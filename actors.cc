@@ -1659,21 +1659,73 @@ int Actor::figure_weapon_pos
 	int myframe = get_framenum();
 	get_info().get_weapon_offset(myframe & 0x1f, actor_x,
 			actor_y);
+	// Get weapon frames for actor frame:
+	switch (myframe)
+	{
+		case 4:
+		case 7:
+		case 22:
+		case 25:
+		case 37:
+		case 40:
+		case 53:
+		case 56:
+			weapon_frame = 4;
+			break;
+		case 5:
+		case 8:
+		case 21:
+		case 24:
+			weapon_frame = 3;
+			break;
+		case 6:
+		case 9:
+		case 20:
+		case 23:
+			weapon_frame = 2;
+			break;
+		case 38:
+		case 41:
+		case 52:
+		case 55:
+			weapon_frame = 34;
+			break;
+		case 36:
+		case 39:
+		case 54:
+		case 57:
+			weapon_frame = 36;
+			break;
+		//The next cases (before the default) are here to make use of all
+		//the frames of the "casting frames" shape (shape 859):
+		case 14:
+		case 30:
+			weapon_frame = 5;
+			break;
+		case 46:
+		case 62:
+			weapon_frame = 37;
+			break;
+		case 15:
+			weapon_frame = 6;
+			break;
+		case 31:
+			weapon_frame = 7;
+			break;
+		case 47:
+			weapon_frame = 38;
+			break;
+		case 63:
+			weapon_frame = 39;
+			break;
+		
+		default:
+			weapon_frame = 1;
+	}
+
 	// Get offsets for weapon shape
-	// NOTE: when combat is implemented, weapon frame should depend on
-	// actor's current attacking frame
-	weapon_frame = 1;
-	int baseframe = myframe&0xf;
-	if (gwin->in_combat() && Is_attack_frame(baseframe))
-		{			// Get direction (0-4).
-		int dir = Get_dir_from_frame(myframe);
-		if (dir < 3)		// N, E, S?
-			weapon_frame = 2 + dir;
-		else			// W = N reflected.
-			weapon_frame = 2 | 32;
-		}
-	weapon->get_info().get_weapon_offset(weapon_frame&0xf, wx,
-			wy);
+	weapon->get_info().get_weapon_offset(weapon_frame&0xf, wx, wy);
+
 	// actor_x will be 255 if (for example) the actor is lying down
 	// wx will be 255 if the actor is not holding a proper weapon
 	if(actor_x != 255 && wx != 255)
@@ -1685,8 +1737,6 @@ int Actor::figure_weapon_pos
 			{
 			swap(weapon_x, weapon_y);
 					// Combat frames are already done.
-			if (weapon_frame == 1)
-				weapon_frame |= 32;
 			}
 #if 0	/* +++++Philanderer's Wand looks strange. */
 					// Watch for valid frame.
