@@ -201,7 +201,7 @@ spellVibrate 0x676 ()
 		var array_size = UI_get_array_size(npcitems);
 		var index;
 		
-		if (array_size > 33)
+		if (((UI_get_npc_number(item) == AVATAR) && (array_size > 33)) || (array_size > 0))
 		{
 			while (index < array_size)
 			{
