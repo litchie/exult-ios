@@ -3060,8 +3060,11 @@ bool Actor::figure_hit_points
 		return false;		// No harm can be done.
 
 				//Give a better base chance for explosions to hit as
-				//they do not depend on the attacker's stats:
-	int prob = explosion || (winf && winf->explodes()) ? 80 : 55 + 8*bias +
+				//they do not depend on the attacker's stats
+				//(except for exploding firebolt (676) and exploding
+				//lightning bolt (807):
+	int prob = (explosion  && (weapon_shape != 676 && weapon_shape != 807))
+				|| (winf && winf->explodes()) ? 80 : 55 + 8*bias +
 		2*Get_effective_prop(attacker, combat, 10) +
 		Get_effective_prop(attacker, dexterity, 10) -
 		2*Get_effective_prop(this, combat, 10) -
@@ -3111,7 +3114,7 @@ bool Actor::figure_hit_points
 		return false;
 		}
 					// Compute hit points to lose.
-	int attacker_str = Get_effective_prop(attacker, strength, 8);
+	int attacker_str = explosion && (weapon_shape == 676 || weapon_shape == 807) ? 8 : Get_effective_prop(attacker, strength, 8);
 	int hp;
 	wpoints += 2*bias;		// Apply user's preference.
 	if (wpoints > 0)		// Some ('curse') do no damage.
@@ -3238,7 +3241,7 @@ Game_object *Actor::attacked
 		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
-	bool defeated = figure_hit_points(weapon_shape >= 0 ? attacker : 0, weapon_shape, ammo_shape);
+	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape == -676 || weapon_shape == -807 ? attacker: 0, weapon_shape, ammo_shape);
 	if (attacker && defeated)
 		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???
