@@ -2595,8 +2595,10 @@ void Actor::usecode_attack
 		}
 	else if (projectile_shape)
 		ammo_shape = projectile_shape;
-	else if (winfo->get_uses() == 3)
+	else if ((winfo->get_uses() == 3)
+			|| !ammo_shape)				//For delayed blast
 		ammo_shape = usecode_weapon;
+
 	if (ammo_shape)
 		gwin->get_effects()->add_effect(
 				new Projectile_effect(this, trg,

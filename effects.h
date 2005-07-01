@@ -120,9 +120,12 @@ class Explosion_effect : public Sprites_effect
 	{
 	Game_object *explode;		// What's exploding, or 0.
 	int weapon;			// Weapon to use for attack values.
+	Actor *attacker;		//Who is responsible for the explosion;
+							//otherwise, explosion and delayed blast spells
+							//would not trigger a response from target
 public:
 	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0,
-						int weap = -1);
+						int weap = -1, Actor *att = 0);
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
