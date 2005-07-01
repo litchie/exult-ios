@@ -3055,8 +3055,8 @@ bool Actor::figure_hit_points
 		return false;		// No harm can be done.
 
 	int prob;
-	if ((weapon_shape == 78) && (explosion || (winf && winf->explodes())))
-		//Give a better base chance for explosion spell to hit as
+	if ((weapon_shape == 621) && (explosion || (winf && winf->explodes())))
+		//Give a better base chance for delayed blast spell to hit as
 		//it does not depend on the attacker's stats:
 		prob = 80;
 	else 
@@ -3250,7 +3250,7 @@ Game_object *Actor::attacked
 		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
-	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape != -78 ? attacker: 0, weapon_shape, ammo_shape);
+	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape != -621 ? attacker: 0, weapon_shape, ammo_shape);
 	if (attacker && defeated)
 		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???
