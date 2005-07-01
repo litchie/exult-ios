@@ -696,6 +696,7 @@ void Projectile_effect::handle_event
 			eman->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
+		case 32:		//SI's explosion
 		case 78:		// Explosion.
 		case 287:		// Swordstrike.
 		case 82:		// Delayed explosion.
