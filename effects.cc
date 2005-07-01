@@ -443,10 +443,13 @@ Explosion_effect::Explosion_effect
 	Tile_coord p, 
 	Game_object *exp,
 	int delay,			// Delay before starting (msecs).
-	int weap			// Weapon to use for damage calcs., or
+	int weap,			// Weapon to use for damage calcs., or
 					//   -1 for default(704 = poweder keg).
-	) : Sprites_effect(1, p, 0, 0, delay), explode(exp),
-		weapon(weap >= 0 ? weap : 704)
+	Actor *att		//who is responsible for the explosion
+					//	or 0 for default
+	) : Sprites_effect(weap == 78 || weap == 553 ? 5 : 1,	//Different sprites for Firedoom staff and Explosion spell
+			p, 0, 0, delay), explode(exp),
+			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
 		exp->set_quality(1); // mark as detonating
@@ -481,7 +484,7 @@ void Explosion_effect::handle_event
 		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				(**it).attacked(0, -704, 0);
+				(**it).attacked(attacker, -weapon, 0);
 			}
 	}
 	Sprites_effect::handle_event(curtime, udata);
@@ -677,8 +680,7 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		int delay = 0;		// For explosions.
-		switch (projectile_shape)
+		switch (weapon)
 			{
 		case 287:		// Swordstrike.
 			eman->add_effect(new Sprites_effect(23, epos));
@@ -693,13 +695,13 @@ void Projectile_effect::handle_event
 			eman->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
+		case 78:		// Explosion.
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
-			delay = 3000;	// Wait 3 secs.  FALL THROUGH!
-		case 78:		// Explosion.
+		case 553:		// Firedoom staff.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			eman->add_effect(new Explosion_effect(epos, 0, delay));
+			eman->add_effect(new Explosion_effect(epos, 0, 0, weapon, attacker));
 			target = 0;	// Takes care of attack.
 			break;
 			}
