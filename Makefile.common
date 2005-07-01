@@ -161,6 +161,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/main_gauche.shp \
 	data/bg/magic_helmet.shp \
 	data/bg/throwing_axe.shp \
+	data/bg/lightning_whip.shp \
 	data/bg/flx.in
 
 

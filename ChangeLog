@@ -1,3 +1,7 @@
+2005-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/fellowshipstaff.shp: new version by Crysta
+	* data/bg/lightning_whip.shp: new art by Crysta
+
 2006-07-01  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed weapon frames, modified behaviour of explosives
 	* effects.cc, effects.h: fixed explosives, and modified their

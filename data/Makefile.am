@@ -84,7 +84,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/custom_sword.shp		\
 	bg/main_gauche.shp		\
 	bg/magic_helmet.shp		\
-	bg/throwing_axe.shp
+	bg/throwing_axe.shp		\
+	bg/lightning_whip.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\

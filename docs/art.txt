@@ -53,12 +53,12 @@ Custom sword		635		Willem Jan
 Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
 Death Scythe		562		Willem Jan
-Fellowship staff	885		Willem Jan
+Fellowship staff	885		Crysta
 Triple crossbow		647		Willem Jan
 Musket			278		Sam
 Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
 Avatar costume		838		-
-Lightning whip		549		- (wrong colour)
+Lightning whip		549		Crysta
 Magic helmet		383		Crysta
 Throwing axe		593		Crysta
