@@ -1,3 +1,11 @@
+2006-07-01  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed weapon frames, modified behaviour of explosives
+	* effects.cc, effects.h: fixed explosives, and modified their
+	  behaviour a bit
+	* usecode/ucsched.cc: Fixed next_frame_max and npc_frame opcodes
+	* content/sifixes/src/spells.uc: Fixed dumb bug in modified Vibrate
+	  spell
+
 2005-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/useval.cc: fix truncated strings when concatenating
 
