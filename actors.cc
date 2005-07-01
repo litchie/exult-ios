@@ -3059,7 +3059,9 @@ bool Actor::figure_hit_points
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
-	int prob = 55 + 8*bias +
+				//Give a better base chance for explosions to hit as
+				//they do not depend on the attacker's stats:
+	int prob = explosion || (winf && winf->explodes()) ? 80 : 55 + 8*bias +
 		2*Get_effective_prop(attacker, combat, 10) +
 		Get_effective_prop(attacker, dexterity, 10) -
 		2*Get_effective_prop(this, combat, 10) -
@@ -3236,7 +3238,7 @@ Game_object *Actor::attacked
 		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
-	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
+	bool defeated = figure_hit_points(weapon_shape >= 0 ? attacker : 0, weapon_shape, ammo_shape);
 	if (attacker && defeated)
 		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???
