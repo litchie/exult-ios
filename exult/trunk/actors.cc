@@ -3051,20 +3051,18 @@ bool Actor::figure_hit_points
 	unsigned char powers = winf ? winf->get_powers() : 0;
 	if (ainf)
 		powers |= ainf->get_powers();
-	if (!explosion && winf && winf->explodes() &&		// Exploding?
-	    rand()%4)			// Let's do it 3/4 the time.
-		eman->add_effect(new Explosion_effect(get_tile() + 
-			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0,
-							weapon_shape));
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
-				//Give a better base chance for explosions to hit as
-				//they do not depend on the attacker's stats
-				//(except for exploding firebolt (676) and exploding
-				//lightning bolt (807):
-	int prob = (explosion  && (weapon_shape != 676 && weapon_shape != 807))
-				|| (winf && winf->explodes()) ? 80 : 55 + 8*bias +
+	int prob;
+	if ((weapon_shape == 78) && (explosion || (winf && winf->explodes())))
+		//Give a better base chance for explosion spell to hit as
+		//it does not depend on the attacker's stats:
+		prob = 80;
+	else 
+		prob = 55;
+	
+	prob += 8*bias +
 		2*Get_effective_prop(attacker, combat, 10) +
 		Get_effective_prop(attacker, dexterity, 10) -
 		2*Get_effective_prop(this, combat, 10) -
@@ -3113,8 +3111,19 @@ bool Actor::figure_hit_points
 			}
 		return false;
 		}
+	
+	//Explode only if it hits
+	if (!explosion && winf && winf->explodes())
+		eman->add_effect(new Explosion_effect(get_tile() + 
+			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0,
+							weapon_shape));
 					// Compute hit points to lose.
-	int attacker_str = explosion && (weapon_shape == 676 || weapon_shape == 807) ? 8 : Get_effective_prop(attacker, strength, 8);
+	int attacker_str;
+	if (explosion || (winf && winf->explodes()))	//Explosions shouldn't depend on strength
+		attacker_str = 8;
+	else
+		attacker_str = Get_effective_prop(attacker, strength, 8);
+		
 	int hp;
 	wpoints += 2*bias;		// Apply user's preference.
 	if (wpoints > 0)		// Some ('curse') do no damage.
@@ -3241,7 +3250,7 @@ Game_object *Actor::attacked
 		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
-	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape == -676 || weapon_shape == -807 ? attacker: 0, weapon_shape, ammo_shape);
+	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape != -78 ? attacker: 0, weapon_shape, ammo_shape);
 	if (attacker && defeated)
 		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???

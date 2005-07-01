@@ -126,6 +126,44 @@ class Explosion_effect : public Sprites_effect
 public:
 	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0,
 						int weap = -1, Actor *att = 0);
+	int Get_explosion_shape(int weap)
+	{
+		switch (weap)
+			{
+		case 597:	//Bow -- only gets here if using burst arrows
+		case 606:	//Magic bow -- only gets here if using burst arrows
+		//case 554:	//burst arrow
+			return 19;
+		case 553:	//firedoom staff
+		case 676:	//exploding firebolt
+		case 807:	//exploding lightning bolt
+			return 5;
+		case 565:	//starburst
+			return 18;
+		case 287:	//swordstrike
+			return 23;
+		default:
+			return 1;
+			}
+	}
+	int Get_explosion_radius(int weap)
+	{
+		switch (weap)
+			{
+		case 287:	//swordstrike
+		case 597:	//Bow -- only gets here if using burst arrows
+		case 606:	//Magic bow -- only gets here if using burst arrows
+		//case 554:	//burst arrow
+			return 3;
+		case 553:	//firedoom staff
+		case 565:	//starburst
+		case 676:	//exploding firebolt
+		case 807:	//exploding lightning bolt
+			return 2;
+		default:
+			return 5;
+			}
+	}
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
