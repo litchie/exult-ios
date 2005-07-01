@@ -1023,8 +1023,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     547, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     76,     0 },
 	{     547, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     76,     1 },
 	// Lightning Whip
-	{     549, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     62,     0 },
-	{     549, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     62,     1 },
+	{     549, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_LIGHTNING_WHIP_SHP,     0 },
+	{     549, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_LIGHTNING_WHIP_SHP,     1 },
 	// Magic Boomerang
 	{     550, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_MAGIC_BOOMERANG_SHP,     0 },
 	{     550, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_MAGIC_BOOMERANG_SHP,     1 },
