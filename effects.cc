@@ -447,7 +447,7 @@ Explosion_effect::Explosion_effect
 					//   -1 for default(704 = poweder keg).
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
-	) : Sprites_effect(weap == 78 || weap == 676 || weap == 807 ? 5 : 1,	//Different sprites for Firedoom staff and Exploding firebolt/lightning bolt
+	) : Sprites_effect(Get_explosion_shape(weap),	//Different sprites for different explosion types
 			p, 0, 0, delay), explode(exp),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
@@ -481,7 +481,10 @@ void Explosion_effect::handle_event
 			explode = 0;
 			}
 		Game_object_vector vec;	// Find objects near explosion.
-		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
+		Game_object::find_nearby(vec, pos, c_any_shapenum,
+				//Some weapons have smaller radius than others:
+				Get_explosion_radius(weapon),
+				0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
 				(**it).attacked(attacker, -weapon, 0);
@@ -682,28 +685,29 @@ void Projectile_effect::handle_event
 		{			// Done? 
 		switch (weapon)
 			{
-		case 287:		// Swordstrike.
-			eman->add_effect(new Sprites_effect(23, epos));
-			break;
-		case 554:		// Burst arrow.
-			eman->add_effect(new Sprites_effect(19, epos));
-			break;
-		case 565:		// Starburst.
-			eman->add_effect(new Sprites_effect(18, epos));
+		case 597:	//Bow
+		case 606:	//Magic bow
+			if (projectile_shape == 554)		// Burst arrow.
+				//eman->add_effect(new Sprites_effect(19, epos));
+				eman->add_effect(new Explosion_effect(epos + 
+					Tile_coord(0, 0, target->get_info().get_3d_height()/2), 0, 0, weapon, attacker));
 			break;
 		case 639:		// Death Vortex.
 			eman->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
 		case 78:		// Explosion.
+		case 287:		// Swordstrike.
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
+		case 565:		// Starburst.
 		case 676:		// Exploding firebolt
 		case 807:		// Exploding lightning bolt
 		case 553:		// Firedoom staff.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			eman->add_effect(new Explosion_effect(epos, 0, 0, weapon, attacker));
+			eman->add_effect(new Explosion_effect(epos + 
+					Tile_coord(0, 0, target->get_info().get_3d_height()/2), 0, 0, weapon, attacker));
 			target = 0;	// Takes care of attack.
 			break;
 			}
