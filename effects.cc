@@ -447,7 +447,7 @@ Explosion_effect::Explosion_effect
 					//   -1 for default(704 = poweder keg).
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
-	) : Sprites_effect(weap == 78 || weap == 553 ? 5 : 1,	//Different sprites for Firedoom staff and Explosion spell
+	) : Sprites_effect(weap == 78 || weap == 676 || weap == 807 ? 5 : 1,	//Different sprites for Firedoom staff and Exploding firebolt/lightning bolt
 			p, 0, 0, delay), explode(exp),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
@@ -698,6 +698,8 @@ void Projectile_effect::handle_event
 		case 78:		// Explosion.
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
+		case 676:		// Exploding firebolt
+		case 807:		// Exploding lightning bolt
 		case 553:		// Firedoom staff.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
