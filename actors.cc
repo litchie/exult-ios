@@ -1666,10 +1666,6 @@ int Actor::figure_weapon_pos
 		case 7:
 		case 22:
 		case 25:
-		case 37:
-		case 40:
-		case 53:
-		case 56:
 			weapon_frame = 4;
 			break;
 		case 5:
@@ -1689,6 +1685,12 @@ int Actor::figure_weapon_pos
 		case 52:
 		case 55:
 			weapon_frame = 34;
+			break;
+		case 37:
+		case 40:
+		case 53:
+		case 56:
+			weapon_frame = 35;
 			break;
 		case 36:
 		case 39:
