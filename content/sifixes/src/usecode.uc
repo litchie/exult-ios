@@ -18,6 +18,7 @@
 #include "misc/inn_keys.uc";				//Inn keys are now deleted/doors locked
 #include "misc/egg_starting_hints.uc";		//Set bear skull flag when Shamino sees the bear
 #include "misc/egg_bane_holocaust.uc";		//Modifies the bane holocaust to give inn keys to innkeepers
+#include "misc/egg_gorlab_swamp_sleep.uc";	//Prevents player from taking companions to dream world
 
 #include "npcs/dupre.uc";					//Dupre now refuses to leave in Spinebreaker mountains
 #include "npcs/shamino.uc";					//Fixing the exchanged item list; also, refuses to leave in Spinebreaker mountains
@@ -42,5 +43,4 @@
 #include "cutscenes/fawn_storm.uc";			//Fixes the Fawn storm so that Iolo's lute is not duplicated
 #include "cutscenes/monitor_banquet.uc";	//Prevents deletion of the training pikeman egg
 #include "cutscenes/wall_of_lights.uc";		//Absolutely force companions to be there and force-kills them after
-
 

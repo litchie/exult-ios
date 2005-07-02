@@ -350,7 +350,6 @@ spellSerpentBond 0x67D ()
 {
 	var pos;
 	var snakepos;
-	var insnakemaze;
 	if (event == DOUBLECLICK)
 	{
 		UI_halt_scheduled(item);
@@ -386,14 +385,15 @@ spellSerpentBond 0x67D ()
 		pos = UI_get_object_position(item);
 		snakepos = [pos[X] + 2, pos[Y] + 2, pos[Z]];
 		
-		insnakemaze = false;
+		var insnakemaze = false;
 		//Check to see if the Avatar is inside the snake maze:
 		if ((pos[X] > 0x550) && (pos[X] < 0x573) && (pos[Y] > 0x1EA) && (pos[Y] < 0x212))
 			insnakemaze = true;
 
-		if ((insnakemaze == false) && UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
+		if ((getAvatarLocationID() != DREAM_WORLD) && (insnakemaze == false) && UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
 		{
-			UI_set_polymorph(UI_get_npc_object(AVATAR), SHAPE_MALE_AVATAR);
+			if (UI_get_item_flag(item, POLYMORPH))
+				UI_set_polymorph(UI_get_npc_object(AVATAR), SHAPE_MALE_AVATAR);
 			item->serpentbondAddNPCsBackToParty();
 		}
 		else
