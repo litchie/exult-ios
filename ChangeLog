@@ -7,6 +7,8 @@
 	* actors.cc: Modified how explosives work on hit; includes modifications for
 	  Death Vortex and Energy Mist; now uses new ammo.dat info to determine if
 	  missiles should be dropped on hit/miss.
+	* content/sifixes (several): Prevent Serpent Bond from smuggling companions
+	  to Dream World in SI
 
 2005-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/fellowshipstaff.shp: new version by Crysta
