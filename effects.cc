@@ -447,12 +447,15 @@ Explosion_effect::Explosion_effect
 					//   -1 for default(704 = poweder keg).
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
-	) : Sprites_effect(Get_explosion_shape(weap),	//Different sprites for different explosion types
+							//Different sprites for different explosion types
+	) : Sprites_effect(Get_explosion_shape(weap),
 			p, 0, 0, delay), explode(exp),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
 		exp->set_quality(1); // mark as detonating
+		//blame avatar:
+		attacker = gwin->get_main_actor();
 	}
 }
 
@@ -469,8 +472,14 @@ void Explosion_effect::handle_event
 		Tile_coord apos = gwin->get_main_actor()->get_tile();
 		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
 
+		Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+		int sfx;
+		if (weapon == 704)
+			sfx = 9;
+		else
+			sfx = winf->get_hitsfx() >= 0 ? winf->get_hitsfx() : winf->get_sfx();
 		Audio::get_ptr()->play_sound_effect(
-				Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
+				Audio::game_sfx(sfx), SDL_MIX_MAXVOLUME, dir);
 		}
 	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
@@ -483,11 +492,10 @@ void Explosion_effect::handle_event
 		Game_object_vector vec;	// Find objects near explosion.
 		Game_object::find_nearby(vec, pos, c_any_shapenum,
 				//Some weapons have smaller radius than others:
-				Get_explosion_radius(weapon),
-				0);
+				Get_explosion_radius(weapon), 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				(**it).attacked(attacker, -weapon, 0);
+				(**it).attacked(attacker, weapon, 0);
 			}
 	}
 	Sprites_effect::handle_event(curtime, udata);
@@ -548,7 +556,10 @@ void Projectile_effect::init
 		}
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
-	path->NewPath(pos, d, 0);
+	if (winfo && ainfo && winfo->explodes() && ainfo->has_special_behaviour())
+		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
+	else
+		path->NewPath(pos, d, 0);
 	if (frames >= 24)		// Use frames 8-23, for direction
 		{			//   going clockwise from North.
 		int dir = Get_dir16(s, d);
@@ -683,35 +694,24 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		switch (weapon)
+		Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+		Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
+		if (winf && winf->explodes())
 			{
-		case 597:	//Bow
-		case 606:	//Magic bow
-			if (projectile_shape == 554)		// Burst arrow.
-				//eman->add_effect(new Sprites_effect(19, epos));
+			if (ainf && ainf->has_special_behaviour())
+				eman->add_effect(new Special_projectile(weapon,
+						attacker, target, pos, target->get_tile() + 
+						Tile_coord(0, 0, target->get_info().get_3d_height()/2)));
+			else
 				eman->add_effect(new Explosion_effect(epos + 
-					Tile_coord(0, 0, target->get_info().get_3d_height()/2), 0, 0, weapon, attacker));
-			break;
-		case 639:		// Death Vortex.
-			eman->add_effect(new Death_vortex(target, epos));
+						Tile_coord(0, 0, target->get_info().get_3d_height()/2),
+						0, 0, weapon, attacker));
 			target = 0;	// Takes care of attack.
-			break;
-		case 32:		//SI's explosion
-		case 78:		// Explosion.
-		case 287:		// Swordstrike.
-		case 82:		// Delayed explosion.
-		case 621:		//    "       "
-		case 565:		// Starburst.
-		case 676:		// Exploding firebolt
-		case 807:		// Exploding lightning bolt
-		case 553:		// Firedoom staff.
-		case 702:		// Cannon.
-		case 704:		// Powder keg.
-			eman->add_effect(new Explosion_effect(epos + 
-					Tile_coord(0, 0, target->get_info().get_3d_height()/2), 0, 0, weapon, attacker));
-			target = 0;	// Takes care of attack.
-			break;
 			}
+		else if (ainf && ainf->bursts())
+			eman->add_effect(new Explosion_effect(epos + 
+					Tile_coord(0, 0, target->get_info().get_3d_height()/2),
+						0, 0, weapon, attacker));
 		if (return_path)	// Returned a boomerang?
 			target->add(gmap->create_ireg_object(weapon, 0));
 		else
@@ -758,19 +758,26 @@ void Projectile_effect::paint
 	}
 
 /*
- *	Create a 'death vortex'.
+ *	Create a 'death vortex' or an 'energy mist'.
  */
 
-Death_vortex::Death_vortex
+Special_projectile::Special_projectile	// A better name is welcome...
 	(
+	int shnum,				// The projectile shape.
+	Actor *att,				// Who cast the spell.
 	Game_object *trg,		// What to aim for.
-	Tile_coord tp			// Target pos, if trg==0.
-	) : vortex(8, 0, SF_SPRITES_VGA), next_damage_time(0)
+	Tile_coord sp,			// Where to start.
+	Tile_coord tp			// Target pos, if trg isn't an actor.
+	) : sprite(shnum == 399 ? 13 : 8, 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
-	pos = trg ? trg->get_tile() : tp;
+	weapon = shnum;
+	attacker = att;
+	pos = sp;
+	dest = tp;
 	target = trg ? trg->as_actor() : 0;
+	stationary = target ? false : true;	//If true, the sprite will 'park' at dest
 	Game_window *gwin = Game_window::get_instance();
-	frames = vortex.get_num_frames();
+	frames = sprite.get_num_frames();
 					// Go for 20 seconds.
 	stop_time = Game::get_ticks() + 20*1000;
 					// Start immediately.
@@ -783,11 +790,11 @@ Death_vortex::Death_vortex
  *	Output:	Width in pixels.
  */
 
-inline int Death_vortex::add_dirty
+inline int Special_projectile::add_dirty
 	(
 	)
 	{
-	Shape_frame *shape = vortex.get_shape();
+	Shape_frame *shape = sprite.get_shape();
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
@@ -799,7 +806,7 @@ inline int Death_vortex::add_dirty
  *	Animation.
  */
 
-void Death_vortex::handle_event
+void Special_projectile::handle_event
 	(
 	unsigned long curtime,		// Current time of day.
 	long udata
@@ -807,19 +814,53 @@ void Death_vortex::handle_event
 	{
 	Game_window *gwin = Game_window::get_instance();
 	int width = add_dirty();	// Repaint old area.
-	if (target && !target->is_dead())	// Follow target.
-		{
-		Tile_coord tpos = target->get_tile();
-		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty;
+	
+	if ((target && !target->is_dead()) || stationary)
+		{			//Move to target/destination if needed
+		Tile_coord tpos = stationary ? dest : target->get_tile();
+		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty,
+			deltaz = tpos.tz +
+				stationary ? 0 : target->get_info().get_3d_height()/2 - pos.tz;
 		int absx = deltax >= 0 ? deltax : -deltax;
 		int absy = deltay >= 0 ? deltay : -deltay;
-		if (absx > 2 || absy > 2)
+		int absz = deltaz >= 0 ? deltaz : -deltaz;
+		uint32 dist = absx*absx + absy*absy + absz*absz;
+		if (dist > 1)
 			{
 			if (deltax)
 				pos.tx += deltax/absx;
 			if (deltay)
 				pos.ty += deltay/absy;
+			if (deltaz)
+				pos.tz += deltaz/absz;
 			}
+		}
+	else
+		{
+		//The target has been killed; find another one
+		Actor_vector npcs;	// Find NPC's.
+		Game_object::find_nearby(npcs, pos, -1, 30, 
+									8);
+		Actor *nearest = 0;
+		uint32 bestdist = 100000;
+		for (Actor_vector::const_iterator it = npcs.begin();
+							it != npcs.end(); ++it)
+			{
+			Actor *npc = *it;
+			if (!npc->is_in_party() && !npc->is_dead() &&
+					(npc->get_effective_alignment() >= Actor::hostile))
+				{
+				Tile_coord npos = npc->get_tile();
+				int dx = npos.tx - pos.tx, dy = npos.ty - pos.ty, dz = npos.tz - pos.tz;
+				uint32 dist = dx*dx + dy*dy + dz*dz;
+				if (dist < bestdist)
+					{
+					bestdist = dist;
+					nearest = npc;
+					}
+				}
+			}
+		target = nearest;
 		}
 	if (curtime > next_damage_time)	// Time to cause damage.
 		{			// Do it every second.
@@ -832,10 +873,12 @@ void Death_vortex::handle_event
 			{
 			Actor *npc = *it;
 			if (!npc->is_in_party())
-				npc->reduce_health(40);
+				//Still powerful, but no longer overkill...
+				//also makes the enemy react, which is good
+				npc->attacked(attacker, weapon, weapon);
 			}
 		}
-	vortex.set_frame((vortex.get_framenum() + 1)%frames);
+	sprite.set_frame((sprite.get_framenum() + 1)%frames);
 	add_dirty();			// Paint new.
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
@@ -850,12 +893,12 @@ void Death_vortex::handle_event
  *	Render.
  */
 
-void Death_vortex::paint
+void Special_projectile::paint
 	(
 	)
 	{
 	int liftpix = pos.tz*c_tilesize/2;
-	vortex.paint_shape(
+	sprite.paint_shape(
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
 	}

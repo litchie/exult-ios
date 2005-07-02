@@ -233,7 +233,7 @@ void Weapon_info::write
 					// BG:  Subtracted 1 from each sfx.
 	int sfx_delta = bg ? -1 : 0;
 	Write2(ptr, sfx - sfx_delta);
-	Write2(ptr, hitsfx + sfx_delta);
+	Write2(ptr, hitsfx - sfx_delta);
 					// Last 2 bytes unknown/unused.
 	Write2(ptr, 0);
 	out.write((char *) buf, sizeof(buf));
@@ -255,7 +255,10 @@ void Ammo_info::write
 	Write2(ptr, family_shape);
 	Write2(ptr, type2);
 	*ptr++ = damage;
-	Write2(ptr, 0);			// Unknown.
+	unsigned char flags0;
+	flags0 = (m_bursts<<6) | ((special_behaviour ? 3 : drop_type)<<4)
+	*ptr++ = flags0;
+	*ptr++ = 0;			// Unknown.
 	*ptr++ = damage_type<<4;
 	*ptr++ = powers;
 	Write2(ptr, 0);			// Unknown.
