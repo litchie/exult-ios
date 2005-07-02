@@ -119,7 +119,7 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DMACOSX"
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT(Mac OS X)
-		SYSLIBS="-framework QuickTime -framework AudioUnit"
+		SYSLIBS="-framework AudioUnit -framework CoreMIDI"
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="data"
 		ARCH=macosx
