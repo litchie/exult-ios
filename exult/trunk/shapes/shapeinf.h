@@ -154,13 +154,23 @@ public:
  */
 class Ammo_info
 	{
+private:
 	int family_shape;		// I.e., burst-arrow's is 'arrow'.
-	unsigned short type2;		// ?? A shape.
+	unsigned short type2;		// What the missile should look like.
 	unsigned char damage;		// Extra damage points.
 	unsigned char powers;		// Same as for weapons.
 	unsigned char damage_type;	// Same as for weapons.
 	bool m_no_blocking;		// Can move through walls.
+	unsigned char drop_type;	// What to do to missile when it hits/misses
+	bool special_behaviour;		// For Energy Mist/Death Vortex.
+	bool m_bursts;				// Burst arrows.
 public:
+	enum Drop_types			// Determines what happens when the missile misses
+		{
+		drop_normally = 0,
+		never_drop = 1,
+		always_drop = 2
+		};
 	friend class Shapes_vga_file;
 	Ammo_info()
 		{  }
@@ -185,6 +195,18 @@ public:
 		{ return m_no_blocking; }
 	void set_no_blocking(bool tf)
 		{ m_no_blocking = tf; }
+	unsigned char get_drop_type() const
+		{ return drop_type; }
+	void set_drop_type(unsigned char drop)
+		{ drop_type = drop; }
+	bool has_special_behaviour() const
+		{ return special_behaviour; }
+	void set_has_special_behaviour(bool sb)
+		{ special_behaviour = sb; }
+	bool bursts() const
+		{ return m_bursts; }
+	void set_bursts(bool b)
+		{ m_bursts = b; }
 	};
 
 /*

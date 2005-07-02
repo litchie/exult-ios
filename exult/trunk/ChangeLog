@@ -1,8 +1,18 @@
+2005-07-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/shapeinf.cc, etc: Added capabilities to read/save some previously
+	  unknown data from ammo.dat and fixed minor bug on saving weapons.dat
+	* effects.cc: Modified to use newly decoded ammo.dat info, modified Death
+	  Vortex to more closely resemble original and implemented Energy Mist (the
+	  latter two share the same code)
+	* actors.cc: Modified how explosives work on hit; includes modifications for
+	  Death Vortex and Energy Mist; now uses new ammo.dat info to determine if
+	  missiles should be dropped on hit/miss.
+
 2005-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/fellowshipstaff.shp: new version by Crysta
 	* data/bg/lightning_whip.shp: new art by Crysta
 
-2006-07-01  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2005-07-01  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed weapon frames, modified behaviour of explosives
 	* effects.cc, effects.h: fixed explosives, and modified their
 	  behaviour a bit

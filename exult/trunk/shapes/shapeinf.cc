@@ -111,12 +111,16 @@ int Ammo_info::read
 	uint8 *ptr = buf;
 	int shapenum = Read2(ptr);	// Bytes 0-1.
 	family_shape = Read2(ptr);
-	type2 = Read2(ptr);		// ???
+	type2 = Read2(ptr);		// How the missile looks like
 	damage = *ptr++;
-	ptr += 2;			// 2 unknown.
 	unsigned char flags0 = *ptr++;
-	m_no_blocking = (flags0>>3)&1;
-	damage_type = (flags0>>4)&15;
+	special_behaviour = ((flags0>>4)&3)==3;
+	drop_type = special_behaviour ? 0 : (flags0>>4)&3;
+	m_bursts = (flags0>>6)&1;
+	ptr++;			// 1 unknown.
+	unsigned char flags1 = *ptr++;
+	m_no_blocking = (flags1>>3)&1;
+	damage_type = (flags1>>4)&15;
 	powers = *ptr++;
 					// Last 2 unknown.
 	return shapenum;
