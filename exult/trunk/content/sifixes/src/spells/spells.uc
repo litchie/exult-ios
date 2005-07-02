@@ -200,8 +200,11 @@ spellVibrate 0x676 ()
 		npcitems = UI_get_cont_items(item, SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
 		var array_size = UI_get_array_size(npcitems);
 		var index;
+		var mincount;
+		mincount = UI_count_objects(item, SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY) +
+				   UI_count_objects(item, SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
 		
-		if (((UI_get_npc_number(item) == AVATAR) && (array_size > 33)) || (array_size > 0))
+		if (array_size > mincount)
 		{
 			while (index < array_size)
 			{
@@ -210,6 +213,11 @@ spellVibrate 0x676 ()
 				if ((target_shape != SHAPE_PATH_EGG) && (target_shape != SHAPE_USECODE_CONTAINER))
 					break;
 			}
+			
+			//Just for safety:
+			target_shape = UI_get_item_shape(npcitems[index]);
+			if ((target_shape == SHAPE_PATH_EGG) || (target_shape == SHAPE_USECODE_CONTAINER))
+				return;
 			
 			if (index <= array_size)
 			{
