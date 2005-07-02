@@ -3004,9 +3004,6 @@ bool Actor::figure_hit_points
 	Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
-	bool explosion = false;		// From an explosion?
-	if (weapon_shape < 0)		// Don't want recusive explosions.
-		{ explosion = true; weapon_shape = -weapon_shape; }
 	bool theyre_party = attacker &&
 			(attacker->party_id != -1 || attacker->npc_num == 0);
 	bool instant_death = (cheat.in_god_mode() && theyre_party);
@@ -3033,11 +3030,16 @@ bool Actor::figure_hit_points
 		if (!wpoints)
 			wpoints = 1;	// Always give at least one.
 		}
+	bool explosion = winf ? winf->explodes() : false;
 					// Get bonus ammo points.
 	Ammo_info *ainf = ammo_shape > 0 ? 
 			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;
+	bool special_behaviour;
 	if (ainf)
+		{
 		wpoints += ainf->get_damage();
+		special_behaviour = ainf->has_special_behaviour();
+		}
 	int usefun;			// See if there's usecode for it.
 	if (winf && (usefun = winf->get_usecode()) != 0)
 		ucmachine->call_usecode(usefun, this,
@@ -3053,9 +3055,9 @@ bool Actor::figure_hit_points
 		powers |= ainf->get_powers();
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
-
+	
 	int prob;
-	if ((weapon_shape == 621) && (explosion || (winf && winf->explodes())))
+	if (weapon_shape == 621)
 		//Give a better base chance for delayed blast spell to hit as
 		//it does not depend on the attacker's stats:
 		prob = 80;
@@ -3085,41 +3087,43 @@ bool Actor::figure_hit_points
 			attacker->say(magebane_struck);
 			}
 		}
-	if (instant_death)
+	if (instant_death || special_behaviour)
 		prob = 200;	// always hits
 
 	if (combat_trace) {
 		cout << "Hit probability is " << prob << endl;
 	}
+	bool missed = false;
 	if (rand()%100 > prob)
-		{			// Missed.
-					// See if we should drop ammo.
+		missed = true;			// Missed.
+	
+	// See if we should drop ammo.
+	unsigned char drop = ainf ? ainf->get_drop_type() : 0;
+	if ((drop == Ammo_info::always_drop) || 
+			((drop != Ammo_info::never_drop) && (missed)))
+		{
 		if (winf && ammo_shape && attacker &&
 		    ((winf->is_thrown() && !winf->returns()) ||
 			winf->get_ammo_consumed() > 0))
 			{
 			Tile_coord pos = Map_chunk::find_spot(get_tile(), 3,
 							ammo_shape, 0, 1);
-			if (pos.tx == -1)
-				return false;
-			Game_object *aobj = gmap->create_ireg_object(
-								ammo_shape, 0);
-			if (attacker->get_flag(	Obj_flags::is_temporary))
-				aobj->set_flag(	Obj_flags::is_temporary);
-			aobj->set_flag(Obj_flags::okay_to_take);
-			aobj->move(pos);
+			if (pos.tx != -1)
+				{
+				Game_object *aobj = gmap->create_ireg_object(
+									ammo_shape, 0);
+				if (attacker->get_flag(	Obj_flags::is_temporary))
+					aobj->set_flag(	Obj_flags::is_temporary);
+				aobj->set_flag(Obj_flags::okay_to_take);
+				aobj->move(pos);
+				}
 			}
-		return false;
 		}
-	
-	//Explode only if it hits
-	if (!explosion && winf && winf->explodes())
-		eman->add_effect(new Explosion_effect(get_tile() + 
-			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0,
-							weapon_shape));
+	if (missed)
+		return false;
 					// Compute hit points to lose.
 	int attacker_str;
-	if (explosion || (winf && winf->explodes()))	//Explosions shouldn't depend on strength
+	if (explosion)	//Explosions shouldn't depend on strength
 		attacker_str = 8;
 	else
 		attacker_str = Get_effective_prop(attacker, strength, 8);
@@ -3128,15 +3132,16 @@ bool Actor::figure_hit_points
 	wpoints += 2*bias;		// Apply user's preference.
 	if (wpoints > 0)		// Some ('curse') do no damage.
 		{
-		if (wpoints == 127)	// Glass sword?
+		if ((wpoints == 127)	// Glass sword?
+			|| (special_behaviour))	//Death Vortex/Energy Mist
 			hp = wpoints;	// A killer.
 		else {
 			hp = 1 + rand()%wpoints;
-            if (attacker_str > 2)
-                hp += 1 + rand()%(attacker_str/3);
-            if (armor > 0)
-                hp -= 1 + rand()%armor;
-        }
+			if (attacker_str > 2)
+				hp += 1 + rand()%(attacker_str/3);
+			if (armor > 0)
+				hp -= 1 + rand()%armor;
+		}
 		if (hp < 1)
 			hp = 1;
 		}
@@ -3147,7 +3152,7 @@ bool Actor::figure_hit_points
 		if ((powers&Weapon_info::poison) && roll_to_win(
 			Get_effective_prop(attacker, Actor::strength),
 			Get_effective_prop(this, Actor::dexterity)) &&
-		    !(minf && minf->poison_safe()))
+			!(minf && minf->poison_safe()))
 			set_flag(Obj_flags::poisoned);
 		if (powers&Weapon_info::magebane)
 			{
@@ -3178,7 +3183,7 @@ bool Actor::figure_hit_points
 	int sfx;			// Play 'hit' sfx.
 	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
 					// But only if Ava. involved.
-	    (this == gwin->get_main_actor() || 
+		(this == gwin->get_main_actor() || 
 				attacker == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
 
@@ -3224,7 +3229,6 @@ Game_object *Actor::attacked
 	(
 	Actor *attacker,		// 0 if from a trap.
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
-					//   If < 0, it's an explosion.
 	int ammo_shape			// Also may be 0.
 	)
 	{
@@ -3250,7 +3254,7 @@ Game_object *Actor::attacked
 		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
-	bool defeated = figure_hit_points(weapon_shape >= 0 || weapon_shape != -621 ? attacker: 0, weapon_shape, ammo_shape);
+	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && defeated)
 		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???

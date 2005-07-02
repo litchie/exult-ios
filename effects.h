@@ -124,8 +124,8 @@ class Explosion_effect : public Sprites_effect
 							//otherwise, explosion and delayed blast spells
 							//would not trigger a response from target
 public:
-	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0,
-						int weap = -1, Actor *att = 0);
+	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0, int weap = -1,
+			Actor *att = 0);
 	int Get_explosion_shape(int weap)
 	{
 		switch (weap)
@@ -201,20 +201,25 @@ public:
 	};
 
 /*
- *	'Death Vortex', from the spell.  (Maybe this could be a
+ *	'Death Vortex' and 'Energy Mist', as the spells.  (Maybe this could be a
  *	Sprites_effect.)
+ *	A better name is welcome...
  */
-class Death_vortex : public Special_effect
+class Special_projectile : public Special_effect
 	{
-	ShapeID vortex;
+	ShapeID sprite;
+	int weapon;		// The weapon's shape number.
+	Actor *attacker;		// Who is responsible for the attack.
 	Actor *target;			// We'll follow this around if not 0.
 	Tile_coord pos;			// Current position.
+	Tile_coord dest;		// Destination pos for when there is no target.
+	bool stationary;		// If the effect should seek new targets.
 	int frames;			// # frames.
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
 	int add_dirty();
 public:
-	Death_vortex(Game_object *trg, Tile_coord tp);
+	Special_projectile(int shnum, Actor *att, Game_object *trg, Tile_coord sp, Tile_coord tp);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
