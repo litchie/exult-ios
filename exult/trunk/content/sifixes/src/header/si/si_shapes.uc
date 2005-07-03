@@ -50,6 +50,7 @@ const int SHAPE_BRUSH				= 285;	//0x011D
 const int SHAPE_RING				= 887;	//0x0377
 const int SHAPE_STOCKINGS			= 677;	//0x02A5
 const int SHAPE_FOOD				= 377;	//0x0179
+const int FRAME_DRIED_FISH			= 31;
 const int SHAPE_LARGE_SKULL			= 244;	//0x00F4
 const int SHAPE_MONITOR_SHIELD		= 729;	//0x02D9
 const int SHAPE_BOTTLE				= 616;	//0x0268
@@ -59,6 +60,8 @@ const int SHAPE_FILARI				= 948;	//0x03B4
 const int SHAPE_SEVERED_LIMB		= 794;	//0x031A
 const int SHAPE_LEATHER_HELM		= 1004;	//0x03EC
 const int SHAPE_BREAST_PLATE		= 419;	//0x01A3
+
+const int SHAPE_FISH				= 509;
 
 const int SHAPE_BOOK				= 642;	//0x0282
 const int SHAPE_MAGIC_SCROLL		= 715;
@@ -76,6 +79,8 @@ const int SHAPE_LUTE				= 692;
 
 const int SHAPE_BROKEN_DISH			= 546;
 const int SHAPE_GOBLIN2				= 691;
+
+const int SHAPE_BUCKET				= 810;
 
 enum npc_shapes
 {

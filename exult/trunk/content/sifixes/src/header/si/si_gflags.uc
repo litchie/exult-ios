@@ -46,6 +46,7 @@ const int BEATRIX_PROTECTION			= 0x25B;
 const int BEATRIX_FORGAVE_SHAMINO		= 0x25C;
 const int FREED_GWENNOS_BODY			= 0x25F;
 const int TALKED_TO_GWANI_ABOUT_GWENNO	= 0x262;
+const int BAYANDA_GAVE_BUCKET			= 0x264;
 const int GWENNO_IS_DEAD				= 0x26A;
 const int IOLO_GWENNO_REUNITED			= 0x275;	//Iolo and Gwenno are alive, sane and talked to each other
 const int TALKED_TO_GREAT_HIEROPHANT	= 0x279;
