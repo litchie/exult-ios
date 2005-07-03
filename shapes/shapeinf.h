@@ -57,8 +57,10 @@ public:
 		};
 	enum Actor_frames		// Actor frames to show when using:
 		{
+		reach = 0,
 		raise = 1,
-		reach = 2
+		fast_swing = 2,
+		slow_swing = 3
 		};
 private:
 	unsigned char powers;		// Poison, sleep, charm. flags.
