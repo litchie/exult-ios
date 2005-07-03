@@ -97,7 +97,7 @@ public:
 	void set_powers(unsigned char p)
 		{ powers = p; }
 	unsigned char get_actor_frames(bool projectile) const
-		{ return !projectile ? (actor_frames&3) : (actor_frames>>2); }
+		{ return !projectile ? (actor_frames&3) : (actor_frames>>2)&3; }
 	void set_actor_frames(unsigned char f)
 		{ actor_frames = f; }
 	int get_ammo_consumed()

@@ -1,3 +1,9 @@
+2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc, shapes/shapeinf.h: Implemented weapon-dependent frame sequences
+	  for attacks
+	* effects.cc, effects.h: Slightly modified the way burst arrows are handled,
+	  eliminated some hard-coded data about explosion sizes and moved the definition
+	  of Get_explosion_shape out of Explosion_effect class.
 2005-07-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/shapeinf.cc, etc: Added capabilities to read/save some previously
 	  unknown data from ammo.dat and fixed minor bug on saving weapons.dat
