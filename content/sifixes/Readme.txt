@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.01
+version: 0.15.02
 
 	This document fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -158,6 +158,10 @@ version: 0.15.01
 	    
 6	Version history
 -------------------
+version: 0.15.02
+	- Baiyanda now really gives dried fish when you ask her.
+	- You can no longer smuggle your party members into the Dream World
+	  by use of the Serpent Bond spell.
 version: 0.15.01
 	- Fixed stupid bug I introduced while preventing Vibrate spell
 	  from dropping Usecode container (basically, the spell would only
@@ -195,5 +199,4 @@ version: 0.15.00
 	  nor its contents.
 	- Slightly modified the Firesnake spell.
 	- Spells. I took Neutronium Dragon's suggestions for
-	  Erstam's Surprise and Vibrate.	
-
+	  Erstam's Surprise and Vibrate.

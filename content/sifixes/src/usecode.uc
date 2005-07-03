@@ -23,6 +23,7 @@
 #include "npcs/dupre.uc";					//Dupre now refuses to leave in Spinebreaker mountains
 #include "npcs/shamino.uc";					//Fixing the exchanged item list; also, refuses to leave in Spinebreaker mountains
 #include "npcs/iolo.uc";					//Iolo now refuses to leave in Spinebreaker mountains
+#include "npcs/baiyanda.uc";				//She now really gives dried fish when asked
 #include "npcs/cantra.uc";					//For curing Cantra, from exult/content/si
 #include "npcs/frigidazzi.uc";				//Fixes fur cap/misplaced item list bug
 #include "npcs/ghost.uc";					//Removes the False Chaos Hierophant bug
