@@ -256,7 +256,7 @@ void Ammo_info::write
 	Write2(ptr, type2);
 	*ptr++ = damage;
 	unsigned char flags0;
-	flags0 = (m_bursts<<6) | ((special_behaviour ? 3 : drop_type)<<4)
+	flags0 = (m_bursts<<6) | ((special_behaviour ? 3 : drop_type)<<4);
 	*ptr++ = flags0;
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = damage_type<<4;
