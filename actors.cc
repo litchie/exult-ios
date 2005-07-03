@@ -646,23 +646,22 @@ int Actor::get_attack_frames
 		    (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
 			frame_flags = winfo->get_actor_frames(projectile);
 		else				// Default to normal swing.
-			frame_flags = projectile ? 0 : Weapon_info::raise|
-								Weapon_info::reach;
+			frame_flags = projectile ? Weapon_info::reach : Weapon_info::fast_swing;
 		switch (frame_flags)
 			{
-			case 0:
+			case Weapon_info::reach:
 				which = reach_attack_frames;
 				cnt = sizeof(reach_attack_frames1);
 				break;
-			case 1:
+			case Weapon_info::raise:
 				which = raise_attack_frames;
 				cnt = sizeof(raise_attack_frames1);
 				break;
-			case 2:
+			case Weapon_info::fast_swing:
 				which = fast_swing_attack_frames;
 				cnt = sizeof(fast_swing_attack_frames1);
 				break;
-			case 3:
+			case Weapon_info::slow_swing:
 				which = slow_swing_attack_frames;
 				cnt = sizeof(slow_swing_attack_frames1);
 				break;
