@@ -1666,64 +1666,53 @@ int Actor::figure_weapon_pos
 		case 7:
 		case 22:
 		case 25:
+		case 36:
+		case 39:
+		case 54:
+		case 57:
 			weapon_frame = 4;
 			break;
 		case 5:
 		case 8:
 		case 21:
 		case 24:
+		case 37:
+		case 40:
+		case 53:
+		case 56:
 			weapon_frame = 3;
 			break;
 		case 6:
 		case 9:
 		case 20:
 		case 23:
-			weapon_frame = 2;
-			break;
 		case 38:
 		case 41:
 		case 52:
 		case 55:
-			weapon_frame = 34;
-			break;
-		case 37:
-		case 40:
-		case 53:
-		case 56:
-			weapon_frame = 35;
-			break;
-		case 36:
-		case 39:
-		case 54:
-		case 57:
-			weapon_frame = 36;
+			weapon_frame = 2;
 			break;
 		//The next cases (before the default) are here to make use of all
 		//the frames of the "casting frames" shape (shape 859):
 		case 14:
 		case 30:
-			weapon_frame = 5;
-			break;
 		case 46:
 		case 62:
-			weapon_frame = 37;
+			weapon_frame = 5;
 			break;
 		case 15:
+		case 47:
 			weapon_frame = 6;
 			break;
 		case 31:
-			weapon_frame = 7;
-			break;
-		case 47:
-			weapon_frame = 38;
-			break;
 		case 63:
-			weapon_frame = 39;
+			weapon_frame = 7;
 			break;
 		
 		default:
 			weapon_frame = 1;
 	}
+	weapon_frame |= (myframe & 32);
 
 	// Get offsets for weapon shape
 	weapon->get_info().get_weapon_offset(weapon_frame&0xf, wx, wy);
@@ -1735,7 +1724,7 @@ int Actor::figure_weapon_pos
 		weapon_x = wx - actor_x;
 		weapon_y = wy - actor_y;
 		// Need to swap offsets if actor's shape is reflected
-		if((get_framenum() & 32))
+		if(myframe & 32)
 			{
 			swap(weapon_x, weapon_y);
 					// Combat frames are already done.
