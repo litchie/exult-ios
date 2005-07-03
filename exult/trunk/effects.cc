@@ -434,6 +434,30 @@ void Sprites_effect::paint
 		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize);
 	}
 
+inline int Get_explosion_shape(int shapenum)
+{
+	switch (shapenum)
+		{
+	case 399:	//delayed blast
+		return 13;
+	case 639:	//death vortex
+		return 8;
+	case 554:	//burst arrow
+		return 19;
+	case 78:	//explosion
+	case 621:	//delayed blast
+		return 4;	//Guessing
+	case 702:	//cannon
+	case 704:	//powder keg
+		return 1;
+	case 565:	//starburst
+		return 18;
+	case 287:	//swordstrike
+		return 23;
+	default:	//This seems to be the default in the original
+		return 5;
+		}
+}
 /*
  *	Start explosion.
  */
@@ -445,11 +469,12 @@ Explosion_effect::Explosion_effect
 	int delay,			// Delay before starting (msecs).
 	int weap,			// Weapon to use for damage calcs., or
 					//   -1 for default(704 = poweder keg).
+	int proj,		// Projectile for e.g., burst arrows, 0 otherwise
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
 							//Different sprites for different explosion types
-	) : Sprites_effect(Get_explosion_shape(weap),
-			p, 0, 0, delay), explode(exp),
+	) : Sprites_effect(Get_explosion_shape(proj ? proj : weap >= 0 ? weap : 704),
+			p, 0, 0, delay), explode(exp), projectile(proj),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
@@ -489,13 +514,14 @@ void Explosion_effect::handle_event
 			explode->remove_this();
 			explode = 0;
 			}
+		Shape_frame *shape = sprite.get_shape();
+		int width = shape->get_width();		//Get the sprite's width
 		Game_object_vector vec;	// Find objects near explosion.
 		Game_object::find_nearby(vec, pos, c_any_shapenum,
-				//Some weapons have smaller radius than others:
-				Get_explosion_radius(weapon), 0);
+				width/(2*c_tilesize), 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				(**it).attacked(attacker, weapon, 0);
+				(**it).attacked(attacker, weapon, projectile);
 			}
 	}
 	Sprites_effect::handle_event(curtime, udata);
@@ -705,13 +731,16 @@ void Projectile_effect::handle_event
 			else
 				eman->add_effect(new Explosion_effect(epos + 
 						Tile_coord(0, 0, target->get_info().get_3d_height()/2),
-						0, 0, weapon, attacker));
+						0, 0, weapon, 0, attacker));
 			target = 0;	// Takes care of attack.
 			}
 		else if (ainf && ainf->bursts())
+			{
 			eman->add_effect(new Explosion_effect(epos + 
 					Tile_coord(0, 0, target->get_info().get_3d_height()/2),
-						0, 0, weapon, attacker));
+						0, 0, weapon, projectile_shape, attacker));
+			target = 0;	// Takes care of attack.
+			}
 		if (return_path)	// Returned a boomerang?
 			target->add(gmap->create_ireg_object(weapon, 0));
 		else
@@ -768,7 +797,7 @@ Special_projectile::Special_projectile	// A better name is welcome...
 	Game_object *trg,		// What to aim for.
 	Tile_coord sp,			// Where to start.
 	Tile_coord tp			// Target pos, if trg isn't an actor.
-	) : sprite(shnum == 399 ? 13 : 8, 0, SF_SPRITES_VGA), next_damage_time(0)
+	) : sprite(Get_explosion_shape(shnum), 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
 	weapon = shnum;
 	attacker = att;

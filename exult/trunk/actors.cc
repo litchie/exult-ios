@@ -167,6 +167,15 @@ Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
 const signed char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
 								13, 14};
+const signed char reach_attack_frames1[] = {3, 6, 3};
+const signed char raise_attack_frames1[] = {3, 4, 6, 3};
+const signed char fast_swing_attack_frames1[] = {3, 5, 6, 3};
+const signed char slow_swing_attack_frames1[] = {3, 4, 5, 6, 3};
+const signed char reach_attack_frames2[] = {3, 9, 3};
+const signed char raise_attack_frames2[] = {3, 7, 9, 3};
+const signed char fast_swing_attack_frames2[] = {3, 8, 9, 3};
+const signed char slow_swing_attack_frames2[] = {3, 7, 8, 9, 3};
+
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
@@ -588,44 +597,6 @@ void Actor::check_temperature
 	}
 
 /*
- *	Get the 4 base frames for striking/shooting/throwing a weapon.
- */
-
-static void Get_weapon_frames
-	(
-	int weapon,			// Weapon shape, or 0 for innate.
-	bool projectile,		// Shooting/throwing.
-	bool two_handed,		// Held in both hands.
-	signed char *frames		// Four frames stored here.
-	) 
-	{
-					// Frames for swinging.
-	static signed char swing_frames1[3] = {Actor::raise1_frame, 
-					       Actor::reach1_frame,
-					       Actor::strike1_frame};
-	static signed char swing_frames2[3] = {Actor::raise2_frame, 
-					       Actor::reach2_frame,
-					       Actor::strike2_frame};
-	unsigned char frame_flags;	// Get Actor_frame flags.
-	Weapon_info *winfo;
-	if (weapon && 
-	    (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
-		frame_flags = winfo->get_actor_frames(projectile);
-	else				// Default to normal swing.
-		frame_flags = projectile ? 0 : Weapon_info::raise|
-							Weapon_info::reach;
-					// Use frames for weapon type.
-	const signed char *swing_frames = two_handed ? swing_frames2 : swing_frames1;
-	frames[0] = Actor::ready_frame;
-					// Do 'swing' frames.
-	frames[1] = (frame_flags&Weapon_info::raise) ? swing_frames[0]
-							: Actor::ready_frame;
-	frames[2] = (frame_flags&Weapon_info::reach) ? swing_frames[1]
-							: Actor::ready_frame;
-	frames[3] = swing_frames[2];// Always do the 'strike'.
-	}
-
-/*
  *	Get sequence of frames for an attack.
  *
  *	Output:	# of frames stored.
@@ -651,7 +622,51 @@ int Actor::get_attack_frames
 	case 529:			// Slimes.
 		return 0;		// None, I believe.
 	default:
-		Get_weapon_frames(weapon, projectile, two_handed, baseframes);
+		const signed char *reach_attack_frames;
+		const signed char *raise_attack_frames;
+		const signed char *fast_swing_attack_frames;
+		const signed char *slow_swing_attack_frames;
+		if (two_handed)
+			{
+			reach_attack_frames = reach_attack_frames2;
+			raise_attack_frames = raise_attack_frames2;
+			fast_swing_attack_frames = fast_swing_attack_frames2;
+			slow_swing_attack_frames = slow_swing_attack_frames2;
+			}
+		else
+			{
+			reach_attack_frames = reach_attack_frames1;
+			raise_attack_frames = raise_attack_frames1;
+			fast_swing_attack_frames = fast_swing_attack_frames1;
+			slow_swing_attack_frames = slow_swing_attack_frames1;
+			}
+		unsigned char frame_flags;	// Get Actor_frame flags.
+		Weapon_info *winfo;
+		if (weapon && 
+		    (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
+			frame_flags = winfo->get_actor_frames(projectile);
+		else				// Default to normal swing.
+			frame_flags = projectile ? 0 : Weapon_info::raise|
+								Weapon_info::reach;
+		switch (frame_flags)
+			{
+			case 0:
+				which = reach_attack_frames;
+				cnt = sizeof(reach_attack_frames1);
+				break;
+			case 1:
+				which = raise_attack_frames;
+				cnt = sizeof(raise_attack_frames1);
+				break;
+			case 2:
+				which = fast_swing_attack_frames;
+				cnt = sizeof(fast_swing_attack_frames1);
+				break;
+			case 3:
+				which = slow_swing_attack_frames;
+				cnt = sizeof(slow_swing_attack_frames1);
+				break;
+			}
 		break;
 		}
 	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
