@@ -1,4 +1,7 @@
 2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc, shapes/shapeinf.h: Modified constant names and used them for attack
+	  frames. Also changed the default attack sequence for when there is no weapon.
+2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc, shapes/shapeinf.h: Implemented weapon-dependent frame sequences
 	  for attacks
 	* effects.cc, effects.h: Slightly modified the way burst arrows are handled,
