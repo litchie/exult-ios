@@ -488,11 +488,15 @@ void Combat_schedule::approach_foe
 			{
 			delete path;	// Really failed.  Try again in 
 					//  after wandering.
-					// Just try to walk somewhere.
-			Tile_coord pos = opponent->get_tile();
-			if (rand()%3 == 0)
-				pos = pos + Tile_coord(rand()%12 - 6,
-							rand()%12 - 6, 0);
+					// Just try to walk towards opponent.
+			Tile_coord pos = npc->get_tile();
+			Tile_coord topos = opponent->get_tile();
+			int dirx = topos.tx > pos.tx ? 2
+				: (topos.tx < pos.tx ? -2 : (rand()%3 - 1));
+			int diry = topos.ty > pos.ty ? 2
+				: (topos.ty < pos.ty ? -2 : (rand()%3 - 1));
+			pos.tx += dirx * (1 + rand()%4);
+			pos.ty += diry * (1 + rand()%4);
 			npc->walk_to_tile(pos, 2*gwin->get_std_delay(), 
 							500 + rand()%500);
 			failures++;
