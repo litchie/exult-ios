@@ -1,3 +1,9 @@
+2005-07-03    <jeff@mini.nerble.net>
+
+	* When equipping monsters, give them ammo for their weapons.
+	* When an NPC can't pathfind to an enemy in combat, just let him
+	wander a short way towards the enemy before retrying.
+
 2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc, shapes/shapeinf.h: Modified constant names and used them for attack
 	  frames. Also changed the default attack sequence for when there is no weapon.
