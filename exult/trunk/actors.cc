@@ -3030,8 +3030,8 @@ bool Actor::figure_hit_points
 		{
 		Game_object *w;
 		winf = attacker->get_weapon(wpoints, weapon_shape, w);
-		if (!wpoints)
-			wpoints = 1;	// Always give at least one.
+		if (!winf)
+			wpoints = 1;	// Give at least one, but only if there's no weapon
 		}
 	bool explosion = winf ? winf->explodes() : false;
 					// Get bonus ammo points.
