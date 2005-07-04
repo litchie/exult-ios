@@ -118,6 +118,12 @@ const LowLevelMidiDriver::MT32Patch LowLevelMidiDriver::mt32_patch_template = {
 //
 static const uint32 all_dev_reset_base = 0x7f0000;
 
+// Display  Consts
+//
+static const uint32 display_base = 0x200000;	// Note, these are 7 bit!
+static const uint32 display_mem_size = 0x14;	// Display is 20 ASCII characters (32-127)
+
+
 // Convert 14 Bit base address to real
 static inline int ConvBaseToActual(uint32 address_base)
 {
@@ -141,6 +147,7 @@ LowLevelMidiDriver::~LowLevelMidiDriver()
 	if (initialized) 
 	{
 		perr <<	"Warning: Destructing LowLevelMidiDriver and destroyMidiDriver() wasn't called!" << std::endl;
+		//destroyMidiDriver();
 		if (thread) SDL_KillThread(thread);
 	}
 	thread = 0;
@@ -439,20 +446,25 @@ void LowLevelMidiDriver::destroyThreadedSynth()
 
 	int count = 0;
 	
-	while (count < 100)
+	while (count < 400)
 	{
 		giveinfo();
 		// Wait 1 MS before trying again
 		if (peekComMessageType() == LLMD_MSG_THREAD_EXIT)
+		{
 			yield ();
+			SDL_Delay(1);
+		}
 		else break;
 		
 		count++;
 	}
 
 	// We waited a while and it still didn't terminate
-	if (count == 100 && peekComMessageType() == LLMD_MSG_THREAD_EXIT)
+	if (count == 400 && peekComMessageType() == LLMD_MSG_THREAD_EXIT) {
+		perr << "MidiPlayer Thread failed to stop in time. Killing it." << std::endl;
 		SDL_KillThread (thread);
+	}
 
 	lockComMessage();
 	{
@@ -506,6 +518,12 @@ int LowLevelMidiDriver::threadMain()
 		if (playSequences()) break;
 		yield();
 	}
+
+	// Display messages          0123456789ABCDEF0123
+	const char exit_display[] = "Poor Poor Avatar... ";
+	sendMT32SystemMessage(display_base,0,display_mem_size,exit_display);
+	sendMT32SystemMessage(all_dev_reset_base,0,1,exit_display);
+	SDL_Delay(40);
 
 	lockComMessage();
 	{

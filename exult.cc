@@ -314,6 +314,7 @@ int main
 	}
 	catch( const quit_exception & e )
     {
+		Audio::Destroy();	// Deinit the sound system.
         result = 0;
     }
 	catch( const exult_exception & e )
