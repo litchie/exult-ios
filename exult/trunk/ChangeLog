@@ -1,3 +1,8 @@
+2005-07-04  Ryan Nunn  <colourles@users.sourceforge.net>
+	* exult.cc : Ensure Audio is deinitialized on exit
+	* audio/midi_drivers/LowLevelMidiDriver.cpp, 
+	  audio/midi_drivers/XMidiFile.cpp : Small changes to MT32 display handling
+
 2005-07-03    <jeff@mini.nerble.net>
 
 	* When equipping monsters, give them ammo for their weapons.

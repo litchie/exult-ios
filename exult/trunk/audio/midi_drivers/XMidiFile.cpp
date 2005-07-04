@@ -468,17 +468,17 @@ static const uint32 display_mem_size = 0x14;	// Display is 20 ASCII characters (
 
 // Display messages                         0123456789ABCDEF0123
 #ifdef PENTAGRAM_IN_EXULT
-static const char display[]              = "  Uploading Timbres ";
+static const char display[]              = " Uploading Timbres! ";
 static const char display_black_gate[]   = "BG Uploading Timbres";
 static const char display_serpent_isle[] = "SI Uploading Timbres";
 
-static const char display_beginning[] =    " --==|  Exult  |==--";
+static const char display_beginning[] =    "--==|  Exult!  |==--";
 static const char display_beginning_bg[] = " U7: The Black Gate ";
 static const char display_beginning_si[] = "U7: The Serpent Isle";
 #else
 
-static const char display[]              = "  Uploading Timbres ";
-static const char display_beginning[] =    "      Pentagram     ";
+static const char display[]              = " Uploading Timbres! ";
+static const char display_beginning[] =    "--=| Pentagram! |=--";
 #endif
 
 //
