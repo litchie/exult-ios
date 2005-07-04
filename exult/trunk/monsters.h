@@ -35,6 +35,7 @@ class Monster_actor : public Npc_actor
 	Animator *animator;		// For wounded men.
 	void link_in();			// Add to in_world list.
 	void link_out();		// Remove from list.
+	void equip(const Monster_info *inf, bool temporary);
 public:
 	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
 							int uc = -1);

@@ -174,6 +174,45 @@ static int Find_monster_food
 	}
 
 /*
+ *	Equip.
+ */
+
+void Monster_actor::equip
+	(
+	const Monster_info *inf,
+	bool temporary
+	)
+	{
+					// Get equipment.
+	int equip_offset = inf->equip_offset;
+	Equip_record *equip = inf->equip;
+	if (!equip_offset || equip_offset - 1 >= inf->equip_cnt)
+		return;
+	Equip_record& rec = equip[equip_offset - 1];
+	for (size_t i = 0;
+		 i < sizeof(equip->elements)/sizeof(equip->elements[0]); i++)
+		{		// Give equipment.
+		Equip_element& elem = rec.elements[i];
+		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
+			continue;// You lose.
+		int frnum = (elem.shapenum == 377) ? 
+			Find_monster_food(get_shapenum()) : 0;
+		Shape_info& einfo = ShapeID::get_info(elem.shapenum);
+		if (einfo.has_quality())
+			create_quantity(1, elem.shapenum, elem.quantity,
+				frnum, temporary);
+		else
+			create_quantity(elem.quantity,
+				elem.shapenum, c_any_qual, frnum, temporary);
+		Weapon_info *winfo = einfo.get_weapon_info();
+		int ammo = winfo ? winfo->get_ammo_consumed() : 0;
+		if (ammo)		// Weapon requires ammo.
+			create_quantity(5 + rand()%25, ammo, c_any_qual, 0,
+						temporary);
+		}
+	}
+
+/*
  *	Create an instance of a monster.
  */
 
@@ -242,36 +281,8 @@ Monster_actor *Monster_actor::create
 	monster->set_invalid();		// Place in world.
 	if (pos.tx >= 0)
 		monster->move(pos.tx, pos.ty, pos.tz);
-	if (equipment) {
-					// Get equipment.
-		int equip_offset = inf->equip_offset;
-		Equip_record *equip = inf->equip;
-		if (equip_offset && equip_offset - 1 < inf->equip_cnt)
-		{
-			Equip_record& rec = equip[equip_offset - 1];
-			for (size_t i = 0;
-				 i < sizeof(equip->elements)/sizeof(
-							equip->elements[0]);
-				 i++)
-			{		// Give equipment.
-				Equip_element& elem = rec.elements[i];
-				if (!elem.shapenum || 1 + rand()%100 > 
-						elem.probability)
-					continue;// You lose.
-				int frnum = (elem.shapenum == 377) ? 
-					Find_monster_food(shnum) : 0;
-				if (ShapeID::get_info(elem.shapenum).
-								has_quality())
-					monster->create_quantity(1, 
-						elem.shapenum, elem.quantity,
-						frnum, temporary);
-				else
-					monster->create_quantity(elem.quantity,
-						elem.shapenum, c_any_qual, 
-							frnum, temporary);
-			}
-		}
-	}
+	if (equipment)
+		monster->equip(inf, temporary);	// Get equipment.
 
 	if (sched < 0)			// Set sched. AFTER equipping.
 		sched = static_cast<int>(Schedule::loiter);
