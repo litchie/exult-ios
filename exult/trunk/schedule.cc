@@ -1154,7 +1154,8 @@ void Sleep_schedule::now_what
 	(
 	)
 	{
-	if (!bed && state == 0)		// Always find bed.
+	if (!bed && state == 0 &&		// Always find bed.
+			!npc->get_flag(Obj_flags::asleep))	// Unless flag already set
 		{			// Find closest EW or NS bed.
 		static int bedshapes[2] = {696, 1011};
 		Stand_up(npc);
