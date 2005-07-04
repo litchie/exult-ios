@@ -2570,6 +2570,7 @@ void Actor::usecode_attack
 	int projectile_range = winfo->get_projectile_range();
 	bool returns = winfo->returns();
 	bool is_thrown = winfo->is_thrown();
+	bool skip_render = false;
 	if (ammo_shape)
 		{
 		if (!(ammo_shape = Combat_schedule::use_ammo(this, ammo_shape,
@@ -2598,14 +2599,25 @@ void Actor::usecode_attack
 		}
 	else if (projectile_shape)
 		ammo_shape = projectile_shape;
-	else if ((winfo->get_uses() == 3)
-			|| !ammo_shape)				//For delayed blast
+	else if (winfo->get_uses() == 3)
 		ammo_shape = usecode_weapon;
+	else
+		{	// ammo_shape is still zero; see if usecode_weapon looks
+			// like a projectile:
+		ShapeID id(usecode_weapon, 0, SF_SHAPES_VGA);
+		if (id.get_num_frames() >= 24)
+			{
+			ammo_shape = usecode_weapon;
+			// I am interpreting the lack of projectile info as meaning
+			// not to render the projectile:
+			skip_render = true;
+			}
+		}
 
 	if (ammo_shape)
 		gwin->get_effects()->add_effect(
 				new Projectile_effect(this, trg,
-					ammo_shape, usecode_weapon));
+					ammo_shape, usecode_weapon, skip_render));
 	}
 
 /*
@@ -3048,11 +3060,6 @@ bool Actor::figure_hit_points
 		ucmachine->call_usecode(usefun, this,
 					Usecode_machine::weapon);
 					// Same for ammo.
-	if (ammo_shape == 0x238 && Game::get_game_type() == SERPENT_ISLE)
-					// KLUDGE:  putting Draygan to sleep.
-		ucmachine->call_usecode(0x7e1, this,
-					Usecode_machine::weapon);
-					// Get special attacks (poison, etc.)
 	unsigned char powers = winf ? winf->get_powers() : 0;
 	if (ainf)
 		powers |= ainf->get_powers();
@@ -3099,7 +3106,17 @@ bool Actor::figure_hit_points
 	bool missed = false;
 	if (rand()%100 > prob)
 		missed = true;			// Missed.
-	
+	if (!missed && (Game::get_game_type() == SERPENT_ISLE))
+		{	// putting Draygan to sleep (better kludge).
+		if (powers&Weapon_info::si_no_damage)
+			{	// if ainf exists, may be SI sleep arrows.
+				// Just in case, see if it is set to sleep:
+			if (ainf && ainf->get_powers()&Weapon_info::sleep)
+				ucmachine->call_usecode(0x7e1, this,
+							Usecode_machine::weapon);
+			return false;	//Causes no harm
+			}
+		}
 	// See if we should drop ammo.
 	unsigned char drop = ainf ? ainf->get_drop_type() : 0;
 	if ((drop == Ammo_info::always_drop) || 
