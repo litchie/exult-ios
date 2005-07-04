@@ -44,7 +44,9 @@ public:
 		curse = 4,
 		poison = 8,
 		paralyze = 16,
-		magebane = 32		// Takes away mana.
+		magebane = 32,		// Takes away mana.
+		si_no_damage = 128	// Weapon/missile causes no damage;
+							// also puts Draygan to sleep.
 		};
 	enum Damage_type		// Type of damage.  These also are the
 					//   bit #'s in Monster_info's 

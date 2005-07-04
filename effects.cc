@@ -594,7 +594,7 @@ void Projectile_effect::init
 	else if (frames == 1 && sprite.get_shapenum() != 704)
 		sprite.set_frame(0);	// (Don't show powder keg!)
 	else
-		sprite.set_frame(-1);	// We just won't show it.
+		skip_render = true;		// We just won't show it.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
@@ -609,9 +609,10 @@ Projectile_effect::Projectile_effect
 	Actor *att,			// Source of spell/attack.
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
-	int weap			// Weapon (bow, gun, etc.) shape, or 0.
+	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
+	bool no_render		// If true, prevent rendering of missile.
 	) : attacker(att), target(to), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap),
+	    sprite(shnum, 0), weapon(weap), skip_render(no_render),
 	    return_path(false)
 	{
 	init(attacker->get_tile(), to->get_tile());
@@ -628,7 +629,7 @@ Projectile_effect::Projectile_effect
 	int shnum,			// Projectile shape
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
 	) : attacker(0), target(0), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap),
+	    sprite(shnum, 0), weapon(weap), skip_render(false),
 	    return_path(false)
 	{
 	init(s, d);
@@ -646,7 +647,7 @@ Projectile_effect::Projectile_effect
 	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
 	bool retpath			// Return of a boomerang.
 	) : attacker(0), target(to), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap),
+	    sprite(shnum, 0), weapon(weap), skip_render(false),
 	    return_path(retpath)
 	{
 	init(s, to->get_tile());
@@ -671,8 +672,8 @@ inline void Projectile_effect::add_dirty
 	(
 	)
 	{
-	if (pos.tx == -1 || sprite.get_framenum() == -1)
-		return;			// Already at destination.
+	if (skip_render)
+		return;
 	Shape_frame *shape = sprite.get_shape();
 					// Force repaint of prev. position.
 	int liftpix = pos.tz*c_tilesize/2;
@@ -761,7 +762,7 @@ void Projectile_effect::handle_event
 				}
 			}
 		add_dirty();
-		pos.tx = -1;		// Signal we're done.
+		skip_render = true;
 		eman->remove_effect(this);
 		return;
 		}
@@ -778,8 +779,8 @@ void Projectile_effect::paint
 	(
 	)
 	{
-	if (pos.tx == -1 || sprite.get_framenum() == -1)
-		return;			// Already at destination.
+	if (skip_render)
+		return;
 	int liftpix = pos.tz*c_tilesize/2;
 	sprite.paint_shape(
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,

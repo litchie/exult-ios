@@ -1,3 +1,9 @@
+2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Modified detection of 'delayed blast' projectile, as it was too inclusive
+	  before. I also am interpreting its lack of projectile data to mean it
+	  should not be rendered. This matches the original.
+	* Modified the way SI sleep arrows work to better match the original.
+
 2005-07-04  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc : Ensure Audio is deinitialized on exit
 	* audio/midi_drivers/LowLevelMidiDriver.cpp, 

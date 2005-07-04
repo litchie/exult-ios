@@ -146,12 +146,13 @@ class Projectile_effect : public Special_effect
 	Tile_coord pos;			// Current position.
 	bool return_path;		// Returning a boomerang.
 	bool no_blocking;		// Don't get blocked by things.
+	bool skip_render;	// For delayed blast.
 					// Add dirty rectangle.
 	void add_dirty();
 	void init(Tile_coord s, Tile_coord t);
 public:
 	Projectile_effect(Actor *att, Game_object *to, int shnum,
-								int weap = 0);
+							int weap = 0, bool no_render = false);
 					// For missile traps:
 	Projectile_effect(Tile_coord s, Tile_coord d, int shnum, int weap);
 	Projectile_effect(Tile_coord s, Game_object *to, int shnum, int weap,
