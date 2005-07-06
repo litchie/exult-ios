@@ -13,7 +13,7 @@ Iolo 0x403 ()
 	var avatar_name;
 	var trainer;
 	
-	iolo_id = UI_get_npc_id(IOLO);
+	iolo_id = IOLO->get_npc_id();
 	avatar_title = getPoliteTitle();
 	avatar_name = getAvatarName();
 	
@@ -21,12 +21,12 @@ Iolo 0x403 ()
 	{
 		if (gflags[MONITOR_TRAINING])
 		{
-			trainer = UI_get_oppressor(IOLO);
+			trainer = IOLO->get_oppressor();
 			trainer = (0 - trainer);
 			if (!gflags[TEMP_FLAG_1])
 			{
 				gflags[TEMP_FLAG_1] = true;
-				trainingEndDialog(UI_get_npc_object(trainer), UI_get_npc_object(IOLO));
+				trainingEndDialog(trainer->get_npc_object(), IOLO->get_npc_object());
 				return;
 			}
 			endMonitorTraining(item);
@@ -39,29 +39,29 @@ Iolo 0x403 ()
 		delayedBark(AVATAR, "@Dear friend...@", 0);
 		IOLO->makePartyFaceNPC();
 		
-		if (!UI_get_item_flag(IOLO, SI_ZOMBIE))
+		if (!IOLO->get_item_flag(SI_ZOMBIE))
 		{
 			if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
 			{
 				var freed = false;
-				var doors = UI_find_nearby(IOLO, SHAPE_DOOR_VERTICAL, 15, 0);
+				var doors = IOLO->find_nearby(SHAPE_DOOR_VERTICAL, 15, 0);
 				var door;
 				var index;
 				var max;
 				
 				for (door in doors with index to max)
-					if ((UI_get_item_quality(door) == 104) && (getDoorState(door) != 2))
+					if ((door->get_item_quality() == 104) && (getDoorState(door) != 2))
 						freed = true;
 
-				doors = UI_find_nearby(IOLO, SHAPE_DOOR_HORIZONTAL, 15, 0);
+				doors = IOLO->find_nearby(SHAPE_DOOR_HORIZONTAL, 15, 0);
 				for (door in doors with index to max)
-					if (UI_get_item_quality(door) == 104)
+					if (door->get_item_quality() == 104)
 						freed = true;
 
 				if (freed)
 				{
 					delayedBark(IOLO, "@I am free!@", 2);
-					UI_set_schedule_type(IOLO, TALK);
+					IOLO->set_schedule_type(TALK);
 				}
 				else
 				{
@@ -72,13 +72,13 @@ Iolo 0x403 ()
 						nohalt;
 						call ioloShape;
 					}
-					UI_set_schedule_type(IOLO, WAIT);
+					IOLO->set_schedule_type(WAIT);
 				}
 			}
 			else
 			{
 				delayedBark(IOLO, "@Yes?@", 2);
-				UI_set_schedule_type(IOLO, TALK);
+				IOLO->set_schedule_type(TALK);
 			}
 		}
 		else
@@ -91,24 +91,24 @@ Iolo 0x403 ()
 	
 	else if (event == STARTED_TALKING)
 	{
-		UI_clear_item_say(IOLO);
-		UI_clear_item_say(AVATAR);
+		IOLO->clear_item_say();
+		AVATAR->clear_item_say();
 		if (!gflags[STARTING_SPEECH])
 		{
 			UI_init_conversation();
-			UI_show_npc_face0(IOLO, 0);
+			IOLO->show_npc_face0(0);
 			say("@'Twas a fearsome passage, " + avatar_name + ". After we sailed between the Serpent Pillars, I could have sworn that we were flying...@");
 			say("@Yet here we are on the ship. I wonder if I lost anything...@");
-			UI_show_npc_face1(DUPRE, 0);
+			DUPRE->show_npc_face1(0);
 			say("@We may be on the ship, but the ship is upon dry land! I think that thou art correct, Iolo. We did fly!@");
 			UI_remove_npc_face1();
 			UI_set_conversation_slot(0);
 			say("@Brrr. Dost thou notice the chill in the air? 'Tis much colder here than at home.@");
 			say("@I hope Gwenno brought enough warm clothing...@");
-			UI_show_npc_face1(SHAMINO, 0);
+			SHAMINO->show_npc_face1(0);
 			say("@Do not worry so, old friend. We shall find thy wife soon enough.@");
 			UI_remove_npc_face1();
-			UI_show_npc_face1(DUPRE, 0);
+			DUPRE->show_npc_face1(0);
 			say("@And that fiend, Batlin, I hope!@");
 			UI_remove_npc_face1();
 			UI_set_conversation_slot(0);
@@ -117,21 +117,21 @@ Iolo 0x403 ()
 			delayedBark(SHAMINO, "@Where are we?@", 5);
 			delayedBark(DUPRE, "@Let us find Batlin!@", 15);
 			delayedBark(IOLO, "@Do not forget about Gwenno...@", 35);
-			UI_add_to_party(IOLO);
-			UI_add_to_party(DUPRE);
-			UI_add_to_party(SHAMINO);
+			IOLO->add_to_party();
+			DUPRE->add_to_party();
+			SHAMINO->add_to_party();
 			gflags[STARTING_SPEECH] = true;
-			UI_clear_item_flag(AVATAR, DONT_MOVE);
+			AVATAR->clear_item_flag(DONT_MOVE);
 			abort;
 		}
 		if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
 		{
-			UI_show_npc_face0(IOLO, 0);
+			IOLO->show_npc_face0(0);
 			say("@I thank thee for freeing me from this hellhole! The natives of this place are ignorant sots. Imagine, thinking me to be a sorcerer!@");
 			say("@Hast thou looked in thy packs since the storm, " + avatar_title + "? Nothing in my backpack is as it was when Lord British gave us the list, Avatar!@");
 			if (npcNearbyAndVisible(SHAMINO))
 			{
-				UI_show_npc_face1(SHAMINO, 0);
+				SHAMINO->show_npc_face1(0);
 				say("@I am making a list of the strange items which the storm gave us.@");
 				UI_remove_npc_face1();
 				UI_set_conversation_slot(0);
@@ -141,45 +141,42 @@ Iolo 0x403 ()
 			{
 				if (npcNearbyAndVisible(DUPRE))
 				{
-					UI_show_npc_face1(DUPRE, 0);
+					DUPRE->show_npc_face1(0);
 					say("@I have a list of the strange items which the storm gave us.@");
 					UI_remove_npc_face1();
 					UI_set_conversation_slot(0);
 					say("@I shall add to it.@");
 				}
 				else
-				{
-					message("@I shall make a list of the strange things I have found in my packs. Perhaps these are clues to where our real belongings have gone.@");
-					say();
-				}
+					say("@I shall make a list of the strange things I have found in my packs. Perhaps these are clues to where our real belongings have gone.@");
 			}
-			UI_add_to_party(IOLO);
-			UI_set_new_schedules(IOLO, MIDNIGHT, EAT_AT_INN, [0x097C, 0x0464]);
+			IOLO->add_to_party();
+			IOLO->set_new_schedules(MIDNIGHT, EAT_AT_INN, [0x097C, 0x0464]);
 			gflags[IOLO_HAS_BELONGINGS] = true;
 			setExchangedItemFlags();
 			gflags[IOLO_MADE_EQUIPMENT_LIST] = true;
 			abort;
 		}
-		UI_show_npc_face0(IOLO, 0);
-		if (UI_get_item_flag(IOLO, IN_PARTY))
+		IOLO->show_npc_face0(0);
+		if (IOLO->get_item_flag(IN_PARTY))
 		{
-			UI_set_schedule_type(IOLO, FOLLOW_AVATAR);
+			IOLO->set_schedule_type(FOLLOW_AVATAR);
 			add("leave");
 		}
 		else
 		{
-			UI_run_schedule(IOLO);
+			IOLO->run_schedule();
 			add("join");
 		}
 		
 		if (iolo_id == BOOTED_FOR_FREEDOM)
 		{
-			UI_remove_answer("join");
+			remove("join");
 			say("@Thank the Virtues! Thou art whole and hale, " + avatar_title + "!@");
 			say("@I feared that I had lost both thee and my beloved wife, but thou hast survived the depths even as Dupre assured me that thou wouldst...@");
 			if (npcNearbyAndVisible(GUSTACIO))
 			{
-				UI_show_npc_face1(GUSTACIO, 0);
+				GUSTACIO->show_npc_face1(0);
 				say("@'Tis said that only a superb Mage can leave the Mountains of Freedom alive.@");
 				UI_remove_npc_face1();
 				UI_set_conversation_slot(0);
@@ -187,8 +184,8 @@ Iolo 0x403 ()
 			
 			say("@The Sorcerer Gustacio hath been instructing me somewhat in the magic of this land, " + avatar_title + ". I think that he doth have information that shall interest thee.@");
 			gflags[AFTER_FREEDOM_NEWS] = true;
-			UI_set_npc_id(IOLO, 0);
-			UI_add_to_party(IOLO);
+			IOLO->set_npc_id(0);
+			IOLO->add_to_party();
 			gflags[IOLO_HAS_BELONGINGS] = true;
 			remove("join");
 			add("leave");
@@ -196,8 +193,8 @@ Iolo 0x403 ()
 		else if (iolo_id == CURED_OF_INSANITY)
 		{
 			say("@No truer friend can I have than thee, " + avatar_title + "! Not only thou didst save my wife, but thou hast saved me as well... Thank thee, my friend!@");
-			UI_set_npc_id(IOLO, 0);
-			UI_add_to_party(IOLO);
+			IOLO->set_npc_id(0);
+			IOLO->add_to_party();
 			script IOLO after 15 ticks call xenkaReturns;
 			remove("join");
 			add(["leave"]);
@@ -208,19 +205,19 @@ Iolo 0x403 ()
 			add("a song");
 		}
 		
-		if (UI_get_npc_id(SHAMINO) == BOOTED_FOR_FREEDOM)
+		if (SHAMINO->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Shamino's whereabouts");
 
-		if (UI_get_npc_id(DUPRE) == BOOTED_FOR_FREEDOM)
+		if (DUPRE->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Dupre's whereabouts");
 
-		if (UI_get_npc_id(BOYDON) == BOOTED_FOR_FREEDOM)
+		if (BOYDON->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Boydon's whereabouts");
 
-		if (gflags[IOLO_HAS_BELONGINGS] && (UI_get_cont_items(IOLO, SHAPE_ANY, QUALITY_ANY, FRAME_ANY) && !UI_get_item_flag(IOLO, IN_PARTY)))
+		if (gflags[IOLO_HAS_BELONGINGS] && (IOLO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY) && !IOLO->get_item_flag(IN_PARTY)))
 			add("belongings");
 
-		UI_show_npc_face0(IOLO, 0);
+		IOLO->show_npc_face0(0);
 		add(["Gwenno", "bye"]);
 		converse (0)
 		{
@@ -233,7 +230,7 @@ Iolo 0x403 ()
 					if (npcNearbyAndVisible(SCHMED))
 					{
 						say("@But " + avatar_title + ", the Guardian of the Test is standing right here. If thou desirest to cheat, thou shouldst at least do so covertly...@");
-						UI_show_npc_face1(SCHMED, 0);
+						SCHMED->show_npc_face1(0);
 						say("@No cheating, stranger!@");
 						UI_remove_npc_face1();
 						delayedBark(SCHMED, "@No cheating!@", 2);
@@ -248,7 +245,7 @@ Iolo 0x403 ()
 				{
 					add("leave");
 					say("@'Tis always an adventure to travel with thee, " + avatar_name + "! I shall be proud to accompany thee.@");
-					UI_add_to_party(IOLO);
+					IOLO->add_to_party();
 					gflags[IOLO_HAS_BELONGINGS] = true;
 				}
 				else
@@ -269,13 +266,13 @@ Iolo 0x403 ()
 					add("join");
 					message("@Whatever thou dost wish, Avatar.@");
 					say();
-					UI_remove_from_party(IOLO);
+					IOLO->remove_from_party();
 					askIoloBelongings();
 					npcAskWhereToWait(IOLO);
 				}
 			
 			case "Gwenno" (remove):
-				if (UI_get_item_flag(GWENNO, IN_PARTY) || (npcNearbyAndVisible(GWENNO) && (!UI_get_item_flag(GWENNO, SI_ZOMBIE))))
+				if (GWENNO->get_item_flag(IN_PARTY) || (npcNearbyAndVisible(GWENNO) && (!GWENNO->get_item_flag(SI_ZOMBIE))))
 					say("@No truer friend have I had in all of my life than thee, " + avatar_name + ". With my lady love Gwenno returned to my side where she doth belong, my life is once again complete.@");
 
 				else if (!gflags[TALKED_TO_GWANI_ABOUT_GWENNO])
@@ -287,14 +284,14 @@ Iolo 0x403 ()
 				else if (gflags[GWENNO_IS_DEAD])
 					say("@Now that we have succeeded in freeing Gwenno's body, perhaps the Monks of Monk Isle -- the self-professed masters of life and death -- may be able to help her.@");
 
-				else if (UI_get_item_flag(GWENNO, SI_ZOMBIE))
+				else if (GWENNO->get_item_flag(SI_ZOMBIE))
 					say("@We must find some way of restoring Gwenno's mind! Unless we can do that her precious spirit is lost to me.@");
 
 				else
 					say("@My soul is at peace. Joy is to know Gwenno, and to have her once more in thriving good health.@");
 			
 			case "a song" (remove):
-				if (UI_get_item_flag(BYRIN, MET))
+				if (BYRIN->get_item_flag(MET))
 				{
 					say("@Dost thou wish me to repeat a song thou hast already heard? Or dost thou wish to hear a new song?@");
 					var songlist = [];
@@ -371,7 +368,7 @@ Iolo 0x403 ()
 		var avatar_location = getAvatarLocationID();
 		if (avatar_location == DREAM_WORLD)
 		{
-			UI_show_npc_face0(IOLO, 0);
+			IOLO->show_npc_face0(0);
 			say("@Avatar! Why art thou in my dream? I was looking for Gwenno...@");
 			say("@Oh. Perhaps I have intruded upon thy dream.@");
 			say("@Forgive me. I shall go seeking my wife and leave thee to thy dream.@");
@@ -379,10 +376,10 @@ Iolo 0x403 ()
 			UI_remove_npc_face0();
 			delayedBark(IOLO, "@Pleasant dreams!@", 2);
 			
-			var pos = UI_get_object_position(CLONE_IOLO);
+			var pos = CLONE_IOLO->get_object_position();
 			UI_sprite_effect(0x1A, pos[X], pos[Y], 0, 0, 0, -1);
 			UI_play_sound_effect(0x51);
-			UI_set_item_quality(item, 3);
+			set_item_quality(3);
 			
 			script item after 10 ticks
 			{
@@ -395,7 +392,7 @@ Iolo 0x403 ()
 		}
 		else if (avatar_location == TOLERANCE)
 		{
-			UI_show_npc_face0(IOLO, 0);
+			IOLO->show_npc_face0(0);
 			say("@More snakes! Destroy the vile creatures, Avatar!@");
 			UI_remove_npc_face0();
 			delayedBark(IOLO, "@I hate snakes!@", 2);
@@ -403,7 +400,7 @@ Iolo 0x403 ()
 		}
 		else if (avatar_location == ICE_PLAINS)
 		{
-			UI_show_npc_face0(IOLO, 0);
+			IOLO->show_npc_face0(0);
 			say("@Oh, my poor Gwenno!@ *@Now she is truly frigid.@");
 			UI_remove_npc_face0();
 			delayedBark(IOLO, "@My love hath now departed!@", 2);
@@ -413,7 +410,7 @@ Iolo 0x403 ()
 	
 	else if (event == PROXIMITY)
 	{
-		if (UI_get_schedule_type(IOLO) == PATROL)
+		if (IOLO->get_schedule_type() == PATROL)
 		{
 			if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
 			{

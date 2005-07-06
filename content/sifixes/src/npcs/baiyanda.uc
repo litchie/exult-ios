@@ -2,17 +2,17 @@ Baiyanda 0x48F ()
 {
 	if (event == DOUBLECLICK)
 	{
-		UI_item_say(AVATAR, "@Greetings@");
+		AVATAR->item_say("@Greetings@");
 		delayedBark(BAYANDA, "@We knew thou would come.@", 3);
-		UI_set_schedule_type(BAYANDA, TALK);
+		BAYANDA->set_schedule_type(TALK);
 	}
 	if (event == STARTED_TALKING)
 	{
-		UI_run_schedule(BAYANDA);
-		UI_clear_item_say(BAYANDA);
-		UI_show_npc_face0(BAYANDA, 0);
+		BAYANDA->run_schedule();
+		BAYANDA->clear_item_say();
+		BAYANDA->show_npc_face0(0);
 
-		if (UI_get_item_flag(BAYANDA, MET))
+		if (BAYANDA->get_item_flag(MET))
 			say("@We meet again.@");
 		else
 			say("@Thou art Avatar!@");
@@ -29,7 +29,7 @@ Baiyanda 0x48F ()
 			
 			case "name" (remove):
 				say("@I am Baiyanda, mate of Mwaerno and healer for Gwani people.@");
-				UI_set_item_flag(BAYANDA, MET);
+				BAYANDA->set_item_flag(MET);
 				add(["Mwaerno", "healer"]);
 			
 			case "Mwaerno" (remove):
@@ -44,7 +44,7 @@ Baiyanda 0x48F ()
 				add("Gwenno");
 			
 			case "Gwenno" (remove):
-				if (UI_get_schedule_type(GWENNO) == WAIT)
+				if (GWENNO->get_schedule_type() == WAIT)
 				{
 					say("@Gwenno dead. She good woman. Very generous. She once make gift of bucket to Baiyanda. Baiyanda place body at sacred Gwani Death Temple.@");
 					gflags[TALKED_TO_GWANI_ABOUT_GWENNO] = true;
@@ -70,7 +70,7 @@ Baiyanda 0x48F ()
 				var max;
 				
 				for (npc in living_npcs with index to max)
-					namelist = (namelist & UI_get_npc_name(npc));
+					namelist = (namelist & npc->get_npc_name());
 
 				living_npcs = [0, living_npcs];
 				
@@ -80,14 +80,14 @@ Baiyanda 0x48F ()
 					say("@Maybe thou return later.@");
 				else
 				{
-					var npcnumber = UI_get_npc_number(choice);
-					var poisoned = UI_get_item_flag(choice, POISONED);
-					var str = UI_get_npc_prop(choice, STRENGTH);
-					var hps = UI_get_npc_prop(choice, HEALTH);
-					var npcname = UI_get_npc_name(choice);
+					var npcnumber = choice->get_npc_number();
+					var poisoned = choice->get_item_flag(POISONED);
+					var str = choice->get_npc_prop(STRENGTH);
+					var hps = choice->get_npc_prop(HEALTH);
+					var npcname = choice->get_npc_name();
 					if (str > hps)
 					{
-						UI_set_npc_prop(npcnumber, HEALTH, str - hps);
+						npcnumber->set_npc_prop(HEALTH, str - hps);
 						say("@All right, " + npcname + " healed now!@");
 					}
 					else
@@ -106,7 +106,7 @@ Baiyanda 0x48F ()
 					}
 					if (poisoned == true)
 					{
-						UI_clear_item_flag(choice, POISONED);
+						choice->clear_item_flag(POISONED);
 						say("@Good! Poison gone now.@");
 					}
 				}
@@ -134,7 +134,7 @@ Baiyanda 0x48F ()
 				say("@But Ice Dragons very rare creatures. Gwani honor all life -- try everything before we hunt them.@");
 				say("@One did live north of our village. We drove different one east many years ago.@");
 
-				if (UI_get_item_flag(NEYOBI, SI_ZOMBIE))
+				if (NEYOBI->get_item_flag(SI_ZOMBIE))
 				{
 					say("@Ice Dragon blood maybe only thing powerful enough to cure Neyobi. But it so rare that it very hard to find. Five of our hunters looking for it.@");
 					say("@Gwenno said thou help people in need. Thou must find some Ice Dragon blood for Neyobi! It is the last hope!@");
@@ -160,7 +160,7 @@ Baiyanda 0x48F ()
 				say("@Years ago, Gwani attacked by dragon. Myauri and Mwaerno led hunters to fight it. Gwani drove it east beyond mountains. It very old dragon and still unmated. Very rare.@");
 			
 			case "Neyobi" (remove):
-				if (UI_get_item_flag(NEYOBI, SI_ZOMBIE))
+				if (NEYOBI->get_item_flag(SI_ZOMBIE))
 					say("@Neyobi ill from strange sickness. Baiyanda never seen before. Nothing Baiyanda tried help her. Ice Dragon blood only thing that could save her.@");
 				else
 					say("@No magic in whole world would have saved Neyobi's life. But when Gwani way of healing with balance of nature done, she better.@");

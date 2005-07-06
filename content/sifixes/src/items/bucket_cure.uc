@@ -19,15 +19,15 @@ DumpBucket 0x88A ()
 		
 	UI_printf(["The shape clicked on is %s", UI_get_item_shape(target)]);
 	
-	var npcnum = UI_get_npc_number(target[1]);		// It's item, position.
-	var bucket_quality = UI_get_item_quality(item);
+	var npcnum = target[1]->get_npc_number();		// It's item, position.
+	var bucket_quality = get_item_quality();
 	var handled = false;
 	
-	if (UI_get_item_frame(item) == 1)
+	if (get_item_frame() == 1)
 	{
 		if ((npcnum == CANTRA) &&  (bucket_quality == QUALITY_LOGIC))
 		{
-			UI_set_schedule_type(CANTRA, WAIT);
+			CANTRA->set_schedule_type(WAIT);
 			//Without UI_set_path_failure, Cantra's would be stuck in waiting mode if
 			//the player moved the Avatar before reaching Cantra:
 			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCantra, item, PATH_SUCCESS))
@@ -38,7 +38,7 @@ DumpBucket 0x88A ()
 				 ((npcnum == SHAMINO)	&& (bucket_quality == QUALITY_ETHICALITY)) ||
 				 ((npcnum == IOLO)		&& (bucket_quality == QUALITY_LOGIC)))
 		{
-			UI_set_schedule_type(npcnum, WAIT);
+			npcnum->set_schedule_type(WAIT);
 			
 			if (UI_path_run_usecode([target[2], target[3], target[4]], CureCompanion, item, PATH_SUCCESS))
 				UI_set_path_failure(CureCompanion, item, PATH_FAILURE);
@@ -47,6 +47,6 @@ DumpBucket 0x88A ()
 	}
 
 	// Let orig. function handle it.
-	UI_set_intercept_item(target);
+	target->set_intercept_item();
 	DumpBucket.original();
 }

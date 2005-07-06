@@ -26,12 +26,12 @@ Resurrect 0x8FE ()
 	
 	for (body in resurrectlist with index to max)
 	{
-		if (body != UI_get_npc_object(AVATAR))
+		if (body != AVATAR->get_npc_object())
 		{
 			itemindex = getIndexForElement(npc, resurrectables);
 			name = resurrectablenames[itemindex];
 			var flag_dont_resurrect = false;
-			npc = UI_get_body_npc(body);
+			npc = body->get_body_npc();
 			if (gflags[BANES_RELEASED])
 			{
 				//Prevent "resurrection" of the three Banes:
@@ -53,7 +53,7 @@ Resurrect 0x8FE ()
 				say("@I am sorry, my " + msg + ", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to rause it...@");
 			}
 			
-			if (!flag_dont_resurrect && !UI_is_dead(npc))
+			if (!flag_dont_resurrect && !npc->is_dead())
 			{
 				//Prevent resurrection of a live NPC:
 				flag_dont_resurrect = true;
@@ -61,23 +61,23 @@ Resurrect 0x8FE ()
 			}
 			
 			if (flag_dont_resurrect)
-				UI_remove_item(body);
+				body->remove_item();
 
 			else
 			{
 				itemindex = getIndexForElement(npc, resurrectables);
 				name = resurrectablenames[itemindex];
-				pos = UI_get_object_position(npc);
+				pos = npc->get_object_position();
 				
-				if (UI_resurrect(body))
+				if (body->UI_resurrect())
 				{
 					say("@Now thy friend " + name + " doth live again.@");
-					if (UI_get_item_flag(npc, IN_PARTY) && UI_get_item_flag(npc, SI_ZOMBIE))
-						UI_remove_from_party(npc);
+					if (npc->get_item_flag(IN_PARTY) && npc->get_item_flag(SI_ZOMBIE))
+						npc->remove_from_party();
 	
-					UI_set_new_schedules(npc, MIDNIGHT, WAIT, [pos[X], pos[Y]]);
-					UI_run_schedule(npc);
-					UI_set_schedule_type(npc, WAIT);
+					npc->set_new_schedules(MIDNIGHT, WAIT, [pos[X], pos[Y]]);
+					npc->run_schedule();
+					npc->set_schedule_type(WAIT);
 	
 					foodlevel = getPropValue(npc, FOODLEVEL);
 					foodlevel = (31 - foodlevel);

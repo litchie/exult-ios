@@ -20,8 +20,8 @@ spellSurprise 0x667 ()
 	
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Ex Jux Hur@");
+		halt_scheduled();
+		item_say("@Ex Jux Hur@");
 		if (notInMagicStorm())
 		{
 			script item
@@ -29,13 +29,13 @@ spellSurprise 0x667 ()
 				actor frame SWING_3;		actor frame SWING_2H_2;
 				sfx 20;						wait 5;
 				call spellSurprise;}
-			nearbynpcs = UI_find_nearby(item, SHAPE_ANY, 30, 8);
+			nearbynpcs = find_nearby(SHAPE_ANY, 30, 8);
 			party = UI_get_party_list();
 			for (npc in nearbynpcs with index to max)
 			{
 				if (!(npc in party))
 				{
-					delay = (UI_get_distance(item, npc) + 15);
+					delay = (get_distance(npc) + 15);
 					script npc after delay ticks
 					{	nohalt;						call spellSurprise;}
 				}
@@ -52,35 +52,35 @@ spellSurprise 0x667 ()
 	
 	else if (event == SCRIPTED)
 	{
-		if (item == UI_get_npc_object(AVATAR))
+		if (item == AVATAR->get_npc_object())
 		{
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0, -3, -3, 4, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0,  0, -4, 4, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0,  3, -3, 3, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0, -4,  0, 2, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0,  4,  0, 1, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0, -3,  3, 3, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0,  0,  4, 1, 25);
-			UI_obj_sprite_effect(item, ANIMATION_CLOUDS, 0, 0,  3,  3, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -3, -3, 4, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  0, -4, 4, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  3, -3, 3, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -4,  0, 2, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  4,  0, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -3,  3, 3, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  0,  4, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  3,  3, 1, 25);
 		}
 		else
 		{
 			rand = UI_get_random(3);
 			if (rand == 1)
 			{
-				UI_set_schedule_type(item, IN_COMBAT);
-				UI_set_attack_mode(item, FLEE);
-				UI_set_opponent(item, AVATAR);
+				set_schedule_type(IN_COMBAT);
+				set_attack_mode(FLEE);
+				set_opponent(AVATAR);
 			}
 			else if (rand == 2)
 			{
-				UI_halt_scheduled(item);
-				UI_set_item_flag(item, ASLEEP);
+				halt_scheduled();
+				set_item_flag(ASLEEP);
 			}
 			else if (rand == 3)
 			{
-				UI_halt_scheduled(item);
-				UI_set_item_flag(item, POISONED);
+				halt_scheduled();
+				set_item_flag(POISONED);
 			}
 		}
 	}
@@ -103,8 +103,8 @@ spellCreateAmmo 0x66E ()
 	var rand;
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@In Jux Ylem@");
+		halt_scheduled();
+		item_say("@In Jux Ylem@");
 		if (notInMagicStorm())
 		{
 			script item
@@ -125,18 +125,18 @@ spellCreateAmmo 0x66E ()
 	}
 	if (event == SCRIPTED)
 	{
-		bows = UI_count_objects(PARTY, SHAPE_BOW, QUALITY_ANY, FRAME_ANY);
-		magicbows = UI_count_objects(PARTY, SHAPE_MAGIC_BOW, QUALITY_ANY, FRAME_ANY);
-		crossbows = UI_count_objects(PARTY, SHAPE_CROSSBOW, QUALITY_ANY, FRAME_ANY);
+		bows = PARTY->count_objects(SHAPE_BOW, QUALITY_ANY, FRAME_ANY);
+		magicbows = PARTY->count_objects(SHAPE_MAGIC_BOW, QUALITY_ANY, FRAME_ANY);
+		crossbows = PARTY->count_objects(SHAPE_CROSSBOW, QUALITY_ANY, FRAME_ANY);
 		bows = (bows + magicbows);
 		missile_shape = SHAPE_ARROW;
 		if (crossbows > bows)
 			missile_shape = SHAPE_BOLT;
 
-		obj = UI_create_new_object(missile_shape);
+		obj = missile_shape->create_new_object();
 		if (obj)
 		{
-			pos = UI_get_object_position(AVATAR);
+			pos = AVATAR->get_object_position();
 			amount = (getNPCLevel(AVATAR) * 8);
 			rand = UI_die_roll(amount, (amount + 20));
 			
@@ -147,8 +147,8 @@ spellCreateAmmo 0x66E ()
 			if (rand > MAX_AMMO)
 				rand = MAX_AMMO;
 
-			UI_set_item_flag(obj, TEMPORARY);
-			UI_set_item_quantity(obj, rand);
+			obj->set_item_flag(TEMPORARY);
+			obj->set_item_quantity(rand);
 			UI_update_last_created(pos);
 		}
 	}
@@ -168,11 +168,11 @@ spellVibrate 0x676 ()
 	if (event == DOUBLECLICK)
 	{
 		target = UI_click_on_item();
-		target_shape = UI_get_item_shape(target);
+		target_shape = target->get_item_shape();
 		dir = directionFromAvatar(item);
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Uus Des Por Grav@");
-		if (notInMagicStorm() && UI_is_npc(target) && (target[X] != 0))
+		halt_scheduled();
+		item_say("@Uus Des Por Grav@");
+		if (notInMagicStorm() && target->is_npc() && (target[X] != 0))
 		{
 			script item
 			{	nohalt;						face dir;
@@ -197,35 +197,35 @@ spellVibrate 0x676 ()
 		var pos;
 		var updworked;
 		var npcitems;
-		npcitems = UI_get_cont_items(item, SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
+		npcitems = get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
 		var array_size = UI_get_array_size(npcitems);
 		var index;
 		var mincount;
-		mincount = UI_count_objects(item, SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY) +
-				   UI_count_objects(item, SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
+		mincount = count_objects(SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY) +
+				   count_objects(SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
 		
 		if (array_size > mincount)
 		{
 			while (index < array_size)
 			{
 				index = index + 1;
-				target_shape = UI_get_item_shape(npcitems[index]);
+				target_shape = npcitems[index]->get_item_shape();
 				if ((target_shape != SHAPE_PATH_EGG) && (target_shape != SHAPE_USECODE_CONTAINER))
 					break;
 			}
 			
 			//Just for safety:
-			target_shape = UI_get_item_shape(npcitems[index]);
+			target_shape = npcitems[index]->get_item_shape();
 			if ((target_shape == SHAPE_PATH_EGG) || (target_shape == SHAPE_USECODE_CONTAINER))
 				return;
 			
 			if (index <= array_size)
 			{
-				curritem = UI_set_last_created(npcitems[index]);
+				curritem = npcitems[index]->set_last_created();
 				if (curritem)
 				{
 					
-					pos = UI_get_object_position(item);
+					pos = get_object_position();
 					updworked = UI_update_last_created(pos);
 	
 					if (!updworked)
@@ -241,7 +241,7 @@ spellVibrate 0x676 ()
 						updworked = UI_update_last_created([pos[X], (pos[Y] + 2), pos[Z]]);
 	
 					if (!updworked)
-						UI_remove_item(curritem);
+						curritem->remove_item();
 					else
 					{
 						script item
@@ -271,9 +271,9 @@ spellCreateIce 0x678 ()
 	failed = false;
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
+		halt_scheduled();
 		target = UI_click_on_item();
-		UI_item_say(item, "@In Frio@");
+		item_say("@In Frio@");
 		field_x = (target[X + 1] + 1);
 		field_y = (target[Y + 1] + 1);
 		field_z = target[Z + 1];
@@ -283,14 +283,14 @@ spellCreateIce 0x678 ()
 			field = UI_create_new_object(SHAPE_MONOLITH);
 			if (field)
 			{
-				UI_set_item_frame(field, 9);
+				field->set_item_frame(9);
 				if (UI_update_last_created(pos))
 				{
 					script item
 					{	nohalt;						actor frame SWING_1;
 						actor frame SWING_2;		actor frame SWING_3;}
 						
-					UI_set_item_flag(field, TEMPORARY);
+					field->set_item_flag(TEMPORARY);
 					script field after 200 ticks
 						remove;
 				}
@@ -321,10 +321,10 @@ spellFetch 0x67B ()
 	if (event == DOUBLECLICK)
 	{
 		target = UI_click_on_item();
-		isgrabbable = UI_get_item_usability(target);
+		isgrabbable = target->get_item_usability();
 		dir = directionFromAvatar(item);
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Por Ylem@");
+		halt_scheduled();
+		item_say("@Por Ylem@");
 		//Original:
 		//if (notInMagicStorm() && ((isgrabbable < 2) && (isgrabbable > 0)))
 		//It seems that at some point, they were considering to have more
@@ -334,8 +334,8 @@ spellFetch 0x67B ()
 			script item
 			{	nohalt;						face dir;
 				sfx 67;}
-			if (UI_set_last_created(target))
-				UI_update_last_created(UI_get_object_position(item));
+			if (target->set_last_created())
+				UI_update_last_created(get_object_position());
 		}
 		else
 		{
@@ -352,9 +352,9 @@ spellSerpentBond 0x67D ()
 	var snakepos;
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Kal Frio Xen Ex@");
-		if (notInMagicStorm() && (!UI_get_item_flag(AVATAR, PETRA)))
+		halt_scheduled();
+		item_say("@Kal Frio Xen Ex@");
+		if (notInMagicStorm() && (!AVATAR->get_item_flag(PETRA)))
 		{
 			script item
 			{	nohalt;						actor frame SWING_2H_1;
@@ -367,7 +367,7 @@ spellSerpentBond 0x67D ()
 			script getPathEgg(5, 1) after 300 ticks
 			{	nohalt;						finish;
 				call spellSerpentBond;}
-			UI_set_polymorph(UI_get_npc_object(AVATAR), SHAPE_SNAKE);
+			AVATAR->set_polymorph(SHAPE_SNAKE);
 		}
 		else
 		{
@@ -382,7 +382,7 @@ spellSerpentBond 0x67D ()
 	
 	else if (event == SCRIPTED)
 	{
-		pos = UI_get_object_position(item);
+		pos = get_object_position();
 		snakepos = [pos[X] + 2, pos[Y] + 2, pos[Z]];
 		
 		var insnakemaze = false;
@@ -392,8 +392,8 @@ spellSerpentBond 0x67D ()
 
 		if ((getAvatarLocationID() != DREAM_WORLD) && (insnakemaze == false) && UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
 		{
-			if (UI_get_item_flag(item, POLYMORPH))
-				UI_set_polymorph(UI_get_npc_object(AVATAR), SHAPE_MALE_AVATAR);
+			if (get_item_flag(POLYMORPH))
+				AVATAR->set_polymorph(SHAPE_MALE_AVATAR);
 			item->serpentbondAddNPCsBackToParty();
 		}
 		else
@@ -420,20 +420,20 @@ spellFireSnake 0x67E ()
 	if (event == DOUBLECLICK)
 	{
 		target = UI_click_on_item();
-		dir = UI_direction_from(item, target);
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Kal Vas Frio Grav@");
+		dir = direction_from(target);
+		halt_scheduled();
+		item_say("@Kal Vas Frio Grav@");
 		if (notInMagicStorm())
 		{
 			if (target[X] == 0)
 			{
 				pos = [target[X + 1], target[Y + 1], target[Z + 1]];
 				target = UI_create_new_object(SHAPE_PATH_EGG);
-				UI_set_item_frame(target, 31);
-				UI_set_item_flag(target, TEMPORARY);
+				target->set_item_frame(31);
+				target->set_item_flag(TEMPORARY);
 				UI_update_last_created(pos);
 				
-				script target after (UI_get_distance(target, item) + 3) ticks
+				script target after (get_distance(target) + 3) ticks
 				{	nohalt;						remove;}
 			}
 			
@@ -443,7 +443,7 @@ spellFireSnake 0x67E ()
 			field = UI_create_new_object(SHAPE_FIRE_FIELD);
 			if (field)
 			{
-				pos = UI_get_object_position(item);
+				pos = get_object_position();
 				if (dir in [NORTHWEST, NORTH, NORTHEAST])
 					field_y = pos[Y] - 2;
 				else if (dir in [SOUTHWEST, SOUTH, SOUTHEAST])
@@ -461,8 +461,8 @@ spellFireSnake 0x67E ()
 				field_z = pos[Z];
 				pos = [field_x, field_y, field_z];
 				UI_update_last_created(pos);
-				UI_set_item_quality(field, duration);
-				UI_set_item_flag(field, TEMPORARY);
+				field->set_item_quality(duration);
+				field->set_item_flag(TEMPORARY);
 				script field after duration ticks
 				{	nohalt;						remove;}
 					
@@ -482,13 +482,13 @@ spellFireSnake 0x67E ()
 	
 	else if (event == SCRIPTED)
 	{
-		oldfield = UI_find_nearest(item, SHAPE_FIRE_FIELD, 36);
+		oldfield = find_nearest(SHAPE_FIRE_FIELD, 36);
 
-		dir = UI_direction_from(oldfield, item);
+		dir = oldfield->direction_from(item);
 		field = UI_create_new_object(SHAPE_FIRE_FIELD);
 		if (field)
 		{
-			pos = UI_get_object_position(oldfield);
+			pos = oldfield->get_object_position();
 			if (dir in [NORTHWEST, NORTH, NORTHEAST])
 				field_y = pos[Y] - 1;
 			else if (dir in [SOUTHWEST, SOUTH, SOUTHEAST])
@@ -507,7 +507,7 @@ spellFireSnake 0x67E ()
 			pos = [field_x, field_y, field_z];
 			
 			
-			if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0) && UI_get_distance(oldfield, item) > 1)
+			if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0) && get_distance(oldfield) > 1)
 			{
 				//Try going up:
 				pos[Z] = field_z + 1;
@@ -524,20 +524,22 @@ spellFireSnake 0x67E ()
 			}
 			
 			UI_update_last_created(pos);
-			UI_set_item_quality(field, duration);
-			UI_set_item_flag(field, TEMPORARY);
+			field->set_item_quality(duration);
+			field->set_item_flag(TEMPORARY);
 			
 			script field after duration ticks
 			{	nohalt;						remove;}
 			
-			if (UI_get_distance(oldfield, item) == 0)
+			if (get_distance(oldfield) == 0)
 			{
-				oldfield->firesnakeExplode();//UI_explode(oldfield, oldfield, 0x20);
+				//oldfield->firesnakeExplode();
+				UI_explode(oldfield, oldfield, 0x20);
 				return;
 			}
 			else if (UI_get_distance(field, item) == 0)
 			{
-				field->firesnakeExplode();//UI_explode(field, field, 0x20);
+				//field->firesnakeExplode();
+				UI_explode(field, field, 0x20);
 				return;
 			}
 			
@@ -556,8 +558,8 @@ spellStopStorm 0x684 ()
 {
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@An Hur@");
+		halt_scheduled();
+		item_say("@An Hur@");
 		if (notInMagicStorm())
 		{
 			script item
@@ -582,15 +584,15 @@ spellImbalance 0x687 ()
 	var delay;
 	if (event == DOUBLECLICK)
 	{
-		UI_halt_scheduled(item);
-		UI_item_say(item, "@Kal Vas An Grav@");
+		halt_scheduled();
+		item_say("@Kal Vas An Grav@");
 		if (notInMagicStorm())
 		{
-			UI_obj_sprite_effect(item, ANIMATION_TELEPORT, -2, -2, -3, -3, 0, -1);
-			UI_obj_sprite_effect(item, ANIMATION_TELEPORT, -2, -2,  3, -3, 0, -1);
-			UI_obj_sprite_effect(item, ANIMATION_TELEPORT, -2, -2,  3,  3, 0, -1);
-			UI_obj_sprite_effect(item, ANIMATION_TELEPORT, -2, -2, -3,  3, 0, -1);
-			UI_obj_sprite_effect(item, 26,				   -2, -2,  0,  0, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3, -3, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2,  3, -3, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2,  3,  3, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3,  3, 0, -1);
+			obj_sprite_effect(26,				   -2, -2,  0,  0, 0, -1);
 			script item
 			{	nohalt;						actor frame SWING_1;
 				actor frame SWING_2H_2;		actor frame KNEEL;

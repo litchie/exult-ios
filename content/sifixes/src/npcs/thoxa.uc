@@ -15,7 +15,7 @@ Thoxa 0x4D3 ()
 	var var000E;
 
 	avatarlocation = getAvatarLocationID();
-	met_thoxa = UI_get_item_flag(item, MET);
+	met_thoxa = get_item_flag(MET);
 	
 	title = "son";
 	if (UI_is_pc_female())
@@ -23,47 +23,46 @@ Thoxa 0x4D3 ()
 
 	if (event == DOUBLECLICK)
 	{
-		if (UI_get_npc_id(KARNAX) != 0)
+		if (KARNAX->get_npc_id() != 0)
 		{
-			UI_item_say(item, "@Not now...@");
+			item_say("@Not now...@");
 			abort;
 		}
-		UI_item_say(AVATAR, "@Excuse me...@");
+		AVATAR->item_say("@Excuse me...@");
 		item->makePartyFaceNPC();
 		delayedBark(item, "@Yes, my " + title + "?@", 2);
-		UI_set_schedule_type(item, TALK);
+		set_schedule_type(TALK);
 	}
 	
 	else if (event == STARTED_TALKING)
 	{
-		UI_run_schedule(item);
-		UI_clear_item_say(item);
-		UI_show_npc_face0(item, 0);
+		run_schedule();
+		clear_item_say();
+		show_npc_face0(0);
 		if ((avatarlocation == MONITOR) && (gflags[AVATAR_GOT_SHORT_STICK] && (!gflags[DUPRE_IS_TOAST])))
 		{
 			say("@It is written that 'The Hero from Another World shall face the end as the beginning'! Thou didst enter our land with thy three companions, they must be present at the final moment to forestall disaster!@");
-			//UI_remove_npc_face0();
 			delayedBark(item, "@I shall pray for thee!@", 0);
 			
 			//Yet to be tested:
 			resurrectCompanions();
-			UI_move_object(item, [0x5FA, 0x78F, 0x0]);
+			move_object([0x5FA, 0x78F, 0x0]);
 			//How it is done in the original
 			/*companions = [IOLO, SHAMINO, DUPRE];
 			for (npc in companions with index to max)
 			{
-				if (!UI_npc_nearby(npc))
+				if (!npc->npc_nearby())
 				{
-					UI_approach_avatar(npc, 80, 40);
-					if (!(UI_get_schedule_type(npc) == FOLLOW_AVATAR))
-						UI_add_to_party(npc);
+					npc->approach_avatar(80, 40);
+					if (!(npc->get_schedule_type() == FOLLOW_AVATAR))
+						npc->add_to_party();
 				}
 			}*/
 			abort;
 		}
 		
 		UI_set_conversation_slot(0);
-		pos = UI_get_object_position(item);
+		pos = get_object_position();
 		
 		//This is the bit Thoxa says in the Spinebreaker Mountains. I added a
 		//check to see if the banes have been released, so the companions can
@@ -102,18 +101,10 @@ Thoxa 0x4D3 ()
 		
 		if (gflags[TALKED_TO_GREAT_HIEROPHANT] && (!gflags[TALKED_TO_CHAOS_HIEROPHANT]))
 		{
-			message("@I see... Thou hast made great progress in thy quest, my ");
-			message(title);
-			message(". But before thou canst continue, thou must seek the wisdom of the last child of Chaos. He alone holds the key to the location of the Chaos Hierophant.@");
-			say();
+			say("@I see... Thou hast made great progress in thy quest, my " + title + ". But before thou canst continue, thou must seek the wisdom of the last child of Chaos. He alone holds the key to the location of the Chaos Hierophant.@");
 			
-			if (UI_get_item_flag(SETHYS, MET))
-			{
-				message("@Thou didst meet him in his imprisonment, my ");
-				message(title);
-				message(". Yet he remains a prisoner out of time. Seek him within the Shrine that is his home.@");
-				say();
-			}
+			if (SETHYS->get_item_flag(MET))
+				say("@Thou didst meet him in his imprisonment, my " + title + ". Yet he remains a prisoner out of time. Seek him within the Shrine that is his home.@");
 			else
 				say("@He remains a prisoner out of time, imprisoned within the Shrine that is his home.@");
 		}
@@ -162,7 +153,7 @@ Thoxa 0x4D3 ()
 			case "visitors" (remove):
 				if (npcNearbyAndVisible(GWENNO))
 				{
-					if (!UI_get_item_flag(GWENNO, SI_ZOMBIE))
+					if (!GWENNO->get_item_flag(SI_ZOMBIE))
 						say("@Such visitors are rare, for the journey here is not an easy one. As I remember it, Gwenno was our last visitor.@");
 
 					else
@@ -176,7 +167,7 @@ Thoxa 0x4D3 ()
 			case "Gwenno" (remove):
 				if (npcNearbyAndVisible(GWENNO))
 				{
-					if (!UI_get_item_flag(GWENNO, SI_ZOMBIE))
+					if (!GWENNO->get_item_flag(SI_ZOMBIE))
 					{
 						message("@It is a pleasure having her here, my ");
 						message(title);
@@ -221,12 +212,12 @@ Thoxa 0x4D3 ()
 
 				say("@I must return to Monk Isle.@");
 				UI_remove_npc_face0();
-				pos = UI_get_object_position(item);
+				pos = get_object_position();
 				pos[X] = (pos[X] - (pos[Z] / 2));
 				pos[Y] = (pos[Y] - (pos[Z] / 2));
 				UI_sprite_effect(0x7, pos[X], pos[Y], 0, 0, 0, -1);
 				UI_play_sound_effect(0x51);
-				UI_remove_npc(item);
+				remove_npc();
 				abort;
 			
 		}

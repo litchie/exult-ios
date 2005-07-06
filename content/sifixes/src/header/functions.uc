@@ -1,11 +1,11 @@
-freeze 0xC00 (){UI_set_item_flag(item, DONT_MOVE);}
-unfreeze (){UI_clear_item_flag(item, DONT_MOVE);}
+freeze 0xC00 (){set_item_flag(DONT_MOVE);}
+unfreeze (){clear_item_flag(DONT_MOVE);}
 
 addShaminoToParty ()
 {
-	UI_add_to_party(SHAMINO);
+	SHAMINO->add_to_party();
 	gflags[SHAMINO_HAS_BELONGINGS] = true;
-	UI_set_npc_id(SHAMINO, 0);
+	SHAMINO->set_npc_id(0);
 	
 	script getPathEgg(5, 4) after 10 ticks
 	{
@@ -19,7 +19,7 @@ addShaminoToParty ()
 //Unlike the other two companions, Iolo didn't have one for himself:
 askIoloBelongings ()
 {
-	if (UI_get_cont_items(IOLO, SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
+	if (IOLO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
 	{
 		say("@I am carrying many items, some of which may be of use to thee. Wouldst thou care to have these?@");
 		if (askYesNo())
@@ -27,7 +27,7 @@ askIoloBelongings ()
 			say("@Here they are.@");
 			gflags[IOLO_HAS_BELONGINGS] = false;
 	
-			var iolo_items = UI_get_cont_items(IOLO, SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
+			var iolo_items = IOLO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
 			var obj;
 			var index;
 			var max;
@@ -36,14 +36,14 @@ askIoloBelongings ()
 			
 			for (obj in iolo_items with index to max)
 			{
-				if (!((UI_get_item_shape(obj) == SHAPE_PLAINRING) && (UI_get_item_frame(obj) == 2)))
+				if (!((obj->get_item_shape() == SHAPE_PLAINRING) && (obj->get_item_frame() == 2)))
 				{
-					give_return = giveItemsToPartyMember(AVATAR, UI_get_item_quantity(obj, 0), UI_get_item_shape(obj), UI_get_item_quality(obj), UI_get_item_frame(obj), UI_get_item_flag(obj, TEMPORARY), false);
+					give_return = giveItemsToPartyMember(AVATAR, obj->get_item_quantity(0), obj->get_item_shape(), obj->get_item_quality(), obj->get_item_frame(), obj->get_item_flag(TEMPORARY), false);
 					if (cumulative_result[1] == 0)
 						cumulative_result[1] = give_return[1];
 	
 					cumulative_result[2] = (cumulative_result[2] + give_return[getArraySize(give_return)]);
-					UI_remove_item(obj);
+					obj->remove_item();
 				}
 			}
 	
@@ -95,23 +95,23 @@ CureCantra ()
 	if (event == PATH_SUCCESS)
 	{
 		UI_close_gumps();
-		UI_set_item_frame(item, 0);	// Now empty.
-		UI_set_item_quality(item, 0);	//Just for safety
+		set_item_frame(0);	// Now empty.
+		set_item_quality(0);	//Just for safety
 	
-		UI_obj_sprite_effect(CANTRA, ANIMATION_TELEPORT, 0, 0, 0, 0, 0, 0);
-		UI_clear_item_flag(CANTRA, SI_ZOMBIE);	// No longer crazy.
-		UI_set_schedule_type(CANTRA, TALK);
+		CANTRA->obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, 0);
+		CANTRA->clear_item_flag(SI_ZOMBIE);	// No longer crazy.
+		CANTRA->set_schedule_type(TALK);
 		gflags[CURED_CANTRA] = true;			// We've done it.
 	}
 	
 	else if (event == PATH_FAILURE)
-		UI_set_schedule_type(CANTRA, WANDER);
+		CANTRA->set_schedule_type(WANDER);
 }
 
 CureCompanion ()
 {
 	var npcnum;
-	var bucket_quality = UI_get_item_quality(item);
+	var bucket_quality = get_item_quality();
 	
 	//Through the bucket's quality, determine which companion
 	//is being cured:
@@ -125,21 +125,21 @@ CureCompanion ()
 	if (event == PATH_SUCCESS)
 	{
 		UI_close_gumps();
-		UI_set_item_frame(item, 0);	// Now empty.
-		UI_set_item_quality(item, 0);	//Just for safety
+		set_item_frame(0);	// Now empty.
+		set_item_quality(0);	//Just for safety
 	
-		UI_obj_sprite_effect(npcnum, ANIMATION_TELEPORT, 0, 0, 0, 0, 0, 0);
-		UI_clear_item_flag(npcnum, SI_ZOMBIE);
+		npcnum->obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, 0);
+		npcnum->clear_item_flag(SI_ZOMBIE);
 		
 		//This is for the new conversation, and only happens once per companion:
-		UI_set_npc_id(npcnum, CURED_OF_INSANITY);
+		npcnum->set_npc_id(CURED_OF_INSANITY);
 		
-		if (!UI_get_item_flag(npcnum, IN_PARTY))
-			UI_set_schedule_type(npcnum, TALK);
+		if (!npcnum->get_item_flag(IN_PARTY))
+			npcnum->set_schedule_type(TALK);
 	}
 	
 	else if (event == PATH_FAILURE)
-		UI_set_schedule_type(npcnum, WANDER);
+		npcnum->set_schedule_type(WANDER);
 }
 
 firesnakeExplode ()
@@ -148,9 +148,9 @@ firesnakeExplode ()
 	var index;
 	var max;
 	var damage;
-	var nearbyobjs = UI_find_nearby(item, SHAPE_ANY, 8, 0);
+	var nearbyobjs = find_nearby(SHAPE_ANY, 8, 0);
 	var party = UI_get_party_list();
-	var pos = UI_get_object_position(item);
+	var pos = get_object_position();
 	var vertoff = (pos[Z] + 1) / 2;
 	UI_sprite_effect(1, (pos[X] + vertoff), (pos[Y] + vertoff), 0, 0, 0, -1);
 	UI_play_sound_effect(42);
@@ -161,12 +161,12 @@ firesnakeExplode ()
 		if (!(obj in party))
 		{
 			damage = UI_die_roll(10, 20);
-			if (UI_is_npc(obj))
+			if (obj->is_npc())
 			{
 				script obj hit damage;//BLEED
-				if (UI_get_alignment(obj) != 2)
-					UI_set_alignment(obj, 2);
-				UI_set_schedule_type(obj, IN_COMBAT);
+				if (obj->get_alignment() != 2)
+					obj->set_alignment(2);
+				obj->set_schedule_type(IN_COMBAT);
 			}
 			else
 				script obj hit damage;//DONTBLEED
@@ -193,15 +193,15 @@ dropAllItems (var npc, var pos)
 	while (count < UI_get_array_size(cont_collection))
 	{
 		count = count + 1;
-		containers = UI_get_cont_items(npc, cont_collection[count], QUALITY_ANY, FRAME_ANY);
+		containers = npc->get_cont_items(cont_collection[count], QUALITY_ANY, FRAME_ANY);
 		if (containers)
 		{
 			for (obj in containers with index to max)
 			{
 				//Only directly drop those directly held by the NPC:
-				if (UI_is_npc(getOuterContainer(obj)))
+				if (getOuterContainer(obj)->is_npc())
 				{
-					flag = UI_set_last_created(obj);
+					flag = obj->set_last_created();
 					if (flag)
 						UI_update_last_created(pos);
 				}
@@ -211,12 +211,12 @@ dropAllItems (var npc, var pos)
 
 	//Now that most objects are in the ground, inside containers, it is
 	//time to drop the rest:
-	var objects = UI_get_cont_items(npc, SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
+	var objects = npc->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
 	if (objects)
 	{
 		for (obj in objects with index to max)
 		{
-			flag = UI_set_last_created(obj);
+			flag = obj->set_last_created();
 			if (flag)
 				UI_update_last_created(pos);
 		}

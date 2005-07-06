@@ -1,7 +1,7 @@
 returnDupresShield 0x848 ()
 {
 	say("@I shall certainly be sad to part with it, but if thou dost claim it, then I must give it to thee.@");
-	UI_remove_cont_items(LUTHER, 1, SHAPE_DUPRE_SHIELD, QUALITY_ANY, 0, 0);
+	LUTHER->remove_cont_items(1, SHAPE_DUPRE_SHIELD, QUALITY_ANY, 0, 0);
 	giveItemsToPartyMember(AVATAR, 1, SHAPE_DUPRE_SHIELD, QUALITY_ANY, FRAME_ANY, 0, true);
 	gflags[HAS_DUPRE_SHIELD] = true;
 	say("@Now I shall have to find myself another shield...@");
@@ -14,13 +14,13 @@ returnDupresShield 0x848 ()
 		gflags[KNOWS_MONITOR_SHIELD_ORIGIN] = true;
 		
 		UI_remove_party_items(1, SHAPE_MONITOR_SHIELD, QUALITY_ANY, 0, true);
-		if (UI_add_cont_items(LUTHER, 1, SHAPE_MONITOR_SHIELD, QUALITY_ANY, 0, 18))
+		if (LUTHER->add_cont_items(1, SHAPE_MONITOR_SHIELD, QUALITY_ANY, 0, 18))
 		{
 			var shield = UI_create_new_object(SHAPE_MONITOR_SHIELD);
 			if (shield)
 			{
-				UI_set_item_flag(shield, TEMPORARY);
-				var pos = UI_get_object_position(LUTHER);
+				shield->set_item_flag(TEMPORARY);
+				var pos = LUTHER->get_object_position();
 				UI_update_last_created(pos);
 			}
 		}

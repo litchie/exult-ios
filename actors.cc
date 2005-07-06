@@ -3063,6 +3063,20 @@ bool Actor::figure_hit_points
 	unsigned char powers = winf ? winf->get_powers() : 0;
 	if (ainf)
 		powers |= ainf->get_powers();
+	if (attacker && (usefun ||
+			(wpoints || powers) && !powers&Weapon_info::si_no_damage))
+		{ 
+		if (attacker->get_schedule_type() == Schedule::duel)
+			return this;	// Just play-fighting.
+		set_oppressor(attacker->get_npc_num());
+		if (is_combat_protected() && party_id >= 0 &&
+		    rand()%5 == 0)
+			say(first_need_help, last_need_help);
+					// Attack back, but not if in party.
+		if (!target && !is_in_party())
+			set_target(attacker,
+			    attacker->get_schedule_type() != Schedule::duel);
+		}
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 	
@@ -3256,19 +3270,6 @@ Game_object *Actor::attacked
 					// Or party member of dead Avatar?
 	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
 		return 0;
-	if (attacker)
-		{ 
-		if (attacker->get_schedule_type() == Schedule::duel)
-			return this;	// Just play-fighting.
-		set_oppressor(attacker->get_npc_num());
-		if (is_combat_protected() && party_id >= 0 &&
-		    rand()%5 == 0)
-			say(first_need_help, last_need_help);
-					// Attack back, but not if in party.
-		if (!target && !is_in_party())
-			set_target(attacker,
-			    attacker->get_schedule_type() != Schedule::duel);
-		}
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 		get_info().has_translucency() && 
