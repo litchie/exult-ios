@@ -33,6 +33,8 @@ adder1 0x481 (a, b)
 	c = item;
 	event = event + 7;
 	c = UI_get_item_flag(item, 10);
+	c = item->get_item_flag(10);
+	c = get_item_flag(10);
 	c = UI_get_party_list();
 	for(actor1 in c with i to max)
 		{

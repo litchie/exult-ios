@@ -228,7 +228,7 @@ public:
 			return (*it).second;
 		}
 					// Search upwards through scopes.
-	Uc_symbol *search_up(char *nm);
+	Uc_symbol *search_up(const char *nm);
 	void add(Uc_symbol *sym)	// Add (does NOT check for dups.)
 		{
 		const char *nm = sym->name.c_str();
