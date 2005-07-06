@@ -1,3 +1,10 @@
+2005-07-05    <jeff@mini.nerble.net>
+	* usecode/compiler/*.{cc,h}: Allow intrinsics to be called as
+	'methods', so that the following are equivalent:
+		c = UI_get_item_flag(item, 10);
+		c = item->get_item_flag(10);
+		c = get_item_flag(10);
+
 2005-07-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Modified detection of 'delayed blast' projectile, as it was too inclusive
 	  before. I also am interpreting its lack of projectile data to mean it

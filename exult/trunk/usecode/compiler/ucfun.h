@@ -89,7 +89,7 @@ public:
 		}
 	Uc_symbol *search(char *nm)	// Search current scope.
 		{ return cur_scope->search(nm); }
-	Uc_symbol *search_up(char *nm)
+	Uc_symbol *search_up(const char *nm)
 		{ 
 		Uc_symbol *sym = cur_scope->search_up(nm);
 		return (sym ? sym : globals.search(nm));

@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <string>
 
 #include "ucfun.h"
 #include "ucexpr.h"
@@ -42,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::strcpy;
 using std::strcat;
 using std::strlen;
+using std::string;
 
 void yyerror(char *);
 extern int yylex();
@@ -56,6 +58,7 @@ std::vector<Uc_function *> functions;	// THIS is what we produce.
 
 static Uc_function *function = 0;	// Current function being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
+static Uc_expression *method_this = 0;
 
 %}
 
@@ -768,11 +771,11 @@ function_call:
 	| method_call
 	;
 
-method_call:
-	primary hierarchy_tok routine_call /* Really a way to do CALLE.	*/
+method_call:	/* A way to do CALLE or to call an intrinsic. */
+	primary hierarchy_tok { method_this = $1;  } routine_call 
 		{
-		$3->set_itemref($1);
-		$$ = $3;	
+		$$ = $4;
+		method_this = 0;
 		}
 	;
 
@@ -785,6 +788,14 @@ routine_call:
 	IDENTIFIER opt_original '(' opt_expression_list ')'
 		{ 
 		Uc_symbol *sym = function->search_up($1);
+		if (!sym)		/* Check for intrinsic name.	*/
+			{
+			string iname = string("UI_") + $1;
+			sym = function->search_up(iname.c_str());
+					/* Treat as method call on 'item'.*/
+			if (sym && !method_this)
+				method_this = new Uc_item_expression();
+			}
 		if (!sym)
 			{
 			char buf[150];
@@ -793,8 +804,12 @@ routine_call:
 			$$ = 0;
 			}
 		else
+			{
 			$$ = new Uc_call_expression(sym, $4, function,
 							$2 ? true : false);
+			$$->set_itemref(method_this);
+			method_this = 0;
+			}
 		}
 	;
 
