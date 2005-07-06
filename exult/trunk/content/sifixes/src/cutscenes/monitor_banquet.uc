@@ -11,14 +11,14 @@ MonitorBanquet 0x1C3 ()
 	var max;
 	var npc;
 	
-	if ((event == SCRIPTED) && (UI_get_npc_id(MARSTEN) == 0))
+	if ((event == SCRIPTED) && (MARSTEN->get_npc_id() == 0))
 	{
 		UI_play_music(15, getPathEgg(5, 1));
-		UI_set_item_flag(AVATAR, DONT_MOVE);
-		var health = UI_get_npc_prop(SHAZZANA, HEALTH);
-		UI_set_npc_prop(SHAZZANA, HEALTH, (UI_get_npc_prop(SHAZZANA, STRENGTH) - health));
-		health = UI_get_npc_prop(LUTHER, HEALTH);
-		UI_set_npc_prop(LUTHER, HEALTH, (UI_get_npc_prop(SHAZZANA, STRENGTH) - health));
+		AVATAR->set_item_flag(DONT_MOVE);
+		var health = SHAZZANA->get_npc_prop(HEALTH);
+		SHAZZANA->set_npc_prop(HEALTH, (SHAZZANA->get_npc_prop(STRENGTH) - health));
+		health = LUTHER->get_npc_prop(HEALTH);
+		LUTHER->set_npc_prop(HEALTH, (LUTHER->get_npc_prop(STRENGTH) - health));
 
 		npc = partyUtters(1, 0, 0, true);
 		
@@ -28,27 +28,27 @@ MonitorBanquet 0x1C3 ()
 
 		delayedBark(npc, "@" + partytoken + " shall wait for thee here!@", 5);
 		
-		var partymembers = removeFromArray(UI_get_npc_object(AVATAR), UI_get_party_list2());
+		var partymembers = removeFromArray(AVATAR->get_npc_object(), UI_get_party_list2());
 		var pos;
 		for (npc in partymembers with index to max)
 		{
-			UI_remove_from_party(npc);
-			pos = UI_get_object_position(npc);
-			UI_set_new_schedules(npc, MIDNIGHT, STANDTHERE, [pos[X], pos[Y]]);
-			UI_run_schedule(npc);
+			npc->remove_from_party();
+			pos = npc->get_object_position();
+			npc->set_new_schedules(MIDNIGHT, STANDTHERE, [pos[X], pos[Y]]);
+			npc->run_schedule();
 		}
 		
-		UI_item_say(AVATAR, "@This must be the place!@");
-		UI_si_path_run_usecode(AVATAR, [0x41F, 0xA7C, 0x0], PATH_SUCCESS, item, MonitorBanquet, true);
+		AVATAR->item_say("@This must be the place!@");
+		AVATAR->si_path_run_usecode([0x41F, 0xA7C, 0x0], PATH_SUCCESS, item, MonitorBanquet, true);
 		UI_set_path_failure(MonitorBanquet, item, PATH_FAILURE);
 		gflags[MONITOR_BANQUET_STARTED] = true;
 		//In the original, the avatar's position is used instead of
 		//a hardcoded one. I preferred the hardcoded one -- this
 		//allows higher resolutions to work if the player is too far
 		//away when double-clicking the doors.
-		//var objpos = [UI_get_object_position(AVATAR), QUALITY_ANY, 6];
+		//var objpos = [AVATAR->get_object_position(), QUALITY_ANY, 6];
 		var objpos = [0x41F, 0xA7C, 0x0, QUALITY_ANY, 6];
-		var eggs = UI_find_nearby(objpos, SHAPE_EGG, 40, 16);
+		var eggs = objpos->find_nearby(SHAPE_EGG, 40, 16);
 		var egg;
 		var dir;
 		var eggquality;
@@ -58,13 +58,13 @@ MonitorBanquet 0x1C3 ()
 						  CALADIN, CELLIA, TEMPLAR, KRAYG, LUTHER, 0];
 		for (egg in eggs with index to max)
 		{
-			pos = UI_get_object_position(egg);
-			eggquality = UI_get_item_quality(egg);
+			pos = egg->get_object_position();
+			eggquality = egg->get_item_quality();
 			npc = false;
 			if (eggquality == 12)
 			{
-				UI_move_object(LUCILLA, pos);
-				UI_set_schedule_type(LUCILLA, WAIT);
+				LUCILLA->move_object(pos);
+				LUCILLA->set_schedule_type(WAIT);
 				script LUCILLA
 				{	face WEST;					actor frame STAND;}
 			}
@@ -72,10 +72,10 @@ MonitorBanquet 0x1C3 ()
 			{
 				dir = directions[eggquality];
 				npc = npcids[eggquality];
-				if (npc && (!UI_get_item_flag(npc, DEAD)))
+				if (npc && (!npc->get_item_flag(DEAD)))
 				{
-					UI_move_object(npc, pos);
-					UI_set_schedule_type(npc, WAIT);
+					npc->move_object(pos);
+					npc->set_schedule_type(WAIT);
 					script npc
 					{	face dir;					continue;
 						actor frame SIT;}
@@ -90,11 +90,11 @@ MonitorBanquet 0x1C3 ()
 		//nearby eggs with frame *6* and any quality -- which were
 		//used to create the NPCs above anyway, and never get used
 		//in the game again.
-		//objpos = [UI_get_object_position(AVATAR), 0, 7];
+		//objpos = [AVATAR->get_object_position(), 0, 7];
 		objpos = [0x41F, 0xA7C, 0x0, QUALITY_ANY, 6];
-		eggs = UI_find_nearby(objpos, SHAPE_EGG, 40, 16);
+		eggs = objpos->find_nearby(SHAPE_EGG, 40, 16);
 		for (egg in eggs with index to max)
-			UI_remove_item(egg);
+			egg->remove_item();
 		abort;
 	}
 	else

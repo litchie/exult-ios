@@ -15,17 +15,17 @@ Gwenno 0x495 ()
 	
 	if ((event == DOUBLECLICK) || (event == SCRIPTED))
 	{
-		UI_item_say(AVATAR, "@A pleasure to see thee...@");
+		AVATAR->item_say("@A pleasure to see thee...@");
 		GWENNO->makePartyFaceNPC();
-		if (!UI_get_item_flag(GWENNO, SI_ZOMBIE))
+		if (!GWENNO->get_item_flag(SI_ZOMBIE))
 		{
 			delayedBark(GWENNO, "@'Tis good to see thee!@", 2);
-			UI_set_schedule_type(GWENNO, TALK);
+			GWENNO->set_schedule_type(TALK);
 		}
 		else
 		{
-			UI_set_new_schedules(GWENNO, MIDNIGHT, SI_ZOMBIE, [0x977, 0x48C]);
-			UI_run_schedule(GWENNO);
+			GWENNO->set_new_schedules(MIDNIGHT, SI_ZOMBIE, [0x977, 0x48C]);
+			GWENNO->run_schedule();
 			if (!gflags[SERPENT_GWENNO_BANE_SPEECH])
 			{
 				gflags[SERPENT_GWENNO_BANE_SPEECH] = true;
@@ -46,21 +46,21 @@ Gwenno 0x495 ()
 	
 	if (event == STARTED_TALKING)
 	{
-		if (UI_get_item_flag(GWENNO, IN_PARTY))
+		if (GWENNO->get_item_flag(IN_PARTY))
 		{
-			UI_set_schedule_type(GWENNO, FOLLOW_AVATAR);
+			GWENNO->set_schedule_type(FOLLOW_AVATAR);
 			add("leave");
 		}
 		else
 		{
-			UI_run_schedule(GWENNO);
+			GWENNO->run_schedule();
 			add("join");
 		}
 		
-		UI_clear_item_say(GWENNO);
-		UI_show_npc_face0(GWENNO, 0);
+		GWENNO->clear_item_say();
+		GWENNO->show_npc_face0(0);
 		
-		if (((!UI_get_item_flag(IOLO, SI_ZOMBIE)) && gflags[INSANITY_BANE_DEAD]) && (!gflags[IOLO_GWENNO_REUNITED]))
+		if (((!IOLO->get_item_flag(SI_ZOMBIE)) && gflags[INSANITY_BANE_DEAD]) && (!gflags[IOLO_GWENNO_REUNITED]))
 		{
 			say("@Iolo! My beloved Iolo!@");
 			say("@Oh, I had feared that I would never see thee again!@");
@@ -102,16 +102,16 @@ Gwenno 0x495 ()
 			gflags[IOLO_GWENNO_REUNITED] = true;
 		}
 		
-		if (UI_get_item_flag(IOLO, SI_ZOMBIE) && gflags[INSANITY_BANE_DEAD])
+		if (IOLO->get_item_flag(SI_ZOMBIE) && gflags[INSANITY_BANE_DEAD])
 		{
 			say("@A thousand thanks for bringing back mine husband, " + avatarname + ".@");
 			say("@I grieve that his wits seem to have left him. But at least he is safe with me.@");
 			say("@I shall do all that I can to aid thee in restoring him. Or gladly care for him all the remainder of my days... even as he is.@");
 		}
 		
-		if (!UI_get_item_flag(GWENNO, MET))
+		if (!GWENNO->get_item_flag(MET))
 		{
-			UI_set_item_flag(GWENNO, MET);
+			GWENNO->set_item_flag(MET);
 			say("@What a relief to see thee again, " + avatarname + ".@");
 			say("@I fear that thy work hath only begun. Batlin's deeds have only worsened the storms.@");
 			say("@As the sand dwindles within the Hourglass of Fate, the danger will only increase. Thou must find the answer quickly, Avatar!@");
@@ -137,7 +137,7 @@ Gwenno 0x495 ()
 			say("@Perhaps if thou wouldst ask one of the monks -- perhaps Thoxa -- she could try to divine where the Chaos Hierophant lies.@");
 		}
 
-		if (gflags[GWENNO_HAS_BELONGINGS] && ((!UI_get_item_flag(GWENNO, IN_PARTY)) && UI_get_cont_items(GWENNO, SHAPE_ANY, QUALITY_ANY, FRAME_ANY)))
+		if (gflags[GWENNO_HAS_BELONGINGS] && ((!GWENNO->get_item_flag(IN_PARTY)) && GWENNO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY)))
 			add("belongings");
 
 		add(["bye"]);
@@ -154,7 +154,7 @@ Gwenno 0x495 ()
 					{
 						add("leave");
 						say("@If thou dost think I can be of use...@");
-						UI_add_to_party(GWENNO);
+						GWENNO->add_to_party();
 						gflags[GWENNO_HAS_BELONGINGS] = true;
 					}
 					else
@@ -163,7 +163,7 @@ Gwenno 0x495 ()
 						say("@Instead, I shall remain here. After all, what can one old woman do for thee?@");
 					}
 				}
-				else if (UI_get_item_flag(IOLO, SI_ZOMBIE))
+				else if (IOLO->get_item_flag(SI_ZOMBIE))
 					say("@But I must remain here and study! I must help thee find a way to restore my dear Iolo!@");
 				else
 					say("@I will be of more use to thee if I remain here. I seem to have a talent for finding the information thou dost need.@");
@@ -171,7 +171,7 @@ Gwenno 0x495 ()
 			case "leave" (remove):
 				add("join");
 				say("@I understand, " + avatarname + "...@");
-				UI_remove_from_party(GWENNO);
+				GWENNO->remove_from_party();
 				npcAskWhereToWait(GWENNO);
 			
 			case "Batlin's deeds" (remove):

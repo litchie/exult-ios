@@ -11,7 +11,7 @@ Dupre 0x401 ()
 	var avatar_name;
 	var trainer;
 	
-	dupre_id = UI_get_npc_id(DUPRE);
+	dupre_id = DUPRE->get_npc_id();
 	avatar_title = getPoliteTitle();
 	avatar_name = getAvatarName();
 
@@ -19,12 +19,12 @@ Dupre 0x401 ()
 	{
 		if (gflags[MONITOR_TRAINING])
 		{
-			trainer = UI_get_oppressor(DUPRE);
+			trainer = DUPRE->get_oppressor();
 			trainer = (0 - trainer);
 			if (!gflags[TEMP_FLAG_1])
 			{
 				gflags[TEMP_FLAG_1] = true;
-				trainingEndDialog(UI_get_npc_object(trainer), UI_get_npc_object(DUPRE));
+				trainingEndDialog(trainer->get_npc_object(), DUPRE->get_npc_object());
 				return;
 			}
 			endMonitorTraining(item);
@@ -34,12 +34,12 @@ Dupre 0x401 ()
 	
 	else if (event == DOUBLECLICK)
 	{
-		UI_item_say(AVATAR, "@Dupre...@");
+		AVATAR->item_say("@Dupre...@");
 		DUPRE->makePartyFaceNPC();
-		if (!UI_get_item_flag(DUPRE, SI_ZOMBIE))
+		if (!DUPRE->get_item_flag(SI_ZOMBIE))
 		{
 			delayedBark(DUPRE, "@Yes, " + avatar_title + "?@", 2);
-			UI_set_schedule_type(DUPRE, TALK);
+			DUPRE->set_schedule_type(TALK);
 		}
 		else
 		{
@@ -51,17 +51,17 @@ Dupre 0x401 ()
 	
 	else if (event == STARTED_TALKING)
 	{
-		UI_show_npc_face0(DUPRE, 0);
-		UI_clear_item_say(DUPRE);
+		DUPRE->show_npc_face0(0);
+		DUPRE->clear_item_say();
 		
-		if (UI_get_item_flag(DUPRE, IN_PARTY))
+		if (DUPRE->get_item_flag(IN_PARTY))
 		{
-			UI_set_schedule_type(DUPRE, FOLLOW_AVATAR);
+			DUPRE->set_schedule_type(FOLLOW_AVATAR);
 			add("leave");
 		}
 		else
 		{
-			UI_run_schedule(DUPRE);
+			DUPRE->run_schedule();
 			add("join");
 		}
 		
@@ -80,8 +80,8 @@ Dupre 0x401 ()
 				say("@And I have good news for thee, " + avatar_title + ".@");
 				add("good news");
 			}
-			UI_set_npc_id(DUPRE, 0);
-			UI_add_to_party(DUPRE);
+			DUPRE->set_npc_id(0);
+			DUPRE->add_to_party();
 			gflags[DUPRE_HAS_BELONGINGS] = true;
 			remove("join");
 			add(["leave"]);
@@ -89,8 +89,8 @@ Dupre 0x401 ()
 		else if (dupre_id == CURED_OF_INSANITY)
 		{
 			say("@I am not as good with words as our friend Iolo, Avatar, so I shall thank thee by fighting at thy side...@");
-			UI_set_npc_id(DUPRE, 0);
-			UI_add_to_party(DUPRE);
+			DUPRE->set_npc_id(0);
+			DUPRE->add_to_party();
 			script DUPRE after 15 ticks call xenkaReturns;
 			remove("join");
 			add(["leave"]);
@@ -103,17 +103,17 @@ Dupre 0x401 ()
 				say("@When that strange storm struck, there was a flash, and then I found myself in a wilderness.@");
 				say("@Fearing to be slain by the Goblins patrolling the woods, I instead took shelter in this walled city. But these Pikemen insist on escorting me to their leader!@");
 
-				if (UI_npc_nearby(MARSTEN))
+				if (MARSTEN->npc_nearby())
 				{
-					UI_show_npc_face1(MARSTEN, 0);
+					MARSTEN->UI_show_npc_face1(0);
 					say("@That is all right. If thou art with my friend here, thou needest not speak with me.@");
 					UI_remove_npc_face1();
 					UI_set_conversation_slot(0);
 				}
-				UI_add_to_party(DUPRE);
+				DUPRE->add_to_party();
 				remove("join");
 				add("leave");
-				UI_set_new_schedules(DUPRE, MIDNIGHT, EAT_AT_INN, [0x097C, 0x0464]);
+				DUPRE->set_new_schedules(MIDNIGHT, EAT_AT_INN, [0x097C, 0x0464]);
 			}
 			else
 			{
@@ -123,16 +123,16 @@ Dupre 0x401 ()
 			}
 		}
 
-		if (UI_get_npc_id(SHAMINO) == BOOTED_FOR_FREEDOM)
+		if (SHAMINO->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Shamino's whereabouts");
 
-		if (UI_get_npc_id(IOLO) == BOOTED_FOR_FREEDOM)
+		if (IOLO->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Iolo's whereabouts");
 
-		if (UI_get_npc_id(BOYDON) == BOOTED_FOR_FREEDOM)
+		if (BOYDON->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Boydon's whereabouts");
 
-		if (gflags[DUPRE_HAS_BELONGINGS] && (!UI_get_item_flag(DUPRE, IN_PARTY)) && UI_get_cont_items(DUPRE, SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
+		if (gflags[DUPRE_HAS_BELONGINGS] && (!DUPRE->get_item_flag(IN_PARTY)) && DUPRE->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
 			add("belongings");
 
 		add(["bye"]);
@@ -142,7 +142,7 @@ Dupre 0x401 ()
 				askDupreBelongings();
 			
 			case "good news" (remove):
-				if (UI_get_item_flag(IOLO, IN_PARTY) || (UI_get_npc_id(IOLO) == BOOTED_FOR_FREEDOM))
+				if (IOLO->get_item_flag(IN_PARTY) || (IOLO->UI_get_npc_id() == BOOTED_FOR_FREEDOM))
 					say("@But I should let Iolo tell thee...@");
 
 				else
@@ -167,7 +167,7 @@ Dupre 0x401 ()
 				{
 					add("leave");
 					say("@With great pride!@");
-					UI_add_to_party(DUPRE);
+					DUPRE->add_to_party();
 					gflags[DUPRE_HAS_BELONGINGS] = true;
 				}
 				else
@@ -187,7 +187,7 @@ Dupre 0x401 ()
 				{
 					add("join");
 					say("@I hesitate to leave thee. But if thou dost insist...@");
-					UI_remove_from_party(DUPRE);
+					DUPRE->remove_from_party();
 					askDupreBelongings();
 					npcAskWhereToWait(DUPRE);
 				}
@@ -214,7 +214,7 @@ Dupre 0x401 ()
 					say("@That blasted storm exchanged all of mine equipment for useless refuse! Even mine enchanted shield!@");
 					say("@We cannot hope to survive long without the proper equipment. Perhaps if we can find where this rubbish came from, we can find our good equipment.@");
 					say("@I shall prepare a list.@");
-					if (UI_npc_nearby(SHAMINO))
+					if (SHAMINO->npc_nearby())
 					{
 						npcSpeakIfNearby(SHAMINO, "@I have already begun one.@");
 						UI_set_conversation_slot(0);
@@ -235,7 +235,7 @@ Dupre 0x401 ()
 	{
 		if (getAvatarLocationID() == TOLERANCE)
 		{
-			UI_show_npc_face0(DUPRE, 0);
+			DUPRE->show_npc_face0(0);
 			say("@Unholy creatures! We must destroy these foul skeletons, Avatar!@");
 			UI_remove_npc_face0();
 			delayedBark(DUPRE, "@I hate skeletons!@", 2);

@@ -1,8 +1,8 @@
 Scroll shape#(0x31D) ()
 {
-	var quality = UI_get_item_quality(item);
+	var quality = get_item_quality();
 	UI_play_sound_effect2(0x5E, item);
-	UI_book_mode(item);
+	book_mode();
 	if (quality == 0xBD)
 	{
 

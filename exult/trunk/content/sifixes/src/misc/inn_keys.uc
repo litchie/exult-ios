@@ -62,27 +62,27 @@ eggLockInnDoors 0xCB0 ()
 
 	if (event == EVENT_WALKING)
 	{
-		if (UI_get_distance(inn_keeper, AVATAR) < 10)
+		if (inn_keeper->get_distance(AVATAR) < 10)
 		{
 			script item after 2 ticks
 			{	call eggLockInnDoors, STARTED_TALKING;}
 			
 			script inn_keeper
-			{	call freeze;				face UI_direction_from(inn_keeper, AVATAR);
+			{	call freeze;				face inn_keeper->direction_from(AVATAR);
 				actor frame STAND;}
 		}
 		
 		else
 		{
 			//Just to ensure that the innkeeper *will* reach the Avatar:
-			UI_approach_avatar(inn_keeper, 0, 0);
+			inn_keeper->approach_avatar(0, 0);
 			script item after 2 ticks
 			{	call eggLockInnDoors, EVENT_WALKING;}
 		}
 		abort;
 	}
 	
-	var pos = UI_get_object_position(item);
+	var pos = get_object_position();
 
 	if (egg_quality == INN_SLEEPING_SOLDIER)
 	{
@@ -140,26 +140,26 @@ eggLockInnDoors 0xCB0 ()
 	var index;
 	var max;
 	var key;
-	var inn_keys = UI_count_objects(PARTY, SHAPE_KEY, qualities[egg_quality], FRAME_ANY);
-	var ground_keys = UI_find_nearby(pos, SHAPE_KEY, 50, 0);
+	var inn_keys = PARTY->count_objects(SHAPE_KEY, qualities[egg_quality], FRAME_ANY);
+	var ground_keys = pos->find_nearby(SHAPE_KEY, 50, 0);
 	for (key in ground_keys with index to max)
 	{
-		if (UI_get_item_quality(key) == qualities[egg_quality])
+		if (key->get_item_quality() == qualities[egg_quality])
 			inn_keys = inn_keys + 1;
 	}
 
 	var dir;
 	
-	if (inn_keys || UI_is_on_keyring(qualities[egg_quality]))
+	if (inn_keys || qualities[egg_quality]->is_on_keyring())
 	{
 		var msg;
 		if (event == EGG)
 		{
-			UI_halt_scheduled(AVATAR);
+			AVATAR->halt_scheduled();
 			AVATAR->freeze();
 
-			UI_halt_scheduled(inn_keeper);
-			UI_approach_avatar(inn_keeper, 0, 0);
+			inn_keeper->halt_scheduled();
+			inn_keeper->approach_avatar(0, 0);
 			
 			if (UI_is_pc_inside())
 				msg = "@Yes?@";
@@ -167,7 +167,7 @@ eggLockInnDoors 0xCB0 ()
 				msg = "@Oops...@";
 			
 			script AVATAR after 4 ticks
-			{	face UI_direction_from(AVATAR, inn_keeper);
+			{	face AVATAR->direction_from(inn_keeper);
 				wait 2;						say msg;}
 
 			if (UI_is_pc_inside())
@@ -199,13 +199,13 @@ eggLockInnDoors 0xCB0 ()
 				{
 					say("@Come back inside, then, and enjoy thy room, " + polite_title + "!@");
 
-					UI_run_schedule(inn_keeper);
+					inn_keeper->run_schedule();
 					script inn_keeper after 2 ticks
 					{	nohalt;						call unfreeze;
 						actor frame STAND;			say "@Enjoy thy stay!@";}
 
-					UI_halt_scheduled(AVATAR);
-					pos = UI_get_object_position(item);
+					AVATAR->halt_scheduled();
+					pos = get_object_position();
 					dir = step_directions[egg_quality];
 					if (dir == NORTH)
 						pos[Y] = pos[Y] - 8;
@@ -216,7 +216,7 @@ eggLockInnDoors 0xCB0 ()
 					else if (dir == WEST)
 						pos[X] = pos[X] - 8;
 	
-					UI_si_path_run_usecode(AVATAR, pos, PATH_SUCCESS, AVATAR, unfreeze, true);
+					AVATAR->si_path_run_usecode(pos, PATH_SUCCESS, AVATAR, unfreeze, true);
 					UI_set_path_failure(unfreeze, AVATAR, PATH_FAILURE);
 					abort;
 				}
@@ -228,9 +228,9 @@ eggLockInnDoors 0xCB0 ()
 			}
 			
 			AVATAR->unfreeze();
-			UI_halt_scheduled(AVATAR);
+			AVATAR->halt_scheduled();
 
-			UI_run_schedule(inn_keeper);
+			inn_keeper->run_schedule();
 			script inn_keeper after 2 ticks
 			{	nohalt;						call unfreeze;
 				actor frame STAND;			say msg;}
@@ -238,12 +238,12 @@ eggLockInnDoors 0xCB0 ()
 	}
 	
 	UI_remove_party_items(inn_keys, SHAPE_KEY, qualities[egg_quality], FRAME_ANY, true);
-	if (UI_is_on_keyring(qualities[egg_quality])) UI_remove_from_keyring(qualities[egg_quality]);
+	if (qualities[egg_quality]->is_on_keyring()) qualities[egg_quality]->remove_from_keyring();
 	
 	for (key in ground_keys with index to max)
 	{
-		if (UI_get_item_quality(key) == qualities[egg_quality])
-			UI_remove_item(key);
+		if (key->get_item_quality() == qualities[egg_quality])
+			key->remove_item();
 	}
 
 	
@@ -252,7 +252,7 @@ eggLockInnDoors 0xCB0 ()
 	
 	var door;
 	for (door in door_shapes with index to max)
-		inn_doors = inn_doors & UI_find_nearby(pos, door, dist, 0);
+		inn_doors = inn_doors & pos->find_nearby(door, dist, 0);
 	
 	var door_state;
 	var door_function;
@@ -260,41 +260,41 @@ eggLockInnDoors 0xCB0 ()
 	for (door in inn_doors with index to max)
 	{
 		event = DOUBLECLICK;
-		if (UI_get_item_quality(door) == qualities[egg_quality])
+		if (door->get_item_quality() == qualities[egg_quality])
 		{
-			door_state = (UI_get_item_frame(door) % 4);
+			door_state = (door->get_item_frame() % 4);
 			if (door_state == DOOR_OPEN)
 			{
-				door_function = UI_get_item_shape(door);
+				door_function = door->get_item_shape();
 				if (door_function == SHAPE_DOOR_HORIZONTAL)
 					door->doorHorizontal();
 				else if (door_function == SHAPE_DOOR_VERTICAL)
 					door->doorVertical();
 				
-				UI_set_intercept_item(door);
+				door->set_intercept_item();
 				door->UseKeyOnDoor();
 			}
 	
 			else if (door_state == DOOR_UNLOCKED)
 			{
-				UI_set_intercept_item(door);
+				door->set_intercept_item();
 				door->UseKeyOnDoor();
 			}
 		}
 	}
 	
-	var inn_beds = UI_find_nearby(pos, SHAPE_BED_HORIZONTAL, dist, 0);
-	inn_beds = inn_beds & UI_find_nearby(pos, SHAPE_BED_VERTICAL, dist, 0);
+	var inn_beds = pos->find_nearby(SHAPE_BED_HORIZONTAL, dist, 0);
+	inn_beds = inn_beds & pos->find_nearby(SHAPE_BED_VERTICAL, dist, 0);
 	var bed;
 	var bed_state;
 	for (bed in inn_beds with index to max)
 	{
-		bed_state = UI_get_item_frame(bed);
+		bed_state = bed->get_item_frame();
 		if (bed_state > 2)
 		{
 			bed_state = (bed_state - 3) % 2;
 			if (bed_state == BED_UNMADE)
-				UI_set_item_frame(bed, UI_get_item_frame(bed) - 1);
+				bed->set_item_frame(bed->get_item_frame() - 1);
 		}
 	}
 }

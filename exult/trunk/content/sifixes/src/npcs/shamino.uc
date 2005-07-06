@@ -20,21 +20,21 @@ Shamino 0x402 ()
 	var frigmessage;
 	var frigpresents;
 	
-	shamino_id = UI_get_npc_id(SHAMINO);
+	shamino_id = SHAMINO->get_npc_id();
 	avatartitle = getPoliteTitle();
 	avatarfemale = UI_is_pc_female();
 	avatarname = getAvatarName();
 	
-	if ((event == DEATH) && UI_get_item_flag(SHAMINO, SI_TOURNAMENT))
+	if ((event == DEATH) && SHAMINO->get_item_flag(SI_TOURNAMENT))
 	{
 		if (gflags[MONITOR_TRAINING])
 		{
-			trainer = UI_get_oppressor(SHAMINO);
+			trainer = SHAMINO->get_oppressor();
 			trainer = (0 - trainer);
 			if (!gflags[TEMP_FLAG_1])
 			{
 				gflags[TEMP_FLAG_1] = true;
-				trainingEndDialog(UI_get_npc_object(trainer), UI_get_npc_object(SHAMINO));
+				trainingEndDialog(trainer->get_npc_object(), SHAMINO->get_npc_object());
 				return;
 			}
 			endMonitorTraining(item);
@@ -44,10 +44,10 @@ Shamino 0x402 ()
 		{
 			if ((getAvatarLocationID() != SHAMINOS_CASTLE) && ((!gflags[BANES_RELEASED]) && (getAvatarLocationID() != SPINEBREAKER_MOUNTAINS)))
 			{
-				UI_show_npc_face0(BEATRIX_FACE, 0);
+				BEATRIX_FACE->show_npc_face0(0);
 				say("@Do not die, my sweet King...@");
 
-				UI_show_npc_face1(SHAMINO, 0);
+				SHAMINO->show_npc_face1(0);
 				say("@Beatrix, is that thee?@");
 				UI_remove_npc_face1();
 
@@ -62,23 +62,23 @@ Shamino 0x402 ()
 				giveItemsToPartyMember(SHAMINO, 1, SHAPE_BOOK, 63, 0, 0, true);
 				gflags[BEATRIX_PROTECTION] = false;
 				gflags[BEATRIX_FORGAVE_SHAMINO] = true;
-				UI_clear_item_flag(SHAMINO, SI_TOURNAMENT);
+				SHAMINO->clear_item_flag(SI_TOURNAMENT);
 			}
 			else
 			{
-				UI_clear_item_flag(SHAMINO, SI_TOURNAMENT);
-				UI_reduce_health(SHAMINO, 50, 0);
+				SHAMINO->clear_item_flag(SI_TOURNAMENT);
+				SHAMINO->reduce_health(50, 0);
 			}
 		}
 	}
 	else if (event == DOUBLECLICK)
 	{
-		UI_item_say(AVATAR, "Shamino...");
+		AVATAR->item_say("Shamino...");
 		SHAMINO->makePartyFaceNPC();
-		if (!UI_get_item_flag(SHAMINO, SI_ZOMBIE))
+		if (!SHAMINO->get_item_flag(SI_ZOMBIE))
 		{
 			delayedBark(SHAMINO, "@Yes, " + avatarname + "?", 2);
-			UI_set_schedule_type(SHAMINO, TALK);
+			SHAMINO->set_schedule_type(TALK);
 		}
 		else
 		{
@@ -89,19 +89,19 @@ Shamino 0x402 ()
 	}
 	else if (event == STARTED_TALKING)
 	{
-		UI_clear_item_say(SHAMINO);
-		if (UI_get_item_flag(SHAMINO, IN_PARTY))
+		SHAMINO->clear_item_say();
+		if (SHAMINO->get_item_flag(IN_PARTY))
 		{
-			UI_set_schedule_type(SHAMINO, FOLLOW_AVATAR);
+			SHAMINO->set_schedule_type(FOLLOW_AVATAR);
 			add("leave");
 		}
 		else
 		{
-			UI_run_schedule(SHAMINO);
+			SHAMINO->run_schedule();
 			add("join");
 		}
 		
-		UI_show_npc_face0(SHAMINO, 0);
+		SHAMINO->show_npc_face0(0);
 		if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[SHAMINO_MADE_EQUIPMENT_LIST]))
 		{
 			say("@Avatar! Art thou all right? I heard what sounded like the explosions of a volcano -- and look at all the fire here...@");
@@ -113,10 +113,10 @@ Shamino 0x402 ()
 			gflags[SHAMINO_MADE_EQUIPMENT_LIST] = true;
 			delayedBark(SHAMINO, "@Such strangeness!@", 0);
 			unfreezeAvatar();
-			UI_add_to_party(SHAMINO);
+			SHAMINO->add_to_party();
 			setExchangedItemFlags();
 			gflags[SHAMINO_HAS_BELONGINGS] = true;
-			UI_set_new_schedules(SHAMINO, MIDNIGHT, EAT_AT_INN, [0x97C, 0x464]);
+			SHAMINO->set_new_schedules(MIDNIGHT, EAT_AT_INN, [0x97C, 0x464]);
 			abort;
 		}
 
@@ -142,8 +142,8 @@ Shamino 0x402 ()
 		else if (shamino_id == CURED_OF_INSANITY)
 		{
 			say("@Thank thee, Avatar, for restoring my mind! As always, I am ready to provide whatever aid I can, " + avatartitle + ".@");
-			UI_set_npc_id(SHAMINO, 0);
-			UI_add_to_party(SHAMINO);
+			SHAMINO->set_npc_id(0);
+			SHAMINO->add_to_party();
 			script SHAMINO after 15 ticks call xenkaReturns;
 			remove("join");
 			add(["leave", "bye"]);
@@ -152,16 +152,16 @@ Shamino 0x402 ()
 		{
 			say("@I am ready to provide whatever aid I can, " + avatartitle + ".@");
 
-			if (UI_get_npc_id(DUPRE) == BOOTED_FOR_FREEDOM)
+			if (DUPRE->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Dupre's whereabouts");
 	
-			if (UI_get_npc_id(IOLO) == BOOTED_FOR_FREEDOM)
+			if (IOLO->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Iolo's whereabouts");
 	
-			if (UI_get_npc_id(BOYDON) == BOOTED_FOR_FREEDOM)
+			if (BOYDON->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Boydon's whereabouts");
 	
-			if ((!UI_get_item_flag(SHAMINO, IN_PARTY)) && (UI_get_cont_items(SHAMINO, SHAPE_ANY, QUALITY_ANY, FRAME_ANY) && (gflags[SHAMINO_HAS_BELONGINGS] == true)))
+			if ((!SHAMINO->get_item_flag(IN_PARTY)) && (SHAMINO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY) && (gflags[SHAMINO_HAS_BELONGINGS] == true)))
 				add("belongings");
 	
 			add(["bye"]);
@@ -184,12 +184,12 @@ Shamino 0x402 ()
 					addShaminoToParty();
 
 			case "news" (remove):
-				if (UI_get_item_flag(IOLO, IN_PARTY))
+				if (IOLO->get_item_flag(IN_PARTY))
 					say("@To be honest, this is not my news -- it belongs to our good friend, the Bard. Thou shouldst ask Iolo.@");
 
 				else
 				{
-					if (UI_get_npc_id(IOLO) == BOOTED_FOR_FREEDOM)
+					if (IOLO->get_npc_id() == BOOTED_FOR_FREEDOM)
 						say("@Quickly, let us find Iolo. He can tell thee all about the discovery!@");
 
 					else
@@ -260,7 +260,7 @@ Shamino 0x402 ()
 				{
 					add("leave");
 					say("@Most gratefully!@");
-					UI_add_to_party(SHAMINO);
+					SHAMINO->add_to_party();
 					gflags[SHAMINO_HAS_BELONGINGS] = true;
 				}
 				else
@@ -279,7 +279,7 @@ Shamino 0x402 ()
 				{
 					add("join");
 					say("@If that is what thou dost wish...@");
-					UI_remove_from_party(SHAMINO);
+					SHAMINO->remove_from_party();
 					askShaminoBelongings();
 					npcAskWhereToWait(SHAMINO);
 				}
@@ -312,7 +312,7 @@ Shamino 0x402 ()
 		{
 			//In the original, it was Iolo's face which appeared... which is
 			//likely an error, as this is in Shamino's usecode...
-			UI_show_npc_face0(SHAMINO, 0);
+			SHAMINO->show_npc_face0(0);
 			say("@We are beset by dragons, Avatar! We must slay them quickly!@");
 			UI_remove_npc_face0();
 			delayedBark(SHAMINO, "@I hate dragons!@", 2);
@@ -321,7 +321,7 @@ Shamino 0x402 ()
 		
 		else if (location_id == SHAMINOS_CASTLE)
 		{
-			UI_show_npc_face0(SHAMINO, 0);
+			SHAMINO->show_npc_face0(0);
 			say("@It hath been so long I barely recognize this place, like somewhere from a dream. I do recall that there is an illusory door west of the castle gates near a big tree.@");
 			UI_remove_npc_face0();
 			delayedBark(SHAMINO, "@Somewhere around here...@", 3);

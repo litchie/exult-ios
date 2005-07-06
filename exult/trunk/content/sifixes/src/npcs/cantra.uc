@@ -9,7 +9,7 @@
 Cantra 0x440()
 {
 	//I prefer to check this flag instead:
-	if (!UI_get_item_flag(item, SI_ZOMBIE))
+	if (!get_item_flag(SI_ZOMBIE))
 		Cantra.original();
 	
 	else
@@ -17,14 +17,14 @@ Cantra 0x440()
 		//Changed from Jeff's code for a SI-like behavior:
 		if (event == DOUBLECLICK)
 		{
-			UI_item_say(AVATAR, "Hello, Cantra.");
+			AVATAR->item_say("Hello, Cantra.");
 			CANTRA->makePartyFaceNPC();
 			delayedBark(CANTRA, "@I am not Cantra!@", 2);
-			UI_set_schedule_type(CANTRA, TALK);
+			CANTRA->set_schedule_type(TALK);
 		}
 		else if (event == STARTED_TALKING)
 		{
-			UI_run_schedule(CANTRA);
+			CANTRA->run_schedule();
 			var msg = ["@I want thy flesh!@", "@I want thy blood!@", "@Blood! Blood everywhere!@", "@How hungry I am!@"];
 			var rand = UI_get_random(UI_get_array_size(msg));
 			item.say(msg[rand]);

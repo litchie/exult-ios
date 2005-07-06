@@ -24,22 +24,22 @@ Potion shape#(0x154) ()
 	
 	if (event == DOUBLECLICK)
 	{
-		itemframe = UI_get_item_frame(item);
+		itemframe = get_item_frame();
 		target = UI_click_on_item();
 
 		UI_play_sound_effect2(0x24, item);
-		if (UI_is_npc(target))
+		if (target->is_npc())
 		{
 			UI_play_sound_effect(0x39);
 			if (itemframe == SLEEP_POTION)
 			{
-				var npcnum = UI_get_npc_number(target);
+				var npcnum = target->get_npc_number();
 				if ((getAvatarLocationID() == SPINEBREAKER_MOUNTAINS) && ((npcnum == IOLO) || (npcnum == SHAMINO) || (npcnum == DUPRE)))
 				{
 					npcnum.say("@But we are so close to Batlin now, Avatar! I don't want to miss all the action!@");
 					abort;
 				}
-				UI_set_item_flag(target, ASLEEP);
+				target->set_item_flag(ASLEEP);
 			}
 			
 			else if (itemframe == HEALING_POTION)
@@ -47,50 +47,50 @@ Potion shape#(0x154) ()
 			
 			else if (itemframe == CURING_POTION)
 			{
-				UI_clear_item_flag(target, POISONED);
-				UI_clear_item_flag(target, PARALYZED);
-				UI_clear_item_flag(target, ASLEEP);
-				UI_clear_item_flag(target, CHARMED);
-				UI_clear_item_flag(target, CURSED);
+				target->clear_item_flag(POISONED);
+				target->clear_item_flag(PARALYZED);
+				target->clear_item_flag(ASLEEP);
+				target->clear_item_flag(CHARMED);
+				target->clear_item_flag(CURSED);
 			}
 			
 			else if (itemframe == POISION_POTION)
-				UI_set_item_flag(target, POISONED);
+				target->set_item_flag(POISONED);
 
 			else if (itemframe == AWAKENING_POTION)
-				UI_clear_item_flag(target, ASLEEP);
+				target->clear_item_flag(ASLEEP);
 
 			else if (itemframe == PROTECTION_POTION)
-				UI_set_item_flag(target, PROTECTION);
+				target->set_item_flag(PROTECTION);
 
 			else if (itemframe == LIGHT_POTION)
 				UI_cause_light(200);
 
 			else if (itemframe == INVISIBILITY_POTION)
-				UI_set_item_flag(target, INVISIBLE);
+				target->set_item_flag(INVISIBLE);
 
 			else if (itemframe == MANA_POTION)
 			{
-				if (target == UI_get_npc_object(AVATAR))
+				if (target == AVATAR->get_npc_object())
 				{
-					var mana = UI_get_npc_prop(AVATAR, MANA);
+					var mana = AVATAR->get_npc_prop(MANA);
 					var recover = UI_get_random(10);
 					if ((mana + recover) > 31)
 						recover = (31 - mana);
 
-					UI_set_npc_prop(AVATAR, MANA, recover);
+					AVATAR->set_npc_prop(MANA, recover);
 				}
 			}
 			
 			else if (itemframe == WARMTH_POTION)
-				UI_set_temperature(target, 0);
+				target->set_temperature(0);
 
 			else if (itemframe >= 10)
 			{
 				partyUtters(1, "@What is this!@", 0, false);
 				abort;
 			}
-			UI_remove_item(item);
+			remove_item();
 			abort;
 		}
 		else
@@ -100,11 +100,11 @@ Potion shape#(0x154) ()
 			var spill = UI_create_new_object(SHAPE_SPILL);
 			if (spill)
 			{
-				UI_set_item_flag(spill, TEMPORARY);
-				UI_set_item_frame(spill, UI_die_roll(4, 23));
+				spill->set_item_flag(TEMPORARY);
+				spill->set_item_frame(UI_die_roll(4, 23));
 				UI_update_last_created(pos);
 			}
-			UI_remove_item(item);
+			remove_item();
 		}
 	}
 }

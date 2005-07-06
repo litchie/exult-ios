@@ -1,3 +1,7 @@
+2005-07-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Modified the SI Fixes source files to use the new intrinsic calling
+	  method ('->'). Also, removed duplicate (unused) files.
+
 2005-07-05    <jeff@mini.nerble.net>
 	* usecode/compiler/*.{cc,h}: Allow intrinsics to be called as
 	'methods', so that the following are equivalent:
