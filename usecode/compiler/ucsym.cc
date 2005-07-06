@@ -243,8 +243,6 @@ int Uc_intrinsic_symbol::gen_call
 	)
 	{
 	int parmcnt = 0;
-	if (itemref)			// Makes no sense for intrinsice.
-		Uc_location::yyerror("Can't use ITEM for intrinsic");
 					// Want to push parm. values.
 	const std::vector<Uc_expression *>& exprs = parms->get_exprs();
 					// Push backwards, so #0 pops first.
@@ -253,6 +251,11 @@ int Uc_intrinsic_symbol::gen_call
 		{
 		Uc_expression *expr = *it;
 		expr->gen_value(out);
+		parmcnt++;
+		}
+	if (itemref)			// Happens with 'method' call.
+		{
+		itemref->gen_value(out);
 		parmcnt++;
 		}
 					// ++++ parmcnt == num_parms.
@@ -414,7 +417,7 @@ Uc_scope::~Uc_scope
 
 Uc_symbol *Uc_scope::search_up
 	(
-	char *nm
+	const char *nm
 	)
 	{
 	Uc_symbol *found = search(nm);	// First look here.
