@@ -5,15 +5,15 @@ FawnStorm 0x6BC ()
 	
 	if (event == SCRIPTED)
 	{
-		var quality = UI_get_item_quality(pathegg);
+		var quality = pathegg->get_item_quality();
 		if (quality == 6)
 		{
-			UI_set_item_flag(AVATAR, DONT_MOVE);
+			AVATAR->set_item_flag(DONT_MOVE);
 			lute = UI_create_new_object(SHAPE_LUTE);
 			if (lute)
 			{
-				UI_set_item_frame(lute, 0);
-				var pos = UI_get_object_position(IOLO);
+				lute->set_item_frame(0);
+				var pos = IOLO->get_object_position();
 				pos[Y] = pos[Y] + 1;
 				if (UI_update_last_created(pos))
 				{
@@ -21,13 +21,13 @@ FawnStorm 0x6BC ()
 					pos[Y] = pos[Y] + (pos[Z] / 2);
 					UI_sprite_effect(21, pos[X], pos[Y], 0, 0, 0, -1);
 					
-					var dir = UI_find_direction(IOLO, lute);
+					var dir = IOLO->find_direction(lute);
 					script IOLO
 					{	nohalt;					wait 1;
 						face dir;				say "@Look, Avatar!@";
 						wait 5;  				actor frame LEAN;
 						wait 9;					call FawnStorm;}
-					UI_set_item_quality(pathegg, quality + 1);
+					pathegg->set_item_quality(quality + 1);
 					UI_set_weather(0);
 				}
 				else
@@ -45,13 +45,11 @@ FawnStorm 0x6BC ()
 		}
 		else if (quality == 7)
 		{
-			lute = UI_find_nearby(IOLO, SHAPE_LUTE, 25, 0);
+			lute = IOLO->find_nearby(SHAPE_LUTE, 25, 0);
 			if (lute)
 			{
-				UI_set_last_created(lute);
-				UI_give_last_created(IOLO);
-				//UI_remove_item(lute);
-				//giveItemsToPartyMember(IOLO, 1, SHAPE_LUTE, 0, 0, 0, false);
+				lute->set_last_created();
+				IOLO->give_last_created();
 			}
 			
 			script IOLO
@@ -60,8 +58,8 @@ FawnStorm 0x6BC ()
 			script pathegg after 3 ticks
 			{	nohalt;					call FawnStorm;}
 			
-			UI_set_item_quality(pathegg, quality + 1);
-			UI_clear_item_flag(AVATAR, DONT_MOVE);
+			pathegg->set_item_quality(quality + 1);
+			AVATAR->clear_item_flag(DONT_MOVE);
 			delayedBark(IOLO, "@A lute!@", 0);
 			abort;
 		}

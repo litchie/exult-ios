@@ -32,9 +32,9 @@ Sundial shape#(0x11C) ()
 	{
 		var hour = UI_game_hour();
 		if (hour == 12)
-			UI_item_say(item, "Noon");
+			item_say("Noon");
 		else if ((hour >= 6) && (hour <= 20))
-			UI_item_say(item, " " + UI_game_hour() + " o'clock");
+			item_say(" " + UI_game_hour() + " o'clock");
 		else
 			var bark = "@^<Avatar>, I believe the important part of the word sundial is `sun'.@";
 			partyUtters(1, bark, bark, false);

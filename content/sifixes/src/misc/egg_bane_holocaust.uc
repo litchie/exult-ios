@@ -2,7 +2,7 @@ eggBaneHolocaust 0x6B1 ()
 {
 	if (gflags[BANES_RELEASED])
 	{
-		var npcnum = -1 * UI_get_item_quality(item);
+		var npcnum = -1 * get_item_quality();
 		var inn_keepers = [JENDON,
 						   DEVRA, ARGUS,
 						   ROCCO];
@@ -12,8 +12,8 @@ eggBaneHolocaust 0x6B1 ()
 		if (npcnum in inn_keepers)
 		{
 			var key = UI_create_new_object(SHAPE_KEY);
-			UI_set_item_quality(key, qualities[getIndexForElement(npcnum, inn_keepers)]);
-			UI_give_last_created(npcnum);
+			key->set_item_quality(qualities[getIndexForElement(npcnum, inn_keepers)]);
+			npcnum->give_last_created();
 		}
 		
 		eggBaneHolocaust.original();
