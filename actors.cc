@@ -401,6 +401,15 @@ void Actor::change_frame
 	)
 	{
 	add_dirty();			// Set to repaint old area.
+	ShapeID id(get_shapenum(), frnum, get_shapefile());
+	Shape_frame *shape = id.get_shape();
+	if (!shape || shape->is_empty())
+		{		// Swap 1hand <=> 2hand frames.
+		frnum = (frnum&48)|visible_frames[frnum&15];
+		id.set_frame(frnum);
+		if (!(shape = id.get_shape()) || shape->is_empty())
+			frnum = (frnum&48)|Actor::standing;
+		}
 	set_frame(frnum);
 	add_dirty(1);			// Set to repaint new.
 	}
