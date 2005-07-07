@@ -47,6 +47,7 @@ using std::string;
 
 void yyerror(char *);
 extern int yylex();
+extern void start_script(), end_script();
 static Uc_array_expression *Create_array(int, Uc_expression *);
 static Uc_array_expression *Create_array(int, Uc_expression *, 
 							Uc_expression *);
@@ -496,18 +497,19 @@ converse_options:
 	;
 
 script_statement:			/* Yes, this could be an intrinsic. */
-	SCRIPT item opt_script_delay script_command 
+	SCRIPT { start_script(); } item opt_script_delay script_command 
 		{
 		Uc_array_expression *parms = new Uc_array_expression();
-		parms->add($2);		// Itemref.
-		parms->add($4);		// Script.
-		if ($3)			// Delay?
-			parms->add($3);
+		parms->add($3);		// Itemref.
+		parms->add($5);		// Script.
+		if ($4)			// Delay?
+			parms->add($4);
 					// Get the script intrinsic.
-		Uc_symbol *sym = Uc_function::get_intrinsic($3 ? 2 : 1);
+		Uc_symbol *sym = Uc_function::get_intrinsic($4 ? 2 : 1);
 		Uc_call_expression *fcall = 
 				new Uc_call_expression(sym, parms, function);
 		$$ = new Uc_call_statement(fcall);
+		end_script();
 		}
 	;
 

@@ -36,11 +36,18 @@ adder1 0x481 (a, b)
 	c = item->get_item_flag(10);
 	c = get_item_flag(10);
 	c = UI_get_party_list();
+	c = item->resurrect();
 	for(actor1 in c with i to max)
 		{
 		say("Hello, ", UI_get_npc_name(actor1));
 		}
 	var dd = a + 5, f, e = 2*d;
+
+	script item {
+		nohalt;
+		next frame;
+	}
+
 	return adder(a, 3);
 	}
 
