@@ -364,7 +364,7 @@ int Actor::add_dirty
 	if (!gwin->add_dirty(this))
 		return 0;
 	int weapon_x, weapon_y, weapon_frame;
-	if (figure_rect)
+	if (figure_rect || get_casting_mode() == Actor::show_casting_frames)
 		if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
 			{
 			int shnum = get_effective_weapon_shape();
@@ -1677,7 +1677,7 @@ int Actor::figure_weapon_pos
 	{
 	unsigned char actor_x, actor_y;
 	unsigned char wx, wy;
-	if(spots[lhand] == 0)
+	if((spots[lhand] == 0) && (get_casting_mode() != Actor::show_casting_frames))
 		return 0;
 	// Get offsets for actor shape
 	int myframe = get_framenum();
