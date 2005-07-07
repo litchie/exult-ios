@@ -717,26 +717,20 @@ void Usecode_internal::set_item_frame
 		frame = (item->get_framenum()&32)|(frame&31);
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
-					// Check for empty frame.
-	ShapeID sid(item->get_shapenum(), frame, item->get_shapefile());
-	Shape_frame *shape = sid.get_shape();
-	if (!shape || (check_empty && shape->is_empty()))
-		return;
-	// cout << "Set_item_frame: " << item->get_shapenum() 
-	//				<< ", " << frame << endl;
-					// (Don't mess up rotated frames.)
-	if ((frame&0xf) < item->get_num_frames())
-		{
-#if 0	/* ++++ 1/31/04 (jsf) This shouldn't be needed anymore. */
-		if (item->get_owner())	// Inside a container?
-			{
-			item->set_frame(frame);
-			Gump *gump = gumpman->find_gump(item);
-			if (gump)
-				gwin->set_all_dirty();
-			}
-		else
-#endif
+	Actor *act = as_actor(item);
+	// Actors have frame replacements for empty frames:
+	if (act)
+		act->change_frame(frame);
+	else
+		{			// Check for empty frame.
+		ShapeID sid(item->get_shapenum(), frame, item->get_shapefile());
+		Shape_frame *shape = sid.get_shape();
+		if (!shape || (check_empty && shape->is_empty()))
+			return;
+		// cout << "Set_item_frame: " << item->get_shapenum() 
+		//				<< ", " << frame << endl;
+						// (Don't mess up rotated frames.)
+		if ((frame&0xf) < item->get_num_frames())
 			item->change_frame(frame);
 		}
 	gwin->set_painted();		// Make sure paint gets done.
