@@ -136,6 +136,7 @@ public:
 		{ return selected >= 0; }
 	void set_selected_callback(void (*fun)())
 		{ sel_changed = fun; }
+#if 0	/* ++++Unused */
 					// Get selected shape, or return 0.
 	int get_selected(int& shapenum, int& framenum)
 		{
@@ -145,6 +146,7 @@ public:
 		framenum = info[selected].framenum;
 		return (1);
 		}
+#endif
 	int get_num_cols(int rownum)
 		{ 
 		return  ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
