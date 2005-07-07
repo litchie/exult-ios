@@ -169,7 +169,9 @@ extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
 %}
 
+%option stack
 %x comment
+%s in_script
 
 %%
 
@@ -195,6 +197,7 @@ static		return STATIC_;
 
 converse	return CONVERSE;
 say		return SAY;
+remove		return REMOVE;
 add		return ADD;
 hide		return HIDE;
 message		return MESSAGE;
@@ -212,20 +215,20 @@ abort		return ABORT;
 "shape#"	return SHAPENUM;
 
 					/* Script commands. */
+<in_script>{
+nop		return NOP;
+nohalt		return NOHALT;
+next		return NEXT;
 finish		return FINISH;
 resurrect	return RESURRECT;
 continue	return CONTINUE;
 repeat		return REPEAT;
-nop		return NOP;
-nohalt		return NOHALT;
 wait		return WAIT;
-remove		return REMOVE;
 rise		return RISE;
 descent		return DESCEND;
 frame		return FRAME;
 hatch		return HATCH;
 setegg		return SETEGG;
-next		return NEXT;
 previous	return PREVIOUS;
 cycle		return CYCLE;
 step		return STEP;
@@ -237,6 +240,7 @@ face		return FACE;
 hit		return HIT;
 attack		return ATTACK;
 actor		return ACTOR;
+}
 
 north		return NORTH;
 south		return SOUTH;
@@ -289,11 +293,11 @@ se		return SE;
 
 [ \t\r]+					/* Ignore spaces. */
 "//".*						/* Comments. */
-"/*"			BEGIN(comment);
+"/*"			yy_push_state(comment);
 <comment>[^*\n]*				/* All but '*'. */
 <comment>"*"+[^*/\n]*				/* *'s not followed by '/'. */
 <comment>\n		{ Uc_location::increment_cur_line(); }
-<comment>"*/"		BEGIN(INITIAL);
+<comment>"*/"		yy_pop_state();
 <comment><<EOF>>	{ Uc_location::yyerror("Comment not terminated");
 			yyterminate(); }
 \n			{ Uc_location::increment_cur_line(); }
@@ -314,6 +318,20 @@ se		return SE;
 				}
 			}
 
-
 %%
+
+/*
+ *	Start/end 'script' mode.
+ */
+void start_script()
+	{
+	yy_push_state(in_script);
+	}
+void end_script()
+	{
+	yy_pop_state();
+	}
+
+
+
 
