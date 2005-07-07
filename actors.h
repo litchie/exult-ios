@@ -62,6 +62,7 @@ protected:
 	short shape_save;		// Our old shape, or -1.
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
 	Game_object *target;		// Who/what we're attacking.
+	short casting_mode;		//For displaying casting frames.
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
 		nearest = 0,
@@ -74,6 +75,14 @@ public:
 		flee = 7,
 		random = 8,		// Choose target at random.
 		manual = 9
+		};
+	enum Casting_mode {
+		not_casting = 0,		// The NPC is not casting.
+		init_casting = 1,		// When set, the next usecode script will
+					// display casting frames (shape 859).
+		show_casting_frames = 2	// Used for displaying the casting frames.
+					// Also flags that the when the script finishes, the
+					// casting frames should be disabled.
 		};
 protected:
 					// Party positions
@@ -124,6 +133,7 @@ protected:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 public:
+	friend class Clear_casting;
 	friend class Clear_hit;
 	static void init_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
@@ -134,6 +144,7 @@ public:
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
 					// Force repaint of area taken.
+	int get_effective_weapon_shape();	//For displaying casting frames.
 	int add_dirty(int figure_rect = 0);
 	void change_frame(int frnum);	// Change frame & set to repaint.
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
@@ -396,6 +407,9 @@ public:
 	void set_skin_color (int color) { skin_color = color; set_actor_shape();}
 	virtual int get_type_flags() const
 		{ return type_flags; }
+	short get_casting_mode () const { return casting_mode; }
+	void set_casting_mode (short c) { casting_mode = c; }
+	void end_casting_mode (int delay);
 //++++++Is_dead() test messes up training.
 //	unsigned char get_ident() { return is_dead() ? 0 : ident; }
 	unsigned char get_ident() { return ident; }

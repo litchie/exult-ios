@@ -3039,3 +3039,10 @@ USECODE_INTRINSIC(printf)
 	return ret;
 }
 
+USECODE_INTRINSIC(begin_casting_mode)
+{
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		npc->set_casting_mode(Actor::init_casting);
+	return no_ret;
+}

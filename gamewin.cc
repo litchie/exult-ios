@@ -600,7 +600,9 @@ bool Game_window::is_moving
 
 bool Game_window::main_actor_dont_move()
     { 
-    return main_actor->get_flag(Obj_flags::dont_move) != 0;
+    return (Game::get_game_type() == BLACK_GATE ?
+			(main_actor->get_flag(Obj_flags::bg_dont_move) != 0) :
+			(main_actor->get_flag(Obj_flags::dont_move) != 0));
     }
 
 /*

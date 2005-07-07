@@ -265,6 +265,7 @@ void Spellbook_object::execute_spell
 	bool in_combat			// Being used in combat.
 	)
 	{
+	act->set_casting_mode(Actor::init_casting);
 	ucmachine->call_usecode(Get_usecode(spell), act, 
 		in_combat ? Usecode_machine::weapon :
 			    Usecode_machine::double_click);
