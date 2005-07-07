@@ -292,6 +292,9 @@ void Usecode_script::handle_event
 	long udata			// ->usecode machine.
 	)
 	{
+	Actor *act = obj->as_actor();
+	if (act && act->get_casting_mode() == Actor::init_casting)
+		act->set_casting_mode(Actor::show_casting_frames);
 	Usecode_internal *usecode = (Usecode_internal *) udata;
 	int delay = exec(usecode, false);
 	if (i < cnt)			// More to do?
@@ -306,6 +309,8 @@ void Usecode_script::handle_event
 		usecode->activate_cached(objpos);
 	}
 #endif
+	if (act && act->get_casting_mode() == Actor::show_casting_frames)
+		act->end_casting_mode(delay);
 	delete this;			// Hope this is safe.
 	}
 

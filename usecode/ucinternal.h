@@ -353,7 +353,9 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_item_usability);
 	USECODE_INTRINSIC_DECL(get_skin_colour);
 	USECODE_INTRINSIC_DECL(printf);
-
+					// Exult only:
+	USECODE_INTRINSIC_DECL(begin_casting_mode);
+	
 	/*
 	 *	Other private methods:
 	 */
