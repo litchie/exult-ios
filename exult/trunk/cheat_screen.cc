@@ -82,7 +82,7 @@ const char *CheatScreen::flag_names[64] = {
 	"asleep",		// 0x01
 	"charmed",		// 0x02
 	"cursed",		// 0x03
-	0,			// 0x04
+	"dead",			// 0x04
 	0,			// 0x05
 	"in_party",		// 0x06
 	"paralyzed",		// 0x07
@@ -91,19 +91,19 @@ const char *CheatScreen::flag_names[64] = {
 	"protection",		// 0x09
 	"on_moving_barge",	// 0x0A
 	"okay_to_take",		// 0x0B
-	"tremor",		// 0x0C
-	"cant_die",		// 0x0D
-	"dancing",		// 0x0E
-	"dont_move",		// 0x0F
+	"might",		// 0x0C
+	"no_spell_casting",	//0x0D
+	"cant_die",		// 0x0E
+	"dancing",		// 0x0F
 
-	0,			// 0x10
+	"dont_move",		// 0x10
 	"si_on_moving_barge",	// 0x11
 	"is_temporary",		// 0x12
 	0,			// 0x13
 	0,			// 0x14
 	"okay_to_land",		// 0x15
-	0,			// 0x16
-	0,			// 0x17
+	"bg_dont_move",	// 0x16
+	"in_dungeon",	// 0x17
 
 	0,			// 0x18
 	"confused",		// 0x19
@@ -111,15 +111,15 @@ const char *CheatScreen::flag_names[64] = {
 	0,			// 0x1B
 	"met",			// 0x1C
 	"si_tournament",	// 0x1D
-	"misc",			// 0x1E
+	"si_zombie",	// 0x1E
 	0,			// 0x1F
 
-	0,			// 0x20
+	"polymorph",	// 0x20
 	"tattooed",		// 0x21
 	"read",			// 0x22
 	"petra",		// 0x23
 	0,			// 0x24
-	0,			// 0x25
+	"freeze",		// 0x25
 	0,			// 0x26
 	0,			// 0x27
 
@@ -1477,7 +1477,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	snprintf (buf, 512, "[P] Conjrd.%c", actor->get_type_flag(Actor::tf_conjured)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-45, 8);
 
-	// Tournament (SI ONLY)
+	// Tournament (Original is SI only -- allowing for BG in Exult)
 	snprintf (buf, 512, "[3] Tourna.%c", actor->get_flag(
 		Obj_flags::si_tournament)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);

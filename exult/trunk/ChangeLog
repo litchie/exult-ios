@@ -1,4 +1,13 @@
 2005-07-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Allow si_tournament to be used in BG. Also, introduced bg_dont_move
+	  flag for BG, which works like dont_move does in SI. Finally, updated
+	  the cheat screen's flag names to reflect the flag names as they are
+	  defined in "flags.h".
+	* Implemented the use of casting frames when casting spells. Also added
+	  a new intrinsic called 'begin_casting_mode' which activates the use of
+	  casting frames for a given NPC (added mostly for scripting purposes).
+
+2005-07-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Modified the SI Fixes source files to use the new intrinsic calling
 	  method ('->'). Also, removed duplicate (unused) files.
 	* actors.cc: NPCs should only react if the weapon actually does something

@@ -338,6 +338,19 @@ void Actor::unready_weapon
 		}
 	}
 
+int Actor::get_effective_weapon_shape
+	(
+	)
+	{
+	if (get_casting_mode() == Actor::show_casting_frames)
+		return 859;		// Casting frames
+	else
+		{
+		Game_object * weapon = spots[lhand];
+		return weapon->get_shapenum();
+		}
+	}
+
 /*
  *	Add dirty rectangle(s).
  *
@@ -354,8 +367,7 @@ int Actor::add_dirty
 	if (figure_rect)
 		if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
 			{
-			Game_object * weapon = spots[lhand];
-			int shnum = weapon->get_shapenum();
+			int shnum = get_effective_weapon_shape();
 			
 			Shape_frame *wshape = ShapeID(shnum, weapon_frame).get_shape();
 
@@ -1618,8 +1630,7 @@ void Actor::paint_weapon
 	int weapon_x, weapon_y, weapon_frame;
 	if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
 		{
-		Game_object * weapon = spots[lhand];
-		int shnum = weapon->get_shapenum();
+		int shnum = get_effective_weapon_shape();
 		ShapeID wsid(shnum, weapon_frame);
 		Shape_frame *wshape = wsid.get_shape();
 		if (!wshape)
@@ -1666,8 +1677,7 @@ int Actor::figure_weapon_pos
 	{
 	unsigned char actor_x, actor_y;
 	unsigned char wx, wy;
-	Game_object * weapon = spots[lhand];
-	if(weapon == 0)
+	if(spots[lhand] == 0)
 		return 0;
 	// Get offsets for actor shape
 	int myframe = get_framenum();
@@ -1729,7 +1739,9 @@ int Actor::figure_weapon_pos
 	weapon_frame |= (myframe & 32);
 
 	// Get offsets for weapon shape
-	weapon->get_info().get_weapon_offset(weapon_frame&0xf, wx, wy);
+	int shnum = get_effective_weapon_shape();
+	Shape_info& info = ShapeID::get_info(shnum);
+	info.get_weapon_offset(weapon_frame&0xf, wx, wy);
 
 	// actor_x will be 255 if (for example) the actor is lying down
 	// wx will be 255 if the actor is not holding a proper weapon
@@ -2080,6 +2092,31 @@ void Actor::set_property
 	}
 
 /*
+ *	A class whose whole purpose is to stop casting mode.
+ */
+class Clear_casting : public Time_sensitive
+	{
+public:
+	Clear_casting()
+		{  }
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+void Clear_casting::handle_event(unsigned long curtime, long udata)
+	{ 
+	Actor *a = reinterpret_cast<Actor*>(udata);
+	a->set_casting_mode(Actor::not_casting);
+	a->add_dirty();
+	delete this;
+	}
+
+void Actor::end_casting_mode (int delay)
+	{
+	Clear_casting *c = new Clear_casting();
+	gwin->get_tqueue()->add(Game::get_ticks() + 2 * delay, c, 
+				reinterpret_cast<long>(this));
+	}
+
+/*
  *	A class whose whole purpose is to clear the 'hit' flag.
  */
 class Clear_hit : public Time_sensitive
@@ -2182,9 +2219,7 @@ bool Actor::reduce_health
 		}
 	if (Actor::is_dying())
 		{
-		if (Game::get_game_type() == SERPENT_ISLE &&
-					// SI 'tournament'?
-		    get_flag(Obj_flags::si_tournament))
+		if (get_flag(Obj_flags::si_tournament))
 			{
 			ucmachine->call_usecode(get_usecode(), this, 
 							Usecode_machine::died);
@@ -2288,6 +2323,7 @@ void Actor::set_flag
 		gclock->set_palette();
 		break;
 	case Obj_flags::dont_move:
+	case Obj_flags::bg_dont_move:
 		stop();			// Added 7/6/03.
 		break;
 		}
