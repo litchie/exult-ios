@@ -667,7 +667,7 @@ void Combat_schedule::start_strike
 	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
 							dir, frames);
 	if (cnt)
-		npc->set_action(new Frames_actor_action(frames, cnt));
+		npc->set_action(new Frames_actor_action(frames, cnt - 1));
 	npc->start();			// Get back into time queue.
 	int sfx;			// Play sfx.
 	Game_window *gwin = Game_window::get_instance();

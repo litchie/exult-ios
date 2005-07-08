@@ -430,6 +430,7 @@ gint Npc_chooser::mouse_press
 		if (info[i].box.has_point(absx, absy))
 			{		// Found the box?
 					// Indicate we can drag.
+#if 0
 #ifdef WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
@@ -437,6 +438,7 @@ gint Npc_chooser::mouse_press
 // position is *still* inside the shape. So if you move the mouse too fast,
 // we are stuck.
 			win32_button = true;
+#endif
 #endif
 			new_selected = i;
 			break;
