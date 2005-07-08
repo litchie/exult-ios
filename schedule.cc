@@ -1026,7 +1026,8 @@ void Tool_schedule::now_what
 		}
 	signed char frames[12];		// Use pick.
 	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
-	npc->set_action(new Frames_actor_action(frames, cnt));
+	if (cnt)
+		npc->set_action(new Frames_actor_action(frames, cnt - 1));
 	npc->start();			// Get back into time queue.
 	}
 
@@ -2342,7 +2343,8 @@ void Sew_schedule::now_what
 		signed char frames[5];
 		int nframes = npc->get_attack_frames(698, false, 
 								dir, frames);
-		npc->set_action(new Frames_actor_action(frames, nframes));
+		if (nframes)
+			npc->set_action(new Frames_actor_action(frames, nframes - 1));
 		sew_clothes_cnt++;
 		if (sew_clothes_cnt > 1 && sew_clothes_cnt < 5)
 			{
@@ -3002,7 +3004,8 @@ void Forge_schedule::now_what
 
 		signed char frames[12];
 		int cnt = npc->get_attack_frames(623, false, 0, frames);
-		npc->set_action(new Frames_actor_action(frames, cnt));
+		if (cnt)
+			npc->set_action(new Frames_actor_action(frames, cnt - 1));
 		
 		Actor_action **a = new Actor_action*[10];
 		a[0] = new Frames_actor_action(frames, cnt);
