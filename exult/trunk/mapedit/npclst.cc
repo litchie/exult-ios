@@ -55,11 +55,10 @@ using std::cout;
 using std::endl;
 using std::strlen;
 using std::string;
+using std::vector;
 using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
-
-std::vector<Estudio_npc> Npc_chooser::npcs;
 
 /*
  *	Blit onto screen.
@@ -103,6 +102,7 @@ void Npc_chooser::render
 	(
 	)
 	{
+	vector<Estudio_npc>& npcs = get_npcs();
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Clear window first.
@@ -171,6 +171,7 @@ void Npc_chooser::setup_shapes_info
 	(
 	)
 	{
+	vector<Estudio_npc>& npcs = get_npcs();
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width;
 	int x = 0;
@@ -496,7 +497,7 @@ static gint Mouse_release
  *	Keystroke in draw-area.
  */
 C_EXPORT gboolean
-on_draw_key_press			(GtkEntry	*entry,
+on_npc_draw_key_press			(GtkEntry	*entry,
 					 GdkEventKey	*event,
 					 gpointer	 user_data)
 {
@@ -747,7 +748,18 @@ int Npc_chooser::get_count
 	(
 	)
 	{
-	return group ? group->size() : npcs.size();
+	return group ? group->size() : get_npcs().size();
+	}
+
+/*
+ *	Get NPC list.
+ */
+
+vector<Estudio_npc>& Npc_chooser::get_npcs
+	(
+	)
+	{
+	return ((Npcs_file_info *) file_info)->get_npcs();
 	}
 
 /*
@@ -763,6 +775,7 @@ void Npc_chooser::search
 	int total = get_count();
 	if (!total)
 		return;			// Empty.
+	vector<Estudio_npc>& npcs = get_npcs();
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Start with selection, or top.
 	int start = selected >= 0 ? selected : rows[row0].index0;
@@ -901,7 +914,7 @@ Npc_chooser::Npc_chooser
 				GTK_SIGNAL_FUNC(expose), this);
 					// Keystroke.
 	gtk_signal_connect(GTK_OBJECT(draw), "key-press-event",
-		      GTK_SIGNAL_FUNC (on_draw_key_press),
+		      GTK_SIGNAL_FUNC (on_npc_draw_key_press),
 		      this);
 	GTK_WIDGET_SET_FLAGS(draw, GTK_CAN_FOCUS);
 					// Set mouse click handler.
@@ -1006,7 +1019,7 @@ void Npc_chooser::update_statusbar
 		{
 		int npcnum = info[selected].npcnum;
 		g_snprintf(buf, sizeof(buf), "Npc %d:  '%s'",
-					npcnum, npcs[npcnum].name.c_str());
+				npcnum, get_npcs()[npcnum].name.c_str());
 		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
 							sbar_sel, buf);
 		}

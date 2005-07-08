@@ -4,8 +4,8 @@
  **	Written: 7/6/2005 - JSF
  **/
 
-#ifndef INCL_SHAPELST
-#define INCL_SHAPELST	1
+#ifndef INCL_NPCLST
+#define INCL_NPCLST	1
 
 /*
 Copyright (C) 2005  The Exult Team
@@ -36,18 +36,7 @@ class Vga_file;
 class Image_buffer8;
 class Shapes_vga_file;
 class Editing_file;
-
-/*
- *	Info. needed for each NPC:
- */
-class Estudio_npc
-	{
-	friend class Npc_chooser;
-	short shapenum;
-	std::string name;
-public:
-	Estudio_npc() {  }
-	};
+class Estudio_npc;
 
 /*
  *	Store information about an NPC shown in the list.
@@ -87,7 +76,6 @@ class Npc_chooser: public Object_browser, public Shape_draw
 	{
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
-	static std::vector<Estudio_npc> npcs;	// Shared NPC info.
 	std::vector<Npc_entry> info;	// Pos. of each shape/frame.
 	std::vector<Npc_row> rows;
 	int row0;			// Row # at top of window.
@@ -121,6 +109,7 @@ public:
 				Shape_group *g = 0, Shape_file_info *fi = 0);
 	virtual ~Npc_chooser();
 	int get_count();		// Get # shapes we can display.
+	std::vector<Estudio_npc>& get_npcs();
 	virtual void search(const char *srch, int dir);
 	virtual void locate(bool upwards);	// Locate NPC on game map.
 					// Turn off selection.

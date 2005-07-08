@@ -31,6 +31,8 @@ exult_studio_SOURCES = \
 	locator.h \
 	maps.cc \
 	npcedit.cc \
+	npclst.cc \
+	npclst.h \
 	objedit.cc \
 	shapeedit.cc \
 	studio.cc \
