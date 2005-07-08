@@ -79,7 +79,8 @@ static char *mode_names[5] = {"move1", "paint1", "paint_with_chunks1",
 
 enum ExultFileTypes {
 	ShapeArchive =1,
-	ChunkArchive,
+	ChunksArchive,
+	NpcsArchive,
 	PaletteFile,
 	FlexArchive,
 	ComboArchive
@@ -125,8 +126,12 @@ static void Filelist_selection(GtkTreeView *treeview, GtkTreePath *path)
 		studio->set_browser("Combo Browser", 
 					studio->create_browser(text));
 		break;
-	case ChunkArchive:
+	case ChunksArchive:
 		studio->set_browser("Chunk Browser", 
+					studio->create_browser(text));
+		break;
+	case NpcsArchive:
+		studio->set_browser("NPC Browser",
 					studio->create_browser(text));
 		break;
 	case PaletteFile:
@@ -952,7 +957,9 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 	connect_to_server();		// Connect to server with 'gamedat'.
 }
 
-void add_to_tree(GtkTreeStore *model, const char *folderName, const char *files, ExultFileTypes file_type)
+/*	Note:  Args after extcnt are in (name, file_type) pairs.	*/
+void add_to_tree(GtkTreeStore *model, const char *folderName, 
+	const char *files, ExultFileTypes file_type, int extra_cnt, ...)
 {
 	struct dirent *entry;
 	GtkTreeIter iter;
@@ -1032,6 +1039,21 @@ void add_to_tree(GtkTreeStore *model, const char *folderName, const char *files,
 
 		free(pattern);
 	} while (adding_children);
+
+	std::va_list ap;
+	va_start(ap, extra_cnt);
+	while (extra_cnt--)
+		{
+		char *nm = va_arg(ap, char *);
+		int ty = va_arg(ap, int);
+		gtk_tree_store_append (model, &child_iter, &iter);
+		gtk_tree_store_set (model, &child_iter,
+			      		FOLDER_COLUMN, NULL,
+			      		FILE_COLUMN, nm,
+					DATA_COLUMN, ty,
+			      		-1);
+		}
+	va_end(ap);
 }
 
 /*
@@ -1081,12 +1103,15 @@ void ExultStudio::setup_file_list() {
 					GTK_TREE_VIEW_COLUMN(column), TRUE);
 		}
 	gtk_tree_store_clear(model);
-	add_to_tree(model, "Shape Files", "*.vga,*.shp,combos.flx", ShapeArchive);
-	add_to_tree(model, "Map Files", "u7chunks", ChunkArchive);
-	add_to_tree(model, "Palette Files", "*.pal,palettes.flx", PaletteFile);
+	add_to_tree(model, "Shape Files", "*.vga,*.shp,combos.flx", 
+							ShapeArchive, 0);
+	add_to_tree(model, "Map Files", "u7chunks", ChunksArchive, 1,
+						"npcs", NpcsArchive);
+	add_to_tree(model, "Palette Files", "*.pal,palettes.flx", 
+							PaletteFile, 0);
 	
 #if 0	/* Skip this until we can do something with these files. */
-	add_to_tree(model, "FLEX Files", "*.flx", FlexArchive);
+	add_to_tree(model, "FLEX Files", "*.flx", FlexArchive, 0);
 #endif
 					// Expand all entries.
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(file_list));

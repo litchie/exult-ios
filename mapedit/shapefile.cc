@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "shapelst.h"
 #include "chunklst.h"
+#include "npclst.h"
 #include "paledit.h"
 #include "utils.h"
 #include "Flex.h"
@@ -234,6 +235,21 @@ void Chunks_file_info::flush
 		return;
 	modified = false;
 	cerr << "Chunks should be stored by Exult" << endl;
+	}
+
+/*
+ *	Create a browser for our data.
+ */
+
+Object_browser *Npcs_file_info::create_browser
+	(
+	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
+	unsigned char *palbuf,		// Palette for displaying.
+	Shape_group *g			// Group, or 0.
+	)
+	{
+	return new Npc_chooser(vgafile->get_ifile(), palbuf, 
+							400, 64, g, this);
 	}
 
 /*
@@ -496,7 +512,7 @@ Shape_file_set::~Shape_file_set
 /*
  *	This routines tries to create files that don't yet exist.
  *
- *	Output:	true if successful.
+ *	Output:	true if successful or if we don't need to create it.
  */
 
 static bool Create_file
@@ -522,6 +538,8 @@ static bool Create_file
 		out.close();		// Empty file.
 		return true;
 		}
+	else if (strcasecmp("npcs", basename) == 0)
+		return true;		// Don't need file.
 	return false;			// Might add more later.
 	}
 
@@ -581,6 +599,8 @@ Shape_file_info *Shape_file_set::create
 		return append(new Chunks_file_info(basename, fullname, 
 								file, groups));
 		}
+	else if (strcasecmp(basename, "npcs") == 0)
+		return append(new Npcs_file_info(basename, fullname, groups));
 	else if (strcasecmp(basename, "combos.flx") == 0 ||
 		 strcasecmp(basename, "palettes.flx") == 0)
 		return append(new Flex_file_info(basename, fullname, 

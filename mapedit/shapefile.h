@@ -126,6 +126,36 @@ public:
 	};
 
 /*
+ *	Info. needed for each NPC:
+ */
+class Estudio_npc
+	{
+	friend class Npc_chooser;
+	friend class Npcs_file_info;
+	short shapenum;
+	std::string name;
+public:
+	Estudio_npc() {  }
+	};
+
+/*
+ *	NPC's aren't really in a file.  The info. comes from Exult.
+ */
+class Npcs_file_info : public Shape_file_info
+	{
+	std::vector<Estudio_npc> npcs;	// Shared NPC info.
+public:
+					// We will own file.
+	Npcs_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
+		: Shape_file_info(bnm, pnm, g)
+		{  }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0);
+	std::vector<Estudio_npc>& get_npcs()
+		{ return npcs; }
+	};
+
+/*
  *	Flex file (used for combos, palettes):
  */
 class Flex_file_info : public Shape_file_info
