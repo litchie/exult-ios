@@ -84,6 +84,7 @@ class Npc_chooser: public Object_browser, public Shape_draw
 	int last_npc;			// Last shape visible in window.
 	int voffset;			// Vertical offset in pixels.
 	int status_id;			// Statusbar msg. ID.
+	int red;			// Index of color red in palbuf.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);

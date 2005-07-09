@@ -131,6 +131,10 @@ void Npc_chooser::render
 				int sy = info[index].box.y - voffset;
 				shape->paint(iwin, sx + shape->get_xleft(),
 						sy + shape->get_yabove());
+				if (npcs[npcnum].unused)
+					shape->paint_rle_outline(iwin,
+						sx + shape->get_xleft(),
+						sy + shape->get_yabove(), red);
 				last_npc = npcnum;
 				}
 			}
@@ -814,9 +818,15 @@ void Npc_chooser::locate
 	{
 	if (selected < 0)
 		return;			// Shouldn't happen.
+	int npcnum = info[selected].npcnum;
+	if (get_npcs()[npcnum].unused)
+		{
+		EStudio::Alert("Npc %d is unused.", npcnum);
+		return;
+		}
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
-	Write2(ptr, info[selected].npcnum);
+	Write2(ptr, npcnum);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->send_to_server(
 			Exult_server::locate_npc, data, ptr - data);
@@ -971,6 +981,7 @@ Npc_chooser::Npc_chooser
 	gtk_box_pack_start(GTK_BOX(vbox), 
 		create_controls(find_controls | locate_controls),
 						FALSE, FALSE, 0);
+	red = ExultStudio::get_instance()->find_palette_color(63, 5, 5);
 	}
 
 /*
