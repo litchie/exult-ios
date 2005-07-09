@@ -73,6 +73,8 @@ int Weapon_info::read
 	range = range>>3;
 	unsigned char flags1 = *ptr++;
 	m_returns = (flags1&1);
+	missile_speed = (flags1>>1)&7;
+	rotation_speed = (flags1>>4)&15;
 #if 0
 	// Testing if 'throwable'.  Looks like ammo==-3 => throwable UNLESS
 	//   uses == 0.
@@ -82,7 +84,9 @@ int Weapon_info::read
 			<< ") has ammo = " << ammo << " and uses = "
 			<< (int) uses << endl;
 #endif
-	actor_frames = (*ptr++)&15;
+	unsigned char flags2 = *ptr++;
+	actor_frames = (flags2&15);
+	cycle_delay =  (flags2>>4)&15;
 	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);

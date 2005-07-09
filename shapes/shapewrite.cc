@@ -224,9 +224,11 @@ void Weapon_info::write
 				((m_explodes ? 1 : 0)<<1);
 	*ptr++ = flags0;
 	*ptr++ = (range<<3) | (uses<<1);
-	unsigned char flags1 = m_returns ? 1 : 0;
+	unsigned char flags1 = (m_returns ? 1 : 0) |
+				(missile_speed<<1)|(rotation_speed<<4);
 	*ptr++ = flags1;
-	*ptr++ = actor_frames;
+	unsigned char flags2 = actor_frames|(cycle_delay<<4);
+	*ptr++ = flags2;
 	*ptr++ = powers;
 	*ptr++ = 0;			// ??
 	Write2(ptr, usecode);

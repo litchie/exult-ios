@@ -78,6 +78,9 @@ private:
 	short projectile;		// Projectile shape, or 0.
 	bool m_explodes;		// Projectile explodes on impact.
 	bool m_returns;			// Boomerang, magic axe.
+	short missile_speed;	// # of steps taken by the missile each cycle.
+	short rotation_speed;	// Added to frame # each cycle (misslies only).
+	short cycle_delay;		// Delay between successive cycles?
 	bool m_no_blocking;		// Can move through walls.
 	short usecode;			// Usecode function, or 0.
 	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
@@ -141,6 +144,18 @@ public:
 		{ return projectile; }
 	void set_projectile(int p)
 		{ projectile = p; }
+	int get_missile_speed()
+		{ return missile_speed; }
+	void set_missile_speed(int s)
+		{ missile_speed = s; }
+	int get_rotation_speed()
+		{ return rotation_speed; }
+	void set_rotation_speed(int s)
+		{ rotation_speed = s; }
+	int get_cycle_delay()
+		{ return cycle_delay; }
+	void set_cycle_delay(int d)
+		{ cycle_delay = d; }
 	int get_usecode()
 		{ return usecode; }
 	void set_usecode(int u)

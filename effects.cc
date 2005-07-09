@@ -717,11 +717,23 @@ void Projectile_effect::handle_event
 	int delay = gwin->get_std_delay()/2;
 	add_dirty();			// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
-	if (!path->GetNextStep(pos) ||	// Get next spot.
+	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	if (winf && winf->get_rotation_speed())
+		{	// The missile rotates (such as axes/boomerangs)
+		int new_frame = sprite.get_framenum() + winf->get_rotation_speed();
+		sprite.set_frame(new_frame > 23 ? ((new_frame - 8)%16) + 8 : new_frame);
+		}
+	if (winf && winf->get_cycle_delay())	// This slows down the missile.
+		delay *= (1 + winf->get_cycle_delay());	// Guessing how to do it.
+	bool path_finished;
+	for (int i = 0; i <= winf->get_missile_speed(); i++)
+					// This speeds up the missile.
+		if ((path_finished = !path->GetNextStep(pos)) == true)
+			break;
+	if (path_finished ||	// Get next spot.
 					// If missile egg, detect target.
 	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 		Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
 		if (winf && winf->explodes())
 			{
@@ -730,8 +742,7 @@ void Projectile_effect::handle_event
 						attacker, target, pos, target->get_tile() + 
 						Tile_coord(0, 0, target->get_info().get_3d_height()/2)));
 			else
-				eman->add_effect(new Explosion_effect(epos + 
-						Tile_coord(0, 0, target->get_info().get_3d_height()/2),
+				eman->add_effect(new Explosion_effect(epos,
 						0, 0, weapon, 0, attacker));
 			target = 0;	// Takes care of attack.
 			}

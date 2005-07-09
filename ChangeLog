@@ -1,3 +1,11 @@
+2005-07-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Implemented missile rotation and speed, using data from weapons.dat; this
+	  data is now saved and loaded correctly.
+	* Modified the animation speed of attacks; it now uses get_std_delay to
+	  determine speed.
+	* Modified very slightly the way attack frames are handled.
+	* Fixed initialization bug of casting frames.
+
 2005-07-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Allow si_tournament to be used in BG. Also, introduced bg_dont_move
 	  flag for BG, which works like dont_move does in SI. Finally, updated

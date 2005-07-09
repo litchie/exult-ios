@@ -167,14 +167,14 @@ Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
 const signed char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
 								13, 14};
-const signed char reach_attack_frames1[] = {3, 6, 3};
-const signed char raise_attack_frames1[] = {3, 4, 6, 3};
-const signed char fast_swing_attack_frames1[] = {3, 5, 6, 3};
-const signed char slow_swing_attack_frames1[] = {3, 4, 5, 6, 3};
-const signed char reach_attack_frames2[] = {3, 9, 3};
-const signed char raise_attack_frames2[] = {3, 7, 9, 3};
-const signed char fast_swing_attack_frames2[] = {3, 8, 9, 3};
-const signed char slow_swing_attack_frames2[] = {3, 7, 8, 9, 3};
+const signed char reach_attack_frames1[] = {3, 6};
+const signed char raise_attack_frames1[] = {3, 4, 6};
+const signed char fast_swing_attack_frames1[] = {3, 5, 6};
+const signed char slow_swing_attack_frames1[] = {3, 4, 5, 6};
+const signed char reach_attack_frames2[] = {3, 9};
+const signed char raise_attack_frames2[] = {3, 7, 9};
+const signed char fast_swing_attack_frames2[] = {3, 8, 9};
+const signed char slow_swing_attack_frames2[] = {3, 7, 8, 9};
 
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
@@ -489,7 +489,7 @@ Actor::Actor
 	    siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
-	    weapon_rect(0, 0, 0, 0), rest_time(0)
+	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -3061,9 +3061,6 @@ bool Actor::figure_hit_points
 	// godmode effects:
 	if (were_party && cheat.in_god_mode())
 		return false;
-	Monster_info *minf = get_info().get_monster_info();
-	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
-		return false;
 	bool theyre_party = attacker &&
 			(attacker->party_id != -1 || attacker->npc_num == 0);
 	bool instant_death = (cheat.in_god_mode() && theyre_party);
@@ -3226,6 +3223,7 @@ bool Actor::figure_hit_points
 		}
 	else
 		hp = 0;
+	Monster_info *minf = get_info().get_monster_info();
 	if (powers)			// Special attacks?
 		{
 		if ((powers&Weapon_info::poison) && roll_to_win(
