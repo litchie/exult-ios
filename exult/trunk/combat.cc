@@ -667,7 +667,7 @@ void Combat_schedule::start_strike
 	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
 							dir, frames);
 	if (cnt)
-		npc->set_action(new Frames_actor_action(frames, cnt - 1));
+		npc->set_action(new Frames_actor_action(frames, cnt, gwin->get_std_delay()));
 	npc->start();			// Get back into time queue.
 	int sfx;			// Play sfx.
 	Game_window *gwin = Game_window::get_instance();
@@ -953,7 +953,7 @@ void Combat_schedule::now_what
 			int dir = npc->get_direction(opponent);
 			if (!strange)	// Avoid messing up slimes.
 				npc->change_frame(npc->get_dir_framenum(dir,
-							Actor::standing));
+							Actor::ready_frame));
 					// Glass sword?  Only 1 use.
 			if (weapon_shape == 604)
 				{
