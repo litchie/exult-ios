@@ -148,11 +148,12 @@ public:
 					// We will own file.
 	Npcs_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
 		: Shape_file_info(bnm, pnm, g)
-		{  }
+		{ Npcs_file_info::revert(); }
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 				unsigned char *palbuf, Shape_group *g = 0);
 	std::vector<Estudio_npc>& get_npcs()
 		{ return npcs; }
+	virtual bool revert();
 	};
 
 /*
