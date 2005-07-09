@@ -754,9 +754,15 @@ void Game_window::locate_npc
 		}
 	else
 		{	// ++++WHAT IF on a different map???
-		center_view(npc->get_tile());
+		Tile_coord pos = npc->get_tile();
+		center_view(pos);
+		cheat.clear_selected();
+		cheat.append_selected(npc);
 		snprintf(msg, 80, "NPC %d: '%s'.", npc_num,
 					npc->get_npc_name().c_str());
+		int above = pos.tz + npc->get_info().get_3d_height() - 1;
+		if (skip_above_actor > above)
+			set_above_main_actor(above);
 		effects->center_text(msg);
 		}
 	}
