@@ -1,7 +1,7 @@
 //When you are sent to Freedom, the NPC ID of Iolo, Shamino, Dupre and Boydon
 //gets set to this value so the game knows they were in your party:
 const int BOOTED_FOR_FREEDOM			= 0x001E;
-const int CURED_OF_INSANITY				= 0x001F;
+const int CURED_OF_INSANITY				= 0x0020;
 
 //Party members (you know 'em, you love 'em)
 enum party_members
