@@ -291,6 +291,7 @@ public:
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < (int)npcs.size()) ? 
 				npcs[npc_num] : 0; }
+	void locate_npc(int npc_num);
 	void set_body(int npc_num, Dead_body *body)
 		{ bodies.put(npc_num, body); }
 	Dead_body *get_body(int npc_num)

@@ -732,6 +732,36 @@ void Game_window::add_npc
 	}
 
 /*
+ *	Show desired NPC.
+ */
+
+void Game_window::locate_npc
+	(
+	int npc_num
+	)
+	{
+	char msg[80];
+	Actor *npc = get_npc(npc_num);
+	if (!npc)
+		{
+		snprintf(msg, 80, "NPC %d does not exist.", npc_num);
+		effects->center_text(msg);
+		}
+	else if (npc->is_pos_invalid())
+		{
+		snprintf(msg, 80, "NPC %d is not on the map.", npc_num);
+		effects->center_text(msg);
+		}
+	else
+		{	// ++++WHAT IF on a different map???
+		center_view(npc->get_tile());
+		snprintf(msg, 80, "NPC %d: '%s'.", npc_num,
+					npc->get_npc_name().c_str());
+		effects->center_text(msg);
+		}
+	}
+
+/*
  *	Find first unused NPC #.
  */
 

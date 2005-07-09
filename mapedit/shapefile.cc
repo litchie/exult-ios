@@ -253,6 +253,61 @@ Object_browser *Npcs_file_info::create_browser
 	}
 
 /*
+ *	Revert to Exult's list of NPC's.
+ *
+ *	Output:	True (meaning we support 'revert').
+ */
+
+bool Npcs_file_info::revert
+	(
+	)
+	{
+	modified = false;
+	npcs.resize(0);
+	ExultStudio *studio = ExultStudio::get_instance();
+	int server_socket = studio->get_server_socket();
+					// Should get immediate answer.
+	unsigned char buf[Exult_server::maxlength];
+	Exult_server::Msg_type id;
+	int num_npcs, datalen;
+	if (Send_data(server_socket, Exult_server::npc_unused) == -1 ||
+	    !Exult_server::wait_for_response(server_socket, 100) ||
+	    (datalen = Exult_server::Receive_data(server_socket, 
+					id, buf, sizeof(buf))) == -1 ||
+		id != Exult_server::npc_unused)
+		{
+		cerr << "Error sending data to server." << endl;
+		return false;
+		}
+	unsigned char *ptr = &buf[0], *newptr;
+	num_npcs = Read2(ptr);
+	npcs.resize(num_npcs);
+	for (int i = 0; i < num_npcs; ++i)
+		{
+		ptr = newptr = &buf[0];
+		Write2(ptr, i);
+		if (!studio->send_to_server(Exult_server::npc_info,
+							buf, ptr - buf) ||
+		    !Exult_server::wait_for_response(server_socket, 100) ||
+		    (datalen = Exult_server::Receive_data(server_socket, 
+						id, buf, sizeof(buf))) == -1 ||
+		    id != Exult_server::npc_info ||
+		    Read2(newptr) != i)
+			{		
+			npcs.resize(0);
+			cerr << "Error getting info for NPC #" << i << endl;
+			return false;
+			}
+		npcs[i].shapenum = Read2(newptr);	// -1 if unused.
+		if (npcs[i].shapenum >= 0)
+			npcs[i].name = (char *) newptr;
+		else
+			npcs[i].name = "";
+		}
+	return true;
+	}
+
+/*
  *	Init.
  */
 

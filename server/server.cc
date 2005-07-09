@@ -437,12 +437,33 @@ static void Handle_client_message
 	case Exult_server::paste:
 		cheat.paste();
 		break;
-	case Exult_server::npc_info:
+	case Exult_server::npc_unused:
 		Write2(ptr, gwin->get_num_npcs());
 		Write2(ptr, gwin->get_unused_npc());
-		Exult_server::Send_data(client_socket, Exult_server::npc_info,
-							data, ptr - data);
+		Exult_server::Send_data(client_socket, 
+				Exult_server::npc_unused, data, ptr - data);
 		break;
+	case Exult_server::npc_info:
+		{
+		int npcnum = Read2(ptr);
+		Actor *npc = gwin->get_npc(npcnum);
+		if (npc && !npc->is_unused())
+			{
+			Write2(ptr, npc->get_shapenum());
+			std::string nm = npc->get_npc_name();
+			strcpy((char *) ptr, nm.c_str());
+					// Point past ending NULL.
+			ptr += strlen((char *)ptr) + 1;
+			}
+		else
+			Write2(ptr, (unsigned short) -1);
+		Exult_server::Send_data(client_socket, 
+				Exult_server::npc_info, data, ptr - data);
+		break;
+		}
+	case Exult_server::locate_npc:
+		gwin->locate_npc(Read2(ptr));
+		break;		
 	case Exult_server::edit_selected:
 		{
 		unsigned char basic = *ptr;

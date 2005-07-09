@@ -172,12 +172,14 @@ void Npc_chooser::setup_shapes_info
 	)
 	{
 	vector<Estudio_npc>& npcs = get_npcs();
+	if (!npcs.size())		// No NPC's?  Try to get them.
+		((Npcs_file_info *) file_info)->revert();
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width;
 	int x = 0;
 	int curr_y = 0;
 	int row_h = 0;
-	int total_cnt = get_count();
+	int total_cnt = get_count(), num_shapes = ifile->get_num_shapes();
 	int index;			// This is shapenum if there's no
 					//   filter (group).
 	rows.resize(1);			// Start 1st row.
@@ -187,8 +189,10 @@ void Npc_chooser::setup_shapes_info
 		{
 		int npcnum = group ? (*group)[index] : index;
 		int shapenum = npcs[npcnum].shapenum;
+			if (shapenum < 0 || shapenum >= num_shapes)
+				continue;
 		Shape_frame *shape = ifile->get_shape(shapenum, 0);
-		if(!shape)
+		if (!shape)
 			continue;
 		int sh = shape->get_height(),
 		    sw = shape->get_width();
@@ -810,15 +814,12 @@ void Npc_chooser::locate
 	{
 	if (selected < 0)
 		return;			// Shouldn't happen.
-#if 0	/* ++++FINISH */
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
-	Write2(ptr, info[selected].shapenum);
-	*ptr++ = upwards ? 1 : 0;
+	Write2(ptr, info[selected].npcnum);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->send_to_server(
-			Exult_server::locate_shape, data, ptr - data);
-#endif
+			Exult_server::locate_npc, data, ptr - data);
 	}
 
 /*
