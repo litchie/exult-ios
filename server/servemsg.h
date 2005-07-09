@@ -77,12 +77,14 @@ enum Msg_type
 	cut = 27,			// Cut/copy.
 	paste = 28,			// ... from clipboard.
 	select_status = 29,		// Flags:  selection, clipboard avail.
-	npc_info = 30,			// Get #NPC's, first unused.
+	npc_unused = 30,		// Get #NPC's, first unused.
 	edit_selected = 31,		// Edit selected object.
 	set_edit_chunknum = 32,		// Set chunk# to paint with.
 	game_pos = 33,			// Returns tx, ty, tz of main char.
 	goto_map = 34,			// Teleport to map #n.
 	barge = 35,			// Edit barge object.
+	npc_info = 36,			// Send back NPC info.
+	locate_npc = 37,		// Show NPC on map.
 	usecode_debugging = 128
 	};
 
