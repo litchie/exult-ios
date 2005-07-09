@@ -278,6 +278,7 @@ public:
 	void set_sensitive(char *name, bool vis);
 	int prompt(const char *msg, const char *choice0, 
 			const char *choice1 = 0,const char *choice2 = 0);
+	int find_palette_color(int r, int g, int b);
 };
 
 					// Utilities:
