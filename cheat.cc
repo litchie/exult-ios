@@ -170,11 +170,11 @@ void Cheat::toggle_map_editor (void) {
 					!gwin->get_win()->is_fullscreen())
 				{
 					char cmnd[256];		// Set up command.
-					strcpy(cmnd, "exult_studio -x");
+					strcpy(cmnd, "exult_studio -x ");
 					std::string data_path;
 					config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 					strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
-					strcat(cmnd, " -g");	// Now want game name.
+					strcat(cmnd, " -g ");	// Now want game name.
 					std::string gamenamestr = Game::get_gametitle();
 					strcat(cmnd, gamenamestr.c_str());
 					strcat(cmnd, " &");
