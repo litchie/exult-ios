@@ -447,9 +447,10 @@ static void Handle_client_message
 		{
 		int npcnum = Read2(ptr);
 		Actor *npc = gwin->get_npc(npcnum);
-		if (npc && !npc->is_unused())
+		if (npc)
 			{
 			Write2(ptr, npc->get_shapenum());
+			*ptr++ = npc->is_unused();
 			std::string nm = npc->get_npc_name();
 			strcpy((char *) ptr, nm.c_str());
 					// Point past ending NULL.

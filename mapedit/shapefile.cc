@@ -300,9 +300,15 @@ bool Npcs_file_info::revert
 			}
 		npcs[i].shapenum = Read2(newptr);	// -1 if unused.
 		if (npcs[i].shapenum >= 0)
+			{
+			npcs[i].unused = (*newptr++ != 0);
 			npcs[i].name = (char *) newptr;
+			}
 		else
+			{
+			npcs[i].unused = true;
 			npcs[i].name = "";
+			}
 		}
 	return true;
 	}
