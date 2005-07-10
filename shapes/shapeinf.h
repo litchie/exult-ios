@@ -55,7 +55,9 @@ public:
 		normal_damage = 0,
 		fire_damage = 1,
 		magic_damage = 2,
-		poison_damage = 3	// Not sure about rest.
+		lightning_damage = 3,
+		ethereal_damage = 4,
+		sonic_damage = 5
 		};
 	enum Actor_frames		// Actor frames to show when using:
 		{

@@ -2159,7 +2159,7 @@ bool Actor::reduce_health
 		return false;
 	Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
-		return false;
+		delta = 0;		// Let them appear to be wounded.
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 			get_info().has_translucency() &&
@@ -2169,7 +2169,7 @@ bool Actor::reduce_health
 	if (attacker && attacker->is_in_party() && GAME_BG &&
 	    npc_num > 0 &&
 	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
-	    !(flags & (1<<Obj_flags::charmed)) &&
+	    !(flags & (1<<Obj_flags::charmed)) && !is_in_party() &&
 	    get_info().get_shape_class() == Shape_info::human)
 		{
 		static long lastcall = 0L;	// Last time yelled.
@@ -2972,6 +2972,39 @@ int Actor::get_armor_points
 	}
 
 /*
+ *	Get whether or not the actor is immune or vulnerable to a form of damage.
+ *
+ *	Input is damage_type for a weapon.
+ *
+ *	Returns 1 if the actor is immune, -1 if vulnerable or 0 otherwise.
+ */
+
+int Actor::is_immune
+	(
+	int type
+	)
+	{
+	Monster_info *minf = get_info().get_monster_info();
+	int is_immune = 0;
+	if (minf && minf->get_immune()&(1<<type))
+		return 1;
+	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
+					rhand, legs, feet};
+	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
+	for (int i = 0; i < num_armor_spots; i++)
+		{
+		Game_object *armor = spots[static_cast<int>(aspots[i])];
+		Armor_info *arinfo = armor ? armor->get_info().get_armor_info() : 0;
+		if (arinfo && arinfo->get_immune()&(1<<type))
+			return 1;
+		}
+	if (minf && minf->get_vulnerable()&(1<<type))
+		return -1;
+	else
+		return 0;
+	}
+
+/*
  *	Get weapon value.
  */
 
@@ -3224,6 +3257,20 @@ bool Actor::figure_hit_points
 	else
 		hp = 0;
 	Monster_info *minf = get_info().get_monster_info();
+	int damage_type = winf ? winf->get_damage_type() : 0;
+	if (ainf)
+		{
+		if (winf && winf->get_uses() == 3)	// Bows, crossbows, muskets
+			damage_type = ainf->get_damage_type();
+		else if (!winf)
+			damage_type = ainf->get_damage_type();
+		}
+	switch (is_immune(damage_type))
+		{
+		case 1:		hp = 0; break;	// Is immune
+		case -1:	hp *= 2; break;	// Is vulnerable
+		default:	break;
+		}
 	if (powers)			// Special attacks?
 		{
 		if ((powers&Weapon_info::poison) && roll_to_win(
@@ -3272,7 +3319,7 @@ bool Actor::figure_hit_points
 				properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
-	bool defeated = reduce_health(hp, attacker);
+	bool defeated = hp > 0 ? reduce_health(hp, attacker) : false;
 	if (Combat::show_hits)
 		{
 		eman->remove_text_effect(this);
