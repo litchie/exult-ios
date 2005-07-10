@@ -53,7 +53,12 @@ Resurrect 0x8FE ()
 				say("@I am sorry, my " + msg + ", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to rause it...@");
 			}
 			
-			if (!flag_dont_resurrect && !npc->is_dead())
+			var pos = npc->get_object_position();
+			if (!flag_dont_resurrect && !npc->is_dead() && 
+				//Check to see if the NPC is *outside* of the
+				//House of the Dead:
+				(!((pos[X] >= 0x40) && (pos[Y] >= 0) &&
+				(pos[X] <= 0xEF) && (pos[Y] <= 0x4F))))
 			{
 				//Prevent resurrection of a live NPC:
 				flag_dont_resurrect = true;
