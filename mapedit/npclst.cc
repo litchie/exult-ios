@@ -328,6 +328,8 @@ gint Npc_chooser::configure
 		}
 	else
 		render();		// Same size?  Just render it.
+	if (group)			// Filtering?
+		enable_drop();		// Can drop NPCs here.
 	return (TRUE);
 	}
 
@@ -347,7 +349,7 @@ gint Npc_chooser::expose
 							event->area.height);
 	return (TRUE);
 	}
-#if 0	/* ++++++Maybe later */
+
 /*
  *	Handle a mouse drag event.
  */
@@ -373,7 +375,7 @@ gint Npc_chooser::win32_drag_motion
 		// This call allows us to recycle the data transfer initialization code.
 		//  It's clumsy, but far easier to maintain.
 		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
-		  U7_TARGET_SHAPEID, 0, data);
+		  U7_TARGET_NPCID, 0, data);
 
 		POINT pnt;
 		GetCursorPos(&pnt);
@@ -404,11 +406,10 @@ gint Npc_chooser::drag_motion
 	{
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	if (!chooser->dragging && chooser->selected >= 0)
-		chooser->start_drag(U7_TARGET_SHAPEID_NAME, 
-			U7_TARGET_SHAPEID, (GdkEvent *) event);
+		chooser->start_drag(U7_TARGET_NPCID_NAME, 
+			U7_TARGET_NPCID, (GdkEvent *) event);
 	return true;
 	}
-#endif
 #endif
 
 /*
@@ -439,7 +440,6 @@ gint Npc_chooser::mouse_press
 		if (info[i].box.has_point(absx, absy))
 			{		// Found the box?
 					// Indicate we can drag.
-#if 0
 #ifdef WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
@@ -447,7 +447,6 @@ gint Npc_chooser::mouse_press
 // position is *still* inside the shape. So if you move the mouse too fast,
 // we are stuck.
 			win32_button = true;
-#endif
 #endif
 			new_selected = i;
 			break;
@@ -541,7 +540,6 @@ void Npc_chooser::edit_npc
 		cerr << "Error sending data to server." << endl;
 	}
 
-#if 0	/* +++++Maybe someday?? */
 /*
  *	Someone wants the dragged shape.
  */
@@ -558,17 +556,12 @@ void Npc_chooser::drag_data_get
 	{
 	cout << "In DRAG_DATA_GET" << endl;
 	Npc_chooser *chooser = (Npc_chooser *) data;
-	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
+	if (chooser->selected < 0 || info != U7_TARGET_NPCID)
 		return;			// Not sure about this.
 	guchar buf[30];
-	int file = chooser->ifile->get_u7drag_type();
-	if (file == U7_SHAPE_UNK)
-		U7_SHAPE_SHAPES;	// Just assume it's shapes.vga.
-	Shape_entry& shinfo = chooser->info[chooser->selected];
-	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
-							shinfo.framenum);
-	cout << "Setting selection data (" << shinfo.shapenum <<
-			'/' << shinfo.framenum << ')' << endl;
+	int npcnum = chooser->info[chooser->selected].npcnum;
+	int len = Store_u7_npcid(buf, npcnum);
+	cout << "Setting selection data (" << npcnum << ')' << endl;
 #ifdef WIN32
 	windragdata *wdata = (windragdata *)seldata;
 	wdata->assign(info, len, buf);
@@ -578,11 +571,10 @@ void Npc_chooser::drag_data_get
 								time);
 					// Set data.
 	gtk_selection_data_set(seldata,
-			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
+			gdk_atom_intern(U7_TARGET_NPCID_NAME, 0),
                                 				8, buf, len);
 #endif
 	}
-#endif
 
 /*
  *	Another app. has claimed the selection.
@@ -600,7 +592,6 @@ gint Npc_chooser::selection_clear
 	return TRUE;
 	}
 
-#if 0
 /*
  *	Beginning of a drag.
  */
@@ -616,16 +607,69 @@ gint Npc_chooser::drag_begin
 	Npc_chooser *chooser = (Npc_chooser *) data;
 	if (chooser->selected < 0)
 		return FALSE;		// ++++Display a halt bitmap.
-					// Get ->shape.
-	Shape_entry& shinfo = chooser->info[chooser->selected];
-	Shape_frame *shape = chooser->ifile->get_shape(shinfo.shapenum, 
-							shinfo.framenum);
+					// Get ->npc.
+	int npcnum = chooser->info[chooser->selected].npcnum;
+	Estudio_npc& npc = chooser->get_npcs()[npcnum];
+	Shape_frame *shape = chooser->ifile->get_shape(npc.shapenum, 0);
 	if (!shape)
 		return FALSE;
 	chooser->set_drag_icon(context, shape);	// Set icon for dragging.
 	return TRUE;
 	}
+
+/*
+ *	Chunk was dropped here.
+ */
+
+void Npc_chooser::drag_data_received
+	(
+	GtkWidget *widget,
+	GdkDragContext *context,
+	gint x,
+	gint y,
+	GtkSelectionData *seldata,
+	guint info,
+	guint time,
+	gpointer udata			// Should point to Shape_draw.
+	)
+	{
+	Npc_chooser *chooser = (Npc_chooser *) udata;
+	cout << "Npc drag_data_received" << endl;
+	if (seldata->type == gdk_atom_intern(U7_TARGET_NPCID_NAME, 0) &&
+	    seldata->format == 8 && seldata->length > 0)
+		{
+		int npcnum;
+		Get_u7_npcid(seldata->data, npcnum);
+		chooser->group->add(npcnum);
+		chooser->setup_info(true);
+		chooser->render();
+		}
+	}
+
+/*
+ *	Set to accept drops from drag-n-drop of a chunk.
+ */
+
+void Npc_chooser::enable_drop
+	(
+	)
+	{
+	if (drop_enabled)		// More than once causes warning.
+		return;
+	drop_enabled = true;
+	gtk_widget_realize(draw);//???????
+#ifndef WIN32
+	GtkTargetEntry tents[1];
+	tents[0].target = U7_TARGET_NPCID_NAME;
+	tents[0].flags = 0;
+	tents[0].info = U7_TARGET_NPCID;
+	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
+			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE));
+
+	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
+				GTK_SIGNAL_FUNC(drag_data_received), this);
 #endif
+	}
 
 /*
  *	Scroll to a new shape/frame.
@@ -871,7 +915,7 @@ Npc_chooser::Npc_chooser
 		Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		info(0), row0(0), rows(0),
 		row0_voffset(0), total_height(0), status_id(-1),
-		sel_changed(0), voffset(0)
+		sel_changed(0), voffset(0), drop_enabled(false)
 	{
 	rows.reserve(40);
 					// Put things in a vert. box.
@@ -910,7 +954,6 @@ Npc_chooser::Npc_chooser
 				GTK_SIGNAL_FUNC(Mouse_press), this);
 	gtk_signal_connect(GTK_OBJECT(draw), "button_release_event",
 				GTK_SIGNAL_FUNC(Mouse_release), this);
-#if 0
 					// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 				GTK_SIGNAL_FUNC(drag_begin), this);
@@ -924,7 +967,6 @@ Npc_chooser::Npc_chooser
 #endif
 	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
 				GTK_SIGNAL_FUNC(drag_data_get), this);
-#endif
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
 				GTK_SIGNAL_FUNC(selection_clear), this);
 	gtk_container_add (GTK_CONTAINER (frame), draw);
