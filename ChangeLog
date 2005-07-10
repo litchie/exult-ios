@@ -1,3 +1,10 @@
+2005-07-10  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/exult_studio.glade, shapeedit.cc: New info from weapons.dat and
+	  ammo.dat can now be edited in Exult Studio. Also, modified the 'ready spot'
+	  menu from 'Shape Info' window in preparation to getting it to work.
+	* content/sifixes/resurrect.uc: Fixed resurrection bug when target NPC was
+	  alive but in the House of the Dead.
+
 2005-07-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Implemented missile rotation and speed, using data from weapons.dat; this
 	  data is now saved and loaded correctly.
