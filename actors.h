@@ -466,6 +466,9 @@ public:
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
 	virtual int get_armor_points();	// Get total armor value.
+					// Gets whether the actor is immune or vulnerable to a given
+					// form of damage:
+	int Actor::is_immune(int type);
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape,
 						Game_object *& obj);
