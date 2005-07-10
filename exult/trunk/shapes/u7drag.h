@@ -50,6 +50,14 @@ void Get_u7_shapeid(unsigned char *data, int& file, int& shape, int& frame);
 int Store_u7_chunkid(unsigned char *data, int cnum);
 void Get_u7_chunkid(unsigned char *data, int& cnum);
 
+//	Target information for dragging an npc:
+#define U7_TARGET_NPCID_NAME "U7NPCID"
+#define U7_TARGET_NPCID 138
+
+//	Store/get npc #.
+int Store_u7_npcid(unsigned char *data, int npcnum);
+void Get_u7_npcid(unsigned char *data, int& npcnum);
+
 //	Target information for dragging a 'combo' (group of shapes):
 #define U7_TARGET_COMBOID_NAME "U7COMBOID"
 #define U7_TARGET_COMBOID 139

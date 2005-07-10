@@ -70,7 +70,7 @@ void Get_u7_shapeid
 	}
 
 /*
- *	Store in char array.
+ *	Store/retrieve chunk #.
  *
  *	Output:	Length of what's stored.
  */
@@ -86,10 +86,6 @@ int Store_u7_chunkid
 	return (ptr - data);
 	}
 
-/*
- *	Retrieve cnum#.
- */
-
 void Get_u7_chunkid
 	(
 	unsigned char *data, 		// At least 4 bytes.
@@ -98,6 +94,33 @@ void Get_u7_chunkid
 	{
 	unsigned char *ptr = data;
 	cnum = Read2(ptr);
+	}
+
+/*
+ *	Store/retrieve npc #.
+ *
+ *	Output:	Length of what's stored.
+ */
+
+int Store_u7_npcid
+	(
+	unsigned char *data, 		// At least 4 bytes.
+	int npcnum			// Npc #.
+	)
+	{
+	unsigned char *ptr = data;
+	Write2(ptr, npcnum);
+	return (ptr - data);
+	}
+
+void Get_u7_npcid
+	(
+	unsigned char *data, 		// At least 4 bytes.
+	int& npcnum			// 0-0xffff returned.
+	)
+	{
+	unsigned char *ptr = data;
+	npcnum = Read2(ptr);
 	}
 
 /*
