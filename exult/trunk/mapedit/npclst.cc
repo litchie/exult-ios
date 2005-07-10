@@ -52,6 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fontgen.h"
 
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::strlen;
 using std::string;
@@ -177,7 +178,7 @@ void Npc_chooser::setup_shapes_info
 	{
 	vector<Estudio_npc>& npcs = get_npcs();
 	if (!npcs.size())		// No NPC's?  Try to get them.
-		((Npcs_file_info *) file_info)->revert();
+		((Npcs_file_info *) file_info)->setup();
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width;
 	int x = 0;
@@ -466,16 +467,12 @@ gint Npc_chooser::mouse_press
 		unselect(true);		// No selection.
 	else if (selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
-#if 0	/* +++++Bring up NPC dialog */
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
-			edit_shape_info();
-#endif
+			edit_npc();
 		}
-#if 0	/* +++++FINISH */
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(create_popup()), 
 				0, 0, 0, 0, event->button, event->time);
-#endif
 	return (TRUE);
 	}
 
@@ -526,29 +523,23 @@ on_npc_draw_key_press			(GtkEntry	*entry,
 	return FALSE;			// Let parent handle it.
 }
 
-#if 0	/* +++++We'll want to bring up the NPC dialog */
 /*
- *	Bring up the shape-info editor for the selected shape.
+ *	Bring up the NPC editor.
  */
 
-void Npc_chooser::edit_shape_info
+void Npc_chooser::edit_npc
 	(
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	int shnum = info[selected].shapenum,
-	    frnum = info[selected].framenum;
-	Shape_info *info = 0;
-	char *name = 0;
-	if (shapes_file)
-		{			// Read info. the first time.
-		shapes_file->read_info(false, true);//+++++BG?
-		info = &shapes_file->get_info(shnum);
-		name = studio->get_shape_name(shnum);
-		}
-	studio->open_shape_window(shnum, frnum, file_info, name, info);
+	int npcnum = info[selected].npcnum;
+	Estudio_npc& npc = get_npcs()[npcnum];
+	unsigned char buf[Exult_server::maxlength], *ptr;
+	ptr = &buf[0];
+	Write2(ptr, npcnum);
+	if (!studio->send_to_server(Exult_server::edit_npc, buf, ptr - buf))
+		cerr << "Error sending data to server." << endl;
 	}
-#endif
 
 #if 0	/* +++++Maybe someday?? */
 /*
@@ -833,6 +824,19 @@ void Npc_chooser::locate
 	}
 
 /*
+ *	Handle popup menu items.
+ */
+
+void on_npc_popup_edit_activate
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	((Npc_chooser *) udata)->edit_npc();
+	}
+
+/*
  *	Set up popup menu for shape browser.
  */
 
@@ -841,44 +845,15 @@ GtkWidget *Npc_chooser::create_popup
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	Object_browser::create_popup();	// Create popup with groups, files.
-#if 0	/* +++++++++FINISH */
+	// Create popup with groups, but not files.
+	Object_browser::create_popup(false);
 	if (selected >= 0)		// Add editing choices.
 		{
-		Add_menu_item(popup, "Info...",
-			GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
-		if (studio->get_image_editor())
-			{
-			Add_menu_item(popup, "Edit...",
-				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
+		Add_menu_item(popup, "Edit...",
+				GTK_SIGNAL_FUNC(on_npc_popup_edit_activate),
 								 this);
-			if (IS_FLAT(info[selected].shapenum) && 
-					file_info == studio->get_vgafile())
-				Add_menu_item(popup, "Edit tiled...",
-				    GTK_SIGNAL_FUNC(
-				    on_shapes_popup_edtiles_activate), this);
-			}
-					// Separator.
-		Add_menu_item(popup);
-					// Add/del.
-		Add_menu_item(popup, "New frame",
-			GTK_SIGNAL_FUNC(on_shapes_popup_new_frame), this);
-					// Export/import.
-		Add_menu_item(popup, "Export frame...",
-			GTK_SIGNAL_FUNC(on_shapes_popup_export), this);
-		Add_menu_item(popup, "Import frame...",
-			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
-		}
-	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
-		{
-					// Separator.
-		Add_menu_item(popup);
-		Add_menu_item(popup, "New shape",
-			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
 		}
 	return popup;
-#endif
-	return 0;
 	}
 
 /*
@@ -1032,8 +1007,10 @@ void Npc_chooser::update_statusbar
 	if (selected >= 0)
 		{
 		int npcnum = info[selected].npcnum;
-		g_snprintf(buf, sizeof(buf), "Npc %d:  '%s'",
-				npcnum, get_npcs()[npcnum].name.c_str());
+		Estudio_npc& npc = get_npcs()[npcnum];
+		g_snprintf(buf, sizeof(buf), "Npc %d:  '%s'%s",
+					npcnum, npc.name.c_str(),
+				npc.unused ? " (unused)" : "");
 		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
 							sbar_sel, buf);
 		}

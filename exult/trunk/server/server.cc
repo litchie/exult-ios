@@ -464,7 +464,15 @@ static void Handle_client_message
 		}
 	case Exult_server::locate_npc:
 		gwin->locate_npc(Read2(ptr));
-		break;		
+		break;
+	case Exult_server::edit_npc:
+		{
+		int npcnum = Read2(ptr);
+		Actor *npc = gwin->get_npc(npcnum);
+		if (npc)
+			npc->edit();
+		break;
+		}		
 	case Exult_server::edit_selected:
 		{
 		unsigned char basic = *ptr;

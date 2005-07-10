@@ -234,19 +234,23 @@ void Object_browser::on_browser_file_revert
 
 GtkWidget *Object_browser::create_popup
 	(
+	bool files			// Include 'files'.
 	)
 	{
 	if (popup)			// Clean out old.
 		gtk_widget_destroy(popup);
 	popup = gtk_menu_new();		// Create popup menu.
+	if (files)
+		{
 					// Add "File" submenu.
-	GtkWidget *mitem = Add_menu_item(popup, "File...");
-	GtkWidget *file_menu = gtk_menu_new();
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), file_menu);
-	Add_menu_item(file_menu, "Save",
+		GtkWidget *mitem = Add_menu_item(popup, "File...");
+		GtkWidget *file_menu = gtk_menu_new();
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), file_menu);
+		Add_menu_item(file_menu, "Save",
 				GTK_SIGNAL_FUNC(on_browser_file_save), this);
-	Add_menu_item(file_menu, "Revert",
+		Add_menu_item(file_menu, "Revert",
 				GTK_SIGNAL_FUNC(on_browser_file_revert), this);
+		}
 	if (selected >= 0)		// Item selected?  Add groups.
 		add_group_submenu(popup);
 	return popup;

@@ -137,6 +137,7 @@ public:
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
 #endif
+	void edit_npc();
 					// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 				GdkEventSelection *event, gpointer data);
