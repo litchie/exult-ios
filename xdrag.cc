@@ -74,18 +74,20 @@ Xdnd::Xdnd
 	Move_combo_handler_fun movecmbfun,
 	Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun,
+	Drop_npc_handler_fun npcfun,
 	Drop_combo_handler_fun cmbfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
-		file(-1), shape(-1), frame(-1), chunknum(-1), 
+		file(-1), shape(-1), frame(-1), chunknum(-1), npcnum(-1),
 		combo_cnt(-1), combo(0), combo_xtiles(0), combo_ytiles(0),
 		data_valid(false), move_shape_handler(movefun),
 		move_combo_handler(movecmbfun),
 		shape_handler(shapefun), chunk_handler(cfun),
-		combo_handler(cmbfun)
+		npc_handler(npcfun), combo_handler(cmbfun)
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
 	chunkid_atom = XInternAtom(display, U7_TARGET_CHUNKID_NAME, 0);
+	npcid_atom = XInternAtom(display, U7_TARGET_NPCID_NAME, 0);
 	comboid_atom = XInternAtom(display, U7_TARGET_COMBOID_NAME, 0);
 					// Atom for Xdnd protocol:
 	xdnd_aware = XInternAtom(display, "XdndAware", 0);
@@ -175,6 +177,7 @@ void Xdnd::client_msg
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
 			    drag_types[i] == chunkid_atom ||
+			    drag_types[i] == npcid_atom ||
 			    drag_types[i] == comboid_atom)
 				break;
 		xev.xclient.message_type = xdnd_status;
@@ -214,10 +217,11 @@ void Xdnd::client_msg
 		}
 	else if (cev.message_type == xdnd_drop)
 		{
-		int i;			// For now, just do shapes, chunks.
+		int i;			
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
 			    drag_types[i] == chunkid_atom ||
+			    drag_types[i] == npcid_atom ||
 			    drag_types[i] == comboid_atom)
 				break;
 		bool okay = data_valid && i < num_types;
@@ -232,6 +236,8 @@ void Xdnd::client_msg
 			}
 		else if (chunknum >= 0)	// A whole chunk.
 			(*chunk_handler)(chunknum, lastx, lasty, 0);
+		else if (npcnum >= 0)	// An NPC.
+			(*npc_handler)(npcnum, lastx, lasty, 0);
 		else if (combo_cnt >= 0 && combo)
 			(*combo_handler)(combo_cnt, combo, lastx, lasty, 0);
 
@@ -252,12 +258,12 @@ void Xdnd::select_msg
 		XGetAtomName(display, sev.target) << endl;
 	if (sev.selection != xdnd_selection || 
 		(sev.target != shapeid_atom && sev.target != chunkid_atom &&
-		 sev.target != comboid_atom) ||
+		 sev.target != npcid_atom && sev.target != comboid_atom) ||
 	    sev.property == None)
 		return;			// Wrong type.
 	cout << "HERE" << endl;
 	file = shape = frame = -1;	// Invalidate old data.
-	chunknum = -1;
+	chunknum = npcnum = -1;
 	combo_cnt = -1;
 	combo_xtiles = combo_ytiles = 0;
 	delete combo;
@@ -282,6 +288,11 @@ void Xdnd::select_msg
 	else if (sev.target == chunkid_atom)
 		{			// A whole chunk.
 		Get_u7_chunkid(data, chunknum);
+		data_valid = true;
+		}
+	else if (sev.target == npcid_atom)
+		{
+		Get_u7_npcid(data, npcnum);
 		data_valid = true;
 		}
 	else if (sev.target == comboid_atom)

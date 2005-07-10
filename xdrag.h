@@ -35,6 +35,7 @@ class Xdnd
 	Window xgamewin;		// Game window within xwmwin.
 	Atom shapeid_atom;		// For drag-and-drop of shapes.
 	Atom chunkid_atom;		// For chunks.
+	Atom npcid_atom;		// For NPC's.
 	Atom comboid_atom;		// For combos.
 	Atom xdnd_aware;		// For XdndAware.
 	Atom xdnd_enter;
@@ -55,6 +56,7 @@ class Xdnd
 	int winx, winy;			// Window coords. at start of drag.
 	int file, shape, frame;		// Set when a shape is being dragged.
 	int chunknum;			// Set when a chunk is dragged.
+	int npcnum;			// Set when an NPC is dragged.
 	int combo_cnt;			// Set when combo is dragged.
 	int combo_xtiles, combo_ytiles, combo_tiles_right, combo_tiles_below;
 	struct U7_combo_data *combo;	// Combo elements (allocated);
@@ -64,12 +66,13 @@ class Xdnd
 	Move_combo_handler_fun move_combo_handler;	// For dragging combos.
 	Drop_shape_handler_fun shape_handler;	// For dropping shapes.
 	Drop_chunk_handler_fun chunk_handler;	// For dropping chunks.
+	Drop_npc_handler_fun npc_handler;	// For dropping npcs.
 	Drop_combo_handler_fun combo_handler;	// For dropping combos.
 public:
 	Xdnd(Display *d, Window xw, Window xgw, Move_shape_handler_fun movefun,
 		Move_combo_handler_fun movecmbfun,
 		Drop_shape_handler_fun shapefun, Drop_chunk_handler_fun cfun,
-					Drop_combo_handler_fun cmbfun);
+		Drop_npc_handler_fun npcfun, Drop_combo_handler_fun cmbfun);
 	~Xdnd();
 	void client_msg(XClientMessageEvent& cev);
 	void select_msg(XSelectionEvent& sev);

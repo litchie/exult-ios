@@ -171,6 +171,7 @@ static void Move_dragged_combo(int xtiles, int ytiles, int tiles_right,
 	int tiles_below, int x, int y, int prevx, int prevy, bool show);
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *d);
 static void Drop_dragged_chunk(int chunknum, int x, int y, void *d);
+static void Drop_dragged_npc(int npcnum, int x, int y, void *d);
 static void Drop_dragged_combo(int cnt, U7_combo_data *combo, 
 							int x, int y, void *d);
 #endif
@@ -798,7 +799,7 @@ static void Init
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 		info.info.x11.window, Move_dragged_shape, Move_dragged_combo,
 				Drop_dragged_shape, Drop_dragged_chunk, 
-							Drop_dragged_combo);
+				Drop_dragged_npc, Drop_dragged_combo);
 #elif !defined(UNDER_CE)
 	SDL_GetWMInfo(&info);
 	Server_init();			// Initialize server (for map-editor).
@@ -2030,8 +2031,7 @@ static Game_object *Create_object
 	}
 
 /*
- *	Drop a shape dragged from a shape-chooser via drag-and-drop.  Dnd is
- *	only supported under X for now.
+ *	Drop a shape dragged from a shape-chooser via drag-and-drop.
  */
 
 static void Drop_dragged_shape
@@ -2080,8 +2080,7 @@ static void Drop_dragged_shape
 	}
 
 /*
- *	Drop a chunk dragged from a chunk-chooser via drag-and-drop.  Dnd is
- *	only supported under X for now.
+ *	Drop a chunk dragged from a chunk-chooser via drag-and-drop.
  */
 
 static void Drop_dragged_chunk
@@ -2103,6 +2102,33 @@ static void Drop_dragged_chunk
 	    ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	gwin->get_map()->set_chunk_terrain(cx, cy, chunknum);
+	gwin->paint();
+	}
+
+/*
+ *	Drop a npc dragged from a npc-chooser via drag-and-drop.
+ */
+
+static void Drop_dragged_npc
+	(
+	int npcnum,
+	int x, int y,			// Mouse coords. within window.
+	void *data			// Passed data, unused by exult
+	)
+	{
+	int scale = gwin->get_win()->get_scale();
+	if (!cheat.in_map_editor())	// Get into editing mode.
+		cheat.toggle_map_editor();
+	x /= scale;			// Watch for scaled window.
+	y /= scale;
+	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
+	cout << "Set npc (" << npcnum << ')' << endl;
+	Actor *npc = gwin->get_npc(npcnum);
+	if (!npc)
+		return;
+	Dragging_info drag(npc);
+	if (drag.drop(x, y))
+		npc->set_unused(false);
 	gwin->paint();
 	}
 

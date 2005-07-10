@@ -79,6 +79,7 @@ typedef void (*Move_combo_handler_fun)(int xtiles, int ytiles, int tiles_right,
 typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y,
 							void *data);
 typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *data);
+typedef void (*Drop_npc_handler_fun)(int npc, int x, int y, void *data);
 typedef void (*Drop_combo_handler_fun)(int cnt, struct U7_combo_data *combo, 
 					int x, int y, void *data);
 

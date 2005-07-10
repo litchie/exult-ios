@@ -50,7 +50,6 @@ class Dragging_info : public Game_singletons
 	void put_back();		// Put back object.
 	bool drop_on_gump(int x, int y, Game_object *to_drop, Gump *gump);
 	bool drop_on_map(int x, int y, Game_object *to_drop);
-	bool drop(int x, int y);	// Drop obj. at given position.
 public:
 	friend class Game_window;
 					// Create for dropping new object.
@@ -59,6 +58,7 @@ public:
 	~Dragging_info();
 	bool moved(int x, int y);	// Mouse moved.
 	void paint();			// Paint object being dragged.
+	bool drop(int x, int y);	// Drop obj. at given position.
 					// Mouse button released.
 	bool drop(int x, int y, bool moved);
 	};
