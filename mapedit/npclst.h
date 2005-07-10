@@ -85,6 +85,7 @@ class Npc_chooser: public Object_browser, public Shape_draw
 	int voffset;			// Vertical offset in pixels.
 	int status_id;			// Statusbar msg. ID.
 	int red;			// Index of color red in palbuf.
+	bool drop_enabled;		// So we only do it once.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -132,29 +133,29 @@ public:
 							gpointer data);
 					// Handle mouse press.
 	gint mouse_press(GtkWidget *widget, GdkEventButton *event);
-#if 0	/* Maybe allow dragging into game?? */
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
-#endif
 	void edit_npc();
 					// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 				GdkEventSelection *event, gpointer data);
-#if 0
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
-#endif
+					// Handler for drop.
+	static void drag_data_received(GtkWidget *widget, 
+		GdkDragContext *context, gint x, gint y, 
+		GtkSelectionData *selection_data, guint info, guint time,
+		gpointer udata);
+	void enable_drop();
 					// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
-#if 0
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);
 #else
 	static gint drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);
-#endif
 #endif
 	};
 
