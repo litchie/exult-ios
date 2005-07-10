@@ -1,3 +1,7 @@
+2005-07-09    <jeff@mini.nerble.net>
+
+	* mapedit/npclst.cc (Npc_chooser): Added NPC browser.
+
 2005-07-10  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/exult_studio.glade, shapeedit.cc: New info from weapons.dat and
 	  ammo.dat can now be edited in Exult Studio. Also, modified the 'ready spot'
