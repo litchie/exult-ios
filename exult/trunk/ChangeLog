@@ -1,3 +1,14 @@
+2005-07-10  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/shapeinf.h, mapedit/exult_studio.glade, shapeedit.cc: Corrected
+	  damage type (from 'poison' to 'lightning') and added two other damage
+	  types ('ethereal' and 'sonic') and immunities -- both of which are used
+	  in BG, but not in SI. Also, left shapeedit.cc pratically ready to get
+	  'ready spots' working (it does for BG already).
+	* actors.cc: Implemented immunities/vulnerabilities. Also allowed actors
+	  with cant_die flag to appear to be wounded (flash with red outline), as
+	  in the original. Last, prevented party members from calling the guards if
+	  they die because of the Avatar.
+
 2005-07-09    <jeff@mini.nerble.net>
 
 	* mapedit/npclst.cc (Npc_chooser): Added NPC browser.

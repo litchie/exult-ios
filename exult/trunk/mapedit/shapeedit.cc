@@ -568,6 +568,55 @@ void ExultStudio::set_shape_notebook_frame
 	set_spin("shinfo_wihy", wy, 0, 255);
 	}
 
+inline short get_bg_spots(short spot)
+	{
+	switch (spot)
+		{
+		case 0x00: return 0;
+		case 0x08: return 1;
+		case 0xA0: return 2;
+		case 0x01: return 3;
+		case 0xA1: return 4;
+		case 0x40: return 5;
+		case 0x48: return 6;
+		case 0x20: return 7;
+		case 0x28: return 8;
+		case 0xA8: return 9;
+		case 0x30: return 10;
+		case 0x50: return 11;
+		case 0x58: return 12;
+		case 0x90: return 13;
+		case 0x78: return 14;
+		default: return 0;
+		}
+	}
+
+inline short get_si_spots(short spot)
+	{
+	switch (spot)
+		{
+		case 0x00: return 0;
+		case 0x08: return 1;
+		case 0xA0: return 2;
+		case 0x01: return 3;
+		case 0xA1: return 4;
+		case 0x50: return 5;
+		case 0x20: return 6;
+		case 0x48: return 7;
+		case 0x18: return 8;
+		case 0x10: return 9;
+		case 0x78: return 10;
+		case 0x60: return 11;
+		case 0x28: return 12;
+		case 0x40: return 13;
+		case 0x58: return 14;
+		case 0x70: return 15;
+		case 0x68: return 16;
+		case 0x30: return 17;
+		default: return 0;
+		}
+	}
+
 /*
  *	Fill in the shape-editing notebook.
  */
@@ -589,12 +638,13 @@ void ExultStudio::init_shape_notebook
 	set_shape_notebook_frame(frnum);
 	set_spin("shinfo_ztiles", info.get_3d_height());
 	int spot = info.get_ready_type();
-	if (spot < 0)
-		spot = 3;		// Left hand if looks invalid.
-	else if (spot == 100)
-		spot = 18;		// LR Hand.  Not sure about this.
-	else if (spot > 17)
-		spot = 3;
+#if 0	// Need to add game detection code first:
+	if (game_id == BLACKGATE)
+		spot = get_bg_spots(spot);
+	else
+		spot = get_si_spots(spot);
+#endif	
+	spot = get_bg_spots(spot);	// Assume BG until then.
 	set_optmenu("shinfo_ready_spot", spot);
 	set_spin("shinfo_weight", info.get_weight(), 0, 255);
 	set_spin("shinfo_volume", info.get_volume(), 0, 255);
@@ -686,7 +736,9 @@ void ExultStudio::init_shape_notebook
 		static char *immun[] = {"shinfo_armor_immun0",
 					"shinfo_armor_immun1",
 					"shinfo_armor_immun2",
-					"shinfo_armor_immun3" };
+					"shinfo_armor_immun3",
+					"shinfo_armor_immun4",
+					"shinfo_armor_immun5" };
 		set_spin("shinfo_armor_value", arinfo->get_prot());
 		set_bit_toggles(&immun[0], 
 			sizeof(immun)/sizeof(immun[0]), arinfo->get_immune());
@@ -708,11 +760,15 @@ void ExultStudio::init_shape_notebook
 		static char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
 					"shinfo_monster_vuln2",
-					"shinfo_monster_vuln3" };
+					"shinfo_monster_vuln3",
+					"shinfo_monster_vuln4",
+					"shinfo_monster_vuln5" };
 		static char *immun[] = {"shinfo_monster_immun0",
 					"shinfo_monster_immun1",
 					"shinfo_monster_immun2",
-					"shinfo_monster_immun3" };
+					"shinfo_monster_immun3",
+					"shinfo_monster_immun4",
+					"shinfo_monster_immun5" };
 		set_bit_toggles(&vuln[0], sizeof(vuln)/sizeof(vuln[0]),
 						minfo->get_vulnerable());
 		set_bit_toggles(&immun[0], 
@@ -759,8 +815,18 @@ void ExultStudio::save_shape_notebook
 	info.set_3d(get_spin("shinfo_xtiles"), get_spin("shinfo_ytiles"),
 						get_spin("shinfo_ztiles"));
 	int spot = get_optmenu("shinfo_ready_spot");
-	if (spot == 18)			// LR hand.
-		spot = 100;
+	// In both cases, 0xFF means that it should not be saved
+	const signed char bg_spots[] = {0xFF, 0x08, 0xA0, 0x01, 0xA1, 0x40, 0x48,
+			0x20, 0x28, 0xA8, 0x30, 0x50, 0x58, 0x90, 0x78};
+	const signed char si_spots[] = {0xFF, 0x08, 0xa0, 0x01, 0xa1, 0x50, 0x20,
+			0x48, 0x18, 0x10, 0x78, 0x60, 0x28, 0x40, 0x58, 0x70, 0x68, 0x30};
+#if 0	// Need to add game detection code first:
+	if (game_id == BLACKGATE)
+		spot = bg_spots[spot];
+	else
+		spot = si_spots[spot];
+#endif
+	spot = bg_spots[spot];	// Assume BG until then.
 	info.set_ready_type(spot);
 	info.set_weight_volume(get_spin("shinfo_weight"),
 						get_spin("shinfo_volume"));
@@ -862,7 +928,9 @@ void ExultStudio::save_shape_notebook
 		static char *immun[] = {"shinfo_armor_immun0",
 					"shinfo_armor_immun1",
 					"shinfo_armor_immun2",
-					"shinfo_armor_immun3" };
+					"shinfo_armor_immun3",
+					"shinfo_armor_immun4",
+					"shinfo_armor_immun5" };
 		arinfo->set_prot(get_spin("shinfo_armor_value"));
 		arinfo->set_immune(get_bit_toggles(&immun[0], 
 					sizeof(immun)/sizeof(immun[0])));
@@ -885,11 +953,15 @@ void ExultStudio::save_shape_notebook
 		static char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
 					"shinfo_monster_vuln2",
-					"shinfo_monster_vuln3" };
+					"shinfo_monster_vuln3",
+					"shinfo_monster_vuln4",
+					"shinfo_monster_vuln5" };
 		static char *immun[] = {"shinfo_monster_immun0",
 					"shinfo_monster_immun1",
 					"shinfo_monster_immun2",
-					"shinfo_monster_immun3" };
+					"shinfo_monster_immun3",
+					"shinfo_monster_immun4",
+					"shinfo_monster_immun5" };
 		minfo->set_vulnerable(get_bit_toggles(&vuln[0], 
 						sizeof(vuln)/sizeof(vuln[0])));
 		minfo->set_immune(get_bit_toggles(&immun[0], 
