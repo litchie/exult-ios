@@ -85,6 +85,7 @@ enum Msg_type
 	barge = 35,			// Edit barge object.
 	npc_info = 36,			// Send back NPC info.
 	locate_npc = 37,		// Show NPC on map.
+	edit_npc = 38,			// Bring up NPC-editor.
 	usecode_debugging = 128
 	};
 

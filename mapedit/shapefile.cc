@@ -253,12 +253,10 @@ Object_browser *Npcs_file_info::create_browser
 	}
 
 /*
- *	Revert to Exult's list of NPC's.
- *
- *	Output:	True (meaning we support 'revert').
+ *	Get Exult's list of NPC's.
  */
 
-bool Npcs_file_info::revert
+void Npcs_file_info::setup
 	(
 	)
 	{
@@ -277,7 +275,7 @@ bool Npcs_file_info::revert
 		id != Exult_server::npc_unused)
 		{
 		cerr << "Error sending data to server." << endl;
-		return false;
+		return;
 		}
 	unsigned char *ptr = &buf[0], *newptr;
 	num_npcs = Read2(ptr);
@@ -296,7 +294,7 @@ bool Npcs_file_info::revert
 			{		
 			npcs.resize(0);
 			cerr << "Error getting info for NPC #" << i << endl;
-			return false;
+			return;
 			}
 		npcs[i].shapenum = Read2(newptr);	// -1 if unused.
 		if (npcs[i].shapenum >= 0)
@@ -310,7 +308,7 @@ bool Npcs_file_info::revert
 			npcs[i].name = "";
 			}
 		}
-	return true;
+	return;
 	}
 
 /*
