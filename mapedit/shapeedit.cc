@@ -537,6 +537,15 @@ C_EXPORT void on_shinfo_container_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_container_box", on);
 	}
+C_EXPORT void on_shinfo_ammo_special_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_sensitive("shinfo_ammo_drop", !on);
+	}
 
 /*
  *	Set frame-dependent fields in the shape-editing notebook.
@@ -622,7 +631,7 @@ void ExultStudio::init_shape_notebook
 		set_optmenu("shinfo_weapon_ammo", ammo_use);
 		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
 		set_spin("shinfo_weapon_proj", winfo->get_projectile(),
-								0, 1023);
+								0, 2047);
 		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
 		set_spin("shinfo_weapon_sfx", winfo->get_sfx(), 0, 1023);
 		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx(), 0, 1023);
@@ -639,6 +648,11 @@ void ExultStudio::init_shape_notebook
 			sizeof(powers)/sizeof(powers[0]), winfo->get_powers());
 		set_toggle("shinfo_weapon_explodes", winfo->explodes());
 		set_toggle("shinfo_weapon_returns", winfo->returns());
+		set_optmenu("shinfo_weapon_frames", winfo->get_actor_frames(false));
+		set_optmenu("shinfo_proj_frames", winfo->get_actor_frames(true));
+		set_spin("shinfo_proj_rotation", winfo->get_rotation_speed());
+		set_spin("shinfo_proj_speed", winfo->get_missile_speed());
+		set_spin("shinfo_proj_delay", winfo->get_cycle_delay());
 		}
 	Ammo_info *ainfo = info.get_ammo_info();
 	set_toggle("shinfo_ammo_check", ainfo != 0);
@@ -658,6 +672,11 @@ void ExultStudio::init_shape_notebook
 		set_bit_toggles(&powers[0], 
 			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
 					// 'Explode'???
+		set_toggle("shinfo_ammo_bursts", ainfo->bursts());
+		set_toggle("shinfo_ammo_special", ainfo->has_special_behaviour());
+		set_optmenu("shinfo_ammo_drop", ainfo->get_drop_type());
+		ExultStudio::get_instance()->set_sensitive("shinfo_ammo_drop",
+				!ainfo->has_special_behaviour());
 		}
 	Armor_info *arinfo = info.get_armor_info();
 	set_toggle("shinfo_armor_check", arinfo != 0);
@@ -799,6 +818,11 @@ void ExultStudio::save_shape_notebook
 					// 'Explode'???
 		winfo->set_returns(get_toggle("shinfo_weapon_returns"));
 		winfo->set_explodes(get_toggle("shinfo_weapon_explodes"));
+		winfo->set_actor_frames(get_optmenu("shinfo_weapon_frames") |
+				(get_optmenu("shinfo_proj_frames")<<2));
+		winfo->set_rotation_speed(get_spin("shinfo_proj_rotation"));
+		winfo->set_missile_speed(get_spin("shinfo_proj_speed"));
+		winfo->set_cycle_delay(get_spin("shinfo_proj_delay"));
 		}
 	if (!get_toggle("shinfo_ammo_check"))
 		info.set_ammo_info(false);	// Not ammo.
@@ -818,6 +842,17 @@ void ExultStudio::save_shape_notebook
 		ainfo->set_powers(get_bit_toggles(&powers[0], 
 					sizeof(powers)/sizeof(powers[0])));
 					// 'Explode'???
+		ainfo->set_bursts(get_toggle("shinfo_ammo_bursts"));
+		if (get_toggle("shinfo_ammo_special"))
+			{
+			ainfo->set_has_special_behaviour(true);
+			ainfo->set_drop_type(0);
+			}
+		else
+			{
+			ainfo->set_has_special_behaviour(false);
+			ainfo->set_drop_type(get_optmenu("shinfo_ammo_drop"));
+			}
 		}
 	if (!get_toggle("shinfo_armor_check"))
 		info.set_armor_info(false);	// Not armor.
