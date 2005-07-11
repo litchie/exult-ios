@@ -521,7 +521,12 @@ void Explosion_effect::handle_event
 				width/(2*c_tilesize), 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				(**it).attacked(attacker, weapon, projectile);
+				Game_object *obj = *it;
+				Actor *act = obj->as_actor();
+				if (act)
+					act->attacked(attacker, weapon, projectile);
+				else
+					obj->attacked(attacker, weapon, projectile);
 			}
 	}
 	Sprites_effect::handle_event(curtime, udata);
