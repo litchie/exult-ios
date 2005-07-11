@@ -1216,7 +1216,7 @@ int Game_object::attack_object
 		wpoints = winf->get_damage();
 	if (!wpoints)			// Telekenesis should NOT destroy!
 		return 0;
-	if (attacker)
+	if (attacker && !winf->explodes())
 		wpoints += attacker->get_level() +
 			attacker->get_effective_prop((int) Actor::strength);
 	return wpoints;
@@ -1231,14 +1231,10 @@ int Game_object::attack_object
 Game_object *Game_object::attacked
 	(
 	Actor *attacker,
-	int weapon_shape,		// Weapon shape, or 0 to use readied,
-					//   or -weapon shape if explosion.
+	int weapon_shape,		// Weapon shape, or 0 to use readied
 	int ammo_shape
 	)
 	{
-	if (weapon_shape < 0)		// We ignore this flag.
-		weapon_shape = -weapon_shape;
-	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 
@@ -1305,6 +1301,8 @@ Game_object *Game_object::attacked
 		return this;
 	}
 
+	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
+
 	if (combat_trace) {
 		cout << name << " hits " << get_name()
 			 << " for " << wpoints << " hit points, leaving "
@@ -1314,7 +1312,10 @@ Game_object *Game_object::attacked
 	if (wpoints >= hp) {
 		// object destroyed
 		eman->remove_text_effect(this);
-		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
+		if (!((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702)))
+				// The cannon usecode does this already; doing so again has
+				// bad effects for Britannian landscape...
+			ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
 		return 0;
 	} else {
 		set_obj_hp(hp - wpoints);
