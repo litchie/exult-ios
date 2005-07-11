@@ -1216,7 +1216,7 @@ int Game_object::attack_object
 		wpoints = winf->get_damage();
 	if (!wpoints)			// Telekenesis should NOT destroy!
 		return 0;
-	if (attacker && !winf->explodes())
+	if (attacker && !(winf && winf->explodes()))
 		wpoints += attacker->get_level() +
 			attacker->get_effective_prop((int) Actor::strength);
 	return wpoints;
@@ -1291,7 +1291,6 @@ Game_object *Game_object::attacked
 	string name = "<trap>";
 	if (attacker)
 		name = attacker->get_name();
-
 
 	if (hp == 0) { // indestructible
 		if (combat_trace) {
