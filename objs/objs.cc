@@ -173,13 +173,48 @@ int Game_object::get_quantity
 		return 1;
 	}
 
-int Game_object::get_obj_hp() const
+int Game_object::get_obj_hp(int weapon_shape) const
 {
 	int shnum = get_shapenum();
 	if (Has_hitpoints(shnum))
 		return quality;
 	else
-		return 0;
+		{
+		// some special cases
+		// guessing these don't have hitpoints by default because
+		// doors need their 'quality' field for something else
+
+		int frnum = get_framenum();
+		if (shnum == 432 || shnum == 433) // doors
+			{
+			if (get_quality()==0 || weapon_shape==704 ||
+				((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))) 
+				// only 'normal' doors (or powderkeg/cannon)
+				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
+					return 6;
+			}
+		else if (shnum == 270 || shnum == 376) // more doors
+			{
+			if (get_quality()==0 || weapon_shape==704 ||
+				((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))) 
+				// only 'normal' doors (or powderkeg/cannon)
+				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
+					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
+					return 6;
+			}
+					// Serpent statue at end of SI:
+		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
+			return 1;
+#if 0
+		else if (shnum == 522 && frnum < 2)
+			{ // locked normal chest
+			if (get_quality() == 0 || get_quality() == 255)
+				return 6;
+			}
+#endif
+		else	
+			return 0;
+		}
 }
 
 void Game_object::set_obj_hp(int hp)
@@ -1235,35 +1270,17 @@ Game_object *Game_object::attacked
 	int ammo_shape
 	)
 	{
+	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 
 	int hp = get_obj_hp();		// Returns 0 if doesn't have HP's or is
 					//   indestructible,
 	if (!hp) {			//   with exceptions:
-		// some special cases
-		// guessing these don't have hitpoints by default because
-		// doors need their 'quality' field for something else
-
-		if (shnum == 432 || shnum == 433) // doors
-			{
-			if (get_quality()==0 || weapon_shape==704)
-				// only 'normal' doors (or powderkeg)
-				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
-					hp = 6;
-			}
-		else if (shnum == 270 || shnum == 376) // more doors
-			{
-			if (get_quality()==0 || weapon_shape==704)
-				// only 'normal' doors (or powderkeg)
-				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
-					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
-					hp = 6;
-			}
-					// Serpent statue at end of SI:
-		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
-			hp = 1;
-		else if (shnum == 704 && weapon_shape == 704) { // Powder keg...
+		if (shnum == 704 && // Powder keg... but not if cannon, as it already
+							// detonates them via usecode.
+			!((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702)))
+		{
 			// cause chain reaction
 
 			// marked already detonating powderkegs with quality
@@ -1279,13 +1296,6 @@ Game_object *Game_object::attacked
 					: ((frnum%3) != 0 ? frnum + 1 : frnum);
 			change_frame(newframe);
 		}
-#if 0
-		else if (shnum == 522 && frnum < 2) { // locked normal chest
-			if (get_quality() == 0 || get_quality() == 255)
-				hp = 6;
-		}
-#endif
-
 	}
 
 	string name = "<trap>";
@@ -1299,8 +1309,6 @@ Game_object *Game_object::attacked
 		}
 		return this;
 	}
-
-	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
 
 	if (combat_trace) {
 		cout << name << " hits " << get_name()
