@@ -2959,8 +2959,9 @@ int Actor::get_armor_points
 	)
 	{
 	int points = 0;
-	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
-					rhand, legs, feet};
+	static enum Spots aspots[] = {head, neck, torso, cloak_spot, belt,
+					lhand, rhand, lfinger, rfinger, legs, feet, ears_spot,
+					hands2_spot};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
 	for (int i = 0; i < num_armor_spots; i++)
 		{
@@ -2988,8 +2989,9 @@ int Actor::is_immune
 	int is_immune = 0;
 	if (minf && minf->get_immune()&(1<<type))
 		return 1;
-	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
-					rhand, legs, feet};
+	static enum Spots aspots[] = {head, neck, torso, cloak_spot, belt,
+					lhand, rhand, lfinger, rfinger, legs, feet, ears_spot,
+					hands2_spot};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
 	for (int i = 0; i < num_armor_spots; i++)
 		{
