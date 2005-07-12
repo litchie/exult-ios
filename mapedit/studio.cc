@@ -926,7 +926,7 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 	U7FileManager::get_ptr()->reset();
 	delete palbuf;			// Delete old.
 	string dirstr;
-	string d("config/disk/game/blackgate/path");
+	string d("config/disk/game/");
 	string gd = d + "blackgate/path";
 	config->value(gd.c_str(), dirstr, "");
 	if (dirstr == gamepath)
