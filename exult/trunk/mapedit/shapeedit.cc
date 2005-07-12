@@ -638,13 +638,10 @@ void ExultStudio::init_shape_notebook
 	set_shape_notebook_frame(frnum);
 	set_spin("shinfo_ztiles", info.get_3d_height());
 	int spot = info.get_ready_type();
-#if 0	// Need to add game detection code first:
-	if (game_id == BLACKGATE)
+	if (game_type == BLACK_GATE)
 		spot = get_bg_spots(spot);
 	else
 		spot = get_si_spots(spot);
-#endif	
-	spot = get_bg_spots(spot);	// Assume BG until then.
 	set_optmenu("shinfo_ready_spot", spot);
 	set_spin("shinfo_weight", info.get_weight(), 0, 255);
 	set_spin("shinfo_volume", info.get_volume(), 0, 255);
@@ -822,13 +819,10 @@ void ExultStudio::save_shape_notebook
 	const signed char si_spots[] = {0xFF, 0x08, 0xa0, 0x01, 0xa1, 0x50, 0x20,
 			0x48, 0x18, 0x10, 0x78, 0x60, 0x28, 0x40, 0x58, 0x70, 0x68, 0xFF,
 			0xFF, 0x30};
-#if 0	// Need to add game detection code first:
-	if (game_id == BLACKGATE)
+	if (game_type == BLACK_GATE)
 		spot = bg_spots[spot];
 	else
 		spot = si_spots[spot];
-#endif
-	spot = bg_spots[spot];	// Assume BG until then.
 	info.set_ready_type(spot);
 	info.set_weight_volume(get_spin("shinfo_weight"),
 						get_spin("shinfo_volume"));

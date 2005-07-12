@@ -124,7 +124,7 @@ public:
 	void set_quality(int q)
 		{ quality = q; }
 	int get_quantity() const;	// Like # of coins.
-	virtual int get_obj_hp() const;     // hitpoints for non-NPCs
+	virtual int get_obj_hp(int weapon_shape = 0) const;	// hitpoints for non-NPCs
 	virtual void set_obj_hp(int hp);
 	int get_volume() const;		// Get space taken.
 					// Add/remove to/from quantity.

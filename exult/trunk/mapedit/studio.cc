@@ -471,7 +471,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	static_path(0), image_editor(0), default_game(0), background_color(0),
 	browser(0), palbuf(0), 
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), npc_status_id(0),
+	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE),
 	objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
 {
@@ -925,6 +925,21 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 					// Clear file cache!
 	U7FileManager::get_ptr()->reset();
 	delete palbuf;			// Delete old.
+	string dirstr;
+	string d("config/disk/game/blackgate/path");
+	string gd = d + "blackgate/path";
+	config->value(gd.c_str(), dirstr, "");
+	if (dirstr == gamepath)
+		game_type = BLACK_GATE;
+	else
+		{
+		gd = d + "serpentisle/path";
+		config->value(gd.c_str(), dirstr, "");
+		if (dirstr == gamepath)
+			game_type = SERPENT_ISLE;
+		else
+			game_type = EXULT_DEVEL_GAME;
+		}
 	string palname("<PATCH>/");	// 1st look in patch for palettes.
 	palname += "palettes.flx";
 	size_t len;

@@ -52,6 +52,13 @@ typedef void (*Msg_callback)(Exult_server::Msg_type id,
 #endif
 
 class ExultStudio {
+public:
+	enum Exult_Game {
+		NONE,
+		BLACK_GATE,
+		SERPENT_ISLE,
+		EXULT_DEVEL_GAME		// One that we develop.
+	};
 private:
 	char			*glade_path;	// Where our .glade file is.
 	GtkWidget		*app;
@@ -98,6 +105,8 @@ private:
 					// Compile window:
 	GtkWidget		*compilewin;
 	Exec_box		*compile_box;
+					// Which game type:
+	Exult_Game game_type;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -279,6 +288,7 @@ public:
 	int prompt(const char *msg, const char *choice0, 
 			const char *choice1 = 0,const char *choice2 = 0);
 	int find_palette_color(int r, int g, int b);
+	Exult_Game get_game_type() const { return game_type; }
 };
 
 					// Utilities:
