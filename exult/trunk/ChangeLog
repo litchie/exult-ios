@@ -1,3 +1,6 @@
+2005-07-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc: fix crashing german BG (its IDENTITY is "ULTIMA7")
+
 2005-07-11  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/studio.h, etc: Implemented game detection code and ready spots.
 	  I am trusting exult.cfg to be accurate, which I am not sure is wise :-)

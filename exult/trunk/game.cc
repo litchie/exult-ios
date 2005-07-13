@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2004  The Exult Team
+ *  Copyright (C) 2000-2005  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,7 +133,8 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		char *static_identity = Game_window::get_game_identity(
 								INITGAME);
 
-		if (!strcmp(static_identity," ULTIMA7")) {
+		if (!strcmp(static_identity," ULTIMA7") ||
+			!strcmp(static_identity,"ULTIMA7") ) {
 			game_type = BLACK_GATE;
 			expansion = false;
 		} else if (!strcmp(static_identity, "FORGE")) {
@@ -162,6 +163,7 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		game = new DEV_Game();
 		break;
 	default:
+		cout << "Unrecognized game type!" << endl;
 		game = 0;
 	}
 
