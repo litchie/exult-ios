@@ -133,8 +133,7 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		char *static_identity = Game_window::get_game_identity(
 								INITGAME);
 
-		if (!strcmp(static_identity," ULTIMA7") ||
-			!strcmp(static_identity,"ULTIMA7") ) {
+		if (!strcmp(static_identity,"ULTIMA7")) {
 			game_type = BLACK_GATE;
 			expansion = false;
 		} else if (!strcmp(static_identity, "FORGE")) {
