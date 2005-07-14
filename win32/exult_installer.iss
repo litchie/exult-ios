@@ -51,7 +51,7 @@ Source: Exult\NEWS.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
 Source: Exult\ReadMe.html; DestDir: {app}; Flags: ignoreversion isreadme; Components: Docs
 Source: Exult\README.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
 Source: Exult\README.win32.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
-Source: Exult\sidefaultkeys.txt; DestDir: {app}\images; Flags: ignoreversion; Components: Docs
+Source: Exult\sidefaultkeys.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
 Source: Exult\images\back.gif; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
 Source: Exult\images\docs01.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
 Source: Exult\images\docs02.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
