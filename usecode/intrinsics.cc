@@ -703,9 +703,16 @@ USECODE_INTRINSIC(npc_nearby)
 {
 	// NPC nearby? (item).
 	Game_object *npc = get_item(parms[0]);
-	int is_near = (npc != 0 && 
+	if (!npc)
+		return Usecode_value(0);
+	Tile_coord pos = npc->get_tile();
+	int is_near = (
+#if 0	/* Old way, messes up Karnax at start of SI. */
 		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
 								< 12 &&
+#else
+		gwin->get_win_tile_rect().has_point(pos.tx, pos.ty) &&
+#endif
 					// FALSE if asleep.
 		!npc->get_flag(Obj_flags::asleep));
 	Usecode_value u(is_near);
