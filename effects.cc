@@ -525,7 +525,8 @@ void Explosion_effect::handle_event
 				Actor *act = obj->as_actor();
 				if (act)
 					act->attacked(attacker, weapon, projectile);
-				else if (obj->get_obj_hp(weapon) || obj->get_shapenum() == 704)
+				else if (obj->get_effective_obj_hp(weapon) ||
+							obj->get_shapenum() == 704)
 					obj->attacked(attacker, weapon, projectile);
 			}
 	}

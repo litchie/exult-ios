@@ -1,3 +1,10 @@
+2005-07-15  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed bug I introduced in which dueling NPCs would slaughter
+	  each other and then attack the avatar.
+	* objs.cc, objs.h: Fixed bug I introduced about container hit points.
+	* effects.cc: Changed to use the new get_effective_obj_hp function.
+	* animate.cc: Added a few new shape sound effects.
+
 2005-07-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc: fix crashing german BG (its IDENTITY is "ULTIMA7")
 
