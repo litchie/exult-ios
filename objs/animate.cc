@@ -180,11 +180,26 @@ int Object_sfx::get_shape_sfx
 		table[780] = 56;
 					// Fountains:
 		table[893] = 36;
-					// Moongates:
-		table[776] = 77;
-		table[777] = 77;
 		if (GAME_BG)
 			{
+						// Moongates:
+			table[157] = 77;
+			table[776] = 77;
+			table[777] = 77;
+			table[779] = 77;
+						// Sphere generator:
+			table[234] = 80;
+			table[235] = 80;
+			table[236] = 80;
+						// Tetrahedron generator:
+			table[242] = 81;
+			table[243] = 81;
+			table[244] = 81;
+						// Cube generator:
+			table[238] = 82;
+			table[239] = 82;
+			table[240] = 82;
+			
 			table[305] = 78;	// Black gate.
 			table[786] = 79;	// Vortex cube.
 			}

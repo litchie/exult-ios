@@ -173,17 +173,15 @@ int Game_object::get_quantity
 		return 1;
 	}
 
-int Game_object::get_obj_hp(int weapon_shape) const
+int Game_object::get_effective_obj_hp(int weapon_shape) const
 {
-	int shnum = get_shapenum();
-	if (Has_hitpoints(shnum))
-		return quality;
-	else
+ 	int hps = get_obj_hp();
+ 	if (!hps)
 		{
 		// some special cases
 		// guessing these don't have hitpoints by default because
 		// doors need their 'quality' field for something else
-
+		int shnum = get_shapenum();
 		int frnum = get_framenum();
 		if (shnum == 432 || shnum == 433) // doors
 			{
@@ -191,7 +189,7 @@ int Game_object::get_obj_hp(int weapon_shape) const
 				((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))) 
 				// only 'normal' doors (or powderkeg/cannon)
 				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
-					return 6;
+					hps = 6;
 			}
 		else if (shnum == 270 || shnum == 376) // more doors
 			{
@@ -200,21 +198,28 @@ int Game_object::get_obj_hp(int weapon_shape) const
 				// only 'normal' doors (or powderkeg/cannon)
 				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
 					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
-					return 6;
+					hps = 6;
 			}
 					// Serpent statue at end of SI:
 		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
-			return 1;
+			hps = 1;
 #if 0
 		else if (shnum == 522 && frnum < 2)
 			{ // locked normal chest
 			if (get_quality() == 0 || get_quality() == 255)
-				return 6;
+				hps = 6;
 			}
 #endif
-		else	
-			return 0;
 		}
+	return hps;
+}
+
+int Game_object::get_obj_hp() const
+{
+	if (Has_hitpoints(get_shapenum()))
+		return quality;
+	else
+		return 0;
 }
 
 void Game_object::set_obj_hp(int hp)
@@ -1274,7 +1279,7 @@ Game_object *Game_object::attacked
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 
-	int hp = get_obj_hp();		// Returns 0 if doesn't have HP's or is
+	int hp = get_effective_obj_hp();	// Returns 0 if doesn't have HP's or is
 					//   indestructible,
 	if (!hp) {			//   with exceptions:
 		if (shnum == 704 && // Powder keg... but not if cannon, as it already
