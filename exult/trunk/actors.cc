@@ -3143,8 +3143,6 @@ bool Actor::figure_hit_points
 	if (attacker && (usefun ||
 			(wpoints || powers) && !powers&Weapon_info::si_no_damage))
 		{ 
-		if (attacker->get_schedule_type() == Schedule::duel)
-			return this;	// Just play-fighting.
 		set_oppressor(attacker->get_npc_num());
 		if (is_combat_protected() && party_id >= 0 &&
 		    rand()%5 == 0)
@@ -3362,6 +3360,8 @@ Game_object *Actor::attacked
 					// Or party member of dead Avatar?
 	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
 		return 0;
+	if (attacker->get_schedule_type() == Schedule::duel)
+		return this;	// Just play-fighting.
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 		get_info().has_translucency() && 
