@@ -61,5 +61,6 @@ const char UC_POPEVENTID = 0x4b;
 const char UC_PUSHSTATIC = 0x50;	// Push static.
 const char UC_POPSTATIC = 0x51;		// Pop static.
 const char UC_CALLO = 0x52;		// Call original.
+const char UC_CALLIND = 0x53;		// Call indirect.  Addr. on stack.
 
 #endif

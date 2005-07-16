@@ -2405,7 +2405,7 @@ int Usecode_internal::run()
 					if (frame->locals[offset].get_int_value() >= 0) {
 						char buf[20];
 						snprintf(buf, 20, "%ld",
-								 frame->locals[offset].get_int_value());
+				 frame->locals[offset].get_int_value());
 						append_string(buf);
 					}
 				}
@@ -2593,6 +2593,16 @@ int Usecode_internal::run()
 				offset = Read2(frame->ip);
 				call_function(offset, frame->eventid, caller,
 								false, true);
+				frame_changed = true;
+				break;
+			}
+			case 0x53:		// CALLIND:  call indirect.
+			{			//  Function # is on stack.
+				Usecode_value funval = pop();
+				int offset = funval.get_int_value();
+				Usecode_value ival = pop();
+				Game_object *caller = get_item(ival);
+				call_function(offset, frame->eventid, caller);
 				frame_changed = true;
 				break;
 			}
