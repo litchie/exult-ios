@@ -127,7 +127,7 @@ static opcode_desc opcode_table[] =
 	{ "push\tstatic", 2, VARREF },			// 50
 	{ "pop\tstatic", 2, VARREF },			// 51
 	{ "callo",2,IMMED },				// 52
-	{ NULL, 0, 0 },					// 53
+	{ "callind", 0, 0 },			// 53
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 54-57
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 58-5B
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
