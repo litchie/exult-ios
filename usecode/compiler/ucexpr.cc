@@ -501,7 +501,7 @@ void Uc_array_expression::gen_value
 	}
 
 /*
- *	Push all values onto the stack.
+ *	Push all values onto the stack.  This is also called for parm. lists.
  *
  *	Output:	# pushed
  */
@@ -535,6 +535,20 @@ void Uc_call_expression::gen_value
 	vector<char>& out
 	)
 	{
+	if (ind)			// Indirect?
+		{
+		int parmcnt = parms->gen_values(out);	// Push params.
+		if (!itemref)
+			{
+			Uc_item_expression item;
+			item.gen_value(out);
+			}
+		else
+			itemref->gen_value(out);
+		ind->gen_value(out);	// Function #.
+		out.push_back((char) UC_CALLIND);
+		return;
+		}
 	if (!sym)
 		return;			// Already failed once.
 	if (!sym->gen_call(out, function, original, itemref,  

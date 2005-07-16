@@ -1,3 +1,12 @@
+2005-07-15    <jeff@mini.nerble.net>
+
+	* usecode/ucinternal.cc: Added support for indirect calls.
+	Example:
+	var fun = fun1;
+	(*fun)(3);
+	fun = fun + 1;
+	(*fun)(17);
+
 2005-07-15  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed bug I introduced in which dueling NPCs would slaughter
 	  each other and then attack the avatar.

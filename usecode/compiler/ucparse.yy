@@ -813,6 +813,12 @@ routine_call:
 			method_this = 0;
 			}
 		}
+	| '(' '*' primary ')' '(' opt_expression_list ')'
+		{
+		$$ = new Uc_call_expression($3, $6, function);
+		$$->set_itemref(method_this);
+		method_this = 0;
+		}
 	;
 
 opt_original:
