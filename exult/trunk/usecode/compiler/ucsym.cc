@@ -242,17 +242,7 @@ int Uc_intrinsic_symbol::gen_call
 	bool retvalue			// True if a function.
 	)
 	{
-	int parmcnt = 0;
-					// Want to push parm. values.
-	const std::vector<Uc_expression *>& exprs = parms->get_exprs();
-					// Push backwards, so #0 pops first.
-	for (std::vector<Uc_expression *>::const_reverse_iterator it = 
-			exprs.rbegin(); it != exprs.rend(); it++)
-		{
-		Uc_expression *expr = *it;
-		expr->gen_value(out);
-		parmcnt++;
-		}
+	int parmcnt = parms->gen_values(out);	// Want to push parm. values.
 	if (itemref)			// Happens with 'method' call.
 		{
 		itemref->gen_value(out);
@@ -343,17 +333,7 @@ int Uc_function_symbol::gen_call
 	bool /* retvalue */		// True if a function.
 	)
 	{
-	int parmcnt = 0;
-					// Want to push parm. values.
-	const std::vector<Uc_expression *>& exprs = aparms->get_exprs();
-					// Push backwards, so #0 pops first.
-	for (std::vector<Uc_expression *>::const_reverse_iterator it = 
-			exprs.rbegin(); it != exprs.rend(); it++)
-		{
-		Uc_expression *expr = *it;
-		expr->gen_value(out);
-		parmcnt++;
-		}
+	int parmcnt = aparms->gen_values(out);	// Want to push parm. values.
 	if (parmcnt != parms.size())
 		{
 		char buf[100];
