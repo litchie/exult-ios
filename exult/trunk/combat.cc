@@ -626,7 +626,8 @@ void Combat_schedule::start_strike
 			{		// Out of ammo/reagents.
 			if (npc->get_schedule_type() != Schedule::duel)
 				{	// Look in pack for ammo.
-				if (spellbook || !npc->ready_ammo())
+				if (spellbook || uses_charges ||
+							!npc->ready_ammo())
 					Swap_weapons(npc);
 				Combat_schedule::set_weapon();
 				}

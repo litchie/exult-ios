@@ -3026,8 +3026,9 @@ Weapon_info *Actor::get_weapon
 			{
 			points = winf->get_damage();
 			shape = weapon->get_shapenum();
+			return winf;
 			}
-					// Try both hands.
+					// Try right hand.
 	weapon = spots[static_cast<int>(rhand)];
 	if (weapon)
 		{
