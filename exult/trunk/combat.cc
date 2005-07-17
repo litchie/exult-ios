@@ -535,23 +535,18 @@ void Combat_schedule::approach_foe
 	}
 
 /*
- *	Swap weapon with the one in the belt.
- *
- *	Output:	1 if successful.
+ *	Check for a useful weapon at a given ready-spot.
  */
 
-static int Swap_weapons
+static Game_object *Get_usable_weapon
 	(
-	Actor *npc
+	Actor *npc,
+	int index			// Ready-spot to check.
 	)
 	{
-	Game_object *bobj = npc->get_readied(Actor::belt);
+	Game_object *bobj = npc->get_readied(index);
 	if (!bobj)
-		{
-		bobj = npc->get_readied(Actor::back2h_spot);
-		if (!bobj)
-			return 0;
-		}
+		return 0;
 	Shape_info& info = bobj->get_info();
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
@@ -569,13 +564,36 @@ static int Swap_weapons
 	if (info.get_ready_type() == two_handed_weapon &&
 	    npc->get_readied(Actor::rhand) != 0)
 		return 0;		// Needs two free hands.
+	return bobj;
+	}
+
+/*
+ *	Swap weapon with the one in the belt.
+ *
+ *	Output:	1 if successful.
+ */
+
+static int Swap_weapons
+	(
+	Actor *npc
+	)
+	{
+	int index = Actor::belt;
+	Game_object *bobj = Get_usable_weapon(npc, index);
+	if (!bobj)
+		{
+		index = Actor::back2h_spot;
+		bobj = Get_usable_weapon(npc, index);
+		if (!bobj)
+			return 0;
+		}
 	Game_object *oldweap = npc->get_readied(Actor::lhand);
 	if (oldweap)
 		npc->remove(oldweap);
 	npc->remove(bobj);
 	npc->add(bobj, 1);		// Should go into weapon hand.
-	if (oldweap)
-		npc->add(oldweap, 1);	
+	if (oldweap)			// Put old where new one was.
+		npc->add_readied(oldweap, index, 1, 1);	
 	return 1;
 	}
 
