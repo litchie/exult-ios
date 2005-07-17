@@ -1,3 +1,12 @@
+2005-07-16  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed crash when there was no attacker.
+	* intrinsics.cc: Fixed real cause of the super-cannon bug -- LOOP opcode
+	  should not loop if the variable hasn't been initialized (verified in the
+	  original, but with the add-ons only).
+	* objs.cc, effects.cc: Undid one change in each which became unnecessary now
+	  that the real cause of the super-cannon bug has been found. Also, slightly
+	  tweaked Projectile_effect for the benefit of traps.
+
 2005-07-15    <jeff@mini.nerble.net>
 
 	* usecode/ucinternal.cc: Added support for indirect calls.

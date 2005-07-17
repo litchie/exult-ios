@@ -482,6 +482,9 @@ Explosion_effect::Explosion_effect
 		//blame avatar:
 		attacker = gwin->get_main_actor();
 	}
+	else if (weapon == 702 && Game::get_game_type() == BLACK_GATE)
+		// Cannon, blame avatar:
+		attacker = gwin->get_main_actor();
 }
 
 
@@ -525,8 +528,7 @@ void Explosion_effect::handle_event
 				Actor *act = obj->as_actor();
 				if (act)
 					act->attacked(attacker, weapon, projectile);
-				else if (obj->get_effective_obj_hp(weapon) ||
-							obj->get_shapenum() == 704)
+				else
 					obj->attacked(attacker, weapon, projectile);
 			}
 	}
@@ -601,8 +603,9 @@ void Projectile_effect::init
 		sprite.set_frame(0);	// (Don't show powder keg!)
 	else
 		skip_render = true;		// We just won't show it.
-					// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	add_dirty();			// Paint immediately.
+					// Start after a slight delay.
+	gwin->get_tqueue()->add(Game::get_ticks(), this, gwin->get_std_delay()/2);
 	}
 
 
@@ -733,12 +736,14 @@ void Projectile_effect::handle_event
 		delay *= (1 + winf->get_cycle_delay());	// Guessing how to do it.
 	bool path_finished;
 	for (int i = 0; i <= winf->get_missile_speed(); i++)
-					// This speeds up the missile.
-		if ((path_finished = !path->GetNextStep(pos)) == true)
+		{	// This speeds up the missile.
+		path_finished = !(path->GetNextStep(pos) == true) ||	// Get next spot.
+				// If missile egg, detect target.
+			(!target && !no_blocking && (target = Find_target(gwin, pos)) != 0);
+		if (path_finished)
 			break;
-	if (path_finished ||	// Get next spot.
-					// If missile egg, detect target.
-	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
+		}
+	if (path_finished)
 		{			// Done? 
 		Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
 		if (winf && winf->explodes())

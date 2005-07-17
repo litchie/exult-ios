@@ -2294,6 +2294,13 @@ int Usecode_internal::run()
 				
 				// Get array to loop over.
 				Usecode_value& arr = frame->locals[local4];
+ 				if (initializing_loop && arr.is_undefined())
+				{	// If the local 'array' is not initialized, do not loop
+					// (verified in FoV and SS):
+					initializing_loop = false;
+					frame->ip += offset;
+					break;
+				}
 
 				int next = frame->locals[local1].get_int_value();
 
