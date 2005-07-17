@@ -1,3 +1,11 @@
+2005-07-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamewin.cc: Fixed small bug with dont_move flag in BG.
+	* intrinsics.cc: Allowed bg_dont_move flag to work like SI's dont_move flag
+	  when it is toggled (i.e., take Avatar out of combat mode). Also allowed
+	  invisible flag to be set for all objects.
+	* objs.cc: Fixed small bug which prevented detection of invisible objects
+	  with find_nearby using mask 0x20.
+
 2005-07-16  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed crash when there was no attacker.
 	* intrinsics.cc: Fixed real cause of the super-cannon bug -- LOOP opcode
@@ -8862,4 +8870,6 @@
 	has a major mode which enables easy editing of this beast.
 	* autogen.sh: script which generates automake/autoconf stuff.
 	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc
+	instead.
+∏PdÃ◊è
 	instead.
