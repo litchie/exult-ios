@@ -2283,21 +2283,22 @@ USECODE_INTRINSIC(set_item_flag)
 	switch (flag)
 		{
 	case Obj_flags::dont_move:
+	case Obj_flags::bg_dont_move:
 		obj->set_flag(flag);
 					// Get out of combat mode.
 		if (obj == gwin->get_main_actor() && 
-			Game::get_game_type() == SERPENT_ISLE &&
-							gwin->in_combat())
+			gwin->in_combat() &&
+			((flag == Obj_flags::bg_dont_move &&
+			  Game::get_game_type() == BLACK_GATE) ||
+			 (flag == Obj_flags::dont_move &&
+			  Game::get_game_type() == SERPENT_ISLE)))
 			gwin->toggle_combat();
 					// Show change in status.
 		gwin->set_all_dirty();
 		break;
 	case Obj_flags::invisible:
-		if (as_actor(obj))	// Only NPC's for now.
-			{
-			obj->set_flag(flag);
-			gwin->add_dirty(obj);
-			}
+		obj->set_flag(flag);
+		gwin->add_dirty(obj);
 		break;
 	case 0x14:			// The sailor (Ferryman).
 		sailor = obj;
