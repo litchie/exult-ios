@@ -448,7 +448,7 @@ static int Check_mask
 		return 0;
 					// Invisible object?
 	if (obj->get_flag(Obj_flags::invisible))
-		if (!(mask&20))	// Guess:  0x20 == invisible.
+		if (!(mask&0x20))	// Guess:  0x20 == invisible.
 			{
 			if (!(mask&0x40))	// Guess:  Inv. party member.
 				return 0;
