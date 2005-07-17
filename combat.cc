@@ -631,6 +631,9 @@ void Combat_schedule::start_strike
 					Swap_weapons(npc);
 				Combat_schedule::set_weapon();
 				}
+			if (!npc->get_info().has_strange_movement())
+				npc->change_frame(npc->get_dir_framenum(
+							Actor::standing));
 			state = approach;
 			npc->set_target(0);
 			npc->start(200, 500);
