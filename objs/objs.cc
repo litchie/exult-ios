@@ -1282,8 +1282,8 @@ Game_object *Game_object::attacked
 	int hp = get_effective_obj_hp();	// Returns 0 if doesn't have HP's or is
 					//   indestructible,
 	if (!hp) {			//   with exceptions:
-		if (shnum == 704 && // Powder keg... but not if cannon, as it already
-							// detonates them via usecode.
+		if (shnum == 704 && // Detonate Powder kegs... but not if the weapon is
+							// the BG cannon, as it detonates them via usecode.
 			!((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702)))
 		{
 			// cause chain reaction
@@ -1324,10 +1324,7 @@ Game_object *Game_object::attacked
 	if (wpoints >= hp) {
 		// object destroyed
 		eman->remove_text_effect(this);
-		if (!((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702)))
-				// The cannon usecode does this already; doing so again has
-				// bad effects for Britannian landscape...
-			ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
+		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
 		return 0;
 	} else {
 		set_obj_hp(hp - wpoints);
