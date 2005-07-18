@@ -78,8 +78,12 @@ public:
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
+	void show_gump(int event = 1);
 					// Run usecode function.
 	virtual void activate(int event = 1);
+	virtual bool edit();		// Edit in ExultStudio.
+					// Saved from ExultStudio.
+	static void update_from_studio(unsigned char *data, int datalen);
 	virtual int get_weight();
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);

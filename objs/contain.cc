@@ -35,7 +35,16 @@
 #include "databuf.h"
 #include "ucsched.h"
 
+#ifdef USE_EXULTSTUDIO
+#include "cheat.h"
+#include "server.h"
+#include "objserial.h"
+#include "servemsg.h"
+#endif
+
 #ifndef UNDER_CE
+using std::cout;
+using std::endl;
 using std::rand;
 using std::ostream;
 #endif
@@ -421,16 +430,14 @@ Game_object *Container_game_object::find_item
 	}
 
 /*
- *	Run usecode when double-clicked.
+ *	Displays the object's gump.
  */
-
-void Container_game_object::activate
+ 
+void Container_game_object::show_gump
 	(
 	int event
 	)
 	{
-	if (edit())
-		return;			// Map-editing.
 	int shnum = get_shapenum();
 	Gump_manager *gump_man = gumpman;
 
@@ -511,7 +518,7 @@ void Container_game_object::activate
 		return;
 
 		case 800:			// Chest.
-		if (get_quality() >= 251)	// Trapped?
+		if (!cheat.in_map_editor() && get_quality() >= 251)	// Trapped?
 			{		// Run normal usecode fun.
 			ucmachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
@@ -556,13 +563,115 @@ void Container_game_object::activate
 	}
 						// Try containers.dat.
 	int gump = get_info().get_container_gump();
-	if (gump >= 0) {
+	if (gump >= 0)
+		{
 		gump_man->add_gump(this, gump);
 		return;
+		}
 	}
+
+/*
+ *	Run usecode when double-clicked.
+ */
+
+void Container_game_object::activate
+	(
+	int event
+	)
+	{
+	if (edit())
+		return;			// Map-editing.
+	show_gump(event);
 					// Try to run normal usecode fun.
-	ucmachine->call_usecode(shnum, this,
+	ucmachine->call_usecode(get_shapenum(), this,
 				(Usecode_machine::Usecode_events) event);
+	}
+
+/*
+ *	Edit in ExultStudio.
+ */
+
+bool Container_game_object::edit
+	(
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
+		{
+		editing = 0;
+		Tile_coord t = get_tile();
+		unsigned long addr = (unsigned long) this;
+		std::string name = get_name();
+		if (Container_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), get_quality(), name,
+			get_obj_hp(),
+			get_flag(Obj_flags::invisible) != 0,
+			get_flag(Obj_flags::okay_to_take) != 0) != -1)
+			{
+			cout << "Sent object data to ExultStudio" << endl;
+			editing = this;
+			}
+		else
+			cout << "Error sending object to ExultStudio" <<endl;
+		return true;
+		}
+#endif
+	return false;
+	}
+
+/*
+ *	Message to update from ExultStudio.
+ */
+
+void Container_game_object::update_from_studio
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame, quality;
+	unsigned char res;
+	bool invis, can_take;
+	std::string name;
+	if (!Container_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		quality, name, res, invis, can_take))
+		{
+		cout << "Error decoding object" << endl;
+		return;
+		}
+	Container_game_object *obj = (Container_game_object *) addr;
+	if (!editing || obj != editing)
+		{
+		cout << "Obj from ExultStudio is not being edited" << endl;
+		return;
+		}
+//	editing = 0;	// He may have chosen 'Apply', so still editing.
+	if (invis)
+		obj->set_flag(Obj_flags::invisible);
+	else
+		obj->clear_flag(Obj_flags::invisible);
+	if (can_take)
+		obj->set_flag(Obj_flags::okay_to_take);
+	else
+		obj->clear_flag(Obj_flags::okay_to_take);
+	gwin->add_dirty(obj);
+	obj->set_shape(shape, frame);
+	gwin->add_dirty(obj);
+	obj->set_quality(quality);
+	obj->set_obj_hp(res);
+	Container_game_object *owner = obj->get_owner();
+	if (!owner)
+		{	// See if it moved -- but only if not inside something!
+		Tile_coord oldt = obj->get_tile();
+		if (oldt.tx != tx || oldt.ty != ty || oldt.tz != tz)
+			obj->move(tx, ty, tz);
+		}
+	cout << "Object updated" << endl;
+#endif
 	}
 
 /*
@@ -700,7 +809,7 @@ void Container_game_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
 	*ptr++ = (unsigned char)resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
-	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
+	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 	out->write((char*)buf, ptr - buf);
 	write_contents(out);		// Write what's contained within.

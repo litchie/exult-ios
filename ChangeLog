@@ -1,3 +1,11 @@
+2005-07-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed bug which prevented frame from being correctly set when
+	  creating new NPCs.
+	* objs/objs.cc: Fixed bug while editing objects contained by other objects.
+	* mapedit/objedit.cc, npcedit.cc: Added support for dragging shapes >1024.
+	* All other files: Added support for extended editing of container objects
+	  (i.e., editing resistance, 'invisible' and 'okay_to_take' flags).
+
 2005-07-17    <jeff@mini.nerble.net>
 
 	* combat.cc: Improvements to weapon-readying so that monsters are

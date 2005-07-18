@@ -94,6 +94,9 @@ private:
 					// Object editor:
 	GtkWidget		*objwin;
 	Shape_draw		*obj_draw;
+					// container editor:
+	GtkWidget		*contwin;
+	Shape_draw		*cont_draw;
 					// Shape info. editor:
 	GtkWidget		*shapewin;
 	Shape_draw		*shape_draw;
@@ -115,6 +118,8 @@ private:
 	Windnd			*npcdnd;
 	HWND			objhwnd;
 	Windnd			*objdnd;
+	HWND			conthwnd;
+	Windnd			*contdnd;
 	HWND			shphwnd;
 	Windnd			*shpdnd;
 #endif
@@ -201,6 +206,14 @@ public:
 	void rotate_obj();
 	void show_obj_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_obj_shape(int shape, int frame);
+					// Containers:
+	void open_cont_window(unsigned char *data, int datalen);
+	void close_cont_window();
+	int init_cont_window(unsigned char *data, int datalen);
+	int save_cont_window();
+	void rotate_cont();
+	void show_cont_shape(int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_cont_shape(int shape, int frame);
 					// Barges:
 	void open_barge_window(unsigned char *data = 0, int datalen = 0);
 	void close_barge_window();
