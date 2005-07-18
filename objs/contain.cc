@@ -431,9 +431,10 @@ Game_object *Container_game_object::find_item
 
 /*
  *	Displays the object's gump.
+ *	Returns true if the gump has been handled.
  */
  
-void Container_game_object::show_gump
+bool Container_game_object::show_gump
 	(
 	int event
 	)
@@ -445,7 +446,7 @@ void Container_game_object::show_gump
 	{
 		case 405:			// Ship's hold
 		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
-		return;
+		return true;
 
 		case 406:			// Nightstand.
 		case 407:			// Desk.
@@ -454,7 +455,7 @@ void Container_game_object::show_gump
 		case 416:			// Chest of drawers.
 		case 679:
 		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
-		return;
+		return true;
 
 		case 400:			// Bodies.
 		case 414:
@@ -463,41 +464,41 @@ void Container_game_object::show_gump
 		case 892:
 		case 507: 			// Bones
 		gump_man->add_gump(this, game->get_shape("gumps/body"));
-		return;
+		return true;
 
 		case 800:			// Chest.
 		gump_man->add_gump(this, game->get_shape("gumps/chest"));
-		return;
+		return true;
 
 		case 801:			// Backpack.
 		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
-		return;
+		return true;
 
 		case 799:			// Unsealed box
 		gump_man->add_gump(this, game->get_shape("gumps/box"));
-		return;
+		return true;
 
 		case 802:			// Bag.
 		gump_man->add_gump(this, game->get_shape("gumps/bag"));
-		return;
+		return true;
 
 		case 803:			// Basket.
 		gump_man->add_gump(this, game->get_shape("gumps/basket"));
-		return;
+		return true;
 	
 		case 804:			// Crate.
 		gump_man->add_gump(this, game->get_shape("gumps/crate"));
-		return;
+		return true;
 
 		case 819:			// Barrel.
 		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
-		return;
+		return true;
 	}
 	else if (Game::get_game_type() == SERPENT_ISLE) switch(shnum)	// Watch for gumps.
 	{
 		case 405:			// Ship's hold
 		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
-		return;
+		return true;
 
 		case 406:			// Nightstand.
 		case 407:			// Desk.
@@ -505,7 +506,7 @@ void Container_game_object::show_gump
 		case 416:			// Chest of drawers.
 		case 679:
 		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
-		return;
+		return true;
 
 		case 400:			// Bodies.
 		case 402:
@@ -515,59 +516,60 @@ void Container_game_object::show_gump
 		case 892:
 		case 507: 			// Bones
 		gump_man->add_gump(this, game->get_shape("gumps/body"));
-		return;
+		return true;
 
 		case 800:			// Chest.
 		if (!cheat.in_map_editor() && get_quality() >= 251)	// Trapped?
 			{		// Run normal usecode fun.
 			ucmachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
-			return;
+			return true;
 			}
 						// FALL THROUGH to 486.
 		case 486:			// Usecode container.
 		gump_man->add_gump(this, game->get_shape("gumps/chest"));
-		return;
+		return true;
 
 		case 801:			// Backpack.
 		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
-		return;
+		return true;
 
 		case 799:			// Unsealed box
 		gump_man->add_gump(this, game->get_shape("gumps/box"));
-		return;
+		return true;
 
 		case 802:			// Bag.
 		gump_man->add_gump(this, game->get_shape("gumps/bag"));
-		return;
+		return true;
 
 		case 803:			// Basket.
 		gump_man->add_gump(this, game->get_shape("gumps/basket"));
-		return;
+		return true;
 	
 		case 804:			// Crate.
 		gump_man->add_gump(this, game->get_shape("gumps/crate"));
-		return;
+		return true;
 
 		case 819:			// Barrel.
 		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
-		return;
+		return true;
 
 		case 297:			// Hollow Tree
 		gump_man->add_gump(this, game->get_shape("gumps/tree"));
-		return;
+		return true;
 
 		case 555:			// Serpent Jawbone
 		gump_man->add_gump(this, game->get_shape("gumps/jawbone"));
-		return;
+		return true;
 	}
 						// Try containers.dat.
 	int gump = get_info().get_container_gump();
 	if (gump >= 0)
 		{
 		gump_man->add_gump(this, gump);
-		return;
+		return true;
 		}
+	return false;
 	}
 
 /*
@@ -581,10 +583,10 @@ void Container_game_object::activate
 	{
 	if (edit())
 		return;			// Map-editing.
-	show_gump(event);
+	if (!show_gump(event))
 					// Try to run normal usecode fun.
-	ucmachine->call_usecode(get_shapenum(), this,
-				(Usecode_machine::Usecode_events) event);
+		ucmachine->call_usecode(get_shapenum(), this,
+					(Usecode_machine::Usecode_events) event);
 	}
 
 /*
