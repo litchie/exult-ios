@@ -212,6 +212,53 @@ void Actor::init
 	}
 
 /*
+ *	Find desired ammo.
+ *
+ *	Output:	->object if found.
+ */
+
+Game_object *Actor::find_ammo
+	(
+	int ammo			// Ammo family shape.
+	)
+	{
+					// See if already have ammo.
+	Game_object *aobj = get_readied(Actor::ammo);
+	if (aobj && In_ammo_family(aobj->get_shapenum(), ammo))
+		return aobj;		// Already readied.
+	Game_object_vector vec(50);		// Get list of all possessions.
+	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
+		{
+		Game_object *obj = *it;
+		if (In_ammo_family(obj->get_shapenum(), ammo))
+			return obj;
+		}
+	return 0;
+	}
+
+/*
+ *	Swap new ammo with old.
+ */
+
+void Actor::swap_ammo
+	(
+	Game_object *newammo
+	)
+	{
+	Game_object *aobj = get_readied(Actor::ammo);
+	if (aobj == newammo)
+		return;			// Already what we need.
+	if (aobj)			// Something there already?
+		aobj->remove_this(1);	// Remove it.
+	newammo->remove_this(1);
+	add(newammo, 1);		// Should go to the right place.
+	if (aobj)			// Put back old ammo.
+		add(aobj, 1);
+	}
+
+/*
  *	Ready ammo for weapon being carried.
  *
  *	Output:	1 if successful, else 0.
@@ -226,28 +273,10 @@ int Actor::ready_ammo
 	int ammo;
 	if (!winf || (ammo = winf->get_ammo_consumed()) == 0)
 		return 1;		// No weapon, or ammo not needed.
-					// See if already have ammo.
-	Game_object *aobj = get_readied(Actor::ammo);
-	if (aobj && In_ammo_family(aobj->get_shapenum(), ammo))
-		return 1;		// Already readied.
-	Game_object_vector vec(50);		// Get list of all possessions.
-	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
-	Game_object *found = 0;
-	for (Game_object_vector::const_iterator it = vec.begin(); 
-							it != vec.end(); ++it)
-		{
-		Game_object *obj = *it;
-		if (In_ammo_family(obj->get_shapenum(), ammo))
-			found = obj;
-		}
+	Game_object *found = find_ammo(ammo);
 	if (!found)
 		return 0;
-	if (aobj)			// Something there already?
-		aobj->remove_this(1);	// Remove it.
-	found->remove_this(1);
-	add(found, 1);			// Should go to the right place.
-	if (aobj)			// Put back old ammo.
-		add(aobj, 1);
+	swap_ammo(found);
 	return 1;
 	}
 
@@ -261,33 +290,41 @@ void Actor::ready_best_weapon
 	{
 	int points;
 	// What about spell book????
-	if (Actor::get_weapon(points) != 0)
-		{
-		ready_ammo();
+	if (Actor::get_weapon(points) != 0 && ready_ammo())
 		return;			// Already have one.
-		}
 	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
-	Game_object *best = 0;
+	Game_object *best = 0, *best_ammo = 0;
 	int best_damage = -20;
 	Ready_type wtype=other;
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
 		{
-		Game_object *obj = *it;
+		Game_object *obj = *it, *ammo_obj = 0;
 		if (obj->get_shapenum() == 595)
 			continue;	// Don't pick the torch. (Don't under-
 					//   stand weapons.dat well, yet!)
 		Shape_info& info = obj->get_info();
 		Weapon_info *winf = info.get_weapon_info();
+		int ammo;
 		if (!winf)
 			continue;	// Not a weapon.
+		if ((ammo = winf->get_ammo_consumed()) != 0)
+			{
+			ammo_obj = find_ammo(ammo);
+			if (!ammo_obj)
+				continue;
+			}
+		if (winf->uses_charges() && info.has_quality() &&
+					obj->get_quality() <= 0)
+			continue;	// No charges left.
 					// +++Might be a class to check.
 		int damage = winf->get_damage();
 		if (damage > best_damage)
 			{
 			wtype = static_cast<Ready_type>(info.get_ready_type());
 			best = obj;
+			best_ammo = ammo_obj;
 			best_damage = damage;
 			}
 		}
@@ -313,7 +350,8 @@ void Actor::ready_best_weapon
 		add(remove1, 1);
 	if (remove2)
 		add(remove2, 1);
-	ready_ammo();			// Get appropriate ammo.
+	if (best_ammo)
+		swap_ammo(best_ammo);
 	}
 
 /*
@@ -2727,7 +2765,7 @@ void Actor::remove
 		if (index == rfinger || index == lfinger)
 			two_fingered = false;
 		if (index == lhand && schedule)
-			schedule->set_weapon();	
+			schedule->set_weapon(true);	
 		}
 	}
 
@@ -3028,6 +3066,7 @@ Weapon_info *Actor::get_weapon
 			shape = weapon->get_shapenum();
 			return winf;
 			}
+#if 0	/* (jsf: 17july2005) I don't think we should look at right hand. */
 					// Try right hand.
 	weapon = spots[static_cast<int>(rhand)];
 	if (weapon)
@@ -3042,6 +3081,7 @@ Weapon_info *Actor::get_weapon
 			obj = weapon;
 			}
 		}
+#endif
 	return winf;
 	}
 

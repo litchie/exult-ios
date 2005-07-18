@@ -88,7 +88,7 @@ public:
 		{  }			//   being active to dormant.
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
-	virtual void set_weapon()	// Set weapon info.
+	virtual void set_weapon(bool removed = false)	// Set weapon info.
 		{  }
 					// Set where to sleep.
 	virtual void set_bed(Game_object *b)
