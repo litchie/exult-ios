@@ -87,7 +87,8 @@ public:
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 	virtual void ending(int newtype);// Switching to another schedule.
-	virtual void set_weapon();	// Set weapon info.
+	virtual void set_weapon(bool removed = false);	// Set weapon info.
+	void set_hand_to_hand();
 	static int use_ammo(Actor *npc, int ammo, int proj);
 	bool has_started_battle() const
 		{ return started_battle; }

@@ -1,3 +1,8 @@
+2005-07-17    <jeff@mini.nerble.net>
+
+	* combat.cc: Improvements to weapon-readying so that monsters are
+	better-equipped. 
+
 2005-07-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc: Fixed small bug with dont_move flag in BG.
 	* intrinsics.cc: Allowed bg_dont_move flag to work like SI's dont_move flag

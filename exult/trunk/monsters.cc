@@ -282,8 +282,11 @@ Monster_actor *Monster_actor::create
 	if (pos.tx >= 0)
 		monster->move(pos.tx, pos.ty, pos.tz);
 	if (equipment)
+		{
 		monster->equip(inf, temporary);	// Get equipment.
-
+		if (sched == Schedule::combat)
+			monster->ready_best_weapon();
+		}
 	if (sched < 0)			// Set sched. AFTER equipping.
 		sched = static_cast<int>(Schedule::loiter);
 	monster->set_schedule_type(sched);
