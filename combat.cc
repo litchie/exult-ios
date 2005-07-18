@@ -637,17 +637,20 @@ void Combat_schedule::start_strike
 		else if (ammo_shape &&
 		    (!(aobj = npc->get_readied(Actor::ammo)) ||
 			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
-			weapon_dead = true;
+			{
+			if (!npc->ready_ammo())	// Look in pack for ammo.
+				weapon_dead = true;
+			}
 		else if (uses_charges && weapon && weapon->get_quality() <= 0)
 			weapon_dead = true;
 		if (weapon_dead)
-			{		// Out of ammo/reagents.
+			{		// Out of ammo/reagents/charges.
 			if (npc->get_schedule_type() != Schedule::duel)
 				{	// Look in pack for ammo.
-				if (spellbook || uses_charges ||
-							!npc->ready_ammo())
-					Swap_weapons(npc);
-				Combat_schedule::set_weapon();
+				if (Swap_weapons(npc))
+					Combat_schedule::set_weapon();
+				else
+					set_hand_to_hand();
 				}
 			if (!npc->get_info().has_strange_movement())
 				npc->change_frame(npc->get_dir_framenum(
@@ -766,12 +769,13 @@ Spellbook_object *Combat_schedule::readied_spellbook
 
 void Combat_schedule::set_weapon
 	(
+	bool removed			// The weapon was just removed.
 	)
 	{
 	int points;
 	spellbook = 0;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
-	if (!info &&			// No weapon?
+	if (!info && !removed &&	// No weapon?
 	    !(spellbook = readied_spellbook()) &&	// No spellbook?
 					// Not dragging?
 	    !gwin->is_dragging() &&
@@ -784,11 +788,7 @@ void Combat_schedule::set_weapon
 		}
 	if (!info)			// Still nothing.
 		{
-		weapon = 0;
-		projectile_shape = ammo_shape = 0;
-		projectile_range = 0;
-		strike_range = 1;	// Can always bite.
-		is_thrown = returns = no_blocking = uses_charges = false;
+		set_hand_to_hand();
 		if (spellbook)		// Did we find a spellbook?
 			{
 			projectile_range = 10;	// Guessing.
@@ -820,6 +820,37 @@ void Combat_schedule::set_weapon
 					: strike_range;
 	if (state == strike || state == fire)
 		state = approach;	// Got to restart attack.
+	}
+
+
+/*
+ *	Set for hand-to-hand combat (no weapon).
+ */
+
+void Combat_schedule::set_hand_to_hand
+	(
+	)
+	{
+	weapon = 0;
+	projectile_shape = ammo_shape = 0;
+	projectile_range = 0;
+	strike_range = 1;	// Can always bite.
+	is_thrown = returns = no_blocking = uses_charges = false;
+				// Put aside weapon.
+	Game_object *weapon = npc->get_readied(Actor::lhand);
+	if (weapon)
+		{
+		int index = -1;
+		if (!npc->get_readied(Actor::belt))
+			index = Actor::belt;
+		else if (!npc->get_readied(Actor::back2h_spot))
+			index = Actor::back2h_spot;
+		if (index >= 0)
+			{
+			npc->remove(weapon);
+			npc->add_readied(weapon, index, 1, 1);	
+			}
+		}
 	}
 
 /*
