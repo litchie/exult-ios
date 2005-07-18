@@ -78,7 +78,7 @@ public:
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
-	void show_gump(int event = 1);
+	bool show_gump(int event = 1);
 					// Run usecode function.
 	virtual void activate(int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
