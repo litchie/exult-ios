@@ -895,10 +895,13 @@ void Game_object::update_from_studio
 	obj->set_shape(shape, frame);
 	gwin->add_dirty(obj);
 	obj->set_quality(quality);
-					// See if it moved.
-	Tile_coord oldt = obj->get_tile();
-	if (oldt.tx != tx || oldt.ty != ty || oldt.tz != tz)
-		obj->move(tx, ty, tz);
+	Container_game_object *owner = obj->get_owner();
+	if (!owner)
+		{	// See if it moved -- but only if not inside something!
+		Tile_coord oldt = obj->get_tile();
+		if (oldt.tx != tx || oldt.ty != ty || oldt.tz != tz)
+			obj->move(tx, ty, tz);
+		}
 	cout << "Object updated" << endl;
 #endif
 	}

@@ -92,6 +92,30 @@ extern int Object_in
 	std::string& name
 	);
 
+extern int Container_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	int quality,
+	std::string name,
+	unsigned char resistance,
+	bool invisible, bool okay_to_take
+	);
+extern int Container_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name,
+	unsigned char& resistance,
+	bool& invisible, bool& okay_to_take
+	);
+
 extern int Barge_object_out
 	(
 	int fd,				// Socket.

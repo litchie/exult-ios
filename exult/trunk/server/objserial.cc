@@ -112,6 +112,29 @@ void Object_io
  *	Output:	1 if successful, else 0.
  */
 template <class Serial> 
+void Container_io
+	(
+	Serial &io,			// Where to store data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,		// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name,
+	unsigned char& resistance,
+	bool& invisible, bool& okay_to_take
+	)
+	{
+	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
+	io << quality << name << resistance << invisible << okay_to_take;
+	}
+
+/*
+ *	Low-level serialization for use both by Exult and ExultStudio (so
+ *	don't put in anything that will pull in all of Exult).
+ *
+ *	Output:	1 if successful, else 0.
+ */
+template <class Serial> 
 void Barge_object_io
 	(
 	Serial &io,			// Where to store data.
@@ -241,6 +264,58 @@ int Object_in
 	Serial_in io(ptr);
 	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 		name);
+	return (ptr - data) == datalen;
+	}
+
+/*
+ *	Send out a container object.
+ *
+ *	Output:	-1 if unsuccessful.  0 if okay.
+ */
+
+int Container_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	int quality,
+	std::string name,
+	unsigned char resistance,
+	bool invisible, bool okay_to_take
+	)
+	{
+	static unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Serial_out io(ptr);
+	Container_io(io, addr, tx, ty, tz, shape, frame, quality,
+		name, resistance, invisible, okay_to_take);
+	return Exult_server::Send_data(fd, Exult_server::container, buf, ptr - buf);
+	}
+
+/*
+ *	Decode a container object.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Container_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,		// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name,
+	unsigned char& resistance,
+	bool& invisible, bool& okay_to_take
+	)
+	{
+	unsigned char *ptr = data;
+	Serial_in io(ptr);
+	Container_io(io, addr, tx, ty, tz, shape, frame, quality,
+		name, resistance, invisible, okay_to_take);
 	return (ptr - data) == datalen;
 	}
 

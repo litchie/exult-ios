@@ -34,6 +34,7 @@ exult_studio_SOURCES = \
 	npclst.cc \
 	npclst.h \
 	objedit.cc \
+	contedit.cc \
 	shapeedit.cc \
 	studio.cc \
 	studio.h \

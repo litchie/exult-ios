@@ -245,6 +245,9 @@ static void Handle_client_message
 	case Exult_server::egg:
 		Egg_object::update_from_studio(&data[0], datalen);
 		break;
+	case Exult_server::container:
+		Container_game_object::update_from_studio(&data[0], datalen);
+		break;
 	case Exult_server::npc:
 		Actor::update_from_studio(&data[0], datalen);
 		break;
@@ -507,6 +510,17 @@ static void Handle_client_message
 		gwin->get_effects()->center_text(msg);
 		break;
 		}
+	case Exult_server::cont_show_gump:
+		unsigned long addr = Read4(ptr);
+		Container_game_object *obj = (Container_game_object *) addr;
+		if (!obj)
+			{
+			cout << "Error decoding container data" << endl;
+			break;
+			}
+		cout << "Displaying container's gump" << endl;
+		obj->show_gump();
+		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);
