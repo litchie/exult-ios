@@ -8884,5 +8884,3 @@
 	* autogen.sh: script which generates automake/autoconf stuff.
 	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc
 	instead.
-¸PdÌ×
-	instead.
