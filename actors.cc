@@ -1956,7 +1956,7 @@ void Actor::update_from_studio
 			return;
 			}
 					// Create.  Gets initialized below.
-		npc = new Npc_actor(name, shape, frame, usecode);
+		npc = new Npc_actor(name, shape, npc_num, usecode);
 		npc->set_invalid();	// Set to invalid position.
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
@@ -1969,7 +1969,6 @@ void Actor::update_from_studio
 			delete npc;
 			return;
 			}
-		npc->npc_num = npc_num;
 		gwin->add_npc(npc, npc_num);
 		if (client_socket >= 0)
 			Exult_server::Send_data(client_socket, Exult_server::user_responded);
@@ -1977,12 +1976,13 @@ void Actor::update_from_studio
 	else				// Old.
 		{
 		npc->add_dirty();
-		npc->set_shape(shape, frame);
-		npc->add_dirty();
 		npc->usecode = usecode;
 		npc->usecode_assigned = true;
 		npc->set_npc_name(name.c_str());
 		}
+	// Ensure proper initialization of frame #:
+	npc->set_shape(shape, frame);
+	npc->add_dirty();
 	npc->face_num = face;
 	npc->set_ident(ident);
 	int i;

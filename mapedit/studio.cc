@@ -472,7 +472,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	browser(0), palbuf(0), 
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE),
-	objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
+	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), shape_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
 {
 	// Initialize the various subsystems
@@ -601,6 +601,9 @@ ExultStudio::~ExultStudio()
 	if (objwin)
 		gtk_widget_destroy(objwin);
 	delete obj_draw;
+	if (contwin)
+		gtk_widget_destroy(contwin);
+	delete cont_draw;
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
 	delete egg_monster_draw;
@@ -2280,6 +2283,9 @@ void ExultStudio::read_from_server
 		break;
 	case Exult_server::npc:
 		open_npc_window(data, datalen);
+		break;
+	case Exult_server::container:
+		open_cont_window(data, datalen);
 		break;
 	case Exult_server::user_responded:
 	case Exult_server::cancel:

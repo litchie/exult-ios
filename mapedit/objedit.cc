@@ -171,7 +171,7 @@ static void Obj_shape_dropped
 	)
 	{
 	if (file == U7_SHAPE_SHAPES && 
-				shape >= c_first_obj_shape && shape < 1024)
+				shape >= c_first_obj_shape && shape < 2048)
 		((ExultStudio *) udata)->set_obj_shape(shape, frame);
 	}
 
