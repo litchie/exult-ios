@@ -261,37 +261,50 @@ void Actor::swap_ammo
 /*
  *	Ready ammo for weapon being carried.
  *
- *	Output:	1 if successful, else 0.
+ *	Output:	true if successful.
  */
 
-int Actor::ready_ammo
+bool Actor::ready_ammo
 	(
 	)
 	{
 	int points;
-	Weapon_info *winf = Actor::get_weapon(points);
+	Game_object *weapon = spots[static_cast<int>(lhand)];
+	if (!weapon)
+		return false;
+	Shape_info& info = weapon->get_info();
+	Weapon_info *winf = info.get_weapon_info();
+	if (!winf)
+		return false;
 	int ammo;
-	if (!winf || (ammo = winf->get_ammo_consumed()) == 0)
-		return 1;		// No weapon, or ammo not needed.
+	if ((ammo = winf->get_ammo_consumed()) == 0)
+		{			// Ammo not needed.
+		if (winf->uses_charges() && info.has_quality() &&
+					weapon->get_quality() <= 0)
+			return false;	// Uses charges, but none left.
+		else
+			return true;
+		}
 	Game_object *found = find_ammo(ammo);
 	if (!found)
-		return 0;
+		return false;
 	swap_ammo(found);
-	return 1;
+	return true;
 	}
 
 /*
  *	If no weapon readied, look through all possessions for the best one.
+ *	Output:	true if successful.
  */
 
-void Actor::ready_best_weapon
+bool Actor::ready_best_weapon
 	(
 	)
 	{
 	int points;
 	// What about spell book????
 	if (Actor::get_weapon(points) != 0 && ready_ammo())
-		return;			// Already have one.
+		return true;		// Already have one.
 	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0, *best_ammo = 0;
@@ -329,7 +342,7 @@ void Actor::ready_best_weapon
 			}
 		}
 	if (!best)
-		return;
+		return false;
 	Game_object *remove1 = 0, *remove2 = 0;
 	if (wtype == two_handed_weapon)
 		{
@@ -352,6 +365,7 @@ void Actor::ready_best_weapon
 		add(remove2, 1);
 	if (best_ammo)
 		swap_ammo(best_ammo);
+	return true;
 	}
 
 /*
