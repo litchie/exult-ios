@@ -585,7 +585,12 @@ static int Swap_weapons
 		index = Actor::back2h_spot;
 		bobj = Get_usable_weapon(npc, index);
 		if (!bobj)
-			return 0;
+			{		// Do thorough search for NPC's.
+			if (!npc->is_in_party())
+				return npc->ready_best_weapon();
+			else
+				return 0;
+			}
 		}
 	Game_object *oldweap = npc->get_readied(Actor::lhand);
 	if (oldweap)

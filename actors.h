@@ -142,8 +142,8 @@ public:
 	int is_blocked(Tile_coord& t, Tile_coord *f = 0);
 	Game_object *find_ammo(int ammo);// Find ammo for desired family.
 	void swap_ammo(Game_object *newammo);
-	int ready_ammo();		// Find and ready appropriate ammo.
-	void ready_best_weapon();	// Find best weapon and ready it.
+	bool ready_ammo();		// Find and ready appropriate ammo.
+	bool ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
 					// Force repaint of area taken.
 	int get_effective_weapon_shape();	//For displaying casting frames.
