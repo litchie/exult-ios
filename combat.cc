@@ -1064,9 +1064,9 @@ void Combat_schedule::now_what
 		else if (uses_charges)
 			{
 			weapon->set_quality(weapon->get_quality() - 1);
-			ashape = pshape;
+			ashape = pshape ? pshape : wshape;
 			}
-		else			// Ammo required?
+		else
 			ashape = ashape ? use_ammo(npc, ashape, pshape)
 				: (pshape ? pshape : wshape);
 		if (ashape > 0)

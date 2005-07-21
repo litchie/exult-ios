@@ -579,14 +579,10 @@ void Projectile_effect::init
 		Shape_info& info = attacker->get_info();
 					// Try for around the heat.
 		pos.tz += info.get_3d_height() - 1;
-		if (d.tx < pos.tx)	// Start on proper side.
-			pos.tx -= info.get_3d_xtiles();
-		else
-			pos.tx++;
+		if (d.tx < pos.tx)
+			pos.tx += info.get_3d_xtiles();
 		if (d.ty < pos.ty)
-			pos.ty -= info.get_3d_ytiles();
-		else
-			pos.ty++;
+			pos.ty += info.get_3d_ytiles();
 		}
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
