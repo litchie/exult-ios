@@ -2070,7 +2070,13 @@ int Actor::drop
 	)
 	{
 	if (is_in_party())	// In party?
-		return (add(obj, false, true));	// We'll take it, and combine.
+		{
+		int res = add(obj, false, true);// We'll take it, and combine.
+		int ind = find_readied(obj);
+		if (ind >= 0)
+			call_readied_usecode(ind,obj,Usecode_machine::readied);
+		return res;
+		}
 	else
 		return 0;
 	}
@@ -2765,7 +2771,11 @@ void Actor::remove
 					//   but it needs to be done before
 					//   removal too.
 					// Definitely DO NOT call if dead!
+#if 0	/* OLD WAY:  Caused probs. with belt-of-strength at start of SS maze.*/
 	if (!ucmachine->in_usecode() && !is_dead())
+#else
+	if (!is_dead())
+#endif
 		call_readied_usecode(index, obj,
 						Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
@@ -2848,6 +2858,8 @@ bool Actor::add
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
 	obj->set_shape_pos(0, 0);	// Clear coords. (set by gump).
+	if (!dont_check)
+		call_readied_usecode(index, obj, Usecode_machine::readied);
 					// (Readied usecode now in drop().)
 	if (obj->get_info().is_light_source())
 		light_sources++;
@@ -2902,11 +2914,8 @@ int Actor::add_readied
 	// Must be gloves
 	if (type == FIS_2Finger && index == lfinger) two_fingered = true;
 
-	// Usecode?  NOTE:  Done in gwin->drop() now.
-//	if (!dont_check)
-//		call_readied_usecode(index, obj,
-//						Usecode_machine::readied);
-
+	if (!dont_check)
+		call_readied_usecode(index, obj, Usecode_machine::readied);
 	// Lightsource?
 	if (obj->get_info().is_light_source()) light_sources++;
 

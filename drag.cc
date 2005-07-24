@@ -360,7 +360,9 @@ void Dragging_info::put_back
 		{			// And don't check for volume!
 					// Restore saved vals.
 		obj->set_shape_pos(old_pos.tx, old_pos.ty);
-		gump->add(obj, -2, -2, -2, -2, true);
+		// 1st try with dont_check==false so usecode gets called.
+		if (!gump->add(obj, -2, -2, -2, -2, false))
+			gump->add(obj, -2, -2, -2, -2, true);
 		}
 	else if (is_new)
 		{
@@ -550,6 +552,7 @@ bool Dragging_info::drop
 					// Do 'unreadied' usecode.
 		gump->get_cont_or_actor(x,y)->call_readied_usecode(
 			readied_index, obj, Usecode_machine::unreadied);
+#if 0	/* Now done in Actor::drop */
 	if (on_gump)			// Do 'readied' usecode.
 		{
 		Container_game_object *owner = on_gump->get_cont_or_actor(x,y);
@@ -558,6 +561,7 @@ bool Dragging_info::drop
 			owner->call_readied_usecode(index,
 					obj, Usecode_machine::readied);
 		}
+#endif
 					// On a barge?
 	Barge_object *barge = gwin->get_moving_barge();
 	if (barge)
