@@ -101,7 +101,7 @@ public:
 class Uc_static_var_symbol : public Uc_var_symbol
 	{
 public:
-	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, offset)
+	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(vector<char>& out);
