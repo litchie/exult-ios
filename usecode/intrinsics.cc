@@ -2137,7 +2137,8 @@ USECODE_INTRINSIC(path_run_usecode)
 	return Usecode_value(path_run_usecode(ava, parms[0], parms[1],
 				parms[2], parms[3],
 					// SI:  Look for free spot. (Guess).
-			Game::get_game_type() == SERPENT_ISLE));
+			GAME_SI, false, 
+			GAME_SI));	// SI:  Bring companions.
 }
 
 USECODE_INTRINSIC(close_gump)

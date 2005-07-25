@@ -1,6 +1,11 @@
 2005-07-24    <jeff@mini.nerble.net>
 
-	* actors.cc,drag.cc:  Call readies/unreadied usecode in more
+	* usecode/ucinternal.cc: In SI, 'path_run_usecode' should have the
+	companions follow (fixes ice-raft).
+
+	* actions.cc (std): At end of path-walking, gather up followers.
+
+	* actors.cc,drag.cc:  Call readied/unreadied usecode in more
 	places so that SI special items (belt-of-strength, etc.) work properly.
 
 2005-07-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
