@@ -145,7 +145,7 @@ class If_else_path_actor_action : public Path_walking_actor_action
 	Actor_action *success, *failure;
 public:
 	If_else_path_actor_action(Actor *actor, Tile_coord dest, 
-				Actor_action *s, Actor_action *f = 0);
+		Actor_action *s, Actor_action *f = 0);
 	~If_else_path_actor_action();
 	void set_failure(Actor_action *f);
 	bool done_and_failed()		// Happens if no path found in ctor.

@@ -719,6 +719,19 @@ bool Barge_object::add
 	}
 
 /*
+ *	Is a given object part of the barge (after a 'gather')?
+ */
+
+bool Barge_object::contains
+	(
+	Game_object *obj
+	)
+	{
+	int ind = objects.find(obj);
+	return ind >= 0;
+	}
+
+/*
  *	Drop another onto this.
  *
  *	Output:	0 to reject, 1 to accept.

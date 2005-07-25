@@ -1357,8 +1357,9 @@ int Usecode_internal::path_run_usecode
 	Usecode_value& useval,		// Usecode #.
 	Usecode_value& itemval,		// Use as itemref in Usecode fun.
 	Usecode_value& eventval,	// Eventid.
-	int find_free,			// Not sure.  For SI.  
-	int always			// Always run function, even if failed.
+	bool find_free,			// Not sure.  For SI.  
+	bool always,			// Always run function, even if failed.
+	bool companions			// For SI:  companions should follow.
 	)
 	{
 	Actor *npc = as_actor(get_item(npcval));
@@ -1395,12 +1396,20 @@ int Usecode_internal::path_run_usecode
 			return 1;	// Maiden loop in SI.  Kludge+++++++
 		}
 	if (!obj)			// Just skip the usecode part.
-		return npc->walk_path_to_tile(dest, gwin->get_std_delay(), 0);
+		{
+		int res = npc->walk_path_to_tile(dest, 
+						gwin->get_std_delay(), 0);
+		if (res && companions && npc->get_action())
+			npc->get_action()->set_get_party();
+		return res;
+		}
 					// Walk there and execute.
 	If_else_path_actor_action *action = 
 		new If_else_path_actor_action(npc, dest,
 				new Usecode_actor_action(usefun, obj, 
 						eventval.get_int_value()));
+	if (companions)
+		action->set_get_party();
 	if (always)			// Set failure to same thing.
 		action->set_failure(
 				new Usecode_actor_action(usefun, obj, 

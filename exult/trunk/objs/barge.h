@@ -101,6 +101,7 @@ public:
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
 							bool combine = false);
+	bool contains(Game_object *obj);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Render.

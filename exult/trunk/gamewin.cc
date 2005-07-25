@@ -576,7 +576,11 @@ void Game_window::set_moving_barge
 	)
 	{
 	if (b && b != moving_barge)
-		b->gather();		// Gather up all objects on it.
+		{
+		b->gather();		// Will 'gather' on next move.
+		if (!b->contains(main_actor))
+			b->set_to_gather();
+		}
 	else if (!b && moving_barge)
 		moving_barge->done();	// No longer 'barging'.
 	moving_barge = b;
