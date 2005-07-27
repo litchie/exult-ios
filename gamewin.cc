@@ -2569,9 +2569,10 @@ void Game_window::call_guards
 	)
 	{
 	Actor *closest;
-	if (!witness && !(witness = find_witness(closest)))
-		return;			// Nobody saw.
-	witness->say(first_call_guards, last_call_guards);
+	if (armageddon)
+		return;
+	if (witness || (witness = find_witness(closest)) != 0)
+		witness->say(first_call_guards, last_call_guards);
 					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());
 					// Create it off-screen.
@@ -2606,6 +2607,8 @@ void Game_window::attack_avatar
 	int create_guards		// # of extra guards to create.
 	)
 	{
+	if (armageddon)
+		return;
 	int gshape = Get_guard_shape(main_actor->get_tile());
 	while (create_guards--)
 		{
