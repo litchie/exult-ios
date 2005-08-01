@@ -42,6 +42,7 @@ bindist: finishedbinary
 	cp $(EXEC) exult-$(VERSION)
 	cp README FAQ README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
 	cp data/exult.flx data/exult_bg.flx data/exult_si.flx exult-$(VERSION)/data
+	cp data/bodies_bg.txt data/bodies_si.txt exult-$(VERSION)/data
 	cp $(HOME)/lib/libSDL.so $(HOME)/lib/README-SDL.txt exult-$(VERSION)/lib
 	rm -f exult-$(VERSION).x86.beos.zip
 	zip -r exult-$(VERSION).x86.beos.zip exult-$(VERSION)

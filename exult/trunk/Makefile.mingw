@@ -66,6 +66,8 @@ install: $(EXEC)
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data
+	cp data/bodies_bg.txt $(U7PATH)/data
+	cp data/bodies_si.txt $(U7PATH)/data
 	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/SDL.dll $(U7PATH)
 	cp SDL/lib/SDL_mixer.dll $(U7PATH)
