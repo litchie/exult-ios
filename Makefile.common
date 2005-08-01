@@ -260,7 +260,7 @@ head2data.test:
 all: $(EXEC)
 
 clean:
-	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
+	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bodies_bg.txt data/bodies_si.txt
 
 tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
 
