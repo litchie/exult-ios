@@ -2,7 +2,6 @@
 #
 #	July 31, 2006 - Derived from shapes/bodies.cc
 #
-
 179:402/23 		# black robe mage no face
 214:402/3 		# male gwani
 226:414/10 		# old red robe mage
@@ -155,7 +154,3 @@
 1027:414/31 		# brown female avatar
 1028:400/1 		# blonde male avatar
 1029:400/2 		# blonde female avatar
-
-
-
-

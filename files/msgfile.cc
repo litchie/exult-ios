@@ -69,6 +69,7 @@ int Read_text_msg_file
 	while (!in.eof())
 		{
 		++linenum;
+		buf[0] = 0;		// In case line is empty.
 		in.get(buf, sizeof(buf));
 		char delim;		// Check for end-of-line.
 		in.get(delim);

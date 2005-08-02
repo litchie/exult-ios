@@ -1,3 +1,7 @@
+2005-08-02    <jeff@mini.nerble.net>
+
+	* shapes/bodies.cc: Use text files for getting body shapes.
+
 2005-07-24    <jeff@mini.nerble.net>
 
 	* usecode/ucinternal.cc: In SI, 'path_run_usecode' should have the

@@ -23,9 +23,17 @@
 #endif
 
 #include "bodies.h"
-#include "hash_utils.h"
 #include "game.h"
+#include "utils.h"
+#include "msgfile.h"
+#include <fstream>
+#include <map>
+#include <vector>
 
+using std::vector;
+using std::ifstream;
+using std::map;
+using std::pair;
 using std::size_t;
 
 /*
@@ -65,7 +73,6 @@ short Body_lookup::bg_table[] = {	// BLACK GATE.
   382, 414, 7, 				// x Kissme
   394, 892, 10, 			// x guard
   401, 762, 25, 			// x pirate
-  401, 400, 16, 			// x pirate.
   403, 414, 16, 			// x Batlin
   445, 400, 3, 				// X mage male
   446, 400, 4, 				// X mage female
@@ -370,42 +377,63 @@ short Body_lookup::si_table[] = {	// SERPENT_ISLE.
 
 	};
 
-#ifndef DONT_HAVE_HASH_SET
+static std::map<int, long> *bodies_table = 0;
 
 /*
- *	Hash function for triples in table:
+ *	Setup table.
  */
-class Hash_shapes
+void Body_lookup::setup
+	(
+	)
 	{
-public:
-					// Return 'live' shape.
-	size_t operator() (const short *t) const
-		{ return t[0]; }
-	};
-
-/*
- *	For testing if two triples match.
- */
-class Equal_shapes
-	{
-public:
-     	bool operator() (const short *a, const short *b) const
-     		{ return a[0] == b[0]; }
-	};
-
-#else
-
-/*
- *	For testing whether one shape is less than another
- */
-class Less_shapes
-	{
-public:
-     	bool operator() (const short *a, const short *b) const
-     		{ return a[0] < b[0]; }
-	};
-
-#endif
+	ifstream in;
+	try {
+		U7open(in, "<PATCH>/bodies.txt", true);
+	} catch (std::exception &) {
+		const char *nm = GAME_SI ? "<DATA>/bodies_si.txt"
+			: (GAME_BG ? "<DATA>/bodies_bg.txt"
+				: "<STATIC>/bodies.txt");
+		U7open(in, nm, true);		// Throws exception.
+	}
+	vector<char *> strings;
+	int i = Read_text_msg_file(in, strings);
+	in.close();
+	bodies_table = new std::map<int, long>;
+	int cnt = strings.size();
+	short *oldptr;
+	int oldcnt;
+	// ++++++++Checking against old table.+++++++ REMOVE THIS SOON.
+	if (Game::get_game_type() == BLACK_GATE)
+		{
+		oldcnt = sizeof(bg_table)/(3*sizeof(bg_table[0]));
+		oldptr = &bg_table[0];
+		}
+	else
+		{
+		oldcnt = sizeof(si_table)/(3*sizeof(si_table[0]));
+		oldptr = &si_table[0];
+		}
+	if (i >= 0)
+		{
+		for ( ; i < cnt; ++i)
+			{
+			char *ptr = strings[i], *eptr;
+			if (!ptr)
+				continue;
+			int bshape = strtol(ptr, &eptr, 0);
+			int bframe = strtol(eptr + 1, 0, 0);
+			assert(oldcnt);
+			assert(i == oldptr[0]);
+			assert(bshape == oldptr[1]);
+			assert(bframe == oldptr[2]);
+			oldptr += 3;
+			oldcnt--;
+			(*bodies_table)[i] = (((long)bshape)<<16)|bframe;
+			}
+		}
+	for (i = 0; i < cnt; ++i)
+		delete strings[i];
+	}
 
 /*
  *	Lookup a shape's body.
@@ -420,49 +448,13 @@ int Body_lookup::find
 	int& deadframe			// Dead frame returned.
 	)
 	{
-#ifndef DONT_HAVE_HASH_SET
-	static hash_set<short *, Hash_shapes, Equal_shapes> *htable = 0;
-#else
-	static std::set<short *, Less_shapes> *htable = 0;
-#endif
-
-	if (!htable)			// First time?
+	if (!bodies_table)		// First time?
+		setup();
+	std::map<int, long>::iterator it = bodies_table->find(liveshape);
+	if (it != bodies_table->end())
 		{
-#ifndef DONT_HAVE_HASH_SET
-		htable = new hash_set<short *, Hash_shapes, Equal_shapes>(300);
-#else
-		htable = new std::set<short *, Less_shapes>();
-#endif
-		short *ptr;
-		int cnt;
-		if (Game::get_game_type() == BLACK_GATE)
-			{
-			cnt = sizeof(bg_table)/(3*sizeof(bg_table[0]));
-			ptr = &bg_table[0];
-			}
-		else
-			{
-			cnt = sizeof(si_table)/(3*sizeof(si_table[0]));
-			ptr = &si_table[0];
-			}
-		while (cnt--)		// Add values.
-			{
-			htable->insert(ptr);
-			ptr += 3;
-			}
-		}
-	short key = (short) liveshape;
-#ifndef DONT_HAVE_HASH_SET
-	hash_set<short *, Hash_shapes, Equal_shapes>::iterator it =
-							htable->find(&key);
-#else
-	std::set<short *, Less_shapes>::iterator it = htable->find(&key);
-#endif
-	if (it != htable->end())
-		{
-		short *triple = *it;
-		deadshape = triple[1];
-		deadframe = triple[2];
+		deadshape = ((*it).second>>16)&0xffff;
+		deadframe = (*it).second&0xffff;
 		return 1;
 		}
 	else
