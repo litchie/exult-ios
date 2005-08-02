@@ -1,5 +1,7 @@
 #	Blackgate bodies.  Each entry contains NPCshape:bodyshape/bodyframe
 #
+#	July 31, 2006 - Derived from shapes/bodies.cc
+#
 154:762/22 			# x mage
 155:762/2 			# X Ferryman
 226:892/29 			# X flying gargoyle
@@ -24,7 +26,6 @@
 382:414/7 			# x Kissme
 394:892/10 			# x guard
 401:762/25 			# x pirate
-401:400/16 			# x pirate.
 403:414/16 			# x Batlin
 445:400/3 			# X mage male
 446:400/4 			# X mage female
@@ -125,5 +126,3 @@
 970:762/14 			# x sheep
 989:400/2 			# X avatar female
 1015:414/4			# x Stone Golem
-
-
