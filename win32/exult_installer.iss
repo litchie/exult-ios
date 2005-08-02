@@ -64,6 +64,8 @@ Source: Exult\images\exult_logo.gif; DestDir: {app}\images; Flags: ignoreversion
 Source: Exult\Data\exult.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_bg.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_si.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\bodies_si.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\bodies_bg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exultmsg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 
 Source: exconfig.dll; Flags: dontcopy
@@ -318,4 +320,3 @@ begin
       RegWriteStringValue(HKEY_LOCAL_MACHINE, 'Software\Exult', 'ShellObjectFolder', ExpandConstant('{groupname}'));
   end
 end;
-
