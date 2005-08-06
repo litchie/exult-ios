@@ -240,6 +240,7 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	data/bg/spark_face_00.png \
 	data/bg/spark_face_01.png \
 	data/bg/spiked_shield_00.png \
+	data/bg/spiked_shield_01.png \
 	data/bg/starburst_00.png \
 	data/bg/starburst_01.png \
 	data/bg/starburst_02.png \
