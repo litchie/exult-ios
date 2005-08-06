@@ -584,7 +584,7 @@ void Paperdoll_gump::paint_object
 		
 	if (item->gender && !info->is_female) f++;
  
-	ShapeID s(item->shape, f, item->file);
+	ShapeID s(item->shape, f, SF_PAPERDOL_VGA);
 	s.paint_shape(box.x + sx, box.y + sy, 1);
 	if (cheat.is_selected(obj))	// Outline selected obj.
 		s.paint_outline(box.x + sx, box.y + sy, HIT_PIXEL);
@@ -665,7 +665,7 @@ void Paperdoll_gump::paint_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	ShapeID s(info->head_shape, f, info->file);
+	ShapeID s(info->head_shape, f, SF_PAPERDOL_VGA);
 	s.paint_shape(box.x + headx, box.y + heady);
 }
 
@@ -973,7 +973,7 @@ Game_object * Paperdoll_gump::check_object
 		
 	if (item->gender && !info->is_female) f++;
 
-	if (check_shape (mx - sx, my - sy, item->shape, f, item->file))
+	if (check_shape (mx - sx, my - sy, item->shape, f, SF_PAPERDOL_VGA))
 	{
 		Shape_frame *shape = obj->get_shape();
 		int w = shape->get_width(), h = shape->get_height();
@@ -1060,7 +1060,7 @@ bool Paperdoll_gump::check_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	return check_shape (mx - headx, my - heady, info->head_shape, f, info->file);
+	return check_shape (mx - headx, my - heady, info->head_shape, f, SF_PAPERDOL_VGA);
 }
 
 /*

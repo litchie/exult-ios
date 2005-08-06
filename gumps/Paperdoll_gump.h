@@ -59,7 +59,6 @@ public:
 		
 		bool			gender;				// Is this object gender specific
 
-		ShapeFile		file;				// Which  VGA file is the shape in
 		int			shape;				// The shape (if -1 use world shape and frame)
 		int			frame;				// The frame
 		int			frame2;				// Second Frame (if used)
@@ -72,7 +71,6 @@ public:
 	{
 		int			npc_shape;			// Choose the NPC based on shape, not NPC number
 		bool			is_female;			// Is the NPC Female (or more specifically not male)
-		ShapeFile		file;				// Which VGA file the head shape is in
 
 		// Body info
 		int			body_shape;			// Body Shape

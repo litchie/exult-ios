@@ -36,7 +36,7 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 
 	set_shape(npcinfo->head_shape);
 	set_frame(npcinfo->head_frame);
-	set_file(npcinfo->file);
+	set_file(SF_PAPERDOL_VGA);
 }
 
 
@@ -54,13 +54,11 @@ void Face_button::update_widget()
 	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(actor->get_shape_real());
 
 	if (get_shapenum() != npcinfo->head_shape ||
-		get_framenum() != npcinfo->head_frame ||
-		get_shapefile() != npcinfo->file)
+		get_framenum() != npcinfo->head_frame)
 	{
 		gwin->add_dirty(get_rect());
 		set_shape(npcinfo->head_shape);
 		set_frame(npcinfo->head_frame);
-		set_file(npcinfo->file);
 		gwin->add_dirty(get_rect());
 	}
 
