@@ -145,8 +145,12 @@ void Shape_manager::load
 		{
 		try
 			{
+			// TODO: For now, I am placing a 'paperdol.vga' file in the exult/data folder.
+			// The objective would be to place the aforementioned file inside 'exult_bg.flx',
+			// but I am not sure how it would be loaded here.
 			files[SF_PAPERDOL_VGA].load(
-					"<SERPENTISLE_STATIC>/paperdol.vga");
+					"<SERPENTISLE_STATIC>/paperdol.vga",
+					U7exists(PATCH_PAPERDOL) ? PATCH_PAPERDOL : "<DATA>/paperdol.vga");
 			files[SF_BG_SIGUMP_FLX].load(
 					"<SERPENTISLE_STATIC>/gumps.vga");
 			files[SF_BG_SISHAPES_VGA].load(
