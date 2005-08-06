@@ -1,3 +1,7 @@
+2005-08-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Changed the way BG paperdolling is handled to use a 'paperdol.vga' file.
+	  Paperdoll patches are now possible in BG too.
+
 2005-08-02    <jeff@mini.nerble.net>
 
 	* shapes/bodies.cc: Use text files for getting body shapes.

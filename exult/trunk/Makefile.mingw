@@ -63,6 +63,7 @@ install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
+	cp data/paperdol.vga $(U7PATH)/data
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data

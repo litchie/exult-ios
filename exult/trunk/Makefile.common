@@ -117,53 +117,139 @@ EXULT_FLX_OBJECTS = \
 
 EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
 EXULT_BG_FLX_OBJECTS = \
-	data/bg/hoe_of_destruction.shp \
-	data/bg/caddellite_helmet.shp \
-	data/bg/great_dagger.shp \
-	data/bg/magic_boomerang.shp \
-	data/bg/gorget.shp \
-	data/bg/cleaver.shp \
-	data/bg/faces.shp \
-	data/bg/faces2.shp \
-	data/bg/amulets.shp \
-	data/bg/bgfiredoom.shp \
-	data/bg/fellowshipstaff.shp \
 	data/bg/BGmap.shp \
 	data/bg/defaultkeys.txt \
-	data/bg/dupre_face.shp \
-	data/bg/fem_av_face.shp \
-	data/bg/iolo_face.shp \
-	data/bg/male_av_face.shp \
-	data/bg/shamino_face.shp \
-	data/bg/greaves.shp \
-	data/bg/spiked_shield.shp \
 	data/bg/mr_faces.shp \
 	data/bg/mr_intro.shp \
-	data/bg/firesword.shp \
-	data/bg/greencloak.shp \
-	data/bg/greycloak.shp \
-	data/bg/ring_of_protection.shp \
-	data/bg/greentop.shp \
-	data/bg/orangedress.shp \
-	data/bg/bluedress.shp \
-	data/bg/death_scythe.shp \
-	data/bg/firewand.shp \
-	data/bg/knife.shp \
-	data/bg/starburst.shp \
-	data/bg/hawk.shp \
-	data/bg/musket_ammo.shp \
-	data/bg/shoes.shp \
-	data/bg/triple_xbow.shp \
-	data/bg/pants.shp \
-	data/bg/hoods.shp \
-	data/bg/musket.shp \
-	data/bg/custom_sword.shp \
-	data/bg/main_gauche.shp \
-	data/bg/magic_helmet.shp \
-	data/bg/throwing_axe.shp \
-	data/bg/lightning_whip.shp \
 	data/bg/flx.in
 
+EXULT_BG_PAPERDOL_VGA = data/paperdol.vga
+EXULT_BG_PAPERDOL_VGA_OBJECTS = \
+	data/bg/amulets_00.png \
+	data/bg/amulets_01.png \
+	data/bg/amulets_02.png \
+	data/bg/amulets_03.png \
+	data/bg/amulets_04.png \
+	data/bg/amulets_05.png \
+	data/bg/bgfiredoom_00.png \
+	data/bg/bgfiredoom_01.png \
+	data/bg/bluedress_00.png \
+	data/bg/bluedress_01.png \
+	data/bg/caddellite_helmet_00.png \
+	data/bg/caddellite_helmet_01.png \
+	data/bg/cleaver_00.png \
+	data/bg/cleaver_01.png \
+	data/bg/custom_sword_00.png \
+	data/bg/custom_sword_01.png \
+	data/bg/death_scythe_00.png \
+	data/bg/death_scythe_01.png \
+	data/bg/dupre_face_00.png \
+	data/bg/dupre_face_01.png \
+	data/bg/fellowshipstaff_00.png \
+	data/bg/fellowshipstaff_01.png \
+	data/bg/fem_av_face_00.png \
+	data/bg/fem_av_face_01.png \
+	data/bg/fem_av_face_02.png \
+	data/bg/fem_av_face_03.png \
+	data/bg/fem_av_face_04.png \
+	data/bg/fem_av_face_05.png \
+	data/bg/firesword_00.png \
+	data/bg/firesword_01.png \
+	data/bg/firewand_00.png \
+	data/bg/firewand_01.png \
+	data/bg/gorget_00.png \
+	data/bg/gorget_01.png \
+	data/bg/gorget_02.png \
+	data/bg/gorget_03.png \
+	data/bg/gorget_04.png \
+	data/bg/gorget_05.png \
+	data/bg/great_dagger_00.png \
+	data/bg/great_dagger_01.png \
+	data/bg/greaves_00.png \
+	data/bg/greaves_01.png \
+	data/bg/greencloak_00.png \
+	data/bg/greencloak_01.png \
+	data/bg/greencloak_02.png \
+	data/bg/greentop_00.png \
+	data/bg/greentop_01.png \
+	data/bg/greentop_02.png \
+	data/bg/greentop_03.png \
+	data/bg/greentop_04.png \
+	data/bg/greentop_05.png \
+	data/bg/greentop_06.png \
+	data/bg/greentop_07.png \
+	data/bg/greycloak_00.png \
+	data/bg/greycloak_01.png \
+	data/bg/greycloak_02.png \
+	data/bg/hawk_00.png \
+	data/bg/hawk_01.png \
+	data/bg/hawk_02.png \
+	data/bg/hoe_of_destruction_00.png \
+	data/bg/hoe_of_destruction_01.png \
+	data/bg/hoods_00.png \
+	data/bg/hoods_01.png \
+	data/bg/hoods_02.png \
+	data/bg/hoods_03.png \
+	data/bg/iolo_face_00.png \
+	data/bg/iolo_face_01.png \
+	data/bg/jaana_face_00.png \
+	data/bg/jaana_face_01.png \
+	data/bg/julia_face_00.png \
+	data/bg/julia_face_01.png \
+	data/bg/katrina_face_00.png \
+	data/bg/katrina_face_01.png \
+	data/bg/knife_00.png \
+	data/bg/knife_01.png \
+	data/bg/magic_boomerang_00.png \
+	data/bg/magic_boomerang_01.png \
+	data/bg/magic_helmet_00.png \
+	data/bg/magic_helmet_01.png \
+	data/bg/main_gauche_00.png \
+	data/bg/main_gauche_01.png \
+	data/bg/main_gauche_02.png \
+	data/bg/male_av_face_00.png \
+	data/bg/male_av_face_01.png \
+	data/bg/male_av_face_02.png \
+	data/bg/male_av_face_03.png \
+	data/bg/male_av_face_04.png \
+	data/bg/male_av_face_05.png \
+	data/bg/musket_00.png \
+	data/bg/musket_01.png \
+	data/bg/musket_ammo_00.png \
+	data/bg/musket_ammo_01.png \
+	data/bg/orange_dress_00.png \
+	data/bg/orange_dress_01.png \
+	data/bg/pants_00.png \
+	data/bg/pants_01.png \
+	data/bg/pants_02.png \
+	data/bg/pants_03.png \
+	data/bg/pants_04.png \
+	data/bg/pants_05.png \
+	data/bg/ring_of_protection_00.png \
+	data/bg/ring_of_protection_01.png \
+	data/bg/ring_of_protection_02.png \
+	data/bg/ring_of_protection_03.png \
+	data/bg/ring_of_protection_04.png \
+	data/bg/ring_of_protection_05.png \
+	data/bg/sentri_face_00.png \
+	data/bg/sentri_face_01.png \
+	data/bg/shamino_face_00.png \
+	data/bg/shamino_face_01.png \
+	data/bg/shoes_00.png \
+	data/bg/shoes_01.png \
+	data/bg/spark_face_00.png \
+	data/bg/spark_face_01.png \
+	data/bg/spiked_shield_00.png \
+	data/bg/starburst_00.png \
+	data/bg/starburst_01.png \
+	data/bg/starburst_02.png \
+	data/bg/throwing_axe_00.png \
+	data/bg/throwing_axe_01.png \
+	data/bg/triple_xbow_00.png \
+	data/bg/triple_xbow_01.png \
+	data/bg/tseramed_face_00.png \
+	data/bg/tseramed_face_01.png \
+	data/bg/bg_paperdol_vga.ipk
 
 EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
@@ -172,8 +258,9 @@ EXULT_SI_FLX_OBJECTS = \
 	data/si/flx.in
 
 FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
 
-$(EXEC) : $(FLEXES) $(OBJS) 
+$(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS) 
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 expack$(EXEEXT) : expack.o $(FILE_OBJS) 
@@ -187,6 +274,9 @@ $(EXULT_BG_FLX): expack$(EXEEXT) $(EXULT_BG_FLX_OBJECTS)
 
 $(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/si/flx.in
+
+$(BG_PAPERDOLL): ipack$(EXEEXT) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
+	ipack$(EXEEXT) -c data/bg/bg_paperdol_vga.ipk
 
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) cmanip.o $(CONF_OBJS) $(FILE_OBJS)
@@ -260,7 +350,7 @@ head2data.test:
 all: $(EXEC)
 
 clean:
-	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
+	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/paperdol.vga
 
 tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
 
