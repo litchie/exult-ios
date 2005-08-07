@@ -61,6 +61,7 @@ Source: Exult\images\docs05.png; DestDir: {app}\images; Flags: ignoreversion noc
 Source: Exult\images\docs06.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
 Source: Exult\images\exult_logo.gif; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
 
+Source: Exult\Data\paperdol.vga; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_bg.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_si.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
