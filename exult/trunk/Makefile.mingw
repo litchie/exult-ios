@@ -63,7 +63,7 @@ install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp data/paperdol.vga $(U7PATH)/data
+	cp data/bg_paperdol.vga $(U7PATH)/data
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data
@@ -82,7 +82,7 @@ dist:   $(EXEC) exconfig.dll
 	cp data/exult.flx $(U7PATH)/Exult/Data
 	cp data/exult_bg.flx $(U7PATH)/Exult/Data
 	cp data/exult_si.flx $(U7PATH)/Exult/Data
-	cp data/paperdol.vga $(U7PATH)/Exult/Data
+	cp data/bg_paperdol.vga $(U7PATH)/Exult/Data
 	cp data/bodies_bg.txt $(U7PATH)/Exult/Data
 	cp data/bodies_si.txt $(U7PATH)/Exult/Data
 	cp data/exultmsg.txt $(U7PATH)/Exult/Data
