@@ -39,6 +39,7 @@ class Dead_body;
 class Npc_timer_list;
 class Frames_sequence;
 class Animator;
+class Actor_attributes;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -58,6 +59,7 @@ protected:
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
 	int properties[12];		// Properties set/used in 'usecode'.
+	Actor_attributes *atts;		// Generic atts. (for new games/mods).
 	unsigned char temperature;	// Measure of coldness (0-63).
 	short shape_save;		// Our old shape, or -1.
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
@@ -394,6 +396,9 @@ public:
 					-(properties[(int) strength]/3); }
 	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
+					// Get/set generic attribute.
+	void set_attribute(const char *nm, int val);
+	int get_attribute(const char *nm);
 	Npc_timer_list *need_timers();
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
