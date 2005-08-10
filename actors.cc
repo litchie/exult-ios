@@ -29,6 +29,8 @@
 #  include <cstring>
 #endif
 #include <algorithm>		/* swap. */
+#include <set>
+#include <map>
 #include "Astar.h"
 #include "Audio.h"
 #include "Gump_manager.h"
@@ -78,6 +80,8 @@ using std::memcpy;
 using std::rand;
 using std::string;
 using std::swap;
+using std::set;
+using std::map;
 #endif
 
 Actor *Actor::editing = 0;
@@ -180,6 +184,40 @@ const signed char slow_swing_attack_frames2[] = {3, 7, 8, 9};
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
 	{ return ((((i&16)/8) - ((i&32)/32)) + 4)%4; }
+
+/*
+ *	Provide attribute/value pairs.
+ */
+class Actor_attributes
+	{
+	static set<string> *strings;	// So names get shared.
+	typedef map<const char *,int> Att_map;
+	Att_map map;
+public:
+	Actor_attributes()
+		{
+		if (!strings)
+			strings = new std::set<string>;
+		}
+	void set(const char *nm, int val)
+		{
+		std::set<string>::iterator siter = strings->find(nm);
+		if (siter == strings->end())
+			siter = strings->insert(nm).first;
+		nm = (*siter).c_str();
+		map[nm] = val;
+		}
+	int get(const char *nm)		// Returns 0 if not set.
+		{
+		std::set<string>::const_iterator siter = strings->find(nm);
+		if (siter == strings->end())
+			return 0;
+		nm = (*siter).c_str();
+		Att_map::const_iterator it = map.find(nm);
+		return it == map.end() ? 0 : (*it).second;
+		}
+	};
+set<string> *Actor_attributes::strings = 0;
 
 /*
  *	Get/create timers.
@@ -541,7 +579,8 @@ Actor::Actor
 	    siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
-	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false)
+	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false),
+	    atts(0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -559,6 +598,7 @@ Actor::~Actor
 	delete schedule;
 	delete action;
 	delete timers;
+	delete atts;
 	}
 
 /*
@@ -2332,6 +2372,33 @@ int Actor::get_effective_prop
 		break;
 		}
 	return val;
+	}
+
+/*
+ *	For mods and new games:  Set generic attribute keyed by a name.
+ */
+
+void Actor::set_attribute
+	(
+	const char *nm,
+	int val
+	)
+	{
+	if (!atts)
+		atts = new Actor_attributes;
+	atts->set(nm, val);
+	}
+
+/*
+ *	Get generic attribute.  Returns 0 if not set.
+ */
+
+int Actor::get_attribute
+	(
+	const char *nm
+	)
+	{
+	return atts ? atts->get(nm) : 0;
 	}
 
 /*
