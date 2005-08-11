@@ -434,9 +434,14 @@ USECODE_INTRINSIC(get_npc_prop)
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
 	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc ? 
-		npc->get_property(parms[1].get_int_value()) : 0);
-	return(u);
+	if (!npc)
+		return Usecode_value(0);
+	const char *att = parms[1].get_str_value();
+	if (att)
+		return Usecode_value(npc->get_attribute(att));
+	else
+		return Usecode_value(npc->get_property(
+						parms[1].get_int_value()));
 }
 
 USECODE_INTRINSIC(set_npc_prop)
@@ -445,9 +450,16 @@ USECODE_INTRINSIC(set_npc_prop)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
 		{			// NOTE: 3rd parm. is a delta!
-		int prop = parms[1].get_int_value();
-		npc->set_property(prop, npc->get_property(prop) +
+		const char *att = parms[1].get_str_value();
+		if (att)
+			npc->set_attribute(att, npc->get_attribute(att) +
 						parms[2].get_int_value());
+		else
+			{
+			int prop = parms[1].get_int_value();
+			npc->set_property(prop, npc->get_property(prop) +
+						parms[2].get_int_value());
+			}
 		return Usecode_value(1);// SI needs return.
 		}
 	return Usecode_value(0);
