@@ -1,3 +1,11 @@
+2005-08-10    <jeff@mini.nerble.net>
+
+	* actors.h (public): get_attributes() returns list of all
+	attribute/value pairs.
+
+	* usecode/intrinsics.cc: get_npc_prop/set_npc_prop can get/set
+	generic attributes if you pass a name as the property.
+
 2005-08-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changed the way BG paperdolling is handled to use a 'paperdol.vga' file.
 	  Paperdoll patches are now possible in BG too.

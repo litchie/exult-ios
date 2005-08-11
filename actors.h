@@ -399,6 +399,7 @@ public:
 					// Get/set generic attribute.
 	void set_attribute(const char *nm, int val);
 	int get_attribute(const char *nm);
+	void get_attributes(std::vector<std::pair<const char *,int> >& attlst);
 	Npc_timer_list *need_timers();
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
