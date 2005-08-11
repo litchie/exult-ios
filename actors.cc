@@ -216,6 +216,12 @@ public:
 		Att_map::const_iterator it = map.find(nm);
 		return it == map.end() ? 0 : (*it).second;
 		}
+	void get_all(std::vector<std::pair<const char *,int> >& attlist)
+		{
+		Att_map::const_iterator it;
+		for (it = map.begin(); it != map.end(); ++it)
+			attlist.push_back(*it);
+		}
 	};
 set<string> *Actor_attributes::strings = 0;
 
@@ -2399,6 +2405,20 @@ int Actor::get_attribute
 	)
 	{
 	return atts ? atts->get(nm) : 0;
+	}
+
+/*
+ *	Get them all.
+ */
+
+void Actor::get_attributes
+	(
+	std::vector<std::pair<const char *,int> >& attlist
+	)
+	{
+	attlist.resize(0);
+	if (atts)
+		atts->get_all(attlist);
 	}
 
 /*
