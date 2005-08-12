@@ -89,7 +89,7 @@ int Import_png8
 					// Indicate we already read something.
 	png_set_sig_bytes(png, sizeof(sigbuf));
 	png_read_info(png, info);	// Read in image info.
-	unsigned long w, h;
+	png_uint_32 w, h;
 	int depth, color, interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 		&interlace, 0, 0);
@@ -316,7 +316,7 @@ int Import_png32
 					// Indicate we already read something.
 	png_set_sig_bytes(png, sizeof(sigbuf));
 	png_read_info(png, info);	// Read in image info.
-	unsigned long w, h;
+	png_uint_32 w, h;
 	int depth, color, interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 		&interlace, 0, 0);
