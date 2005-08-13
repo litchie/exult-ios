@@ -143,7 +143,7 @@ EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	$(EXULT_BG_PAPERDOL_VGA_OBJECTS)
 
 bg_paperdol.vga: $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
-	../tools/expack -i $(srcdir)/bg_paperdol.in
+	../tools/expack -i $(srcdir)/bg/bg_paperdol.in
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
