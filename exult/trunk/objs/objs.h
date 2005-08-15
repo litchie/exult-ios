@@ -256,6 +256,7 @@ public:
 	virtual Egg_object *as_egg() { return 0; }
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
+	virtual void read_attributes(unsigned char *buf, int len) {  }
 					// Count contained objs.
 	virtual int count_objects(int shapenum, int qual = c_any_qual,
 							int framenum = c_any_framenum)

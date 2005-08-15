@@ -149,6 +149,8 @@ public:
 					// Get "ifix" objs. for given chunk.
 	void get_ifix_chunk_objects(DataSource* ifix, int vers,
 				long filepos, int len, int cx, int cy);
+	static void write_attributes(DataSource* ireg,
+			std::vector<std::pair<const char *,int> >& attlist);
 					// Write scheduled script for obj.
 	static void write_scheduled(DataSource* ireg, Game_object *obj,
 						bool write_mark = false);

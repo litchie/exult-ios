@@ -2422,6 +2422,27 @@ void Actor::get_attributes
 	}
 
 /*
+ *	Read in attributes (from savegame file).
+ */
+
+void Actor::read_attributes
+	(
+	unsigned char *buf,		// Attribute/value pairs.
+	int len
+	)
+	{
+	unsigned char *ptr = buf, *endbuf = buf + len;
+	while (ptr < endbuf)
+		{
+		char *att = (char *) ptr;
+		ptr += strlen(att) + 1;
+		assert(ptr + 2 <= endbuf);
+		int val = Read2(ptr);
+		set_attribute(att, val);
+		}
+	}
+
+/*
  *	Set flag.
  */
 
