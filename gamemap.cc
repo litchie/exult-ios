@@ -76,6 +76,7 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
+using std::pair;
 #endif
 
 Exult_vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
@@ -708,6 +709,38 @@ void Game_map::get_ifix_chunk_objects
 #define IREG_SPECIAL	255		// Precedes special entries.
 #define IREG_UCSCRIPT	1		// Saved Usecode_script for object.
 #define IREG_ENDMARK	2		// Just an 'end' mark.
+#define IREG_ATTS	3		// Attribute/value pairs.
+
+/*
+ *	Write out attributes for an object.
+ */
+
+void Game_map::write_attributes
+	(
+	DataSource* ireg,
+	vector<pair<const char *,int> >& attlist
+	)
+	{
+	int len = 0;			// Figure total length.
+	int i, cnt = attlist.size();
+	if (!cnt)
+		return;
+	for (i = 0; i < cnt; ++i)
+		{
+		const char *att = attlist[i].first;
+		len += strlen(att) + 1 + 3;	// Name, NULL, val.
+		}
+	ireg->write1(IREG_SPECIAL);
+	ireg->write1(IREG_UCSCRIPT);
+	ireg->write2(len);
+	for (i = 0; i < cnt; ++i)
+		{
+		const char *att = attlist[i].first;
+		int val = attlist[i].second;
+		ireg->write((void *)att, strlen(att) + 1);
+		ireg->write2(val);
+		}
+	}
 
 /*
  *	Write out scheduled usecode for an object.
@@ -900,6 +933,8 @@ void Read_special_ireg
 #endif
 			}
 		}
+	else if (type == IREG_ATTS)	// Attribute/value pairs?
+		obj->read_attributes(buf, len);
 	else
 		cerr << "Unknown special IREG entry: " << type << endl;
 	delete [] buf;

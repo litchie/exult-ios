@@ -645,6 +645,12 @@ void Actor::write
 	nfile->write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;
+	if (atts)
+		{
+		std::vector<std::pair<const char *,int> > attlist;
+		get_attributes(attlist);
+		Game_map::write_attributes(nfile, attlist);
+		}
 					// Write scheduled usecode.
 	Game_map::write_scheduled(nfile, this, true);
 	}
