@@ -39,6 +39,8 @@ protected:
 
 public:
 	Stats_gump(Container_game_object *cont, int initx, int inity);
+	Stats_gump(Container_game_object *cont, int initx, int inity,
+						int shnum, ShapeFile shfile);
 	~Stats_gump()
 		{  }
 					// Add object.

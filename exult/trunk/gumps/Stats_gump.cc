@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "Stats_gump.h"
 #include "Gump_manager.h"
-
+#include "exult_flx.h"
 
 /*
  *	Some gump shape numbers:
@@ -42,6 +42,63 @@ const int ASLEEP = 0, POISONED = 1, CHARMED = 2, HUNGRY = 3,
 short Stats_gump::textx = 123;
 short Stats_gump::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
+const int num_extra_spots = 10;
+const int att_name_textx = 15;
+
+/*
+ *	A secondary gump for showing custom attributes (for mods, new games).
+ */
+class Stats_extra_gump : public Stats_gump
+	{
+	Actor::Atts_vector atts;
+public:
+	Stats_extra_gump(Container_game_object *cont, int initx, int inity,
+			Actor::Atts_vector allatts, int first)
+		: Stats_gump(cont, initx, inity, EXULT_FLX_STATS_EXTRA_SHP,
+				SF_EXULT_FLX)
+		{
+		int cnt = allatts.size() - first;
+		if (cnt > num_extra_spots)
+			cnt = num_extra_spots;
+		atts.resize(cnt);
+		for (int i = first; i < cnt; ++i)
+			atts[i] = allatts[first + i];
+		}
+	~Stats_extra_gump()
+		{  }
+
+	virtual void paint();
+};
+
+/*
+ *	Paint on screen.
+ */
+
+void Stats_extra_gump::paint
+	(
+	)
+{
+	const int font = 2;
+	Gump_manager* gman = gumpman;
+
+					// Area to print name in.
+	const int namex = 30, namey = 6, namew = 95;
+	Actor *act = get_actor();
+					// Paint the gump itself.
+	paint_shape(x, y);
+					// Paint red "checkmark".
+	check_button->paint();
+					// Show statistics.
+	std::string nm = act->get_name();
+	sman->paint_text(2, nm.c_str(), x + namex +
+		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
+	int cnt = atts.size();
+	for (int i = 0; i < cnt; ++i)
+		{
+		sman->paint_text(font, atts[i].first, x + att_name_textx, y);
+		gman->paint_num(atts[i].second, x + textx, y + texty[0]);
+		}
+}
 
 /*
  *	Show one of the atts.
@@ -71,6 +128,16 @@ Stats_gump::Stats_gump
 	Container_game_object *cont, 
 	int initx, int inity
 	) : Gump(cont, initx, inity, game->get_shape("gumps/statsdisplay"))
+{
+	set_object_area(Rectangle(0,0,0,0), 6, 136);
+}
+Stats_gump::Stats_gump
+	(
+	Container_game_object *cont, 
+	int initx, int inity,
+	int shnum,
+	ShapeFile shfile
+	) : Gump(cont, initx, inity, shnum, shfile)
 {
 	set_object_area(Rectangle(0,0,0,0), 6, 136);
 }
