@@ -2413,7 +2413,7 @@ int Actor::get_attribute
 
 void Actor::get_attributes
 	(
-	std::vector<std::pair<const char *,int> >& attlist
+	Atts_vector& attlist
 	)
 	{
 	attlist.resize(0);
