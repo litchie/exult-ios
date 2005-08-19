@@ -22,6 +22,7 @@ EXULT_FLX_OBJECTS = \
 	extras.shp		\
 	midi_conversion.shp	\
 	notebook.shp		\
+	stats_extra.shp		\
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	scaling_method.shp	\

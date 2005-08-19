@@ -111,7 +111,7 @@ EXULT_FLX_OBJECTS = \
 	data/videooptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
-	data/notebook.shp \
+	data/stats_extra.shp \
 	data/mtgm.mid \
 	data/flx.in
 
