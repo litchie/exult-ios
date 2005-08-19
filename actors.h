@@ -399,7 +399,8 @@ public:
 					// Get/set generic attribute.
 	void set_attribute(const char *nm, int val);
 	int get_attribute(const char *nm);
-	void get_attributes(std::vector<std::pair<const char *,int> >& attlst);
+	typedef std::vector<std::pair<const char *,int> > Atts_vector;
+	void get_attributes(Atts_vector& attlst);
 					// Set atts. from savegame.
 	virtual void read_attributes(unsigned char *buf, int len);
 	Npc_timer_list *need_timers();

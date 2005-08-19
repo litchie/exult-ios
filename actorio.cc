@@ -647,7 +647,7 @@ void Actor::write
 	namebuf[16] = 0;
 	if (atts)
 		{
-		std::vector<std::pair<const char *,int> > attlist;
+		Actor::Atts_vector attlist;
 		get_attributes(attlist);
 		Game_map::write_attributes(nfile, attlist);
 		}
