@@ -1059,6 +1059,7 @@ static void Convert_indexed_image
 	int i;
 	for (i = 0; i < 256; i++)	// Set to 'unknown'.
 		map[i] = -1;
+	map[transp] = transp;		// But leave transparent pix. alone.
 					// Go through pixels.
 	for (i = 0; i < count; i++)
 		{

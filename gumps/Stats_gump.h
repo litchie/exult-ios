@@ -43,6 +43,7 @@ public:
 						int shnum, ShapeFile shfile);
 	~Stats_gump()
 		{  }
+	static Stats_gump *create(Game_object *npc_obj, int x, int y);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,
