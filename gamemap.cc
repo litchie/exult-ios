@@ -728,10 +728,10 @@ void Game_map::write_attributes
 	for (i = 0; i < cnt; ++i)
 		{
 		const char *att = attlist[i].first;
-		len += strlen(att) + 1 + 3;	// Name, NULL, val.
+		len += strlen(att) + 1 + 2;	// Name, NULL, val.
 		}
 	ireg->write1(IREG_SPECIAL);
-	ireg->write1(IREG_UCSCRIPT);
+	ireg->write1(IREG_ATTS);
 	ireg->write2(len);
 	for (i = 0; i < cnt; ++i)
 		{
