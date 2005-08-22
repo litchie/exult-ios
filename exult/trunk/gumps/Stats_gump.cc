@@ -43,19 +43,20 @@ short Stats_gump::textx = 123;
 short Stats_gump::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
 const int num_extra_spots = 10;
-const int att_name_textx = 15;
+const int att_name_textx = 32;
 
 /*
  *	A secondary gump for showing custom attributes (for mods, new games).
  */
 class Stats_extra_gump : public Stats_gump
 	{
+	int order;			// 1, 2, 3 for the NPC.
 	Actor::Atts_vector atts;
 public:
 	Stats_extra_gump(Container_game_object *cont, int initx, int inity,
-			Actor::Atts_vector allatts, int first)
+			Actor::Atts_vector& allatts, int first, int ord)
 		: Stats_gump(cont, initx, inity, EXULT_FLX_STATS_EXTRA_SHP,
-				SF_EXULT_FLX)
+				SF_EXULT_FLX), order(ord)
 		{
 		int cnt = allatts.size() - first;
 		if (cnt > num_extra_spots)
@@ -90,13 +91,19 @@ void Stats_extra_gump::paint
 	check_button->paint();
 					// Show statistics.
 	std::string nm = act->get_name();
+	char buf[20];
+	snprintf(buf, sizeof(buf), "(%d)", order + 1);
+	nm += buf;
 	sman->paint_text(2, nm.c_str(), x + namex +
 		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
 	int cnt = atts.size();
 	for (int i = 0; i < cnt; ++i)
 		{
-		sman->paint_text(font, atts[i].first, x + att_name_textx, y);
-		gman->paint_num(atts[i].second, x + textx, y + texty[0]);
+		std::string attnm(atts[i].first);
+		attnm += ':';
+		sman->paint_text(font, attnm.c_str(),
+			x + att_name_textx, y + texty[i]);
+		gman->paint_num(atts[i].second, x + textx, y + texty[i]);
 		}
 }
 
@@ -140,6 +147,34 @@ Stats_gump::Stats_gump
 	) : Gump(cont, initx, inity, shnum, shfile)
 {
 	set_object_area(Rectangle(0,0,0,0), 6, 136);
+}
+
+/*
+ *	Create for given NPC after first creating one of more for the 'extra'
+ *	stats.
+ */
+
+Stats_gump *Stats_gump::create
+	(
+	Game_object *npc_obj,
+	int x, int y
+	)
+{
+	Actor *npc = npc_obj->as_actor();
+	assert(npc != 0);
+	Actor::Atts_vector atts;
+	npc->get_attributes(atts);
+	int sz = atts.size();
+	int num = (sz + num_extra_spots - 1)/num_extra_spots;
+	// Create going backwards.
+	for (int i = num - 1; i >= 0; --i)
+		{
+		int first = i*num_extra_spots;
+		Stats_extra_gump *egmp = new Stats_extra_gump(npc,
+			x - 5*(i + 1), y - 5*(i + 1), atts, first, i + 1);
+		gumpman->add_gump(egmp);
+		}
+	return new Stats_gump(npc, x, y);
 }
 
 /*

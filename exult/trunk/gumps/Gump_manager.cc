@@ -290,7 +290,7 @@ void Gump_manager::add_gump
 	else if (npc && paperdoll) 
 		new_gump = new Actor_gump(npc, x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
-		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
+		new_gump = Stats_gump::create(obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
 		new_gump = new Spellbook_gump((Spellbook_object *) obj);
 	else if (Game::get_game_type() == SERPENT_ISLE)

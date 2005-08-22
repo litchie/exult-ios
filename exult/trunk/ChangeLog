@@ -1,3 +1,11 @@
+2005-08-21    <jeff@mini.nerble.net>
+
+	* gumps/Stats_gump.cc (Stats_gump): Display 'extra' attributes
+	defined in usecode.
+
+	* mapedit/shapelst.cc: Fixed bug when importing from Gimp where
+	transparency would go away.
+
 2005-08-10    <jeff@mini.nerble.net>
 
 	* actors.h (public): get_attributes() returns list of all
