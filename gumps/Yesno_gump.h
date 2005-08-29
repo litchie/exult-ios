@@ -37,7 +37,6 @@ protected:
 	const std::string text;			// Text of question.  It is drawn in
 					//   object_area.
 	int answer;			// 1 for yes, 0 for no.
-	Yesno_button *yes_button, *no_button;
 	void set_answer(int y)		// Done from 'yes'/'no' button.
 		{
 		answer = (y != 0);

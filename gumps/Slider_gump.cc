@@ -49,9 +49,10 @@ short Slider_gump::xmax = 93;
  */
 class Slider_button : public Gump_button
 {
+	bool is_left;
 public:
-	Slider_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py)
+	Slider_button(Gump *par, int px, int py, int shapenum, bool left)
+		: Gump_button(par, shapenum, px, py), is_left(left)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate();
@@ -65,7 +66,10 @@ void Slider_button::activate
 	(
 	)
 {
-	((Slider_gump *) parent)->clicked_arrow(this);
+	if (is_left)
+		((Slider_gump *) parent)->clicked_left_arrow();
+	else
+		((Slider_gump *) parent)->clicked_right_arrow();
 }
 
 /*
@@ -107,10 +111,10 @@ Slider_gump::Slider_gump
 #ifdef DEBUG
 	cout << "Slider:  " << min_val << " to " << max_val << " by " << step << endl;
 #endif
-	left_arrow = new Slider_button(this, leftbtnx, btny, 
-				       game->get_shape("gumps/slider_left"));
-	right_arrow = new Slider_button(this, rightbtnx, btny, 
-					game->get_shape("gumps/slider_right"));
+	add_elem(new Slider_button(this, leftbtnx, btny, 
+				game->get_shape("gumps/slider_left"), true));
+	add_elem(new Slider_button(this, rightbtnx, btny, 
+				game->get_shape("gumps/slider_right"), false));
 					// Init. to middle value.
 	if (defval < min_val)
 	  defval = min_val;
@@ -127,23 +131,24 @@ Slider_gump::~Slider_gump
 	(
 	)
 {
-	delete left_arrow;
-	delete right_arrow;
 }
 
 /*
  *	An arrow on the slider was clicked.
  */
 
-void Slider_gump::clicked_arrow
+void Slider_gump::clicked_left_arrow
 	(
-	Slider_button *arrow	// What was clicked.
 	)
 {
-	if (arrow == left_arrow)
-		move_diamond(-step_val);
-	else if (arrow == right_arrow)
-		move_diamond(step_val);
+	move_diamond(-step_val);
+}
+
+void Slider_gump::clicked_right_arrow
+	(
+	)
+{
+	move_diamond(step_val);
 }
 
 void Slider_gump::move_diamond(int dir)
@@ -174,9 +179,6 @@ void Slider_gump::paint
 	paint_shape(x, y);
 					// Paint red "checkmark".
 	paint_elems();
-					// Paint buttons.
-	left_arrow->paint();
-	right_arrow->paint();
 					// Paint slider diamond.
 	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
@@ -197,10 +199,6 @@ void Slider_gump::mouse_down
 	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		pushed = btn;
-	else if (left_arrow->on_button(mx, my))
-		pushed = left_arrow;
-	else if (right_arrow->on_button(mx, my))
-		pushed = right_arrow;
 	else
 		pushed = 0;
 	if (pushed)
@@ -295,10 +293,10 @@ void Slider_gump::key_down(int chr)
 		done = 1;
 		break;
 	case SDLK_LEFT:
-		clicked_arrow(left_arrow);
+		clicked_left_arrow();
 		break;
 	case SDLK_RIGHT:
-		clicked_arrow(right_arrow);
+		clicked_right_arrow();
 		break;
 	} 
 }

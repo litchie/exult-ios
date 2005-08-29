@@ -47,7 +47,9 @@ protected:
 	typedef std::vector<Gump_widget *> Gump_elems;
 	Gump_elems elems;		// Includes 'checkmark'.
 	bool handles_kbd;		// Kbd can be handled by gump.
-	void set_object_area(Rectangle area, int checkx = 8, int checky = 64);
+	void set_object_area(Rectangle area, int checkx, int checky);
+	void set_object_area(Rectangle area)
+		{ object_area = area; }
 	void add_elem(Gump_widget *w)
 		{ elems.push_back(w); }
 public:
