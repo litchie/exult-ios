@@ -88,7 +88,7 @@ void Stats_extra_gump::paint
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".
-	check_button->paint();
+	paint_elems();
 					// Show statistics.
 	std::string nm = act->get_name();
 	char buf[20];
@@ -203,7 +203,7 @@ void Stats_gump::paint
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".
-	check_button->paint();
+	paint_elems();
 					// Show statistics.
 	std::string nm = act->get_name();
 	sman->paint_text(2, nm.c_str(), x + namex +

@@ -58,7 +58,7 @@ void Jawbone_gump::paint()
 	paint_shape(x, y);
 
 	// Paint red "checkmark".
-	check_button->paint();
+	paint_elems();
 
 	jawbone->find_teeth();
 

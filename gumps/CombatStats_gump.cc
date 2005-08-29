@@ -48,31 +48,22 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 
 	party_size = gwin->get_party(party, 1);
 
-	Gump::shapenum = game->get_shape("gumps/cstats/1") + party_size - 1;
-	ShapeID::set_shape(Gump::shapenum, 0);
+	int shnum = game->get_shape("gumps/cstats/1") + party_size - 1;
+	ShapeID::set_shape(shnum, 0);
 
 	int i;	// Blame MSVC
 	for (i = 0; i < party_size; i++) {
-		halo_btn[i] = new Halo_button(this, colx + i*coldx, rowy[4], party[i]);
-		cmb_btn[i] = new Combat_mode_button(this, colx + i*coldx + 1, rowy[3],
-											party[i]);
-		face_btn[i] = new Face_button(this, colx + i*coldx - 13, rowy[0],
-									  party[i]);
-	}
-	for (i = party_size; i < 9; i++) {
-		halo_btn[i] = 0;
-		cmb_btn[i] = 0;
-		face_btn[i] = 0;
+		add_elem(new Halo_button(
+				this, colx + i*coldx, rowy[4], party[i]));
+		add_elem(new Combat_mode_button(
+				this, colx + i*coldx + 1, rowy[3], party[i]));
+		add_elem(new Face_button(
+				this, colx + i*coldx - 13, rowy[0], party[i]));
 	}
 }
 
 CombatStats_gump::~CombatStats_gump()
 {
-	for (int i = 0; i < 9; i++) {
-		delete halo_btn[i];
-		delete cmb_btn[i];
-		delete face_btn[i];
-	}
 }
 
 /*
@@ -87,15 +78,10 @@ void CombatStats_gump::paint()
 
 	// stats for all party members
 	for (int i = 0; i < party_size; i++) {
-		face_btn[i]->paint();
-
 		gman->paint_num(party[i]->get_effective_prop(Actor::combat),
-				  x + colx + i*coldx, y + rowy[1]);		
+			  x + colx + i*coldx, y + rowy[1]);		
 		gman->paint_num(party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
-
-		halo_btn[i]->paint();
-		cmb_btn[i]->paint();
 	}
 
 	// magic stats only for Avatar
@@ -105,18 +91,3 @@ void CombatStats_gump::paint()
 						x + colx, y + rowy[6]);	
 }
 
-Gump_button* CombatStats_gump::on_button(int mx, int my)
-{
-	Gump_button *btn = Gump::on_button(mx, my);
-	if (btn)
-		return btn;
-	for (int i = 0; i < party_size; i++) {
-		if (halo_btn[i]->on_button(mx, my))
-			return halo_btn[i];
-		if (cmb_btn[i]->on_button(mx, my))
-			return cmb_btn[i];
-		if (face_btn[i]->on_button(mx, my))
-			return face_btn[i];
-	}
-	return 0;
-}

@@ -173,7 +173,7 @@ void Slider_gump::paint
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".
-	check_button->paint();
+	paint_elems();
 					// Paint buttons.
 	left_arrow->paint();
 	right_arrow->paint();

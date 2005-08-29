@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GUMP_H_
 #define _GUMP_H_
 
+#include <vector>
 #include "exceptions.h"
 #include "rect.h"
 #include "shapeid.h"
@@ -29,6 +30,7 @@ class Game_object;
 class Game_window;
 class Gump_button;
 class Gump_manager;
+class Gump_widget;
 
 /*
  *	A gump contains an image of an open container from "gumps.vga".
@@ -41,12 +43,13 @@ protected:
 	Gump() : ShapeID() {   };
 	Container_game_object *container;// What this gump shows.
 	int x, y;			// Location on screen.
-	unsigned char shapenum;
 	Rectangle object_area;		// Area to paint objects in, rel. to
-					// Where the 'checkmark' goes.
-	Checkmark_button *check_button;
+	typedef std::vector<Gump_widget *> Gump_elems;
+	Gump_elems elems;		// Includes 'checkmark'.
 	bool handles_kbd;		// Kbd can be handled by gump.
 	void set_object_area(Rectangle area, int checkx = 8, int checky = 64);
+	void add_elem(Gump_widget *w)
+		{ elems.push_back(w); }
 public:
 	Gump(Container_game_object *cont, int initx, int inity, int shnum,
 					ShapeFile shfile = SF_GUMPS_VGA);
@@ -92,6 +95,7 @@ public:
 						bool combine = false);
 	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
+	void paint_elems();
 	virtual void paint();
 					// Close (and delete).
 	virtual void close();
