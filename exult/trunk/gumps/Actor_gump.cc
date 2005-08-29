@@ -98,17 +98,13 @@ Actor_gump::Actor_gump
 {
 	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
 	Actor *npc = cont->as_actor();
-	heart_button = new Heart_button(this, heartx, hearty);
+	add_elem(new Heart_button(this, heartx, hearty));
 	if (npc->get_npc_num() == 0)
-		disk_button = new Disk_button(this, diskx, disky);
-	else
-		disk_button = NULL;
+		add_elem(new Disk_button(this, diskx, disky));
 	if (npc->get_npc_num() == 0)
-		combat_button = new Combat_button(this, combatx, combaty);
-	else
-		combat_button = NULL;
-	halo_button = new Halo_button(this, halox, haloy, npc);
-	cmode_button = new Combat_mode_button(this, cmodex, cmodey, npc);
+		add_elem(new Combat_button(this, combatx, combaty));
+	add_elem(new Halo_button(this, halox, haloy, npc));
+	add_elem(new Combat_mode_button(this, cmodex, cmodey, npc));
 							
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.
@@ -126,38 +122,6 @@ Actor_gump::~Actor_gump
 	(
 	)
 {
-	if (heart_button) delete heart_button;
-	if (disk_button) delete disk_button;
-	if (combat_button) delete combat_button;
-	if (halo_button) delete halo_button;
-	if (cmode_button) delete cmode_button;
-}
-
-/*
- *	Is a given screen point on one of our buttons?
- *
- *	Output: ->button if so.
- */
-
-Gump_button *Actor_gump::on_button
-	(
-	int mx, int my			// Point in window.
-	)
-{
-	Gump_button *btn = Gump::on_button(mx, my);
-	if (btn)
-		return btn;
-	else if (heart_button && heart_button->on_button(mx, my))
-		return heart_button;
-	else if (disk_button && disk_button->on_button(mx, my))
-		return disk_button;
-	else if (combat_button && combat_button->on_button(mx, my))
-		return combat_button;
-	else if (halo_button && halo_button->on_button(mx, my))
-		return halo_button;
-	else if (cmode_button && cmode_button->on_button(mx, my))
-		return cmode_button;
-	return 0;
 }
 
 /*
@@ -282,12 +246,6 @@ void Actor_gump::paint
 			sid.paint_shape (sx,sy);
 		}
 	}
-					// Paint buttons.
-	if (heart_button) heart_button->paint();
-	if (disk_button) disk_button->paint();
-	if (combat_button) combat_button->paint();
-	if (halo_button) halo_button->paint();
-	if (cmode_button) cmode_button->paint();
 					// Show weight.
 	int max_weight = container->get_max_weight();
 	int weight = container->get_weight()/10;

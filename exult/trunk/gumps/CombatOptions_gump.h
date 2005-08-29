@@ -29,10 +29,11 @@ class CombatOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(CombatOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[5];	// Below settings, + ok, cancel.
+	int btn0;			// Below settings, + ok, cancel.
 	int difficulty;			// Setting for the buttons.
 	int show_hits;
 	int mode;
+	void build_buttons();
  public:
 	CombatOptions_gump();
 	~CombatOptions_gump();
@@ -46,7 +47,6 @@ class CombatOptions_gump : public Modal_gump
 	virtual void mouse_up(int mx, int my);
 
 	void toggle(Gump_button* btn, int state);
-	void build_buttons();
 
 	void load_settings();
 	void save_settings();

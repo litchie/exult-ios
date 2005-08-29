@@ -47,6 +47,8 @@ static const int colx[] = { 35, 50, 120, 170, 192 };
 static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
 
+const int nbuttons = 5;
+
 static int framerates[] = { 2, 4, 6, 8, 10, -1 };
  // -1 is placeholder for custom framerate
 static int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
@@ -111,11 +113,11 @@ void CombatOptions_gump::cancel()
 
 void CombatOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if (btn == buttons[0])
+	if (btn == elems[btn0])
 		difficulty = state;
-	else if (btn == buttons[1])
+	else if (btn == elems[btn0 + 1])
 		show_hits = state;
-	else if (btn == buttons[2])
+	else if (btn == elems[btn0 + 2])
 		mode = state;
 }
 
@@ -129,15 +131,20 @@ void CombatOptions_gump::build_buttons()
 	diffs[4] = "Harder (+1)";
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
-	buttons[0] = new CombatTextToggle (this, diffs, colx[3], rowy[0], 
-									   85, difficulty, 7);
-	buttons[1] = new CombatEnabledToggle(this, colx[3], rowy[1],
-										 85, show_hits);
+	btn0 = elems.size();
+	add_elem(new CombatTextToggle (this, diffs, colx[3], rowy[0], 
+							   85, difficulty, 7));
+	add_elem(new CombatEnabledToggle(this, colx[3], rowy[1],
+							 85, show_hits));
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
-	buttons[2] = new CombatTextToggle (this, modes, colx[3], rowy[2],
-									   85, mode, 2);
+	add_elem(new CombatTextToggle (this, modes, colx[3], rowy[2],
+							   85, mode, 2));
+	// Ok
+	add_elem(new CombatOptions_button(this, oktext, colx[0], rowy[3]));
+	// Cancel
+	add_elem(new CombatOptions_button(this, canceltext, colx[4], rowy[3]));
 }
 
 void CombatOptions_gump::load_settings()
@@ -158,27 +165,13 @@ CombatOptions_gump::CombatOptions_gump()
 	: Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
 {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
-	const int nbuttons = sizeof(buttons)/sizeof(buttons[0]);
-	for (int i = 0; i < nbuttons; i++)
-		buttons[i] = 0;
 
 	load_settings();
-	
 	build_buttons();
-
-	// Ok
-	buttons[nbuttons - 2] = 
-		new CombatOptions_button(this, oktext, colx[0], rowy[3]);
-	// Cancel
-	buttons[nbuttons - 1] = 
-		new CombatOptions_button(this, canceltext, colx[4], rowy[3]);
 }
 
 CombatOptions_gump::~CombatOptions_gump()
 {
-	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-		if (buttons[i])
-			delete buttons[i];
 }
 
 void CombatOptions_gump::save_settings()
@@ -198,10 +191,6 @@ void CombatOptions_gump::save_settings()
 void CombatOptions_gump::paint()
 {
 	Gump::paint();
-	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-		if (buttons[i])
-			buttons[i]->paint();
-
 	sman->paint_text(2, "Difficulty:", x + colx[0], y + rowy[0] + 1);
 	sman->paint_text(2, "Show Hits:", x + colx[0], y + rowy[1] + 1);
 	sman->paint_text(2, "Mode:", x + colx[0], y + rowy[2] + 1);
@@ -214,9 +203,9 @@ void CombatOptions_gump::mouse_down(int mx, int my)
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
-		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my)) {
-				pushed = buttons[i];
+		for (int i = btn0; i < btn0 + nbuttons; i++)
+			if (elems[i] && elems[i]->on_button(mx, my)) {
+				pushed = (Gump_button *) elems[i];
 				break;
 			}
 

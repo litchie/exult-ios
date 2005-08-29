@@ -35,11 +35,6 @@ class Actor_gump : public Gump
 	UNREPLICATABLE_CLASS(Actor_gump);
 
 protected:
-	Heart_button *heart_button;// For bringing up stats.
-	Disk_button *disk_button;	// For bringing up 'save' box.
-	Combat_button *combat_button;
-	Halo_button *halo_button;
-	Combat_mode_button *cmode_button;
 	static short coords[24];	// Coords. of where to draw things,
 					//   indexed by spot # (0-11).
 	static int spotx(int i) { return coords[2*i]; }
@@ -57,8 +52,6 @@ public:
 	Actor_gump(Container_game_object *cont, int initx, int inity, 
 								int shnum);
 	~Actor_gump();
-					// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,

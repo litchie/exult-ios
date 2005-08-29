@@ -48,7 +48,8 @@ public:
 		{  }
 					// Is a given point on the widget?
 	virtual int on_widget(int mx, int my);
-
+	virtual int on_button(int mx, int my)
+		{ return 0; }
 	virtual void paint();
 
 	virtual Rectangle get_rect();

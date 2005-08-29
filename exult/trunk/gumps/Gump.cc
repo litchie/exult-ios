@@ -41,7 +41,7 @@ Gump::Gump
 	int shnum,			// Shape #.
 	ShapeFile shfile
 	) : ShapeID(shnum, 0, shfile), container(cont), x(initx), y(inity), 
-		check_button(0), handles_kbd(false)
+		handles_kbd(false)
 {
 }
 
@@ -54,7 +54,7 @@ Gump::Gump
 	Container_game_object *cont,	// Container it represents.
 	int shnum,			// Shape #.
 	ShapeFile shfile
-	) : ShapeID(shnum, 0, shfile), container(cont), check_button(0),
+	) : ShapeID(shnum, 0, shfile), container(cont),
 		handles_kbd(false)
 {
 	Shape_frame *shape = get_shape();
@@ -68,11 +68,8 @@ Gump::Gump
 
 Gump::~Gump()
 {
-	if( check_button )
-	{
-		delete check_button;
-		check_button = 0;
-	} 
+	for (Gump_elems::iterator it = elems.begin(); it != elems.end(); ++it)
+		delete *it;
 }
 
 /*
@@ -98,7 +95,7 @@ void Gump::set_object_area
 {
 	object_area = area;
 	checkx += 16; checky -= 12;
-	check_button = new Checkmark_button(this, checkx, checky);
+	elems.push_back(new Checkmark_button(this, checkx, checky));
 }
 
 /*
@@ -210,8 +207,13 @@ Gump_button *Gump::on_button
 	int mx, int my			// Point in window.
 	)
 {
-	return (check_button ? 
-		(check_button->on_button(mx, my) ? check_button : 0) : 0);
+	for (Gump_elems::iterator it = elems.begin(); it != elems.end(); ++it)
+		{
+		Gump_widget *w = *it;
+		if (w->on_button(mx, my))
+			return (Gump_button *) w;
+		}
+	return 0;
 }
 
 /*
@@ -289,6 +291,18 @@ void Gump::remove
 }
 
 /*
+ *	Paint all elems.
+ */
+
+void Gump::paint_elems
+	(
+	)
+	{
+	for (Gump_elems::iterator it = elems.begin(); it != elems.end(); ++it)
+		(*it)->paint();
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -301,7 +315,7 @@ void Gump::paint
 	gwin->set_painted();
 		
 		// Paint red "checkmark".
-	if (check_button) check_button->paint();
+	paint_elems();
 
 	if (!container)
 		return;			// Empty.
