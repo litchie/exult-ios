@@ -2227,8 +2227,6 @@ Shape_chooser::Shape_chooser
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 				GTK_SIGNAL_FUNC(drag_motion), this);
 #endif
-//	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
-//				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
 				GTK_SIGNAL_FUNC(drag_data_get), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",

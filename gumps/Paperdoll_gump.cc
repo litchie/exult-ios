@@ -363,7 +363,7 @@ void Paperdoll_gump::paint
 	paint_shape(x, y);
 
 	// Paint red "checkmark".
-	check_button->paint();
+	paint_elems();
 
 	// Get the information required about ourself
 	Actor *actor = container->as_actor();
