@@ -79,8 +79,8 @@ Yesno_gump::Yesno_gump
 	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), answer(-1)
 {
 	set_object_area(Rectangle(6, 6, 116, 30));
-	yes_button = new Yesno_button(this, yesx, yesnoy, 1);
-	no_button = new Yesno_button(this, nox, yesnoy, 0);
+	add_elem(new Yesno_button(this, yesx, yesnoy, 1));
+	add_elem(new Yesno_button(this, nox, yesnoy, 0));
 }
 
 /*
@@ -91,8 +91,6 @@ Yesno_gump::~Yesno_gump
 	(
 	)
 {
-	delete yes_button;
-	delete no_button;
 }
 
 /*
@@ -105,9 +103,7 @@ void Yesno_gump::paint
 {
 					// Paint the gump itself.
 	paint_shape(x, y);
-					// Paint buttons.
-	yes_button->paint();
-	no_button->paint();
+	paint_elems();			// Paint buttons.
 					// Paint text.
 	sman->paint_text_box(2, text.c_str(), x + object_area.x, 
 			y + object_area.y, object_area.w, object_area.h, 2);
@@ -123,17 +119,9 @@ void Yesno_gump::mouse_down
 	int mx, int my			// Position in window.
 	)
 {
-					// Check buttons.
-	if (yes_button->on_button(mx, my))
-		pushed = yes_button;
-	else if (no_button->on_button(mx, my))
-		pushed = no_button;
-	else
-	{
-		pushed = 0;
-		return;
-	}
-	pushed->push();		// Show it.
+	pushed = on_button(mx, my);
+	if (pushed)
+		pushed->push();		// Show it.
 }
 
 /*

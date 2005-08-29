@@ -31,8 +31,6 @@ class Slider_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(Slider_gump,Modal_gump(0,0,0,0));
 
 protected:
-					// The arrows at each end:
-	Slider_button *left_arrow, *right_arrow;
 	int diamondx;			// Rel. pos. where diamond is shown.
 	static short diamondy;
 	int min_val, max_val;		// Max., min. values to choose from.
@@ -53,8 +51,8 @@ public:
 	int get_val()			// Get last value set.
 		{ return val; }
 					// An arrow was clicked on.
-	void clicked_arrow(Slider_button *arrow);
-
+	void clicked_left_arrow();
+	void clicked_right_arrow();
 	void move_diamond(int dir);
 
 					// Paint it and its contents.

@@ -471,6 +471,6 @@ void Container_gump::initialize
 		set_object_area(Rectangle(36, 46, 84, 40), 8, 70);
 	}
 	else
-		set_object_area(Rectangle(52, 22, 60, 40));
+		set_object_area(Rectangle(52, 22, 60, 40), 8, 64);
 }
 
