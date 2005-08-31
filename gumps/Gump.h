@@ -53,6 +53,7 @@ protected:
 	void add_elem(Gump_widget *w)
 		{ elems.push_back(w); }
 public:
+	friend class Gump_model;
 	Gump(Container_game_object *cont, int initx, int inity, int shnum,
 					ShapeFile shfile = SF_GUMPS_VGA);
 					// Create centered.
@@ -127,19 +128,24 @@ class Container_gump : public Gump
 	void initialize(int shnum);		// Initialize object_area.
 
 public:
-	Container_gump(Container_game_object *cont, int initx, int inity, int shnum,
-			ShapeFile shfile = SF_GUMPS_VGA)
+	Container_gump(Container_game_object *cont, int initx, int inity, 
+			int shnum, ShapeFile shfile = SF_GUMPS_VGA)
 		: Gump(cont, initx, inity, shnum, shfile)
 	{
 		initialize(shnum);
 	}
 					// Create centered.
-	Container_gump(Container_game_object *cont, int shnum, ShapeFile shfile = SF_GUMPS_VGA)
+	Container_gump(Container_game_object *cont, int shnum, 
+					ShapeFile shfile = SF_GUMPS_VGA)
 		: Gump(cont, shnum, shfile)
 	{
 		initialize(shnum);
 	}
-
+					// This one is for Gump_model.
+	Container_gump(Container_game_object *cont, int initx, int inity,
+		int shnum, ShapeFile shfile, Rectangle area)
+		: Gump(cont, shnum, shfile)
+		{  set_object_area(area); }
 };
 
 #endif
