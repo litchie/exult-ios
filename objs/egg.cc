@@ -509,7 +509,7 @@ void Egg_object::update_from_studio
 		egg = new Egg_object(shape, 0, 0, 0, 0, 0, 0, 0, 0);
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
-			if (gwin->drop_at_lift(egg, x, y, lift))
+			if (gwin->drop_at_lift(egg, x, y, lift) == 1)
 				break;
 		if (lift == 12)
 			{
