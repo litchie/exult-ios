@@ -1,3 +1,10 @@
+2005-10-01    <jeff@mini.nerble.net>
+
+	* exult.cc: Watch for game names "blackgate" and "serpentisle".
+
+	* objs/egg.cc (Egg_object): Fixed crash when dropping an egg on
+	something else.
+
 2005-08-21    <jeff@mini.nerble.net>
 
 	* gumps/Stats_gump.cc (Stats_gump): Display 'extra' attributes
