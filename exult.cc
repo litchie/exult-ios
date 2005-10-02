@@ -719,7 +719,11 @@ static void Init
 	// Show the banner
 	Exult_Game mygame;
 	game = 0;
-
+	if (arg_gamename == "blackgate") {
+		run_bg = true;
+	} else if (arg_gamename == "serpentisle") {
+		run_si = true;
+	}
 	// Figure out all the games' paths, before we store them.  That
 	// way, we don't have to recalculate them if we come back to the
 	// main menu and make another selection.
