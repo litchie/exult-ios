@@ -250,11 +250,13 @@ void Actor::read
 
 	set_temperature (((magic_val >> 2) & 0x38) + ((mana_val >> 5) & 7));
 
-//	nfile->skip(1	);	// Index2???? (refer to U7tech.txt)
-	face_num = nfile->read1();
+	face_num = nfile->read2();	// NOTE:  Exult's using 2 bytes, but
+					//   I think orig. used 1.
+	if (fix_first)
+		face_num &= 0xff;	// Just 1 byte in orig.
 	if (!face_num && npc_num > 0)	// Fix older savegames.
 		face_num = npc_num;
-	nfile->skip(2	);	// Unknown
+	nfile->skip(1);	// Unknown
 
 	set_property(static_cast<int>(Actor::exp), nfile->read4());
 	set_property(static_cast<int>(Actor::training), nfile->read1());
@@ -575,8 +577,8 @@ void Actor::write
 	nfile->write1 (magic_val);
 	nfile->write1 (mana_val);
 
-	nfile->write1((face_num >= 0 && face_num <= 255) ? face_num : 0);
-	nfile->write2(0);		// Skip 2
+	nfile->write2(face_num);
+	nfile->write1(0);		// Skip 2
 
 	nfile->write4(get_property(Actor::exp));
 	nfile->write1(get_property(Actor::training));

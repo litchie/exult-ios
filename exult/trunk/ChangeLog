@@ -1,3 +1,7 @@
+2005-10-02    <jeff@mini.nerble.net>
+
+	* actorio.cc: Save/restore 2-byte face#.
+
 2005-10-01    <jeff@mini.nerble.net>
 
 	* exult.cc: Watch for game names "blackgate" and "serpentisle".
