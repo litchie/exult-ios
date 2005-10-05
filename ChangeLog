@@ -1,3 +1,7 @@
+2005-10-04    <jeff@mini.nerble.net>
+
+	* actorio.cc: Save mana/magic for all NPC's.
+
 2005-10-02    <jeff@mini.nerble.net>
 
 	* actorio.cc: Save/restore 2-byte face#.

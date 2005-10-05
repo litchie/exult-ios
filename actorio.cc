@@ -219,36 +219,45 @@ void Actor::read
 	user_set_attack = (amode&(1<<5)) != 0;
 	attack_mode = (Attack_mode) (amode&0xf);
 
-	nfile->skip(3); 	//Unknown
-
-	// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4), TempLow (5-7)
-	// Else: ID# (0-4) ???, TempHigh (5-7) and Mat (0), No Spell Casting (1), Zombie (3), TempLow (5-7)
-	int magic_val = nfile->read1();
-	int mana_val = nfile->read1();
-
-	if (num == 0)
-	{
-		int magic = magic_val&0x1f, mana = mana_val&0x1f;
-		set_property(static_cast<int>(Actor::magic), magic);
-		
-		// Need to make sure that mana is less than magic
-		if (mana < magic)
-			set_property(static_cast<int>(Actor::mana), mana);
-		else
-			set_property(static_cast<int>(Actor::mana), magic);
-
+	nfile->skip(1); 		// Unknown
+	int unk0 = nfile->read1();	// We set high bit of this value.
+	int unk1 = nfile->read1();
+	int magic = 0, mana= 0, temp, flags3, ident = 0;
+	if (fix_first || unk0 == 0) {	// How U7 stored things.
+		// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4), 
+		//						TempLow (5-7)
+		// Else: ID# (0-4), TempHigh (5-7) and Met (0), 
+		//	No Spell Casting (1), Zombie (2), TempLow (5-7)
+		int magic_val = nfile->read1();
+		int mana_val = nfile->read1();
+		temp = ((magic_val >> 2) & 0x38) + ((mana_val >> 5) & 7);
+		if (num == 0) {
+			magic = magic_val&0x1f;
+			mana = mana_val&0x1f;
+			flags3 = 1;		// Met.
+		} else {
+			ident = magic_val&0x1f;
+			flags3 = mana_val;
+		}
+	} else {			// Exult stores magic for all NPC's.
+		magic = unk0 & 0x7f;
+		mana = unk1;
+		temp = nfile->read1();
+		flags3 = nfile->read1();
+		ident = flags3 >> 3;
+		flags3 &= 0x7;
+	}
+	set_property(static_cast<int>(Actor::magic), magic);
+	// Need to make sure that mana is less than magic
+	set_property(static_cast<int>(Actor::mana), mana<magic ? mana : magic);
+	set_temperature (temp);
+	set_ident(ident);
+	if ((flags3 >> 0) & 1) 
 		set_flag (Obj_flags::met);
-	}
-	else
-	{
-		set_ident(magic_val&0x1F);
-		if ((mana_val >> 0) & 1) set_flag (Obj_flags::met);
-		if ((mana_val >> 1) & 1) set_flag(Obj_flags::no_spell_casting);
-		if ((mana_val >> 2) & 1) set_flag (Obj_flags::si_zombie);
-	}
-
-
-	set_temperature (((magic_val >> 2) & 0x38) + ((mana_val >> 5) & 7));
+	if ((flags3 >> 1) & 1) 
+		set_flag(Obj_flags::no_spell_casting);
+	if ((flags3 >> 2) & 1) 
+		set_flag (Obj_flags::si_zombie);
 
 	face_num = nfile->read2();	// NOTE:  Exult's using 2 bytes, but
 					//   I think orig. used 1.
@@ -550,32 +559,19 @@ void Actor::write
 		(combat_protected ? (1<<4) : 0) |
 		(user_set_attack ? (1<<5) : 0);
 	nfile->write1(amode);
-	nfile->write1(0);		// Skip 3.
-	nfile->write2(0);
-
-	// Magic
-	int mana_val = 0;
-	int magic_val = 0;
-	
-	if (get_npc_num() == 0)
-	{
-		mana_val = get_property(static_cast<int>(Actor::mana));
-		magic_val = get_property(static_cast<int>(Actor::magic));
-	}
-	else
-	{
-		magic_val = get_ident() & 0x1F;
-		if (get_flag (Obj_flags::met)) mana_val |= 1;
-		if (get_flag (Obj_flags::no_spell_casting)) mana_val |= 1 << 1;
-		if (get_flag (Obj_flags::si_zombie)) mana_val |= 1 << 2;
-	}
-
-	// Tempertures
-	mana_val |= (get_temperature () & 0x1F) << 5;
-	magic_val |= (get_temperature () & 0x38) << 2;
-
-	nfile->write1 (magic_val);
-	nfile->write1 (mana_val);
+	nfile->write1(0);		// Skip 1.
+	// Exult is using the 2 unknown bytes to store magic, mana for all
+	//   NPC's, and to store temperature more simply.
+	int magic = get_property(static_cast<int>(Actor::magic));
+	nfile->write1(magic|0x80);	// Set high bit to flag new format.
+	nfile->write1(get_property(static_cast<int>(Actor::mana)));
+	nfile->write1(get_temperature());
+	int flags3 = 0;
+	if (get_flag (Obj_flags::met)) flags3 |= 1;
+	if (get_flag (Obj_flags::no_spell_casting)) flags3 |= 1 << 1;
+	if (get_flag (Obj_flags::si_zombie)) flags3 |= 1 << 2;
+	flags3 |= (get_ident()<<3);
+	nfile->write1 (flags3);
 
 	nfile->write2(face_num);
 	nfile->write1(0);		// Skip 2
