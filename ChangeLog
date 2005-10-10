@@ -1,3 +1,7 @@
+2005-10-09    <jeff@mini.nerble.net>
+
+	* objs/barge.cc (Barge_object): Fixed cart-and-horse animation.
+
 2005-10-04    <jeff@mini.nerble.net>
 
 	* actorio.cc: Save mana/magic for all NPC's.

@@ -618,12 +618,16 @@ void Barge_object::handle_event
 		return;			// We shouldn't be doing anything.
 	Tile_coord tile;		// Get spot & walk there.	
 					// Take two steps for speed.
-	if (!path->GetNextStep(tile) || !step(tile))
+	if (!path->GetNextStep(tile) || !Barge_object::step(tile))
 		frame_time = 0;
-					// But not when just starting.
-	else if (!first_step && (!path->GetNextStep(tile) || !step(tile)))
-		frame_time = 0;
-	else
+	else if (!first_step)		// But not when just starting.
+		{
+		taking_2nd_step = true;
+		if (!path->GetNextStep(tile) || !Barge_object::step(tile))
+			frame_time = 0;
+		taking_2nd_step = false;
+		}
+	if (frame_time)			// Still good?
 		gwin->get_tqueue()->add(curtime + frame_time, this, udata);
 	first_step = false;		// After 1st, move 2 at a time.
 	}
@@ -672,16 +676,18 @@ void Barge_object::move
 				ot.tz + dz);
 		obj->remove_this(1);	// Remove object from world.
 		obj->set_invalid();	// So it gets added back right.
-					// Animate a few shapes.
-		int frame = obj->get_framenum();
-		switch (obj->get_shapenum())
-			{
-		case 774:		// Cart wheel.
-			obj->set_frame(((frame + 1)&3)|(frame&32));
-			break;
-		case 796:		// Draft horse.
-			obj->set_frame(((frame + 4)&15)|(frame&32));
-			break;
+		if (!taking_2nd_step)
+			{		// Animate a few shapes.
+			int frame = obj->get_framenum();
+			switch (obj->get_shapenum())
+				{
+			case 774:		// Cart wheel.
+				obj->set_frame(((frame + 1)&3)|(frame&32));
+				break;
+			case 796:		// Draft horse.
+				obj->set_frame(((frame + 4)&15)|(frame&32));
+				break;
+				}
 			}
 		}
 	finish_move(positions, newmap);	// Add back & del. positions.
