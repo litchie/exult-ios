@@ -530,19 +530,19 @@ class Schedule_change
 	{
 	unsigned char time;		// Time*3hours when this takes effect.
 	unsigned char type;		// Schedule_type value.
-	unsigned char x, y;		// Location within superchunk.
-	unsigned char superchunk;	// 0-143.
+	Tile_coord pos;			// Location.
 public:
-	Schedule_change() : time(0), type(0), x(0), y(0), superchunk(0)
+	Schedule_change() : time(0), type(0)
 		{  }
-	void set(unsigned char *ent);	// Create from 4-byte entry.
-	void get(unsigned char *ent);	// Get 4-byte entry.
+	void set4(unsigned char *ent);	// Create from 4-byte entry.
+	void get4(unsigned char *ent);	// Get 4-byte entry.
 	void set(int ax, int ay, unsigned char stype, unsigned char stime);
 	int get_type() const
 		{ return type; }
 	int get_time() const
 		{ return time; }
-	Tile_coord get_pos() const;	// Get position chunk, tile.
+	Tile_coord get_pos() const
+		{ return pos; }
 	};
 
 #endif
