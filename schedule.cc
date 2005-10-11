@@ -3328,32 +3328,38 @@ int Walk_to_schedule::get_actual_type
  *	Set a schedule.
  */
 
-void Schedule_change::set
+void Schedule_change::set4
 	(
 	unsigned char *entry		// 4 bytes read from schedule.dat.
 	)
 	{
 	time = entry[0]&7;
 	type = entry[0]>>3;
-	x = entry[1];
-	y = entry[2];
-	superchunk = entry[3];
+	unsigned char schunk = entry[3];
+	unsigned char x = entry[1], y = entry[2];
+	int sx = schunk%c_num_schunks,
+	    sy = schunk/c_num_schunks;
+	pos = Tile_coord(sx*c_tiles_per_schunk + x, 
+			 sy*c_tiles_per_schunk + y, 0);
 	}
 
 /*
  *	Get a schedule.
  */
 
-void Schedule_change::get
+void Schedule_change::get4
 	(
 	unsigned char *entry		// 4 bytes to write to schedule.dat.
 	)
 	{
 	entry[0] = time&7;
 	entry[0] |= (type&31) << 3;
-	entry[1] = x;
-	entry[2] = y;
-	entry[3] = superchunk;
+	// Entries 1,2 are x, y within superchunk.
+	entry[1] = static_cast<unsigned char>(pos.tx%c_tiles_per_schunk);
+	entry[2] = static_cast<unsigned char>(pos.ty%c_tiles_per_schunk);
+	// Entry[3] is the superchunk.
+	entry[3] = static_cast<unsigned char>(
+		(pos.ty/c_tiles_per_schunk)*12 + (pos.tx/c_tiles_per_schunk));
 	}
 
 /*
@@ -3370,23 +3376,9 @@ void Schedule_change::set
 	{
 	time = stime;
 	type = stype;
-	x = static_cast<unsigned char>(ax%c_tiles_per_schunk);
-	y = static_cast<unsigned char>(ay%c_tiles_per_schunk);
-	superchunk = static_cast<unsigned char>((ay/c_tiles_per_schunk)*12 + (ax/c_tiles_per_schunk));
+	pos = Tile_coord(ax, ay, 0);
 	}
 
-/*
- *	Get position.
- */
-
-Tile_coord Schedule_change::get_pos() const
-	{
-	int cx = 16*(superchunk%12) + x/16,
-	    cy = 16*(superchunk/12) + y/16,
-	    tx = x%16,
-	    ty = y%16;
-	return Tile_coord(cx*c_tiles_per_chunk + tx, cy*c_tiles_per_chunk + ty, 0);
-	}
 
 
 
