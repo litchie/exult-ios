@@ -176,7 +176,7 @@ struct Serial_schedule			// For passing a schedule change.
 	{
 	short time;			// 0-7 (3-hour period).
 	short type;			// Schedule type (mostly 0-31).
-	int tx, ty;			// Tile to go to.
+	int tx, ty, tz;			// Tile to go to.
 	};
 
 int Npc_actor_out

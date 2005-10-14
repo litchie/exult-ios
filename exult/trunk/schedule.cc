@@ -3370,13 +3370,14 @@ void Schedule_change::set
 	(
 	int ax,
 	int ay,
+	int az,
 	unsigned char stype,
 	unsigned char stime
 	)
 	{
 	time = stime;
 	type = stype;
-	pos = Tile_coord(ax, ay, 0);
+	pos = Tile_coord(ax, ay, az);
 	}
 
 
