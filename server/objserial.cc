@@ -215,7 +215,8 @@ static void Npc_actor_io
 	io << num_schedules;
 	for (i = 0; i < num_schedules; i++)
 		io << schedules[i].time << schedules[i].type <<
-				schedules[i].tx << schedules[i].ty;
+				schedules[i].tx << schedules[i].ty <<
+				schedules[i].tz;
 	}
 
 /*

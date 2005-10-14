@@ -212,9 +212,7 @@ static void Set_schedule_line
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
 	list = g_list_next(list);
 	spin = ((GtkBoxChild *) list->data)->widget;
-					// Current engine assumes tz==0.
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), 0);
-	gtk_widget_set_sensitive(spin, FALSE);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
 	}
 
 /*
@@ -247,9 +245,9 @@ static bool Get_schedule_line
 	list = g_list_next(list);
 	spin = ((GtkBoxChild *) list->data)->widget;
 	sched.ty = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
-//	list = g_list_next(list);
-//	spin = ((GtkBoxChild *) list->data)->widget;
-//	sched.tz = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	sched.tz = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
 	sched.time = time;
 	return true;
 	}
@@ -555,7 +553,8 @@ int ExultStudio::init_npc_window
 		int time = sched.time;	// 0-7.
 		if (time < 0 || time > 7)
 			continue;	// Invalid.
-		Set_schedule_line(app_xml,time,sched.type, sched.tx, sched.ty);
+		Set_schedule_line(app_xml,time,sched.type, sched.tx, sched.ty,
+								sched.tz);
 		}
 	return 1;
 	}
@@ -844,11 +843,6 @@ static void Game_loc_response
 	int tx = Read2(data);
 	int ty = Read2(data);
 	int tz = Read2(data);
-	if (tz != 0)
-		{
-		EStudio::Alert("Non-zero height (%d) not yet supported", tz);
-		return;
-		}
 	GList *list = g_list_first(box->children);
 	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);

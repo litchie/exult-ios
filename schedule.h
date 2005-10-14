@@ -536,7 +536,8 @@ public:
 		{  }
 	void set4(unsigned char *ent);	// Create from 4-byte entry.
 	void get4(unsigned char *ent);	// Get 4-byte entry.
-	void set(int ax, int ay, unsigned char stype, unsigned char stime);
+	void set(int ax, int ay, int az, 
+			unsigned char stype, unsigned char stime);
 	int get_type() const
 		{ return type; }
 	int get_time() const
