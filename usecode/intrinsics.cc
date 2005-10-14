@@ -2633,7 +2633,7 @@ USECODE_INTRINSIC(set_new_schedules)
 		int sched = parms[2].get_int_value();
 		int tx = parms[3].get_elem(0).get_int_value();
 		int ty = parms[3].get_elem(1).get_int_value();
-		list[0].set(tx, ty, sched, time);
+		list[0].set(tx, ty, 0, sched, time);
 	}
 	else for (int i = 0; i < count; i++)
 	{
@@ -2641,7 +2641,7 @@ USECODE_INTRINSIC(set_new_schedules)
 		int sched = parms[2].get_elem(i).get_int_value();
 		int tx = parms[3].get_elem(i*2).get_int_value();
 		int ty = parms[3].get_elem(i*2+1).get_int_value();
-		list[i].set(tx, ty, sched, time);
+		list[i].set(tx, ty, 0, sched, time);
 	}
 
 	actor->set_schedules(list, count);

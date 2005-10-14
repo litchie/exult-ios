@@ -1949,6 +1949,7 @@ bool Actor::edit
 			Tile_coord p = changes[i].get_pos();
 			schedules[i].tx = p.tx;
 			schedules[i].ty = p.ty;
+			schedules[i].tz = p.tz;
 			}
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), get_face_shapenum(),
@@ -2056,7 +2057,8 @@ void Actor::update_from_studio
 	Schedule_change *scheds = num_schedules ? 
 				new Schedule_change[num_schedules] : 0;
 	for (i = 0; i < num_schedules; i++)
-		scheds[i].set(schedules[i].tx, schedules[i].ty, 
+		scheds[i].set(schedules[i].tx, schedules[i].ty,
+				schedules[i].tz,
 				schedules[i].type, schedules[i].time);
 	npc->set_schedules(scheds, num_schedules);
 	cout << "Npc updated" << endl;
@@ -4212,18 +4214,21 @@ void Npc_actor::set_schedule_time_type (int time, int type)
 		for (i = 0; i < num_schedules; i++)
 		{
 			tile = schedules[i].get_pos();
-			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+			scheds[i].set(tile.tx, tile.ty, tile.tz,
+			    schedules[i].get_type(), schedules[i].get_time());
 		}
 
-		scheds[num_schedules].set(0, 0, static_cast<unsigned char>(type),
+		scheds[num_schedules].set(0, 0, 0,
+			static_cast<unsigned char>(type),
 			static_cast<unsigned char>(time));
 		set_schedules(scheds, num_schedules+1);
 	}
 	else	// Did find it
 	{
 		tile = schedules[i].get_pos();
-		schedules[i].set(tile.tx, tile.ty, static_cast<unsigned char>(type),
-			static_cast<unsigned char>(time));
+		schedules[i].set(tile.tx, tile.ty, tile.tz,
+					static_cast<unsigned char>(type),
+					static_cast<unsigned char>(time));
 	}
 }
 
@@ -4245,15 +4250,18 @@ void Npc_actor::set_schedule_time_location (int time, int x, int y)
 		for (i = 0; i < num_schedules; i++)
 		{
 			tile = schedules[i].get_pos();
-			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+			scheds[i].set(tile.tx, tile.ty, tile.tz,
+			    schedules[i].get_type(), schedules[i].get_time());
 		}
 
-		scheds[num_schedules].set(x, y, 0, static_cast<unsigned char>(time));
+		scheds[num_schedules].set(x, y, 0, 0, 
+					static_cast<unsigned char>(time));
 		set_schedules(scheds, num_schedules+1);
 	}
 	else	// Did find it
 	{
-		schedules[i].set(x, y, schedules[i].get_type(), static_cast<unsigned char>(time));
+		schedules[i].set(x, y, 0,
+		  schedules[i].get_type(), static_cast<unsigned char>(time));
 	}
 }
 
@@ -4276,14 +4284,14 @@ void Npc_actor::remove_schedule (int time)
 		for (i = 0; i < todel; i++)
 		{
 			tile = schedules[i].get_pos();
-			scheds[i].set(tile.tx, tile.ty, 
+			scheds[i].set(tile.tx, tile.ty, tile.tz,
 			    schedules[i].get_type(), schedules[i].get_time());
 		}
 
 		for (; i < num_schedules - 1; i++)
 		{
 			tile = schedules[i+1].get_pos();
-			scheds[i].set(tile.tx, tile.ty, 
+			scheds[i].set(tile.tx, tile.ty, tile.tz,
 					schedules[i+1].get_type(), 
 					schedules[i+1].get_time());
 		}
