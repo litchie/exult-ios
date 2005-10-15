@@ -3325,7 +3325,7 @@ int Walk_to_schedule::get_actual_type
 	}
 
 /*
- *	Set a schedule.
+ *	Set a schedule from a U7 'schedule.dat' entry.
  */
 
 void Schedule_change::set4
@@ -3335,6 +3335,7 @@ void Schedule_change::set4
 	{
 	time = entry[0]&7;
 	type = entry[0]>>3;
+	days = 0x7f;			// All days of the week.
 	unsigned char schunk = entry[3];
 	unsigned char x = entry[1], y = entry[2];
 	int sx = schunk%c_num_schunks,
@@ -3344,22 +3345,37 @@ void Schedule_change::set4
 	}
 
 /*
- *	Get a schedule.
+ *	Set a schedule from an Exult 'schedule.dat' entry.
  */
 
-void Schedule_change::get4
+void Schedule_change::set8
 	(
-	unsigned char *entry		// 4 bytes to write to schedule.dat.
+	unsigned char *entry		// 8 bytes read from schedule.dat.
 	)
 	{
-	entry[0] = time&7;
-	entry[0] |= (type&31) << 3;
-	// Entries 1,2 are x, y within superchunk.
-	entry[1] = static_cast<unsigned char>(pos.tx%c_tiles_per_schunk);
-	entry[2] = static_cast<unsigned char>(pos.ty%c_tiles_per_schunk);
-	// Entry[3] is the superchunk.
-	entry[3] = static_cast<unsigned char>(
-		(pos.ty/c_tiles_per_schunk)*12 + (pos.tx/c_tiles_per_schunk));
+	pos.tx = Read2(entry);
+	pos.ty = Read2(entry);
+	pos.tz = *entry++;
+	time = *entry++;
+	type = *entry++;
+	days = *entry++;
+	}
+
+/*
+ *	Write out schedule for Exult's 'schedule.dat'.
+ */
+
+void Schedule_change::write8
+	(
+	unsigned char *entry		// 8 bytes to write to schedule.dat.
+	)
+	{
+	Write2(entry, pos.tx);
+	Write2(entry, pos.ty);		// 4
+	*entry++ = pos.tz;		// 5
+	*entry++ = time;		// 6
+	*entry++ = type;		// 7
+	*entry++ = days;		// 8
 	}
 
 /*

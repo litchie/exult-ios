@@ -530,12 +530,15 @@ class Schedule_change
 	{
 	unsigned char time;		// Time*3hours when this takes effect.
 	unsigned char type;		// Schedule_type value.
+	unsigned char days;		// A bit for each day (0-6).  We don't
+					//   yet use this.
 	Tile_coord pos;			// Location.
 public:
-	Schedule_change() : time(0), type(0)
+	Schedule_change() : time(0), type(0), days(0x7f)
 		{  }
 	void set4(unsigned char *ent);	// Create from 4-byte entry.
-	void get4(unsigned char *ent);	// Get 4-byte entry.
+	void set8(unsigned char *ent);	// Create from Exult entry.
+	void write8(unsigned char *ent);// Write out 8-byte Exult entry.
 	void set(int ax, int ay, int az, 
 			unsigned char stype, unsigned char stime);
 	int get_type() const
