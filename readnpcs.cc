@@ -218,9 +218,12 @@ void Game_window::read_schedules
 		}
 	}
 	StreamDataSource sfile(&sfile_stream);
-
+	int entsize = 4;		// 4 is U7's size.
 	num_npcs = sfile.read4();	// # of NPC's, not include Avatar.
-
+	if (num_npcs == -1) {		// Exult format?
+		entsize = 8;
+		num_npcs = sfile.read4();
+	}
 	short *offsets = new short[num_npcs];
 	int i;				// Read offsets with list of scheds.
 	for (i = 0; i < num_npcs; i++)
@@ -232,13 +235,18 @@ void Game_window::read_schedules
 		int cnt = offsets[i + 1] - offsets[i];
 					// Read schedules into this array.
 		Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
-		
-		for (int j = 0; j < cnt; j++)
-			{
-			unsigned char ent[4];
-			sfile.read(reinterpret_cast<char*>(ent), 4);
-			schedules[j].set4(ent);
+		unsigned char ent[10];
+		if (entsize == 4) {	// U7 format?
+			for (int j = 0; j < cnt; j++) {
+				sfile.read(reinterpret_cast<char*>(ent), 4);
+				schedules[j].set4(ent);
 			}
+		} else {		// Exult format.
+			for (int j = 0; j < cnt; j++) {
+				sfile.read(reinterpret_cast<char*>(ent), 8);
+				schedules[j].set8(ent);
+			}
+		}
 					// Store in NPC.
 		if (npc)
 			npc->set_schedules(schedules, cnt);
@@ -271,6 +279,7 @@ void Game_window::write_schedules ()
 	U7open(sfile_stream, GSCHEDULE);
 	StreamDataSource sfile(&sfile_stream);
 
+	sfile.write4((unsigned int)-1);		// Exult version #.
 	sfile.write4(num);		// # of NPC's, not include Avatar.
 	sfile.write2(0);		// First offfset
 
@@ -286,9 +295,9 @@ void Game_window::write_schedules ()
 		npcs[i]->get_schedules(schedules, cnt);
 		for (int j = 0; j < cnt; j++)
 		{
-			unsigned char ent[4];
-			schedules[j].get4(ent);
-			sfile.write(reinterpret_cast<char*>(ent), 4);
+			unsigned char ent[10];
+			schedules[j].write8(ent);
+			sfile.write(reinterpret_cast<char*>(ent), 8);
 		}
 	}
 }
@@ -300,29 +309,40 @@ void Game_window::revert_schedules(Actor *npc)
 
 	int i;
 	ifstream sfile_stream;
+	int entsize = 4;
 
 	U7open(sfile_stream, SCHEDULE_DAT);
 	StreamDataSource sfile(&sfile_stream);
 
 	// # of NPC's, not include Avatar.
 	int num_npcs = sfile.read4();
+	if (num_npcs == -1)
+		{			// Exult's version.
+		entsize = 8;
+		num_npcs = sfile.read4();
+		}
 	short *offsets = new short[num_npcs];
 	for (i = 0; i < num_npcs; i++) offsets[i] = sfile.read2();
 
 	// Seek to the right place
-	sfile.skip(offsets[npc->get_npc_num()-1]*4);
+	sfile.skip(offsets[npc->get_npc_num()-1]*8);
 
 	// Get the count that we want to use
 	int cnt = offsets[npc->get_npc_num()] - offsets[npc->get_npc_num()-1];
 
 	// Read schedules into this array.
 	Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
-
-	for (i = 0; i < cnt; i++)
-	{
-		unsigned char ent[4];
-		sfile.read(reinterpret_cast<char*>(ent), 4);
-		schedules[i].set4(ent);
+	unsigned char ent[10];
+	if (entsize == 4) {		// U7 format.
+		for (i = 0; i < cnt; i++) {
+			sfile.read(reinterpret_cast<char*>(ent), 4);
+			schedules[i].set4(ent);
+		}
+	} else {			// Exult.
+		for (i = 0; i < cnt; i++) {
+			sfile.read(reinterpret_cast<char*>(ent), 8);
+			schedules[i].set8(ent);
+		}
 	}
 	// Store in NPC.
 	npc->set_schedules(schedules, cnt);

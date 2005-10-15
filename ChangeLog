@@ -1,3 +1,7 @@
+2005-10-14    <jeff@mini.nerble.net>
+
+	* readnpcs.cc: New schedules.dat supports z-coord. in pos.
+
 2005-10-09    <jeff@mini.nerble.net>
 
 	* objs/barge.cc (Barge_object): Fixed cart-and-horse animation.
