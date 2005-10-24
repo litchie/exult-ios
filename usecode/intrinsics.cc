@@ -417,6 +417,7 @@ USECODE_INTRINSIC(add_to_party)
 	if (!partyman->add_to_party(npc))
 		return no_ret;		// Can't add.
 	npc->set_schedule_type(Schedule::follow_avatar);
+	npc->set_alignment(Actor::friendly);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
 	return no_ret;
 }
@@ -424,8 +425,9 @@ USECODE_INTRINSIC(add_to_party)
 USECODE_INTRINSIC(remove_from_party)
 {
 	// NPC leaves party.
-	Game_object *npc = get_item(parms[0]);
-	partyman->remove_from_party(as_actor(npc));
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (partyman->remove_from_party(npc))
+		npc->set_alignment(Actor::neutral);
 	return no_ret;
 }
 
