@@ -202,7 +202,10 @@ bool Usecode_value::operator==
 					(value.intval == v2.value.intval)
 					// Okay if 0==empty array.
 			: v2.type == array_type &&
-					!value.intval && !v2.get_array_size();
+					// Happens in blacksword usecode:
+					(v2.get_array_size() ?
+					value.intval == v2.get_elem(0).get_int_value() :
+					!value.intval);
 	else if (type == pointer_type)	// Might be ptr==0.
 		{			// Or ptr == array.  Test elem. 0.
 		if (v2.type == pointer_type || v2.type == int_type)
@@ -218,7 +221,10 @@ bool Usecode_value::operator==
 	else if (type == array_type)
 		{
 		if (v2.type == int_type)
-			return !get_array_size() && !v2.get_int_value();
+			return get_array_size() ?
+				// Making it simmetric just in case:
+				get_elem(0).get_int_value() == v2.get_int_value() :
+				!v2.get_int_value();
 		else if (v2.type == pointer_type && get_array_size())
 			{
 			Usecode_value& v = get_elem(0);

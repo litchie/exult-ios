@@ -520,6 +520,8 @@ int Usecode_script::exec
 				//removed 20011226, breaks serpent gates in SI without SS -wjp
 				&& ((Egg_object *)obj)->get_type() == Egg_object::usecode
 #endif
+				//Fixes the Blacksword's 'Fire' power in BG:
+				&& ((Egg_object *)obj)->get_type() < Egg_object::fire_field
 				)
 				ev = Usecode_internal::egg_proximity;
 					// And for telekenesis spell fun:
