@@ -1,3 +1,7 @@
+2005-10-25    <jeff@mini.nerble.net>
+
+	* actors.cc: Ready/unready weapon depending on schecule.
+
 2005-10-14    <jeff@mini.nerble.net>
 
 	* readnpcs.cc: New schedules.dat supports z-coord. in pos.
