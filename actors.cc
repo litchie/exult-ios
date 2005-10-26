@@ -418,15 +418,15 @@ bool Actor::ready_best_weapon
 
 void Actor::unready_weapon
 	(
-	int spot			// Lhand or rhand.
 	)
 	{
-	Game_object *obj = spots[spot];
+	Game_object *obj = spots[lhand];
 	if (!obj)
 		return;
 	Shape_info& info = obj->get_info();
 	if (!info.get_weapon_info())	// A weapon?
 		return;
+	gwin->add_dirty(this);
 	if (!spots[belt])		// Belt free?
 		{
 		obj->remove_this(1);
@@ -1514,27 +1514,32 @@ void Actor::set_schedule_type
 			schedule = new Combat_schedule(this, old_schedule);
 			break;
 		case Schedule::horiz_pace:
+			ready_best_weapon();
 			schedule = Pace_schedule::create_horiz(this);
 			break;
 		case Schedule::vert_pace:
+			ready_best_weapon();
 			schedule = Pace_schedule::create_vert(this);
 			break;
 		case Schedule::talk:
 			schedule = new Talk_schedule(this);
 			break;
 		case Schedule::dance:
+			unready_weapon();
 			schedule = new Dance_schedule(this);
 			break;
 		case Schedule::farm:	// Use a scythe.
 			schedule = new Tool_schedule(this, 618);
 			break;
 		case Schedule::tend_shop:// For now.
+			unready_weapon();
 			schedule = new Loiter_schedule(this, 3);
 			break;
 		case Schedule::miner:	// Use a pick.
 			schedule = new Tool_schedule(this, 624);
 			break;
 		case Schedule::hound:
+			ready_best_weapon();
 			schedule = new Hound_schedule(this);
 			break;
 		case Schedule::loiter:
@@ -1548,6 +1553,7 @@ void Actor::set_schedule_type
 			schedule = new Forge_schedule(this);
 			break;
 		case Schedule::sleep:
+			unready_weapon();
 			schedule = new Sleep_schedule(this);
 			break;
 		case Schedule::wait:
@@ -1555,6 +1561,7 @@ void Actor::set_schedule_type
 			break;
 		case Schedule::eat:		// For now.
 		case Schedule::sit:
+			unready_weapon();
 			schedule = new Sit_schedule(this);
 			break;
 		case Schedule::bake:
@@ -1564,36 +1571,41 @@ void Actor::set_schedule_type
 			schedule = new Sew_schedule(this);
 			break;
 		case Schedule::shy:
+			unready_weapon();
 			schedule = new Shy_schedule(this);
 			break;
 		case Schedule::lab:
 			schedule = new Lab_schedule(this);
 			break;
 		case Schedule::thief:
-			gwin->add_dirty(this);
-			unready_weapon(lhand);	// For Krieg in Empath Abbey.
-			unready_weapon(rhand);
+			unready_weapon();
 			schedule = new Thief_schedule(this);
 			break;
 		case Schedule::waiter:
+			unready_weapon();
 			schedule = new Waiter_schedule(this);
 			break;
 		case Schedule::kid_games:
+			unready_weapon();
 			schedule = new Kid_games_schedule(this);
 			break;
 		case Schedule::eat_at_inn:
+			unready_weapon();
 			schedule = new Eat_at_inn_schedule(this);
 			break;
 		case Schedule::duel:
 			schedule = new Duel_schedule(this);
 			break;
 		case Schedule::preach:
+			ready_best_weapon();	// Fellowship staff.
 			schedule = new Preach_schedule(this);
 			break;
 		case Schedule::patrol:
+			ready_best_weapon();
 			schedule = new Patrol_schedule(this);
 			break;
 		case Schedule::desk_work:
+			unready_weapon();
 			schedule = new Desk_schedule(this);
 			break;
 		case Schedule::follow_avatar:
