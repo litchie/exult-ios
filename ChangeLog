@@ -1,3 +1,7 @@
+2005-10-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* useval.cc, ucsched.cc: fixing the Blacksword's 'Fire' power
+	  in FoV.
+
 2005-10-25    <jeff@mini.nerble.net>
 
 	* actors.cc: Ready/unready weapon depending on schecule.
