@@ -146,9 +146,9 @@ public:
 	void swap_ammo(Game_object *newammo);
 	bool ready_ammo();		// Find and ready appropriate ammo.
 	bool ready_best_weapon();	// Find best weapon and ready it.
-	void unready_weapon(int spot);	// Try to sheath weapon.
+	void unready_weapon();		// Try to sheath weapon.
 					// Force repaint of area taken.
-	int get_effective_weapon_shape();	//For displaying casting frames.
+	int get_effective_weapon_shape();//For displaying casting frames.
 	int add_dirty(int figure_rect = 0);
 	void change_frame(int frnum);	// Change frame & set to repaint.
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
