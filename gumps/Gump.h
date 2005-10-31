@@ -62,7 +62,7 @@ public:
 					// Clone.
 	Gump(Container_game_object *cont, int initx, int inity, Gump *from);
 	virtual ~Gump();
-	virtual Gump *clone(int initx, int inity)
+	virtual Gump *clone(Container_game_object *obj, int initx, int inity)
 		{ return 0; }
 	int get_x()			// Get coords.
 		{ return x; }

@@ -1,7 +1,5 @@
-++++++++++GOING AWAY (jsf)
-
 /*
- *  Gump_model.h - A gump factory.
+ *  Gump_factory.h - A gump factory.
  *
  *  Copyright (C) 2001-2005  The Exult Team
  *
@@ -20,24 +18,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef GUMP_MODEL_INCLUDED
-#define GUMP_MODEL_INCLUDED
+#ifndef GUMP_FACTORY_INCLUDED
+#define GUMP_FACTORY_INCLUDED
 
-#include <vector>
-#include "exceptions.h"
-#include "rect.h"
-#include "shapeid.h"
+#include <map>
 
 class Gump;
 class Game_object;
-class Gump_widget;
 
 /*
- *	A 'model' represents a top-level gump OR a widget within.
+ *	Create gumps.
  */
-class  Gump_model : public ShapeID
+class  Gump_factory
 {
-	UNREPLICATABLE_CLASS(Gump_model);
 public:
 	typedef enum {
 		// Top-level gumps.
@@ -63,23 +56,14 @@ public:
 		halo,
 		combat_mode,
 		combat_stats
-	} Gump_model_tag;
+	} Gump_factory_tag;
 private:
-	Gump_model_tag tag;
-	int x, y;			// Location within parent.
-	Rectangle object_area;		// Area within this for objects.
-					// Sub-elems (like buttons).
-	typedef std::vector<Gump_model *> Gump_model_elems;
-	Gump_model_elems elems;
+	typedef std::map<int,Gump*> Lookup_map;
+	Lookup_map table;		// Lookup by shape.
 public:
-	Gump_model(Gump_model_tag t, int shnum, int frnum, ShapeFile shfile,
-				Rectangle area, int px = 0, int py = 0)
-		: ShapeID(shnum, frnum, shfile), tag(t), object_area(area), 
-		  x(px), y(py)
-		{  }
-	~Gump_model();
+	Gump_factory();
+	~Gump_factory();
 	Gump *create(Game_object *obj, int initx, int inity);
-	Gump_widget *create_widget(Gump *gump);
 };
 
-#endif // GUMP_MODEL_INCLUDED
+#endif
