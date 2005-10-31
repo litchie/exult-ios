@@ -46,6 +46,8 @@ public:
 	Gump_widget(Gump *par, int shnum, int px, int py, ShapeFile shfile = SF_GUMPS_VGA)
 		: ShapeID(shnum, 0, shfile), parent(par), x(px), y(py)
 		{  }
+	virtual Gump_widget *clone(Gump *par)
+		{ return 0; }
 					// Is a given point on the widget?
 	virtual int on_widget(int mx, int my);
 	virtual int on_button(int mx, int my)

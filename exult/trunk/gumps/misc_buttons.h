@@ -30,6 +30,8 @@ class Checkmark_button : public Gump_button
 {
 public:
 	Checkmark_button(Gump *par, int px, int py);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Checkmark_button(par, x, y); }
 					// What to do when 'clicked':
 	virtual void activate();
 };
@@ -41,6 +43,8 @@ class Heart_button : public Gump_button
 {
 public:
 	Heart_button(Gump *par, int px, int py);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Heart_button(par, x, y); }
 					// What to do when 'clicked':
 	virtual void activate();
 };
@@ -52,6 +56,8 @@ class Disk_button : public Gump_button
 {
 public:
 	Disk_button(Gump *par, int px, int py);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Disk_button(par, x, y); }
 					// What to do when 'clicked':
 	virtual void activate();
 };
@@ -63,6 +69,8 @@ class Combat_button : public Gump_button
 {
 public:
 	Combat_button(Gump *par, int px, int py);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Combat_button(par, x, y); }
 					// What to do when 'clicked':
 	virtual void activate();
 	virtual void paint();
@@ -76,6 +84,8 @@ class Halo_button : public Gump_button
 	Actor *actor;			// Who this represents.
 public:
 	Halo_button(Gump *par, int px, int py, Actor *a);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Halo_button(par, x, y, actor); }
 					// What to do when 'clicked':
 	virtual void activate();
 };
@@ -88,6 +98,8 @@ class Combat_mode_button : public Gump_button
 	Actor *actor;			// Who this represents.
 public:
 	Combat_mode_button(Gump *par, int px, int py, Actor *a);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Combat_mode_button(par, x, y, actor); }
 					// What to do when 'clicked':
 	virtual void activate();
 };
@@ -99,6 +111,8 @@ class Cstats_button : public Gump_button
 {
 public:
 	Cstats_button(Gump *par, int px, int py);
+	virtual Gump_widget *clone(Gump *par)
+		{ return new Cstats_button(par, x, y); }
 
  	// What to do when 'clicked':
 	virtual void activate();
