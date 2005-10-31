@@ -1,3 +1,5 @@
+++++++++++GOING AWAY (jsf)
+
 /*
  *  Gump_model.cc - A gump factory.
  *
