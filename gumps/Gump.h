@@ -59,7 +59,11 @@ public:
 					// Create centered.
 	Gump(Container_game_object *cont, int shnum, 
 					ShapeFile shfile = SF_GUMPS_VGA);
+					// Clone.
+	Gump(Container_game_object *cont, int initx, int inity, Gump *from);
 	virtual ~Gump();
+	virtual Gump *clone(int initx, int inity)
+		{ return 0; }
 	int get_x()			// Get coords.
 		{ return x; }
 	int get_y()
@@ -141,11 +145,13 @@ public:
 	{
 		initialize(shnum);
 	}
-					// This one is for Gump_model.
+					// This one is for cloning.
 	Container_gump(Container_game_object *cont, int initx, int inity,
-		int shnum, ShapeFile shfile, Rectangle area)
-		: Gump(cont, shnum, shfile)
-		{  set_object_area(area); }
+								Gump *from)
+		: Gump(cont, initx, inity, this)
+		{  }
+	virtual Gump *clone(Container_game_object *cont, int initx, int inity)
+		{ return new Container_gump(cont, initx, inity, this); }
 };
 
 #endif
