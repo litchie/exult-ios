@@ -63,6 +63,26 @@ Gump::Gump
 }
 
 /*
+ *	Create for cloning.
+ */
+
+Gump::Gump
+	(
+	Container_game_object *cont, 
+	int initx, int inity, 
+	Gump *from
+	) : ShapeID(from->get_shapenum(), from->get_framenum(),
+						from->get_shapefile()),
+		container(cont), handles_kbd(false), x(initx), y(inity),
+		object_area(from->object_area)
+	{
+					// Clone widgets.
+	for (Gump_elems::iterator it = from->elems.begin(); 
+						it != from->elems.end(); ++it)
+		add_elem((*it)->clone(this));
+	}
+
+/*
  *	Delete gump.
  */
 
