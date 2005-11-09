@@ -325,7 +325,7 @@ void Game_window::revert_schedules(Actor *npc)
 	for (i = 0; i < num_npcs; i++) offsets[i] = sfile.read2();
 
 	// Seek to the right place
-	sfile.skip(offsets[npc->get_npc_num()-1]*8);
+	sfile.skip(offsets[npc->get_npc_num()-1]*entsize);
 
 	// Get the count that we want to use
 	int cnt = offsets[npc->get_npc_num()] - offsets[npc->get_npc_num()-1];
