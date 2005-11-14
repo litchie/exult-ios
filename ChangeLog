@@ -1,3 +1,8 @@
+2005-11-13    <jeff@mini.nerble.net>
+
+	* shapes/shapevga.cc,etc: Moving defs. around so ExultStudio can
+	pass the correct game info. when loading shape data.
+
 2005-10-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* useval.cc, ucsched.cc: fixing the Blacksword's 'Fire' power
 	  in FoV.

@@ -79,7 +79,7 @@ static bool U7open2
 
 void Shapes_vga_file::read_info
 	(
-	bool bg,			// True if BlackGate.
+	Exult_Game game,		// Which game.
 	bool editing			// True to allow files to not exist.
 	)
 	{
@@ -151,7 +151,8 @@ void Shapes_vga_file::read_info
 		for (i = 0; i < cnt; i++)
 			{
 			Weapon_info *winf = new Weapon_info();
-			unsigned short shapenum = winf->read(weapon, bg);
+			unsigned short shapenum = winf->read(weapon, 
+					game == BLACK_GATE);
 			info[shapenum].weapon = winf;
 			}
 		weapon.close();	

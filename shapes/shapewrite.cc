@@ -40,7 +40,7 @@ using std::ofstream;
 
 void Shapes_vga_file::write_info
 	(
-	bool bg				// True if BlackGate.
+	Exult_Game game
 	)
 	{
 	int i, cnt;
@@ -109,7 +109,7 @@ void Shapes_vga_file::write_info
 	weapon.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon)
-			info[i].weapon->write(i, weapon, bg);
+			info[i].weapon->write(i, weapon, game == BLACK_GATE);
 	weapon.close();	
 
 	ofstream ammo;

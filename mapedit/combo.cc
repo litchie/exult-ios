@@ -250,7 +250,7 @@ Combo::Combo
 	    tilefoot(0, 0, 0, 0)
 	{
 					// Read info. the first time.
-	shapes_file->read_info(false, true);//+++++BG?
+	shapes_file->read_info(ExultStudio::get_instance()->get_game_type(), true);
 	}
 
 /*
