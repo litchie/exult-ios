@@ -39,6 +39,7 @@
 #include "shapeid.h"
 #include "XMidiFile.h"
 #include "databuf.h"
+#include "fnames.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -317,9 +318,9 @@ Exult_Game ExultMenu::run()
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
 		if (sfx_bg_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
+			sman->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx(CFG_BG_NAME)?1:0));
 		if (sfx_si_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
+			sman->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx(CFG_SI_NAME)?1:0));
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice<0?choice:menuentries[choice]) {
 		case 5:

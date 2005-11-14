@@ -32,6 +32,7 @@
 #include "imagebuf.h"
 #include "vgafile.h"
 #include "shapeinf.h"
+#include "exult_constants.h"
 
 #define c_first_obj_shape	0x96	// 0-0x95 are 8x8 flat shapes.
 
@@ -49,8 +50,8 @@ public:
 	void init(int min_info_size = -1);
 	virtual ~Shapes_vga_file();
 					// Read additional data files.
-	void read_info(bool bg, bool editing = false);
-	void write_info(bool bg);	// Write them back out.
+	void read_info(Exult_Game game, bool editing = false);
+	void write_info(Exult_Game game);	// Write them back out.
 	virtual Shape *new_shape(int shapenum);	
 	Shape_info& get_info(int shapenum)
 	{

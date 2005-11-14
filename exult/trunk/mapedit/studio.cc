@@ -930,13 +930,13 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 	delete palbuf;			// Delete old.
 	string dirstr;
 	string d("config/disk/game/");
-	string gd = d + "blackgate/path";
+	string gd = (d + CFG_BG_NAME) + "/path";
 	config->value(gd.c_str(), dirstr, "");
 	if (dirstr == gamepath)
 		game_type = BLACK_GATE;
 	else
 		{
-		gd = d + "serpentisle/path";
+		gd = (d + CFG_SI_NAME) + "/path";
 		config->value(gd.c_str(), dirstr, "");
 		if (dirstr == gamepath)
 			game_type = SERPENT_ISLE;
@@ -1230,8 +1230,8 @@ void ExultStudio::write_shape_info
 		Shapes_vga_file *svga = 
 				(Shapes_vga_file *) vgafile->get_ifile();
 					// Make sure data's been read in.
-		svga->read_info(false, true);//+++++BG?
-		svga->write_info(false);//++++BG?
+		svga->read_info(game_type, true);
+		svga->write_info(game_type);
 		}
 	shape_info_modified = false;
 	if (force || shape_names_modified)

@@ -48,10 +48,10 @@ Gump_factory::~Gump_factory()
 	}
 
 /*
- *	Create a gump for a given object.
+ *	Create a gump for a given container.
  */
 
-Gump *Gump_factory::create
+Gump *Gump_factory::open_container
 	(
 	Game_object *obj,
 	int initx, int inity		// Initial screen pos.

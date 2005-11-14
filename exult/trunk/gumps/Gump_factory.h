@@ -63,7 +63,7 @@ private:
 public:
 	Gump_factory();
 	~Gump_factory();
-	Gump *create(Game_object *obj, int initx, int inity);
+	Gump *open_container(Game_object *obj, int initx, int inity);
 };
 
 #endif

@@ -63,7 +63,7 @@ Shape_group::Shape_group
 	Shapes_vga_file *vgafile = (Shapes_vga_file *)
 					es->get_vgafile()->get_ifile();	
 					// Read info. the first time.
-	vgafile->read_info(false, true);//+++++BG?
+	vgafile->read_info(es->get_game_type(), true);
 	int i, cnt = vgafile->get_num_shapes();
 	bool modified = file->modified;
 

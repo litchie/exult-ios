@@ -90,5 +90,11 @@ inline int SUB_TILE(int x, int y)
 #define FORGET_OBJECT(x) do { delete x; x = 0; } while(0)
 #define FORGET_ARRAY(x) do { delete [] x; x = 0; } while(0)
 
+enum Exult_Game {
+	NONE,
+	BLACK_GATE,
+	SERPENT_ISLE,
+	EXULT_DEVEL_GAME		// One that we develop.
+};
 
 #endif

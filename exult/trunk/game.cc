@@ -102,11 +102,11 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		game_type = mygame;
 		break;
 	case SERPENT_ISLE:
-		gametitle = "serpentisle";
+		gametitle = CFG_SI_NAME;
 		break;
 	case BLACK_GATE:
 	default:
-		gametitle = "blackgate";
+		gametitle = CFG_BG_NAME;
 		break;
 	}
 

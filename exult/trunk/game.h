@@ -40,13 +40,6 @@ struct str_int_pair
 	int  num;
 };
 
-enum Exult_Game {
-	NONE,
-	BLACK_GATE,
-	SERPENT_ISLE,
-	EXULT_DEVEL_GAME		// One that we develop.
-};
-
 #define GAME_BG (Game::get_game_type() == BLACK_GATE)
 #define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
 #define GAME_FOV (Game::get_game_type()==BLACK_GATE && Game::has_expansion())

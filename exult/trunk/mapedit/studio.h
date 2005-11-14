@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "vgafile.h"
 #include "servemsg.h"
+#include "exult_constants.h"
 
 class Shape_info;
 class Shapes_vga_file;
@@ -52,13 +53,6 @@ typedef void (*Msg_callback)(Exult_server::Msg_type id,
 #endif
 
 class ExultStudio {
-public:
-	enum Exult_Game {
-		NONE,
-		BLACK_GATE,
-		SERPENT_ISLE,
-		EXULT_DEVEL_GAME		// One that we develop.
-	};
 private:
 	char			*glade_path;	// Where our .glade file is.
 	GtkWidget		*app;

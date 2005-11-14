@@ -147,5 +147,9 @@
 
 #define NUM_FONTS	(20)
 
+// U7 game names in "exult.cfg":
+#define CFG_SI_NAME		"serpentisle"
+#define CFG_BG_NAME		"blackgate"
+
 #endif
 
