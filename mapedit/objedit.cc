@@ -335,7 +335,7 @@ void ExultStudio::rotate_obj
 		return;
 	Shapes_vga_file *shfile = (Shapes_vga_file *) vgafile->get_ifile();
 					// Make sure data's been read in.
-	shfile->read_info(false, true);//+++++BG?
+	shfile->read_info(game_type, true);
 	Shape_info& info = shfile->get_info(shnum);
 	frnum = info.get_rotated_frame(frnum, 1);
 	set_spin("obj_frame", frnum);

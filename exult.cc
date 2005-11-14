@@ -447,13 +447,13 @@ int exult_main(const char *runpath)
 		string data_directory;
 		config->value("config/disk/u7path",data_directory,".");
 		config->set("config/disk/game/blackgate/path",data_directory,true);
-		const string	s("blackgate");
+		const string	s(CFG_BG_NAME);
 		config->set("config/disk/game/blackgate/title",s,true);
 		vs.push_back(s);
 	}
 
-	get_game_paths("blackgate");
-	get_game_paths("serpentisle");
+	get_game_paths(CFG_BG_NAME);
+	get_game_paths(CFG_SI_NAME);
 
 	// Enable tracing of intrinsics?
 	config->value("config/debug/trace/intrinsics",intrinsic_trace);
@@ -719,9 +719,9 @@ static void Init
 	// Show the banner
 	Exult_Game mygame;
 	game = 0;
-	if (arg_gamename == "blackgate") {
+	if (arg_gamename == CFG_BG_NAME) {
 		run_bg = true;
-	} else if (arg_gamename == "serpentisle") {
+	} else if (arg_gamename == CFG_SI_NAME) {
 		run_si = true;
 	}
 	// Figure out all the games' paths, before we store them.  That
@@ -1852,10 +1852,10 @@ void BuildGameMap()
 
 		if (run_bg) {
 			gametype = BLACK_GATE;
-			get_game_paths("blackgate");
+			get_game_paths(CFG_BG_NAME);
 		} else if (run_si) {
 			gametype = SERPENT_ISLE;
-			get_game_paths("serpentisle");
+			get_game_paths(CFG_SI_NAME);
 		} else {
 			cerr << "You have to specify --bg or --si when using --buildmap" << endl;
 			exit(1);

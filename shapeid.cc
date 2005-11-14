@@ -96,7 +96,7 @@ void Shape_manager::read_shape_info
 	{
 	// Want space for extra shapes if BG multiracial enabled.
 	shapes.init(bg_multiracial_allowed ? 1036 : -1);
-	shapes.read_info(GAME_BG);	// Read in shape dimensions.
+	shapes.read_info(Game::get_game_type());// Read in shape dimensions.
 	if (GAME_SI ||			// Fixup Avatar shapes 1024-1035.
 	    bg_multiracial_allowed)
 		{
