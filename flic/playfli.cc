@@ -46,6 +46,8 @@ using std::cout;
 using std::endl;
 #endif
 
+#include <valgrind/memcheck.h>
+
 playfli::playfli(const char *fli_name)
 {
 	ifstream fli_stream; 
@@ -107,7 +109,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	int frame_chunks;
 	int chunk_size;
 	int chunk_type;
-	unsigned char *pixbuf;
+	uint8 *pixbuf;
 	int xoffset=(win->get_width()-fli_width)/2;
 	int yoffset=(win->get_height()-fli_height)/2;
 	bool dont_show = false;
@@ -129,7 +131,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		frame = 0;
 		streampos = streamstart;
 	}
-	pixbuf = new unsigned char[fli_width];
+	pixbuf = new uint8[fli_width];
 
 	if (brightness != palette->get_brightness())
 	{
@@ -195,21 +197,25 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 					{
 						int skip_count = fli_data->read1();
 						pixpos += skip_count;
-						uint8 size_count = fli_data->read1();
-						if (size_count > 127)
+						sint8 size_count = fli_data->read1();
+						if (size_count < 0)
 						{
-							size_count = 256 - size_count;
-							unsigned char data = fli_data->read1();
+							size_count = -size_count;
+							uint8 data = fli_data->read1();
 							memset(pixbuf, data, size_count);
-							if (fli_buf) fli_buf->copy8(pixbuf,size_count,1,pixpos,skip_lines+line);
-								pixpos += size_count;
+							if (fli_buf)
+								fli_buf->copy8(pixbuf, size_count, 1,
+											   pixpos, skip_lines + line);
+							pixpos += size_count;
 				    
 						}
 						else
 						{
-							fli_data->read((char*)pixbuf, size_count);
-							if (fli_buf) fli_buf->copy8(pixbuf,size_count,1,pixpos, skip_lines+line);
-								pixpos += size_count;
+							fli_data->read(pixbuf, size_count);
+							if (fli_buf)
+								fli_buf->copy8(pixbuf, size_count, 1,
+											   pixpos, skip_lines + line);
+							pixpos += size_count;
 						}
 					}
 				}
@@ -227,14 +233,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 					for (int p_count = 0; p_count < packets;
 							p_count++)
 					{
-						char size_count = fli_data->read1();
+						sint8 size_count = fli_data->read1();
 						if (size_count > 0)
 						{
-							unsigned char data = fli_data->read1();
+							uint8 data = fli_data->read1();
 							memset(&pixbuf[pixpos], data, size_count);
 							pixpos += size_count;
 						} else {
-							fli_data->read((char*)&pixbuf[pixpos],
+							fli_data->read(&pixbuf[pixpos],
 									-size_count);
 							pixpos -= size_count;
 						}
