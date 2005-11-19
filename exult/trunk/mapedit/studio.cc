@@ -464,7 +464,8 @@ C_EXPORT gboolean on_main_window_focus_in_event
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
 	glade_path(0), shape_info_modified(false),
 	shape_names_modified(false),
-	vgafile(0), facefile(0), eggwin(0), egg_ctx(0), egg_monster_draw(0),
+	vgafile(0), facefile(0), gumpfile(0),
+	eggwin(0), egg_ctx(0), egg_monster_draw(0),
 	egg_status_id(0),
 	bargewin(0), barge_ctx(0), barge_status_id(0),
 	server_socket(-1), server_input_tag(-1), 
@@ -472,7 +473,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	browser(0), palbuf(0), 
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE),
-	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), shape_draw(0),
+	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
+	shape_draw(0), gump_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
 {
 	// Initialize the various subsystems
@@ -615,6 +617,7 @@ ExultStudio::~ExultStudio()
 	if (shapewin)
 		gtk_widget_destroy(shapewin);
 	delete shape_draw;
+	delete gump_draw;
 	shapewin = 0;
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
@@ -969,6 +972,7 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
+	gumpfile = open_shape_file("gumps.vga");
 	Setup_text();			// Read in shape names.
 	setup_file_list();		// Set up file-list window.
 	set_browser("", 0);		// No browser.
