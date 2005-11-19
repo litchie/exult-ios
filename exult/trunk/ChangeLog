@@ -1,4 +1,7 @@
-2005-10-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2005-11-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* flic/playfli.cc: use sint8/uint8 types instead of char/unsigned char
+
+2005-11-19  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* useval.cc: Fixing a bug I introduced when I fixed the Blacksword's
 	  'Fire' power.
 
