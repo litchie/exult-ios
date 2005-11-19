@@ -46,8 +46,6 @@ using std::cout;
 using std::endl;
 #endif
 
-#include <valgrind/memcheck.h>
-
 playfli::playfli(const char *fli_name)
 {
 	ifstream fli_stream; 
