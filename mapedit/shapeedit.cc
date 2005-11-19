@@ -166,7 +166,6 @@ static void Equip_shape_dropped
 		}
 	}
 
-
 /*
  *	Set up 'equipment' dialog's table, which has 10 identical rows.
  */
@@ -460,6 +459,37 @@ C_EXPORT gboolean on_shinfo_draw_expose_event
 	}
 
 /*
+ *	Draw gump shape in container page.
+ */
+C_EXPORT gboolean on_shinfo_gump_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	ExultStudio::get_instance()->show_shinfo_gump(
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+	return (TRUE);
+	}
+
+/*
+ *	Gump shape # changed, so update shape displayed.
+ */
+C_EXPORT gboolean on_shinfo_gump_num_changed
+	(
+	GtkWidget *widget,
+	GdkEventFocus *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->show_shinfo_gump();
+	return TRUE;
+	}
+
+/*
  *	Shape window's Equip-Edit button.
  */
 C_EXPORT void on_open_equip_button_clicked
@@ -547,6 +577,24 @@ C_EXPORT void on_shinfo_ammo_special_check_toggled
 	ExultStudio::get_instance()->set_sensitive("shinfo_ammo_drop", !on);
 	}
 
+/*
+ *	Callback for when a gump is dropped in the container page's draw area.
+ */
+
+static void Gump_shape_dropped
+	(
+	int file,
+	int shape,
+	int frame,
+	void *udata
+	)
+	{
+	if (file == U7_SHAPE_GUMPS && shape >= 0)
+		{			// Set shape #.
+		ExultStudio::get_instance()->set_spin(
+						"shinfo_gump_num", shape);
+		}
+	}
 /*
  *	Set frame-dependent fields in the shape-editing notebook.
  */
@@ -787,11 +835,7 @@ void ExultStudio::init_shape_notebook
 	int container_gump = info.get_container_gump();
 	set_toggle("shinfo_container_check", container_gump >= 0);
 	set_visible("shinfo_container_box", container_gump >= 0);
-	if (container_gump >= 0)	// Setup container page.
-		{
-		set_spin("shinfo_gump_num", container_gump);
-		}
-
+	set_spin("shinfo_gump_num", container_gump >= 0 ? container_gump : 0);
 	gtk_widget_show(book);
 	}
 
@@ -1003,12 +1047,21 @@ void ExultStudio::open_shape_window
 	if (shape_draw)			// Ifile might have changed.
 		delete shape_draw;
 	shape_draw = 0;
+	if (gump_draw)
+		delete gump_draw;
+	gump_draw = 0;
 	Vga_file *ifile = file_info->get_ifile();
 	if (ifile && palbuf)
 		{
 		shape_draw = new Shape_draw(ifile, palbuf,
 			    glade_xml_get_widget(app_xml, "shinfo_draw"));
 //		shape_draw->enable_drop(Shape_shape_dropped, this);
+		}
+	if (gumpfile && palbuf)
+		{
+		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
+			    glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
+		gump_draw->enable_drop(Gump_shape_dropped, this);
 		}
 					// Store ->'s.
 	gtk_object_set_user_data(GTK_OBJECT(shapewin), info);
@@ -1112,3 +1165,23 @@ void ExultStudio::show_shinfo_shape
 		shape_draw->show();
 	}
 
+/*
+ *	Paint the gump shape on the container page.
+ */
+
+void ExultStudio::show_shinfo_gump
+	(
+	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
+	)
+	{
+	if (!gump_draw)
+		return;
+	gump_draw->configure();
+					// Yes, this is kind of redundant...
+	int shnum = get_spin("shinfo_gump_num");
+	gump_draw->draw_shape_centered(shnum, 0);
+	if (w != -1)
+		gump_draw->show(x, y, w, h);
+	else
+		gump_draw->show();
+	}
