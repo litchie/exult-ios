@@ -69,6 +69,7 @@ private:
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
+	Shape_file_info		*gumpfile;	// 'gumps.vga'.
 	Object_browser		*browser;
 	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
 					// Barge editor:
@@ -93,7 +94,7 @@ private:
 	Shape_draw		*cont_draw;
 					// Shape info. editor:
 	GtkWidget		*shapewin;
-	Shape_draw		*shape_draw;
+	Shape_draw		*shape_draw, *gump_draw;
 	GtkWidget		*equipwin;
 					// Map locator:
 	Locator			*locwin;
@@ -248,6 +249,7 @@ public:
 	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
+	void show_shinfo_gump(int x = 0, int y = 0, int w = -1, int h = -1);
 					// Map locator.
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
