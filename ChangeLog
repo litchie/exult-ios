@@ -1,3 +1,6 @@
+2005-12-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/contain.cc: fix compile error when exult studio disabled
+
 2005-11-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* flic/playfli.cc: use sint8/uint8 types instead of char/unsigned char
 
