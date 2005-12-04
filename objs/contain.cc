@@ -34,9 +34,9 @@
 #include "Gump_manager.h"
 #include "databuf.h"
 #include "ucsched.h"
+#include "cheat.h"
 
 #ifdef USE_EXULTSTUDIO
-#include "cheat.h"
 #include "server.h"
 #include "objserial.h"
 #include "servemsg.h"
