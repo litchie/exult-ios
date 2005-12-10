@@ -546,7 +546,7 @@ WARNING_LEVEL="normal"
 # more warnings
 AC_ARG_ENABLE(warnings, [  --enable-warnings       Enable all warnings [default no]],,enable_warnings=no)
 if test x$enable_warnings = xyes; then
- 	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
+ 	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
 	WARNING_LEVEL="all"
 fi
 
