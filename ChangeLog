@@ -1,3 +1,7 @@
+2005-12-10  Max Horn  <max@quendi.de>
+
+	* configure.ac: Remove some obsolete warnings.
+
 2005-12-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/contain.cc: fix compile error when exult studio disabled
 
