@@ -740,8 +740,10 @@ static void Init
 		U7FileManager::get_ptr()->reset();
 		const char *title = 0;
 
-		if(game)
+		if (game) {
 			delete game;
+			game = 0;
+		}
 		
 		if (run_bg) {
 			mygame = BLACK_GATE;
