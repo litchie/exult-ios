@@ -57,7 +57,6 @@ case "$host_os" in
 		if test "$host_vendor" = "embeddix"; then
 			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
 			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
-			enable_kmid="no"
 			enable_timidity="no"
 			enable_exult_studio_support="no"
 			enable_exult_studio="no"
@@ -72,7 +71,6 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DBEOS"
 		AC_MSG_RESULT(BeOS)
 		SYSLIBS="-lbe -lmidi"
-		enable_kmid="no"
 		enable_timidity="no"
 		;;
 	mingw32* )
@@ -80,7 +78,6 @@ case "$host_os" in
 		AC_MSG_RESULT(Win32 (mingw32))
 		SYSLIBS="-lwinmm -lstdc++"
 		ICON_FILE="win32/exultico.o"
-		enable_kmid="no"
 		enable_timidity="no"
 		;;
 	cygwin* )
@@ -90,7 +87,6 @@ case "$host_os" in
 		CXXFLAGS="$CXXFLAGS -mno-cygwin"
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
-		enable_kmid="no"
 		enable_timidity="no"
 		;;
 	openbsd* )
