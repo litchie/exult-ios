@@ -260,6 +260,8 @@ void getVersionInfo(std::ostream& out)
 	out << "MorphOS";
 #elif (defined(AMIGA))
 	out << "Amiga";
+#elif (defined(NETBSD))
+	out << "NetBSD";
 #else
 	out << "Unknown";
 #endif
