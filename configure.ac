@@ -444,52 +444,6 @@ fi
 
 
 # ---------------------------------------------------------------------
-# Memory allocation scheme
-# ---------------------------------------------------------------------
-AC_MSG_CHECKING(checking memory allocation scheme)
-
-# For the alternate allocator
-AC_ARG_ENABLE(alternate-allocator,    [  --enable-alternate-allocator    Use alternate memory allocator [default no]],,enable_alternate_allocator=no)
-if test x$enable_alternate_allocator = xyes; then
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
-fi
-
-# For storage initialisation
-AC_ARG_ENABLE(storage-initialisation, [  --enable-storage-initialisation Clear storage when allocated [default no]],,enable_storage_initialisation=no)
-if test x$enable_storage_initialisation = xyes; then
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
-	AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0, [Initialize allocated blocks])
-fi
-
-# For storage poisoning
-AC_ARG_ENABLE(storage-poisoning,      [  --enable-storage-poisoning      Poison storage when allocated [default no]],,enable_storage_poisoning=no)
-if test x$enable_storage_poisoning = xyes; then
-	if test x$enable_storage_initialisation = xyes; then
-		AC_MSG_RESULT(poisoned. (Disabling storage initialisation. Can't poison and init to zero.))
-	fi
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
-	AC_DEFINE(POISON_ALLOCATED_BLOCKS, 1, [Poison allocated blocks])
-fi
-
-# output result
-if test x$enable_storage_poisoning = xyes; then
-	if test x$enable_storage_initialisation = xno; then
-		AC_MSG_RESULT(poisoned)
-	fi
-else
-	if test x$enable_storage_initialisation = xyes; then
-		AC_MSG_RESULT(initialized)
-	else
-		if test x$enable_alternate_allocator = xyes; then
-			AC_MSG_RESULT(alternate)
-		else
-			AC_MSG_RESULT(normal)
-		fi
-	  fi
-fi
-
-
-# ---------------------------------------------------------------------
 # Debugging options
 # ---------------------------------------------------------------------
 
@@ -552,17 +506,6 @@ if test x$enable_warnings = xyes; then
 	WARNING_LEVEL="all"
 fi
 
-# Weep into your beer warnings
-AC_ARG_ENABLE(awful-warnings, [  --enable-awful-warnings Enable warnings for violations of Scott Meyers' Effective C++ style guidelines [default no]],,enable_awful_warnings=no)
-if test x$enable_awful_warnings = xyes; then
-	DEBUG_FLAGS="$DEBUG_FLAGS -Weffc++"
-	if test x$WARNING_LEVEL = xall; then
-		WARNING_LEVEL="all, including Scott Meyers' 'effective C++'"
-	else
-		WARNING_LEVEL="Scott Meyers' 'effective C++'"
-	fi
-fi
-
 AC_ARG_ENABLE(paranoid-warnings, [  --enable-paranoid-warnings      Enable paranoid warnings [default no]],,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
 	WARNINGS="-Wall -W -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
@@ -583,58 +526,6 @@ if test x$enable_long_long_warnings = xyes; then
 else
 	AC_MSG_RESULT(yes)
 	DEBUG_FLAGS="$DEBUG_FLAGS -Wno-long-long"
-fi
-
-# Heavy namespaces. Most installations probably can't take this option
-AC_ARG_ENABLE(std-namespace, [  --enable-std-namespace  Honour the std namespace. [default no]],,enable_std_namespace=no)
-AC_MSG_CHECKING(if we should honour the std namespace)
-if test x$enable_std_namespace = xyes; then
-	AC_MSG_RESULT(yes)
-	DEBUG_FLAGS="$DEBUG_FLAGS -fhonor-std"
-else
-	AC_MSG_RESULT(no)
-fi
-
-# repo
-AC_ARG_ENABLE(repo, [  --enable-repo Repo type template instantiation. [default no]],,enable_repo=no)
-AC_MSG_CHECKING(if we should use repo type template instantiation)
-if test x$enable_repo = xyes; then
-	AC_MSG_RESULT(yes)
-	DEBUG_FLAGS="$DEBUG_FLAGS -frepo"
-else
-	AC_MSG_RESULT(no)
-fi
-
-# external templates (alt)
-AC_ARG_ENABLE(external-templates, [  --enable-external-templates	external template instantiation. [default no]],,enable_external_templates=no)
-AC_MSG_CHECKING(if we should use (alternate) external template instantiation)
-if test x$enable_external_templates = xyes; then
-	AC_MSG_RESULT(yes)
-	DEBUG_FLAGS="$DEBUG_FLAGS -falt-external-templates"
-else
-	AC_MSG_RESULT(no)
-fi
-
-
-
-# Architecture dependent optimisations
-AC_MSG_CHECKING(if we should optimise for MMX)
-AC_ARG_ENABLE(timidity, [  --enable-mmx       Use MMX optimisations [default no]],,enable_mmx=no)
-if test x$enable_mmx = xyes; then
-	AC_MSG_RESULT(yes)
-	CXXFLAGS="$CXXFLAGS -mmmx"
-else
-	AC_MSG_RESULT(no)
-fi
-
-# Architecture dependent optimisations
-AC_MSG_CHECKING(if we should optimise for 3DNOW)
-AC_ARG_ENABLE(timidity, [  --enable-3dnow       Use 3DNOW optimisations [default no]],,enable_3dnow=no)
-if test x$enable_3dnow = xyes; then
-	AC_MSG_RESULT(yes)
-	CXXFLAGS="$CXXFLAGS -m3dnow"
-else
-	AC_MSG_RESULT(no)
 fi
 
 # --------------------

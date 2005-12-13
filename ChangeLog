@@ -1,3 +1,7 @@
+2005-12-14  Max Horn  <max@quendi.de>
+
+	* configure.ac: Removed several outdated / obsolete configure options.
+
 2005-12-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* egg.cc: Set facing for egg-created monsters.
 
