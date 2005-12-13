@@ -1,3 +1,6 @@
+2005-12-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* egg.cc: Set facing for egg-created monsters.
+
 2005-12-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac, version.cc: netbsd (partial patch #1111951)
 

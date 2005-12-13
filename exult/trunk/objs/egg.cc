@@ -576,6 +576,7 @@ static void Create_monster
 	Game_window *gwin,
 	Egg_object *egg,
 	int shnum,			// Monster shape.
+	int frnum,			// Monster frame.
 	Monster_info *inf,		// Info.
 	int sched,
 	int align
@@ -587,6 +588,7 @@ static void Create_monster
 		{
 		Monster_actor *monster = Monster_actor::create(shnum, dest,
 								sched, align);
+		monster->change_frame(frnum);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		}
@@ -709,7 +711,7 @@ breaks anything!  */
 			if (cnt > 1)	// Randomize.
 				cnt = 1 + (rand()%cnt);
 			while (cnt--)
-				Create_monster(gwin, this, shnum, inf,
+				Create_monster(gwin, this, shnum, frnum, inf,
 							sched, align);
 			}
 		else			// Create item.
