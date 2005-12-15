@@ -19,7 +19,6 @@ exult_SOURCES =	\
 	actorio.cc	\
 	actors.cc	\
 	actors.h	\
-	alloc.cc	\
 	alpha_kludges.h	\
 	args.cc		\
 	args.h		\
@@ -215,15 +214,19 @@ if MACOSX
 
 bundle_name = Exult.app
 
-Exult_app: ${EXE_TARGET}
+bundle: ${EXE_TARGET}
 	mkdir -p $(bundle_name)/Contents/MacOS
-	mkdir -p $(bundle_name)/Contents/Resources
+	mkdir -p $(bundle_name)/Contents/Resources/data/
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
 	$(INSTALL_DATA) Info.plist $(bundle_name)/Contents/
 	$(INSTALL_PROGRAM) $< $(bundle_name)/Contents/MacOS/
 	$(INSTALL_DATA) macosx/exult.icns $(bundle_name)/Contents/Resources/
+	$(INSTALL_DATA) data/exult.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) data/exult_bg.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) data/exult_si.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) data/midisfx.flx $(bundle_name)/Contents/Resources/data
 
-install-exec-local: Exult_app
+install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
 	cp -r $(bundle_name) $(DESTDIR)/Applications/
 

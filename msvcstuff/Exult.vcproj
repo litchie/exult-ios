@@ -630,9 +630,6 @@
 					RelativePath="..\actors.cc">
 				</File>
 				<File
-					RelativePath="..\alloc.cc">
-				</File>
-				<File
 					RelativePath="..\args.cc">
 				</File>
 				<File
