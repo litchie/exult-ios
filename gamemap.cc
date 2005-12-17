@@ -124,7 +124,9 @@ Chunk_terrain *Game_map::read_terrain
 		chunks->read(reinterpret_cast<char*>(buf), ntiles*2);
 		}
 	Chunk_terrain *ter = new Chunk_terrain(&buf[0], v2_chunks);
-	chunk_terrains->put(chunk_num, ter);
+	if (chunk_num >= chunk_terrains->size())
+		chunk_terrains->resize(chunk_num + 1);
+	(*chunk_terrains)[chunk_num] = ter;
 	return ter;
 	}
 

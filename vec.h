@@ -38,16 +38,6 @@ public:
 #ifndef MACOS /* should be something like PROPER_STD_CPP_LIB or so */
 	T& at(int i) { return (*this)[i]; }
 #endif
-	void put(int i, T& v)		// Set i'th entry.
-		{
-			if (i >= (int)this->size())
-				{
-				insert(this->begin() + this->size(), i - this->size(), 0);
-				push_back(v);
-				}
-			else
-				(*this)[i] = v;
-		}
 };
 
 
