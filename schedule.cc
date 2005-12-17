@@ -723,8 +723,10 @@ void Patrol_schedule::now_what
 			}
 	pathnum += dir;			// Find next path.
 	find_next = false;		// We're doing it.
+	if (pathnum >= paths.size())
+		paths.resize(pathnum + 1);
 					// Already know its location?
-	path =  pathnum >= 0 && pathnum < paths.size() ? paths[pathnum] : 0;
+	path =  pathnum >= 0 ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
@@ -746,7 +748,7 @@ void Patrol_schedule::now_what
 		if (path)		// Save it.
 			{
 			failures = 0;
-			paths.put(pathnum, path);
+			paths[pathnum] = path;
 			}
 		else			// Turn back if at end.
 			{

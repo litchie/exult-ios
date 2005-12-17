@@ -534,10 +534,12 @@ Game_map *Game_window::get_map
 	int num				// Should be > 0.
 	)
 	{
-	if (num >= maps.size() || maps[num] == 0)
+	if (num >= maps.size())
+		maps.resize(num + 1);
+	if (maps[num] == 0)
 		{
 		Game_map* newmap = new Game_map(num);
-		maps.put(num, newmap);
+		maps[num] = newmap;
 		maps[num]->init();
 		}
 	return maps[num];

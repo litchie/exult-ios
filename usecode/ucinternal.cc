@@ -2595,11 +2595,17 @@ int Usecode_internal::run()
 				offset = Read2(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
-				if (offset < 0)
-					statics.put(-offset, val);
-				else
-					frame->function->statics.put(
-								offset, val);
+				if (offset < 0) {
+					if (-offset >= statics.size())
+						statics.resize(-offset + 1);
+					statics[-offset] = val;
+				} else {
+					if (offset >= 
+					    frame->function->statics.size())
+						frame->function->statics.
+							resize(offset + 1);
+					frame->function->statics[offset]=val;
+				}
 			}
 				break;
 			case 0x52:		// CALLO (call original).
