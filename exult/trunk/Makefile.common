@@ -5,7 +5,7 @@ $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32em
 
 VERSION=1.4.01cvs
 
-MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
+MAIN_OBJS=actions.o actorio.o actors.o \
 	args.o bggame.o browser.o cheat.o  \
 	combat.o delobjs.o devgame.o \
 	 dir.o drag.o effects.o exult.o exultmenu.o \
