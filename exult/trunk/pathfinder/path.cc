@@ -323,13 +323,19 @@ public:
 #endif
 		lookup.clear();		// Remove all nodes.
 		}
+	void add_open(int pri, Search_node *nd)
+		{
+		if (pri >= open.size())
+			open.resize(pri + 2);
+		open[pri] = nd;
+		}
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.
 		{
 		int total_cost = nd->get_total_cost();
 		Search_node *last = total_cost < open.size() ?
 						open[total_cost] : 0;
 		nd->add_to_chain(last);	// Add node to this chain.
-		open.put(total_cost, last);
+		add_open(total_cost, last);
 		if (total_cost < best)
 			best = total_cost;
 		}
@@ -348,7 +354,7 @@ public:
 						open[total_cost] : 0;
 		nd->remove_from_chain(last);
 					// Store updated 'last'.
-		open.put(total_cost, last);
+		add_open(total_cost, last);
 		if (!last)		// Last in chain?
 			{
 			if (total_cost == best)
@@ -368,7 +374,7 @@ public:
 					// Return 1st in list.
 		Search_node *node = Search_node::remove_first_from_chain(last);
 					// Store updated 'last'.
-		open.put(best, last);
+		add_open(best, last);
 		if (!last)		// List now empty?
 			{
 			int cnt = open.size();

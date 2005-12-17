@@ -189,9 +189,9 @@ void Chunk_cache::update_object
 	Shape_info& info = obj->get_info();
 	if (info.is_door())		// Special door list.
 		if (add)
-			doors.append(obj);
+			doors.insert(obj);
 		else
-			doors.remove(obj);
+			doors.erase(obj);
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
@@ -596,7 +596,7 @@ Game_object *Chunk_cache::find_door
 	Tile_coord tile
 	)
 	{
-	for (Game_object_vector::iterator it = doors.begin();
+	for (std::set<Game_object*>::iterator it = doors.begin();
 						it != doors.end(); ++it)
 		if ((*it)->blocks(tile))
 			return *it;	// Found it.
@@ -702,13 +702,13 @@ void Map_chunk::add_dependencies
 		int cmp = newcmp == -1 ? 1 : newcmp == 1 ? 0 : -1;
 		if (!cmp)		// Bigger than this object?
 			{
-			newobj->dependencies.put(obj);
-			obj->dependors.put(newobj);
+			newobj->dependencies.insert(obj);
+			obj->dependors.insert(newobj);
 			}
 		else if (cmp == 1)	// Smaller than?
 			{
-			obj->dependencies.put(newobj);
-			newobj->dependors.put(obj);
+			obj->dependencies.insert(newobj);
+			newobj->dependors.insert(obj);
 			}
 		}
 	}
@@ -1233,7 +1233,7 @@ int Map_chunk::find_in_area
 			if (each->get_shapenum() == shapenum &&
 			    each->get_framenum() == framenum &&
 			    tiles.has_point(each->get_tx(), each->get_ty()))
-				vec.append(each);
+				vec.push_back(each);
 		}
 	return vec.size() - savesize;
 	}

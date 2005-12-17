@@ -23,6 +23,7 @@
 #define OBJS_H
 
 #include <string>	// STL string
+#include <set>
 #include "exult_constants.h"
 #include "exult_types.h"
 #include "flags.h"
@@ -71,9 +72,12 @@ protected:
 	int get_cyi() const;
 private:
 	Game_object *next, *prev;	// ->next in chunk list or container.
-	Game_object_vector dependencies;// Objects which must be painted before
+public:
+	typedef std::set<Game_object*> Game_object_set;
+private:
+	Game_object_set dependencies;	// Objects which must be painted before
 					//   this can be rendered.
-	Game_object_vector dependors;	// Objects which must be painted after.
+	Game_object_set dependors;	// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
 	uint32 render_seq;		// Render sequence #.
@@ -163,10 +167,8 @@ public:
 	void change_frame(int frnum);	// Change frame & set to repaint.
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
-	int get_dependency_count()	// Get objs. to paint first.
-		{ return dependencies.size(); }
-	Game_object *get_dependency(int i)
-		{ return dependencies[i]; }
+	Game_object_set& get_dependencies()
+		{ return dependencies; }
 	void clear_dependencies();	// Remove all dependencies.
 
 					// Find nearby objects.

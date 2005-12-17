@@ -63,6 +63,7 @@ using std::rand;
 using std::ostream;
 using std::strchr;
 using std::string;
+using std::set;
 #endif
 
 					// Offset to each neighbor, dir=0-7.
@@ -409,16 +410,16 @@ void Game_object::clear_dependencies
 	(
 	)
 	{
-	Game_object_vector::const_iterator	X;
+	Game_object_set::const_iterator	X;
 	
 	// First do those we depend on.
 	for(X = dependencies.begin(); X != dependencies.end(); ++X )
-		(**X).dependors.remove(this);
+		(**X).dependors.erase(this);
 	dependencies.clear();
 	
 	// Now those who depend on us.
 	for(X = dependors.begin(); X != dependors.end(); ++X )
-		(**X).dependencies.remove(this);
+		(**X).dependencies.erase(this);
 	dependors.clear();
 	}
 

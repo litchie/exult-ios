@@ -316,7 +316,7 @@ void Barge_object::gather
 			    (info.is_barge_part() || t.tz < lift + 5) &&
 			    obj->get_owner() != this)
 				{
-				objects.append(obj);
+				objects.push_back(obj);
 				if (si)
 					{
 					if (obj->get_shapenum() == 0x1f8)
@@ -720,7 +720,7 @@ bool Barge_object::add
 					//   cause obj to be deleted.
 	)
 	{
-	objects.append(obj);		// Add to list.
+	objects.push_back(obj);		// Add to list.
 	return (false);			// We want it added to the chunk.
 	}
 
