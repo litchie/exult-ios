@@ -762,9 +762,6 @@
 						RelativePath="..\args.h">
 					</File>
 					<File
-						RelativePath="..\autoarray.h">
-					</File>
-					<File
 						RelativePath="..\bggame.h">
 					</File>
 					<File
