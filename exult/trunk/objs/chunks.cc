@@ -234,11 +234,28 @@ void Chunk_cache::set_egged
 	)
 	{
 					// Egg already there?
-	int eggnum = egg_objects.find(egg);
+	int eggnum = -1, spot = -1;
+	for (Egg_vector::const_iterator it = egg_objects.begin();
+					it != egg_objects.end(); ++it)
+		{
+		if (*it == egg)
+			{
+			eggnum = it - egg_objects.begin();
+			break;
+			}
+		else if (*it == 0 && spot == -1)
+			spot = it - egg_objects.begin();
+		}
 	if (add)
 		{
 		if (eggnum < 0)		// No, so add it.
-			eggnum = egg_objects.put(egg);
+			{
+			eggnum = spot >= 0 ? spot : egg_objects.size();
+			if (spot >= 0)
+				egg_objects[spot] = egg;
+			else
+				egg_objects.push_back(egg);
+			}
 		if (eggnum > 15)	// We only have 16 bits.
 			eggnum = 15;
 		short mask = (1<<eggnum);
@@ -249,7 +266,7 @@ void Chunk_cache::set_egged
 		}
 	else				// Remove.
 		{
-		if (eggnum < 0 || eggnum >= egg_objects.size())
+		if (eggnum < 0)
 			return;		// Not there.
 		egg_objects[eggnum] = NULL;
 		if (eggnum >= 15)	// We only have 16 bits.
