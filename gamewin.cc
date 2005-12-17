@@ -726,7 +726,7 @@ void Game_window::add_npc
 	assert(num == npc->get_npc_num());
 	assert(num <= npcs.size());
 	if (num == npcs.size())		// Add at end.
-		npcs.append(npc);
+		npcs.push_back(npc);
 	else
 		{			// Better be unused.
 		assert(!npcs[num] || npcs[num]->is_unused());

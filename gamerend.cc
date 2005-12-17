@@ -467,10 +467,11 @@ void Game_render::paint_object
 	if (lift >= skip)
 		return;
 	obj->render_seq = render_seq;
-	int cnt = obj->get_dependency_count();
-	for (int i = 0; i < cnt; i++)
+	Game_object::Game_object_set& deps = obj->get_dependencies();
+	for (Game_object::Game_object_set::iterator it = deps.begin();
+				it != deps.end(); ++it)
 		{
-		Game_object *dep = obj->get_dependency(i);
+		Game_object *dep = *it;
 		if (dep && dep->render_seq != render_seq)
 			paint_object(dep);
 		}

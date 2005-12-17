@@ -66,25 +66,6 @@ public:
 				}
 			return -1;
 		}
-
-	size_type	append( const T& obj )
-		{
-			push_back( obj );
-			return this->size() - 1;
-		}
-
-	void		remove( const T& obj )
-		{
-			// Correct way. An iterator isn't a pointer, necessarily
-			for(iterator X = this->begin(); X != this->end(); ++X)
-			{
-				if( *X == obj )
-				{
-					erase(X);
-					return;
-				}
-			}
-		}
 };
 
 

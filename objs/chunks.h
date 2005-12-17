@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CHUNKS_H
 
 #include "objlist.h"
-
+#include <set>
 
 #include "exult_constants.h"
 #include "rect.h"
@@ -58,7 +58,7 @@ class Chunk_cache : public Game_singletons
 					//   influence.  Bit 15 means it's 1 or
 					//   more of 
 					//   egg_objects[15-(num_eggs-1)].
-	Game_object_vector doors;	// Keep special list of doors.
+	std::set<Game_object*> doors;	// Keep special list of doors.
 	friend class Map_chunk;
 	Chunk_cache();	
 	~Chunk_cache();
