@@ -283,10 +283,6 @@ class Shape_info
 					// Set/clear tfa bit.
 	void set_tfa(int i, int bit, bool tf)
 		{ tfa[i] = tf ? (tfa[i]|(1<<bit)) : (tfa[i]&~(1<<bit)); }
-	// This private copy constructor and assignment operator are never
-	// defined so copying will cause a link error (intentional)
-	Shape_info(const Shape_info & other);
-	const Shape_info & operator = (const Shape_info & other);
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
@@ -296,8 +292,12 @@ public:
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 		dims[0] = dims[1] = dims[2] = 0;
 		}
+	// This copy constructor and assignment operator intentionally cause
+	// errors.
+	Shape_info(const Shape_info & other);
+	const Shape_info & operator = (const Shape_info & other);
 	virtual ~Shape_info();
-	void copy(Shape_info& inf2);
+	void copy(const Shape_info& inf2);
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()
