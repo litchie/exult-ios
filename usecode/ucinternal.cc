@@ -1764,7 +1764,9 @@ void Usecode_internal::read_usecode
 			funs.resize(slotnum < 10 ? 10 : slotnum + 1);
 		Funs256& vec = funs[slotnum];
 		int i = fun->id%0x100;
-		if (i < vec.size() && vec[i])
+		if (i >= vec.size())
+			vec.resize(i + 1);
+		else if (vec[i])
 			{		// Already have one there.
 			if (patch)	// Patching?
 				{
@@ -1782,7 +1784,7 @@ void Usecode_internal::read_usecode
 				delete vec[i];
 				}
 			}
-		vec.put(i, fun);
+		vec[i] = fun;
 		}
 	}
 

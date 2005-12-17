@@ -1997,9 +1997,9 @@ void Waiter_schedule::find_tables
 		Game_object_vector chairs;		// No chairs by it?
 		if (!table->find_nearby(chairs, 873, 3, 0) &&
 		    !table->find_nearby(chairs, 292, 3, 0))
-			prep_tables.append(table);
+			prep_tables.push_back(table);
 		else
-			eating_tables.append(table);
+			eating_tables.push_back(table);
 		}
 	}
 

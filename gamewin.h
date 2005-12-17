@@ -293,7 +293,10 @@ public:
 				npcs[npc_num] : 0; }
 	void locate_npc(int npc_num);
 	void set_body(int npc_num, Dead_body *body)
-		{ bodies.put(npc_num, body); }
+		{ if (npc_num >= bodies.size())
+			bodies.resize(npc_num + 1);
+		  bodies[npc_num] = body;
+		}
 	Dead_body *get_body(int npc_num)
 		{ return bodies[npc_num]; }
 	int get_num_npcs()
