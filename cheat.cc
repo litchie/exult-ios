@@ -620,6 +620,15 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 		move_selected_objs(dx, dy, dz);
 }
 
+bool Cheat::is_selected(Game_object *o)
+	{ 
+	for (Game_object_vector::const_iterator it = selected.begin();
+						it != selected.end(); ++it)
+		if (o == *it)
+			return true;
+	return false;
+	}
+
 /*
  *	Want lowest, southmost, then eastmost first.
  */

@@ -733,8 +733,11 @@ bool Barge_object::contains
 	Game_object *obj
 	)
 	{
-	int ind = objects.find(obj);
-	return ind >= 0;
+	for (Game_object_vector::const_iterator it = objects.begin();
+						it != objects.end(); ++it)
+		if (obj == *it)
+			return true;
+	return false;
 	}
 
 /*

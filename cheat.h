@@ -137,8 +137,7 @@ public:
   void move_selected(int dx, int dy, int dz);
   const Game_object_vector& get_selected() const
 	{ return selected; }
-  bool is_selected(Game_object *o)
-	{ return selected.size() ? (selected.find(o) != -1) : false; }
+  bool is_selected(Game_object *o);
 
   void cut(bool copy = false);
   void paste(int mx, int my);

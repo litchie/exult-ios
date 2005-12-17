@@ -48,24 +48,6 @@ public:
 			else
 				(*this)[i] = v;
 		}
-	int put(T& v)			// Put in a free spot & return it.
-		{
-			int i = find(0);
-			if (i < 0)
-				i = this->size();
-			put(i, v);
-			return (i);
-		}
-	size_type	find( const T& obj ) const
-		{
-			size_type pos = 0;
-			for (const T *X = &*this->begin(); X != &*this->end(); ++X, ++pos)
-				{
-				if( *X == obj )
-					return pos;
-				}
-			return -1;
-		}
 };
 
 
