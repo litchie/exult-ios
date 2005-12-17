@@ -22,12 +22,13 @@
 #ifndef INCL_SHAPEVGA
 #define INCL_SHAPEVGA	1
 
+#include <vector>
 #include <fstream>
 #include <iostream>
 #ifdef MACOS
   #include <cassert>
 #endif
-#include "autoarray.h"
+// #include "autoarray.h"	+++++GOING AWAY.
 #include "fnames.h"
 #include "imagebuf.h"
 #include "vgafile.h"
@@ -41,7 +42,7 @@
  */
 class Shapes_vga_file : public Vga_file
 {
-	autoarray<Shape_info> info;	// Extra info. about each shape.
+	std::vector<Shape_info> info;	// Extra info. about each shape.
 	Shape_info zinfo;		// A fake one (all 0's).
 	bool info_read;			// True when info is set.
 public:
@@ -55,15 +56,8 @@ public:
 	virtual Shape *new_shape(int shapenum);	
 	Shape_info& get_info(int shapenum)
 	{
-#if 0	/* This can go away.  Done in Shape_manager::read_shape_info().	*/
-		// Shapes 1024 -> 1035 in SI are alternative player chars.
-		// Odd are female, even are male.
-		return shapenum>=1024&&shapenum<=1035&&shapenum%2 ? info[989]:
-			shapenum>=1024&&shapenum<=1035 ? info[721]:
-			info[shapenum];
-#else
+		assert(shapenum >= 0 && shapenum < info.size());
 		return info[shapenum];
-#endif
 	}
 };
 

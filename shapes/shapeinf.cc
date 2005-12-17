@@ -153,6 +153,14 @@ int Armor_info::read
 	}
 
 /*
+ *	Not supported:
+ */
+Shape_info::Shape_info(const Shape_info & other) : weapon_offsets(0), 
+		armor(0), weapon(0), ammo(0), monstinf(0)
+	{ copy(other); }
+const Shape_info & Shape_info::operator = (const Shape_info & other)
+	{ copy(other); return *this; }
+/*
  *	Clean up.
  */
 
@@ -172,7 +180,7 @@ Shape_info::~Shape_info()
 
 void Shape_info::copy
 	(
-	Shape_info& inf2
+	const Shape_info& inf2
 	)
 	{
 	for (int i = 0; i < 3; ++i)
@@ -186,6 +194,7 @@ void Shape_info::copy
 	shpdims[1] = inf2.shpdims[1];
 	ready_type = inf2.ready_type;
 	occludes_flag = inf2.occludes_flag;
+	container_gump = inf2.container_gump;
 	// Allocated fields.
 	delete [] weapon_offsets;
 	if (inf2.weapon_offsets)
@@ -194,9 +203,15 @@ void Shape_info::copy
 		memcpy(weapon_offsets, inf2.weapon_offsets, 64);
 		}
 	else
-		inf2.weapon_offsets = 0;
-	// NOT NEEDED YET:
-	assert (!inf2.armor && !inf2.weapon && !inf2.ammo && !inf2.monstinf);
+		weapon_offsets = 0;
+	delete armor;
+	armor = inf2.armor ? new Armor_info(*inf2.armor) : 0;
+	delete ammo;
+	ammo = inf2.ammo ? new Ammo_info(*inf2.ammo) : 0;
+	delete weapon;
+	weapon = inf2.weapon ? new Weapon_info(*inf2.weapon) : 0;
+	delete monstinf;
+	monstinf = inf2.monstinf ? new Monster_info(*inf2.monstinf) : 0;
 	}
 
 /*

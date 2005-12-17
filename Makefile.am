@@ -22,7 +22,6 @@ exult_SOURCES =	\
 	alpha_kludges.h	\
 	args.cc		\
 	args.h		\
-	autoarray.h	\
 	bggame.cc	\
 	bggame.h	\
 	browser.cc	\

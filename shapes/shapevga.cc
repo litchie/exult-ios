@@ -278,9 +278,8 @@ Shapes_vga_file::Shapes_vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Path to patch version, or 0.
-	) : Vga_file(nm, u7drag, nm2), info_read(false)
+	) : Vga_file(nm, u7drag, nm2), info_read(false), info(num_shapes)
 	{
-	info.set_size(num_shapes);
 	}
 
 Shapes_vga_file::~Shapes_vga_file()
@@ -295,7 +294,7 @@ void Shapes_vga_file::init(int min_info_size)
 	else
 		load(SHAPES_VGA);
 
-	info.set_size(min_info_size > num_shapes ? min_info_size : num_shapes);
+	info.resize(min_info_size > num_shapes ? min_info_size : num_shapes);
 }
 
 /*
@@ -311,6 +310,6 @@ Shape *Shapes_vga_file::new_shape
 	{
 	Shape *newshape = Vga_file::new_shape(shapenum);
 	if (newshape && shapenum >= info.size())
-		info.set_size(shapenum + 1);
+		info.resize(shapenum + 1);
 	return newshape;
 	}
