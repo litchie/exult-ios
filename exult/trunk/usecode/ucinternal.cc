@@ -60,7 +60,6 @@
 #include "ucsched.h"
 #include "useval.h"
 #include "utils.h"
-#include "vec.h"
 #include "actors.h"
 #include "egg.h"
 #include "actions.h"
@@ -2771,7 +2770,7 @@ void Usecode_internal::write
 	out.close();
 	U7open(out, USEVARS);		// Static variables. 1st, globals.
 	Write4(out, statics.size());	// # globals.
-	Exult_vector<Usecode_value>::iterator it;
+	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
 		Write_useval(out, *it);
 					// Now do the local statics.

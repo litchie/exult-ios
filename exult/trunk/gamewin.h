@@ -30,7 +30,7 @@
 #include "vgafile.h"
 
 #include <string>	// STL string
-#include "vec.h"
+#include <vector>
 
 #define RED_PLASMA	1
 
@@ -74,6 +74,8 @@ class Shape_info;
 class Game_render;
 class Effects_manager;
 
+using std::vector;
+
 /*
  *	The main game window:
  */
@@ -84,7 +86,7 @@ class Game_window
 	Dragging_info *dragging;	// Dragging info:
 	Effects_manager *effects;	// Manages special effects.
 	Game_clock *clock;		// Keeps track of time.
-	Exult_vector<Game_map*> maps;	// Hold all terrain.
+	vector<Game_map*> maps;	// Hold all terrain.
 	Game_map *map;			// The current map.
 	Game_render *render;		// Helps with rendering.
 	Gump_manager *gump_man;		// Open containers on screen.
@@ -114,8 +116,8 @@ class Game_window
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	Actor *camera_actor;		// What to center view around.
-	Actor_vector npcs;		// Array of NPC's + the Avatar.
-	Exult_vector<Dead_body*> bodies;// Corresponding Dead_body's.
+	vector<Actor*> npcs;		// Array of NPC's + the Avatar.
+	vector<Dead_body*> bodies;// Corresponding Dead_body's.
 	Deleted_objects *removed;	// List of 'removed' objects.
 		// Rendering info:
 	int scrolltx, scrollty;		// Top-left tile of screen.
@@ -219,7 +221,7 @@ public:
 	 */
 	inline Game_map *get_map() const
 		{ return map; }
-	inline const Exult_vector<Game_map*>& get_maps() const
+	inline const vector<Game_map*>& get_maps() const
 		{ return maps; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }

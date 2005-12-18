@@ -44,9 +44,11 @@ class Usecode_function;
 #include "ucmachine.h"
 #include "ucdebugging.h"
 #include "tiles.h"
-#include "vec.h"	// Includes STL vector.
 #include <string>	// STL string
 #include <deque>
+#include <vector>
+
+using std::vector;
 
 /*
  *	Recursively look for a barge that an object is a part of, or on.
@@ -68,9 +70,9 @@ class Usecode_internal : public Usecode_machine
 	{
 					// I'th entry contains funs for ID's
 					//    256*i + n.
-	typedef Exult_vector<Usecode_function*> Funs256;
-	Exult_vector<Funs256> funs;
-	Exult_vector<Usecode_value> statics;	// Global persistent vars.
+	typedef vector<Usecode_function*> Funs256;
+	vector<Funs256> funs;
+	vector<Usecode_value> statics;	// Global persistent vars.
 	std::deque<Stack_frame*> call_stack; // the call stack
 	Stack_frame *frame;		// One intrinsic uses this for now...
 	bool modified_map;		// We add/deleted/moved an object.
@@ -78,7 +80,7 @@ class Usecode_internal : public Usecode_machine
 	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
-	Game_object_vector last_created;// Stack of last items created with 
+	vector<Game_object*> last_created;// Stack of last items created with 
 					//   intrins. x24.
 	Actor *path_npc;		// Last NPC in path_run_usecode().
 	const char *user_choice;	// String user clicked on.

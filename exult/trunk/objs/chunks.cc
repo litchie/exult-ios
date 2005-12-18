@@ -1280,7 +1280,8 @@ void Map_chunk::try_all_eggs
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// (Ignored).
 	int eachcx, eachcy;
-	Egg_vector eggs(40);		// Get them here first, as activating
+	Egg_vector eggs;		// Get them here first, as activating
+	eggs.reserve(40);
 					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
@@ -1426,7 +1427,8 @@ void Map_chunk::gravity
 	int lift			// Lift where tiles are free.
 	)
 	{
-	Game_object_vector dropped(20);	// Gets list of objs. that dropped.
+	Game_object_vector dropped;	// Gets list of objs. that dropped.
+	dropped.reserve(20);
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// Rel. tiles.  Not used.
@@ -1520,7 +1522,8 @@ void Map_chunk::kill_cache()
 	dungeon_levels = 0;
 }
 
-int Map_chunk::get_obj_actors(Game_object_vector &removes, Actor_vector &actors)
+int Map_chunk::get_obj_actors(vector<Game_object*> &removes, 
+						vector<Actor*> &actors)
 {
 	int buf_size = 0;
 	bool failed = false;

@@ -332,7 +332,7 @@ void Game_window::save_gamedat
 
 	ofstream out;
 	U7open(out, fname);
-	Exult_vector<Game_map*>::iterator it;
+	vector<Game_map*>::iterator it;
 	int count = numsavefiles;	// Count up #files to write.
 	for (it = maps.begin(); it != maps.end(); ++it)
 		if (*it)
@@ -1147,7 +1147,7 @@ bool Game_window::save_gamedat_zip
 			bgnumsavefiles : sinumsavefiles;
 	const char **savefiles = (Game::get_game_type() == BLACK_GATE) ?
 			bgsavefiles : sisavefiles;	
-	Exult_vector<Game_map*>::iterator it;
+	vector<Game_map*>::iterator it;
 
 	// Name
 	{

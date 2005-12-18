@@ -22,9 +22,9 @@
 #define SCHEDULE_H	1
 
 #include "tiles.h"
-#include "vec.h"
 #include "lists.h"
 #include "singles.h"
+#include <vector>
 
 #ifdef WIN32
 #include <windows.h>
@@ -35,6 +35,8 @@ class Game_object;
 class Actor;
 class Rectangle;
 class Actor_action;
+
+using std::vector;
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -194,7 +196,7 @@ public:
  */
 class Patrol_schedule : public Schedule
 	{
-	Game_object_vector paths;	// Each 'path' object.
+	vector<Game_object*> paths;	// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 	int dir;			// 1 or -1;
 	int failures;			// # of failures to find marker.
@@ -355,7 +357,7 @@ public:
  */
 class Lab_schedule : public Schedule
 	{
-	Game_object_vector tables;
+	vector<Game_object*> tables;
 	Game_object *chair;		// Chair to sit in.
 	Game_object *book;		// Book to read.
 	Game_object *cauldron;
@@ -398,8 +400,8 @@ class Waiter_schedule : public Schedule
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
 	Actor_queue customers;		// List of customers.
-	Game_object_vector prep_tables;		// Prep. tables.
-	Game_object_vector eating_tables;		// Tables with chairs around them.
+	vector<Game_object*> prep_tables;		// Prep. tables.
+	vector<Game_object*> eating_tables;		// Tables with chairs around them.
 	void get_customer();
 	void find_tables(int shapenum);
 	Game_object *find_serving_spot(Tile_coord& spot);

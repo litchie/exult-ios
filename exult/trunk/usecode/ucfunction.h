@@ -22,8 +22,8 @@
 #define _UCFUNCTION_H
 
 #include <iosfwd>
+#include <vector>
 #include "useval.h"
-#include "vec.h"
 
 class Usecode_function
 {
@@ -38,7 +38,7 @@ class Usecode_function
 
 	bool extended; // is this an 'extented' function? (aka 32 bit function)
 	unsigned char *code;		// The code.
-	Exult_vector<Usecode_value> statics;	// Local statics.
+	std::vector<Usecode_value> statics;	// Local statics.
 					// Create from file.
 	Usecode_function(std::istream& file);
 	inline ~Usecode_function()
