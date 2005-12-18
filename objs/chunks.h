@@ -32,16 +32,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 #include "shapeid.h"
 #include "tiles.h"
-#include "vec.h"
 #include "chunkter.h"
 
 class Map_chunk;
 class Egg_object;
 class Game_object;
 class Game_map;
+class Actor;
 class Npc_actor;
 class Image_buffer8;
 class Chunk_terrain;
+
+using std::vector;
 
 /*
  *	Data cached for a chunk to speed up processing, but which doesn't need
@@ -52,7 +54,7 @@ class Chunk_cache : public Game_singletons
 	Map_chunk *obj_list;
 	unsigned long blocked[256];	// For each tile, 2 bits for each lift
 					//   level for #objs blocking there.
-	Egg_vector egg_objects;		// ->eggs which influence this chunk.
+	vector<Egg_object*> egg_objects;// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
 					//   influence.  Bit 15 means it's 1 or
@@ -255,7 +257,7 @@ public:
 					// Find door blocking given tile.
 	Game_object *find_door(Tile_coord t)
 		{ return need_cache()->find_door(t); }
-	static int find_in_area(Game_object_vector& vec, Rectangle area,
+	static int find_in_area(vector<Game_object*>& vec, Rectangle area,
 					int shapenum, int framenum);
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
@@ -282,7 +284,8 @@ public:
 	void kill_cache();
 					// Get all objects and actors for use when writing memory cache.
 					// returns size require to save
-	int get_obj_actors(Game_object_vector &removes, Actor_vector &actors);
+	int get_obj_actors(vector<Game_object*> &removes,
+						vector<Actor*> &actors);
 
 	};
 

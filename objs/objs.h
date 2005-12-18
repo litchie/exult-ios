@@ -31,7 +31,6 @@
 #include "shapeid.h"
 #include "tqueue.h"
 #include "tiles.h"
-#include "vec.h"
 
 #include "objlist.h"
 
@@ -52,6 +51,10 @@ class DataSource;
 
 template<class T>
 class T_Object_list;
+
+typedef	std::vector<Game_object*>	Game_object_vector;
+typedef	std::vector<Egg_object*>	Egg_vector;
+typedef	std::vector<Actor*>		Actor_vector;
 
 /*
  *	A game object is a shape from shapes.vga along with info. about its

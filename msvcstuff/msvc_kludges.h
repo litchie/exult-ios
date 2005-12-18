@@ -254,7 +254,6 @@ using std::getline;
 #include "../tiles.h"
 #include "../tqueue.h"
 #include "../txtscroll.h"
-#include "../vec.h"
 #include "../flic/playfli.h"
 #include "../pathfinder/Astar.h"
 #include "../pathfinder/PathFinder.h"

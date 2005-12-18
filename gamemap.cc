@@ -79,7 +79,7 @@ using std::vector;
 using std::pair;
 #endif
 
-Exult_vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
+vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
 std::ifstream *Game_map::chunks = 0;
 bool Game_map::v2_chunks = false;
 bool Game_map::read_all_terrain = false;
@@ -204,7 +204,7 @@ void Game_map::init_chunks
 					// 2 bytes/tile.
 	num_chunk_terrains = ((int)chunks->tellg() - hdrsize)/chunksz;
 	if (!chunk_terrains)
-		chunk_terrains = new Exult_vector<Chunk_terrain*>();
+		chunk_terrains = new vector<Chunk_terrain*>();
 					// Resize list to hold all.
 	chunk_terrains->resize(num_chunk_terrains);
 	read_all_terrain = false;
@@ -1415,8 +1415,8 @@ bool Game_map::swap_terrains
 	chunk_terrains_modified = true;
 					// Update terrain maps.
 	Game_window *gwin = Game_window::get_instance();
-	const Exult_vector<Game_map*>& maps = gwin->get_maps();
-	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+	const vector<Game_map*>& maps = gwin->get_maps();
+	for (vector<Game_map*>::const_iterator it = maps.begin();
 						it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
@@ -1494,8 +1494,8 @@ bool Game_map::insert_terrain
 		return true;		// Inserted at end of list.
 					// Update terrain map.
 	Game_window *gwin = Game_window::get_instance();
-	const Exult_vector<Game_map*>& maps = gwin->get_maps();
-	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+	const vector<Game_map*>& maps = gwin->get_maps();
+	for (vector<Game_map*>::const_iterator it = maps.begin();
 						it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
@@ -1536,8 +1536,8 @@ bool Game_map::delete_terrain
 	chunk_terrains_modified = true;
 					// Update terrain map.
 	Game_window *gwin = Game_window::get_instance();
-	const Exult_vector<Game_map*>& maps = gwin->get_maps();
-	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+	const vector<Game_map*>& maps = gwin->get_maps();
+	for (vector<Game_map*>::const_iterator it = maps.begin();
 						it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
@@ -1572,8 +1572,8 @@ void Game_map::commit_terrain_edits
 			ters[i] = 1;
 					// Update terrain map.
 	Game_window *gwin = Game_window::get_instance();
-	const Exult_vector<Game_map*>& maps = gwin->get_maps();
-	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+	const vector<Game_map*>& maps = gwin->get_maps();
+	for (vector<Game_map*>::const_iterator it = maps.begin();
 						it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
