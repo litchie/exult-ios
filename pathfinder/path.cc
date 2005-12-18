@@ -27,11 +27,11 @@
 #include "hash_utils.h"
 #include "PathFinder.h"
 #include "exult_constants.h"
-#include "vec.h"
 
 using std::cout;
 using std::endl;
 using std::size_t;
+using std::vector;
 
 Tile_coord *Find_path
 	(
@@ -285,7 +285,7 @@ public:
  */
 class A_star_queue
 	{
-	Exult_vector<Search_node*> open;// Nodes to be done, by priority. Each
+	vector<Search_node*> open;	// Nodes to be done, by priority. Each
 					//   is a ->last node in chain.
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:

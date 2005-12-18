@@ -104,7 +104,6 @@ exult_SOURCES =	\
 	tqueue.h	\
 	txtscroll.cc	\
 	txtscroll.h	\
-	vec.h 		\
 	version.cc	\
 	version.h	\
 	xdrag.cc	\

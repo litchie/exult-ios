@@ -1777,7 +1777,7 @@ void Lab_schedule::now_what
 	case use_potion:
 		{
 		state = start;
-		Exult_vector<Game_object *> potions;
+		vector<Game_object *> potions;
 		Game_object::find_nearby(potions, spot_on_table, 340, 0, 0);
 		if (potions.size())	// Found a potion.  Remove it.
 			{

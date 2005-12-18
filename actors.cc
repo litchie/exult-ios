@@ -270,7 +270,8 @@ Game_object *Actor::find_ammo
 	Game_object *aobj = get_readied(Actor::ammo);
 	if (aobj && In_ammo_family(aobj->get_shapenum(), ammo))
 		return aobj;		// Already readied.
-	Game_object_vector vec(50);		// Get list of all possessions.
+	Game_object_vector vec;		// Get list of all possessions.
+	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
@@ -349,7 +350,8 @@ bool Actor::ready_best_weapon
 	// What about spell book????
 	if (Actor::get_weapon(points) != 0 && ready_ammo())
 		return true;		// Already have one.
-	Game_object_vector vec(50);		// Get list of all possessions.
+	Game_object_vector vec;		// Get list of all possessions.
+	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0, *best_ammo = 0;
 	int best_damage = -20;

@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mappatch.h"
 #include "gamewin.h"
 #include "objs.h"
-#include "vec.h"
 
 /*
  *	Find (first) matching object.

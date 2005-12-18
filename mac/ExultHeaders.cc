@@ -75,5 +75,4 @@
 #include "ucmachine.h"
 #include "ucsched.h"
 #include "utils.h"
-#include "vec.h"
 #include "virstone.h"

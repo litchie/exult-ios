@@ -427,7 +427,7 @@ Game_window::~Game_window
 	delete win;
 	delete dragging;
 	delete pal;
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		delete *it;
 	delete usecode;
@@ -832,7 +832,7 @@ void Game_window::clear_world
 	clear_dirty();
 	removed->flush();		// Delete.
 	Usecode_script::clear();	// Clear out all scheduled usecode.
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->clear();
 	set_map(0);			// Back to main map.
@@ -1276,7 +1276,7 @@ void Game_window::write
 	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
 							centre_y-text_height);
 	show(true);
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->write_ireg();	// Write ireg files.
 	write_npcs();			// Write out npc.dat.
@@ -1411,7 +1411,7 @@ bool Game_window::was_map_modified
 	{
 	if (Game_map::was_chunk_terrain_modified())
 		return true;
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
@@ -1434,7 +1434,7 @@ void Game_window::write_map
 	(
 	)
 	{
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		{
 		Game_map *map = *it;
@@ -2675,7 +2675,7 @@ void Game_window::setup_game
 	bool map_editing
 	)
 	{
-	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->init();
 				// Init. current 'tick'.
