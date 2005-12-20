@@ -238,7 +238,6 @@ using std::getline;
 #include "../hash_utils.h"
 #include "../keyactions.h"
 #include "../keys.h"
-#include "../lists.h"
 #include "../menulist.h"
 #include "../mouse.h"
 #include "../npcnear.h"

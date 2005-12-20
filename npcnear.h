@@ -21,11 +21,11 @@
 #ifndef NPCNEAR_H
 #define	NPCNEAR_H	1
 
-#include "lists.h"
 #include "tqueue.h"
 
 class Game_window;
 class Npc_actor;
+class Actor;
 
 /*
  *	This class keeps track of NPC's nearby, and randomly runs the Usecode
@@ -48,7 +48,7 @@ public:
 	void handle_event(unsigned long curtime, long udata);
 					// Wait before running more funs.
 	void wait(int secs);
-	void get_all(Actor_queue& list);	// Fill list with nearby NPC's.
+	void get_all(std::vector<Actor*>& list);// Fill list with nearby NPC's.
 	};
 
 #endif	/* INCL_NPCNEAR */

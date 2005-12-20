@@ -31,6 +31,7 @@
 #include "segfile.h"
 #include "u7drag.h"
 #include "U7file.h"
+#include "exceptions.h"
 
 using std::cerr;
 using std::cout;

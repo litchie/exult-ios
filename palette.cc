@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "fnames.h"
 #include "gamewin.h"
+#include "exceptions.h"
 
 #include "SDL_timer.h"
 
