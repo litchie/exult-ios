@@ -1109,13 +1109,13 @@ void Field_object::activate
 		Ireg_game_object::activate(event);
 		return;
 		}
-	Actor_queue npcs;		// Find all nearby NPC's.
+	Actor_vector npcs;		// Find all nearby NPC's.
 	gwin->get_nearby_npcs(npcs);
-	npcs.push(gwin->get_main_actor());	// Include Avatar.
+	npcs.push_back(gwin->get_main_actor());	// Include Avatar.
 	Rectangle eggfoot = get_footprint();
 					// Clear flag to check.
 	((Field_frame_animator *) animator)->activated = false;
-	for (Actor_queue::const_iterator it = npcs.begin(); 
+	for (Actor_vector::const_iterator it = npcs.begin(); 
 						it != npcs.end(); ++it)
 		{
 		Actor *actor = *it;

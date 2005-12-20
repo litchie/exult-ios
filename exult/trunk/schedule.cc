@@ -933,7 +933,8 @@ void Kid_games_schedule::now_what
 					// But don't run too far.
 	while (!kids.empty())
 	{
-		kid = kids.pop();
+		kid = kids.back();
+		kids.pop_back();
 		if (npc->distance(kid) < 16)
 			break;
 		kid = 0;
@@ -960,7 +961,7 @@ void Kid_games_schedule::now_what
 		{
 			Actor *act = *it;
 			if (act->get_schedule_type() == kid_games)
-				kids.push(act);
+				kids.push_back(act);
 		}
 	}
 	Loiter_schedule::now_what();	// Wander around the start.
@@ -1954,12 +1955,15 @@ void Waiter_schedule::get_customer
 		{		// Filter them.
 			Actor *each = (Actor *) *it;
 			if (each->get_schedule_type() == Schedule::eat_at_inn)
-				customers.push(each);
+				customers.push_back(each);
 		}
 	}
 
 	if (!customers.empty())
-		customer = customers.pop();
+		{
+		customer = customers.back();
+		customers.pop_back();
+		}
 	npc->say(first_waiter_ask, last_waiter_ask);	
 	if (prep_tables.size())	// Walk to a 'prep' table.
 	{

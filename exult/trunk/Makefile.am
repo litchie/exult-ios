@@ -70,7 +70,6 @@ exult_SOURCES =	\
 	keys.h		\
 	keyactions.cc	\
 	keyactions.h	\
-	lists.h		\
 	menulist.cc	\
 	menulist.h	\
 	monsters.cc	\

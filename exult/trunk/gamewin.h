@@ -24,7 +24,6 @@
 
 #include "flags.h"
 #include "iwin8.h"
-#include "lists.h"
 #include "rect.h"
 #include "tiles.h"
 #include "vgafile.h"
@@ -316,7 +315,7 @@ public:
 	void add_nearby_npc(Npc_actor *npc);
 	void remove_nearby_npc(Npc_actor *npc);
 					// Get all nearby NPC's.
-	void get_nearby_npcs(Actor_queue& list);
+	void get_nearby_npcs(std::vector<Actor*>& list);
 					// Update NPCs' schedules.
 	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
