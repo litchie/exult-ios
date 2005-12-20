@@ -22,7 +22,6 @@
 #define SCHEDULE_H	1
 
 #include "tiles.h"
-#include "lists.h"
 #include "singles.h"
 #include <vector>
 
@@ -241,7 +240,7 @@ public:
  */
 class Kid_games_schedule : public Loiter_schedule
 	{
-	Actor_queue kids;			// Other kids playing.
+	vector<Actor*> kids;			// Other kids playing.
 public:
 	Kid_games_schedule(Actor *n) : Loiter_schedule(n, 10)
 		{  }
@@ -399,7 +398,7 @@ class Waiter_schedule : public Schedule
 	int first;			// 1 if first 'what_next()' called.
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
-	Actor_queue customers;		// List of customers.
+	vector<Actor*> customers;		// List of customers.
 	vector<Game_object*> prep_tables;		// Prep. tables.
 	vector<Game_object*> eating_tables;		// Tables with chairs around them.
 	void get_customer();

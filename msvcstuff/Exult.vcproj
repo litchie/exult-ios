@@ -837,9 +837,6 @@
 						RelativePath="..\keys.h">
 					</File>
 					<File
-						RelativePath="..\lists.h">
-					</File>
-					<File
 						RelativePath="..\menulist.h">
 					</File>
 					<File

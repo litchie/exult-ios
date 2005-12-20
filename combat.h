@@ -22,7 +22,7 @@
 #define COMBAT_H	1
 
 #include "schedule.h"
-#include "lists.h"
+#include <list>
 
 class Actor;
 class Spellbook_object;
@@ -48,7 +48,7 @@ protected:
 		wait_return = 8		// Wait for boomerang.
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
-	Actor_queue opponents;		// Possible opponents.
+	std::list<Actor*> opponents;	// Possible opponents.
 	Game_object *practice_target;	// Only for duel schedule.
 	Game_object *weapon;
 	int weapon_shape;		// Weapon's shape in shapes.vga.
@@ -74,7 +74,8 @@ protected:
 	void start_battle();		// Play music at start of battle.
 	bool teleport();		// For monsters that can.
 	virtual void find_opponents();
-	Actor *find_protected_attacker();// Find attacker of protected member.
+					// Find attacker of protected member.
+	std::list<Actor*>::iterator find_protected_attacker();
 	Game_object *find_foe(int mode);// Find a new opponent.
 	Game_object *find_foe();
 	void approach_foe();		// Approach foe.

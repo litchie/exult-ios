@@ -305,12 +305,12 @@ void Mouse::set_speed_cursor()
 	 * I don't know whether this is taken into account by 
 	 * get_nearby_npcs, but on the other hand, its a negligible point.
 	 */
-	Actor_queue nearby;
+	Actor_vector nearby;
 	if (!cheat.in_god_mode())
 		gwin->get_nearby_npcs( nearby );
 
 	bool nearby_hostile = false;
-	for( Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
+	for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
 		Actor *actor = *it;
 
 		if( !actor->is_dead() && actor->get_schedule() &&

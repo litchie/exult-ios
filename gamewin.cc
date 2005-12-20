@@ -2403,7 +2403,7 @@ void Game_window::remove_nearby_npc
 
 void Game_window::get_nearby_npcs
 	(
-	Actor_queue& a_list
+	Actor_vector& a_list
 	)
 	{
 	npc_prox->get_all(a_list);
