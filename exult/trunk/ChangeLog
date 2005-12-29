@@ -1,7 +1,7 @@
 2005-12-29  Max Horn  <max@quendi.de>
 
-	* debian/: Removing the debian directory, as requested by the debian
-	package maintainer
+	* configure.ac, debian/, Makefile.am: Removing the debian directory,
+	as requested by the debian package maintainer
 
 2005-12-15  Max Horn  <max@quendi.de>
 
