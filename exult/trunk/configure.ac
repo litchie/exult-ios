@@ -711,7 +711,6 @@ usecode/ucxt/include/Makefile
 usecode/ucxt/src/Makefile
 mapedit/Makefile
 server/Makefile
-debian/Makefile
 ])
 
 dnl ****************
