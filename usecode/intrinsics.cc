@@ -508,6 +508,11 @@ USECODE_INTRINSIC(set_last_created)
 {
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
+	// Don't do it for same object if already there.
+	for (vector<Game_object*>::const_iterator it = last_created.begin();
+				it != last_created.end(); ++it)
+		if (*it == obj)
+			return Usecode_value(0);
 	modified_map = true;
 	if (obj)
 		{
