@@ -80,7 +80,8 @@ public:
 		{ gflags[i] = (val == 1); }
 					// Start speech, or show text.
 	virtual void do_speech(int num) = 0;
-	virtual int in_usecode() = 0;	// Currently in a usecode function?
+	virtual bool in_usecode() = 0;	// Currently in a usecode function?
+	virtual bool in_usecode_for(Game_object *item, Usecode_events event)=0;
 	Keyring* getKeyring() const { return keyring; }
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 

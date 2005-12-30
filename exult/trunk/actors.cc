@@ -2895,13 +2895,9 @@ void Actor::remove
 					//   but it needs to be done before
 					//   removal too.
 					// Definitely DO NOT call if dead!
-#if 0	/* OLD WAY:  Caused probs. with belt-of-strength at start of SS maze.*/
-	if (!ucmachine->in_usecode() && !is_dead())
-#else
-	if (!is_dead())
-#endif
-		call_readied_usecode(index, obj,
-						Usecode_machine::unreadied);
+	if (!is_dead() && !ucmachine->in_usecode_for(
+					obj, Usecode_machine::unreadied))
+		call_readied_usecode(index, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
 		{			// Update light-source count.
