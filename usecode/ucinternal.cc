@@ -2717,6 +2717,26 @@ void Usecode_internal::do_speech
 	}
 
 /*
+ *	Are we in a usecode function for a given item and event?
+ */
+
+bool Usecode_internal::in_usecode_for
+	(
+	Game_object *item,
+	Usecode_events event
+	)
+	{
+	for (std::deque<Stack_frame*>::iterator iter = call_stack.begin();
+				iter != call_stack.end(); ++iter)
+		{
+		Stack_frame *frame = *iter;
+		if (frame->eventid == event && frame->caller_item == item)
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Write out one usecode value.
  */
 

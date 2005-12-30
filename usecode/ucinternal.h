@@ -429,8 +429,9 @@ public:
 	virtual int call_usecode(int id, Game_object *obj, 
 							Usecode_events event);
 	virtual void do_speech(int num);// Start speech, or show text.
-	virtual int in_usecode()	// Currently in a usecode function?
+	virtual bool in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }
+	virtual bool in_usecode_for(Game_object *item, Usecode_events event);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Read in 'gamedat/usecode.dat'.
 
