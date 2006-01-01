@@ -87,5 +87,5 @@ int Virtue_stone_object::get_ireg_size()
 	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
-	return 13;
+	return 8 + get_common_ireg_size();
 }
