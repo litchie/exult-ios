@@ -314,6 +314,5 @@ int Spellbook_object::get_ireg_size()
 	// These shouldn't ever happen, but you never know
 	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
-
-	return 19;
+	return 14 + get_common_ireg_size();
 }

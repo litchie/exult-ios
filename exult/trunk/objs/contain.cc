@@ -826,7 +826,7 @@ int Container_game_object::get_ireg_size()
 	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
-	int total_size = 13;
+	int total_size = 8 + get_common_ireg_size();
 
 	// Now what's inside.
 	if (!objects.is_empty())

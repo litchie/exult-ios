@@ -988,7 +988,7 @@ int Barge_object::get_ireg_size()
 	if (gwin->get_moving_barge() == this || Usecode_script::find(this))
 		return -1;
 
-	int total_size = 13;
+	int total_size = 8 + get_common_ireg_size();
 
 	for (int i = 0; i < perm_count; i++)
 	{
