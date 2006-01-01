@@ -98,7 +98,7 @@ public:
 	unsigned char *write_common_ireg(int norm_len, unsigned char *buf);
 	int get_common_ireg_size() const
 		{ return (get_shapenum() >= 1024 || get_framenum() >= 64) 
-								? 6 : 5; }
+								? 7 : 5; }
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
