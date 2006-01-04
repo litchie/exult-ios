@@ -319,6 +319,11 @@ public:
 
 	virtual void delete_contents() { }
 
+	// Return's the object's usecode for the shape number
+	virtual int get_usecode() const
+		{ return get_shapenum() > 0x400 ?
+			get_shapenum() + 0xC00 : get_shapenum(); }
+
 	};
 
 /*

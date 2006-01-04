@@ -3074,3 +3074,11 @@ USECODE_INTRINSIC(begin_casting_mode)
 		npc->set_casting_mode(Actor::init_casting);
 	return no_ret;
 }
+
+USECODE_INTRINSIC(get_usecode_fun)
+{
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return Usecode_value(0);
+	return Usecode_value(obj->get_usecode());
+}

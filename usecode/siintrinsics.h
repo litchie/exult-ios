@@ -276,7 +276,7 @@
 	USECODE_INTRINSIC_PTR(printf),				// 0xc7 (Exult)
 	USECODE_INTRINSIC_PTR(remove_from_keyring),		// 0xc8 (Exult)
 	USECODE_INTRINSIC_PTR(begin_casting_mode),		// 0xc9 (Exult)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xca
+	USECODE_INTRINSIC_PTR(get_usecode_fun),				// 0xca (Exult)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcb
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcc
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcd
