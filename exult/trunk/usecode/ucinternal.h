@@ -358,6 +358,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(printf);
 					// Exult only:
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
+	USECODE_INTRINSIC_DECL(get_usecode_fun);
 	
 	/*
 	 *	Other private methods:

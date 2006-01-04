@@ -1,3 +1,12 @@
+2006-01-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.h: get_usecode now returns correct value for NPCs with no
+	  assigned usecode *and* with a shape# >1023.
+	* objs.h: added a virtual get_usecode function which returns correct
+	  usecode function for a given shape.
+	* usecode/intrinsics.cc, etc.: added new intrinsic to get an object's
+	  usecode function number via usecode (mostly to allow the calling of
+	  an item's usecode given an item reference to that item).
+	  
 2005-12-29  Max Horn  <max@quendi.de>
 
 	* configure.ac, debian/, Makefile.am: Removing the debian directory,
