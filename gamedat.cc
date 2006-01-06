@@ -1175,9 +1175,16 @@ bool Game_window::save_gamedat_zip
 			if (!*it)
 				continue;
 			for (int schunk = 0; schunk < 12*12; schunk++)
-				Save_level1(zipfile, 
-					(*it)->get_schunk_file_name(U7IREG, 
-							schunk, iname));
+				{
+				//Check to see if the ireg exists before trying to
+				//save it; prevents crash when creating new maps
+				//for existing games
+				if (U7exists((*it)->get_schunk_file_name(U7IREG, 
+							schunk, iname)))
+					Save_level1(zipfile, 
+						(*it)->get_schunk_file_name(U7IREG, 
+								schunk, iname));
+				}
 			}
 	}
 	// Level 2 Compression
@@ -1200,9 +1207,14 @@ bool Game_window::save_gamedat_zip
 			if (!*it)
 				continue;
 			for (int schunk = 0; schunk < 12*12; schunk++)
-				Save_level2(zipfile, 
-					(*it)->get_schunk_file_name(
-						U7IREG, schunk, iname));
+				//Check to see if the ireg exists before trying to
+				//save it; prevents crash when creating new maps
+				//for existing games
+				if (U7exists((*it)->get_schunk_file_name(U7IREG, 
+							schunk, iname)))
+					Save_level2(zipfile, 
+						(*it)->get_schunk_file_name(
+							U7IREG, schunk, iname));
 			}
 
 		End_level2(zipfile);

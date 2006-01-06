@@ -87,6 +87,7 @@ class Usecode_internal : public Usecode_machine
 	bool found_answer;		// Did we already handle the 
 					//   conversation option?
 	Tile_coord saved_pos;		// For a couple SI intrinsics.
+	int saved_map;				// Improvements for these intrinsics.
 	char *String;			// The single string register.
 	int telekenesis_fun;		// For next Usecode call from spell.
 	void append_string(const char *txt);	// Append to string.

@@ -1704,6 +1704,7 @@ Usecode_internal::Usecode_internal
 	    book(0), caller_item(0),
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
+	    saved_map(-1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
 		temp_to_be_deleted(0), telekenesis_fun(-1),
 		modified_map(false)
@@ -2784,6 +2785,7 @@ void Usecode_internal::write
 	Write2(out, saved_pos.tx);	// Write saved pos.
 	Write2(out, saved_pos.ty);
 	Write2(out, saved_pos.tz);
+	Write2(out, saved_map);		// Write saved map.
 	out.flush();
 	if( !out.good() )
 		throw file_write_exception(USEDAT);
@@ -2886,6 +2888,9 @@ void Usecode_internal::read
 	if (!in.good() ||		// Failed.+++++Can remove this later.
 	    saved_pos.tz < 0 || saved_pos.tz > 13)
 		saved_pos = Tile_coord(-1, -1, -1);
+	saved_map = Read2(in);
+	if (!in.good())			// For compat. with older saves.
+		saved_map = -1;
 	}
 
 /*

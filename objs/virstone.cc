@@ -74,7 +74,7 @@ void Virtue_stone_object::write_ireg
 	*ptr++ = pos.tz;		// Finally, lift in entry[7].??Guess+++
 	*ptr++ = 0;			// Entry[8] unknown.
 	*ptr++ = (get_lift()&15)<<4;	// Stone's lift in entry[9].
-	*ptr++ = 0;			// Entry[10].  Unknown.
+	*ptr++ = map;		// Entry[10].  Unknown; using to store map.
 	*ptr++ = 0;			// Entry[11].  Unknown.
 	out->write((char*)buf, ptr - buf);
 	}
