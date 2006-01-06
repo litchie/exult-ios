@@ -1,3 +1,16 @@
+2006-01-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamedat.cc: Checking for the existance of ireg files before saving
+	  them to zip files prevents crashes when saving new maps for existing
+	  games.
+	* gamemap.cc, objs/virtstone.*, usecode/intrinsics.cc, ucinternal.*:
+	  Added multimap support to the following intrinsics:
+		update_last_created & move_object (if the location is a 4-element
+		array, the 4th element is the map #);
+		mark_virtue_stone & recall_virtue_stone (now save/restore the map #);
+		save_pos & teleport_to_saved_pos (now save/restore the map #).
+	  Virtue stones from older save games still work, and so will (I hope)
+	  the saved positions from older SI saves.
+
 2006-01-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.h: get_usecode now returns correct value for NPCs with no
 	  assigned usecode *and* with a shape# >1023.

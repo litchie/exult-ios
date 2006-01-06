@@ -540,12 +540,15 @@ USECODE_INTRINSIC(update_last_created)
 	obj->set_invalid();		// It's already been removed.
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
-	if (sz == 3 || sz == 2)
+	if (sz >= 2)
 		{
+		//arr is loc (x, y, z, map) if sz == 4,
+		//(x, y, z) for sz == 3 and (x, y) for sz == 2
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
-			  sz == 3 ? arr.get_elem(2).get_int_value() : 0);
-		obj->move(dest.tx, dest.ty, dest.tz);
+			  sz >= 3 ? arr.get_elem(2).get_int_value() : 0);
+		obj->move(dest.tx, dest.ty, dest.tz, sz < 4 ? -1 :
+			  arr.get_elem(3).get_int_value());
 		if (GAME_BG) {
 			Usecode_value u(1);
 			return u;
@@ -977,6 +980,8 @@ USECODE_INTRINSIC(move_object)
 	Tile_coord tile(p.get_elem(0).get_int_value(),
 			p.get_elem(1).get_int_value(),
 			p.get_elem(2).get_int_value());
+	int map = p.get_array_size() == 3 ? -1 :
+			p.get_elem(3).get_int_value();
 	Actor *ava = gwin->get_main_actor();
 	modified_map = true;
 	if (parms[0].get_int_value() == -357)
@@ -985,14 +990,14 @@ USECODE_INTRINSIC(move_object)
 					//   tivate eggs when you arrive.
 		gwin->teleport_party(tile, Game::get_game_type() ==
 			SERPENT_ISLE && frame->function->id == 0x7df && 
-				caller_item->get_quality() == 0xcf);
+				caller_item->get_quality() == 0xcf, map);
 		return (no_ret);
 		}
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return (no_ret);
 	Tile_coord oldpos = obj->get_tile();
-	obj->move(tile.tx, tile.ty, tile.tz);
+	obj->move(tile.tx, tile.ty, tile.tz, map);
 	Actor *act = as_actor(obj);
 	if (act)
 		{
@@ -1593,6 +1598,7 @@ USECODE_INTRINSIC(mark_virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_pos(obj->get_outermost()->get_tile());
+		vs->set_map(gwin->get_map()->get_num());
 		}
 	return no_ret;
 }
@@ -1622,7 +1628,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 			}
 		Tile_coord t = vs->get_pos();
 		if (t.tx > 0 || t.ty > 0)
-			gwin->teleport_party(t);
+			gwin->teleport_party(t, false, vs->get_map());
 		}
 	return no_ret;
 }
@@ -2986,7 +2992,10 @@ USECODE_INTRINSIC(save_pos)
 	// save_pos(item).
 	Game_object *item = get_item(parms[0]);
 	if (item)
+		{
 		saved_pos = item->get_tile();
+		saved_map = gwin->get_map()->get_num();
+		}
 	return no_ret;
 }
 
@@ -2999,7 +3008,7 @@ USECODE_INTRINSIC(teleport_to_saved_pos)
 		if (saved_pos.tx < 0 || saved_pos.tx >= c_num_tiles)
 					// Fix old games.  Send to Monitor.
 			saved_pos = Tile_coord(719, 2608, 1);
-		gwin->teleport_party(saved_pos);
+		gwin->teleport_party(saved_pos, false, saved_map);
 		}
 	return no_ret;
 }
