@@ -33,11 +33,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Virtue_stone_object : public Ireg_game_object
 	{
 	Tile_coord pos;			// Position it teleports to.
+	int map;				// Map to teleport to.
 public:
 	Virtue_stone_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-			pos(0, 0, 0)
+			pos(0, 0, 0), map(-1)
 		{  }
 	void set_pos(Tile_coord t)	// Set/get position.
 		{ pos = t; }
@@ -45,6 +46,10 @@ public:
 			unsigned char schunk, unsigned char lft);
 	Tile_coord get_pos()
 		{ return pos; }
+	int get_map()	// Get/set map.
+		{ return map; }
+	void set_map(int m)
+		{ map = m; }
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
