@@ -2828,7 +2828,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 			}
 		}
 	else				// New map, so cache out all of old.
-		memset(reinterpret_cast<char*>(nearby), 1, sizeof(nearby));
+		memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
 
 	// Swap out chunks no longer nearby (0).
 	Game_object_vector removes;

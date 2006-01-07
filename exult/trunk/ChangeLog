@@ -1,3 +1,7 @@
+2006-01-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed cache-out bug which prevented eggs from reseting when
+	  teleporting between maps.
+
 2006-01-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamedat.cc: Checking for the existance of ireg files before saving
 	  them to zip files prevents crashes when saving new maps for existing
