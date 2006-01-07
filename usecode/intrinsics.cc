@@ -1347,9 +1347,13 @@ USECODE_INTRINSIC(display_area)
 		int ty = parms[0].get_elem(1).get_int_value();
 		int unknown = parms[0].get_elem(2).get_int_value();
 					// Figure in tiles.
+		int newmap = size == 3 ? -1 : parms[0].get_elem(3).get_int_value();
+		int oldmap = gwin->get_map()->get_num();
 		int tw = gwin->get_width()/c_tilesize, 
 		    th = gwin->get_height()/c_tilesize;
 		gwin->clear_screen();	// Fill with black.
+		if ((newmap != -1) && (newmap != oldmap))
+			gwin->set_map(newmap);
 		Shape_frame *sprite = ShapeID(10, 0, SF_SPRITES_VGA).get_shape();
 					// Center it.
 		int topx = (gwin->get_width() - sprite->get_width())/2,
@@ -1373,6 +1377,8 @@ USECODE_INTRINSIC(display_area)
 		gwin->show();
 					// Wait for click.
 		Get_click(x, y, Mouse::hand);
+		if ((newmap != -1) && (newmap != oldmap))
+			gwin->set_map(oldmap);
 		gwin->paint();		// Repaint normal area.
 		}
 	return (no_ret);
