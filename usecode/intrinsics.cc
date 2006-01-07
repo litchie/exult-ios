@@ -1005,6 +1005,8 @@ USECODE_INTRINSIC(move_object)
 		if (act == ava)
 			{		// Teleported Avatar?
 					// Make new loc. visible, test eggs.
+			if (map != -1)
+				gwin->set_map(map);
 			gwin->center_view(tile);
 			Map_chunk::try_all_eggs(ava, tile.tx, 
 				tile.ty, tile.tz, oldpos.tx, oldpos.ty);
