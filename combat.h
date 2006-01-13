@@ -78,7 +78,7 @@ protected:
 	std::list<Actor*>::iterator find_protected_attacker();
 	Game_object *find_foe(int mode);// Find a new opponent.
 	Game_object *find_foe();
-	void approach_foe();		// Approach foe.
+	void approach_foe(bool for_projectile = false);		// Approach foe.
 	void start_strike();
 	void run_away();
 	Spellbook_object *readied_spellbook();

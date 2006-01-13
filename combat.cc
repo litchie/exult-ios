@@ -439,8 +439,12 @@ inline Game_object *Combat_schedule::find_foe
 
 void Combat_schedule::approach_foe
 	(
+	bool for_projectile		// Want to attack with projectile.
+					// FOR NOW:  Called as last resort,
+					//  and we try to reach target.
 	)
 	{
+	int dist = for_projectile ? 1 : max_range;
 	Game_object *opponent = npc->get_target();
 					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
@@ -471,7 +475,7 @@ void Combat_schedule::approach_foe
 		}
 	PathFinder *path = new Astar();
 					// Try this for now:
-	Monster_pathfinder_client cost(npc, max_range, opponent);
+	Monster_pathfinder_client cost(npc, dist, opponent);
 	Tile_coord pos = npc->get_tile();
 	if (!path->NewPath(pos, opponent->get_tile(), &cost))
 		{			// Failed?  Try nearest opponent.
@@ -484,7 +488,7 @@ void Combat_schedule::approach_foe
 				{
 				opponent = closest;
 				npc->set_target(opponent);
-				Monster_pathfinder_client cost(npc, max_range, 
+				Monster_pathfinder_client cost(npc, dist, 
 								opponent);
 				retry_ok = (opponent != 0 && path->NewPath(
 				  pos, opponent->get_tile(), &cost));
@@ -533,7 +537,8 @@ void Combat_schedule::approach_foe
 			}
 		}
 					// Walk there, & check half-way.
-	npc->set_action(new Approach_actor_action(path, opponent));
+	npc->set_action(new Approach_actor_action(path, opponent,
+							for_projectile));
 					// Start walking.  Delay a bit if
 					//   opponent is off-screen.
 	npc->start(gwin->get_std_delay(), Off_screen(gwin, opponent) ? 
@@ -671,6 +676,7 @@ void Combat_schedule::start_strike
 			npc->start(200, 500);
 			return;
 			}
+#if 0	/* +++++OLD WAY.  Trolls hung around too long. */
 		Tile_coord pos = npc->get_tile();
 		Tile_coord opos = opponent->get_tile();
 		if (opos.tx < pos.tx)	// Going left?
@@ -691,6 +697,14 @@ void Combat_schedule::start_strike
 			npc->set_target(0);	// And try another enemy.
 			return;
 			}
+#else
+		if (!no_blocking &&
+		    !Fast_pathfinder_client::is_straight_path(npc, opponent))
+			{
+			approach_foe(true);
+			return;
+			}
+#endif
 		if (!started_battle)
 			start_battle();	// Play music if first time.
 		state = fire;		// Clear to go.

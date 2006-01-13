@@ -497,9 +497,11 @@ int Path_walking_actor_action::following_smart_path
 Approach_actor_action::Approach_actor_action
 	(
 	PathFinder *p,			// Path to follow.
-	Game_object *d			// Destination object.
+	Game_object *d,			// Destination object.
+	bool for_proj			// Check for projectile path.
 	) : Path_walking_actor_action(p, 0),	// (Stop if blocked.)
-	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0)
+	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0),
+	    for_projectile(for_proj)
 	{
 					// Get length of path.
 	int nsteps = path->get_num_steps();
@@ -532,6 +534,9 @@ int Approach_actor_action::handle_event
 #endif
 		if (dest_obj->get_tile().distance(orig_dest_pos) > 2)
 			return 0;	// Moved too much, so stop.
+		if (for_projectile &&
+		    Fast_pathfinder_client::is_straight_path(actor, dest_obj))
+			return 0;	// Can fire projectile.
 					// Figure next check.
 		int nsteps = path->get_num_steps();
 		if (nsteps >= 6)
