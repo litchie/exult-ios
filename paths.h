@@ -106,6 +106,7 @@ public:
 	static int is_grabable(Tile_coord from, Tile_coord to);
 					// Check for unblocked straight path.
 	static int is_straight_path(Tile_coord from, Tile_coord to);
+	static int is_straight_path(Game_object *from, Game_object *to);
 	};
 
 /*

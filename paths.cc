@@ -465,6 +465,30 @@ int Fast_pathfinder_client::is_straight_path
 	}
 
 /*
+ *	Check for path from one object to another, using their closest corners.
+ */
+
+int Fast_pathfinder_client::is_straight_path
+	(
+	Game_object *from, Game_object *to
+	)
+	{
+	Rectangle fromtiles = from->get_footprint(),
+		  totiles = to->get_footprint();
+	Tile_coord pos1 = from->get_tile();
+	Tile_coord pos2 = to->get_tile();
+	if (pos2.tx < pos1.tx)	// Going left?
+		pos1.tx = fromtiles.x;
+	else			// Right?
+		pos2.tx = totiles.x;
+	if (pos2.ty < pos1.ty)	// Going north?
+		pos1.ty = fromtiles.y;
+	else			// South.
+		pos2.ty = totiles.y;
+	return is_straight_path(pos1, pos2);
+	}
+
+/*
  *	Create client for getting within a desired distance of a
  *	destination.
  */
@@ -522,16 +546,15 @@ int Monster_pathfinder_client::get_max_cost
 	)
 	{
 	int max_cost = 2*cost_to_goal;	// Don't try to hard.
-	int icost = 2 + 2*intelligence;	// Limit by intelligence.
-	if (max_cost > icost)		// Note: intel. ranges from 0 to 30.
-		max_cost = icost;
+					// Use intelligence.
+	max_cost += intelligence/2;
 	Game_window *gwin = Game_window::get_instance();
 					// Limit to 3/4 screen width.
 	int scost = ((3*gwin->get_width())/4)/c_tilesize;
 	if (max_cost > scost)
 		max_cost = scost;
-	if (max_cost < 15)		// But not too small.
-		max_cost = 15;
+	if (max_cost < 18)		// But not too small.
+		max_cost = 18;
 	return max_cost;
 	}
 
