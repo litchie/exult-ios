@@ -129,8 +129,10 @@ class Approach_actor_action : public Path_walking_actor_action
 	Tile_coord orig_dest_pos;	// Dest_obj's pos. when we start.
 	int cur_step;			// Count steps.
 	int check_step;			// Check at this step.
+	bool for_projectile;		// Check for proj. path.
 public:
-	Approach_actor_action(PathFinder *p, Game_object *d);
+	Approach_actor_action(PathFinder *p, Game_object *d, bool for_proj =
+								false);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	};
