@@ -70,24 +70,25 @@ enum Msg_type
 					//   shown in gamewin.  Sent both ways.
 	set_edit_mode = 21,		// Move(0), paint(1), select(2).
 	combo_pick = 22,		// Sending shape to add to combo.
-	hide_lift = 23,			// Lift passed: 1-16.
-	reload_shapes = 24,		// Reload a .vga file.
-	unused_shapes = 25,		// Find unused shapes in game.
-	locate_shape = 26,		// Find shape in world.
-	cut = 27,			// Cut/copy.
-	paste = 28,			// ... from clipboard.
-	select_status = 29,		// Flags:  selection, clipboard avail.
-	npc_unused = 30,		// Get #NPC's, first unused.
-	edit_selected = 31,		// Edit selected object.
-	set_edit_chunknum = 32,		// Set chunk# to paint with.
-	game_pos = 33,			// Returns tx, ty, tz of main char.
-	goto_map = 34,			// Teleport to map #n.
-	barge = 35,			// Edit barge object.
-	npc_info = 36,			// Send back NPC info.
-	locate_npc = 37,		// Show NPC on map.
-	edit_npc = 38,			// Bring up NPC-editor.
-	container = 39,			// Edit container object.
-	cont_show_gump = 40,	// Displays a container's gump.
+	combo_toggle = 23,
+	hide_lift = 24,			// Lift passed: 1-16.
+	reload_shapes = 25,		// Reload a .vga file.
+	unused_shapes = 26,		// Find unused shapes in game.
+	locate_shape = 27,		// Find shape in world.
+	cut = 28,			// Cut/copy.
+	paste = 29,			// ... from clipboard.
+	select_status = 30,		// Flags:  selection, clipboard avail.
+	npc_unused = 31,		// Get #NPC's, first unused.
+	edit_selected = 32,		// Edit selected object.
+	set_edit_chunknum = 33,		// Set chunk# to paint with.
+	game_pos = 34,			// Returns tx, ty, tz of main char.
+	goto_map = 35,			// Teleport to map #n.
+	barge = 36,			// Edit barge object.
+	npc_info = 37,			// Send back NPC info.
+	locate_npc = 38,		// Show NPC on map.
+	edit_npc = 39,			// Bring up NPC-editor.
+	container = 40,			// Edit container object.
+	cont_show_gump = 41,	// Displays a container's gump.
 	usecode_debugging = 128
 	};
 

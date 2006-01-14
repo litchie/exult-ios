@@ -961,7 +961,7 @@ static void Select_for_combo
 	(
 	SDL_Event& event,
 	bool dragging,			// Dragging to select.
-	bool toggle			// FOR NOW, ignored.
+	bool toggle
 	)
 	{
 	static Game_object *last_obj = 0;
@@ -973,21 +973,20 @@ static void Select_for_combo
 	if (obj) {
 		if (dragging && obj == last_obj)
 			return;
-	} else {
-		static int lasttx = -1, lastty = -1;
-		if (dragging && tx == lasttx && ty == lastty)
-			return;
-	}
-	ShapeID id = obj ? *obj : gwin->get_flat(x, y);
-	Tile_coord t = obj ? obj->get_tile() : Tile_coord(tx, ty, 0);
+		last_obj = obj;
+	} else
+		return;
+	ShapeID id = *obj;
+	Tile_coord t = obj->get_tile();
 	std::string name = item_names[id.get_shapenum()];
-	if (obj) {
-		if (!cheat.is_selected(obj)) {
-			cheat.append_selected(obj);
-			gwin->add_dirty(obj);
-		}
+	if (toggle)
+		cheat.toggle_selected(obj);
+	else if (!cheat.is_selected(obj)) {
+		cheat.append_selected(obj);
+		gwin->add_dirty(obj);
 	}
-	if (Object_out(client_socket, Exult_server::combo_pick,
+	if (Object_out(client_socket, 
+		toggle ? Exult_server::combo_toggle : Exult_server::combo_pick,
 			0, t.tx, t.ty, t.tz, id.get_shapenum(),
 					 id.get_framenum(), 0, name) == -1)
 		cout << "Error sending shape to ExultStudio" << endl;

@@ -1,3 +1,9 @@
+2006-01-14    <jeff@mini.nerble.net>
+
+	* exult.cc: "Combo" selection is now done with single-clicking or
+	dragging.  Shapes added are selected, and one can toggle by
+	holding down the Control key.  Flat tiles are no longer added.
+
 2006-01-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed cache-out bug which prevented eggs from reseting when
 	  teleporting between maps.
