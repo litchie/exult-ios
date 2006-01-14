@@ -47,6 +47,8 @@
 #elif defined(XWIN)
 #include "xdrag.h"
 #endif
+#include "servemsg.h"
+#include "objserial.h"
 #include "server.h"
 #include "chunks.h"
 #include "chunkter.h"
@@ -952,6 +954,45 @@ static void Select_chunks
 	gwin->set_all_dirty();
 	}
 
+/*
+ *	Select for combo.
+ */
+static void Select_for_combo
+	(
+	SDL_Event& event,
+	bool dragging,			// Dragging to select.
+	bool toggle			// FOR NOW, ignored.
+	)
+	{
+	static Game_object *last_obj = 0;
+	int scale = gwin->get_win()->get_scale();
+	int x = event.button.x/scale, y = event.button.y/scale;
+	int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
+	int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
+	Game_object *obj = gwin->find_object(x, y);
+	if (obj) {
+		if (dragging && obj == last_obj)
+			return;
+	} else {
+		static int lasttx = -1, lastty = -1;
+		if (dragging && tx == lasttx && ty == lastty)
+			return;
+	}
+	ShapeID id = obj ? *obj : gwin->get_flat(x, y);
+	Tile_coord t = obj ? obj->get_tile() : Tile_coord(tx, ty, 0);
+	std::string name = item_names[id.get_shapenum()];
+	if (obj) {
+		if (!cheat.is_selected(obj)) {
+			cheat.append_selected(obj);
+			gwin->add_dirty(obj);
+		}
+	}
+	if (Object_out(client_socket, Exult_server::combo_pick,
+			0, t.tx, t.ty, t.tz, id.get_shapenum(),
+					 id.get_framenum(), 0, name) == -1)
+		cout << "Error sending shape to ExultStudio" << endl;
+	}
+
 #endif
 
 /*
@@ -1105,6 +1146,13 @@ static void Handle_event
 							Cheat::select_chunks)
 					{
 					Select_chunks(event, false,
+						SDL_GetModState()&KMOD_CTRL);
+					break;
+					}
+				else if (cheat.get_edit_mode() ==
+							Cheat::combo_pick)
+					{
+					Select_for_combo(event, false,
 						SDL_GetModState()&KMOD_CTRL);
 					break;
 					}
@@ -1265,6 +1313,13 @@ static void Handle_event
 							Cheat::select_chunks)
 					{
 					Select_chunks(event, true,
+						SDL_GetModState()&KMOD_CTRL);
+					break;
+					}
+				else if (cheat.get_edit_mode() ==
+							Cheat::combo_pick)
+					{
+					Select_for_combo(event, true,
 						SDL_GetModState()&KMOD_CTRL);
 					break;
 					}
