@@ -75,7 +75,7 @@ public:
 	Combo_member *get(int i)
 		{ return i >= 0 && i < members.size() ? members[i] : 0; }
 					// Add a new object.
-	void add(int tx, int ty, int tz, int shnum, int frnum);
+	void add(int tx, int ty, int tz, int shnum, int frnum, bool toggle);
 	void remove(int i);		// Remove object #i.
 					// Paint shapes in drawing area.
 	void draw(Shape_draw *draw, int selected = -1, 
@@ -111,7 +111,7 @@ public:
 	void set_order();		// Set selected to desired order.
 	void set_position();		// Set selected to desired position.
 					// Add object/shape picked from Exult.
-	void add(unsigned char *data, int datalen);
+	void add(unsigned char *data, int datalen, bool toggle);
 	void remove();			// Remove selected.
 	void save();			// Save it.
 	bool is_visible()

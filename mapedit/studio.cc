@@ -1125,8 +1125,8 @@ void ExultStudio::setup_file_list() {
 					GTK_TREE_VIEW_COLUMN(column), TRUE);
 		}
 	gtk_tree_store_clear(model);
-	add_to_tree(model, "Shape Files", "*.vga,*.shp,combos.flx", 
-							ShapeArchive, 0);
+	add_to_tree(model, "Shape Files", "*.vga,*.shp", 
+				ShapeArchive, 1, "combos.flx", ComboArchive);
 	add_to_tree(model, "Map Files", "u7chunks", ChunksArchive, 1,
 						"npcs", NpcsArchive);
 	add_to_tree(model, "Palette Files", "*.pal,palettes.flx", 
@@ -2318,7 +2318,12 @@ void ExultStudio::read_from_server
 	case Exult_server::combo_pick:
 		open_combo_window();	// Open if necessary.
 		if (combowin)
-			combowin->add(data, datalen);
+			combowin->add(data, datalen, false);
+		break;
+	case Exult_server::combo_toggle:
+		open_combo_window();	// Open if necessary.
+		if (combowin)
+			combowin->add(data, datalen, true);
 		break;
 	case Exult_server::unused_shapes:
 		show_unused_shapes(data, datalen);
