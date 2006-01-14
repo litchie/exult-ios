@@ -87,7 +87,6 @@
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "servemsg.h"
-#include "objserial.h"
 #endif
 
 #ifndef UNDER_CE
@@ -2308,25 +2307,6 @@ void Game_window::double_clicked
 	if (!gump)
 		{
 		obj = find_object(x, y);
-#ifdef USE_EXULTSTUDIO
-
-		if (cheat.in_map_editor() && cheat.get_edit_mode() == 
-				Cheat::combo_pick && client_socket >= 0)
-			{		// Add obj/tile to combo in EStudio.
-			ShapeID id = obj ? *obj : get_flat(x, y);
-			Tile_coord t = obj ? obj->get_tile() :
-			    Tile_coord((scrolltx + x/c_tilesize)%c_num_tiles,
-			     	       (scrollty + y/c_tilesize)%c_num_tiles, 
-									0);
-			std::string name = item_names[id.get_shapenum()];
-			if (Object_out(client_socket, Exult_server::combo_pick,
-					0, t.tx, t.ty, t.tz, id.get_shapenum(),
-					 id.get_framenum(), 0, name) == -1)
-				cout << "Error sending shape to ExultStudio" 
-								<< endl;
-			return;
-			}
-#endif
 		// Check path, except if an NPC, sign, or if editing.
 	    	if (obj && !obj->as_actor() &&
 			!cheat.in_hack_mover() &&
