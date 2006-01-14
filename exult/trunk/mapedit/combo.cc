@@ -293,7 +293,8 @@ Combo::~Combo
 void Combo::add
 	(
 	int tx, int ty, int tz,		// Location rel. to top-left.
-	int shnum, int frnum		// Shape.
+	int shnum, int frnum,		// Shape.
+	bool toggle
 	)
 	{
 					// Look for identical shape, pos.
@@ -303,7 +304,11 @@ void Combo::add
 		Combo_member *m = *it;
 		if (tx == m->tx && ty == m->ty && tz == m->tz &&
 		    shnum == m->shapenum && frnum == m->framenum)
+			{
+			if (toggle)
+				remove(it - members.begin());
 			return;		// Don't add same one twice.
+			}
 		}
 					// Get tile dims.
 	Shape_info& info = shapes_file->get_info(shnum);
@@ -746,7 +751,8 @@ int Combo_chooser::get_count
 void Combo_editor::add
 	(
 	unsigned char *data,		// Serialized object.
-	int datalen
+	int datalen,
+	bool toggle
 	)
 	{
 	unsigned long addr;
@@ -759,7 +765,7 @@ void Combo_editor::add
 		cout << "Error decoding object" << endl;
 		return;
 		}
-	combo->add(tx, ty, tz, shape, frame);
+	combo->add(tx, ty, tz, shape, frame, toggle);
 	render();
 	}
 
