@@ -509,8 +509,7 @@ int ExultStudio::init_npc_window
 	set_entry("npc_num_entry", npc_num, true, false);
 	set_entry("npc_ident_entry", ident);
 					// Shape/frame.
-	set_entry("npc_shape", shape);
-	set_entry("npc_frame", frame);
+	set_npc_shape(shape, frame);
 	set_npc_face(face, 0);
 					// Usecode #.
 	set_entry("npc_usecode_entry", usecode, true,
