@@ -1606,7 +1606,7 @@ USECODE_INTRINSIC(mark_virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_pos(obj->get_outermost()->get_tile());
-		vs->set_map(gwin->get_map()->get_num());
+		vs->set_map(obj->get_chunk()->get_map()->get_num());
 		}
 	return no_ret;
 }
