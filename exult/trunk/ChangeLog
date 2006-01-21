@@ -1,3 +1,8 @@
+2006-01-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed resurrection bug -- using (e.g.) Death Bolt
+	  resulted in a body which would not be resurrected, unlike what
+	  happened in the original.
+
 2006-01-20  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/intrinsics.cc: Virtue stones should use the map number
 	  they are in, not of the map being displayed.

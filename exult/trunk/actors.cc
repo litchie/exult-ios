@@ -3593,6 +3593,10 @@ void Actor::die
 	Actor *attacker
 	)
 	{
+	// If the actor is already dead, we shouldn't do anything
+	//(fixes a resurrection bug).
+	if (Actor::get_flag(Obj_flags::dead))
+		return;
 					// Get location.
 	Tile_coord pos = get_tile();
 	set_action(0);
