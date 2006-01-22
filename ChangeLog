@@ -1,3 +1,13 @@
+2006-01-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamedat.cc: Improved the previous fix to make it safer. Note
+	  that level 2 compression is still incompatible with multimaps
+	  (or, for that matter, so are the flex saves). I am still trying
+	  to work out a way to fix that *and* keep compatibility with older
+	  saves; relevant sections are tagged with a 'TODO:'. Any takers?
+	* gamewin.cc: Fixed bug in loading of multimap games. Basically,
+	  only map #0 would be loaded, causing data loss when saving maps
+	  or games unless the player visited the other maps.
+	
 2006-01-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed resurrection bug -- using (e.g.) Death Bolt
 	  resulted in a body which would not be resurrected, unlike what
