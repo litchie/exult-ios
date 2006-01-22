@@ -2655,9 +2655,24 @@ void Game_window::setup_game
 	bool map_editing
 	)
 	{
+#if 0
+	// Was not working as intended; in a new game,
+	// only map 0 was being loaded.
 	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->init();
+#else
+	// Map 0 always exists.
+	get_map(0)->init();
+	if (is_system_path_defined("<PATCH>"))
+		// There is a patch dir; search for other maps.
+		for (int i = 1; i<=0xFF; i++)
+		{
+			char fname[128];
+			if (U7exists(Get_mapped_name(PATCH_U7MAP, i, fname)))
+				get_map(i)->init();
+		}
+#endif
 				// Init. current 'tick'.
 	Game::set_ticks(SDL_GetTicks());
 	init_actors();		// Set up actors if not already done.
