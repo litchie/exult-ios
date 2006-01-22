@@ -7,6 +7,8 @@
 	* gamewin.cc: Fixed bug in loading of multimap games. Basically,
 	  only map #0 would be loaded, causing data loss when saving maps
 	  or games unless the player visited the other maps.
+	* actors.cc: approach_another now moves NPCs to the correct
+	  destination map before trying to pathfind.
 	
 2006-01-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed resurrection bug -- using (e.g.) Death Bolt
