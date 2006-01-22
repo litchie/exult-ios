@@ -980,7 +980,7 @@ bool Game_window::restore_gamedat_zip
 		unz_file_info	file_info;
 	
 		unzGetCurrentFileInfo(unzipfile, &file_info,
-			oname2, 13,
+			oname2, 18,
 			NULL, 0,
 			NULL, 0);
 
@@ -1002,8 +1002,15 @@ bool Game_window::restore_gamedat_zip
 		int namelen = strlen(oname);
 		if (oname[namelen - 1] == '.')
 			oname[namelen - 1] = 0;
-
-
+					// Watch out for multimap games.
+		if (oname2[5] == '/')
+		{
+			//May need to create a mapxx directory here
+			oname2[5] = 0;
+			U7mkdir(oname, 0755);
+			oname2[5] = '/';
+		}
+		
 					// Open the file in the zip
 		if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
 			abort("Error opening current from zipfile '%s'.", fname);
