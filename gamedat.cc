@@ -168,6 +168,10 @@ void Game_window::restore_gamedat
 		}
 	for (i = 0; i < numfiles; i++)	// Now read each file.
 		{
+		// TODO: make flex savegames compatible with multimap.
+		// I haven't yet found a way to do so without breaking older
+		// flex saves. Any takers?
+
 					// Get file length.
 		int len = finfo[2*i + 1] - 13;
 		if (len <= 0)
@@ -353,6 +357,9 @@ void Game_window::save_gamedat
 		for (int schunk = 0; schunk < 12*12; schunk++, i++)
 			{
 			char iname[128];
+			// TODO: make flex savegames compatible with multimap.
+			// I haven't yet found a way to do so without breaking older
+			// flex saves. Any takers?
 			Savefile(out, (*it)->get_schunk_file_name(U7IREG,
 							schunk, iname));
 			flex.mark_section_done();
@@ -979,10 +986,18 @@ bool Game_window::restore_gamedat_zip
 	{
 		unz_file_info	file_info;
 	
+		// For safer handling, better do it in two steps.
 		unzGetCurrentFileInfo(unzipfile, &file_info,
-			oname2, 18,
+			NULL, 0,
 			NULL, 0,
 			NULL, 0);
+				// Get the needed buffer size.
+		int filenamelen = file_info.size_filename;
+		unzGetCurrentFileInfo(unzipfile, 0,
+			oname2, filenamelen,
+			NULL, 0,
+			NULL, 0);
+		oname2[filenamelen] = 0;
 
 		// Get file length.
 		int len = file_info.uncompressed_size;
@@ -992,6 +1007,9 @@ bool Game_window::restore_gamedat_zip
 		// Level 2 compression handling
 		if (!std::strcmp("GAMEDAT", oname2))
 		{
+			// TODO: make level 2 compression compatible with multimap.
+			// I haven't yet found a way to do so without breaking older
+			// level 2 saves. Any takers?
 			if (Restore_level2(unzipfile) == false)
 				abort("Error reading level2 from zip '%s'.", fname);
 
@@ -1003,12 +1021,15 @@ bool Game_window::restore_gamedat_zip
 		if (oname[namelen - 1] == '.')
 			oname[namelen - 1] = 0;
 					// Watch out for multimap games.
-		if (oname2[5] == '/')
-		{
-			//May need to create a mapxx directory here
-			oname2[5] = 0;
-			U7mkdir(oname, 0755);
-			oname2[5] = '/';
+		for (int i = 0; i<strlen(oname2); i++)
+		{	//Doing it the right way this time.
+			if (oname2[i] == '/')
+			{
+				//May need to create a mapxx directory here
+				oname2[i] = 0;
+				U7mkdir(oname, 0755);
+				oname2[i] = '/';
+			}
 		}
 		
 					// Open the file in the zip
@@ -1197,6 +1218,10 @@ bool Game_window::save_gamedat_zip
 	// Level 2 Compression
 	else
 	{
+		// TODO: make level 2 compression compatible with multimap.
+		// I haven't yet found a way to do so without breaking older
+		// level 2 saves. Any takers?
+
 		// Keep saveinfo, screenshot, identity using normal compression
 		// There are always files 0 - 2
 		Save_level1(zipfile, GSCRNSHOT);
