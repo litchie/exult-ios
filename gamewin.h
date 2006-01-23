@@ -454,7 +454,7 @@ public:
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool save_gamedat_zip(const char *fname, const char *savename);
-	bool Restore_level2 (void *unzipfile);
+	bool Restore_level2 (void *unzipfile, const char *dirname, int dirlen);
 	bool restore_gamedat_zip(const char *fname);
 	static char *get_game_identity_zip(const char *savename);
 public:
