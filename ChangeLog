@@ -5,6 +5,8 @@
 	  map) to store the files in <GAMEDAT>/mapXX dirs. Still need to
 	  fix the flex saves for multimap capabilities (tagged with a
 	  'TODO:').
+	* gamewin.cc: Fixing a rare crash when changing maps followed by
+	  F3 teleport.
 
 2006-01-22    <jeff@mini.nerble.net>
 
