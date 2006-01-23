@@ -849,15 +849,20 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 
 
 // Level 2 Compression
-bool Game_window::Restore_level2 (void *uzf)
+bool Game_window::Restore_level2
+	(
+	void *uzf, const char *dirname, int dirlen
+	)
 {
 	unzFile unzipfile = static_cast<unzFile>(uzf);
 
 	char oname[50];		// Set up name.
-	char *oname2 = oname+sizeof(GAMEDAT) - 1;		// Set up name.
+	char *oname2 = oname + sizeof(GAMEDAT) + dirlen - 1;
 	char size_buffer[4];
 	int size;
-	strcpy(oname, GAMEDAT);
+	strcpy(oname, dirname);
+	oname2[0] = '/';
+	oname2++;
 
 	if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
 	{
@@ -981,6 +986,7 @@ bool Game_window::restore_gamedat_zip
 	char oname[50];		// Set up name.
 	char *oname2 = oname + sizeof(GAMEDAT) - 1;
 	strcpy(oname, GAMEDAT);
+	bool level2zip = false;
 
 	do
 	{
@@ -1005,14 +1011,22 @@ bool Game_window::restore_gamedat_zip
 			continue;
 
 		// Level 2 compression handling
-		if (!std::strcmp("GAMEDAT", oname2))
+		if (level2zip)
 		{
-			// TODO: make level 2 compression compatible with multimap.
-			// I haven't yet found a way to do so without breaking older
-			// level 2 saves. Any takers?
-			if (Restore_level2(unzipfile) == false)
+			// Files for map # > 0; create dir first.
+			U7mkdir(oname, 0755);
+			// Put a final marker in the dir name.
+			if (Restore_level2(unzipfile, oname, filenamelen) == false)
 				abort("Error reading level2 from zip '%s'.", fname);
-
+			continue;
+		}
+		else if (!std::strcmp("GAMEDAT", oname2))
+		{
+			// Put a final marker in the dir name.
+			if (Restore_level2(unzipfile, oname, 0) == false)
+				abort("Error reading level2 from zip '%s'.", fname);
+			// Flag that this is a level 2 save.
+			level2zip = true;
 			continue;
 		}
 
@@ -1099,9 +1113,23 @@ static bool Save_level1 (zipFile zipfile, const char *fname)
 }
 
 // Level 2 Compression
-static bool Begin_level2 (zipFile zipfile)
+static bool Begin_level2 (zipFile zipfile, int mapnum)
 {
-	return zipOpenNewFileInZip (zipfile, "GAMEDAT", NULL, NULL, 0,
+	char oname[7];		// Set up name.
+	if (mapnum == 0)
+		{
+		strcpy(oname, "GAMEDAT");
+		oname[7] = 0;
+		}
+	else
+		{
+		strcpy(oname, "map");
+		oname[3] = '0' + mapnum/16;
+		int lb = mapnum%16;
+		oname[4] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+		oname[5] = 0;
+		}
+	return zipOpenNewFileInZip (zipfile, oname, NULL, NULL, 0,
 				NULL, 0, NULL, Z_DEFLATED, Z_BEST_COMPRESSION) == ZIP_OK;
 }
 
@@ -1123,7 +1151,10 @@ static bool Save_level2 (zipFile zipfile, const char *fname)
 	
 	// Filename first
 	memset (buf, 0, 13);
-	strncpy (buf, remove_dir(fname), 13);
+	char *fname2 = strrchr(fname, '/') + 1;
+	if (!fname2)
+		fname2 = strchr(fname, '\\') + 1;
+	strncpy (buf, fname2 ? fname2 : fname, 13);
 	int err = zipWriteInFileInZip (zipfile, buf, 12);
 
 	// Size of the file
@@ -1218,17 +1249,14 @@ bool Game_window::save_gamedat_zip
 	// Level 2 Compression
 	else
 	{
-		// TODO: make level 2 compression compatible with multimap.
-		// I haven't yet found a way to do so without breaking older
-		// level 2 saves. Any takers?
-
 		// Keep saveinfo, screenshot, identity using normal compression
 		// There are always files 0 - 2
 		Save_level1(zipfile, GSCRNSHOT);
 		Save_level1(zipfile, GSAVEINFO);
 		Save_level1(zipfile, IDENTITY);
 
-		Begin_level2(zipfile);
+		// Start the GAMEDAT file.
+		Begin_level2(zipfile, 0);
 
 		for (int i = 3; i < numsavefiles; i++)
 			Save_level2(zipfile, savefiles[i]);
@@ -1238,6 +1266,13 @@ bool Game_window::save_gamedat_zip
 			{
 			if (!*it)
 				continue;
+			if ((*it)->get_num() != 0)
+				{
+				// Finish the open file (GAMEDAT or mapXX).
+				End_level2(zipfile);
+				// Start the next file (mapXX).
+				Begin_level2(zipfile, (*it)->get_num());
+				}
 			for (int schunk = 0; schunk < 12*12; schunk++)
 				//Check to see if the ireg exists before trying to
 				//save it; prevents crash when creating new maps

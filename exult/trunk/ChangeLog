@@ -1,3 +1,11 @@
+2006-01-23  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamedat.cc, gamedat.h: Fixed saving and loading multimap saves
+	  with level 2 zip compression. The fix uses internal mapXX files
+	  (similar in structure to the GAMEDAT file used for the default
+	  map) to store the files in <GAMEDAT>/mapXX dirs. Still need to
+	  fix the flex saves for multimap capabilities (tagged with a
+	  'TODO:').
+
 2006-01-22    <jeff@mini.nerble.net>
 
 	* schedule.cc: Improved 'talk' schedule so that NPC won't talk
