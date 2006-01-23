@@ -1,3 +1,8 @@
+2006-01-22    <jeff@mini.nerble.net>
+
+	* schedule.cc: Improved 'talk' schedule so that NPC won't talk
+	until close, and will call to you like in the original.
+
 2006-01-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamedat.cc: Improved the previous fix to make it safer. Note
 	  that level 2 compression is still incompatible with multimaps
