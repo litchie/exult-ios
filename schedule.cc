@@ -828,6 +828,8 @@ void Talk_schedule::now_what
 		Actor_action *pact = Path_walking_actor_action::create_path(
 			npc->get_tile(),
 			gwin->get_main_actor()->get_tile(), cost);
+		if (rand()%3 == 0)
+			npc->say(first_talk, last_talk);
 		if (!pact)
 			{
 #ifdef DEBUG
@@ -849,20 +851,22 @@ void Talk_schedule::now_what
 	case 1:				// Wait a second.
 	case 2:
 		{
-		int dx = 1 - 2*(rand()%2);
-		npc->walk_to_tile(npc->get_tile() +
-			Tile_coord(dx, -dx, 0), 300, 500);
-					// Wait til conversation is over.
-//		if (ucmachine->get_num_faces_on_screen() == 0)
-//			phase++;
-			phase = 3;
+		if (rand()%3 == 0)
+			npc->say(first_talk, last_talk);
+		// Step towards Avatar.
+		Tile_coord pos = npc->get_tile(), 
+			   dest = gwin->get_main_actor()->get_tile();
+		int dx = dest.tx > pos.tx ? 1 : (dest.tx < pos.tx ? -1 : 0);
+		int dy = dest.ty > pos.ty ? 1 : (dest.ty < pos.ty ? -1 : 0);
+		npc->walk_to_tile(pos + Tile_coord(dx, dy, 0), 300, 500);
+		phase = 3;
 		return;
 		}
 	case 3:				// Talk.
-					// Got to be reachable.
-		if (!Fast_pathfinder_client::is_grabable(
-			npc->get_tile(),
-			gwin->get_main_actor()->get_tile()))
+					// Got to be close & reachable.
+		if (npc->distance(gwin->get_main_actor()) > 5 ||
+			!Fast_pathfinder_client::is_grabable(npc->get_tile(),
+				gwin->get_main_actor()->get_tile()))
 			{
 			phase = 0;
 			npc->start(250, 1000);
