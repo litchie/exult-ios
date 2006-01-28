@@ -1865,7 +1865,7 @@ void Game_window::teleport_party
 		set_map(newmap);
 	main_actor->move(t.tx, t.ty, t.tz, newmap);	// Move Avatar.
 	// Fixes a rare crash when moving between maps and teleporting:
-	newmap = main_actor->get_chunk()->get_map()->get_num();
+	newmap = main_actor->get_map_num();
 	center_view(t);			// Bring pos. into view, and insure all
 					//   objs. exist.
 	for (i = 0; i < cnt; i++)

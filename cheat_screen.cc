@@ -40,6 +40,8 @@
 #include "Configuration.h"
 #include "SDL.h"
 #include "party.h"
+#include "chunks.h"
+#include "gamemap.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -1229,7 +1231,8 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 #endif
 
 		case '\'':	// Teleport
-		Game_window::get_instance()->teleport_party(actor->get_tile());
+		Game_window::get_instance()->teleport_party(actor->get_tile(),
+					false, actor->get_map_num());
 		break;
 
 

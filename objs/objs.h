@@ -31,6 +31,8 @@
 #include "shapeid.h"
 #include "tqueue.h"
 #include "tiles.h"
+#include "chunks.h"
+#include "gamemap.h"
 
 #include "objlist.h"
 
@@ -124,6 +126,8 @@ public:
 	int get_direction(Tile_coord t2) const;
 	Map_chunk *get_chunk() const	// Get chunk this is in.
 		{ return chunk; }
+	int get_map_num() const			// Get map number this is in.
+		{ return chunk->get_map()->get_num(); }
 	int get_cx() const;
 	int get_cy() const;
 	int get_quality() const
