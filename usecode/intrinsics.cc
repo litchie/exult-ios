@@ -1606,7 +1606,7 @@ USECODE_INTRINSIC(mark_virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_pos(obj->get_outermost()->get_tile());
-		vs->set_map(obj->get_chunk()->get_map()->get_num());
+		vs->set_map(obj->get_map_num());
 		}
 	return no_ret;
 }
@@ -3098,4 +3098,12 @@ USECODE_INTRINSIC(get_usecode_fun)
 	if (!obj)
 		return Usecode_value(0);
 	return Usecode_value(obj->get_usecode());
+}
+
+USECODE_INTRINSIC(get_map_num)
+{
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return Usecode_value(-1);
+	return Usecode_value(obj->get_map_num());
 }

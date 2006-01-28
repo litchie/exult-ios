@@ -1,3 +1,12 @@
+2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* cheat_screen.cc: The 'Teleport to NPC' function now moves you
+	  to the correct map.
+	* objs.h: Added a 'shortcut' get_map_num() member function for
+	  easier retrieval of an object's current map.
+	* intrinsics.cc, ucinternal.h, bgintrinsics.h, siintrinsics.h:
+	  Added intrinsic get_map_num.
+	* All files but the header files: Modified to use get_map_num().
+
 2006-01-23  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamedat.cc, gamedat.h: Fixed saving and loading multimap saves
 	  with level 2 zip compression. The fix uses internal mapXX files

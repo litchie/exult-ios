@@ -1135,8 +1135,8 @@ int Actor::approach_another
 							src.ty - src.tz/2))
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);
-	int destmap = other->get_chunk()->get_map()->get_num();
-	if (get_chunk()->get_map()->get_num()!=destmap)
+	int destmap = other->get_map_num();
+	if (get_map_num()!=destmap)
 	{
 		src = Tile_coord(-1, -1, 0);
 		move(src, destmap);
@@ -1663,7 +1663,7 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
-	int mapnum = chunk ? chunk->get_map()->get_num() : gmap->get_num();
+	int mapnum = chunk ? get_map_num() : gmap->get_num();
 	if ((mapnum != gmap->get_num()) ||
 	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
 	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
