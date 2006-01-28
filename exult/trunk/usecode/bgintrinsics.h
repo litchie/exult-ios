@@ -203,7 +203,7 @@
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),	// 0xb3
 	USECODE_INTRINSIC_PTR(begin_casting_mode),	// 0xb4 (Exult)
 	USECODE_INTRINSIC_PTR(get_usecode_fun),	// 0xb5 (Exult)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb6
+	USECODE_INTRINSIC_PTR(get_map_num),	// 0xb6 (Exult)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb7
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb8
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb9

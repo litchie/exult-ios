@@ -360,6 +360,7 @@ class Usecode_internal : public Usecode_machine
 					// Exult only:
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
 	USECODE_INTRINSIC_DECL(get_usecode_fun);
+	USECODE_INTRINSIC_DECL(get_map_num);
 	
 	/*
 	 *	Other private methods:
