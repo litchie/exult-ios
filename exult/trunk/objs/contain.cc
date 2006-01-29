@@ -585,7 +585,7 @@ void Container_game_object::activate
 		return;			// Map-editing.
 	if (!show_gump(event))
 					// Try to run normal usecode fun.
-		ucmachine->call_usecode(get_shapenum(), this,
+		ucmachine->call_usecode(get_usecode(), this,
 					(Usecode_machine::Usecode_events) event);
 	}
 
