@@ -1,0 +1,3 @@
+@echo Compiling Usecode...
+@..\..\..\tools\ucc.exe -o ..\data\usecode usecode.uc
+@rem @if errorlevel 1 pause
