@@ -1,4 +1,7 @@
 2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed a few bugs for objects with shape # >1023.
+
+2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* cheat_screen.cc: The 'Teleport to NPC' function now moves you
 	  to the correct map.
 	* objs.h: Added a 'shortcut' get_map_num() member function for
