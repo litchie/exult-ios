@@ -812,7 +812,7 @@ void Game_object::activate
 	{
 	if (edit())
 		return;			// Map-editing.
-	int usefun = UC_SHAPEFUN(get_shapenum());
+	int usefun = get_usecode();
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{

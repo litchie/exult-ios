@@ -1933,7 +1933,7 @@ void Actor::activate
 		ucmachine->call_usecode(0x63d, this,
 			(Usecode_machine::Usecode_events) event);	
 	else if (usecode == -1)
-		ucmachine->call_usecode(get_shapenum(), this,
+		ucmachine->call_usecode(get_usecode(), this,
 			(Usecode_machine::Usecode_events) event);
 	else if (party_id >= 0 || !gwin->is_time_stopped())
 		ucmachine->call_usecode(usecode, this, 
@@ -2772,7 +2772,7 @@ void Actor::call_readied_usecode
 		{
 		Ready_type type = (Ready_type) info.get_ready_type();
 		if (type != other)
-			ucmachine->call_usecode(obj->get_shapenum(),
+			ucmachine->call_usecode(obj->get_usecode(),
 			    obj, (Usecode_machine::Usecode_events) eventid);
 		}
 	}

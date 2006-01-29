@@ -33,7 +33,7 @@
 #include "tiles.h"
 #include "chunks.h"
 #include "gamemap.h"
-
+#include "ucfunids.h"
 #include "objlist.h"
 
 class Actor;
@@ -325,8 +325,7 @@ public:
 
 	// Return's the object's usecode for the shape number
 	virtual int get_usecode() const
-		{ return get_shapenum() > 0x400 ?
-			get_shapenum() + 0xC00 : get_shapenum(); }
+		{ return UC_SHAPEFUN(get_shapenum()); }
 
 	};
 
