@@ -31,6 +31,8 @@
 #include <algorithm>		/* swap. */
 #include <set>
 #include <map>
+#include "chunks.h"
+#include "gamemap.h"
 #include "Astar.h"
 #include "Audio.h"
 #include "Gump_manager.h"
@@ -40,7 +42,6 @@
 #include "actors.h"
 #include "bodies.h"
 #include "cheat.h"
-#include "chunks.h"
 #include "combat.h"
 #include "combat_opts.h"
 #include "dir.h"
@@ -49,7 +50,6 @@
 #include "frameseq.h"
 #include "game.h"
 #include "gamewin.h"
-#include "gamemap.h"
 #include "gameclk.h"
 #include "imagewin.h"
 #include "items.h"
@@ -4469,8 +4469,8 @@ void Npc_actor::handle_event
 	)
 	{
 	if (!action)			// Not doing anything?
-		{
-		if (schedule)
+		{			// Stop if not on current map.
+		if (schedule && chunk->get_map() == gwin->get_map())
 			schedule->now_what();
 		else
 			dormant = true;
@@ -4486,6 +4486,8 @@ void Npc_actor::handle_event
 		else
 			{
 			set_action(0);
+			if (chunk->get_map() != gwin->get_map())
+				dormant = true;
 			if (schedule)
 				if (dormant)
 					schedule->im_dormant();

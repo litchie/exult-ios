@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#include "gamemap.h"
+#include "chunks.h"
 #include "Audio.h"
 #include "Book_gump.h"
 #include "Gump.h"
@@ -29,13 +31,11 @@
 #include "items.h"
 #include "barge.h"
 #include "cheat.h"
-#include "chunks.h"
 #include "conversation.h"
 #include "effects.h"
 #include "exult.h"
 #include "game.h"
 #include "gamewin.h"
-#include "gamemap.h"
 #include "gameclk.h"
 #include "keyring.h"
 #include "mouse.h"

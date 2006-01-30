@@ -26,12 +26,12 @@
 #  include <cstring>
 #endif
 #include "gamewin.h"
+#include "chunks.h"
 #include "gamemap.h"
 #include "game.h"
 #include "monsters.h"
 #include "utils.h"
 #include "egg.h"
-#include "chunks.h"
 #include "schedule.h"
 #include "objiter.h"
 #include "databuf.h"
