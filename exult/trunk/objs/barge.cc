@@ -26,14 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include "gamemap.h"
+#include "chunks.h"
 #include "barge.h"
 #include "gamewin.h"
-#include "gamemap.h"
 #include "actors.h"
 #include "Zombie.h"
 #include "citerate.h"
 #include "dir.h"
-#include "chunks.h"
 #include "objiter.h"
 #include "game.h"
 #include "databuf.h"

@@ -26,6 +26,7 @@
 #  include <cstdlib>
 #endif
 #include "npcnear.h"
+#include "chunks.h"
 #include "gamewin.h"
 #include "actors.h"
 #include "ucmachine.h"
@@ -109,6 +110,8 @@ void Npc_proximity_handler::handle_event
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(10);
 	Tile_coord t = npc->get_tile();
 	if (!tiles.has_point(t.tx, t.ty) ||	// No longer visible?
+					// Not on current map?
+	    npc->get_map() != gwin->get_map() ||
 	    npc->is_dead())		// Or no longer living?
 		{
 		npc->clear_nearby();

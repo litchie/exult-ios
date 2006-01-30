@@ -22,6 +22,8 @@
 
 #include "SDL_events.h"
 #include "files/U7file.h" 
+#include "chunks.h"
+#include "gamemap.h"
 #include "gamewin.h"
 #include "game.h"
 #include "cheat_screen.h"
@@ -40,8 +42,6 @@
 #include "Configuration.h"
 #include "SDL.h"
 #include "party.h"
-#include "chunks.h"
-#include "gamemap.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
