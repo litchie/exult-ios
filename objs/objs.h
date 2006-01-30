@@ -31,8 +31,6 @@
 #include "shapeid.h"
 #include "tqueue.h"
 #include "tiles.h"
-#include "chunks.h"
-#include "gamemap.h"
 #include "ucfunids.h"
 #include "objlist.h"
 
@@ -126,8 +124,14 @@ public:
 	int get_direction(Tile_coord t2) const;
 	Map_chunk *get_chunk() const	// Get chunk this is in.
 		{ return chunk; }
+#ifdef CHUNKS_H				/* Trying to avoid includes.	*/
+	Game_map *get_map() const	// Map we're on.
+		{ return chunk->get_map(); }
+#ifdef GAMEMAP_H
 	int get_map_num() const			// Get map number this is in.
 		{ return chunk->get_map()->get_num(); }
+#endif
+#endif
 	int get_cx() const;
 	int get_cy() const;
 	int get_quality() const
