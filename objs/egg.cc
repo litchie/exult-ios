@@ -604,7 +604,7 @@ void Egg_object::activate_teleport
 	)
 	{
 	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
-	int qual = 255, mapnum = 0;
+	int qual = 255, mapnum = -1;
 	if (type == intermap)
 		mapnum = data1&0xff;
 	else
