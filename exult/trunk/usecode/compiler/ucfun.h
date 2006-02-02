@@ -69,14 +69,24 @@ class Uc_function
 
 	int reloffset; // relative offset of the code being generated
 public:
-	Uc_function(Uc_function_symbol *p);
-	~Uc_function();
 	enum Intrinsic_type
 		{
+		unset,
 		bg,			// Black gate.
 		si			// Serpent isle.
 		};
-	static void set_intrinsics(Intrinsic_type ty);
+private:
+	static Intrinsic_type intrinsic_type;
+public:
+	Uc_function(Uc_function_symbol *p);
+	~Uc_function();
+	static void set_intrinsics();
+	static void setup_intrinsics()		// Init. the 1st time.
+		{ if (!intrinsics.size())
+			set_intrinsics();
+		}
+	static void set_intrinsic_type(Intrinsic_type ty)
+		{ intrinsic_type = ty; }
 	void set_statement(Uc_statement *s)
 		{ statement = s; }
 	void adjust_reloffset(int diff) { reloffset += diff; }
@@ -92,10 +102,16 @@ public:
 	Uc_symbol *search_up(const char *nm)
 		{ 
 		Uc_symbol *sym = cur_scope->search_up(nm);
-		return (sym ? sym : globals.search(nm));
+		if (sym)
+			return sym;
+		setup_intrinsics();
+		return globals.search(nm);
 		}
 	static Uc_intrinsic_symbol *get_intrinsic(int i)
-		{ return (i >= 0 && i < intrinsics.size())? intrinsics[i] : 0;}
+		{ 
+		setup_intrinsics();
+		return (i >= 0 && i < intrinsics.size())? intrinsics[i] : 0;
+		}
 	static Uc_intrinsic_symbol *get_add_answer()
 		{ return get_intrinsic(add_answer); }
 	static Uc_intrinsic_symbol *get_remove_answer()

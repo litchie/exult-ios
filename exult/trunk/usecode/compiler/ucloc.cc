@@ -94,3 +94,12 @@ void Uc_location::yyerror
 	cout << cur_source << ':' << cur_line + 1 << ": " << s << endl;
 	num_errors++;
 	}
+
+void Uc_location::yywarning
+	(
+	char *s
+	)
+	{
+	cout << "Warning: " << cur_source << ':' << cur_line + 1 << ": " << 
+								s << endl;
+	}
