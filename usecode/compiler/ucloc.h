@@ -51,6 +51,7 @@ public:
 		{ return source; }
 	void error(char *s);		// Print error.
 	static void yyerror(char *s);	// Print error at cur. location.
+	static void yywarning(char *s);
 	static int get_num_errors()
 		{ return num_errors; }
 	};

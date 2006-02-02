@@ -1,3 +1,9 @@
+2006-02-01    <jeff@mini.nerble.net>
+
+	* usecode/compiler/uclex.ll,etc.:  Added '#game "blackgate"' and
+	'#game "serpentisle"' directives to set intrinsics at top of ucc
+	source file.  
+
 2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed but with teleport (not intermap) eggs in multimap
 	  games.
