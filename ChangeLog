@@ -1,4 +1,8 @@
-2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2006-02-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Added a custom body for Laurianna in the 'BG Keyring Mod'.
+	* bodies.cc: Removed checks against old tables.
+
+2006-02-01  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Updating 'SI Fixes' and 'BG Keyring Mod' to use the new #game
 	  UCC compiler directive.
 
