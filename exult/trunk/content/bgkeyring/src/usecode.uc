@@ -1,3 +1,5 @@
+#game "blackgate";									//Tells the compiler the game type
+
 #include "headers/constants.uc";					//standard constant definitions
 #include "headers/constants2.uc";					//standard constant definitions
 #include "quests/keyring/constants.uc";				//The constants for the keyring quest

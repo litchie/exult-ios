@@ -1,3 +1,5 @@
+#game "serpentisle";						//Tells the compiler the game type
+
 #include "header/constants.uc";				//Misc constants used everywhere
 #include "header/si/si_gflags.uc";			//SI Global Flags
 #include "header/si/si_externals.uc";		//Calls defined in SI Usecode
