@@ -29,6 +29,7 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <iostream>
 
 using std::vector;
 using std::ifstream;
@@ -400,19 +401,6 @@ void Body_lookup::setup
 	in.close();
 	bodies_table = new std::map<int, long>;
 	int cnt = strings.size();
-	short *oldptr;
-	int oldcnt;
-	// ++++++++Checking against old table.+++++++ REMOVE THIS SOON.
-	if (Game::get_game_type() == BLACK_GATE)
-		{
-		oldcnt = sizeof(bg_table)/(3*sizeof(bg_table[0]));
-		oldptr = &bg_table[0];
-		}
-	else
-		{
-		oldcnt = sizeof(si_table)/(3*sizeof(si_table[0]));
-		oldptr = &si_table[0];
-		}
 	if (i >= 0)
 		{
 		for ( ; i < cnt; ++i)
@@ -422,12 +410,6 @@ void Body_lookup::setup
 				continue;
 			int bshape = strtol(ptr, &eptr, 0);
 			int bframe = strtol(eptr + 1, 0, 0);
-			assert(oldcnt);
-			assert(i == oldptr[0]);
-			assert(bshape == oldptr[1]);
-			assert(bframe == oldptr[2]);
-			oldptr += 3;
-			oldcnt--;
 			(*bodies_table)[i] = (((long)bshape)<<16)|bframe;
 			}
 		}
