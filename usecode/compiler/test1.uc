@@ -1,3 +1,4 @@
+#game "blackgate"
 #include "ucdefs.h"
 
 extern adder 0x480(a, b);	// Declaration.

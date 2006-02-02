@@ -66,7 +66,7 @@ int main
 	static char *optstring = "o:I:s";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
-	Uc_function::Intrinsic_type ty = Uc_function::bg;
+	Uc_function::Intrinsic_type ty = Uc_function::unset;
 	opterr = 0;			// Don't let getopt() print errs.
 	int optchr;
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
@@ -107,8 +107,7 @@ int main
 			outname = strcpy(outbuf, "a.ucout");
 		}
 	Uc_location::set_cur(src, 0);
-					// For now, use black gate.
-	Uc_function::set_intrinsics(ty);
+	Uc_function::set_intrinsic_type(ty);
 #if 0
 //++++TESTING
 	int tok;

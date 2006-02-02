@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "ucparse.h"
 #include "ucloc.h"
+#include "ucfun.h"
 
 using std::string;
 
@@ -129,6 +130,29 @@ static void Include
 					// Set location to new file.
 	Uc_location::set_cur(name, 0);
 	yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
+	}
+
+/*
+ *	Handle #game directive.
+ */
+
+static void Set_game
+	(
+	char *yytext			// Contains name.
+	)
+	{
+	char *ename;
+	char *name = Find_name(yytext, ename);
+	if (!name)
+		Uc_location::yyerror("No name in #game");
+	else if (strcmp(name, "blackgate") == 0)
+		Uc_function::set_intrinsic_type(Uc_function::bg);
+	else if (strcmp(name, "serpentisle") == 0)
+		Uc_function::set_intrinsic_type(Uc_function::si);
+	else
+		Uc_location::yyerror(
+			"Specify \"blackgate\" or \"serpentisle\" "
+				"with #game.");
 	}
 
 /*
@@ -288,6 +312,7 @@ se		return SE;
 "# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
 "#include"[ \t]+.*\n		{ Include(yytext + 8); }
+"#game"[ \t]+.*\n		{ Set_game(yytext + 5); }
 
 \#.*			/* Ignore other cpp directives. */
 

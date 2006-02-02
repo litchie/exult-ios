@@ -43,6 +43,8 @@ int Uc_function::num_global_statics = 0;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
 	Uc_function::push_answers = -1, Uc_function::pop_answers = -1,
 	Uc_function::show_face = -1, Uc_function::remove_face = -1;
+Uc_function::Intrinsic_type Uc_function::intrinsic_type =
+						Uc_function::unset;
 
 /*
  *	Create function, and add to global symbol table.
@@ -474,12 +476,18 @@ const char *si_intrinsic_table[] =
 
 void Uc_function::set_intrinsics
 	(
-	Intrinsic_type ty
 	)
 	{
 	int cnt;
 	const char **table;
-	if (ty == bg)
+	if (intrinsic_type == unset)
+		{
+		Uc_location::yywarning(
+			"Use '#game \"[blackgate|serpentisle]\" to specify "
+			"intrinsics to use (default = blackgate).");
+		intrinsic_type = bg;
+		}
+	if (intrinsic_type == bg)
 		{
 		table = bg_intrinsic_table;
 		cnt = sizeof(bg_intrinsic_table)/sizeof(bg_intrinsic_table[0]);
