@@ -1,3 +1,7 @@
+2006-01-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Updating 'SI Fixes' and 'BG Keyring Mod' to use the new #game
+	  UCC compiler directive.
+
 2006-02-01    <jeff@mini.nerble.net>
 
 	* usecode/compiler/uclex.ll,etc.:  Added '#game "blackgate"' and
