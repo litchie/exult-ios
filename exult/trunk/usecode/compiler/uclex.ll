@@ -156,6 +156,23 @@ static void Set_game
 	}
 
 /*
+ *	Handle #autonumber directive
+ */
+
+static void Set_autonum
+	(
+	char *text		// Contains number.
+	)
+	{
+	char *name;
+	int fun_number = strtol(text, &name, 0);
+	if (fun_number<=0)
+		Uc_location::yyerror("Starting function number too low in #autonumber");
+	
+	Uc_function_symbol::set_last_num(fun_number - 1);
+	}
+
+/*
  *	Make a copy of a string, interpreting '\' codes.
  *
  *	Output:	->allocated string.
@@ -313,6 +330,7 @@ se		return SE;
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
 "#include"[ \t]+.*\n		{ Include(yytext + 8); }
 "#game"[ \t]+.*\n		{ Set_game(yytext + 5); }
+"#autonumber"[ \t]+"0x"[0-9a-fA-F]+\n	{ Set_autonum(yytext + 11); }
 
 \#.*			/* Ignore other cpp directives. */
 
