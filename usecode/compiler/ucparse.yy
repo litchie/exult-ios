@@ -122,7 +122,7 @@ static Uc_expression *method_this = 0;
  *	Production types:
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
-%type <expr> script_command start_call
+%type <expr> script_command start_call addressof
 %type <intval> opt_int eventid direction int_literal converse_options
 %type <intval> opt_original
 %type <sym> declared_sym
@@ -719,6 +719,8 @@ expression:
 	| '-' primary
 		{ $$ = new Uc_binary_expression(UC_SUB,
 				new Uc_int_expression(0), $2); }
+	| addressof
+		{ $$ = $1; }
 	| NOT primary
 		{ $$ = new Uc_unary_expression(UC_NOT, $2); }
 	| '[' opt_expression_list ']'	/* Concat. into an array. */
@@ -727,6 +729,31 @@ expression:
 		{ $$ = new Uc_string_expression(function->add_string($1)); }
 	| STRING_PREFIX
 		{ $$ = new Uc_string_prefix_expression(function, $1); }
+	;
+
+addressof:
+	'&' IDENTIFIER
+		{	// A way to retrieve the function's assigned
+			// usecode number
+		Uc_symbol *sym = function->search_up($2);
+		if (!sym)	/* See if the symbol is defined */
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $2);
+			yyerror(buf);
+			$$ = 0;
+			}
+		Uc_function_symbol *fun = (Uc_function_symbol *) sym;
+		if (!fun)	/* See if the symbol is a function */
+			{
+			char buf[150];
+			sprintf(buf, "'%s' is not a function", $2);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else		/* Output the function's assigned number */
+			$$ = new Uc_int_expression(fun->get_usecode_num());
+		}
 	;
 
 opt_expression_list:

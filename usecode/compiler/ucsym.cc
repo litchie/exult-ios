@@ -38,6 +38,7 @@ using std::strcmp;
 
 int Uc_function_symbol::last_num = -1;
 Uc_function_symbol::Sym_nums Uc_function_symbol::nums_used;
+bool Uc_function_symbol::new_auto_num = false;
 
 /*
  *	Assign value on stack.
@@ -285,7 +286,13 @@ Uc_function_symbol *Uc_function_symbol::create
 	{
 	int ucnum;
 	Uc_function_symbol *sym;
-	last_num = ucnum = num >= 0 ? num : (last_num + 1);
+	ucnum = num >= 0 ? num : (last_num + 1);
+			// Set last_num if the function doesn't
+			// have a number:
+	if (num < 0 || 
+			// Or if we are using old-style autonumbers:
+		(num >= 0 && !new_auto_num))
+		last_num = ucnum;
 					// Keep track of #'s used.
 	Sym_nums::const_iterator it = nums_used.find(ucnum);
 	if (it == nums_used.end())	// Unused?  That's good.

@@ -1,3 +1,24 @@
+2006-02-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* ucparse.yy: Added a way to retrieve the assigned number of a
+	  given function. Used like this:
+		//If function_name is a defined function, fun will
+		//have the correct function number:
+		var fun = &function_name;
+		//Call function_name indirectly:
+		(*fun)();
+	* uclex.ll, ucsym.*: Added new '#autonumber' directive to UCC.
+	  It turns on 'smart' autonumbering of functions from a given
+	  initial value and *ignores* functions with preset function
+	  numbers. For example:
+		#autonumber 0xC00
+		fun1 0xD00 () {/* Code here */}
+		fun2 () {/* Code here */}
+		fun3 0xA00 () {/* Code here */}
+		fun4 () {/* Code here */}
+	  This results in fun2 and fun4 having numbers 0xC00 and 0xC01,
+	  respectivelly. If the directive is not used, the default
+	  ("old-style") autonumbering will be in effect.
+
 2006-02-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Added a custom body for Laurianna in the 'BG Keyring Mod'.
 	* bodies.cc: Removed checks against old tables.

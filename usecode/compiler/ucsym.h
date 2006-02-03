@@ -172,6 +172,9 @@ class Uc_function_symbol : public Uc_symbol
 	{
 	static int last_num;		// Last 'usecode_num', so we can
 					//   assign automatically.
+	static bool new_auto_num;		// Prevents autoassigning of
+					//   function numbers if function already
+					//   has a number of its own.
 public:
 					// Keep track of #'s used.
 	typedef std::map<int, Uc_function_symbol *> Sym_nums;
@@ -200,6 +203,11 @@ public:
 	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue);
+	static void set_last_num(int n)
+		{
+		last_num = n;
+		new_auto_num = true;
+		}
 	};
 
 /*
