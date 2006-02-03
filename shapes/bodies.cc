@@ -26,6 +26,8 @@
 #include "game.h"
 #include "utils.h"
 #include "msgfile.h"
+#include "U7file.h"
+#include "databuf.h"
 #include <fstream>
 #include <map>
 #include <vector>
@@ -387,18 +389,31 @@ void Body_lookup::setup
 	(
 	)
 	{
+	int i = -1;
 	ifstream in;
-	try {
-		U7open(in, "<PATCH>/bodies.txt", true);
-	} catch (std::exception &) {
-		const char *nm = GAME_SI ? "<DATA>/bodies_si.txt"
-			: (GAME_BG ? "<DATA>/bodies_bg.txt"
-				: "<STATIC>/bodies.txt");
-		U7open(in, nm, true);		// Throws exception.
-	}
 	vector<char *> strings;
-	int i = Read_text_msg_file(in, strings);
-	in.close();
+	try {
+		ifstream in;
+		U7open(in, "<PATCH>/bodies.txt", true);
+		i = Read_text_msg_file(in, strings);
+		in.close();
+	} catch (std::exception &) {
+		if (GAME_BG || GAME_SI) {
+
+			str_int_pair resource = game->get_resource("config/bodies");
+
+			U7object txtobj(resource.str, resource.num);
+			size_t len;
+			char *txt = txtobj.retrieve(len);
+			BufferDataSource ds(txt, len);
+			i = Read_text_msg_file(&ds, strings);
+		} else {
+			ifstream in;
+			U7open(in, "<STATIC>/bodies.txt", true);
+			i = Read_text_msg_file(in, strings);
+			in.close();
+		}
+	}
 	bodies_table = new std::map<int, long>;
 	int cnt = strings.size();
 	if (i >= 0)
