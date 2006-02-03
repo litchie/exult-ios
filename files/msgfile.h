@@ -10,7 +10,15 @@
 using std::istream;
 using std::ostream;
 using std::vector;
+class DataSource;
 
+int Read_text_msg_file
+	(
+	DataSource* in,
+	vector<char *>& strings,	// Strings returned here, each
+					//   allocated on heap.
+	char *section = 0
+	);
 int Read_text_msg_file
 	(
 	istream& in,

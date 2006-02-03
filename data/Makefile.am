@@ -45,12 +45,14 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/BGmap.shp			\
 	bg/defaultkeys.txt		\
 	bg/mr_faces.shp			\
-	bg/mr_intro.shp
+	bg/mr_intro.shp			\
+	bg/bodies_bg.txt
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
 	si/SImap.shp			\
-	si/defaultkeys.txt
+	si/defaultkeys.txt		\
+	si/bodies_si.txt
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
@@ -140,7 +142,7 @@ CLEANFILES = exult.flx exult_bg.flx exult_si.flx bg_paperdol.vga *~
 
 EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	$(EXULT_SI_FLX_OBJECTS) $(ESTUDIO_NEW_FILES) midisfx.flx \
-	exultmsg.txt bginclude.uc bodies_bg.txt bodies_si.txt \
+	exultmsg.txt bginclude.uc \
 	$(EXULT_BG_PAPERDOL_VGA_OBJECTS)
 
 bg_paperdol.vga: $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
