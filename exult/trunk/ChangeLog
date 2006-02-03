@@ -1,3 +1,11 @@
+2006-02-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* files/databuf.h: StreamDataSource::eof() returns eof before actually
+	  having read past the end of file, to make this behave consistently
+	  with the other DataSources
+	* files/msgfile.*: allow reading text file from DataSource
+	* shapes/bodies.cc: read bodies_bg/si from .flx files
+	* data/*: moved bodies_bg/si to exult_bg/si.flx
+
 2006-02-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* ucparse.yy: Added a way to retrieve the assigned number of a
 	  given function. Used like this:

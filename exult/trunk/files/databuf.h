@@ -58,19 +58,33 @@ public:
 	virtual bool eof() =0;
 	virtual void flush() { }
 	virtual bool good() { return true; }
+
+	void readline(std::string &str)
+	{
+		str.erase();
+		while (!eof())
+		{
+			char character =  static_cast<char>(read1());
+
+			if (character == '\r') continue;        // Skip cr 
+			else if (character == '\n')     break;  // break on line feed
+
+			str+= character;
+		}
+	}
 };
 
 class StreamDataSource: public DataSource
 {
 protected:
-	std::ifstream *in;
-	std::ofstream *out;
+	std::istream *in;
+	std::ostream *out;
 public:
-	StreamDataSource(std::ifstream *data_stream) : in(data_stream), out(0)
+	StreamDataSource(std::istream *data_stream) : in(data_stream), out(0)
 	{
 	};
 	
-	StreamDataSource(std::ofstream *data_stream) : in(0), out(data_stream)
+	StreamDataSource(std::ostream *data_stream) : in(0), out(data_stream)
 	{
 	};
 	
@@ -134,7 +148,7 @@ public:
 	
 	virtual unsigned int getPos() { return in?in->tellg():out->tellp(); };
 	
-	virtual bool eof() { return in->eof(); }
+	virtual bool eof() { in->get(); bool ret = in->eof(); if (!ret) in->unget(); return ret; }
 	virtual void flush() { if (out) out->flush(); }
 	virtual bool good() { return in ? in->good() : out->good(); }
 };

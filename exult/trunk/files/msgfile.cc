@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include <iomanip>
 #include "utils.h"
+#include "databuf.h"
 
 using std::istream;
 using std::ostream;
@@ -51,41 +52,27 @@ using std::vector;
  *		error.
  */
 
-int Read_text_msg_file
-	(
-	istream& in,
-	vector<char *>& strings,	// Strings returned here, each
-					//   allocated on heap.
-	char *section			// Section name, or NULL.  If given
-					//   the section must be next infile.
-	)
-	{
+int Read_text_msg_file(DataSource* in, vector<char *>& strings, char* section)
+{
 	strings.resize(0);		// Initialize.
 	strings.reserve(1000);
-	char buf[1024];
+	const char* buf;
 	int linenum = 0;
 #define NONEFOUND 0xffffffff
 	unsigned long first = NONEFOUND;// Index of first one found.
-	while (!in.eof())
-		{
+	while (!in->eof())
+	{
 		++linenum;
-		buf[0] = 0;		// In case line is empty.
-		in.get(buf, sizeof(buf));
-		char delim;		// Check for end-of-line.
-		in.get(delim);
-		if (delim != '\n' && !in.eof())
-			{
-			cerr << "Line #" << linenum << " is too long" << endl;
-			return -1;
-			}
-		if (!buf[0])
+		std::string s;
+		in->readline(s);
+		if (s.empty())
 			continue;	// Empty line.
-		unsigned int len = strlen(buf);
-		if (buf[len-1] == '\r') buf[len-1] = 0; // strip possible CR from end
+		unsigned int len = s.size();
+		buf = s.c_str();
 
-		char *ptr = &buf[0];
+		const char *ptr = &buf[0];
 		if (section)
-			{
+		{
 			if (buf[0] != '%' || 
 					strncmp(ptr + 1, "%section", 8) != 0)
 				continue;
@@ -99,33 +86,47 @@ int Read_text_msg_file
 			cerr << "Line #" << linenum << 
 				" has the wrong section name" << endl;
 			return -1;
-			}
+		}
 		if (buf[0] == '%' && strncmp(ptr + 1, "%endsection", 11) == 0)
 			break;
 		char *endptr;		// Get line# in decimal, hex, or oct.
 		long index = strtol(ptr, &endptr, 0);
 		if (endptr == ptr)	// No #?
-			{
+		{
 			if (*ptr == '#')
 				continue;
 			cerr << "Line " << linenum <<
 					" doesn't start with a number" << endl;
 			return -1;
-			}
+		}
 		if (*endptr != ':')
-			{
+		{
 			cerr << "Missing ':' in line " << linenum << 
 				".  Ignoring line" << endl;
 			continue;
-			}
+		}
 		if (index >= strings.size())
 			strings.resize(index + 1);
 		strings[index] = newstrdup(endptr + 1);
 		if (index < first)
 			first = index;
-		}
-	return first == NONEFOUND ? -1 : (int) first;
 	}
+	return first == NONEFOUND ? -1 : (int) first;
+}
+
+
+int Read_text_msg_file
+	(
+	istream& in,
+	vector<char *>& strings,	// Strings returned here, each
+					//   allocated on heap.
+	char *section			// Section name, or NULL.  If given
+					//   the section must be next infile.
+	)
+{
+	StreamDataSource ds(&in);
+	return Read_text_msg_file(&ds, strings, section);
+}
 
 /*
  *	Same as above, but store in given list, and set given count.
@@ -140,8 +141,9 @@ int Read_text_msg_file
 	char *section
 	)
 	{
+	StreamDataSource ds(&in);
 	vector<char *> txtlist;
-	int first = Read_text_msg_file(in, txtlist, section);
+	int first = Read_text_msg_file(&ds, txtlist, section);
 	count = txtlist.size();
 	strings = new char *[count];
 	for (int i = 0; i < count; ++i)

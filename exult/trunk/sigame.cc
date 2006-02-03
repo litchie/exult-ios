@@ -124,6 +124,7 @@ SI_Game::SI_Game()
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
 	
 		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", EXULT_SI_FLX_DEFAULTKEYS_TXT);
+		add_resource("config/bodies", "<DATA>/exult_si.flx", EXULT_SI_FLX_BODIES_SI_TXT);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);
