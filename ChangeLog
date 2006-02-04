@@ -1,3 +1,6 @@
+2006-02-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/objs.*: removed strange ifdefs around certain functions
+
 2006-02-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Reorganized BG Keyring Mod with use of new autonumbering system.
 	* Modified SI Fixes to use new autonumbering system.

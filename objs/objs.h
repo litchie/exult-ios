@@ -48,6 +48,7 @@ class Schedule;
 class Usecode_machine;
 class Vga_file;
 class DataSource;
+class Game_map;
 
 template<class T>
 class T_Object_list;
@@ -124,14 +125,8 @@ public:
 	int get_direction(Tile_coord t2) const;
 	Map_chunk *get_chunk() const	// Get chunk this is in.
 		{ return chunk; }
-#ifdef CHUNKS_H				/* Trying to avoid includes.	*/
-	Game_map *get_map() const	// Map we're on.
-		{ return chunk->get_map(); }
-#ifdef GAMEMAP_H
-	int get_map_num() const			// Get map number this is in.
-		{ return chunk->get_map()->get_num(); }
-#endif
-#endif
+	Game_map *get_map() const; // Map we're on.
+	int get_map_num() const; // Get map number this is in.
 	int get_cx() const;
 	int get_cy() const;
 	int get_quality() const

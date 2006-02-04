@@ -83,6 +83,16 @@ int Game_object::get_cx() const
 int Game_object::get_cy() const
 	{ return chunk ? chunk->cy : 255; }
 
+
+Game_map* Game_object::get_map() const // Map we're on.
+{
+	return chunk->get_map();
+}
+int Game_object::get_map_num() const // Get map number this is in.
+{
+	return chunk->get_map()->get_num();
+}
+
 /*
  *	Get tile.
  */
