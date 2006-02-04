@@ -1996,7 +1996,7 @@ USECODE_INTRINSIC(get_readied)
 	case 17:
 		spot = Actor::back2h_spot; break;
 	default:
-		cerr << "Readied: spot #" << ucspot <<
+		cerr << "Readied: spot #" << where <<
 					" not known yet" << endl;
 		spot = -1;
 		break;
