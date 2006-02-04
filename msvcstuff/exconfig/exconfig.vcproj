@@ -1,89 +1,147 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="8,00"
 	Name="exconfig"
-	SccProjectName=""
-	SccLocalPath="">
+	ProjectGUID="{852E48BB-7F79-47B5-A0F6-7CDA87A8AFAD}"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\win32"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\./exconfig.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="TRUE"
+				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				OmitFramePointers="TRUE"
-				OptimizeForProcessor="2"
-				OptimizeForWindowsApplication="TRUE"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\pathfinder,..\,..\..\,..\..\conf,..\..\files,..\..\filc,..\..\imagewin,..\..\objs,..\..\shapes,..\..\usecode,..\..\Audio,..\..\Audio\MIDI_drivers,..\..\data,..\..\headers"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;_USRDLL;EXCONFIG_EXPORTS;WIN32;USING_PRECOMPILED_HEADER"
-				StringPooling="TRUE"
+				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="3"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				Version="1.1"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				ModuleDefinitionFile="..\..\win32\exconfig.def"
 				ProgramDatabaseFile=".\./exconfig.pdb"
-				ImportLibrary=".\./exconfig.lib"/>
+				ImportLibrary=".\./exconfig.lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\./exconfig.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="3081"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\win32"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\./exconfig.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -91,166 +149,218 @@
 				PreprocessorDefinitions="_DEBUG;_WINDOWS;_USRDLL;EXCONFIG_EXPORTS;WIN32;USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="3"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				Version="1.1"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				ModuleDefinitionFile="..\..\win32\exconfig.def"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\./exconfig.pdb"
-				ImportLibrary=".\./exconfig.lib"/>
+				ImportLibrary=".\./exconfig.lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="TRUE"
-				SuppressStartupBanner="TRUE"
-				TargetEnvironment="1"
-				TypeLibraryName=".\./exconfig.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="3081"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+			>
 			<File
-				RelativePath="..\..\conf\Configuration.cc">
+				RelativePath="..\..\conf\Configuration.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Flat.cc">
+				RelativePath="..\..\win32\exconfig.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Flex.cc">
+				RelativePath="..\..\win32\exconfig.def"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\IFF.cc">
+				RelativePath="..\..\win32\exconfig.rc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Table.cc">
+				RelativePath="..\..\files\Flat.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\U7file.cc">
+				RelativePath="..\..\files\Flex.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\conf\XMLEntity.cc">
+				RelativePath="..\..\files\IFF.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\win32\exconfig.cc">
+				RelativePath="..\..\files\listfiles.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\..\win32\exconfig.def">
-			</File>
-			<File
-				RelativePath="..\..\win32\exconfig.rc">
-			</File>
-			<File
-				RelativePath="..\..\files\listfiles.cc">
-			</File>
-			<File
-				RelativePath="..\msvc_kludges.cc">
+				RelativePath="..\msvc_kludges.cc"
+				>
 				<FileConfiguration
-					Name="Release|Win32">
+					Name="Release|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						ForcedIncludeFiles=""/>
+						ForcedIncludeFiles=""
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"
-						ForcedIncludeFiles=""/>
+						ForcedIncludeFiles=""
+					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\files\utils.cc">
+				RelativePath="..\..\files\Table.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\files\U7file.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\files\utils.cc"
+				>
 				<FileConfiguration
-					Name="Release|Win32">
+					Name="Release|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ForcedIncludeFiles=""/>
+						ForcedIncludeFiles=""
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						ForcedIncludeFiles=""/>
+						ForcedIncludeFiles=""
+					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\conf\XMLEntity.cc"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
+			Filter="h;hpp;hxx;hm;inl"
+			>
 			<File
-				RelativePath="..\..\conf\Configuration.h">
+				RelativePath="..\..\conf\Configuration.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Flat.h">
+				RelativePath="..\..\files\databuf.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Flex.h">
+				RelativePath=".\exconfig.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\IFF.h">
+				RelativePath="..\..\win32\exconfig.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\Table.h">
+				RelativePath="..\..\files\Flat.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\U7file.h">
+				RelativePath="..\..\files\Flex.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\conf\XMLEntity.h">
+				RelativePath="..\..\files\IFF.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\databuf.h">
+				RelativePath="..\..\files\listfiles.h"
+				>
 			</File>
 			<File
-				RelativePath=".\exconfig.h">
+				RelativePath="..\msvc_kludges.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\win32\exconfig.h">
+				RelativePath="..\..\files\Table.h"
+				>
 			</File>
 			<File
-				RelativePath="..\..\files\listfiles.h">
+				RelativePath="..\..\files\U7file.h"
+				>
 			</File>
 			<File
-				RelativePath="..\msvc_kludges.h">
+				RelativePath="..\..\conf\XMLEntity.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
 		</Filter>
 	</Files>
 	<Globals>

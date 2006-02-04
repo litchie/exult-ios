@@ -1,4 +1,12 @@
+//Tells the compiler the game type
 #game "serpentisle";						//Tells the compiler the game type
+
+//Starts autonumbering at function number 0xC00.
+//I leave function numbers in the range 0xA00 to
+//0xBFF for eggs and weapon functions; this is a
+//total of 512 unique functions. That (hopefully)
+//is enough...
+#autonumber 0xC00
 
 #include "header/constants.uc";				//Misc constants used everywhere
 #include "header/si/si_gflags.uc";			//SI Global Flags

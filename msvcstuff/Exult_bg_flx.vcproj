@@ -1,177 +1,231 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="8,00"
 	Name="Exult_bg_flx.h"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MakeFileProj">
+	ProjectGUID="{0E58490B-9F02-4FB6-8D39-18C9DAD87CCB}"
+	Keyword="MakeFileProj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Exult_bg_flx___Win32_Release0"
 			IntermediateDirectory=".\."
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Exult_bg_flx___Win32_Debug"
 			IntermediateDirectory=".\."
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
 			OutputDirectory=".\Exult_bg_flx___Win32_Release_Install"
 			IntermediateDirectory=".\."
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
 			OutputDirectory=".\Exult_bg_flx___Win32_Debug_Install"
 			IntermediateDirectory=".\."
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Shapes"
-			Filter="shp">
+			Filter="shp"
+			>
 			<File
-				RelativePath="..\data\bg\BGmap.shp">
+				RelativePath="..\data\bg\BGmap.shp"
+				>
 			</File>
 			<Filter
 				Name="Faces"
-				Filter="">
+				>
 				<File
-					RelativePath="..\data\bg\dupre_face.shp">
+					RelativePath="..\data\bg\dupre_face.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\faces.shp">
+					RelativePath="..\data\bg\faces.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\faces2.shp">
+					RelativePath="..\data\bg\faces2.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\fem_av_face.shp">
+					RelativePath="..\data\bg\fem_av_face.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\iolo_face.shp">
+					RelativePath="..\data\bg\iolo_face.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\male_av_face.shp">
+					RelativePath="..\data\bg\male_av_face.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\shamino_face.shp">
+					RelativePath="..\data\bg\shamino_face.shp"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Paperdolls"
-				Filter="">
+				>
 				<File
-					RelativePath="..\data\bg\amulets.shp">
+					RelativePath="..\data\bg\amulets.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\bgfiredoom.shp">
+					RelativePath="..\data\bg\bgfiredoom.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\caddellite_helmet.shp">
+					RelativePath="..\data\bg\caddellite_helmet.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\cleaver.shp">
+					RelativePath="..\data\bg\cleaver.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\fellowshipstaff.shp">
+					RelativePath="..\data\bg\fellowshipstaff.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\gorget.shp">
+					RelativePath="..\data\bg\gorget.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\great_dagger.shp">
+					RelativePath="..\data\bg\great_dagger.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\greaves.shp">
+					RelativePath="..\data\bg\greaves.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\hoe_of_destruction.shp">
+					RelativePath="..\data\bg\hoe_of_destruction.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\magic_boomerang.shp">
+					RelativePath="..\data\bg\magic_boomerang.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\magicgorget.shp">
+					RelativePath="..\data\bg\magicgorget.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\spiked_shield.shp">
+					RelativePath="..\data\bg\spiked_shield.shp"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Multiracial"
-				Filter="">
+				>
 				<File
-					RelativePath="..\data\bg\mr_faces.shp">
+					RelativePath="..\data\bg\mr_faces.shp"
+					>
 				</File>
 				<File
-					RelativePath="..\data\bg\mr_intro.shp">
+					RelativePath="..\data\bg\mr_intro.shp"
+					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Misc"
-			Filter="">
+			>
 			<File
-				RelativePath="..\data\bg\defaultkeys.txt">
+				RelativePath="..\data\bg\defaultkeys.txt"
+				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\data\bg\flx.in">
+			RelativePath="..\data\bg\flx.in"
+			>
 		</File>
 	</Files>
 	<Globals>

@@ -1,3 +1,7 @@
+2006-02-03  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Reorganized BG Keyring Mod with use of new autonumbering system.
+	* Modified SI Fixes to use new autonumbering system.
+
 2006-02-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* files/databuf.h: StreamDataSource::eof() returns eof before actually
 	  having read past the end of file, to make this behave consistently
