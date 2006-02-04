@@ -1,207 +1,275 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="8,00"
 	Name="Exult_flx.h"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MakeFileProj">
+	ProjectGUID="{C8853EC2-3A90-4020-976E-D5FBE12B9265}"
+	Keyword="MakeFileProj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Exult_flx___Win32_Debug"
 			IntermediateDirectory=".\Exult_flx___Win32_Debug"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
 			OutputDirectory=".\Exult_flx___Win32_Debug_Install"
 			IntermediateDirectory=".\Exult_flx___Win32_Debug_Install"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Exult_flx___Win32_Release"
 			IntermediateDirectory=".\Exult_flx___Win32_Release"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
 			OutputDirectory=".\Exult_flx___Win32_Release_Install"
 			IntermediateDirectory=".\Exult_flx___Win32_Release_Install"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Misc"
-			Filter="">
+			>
 			<File
-				RelativePath="..\data\credits.txt">
+				RelativePath="..\data\credits.txt"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult0.pal">
+				RelativePath="..\data\exult0.pal"
+				>
 			</File>
 			<File
-				RelativePath="..\data\meditown.mid">
+				RelativePath="..\data\meditown.mid"
+				>
 			</File>
 			<File
-				RelativePath="..\data\quotes.txt">
+				RelativePath="..\data\quotes.txt"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Shapes"
-			Filter="shp">
+			Filter="shp"
+			>
 			<File
-				RelativePath="..\data\audiooptions.shp">
+				RelativePath="..\data\audiooptions.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\black_gate.shp">
+				RelativePath="..\data\black_gate.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\cancel.shp">
+				RelativePath="..\data\cancel.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\cheating.shp">
+				RelativePath="..\data\cheating.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exit.shp">
+				RelativePath="..\data\exit.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\extras.shp">
+				RelativePath="..\data\extras.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_credits.shp">
+				RelativePath="..\data\exult_credits.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_logo.shp">
+				RelativePath="..\data\exult_logo.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_quotes.shp">
+				RelativePath="..\data\exult_quotes.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\font.shp">
+				RelativePath="..\data\font.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\full_screen.shp">
+				RelativePath="..\data\full_screen.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\gamemenu.shp">
+				RelativePath="..\data\gamemenu.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\hp_bar.shp">
+				RelativePath="..\data\hp_bar.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\midi_conversion.shp">
+				RelativePath="..\data\midi_conversion.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\ok.shp">
+				RelativePath="..\data\ok.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\palette_fades.shp">
+				RelativePath="..\data\palette_fades.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\play_1st_scene.shp">
+				RelativePath="..\data\play_1st_scene.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\play_intro.shp">
+				RelativePath="..\data\play_intro.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\pointers.shp">
+				RelativePath="..\data\pointers.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_down.shp">
+				RelativePath="..\data\sav_down.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_downdown.shp">
+				RelativePath="..\data\sav_downdown.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_selected.shp">
+				RelativePath="..\data\sav_selected.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_slider.shp">
+				RelativePath="..\data\sav_slider.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_up.shp">
+				RelativePath="..\data\sav_up.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sav_upup.shp">
+				RelativePath="..\data\sav_upup.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\savegump.shp">
+				RelativePath="..\data\savegump.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\scaling_method.shp">
+				RelativePath="..\data\scaling_method.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\serpent_isle.shp">
+				RelativePath="..\data\serpent_isle.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\setup.shp">
+				RelativePath="..\data\setup.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\sfx_conversion.shp">
+				RelativePath="..\data\sfx_conversion.shp"
+				>
 			</File>
 			<File
-				RelativePath="..\data\videooptions.shp">
+				RelativePath="..\data\videooptions.shp"
+				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\data\Makefile.am">
+			RelativePath="..\data\flx.in"
+			>
 		</File>
 		<File
-			RelativePath="..\data\README">
+			RelativePath="..\data\Makefile.am"
+			>
 		</File>
 		<File
-			RelativePath="..\data\flx.in">
+			RelativePath="..\data\README"
+			>
 		</File>
 	</Files>
 	<Globals>

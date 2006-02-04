@@ -3,8 +3,182 @@
  *	Specifically, it contains dialog functions for Zauriel.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2001-02-03
  */
+
+zaurielSellPotions ()
+{
+	sellItems(
+				//Names
+				["nothing",
+				 "sleep potion", "healing potion", "curative potion",
+				 "vial of poison", "awakening potion", "protection potion",
+				 "illumination potion", "invisibility potion"],
+				//Shapes
+				[0,
+				 SHAPE_POTION, SHAPE_POTION, SHAPE_POTION,
+				 SHAPE_POTION, SHAPE_POTION, SHAPE_POTION,
+				 SHAPE_POTION, SHAPE_POTION],
+				//Frames
+				[0,
+				 0, 1, 2,
+				 3, 4, 5,
+				 6, 7],
+				//Price per unit
+				[0,
+				 20, 160, 160,
+				 20, 10, 10,
+				 40, 80],
+				 //Quantities
+				 [0,
+				  1, 1, 1,
+				  1, 1, 1,
+				  1, 1],
+				  //Articles
+				 ["",
+				  "A ", "A ", "A ",
+				  "A ", "An ", "A ",
+				  "An ", "An "],
+				  //Quantity strings
+				 ["",
+				  " per vial", " per vial", " per vial",
+				  " each", " per vial", " per vial",
+				  " per vial", " per vial"],
+				  //Quantity tokens
+				 ["",
+				  "", "", "",
+				  "", "", "",
+				  "", ""],
+				 //Dialog strings
+				 [" Dost thou still want it?@",
+				  "@How many ", "dost thou want?@",
+				  "@Done! What else dost thou want?@",
+				  "@If thou couldst carry that much, I would sell it to thee. Anything else?@",
+				  "@Thou dost not have sufficient funds. Earn some gold and then return. Anything else?@",
+				  "@Fine by me. Dost thou wish anything else?@",
+				  "@Fair enough. Anything else?@",
+				  "@I have no problems with that. Where were we?@"]);
+}
+
+zaurielSellReagents ()
+{
+	sellItems(
+				//Names
+				["nothing",
+				 "Black pearl", "Blood moss", "Nightshade",
+				 "Mandrake root", "Garlic", "Ginseng",
+				 "Spider silk", "Sulphurous ash"],
+				//Shapes
+				[SHAPE_REAGENT,
+				 SHAPE_REAGENT, SHAPE_REAGENT, SHAPE_REAGENT,
+				 SHAPE_REAGENT, SHAPE_REAGENT, SHAPE_REAGENT,
+				 SHAPE_REAGENT, SHAPE_REAGENT],
+				//Frames
+				[0,
+				 0, 1, 2,
+				 3, 4, 5,
+				 6, 7],
+				//Price per unit
+				[0,
+				 6, 1, 5,
+				 7, 1, 1,
+				 3, 2],
+				 //Quantities
+				 [0,
+				  1, 1, 1,
+				  1, 1, 1,
+				  1, 1],
+				  //Articles
+				 ["",
+				  "", "", "",
+				  "", "", "",
+				  "", ""],
+				  //Quantity strings
+				 ["",
+				  " each", " for one portion", " for one button",
+				  " each", " for one clove", " for one portion",
+				  " for one portion", " for one portion"],
+				  //Quantity tokens
+				 ["",
+				  "", "", "",
+				  "", "", "",
+				  "", ""],
+				 //Dialog strings
+				 [" Dost thou still want it?@",
+				  "@How many ", " dost thou want?@",
+				  "@Done! What else dost thou want?@",
+				  "@If thou couldst carry that much, I would sell it to thee. Anything else?@",
+				  "@Thou dost not have sufficient funds. Earn some gold and then return. Anything else?@",
+				  "@Fine by me. Dost thou wish anything else?@",
+				  "@Fair enough. Anything else?@",
+				  "@I have no problems with that. Where were we?@"]);
+}
+
+zaurielGiveAdvance ()
+{
+	var advance_reagent = [SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT];
+	var advance_potions = [SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION];
+	var advance_item_frames =	[0, 1, 2, 3, 4, 5, 6, 7];
+	var advance_reagent_quantity = [20, 20, 20, 20, 20, 20, 20, 20];
+	var advance_potions_quantity = [1, 4, 4, 0, 2, 2, 1, 2];
+	var advance_quality = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	var pouch1 = createContainerWithObjects(SHAPE_BAG, advance_reagent, advance_item_frames, advance_reagent_quantity, advance_quality);
+	var pouch2 = createContainerWithObjects(SHAPE_BAG, advance_potions, advance_item_frames, advance_potions_quantity, advance_quality);
+	
+	say("@In any case, since thou wilt help me, I shall now give thee a selection of reagents and potions to assist thee.");
+	say("@This is an advance payment, but it shall not be deducted from thy upcoming reward. Consider it as a bonus...@");
+	
+	var gavereags = giveToParty(pouch1);
+	var gavepotns = giveToParty(pouch2);
+	
+	if (gavereags && gavepotns)
+		say("@There is the advance. I have placed it in a couple of bags for thy convenience.@");
+	else
+	{
+		if (!gavereags) pouch1->set_last_created();
+		UI_update_last_created(AVATAR->get_object_position());
+		
+		if (!gavepotns) pouch2->set_last_created();
+		UI_update_last_created(AVATAR->get_object_position());
+		
+		var msg = "it";
+		if ((!gavereags) && (!gavepotns)) msg = "them";
+		
+		say("@I placed the advance in these bags. Since thee and thy party are too encumbered, I shall place " + msg + " on the ground.@");
+	}
+}
+
+zaurielCreateComponents (var quantities)
+{
+	var cont = createContainerWithObjects(SHAPE_CHEST,
+										  [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST],
+										  [0,				0,					0],
+										  quantities,
+										  [0,				0,					0]);
+	cont->set_last_created();
+	ZAURIEL->give_last_created();
+}
+
+zaurielDestroyComponents ()
+{
+	var shapes = [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST];
+	
+	var total;
+	var counter;
+	var shp;
+	
+	var pouch = ZAURIEL->get_cont_items(SHAPE_CHEST, QUALITY_ANY, FRAME_ANY);
+	
+	var cont_items;
+	
+	for (shp in shapes with counter to total)
+	{
+		cont_items = ZAURIEL->count_objects(shp[counter], QUALITY_ANY, FRAME_ANY);
+		pouch->remove_cont_items(cont_items, shp[counter], QUALITY_ANY, FRAME_ANY, true);
+	}
+	pouch->remove_item();
+}
 
 var zaurielExplainQuest(var doing_quest)
 {
@@ -67,7 +241,7 @@ var zaurielExplainQuest(var doing_quest)
 			say("@otherwise I would have used such knowledge to help Laurianna. And maybe the other mages too.@");
 			if (gflags[BROKE_TETRAHEDRON])
 				say("@But in any case, thou hast done mages everywhere a great favor by destroying that tetrahedron generator.@");
-		
+			
 		case "potion" (remove):
 			say("@It is a specially designed potion I crafted through complicated alchemical processes thou knowest nothing about.");
 			say("@It suffices to say that it has two effects: it suppresses my daughter's insanity and reduces her powers to a manageable level.");
@@ -76,7 +250,7 @@ var zaurielExplainQuest(var doing_quest)
 			say("@When thou hast rescued my daughter, it is imperative that she drinks a vial of the potion lest the effects of the previous dose fade.");
 			say("@But alas, all the vials I had where destroyed when I was attacked...@");
 			add(["poison", "destroyed"]);
-		
+			
 		case "blackrock" (remove):
 			say("@Blackrock is a most wonderful substance that is malleable only by powerful magics.");
 			say("@It has also the interesting property of blocking Ether waves.");
@@ -85,7 +259,7 @@ var zaurielExplainQuest(var doing_quest)
 			
 			say("@Using a specially designed arrangement of Blackrock, I was able to create a zone of anti-resonant Ether waves.");
 			say("@These waves had just the right properties so that they can nullify the destruction caused by my daughter's powers.@");
-
+			
 		case "Massive destruction" (remove):
 			say("@It suffices to say that -everything- within a certain distance will be turned to dust. I know not how wide the region is nowadays,");
 			say("@but it was already very wide when Laurianna was still a baby...@");
@@ -131,11 +305,11 @@ var zaurielExplainQuest(var doing_quest)
 		case "necklace" (remove):
 			say("@The necklace was enchanted by the kidnapper himself, and cannot be removed by ordinary means.");
 			say("@Fortunately, Blackrock can be used to disable the necklace if thou hast enough of it. All that is needed is to place the necklace inside the Blackrock.@");
-		
+			
 		case "poison" (remove):
 			say("@I understand thy concern, but it is unfounded. The potion was tailor made for my daughter,");
 			say("@which makes her immune to the deleterious effects of the concoction.@");
-		
+			
 		case "destroyed" (remove):
 			say("@It is no real reason for worry, as I can make more. But alas, I don't have the two main ingredients.");
 			say("@And since I have been waiting for thee here, I haven't been able to gather them.");
@@ -162,12 +336,12 @@ var zaurielExplainQuest(var doing_quest)
 				say("@Anything else you want to know?@");
 				break;
 			}
-
+			
 		case "Tell about potion" (remove):
 			say("@Yes, yes, if thou couldst have but waited for a while longer, thou wouldst realize that I was just about to say that!");
 			break;
 	}
-
+	
 	UI_pop_answers();
 	return doing_quest;
 }
@@ -177,7 +351,7 @@ zaurielTellAboutPotion ()
 	var blackrock_count = PARTY->count_objects(SHAPE_BLACKROCK, QUALITY_ANY, FRAME_ANY);
 	var venom_count = PARTY->count_objects(SHAPE_VENOM, QUALITY_ANY, FRAME_ANY);
 	var gave_potion = (!count_objects(SHAPE_BLACKROCK_POTION, QUALITY_ANY, FRAME_ANY));
-
+	
 	say("@Thou wilt need my special potion for Laurianna and a piece of Blackrock ore to neutralize the necklace.");
 	if (!gave_potion)
 	{
@@ -217,11 +391,11 @@ zaurielTellAboutPotion ()
 				
 				say("@Thou wilt need to gather one vial of Silver Serpent Venom and " + msg + " of Blackrock ore.@");
 			}
-	
+			
 			add("Silver Serpent Venom");
 		}
 	}
-
+	
 	else
 	{
 		say("@I have already given thee the potion, to that much is off the list.");
@@ -241,12 +415,12 @@ zaurielTalkPreQuest ()
 	
 	//Hold the met flag:
 	var met_zauriel = get_item_flag(MET);
-
+	
 	//Get Avatar's name:
 	var player_name = getAvatarName();
-
+	
 	var party = UI_get_party_list();
-
+	
 	//See which companions are here:
 	var iolo_here = inParty(IOLO);
 	var dupre_here = inParty(DUPRE);
@@ -290,11 +464,11 @@ zaurielTalkPreQuest ()
 		if (iolo_here && dupre_here && shamino_here)
 			//Iolo, Shamino and Dupre in party:
 			say("@I am honored to meet the Avatar and his faithful companions! Such a mighty troupe reunited after 200 years can only result in great and virtuous deeds to be performed!");
-
+		
 		else if (!(iolo_here || dupre_here || shamino_here))
 			//Iolo, Shamino and Dupre not in party:
 			say("@I must say that I am disappointed that thou dost not travel with thy friends Iolo, Shamino and Dupre anymore. Having such capable allies in thy party would ensure the success of thy quest.");
-
+		
 		else
 		{
 			if (dupre_here)
@@ -325,10 +499,10 @@ zaurielTalkPreQuest ()
 				
 			say("@If I were thee, I would be quick to find thine old " + msg + " shall be an invaluable asset in thy quest.");
 		}
-
+		
 		say("@And yes, I do realize how unsettling it must be to meet someone who knows so much about thee and thy friends.");
 		say("@It is just that I have an active interest in thee and thy career.~@Thine exploits and adventures make a formidable tale that I hope to preserve for posterity.@");
-
+		
 		//Player has now met Zauriel:
 		set_item_flag(MET);
 	}
@@ -336,23 +510,23 @@ zaurielTalkPreQuest ()
 	//Player has already met Zauriel, so use the shorter intro:
 	else
 		say("Zauriel grins as you approach. @What can I do for thee now, Avatar?@");
-
+	
 	//Standard options:
 	add(["name", "job", "bye", "fellowship"]);
-
+	
 	if (!met_zauriel) add("Waiting for me?");
-
+	
 	//Player can always ask these again until Zauriel moves to Skara Brae:
 	if (met_zauriel) add(["task", "reward"]);
 	
 	//Store the flags in variables for ease of use:
 	var doing_quest = gflags[ACCEPTED_ZAURIEL_QUEST];
-
+	
 	//To store the player's supply of blackrock and silver serpent venom:
 	var blackrock_count;
 	var venom_count;
 	var gave_potion;
-
+	
 	//Options added only if the player has accepted the quest:
 	if (doing_quest)
 	{
@@ -419,15 +593,15 @@ zaurielTalkPreQuest ()
 				//Advertise free reagents:
 				if (!doing_quest)
 					say("@If thou agreest to help me with my task, I shall give thee an ample supply of reagents as an advance payment.");
-
+				
 				say("@But in the meantime, wishest thou to buy some reagents?@");
 				if (askYesNo())
 					//Sell reagents to player:
 					zaurielSellReagents();
-
+				
 				else say("@No, of course thou dost not.@ You can swear that he is having a private laugh at your expense.");
 			}
-
+			
 			//The player does not have a spellbook:
 			else say("@Why wouldst thou want reagents when thou hast not a spellbook? Thinkest thou that they are edible?@");
 			
@@ -435,29 +609,29 @@ zaurielTalkPreQuest ()
 			//Advertise free potions:
 			if (!doing_quest)
 				say("@If thou agreest to help me with my task, I will stock thee with many potions as an advance payment. ");
-
+			
 			say("@But in the meantime, wishest thou to buy some potions?@");
 			if (askYesNo())
 				//Sell potions to player:
 				zaurielSellPotions();
-
+			
 			else say("@It would be wise to have potions; shouldst thou reconsider, let me know.@");
-
+			
 		case "bye":
 			if (!doing_quest)
 				say("@Shoulsdt thou change thy mind about doing my task, come talk to me.@");
-
+			
 			else if (!gave_potion)
 				say("@Come talk to me when thou hast all ingredients for the potion.@");
-
+			
 			else
 				say("@Come talk to me when thou hast rescued my daughter.@");
-
+			
 			break;
 		
 		case "fellowship" (remove):
 			say("@They claim to be a society of enlightened individuals who mutually help each other.");
-
+			
 			//The player has (or had) Alagner's notebook:
 			if (gflags[DELIVERED_NOTEBOOK_TO_WISPS])
 			{
@@ -497,7 +671,7 @@ zaurielTalkPreQuest ()
 			say("@I can already feel thy concerns about giving such a substance to my daughter.");
 			say("@While I would be hesitant to do this under normal conditions, the alchemical process I use to craft the final potion");
 			say("@turns it into a mostly harmless substance, devoid of ill effects -- for my daughter, at any rate.@");
-
+			
 		case "Make potion" (remove):
 			say("@Ah, thou hast all the needed ingredients to make the potion.");
 			event = CAST_TELEPORT;
@@ -507,7 +681,7 @@ zaurielTalkPreQuest ()
 			say("@There is a small island to the north of Skara Brae; that is where the thugs are located.");
 			say("@My divinations indicate that they are in the northwestern portion of the island.");
 			say("@There -is- the issue that the island is disconnected from the mainland, being reachable only by boat or through flying.@");
- 
+			
 		case "reward" (remove):
 			if (!asked_about_quest && !doing_quest)
 			{
@@ -543,7 +717,7 @@ zaurielTalkPreQuest ()
 					"@Magical gear. Gold. Gems. Knowing thou didst do the right thing. What more coudst thou wish for? ",
 					"@One would think that merely knowing thou hast saved the lives of many innocents would be enough for thee...@"
 					];
-
+			
 			//Player can try to badger Zauriel about what the reward is:
 			reward_counter = reward_counter + 1;
 				
@@ -569,7 +743,7 @@ zaurielTalkPreQuest ()
 			say("@It was but a joke, of course. Thou hast set out to rescue my daughter, why would I betray thee?@");
 		}
 	}
-
+	
 	//Save the flags:
 	if (doing_quest)
 		gflags[ACCEPTED_ZAURIEL_QUEST] = true;
@@ -587,12 +761,12 @@ zaurielTalkGemSubquest ()
 		gave_gem = true;
 	else
 		gave_gem = false;
-
+	
 	var have_gem;
 	var have_liche_gems;
 	
 	show_npc_face(0);
-
+	
 	if (quest_state == NO_ONE_THERE)
 	{
 		//Create a gem in Zauriel's possession; it will be the gem given
@@ -602,7 +776,7 @@ zaurielTalkGemSubquest ()
 		say("@If the look in thy face is any indicator, I can see that something is amiss. What seems to be the trouble?@");
 		add("No one was there");
 	}
-
+	
 	else
 	{
 		say("@What can I do for thee now, Avatar?@");
@@ -653,7 +827,7 @@ zaurielTalkGemSubquest ()
 		}
 		add(["reagents", "potions", "bye"]);
 	}
-
+	
 	converse(0)
 	{
 		case "What do I need again?" (remove):
@@ -661,7 +835,7 @@ zaurielTalkGemSubquest ()
 			var spider_eggs = 2 - count_objects(SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY);
 			var invis_dust = 1 - count_objects(SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY);
 			var bee_stringer = 6 - count_objects(SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY);
-
+			
 			//Create the long message:
 			message("@To fix the gem, thou wilt need ");
 			if (spider_eggs > 0)
@@ -700,10 +874,10 @@ zaurielTalkGemSubquest ()
 				if (askYesNo())
 					//Sell reagents to player:
 					zaurielSellReagents();
-
+				
 				else say("@No, of course thou dost not.@ You can swear that he is having a private laugh at your expense.");
 			}
-
+			
 			//The player does not have a spellbook:
 			else say("@Why wouldst thou want reagents when thou hast not a spellbook? Thinkest thou that they are edible?@");
 			
@@ -712,9 +886,9 @@ zaurielTalkGemSubquest ()
 			if (askYesNo())
 				//Sell potions to player:
 				zaurielSellPotions();
-
+			
 			else say("@It would be wise to have potions; shouldst thou reconsider, let me know.@");
-
+			
 		case "No one was there" (remove):
 			//One wing of the Keyring Quest has been finished; kick start
 			//the Gem of Dispelling subquest:
@@ -729,7 +903,7 @@ zaurielTalkGemSubquest ()
 			say("You are unsettled as Zauriel stares into the void, his gaze directed towards the far away island as if he could see it.");
 			say("He finally turns towards you shaking his head. @Of course thou didst not see anything in the island. I should have expected that.@");
 			add("What didst thou see?");
-
+			
 		case "What didst thou see?" (remove):
 			say("@I saw a mighty spell of protection; they are actually halfway between Britannia and the Ethereal Void! -That- is why thou didst see nor bump into them.");
 			say("@And that spell is very potent indeed... I have never seen anything like it before.");
@@ -751,7 +925,7 @@ zaurielTalkGemSubquest ()
 			say("@thus warning its owner that it might be a good idea to shatter it.");
 			say("@With one such gem in thy possession, thou couldst dispel the protective spell thyself.@");
 			add(["Who invented them?", "Where can we get one?"]);
-
+			
 		case "Who invented them?" (remove):
 			say("@It was a mage I knew many years ago that went by the name of Joneleth. He has long since died, sadly...@");
 			
@@ -782,7 +956,7 @@ zaurielTalkGemSubquest ()
 				else
 					add("components");
 			}
-
+			
 		case "scout" (remove):
 			say("@From what I recall, Joneleth lived the remainder of his life in an island southeast of Buccaneers' Den.");
 			say("@There is only one house there; if there are any Gems of Dispelling still in existence, they are likely there.");
@@ -804,7 +978,7 @@ zaurielTalkGemSubquest ()
 				else
 					add("scout");
 			}
-
+			
 		case "Make gem" (remove):
 			say("@Yes, thou hast all required ingredients. Here, let me have them.@ Zauriel takes the ingredients from you.");
 			//Remove what if needed:
@@ -827,7 +1001,7 @@ zaurielTalkGemSubquest ()
 				say("@Since thou art so overburdened, I shall place it on the ground.@");
 				UI_update_last_created(AVATAR->get_object_position());
 			}
-
+			
 		case "Have gem" (remove):
 			if (have_liche_gems > 1) msg = "gems";
 			else msg = "gem";
@@ -869,12 +1043,12 @@ zaurielTalkGemSubquest ()
 						
 					else if (have_liche_gems != 1)
 						say("@A decent gem, but let me see if thou hast better.@");
-
+					
 					low_qual = gem_quality;
 				}
 				else
 					say(gem_appraise_worse[UI_get_random(UI_get_array_size(gem_appraise_worse))]);
-
+				
 			}
 			
 			var quantities;
@@ -899,7 +1073,7 @@ zaurielTalkGemSubquest ()
 						msg = "two bee stingers";
 						quantities = [2, 4, 1];
 					}
-
+					
 					else
 					{
 						msg = "one giant spider egg";
@@ -907,7 +1081,7 @@ zaurielTalkGemSubquest ()
 					}
 					say("@More accurately, thou shalt need to gather " + msg + " if I am to fix the gem.");
 				}
-
+				
 				else if (low_qual < 20)
 				{
 					say("@Thou hast found a good gem -- however, thou wilt still have to gather a few components.");
@@ -916,46 +1090,46 @@ zaurielTalkGemSubquest ()
 						msg = "three bee stingers";
 						quantities = [2, 3, 1];
 					}
-
+					
 					else if (rand > 4)
 					{
 						msg = "two giant spider eggs";
 						quantities = [0, 6, 1];
 					}
-
+					
 					else
 					{
 						msg = "one invisibility dust";
 						quantities = [2, 6, 0];
 					}
-
+					
 					say("@Specifically, I need thee to gather " + msg + " in order to repair the gem.");
 				}
-
+				
 				else if (low_qual < 30)
 				{
 					if (have_liche_gems == 1) msg = "gem";
 					else msg = "best gem";
-
+					
 					say("@Thy " + msg + " is badly damaged, but I can still work with it -- but thou wilt have to gather many components to make it work.");
 					if (rand < 3)
 					{
 						msg = "six bee stingers";
 						quantities = [2, 0, 1];
 					}
-
+					
 					else if (rand > 4)
 					{
 						msg = "two giant spider eggs and two bee stingers";
 						quantities = [0, 4, 1];
 					}
-
+					
 					else
 					{
 						msg = "one invisibility dust, one giant spider egg and one bee stinger";
 						quantities = [1, 5, 0];
 					}
-
+					
 					say("@In other words, thou hast to gather " + msg + " before I can work on the gem.");
 				}
 				
@@ -963,7 +1137,7 @@ zaurielTalkGemSubquest ()
 				{
 					if (have_liche_gems == 1) msg = "gem";
 					else msg = "best gem";
-
+					
 					say("@Thy " + msg + " is so damaged it is almost beyond recovery... after all thy hard work defeating the liche.");
 					
 					if (rand < 3)
@@ -971,19 +1145,19 @@ zaurielTalkGemSubquest ()
 						msg = "six bee stingers and two spider eggs";
 						quantities = [0, 0, 1];
 					}
-
+					
 					else if (rand > 4)
 					{
 						msg = "two giant spider eggs, three bee stingers and one invisibility dust";
 						quantities = [0, 3, 0];
 					}
-
+					
 					else
 					{
 						msg = "one invisibility dust, one giant spider egg and five bee stinger";
 						quantities = [1, 1, 0];
 					}
-
+					
 					say("@In the end, thou hast to gather " + msg + " before I can work on the gem... which is almost as much as is needed for creating a new gem.");
 				}
 				zaurielCreateComponents(quantities);
@@ -992,7 +1166,7 @@ zaurielTalkGemSubquest ()
 				else msg = "all of the gems";
 				
 				say("@In any case, I shall keep in my possession " + msg + " thou hast.");
-
+				
 				if (have_liche_gems == 1) msg = "it";
 				else msg = "them";
 				

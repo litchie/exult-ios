@@ -46,7 +46,7 @@ Regeneration_Ring shape#(0x12A) ()
 	else if (event == UNREADIED)
 		//Stop regeneration:
 		halt_scheduled();
-
+		
 	else if (event == SCRIPTED)
 	{
 		//Halt ring scripts:

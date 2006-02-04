@@ -32,7 +32,7 @@ ZaurielJournal shape#(0x44E) ()
 			say("June 14~~    I have made my mind: I shall try to discover what is happening to Britannia, or more precisely, to the Ether. I will go to the Lycaeum first thing in the morning; if only I knew where the nearest moongate is located...*");
 			say("August 28~~    I have finally found the moongate! I wonder how many people get lost here in Yew trying to find it?");
 		}
-
+		
 		else if (quality == 3)
 		{
 			say("December 21~~    My time in the Lycaeum has been well spent. I have a much better idea of what may be happening in Britannia. My magical skills have also vastly improved in this period of time; it is a good thing that I shall no longer be dependent on the moongates for travel. It is time to go to the mainland and try to search for more answers.*");
@@ -46,7 +46,7 @@ ZaurielJournal shape#(0x44E) ()
 			say("Year 356~~February 18~~    Today is my birthday, and I have been graced with visions of what will come to pass. I put them forth here, up and until the moment of my death by the hands of the mighty Avatar -- who shall return to save Britannia from the mounting threat and will restore the Ether to normal in the process. It is perhaps poetic justice that I should perish by the hands of such a valiant mortal, due to all the transgressions I have made in the past and all the woe and destruction I have caused.~~    I, the great Zauriel, shall be slain by the hands of a most worthy opponent, the same one that slew Mondain, Minax and Exodus! My name will go down into history due to the fierce battle that will ensue, and I shall finally be able to cure my daughter! I must now only uncover the spells I shall have to weave to finally cure my hatchling from the insanity that afflicts her.*");
 			say("Year 361~~August 31~~    Today I shall make the final preparations to cure my daughter. Many mighty spells I, Lord Zauriel, shall weave to take effect upon my demise, using my very essence to heal my daughter's damaged mind. And it could not have been in a better time, for the Avatar shall be returning to Britannia any moment now, even as I have foreseen. All I have to do now is to wait 'distracted' and 'weakened' until that inept mage attacks and kidnaps my beloved daughter, thus setting in motion the events that will result in my well deserved death.*");
 		}
-
+		
 		//Allow for a remark by an NPC:
 		script item call ZaurielJournal;
 	}
@@ -76,19 +76,19 @@ ZaurielJournal shape#(0x44E) ()
 			var msg;
 			if (npc_num == AVATAR)
 				msg = "Iolo, Shamino, Dupre and myself";
-
+			
 			else if (npc_num == IOLO)
 				msg = "the avatar, Shamino, Dupre and myself";
-
+			
 			else if (npc_num == SHAMINO)
 				msg = "the avatar, Iolo, Dupre and myself";
-
+			
 			else if (npc_num == DUPRE)
 				msg = "the avatar, Iolo, Shamino and myself";
-
+			
 			else
 				msg = "the avatar, Iolo, Shamino and Dupre";
-
+			
 			say("@Zauriel also developed a strong interest in " + msg + " while in the Lycaeum. He seems to be completely obsessed...@");
 		}
 		else if (quality == 3)

@@ -2,10 +2,10 @@
  *	This source file contains some generic utility functions.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2001-02-03
  */
 
-avatarSpeak 0xC00(var msg)
+avatarSpeak (var msg)
 {
 	//Show correct gender-based face for Avatar:
 	UI_show_npc_face(AVATAR, UI_is_pc_female());
@@ -27,7 +27,7 @@ freezeParty ()
 	var index;
 	var member;
 	var rand;
-
+	
 	//Get party list:
 	party = UI_get_party_list();
 	//Random NPC for bark:
@@ -48,7 +48,7 @@ unfreezeParty ()
 	var count;
 	var index;
 	var member;
-
+	
 	//Get party list:
 	party = UI_get_party_list();
 	for (member in party with index to count)
@@ -98,7 +98,7 @@ var createContainerWithObjects (var cont_shape, var item_shapes, var item_frames
 			{
 				//Since the item does not have a quantity, we have to create
 				//each item individually.
-	
+				
 				//Place the last object in the container:
 				cont->give_last_created();
 				
@@ -112,7 +112,7 @@ var createContainerWithObjects (var cont_shape, var item_shapes, var item_frames
 					obj->set_item_quality(item_quality[counter]);
 					obj->set_item_flag(OKAY_TO_TAKE);
 					obj->set_item_flag(TEMPORARY);
-			
+					
 					//Place the last object in the container:
 					cont->give_last_created();
 				}
@@ -178,7 +178,7 @@ sellItems (var options, var shapes, var frames, var price, var quantity, var art
 	while (!(choice_index==1))
 	{
 		total_price = price[choice_index] * quantity[choice_index];
-
+		
 		if (quantity[choice_index] > 1)
 			isplural = true;
 		else
@@ -204,7 +204,7 @@ sellItems (var options, var shapes, var frames, var price, var quantity, var art
 				msg = dialog[6];
 			else
 				msg = dialog[7];
-
+			
 			//Inform the player if the buy was successful:
 			say(msg);
 		}
@@ -214,6 +214,6 @@ sellItems (var options, var shapes, var frames, var price, var quantity, var art
 		//Present the menu again:
 		choice_index = chooseFromMenu2(options);
 	}
-
+	
 	say(dialog[9]);
 }

@@ -1,57 +1,84 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="8,00"
 	Name="Exult"
-	SccProjectName=""
-	SccLocalPath="">
+	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release Install|Win32"
 			OutputDirectory=".."
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="TRUE"
+				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				OmitFramePointers="TRUE"
-				EnableFiberSafeOptimizations="FALSE"
-				OptimizeForProcessor="2"
-				OptimizeForWindowsApplication="TRUE"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="false"
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
-				StringPooling="TRUE"
-				ExceptionHandling="TRUE"
+				StringPooling="true"
+				ExceptionHandling="1"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				RuntimeTypeInfo="FALSE"
-				UsePrecompiledHeader="3"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Installing $(TargetFileName)"
-				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)
-"
-				Outputs="$(EXULT_INSTALL_PATH)\$(TargetFileName)"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -59,45 +86,70 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				SubSystem="1"/>
+				SubSystem="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".."
 			IntermediateDirectory=".\DebugNI"
 			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				RuntimeTypeInfo="FALSE"
-				UsePrecompiledHeader="3"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
 				AssemblerListingLocation=".\Debug/"
@@ -105,12 +157,22 @@
 				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -118,66 +180,99 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\../Exult.pdb"
-				SubSystem="1"/>
+				SubSystem="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".."
 			IntermediateDirectory=".\ReleaseNI"
 			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="TRUE"
+				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				OmitFramePointers="TRUE"
-				EnableFiberSafeOptimizations="FALSE"
-				OptimizeForProcessor="2"
-				OptimizeForWindowsApplication="TRUE"
+				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="false"
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32"
-				StringPooling="TRUE"
-				ExceptionHandling="TRUE"
+				StringPooling="true"
+				ExceptionHandling="1"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="3"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
 				AssemblerListingLocation=".\ReleaseNI/"
 				ObjectFile=".\ReleaseNI/"
 				ProgramDataBaseFileName=".\ReleaseNI/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -185,47 +280,75 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\../Exult.pdb"
-				SubSystem="2"/>
+				SubSystem="2"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
 			OutputDirectory=".."
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				OptimizeForProcessor="2"
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				RuntimeTypeInfo="FALSE"
-				UsePrecompiledHeader="3"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
 				AssemblerListingLocation=".\Debug/"
@@ -233,16 +356,22 @@
 				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"
-				Description="Installing $(TargetFileName)"
-				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)
-"
-				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -250,348 +379,456 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
-				SuppressStartupBanner="TRUE"
+				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\../Exult.pdb"
-				SubSystem="1"/>
+				SubSystem="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+			>
 			<Filter
 				Name="Audio"
-				Filter="">
+				>
 				<File
-					RelativePath="..\audio\Audio.cc">
+					RelativePath="..\audio\Audio.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\audio\Midi.cc">
+					RelativePath="..\audio\conv.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\audio\conv.cc">
+					RelativePath="..\audio\Midi.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\audio\soundtest.cc">
+					RelativePath="..\audio\soundtest.cc"
+					>
 				</File>
 				<Filter
 					Name="Audio h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\audio\Audio.h">
+						RelativePath="..\audio\Audio.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\Midi.h">
+						RelativePath="..\audio\conv.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\Mixer.h">
+						RelativePath="..\audio\convmusic.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\SDL_mapping.h">
+						RelativePath="..\audio\Midi.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\conv.h">
+						RelativePath="..\audio\Mixer.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\convmusic.h">
+						RelativePath="..\audio\pcb.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\pcb.h">
+						RelativePath="..\audio\SDL_mapping.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\soundtest.h">
+						RelativePath="..\audio\soundtest.h"
+						>
 					</File>
 				</Filter>
 				<Filter
 					Name="Midi"
-					Filter="">
+					>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiEvent.h">
+						RelativePath="..\audio\midi_drivers\XMidiEvent.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiEventList.cpp">
+						RelativePath="..\audio\midi_drivers\XMidiEventList.cpp"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiEventList.h">
+						RelativePath="..\audio\midi_drivers\XMidiEventList.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiFile.cpp">
+						RelativePath="..\audio\midi_drivers\XMidiFile.cpp"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiFile.h">
+						RelativePath="..\audio\midi_drivers\XMidiFile.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiNoteStack.h">
+						RelativePath="..\audio\midi_drivers\XMidiNoteStack.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiSequence.cpp">
+						RelativePath="..\audio\midi_drivers\XMidiSequence.cpp"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiSequence.h">
+						RelativePath="..\audio\midi_drivers\XMidiSequence.h"
+						>
 					</File>
 					<File
-						RelativePath="..\audio\midi_drivers\XMidiSequenceHandler.h">
+						RelativePath="..\audio\midi_drivers\XMidiSequenceHandler.h"
+						>
 					</File>
 					<Filter
 						Name="Midi Drivers"
-						Filter="">
+						>
 						<File
-							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\FileMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\FileMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FileMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FileMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\fmopl.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\fmopl.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\MidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\MidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\MidiDriver.h">
+							RelativePath="..\audio\midi_drivers\MidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.cpp">
+							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.h">
+							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.h"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\fmopl.cpp">
+							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.cpp"
+							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\fmopl.h">
+							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.h"
+							>
 						</File>
 						<Filter
 							Name="Legacy midi Drivers"
-							Filter="">
+							>
 							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.cc">
+								RelativePath="..\audio\midi_drivers\amiga_midi.cc"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\KMIDI.h">
+								RelativePath="..\audio\midi_drivers\amiga_midi.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\amiga_midi.cc">
+								RelativePath="..\audio\midi_drivers\be_midi.cc"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\amiga_midi.h">
+								RelativePath="..\audio\midi_drivers\be_midi.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\be_midi.cc">
+								RelativePath="..\audio\midi_drivers\forked_player.cc"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\be_midi.h">
+								RelativePath="..\audio\midi_drivers\forked_player.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\forked_player.cc">
+								RelativePath="..\audio\midi_drivers\KMIDI.cc"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\forked_player.h">
+								RelativePath="..\audio\midi_drivers\KMIDI.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.cc">
+								RelativePath="..\audio\midi_drivers\mixer_midiout.cc"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mixer_midiout.h">
+								RelativePath="..\audio\midi_drivers\mixer_midiout.h"
+								>
 							</File>
 						</Filter>
 						<Filter
 							Name="mt32emu"
-							Filter="">
+							>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\i386.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\i386.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\i386.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\i386.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\mt32emu.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32emu.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\part.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\part.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\part.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\part.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\partial.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\partial.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\partial.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\partial.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\structures.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\structures.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\synth.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\synth.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\synth.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\synth.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\tables.cpp">
+								RelativePath="..\audio\midi_drivers\mt32emu\tables.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\mt32emu\tables.h">
+								RelativePath="..\audio\midi_drivers\mt32emu\tables.h"
+								>
 							</File>
 						</Filter>
 						<Filter
 							Name="Timidity"
-							Filter="">
+							>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_common.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_common.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_common.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_common.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_output.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_output.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_output.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_output.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.h"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_a.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_a.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_c.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_c.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.cpp">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.cpp"
+								>
 							</File>
 							<File
-								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.h">
+								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.h"
+								>
 							</File>
 						</Filter>
 					</Filter>
@@ -599,1236 +836,1611 @@
 			</Filter>
 			<Filter
 				Name="conf"
-				Filter="">
+				>
 				<File
-					RelativePath="..\conf\Configuration.cc">
+					RelativePath="..\conf\Configuration.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\conf\XMLEntity.cc">
+					RelativePath="..\conf\XMLEntity.cc"
+					>
 				</File>
 				<Filter
 					Name="conf h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\conf\Configuration.h">
+						RelativePath="..\conf\Configuration.h"
+						>
 					</File>
 					<File
-						RelativePath="..\conf\XMLEntity.h">
+						RelativePath="..\conf\XMLEntity.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="Exult"
-				Filter="">
+				>
 				<File
-					RelativePath="..\actions.cc">
+					RelativePath="..\actions.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\actorio.cc">
+					RelativePath="..\actorio.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\actors.cc">
+					RelativePath="..\actors.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\args.cc">
+					RelativePath="..\args.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\bggame.cc">
+					RelativePath="..\bggame.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\browser.cc">
+					RelativePath="..\browser.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat.cc">
+					RelativePath="..\cheat.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat_screen.cc">
+					RelativePath="..\cheat_screen.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\combat.cc">
+					RelativePath="..\combat.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\delobjs.cc">
+					RelativePath="..\delobjs.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\dir.cc">
+					RelativePath="..\dir.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\drag.cc">
+					RelativePath="..\drag.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\effects.cc">
+					RelativePath="..\effects.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\exult.cc">
+					RelativePath="..\exult.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\exultmenu.cc">
+					RelativePath="..\exultmenu.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\game.cc">
+					RelativePath="..\game.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gameclk.cc">
+					RelativePath="..\gameclk.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gamedat.cc">
+					RelativePath="..\gamedat.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gamemap.cc">
+					RelativePath="..\gamemap.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gamerend.cc">
+					RelativePath="..\gamerend.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gamewin.cc">
+					RelativePath="..\gamewin.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\keyactions.cc">
+					RelativePath="..\keyactions.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\keys.cc">
+					RelativePath="..\keys.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\menulist.cc">
+					RelativePath="..\menulist.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\monsters.cc">
+					RelativePath="..\monsters.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\mouse.cc">
+					RelativePath="..\mouse.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\npcnear.cc">
+					RelativePath="..\npcnear.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\npctime.cc">
+					RelativePath="..\npctime.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\palette.cc">
+					RelativePath="..\palette.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\party.cc">
+					RelativePath="..\party.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\party.h">
+					RelativePath="..\party.h"
+					>
 				</File>
 				<File
-					RelativePath="..\paths.cc">
+					RelativePath="..\paths.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\readnpcs.cc">
+					RelativePath="..\readnpcs.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\schedule.cc">
+					RelativePath="..\schedule.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\segfile.cc">
+					RelativePath="..\segfile.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapeid.cc">
+					RelativePath="..\shapeid.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\sigame.cc">
+					RelativePath="..\sigame.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\tqueue.cc">
+					RelativePath="..\tqueue.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\txtscroll.cc">
+					RelativePath="..\txtscroll.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\version.cc">
+					RelativePath="..\version.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\windrag.cc">
+					RelativePath="..\windrag.cc"
+					>
 				</File>
 				<Filter
 					Name="Exult h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\acconfig.h">
+						RelativePath="..\acconfig.h"
+						>
 					</File>
 					<File
-						RelativePath="..\actions.h">
+						RelativePath="..\actions.h"
+						>
 					</File>
 					<File
-						RelativePath="..\actors.h">
+						RelativePath="..\actors.h"
+						>
 					</File>
 					<File
-						RelativePath="..\alpha_kludges.h">
+						RelativePath="..\alpha_kludges.h"
+						>
 					</File>
 					<File
-						RelativePath="..\args.h">
+						RelativePath="..\args.h"
+						>
 					</File>
 					<File
-						RelativePath="..\bggame.h">
+						RelativePath="..\bggame.h"
+						>
 					</File>
 					<File
-						RelativePath="..\browser.h">
+						RelativePath="..\browser.h"
+						>
 					</File>
 					<File
-						RelativePath="..\cheat.h">
+						RelativePath="..\cheat.h"
+						>
 					</File>
 					<File
-						RelativePath="..\cheat_screen.h">
+						RelativePath="..\cheat_screen.h"
+						>
 					</File>
 					<File
-						RelativePath="..\combat.h">
+						RelativePath="..\combat.h"
+						>
 					</File>
 					<File
-						RelativePath="..\delobjs.h">
+						RelativePath="..\delobjs.h"
+						>
 					</File>
 					<File
-						RelativePath="..\devgame.h">
+						RelativePath="..\devgame.h"
+						>
 					</File>
 					<File
-						RelativePath="..\dir.h">
+						RelativePath="..\dir.h"
+						>
 					</File>
 					<File
-						RelativePath="..\drag.h">
+						RelativePath="..\drag.h"
+						>
 					</File>
 					<File
-						RelativePath="..\effects.h">
+						RelativePath="..\effects.h"
+						>
 					</File>
 					<File
-						RelativePath="..\exceptions.h">
+						RelativePath="..\exceptions.h"
+						>
 					</File>
 					<File
-						RelativePath="..\exult.h">
+						RelativePath="..\exult.h"
+						>
 					</File>
 					<File
-						RelativePath="..\exult_constants.h">
+						RelativePath="..\exult_constants.h"
+						>
 					</File>
 					<File
-						RelativePath="..\exult_types.h">
+						RelativePath="..\exult_types.h"
+						>
 					</File>
 					<File
-						RelativePath="..\exultmenu.h">
+						RelativePath="..\exultmenu.h"
+						>
 					</File>
 					<File
-						RelativePath="..\fnames.h">
+						RelativePath="..\fnames.h"
+						>
 					</File>
 					<File
-						RelativePath="..\frameseq.h">
+						RelativePath="..\frameseq.h"
+						>
 					</File>
 					<File
-						RelativePath="..\game.h">
+						RelativePath="..\game.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gameclk.h">
+						RelativePath="..\gameclk.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gamemap.h">
+						RelativePath="..\gamemap.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gamewin.h">
+						RelativePath="..\gamewin.h"
+						>
 					</File>
 					<File
-						RelativePath="..\headers\gamma.h">
+						RelativePath="..\headers\gamma.h"
+						>
 					</File>
 					<File
-						RelativePath="..\hash_utils.h">
+						RelativePath="..\hash_utils.h"
+						>
 					</File>
 					<File
-						RelativePath="..\keyactions.h">
+						RelativePath="..\keyactions.h"
+						>
 					</File>
 					<File
-						RelativePath="..\keys.h">
+						RelativePath="..\keys.h"
+						>
 					</File>
 					<File
-						RelativePath="..\menulist.h">
+						RelativePath="..\menulist.h"
+						>
 					</File>
 					<File
-						RelativePath="..\monsters.h">
+						RelativePath="..\monsters.h"
+						>
 					</File>
 					<File
-						RelativePath="..\mouse.h">
+						RelativePath="..\mouse.h"
+						>
 					</File>
 					<File
-						RelativePath="..\npcnear.h">
+						RelativePath="..\npcnear.h"
+						>
 					</File>
 					<File
-						RelativePath="..\npctime.h">
+						RelativePath="..\npctime.h"
+						>
 					</File>
 					<File
-						RelativePath="..\palette.h">
+						RelativePath="..\palette.h"
+						>
 					</File>
 					<File
-						RelativePath="..\paths.h">
+						RelativePath="..\paths.h"
+						>
 					</File>
 					<File
-						RelativePath="..\ready.h">
+						RelativePath="..\ready.h"
+						>
 					</File>
 					<File
-						RelativePath="..\rect.h">
+						RelativePath="..\rect.h"
+						>
 					</File>
 					<File
-						RelativePath="..\schedule.h">
+						RelativePath="..\schedule.h"
+						>
 					</File>
 					<File
-						RelativePath="..\segfile.h">
+						RelativePath="..\segfile.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapeid.h">
+						RelativePath="..\shapeid.h"
+						>
 					</File>
 					<File
-						RelativePath="..\sigame.h">
+						RelativePath="..\sigame.h"
+						>
 					</File>
 					<File
-						RelativePath="..\tiles.h">
+						RelativePath="..\tiles.h"
+						>
 					</File>
 					<File
-						RelativePath="..\tqueue.h">
+						RelativePath="..\tqueue.h"
+						>
 					</File>
 					<File
-						RelativePath="..\txtscroll.h">
+						RelativePath="..\txtscroll.h"
+						>
 					</File>
 					<File
-						RelativePath="..\vec.h">
+						RelativePath="..\vec.h"
+						>
 					</File>
 					<File
-						RelativePath="..\version.h">
+						RelativePath="..\version.h"
+						>
 					</File>
 					<File
-						RelativePath="..\windrag.h">
+						RelativePath="..\windrag.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="Files"
-				Filter="">
+				>
 				<File
-					RelativePath="..\files\Flat.cc">
+					RelativePath="..\files\crc.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\Flex.cc">
+					RelativePath="..\files\Flat.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\IFF.cc">
+					RelativePath="..\files\Flex.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\Table.cc">
+					RelativePath="..\files\IFF.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\U7file.cc">
+					RelativePath="..\files\listfiles.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\crc.cc">
+					RelativePath="..\files\msgfile.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\listfiles.cc">
+					RelativePath="..\files\msgfile.h"
+					>
 				</File>
 				<File
-					RelativePath="..\files\msgfile.cc">
+					RelativePath="..\files\Table.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\msgfile.h">
+					RelativePath="..\files\U7file.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\files\utils.cc">
+					RelativePath="..\files\utils.cc"
+					>
 				</File>
 				<Filter
 					Name="files h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\files\Flat.h">
+						RelativePath="..\files\crc.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\Flex.h">
+						RelativePath="..\files\databuf.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\IFF.h">
+						RelativePath="..\files\Flat.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\Table.h">
+						RelativePath="..\files\Flex.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\U7file.h">
+						RelativePath="..\files\IFF.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\crc.h">
+						RelativePath="..\files\listfiles.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\databuf.h">
+						RelativePath="..\files\Table.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\listfiles.h">
+						RelativePath="..\files\U7file.h"
+						>
 					</File>
 					<File
-						RelativePath="..\files\utils.h">
+						RelativePath="..\files\utils.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="flic"
-				Filter="">
+				>
 				<File
-					RelativePath="..\flic\playfli.cc">
+					RelativePath="..\flic\playfli.cc"
+					>
 				</File>
 				<Filter
 					Name="flic h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\flic\playfli.h">
+						RelativePath="..\flic\playfli.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="gumps"
-				Filter="">
+				>
 				<File
-					RelativePath="..\gumps\Actor_gump.cc">
+					RelativePath="..\gumps\Actor_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\AudioOptions_gump.cc">
+					RelativePath="..\gumps\AudioOptions_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Book_gump.cc">
+					RelativePath="..\gumps\Book_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\CombatOptions_gump.cc">
+					RelativePath="..\gumps\CombatOptions_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\CombatStats_gump.cc">
+					RelativePath="..\gumps\CombatStats_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Enabled_button.cc">
+					RelativePath="..\gumps\Enabled_button.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Face_button.cc">
+					RelativePath="..\gumps\Face_button.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Face_stats.cc">
+					RelativePath="..\gumps\Face_stats.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\File_gump.cc">
+					RelativePath="..\gumps\File_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gamemenu_gump.cc">
+					RelativePath="..\gumps\Gamemenu_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\GameplayOptions_gump.cc">
+					RelativePath="..\gumps\GameplayOptions_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gump.cc">
+					RelativePath="..\gumps\Gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gump_ToggleButton.cc">
+					RelativePath="..\gumps\Gump_button.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gump_button.cc">
+					RelativePath="..\gumps\Gump_manager.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gump_manager.cc">
+					RelativePath="..\gumps\Gump_ToggleButton.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Gump_widget.cc">
+					RelativePath="..\gumps\Gump_widget.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Jawbone_gump.cc">
+					RelativePath="..\gumps\Jawbone_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Newfile_gump.cc">
+					RelativePath="..\gumps\misc_buttons.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Notebook_gump.cc">
+					RelativePath="..\gumps\Newfile_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Notebook_gump.h">
+					RelativePath="..\gumps\Notebook_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Paperdoll_gump.cc">
+					RelativePath="..\gumps\Notebook_gump.h"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Paperdoll_gump_info.cc">
+					RelativePath="..\gumps\Paperdoll_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Scroll_gump.cc">
+					RelativePath="..\gumps\Paperdoll_gump_info.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Sign_gump.cc">
+					RelativePath="..\gumps\Scroll_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Slider_gump.cc">
+					RelativePath="..\gumps\Sign_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Spellbook_gump.cc">
+					RelativePath="..\gumps\Slider_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Stats_gump.cc">
+					RelativePath="..\gumps\Spellbook_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Text_button.cc">
+					RelativePath="..\gumps\Stats_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Text_gump.cc">
+					RelativePath="..\gumps\Text_button.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\VideoOptions_gump.cc">
+					RelativePath="..\gumps\Text_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Yesno_gump.cc">
+					RelativePath="..\gumps\VideoOptions_gump.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\misc_buttons.cc">
+					RelativePath="..\gumps\Yesno_gump.cc"
+					>
 				</File>
 				<Filter
 					Name="gumps h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\gumps\Actor_gump.h">
+						RelativePath="..\gumps\Actor_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\AudioOptions_gump.h">
+						RelativePath="..\gumps\AudioOptions_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Book_gump.h">
+						RelativePath="..\gumps\Book_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\CombatOptions_gump.h">
+						RelativePath="..\gumps\CombatOptions_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\CombatStats_gump.h">
+						RelativePath="..\gumps\CombatStats_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Enabled_button.h">
+						RelativePath="..\gumps\Enabled_button.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Face_button.h">
+						RelativePath="..\gumps\Face_button.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Face_stats.h">
+						RelativePath="..\gumps\Face_stats.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\File_gump.h">
+						RelativePath="..\gumps\File_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gamemenu_gump.h">
+						RelativePath="..\gumps\Gamemenu_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\GameplayOptions_gump.h">
+						RelativePath="..\gumps\GameplayOptions_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gump.h">
+						RelativePath="..\gumps\Gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gump_ToggleButton.h">
+						RelativePath="..\gumps\Gump_button.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gump_button.h">
+						RelativePath="..\gumps\Gump_manager.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gump_manager.h">
+						RelativePath="..\gumps\Gump_ToggleButton.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Gump_widget.h">
+						RelativePath="..\gumps\gump_types.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Jawbone_gump.h">
+						RelativePath="..\gumps\gump_utils.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Modal_gump.h">
+						RelativePath="..\gumps\Gump_widget.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Newfile_gump.h">
+						RelativePath="..\gumps\Jawbone_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Paperdoll_gump.h">
+						RelativePath="..\gumps\misc_buttons.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Scroll_gump.h">
+						RelativePath="..\gumps\Modal_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Sign_gump.h">
+						RelativePath="..\gumps\Newfile_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Slider_gump.h">
+						RelativePath="..\gumps\Paperdoll_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Spellbook_gump.h">
+						RelativePath="..\gumps\Scroll_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Stats_gump.h">
+						RelativePath="..\gumps\Sign_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Text_button.h">
+						RelativePath="..\gumps\Slider_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Text_gump.h">
+						RelativePath="..\gumps\Spellbook_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\VideoOptions_gump.h">
+						RelativePath="..\gumps\Stats_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\Yesno_gump.h">
+						RelativePath="..\gumps\Text_button.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\gump_types.h">
+						RelativePath="..\gumps\Text_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\gump_utils.h">
+						RelativePath="..\gumps\VideoOptions_gump.h"
+						>
 					</File>
 					<File
-						RelativePath="..\gumps\misc_buttons.h">
+						RelativePath="..\gumps\Yesno_gump.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="imagewin"
-				Filter="">
+				>
 				<File
-					RelativePath="..\imagewin\ibuf16.cc">
+					RelativePath="..\imagewin\ibuf16.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\ibuf8.cc">
+					RelativePath="..\imagewin\ibuf8.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\imagebuf.cc">
+					RelativePath="..\imagewin\imagebuf.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\imagescl.cc">
+					RelativePath="..\imagewin\imagescl.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\imagewin.cc">
+					RelativePath="..\imagewin\imagewin.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\iwin8.cc">
+					RelativePath="..\imagewin\iwin8.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\savepcx.cc">
+					RelativePath="..\imagewin\savepcx.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\scale.cc">
+					RelativePath="..\imagewin\scale.cc"
+					>
 					<FileConfiguration
 						Name="Release Install|Win32"
-						ExcludedFromBuild="TRUE">
+						ExcludedFromBuild="true"
+						>
 						<Tool
-							Name="VCCLCompilerTool"/>
+							Name="VCCLCompilerTool"
+						/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug|Win32"
-						ExcludedFromBuild="TRUE">
+						ExcludedFromBuild="true"
+						>
 						<Tool
-							Name="VCCLCompilerTool"/>
+							Name="VCCLCompilerTool"
+						/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						ExcludedFromBuild="TRUE">
+						ExcludedFromBuild="true"
+						>
 						<Tool
-							Name="VCCLCompilerTool"/>
+							Name="VCCLCompilerTool"
+						/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug Install|Win32"
-						ExcludedFromBuild="TRUE">
+						ExcludedFromBuild="true"
+						>
 						<Tool
-							Name="VCCLCompilerTool"/>
+							Name="VCCLCompilerTool"
+						/>
 					</FileConfiguration>
 				</File>
 				<Filter
 					Name="imagewin h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\imagewin\ibuf16.h">
+						RelativePath="..\imagewin\ibuf16.h"
+						>
 					</File>
 					<File
-						RelativePath="..\imagewin\ibuf8.h">
+						RelativePath="..\imagewin\ibuf8.h"
+						>
 					</File>
 					<File
-						RelativePath="..\imagewin\imagebuf.h">
+						RelativePath="..\imagewin\imagebuf.h"
+						>
 					</File>
 					<File
-						RelativePath="..\imagewin\imagewin.h">
+						RelativePath="..\imagewin\imagewin.h"
+						>
 					</File>
 					<File
-						RelativePath="..\imagewin\iwin8.h">
+						RelativePath="..\imagewin\iwin8.h"
+						>
 					</File>
 					<File
-						RelativePath="..\imagewin\scale.h">
+						RelativePath="..\imagewin\scale.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="objs"
-				Filter="">
+				>
 				<File
-					RelativePath="..\objs\Objs.cc">
+					RelativePath="..\objs\animate.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\animate.cc">
+					RelativePath="..\objs\barge.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\barge.cc">
+					RelativePath="..\objs\chunks.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\chunks.cc">
+					RelativePath="..\objs\chunkter.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\chunkter.cc">
+					RelativePath="..\objs\contain.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\contain.cc">
+					RelativePath="..\objs\egg.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\egg.cc">
+					RelativePath="..\objs\iregobjs.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\iregobjs.cc">
+					RelativePath="..\objs\jawbone.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\jawbone.cc">
+					RelativePath="..\objs\mappatch.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\mappatch.cc">
+					RelativePath="..\objs\objiter.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\objiter.cc">
+					RelativePath="..\objs\objnames.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\objnames.cc">
+					RelativePath="..\objs\Objs.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\spellbook.cc">
+					RelativePath="..\objs\spellbook.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\virstone.cc">
+					RelativePath="..\objs\virstone.cc"
+					>
 				</File>
 				<Filter
 					Name="objs h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\objs\animate.h">
+						RelativePath="..\objs\animate.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\barge.h">
+						RelativePath="..\objs\barge.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\chunks.h">
+						RelativePath="..\objs\chunks.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\chunkter.h">
+						RelativePath="..\objs\chunkter.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\citerate.h">
+						RelativePath="..\objs\citerate.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\contain.h">
+						RelativePath="..\objs\contain.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\egg.h">
+						RelativePath="..\objs\egg.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\flags.h">
+						RelativePath="..\objs\flags.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\iregobjs.h">
+						RelativePath="..\objs\iregobjs.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\jawbone.h">
+						RelativePath="..\objs\jawbone.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\mappatch.h">
+						RelativePath="..\objs\mappatch.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\monstinf.h">
+						RelativePath="..\shapes\monstinf.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\objiter.h">
+						RelativePath="..\objs\objiter.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\objlist.h">
+						RelativePath="..\objs\objlist.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\objs.h">
+						RelativePath="..\objs\objs.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\ordinfo.h">
+						RelativePath="..\objs\ordinfo.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\spellbook.h">
+						RelativePath="..\objs\spellbook.h"
+						>
 					</File>
 					<File
-						RelativePath="..\objs\virstone.h">
+						RelativePath="..\objs\virstone.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="pathfinder"
-				Filter="">
+				>
 				<File
-					RelativePath="..\pathfinder\Astar.cc">
+					RelativePath="..\pathfinder\Astar.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\pathfinder\PathFinder.cc">
+					RelativePath="..\pathfinder\path.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\pathfinder\Zombie.cc">
+					RelativePath="..\pathfinder\PathFinder.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\pathfinder\path.cc">
+					RelativePath="..\pathfinder\Zombie.cc"
+					>
 				</File>
 				<Filter
 					Name="pathfinder h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\pathfinder\Astar.h">
+						RelativePath="..\pathfinder\Astar.h"
+						>
 					</File>
 					<File
-						RelativePath="..\pathfinder\PathFinder.h">
+						RelativePath="..\pathfinder\PathFinder.h"
+						>
 					</File>
 					<File
-						RelativePath="..\pathfinder\Zombie.h">
+						RelativePath="..\pathfinder\Zombie.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="shapes"
-				Filter="">
+				>
 				<File
-					RelativePath="..\shapes\bodies.cc">
+					RelativePath="..\shapes\bodies.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\font.cc">
+					RelativePath="..\shapes\font.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\fontvga.cc">
+					RelativePath="..\shapes\fontvga.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\glshape.cc">
+					RelativePath="..\shapes\glshape.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\items.cc">
+					RelativePath="..\shapes\items.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\monstinf.cc">
+					RelativePath="..\shapes\monstinf.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\shapeinf.cc">
+					RelativePath="..\shapes\shapeinf.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\shapevga.cc">
+					RelativePath="..\shapes\shapevga.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\u7drag.cc">
+					RelativePath="..\shapes\u7drag.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\vgafile.cc">
+					RelativePath="..\shapes\vgafile.cc"
+					>
 				</File>
 				<Filter
 					Name="shapes h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\shapes\bodies.h">
+						RelativePath="..\shapes\bodies.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\font.h">
+						RelativePath="..\shapes\font.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\fontvga.h">
+						RelativePath="..\shapes\fontvga.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\glshape.h">
+						RelativePath="..\shapes\glshape.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\items.h">
+						RelativePath="..\shapes\items.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\shapeinf.h">
+						RelativePath="..\shapes\shapeinf.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\shapevga.h">
+						RelativePath="..\shapes\shapevga.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\u7drag.h">
+						RelativePath="..\shapes\u7drag.h"
+						>
 					</File>
 					<File
-						RelativePath="..\shapes\vgafile.h">
+						RelativePath="..\shapes\vgafile.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="usecode"
-				Filter="">
+				>
 				<File
-					RelativePath="..\usecode\conversation.cc">
+					RelativePath="..\usecode\conversation.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\intrinsics.cc">
+					RelativePath="..\usecode\intrinsics.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\keyring.cc">
+					RelativePath="..\usecode\keyring.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\stackframe.cc">
+					RelativePath="..\usecode\stackframe.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\ucdisasm.cc">
+					RelativePath="..\usecode\ucdisasm.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\ucfunction.cc">
+					RelativePath="..\usecode\ucfunction.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\ucinternal.cc">
+					RelativePath="..\usecode\ucinternal.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\ucmachine.cc">
+					RelativePath="..\usecode\ucmachine.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\ucsched.cc">
+					RelativePath="..\usecode\ucsched.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\useval.cc">
+					RelativePath="..\usecode\useval.cc"
+					>
 				</File>
 				<Filter
 					Name="usecode h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\usecode\bgintrinsics.h">
+						RelativePath="..\usecode\bgintrinsics.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\conversation.h">
+						RelativePath="..\usecode\conversation.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\keyring.h">
+						RelativePath="..\usecode\keyring.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\siintrinsics.h">
+						RelativePath="..\usecode\siintrinsics.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\ucinternal.h">
+						RelativePath="..\usecode\ucinternal.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\ucmachine.h">
+						RelativePath="..\usecode\ucmachine.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\ucsched.h">
+						RelativePath="..\usecode\ucsched.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\ucscriptop.h">
+						RelativePath="..\usecode\ucscriptop.h"
+						>
 					</File>
 					<File
-						RelativePath="..\usecode\useval.h">
+						RelativePath="..\usecode\useval.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="Server"
-				Filter="">
+				>
 				<File
-					RelativePath="..\server\objserial.cc">
+					RelativePath="..\server\objserial.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\server\servemsg.cc">
+					RelativePath="..\server\servemsg.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\server\server.cc">
+					RelativePath="..\server\server.cc"
+					>
 				</File>
 				<File
-					RelativePath="..\server\servewin32.cc">
+					RelativePath="..\server\servewin32.cc"
+					>
 				</File>
 				<Filter
 					Name="server h"
-					Filter="">
+					>
 					<File
-						RelativePath="..\server\objserial.h">
+						RelativePath="..\server\objserial.h"
+						>
 					</File>
 					<File
-						RelativePath="..\server\servemsg.h">
+						RelativePath="..\server\servemsg.h"
+						>
 					</File>
 					<File
-						RelativePath="..\server\server.h">
+						RelativePath="..\server\server.h"
+						>
 					</File>
 					<File
-						RelativePath="..\server\servewin32.h">
+						RelativePath="..\server\servewin32.h"
+						>
 					</File>
 				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
+			Filter="h;hpp;hxx;hm;inl"
+			>
 			<File
-				RelativePath="..\headers\common_types.h">
+				RelativePath="..\headers\common_types.h"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_bg_flx.h">
+				RelativePath="..\data\exult_bg_flx.h"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_flx.h">
+				RelativePath="..\data\exult_flx.h"
+				>
 			</File>
 			<File
-				RelativePath="..\data\exult_si_flx.h">
+				RelativePath="..\data\exult_si_flx.h"
+				>
 			</File>
 			<File
-				RelativePath="..\istring.cc">
+				RelativePath="..\istring.cc"
+				>
 			</File>
 			<File
-				RelativePath="..\istring.h">
+				RelativePath="..\istring.h"
+				>
 			</File>
 			<File
-				RelativePath="..\headers\pent_include.h">
+				RelativePath="..\headers\pent_include.h"
+				>
 			</File>
 			<File
-				RelativePath="..\tools\uctools.h">
+				RelativePath="..\tools\uctools.h"
+				>
 			</File>
 			<File
-				RelativePath="..\files\zip\unzip.h">
+				RelativePath="..\files\zip\unzip.h"
+				>
 			</File>
 			<File
-				RelativePath="..\files\zip\zip.h">
+				RelativePath="..\files\zip\zip.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+			>
 			<File
-				RelativePath="..\win32\exult.ico">
+				RelativePath="..\win32\exult.ico"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\exultico.rc">
+				RelativePath="..\win32\exultico.rc"
+				>
 				<FileConfiguration
-					Name="Release Install|Win32">
+					Name="Release Install|Win32"
+					>
 					<Tool
 						Name="VCResourceCompilerTool"
 						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"/>
+						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug|Win32"
+					>
 					<Tool
 						Name="VCResourceCompilerTool"
 						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"/>
+						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32">
+					Name="Release|Win32"
+					>
 					<Tool
 						Name="VCResourceCompilerTool"
 						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"/>
+						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Install|Win32">
+					Name="Debug Install|Win32"
+					>
 					<Tool
 						Name="VCResourceCompilerTool"
 						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"/>
+						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
+					/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="MSVC Kludges"
-			Filter="">
+			>
 			<File
-				RelativePath=".\find_nearby.h">
+				RelativePath=".\find_nearby.h"
+				>
 			</File>
 			<File
-				RelativePath=".\msvc_kludges.cc">
+				RelativePath=".\msvc_kludges.cc"
+				>
 				<FileConfiguration
-					Name="Release Install|Win32">
+					Name="Release Install|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
+					Name="Debug|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32">
+					Name="Release|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Install|Win32">
+					Name="Debug Install|Win32"
+					>
 					<Tool
 						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
+						UsePrecompiledHeader="1"
+					/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\msvc_kludges.h">
+				RelativePath=".\msvc_kludges.h"
+				>
 			</File>
 			<File
-				RelativePath=".\unistd.h">
+				RelativePath=".\unistd.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Text Files"
-			Filter="">
+			>
 			<File
-				RelativePath="..\AUTHORS">
+				RelativePath="..\AUTHORS"
+				>
 			</File>
 			<File
-				RelativePath="..\ChangeLog">
+				RelativePath="..\ChangeLog"
+				>
 			</File>
 			<File
-				RelativePath="..\FAQ">
+				RelativePath="..\docs\excinematics.txt"
+				>
 			</File>
 			<File
-				RelativePath="..\INSTALL">
+				RelativePath="..\FAQ"
+				>
 			</File>
 			<File
-				RelativePath="..\Makefile.MorphOS">
+				RelativePath="..\INSTALL"
+				>
 			</File>
 			<File
-				RelativePath="..\Makefile.be">
+				RelativePath="..\Makefile.be"
+				>
 			</File>
 			<File
-				RelativePath="..\Makefile.common">
+				RelativePath="..\Makefile.common"
+				>
 			</File>
 			<File
-				RelativePath="..\Makefile.mingw">
+				RelativePath="..\Makefile.mingw"
+				>
 			</File>
 			<File
-				RelativePath="..\MidiInfo.txt">
+				RelativePath="..\Makefile.MorphOS"
+				>
 			</File>
 			<File
-				RelativePath="..\NEWS">
+				RelativePath="..\message.txt"
+				>
 			</File>
 			<File
-				RelativePath="..\README">
+				RelativePath="..\MidiInfo.txt"
+				>
 			</File>
 			<File
-				RelativePath="..\conf\README">
+				RelativePath="..\NEWS"
+				>
 			</File>
 			<File
-				RelativePath="..\README.1ST">
+				RelativePath="..\README"
+				>
 			</File>
 			<File
-				RelativePath="..\README.BeOS">
+				RelativePath="..\conf\README"
+				>
 			</File>
 			<File
-				RelativePath="..\README.MacOS">
+				RelativePath="..\README.1ST"
+				>
 			</File>
 			<File
-				RelativePath="..\README.axp">
+				RelativePath="..\README.axp"
+				>
 			</File>
 			<File
-				RelativePath="..\README.win32">
+				RelativePath="..\README.BeOS"
+				>
 			</File>
 			<File
-				RelativePath="..\docs\excinematics.txt">
+				RelativePath="..\README.MacOS"
+				>
 			</File>
 			<File
-				RelativePath="..\message.txt">
+				RelativePath="..\README.win32"
+				>
 			</File>
 			<Filter
 				Name="Docs"
-				Filter="">
+				>
 				<File
-					RelativePath="..\docs\FLI.txt">
+					RelativePath="..\docs\art.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\art.txt">
+					RelativePath="..\docs\bgitems.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\bgitems.txt">
+					RelativePath="..\docs\FLI.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\schedule.txt">
+					RelativePath="..\docs\schedule.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\serpentsfx.txt">
+					RelativePath="..\docs\serpentsfx.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\siitems.txt">
+					RelativePath="..\docs\siitems.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7combat.txt">
+					RelativePath="..\docs\u7combat.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7edit.txt">
+					RelativePath="..\docs\u7edit.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7eggs.txt">
+					RelativePath="..\docs\u7eggs.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7itemtypes.txt">
+					RelativePath="..\docs\u7itemtypes.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7monst.txt">
+					RelativePath="..\docs\u7monst.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7ready.txt">
+					RelativePath="..\docs\u7ready.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\u7tech.txt">
+					RelativePath="..\docs\u7tech.txt"
+					>
 				</File>
 				<File
-					RelativePath="..\docs\weapons.txt">
+					RelativePath="..\docs\weapons.txt"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Makefiles"
-				Filter="*.am">
+				Filter="*.am"
+				>
 				<File
-					RelativePath="..\audio\Makefile.am">
+					RelativePath="..\audio\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\audio\midi_drivers\Makefile.am">
+					RelativePath="..\audio\midi_drivers\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\conf\Makefile.am">
+					RelativePath="..\conf\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\data\Makefile.am">
+					RelativePath="..\data\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\files\Makefile.am">
+					RelativePath="..\files\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\flic\Makefile.am">
+					RelativePath="..\flic\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\gumps\Makefile.am">
+					RelativePath="..\gumps\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\Makefile.am">
+					RelativePath="..\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\objs\Makefile.am">
+					RelativePath="..\objs\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\pathfinder\Makefile.am">
+					RelativePath="..\pathfinder\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\shapes\Makefile.am">
+					RelativePath="..\shapes\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\usecode\Makefile.am">
+					RelativePath="..\usecode\Makefile.am"
+					>
 				</File>
 				<File
-					RelativePath="..\imagewin\Makefile.am">
+					RelativePath="..\imagewin\Makefile.am"
+					>
 				</File>
 			</Filter>
 		</Filter>
 		<File
-			RelativePath="..\combat_opts.h">
+			RelativePath="..\combat_opts.h"
+			>
 		</File>
 		<File
-			RelativePath="..\headers\exceptions.h">
+			RelativePath="..\headers\exceptions.h"
+			>
 		</File>
 		<File
-			RelativePath="..\objs\find_nearby.h">
+			RelativePath="..\objs\find_nearby.h"
+			>
 		</File>
 		<File
-			RelativePath="..\gamerend.h">
+			RelativePath="..\gamerend.h"
+			>
 		</File>
 		<File
-			RelativePath="..\singles.h">
+			RelativePath="..\singles.h"
+			>
 		</File>
 		<File
-			RelativePath="..\usecode\stackframe.h">
+			RelativePath="..\usecode\stackframe.h"
+			>
 		</File>
 		<File
-			RelativePath="..\usecode\ucdebugging.h">
+			RelativePath="..\usecode\ucdebugging.h"
+			>
 		</File>
 		<File
-			RelativePath="..\usecode\ucfunction.h">
+			RelativePath="..\usecode\ucfunction.h"
+			>
 		</File>
 	</Files>
 	<Globals>

@@ -3,8 +3,10 @@
  *	Specifically, this is the (modular) function for Zauriel.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2001-02-03
  */
+
+#include "npcs/related_functions/zauriel_dialog.uc"			//Zauriel's dialog functions
 
 Zauriel 0x48B ()
 {
@@ -14,10 +16,10 @@ Zauriel 0x48B ()
 	//For the main quest itself:
 	//See if the daughter is near the father:
 	var laurianna_near = (get_distance(LAURIANNA) <= 20);
-
+	
 	//For the "destroy Britannia" sequence:
 	var has_amulet;
-
+	
 	//The current quest's state:
 	var quest_state = getQuestState();
 	
@@ -61,7 +63,7 @@ Zauriel 0x48B ()
 		else
 			//But is not with Laurianna:
 			barks = ["@Thou hast killed the mage!@", "@Why art thou not with my daughter?@", "@Go and rescue her!@"];
-
+		
 		script item
 		{	face find_direction(AVATAR);
 			say barks[1];				wait 12;
@@ -79,12 +81,12 @@ Zauriel 0x48B ()
 	else
 		in_gem_subquest = false;
 	
-
+	
 	if (event == DOUBLECLICK)
 	{
 		//Close all gumps so the animation starts at once:
 		UI_close_gumps();
-
+		
 		//Sees if the player has met Zauriel:
 		met_zauriel = get_item_flag(MET);
 		
@@ -101,7 +103,7 @@ Zauriel 0x48B ()
 			actor frame STAND;			say bark;
 			wait 10;
 		}
-
+		
 		//Zauriel's response according to flags:
 		if (!met_zauriel) bark = "@The Avatar at last!@";
 		else if (in_gem_subquest) bark = "@Please elaborate.@";
@@ -118,7 +120,7 @@ Zauriel 0x48B ()
 			actor frame STAND;			say bark;
 			wait 8;						call Zauriel;
 		}
-
+		
 		if (laurianna_near)
 		{
 			if (has_amulet)
@@ -137,7 +139,7 @@ Zauriel 0x48B ()
 				//Laurianna has yet to teleport to her father; do so.
 				LAURIANNA->remove_from_party();
 				LAURIANNA->set_schedule_type(WAIT);
-
+				
 				var eggs = find_nearby(SHAPE_EGG, 20, MASK_EGG);
 				var egg;
 				var index;
