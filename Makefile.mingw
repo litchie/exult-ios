@@ -26,7 +26,7 @@ ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
 ZIP_LIBS=-L$(SRC)/zlib -lz
 
 # Leave this option empty
-EXTRA_OPTIONS=-DDEBUG
+EXTRA_OPTIONS=
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
