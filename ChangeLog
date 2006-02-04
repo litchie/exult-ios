@@ -1,5 +1,6 @@
 2006-02-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* effects.cc: fix crash for missile without weapon info
+	* actors.cc: uninitialized variable
 
 2006-02-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Corrected the workings of UI_is_readied and UI_get_readied based
