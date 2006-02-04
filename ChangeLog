@@ -1,3 +1,7 @@
+2006-02-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Corrected the workings of UI_is_readied and UI_get_readied based
+	  on the original games.
+
 2006-02-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/objs.*: removed strange ifdefs around certain functions
 
