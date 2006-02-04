@@ -731,7 +731,8 @@ void Projectile_effect::handle_event
 	if (winf && winf->get_cycle_delay())	// This slows down the missile.
 		delay *= (1 + winf->get_cycle_delay());	// Guessing how to do it.
 	bool path_finished;
-	for (int i = 0; i <= winf->get_missile_speed(); i++)
+	int missile_speed = (winf ? winf->get_missile_speed() : 0);
+	for (int i = 0; i <= missile_speed; i++)
 		{	// This speeds up the missile.
 		path_finished = !(path->GetNextStep(pos) == true) ||	// Get next spot.
 				// If missile egg, detect target.
