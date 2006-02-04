@@ -3316,7 +3316,7 @@ bool Actor::figure_hit_points
 					// Get bonus ammo points.
 	Ammo_info *ainf = ammo_shape > 0 ? 
 			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;
-	bool special_behaviour;
+	bool special_behaviour = false;
 	if (ainf)
 		{
 		wpoints += ainf->get_damage();
