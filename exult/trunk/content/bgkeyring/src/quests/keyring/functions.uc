@@ -96,7 +96,7 @@ var monsterCreate (var shapenum, var npcid, var pos, var facedir, var stats, var
 		//If the ID is that of the mage and his goons, put
 		//the monster in tournament mode:
 		monster->set_item_flag(SI_TOURNAMENT);
-
+	
 	//Set monster as last created:
 	monster->set_last_created();
 	//Update monster to desired spot:
@@ -113,21 +113,21 @@ createMageAndGoons ()
 	var monster_stats;
 	var leather_armor = [SHAPE_LEATHER_HELM, SHAPE_LEATHER_ARMOR, SHAPE_LEATHER_COLLAR,
 						 SHAPE_LEATHER_GLOVES, SHAPE_LEATHER_LEGGINGS, SHAPE_LEATHER_BOOTS];
-
+	
 	var chain_armor   = [SHAPE_CHAIN_COIF, SHAPE_CHAIN_ARMOUR, SHAPE_GORGET,
 						 SHAPE_GAUNTLETS, SHAPE_CHAIN_LEGGINGS, SHAPE_LEATHER_BOOTS];
-
+	
 	var plate_armor   = [SHAPE_GREAT_HELM, SHAPE_PLATE_ARMOUR, SHAPE_GORGET,
 						 SHAPE_GAUNTLETS, SHAPE_PLATE_LEGGINGS, SHAPE_LEATHER_BOOTS];
-
+	
 	var pouch_content;
 	var pouch_frames;
 	var pouch_quantities;
 	var pouch_qualities;
 	var monster_equip;
 	var monster_qualities;
-		
-
+	
+	
 	//Create the mage and his equipment:
 	monster_stats = [12, 12, 26, 12, 18];
 	pouch_content = [SHAPE_LIGHTNING_WAND,
@@ -148,11 +148,11 @@ createMageAndGoons ()
 	monsterCreate(SHAPE_MAGE_MALE, ID_MAGE_OR_GOON, [254, 1170, 0], WEST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-
+	
 	pouch_qualities = [0,
 					   0, 0, 0, 0,
 					   0, 0, 0, 0];
-
+	
 	//Create the gargoyle and his equipment:
 	monster_stats = [24, 12, 12, 24, 20];
 	pouch_content	 = [SHAPE_JEWELRY,
@@ -204,8 +204,8 @@ createMageAndGoons ()
 	monsterCreate(SHAPE_TROLL, ID_MAGE_OR_GOON, [249, 1164, 0], WEST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-
-
+	
+	
 	//Create the cyclops and his equipment:
 	monster_stats = [22, 17, 6, 22, 18];
 	pouch_content	 = [SHAPE_FOOD, SHAPE_FOOD, SHAPE_FOOD, SHAPE_FOOD,
@@ -223,8 +223,8 @@ createMageAndGoons ()
 	monsterCreate(SHAPE_CYCLOPS, ID_MAGE_OR_GOON, [241, 1164, 0], EAST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-
-
+	
+	
 	//Create the fighter and his equipment:
 	monster_stats = [20, 18, 12, 20, 22];
 	pouch_content = [SHAPE_GOLD_BAR, SHAPE_GOLD_COIN,
@@ -260,20 +260,20 @@ var createLichAndGems ()
 	pouch = UI_create_new_object(SHAPE_BAG);
 	//Set pouch to temporary:
 	pouch->set_item_flag(TEMPORARY);
-
+	
 	while (counter < gem_count)
 	{
 		//Increment counter:
- 		counter = counter + 1;
- 		//Create a gem:
- 		gem = UI_create_new_object(SHAPE_GEM_OF_DISPELLING);
- 		//Make it temporary:
+		counter = counter + 1;
+		//Create a gem:
+		gem = UI_create_new_object(SHAPE_GEM_OF_DISPELLING);
+		//Make it temporary:
 		gem->set_item_flag(TEMPORARY);
 		//Get a random value for the gem's quality:
 		var rand = UI_get_random(40) - 1;
- 		gem->set_item_quality(rand);
- 		//Place gem on pouch:
- 		pouch->give_last_created();
+		gem->set_item_quality(rand);
+		//Place gem on pouch:
+		pouch->give_last_created();
 	}
 	
 	//Create Joneleth the liche:
@@ -291,7 +291,7 @@ var createLichAndGems ()
 	liche->set_schedule_type(WAIT);
 	//Put him in the correct spot:
 	UI_update_last_created([0x717, 0x825,0x0]);
-
+	
 	var spell;
 	//Create firebolt spell:
 	spell = UI_create_new_object(SHAPE_FIREBOLT);

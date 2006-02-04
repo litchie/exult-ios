@@ -1,4 +1,4 @@
-freeze 0xC00 (){set_item_flag(DONT_MOVE);}
+freeze (){set_item_flag(DONT_MOVE);}
 unfreeze (){clear_item_flag(DONT_MOVE);}
 
 addShaminoToParty ()

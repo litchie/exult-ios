@@ -175,3 +175,5 @@ const int SHAPE_VORTEX_CUBE				= 786;
 const int SHAPE_STATUE					= 854;
 
 const int SHAPE_TIME_BARRIER			= 1021;
+
+const int KEY_INN						= 255;	//0x0FF, keys for inn doors.

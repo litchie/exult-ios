@@ -1,102 +1,135 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="8,00"
 	Name="Exult_si_flx.h"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MakeFileProj">
+	ProjectGUID="{39A7A7D1-834B-4A01-B321-3D14A359BC88}"
+	Keyword="MakeFileProj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Exult_si_flx___Win32_Release"
 			IntermediateDirectory=".\Exult_si_flx___Win32_Release"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_si_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_si_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Exult_si_flx___Win32_Debug0"
 			IntermediateDirectory=".\Exult_si_flx___Win32_Debug0"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_si_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_si_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
 			OutputDirectory=".\Release Install"
 			IntermediateDirectory=".\Release Install"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_si_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_si_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
 			OutputDirectory=".\Debug Install"
 			IntermediateDirectory=".\Debug Install"
 			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data install_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data reinstall_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..
-nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_si_flx.h"/>
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_si /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_si_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Shapes"
-			Filter="shp">
+			Filter="shp"
+			>
 			<File
-				RelativePath="..\data\si\SImap.shp">
+				RelativePath="..\data\si\SImap.shp"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Misc"
-			Filter="">
+			>
 			<File
-				RelativePath="..\data\si\defaultkeys.txt">
+				RelativePath="..\data\si\defaultkeys.txt"
+				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\data\si\flx.in">
+			RelativePath="..\data\si\flx.in"
+			>
 		</File>
 	</Files>
 	<Globals>

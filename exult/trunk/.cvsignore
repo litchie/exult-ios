@@ -18,7 +18,6 @@ depcomp
 Exult.app
 exult.cfg
 exult.exe
-exult
 Makefile
 Makefile.in
 autoconfig.h.in
@@ -69,3 +68,5 @@ ucparse.cc
 ucparse.h
 zlib-1.1.3
 SDL
+*.user
+Exult.suo

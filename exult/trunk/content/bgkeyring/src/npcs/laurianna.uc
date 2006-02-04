@@ -3,8 +3,10 @@
  *	Specifically, it is the (modular) function for Laurianna.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2001-02-03
  */
+
+#include "npcs/related_functions/laurianna_dialog.uc"		//Laurianna's dialog functions
 
 Laurianna 0x494 ()
 {

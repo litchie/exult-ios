@@ -2,12 +2,9 @@
 This header file defines generic helper functions added to the original.
 
 Author: Alun Bestor (exult@washboardabs.net)
-Last modified: 2005-04-27
+Modified by Marzo Junior
+Last modified: 2006-02-03
 -------------------------------*/
-
-
-//This does nothing except mark the starting address for implicit function addressing. Yes, it's a hack. But it does make custom function declarations a lot simpler. Should be able to be removed once the changes to implicit addressing are checked in.
-startingFunction 0xA00()	{}
 
 //Generic functions
 //-----------------

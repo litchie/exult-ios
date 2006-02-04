@@ -3,7 +3,7 @@
  *	the Keyring Quest.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2001-02-03
  */
 
 //Event levels for the keyring cutscenes:
@@ -38,7 +38,3 @@ const int LAURIANNA_TIMER				= 15;
 const int KEYRING_ENEMY					= -294;
 const int LAUNDO_FACE					= 0;
 const int JONELETH_FACE					= 1;
-
-//NPC number for the two Keyring Quest NPCs:
-const int ZAURIEL						= -139;	//0xFECA
-const int LAURIANNA						= -148;	//0xFEC9

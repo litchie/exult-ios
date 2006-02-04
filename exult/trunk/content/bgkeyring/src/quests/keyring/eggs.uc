@@ -1,5 +1,8 @@
 /*
  *	This source file contains usecode for ALL the eggs used in the Keyring Quest.
+ *
+ *	Author: Marzo Junior
+ *	Last Modified: 2001-02-03
  */
 
 eggNoOneThere 0xBF3 ()
@@ -17,7 +20,7 @@ eggNoOneThere 0xBF3 ()
 		script randomPartyMember() after 25 ticks
 		{	nohalt;						say "@Maybe we should talk...@";
 			wait 12;					say "@...to Zauriel again, Avatar.@";}
-
+		
 		//Register the event:
 		gflags[ISLAND_NO_ONE_THERE] = true;
 		
@@ -34,7 +37,7 @@ eggDetectGem 0xBF4 ()
 	{
 		//The player has the gem, so warn him it is time to use it:
 		randomPartySay("@Look, at how brightly the gem is glowing, Avatar! Maybe it is time to use it...@");
-
+		
 		//Delete the egg:
 		remove_item();
 	}
@@ -52,7 +55,7 @@ eggCreateMageAndGoonsGoons 0xBF5 ()
 			//Since the mage hasn't been killed, and is nowhere to be found, we
 			//create him again (but with no cutscene this time):
 			createMageAndGoons();
-
+			
 			//Reset the counter:
 			LAURIANNA->set_npc_id(0);
 			
@@ -121,10 +124,10 @@ eggCreateSpiderEggs 0xBF8 ()
 	//support shape >= 1024.
 	
 	var egg;
-
+	
 	//See how many eggs we will create:
 	var num_eggs = UI_die_roll(2, 4);
-
+	
 	while (num_eggs > 0)
 	{
 		//Create egg:
@@ -153,4 +156,23 @@ deleteLicheEggs 0xBFA ()
 	else
 		//One or more; delete the relevant eggs:
 		deleteNearbyEggs([0x717, 0x825,0x0], 5);
+}
+
+Liche shape#(354) ()
+{
+	if ((get_npc_id() == ID_JONELETH) && (event == DEATH))
+	{
+		//Joneleth the liche has died
+		//Remove him from tournament mode:
+		clear_item_flag(SI_TOURNAMENT);
+		//Kill him:
+		script item hit 50;
+		//Start loop which will end when the Avatar picks
+		//up at least one Gem of Dispelling:
+		script AVATAR after 10 ticks
+		{	nohalt;						call deleteLicheEggs;}
+		abort;
+	}
+	else
+		Liche.original();
 }
