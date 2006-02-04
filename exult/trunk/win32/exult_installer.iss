@@ -65,8 +65,6 @@ Source: Exult\Data\bg_paperdol.vga; DestDir: {app}\data; Flags: ignoreversion; C
 Source: Exult\Data\exult.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_bg.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exult_si.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
-Source: Exult\Data\bodies_si.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
-Source: Exult\Data\bodies_bg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 Source: Exult\Data\exultmsg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 
 Source: exconfig.dll; Flags: dontcopy
