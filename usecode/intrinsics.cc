@@ -1850,59 +1850,40 @@ USECODE_INTRINSIC(reduce_health)
 static int Get_spot(int ucspot)
 	{
 	int spot;
-	if (GAME_SI)
+	// Appears to be the same for BG and SI;
+	// all where verified in BG and most of  them
+	// where also verified in SI.
+	switch (ucspot)
 		{
-		switch (ucspot)
-			{
-		case 1:
-			spot = Actor::lhand; break;
-		case 2:
-			spot = Actor::rhand; break;
-		case 3:				/* YES */
-			spot = Actor::neck; break;
-		case 5:				/* YES (gauntlets) */
-			spot = Actor::hands2_spot; break;
-		case 7:				/* YES */
-			spot = Actor::lfinger; break;
-		case 8:				/* YES */
-			spot = Actor::rfinger; break;
-		case 9:
-			spot = Actor::head; break; 
-		case 11:			/* YES */
-			spot = Actor::belt; break;
-		default:
-			cerr << "Readied: spot #" << ucspot <<
-						" not known yet" << endl;
-			spot = -1;
-			break;
-			}
-		}
-	else	/* BG */
-		{
-		switch (ucspot)
-			{
-		case 1:
-			spot = Actor::lhand; break;
-		case 2:
-			spot = Actor::rhand; break;
-		case 3:				/* UNSURE */
-			spot = Actor::neck; break;
-		case 5:
-			spot = Actor::hands2_spot; break;
-		case 6:
-			spot = Actor::lfinger; break;
-		case 7:
-			spot = Actor::rfinger; break;
-		case 9:
-			spot = Actor::head; break; 
-		case 11:			/* UNSURE */
-			spot = Actor::belt; break;
-		default:
-			cerr << "Readied: spot #" << ucspot <<
-						" not known yet" << endl;
-			spot = -1;
-			break;
-			}
+	case 0:
+		spot = Actor::back; break;
+	case 1:
+		spot = Actor::lhand; break;
+	case 2:
+		spot = Actor::rhand; break;
+	case 3:
+		spot = Actor::belt; break;
+	case 4:
+		spot = Actor::neck; break;
+	case 5:
+		spot = Actor::torso; break;
+	case 6:
+		spot = Actor::lfinger; break;
+	case 7:
+		spot = Actor::rfinger; break;
+	case 8:
+		spot = Actor::ammo; break;
+	case 9:
+		spot = Actor::head; break; 
+	case 10:
+		spot = Actor::legs; break;
+	case 11:
+		spot = Actor::feet; break;
+	default:
+		cerr << "Readied: spot #" << ucspot <<
+					" not known yet" << endl;
+		spot = -1;
+		break;
 		}
 	return spot;
 	}
@@ -1911,12 +1892,21 @@ USECODE_INTRINSIC(is_readied)
 {
 	// is_readied(npc, where, itemshape, frame (-359=any)).
 	// Where:
+	//   0=back,
 	//   1=weapon hand, 
 	//   2=other hand,
+	//   3=belt,
+	//   4=neck,
+	//   5=torso,
 	//   6=one finger, 
 	//   7=other finger,
-	//   9=head
+	//   8=quiver,
+	//   9=head,
+	//  10=legs,
+	//  11=feet
 	//  20=???
+	// Appears to be the same for BG and SI; SI's get_readied
+	// is far better in any case, and should be used instead.
 
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
@@ -1940,20 +1930,77 @@ USECODE_INTRINSIC(get_readied)
 {
 	// get_readied(npc, where)
 	// Where:
-	//   1=weapon hand, 
-	//   2=other hand,
-	//   6=one finger, 
-	//   7=other finger,
-	//   9=head
-	//  11=belt
-	//  20=???
+	//   0=weapon hand, 
+	//   1=other hand,
+	//   2=cloak,
+	//   3=neck,
+	//   4=head,
+	//   5=gloves,
+	//   6=usecode container,
+	//   7=one finger, 
+	//   8=other finger,
+	//   9=earrings,
+	//  10=quiver,
+	//  11=belt,
+	//  12=torso,
+	//  13=feet,
+	//  14=legs,
+	//  15=backpack,
+	//  16=back shield,
+	//  17=back spot
 
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
 		return Usecode_value(0);
 	int where = parms[1].get_int_value();
 					// Spot defined in Actor class.
-	int spot = Get_spot(where);
+	int spot;
+	// All of these have been verified in SI. The SI spots
+	// should be harmless in BG, so I am leaving them.
+	switch (where)
+		{
+	case 0:
+		spot = Actor::rhand; break;
+	case 1:
+		spot = Actor::lhand; break;
+	case 2:
+		spot = Actor::cloak_spot; break;
+	case 3:
+		spot = Actor::neck; break;
+	case 4:
+		spot = Actor::head; break;
+	case 5:
+		spot = Actor::hands2_spot; break;
+	case 6:
+		spot = Actor::ucont_spot; break;
+	case 7:
+		spot = Actor::lfinger; break;
+	case 8:
+		spot = Actor::rfinger; break;
+	case 9:
+		spot = Actor::ears_spot; break; 
+	case 10:
+		spot = Actor::ammo; break;
+	case 11:
+		spot = Actor::belt; break;
+	case 12:
+		spot = Actor::torso; break; 
+	case 13:
+		spot = Actor::feet; break;
+	case 14:
+		spot = Actor::legs; break;
+	case 15:
+		spot = Actor::back; break; 
+	case 16:
+		spot = Actor::shield_spot; break;
+	case 17:
+		spot = Actor::back2h_spot; break;
+	default:
+		cerr << "Readied: spot #" << ucspot <<
+					" not known yet" << endl;
+		spot = -1;
+		break;
+		}
 	if (spot >= 0)
 		return Usecode_value(npc->get_readied(spot));
 	return Usecode_value(0);
