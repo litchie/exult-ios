@@ -1,3 +1,6 @@
+2006-02-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: fix crash when actor approaches from off-screen
+
 2006-02-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* effects.cc: fix crash for missile without weapon info
 	* actors.cc: uninitialized variable
