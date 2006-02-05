@@ -1135,11 +1135,13 @@ int Actor::approach_another
 							src.ty - src.tz/2))
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);
-	int destmap = other->get_map_num();
-	if (get_map_num()!=destmap)
-	{
-		src = Tile_coord(-1, -1, 0);
-		move(src, destmap);
+	if (get_chunk() && other->get_chunk()) {
+		int destmap = other->get_map_num();
+		if (get_map_num()!=destmap)
+		{
+			src = Tile_coord(-1, -1, 0);
+			move(src, destmap);
+		}
 	}
 	Actor_action *action = new Path_walking_actor_action();
 	if (!action->walk_to_tile(this, src, dest))
