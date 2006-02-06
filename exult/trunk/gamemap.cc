@@ -1152,9 +1152,9 @@ void Game_map::read_ireg_objects
 				Virtue_stone_object *v = 
 				   new Virtue_stone_object(shnum, frnum, tilex,
 						tiley, lift);
-				v->set_pos(entry[4], entry[5], entry[6],
+				v->set_target_pos(entry[4], entry[5], entry[6],
 								entry[7]);
-				v->set_map(entry[10]);
+				v->set_target_map(entry[10]);
 				obj = v;
 				type = 0;
 				}
