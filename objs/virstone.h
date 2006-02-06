@@ -40,15 +40,15 @@ public:
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
 			pos(0, 0, 0), map(-1)
 		{  }
-	void set_pos(Tile_coord t)	// Set/get position.
+	void set_target_pos(Tile_coord t)	// Set/get position.
 		{ pos = t; }
-	void set_pos(unsigned char tilex, unsigned char tiley,
+	void set_target_pos(unsigned char tilex, unsigned char tiley,
 			unsigned char schunk, unsigned char lft);
-	Tile_coord get_pos()
+	Tile_coord get_target_pos()
 		{ return pos; }
-	int get_map()	// Get/set map.
+	int get_target_map()	// Get/set map.
 		{ return map; }
-	void set_map(int m)
+	void set_target_map(int m)
 		{ map = m; }
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);

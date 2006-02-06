@@ -655,8 +655,7 @@ void Barge_object::move
 	add_dirty();
 					// Get current location.
 	Tile_coord old = get_tile();
-	if (newmap != -1 && chunk)
-		newmap = get_map_num();
+	if (newmap == -1) newmap = get_map_num();
 					// Move the barge itself.
 	Container_game_object::move(newtx, newty, newlift, newmap);
 					// Get deltas.

@@ -497,7 +497,11 @@ void Actor::write
 			// Superchunk #.
 	nfile->write1((get_cy()/16)*12 + get_cx()/16);
 	Map_chunk *chunk = get_chunk();
-	int map_num = chunk ? get_map_num() : 0;
+	int map_num = get_map_num();
+	if (map_num < 0) {
+		// we store all off-map actors in map 0
+		map_num = 0;
+	}
 	assert(map_num >= 0 && map_num < 256);
 	nfile->write1(map_num);		// Borrowing for map #.
 					// Usecode.

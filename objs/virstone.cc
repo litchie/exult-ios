@@ -40,7 +40,7 @@ using std::ostream;
  *	Set position from IREG data.
  */
 
-void Virtue_stone_object::set_pos
+void Virtue_stone_object::set_target_pos
 	(
 	unsigned char tilex,		// Tx within superchunk.
 	unsigned char tiley,		// Ty within superchunk,

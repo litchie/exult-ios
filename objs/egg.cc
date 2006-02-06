@@ -717,8 +717,7 @@ breaks anything!  */
 		else			// Create item.
 			{
 			Shape_info& info = ShapeID::get_info(shnum);
-			Game_object *nobj = 
-			    chunk->get_map()->create_ireg_object(info,
+			Game_object *nobj = get_map()->create_ireg_object(info,
 				shnum, frnum, get_tx(), get_ty(), get_lift());
 			if (nobj->is_egg())
 				chunk->add_egg((Egg_object *) nobj);
@@ -871,8 +870,8 @@ void Egg_object::move
 	{
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Game_map *eggmap = newmap >= 0 ? gwin->get_map(newmap) :
-				(chunk ? chunk->get_map() : gmap);
+	Game_map *eggmap = newmap >= 0 ? gwin->get_map(newmap) : get_map();
+	if (!eggmap) eggmap = gmap;
 	Map_chunk *newchunk = eggmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
