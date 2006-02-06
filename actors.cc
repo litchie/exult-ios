@@ -1135,13 +1135,12 @@ int Actor::approach_another
 							src.ty - src.tz/2))
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);
-	if (get_chunk() && other->get_chunk()) {
-		int destmap = other->get_map_num();
-		if (get_map_num()!=destmap)
-		{
-			src = Tile_coord(-1, -1, 0);
-			move(src, destmap);
-		}
+	int destmap = other->get_map_num();
+	int srcmap = get_map_num();
+	if (destmap != -1 && srcmap != -1 && srcmap != destmap)
+	{
+		src = Tile_coord(-1, -1, 0);
+		move(src, destmap);
 	}
 	Actor_action *action = new Path_walking_actor_action();
 	if (!action->walk_to_tile(this, src, dest))
@@ -1665,7 +1664,8 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
-	int mapnum = chunk ? get_map_num() : gmap->get_num();
+	int mapnum = get_map_num();
+	if (mapnum < 0) mapnum = gmap->get_num();
 	if ((mapnum != gmap->get_num()) ||
 	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
 	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
@@ -4472,7 +4472,7 @@ void Npc_actor::handle_event
 	{
 	if (!action)			// Not doing anything?
 		{			// Stop if not on current map.
-		if (schedule && chunk->get_map() == gwin->get_map())
+		if (schedule && get_map() == gwin->get_map())
 			schedule->now_what();
 		else
 			dormant = true;
@@ -4488,7 +4488,7 @@ void Npc_actor::handle_event
 		else
 			{
 			set_action(0);
-			if (chunk->get_map() != gwin->get_map())
+			if (get_map() != gwin->get_map())
 				dormant = true;
 			if (schedule)
 				if (dormant)
@@ -4512,7 +4512,7 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
-	if (get_flag(Obj_flags::paralyzed) || chunk->get_map() != gmap)
+	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
 		return 0;
 	Tile_coord oldtile = get_tile();
 					// Get old chunk.

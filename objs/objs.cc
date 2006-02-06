@@ -86,11 +86,11 @@ int Game_object::get_cy() const
 
 Game_map* Game_object::get_map() const // Map we're on.
 {
-	return chunk->get_map();
+	return chunk ? chunk->get_map() : 0;
 }
 int Game_object::get_map_num() const // Get map number this is in.
 {
-	return chunk->get_map()->get_num();
+	return chunk ? chunk->get_map()->get_num() : -1;
 }
 
 /*
@@ -353,8 +353,8 @@ void Game_object::move
 	{
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Game_map *objmap = newmap >= 0 ? gwin->get_map(newmap) :
-				(chunk ? chunk->get_map() : gmap);
+	Game_map *objmap = newmap >= 0 ? gwin->get_map(newmap) : get_map();
+	if (!objmap) objmap = gmap;
 	Map_chunk *newchunk = objmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
@@ -1374,8 +1374,8 @@ void Ifix_game_object::move
 	Game_object::move(newtx, newty, newlift, newmap);
 	if (chunk)			// Mark superchunk as 'modified'.
 		{
-		int cx = chunk->get_cx(), cy = chunk->get_cy();
-		chunk->get_map()->set_ifix_modified(cx, cy);
+		int cx = get_cx(), cy = get_cy();
+		get_map()->set_ifix_modified(cx, cy);
 		}
 	}
 
@@ -1391,8 +1391,8 @@ void Ifix_game_object::remove_this
 	{
 	if (chunk)			// Mark superchunk as 'modified'.
 		{
-		int cx = chunk->get_cx(), cy = chunk->get_cy();
-		chunk->get_map()->set_ifix_modified(cx, cy);
+		int cx = get_cx(), cy = get_cy();
+		get_map()->set_ifix_modified(cx, cy);
 		}
 	Game_object::remove_this(nodel);
 	}

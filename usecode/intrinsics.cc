@@ -1605,8 +1605,8 @@ USECODE_INTRINSIC(mark_virtue_stone)
 	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
-		vs->set_pos(obj->get_outermost()->get_tile());
-		vs->set_map(obj->get_map_num());
+		vs->set_target_pos(obj->get_outermost()->get_tile());
+		vs->set_target_map(obj->get_map_num());
 		}
 	return no_ret;
 }
@@ -1634,9 +1634,9 @@ USECODE_INTRINSIC(recall_virtue_stone)
 			if (i == cnt)	// Failed?  Force it on Avatar.
 				gwin->get_main_actor()->add(obj, 1);
 			}
-		Tile_coord t = vs->get_pos();
+		Tile_coord t = vs->get_target_pos();
 		if (t.tx > 0 || t.ty > 0)
-			gwin->teleport_party(t, false, vs->get_map());
+			gwin->teleport_party(t, false, vs->get_target_map());
 		}
 	return no_ret;
 }

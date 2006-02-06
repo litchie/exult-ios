@@ -336,7 +336,7 @@ int Monster_actor::step
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
 		return (0);
-	if (get_flag(Obj_flags::paralyzed) || chunk->get_map() != gmap)
+	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
 		return 0;
 					// Get old chunk.
 	Map_chunk *olist = get_chunk();
@@ -611,8 +611,7 @@ int Slime_actor::step
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
 					// Frames 4-11 are green.
-		Game_object *b = chunk->get_map()->create_ireg_object(
-						912, 4 + rand()%8);
+		Game_object *b = get_map()->create_ireg_object(912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);
 		b->move(oldpos);
 		}
