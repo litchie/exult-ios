@@ -2578,21 +2578,22 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x50:		// PUSH static.
-				offset = Read2(frame->ip);
-				if (offset < 0) // Global static.
+				offset = (sint16)Read2(frame->ip);
+				if (offset < 0) {// Global static.
 					if (-offset < statics.size())
 						push(statics[-offset]);
 					else
 						pushi(0);
-				else if (offset <
-					    frame->function->statics.size())
-					push(frame->function->statics[offset]);
-				else
-					pushi(0);
+				} else {
+					if (offset < frame->function->statics.size())
+						push(frame->function->statics[offset]);
+					else
+						pushi(0);
+				}
 				break;
 			case 0x51:		// POP static.
 			{
-				offset = Read2(frame->ip);
+				offset = (sint16)Read2(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
 				if (offset < 0) {

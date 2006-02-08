@@ -390,6 +390,7 @@ class Usecode_internal : public Usecode_machine
 	// debugging functions
 	void uc_trace_disasm(Stack_frame* frame);
 	void uc_trace_disasm(Usecode_value* locals, int num_locals,
+						 std::vector<Usecode_value>& locstatics,
 						 uint8* data, uint8* externals, uint8* code,
 						 uint8* ip);
 	static int get_opcode_length(int opcode);
