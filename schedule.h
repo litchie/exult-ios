@@ -395,14 +395,23 @@ public:
  */
 class Waiter_schedule : public Schedule
 	{
-	int first;			// 1 if first 'what_next()' called.
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
-	vector<Actor*> customers;		// List of customers.
-	vector<Game_object*> prep_tables;		// Prep. tables.
-	vector<Game_object*> eating_tables;		// Tables with chairs around them.
-	void get_customer();
+	Game_object *prep_table;	// Table we're working at.
+	vector<Actor*> customers;	// List of customers.
+	vector<Game_object*> prep_tables;// Prep. tables.
+	vector<Game_object*> eating_tables;// Tables with chairs around them.
+	enum {
+		waiter_setup,
+		get_customer,
+		get_order,
+		prep_food,
+		serve_food
+	} state;
+	bool find_customer();
 	void find_tables(int shapenum);
+	bool walk_to_customer();
+	bool walk_to_prep();
 	Game_object *find_serving_spot(Tile_coord& spot);
 public:
 	Waiter_schedule(Actor *n);
