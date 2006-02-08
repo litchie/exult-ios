@@ -1937,16 +1937,16 @@ void Thief_schedule::now_what
 Waiter_schedule::Waiter_schedule
 	(
 	Actor *n
-	) : Schedule(n), first(1), startpos(n->get_tile()), customer(0)
-		
+	) : Schedule(n), startpos(n->get_tile()), customer(0), prep_table(0),
+	    state(waiter_setup)
 	{
 	}
 
 /*
- *	Get a new customer & walk to a prep. table.
+ *	Find a new customer.
  */
 
-void Waiter_schedule::get_customer
+bool Waiter_schedule::find_customer
 	(
 	)
 {
@@ -1968,22 +1968,51 @@ void Waiter_schedule::get_customer
 		customer = customers.back();
 		customers.pop_back();
 		}
-	npc->say(first_waiter_ask, last_waiter_ask);	
-	if (prep_tables.size())	// Walk to a 'prep' table.
-	{
-		Game_object *table = prep_tables[rand()%prep_tables.size()];
+	return customer != 0;
+}
+
+/*
+ *	Walk to prep. table.
+ *	Output:	false if failed.
+ */
+bool Waiter_schedule::walk_to_prep
+	(
+	)
+{
+	if (prep_tables.size())	{	// Walk to a 'prep' table.
+		prep_table = prep_tables[rand()%prep_tables.size()];
 		Tile_coord pos = Map_chunk::find_spot(
-			table->get_tile(), 1, npc);
+			prep_table->get_tile(), 1, npc);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, gwin->get_std_delay(), 
 							1000 + rand()%1000))
-			return;
-	}
+			return true;
+	} else
+		prep_table = 0;
 	const int dist = 8;		// Bad luck?  Walk randomly.
 	int newx = startpos.tx - dist + rand()%(2*dist);
 	int newy = startpos.ty - dist + rand()%(2*dist);
 	npc->walk_to_tile(newx, newy, startpos.tz, 2*gwin->get_std_delay(), 
 								rand()%2000);
+}
+
+/*
+ *	Walk to customer
+ *	Output:	false if failed.
+ */
+bool Waiter_schedule::walk_to_customer
+	(
+	)
+{
+	if (customer) {
+		Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
+								3, npc);
+		if (dest.tx != -1 && npc->walk_path_to_tile(dest,
+					gwin->get_std_delay(), rand()%1000))
+			return true;		// Walking there.
+	}
+	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
+	return false;
 }
 
 /*
@@ -2026,12 +2055,12 @@ Game_object *Waiter_schedule::find_serving_spot
 	{
 	Game_object_vector plates;	// First look for a nearby plate.
 	Game_object *plate = 0;
+	Game_object_vector::const_iterator it;
 	int cnt = npc->find_nearby(plates, 717, 1, 0);
 	if (!cnt)
 		cnt = npc->find_nearby(plates, 717, 2, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
-	for (Game_object_vector::const_iterator it = plates.begin();
-					it != plates.end(); ++it)
+	for (it = plates.begin(); it != plates.end(); ++it)
 		{
 		plate = *it;
 		if (plate->get_lift()/5 == floor)
@@ -2043,12 +2072,8 @@ Game_object *Waiter_schedule::find_serving_spot
 		}
 	Tile_coord cpos = customer->get_tile();
 	
-	// Blame MSVC
-	{
 		// Go through tables.
-
-	for (Game_object_vector::const_iterator it = eating_tables.begin();
-					it != eating_tables.end(); ++it)
+	for (it = eating_tables.begin(); it != eating_tables.end(); ++it)
 		{
 		Game_object *table = *it;
 		Rectangle foot = table->get_footprint();
@@ -2073,7 +2098,6 @@ Game_object *Waiter_schedule::find_serving_spot
 			return plate;
 			}
 		}
-	}
 	return 0;			// Failed.
 	}
 
@@ -2085,12 +2109,27 @@ void Waiter_schedule::now_what
 	(
 	)
 	{
-	if (rand() % 4 == 0)		// Check for lamps, etc.
+	Game_object *food;
+
+	if (state == get_customer &&
+	    rand() % 4 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
-	if (first)			// First time?
-		{
-		first = 0;		// Find tables.
+	if (state == get_order || state == serve_food) {
+		int dist = customer ? npc->distance(customer) : 5000;
+		if (dist > 32) {	// Need a new customer?
+			state = get_customer;
+			npc->start(200, 1000 + rand()%1000);
+			return;
+		}
+					// Not close enough, so try again.
+		if (dist >= 3 && !walk_to_customer()) {
+			state = get_customer;
+			return;
+		}
+	}
+	switch (state) {
+	case waiter_setup:
 		find_tables(971);
 		find_tables(633);
 		find_tables(847);
@@ -2099,60 +2138,75 @@ void Waiter_schedule::now_what
 		find_tables(890);
 		find_tables(964);
 		find_tables(333);
-		}
-	int dist = customer ? npc->distance(customer) : 5000;
-	if (dist > 32)			// Need a new customer?
-		{
-		get_customer();		// Find one, and walk to a prep. table.
-		return;
-		}
-	if (dist < 3)			// Close enough to customer?
-		{
+		state = get_customer;
+		/* FALL THROUGH */
+	case get_customer:
+		if (!find_customer()) {
+			walk_to_prep();
+			state = prep_food;
+		} else if (walk_to_customer())
+			state = get_order;
+		break;
+	case get_order: {
 		Game_object_vector foods;
-		if (customer->find_nearby(foods, 377, 2, 0) > 0)
-			{
+					// Close enough to customer?
+		if (customer->find_nearby(foods, 377, 2, 0) > 0) {
 			if (rand()%4)
 				npc->say(first_waiter_banter, 
 							last_waiter_banter);
-			}
-		else			// Needs food.
-			{
-			Game_object *food = npc->get_readied(Actor::lhand);
-			Tile_coord spot;
-			if (food && food->get_shapenum() == 377 &&
-			    find_serving_spot(spot))
-				{
-				npc->change_frame(npc->get_dir_framenum(
-					npc->get_direction(customer),
+			state = get_customer;
+			npc->start(200, 1000 + rand()%2000);
+			break;
+		}
+					// Ask for order.
+		npc->say(first_waiter_ask, last_waiter_ask);
+		walk_to_prep();
+		state = prep_food;
+		break;
+	}
+	case prep_food:
+		// +++++Might be nice to do something more here.
+		if (prep_table)
+			npc->change_frame(npc->get_dir_framenum(
+				npc->get_direction(prep_table),
 							Actor::standing));
-				npc->remove(food);
-				food->set_invalid();
-				food->move(spot);
-				if (rand()%3)
-					npc->say(first_waiter_serve,
-						 last_waiter_serve);
-				}
-			}
+		if (!npc->get_readied(Actor::lhand)) {
+					// Acquire some food.
+			int nfoods = ShapeID(377, 0).get_num_frames();
+			int frame = rand()%nfoods;
+			food = new Ireg_game_object(377, frame, 0, 0, 0);
+			npc->add_readied(food, Actor::lhand);
+		}
+		if (!walk_to_customer()) {
+			state = get_customer;
+			if (rand()%3 == 0)
+				gwin->get_usecode()->call_usecode(
+					npc->get_usecode(), npc,
+					Usecode_machine::npc_proximity);
+		} else
+			state = serve_food;
+		break;
+	case serve_food:
+		food = npc->get_readied(Actor::lhand);
+		Tile_coord spot;
+		if (food && food->get_shapenum() == 377 &&
+		    find_serving_spot(spot)) {
+			npc->change_frame(npc->get_dir_framenum(
+				npc->get_direction(customer),
+							Actor::standing));
+			npc->remove(food);
+			food->set_invalid();
+			food->move(spot);
+			if (rand()%3)
+				npc->say(first_waiter_serve,
+					 last_waiter_serve);
+		}
+		state = get_customer;
 		customer = 0;		// Done with this one.
 		npc->start(250, rand()%3000);
 		return;
-		}
-					// Walk to customer with food.
-	if (!npc->get_readied(Actor::lhand))
-		{			// Acquire some food.
-		int nfoods = ShapeID(377, 0).get_num_frames();
-		int frame = rand()%nfoods;
-		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
-		npc->add_readied(food, Actor::lhand);
-		}
-	Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
-					3, npc);
-	if (dest.tx != -1 && npc->walk_path_to_tile(dest,
-					gwin->get_std_delay(), rand()%1000))
-		return;				// Walking there.
-
-	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
 	}
+}
 
 /*
  *	Waiter schedule is done.

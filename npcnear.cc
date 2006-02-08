@@ -145,6 +145,8 @@ void Npc_proximity_handler::handle_event
 			!npc->is_in_party() &&
 					// And not if walking to sched. spot.
 		 sched != Schedule::walk_to_schedule &&
+					// Waiter-sched. does this itself.
+		 sched != Schedule::waiter &&
 					// And not for patrollers/monsters
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||
