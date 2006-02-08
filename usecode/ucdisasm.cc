@@ -35,6 +35,7 @@ using std::cout;
 
 #include "ucinternal.h"
 #include "uctools.h"
+#include "ucfunction.h"
 #include "utils.h"
 #include "useval.h"
 #include "game.h"
@@ -55,6 +56,7 @@ void Usecode_internal::uc_trace_disasm(Stack_frame* frame)
 {
 	uc_trace_disasm(frame->locals,
 					frame->num_args + frame->num_vars,
+					frame->function->statics,
 					frame->data,
 					frame->externs,
 					frame->code,
@@ -62,8 +64,9 @@ void Usecode_internal::uc_trace_disasm(Stack_frame* frame)
 }
 
 void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
-						 uint8* data, uint8* externals, uint8* code,
-						 uint8* ip)
+									   std::vector<Usecode_value>& locstatics,
+									   uint8* data, uint8* externals,
+									   uint8* code, uint8* ip)
 {
 	int func_ip = (int)(ip - code);
 	int opcode = *ip++;
@@ -73,7 +76,8 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	if (opcode >=0 && opcode < (sizeof(opcode_table)/sizeof(opcode_table[0])))
 		pdesc = &(opcode_table[opcode]);
 	signed short immed;
-	unsigned short varref;
+	uint16 varref;
+	sint16 staticref;
 	unsigned short func;
 	int immed32;
 	int offset;
@@ -204,6 +208,22 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					std::printf("set");
 				else
 					std::printf("unset");
+				break;
+			case STATICREF:
+				staticref = Read2(ip);
+				std::printf("[%04X]\t= ", (uint16)staticref);
+				if (staticref < 0) {
+					// global
+					if (-staticref < statics.size())
+						statics[-staticref].print(cout, true);
+					else
+						std::printf("<out of range>");
+				} else {
+					if (staticref < locstatics.size())
+						locstatics[staticref].print(cout, true);
+					else
+						std::printf("<out of range>");
+				}
 				break;
 			default:
 				// Unknown type
