@@ -1,3 +1,7 @@
+2006-02-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/ucinternal.cc: fixed global statics
+	* usecode/ucdisasm.cc: fixed global static disassembly
+
 2006-02-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: don't make get_map/get_map_num segfault when undefined
 	* objs/virstone.*: renamed map/pos functions to get/set_target_pos/map

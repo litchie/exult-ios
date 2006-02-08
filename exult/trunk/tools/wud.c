@@ -187,6 +187,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		}
 		break;
 	case VARREF:
+	case STATICREF:
 		// Print variable reference
 		printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;

@@ -30,6 +30,7 @@
 #define RELATIVE_JUMP32 14
 #define IMMED_RELJUMP32 15
 #define SLOOP32 16
+#define STATICREF 17
 
 // Opcode descriptor
 typedef struct _opcode_desc
@@ -124,8 +125,8 @@ static opcode_desc opcode_table[] =
 	{ "line",2,IMMED },					// 4c
 	{ "func",4,DATA_STRING },			// 4d
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },			// 4e - 4f
-	{ "push\tstatic", 2, VARREF },			// 50
-	{ "pop\tstatic", 2, VARREF },			// 51
+	{ "push\tstatic", 2, STATICREF },			// 50
+	{ "pop\tstatic", 2, STATICREF },			// 51
 	{ "callo",2,IMMED },				// 52
 	{ "callind", 0, 0 },			// 53
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 54-57
