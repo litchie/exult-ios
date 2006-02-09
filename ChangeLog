@@ -1,3 +1,7 @@
+2006-02-08    <jeff@mini.nerble.net>
+
+	* schedule.cc (Waiter_schedule): Improvements to this schedule.
+
 2006-02-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/ucinternal.cc: fixed global statics
 	* usecode/ucdisasm.cc: fixed global static disassembly

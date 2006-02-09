@@ -410,7 +410,7 @@ class Waiter_schedule : public Schedule
 	} state;
 	bool find_customer();
 	void find_tables(int shapenum);
-	bool walk_to_customer();
+	bool walk_to_customer(int min_delay = 0);
 	bool walk_to_prep();
 	Game_object *find_serving_spot(Tile_coord& spot);
 public:
