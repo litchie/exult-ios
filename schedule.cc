@@ -1994,6 +1994,7 @@ bool Waiter_schedule::walk_to_prep
 	int newy = startpos.ty - dist + rand()%(2*dist);
 	npc->walk_to_tile(newx, newy, startpos.tz, 2*gwin->get_std_delay(), 
 								rand()%2000);
+	return false;
 }
 
 /*
@@ -2002,13 +2003,14 @@ bool Waiter_schedule::walk_to_prep
  */
 bool Waiter_schedule::walk_to_customer
 	(
+	int min_delay			// Min. delay in msecs.
 	)
 {
 	if (customer) {
 		Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
 								3, npc);
 		if (dest.tx != -1 && npc->walk_path_to_tile(dest,
-					gwin->get_std_delay(), rand()%1000))
+			gwin->get_std_delay(), min_delay + rand()%1000))
 			return true;		// Walking there.
 	}
 	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
@@ -2165,11 +2167,21 @@ void Waiter_schedule::now_what
 		break;
 	}
 	case prep_food:
-		// +++++Might be nice to do something more here.
-		if (prep_table)
+		if (prep_table && npc->distance(prep_table) <= 3) {
 			npc->change_frame(npc->get_dir_framenum(
-				npc->get_direction(prep_table),
+				npc->get_facing_direction(prep_table),
 							Actor::standing));
+			Usecode_script *scr = new Usecode_script(npc);
+			(*scr) << Ucscript::face_dir << npc->get_dir_facing();
+			for (int cnt = 1 + rand()%3; cnt; --cnt) {
+			  (*scr) << (Ucscript::npc_frame + Actor::ready_frame)
+				 << Ucscript::delay_ticks << 1
+				 << (Ucscript::npc_frame + Actor::raise1_frame)
+				 << Ucscript::delay_ticks << 1;
+			}
+			(*scr) << (Ucscript::npc_frame + Actor::standing);
+			scr->start();	// Start next tick.
+		}
 		if (!npc->get_readied(Actor::lhand)) {
 					// Acquire some food.
 			int nfoods = ShapeID(377, 0).get_num_frames();
@@ -2177,14 +2189,15 @@ void Waiter_schedule::now_what
 			food = new Ireg_game_object(377, frame, 0, 0, 0);
 			npc->add_readied(food, Actor::lhand);
 		}
-		if (!walk_to_customer()) {
+		if (!walk_to_customer(3000)) {
 			state = get_customer;
 			if (rand()%3 == 0)
 				gwin->get_usecode()->call_usecode(
 					npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);
-		} else
+		} else {
 			state = serve_food;
+		}
 		break;
 	case serve_food:
 		food = npc->get_readied(Actor::lhand);
@@ -2200,10 +2213,16 @@ void Waiter_schedule::now_what
 			if (rand()%3)
 				npc->say(first_waiter_serve,
 					 last_waiter_serve);
+			Usecode_script *scr = new Usecode_script(npc);
+			(*scr) << Ucscript::face_dir << npc->get_dir_facing()
+				<< (Ucscript::npc_frame + Actor::ready_frame)
+				<< Ucscript::delay_ticks << 2
+				<< (Ucscript::npc_frame + Actor::standing);
+			scr->start();	// Start next tick.
 		}
 		state = get_customer;
 		customer = 0;		// Done with this one.
-		npc->start(250, rand()%3000);
+		npc->start(250, 1000 + rand()%2000);
 		return;
 	}
 }
