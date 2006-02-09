@@ -144,6 +144,33 @@ int Game_object::get_direction
 	}
 
 /*
+ *	Get direction to best face an object.
+ */
+
+int Game_object::get_facing_direction
+	(
+	Game_object *o2
+	) const
+	{
+	Tile_coord t1 = get_tile();
+	Rectangle torect = o2->get_footprint();
+	if (torect.x + torect.w <= t1.tx && 
+	    t1.ty >= torect.y && t1.ty < torect.y + torect.h)
+		return (int) west;
+	else if (t1.tx < torect.x &&
+	    t1.ty >= torect.y && t1.ty < torect.y + torect.h)
+		return (int) east;
+	else if (torect.y + torect.h <= t1.ty &&
+	    t1.tx >= torect.x && t1.tx < torect.w + torect.h)
+		return (int) south;
+	else if (t1.ty < torect.y &&
+	    t1.tx >= torect.x && t1.tx < torect.w + torect.h)
+		return (int) north;
+	else
+		return get_direction(o2);
+	}
+
+/*
  *	Does a given shape come in quantity.
  */
 static int Has_quantity

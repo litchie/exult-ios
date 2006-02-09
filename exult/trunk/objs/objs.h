@@ -123,6 +123,7 @@ public:
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
 	int get_direction(Tile_coord t2) const;
+	int get_facing_direction(Game_object *o2) const;
 	Map_chunk *get_chunk() const	// Get chunk this is in.
 		{ return chunk; }
 	Game_map *get_map() const; // Map we're on.
