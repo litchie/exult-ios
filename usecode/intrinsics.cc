@@ -892,8 +892,10 @@ USECODE_INTRINSIC(give_last_created)
 		{
 					// Get object, but don't pop yet.
 		Game_object *obj = last_created.back();
+		// Might not have been removed from world yet.
+		if (!obj->get_owner() && obj->is_pos_invalid())
 					// Don't check vol.  Causes failures.
-		ret = cont->add(obj, 1);
+			ret = cont->add(obj, 1);
 		if (ret)		// Pop only if added.  Fixes chest/
 					//   tooth bug in SI.
 			last_created.pop_back();
