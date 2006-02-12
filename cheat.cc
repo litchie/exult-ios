@@ -947,13 +947,13 @@ void Cheat::heal_party (void) const {
 
 			// remove hunger  +++++ what is "normal" food level??
 			party[i]->set_property(Actor::food_level, 30);
+
+			// restore mana
+			if (party[i]->get_effective_prop(Actor::magic)>0)
+				party[i]->set_property(Actor::mana, party[i]->get_property(Actor::magic));
 		}
 	}
 
-	// restore mana
-	Main_actor* avatar = gwin->get_main_actor();
-	avatar->set_property(Actor::mana, avatar->get_property(Actor::magic));
- 
 	eman->center_text("Party healed");
 	gwin->paint();
 }

@@ -519,7 +519,11 @@ static void Handle_client_message
 			break;
 			}
 		cout << "Displaying container's gump" << endl;
-		obj->show_gump();
+		Actor *act = obj->as_actor();
+		if (act)
+			act->show_inventory();
+		else
+			obj->show_gump();
 		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:

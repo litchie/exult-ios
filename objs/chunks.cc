@@ -1362,14 +1362,16 @@ void Map_chunk::setup_dungeon_levels
 	{
 		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
-		if (shnum == 983 || shnum == 969 || shnum == 183 ||
-		    shnum == 182 || shnum == 180 || shnum == 324 || 
-		    ((shnum == 941 || shnum == 394) && 
-					Game::get_game_type() == SERPENT_ISLE))
+		Shape_info *shinf = each->get_info();
+		if (shinf->get_shape_class() == building &&
+			(shinf->is_poisonous() && shinf->is_field()) ||
+			(Shapeinfo_lookup::get_mountain_top(shnum) &&
+			(Game::get_game_type() == BLACK_GATE)))
 		{
 			// SI shape 941, frame 0 => do whole chunk (I think).
 			Rectangle area = 
-				(shnum == 941 && each->get_framenum() == 0)
+				(shinf->has_translucency() 
+					&& each->get_framenum() == 0)
 				? Rectangle(cx*c_tiles_per_chunk,
 					    cy*c_tiles_per_chunk,
 					    c_tiles_per_chunk,
@@ -1384,9 +1386,8 @@ void Map_chunk::setup_dungeon_levels
 				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 						tiles, each->get_lift());
 		}			// Ice Dungeon Pieces in SI
-		else if (Game::get_game_type() == SERPENT_ISLE && (
-			shnum == 436 || shnum == 437 || shnum == 444 ||
-			shnum == 448  || shnum == 466 || shnum == 477))
+		else if (shinf->get_shape_class() == building &&
+			shinf->occludes() && shinf->is_water()))
 		{
 			// HACK ALERT! This gets 320x200 to work, but it is a hack
 			// This is not exactly accurate.

@@ -52,7 +52,8 @@ class  Gump_manager : public Game_singletons
 					// CALL set_gumps_dont_pause_game.
 public:
 	void add_gump(Gump *gump);		// Add a single gump to screen
-	void add_gump(Game_object *obj, int shapenum);	// Show gump for obj
+		// Show gump for obj
+	void add_gump(Game_object *obj, int shapenum, bool actorgump = false);
 
 	bool remove_gump(Gump *gump);		// Detatch a gump from the list
 	bool close_gump(Gump *gump);		// Close a gump

@@ -1,3 +1,41 @@
+2006-02-12  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Round 1 of de-hard-coding data from Exult.
+	* actors.cc: Added support for custom BG-style gumps. Eliminated
+	  the hard-coded data about which items get usecode ready/unready
+	  events.
+	* bggame.cc, sigame.cc: Two new resources in the respective flx
+	  files.
+	* cheat.cc, cheat_screen.cc: NPCs with mana should recover/be able
+	* data/*/*: New de-hard-coded data, and mpdified flx.in files to
+	  add them to the correct game flx file.
+	* effects.cc: The association shape <> explosion sprite has been
+	  moved out.
+	* files/msgfile.cc: Lines starting with a ':' will be sequentially
+	  auto-indexed.
+	* gumps/Face_button.cc, Face_stats.cc: Removed restrictions on
+	  which NPCs display faces in the status bar. Also, NPCs with
+	  non-zero magic will display a mana bar.
+	* gumps/Gump_manager.cc, Gump_manager.h, Paperdoll_gump.h: Added
+	  support for BG-style gumps.
+	* gumps/Paperdoll_gump.cc: Removed references to old paperdoll
+	  data from the file.
+	* gumps/Paperdoll_gump_info.cc: Externalized all paperdoll data.
+	* keyactions.cc: Support for custom BG-style gumps.
+	* server/server.cc, mapedit/exult_studio.glade, npcedit.cc: Added
+	  the ability to display an actor's gump from the edit window.
+	  Also modified a few things in shape edit window in preparation
+	  for adding editing capabilities for newly exported data.
+	* objs/chunks.cc: Removed hard-coded data about 'mountain tops'.
+	  Seems to work OK.
+	* objs/animate.cc, animate.h: Shape <> sfx and shape <> animation
+	  info have been moved out.
+	* shapes/miscinf.h, miscinf.cc, makefile.am: New file for
+	  loading/retrieving the newly de-hard-coded data.
+	  to edit it with cheats.
+	* shapes/bodies.cc, bodies.h: Deleted the old bodies table,
+	  externalized the data in the Is_Body function.
+	* usecode/intrinsics.cc: Fixed wrong comment.
+
 2006-02-08    <jeff@mini.nerble.net>
 
 	* schedule.cc (Waiter_schedule): Improvements to this schedule.

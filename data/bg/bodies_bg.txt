@@ -2,6 +2,14 @@
 #
 #	July 31, 2006 - Derived from shapes/bodies.cc
 #
+%%section bodyshapes
+:400
+:414
+:762
+:778
+:892
+%%endsection
+%%section bodylist
 154:762/22 			# x mage
 155:762/2 			# X Ferryman
 226:892/29 			# X flying gargoyle
@@ -126,3 +134,4 @@
 970:762/14 			# x sheep
 989:400/2 			# X avatar female
 1015:414/4			# x Stone Golem
+%%endsection

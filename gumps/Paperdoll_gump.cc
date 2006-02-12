@@ -369,9 +369,7 @@ void Paperdoll_gump::paint
 	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
-	if (!info) info = GetCharacterInfo (actor->get_shape_real());
-	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
-	else if (!info) info = Characters_BG;
+	if (!info) info = GetCharacterInfoSafe (actor->get_shape_real());
 
 	// Spots that are female/male specific
 	int	shieldx, shieldy,
@@ -743,9 +741,7 @@ Game_object * Paperdoll_gump::find_object
 	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
-	if (!info) info = GetCharacterInfo (actor->get_shape_real());
-	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
-	else if (!info) info = Characters_BG;
+	if (!info) info = GetCharacterInfoSafe (actor->get_shape_real());
 
 	int	shieldx, shieldy,
 		back2x,  back2y,

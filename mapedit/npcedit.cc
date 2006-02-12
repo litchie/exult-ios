@@ -79,6 +79,28 @@ C_EXPORT void on_npc_cancel_btn_clicked
 	ExultStudio::get_instance()->close_npc_window();
 	}
 
+
+/*
+ *	Display the npc's gump.
+ */
+C_EXPORT void on_npc_show_gump_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	cout << "In on_npc_show_gump_clicked()" << endl;
+	unsigned char data[Exult_server::maxlength];
+					// Get container address.
+	unsigned long addr = (unsigned long) gtk_object_get_user_data(
+					GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	unsigned char *ptr = &data[0];
+	Write4(ptr, addr);
+	
+	ExultStudio::get_instance()->send_to_server(Exult_server::cont_show_gump, data, ptr - data);
+	cout << "Sent npc container data to server" << endl;
+	}
+
 /*
  *	Npc window's close button.
  */

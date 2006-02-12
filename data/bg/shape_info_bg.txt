@@ -1,0 +1,125 @@
+#	Various shape information for Black Gate.
+#
+#	February 6, 2006
+#
+%%section explosions
+#Format
+#	:shapenum/spritenum
+#The 'default' explosion is spritenum 5, and may be left out.
+:399/13			# Delayed blast
+:639/8			# Death Vortex
+:554/19			# Burst Arrow
+:78/4			# Explosion
+:621/4			# Delayed Blast
+:702/1			# Cannon
+:704/1			# Powder Keg
+:565/18			# Starburst
+:287/23			# Swordstrike
+%%endsection
+
+%%section shape_sfx
+#Format
+#	:shapenum/sfxnum
+#	Surf (47 or 49)
+:612/49
+:613/49
+:632/49
+:736/49
+:737/49
+:751/49
+:808/49
+:834/49
+:875/49
+:907/49
+:911/49
+:918/49
+:1012/49
+:1020/49
+:1022/49
+#	Bubbles (54, 56)
+:334/56
+:335/56
+:780/56
+#	Fountains
+:893/36
+#		Black Gate only SFX
+#	Moongates
+:157/77
+:776/77
+:777/77
+:779/77
+#	Sphere generator
+:234/80
+:235/80
+:236/80
+#	Tetrahedron generator
+:242/81
+:243/81
+:244/81
+#	Cube generator
+:238/82
+:239/82
+:240/82
+#	Black gate
+:305/78
+#	Vortex cube
+:786/79
+#	Grandfather clock
+:252/116
+:695/116
+%%endsection
+
+%%section animation
+#Format
+#	:shapenum/0/first_frame/frame_count/offset
+#Sundials
+#	:shapenum/1
+#Energy fields
+#	:shapenum/2
+#The dafault animation starts at frame 0, goes through all
+#frames and returns to frame 0 again. This list is only for
+#animations which are NOT like that.
+#For other animation cycles, the animation starts at
+#first_frame, goes through frame_count frames (including the
+#first one) and returns to first_frame. offset is an overall
+#phase shift in the animation. If offset is '%', then Exult
+#will calc offset as sframe%frame_count, where sframe is the
+#frame with which the animation was created. If offset is
+#ommited, Exult will set it equal to sframe.
+#
+#	Sundial
+:284/1
+#	Energy field
+:768/2
+#	Vertical shaft
+:862/0/0/1/0
+:862/0/1/3/0
+#	Horizontal shaft
+:880/0/0/1/0
+:880/0/1/3/0
+#	Sawmill
+:933/0/0/1/0
+:933/0/1/3/0
+%%endsection
+
+%%section usecode_events
+#List of which items receive usecode events when readied/unreadied.
+:296		#	Ring of invibility
+:297		#	Ring of protection
+:298		#	Ring of regeneration
+:338		#	Lit light source
+:701		#	Lit torch
+%%endsection
+
+%%section mountain_tops
+#BG Only; in SI, set the flags 'Occludes', plus 'Poisonous' and 'Field'
+#for dungeons or 'Occludes' plus 'Water' for ice dungeons.
+#In any case (BG or SI), object type MUST be building. Setting the above
+#flags will also work in BG, as long as the shape is not in the list below.
+:983
+:969
+:183
+:182
+:180
+:324
+%%endsection

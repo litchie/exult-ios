@@ -282,7 +282,7 @@ void ActionInventory(int *params)
 			// Check if this actor's inventory page is open or not
 			if (!gump_man->find_gump(actor, shapenum))
 			{
-				gump_man->add_gump(actor, shapenum); //force showing inv.
+				gump_man->add_gump(actor, shapenum, true); //force showing inv.
 				inventory_page = i;
 				return;
 			}

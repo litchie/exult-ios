@@ -35,6 +35,7 @@
 #include "game.h"
 #include "Gump.h"
 #include "egg.h"
+#include "miscinf.h"
 
 #include "SDL_timer.h"
 
@@ -434,30 +435,6 @@ void Sprites_effect::paint
 		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize);
 	}
 
-inline int Get_explosion_shape(int shapenum)
-{
-	switch (shapenum)
-		{
-	case 399:	//delayed blast
-		return 13;
-	case 639:	//death vortex
-		return 8;
-	case 554:	//burst arrow
-		return 19;
-	case 78:	//explosion
-	case 621:	//delayed blast
-		return 4;	//Guessing
-	case 702:	//cannon
-	case 704:	//powder keg
-		return 1;
-	case 565:	//starburst
-		return 18;
-	case 287:	//swordstrike
-		return 23;
-	default:	//This seems to be the default in the original
-		return 5;
-		}
-}
 /*
  *	Start explosion.
  */
@@ -473,7 +450,7 @@ Explosion_effect::Explosion_effect
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
 							//Different sprites for different explosion types
-	) : Sprites_effect(Get_explosion_shape(proj ? proj : weap >= 0 ? weap : 704),
+							) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
 			p, 0, 0, delay), explode(exp), projectile(proj),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {
@@ -817,7 +794,7 @@ Special_projectile::Special_projectile	// A better name is welcome...
 	Game_object *trg,		// What to aim for.
 	Tile_coord sp,			// Where to start.
 	Tile_coord tp			// Target pos, if trg isn't an actor.
-	) : sprite(Get_explosion_shape(shnum), 0, SF_SPRITES_VGA), next_damage_time(0)
+	) : sprite(Shapeinfo_lookup::get_explosion_sprite(shnum), 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
 	weapon = shnum;
 	attacker = att;

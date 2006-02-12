@@ -155,7 +155,7 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 {
 	hp = new Stat_bar(par, px+4, py - 10, a, Actor::health, Actor::strength, PALETTE_INDEX_RED);
 
-	if (actor->get_npc_num() == 0) 
+	if (actor->get_effective_prop(Actor::magic)>0) 
 		mana = new Stat_bar(par, px+4, py - 5, a, Actor::mana, Actor::magic, PALETTE_INDEX_BLUE);
 
 	hit = actor->was_hit();
@@ -389,11 +389,22 @@ void Face_stats::create_buttons()
 
 	int num_to_paint = 0;
 
-	// In BG only Npc's 0 to 10 have paperdolls/gumps
 	for (i = 0; i < party_size; i++) {
 		int num = partyman->get_member(i);
-		if (GAME_SI || (num >= 0 && num <=10)) ++num_to_paint;
-	}
+		// Show faces if in SI, or if paperdolls are allowed
+		if (GAME_SI || sman->can_use_paperdolls())
+			++num_to_paint;
+		else
+			{
+			// Otherwise, show faces also if the character
+			// has paperdoll information (*risky*, as the
+			// specified face may not exist in bg_paperdoll
+			// file (or a patch), leading to a crash)
+			Actor *act = gwin->get_npc(num);
+			if (Paperdoll_gump::GetCharacterInfo(act->get_shapenum()))
+				++num_to_paint;
+			}
+		}
 
 	if (mode == 0) pos = 0;
 	else if (mode == 1) pos = (resx - (num_to_paint+1)*PORTRAIT_WIDTH)/2;
@@ -410,8 +421,14 @@ void Face_stats::create_buttons()
 	for (i = 0; i < party_size; i++)
 	{
 		npc_nums[i+1] = partyman->get_member(i);
-		// In BG only Npc's 0 to 10 have paperdolls/gumps
-		if (GAME_SI || (npc_nums[i+1] >= 0 && npc_nums[i+1] <=10)) {
+		Actor *act = gwin->get_npc(npc_nums[i+1]);
+		// Show faces if in SI, or if paperdolls are allowed
+		if (GAME_SI || sman->can_use_paperdolls() ||
+				// Otherwise, show faces also if the character
+				// has paperdoll information (*risky*, as the
+				// specified face may not exist in bg_paperdoll
+				// file (or a patch), leading to a crash)
+				Paperdoll_gump::GetCharacterInfo(act->get_shapenum())) {
 			pos += width;
 			party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
 		}

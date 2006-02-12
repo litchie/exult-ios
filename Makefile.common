@@ -60,7 +60,7 @@ IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
-	monstinf.o u7drag.o
+	monstinf.o u7drag.o miscinf.o 
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
