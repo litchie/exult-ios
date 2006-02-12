@@ -1932,8 +1932,8 @@ USECODE_INTRINSIC(get_readied)
 {
 	// get_readied(npc, where)
 	// Where:
-	//   0=weapon hand, 
-	//   1=other hand,
+	//   0=other hand, 
+	//   1=weapon hand,
 	//   2=cloak,
 	//   3=neck,
 	//   4=head,

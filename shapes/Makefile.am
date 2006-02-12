@@ -17,6 +17,8 @@ libshapes_la_SOURCES = \
 	glshape.h \
 	items.cc \
 	items.h \
+	miscinf.cc \
+	miscinf.h \
 	monstinf.cc \
 	monstinf.h \
 	pngio.cc \

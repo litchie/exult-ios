@@ -139,6 +139,8 @@ BG_Game::BG_Game()
 
 		add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", EXULT_BG_FLX_DEFAULTKEYS_TXT);
 		add_resource("config/bodies", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BODIES_BG_TXT);
+		add_resource("config/paperdol_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_PAPERDOL_INFO_BG_TXT);
+		add_resource("config/shape_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_INFO_BG_TXT);
 
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);

@@ -84,6 +84,9 @@ public:
 		int			arms_frame;			// Normal Arms Frame
 		int			arms_frame_2h;			// Frame when holding a two handed weapon
 		int			arms_frame_staff;		// Frame when holding staff style weapon
+		
+		// BG gump info
+		int			gump_shape;
 	};
 
 private:
@@ -92,15 +95,6 @@ private:
 protected:
 
 	// Statics
-
-	// Serpent Isle
-	static Paperdoll_npc Characters[];	// NPC information
-	static Paperdoll_item Items[];		// Item Information
-
-	// Black Gate (it's a hack I tell you)
-	static Paperdoll_npc Characters_BG[];	// NPC information
-	static Paperdoll_item Items_BG[];	// Item Information
-
 	static short coords[36];		// Coords. of where to draw things,
 	static short coords_blue[36];		// indexed by spot # (0-17).
 	static short shapes_blue[36];
@@ -176,6 +170,7 @@ public:
 	static Paperdoll_npc *GetCharacterInfoSafe(int shape);
 	static Paperdoll_npc *GetCharacterInfo(int shape);
 	static Paperdoll_item *GetItemInfo(int shape, int frame = -1, int spot = -1);
+	static void Setup_paperdolls();
 
 	// Non Statics
 

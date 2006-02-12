@@ -60,6 +60,7 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings, char* section)
 	int linenum = 0;
 #define NONEFOUND 0xffffffff
 	unsigned long first = NONEFOUND;// Index of first one found.
+	long next_index = 0;// For auto-indexing of lines
 	while (!in->eof())
 	{
 		++linenum;
@@ -84,26 +85,36 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings, char* section)
 				continue;
 				}
 			cerr << "Line #" << linenum << 
-				" has the wrong section name" << endl;
+				" has the wrong section name: " << newstrdup(ptr) << " != " << section << endl;
 			return -1;
 		}
 		if (buf[0] == '%' && strncmp(ptr + 1, "%endsection", 11) == 0)
 			break;
-		char *endptr;		// Get line# in decimal, hex, or oct.
-		long index = strtol(ptr, &endptr, 0);
-		if (endptr == ptr)	// No #?
-		{
-			if (*ptr == '#')
-				continue;
-			cerr << "Line " << linenum <<
-					" doesn't start with a number" << endl;
-			return -1;
+		char *endptr;
+		long index;
+		
+		if (buf[0] == ':')
+		{			// Auto-index lines missing an index.
+			index = next_index++;
+			endptr = const_cast<char *>(&buf[0]);
 		}
-		if (*endptr != ':')
-		{
-			cerr << "Missing ':' in line " << linenum << 
-				".  Ignoring line" << endl;
-			continue;
+		else
+		{			// Get line# in decimal, hex, or oct.
+			index = strtol(ptr, &endptr, 0);
+			if (endptr == ptr)	// No #?
+			{
+				if (*ptr == '#')
+					continue;
+				cerr << "Line " << linenum <<
+						" doesn't start with a number" << endl;
+				return -1;
+			}
+			if (*endptr != ':')
+			{
+				cerr << "Missing ':' in line " << linenum << 
+					".  Ignoring line" << endl;
+				continue;
+			}
 		}
 		if (index >= strings.size())
 			strings.resize(index + 1);

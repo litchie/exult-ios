@@ -2310,7 +2310,7 @@ void CheatScreen::StatMenu (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
 	// Magic - Avatar Only
-	if (!actor->get_npc_num())
+	if (actor->get_effective_prop(Actor::magic)>0)
 	{
 		// Magic Points
 		snprintf (buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));

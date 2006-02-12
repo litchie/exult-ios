@@ -227,19 +227,16 @@ bool Gump_manager::remove_gump(Gump *gump)
 void Gump_manager::add_gump
 	(
 	Game_object *obj,		// Object gump represents.
-	int shapenum			// Shape # in 'gumps.vga'.
+	int shapenum,			// Shape # in 'gumps.vga'.
+	bool actorgump			// If showing an actor's gump
 	)
 {
-	int paperdoll = 0;
+	bool paperdoll = false;
 	
-	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
-		&& Game::get_game_type() != SERPENT_ISLE)
-		paperdoll = 1;
-
 	// overide for paperdolls
-	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
+	if (actorgump && (Game::get_game_type() == SERPENT_ISLE ||
 		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
-		paperdoll=2;
+		paperdoll = true;
 	
 	Gump *dragged = gwin->get_dragging_gump();
 	
@@ -270,7 +267,7 @@ void Gump_manager::add_gump
 	int x = (1 + cnt)*gwin->get_width()/10, 
 	    y = (1 + cnt)*gwin->get_height()/10;
 
-	ShapeID s_id(shapenum, 0, paperdoll == 2 ? SF_PAPERDOL_VGA : SF_GUMPS_VGA);
+	ShapeID s_id(shapenum, 0, paperdoll ? SF_PAPERDOL_VGA : SF_GUMPS_VGA);
     	Shape_frame *shape = s_id.get_shape();
 		
 	if (x + shape->get_xright() > gwin->get_width() ||
@@ -285,9 +282,9 @@ void Gump_manager::add_gump
 	Actor *npc = 0;
     if (obj)
         npc = obj->as_actor();
-	if (npc && paperdoll == 2)
+	if (npc && paperdoll)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
-	else if (npc && paperdoll) 
+	else if (npc && actorgump) 
 		new_gump = new Actor_gump(npc, x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = Stats_gump::create(obj, x, y);
