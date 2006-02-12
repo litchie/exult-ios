@@ -1,0 +1,147 @@
+#	Various shape information for Serpent Isle.
+#
+#	February 6, 2006
+#
+%%section explosions
+#Format
+#	:shapenum/spritenum
+#The 'default' explosion is spritenum 5, and may be left out.
+:399/13			# Delayed blast
+:639/8			# Death Vortex
+:554/19			# Burst Arrow
+:78/4			# Explosion
+:621/4			# Delayed Blast
+:702/1			# Cannon
+:704/1			# Powder Keg
+:565/18			# Starburst
+:287/23			# Swordstrike
+%%endsection
+
+%%section shape_sfx
+#Format
+#	:shapenum/sfxnum
+#	Surf (47 or 49)
+:612/49
+:613/49
+:632/49
+:736/49
+:737/49
+:751/49
+:808/49
+:834/49
+:875/49
+:907/49
+:911/49
+:918/49
+:1012/49
+:1020/49
+:1022/49
+#	Bubbles (54, 56)
+:334/56
+:335/56
+:780/56
+#	Fountains
+:893/36
+%%endsection
+
+%%section animation
+#Format
+#	:shapenum/0/first_frame/frame_count/offset
+#Sundials
+#	:shapenum/1
+#Energy fields
+#	:shapenum/2
+#The dafault animation starts at frame 0, goes through all
+#frames and returns to frame 0 again. This list is only for
+#animations which are NOT like that.
+#For other animation cycles, the animation starts at
+#first_frame, goes through frame_count frames (including the
+#first one) and returns to first_frame. offset is an overall
+#phase shift in the animation. If offset is '%', then Exult
+#will calc offset as sframe%frame_count, where sframe is the
+#frame with which the animation was created. If offset is
+#ommited, Exult will set it equal to sframe.
+#
+#	Sundial
+:284/1
+#	Energy field
+:768/2
+#	Fountain
+:153/0/0/6/%
+:153/0/6/6/%
+:153/0/12/6/%
+#	Lava
+:184/0/0/6/%
+:184/0/6/6/%
+#	Pennant
+:222/0/0/6/%
+:222/0/6/6/%
+:222/0/12/6/%
+#	Fire
+:289/0/0/6/%
+:289/0/6/6/%
+#	Serpent Statue
+:305/0/0/6/%
+:305/0/6/6/%
+#	Fountain
+:326/0/0/6/%
+:326/0/6/6/%
+:326/0/12/6/%
+#	Flux analyzer
+:456/0/0/6/%
+:456/0/6/6/%
+#	Magic music player
+:614/0/0/6/%
+#	Planets
+:655/0/0/6/%
+:655/0/6/6/%
+:655/0/12/6/%
+:655/0/18/6/%
+:655/0/24/6/%
+#	Grandfather clock
+:695/0/0/6/%
+:695/0/6/6/%
+#	Pulsating object
+:726/0/0/6/%
+:726/0/6/6/%
+:726/0/12/6/%
+:726/0/18/6/%
+:726/0/24/6/%
+#	statue
+:743/0/0/6/%
+:743/0/6/6/%
+#	Severed limb
+:794/0/0/6/%
+:794/0/6/6/%
+:794/0/12/6/%
+:794/0/18/6/%
+:794/0/24/6/%
+#	Burning urn
+:992/0/0/6/%
+:992/0/6/6/%
+#	Magic wave
+:779/0/0/6/1
+:779/0/6/6/0
+#	Bubbles
+:335/0/0/6
+:335/0/6/7
+#	Basin
+:322/0/0/6
+:322/0/6/1
+#	Basin
+:714/0/0/6
+:714/0/6/1
+%%endsection
+
+%%section usecode_events
+#List of which items receive usecode events when readied/unreadied.
+:209		#	Quest items
+:296		#	Rings
+:701		#	Lit torch
+:338		#	Lit light source
+:806		#	Black sword
+:990		#	Erinons Axe
+:996		#	Belt of Strength
+:1001		#	Guantlets of Quickness
+:1013		#	Helm of Light
+%%endsection

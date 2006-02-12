@@ -68,7 +68,7 @@ class Frame_animator : public Animator
 	unsigned int delay;		// Rate of animation
 	unsigned short last_shape;	// To check if we need to re init
 	unsigned short last_frame;	// To check if we need to re init
-	enum				// Type of animation
+	enum AniType				// Type of animation
 	{
 		FA_LOOPING = 0,
 		FA_SUNDIAL = 1,

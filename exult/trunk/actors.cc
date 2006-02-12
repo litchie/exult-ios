@@ -64,6 +64,7 @@
 #include "palette.h"
 #include "ucsched.h"
 #include "ucscriptop.h"
+#include "miscinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2094,7 +2095,7 @@ void Actor::show_inventory()
 
 	int shapenum = inventory_shapenum();
 	if (shapenum)
-		gump_man->add_gump(this, shapenum);
+		gump_man->add_gump(this, shapenum, true);
 }
 
 int Actor::inventory_shapenum()
@@ -2102,29 +2103,21 @@ int Actor::inventory_shapenum()
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
 	
-	if (!npc_num && !serpent && get_type_flag(tf_sex))	// Avatar No paperdolls (female)
-		return (ACTOR_FIRST_GUMP+1);
-	else if (!npc_num && !serpent)	// Avatar No paperdolls
-		return (ACTOR_FIRST_GUMP);
-	else if (!npc_num && serpent)	// Avatar Paperdolls
-		return (123);
-					// Gump/combat mode?
-					// Show companions' pictures. (BG)
-	else if (party_id >= 0 &&
-		 npc_num >= 1 && npc_num <= 10 && !serpent)
-			return (ACTOR_FIRST_GUMP + 1 + npc_num);
-	// Show companions' pictures. (SI)
-	else if (party_id >= 0 && serpent)
-		return (123);
-	// Pickpocket Cheat Female no paperdolls
-	else if (!serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		return (66);
-	// Pickpocket Cheat Male no paperdolls
-	else if (!serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		return (65);
-	// Pickpocket Cheat paperdolls
+	if (!serpent)
+		{	// Can't display paperdolls (or they are disabled)
+			// Use BG gumps
+		Paperdoll_gump::Paperdoll_npc *npcinfo =
+			Paperdoll_gump::GetCharacterInfo(get_shapenum());
+
+		if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfo(get_sexed_coloured_shape());
+		if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(get_shape_real());
+		if (!npcinfo)		// No paperdoll info at ALL; should never happen...
+			return (65);	// Default to male (Pickpocket Cheat)
+		
+		return npcinfo->gump_shape;
+		}
 	else /* if (serpent) */
-		return (123);
+		return (123);		// Show paperdolls
 }
 
 
@@ -2735,39 +2728,8 @@ void Actor::call_readied_usecode
 	)
 	{
 					// Limit to certain types.
-	if (Game::get_game_type() == BLACK_GATE)
-		switch (obj->get_shapenum())
-			{
-		case 297:		// Fix special case:  ring of protect.
-			if (eventid == Usecode_machine::readied)
-				Actor::set_flag(Obj_flags::protection);
-			else
-				Actor::clear_flag(Obj_flags::protection);
-			return;
-		case 296:		// Ring of invibility.
-		case 298:		// Ring of regeneration.
-		case 701:		// Lit torch.
-		case 338:		// Lit light source.
-			break;		// We'll do these.
-		default:
-			return;		// Nothing else in BG.
-			}
-	else if (Game::get_game_type() == SERPENT_ISLE)
-		switch (obj->get_shapenum())
-			{
-		case 209:		// ??
-		case 296:		// Rings.
-		case 701:		// Lit torch.
-		case 338:		// Lit light source.
-		case 806:		// Black sword.
-		case 990:		// Erinons Axe.
-		case 996:		// Belt of Strength.
-		case 1001:		// Guantlets of Quickness.
-		case 1013:		// Helm of Light.
-			break;		// Accept these.
-		default:
-			return;
-			}
+	if (!Shapeinfo_lookup::get_usecode_events(obj->get_shapenum()))
+		return;
 
 	Shape_info& info = obj->get_info();
 	if (info.get_shape_class() != Shape_info::container)

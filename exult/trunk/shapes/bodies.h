@@ -26,11 +26,10 @@
  */
 class Body_lookup
 	{
-	static short bg_table[];	// Tables of values.
-	static short si_table[];
 	static void setup();
 public:
 	static int find(int liveshape, int& deadshape, int& deadframe);
+	static int Is_body_shape(int shapeid);
 	};
 
 
@@ -38,10 +37,8 @@ public:
  *	Recognize dead body shapes.
  */
 
-int Is_body
-	(
-	int shapeid
-	);
+inline int Is_body(int shapeid)
+	{ return Body_lookup::Is_body_shape(shapeid); }
 
 
 #endif

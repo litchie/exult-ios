@@ -46,13 +46,17 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/defaultkeys.txt		\
 	bg/mr_faces.shp			\
 	bg/mr_intro.shp			\
-	bg/bodies_bg.txt
+	bg/bodies_bg.txt		\
+	bg/paperdol_info_bg.txt	\
+	bg/shape_info_bg.txt
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
 	si/SImap.shp			\
 	si/defaultkeys.txt		\
-	si/bodies_si.txt
+	si/bodies_si.txt		\
+	si/paperdol_info_si.txt	\
+	si/shape_info_si.txt
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include <map>
 #include <string>
+#include "miscinf.h"
 
 #ifndef UNDER_CE
 using std::map;
@@ -79,7 +80,6 @@ public:
 				}
 		}
 					// Get sfx to play for given shape.
-	static int get_shape_sfx(int shapenum);
 	static void play(Game_object *o, int snum, bool stop = false);
 	};
 
@@ -143,87 +143,6 @@ void Object_sfx::set_obj
 		}
 	}
 
-/*
- *	Get the sound-effect # for a given shape, or -1 if not found.
- */
-
-int Object_sfx::get_shape_sfx
-	(
-	int shapenum
-	)
-	{
-	static map<int, int> table;
-	static int first = 1;
-
-	if (first)			// First time?
-		{
-		first = 0;
-					// Surf: (47 or 49)
-		table[612] = 49;
-		table[613] = 49;
-		table[632] = 49;
-		table[736] = 49;
-		table[737] = 49;
-		table[751] = 49;
-		table[808] = 49;
-		table[834] = 49;
-		table[875] = 49;
-		table[907] = 49;
-		table[911] = 49;
-		table[918] = 49;
-		table[1012] = 49;
-		table[1020] = 49;
-		table[1022] = 49;
-					// Bubbles: (54, 56).
-		table[334] = 56;
-		table[335] = 56;
-		table[780] = 56;
-					// Fountains:
-		table[893] = 36;
-		if (GAME_BG)
-			{
-						// Moongates:
-			table[157] = 77;
-			table[776] = 77;
-			table[777] = 77;
-			table[779] = 77;
-						// Sphere generator:
-			table[234] = 80;
-			table[235] = 80;
-			table[236] = 80;
-						// Tetrahedron generator:
-			table[242] = 81;
-			table[243] = 81;
-			table[244] = 81;
-						// Cube generator:
-			table[238] = 82;
-			table[239] = 82;
-			table[240] = 82;
-			
-			table[305] = 78;	// Black gate.
-			table[786] = 79;	// Vortex cube.
-			}
-		// Grandfather clock tick tock, only in the SQSFX files,
-		 if (Audio::get_ptr()->get_sfx_file() != 0)
-			{
-			std::string s = 
-				Audio::get_ptr()->get_sfx_file()->filename;
-			to_uppercase(s);
-			if(s.find("SQSFX") != std::string::npos)
-				{
-				table[252] = 116;	// Grandfather clock 
-				table[695] = 116;	// Grandfather clock 
-	 			}
-			}	
-				
-		}
-	std::map<int, int>::iterator it = table.find(shapenum);
-	if (it == table.end())
-		return -1;
-	int sfx = (*it).second;
-	return Audio::game_sfx(sfx);
-	return sfx;
-	}
 
 /*
  *	Play a sound, or modify its volume/position.
@@ -318,7 +237,7 @@ int Animator::get_framenum()
 Frame_animator::Frame_animator
 	(
 	Game_object *o
-	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum()))
+	) : Animator(o, Shapeinfo_lookup::get_shape_sfx(o->get_shapenum()))
 {
 	Initialize();
 }
@@ -337,118 +256,36 @@ void Frame_animator::Initialize()
 	last_frame = obj->get_framenum();
 	frames = obj->get_num_frames();
 
-	// Serpent Isle
-	if (Game::get_game_type() == SERPENT_ISLE)
-	{
-		switch (last_shape)
+	Shapeinfo_lookup::Animation_info *aniinf =
+		Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
+	if (aniinf)
 		{
-		
-		case 284:		// Sundial is a special case.
-			type = FA_SUNDIAL;
-			break;
-		
-		case 768:		// Energy field.  Stop at top.
-			type = FA_ENERGY_FIELD;
-			created = Game::get_ticks();
-			first_frame = last_frame;
-			break;
-		
-		case 153:		// Fountain
-		case 184:		// Lava
-		case 222:		// Pennant
-		case 289:		// Fire 
-		case 305:		// Serpent Statue
-		case 326:		// Fountain
-		case 456:		// Flux Analyzer
-		case 614:		// Magic music box
-		case 655:		// Planets 
-		case 695:		// Grandfather clock
-		case 726:		// Pulsating Object
-		case 743:		// Statue??
-		case 794:		// Severed limb
-		case 992:		// Burning urn
-			first_frame = 6*(last_frame/6);
-			frames = 6;
-			created = last_frame%6;
-			break;
-
-		case 779:		// Magic Wave.
-			first_frame = 6*(last_frame/6);
-			frames = 6;
-			if (last_frame < 6) created = 1;
-			else created = 0;
-			break;
-
-		case 335:		// Bubbles
-			created = last_frame;
-			if (last_frame < 6)
+		type = (AniType)aniinf->type;
+		switch (type)
 			{
-				first_frame = 0;
-				frames = 6;
+			case FA_LOOPING:
+				first_frame = aniinf->first_frame;
+				frames = aniinf->frame_count;
+				switch (aniinf->offset)
+					{
+					case -1:
+						created = last_frame;
+						break;
+					case 0:
+						created = aniinf->offset;
+						break;
+					case 1:
+						created = last_frame%frames;
+						break;
+					}
+				break;
+			case FA_ENERGY_FIELD:
+				created = Game::get_ticks();
+				first_frame = last_frame;
+			case FA_SUNDIAL:
+				break;
 			}
-			else
-			{
-				first_frame = 6;
-				frames = frames-6;
-			}
-			break;
-
-		case 322:		// Basin
-		case 714:		// Basin
-			created = last_frame;
-			if (last_frame != frames-1)
-			{
-				first_frame = 0;
-				frames = frames - 1;
-			}
-			else
-			{
-				first_frame = frames -1;
-				frames = 1;
-			}
-			break;
-
-
-		default:
-			break;
 		}
-	}
-	// Black Gate
-	else
-	{
-		switch (last_shape)
-		{
-		
-		case 284:		// Sundial is a special case.
-			type = FA_SUNDIAL;
-			break;
-		
-		case 768:		// Energy field.  Stop at top.
-			type = FA_ENERGY_FIELD;
-			created = Game::get_ticks();
-			first_frame = last_frame;
-			break;
-		
-					// First frame isn't animated
-		case 862:		// Shafts
-		case 880:
-		case 933:		// Millsaw
-			if (last_frame == 0)
-			{
-				first_frame = 0;
-				frames = 1;
-			}
-			else
-			{
-				frames = frames -1;
-				first_frame = 1;
-			}
-			break;
-
-		default:
-			break;
-		}
-	}
 }
 
 /*
@@ -534,7 +371,7 @@ void Frame_animator::handle_event
 Sfx_animator::Sfx_animator
 	(
 	Game_object *o
-	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum()))
+	) : Animator(o, Shapeinfo_lookup::get_shape_sfx(o->get_shapenum()))
 {
 }
 
