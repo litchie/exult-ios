@@ -35,7 +35,7 @@ enum Ready_type {
 	head_armor = 0x48,		// I.e., helm.
 	leg_armor = 0x50,		// I.e., leggings.
 	foot_armor = 0x58,		// I.e., boots.
-	// triple_crossbow_bolts? = 0x78,
+	triple_crossbow_bolts = 0x78,
 	tongs = 0x90,
 	two_handed_weapon = 0xa0,
 	other_spell = 0xa1,		// #676,
