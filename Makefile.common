@@ -73,6 +73,7 @@ OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OB
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
+	data/flx.in \
 	data/exult_quotes.shp \
 	data/exult_credits.shp \
 	data/quotes.txt \
@@ -95,6 +96,7 @@ EXULT_FLX_OBJECTS = \
 	data/extras.shp \
 	data/midi_conversion.shp \
 	data/notebook.shp \
+	data/stats_extra.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
 	data/scaling_method.shp \
@@ -111,17 +113,27 @@ EXULT_FLX_OBJECTS = \
 	data/videooptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
-	data/stats_extra.shp \
-	data/mtgm.mid \
-	data/flx.in
+	data/mtgm.mid
 
 EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
 EXULT_BG_FLX_OBJECTS = \
+	data/bg/flx.in \
 	data/bg/BGmap.shp \
-	data/bg/defaultkeys.txt \
+	data/bg/defaultkeys.txt	\
 	data/bg/mr_faces.shp \
 	data/bg/mr_intro.shp \
-	data/bg/flx.in
+	data/bg/bodies_bg.txt \
+	data/bg/paperdol_info_bg.txt \
+	data/bg/shape_info_bg.txt
+
+EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
+EXULT_SI_FLX_OBJECTS = \
+	data/si/flx.in \
+	data/si/SImap.shp \
+	data/si/defaultkeys.txt \
+	data/si/bodies_si.txt \
+	data/si/paperdol_info_si.txt \
+	data/si/shape_info_si.txt
 
 EXULT_BG_PAPERDOL_VGA = data/bg_paperdol.vga data/bg_paperdol_vga.h
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
@@ -172,12 +184,6 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	data/bg/triple_xbow.shp \
 	data/bg/tseramed_face.shp \
 	data/bg/bg_paperdol.in
-
-EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
-EXULT_SI_FLX_OBJECTS = \
-	data/si/SImap.shp \
-	data/si/defaultkeys.txt \
-	data/si/flx.in
 
 FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
