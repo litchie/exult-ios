@@ -922,12 +922,16 @@ int Combat_schedule::use_ammo
 		return 0;
 	npc->remove(aobj);		// Remove all.
 	int quant = aobj->get_quantity();
-	aobj->modify_quantity(-1);	// Reduce amount.
+	Shape_info& info = ShapeID::get_info(proj);
+	if (GAME_BG && info.get_ready_type() == triple_crossbow_bolts)
+		aobj->modify_quantity(-3);	// Triple crossbows use 3x the ammo.
+	else
+		aobj->modify_quantity(-1);	// Reduce amount.
 	if (quant > 1)			// Still some left?  Put back.
 		npc->add_readied(aobj, Actor::ammo);
 					// Use actual shape unless a different
 					//   projectile was specified.
-	return ammo == proj ? actual_ammo : proj;
+	return ammo != actual_ammo ? actual_ammo : proj;
 	}
 
 

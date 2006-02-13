@@ -1,3 +1,9 @@
+2006-02-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* combat.cc, ready.h: Make missile weapons really use actual ammo.
+	  Triple crossbows now fire magic bolts as they should. They also
+	  spend the correct amount of ammo (3) per shot.
+	* chunks.cc: Fixed a few dumb mistakes from previous commit.
+
 2006-02-12  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Round 1 of de-hard-coding data from Exult.
 	* actors.cc: Added support for custom BG-style gumps. Eliminated
