@@ -23,6 +23,7 @@
 #endif
 
 #include "miscinf.h"
+#include "Audio.h"
 #include "game.h"
 #include "utils.h"
 #include "msgfile.h"
@@ -218,7 +219,7 @@ int Shapeinfo_lookup::get_shape_sfx (int shapenum)
 		setup();
 	std::map<int, int>::iterator it = shape_sfx_table->find(shapenum);
 	if (it != shape_sfx_table->end())
-		return (*it).second;
+		return Audio::game_sfx((*it).second);
 	else
 		return -1;	// The default.
 	}
