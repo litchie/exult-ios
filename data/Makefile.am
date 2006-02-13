@@ -38,7 +38,8 @@ EXULT_FLX_OBJECTS = \
 	audiooptions.shp	\
 	videooptions.shp	\
 	hp_bar.shp		\
-	sfx_icon.shp
+	sfx_icon.shp		\
+	mtgm.mid
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
