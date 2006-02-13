@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "dir.h"
 #include "actors.h"
+#include "miscinf.h"
 
 #if 0
 #include <iostream>
@@ -1362,15 +1363,15 @@ void Map_chunk::setup_dungeon_levels
 	{
 		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
-		Shape_info *shinf = each->get_info();
-		if (shinf->get_shape_class() == building &&
-			(shinf->is_poisonous() && shinf->is_field()) ||
+		Shape_info& shinf = each->get_info();
+		if (shinf.get_shape_class() == Shape_info::building &&
+			(shinf.is_poisonous() && shinf.is_field()) ||
 			(Shapeinfo_lookup::get_mountain_top(shnum) &&
 			(Game::get_game_type() == BLACK_GATE)))
 		{
 			// SI shape 941, frame 0 => do whole chunk (I think).
 			Rectangle area = 
-				(shinf->has_translucency() 
+				(shinf.has_translucency() 
 					&& each->get_framenum() == 0)
 				? Rectangle(cx*c_tiles_per_chunk,
 					    cy*c_tiles_per_chunk,
@@ -1386,8 +1387,8 @@ void Map_chunk::setup_dungeon_levels
 				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 						tiles, each->get_lift());
 		}			// Ice Dungeon Pieces in SI
-		else if (shinf->get_shape_class() == building &&
-			shinf->occludes() && shinf->is_water()))
+		else if (shinf.get_shape_class() == Shape_info::building &&
+			shinf.occludes() && shinf.is_water())
 		{
 			// HACK ALERT! This gets 320x200 to work, but it is a hack
 			// This is not exactly accurate.
