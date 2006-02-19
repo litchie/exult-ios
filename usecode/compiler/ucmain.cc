@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "ucloc.h"
 #include "ucfun.h"
+#include "ucsymtbl.h"
+#include "utils.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
@@ -121,8 +123,23 @@ int main
 		return errs;
 					// Open output.
 	std::ofstream out(outname, ios::binary|ios::out);
-	for (std::vector<Uc_function *>::iterator it = functions.begin();
-					it != functions.end(); it++)
+	Write4(out, UCSYMTBL_MAGIC0);	// Start with symbol table.
+	Write4(out, UCSYMTBL_MAGIC1);
+	std::vector<Uc_function *>::iterator it;
+	Usecode_symbol_table *symtbl = new Usecode_symbol_table;
+	for (it = functions.begin(); it != functions.end(); it++)
+		{
+		Uc_function *fun = *it;
+		Usecode_symbol::Symbol_kind kind = Usecode_symbol::fun_defined;
+		// For now, all externs have their ID given.
+		if (fun->is_externed())
+			kind = Usecode_symbol::fun_extern_defined;
+		symtbl->add_sym(new Usecode_symbol(fun->get_name(),
+					kind, fun->get_usecode_num()));
+		}
+	symtbl->write(out);
+	delete symtbl;
+	for (it = functions.begin(); it != functions.end(); it++)
 		{
 		Uc_function *fun = *it;
 		fun->gen(out);		// Generate function.

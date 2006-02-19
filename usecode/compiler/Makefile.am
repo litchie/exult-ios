@@ -23,6 +23,7 @@ bin_PROGRAMS = ucc
 endif
 
 ucc_LDADD = 			\
+	../libusecode.la	\
 	$(SYSLIBS)
 
 

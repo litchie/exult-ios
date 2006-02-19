@@ -67,6 +67,7 @@
 #include "ucfunction.h"
 #include "effects.h"
 #include "party.h"
+#include "ucsymtbl.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -231,9 +232,14 @@ bool Usecode_internal::call_function(int funcid,
 
 
 #ifdef DEBUG
-	cout << "Running usecode " << hex << setfill((char)0x30) 
-		 << setw(4) << funcid << dec << setfill(' ') <<
-		" (";
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[funcid] : 0;
+	cout << "Running usecode " << setw(4);
+	if (fsym)
+		cout << fsym->get_name();
+	else
+ 		cout << hex << setfill((char)0x30) 
+			<< funcid << dec << setfill(' ');
+	cout << " (";
 	for (i = 0; i < frame->num_args; i++)
 	{
 		if (i)
@@ -286,16 +292,28 @@ void Usecode_internal::return_from_function(Usecode_value& retval)
 
 	cout << "Returning (";
 	retval.print(cout);
-	cout << ") from usecode " << hex << setw(4) << 
-			setfill((char)0x30) << oldfunction << dec << setfill(' ')
-		 << endl;
+	cout << ") from usecode ";
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : 0;
+	if (fsym)
+		cout << fsym->get_name();
+	else
+		cout << hex << setw(4) << 
+		    setfill((char)0x30) << oldfunction << dec << setfill(' ');
+	cout << endl;
 
 
 	if (parent_frame) {
 		int newfunction = call_stack.front()->function->id;
+		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : 0;
 
-		cout << "...back into usecode " << hex << setw(4) << 
-			setfill((char)0x30) << newfunction << dec << setfill(' ') << endl;
+		cout << "...back into usecode ";
+		if (fsym)
+			cout << fsym->get_name();
+		else
+			cout << hex << setw(4) << 
+				setfill((char)0x30) << newfunction << dec << 
+				setfill(' ');
+		cout << endl;
 	}
 #endif
 }
@@ -313,16 +331,27 @@ void Usecode_internal::return_from_procedure()
 
 #ifdef DEBUG
 	Stack_frame *parent_frame = call_stack.front();
+	Usecode_symbol *fsym = symtbl ? (*symtbl)[oldfunction] : 0;
 
-	cout << "Returning from usecode " << hex << setw(4) << 
-			setfill((char)0x30) << oldfunction << dec << setfill(' ')
-		 << endl;
+	cout << "Returning from usecode ";
+	if (fsym)
+		cout << fsym->get_name();
+	else
+		cout << hex << setw(4) << setfill((char)0x30) << 
+				oldfunction << dec << setfill(' ');
+	cout << endl;
 
 	if (parent_frame) {
 		int newfunction = call_stack.front()->function->id;
+		Usecode_symbol *fsym = symtbl ? (*symtbl)[newfunction] : 0;
 
-		cout << "...back into usecode " << hex << setw(4) << 
-			setfill((char)0x30) << newfunction << dec << setfill(' ') << endl;
+		cout << "...back into usecode ";
+		if (fsym)
+			cout << fsym->get_name();
+		else
+			cout << hex << setw(4) << setfill((char)0x30) << 
+				newfunction << dec << setfill(' ');
+		cout << endl;
 	}
 #endif
 }
@@ -1707,7 +1736,7 @@ Usecode_internal::Usecode_internal
 	    saved_map(-1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
 		temp_to_be_deleted(0), telekenesis_fun(-1),
-		modified_map(false)
+		modified_map(false), symtbl(0), frame(0)
 #ifdef USECODE_DEBUGGER
 		, on_breakpoint(false)
 #endif
@@ -1755,6 +1784,16 @@ void Usecode_internal::read_usecode
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
+	long magic = Read4(file);	// Test for symbol table.
+	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file)) 
+							== UCSYMTBL_MAGIC1)
+		{
+		if (!symtbl)
+			symtbl = new Usecode_symbol_table();
+		symtbl->read(file);
+		}
+	else
+		file.seekg(0);
 					// Read in all the functions.
 	while (file.tellg() < size)
 		{
@@ -1798,6 +1837,7 @@ Usecode_internal::~Usecode_internal
 	{
 	delete [] stack;
 	delete [] String;
+	delete symtbl;
 	int num_slots = funs.size();
 	for (int i = 0; i < num_slots; i++)
 		{

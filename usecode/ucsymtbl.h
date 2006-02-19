@@ -26,13 +26,17 @@
 #include <vector>
 #include <map>
 
+#define UCSYMTBL_MAGIC0	0xffffffff
+#define UCSYMTBL_MAGIC1	(((long)'U'<<24)+((long)'C'<<16)+((long)'S'<<8)+'Y')
+
 class Usecode_symbol_table;
 
 class Usecode_symbol {
 public:
 	enum Symbol_kind { 
 		fun_defined = 1, 
-		fun_externed 
+		fun_externed,
+		fun_extern_defined	// External, but fun. # was given.
 	};
 private:
 	friend class Usecode_symbol_table;
@@ -64,13 +68,14 @@ class Usecode_symbol_table {
 	typedef std::map<int, Usecode_symbol *> Val_table;
 	Name_table by_name;
 	Val_table by_val;
-	void setup_by_name();
-	void setup_by_val();
+	void setup_by_name(int start = 0);
+	void setup_by_val(int start = 0);
 public:
 	Usecode_symbol_table() {  }
 	~Usecode_symbol_table();
 	void read(std::istream& in);
 	void write(std::ostream& out);
+	void add_sym(Usecode_symbol *sym);
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
 };
