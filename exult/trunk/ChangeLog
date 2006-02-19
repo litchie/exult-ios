@@ -1,5 +1,6 @@
 2006-02-19    <jeff@mini.nerble.net>
 
+	* tools/wud.cc: Rewrote in C++.  Uses symbol table.
 	* usecode/ucsymtbl.cc (Usecode_symbol_table): Support symbol-table
 	in compiled usecode.
 	* usecode/ucinternal.cc:  Print function names from symbol table.
