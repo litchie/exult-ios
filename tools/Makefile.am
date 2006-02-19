@@ -39,7 +39,11 @@ wuc_SOURCES = \
 	wuc.c \
 	uctools.h
 
-wud_SOURCES = wud.c
+wud_SOURCES = wud.cc
+
+wud_LDADD = \
+	../files/libu7file.la \
+	../usecode/libusecode.la
 
 mklink_SOURCES = mklink.c
 

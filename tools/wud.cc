@@ -1,20 +1,28 @@
-#include <stdio.h>
+#include <fstream>
 #include <stdlib.h>
 #include <string.h>
 #include "uctools.h"
+#include "utils.h"
+#include "ucsymtbl.h"
+
+using std::ifstream;
+using std::istream;
+using std::ios;
+
+Usecode_symbol_table *symtbl = 0;
 
 // Prints module's data segment
-void printdataseg(FILE* f, unsigned int ds)
+void printdataseg(istream& in, unsigned int ds)
 {
 	long pos;
 	unsigned int off = 0;
-	unsigned char* p;	unsigned char* pp;
-	unsigned char* tempstr,*tempstr2;
-	tempstr = malloc(60 + 1);
-	pos = ftell(f);
-	pp = p = malloc(ds);
-	fread(p, 1, ds, f);
-	fseek(f, pos, SEEK_SET);
+	char* p;	
+	char* pp;
+	char tempstr[61], *tempstr2;
+	pos = in.tellg();
+	pp = p = new char[ds];
+	in.read(p, ds);
+	in.seekg(pos);
 	printf("\t\t.data\n");
 	while( off < ds )
 	{
@@ -42,8 +50,7 @@ void printdataseg(FILE* f, unsigned int ds)
 		printf("L%04X:\tdb\t00\n", off+localoff);
 		off += localoff + 1;
 	}
-	free(p);
-	free(tempstr);
+	delete p;
 }
 
 // Prints single opcode
@@ -104,13 +111,15 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	case DATA_STRING:
 	case DATA_STRING32:
 		{
-			unsigned char* pstr;
+			char* pstr;
 			int len;
 			// Print data string operand
 			if (pdesc->type == DATA_STRING)
-				pstr = pdataseg + *(unsigned short*)( ptrc + 1 );
+				pstr = (char *)pdataseg + 
+						*(unsigned short*)( ptrc + 1 );
 			else
-				pstr = pdataseg + *(unsigned int*)( ptrc + 1 );
+				pstr = (char *)pdataseg + 
+						*(unsigned int*)( ptrc + 1 );
 
 			len = strlen(pstr);
 			if( len > 20 )
@@ -166,24 +175,37 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	case CALL:
 		{
 			// Print call operand
-			unsigned short func = *(unsigned short*)( ptrc + 1 );
-			if( ( func < funsize ) &&
-				 func_table[func] )
-				// Known function
-				printf("\t_%s@%d (%04X)\n", func_table[func], ptrc[3], func);
+		unsigned short func = *(unsigned short*)( ptrc + 1 );
+		if( ( func < funsize ) && func_table[func] ) {
+			// Known function
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[func] : 0;
+			if (fsym)
+				printf("\t_%s@%d (%04X)\t\t\t; %s\n", 
+					func_table[func], ptrc[3], func,
+					fsym->get_name());
 			else
-				// Unknown function
-				printf("\t%04X, %d\n", func, ptrc[3]);
+				printf("\t_%s@%d (%04X)\n", 
+					func_table[func], ptrc[3], func);
+		} else
+			// Unknown function
+			printf("\t%04X, %d\n", func, ptrc[3]);
 		}
 		break;
 	case EXTCALL:
 		{
-			// Print extern call
-			unsigned short externpos = *(unsigned short*)( ptrc + 1 );
-			if( externpos < externsize )
-				printf("\t[%04X]\t\t\t; %04XH\n", externpos, pextern[externpos]);
+		// Print extern call
+		unsigned short externpos = *(unsigned short*)( ptrc + 1 );
+		if( externpos < externsize ) {
+			unsigned short func = pextern[externpos];
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[func] : 0;
+			if (fsym)
+				printf("\t[%04X]\t\t\t; %s\n", 
+						externpos, fsym->get_name());
 			else
-				printf("\t[%04X]\t\t\t; ????\n", externpos);
+				printf("\t[%04X]\t\t\t; %04XH\n", 
+							externpos, func);
+		} else
+			printf("\t[%04X]\t\t\t; ????\n", externpos);
 		}
 		break;
 	case VARREF:
@@ -203,7 +225,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	return nbytes;
 }
 
-void printcodeseg(FILE* f, unsigned int ds, unsigned int s,
+void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 				const char **func_table, int funsize, int extended)
 {
 	long pos;
@@ -212,23 +234,24 @@ void printcodeseg(FILE* f, unsigned int ds, unsigned int s,
 	unsigned int i;
 	unsigned int offset;
 	unsigned int nbytes;
-	unsigned char* p;
+	char* p;
 	unsigned char* pp;
-	unsigned char* pdata;
+	char* pdata;
 	unsigned short* pextern;
-	pos = ftell(f);
+	pos = in.tellg();
 	if (extended == 0) {
 		size = s - ds - sizeof(unsigned short);
 	} else {
 		size = s - ds - sizeof(unsigned int);
 	}
 
-	pp = p = malloc(size);
-	pdata = malloc(ds);
-	fread(pdata, 1, ds, f);
+	p = new char[size];
+	pp = (unsigned char *) p;
+	pdata = new char[ds];
+	in.read(pdata, ds);
 	printf("\t\t.code\n");
-	fread(p, 1, size, f);
-	fseek(f, pos, SEEK_SET);
+	in.read(p, size);
+	in.seekg(pos);
 	// Print code segment header
 	if( size < 3 * sizeof(unsigned short) )
 	{
@@ -238,15 +261,12 @@ void printcodeseg(FILE* f, unsigned int ds, unsigned int s,
 		return;
 	}
 	// Print argument counter
-	printf("\t\t.argc %04XH\n", *(unsigned short*)pp);
-	pp += sizeof(unsigned short);
+	printf("\t\t.argc %04XH\n", Read2(pp));
 	// Print locals counter
-	printf("\t\t.localc %04XH\n", *(unsigned short*)pp);
-	pp += sizeof(unsigned short);
+	printf("\t\t.localc %04XH\n", Read2(pp));
 	// Print externs section
-	externsize = *(unsigned short*)pp;
+	externsize = Read2(pp);
 	printf("\t\t.externsize %04XH\n", externsize);
-	pp += sizeof(unsigned short);
 	if( size < ( ( 3 + externsize ) * sizeof(unsigned short) ) )
 	{
 		printf("Code segment bad!\n");
@@ -265,20 +285,21 @@ void printcodeseg(FILE* f, unsigned int ds, unsigned int s,
 	// Print opcodes
 	while( offset < size )
 	{
-		nbytes = print_opcode(pp, offset, pdata, pextern, externsize,
+		nbytes = print_opcode((unsigned char *)pp, offset, 
+				(unsigned char *)pdata, pextern, externsize,
 						func_table, funsize);
 		pp += nbytes;
 		offset += nbytes;
 	}
-	free(p);
-	free(pdata);
+	delete p;
+	delete pdata;
 }
 
 /*
  *	Note:  func = -1 just to print header, funcnum to print it all, or
  *		-2 for any function.
  */
-void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
+void printfunc(istream& in, long func, int i, const char **func_table, int funsize)
 {
 	unsigned short funcnum;
 	unsigned int s, ds;	
@@ -286,23 +307,21 @@ void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 	long off, bodyoff;
 	int extended = 0;
 	// Save start offset
-	off = ftell(f);
+	off = in.tellg();
 	// Read function header
-	fread(&funcnum, sizeof(unsigned short), 1, f);
+	funcnum = Read2(in);
 
 	if (funcnum == 0xFFFF) {
-		fread(&funcnum, sizeof(unsigned short), 1, f);
-		fread(&s, 4, 1, f);
-		bodyoff = ftell(f);
-		fread(&ds, 4, 1, f); 
+		funcnum = Read2(in);
+		s = Read4(in);
+		bodyoff = in.tellg();
+		ds = Read4(in);
 		extended = 1;
 	} else {
-		fread(&temp, sizeof(unsigned short), 1, f);
-		s = temp;
+		s = Read2(in);
 		// Save body offset
-		bodyoff = ftell(f);
-		fread(&temp, sizeof(unsigned short), 1, f);
-		ds = temp;
+		bodyoff = in.tellg();
+		ds = Read2(in);
 	}
 
 	if( func == -1 )
@@ -310,24 +329,29 @@ void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 			funcnum, off, s, ds);
 	if( funcnum == func || func == -2)
 	{
-		printf("\t\t.funcnumber\t%04XH\n", funcnum);
+		Usecode_symbol *fsym = symtbl ? (*symtbl)[funcnum] : 0;
+		if (fsym)
+			printf("\t\t.funcnumber\t%04XH\t\t\t; %s\n", funcnum,
+							fsym->get_name());
+		else
+			printf("\t\t.funcnumber\t%04XH\n", funcnum);
 		if (extended == 1)
 			printf("\t\t.ext32\n");
 		// Dump function contents
-		printdataseg(f, ds);
-		printcodeseg(f, ds, s, func_table, funsize, extended);
+		printdataseg(in, ds);
+		printcodeseg(in, ds, s, func_table, funsize, extended);
 	}
 	// Seek back, then to next function
-	fseek(f, bodyoff, SEEK_SET);
-	fseek(f, s, SEEK_CUR);
+	in.seekg(bodyoff);
+	in.seekg(s, ios::cur);
 }
 
 int main(int argc, char** argv)
 {
-	unsigned long func = -1;
+	long func = -1;
 	long sz;
 	int i = 0;
-	FILE* f;
+	ifstream in;
 	int findex = 1;			// Argv index of file.
 	const char **func_table = bg_intrinsic_table;
 	int funsize = bg_intrinsic_size;
@@ -344,15 +368,26 @@ int main(int argc, char** argv)
 		func_table = si_intrinsic_table;
 		funsize = si_intrinsic_size;
 		}
-	f = fopen(argv[findex], "rb");
-	if( f == NULL )
+	if (!U7open(in, argv[findex]))
 	{
 		fprintf(stderr,"Failed to open %s\n\n", argv[findex]);
 		return 0;
 	}
-	fseek(f, 0, SEEK_END);
-	sz = ftell(f);
-	fseek(f, 0, SEEK_SET);
+	in.seekg(0, ios::end);
+	sz = in.tellg();
+	in.seekg(0);
+	long magic = Read4(in);		// Test for symbol table.
+	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(in)) 
+							== UCSYMTBL_MAGIC1)
+		{
+		if (!symtbl)
+			symtbl = new Usecode_symbol_table();
+		symtbl->read(in);
+		sz -= in.tellg();
+		}
+	else
+		in.seekg(0);
+
 	if( argc > findex + 1 )
 	{
 		char* stopstr;
@@ -361,17 +396,18 @@ int main(int argc, char** argv)
 		else
 			func = strtoul(argv[findex + 1], &stopstr, 16);
 	}
-	while( ftell(f) < sz )
+	while( in.tellg() < sz )
 	{		
-		printfunc(f, func, i, func_table, funsize);
+		printfunc(in, func, i, func_table, funsize);
 		i++;
 	}
 	if( func == -1 )
 	{
-		if( ftell(f) != sz )
-			fprintf(stderr,"Problem, tell = %ld!\n", ftell(f));
+		long pos = in.tellg();
+		if( pos != sz )
+			fprintf(stderr,"Problem, tell = %ld!\n", pos);
 		printf("Functions: %d\n", i);
 	}
-	fclose(f);
+	in.close();
 	return 0;
 }
