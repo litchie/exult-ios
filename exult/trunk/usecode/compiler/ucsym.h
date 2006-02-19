@@ -197,6 +197,8 @@ public:
 		{ return parms.size(); }
 	void set_externed()
 		{ externed = true; }
+	bool is_externed()
+		{ return externed; }
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 					// Generate function/procedure call.

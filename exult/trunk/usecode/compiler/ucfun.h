@@ -89,6 +89,12 @@ public:
 		{ intrinsic_type = ty; }
 	void set_statement(Uc_statement *s)
 		{ statement = s; }
+	const char *get_name()
+		{ return proto->get_name(); }
+	bool is_externed()
+		{ return proto->is_externed(); }
+	int get_usecode_num()
+		{ return proto->get_usecode_num(); }
 	void adjust_reloffset(int diff) { reloffset += diff; }
 	int get_reloffset() const { return reloffset; }
 	void push_scope()		// Start a new scope.

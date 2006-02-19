@@ -67,7 +67,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	spellbook.o virstone.o jawbone.o objnames.o
 
 USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
-	useval.o conversation.o keyring.o ucdisasm.o
+	useval.o conversation.o keyring.o ucdisasm.o ucsymtbl.o
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
 
@@ -246,7 +246,8 @@ wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h
 wuc$(EXEEXT) : wuc.o
 	$(CXX) $(LFLAGS) -o $(@) wuc.o
 
-UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
+UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o \
+		ucsymtbl.o
 
 ucc$(EXEEXT) : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty
