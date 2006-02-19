@@ -1,3 +1,10 @@
+2006-02-19    <jeff@mini.nerble.net>
+
+	* usecode/ucsymtbl.cc (Usecode_symbol_table): Support symbol-table
+	in compiled usecode.
+	* usecode/ucinternal.cc:  Print function names from symbol table.
+	* usecode/compiler/ucmain.cc:  Write out symbol table.
+
 2006-02-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* combat.cc, ready.h: Make missile weapons really use actual ammo.
 	  Triple crossbows now fire magic bolts as they should. They also

@@ -25,6 +25,9 @@
 using std::string;
 using std::istream;
 using std::ostream;
+
+const int curvers = 0;
+
 /*
  *	Cleanup.
  */
@@ -43,15 +46,21 @@ Usecode_symbol_table::~Usecode_symbol_table()
 void Usecode_symbol_table::read(istream& in)
 {
 	int cnt = Read4(in);
-	symbols.reserve(symbols.size() + cnt);
+	int vers = Read4(in);
+	int oldsize = symbols.size();
+	symbols.reserve(oldsize + cnt);
 	for (int i = 0; i < cnt; ++i) {
-		string nm;
-		in >> nm;
+		char nm[256];
+		in.getline(nm, sizeof(nm), 0);
 		int kind = Read2(in);
 		int val = Read4(in);
-		symbols.push_back(new Usecode_symbol(nm.c_str(),
+		symbols.push_back(new Usecode_symbol(nm,
 			(Usecode_symbol::Symbol_kind) kind, val));
 	}
+	if (!by_name.empty())
+		setup_by_name(oldsize);
+	if (!by_val.empty())
+		setup_by_val(oldsize);
 }
 
 /*
@@ -60,30 +69,45 @@ void Usecode_symbol_table::read(istream& in)
 void Usecode_symbol_table::write(ostream& out)
 {
 	Write4(out, symbols.size());
+	Write4(out, curvers);
 	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
 									++it) {
 		Usecode_symbol *sym = *it;
-		out << sym->get_name();
+		const char *nm = sym->get_name();
+		out.write(nm, strlen(nm) + 1);
 		Write2(out, (int) sym->get_kind());
 		Write4(out, sym->get_val());
 	}
 }
 
 /*
+ *	Add a symbol.
+ */
+void Usecode_symbol_table::add_sym(Usecode_symbol *sym)
+{
+	int oldsize = symbols.size();
+	symbols.push_back(sym);
+	if (!by_name.empty())
+		setup_by_name(oldsize);
+	if (!by_val.empty())
+		setup_by_val(oldsize);
+}
+
+/*
  *	Setup tables.
  */
-void Usecode_symbol_table::setup_by_name()
+void Usecode_symbol_table::setup_by_name(int start)
 {
-	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
-									++it) {
+	for (Syms_vector::iterator it = symbols.begin() + start; 
+					it != symbols.end(); ++it) {
 		Usecode_symbol *sym = *it;
 		by_name[sym->name] = sym;
 	}
 }
-void Usecode_symbol_table::setup_by_val()
+void Usecode_symbol_table::setup_by_val(int start)
 {
-	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
-									++it) {
+	for (Syms_vector::iterator it = symbols.begin() + start; 
+						it != symbols.end(); ++it) {
 		Usecode_symbol *sym = *it;
 		by_val[sym->val] = sym;
 	}

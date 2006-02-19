@@ -39,6 +39,7 @@ class Text_gump;
 class Vector;
 class Stack_frame;
 class Usecode_function;
+class Usecode_symbol_table;
 
 #include "useval.h"
 #include "ucmachine.h"
@@ -73,6 +74,7 @@ class Usecode_internal : public Usecode_machine
 	typedef vector<Usecode_function*> Funs256;
 	vector<Funs256> funs;
 	vector<Usecode_value> statics;	// Global persistent vars.
+	Usecode_symbol_table *symtbl;	// (optional) symbol table.
 	std::deque<Stack_frame*> call_stack; // the call stack
 	Stack_frame *frame;		// One intrinsic uses this for now...
 	bool modified_map;		// We add/deleted/moved an object.
