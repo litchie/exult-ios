@@ -59,7 +59,7 @@ protected:
 	unsigned char criteria:3;	// How it's activated.  See below.
 	unsigned distance:6;		// Distance for activation (0-31).
 	unsigned flags:4;		// Formed from below flags.
-	unsigned short data1, data2;	// More data, depending on type.
+	unsigned short data1, data2, data3;	// More data, dep. on type.
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 	Missile_launcher *launcher;	// For missile eggs.
@@ -106,7 +106,7 @@ public:
 	Egg_object(int shapenum, int framenum, unsigned int tilex,
 		unsigned int tiley, unsigned int lft, 
 		unsigned short itype,
-		unsigned char prob, short d1, short d2);
+		unsigned char prob, short d1, short d2, short d3 = 0);
 					// Ctor. for fields:
 	Egg_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft,
@@ -170,7 +170,7 @@ public:
 		unsigned int tilex,
 		unsigned int tiley, unsigned int lft, 
 		unsigned short itype,
-		unsigned char prob, short d1, short d2);
+		unsigned char prob, short d1, short d2, short d3);
 	Animated_egg_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft,
 				unsigned char ty);

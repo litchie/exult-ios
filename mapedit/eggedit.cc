@@ -146,7 +146,7 @@ static void Egg_monster_dropped
 	void *udata
 	)
 	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 0xffff)
 		((ExultStudio *) udata)->set_egg_monster(shape, frame);
 	}
 
@@ -250,11 +250,11 @@ int ExultStudio::init_egg_window
 	int probability;
 	int distance;
 	bool nocturnal, once, hatched, auto_reset;
-	int data1, data2;
+	int data1, data2, data3;
 	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
-		data1, data2))
+		data1, data2, data3))
 		{
 		cout << "Error decoding egg" << endl;
 		return 0;
@@ -275,9 +275,16 @@ int ExultStudio::init_egg_window
 		{
 	case 1:				// Monster:
 		{
-		int shnum = data2&1023, frnum = data2>>10;
-		set_entry("monst_shape", shnum);
-		set_entry("monst_frame", frnum);
+		if (data3 > 0)		// Exult extension.
+			{
+			set_entry("monst_shape", data3);
+			set_entry("monst_frame", data2&0xff);
+			}
+		else
+			{
+			set_entry("monst_shape", data2&1023);
+			set_entry("monst_frame", data2>>10);
+			}
 		set_optmenu("monst_schedule", data1>>8);
 		set_optmenu("monst_align", data1&3);
 		set_spin("monst_count", (data1&0xff)>>2);
@@ -404,15 +411,24 @@ int ExultStudio::save_egg_window
 		once = get_toggle("once"),
 		hatched = get_toggle("hatched"), 
 		auto_reset = get_toggle("autoreset");
-	int data1 = -1, data2 = -1;
+	int data1 = -1, data2 = -1, data3 = 0;
 	switch (type)			// Set notebook page.
 		{
 	case 1:				// Monster:
-		data2 = (get_num_entry("monst_shape")&1023) +
-			(get_num_entry("monst_frame")<<10);
+		{
+		int shnum = get_num_entry("monst_shape"),
+		    frnum = get_num_entry("monst_frame");
+		if (shnum >= 1024 or frnum >= 64)
+			{
+			data3 = shnum;
+			data2 = frnum&0xff;
+			}
+		else
+			data2 = (shnum&1023) + (frnum<<10);
 		data1 = (get_optmenu("monst_schedule")<<8) +
 			(get_optmenu("monst_align")&3) +
 			(get_spin("monst_count")<<2);
+		}
 		break;
 	case 2:				// Jukebox:
 		data1 = (get_spin("juke_song")&0xff) +
@@ -474,7 +490,8 @@ int ExultStudio::save_egg_window
 		}
 	if (Egg_object_out(server_socket, addr, tx, ty, tz,
 		shape, frame, type, criteria, probability, distance,
-		nocturnal, once, hatched, auto_reset, data1, data2) == -1)
+		nocturnal, once, hatched, auto_reset, 
+		data1, data2, data3) == -1)
 		{
 		cout << "Error sending egg data to server" <<endl;
 		return 0;
