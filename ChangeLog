@@ -1,3 +1,7 @@
+2006-02-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemap.cc: Removing some old, unused code.
+	* Makefile.common: Fixed wud compile problem under MinGW.
+
 2006-02-20    <jeff@mini.nerble.net>
 
 	* objs/egg.cc,etc:  Support shapes >= 1024 in monster eggs.

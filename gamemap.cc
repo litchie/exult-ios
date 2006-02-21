@@ -575,9 +575,6 @@ void Game_map::write_ifix_objects
 	StreamDataSource ifix(&ifix_stream);
 					// +++++Use game title.
 	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
-	int u7nshapes = GAME_SI ? 1036 : 1024;
-	int nshapes = 
-		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 	Flex::Flex_vers vers = !New_shapes() ? Flex::orig : Flex::exult_v2;
 	bool v2 = vers == Flex::exult_v2;
 	Flex_writer writer(&ifix, "Exult",  count, vers);

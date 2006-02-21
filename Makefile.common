@@ -240,8 +240,8 @@ textpack$(EXEEXT) : textpack.o $(FILE_OBJS)
 u7voice2syx$(EXEEXT) : u7voice2syx.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) u7voice2syx.o $(FILE_OBJS)
 
-wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h 
-	$(CXX) $(LFLAGS) -o $(@) wud.o
+wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h ucsymtbl.h utils.h
+	$(CXX) $(LFLAGS) -o $(@) wud.o ucsymtbl.o utils.o
 
 wuc$(EXEEXT) : wuc.o
 	$(CXX) $(LFLAGS) -o $(@) wuc.o
