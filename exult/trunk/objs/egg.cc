@@ -152,9 +152,9 @@ Egg_object::Egg_object
 	unsigned int lft, 
 	unsigned short itype,
 	unsigned char prob, 
-	short d1, short d2
+	short d1, short d2, short d3
 	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
-	    probability(prob), data1(d1), data2(d2),
+	    probability(prob), data1(d1), data2(d2), data3(d3),
 	    area(Rectangle(0, 0, 0, 0)), launcher(0)
 	{
 	type = itype&0xf;
@@ -445,7 +445,7 @@ bool Egg_object::edit
 			type, criteria, probability, distance,
 			(flags>>nocturnal)&1, (flags>>once)&1, 
 			(flags>>hatched)&1, (flags>>auto_reset)&1, 
-			data1, data2) != -1)
+			data1, data2, data3) != -1)
 			{
 			cout << "Sent egg data to ExultStudio" << endl;
 			editing = this;
@@ -478,11 +478,11 @@ void Egg_object::update_from_studio
 	int probability;
 	int distance;
 	bool nocturnal, once, hatched, auto_reset;
-	int data1, data2;
+	int data1, data2, data3;
 	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
-		data1, data2))
+		data1, data2, data3))
 		{
 		cout << "Error decoding egg" << endl;
 		return;
@@ -558,6 +558,7 @@ void Egg_object::update_from_studio
 		((auto_reset?1:0)<<Egg_object::auto_reset);
 	egg->data1 = data1;
 	egg->data2 = data2;
+	egg->data3 = data3;
 	if (type == usecode || type == teleport || type == path)
 		egg->set_quality(data1&0xff);
 	Map_chunk *echunk = egg->get_chunk();
@@ -697,8 +698,17 @@ breaks anything!  */
 		break;
 	case monster:			// Also creates other objects.
 		{
-		int shnum = data2&1023;
-		int frnum = data2>>10;
+		int shnum, frnum;
+		if (data3 > 0)		// Exult extension.
+			{
+			shnum = data3;
+			frnum = data2&0xff;
+			}
+		else
+			{
+			shnum = data2&1023;
+			frnum = data2>>10;
+			}
 		Monster_info *inf = 
 				ShapeID::get_info(shnum).get_monster_info();
 		if (inf)
@@ -814,7 +824,8 @@ void Egg_object::print_debug
 	((flags & (1<<(int)hatched)) != 0) <<
 	", areset = " <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
-		<< ", data2 = " << data2 << endl;
+		<< ", data2 = " << data2 
+		<< ", data3 = " << data3 << endl;
 	}
 
 /*
@@ -920,8 +931,9 @@ void Egg_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[20];		// 12-byte entry.
-	uint8 *ptr = write_common_ireg(12, buf);
+	unsigned char buf[30];		// 12-14 byte entry.
+	int sz = data3 > 0 ? 14 : 12;
+	uint8 *ptr = write_common_ireg(sz, buf);
 	unsigned short tword = type&0xf;// Set up 'type' word.
 	tword |= ((criteria&7)<<4);
 	tword |= (((flags>>nocturnal)&1)<<7);
@@ -934,6 +946,8 @@ void Egg_object::write_ireg
 	Write2(ptr, data1);
 	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
+	if (data3 > 0)
+		Write2(ptr, data3);
 	out->write((char*)buf, ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
@@ -946,7 +960,7 @@ int Egg_object::get_ireg_size()
 	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
-	return 8 + get_common_ireg_size();
+	return 8 + get_common_ireg_size() + ((data3 > 0) ? 2 : 0);
 }
 
 /*
@@ -958,9 +972,9 @@ Animated_egg_object::Animated_egg_object
 	unsigned int tilex,
 	unsigned int tiley, unsigned int lft, 
 	unsigned short itype,
-	unsigned char prob, short d1, short d2
+	unsigned char prob, short d1, short d2, short d3
 	) : Egg_object(shapenum, framenum, 
-				tilex, tiley, lft, itype, prob, d1, d2)
+				tilex, tiley, lft, itype, prob, d1, d2, d3)
 	{ 
 	animator = new Frame_animator(this); 
 	}

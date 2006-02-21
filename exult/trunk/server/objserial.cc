@@ -171,12 +171,13 @@ void Egg_object_io
 	bool& once,
 	bool& hatched,
 	bool& auto_reset,
-	int& data1, int& data2
+	int& data1, int& data2, int& data3
 	)
 	{
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << type << criteria << probability << distance << 
-		nocturnal << once << hatched << auto_reset << data1 << data2;
+		nocturnal << once << hatched << auto_reset << 
+		data1 << data2 << data3;
 	}
 
 /*
@@ -390,7 +391,7 @@ int Egg_object_out
 	bool once,
 	bool hatched,
 	bool auto_reset,
-	int data1, int data2
+	int data1, int data2, int data3
 	)
 	{
 	static unsigned char buf[Exult_server::maxlength];
@@ -399,7 +400,7 @@ int Egg_object_out
 	Egg_object_io(io, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
-		data1, data2);
+		data1, data2, data3);
 	return Exult_server::Send_data(fd, Exult_server::egg, buf, ptr - buf);
 	}
 
@@ -424,14 +425,14 @@ int Egg_object_in
 	bool& once,
 	bool& hatched,
 	bool& auto_reset,
-	int& data1, int& data2
+	int& data1, int& data2, int& data3
 	)
 	{
 	unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Egg_object_io(io, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
-		nocturnal, once, hatched, auto_reset, data1, data2);
+		nocturnal, once, hatched, auto_reset, data1, data2, data3);
 	return (ptr - data) == datalen;
 	}
 
