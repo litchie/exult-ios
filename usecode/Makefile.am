@@ -4,7 +4,7 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir
 		-I$(srcdir)/../server $(SDL_CFLAGS) $(INCDIRS) \
 		$(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-SUBDIRS = compiler ucxt
+SUBDIRS = . compiler ucxt
 
 noinst_LTLIBRARIES = libusecode.la
 
