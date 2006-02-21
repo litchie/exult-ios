@@ -973,6 +973,7 @@ void Game_map::read_special_ireg
 static Egg_object *Create_egg
 	(
 	unsigned char *entry,		// 12-byte ireg entry.
+	int entlen,
 	bool animated
 	)
 	{
@@ -983,13 +984,14 @@ static Egg_object *Create_egg
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
+	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
 	Egg_object *obj = animated ?
 		new Animated_egg_object(shnum, frnum,
 			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2)
+						data1, data2, data3)
 		: new Egg_object(shnum, frnum,
 			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2);
+						data1, data2, data3);
 	return (obj);
 	}
 
@@ -1058,7 +1060,7 @@ void Game_map::read_ireg_objects
 		unsigned long oflags = flags & ~(1<<Obj_flags::is_temporary);
 		int testlen = entlen - extended;
 		if (testlen != 6 && testlen != 10 && testlen != 12 && 
-								testlen != 18)
+					testlen != 14 && testlen != 18)
 			{
 			long pos = ireg->getPos();
 			cout << "Unknown entlen " << testlen << " at pos. " <<
@@ -1111,7 +1113,7 @@ void Game_map::read_ireg_objects
 			{
 			bool anim = info.is_animated() || info.has_sfx();
 			assert(!extended);	// Not handled yet.
-			Egg_object *egg = Create_egg(entry, anim);
+			Egg_object *egg = Create_egg(entry, entlen, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;
 			continue;

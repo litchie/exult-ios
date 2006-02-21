@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.23 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.24 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -729,7 +729,8 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   mode      = byte [b0..b1:alignment
                     b2..b7:number]
   workType  = byte
-  data2     = int16 (type of creature)
+  data2     = int16 (type of creature, 6 bits frame, 10 bits shape)
+  data3	    = int16 (Exult:  data3>0 => data3 is shape, data2(7:0) is frame)
 
   for jukebox egg (2):
   data1     = score, flags

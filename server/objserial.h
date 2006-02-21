@@ -152,7 +152,7 @@ extern int Egg_object_out
 	bool once,
 	bool hatched,
 	bool auto_reset,
-	int data1, int data2
+	int data1, int data2, int data3
 	);
 extern int Egg_object_in
 	(
@@ -169,7 +169,7 @@ extern int Egg_object_in
 	bool& once,
 	bool& hatched,
 	bool& auto_reset,
-	int& data1, int& data2
+	int& data1, int& data2, int& data3
 	);
 
 struct Serial_schedule			// For passing a schedule change.
