@@ -420,7 +420,7 @@ void Egg_object::activate
 	)
 	{
 	if (!edit())
-		activate(0, 0);
+		hatch(0, 0);
 	}
 
 /*
@@ -599,7 +599,7 @@ static void Create_monster
  *	Handle a teleport egg.
  */
 
-void Egg_object::activate_teleport
+void Egg_object::hatch_teleport
 	(
 	Game_object *obj		// Object (actor) that came near it.
 	)
@@ -638,7 +638,7 @@ void Egg_object::activate_teleport
  *	Hatch egg.
  */
 
-void Egg_object::activate
+void Egg_object::hatch
 	(
 	Game_object *obj,		// Object (actor) that came near it.
 	bool must			// If 1, skip dice roll & execute
@@ -778,7 +778,7 @@ breaks anything!  */
 		}
 	case teleport:
 	case intermap:
-		activate_teleport(obj);
+		hatch_teleport(obj);
 		break;
 	case weather:
 		{
@@ -797,7 +797,7 @@ breaks anything!  */
 			if (egg != this &&
 			    egg->criteria == external_criteria && 
 			    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
-				egg->activate(obj, 0);
+				egg->hatch(obj, 0);
 			}
 		break;
 		}
@@ -1135,7 +1135,7 @@ void Field_object::activate
 		if (actor->is_dead() || Game_object::distance(actor) > 4)
 			continue;
 		if (actor->get_footprint().intersects(eggfoot))
-			Field_object::activate(actor);
+			Field_object::hatch(actor);
 		}
 	}
 
@@ -1143,7 +1143,7 @@ void Field_object::activate
  *	Someone stepped on it.
  */
 
-void Field_object::activate
+void Field_object::hatch
 	(
 	Game_object *obj,		// Object (actor) that came near it.
 	bool /* must */			// If 1, skip dice roll.
@@ -1188,7 +1188,7 @@ void Mirror_object::activate(int event)
 	Ireg_game_object::activate(event);
 }
 
-void Mirror_object::activate(Game_object *obj, bool must)
+void Mirror_object::hatch(Game_object *obj, bool must)
 {
 	// These are broken, so dont touch
 	if ((get_framenum()%3) == 2)  return;

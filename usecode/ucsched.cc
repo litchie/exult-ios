@@ -277,7 +277,7 @@ inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 					// Guess:  Only certain types:
 	if (type == Egg_object::monster || type == Egg_object::button ||
 	    type == Egg_object::missile)
-		((Egg_object *) e)->activate(
+		((Egg_object *) e)->hatch(
 			usecode->gwin->get_main_actor(), true);
 }
 
