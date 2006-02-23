@@ -582,7 +582,7 @@ void Chunk_cache::activate_eggs
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 		{
-			egg->activate(obj, now);
+			egg->hatch(obj, now);
 			if (chunk->get_cache() != this)
 				return;	// A teleport could have deleted us!
 		}
@@ -597,7 +597,7 @@ void Chunk_cache::activate_eggs
 			Egg_object *egg = egg_objects[i];
 			if (egg && egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 			{
-				egg->activate(obj, now);
+				egg->hatch(obj, now);
 				if (chunk->get_cache() != this)
 					return;	// A teleport could have deleted us!			
 			}
@@ -1307,7 +1307,7 @@ void Map_chunk::try_all_eggs
 		}
 	for (Egg_vector::const_iterator it = eggs.begin(); it != eggs.end();
 									++it)
-		(*it)->activate(obj);
+		(*it)->hatch(obj);
 	norecurse--;
 	}
 
