@@ -58,6 +58,35 @@ using std::ostream;
 Egg_object *Egg_object::editing = 0;
 
 /*
+ *	Create an "egg" from Ireg data.
+ */
+
+Egg_object *Egg_object::create_egg
+	(
+	unsigned char *entry,		// 12+ byte ireg entry.
+	int entlen,
+	bool animated
+	)
+	{
+	int shnum = entry[2]+256*(entry[3]&3);
+	int frnum = entry[3] >> 2;
+	unsigned short type = entry[4] + 256*entry[5];
+	int prob = entry[6];		// Probability (1-100).
+	int data1 = entry[7] + 256*entry[8];
+	int lift = entry[9] >> 4;
+	int data2 = entry[10] + 256*entry[11];
+	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
+	Egg_object *obj = animated ?
+		new Animated_egg_object(shnum, frnum,
+			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
+						data1, data2, data3)
+		: new Egg_object(shnum, frnum,
+			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
+						data1, data2, data3);
+	return (obj);
+	}
+
+/*
  *	Timer for a missile egg (type-6 egg).
  */
 class Missile_launcher : public Time_sensitive, public Game_singletons
