@@ -64,7 +64,7 @@ protected:
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 	Missile_launcher *launcher;	// For missile eggs.
 	void init_field(unsigned char ty);
-	void activate_teleport(Game_object *obj);	// Handle teleport egg.
+	void hatch_teleport(Game_object *obj);	// Handle teleport egg.
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
@@ -135,7 +135,7 @@ public:
 	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void hatch(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,
 						Game_object *egg = 0);
@@ -200,7 +200,7 @@ public:
 		{  }
 					// Run usecode function.
 	virtual void activate(int event = 1);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void hatch(Game_object *obj, bool must = false);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
@@ -219,7 +219,7 @@ public:
 
 					// Run usecode function.
 	virtual void activate(int event = 1);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void hatch(Game_object *obj, bool must = false);
 
 					// Can it be activated?
 	virtual int is_active(Game_object *obj,
