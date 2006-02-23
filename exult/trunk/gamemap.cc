@@ -964,35 +964,6 @@ void Game_map::read_special_ireg
 	}
 
 /*
- *	Create an "egg".
- */
-
-static Egg_object *Create_egg
-	(
-	unsigned char *entry,		// 12-byte ireg entry.
-	int entlen,
-	bool animated
-	)
-	{
-	int shnum = entry[2]+256*(entry[3]&3);
-	int frnum = entry[3] >> 2;
-	unsigned short type = entry[4] + 256*entry[5];
-	int prob = entry[6];		// Probability (1-100).
-	int data1 = entry[7] + 256*entry[8];
-	int lift = entry[9] >> 4;
-	int data2 = entry[10] + 256*entry[11];
-	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
-	Egg_object *obj = animated ?
-		new Animated_egg_object(shnum, frnum,
-			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2, data3)
-		: new Egg_object(shnum, frnum,
-			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2, data3);
-	return (obj);
-	}
-
-/*
  *	Containers and items classed as 'quality_flags' have a byte of flags.
  *	This routine returns them converted into Object_flags.
  */
@@ -1110,7 +1081,8 @@ void Game_map::read_ireg_objects
 			{
 			bool anim = info.is_animated() || info.has_sfx();
 			assert(!extended);	// Not handled yet.
-			Egg_object *egg = Create_egg(entry, entlen, anim);
+			Egg_object *egg = Egg_object::create_egg(
+							entry, entlen, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;
 			continue;
