@@ -50,6 +50,10 @@ public:
 		if (!animating)
 			start_animation();
 		}
+	void stop_animation()
+		{
+		animating = false;
+		}
 	int get_deltax()
 		{ return deltax; }
 	int get_deltay()
