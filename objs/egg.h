@@ -21,7 +21,6 @@
 #define INCL_EGG	1
 
 class	Egg_object;
-class	Animated_egg_object;
 class	Animator;
 class   Monster_actor;
 class 	Missile_launcher;
@@ -62,10 +61,15 @@ protected:
 	unsigned short data1, data2, data3;	// More data, dep. on type.
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
-	Missile_launcher *launcher;	// For missile eggs.
+	Animator *animator;		// Controls animation.
 	void init_field(unsigned char ty);
-	void hatch_teleport(Game_object *obj);	// Handle teleport egg.
+	static Egg_object *create_egg(bool animated,
+		int shnum, int frnum, unsigned int tx,
+		unsigned int ty, unsigned int tz, 
+		unsigned short itype,
+		unsigned char prob, short data1, short data2, short data3);
 public:
+	friend class Button_egg;
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
 		jukebox = 2,
@@ -121,7 +125,9 @@ public:
 		{ return criteria; }
 	int get_type() const
 		{ return type; }
-	void set(int crit, int dist);
+					// Can this be clicked on?
+	virtual int is_findable();
+	virtual void set(int crit, int dist);
 					// Can it be activated?
 	virtual int is_active(Game_object *obj,
 			int tx, int ty, int tz, int from_tx, int from_ty);
@@ -130,13 +136,16 @@ public:
 		{ return area; }
 	int is_solid_area() const
 		{ return solid_area; }
-					// Render.
+	void set_animator(Animator *a);
+	void stop_animation();
 	virtual void paint();
 					// Run usecode function.
 	virtual void activate(int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
+	virtual void hatch_now(Game_object *obj, bool must)
+		{  }
 	virtual void hatch(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,
@@ -159,47 +168,18 @@ public:
 
 	};
 
-/*
- *	An object that cycles through its frames, or wiggles if just one
- *	frame.
- */
-class Animated_egg_object : public Egg_object
-	{
-protected:
-	Animator *animator;		// Controls animation.
-public:
-	Animated_egg_object(int shapenum, int framenum,
-		unsigned int tilex,
-		unsigned int tiley, unsigned int lft, 
-		unsigned short itype,
-		unsigned char prob, short d1, short d2, short d3);
-	Animated_egg_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft,
-				unsigned char ty);
-	virtual ~Animated_egg_object();
-					// Render.
-	virtual void paint();
-					// Can this be clicked on?
-	virtual int is_findable()
-		{ return Ireg_game_object::is_findable(); }
-					// Run usecode function.
-	virtual void activate(int event = 1);
-	void stop_animation();
-	};
 
 /*
  *	Fields are activated like eggs.
  */
 
-class Field_object : public Animated_egg_object
+class Field_object : public Egg_object
 	{
 	bool field_effect(Actor *actor);// Apply field.
 public:
 	Field_object(int shapenum, int framenum, unsigned int tilex, 
-		unsigned int tiley, unsigned int lft, unsigned char ty)
-		: Animated_egg_object(shapenum, framenum, tilex, tiley,
-							lft, ty)
-		{  }
+		unsigned int tiley, unsigned int lft, unsigned char ty);
+	virtual void paint();
 					// Run usecode function.
 	virtual void activate(int event = 1);
 	virtual void hatch(Game_object *obj, bool must = false);
