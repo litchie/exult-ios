@@ -50,41 +50,13 @@
 
 #ifndef UNDER_CE
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::rand;
 using std::ostream;
 #endif
 
 Egg_object *Egg_object::editing = 0;
-
-/*
- *	Create an "egg" from Ireg data.
- */
-
-Egg_object *Egg_object::create_egg
-	(
-	unsigned char *entry,		// 12+ byte ireg entry.
-	int entlen,
-	bool animated
-	)
-	{
-	int shnum = entry[2]+256*(entry[3]&3);
-	int frnum = entry[3] >> 2;
-	unsigned short type = entry[4] + 256*entry[5];
-	int prob = entry[6];		// Probability (1-100).
-	int data1 = entry[7] + 256*entry[8];
-	int lift = entry[9] >> 4;
-	int data2 = entry[10] + 256*entry[11];
-	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
-	Egg_object *obj = animated ?
-		new Animated_egg_object(shnum, frnum,
-			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2, data3)
-		: new Egg_object(shnum, frnum,
-			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-						data1, data2, data3);
-	return (obj);
-	}
 
 /*
  *	Timer for a missile egg (type-6 egg).
@@ -144,7 +116,383 @@ void Missile_launcher::handle_event
 	if (proj)
 		eman->add_effect(proj);
 					// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this, udata);
+	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this,udata);
+	}
+
+/*
+ *	Each egg type:
+ */
+class Jukebox_egg : public Egg_object {
+protected:
+	unsigned char score;
+	bool continuous;
+public:
+	Jukebox_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
+		  score(d1&0xff), continuous(((d1>>8)&1) != 0)
+		{  }
+	virtual void hatch_now(Game_object *obj, bool must) {
+#ifdef DEBUG
+		cout << "Audio parameters might be: " << (data1&0xff) << 
+				" and " << ((data1>>8)&0x01) << endl;
+#endif
+		Audio::get_ptr()->start_music(score, continuous);
+	}
+};
+
+class Soundsfx_egg : public Jukebox_egg {
+public:
+	Soundsfx_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1)
+		: Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob, d1)
+		{  }
+	virtual void hatch_now(Game_object *obj, bool must) {
+		int dir = 0;
+		if (obj)		// Get direction from obj. to egg.
+			{
+			Tile_coord epos = get_tile(), opos = obj->get_tile();
+			dir = Get_direction16(opos.ty - epos.ty, 
+							epos.tx - opos.tx);
+			}
+		Audio::get_ptr()->play_sound_effect(
+			Audio::game_sfx(score), SDL_MIX_MAXVOLUME, dir,
+							continuous);
+	}
+};
+
+class Voice_egg : public Egg_object {
+	unsigned short speechnum;
+public:
+	Voice_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
+		  speechnum(d1)
+		{  }
+	virtual void hatch_now(Game_object *obj, bool must) {
+		ucmachine->do_speech(data1&0xff);
+	}
+};
+
+class Monster_egg : public Egg_object {
+	unsigned short mshape;		// For monster.
+	unsigned char mframe;
+	unsigned char sched, align, cnt;
+	void create_monster(Monster_info *inf) {
+		Tile_coord dest = Map_chunk::find_spot(
+				get_tile(), 5, mshape, 0, 1);
+		if (dest.tx != -1) {
+			Monster_actor *monster = 
+			    Monster_actor::create(mshape, dest, sched, align);
+			monster->change_frame(mframe);
+			gwin->add_dirty(monster);
+			gwin->add_nearby_npc(monster);
+		}
+	}
+public:
+	Monster_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2, short d3)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1,d2,d3),
+		  sched(d1>>8), align(d1&3), cnt((d1&0xff)>>2) {
+
+		if (d3 > 0) {		// Exult extension.
+			mshape = d3;
+			mframe = d2&0xff;
+		} else {
+			mshape = d2&1023;
+			mframe = d2>>10;
+		}
+	}
+	virtual void hatch_now(Game_object *obj, bool must) {
+		Monster_info *inf = 
+				ShapeID::get_info(mshape).get_monster_info();
+		if (inf) {
+			if (gwin->armageddon)
+				return;
+			int num = cnt;
+			if (num > 1)	// Randomize.
+				num = 1 + (rand()%num);
+			while (num--)
+				create_monster(inf);
+		} else {		// Create item.
+			Shape_info& info = ShapeID::get_info(mshape);
+			Game_object *nobj = get_map()->create_ireg_object(info,
+			    mshape, mframe, get_tx(), get_ty(), get_lift());
+			if (nobj->is_egg())
+				chunk->add_egg((Egg_object *) nobj);
+			else
+				chunk->add(nobj);
+			gwin->add_dirty(nobj);
+			nobj->set_flag(Obj_flags::okay_to_take);
+					// Objects are created temporary
+			nobj->set_flag(Obj_flags::is_temporary);
+		}
+	}
+};
+
+class Usecode_egg : public Egg_object {
+	short fun;
+public:
+	Usecode_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		  fun(d2) {  
+		set_quality(d1&0xff);
+	}
+	virtual void hatch_now(Game_object *obj, bool must) {
+		if (must)		// From script?  Do immediately.
+			ucmachine->call_usecode(fun, this,
+					Usecode_machine::egg_proximity);
+		else {			// Do on next animation frame.
+			Usecode_script *scr = new Usecode_script(this);
+			scr->add(Ucscript::usecode, fun);
+			if (flags & (1<<(int)once)) {
+					// Don't remove until done.
+				scr->add(Ucscript::remove);
+				flags &= ~(1<<(int)once);
+			}
+			scr->start(gwin->get_std_delay());
+		}
+	}
+};
+
+class Missile_egg : public Egg_object {
+	short weapon;
+	unsigned char dir, delay;
+	Missile_launcher *launcher;
+public:
+	Missile_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		  weapon(d1), dir(d2&0xff), delay(d2>>8), launcher(0)
+		{  }
+	virtual ~Missile_egg() {
+		if (launcher) {
+			gwin->get_tqueue()->remove(launcher);
+			delete launcher;
+		}
+	}
+	virtual void remove_this(int nodel) {
+		if (launcher) {		// Stop missiles.
+			gwin->get_tqueue()->remove(launcher);
+			delete launcher;
+			launcher = 0;
+		}
+		Egg_object::remove_this(nodel);
+	}
+	virtual void paint() {
+					// Make sure launcher is active.
+		if (launcher && !launcher->in_queue())
+			gwin->get_tqueue()->add(0L, launcher, 0);
+		Egg_object::paint();
+	}
+	virtual void set(int crit, int dist) {
+		if (crit == external_criteria && launcher) {	// Cancel trap.
+			gwin->get_tqueue()->remove(launcher);
+			delete launcher;
+			launcher = 0;
+		}
+		Egg_object::set(crit, dist);
+	}
+	virtual void hatch_now(Game_object *obj, bool must) {
+		Shape_info& info = ShapeID::get_info(weapon);
+		Weapon_info *winf = info.get_weapon_info();
+		int proj;
+		if (winf && winf->get_projectile())
+			proj = winf->get_projectile();
+		else
+			proj = 856;	// Fireball.  Shouldn't get here.
+		if (!launcher)
+			launcher = new Missile_launcher(this, weapon,
+			    proj, dir, gwin->get_std_delay()*delay);
+		if (!launcher->in_queue())
+			gwin->get_tqueue()->add(0L, launcher, 0);
+	}
+};
+
+
+class Teleport_egg : public Egg_object {
+	short mapnum;			// If not -1.
+	short destx, desty;
+public:
+	Teleport_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		  mapnum(-1) {
+		if (type == intermap)
+			mapnum = d1&0xff;
+		else
+			set_quality(d1&0xff);	// Teleport egg.
+		int schunk = d1 >> 8;
+		destx = (schunk%12)*c_tiles_per_schunk + (d2&0xff);
+		desty = (schunk/12)*c_tiles_per_schunk + (d2>>8);
+	}
+	virtual void hatch_now(Game_object *obj, bool must) {
+		Tile_coord pos(-1, -1, -1);	// Get position to jump to.
+		int eggnum = 255;
+		if (mapnum == -1)
+ 			eggnum = get_quality();
+		if (eggnum == 255) {		// Jump to coords.
+			pos = Tile_coord(destx, desty, 0);
+		} else {
+			Egg_vector vec;	// Look for dest. egg (frame == 6).
+			if (find_nearby_eggs(vec, 275, 256, eggnum, 6)) {
+				Egg_object *path = vec[0];
+				pos = path->get_tile();
+			}
+		}
+		cout << "Should teleport to map " << mapnum << 
+				", (" << pos.tx << ", " <<
+					pos.ty << ')' << endl;
+		if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
+					// Teleport everyone!!!
+			gwin->teleport_party(pos, false, mapnum);
+	}
+};
+
+class Weather_egg : public Egg_object {
+	unsigned char weather;		// 0-6
+	unsigned char len;		// In game minutes.
+public:
+	Weather_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		  weather(d1&0xff), len(d1>>8) {
+		if (!len)		// Means continuous.
+			len = 120;	// How about a couple game hours?
+	}
+	virtual void hatch_now(Game_object *obj, bool must) {
+		set_weather(weather, len, this);
+	}
+};
+
+class Button_egg : public Egg_object {
+	unsigned char dist;
+public:
+	Button_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		  dist(d1&0xff)
+		{  }
+	virtual void hatch_now(Game_object *obj, bool must) {
+		Egg_vector eggs;
+		find_nearby_eggs(eggs, 275, dist);
+		for (Egg_vector::const_iterator it = eggs.begin();
+						it != eggs.end(); ++it) {
+			Egg_object *egg = *it;
+			if (egg != this &&
+			    egg->criteria == external_criteria && 
+				// Attempting to fix problem in Silver Seed
+			    !(egg->flags & (1 << (int) hatched))) 
+				egg->hatch(obj, 0);
+		}
+	}
+};
+
+class Path_egg : public Egg_object {
+public:
+	Path_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
+		unsigned int tz, unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2) {
+		set_quality(d1&0xff);
+	}
+};
+
+/*
+ *	Create an "egg" from Ireg data.
+ */
+
+Egg_object *Egg_object::create_egg
+	(
+	unsigned char *entry,		// 12+ byte ireg entry.
+	int entlen,
+	bool animated
+	)
+{
+	int shnum = entry[2]+256*(entry[3]&3);
+	int frnum = entry[3] >> 2;
+	unsigned short type = entry[4] + 256*entry[5];
+	int prob = entry[6];		// Probability (1-100).
+	int data1 = entry[7] + 256*entry[8];
+	int tx = entry[0]&0xf, ty = entry[1]&0xf, tz = entry[9] >> 4;
+	int data2 = entry[10] + 256*entry[11];
+	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
+	return create_egg(animated, shnum, frnum, tx, ty, tz, type, prob, 
+						data1, data2, data3);
+}
+
+Egg_object *Egg_object::create_egg
+	(
+	bool animated,
+	int shnum, int frnum,
+	unsigned int tx, unsigned int ty, unsigned int tz,
+	unsigned short itype,		// Type + flags, etc.
+	unsigned char prob, 
+	short data1, short data2, short data3
+	)
+{
+
+	Egg_object *obj = 0;
+	switch (itype&0xf) {		// The type:
+	case monster:
+		obj = new Monster_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2, data3);
+		break;
+	case jukebox:
+		obj = new Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1);
+		break;
+	case soundsfx:
+		obj = new Soundsfx_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1);
+		break;
+	case voice:
+		obj = new Voice_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1);
+		break;
+	case usecode:
+		obj = new Usecode_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	case missile:
+		obj = new Missile_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	case teleport:
+	case intermap:
+		obj = new Teleport_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	case weather:
+		obj = new Weather_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	case path:
+		obj = new Path_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	case button:
+		obj = new Button_egg(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2);
+		break;
+	default:
+		cerr << "Illegal egg itype:  " << (itype&0xf) << endl;
+		obj = new Egg_object(shnum, frnum, tx, ty, tz, itype, prob,
+						data1, data2, data3);
+	}
+	if (animated)
+		obj->set_animator(new Frame_animator(obj));
+	return (obj);
 	}
 
 /*
@@ -184,7 +532,7 @@ Egg_object::Egg_object
 	short d1, short d2, short d3
 	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
 	    probability(prob), data1(d1), data2(d2), data3(d3),
-	    area(Rectangle(0, 0, 0, 0)), launcher(0)
+	    area(Rectangle(0, 0, 0, 0)), animator(0)
 	{
 	type = itype&0xf;
 					// Teleport destination?
@@ -202,8 +550,6 @@ Egg_object::Egg_object
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
-	if (type == usecode || type == teleport || type == path)
-		set_quality(data1&0xff);
 					// Party_near & auto_reset don't mix
 					//   well.
 	if (criteria == party_near && (flags&(1<<auto_reset)))
@@ -222,11 +568,11 @@ inline void Egg_object::init_field
 	type = ty;
 	probability = 100;
 	data1 = data2 = 0;
-	launcher = 0;
 	area = Rectangle(0, 0, 0, 0);
 	criteria = party_footpad;
 	distance = 0;
 	solid_area = 0;
+	animator = 0;
 	flags = (1 << auto_reset);
 	}
 
@@ -254,11 +600,7 @@ Egg_object::~Egg_object
 	(
 	)
 	{
-	if (launcher)
-		{
-		gwin->get_tqueue()->remove(launcher);
-		delete launcher;
-		}
+	delete animator; 
 	}
 
 /*
@@ -316,6 +658,17 @@ void Egg_object::set_area
 	}
 
 /*
+ *	Can this be clicked on?
+ */
+int Egg_object::is_findable()
+{
+	if (animator)
+		return Ireg_game_object::is_findable();
+	else
+		return Egglike_game_object::is_findable();
+}
+
+/*
  *	Change the criteria and distance. 
  */
 
@@ -330,12 +683,6 @@ void Egg_object::set
 	criteria = crit;
 	distance = dist; 
 	echunk->add_egg(this);
-	if (criteria == external_criteria && launcher)	// Cancel trap.
-		{
-		gwin->get_tqueue()->remove(launcher);
-		delete launcher;
-		launcher = 0;
-		}
 	}
 
 /*
@@ -426,6 +773,27 @@ int Egg_object::is_active
 	}
 
 /*
+ *	Animate.
+ */
+void Egg_object::set_animator(Animator *a)
+{
+	delete animator;
+	animator = a;
+}
+
+/*
+ *	Stop animation.
+ */
+
+void Egg_object::stop_animation
+	(
+	)
+	{
+	if (animator)
+		animator->stop_animation();
+	}
+
+/*
  *	Paint at given spot in world.
  */
 
@@ -433,10 +801,11 @@ void Egg_object::paint
 	(
 	)
 	{
-	Egglike_game_object::paint();
-					// Make sure launcher is active.
-	if (launcher && !launcher->in_queue())
-		gwin->get_tqueue()->add(0L, launcher, 0);
+	if (animator) {
+		animator->want_animation();	// Be sure animation is on.
+		Ireg_game_object::paint();	// Always paint these.
+	} else
+		Egglike_game_object::paint();
 	}
 
 /*
@@ -450,6 +819,8 @@ void Egg_object::activate
 	{
 	if (!edit())
 		hatch(0, 0);
+	if (animator)
+		flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
 /*
@@ -499,6 +870,7 @@ void Egg_object::update_from_studio
 	)
 	{
 #ifdef USE_EXULTSTUDIO
+	int x, y;			// Mouse click for new egg.
 	unsigned long addr;
 	int tx, ty, tz;
 	int shape, frame;
@@ -516,26 +888,52 @@ void Egg_object::update_from_studio
 		cout << "Error decoding egg" << endl;
 		return;
 		}
-	Egg_object *egg = (Egg_object *) addr;
-	if (egg && egg != editing)
+	Egg_object *oldegg = (Egg_object *) addr;
+	if (oldegg && oldegg != editing)
 		{
 		cout << "Egg from ExultStudio is not being edited" << endl;
 		return;
 		}
 	editing = 0;
-	if (!egg)			// Create a new one?
+	if (!oldegg)			// Creating a new one?  Get loc.
 		{
-		int x, y;
 		if (!Get_click(x, y, Mouse::hand, 0))
 			{
 			if (client_socket >= 0)
-				Exult_server::Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, 
+						Exult_server::cancel);
 			return;
 			}
 		if (shape == -1)
 			shape = 275;	// FOR NOW.
-					// Create.  Gets initialized below.
-		egg = new Egg_object(shape, 0, 0, 0, 0, 0, 0, 0, 0);
+		}
+	else if (shape == -1)
+		shape = oldegg->get_shapenum();
+	if (frame == -1)
+		switch (type)
+			{		// (These aren't perfect.)
+		case monster: frame = 0; break;
+		case jukebox: frame = 2; break;
+		case soundsfx:frame = 1; break;
+		case voice:   frame = 3; break;
+		case weather: frame = 4; break;
+		case intermap:
+		case teleport:frame = 5; break;
+		case path:    frame = 6; break;
+	        case missile:
+        		shape = 200; 
+            		if ((data2 & 0xFF) < 8)
+                		frame = 2 + ((data2 & 0xFF) / 2);
+            		else
+                		frame = 1;
+            		break;
+		default:      frame = 7; break;
+			}
+					// ??Animated flag??
+	Egg_object *egg = create_egg(false, shape, frame, tx, ty, tz, type,
+					probability, data1, data2, data3);
+	if (!oldegg)
+		{
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
 			if (gwin->drop_at_lift(egg, x, y, lift) == 1)
@@ -552,31 +950,11 @@ void Egg_object::update_from_studio
 			Exult_server::Send_data(client_socket, 
 						Exult_server::user_responded);
 		}
-	egg->type = type;
-	if (shape != -1)
-		egg->set_shape(shape);
-	if (frame == -1)
-		switch (type)
-			{		// (These aren't perfect.)
-		case monster: frame = 0; break;
-		case jukebox: frame = 2; break;
-		case soundsfx:frame = 1; break;
-		case voice:   frame = 3; break;
-		case weather: frame = 4; break;
-		case intermap:
-		case teleport:frame = 5; break;
-		case path:    frame = 6; break;
-	        case missile:
-        		egg->set_shape(200); 
-            		if ((data2 & 0xFF) < 8)
-                		frame = 2 + ((data2 & 0xFF) / 2);
-            		else
-                		frame = 1;
-            		break;
-		default:      frame = 7; break;
-			}
-	if (frame != -1)
-		egg->set_frame(frame);
+	else
+		{
+		Tile_coord pos = oldegg->get_tile();
+		egg->move(pos.tx, pos.ty, pos.tz);
+		}
 	gwin->add_dirty(egg);
 	egg->criteria = criteria&7;
 	egg->distance = distance&31;
@@ -585,82 +963,14 @@ void Egg_object::update_from_studio
 		((once?1:0)<<Egg_object::once) +
 		((hatched?1:0)<<Egg_object::hatched) +
 		((auto_reset?1:0)<<Egg_object::auto_reset);
-	egg->data1 = data1;
-	egg->data2 = data2;
-	egg->data3 = data3;
-	if (type == usecode || type == teleport || type == path)
-		egg->set_quality(data1&0xff);
+
+	if (oldegg)
+		oldegg->remove_this();
 	Map_chunk *echunk = egg->get_chunk();
 	echunk->remove_egg(egg);	// Got to add it back.
 	echunk->add_egg(egg);
 	cout << "Egg updated" << endl;
 #endif
-	}
-
-/*
- *	Create a monster nearby.
- */
-
-static void Create_monster
-	(
-	Game_window *gwin,
-	Egg_object *egg,
-	int shnum,			// Monster shape.
-	int frnum,			// Monster frame.
-	Monster_info *inf,		// Info.
-	int sched,
-	int align
-	)
-	{
-	Tile_coord dest = Map_chunk::find_spot(
-				egg->get_tile(), 5, shnum, 0, 1);
-	if (dest.tx != -1)
-		{
-		Monster_actor *monster = Monster_actor::create(shnum, dest,
-								sched, align);
-		monster->change_frame(frnum);
-		gwin->add_dirty(monster);
-		gwin->add_nearby_npc(monster);
-		}
-	}
-
-/*
- *	Handle a teleport egg.
- */
-
-void Egg_object::hatch_teleport
-	(
-	Game_object *obj		// Object (actor) that came near it.
-	)
-	{
-	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
-	int qual = 255, mapnum = -1;
-	if (type == intermap)
-		mapnum = data1&0xff;
-	else
- 		qual = get_quality();
-	if (qual == 255)
-		{			// Jump to coords.
-		int schunk = data1 >> 8;
-		pos = Tile_coord(
-			(schunk%12)*c_tiles_per_schunk + (data2&0xff), 
-			(schunk/12)*c_tiles_per_schunk + (data2>>8), 0);
-		}
-	else
-		{
-		Egg_vector vec;		// Look for dest. egg (frame == 6).
-		if (find_nearby_eggs(vec, 275, 256, qual, 6))
-			{
-			Egg_object *path = vec[0];
-			pos = path->get_tile();
-			}
-		}
-	cout << "Should teleport to map " << mapnum << 
-				", (" << pos.tx << ", " <<
-					pos.ty << ')' << endl;
-	if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
-					// Teleport everyone!!!
-		gwin->teleport_party(pos, false, mapnum);
 	}
 
 /*
@@ -700,139 +1010,7 @@ breaks anything!  */
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-	switch(type)
-		{
-	case jukebox:
-#ifdef DEBUG
-		cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0x01) << endl;
-#endif
-		Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
-		break;
-	case soundsfx:
-		{
-		int dir = 0;
-		if (obj)		// Get direction from obj. to egg.
-			{
-			Tile_coord epos = get_tile(), opos = obj->get_tile();
-			dir = Get_direction16(opos.ty - epos.ty, 
-							epos.tx - opos.tx);
-			}
-		Audio::get_ptr()->play_sound_effect(
-			Audio::game_sfx(data1&0xff), SDL_MIX_MAXVOLUME, dir,
-								(data1>>8)&1);
-		break;
-		}
-	case voice:
-		ucmachine->do_speech(data1&0xff);
-		break;
-	case monster:			// Also creates other objects.
-		{
-		int shnum, frnum;
-		if (data3 > 0)		// Exult extension.
-			{
-			shnum = data3;
-			frnum = data2&0xff;
-			}
-		else
-			{
-			shnum = data2&1023;
-			frnum = data2>>10;
-			}
-		Monster_info *inf = 
-				ShapeID::get_info(shnum).get_monster_info();
-		if (inf)
-			{		// Armageddon spell cast?
-			if (gwin->armageddon)
-				break;
-			int sched = data1>>8;
-			int align = data1&3;
-			int cnt = (data1&0xff)>>2;
-			if (cnt > 1)	// Randomize.
-				cnt = 1 + (rand()%cnt);
-			while (cnt--)
-				Create_monster(gwin, this, shnum, frnum, inf,
-							sched, align);
-			}
-		else			// Create item.
-			{
-			Shape_info& info = ShapeID::get_info(shnum);
-			Game_object *nobj = get_map()->create_ireg_object(info,
-				shnum, frnum, get_tx(), get_ty(), get_lift());
-			if (nobj->is_egg())
-				chunk->add_egg((Egg_object *) nobj);
-			else
-				chunk->add(nobj);
-			gwin->add_dirty(nobj);
-			nobj->set_flag(Obj_flags::okay_to_take);
-					// Objects are created temporary
-			nobj->set_flag(Obj_flags::is_temporary);
-			}
-		break;
-		}
-	case usecode:
-		{			// Data2 is the usecode function.
-		if (must)		// From script?  Do immediately.
-			ucmachine->call_usecode(data2, this,
-					Usecode_machine::egg_proximity);
-		else			// Do on next animation frame.
-			{
-			Usecode_script *scr = new Usecode_script(this);
-			scr->add(Ucscript::usecode, data2);
-			if (flags & (1<<(int)once))
-				{	// Don't remove until done.
-				scr->add(Ucscript::remove);
-				flags &= ~(1<<(int)once);
-				}
-			scr->start(gwin->get_std_delay());
-			}
-		break;
-		}
-	case missile:
-		{
-					// Get data.  Not sure about delay.
-		int weapon = data1, dir = data2&0xff, delay = data2>>8;
-		Shape_info& info = ShapeID::get_info(weapon);
-		Weapon_info *winf = info.get_weapon_info();
-		int proj;
-		if (winf && winf->get_projectile())
-			proj = winf->get_projectile();
-		else
-			proj = 856;	// Fireball.  Shouldn't get here.
-		if (!launcher)
-			launcher = new Missile_launcher(this, weapon,
-			    proj, dir, gwin->get_std_delay()*delay);
-		if (!launcher->in_queue())
-			gwin->get_tqueue()->add(0L, launcher, 0);
-		break;
-		}
-	case teleport:
-	case intermap:
-		hatch_teleport(obj);
-		break;
-	case weather:
-		{
-		set_weather(data1&0xff, data1>>8, this);
-		break;
-		}
-	case button:		// Set off all in given area.
-		{
-		int dist = data1&0xff;
-		Egg_vector eggs;
-		find_nearby_eggs(eggs, 275, dist);
-		for (Egg_vector::const_iterator it = eggs.begin();
-					it != eggs.end(); ++it)
-			{
-			Egg_object *egg = *it;
-			if (egg != this &&
-			    egg->criteria == external_criteria && 
-			    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
-				egg->hatch(obj, 0);
-			}
-		break;
-		}
-	default:
-		cout << "Egg not actioned" << endl;
-		}
+	hatch_now(obj, must);
 	if (flags & (1 << (int) once))
 		remove_this(0);
 	}
@@ -941,12 +1119,6 @@ void Egg_object::remove_this
 			chunk->remove_egg(this);
 			}
 		}
-	if (launcher)			// Stop missiles.
-		{
-		gwin->get_tqueue()->remove(launcher);
-		delete launcher;
-		launcher = 0;
-		}
 	 if (!nodel)
 		 gwin->delete_object(this);
 	 }
@@ -993,32 +1165,12 @@ int Egg_object::get_ireg_size()
 }
 
 /*
- *	Create from IREG data.
+ *	Create.
  */
-Animated_egg_object::Animated_egg_object
-	(
-	int shapenum, int framenum,
-	unsigned int tilex,
-	unsigned int tiley, unsigned int lft, 
-	unsigned short itype,
-	unsigned char prob, short d1, short d2, short d3
-	) : Egg_object(shapenum, framenum, 
-				tilex, tiley, lft, itype, prob, d1, d2, d3)
-	{ 
-	animator = new Frame_animator(this); 
-	}
-
-/*
- *	Create for fields.
- */
-
-Animated_egg_object::Animated_egg_object
-	(
-	int shapenum, int framenum, unsigned int tilex, 
-	unsigned int tiley, unsigned int lft,
-	unsigned char ty
-	) : Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
-	{
+Field_object::Field_object(int shapenum, int framenum, unsigned int tilex, 
+		unsigned int tiley, unsigned int lft, unsigned char ty)
+		: Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
+{
 	int recycle = 0;		// Frame to begin new cycles after 1st.
 	switch (type)
 		{
@@ -1029,56 +1181,10 @@ Animated_egg_object::Animated_egg_object
 	case fire_field:
 		recycle = 8; break;
 	case caltrops_field:
-		animator = 0; return;	// This doesn't get animated.
+		return;			// This doesn't get animated.
 		}
-	animator = new Field_frame_animator(this, recycle); 
-	}
-
-/*
- *	Delete.
- */
-Animated_egg_object::~Animated_egg_object()
-	{ 
-	delete animator; 
-	}
-
-/*
- *	Render.
- */
-
-void Animated_egg_object::paint
-	(
-	)
-	{
-	if (animator)
-		animator->want_animation();	// Be sure animation is on.
-	Ireg_game_object::paint();	// Always paint these.
-	}
-
-/*
- *	Run usecode when double-clicked or when activated by proximity.
- */
-
-void Animated_egg_object::activate
-	(
-	int event
-	)
-	{
-	Egg_object::activate(event);
-	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
-	}
-
-/*
- *	Stop animation.
- */
-
-void Animated_egg_object::stop_animation
-	(
-	)
-	{
-	delete animator;
-	animator = 0;
-	}
+	set_animator(new Field_frame_animator(this, recycle));
+}
 
 /*
  *	Apply field.
@@ -1132,6 +1238,19 @@ bool Field_object::field_effect
 	if (!del)			// Tell animator to keep checking.
 		((Field_frame_animator *) animator)->activated = true;
 	return del;
+	}
+
+/*
+ *	Render.
+ */
+
+void Field_object::paint
+	(
+	)
+	{
+	if (animator)
+		animator->want_animation();	// Be sure animation is on.
+	Ireg_game_object::paint();	// Always paint these.
 	}
 
 /*

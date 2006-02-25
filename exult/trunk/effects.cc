@@ -1662,7 +1662,7 @@ void Fire_field_effect::handle_event
 		{
 		if (frnum > 3)		// Starting to wind down?
 			{
-			((Animated_egg_object *) field)->stop_animation();
+			((Egg_object *) field)->stop_animation();
 			frnum = 3;
 			}
 		else
