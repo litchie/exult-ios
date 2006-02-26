@@ -1,3 +1,6 @@
+2006-02-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed potential crash introduced by the previous fix.
+
 2006-02-25  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed brand-new bug preventing many egg types from correctly hatching.
 

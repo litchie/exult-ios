@@ -1007,7 +1007,10 @@ void Egg_object::hatch
 		// Time to hatch the egg.
 		hatch_now(obj, must);
 		if (flags & (1 << (int) once))
+			{
 			remove_this(0);
+			return;
+			}
 		}
 		// Flag it as done, whether or not it has been hatched.
 	flags |= (1 << (int) hatched);
