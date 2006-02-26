@@ -929,8 +929,10 @@ void Egg_object::update_from_studio
             		break;
 		default:      frame = 7; break;
 			}
-					// ??Animated flag??
-	Egg_object *egg = create_egg(false, shape, frame, tx, ty, tz, type,
+	
+	Shape_info& info = ShapeID::get_info(shape);
+	bool anim = info.is_animated() || info.has_sfx();
+	Egg_object *egg = create_egg(anim, shape, frame, tx, ty, tz, type,
 					probability, data1, data2, data3);
 	if (!oldegg)
 		{
