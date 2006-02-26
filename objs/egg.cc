@@ -987,12 +987,6 @@ void Egg_object::hatch
 #ifdef DEBUG
 	print_debug();
 #endif
-					// Flag it as done.
-	flags |= (1 << (int) hatched);
-/*	+++++ I just move the 'hatched' line here from below the 'return' in
-an effort to fix the 'monsters spawning too often' bug.   NEED to see if this
-breaks anything!  */
-
 	/*
 	  MAJOR HACK!
 	  This is an attempt at a work-around of a potential bug in the original
@@ -1008,11 +1002,15 @@ breaks anything!  */
 
 
 	int roll = must ? 0 : 1 + rand()%100;
-	if (roll > probability)
-		return;			// Out of luck.
-	hatch_now(obj, must);
-	if (flags & (1 << (int) once))
-		remove_this(0);
+	if (roll <= probability)
+		{
+		// Time to hatch the egg.
+		hatch_now(obj, must);
+		if (flags & (1 << (int) once))
+			remove_this(0);
+		}
+		// Flag it as done, whether or not it has been hatched.
+	flags |= (1 << (int) hatched);
 	}
 
 /*
