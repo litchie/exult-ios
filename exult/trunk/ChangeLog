@@ -1,3 +1,6 @@
+2006-02-25  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed brand-new bug preventing many egg types from correctly hatching.
+
 2006-02-25    <jeff@mini.nerble.net>
 
 	* objs/egg.cc (public): Rewrote so that each egg type has its own
