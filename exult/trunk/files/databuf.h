@@ -148,7 +148,7 @@ public:
 	
 	virtual unsigned int getPos() { return in?in->tellg():out->tellp(); };
 	
-	virtual bool eof() { in->get(); bool ret = in->eof(); if (!ret) in->unget(); return ret; }
+	virtual bool eof() { return in->peek() == std::char_traits<char>::eof(); }
 	virtual void flush() { if (out) out->flush(); }
 	virtual bool good() { return in ? in->good() : out->good(); }
 };
