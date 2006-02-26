@@ -129,7 +129,7 @@ protected:
 public:
 	Jukebox_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1)
+		unsigned char prob, uint16 d1)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
 		  score(d1&0xff), continuous(((d1>>8)&1) != 0)
 		{  }
@@ -146,7 +146,7 @@ class Soundsfx_egg : public Jukebox_egg {
 public:
 	Soundsfx_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1)
+		unsigned char prob, uint16 d1)
 		: Jukebox_egg(shnum, frnum, tx, ty, tz, itype, prob, d1)
 		{  }
 	virtual void hatch_now(Game_object *obj, bool must) {
@@ -168,7 +168,7 @@ class Voice_egg : public Egg_object {
 public:
 	Voice_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1)
+		unsigned char prob, uint16 d1)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, 0),
 		  speechnum(d1)
 		{  }
@@ -195,7 +195,7 @@ class Monster_egg : public Egg_object {
 public:
 	Monster_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2, short d3)
+		unsigned char prob, uint16 d1, uint16 d2, uint16 d3)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1,d2,d3),
 		  sched(d1>>8), align(d1&3), cnt((d1&0xff)>>2) {
 
@@ -239,7 +239,7 @@ class Usecode_egg : public Egg_object {
 public:
 	Usecode_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  fun(d2) {  
 		set_quality(d1&0xff);
@@ -268,7 +268,7 @@ class Missile_egg : public Egg_object {
 public:
 	Missile_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  weapon(d1), dir(d2&0xff), delay(d2>>8), launcher(0)
 		{  }
@@ -319,11 +319,11 @@ public:
 
 class Teleport_egg : public Egg_object {
 	short mapnum;			// If not -1.
-	short destx, desty;
+	unsigned short destx, desty;
 public:
 	Teleport_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  mapnum(-1) {
 		if (type == intermap)
@@ -363,7 +363,7 @@ class Weather_egg : public Egg_object {
 public:
 	Weather_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  weather(d1&0xff), len(d1>>8) {
 		if (!len)		// Means continuous.
@@ -379,7 +379,7 @@ class Button_egg : public Egg_object {
 public:
 	Button_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
 		  dist(d1&0xff)
 		{  }
@@ -402,7 +402,7 @@ class Path_egg : public Egg_object {
 public:
 	Path_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, short d1, short d2)
+		unsigned char prob, uint16 d1, uint16 d2)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2) {
 		set_quality(d1&0xff);
 	}
