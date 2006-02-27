@@ -1,3 +1,8 @@
+2006-02-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* BG Keyring Mod and SI Fixes are now licensed under the GNU GPL.
+	* For the BG Keyring Mod, I also modified a bit the NPC spellcasting
+	  items and routines, and started work in a spellcasting pseudo-AI.
+
 2006-02-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a crash when using 'actor frame' script opcodes.
 

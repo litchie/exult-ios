@@ -1,8 +1,26 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This header file contains several more shape numbers. It is mostly unsorted...
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 const int SHAPE_SCONCE_SPENT			= 535;	//0x0217
@@ -24,8 +42,11 @@ const int SHAPE_BOLTS					= 723;	//0x2D3
 
 const int SHAPE_BLACKSWORD				= 707;	//0x2C3
 const int SHAPE_MAGIC_BOLTS				= 417;
+const int SHAPE_BURST_ARROWS			= 554;
 const int SHAPE_MAGIC_ARROWS			= 556;
 const int SHAPE_LUCKY_ARROWS			= 558;
+const int SHAPE_LOVE_ARROWS				= 560;
+const int SHAPE_TSERAMED_ARROWS			= 568;
 const int SHAPE_LIGHTNING_WAND			= 629;
 const int SHAPE_FIRE_WAND				= 630;
 const int SHAPE_FIREDOOM_STAFF			= 553;
@@ -177,3 +198,8 @@ const int SHAPE_STATUE					= 854;
 const int SHAPE_TIME_BARRIER			= 1021;
 
 const int KEY_INN						= 255;	//0x0FF, keys for inn doors.
+
+const int SHAPE_BOW						= 597;
+const int SHAPE_MAGIC_BOW				= 606;
+const int SHAPE_CROSSBOW				= 598;
+const int SHAPE_TRIPLE_XBOW				= 647;

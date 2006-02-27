@@ -1,9 +1,27 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This header file contains the shape numbers for all of the new
  *	shapes installed by the Keyring mod. It is unsorted by shape #.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 const int SHAPE_KEYRING					= 1100;	//0x44C
@@ -15,10 +33,10 @@ const int SHAPE_GEM_OF_DISPELLING		= 1105;	//0x451
 const int SHAPE_SPIDER_EGG				= 1106;	//0x452
 const int SHAPE_LAURIANNA				= 1107;	//0x453
 const int SHAPE_LAURIANNA_ROOTED		= 1108;	//0x454
-const int SHAPE_JAANAS_SPELLBOOK		= 1109;	//0x455
+const int SHAPE_SPELL_SPELLBOOK			= 1109;	//0x455
 const int SHAPE_IOLOS_LUTE				= 1110;	//0x456
-const int SHAPE_MARIAHS_SPELLBOOK		= 1111;	//0x457
-const int SHAPE_LAURIANNAS_SPELLBOOK	= 1112;	//0x458
+const int SHAPE_SPELL_AMULET			= 1111;	//0x457
+const int SHAPE_JULIAS_HAMMER			= 1112;	//0x458
 const int SHAPE_ORB_MOONGATE_NW_SE		= 1113;	//0x459
 const int SHAPE_ORB_MOONGATE_NE_SW		= 1114;	//0x45A
 const int SHAPE_ETERNAL_FLAME			= 1115;	//0x45B

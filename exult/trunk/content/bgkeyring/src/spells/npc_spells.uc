@@ -1,8 +1,26 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains functions used by NPCs for spellcasting.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-02-03
+ *	Last Modified: 2006-02-27
  */
 
 enum cast_spell_results
@@ -67,8 +85,10 @@ var isTargetedSpell(var circle, var spell)
 	else if (circle == 8)
 		//				 Death vortex	Invis. all		Mass death	Resurrect
 		//				 Summon			Swordstrike		Time stop		Fire snake
+		//			Mass Resurrect
 		result = 		[true,			false,			false,			true,
-						 false,			true,			false,			true];
+						 false,			true,			false,			true,
+						 false];
 	return result[spell + 1];
 }
 
@@ -115,70 +135,312 @@ var getSpellList(var circle)
 	else if (circle == 8)
 		spell_list = ["none",
 					  "Death vortex", "Invisibility all", "Mass death", "Resurrect",
-					  "Summon", "Swordstrike", "Time stop", "Fire snake"];
+					  "Summon", "Swordstrike", "Time stop", "Fire snake",
+					  "Mass resurrect"];
 	return spell_list;
 }
 
-var removeSpellsFromList(var spell_list, var spells_to_remove)
+var getSpellReagents (var circle, var spell)
 {
-	var spell;
-	var index;
-	var max;
-	var newarray = [];
-
-	if (UI_get_array_size(spells_to_remove) > 1)
+	if (circle == 0)	//linear spells
 	{
-		for (spell in spell_list with index to max)
-		{
-			if (!(spell in spells_to_remove))
-				newarray = [newarray, spell];
-		}
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		return [0, 0, 0, 0,
+				0, 0, 0, 0];
 	}
-	else if (spells_to_remove)
+	else if (circle == 1)
 	{
-		for (spell in spell_list with index to max)
-		{
-			if (!(spell == spells_to_remove[1]))
-				newarray = [newarray, spell];
-		}
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_AWAKEN_ALL)
+			return [0, 0, 0, 0,
+					1, 1, 0, 0];
+		else if (spell == SPELL_CREATE_FOOD)
+			return [0, 0, 0, 1,
+					1, 1, 0, 0];
+		else if (spell == SPELL_CURE)
+			return [0, 0, 0, 0,
+					1, 1, 0, 0];
+		else if (spell == SPELL_DETECT_TRAP)
+			return [0, 0, 1, 0,
+					0, 0, 1, 0];
+		else if (spell == SPELL_GREAT_DOUSE)
+			return [0, 0, 0, 0,
+					1, 0, 1, 0];
+		else if (spell == SPELL_GREAT_IGNITE)
+			return [0, 0, 0, 0,
+					0, 0, 1, 1];
+		else if (spell == SPELL_LIGHT)
+			return [0, 0, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_LOCATE)
+			return [0, 0, 1, 0,
+					0, 0, 0, 0];
+		else if (spell == SPELL_TRANSLATE)
+			return [0, 0, 1, 0,
+					0, 0, 0, 0];
 	}
-	else
-		newarray = spell_list;
-	
-	return newarray;
+	else if (circle == 2)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_DESTROY_TRAP)
+			return [0, 1, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_ENCHANT)
+			return [1, 0, 0, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_FIRE_BLAST)
+			return [1, 0, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_GREAT_LIGHT)
+			return [0, 0, 0, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_MASS_CURE)
+			return [0, 0, 0, 1,
+					1, 1, 0, 0];
+		else if (spell == SPELL_PROTECTION)
+			return [0, 0, 0, 0,
+					1, 1, 0, 1];
+		else if (spell == SPELL_TELEKINESIS)
+			return [1, 1, 0, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_WIZARD_EYE)
+			return [1, 1, 1, 1,
+					0, 0, 1, 1];
+	}
+	else if (circle == 3)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_CURSE)
+			return [0, 0, 1, 0,
+					1, 0, 0, 1];
+		else if (spell == SPELL_HEAL)
+			return [0, 0, 0, 0,
+					1, 1, 1, 0];
+		else if (spell == SPELL_PARALYZE)
+			return [0, 0, 1, 0,
+					0, 0, 1, 0];
+		else if (spell == SPELL_PEER)
+			return [0, 0, 1, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_POISON)
+			return [1, 1, 1, 0,
+					0, 0, 0, 0];
+		else if (spell == SPELL_PROTECT_ALL)
+			return [0, 0, 0, 1,
+					1, 1, 0, 1];
+		else if (spell == SPELL_SLEEP)
+			return [1, 0, 1, 0,
+					0, 0, 1, 0];
+		else if (spell == SPELL_SWARM)
+			return [0, 1, 1, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_REMOVE_CURSE)
+			return [0, 0, 0, 0,
+					1, 1, 0, 1];
+	}
+	else if (circle == 4)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_CONJURE)
+			return [0, 0, 0, 1,
+					0, 0, 1, 0];
+		else if (spell == SPELL_LIGHTNING)
+			return [1, 0, 0, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_MASS_CURSE)
+			return [0, 0, 1, 1,
+					1, 0, 0, 1];
+		else if (spell == SPELL_REVEAL)
+			return [0, 1, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_SEANCE)
+			return [0, 1, 1, 1,
+					0, 0, 1, 1];
+		else if (spell == SPELL_UNLOCK_MAGIC)
+			return [0, 1, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_RECHARGE_MAGIC)
+			return [0, 0, 0, 1,
+					0, 0, 1, 1];
+		else if (spell == SPELL_BLINK)
+			return [0, 1, 0, 1,
+					0, 0, 0, 0];
+	}
+	else if (circle == 5)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_CHARM)
+			return [1, 0, 1, 0,
+					0, 0, 1, 0];
+		else if (spell == SPELL_DANCE)
+			return [0, 1, 0, 1,
+					1, 0, 0, 0];
+		else if (spell == SPELL_DISPEL_FIELD)
+			return [1, 0, 0, 0,
+					1, 0, 1, 1];
+		else if (spell == SPELL_EXPLOSION)
+			return [1, 1, 0, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_FIRE_FIELD)
+			return [1, 0, 0, 0,
+					0, 0, 1, 1];
+		else if (spell == SPELL_GREAT_HEAL)
+			return [0, 0, 0, 1,
+					1, 1, 1, 0];
+		else if (spell == SPELL_INVISIBILITY)
+			return [0, 1, 1, 0,
+					0, 0, 0, 0];
+		else if (spell == SPELL_MASS_SLEEP)
+			return [0, 0, 1, 0,
+					0, 1, 1, 0];
+		else if (spell == SPELL_SUMMON_SKELETONS)
+			return [0, 1, 0, 1,
+					1, 0, 0, 0];
+	}
+	else if (circle == 6)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_CAUSE_FEAR)
+			return [0, 0, 1, 1,
+					1, 0, 0, 0];
+		else if (spell == SPELL_CLONE)
+			return [0, 1, 1, 1,
+					0, 1, 1, 1];
+		else if (spell == SPELL_FIRE_RING)
+			return [1, 0, 0, 1,
+					0, 0, 1, 1];
+		else if (spell == SPELL_FLAME_STRIKE)
+			return [1, 1, 0, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_MAGIC_STORM)
+			return [0, 1, 1, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_POISON_FIELD)
+			return [1, 0, 1, 0,
+					0, 0, 1, 0];
+		else if (spell == SPELL_SLEEP_FIELD)
+			return [1, 0, 0, 0,
+					0, 1, 1, 0];
+		else if (spell == SPELL_TREMOR)
+			return [0, 1, 0, 1,
+					0, 0, 0, 1];
+	}
+	else if (circle == 7)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_CREATE_GOLD)
+			return [0, 0, 0, 1,
+					0, 0, 1, 0];
+		else if (spell == SPELL_DEATH_BOLT)
+			return [1, 0, 1, 0,
+					0, 0, 0, 1];
+		else if (spell == SPELL_DELAYED_BLAST)
+			return [1, 1, 0, 1,
+					0, 0, 1, 1];
+		else if (spell == SPELL_ENERGY_FIELD)
+			return [1, 0, 0, 1,
+					0, 0, 1, 1];
+		else if (spell == SPELL_ENERGY_MIST)
+			return [0, 1, 1, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_MASS_CHARM)
+			return [1, 0, 1, 1,
+					0, 0, 1, 0];
+		else if (spell == SPELL_MASS_MIGHT)
+			return [1, 0, 0, 1,
+					0, 1, 0, 0];
+		else if (spell == SPELL_RESTORATION)
+			return [0, 0, 0, 1,
+					1, 1, 0, 1];
+		else if (spell == SPELL_MASS_DISPEL_FIELD)
+			return [1, 0, 0, 1,
+					1, 0, 1, 1];
+	}
+	else if (circle == 8)
+	{
+		//black pearl,	blood moss,	nightshade,		mandrake root,
+		//garlic,		ginseng,	spider silk,	sulphurous ash
+		if (spell == SPELL_DEATH_VORTEX)
+			return [0, 1, 1, 1,
+					0, 0, 0, 1];
+		else if (spell == SPELL_INVISIBILITY_ALL)
+			return [1, 1, 1, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_MASS_DEATH)
+			return [0, 1, 1, 1,
+					1, 1, 0, 0];
+		else if (spell == SPELL_RESURRECT)
+			return [0, 0, 0, 0,
+					1, 1, 1, 1];
+		else if (spell == SPELL_SUMMON)
+			return [0, 1, 0, 1,
+					1, 0, 0, 0];
+		else if (spell == SPELL_SWORDSTRIKE)
+			return [1, 0, 1, 1,
+					0, 0, 0, 0];
+		else if (spell == SPELL_TIME_STOP)
+			return [0, 1, 0, 1,
+					1, 0, 0, 0];
+		else if (spell == SPELL_MASS_RESURRECT)
+			return [0, 0, 0, 1,
+					1, 1, 1, 1];
+			//return [NO_SUCH_SPELL];
+	}
 }
 
-var getCircleList(var npc, var ignore_npc_level)
+var getCircleList(var npc)
 {
 	var circles;
 	
-	if (ignore_npc_level)
-		circles = ["none", "Linear", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth"];
+	circles = ["Linear", "First"];
+
+	var npclevel = getNPCLevel(npc);
+	if (npclevel > 8 || npc->get_item_flag(ARCHWIZARD))
+		npclevel = 8;
+	if (npc->get_item_flag(BARD_CLASS))
+		npclevel = (npclevel+1)/2;	//Effectively rounding up
 	
-	else
-	{
-		circles = ["Linear", "First"];
+	if (npclevel > 1)
+		circles = [circles, "Second"];
+	if (npclevel > 2)
+		circles = [circles, "Third"];
+	if (npclevel > 3)
+		circles = [circles, "Fourth"];
+	if (npclevel > 4)
+		circles = [circles, "Fifth"];
+	if (npclevel > 5)
+		circles = [circles, "Sixth"];
+	if (npclevel > 6)
+		circles = [circles, "Seventh"];
+	if (npclevel > 7)
+		circles = [circles, "Eighth"];
 	
-		var npclevel = getNPCLevel(npc);
-		if (npclevel > 1)
-			circles = [circles, "Second"];
-		if (npclevel > 2)
-			circles = [circles, "Third"];
-		if (npclevel > 3)
-			circles = [circles, "Fourth"];
-		if (npclevel > 4)
-			circles = [circles, "Fifth"];
-		if (npclevel > 5)
-			circles = [circles, "Sixth"];
-		if (npclevel > 6)
-			circles = [circles, "Seventh"];
-		if (npclevel > 7)
-			circles = [circles, "Eighth"];
-		
-		circles = ["none", circles];
-	}
-		
+	circles = ["none", circles];
 	return circles;
+}
+
+var getSpellCircle (var spellname)
+{
+	var circle;
+	var circlelist;
+
+	while (circle < 8)
+	{
+		circlelist = getSpellList(circle);
+		if (spellname in circlelist)
+			break;
+
+		circle = circle + 1;
+	}
+	return circle;
 }
 
 var getIndexForSpell(var circle, var spellname)
@@ -197,12 +459,12 @@ var getLeveledSpellList (var npc, var ignore_npc_level, var spelllist, var level
 {
 	var list = [];
 	var index;
-	var npclevel;
 	
-	if (ignore_npc_level)
+	var npclevel = getNPCLevel(npc);
+	if (ignore_npc_level || npclevel > 8 || npc->get_item_flag(ARCHWIZARD))
 		npclevel = 8;
-	else
-		npclevel = getNPCLevel(npc);
+	if (npc->get_item_flag(BARD_CLASS))
+		npclevel = (npclevel+1)/2;	//Effectively rounding up
 	
 	index = 1;
 	while (index <= UI_get_array_size(spelllist))
@@ -240,249 +502,16 @@ var getSpellFunction (var circle, var spell)
 		return &spellDeathVortex + spell;
 }	
 
-var npcCastSpell (var npc, var target, var circle, var spell, var archwizard)
+var npcCastSpell (var npc, var target, var circle, var spell)
 {
 	var party = UI_get_party_list();
 	var npcmana = npc->get_npc_prop(MANA);
 	var maxmana = npc->get_npc_prop(MAX_MANA);
-	
-	var spell_function = getSpellFunction(circle, spell);
-	
-	if ((npc in party) && !archwizard)
+
+	if (((npc in party) && !npc->get_item_flag(ARCHWIZARD) ||
+		(!(npc in party) && (npc->get_schedule_type() == WAIT))))
 	{
-		var needed_reagents;
-		
-		if (circle == 0)	//linear spells
-		{
-			needed_reagents = [0, 0, 0, 0,
-							   0, 0, 0, 0];
-		}
-		else if (circle == 1)
-		{
-			if (spell == SPELL_AWAKEN_ALL)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 0, 0];
-			else if (spell == SPELL_CREATE_FOOD)
-				needed_reagents = [0, 0, 0, 1,
-								   1, 1, 0, 0];
-			else if (spell == SPELL_CURE)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 0, 0];
-			else if (spell == SPELL_DETECT_TRAP)
-				needed_reagents = [0, 0, 1, 0,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_GREAT_DOUSE)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 0, 1, 0];
-			else if (spell == SPELL_GREAT_IGNITE)
-				needed_reagents = [0, 0, 0, 0,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_LIGHT)
-				needed_reagents = [0, 0, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_LOCATE)
-				needed_reagents = [0, 0, 1, 0,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_TRANSLATE)
-				needed_reagents = [0, 0, 1, 0,
-								   0, 0, 0, 0];
-		}
-		else if (circle == 2)
-		{
-			if (spell == SPELL_DESTROY_TRAP)
-				needed_reagents = [0, 1, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_ENCHANT)
-				needed_reagents = [1, 0, 0, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_FIRE_BLAST)
-				needed_reagents = [1, 0, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_GREAT_LIGHT)
-				needed_reagents = [0, 0, 0, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_MASS_CURE)
-				needed_reagents = [0, 0, 0, 1,
-								   1, 1, 0, 0];
-			else if (spell == SPELL_PROTECTION)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 0, 1];
-			else if (spell == SPELL_TELEKINESIS)
-				needed_reagents = [1, 1, 0, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_WIZARD_EYE)
-				needed_reagents = [1, 1, 1, 1,
-								   0, 0, 1, 1];
-		}
-		else if (circle == 3)
-		{
-			if (spell == SPELL_CURSE)
-				needed_reagents = [0, 0, 1, 0,
-								   1, 0, 0, 1];
-			else if (spell == SPELL_HEAL)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 1, 0];
-			else if (spell == SPELL_PARALYZE)
-				needed_reagents = [0, 0, 1, 0,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_PEER)
-				needed_reagents = [0, 0, 1, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_POISON)
-				needed_reagents = [1, 1, 1, 0,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_PROTECT_ALL)
-				needed_reagents = [0, 0, 0, 1,
-								   1, 1, 0, 1];
-			else if (spell == SPELL_SLEEP)
-				needed_reagents = [1, 0, 1, 0,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_SWARM)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_REMOVE_CURSE)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 0, 1];
-		}
-		else if (circle == 4)
-		{
-			if (spell == SPELL_CONJURE)
-				needed_reagents = [0, 0, 0, 1,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_LIGHTNING)
-				needed_reagents = [1, 0, 0, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_MASS_CURSE)
-				needed_reagents = [0, 0, 1, 1,
-								   1, 0, 0, 1];
-			else if (spell == SPELL_REVEAL)
-				needed_reagents = [0, 1, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_SEANCE)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_UNLOCK_MAGIC)
-				needed_reagents = [0, 1, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_RECHARGE_MAGIC)
-				needed_reagents = [0, 0, 0, 1,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_BLINK)
-				needed_reagents = [0, 1, 0, 1,
-								   0, 0, 0, 0];
-		}
-		else if (circle == 5)
-		{
-			if (spell == SPELL_CHARM)
-				needed_reagents = [1, 0, 1, 0,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_DANCE)
-				needed_reagents = [0, 1, 0, 1,
-								   1, 0, 0, 0];
-			else if (spell == SPELL_DISPEL_FIELD)
-				needed_reagents = [1, 0, 0, 0,
-								   1, 0, 1, 1];
-			else if (spell == SPELL_EXPLOSION)
-				needed_reagents = [1, 1, 0, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_FIRE_FIELD)
-				needed_reagents = [1, 0, 0, 0,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_GREAT_HEAL)
-				needed_reagents = [0, 0, 0, 1,
-								   1, 1, 1, 0];
-			else if (spell == SPELL_INVISIBILITY)
-				needed_reagents = [0, 1, 1, 0,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_MASS_SLEEP)
-				needed_reagents = [0, 0, 1, 0,
-								   0, 1, 1, 0];
-			else if (spell == SPELL_SUMMON_SKELETONS)
-				needed_reagents = [0, 1, 0, 1,
-								   1, 0, 0, 0];
-		}
-		else if (circle == 6)
-		{
-			if (spell == SPELL_CAUSE_FEAR)
-				needed_reagents = [0, 0, 1, 1,
-								   1, 0, 0, 0];
-			else if (spell == SPELL_CLONE)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 1, 1, 1];
-			else if (spell == SPELL_FIRE_RING)
-				needed_reagents = [1, 0, 0, 1,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_FLAME_STRIKE)
-				needed_reagents = [1, 1, 0, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_MAGIC_STORM)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_POISON_FIELD)
-				needed_reagents = [1, 0, 1, 0,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_SLEEP_FIELD)
-				needed_reagents = [1, 0, 0, 0,
-								   0, 1, 1, 0];
-			else if (spell == SPELL_TREMOR)
-				needed_reagents = [0, 1, 0, 1,
-								   0, 0, 0, 1];
-		}
-		else if (circle == 7)
-		{
-			if (spell == SPELL_CREATE_GOLD)
-				needed_reagents = [0, 0, 0, 1,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_DEATH_BOLT)
-				needed_reagents = [1, 0, 1, 0,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_DELAYED_BLAST)
-				needed_reagents = [1, 1, 0, 1,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_ENERGY_FIELD)
-				needed_reagents = [1, 0, 0, 1,
-								   0, 0, 1, 1];
-			else if (spell == SPELL_ENERGY_MIST)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_MASS_CHARM)
-				needed_reagents = [1, 0, 1, 1,
-								   0, 0, 1, 0];
-			else if (spell == SPELL_MASS_MIGHT)
-				needed_reagents = [1, 0, 0, 1,
-								   0, 1, 0, 0];
-			else if (spell == SPELL_RESTORATION)
-				needed_reagents = [0, 0, 0, 1,
-								   1, 1, 0, 1];
-			else if (spell == SPELL_MASS_DISPEL_FIELD)
-				needed_reagents = [1, 0, 0, 1,
-								   1, 0, 1, 1];
-		}
-		else if (circle == 8)
-		{
-			if (spell == SPELL_DEATH_VORTEX)
-				needed_reagents = [0, 1, 1, 1,
-								   0, 0, 0, 1];
-			else if (spell == SPELL_INVISIBILITY_ALL)
-				needed_reagents = [1, 1, 1, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_MASS_DEATH)
-				needed_reagents = [0, 1, 1, 1,
-								   1, 1, 0, 0];
-			else if (spell == SPELL_RESURRECT)
-				needed_reagents = [0, 0, 0, 0,
-								   1, 1, 1, 1];
-			else if (spell == SPELL_SUMMON)
-				needed_reagents = [0, 1, 0, 1,
-								   1, 0, 0, 0];
-			else if (spell == SPELL_SWORDSTRIKE)
-				needed_reagents = [1, 0, 1, 1,
-								   0, 0, 0, 0];
-			else if (spell == SPELL_TIME_STOP)
-				needed_reagents = [0, 1, 0, 1,
-								   1, 0, 0, 0];
-				//return [NO_SUCH_SPELL];
-		}
+		var needed_reagents = getSpellReagents(circle, spell);
 		
 		var reagent_names =			["black pearl",	"blood moss",	"nightshade",	"mandrake root",
 									 "garlic",		"ginseng",		"spider silk",	"sulphurous ash"];
@@ -550,8 +579,12 @@ var npcCastSpell (var npc, var target, var circle, var spell, var archwizard)
 		for (reagent in reagent_frames with index to max)
 			npc->remove_cont_items(needed_reagents[reagent], SHAPE_REAGENT, QUALITY_ANY, reagent - 1, true);
 	}
-
+	
 	npc->begin_casting_mode();
+	
+	npc->halt_scheduled();
+	var spell_function = getSpellFunction(circle, spell);
+	event = DOUBLECLICK;
 	if (isTargetedSpell(circle, spell))
 	{
 		if (!target)
@@ -561,11 +594,13 @@ var npcCastSpell (var npc, var target, var circle, var spell, var archwizard)
 	else
 		npc->(*spell_function)();
 	
-	if (!(npc in party) || archwizard) circle = 0;
+	//Return NPC to standing frame once spellcasting is done
+	script npc after 12 ticks actor frame STAND;
+	if (!(npc in party) || npc->get_item_flag(ARCHWIZARD)) circle = 0;
 	return [CASTING_SUCCESSFUL, circle];
 }
 
-npcAskSpellToCast (var npc, var ignorenpclevel, var archwizard, var talk, var removespells)
+npcAskSpellToCast (var npc, var talk, var removespells)
 {
 	UI_push_answers();
 	
@@ -576,7 +611,7 @@ npcAskSpellToCast (var npc, var ignorenpclevel, var archwizard, var talk, var re
 	var casting_status;
 	var circle_list;
 
-	circle_list = getCircleList(npc, ignorenpclevel);
+	circle_list = getCircleList(npc);
 	
 	say(talk[1]);
 	while (true)
@@ -587,7 +622,7 @@ npcAskSpellToCast (var npc, var ignorenpclevel, var archwizard, var talk, var re
 			break;
 		else
 		{
-			spelllist = removeSpellsFromList(getSpellList(circle), removespells);
+			spelllist = removeItemsFromList(getSpellList(circle), removespells);
 
 			say(talk[2]);
 			spell = chooseFromMenu2(spelllist);
@@ -597,14 +632,14 @@ npcAskSpellToCast (var npc, var ignorenpclevel, var archwizard, var talk, var re
 			{
 				//Determine the true spell index:
 				spell = getIndexForSpell(circle, spelllist[spell]);
-				casting_return = npcCastSpell(npc, 0, circle, spell, archwizard);
+				casting_return = npcCastSpell(npc, 0, circle, spell);
 				var casting_result = casting_return[1];
 				if (casting_result == CASTING_SUCCESSFUL)
 				{
 					//casting_return[2] is the mana cost of the spell.
 					//Only do this if the spell cost any mana at all.
 					if (casting_return[2] != 0)
-						npc->set_npc_prop(MANA, -1*casting_return[2]);
+						npc->set_npc_prop(MANA, -casting_return[2]);
 
 					//The casting succeeded; abort so the spell can be cast:
 					abort;
@@ -637,29 +672,21 @@ npcAskSpellToCast (var npc, var ignorenpclevel, var archwizard, var talk, var re
 	UI_pop_answers();
 }
 
-npcCastSpellDialog (var npc, var spell, var archwizard, var talk)
+npcCastSpellDialog (var npc, var spell, var talk)
 {
-	var circle;
-	var circlelist;
-
-	while (circle < 8)
-	{
-		circlelist = getSpellList(circle);
-		if (spell in circlelist)
-			break;
-
-		circle = circle + 1;
-	}
+	var circle = getSpellCircle(spell);
 	
-	var casting_return = npcCastSpell(npc, 0, circle, getIndexForSpell(circle, spell), archwizard);
+	npc.hide();
+	var casting_return = npcCastSpell(npc, 0, circle, getIndexForSpell(circle, spell));
 	var casting_result = casting_return[1];
 	
 	if (casting_result == CASTING_SUCCESSFUL)
 	{
+		
 		//casting_return[2] is the mana cost of the spell.
 		//Only do this if the spell cost any mana at all.
 		if (casting_return[2] != 0)
-			npc->set_npc_prop(MANA, -1*casting_return[2]);
+			npc->set_npc_prop(MANA, -casting_return[2]);
 		
 		//The casting succeeded; abort so the spell can be cast:
 		abort;
@@ -668,22 +695,44 @@ npcCastSpellDialog (var npc, var spell, var archwizard, var talk)
 	{
 		//Not enough reagents; casting_return[2] is the string telling which
 		//reagents are missing:
-		say(talk[5]);
+		npc.say(talk[5]);
 		say(talk[6] + casting_return[2]);
 	}
 	else if (casting_result == NOT_ENOUGH_MANA)
 	{
 		if (casting_return[2])
-			say(talk[7]);
+			npc.say(talk[7]);
 		else
-			say(talk[8]);
-		}
+			npc.say(talk[8]);
+	}
+	else if (casting_result == NO_SUCH_SPELL)
+		//This should never happen...
+		npc.say("@Alas, I am afraid that spell doesn't exist. Warn the programmer, something is amiss!@");
+	npc.hide();
+}
+
+npcCastSpellBark (var npc, var target, var circle, var spell)
+{
+	var casting_return = npcCastSpell(npc, target, circle, spell);
+	var casting_result = casting_return[1];
+	
+	if (casting_result == CASTING_SUCCESSFUL)
+	{
+		//casting_return[2] is the mana cost of the spell.
+		//Only do this if the spell cost any mana at all.
+		if (casting_return[2] != 0)
+			npc->set_npc_prop(MANA, -casting_return[2]);
+		
+		//The casting succeeded; abort so the spell can be cast:
+		abort;
+	}
+
 	else if (casting_result == NO_SUCH_SPELL)
 		//This should never happen...
 		say("@Alas, I am afraid that spell doesn't exist. Warn the programmer, something is amiss!@");
 }
 
-npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var archwizard, var barks)
+npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var barks)
 {
 	if (!spellitem)
 	{
@@ -714,7 +763,7 @@ npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var archwizar
 	else if (spell == "Swordstrike")
 		circle = 8;
 	
-	var casting_return = npcCastSpell(npc, target, circle, getIndexForSpell(circle, spell), archwizard);
+	var casting_return = npcCastSpell(npc, target, circle, getIndexForSpell(circle, spell));
 	var casting_result = casting_return[1];
 	
 	if (casting_result == CASTING_SUCCESSFUL)
@@ -722,7 +771,7 @@ npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var archwizar
 		//casting_return[2] is the mana cost of the spell.
 		//Only do this if the spell cost any mana at all.
 		if (casting_return[2] != 0)
-			npc->set_npc_prop(MANA, -1*casting_return[2]);
+			npc->set_npc_prop(MANA, -casting_return[2]);
 
 		//The casting succeeded; abort so the spell can be cast:
 		abort;
@@ -742,7 +791,7 @@ npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var archwizar
 		npc->item_say("No spell");
 }
 
-npcCastHealing (var npc, var archwizard, var talk_cast, var talk, var healing_spells)
+npcCastHealing (var npc, var talk_cast, var talk, var healing_spells)
 {
 	var choice;
 	while (true)
@@ -766,7 +815,6 @@ npcCastHealing (var npc, var archwizard, var talk_cast, var talk, var healing_sp
 			
 			npcCastSpellDialog(npc,
 				choice,
-				archwizard,
 				talk_cast);
 		}	
 		else

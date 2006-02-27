@@ -1033,10 +1033,10 @@ Exult 1.4.01cvs text message file.  Written by ExultStudio.
 0x452:spider egg
 0x453:Laurianna
 0x454:Laurianna
-0x455:Jaana's Spellbook
-0x456:Iolo's Lute
-0x457:Mariah's Spellbook
-0x458:Laurianna's Spellbook
+0x455:spellbook
+0x456:Iolo's lute
+0x457:amulet
+0x458:Julia's hammer
 0x459:Moongate
 0x45a:Moongate
 0x45b:Flame of Principle
@@ -1047,6 +1047,8 @@ Exult 1.4.01cvs text message file.  Written by ExultStudio.
 0x462:Mariah
 0x464:item of principle
 0x465:carpet
+0x466:Shamino's Ankh
+0x467:Dupre's Amulet
 %%endsection shapes
 %%section msgs
 0x0:"Step aside!"

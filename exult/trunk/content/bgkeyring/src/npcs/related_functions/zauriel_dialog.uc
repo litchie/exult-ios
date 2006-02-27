@@ -1,9 +1,27 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains usecode for the Keyring Quest.
  *	Specifically, it contains dialog functions for Zauriel.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-02-03
+ *	Last Modified: 2006-02-27
  */
 
 zaurielSellPotions ()
@@ -129,8 +147,8 @@ zaurielGiveAdvance ()
 	say("@In any case, since thou wilt help me, I shall now give thee a selection of reagents and potions to assist thee.");
 	say("@This is an advance payment, but it shall not be deducted from thy upcoming reward. Consider it as a bonus...@");
 	
-	var gavereags = giveToParty(pouch1);
-	var gavepotns = giveToParty(pouch2);
+	var gavereags = forceGiveObjToParty(pouch1);
+	var gavepotns = forceGiveObjToParty(pouch2);
 	
 	if (gavereags && gavepotns)
 		say("@There is the advance. I have placed it in a couple of bags for thy convenience.@");

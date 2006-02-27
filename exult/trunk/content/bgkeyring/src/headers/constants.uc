@@ -1,11 +1,31 @@
-/*-----------------------------
-This header file defines general constants used throughout usecode, for Black Gate and Serpent Isle.
-Constants particular to a function can be found in the relevant codefile; constants particular to a game can be found in that game's header directory.
-
-Author: Alun Bestor (exult@washboardabs.net)
-With modifications by Marzo Junior (marzojr@yahoo.com)
-Last modified: 2006-01-20
--------------------------------*/
+/*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
+ *	This header file defines general constants used throughout usecode, for
+ *	Black Gate and Serpent Isle. Constants particular to a function can be
+ *	found in the relevant codefile; constants particular to a game can be
+ *	found in that game's header directory.
+ *
+ *	Author: Alun Bestor (exult@washboardabs.net)
+ *	With modifications by Marzo Junior (marzojr@yahoo.com)
+ *	Last modified: 2006-02-27
+ */
 
 //Event types, compiled with help from Marzo
 //The global <event> variable is set with one of these values to describe how the current function was called: whether by the player clicking on the object, or by a scripted event, or by egg trigger conditions, or just the item being onscreen, etc.
@@ -224,29 +244,61 @@ enum frame_offsets
 
 
 
-//Ready slots: use with UI_is_readied and UI_get_readied. These are the same whether paperdolls are on or off, it appears.
-//Some slots don't appear to be checkable at all: e.g. legs, boots, armour, quiver, backpack slot (even when paperdolls are off) - i.e., UI_get_readied will return nothing even when they are filled. This could be an Exult limitation.
-enum inv_slots
+//Ready slots: use with UI_is_readied. These are the same whether paperdolls are on or off.
+enum is_readied_inv_slots
 {
-	RIGHT_HAND		= 1,
-	WEAPON_HAND		= 1,
-	BOTH_HANDS		= 1,	//For two-handed items
+	IR_RIGHT_HAND		= 1,
+	IR_WEAPON_HAND		= 1,
+	IR_BOTH_HANDS		= 1,	//For two-handed items
 
-	LEFT_HAND		= 2,
-	SHIELD_HAND		= 2,
-	OFF_HAND		= 2,
+	IR_LEFT_HAND		= 2,
+	IR_SHIELD_HAND		= 2,
+	IR_OFF_HAND			= 2,
 
-	NECK			= 3,
-	CLOAK			= 3,
+	IR_NECK				= 3,
+	IR_CLOAK			= 3,
 
-	RIGHT_FINGER	= 6,
-	LEFT_FINGER		= 7,
-	GLOVES			= 6,
+	IR_RIGHT_FINGER		= 6,
+	IR_LEFT_FINGER		= 7,
+	IR_GLOVES			= 6,
 
-	HEAD			= 9,
-	BELT			= 11
+	IR_HEAD				= 9,
+	IR_BELT				= 11
 };
 
+//Ready slots: use with UI_get_readied. These are the same whether paperdolls are on or off.
+enum get_readied_inv_slots
+{
+	LEFT_HAND			= 0,
+	SHIELD_HAND			= 0,
+	OTHER_HAND			= 0,
+	
+	RIGHT_HAND			= 1,
+	WEAPON_HAND			= 1,
+	BOTH_HANDS			= 1,
+	
+	CLOAK				= 2,		//SI only
+	NECK				= 3,
+	HEAD				= 4,
+
+	GLOVES				= 5,		//In BG, exclusive with ONE_FINGER and OTHER_FINGER
+
+	USECODE_CONTAINER	= 6,		//SI only
+	
+	ONE_FINGER			= 7,		//In BG, exclusive with GLOVES
+	OTHER_FINGER		= 8,		//In BG, exclusive with GLOVES
+	
+	EARRINGS			= 9,		//SI only
+	
+	QUIVER				= 10,
+	BELT				= 11,
+	TORSO				= 12,
+	FEET				= 13,
+	LEGS				= 14,
+	BACKPACK			= 15,
+	BACK_SHIELD			= 16,		//SI only
+	BACK_SPOT			= 17		//SI only
+};
 
 //NPC properties (mostly ability scores)
 //These can be retrieved and set using UI_get_npc_property(npc, property) and UI_set_npc_property(npc, property, value) respectively.
@@ -290,6 +342,27 @@ enum cursors
 	CURSOR_OUT_OF_AMMO	= 3,
 	CURSOR_TOO_HEAVY	= 4,
 	CURSOR_WONT_FIT		= 5
+};
+
+
+//NPC atitudes toward the avatar
+enum alignments
+{
+	FRIENDLY		= 0,
+	NEUTRAL			= 1,
+	HOSTILE			= 2,
+	RANDOM_ALIGN	= 3
+};
+
+enum weather_types
+{
+	CLEAR_WEATHER	= 0,
+	SNOWING			= 1,	//Unsure; in Exult, works the same as RAIN, below and seems identical to RAIN in the originals
+	RAIN			= 2,
+	SPARKLE			= 3,	//Prevents casting of spells in BG (and maybe SI too?)
+	FOG				= 4,	//Seems to work like RAIN in the originals
+	OVERCAST		= 5,	//Seems to clear weather in the originals
+	CLOUDY			= 6
 };
 
 //Mask values used (e.g.) in find_nearby intrinsic; these are flags, which mean

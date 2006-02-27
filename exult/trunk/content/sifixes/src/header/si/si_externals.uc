@@ -1,3 +1,22 @@
+/*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 //Called at the first meeting with Thoxa, when you meet her at the dream world and when
 //she appears before the Banes are released. The SI devs must have been running out of
 //available functions... or maybe out of time to search for them.
@@ -140,5 +159,3 @@ extern setNewSchecules 0x9AC (var npc, var posx, var posy, var activity);
 //Makes the NPC ask where to wait when kicked from the party
 //(or, in some cases, simply says where he will be later):
 extern npcAskWhereToWait 0x9B4 (var npcnum);
-
-
