@@ -1,9 +1,27 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains usecode for the Keyring Quest.
  *	Specifically, it is has Laurianna's dialog functions.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-02-03
+ *	Last Modified: 2006-02-27
  */
 
 switchFace (var facenum) {LAURIANNA.hide();	LAURIANNA->show_npc_face(facenum);}
@@ -131,155 +149,40 @@ lauriannaSellReagents ()
 				  "@Let me now if thou dost change thy mind, Avatar. What were we talking about?@"]);
 }
 
-lauriannaMassResurrect ()
-{
-	if (event == DOUBLECLICK)
-	{
-		item_say("@Vas Mani Corp Hur@");
-		if (inMagicStorm())
-		{
-			script item
-			{	nohalt;						sfx 64;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			call lauriannaMassResurrect;}
-			UI_play_music(15, 0);
-		}
-		else
-		{
-			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				call spellFails;}
-		}
-	}
-	else if (event == SCRIPTED)
-	{
-		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES];
-		var shnum;
-		var index;
-		var max;
-		var bodies = [];
-		for (shnum in bodyshapes with index to max)
-			bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
-		var body;
-		var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
-		var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
-		for (body in bodies with index to max)
-		{
-			var qual = body->get_item_quality();
-			var quant = body->get_item_quantity(1);
-			if ((qual != 0) || (quant != 0))
-			{
-				var pos = get_object_position();
-				UI_sprite_effect(ANIMATION_LIGHTNING, pos[X], pos[Y], 0, 0, 0, -1);
-				UI_sprite_effect(ANIMATION_GREEN_BUBBLES, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
-				var dist = get_distance(body);
-				script body after 2+dist/3 ticks call lauriannaMassResurrect, EGG;
-			}
-		}
-	}
-	else
-		resurrect();
-}	
-
 lauriannaHeal ()
 {
-	/*	DISABLED
 	UI_push_answers();
-	
+
 	var healing_spells = getLeveledSpellList(item,
-		false,
+		true,
 		["Cure", "Mass cure", "Heal", "Great heal", "Restoration", "Resurrect"],
 		[1, 2, 3, 5, 7, 8],
 		[]);
 	
-	while (true)
+	say("@Which spell dost thou wish me to cast?@");
+	var choice = askForResponse(["none", healing_spells]);
+	if (choice != "none")
 	{
-		say("@Which spell dost thou wish me to cast?@");
-		var choice = askForResponse(["none", healing_spells]);
-		if (choice != "none")
-		{
-			if ((choice == "Restoration") || (choice == "Mass cure"))
-				say("@It is my pleasure, Avatar!@");
-			
-			else
-			{
-				message("@Who dost thou wish to be ");
-				if ((choice == "Heal") || (choice == "Great heal")) message("healed");
-				else if (choice == "Cure") message("cured of poison");
-				else message("resurrected");
-				message("?@");
-				say();
-			}
-			
-			npcCastSpellDialog(item,
-				choice,
-				false,
-				["@Dost thou wish me to cast a spell of which circle?@",
-				 "@Which spell dost thou wish me to cast?@",
-				 "@Thou hast changed thy mind? Fine. Dost thou wish for a different circle perhaps?@",
-				 "@Oh. Some other time, perhaps...@",
-				 "@Alas, I don't have enough reagents for that spell.",
-				 "@I am lacking ",
-				 "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				 "@I must rest a while before I can cast this spell.@"]);
-		}	
+		if ((choice == "Restoration") || (choice == "Mass cure"))
+			say("@It is my pleasure, Avatar!@");
+		
 		else
-			break;
+		{
+			message("@Who dost thou wish to be ");
+			if ((choice == "Heal") || (choice == "Great heal")) message("healed");
+			else if (choice == "Cure") message("cured of poison");
+			else message("resurrected");
+			message("?@");
+			say();
+		}
+		npcCastSpellDialog(item,
+			choice,
+			spellitemGetTalkCast(LAURIANNA));
+		abort;
 	}	
+	
 	say("@I am glad that thou art not in need of healing!@");
 	UI_pop_answers();
-	*/
-	while (true)
-	{
-		say("@What service wilt thou want?@");
-		var choice = askForResponse(["none", "healing", "resurrection"]);
-		if (choice == "none")
-			break;
-		else if (choice == "healing")
-		{
-			halt_scheduled();
-			item_say("@Vas Mani Hur@");
-			if (inMagicStorm())
-			{
-				script item
-				{	nohalt;						actor frame SWING_1;
-					actor frame CAST_2;			actor frame SWING_2H_3;
-					sfx 64;}
-				var targets = UI_get_party_list();
-				var index;
-				var max;
-				var npc;
-				for (npc in targets with index to max)
-				{
-					npc->clear_item_flag(ASLEEP);
-					npc->clear_item_flag(CHARMED);
-					npc->clear_item_flag(CURSED);
-					npc->clear_item_flag(PARALYZED);
-					npc->clear_item_flag(POISONED);
-					var str = npc->get_npc_prop(STRENGTH);
-					var hps = npc->get_npc_prop(HEALTH);
-					npc->set_npc_prop(HEALTH, (str - hps));
-					npc->obj_sprite_effect(13, -1, -1, 0, 0, 0, -1);
-				}
-			}
-			else
-			{
-				script item
-				{	nohalt;						actor frame SWING_1;
-					actor frame CAST_2;			actor frame SWING_2H_3;
-					call spellFails;}
-			}
-			abort;
-		}
-		else if (choice == "resurrection")
-		{
-			event = DOUBLECLICK;
-			LAURIANNA->lauriannaMassResurrect();
-			abort;
-		}
-	}
-	say("@I am glad that thou art not in need of healing!@");
 }
 
 lauriannaPrePotionDialog ()
@@ -291,10 +194,7 @@ lauriannaPrePotionDialog ()
 	if (!get_item_flag(MET))
 	{
 		giveExperience(100);
-		/*	DISABLED
-		var spellbook = UI_create_new_object(SHAPE_LAURIANNAS_SPELLBOOK);
-		give_last_created();
-		*/
+		
 		set_item_flag(MET);
 		
 		LAURIANNA->show_npc_face(1);
@@ -695,17 +595,15 @@ lauriannaPostPotionDialog ()
 				break;
 			}
 			
-		/*	DISABLED
 		case "Cast spell" :
-			var spellbook = get_cont_items(SHAPE_LAURIANNAS_SPELLBOOK, QUALITY_ANY, FRAME_ANY);
+			var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 			if (spellbook)
 			{
 				event = DOUBLECLICK;
-				spellbook->Lauriannas_Spellbook();
+				spellbook->spellitem_Spellbook();
 			}
 			else
 				say("@I'd love to, but thou hast taken away my spellbook.@");
-		*/
 		case "heal" :
 			lauriannaHeal();
 		
@@ -889,7 +787,6 @@ lauriannaYewDialog ()
 	
 	var sched = get_schedule_type();
 
-	/*
 	if ((UI_get_timer(LAURIANNA_TIMER) > 72) && !gflags[LAURIANNA_READY])
 	{
 		gflags[LAURIANNA_READY] = true;
@@ -911,7 +808,6 @@ lauriannaYewDialog ()
 						 [100, 0, 0, 0, 0, 0, 0],
 						 pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
 	}
-	*/
 	
 	var in_party = (item in UI_get_party_list());
 	
@@ -944,7 +840,6 @@ lauriannaYewDialog ()
 	{
 		add(["name", "job", "bye", "heal"]);
 		
-		/*	DISABLED
 		if (gflags[LAURIANNA_READY])
 		{
 			if (gflags[LAURIANNA_WILL_JOIN])
@@ -989,7 +884,6 @@ lauriannaYewDialog ()
 			}
 		}
 		else	
-		*/
 			say("@Hello again, Avatar. What can I do for thee?@");
 	}
 	
@@ -1052,7 +946,7 @@ lauriannaYewDialog ()
 			else
 				say("@But thou hast not a spellbook, Avatar! What wouldst thou use reagents for?@");
 		
-		 case "Give journal" (remove):
+		case "Give journal" (remove):
 			UI_remove_party_items(1, SHAPE_JOURNAL, QUALITY_ANY, FRAME_ANY);
 			gflags[LAURIANNA_HAS_JOURNAL] = true;
 			/*	DISABLED
@@ -1065,7 +959,6 @@ lauriannaYewDialog ()
 			say("@I have started with the Shrine of Justice because it is nearest to where I live now.");
 			say("@In the future, I hope to have visited them all, and learned as much as I can about the Eight Virtues.@");
 			
-		/*	DISABLED
 		case "join" (remove):
 			add_to_party();
 			in_party = true;
@@ -1093,15 +986,15 @@ lauriannaYewDialog ()
 			abort;
 		
 		case "Cast spell":
-			var spellbook = get_cont_items(SHAPE_LAURIANNAS_SPELLBOOK, QUALITY_ANY, FRAME_ANY);
+			var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 			if (spellbook)
 			{
 				event = DOUBLECLICK;
-				spellbook->Lauriannas_Spellbook();
+				spellbook->spellitem_Spellbook();
 			}
 			else
 				say("@I'd love to, but thou hast taken my spellbook.@");
-		*/
+		
 		case "bye":
 			if (!in_party)
 				say("@Farewell, " + getPoliteTitle() + ". I hope I'll see thee again soon!@");

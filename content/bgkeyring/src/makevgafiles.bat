@@ -193,7 +193,7 @@
 @%ipackpath% -%varfonts% %new_fonts% >> log.txt
 
 :writegumps
-@if %varfonts%==n goto writepaperdol
+@if %vargumps%==n goto writepaperdol
 @echo Writing gumps.vga...
 @%ipackpath% -%vargumps% %new_gumps% >> log.txt
 

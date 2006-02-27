@@ -1,8 +1,26 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains the usecode for Gems of Dispelling.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 Gem_Of_Dispelling shape#(0x451) ()
@@ -24,6 +42,7 @@ Gem_Of_Dispelling shape#(0x451) ()
 			//Description of action:
 			avatarSpeak("You pick up the gem with your hand and firmly crush it -- although, to your surprise, the gem is far easier to crush than you had anticipated.");
 			avatarSpeak("You wait for the spell to take effect as the magical energies course through the Ether.");
+			AVATAR.hide();
 	
 			//Give the amulet to Laurianna:
 			var amulet = UI_create_new_object(SHAPE_AMULET);

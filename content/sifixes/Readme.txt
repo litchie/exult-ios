@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.02
+version: 0.15.04
 
 	This document fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -158,6 +158,13 @@ version: 0.15.02
 	    
 6	Version history
 -------------------
+version: 0.15.04
+	- SI Fixes is now licensed under the GNU General Public License.
+version: 0.15.03
+	- Modified SI Fixes to use new intrinsic calling method (using '->').
+	- Fixed bug on resurrection of Gwenno and companions (post-banes).
+	- Fixed bug where companions would have the wrong dialog after you went
+	  through the Silver Seed Maze.
 version: 0.15.02
 	- Baiyanda now really gives dried fish when you ask her.
 	- You can no longer smuggle your party members into the Dream World

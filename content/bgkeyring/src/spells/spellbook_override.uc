@@ -1,4 +1,22 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This header file overrides the spellbook's spells (most of them, anyway)
  *	to use the new versions. I preferred to do it this way for four reasons:
  *		(1) There is a clean algorythm by which NPC spells are cast;
@@ -15,7 +33,7 @@
  *	same rules.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 spellAwaken_Override			0x640 () {spellAwaken(UI_click_on_item());}
@@ -87,15 +105,18 @@ spellMark_Override				0x662 ()
 		if ((target->get_item_frame() == 7) && gflags[ATTUNED_SPIRITUALITY_STONE])
 			gflags[ATTUNED_SPIRITUALITY_STONE] = false;
 		
-		//Get the stone's position:
-		pos = target->get_object_position();
-
-		//Check to see if the STONE is inside the area of the Shrine of the Codex: 
-		if (!UI_is_pc_inside() && (pos[X] >= 0xA50) && (pos[Y] >= 0xABC) && (pos[X] <= 0xAE0) && (pos[Y] <= 0xB1D))
-			in_codex_shrine = true;
-		if ((pos[X] >= 0xA80) && (pos[Y] >= 0xADC) && (pos[X] <= 0xABB) && (pos[Y] <= 0xB0D))
-			in_codex_shrine = true;
-
+		if (target->get_map_num() == 0)
+		{
+			//Get the stone's position:
+			pos = target->get_object_position();
+	
+			//Check to see if the STONE is inside the area of the Shrine of the Codex: 
+			if (!UI_is_pc_inside() && (pos[X] >= 0xA50) && (pos[Y] >= 0xABC) && (pos[X] <= 0xAE0) && (pos[Y] <= 0xB1D))
+				in_codex_shrine = true;
+			if ((pos[X] >= 0xA80) && (pos[Y] >= 0xADC) && (pos[X] <= 0xABB) && (pos[Y] <= 0xB0D))
+				in_codex_shrine = true;
+		}
+		
 		if (!in_codex_shrine)
 		{
 			//The stone is not inside the area guarded by the Guardians;

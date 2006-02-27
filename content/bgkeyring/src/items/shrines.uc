@@ -1,8 +1,26 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains usecode for the Shrines of the Virtues.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 const int SHRINE_FACES					= 0xFED8;	//-296;
@@ -185,14 +203,18 @@ Shrine shape#(0x463) ()
 
 				//NPC banthers:
 				var noun = "he";
-				if (UI_is_pc_female()) noun = "she";
+				if (UI_is_pc_female())
+					noun = "she";
 				
-				if (inParty(DUPRE) && (UI_get_random(3) == 1))
-					script DUPRE after 5 ticks say "@Is there a pub nearby?@";
-				if (inParty(SHAMINO) && (UI_get_random(3) == 1))
-					script SHAMINO after 8 ticks say "@There " + noun + " goes again...@";
-				if (inParty(IOLO) && (UI_get_random(3) == 1))
-					script IOLO after 11 ticks say "@Where is my lute?@";
+				const int BARK_COUNT = 3;
+				var rand = UI_get_random(BARK_COUNT);
+				var delay = UI_die_roll(5, 11);
+				if (inParty(DUPRE) && (rand == 1))
+					script DUPRE after delay ticks say "@Is there a pub nearby?@";
+				else if (inParty(SHAMINO) && (rand == 2))
+					script SHAMINO after delay ticks say "@There " + noun + " goes again...@";
+				else if (inParty(IOLO) && (rand == 3))
+					script IOLO after delay ticks say "@Where is my lute?@";
 
 				abort;
 			}

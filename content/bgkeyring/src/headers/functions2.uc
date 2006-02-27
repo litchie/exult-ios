@@ -1,8 +1,26 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains some generic utility functions.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-02-03
+ *	Last Modified: 2006-02-27
  */
 
 avatarSpeak (var msg)
@@ -131,7 +149,41 @@ var createContainerWithObjects (var cont_shape, var item_shapes, var item_frames
 	return cont;
 }
 
-var giveToParty(var obj)
+interjectIfPossible (var npcnum, var msg)
+{
+	if (npcnum->npc_nearby())
+	{
+		var facenum = 0;
+		/*
+		 * Note: Not all NPCs have their NPC # equal to their face number.
+		 * Here would be a good place to set the face number for these NPCs,
+		 * along the lines of
+		 *  if (npcnum->get_item_shape() == 0x02EB)
+		 *  	npcnum = 0xFED6;
+		 * or maybe
+		 * 	if (npcnum == 0xFED6)
+		 *  	npcnum = 0xFEDA;
+		 * Also, specifying a different face here is a good idea if the NPC
+		 * should use a different face.
+		*/
+		
+		
+		npcnum->show_npc_face(facenum);
+		if (npcnum->get_item_flag(CONFUSED))
+			say("@Slurp@");
+		else
+		{
+			var lines;
+			var index;
+			var max;
+			for (lines in msg with index to max)
+				say(lines);
+		}
+		npcnum.hide();
+	}
+}
+
+var forceGiveObjToParty(var obj)
 {
 	//Get party list:
 	var party = UI_get_party_list();

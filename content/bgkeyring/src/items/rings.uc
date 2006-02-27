@@ -1,10 +1,28 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains a 'fix' for rings which prevents them
  *	from taking effect if you are merely *holding* them.
  *	keyring item.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 Invisibility_Ring shape#(0x128) ()
@@ -14,7 +32,7 @@ Invisibility_Ring shape#(0x128) ()
 	{
 		//Get ring container:
 		cont = get_container();
-		if (cont->is_npc() && (item == cont->get_readied(6) || item == cont->get_readied(7)))
+		if (cont->is_npc() && (item == cont->get_readied(ONE_FINGER) || item == cont->get_readied(OTHER_FINGER)))
 			//If the container is an NPC, and if the item is equipped in a finger,
 			//make user invisible:
 			cont->set_item_flag(INVISIBLE);
@@ -34,7 +52,7 @@ Regeneration_Ring shape#(0x12A) ()
 	{
 		//Get ring container:
 		cont = get_container();
-		if (cont->is_npc() && (item == cont->get_readied(6) || item == cont->get_readied(7)))
+		if (cont->is_npc() && (item == cont->get_readied(ONE_FINGER) || item == cont->get_readied(OTHER_FINGER)))
 		{
 			//If the container is an NPC, and if the item is equipped in a finger,
 			//make user regenerate:

@@ -1,14 +1,36 @@
-/*-----------------------------
-This header file defines constants for every NPC in Black Gate. Yes, every damn one. They are ordered by region encountered. This list does not include generic 'monsters' you can talk to (e.g. town guards) or clones. AFAIK most of those live after -255 and aren't accessible using npc numbers.
-
-You can get convert these NPC numbers to and from an NPC object reference using UI_get_npc_object and UI_get_npc_number. However, many intrinsics and language constructs will accept either an object reference or an NPC number. Many others do require you to supply an object reference though (generally the ones that operate on any item rather than just NPCs).
-
-To find the corresponding function for each NPC, take their positive ID and add 1024 (0x400 in hex):
-e.g. Iolo's function is 1 + 1024 = 1025 (or 0x401 in hex).
-
-Author: Alun Bestor (exult@washboardabs.net)
-Last modified: 2005-04-27
--------------------------------*/
+/*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
+ *	This header file defines constants for every NPC in Black Gate. Yes, every
+ *	damn one. They are ordered by region encountered. This list does not include
+ *	generic 'monsters' you can talk to (e.g. town guards) or clones. AFAIK most
+ *	of those live after -255 and aren't accessible using npc numbers.
+ *
+ *	You can get convert these NPC numbers to and from an NPC object reference
+ *	using UI_get_npc_object and UI_get_npc_number. However, many intrinsics and
+ *	language constructs will accept either an object reference or an NPC number.
+ *	Many others do require you to supply an object reference though (generally
+ *	the ones that operate on any item rather than just NPCs).
+ *
+ *	Author: Alun Bestor (exult@washboardabs.net)
+ *	Last Modified: 2006-02-27
+ */
 
 
 //Party members (you know em, you love em)
