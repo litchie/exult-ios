@@ -1,3 +1,6 @@
+2006-02-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed a crash when using 'actor frame' script opcodes.
+
 2006-02-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* files/databuf.h: Ryan's cleanup of Pentagram's IFileDataSource::eof()
 

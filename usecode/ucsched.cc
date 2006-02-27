@@ -598,7 +598,8 @@ int Usecode_script::exec
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
 				Actor *npc = obj->as_actor();
-				npc->clear_rest_time();
+				if (npc)
+					npc->clear_rest_time();
 				//Get the actor's actual facing:
 				int v = (obj->get_framenum()&48)|(opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
