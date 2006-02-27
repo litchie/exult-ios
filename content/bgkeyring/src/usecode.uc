@@ -1,92 +1,75 @@
-#game "blackgate";									//Tells the compiler the game type
-
-#include "headers/constants.uc";					//standard constant definitions
-#include "headers/constants2.uc";					//standard constant definitions
-#include "quests/keyring/constants.uc";				//The constants for the keyring quest
-
-#include "headers/bg/bg_npcs.uc";					//Black Gate npc constants
-
-#include "headers/bg/bg_shapes.uc";					//Black Gate shape and frame constants
-#include "headers/bg/bg_shapes2.uc";				//Black Gate shape and frame constants
-#include "headers/new_shapes.uc";					//Brand new shape and frame constants
-
-#include "headers/bg/bg_gflags.uc";					//Black Gate global flags
-#include "headers/bg/bg_gflags2.uc";				//Black Gate global flags
-#include "headers/new_flags.uc";					//Brand new global flags
-
-#include "headers/bg/bg_externals.uc";				//extern declarations for BG functions
-#include "headers/bg/bg_externals2.uc";				//extern declarations for BG functions
-
-#include "headers/new_items.uc";					//extern declarations for new items
-
-#include "headers/functions.uc";					//new general-purpose functions
-
-#include "headers/utility_functions.uc";			//Some new general-purpose functions
-#include "quests/keyring/functions.uc";				//Functions for the keyring quest
-
-//Functions related to items:
-#include "items/related_functions/keyring_functions.uc";		//General key and keyring functions
-#include "items/related_functions/arcadion_dialog.uc";			//Arcadion's dialog (broken into three functions) and related functions
-#include "items/related_functions/blackrock_potion_kill.uc";	//The Blackrock potion's kill routine
-
-//Cutscenes of the Keyring Quest:
-#include "quests/keyring/cutscenes/zauriel_make_potion.uc";		//Zauriel makes the Blackrock potion
-#include "quests/keyring/cutscenes/mage_and_goons.uc";			//The cutscene with Laundo and his goons
-#include "quests/keyring/cutscenes/zauriel_ritual.uc";			//Zauriel performs the curing ritual
-#include "quests/keyring/cutscenes/cheaters_cataclysm.uc";		//The cataclysm triggered by hackmocing Laurianna with the amulet near to her father
-
-#include "misc/show_codex.uc";									//Displays the Codex
-
-#include "npcs/related_functions/zauriel_functions.uc";			//Misc Zauriel functions
-#include "npcs/related_functions/zauriel_dialog.uc";			//Zauriel's dialog functions
-#include "npcs/related_functions/laurianna_functions.uc";		//Misc Laurianna functions
-#include "npcs/related_functions/laurianna_dialog.uc";			//Laurianna's dialog functions
-
 /*
- *	Starting here, all functions have predefined numbers. This can be for
- *	any of the reasons below:
- *		1) They are reimplementations of standard BG functions;
- *		2) They are whole new functions used for eggs;
- *		3) They are item functions;
- *		4) They are NPC functions.
-*/
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+ 
+//Tells the compiler the game type
+#game "blackgate"
 
-#include "items/related_functions/blacksword_functions.uc";		//Reimplemented blacksword functions
+//Starts autonumbering at function number 0xC00.
+//I leave function numbers in the range 0xA00 to
+//0xBFF for eggs and weapon functions; this is a
+//total of 512 unique functions. That (hopefully)
+//is enough...
+#autonumber 0xC00
 
-//Egg functions:
-#include "misc/codex_eggs.uc";						//Eggs for displaying the Codex
-#include "quests/keyring/eggs.uc";					//The keyring quest egg functions
-#include "quests/locklake/cleanup_eggs.uc";			//Eggs that gradually clean Lock Lake
-#include "misc/inn_key_eggs.uc";					//Deletes inn keys, tidies up beds and locks inn doors
+#include "headers/constants.uc"					//standard constant definitions
+#include "headers/constants2.uc"				//standard constant definitions
 
-//Death usecode for the mage and his goons
-#include "quests/keyring/cutscenes/related_functions/mage_and_goons_death.uc";
-//Death usecode for Joneleth the liche
-#include "quests/keyring/liche_death.uc";
+#include "headers/bg/bg_npcs.uc"				//Black Gate npc constants
+#include "headers/npcs.uc"						//New npc constants
 
-//Spellbook override:
-#include "spells/spellbook_override.uc";			//Makes avatar use the new spells
+#include "headers/bg/bg_shapes.uc"				//Black Gate shape and frame constants
+#include "headers/bg/bg_shapes2.uc"				//Black Gate shape and frame constants
+#include "headers/new_shapes.uc"				//Brand new shape and frame constants
 
-//Item functions:
-#include "items/orb_of_the_moons.uc";				//New Orb of the Moons
-#include "items/eternal_flames.uc";					//Flames of Principle, Infinity and Singularity
-#include "items/plaque.uc";							//Flames of Principle, Infinity and Singularity
-#include "items/rings.uc";							//Fixes rings so that they must be on your finger to work
-#include "items/keyring.uc";						//The keyring function
-#include "items/key.uc";							//The key function
-#include "items/zauriel_journal.uc";				//Zauriel's journal
-#include "items/blacksword.uc";						//New blacksword function
-#include "items/gem_of_dispelling.uc";				//For the keyring quest
-#include "items/blackrock_potion.uc";				//For the keyring quest
-#include "items/lens.uc";							//For viewing the Codex
-#include "items/magic_carpet.uc";					//Prevents landing he carpet near the Codex Shrine
-#include "items/shrines.uc";						//For meditation at shrines
-#include "items/remote_viewers.uc";					//Multimap support of orrery viewer, Isle of Fire gem and crystal balls
+#include "headers/bg/bg_gflags.uc"				//Black Gate global flags
+#include "headers/bg/bg_gflags2.uc"				//Black Gate global flags
+#include "headers/new_flags.uc"					//Brand new global flags
 
-//NPCs:
-#include "npcs/wisps.uc";							//Modified wisps that are compatible with the new orb
-#include "npcs/lordheather.uc";						//Kick start Lock Lake cleaning by signing bill
-#include "npcs/perrin.uc";							//Modified for compatibility with Keyring quest
-#include "npcs/reyna.uc";							//Modified for compatibility with Keyring quest
-#include "npcs/zauriel.uc";							//Keyring quest NPC
-#include "npcs/laurianna.uc";						//Keyring quest NPC
+#include "headers/bg/bg_externals.uc"			//extern declarations for BG functions
+#include "headers/bg/bg_externals2.uc"			//extern declarations for BG functions
+
+#include "headers/new_items.uc"					//extern declarations for new items
+
+#include "headers/functions.uc"					//new general-purpose functions
+#include "headers/functions2.uc"				//Some new general-purpose functions
+#include "headers/array_functions.uc"			//Several array functions
+
+//NPC Spellcasting Mod
+#include "spells/main_spells.uc"
+
+//The Keyring Quest:
+#include "quests/keyring.uc"
+
+//The Codex Quest:
+#include "quests/codex.uc"
+
+//Lock Lake Cleanup:
+#include "quests/locklake/cleanup_eggs.uc"		//Eggs that gradually clean Lock Lake
+#include "npcs/lordheather.uc"					//Kick start Lock Lake cleaning by signing bill
+
+//Inn Keys Reclaimed:
+#include "misc/inn_key_eggs.uc"					//Deletes inn keys, tidies up beds and locks inn doors
+
+//For the Improved Orb of the Moons:
+#include "items/orb_of_the_moons.uc"			//New Orb of the Moons
+#include "npcs/wisps.uc"						//Modified wisps that are compatible with the new orb
+
+//Items modified for one reason or another:
+#include "items/rings.uc"						//Fixes rings so that they must be on your finger to work
+#include "items/remote_viewers.uc"				//Multimap support of orrery viewer, Isle of Fire gem and crystal balls

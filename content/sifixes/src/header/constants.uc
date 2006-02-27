@@ -1,11 +1,31 @@
-/*-----------------------------
-This header file defines general constants used throughout usecode, for Black Gate and Serpent Isle.
-Constants particular to a function can be found in the relevant codefile; constants particular to a game can be found in that game's header directory.
-
-Author: Alun Bestor (exult@washboardabs.net)
-Slightly modified for SI by Marzo Junior
-Last modified: 2005-06-15
--------------------------------*/
+/*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
+ *	This header file defines general constants used throughout usecode, for
+ *	Black Gate and Serpent Isle. Constants particular to a function can be
+ *	found in the relevant codefile; constants particular to a game can be
+ *	found in that game's header directory.
+ *	
+ *	Author: Alun Bestor (exult@washboardabs.net)
+ *	Slightly modified for SI by Marzo Junior
+ *	Last modified: 2006-02-27
+ */
 
 //Event types, compiled with help from Marzo
 //The global <event> variable is set with one of these values to describe how the current function was called: whether by the player clicking on the object, or by a scripted event, or by egg trigger conditions, or just the item being onscreen, etc.

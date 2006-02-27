@@ -1,9 +1,27 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains some spellcasting related constants, as well as
  *	a few general-purpose spell functions. IT IS NOT FINISHED YET!
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-01-20
+ *	Last Modified: 2006-02-27
  */
 
 const int SCRIPT_FACE_DIR			= 0x59;
@@ -14,22 +32,33 @@ enum npc_wizard_flags
 {
 	//New spell effects:
 	CONFUSION						= 40,	//Under the effects of Consufion spell
+	DEATH_PROTECTION				= 41,	//Protected from death spells
 	//Spellcasting power:
-	MAGE_CLASS						= 50,	//Full spellcasting capabilities
-	BARD_CLASS						= 51,	//Half-level spellcasting
+	ARCHWIZARD						= 45,	//Cheat mode
+	MAGE_CLASS						= 46,	//Full spellcasting capabilities
+	BARD_CLASS						= 47,	//1/2 level spellcasting
+	WARMAGE							= 48,	//Combat spells cost half as much mana (round up)
+	SUMMONER						= 49,	//Summoning spells cost half as much mana (round up)
+	HEALER							= 50,	//Casts healing as if level 8, no death spells
+	NECROMANCER						= 51,	//Casts death as if level 8, no healing spells
 	//The next constants are used to control spellcaster AI; the AI is NOT
 	//IMPLEMENTED YET.
-	WIZ_HEALER						= 56,
-	WIZ_KINETICIST					= 57,
-	WIZ_DEATH_MAGE					= 58,
-	WIZ_ENCHANTER					= 59,
-	WIZ_WARMAGE						= 60,
-	WIZ_CONJURER					= 61,
-	WIZ_DIVINER						= 62,
-	WIZ_THAUMATURGE					= 63
+	AI_CAST_DONT_CAST				= 52,	//AI will not cast any spells
+	AI_CAST_VERY_FEW				= 53,	//AI will cast every 32-36 ticks
+	AI_CAST_FEW						= 54,	//AI will cast every 24-28 ticks
+	//AI_CAST_DEFAULT						//AI will cast every 16-20 ticks
+	AI_CAST_MANY					= 55,	//AI will cast every 8-12 ticks
+	AI_HEALING						= 56,	//AI will try to cast healing spells first
+	AI_SUPPORT						= 57,	//AI will try to cast support spells first
+	AI_OFFENSE						= 58,	//AI will try to cast damaging combat first
+	AI_SUMMON						= 59,	//AI will try to summon creatures first
+	AI_ENCHANT						= 60,	//AI will try to cast non-damage combat spells
+	AI_DEATH						= 61,	//AI will try to cast death spells first
+	AI_MISDIRECTION					= 62,	//AI will try to use invisibility+blink+mass confusion very early and often
+	AI_TEMPORARY					= 63	//AI will stop casting when it runs out of targets
 };
 
-greatDouseIgnite 0xB00 (var shapes)
+greatDouseIgnite (var shapes)
 {
 	var dist = 25;
 	var index;
@@ -53,62 +82,6 @@ greatDouseIgnite 0xB00 (var shapes)
 			script lightsource after delay ticks
 			{	nohalt;					call lightsource->get_usecode_fun(), DOUBLECLICK;}
 		}
-	}
-}
-
-var getFriendlyTargetList (var caster, var dist)
-{
-	if ((caster->get_npc_object()) in UI_get_party_list())
-		//Caster is in the party; return party:
-		return UI_get_party_list();
-	else
-	{
-		//Caster not in party:
-		var npc;
-		var index;
-		var max;
-		//Get all nearby NPCs:
-		var npclist = getNearbyNonPartyNPCs(dist);
-		var retlist = [];
-		//Get caster's alignment:
-		var align = caster->get_alignment();
-		for (npc in npclist with index to max)
-			//For each NPC in the list,
-			if (align == npc->get_alignment())
-				//Add NPC to list if align matches caster's:
-				retlist = [retlist, npc];
-		if (align == 0)
-			//Add party to list if caster is friendly:
-			retlist = [retlist, UI_get_party_list()];
-		return retlist;
-	}
-}
-
-var getEnemyTargetList (var caster, var dist)
-{
-	if ((caster->get_npc_object()) in UI_get_party_list())
-		//If caster in party, return all non-party NPCs:
-		return getNearbyNonPartyNPCs(dist);
-	else
-	{
-		//Caster not in party:
-		var npc;
-		var index;
-		var max;
-		//Get all nearby NPCs:
-		var npclist = getNearbyNonPartyNPCs(dist);
-		var retlist = [];
-		//Get caster's alignment:
-		var align = caster->get_alignment();
-		for (npc in npclist with index to max)
-			//For each NPC in the list,
-			if (align != npc->get_alignment())
-				//Add NPC to list if align doesn't match caster's:
-				retlist = [retlist, npc];
-		if (align != 0)
-			//Add party to list if caster is not friendly:
-			retlist = [retlist, UI_get_party_list()];
-		return retlist;
 	}
 }
 

@@ -1,9 +1,27 @@
 /*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
  *	This source file contains some reimplementations of almost all
  *	eighth circle spells. The exception is 'Armaggedon'.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2001-02-03
+ *	Last Modified: 2006-02-27
  */
 
 /*
@@ -16,6 +34,7 @@
 	extern spellSummon ();
 	extern spellSwordStrike ();
 	extern spellTimeStop ();
+	extern spellMassResurrect ();
 */
 
 enum eighth_circle_spells
@@ -26,7 +45,8 @@ enum eighth_circle_spells
 	SPELL_RESURRECT					= 3,
 	SPELL_SUMMON					= 4,
 	SPELL_SWORDSTRIKE				= 5,
-	SPELL_TIME_STOP					= 6			//NPC-only spell
+	SPELL_TIME_STOP					= 6,			//NPC-only spell
+	SPELL_MASS_RESURRECT			= 7			//Special NPC-only spell
 };
 
 spellDeathVortex (var target)
@@ -320,3 +340,54 @@ spellTimeStop ()
 	else if (event == SCRIPTED)
 		UI_stop_time(100);
 }
+
+spellMassResurrect ()
+{
+	if (event == DOUBLECLICK)
+	{
+		item_say("@Vas Mani Corp Hur@");
+		if (inMagicStorm())
+		{
+			script item
+			{	nohalt;						sfx 64;
+				actor frame KNEEL;			actor frame STAND;
+				actor frame CAST_1;			call spellMassResurrect;}
+			UI_play_music(15, 0);
+		}
+		else
+		{
+			script item
+			{	nohalt;						actor frame KNEEL;
+				actor frame STAND;			actor frame CAST_1;
+				call spellFails;}
+		}
+	}
+	else if (event == SCRIPTED)
+	{
+		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES];
+		var shnum;
+		var index;
+		var max;
+		var bodies = [];
+		for (shnum in bodyshapes with index to max)
+			bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
+		var body;
+		var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
+		var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
+		for (body in bodies with index to max)
+		{
+			var qual = body->get_item_quality();
+			var quant = body->get_item_quantity(1);
+			if ((qual != 0) || (quant != 0))
+			{
+				var pos = get_object_position();
+				UI_sprite_effect(ANIMATION_LIGHTNING, pos[X], pos[Y], 0, 0, 0, -1);
+				UI_sprite_effect(ANIMATION_GREEN_BUBBLES, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
+				var dist = get_distance(body);
+				script body after 2+dist/3 ticks call spellMassResurrect, EGG;
+			}
+		}
+	}
+	else
+		resurrect();
+}	

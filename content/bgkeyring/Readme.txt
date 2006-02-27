@@ -31,7 +31,8 @@ version: 0.10.02
 	useful suggestions in the old Phorum thread. They are Crysta the Elf,
 	gruck, Gradilla Dragon, Dominus and Artaxerxes.
 	
-	I must also thank Crysta the Elf for some graphics he made/edited.
+	I must also thank Crysta the Elf for some graphics he made/edited,
+	and Sissy Knox for Mariah's gump.
 	The full list is in the version history, below.
 
 	Also, the structure of the mod is based on Alun Bestor's Quests and
@@ -164,6 +165,16 @@ version: 0.10.02
 	
 7	Version history
 -------------------
+version: 0.10.04
+	- New NPC spellbook graphics by Crysta the Elf.
+	- Added Dupre's Amulet and Shamino's Ankh (their spellcasting items)
+	  by Crysta the Elf.
+	- Started adding paperdoll files.
+	- Added Mariah's BG Gump, by Sissy Knox.
+	- The Keyring is now licensed under the GNU General Public License.
+version: 0.10.03
+	- Added basic NPC spellcasting files.
+	- Reorganized mod based on new UCC capabilities.
 version: 0.10.02
 	- Some faces were retouched by Crysta the Elf: Zauriel, Laundo and
 	  Joneleth.

@@ -1,9 +1,27 @@
-/*-----------------------------
-This header file defines extern aliases for original Black Gate usecode functions.
-
-Author: Alun Bestor (exult@washboardabs.net)
-Last modified: 2005-04-28
--------------------------------*/
+/*
+ *
+ *  Copyright (C) 2006  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ *
+ *	This header file defines extern aliases for original Black Gate usecode functions.
+ *
+ *	Author: Alun Bestor (exult@washboardabs.net)
+ *	Last Modified: 2006-02-27
+ */
 
 
 //Item-related functions
@@ -97,6 +115,3 @@ extern giveExperience 0x911(var exp);
 //Shows a blocked cursor and plays the "errn" sound. All this really does is supplement UI_flash_mouse() with the sound. (Some originals use this function, some just call UI_flash_mouse directly.)
 //See constant.uc for the constants for cursor graphics.
 extern flashBlocked 0x8FD(var cursor);
-
-//Returns a version of <array> that has <value> stripped from it.
-extern var removeFromArray 0x93C(var array, var value);
