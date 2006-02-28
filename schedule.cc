@@ -353,8 +353,7 @@ Pace_schedule *Pace_schedule::create_horiz
 	)
 	{
 	Tile_coord t = n->get_tile();	// Get his position.
-	return (new Pace_schedule(n, Tile_coord(t.tx - 4, t.ty, t.tz),
-					Tile_coord(t.tx + 4, t.ty, t.tz)));
+	return (new Pace_schedule(n, 1, t));
 	}
 
 /*
@@ -367,8 +366,7 @@ Pace_schedule *Pace_schedule::create_vert
 	)
 	{
 	Tile_coord t = n->get_tile();	// Get his position.
-	return (new Pace_schedule(n, Tile_coord(t.tx, t.ty - 4, t.tz),
-					Tile_coord(t.tx, t.ty + 4, t.tz)));
+	return (new Pace_schedule(n, 0, t));
 	}
 
 /*
@@ -382,22 +380,69 @@ void Pace_schedule::now_what
 	if (rand() % 6 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
-	which = !which;			// Flip direction.
-	int delay = 750;		// Delay .75 secs.
-	if (blocked.tx != -1)		// Blocked?
+	
+	if (phase == 0)
 		{
-		Game_object *obj = Game_object::find_blocking(blocked);
-		blocked.tx = -1;
-		Monster_info *minfo = npc->get_info().get_monster_info();
-		if (obj && obj->as_actor() != 0 &&
-		    (!minfo || !minfo->cant_yell()))
-			{
-			npc->say(first_move_aside, last_move_aside);
-			delay = 1200;	// Wait longer.
-			}
+		phase++;
+		if (loc != npc->get_tile())
+			npc->walk_to_tile(loc, gwin->get_std_delay(), gwin->get_std_delay());
+		else
+			npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		}
-					// Wait 1 sec. before moving.
-	npc->walk_to_tile(which ? p1 : p0, gwin->get_std_delay(), delay);
+	else
+		{
+		int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
+		bool changedir = false;
+		Tile_coord offset;
+		switch (dir)
+			{
+			case north:
+			case south:
+				if (which)
+					changedir = true;
+				else
+					offset = Tile_coord(0, dir == south ? 1 : -1, 0);
+				break;
+			case east:
+			case west:
+				if (!which)
+					changedir = true;
+				else
+					offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
+				break;
+			}
+		
+		if (blocked.tx != -1)		// Blocked?
+			{
+			Game_object *obj = Game_object::find_blocking(blocked);
+			blocked.tx = -1;
+			changedir = true;
+			if (obj && obj->as_actor())
+				{
+				Monster_info *minfo = npc->get_info().get_monster_info();
+				if (!minfo || !minfo->cant_yell())
+					{
+					npc->say(first_move_aside, last_move_aside);
+						// Wait longer.
+					npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+					return;
+					}
+				}
+			}
+
+		if (changedir)
+			{
+			const int facedirs[] = {west, north, north, east, east, south, south, west};
+			npc->change_frame(npc->get_dir_framenum(
+				facedirs[dir], Actor::standing));
+			npc->start(2*gwin->get_std_delay(), 2*gwin->get_std_delay());
+			return;
+			}
+
+		Tile_coord p0 = npc->get_tile() + offset;
+						// Wait a bit before moving.
+		npc->walk_to_tile(p0, gwin->get_std_delay(), gwin->get_std_delay(), 0);
+		}
 	}
 
 /*
@@ -812,7 +857,7 @@ void Talk_schedule::now_what
 	if (phase != 0 && phase != 4 &&
 	    npc->distance(gwin->get_main_actor()) < 8)
 		phase = 3;
-
+	int speed = gwin->get_std_delay() << 1;
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
@@ -820,7 +865,7 @@ void Talk_schedule::now_what
 		if (npc->distance(gwin->get_main_actor()) > 50)
 			{		// Too far?  
 					// Try a little later.
-			npc->start(250, 5000);
+			npc->start(speed, 5000);
 			return;
 			}
 					// Aim for within 5 tiles.
@@ -843,7 +888,7 @@ void Talk_schedule::now_what
 					// Walk there, and retry if
 					//   blocked.
 			npc->set_action(pact);
-			npc->start(400, 250);	// Start walking.
+			npc->start(speed, 250);	// Start walking.
 			}
 		phase++;
 		return;
@@ -858,7 +903,7 @@ void Talk_schedule::now_what
 			   dest = gwin->get_main_actor()->get_tile();
 		int dx = dest.tx > pos.tx ? 1 : (dest.tx < pos.tx ? -1 : 0);
 		int dy = dest.ty > pos.ty ? 1 : (dest.ty < pos.ty ? -1 : 0);
-		npc->walk_to_tile(pos + Tile_coord(dx, dy, 0), 300, 500);
+		npc->walk_to_tile(pos + Tile_coord(dx, dy, 0), speed, 500);
 		phase = 3;
 		return;
 		}
@@ -869,14 +914,14 @@ void Talk_schedule::now_what
 				gwin->get_main_actor()->get_tile()))
 			{
 			phase = 0;
-			npc->start(250, 1000);
+			npc->start(speed, 1000);
 			return;
 			}
 					// But first face Avatar.
 		npc->change_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
 		phase++;
-		npc->start(250, 250);	// Wait another 1/4 sec.
+		npc->start(speed, 250);	// Wait another 1/4 sec.
 		break;
 	case 4:
 		npc->stop();		// Stop moving.
