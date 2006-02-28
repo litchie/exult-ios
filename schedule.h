@@ -142,16 +142,16 @@ public:
 	};
 
 /*
- *	A schedule for pacing between two points:
+ *	A schedule for pacing between two obstacles:
  */
 class Pace_schedule : public Schedule
 	{
-	Tile_coord p0;			// Point 0 tile coords.
-	Tile_coord p1;			// Point 1 tile coords.
-	char which;			// Which he's going to (0 or 1).
+	char which;		// 0 for north-south, 1 for east-west
+	Tile_coord loc;	// The starting position of the schedule
+	int phase;		// Current phase
 public:
-	Pace_schedule(Actor *n, Tile_coord pt0, Tile_coord pt1)
-		: Schedule(n), p0(pt0), p1(pt1), which(0)
+	Pace_schedule(Actor *n, char dir, Tile_coord pos)
+		: Schedule(n), which(dir), loc(pos), phase(0)
 		{  }
 					// Create common schedules:
 	static Pace_schedule *create_horiz(Actor *n);
