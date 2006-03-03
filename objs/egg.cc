@@ -54,6 +54,7 @@ using std::cerr;
 using std::endl;
 using std::rand;
 using std::ostream;
+using std::string;
 #endif
 
 Egg_object *Egg_object::editing = 0;
@@ -236,14 +237,17 @@ public:
 
 class Usecode_egg : public Egg_object {
 	short fun;
+	string fun_name;		// Actual name in usecode source.
 public:
 	Usecode_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, uint16 d1, uint16 d2)
+		unsigned char prob, uint16 d1, uint16 d2, const char *fnm)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
-		  fun(d2) {  
+		  fun(d2), fun_name(fnm ? fnm : "") {  
 		set_quality(d1&0xff);
 	}
+	virtual const char *get_str1()
+		{ return fun_name.c_str(); }
 	virtual void hatch_now(Game_object *obj, bool must) {
 		if (must)		// From script?  Do immediately.
 			ucmachine->call_usecode(fun, this,
@@ -438,12 +442,17 @@ Egg_object *Egg_object::create_egg
 	unsigned int tx, unsigned int ty, unsigned int tz,
 	unsigned short itype,		// Type + flags, etc.
 	unsigned char prob, 
-	short data1, short data2, short data3
+	short data1, short data2, short data3,
+	const char *str1
 	)
 {
+	int type = itype&0xf;
+					// Teleport destination?
+	if (type == teleport && frnum == 6 && shnum == 275)
+		type = path;		// (Mountains N. of Vesper).
 
 	Egg_object *obj = 0;
-	switch (itype&0xf) {		// The type:
+	switch (type) {		// The type:
 	case monster:
 		obj = new Monster_egg(shnum, frnum, tx, ty, tz, itype, prob,
 						data1, data2, data3);
@@ -462,7 +471,7 @@ Egg_object *Egg_object::create_egg
 		break;
 	case usecode:
 		obj = new Usecode_egg(shnum, frnum, tx, ty, tz, itype, prob,
-						data1, data2);
+						data1, data2, str1);
 		break;
 	case missile:
 		obj = new Missile_egg(shnum, frnum, tx, ty, tz, itype, prob,
@@ -486,7 +495,7 @@ Egg_object *Egg_object::create_egg
 						data1, data2);
 		break;
 	default:
-		cerr << "Illegal egg itype:  " << (itype&0xf) << endl;
+		cerr << "Illegal egg itype:  " << type << endl;
 		obj = new Egg_object(shnum, frnum, tx, ty, tz, itype, prob,
 						data1, data2, data3);
 	}
@@ -840,12 +849,14 @@ bool Egg_object::edit
 		editing = 0;
 		Tile_coord t = get_tile();
 		unsigned long addr = (unsigned long) this;
+		// Usecode function name.
+		string str1 = get_str1();
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
 			type, criteria, probability, distance,
 			(flags>>nocturnal)&1, (flags>>once)&1, 
 			(flags>>hatched)&1, (flags>>auto_reset)&1, 
-			data1, data2, data3) != -1)
+			data1, data2, data3, str1) != -1)
 			{
 			cout << "Sent egg data to ExultStudio" << endl;
 			editing = this;
@@ -880,10 +891,11 @@ void Egg_object::update_from_studio
 	int distance;
 	bool nocturnal, once, hatched, auto_reset;
 	int data1, data2, data3;
+	string str1;
 	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
-		data1, data2, data3))
+		data1, data2, data3, str1))
 		{
 		cout << "Error decoding egg" << endl;
 		return;
@@ -933,7 +945,7 @@ void Egg_object::update_from_studio
 	Shape_info& info = ShapeID::get_info(shape);
 	bool anim = info.is_animated() || info.has_sfx();
 	Egg_object *egg = create_egg(anim, shape, frame, tx, ty, tz, type,
-					probability, data1, data2, data3);
+			probability, data1, data2, data3, str1.c_str());
 	if (!oldegg)
 		{
 		int lift;		// Try to drop at increasing hts.

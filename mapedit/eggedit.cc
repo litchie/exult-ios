@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::string;
+
 /*
  *	Open egg window.
  */
@@ -251,10 +253,11 @@ int ExultStudio::init_egg_window
 	int distance;
 	bool nocturnal, once, hatched, auto_reset;
 	int data1, data2, data3;
+	string str1;
 	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
-		data1, data2, data3))
+		data1, data2, data3, str1))
 		{
 		cout << "Error decoding egg" << endl;
 		return 0;
@@ -302,7 +305,10 @@ int ExultStudio::init_egg_window
 		set_spin("speech_number", data1&0xff);
 		break;
 	case 5:				// Usecode:
-		set_entry("usecode_number", data2, true);
+		if (str1.size())
+			set_entry("usecode_number", str1.c_str(), true);
+		else
+			set_entry("usecode_number", data2, true);
 		set_spin("usecode_quality", data1&0xff);
 		break;
 	case 6:				// Missile:
@@ -412,6 +418,7 @@ int ExultStudio::save_egg_window
 		hatched = get_toggle("hatched"), 
 		auto_reset = get_toggle("autoreset");
 	int data1 = -1, data2 = -1, data3 = 0;
+	string str1;
 	switch (type)			// Set notebook page.
 		{
 	case 1:				// Monster:
@@ -443,6 +450,8 @@ int ExultStudio::save_egg_window
 		break;
 	case 5:				// Usecode:
 		data2 = get_num_entry("usecode_number");
+		if (!data2)
+			str1 = get_text_entry("usecode_number");
 		data1 = get_spin("usecode_quality")&0xff;
 		break;
 	case 6:				// Missile:
@@ -491,7 +500,7 @@ int ExultStudio::save_egg_window
 	if (Egg_object_out(server_socket, addr, tx, ty, tz,
 		shape, frame, type, criteria, probability, distance,
 		nocturnal, once, hatched, auto_reset, 
-		data1, data2, data3) == -1)
+		data1, data2, data3, str1) == -1)
 		{
 		cout << "Error sending egg data to server" <<endl;
 		return 0;
