@@ -67,7 +67,8 @@ protected:
 		int shnum, int frnum, unsigned int tx,
 		unsigned int ty, unsigned int tz, 
 		unsigned short itype,
-		unsigned char prob, short data1, short data2, short data3);
+		unsigned char prob, short data1, short data2, short data3,
+		const char *str1 = 0);
 public:
 	friend class Button_egg;
 	enum Egg_types {		// Types of eggs:
@@ -125,6 +126,8 @@ public:
 		{ return criteria; }
 	int get_type() const
 		{ return type; }
+	virtual const char *get_str1()
+		{ return ""; }
 					// Can this be clicked on?
 	virtual int is_findable();
 	virtual void set(int crit, int dist);
