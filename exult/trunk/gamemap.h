@@ -157,6 +157,7 @@ public:
 					// Write scheduled script for obj.
 	static void write_scheduled(DataSource* ireg, Game_object *obj,
 						bool write_mark = false);
+	static int write_string(DataSource* ireg, const char *str);
 	void write_ireg();		// Write modified ireg files.
 					// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
