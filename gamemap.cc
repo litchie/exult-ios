@@ -709,6 +709,7 @@ void Game_map::get_ifix_chunk_objects
 #define IREG_UCSCRIPT	1		// Saved Usecode_script for object.
 #define IREG_ENDMARK	2		// Just an 'end' mark.
 #define IREG_ATTS	3		// Attribute/value pairs.
+#define IREG_STRING	4		// A string; ie, function name.
 
 /*
  *	Write out attributes for an object.
@@ -772,6 +773,26 @@ void Game_map::write_scheduled
 		ireg->write1(IREG_SPECIAL);
 		ireg->write1(IREG_ENDMARK);
 		}
+	}
+
+/*
+ *	Write string entry and/or return length of what's written.
+ */
+int Game_map::write_string
+	(
+	DataSource* ireg,		// Null if we just want length.
+	const char *str
+	)
+	{
+	int len = 1 + strlen(str);
+	if (ireg)
+		{
+		ireg->write1(IREG_SPECIAL);
+		ireg->write1(IREG_STRING);
+		ireg->write2(len);
+		ireg->write((void *)str, len);
+		}
+	return len + 2;
 	}
 
 /*
