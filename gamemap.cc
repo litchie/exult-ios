@@ -955,6 +955,12 @@ void Read_special_ireg
 		}
 	else if (type == IREG_ATTS)	// Attribute/value pairs?
 		obj->read_attributes(buf, len);
+	else if (type == IREG_STRING)	// IE, Usecode egg function name?
+		{
+		if (obj->is_egg())
+			static_cast<Egg_object*>(obj)->set_str1(
+					reinterpret_cast<char*>(buf));
+		}
 	else
 		cerr << "Unknown special IREG entry: " << type << endl;
 	delete [] buf;

@@ -128,6 +128,8 @@ public:
 		{ return type; }
 	virtual const char *get_str1()
 		{ return ""; }
+	virtual void set_str1(const char *s)
+		{  }
 					// Can this be clicked on?
 	virtual int is_findable();
 	virtual void set(int crit, int dist);
