@@ -246,6 +246,9 @@ public:
 		  fun(d2), fun_name(fnm ? fnm : "") {  
 		set_quality(d1&0xff);
 	}
+	virtual void set_str1(const char *s) {
+		fun_name = s;
+	}
 	virtual const char *get_str1()
 		{ return fun_name.c_str(); }
 	virtual void hatch_now(Game_object *obj, bool must) {
@@ -1165,6 +1168,9 @@ void Egg_object::write_ireg
 	if (data3 > 0)
 		Write2(ptr, data3);
 	out->write((char*)buf, ptr - buf);
+	const char *str1 = get_str1();
+	if (*str1)			// This will be usecode fun. name.
+		Game_map::write_string(out, str1);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
@@ -1175,8 +1181,9 @@ int Egg_object::get_ireg_size()
 	// These shouldn't ever happen, but you never know
 	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
-
-	return 8 + get_common_ireg_size() + ((data3 > 0) ? 2 : 0);
+	const char *str1 = get_str1();
+	return 8 + get_common_ireg_size() + ((data3 > 0) ? 2 : 0)
+		+ (*str1 ? Game_map::write_string(0, str1) : 0);
 }
 
 /*
