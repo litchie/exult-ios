@@ -434,6 +434,7 @@ public:
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 
 							Usecode_events event);
+	virtual int find_function(const char *nm);
 	virtual void do_speech(int num);// Start speech, or show text.
 	virtual bool in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }
