@@ -213,34 +213,21 @@ void Combat_schedule::find_opponents
 {
 	opponents.clear();
 	Game_window *gwin = Game_window::get_instance();
-	if (npc->get_effective_alignment() >= Npc_actor::hostile)
-	{
-		Actor *party[10];
-		int cnt = gwin->get_party(party, 1);
-		Actor *cact = gwin->get_camera_actor();
-					// Watch for companion on List Field.
-		if (cact && cact != gwin->get_main_actor() &&
-		    cact->get_alignment() == Npc_actor::friendly &&
-		    cact->get_flag(Obj_flags::si_tournament))
-			party[cnt++] = cact;
-		for (int i = 0; i < cnt; i++)
-					// But ignore invisible ones.
-			if (!party[i]->get_flag(Obj_flags::invisible) &&
-			    party[i] != npc)
-				opponents.push_back(party[i]);
-		return;
-	}
 	Actor_vector nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
 					// See if we're a party member.
 	bool in_party = npc->is_in_party();
+	int npc_align = npc->get_effective_alignment();
 	for (Actor_vector::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
 		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
 			continue;	// Dead or invisible.
-		if (actor->get_effective_alignment() >= Npc_actor::hostile)
+		if ((npc_align == Npc_actor::friendly &&
+				actor->get_effective_alignment() >= Npc_actor::hostile) ||
+			(npc_align == Npc_actor::hostile &&
+				actor->get_effective_alignment() == Npc_actor::friendly))
 		{
 			opponents.push_back(actor);
 		}
