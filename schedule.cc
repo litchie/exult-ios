@@ -38,6 +38,7 @@
 #include "ucsched.h"
 #include "ucscriptop.h"
 #include "monstinf.h"
+#include "frameseq.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -440,8 +441,15 @@ void Pace_schedule::now_what
 			}
 
 		Tile_coord p0 = npc->get_tile() + offset;
-						// Wait a bit before moving.
-		npc->walk_to_tile(p0, gwin->get_std_delay(), gwin->get_std_delay(), 0);
+		Frames_sequence *frames = npc->get_frames(dir);
+		int& step_index = npc->get_step_index();
+		if (!step_index)		// First time?  Init.
+			step_index = frames->find_unrotated(npc->get_framenum());
+						// Get next (updates step_index).
+		int frame = frames->get_next(step_index);
+			// One step at a time.
+		npc->step(p0, frame);
+		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		}
 	}
 
@@ -679,168 +687,494 @@ void Patrol_schedule::now_what
 	(
 	)
 	{
-	if (sitting)			// Sitting?
-		{
-					// Stay 5-15 secs.
-		if ((npc->get_framenum()&0xf) == Actor::sit_frame)
-			npc->start(250, 5000 + rand()%10000);
-		else			// Not sitting.
-			npc->start(250, rand()%1000);
-		sitting = false;	// Continue on afterward.
-		find_next = true;
-		return;
-		}
 	if (rand() % 8 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
-	const int PATH_SHAPE = 607;
-	Game_object *path;
-	if (!find_next &&
-	    pathnum >= 0 &&		// Arrived at path?
-	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
-	    npc->distance(path) < 2)
-					// Quality = type.  (I think high bits
-					//   are flags.
-		switch (path->get_quality()&31)
-			{
-		case 0:			// None.
-			break;
-		case 1:			// Wrap to 0.
-			pathnum = -1;
-			dir = 1;
-			break;
-		case 2:			// Pause.
-			break;		//++++++++
-		case 3:			// Sit.
-			if (Sit_schedule::set_action(npc))
-				{
-				sitting = true;
-				return;
-				}
-			break;
-		case 4:			// Kneel at tombstone.+++++++
-		case 5:			// Kneel+++++++++++
-		case 6:			// Loiter.++++++
-			break;
-		case 7:			// Left about-face.
-		case 8:			// Right about-face.
-			if (pathnum == 0 && dir == -1)
-				dir = 1;
-			else if (pathnum > 0 && dir == 1)
-				dir = -1;
-					// ++++Turn animations.
-			break;
-		case 9:			// Horiz. pace.+++++++
-		case 10:		// Vert. pace+++++++
-		case 11:		// 50% reverse.
-		case 12:		// 50% skip next.
-		case 13:		// Hammer.++++++
-		case 14:		// Check area.
-			break;		//++++++Implement above.
-		case 15:		// Usecode.
-			{		// Schedule so we don't get deleted.
-			Usecode_script *scr = new Usecode_script(npc);
-					// Don't let this script halt others,
-					//   as it messes up automaton in
-					//   SI-Freedom.
-			(*scr) << Ucscript::dont_halt <<
-				Ucscript::usecode2 << npc->get_usecode() <<
-			      static_cast<int>(Usecode_machine::npc_proximity);
-			scr->start();	// Start next tick.
-			find_next = true;	// THEN, find next path.
-			npc->start(250, 500);
-			return;
-			}
-		case 16:		// Bow to ground.  ++++Implement.
-		case 17:		// Bow from ground.+++++
-		case 18:		// Wait for semaphore+++++
-		case 19:		// Release semaphore+++++
-		case 20:		// Ready weapon++++++++
-		case 21:		// Unready weapon+++++++
-		case 22:		// One-handed swing.+++++
-		case 23:		// Two-handed swing.
-		case 24:		// Read++++++
-		case 25:		// 50% wrap to 0.++++++
-		case 26:		// Combat near??
-		case 27:		// Repeat forever??
-		default:
-			break;
-			}
-	pathnum += dir;			// Find next path.
-	find_next = false;		// We're doing it.
-	if (pathnum >= paths.size())
-		paths.resize(pathnum + 1);
-					// Already know its location?
-	path =  pathnum >= 0 ? paths[pathnum] : 0;
-	if (!path)			// No, so look around.
+	if (seek_combat)	// Check for nearby foes.
 		{
-		Game_object_vector nearby;
-		npc->find_nearby(nearby, PATH_SHAPE, 25, 0);
-		int best_dist = 1000;	// Find closest.
-		for (Game_object_vector::const_iterator it = nearby.begin();
-						it != nearby.end(); ++it)
+		Actor_vector vec;		// Look within 10 tiles (guess).
+		npc->find_nearby_actors(vec, c_any_shapenum, 10);
+		int npc_align = npc->get_effective_alignment();
+		Actor *foe = 0;
+		for (Actor_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
 			{
-			Game_object *obj = *it;
-			int framenum = obj->get_framenum();
-			int dist;
-			if (framenum == pathnum && 
-			    (dist = obj->distance(npc)) < best_dist)
-				{	// Found it.
-				path = obj;
-				best_dist = dist;
-				}
-			}
-		if (path)		// Save it.
-			{
-			failures = 0;
-			paths[pathnum] = path;
-			}
-		else			// Turn back if at end.
-			{
-			failures++;
-			dir = 1;
-			if (pathnum == 0)	// At start?  Retry.
+			Actor *actor = *it;
+			if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
+				continue;	// Dead or invisible.
+			if ((npc_align == Npc_actor::friendly &&
+					actor->get_effective_alignment() >= Npc_actor::hostile) ||
+				(npc_align == Npc_actor::hostile &&
+					actor->get_effective_alignment() == Npc_actor::friendly))
 				{
-				if (failures < 4)
-					{
-					pathnum = -1;
-					npc->start(200, 500);
-					return;
-					}
-					// After 4, fall through.
-				}
-			else		// At end, go back to start.
-				{
-				pathnum = 0;
-				path = paths.size() ? paths[0] : 0;
+				foe = actor;
+				break;
 				}
 			}
-		if (!path)		// Still failed?
+		if (foe)
 			{
-					// Wiggle a bit.
-			Tile_coord pos = npc->get_tile();
-			int dist = failures + 2;
-			Tile_coord delta = Tile_coord(rand()%dist - dist/2,
-					rand()%dist - dist, 0);
-			npc->walk_to_tile(pos + delta, gwin->get_std_delay(), 
-								failures*300);
-			int pathcnt = paths.size();
-			pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
+			npc->set_schedule_type(Schedule::combat, 0);
+			npc->set_target(foe);
 			return;
 			}
 		}
-	Tile_coord d = path->get_tile();
-    	if (!npc->walk_path_to_tile(d, gwin->get_std_delay(), rand()%1000))
-		{		
-					// Look for free tile within 1 square.
-		d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
-						npc->get_framenum(), 1);
-		if (d.tx == -1 || !npc->walk_path_to_tile(d,
-					gwin->get_std_delay(), rand()%1000))
-			{		// Failed.  Later.
-			npc->start(200, 2000);
-			return;
+	int speed = gwin->get_std_delay();
+	const int PATH_SHAPE = 607;
+	Game_object *path;
+	switch (state)
+		{
+		case 0:	// Find next path.
+			{
+			pathnum += dir;			// Find next path.
+			if (pathnum == 0 && dir == -1)
+				dir = 1;	// Start over from zero.
+			if (pathnum >= paths.size())
+				paths.resize(pathnum + 1);
+							// Already know its location?
+			path =  pathnum >= 0 ? paths[pathnum] : 0;
+			if (!path)			// No, so look around.
+				{
+				Game_object_vector nearby;
+				npc->find_nearby(nearby, PATH_SHAPE, 25, 0);
+				int best_dist = 1000;	// Find closest.
+				for (Game_object_vector::const_iterator it = nearby.begin();
+								it != nearby.end(); ++it)
+					{
+					Game_object *obj = *it;
+					int framenum = obj->get_framenum();
+					int dist;
+					if (framenum == pathnum && 
+						(dist = obj->distance(npc)) < best_dist)
+						{	// Found it.
+						path = obj;
+						best_dist = dist;
+						}
+					}
+				if (path)		// Save it.
+					{
+					failures = 0;
+					paths[pathnum] = path;
+					}
+				else			// Turn back if at end.
+					{
+					failures++;
+					dir = 1;
+					if (pathnum == 0)	// At start?  Retry.
+						{
+						if (failures < 4)
+							{
+							pathnum = -1;
+							npc->start(speed, 500);
+							return;
+							}
+							// After 4, fall through.
+						}
+					else		// At end, go back to start.
+						{
+						if (wrap)
+							{
+							pathnum = 0;
+							path = paths.size() ? paths[0] : 0;
+							}
+						else
+							{
+							pathnum = pathnum-2 >= 0 ? pathnum-2 : 0;
+							dir = -1;
+							path = paths.size() ? paths[pathnum] : 0;
+							}
+						}
+					}
+				if (!path)		// Still failed?
+					{
+							// Wiggle a bit.
+					Tile_coord pos = npc->get_tile();
+					int dist = failures + 2;
+					Tile_coord delta = Tile_coord(rand()%dist - dist/2,
+							rand()%dist - dist, 0);
+					npc->walk_to_tile(pos + delta, speed, 
+										failures*300);
+					int pathcnt = paths.size();
+					pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
+					return;
+					}
+				}
+			Tile_coord d = path->get_tile();
+			if (!npc->walk_path_to_tile(d, speed, 2*speed + rand()%500))
+				{		
+							// Look for free tile within 1 square.
+				d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
+								npc->get_framenum(), 1);
+				if (d.tx == -1 || !npc->walk_path_to_tile(d,
+							speed, rand()%1000))
+					{		// Failed.  Later.
+					npc->start(speed, 2000);
+					return;
+					}
+				}
+			state = 1;	// Walking to path.
+			break;
 			}
+		case 1:	// Walk to next path.
+			if (pathnum >= 0 &&		// Arrived at path?
+				pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
+				npc->distance(path) < 2)
+				{
+				whichdir = 1;	// Default to East-West pace.
+				int delay = 2;
+				// Scripts for all actions. At worst, display standing frame
+				// once the path egg is reached.
+				Usecode_script *scr = new Usecode_script(npc);
+				(*scr) << Ucscript::dont_halt
+					<< Ucscript::npc_frame + Actor::standing;
+							// Quality = type.  (I think high bits
+							// are flags).
+				int qual = path->get_quality();
+				seek_combat = (bool)(qual&32);
+				// TODO: Find out what flags 64 and 128 mean. It would seem
+				// that they are 'Repeat Forever' and 'Exc. Reserved.', but
+				// what does those mean?
+				switch (qual&31)
+					{
+				case 0:			// None.
+					break;
+				case 25:		// 50% wrap to 0.
+					if (rand()%2)
+						break;
+					// Fall through to wrap.
+				case 1:			// Wrap to 0.
+					pathnum = -1;
+					dir = 1;
+					break;
+				case 2:			// Pause; guessing 3 ticks.
+					{
+					(*scr) << Ucscript::delay_ticks << 3;
+					delay = 5;
+					break;
+					}
+				case 24:		// Read
+					// Find the book which will be read.
+					book = npc->find_closest(642, 4);
+					// Fall through to sit.
+				case 3:			// Sit.
+					if (Sit_schedule::set_action(npc))
+						{
+						scr->start();	// Start next tick.
+						state = 2;
+						return;
+						}
+					break;
+				case 4:			// Kneel at tombstone.
+				case 5:			// Kneel
+					{	// Both seem to work identically.
+					(*scr) << Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::bow_frame <<
+						Ucscript::delay_ticks << 4 <<
+						Ucscript::npc_frame + Actor::kneel_frame <<
+						Ucscript::delay_ticks << 20 <<
+						Ucscript::npc_frame + Actor::bow_frame <<
+						Ucscript::delay_ticks << 4 <<
+						Ucscript::npc_frame + Actor::standing; 
+					delay = 36;
+					break;
+					}
+				case 6:			// Loiter.
+					{
+					scr->start();	// Start next tick.
+					center = path->get_tile();
+					state = 4;
+					npc->start(speed, speed*delay);
+					return;
+					}
+				case 7:			// Right about-face.
+				case 8:			// Left about-face.
+					{
+					wrap = false;	// Guessing; seems to match the original.
+					const int dirs_left[] = {west, north, north, east, east, south, south, west};
+					const int dirs_right[] = {east, east, south, south, west, west, north, north};
+					const int *face_dirs;
+					if (path->get_quality()&31 == 7)
+						face_dirs = dirs_right;
+					else
+						face_dirs = dirs_left;
+					int facing = npc->get_dir_facing();
+					for (int i=0; i<2; i++)
+						{
+						(*scr) << Ucscript::delay_ticks << 2 <<
+						Ucscript::face_dir << face_dirs[facing];
+						facing = face_dirs[facing];
+						}
+					delay = 8;
+					break;
+					}
+				// Both 9 and 10 appear to pace vertically in the originals.
+				// I am having 9 as vert. pace for the guards in Fawn.
+				case 9:			// Vert. pace.
+					whichdir = 0;
+				case 10:		// Horiz. pace.
+					{
+					pace_count = -1;
+					scr->start();	// Start next tick.
+					center = path->get_tile();
+					state = 5;
+					npc->start(speed, speed*delay);
+					return;
+					}
+				case 11:		// 50% reverse.
+					if (rand()%2)
+						dir *= -1;
+					break;
+				case 12:		// 50% skip next.
+					{
+					if (rand()%2)
+						pathnum += dir;
+					break;
+					}
+				case 13:		// Hammer.
+					{
+					if (!hammer)	// Create hammer if does not exist.
+						hammer = new Ireg_game_object(623, 0, 0, 0);
+						// For safety, unready weapon first.
+					npc->unready_weapon();
+					npc->add_dirty();
+						// Ready the hammer in the weapon hand.
+					npc->add_readied(hammer, Actor::lhand, 0, 1);
+					npc->add_dirty();
+
+					(*scr) << Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::ready_frame <<
+						Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::raise1_frame <<
+						Ucscript::delay_ticks << 2 <<
+						Ucscript::sfx << 37 <<
+						Ucscript::npc_frame + Actor::out_frame <<
+						Ucscript::repeat << -11 << 1 <<
+						Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::ready_frame <<
+						Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::standing;
+					delay = 24;
+					break;
+					}
+				case 15:	// Usecode.
+					{		// Don't let this script halt others,
+							//   as it messes up automaton in
+							//   SI-Freedom.
+					(*scr) << Ucscript::usecode2 << npc->get_usecode() <<
+						  static_cast<int>(Usecode_machine::npc_proximity);
+					delay = 3;
+					break;
+					}
+				case 16:		// Bow to ground.
+				case 17:		// Bow from ground, seems to work exactly like 16
+					{
+					(*scr) << Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::bow_frame <<
+						Ucscript::delay_ticks << 2 <<
+						Ucscript::npc_frame + Actor::standing;
+					delay = 8;
+					break;
+					}
+				case 20:		// Ready weapon
+					npc->ready_best_weapon();
+					break;
+				case 14:		// Check area.
+					// Maybe could be improved?
+					delay += 2;
+					(*scr) << Ucscript::delay_ticks << 2;
+				case 21:		// Unready weapon
+					npc->unready_weapon();
+					break;
+				case 22:		// One-handed swing.
+				case 23:		// Two-handed swing.
+					{
+					int dir = npc->get_dir_facing();
+					signed char frames[12];		// Get frames to show.
+					Game_object *weap = npc->get_readied(Actor::rhand);
+					int cnt = npc->get_attack_frames(weap ? weap->get_shapenum() : 0,
+								0, dir, frames);
+					if (cnt)
+						npc->set_action(new Frames_actor_action(frames, cnt, speed));
+					npc->start(speed, speed*(delay+1));		// Get back into time queue.
+					break;
+					}
+				// What should these two do???
+				case 18:		// Wait for semaphore+++++
+				case 19:		// Release semaphore+++++
+				default:
+#ifdef DEBUG
+	cout << "Unhandled path egg quality in patrol schedule: " << qual << endl;
+#endif
+					break;
+					}
+				scr->start();	// Start next tick.
+				state = 0;	// THEN, find next path.
+				npc->start(speed, speed*delay);
+				}
+			else
+				{
+				state = 0;	// Walking to path.
+				npc->start(speed, speed);
+				}
+			break;
+		case 2:	// Sitting/reading.
+			{
+					// Stay 5-15 secs.
+			if ((npc->get_framenum()&0xf) == Actor::sit_frame)
+				{
+				if (book)
+					{	// Open book if reading.
+					int frnum = book->get_framenum();
+					if (frnum%3)
+						book->change_frame(frnum - frnum%3);
+					else	// Book already open; we shouldn't close it then.
+						book = 0;
+					}
+				npc->start(250, 5000 + rand()%10000);
+				}
+			else			// Not sitting.
+				npc->start(250, rand()%1000);
+			state = 3;	// Continue on afterward.
+			break;
+			}
+		case 3:	// Stand up.
+			{
+			if ((npc->get_framenum()&0xf) == Actor::sit_frame)
+				{
+				if (book)
+					{		// Close book we opened it.
+					int frnum = book->get_framenum();
+					book->change_frame(frnum - frnum%3 + 1);
+					book = 0;
+					}
+				// Standing up animation.
+				Usecode_script *scr = new Usecode_script(npc);
+				(*scr) << Ucscript::dont_halt <<
+					Ucscript::delay_ticks << 2 <<
+					Ucscript::npc_frame + Actor::bow_frame <<
+					Ucscript::delay_ticks << 2 <<
+					Ucscript::npc_frame + Actor::standing;
+				scr->start();	// Start next tick.
+				npc->start(speed, speed*7);
+				}
+			state = 0;
+			break;
+			}
+		case 4:	// Loiter.
+			{
+			if (rand()%5 == 0)
+				{
+				state = 0;
+				npc->start(speed, speed);
+				}
+			else
+				{
+				int dist = 12;
+				int newx = center.tx - dist + rand()%(2*dist);
+				int newy = center.ty - dist + rand()%(2*dist);
+								// Wait a bit.
+				npc->walk_to_tile(newx, newy, center.tz, speed, 
+											rand()%2000);
+				}
+			break;
+			}
+		case 5:	// Pacing.
+			{
+			if (npc->get_tile().distance(center) < 1)
+				{
+				pace_count++;
+				if (pace_count > 0 && pace_count == 6)
+					{
+					Usecode_script *scr = new Usecode_script(npc);
+					(*scr) << Ucscript::dont_halt
+						<< Ucscript::npc_frame + Actor::standing;
+					scr->start();	// Start next tick.
+					state = 0;
+					npc->start(speed, 2*speed);
+					return;
+					}
+				}
+			int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
+			bool changedir = false;
+			Tile_coord offset;
+			switch (dir)
+				{
+				case north:
+				case south:
+					if (whichdir)
+						changedir = true;
+					else
+						offset = Tile_coord(0, dir == south ? 1 : -1, 0);
+					break;
+				case east:
+				case west:
+					if (!whichdir)
+						changedir = true;
+					else
+						offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
+					break;
+				}
+			
+			if (blocked.tx != -1)		// Blocked?
+				{
+				Game_object *obj = Game_object::find_blocking(blocked);
+				blocked.tx = -1;
+				changedir = true;
+				if (obj && obj->as_actor())
+					{
+					Monster_info *minfo = npc->get_info().get_monster_info();
+					if (!minfo || !minfo->cant_yell())
+						{
+						npc->say(first_move_aside, last_move_aside);
+							// Wait longer.
+						npc->start(speed, speed);
+						return;
+						}
+					}
+				}
+
+			if (changedir)
+				{
+				if (npc->get_tile().distance(center) < 1)
+					pace_count--;
+				const int facedirs[] = {west, north, north, east, east, south, south, west};
+				npc->change_frame(npc->get_dir_framenum(
+					facedirs[dir], Actor::standing));
+				npc->start(2*speed, 2*speed);
+				return;
+				}
+
+			Tile_coord p0 = npc->get_tile() + offset;
+			Frames_sequence *frames = npc->get_frames(dir);
+			int& step_index = npc->get_step_index();
+			if (!step_index)		// First time?  Init.
+				step_index = frames->find_unrotated(npc->get_framenum());
+							// Get next (updates step_index).
+			int frame = frames->get_next(step_index);
+				// One step at a time.
+			npc->step(p0, frame);
+			npc->start(speed, speed);
+			break;
+			}
+		default:
+			// Just in case.
+			break;
+		}
+	}
+
+
+/*
+ *	End of patrol
+ */
+	
+void Patrol_schedule::ending
+	(
+	int new_type			// New schedule.
+	)
+	{
+	if (hammer)
+		{
+		hammer->remove_this();
+		hammer = 0;
 		}
 	}
 

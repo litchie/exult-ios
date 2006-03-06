@@ -197,16 +197,25 @@ class Patrol_schedule : public Schedule
 	{
 	vector<Game_object*> paths;	// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
-	int dir;			// 1 or -1;
+	int dir;				// 1 or -1;
+	bool wrap;				// If true, wraps to zero when reached last path
 	int failures;			// # of failures to find marker.
-	bool sitting;			// Sat down for one of the paths.
-	bool find_next;			// Search for next path object.
+	int state;				// The patrol state.
+	Tile_coord center;		// For 'loiter' and 'pace' path eggs.
+	char whichdir;			// For 'pace' path eggs.
+	int pace_count;			// For 'pace' path eggs.
+	Game_object *hammer;	// For 'hammer' path eggs.
+	Game_object *book;		// For 'read' path eggs.
+	bool seek_combat;		// The NPC should seek enemies while patrolling.
 public:
 	Patrol_schedule(Actor *n)
-		: Schedule(n), pathnum(-1), dir(1), failures(0),
-		  sitting(false), find_next(true)
+		: Schedule(n), pathnum(-1), dir(1), wrap(true),
+		  failures(0), state(0), center(0, 0, 0),
+		  whichdir(0), pace_count(0), hammer(0), book(0),
+		  seek_combat(false)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype); // Switching to another schedule
 	};
 
 /*

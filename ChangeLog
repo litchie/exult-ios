@@ -1,3 +1,23 @@
+2006-03-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* schedule.cc, schedule.h: Tweaked the 'Pace' schedules. Also, greatly
+	  modified the 'Patrol' schedule so that it works more like the original.
+	* combat.cc: Slightly midified the way opponents are found in combat.
+	  Hostile actors will now target friendly actors, which include party
+	  members.
+	* actors.cc: Oppressors are now set when an NPC's target is set. Also,
+	  they are set when an NPC is attacked instead of when it is hurt.
+	  Additionally, the avatar will now set the 'blocked' vector if it is
+	  moving due to a schedule.
+	* actors.cc, usecode/bgintrinsics.h: Allowed several more SI intrinsics
+	  for BG; specifically, the intrinsics add_cont_items, clear_item_say,
+	  save_pos, teleport_to_saved_pos, set_camera, set_polymorph and
+	  infravision can now be used in BG games.
+	* usecode/intrinsics.cc: Added reminder to look into 'approach_avatar'
+	  intrinsic (seems to actually be 'create_offscreen', but I need to do
+	  some further tests to be sure).
+	* docs/exult_intrinsics.txt: Full intrinsic documentation describing
+	  them as they are implemented in Exult. ALL intrinsics are documented.
+
 2006-03-05    <jeff@mini.nerble.net>
 
 	* objs/egg.cc,etc.: Usecode eggs may be given a function name

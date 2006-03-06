@@ -1217,6 +1217,9 @@ void Actor::set_target
 	target = obj;
 	if (start_combat && (schedule_type != Schedule::combat || !schedule))
 		set_schedule_type(Schedule::combat);
+	Actor *opponent = obj ? obj->as_actor() : 0;
+	if (opponent)
+		opponent->set_oppressor(get_npc_num());
 	}
 
 /*
@@ -3297,7 +3300,6 @@ bool Actor::figure_hit_points
 	if (attacker && (usefun ||
 			(wpoints || powers) && !powers&Weapon_info::si_no_damage))
 		{ 
-		set_oppressor(attacker->get_npc_num());
 		if (is_combat_protected() && party_id >= 0 &&
 		    rand()%5 == 0)
 			say(first_need_help, last_need_help);
@@ -3514,6 +3516,8 @@ Game_object *Actor::attacked
 					// Or party member of dead Avatar?
 	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
 		return 0;
+	if (attacker)
+		set_oppressor(attacker->get_npc_num());
 	if (attacker && attacker->get_schedule_type() == Schedule::duel)
 		return this;	// Just play-fighting.
 					// Watch for Skara Brae ghosts.
@@ -3861,6 +3865,8 @@ int Main_actor::step
 					// If okay, try one last time.
 		 is_blocked(t))))
 		{
+		if (schedule)		// Tell scheduler.
+			schedule->set_blocked(t);
 		stop();
 		return (0);
 		}
@@ -4059,9 +4065,6 @@ void Actor::set_actor_shape()
 // Sets the polymorph to shape
 void Actor::set_polymorph (int shape)
 {
-	// Polymorph is only SI
-	if (Game::get_game_type() != SERPENT_ISLE) return;
-
 #ifdef DEBUG
 	cerr << "Setting polymorph for " << get_npc_num() << endl;
 	cerr << "Shape " << shape << endl;
@@ -4069,18 +4072,27 @@ void Actor::set_polymorph (int shape)
 #endif
 	
 	// Want to set to Avatar
+	ShapeFile the_file = SF_SHAPES_VGA;
 	if (shape == 721 || shape == 989)
 	{
 		Actor *avatar = gwin->get_main_actor();
 		if (!avatar) return;
 
-		if (avatar->get_skin_color() == 0) // WH
-			shape = 1028+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
-		else if (avatar->get_skin_color() == 1) // BN
-			shape = 1026+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
-		else // BK
-			shape = 1024+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+		int female = get_type_flag(tf_sex)?1:0;
+
+		if (Game::get_game_type() == SERPENT_ISLE||sman->can_use_multiracial())
+		{
+			if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
+
+			if (get_skin_color() == 0) // WH
+				shape = 1028+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+			else if (get_skin_color() == 1) // BN
+				shape = 1026+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+			else if (get_skin_color() == 2) // BK
+				shape = 1024+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+		}
 	}
+	set_file(the_file);
 
 	if (shape == shape_save)
 	{
@@ -4099,10 +4111,9 @@ void Actor::set_polymorph (int shape)
 // Sets polymorph shape to defaults based on flags and npc num
 void Actor::set_polymorph_default()
 {
-	// Polymorph is only SI
-	if (Game::get_game_type() != SERPENT_ISLE || 
-					!get_flag(Obj_flags::polymorph)
-				|| (get_npc_num() != 0 && get_npc_num() != 28))
+	if (!get_flag(Obj_flags::polymorph)
+			|| (get_npc_num() != 0 &&
+				(GAME_SI && get_npc_num() != 28)))
 		return;
 
 	set_actor_shape();
