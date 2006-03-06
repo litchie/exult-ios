@@ -2931,6 +2931,9 @@ USECODE_INTRINSIC(add_removed_npc)
 USECODE_INTRINSIC(approach_avatar)
 {
 	// Approach_avatar(npc, ?, ?).
+	// In the original, this intrinsic seems to create 'npc' off-screen, while it
+	// approaches the avatar due to si_path_run_usecode or the 'TALK' schedule.
+	// Need to investigate this further.
 	// Actor we want to move
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (!actor || actor->is_dead())
