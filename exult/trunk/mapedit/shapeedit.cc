@@ -112,6 +112,19 @@ C_EXPORT gboolean on_equip_recnum_changed
 	ExultStudio::get_instance()->init_equip_window(recnum);
 	return TRUE;
 	}
+
+/*
+ *	Add new record.
+ */
+C_EXPORT void on_equip_new_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->new_equip_record();
+	}
+
 /*
  *	Draw shape in one of the Equip dialog rows.
  */
@@ -393,6 +406,23 @@ void ExultStudio::show_equip_shape
 		eq->draw->show(x, y, w, h);
 	else
 		eq->draw->show();
+	}
+
+/*
+ *	Add a new equipment record.
+ */
+
+void ExultStudio::new_equip_record
+	(
+	)
+	{
+	Equip_record rec;
+	Monster_info::add_equip(rec);
+	int ecnt = Monster_info::get_equip_cnt();
+	int recnum = ecnt;
+					// Show new entry.
+	set_spin("equip_recnum", recnum, 1, ecnt);
+	shape_info_modified = true;
 	}
 
 /*

@@ -72,6 +72,22 @@ static bool U7open2
 	}
 
 /*
+ *	Reload info.
+ */
+
+void Shapes_vga_file::reload_info
+	(
+	Exult_Game game,		// Which game.
+	int min_info_size
+	)
+	{
+	info_read = false;
+	info.resize(0);
+	info.resize(min_info_size > num_shapes ? min_info_size : num_shapes);
+	read_info(game);
+	}	
+
+/*
  *	Read in data files about shapes.
  *
  *	Output:	0 if error.
@@ -233,10 +249,10 @@ void Shapes_vga_file::read_info
 	if (U7open2(mfile, patch_name(PATCH_EQUIP), EQUIP, editing))
 		{
 		int num_recs = Read1(mfile);
-		Equip_record *equip = new Equip_record[num_recs];
+		Monster_info::reserve_equip(num_recs);
 		for (i = 0; i < num_recs; i++)
 			{
-			Equip_record& rec = equip[i];
+			Equip_record equip;
 					// 10 elements/record.
 			for (int elem = 0; elem < 10; elem++)
 				{
@@ -244,11 +260,10 @@ void Shapes_vga_file::read_info
 				unsigned prob = Read1(mfile);
 				unsigned quant = Read1(mfile);
 				Read2(mfile);
-				rec.set(elem, shnum, prob, quant);
+				equip.set(elem, shnum, prob, quant);
 				}
+			Monster_info::add_equip(equip);
 			}
-					// Monster_info owns this.
-		Monster_info::set_equip(equip, num_recs);
 		mfile.close();
 		}
 	ifstream(occ);			// Read flags from occlude.dat.
@@ -293,7 +308,8 @@ void Shapes_vga_file::init(int min_info_size)
 		load(SHAPES_VGA, PATCH_SHAPES);
 	else
 		load(SHAPES_VGA);
-
+	info_read = false;
+	info.resize(0);
 	info.resize(min_info_size > num_shapes ? min_info_size : num_shapes);
 }
 

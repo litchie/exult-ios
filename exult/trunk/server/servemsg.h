@@ -88,7 +88,8 @@ enum Msg_type
 	locate_npc = 38,		// Show NPC on map.
 	edit_npc = 39,			// Bring up NPC-editor.
 	container = 40,			// Edit container object.
-	cont_show_gump = 41,	// Displays a container's gump.
+	cont_show_gump = 41,		// Displays a container's gump.
+	reload_shapes_info = 42,	// Reload shapes info.
 	usecode_debugging = 128
 	};
 

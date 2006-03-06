@@ -262,6 +262,18 @@ void Shape_manager::reload_shapes
 	}
 
 /*
+ *	Just reload info. files.
+ */
+
+void Shape_manager::reload_shape_info
+	(
+	)
+	{
+	shapes.reload_info(Game::get_game_type(),
+					bg_multiracial_allowed ? 1036 : -1);
+	}
+
+/*
  *	Clean up.
  */
 Shape_manager::~Shape_manager()
