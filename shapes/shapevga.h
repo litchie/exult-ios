@@ -51,6 +51,7 @@ public:
 	void init(int min_info_size = -1);
 	virtual ~Shapes_vga_file();
 					// Read additional data files.
+	void reload_info(Exult_Game game, int min_info_size = -1);
 	void read_info(Exult_Game game, bool editing = false);
 	void write_info(Exult_Game game);	// Write them back out.
 	virtual Shape *new_shape(int shapenum);	

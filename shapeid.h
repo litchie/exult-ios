@@ -78,6 +78,7 @@ public:
 		{ return instance; }
 	void load();			// Read in files.
 	void reload_shapes(int dragtype);	// Reload a shape file.
+	void reload_shape_info();
 	Vga_file& get_file(enum ShapeFile f)
 		{ return files[(int) f]; };
 	Shapes_vga_file& get_shapes()

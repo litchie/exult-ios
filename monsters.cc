@@ -185,12 +185,13 @@ void Monster_actor::equip
 	{
 					// Get equipment.
 	int equip_offset = inf->equip_offset;
-	Equip_record *equip = inf->equip;
-	if (!equip_offset || equip_offset - 1 >= inf->equip_cnt)
+	vector<Equip_record>& equip = inf->equip;
+	if (!equip_offset || equip_offset - 1 >= inf->get_equip_cnt())
 		return;
 	Equip_record& rec = equip[equip_offset - 1];
 	for (size_t i = 0;
-		 i < sizeof(equip->elements)/sizeof(equip->elements[0]); i++)
+		 i < sizeof(equip[0].elements)/sizeof(equip[0].elements[0]); 
+									i++)
 		{		// Give equipment.
 		Equip_element& elem = rec.elements[i];
 		if (!elem.shapenum || 1 + rand()%100 > elem.probability)

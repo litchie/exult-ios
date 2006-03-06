@@ -13722,17 +13722,48 @@ Coordinates</property>
 	  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
 
 	  <child>
-	    <widget class="GtkSpinButton" id="equip_recnum">
+	    <widget class="GtkHBox" id="hbox60">
+	      <property name="border_width">4</property>
 	      <property name="visible">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="climb_rate">1</property>
-	      <property name="digits">0</property>
-	      <property name="numeric">False</property>
-	      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-	      <property name="snap_to_ticks">False</property>
-	      <property name="wrap">False</property>
-	      <property name="adjustment">0 0 100 1 10 10</property>
-	      <signal name="changed" handler="on_equip_recnum_changed"/>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">4</property>
+
+	      <child>
+		<widget class="GtkSpinButton" id="equip_recnum">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="climb_rate">1</property>
+		  <property name="digits">0</property>
+		  <property name="numeric">False</property>
+		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+		  <property name="snap_to_ticks">False</property>
+		  <property name="wrap">False</property>
+		  <property name="adjustment">0 0 100 1 10 10</property>
+		  <signal name="changed" handler="on_equip_recnum_changed"/>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkButton" id="equip_new">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="label" translatable="yes">New</property>
+		  <property name="use_underline">True</property>
+		  <property name="relief">GTK_RELIEF_NORMAL</property>
+		  <property name="focus_on_click">True</property>
+		  <signal name="clicked" handler="on_equip_new_clicked" last_modification_time="Mon, 06 Mar 2006 02:34:20 GMT"/>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
 	    </widget>
 	  </child>
 

@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
+#include <vector>
 
 /*
  *	An element from 'equip.dat', describing a monster's equipment:
@@ -42,7 +43,7 @@ class Equip_element
 public:
 	friend class Monster_info;
 	friend class Monster_actor;
-	Equip_element()
+	Equip_element() : shapenum(0), probability(0), quantity(0)
 		{  }
 	void set(int shnum, int prob, int quant)
 		{
@@ -81,8 +82,7 @@ public:
  */
 class Monster_info
 	{
-	static Equip_record *equip;	// ->equipment info.
-	static int equip_cnt;		// # entries in equip.
+	static std::vector<Equip_record> equip;	// ->equipment info.
 	static Monster_info default_info;	// For shapes not found.
 	unsigned char strength;		// Attributes.
 	unsigned char dexterity;
@@ -110,16 +110,14 @@ public:
 					// Write out.
 	void write(int shapenum, std::ostream& mfile);
 	static const Monster_info *get_default();
-					// Done by Game_window:
-	static void set_equip(Equip_record *eq, int cnt)
-		{
-		equip = eq;
-		equip_cnt = cnt;
-		}
+	static void reserve_equip(int cnt)
+		{ equip.reserve(cnt); }
+	static void add_equip(Equip_record& eq)
+		{ equip.push_back(eq); }
 	static int get_equip_cnt()
-		{ return equip_cnt; }
+		{ return equip.size(); }
 	static Equip_record& get_equip(int i)
-		{ assert(i >= 0 && i < equip_cnt); return equip[i]; }
+		{ assert(i >= 0 && i < equip.size()); return equip[i]; }
 	bool splits() const
 		{ return m_splits; }
 	void set_splits(bool tf)
