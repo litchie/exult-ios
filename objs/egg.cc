@@ -243,15 +243,20 @@ public:
 		unsigned int tz, unsigned short itype,
 		unsigned char prob, uint16 d1, uint16 d2, const char *fnm)
 		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
-		  fun(d2), fun_name(fnm ? fnm : "") {  
+		  fun(d2) {  
 		set_quality(d1&0xff);
+		Usecode_egg::set_str1(fnm);
 	}
 	virtual void set_str1(const char *s) {
-		fun_name = s;
+		fun_name = s ? s : "";
+		if (s && *s)
+			fun = 0;	// Want to look this up.
 	}
 	virtual const char *get_str1()
 		{ return fun_name.c_str(); }
 	virtual void hatch_now(Game_object *obj, bool must) {
+		if (!fun && !fun_name.empty())
+			fun = ucmachine->find_function(fun_name.c_str());
 		if (must)		// From script?  Do immediately.
 			ucmachine->call_usecode(fun, this,
 					Usecode_machine::egg_proximity);

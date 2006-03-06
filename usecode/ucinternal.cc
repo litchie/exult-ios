@@ -2744,6 +2744,25 @@ int Usecode_internal::call_usecode
 	}
 
 /*
+ *	Lookup function name in symbol table.  Prints error if not found.
+ */
+
+int Usecode_internal::find_function
+	(
+	const char *nm
+	)
+	{
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[nm] : 0;
+	if (!ucsym)
+		{
+		cerr << "Failed to find Usecode symbol '" << nm
+					<< "'." << endl;
+		return 0;
+		}
+	return ucsym->get_val();
+	}
+
+/*
  *	Start speech, or show text if speech isn't enabled.
  */
 
