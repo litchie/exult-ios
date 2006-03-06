@@ -36,8 +36,7 @@ using std::cout;
 using std::endl;
 using std::istream;
 
-Equip_record *Monster_info::equip = 0;
-int Monster_info::equip_cnt = 0;
+std::vector<Equip_record> Monster_info::equip;
 Monster_info Monster_info::default_info;
 
 /*

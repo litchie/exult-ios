@@ -511,6 +511,7 @@ static void Handle_client_message
 		break;
 		}
 	case Exult_server::cont_show_gump:
+		{
 		unsigned long addr = Read4(ptr);
 		Container_game_object *obj = (Container_game_object *) addr;
 		if (!obj)
@@ -524,6 +525,10 @@ static void Handle_client_message
 			act->show_inventory();
 		else
 			obj->show_gump();
+		break;
+		}
+	case Exult_server::reload_shapes_info:
+		Shape_manager::get_instance()->reload_shape_info();
 		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:

@@ -1236,6 +1236,12 @@ void ExultStudio::write_shape_info
 					// Make sure data's been read in.
 		svga->read_info(game_type, true);
 		svga->write_info(game_type);
+					// Tell Exult to reload.
+		unsigned char buf[Exult_server::maxlength];
+		unsigned char *ptr = &buf[0];
+		ExultStudio *studio = ExultStudio::get_instance();
+		studio->send_to_server(Exult_server::reload_shapes_info, 
+							buf, ptr - buf);
 		}
 	shape_info_modified = false;
 	if (force || shape_names_modified)
