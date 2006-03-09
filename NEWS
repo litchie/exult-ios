@@ -1,3 +1,15 @@
+xx/xx/06	v1.4
+
+		In-game Notebook with support for automatic notes (notes created by usecode)
+		Integrated Pentagram(tm) Audio system
+		New shapes for paperdoll
+		Multi-map support for new games
+		Increased limits on resource sizes (shapes, frames, etc)
+		Moved hard-coded information to configuration files
+		Greatly improved compiler tools to ease new game development
+		Tons of bugfixes
+
+
 06/10/04	v1.2
 
 		Official release with all the improvements and bug fixes from
