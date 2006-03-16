@@ -1867,7 +1867,7 @@ void change_gamma (bool down)
 	float delta = down?0.05:-0.05;
 	Image_window8::get_gamma(r, g, b);	
 	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
-	gwin->get_pal()->set(-1, -1);
+	gwin->get_pal()->apply(true);	// So new brightness applies.
 
 	// Message
 #ifdef HAVE_SNPRINTF
