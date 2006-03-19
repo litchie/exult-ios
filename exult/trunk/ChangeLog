@@ -1,3 +1,6 @@
+2006-03-19  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemap.cc: Fixed incorrect return value of data size for written strings.
+
 2006-03-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* schedule.cc, schedule.h: Tweaked the 'Pace' schedules. Also, greatly
 	  modified the 'Patrol' schedule so that it works more like the original.
