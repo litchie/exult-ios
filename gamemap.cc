@@ -792,7 +792,7 @@ int Game_map::write_string
 		ireg->write2(len);
 		ireg->write((void *)str, len);
 		}
-	return len + 2;
+	return len + 4;
 	}
 
 /*
