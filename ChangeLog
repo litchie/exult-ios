@@ -1,3 +1,8 @@
+2006-04-05    <jeff@mini.nerble.net>
+
+	* objs/objs.cc: Handle changes to IFIX and terrain objects
+	correctly so the changes get saved by EStudio.
+
 2006-03-19  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamemap.cc: Fixed incorrect return value of data size for written strings.
 

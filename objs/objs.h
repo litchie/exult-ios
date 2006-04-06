@@ -340,6 +340,10 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 	virtual Terrain_game_object *as_terrain() { return this; }
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain();
 	};
 
