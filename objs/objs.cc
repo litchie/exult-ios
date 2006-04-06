@@ -934,13 +934,10 @@ void Game_object::update_from_studio
 	gwin->add_dirty(obj);
 	obj->set_quality(quality);
 	Container_game_object *owner = obj->get_owner();
-	if (!owner)
-		{	// See if it moved -- but only if not inside something!
-		Tile_coord oldt = obj->get_tile();
-		if (oldt.tx != tx || oldt.ty != ty || oldt.tz != tz)
-			obj->move(tx, ty, tz);
-		}
-	cout << "Object updated" << endl;
+	if (!owner)	// See if it moved -- but only if not inside something!
+			// Don't skip this even if coords. are the same, since
+			//   it will mark the chunk as modified.
+		obj->move(tx, ty, tz);
 #endif
 	}
 
@@ -1375,6 +1372,55 @@ Game_object *Game_object::attacked
 }
 
 /*
+ *	Move to a new absolute location.  This should work even if the old
+ *	location is invalid (chunk = 0).
+ */
+
+void Terrain_game_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift,
+	int newmap
+	)
+	{
+	gwin->get_map()->set_map_modified();
+	if (chunk)
+		{
+		Chunk_terrain *ter = chunk->get_terrain();
+		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+		gwin->get_map()->set_chunk_terrains_modified();
+		}
+	Game_object::move(newtx, newty, newlift, newmap);
+	if (chunk)
+		{
+		Chunk_terrain *ter = chunk->get_terrain();
+		ter->set_flat(get_tx(), get_ty(), *this);
+		gwin->get_map()->set_chunk_terrains_modified();
+		}
+	}
+
+/*
+ *	Remove an object from the world.
+ *	The object is deleted.
+ */
+
+void Terrain_game_object::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	gwin->get_map()->set_map_modified();
+	if (chunk)
+		{
+		Chunk_terrain *ter = chunk->get_terrain();
+		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+		gwin->get_map()->set_chunk_terrains_modified();
+		}
+	Game_object::remove_this(nodel);
+	}
+
+/*
  *	Paint terrain objects only.
  */
 
@@ -1398,12 +1444,11 @@ void Ifix_game_object::move
 	int newmap
 	)
 	{
-	Game_object::move(newtx, newty, newlift, newmap);
 	if (chunk)			// Mark superchunk as 'modified'.
-		{
-		int cx = get_cx(), cy = get_cy();
-		get_map()->set_ifix_modified(cx, cy);
-		}
+		get_map()->set_ifix_modified(get_cx(), get_cy());
+	Game_object::move(newtx, newty, newlift, newmap);
+	if (chunk)
+		get_map()->set_ifix_modified(get_cx(), get_cy());
 	}
 
 /*
