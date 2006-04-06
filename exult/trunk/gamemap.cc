@@ -1804,7 +1804,8 @@ void Game_map::cache_out_schunk(int schunk)
 	const int scy = 16*(schunk/12);
 	const int scx = 16*(schunk%12);
 	int cy, cx;
-	bool save_map_modified = map_modified;
+	bool save_map_modified = map_modified,
+	     save_terrain_modified = chunk_terrains_modified;
 
 	if (schunk_modified[schunk])
 		return;			// NEVER cache out modified chunks.
@@ -1876,4 +1877,5 @@ void Game_map::cache_out_schunk(int schunk)
 					// Removing objs. sets these flags.
 	schunk_modified[schunk] = false;
 	map_modified = save_map_modified;
+	chunk_terrains_modified = save_terrain_modified;
 }
