@@ -228,7 +228,7 @@ void Combat_schedule::find_opponents
 		if (npc_align == Npc_actor::friendly &&
 		    actor->get_effective_alignment() >= Npc_actor::hostile)
 			opponents.push_back(actor);
-		else if (npc_align == Npc_actor::hostile &&
+		else if (npc_align >= Npc_actor::hostile &&
 			(actor->is_in_party() ||
 			 actor->get_effective_alignment() == 
 						Npc_actor::friendly))
