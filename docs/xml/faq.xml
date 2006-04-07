@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="04 October 2004(GMT">
+<faqs title="Exult" changed="08 April 2006(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="08042006">
+			<header>- 08 April 2006</header>
+			<body>
+				<ul>
+				<li><ref1 target="mods_patches"/> a list of where to find those.</li>
+				<li><ref1 target="why_gameplayfaq"/> explained the mark in the questions.</li>
+				<li><ref1 target="alagnar_dead"/> a bug that also exists in the original.</li>
+				</ul>
+			</body>
+		</sub>
+		
 		<sub name="04102004">
 			<header>- 04 October 2004</header>
 			<body>
@@ -110,7 +121,7 @@
 				<para>
 					No the <Exult/> team will not accept donations. For us there are greater legal matters 
 					involved, which none of us particularly want to explore. We do not want to risk the 
-					wrath of EA for directly profitting off xult.<br/>
+					wrath of EA for directly profitting off <Exult/>.<br/>
 					If you want to donate to anyone, donate to 
 					<extref target="http://sourceforge.net/donate/">Sourceforge</extref>. 
 					We wouldn't be here if it weren't for them. 
@@ -708,6 +719,33 @@
 				</cite>
 			</body>
 		</sub>
+		<sub name="mods_patches">
+			<header>Are there patches or Mods for <Exult/></header>
+			<body>
+				<para>
+					With <Studio/> advancing more and more, there are actually now a couple of patches
+					and Mods (modifications) for <Exult/>.<br/>
+					A nice collection can be found at 
+					<extref target="http://esguides.com/">Exult Studio Guides</extref>, including the
+					<Exult/> team's <strong>Sourceforge Island</strong> patch. Other patches/mods can be 
+					found at:
+				</para>
+				<ol>
+				<li><extref target="http://www.u7feudallands.com">Ultima VII: The Feudal Lands</extref><br/>
+					a very ambitious and massive mod under development.</li>
+				<li><extref target="http://tinyurl.com/nnrjg">BG Keyring Mod</extref><br/>
+					the newest <Exult/> team member developed a very big and nice mod that started out as 
+					a way to add the SI keyring to BG and ended up modyfying numerous aspects of BG+FoV. Read
+					the discussion to learn what it all changes.</li>
+				<li><extref target="http://tinyurl.com/m9du2">Ultima 6 conversion</extref><br/>
+					an unfinished mod to convert Ultima 7 to Ultima 6.</li>
+				</ol>
+				<para>
+					All the patches and mods require that you install the latest snapshot. They will not
+					work with the last official release.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Bugs, known issues and not yet implemented features">
 		<sub name="known_bugs">
@@ -889,6 +927,11 @@
 					<strong>Note that this section contains text that may spoil your game.
 					Caution is advised.</strong>
 				</para>
+				<para>
+					We added a mark to the question (BG/FoV/SI/SS) to show which Ultima 7 game is
+					affected by this. See <extref doc="docs" target="terms"/> to learn which game 
+					these marks point to.
+				</para>
 			</body>
 		</sub>
 		<sub name="virtue_stones">
@@ -945,6 +988,17 @@
 					After you defeated the enemy you have to doubleclick the prism to destroy the generator.
 					You will then find the black prism (without the yellow outline) to your feet. Look 
 					closely and take it with you.
+				</para>
+			</body>
+		</sub>
+		<sub name="alagnar_dead">
+			<header>Why is Alagnar not dead (BG)?</header>
+			<body>
+				<para>
+					At a certain point in the game Alagnar is supposed to be murdered. Unfortunately
+					there is a bug in the original game data, that lets him walk around alive in his
+					own murder scene. To avoid this bug you have come in through the south door of 
+					his house.
 				</para>
 			</body>
 		</sub>
