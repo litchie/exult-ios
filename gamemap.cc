@@ -139,7 +139,7 @@ Game_map::Game_map
 	int n
 	) : 
             num(n), 
-	    map_modified(false),
+	    map_modified(false), caching_out(0),
 	    map_patches(new Map_patch_collection)
 	{
 	}
@@ -1834,6 +1834,7 @@ void Game_map::cache_out_schunk(int schunk)
 	}
 
 	schunk_read[schunk] = false;
+	++caching_out;
 
 #ifdef DEBUG
 	std::cout << "Buffer size of " << buf_size << " bytes required to store super chunk" << std::endl;
@@ -1878,4 +1879,5 @@ void Game_map::cache_out_schunk(int schunk)
 	schunk_modified[schunk] = false;
 	map_modified = save_map_modified;
 	chunk_terrains_modified = save_terrain_modified;
+	--caching_out;
 }

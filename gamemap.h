@@ -69,6 +69,7 @@ class Game_map
 	bool schunk_modified[144];	// Flag for modified "ifix".
 	char *schunk_cache[144];
 	int  schunk_cache_sizes[144];
+	int caching_out;		// >0 in 'cache_out_schunk'.
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
@@ -85,6 +86,8 @@ public:
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 	static bool is_v2_chunks()
 		{ return v2_chunks; }
+	bool is_caching_out() const
+		{ return caching_out > 0; }
 	int get_num() const
 		{ return num; }
 	inline short get_terrain_num(int cx, int cy) const
