@@ -1384,15 +1384,19 @@ void Terrain_game_object::move
 	int newmap
 	)
 	{
-	gwin->get_map()->set_map_modified();
-	if (chunk)
+	bool caching_out = gwin->get_map()->is_caching_out();
+	if (!caching_out)
 		{
-		Chunk_terrain *ter = chunk->get_terrain();
-		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
-		gwin->get_map()->set_chunk_terrains_modified();
+		gwin->get_map()->set_map_modified();
+		if (chunk)
+			{
+			Chunk_terrain *ter = chunk->get_terrain();
+			ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+			gwin->get_map()->set_chunk_terrains_modified();
+			}
 		}
 	Game_object::move(newtx, newty, newlift, newmap);
-	if (chunk)
+	if (chunk && !caching_out)
 		{
 		Chunk_terrain *ter = chunk->get_terrain();
 		ter->set_flat(get_tx(), get_ty(), *this);
@@ -1410,12 +1414,15 @@ void Terrain_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	gwin->get_map()->set_map_modified();
-	if (chunk)
+	if (!gwin->get_map()->is_caching_out())
 		{
-		Chunk_terrain *ter = chunk->get_terrain();
-		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
-		gwin->get_map()->set_chunk_terrains_modified();
+		gwin->get_map()->set_map_modified();
+		if (chunk)
+			{
+			Chunk_terrain *ter = chunk->get_terrain();
+			ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+			gwin->get_map()->set_chunk_terrains_modified();
+			}
 		}
 	Game_object::remove_this(nodel);
 	}
@@ -1444,10 +1451,11 @@ void Ifix_game_object::move
 	int newmap
 	)
 	{
-	if (chunk)			// Mark superchunk as 'modified'.
+	bool caching_out = gwin->get_map()->is_caching_out();
+	if (chunk && !caching_out)	// Mark superchunk as 'modified'.
 		get_map()->set_ifix_modified(get_cx(), get_cy());
 	Game_object::move(newtx, newty, newlift, newmap);
-	if (chunk)
+	if (chunk && !caching_out)
 		get_map()->set_ifix_modified(get_cx(), get_cy());
 	}
 
