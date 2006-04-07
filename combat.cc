@@ -215,6 +215,7 @@ void Combat_schedule::find_opponents
 	Game_window *gwin = Game_window::get_instance();
 	Actor_vector nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
+	nearby.push_back(gwin->get_main_actor());	// Incl. Avatar!
 					// See if we're a party member.
 	bool in_party = npc->is_in_party();
 	int npc_align = npc->get_effective_alignment();
@@ -224,13 +225,14 @@ void Combat_schedule::find_opponents
 		Actor *actor = *it;
 		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
 			continue;	// Dead or invisible.
-		if ((npc_align == Npc_actor::friendly &&
-				actor->get_effective_alignment() >= Npc_actor::hostile) ||
-			(npc_align == Npc_actor::hostile &&
-				actor->get_effective_alignment() == Npc_actor::friendly))
-		{
+		if (npc_align == Npc_actor::friendly &&
+		    actor->get_effective_alignment() >= Npc_actor::hostile)
 			opponents.push_back(actor);
-		}
+		else if (npc_align == Npc_actor::hostile &&
+			(actor->is_in_party() ||
+			 actor->get_effective_alignment() == 
+						Npc_actor::friendly))
+			opponents.push_back(actor);
 		else if (in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
