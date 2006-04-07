@@ -1,3 +1,8 @@
+2006-04-08 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
+	* docs/ReadMe.html,FAQ.html: updated documentation and FAQ
+	* Readme, FAQ: updated
+
 2006-04-05    <jeff@mini.nerble.net>
 
 	* objs/objs.cc: Handle changes to IFIX and terrain objects

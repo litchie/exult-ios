@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="14 March 2005(GMT)">
+<readme title="Exult" changed="08 April 2006(GMT)">
 	<section title="Changes to the Documentation">
-		<sub name="14032005">
+		<sub name="08042006">
+			<header>- 08 April 2006</header>
+			<body>
+				<ul>
+				<li><ref1 target="installation"/> needed some polishing.</li>
+				<li><ref1 target="path_config"/> synched the path settings with the new Installation section.</li>
+				<li><section_ref target="Installing the original Ultima VII games for use with Exult"/> 
+					might help some people.</li>
+				</ul>
+			</body>
+		</sub>
+<sub name="14032005">
 			<header>- 14 March 2005</header>
 			<body>
 				<ul>
@@ -54,7 +65,7 @@
 				<li><ref1 target="audio_gump"/> updated with 'recent' audio changes.</li>
 				</ul>
 			</body>
-		</sub>
+		</sub>		
 	</section>
 	<section title="Introduction">
 		<sub name="exult_version">
@@ -147,15 +158,18 @@
 					<li>First you need to get Ultima 7. Either you own it already, or
 						you buy it somewhere.</li>
 					<li>You need an installed version of Ultima 7 to run <Exult/> with.
-						The <strong>Ultima Collection</strong> already contains a pre-installed
-						version of U7 (in the directory /ultima7 on the CD), but
-						with older versions you may have to install the game yourself.</li>
+						At <section_ref target="Installing the original Ultima VII games for use with Exult"/>
+						we have a guide on how to install the original games.</li>
 					<li>Copy the installed Ultima7 folder to an appropriate folder
 					 	- see <ref target="path_config"/> for suggestions.</li>
+					<li>Download <Exult/> from our 
+						<extref target="http://exult.sourceforge.net/download.php">download section</extref>
+						and install it.</li>
 					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> in Windows)
 						and quit it immediately.</li>
 					<li>Edit the configuration file with a text editor (e.g. on Windows use Notepad) 
-						and enter the correct paths for the game folders - see <ref target="exult_config"/></li>
+						and enter the correct paths for the game folders - see <ref target="exult_config"/>
+						for details</li>
 					<li>Run <strong>exult</strong> and enjoy the game :-)</li>
 				</ul>
 				<para>
@@ -501,12 +515,12 @@
 				</para>
 				<para>
 					The other is a little more complicated but appeals to control freaks like me:<br/>
-					Make a directory c:\ultima7<br/>
-					make two subfolders named "blackgate" and "serpentisle" (without the quotes of course)<br/>
+					Make a directory c:\exult<br/>
+					make two subfolders named "ultima7" and "serpent" (without the quotes of course)<br/>
 					Extract or install the two Ultima 7 games into the appropriate folder
-					("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle)<br/>
-					Install <Exult/> to c:\ultima7.<br/>
-					Now you have to edit the file c:\ultima7\exult.cfg file like this (Non-Windows users please look 
+					("The Black Gate" to c:\exult\ultima7 and "Serpent Isle" to c:\exult\serpent)<br/>
+					Install <Exult/> to c:\Exult.<br/>
+					Now you have to edit the file c:\exult\exult.cfg file like this (Non-Windows users please look 
 					at <ref target="exult_config"/> for the location of exult.cfg):
 				</para>
 				<configdesc>
@@ -521,7 +535,7 @@
 									blackgate
 									</configtag>
 									<configtag name="path">
-									./blackgate
+									./ultima7
 									</configtag>
 								</configtag>
 								<configtag name="serpentisle">
@@ -529,7 +543,7 @@
 									serpentisle
 									</configtag>
 									<configtag name="path">
-									./serpentisle
+									./serpent
 									</configtag>
 								</configtag>
 							</configtag>
@@ -537,11 +551,11 @@
 					</configtag>
 				</configdesc>
 				<para>
-				    You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path
+				    You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path
 				    to point to the correct directory.
 				</para>
 				<para>
-					<em>Note:</em> Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\).
+					<em>Note:</em> Better don't use spaces in the path (e.g. c:\exult\the black gate\).
 					Some people seem to have problems with that.
 				</para>
 				<para>
@@ -587,16 +601,16 @@
 									blackgate
 									</configtag>
 									<configtag name="path">
-									./blackgate
+									./ultima7
 									</configtag>
 									<configtag name="savegame_path">
-									./blackgate
+									./ultima7
 									</configtag>
 									<configtag name="static_path">
-									./blackgate/static
+									./ultima7/static
 									</configtag>
 									<configtag name="gamedat_path">
-									./blackgate/gamedat
+									./ultima7/gamedat
 									</configtag>
 								</configtag>
 							</configtag>
@@ -1505,6 +1519,213 @@
 					<extref target="http://exult.sf.net/forum/"/> or
 					email me (see <ref target="author_zaurus"/>).
 				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Installing the original Ultima VII games for use with Exult">
+		<sub name="win32_floppy">
+			<header>Installing the floppy disks of BG/SI on Windows</header>
+			<body>
+				<para>
+					Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive 
+					(<strong>a:\</strong>). 
+					Doubleclick on install.exe, choose the drive you want to install to, and then in which 
+					folder you want BG/SI to be installed to (Let's assume <strong>C:\Exult\ULTIMA7</strong> 
+					for BG and <strong>C:\Exult\SERPENT</strong> for SI).<br/> 
+					Next you choose the sound card, but as this is not relevant for <Exult/>, choose "No sound 
+					card". Confirm the settings with "Y" and the installer begins to make noise in your 
+					floppy drive...<br/>
+					When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the
+					installation is done, the installer will complain, that "something has put your system 
+					in protected mode...", ignore that and press any key to continue. Again it will complain 
+					that "your current system configuration is not compatible with Ultima VII!...", ignore 
+					that as well and press "N" (you don't need a bootdisk for playing U7 with <Exult/>). Finally 
+					hit any key to finish your installation. The installer will finish and the game can be 
+					found at <strong>C:\Exult\ULTIMA7</strong> or <strong>C:\Exult\SERPENT</strong>.
+				</para>
+				<para>
+					When installing Ultima VII from floppy disks in Windows you can run into some problems.<br/>
+					The installer assumes that all drives in the computer are hard drives and can't cope with
+					drives like CD-Roms and card readers. It tries to read how much free space the drives have 
+					and if there is no media in the drive it gives an error and you can't proceed.<br/>
+					To solve this you have to insert a CD-Rom in your CD/DVD-Rom drive. If you have a multi card 
+					reader disconnect that if possible (or insert cards in all the slots if you have them). If 
+					disconnecting the reader is not possible you have to use one of the other ways to install the
+					floppy versions or use a different computer.
+				</para>
+				<para>
+					Unfortunately it is possible that one of the floppies is no longer working. In that case the
+					installation will fail and the installer might suggest that there is a device error and asks 
+					you to reboot your computer. Don't follow that advice a reboot is not likely to fix it.
+				</para> 
+			</body>
+		</sub>
+		<sub name="win32_addons">
+			<header>Installing the floppy disks of the Add-Ons FoV/SS on Windows</header>
+			<body>
+				<para>
+					Insert the add-on floppy disk in your floppy drive, open explorer and click on the floppy 
+					drive (<strong>a:\</strong>). Doubleclick on install.exe, and then you first have to choose 
+					the drive where you installed the game (BG/SI) to. Default is <strong>C:\</strong>, the 
+					installer will then search in which folder BG/SI has been installed to. This is unfortunately 
+					not working on every computer, for some unknown reason the installer might crash at this point.<br/>
+					If it doesn't crash the installer will write where it found BG/SI installed to and will ask 
+					whether you want to proceed with the installation. Hit "Y" and the installation will begin, 
+					at the end press any key to finish the installation and to close the installer.
+				</para>
+				<para>
+					When installing the add-ons you might run into the same problems as when installing the full
+					games (see above <ref target="win32_floppy"/>).
+				</para>
+			</body>
+		</sub>
+		<sub name="dosbox_floppy">
+			<header>Installing the floppy disks of BG/SI using DosBox</header>
+			<body>
+				<para>
+					<extref target="http://DosBox.sf.net">DosBox</extref> is a program that emulates the old Dos
+					and should run on any operating system that <Exult/> runs on (and more). So this is perfect 
+					for users that don't run Windows.
+				</para>
+				<para>
+					To install Ultima VII with DosBox, download and install DosBox from 
+					<extref target="http://DosBox.sf.net"/>.Make a new folder in your <strong>C:\</strong> drive 
+					called <strong>Exult</strong>.<br/>
+					Insert Disk 1 in your floppy drive, start DosBox and type the following:<br/>
+					<kbd>mount c C:\Exult</kbd><br/>
+					<kbd>mount a a:\ -t floppy</kbd><br/>
+					<kbd>a:</kbd><br/>
+					<kbd>install</kbd><br/>
+				</para>
+				<para>
+					The installer will start and ask you on which drive to install Ultima VII to. Choose c and 
+					when it asks for the target directory choose <strong>C:\ULTIMA7</strong> for BG or 
+					<strong>C:\SERPENT</strong> for SI (in both cases you can just hit enter). Next you choose 
+					the sound card, but as this is not relevant for <Exult/>, choose "No sound card". Confirm the 
+					settings with "Y" and the installer begins to make noise in your floppy drive...<br/>
+					When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the
+					installation is done, the installer will complain, that "something has put your system 
+					in protected mode...", ignore that and press any key to continue. Again it will complain 
+					that "your current system configuration is not compatible with Ultima VII!...", ignore 
+					that as well and press "N" (you don't need a bootdisk for playing U7 with <Exult/>). Finally 
+					hit any key to finish your installation. Close DosBox. The game can now be found at 
+					<strong>C:\Exult\ULTIMA7</strong> or <strong>C:\Exult\SERPENT</strong>.
+				</para>
+			</body>
+		</sub>
+		<sub name="dosbox_addons">
+			<header>Installing the floppy disks of the Add-Ons FoV/SS using DosBox</header>
+			<body>
+				<para>
+					We assume you followed the above guide on how to <ref1 target="DosBox_floppy"/>, so you 
+					should have BG/SI installed to <strong>C:\Exult\ULTIMA7</strong> or 
+					<strong>C:\Exult\SERPENT</strong>.
+				</para>
+				<para>
+					Insert the add-on floppy disk in your floppy drive, start DosBox and type the following:<br/>
+					<kbd>mount c C:\Exult</kbd><br/>
+					<kbd>mount a a:\ -t floppy</kbd><br/>
+					<kbd>a:</kbd><br/>
+					<kbd>install</kbd><br/>
+				</para>
+				<para>
+					Now you have to choose the drive where you installed the game to. Choose C and the installer 
+					will find the correct directory of BG/SI and will ask for your confirmation to proceed with 
+					the installation. Hit "Y" and the installation will begin, at the end press any key to finish
+					the installation and to close the installer. Close DosBox.<br/>
+					FoV is then installed in <strong>C:\Exult\ULTIMA7</strong>. SS is then installed in 
+					<strong>C:\Exult\SERPENT</strong>.
+				</para>
+				<para>
+					Unfortunately you might run into a DosBox when installing the add-ons in DosBox. You might 
+					have to rename the file <strong>C:\Exult\ULTIMA7\static\usecode.new</strong> to just
+					<strong>C:\Exult\ULTIMA7\static\usecode</strong> (or 
+					<strong>C:\Exult\SERPENT\static\usecode.new</strong> to just 
+					<strong>C:\Exult\SERPENT\static\usecode</strong>)
+				</para>
+			</body>
+		</sub>
+		<sub name="bg_manual">
+			<header>Manual installation of the BG floppy disks</header>
+			<body>
+				<para>
+					If for some reason you can't use the above guides to install BG, there is also a way to 
+					install BG without using the installer.
+				</para>
+				<para>
+					Copy all the files of your floppy files in one folder (e.g. <strong>C:\Exult\BGfloppy</strong>). 
+					If you are using Windows open a command prompt (run -> cmd.exe) and change into this directory 
+					(enter <kbd>cd C:\Exult\BGfloppy</kbd>). There enter the following lines and press return after 
+					each line:<br/>
+					<kbd>copy /b u7disk00 +U7disk01 + u7disk02 u7disk00.zip</kbd><br/>
+					<kbd>copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip</kbd><br/>
+					<kbd>copy /b u7disk20 + u7disk21 u7disk20.zip</kbd><br/>
+				</para>
+				<para>
+					In that directory you can now find 3 zip files. You can use winzip/winrar/any unarchiver now 
+					to extract the files (keep folder structure in the settings) to <strong>C:\Exult\ULTIMA7</strong>. 
+					Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to <strong>C:\Exult\ULTIMA7</strong>.
+					Or enter the following lines on the command prompt:<br/>
+					<kbd>pkunzip -d -e u7disk00.zip C:\Exult\ULTIMA7</kbd><br/>
+					<kbd>pkunzip -d -e u7disk10.zip C:\Exult\ULTIMA7</kbd><br/>
+					<kbd>pkunzip -d -e u7disk20.zip C:\Exult\ULTIMA7</kbd><br/>
+					<kbd>copy *.exe C:\Exult\ULTIMA7</kbd><br/>
+					<kbd>copy install.prm C:\Exult\ULTIMA7</kbd><br/>
+					Installation is now finished and you can delete the folder <strong>C:\Exult\BGfloppy</strong>.
+				</para>
+			</body>
+		</sub>
+		<sub name="si_manual">
+			<header>Manual installation of the SI floppy disks</header>
+			<body>
+				<para>
+					If for some reason you can't use the above guides to install SI, there is also a way to 
+					install SI without using the installer.
+				</para>
+				<para>
+					Copy all the files of your floppy files in one folder (e.g. <strong>C:\Exult\SIfloppy</strong>). 
+					If you are using Windows open a command prompt (run -> cmd.exe) and change into this directory 
+					(enter <kbd>cd C:\Exult\SIfloppy</kbd>). There enter the following lines and press return after 
+					each line:<br/>
+					<kbd>copy sidisk00 sidisk00.zip</kbd><br/>
+					<kbd>copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip</kbd><br/>
+					<kbd>copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip</kbd><br/>
+					<kbd>copy /b sidisk30 + sidisk31 sidisk30.zip</kbd><br/>
+					<kbd>copy sidisk40 sidisk40.zip</kbd><br/>
+				</para>
+				<para>
+					In that directory you can now find 5 zip files. You can use winzip/winrar/any unarchiver now 
+					to extract the files (keep folder structure in the settings) to <strong>C:\Exult\SERPENT</strong>. 
+					Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to 
+					<strong>C:\Exult\SERPENT</strong>.<br/>
+					Or enter the following lines on the command prompt:<br/>
+					<kbd>pkunzip -d -e sidisk00.zip C:\Exult\SERPENT</kbd><br/>
+					<kbd>pkunzip -d -e sidisk10.zip C:\Exult\SERPENT</kbd><br/>
+					<kbd>pkunzip -d -e sidisk20.zip C:\Exult\SERPENT</kbd><br/>
+					<kbd>pkunzip -d -e sidisk30.zip C:\Exult\SERPENT</kbd><br/>
+					<kbd>pkunzip -d -e sidisk40.zip C:\Exult\SERPENT</kbd><br/>
+					<kbd>copy *.exe C:\Exult\SERPENT</kbd><br/>
+					<kbd>ccopy install.prm C:\Exult\SERPENT</kbd><br/>
+					Installation is now finished and you can delete the folder <strong>C:\Exult\SIfloppy</strong>.
+				</para>
+			</body>
+		</sub>
+		<sub name="cdrom_install">
+			<header>Installing the CD-ROM versions of Ultima VII</header>
+			<body>
+				<para>
+					There are a couple of CD-ROM versions of Ultima VII. These all come with the add-ons pre-installed
+					so with these you don't have to bother with installing the floppy disk version of the add-ons.
+					To our knowledge the following CD-ROM versions exist:
+				</para>
+				<ul>
+					<li><strong>Ultima Collection</strong><br/>
+					From the CD just copy the folders Serpent and Ultima7 to <strong>C:\Exult</strong>. Don't bother 
+					with the Ultima Collection installer.</li>
+					<li><strong>The Complete Ultima VII (EA presents CD-Rom Classics)</strong><br/>
+					On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to 
+					<strong>C:\Exult\SERPENT</strong> and unzip Ultima7.zip to <strong>C:\Exult\ULTIMA7</strong>.</li>
+				</ul>
 			</body>
 		</sub>
 	</section>
