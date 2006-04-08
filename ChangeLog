@@ -1,3 +1,9 @@
+2006-04-07    <jeff@mini.nerble.net>
+
+	* combat.cc: Support 'summon' by certain monsters (mages,
+	liches).  Also added teleport, summon, and can-be-invisible flag
+	support to ExultStudio and to savegames.
+
 2006-04-08 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
 	* docs/ReadMe.html,FAQ.html: updated documentation and FAQ

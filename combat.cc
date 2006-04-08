@@ -130,15 +130,17 @@ void Combat_schedule::monster_died
 	}
 
 /*
- *	Can a given shape teleport?
+ *	Can a given shape teleport? summon?  turn invisible?
  */
 
-inline bool Can_teleport
+static bool Can_teleport
 	(
 	Actor *npc
 	)
 	{
-	switch (npc->get_shapenum())
+	Monster_info *minfo;
+	int shnum = npc->get_shapenum();
+	switch (shnum)
 		{
 	case 534:			// Wisp.
 	case 154:
@@ -148,7 +150,53 @@ inline bool Can_teleport
 	case 519:			// Liche.
 		return true;
 	default:
-		return false;
+		minfo = ShapeID::get_info(shnum).get_monster_info();
+		return minfo ? minfo->can_teleport() : false;
+		}
+	}
+
+static bool Can_summon
+	(
+	Actor *npc
+	)
+	{
+	Monster_info *minfo;
+	int shnum = npc->get_shapenum();
+	switch (shnum)
+		{
+	case 154:
+	case 445:
+	case 446:			// Mages.
+	case 354:
+	case 519:			// Liche.
+		return true;
+	default:
+		minfo = ShapeID::get_info(shnum).get_monster_info();
+		return minfo ? minfo->can_summon() : false;
+		}
+	}
+
+static bool Can_be_invisible
+	(
+	Actor *npc
+	)
+	{
+	Monster_info *minfo;
+	int shnum = npc->get_shapenum();
+	switch (shnum)
+		{
+	case 504:			// Dragon.
+	case 299:
+	case 317:			// Ghosts.
+	case 154:
+	case 445:
+	case 446:			// Mages.
+	case 354:
+	case 519:			// Liche.
+		return true;
+	default:
+		minfo = ShapeID::get_info(shnum).get_monster_info();
+		return minfo ? minfo->can_be_invisible() : false;
 		}
 	}
 
@@ -174,7 +222,7 @@ bool Combat_schedule::teleport
 	if (dest.tx == -1)
 		return false;		// No spot found.
 	Tile_coord src = npc->get_tile();
-	if (dest.distance(src) > 6 && rand()%5 != 0)
+	if (dest.distance(src) > 7 && rand()%2 != 0)
 		return false;		// Got to give Avatar a chance to
 					//   get away.
 					// Create fire-field where he was.
@@ -183,10 +231,29 @@ bool Combat_schedule::teleport
 	if (src.tz < 0)
 		src.tz = 0;
 	eman->add_effect(new Fire_field_effect(src));
+	int sfx = Audio::game_sfx(43);
+	Audio::get_ptr()->play_sound_effect(sfx);	// The weird noise.
 	npc->move(dest.tx, dest.ty, dest.tz);
 					// Show the stars.
 	eman->add_effect(new Sprites_effect(7, npc, 0, 0, 0, 0));
 	return true;
+	}
+
+/*
+ *	Some monsters can do the "summon" spell.
+ */
+
+void Combat_schedule::summon
+	(
+	)
+	{
+	unsigned int curtime = SDL_GetTicks();
+	if (curtime < summon_time)
+		return;
+	// Not again for 30-40 seconds.
+	summon_time = curtime + 30000 + rand()%10000;
+	ucmachine->call_usecode(0x685,
+			    npc, Usecode_machine::double_click);
 	}
 
 /*
@@ -457,7 +524,7 @@ void Combat_schedule::approach_foe
 		run_away();
 		return;
 		}
-	if (Can_teleport(npc) && rand()%4 == 0 &&	// Try 1/4 to teleport.
+	if (rand()%4 == 0 && Can_teleport(npc) &&	// Try 1/4 to teleport.
 	    teleport())
 		{
 		start_battle();
@@ -527,13 +594,20 @@ void Combat_schedule::approach_foe
 				npc->say(first_to_battle, last_to_battle);
 			}
 		}
+	int extra_delay = 0;
+	if (rand()%5 == 0 && Can_summon(npc))
+		{
+		summon();
+		extra_delay = 5000;
+		}
 					// Walk there, & check half-way.
 	npc->set_action(new Approach_actor_action(path, opponent,
 							for_projectile));
 					// Start walking.  Delay a bit if
 					//   opponent is off-screen.
-	npc->start(gwin->get_std_delay(), Off_screen(gwin, opponent) ? 
-		5*gwin->get_std_delay() : gwin->get_std_delay());
+	npc->start(gwin->get_std_delay(), extra_delay +
+		(Off_screen(gwin, opponent) ? 
+			5*gwin->get_std_delay() : gwin->get_std_delay()));
 	}
 
 /*
@@ -942,6 +1016,7 @@ Combat_schedule::Combat_schedule
 		practice_target(0), is_thrown(false), yelled(0),
 		no_blocking(false), uses_charges(false),
 		started_battle(false), fleed(0), failures(0), teleport_time(0),
+		summon_time(0),
 		dex_points(0), alignment(n->get_effective_alignment())
 	{
 	Combat_schedule::set_weapon();
@@ -949,6 +1024,7 @@ Combat_schedule::Combat_schedule
 	Game_window *gwin = Game_window::get_instance();
 	Monster_info *minf = npc->get_info().get_monster_info();
 	can_yell = !minf || !minf->cant_yell();
+	summon_time = SDL_GetTicks() + 4000;
 	}
 
 

@@ -68,11 +68,14 @@ protected:
 	bool can_yell;
 	int failures;			// # failures to find opponent.
 	unsigned int teleport_time;	// Next time we can teleport.
+	unsigned int summon_time;
 	unsigned int dex_points;	// Need these to attack.
 	int alignment;			// So we can tell if it changed.
 
 	void start_battle();		// Play music at start of battle.
 	bool teleport();		// For monsters that can.
+	void summon();
+	void be_invisible();
 	virtual void find_opponents();
 					// Find attacker of protected member.
 	std::list<Actor*>::iterator find_protected_attacker();
