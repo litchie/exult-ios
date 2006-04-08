@@ -141,8 +141,10 @@ inline bool Can_teleport
 	switch (npc->get_shapenum())
 		{
 	case 534:			// Wisp.
+	case 154:
 	case 445:
 	case 446:			// Mages.
+	case 354:
 	case 519:			// Liche.
 		return true;
 	default:

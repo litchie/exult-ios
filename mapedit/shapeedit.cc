@@ -854,6 +854,10 @@ void ExultStudio::init_shape_notebook
 		set_toggle("shinfo_monster_cant_bleed", minfo->cant_bleed());
 		set_toggle("shinfo_monster_poison_safe",
 						minfo->poison_safe());
+		set_toggle("shinfo_monster_teleports", minfo->can_teleport());
+		set_toggle("shinfo_monster_summons", minfo->can_summon());
+		set_toggle("shinfo_monster_be_invisible", 
+						minfo->can_be_invisible());
 		static char *flags[] = {"shinfo_monster_flag0",
 					"shinfo_monster_flag1",
 					"shinfo_monster_flag2",
@@ -1042,6 +1046,12 @@ void ExultStudio::save_shape_notebook
 		minfo->set_cant_bleed(get_toggle("shinfo_monster_cant_bleed"));
 		minfo->set_poison_safe(
 				get_toggle("shinfo_monster_poison_safe"));
+		minfo->set_can_teleport(
+				get_toggle("shinfo_monster_teleports"));
+		minfo->set_can_summon(
+				get_toggle("shinfo_monster_summons"));
+		minfo->set_can_be_invisible(
+				get_toggle("shinfo_monster_be_invisible"));
 		static char *flags[] = {"shinfo_monster_flag0",
 					"shinfo_monster_flag1",
 					"shinfo_monster_flag2",
