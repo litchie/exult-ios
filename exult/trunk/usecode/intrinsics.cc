@@ -1137,8 +1137,12 @@ USECODE_INTRINSIC(summon)
 				Map_chunk::inside : Map_chunk::outside);
 	if (dest.tx == -1)
 		return Usecode_value(0);
+	Actor *npc = as_actor(caller_item);
+	int align = Actor::friendly;
+	if (npc && !npc->is_in_party())
+		align = npc->get_alignment();
 	Monster_actor *monst = Monster_actor::create(shapenum, dest,
-					Schedule::combat, Actor::friendly);
+					Schedule::combat, align);
 	return Usecode_value(monst);
 }
 
