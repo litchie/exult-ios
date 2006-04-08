@@ -316,6 +316,9 @@ void Monster_info::write
 		 (m_cant_bleed ? (1<<6) : 0);
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = equip_offset;
+	*ptr++ = (m_can_teleport ? (1<<0) : 0) |
+		 (m_can_summon ? (1<<1) : 0) |
+		 (m_can_be_invisible ? (1<<2) : 0);
 	out.write((char *) buf, sizeof(buf));
 	}
 
