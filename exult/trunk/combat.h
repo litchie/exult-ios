@@ -74,7 +74,7 @@ protected:
 
 	void start_battle();		// Play music at start of battle.
 	bool teleport();		// For monsters that can.
-	void summon();
+	bool summon();
 	void be_invisible();
 	virtual void find_opponents();
 					// Find attacker of protected member.
