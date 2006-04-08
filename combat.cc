@@ -243,17 +243,18 @@ bool Combat_schedule::teleport
  *	Some monsters can do the "summon" spell.
  */
 
-void Combat_schedule::summon
+bool Combat_schedule::summon
 	(
 	)
 	{
 	unsigned int curtime = SDL_GetTicks();
 	if (curtime < summon_time)
-		return;
+		return false;
 	// Not again for 30-40 seconds.
 	summon_time = curtime + 30000 + rand()%10000;
 	ucmachine->call_usecode(0x685,
 			    npc, Usecode_machine::double_click);
+	return true;
 	}
 
 /*
@@ -595,11 +596,8 @@ void Combat_schedule::approach_foe
 			}
 		}
 	int extra_delay = 0;
-	if (rand()%5 == 0 && Can_summon(npc))
-		{
-		summon();
+	if (rand()%5 == 0 && Can_summon(npc) && summon())
 		extra_delay = 5000;
-		}
 					// Walk there, & check half-way.
 	npc->set_action(new Approach_actor_action(path, opponent,
 							for_projectile));
