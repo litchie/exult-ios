@@ -77,6 +77,9 @@ int Monster_info::read
 	ptr++;
 	ptr++;				// Unknown.
 	equip_offset = *ptr++;		// Byte 13.
+	m_can_teleport = (*ptr & 1) != 0;	// Exult's extra flags.
+	m_can_summon = (*ptr & 2) != 0;
+	m_can_be_invisible = (*ptr & 4) != 0;
 	return shapenum;
 	}
 

@@ -103,6 +103,10 @@ class Monster_info
 	bool m_cant_yell;		// Can't yell during combat.
 	bool m_cant_bleed;
 	bool m_poison_safe;		// Can't be poisoned.
+
+	bool m_can_teleport;
+	bool m_can_summon;
+	bool m_can_be_invisible;
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
@@ -138,6 +142,18 @@ public:
 		{ return m_poison_safe; }
 	void set_poison_safe(bool tf)
 		{ m_poison_safe = tf; }
+	bool can_teleport() const
+		{ return m_can_teleport; }
+	void set_can_teleport(bool tf)
+		{ m_can_teleport = tf; }
+	bool can_summon() const
+		{ return m_can_summon; }
+	void set_can_summon(bool tf)
+		{ m_can_summon = tf; }
+	bool can_be_invisible() const
+		{ return m_can_be_invisible; }
+	void set_can_be_invisible(bool tf)
+		{ m_can_be_invisible = tf; }
 					// Get bits indicating
 					//   Weapon_info::damage_type:
 	unsigned char get_vulnerable() const
