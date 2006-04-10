@@ -258,6 +258,25 @@ bool Combat_schedule::summon
 	}
 
 /*
+ *	Some can turn invisible.
+ */
+
+bool Combat_schedule::be_invisible
+	(
+	)
+	{
+	unsigned int curtime = SDL_GetTicks();
+	if (curtime < invisible_time)
+		return false;
+	// Not again for 40-60 seconds.
+	invisible_time = curtime + 40000 + rand()%20000;
+	if (npc->get_flag(Obj_flags::invisible))
+		return false;	// Also don't to it again for a while.
+	npc->set_flag(Obj_flags::invisible);
+	return true;
+	}
+
+/*
  *	Off-screen?
  */
 
@@ -293,7 +312,8 @@ void Combat_schedule::find_opponents
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
-		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
+		if (actor->is_dead() || 
+		    (actor->get_flag(Obj_flags::invisible) && rand()%10))
 			continue;	// Dead or invisible.
 		if (npc_align == Npc_actor::friendly &&
 		    actor->get_effective_alignment() >= Npc_actor::hostile)
@@ -598,6 +618,8 @@ void Combat_schedule::approach_foe
 	int extra_delay = 0;
 	if (rand()%5 == 0 && Can_summon(npc) && summon())
 		extra_delay = 5000;
+	else if (rand()%10 == 0 && Can_be_invisible(npc))
+		(void) be_invisible();
 					// Walk there, & check half-way.
 	npc->set_action(new Approach_actor_action(path, opponent,
 							for_projectile));
@@ -957,7 +979,7 @@ inline int Need_new_opponent
 	if (!opponent || 
 	    ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
 					// Or invisible?
-	    opponent->get_flag(Obj_flags::invisible))
+	    (opponent->get_flag(Obj_flags::invisible) && rand()%4 == 0))
 		return 1;
 					// See if off screen.
 	return Off_screen(gwin, opponent) && !Off_screen(gwin, npc);
@@ -1022,7 +1044,9 @@ Combat_schedule::Combat_schedule
 	Game_window *gwin = Game_window::get_instance();
 	Monster_info *minf = npc->get_info().get_monster_info();
 	can_yell = !minf || !minf->cant_yell();
-	summon_time = SDL_GetTicks() + 4000;
+	unsigned int curtime = SDL_GetTicks();
+	summon_time = curtime + 4000;
+	invisible_time = curtime + 4500;
 	}
 
 
