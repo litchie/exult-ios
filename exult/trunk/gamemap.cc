@@ -1341,6 +1341,23 @@ void Game_map::get_superchunk_objects
 	}
 
 /*
+ *	Just see if a tile is occupied by something.
+ */
+
+bool Game_map::is_tile_occupied
+	(
+	Tile_coord tile
+	)
+	{
+	Map_chunk *chunk = get_chunk_safely(
+			tile.tx/c_tiles_per_chunk, tile.ty/c_tiles_per_chunk);
+	if (!chunk)			// Outside the world?
+		return 0;		// Then it's not blocked.
+	return chunk->is_tile_occupied(tile.tx%c_tiles_per_chunk,
+				tile.ty%c_tiles_per_chunk, tile.tz);
+	}
+
+/*
  *	Locate a chunk with a given terrain # and center the view on it.
  *
  *	Output:	true if found, else 0.
