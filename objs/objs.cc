@@ -749,8 +749,8 @@ int Game_object::is_closed_door
 		after = doortile + Tile_coord(0, 1, 0);
 		}
 					// Should be blocked before/after.
-	return (Map_chunk::is_blocked(before) &&
-	    	Map_chunk::is_blocked(after));
+	return (gmap->is_tile_occupied(before) &&
+	    	gmap->is_tile_occupied(after));
 	}
 
 /*

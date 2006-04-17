@@ -452,6 +452,8 @@ int Fast_pathfinder_client::is_straight_path
 	Tile_coord to			// To this spot.
 	)
 	{
+	Game_map *gmap = Game_window::get_instance()->get_map();
+
 	to.tz = from.tz;		// ++++++For now.
 	Zombie path;
 	if (!path.NewPath(from, to, 0))	// Should always succeed.
@@ -459,7 +461,7 @@ int Fast_pathfinder_client::is_straight_path
 	Tile_coord t;			// Check each tile.
 	bool done;
 	while (path.GetNextStep(t, done))
-		if (t != from && t != to && Map_chunk::is_blocked(t))
+		if (t != from && t != to && gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.
 	}
