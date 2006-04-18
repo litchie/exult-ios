@@ -454,7 +454,6 @@ int Fast_pathfinder_client::is_straight_path
 	{
 	Game_map *gmap = Game_window::get_instance()->get_map();
 
-	to.tz = from.tz;		// ++++++For now.
 	Zombie path;
 	if (!path.NewPath(from, to, 0))	// Should always succeed.
 		return 0;
@@ -479,6 +478,9 @@ int Fast_pathfinder_client::is_straight_path
 		  totiles = to->get_footprint();
 	Tile_coord pos1 = from->get_tile();
 	Tile_coord pos2 = to->get_tile();
+				// Use top tile.
+	pos1.tz += from->get_info().get_3d_height() - 1;
+	pos2.tz += to->get_info().get_3d_height() - 1;
 	if (pos2.tx < pos1.tx)	// Going left?
 		pos1.tx = fromtiles.x;
 	else			// Right?
