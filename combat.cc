@@ -719,9 +719,7 @@ void Combat_schedule::start_strike
 	if (strike_range && dz < 5 &&	// Same floor?
 		stiles.enlarge(strike_range).intersects(opptiles))
 		state = strike;
-	else if (dz >= 5 ||		// FOR NOW, since is_straight_path()
-					//   doesn't check z-coord.
-		 !projectile_range ||
+	else if (!projectile_range ||
 					// Enlarge to projectile range.
 		 !ptiles.enlarge(projectile_range).intersects(opptiles))
 		{
