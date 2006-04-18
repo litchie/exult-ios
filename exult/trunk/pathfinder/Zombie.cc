@@ -24,6 +24,29 @@
 #include "Zombie.h"
 
 /*
+ *	Figure 'dir' (1 or -1) and abs. value of 'delta'.
+ */
+inline void Figure_dir
+	(
+	long delta,
+	unsigned int& abs_delta,
+	int& dir
+	)
+	{
+	if (delta >= 0)
+		{
+		dir = 1;
+		abs_delta = delta;
+		}
+	else
+		{
+		dir = -1;
+		abs_delta = -delta;
+		}
+	}
+
+
+/*
  *	Find path from source to destination.
  *
  *	Output:	1 if successful, else 0.
@@ -33,53 +56,57 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 	src = s;			// Store start, destination.
 	dest = d;
 	cur = s;			// Get current coords.
-	sum = 0;			// Clear accumulator.
+	sum1 = sum2 = 0;		// Clear accumulators.
 	long deltax = Tile_coord::delta(cur.tx, dest.tx);
 	long deltay = Tile_coord::delta(cur.ty, dest.ty);
-	if (!deltax && !deltay)		// Going nowhere?
+	long deltaz = Tile_coord::delta(cur.tz, dest.tz);
+	if (!deltax && !deltay && !deltaz)	// Going nowhere?
 		{
 		major_distance = 0;
 		return (0);
 		}		
-	unsigned int abs_deltax, abs_deltay;
-	int x_dir, y_dir;
-	if (deltay >= 0)		// Figure directions.
+	unsigned int abs_deltax, abs_deltay, abs_deltaz;
+	int x_dir, y_dir, z_dir;	// Figure directions.
+	Figure_dir(deltax, abs_deltax, x_dir);
+	Figure_dir(deltay, abs_deltay, y_dir);
+	Figure_dir(deltaz, abs_deltaz, z_dir);
+	if (abs_deltaz >= abs_deltax &&	// Moving fastest along z?
+	    abs_deltaz >= abs_deltay)
 		{
-		y_dir = 1;
-		abs_deltay = deltay;
+		major_coord = &cur.tz;
+		minor_coord1 = &cur.tx;
+		minor_coord2 = &cur.ty;
+		major_dir = z_dir;
+		minor_dir1 = x_dir;
+		minor_dir2 = y_dir;
+		major_delta = abs_deltay;
+		minor_delta1 = abs_deltax;
+		minor_delta2 = abs_deltay;
 		}
-	else
-		{
-		y_dir = -1;
-		abs_deltay = -deltay;
-		}
-	if (deltax >= 0)
-		{
-		x_dir = 1;
-		abs_deltax = deltax;
-		}
-	else
-		{
-		x_dir = -1;
-		abs_deltax = -deltax;
-		}
-	if (abs_deltay >= abs_deltax)	// Moving faster along y?
+	else if (abs_deltay >= abs_deltax &&	// Moving fastest along y?
+	    	 abs_deltay >= abs_deltaz)
 		{
 		major_coord = &cur.ty;
-		minor_coord = &cur.tx;
+		minor_coord1 = &cur.tx;
+		minor_coord2 = &cur.tz;
 		major_dir = y_dir;
-		minor_dir = x_dir;
+		minor_dir1 = x_dir;
+		minor_dir2 = z_dir;
 		major_delta = abs_deltay;
-		minor_delta = abs_deltax;
+		minor_delta1 = abs_deltax;
+		minor_delta2 = abs_deltaz;
 		}
-	else				// Moving faster along x?
+	else				// Moving fastest along x?
 		{
 		major_coord = &cur.tx;
-		minor_coord = &cur.ty;
+		minor_coord1 = &cur.ty;
+		minor_coord2 = &cur.tz;
 		major_dir = x_dir;
-		minor_dir = y_dir;
+		minor_dir1 = y_dir;
+		minor_dir2 = z_dir;
 		major_delta = abs_deltax;
-		minor_delta = abs_deltay;
+		minor_delta1 = abs_deltay;
+		minor_delta2 = abs_deltaz;
 		}
 	major_distance = major_delta;	// How far to go.
 	return (1);
@@ -100,18 +127,22 @@ int Zombie::GetNextStep(Tile_coord& n, bool& done)
 					// Subtract from distance to go.
 	major_distance -= major_frame_incr;
 					// Accumulate change.
-	sum += major_frame_incr * minor_delta;
-					// Figure change in slower axis.
-	int minor_frame_incr = sum/major_delta;
-	sum = sum % major_delta;	// Remove what we used.
+	sum1 += major_frame_incr * minor_delta1;
+	sum2 += major_frame_incr * minor_delta2;
+					// Figure change in slower axes.
+	int minor_frame_incr1 = sum1/major_delta;
+	int minor_frame_incr2 = sum2/major_delta;
+	sum1 = sum1 % major_delta;	// Remove what we used.
+	sum2 = sum2 % major_delta;	// Remove what we used.
 					// Update coords. within world.
 	*major_coord += major_dir*major_frame_incr;
-	*minor_coord += minor_dir*minor_frame_incr;
+	*minor_coord1 += minor_dir1*minor_frame_incr1;
+	*minor_coord2 += minor_dir2*minor_frame_incr2;
 					// Watch for wrapping.
 	*major_coord = (*major_coord + c_num_tiles)%c_num_tiles;
-	*minor_coord = (*minor_coord + c_num_tiles)%c_num_tiles;
+	*minor_coord1 = (*minor_coord1 + c_num_tiles)%c_num_tiles;
+	*minor_coord2 = (*minor_coord2 + c_num_tiles)%c_num_tiles;
 	n = cur;			// Return new tile.
-					// ++++++For now, ignore tz.
 	done = (major_distance <= 0);	// Indicate if this is the last one.
 	return (1);
 }

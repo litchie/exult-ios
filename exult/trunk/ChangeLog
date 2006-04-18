@@ -1,3 +1,9 @@
+2006-04-18    <jeff@mini.nerble.net>
+
+	* pathfinder/Zombie.cc: Straight-line pathfinder now works in
+	3-dimensions, and combat projectile code allows shooting things at
+	any height.
+
 2006-04-07    <jeff@mini.nerble.net>
 
 	* combat.cc: Support 'summon' by certain monsters (mages,

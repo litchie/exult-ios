@@ -29,14 +29,16 @@ class	Zombie: public virtual PathFinder
 	int major_frame_incr;		// # steps to take in faster dir.
 	Tile_coord cur;			// Current pos. within world.
 					// ->'s to cur.tx, cur.ty.
-	short *major_coord, *minor_coord;
-	int major_dir, minor_dir;	// 1 or -1 for dir. along each axis.
-	int major_delta, minor_delta;	// For each tile we move along major
+	short *major_coord, *minor_coord1, *minor_coord2;
+					// 1 or -1 for dir. along each axis.
+	int major_dir, minor_dir1, minor_dir2;
+	int major_delta, minor_delta1, minor_delta2;	
+					// For each tile we move along major
 					//   axis, we add 'minor_delta'.  When
 					//   the sum >= 'major_delta', we move
 					//   1 tile along minor axis, and
 					//   subtract 'major_delta' from sum.
-	int sum;			// Sum of 'minor_delta''s.
+	int sum1, sum2;			// Sum of 'minor_delta''s.
 public:
 	Zombie(int major_incr = 1) : major_distance(0), 
 					major_frame_incr(major_incr)
