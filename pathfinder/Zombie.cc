@@ -79,7 +79,7 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 		major_dir = z_dir;
 		minor_dir1 = x_dir;
 		minor_dir2 = y_dir;
-		major_delta = abs_deltay;
+		major_delta = abs_deltaz;
 		minor_delta1 = abs_deltax;
 		minor_delta2 = abs_deltay;
 		}
