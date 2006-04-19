@@ -597,7 +597,12 @@ Projectile_effect::Projectile_effect
 	    sprite(shnum, 0), weapon(weap), skip_render(no_render),
 	    return_path(false)
 	{
-	init(attacker->get_tile(), to->get_tile());
+	Tile_coord pos1 = att->get_tile();
+	Tile_coord pos2 = to->get_tile();
+				// Use top tile.
+	pos1.tz += att->get_info().get_3d_height() - 1;
+	pos2.tz += to->get_info().get_3d_height() - 1;
+	init(pos1, pos2);
 	}
 
 /*
