@@ -85,7 +85,7 @@ void Body_lookup::setup
 		body_shape_table.resize(cnt);
 		for ( ; i < cnt; ++i)
 			{
-			char *ptr = bodies_strings[i], *eptr;
+			char *ptr = shapes_strings[i], *eptr;
 			if (!ptr)
 				continue;
 			body_shape_table[i] = strtol(ptr, &eptr, 0);
