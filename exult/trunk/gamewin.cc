@@ -2552,7 +2552,7 @@ void Game_window::call_guards
 	)
 	{
 	Actor *closest;
-	if (armageddon)
+	if (armageddon || in_dungeon)
 		return;
 	if (witness || (witness = find_witness(closest)) != 0)
 		witness->say(first_call_guards, last_call_guards);
