@@ -107,7 +107,7 @@ void Paperdoll_gump::Setup_paperdolls()
 			}
 		}
 	for (i = 0; i < cnt; ++i)
-		delete char_strings[i];
+		delete[] char_strings[i];
 
 	cnt = item_strings.size();
 	if (j >= 0)
@@ -137,7 +137,7 @@ void Paperdoll_gump::Setup_paperdolls()
 			}
 		}
 	for (j = 0; j < cnt; ++j)
-		delete item_strings[j];
+		delete[] item_strings[j];
 }
 
 Paperdoll_gump::Paperdoll_npc *Paperdoll_gump::GetCharacterInfo(int shape)
