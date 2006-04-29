@@ -92,7 +92,7 @@ void Body_lookup::setup
 			}
 		}
 	for (i = 0; i < cnt; ++i)
-		delete shapes_strings[i];
+		delete[] shapes_strings[i];
 	
 	cnt = bodies_strings.size();
 	if (j >= 0)
@@ -108,7 +108,7 @@ void Body_lookup::setup
 			}
 		}
 	for (j = 0; j < cnt; ++j)
-		delete bodies_strings[j];
+		delete[] bodies_strings[j];
 	}
 
 /*

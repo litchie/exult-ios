@@ -108,7 +108,7 @@ void Shapeinfo_lookup::setup
 			}
 		}
 	for (i = 0; i < cnt; ++i)
-		delete explosion_sprite_strings[i];
+		delete[] explosion_sprite_strings[i];
 	
 	shape_sfx_table = new std::map<int, int>;
 	cnt = shape_sfx_strings.size();
@@ -125,7 +125,7 @@ void Shapeinfo_lookup::setup
 			}
 		}
 	for (j = 0; j < cnt; ++j)
-		delete shape_sfx_strings[j];
+		delete[] shape_sfx_strings[j];
 
 	cnt = animation_cycle_strings.size();
 	if (k >= 0)
@@ -161,7 +161,7 @@ void Shapeinfo_lookup::setup
 			}
 		}
 	for (k = 0; k < cnt; ++k)
-		delete animation_cycle_strings[k];
+		delete[] animation_cycle_strings[k];
 
 	usecode_event_table = new std::map<int, bool>;
 	cnt = usecode_event_strings.size();
@@ -177,7 +177,7 @@ void Shapeinfo_lookup::setup
 			}
 		}
 	for (l = 0; l < cnt; ++l)
-		delete usecode_event_strings[l];
+		delete[] usecode_event_strings[l];
 
 	mountain_top_table = new std::map<int, bool>;
 	cnt = mountain_top_strings.size();
@@ -193,7 +193,7 @@ void Shapeinfo_lookup::setup
 			}
 		}
 	for (m = 0; m < cnt; ++m)
-		delete mountain_top_strings[m];
+		delete[] mountain_top_strings[m];
 	}
 
 /*
