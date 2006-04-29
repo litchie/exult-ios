@@ -1,3 +1,6 @@
+2006-04-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* various: fix delete/delete[] mixups
+
 2006-04-18    <jeff@mini.nerble.net>
 
 	* pathfinder/Zombie.cc: Straight-line pathfinder now works in
