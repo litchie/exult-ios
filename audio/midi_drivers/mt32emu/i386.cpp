@@ -56,10 +56,12 @@ static inline bool atti386_DetectSIMD() {
 
 	/* check cpuid */
 	__asm__ __volatile__(
+		"pushl  %%ebx            \n" \
 		"movl   $1, %%eax        \n" \
 		"cpuid                   \n" \
 		"movl   %%edx, %0        \n" \
-		: "=r"(result) : : "eax", "ebx", "ecx", "edx");
+		"popl   %%ebx            \n" \
+		: "=r"(result) : : "eax", "ecx", "edx");
 
 	if (result & (1 << 25))
 		return true;
@@ -75,10 +77,12 @@ static inline bool atti386_Detect3DNow() {
 
 	// get cpuid
 	__asm__ __volatile__(
+		"pushl  %%ebx            \n" \
 		"movl   $0x80000001, %%eax \n" \
 		"cpuid                     \n" \
 		"movl   %%edx, %0          \n" \
-		: "=r"(result) : : "eax", "ebx", "ecx", "edx");
+		"popl   %%ebx            \n" \
+		: "=r"(result) : : "eax", "ecx", "edx");
 
 	if (result & 0x80000000)
 		return true;
@@ -140,7 +144,11 @@ static inline float atti386_iir_filter_sse(float *output, float *hist1_ptr, floa
 		"popl %2                        \n" \
 		"popl %1                        \n" \
 		: : "r"(output), "r"(coef_ptr), "r"(hist1_ptr)
-		: "xmm1", "xmm2", "xmm3", "memory");
+		: "memory"
+#ifdef __SSE__
+		, "xmm1", "xmm2", "xmm3"
+#endif
+		);
 
 	return *output;
 }
@@ -151,8 +159,8 @@ static inline float atti386_iir_filter_3DNow(float output, float *hist1_ptr, flo
 	__asm__ __volatile__ (
 		"movq %0, %%mm1       \n" \
 		"                     \n" \
-		"movl  %1, %%ebx      \n" \
-		"movq 0(%%ebx), %%mm2 \n" \
+		"movl  %1, %%edi      \n" \
+		"movq 0(%%edi), %%mm2 \n" \
 		"                     \n" \
 		"movl %2, %%eax;      \n" \
 		"movq 0(%%eax), %%mm3 \n" \
@@ -165,8 +173,8 @@ static inline float atti386_iir_filter_3DNow(float output, float *hist1_ptr, flo
 		"                     \n" \
 		"movd %%mm1, %3       \n" \
 		"                     \n" \
-		"addl  $8, %%ebx      \n" \
-		"movq 0(%%ebx), %%mm2 \n" \
+		"addl  $8, %%edi      \n" \
+		"movq 0(%%edi), %%mm2 \n" \
 		"movq 0(%%eax), %%mm3 \n" \
 		"                     \n" \
 		"pfmul %%mm3, %%mm2   \n" \
@@ -180,10 +188,10 @@ static inline float atti386_iir_filter_3DNow(float output, float *hist1_ptr, flo
 		"                     \n" \
 		"movd %%mm3, 4(%%eax) \n" \
 		"                     \n" \
-		"addl $8, %%ebx       \n" \
+		"addl $8, %%edi       \n" \
 		"addl $8, %%eax       \n" \
 		"                     \n" \
-		"movq 0(%%ebx), %%mm2 \n" \
+		"movq 0(%%edi), %%mm2 \n" \
 		"movq 0(%%eax), %%mm3 \n" \
 		"                     \n" \
 		"pfmul %%mm3, %%mm2   \n" \
@@ -194,8 +202,8 @@ static inline float atti386_iir_filter_3DNow(float output, float *hist1_ptr, flo
 		"                     \n" \
 		"movd %%mm1, %3       \n" \
 		"                     \n" \
-		"addl $8, %%ebx       \n" \
-		"movq 0(%%ebx), %%mm2 \n" \
+		"addl $8, %%edi       \n" \
+		"movq 0(%%edi), %%mm2 \n" \
 		"movq 0(%%eax), %%mm3 \n" \
 		"                     \n" \
 		"pfmul %%mm3, %%mm2   \n" \
@@ -211,7 +219,11 @@ static inline float atti386_iir_filter_3DNow(float output, float *hist1_ptr, flo
 		"movd %%mm1, %0       \n" \
 		"femms                \n" \
 		: "=m"(output) : "g"(coef_ptr), "g"(hist1_ptr), "m"(tmp)
-		: "eax", "ebx", "mm1", "mm2", "mm3", "memory");
+		: "eax", "edi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2", "mm3"
+#endif
+		);
 
 	return output;
 }
@@ -243,7 +255,11 @@ static inline void atti386_produceOutput1(int tmplen, Bit16s myvolume, Bit16s *u
 		"jg   1b              \n" \
 		"emms                 \n" \
 		: : "g"(tmplen), "g"(myvolume), "g"(useBuf), "g"(snd)
-		: "eax", "ecx", "edi", "esi", "mm1", "mm2", "mm3", "memory");
+		: "eax", "ecx", "edi", "esi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2", "mm3"
+#endif
+		);
 }
 
 static inline void atti386_produceOutput2(Bit32u len, Bit16s *snd, float *sndbufl, float *sndbufr, float *multFactor) {
@@ -303,7 +319,11 @@ static inline void atti386_mixBuffers(Bit16s * buf1, Bit16s *buf2, int len) {
 		"jg   1b              \n" \
 		"emms                 \n" \
 		: : "g"(len), "g"(buf1), "g"(buf2)
-		: "ecx", "edi", "esi", "mm1", "mm2", "memory");
+		: "ecx", "edi", "esi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2"
+#endif
+		);
 }
 
 static inline void atti386_mixBuffersRingMix(Bit16s * buf1, Bit16s *buf2, int len) {
@@ -325,7 +345,11 @@ static inline void atti386_mixBuffersRingMix(Bit16s * buf1, Bit16s *buf2, int le
 		"jg   1b              \n" \
 		"emms                 \n" \
 		: : "g"(len), "g"(buf1), "g"(buf2)
-		: "ecx", "edi", "esi", "mm1", "mm2", "mm3", "memory");
+		: "ecx", "edi", "esi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2", "mm3"
+#endif
+		);
 }
 
 static inline void atti386_mixBuffersRing(Bit16s * buf1, Bit16s *buf2, int len) {
@@ -345,7 +369,11 @@ static inline void atti386_mixBuffersRing(Bit16s * buf1, Bit16s *buf2, int len) 
 		"jg   1b              \n" \
 		"emms                 \n" \
 		: : "g"(len), "g"(buf1), "g"(buf2)
-		: "ecx", "edi", "esi", "mm1", "mm2", "memory");
+		: "ecx", "edi", "esi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2"
+#endif
+		);
 }
 
 static inline void atti386_partialProductOutput(int quadlen, Bit16s leftvol, Bit16s rightvol, Bit16s *partialBuf, Bit16s *p1buf) {
@@ -360,6 +388,7 @@ static inline void atti386_partialProductOutput(int quadlen, Bit16s leftvol, Bit
 		"por  %%mm2, %%mm1    \n" \
 		"movl %3, %%edi       \n" \
 		"movl %4, %%esi       \n" \
+	    "pushl %%ebx          \n" \
 		"1:                   \n" \
 		"movw 0(%%esi), %%bx  \n" \
 		"addl $2, %%esi       \n" \
@@ -385,8 +414,13 @@ static inline void atti386_partialProductOutput(int quadlen, Bit16s leftvol, Bit
 		"cmpl $0, %%ecx       \n" \
 		"jg 1b                \n" \
 		"emms                 \n"  \
+	    "popl %%ebx           \n" \
 		: : "g"(quadlen), "g"(leftvol), "g"(rightvol), "g"(partialBuf), "g"(p1buf)
-		: "eax", "ebx", "ecx", "edx", "edi", "esi", "mm1", "mm2", "mm3", "memory");
+		: "eax", "ecx", "edx", "edi", "esi", "memory"
+#ifdef __MMX__
+		, "mm1", "mm2", "mm3"
+#endif
+		);
 }
 
 #endif
