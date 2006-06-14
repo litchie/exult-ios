@@ -1,3 +1,11 @@
+2006-06-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* intrinsics.cc: Fixed multimap issue when casting 'mark' on a virtue stone
+	  when the stone is not directly on the map.
+	* actors.cc, ready.h, objs/contain.cc, mapedit/shapeedit.cc and
+	  mapedit/exult_studio.glade: Added an 'usecode container' item type to BG.
+	  Also, in 'objs/contain.cc', changed the usecode container detection code
+	  to use the item type instead of shape number.
+
 2006-06-11 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* midi/audio_drivers/mt32emu/i386.cpp: sync with scummvm to make it
 	  compile with gcc 4
