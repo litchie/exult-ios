@@ -1612,7 +1612,7 @@ USECODE_INTRINSIC(mark_virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_target_pos(obj->get_outermost()->get_tile());
-		vs->set_target_map(obj->get_map_num());
+		vs->set_target_map(obj->get_outermost()->get_map_num());
 		}
 	return no_ret;
 }

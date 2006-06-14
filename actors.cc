@@ -1340,6 +1340,10 @@ void Actor::get_prefered_slots
 			case foot_armor:
 			prefered = feet;
 			break;
+			
+			case usecode_container_bg:
+			prefered = ucont_spot;
+			break;
 		}
 	}
 	else if (Game::get_game_type() == SERPENT_ISLE)	// Serpent Isle Types

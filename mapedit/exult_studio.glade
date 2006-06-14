@@ -9320,7 +9320,7 @@ Coordinates</property>
 			      <child>
 				<widget class="GtkMenuItem" id="usecode_container_si1">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Usecode container (SI)</property>
+				  <property name="label" translatable="yes">Usecode container</property>
 				  <property name="use_underline">True</property>
 				</widget>
 			      </child>

@@ -31,6 +31,7 @@ enum Ready_type {
 	neck_armor = 0x20,
 	torso_armor = 0x28,
 	ring = 0x30,
+	usecode_container_bg = 0x38,	// Porting from SI
 	ammunition = 0x40,
 	head_armor = 0x48,		// I.e., helm.
 	leg_armor = 0x50,		// I.e., leggings.
