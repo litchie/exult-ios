@@ -1,3 +1,7 @@
+2006-06-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug where 'stray' items on the ground would be picked up
+	  by the carpet even though they shouldn't.
+
 2006-06-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* intrinsics.cc: Fixed multimap issue when casting 'mark' on a virtue stone
 	  when the stone is not directly on the map.
