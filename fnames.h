@@ -132,6 +132,7 @@
 
 #define TEXTMSGS	"<STATIC>/textmsg.txt"
 #define PATCH_TEXTMSGS	"<PATCH>/textmsg.txt"
+#define PATCH_MINIMAPS	"<PATCH>/minimaps.vga"
 
 #define R_SINTRO "<STATIC>/r_sintro.xmi"
 #define A_SINTRO "<STATIC>/a_sintro.xmi"
