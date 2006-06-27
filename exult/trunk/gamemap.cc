@@ -1771,6 +1771,77 @@ Game_object *Game_map::locate_shape
 	}
 
 /*
+ *	Create a 192x192 map shape.
+ */
+
+void Game_map::create_minimap(Shape *minimaps, unsigned char *chunk_pixels)
+{
+	int cx, cy;
+	unsigned char *pixels = new unsigned char[c_num_chunks*c_num_chunks];
+
+	for (cy = 0; cy < c_num_chunks; ++cy) {
+		int yoff = cy*c_num_chunks;
+		for (cx = 0; cx < c_num_chunks; ++cx) {
+			int chunk_num = terrain_map[cx][cy];
+			pixels[yoff + cx] = chunk_pixels[chunk_num];
+		}
+	}
+	Shape_frame *frame = new Shape_frame(pixels, 
+				c_num_chunks, c_num_chunks, 0, 0, true);
+	if (num >= minimaps->get_num_frames())
+		minimaps->resize(num + 1);
+	minimaps->set_frame(frame, num);
+	delete [] pixels;
+}
+
+/*
+ *	Create a 192x192 map shape for each map and write out 
+ *	"patch/minimaps.vga".
+ *
+ *	Output:	false if failed.
+ */
+
+bool Game_map::write_minimap(vector<Game_map *>& maps)
+{
+					// A pixel for each possible chunk.
+	int num_chunks = chunk_terrains->size();
+	unsigned char *chunk_pixels = new unsigned char[num_chunks];
+	unsigned char *ptr = chunk_pixels;
+	Palette pal;
+	pal.set(PALETTE_DAY, 100, false);
+	for (vector<Chunk_terrain *>::const_iterator it = 
+		chunk_terrains->begin(); it != chunk_terrains->end(); ++it) {
+		Chunk_terrain *ter = *it;
+		Image_buffer8 *ibuf = ter->get_rendered_flats();
+		unsigned char *terbits = ibuf->get_bits();
+		int w = ibuf->get_width(), h = ibuf->get_height();
+		unsigned long r = 0, g = 0, b = 0;
+		for (int y = 0; y < h; ++y) {
+			for (int x = 0; x < w; ++x) {
+				r += pal.get_red(*terbits);
+				g += pal.get_green(*terbits);
+				b += pal.get_blue(*terbits);
+				++terbits;
+			}
+		}
+		r /= w*h; b /= w*h; g /= w*h;
+		*chunk_pixels++ = pal.find_color(r, g, b);
+	}
+	int nmaps = maps.size();
+	Shape *shape = new Shape(nmaps);
+	for (int i = 0; i < nmaps; ++i)
+		maps[i]->create_minimap(shape, chunk_pixels);
+	ofstream mfile;
+	U7open(mfile, PATCH_MINIMAPS);	// May throw exception.
+	Flex_writer writer(mfile, "Written by Exult", 1);
+	shape->write(mfile);
+	writer.mark_section_done();
+	bool ok = writer.close();
+	delete [] chunk_pixels;
+	return ok;
+}
+
+/*
  *	Do a cache out. (x, y) is the center.
  *	If x == -1, cache out whole map.
  */

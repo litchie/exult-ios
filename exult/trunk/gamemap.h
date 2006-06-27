@@ -43,6 +43,7 @@ class Egg_object;
 class Shape_info;
 class Shapes_vga_file;
 class DataSource;
+class Shape;
 
 using std::vector;
 
@@ -76,6 +77,8 @@ class Game_map
 	Map_chunk *create_chunk(int cx, int cy);
 	static Chunk_terrain *read_terrain(int chunk_num);
 
+					// Create a 192x192 viewable map.
+	void create_minimap(Shape *minimaps, unsigned char *chunk_pixels);
 	void cache_out_schunk(int schunk);
 public:
 	Game_map(int n);
@@ -194,6 +197,8 @@ public:
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
 							Game_object *start);
+	static bool write_minimap(vector<Game_map *>& maps);
+
 				// Do a cache out. (cx, cy) is the center
 	void cache_out(int cx, int cy);
 	};
