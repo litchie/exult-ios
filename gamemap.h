@@ -197,7 +197,7 @@ public:
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
 							Game_object *start);
-	static bool write_minimap(vector<Game_map *>& maps);
+	static bool write_minimap();
 
 				// Do a cache out. (cx, cy) is the center
 	void cache_out(int cx, int cy);
