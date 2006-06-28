@@ -80,6 +80,7 @@ void ActionLevelup(int* params);
 void ActionMapEditor(int* params);
 void ActionHackMover(int* params);
 void ActionMapTeleport(int* params);
+void ActionWriteMiniMap(int* params);
 void ActionTeleport(int* params);
 void ActionNextMapTeleport(int *params);
 void ActionTime(int* params);

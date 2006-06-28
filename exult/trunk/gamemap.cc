@@ -1801,16 +1801,22 @@ void Game_map::create_minimap(Shape *minimaps, unsigned char *chunk_pixels)
  *	Output:	false if failed.
  */
 
-bool Game_map::write_minimap(vector<Game_map *>& maps)
+bool Game_map::write_minimap()
 {
+	char msg[80];
 					// A pixel for each possible chunk.
 	int num_chunks = chunk_terrains->size();
 	unsigned char *chunk_pixels = new unsigned char[num_chunks];
 	unsigned char *ptr = chunk_pixels;
+	Game_window *gwin = Game_window::get_instance();
 	Palette pal;
 	// Ensure that all terrain is loaded:
 	get_all_terrain();
 	pal.set(PALETTE_DAY, 100, false);
+	Effects_manager *eman = gwin->get_effects();
+	eman->center_text("Encoding chunks");
+	gwin->paint();
+	gwin->show();
 	for (vector<Chunk_terrain *>::const_iterator it = 
 		chunk_terrains->begin(); it != chunk_terrains->end(); ++it) {
 		Chunk_terrain *ter = *it;
@@ -1829,10 +1835,18 @@ bool Game_map::write_minimap(vector<Game_map *>& maps)
 		r /= w*h; b /= w*h; g /= w*h;
 		*ptr++ = pal.find_color(r, g, b);
 	}
+	eman->remove_text_effects();
+	const vector<Game_map*>& maps = gwin->get_maps();
 	int nmaps = maps.size();
-	Shape *shape = new Shape(nmaps);
-	for (int i = 0; i < nmaps; ++i)
+	Shape *shape = new Shape;
+	for (int i = 0; i < nmaps; ++i) {
+		snprintf(msg, sizeof(msg), "Creating minimap %d", i);
+		eman->center_text(msg);
+		gwin->paint();
+		gwin->show();
 		maps[i]->create_minimap(shape, chunk_pixels);
+		eman->remove_text_effects();
+	}
 	ofstream mfile;
 	U7open(mfile, PATCH_MINIMAPS);	// May throw exception.
 	Flex_writer writer(mfile, "Written by Exult", 1);
@@ -1840,6 +1854,7 @@ bool Game_map::write_minimap(vector<Game_map *>& maps)
 	writer.mark_section_done();
 	bool ok = writer.close();
 	delete [] chunk_pixels;
+	gwin->set_all_dirty();
 	return ok;
 }
 
