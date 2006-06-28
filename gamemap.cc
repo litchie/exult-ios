@@ -1808,6 +1808,8 @@ bool Game_map::write_minimap(vector<Game_map *>& maps)
 	unsigned char *chunk_pixels = new unsigned char[num_chunks];
 	unsigned char *ptr = chunk_pixels;
 	Palette pal;
+	// Ensure that all terrain is loaded:
+	get_all_terrain();
 	pal.set(PALETTE_DAY, 100, false);
 	for (vector<Chunk_terrain *>::const_iterator it = 
 		chunk_terrains->begin(); it != chunk_terrains->end(); ++it) {
@@ -1825,7 +1827,7 @@ bool Game_map::write_minimap(vector<Game_map *>& maps)
 			}
 		}
 		r /= w*h; b /= w*h; g /= w*h;
-		*chunk_pixels++ = pal.find_color(r, g, b);
+		*ptr++ = pal.find_color(r, g, b);
 	}
 	int nmaps = maps.size();
 	Shape *shape = new Shape(nmaps);
