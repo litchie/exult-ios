@@ -1,3 +1,8 @@
+2006-06-27    <jeff@mini.nerble.net>
+
+	* gamemap.cc: Shift-F3 writes out "patch/minimaps.vga", with a
+	frame for each game map (192x192 pixels).
+
 2006-06-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixing crash (due to terrains not being loaded) and pointer mix-up (causing
 	  wrong colors in the generated minimap) in the new minimap generator.

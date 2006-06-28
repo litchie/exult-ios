@@ -154,6 +154,7 @@ const struct Action {
 	{ "TOGGLE_HACK_MOVER",
 	  ActionHackMover, 0, "Toggle hack-mover mode", true, true, NONE, false },
 	{ "MAP_TELEPORT", ActionMapTeleport, 0, "Map teleport", true, true, NONE, false },
+	{ "WRITE_MINIMAP", ActionWriteMiniMap, 0, "Write minimap", true, true, NONE, false },
 	{ "CURSOR_TELEPORT",
 	  ActionTeleport, 0, "Teleport to cursor", true, true, NONE, false },
 	{ "NEXT_MAP_TELEPORT",

@@ -55,6 +55,7 @@ F2		cheat_screen
 F3		map_teleport
 F4		toggle_fullscreen
 F10		show_endgame
+Shift-F3	write_minimap
 Alt-F4		quit
 Alt-Enter	toggle_fullscreen
 Alt-1		sound_tester

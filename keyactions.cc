@@ -24,6 +24,7 @@
 #include "keys.h"
 #include "gump_utils.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "mouse.h"
 #include "actors.h"
 #include "game.h"
@@ -655,6 +656,12 @@ void ActionHackMover(int *params)
 void ActionMapTeleport(int *params)
 {
 	cheat.map_teleport();
+}
+
+//  { ActionWriteMiniMap, 0, "Write minimap", true, true, NONE },
+void ActionWriteMiniMap(int *params)
+{
+	Game_map::write_minimap();
 }
 
 //  { ActionTeleport, 0, "Teleport to cursor", true, true, NONE },
