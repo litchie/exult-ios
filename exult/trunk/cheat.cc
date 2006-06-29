@@ -772,22 +772,27 @@ public:
 	int x, y;			// Where it's painted.
 	int w, h;
 	Shape_frame *map;
+	Vga_file *mini;			// If "minimaps.vga" is found.
+	Cheat_map(int mapnum = 0) : map(0), mini(0) {
+		if (U7exists(PATCH_MINIMAPS)) {
+			mini = new Vga_file(PATCH_MINIMAPS);
+			if (!(map = mini->get_shape(0, mapnum)))
+				map = mini->get_shape(0, 0);
+		} else {
+			ShapeID mapid(game->get_shape("sprites/cheatmap"), 
+							1, SF_GAME_FLX);
+			map = mapid.get_shape();
+		}
+		// Get coords. for centered view.
+		w = map->get_width();
+		h = map->get_height();
+		x = (gwin->get_width() - w)/2 + map->get_xleft();
+		y = (gwin->get_height() - h)/2 + map->get_yabove();
+	}
+	~Cheat_map() { delete mini; }
 
-	virtual void paint()
-	{
-#if 0
-	ShapeID mapid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
-#else
-	ShapeID mapid(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX);
-#endif
-	map = mapid.get_shape();
-
-	// Get coords. for centered view.
-	w = map->get_width();
-	h = map->get_height();
-	x = (gwin->get_width() - w)/2 + map->get_xleft();
-	y = (gwin->get_height() - h)/2 + map->get_yabove();
-	mapid.paint_shape(x, y, 1);
+	virtual void paint() {
+	sman->paint_shape(x, y, map, true);
   
 	// mark current location
 	int xx, yy;
@@ -806,7 +811,7 @@ public:
 
 void Cheat::map_teleport (void) const {
 	if (!enabled) return;
-	Cheat_map map;
+	Cheat_map map(gwin->get_map()->get_num());
 	int xx, yy;
 	if (!Get_click(xx, yy, Mouse::greenselect, 0, false, &map)) {
 		gwin->paint();
