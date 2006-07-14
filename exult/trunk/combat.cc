@@ -759,39 +759,20 @@ void Combat_schedule::start_strike
 			npc->start(200, 500);
 			return;
 			}
-#if 0	/* +++++OLD WAY.  Trolls hung around too long. */
-		Tile_coord pos = npc->get_tile();
-		Tile_coord opos = opponent->get_tile();
-		if (opos.tx < pos.tx)	// Going left?
-			pos.tx = npctiles.x;
-		else			// Right?
-			opos.tx = opptiles.x;
-		if (opos.ty < pos.ty)	// Going north?
-			pos.ty = npctiles.y;
-		else			// South.
-			opos.ty = opptiles.y;
-		if (!no_blocking &&
-		    !Fast_pathfinder_client::is_straight_path(pos, opos))
-			{		// Blocked.  Find another spot.
-			pos.tx += rand()%7 - 3;
-			pos.ty += rand()%7 - 3;
-			npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
-			state = approach;
-			npc->set_target(0);	// And try another enemy.
-			return;
-			}
-#else
-		if (!no_blocking &&
-		    !Fast_pathfinder_client::is_straight_path(npc, opponent))
-			{
-			approach_foe(true);
-			return;
-			}
-#endif
-		if (!started_battle)
-			start_battle();	// Play music if first time.
 		state = fire;		// Clear to go.
 		}
+	// At this point, we're within range, with state set.
+	if (!no_blocking &&
+	    !Fast_pathfinder_client::is_straight_path(npc, opponent))
+		{
+//+++++++Keeps looping here.  I think Monster_path_client should do the LOF check
+//too.
+		state = approach;
+		approach_foe(state == fire);
+		return;
+		}
+	if (!started_battle)
+		start_battle();	// Play music if first time.
 	if (combat_trace) {
 		cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	}

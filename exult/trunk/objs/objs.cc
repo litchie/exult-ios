@@ -661,6 +661,28 @@ Rectangle Game_object::get_footprint
 	}
 
 /*
+ *	Get volume in absolute tiles.
+ */
+
+Block Game_object::get_block
+	(
+	)
+	{
+	Shape_info& info = get_info();
+					// Get footprint.
+	int frame = get_framenum();
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
+	int ztiles = info.get_3d_height();
+	Tile_coord t = get_tile();
+	Block vol((t.tx - xtiles + 1 + c_num_tiles)%c_num_tiles, 
+		  (t.ty - ytiles + 1 + c_num_tiles)%c_num_tiles, 
+		   t.tz, 
+		  xtiles, ytiles, ztiles);
+	return vol;
+	}
+
+/*
  *	Does this object block a given tile?
  */
 
