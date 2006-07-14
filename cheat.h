@@ -101,8 +101,8 @@ public:
   void set_edit_mode(Map_editor_mode md);
   void clear_chunksel();
   void add_chunksel(Map_chunk *chunk, bool extend = false);
-  void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy);
-  void Cheat::move_selected_chunks(int dx, int dy);
+  void move_chunk(Map_chunk *chunk, int dx, int dy);
+  void move_selected_chunks(int dx, int dy);
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
   void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }

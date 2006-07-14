@@ -52,7 +52,8 @@ using std::vector;
  *		error.
  */
 
-int Read_text_msg_file(DataSource* in, vector<char *>& strings, char* section)
+int Read_text_msg_file(DataSource* in, vector<char *>& strings,
+					   const char* section)
 {
 	strings.resize(0);		// Initialize.
 	strings.reserve(1000);
@@ -92,7 +93,7 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings, char* section)
 			break;
 		char *endptr;
 		long index;
-		
+
 		if (buf[0] == ':')
 		{			// Auto-index lines missing an index.
 			index = next_index++;
@@ -131,7 +132,7 @@ int Read_text_msg_file
 	istream& in,
 	vector<char *>& strings,	// Strings returned here, each
 					//   allocated on heap.
-	char *section			// Section name, or NULL.  If given
+	const char *section			// Section name, or NULL.  If given
 					//   the section must be next infile.
 	)
 {
@@ -149,7 +150,7 @@ int Read_text_msg_file
 	char **& strings,		// Strings returned here, each
 					//   allocated on heap.
 	int& count,
-	char *section
+	const char *section
 	)
 	{
 	StreamDataSource ds(&in);
@@ -169,7 +170,7 @@ int Read_text_msg_file
 void Write_msg_file_section
 	(
 	ostream& out, 
-	char *section, 
+	const char *section, 
 	char **items, 
 	int num_items
 	)
