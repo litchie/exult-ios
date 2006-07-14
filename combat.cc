@@ -380,7 +380,7 @@ list<Actor*>::iterator Combat_schedule::find_protected_attacker
 			}
 		}
 	if (best_opp == opponents.end())
-		return 0;
+		return opponents.end();
 	if (failures < 5 && yelled && rand()%2 && npc != prot_actor)
 		npc->say(first_will_help, last_will_help);
 	return best_opp;
