@@ -93,4 +93,21 @@ public:					// Let's make it all public.
 		}
 	};
 
+/*
+ *	A 3-dim. block.
+ */
+class Block
+	{
+public:
+	int x, y, z;			// Position.
+	int w, d, h;			// Dimensions.
+	Block(int xin, int yin, int zin, int win, int din, int hin)
+		: x(xin), y(yin), z(zin), w(win), d(din), h(hin)
+		{  }
+	Block() { }			// An uninitialized one.
+					// Is this point in it?
+	int has_point(int px, int py, int pz) const
+		{ return (px >= x && px < x + w && py >= y && py < y + d &&
+			  pz >= z && pz < z + h); }
+	};
 #endif
