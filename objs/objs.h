@@ -212,6 +212,7 @@ public:
 						int dist = 24)
 		{ return find_closest(pos, &shapenum, 1, dist); }
 	Rectangle get_footprint();	// Get tile footprint.
+	Block get_block();
 	bool blocks(Tile_coord tile);	// Do we block a given tile?
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);

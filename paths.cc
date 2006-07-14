@@ -474,22 +474,35 @@ int Fast_pathfinder_client::is_straight_path
 	Game_object *from, Game_object *to
 	)
 	{
-	Rectangle fromtiles = from->get_footprint(),
-		  totiles = to->get_footprint();
+	Block fromvol = from->get_block(),
+	      tovol = to->get_block();
 	Tile_coord pos1 = from->get_tile();
 	Tile_coord pos2 = to->get_tile();
-				// Use top tile.
-	pos1.tz += from->get_info().get_3d_height() - 1;
-	pos2.tz += to->get_info().get_3d_height() - 1;
+	int ht1 = fromvol.h;
+	int ht2 = tovol.h;
 	if (pos2.tx < pos1.tx)	// Going left?
-		pos1.tx = fromtiles.x;
+		pos1.tx = fromvol.x;
 	else			// Right?
-		pos2.tx = totiles.x;
+		pos2.tx = tovol.x;
 	if (pos2.ty < pos1.ty)	// Going north?
-		pos1.ty = fromtiles.y;
+		pos1.ty = fromvol.y;
 	else			// South.
-		pos2.ty = totiles.y;
-	return is_straight_path(pos1, pos2);
+		pos2.ty = tovol.y;
+				// Use top tile.
+	pos1.tz += ht1 - 1;
+	pos2.tz += ht2 - 1;
+	Game_map *gmap = Game_window::get_instance()->get_map();
+	Zombie path;
+	if (!path.NewPath(pos1, pos2, 0))	// Should always succeed.
+		return 0;
+	Tile_coord t;			// Check each tile.
+	bool done;
+	while (path.GetNextStep(t, done) && 
+				!tovol.has_point(t.tx, t.ty, t.tz))
+		if (!fromvol.has_point(t.tx, t.ty, t.tz) && 
+					gmap->is_tile_occupied(t))
+			return 0;	// Blocked.
+	return 1;			// Looks okay.
 	}
 
 /*
