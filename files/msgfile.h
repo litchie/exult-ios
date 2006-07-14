@@ -17,14 +17,14 @@ int Read_text_msg_file
 	DataSource* in,
 	vector<char *>& strings,	// Strings returned here, each
 					//   allocated on heap.
-	char *section = 0
+	const char *section = 0
 	);
 int Read_text_msg_file
 	(
 	istream& in,
 	vector<char *>& strings,	// Strings returned here, each
 					//   allocated on heap.
-	char *section = 0
+	const char *section = 0
 	);
 int Read_text_msg_file
 	(
@@ -32,12 +32,12 @@ int Read_text_msg_file
 	char **& strings,		// Strings returned here, each
 					//   allocated on heap.
 	int& count,
-	char *section = 0
+	const char *section = 0
 	);
 void Write_msg_file_section
 	(
 	ostream& out, 
-	char *section, 
+	const char *section, 
 	char **items, 
 	int num_items
 	);

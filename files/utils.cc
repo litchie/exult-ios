@@ -686,7 +686,7 @@ char *newstrdup(const char *s)
 
 char *Get_mapped_name
 	(
-	char *from,
+	const char *from,
 	int num,
 	char *to
 	)
