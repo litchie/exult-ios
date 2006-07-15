@@ -769,8 +769,6 @@ void Combat_schedule::start_strike
 	if (check_lof &&
 	    !Fast_pathfinder_client::is_straight_path(npc, opponent))
 		{
-//+++++++Keeps looping here.  I think Monster_path_client should do the LOF check
-//too.
 		state = approach;
 		approach_foe(true);	// Try to get adjacent.
 		return;
