@@ -711,6 +711,7 @@ void Combat_schedule::start_strike
 		  opptiles = opponent->get_footprint();
 	Rectangle stiles = npctiles,	// Get copy for weapon range.
 		  ptiles = npctiles;
+	bool check_lof = !no_blocking;
 					// Get difference in lift.
 	int dz = npc->get_lift() - opponent->get_lift();
 	if (dz < 0)
@@ -718,7 +719,10 @@ void Combat_schedule::start_strike
 					// Close enough to strike?
 	if (strike_range && dz < 5 &&	// Same floor?
 		stiles.enlarge(strike_range).intersects(opptiles))
+		{
+		check_lof = (strike_range > 1);
 		state = strike;
+		}
 	else if (!projectile_range ||
 					// Enlarge to projectile range.
 		 !ptiles.enlarge(projectile_range).intersects(opptiles))
@@ -762,7 +766,7 @@ void Combat_schedule::start_strike
 		state = fire;		// Clear to go.
 		}
 	// At this point, we're within range, with state set.
-	if (!no_blocking &&
+	if (check_lof &&
 	    !Fast_pathfinder_client::is_straight_path(npc, opponent))
 		{
 //+++++++Keeps looping here.  I think Monster_path_client should do the LOF check
