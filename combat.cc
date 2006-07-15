@@ -772,7 +772,7 @@ void Combat_schedule::start_strike
 //+++++++Keeps looping here.  I think Monster_path_client should do the LOF check
 //too.
 		state = approach;
-		approach_foe(state == fire);
+		approach_foe(true);	// Try to get adjacent.
 		return;
 		}
 	if (!started_battle)
