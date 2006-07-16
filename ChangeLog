@@ -1,3 +1,8 @@
+2006-07-16    <jeff@mini.nerble.net>
+
+	* shapes/shapeinf.h (public): Don't divide striking range by 2; I
+	think that was a mistake.
+
 2006-07-14    <jeff@mini.nerble.net>
 
 	* rect.h, paths.cc, objs.cc, combat.cc: Avoid attacks through
