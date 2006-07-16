@@ -138,8 +138,8 @@ public:
 		{ return range; }
 	void set_range(int r)
 		{ range = r; }
-	int get_striking_range()	// Guessing about div. by 2.
-		{ return uses < 3 ? range/2 : 0; }
+	int get_striking_range()
+		{ return uses < 3 ? range : 0; }
 	int get_projectile_range()	// +++Guess for thrown weapons.
 		{ return uses == 3 ? range : is_thrown() ? 20 : 0; }
 	int get_projectile()
