@@ -1,3 +1,6 @@
+2006-06-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixing Skara Brae Ferry problem (bug #1521291).
+
 2006-07-16    <jeff@mini.nerble.net>
 
 	* shapes/shapeinf.h (public): Don't divide striking range by 2; I
