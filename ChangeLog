@@ -1,3 +1,7 @@
+2006-07-20    <jeff@mini.nerble.net>
+
+	* actorio.cc: (Experimentally) Allow chars. >= 127 in NPC names.
+
 2006-06-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixing Skara Brae Ferry problem (bug #1521291).
 
