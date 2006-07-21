@@ -377,27 +377,28 @@ void Actor::read
 	// Skip 7
 	nfile->skip(7);
 
-	char namebuf[17];
+	unsigned char namebuf[17];
 	nfile->read(namebuf, 16);
 	
 	for (int i = 0; i < 16; i++)
 		if (namebuf[i] == 0) 
 			i = 16;
-		else if (namebuf[i] < ' ' || namebuf[i] >= 127)
+		/*	Used to also require namebuf[i] < 127 (jsf).	*/
+		else if (namebuf[i] < ' ')
 		{
 			namebuf[0] = 0;
 			break;
 		}
 
 	namebuf[16] = 0;		// Be sure it's 0-delimited.
-//	cout << "Actor " << namebuf << " has alignment " << align << endl;
+//	cout << "Actor " << namebuf << " has alignment " << alignment << endl;
 	
 	if (num == 0 && Game::get_avname())
 	{
 		name = Game::get_avname();
 	}
 	else
-		name = namebuf;		// Store copy of it.
+		name = (char *)namebuf;		// Store copy of it.
 
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
