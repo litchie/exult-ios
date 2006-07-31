@@ -98,6 +98,11 @@
 \C<artaxerxes@users.sourceforge.net>
 \CZaurus port and Exult Studio tools
 
+\CMarzo Sette Torres Junior
+\C<marzojr@yahoo.com>
+\CMajor 'mods' such as SIfixes
+\CLots of bug-fixing
+
 \COTHER CONTRIBUTORS
 
 \COlivier Marcoux
@@ -126,7 +131,7 @@
 
 \CRobert Bihlmeyer
 
-\CMarzo Sette Torres Junior
+\CEric Wasylishen
 
 
 \CARTISTS
