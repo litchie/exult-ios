@@ -103,6 +103,9 @@
 \CMajor 'mods' such as SIfixes
 \CLots of bug-fixing
 
+\CEric Wasylishen
+\CLip-syncing in the BG intro.
+
 \COTHER CONTRIBUTORS
 
 \COlivier Marcoux
@@ -130,8 +133,6 @@
 \CPaul Hebble
 
 \CRobert Bihlmeyer
-
-\CEric Wasylishen
 
 
 \CARTISTS
