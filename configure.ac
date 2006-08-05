@@ -444,6 +444,39 @@ fi
 
 
 # ---------------------------------------------------------------------
+# Alternative directories
+# ---------------------------------------------------------------------
+
+DESKTOPDIR="${datadir}/applications"
+AC_ARG_WITH([desktopdir],
+            AS_HELP_STRING([--with-desktopdir=DIR],[change desktop directory]),
+	[case "${withval}" in
+		yes)
+		;;
+		no)
+		;;	
+		*)
+			DESKTOPDIR="${withval}"
+		;;
+	esac])
+AC_SUBST([DESKTOPDIR])
+
+ICONDIR="${datadir}/icons"
+AC_ARG_WITH([icondir],
+            AS_HELP_STRING([--with-icondir=DIR],[change icon directory]),
+	[case "${withval}" in
+		yes)
+		;;
+		no)
+		;;
+		*)
+			ICONDIR="${withval}"
+		;;
+	esac])
+AC_SUBST([ICONDIR])
+
+
+# ---------------------------------------------------------------------
 # Debugging options
 # ---------------------------------------------------------------------
 
