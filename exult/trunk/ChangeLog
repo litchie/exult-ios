@@ -1,6 +1,7 @@
 2006-08-05 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac, desktop/Makefile.am: adapted version of patch #1532621:
 	  support alternative dirs for .desktop and icon files
+	* docs/exult_studio.1, docs/ucc.1: manpages from patch #1532624
 
 2006-07-30    <jeff@mini.nerble.net>
 

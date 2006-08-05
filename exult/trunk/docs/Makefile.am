@@ -1,4 +1,4 @@
-man_MANS = exult.6 expack.1 ipack.1 shp2pcx.1 splitshp.1 textpack.1
+man_MANS = exult.6 expack.1 ipack.1 shp2pcx.1 splitshp.1 textpack.1 exult_studio.1 ucc.1
 
 EXTRA_DIST =		\
 	$(man_MANS)
