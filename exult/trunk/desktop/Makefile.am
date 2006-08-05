@@ -1,7 +1,7 @@
-icondir = $(datadir)/icons
+icondir = $(ICONDIR)
 dist_icon_DATA = exult.png
 
-desktopdir = $(datadir)/applications
+desktopdir = $(DESKTOPDIR)
 dist_desktop_DATA = exult.desktop
 
 CLEANFILES = *~
