@@ -45,7 +45,7 @@
 #include "mouse.h"
 #include "palette.h"
 #include "shapeid.h"
-#include "modmgr.h"
+#include "mapedit/modmgr.h"
 
 #ifndef UNDER_CE
 using std::cout;
