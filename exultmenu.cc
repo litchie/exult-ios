@@ -40,11 +40,79 @@
 #include "XMidiFile.h"
 #include "databuf.h"
 #include "fnames.h"
+#include "modmgr.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
 static bool get_play_1st_scene(void);
 static void set_play_1st_scene(bool);
+
+#define MAX_GAMES 100
+#define PAGE_SIZE 10
+#define REBUILD_MENU(x) {delete menu; menu = x; gwin->clear_screen(true);}
+#define NAV_CLICK(x, y) {	\
+			case -8:	\
+				y = 0;	\
+				REBUILD_MENU(x);	\
+				break;	\
+			case -7:	\
+				y -= PAGE_SIZE;	\
+				REBUILD_MENU(x);	\
+				break;	\
+			case -6:	\
+				y += PAGE_SIZE;	\
+				REBUILD_MENU(x);	\
+				break;	\
+			case -5:	\
+				y = last_page;	\
+				REBUILD_MENU(x);	\
+				break;}
+
+int maximum_size(Font *font, char *options[], int num_choices, int centerx)
+{
+	int max_width = 0, width;
+	for(int i=0; i<num_choices; i++) {
+		width = font->get_text_width(options[i]);
+		if (width > max_width)
+			max_width = width;
+	}
+	max_width += 16;
+	return max_width;
+}
+
+void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, int pagesize, int num_choices, int xpos, int ypos)
+{
+	char *menuscroller[] = {
+		"FIRST",
+		"PREVIOUS",
+		"NEXT",
+		"LAST"
+	};
+	int ncount = sizeof(menuscroller)/sizeof(int);
+	assert(ncount==4);
+	int max_width = maximum_size(font, menuscroller, ncount, xpos);
+	xpos = xpos - max_width*3/2;
+	
+	num_choices--;
+	int lastpage = num_choices - num_choices%pagesize;
+
+	for(int i=0; i<ncount; i++) {
+		//Check to see if this entry is needed at all:
+		if (!((i<2 && first == 0) ||
+			(i==0 && first == pagesize) ||
+			(i>=2 && lastpage == first) ||
+			(i==3 && lastpage == first+pagesize)))
+		{
+			MenuTextEntry *entry = new MenuTextEntry(fonton, font, menuscroller[i],
+								xpos, ypos);
+			//These commands have negative ids:
+			entry->set_id(i-8);
+			menu->add_entry(entry);
+		}
+		xpos += max_width;
+	}
+
+}
 
 ExultMenu::ExultMenu(Game_window *gw)
 {
@@ -52,6 +120,9 @@ ExultMenu::ExultMenu(Game_window *gw)
 	ibuf = gwin->get_win()->get_ib8();
 	calc_win();
 	fontManager.add_font("CREDITS_FONT", EXULT_FLX, EXULT_FLX_FONT_SHP, 1);
+	fontManager.add_font("HOT_FONT", EXULT_FLX, EXULT_FLX_FONTON_SHP, 1);
+	fontManager.add_font("NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONT_SHP, 1);
+	fontManager.add_font("HOT_NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONTON_SHP, 1);
 	exult_flx.load(EXULT_FLX);
 }
 
@@ -61,11 +132,8 @@ ExultMenu::~ExultMenu()
 
 void ExultMenu::calc_win()
 {
-	topx = (gwin->get_width()-320)/2;
-	topy = (gwin->get_height()-200)/2;
 	centerx = gwin->get_width()/2;
 	centery = gwin->get_height()/2;
-	menuy = topy+120;
 }
 
 
@@ -73,22 +141,21 @@ void ExultMenu::setup()
 {
 	Palette *gpal = gwin->get_pal();
 	Font *font = fontManager.get_font("CREDITS_FONT");
+	Font *fonton = fontManager.get_font("HOT_FONT");
 	MenuList menu;
 
-	int menuypos = menuy-44;
+	int menuypos = centery-44;
 	
-	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,1),
-			      exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,0),
-			      centerx, menuypos, font);
+	MenuTextChoice *scalemethod = new MenuTextChoice(fonton, font, "SCALING METHOD",
+					centerx, menuypos);
 	for (int i = 0; i < Image_window::NumScalers; i++)
 		scalemethod->add_choice(Image_window::get_name_for_scaler(i));
 	scalemethod->set_choice(gwin->get_win()->get_scaler());
 	menu.add_entry(scalemethod);
 	menuypos+=11;
 	
-	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PALETTE_FADES_SHP,1),
-			      exult_flx.get_shape(EXULT_FLX_PALETTE_FADES_SHP,0),
-			      centerx, menuypos, font);
+	MenuTextChoice *palfades = new MenuTextChoice(fonton, font, "PALETTE FADES",
+					centerx, menuypos);
 	palfades->add_choice("Off");
 	palfades->add_choice("On");
 	palfades->set_choice(gwin->get_pal()->get_fades_enabled()?1:0);
@@ -96,42 +163,39 @@ void ExultMenu::setup()
 	menuypos+=11;
 
 #ifdef SHOW_MIDICONV_IN_EXULTMENU
-	MenuChoice *midiconv = 0;
+	MenuTextChoice *midiconv = 0;
 #ifdef ENABLE_MIDISFX
-	MenuChoice *sfxconv = 0;
+	MenuTextChoice *sfxconv = 0;
 #endif
 
 	if (Audio::get_ptr()->get_midi()) {
-	  midiconv = new MenuChoice(exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,1),
-				  exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,0),
-				  centerx, menuypos, font);
+		midiconv = new MenuTextChoice(fonton, font, "MIDI CONVERSION",
+					centerx, menuypos, font);
 
-	  midiconv->add_choice("None");
-	  midiconv->add_choice("GM");
-	  midiconv->add_choice("GS");
-	  midiconv->add_choice("GS127");
+		midiconv->add_choice("None");
+		midiconv->add_choice("GM");
+		midiconv->add_choice("GS");
+		midiconv->add_choice("GS127");
 
-	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
-	  menu.add_entry(midiconv);
-	  menuypos+=11;
+		midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
+		menu.add_entry(midiconv);
+		menuypos+=11;
 
 #ifdef ENABLE_MIDISFX	
-	  MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(EXULT_FLX_SFX_CONVERSION_SHP,1),
-					     exult_flx.get_shape(EXULT_FLX_SFX_CONVERSION_SHP,0),
-					     centerx, menuypos, font);
-	  sfxconv->add_choice("None");
-	  sfxconv->add_choice("GS");
-	  sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDIFILE_CONVERT_GS127_TO_GS?1:0);
+		MenuTextChoice *sfxconv = new MenuTextChoice(fonton, font, "SFX CONVERSION",
+					centerx, menuypos, font);
+		sfxconv->add_choice("None");
+		sfxconv->add_choice("GS");
+		sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDIFILE_CONVERT_GS127_TO_GS?1:0);
 
-	  menu.add_entry(sfxconv);
-	  menuypos+=11;
+		menu.add_entry(sfxconv);
+		menuypos+=11;
 #endif
 	}
 #endif
 	
-	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PLAY_INTRO_SHP,1),
-			      exult_flx.get_shape(EXULT_FLX_PLAY_INTRO_SHP,0),
-			      centerx, menuypos, font);
+	MenuTextChoice *playintro = new MenuTextChoice(fonton, font, "PLAY INTRODUCTION",
+					centerx, menuypos);
 	playintro->add_choice("Off");
 	playintro->add_choice("On");
 	playintro->set_choice(get_play_intro()?1:0);
@@ -139,9 +203,8 @@ void ExultMenu::setup()
 	menuypos+=11;
 
 	
-	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PLAY_1ST_SCENE_SHP,1),
-			      exult_flx.get_shape(EXULT_FLX_PLAY_1ST_SCENE_SHP,0),
-			      centerx, menuypos, font);
+	MenuTextChoice *playscene = new MenuTextChoice(fonton, font, "PLAY FIRST SCENE",
+					centerx, menuypos);
 	playscene->add_choice("Off");
 	playscene->add_choice("On");
 	playscene->set_choice(get_play_1st_scene()?1:0);
@@ -149,32 +212,28 @@ void ExultMenu::setup()
 	menuypos+=11;
 
 
-	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(EXULT_FLX_FULL_SCREEN_SHP,1),
-			      exult_flx.get_shape(EXULT_FLX_FULL_SCREEN_SHP,0),
-			      centerx, menuypos, font);
+	MenuTextChoice *fullscreen = new MenuTextChoice(fonton, font, "FULL SCREEN",
+					centerx, menuypos);
 	fullscreen->add_choice("Off");
 	fullscreen->add_choice("On");
 	fullscreen->set_choice(gwin->get_win()->is_fullscreen()?1:0);
 	menu.add_entry(fullscreen);
 	menuypos+=11;
 
-	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(EXULT_FLX_CHEATING_SHP,1),
-				      exult_flx.get_shape(EXULT_FLX_CHEATING_SHP,0),
-				      centerx, menuypos, font);
+	MenuTextChoice *cheating = new MenuTextChoice(fonton, font, "CHEATING",
+					centerx, menuypos);
 	cheating->add_choice("Off");
 	cheating->add_choice("On");
 	cheating->set_choice(cheat()?1:0);
 	menu.add_entry(cheating);
 	menuypos+=11;
 
-	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(EXULT_FLX_OK_SHP,1),
-		      exult_flx.get_shape(EXULT_FLX_OK_SHP,0),
-		      centerx-64, menuy+55);
+	MenuTextEntry *ok = new MenuTextEntry(fonton, font, "OK",
+					centerx-64, centery+55);
 	int ok_button = menu.add_entry(ok);
 	
-	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(EXULT_FLX_CANCEL_SHP,1),
-			 exult_flx.get_shape(EXULT_FLX_CANCEL_SHP,0),
-			 centerx+64, menuy+55);
+	MenuTextEntry *cancel = new MenuTextEntry(fonton, font, "CANCEL",
+					centerx+64, centery+55);
 	int cancel_button = menu.add_entry(cancel);
 	
 	menu.set_selection(0);
@@ -205,15 +264,15 @@ void ExultMenu::setup()
 
 #ifdef SHOW_MIDICONV_IN_EXULTMENU
 			if (Audio::get_ptr()->get_midi()) {
-			  if (midiconv) {
-			    // Midi Conversion
-			    Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
-			  }
+				if (midiconv) {
+					// Midi Conversion
+					Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
+				}
 #ifdef ENABLE_MIDISFX
-			  if (sfxconv) {
-			  // SFX Conversion
-			    Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDIFILE_CONVERT_GS127_TO_GS:XMIDIFILE_CONVERT_NOCONVERSION);
-			  }
+				if (sfxconv) {
+					// SFX Conversion
+					Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDIFILE_CONVERT_GS127_TO_GS:XMIDIFILE_CONVERT_NOCONVERSION);
+				}
 #endif
 			}
 #endif
@@ -223,7 +282,7 @@ void ExultMenu::setup()
 			set_play_1st_scene(playscene->get_choice()==1);
 			// Full screen
 			if(((fullscreen->get_choice()==0)&&(gwin->get_win()->is_fullscreen()))||
-			   ((fullscreen->get_choice()==1)&&(!gwin->get_win()->is_fullscreen())))
+				((fullscreen->get_choice()==1)&&(!gwin->get_win()->is_fullscreen())))
 				gwin->get_win()->toggle_fullscreen();
 			config->set("config/video/fullscreen",gwin->get_win()->is_fullscreen()?"yes":"no",true);
 			// Cheating
@@ -238,28 +297,192 @@ void ExultMenu::setup()
 	}
 }
 
-Exult_Game ExultMenu::run()
+MenuList *ExultMenu::create_main_menu(int first)
+{
+	MenuList *menu = new MenuList();
+
+	int ypos = 15;
+	int xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
+	
+	std::vector<ModManager *> *game_list = gamemanager->get_game_list();
+	int num_choices = game_list->size();
+	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
+	for(int i=first; i<last; i++) {
+		ModManager *exultgame = (*game_list)[i];
+		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
+			Audio::get_ptr()->can_sfx(exultgame->get_title())?1:0);
+		/* ++++ TESTING
+		Shape_frame *sfxicon = Audio::get_ptr()->can_sfx(exultgame->get_title())?
+			0:exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0);
+		*/
+		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
+							exultgame->get_menu_string().c_str(),
+							sfxicon, xpos+(i%2)*centerx, ypos);
+		entry->set_id(i);
+		menu->add_entry(entry);
+
+		if (exultgame->has_mods())
+		{
+			MenuTextEntry *mod_entry = new MenuTextEntry(navfonton, navfont, "SHOW MODS",
+								xpos+(i%2)*centerx, ypos+entry->get_height()+4);
+			mod_entry->set_id(i+MAX_GAMES);
+			menu->add_entry(mod_entry);
+		}
+		if (i%2)
+			ypos += 45;
+	}
+	
+	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
+			centerx, ypos = gwin->get_height()-5*font->get_text_height());
+
+	char *menuchoices[] = { 
+		"SETUP",
+		"CREDITS",
+		"QUOTES",
+		"EXIT"
+	};
+	int num_entries = sizeof(menuchoices)/sizeof(int);
+	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
+	xpos = centerx - max_width*(num_entries-1)/2;
+	ypos = gwin->get_height()-3*font->get_text_height();
+	for(int i=0; i<4; i++) {
+		MenuTextEntry *entry = new MenuTextEntry(fonton, font, menuchoices[i],
+							xpos, ypos);
+		//These commands have negative ids:
+		entry->set_id(i-4);
+		menu->add_entry(entry);
+		xpos += max_width;
+	}
+
+	return menu;
+}
+
+MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
+{
+	MenuList *menu = new MenuList();
+
+	int ypos = 15;
+	int xpos = centerx/2;
+	
+	std::vector<ModInfo *> *mod_list = selgame->get_mod_list();
+	int num_choices = mod_list->size();
+	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
+	for(int i=first; i<last; i++) {
+		ModInfo *exultmod = (*mod_list)[i];
+		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
+							exultmod->get_menu_string().c_str(),
+							0, xpos+(i%2)*centerx, ypos);
+		entry->set_id(i);
+		entry->set_enabled(exultmod->is_mod_compatible());
+		menu->add_entry(entry);
+
+		if (!exultmod->is_mod_compatible())
+		{
+			MenuGameEntry *incentry = new MenuGameEntry(navfonton, navfont, "WRONG EXULT VERSION",
+								0, xpos+(i%2)*centerx, ypos+entry->get_height()+4);
+			// Accept no clicks:
+			incentry->set_enabled(false);
+			menu->add_entry(incentry);
+		}
+		if (i%2)
+			ypos += 45;
+	}
+	
+	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
+			centerx, ypos = gwin->get_height()-5*font->get_text_height());
+
+	char *menuchoices[] = { 
+		"RETURN TO MAIN MENU"
+	};
+	int num_entries = sizeof(menuchoices)/sizeof(int);
+	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
+	xpos = centerx - max_width*(num_entries-1)/2;
+	ypos = gwin->get_height()-3*font->get_text_height();
+	for(int i=0; i<num_entries; i++) {
+		MenuTextEntry *entry = new MenuTextEntry(fonton, font, menuchoices[i],
+							xpos, ypos);
+		//These commands have negative ids:
+		entry->set_id(i-4);
+		menu->add_entry(entry);
+		xpos += max_width;
+	}
+
+	return menu;
+}
+
+BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
+{
+	Palette *gpal = gwin->get_pal();
+	Shape_manager *sman = Shape_manager::get_instance();
+	
+	gwin->clear_screen(true);
+	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
+	gpal->apply();
+
+	int first_mod = 0, num_choices = selgame->get_mod_list()->size()-1,
+		last_page = num_choices-num_choices%PAGE_SIZE;
+	MenuList *menu = create_mods_menu(selgame, first_mod);
+	menu->set_selection(0);
+	BaseGameInfo *sel_mod = 0;
+	
+	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	int logox = centerx-exultlogo->get_width()/2,
+		logoy = centery-exultlogo->get_height()/2;
+	do {
+		sman->paint_shape(logox,logoy,exultlogo);
+		font->draw_text(gwin->get_win()->get_ib8(), 
+					gwin->get_width()-font->get_text_width(VERSION),
+					gwin->get_height()-font->get_text_height()-5, VERSION);
+		int choice = menu->handle_events(gwin, menu_mouse);
+		switch(choice) {
+			case -10: // The incompatibility notice; do nothing
+				break;
+			NAV_CLICK(create_mods_menu(selgame, first_mod), first_mod);
+			case -4: // Return to main menu
+				gpal->fade_out(c_fade_out_time/2);
+				wait_delay(c_fade_out_time/2);
+				gwin->clear_screen(true);
+				delete menu;
+				return 0;
+			default:
+				if (choice>=0)
+				{
+					// Load the game:
+					gpal->fade_out(c_fade_out_time);
+					sel_mod = selgame->get_mod(choice);
+					break;
+				}
+		}
+	} while(sel_mod==0);
+	delete menu;
+	
+	gwin->clear_screen(true);
+	return sel_mod;
+}
+
+BaseGameInfo *ExultMenu::run()
 {
 	Palette *gpal = gwin->get_pal();
 
 	Shape_manager *sman = Shape_manager::get_instance();
-	Font *font = fontManager.get_font("CREDITS_FONT");
-	// Check for the games in the designated directories.
-	bool bg_installed = BG_Game::is_installed();
-	bool si_installed = SI_Game::is_installed();
+	font = fontManager.get_font("CREDITS_FONT");
+	fonton = fontManager.get_font("HOT_FONT");
+	navfont = fontManager.get_font("NAV_FONT");
+	navfonton = fontManager.get_font("HOT_NAV_FONT");
 
-	if(!bg_installed && !si_installed) {
+	if(!gamemanager->get_game_count()) {
 		gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
+		int topy = centery-25;
 		font->center_text(gwin->get_win()->get_ib8(),
-				  centerx, topy+20, "WARNING");
+					centerx, topy+20, "WARNING");
 		font->center_text(gwin->get_win()->get_ib8(),
-				  centerx, topy+40, "Could not find the data files for either");
+					centerx, topy+40, "Could not find the data files for either");
 		font->center_text(gwin->get_win()->get_ib8(),
-				  centerx, topy+50, "\"The Black Gate\" or \"Serpent Isle\".");
+					centerx, topy+50, "\"The Black Gate\" or \"Serpent Isle\".");
 		font->center_text(gwin->get_win()->get_ib8(),
-				  centerx, topy+60, "Please edit the configuration file");
+					centerx, topy+60, "Please edit the configuration file");
 		font->center_text(gwin->get_win()->get_ib8(),
-				  centerx, topy+70, "and restart Exult");
+					centerx, topy+70, "and restart Exult");
 		gpal->apply();
 		while(!wait_delay(200))
 			;	
@@ -275,99 +498,77 @@ Exult_Game ExultMenu::run()
 	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
-	sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
+	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	int logox = centerx-exultlogo->get_width()/2,
+		logoy = centery-exultlogo->get_height()/2;
+	sman->paint_shape(logox,logoy,exultlogo);
 	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
-	MenuList *menu = new MenuList();
-		
-	int menuchoices[] = { 
-		EXULT_FLX_BLACK_GATE_SHP,
-		EXULT_FLX_SERPENT_ISLE_SHP,
-		EXULT_FLX_SETUP_SHP,
-		EXULT_FLX_EXULT_CREDITS_SHP,
-		EXULT_FLX_EXULT_QUOTES_SHP,
-		EXULT_FLX_EXIT_SHP 
-	};
-	int num_choices = sizeof(menuchoices)/sizeof(int);
-	int *menuentries = new int[num_choices];
-	int entries = 0;
-	int sfx_bg_ypos = -1, sfx_si_ypos = -1;
-	
-	int ypos = menuy-24;
-	for(int i=0; i<num_choices; i++) {
-		if((i==0 && bg_installed)||(i==1 && si_installed)||i>1) {
-			menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
-						      exult_flx.get_shape(menuchoices[i],0),
-						      centerx, ypos));
-			if(i==0)
-				sfx_bg_ypos = ypos;
-			if(i==1)
-				sfx_si_ypos = ypos;
-			ypos += exult_flx.get_shape(menuchoices[i],0)->get_height()+2;
-			menuentries[entries++]=i;
-		}
-		if(i<2)
-			ypos+=5;
-	}
+
+	int first_game = 0, num_choices = gamemanager->get_game_count()-1,
+		last_page = num_choices-num_choices%PAGE_SIZE;
+	MenuList *menu = create_main_menu(first_game);
 	menu->set_selection(0);
-	Exult_Game sel_game = NONE;
+	BaseGameInfo *sel_game = 0;
 	
 	do {
-		sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
+		sman->paint_shape(logox,logoy,exultlogo);
 		font->draw_text(gwin->get_win()->get_ib8(), 
-					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
-		if (sfx_bg_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx(CFG_BG_NAME)?1:0));
-		if (sfx_si_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx(CFG_SI_NAME)?1:0));
+					gwin->get_width()-font->get_text_width(VERSION),
+					gwin->get_height()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
-		switch(choice<0?choice:menuentries[choice]) {
-		case 5:
-		case -1: // Exit
-			gpal->fade_out(c_fade_out_time);
-			Audio::get_ptr()->stop_music();
-			throw quit_exception();
-		case 0: // Black Gate
-			gpal->fade_out(c_fade_out_time);
-			sel_game = BLACK_GATE;
-			break;
-		case 1: // Serpent Isle
-			gpal->fade_out(c_fade_out_time);
-			sel_game = SERPENT_ISLE;
-			break;
-		case 2: // Setup
-			gpal->fade_out(c_fade_out_time);
-			setup();
-			gpal->apply();
-			break;
-		case 3: // Exult Credits
-			{
+		switch(choice) {
+			NAV_CLICK(create_main_menu(first_game), first_game);
+			case -4: // Setup
 				gpal->fade_out(c_fade_out_time);
-				TextScroller credits(EXULT_FLX, EXULT_FLX_CREDITS_TXT, 
-						     fontManager.get_font("CREDITS_FONT"),
-						     exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				credits.run(gwin);
-				gwin->clear_screen(true);
+				setup();
 				gpal->apply();
-			}
-			break;
-		case 4: // Exult Quotes
-			{
+				break;
+			case -3: // Exult Credits
+				{
+					gpal->fade_out(c_fade_out_time);
+					TextScroller credits(EXULT_FLX, EXULT_FLX_CREDITS_TXT, 
+								fontManager.get_font("CREDITS_FONT"),
+								exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
+					credits.run(gwin);
+					gwin->clear_screen(true);
+					gpal->apply();
+				}
+				break;
+			case -2: // Exult Quotes
+				{
+					gpal->fade_out(c_fade_out_time);
+					TextScroller quotes(EXULT_FLX, EXULT_FLX_QUOTES_TXT, 
+								fontManager.get_font("CREDITS_FONT"),
+			 					exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
+					quotes.run(gwin);
+					gwin->clear_screen(true);
+					gpal->apply();
+				}
+				break;
+			case -1: // Exit
 				gpal->fade_out(c_fade_out_time);
-				TextScroller quotes(EXULT_FLX, EXULT_FLX_QUOTES_TXT, 
-						    fontManager.get_font("CREDITS_FONT"),
-			     			    exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				quotes.run(gwin);
-				gwin->clear_screen(true);
-				gpal->apply();
-			}
-			break;
-		default:
-			break;
+				Audio::get_ptr()->stop_music();
+				throw quit_exception();
+			default:
+				if (choice>=0 && choice<MAX_GAMES)
+				{
+					// Load the game:
+					gpal->fade_out(c_fade_out_time);
+					sel_game = gamemanager->get_game(choice);
+				}
+				else if (choice>=MAX_GAMES && choice<2*MAX_GAMES)
+				{
+					// Show the mods for the game:
+					gpal->fade_out(c_fade_out_time/2);
+					sel_game = show_mods_menu(gamemanager->get_game(choice-MAX_GAMES));
+					gwin->clear_screen(true);
+					gpal->apply();
+				}
+				break;
 		}
-	} while(sel_game==NONE);
-	delete[] menuentries;
+	} while(sel_game==0);
 	delete menu;
 	
 	gwin->clear_screen(true);

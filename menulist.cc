@@ -46,7 +46,7 @@ MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 
 void MenuEntry::paint(Game_window *gwin)
 {
-        if (!dirty) return;
+	if (!dirty) return;
 	dirty = false;
 
 	Shape_frame *shape;
@@ -62,16 +62,127 @@ void MenuEntry::paint(Game_window *gwin)
 bool MenuEntry::handle_event(SDL_Event& event)
 {
 	return((event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) ||
-	       event.type == SDL_MOUSEBUTTONUP);
+			event.type == SDL_MOUSEBUTTONUP);
 }
 
-// MenuChoice: a multiple-choice menu entry
-MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Font *fnt)
+// MenuTextEntry: a selectable menu entry (a button)
+MenuTextEntry::MenuTextEntry(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos)
+	: enabled(true)
 {
-	frame_on = on;
-	frame_off = off;
-	int max_width = on->get_width()>off->get_width()?on->get_width():off->get_width();
-	int max_height = on->get_height()>off->get_height()?on->get_height():off->get_height();
+	font_on = fnton;
+	font = fnt;
+	text = txt;
+	int max_width = font->get_text_width(text);
+	int max_height = font->get_text_height();
+	x = xpos;
+	y1 = y = ypos;
+	x1 = xpos-max_width/2+1;
+	x2 = x1+max_width+1;
+	y2 = y1+max_height+1;
+	selected = false;
+	dirty = true;
+}	
+
+void MenuTextEntry::paint(Game_window *gwin)
+{
+	if (!dirty) return;
+	dirty = false;
+
+	Font *fnt;
+	if (selected && enabled)
+		fnt = font_on;
+	else
+		fnt = font;
+	fnt->paint_text_box(gwin->get_win()->get_ib8(), text,
+		 x1, y1, x2-x1, y2-y1, 0, false, true, 0);
+	gwin->get_win()->show(x1,y1,x2-x1,y2-y1);	
+}
+
+bool MenuTextEntry::handle_event(SDL_Event& event)
+{
+	return (((event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) ||
+			event.type == SDL_MOUSEBUTTONUP)) && enabled;
+}
+
+// MenuGameEntry: a selectable menu entry (a button)
+MenuGameEntry::MenuGameEntry(
+	 Font *fnton,
+	 Font *fnt,
+	 const char *txt,
+	 Shape_frame *sfx,
+	 int xpos, int ypos
+	 )
+	 : MenuTextEntry(fnton, fnt, txt, xpos, ypos), enabled(true)
+{
+	sfxicon = sfx;
+	int max_width = 0, width;
+	int max_height = font->get_text_height();
+	//For game titles, which may have more than one line:
+	char *ptr = strdup(txt);
+	char *lineptr = ptr;
+	int lines = 1;
+	while (*ptr != 0)
+	{
+		if (*ptr == '\n')
+		{
+			lines++;
+			*ptr = 0;
+			width = font->get_text_width(lineptr);
+			if (width > max_width)
+				max_width = width;
+			*ptr = '\n';
+			lineptr = ptr + 1;
+		}
+		ptr++;
+	}
+	width = font->get_text_width(lineptr);
+	if (width > max_width)
+		max_width = width;
+	max_height *= lines;
+	x = xpos;
+	y1 = y = ypos;
+	x1 = xpos-max_width/2+1;
+	x2 = x1+max_width+1;
+	y2 = y1+max_height+lines;
+	selected = false;
+	dirty = true;
+}	
+
+void MenuGameEntry::paint(Game_window *gwin)
+{
+	if (!dirty) return;
+	dirty = false;
+
+	if (sfxicon)
+	{
+		Shape_manager::get_instance()->paint_shape(x1-sfxicon->get_width()-3,y, sfxicon);
+		gwin->get_win()->show(x1-sfxicon->get_width()-3,y,sfxicon->get_width(),sfxicon->get_height());
+	}
+
+	Font *fnt;
+	if (selected && enabled)
+		fnt = font_on;
+	else
+		fnt = font;
+	fnt->paint_text_box(gwin->get_win()->get_ib8(), text,
+		 x1, y1, x2-x1, y2-y1, 0, false, true, 0);
+	gwin->get_win()->show(x1,y1,x2-x1,y2-y1);	
+}
+
+bool MenuGameEntry::handle_event(SDL_Event& event)
+{
+	return (((event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) ||
+			event.type == SDL_MOUSEBUTTONUP)) && enabled;
+}
+
+// MenuTextChoice: a multiple-choice menu entry
+MenuTextChoice::MenuTextChoice(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos)
+{
+	font_on = fnton;
+	font = fnt;
+	text = txt;
+	int max_width = font->get_text_width(text);
+	int max_height = font->get_text_height();
 	x = xpos;
 	x1 = x-max_width;
 	y1 = y = ypos;
@@ -79,12 +190,11 @@ MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Fo
 	y2 = y1 + max_height;
 	selected = false;
 	choice = -1;
-	font = fnt;
 	max_choice_width = 0;
 	choices = new std::vector<std::string>();
 }
 
-void MenuChoice::add_choice(const char *s)
+void MenuTextChoice::add_choice(const char *s)
 {
 	choices->push_back(std::string(s));
 	int len = font->get_text_width(s);
@@ -92,29 +202,28 @@ void MenuChoice::add_choice(const char *s)
 	x2 = x+32+max_choice_width;
 }
 
-void MenuChoice::paint(Game_window *gwin)
+void MenuTextChoice::paint(Game_window *gwin)
 {
-        if (!dirty) return;
+	if (!dirty) return;
 	dirty = false;
 
-	Shape_frame *shape;
-	if(selected)
-		shape = frame_on;
+	Font *fnt;
+	if (selected)
+		fnt = font_on;
 	else
-		shape = frame_off;
+		fnt = font;
+	fnt->draw_text(gwin->get_win()->get_ib8(), x1, y1, text);
+	gwin->get_win()->show(x1,y1, x1+fnt->get_text_width(text), y2);
 
-	Shape_manager::get_instance()->paint_shape(
-					x-shape->get_width(), y, shape);
-	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, max_choice_width, font->get_text_height(), x+32, y);
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					x+32, y, (*choices)[choice].c_str());
-		gwin->get_win()->show(x+32,y, x+32+max_choice_width, y+font->get_text_height());
+		gwin->get_win()->show(x+32,y, x+32+max_choice_width, y2);
 	}
 }
 
-bool MenuChoice::handle_event(SDL_Event& event)
+bool MenuTextChoice::handle_event(SDL_Event& event)
 {
 	if(event.type==SDL_MOUSEBUTTONUP) {
 		dirty = true;
@@ -131,7 +240,7 @@ bool MenuChoice::handle_event(SDL_Event& event)
 			break;
 		case SDLK_RIGHT:
 			dirty = true;
-		        choice++;
+			choice++;
 			if(choice>=choices->size())
 				choice = 0;
 			break;
@@ -175,11 +284,11 @@ void MenuList::set_selection(int x, int y)
 
 	// deselect the previous one, unless nothing changed
 	if (selected) {
-	        entry = (*entries)[selection];
-	        if (entry->is_mouse_over(x, y))
-	                return;
+		entry = (*entries)[selection];
+		if (entry->is_mouse_over(x, y))
+			return;
 
-                entry->set_selected(false);
+		entry->set_selected(false);
 	}
 	
 	// select the new one, and return when found
@@ -199,7 +308,7 @@ void MenuList::set_selection(int x, int y)
 
 int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 {
-        unsigned char mouse_visible;
+	unsigned char mouse_visible;
 	int count = entries->size();
 	bool exit_loop = false;
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
@@ -211,7 +320,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	gwin->show(1);
 	mouse->show();
 	do {
-	        mouse_visible = mouse->is_onscreen();
+		mouse_visible = mouse->is_onscreen();
 		if (mouse_visible) mouse->hide();
 
 		// redraw items if they're dirty
@@ -222,7 +331,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 
 		// redraw mouse if visible
 		if (mouse_visible) {
-		        mouse->show();
+			mouse->show();
 			mouse->blit_dirty();
 		}
 
@@ -236,19 +345,19 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 			mouse->show();
 			mouse->blit_dirty();
 		} else if(event.type==SDL_MOUSEBUTTONDOWN) {
-		        if (!mouse_visible) {
-			        // if invisible, redraw mouse
-			        set_selection(event.button.x / scale, 
-					      event.button.y / scale); 
-			        mouse->show();
-			        mouse->blit_dirty();
+			if (!mouse_visible) {
+				// if invisible, redraw mouse
+				set_selection(event.button.x / scale, 
+							event.button.y / scale); 
+				mouse->show();
+				mouse->blit_dirty();
 			}
 		} else if(event.type==SDL_MOUSEBUTTONUP) {
-		        MenuObject *entry = (*entries)[selection];
+			MenuObject *entry = (*entries)[selection];
 			if (entry->is_mouse_over(
-					   event.button.x / scale, 
-					   event.button.y / scale)) {
-			        exit_loop = entry->handle_event(event);
+						event.button.x / scale, 
+						event.button.y / scale)) {
+				exit_loop = entry->handle_event(event);
 			}
 		} else if(event.type==SDL_KEYDOWN) {
 			mouse->hide();
@@ -292,11 +401,11 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				continue;
 			case SDLK_s:
 				if ((event.key.keysym.mod & KMOD_ALT) &&
-				    (event.key.keysym.mod & KMOD_CTRL))
+					(event.key.keysym.mod & KMOD_CTRL))
 					make_screenshot(true);
 			default:
 				{
-				        // let key be processed by selected menu-item
+					// let key be processed by selected menu-item
 					if(selected) {
 						MenuObject *entry = (*entries)[selection];
 						exit_loop = entry->handle_event(event);
@@ -305,10 +414,13 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				break;
 			}
 		} else if(event.type==SDL_QUIT) {
-                        return -1;
+			return -1;
 		}
 	} while(!exit_loop);
 	mouse->hide();
-	return selection;
+	if ((*entries)[selection]->get_has_id())
+		return (*entries)[selection]->get_id();
+	else
+		return selection;
 }
 

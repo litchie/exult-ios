@@ -92,6 +92,7 @@
 #include "exult_si_flx.h"
 #include "crc.h"
 #include "items.h"
+#include "modmgr.h"
 
 #ifndef UNDER_CE
 using std::atof;
@@ -107,6 +108,7 @@ using std::vector;
 
 Configuration *config = 0;
 KeyBinder *keybinder = 0;
+GameManager *gamemanager = 0;
 
 /*
  *	Globals:
@@ -190,6 +192,7 @@ static void get_game_paths(const string &gametitle);
 static bool run_bg = false;		// skip menu and run bg
 static bool run_si = false;		// skip menu and run si
 static string arg_gamename = "default";	// cmdline arguments
+static string arg_modname = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
 static bool arg_nomenu = false;
@@ -270,6 +273,7 @@ int main
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
 	parameters.declare("--game",&arg_gamename,"default");
+	parameters.declare("--mod",&arg_modname,"default");
 	parameters.declare("--buildmap",&arg_buildmap,-1);
 	parameters.declare("--nocrc",&ignore_crc,true);
 	parameters.declare("-c",&arg_configfile,"");
@@ -290,6 +294,7 @@ int main
 			 << "--si\t\tSkip menu and run Serpent Isle" << endl
 			 << "--nomenu\tSkip BG/SI game menu" << endl
 			 << "--game <game>\tRun original game" << endl
+			 << "--mod <mod>\tMust be used together with '--bg', '--si' or '--game <game>'; runs the specified game using the mod with title equal to '<mod>'" << endl
 			 << "--buildmap <N>\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(N=0: all roofs, 1: no level 2 roofs, 2: no roofs)" << endl
 			 << "\t\tonly valid when used together with --bg or --si" << endl
@@ -303,6 +308,13 @@ int main
 	if (run_bg && run_si) {
 		cerr << "Error: You may only specify either -bg or -si!" << 
 									endl;
+		exit(1);
+	}
+
+	if (arg_modname != "default" &&
+			!(run_bg || run_si || (arg_gamename != "default")))
+	{
+		cerr << "Error: You must also specify the game to be used!" << endl;
 		exit(1);
 	}
 
@@ -397,6 +409,7 @@ int exult_main(const char *runpath)
 	add_system_path("<PATCH>", "patch");
 //	add_system_path("<SAVEGAME>", "savegame");
 	add_system_path("<SAVEGAME>", ".");
+	add_system_path("<MODS>", "mods");
 
 	std::cout << "Exult path settings:" << std::endl;
 	std::cout << "Data          : " << get_system_path("<DATA>") << std::endl;
@@ -453,9 +466,6 @@ int exult_main(const char *runpath)
 		config->set("config/disk/game/blackgate/title",s,true);
 		vs.push_back(s);
 	}
-
-	get_game_paths(CFG_BG_NAME);
-	get_game_paths(CFG_SI_NAME);
 
 	// Enable tracing of intrinsics?
 	config->value("config/debug/trace/intrinsics",intrinsic_trace);
@@ -533,94 +543,6 @@ int exult_main(const char *runpath)
 	return result;
 }
 
-/*
- *	Calculate paths for the given game, using the config file and
- *	falling back to defaults if necessary.  These are stored in
- *	per-game system_path entries, which are then used later once the
- *	game is selected.
- */
-static void get_game_paths(const string &gametitle)
-{
-	std::string data_directory, static_dir, gamedat_dir, savegame_dir,
-		default_dir, system_path_tag(to_uppercase(gametitle)),
-		config_path("config/disk/game/" + gametitle + "/path");
-
-	config->value(config_path.c_str(), data_directory, ".");
-	if (data_directory == ".")
-		config->set(config_path.c_str(), data_directory, true);
-#if 0
-	cout << "setting " << gametitle
-		<< " game directories to: " << data_directory << endl;
-#endif
-
-	config_path = "config/disk/game/" + gametitle + "/static_path";
-	default_dir = data_directory + "/static";
-	config->value(config_path.c_str(), static_dir, default_dir.c_str());
-	add_system_path("<" + system_path_tag + "_STATIC>", static_dir);
-#if 0
-	cout << "setting " << gametitle
-		<< " static directory to: " << static_dir << endl;
-#endif
-
-	const char *home = 0;		// Will get $HOME.
-	string home_game("");		// Gets $HOME/.exult/gametitle.
-	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
-	default_dir = data_directory + "/gamedat";
-	config->value(config_path.c_str(), gamedat_dir, "");
-#if (!defined(WIN32) && !defined(MACOS))
-	if (gamedat_dir == "" &&	// Not set?
-					// And default doesn't exist?
-	    !U7exists(default_dir.c_str()) && (home = getenv("HOME")) != 0)
-		{
-		home_game = home;
-		home_game += "/.exult";
-					// Create $HOME/.exult/gametitle.
-		U7mkdir(home_game.c_str(), 0755);
-		home_game = home_game + '/' + gametitle;
-		U7mkdir(home_game.c_str(), 0755);
-					// Successfully created dir?
-		if (U7exists(home_game.c_str()))
-			{		// Use $HOME/.exult/gametitle/gamedat.
-			gamedat_dir = home_game + "/gamedat";
-			config->set(config_path.c_str(), gamedat_dir.c_str(),
-								true);
-			}
-		else
-			home_game = "";	// Failed.
-		}
-#endif
-	if (gamedat_dir == "")		// Didn't create it in $HOME/.exult?
-		gamedat_dir = default_dir;
-	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
-#if 0
-	cout << "setting " << gametitle
-		<< " gamedat directory to: " << gamedat_dir << endl;
-#endif
-
-	config_path = "config/disk/game/" + gametitle + "/savegame_path";
-	if (home_game == "")
-		config->value(config_path.c_str(), savegame_dir, 
-						data_directory.c_str());
-	else
-		{			// Store saves under $HOME/....
-		config->value(config_path.c_str(), savegame_dir,
-						home_game.c_str());
-		config->set(config_path.c_str(), savegame_dir.c_str(), true);
-		}
-	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
-#if 0
-	cout << "setting " << gametitle
-		<< " savegame directory to: " << savegame_dir << endl;
-#endif
-
-	config_path = "config/disk/game/" + gametitle + "/patch";
-	string patch_directory;
-	default_dir = data_directory + "/patch";
-	config->value(config_path.c_str(), patch_directory, 
-							default_dir.c_str());
-	add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
-}
-
 namespace ExultIcon {
 	#include "exulticon.h"
 }
@@ -648,7 +570,6 @@ static void SetIcon()
 	SDL_FreeSurface(iconsurface);
 }
 
-
 /*
  *	Initialize and create main window.
  */
@@ -660,6 +581,15 @@ static void Init
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif
+#ifdef WIN32
+	// Due to the new menu size, the window can sometimes
+	// be partially offscreen in Windows. SDL currently
+	// offers no better way of doing this, so...
+	// I don't know if this will be problem in other OSes,
+	// so I leave it Windows-specific for now.
+	// Maybe it would be best to use SDL_putenv instead?
+	putenv("SDL_VIDEO_CENTERED=center");
+#endif
 	if (SDL_Init(init_flags) < 0)
 	{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
@@ -668,7 +598,7 @@ static void Init
 	std::atexit(SDL_Quit);
 	
 	SDL_SysWMinfo info;		// Get system info.
-        SDL_GetWMInfo(&info);
+	SDL_GetWMInfo(&info);
 #ifdef USE_EXULTSTUDIO
 					// Want drag-and-drop events.
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
@@ -704,11 +634,24 @@ static void Init
 	sclr = Image_window::get_scaler_for_name(scaler);
 	if (sclr == Image_window::NoScaler) config->set("config/video/scale_method","2xSaI",true);
 
+	// Load games and mods; also stores system paths:
+	gamemanager = new GameManager();
+	if (run_bg) {
+		arg_gamename == CFG_BG_NAME;
+		run_bg = false;
+	} else if (run_si) {
+		arg_gamename == CFG_SI_NAME;
+		run_si = false;
+	}
+
 	if (arg_buildmap >= 0)
 		BuildGameMap();
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
-	gwin = new Game_window(sw, sh, scaleval, sclr);
+	if (arg_gamename != "default" || run_bg || run_si)
+		gwin = new Game_window(sw, sh, scaleval, sclr);
+	else
+		gwin = new Game_window(400, 300, scaleval, sclr);
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::Init();
 
@@ -721,46 +664,54 @@ static void Init
 	// Show the banner
 	Exult_Game mygame;
 	game = 0;
-	if (arg_gamename == CFG_BG_NAME) {
-		run_bg = true;
-	} else if (arg_gamename == CFG_SI_NAME) {
-		run_si = true;
-	}
-	// Figure out all the games' paths, before we store them.  That
-	// way, we don't have to recalculate them if we come back to the
-	// main menu and make another selection.
-	if (arg_gamename != "default") {
-		// The user gave us a game title, so load that one's
-		// paths.
-		get_game_paths(arg_gamename);
-	}
-	store_system_paths();
 
 	do {
 		reset_system_paths();
 		fontManager.reset();
 		U7FileManager::get_ptr()->reset();
-		const char *title = 0;
 
 		if (game) {
 			delete game;
 			game = 0;
 		}
 		
-		if (run_bg) {
-			mygame = BLACK_GATE;
-			run_bg = false;
-		} else if (run_si) {
-			mygame = SERPENT_ISLE;
-			run_si = false;
-		} else if (arg_buildmap < 0 && arg_gamename != "default") {
-			mygame = EXULT_DEVEL_GAME;
-			title = arg_gamename.c_str();
-		} else {
-			ExultMenu exult_menu(gwin);
-			mygame = exult_menu.run();
+		BaseGameInfo *newgame = 0;
+		if (arg_gamename != "default")
+		{
+			ModManager *basegame = gamemanager->find_game(arg_gamename);
+			if (basegame)
+			{
+				if (arg_modname != "default")
+					newgame = basegame->get_mod(arg_modname);
+				else
+					newgame = basegame;
+				arg_modname = "default";
+			}
+			if (!newgame)
+				cerr << "Game '" << arg_gamename << "' not found." << endl;
+			// Prevent game from being reloaded in case the player
+			// tries to return to the main menu:
+			arg_gamename = "default";
 		}
-		Game::create_game(mygame, title);
+		else
+		{
+			gwin->resized(400, 300, scaleval, sclr);
+			// Ensure proper clipping:
+			gwin->get_win()->set_clip(0, 0, 400, 300);
+			ExultMenu exult_menu(gwin);
+			newgame = exult_menu.run();
+		}
+		if (!newgame)
+		{
+			// Should never happen... maybe display the exult menu instead?
+			cerr << "Could not find any games to run; leaving." << endl;
+			exit(1);
+		}
+
+		gwin->resized(sw, sh, scaleval, sclr);
+		// Ensure proper clipping:
+		gwin->get_win()->set_clip(0, 0, sw, sh);
+		Game::create_game(newgame);
 
 		Audio *audio = Audio::get_ptr();
 		MyMidiPlayer *midi = 0;
@@ -789,6 +740,9 @@ static void Init
 		}
 	} while(!game->show_menu(arg_nomenu));
 
+	// Should not be needed anymore:
+	delete gamemanager;
+
 	Audio *audio = Audio::get_ptr();
 	if (audio) {
 		MyMidiPlayer *midi = audio->get_midi();
@@ -801,8 +755,8 @@ static void Init
 					// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
-        SDL_GetWMInfo(&info);
-        xfd = ConnectionNumber(info.info.x11.display);
+	SDL_GetWMInfo(&info);
+	xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 		info.info.x11.window, Move_dragged_shape, Move_dragged_combo,
@@ -812,12 +766,12 @@ static void Init
 	SDL_GetWMInfo(&info);
 	Server_init();			// Initialize server (for map-editor).
 	hgwin = info.window;
-        OleInitialize(NULL);
+	OleInitialize(NULL);
 	windnd = new Windnd(hgwin, Move_dragged_shape, Move_dragged_combo,
 				Drop_dragged_shape, Drop_dragged_chunk,
 							Drop_dragged_combo);
 	if (FAILED(RegisterDragDrop(hgwin, windnd))) {
-	     cout << "Something's wrong with OLE2 ..." << endl;
+		cout << "Something's wrong with OLE2 ..." << endl;
 	};
 #endif
 #endif
@@ -1905,18 +1859,40 @@ void BuildGameMap()
 			case 1: maplift = 10; break;
 			case 2: maplift = 5; break;
 		}
-
+		
+		// For now, I am leaving it only for unmodded BG and SI.
+		BaseGameInfo *newgame = 0;
 		if (run_bg) {
-			gametype = BLACK_GATE;
-			get_game_paths(CFG_BG_NAME);
+			run_bg = false;
+			// BG will always be the first game if it is installed:
+			if (gamemanager->is_bg_installed())
+				newgame = gamemanager->get_game(0);
+			else
+			{
+				newgame = 0;
+				cerr << "Black Gate not found." << endl;
+				exit(1);
+			}
 		} else if (run_si) {
-			gametype = SERPENT_ISLE;
-			get_game_paths(CFG_SI_NAME);
+			run_si = false;
+			// BG will always be the first game if it is installed,
+			// while SI will be the next one:
+			if (gamemanager->is_si_installed())
+				if (gamemanager->is_bg_installed())
+					newgame = gamemanager->get_game(1);
+				else
+					newgame = gamemanager->get_game(0);
+			else
+			{
+				newgame = 0;
+				cerr << "Serpent Isle not found." << endl;
+				exit(1);
+			}
 		} else {
 			cerr << "You have to specify --bg or --si when using --buildmap" << endl;
 			exit(1);
 		}
-
+		
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
 
@@ -1929,7 +1905,7 @@ void BuildGameMap()
 		config->set("config/video/fullscreen",fullscreenstr,true);
 		Audio::Init();
 		current_res = find_resolution(w, h, sc);
-		Game::create_game(gametype);
+		Game::create_game(newgame);
 		gwin->init_files(false); //init, but don't show plasma	
 		gwin->get_map()->init();// +++++Got to clean this up.
 		gwin->get_pal()->set(0);

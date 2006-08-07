@@ -1,3 +1,37 @@
+2006-08-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Adding mod manager to Exult and Exult Studio. New Exult menu now displays
+	  all games in exult.cfg and has a sub-menu for each game's mods. Likewise,
+	  Exult Studio can load games and mods. In some of the files, converted some
+	  identation spaces into tabs, and some trailing spaces were removed.
+	Detailed information:
+	* modmgr.*: New classes that (1) manage the game list, (2) manage each
+	  game's mods and (3) store information for each game/mod and correctly
+	  sets path information when needed. Games have their own entries in
+	  exult.cfg (with the additional "title" tag containing the string to
+	  display in the Exult menu), while mods have their own drop-in cfg files
+	  located in "<MODS>/*.cfg". The "<MODS>" directory is configurable for
+	  each game in exult.cfg (with the new "<mods>" tag), but defaults to
+	  "<path>/mods".
+	* menulist.*: New text-based menu entry classes replacing the shape-based
+	  ones (except for the MenuEntry, also referenced in game.cc, due to palette
+	  concerns) and added menu IDs to entries.
+	* exult.*: Command-line loading of mods with "--mod <mod>", modified loading
+	  of games to use classes from modmgr; moved some functions to modmgr.*;
+	  added "<MODS>" system path configurable in exult.cfg; Exult will now be
+	  centered in Windows when not in full-screen mode to prevent window
+	  being partially offscreen.
+	* game.*, bggame.*, sigame.*, devgame.*: Moved is_installed to modmgr.*,
+	  modified game creation to use modmgr.*, mod used is reported in stdout,
+	  initial game uses new menu IDs.
+	* exultmenu.*: The new menus mentioned above.
+	* exult0.pal, *.shp, flx.in: Removed old menu shapes and added fonts for them.
+	* cheat.cc: Map-editing loads Exult Studio using the current game and mod.
+	* studio.*, exult_studio.glade: Loading of games and mods via dialogs,
+	  loading of mods via command line with "-m <mod>" and creation of new
+	  mods via dialog. Uses the classes from modmgr.*
+	* makefile.*: Added modmgr.*, modified list of *.shp's used.
+
+
 2006-08-05 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac, desktop/Makefile.am: adapted version of patch #1532621:
 	  support alternative dirs for .desktop and icon files
