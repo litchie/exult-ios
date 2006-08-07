@@ -30,8 +30,6 @@
 #include "fnames.h"
 #include "listfiles.h"
 #include "exult_constants.h"
-#include "bggame.h"
-#include "sigame.h"
 #include "utils.h"
 #include "Configuration.h"
 
