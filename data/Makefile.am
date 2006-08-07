@@ -1,31 +1,18 @@
 EXULT_FLX_OBJECTS = \
 	flx.in			\
-	exult_quotes.shp	\
-	exult_credits.shp	\
 	quotes.txt		\
 	credits.txt		\
 	exult_logo.shp		\
 	exult0.pal		\
-	black_gate.shp		\
-	serpent_isle.shp	\
 	meditown.mid		\
 	font.shp		\
-	setup.shp		\
-	play_intro.shp		\
-	full_screen.shp		\
-	cheating.shp		\
-	ok.shp			\
-	cancel.shp		\
+	fonton.shp		\
+	navfont.shp		\
+	navfonton.shp		\
 	pointers.shp		\
-	exit.shp		\
-	play_1st_scene.shp	\
 	extras.shp		\
-	midi_conversion.shp	\
 	notebook.shp		\
 	stats_extra.shp		\
-	sfx_conversion.shp	\
-	palette_fades.shp	\
-	scaling_method.shp	\
 	savegump.shp		\
 	sav_downdown.shp	\
 	sav_down.shp		\
