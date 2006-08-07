@@ -28,6 +28,7 @@ class Game_window;
 class KeyBinder;
 class Tile_coord;
 class Paintable;
+class GameManager;
 
 /*
  *	Get a click, or, optionally, a keyboard char.
@@ -78,6 +79,7 @@ typedef enum
 
 extern KeyBinder *keybinder;
 extern Configuration *config;
+extern GameManager *gamemanager;
 
 extern quitting_time_enum quitting_time;
 

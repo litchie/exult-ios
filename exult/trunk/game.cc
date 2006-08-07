@@ -45,6 +45,7 @@
 #include "mouse.h"
 #include "palette.h"
 #include "shapeid.h"
+#include "modmgr.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -67,6 +68,7 @@ static int av_sex = -1;
 static int av_skin = -1;
 
 std::string Game::gametitle;
+std::string Game::modtitle;
 
 unsigned int Game::ticks = 0;
 
@@ -93,39 +95,15 @@ Game::~Game()
 	game_type = NONE;
 }
 
-Game *Game::create_game(Exult_Game mygame, const char *title)
+Game *Game::create_game(BaseGameInfo *mygame)
 {
-	switch(mygame) {
-	case EXULT_DEVEL_GAME:
-		assert(title != 0);
-		gametitle = title;
-		game_type = mygame;
-		break;
-	case SERPENT_ISLE:
-		gametitle = CFG_SI_NAME;
-		break;
-	case BLACK_GATE:
-	default:
-		gametitle = CFG_BG_NAME;
-		break;
-	}
+	mygame->setup_game_paths();
+	gametitle = mygame->get_title();
+	modtitle = mygame->get_mod_title();
 
 	// See if map-editing.
 	string d("config/disk/game/" + gametitle + "/editing");
 	config->value(d.c_str(), editing_flag, false);
-
-	// Make aliases to the current game's paths.
-	string system_path_tag(gametitle);
-	to_uppercase(system_path_tag);
-	clone_system_path("<STATIC>", "<" + system_path_tag + "_STATIC>");
-	clone_system_path("<GAMEDAT>", "<" + system_path_tag + "_GAMEDAT>");
-	clone_system_path("<SAVEGAME>", "<" + system_path_tag + "_SAVEGAME>");
-	if (is_system_path_defined("<" + system_path_tag + "_PATCH>"))
-		clone_system_path("<PATCH>", "<" + system_path_tag + "_PATCH>");
-	else
-		clear_system_path("<PATCH>");
-
-	U7mkdir("<SAVEGAME>", 0755); // make sure savegame directory exists
 
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
@@ -148,9 +126,15 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		}
 		delete[] static_identity;
 	}
+	char buf[256];
+	if (mygame && mygame->get_mod_title()!="")
+		snprintf(buf, 256, " with the '%s' modification.",
+				mygame->get_title().c_str());
+	else
+		buf[0] = 0;
 	switch(game_type) {
 	case BLACK_GATE:
-		cout << "Starting a BLACK GATE game" << endl;
+		cout << "Starting a BLACK GATE game" << buf << endl;
 		game = new BG_Game();
 		break;
 	case SERPENT_ISLE:
@@ -166,15 +150,15 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		game = 0;
 	}
 
-	std::cout << "Game path settings:" << std::endl;
-	std::cout << "Static  : " << get_system_path("<STATIC>") << std::endl;
-	std::cout << "Gamedat : " << get_system_path("<GAMEDAT>") << std::endl;
-	std::cout << "Savegame: " << get_system_path("<SAVEGAME>") << std::endl;
+	cout << "Game path settings:" << std::endl;
+	cout << "Static  : " << get_system_path("<STATIC>") << endl;
+	cout << "Gamedat : " << get_system_path("<GAMEDAT>") << endl;
+	cout << "Savegame: " << get_system_path("<SAVEGAME>") << endl;
 	if (is_system_path_defined("<PATCH>"))
-		std::cout << "Patch   : " << get_system_path("<PATCH>") << std::endl;
+		cout << "Patch   : " << get_system_path("<PATCH>") << endl;
 	else
-		std::cout << "Patch   : none" << std::endl;
-	std::cout << std::endl;
+		cout << "Patch   : none" << endl;
+	cout << endl;
 
 	return game;
 }
@@ -328,7 +312,6 @@ bool Game::show_menu(bool skip)
 		
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
-	int *menuentries = new int[num_choices];
 	
 	Vga_file exult_flx(EXULT_FLX);
 	char npc_name[16];
@@ -345,11 +328,12 @@ bool Game::show_menu(bool skip)
 			int offset = 0;
 			for(int i=0; i<num_choices; i++) {
 				if((i!=4 && i!=5) || (i==4 && U7exists("<SAVEGAME>/quotes.flg")) || (i==5 && U7exists("<SAVEGAME>/endgame.flg"))) {
-					menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
+					MenuEntry *entry = new MenuEntry(menushapes.get_shape(menuchoices[i],1),
 						      menushapes.get_shape(menuchoices[i],0),
-						      centerx, menuy+offset));
+						      centerx, menuy+offset);
+					entry->set_id(i);
+					menu->add_entry(entry);
 					offset += menushapes.get_shape(menuchoices[i],1)->get_ybelow() + 3;
-					menuentries[entries++]=i;
 				}
 			}
 			menu->set_selection(2);
@@ -357,7 +341,7 @@ bool Game::show_menu(bool skip)
 	
 		bool created = false;
 		int choice = menu->handle_events(gwin, menu_mouse);
-		switch(choice<0?choice:menuentries[choice]) {
+		switch(choice) {
 		case -1: // Exit
 			pal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
@@ -423,7 +407,6 @@ bool Game::show_menu(bool skip)
 		gwin->clear_screen(true);
 	}
 	delete menu;
-	delete[] menuentries;
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 	return play;

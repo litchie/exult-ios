@@ -25,20 +25,30 @@
 class Mouse;
 class Image_buffer8;
 class Game_window;
+class BaseGameInfo;
+class ModManager;
+class MenuList;
 
 class ExultMenu {
 private:
+	Font *font;
+	Font *fonton;
+	Font *navfont;
+	Font *navfonton;
 	Game_window *gwin;
 	Image_buffer8 *ibuf;
 	Vga_file exult_flx;
 	//	Palette pal;
-	int topx, topy, centerx, centery, menuy;
+	int centerx, centery;
 	void calc_win();
 	Mouse *menu_mouse;
+	MenuList *create_main_menu(int first = 0);
+	MenuList *create_mods_menu(ModManager *selgame, int first = 0);
+	BaseGameInfo *show_mods_menu(ModManager *selgame);
 public:
 	ExultMenu(Game_window *gw);
 	~ExultMenu();
-	Exult_Game run();
+	BaseGameInfo *run();
 	void setup();
 };
 

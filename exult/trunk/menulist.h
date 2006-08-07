@@ -29,13 +29,15 @@ class Font;
 class Mouse;
 
 class MenuObject {
+private:
+	bool has_id;
+	int id;
 public:
-	Shape_frame *frame_on, *frame_off;
 	int x, y, x1, y1, x2, y2;
 	bool selected;
 	bool dirty;
 
-	MenuObject() { };
+	MenuObject() : has_id(false), id(0) { }
 	virtual ~MenuObject() { }
 	
 	void set_selected(bool sel) { 
@@ -48,26 +50,72 @@ public:
 	
 	virtual void paint(Game_window *gwin) =0;
 	virtual bool handle_event(SDL_Event& event) =0;
+
+	bool get_has_id () const { return has_id; }
+	int get_id () const { return id; }
+	void set_id (int newid) { has_id = true; id = newid; }
+	//Don't think it will ever be needed, but:
+	void delete_id () { has_id = false; id = 0; }
 };
 
 class MenuEntry: public MenuObject {
 public:
+	Shape_frame *frame_on, *frame_off;
 	MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos);
 	virtual ~MenuEntry() { }
-
+	
 	virtual void paint(Game_window *gwin);
 	virtual bool handle_event(SDL_Event& event);
 };
 
-class MenuChoice: public MenuObject {
+class MenuTextObject: public MenuObject {
+public:
+	Font *font;
+	Font *font_on;
+	const char *text;
+	MenuTextObject() {}
+	virtual ~MenuTextObject() { }
+
+	virtual int get_height() { return (y2-y1); }
+	virtual void paint(Game_window *gwin) =0;
+	virtual bool handle_event(SDL_Event& event) =0;
+};
+
+class MenuTextEntry: public MenuTextObject {
+private:
+	bool enabled;
+public:
+	MenuTextEntry(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
+	virtual ~MenuTextEntry() { }
+
+	virtual void paint(Game_window *gwin);
+	virtual bool handle_event(SDL_Event& event);
+	void set_enabled(bool en) { enabled = en; }
+};
+
+class MenuGameEntry: public MenuTextEntry {
+private:
+	Shape_frame *sfxicon;
+	bool enabled;
+public:
+	MenuGameEntry(Font *fnton, Font *fnt, const char *txt, Shape_frame *sfx,
+		int xpos, int ypos);
+	virtual ~MenuGameEntry() { }
+
+	virtual void paint(Game_window *gwin);
+	virtual bool handle_event(SDL_Event& event);
+	bool is_enabled() const { return enabled; }
+	void set_enabled(bool en) { enabled = en; }
+};
+
+class MenuTextChoice: public MenuTextObject {
 private:
 	std::vector<std::string> *choices;
 	int choice;
-	Font *font;
 	int max_choice_width;
 public:
-	MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Font *fnt);
-	virtual ~MenuChoice() { delete choices; }
+	MenuTextChoice(Font *fnton, Font *fnt, const char *txt, int xpos, int ypos);
+	virtual ~MenuTextChoice() { delete choices; }
 	void add_choice(const char *s);
 	int get_choice() { return choice; }
 	void set_choice(int c) { choice = c; }

@@ -1882,6 +1882,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\miscinf.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\monstinf.cc"
 					>
 				</File>
@@ -1922,6 +1926,10 @@
 					</File>
 					<File
 						RelativePath="..\shapes\items.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\miscinf.h"
 						>
 					</File>
 					<File
@@ -2265,11 +2273,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File

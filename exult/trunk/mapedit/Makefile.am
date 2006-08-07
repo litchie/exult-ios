@@ -50,7 +50,9 @@ exult_studio_SOURCES = \
 	shapegroup.cc \
 	shapegroup.h \
 	shapelst.cc \
-	shapelst.h
+	shapelst.h \
+	modmgr.cc \
+	modmgr.h
 
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)
