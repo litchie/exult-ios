@@ -18,6 +18,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <vector>
 #include <iostream>
 #include <string>
@@ -28,7 +33,7 @@
 #include "bggame.h"
 #include "sigame.h"
 #include "utils.h"
-#include "configuration.h"
+#include "Configuration.h"
 
 using std::cout;
 using std::cerr;
