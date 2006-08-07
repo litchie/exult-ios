@@ -72,6 +72,8 @@ exult_SOURCES =	\
 	keyactions.h	\
 	menulist.cc	\
 	menulist.h	\
+	modmgr.cc \
+	modmgr.h \
 	monsters.cc	\
 	monsters.h	\
 	mouse.cc	\

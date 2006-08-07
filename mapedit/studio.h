@@ -21,9 +21,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <vector>
+#include <string>
 #include "vgafile.h"
 #include "servemsg.h"
 #include "exult_constants.h"
+
+using std::string;
 
 class Shape_info;
 class Shapes_vga_file;
@@ -105,6 +108,8 @@ private:
 	Exec_box		*compile_box;
 					// Which game type:
 	Exult_Game game_type;
+	int curr_game;	// Which game is loaded
+	int curr_mod;	// Which mod is loaded, or -1 for none
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -130,7 +135,7 @@ public:
 	
 	static ExultStudio *get_instance()
 		{ return self; }
-	GladeXML *get_xml() 
+	GladeXML *get_xml()
 		{ return app_xml; }
 	int get_server_socket() const
 		{ return server_socket; }
@@ -157,10 +162,8 @@ public:
 
 	void create_new_game(const char *dir);
 	void new_game();
-	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
-	void set_game_path(const char *path, const char *patchpath = 0,
-						const char *gdatpath = 0);
+	void set_game_path(string gamename, string modname="");
 	void setup_file_list();
 	void save_all();		// Write out everything.
 	bool need_to_save();		// Anything modified?
@@ -263,6 +266,9 @@ public:
 					// Maps.
 	void new_map_dialog();
 	void setup_maps_list();
+
+					// Games.
+	void open_game_dialog(bool createmod=false);
 
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);

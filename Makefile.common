@@ -8,7 +8,7 @@ VERSION=1.4.01cvs
 MAIN_OBJS=actions.o actorio.o actors.o \
 	args.o bggame.o browser.o cheat.o  \
 	combat.o delobjs.o devgame.o \
-	 dir.o drag.o effects.o exult.o exultmenu.o \
+	dir.o drag.o effects.o exult.o exultmenu.o modmgr.o \
 	game.o gameclk.o gamedat.o gamemap.o \
 	gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
@@ -74,32 +74,19 @@ OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OB
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
 	data/flx.in \
-	data/exult_quotes.shp \
-	data/exult_credits.shp \
 	data/quotes.txt \
 	data/credits.txt \
 	data/exult_logo.shp \
 	data/exult0.pal \
-	data/black_gate.shp \
-	data/serpent_isle.shp \
 	data/meditown.mid \
 	data/font.shp \
-	data/setup.shp \
-	data/play_intro.shp \
-	data/full_screen.shp \
-	data/cheating.shp \
-	data/ok.shp \
-	data/cancel.shp \
+	data/fonton.shp \
+	data/navfont.shp \
+	data/navfonton.shp \
 	data/pointers.shp \
-	data/exit.shp \
-	data/play_1st_scene.shp \
 	data/extras.shp \
-	data/midi_conversion.shp \
 	data/notebook.shp \
 	data/stats_extra.shp \
-	data/sfx_conversion.shp \
-	data/palette_fades.shp \
-	data/scaling_method.shp \
 	data/savegump.shp \
 	data/sav_downdown.shp \
 	data/sav_down.shp \

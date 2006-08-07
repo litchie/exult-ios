@@ -33,6 +33,7 @@ class Image_window8;
 class Image_buffer8;
 class Mouse;
 class Configuration;
+class BaseGameInfo;
 
 struct str_int_pair
 {
@@ -62,6 +63,7 @@ private:
 	Configuration *xml;		/* Shapes/resources from XML file. */
 	Mouse *menu_mouse;
 	static std::string gametitle;
+	static std::string modtitle;
 	static unsigned int ticks;
 protected:
 	static bool editing_flag;
@@ -81,7 +83,7 @@ public:
 	static void set_new_game() { new_game_flag = true; }
 	static bool is_new_game() { return new_game_flag; }
 	static bool is_editing() { return editing_flag; }
-	static Game *create_game(Exult_Game mygame, const char *title = 0);
+	static Game *create_game(BaseGameInfo *mygame);
 	static Exult_Game get_game_type() { return game_type; }
 	static bool has_expansion() { return expansion; }
 
@@ -96,6 +98,7 @@ public:
 	static void clear_avskin ();
 
 	static std::string get_gametitle() { return gametitle; }
+	static std::string get_modtitle() { return modtitle; }
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;

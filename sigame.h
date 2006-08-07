@@ -38,7 +38,6 @@ public:
 	virtual int  get_start_tile_y()
 		{ return (155*c_tiles_per_chunk); }
 	virtual void show_journey_failed();
-	static bool is_installed();
 };
 
 	

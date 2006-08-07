@@ -39,6 +39,7 @@
 #include "exult.h"
 #include "Configuration.h"
 #include "shapeid.h"
+#include "modmgr.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -1538,7 +1539,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	// Need to know if SI is installed
-	bool si_installed = SI_Game::is_installed();
+	bool si_installed = gamemanager->is_si_installed();
 
 	U7object faces_u7o("<DATA>/exult_bg.flx", EXULT_BG_FLX_MR_INTRO_SHP);
 	size_t shapesize;
@@ -1742,26 +1743,4 @@ bool BG_Game::new_game(Vga_file &shapes)
 	SDL_EnableUNICODE(0);
 
 	return ok;
-}
-
-bool BG_Game::is_installed()
-{
-	std::string buf("<BLACKGATE_STATIC>/endgame.dat");
-	bool foundbg = U7exists(buf);
-	bool foundbgflx = U7exists("<DATA>/exult_bg.flx");
-
-	if (foundbg)
-		std::cout << "Black Gate   : found" << std::endl;
-	else
-		std::cout << "Black Gate   : not found (" 
-				  << get_system_path(buf) << ")" << std::endl;
-
-	if (foundbgflx)
-		std::cout << "exult_bg.flx : found" << std::endl;
-	else
-		std::cout << "exult_bg.flx : not found (" 
-				  << get_system_path("<DATA>/exult_bg.flx")
-				  << ")" << std::endl;
-
-	return (foundbg && foundbgflx);
 }
