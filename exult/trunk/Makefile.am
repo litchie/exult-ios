@@ -72,8 +72,6 @@ exult_SOURCES =	\
 	keyactions.h	\
 	menulist.cc	\
 	menulist.h	\
-	modmgr.cc \
-	modmgr.h \
 	monsters.cc	\
 	monsters.h	\
 	mouse.cc	\
@@ -128,7 +126,7 @@ EXULTLIBS = \
 	files/zip/libminizip.la
 
 exult_LDADD = \
-	$(EXULTLIBS) \
+	$(EXULTLIBS) mapedit/modmgr.o \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE) \
 	$(ZLIB_LIBS) $(OPENGL_LIBS)
 

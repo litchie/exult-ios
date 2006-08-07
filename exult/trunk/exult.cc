@@ -92,7 +92,7 @@
 #include "exult_si_flx.h"
 #include "crc.h"
 #include "items.h"
-#include "modmgr.h"
+#include "mapedit/modmgr.h"
 
 #ifndef UNDER_CE
 using std::atof;

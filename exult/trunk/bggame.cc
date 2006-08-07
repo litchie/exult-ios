@@ -39,7 +39,7 @@
 #include "exult.h"
 #include "Configuration.h"
 #include "shapeid.h"
-#include "modmgr.h"
+#include "mapedit/modmgr.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
