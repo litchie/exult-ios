@@ -1,3 +1,9 @@
+2006-08-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exult.cc, exultmenu.cc: Added a Zaurus version of the menu -- single
+	  column, only 3 games/mods per page and no Exult logo in the back (as it
+	  interferes with menu) -- due to resolution constraints. Also fixed dumb
+	  mistake when loading a game with --bg or --si.
+
 2006-08-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Adding mod manager to Exult and Exult Studio. New Exult menu now displays
 	  all games in exult.cfg and has a sub-menu for each game's mods. Likewise,
