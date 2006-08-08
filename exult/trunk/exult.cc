@@ -637,10 +637,10 @@ static void Init
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 	if (run_bg) {
-		arg_gamename == CFG_BG_NAME;
+		arg_gamename = CFG_BG_NAME;
 		run_bg = false;
 	} else if (run_si) {
-		arg_gamename == CFG_SI_NAME;
+		arg_gamename = CFG_SI_NAME;
 		run_si = false;
 	}
 
@@ -648,10 +648,14 @@ static void Init
 		BuildGameMap();
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
+#if defined(__zaurus__)
+	gwin = new Game_window(sw, sh, scaleval, sclr);
+#else
 	if (arg_gamename != "default" || run_bg || run_si)
 		gwin = new Game_window(sw, sh, scaleval, sclr);
 	else
 		gwin = new Game_window(400, 300, scaleval, sclr);
+#endif
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::Init();
 
@@ -695,9 +699,11 @@ static void Init
 		}
 		else
 		{
+#if !(defined(__zaurus__))
 			gwin->resized(400, 300, scaleval, sclr);
 			// Ensure proper clipping:
 			gwin->get_win()->set_clip(0, 0, 400, 300);
+#endif
 			ExultMenu exult_menu(gwin);
 			newgame = exult_menu.run();
 		}

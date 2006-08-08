@@ -48,7 +48,11 @@ static bool get_play_1st_scene(void);
 static void set_play_1st_scene(bool);
 
 #define MAX_GAMES 100
-#define PAGE_SIZE 10
+#if defined(__zaurus__)
+	#define PAGE_SIZE 3
+#else
+	#define PAGE_SIZE 10
+#endif
 #define REBUILD_MENU(x) {delete menu; menu = x; gwin->clear_screen(true);}
 #define NAV_CLICK(x, y) {	\
 			case -8:	\
@@ -302,33 +306,38 @@ MenuList *ExultMenu::create_main_menu(int first)
 	MenuList *menu = new MenuList();
 
 	int ypos = 15;
-	int xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
-	
+	int xpos;
+#if !(defined(__zaurus__))
+	xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
+#endif
 	std::vector<ModManager *> *game_list = gamemanager->get_game_list();
 	int num_choices = game_list->size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
+#if defined(__zaurus__)
+		int menux = centerx;
+#else
+		int menux = xpos+(i%2)*centerx;
+#endif
 		ModManager *exultgame = (*game_list)[i];
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
 			Audio::get_ptr()->can_sfx(exultgame->get_title())?1:0);
-		/* ++++ TESTING
-		Shape_frame *sfxicon = Audio::get_ptr()->can_sfx(exultgame->get_title())?
-			0:exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0);
-		*/
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							exultgame->get_menu_string().c_str(),
-							sfxicon, xpos+(i%2)*centerx, ypos);
+							sfxicon, menux, ypos);
 		entry->set_id(i);
 		menu->add_entry(entry);
 
 		if (exultgame->has_mods())
 		{
 			MenuTextEntry *mod_entry = new MenuTextEntry(navfonton, navfont, "SHOW MODS",
-								xpos+(i%2)*centerx, ypos+entry->get_height()+4);
+								menux, ypos+entry->get_height()+4);
 			mod_entry->set_id(i+MAX_GAMES);
 			menu->add_entry(mod_entry);
 		}
+#if !(defined(__zaurus__))
 		if (i%2)
+#endif
 			ypos += 45;
 	}
 	
@@ -362,16 +371,24 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 	MenuList *menu = new MenuList();
 
 	int ypos = 15;
-	int xpos = centerx/2;
+	int xpos;
+#if !(defined(__zaurus__))
+	xpos = centerx/2;
+#endif
 	
 	std::vector<ModInfo *> *mod_list = selgame->get_mod_list();
 	int num_choices = mod_list->size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
+#if defined(__zaurus__)
+		int menux = centerx;
+#else
+		int menux = xpos+(i%2)*centerx;
+#endif
 		ModInfo *exultmod = (*mod_list)[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							exultmod->get_menu_string().c_str(),
-							0, xpos+(i%2)*centerx, ypos);
+							0, menux, ypos);
 		entry->set_id(i);
 		entry->set_enabled(exultmod->is_mod_compatible());
 		menu->add_entry(entry);
@@ -379,12 +396,14 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 		if (!exultmod->is_mod_compatible())
 		{
 			MenuGameEntry *incentry = new MenuGameEntry(navfonton, navfont, "WRONG EXULT VERSION",
-								0, xpos+(i%2)*centerx, ypos+entry->get_height()+4);
+								0, menux, ypos+entry->get_height()+4);
 			// Accept no clicks:
 			incentry->set_enabled(false);
 			menu->add_entry(incentry);
 		}
+#if !(defined(__zaurus__))
 		if (i%2)
+#endif
 			ypos += 45;
 	}
 	
@@ -425,11 +444,16 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = 0;
 	
+#if !(defined(__zaurus__))
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	int logox = centerx-exultlogo->get_width()/2,
 		logoy = centery-exultlogo->get_height()/2;
+#endif
 	do {
+#if !(defined(__zaurus__))
+		// Interferes with the menu.
 		sman->paint_shape(logox,logoy,exultlogo);
+#endif
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					gwin->get_width()-font->get_text_width(VERSION),
 					gwin->get_height()-font->get_text_height()-5, VERSION);
@@ -511,9 +535,16 @@ BaseGameInfo *ExultMenu::run()
 	MenuList *menu = create_main_menu(first_game);
 	menu->set_selection(0);
 	BaseGameInfo *sel_game = 0;
+#if defined(__zaurus__)
+	// Erase the old logo.
+	gwin->clear_screen(true);
+#endif
 	
 	do {
+#if !(defined(__zaurus__))
+		// Interferes with the menu.
 		sman->paint_shape(logox,logoy,exultlogo);
+#endif
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					gwin->get_width()-font->get_text_width(VERSION),
 					gwin->get_height()-font->get_text_height()-5, VERSION);
