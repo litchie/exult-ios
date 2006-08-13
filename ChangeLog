@@ -1,3 +1,7 @@
+2006-08-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed cache-out bug of terrain objects when the whole map is cached
+	  out (mostly when teleporting to another map).
+
 2006-08-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, exultmenu.cc: Added a Zaurus version of the menu -- single
 	  column, only 3 games/mods per page and no Exult logo in the back (as it
