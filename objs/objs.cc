@@ -1436,15 +1436,16 @@ void Terrain_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	if (!gwin->get_map()->is_caching_out())
+	// Is this condition necessary?
+	if (chunk)
 		{
-		gwin->get_map()->set_map_modified();
-		if (chunk)
-			{
-			Chunk_terrain *ter = chunk->get_terrain();
-			ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
-			gwin->get_map()->set_chunk_terrains_modified();
-			}
+		// Do NOT remove object if the map is being cached out.
+		if (chunk->get_map()->is_caching_out())
+			return;
+		chunk->get_map()->set_map_modified();
+		Chunk_terrain *ter = chunk->get_terrain();
+		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+		gwin->get_map()->set_chunk_terrains_modified();
 		}
 	Game_object::remove_this(nodel);
 	}
