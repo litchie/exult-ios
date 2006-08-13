@@ -1,6 +1,9 @@
 2006-08-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* Fixed cache-out bug of terrain objects when the whole map is cached
+	* objs.cc: Fixed cache-out bug of terrain objects when the whole map is cached
 	  out (mostly when teleporting to another map).
+	* exult.cc, exultmenu.cc: Fixed a palette problem when loading a game with
+	  command-line parameters with 'skip_splash' disabled. Also, fixed the initial
+	  Exult logo in the menu.
 
 2006-08-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, exultmenu.cc: Added a Zaurus version of the menu -- single
