@@ -487,6 +487,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 BaseGameInfo *ExultMenu::run()
 {
 	Palette *gpal = gwin->get_pal();
+	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 
 	Shape_manager *sman = Shape_manager::get_instance();
 	font = fontManager.get_font("CREDITS_FONT");
@@ -495,7 +496,6 @@ BaseGameInfo *ExultMenu::run()
 	navfonton = fontManager.get_font("HOT_NAV_FONT");
 
 	if(!gamemanager->get_game_count()) {
-		gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 		int topy = centery-25;
 		font->center_text(gwin->get_win()->get_ib8(),
 					centerx, topy+20, "WARNING");
@@ -522,11 +522,10 @@ BaseGameInfo *ExultMenu::run()
 	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
-	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
 	int logox = centerx-exultlogo->get_width()/2,
 		logoy = centery-exultlogo->get_height()/2;
 	sman->paint_shape(logox,logoy,exultlogo);
-	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
 
@@ -539,7 +538,7 @@ BaseGameInfo *ExultMenu::run()
 	// Erase the old logo.
 	gwin->clear_screen(true);
 #endif
-	
+	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	do {
 #if !(defined(__zaurus__))
 		// Interferes with the menu.
