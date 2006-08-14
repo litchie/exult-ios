@@ -4,6 +4,8 @@
 	* exult.cc, exultmenu.cc: Fixed a palette problem when loading a game with
 	  command-line parameters with 'skip_splash' disabled. Also, fixed the initial
 	  Exult logo in the menu.
+	* modmgr.cc: Remove trailing slashes before adding "<MODS>" system path for
+	  each game.
 
 2006-08-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, exultmenu.cc: Added a Zaurus version of the menu -- single
