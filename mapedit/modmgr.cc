@@ -331,6 +331,12 @@ static void get_game_paths(const string &gametitle)
 	default_dir = data_directory + "/mods";
 	config->value(config_path.c_str(), mods_directory, 
 							default_dir.c_str());
+	if (*(mods_directory.end()-1) == '/' || *(mods_directory.end()-1) == '\\')
+	{
+		// Remove any trailing slashes, just in case:
+		mods_directory.resize(mods_directory.length()-1);
+		config->set(config_path.c_str(), mods_directory, true);
+	}
 	add_system_path("<" + system_path_tag + "_MODS>", mods_directory.c_str());
 }
 
