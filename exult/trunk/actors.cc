@@ -2524,6 +2524,7 @@ void Actor::set_flag
 	case Obj_flags::dont_move:
 	case Obj_flags::bg_dont_move:
 		stop();			// Added 7/6/03.
+		set_action(0);	// Force actor to stop current action.
 		break;
 		}
 					// Update stats if open.
@@ -2587,6 +2588,11 @@ void Actor::clear_flag
 		}
 	else if (flag == Obj_flags::charmed)
 		set_target(0);			// Need new opponent.
+	else if ((GAME_BG && flag == Obj_flags::bg_dont_move) ||
+			flag == Obj_flags::dont_move)
+		// Start again after a little while
+		start(gwin->get_std_delay(), gwin->get_std_delay());
+	
 	set_actor_shape();
 	}
 
@@ -4447,12 +4453,14 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	bool in_usecode_control = (GAME_BG && get_flag(Obj_flags::bg_dont_move))
+			|| get_flag(Obj_flags::dont_move);
 	if (!action)			// Not doing anything?
 		{			// Stop if not on current map.
-		if (schedule && get_map() == gwin->get_map())
-			schedule->now_what();
-		else
+		if (get_map() != gwin->get_map())
 			dormant = true;
+		else if (schedule && !in_usecode_control)
+			schedule->now_what();
 		}
 	else
 		{			// Do what we should.
@@ -4467,7 +4475,7 @@ void Npc_actor::handle_event
 			set_action(0);
 			if (get_map() != gwin->get_map())
 				dormant = true;
-			if (schedule)
+			if (schedule && !in_usecode_control)
 				if (dormant)
 					schedule->im_dormant();
 				else

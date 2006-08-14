@@ -1,3 +1,7 @@
+2006-08-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Setting bg_dont_move and dont_move flags prevent actors from doing any
+	  schedule actions while the flag is set.
+
 2006-08-13  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs.cc: Fixed cache-out bug of terrain objects when the whole map is cached
 	  out (mostly when teleporting to another map).
