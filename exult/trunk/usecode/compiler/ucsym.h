@@ -188,7 +188,7 @@ public:
 	friend class Uc_scope;
 	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
 	static Uc_function_symbol *create(char *nm, int num, 
-						std::vector<char *>& p);
+						std::vector<char *>& p, bool is_extern=false);
 	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()

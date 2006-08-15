@@ -1,4 +1,19 @@
 2006-08-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* modmgr.cc: Added two path macros to mod cfg files: '__MODS__' and
+	  '__MOD_PATH__'. They are expanded, respectivelly, to the game's '<MODS>'
+	  dir and to the mod's '<MODS>/<mod_title>' (where '<mod_title>' is the
+	  mod's cfg option, defaulting to the filename -- sans extension -- of
+	  said cfg).
+	* schedule.cc: Slightly tweaked the 'talk' schedule. NPCs will no longer
+	  try to talk through mountains.
+	* ucsym.*, ucparse.yy, ucfun.h: Fixed bug #1540599. Now, declaring functions
+	  through externs and directly will always assign the same function number
+	  in both cases (and regardless of order) as long as both have the same
+	  number of parameters (and whether or not autonumbering -- either style --
+	  is being used). Duplicate declarations (but not duplicate externs, unless
+	  the parameter count differs) will raise errors now.
+
+2006-08-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Setting bg_dont_move and dont_move flags prevent actors from doing any
 	  schedule actions while the flag is set.
 
