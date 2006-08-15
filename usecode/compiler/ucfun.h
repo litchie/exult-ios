@@ -113,6 +113,10 @@ public:
 		setup_intrinsics();
 		return globals.search(nm);
 		}
+	static Uc_symbol *search_globals(const char *nm)
+		{ 
+		return globals.search(nm);
+		}
 	static Uc_intrinsic_symbol *get_intrinsic(int i)
 		{ 
 		setup_intrinsics();

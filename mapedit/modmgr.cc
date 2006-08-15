@@ -127,21 +127,44 @@ ModInfo::ModInfo (Exult_Game game, string name, string mod, Configuration *modco
 
 	string tagstr(mod_title), systagstr(to_uppercase(title.c_str())),
 		system_path_tag(to_uppercase(title + ("_" + tagstr))),
-		data_directory("<" + systagstr + "_MODS>/" + tagstr);
+		mods_dir("<" + systagstr + "_MODS>"), data_directory(mods_dir + "/" + tagstr),
+		mods_macro("__MODS__"), mod_path_macro("__MOD_PATH__");
+	string::size_type pos;
 
 	config_path = "mod_info/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	modconfig->value(config_path, gamedatdir, get_system_path(default_dir).c_str());
-	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedatdir);
+	// Path 'macros' for relavite paths:
+	pos = gamedatdir.find(mods_macro);
+	if (pos != string::npos)
+		gamedatdir.replace(pos, mods_macro.length(), mods_dir);
+	pos = gamedatdir.find(mod_path_macro);
+	if (pos != string::npos)
+		gamedatdir.replace(pos, mod_path_macro.length(), data_directory);
+	add_system_path("<" + system_path_tag + "_GAMEDAT>", get_system_path(gamedatdir));
 
 	config_path = "mod_info/savegame_path";
 	modconfig->value(config_path, savedir, get_system_path(data_directory).c_str());
-	add_system_path("<" + system_path_tag + "_SAVEGAME>", savedir);
+	// Path 'macros' for relavite paths:
+	pos = savedir.find(mods_macro);
+	if (pos != string::npos)
+		savedir.replace(pos, mods_macro.length(), mods_dir);
+	pos = savedir.find(mod_path_macro);
+	if (pos != string::npos)
+		savedir.replace(pos, mod_path_macro.length(), data_directory);
+	add_system_path("<" + system_path_tag + "_SAVEGAME>", get_system_path(savedir));
 	
 	config_path = "mod_info/patch";
 	default_dir = data_directory + "/patch";
 	modconfig->value(config_path, patchdir, get_system_path(default_dir).c_str());
-	add_system_path("<" + system_path_tag + "_PATCH>", patchdir);
+	// Path 'macros' for relavite paths:
+	pos = patchdir.find(mods_macro);
+	if (pos != string::npos)
+		patchdir.replace(pos, mods_macro.length(), mods_dir);
+	pos = patchdir.find(mod_path_macro);
+	if (pos != string::npos)
+		patchdir.replace(pos, mod_path_macro.length(), data_directory);
+	add_system_path("<" + system_path_tag + "_PATCH>", get_system_path(patchdir));
 }
 
 // ModManager: class that manages a game's modlist and paths

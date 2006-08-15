@@ -281,12 +281,25 @@ Uc_function_symbol *Uc_function_symbol::create
 	char *nm, 
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
-	std::vector<char *>& p
+	std::vector<char *>& p,
+	bool is_extern
 	)
 	{
-	int ucnum;
-	Uc_function_symbol *sym;
-	ucnum = num >= 0 ? num : (last_num + 1);
+	// Override function number if the function has been declared before this.
+	Uc_function_symbol *sym = (Uc_function_symbol *) Uc_function::search_globals(nm);
+	if (sym)
+		if (sym->is_externed() || is_extern)
+			if (sym->get_num_parms() == p.size())
+				num = sym->get_usecode_num();
+			else
+				num = -1;
+		else
+			{
+			char buf[256];
+			sprintf(buf, "Duplicate declaration of function '%s'.", nm);
+			Uc_location::yyerror(buf);
+			}
+	int ucnum = num >= 0 ? num : (last_num + 1);
 			// Set last_num if the function doesn't
 			// have a number:
 	if (num < 0 || 
@@ -452,7 +465,8 @@ int Uc_scope::add_function_symbol
 		{
 		if (fun2->externed || fun->externed)
 			{
-			if (Uc_function_symbol::last_num == fun->usecode_num)
+			if (!Uc_function_symbol::new_auto_num &&
+					Uc_function_symbol::last_num == fun->usecode_num)
 				--Uc_function_symbol::last_num;
 			}
 		else

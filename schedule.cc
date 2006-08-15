@@ -1207,18 +1207,24 @@ void Talk_schedule::now_what
 		Actor_action *pact = Path_walking_actor_action::create_path(
 			npc->get_tile(),
 			gwin->get_main_actor()->get_tile(), cost);
-		if (rand()%3 == 0)
-			npc->say(first_talk, last_talk);
 		if (!pact)
 			{
 #ifdef DEBUG
 			cout << "Talk: Failed to find path for " << 
 						npc->get_name() << endl;
 #endif
+#if 0	// ++++ Testing.
 			npc->follow(gwin->get_main_actor());
+#else
+			// No path found; try again a little later.
+			npc->start(speed, 500);
+			return;
+#endif
 			}
 		else
 			{
+		if (rand()%3 == 0)
+			npc->say(first_talk, last_talk);
 					// Walk there, and retry if
 					//   blocked.
 			npc->set_action(pact);
@@ -1248,7 +1254,7 @@ void Talk_schedule::now_what
 				gwin->get_main_actor()->get_tile()))
 			{
 			phase = 0;
-			npc->start(speed, 1000);
+			npc->start(speed, 500);
 			return;
 			}
 					// But first face Avatar.
