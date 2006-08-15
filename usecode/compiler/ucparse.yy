@@ -60,6 +60,7 @@ std::vector<Uc_function *> functions;	// THIS is what we produce.
 static Uc_function *function = 0;	// Current function being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
 static Uc_expression *method_this = 0;
+static bool is_extern = false;	// Marks a function symbol as being an extern
 
 %}
 
@@ -161,7 +162,7 @@ global_decl:
 	;
 
 function:
-	function_proto 
+	function_proto
 		{ function = new Uc_function($1); }
 		statement_block
 		{ 
@@ -175,7 +176,7 @@ function:
 function_proto:
 	opt_var IDENTIFIER opt_int '(' opt_identifier_list ')'
 		{
-		$$ = Uc_function_symbol::create($2, $3, *$5);
+		$$ = Uc_function_symbol::create($2, $3, *$5, is_extern);
 		delete $5;		// A copy was made.
 		}
 	;
@@ -368,8 +369,8 @@ string_decl:
 	;
 
 function_decl:
-	EXTERN function_proto ';'
-		{ $$ = $2; $$->set_externed(); }
+	EXTERN { is_extern = true; } function_proto ';'
+		{ $$ = $3; $$->set_externed(); is_extern = false; }
 	;
 
 assignment_statement:
