@@ -878,10 +878,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\bggame.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\browser.cc"
 					>
 				</File>
@@ -958,6 +954,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\mapedit\modmgr.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\monsters.cc"
 					>
 				</File>
@@ -1006,10 +1006,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\sigame.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\tqueue.cc"
 					>
 				</File>
@@ -1049,10 +1045,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\bggame.h"
-						>
-					</File>
-					<File
 						RelativePath="..\browser.h"
 						>
 					</File>
@@ -1070,10 +1062,6 @@
 					</File>
 					<File
 						RelativePath="..\delobjs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\devgame.h"
 						>
 					</File>
 					<File
@@ -1153,6 +1141,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\mapedit\modmgr.h"
+						>
+					</File>
+					<File
 						RelativePath="..\monsters.h"
 						>
 					</File>
@@ -1194,10 +1186,6 @@
 					</File>
 					<File
 						RelativePath="..\shapeid.h"
-						>
-					</File>
-					<File
-						RelativePath="..\sigame.h"
 						>
 					</File>
 					<File
@@ -2074,6 +2062,154 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="gamemgr"
+				>
+				<File
+					RelativePath="..\gamemgr\bggame.cc"
+					>
+					<FileConfiguration
+						Name="Release Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\gamemgr\devgame.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\modmgr.cc"
+					>
+					<FileConfiguration
+						Name="Release Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\gamemgr\sigame.cc"
+					>
+					<FileConfiguration
+						Name="Release Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<Filter
+					Name="gamemgr h"
+					>
+					<File
+						RelativePath="..\gamemgr\bggame.h"
+						>
+					</File>
+					<File
+						RelativePath="..\gamemgr\devgame.h"
+						>
+					</File>
+					<File
+						RelativePath="..\gamemgr\modmgr.h"
+						>
+					</File>
+					<File
+						RelativePath="..\gamemgr\sigame.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -2273,11 +2409,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File

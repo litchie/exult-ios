@@ -56,7 +56,7 @@ rm -f audio/midi_drivers/Makefile audio/Makefile conf/Makefile data/Makefile \
       shapes/Makefile tools/Makefile usecode/compiler/Makefile \
       usecode/ucxt/Docs/Makefile usecode/ucxt/data/Makefile \
       usecode/ucxt/include/Makefile usecode/ucxt/src/Makefile \
-      usecode/ucxt/Makefile usecode/Makefile Makefile
+      usecode/ucxt/Makefile usecode/Makefile gamemgr/Makefile Makefile
 
 
 # touch the configure.ac file to force rebuilding configure

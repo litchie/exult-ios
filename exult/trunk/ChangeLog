@@ -1,3 +1,7 @@
+2006-08-20  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed compilation problems caused by modmgr by moving files bggame.*,
+	  sigame.*, devgame.* and modmgr.* into new 'gamemgr' directory.
+
 2006-08-14  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* modmgr.cc: Added two path macros to mod cfg files: '__MODS__' and
 	  '__MOD_PATH__'. They are expanded, respectivelly, to the game's '<MODS>'

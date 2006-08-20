@@ -1,19 +1,19 @@
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/smooth:$(SRC)/objs:$(SRC)/pathfinder: \
 $(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src: \
-$(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:$(SRC)/mapedit
+$(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:$(SRC)/gamemgr
 
 VERSION=1.4.01cvs
 
 MAIN_OBJS=actions.o actorio.o actors.o \
-	args.o bggame.o browser.o cheat.o  \
-	combat.o delobjs.o devgame.o \
-	dir.o drag.o effects.o exult.o exultmenu.o modmgr.o \
+	args.o browser.o cheat.o  \
+	combat.o delobjs.o \
+	dir.o drag.o effects.o exult.o exultmenu.o \
 	game.o gameclk.o gamedat.o gamemap.o \
 	gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
 	party.o \
-	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
+	paths.o readnpcs.o schedule.o segfile.o tqueue.o txtscroll.o \
 	exultico.o cheat_screen.o shapeid.o version.o windrag.o istring.o
 # unused: npctest.o
 
@@ -46,6 +46,8 @@ FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o msgfile
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
 
+GAMEMGR_OBJS=bggame.o devgame.o sigame.o modmgr.o
+
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
 	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
@@ -69,7 +71,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o ucsymtbl.o
 
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GAMEMGR_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
@@ -244,7 +246,7 @@ ucparse.cc:
 	mv ucparse.c ucparse.cc
  
 uclex.cc:  
-	flex usecode/compiler/uclex.ll 
+	flex usecode/compiler/uclex.ll
 	mv lex.yy.c uclex.cc
 
 UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o

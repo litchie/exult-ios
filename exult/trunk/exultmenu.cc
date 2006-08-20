@@ -40,7 +40,7 @@
 #include "XMidiFile.h"
 #include "databuf.h"
 #include "fnames.h"
-#include "mapedit/modmgr.h"
+#include "gamemgr/modmgr.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);

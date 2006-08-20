@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
-	-I$(srcdir)/../imagewin -I$(srcdir)/../conf \
+	-I$(srcdir)/../imagewin -I$(srcdir)/../conf -I$(srcdir)../gamemgr \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
@@ -50,9 +50,7 @@ exult_studio_SOURCES = \
 	shapegroup.cc \
 	shapegroup.h \
 	shapelst.cc \
-	shapelst.h \
-	modmgr.cc \
-	modmgr.h
+	shapelst.h
 
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)
@@ -60,6 +58,7 @@ noinst_PROGRAMS = $(GIMP_PLUGINS)
 exult_studio_LDADD = \
 	../conf/libconf.la		\
 	../imagewin/libimagewin.la	\
+	../gamemgr/libgamemgr.la	\
 	../shapes/libshapes.la 		\
 	../files/libu7file.la		\
 	../server/libserver.la		\
