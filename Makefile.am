@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shapes \
-	-I$(srcdir)/server -I$(srcdir)/data \
+	-I$(srcdir)/server -I$(srcdir)/data -I$(srcdir)/gamemgr \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
 	-I$(srcdir)/audio -I$(srcdir)/audio/midi_drivers -I$(srcdir)/pathfinder \
 	-I$(srcdir)/usecode \
@@ -9,7 +9,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shap
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS =  files conf shapes imagewin flic pathfinder \
-	data usecode tools audio gumps objs server mapedit desktop docs
+	data usecode tools audio gumps objs server gamemgr desktop docs
 
 bin_PROGRAMS = exult
 
@@ -22,8 +22,6 @@ exult_SOURCES =	\
 	alpha_kludges.h	\
 	args.cc		\
 	args.h		\
-	bggame.cc	\
-	bggame.h	\
 	browser.cc	\
 	browser.h	\
 	cheat.cc	\
@@ -35,8 +33,6 @@ exult_SOURCES =	\
 	combat_opts.h	\
 	delobjs.cc	\
 	delobjs.h	\
-	devgame.cc	\
-	devgame.h	\
 	dir.cc		\
 	dir.h		\
 	drag.cc		\
@@ -95,8 +91,6 @@ exult_SOURCES =	\
 	segfile.h	\
 	shapeid.cc	\
 	shapeid.h	\
-	sigame.cc	\
-	sigame.h	\
 	singles.h	\
 	tiles.h		\
 	tqueue.cc	\
@@ -123,10 +117,11 @@ EXULTLIBS = \
 	objs/libobjs.la \
 	gumps/libgumps.la \
 	files/libu7file.la \
-	files/zip/libminizip.la
+	files/zip/libminizip.la \
+	gamemgr/libgamemgr.la
 
 exult_LDADD = \
-	$(EXULTLIBS) mapedit/modmgr.o \
+	$(EXULTLIBS) \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE) \
 	$(ZLIB_LIBS) $(OPENGL_LIBS)
 
