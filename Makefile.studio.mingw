@@ -7,7 +7,7 @@ U7PATH=C:/Ultima7
 TOOLSPATH=C:/GimpPlugin
 
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gamemgr:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
 VERSION=1.4.01cvs
 
@@ -51,10 +51,12 @@ SERVER_OBJS=objserial.o servemsg.o servewin32.o
 MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
 	exult_studio.o locator.o maps.o \
 	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o shapedraw.o \
-	shapefile.o shapegroup.o modmgr.o \
+	shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
+
+GAMEMGR_OBJS=modmgr.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
@@ -64,7 +66,7 @@ CONF_OBJS=Configuration.o XMLEntity.o
 
 MISC_OBJS=exultstudioico.o windrag.o
 
-OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(GAMEMGR_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
 
 $(EXEC): $(OBJS) $(EXP_FILE)
 	$(CXX) $(EXP_FILE) -o $@ $(OBJS) $(LIBS)

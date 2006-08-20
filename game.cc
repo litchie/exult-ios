@@ -37,15 +37,15 @@
 #include "flic/playfli.h"
 #include "font.h"
 #include "game.h"
-#include "bggame.h"
-#include "sigame.h"
-#include "devgame.h"
+#include "gamemgr/bggame.h"
+#include "gamemgr/sigame.h"
+#include "gamemgr/devgame.h"
 #include "gamewin.h"
 #include "keys.h"
 #include "mouse.h"
 #include "palette.h"
 #include "shapeid.h"
-#include "mapedit/modmgr.h"
+#include "gamemgr/modmgr.h"
 
 #ifndef UNDER_CE
 using std::cout;

@@ -725,6 +725,7 @@ audio/midi_drivers/mt32emu/Makefile
 conf/Makefile
 files/Makefile
 files/zip/Makefile
+gamemgr/Makefile
 gumps/Makefile
 pathfinder/Makefile
 flic/Makefile
