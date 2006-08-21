@@ -1,3 +1,9 @@
+2006-08-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Makefile.common: Force recreation of ucparse.{cc,h} or uclex.cc if,
+	  respectively, ucparse.yy or uclex.yy are changed. Need to know if
+	  it causes compilation problems in MorphOS or BeOS. Also removed some
+	  trailing spaces.
+
 2006-08-20  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed compilation problems caused by modmgr by moving files bggame.*,
 	  sigame.*, devgame.* and modmgr.* into new 'gamemgr' directory.
