@@ -177,10 +177,10 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
 
-$(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS) 
+$(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
-expack$(EXEEXT) : expack.o $(FILE_OBJS) 
+expack$(EXEEXT) : expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) expack.o $(FILE_OBJS)
 
 $(EXULT_FLX): expack$(EXEEXT) $(EXULT_FLX_OBJECTS)
@@ -241,11 +241,11 @@ UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o \
 ucc$(EXEEXT) : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty
 
-ucparse.cc:  
+ucparse.cc:
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
 	mv ucparse.c ucparse.cc
  
-uclex.cc:  
+uclex.cc:
 	flex usecode/compiler/uclex.ll
 	mv lex.yy.c uclex.cc
 
@@ -270,7 +270,11 @@ all: $(EXEC)
 clean:
 	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg_paperdol.vga data/bg_paperdol_vga.h
 
-tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
+uccrefresh:
+	if test usecode/compiler/ucparse.yy -nt ucparse.cc ; then rm -f ucparse.cc ucparse.h ; fi
+	if test usecode/compiler/uclex.ll -nt uclex.cc ; then rm -f uclex.cc ; fi
+
+tools:  uccrefresh expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
 
 toolsclean:
 	rm -f expack.o expack$(EXEEXT) $(FILE_OBJS)
