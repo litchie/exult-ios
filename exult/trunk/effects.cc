@@ -554,12 +554,20 @@ void Projectile_effect::init
 	if (attacker)			// Try to set start better.
 		{
 		Shape_info& info = attacker->get_info();
-					// Try for around the heat.
-		pos.tz += info.get_3d_height() - 1;
+		// Start closer to the center of the actor.
+		pos.tz += (info.get_3d_height() * 3)/4;
 		if (d.tx < pos.tx)
 			pos.tx += info.get_3d_xtiles();
 		if (d.ty < pos.ty)
 			pos.ty += info.get_3d_ytiles();
+		}
+	if (target)			// Try to set end better.
+		{
+		Shape_info& info = target->get_info();
+		// Aim around the center of the target:
+		d.tx -= info.get_3d_xtiles()/2;
+		d.ty -= info.get_3d_ytiles()/2;
+		d.tz += (info.get_3d_height() * 3)/4;
 		}
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
@@ -597,12 +605,7 @@ Projectile_effect::Projectile_effect
 	    sprite(shnum, 0), weapon(weap), skip_render(no_render),
 	    return_path(false)
 	{
-	Tile_coord pos1 = att->get_tile();
-	Tile_coord pos2 = to->get_tile();
-				// Use top tile.
-	pos1.tz += att->get_info().get_3d_height() - 1;
-	pos2.tz += to->get_info().get_3d_height() - 1;
-	init(pos1, pos2);
+	init(att->get_tile(), to->get_tile());
 	}
 
 /*
