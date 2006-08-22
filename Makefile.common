@@ -5,19 +5,15 @@ $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32em
 
 VERSION=1.4.01cvs
 
-MAIN_OBJS=actions.o actorio.o actors.o \
-	args.o browser.o cheat.o  \
-	combat.o delobjs.o \
-	dir.o drag.o effects.o exult.o exultmenu.o \
-	game.o gameclk.o gamedat.o gamemap.o \
-	gamerend.o gamewin.o keys.o keyactions.o \
-	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
-	party.o \
-	paths.o readnpcs.o schedule.o segfile.o tqueue.o txtscroll.o \
-	exultico.o cheat_screen.o shapeid.o version.o windrag.o istring.o
+MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o \
+	combat.o delobjs.o dir.o drag.o effects.o exult.o exultico.o exultmenu.o \
+	game.o gameclk.o gamedat.o gamemap.o  gamerend.o gamewin.o istring.o keys.o \
+	keyactions.o menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
+	party.o paths.o readnpcs.o schedule.o segfile.o shapeid.o tqueue.o txtscroll.o \
+	version.o windrag.o 
 # unused: npctest.o
 
-PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
+PATH_OBJS=Astar.o path.o PathFinder.o Zombie.o
 
 CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
@@ -41,35 +37,32 @@ AUDIO_OBJS=Audio.o conv.o Midi.o soundtest.o $(MIDI_DRV_OBJS)
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o msgfile.o
+FILE_OBJS=crc.o Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
 
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
 
-GAMEMGR_OBJS=bggame.o devgame.o sigame.o modmgr.o
+GAMEMGR_OBJS=bggame.o devgame.o modmgr.o sigame.o
 
-GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
-	Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
-	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
-	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
-	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
-	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
-	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o \
-	Text_button.o GameplayOptions_gump.o CombatOptions_gump.o \
-	 Enabled_button.o Notebook_gump.o
+GUMPS_OBJS= Actor_gump.o AudioOptions_gump.o Book_gump.o CombatOptions_gump.o \
+	CombatStats_gump.o Enabled_button.o Face_button.o  Face_stats.o File_gump.o \
+	Gamemenu_gump.o GameplayOptions_gump.o Gump.o Gump_button.o Gump_manager.o \
+	Gump_widget.o Gump_ToggleButton.o Jawbone_gump.o misc_buttons.o Newfile_gump.o \
+	Notebook_gump.o Paperdoll_gump.o Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o \
+	Slider_gump.o Spellbook_gump.o Stats_gump.o Text_button.o Text_gump.o \
+	VideoOptions_gump.o Yesno_gump.o
 
-IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
+IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o imagewin.o imagescl.o iwin8.o \
 	savepcx.o
 
-SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
-	monstinf.o u7drag.o miscinf.o 
+SHAPES_OBJS=bodies.o font.o fontvga.o items.o miscinf.o monstinf.o shapeinf.o \
+	shapevga.o u7drag.o vgafile.o
 
-OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
-	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
-	spellbook.o virstone.o jawbone.o objnames.o
+OBJS_OBJS=animate.o barge.o chunks.o chunkter.o  contain.o egg.o iregobjs.o \
+	jawbone.o mappatch.o objiter.o objnames.o objs.o spellbook.o virstone.o
 
-USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
-	useval.o conversation.o keyring.o ucdisasm.o ucsymtbl.o
+USECODE_OBJS=conversation.o intrinsics.o keyring.o stackframe.o ucdisasm.o ucfunction.o \
+	ucinternal.o ucmachine.o ucsched.o ucsymtbl.o useval.o
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GAMEMGR_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
 
@@ -198,7 +191,8 @@ $(BG_PAPERDOLL): expack$(EXEEXT) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 
-IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
+IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o \
+	ibuf8.o ibuf16.o vgafile.o pngio.o
 
 ipack$(EXEEXT) : $(IPACK_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(IPACK_OBJS) -lpng -lz
@@ -229,8 +223,8 @@ textpack$(EXEEXT) : textpack.o $(FILE_OBJS)
 u7voice2syx$(EXEEXT) : u7voice2syx.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) u7voice2syx.o $(FILE_OBJS)
 
-wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h ucsymtbl.h utils.h
-	$(CXX) $(LFLAGS) -o $(@) wud.o ucsymtbl.o utils.o
+wud$(EXEEXT) : ucsymtbl.o utils.o wud.o uctools.h bgintrinsics.h siintrinsics.h ucsymtbl.h utils.h
+	$(CXX) $(LFLAGS) -o $(@) ucsymtbl.o utils.o wud.o
 
 wuc$(EXEEXT) : wuc.o
 	$(CXX) $(LFLAGS) -o $(@) wuc.o
