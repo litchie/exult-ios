@@ -540,7 +540,12 @@ int Approach_actor_action::handle_event
 					// Figure next check.
 		int nsteps = path->get_num_steps();
 		if (nsteps >= 6)
+#if 0	// ++++ Testing
 			check_step += nsteps/2;
+#else
+			// Try checking more often.
+			check_step += 3;
+#endif
 		}
 	return delay;
 	}
