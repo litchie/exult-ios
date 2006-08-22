@@ -897,6 +897,7 @@ void Combat_schedule::set_weapon
 
 		returns = info->returns();
 		is_thrown = info->is_thrown();
+#if 0	/* NO GOOD.  The original doesn't seem to use this flag. */
 		no_blocking = info->no_blocking();
 		if (ammo_shape)
 			{
@@ -906,6 +907,9 @@ void Combat_schedule::set_weapon
 				no_blocking = 
 					no_blocking || ainfo->no_blocking();
 			}
+#else
+		no_blocking = false;
+#endif
 		}
 	max_range = projectile_range > strike_range ? projectile_range
 					: strike_range;
