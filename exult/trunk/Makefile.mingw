@@ -3,8 +3,6 @@
 
 # Where is Ultima 7 installed
 U7PATH=C:/Ultima7
-#Only used for snapshots
-TOOLSPATH=C:/U7Tools
 
 # Base of the exult source
 SRC=.
@@ -135,44 +133,44 @@ toolsinstall: tools
 	cp SDL/lib/SDL.dll $(U7PATH)/tools
 
 toolsdist: tools
-	mkdir -p $(TOOLSPATH)
-	mkdir -p $(TOOLSPATH)/tools
-	strip expack.exe -o $(TOOLSPATH)/tools/expack.exe
-	strip cmanip.exe -o $(TOOLSPATH)/tools/cmanip.exe
-	strip ipack.exe -o $(TOOLSPATH)/tools/ipack.exe
-	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
-	strip mockup.exe -o $(TOOLSPATH)/tools/mockup.exe
-	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
-	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
-	strip smooth.exe -o $(TOOLSPATH)/tools/smooth.exe
-	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
-	strip textpack.exe -o $(TOOLSPATH)/tools/textpack.exe
-	strip u7voice2syx.exe -o $(TOOLSPATH)/tools/u7voice2syx.exe
-	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
-	strip wuc.exe -o $(TOOLSPATH)/tools/wuc.exe
-	strip wud.exe -o $(TOOLSPATH)/tools/wud.exe
-	strip ucxt.exe -o $(TOOLSPATH)/ucxt.exe
-	mkdir -p $(TOOLSPATH)/data
-	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data
-	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data
-	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data
-	cp usecode/ucxt/data/u7opcodes.data $(TOOLSPATH)/data
-	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data
-	cp data/bginclude.uc $(TOOLSPATH)/data
-	cp data/u7bgintrinsics.data $(TOOLSPATH)/data
-	cp data/u7siintrinsics.data $(TOOLSPATH)/data
-	cp tools/expack.txt $(TOOLSPATH)/tools
-	cp tools/intrins1.txt $(TOOLSPATH)/tools
-	cp tools/intrins2.txt $(TOOLSPATH)/tools
-	cp tools/ipack.txt $(TOOLSPATH)/tools
-	cp tools/shp2pcx.txt $(TOOLSPATH)/tools
-	cp tools/splitshp.txt $(TOOLSPATH)/tools
-	cp tools/textpack.txt $(TOOLSPATH)/tools
-	cp tools/u7bgflag.txt $(TOOLSPATH)/tools
-	cp tools/u7siflag.txt $(TOOLSPATH)/tools
-	cp tools/ucformat.txt $(TOOLSPATH)/tools
-	u2d $(TOOLSPATH)/tools/*.txt
-	cp SDL/lib/SDL.dll $(TOOLSPATH)/tools
+	mkdir -p $(U7PATH)/Tools
+	mkdir -p $(U7PATH)/Tools/tools
+	strip expack.exe -o $(U7PATH)/Tools/tools/expack.exe
+	strip cmanip.exe -o $(U7PATH)/Tools/tools/cmanip.exe
+	strip ipack.exe -o $(U7PATH)/Tools/tools/ipack.exe
+	strip mklink.exe -o $(U7PATH)/Tools/tools/mklink.exe
+	strip mockup.exe -o $(U7PATH)/Tools/tools/mockup.exe
+	strip rip.exe -o $(U7PATH)/Tools/tools/rip.exe
+	strip shp2pcx.exe -o $(U7PATH)/Tools/tools/shp2pcx.exe
+	strip smooth.exe -o $(U7PATH)/Tools/tools/smooth.exe
+	strip splitshp.exe -o $(U7PATH)/Tools/tools/splitshp.exe
+	strip textpack.exe -o $(U7PATH)/Tools/tools/textpack.exe
+	strip u7voice2syx.exe -o $(U7PATH)/Tools/tools/u7voice2syx.exe
+	strip ucc.exe -o $(U7PATH)/Tools/tools/ucc.exe
+	strip wuc.exe -o $(U7PATH)/Tools/tools/wuc.exe
+	strip wud.exe -o $(U7PATH)/Tools/tools/wud.exe
+	strip ucxt.exe -o $(U7PATH)/Tools/ucxt.exe
+	mkdir -p $(U7PATH)/Tools/data
+	cp usecode/ucxt/data/events.data $(U7PATH)/Tools/data
+	cp usecode/ucxt/data/flags.data $(U7PATH)/Tools/data
+	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/Tools/data
+	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/Tools/data
+	cp usecode/ucxt/data/u7misc.data $(U7PATH)/Tools/data
+	cp data/bginclude.uc $(U7PATH)/Tools/data
+	cp data/u7bgintrinsics.data $(U7PATH)/Tools/data
+	cp data/u7siintrinsics.data $(U7PATH)/Tools/data
+	cp tools/expack.txt $(U7PATH)/Tools/tools
+	cp tools/intrins1.txt $(U7PATH)/Tools/tools
+	cp tools/intrins2.txt $(U7PATH)/Tools/tools
+	cp tools/ipack.txt $(U7PATH)/Tools/tools
+	cp tools/shp2pcx.txt $(U7PATH)/Tools/tools
+	cp tools/splitshp.txt $(U7PATH)/Tools/tools
+	cp tools/textpack.txt $(U7PATH)/Tools/tools
+	cp tools/u7bgflag.txt $(U7PATH)/Tools/tools
+	cp tools/u7siflag.txt $(U7PATH)/Tools/tools
+	cp tools/ucformat.txt $(U7PATH)/Tools/tools
+	u2d $(U7PATH)/Tools/tools/*.txt
+	cp SDL/lib/SDL.dll $(U7PATH)/Tools/tools
 
 allclean: clean toolsclean
 	rm -f exconfig.dll exconfig_rc.o exconfig.o
