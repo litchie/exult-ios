@@ -1632,6 +1632,10 @@ void Actor::set_schedule_type
 			cerr << "Attempted to set a \"walk to schedule\" activity for NPC "<< get_npc_num() << endl;
 			break;
 		default:
+			if (new_schedule_type >= 
+					Schedule::first_scripted_schedule)
+				schedule = new Scripted_schedule(this,
+							new_schedule_type);
 			break;
 			}
 					// Set AFTER creating new schedule.

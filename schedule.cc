@@ -47,6 +47,8 @@ using std::endl;
 using std::rand;
 #endif
 
+vector<char *> Schedule_change::script_names;
+
 /*
  *	Create. 
  */
@@ -202,9 +204,10 @@ static int find_method(Usecode_machine *uc, char *cls, char *meth, bool noerr)
 Scripted_schedule::Scripted_schedule
 	(
 	Actor *n,
-	char *nm
-	) : Schedule(n), name(nm)
+	int ty
+	) : Schedule(n), type(ty)
 	{
+	char *nm = Schedule_change::get_script_name(ty);
 	now_what_id = find_method(ucmachine, nm, "now_what", false);
 	im_dormant_id = find_method(ucmachine, nm, "im_dormant", true);
 	ending_id = find_method(ucmachine, nm, "ending", true);
@@ -3852,6 +3855,20 @@ int Walk_to_schedule::get_actual_type
 	}
 
 /*
+ *	Clear out names.
+ */
+
+void Schedule_change::clear
+	(
+	)
+	{
+	for (vector<char *>::iterator it = script_names.begin();
+				it != script_names.end(); ++it)
+		delete *it;
+	script_names.resize(0);
+	}
+
+/*
  *	Set a schedule from a U7 'schedule.dat' entry.
  */
 
@@ -3872,7 +3889,7 @@ void Schedule_change::set4
 	}
 
 /*
- *	Set a schedule from an Exult 'schedule.dat' entry.
+ *	Set a schedule from an Exult 'schedule.dat' entry (vers. -1).
  */
 
 void Schedule_change::set8
