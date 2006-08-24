@@ -42,6 +42,7 @@
 
 #ifndef UNDER_CE
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::rand;
 #endif
@@ -164,6 +165,64 @@ int Schedule::get_actual_type
 	)
 	{
 	return npc->get_schedule_type();
+	}
+
+/*
+ *	Run usecode function.
+ */
+
+void Scripted_schedule::run
+	(
+	int id				// A Usecode function #.
+	)
+	{
+	if (id)
+		ucmachine->call_method(inst, id, npc);
+	}
+
+/*
+ *	Lookup Usecode 'method'.
+ */
+
+static int find_method(Usecode_machine *uc, char *cls, char *meth, bool noerr)
+	{
+	char buf[512];
+	if (snprintf(buf, sizeof(buf), "%s::%s", cls, meth) >= sizeof(buf))
+		{
+		buf[sizeof(buf) - 1] = 0;
+		cerr << "Method '" << buf << "' was too long!!!" << endl;
+		}
+	return uc->find_function(buf, noerr);
+	}
+
+/*
+ *	Create schedule that uses Usecode methods for the actions.
+ */
+
+Scripted_schedule::Scripted_schedule
+	(
+	Actor *n,
+	char *nm
+	) : Schedule(n), name(nm)
+	{
+	now_what_id = find_method(ucmachine, nm, "now_what", false);
+	im_dormant_id = find_method(ucmachine, nm, "im_dormant", true);
+	ending_id = find_method(ucmachine, nm, "ending", true);
+	set_weapon_id = find_method(ucmachine, nm, "set_weapon", true);
+	set_bed_id = find_method(ucmachine, nm, "set_bed", true);
+	notify_object_gone_id = find_method(ucmachine, nm, 
+					"notify_object_gone", true);
+	}
+
+/*
+ *	Cleanup.
+ */
+
+Scripted_schedule::~Scripted_schedule
+	(
+	)
+	{
+	ucmachine->call_method(inst, -1, NULL);	// Free 'inst'.
 	}
 
 /*

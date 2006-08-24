@@ -34,6 +34,7 @@ class Game_object;
 class Actor;
 class Rectangle;
 class Actor_action;
+class Usecode_value;
 
 using std::vector;
 
@@ -75,7 +76,8 @@ public:
 		desk_work = 30,	follow_avatar = 31,
 					// Our own:
 		walk_to_schedule = 32,
-		street_maintenance = 33
+		street_maintenance = 33,
+		scripted_schedule = 34
 		};
 					// Set actor to walk somewhere, then
 					//   do something.
@@ -100,6 +102,34 @@ public:
 		{  }
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
+	};
+
+/*
+ *	Schedule is implemented as Usecode functions.
+ */
+class Scripted_schedule : public Schedule
+	{
+	char *name;			// Schedule name.
+	Usecode_value *inst;		// Usecode schedule instance.
+					// Usecode function #'s:
+	int now_what_id, im_dormant_id, ending_id, set_weapon_id, set_bed_id,
+			notify_object_gone_id;
+	void run(int id);
+public:
+	Scripted_schedule(Actor *n, char *nm);
+	~Scripted_schedule();
+	virtual void now_what()
+		{ run(now_what_id); }
+	virtual void im_dormant()
+		{ run(im_dormant_id); }
+	virtual void ending(int newtype)
+		{ run(ending_id); }
+	virtual void set_weapon(bool removed = false)
+		{ run(set_weapon_id); }
+	virtual void set_bed(Game_object *b)
+		{ run(set_bed_id); }
+	virtual void notify_object_gone(Game_object *obj)
+		{ run(notify_object_gone_id); }
 	};
 
 /*

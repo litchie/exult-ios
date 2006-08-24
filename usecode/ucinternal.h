@@ -432,9 +432,11 @@ public:
 					// Read in usecode functions.
 	virtual void read_usecode(std::istream& file, bool patch = false);
 					// Call desired function.
-	virtual int call_usecode(int id, Game_object *obj, 
+	virtual int call_usecode(int id, Game_object *item, 
 							Usecode_events event);
-	virtual int find_function(const char *nm);
+	virtual Usecode_value *call_method(Usecode_value *inst, int id,
+					Game_object *item);
+	virtual int find_function(const char *nm, bool noerr = false);
 	virtual void do_speech(int num);// Start speech, or show text.
 	virtual bool in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }
