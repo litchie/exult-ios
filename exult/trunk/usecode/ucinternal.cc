@@ -2707,7 +2707,7 @@ int Usecode_internal::run()
 int Usecode_internal::call_usecode
 	(
 	int id, 			// Function #.
-	Game_object *obj,		// Item ref.
+	Game_object *item,		// Item ref.
 	Usecode_events event
 	)
 	{
@@ -2720,7 +2720,7 @@ int Usecode_internal::call_usecode
 	conv->clear_answers();
 
 	int ret;
-	if (call_function(id, event, obj, true))
+	if (call_function(id, event, item, true))
 		ret = run();
 	else
 		ret = -1; // failed to call the function
@@ -2744,18 +2744,37 @@ int Usecode_internal::call_usecode
 	}
 
 /*
+ *	Call a 'method'.
+ *	Output:	Same as input, unless it's 'new', in which we return the new
+ *		instance.
+ */
+
+Usecode_value *Usecode_internal::call_method
+	(
+	Usecode_value *inst,		// Instance, or NULL.
+	int id, 			// Function # or -1 for free inst.
+	Game_object *item		// Item ref.
+	)
+	{
+	//++++++++IMPELEMENT THIS (including case where id == -1)
+	return 0;
+	}
+
+/*
  *	Lookup function name in symbol table.  Prints error if not found.
  */
 
 int Usecode_internal::find_function
 	(
-	const char *nm
+	const char *nm,
+	bool noerr
 	)
 	{
 	Usecode_symbol *ucsym = symtbl ? (*symtbl)[nm] : 0;
 	if (!ucsym)
 		{
-		cerr << "Failed to find Usecode symbol '" << nm
+		if (!noerr)
+			cerr << "Failed to find Usecode symbol '" << nm
 					<< "'." << endl;
 		return 0;
 		}
