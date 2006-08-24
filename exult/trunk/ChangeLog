@@ -1,3 +1,9 @@
+2006-08-24    <jeff@mini.nerble.net>
+
+	* schedule.cc,readnpcs.cc,actors.cc:  Working on support for
+	usecode-scripted schedules.  Also did some cleanup on schedule
+	reading/writing.
+
 2006-08-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actions.cc: Testing adding a limit to the number of steps between each
 	  check in Approach_actor_action (makes for smarter archers and monsters).
