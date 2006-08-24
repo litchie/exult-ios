@@ -186,6 +186,71 @@ void Game_window::write_npcs
 	}
 
 /*
+ *	Read in offsets.  When done, file is set to start of script names (if
+ *	there are any).
+ */
+
+void Set_to_read_schedules
+	(
+	StreamDataSource& sfile,
+	int& num_npcs,			// # npc's returnes.
+	int& entsize,			// Entry size returned.
+	int& num_script_names,		// # of usecode script names ret'd.
+	short *& offsets		// List of offsets ret'd.
+	)
+	{
+	entsize = 4;			// 4 is U7's size.
+	num_script_names = 0;
+	num_npcs = sfile.read4();	// # of NPC's, not include Avatar.
+	if (num_npcs == -1) {		// Exult format?
+		entsize = 8;
+		num_npcs = sfile.read4();
+	} else if (num_npcs == -2) {
+		entsize = 8;
+		num_npcs = sfile.read4();
+		num_script_names = sfile.read2();
+	}
+	offsets = new short[num_npcs];
+	int i;				// Read offsets with list of scheds.
+	for (i = 0; i < num_npcs; i++)
+		offsets[i] = sfile.read2();
+	}
+
+/*
+ *	Read one NPC's schedule.
+ */
+
+void Read_a_schedule
+	(
+	StreamDataSource& sfile,
+	int index,
+	Actor *npc,
+	int entsize,
+	short *offsets
+	)
+	{
+	int cnt = offsets[index] - offsets[index - 1];
+				// Read schedules into this array.
+	Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
+	unsigned char ent[10];
+	if (entsize == 4) {	// U7 format?
+		for (int j = 0; j < cnt; j++) {
+			sfile.read(reinterpret_cast<char*>(ent), 4);
+			schedules[j].set4(ent);
+		}
+	} else {		// Exult formats.
+		for (int j = 0; j < cnt; j++) {
+			sfile.read(reinterpret_cast<char*>(ent), 8);
+			schedules[j].set8(ent);
+		}
+	}
+	if (npc)			// Store in NPC.
+		npc->set_schedules(schedules, cnt);
+	else
+		delete schedules;
+	}
+
+/*
  *	Read NPC schedules.
  */
 
@@ -194,7 +259,8 @@ void Game_window::read_schedules
 	)
 	{
 	ifstream sfile_stream;
-	int num_npcs = 0;
+	int i, num_npcs = 0, entsize, num_script_names;
+	short *offsets;
 	try
 	{
 		U7open(sfile_stream, GSCHEDULE);
@@ -218,46 +284,32 @@ void Game_window::read_schedules
 		}
 	}
 	StreamDataSource sfile(&sfile_stream);
-	int entsize = 4;		// 4 is U7's size.
-	num_npcs = sfile.read4();	// # of NPC's, not include Avatar.
-	if (num_npcs == -1) {		// Exult format?
-		entsize = 8;
-		num_npcs = sfile.read4();
+	Set_to_read_schedules(sfile, num_npcs, entsize, num_script_names,
+								offsets);
+	Schedule_change::clear();
+	vector<char *>& script_names = Schedule_change::get_script_names();
+	if (num_script_names) {
+		(void) sfile.read2();	// Skip past total size.
+		script_names.reserve(num_script_names);
+		for (i = 0; i < num_script_names; ++i) {
+			int sz = sfile.read2();
+			char *nm = new char[sz + 1];
+			sfile.read(nm, sz);
+			nm[sz] = 0;
+			script_names.push_back(nm);
+		}
 	}
-	short *offsets = new short[num_npcs];
-	int i;				// Read offsets with list of scheds.
-	for (i = 0; i < num_npcs; i++)
-		offsets[i] = sfile.read2();
+
 	for (i = 0; i < num_npcs - 1; i++)	// Do each NPC, except Avatar.
 		{
 					// Avatar isn't included here.
 		Actor *npc = npcs[i + 1];
-		int cnt = offsets[i + 1] - offsets[i];
-					// Read schedules into this array.
-		Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
-		unsigned char ent[10];
-		if (entsize == 4) {	// U7 format?
-			for (int j = 0; j < cnt; j++) {
-				sfile.read(reinterpret_cast<char*>(ent), 4);
-				schedules[j].set4(ent);
-			}
-		} else {		// Exult format.
-			for (int j = 0; j < cnt; j++) {
-				sfile.read(reinterpret_cast<char*>(ent), 8);
-				schedules[j].set8(ent);
-			}
-		}
-					// Store in NPC.
-		if (npc)
-			npc->set_schedules(schedules, cnt);
-		else
-			delete schedules;
+		Read_a_schedule(sfile, i + 1, npc, entsize, offsets);
 		CYCLE_RED_PLASMA();
 		}
 	delete [] offsets;		// Done with this.
 	cout.flush();
 	}
-
 
 /*
  *	Write NPC schedules.
@@ -278,10 +330,12 @@ void Game_window::write_schedules ()
 
 	U7open(sfile_stream, GSCHEDULE);
 	StreamDataSource sfile(&sfile_stream);
+	vector<char *>& script_names = Schedule_change::get_script_names();
 
-	sfile.write4((unsigned int)-1);		// Exult version #.
+	sfile.write4((unsigned int)-2);		// Exult version #.
 	sfile.write4(num);		// # of NPC's, not include Avatar.
-	sfile.write2(0);		// First offfset
+	sfile.write2(script_names.size());
+	sfile.write2(0);		// First offset
 
 	for (i = 1; i < num; i++)	// write offsets with list of scheds.
 	{
@@ -289,13 +343,25 @@ void Game_window::write_schedules ()
 		offset += cnt;
 		sfile.write2(offset);
 	}
-
+	if (script_names.size()) {
+		int total = 0;		// Figure total size.
+		vector<char *>::iterator it;
+		for (it = script_names.begin(); it != script_names.end(); ++it)
+			total += 2 + strlen(*it);
+		sfile.write2(total);
+		for (it = script_names.begin(); 
+					it != script_names.end(); ++it) {
+			int len = strlen(*it);
+			sfile.write2(len);
+			sfile.write(*it, len);
+		}
+	}
 	for (i = 1; i < num; i++)	// Do each NPC, except Avatar.
 	{
 		npcs[i]->get_schedules(schedules, cnt);
 		for (int j = 0; j < cnt; j++)
 		{
-			unsigned char ent[10];
+			unsigned char ent[20];
 			schedules[j].write8(ent);
 			sfile.write(reinterpret_cast<char*>(ent), 8);
 		}
@@ -309,43 +375,21 @@ void Game_window::revert_schedules(Actor *npc)
 
 	int i;
 	ifstream sfile_stream;
-	int entsize = 4;
+	int num_npcs, entsize, num_script_names;
+	short *offsets;
 
 	U7open(sfile_stream, SCHEDULE_DAT);
 	StreamDataSource sfile(&sfile_stream);
-
-	// # of NPC's, not include Avatar.
-	int num_npcs = sfile.read4();
-	if (num_npcs == -1)
-		{			// Exult's version.
-		entsize = 8;
-		num_npcs = sfile.read4();
-		}
-	short *offsets = new short[num_npcs];
-	for (i = 0; i < num_npcs; i++) offsets[i] = sfile.read2();
-
+	Set_to_read_schedules(sfile, num_npcs, entsize, num_script_names,
+								offsets);
+	if (num_script_names) {
+		int sz = sfile.read2();
+		sfile.skip(sz);
+	}
 	// Seek to the right place
 	sfile.skip(offsets[npc->get_npc_num()-1]*entsize);
 
-	// Get the count that we want to use
-	int cnt = offsets[npc->get_npc_num()] - offsets[npc->get_npc_num()-1];
-
-	// Read schedules into this array.
-	Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
-	unsigned char ent[10];
-	if (entsize == 4) {		// U7 format.
-		for (i = 0; i < cnt; i++) {
-			sfile.read(reinterpret_cast<char*>(ent), 4);
-			schedules[i].set4(ent);
-		}
-	} else {			// Exult.
-		for (i = 0; i < cnt; i++) {
-			sfile.read(reinterpret_cast<char*>(ent), 8);
-			schedules[i].set8(ent);
-		}
-	}
-	// Store in NPC.
-	npc->set_schedules(schedules, cnt);
+	Read_a_schedule(sfile, npc->get_npc_num(), npc, entsize, offsets);
 
 	// Done
 	delete [] offsets;

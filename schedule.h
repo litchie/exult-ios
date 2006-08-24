@@ -77,7 +77,7 @@ public:
 					// Our own:
 		walk_to_schedule = 32,
 		street_maintenance = 33,
-		scripted_schedule = 34
+		first_scripted_schedule = 0x80
 		};
 					// Set actor to walk somewhere, then
 					//   do something.
@@ -109,14 +109,14 @@ public:
  */
 class Scripted_schedule : public Schedule
 	{
-	char *name;			// Schedule name.
+	int type;			// Sched. type (so we can get name).
 	Usecode_value *inst;		// Usecode schedule instance.
 					// Usecode function #'s:
 	int now_what_id, im_dormant_id, ending_id, set_weapon_id, set_bed_id,
 			notify_object_gone_id;
 	void run(int id);
 public:
-	Scripted_schedule(Actor *n, char *nm);
+	Scripted_schedule(Actor *n, int ty);
 	~Scripted_schedule();
 	virtual void now_what()
 		{ run(now_what_id); }
@@ -577,6 +577,7 @@ public:
  */
 class Schedule_change
 	{
+	static vector<char *> script_names;	// For Scripted_schedule's.
 	unsigned char time;		// Time*3hours when this takes effect.
 	unsigned char type;		// Schedule_type value.
 	unsigned char days;		// A bit for each day (0-6).  We don't
@@ -585,8 +586,11 @@ class Schedule_change
 public:
 	Schedule_change() : time(0), type(0), days(0x7f)
 		{  }
+	static void clear();
+	static vector<char *>& get_script_names()
+		{ return script_names; }
 	void set4(unsigned char *ent);	// Create from 4-byte entry.
-	void set8(unsigned char *ent);	// Create from Exult entry.
+	void set8(unsigned char *ent);	// Create from Exult entry (v. -1).
 	void write8(unsigned char *ent);// Write out 8-byte Exult entry.
 	void set(int ax, int ay, int az, 
 			unsigned char stype, unsigned char stime);
@@ -596,6 +600,9 @@ public:
 		{ return time; }
 	Tile_coord get_pos() const
 		{ return pos; }
+	static char *get_script_name(int ty)
+		{ return ty >= Schedule::first_scripted_schedule ? 
+		    script_names[ty - Schedule::first_scripted_schedule] : 0; }
 	};
 
 #endif
