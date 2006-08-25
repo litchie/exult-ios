@@ -3,6 +3,8 @@
 	* schedule.cc,readnpcs.cc,actors.cc:  Working on support for
 	usecode-scripted schedules.  Also did some cleanup on schedule
 	reading/writing.
+	(Eat_at_inn_schedule): No more annoying delay before inn customers
+	take their seats.
 
 2006-08-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actions.cc: Testing adding a limit to the number of steps between each
