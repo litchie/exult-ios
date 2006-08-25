@@ -527,10 +527,9 @@ void Eat_at_inn_schedule::now_what
 	if ((frnum&0xf) != Actor::sit_frame)
 		{			// First have to sit down.
 		if (!Sit_schedule::set_action(npc))
-			{		// Try again in a while.
+					// Try again in a while.
 			npc->start(250, 5000);
-			return;
-			}
+		return;
 		}
 	Game_object_vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
