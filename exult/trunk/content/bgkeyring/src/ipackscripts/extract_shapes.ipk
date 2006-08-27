@@ -1,11 +1,20 @@
-     archive    ../../static/shapes.vga
-     palette    ../../static/palettes.flx
+     archive    ../../../static/shapes.vga
+     palette    ../../../static/palettes.flx
      165/8:     temp/Slate_Roof_2_
      269/16:    temp/Carpet_
      397/24:    temp/Death_Bolt_
      400/32:    temp/Bodies_
+     454/32:    temp/Julia_
+     465/32:    temp/Iolo_
+     466/32:    temp/LordBritish_
      469/32:    temp/Mariah_
+     487/32:    temp/Shamino_
+     488/32:    temp/Dupre_
      490/32:    temp/Jaana_
      508/3:     temp/Stained_Glass_Horizontal_
      512/3:     temp/Stained_Glass_Vertical_
+     658/3:     temp/Dough_
+     668/16:    temp/Sword_Blank_
+     810/7:     temp/Bucket_
+     863/16:    temp/Kitchen_
      1021/8:    temp/Barrier_

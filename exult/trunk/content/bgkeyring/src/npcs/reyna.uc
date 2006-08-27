@@ -26,23 +26,18 @@
  */
 
 //Externs:
-extern reynaHeal 0x8D2 (var price_heal, var price_cure, var price_resurrect);
+//extern reynaHeal 0x8D2 (var price_heal, var price_cure, var price_resurrect);
 
 //New functions
 askAboutMother (var tomb, var has_flowers)
 {
-	var plant;
-	var index;
-	var count;
-	var msg;
-	
+	var msg = "";
 	gflags[ASKED_REYNA_ABOUT_MOTHER] = true;
 	if (tomb)
 	{
-		var msg = "";
 		//Check to see if there are flowers at Reyna's mother's grave:
 		var plants = find_nearby(SHAPE_PLANT, 10, MASK_NONE);
-		for (plant in plants with index to count)
+		for (plant in plants)
 		{
 			if (plant->get_item_frame() == 4)
 				//There are:
@@ -227,10 +222,11 @@ Reyna 0x46C ()
 					//50% discount if the Avatar gave her flowers:
 					used_half_price = true;
 					say("@For thy kindly gift of flowers, I will aid thee for half price.@ She smiles at you.");
-					reynaHeal(15, 5, 200);
+					//reynaHeal(15, 5, 200);
 				}
-				else
-					reynaHeal(30, 10, 400);
+				//else
+					//reynaHeal(30, 10, 400);
+				serviceHeal();
 			}
 			
 			else
@@ -245,12 +241,8 @@ Reyna 0x46C ()
 			//Avatar claims it is an emergency
 			//Get party list:
 			var party = UI_get_party_list();
-			var npc;
-			var index;
-			var count;
-			
 			var is_emergency = false;
-			for (npc in party with index to count)
+			for (npc in party)
 			{
 				//For every party member,
 				if (npc->get_item_flag(POISONED) || (npc->get_npc_prop(HEALTH) < 10))

@@ -26,7 +26,7 @@
 Gem_Of_Dispelling shape#(0x451) ()
 {
 	if (event != DOUBLECLICK) return;
-
+	
 	//Get gem's quality:
 	var gem_quality = get_item_quality();
 	//Get quest state:

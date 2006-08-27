@@ -445,12 +445,8 @@ var getSpellCircle (var spellname)
 
 var getIndexForSpell(var circle, var spellname)
 {
-	var spell;
 	var spelllist = getSpellList(circle);
-	var index;
-	var max;
-	
-	for (spell in spelllist with index to max)
+	for (spell in spelllist with index)
 		if (spell == spellname)
 			return index - 2;
 }
@@ -522,15 +518,12 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 		var plural_suffixes = 		["s",			"",				"",				"s",
 									 "",			"",				"",				""];
 		var reagent_frames = [1, 2, 3, 4, 5, 6, 7, 8];
-		var reagent;
-		var index;
-		var max;
 		var lacking_reagents = [0, 0, 0, 0, 0, 0, 0, 0];
 		var reagent_count;
 		var missing_count;
 		var ret_str;
 		
-		for (reagent in reagent_frames with index to max)
+		for (reagent in reagent_frames)
 		{
 			reagent_count = npc->count_objects(SHAPE_REAGENT, QUALITY_ANY, reagent - 1);
 			if (!(reagent_count >= needed_reagents[reagent]))
@@ -543,7 +536,7 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 		if (missing_count)
 		{
 			var currcount = 0;
-			for (reagent in reagent_frames with index to max)
+			for (reagent in reagent_frames)
 			{
 				if (lacking_reagents[reagent])
 				{
@@ -576,7 +569,7 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 		if (npcmana < circle)
 			return [NOT_ENOUGH_MANA, (maxmana < circle)];
 		
-		for (reagent in reagent_frames with index to max)
+		for (reagent in reagent_frames)
 			npc->remove_cont_items(needed_reagents[reagent], SHAPE_REAGENT, QUALITY_ANY, reagent - 1, true);
 	}
 	

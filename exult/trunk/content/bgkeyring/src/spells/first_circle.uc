@@ -23,7 +23,7 @@
  *	There is also a new spell in the list: 'Translate'.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
 /*
@@ -68,10 +68,7 @@ spellAwakenAll ()
 				actor frame SWING_1;		actor frame SWING_3;}
 			var dist = 25;
 			var nearby_npcs = find_nearby(-1, dist, MASK_NPC);
-			var max;
-			var npc;
-			var index;
-			for (npc in nearby_npcs with index to max)
+			for (npc in nearby_npcs)
 			{
 				script npc
 				{	nohalt;						call spellAwakenAll;}
@@ -121,12 +118,9 @@ spellCreateFood ()
 		if (!get_item_flag(PARTY))
 			return;
 		
-		var npc;
-		var index;
-		var max;
 		var party = UI_get_party_list();
 		
-		for (npc in party with index to max)
+		for (npc in party)
 		{
 			var pos = npc->get_object_position();
 			var fooditem = UI_create_new_object(SHAPE_FOOD);
@@ -187,20 +181,17 @@ spellDetectTrap ()
 				actor frame SWING_1;		actor frame SWING_3;}
 			var npclevel = getNPCLevel(item);
 			var dist = (21 + npclevel);
-			var nearby_traps = find_nearby(SHAPE_TRAP, dist, MASK_EGG + MASK_INVISIBLE + MASK_TRANLUCENT);
-			var index;
-			var max;
-			var trap;
-			for (trap in nearby_traps with index to max)
+			var nearby_traps = find_nearby(SHAPE_TRAP, dist, MASK_ALL_UNSEEN);
+			for (trap in nearby_traps)
 			{
 				script trap after 5 ticks
 				{	nohalt;						call spellDetectTrap, SCRIPTED;}
 			}
 			
-			var openchests = find_nearby(SHAPE_CHEST, dist, 176);
-			var closedchests = find_nearby(SHAPE_LOCKED_CHEST, dist, MASK_EGG + MASK_INVISIBLE + MASK_TRANLUCENT);
+			var openchests = find_nearby(SHAPE_CHEST, dist, MASK_ALL_UNSEEN);
+			var closedchests = find_nearby(SHAPE_LOCKED_CHEST, dist, MASK_ALL_UNSEEN);
 			var chests = (openchests & closedchests);
-			for (trap in chests with index to max)
+			for (trap in chests)
 			{
 				if (trap->get_item_quality() == KEY_PICKABLE_TRAPPED)
 				{

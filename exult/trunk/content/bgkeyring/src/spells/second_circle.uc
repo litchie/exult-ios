@@ -21,7 +21,7 @@
  *	circle spells.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
 /*
@@ -63,11 +63,8 @@ spellDestroyTrap (var target)
 			{	nohalt;						face dir;
 				actor frame CAST_1;			actor frame CAST_2;
 				actor frame SWING_2H_3;}
-			var nearby_traps = target->find_nearby(SHAPE_TRAP, 2, MASK_EGG + MASK_INVISIBLE + MASK_TRANLUCENT);
-			var index;
-			var max;
-			var trap;
-			for (trap in nearby_traps with index to max)
+			var nearby_traps = target->find_nearby(SHAPE_TRAP, 2, MASK_ALL_UNSEEN);
+			for (trap in nearby_traps)
 			{
 				target = trap->get_object_position();
 				
@@ -76,8 +73,8 @@ spellDestroyTrap (var target)
 				UI_sprite_effect(13, target[X], target[Y], 0, 0, 0, -1);
 				UI_play_sound_effect(66);
 			}
-			nearby_traps = find_nearby(SHAPE_LOCKED_CHEST, 2, MASK_EGG + MASK_INVISIBLE + MASK_TRANLUCENT);
-			for (trap in nearby_traps with index to max)
+			nearby_traps = find_nearby(SHAPE_LOCKED_CHEST, 2, MASK_ALL_UNSEEN);
+			for (trap in nearby_traps)
 			{
 				target = trap->get_object_position();
 				if (trap->get_item_quality() == KEY_PICKABLE_TRAPPED)
@@ -129,16 +126,9 @@ spellEnchant (var target)
 	
 	else if (event == SCRIPTED)
 	{
-		var counter = 0;
-		var index;
-		var max;
-		var missile;
-		for (missile in normal_missiles with index to max)
-		{
-			counter = (counter + 1);
+		for (missile in normal_missiles with index)
 			if (missile == get_item_shape())
-				set_item_shape(magic_missiles[counter]);
-		}
+				set_item_shape(magic_missiles[index]);
 	}
 }
 
@@ -221,14 +211,11 @@ spellMassCure ()
 	
 	else if (event == SCRIPTED)
 	{
-		var index;
-		var max;
-		var npc;
 		var targets = getFriendlyTargetList(item, 25);
-		for (npc in targets with index to max)
+		for (npc in targets)
 		{
-				npc->clear_item_flag(POISONED);
-				npc->clear_item_flag(PARALYZED);
+			npc->clear_item_flag(POISONED);
+			npc->clear_item_flag(PARALYZED);
 		}
 	}
 }

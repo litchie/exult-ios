@@ -48,12 +48,8 @@ beginCataclysm ()
 		var party = UI_get_party_list();
 		party = party & ZAURIEL;
 
-		var member;
-		var counter;
-		var party_count;
-		
 		//Make everyone SHY away:
-		for (member in party with counter to party_count)
+		for (member in party)
 			member->set_schedule_type(SHY);
 		
 		//Long, long earthquake:
@@ -89,7 +85,7 @@ beginCataclysm ()
 		
 		else
 		{
-			member->set_schedule_type(DANCE);
+			LAURIANNA->set_schedule_type(DANCE);
 			//Laurianna has gone insane. Not used yet.
 			script LAURIANNA
 			{

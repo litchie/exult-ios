@@ -1047,8 +1047,9 @@ Exult 1.4.01cvs text message file.  Written by ExultStudio.
 0x462:Mariah
 0x464:item of principle
 0x465:carpet
-0x466:Shamino's Ankh
-0x467:Dupre's Amulet
+0x466:Lord British's Scepter
+0x467:Lord British's Crown
+0x468:Lord British's Amulet
 %%endsection shapes
 %%section msgs
 0x0:"Step aside!"

@@ -107,10 +107,7 @@ spellDance ()
 	{
 		var dist = 25;
 		var nonparty_npcs = getNearbyNonPartyNPCs(dist);
-		var index;
-		var max;
-		var npc;
-		for (npc in nonparty_npcs with index to max)
+		for (npc in nonparty_npcs)
 		{
 			var intelligence = npc->get_npc_prop(INTELLIGENCE);
 			if ((intelligence > 5) && (intelligence < 25))
@@ -322,10 +319,7 @@ spellMassSleep ()
 	else if (event == SCRIPTED)
 	{
 		var targets = getEnemyTargetList(item, 25);
-		var index;
-		var max;
-		var npc;
-		for (npc in targets with index to max)
+		for (npc in targets)
 		{
 			npc->halt_scheduled();
 			npc->set_item_flag(ASLEEP);

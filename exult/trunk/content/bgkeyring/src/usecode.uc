@@ -22,9 +22,9 @@
 
 //Starts autonumbering at function number 0xC00.
 //I leave function numbers in the range 0xA00 to
-//0xBFF for eggs and weapon functions; this is a
-//total of 512 unique functions. That (hopefully)
-//is enough...
+//0xBFF for weapon functions; this is a total of
+//512 unique functions. That is likely much more
+//than enough...
 #autonumber 0xC00
 
 #include "headers/constants.uc"					//standard constant definitions
@@ -73,3 +73,9 @@
 //Items modified for one reason or another:
 #include "items/rings.uc"						//Fixes rings so that they must be on your finger to work
 #include "items/remote_viewers.uc"				//Multimap support of orrery viewer, Isle of Fire gem and crystal balls
+
+//From Alun Bestor's Quests & Iteractions mod:
+#include "misc/iteractions.uc"					//Adds the new item iteractions
+
+//The Crown Jewels:
+#include "items/crown_jewels.uc"

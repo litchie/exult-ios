@@ -25,15 +25,10 @@
 
 monsterStats (var monster, var stats)
 {
-	var counter;
-	var statnum;
-	var max_count;
 	var stat_value;
-
 	//IDs of the properties to set:
 	var stat_ids = [STRENGTH, DEXTERITY, INTELLIGENCE, HEALTH, COMBAT];
-
-	for (statnum in stat_ids with counter to max_count)
+	for (statnum in stat_ids)
 	{
 		//For each stat in the array, set the monster's attribute:
 		stat_value = monster->get_npc_prop(statnum + 1);
@@ -43,18 +38,15 @@ monsterStats (var monster, var stats)
 
 monsterEquipment (var monster, var arms, var arms_quality, var pouch_content, var pouch_frames, var pouch_quantities, var pouch_qualities)
 {
-	var counter;
-	var itemnum;
-	var max_count;
 	var bag;
 	var new_obj;
 	var index;
 	
-	for (itemnum in arms with counter to max_count)
+	for (itemnum in arms with /*counter*/index)
 	{
 		//For each item in arms,
 		//increment counter:
-		index = index + 1;
+		//index = index + 1;
 		//Create the object:
 		new_obj = UI_create_new_object(itemnum);
 		//Set quality:
@@ -340,14 +332,9 @@ deleteNearbyEggs (var pos, var dist)
 {
 	//Find all nearby eggs within dist of pos:
 	var eggs = pos->find_nearby(SHAPE_EGG, dist, MASK_EGG);
-	var max;
-	var counter;
-	var egg;
-	
 	//Halt scripts for item:
 	halt_scheduled();
-	
-	for (egg in eggs with counter to max)
+	for (egg in eggs)
 	{
 		//For each egg found,
 		if (egg->get_item_frame() == 7)

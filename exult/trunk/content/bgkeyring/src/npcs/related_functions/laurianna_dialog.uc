@@ -149,40 +149,31 @@ lauriannaSellReagents ()
 				  "@Let me now if thou dost change thy mind, Avatar. What were we talking about?@"]);
 }
 
-lauriannaHeal ()
+lauriannaHeal (var spellbook)
 {
-	UI_push_answers();
-
-	var healing_spells = getLeveledSpellList(item,
-		true,
-		["Cure", "Mass cure", "Heal", "Great heal", "Restoration", "Resurrect"],
-		[1, 2, 3, 5, 7, 8],
-		[]);
-	
-	say("@Which spell dost thou wish me to cast?@");
-	var choice = askForResponse(["none", healing_spells]);
-	if (choice != "none")
-	{
-		if ((choice == "Restoration") || (choice == "Mass cure"))
-			say("@It is my pleasure, Avatar!@");
-		
+	var party = UI_get_party_list();
+	var in_party = (item in party);
+	if (spellbook)
+		if (!in_party)
+		{
+			say("@Let me see what I can do.@");
+			LAURIANNA.hide();
+			script LAURIANNA call aiMain;
+			abort;
+		}
 		else
 		{
-			message("@Who dost thou wish to be ");
-			if ((choice == "Heal") || (choice == "Great heal")) message("healed");
-			else if (choice == "Cure") message("cured of poison");
-			else message("resurrected");
-			message("?@");
-			say();
+			if (get_schedule_type() == TEND_SHOP)
+			{
+				say("@Normally, I would have to charge thee -- I am on duty right now.");
+				say("@However, given all that thou hast done for me, I shall heal thee for free.");
+			}
+			else
+				say("@Given all that thou hast done for me, the least I can do is heal thee for free.");
+			serviceHeal();
 		}
-		npcCastSpellDialog(item,
-			choice,
-			spellitemGetTalkCast(LAURIANNA));
-		abort;
-	}	
-	
-	say("@I am glad that thou art not in need of healing!@");
-	UI_pop_answers();
+	else
+		say("@I'd love to, but thou hast taken my spellbook.@");
 }
 
 lauriannaPrePotionDialog ()
@@ -469,10 +460,18 @@ lauriannaPostPotionDialog ()
 		else
 		{
 			say("@How can I be of assistance, " + getPoliteTitle() + "?@");
-			add(/*"Cast spell"*/"heal");
+			add("Cast spell", "heal");
 		}
 	}
-	
+	var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
+	if (!spellbook)
+	{
+		// Extra safeguard:
+		spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, QUALITY_ANY, 2);
+		if (spellbook)
+			spellbook->set_item_quality(-get_npc_number());
+	}
+
 	converse(0)
 	{
 		case "name" (remove):
@@ -481,7 +480,7 @@ lauriannaPostPotionDialog ()
 		case "job" (remove):
 			say("@While I have no real job to speak of due to my... condition, I am a mage of no small amount of power -- as thou knowest well.");
 			say("@Right now, all I want to do is meet my father again, but I can cast a spell or two if thou needst me to.@");
-			add([/*"Cast spell", */"heal", "Meet father"]);
+			add(["Cast spell", "heal", "Meet father"]);
 			
 		case "bye" (remove):
 			if (!in_party && !has_amulet)
@@ -562,11 +561,8 @@ lauriannaPostPotionDialog ()
 				remove_from_party();
 				set_schedule_type(WAIT);
 				var eggs = ZAURIEL->find_nearby(SHAPE_EGG, 20, MASK_EGG);
-				var egg;
-				var index;
-				var max;
 				var pos;
-				for (egg in eggs with index to max)
+				for (egg in eggs)
 					if (egg->get_item_quality() == -1 * get_npc_number())
 					{
 						pos = egg->get_object_position();
@@ -596,7 +592,6 @@ lauriannaPostPotionDialog ()
 			}
 			
 		case "Cast spell" :
-			var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 			if (spellbook)
 			{
 				event = DOUBLECLICK;
@@ -605,7 +600,7 @@ lauriannaPostPotionDialog ()
 			else
 				say("@I'd love to, but thou hast taken away my spellbook.@");
 		case "heal" :
-			lauriannaHeal();
+			lauriannaHeal(spellbook);
 		
 		case "Meet father" (remove):
 			say("@Not only do I miss him terribly, but also he found a cure to my condition. He was about to use it when I was kidnapped...");
@@ -790,8 +785,14 @@ lauriannaYewDialog ()
 	if ((UI_get_timer(LAURIANNA_TIMER) > 72) && !gflags[LAURIANNA_READY])
 	{
 		gflags[LAURIANNA_READY] = true;
-		var exp = AVATAR->get_npc_prop(EXPERIENCE);
-		set_npc_prop(EXPERIENCE, exp);
+		//Calculate the average exp of all party members
+		var totalexp;
+		var party = UI_get_party_list();
+		for (npc in party)
+			totalexp = totalexp + npc->get_npc_prop(EXPERIENCE);
+		
+		totalexp = totalexp / UI_get_array_size(party);
+		set_npc_prop(EXPERIENCE, totalexp - get_npc_prop(EXPERIENCE));
 		
 		var leather_armor = [SHAPE_LEATHER_HELM, SHAPE_LEATHER_ARMOR, SHAPE_LEATHER_COLLAR,
 					 SHAPE_LEATHER_GLOVES, SHAPE_LEATHER_LEGGINGS, SHAPE_LEATHER_BOOTS];
@@ -830,9 +831,8 @@ lauriannaYewDialog ()
 		say("@I am also teaching -him- about magic in general. He is even considering writing a treatise on it...@");
 		set_item_flag(MET);
 		
-		/*	DISABLED
-		if (gflags[LAURIANNA_HAS_JOURNAL]) UI_set_timer(LAURIANNA_TIMER);
-		*/
+		if (gflags[LAURIANNA_HAS_JOURNAL])
+			UI_set_timer(LAURIANNA_TIMER);
 		
 		add(["name", "job", "bye", "Reyna", "Perrin", "heal"]);
 	}
@@ -887,10 +887,22 @@ lauriannaYewDialog ()
 			say("@Hello again, Avatar. What can I do for thee?@");
 	}
 	
-	if (!in_party && (sched == WANDER)) add("Shrine of Justice");
+	if (!in_party && (sched == WANDER))
+		add("Shrine of Justice");
 	
-	if (PARTY->count_objects(SHAPE_JOURNAL, QUALITY_ANY, FRAME_ANY) && !gflags[LAURIANNA_HAS_JOURNAL]) add("Give journal");
+	if (PARTY->count_objects(SHAPE_JOURNAL, QUALITY_ANY, FRAME_ANY) &&
+			!gflags[LAURIANNA_HAS_JOURNAL])
+		add("Give journal");
 	
+	var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
+	if (!spellbook)
+	{
+		// Extra safeguard:
+		spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, QUALITY_ANY, 2);
+		if (spellbook)
+			spellbook->set_item_quality(-get_npc_number());
+	}
+
 	converse (0)
 	{
 		case "name" (remove):
@@ -919,18 +931,7 @@ lauriannaYewDialog ()
 			}
 		
 		case "heal":
-			if (!in_party)
-			{
-				if (sched == TEND_SHOP)
-				{
-					say("@Normally, I would have to charge thee -- I am on duty right now.");
-					say("@However, given all that thou hast done for me, I shall heal thee for free.");
-				}
-				
-				else
-					say("@Given all that thou hast done for me, the least I can do is heal thee for free.");
-			}
-			lauriannaHeal();
+			lauriannaHeal(spellbook);
 			
 		case "reagents":
 			if (PARTY->count_objects(SHAPE_SPELLBOOK, QUALITY_ANY, FRAME_ANY))
@@ -938,20 +939,16 @@ lauriannaYewDialog ()
 				say("@Wishest thou to buy some reagents?@");
 				if (askYesNo())
 					lauriannaSellReagents();
-				
 				else
 					say("@Oh. Never mind, then.@");
 			}
-			
 			else
 				say("@But thou hast not a spellbook, Avatar! What wouldst thou use reagents for?@");
 		
 		case "Give journal" (remove):
 			UI_remove_party_items(1, SHAPE_JOURNAL, QUALITY_ANY, FRAME_ANY);
 			gflags[LAURIANNA_HAS_JOURNAL] = true;
-			/*	DISABLED
 			UI_set_timer(LAURIANNA_TIMER);
-			*/
 			lauriannaGiveKeyring();
 			
 		case "Shrine of Justice" (remove):
@@ -986,7 +983,6 @@ lauriannaYewDialog ()
 			abort;
 		
 		case "Cast spell":
-			var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 			if (spellbook)
 			{
 				event = DOUBLECLICK;

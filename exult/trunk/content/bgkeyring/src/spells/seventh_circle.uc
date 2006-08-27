@@ -264,10 +264,7 @@ spellMassCharm ()
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			var dist = 25;
 			var nonparty_npcs = getNearbyNonPartyNPCs(dist);
-			var index;
-			var max;
-			var npc;
-			for (npc in nonparty_npcs with index to max)
+			for (npc in nonparty_npcs)
 			{
 				var delay = ((get_distance(npc) / 4) + 4);
 				if (!(UI_die_roll(1, 3) == 1))
@@ -318,10 +315,7 @@ spellMassMight ()
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 
 			var targets = getFriendlyTargetList(item, 25);
-			var index;
-			var max;
-			var npc;
-			for (npc in targets with index to max)
+			for (npc in targets)
 			{
 				var delay = ((get_distance(npc) / 3) + 5);
 				script npc after delay ticks
@@ -354,10 +348,7 @@ spellRestoration ()
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				sfx 64;}
 			var targets = getFriendlyTargetList(item, 25);
-			var index;
-			var max;
-			var npc;
-			for (npc in targets with index to max)
+			for (npc in targets)
 			{
 				npc->clear_item_flag(PARALYZED);
 				npc->clear_item_flag(POISONED);
@@ -392,17 +383,10 @@ spellMassDispelField ()
 				actor frame SWING_2H_3;}
 				
 			var dist = 25;
-			var index;
-			var max;
-			var obj;
-			
-			for (obj in field_shapes with index to max)
+			for (obj in field_shapes)
 			{
-				var index2;
-				var max2;
-				var field;
 				var fields = find_nearby(obj, dist, MASK_NONE);
-				for (field in fields with index2 to max2)
+				for (field in fields)
 				{
 					var objshape = field->get_item_shape();
 					var delay = ((get_distance(field) / 3) + 2);

@@ -20,7 +20,7 @@
  *	This source file contains usecode for the Shrines of the Virtues.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
 const int SHRINE_FACES					= 0xFED8;	//-296;
@@ -139,11 +139,8 @@ Shrine shape#(0x463) ()
 							set_item_frame(SHRINE_SACRIFICE - 1);
 							play_sound_effect2(64, item);
 							
-							var bloodstains = pos->find_nearby(SHAPE_BLOOD, 20, MASK_TRANLUCENT);
-							var blood;
-							var index;
-							var max;
-							for (blood in bloodstains with index to max)
+							var bloodstains = pos->find_nearby(SHAPE_BLOOD, 20, MASK_TRANSLUCENT);
+							for (blood in bloodstains)
 								script blood after (3*get_distance(blood))/2 ticks remove;
 						}
 						else

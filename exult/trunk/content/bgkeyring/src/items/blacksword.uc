@@ -69,16 +69,14 @@ var isWorthyToKill 0x848 (var target_shape)
 					 SHAPE_IOLO, SHAPE_SHAMINO, SHAPE_DUPRE, SHAPE_SPARK, SHAPE_HOOK,
 					 SHAPE_MAGE_MALE, SHAPE_MAGE_FEMALE, SHAPE_MONSTER_MAGE];
 	
-	if (target_shape in killables) return true;
-	else return false;
+	return (target_shape in killables);
 }
 
 var isUndead 0x849 (var target_shape)
 {
 	var undead = [SHAPE_LICHE2, SHAPE_LICHE, SHAPE_SKELETON, SHAPE_GHOST2, SHAPE_GHOST_MALE, SHAPE_GHOST_FEMALE];
 	
-	if (target_shape in undead) return true;
-	else return false;
+	return (target_shape in undead);
 }
 
 teleportIsleOfFire 0x6F9 ()

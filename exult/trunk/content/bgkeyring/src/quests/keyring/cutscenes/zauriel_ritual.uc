@@ -47,17 +47,14 @@ zaurielTeleportPartyAround ()
 	//Find nearby eggs:
 	var eggs = 	pos->find_nearby(SHAPE_EGG, dist, MASK_EGG);
 	//Find nearby barriers:
-	var barriers = pos->find_nearby(SHAPE_BARRIER, 3 * dist, MASK_TRANLUCENT);
-	var egg;
+	var barriers = pos->find_nearby(SHAPE_BARRIER, 3 * dist, MASK_TRANSLUCENT);
 	var count = 0;
-	var max;
-	var index;
 	var new_pos;
 	//The only four which are allowed to fight:
 	var companions = [UI_get_avatar_ref(), SHAMINO->get_npc_object(),
 					  IOLO->get_npc_object(), DUPRE->get_npc_object()];
 	
-	for (egg in eggs with index to max)
+	for (egg in eggs)
 	{
 		//Each egg has a quality equal to the number
 		//of a joinable NPC
@@ -167,13 +164,10 @@ zaurielRitualCutscene ()
 			call zaurielRitualCutscene, BEGIN_ZAURIEL_COMBAT;
 		}
 		
-		var npc;
 		var party = [UI_get_party_list(), LAURIANNA];
-		var index;
-		var max;
 		var companions = [UI_get_avatar_ref(), SHAMINO->get_npc_object(),
 						  IOLO->get_npc_object(), DUPRE->get_npc_object()];
-		for (npc in party with index to max)
+		for (npc in party)
 		{
 			if (!(npc in companions))
 			{
@@ -304,11 +298,8 @@ zaurielRitualCutscene ()
 		UI_sprite_effect(ANIMATION_FIREWORKS, pos[X], pos[Y], 0, 0, 0, -1);
 		//delete all magical barriers:
 		var dist = 20;
-		var barriers = pos->find_nearby(SHAPE_BARRIER, dist, MASK_TRANLUCENT);
-		var obj;
-		var max;
-		var index;
-		for (obj in barriers with index to max)
+		var barriers = pos->find_nearby(SHAPE_BARRIER, dist, MASK_TRANSLUCENT);
+		for (obj in barriers)
 			script obj remove;
 			
 		item->trueUnfreeze();
