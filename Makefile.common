@@ -230,7 +230,7 @@ wuc$(EXEEXT) : wuc.o
 	$(CXX) $(LFLAGS) -o $(@) wuc.o
 
 UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o \
-		ucsymtbl.o
+		ucsymtbl.o ucclass.o
 
 ucc$(EXEEXT) : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty
