@@ -181,16 +181,10 @@ zaurielCreateComponents (var quantities)
 zaurielDestroyComponents ()
 {
 	var shapes = [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST];
-	
-	var total;
-	var counter;
-	var shp;
-	
 	var pouch = ZAURIEL->get_cont_items(SHAPE_CHEST, QUALITY_ANY, FRAME_ANY);
-	
 	var cont_items;
 	
-	for (shp in shapes with counter to total)
+	for (shp in shapes with counter)
 	{
 		cont_items = ZAURIEL->count_objects(shp[counter], QUALITY_ANY, FRAME_ANY);
 		pouch->remove_cont_items(cont_items, shp[counter], QUALITY_ANY, FRAME_ANY, true);
@@ -1021,27 +1015,25 @@ zaurielTalkGemSubquest ()
 			}
 			
 		case "Have gem" (remove):
-			if (have_liche_gems > 1) msg = "gems";
-			else msg = "gem";
+			if (have_liche_gems > 1)
+				msg = "gems";
+			else
+				msg = "gem";
 			say("@Let me examine thy " + msg + ".@ Zauriel takes the " + msg + " from you.");
 			//Here, Zauriel will appraise the gems the Avatar found
 			//in Joneleth's body:
-			var counter;
-			var total;
 			var gems = [];
 			var party = UI_get_party_list();
-			var member;
-			for (member in party with counter to total)
-				gems = gems & member->get_cont_items(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY);
+			for (npc in party)
+				gems = gems & npc->get_cont_items(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY);
 				
-			var gem;
 			var gem_quality;
 			var low_qual = 255;
 			var best_gem;
 			var gem_appraise_better = ["@This gem is promising.@", "@This gem is the best so far...@", "@Now, that gem is better.@"];
 			var gem_appraise_worse = ["@This gem isn't very promising...@", "@This gem should be thrown into the ocean!@", "@I hope thou hast better gems...@"];
 			
-			for (gem in gems with counter to total)
+			for (gem in gems)
 			{
 				gem_quality = gem->get_item_quality();
 				if (gem_quality == 0)

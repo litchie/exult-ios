@@ -71,12 +71,9 @@ var giveItemsToParty (var quantity, var shapenum, var quality, var framenum, var
 			else
 				say("@Thou art so encumbered! Let me give some of this to thy friends.@");
 
-			var index;
-			var max;
-			var npc;
 			var msgs = ["@I'll help carry it.@", "@I will carry that.@", "@I will carry some.@", "@Let me help with that.@"];
 			
-			for (npc in companions with index to max)
+			for (npc in companions)
 				interjectIfPossible(UI_get_npc_number(npc), msgs[UI_get_random(UI_get_array_size(msgs))]);
 		}
 		
@@ -399,15 +396,12 @@ serviceHeal ()
 		if (reply == SERVICE_HEAL)
 			targets = filterListByRelHits(UI_get_party_list(), 4);
 		else if (reply == SERVICE_CURE)
-			targets = filterListByFlag(UI_get_party_list(), POISONED);
+			targets = filterListByFlag(UI_get_party_list(), POISONED, true);
 		else if (reply == SERVICE_RESURRECT)
 		{
 			var bodies = [AVATAR->find_nearby(SHAPE_BODIES_1, 25, MASK_NONE), AVATAR->find_nearby(SHAPE_BODIES_2, 25, MASK_NONE)];
 
-			var index;
-			var max;
-			var body;
-			for (body in bodies with index to max)
+			for (body in bodies)
 				if (body->get_body_npc())
 				{
 					targets = [targets, body];
@@ -542,7 +536,7 @@ serviceHeal ()
 				{
 					var verbs = [" feeds ", " gives "];
 					var msgs = [" an infusion of Ginseng, which nullifies the potion after a while@",
-								" a red potion, which cancels the poison almost immeditatelly..@",
+								" a red potion, which cancels the poison almost immeditatelly.@",
 								" a herbal antidote. After a while, the poison is gone.@"];
 					while (numtargets)
 					{

@@ -61,19 +61,12 @@ enum npc_wizard_flags
 greatDouseIgnite (var shapes)
 {
 	var dist = 25;
-	var index;
-	var max;
-	var obj;
-	
-	for (obj in shapes with index to max)
+	for (obj in shapes)
 	{
 		//For each shape # in the array,
-		var index2;
-		var max2;
-		var lightsource;
 		//Find all nearby objects with that shape...
 		var lsources = find_nearby(obj, dist, MASK_NONE);
-		for (lightsource in lsources with index2 to max2)
+		for (lightsource in lsources)
 		{
 			//For each object in the array,
 			//calculate a delay based on distance:

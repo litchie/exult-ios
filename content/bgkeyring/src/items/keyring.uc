@@ -34,30 +34,13 @@ const int KEY_CHRISTOPHERS_CHEST	= 253;	//Key for Christopher's chest
 
 UseKeyOnChest (var chest)
 {
-	var item_shape;
-	var item_quality;
-	var target_quality;
-	var msg;
-	
-	var cont;
-	var cont_coll;
-	var cont_count;
-	var for_counter;
-	var gump_objs = [761, 799, 801, 802, 803];
-	var gump;
-	var container_count;
-	var loop_counter;
-	
-	item_quality = get_item_quality();
-	target_quality = chest->get_item_quality();
-	
 	//key was used in a locked chest:
 	if (chest->get_item_shape() == SHAPE_LOCKED_CHEST)
 	{
 		chest->set_item_shape(SHAPE_CHEST);
 		chest->item_say("Unlocked");
 	
-		if (target_quality == KEY_CHRISTOPHERS_CHEST) gflags[UNLOCKED_CHRISTOPHERS_CHEST] = true;
+		if (chest->get_item_quality() == KEY_CHRISTOPHERS_CHEST) gflags[UNLOCKED_CHRISTOPHERS_CHEST] = true;
 	}
 	
 	//key was used in an unlocked chest:
@@ -67,11 +50,14 @@ UseKeyOnChest (var chest)
 		if (containedBy(item, chest))
 		{
 			//To differentiate between a key and a keyring:
-			item_shape = get_item_shape();
+			var item_shape = get_item_shape();
 			
 			//Complain that the key is inside the chest:
-			if (item_shape == SHAPE_KEYRING) msg = "The keyring";
-			else if (item_shape == SHAPE_KEY) msg = "The key";
+			var msg;
+			if (item_shape == SHAPE_KEYRING)
+				msg = "The keyring";
+			else if (item_shape == SHAPE_KEY)
+				msg = "The key";
 			AVATAR->item_say(msg + " is inside the chest!");
 		}
 		else
@@ -80,10 +66,11 @@ UseKeyOnChest (var chest)
 			
 			//Closes the chest's gumps, if open, and those of all contained containers:
 			chest->close_gump();
-			for (gump in gump_objs with loop_counter to container_count)
+			var gump_objs = [761, 799, 801, 802, 803];
+			for (gump in gump_objs)
 			{
-				cont_coll = chest->get_cont_items(gump, QUALITY_ANY, FRAME_ANY);
-				for (cont in cont_coll with for_counter to cont_count)
+				var cont_coll = chest->get_cont_items(gump, QUALITY_ANY, FRAME_ANY);
+				for (cont in cont_coll)
 					cont->close_gump();
 			}
 			chest->set_item_shape(SHAPE_LOCKED_CHEST);
@@ -94,10 +81,7 @@ UseKeyOnChest (var chest)
 
 KeyInternal (var target, var keyfits, var barks)
 {
-	var lockables;
-	var target_shape;
-	
-	lockables = [
+	var lockables = [
 				 SHAPE_LOCKED_CHEST,
 				 SHAPE_CHEST,
 				 SHAPE_DOOR_HORIZONTAL,
@@ -105,7 +89,7 @@ KeyInternal (var target, var keyfits, var barks)
 				 SHAPE_DOOR2_HORIZONTAL,
 				 SHAPE_DOOR2_VERTICAL];
 	
-	target_shape = target->get_item_shape();
+	var target_shape = target->get_item_shape();
 	
 	//The target cannot be unlocked:
 	if (!(target_shape in lockables)) return;
@@ -134,35 +118,19 @@ KeyInternal (var target, var keyfits, var barks)
 
 AddPartyKeysToKeyring ()
 {
-	var party;
-	var party_count;
-	var loop_counter;
-	var key;
-	var key_count;
-	var for_counter;
-	var key_coll;
-	var party_key_count;
-	var quality;
-	
-	//Get party list and size:
-	party = UI_get_party_list();
-	party_count = UI_get_array_size(party);
-	
 	event = SCRIPTED;
 	
-	loop_counter = 0;
 	//Count party keys:
-	party_key_count = PARTY->count_objects(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
-	while (loop_counter < party_count)
+	var party_key_count = PARTY->count_objects(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
+	var party = UI_get_party_list();
+	for (npc in party)
 	{
-		//For each party member,
-		loop_counter = loop_counter + 1;
-		//Get contained keys
-		key_coll = party[loop_counter]->get_cont_items(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
-		for (key in key_coll with for_counter to key_count)
+		//For each party member, get contained keys
+		var key_coll = npc->get_cont_items(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
+		for (key in key_coll)
 		{
 			//For each key found, get key quality:
-			quality = key->get_item_quality();
+			var quality = key->get_item_quality();
 			if ((quality != KEY_INN) && (quality != KEY_ALAGNER))
 			{
 				//Do not add inn keys or Alagner's key!

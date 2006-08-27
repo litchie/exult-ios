@@ -91,10 +91,7 @@ spellInvisibilityAll ()
 				actor frame CAST_1;			actor frame STAND;
 				actor frame SWING_2H_3;}
 			var targets = getFriendlyTargetList(item, 25);
-			var index;
-			var max;
-			var npc;
-			for (npc in targets with index to max)
+			for (npc in targets)
 			{
 				var delay = ((get_distance(npc) / 3) + 5);
 				script npc after delay ticks
@@ -134,10 +131,7 @@ spellMassDeath ()
 			var safenpcs = [UI_get_party_list2(), UI_get_npc_object(LORD_BRITISH),
 							UI_get_npc_object(BATLIN)];
 			var killed_anyone = false;
-			var index;
-			var max;
-			var npc;
-			for (npc in nearby_npcs with index to max)
+			for (npc in nearby_npcs)
 			{
 				if (!(npc in safenpcs))
 				{
@@ -152,7 +146,7 @@ spellMassDeath ()
 			if (killed_anyone == true)
 			{
 				var party = UI_get_party_list();
-				for (npc in party with index to max)
+				for (npc in party)
 				{
 					var hps = npc->get_npc_prop(HEALTH);
 					hurtNPC(npc, (hps - 2));
@@ -365,16 +359,13 @@ spellMassResurrect ()
 	else if (event == SCRIPTED)
 	{
 		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES];
-		var shnum;
-		var index;
-		var max;
 		var bodies = [];
-		for (shnum in bodyshapes with index to max)
+		for (shnum in bodyshapes)
 			bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
 		var body;
 		var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
 		var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
-		for (body in bodies with index to max)
+		for (body in bodies)
 		{
 			var qual = body->get_item_quality();
 			var quant = body->get_item_quantity(1);

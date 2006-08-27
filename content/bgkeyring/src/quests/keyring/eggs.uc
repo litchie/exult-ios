@@ -20,10 +20,10 @@
  *	This source file contains usecode for ALL the eggs used in the Keyring Quest.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
-eggNoOneThere 0xBF3 ()
+eggNoOneThere ()
 {
 	if (event != EGG)
 		return;
@@ -47,7 +47,7 @@ eggNoOneThere 0xBF3 ()
 	}
 }
 
-eggDetectGem 0xBF4 ()
+eggDetectGem ()
 {
 	if (event != EGG)
 		return;
@@ -61,7 +61,7 @@ eggDetectGem 0xBF4 ()
 	}
 }
 
-eggCreateMageAndGoonsGoons 0xBF5 ()
+eggCreateMageAndGoonsGoons ()
 {
 	if (event != EGG)
 		return;
@@ -93,7 +93,7 @@ eggCreateMageAndGoonsGoons 0xBF5 ()
 	}
 }
 
-eggCreateLiche 0xBF6 ()
+eggCreateLiche ()
 {
 	if (event != EGG)
 		return;
@@ -104,7 +104,7 @@ eggCreateLiche 0xBF6 ()
 	if ((!liche) && (getQuestState() == TOLD_ABOUT_GEM)) createLichAndGems();
 }
 
-eggLicheDialog 0xBF7 ()
+eggLicheDialog ()
 {
 	if (event != EGG)
 		return;
@@ -134,7 +134,7 @@ eggLicheDialog 0xBF7 ()
 		script item after 2 ticks call eggLicheDialog;
 }
 
-eggCreateSpiderEggs 0xBF8 ()
+eggCreateSpiderEggs ()
 {
 	if (event != EGG)
 		return;
@@ -163,7 +163,7 @@ eggCreateSpiderEggs 0xBF8 ()
 	}
 }
 
-deleteLicheEggs 0xBFA ()
+deleteLicheEggs ()
 {
 	//Count the number of gems of dispelling have been picked up:
 	var party_gems = PARTY->count_objects(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY);

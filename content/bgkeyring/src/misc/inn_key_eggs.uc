@@ -20,7 +20,7 @@
  *	This source file contains the code for innkeepers reclaiming the Inn Keys.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
 //Inn identifiers:
@@ -34,9 +34,6 @@ const int INN_SALTY_DOG					= 7;
 const int INN_HONORABLE_HOUND			= 8;
 const int INN_CHEQUERED_CORK_EAST		= 9;
 const int INN_CHEQUERED_CORK_SOUTH		= 10;
-
-//To make innkeeper move towards Avatar:
-const int EVENT_WALKING					= 12;
 
 //For locking doors:
 enum door_states
@@ -54,7 +51,11 @@ enum bed_states
 	BED_UNMADE							= 1
 };
 
-eggLockInnDoors 0xBFC ()
+//To get the proper offsets and NPC IDs:
+const int EVENT_FIND_EGG				= 20;
+const int EVENT_TALK					= 21;
+
+eggLockInnDoors ()
 {
 	var polite_title = getPoliteTitle();
 	var inn_keepers = [JAMES, JAMES, MANDY, PAMELA, OPHELIA, BORIS, POLLY,
@@ -64,38 +65,26 @@ eggLockInnDoors 0xBFC ()
 					 "Salty Dog", "Honorable Hound", "Chequered Cork", "Chequered Cork"];
 	var step_directions = [SOUTH, NORTH, NORTH, NORTHEAST, WEST, WEST,
 						   NORTH, WEST, WEST, NORTH];
+
+	if (event == EVENT_TALK)
+	{
+		set_schedule_type(TALK);
+		trueUnfreeze();
+		run_schedule();
+		abort;
+	}
+	else if (event == EVENT_FIND_EGG)
+	{
+		var objpos = AVATAR->get_object_position();
+		objpos = [objpos, get_npc_id(), 7];
+		var egg = objpos->find_nearby(SHAPE_EGG, 3, MASK_EGG);
+		script egg call eggLockInnDoors, PATH_SUCCESS;
+		abort;
+	}
 	
 	//Get the innkeeper's index:
 	var egg_quality = get_item_quality();
 	var inn_keeper = inn_keepers[egg_quality];
-	
-	if (event == EVENT_WALKING)
-	{
-		//The innkeeper should have started moving towards the
-		//Avatar; give him a boost:
-		var keeper_pos = inn_keeper->get_object_position();
-		var avatar_pos = AVATAR->get_object_position();
-		//Vector from innkeeper to Avatar 
-		var delta_pos = [keeper_pos[X] - avatar_pos[X],
-						 keeper_pos[Y] - avatar_pos[Y],
-						 keeper_pos[Z] - avatar_pos[Z]];
-		//Length of said vector:
-		var len = inn_keeper->get_distance(AVATAR);
-		//Renormalized vector with length 5:
-		delta_pos = [(5 * delta_pos[X]) / len,
-					 (5 * delta_pos[Y]) / len,
-					 (5 * delta_pos[Z]) / len];
-		//Innkeeper's final destination:
-		var dest_pos = [avatar_pos[X] + delta_pos[X],
-						avatar_pos[Y] + delta_pos[Y],
-						avatar_pos[Z] + delta_pos[Z]];
-		
-		//Force innkeeper to move to Avatar (or call usecode
-		//anyway if not possible):
-		inn_keeper->si_path_run_usecode(dest_pos, PATH_SUCCESS, item, eggLockInnDoors, true);
-		//LEAVE:
-		abort;
-	}
 	
 	//Get the egg's position:
 	var pos = get_object_position();
@@ -134,14 +123,11 @@ eggLockInnDoors 0xBFC ()
 		pos[Y] = pos[Y] - 15;
 	}
 	
-	var index;
-	var max;
-	var key;
 	//Find all inn keys owner by the party:
 	var inn_keys = PARTY->count_objects(SHAPE_KEY, KEY_INN, FRAME_ANY);
 	//Find all keys in the ground:
 	var ground_keys = pos->find_nearby(SHAPE_KEY, 50, MASK_NONE);
-	for (key in ground_keys with index to max)
+	for (key in ground_keys)
 	{
 		//See how many are inn keys:
 		if (key->get_item_quality() == KEY_INN)
@@ -165,28 +151,34 @@ eggLockInnDoors 0xBFC ()
 				AVATAR->trueFreeze();
 				
 				//Start to move the innkeeper towards the Avatar:
-				inn_keeper->approach_avatar(0, 0);
+				inn_keeper->approach_avatar();
 				
+				inn_keeper->set_npc_id(egg_quality);
+
 				var delay = inn_keeper->get_distance(AVATAR) / 5;
 				//Innkeeper calls out to Avatar:
 				script inn_keeper after (delay - 2) ticks
 				{	nohalt;						call trueFreeze;
-					say "@Hold on a bit...@";	call trueUnfreeze;}
-				
+					say "@Hold on a bit...@";	call eggLockInnDoors, EVENT_TALK;}
+
 				//Avatar replies:
 				script AVATAR after 2 * delay ticks
 				{	face AVATAR->direction_from(inn_keeper);
 					wait 2;						say "@Yes?@";}
-				
-				//After a little while, call this function again:
-				script item after 4 ticks
-				{	call eggLockInnDoors, EVENT_WALKING;}
 				
 				abort;
 			}
 			
 			else if (event == PATH_SUCCESS)
 			{
+				inn_keeper->set_npc_id(0);
+				inn_keeper->run_schedule();
+
+				//Make innkeeper revert to normal schedule and unfreeze him:
+				script inn_keeper after 2 ticks
+				{	nohalt;						call trueUnfreeze;
+					actor frame STAND;			say "@Do come back!!@";}
+
 				//The innkeeper has reached destination (or gave up
 				//trying and called the usecode anyway...)
 				inn_keeper.say("@I take it that thou art checking out then, " + polite_title + "?@");
@@ -199,12 +191,6 @@ eggLockInnDoors 0xBFC ()
 					
 					//Unfreeze Avatar:
 					AVATAR->trueUnfreeze();
-					
-					//Make innkeeper revert to normal schedule and unfreeze him:
-					inn_keeper->run_schedule();
-					script inn_keeper after 2 ticks
-					{	nohalt;						call trueUnfreeze;
-						actor frame STAND;			say "@Do come back!!@";}
 				}
 				else
 				{
@@ -213,11 +199,6 @@ eggLockInnDoors 0xBFC ()
 					var step_to = step_directions[egg_quality];
 					//Halt scripts:
 					AVATAR->halt_scheduled();
-					
-					//Unfreeze innkeeper:
-					script inn_keeper after 2 ticks
-					{	nohalt;						call trueUnfreeze;
-						actor frame STAND;			say "@Enjoy thy stay!@";}
 					
 					//Determine were the Avatar is going to:
 					pos = get_object_position();
@@ -243,7 +224,7 @@ eggLockInnDoors 0xBFC ()
 	//Remove inn keys from party:
 	inn_keys->remove_party_items(SHAPE_KEY, KEY_INN, FRAME_ANY, true);
 	//Delete innkeys from the ground:
-	for (key in ground_keys with index to max)
+	for (key in ground_keys)
 	{
 		if (key->get_item_quality() == KEY_INN)
 			key->remove_item();
@@ -257,16 +238,14 @@ eggLockInnDoors 0xBFC ()
 			SHAPE_DOOR2_HORIZONTAL,
 			SHAPE_DOOR2_VERTICAL
 			];
-	
-	var door;
 	//Find unlocked doors
-	for (door in door_shapes with index to max)
+	for (door in door_shapes)
 		inn_doors = inn_doors & pos->find_nearby(door, 20, MASK_NONE);
 	
 	var door_state;
 	var door_function;
 
-	for (door in inn_doors with index to max)
+	for (door in inn_doors)
 	{
 		//For each nearby door,
 		if (door->get_item_quality() == KEY_INN)
@@ -298,7 +277,7 @@ eggLockInnDoors 0xBFC ()
 	inn_beds = inn_beds & pos->find_nearby(SHAPE_BED_VERTICAL, 20, MASK_NONE);
 	var bed;
 	var bed_state;
-	for (bed in inn_beds with index to max)
+	for (bed in inn_beds)
 	{
 		//For each bed found,
 		bed_state = bed->get_item_frame();
@@ -311,4 +290,70 @@ eggLockInnDoors 0xBFC ()
 				bed->set_item_frame(bed->get_item_frame() - 1);
 		}
 	}
+}
+
+
+//New NPC usecode for better handling:
+James 0x42E ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		James.original();
+}
+
+Mandy 0x4E7 ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Mandy.original();
+}
+
+Pamela 0x44E ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Pamela.original();
+}
+
+Ophelia 0x47A ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Ophelia.original();
+}
+
+Boris 0x482 ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Boris.original();
+}
+
+Polly 0x4B3 ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Polly.original();
+}
+
+Apollonia 0x413 ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Apollonia.original();
+}
+
+Rutherford 0x45C ()
+{
+	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
+		script item call eggLockInnDoors, EVENT_FIND_EGG;	
+	else
+		Rutherford.original();
 }

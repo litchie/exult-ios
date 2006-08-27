@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor/The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -375,7 +375,8 @@ enum item_masks
 	MASK_EGG				= 0x10,		//Also for barges
 	MASK_INVISIBLE			= 0x20,
 	MASK_PARTY_INVISIBLE	= 0x40,
-	MASK_TRANLUCENT			= 0x80
+	MASK_TRANSLUCENT		= 0x80,
+	MASK_ALL_UNSEEN			= 0xB0		//MASK_EGG+MASK_INVISIBLE+MASK_TRANLUCENT
 };
 
 //NPC animation frames, WITH rotation bit. Use these with UI_set_item_frame_rot

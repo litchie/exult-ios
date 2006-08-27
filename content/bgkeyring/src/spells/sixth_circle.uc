@@ -76,10 +76,7 @@ spellCauseFear ()
 	else if (event == SCRIPTED)
 	{
 		var targets = getEnemyTargetList(item, 25);
-		var index;
-		var max;
-		var npc;
-		for (npc in targets with index to max)
+		for (npc in targets)
 		{
 			if (npc->get_npc_prop(INTELLIGENCE) > 5)
 			{
@@ -206,10 +203,7 @@ spellFlameStrike ()
 				actor frame SWING_2H_3;}
 				
 			var targets = getEnemyTargetList(item, 25);
-			var index;
-			var max;
-			var npc;
-			for (npc in targets with index to max)
+			for (npc in targets)
 			{
 				var pos = npc->get_object_position();
 				var strike_x = pos[X];
@@ -386,10 +380,7 @@ spellTremor ()
 	{
 		var targets = getEnemyTargetList(item, 40);
 		var duration = 12;
-		var index;
-		var max;
-		var npc;
-		for (npc in targets with index to max)
+		for (npc in targets)
 		{
 			var counter = 0;
 			var usecodearray = [];

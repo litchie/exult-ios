@@ -149,10 +149,7 @@ prepareCombatSpell (var npc, var stored_spell, var removespells, var talk)
 
 var getFavoriteNameList (var index_array)
 {
-	var index;
-	var max;
 	var ret_array = [];
-	var element;
 	var circle;
 	var spell_index;
 	var spell_names;
@@ -176,7 +173,7 @@ var getFavoriteNameList (var index_array)
 		circle = circle - 1;
 	}
 	
-	for (element in index_array with index to max)
+	for (element in index_array)
 	{
 		circle = 9;
 		while (circle > 0)
@@ -202,17 +199,14 @@ var getFavoriteNameList (var index_array)
 
 var getFavoriteIndexList (var name_array)
 {
-	var index;
-	var max;
 	var ret_array = [];
-	var element;
 	var circle;
 	var spell_index;
 	
 	if (UI_get_array_size(name_array) == 1)
 		name_array = name_array[1];
 	
-	for (element in name_array with index to max)
+	for (element in name_array)
 	{
 		circle = 0;
 		while (circle < 8)

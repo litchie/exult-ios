@@ -1,9 +1,18 @@
      archive    ../data/shapes.vga
      165/9:     temp/Slate_Roof_2_
      400/33:    temp/Bodies_
+     454/32:    temp/Julia_
+     465/32:    temp/Iolo_
+     466/32:    temp/LordBritish_
+     487/32:    temp/Shamino_
+     488/32:    temp/Dupre_
      490/32:    temp/Jaana_
      508/5:     temp/Stained_Glass_Horizontal_
      512/5:     temp/Stained_Glass_Vertical_
+     658/5:     temp/Dough_
+     668/16:    temp/Sword_Blank_
+     810/8:     temp/Bucket_
+     863/19:    temp/Kitchen_
      1100/5:    temp/Keyring_
      1101/8:    temp/Barrier_
      1102/2:    temp/Book_
@@ -30,3 +39,6 @@
      1123/9:    temp/Shrine_
      1124/3:    temp/Item_of_Principle_
      1125/1:    temp/Codex_Carpet_Full_
+     1126/5:    temp/LB_Sceptre_
+     1127/1:    temp/LB_Crown_
+     1128/1:    temp/LB_Amulet_

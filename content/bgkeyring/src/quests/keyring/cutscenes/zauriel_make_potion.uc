@@ -45,10 +45,7 @@ enum MakePotion_levels
 zaurielMakePotion ()
 {
 	var pos;
-	var npc;
 	var party = UI_get_party_list();
-	var index;
-	var max;
 	var casting;
 	
 	if (event == CAST_TELEPORT)
@@ -79,7 +76,7 @@ zaurielMakePotion ()
 		//The spell effect animation:
 		pos = get_object_position();
 		UI_sprite_effect(ANIMATION_TELEPORT, pos[X], pos[Y], 0, 0, 0, -1);
-		for (npc in party with index to max)
+		for (npc in party)
 		{
 			pos = npc->get_object_position();
 			UI_sprite_effect(ANIMATION_TELEPORT, pos[X], pos[Y], 0, 0, 0, -1);

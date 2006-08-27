@@ -64,7 +64,14 @@ Jaana 0x405 ()
 			item.say("@Yes, " + avatarname + "?@ Jaana asks.");
 
 		var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
-		
+		if (!spellbook)
+		{
+			// Extra safeguard:
+			spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, QUALITY_ANY, 0);
+			if (spellbook)
+				spellbook->set_item_quality(-get_npc_number());
+		}
+
 		converse (0)
 		{
 			case "name" (remove):
@@ -88,7 +95,18 @@ Jaana 0x405 ()
 				}
 			
 			case "heal":
-				serviceHeal();
+				if (spellbook)
+					if (item in party)
+					{
+						say("@Let me see what I can do.@");
+						JAANA.hide();
+						script JAANA call aiMain;
+						abort;
+					}
+					else
+						serviceHeal();
+				else
+					say("@I would be happy to, but thou hast taken away my spellbook.@");
 				/*
 				if (spellbook)
 				{
@@ -215,15 +233,26 @@ Jaana 0x405 ()
 				if (isNearby(LORD_HEATHER))
 				{
 					LORD_HEATHER.say("@I see that thou art leaving Cove for a while, my dear?@*");
-					
 					item.say("@Yes, milord. But I shall return. I promise thee.@*");
-					
 					LORD_HEATHER.say("@I shall try not to worry about thee, but it will be difficult.@*");
-					
 					item.say("@Do not worry. I shall be safe with the Avatar.@*");
-					
 					LORD_HEATHER.say("@I do hope so.@ The Mayor embraces Jaana.*");
 					LORD_HEATHER.hide();
+					
+					if (isNearby(DUPRE))
+						DUPRE.say("Dupre whispers to you, @Here and she doth say I am the scoundrel!@");
+					
+					if (isNearby(SHAMINO))
+						SHAMINO.say("@Thou -art- the scoundrel!@");
+					
+					if (isNearby(DUPRE))
+					{
+						DUPRE.say("@At least the only thing I've cozied up to is a mug of ale!@");
+						DUPRE.say("@HA!@, Dupre calls out.  When he notices everyone is looking at him, he blushes slightly.");
+						DUPRE.say("@Nothing to see here, carry on.@");
+						DUPRE.hide();
+						item.say("Jaana just laughs.");
+					}
 				}
 			
 			case "Iolo" (remove):

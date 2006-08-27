@@ -227,11 +227,8 @@ spellProtectAll ()
 		UI_play_sound_effect(109);
 		var pos = get_object_position();
 		UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
-		var index;
-		var max;
-		var npc;
 		var targets = getFriendlyTargetList(item, 25);
-		for (npc in targets with index to max)
+		for (npc in targets)
 			npc->set_item_flag(PROTECTION);
 	}
 }
