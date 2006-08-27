@@ -235,6 +235,7 @@ false		return UCFALSE;
 break		return BREAK;
 case		return CASE;
 static		return STATIC_;
+class		return CLASS;
 
 converse	return CONVERSE;
 say		return SAY;

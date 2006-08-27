@@ -253,6 +253,7 @@ public:
 		}
 					// Add a function decl.
 	int add_function_symbol(Uc_function_symbol *fun);
+	bool is_dup(char *nm);		// Already declared?
 	};
 
 #endif
