@@ -479,4 +479,26 @@ int Uc_scope::add_function_symbol
 	return 0;
 	}
 
+/*
+ *	Check for a duplicate symbol and print an error.
+ *
+ *	Output:	true if dup., with error printed.
+ */
+
+bool Uc_scope::is_dup
+	(
+	char *nm
+	)
+	{
+	Uc_symbol *sym = search(nm);
+	if (sym)			// Already in scope?
+		{
+		char msg[180];
+		sprintf(msg, "Symbol '%s' already declared", nm);
+		Uc_location::yyerror(msg);
+		return true;
+		}
+	return false;
+	}
+
 

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "ucfun.h"
+#include "ucclass.h"
 #include "ucexpr.h"
 #include "ucstmt.h"
 #include "opcodes.h"
@@ -57,7 +58,8 @@ static Uc_array_expression *Create_array(int, Uc_expression *,
 
 std::vector<Uc_function *> functions;	// THIS is what we produce.
 
-static Uc_function *function = 0;	// Current function being parsed.
+static Uc_function *cur_fun = 0;	// Current function being parsed.
+static Uc_class *cur_class = 0;		// ...or, current class being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
 static Uc_expression *method_this = 0;
 static bool is_extern = false;	// Marks a function symbol as being an extern
@@ -86,7 +88,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
 
 /*
  *	Script keywords:
@@ -133,7 +135,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> special_method_call_statement
-%type <stmt> array_loop_statement var_decl var_decl_list declaration
+%type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
 %type <stmt> break_statement converse_statement converse2_statement
 %type <stmt> converse_case script_statement
 %type <stmt> label_statement goto_statement answer_statement
@@ -159,16 +161,50 @@ global_decl:
 	| const_int_decl
 	| enum_decl
 	| static_decl
+	| class_decl
+	;
+
+class_decl:
+	CLASS IDENTIFIER 
+		{ cur_class = new Uc_class($2); }
+		'{' class_item_list '}'
+		{
+		cur_class = 0;
+		}
+	;
+
+class_item_list:
+	class_item_list class_item
+	|				/* Empty */
+	;
+
+class_item:
+	VAR var_decl_list ';'
+	| method
+	;
+
+method:
+	IDENTIFIER '(' opt_identifier_list ')'
+		{
+		Uc_function_symbol *funsym = 
+			Uc_function_symbol::create($1, -1, *$3, is_extern);
+		delete $3;		// A copy was made.
+		cur_fun = new Uc_function(funsym, cur_class->get_scope());
+		}
+		function_body
 	;
 
 function:
-	function_proto
-		{ function = new Uc_function($1); }
+	function_proto { cur_fun = new Uc_function($1); }
+	function_body
+	;
+
+function_body:
 		statement_block
 		{ 
-		function->set_statement($3);
-		functions.push_back(function);
-		function = 0;
+		cur_fun->set_statement($1);
+		functions.push_back(cur_fun);
+		cur_fun = 0;
 		}
 	;
 
@@ -189,11 +225,11 @@ opt_int:
 
 statement_block:
 	'{' 
-		{ function->push_scope(); }
+		{ cur_fun->push_scope(); }
 	statement_list '}'
 		{
 		$$ = $3;
-		function->pop_scope();
+		cur_fun->pop_scope();
 		}
 	;
 
@@ -208,7 +244,7 @@ statement_list:
 	;
 
 statement:
-	declaration
+	stmt_declaration
 	| assignment_statement
 	| if_statement
 	| while_statement
@@ -234,7 +270,7 @@ statement:
 		{ $$ = 0; }
 	;
 
-declaration:
+stmt_declaration:
 	VAR var_decl_list ';'
 		{ $$ = $2; }
 	| STRING string_decl_list ';'
@@ -245,7 +281,7 @@ declaration:
 		{ $$ = 0; }
 	| function_decl
 		{
-		if (!function->add_function_symbol($1))
+		if (!cur_fun->add_function_symbol($1))
 			delete $1;
 		$$ = 0;
 		}
@@ -291,8 +327,8 @@ enum_item:
 	| IDENTIFIER
 		{			/* Increment last value.	*/
 		++enum_val;
-		if (function)
-			function->add_int_const_symbol($1, enum_val);
+		if (cur_fun)
+			cur_fun->add_int_const_symbol($1, enum_val);
 		else			// Global.
 			Uc_function::add_global_int_const_symbol($1, enum_val);
 		}
@@ -313,8 +349,8 @@ const_int:
 		int val;		// Get constant.
 		if ($3->eval_const(val))
 			{
-			if (function)
-				function->add_int_const_symbol($1, val);
+			if (cur_fun)
+				cur_fun->add_int_const_symbol($1, val);
 			else		// Global.
 				Uc_function::add_global_int_const_symbol(
 								$1, val);
@@ -325,13 +361,17 @@ const_int:
 
 var_decl:
 	IDENTIFIER
-		{ 
-		function->add_symbol($1); 
+		{
+		if (cur_fun)
+			cur_fun->add_symbol($1);
+		else
+			cur_class->add_symbol($1);
 		$$ = 0;
 		}
 	| IDENTIFIER '=' expression
 		{
-		Uc_var_symbol *var = function->add_symbol($1);
+		Uc_var_symbol *var = cur_fun ? cur_fun->add_symbol($1)
+					     : cur_class->add_symbol($1);
 		$$ = new Uc_assignment_statement(
 				new Uc_var_expression(var), $3);
 		}
@@ -349,8 +389,8 @@ static_var_decl_list:
 static_var:
 	IDENTIFIER
 		{
-		if (function)
-			function->add_static($1);
+		if (cur_fun)
+			cur_fun->add_static($1);
 		else
 			Uc_function::add_global_static($1);
 		}
@@ -364,7 +404,7 @@ string_decl_list:
 string_decl:
 	IDENTIFIER '=' STRING_LITERAL 
 		{
-		function->add_string_symbol($1, $3);
+		cur_fun->add_string_symbol($1, $3);
 		}
 	;
 
@@ -394,39 +434,39 @@ array_loop_statement:
 	start_array_loop ')' statement
 		{
 		$1->set_statement($3);
-		$1->finish(function);
-		function->pop_scope();
+		$1->finish(cur_fun);
+		cur_fun->pop_scope();
 		}
 	| start_array_loop WITH IDENTIFIER 
-		{ $1->set_index(function->add_symbol($3)); }
+		{ $1->set_index(cur_fun->add_symbol($3)); }
 					')' statement
 		{
 		$1->set_statement($6);
-		$1->finish(function);
-		function->pop_scope();
+		$1->finish(cur_fun);
+		cur_fun->pop_scope();
 		}
 	| start_array_loop WITH IDENTIFIER 
-		{ $1->set_index(function->add_symbol($3)); }
+		{ $1->set_index(cur_fun->add_symbol($3)); }
 				TO IDENTIFIER 
-		{ $1->set_array_size(function->add_symbol($6)); }
+		{ $1->set_array_size(cur_fun->add_symbol($6)); }
 						')' statement
 		{
 		$1->set_statement($9);
-		function->pop_scope();
+		cur_fun->pop_scope();
 		}
 	;
 
 start_array_loop:
 	start_for IDENTIFIER UCC_IN declared_var
 		{
-		Uc_var_symbol *var = function->add_symbol($2);
+		Uc_var_symbol *var = cur_fun->add_symbol($2);
 		$$ = new Uc_arrayloop_statement(var, $4);
 		}
 	;
 
 start_for:
 	FOR '('
-		{ function->push_scope(); }
+		{ cur_fun->push_scope(); }
 	;
 
 function_call_statement:
@@ -443,7 +483,7 @@ special_method_call_statement:
 		stmts->add(new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_show_face(),
 			new Uc_array_expression($1, new Uc_int_expression(0)), 
-								function)));
+								cur_fun)));
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
 		}
@@ -451,7 +491,7 @@ special_method_call_statement:
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_remove_face(),
-				new Uc_array_expression($1), function));
+				new Uc_array_expression($1), cur_fun));
 		}
 	;
 
@@ -485,7 +525,7 @@ converse_case_list:
 converse_case:
 	CASE STRING_LITERAL converse_options ':' statement_list
 		{
-		$$ = new Uc_converse_case_statement(function->add_string($2),
+		$$ = new Uc_converse_case_statement(cur_fun->add_string($2),
 				($3 ? true : false), $5);
 		}
 	;
@@ -508,7 +548,7 @@ script_statement:			/* Yes, this could be an intrinsic. */
 					// Get the script intrinsic.
 		Uc_symbol *sym = Uc_function::get_intrinsic($4 ? 2 : 1);
 		Uc_call_expression *fcall = 
-				new Uc_call_expression(sym, parms, function);
+				new Uc_call_expression(sym, parms, cur_fun);
 		$$ = new Uc_call_statement(fcall);
 		end_script();
 		}
@@ -647,7 +687,7 @@ break_statement:
 label_statement:
 	IDENTIFIER ':'
 		{
-			Uc_label *label = function->search_label($1);
+			Uc_label *label = cur_fun->search_label($1);
 			if (label) {
 				char buf[150];
 				sprintf(buf, "duplicate label: '%s'", $1);
@@ -656,7 +696,7 @@ label_statement:
 			}
 			else {
 				label = new Uc_label($1);
-				function->add_label(label);
+				cur_fun->add_label(label);
 				$$ = new Uc_label_statement(label);
 			}
 		}
@@ -672,13 +712,13 @@ answer_statement:
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_add_answer(),
-								$3, function));
+								$3, cur_fun));
 		}
 	| REMOVE '(' expression_list ')' ';'
 		{
 		$$ = new Uc_call_statement(new Uc_call_expression(
 					Uc_function::get_remove_answer(),
-								$3, function));
+								$3, cur_fun));
 		}
 	;
 
@@ -727,16 +767,16 @@ expression:
 	| '[' opt_expression_list ']'	/* Concat. into an array. */
 		{ $$ = $2; }
 	| STRING_LITERAL
-		{ $$ = new Uc_string_expression(function->add_string($1)); }
+		{ $$ = new Uc_string_expression(cur_fun->add_string($1)); }
 	| STRING_PREFIX
-		{ $$ = new Uc_string_prefix_expression(function, $1); }
+		{ $$ = new Uc_string_prefix_expression(cur_fun, $1); }
 	;
 
 addressof:
 	'&' IDENTIFIER
 		{	// A way to retrieve the function's assigned
 			// usecode number
-		Uc_symbol *sym = function->search_up($2);
+		Uc_symbol *sym = cur_fun->search_up($2);
 		if (!sym)	/* See if the symbol is defined */
 			{
 			char buf[150];
@@ -817,11 +857,11 @@ hierarchy_tok:
 routine_call:
 	IDENTIFIER opt_original '(' opt_expression_list ')'
 		{ 
-		Uc_symbol *sym = function->search_up($1);
+		Uc_symbol *sym = cur_fun->search_up($1);
 		if (!sym)		/* Check for intrinsic name.	*/
 			{
 			string iname = string("UI_") + $1;
-			sym = function->search_up(iname.c_str());
+			sym = cur_fun->search_up(iname.c_str());
 					/* Treat as method call on 'item'.*/
 			if (sym && !method_this)
 				method_this = new Uc_item_expression();
@@ -835,7 +875,7 @@ routine_call:
 			}
 		else
 			{
-			$$ = new Uc_call_expression(sym, $4, function,
+			$$ = new Uc_call_expression(sym, $4, cur_fun,
 							$2 ? true : false);
 			$$->set_itemref(method_this);
 			method_this = 0;
@@ -843,7 +883,7 @@ routine_call:
 		}
 	| '(' '*' primary ')' '(' opt_expression_list ')'
 		{
-		$$ = new Uc_call_expression($3, $6, function);
+		$$ = new Uc_call_expression($3, $6, cur_fun);
 		$$->set_itemref(method_this);
 		method_this = 0;
 		}
@@ -921,7 +961,7 @@ declared_var:
 			sprintf(buf, "'%s' not a 'var'", $1);
 			yyerror(buf);
 			sprintf(buf, "%s_needvar", $1->get_name());
-			var = function->add_symbol(buf);
+			var = cur_fun->add_symbol(buf);
 			}
 		$$ = var;
 		}
@@ -930,13 +970,13 @@ declared_var:
 declared_sym:
 	IDENTIFIER
 		{
-		Uc_symbol *sym = function->search_up($1);
+		Uc_symbol *sym = cur_fun->search_up($1);
 		if (!sym)
 			{
 			char buf[150];
 			sprintf(buf, "'%s' not declared", $1);
 			yyerror(buf);
-			sym = function->add_symbol($1);
+			sym = cur_fun->add_symbol($1);
 			}
 		$$ = sym;
 		}

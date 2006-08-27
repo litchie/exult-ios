@@ -78,7 +78,7 @@ public:
 private:
 	static Intrinsic_type intrinsic_type;
 public:
-	Uc_function(Uc_function_symbol *p);
+	Uc_function(Uc_function_symbol *p, Uc_scope *parent = 0);
 	~Uc_function();
 	static void set_intrinsics();
 	static void setup_intrinsics()		// Init. the 1st time.
@@ -134,8 +134,6 @@ public:
 		{ return get_intrinsic(show_face); }
 	static Uc_intrinsic_symbol *get_remove_face()
 		{ return get_intrinsic(remove_face); }
-					// Already declared?
-	static bool is_dup(Uc_scope *scope, char *nm);
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
 	void add_static(char *nm);	// Add static var. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun)
