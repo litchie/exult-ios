@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor/The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
  *	This header file defines generic helper functions added to the original.
  *
  *	Author: Alun Bestor (exult@washboardabs.net)
- *	Modified by Marzo Junior
- *	Last modified: 2006-02-27
+ *	Modified by Exult Team
+ *	Last modified: 2006-03-19
  */
 
 //Generic functions
@@ -34,26 +34,6 @@ var randomIndex(var array)
 	var rand = UI_get_random(size);
 	return array[rand];
 }
-
-
-//returns the appropriate function code for an object/NPC
-getFunction(var obj)
-{
-	var func;
-
-	//NPC functions are 1024 + NPC id
-	//Todo: check if ES allows you to assign a custom function number and if so, whether this can be determined
-	if (UI_is_npc(obj))
-	{
-		var npcnum = UI_get_npc_number(obj);
-		func = 1024 - npcnum;	//the NPC number is negative
-	}
-	//Regular item functions are equal to the shape number
-	else func = UI_get_item_shape(obj);
-
-	return func;
-}
-
 
 //NPC-related functions
 //---------------------
@@ -145,7 +125,7 @@ pickUpItem()
 {
 	var container = getOuterContainer(item);
 	var direction = directionFromAvatar(container);
-	var func = getFunction(item);
+	var func = get_usecode_fun();
 
 	//The avatar is already carrying the item, call the function immediately and leave it at that
 	//This shouldn't happen, since gotoAndGet() will have picked up this case already - however, it could be the player drags the item into their inventory while walking, so...
@@ -209,7 +189,7 @@ gotoAndGet(var target)
 		//Avatar is the container - call the target's function immediately.
 		if (isAvatar(container))
 		{
-			func = getFunction(target);
+			func = target->get_usecode_fun();
 			script target { nohalt; wait 1; call func; }
 			return;
 		}

@@ -20,17 +20,15 @@
  *	This source file contains the code for the cleaning of Lock Lake.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
 const int LOCK_LAKE_TIMER				= 0xC;
 
-eggCleanLockLake 0xBFB ()
+eggCleanLockLake ()
 {
 	if (event != EGG)
 		return;
-	var index;
-	var max;
 	var pos;
 
 	//Get the eggs' quality:
@@ -62,35 +60,36 @@ eggCleanLockLake 0xBFB ()
 		
 		//Store the current elapsed time, but only
 		//after storing it in a local variable:
+		var time;
 		if (quality == 0)
 		{
-			max = last_elapsed_time_1;
+			time = last_elapsed_time_1;
 			last_elapsed_time_1 = elapsed_time;
 		}
 		else if (quality == 1)
 		{
-			max = last_elapsed_time_2;
+			time = last_elapsed_time_2;
 			last_elapsed_time_2 = elapsed_time;
 		}
 		else if (quality == 5)
 		{
-			max = last_elapsed_time_3;
+			time = last_elapsed_time_3;
 			last_elapsed_time_3 = elapsed_time;
 		}
 		else if (quality == 9)
 		{
-			max = last_elapsed_time_4;
+			time = last_elapsed_time_4;
 			last_elapsed_time_4 = elapsed_time;
 		}
 		else if (quality == 11)
 		{
-			max = last_elapsed_time_5;
+			time = last_elapsed_time_5;
 			last_elapsed_time_5 = elapsed_time;
 		}
 
 		//Get the amount of time that elapsed since the last visit
 		//to this egg:
-		elapsed_time = elapsed_time - max;
+		elapsed_time = elapsed_time - time;
 
 		if (elapsed_time <= 0)
 			//No time elapsed or invalid time; abort:
@@ -105,7 +104,7 @@ eggCleanLockLake 0xBFB ()
 		//Get the shapes of all nearby 'garbage' items:
 		var garbage = pos->find_nearby(SHAPE_BROKEN_DISH, 50, MASK_NONE);
 		garbage = [garbage, pos->find_nearby(SHAPE_GARBAGE, 50, MASK_NONE)];
-		garbage = [garbage, pos->find_nearby(SHAPE_STAIN, 50, MASK_TRANLUCENT)];
+		garbage = [garbage, pos->find_nearby(SHAPE_STAIN, 50, MASK_TRANSLUCENT)];
 		garbage = [garbage, pos->find_nearby(SHAPE_DIAPER, 50, MASK_NONE)];
 		garbage = [garbage, pos->find_nearby(SHAPE_BROKEN_ROOF, 50, MASK_NONE)];
 		garbage = [garbage, pos->find_nearby(SHAPE_ANCHOR, 50, MASK_NONE)];
@@ -139,7 +138,7 @@ eggCleanLockLake 0xBFB ()
 			//How many items will be cleaned this time:
 			items_to_remove = (elapsed_time + UI_die_roll(5, 12)) * 3;
 			
-			for (obj in garbage with index to max)
+			for (obj in garbage)
 			{
 				//For each garbage object in the list,
 				//Get a random number:
@@ -183,10 +182,7 @@ eggCleanLockLake 0xBFB ()
 						var cont_items = obj->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
 						if (cont_items)
 						{
-							var obj2;
-							var index2;
-							var max2;
-							for (obj2 in cont_items with index2 to max2)
+							for (obj2 in cont_items)
 								//Remove them all:
 								obj2->remove_item();
 						}
@@ -262,8 +258,7 @@ eggCleanLockLake 0xBFB ()
 									UI_find_nearby([0x5DB, 0x4D3, 0x0], SHAPE_EGG, 5, MASK_EGG),
 									UI_find_nearby([0x5E4, 0x4BE, 0x0], SHAPE_EGG, 5, MASK_EGG),
 									UI_find_nearby([0x600, 0x4C9, 0x0], SHAPE_EGG, 5, MASK_EGG)];
-					var egg;
-					for (egg in fly_eggs with index to max)
+					for (egg in fly_eggs)
 						//Remove them all:
 						egg->remove_item();
 				}

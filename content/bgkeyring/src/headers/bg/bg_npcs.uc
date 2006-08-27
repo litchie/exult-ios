@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,21 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
- *	This header file defines constants for every NPC in Black Gate. Yes, every
- *	damn one. They are ordered by region encountered. This list does not include
- *	generic 'monsters' you can talk to (e.g. town guards) or clones. AFAIK most
- *	of those live after -255 and aren't accessible using npc numbers.
- *
- *	You can get convert these NPC numbers to and from an NPC object reference
- *	using UI_get_npc_object and UI_get_npc_number. However, many intrinsics and
- *	language constructs will accept either an object reference or an NPC number.
- *	Many others do require you to supply an object reference though (generally
- *	the ones that operate on any item rather than just NPCs).
+ *	This header file defines constants for shapes and frames in Black Gate's
+ *	SHAPES.VGA. Fill them in as you go along! It is best to use enums to group
+ *	shapes thematically by type and frames by shape, rather than attempting to
+ *	order them numerically.
  *
  *	Author: Alun Bestor (exult@washboardabs.net)
- *	Last Modified: 2006-02-27
- */
-
+ *	Last Modified: 2006-03-19
+*/
 
 //Party members (you know em, you love em)
 enum party_members

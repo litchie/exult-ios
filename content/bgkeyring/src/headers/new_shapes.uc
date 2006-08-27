@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor/The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
  *	This header file contains the shape numbers for all of the new
  *	shapes installed by the Keyring mod. It is unsorted by shape #.
  *
- *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Author: Marzo Junior/Alun Bestor
+ *	Last Modified: 2006-03-19
  */
 
 const int SHAPE_KEYRING					= 1100;	//0x44C
@@ -50,3 +50,25 @@ const int SHAPE_MARIAH					= 1122;	//0x462
 const int SHAPE_SHRINE					= 1123;	//0x463
 const int SHAPE_ITEM_OF_PRINCIPLE		= 1124; //0x464
 const int SHAPE_CODEX_CARPET			= 1125;	//0x465
+
+//Added to SHAPE_STONE_CHIPS
+//added for Rune of Honor quest
+const int FRAME_SLATE					= 5;
+
+//Added to SHAPE_RUNE
+//added for Rune of Honor quest
+const int FRAME_RUNE_REPLICA			= 8;
+
+//Added to SHAPE_KITCHEN_ITEM
+const int FRAME_CHURN_2					= 16;
+const int FRAME_CHURN_3					= 17;
+const int FRAME_PITCHER_MILK			= 18;
+
+//Added to SHAPE_DOUGH
+//flat dough + apples = pie dough (when baked in oven, this creates a pie)
+const int	FRAME_DOUGH_PIE				= 3;
+//flour + egg = cake dough (when baked in oven, this creates a cake)
+const int	FRAME_DOUGH_CAKE			= 4;
+
+//Added to SHAPE_BUCKET
+const int	FRAME_BUCKET_MILK			= 7;

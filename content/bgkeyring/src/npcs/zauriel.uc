@@ -159,11 +159,8 @@ Zauriel 0x48B ()
 				LAURIANNA->set_schedule_type(WAIT);
 				
 				var eggs = find_nearby(SHAPE_EGG, 20, MASK_EGG);
-				var egg;
-				var index;
-				var max;
 				var pos;
-				for (egg in eggs with index to max)
+				for (egg in eggs)
 					if (egg->get_item_quality() ==  -1 * LAURIANNA->get_npc_number())
 					{
 						pos = egg->get_object_position();

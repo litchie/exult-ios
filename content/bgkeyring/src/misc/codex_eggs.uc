@@ -20,10 +20,10 @@
  *	This source file contains usecode for the Codex-ralated eggs.
  *
  *	Author: Marzo Junior
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
  */
 
-eggCodexLenses 0xBF0 ()
+eggCodexLenses ()
 {
 	var pos;
 	var quality;
@@ -96,7 +96,7 @@ eggCodexLenses 0xBF0 ()
 	}
 }
 
-eggCodexShrineEntrance 0xBF1 ()
+eggCodexShrineEntrance ()
 {
 	if (event != EGG)
 		return;
@@ -167,7 +167,7 @@ eggCodexShrineEntrance 0xBF1 ()
 	}
 }
 
-eggCodexQuest 0xBF2 ()
+eggCodexQuest ()
 {
 	if (event != EGG)
 		return;
@@ -292,24 +292,21 @@ eggCodexQuest 0xBF2 ()
 		gflags[CODEX_ALL_ITEMS_IN_PLACE] = false;
 }
 
-eggDeleteTimelord 0xBFD ()
+eggDeleteTimelord ()
 {
 	if (event != EGG)
 		return;
 	if (gflags[BROKE_SPHERE])
 	{
 		var objs = UI_find_nearby(item, SHAPE_STATUE, 10, MASK_NONE);
-		objs = [objs, UI_find_nearby(item, SHAPE_TIME_BARRIER, 10, MASK_TRANLUCENT)];
-		var obj;
-		var index;
-		var max;
-		for (obj in objs with index to max)
+		objs = [objs, UI_find_nearby(item, SHAPE_TIME_BARRIER, 10, MASK_TRANSLUCENT)];
+		for (obj in objs)
 			obj->remove_item();
 		remove_item();
 	}
 }
 
-eggReturnedItemsOfPrinciple 0xBFE ()
+eggReturnedItemsOfPrinciple ()
 {
 	if (event != EGG)
 		return;

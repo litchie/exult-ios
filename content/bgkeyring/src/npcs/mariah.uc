@@ -53,13 +53,10 @@ Mariah 0x499 ()
 		{
 			did_post_tetrahedron = true;
 			//Give an exp boost to Mariah, so she won't be so far outclassed by other companions
-			var npc;
-			var index;
-			var max;
 			var totalexp;
 			
 			//Calculate the average exp of all party members
-			for (npc in party with index to max)
+			for (npc in party)
 				totalexp = totalexp + npc->get_npc_prop(EXPERIENCE);
 			
 			totalexp = totalexp / UI_get_array_size(party);
@@ -101,6 +98,13 @@ Mariah 0x499 ()
 				
 				case "Cast spell":
 					var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
+					if (!spellbook)
+					{
+						// Extra safeguard:
+						spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, QUALITY_ANY, 1);
+						if (spellbook)
+							spellbook->set_item_quality(-get_npc_number());
+					}
 					if (spellbook)
 					{
 						event = DOUBLECLICK;
@@ -215,21 +219,13 @@ Mariah 0x499 ()
 	}
 	else if (event == PROXIMITY)
 	{
-		var sched = UI_get_schedule_type(UI_get_npc_object(MARIAH));
-		var rand = UI_die_roll(1, 4);
-		var bark;
-		
-		if ((sched == LOITER) && !gflags[BROKE_TETRAHEDRON])
+		if ((MARIAH->get_schedule_type() == LOITER) && !gflags[BROKE_TETRAHEDRON])
 		{
-			if (rand == 1)
-				bark = "@Where -are- those pastries!@";
-			else if (rand == 2)
-				bark = "@Lovely, lovely shelves!@";
-			else if (rand == 3)
-				bark = "@Lovely, lovely ink wells!@";
-			else if (rand == 4)
-				bark = "@Magic is in the air...@";
-			MARIAH->item_say(bark);
+			var barks = ["@Where -are- those pastries!@",
+						 "@Lovely, lovely shelves!@",
+						 "@Lovely, lovely ink wells!@",
+						 "@Magic is in the air...@"];
+			MARIAH->item_say(barks[UI_get_random(UI_get_array_size(barks))]);
 		}
 		else
 			scheduleBarks(MARIAH);

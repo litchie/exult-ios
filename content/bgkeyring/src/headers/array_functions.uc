@@ -31,16 +31,13 @@ var getFriendlyTargetList (var caster, var dist)
 		return UI_get_party_list();
 	else
 	{
-		//Caster not in party:
-		var npc;
-		var index;
-		var max;
+		//Caster not in party
 		//Get all nearby NPCs:
 		var npclist = getNearbyNonPartyNPCs(dist);
 		var retlist = [];
 		//Get caster's alignment:
 		var align = caster->get_alignment();
-		for (npc in npclist with index to max)
+		for (npc in npclist)
 			//For each NPC in the list,
 			if (align == npc->get_alignment())
 				//Add NPC to list if align matches caster's:
@@ -60,16 +57,13 @@ var getEnemyTargetList (var caster, var dist)
 		return getNearbyNonPartyNPCs(dist);
 	else
 	{
-		//Caster not in party:
-		var npc;
-		var index;
-		var max;
+		//Caster not in party
 		//Get all nearby NPCs:
 		var npclist = getNearbyNonPartyNPCs(dist);
 		var retlist = [];
 		//Get caster's alignment:
 		var align = caster->get_alignment();
-		for (npc in npclist with index to max)
+		for (npc in npclist)
 			//For each NPC in the list,
 			if (align != npc->get_alignment())
 				//Add NPC to list if align doesn't match caster's:
@@ -84,17 +78,15 @@ var getEnemyTargetList (var caster, var dist)
 //Removes element # elemindex from the array and returns resulting array
 var removeFromArrayByIndex (var array, var elemindex)
 {
-	var count = 1;
+	//var count = 1;
 	var retarray = [];
-	var index;
-	var max;
-	var elem;
 
-	for (elem in array with index to max)
+	for (elem in array with index)
 	{
-		if (count != elemindex)
+		if (index != elemindex)
+		//if (count != elemindex)
 			retarray = [retarray, elem];
-		count = count + 1;
+		//count = count + 1;
 	}
 	return retarray;
 }
@@ -102,12 +94,9 @@ var removeFromArrayByIndex (var array, var elemindex)
 //Given an NPC list, returns only those with a given flag set
 var filterListByFlag(var list, var flag, var state)
 {
-	var index;
-	var max;
-	var npc;
 	var ret_list = [];
 	
-	for (npc in list with index to max)
+	for (npc in list)
 	{
 		if (npc->get_item_flag(flag) == state)
 			ret_list = [ret_list, npc];
@@ -119,14 +108,11 @@ var filterListByFlag(var list, var flag, var state)
 //in a given spot
 var filterListByEquipedObject(var list, var shapes, var spot)
 {
-	var index;
-	var max;
-	var npc;
 	var ret_list = [];
 	if (UI_get_array_size(shapes) == 1)
 		shapes = [shapes];
 	
-	for (npc in list with index to max)
+	for (npc in list)
 	{
 		if ((npc->get_readied(spot))->get_item_shape() in shapes)
 			ret_list = [ret_list, npc];
@@ -137,12 +123,8 @@ var filterListByEquipedObject(var list, var shapes, var spot)
 //Given an NPC list, returns only those hit points less than (max hps)*frac/4
 var filterListByRelHits(var list, var frac)
 {
-	var index;
-	var max;
-	var npc;
 	var ret_list = [];
-	
-	for (npc in list with index to max)
+	for (npc in list)
 	{
 		var hps = 4*npc->get_npc_prop(HEALTH);
 		var str = npc->get_npc_prop(STRENGTH);
@@ -156,9 +138,6 @@ var filterListByRelHits(var list, var frac)
 //which are not in removes
 var removeItemsFromList(var list, var removes)
 {
-	var spell;
-	var index;
-	var max;
 	var newarray = [];
 	
 	if (UI_get_array_size(removes) > 0)
@@ -166,7 +145,7 @@ var removeItemsFromList(var list, var removes)
 		if (UI_get_array_size(removes) == 1)
 			removes = [removes];
 		
-		for (spell in list with index to max)
+		for (spell in list)
 		{
 			if (!(spell in removes))
 				newarray = [newarray, spell];
@@ -182,9 +161,6 @@ var removeItemsFromList(var list, var removes)
 //which are also in list2
 var intersectLists(var list1, var list2)
 {
-	var spell;
-	var index;
-	var max;
 	var newarray = [];
 
 	if (UI_get_array_size(list2) > 0)
@@ -192,7 +168,7 @@ var intersectLists(var list1, var list2)
 		if (UI_get_array_size(list2) == 1)
 			list2 = [list2];
 		
-		for (spell in list1 with index to max)
+		for (spell in list1)
 		{
 			if (spell in list2)
 				newarray = [newarray, spell];
@@ -206,14 +182,11 @@ var intersectLists(var list1, var list2)
 
 filterBodyList(var list, var body)
 {
-	var currbody;
-	var index;
-	var max;
 	var newarray = [];
 
 	if (UI_get_array_size(list) > 0)
 	{
-		for (currbody in list with index to max)
+		for (currbody in list)
 		{
 			if (currbody->get_body_npc() != body->get_body_npc())
 				newarray = [newarray, currbody];
@@ -229,14 +202,11 @@ filterBodyList(var list, var body)
 //Returns a version of <array> that has <obj> stripped from it.
 removeFromArray(var array, var obj)
 {
-	var curr;
-	var index;
-	var max;
 	var newarray = [];
 
 	if (UI_get_array_size(array) > 0)
 	{
-		for (curr in array with index to max)
+		for (curr in array)
 		{
 			if (curr != obj)
 				newarray = [newarray, curr];

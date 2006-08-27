@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  *	order them numerically.
  *
  *	Author: Alun Bestor (exult@washboardabs.net)
- *	Last Modified: 2006-02-27
+ *	Last Modified: 2006-03-19
 */
 
 //Shapes

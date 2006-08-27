@@ -50,3 +50,9 @@
 //Modified NPCs:
 #include "npcs/jaana.uc"						//For NPC spellcasting
 #include "npcs/mariah.uc"						//For NPC spellcasting
+#include "npcs/csil.uc"							//Now uses the Generic Healing Service
+#include "npcs/elad.uc"							//Now uses the Generic Healing Service
+#include "npcs/leigh.uc"						//Now uses the Generic Healing Service
+#include "npcs/inmanilem.uc"					//Now uses the Generic Healing Service
+#include "npcs/chantu.uc"						//Now uses the Generic Healing Service
+#include "npcs/lordbritish.uc"					//Now uses the Generic Healing Service

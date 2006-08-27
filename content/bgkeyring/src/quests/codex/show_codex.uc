@@ -242,11 +242,8 @@ displayCodex ()
 						
 						pos = [2719, 2801, 4];
 						var itemsofprinc = pos->find_nearby(SHAPE_ITEM_OF_PRINCIPLE, 3, MASK_NONE);
-						var obj;
-						var index;
-						var max;
 						//Animations in the items of principle:
-						for (obj in itemsofprinc with index to max)
+						for (obj in itemsofprinc)
 						{
 							pos = obj->get_object_position();
 							UI_sprite_effect(ANIMATION_PURPLE_BUBBLES, pos[X] - pos[Z]/2, pos[Y] - pos[Z]/2, 0, 0, 0, -1);

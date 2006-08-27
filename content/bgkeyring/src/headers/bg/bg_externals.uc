@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,12 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
- *	This header file defines extern aliases for original Black Gate usecode functions.
+ *	This header file defines constants for shapes and frames in Black Gate's
+ *	SHAPES.VGA. Fill them in as you go along! It is best to use enums to group
+ *	shapes thematically by type and frames by shape, rather than attempting to
+ *	order them numerically.
  *
  *	Author: Alun Bestor (exult@washboardabs.net)
- *	Last Modified: 2006-02-27
- */
-
+ *	Last Modified: 2006-03-19
+*/
 
 //Item-related functions
 //----------------------

@@ -40,36 +40,26 @@ showCastingFrames () { item->begin_casting_mode(); }
 
 freezeParty ()
 {
-	var party;
-	var count;
-	var index;
-	var member;
-	var rand;
-	
 	//Get party list:
-	party = UI_get_party_list();
+	var party = UI_get_party_list();
 	//Random NPC for bark:
-	rand = UI_get_random(count - 1) + 1;
-	for (member in party with index to count)
+	var rand = UI_get_random(UI_get_array_size(party) - 1) + 1;
+	for (member in party with index)
 	{
 		//For each NPC in party,
 		//freeze NPC:
 		member->trueFreeze();
 		//This is the randomly chosen NPC which barks something:
-		if (rand == index) script member {wait 4; say "@I am frozen in place!@";}
+		if (rand == index)
+			script member {wait 4; say "@I am frozen in place!@";}
 	}
 }
 
 unfreezeParty ()
 {
-	var party;
-	var count;
-	var index;
-	var member;
-	
 	//Get party list:
-	party = UI_get_party_list();
-	for (member in party with index to count)
+	var party = UI_get_party_list();
+	for (member in party)
 		//Unfreeze all party members:
 		member->trueUnfreeze(true);
 }
@@ -173,10 +163,7 @@ interjectIfPossible (var npcnum, var msg)
 			say("@Slurp@");
 		else
 		{
-			var lines;
-			var index;
-			var max;
-			for (lines in msg with index to max)
+			for (lines in msg)
 				say(lines);
 		}
 		npcnum.hide();
@@ -187,13 +174,9 @@ var forceGiveObjToParty(var obj)
 {
 	//Get party list:
 	var party = UI_get_party_list();
-	var npc;
-	var index;
-	var count;
-	
 	//Set the desired object as being the last created:
 	obj->set_last_created();
-	for (npc in party with index to count)
+	for (npc in party)
 	{
 		//For each npc in the party,
 		//try to give item to NPC:
@@ -261,7 +244,8 @@ sellItems (var options, var shapes, var frames, var price, var quantity, var art
 			say(msg);
 		}
 		
-		else say(dialog[8]);
+		else
+			say(dialog[8]);
 		
 		//Present the menu again:
 		choice_index = chooseFromMenu2(options);

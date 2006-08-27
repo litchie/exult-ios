@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2006  The Exult Team
+ *  Copyright (C) 2006  Alun Bestor
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,15 +17,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *
- *	This header file defines constants for each global flag used in Black Gate.
- *	Fill them in as you go along! It is best to use enums to group flags
- *	thematically by purpose, quest, npc or region, rather than attempting to
+ *	This header file defines constants for shapes and frames in Black Gate's
+ *	SHAPES.VGA. Fill them in as you go along! It is best to use enums to group
+ *	shapes thematically by type and frames by shape, rather than attempting to
  *	order them numerically.
  *
  *	Author: Alun Bestor (exult@washboardabs.net)
- *	Last Modified: 2006-02-27
- */
-
+ *	Last Modified: 2006-03-19
+*/
 
 //Who the player has met. BG used global flags for this because the MET item flag didn't originally exist.
 enum met_flags
@@ -37,6 +36,7 @@ enum met_flags
 	MET_CANDICE			= 0xAA,
 	MET_WILLY			= 0xB5,
 	MET_GORDON			= 0xBB,
+	MET_CSIL			= 0xA4,
 
 	MET_JULIA			= 0x1B,
 	MET_GLADSTONE		= 0x110,
@@ -45,7 +45,15 @@ enum met_flags
 
 	MET_MENION			= 0x269,
 	MET_HORFFE			= 0x26E,
-	MET_TORY			= 0x271
+	MET_TORY			= 0x271,
+
+	MET_ELAD			= 0x204,
+	
+	MET_LEIGH			= 0x272,
+	
+	MET_INMANILEM		= 0x247,
+	
+	MET_CHANTU			= 0x52
 };
 
 //Flags used by the starting murder investigation quest
@@ -81,6 +89,7 @@ const int CAST_ARMAGEDDON = 0x1E;
 enum lb_conversation_flags
 {
 	WESTON_FREED					= 0xCC,
+	AGREED_TO_FREE_WESTON			= 0xCD,
 	GOT_ORB							= 0xDD,
 	ASKED_LB_ABOUT_MAGIC			= 0x66,
 	LEARNED_ABOUT_BRITAIN_MURDER	= 0xD1, //allows you to ask Patterson about it

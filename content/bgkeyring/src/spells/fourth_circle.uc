@@ -144,11 +144,8 @@ spellMassCurse ()
 			{	nohalt;						actor frame CAST_1;
 				sfx 65;						actor frame CAST_2;
 				actor frame CAST_1;			actor frame SWING_2H_3;}
-			var index;
-			var max;
-			var npc;
 			var targets = getEnemyTargetList(item, 31);
-			for (npc in targets with index to max)
+			for (npc in targets)
 				if (!(UI_die_roll(1, 3) == 1))
 				{
 					var delay = ((get_distance(npc) / 3) + 5);
@@ -189,9 +186,6 @@ spellReveal ()
 			var dist = 7;
 			var counter = 0;
 			var revealables = [];
-			var obj;
-			var index;
-			var max;
 			while (counter != 12)
 			{
 				counter = (counter + 1);
@@ -199,15 +193,13 @@ spellReveal ()
 				var find_y = (pos[Y] + offset_y[counter]);
 				findpos = [find_x, find_y, 0];
 				var invisibles = findpos->find_nearby(SHAPE_ANY, dist, MASK_INVISIBLE);
-				for (obj in invisibles with index to max)
-				{
+				for (obj in invisibles)
 					if (obj->get_item_flag(INVISIBLE) && (!(obj in revealables)))
 						revealables = (revealables & obj);
-				}
 			}
 			if (revealables)
 			{
-				for (obj in revealables with index to max)
+				for (obj in revealables)
 				{
 					script obj after 5 ticks
 					{	nohalt;						call spellReveal;}
@@ -433,19 +425,15 @@ spellBlink (var target)
 					actor frame SWING_1;		actor frame SWING_2H_2;
 					actor frame SWING_1;		actor frame STAND;}
 				
-				var npc;
-				var index;
-				var max;
 				var targets;
 				if (move_party)
 					targets = party;
 				else
 					targets = [item];
 				
-				for (npc in targets with index to max)
+				for (npc in targets)
 				{
 					var pos = npc->get_object_position();
-					//UI_sprite_effect(ANIMATION_TELEPORT, pos[X], pos[Y], 0, 0, 0, -1);
 					npc->obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, -1);
 					UI_play_sound_effect2(SOUND_TELEPORT, npc);
 					var field = UI_create_new_object(SHAPE_FIRE_FIELD);
