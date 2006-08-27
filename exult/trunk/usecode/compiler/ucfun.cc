@@ -52,8 +52,9 @@ Uc_function::Intrinsic_type Uc_function::intrinsic_type =
 
 Uc_function::Uc_function
 	(
-	Uc_function_symbol *p
-	) : top(0), proto(p), cur_scope(&top), num_parms(0),
+	Uc_function_symbol *p,
+	Uc_scope *parent
+	) : top(parent), proto(p), cur_scope(&top), num_parms(0),
 	    num_locals(0), num_statics(0), text_data(0), text_data_size(0),
 	    statement(0), reloffset(0)
 	{
@@ -95,29 +96,6 @@ Uc_function::~Uc_function
 	}
 
 /*
- *	Check for a duplicate symbol and print an error.
- *
- *	Output:	true if dup., with error printed.
- */
-
-bool Uc_function::is_dup
-	(
-	Uc_scope *scope,
-	char *nm
-	)
-	{
-	Uc_symbol *sym = scope->search(nm);
-	if (sym)			// Already in scope?
-		{
-		char msg[180];
-		sprintf(msg, "Symbol '%s' already declared", nm);
-		Uc_location::yyerror(msg);
-		return true;
-		}
-	return false;
-	}
-
-/*
  *  Find a label in this function
  *
  *  Output: label, or 0 if not found
@@ -143,7 +121,7 @@ Uc_var_symbol *Uc_function::add_symbol
 	char *nm
 	)
 	{
-	if (is_dup(cur_scope, nm))
+	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
@@ -160,7 +138,7 @@ void Uc_function::add_static
 	char *nm
 	)
 	{
-	if (is_dup(cur_scope, nm))
+	if (cur_scope->is_dup(nm))
 		return;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_static_var_symbol(nm, num_statics++);
@@ -177,7 +155,7 @@ Uc_symbol *Uc_function::add_string_symbol
 	char *text
 	)
 	{
-	if (is_dup(cur_scope, nm))
+	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
 	Uc_symbol *sym = new Uc_string_symbol(nm, add_string(text));
@@ -197,7 +175,7 @@ Uc_symbol *Uc_function::add_int_const_symbol
 	int value
 	)
 	{
-	if (is_dup(cur_scope, nm))
+	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
@@ -217,7 +195,7 @@ Uc_symbol *Uc_function::add_global_int_const_symbol
 	int value
 	)
 	{
-	if (is_dup(&globals, nm))
+	if (globals.is_dup(nm))
 		return 0;
 					// Create & assign slot.
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
@@ -234,7 +212,7 @@ void Uc_function::add_global_static
 	char *nm
 	)
 	{
-	if (is_dup(&globals, nm))
+	if (globals.is_dup(nm))
 		return;
 	num_global_statics++;		// These start with 1.
 					// Create & assign slot.
