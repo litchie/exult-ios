@@ -1,10 +1,11 @@
-2006-08-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2006-08-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Makefile.common: Fixed UCC compile problem in MinGW.
 	* content/bgkeyring/*/*: Merged in the 'Iteractions' part of Alun Bestor's
 	  Quests & Iteractions mod into the Keyring mod. Added generic healing
 	  services (used by all healers), Lord British's Crown Jewels and updated
 	  the code to use newer features of UCC. Also added casting frames for all
 	  caster NPCs and changed some crlfs to lfs.
+	* objs/objs.*: Fixed map corruption bug when moving chunk non-flat objects.
 
 2006-08-24    <jeff@mini.nerble.net>
 
