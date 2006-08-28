@@ -1413,7 +1413,10 @@ void Terrain_game_object::move
 		if (chunk)
 			{
 			Chunk_terrain *ter = chunk->get_terrain();
-			ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+			if (!prev_flat.is_invalid())
+				ter->set_flat(get_tx(), get_ty(), prev_flat);
+			else
+				ter->set_flat(get_tx(), get_ty(), ShapeID(12, 0));
 			gwin->get_map()->set_chunk_terrains_modified();
 			}
 		}
@@ -1421,6 +1424,7 @@ void Terrain_game_object::move
 	if (chunk && !caching_out)
 		{
 		Chunk_terrain *ter = chunk->get_terrain();
+		prev_flat = ter->get_flat(get_tx(), get_ty());
 		ter->set_flat(get_tx(), get_ty(), *this);
 		gwin->get_map()->set_chunk_terrains_modified();
 		}
@@ -1444,7 +1448,10 @@ void Terrain_game_object::remove_this
 			return;
 		chunk->get_map()->set_map_modified();
 		Chunk_terrain *ter = chunk->get_terrain();
-		ter->set_flat(get_tx(), get_ty(), ShapeID(0, 0));
+		if (!prev_flat.is_invalid())
+			ter->set_flat(get_tx(), get_ty(), prev_flat);
+		else
+			ter->set_flat(get_tx(), get_ty(), ShapeID(12, 0));
 		gwin->get_map()->set_chunk_terrains_modified();
 		}
 	Game_object::remove_this(nodel);
