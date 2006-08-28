@@ -335,10 +335,12 @@ public:
  */
 class Terrain_game_object : public Game_object
 	{
+	ShapeID prev_flat;
 public:
 	Terrain_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
-		: Game_object(shapenum, framenum, tilex, tiley, lft)
+		: Game_object(shapenum, framenum, tilex, tiley, lft),
+		  prev_flat(ShapeID(12, 0))
 		{  }
 	virtual Terrain_game_object *as_terrain() { return this; }
 					// Move to new abs. location.
