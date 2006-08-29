@@ -36,10 +36,12 @@ public:
 	enum Symbol_kind { 
 		fun_defined = 1, 
 		fun_externed,
-		fun_extern_defined	// External, but fun. # was given.
+		fun_extern_defined,	// External, but fun. # was given.
+		class_scope
 	};
 private:
 	friend class Usecode_symbol_table;
+	friend class Usecode_scope_symbol;
 	std::string name;
 	Symbol_kind kind;
 	int val;			// Function #.
@@ -56,12 +58,8 @@ public:
 	
 };
 
-/*
- *	This class represents a symbol table read in from a Usecode file.  This
- *	is an Exult construct; ie, U7's 'usecode' file doesn't have a symbol-
- *	table.
- */
-class Usecode_symbol_table {
+class Usecode_scope_symbol : public Usecode_symbol
+	{
 	typedef std::vector<Usecode_symbol *> Syms_vector;
 	Syms_vector symbols;		// All symbols.
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
@@ -71,13 +69,26 @@ class Usecode_symbol_table {
 	void setup_by_name(int start = 0);
 	void setup_by_val(int start = 0);
 public:
-	Usecode_symbol_table() {  }
-	~Usecode_symbol_table();
+	Usecode_scope_symbol(const char *nm = "_usecode_", 
+			Symbol_kind k = class_scope, int v = 0)
+		: Usecode_symbol(nm, k, v)
+		{  }
+	~Usecode_scope_symbol();
 	void read(std::istream& in);
 	void write(std::ostream& out);
 	void add_sym(Usecode_symbol *sym);
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
+	};
+
+/*
+ *	This class represents a symbol table read in from a Usecode file.  This
+ *	is an Exult construct; ie, U7's 'usecode' file doesn't have a symbol-
+ *	table.
+ */
+class Usecode_symbol_table : public Usecode_scope_symbol {
+public:
+	Usecode_symbol_table() {  }
 };
 
 #endif
