@@ -31,7 +31,7 @@ const int curvers = 0;
 /*
  *	Cleanup.
  */
-Usecode_symbol_table::~Usecode_symbol_table()
+Usecode_scope_symbol::~Usecode_scope_symbol()
 {
 	for (Syms_vector::iterator it = symbols.begin(); it != symbols.end();
 									++it) {
@@ -43,7 +43,7 @@ Usecode_symbol_table::~Usecode_symbol_table()
 /*
  *	Read from a file.
  */
-void Usecode_symbol_table::read(istream& in)
+void Usecode_scope_symbol::read(istream& in)
 {
 	int cnt = Read4(in);
 	int vers = Read4(in);
@@ -54,8 +54,17 @@ void Usecode_symbol_table::read(istream& in)
 		in.getline(nm, sizeof(nm), 0);
 		int kind = Read2(in);
 		int val = Read4(in);
-		symbols.push_back(new Usecode_symbol(nm,
-			(Usecode_symbol::Symbol_kind) kind, val));
+		Usecode_symbol *sym;
+		if (kind == Usecode_symbol::class_scope) {
+			Usecode_scope_symbol *s = new Usecode_scope_symbol(nm, 
+				(Usecode_symbol::Symbol_kind) kind, val);
+			s->read(in);
+			sym = s;
+		} else {
+			sym = new Usecode_symbol(nm,
+				(Usecode_symbol::Symbol_kind) kind, val);
+		}
+		symbols.push_back(sym);
 	}
 	if (!by_name.empty())
 		setup_by_name(oldsize);
@@ -66,7 +75,7 @@ void Usecode_symbol_table::read(istream& in)
 /*
  *	Write to a file.
  */
-void Usecode_symbol_table::write(ostream& out)
+void Usecode_scope_symbol::write(ostream& out)
 {
 	Write4(out, symbols.size());
 	Write4(out, curvers);
@@ -77,13 +86,15 @@ void Usecode_symbol_table::write(ostream& out)
 		out.write(nm, strlen(nm) + 1);
 		Write2(out, (int) sym->get_kind());
 		Write4(out, sym->get_val());
+		if (sym->get_kind() == class_scope)
+			static_cast<Usecode_scope_symbol*>(sym)->write(out);
 	}
 }
 
 /*
  *	Add a symbol.
  */
-void Usecode_symbol_table::add_sym(Usecode_symbol *sym)
+void Usecode_scope_symbol::add_sym(Usecode_symbol *sym)
 {
 	int oldsize = symbols.size();
 	symbols.push_back(sym);
@@ -96,7 +107,7 @@ void Usecode_symbol_table::add_sym(Usecode_symbol *sym)
 /*
  *	Setup tables.
  */
-void Usecode_symbol_table::setup_by_name(int start)
+void Usecode_scope_symbol::setup_by_name(int start)
 {
 	for (Syms_vector::iterator it = symbols.begin() + start; 
 					it != symbols.end(); ++it) {
@@ -104,7 +115,7 @@ void Usecode_symbol_table::setup_by_name(int start)
 		by_name[sym->name] = sym;
 	}
 }
-void Usecode_symbol_table::setup_by_val(int start)
+void Usecode_scope_symbol::setup_by_val(int start)
 {
 	for (Syms_vector::iterator it = symbols.begin() + start; 
 						it != symbols.end(); ++it) {
@@ -116,7 +127,7 @@ void Usecode_symbol_table::setup_by_val(int start)
 /*
  *	Lookup by name or by value.
  */
-Usecode_symbol *Usecode_symbol_table::operator[](const char *nm)
+Usecode_symbol *Usecode_scope_symbol::operator[](const char *nm)
 {
 	if (by_name.empty())
 		setup_by_name();
@@ -127,7 +138,7 @@ Usecode_symbol *Usecode_symbol_table::operator[](const char *nm)
 		return (*it).second;
 }
 
-Usecode_symbol *Usecode_symbol_table::operator[](int val)
+Usecode_symbol *Usecode_scope_symbol::operator[](int val)
 {
 	if (by_val.empty())
 		setup_by_val();
