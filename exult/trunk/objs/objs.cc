@@ -1406,7 +1406,7 @@ void Terrain_game_object::move
 	int newmap
 	)
 	{
-	bool caching_out = gwin->get_map()->is_caching_out();
+	bool caching_out = chunk ? chunk->get_map()->is_caching_out() : false;
 	if (!caching_out)
 		{
 		gwin->get_map()->set_map_modified();
@@ -1440,8 +1440,7 @@ void Terrain_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	// Is this condition necessary?
-	if (chunk)
+	if (chunk && !nodel)
 		{
 		// Do NOT remove object if the map is being cached out.
 		if (chunk->get_map()->is_caching_out())
