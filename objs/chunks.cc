@@ -675,7 +675,8 @@ void Map_chunk::set_terrain
 		}
 		for (Game_object_vector::const_iterator it=removes.begin(); 
 						it!=removes.end(); ++it)
-			(*it)->remove_this();
+			// We don't want to edit the chunks here:
+			(*it)->Game_object::remove_this();
 		}
 	terrain = ter;
 	terrain->add_client();
