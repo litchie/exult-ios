@@ -1,4 +1,9 @@
-2006-08-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2006-08-31  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapelst.cc, shapelst.h: The Gimp would fail to load a frame if the
+	  game's path in exult.cfg was a relative path. Also, added the ability
+	  to export and import all frames of a given shape to/from pngs.
+
+2006-08-29  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* chunks.cc, objs.o: Fixed map corruption bug when dragging chunks from ES.
 	  Also, prevent map changes when removing terrain objects if nodel is true,
 	  and correctly check for map cache out when moving terrain objects.

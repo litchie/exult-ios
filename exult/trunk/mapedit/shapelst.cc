@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "pngio.h"
 #include "fontgen.h"
+#include "utils.h"
 
 using std::cout;
 using std::endl;
@@ -81,7 +82,7 @@ public:
 					// Create for single frame:
 	Editing_file(const char *vganm, const char *pnm, time_t m, 
 							int sh, int fr) 
-		: vga_basename(vganm), pathname(pnm), 
+		: vga_basename(vganm), pathname(pnm),
 		  mtime(m), shapenum(sh), framenum(fr), tiles(0)
 		{  }
 					// Create tiled:
@@ -934,8 +935,18 @@ void Shape_chooser::edit_shape
 		}
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
+#ifdef WIN32
+	if (fname[0] == '.' && (fname[1] == '\\' || fname[1] == '/'))
+	{
+		char currdir[260];
+		GetCurrentDirectory (260, currdir);
+		cmd += currdir;
+		if (cmd[cmd.length()-1] != '\\')
+			cmd += '\\';
+	}
+#endif
 	cmd += fname;
-	cmd += " &";			// Background. 
+	cmd += " &";			// Background.
 #ifndef WIN32
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
@@ -945,7 +956,7 @@ void Shape_chooser::edit_shape
 	STARTUPINFO		si;
 	std::memset (&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	int ret = CreateProcess (NULL, const_cast<char *>(cmd.c_str()), 
+	int ret = CreateProcess (NULL, const_cast<char *>(cmd.c_str()),
 			NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 	if (!ret)
 		Alert("Can't launch '%s'", studio->get_image_editor());
@@ -1294,6 +1305,119 @@ void Shape_chooser::import_frame
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->update_group_windows(0);
 	}
+
+/*
+ *	Export all frames of current shape.
+ */
+
+void Shape_chooser::export_all_pngs
+	(
+	char *fname,
+	int shnum
+	)
+{
+	for (int i=0; i<ifile->get_num_frames(shnum); i++)
+	{
+		char *fullname = new char[strlen(fname) + 30];
+		sprintf(fullname, "%s%02d.png", fname, i);
+		cout << "Writing " << fullname << endl;
+		Shape_frame *frame = ifile->get_shape(shnum, i);
+		int w = frame->get_width(), h = frame->get_height();
+		Image_buffer8 img(w, h);	// Render into a buffer.
+		img.fill8(transp);		// Fill with transparent pixel.
+		frame->paint(&img, frame->get_xleft(), frame->get_yabove());
+		int xoff = 0, yoff = 0;
+		if (frame->is_rle())
+			{
+			xoff = -frame->get_xright();
+			yoff = -frame->get_ybelow();
+			}
+		export_png(fullname, img, xoff, yoff);
+	}
+}
+
+void Shape_chooser::export_all_frames
+	(
+	char *fname,
+	gpointer user_data
+	)
+{
+	Shape_chooser *ed = (Shape_chooser *) user_data;
+	int shnum = ed->info[ed->selected].shapenum;
+	ed->export_all_pngs(fname, shnum);
+}
+
+/*
+ *	Import all frames into current shape.
+ */
+
+void Shape_chooser::import_all_pngs
+	(
+	char *fname,
+	int shnum
+	)
+{
+	char *fullname = new char[strlen(fname) + 30];
+	sprintf(fullname, "%s%02d.png", fname, 0);
+	if (!U7exists(fullname))
+	{
+		std::cerr << "Invalid base file name for import of all frames!" << std::endl;
+		return;
+	}
+	int i=0;
+	unsigned char pal[3*256];	// Get current palette.
+	Get_rgb_palette(palette, pal);
+	Shape *shape = ifile->extract_shape(shnum);
+	if (!shape)
+		return;
+	ExultStudio *studio = ExultStudio::get_instance();
+	while (U7exists(fullname))
+	{
+		int w, h, rowsize, xoff, yoff, palsize;
+		unsigned char *pixels, *oldpal;
+						// Import, with 255 = transp. index.
+		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
+							pixels, oldpal, palsize))
+			return;			// Just return if error, for now.
+						// Convert to game palette.
+		Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
+		delete oldpal;
+		int xleft = w + xoff - 1, yabove = h + yoff - 1;
+		Shape_frame *frame = new Shape_frame(pixels,
+					w, h, xleft, yabove, true);
+		if (i<ifile->get_num_frames(shnum))
+			shape->set_frame(frame, i);
+		else
+			shape->add_frame(frame, i);
+		delete pixels;
+
+		i++;
+		delete fullname;
+		fullname = new char[strlen(fname) + 30];
+		sprintf(fullname, "%s%02d.png", fname, i);
+	}
+	render();
+	show();
+	file_info->set_modified();
+	studio->update_group_windows(0);
+}
+
+void Shape_chooser::import_all_frames
+	(
+	char *fname,
+	gpointer user_data
+	)
+{
+	Shape_chooser *ed = (Shape_chooser *) user_data;
+	if (ed->selected < 0)
+		return;			// Shouldn't happen.
+	int shnum = ed->info[ed->selected].shapenum;
+	int len = strlen(fname);
+	// Ensure we have a valid file name.
+	if (fname[len-4] == '.')
+		fname[len-6] = 0;
+	ed->import_all_pngs(fname, shnum);
+}
 
 /*
  *	Add a frame.
@@ -1990,6 +2114,30 @@ static void on_shapes_popup_export
 							udata);
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
+static void on_shapes_popup_export_all
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Choose the base .png file name for all frames",
+			(File_sel_okay_fun) Shape_chooser::export_all_frames,
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
+static void on_shapes_popup_import_all
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Choose the one of the .png sprites to import",
+			(File_sel_okay_fun) Shape_chooser::import_all_frames,
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
 static void on_shapes_popup_new_frame
 	(
 	GtkMenuItem *item,
@@ -2134,7 +2282,7 @@ GtkWidget *Shape_chooser::create_popup
 			Add_menu_item(popup, "Edit...",
 				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
 								 this);
-			if (IS_FLAT(info[selected].shapenum) && 
+			if (IS_FLAT(info[selected].shapenum) &&
 					file_info == studio->get_vgafile())
 				Add_menu_item(popup, "Edit tiled...",
 				    GTK_SIGNAL_FUNC(
@@ -2150,6 +2298,17 @@ GtkWidget *Shape_chooser::create_popup
 			GTK_SIGNAL_FUNC(on_shapes_popup_export), this);
 		Add_menu_item(popup, "Import frame...",
 			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
+		if (!IS_FLAT(info[selected].shapenum) ||
+				file_info != studio->get_vgafile())
+			{
+						// Separator.
+			Add_menu_item(popup);
+						// Export/import all frames.
+			Add_menu_item(popup, "Export all frames...",
+				GTK_SIGNAL_FUNC(on_shapes_popup_export_all), this);
+			Add_menu_item(popup, "Import all frames...",
+				GTK_SIGNAL_FUNC(on_shapes_popup_import_all), this);
+			}
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
