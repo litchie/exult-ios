@@ -825,7 +825,10 @@ Chunk_chooser::Chunk_chooser
 	static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
 								0, 0};
 	char v2buf[V2_CHUNK_HDR_SIZE];	// Check for V2 chunks.
+	chunkfile.seekg(0);
 	chunkfile.read(v2buf, sizeof(v2buf));
+	if (!chunkfile.good())
+		cout << "Chunkfile has an error!" << endl;
 	if (memcmp(v2hdr, v2buf, sizeof(v2buf)) == 0)
 		{
 		headersz = V2_CHUNK_HDR_SIZE;
