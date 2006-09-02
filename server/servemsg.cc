@@ -139,6 +139,7 @@ int Receive_data
 bool wait_for_response(int socket, int ms)
 {
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
+	/*
 	int ticks = GetTickCount();
 	while(GetTickCount() < ticks+ms) {
 		if (peek_pipe() > 0) return true;
@@ -146,6 +147,7 @@ bool wait_for_response(int socket, int ms)
 	}
 	if (peek_pipe() > 0) return true;
 	return false;
+	*/
 #endif
 	return true;
 }

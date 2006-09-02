@@ -1,3 +1,11 @@
+2006-09-01  Ryan Nunn <colourles@users.sourceforge.net>
+	* audio/midi_drivers/LowLevelMidiDriver.cpp : Improving termination code 
+	  for threaded midi drivers
+	* server/servemsg.cc, server/server.cc, server/servewin32.cc : Rewrote 
+	  Exult<->ExultStudio communications to use a socket in Windows. Should be
+	  much more stable
+	* Other cc files fixing up some 'const' (or lack there of) problems
+
 2006-08-31  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapelst.cc, shapelst.h: The Gimp would fail to load a frame if the
 	  game's path in exult.cfg was a relative path. Also, added the ability

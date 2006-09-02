@@ -379,7 +379,7 @@ int exult_main(const char *runpath)
 			add_system_path("<DATA>", "data");
 			if(!U7exists(EXULT_FLX))
 			{
-				char *sep = std::strrchr(runpath,'/');
+				const char *sep = std::strrchr(runpath,'/');
 				if (!sep) sep = std::strrchr(runpath,'\\');
 				int plen = sep-runpath;
 				char *dpath = new char[plen+10];

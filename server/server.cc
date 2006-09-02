@@ -587,15 +587,6 @@ void Server_delay
 #else
 	if (listen_socket == -1) return;
 
-	if (Exult_server::is_broken()) {
-		std::cout << "Client disconnected." << endl;
-		Exult_server::disconnect_from_client();
-		Exult_server::setup_connect();
-		client_socket = -1;
-	}
-
-	SleepEx(20, TRUE);
-
 	if (client_socket == -1) {
 		// Only do this in map edit mode
 		if (!cheat.in_map_editor()) return;
@@ -610,9 +601,7 @@ void Server_delay
 		handle_message(client_socket);
 		
 	if (Exult_server::is_broken()) {
-		if (Exult_server::notify_connection_lost()) std::cout << "Client disconnected." << endl;
-		Exult_server::disconnect_from_client();
-		Exult_server::setup_connect();
+		std::cout << "Client disconnected." << endl;
 		client_socket = -1;
 	}
 #endif
