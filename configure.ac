@@ -626,9 +626,9 @@ fi
 AC_PATH_PROG(FT2CONFIG, freetype-config)
 if test -n "$FT2CONFIG"; then
 	AC_DEFINE(HAVE_FREETYPE2, 1, [Have freetype2])
-	FREETYPE2_LIBS=`freetype-config --libs`
+	FREETYPE2_LIBS=`$FT2CONFIG --libs`
 	AC_SUBST(FREETYPE2_LIBS)
-	FREETYPE2_INCLUDES=`freetype-config --cflags`
+	FREETYPE2_INCLUDES=`$FT2CONFIG --cflags`
 	AC_SUBST(FREETYPE2_INCLUDES)
 fi
 
