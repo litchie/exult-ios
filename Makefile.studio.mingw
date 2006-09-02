@@ -43,7 +43,7 @@ CXX=g++
 CFLAGS= -O2 -mms-bitfields
 CC=gcc
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows -lws2_32
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 

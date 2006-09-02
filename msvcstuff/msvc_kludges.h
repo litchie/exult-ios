@@ -142,7 +142,7 @@ using std::strtol;
 //
 // Hacks for MSVC 7
 //
-#elif (_MSC_VER == 1300)
+#elif (_MSC_VER == 1300 || _MSC_VER == 1400)
 
 #include <cctype>
 #define HAVE_SYS_STAT_H
