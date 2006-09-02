@@ -142,8 +142,8 @@ void Chunk_chooser::render
 	const int chunkw = 128, chunkh = 128;
 	int total_cnt = get_count();
 	int y = border;
-					// Show bottom if at least 1/2 vis.
-	while (index < total_cnt && y + chunkh/2 + border <= winh)
+					// Show bottom if at least 1/4 vis.
+	while (index < total_cnt && y + chunkh/4 <= winh)
 		{
 		int x = border;
 		int cliph = y + chunkh <= winh ? chunkh : (winh - y);
