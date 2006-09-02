@@ -37,7 +37,7 @@ CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -
 CXX=g++
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows -lws2_32
 
 EXEC=Exult.exe
 EXEEXT=.exe

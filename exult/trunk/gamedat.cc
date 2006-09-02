@@ -1151,7 +1151,7 @@ static bool Save_level2 (zipFile zipfile, const char *fname)
 	
 	// Filename first
 	memset (buf, 0, 13);
-	char *fname2 = strrchr(fname, '/') + 1;
+	const char *fname2 = strrchr(fname, '/') + 1;
 	if (!fname2)
 		fname2 = strchr(fname, '\\') + 1;
 	strncpy (buf, fname2 ? fname2 : fname, 13);

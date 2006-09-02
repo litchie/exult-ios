@@ -695,7 +695,7 @@ char *Get_mapped_name
 		strcpy(to, from);	// Default map.
 	else
 		{
-		char *sep = strrchr(from, '/');
+		const char *sep = strrchr(from, '/');
 		assert(sep != 0);
 		int len = sep - from;
 		memcpy(to, from, len);	// Copy dir.

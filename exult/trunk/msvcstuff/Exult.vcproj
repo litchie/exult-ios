@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Exult"
 	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
+	RootNamespace="Exult"
 	>
 	<Platforms>
 		<Platform
@@ -50,7 +51,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				StringPooling="true"
 				ExceptionHandling="1"
@@ -82,7 +83,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib  ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
@@ -144,7 +145,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -176,7 +177,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib ws2_32.lib ole32.lib user32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
@@ -245,7 +246,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32"
 				StringPooling="true"
 				ExceptionHandling="1"
@@ -276,7 +277,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
@@ -343,7 +344,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -375,7 +376,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib SDLmain.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib SDLmain.lib  ws2_32.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
@@ -951,10 +952,6 @@
 				</File>
 				<File
 					RelativePath="..\menulist.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\mapedit\modmgr.cc"
 					>
 				</File>
 				<File
@@ -1978,6 +1975,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\usecode\ucsymtbl.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\useval.cc"
 					>
 				</File>
@@ -2409,11 +2410,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
