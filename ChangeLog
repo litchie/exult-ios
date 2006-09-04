@@ -1,4 +1,4 @@
-2006-08-31  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2006-09-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* game.cc: Starting a game with a mod resulted in wrong mod identification
 	  in stdout.
 	* mapedit/studio.cc, server/server.cc, server/servewin32.cc: In Windows, use
