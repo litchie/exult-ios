@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 
 #include "ucclass.h"
+#include "ucsymtbl.h"
 
 /*
  *	Create.
@@ -38,9 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Uc_class::Uc_class
 	(
 	char *nm
-	) : scope(0), num_vars(0)
+	) : scope(0), num_vars(0), name(nm)
 	{
-	// +++++FINISH (nm)
 	}
 
 /*
@@ -66,8 +66,41 @@ Uc_var_symbol *Uc_class::add_symbol
 	if (scope.is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_var_symbol *var = new Uc_var_symbol(nm, num_vars++);
+	Uc_var_symbol *var = new Uc_class_var_symbol(nm, num_vars++);
 	scope.add(var);
 	return var;
+	}
+
+/*
+ *	Generate Usecode.
+ */
+
+void Uc_class::gen
+	(
+	std::ostream& out
+	)
+	{
+	std::vector<Uc_design_unit *>::iterator it;
+	for (it = methods.begin(); it != methods.end(); it++)
+		{
+		(*it)->gen(out);		// Generate function.
+		}
+	}
+
+/*
+ *	Create symbol for this function.
+ */
+
+Usecode_symbol *Uc_class::create_sym
+	(
+	)
+	{
+	Usecode_symbol::Symbol_kind kind = Usecode_symbol::class_scope;
+	Usecode_scope_symbol *cs = 
+		new Usecode_scope_symbol(name.c_str(), kind);
+	std::vector<Uc_design_unit *>::iterator it;
+	for (it = methods.begin(); it != methods.end(); it++)
+		cs->add_sym((*it)->create_sym());
+	return cs;
 	}
 

@@ -174,6 +174,38 @@ int Uc_static_var_symbol::gen_value
 	}
 
 /*
+ *	Assign value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_class_var_symbol::gen_assign
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_POPCLSVAR);
+	Write2(out, offset);
+	return 1;
+	}
+
+/*
+ *	Generate code to push variable's value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_class_var_symbol::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_PUSHCLSVAR);
+	Write2(out, offset);
+	return 1;
+	}
+
+/*
  *	Generate code to push variable's value on stack.
  *
  *	Output: 0 if can't do this.
