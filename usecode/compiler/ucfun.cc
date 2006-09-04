@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "opcodes.h"
 #include "ucexpr.h"			/* Needed only for Write2(). */
+#include "ucsymtbl.h"
 
 using std::strlen;
 using std::memcpy;
@@ -497,3 +498,17 @@ void Uc_function::set_intrinsics
 		}
 	}
 
+/*
+ *	Create symbol for this function.
+ */
+
+Usecode_symbol *Uc_function::create_sym
+	(
+	)
+	{
+	Usecode_symbol::Symbol_kind kind = Usecode_symbol::fun_defined;
+	// For now, all externs have their ID given.
+	if (is_externed())
+		kind = Usecode_symbol::fun_extern_defined;
+	return new Usecode_symbol(get_name(), kind, get_usecode_num());
+	}

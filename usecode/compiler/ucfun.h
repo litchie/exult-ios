@@ -37,7 +37,7 @@ class Uc_statement;
 /* 
  *	This represents a usecode function:
  */
-class Uc_function
+class Uc_function : public Uc_design_unit
 	{
 	static Uc_scope globals;	// For finding intrinsics, funs.
 					// Intrinsics, indexed by number:
@@ -163,6 +163,7 @@ public:
 	int link(Uc_function_symbol *fun);
 	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
+	virtual Usecode_symbol *create_sym();
 	};
 
 #endif

@@ -56,7 +56,7 @@ static Uc_array_expression *Create_array(int, Uc_expression *,
 
 #define YYERROR_VERBOSE 1
 
-std::vector<Uc_function *> functions;	// THIS is what we produce.
+std::vector<Uc_design_unit *> units;	// THIS is what we produce.
 
 static Uc_function *cur_fun = 0;	// Current function being parsed.
 static Uc_class *cur_class = 0;		// ...or, current class being parsed.
@@ -169,6 +169,7 @@ class_decl:
 		{ cur_class = new Uc_class($2); }
 		'{' class_item_list '}'
 		{
+		units.push_back(cur_class);
 		cur_class = 0;
 		}
 	;
@@ -191,20 +192,26 @@ method:
 		delete $3;		// A copy was made.
 		cur_fun = new Uc_function(funsym, cur_class->get_scope());
 		}
-		function_body
+	function_body
+		{
+		cur_class->add_method(cur_fun);
+		cur_fun = 0;
+		}
 	;
 
 function:
 	function_proto { cur_fun = new Uc_function($1); }
 	function_body
+		{
+		units.push_back(cur_fun);
+		cur_fun = 0;
+		}
 	;
 
 function_body:
 		statement_block
 		{ 
 		cur_fun->set_statement($1);
-		functions.push_back(cur_fun);
-		cur_fun = 0;
 		}
 	;
 
