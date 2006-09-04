@@ -194,7 +194,7 @@ void Server_init
 
 	listen_socket = client_socket = -1;
 
-	std::string servename = get_system_path("<STATIC>");
+	std::string servename = get_system_path("<GAMEDAT>");
 
 	if (Exult_server::create_pipe(servename.c_str())) listen_socket = 1;
 
@@ -591,7 +591,7 @@ void Server_delay
 		// Only do this in map edit mode
 		if (!cheat.in_map_editor()) return;
 
-		std::string servename = get_system_path("<STATIC>");
+		std::string servename = get_system_path("<GAMEDAT>");
 		if (!Exult_server::try_connect_to_client(servename.c_str())) return;
 		else client_socket = 1;
 		std::cout << "Connected to client" << endl;
