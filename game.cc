@@ -129,7 +129,7 @@ Game *Game::create_game(BaseGameInfo *mygame)
 	char buf[256];
 	if (mygame && mygame->get_mod_title()!="")
 		snprintf(buf, 256, " with the '%s' modification.",
-				mygame->get_title().c_str());
+				mygame->get_mod_title().c_str());
 	else
 		buf[0] = 0;
 	switch(game_type) {
