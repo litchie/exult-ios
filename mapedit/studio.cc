@@ -2644,7 +2644,7 @@ bool ExultStudio::connect_to_server
 	if (server_input_tag != -1) gtk_timeout_remove(server_input_tag);
 	server_socket = server_input_tag = -1;
 
-	if (Exult_server::try_connect_to_server(static_path) > 0)
+	if (Exult_server::try_connect_to_server(g_strdup_printf(get_system_path("<GAMEDAT>").c_str())) > 0)
 		server_input_tag = gtk_timeout_add(50, Read_from_server, this);
 	else
 		return false;
