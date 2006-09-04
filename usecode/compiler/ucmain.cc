@@ -46,7 +46,7 @@ using std::strlen;
 using std::ios;
 
 					// THIS is what the parser produces.
-extern std::vector<Uc_function *> functions;	
+extern std::vector<Uc_design_unit *> units;	
 
 std::vector<char *> include_dirs;	// -I directories.
 
@@ -125,24 +125,17 @@ int main
 	std::ofstream out(outname, ios::binary|ios::out);
 	Write4(out, UCSYMTBL_MAGIC0);	// Start with symbol table.
 	Write4(out, UCSYMTBL_MAGIC1);
-	std::vector<Uc_function *>::iterator it;
+	std::vector<Uc_design_unit *>::iterator it;
 	Usecode_symbol_table *symtbl = new Usecode_symbol_table;
-	for (it = functions.begin(); it != functions.end(); it++)
+	for (it = units.begin(); it != units.end(); it++)
 		{
-		Uc_function *fun = *it;
-		Usecode_symbol::Symbol_kind kind = Usecode_symbol::fun_defined;
-		// For now, all externs have their ID given.
-		if (fun->is_externed())
-			kind = Usecode_symbol::fun_extern_defined;
-		symtbl->add_sym(new Usecode_symbol(fun->get_name(),
-					kind, fun->get_usecode_num()));
+		symtbl->add_sym((*it)->create_sym());
 		}
 	symtbl->write(out);
 	delete symtbl;
-	for (it = functions.begin(); it != functions.end(); it++)
+	for (it = units.begin(); it != units.end(); it++)
 		{
-		Uc_function *fun = *it;
-		fun->gen(out);		// Generate function.
+		(*it)->gen(out);	// Generate function.
 		}
 	return Uc_location::get_num_errors();
 	}

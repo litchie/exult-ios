@@ -34,19 +34,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /* 
  *	This represents a usecode class (vaguely like in C++).
  */
-class Uc_class
+class Uc_class : public Uc_design_unit
 	{
+	std::string name;
 	Uc_scope scope;
 	int num_vars;			// # member variables.
+	std::vector<Uc_design_unit *> methods;
 public:
 	Uc_class(char *nm);
 	~Uc_class();
 	Uc_scope *get_scope()
 		{ return &scope; }
 	Uc_var_symbol *add_symbol(char *nm);	// Add class variable.
-#if 0
+	void add_method(Uc_design_unit *m)
+		{ methods.push_back(m); }
 	void gen(std::ostream& out);	// Generate Usecode.
-#endif
+	virtual Usecode_symbol *create_sym();
 	};
 
 #endif

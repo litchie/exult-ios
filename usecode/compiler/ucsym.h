@@ -37,6 +37,7 @@ using std::vector;
 class Uc_array_expression;
 class Uc_expression;
 class Uc_function;
+class Usecode_symbol;
 
 /*
  *	For comparing names:
@@ -102,6 +103,20 @@ class Uc_static_var_symbol : public Uc_var_symbol
 	{
 public:
 	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
+		{  }
+					// Gen. code to put result on stack.
+	virtual int gen_value(vector<char>& out);
+					// Gen. to assign from stack.
+	virtual int gen_assign(vector<char>& out);
+	};
+
+/*
+ *	A class member variable.
+ */
+class Uc_class_var_symbol : public Uc_var_symbol
+	{
+public:
+	Uc_class_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(vector<char>& out);
@@ -254,6 +269,16 @@ public:
 					// Add a function decl.
 	int add_function_symbol(Uc_function_symbol *fun);
 	bool is_dup(char *nm);		// Already declared?
+	};
+
+/*
+ *	Abstract top-level code (functions, classes). 
+ */
+class Uc_design_unit
+	{
+public:
+	virtual void gen(std::ostream& out) = 0;	// Generate Usecode.
+	virtual Usecode_symbol *create_sym() = 0;
 	};
 
 #endif
