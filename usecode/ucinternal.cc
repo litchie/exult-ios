@@ -2671,6 +2671,34 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
+			case 0x54:		// PUSH class var.
+				offset = Read2(frame->ip);
+				if (offset < 0) {
+					LOCAL_VAR_ERROR(offset);
+					pushi(0);
+				} else {
+					Usecode_value& ths = frame->locals[0];
+					int size = ths.get_array_size();
+					if (offset < size)
+						push(ths.get_elem(offset));
+					else {
+						Usecode_value z(0);
+						push(z);
+					}
+				}
+				break;
+			case 0x55:		// POP class var.
+			{
+				// Get value.
+				Usecode_value val = pop();
+				offset = Read2(frame->ip);
+				Usecode_value& ths = frame->locals[0];
+				int size = ths.get_array_size();
+				if (offset >= size)
+					ths.resize(offset + 1);
+				ths.put_elem(offset, val);
+				break;
+			}
 			case 0xcd: // 32 bit debugging function init
 			{
 				int funcname = (sint32)Read4(frame->ip);
