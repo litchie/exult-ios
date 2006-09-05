@@ -26,7 +26,6 @@
 #include <iostream>
 
 #include <vector>	// STL container
-#include <deque>	// STL container
 #include <string>	// STL string
 
 class Game_object;
