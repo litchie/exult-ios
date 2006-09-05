@@ -384,7 +384,6 @@ int main(int argc, char** argv)
 		if (!symtbl)
 			symtbl = new Usecode_symbol_table();
 		symtbl->read(in);
-		sz -= in.tellg();
 		}
 	else
 		in.seekg(0);
