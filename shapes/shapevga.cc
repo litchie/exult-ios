@@ -269,6 +269,8 @@ void Shapes_vga_file::read_info
 	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing))
 		{
 		unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
+			// Ensure sensible defaults.
+		memset(&occbits[0], 0, sizeof(occbits));
 		occ.read((char *)occbits, sizeof(occbits));
 		for (i = 0; i < occ.gcount(); i++)
 			{
