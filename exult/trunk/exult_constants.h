@@ -45,6 +45,13 @@ const int c_any_shapenum = -359;
 const int c_any_qual = -359;
 const int c_any_framenum = -359;
 
+// Maximum number of shapes:
+const int c_max_shapes = 2048;
+const int c_occsize = c_max_shapes/8 + (c_max_shapes%8 ? 1 : 0);
+
+// Maximum number of global flags:
+const int c_last_gflag = 2047;
+
 /*
  * Empty string
  */

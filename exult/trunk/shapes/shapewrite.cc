@@ -186,7 +186,7 @@ void Shapes_vga_file::write_info
 
 	ofstream(occ);			// Write occlude.dat.
 	U7open(occ, PATCH_OCCLUDE);
-	unsigned char occbits[128];	// 1024 bit flags.
+	unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
 					// +++++This could be rewritten better!
 	memset(&occbits[0], 0, sizeof(occbits));
 	for (i = 0; i < sizeof(occbits); i++)
@@ -283,7 +283,7 @@ void Armor_info::write
 	*ptr++ = prot;			// Protection value.
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = immune;		// Immunity flags.
-       	Write4(ptr, 0);			// Last 5 are unknown/unused.
+	Write4(ptr, 0);			// Last 5 are unknown/unused.
 	*ptr = 0;
 	out.write((char *) buf, sizeof(buf));
 	}

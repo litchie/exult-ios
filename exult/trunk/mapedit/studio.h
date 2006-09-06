@@ -290,6 +290,7 @@ public:
 	void set_optmenu(char *name, int val);
 	int get_spin(char *name);
 	void set_spin(char *name, int val, bool sensitive = true);
+	void set_spin(char *name, int low, int high);
 	void set_spin(char *name, int val, int low, int high);
 	int get_num_entry(char *name);
 	const gchar *get_text_entry(char *name);

@@ -176,8 +176,11 @@ consumeEdible (var food, var npc, var nutritional_value, var sound_effect)
 
 	stealItem(food);	//Make sure it has been properly nicked
 	UI_play_sound_effect2(sound_effect, npc);	//Homph homph homph
-	food->remove_item();
-
+	if (shapenum == SHAPE_REAGENT)
+		// Garlic has quantity
+		subtractQuantity(food);
+	else
+		food->remove_item();	
 
 	var rand = UI_get_random(10);	//Used for randomising the barks
 

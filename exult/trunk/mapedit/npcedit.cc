@@ -157,7 +157,7 @@ static void Npc_shape_dropped
 	void *udata
 	)
 	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 2048)
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes)
 		((ExultStudio *) udata)->set_npc_shape(shape, frame);
 	}
 
