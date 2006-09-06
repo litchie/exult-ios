@@ -36,6 +36,7 @@ class Usecode_value;
 
 #include "exceptions.h"
 #include "singles.h"
+#include "exult_constants.h"
 
 /*
  *	Here's our virtual machine for running usecode.  The actual internals
@@ -45,7 +46,7 @@ class Usecode_machine : public Game_singletons
 	{
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
-	unsigned char gflags[2048];	// Global flags.
+	unsigned char gflags[c_last_gflag+1];	// Global flags.
 	Keyring* keyring;
 	Conversation *conv;		// Handles conversations
 public:

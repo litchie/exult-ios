@@ -101,34 +101,34 @@ void ShapeBrowser::browse_shapes()
 		//int active;
 		
 		do {
- 		        if (redraw) {
-			        gwin->clear_screen();
-			        snprintf(buf,255,"palettes/%d",current_palette);
+			if (redraw) {
+				gwin->clear_screen();
+				snprintf(buf,255,"palettes/%d",current_palette);
 				pal_tuple = game->get_resource(buf);
 				char xfrsc[256];
 				if (current_xform > 0)
 					{
-					snprintf(xfrsc, 255, "xforms/%d", 
+					snprintf(xfrsc, 255, "xforms/%d",
 							current_xform);
 					xform_tuple = game->
 						get_resource(xfrsc);
 					pal.load(pal_tuple.str, pal_tuple.num,
-						xform_tuple.str, 
+						xform_tuple.str,
 						xform_tuple.num);
 					}
 				else
 					pal.load(pal_tuple.str,pal_tuple.num);
-					
+
 				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-30, 8);
-				
+
 				num_shapes = shapes->get_num_shapes();
 				snprintf(buf,255,"Shape: %2d/%d", current_shape, num_shapes-1);
 				//font->draw_text(ibuf, 0, 180, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-20, 8);
-			
-			    num_frames = shapes->get_num_frames(current_shape);
+
+				num_frames = shapes->get_num_frames(current_shape);
 				snprintf(buf,255,"Frame: %2d/%d", current_frame, num_frames-1);
 				//font->draw_text(ibuf, 160, 180, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 162, maxy-20, 8);
@@ -137,48 +137,48 @@ void ShapeBrowser::browse_shapes()
 				//font->draw_text(ibuf, 0, 190, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-10, 8);
 
-			        if (num_frames) {
-				        Shape_frame *frame = shapes->get_shape(
-					        current_shape, current_frame);
+				if (num_frames) {
+					Shape_frame *frame = shapes->get_shape(
+				current_shape, current_frame);
 
- 				        if (frame) {
-					        snprintf(buf,255,"%d x %d", frame->get_width(), frame->get_height());
-					        //font->draw_text(ibuf, 32, 32, buf);
+					if (frame) {
+						snprintf(buf,255,"%d x %d", frame->get_width(), frame->get_height());
+						//font->draw_text(ibuf, 32, 32, buf);
 						font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
-
-						Shape_info& info = 
-							ShapeID::get_info(current_shape);
-
-					        snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
-					        font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
-
-					        //font->draw_text(ibuf, 32, 16, item_names[current_shape]);
+	
+						Shape_info& info =
+						ShapeID::get_info(current_shape);
+	
+						snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
+						font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
+	
+						//font->draw_text(ibuf, 32, 16, item_names[current_shape]);
 						font->paint_text_fixedwidth(ibuf, item_names[current_shape], 2, 2, 8);
-
+	
 						//draw outline
-						gwin->get_win()->fill8(255, 
-						    frame->get_width()+4, frame->get_height()+4, 
-						    gwin->get_width()/2 - frame->get_xleft() - 2, 
-						    gwin->get_height()/2 - frame->get_yabove() - 2);
-					        gwin->get_win()->fill8(0,
-						    frame->get_width()+2, frame->get_height()+2,
-						    gwin->get_width()/2 - frame->get_xleft()-1, 
-						    gwin->get_height()/2 - frame->get_yabove()-1);
-
+						gwin->get_win()->fill8(255,
+						frame->get_width()+4, frame->get_height()+4,
+						gwin->get_width()/2 - frame->get_xleft() - 2,
+						gwin->get_height()/2 - frame->get_yabove() - 2);
+						gwin->get_win()->fill8(0,
+						frame->get_width()+2, frame->get_height()+2,
+						gwin->get_width()/2 - frame->get_xleft()-1,
+						gwin->get_height()/2 - frame->get_yabove()-1);
+	
 						//draw shape
-					        sman->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+						sman->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
 
-				        } else
-					        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
- 			        } else
-				        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
- 	
-			        pal.apply();
+					} else
+						font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
+				} else
+					font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
+
+				pal.apply();
 				redraw = false;
 			}
-  			SDL_WaitEvent(&event);
+			SDL_WaitEvent(&event);
 			if(event.type==SDL_KEYDOWN) {
-               			redraw = true;
+				redraw = true;
 				int shift = event.key.keysym.mod & KMOD_SHIFT;
 				//int ctrl = event.key.keysym.mod & KMOD_CTRL;
 				switch(event.key.keysym.sym) {
@@ -203,7 +203,7 @@ void ShapeBrowser::browse_shapes()
 							num_xforms);
 					break;
 				// Shapes
-			        case SDLK_s:
+				case SDLK_s:
 					if ((event.key.keysym.mod & KMOD_ALT) && (event.key.keysym.mod & KMOD_CTRL)) 
 						make_screenshot(true);
 					else {
@@ -242,8 +242,8 @@ void ShapeBrowser::browse_shapes()
 				case SDLK_RIGHT:
 					handle_key(0, current_frame, num_frames);
 					break;
-
 				default:
+
 					break;
 				}
 			}

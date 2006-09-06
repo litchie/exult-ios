@@ -27,6 +27,7 @@
 #include <iostream>
 #include <cassert>
 #include "exult_types.h"
+#include "exult_constants.h"
 #include "imagebuf.h"
 
 class DataSource;

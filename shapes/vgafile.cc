@@ -1315,7 +1315,7 @@ Shape *Vga_file::new_shape
 	int shapenum
 	)
 	{
-	if (shapenum < 0 || shapenum >= 2048)	// (2048 is really arbitrary.)
+	if (shapenum < 0 || shapenum >= c_max_shapes)
 		return 0;
 	if (shapenum < num_shapes)
 		{

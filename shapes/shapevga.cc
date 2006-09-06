@@ -202,37 +202,36 @@ void Shapes_vga_file::read_info
 		}
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
-	unsigned short offsets[2048];
+	unsigned short offsets[c_max_shapes];
 	if (U7open2(wihh, patch_name(PATCH_WIHH), WIHH, editing))
-		cnt = num_shapes;// <= 1024 ? num_shapes : 1024;
-	else
-		cnt = 0;
-	for (i = 0; i < cnt; i++)
-		offsets[i] = Read2(wihh);
-	for (i = 0; i < cnt; i++)
-		// A zero offset means there is no record
-		if(offsets[i] == 0)
-			info[i].weapon_offsets = 0;
-		else
-			{
-			wihh.seekg(offsets[i]);
-			// There are two bytes per frame: 64 total
-			info[i].weapon_offsets = new unsigned char[64];
-			for(int j = 0; j < 32; j++)
+		{
+		cnt = num_shapes;
+		for (i = 0; i < cnt; i++)
+			offsets[i] = Read2(wihh);
+		for (i = 0; i < cnt; i++)
+			// A zero offset means there is no record
+			if(offsets[i] == 0)
+				info[i].weapon_offsets = 0;
+			else
 				{
-				unsigned char x = Read1(wihh);
-				unsigned char y = Read1(wihh);
-				// Set x/y to 255 if weapon is not to be drawn
-				// In the file x/y are either 64 or 255:
-				// I am assuming that they mean the same
-				if(x > 63 || y > 63)
-					x = y = 255;
-				info[i].weapon_offsets[j * 2] = x;
-				info[i].weapon_offsets[j * 2 + 1] = y;
+				wihh.seekg(offsets[i]);
+				// There are two bytes per frame: 64 total
+				info[i].weapon_offsets = new unsigned char[64];
+				for(int j = 0; j < 32; j++)
+					{
+					unsigned char x = Read1(wihh);
+					unsigned char y = Read1(wihh);
+					// Set x/y to 255 if weapon is not to be drawn
+					// In the file x/y are either 64 or 255:
+					// I am assuming that they mean the same
+					if(x > 63 || y > 63)
+						x = y = 255;
+					info[i].weapon_offsets[j * 2] = x;
+					info[i].weapon_offsets[j * 2 + 1] = y;
+					}
 				}
-			}
-	if (cnt)
 		wihh.close();
+		}
 	ifstream mfile;			// Now get monster info.
 	if (U7open2(mfile, patch_name(PATCH_MONSTERS), MONSTERS, editing))
 		{
@@ -269,9 +268,9 @@ void Shapes_vga_file::read_info
 	ifstream(occ);			// Read flags from occlude.dat.
 	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing))
 		{
-		unsigned char occbits[128];	// 1024 bit flags.
+		unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
 		occ.read((char *)occbits, sizeof(occbits));
-		for (i = 0; i < sizeof(occbits); i++)
+		for (i = 0; i < occ.gcount(); i++)
 			{
 			unsigned char bits = occbits[i];
 			int shnum = i*8;	// Check each bit.
