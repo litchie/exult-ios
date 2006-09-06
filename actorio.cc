@@ -104,9 +104,9 @@ void Actor::read
 	if (npc_num >= 0 && npc_num < 256)
 		usecode = 0x400 + npc_num;
 					// Watch for new NPC's added.
-	else if ((!has_usecode && !usecode_assigned && 
-						usecode != 0x400 + npc_num) ||
-	    usecode == 0xfff)
+	else if ((!has_usecode && !usecode_assigned &&
+	          usecode != 0x400 + npc_num) ||
+	         usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
 	int health_val = static_cast<int>(static_cast<char>(nfile->read1()));
@@ -473,10 +473,10 @@ void Actor::write
 
 	int old_shape = get_shapenum();	// Backup shape because we might change it
 	set_shape( get_shape_real() );	// Change the shape out non polymorph one
-	// ++++++In future, got to handle shapenum > 1023.
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf4[0] = ((get_cx()%16) << 4) | get_tx();
 	buf4[1] = ((get_cy()%16) << 4) | get_ty();
+	// ++++++Is this even needed anymore? We already save 16-bit shapes below.
 	buf4[2] = shapenum&0xff;
 	buf4[3] = ((shapenum>>8)&3) | (framenum<<2);
 

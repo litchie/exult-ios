@@ -321,8 +321,12 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		break;
 
 		case CP_GFlagNum:
-		font->paint_text_fixedwidth(ibuf, "Enter Global Flag 0-1023. (-1 to cancel.)", 0, maxy-9, 8);
+		{
+		char buf[50];
+		snprintf(buf, 50, "Enter Global Flag 0-%d. (-1 to cancel.)", c_last_gflag);
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-9, 8);
 		break;
+		}
 
 		case CP_NFlagNum:
 		font->paint_text_fixedwidth(ibuf, "Enter NPC Flag 0-63. (-1 to cancel.)", 0, maxy-9, 8);
@@ -369,7 +373,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 				if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
 #else
 				chr = std::toupper(chr);
-#endif         
+#endif
 			}
 			if(curlen<(len-1))
 			{
@@ -656,7 +660,7 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		// Global Flag Editor
 		case 'f':
 		if (npc < -1) mode = CP_InvalidValue;
-		else if (npc > 1023) mode = CP_InvalidValue;
+		else if (npc > c_last_gflag) mode = CP_InvalidValue;
 		else if (npc == -1 || !input[0]) mode = CP_Canceled;
 		else mode = GlobalFlagLoop(npc);
 		break;
@@ -901,7 +905,7 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 
 		// Change Flag
 		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, maxy-72, 8);
-		if (num > 0 && num < 1023) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, maxy-63, 8);
+		if (num > 0 && num < c_last_gflag) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, maxy-63, 8);
 		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, maxy-63, 8);
 		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, maxy-63, 8);
 
@@ -924,12 +928,12 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 			else if (command == '+')	// Increment
 			{
 				num++;
-				if (num > 1023) num = 1023;
+				if (num > c_last_gflag) num = c_last_gflag;
 			}
 			else if (command == '*')	// Change Flag
 			{
 				i = std::atoi(input);
-				if (i < -1 || i > 1023) mode = CP_InvalidValue;
+				if (i < -1 || i > c_last_gflag) mode = CP_InvalidValue;
 				else if (i == -1) mode = CP_Canceled;
 				else if (input[0]) num = i;
 			}
@@ -1958,9 +1962,9 @@ void CheatScreen::BusinessLoop (Actor *actor)
 
 		// First the display
 		if (mode == CP_Activity)
-            ActivityDisplay();
+			ActivityDisplay();
 		else
-            BusinessDisplay(actor);
+			BusinessDisplay(actor);
 
 		// Now the Menu Column
 		BusinessMenu(actor);
@@ -2059,10 +2063,10 @@ void CheatScreen::BusinessMenu (Actor *actor)
 		font->paint_text_fixedwidth(ibuf, " 6 PM: [G] Set  [O] Location  [7] Clear", 0, maxy-48, 8);
 		font->paint_text_fixedwidth(ibuf, " 9 PM: [H] Set  [P] Location  [8] Clear", 0, maxy-40, 8);
 
-	       font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it [R]evert", 0, maxy-30, 8);
+		font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it [R]evert", 0, maxy-30, 8);
 	}
 	else
-	        font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-30, 8);
+		font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-30, 8);
 }
 
 void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &time, int &prev)

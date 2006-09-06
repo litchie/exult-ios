@@ -306,25 +306,25 @@ Game_window::Game_window
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
 	    win(0), map(new Game_map(0)), pal(0),
-	    usecode(0), combat(false), armageddon(false), 
+	    usecode(0), combat(false), armageddon(false),
 	    walk_in_formation(false),
-            tqueue(new Time_queue()), time_stopped(0),
+	    tqueue(new Time_queue()), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
-	    effects(new Effects_manager(this)), 
+	    effects(new Effects_manager(this)),
 	    gump_man(new Gump_manager), render(new Game_render),
 	    party_man(new Party_manager),
-	    painted(false), focus(true), 
+	    painted(false), focus(true),
 	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
-            text_bg(false), step_tile_delta(8), allow_double_right_move(true),
+	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
 	    special_light(0),
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    double_click_closes_gumps(false),
-	    removed(new Deleted_objects()), 
+	    removed(new Deleted_objects()),
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 #ifdef RED_PLASMA
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
@@ -413,7 +413,7 @@ Game_window::~Game_window
 	(
 	)
 	{
-    	gump_man->close_all_gumps(true);
+	gump_man->close_all_gumps(true);
 	clear_world();			// Delete all objects, chunks.
 	int i;	// Blame MSVC
 	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
@@ -604,11 +604,11 @@ bool Game_window::is_moving
  */
 
 bool Game_window::main_actor_dont_move()
-    { 
-    return (main_actor->get_flag(Obj_flags::dont_move) != 0) ||
+	{
+	return (main_actor->get_flag(Obj_flags::dont_move) != 0) ||
 			(Game::get_game_type() == BLACK_GATE &&
 			main_actor->get_flag(Obj_flags::bg_dont_move) != 0);
-    }
+	}
 
 /*
  *	Add time for a light spell.
@@ -1819,7 +1819,7 @@ void Game_window::start_actor_along_path
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
 	Tile_coord dest(get_scrolltx() + (winx + liftpixels)/c_tilesize,
-	    get_scrollty() + (winy + liftpixels)/c_tilesize, lift);
+		get_scrollty() + (winy + liftpixels)/c_tilesize, lift);
 	if (!main_actor->walk_path_to_tile(dest, speed))
 		cout << "Couldn't find path for Avatar." << endl;
 	else
@@ -1991,7 +1991,7 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		while ((obj = next.get_next()) != 0)
 			{
 			if (obj->get_lift() >= not_above ||
-			    !get_shape_rect(obj).has_point(x, y) || 
+			    !get_shape_rect(obj).has_point(x, y) ||
 			    !obj->is_findable())
 				continue;
 					// Check the shape itself.
@@ -2198,7 +2198,7 @@ void Game_window::paused_combat_select
 		int lift = npc->get_lift();
 		int liftpixels = 4*lift;
 		Tile_coord dest(scrolltx + (x + liftpixels)/c_tilesize,
-	    		scrollty + (y + liftpixels)/c_tilesize, lift);
+				scrollty + (y + liftpixels)/c_tilesize, lift);
 					// Aim within 1 tile.
 		if (!npc->walk_path_to_tile(dest, std_delay, 0, 1))
 			Mouse::mouse->flash_shape(Mouse::blocked);
@@ -2310,7 +2310,7 @@ void Game_window::double_clicked
 		{
 		obj = find_object(x, y);
 		// Check path, except if an NPC, sign, or if editing.
-	    	if (obj && !obj->as_actor() &&
+			if (obj && !obj->as_actor() &&
 			!cheat.in_hack_mover() &&
 			//!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
@@ -2721,7 +2721,8 @@ void Game_window::setup_game
 	{
 		party[i]->init_readied();
 	}
-	time_stopped = 0;
+	// Ensure time is stopped if map-editing.
+	time_stopped = map_editing ? -1 : 0;
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.
 					// Want to activate first egg.
@@ -2935,20 +2936,20 @@ void Game_window::setup_load_palette()
 		return;
 
 	if (Game::get_game_type()==BLACK_GATE)
-    {
-        plasma_start_color = BG_PLASMA_START_COLOR;
-        plasma_cycle_range = BG_PLASMA_CYCLE_RANGE;
-    }
+	{
+		plasma_start_color = BG_PLASMA_START_COLOR;
+		plasma_cycle_range = BG_PLASMA_CYCLE_RANGE;
+	}
 	else // Default:  if (Game::get_game_type()==SERPENT_ISLE)
-    {
-        plasma_start_color = SI_PLASMA_START_COLOR;
-        plasma_cycle_range = SI_PLASMA_CYCLE_RANGE;
-    }
-    
-    // Put up the plasma to the screen
-    plasma(get_width(), get_height(), 0, 0, plasma_start_color, plasma_start_color+plasma_cycle_range-1);
+	{
+		plasma_start_color = SI_PLASMA_START_COLOR;
+		plasma_cycle_range = SI_PLASMA_CYCLE_RANGE;
+	}
 
-     // Load the palette
+	// Put up the plasma to the screen
+	plasma(get_width(), get_height(), 0, 0, plasma_start_color, plasma_start_color+plasma_cycle_range-1);
+
+	// Load the palette
 	if (Game::get_game_type()==BLACK_GATE)
 		pal->load("<STATIC>/intropal.dat",2);
 	else if (Game::get_game_type()==SERPENT_ISLE)

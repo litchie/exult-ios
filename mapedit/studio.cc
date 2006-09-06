@@ -144,7 +144,7 @@ static void Filelist_selection(GtkTreeView *treeview, GtkTreePath *path)
 		break;
 	}
 	g_free(text);
-}                                     
+}
 
 C_EXPORT void on_filelist_tree_cursor_changed(GtkTreeView *treeview)
 {
@@ -558,7 +558,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	image_editor = g_strdup(iedit.c_str());
 	config->set("config/estudio/image_editor", iedit, true);
 #ifdef WIN32
-    OleInitialize(NULL);
+	OleInitialize(NULL);
 #endif
 					// Init. 'Mode' menu, since Glade
 					//   doesn't seem to do it right.
@@ -578,7 +578,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 ExultStudio::~ExultStudio()
 {
 #ifdef WIN32
-    OleUninitialize();
+	OleUninitialize();
 #endif
 					// Store main window size.
 	int w = app->allocation.width, h = app->allocation.height;
@@ -912,7 +912,7 @@ void on_gameselect_ok_clicked
 		if (!U7exists(pathname))
 			U7mkdir(pathname.c_str(), 0755);
 		// Create mod directories:
-        pathname += "/" + modtitle;
+		pathname += "/" + modtitle;
 		U7mkdir(pathname.c_str(), 0755);
 		string d = pathname + "/patch";
 		U7mkdir(d.c_str(), 0755);
@@ -1417,7 +1417,7 @@ bool ExultStudio::need_to_save
 		int vers, edlift, hdlift, edmode;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
-		    Game_info_in(data, len, vers, edlift, hdlift, 
+		    Game_info_in(data, len, vers, edlift, hdlift,
 						editing, grid, mod, edmode) &&
 		    mod == true)
 			return true;
@@ -1835,6 +1835,25 @@ void ExultStudio::set_spin
 		{
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(btn), val);
 		gtk_widget_set_sensitive(btn, sensitive);
+		}
+	}
+
+/*
+ *	Find and set a spin button's range.
+ */
+
+void ExultStudio::set_spin
+	(
+	char *name,
+	int low, int high		// Range.
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (btn)
+		{
+		gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(btn),
+			GTK_ADJUSTMENT(
+			gtk_adjustment_new (0, low, high, 1, 10, 10)));
 		}
 	}
 
@@ -2263,8 +2282,8 @@ void ExultStudio::background_color_okay
 	gtk_color_selection_get_color(
 			GTK_COLOR_SELECTION(colorsel->colorsel), rgb);
 	unsigned char r = (unsigned char) (rgb[0]*256),
-		      g = (unsigned char) (rgb[1]*256),
-		      b = (unsigned char) (rgb[2]*256);
+	              g = (unsigned char) (rgb[1]*256),
+	              b = (unsigned char) (rgb[2]*256);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->background_color = (r<<16) + (g<<8) + b;
 					// Show new color.
@@ -2603,19 +2622,19 @@ bool ExultStudio::connect_to_server
 		}
 	if (!addr.sun_path[0])		// Default to game/gamedat.
 		{
-	        strcpy(addr.sun_path, static_path);
-        	char *pstatic = strrchr(addr.sun_path, '/');
-	        if (pstatic && !pstatic[1])     // End of path?
-        	        {
-                	pstatic[0] = 0;
-	                pstatic = strrchr(addr.sun_path, '/');
-        	        }
-	        if (!pstatic)
-        	        {
-                	cout << "Can't find gamedat for socket" << endl;
-	                return false;
-        	        }
-	        strcpy(pstatic + 1, "gamedat/exultserver");
+		strcpy(addr.sun_path, static_path);
+		char *pstatic = strrchr(addr.sun_path, '/');
+		if (pstatic && !pstatic[1])     // End of path?
+			{
+			pstatic[0] = 0;
+			pstatic = strrchr(addr.sun_path, '/');
+			}
+		if (!pstatic)
+			{
+			cout << "Can't find gamedat for socket" << endl;
+			return false;
+			}
+		strcpy(pstatic + 1, "gamedat/exultserver");
 		}
 	server_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
 	if (server_socket < 0)

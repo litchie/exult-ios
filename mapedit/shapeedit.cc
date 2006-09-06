@@ -173,7 +173,7 @@ static void Equip_shape_dropped
 	)
 	{
 	Equip_row_widgets *eq = (Equip_row_widgets *) udata;
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes)
 		{			// Set shape #.
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(eq->shape), shape);
 		}
@@ -197,34 +197,34 @@ static void Setup_equip
 	GtkWidget *label = gtk_label_new ("Shape");
 	gtk_widget_show (label);
 	gtk_table_attach (table, label, 0, 3, 0, 1,
-        	            (GtkAttachOptions) (0),
-                	    (GtkAttachOptions) (0), 0, 0);
+	                  (GtkAttachOptions) (0),
+	                  (GtkAttachOptions) (0), 0, 0);
 	label = gtk_label_new ("Chance (%)");
 	gtk_widget_show (label);
-	  gtk_table_attach (table, label, 4, 5, 0, 1,
-	                    (GtkAttachOptions) (0),
-        	            (GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (table, label, 4, 5, 0, 1,
+	                  (GtkAttachOptions) (0),
+	                  (GtkAttachOptions) (0), 0, 0);
 	label = gtk_label_new ("Count");
 	gtk_widget_show (label);
 	gtk_table_attach (table, label, 6, 7, 0, 1,
-        	            (GtkAttachOptions) (0),
-                	    (GtkAttachOptions) (0), 0, 0);
+	                  (GtkAttachOptions) (0),
+	                  (GtkAttachOptions) (0), 0, 0);
 					// Separators:
 	GtkWidget *vsep = gtk_vseparator_new ();
 	gtk_widget_show (vsep);
 	gtk_table_attach (table, vsep, 3, 4, 0, 12,
-        	            (GtkAttachOptions) (0),
-                	    (GtkAttachOptions) (GTK_FILL), 2, 0);
+	                  (GtkAttachOptions) (0),
+	                  (GtkAttachOptions) (GTK_FILL), 2, 0);
 	vsep = gtk_vseparator_new ();
 	gtk_widget_show (vsep);
 	gtk_table_attach (table, vsep, 5, 6, 0, 12,
-        	            (GtkAttachOptions) (0),
-                	    (GtkAttachOptions) (GTK_FILL), 2, 0);
+	                  (GtkAttachOptions) (0),
+	                  (GtkAttachOptions) (GTK_FILL), 2, 0);
 	GtkWidget *hsep = gtk_hseparator_new ();
 	gtk_widget_show (hsep);
 	gtk_table_attach (table, hsep, 0, 7, 1, 2,
-        	            (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                	    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+	                  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+	                  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
 					// Create the rows.
 	for (int row = 0; row < 10; row++)
@@ -232,9 +232,9 @@ static void Setup_equip
 					// Create frame, shape drawing area.
 		GtkWidget *frame = gtk_frame_new (NULL);
 		gtk_widget_show (frame);
-  		gtk_table_attach (table, frame, 0, 1, row + 2, row + 3,
-                	    (GtkAttachOptions) (GTK_FILL),
-	                    (GtkAttachOptions) (GTK_FILL), 3, 0);
+		gtk_table_attach (table, frame, 0, 1, row + 2, row + 3,
+	                      (GtkAttachOptions) (GTK_FILL),
+	                      (GtkAttachOptions) (GTK_FILL), 3, 0);
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 
 		GtkWidget *drawingarea = gtk_drawing_area_new ();
@@ -254,12 +254,12 @@ static void Setup_equip
 			}
 					// Shape #:
   		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
-			gtk_adjustment_new (1, 0, 1023, 1, 50, 50)), 1, 0);
+			gtk_adjustment_new (1, 0, c_max_shapes-1, 1, 50, 50)), 1, 0);
 		rows[row].shape = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach (table, spin, 1, 2, row + 2, row + 3,
-                		    (GtkAttachOptions) (GTK_FILL),
-		                    (GtkAttachOptions) (0), 0, 0);
+		                  (GtkAttachOptions) (GTK_FILL),
+		                  (GtkAttachOptions) (0), 0, 0);
 		gtk_signal_connect(GTK_OBJECT(spin), "changed",
 				GTK_SIGNAL_FUNC(on_equip_shape_changed),
 								&rows[row]);
@@ -268,8 +268,8 @@ static void Setup_equip
 		rows[row].name = label;
 		gtk_widget_show (label);
 		gtk_table_attach (table, label, 2, 3, row + 2, row + 3,
-                		(GtkAttachOptions) (0),
-				(GtkAttachOptions) (0), 0, 0);
+		                  (GtkAttachOptions) (0),
+		                  (GtkAttachOptions) (0), 0, 0);
 		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 		gtk_misc_set_alignment (GTK_MISC (label), 6.70552e-08, 0.5);
 					// Chance:
@@ -278,16 +278,16 @@ static void Setup_equip
 		rows[row].chance = spin;
 		gtk_widget_show (spin);
 		gtk_table_attach (table, spin, 4, 5, row + 2, row + 3,
-                		    (GtkAttachOptions) (GTK_FILL),
-                		    (GtkAttachOptions) (0), 0, 0);
+		                  (GtkAttachOptions) (GTK_FILL),
+		                  (GtkAttachOptions) (0), 0, 0);
 					// Count:
 		spin = gtk_spin_button_new (GTK_ADJUSTMENT(
 			gtk_adjustment_new (1, 0, 100, 1, 10, 10)), 1, 0);
 		rows[row].count = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach (table, spin, 6, 7, row + 2, row + 3,
-                	    (GtkAttachOptions) (GTK_FILL),
-	                    (GtkAttachOptions) (0), 0, 0);
+		                  (GtkAttachOptions) (GTK_FILL),
+		                  (GtkAttachOptions) (0), 0, 0);
 		}
 	}
 
@@ -555,7 +555,7 @@ on_shinfo_frame_changed			(GtkSpinButton *button,
 C_EXPORT void on_shinfo_weapon_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -564,7 +564,7 @@ C_EXPORT void on_shinfo_weapon_check_toggled
 C_EXPORT void on_shinfo_ammo_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -573,7 +573,7 @@ C_EXPORT void on_shinfo_ammo_check_toggled
 C_EXPORT void on_shinfo_armor_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -582,7 +582,7 @@ C_EXPORT void on_shinfo_armor_check_toggled
 C_EXPORT void on_shinfo_monster_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -591,7 +591,7 @@ C_EXPORT void on_shinfo_monster_check_toggled
 C_EXPORT void on_shinfo_container_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -600,7 +600,7 @@ C_EXPORT void on_shinfo_container_check_toggled
 C_EXPORT void on_shinfo_ammo_special_check_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -757,8 +757,7 @@ void ExultStudio::init_shape_notebook
 			winfo->is_thrown() ? 3 : 1;	// 1 == "None".
 		set_optmenu("shinfo_weapon_ammo", ammo_use);
 		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
-		set_spin("shinfo_weapon_proj", winfo->get_projectile(),
-								0, 2047);
+		set_spin("shinfo_weapon_proj", winfo->get_projectile());
 		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
 		set_spin("shinfo_weapon_sfx", winfo->get_sfx(), 0, 1023);
 		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx(), 0, 1023);
@@ -907,7 +906,7 @@ void ExultStudio::save_shape_notebook
 	info.set_weight_volume(get_spin("shinfo_weight"),
 						get_spin("shinfo_volume"));
 	info.set_weapon_offset(frnum, get_spin("shinfo_wihx"),
-		      				get_spin("shinfo_wihy"));
+	                       get_spin("shinfo_wihy"));
 					// Bunch of flags:
 	info.set_sfx(get_toggle("shinfo_sfx_check"));
 	info.set_strange_movement(get_toggle("shinfo_strange_check"));
@@ -1096,13 +1095,13 @@ void ExultStudio::open_shape_window
 	if (ifile && palbuf)
 		{
 		shape_draw = new Shape_draw(ifile, palbuf,
-			    glade_xml_get_widget(app_xml, "shinfo_draw"));
+		             glade_xml_get_widget(app_xml, "shinfo_draw"));
 //		shape_draw->enable_drop(Shape_shape_dropped, this);
 		}
 	if (gumpfile && palbuf)
 		{
 		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
-			    glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
+		            glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
 		gump_draw->enable_drop(Gump_shape_dropped, this);
 		}
 					// Store ->'s.
@@ -1122,6 +1121,10 @@ void ExultStudio::open_shape_window
 	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
 							shape->get_height());
 					// Get info. notebook.
+	// Ensure proper bounds for shapes:
+	set_spin("shinfo_weapon_ammo_shape", 0, c_max_shapes-1);
+	set_spin("shinfo_weapon_proj", 0, c_max_shapes-1);
+	set_spin("shinfo_ammo_family", 0, c_max_shapes-1);
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "shinfo_notebook");
 	if (info)
 		init_shape_notebook(*info, notebook, shnum, frnum);

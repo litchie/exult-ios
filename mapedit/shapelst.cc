@@ -632,12 +632,12 @@ gint Shape_chooser::mouse_press
 	gtk_widget_grab_focus(widget);
 
 	if (event->button == 4) {
-        	if (row0 > 0)
-            		scroll_row_vertical(row0-1);
-        	return(TRUE);
-    	} else if (event->button == 5) {
-        	scroll_row_vertical(row0+1);
-        	return(TRUE);
+		if (row0 > 0)
+			scroll_row_vertical(row0-1);
+		return(TRUE);
+	} else if (event->button == 5) {
+		scroll_row_vertical(row0+1);
+	return(TRUE);
 	}
 	int old_selected = selected, new_selected = -1;
 	int i;				// Search through entries.
@@ -1500,7 +1500,7 @@ on_new_shape_okay_clicked              (GtkButton       *button,
 C_EXPORT void on_new_shape_font_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
@@ -1602,7 +1602,7 @@ void Shape_chooser::new_shape
 	GtkWidget *spin = glade_xml_get_widget(xml, "new_shape_num");
 	GtkAdjustment *adj = gtk_spin_button_get_adjustment(
 						GTK_SPIN_BUTTON(spin));
-	adj->upper = 2047;		// Just a big number.
+	adj->upper = c_max_shapes-1;
 	gtk_adjustment_changed(adj);
 	Vga_file *ifile = file_info->get_ifile();
 	int shstart;			// Find an unused shape.
@@ -1797,7 +1797,7 @@ void Shape_chooser::drag_data_get
 					// Set data.
 	gtk_selection_data_set(seldata,
 			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
-                                				8, buf, len);
+			                                8, buf, len);
 #endif
 	}
 
@@ -2020,7 +2020,7 @@ void Shape_chooser::frame_changed
 void Shape_chooser::all_frames_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer data
+	gpointer data
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
@@ -2367,8 +2367,8 @@ Shape_chooser::Shape_chooser
 				GTK_SIGNAL_FUNC(expose), this);
 					// Keystroke.
 	gtk_signal_connect(GTK_OBJECT(draw), "key-press-event",
-		      GTK_SIGNAL_FUNC (on_draw_key_press),
-		      this);
+	                   GTK_SIGNAL_FUNC (on_draw_key_press),
+	                   this);
 	GTK_WIDGET_SET_FLAGS(draw, GTK_CAN_FOCUS);
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
