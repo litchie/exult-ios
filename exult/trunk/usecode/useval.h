@@ -41,22 +41,21 @@ public:
 		int_type = 0,
 		string_type = 1,	// Allocated string.
 		array_type = 2,
-		end_of_array_type = 3,	// Marks end of array.
-		pointer_type = 4
+		pointer_type = 3
 		};
 private:
 	Val_type type;		// Type stored here.
-	union
-		{
+	union {
 		long intval;
 		char *str;
-		Usecode_value *array;
+		struct {
+			Usecode_value *elems;
+			short cnt;
+		} array;
 		Game_object *ptr;
-		} value;
+	} value;
 
 	bool undefined;
-					// Count array elements.
-	static int count_array(const Usecode_value& val);
 public:
 	inline Usecode_value() : type(int_type), undefined(true)
 		{ value.intval = 0; }
@@ -67,10 +66,10 @@ public:
 	Usecode_value(int size, Usecode_value *elem0) 
 			: type(array_type), undefined(false)
 		{
-		value.array = new Usecode_value[size + 1];
-		value.array[size].type = end_of_array_type;
+		value.array.elems = new Usecode_value[size];
+		value.array.cnt = size;
 		if (elem0)
-			value.array[0] = *elem0;
+			value.array.elems[0] = *elem0;
 		}
 	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false)
 		{ value.ptr = ptr; }
@@ -91,7 +90,7 @@ public:
 	inline Val_type get_type() const
 		{ return type; }
 	int get_array_size() const		// Get size of array.
-		{ return (type == array_type) ? count_array(*this) : 0; }
+		{ return (type == array_type) ? value.array.cnt : 0; }
 	bool is_array() const
 		{ return (type == array_type); }
 	bool is_int() const
@@ -117,29 +116,29 @@ public:
 		const char *str = get_str_value();
 		return str ? std::atoi(str) 
 			: ((type == array_type && get_array_size())
-			? value.array[0].need_int_value() 
+			? value.array.elems[0].need_int_value() 
 					// Pointer = ref.
 			: (type == pointer_type ? (value.intval&0x7ffffff)
 					: get_int_value()));
 		}
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
-		{ value.array[i] = val; }
+		{ value.array.elems[i] = val; }
 					// Get an array element.
 	inline Usecode_value& get_elem(int i) const
 		{
 		static Usecode_value zval(0);
 //		assert(type == array_type);//+++++Testing.
-		return (type == array_type) ? value.array[i] : zval;
+		return (type == array_type) ? value.array.elems[i] : zval;
 		}
 	inline Usecode_value& operator[](int i)
 		{
 		assert(type == array_type);
-		return value.array[i];
+		return value.array.elems[i];
 		}
 					// Get array elem. 0, or this.
 	inline Usecode_value& get_elem0()
-		{ return (type == array_type) ? value.array[0] : *this; }
+		{ return (type == array_type) ? value.array.elems[0] : *this; }
 	inline bool is_false() const	// Represents a FALSE value?
 		{
 		switch(type)
@@ -149,7 +148,7 @@ public:
 			case pointer_type:
 				return value.ptr == NULL;
 			case array_type:
-				return value.array[0].type == end_of_array_type;
+				return value.array.cnt == 0;
 			default:
 				return false;
 			}
