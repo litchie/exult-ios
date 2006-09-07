@@ -1,3 +1,6 @@
+2006-09-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	content/sifixes/*/*.uc: CRLF->LF.
+
 2006-09-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* In General: Changed a spaces in identation to tabs.
 	* gamewin.cc: When starting a game using '--edit', have time be stopped
