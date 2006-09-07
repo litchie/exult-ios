@@ -49,22 +49,6 @@ using std::strlen;
 #endif
 
 
-
-/*
- *	Get array size.
- */
-
-int Usecode_value::count_array
-	(
-	const Usecode_value& val
-	)
-	{
-	int i;
-	for (i = 0; val.value.array[i].type != end_of_array_type; i++)
-		;
-	return (i);
-	}
-
 /*
  *	Destructor
  *
@@ -73,7 +57,7 @@ int Usecode_value::count_array
 Usecode_value::~Usecode_value()
 {
 	if (type == array_type)
-		delete [] value.array;
+		delete [] value.array.elems;
 	else if (type == string_type)
 		delete [] value.str;
 }
@@ -90,7 +74,7 @@ Usecode_value& Usecode_value::operator=
 	if (&v2 == this)
 		return *this;
 	if (type == array_type)
-		delete [] value.array;
+		delete [] value.array.elems;
 	else if (type == string_type)
 		delete [] value.str;
 	type = v2.type;			// Assign new values.
@@ -102,12 +86,10 @@ Usecode_value& Usecode_value::operator=
 		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;
 	else if (type == array_type)
 		{
-                int tempsize = 1+count_array(v2);
-		value.array = new Usecode_value[tempsize];
-		int i = 0;
-		do
-			value.array[i] = v2.value.array[i];
-		while (value.array[i++].type != end_of_array_type);
+                value.array.cnt = v2.value.array.cnt;
+		value.array.elems = new Usecode_value[value.array.cnt];
+		for (int i = 0; i < value.array.cnt; ++i)
+			value.array.elems[i] = v2.value.array.elems[i];
 		}
 
 	undefined = v2.undefined;
@@ -126,7 +108,7 @@ Usecode_value& Usecode_value::operator=
 	)
 	{
 	if (type == array_type)
-		delete [] value.array;
+		delete [] value.array.elems;
 	else if (type == string_type)
 		delete [] value.str;
 	type = string_type;
@@ -164,24 +146,24 @@ int Usecode_value::resize
 		*this = Usecode_value(new_size, &elem);
 		return (1);
 		}
-	int size = count_array(*this);	// Get current size.
+	int size = value.array.cnt;	// Get current size.
 	if (new_size == size)
 		return (1);		// Nothing to do.
-	Usecode_value *newvals = new Usecode_value[new_size + 1];
-	newvals[new_size].type = end_of_array_type;
+	Usecode_value *newvals = new Usecode_value[new_size];
 					// Move old values over.
 	int cnt = new_size < size ? new_size : size;
 	for (int i = 0; i < cnt; i++)
-		newvals[i] = value.array[i];
-	delete [] value.array;		// Delete old list.
-	value.array = newvals;		// Store new.
+		newvals[i] = value.array.elems[i];
+	delete [] value.array.elems;
+	value.array.elems = newvals;		// Store new.
+	value.array.cnt = new_size;
 	return (1);
 	}
 
 void	Usecode_value::push_back(int i)
 {
-	resize(count_array(*this)+1);
-	value.array[count_array(*this)-1]=Usecode_value(i);
+	resize(value.array.cnt + 1);
+	value.array.elems[value.array.cnt-1]=Usecode_value(i);
 }
 
 /*
@@ -212,7 +194,7 @@ bool Usecode_value::operator==
 			return (value.ptr == v2.value.ptr);
 		else if (v2.type == array_type && v2.get_array_size())
 			{
-			const Usecode_value& val2 = v2.value.array[0];
+			const Usecode_value& val2 = v2.value.array.elems[0];
 			return (value.ptr == val2.value.ptr);
 			}
 		else
@@ -221,7 +203,7 @@ bool Usecode_value::operator==
 	else if (type == array_type)
 		{
 		if (v2.type == int_type)
-			// Making it simmetric just in case:
+			// Making it symetric just in case:
 			return (get_array_size() ?
 				get_elem(0).value.intval == v2.value.intval :
 				!v2.value.intval);
@@ -265,8 +247,8 @@ int Usecode_value::find_elem
 	if (type != array_type)
 		return (-1);		// Not an array.
 	int i;
-	for (i = 0; value.array[i].type != end_of_array_type; i++)
-		if (value.array[i] == val)
+	for (i = 0; i < value.array.cnt; i++)
+		if (value.array.elems[i] == val)
 			return (i);
 	return (-1);
 	}
@@ -320,7 +302,7 @@ void Usecode_value::append
 	int sz = get_array_size();
 	resize(sz + cnt);
 	for (int i = 0; i < cnt; i++)
-		value.array[sz + i].value.intval = vals[i];
+		value.array.elems[sz + i].value.intval = vals[i];
 	}
 
 /*
@@ -380,12 +362,12 @@ void Usecode_value::print
 		{
 		out << "[ ";
 		int i;
-		for (i = 0; value.array[i].type != end_of_array_type; i++) {
+		for (i = 0; i < value.array.cnt; i++) {
 			if (!shortformat || i < 2) {
 				if (i)
 					out << ", ";
 				
-				value.array[i].print(out);
+				value.array.elems[i].print(out);
 			}
 		}
 		if (shortformat && i > 2)
@@ -497,11 +479,11 @@ int Usecode_value::save
 		if (buflen < 3)
 			return -1;
 		*ptr++ = type;
-		int len = count_array(*this);
+		int len = value.array.cnt;
 		Write2(ptr, len); // first length, then length Usecode_values
 		int remaining = buflen - 3;
 		for (int i=0; i < len; i++) {
-			int retval = value.array[i].save(ptr, remaining);
+			int retval = value.array.elems[i].save(ptr, remaining);
 			if (retval == -1)
 				return -1;
 
@@ -564,7 +546,8 @@ bool Usecode_value::restore
 		*this = Usecode_value(len, 0); // create array
 		for (int i=0; i < len; i++) {
 			uint8* t = ptr;
-			bool retval = value.array[i].restore(ptr, remaining);
+			bool retval = value.array.elems[i].restore(
+							ptr, remaining);
 			remaining -= (ptr - t);
 			if (!retval)
 				return false;
