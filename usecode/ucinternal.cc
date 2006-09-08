@@ -1586,7 +1586,7 @@ struct Usecode_internal::IntrinsicTableEntry
 	};
 
 
-int	max_bundled_intrinsics=0xff;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x3ff;	// Index of the last intrinsic in this table
 /*
  *	Call an intrinsic function.
  */
@@ -1735,8 +1735,8 @@ Usecode_internal::Usecode_internal
 	    saved_pos(-1, -1, -1),
 	    saved_map(-1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-		temp_to_be_deleted(0), telekenesis_fun(-1),
-		modified_map(false), symtbl(0), frame(0)
+	    temp_to_be_deleted(0), telekenesis_fun(-1),
+	    modified_map(false), symtbl(0), frame(0)
 #ifdef USECODE_DEBUGGER
 		, on_breakpoint(false)
 #endif
@@ -1747,7 +1747,7 @@ Usecode_internal::Usecode_internal
 	ifstream file;                // Read in usecode.
 	try
 		{
-	        U7open(file, USECODE);
+		U7open(file, USECODE);
 		read_usecode(file);
 		file.close();
 		}
@@ -2643,8 +2643,7 @@ int Usecode_internal::run()
 				} else {
 					if (offset >= 
 					    frame->function->statics.size())
-						frame->function->statics.
-							resize(offset + 1);
+						frame->function->statics.resize(offset + 1);
 					frame->function->statics[offset]=val;
 				}
 			}
@@ -2994,7 +2993,7 @@ void Usecode_internal::read
 	saved_pos.tz = Read2(in);
 	if (!in.good() ||		// Failed.+++++Can remove this later.
 	    saved_pos.tz < 0 || saved_pos.tz > 13)
-		saved_pos = Tile_coord(-1, -1, -1);
+	    saved_pos = Tile_coord(-1, -1, -1);
 	saved_map = Read2(in);
 	if (!in.good())			// For compat. with older saves.
 		saved_map = -1;
