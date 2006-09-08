@@ -163,7 +163,7 @@ class Usecode_internal : public Usecode_machine
 								long delay);
 
 	/*
-         *	Embedded intrinsics
+	 *	Embedded intrinsics
 	 */
 
 	static struct IntrinsicTableEntry
@@ -195,43 +195,43 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_item_frame);
 	USECODE_INTRINSIC_DECL(get_item_quality);
 	USECODE_INTRINSIC_DECL(set_item_quality);
-        USECODE_INTRINSIC_DECL(get_item_quantity);
-        USECODE_INTRINSIC_DECL(set_item_quantity);
-        USECODE_INTRINSIC_DECL(get_object_position);
+	USECODE_INTRINSIC_DECL(get_item_quantity);
+	USECODE_INTRINSIC_DECL(set_item_quantity);
+	USECODE_INTRINSIC_DECL(get_object_position);
 	USECODE_INTRINSIC_DECL(get_distance);
-        USECODE_INTRINSIC_DECL(find_direction);
-        USECODE_INTRINSIC_DECL(get_npc_object);
-        USECODE_INTRINSIC_DECL(get_schedule_type);
-        USECODE_INTRINSIC_DECL(set_schedule_type);
-        USECODE_INTRINSIC_DECL(add_to_party);
-        USECODE_INTRINSIC_DECL(remove_from_party);
-        USECODE_INTRINSIC_DECL(get_npc_prop);
-        USECODE_INTRINSIC_DECL(set_npc_prop);
-        USECODE_INTRINSIC_DECL(get_avatar_ref);
-        USECODE_INTRINSIC_DECL(get_party_list);
-        USECODE_INTRINSIC_DECL(create_new_object);
-        USECODE_INTRINSIC_DECL(create_new_object2);
-        USECODE_INTRINSIC_DECL(set_last_created);
-        USECODE_INTRINSIC_DECL(update_last_created);
-        USECODE_INTRINSIC_DECL(get_npc_name);
-        USECODE_INTRINSIC_DECL(count_objects);
+	USECODE_INTRINSIC_DECL(find_direction);
+	USECODE_INTRINSIC_DECL(get_npc_object);
+	USECODE_INTRINSIC_DECL(get_schedule_type);
+	USECODE_INTRINSIC_DECL(set_schedule_type);
+	USECODE_INTRINSIC_DECL(add_to_party);
+	USECODE_INTRINSIC_DECL(remove_from_party);
+	USECODE_INTRINSIC_DECL(get_npc_prop);
+	USECODE_INTRINSIC_DECL(set_npc_prop);
+	USECODE_INTRINSIC_DECL(get_avatar_ref);
+	USECODE_INTRINSIC_DECL(get_party_list);
+	USECODE_INTRINSIC_DECL(create_new_object);
+	USECODE_INTRINSIC_DECL(create_new_object2);
+	USECODE_INTRINSIC_DECL(set_last_created);
+	USECODE_INTRINSIC_DECL(update_last_created);
+	USECODE_INTRINSIC_DECL(get_npc_name);
+	USECODE_INTRINSIC_DECL(count_objects);
 	USECODE_INTRINSIC_DECL(find_object);
-        USECODE_INTRINSIC_DECL(get_cont_items);
-        USECODE_INTRINSIC_DECL(remove_party_items);
-        USECODE_INTRINSIC_DECL(add_party_items);
-        USECODE_INTRINSIC_DECL(play_music);
-        USECODE_INTRINSIC_DECL(npc_nearby);
+	USECODE_INTRINSIC_DECL(get_cont_items);
+	USECODE_INTRINSIC_DECL(remove_party_items);
+	USECODE_INTRINSIC_DECL(add_party_items);
+	USECODE_INTRINSIC_DECL(play_music);
+	USECODE_INTRINSIC_DECL(npc_nearby);
 	USECODE_INTRINSIC_DECL(npc_nearby2);
-        USECODE_INTRINSIC_DECL(find_nearby_avatar);
-        USECODE_INTRINSIC_DECL(is_npc);
-        USECODE_INTRINSIC_DECL(display_runes);
-        USECODE_INTRINSIC_DECL(click_on_item);
+	USECODE_INTRINSIC_DECL(find_nearby_avatar);
+	USECODE_INTRINSIC_DECL(is_npc);
+	USECODE_INTRINSIC_DECL(display_runes);
+	USECODE_INTRINSIC_DECL(click_on_item);
 	USECODE_INTRINSIC_DECL(set_intercept_item);
-        USECODE_INTRINSIC_DECL(find_nearby);
-        USECODE_INTRINSIC_DECL(give_last_created);
+	USECODE_INTRINSIC_DECL(find_nearby);
+	USECODE_INTRINSIC_DECL(give_last_created);
 	USECODE_INTRINSIC_DECL(is_dead);
-        USECODE_INTRINSIC_DECL(game_hour);
-        USECODE_INTRINSIC_DECL(game_minute);
+	USECODE_INTRINSIC_DECL(game_hour);
+	USECODE_INTRINSIC_DECL(game_minute);
 	USECODE_INTRINSIC_DECL(get_npc_number);
 	USECODE_INTRINSIC_DECL(part_of_day);
 	USECODE_INTRINSIC_DECL(get_alignment);
