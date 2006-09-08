@@ -1,4 +1,8 @@
 2006-09-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/ucinternal.cc: Increased the maximum number of intrinsics to 1024.
+	* usecode/ucinternal.h: A identing spaces to tabs, some align tabs to spaces.
+
+2006-09-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	content/sifixes/*/*.uc: CRLF->LF.
 
 2006-09-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
