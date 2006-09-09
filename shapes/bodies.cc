@@ -70,12 +70,16 @@ void Body_lookup::setup
 			BufferDataSource ds(txt, len);
 			i = Read_text_msg_file(&ds, shapes_strings, "bodyshapes");
 			j = Read_text_msg_file(&ds, bodies_strings, "bodylist");
-		} else {
+		} else try {
 			ifstream in;
 			U7open(in, "<STATIC>/bodies.txt", true);
 			i = Read_text_msg_file(in, shapes_strings, "bodyshapes");
 			j = Read_text_msg_file(in, bodies_strings, "bodylist");
 			in.close();
+		} catch (std::exception &e) {
+			if (!Game::is_editing())
+				throw e;
+			i = j = -1;
 		}
 	}
 	bodies_table = new std::map<int, long>;

@@ -123,6 +123,10 @@ Game *Game::create_game(BaseGameInfo *mygame)
 		} else if (!strcmp(static_identity, "SILVER SEED")) {
 			game_type = SERPENT_ISLE;
 			expansion = true;
+		} else if (game_type == NONE && mygame &&
+				mygame->get_game_type() == EXULT_DEVEL_GAME) {
+			game_type = EXULT_DEVEL_GAME;
+			expansion = false;
 		}
 		delete[] static_identity;
 	}
