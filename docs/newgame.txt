@@ -66,7 +66,7 @@ These instructions are for building a new game that I will refer to as
 Once you've done some artwork, you're ready to describe some of the
 game's objects.  To do this, start up ExultStudio, giving it the
 location of your new game's 'static' directory.  In my case, I run
-'exult_studio -xdata -dmygame'.
+'exult_studio -g mygame'.
 
 Then click on 'shapes.vga' in the 'Files' area, so your game shapes
 are displayed.  To describe a shape, double-click on it to bring up
