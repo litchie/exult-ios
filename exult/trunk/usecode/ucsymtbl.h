@@ -37,7 +37,8 @@ public:
 		fun_defined = 1, 
 		fun_externed,
 		fun_extern_defined,	// External, but fun. # was given.
-		class_scope
+		class_scope,
+		table_scope
 	};
 private:
 	friend class Usecode_symbol_table;
@@ -70,7 +71,7 @@ class Usecode_scope_symbol : public Usecode_symbol
 	void setup_by_val(int start = 0);
 public:
 	Usecode_scope_symbol(const char *nm = "_usecode_", 
-			Symbol_kind k = class_scope, int v = 0)
+			Symbol_kind k = table_scope, int v = 0)
 		: Usecode_symbol(nm, k, v)
 		{  }
 	~Usecode_scope_symbol();
@@ -79,6 +80,23 @@ public:
 	void add_sym(Usecode_symbol *sym);
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
+	};
+
+class Usecode_class_symbol : public Usecode_scope_symbol
+	{
+	typedef std::vector<int> Ints_vector;
+	Ints_vector methods;		// List of method usecode #'s.
+public:
+	Usecode_class_symbol(const char *nm, Symbol_kind k = class_scope,
+						int v = 0)
+		: Usecode_scope_symbol(nm, k, v)
+		{  }
+	void add_method_num(int val)
+		{ methods.push_back(val); }
+	int get_method_id(int i)
+		{ return (i >= 0 && i < methods.size()) ? methods[i] : -1; }
+	void read(std::istream& in);
+	void write(std::ostream& out);
 	};
 
 /*

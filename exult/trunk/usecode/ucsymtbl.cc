@@ -56,7 +56,7 @@ void Usecode_scope_symbol::read(istream& in)
 		int val = Read4(in);
 		Usecode_symbol *sym;
 		if (kind == Usecode_symbol::class_scope) {
-			Usecode_scope_symbol *s = new Usecode_scope_symbol(nm, 
+			Usecode_class_symbol *s = new Usecode_class_symbol(nm, 
 				(Usecode_symbol::Symbol_kind) kind, val);
 			s->read(in);
 			sym = s;
@@ -87,7 +87,7 @@ void Usecode_scope_symbol::write(ostream& out)
 		Write2(out, (int) sym->get_kind());
 		Write4(out, sym->get_val());
 		if (sym->get_kind() == class_scope)
-			static_cast<Usecode_scope_symbol*>(sym)->write(out);
+			static_cast<Usecode_class_symbol*>(sym)->write(out);
 	}
 }
 
@@ -149,3 +149,27 @@ Usecode_symbol *Usecode_scope_symbol::operator[](int val)
 		return (*it).second;
 }
 
+/*
+ *	Read from a file.
+ */
+void Usecode_class_symbol::read(istream& in)
+{
+	Usecode_scope_symbol::read(in);
+	int num_methods = Read2(in);
+	methods.resize(num_methods);
+	for (int i = 0; i < num_methods; ++i)
+		methods[i] = Read2(in);
+}
+
+/*
+ *	Write to a file.
+ */
+void Usecode_class_symbol::write(ostream& out)
+{
+	Usecode_scope_symbol::write(out);
+	int num_methods = methods.size();
+	Write2(out, num_methods);
+	for (Ints_vector::iterator it = methods.begin(); it != methods.end();
+							++it)
+		Write2(out, *it);
+}

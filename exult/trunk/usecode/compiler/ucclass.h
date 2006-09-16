@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <iosfwd>
 #endif
 
+class Uc_function;
+
 /* 
  *	This represents a usecode class (vaguely like in C++).
  */
@@ -38,16 +40,16 @@ class Uc_class : public Uc_design_unit
 	{
 	std::string name;
 	Uc_scope scope;
-	int num_vars;			// # member variables.
-	std::vector<Uc_design_unit *> methods;
+	int num_vars;			// # member variables.  The 1st one
+					//  will be the class info.
+	std::vector<Uc_function *> methods;
 public:
 	Uc_class(char *nm);
 	~Uc_class();
 	Uc_scope *get_scope()
 		{ return &scope; }
 	Uc_var_symbol *add_symbol(char *nm);	// Add class variable.
-	void add_method(Uc_design_unit *m)
-		{ methods.push_back(m); }
+	void add_method(Uc_function *m);
 	void gen(std::ostream& out);	// Generate Usecode.
 	virtual Usecode_symbol *create_sym();
 	};
