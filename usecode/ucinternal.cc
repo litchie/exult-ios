@@ -412,6 +412,11 @@ inline Usecode_value Usecode_internal::pop()
 	return *--sp; 
 }
 
+inline Usecode_value Usecode_internal::peek()
+{
+	return sp[-1];
+}
+
 inline void Usecode_internal::pushref(Game_object *obj)
 {
 	Usecode_value v(obj);
@@ -1880,6 +1885,10 @@ void Clearbreak()
 	cerr << "Global flag #" << (x) << " out of range!";\
 	CERR_CURRENT_IP()
 
+#define THIS_ERROR()\
+	cerr << "NULL class pointer!";\
+	CERR_CURRENT_IP()
+
 /*
  *  The main usecode interpreter
  * 
@@ -2696,6 +2705,21 @@ int Usecode_internal::run()
 				if (offset >= size)
 					ths.resize(offset + 1);
 				ths.put_elem(offset, val);
+				break;
+			}
+			case 0x56:		// CALLM - call method.
+			{
+				offset = Read2(frame->ip);
+				Usecode_value thisptr = peek();
+				Usecode_class_symbol *c =
+					thisptr.get_class_ptr_value();
+				if (!c) {
+					THIS_ERROR();
+					(void) pop();
+					break;
+				}
+				int index = c->get_method_id(offset);
+				call_function(index, frame->eventid);
 				break;
 			}
 			case 0xcd: // 32 bit debugging function init

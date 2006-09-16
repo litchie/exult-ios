@@ -101,6 +101,7 @@ class Usecode_internal : public Usecode_machine
 	void stack_error(int under);
 	void push(Usecode_value& val);	// Push/pop stack.
 	Usecode_value pop();
+	Usecode_value peek();
 	void pushref(Game_object* obj); // Push itemref
 	void pushi(long val);		// Push/pop integers.
 	int popi();

@@ -57,7 +57,7 @@ Uc_function::Uc_function
 	Uc_scope *parent
 	) : top(parent), proto(p), cur_scope(&top), num_parms(0),
 	    num_locals(0), num_statics(0), text_data(0), text_data_size(0),
-	    statement(0), reloffset(0)
+	    statement(0), reloffset(0), method_num(-1)
 	{
 	char *nm = (char *) proto->get_name();
 	add_global_function_symbol(proto);// Add prototype to globals.

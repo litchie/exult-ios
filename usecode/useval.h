@@ -29,6 +29,7 @@
 #include <string>	// STL string
 
 class Game_object;
+class Usecode_class_symbol;
 
 /*
  *	A value that we store can be an integer, string, or array.
@@ -41,7 +42,8 @@ public:
 		int_type = 0,
 		string_type = 1,	// Allocated string.
 		array_type = 2,
-		pointer_type = 3
+		pointer_type = 3,
+		class_pointer_type = 4	// ->Usecode_class_symbol
 		};
 private:
 	Val_type type;		// Type stored here.
@@ -53,6 +55,7 @@ private:
 			short cnt;
 		} array;
 		Game_object *ptr;
+		Usecode_class_symbol *cptr;
 	} value;
 
 	bool undefined;
@@ -73,6 +76,9 @@ public:
 		}
 	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false)
 		{ value.ptr = ptr; }
+	Usecode_value(Usecode_class_symbol *ptr) : type(class_pointer_type),
+						undefined(false)
+		{ value.cptr = ptr; }
 	~Usecode_value();
 	Usecode_value& operator=(const Usecode_value& v2);
 	Usecode_value& operator=(const char *str);
@@ -107,6 +113,8 @@ public:
 		}
 	Game_object* get_ptr_value() const	// Get pointer value.
 		{ return ((type == pointer_type) ? value.ptr : 0); }
+	Usecode_class_symbol *get_class_ptr_value() const
+		{ return ((type == class_pointer_type) ? value.cptr : 0); }
 					// Get string value.
 	const char *get_str_value() const
 		{ return ((type == string_type) ? value.str : 0); }

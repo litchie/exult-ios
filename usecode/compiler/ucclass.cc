@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ucclass.h"
 #include "ucsymtbl.h"
+#include "ucfun.h"
 
 /*
  *	Create.
@@ -39,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Uc_class::Uc_class
 	(
 	char *nm
-	) : scope(0), num_vars(0), name(nm)
+	) : scope(0), num_vars(1), name(nm)
 	{
 	}
 
@@ -72,6 +73,21 @@ Uc_var_symbol *Uc_class::add_symbol
 	}
 
 /*
+ *	Add method.
+ *	NOTE: If/when we support derived classes, we will first need to search
+ *		the 'methods' table for the method name.
+ */
+
+void Uc_class::add_method
+	(
+	Uc_function *m
+	)
+	{
+	m->set_method_num(methods.size());
+	methods.push_back(m); 
+	}
+
+/*
  *	Generate Usecode.
  */
 
@@ -80,10 +96,12 @@ void Uc_class::gen
 	std::ostream& out
 	)
 	{
-	std::vector<Uc_design_unit *>::iterator it;
+	std::vector<Uc_function *>::iterator it;
 	for (it = methods.begin(); it != methods.end(); it++)
 		{
-		(*it)->gen(out);		// Generate function.
+		Uc_function *m = *it;
+		if (m->get_parent() == &scope)
+			m->gen(out);	// Generate function if its ours.
 		}
 	}
 
@@ -96,11 +114,15 @@ Usecode_symbol *Uc_class::create_sym
 	)
 	{
 	Usecode_symbol::Symbol_kind kind = Usecode_symbol::class_scope;
-	Usecode_scope_symbol *cs = 
-		new Usecode_scope_symbol(name.c_str(), kind);
-	std::vector<Uc_design_unit *>::iterator it;
+	Usecode_class_symbol *cs = 
+		new Usecode_class_symbol(name.c_str(), kind);
+	std::vector<Uc_function *>::iterator it;
 	for (it = methods.begin(); it != methods.end(); it++)
-		cs->add_sym((*it)->create_sym());
+		{
+		Uc_function *m = *it;
+		cs->add_sym(m->create_sym());
+		cs->add_method_num(it - methods.begin());
+		}
 	return cs;
 	}
 
