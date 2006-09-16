@@ -132,7 +132,8 @@ static opcode_desc opcode_table[] =
 	{ "callind", 0, 0 },			// 53
 	{ "push\tclsvar", 2, CLASSVARREF },			// 54
 	{ "pop\tclsvar", 2, CLASSVARREF },			// 55
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 56-57
+	{ "callm", 2, IMMED },					// 56
+	{ NULL, 0, 0 },	// 57
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 58-5B
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 60-63
