@@ -299,7 +299,7 @@ Uc_function_symbol::Uc_function_symbol
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
 	std::vector<char *>& p
-	) :  Uc_symbol(nm), parms(p), usecode_num(num)
+	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1)
 	{
 	}
 
@@ -380,18 +380,20 @@ int Uc_function_symbol::gen_call
 	vector<char>& out,
 	Uc_function *fun,
 	bool orig,			// Call original (not one from patch).
-	Uc_expression *itemref,		// Non-NULL for CALLE.
+	Uc_expression *itemref,		// Non-NULL for CALLE or method.
 	Uc_array_expression *aparms,	// Actual parameter list.
 	bool /* retvalue */		// True if a function.
 	)
 	{
+	char buf[200];
 	int parmcnt = aparms->gen_values(out);	// Want to push parm. values.
+	parmcnt += (method_num >= 0);		// Count 'this'.
 	if (parmcnt != parms.size())
 		{
-		char buf[100];
 		sprintf(buf,
 			"# parms. passed (%d) doesn't match '%s' count (%d)",
 			parmcnt, get_name(), parms.size());
+		Uc_location::yyerror(buf);
 		}				
 	if (orig)
 		{
@@ -404,6 +406,26 @@ int Uc_function_symbol::gen_call
 			itemref->gen_value(out);
 		out.push_back((char) UC_CALLO);
 		Write2(out, usecode_num);	// Use fun# directly.
+		}
+	else if (method_num >= 0)		// Class method?
+		{
+		// If no explicit obj., find 'this'.
+		if (!itemref && fun->get_method_num() >= 0)
+			{
+			Uc_symbol *tsym = fun->search("this");
+			if (tsym && dynamic_cast<Uc_var_symbol *>(tsym))
+				itemref = tsym->create_expression();
+			}
+		if (!itemref)
+			{
+			sprintf(buf,
+			"Class method '%s' requires a 'this'.", get_name());
+			Uc_location::yyerror(buf);
+			}
+		else
+			itemref->gen_value(out);
+		out.push_back((char) UC_CALLM);
+		Write2(out, method_num);
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{

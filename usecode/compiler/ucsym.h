@@ -198,16 +198,21 @@ private:
 					// Note:  offset = Usecode fun. #.
 	std::vector<char *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
+	int method_num;			// Index with class if a method.
 	bool externed;
 public:
 	friend class Uc_scope;
 	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
 	static Uc_function_symbol *create(char *nm, int num, 
-						std::vector<char *>& p, bool is_extern=false);
+				std::vector<char *>& p, bool is_extern=false);
 	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
 		{ return usecode_num; }
+	void set_method_num(int n)
+		{ method_num = n; }
+	int get_method_num()
+		{ return method_num; }
 	int get_num_parms()
 		{ return parms.size(); }
 	void set_externed()

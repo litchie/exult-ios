@@ -68,7 +68,6 @@ class Uc_function : public Uc_design_unit
 	Uc_statement *statement;	// Statement(s) in function.
 
 	int reloffset; // relative offset of the code being generated
-	int method_num;			// Index with class if a method.
 public:
 	enum Intrinsic_type
 		{
@@ -97,9 +96,9 @@ public:
 	int get_usecode_num()
 		{ return proto->get_usecode_num(); }
 	void set_method_num(int n)
-		{ method_num = n; }
+		{ proto->set_method_num(n); }
 	int get_method_num()
-		{ return method_num; }
+		{ return proto->get_method_num(); }
 	void adjust_reloffset(int diff) { reloffset += diff; }
 	int get_reloffset() const { return reloffset; }
 	Uc_scope *get_parent()
