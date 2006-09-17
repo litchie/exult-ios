@@ -48,14 +48,14 @@ GUMPS_OBJS= Actor_gump.o AudioOptions_gump.o Book_gump.o CombatOptions_gump.o \
 	CombatStats_gump.o Enabled_button.o Face_button.o  Face_stats.o File_gump.o \
 	Gamemenu_gump.o GameplayOptions_gump.o Gump.o Gump_button.o Gump_manager.o \
 	Gump_widget.o Gump_ToggleButton.o Jawbone_gump.o misc_buttons.o Newfile_gump.o \
-	Notebook_gump.o Paperdoll_gump.o Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o \
+	Notebook_gump.o Paperdoll_gump.o Scroll_gump.o Sign_gump.o \
 	Slider_gump.o Spellbook_gump.o Stats_gump.o Text_button.o Text_gump.o \
 	VideoOptions_gump.o Yesno_gump.o
 
 IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o imagewin.o imagescl.o iwin8.o \
 	savepcx.o
 
-SHAPES_OBJS=bodies.o font.o fontvga.o items.o miscinf.o monstinf.o shapeinf.o \
+SHAPES_OBJS=font.o fontvga.o items.o miscinf.o monstinf.o shapeinf.o \
 	shapevga.o u7drag.o vgafile.o
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o  contain.o egg.o iregobjs.o \

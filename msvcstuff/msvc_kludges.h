@@ -315,7 +315,7 @@ using std::getline;
 #include "../imagewin/imagebuf.h"
 #include "../imagewin/imagewin.h"
 #include "../imagewin/iwin8.h"
-#include "../shapes/bodies.h"
+#include "../shapes/miscinf.h"
 #include "../shapes/font.h"
 #include "../shapes/fontvga.h"
 #include "../shapes/items.h"

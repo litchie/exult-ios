@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "objiter.h"
 #include "cheat.h"
+#include "miscinf.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -367,9 +368,9 @@ void Paperdoll_gump::paint
 
 	// Get the information required about ourself
 	Actor *actor = container->as_actor();
-	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
-	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
-	if (!info) info = GetCharacterInfoSafe (actor->get_shape_real());
+	Paperdoll_npc *info = Shapeinfo_lookup::GetCharacterInfo (container->get_shapenum());
+	if (!info) info = Shapeinfo_lookup::GetCharacterInfo (actor->get_sexed_coloured_shape());
+	if (!info) info = Shapeinfo_lookup::GetCharacterInfoSafe (actor->get_shape_real());
 
 	// Spots that are female/male specific
 	int	shieldx, shieldy,
@@ -417,7 +418,7 @@ void Paperdoll_gump::paint
 		paint_body        (box, info);
 		paint_object      (box, info, Actor::legs,        legsx,  legsy);
 		paint_object      (box, info, Actor::feet,        feetx,  feety);		
-		paint_object      (box, info, Actor::ammo,        ammox,  ammoy);
+		paint_object      (box, info, Actor::ammo,        ammox,  ammoy, 0, -1, Actor::lhand);
 		paint_object      (box, info, Actor::torso,       bodyx,  bodyy);
 		paint_belt        (box, info);
 		paint_head        (box, info);
@@ -451,21 +452,21 @@ void Paperdoll_gump::paint
 		paint_body        (box, info);
 		paint_object      (box, info, Actor::legs,        legsx,  legsy);
 		paint_object      (box, info, Actor::feet,        feetx,  feety);		
-		paint_object      (box, info, Actor::ammo,        ammox,  ammoy);
+		paint_object      (box, info, Actor::ammo,        ammox,  ammoy, 0, -1, Actor::lhand);
 
 		paint_object      (box, info, Actor::torso,       bodyx,  bodyy);
 		paint_belt        (box, info);
 		paint_head        (box, info);
 
 		obj = container->get_readied(Actor::neck);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
-		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
+		item2 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
 		if (!item1 && !item2)
 			paint_object      (box, info, Actor::neck,        neckx,  necky);
 
 		obj = container->get_readied(Actor::belt);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::shield_spot);
-		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::back2h_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::shield_spot);
+		item2 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::back2h_spot);
 		if (!item1 && !item2)
 			paint_object      (box, info, Actor::belt,        beltx,  belty);
 
@@ -476,7 +477,7 @@ void Paperdoll_gump::paint
 		paint_object_arms (box, info, Actor::rfinger,     lhandx, lhandy, 0);
 
 		obj = container->get_readied(Actor::lfinger);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::hands2_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::hands2_spot);
 		if (!item1)
 			paint_object_arms (box, info, Actor::lfinger,     rhandx, rhandy, 0);
 		else
@@ -536,7 +537,7 @@ void Paperdoll_gump::paint_object
 	int old_it = itemtype;
 	if (itemtype == -1) itemtype = spot;
 	
-	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
+	Paperdoll_item *item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
 		if ((old_it != -1 && !item)|| checkspot != -1) return;
@@ -560,13 +561,25 @@ void Paperdoll_gump::paint_object
 	}
 	else if (checkspot != -1)
 	{
+		bool exit_fail = true;
+		if (spot == Actor::ammo && frame == 0)
+			exit_fail = false;
 		Game_object *check = container->get_readied(checkspot);
-		if (!check) return;
-	
-		if (checktype == -1) checktype = checkspot;
-	
-		Paperdoll_item *item_check = GetItemInfo (check->get_shapenum(), check->get_framenum(), checktype);
-		if (!item_check || item_check->type != item->type)
+		if (check)
+		{
+			if (checktype == -1) checktype = checkspot;
+		
+			Paperdoll_item *item_check = Shapeinfo_lookup::GetItemInfo (check->get_shapenum(), check->get_framenum(), checktype);
+			if (item_check && item_check->type == item->type)
+			{
+				if (!exit_fail)
+					frame++;
+				else
+					exit_fail = false;
+			}
+		}
+		
+		if (exit_fail)
 			return;
 	}
 
@@ -656,7 +669,7 @@ void Paperdoll_gump::paint_head
 	Game_object *obj = container->get_readied(Actor::head);
 
 	Paperdoll_item *item = NULL;
-	if (obj) item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
+	if (obj) item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
 	int f = info->head_frame;
 
@@ -679,7 +692,7 @@ void Paperdoll_gump::paint_arms
 	Game_object *obj = container->get_readied(Actor::rhand);
 
 	Paperdoll_item *item = NULL;
-	if (obj) item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
+	if (obj) item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
 	ShapeID s(info->arms_shape, info->arms_frame, SF_PAPERDOL_VGA);
 
@@ -705,12 +718,12 @@ void Paperdoll_gump::paint_arms
  *	Gets which arm frame to use
  */
 
-Paperdoll_gump::Object_type Paperdoll_gump::get_arm_type(void)
+Object_type Paperdoll_gump::get_arm_type(void)
 {
 	Game_object *obj = container->get_readied(Actor::lhand);
 	if (!obj) return OT_Normal;
 	
-	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
+	Paperdoll_item *item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
 	if (item) return item->type;
 
@@ -739,9 +752,9 @@ Game_object * Paperdoll_gump::find_object
 
 	// Get the information required about ourself
 	Actor *actor = container->as_actor();
-	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
-	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
-	if (!info) info = GetCharacterInfoSafe (actor->get_shape_real());
+	Paperdoll_npc *info = Shapeinfo_lookup::GetCharacterInfo (container->get_shapenum());
+	if (!info) info = Shapeinfo_lookup::GetCharacterInfo (actor->get_sexed_coloured_shape());
+	if (!info) info = Shapeinfo_lookup::GetCharacterInfoSafe (actor->get_shape_real());
 
 	int	shieldx, shieldy,
 		back2x,  back2y,
@@ -820,7 +833,7 @@ Game_object * Paperdoll_gump::find_object
 			return NULL;
 		if ((obj = check_object      (mx, my, info, Actor::torso,       bodyx,  bodyy)))
 			return obj;
-		if ((obj = check_object      (mx, my, info, Actor::ammo,        ammox,  ammoy)))
+		if ((obj = check_object      (mx, my, info, Actor::ammo,        ammox,  ammoy, 0, -1, Actor::lhand)))
 			return obj;
 		if ((obj = check_object      (mx, my, info, Actor::feet,        feetx,  feety)))	
 			return obj;
@@ -849,7 +862,7 @@ Game_object * Paperdoll_gump::find_object
 			return obj;
 
 		obj = container->get_readied(Actor::lfinger);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::hands2_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::hands2_spot);
 		if (!item1 && (obj = check_object_arms (mx, my, info, Actor::lfinger,     rhandx, rhandy, 0)))
 			return obj;
 		else if ((obj = check_object_arms (mx, my, info, Actor::lfinger,     rhandx, rhandy, 0, Actor::hands2_spot)))
@@ -867,14 +880,14 @@ Game_object * Paperdoll_gump::find_object
 			return NULL;
 
 		obj = container->get_readied(Actor::belt);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::shield_spot);
-		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::back2h_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::shield_spot);
+		item2 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::back2h_spot);
 		if (!item1 && !item2 && (obj = check_object      (mx, my, info, Actor::belt,        beltx,  belty)))
 			return obj;
 
 		obj = container->get_readied(Actor::neck);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
-		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
+		item1 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
+		item2 = !obj?NULL:Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
 		if (!item1 && !item2 && (obj = check_object      (mx, my, info, Actor::neck,        neckx,  necky)))
 			return obj;
 
@@ -885,7 +898,7 @@ Game_object * Paperdoll_gump::find_object
 		if ((obj = check_object      (mx, my, info, Actor::torso,       bodyx,  bodyy)))
 			return obj;
 
-		if ((obj = check_object      (mx, my, info, Actor::ammo,        ammox,  ammoy)))
+		if ((obj = check_object      (mx, my, info, Actor::ammo,        ammox,  ammoy, 0, -1, Actor::lhand)))
 			return obj;
 		if ((obj = check_object      (mx, my, info, Actor::feet,        feetx,  feety)))	
 			return obj;
@@ -930,7 +943,7 @@ Game_object * Paperdoll_gump::check_object
 	int old_it = itemtype;
 	if (itemtype == -1) itemtype = spot;
 	
-	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
+	Paperdoll_item *item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
 		if ((old_it != -1 &&!item) || checkspot != -1) return 0;
@@ -947,13 +960,25 @@ Game_object * Paperdoll_gump::check_object
 	}
 	else if (checkspot != -1)
 	{
+		bool exit_fail = true;
+		if (spot == Actor::ammo && frame == 0)
+			exit_fail = false;
 		Game_object *check = container->get_readied(checkspot);
-		if (!check) return NULL;
-	
-		if (checktype == -1) checktype = checkspot;
-	
-		Paperdoll_item *item_check = GetItemInfo (check->get_shapenum(), check->get_framenum(), checktype);
-		if (!item_check || item_check->type != item->type)
+		if (check)
+		{
+			if (checktype == -1) checktype = checkspot;
+		
+			Paperdoll_item *item_check = Shapeinfo_lookup::GetItemInfo (check->get_shapenum(), check->get_framenum(), checktype);
+			if (item_check && item_check->type == item->type)
+			{
+				if (!exit_fail)
+					frame++;
+				else
+					exit_fail = false;
+			}
+		}
+		
+		if (exit_fail)
 			return NULL;
 	}
 
@@ -1049,7 +1074,7 @@ bool Paperdoll_gump::check_head
 	Game_object *obj = container->get_readied(Actor::head);
 
 	Paperdoll_item *item = NULL;
-	if (obj) item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
+	if (obj) item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
 	int f = info->head_frame;
 
@@ -1071,7 +1096,7 @@ bool Paperdoll_gump::check_arms
 	Game_object *obj = container->get_readied(Actor::rhand);
 
 	Paperdoll_item *item = NULL;
-	if (obj) item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
+	if (obj) item = Shapeinfo_lookup::GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
 	switch (get_arm_type())
 	{

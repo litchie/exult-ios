@@ -40,7 +40,6 @@
 #include "Zombie.h"
 #include "actions.h"
 #include "actors.h"
-#include "bodies.h"
 #include "cheat.h"
 #include "combat.h"
 #include "combat_opts.h"
@@ -1255,15 +1254,18 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 			return true;
 		else if (Game::get_game_type() == BLACK_GATE)
 		{
-			if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), back2h_spot))
 				return true;
-			else if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), shield_spot))
+			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), shield_spot))
 				return true;
 		}
 	}
 
 	// Lastly if we have gotten here, check the paperdoll table 
-	return Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), spot);
+	return Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+			obj->get_framenum(), spot);
 }
 
 /*
@@ -1299,9 +1301,11 @@ void Actor::get_prefered_slots
 			if (type == spell || type == other_spell) fistype = FIS_Spell;
 			else if (type == two_handed_weapon) fistype = FIS_2Hand;
 
-			if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
+			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), rhand))
 				prefered = rhand;
-			else if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back))
+			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), back))
 				prefered = back;
 			else
 				alternate = rhand;
@@ -1357,16 +1361,19 @@ void Actor::get_prefered_slots
 			if (type == spell_si|| type == other_spell_si) fistype = FIS_Spell;
 			else if (type == two_handed_si) fistype = FIS_2Hand;
 
-			if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
+			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), rhand))
 				prefered = rhand;
 			else
 				alternate = rhand;
 			break;
 
 			case other:
-			if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), back2h_spot))
 				prefered = back2h_spot;
-			else if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back))
+			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
+					obj->get_framenum(), back))
 				prefered = back;
 			else 
 				alternate = rhand;
@@ -2117,11 +2124,11 @@ int Actor::inventory_shapenum()
 	if (!serpent)
 		{	// Can't display paperdolls (or they are disabled)
 			// Use BG gumps
-		Paperdoll_gump::Paperdoll_npc *npcinfo =
-			Paperdoll_gump::GetCharacterInfo(get_shapenum());
+		Paperdoll_npc *npcinfo =
+			Shapeinfo_lookup::GetCharacterInfo(get_shapenum());
 
-		if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfo(get_sexed_coloured_shape());
-		if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(get_shape_real());
+		if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfo(get_sexed_coloured_shape());
+		if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfoSafe(get_shape_real());
 		if (!npcinfo)		// No paperdoll info at ALL; should never happen...
 			return (65);	// Default to male (Pickpocket Cheat)
 		
@@ -3613,7 +3620,7 @@ void Actor::die
 	if (!minfo || !minfo->has_no_body())
 		{
 		int frnum;			// Lookup body shape/frame.
-		if (!Body_lookup::find(get_shapenum(), shnum, frnum))
+		if (!Shapeinfo_lookup::find_body(get_shapenum(), shnum, frnum))
 			{
 			shnum = 400;
 			frnum = 3;
@@ -4501,6 +4508,8 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
+	if (cheat.in_map_editor() && party_id < 0)
+		return 0;
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
 		return 0;
 	Tile_coord oldtile = get_tile();
