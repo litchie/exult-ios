@@ -1,3 +1,19 @@
+2006-09-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/bodies.*, gumps/Paperdoll_gump_info.cc: Removed files, code
+	  moved to miscinf.*.
+	* gumps/Paperdoll_gump.cc: For ammo, use 'frame2' instead of 'frame'
+	  when a compatible weapon is in hand. Also, see below.
+	* actors.cc: 'step' should do nothing for non-party members when in
+	  map-edit mode. Also, see below.
+	* gumps/Face_button.cc, gumps/Face_stats.cc, gumps/Paperdoll_gump.*,
+	  objs/animate.cc, actors.cc, effects.cc, gamewin.cc, gamemap.cc,
+	  shapes/miscinf.*, usecode/ucinternal.cc, msvc_kludges.h, shapes/Makefile.am,
+	  gumps/Makefile.am, Makefile.common: Clean up and centralization of code from
+	  miscinf.* and old shapes/bodies.* and gumps/Paperdoll_gump_info.cc. Also,
+	  the paperdol_info.txt, bodies.txt and shape_info.txt data files no longer
+	  completelly override those from Exult_XX.flx (for BG and SI) or from static
+	  dir (for new games).
+
 2006-09-07  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/ucinternal.cc: Increased the maximum number of intrinsics to 1024.
 	* usecode/ucinternal.h: A identing spaces to tabs, some align tabs to spaces.

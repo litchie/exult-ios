@@ -37,163 +37,369 @@
 using std::vector;
 using std::ifstream;
 using std::map;
+using std::multimap;
 using std::pair;
-using std::size_t;
 
 static map<int, int> *explosion_sprite_table = 0;
 static map<int, int> *shape_sfx_table = 0;
-static vector<Shapeinfo_lookup::Animation_info> animation_cycle_table;
+static multimap<int, Animation_info> *animation_cycle_table = 0;
 static map<int, bool> *usecode_event_table = 0;
 static map<int, bool> *mountain_top_table = 0;
+
+static map<int, pair<int, int> > *bodies_table = 0;
+static map<int, bool> *body_shape_table = 0;
+
+static map<int, Paperdoll_npc> *characters_table = 0;
+static multimap<int, Paperdoll_item> *items_table = 0;
+
+void Paperdoll_npc_parser::parse_entry
+	(
+	int index,
+	char *eptr,
+	bool for_patch
+	)
+	{
+	Paperdoll_npc npc;
+	int npc_shape = strtol(eptr, &eptr, 0);
+	npc.is_female = strtol(eptr + 1, &eptr, 0) ? true : false;
+	npc.body_shape = strtol(eptr + 1, &eptr, 0);
+	npc.body_frame = strtol(eptr + 1, &eptr, 0);
+	npc.head_shape = strtol(eptr + 1, &eptr, 0);
+	npc.head_frame = strtol(eptr + 1, &eptr, 0);
+	npc.head_frame_helm = strtol(eptr + 1, &eptr, 0);
+	npc.arms_shape = strtol(eptr + 1, &eptr, 0);
+	npc.arms_frame = strtol(eptr + 1, &eptr, 0);
+	npc.arms_frame_2h = strtol(eptr + 1, &eptr, 0);
+	npc.arms_frame_staff = strtol(eptr + 1, &eptr, 0);
+	if (*eptr)	// BG-style gumps
+		npc.gump_shape = strtol(eptr + 1, 0, 0);
+	else
+		npc.gump_shape = -1;
+	(*table)[npc_shape] = npc;
+	}
+
+void Paperdoll_item_parser::parse_entry
+	(
+	int index,
+	char *eptr,
+	bool for_patch
+	)
+	{
+	Paperdoll_item obj;
+	int world_shape = strtol(eptr, &eptr, 0);
+	obj.world_frame = strtol(eptr + 1, &eptr, 0);
+	obj.spot = strtol(eptr + 1, &eptr, 0);
+	obj.type = (Object_type)strtol(eptr + 1, &eptr, 0);
+	obj.gender = strtol(eptr + 1, &eptr, 0) ? true : false;
+	obj.shape = strtol(eptr + 1, &eptr, 0);
+	obj.frame = strtol(eptr + 1, &eptr, 0);
+	// Not all items have all entries, so check first
+	if (*eptr)
+		obj.frame2 = strtol(eptr + 1, &eptr, 0);
+	if (*eptr)
+		obj.frame3 = strtol(eptr + 1, &eptr, 0);
+	if (*eptr)
+		obj.frame4 = strtol(eptr + 1, 0, 0);
+	if (for_patch)
+		{
+		Paperdoll_item *old = 0;
+		typedef multimap<int, Paperdoll_item>::iterator objIterator;
+		pair<objIterator, objIterator> itPair =
+				items_table->equal_range(world_shape);
+		for (objIterator it = itPair.first; it != itPair.second; ++it)
+			{
+			Paperdoll_item& inf = (*it).second;
+			if (obj.world_frame == inf.world_frame
+					&& obj.spot == inf.spot)
+				{
+				old = &inf;
+				break;
+				}
+			}
+		if (old)
+			// Replace existing.
+			*old = obj;
+		else
+			table->insert(pair<int, Paperdoll_item>(world_shape, obj));
+		}
+	else
+		table->insert(pair<int, Paperdoll_item>(world_shape, obj));
+	}
+
+void Animation_parser::parse_entry
+	(
+	int index,
+	char *eptr,
+	bool for_patch
+	)
+	{
+	Animation_info inf;
+	int shapenum = strtol(eptr, &eptr, 0);
+	inf.type = strtol(eptr + 1, &eptr, 0);
+	if (inf.type == 0)	// FA_LOOPING
+		{
+		inf.first_frame = strtol(eptr + 1, &eptr, 0);
+		inf.frame_count = strtol(eptr + 1, &eptr, 0);
+		if (!*eptr)
+			inf.offset_type = -1;
+		else
+			{
+			eptr++;
+			if (*eptr = '%')
+				inf.offset_type = 1;
+			else
+				{
+				inf.offset_type = 0;	// For safety.
+				inf.offset = strtol(eptr, &eptr, 0);
+				}
+			}
+		}
+	if (for_patch)
+		{
+		Animation_info *old = Shapeinfo_lookup::get_animation_cycle_info(
+				shapenum, inf.first_frame);
+		if (old)
+			// Replace existing.
+			*old = inf;
+		else
+			table->insert(pair<int, Animation_info>(shapenum, inf));
+		}
+	else
+		table->insert(pair<int, Animation_info>(shapenum, inf));
+	}
+
 /*
- *	Setup tables.
+ *	Parses a shape data file.
  */
-void Shapeinfo_lookup::setup
+void Shapeinfo_lookup::Read_data_file
+	(
+	const char *fname,					// Name of file to read, sans extension
+	const char *sections[],				// The names of the sections
+	Shapeinfo_entry_parser *parsers[],	// Parsers to use for each section
+	int numsections						// Number of sections
+	)
+	{
+	vector<Readstrings> static_strings;
+	vector<Readstrings> patch_strings;
+	static_strings.resize(numsections);
+	char buf[50];
+	if (GAME_BG || GAME_SI)
+		{
+		snprintf(buf, 50, "config/%s", fname);
+		str_int_pair resource = game->get_resource(buf);
+		U7object txtobj(resource.str, resource.num);
+		std::size_t len;
+		char *txt = txtobj.retrieve(len);
+		BufferDataSource ds(txt, len);
+		for (int i=0; i<numsections; i++)
+			Read_text_msg_file(&ds, static_strings[i], sections[i]);
+		}
+	else
+		{
+		try
+			{
+			snprintf(buf, 50, "<STATIC>/%s.txt", fname);
+			ifstream in;
+			U7open(in, buf, true);
+			for (int i=0; i<numsections; i++)
+				Read_text_msg_file(in, static_strings[i], sections[i]);
+			in.close();
+			}
+		catch (std::exception &e)
+			{
+			if (!Game::is_editing())
+				throw e;
+			}
+		}
+	patch_strings.resize(numsections);
+	snprintf(buf, 50, "<PATCH>/%s.txt", fname);
+	if (U7exists(buf))
+		{
+		ifstream in;
+		U7open(in, buf, true);
+		for (int i=0; i<numsections; i++)
+			Read_text_msg_file(in, patch_strings[i], sections[i]);
+		in.close();
+		}
+
+	for (int i=0; i<static_strings.size(); i++)
+		{
+		Readstrings& section = static_strings[i];
+		for (int j=0; j<section.size(); j++)
+			{
+			char *ptr = section[j];
+			if (!ptr)
+				continue;
+			parsers[i]->parse_entry(j, ptr, false);
+			delete[] section[j];
+			}
+		section.clear();
+		}
+	static_strings.clear();
+	for (int i=0; i<patch_strings.size(); i++)
+		{
+		Readstrings& section = patch_strings[i];
+		for (int j=0; j<section.size(); j++)
+			{
+			char *ptr = section[j];
+			if (!ptr)
+				continue;
+			parsers[i]->parse_entry(j, ptr, true);
+			delete[] section[j];
+			}
+		section.clear();
+		}
+	patch_strings.clear();
+	}
+
+/*
+ *	Setup misc info tables.
+ */
+void Shapeinfo_lookup::setup_miscinf
 	(
 	)
 	{
-	int i = -1, j = -1, k = -1, l = -1, m = -1;
-	ifstream in;
-	vector<char *> explosion_sprite_strings;
-	vector<char *> shape_sfx_strings;
-	vector<char *> animation_cycle_strings;
-	vector<char *> usecode_event_strings;
-	vector<char *> mountain_top_strings;
-	try {
-		ifstream in;
-		U7open(in, "<PATCH>/shape_info.txt", true);
-		i = Read_text_msg_file(in, explosion_sprite_strings, "explosions");
-		j = Read_text_msg_file(in, shape_sfx_strings, "shape_sfx");
-		k = Read_text_msg_file(in, animation_cycle_strings, "animation");
-		l = Read_text_msg_file(in, usecode_event_strings, "usecode_events");
-		m = Read_text_msg_file(in, mountain_top_strings, "mountain_tops");
-		in.close();
-	} catch (std::exception &) {
-		if (GAME_BG || GAME_SI) {
-
-			str_int_pair resource = game->get_resource("config/shape_info");
-
-			U7object txtobj(resource.str, resource.num);
-			size_t len;
-			char *txt = txtobj.retrieve(len);
-			BufferDataSource ds(txt, len);
-			i = Read_text_msg_file(&ds, explosion_sprite_strings, "explosions");
-			j = Read_text_msg_file(&ds, shape_sfx_strings, "shape_sfx");
-			k = Read_text_msg_file(&ds, animation_cycle_strings, "animation");
-			l = Read_text_msg_file(&ds, usecode_event_strings, "usecode_events");
-			m = Read_text_msg_file(&ds, mountain_top_strings, "mountain_tops");
-		} else {
-			ifstream in;
-			U7open(in, "<STATIC>/shape_info.txt", true);
-			i = Read_text_msg_file(in, explosion_sprite_strings, "explosions");
-			j = Read_text_msg_file(in, shape_sfx_strings, "shape_sfx");
-			k = Read_text_msg_file(in, animation_cycle_strings, "animation");
-			l = Read_text_msg_file(in, usecode_event_strings, "usecode_events");
-			m = Read_text_msg_file(in, mountain_top_strings, "mountain_tops");
-			in.close();
-		}
+	explosion_sprite_table = new map<int, int>;
+	shape_sfx_table = new map<int, int>;
+	animation_cycle_table = new multimap<int, Animation_info>;
+	usecode_event_table = new map<int, bool>;
+	mountain_top_table = new map<int, bool>;
+	const char *sections[5] = {"explosions", "shape_sfx",
+			"animation", "usecode_events", "mountain_tops"};
+	Shapeinfo_entry_parser *parsers[5] = {
+			new Int_pair_parser(explosion_sprite_table),
+			new Int_pair_parser(shape_sfx_table),
+			new Animation_parser(animation_cycle_table),
+			new Bool_parser(usecode_event_table),
+			new Bool_parser(mountain_top_table)};
+	Read_data_file("shape_info", sections, parsers, 5);
 	}
-	explosion_sprite_table = new std::map<int, int>;
-	int cnt = explosion_sprite_strings.size();
-	if (i >= 0)
-		{
-		for ( ; i < cnt; ++i)
-			{
-			char *ptr = explosion_sprite_strings[i], *eptr;
-			if (!ptr)
-				continue;
-			int shapenum = strtol(ptr, &eptr, 0);
-			int spritenum = strtol(eptr + 1, 0, 0);
-			(*explosion_sprite_table)[shapenum] = spritenum;
-			}
-		}
-	for (i = 0; i < cnt; ++i)
-		delete[] explosion_sprite_strings[i];
-	
-	shape_sfx_table = new std::map<int, int>;
-	cnt = shape_sfx_strings.size();
-	if (j >= 0)
-		{
-		for ( ; j < cnt; ++j)
-			{
-			char *ptr = shape_sfx_strings[j], *eptr;
-			if (!ptr)
-				continue;
-			int shapenum = strtol(ptr, &eptr, 0);
-			int sfxnum = strtol(eptr + 1, 0, 0);
-			(*shape_sfx_table)[shapenum] = sfxnum;
-			}
-		}
-	for (j = 0; j < cnt; ++j)
-		delete[] shape_sfx_strings[j];
 
-	cnt = animation_cycle_strings.size();
-	if (k >= 0)
-		{
-		animation_cycle_table.resize(cnt);
-		for ( ; k < cnt; ++k)
-			{
-			char *ptr = animation_cycle_strings[k], *eptr;
-			if (!ptr)
-				continue;
-			Animation_info inf;
-			inf.shapenum = strtol(ptr, &eptr, 0);
-			inf.type = strtol(eptr + 1, &eptr, 0);
-			if (inf.type == 0)	// FA_LOOPING
-				{
-				inf.first_frame = strtol(eptr + 1, &eptr, 0);
-				inf.frame_count = strtol(eptr + 1, &eptr, 0);
-				if (!*eptr)
-					inf.offset_type = -1;
-				else
-					{
-					eptr++;
-					if (*eptr = '%')
-						inf.offset_type = 1;
-					else
-						{
-						inf.offset_type = 0;	// For safety.
-						inf.offset = strtol(eptr, &eptr, 0);
-						}
-					}
-				}
-			animation_cycle_table[k] = inf;
-			}
-		}
-	for (k = 0; k < cnt; ++k)
-		delete[] animation_cycle_strings[k];
+/*
+ *	Setup body info table.
+ */
+void Shapeinfo_lookup::setup_bodies
+	(
+	)
+	{
+	body_shape_table = new map<int, bool>;
+	bodies_table = new map<int, pair<int, int> >;
+	const char *sections[2] = {"bodyshapes", "bodylist"};
+	Shapeinfo_entry_parser *parsers[2] = {
+			new Bool_parser(body_shape_table),
+			new Body_parser(bodies_table)};
+	Read_data_file("bodies", sections, parsers, 2);
+	}
 
-	usecode_event_table = new std::map<int, bool>;
-	cnt = usecode_event_strings.size();
-	if (l >= 0)
-		{
-		for ( ; l < cnt; ++l)
-			{
-			char *ptr = usecode_event_strings[l], *eptr;
-			if (!ptr)
-				continue;
-			int shapenum = strtol(ptr, &eptr, 0);
-			(*usecode_event_table)[shapenum] = true;
-			}
-		}
-	for (l = 0; l < cnt; ++l)
-		delete[] usecode_event_strings[l];
+/*
+ *	Setup paperdoll tables.
+ */
+void Shapeinfo_lookup::setup_paperdolls()
+{
+	characters_table = new map<int, Paperdoll_npc>;
+	items_table = new multimap<int, Paperdoll_item>;
+	const char *sections[2] = {"characters", "items"};
+	Shapeinfo_entry_parser *parsers[2] = {
+			new Paperdoll_npc_parser(characters_table),
+			new Paperdoll_item_parser(items_table)};
+	Read_data_file("paperdol_info", sections, parsers, 2);
+}
 
-	mountain_top_table = new std::map<int, bool>;
-	cnt = mountain_top_strings.size();
-	if (m >= 0)
+/*
+ *	Lookup a shape's explosion sprite.
+ *
+ *	Output:	5 if not found.
+ */
+
+int Shapeinfo_lookup::get_explosion_sprite (int shapenum)
+	{
+	if (!explosion_sprite_table)		// First time?
+		setup_miscinf();
+	map<int, int>::iterator it = explosion_sprite_table->find(shapenum);
+	if (it != explosion_sprite_table->end())
+		return (*it).second;
+	else
+		return 5;	// The default.
+	}
+
+/*
+ *	Lookup a shape's sfx.
+ *
+ *	Output:	-1 if not found.
+ */
+
+int Shapeinfo_lookup::get_shape_sfx (int shapenum)
+	{
+	if (!shape_sfx_table)		// First time?
+		setup_miscinf();
+	map<int, int>::iterator it = shape_sfx_table->find(shapenum);
+	if (it != shape_sfx_table->end())
+		return Audio::game_sfx((*it).second);
+	else
+		return -1;	// The default.
+	}
+
+/*
+ *	Lookup whether to call usecode when readying/unreadying a shape
+ *
+ *	Output:	false if not found.
+ */
+
+bool Shapeinfo_lookup::get_usecode_events (int shapenum)
+	{
+	if (!usecode_event_table)		// First time?
+		setup_miscinf();
+	map<int, bool>::iterator it = usecode_event_table->find(shapenum);
+	if (it != usecode_event_table->end())
+		return (*it).second;
+	else
+		return false;	// The default.
+	}
+
+/*
+ *	Lookup if a shape is a mountain top.
+ *
+ *	Output:	0 if not found.
+ */
+
+bool Shapeinfo_lookup::get_mountain_top (int shapenum)
+	{
+	if (!mountain_top_table)		// First time?
+		setup_miscinf();
+	map<int, bool>::iterator it = mountain_top_table->find(shapenum);
+	if (it != mountain_top_table->end())
+		return (*it).second;
+	else
+		return false;	// The default.
+	}
+
+/*
+ *	Get information about the animation cycle of a shape given
+ *	the initial frame.
+ *
+ *	Output:	NULL if not found.
+ */
+
+Animation_info *Shapeinfo_lookup::get_animation_cycle_info
+	(
+	int shapenum,
+	int init_frame
+	)
+	{
+	if (!animation_cycle_table)		// First time?
+		setup_miscinf();
+	typedef multimap<int, Animation_info>::iterator aniIterator;
+	pair<aniIterator, aniIterator> itPair =
+			animation_cycle_table->equal_range(shapenum);
+	for (aniIterator it = itPair.first; it != itPair.second; ++it)
 		{
-		for ( ; m < cnt; ++m)
-			{
-			char *ptr = mountain_top_strings[m], *eptr;
-			if (!ptr)
-				continue;
-			int shapenum = strtol(ptr, &eptr, 0);
-			(*mountain_top_table)[shapenum] = true;
-			}
+		Animation_info& inf = (*it).second;
+		if (inf.type != 0 ||
+			(inf.first_frame <= init_frame &&
+			 inf.first_frame + inf.frame_count > init_frame))
+			return &inf;
 		}
-	for (m = 0; m < cnt; ++m)
-		delete[] mountain_top_strings[m];
+	return NULL;
 	}
 
 /*
@@ -202,67 +408,76 @@ void Shapeinfo_lookup::setup
  *	Output:	0 if not found.
  */
 
-int Shapeinfo_lookup::get_explosion_sprite (int shapenum)
-	{
-	if (!explosion_sprite_table)		// First time?
-		setup();
-	std::map<int, int>::iterator it = explosion_sprite_table->find(shapenum);
-	if (it != explosion_sprite_table->end())
-		return (*it).second;
-	else
-		return 5;	// The default.
-	}
-
-int Shapeinfo_lookup::get_shape_sfx (int shapenum)
-	{
-	if (!shape_sfx_table)		// First time?
-		setup();
-	std::map<int, int>::iterator it = shape_sfx_table->find(shapenum);
-	if (it != shape_sfx_table->end())
-		return Audio::game_sfx((*it).second);
-	else
-		return -1;	// The default.
-	}
-
-bool Shapeinfo_lookup::get_usecode_events (int shapenum)
-	{
-	if (!usecode_event_table)		// First time?
-		setup();
-	std::map<int, bool>::iterator it = usecode_event_table->find(shapenum);
-	if (it != usecode_event_table->end())
-		return (*it).second;
-	else
-		return false;	// The default.
-	}
-
-bool Shapeinfo_lookup::get_mountain_top (int shapenum)
-	{
-	if (!mountain_top_table)		// First time?
-		setup();
-	std::map<int, bool>::iterator it = mountain_top_table->find(shapenum);
-	if (it != mountain_top_table->end())
-		return (*it).second;
-	else
-		return false;	// The default.
-	}
-
-
-Shapeinfo_lookup::Animation_info *Shapeinfo_lookup::get_animation_cycle_info
+int Shapeinfo_lookup::find_body
 	(
-	int shapenum,
-	int init_frame
+	int liveshape,			// Live actor's shape.
+	int& deadshape,			// Dead shape returned.
+	int& deadframe			// Dead frame returned.
 	)
 	{
-
-	if (animation_cycle_table.empty())		// First time?
-		setup();
-	for (vector<Animation_info>::iterator it=animation_cycle_table.begin();
-			it!=animation_cycle_table.end(); ++it)
+	if (!bodies_table)		// First time?
+		setup_bodies();
+	map<int, pair<int, int> >::iterator it = bodies_table->find(liveshape);
+	if (it != bodies_table->end())
 		{
-		if ((*it).shapenum == shapenum && ((*it).type != 0 ||
-			((*it).first_frame <= init_frame &&
-			 (*it).first_frame + (*it).frame_count > init_frame)))
-			return &*it;
+		deadshape = ((*it).second).first;
+		deadframe = ((*it).second).second;
+		return 1;
+		}
+	else
+		return 0;
+	}
+
+/*
+ *	Recognize dead body shapes.
+ */
+
+bool Shapeinfo_lookup::Is_body_shape
+	(
+	int shapeid
+	)
+	{
+	if (!body_shape_table)		// First time?
+		setup_bodies();
+	map<int, bool>::iterator it = body_shape_table->find(shapeid);
+	if (it != body_shape_table->end())
+		return (*it).second;
+	else
+		return false;
+	}
+
+Paperdoll_npc *Shapeinfo_lookup::GetCharacterInfo(int shape)
+{
+	if (!characters_table)
+		setup_paperdolls();
+	map<int, Paperdoll_npc>::iterator it = characters_table->find(shape);
+	if (it != characters_table->end())
+		return &((*it).second);
+	else
+		return NULL;
+}
+
+Paperdoll_npc *Shapeinfo_lookup::GetCharacterInfoSafe(int shape)
+{
+	Paperdoll_npc *ch = GetCharacterInfo(shape);
+	if (ch) return ch;
+	else return &(*characters_table)[0];
+}
+
+Paperdoll_item *Shapeinfo_lookup::GetItemInfo(int shape, int frame, int spot)
+{
+	if (!items_table)
+		setup_paperdolls();
+	frame &= 0x1f;			// Mask off 'rotated' bit.
+	typedef multimap<int, Paperdoll_item>::iterator objIterator;
+	pair<objIterator, objIterator> itPair =
+			items_table->equal_range(shape);
+	for (objIterator it = itPair.first; it != itPair.second; ++it)
+		{
+		Paperdoll_item& obj = (*it).second;
+		if ((frame == -1 || obj.world_frame == -1 || obj.world_frame == frame)
+				&& (spot == -1 || obj.spot == spot))
+			return &obj;
 		}
 	return NULL;
-	}
+}

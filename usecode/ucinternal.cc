@@ -1360,7 +1360,7 @@ Game_object *Usecode_internal::create_object
 	}
 	else
 	{
-		if (Is_body(shapenum))
+		if (Shapeinfo_lookup::Is_body_shape(shapenum))
 		{
 			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
 		}
