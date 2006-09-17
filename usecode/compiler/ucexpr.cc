@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "opcodes.h"
 #include "ucfun.h"
+#include "ucclass.h"
 
 /*
  *	Default.  Just push the one value.
@@ -561,3 +562,30 @@ void Uc_call_expression::gen_value
 		error(buf);
 		}
 	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_new_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	Uc_class_symbol *csym = dynamic_cast<Uc_class_symbol *>(
+			Uc_function::search_globals(class_name.c_str()));
+	if (!csym)
+		{
+		char buf[150];
+		sprintf(buf, "'%s' not found, or is not a class.",
+						class_name.c_str());
+		error(buf);
+		return;
+		}
+	Uc_int_expression *cnum = new Uc_int_expression(
+						csym->get_cls()->get_num());
+	Uc_array_expression parms(cnum);
+	Uc_function::get_class_new()->gen_call(out, 0, false, 0,  
+						&parms, true);
+	}
+
