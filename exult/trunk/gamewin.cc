@@ -48,7 +48,7 @@
 #include "monsters.h"
 #include "animate.h"
 #include "barge.h"
-#include "bodies.h"
+#include "miscinf.h"
 #include "cheat.h"
 #include "chunkter.h"
 #include "combat_opts.h"
@@ -2208,7 +2208,8 @@ void Game_window::paused_combat_select
 		}
 	Actor *target = obj->as_actor();
 					// Don't attack party or body.
-	if ((target && target->is_in_party()) || Is_body(obj->get_shapenum()))
+	if ((target && target->is_in_party()) ||
+			Shapeinfo_lookup::Is_body_shape(obj->get_shapenum()))
 		{
 		Mouse::mouse->flash_shape(Mouse::redx);
 		return;
@@ -2331,7 +2332,7 @@ void Game_window::double_clicked
 					// But don't attack party members.
 		if ((!npc || !npc->is_in_party()) &&
 					// Or bodies.
-						!Is_body(obj->get_shapenum()))
+				!Shapeinfo_lookup::Is_body_shape(obj->get_shapenum()))
 			{		// In combat mode.
 			// Want everyone to be in combat.
 			combat = 0;

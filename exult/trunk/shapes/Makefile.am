@@ -5,8 +5,6 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir
 noinst_LTLIBRARIES = libshapes.la
 
 libshapes_la_SOURCES = \
-	bodies.cc \
-	bodies.h \
 	font.cc \
 	font.h \
 	fontgen.cc \

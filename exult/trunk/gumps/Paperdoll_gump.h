@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _PAPERDOLL_GUMP_H_
 
 #include "Gump.h"
+#include "miscinf.h"
 
 class Heart_button;
 class Disk_button;
@@ -34,61 +35,6 @@ class Combat_mode_button;
 
 class Paperdoll_gump : public Gump 
 {
-public:
-	enum Object_type
-	{
-		OT_Normal = 0,
-		OT_Single = 1,
-		OT_Double = 2,
-		OT_Staff = 3,
-		OT_Bow = 4,
-		OT_Crossbow = 5,
-		OT_Shield = 6,
-		OT_Helm = 7,
-		OT_Musket = 8
-	};
-
-	// This contains info on how to render an item when it's in a certain spot
-	struct Paperdoll_item
-	{
-		int			world_shape;			// Shape in the world
-		int			world_frame;			// Frame in the world (-1 for all)
-		int			spot;				// Spot placed in
-
-		Object_type		type;				// What type of object is this
-		
-		bool			gender;				// Is this object gender specific
-
-		int			shape;				// The shape (if -1 use world shape and frame)
-		int			frame;				// The frame
-		int			frame2;				// Second Frame (if used)
-		int			frame3;				// Second Frame (if used)
-		int			frame4;				// Second Frame (if used)
-	};
-
-	// This contain Information about NPC rendering
-	struct  Paperdoll_npc
-	{
-		int			npc_shape;			// Choose the NPC based on shape, not NPC number
-		bool			is_female;			// Is the NPC Female (or more specifically not male)
-
-		// Body info
-		int			body_shape;			// Body Shape
-		int			body_frame;			// Body Frame
-
-		int			head_shape;			// Head Shape
-		int			head_frame;			// Normal Head Frame
-		int			head_frame_helm;		// Frame when wearing a helm
-
-		int			arms_shape;			// Shape for Arms
-		int			arms_frame;			// Normal Arms Frame
-		int			arms_frame_2h;			// Frame when holding a two handed weapon
-		int			arms_frame_staff;		// Frame when holding staff style weapon
-		
-		// BG gump info
-		int			gump_shape;
-	};
-
 private:
 	UNREPLICATABLE_CLASS(Paperdoll_gump);
 
@@ -152,28 +98,7 @@ protected:
 	
 	// Set to location of an object a spot
 	void set_to_spot(Game_object *obj, int index);
-
 public:
-
-	// Statics
-
-	inline static bool IsObjectAllowed(int shape, int frame, int spot)
-		{ return GetItemInfo(shape, frame, spot)!=NULL?true:false; }
-
-	inline static int GetFaceShape(int shape, int frame, int spot)
-		{ return GetItemInfo(shape, frame, spot)!=NULL?true:false; }
-
-	inline static bool IsNPCFemale(int shape)
-	{ return GetCharacterInfo(shape)?GetCharacterInfoSafe(shape)->is_female:true; }
-
-	// Retrieve info about an item or NPC
-	static Paperdoll_npc *GetCharacterInfoSafe(int shape);
-	static Paperdoll_npc *GetCharacterInfo(int shape);
-	static Paperdoll_item *GetItemInfo(int shape, int frame = -1, int spot = -1);
-	static void Setup_paperdolls();
-
-	// Non Statics
-
 	Paperdoll_gump(Container_game_object *cont, int initx, int inity, 
 								int shnum);
 

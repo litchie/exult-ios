@@ -28,11 +28,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 	: Gump_button(par, 0, px, py), actor(a)
 {
-	Paperdoll_gump::Paperdoll_npc *npcinfo =
-		Paperdoll_gump::GetCharacterInfo(a->get_shapenum());
+	Paperdoll_npc *npcinfo =
+		Shapeinfo_lookup::GetCharacterInfo(a->get_shapenum());
 
-	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfo(a->get_sexed_coloured_shape());
-	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(a->get_shape_real());
+	if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfo(a->get_sexed_coloured_shape());
+	if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfoSafe(a->get_shape_real());
 
 	set_shape(npcinfo->head_shape);
 	set_frame(npcinfo->head_frame);
@@ -47,11 +47,11 @@ void Face_button::double_clicked(int x, int y)
 
 void Face_button::update_widget()
 {
-	Paperdoll_gump::Paperdoll_npc *npcinfo =
-		Paperdoll_gump::GetCharacterInfo(actor->get_shapenum());
+	Paperdoll_npc *npcinfo =
+		Shapeinfo_lookup::GetCharacterInfo(actor->get_shapenum());
 
-	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfo(actor->get_sexed_coloured_shape());
-	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(actor->get_shape_real());
+	if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfo(actor->get_sexed_coloured_shape());
+	if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfoSafe(actor->get_shape_real());
 
 	if (get_shapenum() != npcinfo->head_shape ||
 		get_framenum() != npcinfo->head_frame)

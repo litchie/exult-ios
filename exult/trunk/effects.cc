@@ -450,7 +450,7 @@ Explosion_effect::Explosion_effect
 	Actor *att		//who is responsible for the explosion
 					//	or 0 for default
 							//Different sprites for different explosion types
-							) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
+	) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
 			p, 0, 0, delay), explode(exp), projectile(proj),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 {

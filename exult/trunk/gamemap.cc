@@ -52,7 +52,7 @@
 #include "actors.h"	/* For Dead_body, which should be moved. */
 #include "ucsched.h"
 #include "gamewin.h"	/* With some work, could get rid of this. */
-#include "bodies.h"
+#include "miscinf.h"
 #include "game.h"
 #include "effects.h"
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
@@ -1183,7 +1183,7 @@ void Game_map::read_ireg_objects
 				obj = b;
 				gwin->set_body(npc_num, b);
 				}
-			else if (Is_body(shnum)) {
+			else if (Shapeinfo_lookup::Is_body_shape(shnum)) {
 				obj = new Dead_body(
 				    shnum, frnum, tilex, tiley, lift, -1);
 			}

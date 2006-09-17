@@ -256,8 +256,7 @@ void Frame_animator::Initialize()
 	last_frame = obj->get_framenum();
 	frames = obj->get_num_frames();
 
-	Shapeinfo_lookup::Animation_info *aniinf =
-		Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
+	Animation_info *aniinf = Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
 	if (aniinf)
 		{
 		type = (AniType)aniinf->type;

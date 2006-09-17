@@ -401,7 +401,7 @@ void Face_stats::create_buttons()
 			// specified face may not exist in bg_paperdoll
 			// file (or a patch), leading to a crash)
 			Actor *act = gwin->get_npc(num);
-			if (Paperdoll_gump::GetCharacterInfo(act->get_shapenum()))
+			if (Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum()))
 				++num_to_paint;
 			}
 		}
@@ -428,7 +428,7 @@ void Face_stats::create_buttons()
 				// has paperdoll information (*risky*, as the
 				// specified face may not exist in bg_paperdoll
 				// file (or a patch), leading to a crash)
-				Paperdoll_gump::GetCharacterInfo(act->get_shapenum())) {
+				Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum())) {
 			pos += width;
 			party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
 		}
