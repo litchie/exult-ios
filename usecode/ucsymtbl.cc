@@ -59,6 +59,8 @@ void Usecode_scope_symbol::read(istream& in)
 			Usecode_class_symbol *s = new Usecode_class_symbol(nm, 
 				(Usecode_symbol::Symbol_kind) kind, val);
 			s->read(in);
+			assert(s->get_val() == classes.size());
+			classes.push_back(s);
 			sym = s;
 		} else {
 			sym = new Usecode_symbol(nm,
@@ -159,6 +161,7 @@ void Usecode_class_symbol::read(istream& in)
 	methods.resize(num_methods);
 	for (int i = 0; i < num_methods; ++i)
 		methods[i] = Read2(in);
+	num_vars = Read2(in);
 }
 
 /*
@@ -172,4 +175,5 @@ void Usecode_class_symbol::write(ostream& out)
 	for (Ints_vector::iterator it = methods.begin(); it != methods.end();
 							++it)
 		Write2(out, *it);
+	Write2(out, num_vars);
 }

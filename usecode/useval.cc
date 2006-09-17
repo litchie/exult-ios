@@ -91,9 +91,13 @@ Usecode_value& Usecode_value::operator=
 		for (int i = 0; i < value.array.cnt; ++i)
 			value.array.elems[i] = v2.value.array.elems[i];
 		}
+	else if (type == class_obj_type)
+		{			// Copy ->.
+		value.array.cnt = v2.value.array.cnt;
+		value.array.elems = v2.value.array.elems;
+		}
 
 	undefined = v2.undefined;
-
 	return *this;
 	}
 
@@ -564,4 +568,23 @@ ostream& operator<<(ostream& out, Usecode_value& val)
 {
 	val.print(out, true);
 	return out;
+}
+
+/*
+ *	Create/delete class objects.
+ */
+void Usecode_value::class_new(Usecode_class_symbol *cls, int nvars)
+{
+	assert(type == int_type);
+	type = class_obj_type;
+	value.array.cnt = nvars + 1;	// Stores class, class vars.
+	value.array.elems = new Usecode_value[value.array.cnt];
+	value.array.elems[0] = Usecode_value(cls);
+}
+
+void Usecode_value::class_delete()
+{
+	assert(type == class_obj_type);
+	delete [] value.array.elems;
+	*this = Usecode_value(0);
 }

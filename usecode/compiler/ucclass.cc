@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsymtbl.h"
 #include "ucfun.h"
 
+int Uc_class::last_num = -1;
+
 /*
  *	Create.
  */
@@ -42,6 +44,7 @@ Uc_class::Uc_class
 	char *nm
 	) : scope(0), num_vars(1), name(nm)
 	{
+	num = ++last_num;
 	}
 
 /*
@@ -114,8 +117,8 @@ Usecode_symbol *Uc_class::create_sym
 	)
 	{
 	Usecode_symbol::Symbol_kind kind = Usecode_symbol::class_scope;
-	Usecode_class_symbol *cs = 
-		new Usecode_class_symbol(name.c_str(), kind);
+	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(), 
+				Usecode_symbol::class_scope, num, num_vars);
 	std::vector<Uc_function *>::iterator it;
 	for (it = methods.begin(); it != methods.end(); it++)
 		{
