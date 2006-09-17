@@ -43,7 +43,8 @@ public:
 		string_type = 1,	// Allocated string.
 		array_type = 2,
 		pointer_type = 3,
-		class_pointer_type = 4	// ->Usecode_class_symbol
+		class_sym_type = 4,	// ->Usecode_class_symbol
+		class_obj_type = 5	// An 'array_type' for a class obj.
 		};
 private:
 	Val_type type;		// Type stored here.
@@ -76,7 +77,7 @@ public:
 		}
 	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false)
 		{ value.ptr = ptr; }
-	Usecode_value(Usecode_class_symbol *ptr) : type(class_pointer_type),
+	Usecode_value(Usecode_class_symbol *ptr) : type(class_sym_type),
 						undefined(false)
 		{ value.cptr = ptr; }
 	~Usecode_value();
@@ -113,8 +114,6 @@ public:
 		}
 	Game_object* get_ptr_value() const	// Get pointer value.
 		{ return ((type == pointer_type) ? value.ptr : 0); }
-	Usecode_class_symbol *get_class_ptr_value() const
-		{ return ((type == class_pointer_type) ? value.cptr : 0); }
 					// Get string value.
 	const char *get_str_value() const
 		{ return ((type == string_type) ? value.str : 0); }
@@ -136,7 +135,6 @@ public:
 	inline Usecode_value& get_elem(int i) const
 		{
 		static Usecode_value zval(0);
-//		assert(type == array_type);//+++++Testing.
 		return (type == array_type) ? value.array.elems[i] : zval;
 		}
 	inline Usecode_value& operator[](int i)
@@ -179,6 +177,20 @@ public:
 					// Save/restore.
 	int save(unsigned char *buf, int len);
 	bool restore(unsigned char *& ptr, int len);
+					// Class objects.
+	void class_new(Usecode_class_symbol *cls, int nvars);
+	void class_delete();
+	Usecode_value& nth_class_var(int n)
+		{
+		static Usecode_value zval(0);
+		return (type == class_obj_type && n <= value.array.cnt) ?
+			value.array.elems[n] : zval;
+		}
+	Usecode_class_symbol *get_class_ptr() const
+		{ return (type == class_obj_type) ? 
+			value.array.elems[0].value.cptr : 0;
+		}
+
 	};
 
 

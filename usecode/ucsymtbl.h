@@ -29,6 +29,7 @@
 #define UCSYMTBL_MAGIC0	0xffffffff
 #define UCSYMTBL_MAGIC1	(((long)'U'<<24)+((long)'C'<<16)+((long)'S'<<8)+'Y')
 
+class Usecode_class_symbol;
 class Usecode_symbol_table;
 
 class Usecode_symbol {
@@ -63,6 +64,7 @@ class Usecode_scope_symbol : public Usecode_symbol
 	{
 	typedef std::vector<Usecode_symbol *> Syms_vector;
 	Syms_vector symbols;		// All symbols.
+	std::vector<Usecode_class_symbol*> classes;	// Just the classes.
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
 	typedef std::map<int, Usecode_symbol *> Val_table;
 	Name_table by_name;
@@ -80,21 +82,26 @@ public:
 	void add_sym(Usecode_symbol *sym);
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
+	Usecode_class_symbol *get_class(int n)
+		{ return n < classes.size() ? classes[n] : 0; }
 	};
 
 class Usecode_class_symbol : public Usecode_scope_symbol
 	{
 	typedef std::vector<int> Ints_vector;
 	Ints_vector methods;		// List of method usecode #'s.
+	int num_vars;			// # of class variables.
 public:
-	Usecode_class_symbol(const char *nm, Symbol_kind k = class_scope,
-						int v = 0)
-		: Usecode_scope_symbol(nm, k, v)
+	Usecode_class_symbol(const char *nm, Symbol_kind k,
+						int v, int nvars = 0)
+		: Usecode_scope_symbol(nm, k, v), num_vars(nvars)
 		{  }
 	void add_method_num(int val)
 		{ methods.push_back(val); }
 	int get_method_id(int i)
 		{ return (i >= 0 && i < methods.size()) ? methods[i] : -1; }
+	int get_num_vars()
+		{ return num_vars; }
 	void read(std::istream& in);
 	void write(std::ostream& out);
 	};

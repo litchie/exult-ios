@@ -38,6 +38,8 @@ class Uc_function;
  */
 class Uc_class : public Uc_design_unit
 	{
+	static int last_num;
+	int num;			// Unique ID for class.
 	std::string name;
 	Uc_scope scope;
 	int num_vars;			// # member variables.  The 1st one
@@ -48,6 +50,7 @@ public:
 	~Uc_class();
 	Uc_scope *get_scope()
 		{ return &scope; }
+	int get_num() { return num; }
 	Uc_var_symbol *add_symbol(char *nm);	// Add class variable.
 	void add_method(Uc_function *m);
 	void gen(std::ostream& out);	// Generate Usecode.

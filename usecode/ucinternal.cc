@@ -2680,31 +2680,19 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x54:		// PUSH class var.
+			{
 				offset = Read2(frame->ip);
-				if (offset < 0) {
-					LOCAL_VAR_ERROR(offset);
-					pushi(0);
-				} else {
-					Usecode_value& ths = frame->locals[0];
-					int size = ths.get_array_size();
-					if (offset < size)
-						push(ths.get_elem(offset));
-					else {
-						Usecode_value z(0);
-						push(z);
-					}
-				}
+				Usecode_value& ths = frame->locals[0];
+				push(ths.nth_class_var(offset));
 				break;
+			}
 			case 0x55:		// POP class var.
 			{
 				// Get value.
 				Usecode_value val = pop();
 				offset = Read2(frame->ip);
 				Usecode_value& ths = frame->locals[0];
-				int size = ths.get_array_size();
-				if (offset >= size)
-					ths.resize(offset + 1);
-				ths.put_elem(offset, val);
+				ths.nth_class_var(offset) = val;
 				break;
 			}
 			case 0x56:		// CALLM - call method.
@@ -2712,7 +2700,7 @@ int Usecode_internal::run()
 				offset = Read2(frame->ip);
 				Usecode_value thisptr = peek();
 				Usecode_class_symbol *c =
-				    thisptr.get_elem0().get_class_ptr_value();
+				    thisptr.get_class_ptr();
 				if (!c) {
 					THIS_ERROR();
 					(void) pop();
