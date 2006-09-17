@@ -364,6 +364,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
 	USECODE_INTRINSIC_DECL(get_usecode_fun);
 	USECODE_INTRINSIC_DECL(get_map_num);
+	USECODE_INTRINSIC_DECL(class_new);
+	USECODE_INTRINSIC_DECL(class_delete);
 	
 	/*
 	 *	Other private methods:
