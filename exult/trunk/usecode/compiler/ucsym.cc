@@ -174,6 +174,28 @@ int Uc_static_var_symbol::gen_value
 	}
 
 /*
+ *	Create new class symbol and store in global table.
+ */
+
+Uc_class_symbol *Uc_class_symbol::create
+	(
+	char *nm, 
+	Uc_class *c
+	)
+	{
+	Uc_symbol *sym = Uc_function::search_globals(nm);
+	if (sym)
+		{
+		char buf[256];
+		sprintf(buf, "Class name '%s' already exists.", nm);
+		Uc_location::yyerror(buf);
+		}
+	Uc_class_symbol *csym = new Uc_class_symbol(nm, c);
+	Uc_function::add_global_class_symbol(csym);
+	return csym;
+	}
+
+/*
  *	Assign value on stack.
  *
  *	Output: 0 if can't do this.
