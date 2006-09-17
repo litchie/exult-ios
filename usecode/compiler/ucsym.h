@@ -38,6 +38,7 @@ class Uc_array_expression;
 class Uc_expression;
 class Uc_function;
 class Usecode_symbol;
+class Uc_class;
 
 /*
  *	For comparing names:
@@ -108,6 +109,20 @@ public:
 	virtual int gen_value(vector<char>& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(vector<char>& out);
+	};
+
+/*
+ *	A class.
+ */
+class Uc_class_symbol : public Uc_symbol
+	{
+	Uc_class *cls;
+public:
+	Uc_class_symbol(char *nm, Uc_class *c) : Uc_symbol(nm), cls(c)
+		{  }
+	static Uc_class_symbol *create(char *nm, Uc_class *c);
+	Uc_class *get_cls()
+		{ return cls; }
 	};
 
 /*

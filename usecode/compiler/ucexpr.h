@@ -35,6 +35,7 @@ class Uc_symbol;
 class Uc_var_symbol;
 class Uc_function;
 class Uc_function_symbol;
+class Uc_class;
 
 /*
  *	Base class for expressions.
@@ -321,6 +322,19 @@ public:
 		{ itemref = iexpr; }
 	void set_no_return()
 		{ return_value = false; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(vector<char>& out);
+	};
+
+/*
+ *	Class 'new'.
+ */
+class Uc_new_expression : public Uc_expression
+	{
+	std::string class_name;
+public:
+	Uc_new_expression(const char *cnm) : class_name(cnm)
+		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
 	};

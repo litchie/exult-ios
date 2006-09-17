@@ -89,6 +89,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
+%token NEW DELETE
 
 /*
  *	Script keywords:
@@ -125,7 +126,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
  *	Production types:
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
-%type <expr> script_command start_call addressof
+%type <expr> script_command start_call addressof new_expr
 %type <intval> opt_int eventid direction int_literal converse_options
 %type <intval> opt_original
 %type <sym> declared_sym
@@ -139,6 +140,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 %type <stmt> break_statement converse_statement converse2_statement
 %type <stmt> converse_case script_statement
 %type <stmt> label_statement goto_statement answer_statement
+%type <stmt> delete_statement
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
@@ -170,6 +172,8 @@ class_decl:
 		'{' class_item_list '}'
 		{
 		units.push_back(cur_class);
+		// Add to 'globals' symbol table.
+		(void) Uc_class_symbol::create($2, cur_class);
 		cur_class = 0;
 		}
 	;
@@ -267,6 +271,7 @@ statement:
 	| break_statement
 	| label_statement
 	| goto_statement
+	| delete_statement
 	| SAY  '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_say_statement($3); }
 	| MESSAGE '(' opt_expression_list ')' ';'
@@ -715,6 +720,16 @@ goto_statement:
 		{ $$ = new Uc_goto_statement($2); }
 	;
 
+delete_statement:
+	DELETE declared_var ';'
+		{
+		Uc_expression *e = $2->create_expression(); 
+		$$ = new Uc_call_statement(
+			new Uc_call_expression(Uc_function::get_class_delete(),
+				new Uc_array_expression(e), cur_fun));
+		}
+	;
+
 answer_statement:
 	ADD '(' expression_list ')' ';'
 		{
@@ -778,6 +793,7 @@ expression:
 		{ $$ = new Uc_string_expression(cur_fun->add_string($1)); }
 	| STRING_PREFIX
 		{ $$ = new Uc_string_prefix_expression(cur_fun, $1); }
+	| new_expr
 	;
 
 addressof:
@@ -842,6 +858,11 @@ primary:
 		{ $$ = new Uc_item_expression(); }
 	| '(' expression ')'
 		{ $$ = $2; }
+	;
+
+new_expr:
+	NEW IDENTIFIER
+		{ $$ = new Uc_new_expression($2); }
 	;
 
 function_call:
