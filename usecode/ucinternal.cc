@@ -2712,7 +2712,7 @@ int Usecode_internal::run()
 				offset = Read2(frame->ip);
 				Usecode_value thisptr = peek();
 				Usecode_class_symbol *c =
-					thisptr.get_class_ptr_value();
+				    thisptr.get_elem0().get_class_ptr_value();
 				if (!c) {
 					THIS_ERROR();
 					(void) pop();
