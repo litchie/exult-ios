@@ -42,8 +42,7 @@ class Uc_class : public Uc_design_unit
 	int num;			// Unique ID for class.
 	std::string name;
 	Uc_scope scope;
-	int num_vars;			// # member variables.  The 1st one
-					//  will be the class info.
+	int num_vars;			// # member variables.
 	std::vector<Uc_function *> methods;
 public:
 	Uc_class(char *nm);

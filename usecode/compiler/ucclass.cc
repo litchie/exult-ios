@@ -42,7 +42,7 @@ int Uc_class::last_num = -1;
 Uc_class::Uc_class
 	(
 	char *nm
-	) : scope(0), num_vars(1), name(nm)
+	) : scope(0), num_vars(0), name(nm)
 	{
 	num = ++last_num;
 	}
@@ -124,7 +124,7 @@ Usecode_symbol *Uc_class::create_sym
 		{
 		Uc_function *m = *it;
 		cs->add_sym(m->create_sym());
-		cs->add_method_num(it - methods.begin());
+		cs->add_method_num(m->get_usecode_num());
 		}
 	return cs;
 	}

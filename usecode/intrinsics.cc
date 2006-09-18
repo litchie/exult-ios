@@ -3185,6 +3185,7 @@ USECODE_INTRINSIC(class_new)
 		return Usecode_value(0);
 	}
 	obj.class_new(cls, cls->get_num_vars());
+	return obj;
 }
 
 USECODE_INTRINSIC(class_delete)
