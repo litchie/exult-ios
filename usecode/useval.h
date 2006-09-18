@@ -181,10 +181,10 @@ public:
 	void class_new(Usecode_class_symbol *cls, int nvars);
 	void class_delete();
 	Usecode_value& nth_class_var(int n)
-		{
+		{			// Note:  Elem. 0 is the ->class.
 		static Usecode_value zval(0);
-		return (type == class_obj_type && n <= value.array.cnt) ?
-			value.array.elems[n] : zval;
+		return (type == class_obj_type && n + 1 < value.array.cnt) ?
+			value.array.elems[n + 1] : zval;
 		}
 	Usecode_class_symbol *get_class_ptr() const
 		{ return (type == class_obj_type) ? 
