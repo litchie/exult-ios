@@ -191,7 +191,7 @@ class_item:
 method:
 	IDENTIFIER '(' opt_identifier_list ')'
 		{
-		$3->push_back("this");	// So it's local[0].
+		$3->insert($3->begin(), "this");	// So it's local[0].
 		Uc_function_symbol *funsym = 
 			Uc_function_symbol::create($1, -1, *$3, is_extern);
 		delete $3;		// A copy was made.
