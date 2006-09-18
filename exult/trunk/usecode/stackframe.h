@@ -58,6 +58,8 @@ class Stack_frame
 
 	Usecode_value *save_sp;
 
+	Usecode_value& get_this()
+		{ return locals[num_args - 1]; }
 	static int LastCallChainID;
 	static int getCallChainID() { return ++LastCallChainID; }
 };

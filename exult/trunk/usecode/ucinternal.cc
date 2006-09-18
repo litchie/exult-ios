@@ -2682,7 +2682,7 @@ int Usecode_internal::run()
 			case 0x54:		// PUSH class var.
 			{
 				offset = Read2(frame->ip);
-				Usecode_value& ths = frame->locals[0];
+				Usecode_value& ths = frame->get_this();
 				push(ths.nth_class_var(offset));
 				break;
 			}
@@ -2691,7 +2691,7 @@ int Usecode_internal::run()
 				// Get value.
 				Usecode_value val = pop();
 				offset = Read2(frame->ip);
-				Usecode_value& ths = frame->locals[0];
+				Usecode_value& ths = frame->get_this();
 				ths.nth_class_var(offset) = val;
 				break;
 			}
