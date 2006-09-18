@@ -34,6 +34,7 @@
 
 #include "useval.h"
 #include "utils.h"
+#include "ucsymtbl.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -78,25 +79,30 @@ Usecode_value& Usecode_value::operator=
 	else if (type == string_type)
 		delete [] value.str;
 	type = v2.type;			// Assign new values.
-	if (type == int_type)
+	switch (type) {
+	case int_type:
 		value.intval = v2.value.intval;
-	else if (type == pointer_type)
+		break;
+	case pointer_type:
 		value.ptr = v2.value.ptr;
-	else if (type == string_type)
+		break;
+	case string_type:
 		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;
-	else if (type == array_type)
-		{
+		break;
+	case array_type:
                 value.array.cnt = v2.value.array.cnt;
 		value.array.elems = new Usecode_value[value.array.cnt];
 		for (int i = 0; i < value.array.cnt; ++i)
 			value.array.elems[i] = v2.value.array.elems[i];
-		}
-	else if (type == class_obj_type)
-		{			// Copy ->.
+		break;
+	case class_sym_type:
+		value.cptr = v2.value.cptr;
+		break;
+	case class_obj_type:		// Copy ->.
 		value.array.cnt = v2.value.array.cnt;
 		value.array.elems = v2.value.array.elems;
-		}
-
+		break;
+	}
 	undefined = v2.undefined;
 	return *this;
 	}
@@ -379,6 +385,16 @@ void Usecode_value::print
 		out << " ]";
 		}
 		break;
+	case class_obj_type:
+		{
+		Usecode_class_symbol *c = get_class_ptr();
+		out << "->";
+		if (c)
+			out << c->get_name();
+		else
+			out << "obj?";
+		break;
+		}
 	default:
 		break;
 		}

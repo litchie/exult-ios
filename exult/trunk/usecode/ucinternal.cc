@@ -2708,6 +2708,7 @@ int Usecode_internal::run()
 				}
 				int index = c->get_method_id(offset);
 				call_function(index, frame->eventid);
+				frame_changed = true;
 				break;
 			}
 			case 0xcd: // 32 bit debugging function init
