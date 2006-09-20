@@ -567,7 +567,8 @@ void Uc_call_expression::check_params()
 		}
 	for (int i = ignore_this; i < parmscnt; i++)
 		{
-		Uc_expression *expr = callparms[i];
+		Uc_expression *expr = callparms[i - ignore_this];
+		expr->is_class();
 		Uc_var_symbol *var = protoparms[i];
 		Uc_class_inst_symbol *cls =
 				dynamic_cast<Uc_class_inst_symbol *>(var);
