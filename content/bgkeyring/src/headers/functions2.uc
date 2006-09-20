@@ -61,7 +61,7 @@ unfreezeParty ()
 	var party = UI_get_party_list();
 	for (member in party)
 		//Unfreeze all party members:
-		member->trueUnfreeze(true);
+		member->trueUnfreeze();
 }
 
 var createContainerWithObjects (var cont_shape, var item_shapes, var item_frames, var item_quantity, var item_quality)

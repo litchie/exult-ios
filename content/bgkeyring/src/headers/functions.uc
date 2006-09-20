@@ -39,7 +39,7 @@ var randomIndex(var array)
 //---------------------
 
 //Returns true if the specified object is the avatar, false otherwise.
-isAvatar(var object)	{ return (UI_get_npc_object(object) == UI_get_avatar_ref()); }
+var isAvatar(var object)	{ return (UI_get_npc_object(object) == UI_get_avatar_ref()); }
 
 //Check if the player has met the specified person (i.e. whether their Met flag has been set).
 //Can take either an NPC constant or an object reference.
@@ -48,7 +48,7 @@ var hasMet(var npc)		{ return UI_get_item_flag(npc, MET); }
 //Returns true if the specified NPC is in the party, false otherwise
 //There should be an intrinsic for this, but it doesn't appear to be defined
 //Can take an NPC constant or an object reference.
-inParty(var npc)		{ npc = UI_get_npc_object(npc); return (npc in UI_get_party_list()); }
+var inParty(var npc)		{ npc = UI_get_npc_object(npc); return (npc in UI_get_party_list()); }
 
 //quick bark/say functions, useful for testing. See also randomPartySay() and randomPartyBark() (original functions)
 avatarBark(var line)	{ if (canTalk(AVATAR)) UI_item_say(AVATAR, line); }
@@ -59,7 +59,7 @@ avatarSay(var line)		{ if (canTalk(AVATAR)) AVATAR.say(line); }
 //-----------------------------
 
 //Shift an object into a container (can be from another container or the world)
-moveToContainer(var object, var container, var dont_check_ownership)
+var moveToContainer(var object, var container, var dont_check_ownership)
 {
 	var orig_pos;
 	var orig_container;
@@ -91,7 +91,7 @@ moveToContainer(var object, var container, var dont_check_ownership)
 }
 
 //Opposite of moveToContainer: tries to place the item at the specified location, or returns it to its previous location/container if that couldn't be done.
-moveToLocation(var object, var pos)
+var moveToLocation(var object, var pos)
 {
 	var orig_pos;
 	var orig_container;

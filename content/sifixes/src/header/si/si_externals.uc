@@ -31,7 +31,7 @@ extern startSerpentSpeechViaRing 0x377 ();
 extern makePartyFaceNPC 0x7D1 ();
 
 //Makes NPC face Avatar:
-extern faceAvatar 0x7D2 (var npc);
+extern faceAvatar 0x7D2 ();
 
 //Resurrects Iolo, Shamino and Dupre and adds them back to the party
 extern resurrectCompanions 0x86D ();

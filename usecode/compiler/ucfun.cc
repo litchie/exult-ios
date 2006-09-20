@@ -61,7 +61,7 @@ Uc_function::Uc_function
 	    statement(0), reloffset(0)
 	{
 	char *nm = (char *) proto->get_name();
-	add_global_function_symbol(proto);// Add prototype to globals.
+	add_global_function_symbol(proto, parent);// Add prototype to globals.
 #if 0
 	if (!globals.search(nm))		
 		globals.add(proto);
@@ -72,9 +72,9 @@ Uc_function::Uc_function
 		Uc_location::yyerror(buf);
 		}
 #endif
-	const std::vector<char *>& parms = proto->get_parms();
+	const std::vector<Uc_var_symbol *>& parms = proto->get_parms();
 	// Add backwards.
-	for (std::vector<char *>::const_reverse_iterator it = parms.rbegin();
+	for (std::vector<Uc_var_symbol *>::const_reverse_iterator it = parms.rbegin();
 				it != parms.rend(); it++)
 		add_symbol(*it);
 	num_parms = num_locals;		// Set counts.
@@ -127,6 +127,45 @@ Uc_var_symbol *Uc_function::add_symbol
 		return 0;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
+	cur_scope->add(var);
+	return var;
+	}
+
+/*
+ *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_class_inst_symbol *Uc_function::add_symbol
+	(
+	char *nm,
+	Uc_class *c
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_class_inst_symbol *var = new Uc_class_inst_symbol(nm, c, num_parms + num_locals++);
+	cur_scope->add(var);
+	return var;
+	}
+
+/*
+ *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_symbol
+	(
+	Uc_var_symbol *var
+	)
+	{
+	if (cur_scope->is_dup(const_cast<char *>(var->get_name())))
+		return 0;
+					// Create & assign slot.
+	var->set_offset(num_parms + num_locals++);
 	cur_scope->add(var);
 	return var;
 	}

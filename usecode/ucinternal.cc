@@ -167,6 +167,15 @@ Usecode_function *Usecode_internal::find_function(int funcid)
 	return fun;
 }
 
+inline Usecode_class_symbol *Usecode_internal::get_class(int n)
+	{
+	return symtbl->get_class(n);
+	}
+inline Usecode_class_symbol *Usecode_internal::get_class(const char *nm)
+	{
+	return symtbl->get_class(nm);
+	}
+
 bool Usecode_internal::call_function(int funcid,
 					 int eventid,
 					 Game_object *caller,
@@ -2679,14 +2688,14 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
-			case 0x54:		// PUSH class var.
+			case 0x54:		// PUSH class this->var.
 			{
 				offset = Read2(frame->ip);
 				Usecode_value& ths = frame->get_this();
 				push(ths.nth_class_var(offset));
 				break;
 			}
-			case 0x55:		// POP class var.
+			case 0x55:		// POP class this->var.
 			{
 				// Get value.
 				Usecode_value val = pop();
@@ -2695,12 +2704,21 @@ int Usecode_internal::run()
 				ths.nth_class_var(offset) = val;
 				break;
 			}
-			case 0x56:		// CALLM - call method.
+			case 0x56:		// CALLM - call method, use var vtable.
+			case 0x57:		// CALLMS - call method, use pushed vtable.
 			{
 				offset = Read2(frame->ip);
-				Usecode_value thisptr = peek();
-				Usecode_class_symbol *c =
-				    thisptr.get_class_ptr();
+				Usecode_class_symbol *c;
+				if (opcode == 0x56)
+					{
+					Usecode_value thisptr = peek();
+					c = thisptr.get_class_ptr();
+					}
+				else
+					{
+					Usecode_value thisptr = Read2(frame->ip);
+					c = get_class(thisptr.get_int_value());
+					}
 				if (!c) {
 					THIS_ERROR();
 					(void) pop();
@@ -2709,6 +2727,35 @@ int Usecode_internal::run()
 				int index = c->get_method_id(offset);
 				call_function(index, frame->eventid);
 				frame_changed = true;
+				break;
+			}
+			case 0x58:		// CLSCREATE
+			{
+				int cnum = Read2(frame->ip);
+				Usecode_class_symbol *cls = symtbl->get_class(cnum);
+				if (!cls) {
+					cerr << "Can't create obj. for class #" << cnum << endl;
+					pushi(0);
+					break;
+				}
+				int cnt = cls->get_num_vars();
+				Usecode_value new_class = Usecode_value(0);
+				new_class.class_new(cls, cnt);
+
+				int to = 0;	// Store at this index.
+				// We are trusting UCC output here.
+				while (cnt--)
+				{
+					Usecode_value val = pop();
+					new_class.nth_class_var(to++) = val;
+				}
+				push(new_class);
+				break;
+			}
+			case 0x59:		//CLASSDEL
+			{
+				Usecode_value cls = pop();
+				cls.class_delete();
 				break;
 			}
 			case 0xcd: // 32 bit debugging function init
@@ -2789,15 +2836,72 @@ int Usecode_internal::call_usecode
  *		instance.
  */
 
-Usecode_value *Usecode_internal::call_method
+bool Usecode_internal::call_method
 	(
 	Usecode_value *inst,		// Instance, or NULL.
 	int id, 			// Function # or -1 for free inst.
 	Game_object *item		// Item ref.
 	)
 	{
-	//++++++++IMPELEMENT THIS (including case where id == -1)
-	return 0;
+	if (id == -1)
+		{	// Only delete the class for now
+		inst->class_delete();
+		return false;
+		}
+	Usecode_function *fun = find_function(id);
+	if (!fun)
+		return false;
+
+	Stack_frame *frame = new Stack_frame(fun, 0, item,
+			Stack_frame::getCallChainID(), 0);
+	
+	int oldstack = 0;
+	while (frame->num_args > oldstack) // Not enough args pushed?
+	{
+		pushi(0); // add zeroes
+		oldstack++;
+	}
+
+	// Store args in first num_args locals
+	int i;
+	for (i = 0; i < frame->num_args; i++)
+	{
+		Usecode_value val = pop();
+		frame->locals[frame->num_args - i - 1] = val;
+	}
+
+	// save stack pointer
+	frame->save_sp = sp;
+
+	// add new stack frame to top of stack
+	call_stack.push_front(frame);
+
+
+#ifdef DEBUG
+	Usecode_class_symbol *cls = inst->get_class_ptr();
+	Usecode_symbol *fsym = cls ? (*cls)[id] : 0;
+	cout << "Running usecode " << setw(4);
+	if (cls)
+		cout << cls->get_name();
+	else	// Shouldn't happen.
+		cout << "Unknown class";
+	cout << "::";
+	if (fsym)
+		cout << fsym->get_name();
+	else
+ 		cout << hex << setfill((char)0x30) 
+			<< id << dec << setfill(' ');
+	cout << " (";
+	for (i = 0; i < frame->num_args; i++)
+	{
+		if (i)
+			cout << ", ";
+		frame->locals[i].print(cout);
+	}
+	cout << endl;
+#endif
+
+	return true;
 	}
 
 /*

@@ -30,7 +30,7 @@ var lauriannaAskJoin ()
 {
 	var party = UI_get_party_list();
 	var party_size = UI_get_array_size(party);
-	
+
 	if (party_size < 8)
 	{
 		say("@Wilt thou bring me to my father? Wilt thou let me join thee?@");

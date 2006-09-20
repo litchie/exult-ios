@@ -52,6 +52,10 @@ extern void start_script(), end_script();
 static Uc_array_expression *Create_array(int, Uc_expression *);
 static Uc_array_expression *Create_array(int, Uc_expression *, 
 							Uc_expression *);
+static Uc_class *Find_class(const char *nm);
+static bool Class_unexpected_error(Uc_expression *expr);
+static bool Nonclass_unexpected_error(Uc_expression *expr);
+static bool Incompatible_classes_error(Uc_class *src, Uc_class *trg);
 
 
 #define YYERROR_VERBOSE 1
@@ -63,6 +67,8 @@ static Uc_class *cur_class = 0;		// ...or, current class being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
 static Uc_expression *method_this = 0;
 static bool is_extern = false;	// Marks a function symbol as being an extern
+static Uc_class *class_type = 0;	// For declaration of class variables.
+static bool has_ret = false;
 
 %}
 
@@ -70,11 +76,12 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 	{
 	class Uc_symbol *sym;
 	class Uc_var_symbol *var;
+	class Uc_class *cls;
 	class Uc_expression *expr;
 	class Uc_call_expression *funcall;
 	class Uc_function_symbol *funsym;
 	class Uc_statement *stmt;
-	class std::vector<char *> *strvec;
+	class std::vector<Uc_var_symbol *> *varvec;
 	class Uc_block_statement *block;
 	class Uc_arrayloop_statement *arrayloop;
 	class Uc_array_expression *exprlist;
@@ -120,23 +127,26 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 %left '-' '+' '&'
 %left '*' '/' '%'
 %left NOT
-%left UCC_POINTS
+%left UCC_POINTS UCC_SCOPE
 
 /*
  *	Production types:
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
-%type <expr> script_command start_call addressof new_expr
+%type <expr> script_command start_call addressof new_expr class_expr
+%type <expr> nonclass_expr
 %type <intval> opt_int eventid direction int_literal converse_options
-%type <intval> opt_original
+%type <intval> opt_original opt_var
 %type <sym> declared_sym
-%type <var> declared_var
+%type <var> declared_var param
+%type <cls> opt_inheritance defined_class
 %type <funsym> function_proto function_decl
-%type <strvec> identifier_list opt_identifier_list
+%type <varvec> param_list opt_param_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> special_method_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
+%type <stmt> class_decl class_decl_list
 %type <stmt> break_statement converse_statement converse2_statement
 %type <stmt> converse_case script_statement
 %type <stmt> label_statement goto_statement answer_statement
@@ -163,12 +173,13 @@ global_decl:
 	| const_int_decl
 	| enum_decl
 	| static_decl
-	| class_decl
+	| class_definition
 	;
 
-class_decl:
-	CLASS IDENTIFIER 
-		{ cur_class = new Uc_class($2); }
+class_definition:
+	CLASS IDENTIFIER opt_inheritance 
+		{ $3 ? cur_class = new Uc_class($2, $3)
+		     : cur_class = new Uc_class($2); }
 		'{' class_item_list '}'
 		{
 		units.push_back(cur_class);
@@ -178,23 +189,49 @@ class_decl:
 		}
 	;
 
+opt_inheritance:
+	':' defined_class
+		{ $$ = $2; }
+	|				/* Empty */
+		{ $$ = 0; }
+	;
+
 class_item_list:
 	class_item_list class_item
 	|				/* Empty */
 	;
 
 class_item:
-	VAR var_decl_list ';'
+	VAR { has_ret = true; } class_var_def
+		{ has_ret = false; }
+	| CLASS '<' defined_class '>' { class_type = $3; } method
+		{ class_type = 0; }
+	| method
+	;
+
+class_var_def:
+	var_decl_list ';'
+		{ ; }
 	| method
 	;
 
 method:
-	IDENTIFIER '(' opt_identifier_list ')'
+	IDENTIFIER '(' opt_param_list ')'
 		{
-		$3->insert($3->begin(), "this");	// So it's local[0].
+		$3->insert($3->begin(),		// So it's local[0].
+			new Uc_class_inst_symbol("this", cur_class, 0));
 		Uc_function_symbol *funsym = 
-			Uc_function_symbol::create($1, -1, *$3, is_extern);
+			Uc_function_symbol::create($1, -1, *$3, false,
+					cur_class->get_scope());
 		delete $3;		// A copy was made.
+		
+		// Set return type.
+		if (has_ret)
+			funsym->set_has_ret();
+		else if (class_type)
+			funsym->set_ret_type(class_type);
+		has_ret = class_type = 0;
+
 		cur_fun = new Uc_function(funsym, cur_class->get_scope());
 		}
 	function_body
@@ -222,10 +259,18 @@ function_body:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	opt_var IDENTIFIER opt_int '(' opt_identifier_list ')'
+	opt_var IDENTIFIER opt_int '(' opt_param_list ')'
 		{
 		$$ = Uc_function_symbol::create($2, $3, *$5, is_extern);
+		if ($1)
+			$$->set_has_ret();
 		delete $5;		// A copy was made.
+		}
+	| CLASS '<' defined_class '>' IDENTIFIER opt_int '(' opt_param_list ')'
+		{
+		$$ = Uc_function_symbol::create($5, $6, *$8, is_extern);
+		$$->set_ret_type($3);
+		delete $8;		// A copy was made.
 		}
 	;
 
@@ -286,6 +331,8 @@ statement:
 stmt_declaration:
 	VAR var_decl_list ';'
 		{ $$ = $2; }
+	| CLASS '<' defined_class '>' { class_type = $3; } class_decl_list ';'
+		{ class_type = 0; $$ = $6; }
 	| STRING string_decl_list ';'
 		{ $$ = 0; }
 	| const_int_decl
@@ -294,7 +341,8 @@ stmt_declaration:
 		{ $$ = 0; }
 	| function_decl
 		{
-		if (!cur_fun->add_function_symbol($1))
+		if (!cur_fun->add_function_symbol($1, cur_class ?
+				cur_class->get_scope() : 0))
 			delete $1;
 		$$ = 0;
 		}
@@ -357,7 +405,7 @@ const_int_decl_list:
 	;
 
 const_int:
-	IDENTIFIER '=' expression	
+	IDENTIFIER '=' nonclass_expr	
 		{
 		int val;		// Get constant.
 		if ($3->eval_const(val))
@@ -381,12 +429,98 @@ var_decl:
 			cur_class->add_symbol($1);
 		$$ = 0;
 		}
-	| IDENTIFIER '=' expression
+	| IDENTIFIER '=' nonclass_expr
 		{
-		Uc_var_symbol *var = cur_fun ? cur_fun->add_symbol($1)
-					     : cur_class->add_symbol($1);
-		$$ = new Uc_assignment_statement(
-				new Uc_var_expression(var), $3);
+		if (cur_class)
+			{
+			char buf[180];
+			sprintf(buf, "Initialization of class member var '%s' must be done through constructor", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			{
+			Uc_var_symbol *var = cur_fun ? cur_fun->add_symbol($1)
+							 : cur_class->add_symbol($1);
+			$$ = new Uc_assignment_statement(
+					new Uc_var_expression(var), $3);
+			}
+		}
+	;
+
+class_decl_list:
+	class_decl_list ',' class_decl
+		{
+		if (!$3)
+			$$ = $1;
+		else if (!$1)
+			$$ = $3;
+		else		/*	Both nonzero; need a list.	*/
+			{
+			Uc_block_statement *b = dynamic_cast<Uc_block_statement *>($1);
+			if (!b)
+				{
+				b = new Uc_block_statement();
+				b->add($1);
+				}
+			b->add($3);
+			$$ = b;
+			}
+		}
+	| class_decl
+		{ $$ = $1; }
+
+class_decl:
+	IDENTIFIER
+		{
+		if (cur_fun)
+			cur_fun->add_symbol($1, class_type);
+		else
+			// Unsupported for now
+			;
+		$$ = 0;
+		}
+	| IDENTIFIER '=' class_expr
+		{
+		if (Nonclass_unexpected_error($3))
+			$$ = 0;
+		else
+			{
+			Uc_class *src = $3->get_cls();
+			if (Incompatible_classes_error(src, class_type))
+				$$ = 0;
+			else
+				{
+				Uc_class_inst_symbol *c = cur_fun->add_symbol($1, class_type);
+				$$ = new Uc_assignment_statement(new Uc_class_expression(c), $3);
+				}
+			}
+		}
+	;
+
+class_expr:
+	new_expr
+		{ $$ = $1; }
+	| IDENTIFIER
+		{
+		Uc_symbol *sym = cur_fun->search_up($1);
+		if (!sym)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			sym = cur_fun->add_symbol($1);
+			}
+		Uc_class_inst_symbol *c = dynamic_cast<Uc_class_inst_symbol *>(sym);
+		if (!c)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not a class", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_class_expression(c);
 		}
 	;
 
@@ -423,12 +557,32 @@ string_decl:
 
 function_decl:
 	EXTERN { is_extern = true; } function_proto ';'
-		{ $$ = $3; $$->set_externed(); is_extern = false; }
+		{ $$ = $3; is_extern = false; }
 	;
 
 assignment_statement:
 	expression '=' expression ';'
-		{ $$ = new Uc_assignment_statement($1, $3); }
+		{
+		// Some rudimentary type-checking for classes
+		if ($1->is_class())
+			{
+			if (Nonclass_unexpected_error($3))
+				$$ = 0;
+			else
+				{
+				Uc_class *trg = $1->get_cls();
+				Uc_class *src = $3->get_cls();
+				if (Incompatible_classes_error(src, trg))
+					$$ = 0;
+				else
+					$$ = new Uc_assignment_statement($1, $3);
+				}
+			}
+		else if (Class_unexpected_error($3))
+			$$ = 0;
+		else
+			$$ = new Uc_assignment_statement($1, $3);
+		}
 	;
 
 if_statement:
@@ -439,7 +593,7 @@ if_statement:
 	;
 
 while_statement:
-	WHILE '(' expression ')' statement
+	WHILE '(' nonclass_expr ')' statement
 		{ $$ = new Uc_while_statement($3, $5); }
 	;
 
@@ -509,10 +663,68 @@ special_method_call_statement:
 	;
 
 return_statement:
-	RETURN expression ';'
-		{ $$ = new Uc_return_statement($2); }
+	RETURN '0' ';'
+		{
+		// Allow return of '0' in functions that return a class.
+		if (!cur_fun->get_has_ret())
+			{
+			char buf[180];
+			sprintf(buf, "Function '%s' can't return a value",
+					cur_fun->get_name());
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_return_statement(new Uc_int_expression(0));
+		}
+	| RETURN expression ';'
+		{
+		if (!cur_fun->get_has_ret())
+			{
+			char buf[180];
+			sprintf(buf, "Function '%s' can't return a value",
+					cur_fun->get_name());
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			{
+			Uc_class *src = $2->get_cls();
+			Uc_class *trg = cur_fun->get_cls();
+			if (!src && !trg)
+				$$ = new Uc_return_statement($2);
+			else if (!src || !trg)
+				{
+				char buf[210];
+				sprintf(buf, "Function '%s' expects a return of %s '%s' but supplied value is %s'%s'",
+						cur_fun->get_name(),
+						trg ? "class" : "type",
+						trg ? trg->get_name() : "var",
+						src ? "class " : "",
+						src ? src->get_name() : "var");
+				yyerror(buf);
+				$$ = 0;
+				}
+			else if (Incompatible_classes_error(src, trg))
+				$$ = 0;
+			else
+				$$ = new Uc_return_statement($2);
+			}
+		}
 	| RETURN ';'
-		{ $$ = new Uc_return_statement(); }
+		{
+		if (cur_fun->get_has_ret())
+			{
+			Uc_class *cls = cur_fun->get_cls();
+			char buf[180];
+			sprintf(buf, "Function '%s' must return a '%s'",
+					cur_fun->get_name(), cls ? cls->get_name() : "var");
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_return_statement();
+		}
 	;
 
 converse_statement:
@@ -522,7 +734,12 @@ converse_statement:
 
 converse2_statement:			/* A less wordy form.		*/
 	CONVERSE '(' expression ')' '{' converse_case_list '}'
-		{ $$ = new Uc_converse2_statement($3, $6); }
+		{
+		if (Class_unexpected_error($3))
+			$$ = 0;
+		else
+			$$ = new Uc_converse2_statement($3, $6);
+		}
 	;
 
 converse_case_list:
@@ -588,7 +805,7 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::resurrect); }
 	| CONTINUE ';'			/* Continue script without painting. */
 		{ $$ = new Uc_int_expression(Ucscript::cont); }
-	| REPEAT expression script_command  ';'
+	| REPEAT nonclass_expr script_command  ';'
 		{
 		Uc_array_expression *result = new Uc_array_expression();
 		result->concat($3);	// Start with cmnds. to repeat.
@@ -604,9 +821,9 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::nop); }
 	| NOHALT  ';'
 		{ $$ = new Uc_int_expression(Ucscript::dont_halt); }
-	| WAIT expression  ';'		/* Ticks. */
+	| WAIT nonclass_expr  ';'		/* Ticks. */
 		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
-	| WAIT expression HOURS  ';'	/* Game hours. */
+	| WAIT nonclass_expr HOURS  ';'	/* Game hours. */
 		{ $$ = Create_array(Ucscript::delay_hours, $2); }
 	| REMOVE ';'			/* Remove item. */
 		{ $$ = new Uc_int_expression(Ucscript::remove); }
@@ -614,13 +831,13 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::rise); }
 	| DESCEND ';'
 		{ $$ = new Uc_int_expression(Ucscript::descend); }
-	| FRAME expression ';'
+	| FRAME nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
 	| ACTOR FRAME int_literal ';'	/* 0-15. ++++Maybe have keywords. */
 		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
-	| SETEGG expression ',' expression ';'
+	| SETEGG nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame_max); }
@@ -630,26 +847,26 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min); }
 	| PREVIOUS FRAME CYCLE ';'
 		{ $$ = new Uc_int_expression(Ucscript::prev_frame); }
-	| SAY expression ';'
+	| SAY nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::say, $2); }
-	| STEP expression ';'		/* Step in given direction (0-7). */
+	| STEP nonclass_expr ';'		/* Step in given direction (0-7). */
 		{ $$ = Create_array(Ucscript::step, $2); }
 	| STEP direction ';'
 		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
-	| MUSIC expression ';'
+	| MUSIC nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
 	| start_call ';'
 		{ $$ = Create_array(Ucscript::usecode, $1); }
 	| start_call ',' eventid ';'
 		{ $$ = Create_array(Ucscript::usecode2, $1, 
 				new Uc_int_expression($3)); }
-	| SPEECH expression ';'
+	| SPEECH nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::speech, $2); }
-	| SFX expression ';'
+	| SFX nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::sfx, $2); }
-	| FACE expression ';'
+	| FACE nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
-	| HIT expression ';'		/* 2nd parm unknown. */
+	| HIT nonclass_expr ';'		/* 2nd parm unknown. */
 		{ $$ = Create_array(Ucscript::hit, $2); }
 	| ATTACK ';'
 		{ $$ = new Uc_int_expression(Ucscript::attack); }
@@ -658,7 +875,7 @@ script_command:
 	;
 
 start_call:
-	CALL expression
+	CALL nonclass_expr
 		{ $$ = $2; }
 	;
 
@@ -686,7 +903,7 @@ eventid:
 	;
 
 opt_script_delay:
-	AFTER expression TICKS
+	AFTER nonclass_expr TICKS
 		{ $$ = $2; }
 	|
 		{ $$ = 0; }
@@ -723,10 +940,16 @@ goto_statement:
 delete_statement:
 	DELETE declared_var ';'
 		{
-		Uc_expression *e = $2->create_expression(); 
-		$$ = new Uc_call_statement(
-			new Uc_call_expression(Uc_function::get_class_delete(),
-				new Uc_array_expression(e), cur_fun));
+		Uc_class_inst_symbol *cls = dynamic_cast<Uc_class_inst_symbol *>($2);
+		if (!cls)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' is not a class", $2->get_name());
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_delete_statement(new Uc_del_expression(cls));
 		}
 	;
 
@@ -745,44 +968,58 @@ answer_statement:
 		}
 	;
 
+nonclass_expr:
+	expression
+		{
+		if (Class_unexpected_error($1))
+			$$ = 0;
+		else
+			$$ = $1;
+		}
+
 expression:
 	primary
 		{ $$ = $1; }
-	| expression '+' expression
+	| nonclass_expr '+' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_ADD, $1, $3); }
-	| expression '-' expression
+	| nonclass_expr '-' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_SUB, $1, $3); }
-	| expression '*' expression
+	| nonclass_expr '*' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_MUL, $1, $3); }
-	| expression '/' expression
+	| nonclass_expr '/' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_DIV, $1, $3); }
-	| expression '%' expression
+	| nonclass_expr '%' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_MOD, $1, $3); }
-	| expression EQUALS expression
+	| nonclass_expr EQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPEQ, $1, $3); }
-	| RESPONSE EQUALS expression
+	| RESPONSE EQUALS nonclass_expr
 		{ $$ = new Uc_response_expression($3); }
-	| expression NEQUALS expression
+	| nonclass_expr NEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
-	| expression '<' expression
+	| nonclass_expr '<' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPL, $1, $3); }
-	| expression LTEQUALS expression
+	| nonclass_expr LTEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPLE, $1, $3); }
-	| expression '>' expression
+	| nonclass_expr '>' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPG, $1, $3); }
-	| expression GTEQUALS expression
+	| nonclass_expr GTEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPGE, $1, $3); }
-	| expression AND expression
+	| nonclass_expr AND nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_AND, $1, $3); }
-	| expression OR expression
+	| nonclass_expr OR nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
-	| expression UCC_IN expression	/* Value in array. */
+	| nonclass_expr UCC_IN nonclass_expr	/* Value in array. */
 		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
-	| expression '&' expression	/* append arrays */
+	| nonclass_expr '&' nonclass_expr	/* append arrays */
 		{ $$ = new Uc_binary_expression(UC_ARRA, $1, $3); }
 	| '-' primary
-		{ $$ = new Uc_binary_expression(UC_SUB,
-				new Uc_int_expression(0), $2); }
+		{
+		if (Class_unexpected_error($2))
+			$$ = 0;
+		else
+			$$ = new Uc_binary_expression(UC_SUB,
+				new Uc_int_expression(0), $2);
+		}
 	| addressof
 		{ $$ = $1; }
 	| NOT primary
@@ -861,8 +1098,10 @@ primary:
 	;
 
 new_expr:
-	NEW IDENTIFIER
-		{ $$ = new Uc_new_expression($2); }
+	NEW defined_class '(' opt_expression_list ')'
+		{
+		$$ = new Uc_new_expression(new Uc_class_inst_symbol("", $2, 0), $4);
+		}
 	;
 
 function_call:
@@ -885,8 +1124,18 @@ hierarchy_tok:
 
 routine_call:
 	IDENTIFIER opt_original '(' opt_expression_list ')'
-		{ 
-		Uc_symbol *sym = cur_fun->search_up($1);
+		{
+		Uc_symbol *sym = 0;
+		// Check class methods first.
+		if (cur_class)
+			sym = cur_class->get_scope()->search($1);
+		if (!sym && method_this && method_this->is_class())
+			{
+			Uc_class *cls = method_this->get_cls();
+			sym = cls->get_scope()->search($1);
+			}
+		if (!sym)
+			sym = cur_fun->search_up($1);
 		if (!sym)		/* Check for intrinsic name.	*/
 			{
 			string iname = string("UI_") + $1;
@@ -907,8 +1156,63 @@ routine_call:
 			$$ = new Uc_call_expression(sym, $4, cur_fun,
 							$2 ? true : false);
 			$$->set_itemref(method_this);
+			$$->check_params();
 			method_this = 0;
 			}
+		}
+	| defined_class UCC_SCOPE IDENTIFIER '(' opt_expression_list ')'
+		{
+		Uc_class *cls = 0;
+		if (method_this && method_this->is_class())
+			cls = method_this->get_cls();
+		else if (method_this || !cur_class)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' requires a class object", $3);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			cls = cur_class;
+
+		if (cls)
+			{
+			if (Incompatible_classes_error(cls, $1))
+				$$ = 0;
+			else
+				{
+				Uc_symbol *sym = $1->get_scope()->search($3);
+				if (!sym)
+					{
+					char buf[150];
+					sprintf(buf, "Function '%s' is not declared in class '%s'",
+							$3, $1->get_name());
+					yyerror(buf);
+					$$ = 0;
+					}
+				else
+					{
+					Uc_function_symbol *fun =
+							dynamic_cast<Uc_function_symbol *>(sym);
+					if (!fun)
+						{
+						char buf[150];
+						sprintf(buf, "'%s' is not a function", $3);
+						yyerror(buf);
+						$$ = 0;
+						}
+					else
+						{
+						$$ = new Uc_call_expression(sym, $5, cur_fun, false);
+						$$->set_itemref(method_this);
+						$$->set_call_scope($1);
+						$$->check_params();
+						method_this = 0;
+						}
+					}
+				}
+			}
+
 		}
 	| '(' '*' primary ')' '(' opt_expression_list ')'
 		{
@@ -925,21 +1229,29 @@ opt_original:
 		{ $$ = 0; }
 	;
 
-opt_identifier_list:
-	identifier_list
+opt_param_list:
+	param_list
 	|
-		{ $$ = new std::vector<char *>; }
+		{ $$ = new std::vector<Uc_var_symbol *>; }
    	;
 
-identifier_list:
-	identifier_list ',' opt_var IDENTIFIER
-		{ $1->push_back($4); }
-	| opt_var IDENTIFIER
+param_list:
+	param_list ',' param
+		{ $1->push_back($3); }
+	| param
 		{
-		$$ = new std::vector<char *>;
-		$$->push_back($2);
+		$$ = new std::vector<Uc_var_symbol *>;
+		$$->push_back($1);
 		}
 	;
+
+param:
+	IDENTIFIER
+		{ $$ = new Uc_var_symbol($1, 0); }
+	| VAR IDENTIFIER
+		{ $$ = new Uc_var_symbol($2, 0); }
+	| CLASS '<' defined_class '>' IDENTIFIER
+		{ $$ = new Uc_class_inst_symbol($5, $3, 0); }
 
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
@@ -963,7 +1275,9 @@ int_literal:				/* A const. integer value.	*/
 
 opt_var:
 	VAR
+		{ $$ = 1; }
 	|
+		{ $$ = 0; }
 	;
 
 declared_var_value:
@@ -1011,6 +1325,11 @@ declared_sym:
 		}
 	;
 
+defined_class:
+	IDENTIFIER
+		{ $$ = Find_class($1); }
+	;
+
 %%
 
 /*
@@ -1040,4 +1359,57 @@ static Uc_array_expression *Create_array
 	arr->add(e2);
 	arr->add(e3);
 	return arr;
+	}
+static Uc_class *Find_class
+	(
+	const char *nm
+	)
+	{
+	Uc_class_symbol *csym = dynamic_cast<Uc_class_symbol *>(
+			Uc_function::search_globals(nm));
+	if (!csym)
+		{
+		char buf[150];
+		sprintf(buf, "'%s' not found, or is not a class.", nm);
+		yyerror(buf);
+		return 0;
+		}
+	return csym->get_cls();
+	}
+
+static bool Class_unexpected_error(Uc_expression *expr)
+	{
+	if (expr->is_class())
+		{
+		char buf[150];
+		sprintf(buf, "Can't convert class into non-class");
+		yyerror(buf);
+		return true;
+		}
+	return false;
+	}
+
+static bool Nonclass_unexpected_error(Uc_expression *expr)
+	{
+	if (!expr->is_class())
+		{
+		char buf[150];
+		sprintf(buf, "Can't convert non-class into class.");
+		yyerror(buf);
+		return true;
+		}
+	return false;
+	}
+
+static bool Incompatible_classes_error(Uc_class *src, Uc_class *trg)
+	{
+	if (!src->is_class_compatible(trg->get_name()))
+		{
+		char buf[180];
+		sprintf(buf, "Class '%s' can't be converted into class '%s'",
+				src->get_name(), trg->get_name());
+		yyerror(buf);
+		return true;
+		}
+	return false;
 	}

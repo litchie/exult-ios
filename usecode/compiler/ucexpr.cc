@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "opcodes.h"
 #include "ucfun.h"
 #include "ucclass.h"
+#include "ucloc.h"
 
 /*
  *	Default.  Just push the one value.
@@ -527,6 +528,82 @@ int Uc_array_expression::gen_values
 	return actual;
 	}
 
+inline bool Uc_call_expression::is_class() const
+	{
+	return sym->get_cls() != 0;
+	}
+
+inline Uc_class *Uc_call_expression::get_cls() const
+	{
+	return sym->get_cls();
+	}
+
+/*
+ *	Generate code to check if the passed params are in the correct number
+ *	and of the correct types.
+ */
+
+void Uc_call_expression::check_params()
+	{
+	Uc_function_symbol *fun = dynamic_cast<Uc_function_symbol *>(sym);
+	if (!fun)
+		{
+		// Intrinsics; do nothing for now.
+		return;
+		}
+	const vector<Uc_var_symbol *>& protoparms = fun->get_parms();
+	const vector<Uc_expression *>& callparms = parms->get_exprs();
+	bool ignore_this = fun->get_method_num() >= 0;
+	int parmscnt = callparms.size() + ignore_this;
+	if (parmscnt != protoparms.size())
+		{
+		char buf[150];
+		sprintf(buf,
+			"# parms. passed (%d) doesn't match '%s' count (%d)",
+			parmscnt - ignore_this, sym->get_name(),
+			protoparms.size() - ignore_this);
+		Uc_location::yyerror(buf);
+		return;
+		}
+	for (int i = ignore_this; i < parmscnt; i++)
+		{
+		Uc_expression *expr = callparms[i];
+		Uc_var_symbol *var = protoparms[i];
+		Uc_class_inst_symbol *cls =
+				dynamic_cast<Uc_class_inst_symbol *>(var);
+		char buf[180];
+		if (expr->is_class())
+			{
+			Uc_class_expression *cexp =
+					dynamic_cast<Uc_class_expression *>(expr);
+			if (!cls)
+				{
+				sprintf(buf,
+					"Error in parm. #%d: cannot convert class to non-class", i+1);
+				Uc_location::yyerror(buf);
+				}
+			else if (!cexp->get_cls()->is_class_compatible(
+						cls->get_cls()->get_name()))
+				{
+				sprintf(buf,
+					"Error in parm. #%d: class '%s' cannot be converted into class '%s'",
+					i+1, cexp->get_cls()->get_name(),
+					cls->get_cls()->get_name());
+				Uc_location::yyerror(buf);
+				}
+			}
+		else
+			{
+			if (cls)
+				{
+				sprintf(buf,
+					"Error in parm. #%d: cannot convert non-class into class", i+1);
+				Uc_location::yyerror(buf);
+				}
+			}
+		}
+	}
+
 /*
  *	Generate code to evaluate expression and leave result on stack.
  */
@@ -553,7 +630,7 @@ void Uc_call_expression::gen_value
 	if (!sym)
 		return;			// Already failed once.
 	if (!sym->gen_call(out, function, original, itemref,  
-							parms, return_value))
+							parms, return_value, meth_scope))
 		{
 		char buf[150];
 		sprintf(buf, "'%s' isn't a function or intrinsic",
@@ -561,6 +638,69 @@ void Uc_call_expression::gen_value
 		sym = 0;		// Avoid repeating error if in loop.
 		error(buf);
 		}
+	}
+
+void Uc_class_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	if (!inst->gen_value(out))
+		{
+		char buf[150];
+		sprintf(buf, "Can't assign to '%s'", inst->get_name());
+		error(buf);
+		}
+	}
+
+inline Uc_class *Uc_class_expression::get_cls() const
+	{
+	return inst->get_cls();
+	}
+
+void Uc_class_expression::gen_assign
+	(
+	vector<char>& out
+	)
+	{
+	if (!inst->gen_assign(out))
+		{
+		char buf[150];
+		sprintf(buf, "Can't assign to '%s'", inst->get_name());
+		error(buf);
+		}
+	}
+
+/*
+ *	Ensure that the correct number of arguments are pushed to constructor.
+ */
+Uc_new_expression::Uc_new_expression
+	(
+	Uc_class_inst_symbol *c,
+	Uc_array_expression *p
+	)
+	: Uc_class_expression(c), parms(p)
+	{
+	Uc_class *cls = inst->get_cls();
+	int pushed_parms = parms->get_exprs().size();
+	if (cls->get_num_vars() > pushed_parms)
+		{
+		char buf[180];
+		int missing = cls->get_num_vars() - pushed_parms;
+		sprintf(buf, "%d argument%s missing in constructor of class '%s'",
+				missing, (missing > 1) ? "s" : "", cls->get_name());
+		yywarning(buf);
+		}
+	else if (cls->get_num_vars() < pushed_parms)
+		{
+		char buf[180];
+		sprintf(buf, "Too many arguments in constructor of class '%s'",
+				cls->get_name());
+		yyerror(buf);
+		}
+	// Ensure that all data members get initialized.
+	for (int i = pushed_parms; i < cls->get_num_vars(); i++)
+		parms->add(new Uc_int_expression(0));
 	}
 
 /*
@@ -572,20 +712,21 @@ void Uc_new_expression::gen_value
 	vector<char>& out
 	)
 	{
-	Uc_class_symbol *csym = dynamic_cast<Uc_class_symbol *>(
-			Uc_function::search_globals(class_name.c_str()));
-	if (!csym)
-		{
-		char buf[150];
-		sprintf(buf, "'%s' not found, or is not a class.",
-						class_name.c_str());
-		error(buf);
-		return;
-		}
-	Uc_int_expression *cnum = new Uc_int_expression(
-						csym->get_cls()->get_num());
-	Uc_array_expression parms(cnum);
-	Uc_function::get_class_new()->gen_call(out, 0, false, 0,  
-						&parms, true);
+	int actual = parms->gen_values(out);
+	out.push_back((char)UC_CLSCREATE);
+	Uc_class *cls = inst->get_cls();
+	Write2(out, cls->get_num());
 	}
 
+/*
+ *	Generate code to delete class.
+ */
+
+void Uc_del_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	cls->gen_value(out);
+	out.push_back((char)UC_CLASSDEL);
+	}

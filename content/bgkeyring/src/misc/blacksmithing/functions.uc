@@ -40,7 +40,7 @@ var onAnvil (var swordblank, var anvil)
 }
 
 //returns true if the specified blank is the Black Sword blank, false otherwise
-isBlackSword (var swordblank) {return (swordblank->get_item_frame() >= 8);}
+var isBlackSword (var swordblank) {return (swordblank->get_item_frame() >= 8);}
 
 //Set the base cool frame of the swordblank (this depends on how much it has
 //been worked; it is governed by 3 different quality states, see
@@ -411,7 +411,7 @@ useSwordOnTrough ()
 		UI_sprite_effect(9, (swordblank_pos[X] - 3), (swordblank_pos[Y] - 3), 0, 0, 0, -1);
 		UI_play_sound_effect(SOUND_QUENCH_SWORD);
 
-		if (isBlackSword())
+		if (isBlackSword(item))
 			item->setCooledFrame();
 		else
 		{

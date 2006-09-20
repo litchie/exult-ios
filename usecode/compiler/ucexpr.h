@@ -33,6 +33,7 @@ using std::vector;
 
 class Uc_symbol;
 class Uc_var_symbol;
+class Uc_class_inst_symbol;
 class Uc_function;
 class Uc_function_symbol;
 class Uc_class;
@@ -61,6 +62,10 @@ public:
 	virtual Uc_var_symbol *need_var(vector<char>& out, Uc_function *fun);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
+	virtual bool is_class() const
+		{ return false; }
+	virtual Uc_class *get_cls() const
+		{ return 0; }
 	};
 
 /*
@@ -305,16 +310,19 @@ class Uc_call_expression : public Uc_expression
 	Uc_function *function;		// May need function this is in.
 	bool return_value;		// True for a function (to return
 					//   its value).
+	Uc_class *meth_scope;
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
 					Uc_function *fun, bool orig = false)
 		: sym(s), ind(0), itemref(0), parms(prms), 
-		  function(fun), original(orig), return_value(true)
+		  function(fun), original(orig), return_value(true),
+		  meth_scope(0)
 		{  }
 	Uc_call_expression(Uc_expression *i, Uc_array_expression *prms,
 					Uc_function *fun)
 		: sym(0), ind(i), itemref(0), parms(prms), function(fun),
-		  original(false), return_value(true)
+		  original(false), return_value(true),
+		  meth_scope(0)
 		{  }
 	~Uc_call_expression()
 		{ delete parms; delete itemref; }
@@ -324,16 +332,55 @@ public:
 		{ return_value = false; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
+	void set_call_scope(Uc_class *s)
+		{ meth_scope = s; }
+	void check_params();
+	virtual bool is_class() const;
+	virtual Uc_class *get_cls() const;
+	};
+
+class Uc_class_expression : public Uc_expression
+	{
+protected:
+	Uc_class_inst_symbol *inst;
+public:
+	Uc_class_expression(Uc_class_inst_symbol *c)
+		: inst(c)
+		{  }
+	virtual void gen_value(vector<char>& out);
+	virtual void gen_assign(vector<char>& out);
+	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
+		{ return 0; }
+	virtual bool is_class() const
+		{ return true; }
+	virtual Uc_class *get_cls() const;
 	};
 
 /*
  *	Class 'new'.
  */
-class Uc_new_expression : public Uc_expression
+class Uc_new_expression : public Uc_class_expression
 	{
-	std::string class_name;
+protected:
+	Uc_array_expression *parms;		// Parameters passed to constructor.
 public:
-	Uc_new_expression(const char *cnm) : class_name(cnm)
+	Uc_new_expression(Uc_class_inst_symbol *c, Uc_array_expression *p);
+	~Uc_new_expression()
+		{ delete parms; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(vector<char>& out);
+	};
+
+/*
+ *	Class 'delete'.
+ */
+class Uc_del_expression : public Uc_expression
+	{
+	Uc_class_inst_symbol *cls;
+public:
+	Uc_del_expression(Uc_class_inst_symbol *v) : cls(v)
+		{  }
+	~Uc_del_expression()
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
