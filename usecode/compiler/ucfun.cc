@@ -137,7 +137,7 @@ Uc_var_symbol *Uc_function::add_symbol
  *	Output:	New sym, or 0 if already declared.
  */
 
-Uc_class_inst_symbol *Uc_function::add_symbol
+Uc_var_symbol *Uc_function::add_symbol
 	(
 	char *nm,
 	Uc_class *c
@@ -146,7 +146,7 @@ Uc_class_inst_symbol *Uc_function::add_symbol
 	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_class_inst_symbol *var = new Uc_class_inst_symbol(nm, c, num_parms + num_locals++);
+	Uc_var_symbol *var = new Uc_class_inst_symbol(nm, c, num_parms + num_locals++);
 	cur_scope->add(var);
 	return var;
 	}
@@ -183,6 +183,23 @@ void Uc_function::add_static
 		return;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_static_var_symbol(nm, num_statics++);
+	cur_scope->add(var);
+	}
+
+/*
+ *	Add a new static class to the current scope.
+ */
+
+void Uc_function::add_static
+	(
+	char *nm,
+	Uc_class *c
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return;
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_class_symbol(nm, c, num_statics++);
 	cur_scope->add(var);
 	}
 
@@ -258,6 +275,25 @@ void Uc_function::add_global_static
 	num_global_statics++;		// These start with 1.
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_static_var_symbol(nm, 
+							-num_global_statics);
+	globals.add(var);
+	}
+
+/*
+ *	Add a global static class.
+ */
+
+void Uc_function::add_global_static
+	(
+	char *nm,
+	Uc_class *c
+	)
+	{
+	if (globals.is_dup(nm))
+		return;
+	num_global_statics++;		// These start with 1.
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_class_symbol(nm, c,
 							-num_global_statics);
 	globals.add(var);
 	}

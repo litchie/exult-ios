@@ -56,6 +56,10 @@ static Uc_class *Find_class(const char *nm);
 static bool Class_unexpected_error(Uc_expression *expr);
 static bool Nonclass_unexpected_error(Uc_expression *expr);
 static bool Incompatible_classes_error(Uc_class *src, Uc_class *trg);
+static Uc_call_expression *cls_method_call(Uc_expression *cls, Uc_class *curcls,
+		Uc_class *clsscope, char *nm, Uc_array_expression *parms);
+static Uc_call_expression *cls_function_call(Uc_expression *ths,
+		Uc_class *curcls, char *nm, bool original, Uc_array_expression *parms);
 
 
 #define YYERROR_VERBOSE 1
@@ -65,7 +69,6 @@ std::vector<Uc_design_unit *> units;	// THIS is what we produce.
 static Uc_function *cur_fun = 0;	// Current function being parsed.
 static Uc_class *cur_class = 0;		// ...or, current class being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
-static Uc_expression *method_this = 0;
 static bool is_extern = false;	// Marks a function symbol as being an extern
 static Uc_class *class_type = 0;	// For declaration of class variables.
 static bool has_ret = false;
@@ -154,7 +157,7 @@ static bool has_ret = false;
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
-%type <funcall> function_call routine_call method_call
+%type <funcall> function_call
 
 %%
 
@@ -491,8 +494,8 @@ class_decl:
 				$$ = 0;
 			else
 				{
-				Uc_class_inst_symbol *c = cur_fun->add_symbol($1, class_type);
-				$$ = new Uc_assignment_statement(new Uc_class_expression(c), $3);
+				Uc_var_symbol *v = cur_fun->add_symbol($1, class_type);
+				$$ = new Uc_assignment_statement(new Uc_class_expression(v), $3);
 				}
 			}
 		}
@@ -526,6 +529,10 @@ class_expr:
 
 static_decl:
 	STATIC_ VAR static_var_decl_list ';'
+	| STATIC_ CLASS '<' defined_class '>'
+		{ class_type = $4; }
+		static_cls_decl_list ';'
+		{ class_type = 0; }
 	;
 
 static_var_decl_list:
@@ -540,6 +547,21 @@ static_var:
 			cur_fun->add_static($1);
 		else
 			Uc_function::add_global_static($1);
+		}
+	;
+
+static_cls_decl_list:
+	static_cls
+	| static_cls_decl_list ',' static_cls
+	;
+
+static_cls:
+	IDENTIFIER
+		{
+		if (cur_fun)
+			cur_fun->add_static($1, class_type);
+		else
+			Uc_function::add_global_static($1, class_type);
 		}
 	;
 
@@ -1104,121 +1126,37 @@ new_expr:
 		}
 	;
 
-function_call:
-	routine_call
-	| method_call
-	;
-
-method_call:	/* A way to do CALLE or to call an intrinsic. */
-	primary hierarchy_tok { method_this = $1;  } routine_call 
-		{
-		$$ = $4;
-		method_this = 0;
-		}
-	;
-
 hierarchy_tok:
 	UCC_POINTS
 	| '.'
 	;
 
-routine_call:
-	IDENTIFIER opt_original '(' opt_expression_list ')'
+function_call:
+	primary hierarchy_tok IDENTIFIER opt_original '(' opt_expression_list ')'
 		{
-		Uc_symbol *sym = 0;
-		// Check class methods first.
-		if (cur_class)
-			sym = cur_class->get_scope()->search($1);
-		if (!sym && method_this && method_this->is_class())
-			{
-			Uc_class *cls = method_this->get_cls();
-			sym = cls->get_scope()->search($1);
-			}
-		if (!sym)
-			sym = cur_fun->search_up($1);
-		if (!sym)		/* Check for intrinsic name.	*/
-			{
-			string iname = string("UI_") + $1;
-			sym = cur_fun->search_up(iname.c_str());
-					/* Treat as method call on 'item'.*/
-			if (sym && !method_this)
-				method_this = new Uc_item_expression();
-			}
-		if (!sym)
-			{
-			char buf[150];
-			sprintf(buf, "'%s' not declared", $1);
-			yyerror(buf);
-			$$ = 0;
-			}
-		else
-			{
-			$$ = new Uc_call_expression(sym, $4, cur_fun,
-							$2 ? true : false);
-			$$->set_itemref(method_this);
-			$$->check_params();
-			method_this = 0;
-			}
+		$$ = cls_function_call($1, cur_class, $3, $4, $6);
+		}
+	| IDENTIFIER opt_original '(' opt_expression_list ')'
+		{
+		$$ = cls_function_call(0, cur_class, $1, $2, $4);
+		}
+	| primary hierarchy_tok defined_class UCC_SCOPE IDENTIFIER '(' opt_expression_list ')'
+		{
+		$$ = cls_method_call($1, $1->get_cls(), $3, $5, $7);
 		}
 	| defined_class UCC_SCOPE IDENTIFIER '(' opt_expression_list ')'
 		{
-		Uc_class *cls = 0;
-		if (method_this && method_this->is_class())
-			cls = method_this->get_cls();
-		else if (method_this || !cur_class)
-			{
-			char buf[150];
-			sprintf(buf, "'%s' requires a class object", $3);
-			yyerror(buf);
-			$$ = 0;
-			}
-		else
-			cls = cur_class;
-
-		if (cls)
-			{
-			if (Incompatible_classes_error(cls, $1))
-				$$ = 0;
-			else
-				{
-				Uc_symbol *sym = $1->get_scope()->search($3);
-				if (!sym)
-					{
-					char buf[150];
-					sprintf(buf, "Function '%s' is not declared in class '%s'",
-							$3, $1->get_name());
-					yyerror(buf);
-					$$ = 0;
-					}
-				else
-					{
-					Uc_function_symbol *fun =
-							dynamic_cast<Uc_function_symbol *>(sym);
-					if (!fun)
-						{
-						char buf[150];
-						sprintf(buf, "'%s' is not a function", $3);
-						yyerror(buf);
-						$$ = 0;
-						}
-					else
-						{
-						$$ = new Uc_call_expression(sym, $5, cur_fun, false);
-						$$->set_itemref(method_this);
-						$$->set_call_scope($1);
-						$$->check_params();
-						method_this = 0;
-						}
-					}
-				}
-			}
-
+		$$ = cls_method_call(0, cur_class, $1, $3, $5);
+		}
+	| primary hierarchy_tok '(' '*' primary ')' '(' opt_expression_list ')'
+		{
+		$$ = new Uc_call_expression($5, $8, cur_fun);
+		$$->set_itemref($1);
 		}
 	| '(' '*' primary ')' '(' opt_expression_list ')'
 		{
 		$$ = new Uc_call_expression($3, $6, cur_fun);
-		$$->set_itemref(method_this);
-		method_this = 0;
+		$$->set_itemref(0);
 		}
 	;
 
@@ -1412,4 +1350,98 @@ static bool Incompatible_classes_error(Uc_class *src, Uc_class *trg)
 		return true;
 		}
 	return false;
+	}
+
+static Uc_call_expression *cls_method_call
+	(
+	Uc_expression *ths,
+	Uc_class *curcls,
+	Uc_class *clsscope,
+	char *nm,
+	Uc_array_expression *parms
+	)
+	{
+	if (!curcls && !(ths && ths->is_class()))
+		{
+		char buf[150];
+		sprintf(buf, "'%s' requires a class object", nm);
+		yyerror(buf);
+		return 0;
+		}
+
+	if (Incompatible_classes_error(curcls, clsscope))
+		return 0;
+
+	Uc_symbol *sym = clsscope->get_scope()->search(nm);
+	if (!sym)
+		{
+		char buf[150];
+		sprintf(buf, "Function '%s' is not declared in class '%s'",
+				nm, clsscope->get_name());
+		yyerror(buf);
+		return 0;
+		}
+
+	Uc_function_symbol *fun = dynamic_cast<Uc_function_symbol *>(sym);
+	if (!fun)
+		{
+		char buf[150];
+		sprintf(buf, "'%s' is not a function", nm);
+		yyerror(buf);
+		return 0;
+		}
+
+	Uc_call_expression *ret =
+			new Uc_call_expression(sym, parms, cur_fun, false);
+	ret->set_itemref(ths);
+	ret->set_call_scope(clsscope);
+	ret->check_params();
+	return ret;
+	}
+
+static Uc_call_expression *cls_function_call
+	(
+	Uc_expression *ths,
+	Uc_class *curcls,
+	char *nm,
+	bool original,
+	Uc_array_expression *parms
+	)
+	{
+	Uc_symbol *sym = 0;
+	// Check class methods first.
+	if (!ths && curcls)
+		sym = curcls->get_scope()->search(nm);
+	else if (ths && ths->is_class())
+		sym = ths->get_cls()->get_scope()->search(nm);
+	
+	// Search for defined functions.
+	if (!sym)
+		sym = cur_fun->search_up(nm);
+
+	// Check for intrinsic name.
+	if (!sym)		
+		{
+		string iname = string("UI_") + nm;
+		sym = cur_fun->search_up(iname.c_str());
+		// Treat as method call on 'item'.
+		if (sym && !ths)
+			ths = new Uc_item_expression();
+		}
+
+	if (!sym)
+		{
+		char buf[150];
+		sprintf(buf, "'%s' not declared", nm);
+		yyerror(buf);
+		return 0;
+		}
+	else
+		{
+		Uc_call_expression *ret =
+				new Uc_call_expression(sym, parms, cur_fun, original);
+		ret->set_itemref(ths);
+		ret->check_params();
+		return ret;
+		}
 	}

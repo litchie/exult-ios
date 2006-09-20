@@ -73,6 +73,7 @@ public:
  */
 class Uc_var_expression : public Uc_expression
 	{
+protected:
 	Uc_var_symbol *var;
 public:
 					// Use current location.
@@ -339,13 +340,11 @@ public:
 	virtual Uc_class *get_cls() const;
 	};
 
-class Uc_class_expression : public Uc_expression
+class Uc_class_expression : public Uc_var_expression
 	{
-protected:
-	Uc_class_inst_symbol *inst;
 public:
-	Uc_class_expression(Uc_class_inst_symbol *c)
-		: inst(c)
+	Uc_class_expression(Uc_var_symbol *v)
+		: Uc_var_expression(v)
 		{  }
 	virtual void gen_value(vector<char>& out);
 	virtual void gen_assign(vector<char>& out);
@@ -364,7 +363,7 @@ class Uc_new_expression : public Uc_class_expression
 protected:
 	Uc_array_expression *parms;		// Parameters passed to constructor.
 public:
-	Uc_new_expression(Uc_class_inst_symbol *c, Uc_array_expression *p);
+	Uc_new_expression(Uc_var_symbol *v, Uc_array_expression *p);
 	~Uc_new_expression()
 		{ delete parms; }
 					// Gen. code to put result on stack.

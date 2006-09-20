@@ -153,9 +153,10 @@ public:
 	static Uc_intrinsic_symbol *get_class_delete()
 		{ return get_intrinsic(class_delete); }
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
-	Uc_class_inst_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
+	Uc_var_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(Uc_var_symbol *var);// Add var. to current scope.
 	void add_static(char *nm);	// Add static var. to current scope.
+	void add_static(char *nm, Uc_class *c);	// Add static cls. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent=0)
 		{ return cur_scope->add_function_symbol(fun, parent); }
 	static int add_global_function_symbol(Uc_function_symbol *fun,
@@ -169,6 +170,7 @@ public:
 	Uc_symbol *add_int_const_symbol(char *nm, int value);
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
 	static void add_global_static(char *nm);
+	static void add_global_static(char *nm, Uc_class *c);
 	int add_string(char *text);
 	int find_string_prefix(Uc_location& loc, const char *text);
 					// Start/end loop.

@@ -646,17 +646,17 @@ void Uc_class_expression::gen_value
 	vector<char>& out
 	)
 	{
-	if (!inst->gen_value(out))
+	if (!var->gen_value(out))
 		{
 		char buf[150];
-		sprintf(buf, "Can't assign to '%s'", inst->get_name());
+		sprintf(buf, "Can't assign to '%s'", var->get_name());
 		error(buf);
 		}
 	}
 
 inline Uc_class *Uc_class_expression::get_cls() const
 	{
-	return inst->get_cls();
+	return var->get_cls();
 	}
 
 void Uc_class_expression::gen_assign
@@ -664,10 +664,10 @@ void Uc_class_expression::gen_assign
 	vector<char>& out
 	)
 	{
-	if (!inst->gen_assign(out))
+	if (!var->gen_assign(out))
 		{
 		char buf[150];
-		sprintf(buf, "Can't assign to '%s'", inst->get_name());
+		sprintf(buf, "Can't assign to '%s'", var->get_name());
 		error(buf);
 		}
 	}
@@ -677,12 +677,12 @@ void Uc_class_expression::gen_assign
  */
 Uc_new_expression::Uc_new_expression
 	(
-	Uc_class_inst_symbol *c,
+	Uc_var_symbol *v,
 	Uc_array_expression *p
 	)
-	: Uc_class_expression(c), parms(p)
+	: Uc_class_expression(v), parms(p)
 	{
-	Uc_class *cls = inst->get_cls();
+	Uc_class *cls = var->get_cls();
 	int pushed_parms = parms->get_exprs().size();
 	if (cls->get_num_vars() > pushed_parms)
 		{
@@ -715,7 +715,7 @@ void Uc_new_expression::gen_value
 	{
 	int actual = parms->gen_values(out);
 	out.push_back((char)UC_CLSCREATE);
-	Uc_class *cls = inst->get_cls();
+	Uc_class *cls = var->get_cls();
 	Write2(out, cls->get_num());
 	}
 
