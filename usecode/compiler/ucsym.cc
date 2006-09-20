@@ -187,6 +187,17 @@ int Uc_static_var_symbol::gen_value
 	}
 
 /*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_static_class_symbol::create_expression
+	(
+	)
+	{
+	return new Uc_class_expression(this);
+	}
+
+/*
  *	Create new class symbol and store in global table.
  */
 
