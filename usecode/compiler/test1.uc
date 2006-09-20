@@ -52,6 +52,72 @@ adder1 0x481 (a, b)
 	return adder(a, 3);
 	}
 
+class Test
+{
+	var testvar;
+	now_what() { ; }
+	Fun2() { ; }
+}
+
+class Test2 : Test	// Inheritance: class Test2 has all data members and
+		// functions of class Test, and can be converted to class Test if
+		// needed by e.g., a function call.
+{
+	var testvar1;
+	now_what1() { testvar1 = 0; Test::Fun2(); now_what(); Fun2(); }
+	class<Test> Fun2()
+	{
+		testvar1 = 1;
+		//return;	// Fails to compile
+		//return 1;	// Fails to compile
+		//return 0;	// Compiles correctly
+		return this;	// this is of type class<Test2>, which is
+				// derived from class<Test> hence can be
+				// converted to it
+	}
+	Fun3()
+	{
+		//return 1;	// Fails to compile
+		//return this;	// Fails to compile
+		return;	// Fails to compile
+	}
+}
+
+class Test3 : Test
+{  }
+
+class Test4 : Test2
+{  }
+
+class<Test3> Fun2 0xB00 (class<Test> a)
+{
+	class<Test> mytest;
+	class<Test2> foo = new Test2(5, 6);	// Constructor example
+	class<Test> bar = new Test2(7, 8);	// Constructor and casting example
+
+	foo->Fun2();		// Calls Fun2 of class Test2 with 'foo' as 'this'
+	foo->Test::Fun2();	// Calls Fun2 of class Test with 'foo' as 'this'
+	foo->now_what1();
+
+	bar = foo;
+	//foo = bar;	// Fails to compile
+
+	// Constructor and casting examples:
+	mytest = new Test(9);
+	mytest = new Test2(10, 11);
+	mytest = new Test(12);
+	mytest = new Test4(a, a);
+	mytest = new Test3(a);
+	bar = new Test(13);
+	
+	// Conditions:
+	if (bar)
+		;
+		
+	// Deletion:
+	delete bar;
+}
+
 /*
 adder 0x480 (a, b)
 	{
