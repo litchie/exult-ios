@@ -1,4 +1,4 @@
-2006-09-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2006-09-20  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Working on UCC classes. Added inheritance support, class instantiation in
 	  UCC, type checking for class casts, changed method of class creation and
 	  deletion and added support for method calls with and without scope
@@ -7,6 +7,9 @@
 	  functions, with full type checking; a '0' can be returned as a class
 	  return. Methods can also return values now (including classes) but class
 	  data members cannot be classes themselves yet.
+	  Added static and global static classes and fixed bug preventing the
+	  following code from working correctly unless item == npc:
+			npc->set_item_frame(1+get_item_frame());
 	  Possible future enhancements: add a way to set/retrieve class variables
 	  from outside a class; maybe allow class data members to be classes.
 	* Modified handling of '#' directives in UCC so they don't disrupt the line

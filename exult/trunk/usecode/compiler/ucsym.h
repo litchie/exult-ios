@@ -132,6 +132,22 @@ public:
 	};
 
 /*
+ *	A static (persistent) class.
+ */
+class Uc_static_class_symbol : public Uc_static_var_symbol
+	{
+protected:
+	Uc_class *cls;
+public:
+	Uc_static_class_symbol(char *nm, Uc_class *c, int off)
+		: Uc_static_var_symbol(nm, off), cls(c)
+		{  }
+	virtual Uc_expression *create_expression();
+	virtual Uc_class *get_cls() const
+		{ return cls; }
+	};
+
+/*
  *	A class.
  */
 class Uc_class_symbol : public Uc_symbol
