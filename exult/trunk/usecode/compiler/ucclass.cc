@@ -28,10 +28,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 #include <cassert>
+#include <vector>
 
 #include "ucclass.h"
 #include "ucsymtbl.h"
 #include "ucfun.h"
+#include "ucloc.h"
+
+using std::vector;
 
 int Uc_class::last_num = -1;
 
@@ -42,9 +46,22 @@ int Uc_class::last_num = -1;
 Uc_class::Uc_class
 	(
 	char *nm
-	) : scope(0), num_vars(0), name(nm)
+	) : scope(0), num_vars(0), name(nm), base_class(0)
 	{
 	num = ++last_num;
+	}
+
+Uc_class::Uc_class
+	(
+	char *nm,
+	Uc_class *base
+	) : base_class(base), scope(base->scope), num_vars(base->num_vars),
+		name(nm), methods(base->methods)
+	{
+	num = ++last_num;
+	for (vector<Uc_function *>::iterator it = methods.begin();
+			it != methods.end(); ++it)
+		(*it)->set_inherited();
 	}
 
 /*
@@ -77,8 +94,6 @@ Uc_var_symbol *Uc_class::add_symbol
 
 /*
  *	Add method.
- *	NOTE: If/when we support derived classes, we will first need to search
- *		the 'methods' table for the method name.
  */
 
 void Uc_class::add_method
@@ -86,6 +101,28 @@ void Uc_class::add_method
 	Uc_function *m
 	)
 	{
+	// If this is a duplicate inherited function, override it.
+	for (vector<Uc_function *>::iterator it = methods.begin();
+			it != methods.end(); ++it)
+		{
+		Uc_function *method = *it;
+		if (!strcmp(m->get_name(), method->get_name()))
+			{
+			if (method->is_inherited())
+				{
+				m->set_method_num(method->get_method_num());
+				*it = m;
+				return;
+				}
+			else
+				{
+				char buf[150];
+				sprintf(buf, "Duplicate decl. of virtual member function '%s'.", m->get_name());
+				Uc_location::yyerror(buf);
+				return;
+				}
+			}
+		}
 	m->set_method_num(methods.size());
 	methods.push_back(m); 
 	}
@@ -99,7 +136,7 @@ void Uc_class::gen
 	std::ostream& out
 	)
 	{
-	std::vector<Uc_function *>::iterator it;
+	vector<Uc_function *>::iterator it;
 	for (it = methods.begin(); it != methods.end(); it++)
 		{
 		Uc_function *m = *it;
@@ -119,7 +156,7 @@ Usecode_symbol *Uc_class::create_sym
 	Usecode_symbol::Symbol_kind kind = Usecode_symbol::class_scope;
 	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(), 
 				Usecode_symbol::class_scope, num, num_vars);
-	std::vector<Uc_function *>::iterator it;
+	vector<Uc_function *>::iterator it;
 	for (it = methods.begin(); it != methods.end(); it++)
 		{
 		Uc_function *m = *it;
@@ -129,3 +166,13 @@ Usecode_symbol *Uc_class::create_sym
 	return cs;
 	}
 
+bool Uc_class::is_class_compatible
+	(
+	const char *nm
+	)
+	{
+	if (name == nm)
+		return true;
+	else
+		return base_class ? base_class->is_class_compatible(nm) : false;
+	}

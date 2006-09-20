@@ -39,6 +39,8 @@
 #include "ucscriptop.h"
 #include "monstinf.h"
 #include "frameseq.h"
+#include "ucsymtbl.h"
+#include "useval.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -186,15 +188,17 @@ void Scripted_schedule::run
  *	Lookup Usecode 'method'.
  */
 
-static int find_method(Usecode_machine *uc, char *cls, char *meth, bool noerr)
+static int find_method(Usecode_class_symbol *cls, char *meth, bool noerr)
 	{
-	char buf[512];
-	if (snprintf(buf, sizeof(buf), "%s::%s", cls, meth) >= sizeof(buf))
+	Usecode_symbol *ucsym = (*cls)[meth];
+	if (!ucsym)
 		{
-		buf[sizeof(buf) - 1] = 0;
-		cerr << "Method '" << buf << "' was too long!!!" << endl;
+		if (!noerr)
+			cerr << "Failed to find method '" << meth
+					<< "' in class '" << cls->get_name() << "'." << endl;
+		return 0;
 		}
-	return uc->find_function(buf, noerr);
+	return ucsym->get_val();
 	}
 
 /*
@@ -208,13 +212,26 @@ Scripted_schedule::Scripted_schedule
 	) : Schedule(n), type(ty)
 	{
 	char *nm = Schedule_change::get_script_name(ty);
-	now_what_id = find_method(ucmachine, nm, "now_what", false);
-	im_dormant_id = find_method(ucmachine, nm, "im_dormant", true);
-	ending_id = find_method(ucmachine, nm, "ending", true);
-	set_weapon_id = find_method(ucmachine, nm, "set_weapon", true);
-	set_bed_id = find_method(ucmachine, nm, "set_bed", true);
-	notify_object_gone_id = find_method(ucmachine, nm, 
-					"notify_object_gone", true);
+	Usecode_class_symbol *cls = ucmachine->get_class(nm);
+	if (!cls)
+		{
+		cerr << "Could not find scripted schedule '" << nm <<
+				"'. Switching to 'Loiter' schedule instead." << endl;
+		npc->set_schedule_type(loiter);
+		delete this;
+		return;
+		}
+	else
+		{
+		inst = new Usecode_value(0);
+		inst->class_new(cls, cls->get_num_vars());
+		now_what_id = find_method(cls, "now_what", false);
+		im_dormant_id = find_method(cls, "im_dormant", true);
+		ending_id = find_method(cls, "ending", true);
+		set_weapon_id = find_method(cls, "set_weapon", true);
+		set_bed_id = find_method(cls, "set_bed", true);
+		notify_object_gone_id = find_method(cls, "notify_object_gone", true);
+		}
 	}
 
 /*

@@ -72,6 +72,8 @@ void Usecode_scope_symbol::read(istream& in)
 		setup_by_name(oldsize);
 	if (!by_val.empty())
 		setup_by_val(oldsize);
+	if (!class_names.empty())
+		setup_class_names(oldsize);
 }
 
 /*
@@ -125,6 +127,15 @@ void Usecode_scope_symbol::setup_by_val(int start)
 		by_val[sym->val] = sym;
 	}
 }
+void Usecode_scope_symbol::setup_class_names(int start)
+{
+	for (std::vector<Usecode_class_symbol*>::iterator 
+			it = classes.begin() + start; 
+			it != classes.end(); ++it) {
+		Usecode_class_symbol *sym = *it;
+		class_names[sym->name] = sym;
+	}
+}
 
 /*
  *	Lookup by name or by value.
@@ -146,6 +157,17 @@ Usecode_symbol *Usecode_scope_symbol::operator[](int val)
 		setup_by_val();
 	Val_table::iterator it = by_val.find(val);
 	if (it == by_val.end())
+		return 0;
+	else
+		return (*it).second;
+}
+
+Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
+{
+	if (by_name.empty())
+		setup_class_names();
+	Class_name_table::iterator it = class_names.find(nm);
+	if (it == class_names.end())
 		return 0;
 	else
 		return (*it).second;

@@ -180,7 +180,7 @@ var intersectLists(var list1, var list2)
 	return newarray;
 }
 
-filterBodyList(var list, var body)
+var filterBodyList(var list, var body)
 {
 	var newarray = [];
 
@@ -200,7 +200,7 @@ filterBodyList(var list, var body)
 
 
 //Returns a version of <array> that has <obj> stripped from it.
-removeFromArray(var array, var obj)
+var removeFromArray(var array, var obj)
 {
 	var newarray = [];
 

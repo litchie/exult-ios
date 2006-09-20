@@ -33,6 +33,7 @@ class Keyring;
 class Game_object;
 class Actor;
 class Usecode_value;
+class Usecode_class_symbol;
 
 #include "exceptions.h"
 #include "singles.h"
@@ -88,9 +89,11 @@ public:
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *item, 
 						Usecode_events event) = 0;
-	virtual Usecode_value *call_method(Usecode_value *inst, int id,
+	virtual bool call_method(Usecode_value *inst, int id,
 					Game_object *item) = 0;
 	virtual int find_function(const char *nm, bool noerr = false) = 0;
+	virtual Usecode_class_symbol *get_class(int n) = 0;
+	virtual Usecode_class_symbol *get_class(const char *nm) = 0;
 	virtual void write() = 0;	// Write out 'gamedat/usecode.dat'.
 	virtual void read() = 0;	// Read in 'gamedat/usecode.dat'.
 

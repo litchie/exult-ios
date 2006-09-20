@@ -68,11 +68,13 @@ public:
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
-							bool retvalue);
+							bool retvalue, Uc_class *scope_vtbl = 0);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
+	virtual Uc_class *get_cls() const
+		{ return 0; }
 	};
 
 /*
@@ -89,12 +91,30 @@ public:
 		{  }
 	int get_offset()
 		{ return offset; }
+	void set_offset(int off)
+		{ offset = off; }
 					// Gen. code to put result on stack.
 	virtual int gen_value(vector<char>& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(vector<char>& out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
+	};
+
+/*
+ *	A class instance, a typed variable which can be assigned to.
+ */
+class Uc_class_inst_symbol : public Uc_var_symbol
+	{
+protected:
+	Uc_class *cls;
+public:
+	Uc_class_inst_symbol(char *nm, Uc_class *c, int off)
+		: Uc_var_symbol(nm, off), cls(c)
+		{  }
+	virtual Uc_expression *create_expression();
+	virtual Uc_class *get_cls() const
+		{ return cls; }
 	};
 
 /*
@@ -192,7 +212,7 @@ public:
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
-							bool retvalue);
+							bool retvalue, Uc_class *scope_vtbl = 0);
 	};
 
 /*
@@ -211,16 +231,20 @@ public:
 private:
 	static Sym_nums nums_used;
 					// Note:  offset = Usecode fun. #.
-	std::vector<char *> parms;	// Parameters.
+	std::vector<Uc_var_symbol *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
 	int method_num;			// Index with class if a method.
 	bool externed;
+	bool inherited;
+	bool has_ret;
+	Uc_class *ret_type;
 public:
 	friend class Uc_scope;
-	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
+	Uc_function_symbol(char *nm, int num, std::vector<Uc_var_symbol *>& p);
 	static Uc_function_symbol *create(char *nm, int num, 
-				std::vector<char *>& p, bool is_extern=false);
-	const std::vector<char *>& get_parms()
+				std::vector<Uc_var_symbol *>& p, bool is_extern=false,
+				Uc_scope *scope = 0);
+	const std::vector<Uc_var_symbol *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
 		{ return usecode_num; }
@@ -234,17 +258,29 @@ public:
 		{ externed = true; }
 	bool is_externed()
 		{ return externed; }
+	void set_inherited()
+		{ inherited = true; }
+	bool is_inherited()
+		{ return inherited; }
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
-							bool retvalue);
+							bool retvalue, Uc_class *scope_vtbl = 0);
 	static void set_last_num(int n)
 		{
 		last_num = n;
 		new_auto_num = true;
 		}
+	virtual bool get_has_ret() const
+		{ return has_ret; }
+	virtual void set_has_ret()
+		{ has_ret = true; }
+	virtual Uc_class *get_cls() const
+		{ return ret_type; }
+	virtual bool set_ret_type(Uc_class *r)
+		{ ret_type = r; has_ret = true; }
 	};
 
 /*
@@ -287,7 +323,7 @@ public:
 		return newscope;
 		}
 					// Add a function decl.
-	int add_function_symbol(Uc_function_symbol *fun);
+	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent=0);
 	bool is_dup(char *nm);		// Already declared?
 	};
 
@@ -299,6 +335,8 @@ class Uc_design_unit
 public:
 	virtual void gen(std::ostream& out) = 0;	// Generate Usecode.
 	virtual Usecode_symbol *create_sym() = 0;
+	virtual bool is_class() const
+		{ return false; }
 	};
 
 #endif

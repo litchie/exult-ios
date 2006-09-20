@@ -145,7 +145,7 @@ Mariah 0x499 ()
 					}
 				
 				case "spells":
-					mariahSellSpells(MARIAH);
+					MARIAH->mariahSellSpells();
 				
 				case "reagents":
 					mariahSellReagents("Reagents");
@@ -203,7 +203,7 @@ Mariah 0x499 ()
 				
 				case "which day" (remove):
 					say("@Why, today. Thou art in luck. Buy a spell.@");
-					mariahSellSpells(MARIAH);
+					MARIAH->mariahSellSpells();
 				
 				case "reagents":
 					mariahSellReagents("Reagents");

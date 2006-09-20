@@ -40,6 +40,7 @@ class Vector;
 class Stack_frame;
 class Usecode_function;
 class Usecode_symbol_table;
+class Usecode_class_symbol;
 
 #include "useval.h"
 #include "ucmachine.h"
@@ -364,8 +365,6 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(begin_casting_mode);
 	USECODE_INTRINSIC_DECL(get_usecode_fun);
 	USECODE_INTRINSIC_DECL(get_map_num);
-	USECODE_INTRINSIC_DECL(class_new);
-	USECODE_INTRINSIC_DECL(class_delete);
 	
 	/*
 	 *	Other private methods:
@@ -437,13 +436,15 @@ public:
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *item, 
 							Usecode_events event);
-	virtual Usecode_value *call_method(Usecode_value *inst, int id,
+	virtual bool call_method(Usecode_value *inst, int id,
 					Game_object *item);
 	virtual int find_function(const char *nm, bool noerr = false);
 	virtual void do_speech(int num);// Start speech, or show text.
 	virtual bool in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }
 	virtual bool in_usecode_for(Game_object *item, Usecode_events event);
+	virtual Usecode_class_symbol *get_class(int n);
+	virtual Usecode_class_symbol *get_class(const char *nm);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Read in 'gamedat/usecode.dat'.
 

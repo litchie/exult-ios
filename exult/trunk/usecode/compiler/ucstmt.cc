@@ -602,3 +602,18 @@ void Uc_opcode_statement::gen
 	{
 	out.push_back((char) opcode);
 	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_delete_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	if (!expr)
+		return;
+	expr->gen_value(out);
+	}

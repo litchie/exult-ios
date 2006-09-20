@@ -3175,22 +3175,3 @@ USECODE_INTRINSIC(get_map_num)
 	return Usecode_value(obj->get_map_num());
 }
 
-USECODE_INTRINSIC(class_new)
-{
-	int cnum = parms[0].get_int_value();
-	Usecode_class_symbol *cls = symtbl->get_class(cnum);
-	Usecode_value obj(0);
-	if (!cls) {
-		cerr << "Can't create obj. for class #" << cnum << endl;
-		return Usecode_value(0);
-	}
-	obj.class_new(cls, cls->get_num_vars());
-	return obj;
-}
-
-USECODE_INTRINSIC(class_delete)
-{
-	parms[0].class_delete();
-	return no_ret;
-}
-

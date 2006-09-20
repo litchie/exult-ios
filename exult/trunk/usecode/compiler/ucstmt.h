@@ -34,6 +34,7 @@ class Uc_call_expression;
 class Uc_array_expression;
 class Uc_function;
 class Uc_var_symbol;
+class Uc_del_expression;
 
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
@@ -291,6 +292,19 @@ class Uc_opcode_statement : public Uc_statement
 	int opcode;
 public:
 	Uc_opcode_statement(int op) : opcode(op)
+		{  }
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	Statement that just represents a single opcode.
+ */
+class Uc_delete_statement : public Uc_statement
+	{
+	Uc_del_expression *expr;
+public:
+	Uc_delete_statement(Uc_del_expression *e) : expr(e)
 		{  }
 					// Generate code.
 	virtual void gen(std::vector<char>& out, Uc_function *fun);

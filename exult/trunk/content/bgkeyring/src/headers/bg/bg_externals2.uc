@@ -78,7 +78,7 @@ extern var inGreaterTrinsicArea 0x93E ();
 
 //Blacksword-related externs:
 //Fire power:
-extern createFire 0x6FC (var var0000);
+extern createFire 0x6FC ();
 extern teleportIsleOfFire 0x6F9 ();
 //Death power:
 extern killTarget 0x70F ();
