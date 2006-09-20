@@ -93,7 +93,6 @@ enum day_periods
 	NIGHT			= 7		//21-23 (night palette)
 };
 
-
 //Wildcards, used for specifying "any acceptable value for this parameter" to a measuring function. These are commonly used with object-related intrinsics like UI_get_cont_items, UI_count_objects, UI_remove_party_items etc.
 enum wildcards
 {
@@ -101,7 +100,6 @@ enum wildcards
 	QUALITY_ANY	= -359,
 	FRAME_ANY	= -359
 };
-
 
 //tick multipliers, for use with UI_advance_time or script statements
 enum times
@@ -116,8 +114,6 @@ UI_advance_time(30 * MINUTE);	//advance time by 30 game minutes
 UI_advance_time(2 * HOUR);		//advance time by two game hours
 script after MINUTE ticks	{ ... }	//schedule this script block to execute after one game minute
 */
-
-
 
 //Item/NPC flags, stolen from the Exult LB-joins-party patch with some comments added
 //These can be retrieved and set using UI_get_item_flag(itemref, flag), UI_set_item_flag(itemref, flag) and UI_clear_item_flag(itemref, flag).
@@ -162,7 +158,6 @@ enum item_flags
 	FREEZE		= 37		// SI.  pretty sure.
 };
 
-
 //Business activities (taken from the cheat screen)
 enum schedules
 {
@@ -205,7 +200,6 @@ enum schedules
 	FOLLOW_AVATAR	= 31	//That most noble of pursuits. Like WAIT, this completely overrides the NPC's schedule list.
 };
 
-
 //NPC animation frames. Use these with UI_set_item_frame or (preferably) in script blocks, with 'actor frame'.
 //e.g.: script AVATAR { actor frame STAND; actor frame USE; actor frame SWING_1; actor_frame STAND; }
 //Important note: use 'actor frame' with NPCs instead of 'frame', as 'actor frame' takes the NPC's current facing into account.
@@ -241,8 +235,6 @@ enum frame_offsets
 	WEST_FRAMESET	= 32,
 	EAST_FRAMESET	= 48
 };
-
-
 
 //Ready slots: use with UI_is_readied. These are the same whether paperdolls are on or off.
 enum is_readied_inv_slots
@@ -317,7 +309,6 @@ enum npc_properties
 	FOODLEVEL		= 9
 };
 
-
 //NPC attack behaviours. Retrieve and set using UI_set_attack_mode(npc, mode) and UI_get_attack_mode(npc).
 enum npc_attack_modes
 {
@@ -333,7 +324,6 @@ enum npc_attack_modes
 	MANUAL		= 9
 };
 
-
 //Failure cursor constants for use with UI_flash_mouse. Note that these do not correspond to frame numbers in pointers.uc, but to some internal mapping. (the "BLOCKED" cursor seems to be unavailable through this method.)
 enum cursors
 {
@@ -343,7 +333,6 @@ enum cursors
 	CURSOR_TOO_HEAVY	= 4,
 	CURSOR_WONT_FIT		= 5
 };
-
 
 //NPC atitudes toward the avatar
 enum alignments

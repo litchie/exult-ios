@@ -328,12 +328,13 @@ se		return SE;
 "<="			{ return LTEQUALS; }
 ">="			{ return GTEQUALS; }
 "->"			{ return UCC_POINTS; }
+"::"			{ return UCC_SCOPE; }
 
-"# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
-"#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
-"#include"[ \t]+.*\n		{ Include(yytext + 8); }
-"#game"[ \t]+.*\n		{ Set_game(yytext + 5); }
-"#autonumber"[ \t]+"0x"[0-9a-fA-F]+\n	{ Set_autonum(yytext + 11); }
+"# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); Uc_location::increment_cur_line(); }
+"#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); Uc_location::increment_cur_line(); }
+"#include"[ \t]+.*\n		{ Uc_location::increment_cur_line(); Include(yytext + 8); }
+"#game"[ \t]+.*\n		{ Set_game(yytext + 5); Uc_location::increment_cur_line(); }
+"#autonumber"[ \t]+"0x"[0-9a-fA-F]+\n	{ Set_autonum(yytext + 11); Uc_location::increment_cur_line(); }
 
 \#.*			/* Ignore other cpp directives. */
 
@@ -377,7 +378,3 @@ void end_script()
 	{
 	yy_pop_state();
 	}
-
-
-
-

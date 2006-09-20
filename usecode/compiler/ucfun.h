@@ -93,12 +93,20 @@ public:
 		{ return proto->get_name(); }
 	bool is_externed()
 		{ return proto->is_externed(); }
+	bool is_inherited()
+		{ return proto->is_inherited(); }
+	void set_inherited()
+		{ proto->set_inherited(); }
 	int get_usecode_num()
 		{ return proto->get_usecode_num(); }
 	void set_method_num(int n)
 		{ proto->set_method_num(n); }
 	int get_method_num()
 		{ return proto->get_method_num(); }
+	virtual bool get_has_ret() const
+		{ return proto->get_has_ret(); }
+	virtual Uc_class *get_cls() const
+		{ return proto->get_cls(); }
 	void adjust_reloffset(int diff) { reloffset += diff; }
 	int get_reloffset() const { return reloffset; }
 	Uc_scope *get_parent()
@@ -145,11 +153,14 @@ public:
 	static Uc_intrinsic_symbol *get_class_delete()
 		{ return get_intrinsic(class_delete); }
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
+	Uc_class_inst_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
+	Uc_var_symbol *add_symbol(Uc_var_symbol *var);// Add var. to current scope.
 	void add_static(char *nm);	// Add static var. to current scope.
-	int add_function_symbol(Uc_function_symbol *fun)
-		{ return cur_scope->add_function_symbol(fun); }
-	static int add_global_function_symbol(Uc_function_symbol *fun)
-		{ return globals.add_function_symbol(fun); }
+	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent=0)
+		{ return cur_scope->add_function_symbol(fun, parent); }
+	static int add_global_function_symbol(Uc_function_symbol *fun,
+			Uc_scope *parent=0)
+		{ return globals.add_function_symbol(fun, parent); }
 	static void add_global_class_symbol(Uc_class_symbol *c)
 		{ globals.add(c); }
 					// Add string constant.

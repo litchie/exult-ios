@@ -65,5 +65,8 @@ const char UC_CALLIND = 0x53;		// Call indirect.  Addr. on stack.
 const char UC_PUSHCLSVAR = 0x54;	// Push this->var.
 const char UC_POPCLSVAR = 0x55;		// Pop this->var.
 const char UC_CALLM = 0x56;		// Call method (index is on stack).
+const char UC_CALLMS = 0x57;		// Call method (index is on stack).
+const char UC_CLSCREATE = 0x58;	// Create class instance.
+const char UC_CLASSDEL = 0x59;	// Delete class instance.
 
 #endif

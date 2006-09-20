@@ -1,3 +1,21 @@
+2006-09-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Working on UCC classes. Added inheritance support, class instantiation in
+	  UCC, type checking for class casts, changed method of class creation and
+	  deletion and added support for method calls with and without scope
+	  resolution operator (to allow calling of overriden inherited functions).
+	  Classes can be passed as parameters to functions and be returned by
+	  functions, with full type checking; a '0' can be returned as a class
+	  return. Methods can also return values now (including classes) but class
+	  data members cannot be classes themselves yet.
+	  Possible future enhancements: add a way to set/retrieve class variables
+	  from outside a class; maybe allow class data members to be classes.
+	* Modified handling of '#' directives in UCC so they don't disrupt the line
+	  numbering.
+	* In Keyring mod: Fixed a few missing vars in function headers and a few
+	  missing parameters in function calls. Also, updated Paperdoll_info.txt and
+	  bodies.txt to include only the new paperdoll/body information.
+	* In SI Fixes mod: Removed wrong parameter from function definition.
+
 2006-09-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/bodies.*, gumps/Paperdoll_gump_info.cc: Removed files, code
 	  moved to miscinf.*.

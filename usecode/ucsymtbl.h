@@ -67,10 +67,13 @@ class Usecode_scope_symbol : public Usecode_symbol
 	std::vector<Usecode_class_symbol*> classes;	// Just the classes.
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
 	typedef std::map<int, Usecode_symbol *> Val_table;
+	typedef std::map<std::string, Usecode_class_symbol *> Class_name_table;
 	Name_table by_name;
 	Val_table by_val;
+	Class_name_table class_names;
 	void setup_by_name(int start = 0);
 	void setup_by_val(int start = 0);
+	void setup_class_names(int start = 0);
 public:
 	Usecode_scope_symbol(const char *nm = "_usecode_", 
 			Symbol_kind k = table_scope, int v = 0)
@@ -84,6 +87,7 @@ public:
 	Usecode_symbol *operator[](int val);
 	Usecode_class_symbol *get_class(int n)
 		{ return n < classes.size() ? classes[n] : 0; }
+	Usecode_class_symbol *get_class(const char *nm);
 	};
 
 class Usecode_class_symbol : public Usecode_scope_symbol

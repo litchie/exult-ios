@@ -116,7 +116,7 @@ var prepareSpell (var npc, var spell_array, var talk, var removespells)
 	return ret_array;
 }
 
-prepareCombatSpell (var npc, var stored_spell, var removespells, var talk)
+var prepareCombatSpell (var npc, var stored_spell, var removespells, var talk)
 {
 	if (!stored_spell)
 		message(talk[1]);

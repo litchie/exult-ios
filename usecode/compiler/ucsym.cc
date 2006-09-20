@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "ucexpr.h"
 #include "ucfun.h"
+#include "ucclass.h"
 
 using std::strcmp;
 
@@ -81,7 +82,8 @@ int Uc_symbol::gen_call
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
-	bool retvalue			// True if a function.
+	bool retvalue,			// True if a function.
+	Uc_class *scope_vtbl	// For method calls using a different scope.
 	)
 	{
 	return 0;
@@ -139,6 +141,17 @@ Uc_expression *Uc_var_symbol::create_expression
 	)
 	{
 	return new Uc_var_expression(this);
+	}
+
+/*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_class_inst_symbol::create_expression
+	(
+	)
+	{
+	return new Uc_class_expression(this);
 	}
 
 /*
@@ -294,7 +307,8 @@ int Uc_intrinsic_symbol::gen_call
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
-	bool retvalue			// True if a function.
+	bool retvalue,			// True if a function.
+	Uc_class *scope_vtbl	// For method calls using a different scope.
 	)
 	{
 	int parmcnt = parms->gen_values(out);	// Want to push parm. values.
@@ -320,8 +334,9 @@ Uc_function_symbol::Uc_function_symbol
 	char *nm, 
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
-	std::vector<char *>& p
-	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1)
+	std::vector<Uc_var_symbol *>& p
+	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
+	     ret_type(0), has_ret(false)
 	{
 	}
 
@@ -335,14 +350,25 @@ Uc_function_symbol *Uc_function_symbol::create
 	char *nm, 
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
-	std::vector<char *>& p,
-	bool is_extern
+	std::vector<Uc_var_symbol *>& p,
+	bool is_extern,
+	Uc_scope *scope
 	)
 	{
 	// Override function number if the function has been declared before this.
-	Uc_function_symbol *sym = (Uc_function_symbol *) Uc_function::search_globals(nm);
+	Uc_function_symbol *sym = (Uc_function_symbol *) (scope ?
+		scope->search(nm) : Uc_function::search_globals(nm));
 	if (sym)
-		if (sym->is_externed() || is_extern)
+		if (scope)
+			{
+			if (!sym->is_inherited())
+				{
+				char buf[256];
+				sprintf(buf, "Duplicate declaration of function '%s'.", nm);
+				Uc_location::yyerror(buf);
+				}
+			}
+		else if (sym->is_externed() || is_extern)
 			if (sym->get_num_parms() == p.size())
 				num = sym->get_usecode_num();
 			else
@@ -365,6 +391,8 @@ Uc_function_symbol *Uc_function_symbol::create
 	if (it == nums_used.end())	// Unused?  That's good.
 		{
 		sym = new Uc_function_symbol(nm, ucnum, p);
+		if (is_extern)
+			sym->set_externed();
 		nums_used[ucnum] = sym;
 		return sym;
 		}
@@ -404,7 +432,8 @@ int Uc_function_symbol::gen_call
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE or method.
 	Uc_array_expression *aparms,	// Actual parameter list.
-	bool /* retvalue */		// True if a function.
+	bool retvalue,		// True if a function.
+	Uc_class *scope_vtbl	// For method calls using a different scope.
 	)
 	{
 	char buf[200];
@@ -446,8 +475,17 @@ int Uc_function_symbol::gen_call
 			}
 		else
 			itemref->gen_value(out);
-		out.push_back((char) UC_CALLM);
-		Write2(out, method_num);
+		if (scope_vtbl)
+			{
+			out.push_back((char) UC_CALLMS);
+			Write2(out, method_num);
+			Write2(out, scope_vtbl->get_num());
+			}
+		else
+			{
+			out.push_back((char) UC_CALLM);
+			Write2(out, method_num);
+			}
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{
@@ -513,15 +551,23 @@ Uc_symbol *Uc_scope::search_up
 
 int Uc_scope::add_function_symbol
 	(
-	Uc_function_symbol *fun
+	Uc_function_symbol *fun,
+	Uc_scope *parent
 	)
 	{
 	char buf[150];
 	const char *nm = fun->get_name();
-	Uc_symbol *found = search(nm);	// Already here?
+	Uc_symbol *found;	// Already here?
+	if (parent)
+		found = parent->search(nm);
+	else
+		found = search(nm);
 	if (!found)			// If not, that's good.
 		{
-		add(fun);
+		if (parent)
+			parent->add(fun);
+		else
+			add(fun);
 		return 1;
 		}
 	Uc_function_symbol *fun2 = dynamic_cast<Uc_function_symbol *> (found);
@@ -534,12 +580,15 @@ int Uc_scope::add_function_symbol
 		}
 	else if (fun->get_num_parms() != fun2->get_num_parms())
 		{
-		sprintf(buf, "Decl. of '%s' doesn't match previous decl", nm);
+		if (fun2->is_inherited())
+			sprintf(buf, "Decl. of virtual member function '%s' doesn't match decl. from base class", nm);
+		else
+			sprintf(buf, "Decl. of '%s' doesn't match previous decl", nm);
 		Uc_location::yyerror(buf);
 		}
 	else if (fun->usecode_num != fun2->usecode_num)
 		{
-		if (fun2->externed || fun->externed)
+		if (fun2->externed || fun->externed || fun2->is_inherited())
 			{
 			if (!Uc_function_symbol::new_auto_num &&
 					Uc_function_symbol::last_num == fun->usecode_num)

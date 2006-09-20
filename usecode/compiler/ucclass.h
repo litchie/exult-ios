@@ -44,8 +44,10 @@ class Uc_class : public Uc_design_unit
 	Uc_scope scope;
 	int num_vars;			// # member variables.
 	std::vector<Uc_function *> methods;
+	Uc_class *base_class;	// For inheritance.
 public:
 	Uc_class(char *nm);
+	Uc_class(char *nm, Uc_class *base);
 	~Uc_class();
 	Uc_scope *get_scope()
 		{ return &scope; }
@@ -54,6 +56,13 @@ public:
 	void add_method(Uc_function *m);
 	void gen(std::ostream& out);	// Generate Usecode.
 	virtual Usecode_symbol *create_sym();
+	virtual bool is_class() const
+		{ return true; }
+	const char *get_name() const
+		{ return name.c_str(); }
+	int get_num_vars() const
+		{ return num_vars; }
+	bool is_class_compatible(const char *nm);
 	};
 
 #endif

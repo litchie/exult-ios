@@ -214,6 +214,10 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		// Print variable reference
 		printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;
+	case IMMED_PAIR:
+		printf("\t%04XH, %04XH\n", *(unsigned short*)( ptrc + 1 ),
+						*(unsigned short*)( ptrc + 3 ));
+		break;
 	case FLGREF:
 		// Print global flag reference
 		printf("\tflag:[%04X]\n", *(unsigned short*)( ptrc + 1 ));

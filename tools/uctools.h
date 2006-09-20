@@ -32,6 +32,7 @@
 #define SLOOP32 16
 #define STATICREF 17
 #define CLASSVARREF 18
+#define IMMED_PAIR 19
 
 // Opcode descriptor
 typedef struct _opcode_desc
@@ -133,8 +134,10 @@ static opcode_desc opcode_table[] =
 	{ "push\tclsvar", 2, CLASSVARREF },			// 54
 	{ "pop\tclsvar", 2, CLASSVARREF },			// 55
 	{ "callm", 2, IMMED },					// 56
-	{ NULL, 0, 0 },	// 57
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 58-5B
+	{ "callms", 4, IMMED_PAIR },	// 57
+	{ "clscreate", 2, IMMED },	// 58
+	{ "classdel", 0, 0 },	// 59
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5A-5B
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 60-63
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 64-67
