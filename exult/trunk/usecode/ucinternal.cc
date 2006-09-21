@@ -2280,27 +2280,49 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			case 0x26:		// AIDX.
+			case 0x5A:		// AIDXS.
 			{
 				sval = popi();	// Get index into array.
 				sval--;		// It's 1 based.
 				// Get # of local to index.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					pushi(0);
-					break;
+				Usecode_value *val;
+				if (opcode == 0x26) {
+					offset = Read2(frame->ip);
+					if (offset < 0 || offset >= num_locals) {
+						LOCAL_VAR_ERROR(offset);
+						pushi(0);
+						break;
+					}
+					val = &(frame->locals[offset]);
+				} else {
+					offset = (sint16)Read2(frame->ip);
+					if (offset < 0) {// Global static.
+						if (-offset < statics.size())
+							val = &(statics[-offset]);
+						else {
+							cerr << "Global static variable #" << (offset) << " out of range!";\
+							pushi(0);
+							break;
+						}
+					} else {
+						if (offset < frame->function->statics.size())
+							val = &(frame->function->statics[offset]);
+						else {
+							cerr << "Local static variable #" << (offset) << " out of range!";\
+							pushi(0);
+							break;
+						}
+					}
 				}
 				if (sval < 0) {
 					cerr << "AIDX: Negative array index: " << sval << endl;
 					pushi(0);
 					break;
 				}
-				Usecode_value& val = frame->locals[offset];
-				
-				if (val.is_array()) {
-					push(val.get_elem(sval));
+				if (val->is_array()) {
+					push(val->get_elem(sval));
 				} else if (sval == 0) {
-					push(val); // needed for SS keyring (among others)
+					push(*val); // needed for SS keyring (among others)
 				} else {
 					pushi(0);  // guessing... probably unnecessary
 				}
@@ -2318,8 +2340,9 @@ int Usecode_internal::run()
 			case 0xae:		// (32 bit version)   
 			{
 				int nextopcode = *(frame->ip);
-				if ((opcode == 0x2e && nextopcode != 0x02) ||
-					(opcode == 0xae && nextopcode != 0x82)) {
+				if ((opcode == 0x2e && 
+						(nextopcode != 0x02 && nextopcode != 0x5C))
+					|| (opcode == 0xae && nextopcode != 0x82)) {
 					cerr << "2nd byte in loop isn't a 0x02 (or 0x82)!"<<endl;
 					break;
 				} else {
@@ -2328,6 +2351,7 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x02:	// LOOP (2nd byte of loop)
+			case 0x5C:	// LOOP (2nd byte of loop) using static array
 			case 0x82:  // (32 bit version)
 			{
 				// Counter (1-based).
@@ -2337,7 +2361,11 @@ int Usecode_internal::run()
 				// Current value of loop var.
 				int local3 = Read2(frame->ip);
 				// Array of values to loop over.
-				int local4 = Read2(frame->ip);
+				int local4;
+				if (opcode == 0x5C)
+					local4 = (sint16)Read2(frame->ip);
+				else
+					local4 = Read2(frame->ip);
 				// Get offset to end of loop.
 				if (opcode < 0x80)
 					offset = (short) Read2(frame->ip);
@@ -2349,20 +2377,39 @@ int Usecode_internal::run()
 					break;
 				}
 				if (local2 < 0 || local2 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
+					LOCAL_VAR_ERROR(local2);
 					break;
 				}
 				if (local3 < 0 || local3 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
+					LOCAL_VAR_ERROR(local3);
 					break;
 				}
-				if (local4 < 0 || local4 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
-					break;
+				if (opcode == 0x5C) {
+					if (local4 < 0) {// Global static.
+						if (-local4 >= statics.size()) {
+							cerr << "Global static variable #" << (-local4) << " out of range!";\
+							CERR_CURRENT_IP();
+							break;
+						}
+					} else {
+						if (local4 >= frame->function->statics.size()) {
+							cerr << "Local static variable #" << (local4) << " out of range!";\
+							CERR_CURRENT_IP();
+							break;
+						}
+					}
+				} else {
+					if (local4 < 0 || local4 >= num_locals) {
+						LOCAL_VAR_ERROR(local4);
+						break;
+					}
 				}
 				
 				// Get array to loop over.
-				Usecode_value& arr = frame->locals[local4];
+				Usecode_value& arr = opcode == 0x5C ? 
+						(local4 < 0 ? statics[-local4]
+							: frame->function->statics[local4])
+						: frame->locals[local4];
  				if (initializing_loop && arr.is_undefined())
 				{	// If the local 'array' is not initialized, do not loop
 					// (verified in FoV and SS):
@@ -2583,22 +2630,44 @@ int Usecode_internal::run()
 				pushi(*(frame->ip)++);
 				break;
 			case 0x46:		// Set array element.
+			case 0x5B:		// Set static array element.
 			{
-				// Get # of local array.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					break;
+				Usecode_value *arr;
+				if (opcode == 0x46) {
+					offset = Read2(frame->ip);
+					// Get # of local array.
+					if (offset < 0 || offset >= num_locals) {
+						LOCAL_VAR_ERROR(offset);
+						break;
+					}
+					arr = &(frame->locals[offset]);
+				} else {
+					offset = (sint16)Read2(frame->ip);
+					if (offset < 0) {// Global static.
+						if (-offset < statics.size())
+							arr = &(statics[-offset]);
+						else {
+							cerr << "Global static variable #" << (offset) << " out of range!";\
+							CERR_CURRENT_IP();
+							break;
+						}
+					} else {
+						if (offset < frame->function->statics.size())
+							arr = &(frame->function->statics[offset]);
+						else {
+							cerr << "Local static variable #" << (offset) << " out of range!";\
+							CERR_CURRENT_IP();
+							break;
+						}
+					}
 				}
-
-				Usecode_value& arr = frame->locals[offset];
 				short index = popi();
 				index--;	// It's 1-based.
 				Usecode_value val = pop();
-				int size = arr.get_array_size();
+				int size = arr->get_array_size();
 				if (index >= 0 && 
-					(index < size || arr.resize(index + 1)))
-					arr.put_elem(index, val);
+					(index < size || arr->resize(index + 1)))
+					arr->put_elem(index, val);
 				break;
 			}
 			case 0x47:		// CALLE.  Stack has caller_item.

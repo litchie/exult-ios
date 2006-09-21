@@ -68,5 +68,8 @@ const char UC_CALLM = 0x56;		// Call method (index is on stack).
 const char UC_CALLMS = 0x57;		// Call method (index is on stack).
 const char UC_CLSCREATE = 0x58;	// Create class instance.
 const char UC_CLASSDEL = 0x59;	// Delete class instance.
+const char UC_AIDXS = 0x5A;		// Pop static array elem.
+const char UC_POPARRS = 0x5B;		// Pop into static array elem.
+const char UC_LOOPTOPS = 0x5C;		// Loop with static array
 
 #endif

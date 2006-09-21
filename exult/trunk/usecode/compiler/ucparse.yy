@@ -157,6 +157,7 @@ static bool has_ret = false;
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
+%type <exprlist> opt_nonclass_expr_list nonclass_expr_list
 %type <funcall> function_call
 
 %%
@@ -320,9 +321,9 @@ statement:
 	| label_statement
 	| goto_statement
 	| delete_statement
-	| SAY  '(' opt_expression_list ')' ';'
+	| SAY  '(' opt_nonclass_expr_list ')' ';'
 		{ $$ = new Uc_say_statement($3); }
-	| MESSAGE '(' opt_expression_list ')' ';'
+	| MESSAGE '(' opt_nonclass_expr_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
 	| answer_statement
 	| ABORT ';'
@@ -648,6 +649,13 @@ array_loop_statement:
 start_array_loop:
 	start_for IDENTIFIER UCC_IN declared_var
 		{
+		if ($4->get_cls())
+			{
+			char buf[150];
+			sprintf(buf, "Can't convert class '%s' into non-class",
+					$4->get_name());
+			yyerror(buf);
+			}
 		Uc_var_symbol *var = cur_fun->add_symbol($2);
 		$$ = new Uc_arrayloop_statement(var, $4);
 		}
@@ -665,7 +673,7 @@ function_call_statement:
 
 special_method_call_statement:
 					/* Have 'primary' say something.*/
-	primary hierarchy_tok SAY '(' opt_expression_list ')' ';'
+	primary hierarchy_tok SAY '(' opt_nonclass_expr_list ')' ';'
 		{
 		Uc_block_statement *stmts = new Uc_block_statement();
 					/* Set up 'show' call.		*/
@@ -807,7 +815,7 @@ script_statement:			/* Yes, this could be an intrinsic. */
 	;
 
 item:					/* Any object, NPC.	*/
-	expression
+	nonclass_expr
 	;
 
 script_command_list:
@@ -976,17 +984,33 @@ delete_statement:
 	;
 
 answer_statement:
-	ADD '(' expression_list ')' ';'
+	ADD '(' nonclass_expr_list ')' ';'
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_add_answer(),
 								$3, cur_fun));
 		}
-	| REMOVE '(' expression_list ')' ';'
+	| REMOVE '(' nonclass_expr_list ')' ';'
 		{
 		$$ = new Uc_call_statement(new Uc_call_expression(
 					Uc_function::get_remove_answer(),
 								$3, cur_fun));
+		}
+	;
+
+opt_nonclass_expr_list:
+	nonclass_expr_list
+	|
+		{ $$ = new Uc_array_expression(); }
+	;
+
+nonclass_expr_list:
+	nonclass_expr_list ',' nonclass_expr
+		{ $$->add($3); }
+	| nonclass_expr
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);
 		}
 	;
 
@@ -1102,7 +1126,20 @@ primary:
 	| declared_var_value
 		{ $$ = $1; }
 	| declared_var '[' expression ']'
-		{ $$ = new Uc_arrayelem_expression($1, $3); }
+		{
+		if ($1->get_cls())
+			{
+			char buf[150];
+			sprintf(buf, "Can't convert class '%s' into non-class",
+					$1->get_name());
+			yyerror(buf);
+			$$ = new Uc_arrayelem_expression($1, $3);
+			}
+		else if ($1->is_static())
+			$$ = new Uc_static_arrayelem_expression($1, $3);
+		else
+			$$ = new Uc_arrayelem_expression($1, $3);
+		}
 	| FLAG '[' int_literal ']'
 		{ $$ = new Uc_flag_expression($3); }
 	| function_call
@@ -1120,7 +1157,7 @@ primary:
 	;
 
 new_expr:
-	NEW defined_class '(' opt_expression_list ')'
+	NEW defined_class '(' opt_nonclass_expr_list ')'
 		{
 		$$ = new Uc_new_expression(new Uc_class_inst_symbol("", $2, 0), $4);
 		}
