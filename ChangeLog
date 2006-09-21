@@ -10,6 +10,8 @@
 	  Added static and global static classes and fixed bug preventing the
 	  following code from working correctly unless item == npc:
 			npc->set_item_frame(1+get_item_frame());
+	  Got static arrays working correctly in loops and in setting/retrieving
+	  their elements.
 	  Possible future enhancements: add a way to set/retrieve class variables
 	  from outside a class; maybe allow class data members to be classes.
 	* Modified handling of '#' directives in UCC so they don't disrupt the line

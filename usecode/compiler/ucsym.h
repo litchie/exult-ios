@@ -75,6 +75,8 @@ public:
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const
 		{ return 0; }
+	virtual bool is_static() const
+		{ return false; }
 	};
 
 /*
@@ -129,6 +131,8 @@ public:
 	virtual int gen_value(vector<char>& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(vector<char>& out);
+	virtual bool is_static() const
+		{ return true; }
 	};
 
 /*
@@ -145,6 +149,8 @@ public:
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const
 		{ return cls; }
+	virtual bool is_static() const
+		{ return true; }
 	};
 
 /*

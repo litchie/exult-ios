@@ -137,8 +137,10 @@ static opcode_desc opcode_table[] =
 	{ "callms", 4, IMMED_PAIR },	// 57
 	{ "clscreate", 2, IMMED },	// 58
 	{ "classdel", 0, 0 },	// 59
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5A-5B
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
+	{ "aidxs", 2, VARREF },	// 5A
+	{ "setstaticarrayelem", 2, IMMED },	// 5B
+	{ "initstaticloop", 0, 0 },	// 5C
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5D-5F
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 60-63
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 64-67
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 68-6B

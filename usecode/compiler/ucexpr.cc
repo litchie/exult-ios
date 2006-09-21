@@ -202,6 +202,38 @@ void Uc_arrayelem_expression::gen_assign
  *	Generate code to evaluate expression and leave result on stack.
  */
 
+void Uc_static_arrayelem_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	out.push_back((char) UC_AIDXS);	// Opcode, var #.
+	Write2(out, array->get_offset());
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_static_arrayelem_expression::gen_assign
+	(
+	vector<char>& out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	out.push_back((char) UC_POPARRS);	// Opcode, var #.
+	Write2(out, array->get_offset());
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
 void Uc_flag_expression::gen_value
 	(
 	vector<char>& out
