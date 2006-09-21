@@ -19,6 +19,7 @@
  */
 
 #include <iostream>
+#include <cassert>
 #include "ucsymtbl.h"
 #include "utils.h"
 
