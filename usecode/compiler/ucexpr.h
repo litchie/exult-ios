@@ -107,6 +107,7 @@ public:
  */
 class Uc_arrayelem_expression : public Uc_expression
 	{
+protected:
 	Uc_var_symbol *array;
 	Uc_expression *index;
 public:
@@ -114,6 +115,23 @@ public:
 		: array(a), index(i)
 		{  }
 	~Uc_arrayelem_expression()
+		{ delete index; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(vector<char>& out);
+					// Gen. to assign from stack.
+	virtual void gen_assign(vector<char>& out);
+	};
+
+/*
+ *	An array element of an static array.
+ */
+class Uc_static_arrayelem_expression : public Uc_arrayelem_expression
+	{
+public:
+	Uc_static_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
+		: Uc_arrayelem_expression(a, i)
+		{  }
+	~Uc_static_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);

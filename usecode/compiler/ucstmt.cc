@@ -240,7 +240,10 @@ void Uc_arrayloop_statement::gen
 		return;			// Nothing useful to do.
 	out.push_back((char) UC_LOOP);	// Start of loop.
 	int top = out.size();		// This is where to jump back to.
-	out.push_back((char) UC_LOOPTOP);
+	if (array->is_static())
+		out.push_back((char) UC_LOOPTOPS);
+	else
+		out.push_back((char) UC_LOOPTOP);
 	Write2(out, index->get_offset());// Counter, total-count variables.
 	Write2(out, array_size->get_offset());
 	Write2(out, var->get_offset());	// Loop variable, than array.
