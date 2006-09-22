@@ -967,6 +967,7 @@ static void Handle_events
 	{
 	uint32 last_repaint = 0;	// For insuring animation repaints.
 	uint32 last_rotate = 0;
+	uint32 last_rest = 0;
 	/*
 	 *	Main event loop.
 	 */
@@ -1006,8 +1007,11 @@ static void Handle_events
 			if ((SDL_BUTTON(3) & ms) && !right_on_gump)
 				gwin->start_actor(x/scale, y/scale, 
 					Mouse::mouse->avatar_speed);
-			else 
-				gwin->get_main_actor()->resting(50);
+			else if (ticks > last_rest)
+				{
+				gwin->get_main_actor()->resting(ticks - last_rest);
+				last_rest = ticks;
+				}
 			}
 
 		// handle delayed showing of clicked items (wait for possible dblclick)

@@ -508,6 +508,7 @@ void Actor::change_frame
 		if (!(shape = id.get_shape()) || shape->is_empty())
 			frnum = (frnum&48)|Actor::standing;
 		}
+	rest_time = 0;
 	set_frame(frnum);
 	add_dirty(1);			// Set to repaint new.
 	}
