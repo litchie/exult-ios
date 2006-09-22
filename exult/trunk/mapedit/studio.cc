@@ -1270,6 +1270,10 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 				// Ignore case of extension.
 				if(!strcmp(fname,".")||!strcmp(fname,"..")||strcasecmp(fname + flen - strlen(ext), ext) != 0)
 					continue;
+				// Filter out 'font0000.vga' file as it is apparently
+				// from an old origin screensaver.
+				if(!strcasecmp(fname,"font0000.vga"))
+					continue;
 				// See if also in 'patch'.
 				string fullpath(ppath);
 				fullpath += "/";
@@ -1356,7 +1360,7 @@ void ExultStudio::setup_file_list() {
 				ShapeArchive, 1, "combos.flx", ComboArchive);
 	add_to_tree(model, "Map Files", "u7chunks", ChunksArchive, 1,
 						"npcs", NpcsArchive);
-	add_to_tree(model, "Palette Files", "*.pal,palettes.flx", 
+	add_to_tree(model, "Palette Files", "*.pal,palettes.flx",
 							PaletteFile, 0);
 	
 #if 0	/* Skip this until we can do something with these files. */
