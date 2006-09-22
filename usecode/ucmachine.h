@@ -94,6 +94,7 @@ public:
 	virtual int find_function(const char *nm, bool noerr = false) = 0;
 	virtual Usecode_class_symbol *get_class(int n) = 0;
 	virtual Usecode_class_symbol *get_class(const char *nm) = 0;
+	virtual int get_shape_fun(int n) = 0;
 	virtual void write() = 0;	// Write out 'gamedat/usecode.dat'.
 	virtual void read() = 0;	// Read in 'gamedat/usecode.dat'.
 

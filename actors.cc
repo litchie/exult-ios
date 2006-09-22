@@ -588,7 +588,7 @@ Actor::Actor
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false),
-	    atts(0)
+	    atts(0), usecode_name("")
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -1993,9 +1993,9 @@ bool Actor::edit
 			schedules[i].tz = p.tz;
 			}
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
-			get_shapenum(), get_framenum(), get_face_shapenum(),
-			name, npc_num, ident, usecode, properties, attack_mode,
-			alignment, flags, siflags, type_flags,
+				get_shapenum(), get_framenum(), get_face_shapenum(),
+				name, npc_num, ident, usecode, usecode_name, properties,
+				attack_mode, alignment, flags, siflags, type_flags,
 				num_schedules, schedules) != -1)
 			{
 			cout << "Sent npc data to ExultStudio" << endl;
@@ -2026,6 +2026,7 @@ void Actor::update_from_studio
 	std::string name;
 	short npc_num, ident;
 	int usecode;
+	std::string usecodefun;
 	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
@@ -2034,7 +2035,7 @@ void Actor::update_from_studio
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		face, name, npc_num, ident, usecode, 
+			face, name, npc_num, ident, usecode, usecodefun,
 			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
 		{
@@ -2059,6 +2060,15 @@ void Actor::update_from_studio
 			}
 					// Create.  Gets initialized below.
 		npc = new Npc_actor(name, shape, npc_num, usecode);
+		npc->usecode_name = usecodefun;
+		if (usecodefun.size())
+			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
+		if (npc_num >= 256 && npc->usecode != -1 &&
+				npc->usecode != 0x400 + npc_num)
+			npc->usecode_assigned = true;
+		else
+			npc->usecode_assigned = false;
+
 		npc->set_invalid();	// Set to invalid position.
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
@@ -2078,8 +2088,17 @@ void Actor::update_from_studio
 	else				// Old.
 		{
 		npc->add_dirty();
-		npc->usecode = usecode;
-		npc->usecode_assigned = true;
+		npc->usecode_name = usecodefun;
+		if (usecodefun.size())
+			npc->usecode = ucmachine->find_function(usecodefun.c_str(), true);
+		else
+			npc->usecode = usecode;
+		if (npc_num >= 256 && npc->usecode != -1 &&
+				npc->usecode != 0x400 + npc_num)
+			npc->usecode_assigned = true;
+		else
+			npc->usecode_assigned = false;
+
 		npc->set_npc_name(name.c_str());
 		}
 	// Ensure proper initialization of frame #:

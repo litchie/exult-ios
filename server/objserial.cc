@@ -198,6 +198,7 @@ static void Npc_actor_io
 	short& npc_num,
 	short& ident,
 	int& usecode,
+	std::string& usecodefun,
 	int *properties,		// Must have room for 12.
 	short& attack_mode,
 	short& alignment,
@@ -209,7 +210,7 @@ static void Npc_actor_io
 	)
 	{
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
-	io << face << name << npc_num << ident << usecode;
+	io << face << name << npc_num << ident << usecode << usecodefun;
 	int i;
 	for (i = 0; i < 12; i++)
 		io << properties[i];
@@ -456,6 +457,7 @@ int Npc_actor_out
 	short npc_num,
 	short ident,
 	int usecode,
+	std::string usecodefun,
 	int properties[12],
 	short attack_mode,
 	short alignment,
@@ -470,7 +472,7 @@ int Npc_actor_out
 	unsigned char *ptr = &buf[0];
 	Serial_out io(ptr);
 	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
-		name, npc_num, ident, usecode, 
+		name, npc_num, ident, usecode, usecodefun,
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
 		num_schedules, schedules);
@@ -494,6 +496,7 @@ int Npc_actor_in
 	short& npc_num,
 	short& ident,
 	int& usecode,
+	std::string& usecodefun,
 	int properties[12],
 	short& attack_mode,
 	short& alignment,
@@ -507,7 +510,7 @@ int Npc_actor_in
 	unsigned char *ptr = data;
 	Serial_in io(ptr);
 	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
-		name, npc_num, ident, usecode, 
+		name, npc_num, ident, usecode, usecodefun,
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
 		num_schedules, schedules);

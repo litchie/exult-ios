@@ -38,7 +38,6 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "databuf.h"
-#include "ucfunids.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -1288,6 +1287,14 @@ int Game_object::get_rotated_frame
 		return get_info().get_rotated_frame(curframe, quads);
 	}
 
+/*
+ *	Figure attack points against an object, and also run weapon's usecode.
+ */
+
+inline int Game_object::get_usecode() const
+	{
+	return ucmachine->get_shape_fun(get_shapenum());
+	}
 
 /*
  *	Figure attack points against an object, and also run weapon's usecode.

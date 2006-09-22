@@ -157,6 +157,7 @@ void Game_window::write_npcs
 	nfile.write2(num_npcs1);	// Start with counts.
 	nfile.write2(num_npcs - num_npcs1);
 	int i;
+	std::cout << "NPC write " << std::endl;
 	for (i = 0; i < num_npcs; i++)
 		npcs[i]->write(&nfile);
 	nfile_stream.flush();

@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucstmt.h"
 #include "opcodes.h"
 #include "ucscriptop.h"
-#include "ucfunids.h"
 
 using std::strcpy;
 using std::strcat;
@@ -139,7 +138,7 @@ static bool has_ret = false;
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr
 %type <intval> opt_int eventid direction int_literal converse_options
-%type <intval> opt_original opt_var
+%type <intval> opt_original opt_var opt_shapenum
 %type <sym> declared_sym
 %type <var> declared_var param
 %type <cls> opt_inheritance defined_class
@@ -263,19 +262,38 @@ function_body:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	opt_var IDENTIFIER opt_int '(' opt_param_list ')'
+	opt_var IDENTIFIER opt_int opt_shapenum '(' opt_param_list ')'
 		{
-		$$ = Uc_function_symbol::create($2, $3, *$5, is_extern);
+		if ($3 != -1 && $4 != -1)
+			{
+			char buf[180];
+			sprintf(buf, "parse error: 'shape#(%d)' unexpected", $4);
+			yyerror(buf);
+			}
+		$$ = Uc_function_symbol::create($2, $3, *$6, is_extern, 0, $4);
 		if ($1)
 			$$->set_has_ret();
-		delete $5;		// A copy was made.
+		delete $6;		// A copy was made.
 		}
-	| CLASS '<' defined_class '>' IDENTIFIER opt_int '(' opt_param_list ')'
+	| CLASS '<' defined_class '>' IDENTIFIER opt_int opt_shapenum '(' opt_param_list ')'
 		{
-		$$ = Uc_function_symbol::create($5, $6, *$8, is_extern);
+		if ($6 > -1 && $7 > -1)
+			{
+			char buf[180];
+			sprintf(buf, "parse error: 'shape#(%d)' unexpected", $7);
+			yyerror(buf);
+			}
+		$$ = Uc_function_symbol::create($5, $6, *$9, is_extern, 0, $7);
 		$$->set_ret_type($3);
-		delete $8;		// A copy was made.
+		delete $9;		// A copy was made.
 		}
+	;
+
+opt_shapenum:
+	SHAPENUM '(' INT_LITERAL ')'
+		{ $$ = $3; }
+	|				/* Empty. */
+		{ $$ = -1; }
 	;
 
 opt_int:
@@ -1230,8 +1248,6 @@ param:
 
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
-	| SHAPENUM '(' INT_LITERAL ')'
-		{ $$ = UC_SHAPEFUN($3); }
 	| declared_sym
 		{
 		Uc_const_int_symbol *sym = 

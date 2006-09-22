@@ -36,6 +36,7 @@
 #include "objiter.h"
 #include "databuf.h"
 #include "npctime.h"
+#include "ucmachine.h"
 
 using std::ios;
 using std::cout;
@@ -85,8 +86,11 @@ void Actor::read
 					//   possibly empty.
 					// iflag1:2 == usecode # assigned by
 					//   ES, so always use it.
+					// iflag1:3 == usecode fun name assigned
+					//   by ES, so use it instead.
 	bool read_sched_usecode = !fix_first && (iflag1&2);
-	if (!fix_first && (iflag1&4))
+	bool usecode_name_used = !fix_first && (iflag1&8);
+	if (usecode_name_used || !fix_first && (iflag1&4))
 		usecode_assigned = true;
 
 	int schunk = nfile->read1();	// Superchunk #.
@@ -98,13 +102,11 @@ void Actor::read
 	int usefun = nfile->read2();	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
 	usecode = usefun & 0xfff;
-//	if (!npc_num)			// Avatar is always first.
-//		usecode = 0x400;
 					// Need this for BG. (Not sure if SI.)
 	if (npc_num >= 0 && npc_num < 256)
 		usecode = 0x400 + npc_num;
 					// Watch for new NPC's added.
-	else if ((!has_usecode && !usecode_assigned &&
+	else if (usecode_name_used || (!has_usecode && !usecode_assigned &&
 	          usecode != 0x400 + npc_num) ||
 	         usecode == 0xfff)
 		usecode = -1;		// Let's try this.
@@ -353,6 +355,16 @@ void Actor::read
 		flags2 |= f;
 		if (!polym && get_flag(Obj_flags::polymorph))
 			clear_flag(Obj_flags::polymorph);
+
+		if (usecode_name_used)
+			{	// Support for named functions.
+			int funsize = nfile->read1();
+			char nm[funsize+1];
+			nfile->read(nm, funsize);
+			nm[funsize] = 0;
+			usecode_name = nm;
+			usecode = ucmachine->find_function(nm);
+			}
 	}
 	else
 	{
@@ -492,8 +504,14 @@ void Actor::write
 					//   ES, so always use it.
 	int iflag1 = objects.is_empty() ? 0 : 1;
 	iflag1 |= 2;			// We're always doing write_scheduled()
-	if (usecode_assigned)		// # assigned by EStudio?
-		iflag1 |= 4;		// Set bit 2.
+	if (usecode_assigned)	// # assigned by EStudio?
+	{
+		// If we have a name, use it instead of the usecode #.
+		if (!usecode_name.empty())
+			iflag1 |= 8;		// Set bit 3.
+		else
+			iflag1 |= 4;		// Set bit 2.
+	}
 	nfile->write2(iflag1);
 			// Superchunk #.
 	nfile->write1((get_cy()/16)*12 + get_cx()/16);
@@ -626,6 +644,15 @@ void Actor::write
 
 	// flags2
 	nfile->write4(flags2);
+
+	if (usecode_assigned && !usecode_name.empty())
+	{	// Support for named functions.
+		int size = usecode_name.size();
+		nfile->write1(size);
+		char nm[size];
+		std::strncpy(nm, usecode_name.c_str(), size);
+		nfile->write(nm, size);
+	}
 
 	// Skip 15
 	for (i = 0; i < 15; i++)

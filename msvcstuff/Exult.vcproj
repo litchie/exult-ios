@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Exult"
 	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
 	RootNamespace="Exult"
@@ -1403,10 +1403,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\gumps\Paperdoll_gump_info.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\gumps\Scroll_gump.cc"
 					>
 				</File>
@@ -1847,10 +1843,6 @@
 				Name="shapes"
 				>
 				<File
-					RelativePath="..\shapes\bodies.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\shapes\font.cc"
 					>
 				</File>
@@ -1893,10 +1885,6 @@
 				<Filter
 					Name="shapes h"
 					>
-					<File
-						RelativePath="..\shapes\bodies.h"
-						>
-					</File>
 					<File
 						RelativePath="..\shapes\font.h"
 						>
@@ -2410,11 +2398,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File

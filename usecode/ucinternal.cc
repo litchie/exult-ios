@@ -171,9 +171,18 @@ inline Usecode_class_symbol *Usecode_internal::get_class(int n)
 	{
 	return symtbl->get_class(n);
 	}
+
 inline Usecode_class_symbol *Usecode_internal::get_class(const char *nm)
 	{
 	return symtbl->get_class(nm);
+	}
+
+inline int Usecode_internal::get_shape_fun(int n)
+	{
+	return n < 0x400 ? n :
+			(symtbl ? symtbl->get_high_shape_fun(n)
+				// Default to 'old-style' high shape functions.
+				: 0x1000 + (n - 0x400));
 	}
 
 bool Usecode_internal::call_function(int funcid,
@@ -599,6 +608,7 @@ void Usecode_internal::say_string
 		if (!eol)		// Not found?
 			{
 			conv->show_npc_message(str);
+			click_to_continue();
 			break;
 			}
 		*eol = 0;
@@ -1759,6 +1769,7 @@ Usecode_internal::Usecode_internal
 	memset((char *) &timers[0], 0, sizeof(timers));
 	sp = stack;
 	ifstream file;                // Read in usecode.
+	std::cout << "Reading usecode file." << std::endl;
 	try
 		{
 		U7open(file, USECODE);
@@ -1802,8 +1813,9 @@ void Usecode_internal::read_usecode
 	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file)) 
 							== UCSYMTBL_MAGIC1)
 		{
-		if (!symtbl)
-			symtbl = new Usecode_symbol_table();
+		if (symtbl)
+			delete symtbl;
+		symtbl = new Usecode_symbol_table();
 		symtbl->read(file);
 		}
 	else
@@ -2989,7 +3001,7 @@ int Usecode_internal::find_function
 		if (!noerr)
 			cerr << "Failed to find Usecode symbol '" << nm
 					<< "'." << endl;
-		return 0;
+		return -1;
 		}
 	return ucsym->get_val();
 	}

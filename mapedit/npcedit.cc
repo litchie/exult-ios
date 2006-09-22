@@ -508,6 +508,7 @@ int ExultStudio::init_npc_window
 	std::string name;
 	short npc_num, ident;
 	int usecode;
+	std::string usecodefun;
 	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
@@ -516,7 +517,7 @@ int ExultStudio::init_npc_window
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame, face,
-		name, npc_num, ident, usecode, properties, 
+			name, npc_num, ident, usecode, usecodefun, properties,
 			attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
 		{
@@ -534,8 +535,10 @@ int ExultStudio::init_npc_window
 	set_npc_shape(shape, frame);
 	set_npc_face(face, 0);
 					// Usecode #.
-	set_entry("npc_usecode_entry", usecode, true,
-					npc_num >= 256 ? true : false);
+	if (npc_num >= 256 && usecodefun.size())
+		set_entry("npc_usecode_entry", usecodefun.c_str(), true);
+	else
+		set_entry("npc_usecode_entry", usecode, true, npc_num >= 256);
 					// Combat:
 	set_optmenu("npc_attack_mode", attack_mode);
 	set_optmenu("npc_alignment", alignment);
@@ -622,6 +625,9 @@ int ExultStudio::save_npc_window
 	GtkWidget *fw = glade_xml_get_widget(app_xml, "npc_face_frame");
 	int face = (int) gtk_object_get_user_data(GTK_OBJECT(fw));
 	int usecode = get_num_entry("npc_usecode_entry");
+	std::string usecodefun = "";
+	if (!usecode)
+		usecodefun = get_text_entry("npc_usecode_entry");
 	short attack_mode = get_optmenu("npc_attack_mode");
 	short alignment = get_optmenu("npc_alignment");
 
@@ -668,7 +674,7 @@ int ExultStudio::save_npc_window
 		if (Get_schedule_line(app_xml, i, schedules[num_schedules]))
 			num_schedules++;
 	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame, face,
-		name, npc_num, ident, usecode, 
+			name, npc_num, ident, usecode, usecodefun,
 			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, 
 			num_schedules, schedules) == -1)

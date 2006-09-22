@@ -53,6 +53,7 @@ protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	bool usecode_assigned;		// Usecode # explicitly assigned.
+	std::string usecode_name;		// Name of usecode fun explicitly assigned.
 	bool unused;			// If npc_num > 0, this NPC is unused
 					//   in the game.
 	short npc_num;			// # in Game_window::npcs list, or -1.
