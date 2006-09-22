@@ -404,6 +404,9 @@ int Usecode_script::exec
 			{		//   delay before next instruction.
 			Usecode_value& delayval = code->get_elem(++i);
 					// It's # of ticks.
+			Actor *act = usecode->as_actor(obj);
+			if (act)
+				act->clear_rest_time();
 			delay = gwin->get_std_delay()*delayval.get_int_value();
 			break;		
 			}
@@ -526,10 +529,10 @@ int Usecode_script::exec
 				ev = Usecode_internal::egg_proximity;
 					// And for telekenesis spell fun:
 			else if (fun == usecode->telekenesis_fun)
-					{
-					ev = Usecode_internal::double_click;
-					usecode->telekenesis_fun = -1;
-					}
+				{
+				ev = Usecode_internal::double_click;
+				usecode->telekenesis_fun = -1;
+				}
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
@@ -597,9 +600,6 @@ int Usecode_script::exec
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
-				Actor *npc = obj->as_actor();
-				if (npc)
-					npc->clear_rest_time();
 				//Get the actor's actual facing:
 				int v = (obj->get_framenum()&48)|(opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
@@ -636,6 +636,7 @@ void Usecode_script::step
 	Actor *act = usecode->as_actor(obj);
 	if (act)
 		{
+		act->clear_rest_time();
 		Frames_sequence *frames = act->get_frames(dir);
 					// Get frame (updates frame_index).
 		frame = frames->get_next(frame_index);
