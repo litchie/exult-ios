@@ -37,7 +37,6 @@ libusecode_la_SOURCES = \
 	ucserial.cc	\
 	ucfunction.h	\
 	ucfunction.cc	\
-	ucfunids.h	\
 	ucsymtbl.cc	\
 	ucsymtbl.h
 

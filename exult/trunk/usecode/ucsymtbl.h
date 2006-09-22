@@ -39,7 +39,8 @@ public:
 		fun_externed,
 		fun_extern_defined,	// External, but fun. # was given.
 		class_scope,
-		table_scope
+		table_scope,
+		shape_fun
 	};
 private:
 	friend class Usecode_symbol_table;
@@ -47,9 +48,10 @@ private:
 	std::string name;
 	Symbol_kind kind;
 	int val;			// Function #.
+	int extra;			// Extra symbol info.
 public:
-	Usecode_symbol(const char *nm, Symbol_kind k, int v)
-		: name(nm), kind(k), val(v)
+	Usecode_symbol(const char *nm, Symbol_kind k, int v, int e = -1)
+		: name(nm), kind(k), val(v), extra(e)
 		{  }
 	const char *get_name() const
 		{ return name.c_str(); }
@@ -57,7 +59,8 @@ public:
 		{ return kind; }
 	int get_val() const
 		{ return val; }
-	
+	int get_extra() const
+		{ return extra; }
 };
 
 class Usecode_scope_symbol : public Usecode_symbol
@@ -68,15 +71,17 @@ class Usecode_scope_symbol : public Usecode_symbol
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
 	typedef std::map<int, Usecode_symbol *> Val_table;
 	typedef std::map<std::string, Usecode_class_symbol *> Class_name_table;
+	typedef std::map<int, int> Shape_table;
 	Name_table by_name;
 	Val_table by_val;
 	Class_name_table class_names;
+	Shape_table shape_funs;
 	void setup_by_name(int start = 0);
 	void setup_by_val(int start = 0);
 	void setup_class_names(int start = 0);
 public:
 	Usecode_scope_symbol(const char *nm = "_usecode_", 
-			Symbol_kind k = table_scope, int v = 0)
+			Symbol_kind k = table_scope, int v = -1)
 		: Usecode_symbol(nm, k, v)
 		{  }
 	~Usecode_scope_symbol();
@@ -88,6 +93,7 @@ public:
 	Usecode_class_symbol *get_class(int n)
 		{ return n < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
+	int get_high_shape_fun(int n);
 	};
 
 class Usecode_class_symbol : public Usecode_scope_symbol

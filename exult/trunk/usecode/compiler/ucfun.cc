@@ -590,5 +590,8 @@ Usecode_symbol *Uc_function::create_sym
 	// For now, all externs have their ID given.
 	if (is_externed())
 		kind = Usecode_symbol::fun_extern_defined;
-	return new Usecode_symbol(get_name(), kind, get_usecode_num());
+	if (proto->get_shape_num() != -1)
+		kind = Usecode_symbol::shape_fun;
+	return new Usecode_symbol(get_name(), kind, get_usecode_num(),
+				proto->get_shape_num());
 	}

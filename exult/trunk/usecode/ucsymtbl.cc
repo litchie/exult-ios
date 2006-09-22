@@ -64,8 +64,14 @@ void Usecode_scope_symbol::read(istream& in)
 			classes.push_back(s);
 			sym = s;
 		} else {
+			int shape = 0;
+			// Shape function table:
+			if (kind == Usecode_symbol::shape_fun) {
+				shape = Read4(in);
+				shape_funs[shape] = val;
+			}
 			sym = new Usecode_symbol(nm,
-				(Usecode_symbol::Symbol_kind) kind, val);
+				(Usecode_symbol::Symbol_kind) kind, val, shape);
 		}
 		symbols.push_back(sym);
 	}
@@ -93,6 +99,8 @@ void Usecode_scope_symbol::write(ostream& out)
 		Write4(out, sym->get_val());
 		if (sym->get_kind() == class_scope)
 			static_cast<Usecode_class_symbol*>(sym)->write(out);
+		else if (sym->get_kind() == shape_fun)
+			Write4(out, sym->get_extra());
 	}
 }
 
@@ -170,6 +178,21 @@ Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
 	Class_name_table::iterator it = class_names.find(nm);
 	if (it == class_names.end())
 		return 0;
+	else
+		return (*it).second;
+}
+
+/*
+ *	Lookup shape function.
+ */
+int Usecode_scope_symbol::get_high_shape_fun(int n)
+{
+	if (shape_funs.empty())
+		// Default to 'old style' high shape functions.
+		return 0x1000 + (n - 0x400);
+	Shape_table::iterator it = shape_funs.find(n);
+	if (it == shape_funs.end())
+		return -1;
 	else
 		return (*it).second;
 }

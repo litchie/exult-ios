@@ -31,7 +31,6 @@
 #include "shapeid.h"
 #include "tqueue.h"
 #include "tiles.h"
-#include "ucfunids.h"
 #include "objlist.h"
 
 class Actor;
@@ -325,8 +324,7 @@ public:
 	virtual void delete_contents() { }
 
 	// Return's the object's usecode for the shape number
-	virtual int get_usecode() const
-		{ return UC_SHAPEFUN(get_shapenum()); }
+	virtual int get_usecode() const;
 
 	};
 

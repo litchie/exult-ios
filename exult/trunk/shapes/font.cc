@@ -83,6 +83,7 @@ static const char *Pass_word
  *		\n	New line.
  *		space	Word break.
  *		tab	Treated like a space for now.
+ *		*	Page break.
  *
  *	Output:	If out of room, -offset of end of text painted.
  *		Else height of text painted.
@@ -161,6 +162,13 @@ int Font::paint_text_box
 			}
 		if (cur_line >= max_lines)
 			break;
+
+		if (*text == '*')
+			{
+			text++;
+			if (cur_line)
+				break;
+			}
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = get_text_width(text, ewrd - text);
@@ -182,7 +190,7 @@ int Font::paint_text_box
 		text = ewrd;		// Continue past the word.
 					// Keep loc. of punct. endings.
 		if (text[-1] == '.' || text[-1] == '?' || text[-1] == '!' ||
-		    text[-1] == ',')
+		    text[-1] == ',' || text[-1] == '"')
 			{
 			last_punct_end = text;
 			last_punct_line = cur_line;
@@ -294,6 +302,7 @@ int Font::paint_text
  *		\n	New line.
  *		space	Word break.
  *		tab	Treated like a space for now.
+ *		*	Page break. 
  *
  *	Output:	If out of room, -offset of end of text painted.
  *		Else height of text painted.
@@ -353,6 +362,13 @@ int Font::paint_text_box_fixedwidth
 
 		if (cur_line >= max_lines)
 			break;
+
+		if (*text == '*')
+			{
+			text++;
+			if (cur_line)
+				break;
+			}
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = (ewrd - text) * char_width;
@@ -370,7 +386,7 @@ int Font::paint_text_box_fixedwidth
 		text = ewrd;		// Continue past the word.
 					// Keep loc. of punct. endings.
 		if (text[-1] == '.' || text[-1] == '?' || text[-1] == '!' ||
-		    text[-1] == ',')
+		    text[-1] == ',' || text[-1] == '"')
 			{
 			last_punct_end = text;
 			last_punct_line = cur_line;
@@ -587,6 +603,13 @@ int Font::find_cursor
 			}
 		if (cur_line >= max_lines)
 			break;
+
+		if (*text == '*')
+			{
+			text++;
+			if (cur_line)
+				break;
+			}
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = get_text_width(text, ewrd - text);
