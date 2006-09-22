@@ -1760,6 +1760,15 @@ void Game_window::start_actor
 	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
+	Usecode_script *scr = 0;
+	while ((scr = Usecode_script::find(main_actor, scr)) != 0)
+		{
+		if (scr->is_activated())
+			{
+			cout << "Got here" << endl;
+			return;
+			}
+		}
 	if (main_actor_dont_move() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
 		return;
 //	teleported = 0;
