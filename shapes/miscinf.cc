@@ -201,8 +201,16 @@ void Shapeinfo_lookup::Read_data_file
 			snprintf(buf, 50, "<STATIC>/%s.txt", fname);
 			ifstream in;
 			U7open(in, buf, true);
+			in.seekg(0, std::ios::end);
+			int size = in.tellg();	// Get file size.
+			in.seekg(0);
 			for (int i=0; i<numsections; i++)
-				Read_text_msg_file(in, static_strings[i], sections[i]);
+				{
+				std::size_t loc = in.tellg();
+				if (loc < size &&
+					Read_text_msg_file(in, static_strings[i], sections[i]) == -1)
+					in.seekg(loc);
+				}
 			in.close();
 			}
 		catch (std::exception &e)
@@ -217,8 +225,16 @@ void Shapeinfo_lookup::Read_data_file
 		{
 		ifstream in;
 		U7open(in, buf, true);
+		in.seekg(0, std::ios::end);
+		int size = in.tellg();	// Get file size.
+		in.seekg(0);
 		for (int i=0; i<numsections; i++)
-			Read_text_msg_file(in, patch_strings[i], sections[i]);
+			{
+			std::size_t loc = in.tellg();
+			if (loc < size &&
+				Read_text_msg_file(in, patch_strings[i], sections[i]) == -1)
+				in.seekg(loc);
+			}
 		in.close();
 		}
 

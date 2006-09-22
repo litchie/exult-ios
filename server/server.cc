@@ -597,7 +597,7 @@ void Server_delay
 		std::cout << "Connected to client" << endl;
 	}
 
-	if (Exult_server::peek_pipe() > 0)
+	while (Exult_server::peek_pipe() > 0)
 		handle_message(client_socket);
 		
 	if (Exult_server::is_broken()) {
