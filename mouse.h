@@ -91,7 +91,7 @@ public:
 	enum Avatar_Speed_Factors
 	{
 		slow_speed_factor          = 100,
-		medium_combat_speed_factor = 133,
+		medium_combat_speed_factor = 150,
 		medium_speed_factor        = 200,
 		fast_speed_factor          = 400
 	};

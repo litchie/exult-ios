@@ -35,6 +35,7 @@
 #include "combat_opts.h"
 #include "combat.h"
 #include "schedule.h" /* To get Schedule::combat */
+#include "ucsched.h"
 
 #ifndef _MSC_VER
 using std::max;
@@ -233,19 +234,19 @@ void Mouse::set_speed_cursor()
 {
 	Game_window *gwin = Game_window::get_instance();
 	Gump_manager *gump_man = gwin->get_gump_man();
-   
+
 	int cursor = dontchange;
 	int ax, ay;			// Get Avatar/barge screen location.
 
-    // Check if we are in dont_move mode, in this case display the hand cursor
+	// Check if we are in dont_move mode, in this case display the hand cursor
 	if (gwin->main_actor_dont_move())
-	        cursor = hand;
+			cursor = hand;
 			/* Can again, optionally move in gump mode. */
 	else if (gump_man->gump_mode()) {
 		if (gump_man->gumps_dont_pause_game())
 		{
-    		Gump *gump = gump_man->find_gump(mousex, mousey);
-        
+			Gump *gump = gump_man->find_gump(mousex, mousey);
+		
 			if (gump && !gump->no_handcursor())
 				cursor = hand;
 		}
@@ -254,105 +255,106 @@ void Mouse::set_speed_cursor()
 
 	else if (gwin->get_dragging_gump()) cursor = hand;
 
-    else if (cheat.in_map_editor()) 
-    {
-	switch (cheat.get_edit_mode())
+	else if (cheat.in_map_editor()) 
 	{
-	case Cheat::move:
-	    cursor = hand; break;
-	case Cheat::paint:
-	    cursor = short_combat_arrows[4]; break;	// Short S red arrow.
-	case Cheat::paint_chunks:
-	    cursor = med_combat_arrows[0]; break;	// Med. N red arrow.
-#if 0
-	case Cheat::select:
-	    cursor = short_arrows[7]; break;		// Short NW green.
-	case Cheat::hide:
-	    cursor = redx; break;
-#endif
-	case Cheat::combo_pick:
-	    cursor = greenselect; break;
-	case Cheat::select_chunks:
-	    cursor = greenselect; break;	// Nice to have somethin else.
-	}
-    }
-    else if (Combat::is_paused())
-	cursor = short_combat_arrows[0];	// Short N red arrow.
-    if (cursor == dontchange)
-    {
-        Barge_object *barge = gwin->get_moving_barge();
-        if (barge)
-        {			// Use center of barge.
-            gwin->get_shape_location(barge, ax, ay);
-            ax -= barge->get_xtiles()*(c_tilesize/2);
-            ay -= barge->get_ytiles()*(c_tilesize/2);
-        }
-        else				
-            gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
-    
-        int dy = ay - mousey, dx = mousex - ax;
-        Direction dir = Get_direction(dy, dx);
-	Rectangle gamewin_dims = gwin->get_win_rect();
-	float speed_section = max( max( -static_cast<float>(dx)/ax, static_cast<float>(dx)/(gamewin_dims.w-ax)), max(static_cast<float>(dy)/ay, -static_cast<float>(dy)/(gamewin_dims.h-ay)) );
-
-	/* If there is a hostile NPC nearby, the avatar isn't allowed to
-	 * move very fast
-	 * Note that the range at which this occurs in the original is
-	 * less than the "potential target" range- that is, if I go into
-	 * combat mode, even when I'm allowed to run at full speed,
-	 * I'll sometime charge off to kill someone "too far away"
-	 * to affect a speed limit.
-	 * I don't know whether this is taken into account by 
-	 * get_nearby_npcs, but on the other hand, its a negligible point.
-	 */
-	Actor_vector nearby;
-	if (!cheat.in_god_mode())
-		gwin->get_nearby_npcs( nearby );
-
-	bool nearby_hostile = false;
-	for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
-		Actor *actor = *it;
-
-		if( !actor->is_dead() && actor->get_schedule() &&
-			actor->get_alignment() >= Npc_actor::hostile && 
-		    actor->get_schedule_type() == Schedule::combat && 
-			static_cast<Combat_schedule*>(actor->get_schedule())->
-						has_started_battle())
+	switch (cheat.get_edit_mode())
 		{
-			/* TODO- I think invisibles still trigger the
-			 * slowdown, verify this. */
-			nearby_hostile = true;
-			break; /* No need to bother checking the rest :P */
+		case Cheat::move:
+			cursor = hand; break;
+		case Cheat::paint:
+			cursor = short_combat_arrows[4]; break;	// Short S red arrow.
+		case Cheat::paint_chunks:
+			cursor = med_combat_arrows[0]; break;	// Med. N red arrow.
+#if 0
+		case Cheat::select:
+			cursor = short_arrows[7]; break;		// Short NW green.
+		case Cheat::hide:
+			cursor = redx; break;
+#endif
+		case Cheat::combo_pick:
+			cursor = greenselect; break;
+		case Cheat::select_chunks:
+			cursor = greenselect; break;	// Nice to have somethin else.
 		}
 	}
+	else if (Combat::is_paused())
+	cursor = short_combat_arrows[0];	// Short N red arrow.
+	if (cursor == dontchange)
+	{
+		Barge_object *barge = gwin->get_moving_barge();
+		if (barge)
+		{			// Use center of barge.
+			gwin->get_shape_location(barge, ax, ay);
+			ax -= barge->get_xtiles()*(c_tilesize/2);
+			ay -= barge->get_ytiles()*(c_tilesize/2);
+		}
+		else				
+			gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+	
+		int dy = ay - mousey, dx = mousex - ax;
+		Direction dir = Get_direction(dy, dx);
+		Rectangle gamewin_dims = gwin->get_win_rect();
+		float speed_section = max( max( -static_cast<float>(dx)/ax, static_cast<float>(dx)/(gamewin_dims.w-ax)), max(static_cast<float>(dy)/ay, -static_cast<float>(dy)/(gamewin_dims.h-ay)) );
 
-        if( speed_section < 0.4 )
-        {
-            if( gwin->in_combat() )
-                cursor = get_short_combat_arrow( dir );
-            else
-                cursor = get_short_arrow( dir );
-            avatar_speed = 100*gwin->get_std_delay()/slow_speed_factor;
-        }
-        else if( speed_section < 0.8 || gwin->in_combat() || nearby_hostile )
-        {
-            if( gwin->in_combat() )
-                cursor = get_medium_combat_arrow( dir );
-            else
-                cursor = get_medium_arrow( dir );
-            if( gwin->in_combat() || nearby_hostile )
-                avatar_speed = 100*gwin->get_std_delay()/medium_combat_speed_factor;
-            else
-                avatar_speed = 100*gwin->get_std_delay()/medium_speed_factor;
-        }
-        else /* Fast - NB, we can't get here in combat mode; there is no
-              * long combat arrow, nor is there a fast combat speed. */
-        {           
-	    cursor = get_long_arrow( dir );
-            avatar_speed = 100*gwin->get_std_delay()/fast_speed_factor;
-        }
-    }
-    
-    if (cursor != dontchange)
-        set_shape(cursor);
+		/* If there is a hostile NPC nearby, the avatar isn't allowed to
+		 * move very fast
+		 * Note that the range at which this occurs in the original is
+		 * less than the "potential target" range- that is, if I go into
+		 * combat mode, even when I'm allowed to run at full speed,
+		 * I'll sometime charge off to kill someone "too far away"
+		 * to affect a speed limit.
+		 * I don't know whether this is taken into account by 
+		 * get_nearby_npcs, but on the other hand, its a negligible point.
+		 */
+		Actor_vector nearby;
+		if (!cheat.in_god_mode())
+			gwin->get_nearby_npcs( nearby );
+
+		bool nearby_hostile = false;
+		for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
+			Actor *actor = *it;
+
+			if( !actor->is_dead() && actor->get_schedule() &&
+				actor->get_alignment() >= Npc_actor::hostile && 
+				actor->get_schedule_type() == Schedule::combat && 
+				static_cast<Combat_schedule*>(actor->get_schedule())->
+							has_started_battle())
+			{
+				/* TODO- I think invisibles still trigger the
+				 * slowdown, verify this. */
+				nearby_hostile = true;
+				break; /* No need to bother checking the rest :P */
+			}
+		}
+		const int base_speed = 200*gwin->get_std_delay();
+		if( speed_section < 0.4 )
+		{
+			if( gwin->in_combat() )
+				cursor = get_short_combat_arrow( dir );
+			else
+				cursor = get_short_arrow( dir );
+			avatar_speed = base_speed/slow_speed_factor;
+		}
+		else if( speed_section < 0.8 || gwin->in_combat() || nearby_hostile 
+				|| Usecode_script::find(gwin->get_main_actor()))
+		{
+			if( gwin->in_combat() )
+				cursor = get_medium_combat_arrow( dir );
+			else
+				cursor = get_medium_arrow( dir );
+			if( gwin->in_combat() || nearby_hostile )
+				avatar_speed = base_speed/medium_combat_speed_factor;
+			else
+				avatar_speed = base_speed/medium_speed_factor;
+		}
+		else /* Fast - NB, we can't get here in combat mode; there is no
+		      * long combat arrow, nor is there a fast combat speed. */
+		{
+		cursor = get_long_arrow( dir );
+			avatar_speed = base_speed/fast_speed_factor;
+		}
+	}
+	
+	if (cursor != dontchange)
+		set_shape(cursor);
 }
