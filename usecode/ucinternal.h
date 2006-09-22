@@ -445,6 +445,7 @@ public:
 	virtual bool in_usecode_for(Game_object *item, Usecode_events event);
 	virtual Usecode_class_symbol *get_class(int n);
 	virtual Usecode_class_symbol *get_class(const char *nm);
+	virtual int get_shape_fun(int n);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Read in 'gamedat/usecode.dat'.
 

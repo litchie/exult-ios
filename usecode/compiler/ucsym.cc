@@ -345,9 +345,10 @@ Uc_function_symbol::Uc_function_symbol
 	char *nm, 
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
-	std::vector<Uc_var_symbol *>& p
+	std::vector<Uc_var_symbol *>& p,
+	int shp
 	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
-	     ret_type(0), has_ret(false)
+	     ret_type(0), has_ret(false), shape_num(shp)
 	{
 	}
 
@@ -363,9 +364,16 @@ Uc_function_symbol *Uc_function_symbol::create
 					//  1 + last_num.
 	std::vector<Uc_var_symbol *>& p,
 	bool is_extern,
-	Uc_scope *scope
+	Uc_scope *scope,
+	int shp
 	)
 	{
+	if (shp >= 0x400)
+		// Just for safety.
+		num = -1;
+	else if (shp != -1)
+		num = shp;
+		
 	// Override function number if the function has been declared before this.
 	Uc_function_symbol *sym = (Uc_function_symbol *) (scope ?
 		scope->search(nm) : Uc_function::search_globals(nm));
@@ -401,7 +409,7 @@ Uc_function_symbol *Uc_function_symbol::create
 	Sym_nums::const_iterator it = nums_used.find(ucnum);
 	if (it == nums_used.end())	// Unused?  That's good.
 		{
-		sym = new Uc_function_symbol(nm, ucnum, p);
+		sym = new Uc_function_symbol(nm, ucnum, p, shp);
 		if (is_extern)
 			sym->set_externed();
 		nums_used[ucnum] = sym;

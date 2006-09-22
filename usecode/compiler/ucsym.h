@@ -256,16 +256,18 @@ private:
 	std::vector<Uc_var_symbol *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
 	int method_num;			// Index with class if a method.
+	int shape_num;			// Shape # this function is for.
 	bool externed;
 	bool inherited;
 	bool has_ret;
 	Uc_class *ret_type;
 public:
 	friend class Uc_scope;
-	Uc_function_symbol(char *nm, int num, std::vector<Uc_var_symbol *>& p);
+	Uc_function_symbol(char *nm, int num,
+				std::vector<Uc_var_symbol *>& p, int shp = -1);
 	static Uc_function_symbol *create(char *nm, int num, 
 				std::vector<Uc_var_symbol *>& p, bool is_extern=false,
-				Uc_scope *scope = 0);
+				Uc_scope *scope = 0, int shp = -1);
 	const std::vector<Uc_var_symbol *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
@@ -274,6 +276,8 @@ public:
 		{ method_num = n; }
 	int get_method_num()
 		{ return method_num; }
+	int get_shape_num()
+		{ return shape_num; }
 	int get_num_parms()
 		{ return parms.size(); }
 	void set_externed()
