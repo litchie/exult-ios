@@ -2790,7 +2790,25 @@ void Actor::call_readied_usecode
  *	the 'set_to_attack' intrinsic.
  *	Note:	I think this is only for weapons that fire (jsf).
  */
+bool Actor::in_usecode_control() const
+	{
+	if (GAME_BG && get_flag(Obj_flags::bg_dont_move)
+			|| get_flag(Obj_flags::dont_move))
+		return true;
+	Usecode_script *scr = 0;
+	Actor *act = const_cast<Actor *>(this);
+	while ((scr = Usecode_script::find(act, scr)) != 0)
+		// no_halt scripts seem not to prevent movement.
+		if (scr->is_activated() && !scr->is_no_halt())
+			return true;
+	return false;
+	}
 
+/*
+ *	Attack using the usecode_target and usecode_weapon fields set by
+ *	the 'set_to_attack' intrinsic.
+ *	Note:	I think this is only for weapons that fire (jsf).
+ */
 void Actor::usecode_attack
 	(
 	)
@@ -4484,13 +4502,11 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
-	bool in_usecode_control = (GAME_BG && get_flag(Obj_flags::bg_dont_move))
-			|| get_flag(Obj_flags::dont_move);
 	if (!action)			// Not doing anything?
 		{			// Stop if not on current map.
 		if (get_map() != gwin->get_map())
 			dormant = true;
-		else if (schedule && !in_usecode_control)
+		else if (schedule && !in_usecode_control())
 			schedule->now_what();
 		}
 	else
@@ -4506,7 +4522,7 @@ void Npc_actor::handle_event
 			set_action(0);
 			if (get_map() != gwin->get_map())
 				dormant = true;
-			if (schedule && !in_usecode_control)
+			if (schedule && !in_usecode_control())
 				if (dormant)
 					schedule->im_dormant();
 				else

@@ -1760,12 +1760,8 @@ void Game_window::start_actor
 	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor_dont_move() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
+	if (main_actor->in_usecode_control() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
 		return;
-	Usecode_script *scr = 0;
-	while ((scr = Usecode_script::find(main_actor, scr)) != 0)
-		if (scr->is_activated())
-			return;
 //	teleported = 0;
 	if (moving_barge)
 		{			// Want to move center there.
@@ -1817,12 +1813,8 @@ void Game_window::start_actor_along_path
 	    moving_barge)		// For now, don't do barges.
 		return;			// Zzzzz....
 					// Animation in progress?
-	if (main_actor_dont_move())
+	if (main_actor->in_usecode_control())
 		return;
-	Usecode_script *scr = 0;
-	while ((scr = Usecode_script::find(main_actor, scr)) != 0)
-		if (scr->is_activated())
-			return;
 //	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
