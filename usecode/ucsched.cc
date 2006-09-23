@@ -126,10 +126,14 @@ void Usecode_script::start
 		else
 			break;
 		}
+	/*	++++ NEEDS TESTING: Trying another look at no_halt;
+		it apparently does not end other scripts, but seems
+		to allow movement during the execution of the script.
 	if (!is_no_halt())		// If flag not set,
 					// Remove other entries that aren't
 					//   'no_halt'.
 		Usecode_script::terminate(obj);
+	*/
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
@@ -394,10 +398,10 @@ int Usecode_script::exec
 			must_finish = true;
 			do_another = true;
 			break;
-		case dont_halt:		// ?? Always appears first.
-					// Maybe means "don't let
-					//    intrinsic 5c stop it".
-			no_halt = true;	// PURE GUESS.
+		case dont_halt:
+			// Seems to mean 'don't let intrinsic 5c halt it' as
+			// well as 'allow actor to move during script'
+			no_halt = true;
 			do_another = true;
 			break;
 		case delay_ticks:	// 1 parm.

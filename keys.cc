@@ -71,7 +71,7 @@ const struct Action {
 	bool show;
 	bool cheat;
 	Exult_Game game;
-    bool allow_during_dont_move;
+	bool allow_during_dont_move;
 } ExultActions[] = {
 	{ "QUIT", ActionQuit, 0, "Quit", true, false, NONE, true },
 	{ "SAVE_RESTORE", ActionFileGump, 0, "Save/restore", true, false, NONE, true },
@@ -142,7 +142,7 @@ const struct Action {
 	  ActionToggleEggs, 0, "Toggle egg display", true, true, NONE, false },
 	{ "TOGGLE_GOD_MODE",
 	  ActionGodMode, 0, "Toggle god mode", true, true, NONE, false },
-    { "CHANGE_GENDER", 
+	{ "CHANGE_GENDER", 
 	  ActionGender, 0, "Change gender", true, true, NONE, false },
 	{ "CHEAT_HELP", ActionCheatHelp, 0, "List cheat keys", true, true, NONE, false },
 	{ "TOGGLE_INFRAVISION",
@@ -293,19 +293,19 @@ bool KeyBinder::DoAction(ActionType a, bool press)
 	if (a.action->game != NONE && a.action->game != Game::get_game_type())
 		return true;
 	
-       // Restrict key actions in dont_move mode
+	// Restrict key actions in dont_move mode
 	if (a.action->allow_during_dont_move
-        || !Game_window::get_instance()->main_actor_dont_move()
-	|| cheat.in_map_editor())	// But not if map-editing.
-    {
-        if (press)
-            a.action->func(a.params);
-        else 
-        {
-            if(a.action->func_release != NULL)
-                a.action->func_release(a.params);
-        }
-    }
+		|| !Game_window::get_instance()->main_actor_dont_move()
+		|| cheat.in_map_editor())	// But not if map-editing.
+	{
+		if (press)
+			a.action->func(a.params);
+		else 
+		{
+			if(a.action->func_release != NULL)
+				a.action->func_release(a.params);
+		}
+	}
 	
 	return true;
 }
