@@ -3851,6 +3851,10 @@ void Main_actor::handle_event
 		if (delay)		// Keep going with same action.
 			gwin->get_tqueue()->add(
 					curtime + delay, this, udata);
+		else if (in_usecode_control())
+			// Keep trying if we are in usecode control.
+			gwin->get_tqueue()->add(
+					curtime + gwin->get_std_delay(), this, udata);
 		else
 			{
 			set_action(0);
@@ -3858,6 +3862,10 @@ void Main_actor::handle_event
 				schedule->now_what();
 			}
 		}
+	else if (in_usecode_control())
+		// Keep trying if we are in usecode control.
+		gwin->get_tqueue()->add(
+				curtime + gwin->get_std_delay(), this, udata);
 	else if (schedule)
 		schedule->now_what();
 	}
