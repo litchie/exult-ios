@@ -126,14 +126,10 @@ void Usecode_script::start
 		else
 			break;
 		}
-	/*	++++ NEEDS TESTING: Trying another look at no_halt;
-		it apparently does not end other scripts, but seems
-		to allow movement during the execution of the script.
 	if (!is_no_halt())		// If flag not set,
 					// Remove other entries that aren't
 					//   'no_halt'.
 		Usecode_script::terminate(obj);
-	*/
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
