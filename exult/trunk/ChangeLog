@@ -1,4 +1,11 @@
 2006-09-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* ucsched.cc, actors.*, gamewin.cc: Looking at 'no_halt' script opcode in
+	  a slightly different way. In particular, this prevents silver serpent
+	  venom from freezing the user for 1 game hour.
+	* ucsym.h: Fixed a GCC 4 compile problem.
+	* keys.cc: Changed a few identing spaces to tabs.
+
+2006-09-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Reduced avatar's speed to prevent outrunning of the teleport storm at the
 	  start of SI. The reulting speed also seems to match the original games
 	  better, as it is now very hard to outrun enemies. The avatar's speed is

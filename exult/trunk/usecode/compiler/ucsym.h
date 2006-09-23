@@ -39,6 +39,7 @@ class Uc_expression;
 class Uc_function;
 class Usecode_symbol;
 class Uc_class;
+class Uc_scope;
 
 /*
  *	For comparing names:
