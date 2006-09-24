@@ -1,3 +1,6 @@
+2006-09-24  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Implemented monster attack SFX; verified in the originals.
+
 2006-09-22  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* ucsched.cc, actors.*, gamewin.cc: Looking at 'no_halt' script opcode in
 	  a slightly different way. In particular, this prevents silver serpent

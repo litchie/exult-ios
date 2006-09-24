@@ -98,6 +98,7 @@ class Monster_info
 	unsigned char vulnerable, immune;
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
 					//   if 0, there's none.)
+	short sfx;		// Sound used when attacking. We *need* better sfx packs.
 	bool m_splits;			// For slimes.
 	bool m_cant_die;
 	bool m_cant_yell;		// Can't yell during combat.
@@ -110,9 +111,9 @@ class Monster_info
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
-	int read(std::istream& mfile);	// Read in from file.
+	int read(std::istream& mfile, bool bg);	// Read in from file.
 					// Write out.
-	void write(int shapenum, std::ostream& mfile);
+	void write(int shapenum, std::ostream& mfile, bool bg);
 	static const Monster_info *get_default();
 	static void reserve_equip(int cnt)
 		{ equip.reserve(cnt); }
@@ -206,6 +207,10 @@ public:
 		{ return equip_offset; }
 	void set_equip_offset(int o)
 		{ equip_offset = o; }
+	short get_hitsfx() const
+		{ return sfx; }
+	void set_hitsfx(short s)
+		{ sfx = s; }
 	};
 
 
