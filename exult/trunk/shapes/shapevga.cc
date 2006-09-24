@@ -239,7 +239,7 @@ void Shapes_vga_file::read_info
 		for (i = 0; i < num_monsters; i++)
 			{
 			Monster_info *minf = new Monster_info();
-			int shnum = minf->read(mfile);
+			int shnum = minf->read(mfile, game == BLACK_GATE);
 			info[shnum].monstinf = minf;
 			}
 		mfile.close();
