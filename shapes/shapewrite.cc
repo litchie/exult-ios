@@ -163,7 +163,7 @@ void Shapes_vga_file::write_info
 	mfile.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].monstinf)
-			info[i].monstinf->write(i, mfile);
+			info[i].monstinf->write(i, mfile, game == BLACK_GATE);
 	mfile.close();
 
 	U7open(mfile, PATCH_EQUIP);	// Write 'equip.dat'.
@@ -295,7 +295,8 @@ void Armor_info::write
 void Monster_info::write
 	(
 	int shapenum,
-	std::ostream& out
+	std::ostream& out,		// Write to here.
+	bool bg
 	)
 	{
 	uint8 buf[25];		// Entry length.
@@ -319,6 +320,9 @@ void Monster_info::write
 	*ptr++ = (m_can_teleport ? (1<<0) : 0) |
 		 (m_can_summon ? (1<<1) : 0) |
 		 (m_can_be_invisible ? (1<<2) : 0);
+	*ptr++ = 0;			// Unknown.
+	int sfx_delta = bg ? -1 : 0;
+	*ptr++ = (signed char)(sfx&0xff - sfx_delta);
 	out.write((char *) buf, sizeof(buf));
 	}
 

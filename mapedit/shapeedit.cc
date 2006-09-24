@@ -832,6 +832,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_monster_wpn", minfo->get_weapon());
 		set_spin("shinfo_monster_reach", minfo->get_reach());
 		set_spin("shinfo_monster_equip", minfo->get_equip_offset());
+		set_spin("shinfo_monster_sfx", minfo->get_hitsfx());
 		set_optmenu("shinfo_monster_align", minfo->get_alignment());
 		static char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
@@ -1024,6 +1025,7 @@ void ExultStudio::save_shape_notebook
 			get_spin("shinfo_monster_wpn"),
 			get_spin("shinfo_monster_reach"));
 		minfo->set_equip_offset(get_spin("shinfo_monster_equip"));
+		minfo->set_hitsfx(get_spin("shinfo_monster_sfx"));
 		minfo->set_alignment(get_optmenu("shinfo_monster_align"));
 		static char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",

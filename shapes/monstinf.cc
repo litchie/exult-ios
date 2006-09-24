@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "utils.h"
 #include "monstinf.h"
+#include "items.h"
+#include <iomanip>
 
 // #include "items.h"
 
@@ -47,7 +49,8 @@ Monster_info Monster_info::default_info;
 
 int Monster_info::read
 	(
-	istream& in			// Read from here.
+	istream& in,			// Read from here.
+	bool bg
 	)
 	{
 	uint8 buf[25];		// Entry length.
@@ -66,20 +69,24 @@ int Monster_info::read
 	m_splits = (*ptr & 1) != 0;	// Byte 6 (slimes).
 	m_cant_die = (*ptr & 2) != 0;
 	armor = (*ptr++ >> 4) & 15;
-	ptr++;				// Unknown.
+	ptr++;				// Byte 7: Unknown.
 	reach = *ptr & 15;		// Byte 8 - weapon reach.
 	weapon = (*ptr++ >> 4) & 15;
 	flags = *ptr++;			// Byte 9.
-	vulnerable = *ptr++;
-	immune = *ptr++;
-	m_cant_yell = (*ptr & (1<<5)) != 0;
+	vulnerable = *ptr++;	// Byte 10.
+	immune = *ptr++;		// Byte 11.
+	m_cant_yell = (*ptr & (1<<5)) != 0;		// Byte 12.
 	m_cant_bleed = (*ptr & (1<<6)) != 0;
 	ptr++;
-	ptr++;				// Unknown.
-	equip_offset = *ptr++;		// Byte 13.
-	m_can_teleport = (*ptr & 1) != 0;	// Exult's extra flags.
+	ptr++;	// Byte 13: Unknown.
+	equip_offset = *ptr++;		// Byte 14.
+	m_can_teleport = (*ptr & 1) != 0;	// Exult's extra flags: byte 15.
 	m_can_summon = (*ptr & 2) != 0;
 	m_can_be_invisible = (*ptr & 4) != 0;
+	ptr++;
+	ptr++;		// Byte 16: Unknown (0).
+	int sfx_delta = bg ? -1 : 0;
+	sfx = ((signed char)*ptr++) + sfx_delta;	// Byte 17.
 	return shapenum;
 	}
 
