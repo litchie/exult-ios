@@ -89,7 +89,25 @@ zaurielTeleportPartyAround ()
 			UI_sprite_effect(ANIMATION_TELEPORT, new_pos[X], new_pos[Y], 0, 0, 0, -1);
 			npc->move_object(new_pos);
 		}
-		//Remove the egg
+		else
+			//Remove the egg if the NPC is not here.
+			egg->remove_item();
+	}
+}
+
+zaurielUnfreezeFormerParty ()
+{
+	var pos = get_object_position();
+	//Find nearby eggs:
+	var eggs = 	pos->find_nearby(SHAPE_EGG, 20, MASK_EGG);
+
+	for (egg in eggs)
+	{
+		//Each egg has a quality equal to the number
+		//of a joinable NPC
+		var qual = egg->get_item_quality();
+		var npc = qual->get_npc_object();
+		npc->trueUnfreeze();
 		egg->remove_item();
 	}
 }
@@ -284,7 +302,7 @@ zaurielRitualCutscene ()
 			wait 12;					remove;}
 
 		unfreezeParty();
-		
+
 		script item after 16 ticks call zaurielRitualCutscene, RITUAL_END;
 	}
 	else if (event == RITUAL_END)
@@ -301,7 +319,8 @@ zaurielRitualCutscene ()
 		var barriers = pos->find_nearby(SHAPE_BARRIER, dist, MASK_TRANSLUCENT);
 		for (obj in barriers)
 			script obj remove;
-			
+		zaurielUnfreezeFormerParty();
+
 		item->trueUnfreeze();
 		
 		//Mark Laurianna's cure:

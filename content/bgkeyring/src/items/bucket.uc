@@ -67,7 +67,7 @@ makeSpill ()
 	spill->set_item_frame(UI_die_roll(min_frame, max_frame));	//choose a random frame
 	spill->set_item_flag(TEMPORARY);	//added to the original, prevents them sticking around FOREVER AND EVER
 
-	target_pos->update_last_created();
+	UI_update_last_created(target_pos);
 
 	//for FV quest: decrement the quality (ie, remaining spills) of the bucket
 	var bucket_quality = get_item_quality();
@@ -294,7 +294,7 @@ useBucketOnDousable ()
 			var new_lightsource = UI_create_new_object(new_shape);
 			new_lightsource->set_item_quality(lightsource_quality);
 			new_lightsource->set_item_frame(target_frame);
-			target_pos->update_last_created();
+			UI_update_last_created(target_pos);
 
 			//play lean-down animation?
 			script AVATAR
@@ -501,7 +501,7 @@ Bucket shape#(0x32A) ()
 				target_offsetx = [0, 2, 0, -2];
 				target_offsety = [2, 0, -2, 0];
 
-				script target wait 50;
+				script target repeat 50 wait 1;;
 				gotoObject(target, target_offsetx, target_offsety, 0, useBucketOnNPC, target, SCRIPTED);
 			}
 		}
@@ -631,10 +631,10 @@ Bucket shape#(0x32A) ()
 
 			//This strips the object reference from target, making
 			//it a regular X,Y,Z coordinate array
-			target = removeFromArray(target[1], target);
+			target = removeFromArray(target, target[1]);
 
 			target[Y] = target[Y] + 1;
-			target->path_run_usecode(useBucketOnGround, item, SCRIPTED);
+			UI_path_run_usecode(target, useBucketOnGround, item, SCRIPTED);
 		}
 	}
 }
