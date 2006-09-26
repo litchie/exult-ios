@@ -122,7 +122,7 @@ FishingRod shape#(0x296) ()
 			//put it near the avatar's feet
 			var avatar_pos = AVATAR->get_object_position();
 			avatar_pos[X] = avatar_pos[X] + 1;
-			avatar_pos->update_last_created();
+			UI_update_last_created(avatar_pos);
 
 			UI_play_sound_effect(SOUND_LANDEDFISH);
 
