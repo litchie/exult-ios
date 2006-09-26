@@ -2786,13 +2786,12 @@ void Actor::call_readied_usecode
 	}
 
 /*
- *	Attack using the usecode_target and usecode_weapon fields set by
- *	the 'set_to_attack' intrinsic.
- *	Note:	I think this is only for weapons that fire (jsf).
+ *	Returns true if NPC is in a non-no_halt usecode script or if
+ *	dont_move flag is set.
  */
 bool Actor::in_usecode_control() const
 	{
-	if (GAME_BG && get_flag(Obj_flags::bg_dont_move)
+	if ((GAME_BG && get_flag(Obj_flags::bg_dont_move))
 			|| get_flag(Obj_flags::dont_move))
 		return true;
 	Usecode_script *scr = 0;
@@ -4517,6 +4516,12 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	if (cheat.in_map_editor() && party_id < 0)
+		{
+		gwin->get_tqueue()->add(
+				curtime + gwin->get_std_delay(), this, udata);
+		return;
+		}
 	if (!action)			// Not doing anything?
 		{			// Stop if not on current map.
 		if (get_map() != gwin->get_map())
@@ -4559,8 +4564,6 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
-	if (cheat.in_map_editor() && party_id < 0)
-		return 0;
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
 		return 0;
 	Tile_coord oldtile = get_tile();

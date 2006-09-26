@@ -1,3 +1,12 @@
+2006-09-25  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* schedule.cc: Fixed pace schedule for large creatures (such as the cyclops
+	  northeast of Cove).
+	* actors.cc: Map-edit mode now delays handle_events for actors, preventing
+	  almost all actions. Also, fixed the bg_dont_move condition in
+	  in_usecode_control function.
+	* egg.*: Fixed field/caltrop bugs on editing/updating from ES, as well as
+	  bug #1564529.
+
 2006-09-24  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Implemented monster attack SFX; verified in the originals.
 
