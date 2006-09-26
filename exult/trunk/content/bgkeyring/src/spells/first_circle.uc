@@ -113,12 +113,12 @@ spellCreateFood ()
 	
 	else if (event == SCRIPTED)
 	{
+		var party = UI_get_party_list();
+		
 		//If the caster is not in party, this was just for 'show', i.e.,
 		//a usecode-schedule display.
-		if (!get_item_flag(PARTY))
+		if (!(get_npc_object() in party))
 			return;
-		
-		var party = UI_get_party_list();
 		
 		for (npc in party)
 		{
