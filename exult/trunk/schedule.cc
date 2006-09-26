@@ -494,6 +494,11 @@ void Pace_schedule::now_what
 		
 		if (blocked.tx != -1)		// Blocked?
 			{
+			Shape_info& shinfo = npc->get_info();
+			if (dir == north)
+				blocked = blocked + Tile_coord(0, -shinfo.get_3d_ytiles(), 0);
+			else if (dir == west)
+				blocked = blocked + Tile_coord(-shinfo.get_3d_xtiles(), 0, 0);
 			Game_object *obj = Game_object::find_blocking(blocked);
 			blocked.tx = -1;
 			changedir = true;

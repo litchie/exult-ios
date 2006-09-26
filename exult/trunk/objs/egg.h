@@ -192,6 +192,12 @@ public:
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
+	virtual int is_findable()
+		{ return Ireg_game_object::is_findable(); }
+	virtual bool edit()
+		{ Ireg_game_object::edit(); }
+	static void update_from_studio(unsigned char *data, int datalen)
+		{ Ireg_game_object::update_from_studio(data, datalen); }
 	};
 
 /*
@@ -223,5 +229,9 @@ public:
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
 	virtual int get_ireg_size();
+	virtual bool edit()
+		{ Ireg_game_object::edit(); }
+	static void update_from_studio(unsigned char *data, int datalen)
+		{ Ireg_game_object::update_from_studio(data, datalen); }
 };
 #endif
