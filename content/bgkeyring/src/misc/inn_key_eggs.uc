@@ -69,8 +69,8 @@ eggLockInnDoors ()
 	if (event == EVENT_TALK)
 	{
 		set_schedule_type(TALK);
-		trueUnfreeze();
-		run_schedule();
+		script item
+		{	call trueUnfreeze;}
 		abort;
 	}
 	else if (event == EVENT_FIND_EGG)
@@ -157,8 +157,9 @@ eggLockInnDoors ()
 
 				var delay = inn_keeper->get_distance(AVATAR) / 5;
 				//Innkeeper calls out to Avatar:
-				script inn_keeper after (delay - 2) ticks
-				{	nohalt;						call trueFreeze;
+				script inn_keeper
+				{	call trueFreeze;			wait delay;
+					face inn_keeper->find_direction(AVATAR);
 					say "@Hold on a bit...@";	call eggLockInnDoors, EVENT_TALK;}
 
 				//Avatar replies:
