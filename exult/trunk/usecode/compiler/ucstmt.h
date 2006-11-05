@@ -215,11 +215,11 @@ public:
  */
 class Uc_converse_case_statement : public Uc_statement
 	{
-	int string_offset;		// Offset of string to compare.
+	std::vector<int> string_offset;		// Offset of string to compare.
 	bool remove;			// True to remove answer.
 	Uc_statement *statements;	// Execute these.
 public:
-	Uc_converse_case_statement(int soff, bool rem, Uc_statement *stmts)
+	Uc_converse_case_statement(std::vector<int> soff, bool rem, Uc_statement *stmts)
 		: string_offset(soff), remove(rem), statements(stmts)
 		{  }
 	~Uc_converse_case_statement()

@@ -2342,6 +2342,8 @@ int Usecode_internal::run()
 			}
 			case 0x2d:		// RET. (Return from function)
 			{
+				// ++++ Testing.
+				show_pending_text();
 				Usecode_value r = pop();
 
 				return_from_function(r);
@@ -2617,26 +2619,28 @@ int Usecode_internal::run()
 				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 					pushi(0);
+				} else {
+					pushi(gflags[offset]);
 				}
-				pushi(gflags[offset]);
 				break;
 			case 0x43:		// POPF.
 				offset = Read2(frame->ip);
 				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
-				}
-				gflags[offset] = (unsigned char) popi();
-				if (gflags[offset]) {
-					Notebook_gump::add_gflag_text(offset);
+				} else {
+					gflags[offset] = (unsigned char) popi();
+					if (gflags[offset]) {
+						Notebook_gump::add_gflag_text(offset);
 #ifdef DEBUG
-					cout << "Setting global flag: "
-							<< offset << endl;
+						cout << "Setting global flag: "
+								<< offset << endl;
 #endif
+					}
+					// ++++KLUDGE for Monk Isle:
+					if (offset == 0x272 && Game::get_game_type() ==
+						SERPENT_ISLE)
+						gflags[offset] = 0;
 				}
-				// ++++KLUDGE for Monk Isle:
-				if (offset == 0x272 && Game::get_game_type() ==
-					SERPENT_ISLE)
-					gflags[offset] = 0;
 				break;
 			case 0x44:		// PUSHB.
 				pushi(*(frame->ip)++);
