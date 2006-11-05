@@ -87,6 +87,7 @@ static bool has_ret = false;
 	class Uc_block_statement *block;
 	class Uc_arrayloop_statement *arrayloop;
 	class Uc_array_expression *exprlist;
+	class std::vector<int> *intlist;
 	int intval;
 	char *strval;
 	}
@@ -98,7 +99,7 @@ static bool has_ret = false;
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
-%token NEW DELETE
+%token NEW DELETE RUNSCRIPT UCC_INSERT
 
 /*
  *	Script keywords:
@@ -129,16 +130,17 @@ static bool has_ret = false;
 %left '-' '+' '&'
 %left '*' '/' '%'
 %left NOT
-%left UCC_POINTS UCC_SCOPE
+%left UCC_POINTS UCC_SCOPE UCC_INSERT
 
 /*
  *	Production types:
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
-%type <expr> nonclass_expr
-%type <intval> opt_int eventid direction int_literal converse_options
+%type <expr> nonclass_expr opt_delay inserted_script
+%type <intval> opt_int direction int_literal converse_options
 %type <intval> opt_original opt_var opt_shapenum
+%type <intlist> string_list
 %type <sym> declared_sym
 %type <var> declared_var param
 %type <cls> opt_inheritance defined_class
@@ -156,7 +158,7 @@ static bool has_ret = false;
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
-%type <exprlist> opt_nonclass_expr_list nonclass_expr_list
+%type <exprlist> opt_nonclass_expr_list nonclass_expr_list inserted_script_list
 %type <funcall> function_call
 
 %%
@@ -708,6 +710,32 @@ special_method_call_statement:
 			new Uc_call_expression(Uc_function::get_remove_face(),
 				new Uc_array_expression($1), cur_fun));
 		}
+	| primary hierarchy_tok RUNSCRIPT '(' declared_var opt_delay ')' ';'
+		{
+		if ($5->get_cls())
+			{
+			char buf[150];
+			sprintf(buf, "Can't convert class '%s' into non-class",
+					$5->get_name());
+			yyerror(buf);
+			}
+		Uc_array_expression *parms = new Uc_array_expression();
+		parms->add($1);		// Itemref.
+		parms->add(new Uc_var_expression($5));		// Script.
+		if ($6)
+			parms->add($6);		// Delay.
+					// Get the script intrinsic.
+		Uc_symbol *sym = Uc_function::get_intrinsic($6 ? 2 : 1);
+		$$ = new Uc_call_statement(
+			new Uc_call_expression(sym, parms, cur_fun));
+		}
+	;
+
+opt_delay:
+	',' nonclass_expr
+		{ $$ = $2; }
+	|
+		{ $$ = 0; }
 	;
 
 return_statement:
@@ -801,12 +829,26 @@ converse_case_list:
 	;
 
 converse_case:
-	CASE STRING_LITERAL converse_options ':' statement_list
+	CASE string_list converse_options ':'
+			{ cur_fun->push_scope(); } statement_list
 		{
-		$$ = new Uc_converse_case_statement(cur_fun->add_string($2),
-				($3 ? true : false), $5);
+		$$ = new Uc_converse_case_statement(*$2,
+				($3 ? true : false), $6);
+		delete $2;		// A copy was made.
+		cur_fun->pop_scope();
 		}
 	;
+
+string_list:
+	string_list ',' STRING_LITERAL
+		{ $$->push_back(cur_fun->add_string($3)); }
+	| STRING_LITERAL
+		{
+		$$ = new vector<int>;
+		$$->push_back(cur_fun->add_string($1));
+		}
+	;
+
 
 converse_options:
 	'(' REMOVE ')'			/* For now, just one.		*/
@@ -828,6 +870,48 @@ script_statement:			/* Yes, this could be an intrinsic. */
 		Uc_call_expression *fcall = 
 				new Uc_call_expression(sym, parms, cur_fun);
 		$$ = new Uc_call_statement(fcall);
+		end_script();
+		}
+	| declared_var UCC_INSERT inserted_script_list ';'
+		{
+		if ($1->get_cls())
+			{
+			char buf[150];
+			sprintf(buf, "Can't convert class '%s' into non-class",
+					$1->get_name());
+			yyerror(buf);
+			}
+		Uc_var_expression *var = new Uc_var_expression($1);
+		$$ = new Uc_assignment_statement(
+				var, new Uc_array_expression(var, $3));
+		}
+	;
+
+inserted_script_list:
+	inserted_script_list UCC_INSERT inserted_script
+		{ $$->add($3); }
+	| inserted_script
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);
+		}
+	;
+
+inserted_script:
+	declared_var
+		{
+		if ($1->get_cls())
+			{
+			char buf[150];
+			sprintf(buf, "Can't convert class '%s' into non-class",
+					$1->get_name());
+			yyerror(buf);
+			}
+		$$ = new Uc_var_expression($1);
+		}
+	| '{' { start_script(); } script_command_list '}'
+		{
+		$$ = $3;
 		end_script();
 		}
 	;
@@ -905,9 +989,8 @@ script_command:
 		{ $$ = Create_array(Ucscript::music, $2); }
 	| start_call ';'
 		{ $$ = Create_array(Ucscript::usecode, $1); }
-	| start_call ',' eventid ';'
-		{ $$ = Create_array(Ucscript::usecode2, $1, 
-				new Uc_int_expression($3)); }
+	| start_call ',' nonclass_expr ';'
+		{ $$ = Create_array(Ucscript::usecode2, $1, $3); }
 	| SPEECH nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::speech, $2); }
 	| SFX nonclass_expr ';'
@@ -944,10 +1027,6 @@ direction:
 		{ $$ = 6; }
 	| NW
 		{ $$ = 7; }
-	;
-
-eventid:
-	int_literal
 	;
 
 opt_script_delay:
@@ -1056,6 +1135,11 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_MOD, $1, $3); }
 	| nonclass_expr EQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPEQ, $1, $3); }
+	| NEW SCRIPT { start_script(); } script_command
+		{
+		$$ = $4;
+		end_script();
+		}
 	| RESPONSE EQUALS nonclass_expr
 		{ $$ = new Uc_response_expression($3); }
 	| nonclass_expr NEQUALS nonclass_expr
