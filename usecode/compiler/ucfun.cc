@@ -479,7 +479,13 @@ void Uc_function::gen
 	code.reserve(30000);
 	if (statement)
 		statement->gen(code, this);
-	code.push_back((char) UC_RET);	// Always end with a RET.
+	// Always end with a RET or RTS.
+	if (proto->get_has_ret())
+		// Function specifies a return value.
+		// When in doubt, return zero by default.
+		code.push_back((char) UC_RTS);
+	else
+		code.push_back((char) UC_RET);
 	link_labels(code);
 	int codelen = code.size();	// Get its length.
 	int num_links = links.size();

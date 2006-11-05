@@ -179,7 +179,7 @@ static void Drop_dragged_npc(int npcnum, int x, int y, void *d);
 static void Drop_dragged_combo(int cnt, U7_combo_data *combo, 
 							int x, int y, void *d);
 #endif
-static void BuildGameMap();
+static void BuildGameMap(BaseGameInfo *game);
 static void Handle_events();
 static void Handle_event(SDL_Event& event);
 static void get_game_paths(const string &gametitle);
@@ -636,6 +636,7 @@ static void Init
 
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
+
 	if (run_bg) {
 		arg_gamename = CFG_BG_NAME;
 		run_bg = false;
@@ -644,10 +645,7 @@ static void Init
 		run_si = false;
 	}
 
-	if (arg_buildmap >= 0)
-		BuildGameMap();
-
-	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
+	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));
 #if defined(__zaurus__)
 	gwin = new Game_window(sw, sh, scaleval, sclr);
 #else
@@ -666,7 +664,6 @@ static void Init
 
 	SDL_SetEventFilter(0);
 	// Show the banner
-	Exult_Game mygame;
 	game = 0;
 
 	do {
@@ -713,6 +710,9 @@ static void Init
 			cerr << "Could not find any games to run; leaving." << endl;
 			exit(1);
 		}
+
+		if (arg_buildmap >= 0)
+			BuildGameMap(newgame);
 
 		gwin->resized(sw, sh, scaleval, sclr);
 		// Ensure proper clipping:
@@ -1866,7 +1866,7 @@ void change_gamma (bool down)
 	config->set("config/video/gamma/blue", text, true);
 }
 
-void BuildGameMap()
+void BuildGameMap(BaseGameInfo *game)
 {
 	int w, h, sc, sclr;
 
@@ -1874,44 +1874,10 @@ void BuildGameMap()
 	// WARNING!! Takes up lots of memory and diskspace!
 	if (arg_buildmap >= 0) {
 		int maplift = 16;
-		Exult_Game gametype;
 		switch(arg_buildmap) {
 			case 0: maplift = 16; break;
 			case 1: maplift = 10; break;
 			case 2: maplift = 5; break;
-		}
-		
-		// For now, I am leaving it only for unmodded BG and SI.
-		BaseGameInfo *newgame = 0;
-		if (run_bg) {
-			run_bg = false;
-			// BG will always be the first game if it is installed:
-			if (gamemanager->is_bg_installed())
-				newgame = gamemanager->get_game(0);
-			else
-			{
-				newgame = 0;
-				cerr << "Black Gate not found." << endl;
-				exit(1);
-			}
-		} else if (run_si) {
-			run_si = false;
-			// BG will always be the first game if it is installed,
-			// while SI will be the next one:
-			if (gamemanager->is_si_installed())
-				if (gamemanager->is_bg_installed())
-					newgame = gamemanager->get_game(1);
-				else
-					newgame = gamemanager->get_game(0);
-			else
-			{
-				newgame = 0;
-				cerr << "Serpent Isle not found." << endl;
-				exit(1);
-			}
-		} else {
-			cerr << "You have to specify --bg or --si when using --buildmap" << endl;
-			exit(1);
 		}
 		
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
@@ -1926,7 +1892,7 @@ void BuildGameMap()
 		config->set("config/video/fullscreen",fullscreenstr,true);
 		Audio::Init();
 		current_res = find_resolution(w, h, sc);
-		Game::create_game(newgame);
+		Game::create_game(game);
 		gwin->init_files(false); //init, but don't show plasma	
 		gwin->get_map()->init();// +++++Got to clean this up.
 		gwin->get_pal()->set(0);

@@ -244,6 +244,7 @@ say		return SAY;
 remove		return REMOVE;
 add		return ADD;
 hide		return HIDE;
+run_script	return RUNSCRIPT;
 message		return MESSAGE;
 response	return RESPONSE;
 script		return SCRIPT;
@@ -329,6 +330,7 @@ se		return SE;
 ">="			{ return GTEQUALS; }
 "->"			{ return UCC_POINTS; }
 "::"			{ return UCC_SCOPE; }
+"<<"			{ return UCC_INSERT; }
 
 "# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); Uc_location::increment_cur_line(); }
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); Uc_location::increment_cur_line(); }

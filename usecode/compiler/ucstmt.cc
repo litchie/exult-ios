@@ -292,7 +292,9 @@ void Uc_return_statement::gen
 		{
 		expr->gen_value(out);	// Put value on stack.
 		out.push_back((char) UC_SETR);// Pop into ret_value.
-		out.push_back((char) UC_RTS);
+		// +++++ The following isn't needed given the way Exult
+		// +++++ executes UC_SETR
+		//out.push_back((char) UC_RTS);
 		}
 	else
 		out.push_back((char) UC_RET);
@@ -426,17 +428,35 @@ void Uc_converse_case_statement::gen
 	Uc_function *fun
 	)
 	{
-	out.push_back((char) UC_PUSHS);	// Gen. string comparison.
-	Write2(out, string_offset);
+	for (vector<int>::reverse_iterator it = string_offset.rbegin();
+			it != string_offset.rend(); ++it)
+		{
+		// Push strings on stack.
+		out.push_back((char) UC_PUSHS);
+		Write2(out, *it);
+		}
 	out.push_back((char) UC_CMPS);	// Generate comparison.
-	Write2(out, 1);			// # strings on stack.
+	Write2(out, string_offset.size());	// # strings on stack.
 	int to_top_index = out.size();	// Remember this spot to fill in.
 	Write2(out, 0);			// Place holder.
 	if (remove)			// Remove answer?
 		{
-		Uc_string_expression str(string_offset);
-		Call_intrinsic(out, fun,
-				Uc_function::get_remove_answer(), &str);
+		if (string_offset.size() > 1)
+			{
+			Uc_array_expression *strlist = new Uc_array_expression();
+			for (vector<int>::iterator it = string_offset.begin();
+					it != string_offset.end(); ++it)
+				{
+				Uc_string_expression *str = new Uc_string_expression(*it);
+				strlist->add(str);
+				}
+			Call_intrinsic(out, fun,
+					Uc_function::get_remove_answer(), strlist);
+			}
+		else
+			Call_intrinsic(out, fun,
+					Uc_function::get_remove_answer(),
+					new Uc_string_expression(string_offset[0]));
 		}
 	if (statements)			// Generate statement's code.
 		statements->gen(out, fun);
