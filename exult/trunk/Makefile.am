@@ -9,7 +9,8 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shap
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS =  files conf shapes imagewin flic pathfinder \
-	data usecode tools audio gumps objs server gamemgr desktop docs
+	data usecode tools audio gumps objs server gamemgr \
+	mapedit desktop docs
 
 bin_PROGRAMS = exult
 
