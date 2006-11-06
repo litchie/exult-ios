@@ -455,7 +455,7 @@ var_decl:
 		}
 	| IDENTIFIER '=' nonclass_expr
 		{
-		if (cur_class)
+		if (cur_class && !cur_fun)
 			{
 			char buf[180];
 			sprintf(buf, "Initialization of class member var '%s' must be done through constructor", $1);
