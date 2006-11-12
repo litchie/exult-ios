@@ -18026,7 +18026,6 @@ will be added automatically</property>
 </widget>
 
 <widget class="GtkDialog" id="usecodes_dialog">
-  <property name="visible">True</property>
   <property name="title" translatable="yes">Usecode Entries</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
