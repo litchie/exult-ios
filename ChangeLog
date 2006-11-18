@@ -1,3 +1,6 @@
+2006-11-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* docs/exult_intrinsics.txt: Reformatting file, some other minor fixes.
+
 2006-11-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* ucinternal.cc: Fixed possible stack corruption on usecode machine when
 	  getting/setting global flags. Also, for testing, make opcode 0x2d (setr)
