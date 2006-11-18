@@ -822,7 +822,7 @@ int UI_get_schedule_type(actor npc)
 int npc->get_schedule_type()
 
     Returns the schedule (an int in the range 0-31) of 'npc', as reported in the
-    cheat screen.	Here is a list of the schedule constants defined in
+    cheat screen. Here is a list of the schedule constants defined in
     'src/headers/constants.uc':
 
         IN_COMBAT    = 0     PACE_HORIZONTAL    = 1     PACE_VERTICAL    = 2
@@ -1074,7 +1074,7 @@ UI_sit_down(actor npc, object obj)
 npc->sit_down(object obj)
 
     Makes 'npc' sit on 'obj'. 'obj' must be a chair/seat shape (currently,
-    hardcoded to 873/292). For barge seats, also runs the barge	usecode when
+    hardcoded to 873/292). For barge seats, also runs the barge usecode when
     everyone in the party is seated.
 
 UI_get_body_npc(object obj)                                          [SI, Exult]
@@ -1259,7 +1259,7 @@ USER INTERFACE
 misc[4] UI_click_on_item()
 
     Displays the targeting square and waits for the player to click on
-    something. The return is a 4 element array whose first	element is the
+    something. The return is a 4 element array whose first element is the
     object reference of the clicked item or zero if the player clicked in the
     world. The last three elements are the (x, y, z) position of the click.
 
@@ -1400,7 +1400,7 @@ obj->book_mode()
     ****** SI SPECIFIC ******
     In SI, there is one additional shape of 'obj' which displays a scroll gump:
     it is shape 707. Additionally, there are two shapes which will display
-    serpentine runes: shape 707 (seprentine scroll) and shape 705	(serpentine
+    serpentine runes: shape 707 (seprentine scroll) and shape 705 (serpentine
     book). In both cases, If the avatar's 'READ' flag is set, any serpentine
     runes will be translated to normal runes.
     **** END SI SPECIFIC ****
@@ -1441,15 +1441,17 @@ UI_sprite_effect(int sprite, int x, int y, int vel_x, int vel_y, int reps)
     animation will last before deleting itself, looping the sprite's frames if
     it is needed.
 
-UI_obj_sprite_effect(object obj, int sprite, int rel_x, int rel_y, int vel_x, int vel_y, int reps)
-obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y, int reps)
+UI_obj_sprite_effect(object obj, int sprite, int rel_x, int rel_y, int vel_x,
+        int vel_y, int reps)
+obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y,
+        int reps)
 
     Creates a sprite effect from 'SPRITES.VGA'. This sprite effect is tied to
     'obj'; if 'obj' moves, the sprite will move along. 'sprite' is the sprite's
     shape number, ('rel_x', 'rel_y') is the relative (x, y) offset of the sprite
     relative to the position of 'obj', ('vel_x', 'vel_y') is the (x, y) speed
     (i.e., change in coordinates at every tick, and in addition to any motion
-    of 'obj'). If 'reps' < 0, the	sprite effect goes through all frames (at the
+    of 'obj'). If 'reps' < 0, the sprite effect goes through all frames (at the
     rate of one frame per tick) and deletes itself; otherwise, 'reps' is the
     total number of ticks the animation will last before deleting itself,
     looping the sprite's frames if it is needed.
