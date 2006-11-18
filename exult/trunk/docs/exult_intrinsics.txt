@@ -1,329 +1,357 @@
-GENERAL DEFINITIONS:
-=====================================================================================================================
-	For UCC purposes, the avatar is an NPC just like any other. Constants referred to below (usually in ALL CAPS) are
-definied in 'src/headers/contants.uc' unless otherwise stated.
+================================================================================
+GENERAL DEFINITIONS
+================================================================================
 
-	Unlike UCC-defined functions, intrinsics do not have a 'prototype'; you can pass as many (or as few) parameters
-to an intrinsic as you like. The only 'hard' limits are that (1) Exult will not like if call an intrinsic with more
-than 12 parameters or (2) if the intrinsic expects parameters which you haven't supplied. The parameter lists in the
-list below is the minimum safe number of parameters.
+For UCC purposes, the avatar is an NPC just like any other. Constants referred
+to below (usually in ALL CAPS) are definied in 'src/headers/contants.uc' unless
+otherwise stated.
 
-	To the right of many intrinsic 'prototypes', you can see an indicator between square brackets. This indicator
-is a quick way to see if that intrinsic is available for the specific game you are interested in. The possible
-values of these indicators are:
-		Indicator			Meaning
-		'[BG]'				BG-specific intrinsic
-		'[SI]'				SI-specific intrinsic
-		'[Exult]'			Exult-specific intrinsic, available to both BG and SI
-		'[BG, Exult]'		Originally available only in BG, Exult allows SI to call it too
-		'[SI, Exult]'		Originally available only in SI, Exult allows BG to call it too
-		'[Exult: BG]'		Exult-specific intrinsic, available only to BG
-		'[Exult: SI]'		Exult-specific intrinsic, available only to SI
-		(not present)		Intrinsic available for BG and SI
-	The '[Exult]', '[BG, Exult]' and '[SI, Exult]' are essentially equivalent to no indicator at all; they are used
-in this document only for completness.
-	
-	The intrinsic prototypes below are in UCC-esque form. It is actually more like C than UCC. Specifically, all
-parameters have a type instead of the UCC-'var'. The parameter type indicates what Exult will be expecting; the UCC
-compiler won't care in the slightest what you pass as a parameter. The parameter types I use are as follows:
-	
-	'int'for integers.
-	
-	'object' is any object or NPC. It can be an object reference, 'item', a number (positive or negative, Exult will
-try to interpret it as an NPC in either case if in the correct range).
+Unlike UCC-defined functions, intrinsics do not have a 'prototype'; you can pass
+as many (or as few) parameters to an intrinsic as you like. The only 'hard'
+limits are that Exult will not like if you (1) call an intrinsic with more than
+12 parameters or (2) the intrinsic expects parameters which you haven't
+supplied. The parameter lists in the list below is the minimum safe number of
+parameters.
 
-	'actor' is any NPC. It is evaluated the same way as 'object' is, but will reject anything that can't be converted
-to an NPC. Monsters are also accepted.
+To the right of many intrinsic 'prototypes', you can see an indicator between
+square brackets. This indicator is a quick way to see if that intrinsic is
+available for the specific game you are interested in. The possible values of
+these indicators are:
 
-	'bool' is a 'true'/'false' parameter.
+    Indicator        Meaning
+    [BG]             BG-specific intrinsic
+    [SI]             SI-specific intrinsic
+    [Exult]          Exult-specific intrinsic, available to both BG and SI
+    [BG, Exult]      Originally BG-only, Exult allows it in SI too
+    [SI, Exult]      Originally SI-only, Exult allows it in BG too
+    [Exult: BG]      Exult-specific intrinsic, available only to BG
+    [Exult: SI]      Exult-specific intrinsic, available only to SI
+    (not present)    Intrinsic available for BG and SI
 
-	'string' is a string (text).
+The '[Exult]', '[BG, Exult]' and '[SI, Exult]' indicators are essentially
+equivalent to no indicator at all; they are used in this document only for
+completness.
 
-	If the parameter name is followed by a '[]', it indicates an array with elements of the specified type. Example:
-'actor npc[]' means an array of NPCs. If there is a number between the brackets, it means an array of that length;
-for example, 'int num[3]' means an array with 3 'int' elements. In some cases, an array can be of type 'misc' to
-indicate that not all of the array's elements are of the same type.
+The intrinsic prototypes below are in UCC-esque form. It is actually more like C
+than UCC. Specifically, all parameters have a type instead of the UCC-'var'. The
+parameter type indicates what Exult will be expecting; the UCC compiler won't
+care in the slightest what you pass as a parameter. The parameter types I use
+are as follows:
 
-	'function' refers to usecode functions. In UCC, this can be the function name or its usecode number. For example:
-'extern Bolt shape#(0x2D3) ();' can be passed as 'Bolt' (the functin name), 'shape#(0x2D3)' (its function number),
-'0x2D3' (once again, its function number since 'shape#(shnum) == shnum' if shnum < 0x400) or as '&Bolt' (using the
-'address of' operator '&' to get the function number).
+'int' for integers.
 
-	Some intrinsics are 'overloaded'; i.e., they accept more than one parameter type. In those cases, all of the
-possibilities are listed as prototypes.
+'object' is any object or NPC. It can be an object reference, 'item' or a number
+(positive or negative, Exult will try to interpret it as an NPC in either case
+if in the correct range).
 
-	If the parameter list is simply '[special]', see the description for details.
+'actor' is any NPC. It is evaluated the same way as 'object' is, but will reject
+anything that can't be converted to an NPC. Monsters are also accepted.
 
-	If the intrinsic is preceeded by a parameter type, it means that the intrinsic returns something of that type;
-the description explains the return value. In some cases, the return value can be 'misc[]' to indicate that the
-intrinsic returns an array, not all of which are of the same type.
+'bool' is a 'true'/'false' parameter.
 
-	All intrinsics can be called as presented in the list. If an intrinsic has at least one parameter, it can be
-called in 'calle' form, with the first parameter as its 'object'. Example:
-		int UI_execute_usecode_array(object obj, int script[]);
-		int obj->execute_usecode_array(int script[]);
-	The first parameter and the '->' can both be omitted if 'obj' is 'item', and if you omit either of them you
-*must* omit both or the Usecode will fail to compile. For stylistic purposes, the 'calle' form should be used only
-when the first parameter is an object or NPC (or 'item'). For all intrinsics with 'appropriate' parameter types, I
-have listed both forms in the list below.
-	Also, you may have noticed that I did not include the parameter type of 'obj' when I gave the 'calle' form of
-execute_usecode_array; since I will only give the 'calle' form when the parameter type is 'object' or 'actor', I feel
-that it is unneeded.
+'string' is a string (text).
 
+If the parameter name is followed by a '[]', it indicates an array with elements
+of the specified type. Example: 'actor npc[]' means an array of NPCs. If there
+is a number between the brackets, it means an array of that length; for
+example, 'int num[3]' means an array with 3 'int' elements. In some cases, an
+array can be of type 'misc' to indicate that not all of the array's elements
+are of the same type.
+
+'function' refers to usecode functions. In UCC, this can be the function name or
+its usecode number. For example: 'extern Bolt shape#(0x2D3) ();' can be passed
+as 'Bolt' (the function name), '0x2D3' (its function number since
+'shape#(shnum) == shnum' if shnum < 0x400) or as '&Bolt' (using the 'address
+of' operator '&' to get the function number).
+
+Some intrinsics are 'overloaded'; i.e., they accept more than one parameter
+type. In those cases, all of the possibilities are listed as prototypes.
+
+If the parameter list is simply '[special]', see the description for details.
+
+If the intrinsic is preceeded by a parameter type, it means that the intrinsic
+returns something of that type; the description explains the return value. In
+some cases, the return value can be 'misc[]' to indicate that the intrinsic
+returns an array, not all of which are of the same type.
+
+All intrinsics can be called as presented in the list. If an intrinsic has at
+least one parameter, it can be called in 'calle' form, with the first parameter
+as its 'object'. Example:
+
+int UI_execute_usecode_array(object obj, int script[]);
+int obj->execute_usecode_array(int script[]);
+
+The first parameter and the '->' can both be omitted if 'obj' is 'item', and if
+you omit either of them you *must* omit both or the Usecode will fail to
+compile. For stylistic purposes, the 'calle' form should be used only when the
+first parameter is an object or NPC (or 'item'). For all intrinsics with
+'appropriate' parameter types, I have listed both forms in the list below.
+
+Also, you may have noticed that I did not include the parameter type of 'obj'
+when I gave the 'calle' form of execute_usecode_array; since I will only give
+the 'calle' form when the parameter type is 'object' or 'actor', I feel that it
+is unneeded.
+
+================================================================================
 INTRINSIC FUNCTIONS
-=====================================================================================================================
+================================================================================
 
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 RANDOM NUMBERS
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_get_random(int max)
 
-	Returns a random number between '1' and 'max'.
-
+    Returns a random number between '1' and 'max'.
 
 int UI_die_roll(int min, int max)
-	
-	Returns a random value between 'min' and 'max'.
 
+    Returns a random value between 'min' and 'max'.
 
-int UI_roll_to_win(int att, int def)																[BG]
+int UI_roll_to_win(int att, int def)                                        [BG]
 
-	Rolls a (0-based) 25-sided die. If the result is 0, return value is '0'; if the roll is 24, return value is	'1'.
-	For all other values of the die roll, it adds 'att' and subtracts 'def' from the die roll; if this final value
-	is less than 12, return value is '0'. Otherwise, return is '1'.
+    Rolls a (0-based) 25-sided die. If the result is 0, return value is '0'; if
+    the roll is 24, return value is '1'. For all other values of the die roll,
+    it adds 'att' and subtracts 'def' from the die roll; if this final value is
+    less than 12, return value is '0'. Otherwise, return is '1'.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 SCRIPTING
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_execute_usecode_array(object obj, int script[])
 int obj->execute_usecode_array(int script[])
 
-	Deprecated; use UCC script blocks instead. Animates 'obj' according to 'script'. Always returns '1'.
-
+    Deprecated; use UCC script blocks instead. Animates 'obj' according to
+    'script'. Always returns '1'.
 
 int UI_delayed_execute_usecode_array(object obj, int script[], int delay)
 int obj->delayed_execute_usecode_array(int script[], int delay)
 
-	Deprecated; use UCC script blocks instead. Exactly like execute_usecode_array, but delayed by 'delay' ticks.
-
+    Deprecated; use UCC script blocks instead. Exactly like
+    execute_usecode_array, but delayed by 'delay' ticks.
 
 bool UI_in_usecode(object obj)
 bool obj->in_usecode()
 
-	Returns 'true' is executing an Usecode script for 'obj', 'false' otherwise.
-
+    Returns 'true' if executing an Usecode script for 'obj', 'false' otherwise.
 
 UI_halt_scheduled(object obj)
 obj->halt_scheduled()
 
-	Terminates all running scripts for 'obj', except for 'nohalt' scripts.
+    Terminates all running scripts for 'obj', except for 'nohalt' scripts.
 
-
-UI_begin_casting_mode(actor npc)																	[Exult]
+UI_begin_casting_mode(actor npc)                                         [Exult]
 npc->begin_casting_mode()
 
-	Starts casting mode for 'npc'. When the next script starts for 'npc', that NPC will display casting frames
-	(shape 859) until the script ends.
-
+    Starts casting mode for 'npc'. When the next script starts for 'npc', that
+    NPC will display casting frames (shape 859) until the script ends.
 
 int UI_path_run_usecode(int pos[], function fun, object obj, int event)
 
-	If the avatar can walk to to the location specified by 'pos', this intrinsic causes him to walk there and
-	returns '1'; otherwise, return value is '0'. When the avatar gets to the destination, Exult will can usecode
-	function 'fun', with 'obj' as 'item' and 'event' as the event ID. If 'obj' is not a valid object, the usecode
-	function is ignored. 'pos' can be either a 2-dimensional or a 3-dimensional position. Note that the player
-	can interrupt the path by moving the avatar while it is walking.
-	****** SI SPECIFIC ******
-	In SI, path_run_usecode finds a free spot within 3 tiles of the position specified by 'pos'; it also allows
-	a rise/drop of 3 in the z direction. Finally, path_run_usecode also makes the other party members move.
-	**** END SI SPECIFIC ****
+    If the avatar can walk to to the location specified by 'pos', this intrinsic
+    causes him to walk there and returns '1'; otherwise, return value is '0'.
+    When the avatar gets to the destination, Exult will can usecode function
+    'fun', with 'obj' as 'item' and 'event' as the event ID. If 'obj' is not a
+    valid object, the usecode function is ignored. 'pos' can be either a
+    2-dimensional or a 3-dimensional position. Note that the player can
+    interrupt the path by moving the avatar while it is walking.
 
+    ****** SI SPECIFIC ******
+    In SI, path_run_usecode finds a free spot within 3 tiles of the position
+    specified by 'pos'; it also allows a rise/drop of 3 in the z direction.
+    Finally, path_run_usecode also makes the other party members move.
+    **** END SI SPECIFIC ****
 
-UI_si_path_run_usecode(actor npc, int pos[], int event, object obj, function fun, bool flag)		[SI, Exult]
+UI_si_path_run_usecode(actor npc, int pos[], int event,              [SI, Exult]
+        object obj, function fun, bool flag)
 npc->si_path_run_usecode(int [], int event, object obj, function fun, bool flag)
 
-	Similar to path_run_usecode, the main differences are:
-		(1) it is 'npc', not necessarily the avatar, which describes the path;
-		(2) the path is uninterruptable by the player;
-		(3) the parameter order;
-		(4) if 'flag' is 'true', 'fun' will be executed even if the destination is not reachable;
-		(5) si_path_run_usecode does not return a value.
-	****** SI SPECIFIC ******
-	None of the SI-specific properties of path_run_usecode apply to si_path_run_usecode.
-	**** END SI SPECIFIC ****
+    Similar to path_run_usecode, the main differences are:
 
+        (1)   it is 'npc', not necessarily the avatar, which describes the
+              path;
+        (2)   the path is uninterruptable by the player;
+        (3)   the parameter order;
+        (4)   if 'flag' is 'true', 'fun' will be executed even if the
+              destination is not reachable;
+        (5)   si_path_run_usecode does not return a value.
+
+    ****** SI SPECIFIC ******
+    None of the SI-specific properties of path_run_usecode apply to
+    si_path_run_usecode.
+    **** END SI SPECIFIC ****
 
 UI_set_path_failure(function fun, object obj, int event)
 
-	Used after a path_run_usecode or si_path_run_usecode call, this function causes function 'fun' to be called with
-	'item' equal to 'obj' and event ID 'event' should the character fail to get to the destination for some reason.
-
+    Used after a path_run_usecode or si_path_run_usecode call, this function
+    causes function 'fun' to be called with 'item' equal to 'obj' and event ID
+    'event' should the character fail to get to the destination for some
+    reason.
 
 UI_telekenesis(function fun)
 
-	Deprecated. Stores 'fun'. The next *script* call to 'fun' (e.g., 'script item call fun;') will have an event
-	ID of 'DOUBLECLICK' instead of the standard 'SCRIPTED' event ID used for scripts. Since UCC scripts allow calling
-	a function with an event ID of your	choice (e.g., 'script item call fun, DOUBLECLICK;') it is best to simply
-	ignore this intrinsic.
+    Deprecated. Stores 'fun'. The next *script* call to 'fun' (e.g., 'script
+    item call fun;') will have an event ID of 'DOUBLECLICK' instead of the
+    standard 'SCRIPTED' event ID used for scripts. Since UCC scripts allow
+    calling a function with an event ID of your choice (e.g., 'script item call
+    fun, DOUBLECLICK;') it is best to simply ignore this intrinsic.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 DIALOG
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 UI_show_npc_face(actor npc, int face)
 npc->show_npc_face(int face)
-	
-	Displays frame 'face' of the portrait shape specified by 'npc'. Displays the face whose number is the absolute
-	value of the NPC's number. Each NPC can only display one portrait at a time.
-	If you are going to show the default frame ('face' == 0), use UCC's 'npc.say()' to display the NPC's face and
-	display any text within the parenthesis (or set with 'message') too. For the avatar, using 'AVATAR.say()' will
-	only result in the male avatar (unless using the SI avatars).
-	This intrinsic finds a free slot to display the face in or uses the second slot if there are no free slots.
 
+    Displays frame 'face' of the portrait shape specified by 'npc'. Displays the
+    face whose number is the absolute value of the NPC's number. Each NPC can
+    only display one portrait at a time. If you are going to show the default
+    frame ('face' == 0), use UCC's 'npc.say()' to display the NPC's face and
+    display any text within the parenthesis (or set with 'message') too. For
+    the avatar, using 'AVATAR.say()' will only result in the male avatar
+    (unless using the SI avatars). This intrinsic finds a free slot to display
+    the face in or uses the second slot if there are no free slots.
 
-UI_show_npc_face0(actor npc, int face)																[SI]
+UI_show_npc_face0(actor npc, int face)                                      [SI]
 npc->show_npc_face0(int face)
 
-	Like show_npc_face, but always displays the face on slot 0.
+    Like show_npc_face, but always displays the face on slot 0.
 
-	
-UI_show_npc_face1(actor npc, int face)																[SI]
+UI_show_npc_face1(actor npc, int face)                                      [SI]
 npc->show_npc_face1(int face)
 
-	Like show_npc_face, but always displays the face on slot 1.
+    Like show_npc_face, but always displays the face on slot 1.
 
-	
 UI_remove_npc_face(actor npc)
 npc->remove_npc_face()
-	
-	Deprecated; use UCC's 'npc.hide()' statement instead. Hides npc's portrait. See show_npc_face for details.
 
+    Deprecated; use UCC's 'npc.hide()' statement instead. Hides npc's portrait.
+    See show_npc_face for details.
 
-UI_remove_npc_face0()																				[SI]
+UI_remove_npc_face0()                                                       [SI]
 npc->remove_npc_face0()
-	
-	Deprecated; like remove_npc_face, but removes from slot 0 only.
 
+    Deprecated; like remove_npc_face, but removes from slot 0 only.
 
-UI_remove_npc_face1()																				[SI]
+UI_remove_npc_face1()                                                       [SI]
 npc->remove_npc_face1()
-	
-	Deprecated; like remove_npc_face, but removes from slot 1 only.
 
+    Deprecated; like remove_npc_face, but removes from slot 1 only.
 
-UI_set_conversation_slot(int slot)																	[SI]
+UI_set_conversation_slot(int slot)                                          [SI]
 npc->set_conversation_slot()
-	
-	Sets the active conversation face to 'slot'. 'slot' must be '0' or '1'.
 
+    Sets the active conversation face to 'slot'. 'slot' must be '0' or '1'.
 
-UI_init_conversation()																				[SI]
+UI_init_conversation()                                                      [SI]
 npc->init_conversation()
-	
-	Initializes the face information for a conversation. In Exult, it is usually safe to skip it.
 
+    Initializes the face information for a conversation. In Exult, it is usually
+    safe to skip it.
 
-UI_end_conversation(int slot)																		[SI]
+UI_end_conversation(int slot)                                               [SI]
 npc->end_conversation()
-	
-	Shows any pending text and removes all faces from the screen. Usually safe to skip this in Exult.
 
+    Shows any pending text and removes all faces from the screen. Usually safe
+    to skip this in Exult.
 
 UI_add_answer(string answer)
 UI_add_answer(string answer[])
-	
-	Deprecated; use UCC's 'add(string answer)' or 'add(string answer[])' statements instead. Adds the elements of
-	'answer' as dialog options.
-	
+
+    Deprecated; use UCC's 'add(string answer)' or 'add(string answer[])'
+    statements instead. Adds the elements of 'answer' as dialog options.
 
 UI_remove_answer(string answer)
 UI_remove_answer(string answer[])
-	
-	Deprecated; use UCC's '(remove)' construct instead. Removes all elements of 'answer' from dialog options.
 
+    Deprecated; use UCC's '(remove)' construct instead. Removes all elements of
+    'answer' from dialog options.
 
 UI_push_answers()
-	
-	Pushes (stores) all answers in a LIFO stack and then clears all options from the screen.
 
+    Pushes (stores) all answers in a LIFO stack and then clears all options from
+    the screen.
 
 UI_pop_answers()
-	
-	Pops (restores) all answers stored in the LIFO stack.
 
+    Pops (restores) all answers stored in the LIFO stack.
 
 UI_clear_answers()
-	
-	Clears all answers from the screen.
 
+    Clears all answers from the screen.
 
 string UI_select_from_menu()
-	
-	Makes player choose one answer among all that are being currently displayed and returns the selected choice.
 
+    Makes player choose one answer among all that are being currently displayed
+    and returns the selected choice.
 
 int UI_select_from_menu2()
-	
-	Like select_from_menu, but returns the selected answer's index (from 1 to n) instead.
 
+    Like select_from_menu, but returns the selected answer's index (from 1 to n)
+    instead.
 
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 SOUND/MUSIC
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 UI_play_sound_effect(int sfx)
 
-	Plays sound effect 'sfx'
-
+    Plays sound effect 'sfx'
 
 UI_play_sound_effect2(int sfx, object obj)
 
-	Plays sound effect 'sfx' with sound intensity dependent on the distance between the avatar and 'obj'.
-
+    Plays sound effect 'sfx' with sound intensity dependent on the distance
+    between the avatar and 'obj'.
 
 UI_play_music(int track, object obj)
 
-	Plays the music track number 'track'. If 'obj' is a reference to a valid object/NPC, and 'obj' is in the game map,
-	it will also display the sprite effect # 24 (musical notes). If 'track' is '255' ('0xFF'), Exult will *stop* any
-	music that is playing instead.
-
+    Plays the music track number 'track'. If 'obj' is a reference to a valid
+    object/NPC, and 'obj' is in the game map, it will also display the sprite
+    effect # 24 (musical notes). If 'track' is '255' ('0xFF'), Exult will
+    *stop* any music that is playing instead.
 
 int UI_start_speech(int track)
 
-	Starts to play the speech track specified by 'track' and returns '1' if successful; returns '0' if can't play the
-	speech for some reason (e.g., speech being disabled).
-	****** SI SPECIFIC ******
-	In SI, speech also displays a full-screen face from 'FACES.VGA'.
-	**** END SI SPECIFIC ****
+    Starts to play the speech track specified by 'track' and returns '1' if
+    successful; returns '0' if can't play the speech for some reason (e.g.,
+    speech being disabled).
 
+    ****** SI SPECIFIC ******
+    In SI, speech also displays a full-screen face from 'FACES.VGA'.
+    **** END SI SPECIFIC ****
 
 int UI_get_speech_track()
 
-	Returns the track number for the currently playing speech track.
+    Returns the track number for the currently playing speech track.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 SEARCHING/COUNTING
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 object UI_find_nearest(object obj, int shape, int dist)
 object obj->find_nearest(int shape, int dist)
-	
-	Returns an object reference to the nearest object with shape 'shape' that is within 'dist' tiles from 'obj'.
 
+    Returns an object reference to the nearest object with shape 'shape' that is
+    within 'dist' tiles from 'obj'.
 
 object UI_find_object(object cont, int shape, int qual, int frame)
 object cont->find_object(int shape, int qual, int frame)
 object UI_find_object(int cont, int shape, int qual, int frame)
 object UI_find_object(int cont[3], int shape, int qual, int frame)
-	
-	If 'cont' is a container, NPC or 'PARTY', finds all objects contained by 'cont'. If 'cont' is a vector[int,3],
-	it is treated as a (x, y, z) position and the intrinsic finds all objects within one tile of this position (in the
-	current game map). If 'cont' is equal to '-359', if searches the whole screen. In any case, this intrinsic returns
-	the first item that has shape 'shape', quality 'qual' and frame 'frame'. 'qual' and 'frame' can be wildcards:
-		qual						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Note, however, that 'shape' CANNOT be a wildcard.
 
+    If 'cont' is a container, NPC or 'PARTY', finds all objects contained by
+    'cont'. If 'cont' is a vector[int,3], it is treated as a (x, y, z) position
+    and the intrinsic finds all objects within one tile of this position (in the
+    current game map). If 'cont' is equal to '-359', if searches the whole
+    screen. In any case, this intrinsic returns the first item that has shape
+    'shape', quality 'qual' and frame 'frame'. 'qual' and 'frame' can be
+    wildcards:
+
+        qual                     frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
+
+    Note, however, that 'shape' CANNOT be a wildcard.
 
 object[] UI_find_nearby(object loc, int shape, int dist, int mask)
 object[] loc->find_nearby(int shape, int dist, int mask)
@@ -331,182 +359,212 @@ object[] UI_find_nearby(int loc[3], int shape, int dist, int mask)
 object[] UI_find_nearby(int loc[5], int shape, int dist, int mask)
 object[] UI_find_nearby(misc loc[4], int shape, int dist, int mask)
 
-	'loc' can be the return of a click_on_item intrinsic call, an object reference, a (x, y, z) position vector or a
-	(x, y, z, quality, frame) vector; in all cases, find_nearby will look for all objects within 'dist' tiles of the
-	specified object which have shape given by 'shape' and are not left out by the mask 'mask'. This intrinsic returns
-	an array containing all matching objects sorted right to left, near to far. If 'loc' is the five-element
-	array, the object must also match the supplied values of quality and frame. 'shape' can be '-1' or 'SHAPE_ANY' to
-	match any shapes; in either case, 'mask' will be ignored if it is equal to 'MASK_NPC'. Moreover, the five-element
-	'loc' array can use wildcards for 'quality' and 'frame':
-		quality						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Here is a list of the mask values for 'mask' defined in 'src/headers/contants.uc':
-		MASK_NONE		= 0x00		MASK_NPC		= 0x04		MASK_NPC2		= 0x08		MASK_EGG		= 0x10
-		MASK_INVISIBLE	= 0x20		MASK_PARTY_INVISIBLE	= 0x40
-		MASK_TRANLUCENT	= 0x80
-	Mask values can be combined (by adding them together). 'MASK_NPC' and 'MASK_NPC2' are treated almost exactly the
-	same way by Exult; the only difference being the aforementioned fact that, if 'mask' is equal to 'MASK_NPC' and
-	'shape' is not a wildcard, then the mask will be completely ignored.
+    'loc' can be the return of a 'UI_click_on_item' intrinsic call, an object
+    reference, a (x, y, z) position vector or a (x, y, z, quality, frame)
+    vector; in all cases, find_nearby will look for all objects within 'dist'
+    tiles of the specified object which have shape given by 'shape' and are not
+    left out by the mask 'mask'. This intrinsic returns an array containing all
+    matching objects sorted right to left, near to far. If 'loc' is the
+    five-element array, the object must also match the supplied values of
+    quality and frame. 'shape' can be '-1' or 'SHAPE_ANY' to match any shapes;
+    in either case, 'mask' will be ignored if it is equal to 'MASK_NPC'.
+    Moreover, the five-element 'loc' array can use wildcards for 'quality' and
+    'frame':
 
+        quality                  frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
+
+    Here is a list of the mask values for 'mask' defined in
+    'src/headers/contants.uc':
+
+        MASK_NONE          = 0x00    MASK_NPC                = 0x04
+        MASK_NPC2          = 0x08    MASK_EGG                = 0x10
+        MASK_INVISIBLE     = 0x20    MASK_PARTY_INVISIBLE    = 0x40
+        MASK_TRANLUCENT    = 0x80    
+
+    Mask values can be combined (by adding them together). 'MASK_NPC' and
+    'MASK_NPC2' are treated almost exactly the same way by Exult; the only
+    difference being the aforementioned fact that, if 'mask' is equal to
+    'MASK_NPC' and 'shape' is not a wildcard, then the mask will be completely
+    ignored.
 
 object[] UI_find_nearby_avatar(int shape)
 
-	Returns an array containing all objects with shape 'shape' that are located within 192 tiles of the avatar; the
-	return array is sorted right to left, near to far. 'shape' can be '-1' or SHAPE_ANY to signify all shapes.
-	You cannot find eggs, barges, invisible or transparent objects with this intrinsic.
-
+    Returns an array containing all objects with shape 'shape' that are located
+    within 192 tiles of the avatar; the return array is sorted right to left,
+    near to far. 'shape' can be '-1' or SHAPE_ANY to signify all shapes. You
+    cannot find eggs, barges, invisible or transparent objects with this
+    intrinsic.
 
 bool UI_npc_nearby(actor npc)
 bool npc->npc_nearby()
 
-	Returns 'true' if 'npc' is in the screen and NOT asleep, false otherwise.
+    Returns 'true' if 'npc' is in the screen and NOT asleep, 'false' otherwise.
 
-
-bool UI_npc_nearby2(actor npc)																		[SI]
+bool UI_npc_nearby2(actor npc)                                              [SI]
 bool npc->npc_nearby2()
 
-	Returns 'true' if 'npc' is NOT asleep and within 40 tiles of the avatar, false otherwise.
-
+    Returns 'true' if 'npc' is NOT asleep and within 40 tiles of the avatar,
+    'false' otherwise.
 
 int UI_count_objects(object obj, int shape, int qual, int frame)
 int obj->count_objects(int shape, int qual, int frame)
-	
-	Goes through all items contained by 'obj' and counts all of those that have shape 'shape', quality 'qual' and
-	frame 'frame'. 'obj' must be a container, an NPC or 'PARTY' for the whole party. The other three paramaters can
-	be the following wildcards:
-		shape						qual						frame
-		SHAPE_ANY		= -359		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	For clarity, use the appropriately named constant for the correct parameter.
 
+    Goes through all items contained by 'obj' and counts all of those that have
+    shape 'shape', quality 'qual' and frame 'frame'. 'obj' must be a container,
+    an NPC or 'PARTY' for the whole party. The other three paramaters can be the
+    following wildcards:
+
+        shape                    qual                     frame
+        SHAPE_ANY      = -359    QUALITY_ANY    = -359    FRAME_ANY      = -359
+
+    For clarity, use the appropriately named constant for the correct parameter.
 
 object[] UI_get_cont_items(object obj, int shape, int qual, int frame)
 object[] obj->get_cont_items(int shape, int qual, int frame)
 
-	Works like count_objects intrinsic; the differences are:
-	(1) 'obj' cannot be 'PARTY';
-	(2) It returns a list of all the objects matching the specified criteria, instead of a count.
+    Works like 'count_objects' intrinsic; the differences are:
 
+        (1)   'obj' cannot be 'PARTY';
+        (2)   It returns a list of all the objects matching the specified
+              criteria, instead of a count.
 
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 CREATION/PLACEMENT/REMOVAL
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_is_not_blocked(int pos[3], int shape, int frame)
 
-	Returns '1' if there is enough space to place shape 'shape', frame 'frame' in the position 'pos'; returns
-	'0' otherwise.
-
+    Returns '1' if there is enough space to place shape 'shape', frame 'frame'
+    in the position 'pos'; returns '0' otherwise.
 
 actor[] UI_add_party_items(int count, int shape, int qual, int frame)
 
-	Creates a total of 'count' units of an item with shape 'shape', quality 'qual' and frame 'frame' and distributes these
-	items between party members. Returns a list of NPC objects of all party members that received units of the items.
-	'qual' and 'frame' can be wildcards:
-		qual						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Note, however, that 'shape' CANNOT be a wildcard.
-	In the original game, there is a fifth 'bool' parameter; its meaning is unknown, and Exult will ignore this last
-	parameter if you do place it there.
-	****** SI SPECIFIC ******
-	If the party cannot hold all added objects, the remaining items are placed in the ground. The amount of items that
-	were dropped to the ground is appended to the list of NPCs that received the items.
-	**** END SI SPECIFIC ****
+    Creates a total of 'count' units of an item with shape 'shape', quality
+    'qual' and frame 'frame' and distributes these items between party members.
+    Returns a list of NPC objects of all party members that received units of
+    the items. 'qual' and 'frame' can be wildcards:
 
+        qual                     frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
+
+    Note, however, that 'shape' CANNOT be a wildcard. In the original game,
+    there is a fifth 'bool' parameter; its meaning is unknown, and Exult will
+    ignore this last parameter if you do place it there.
+
+    ****** SI SPECIFIC ******
+    If the party cannot hold all added objects, the remaining items are placed
+    in the ground. The amount of items that were dropped to the ground is
+    appended to the list of NPCs that received the items.
+    **** END SI SPECIFIC ****
 
 int UI_remove_party_items(int count, int shape, int qual, int frame)
 
-	Deletes from the party's inventory a total of 'count' units of an item with shape 'shape', quality 'qual' and frame
-	'frame'. Returns '1' if successful, '0' otherwise. 'qual' and 'frame' can be wildcards:
-		qual						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Note, however, that 'shape' CANNOT.
-	In the original game, there is a fifth 'bool' parameter; its meaning is unknown, and Exult will ignore this last
-	parameter if you do place it there.
+    Deletes from the party's inventory a total of 'count' units of an item with
+    shape 'shape', quality 'qual' and frame 'frame'. Returns '1' if successful,
+    '0' otherwise. 'qual' and 'frame' can be wildcards:
 
+        qual                     frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
+
+    Note, however, that 'shape' CANNOT. In the original game, there is a fifth
+    'bool' parameter; its meaning is unknown, and Exult will ignore this last
+    parameter if you do place it there.
 
 int UI_summon(int shape)
 
-	Creates a monster with shape 'shape'. The created monster has equipment as defined in its equipment record, and has
-	a 'FRIENDLY' alignment. If the creation is successful, the return value is a reference to the monster; otherwise,
-	the return is '0'. In the originals, there was an additional 'bool' parameter, but it is unimplemented in Exult.
+    Creates a monster with shape 'shape'. The created monster has equipment as
+    defined in its equipment record, and has a 'FRIENDLY' alignment. If the
+    creation is successful, the return value is a reference to the monster;
+    otherwise, the return is '0'. In the originals, there was an additional
+    'bool' parameter, but it is unimplemented in Exult.
 
-
-actor UI_clone(actor npc)																			[BG]
+actor UI_clone(actor npc)                                                   [BG]
 actor npc->clone()
 
-	Creates a clone of 'npc'. The clone has alignment set to 'FRIENDLY' and is in 'IN_COMBAT' schedule. Return value
-	is a reference to the clone if creation succeeds or '0' otherwise.
-
+    Creates a clone of 'npc'. The clone has alignment set to 'FRIENDLY' and is
+    in 'IN_COMBAT' schedule. Return value is a reference to the clone if
+    creation succeeds or '0' otherwise.
 
 object UI_create_new_object(int shape)
 
-	Creates a new object using 'shape' as it's shape and returns an object reference to the newly created item. The new
-	item is pushed into the 'last created' LIFO stack, and is in 'limbo' until it is placed in the game map through
-	the 'update_last_created' intrinsic. If 'shape' is a monster shape, the object is created without any equipment
-	whatsoever, even if the shape has an associated equipment entry.
+    Creates a new object using 'shape' as it's shape and returns an object
+    reference to the newly created item. The new item is pushed into the 'last
+    created' LIFO stack, and is in 'limbo' until it is placed in the game map
+    through the 'UI_update_last_created' intrinsic. If 'shape' is a monster
+    shape, the object is created without any equipment whatsoever, even if the
+    shape has an associated equipment entry.
 
+object UI_create_new_object2(int shape, int pos[])                   [SI, Exult]
 
-object UI_create_new_object2(int shape, int pos[])													[SI, Exult]
-
-	Creates an object with shape 'shape' and updates it exactly as if you had called 'UI_update_last_created(pos)'.
-	If 'shape' is a monster shape, the monster is created with equipment as defined in its equipment record. Returns
-	an object reference to the created object if successful, '0' otherwise.
-
+    Creates an object with shape 'shape' and updates it exactly as if you had
+    called 'UI_update_last_created(pos)'. If 'shape' is a monster shape, the
+    monster is created with equipment as defined in its equipment record.
+    Returns an object reference to the created object if successful, '0'
+    otherwise.
 
 object UI_set_last_created(object obj)
 object obj->set_last_created()
 
-	Removes 'obj' from game map and pushes it into the 'last created' stack; does nothing if 'obj' is already in the
-	aforementioned stack. Returns an object reference to 'obj'.
+    Removes 'obj' from game map and pushes it into the 'last created' stack;
+    does nothing if 'obj' is already in the aforementioned stack. Returns an
+    object reference to 'obj'.
 
+    ****** BG SPECIFIC ******
+    int UI_update_last_created(int pos[])
+    **** END BG SPECIFIC ****
 
-	****** BG SPECIFIC ******
-int UI_update_last_created(int pos[])
-	**** END SI SPECIFIC ****
-	****** SI SPECIFIC ******
-object UI_update_last_created(int pos[])
-	**** END SI SPECIFIC ****
+    ****** SI SPECIFIC ******
+    object UI_update_last_created(int pos[])
+    **** END SI SPECIFIC ****
 
-	Pops the last object pushed in the 'last created' stack and places in the position specified by 'pos'. 'pos'
-	can have from one to four elements:
-	* if 'pos' has only one element, the object will be deleted (equivalent to remove_item intrinsic);
-	* 2 elements mean a (x, y) location, and the object is placed at z = 0 in the current game map;
-	* 3 emelents mean a (x, y, z) location, and the object is placed in the current game map;
-	* 4 elements mean a (x, y, z, map) location and if map == -1, the object is placed in the current game map.
-	Returns a null reference if the 'last created' stack is empty.
-	****** BG SPECIFIC ******
-	If successful, returns 1.
-	**** END SI SPECIFIC ****
-	****** SI SPECIFIC ******
-	If successful, returns a reference to the object.
-	**** END SI SPECIFIC ****
+    Pops the last object pushed in the 'last created' stack and places in the
+    position specified by 'pos'. 'pos' can have from one to four elements:
 
+    * if 'pos' has only one element, the object will be deleted (equivalent to
+      'remove_item' intrinsic);
+    * 2 elements mean a (x, y) location, and the object is placed at z = 0 in
+      the current game map;
+    * 3 emelents mean a (x, y, z) location, and the object is placed in the
+      current game map;
+    * 4 elements mean a (x, y, z, map) location and if map == -1, the object
+      is placed in the current game map.
+
+    Returns a null reference if the 'last created' stack is empty.
+
+    ****** BG SPECIFIC ******
+    If successful, returns 1.
+    **** END BG SPECIFIC ****
+
+    ****** SI SPECIFIC ******
+    If successful, returns a reference to the object.
+    **** END SI SPECIFIC ****
 
 UI_give_last_created(object obj)
 obj->give_last_created()
 
-	Pops one item from the 'last created' stack and FORCE-gives it to 'obj', which *must* be a container. Returns
-	'true' if successful, 'false' otherwise. The given item is poped only if it is successfully given to 'obj'.
-
+    Pops one item from the 'last created' stack and FORCE-gives it to 'obj',
+    which *must* be a container. Returns 'true' if successful, 'false'
+    otherwise. The given item is poped only if it is successfully given to
+    'obj'.
 
 int[3] UI_get_object_position(object obj)
 int[3] obj->get_object_position()
-	
-	Returns the (x, y, z) position of 'obj'.
 
+    Returns the (x, y, z) position of 'obj'.
 
 UI_move_object(object obj, int pos[])
 obj->move_object(int pos[])
 
-	Moves 'obj' to the location specified by 'pos'. If 'pos' has 3 elements, it is a (x, y, z) position vector;
-	if 'pos' has 4 elements, the first 3 are the (x, y, z) position and element 4 is the map number. A map number
-	equal to '-1' is interpreted to move the NPC to the current game map.
-
+    Moves 'obj' to the location specified by 'pos'. If 'pos' has 3 elements, it
+    is a (x, y, z) position vector; if 'pos' has 4 elements, the first 3 are
+    the (x, y, z) position and element 4 is the map number. A map number equal
+    to '-1' is interpreted to move the NPC to the current game map.
 
 int UI_get_distance(object obj1, object obj2)
 int obj1->get_distance(obj2)
-	
-	Returns the distance between 'obj1' and 'obj2'.
 
+    Returns the distance between 'obj1' and 'obj2'.
 
 int UI_find_direction(object param1, object param2)
 int param1->find_direction(object param2)
@@ -521,921 +579,938 @@ int UI_find_direction(misc param1[4], object param2)
 int UI_find_direction(misc param1[4], int param2[3])
 int UI_find_direction(misc param1[4], misc param2[4])
 
-	This intrinsic is aliased under the name 'direction_from'; they are both equivalent in Exult. It returns the
-	direction from param1 to param2. In the case of the 'misc' parameters, the 4-element array it must be of the form
-	{object, int, int, int}; for example, it can be the return of a 'click_on_item' intrinsic call.
-	If Exult can't make sense of either parameter, it will use 'item' instead for that parameter.
-	The return is one of the following:
-		NORTH		= 0			NORTHEAST	= 1			EAST		= 2			SOUTHEAST	= 3
-		SOUTH		= 4			SOUTHWEST	= 5			WEST		= 6			NORTHWEST	= 7
+    This intrinsic is aliased under the name 'direction_from'; they are both
+    equivalent in Exult. It returns the direction from param1 to param2. In the
+    case of the 'misc' parameters, the 4-element array it must be of the form
+    {object, int, int, int}; for example, it can be the return of a
+    'UI_click_on_item' intrinsic call. If Exult can't make sense of either
+    parameter, it will use 'item' instead for that parameter.
 
+    The return is one of the following:
 
-int UI_add_cont_items(object obj, int count, int shape, int qual, int frame, int unk)				[SI, Exult]
+        NORTH    = 0    NORTHEAST    = 1    EAST    = 2    SOUTHEAST    = 3
+        SOUTH    = 4    SOUTHWEST    = 5    WEST    = 6    NORTHWEST    = 7
+
+int UI_add_cont_items(object obj, int count, int shape, int          [SI, Exult]
+        qual, int frame, int unk)
 int obj->remove_cont_items(int count, int shape, int qual, int frame, int unk)
 
-	Adds 'count' objects with shape 'shape', quality 'qual' and frame 'frame' that are contained by 'obj'. 'unk'
-	is an unknown flag which is ignored by Exult; I *think* it is safe to omit it from the parameter list, but I
-	am not sure. 'qual' and 'frame' can be wildcards:
-		qual						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Return value is the number of objects actually added.
+    Adds 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
+    that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
+    Exult; I *think* it is safe to omit it from the parameter list, but I am
+    not sure. 'qual' and 'frame' can be wildcards:
 
+        qual                     frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
 
-int UI_remove_cont_items(object obj, int count, int shape, int qual, int frame, int unk)			[SI, Exult]
+    Return value is the number of objects actually added.
+
+int UI_remove_cont_items(object obj, int count, int shape,           [SI, Exult]
+        int qual, int frame, int unk)
 int obj->remove_cont_items(int count, int shape, int qual, int frame, int unk)
 
-	Removes 'count' objects with shape 'shape', quality 'qual' and frame 'frame' that are contained by 'obj'. 'unk'
-	is an unknown flag which is ignored by Exult; I *think* it is safe to omit it from the parameter list, but I
-	am not sure. 'qual' and 'frame' can be wildcards:
-		qual						frame
-		QUALITY_ANY		= -359		FRAME_ANY		= -359
-	Return value is the number of objects actually removed.
+    Removes 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
+    that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
+    Exult; I *think* it is safe to omit it from the parameter list, but I am
+    not sure. 'qual' and 'frame' can be wildcards:
 
+        qual                     frame
+        QUALITY_ANY    = -359    FRAME_ANY      = -359
 
-UI_remove_from_area(int shape, int frame, int ul[2], int lr[2])										[SI, Exult]
+    Return value is the number of objects actually removed.
 
-	'ul' and 'lr' define opposite corners (upper left and lower right, respectivelly) of a rectangle in the
-	game map; the intrinsic finds all objects of shape 'shape' and frame 'frame' which are inside this rectangle and
-	deletes them.
+UI_remove_from_area(int shape, int frame, int ul[2], int             [SI, Exult]
+        lr[2])
 
+    'ul' and 'lr' define opposite corners (upper left and lower right,
+    respectivelly) of a rectangle in the game map; the intrinsic finds all
+    objects of shape 'shape' and frame 'frame' which are inside this rectangle
+    and deletes them.
 
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 OBJECTS
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_get_item_shape(object obj)
 int obj->get_item_shape()
-	
-	Returns the shape of 'obj'.
 
+    Returns the shape of 'obj'.
 
 UI_set_item_shape(object obj, int shape)
 obj->set_item_shape(int shape)
-	
-	Changes the shape of 'obj' to 'shape'. May need to use 'update_last_created' intrinsic to display the new shape
-	correctly.
 
+    Changes the shape of 'obj' to 'shape'. May need to use
+    'UI_update_last_created' intrinsic to display the new shape correctly.
 
 int UI_get_item_frame(object obj)
 int obj->get_item_frame()
-	
-	Returns the frame of 'obj'. Returns only base frame, without information about facing.
 
+    Returns the frame of 'obj'. Returns only base frame, without information
+    about facing.
 
 UI_set_item_frame(object obj, int frame)
 obj->set_item_frame(int frame)
-	
-	Changes frame of 'obj' to 'frame'. Preserves an object's 'rotation'.
 
+    Changes frame of 'obj' to 'frame'. Preserves an object's 'rotation'.
 
 int UI_get_item_frame_rot(object obj)
 int obj->get_item_frame_rot()
 
-	Returns the current frame of 'obj' *with* the rotated bit.
-
+    Returns the current frame of 'obj' *with* the rotated bit.
 
 UI_set_item_frame_rot(object obj, int frame)
 obj->set_item_frame_rot(int frame)
 
-	Sets the current frame of 'obj' to 'frame'; this *will* change the object's facing.
-
+    Sets the current frame of 'obj' to 'frame'; this *will* change the object's
+    facing.
 
 int UI_get_item_quality(object obj)
-int obj->get_item_frame()
-	
-	Returns the quality of 'obj' if the item has one, or zero otherwise.
+int obj->get_item_quality()
 
+    Returns the quality of 'obj' if the item has one, or zero otherwise.
 
 UI_set_item_quality(object obj, int qual)
-obj->set_item_frame(int qual)
-	
-	If the object has a quality, changes quality of 'obj' to 'qual' and returns '1'. Returns '0' otherwise.
+obj->set_item_quality(int qual)
 
+    If the object has a quality, changes quality of 'obj' to 'qual' and returns
+    '1'. Returns '0' otherwise.
 
 int UI_get_item_quantity(object obj)
 int obj->get_item_quantity()
-	
-	Returns quantity of 'obj' if it has one. Strictly speaking, has two parameters in the original game; the second
-	parameter is a mistery, and is unimplemented in Exult. UCC does not complain about the missing parameter, so it
-	is perhaps best to leave it out.
-	
+
+    Returns quantity of 'obj' if it has one. Strictly speaking, has two
+    parameters in the original game; the second parameter is a mistery, and is
+    unimplemented in Exult. UCC does not complain about the missing parameter,
+    so it is perhaps best to leave it out.
 
 int UI_set_item_quantity(object obj, int quant)
 int obj->set_item_quantity(int quant)
-	
-	If 'obj' has a quantity, sets it to 'quant' and returns '1'; returns '0' otherwise. Setting the quantity to zero
-	will delete the object unless it is in 'limbo' (i.e., not in the game map -- likely because it has been created
-	by Usecode but not yet placed).
 
+    If 'obj' has a quantity, sets it to 'quant' and returns '1'; returns '0'
+    otherwise. Setting the quantity to zero will delete the object unless it is
+    in 'limbo' (i.e., not in the game map -- likely because it has been created
+    by Usecode but not yet placed).
 
 int UI_get_lift(object obj)
 int obj->get_lift()
 
-	Returns the lift (z coordinate) of 'obj'.
-
+    Returns the lift (z coordinate) of 'obj'.
 
 UI_set_lift(object obj, int lift)
 obj->set_lift(int lift)
 
-	Sets the lift (z coordinate) of 'obj' to 'lift'. 'lift' must be >= 0 and < 20, although it may be rejected if it
-	is greater than 15 (don't know for sure).
-
+    Sets the lift (z coordinate) of 'obj' to 'lift'. 'lift' must be >= 0 and <
+    20, although it may be rejected if it is greater than 15 (don't know for
+    sure).
 
 int UI_get_item_flag(object obj, int flag)
 int obj->get_item_flag(int flag)
 
-	Gets the flag 'flag' of 'obj'. Some constants defined for 'flag' are:
-		INVISIBLE			= 0			ASLEEP				= 1			CHARMED				= 2
-		CURSED				= 3			DEAD				= 4			IN_PARTY			= 6
-		PARALYZED			= 7			PARALYSED			= 7			POISONED			= 8
-		PROTECTION			= 9			ON_MOVING_BARGE		= 10		OKAY_TO_TAKE		= 11
-		MIGHT				= 12		NO_SPELL_CASTING	= 13		CANT_DIE			= 14
-		DANCING				= 15		DONT_MOVE			= 16		DONT_RENDER			= 16
-		SI_ON_MOVING_BARGE	= 17		TEMPORARY			= 18		OKAY_TO_LAND		= 21
-		BG_DONT_MOVE		= 22		IN_DUNGEON			= 23		CONFUSED			= 25
-		IN_MOTION			= 26		MET					= 28		SI_TOURNAMENT		= 29
-		SI_ZOMBIE			= 30		POLYMORPH			= 32		TATTOOED			= 33
-		READ				= 34		PETRA				= 35		FREEZE				= 37
-	'flag' can be, however, any value in the 0-63 range. The values above are for NPCs; most of them are not valid
-	for inanimate objects, and some of them ('READ', 'PETRA', 'TATTOOED') have no effect on anyone but the avatar.
+    Gets the flag 'flag' of 'obj'. Some constants defined for 'flag' are:
 
+        INVISIBLE             = 0     ASLEEP              = 1
+        CHARMED               = 2     CURSED              = 3
+        DEAD                  = 4     IN_PARTY            = 6
+        PARALYZED             = 7     PARALYSED           = 7
+        POISONED              = 8     PROTECTION          = 9
+        ON_MOVING_BARGE       = 10    OKAY_TO_TAKE        = 11
+        MIGHT                 = 12    NO_SPELL_CASTING    = 13
+        CANT_DIE              = 14    DANCING             = 15
+        DONT_MOVE             = 16    DONT_RENDER         = 16
+        SI_ON_MOVING_BARGE    = 17    TEMPORARY           = 18
+        OKAY_TO_LAND          = 21    BG_DONT_MOVE        = 22
+        IN_DUNGEON            = 23    CONFUSED            = 25
+        IN_MOTION             = 26    MET                 = 28
+        SI_TOURNAMENT         = 29    SI_ZOMBIE           = 30
+        POLYMORPH             = 32    TATTOOED            = 33
+        READ                  = 34    PETRA               = 35
+        FREEZE                = 37    
+
+    'flag' can be, however, any value in the 0-63 range. The values above are
+    for NPCs; most of them are not valid for inanimate objects, and some of
+    them ('READ', 'PETRA', 'TATTOOED') have no effect on anyone but the avatar.
 
 UI_set_item_flag(object obj, int flag)
 obj->set_item_flag(int flag)
 
-	Sets the flag 'flag' of 'obj'. Many flags have immediate effects when set; most do not.
-
+    Sets the flag 'flag' of 'obj'. Many flags have immediate effects when set;
+    most do not.
 
 UI_clear_item_flag(object obj, int flag)
 obj->UI_clear_item_flag(int flag)
 
-	Clears the flag 'flag' of 'obj'. Many flags have immediate effectswhen cleared; most do not.
-
+    Clears the flag 'flag' of 'obj'. Many flags have immediate effectswhen
+    cleared; most do not.
 
 object UI_get_barge(object obj)
 object obj->get_barge()
 
-	Returns the barge object (shape 961) that 'obj' is part of or lying on.
+    Returns the barge object (shape 961) that 'obj' is part of or lying on.
 
-
-UI_set_barge_dir(object obj, int dir)																[SI, Exult]
+UI_set_barge_dir(object obj, int dir)                                [SI, Exult]
 obj->set_barge_dir(int dir)
 
-	If 'obj' is a barge object, sets its direction (along with all objects laying on 'obj') to 'dir'. 'dir' can
-	be one of the constants defined for find_direction intrinsic.
-
+    If 'obj' is a barge object, sets its direction (along with all objects
+    laying on 'obj') to 'dir'. 'dir' can be one of the constants defined for
+    'find_direction' intrinsic.
 
 int UI_on_barge()
 
-	Returns '1' if the entire party is inside the same barge as the avatar, '0' otherwise. If the avatar is *not* in
-	a barge, returns '0' too.
-	****** SI SPECIFIC ******
-	In SI, also forces the party's NPCs to get on board the barge.
-	**** END SI SPECIFIC ****
+    Returns '1' if the entire party is inside the same barge as the avatar, '0'
+    otherwise. If the avatar is *not* in a barge, returns '0' too.
 
+    ****** SI SPECIFIC ******
+    In SI, also forces the party's NPCs to get on board the barge.
+    **** END SI SPECIFIC ****
 
 object UI_get_container(object obj)
 object obj->get_container()
 
-	Returns a reference to the container of 'obj', or '0' if 'obj' is directly in the game map.
-
+    Returns a reference to the container of 'obj', or '0' if 'obj' is directly
+    in the game map.
 
 UI_remove_item(object obj)
 obj->remove_item()
 
-	Deletes 'obj'. If 'obj' is in the 'last created' stack, it is removed from it.
+    Deletes 'obj'. If 'obj' is in the 'last created' stack, it is removed from
+    it.
 
-
-int UI_get_usecode_fun(object obj)																	[Exult]
+int UI_get_usecode_fun(object obj)                                       [Exult]
 int obj->get_usecode_fun()
 
-	Gets the usecode function number for 'obj'. This takes into consideration an NPC's assigned function (if any)
-	and the correct shape <> function mapping for shapes > 1024.
+    Gets the usecode function number for 'obj'. This takes into consideration an
+    NPC's assigned function (if any) and the correct shape <> function mapping
+    for shapes > 1024.
 
-
-int UI_get_map_num(object obj)																		[Exult]
+int UI_get_map_num(object obj)                                           [Exult]
 int obj->get_map_num()
 
-	Returns the map number that 'obj' is in. Objects not located in the game map have map number equal to '-1'.
+    Returns the map number that 'obj' is in. Objects not located in the game map
+    have map number equal to '-1'.
 
-
-int UI_get_item_usability(object obj)																[SI]
+int UI_get_item_usability(object obj)                                       [SI]
 int obj->get_item_usability()
 
-	Returns '1' if the 'obj' is grabbable, '0' otherwise.
+    Returns '1' if the 'obj' is grabbable, '0' otherwise.
 
+bool UI_is_on_keyring(int qual)                                             [SI]
 
-bool UI_is_on_keyring(int qual)																		[SI]
+    Returns 'true' if a key with quality 'qual' is on the keyring, 'false'
+    otherwise.
 
-	Returns 'true' if a key with quality 'qual' is on the keyring, 'false' otherwise.
+UI_add_to_keyring(int qual)                                                 [SI]
 
+    Adds key with quality 'qual' to the keyring.
 
-UI_add_to_keyring(int qual)																			[SI]
+bool UI_remove_from_keyring(int qual)                                [Exult: SI]
 
-	Adds key with quality 'qual' to the keyring.
+    Removes key with quality 'qual' from the keyring. Returns 'true' if the key
+    exists (and therefore was removed), 'false' otherwise.
 
-
-bool UI_remove_from_keyring(int qual)																[Exult: SI]
-
-	Removes key with quality 'qual' from the keyring. Returns 'true' if the key exists (and therefore was removed),
-	'false' otherwise.
-
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 NPCs
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_get_npc_object(int npc)
 int npc->get_npc_object()
 int[] UI_get_npc_object(int npc[])
-	
-	Returns an array containing the NPC objects corresponding to the NPC numbers in 'npc'.
 
+    Returns an array containing the NPC objects corresponding to the NPC numbers
+    in 'npc'.
 
 int UI_get_schedule_type(actor npc)
 int npc->get_schedule_type()
-	
-	Returns the schedule (an int in the range 0-31) of 'npc', as reported in the cheat screen.	Here is a list of
-	the schedule constants defined in 'src/headers/constants.uc':
-		IN_COMBAT		= 0			PACE_HORIZONTAL	= 1			PACE_VERTICAL	= 2			TALK			= 3
-		DANCE			= 4			EAT				= 5			FARM			= 6			TEND_SHOP		= 7
-		MINE			= 8			MINER			= 8			HOUND			= 9			STANDTHERE		= 10
-		LOITER			= 11		WANDER			= 12		BLACKSMITH		= 13		SLEEP			= 14
-		WAIT			= 15		MAJOR_SIT		= 16		GRAZE			= 17		BAKE			= 18
-		SEW				= 19		SHY				= 20		LAB				= 21		THIEF			= 22
-		WAITER			= 23		SPECIAL			= 24		KID_GAMES		= 25		TAG				= 25
-		EAT_AT_INN		= 26		DUEL			= 27		SPAR			= 27		PREACH			= 28
-		PATROL			= 29		DESK_WORK		= 30		FOLLOW_AVATAR	= 31	
 
+    Returns the schedule (an int in the range 0-31) of 'npc', as reported in the
+    cheat screen.	Here is a list of the schedule constants defined in
+    'src/headers/constants.uc':
+
+        IN_COMBAT    = 0     PACE_HORIZONTAL    = 1     PACE_VERTICAL    = 2
+        TALK         = 3     DANCE              = 4     EAT              = 5
+        FARM         = 6     TEND_SHOP          = 7     MINE             = 8
+        MINER        = 8     HOUND              = 9     STANDTHERE       = 10
+        LOITER       = 11    WANDER             = 12    BLACKSMITH       = 13
+        SLEEP        = 14    WAIT               = 15    MAJOR_SIT        = 16
+        GRAZE        = 17    BAKE               = 18    SEW              = 19
+        SHY          = 20    LAB                = 21    THIEF            = 22
+        WAITER       = 23    SPECIAL            = 24    KID_GAMES        = 25
+        TAG          = 25    EAT_AT_INN         = 26    DUEL             = 27
+        SPAR         = 27    PREACH             = 28    PATROL           = 29
+        DESK_WORK    = 30    FOLLOW_AVATAR      = 31    
 
 UI_set_schedule_type(actor npc, int sched)
 npc->set_schedule_type(int sched)
-	
-	Sets the schedule of 'npc' to 'sched' (as defined in the cheat screen). A list of schedule constants is included
-	below get_schedule_type intrinsic description.
 
+    Sets the schedule of 'npc' to 'sched' (as defined in the cheat screen). A
+    list of schedule constants is included below 'get_schedule_type' intrinsic
+    description.
 
-UI_modify_schedule(actor npc, int time, int sched, int pos[2])										[SI, Exult]
+UI_modify_schedule(actor npc, int time, int sched, int               [SI, Exult]
+        pos[2])
 npc->modify_schedule(int time, int sched, int pos[2])
 
-	Sets the time period 'time' schedule of 'npc' to 'sched' at (x, y) location 'pos'. Allowed values for 'time'
-	are those for the part_of_day intrinsic; allowed values for 'sched' are the same ones as the return values of
-	get_schedule_type intrinsic.
+    Sets the time period 'time' schedule of 'npc' to 'sched' at (x, y) location
+    'pos'. Allowed values for 'time' are those for the
+    UI_part_of_daypart_of_day intrinsic; allowed values for 'sched' are the
+    same ones as the return values of 'get_schedule_type' intrinsic.
 
-
-UI_set_new_schedules(actor npc, int time, int sched, int loc[2])									[SI, Exult]
+UI_set_new_schedules(actor npc, int time, int sched, int             [SI, Exult]
+        loc[2])
 UI_set_new_schedules(actor npc, int time[n], int sched[n], int loc[2n])
 npc->set_new_schedules(int time, int sched, int loc[2])
 npc->set_new_schedules(int time[n], int sched[n], int loc[2n])
 
-	Sets new schedule(s) for 'npc'. 'time' contains the time periods for the schedules; allowed values are like those
-	for the part_of_day intrinsic. 'sched' contains the schedule types for the corresponding time periods in 'time';
-	allowed values are the same ones as the return values of get_schedule_type intrinsic. 'loc' containt the (x, y)
-	positions of the schedules; each pair or elements in 'loc' is the (x, y) coordinate of the corresponding time
-	period in 'time' and schedule in 'sched'. The 'wildcard' 'n' is just to indicate that however many elements are
-	in 'time', 'sched' must have just as many and 'loc' must have twice as many.
+    Sets new schedule(s) for 'npc'. 'time' contains the time periods for the
+    schedules; allowed values are like those for the 'UI_part_of_day'
+    intrinsic. 'sched' contains the schedule types for the corresponding time
+    periods in 'time'; allowed values are the same ones as the return values of
+    'get_schedule_type' intrinsic. 'loc' containt the (x, y) positions of the
+    schedules; each pair or elements in 'loc' is the (x, y) coordinate of the
+    corresponding time period in 'time' and schedule in 'sched'. The 'wildcard'
+    'n' is just to indicate that however many elements are in 'time', 'sched'
+    must have just as many and 'loc' must have twice as many.
 
-
-UI_run_schedule(actor npc)																			[SI, Exult]
+UI_run_schedule(actor npc)                                           [SI, Exult]
 npc->run_schedule()
 
-	Reverts the current schedule of 'npc' to its programmed schedule.
+    Reverts the current schedule of 'npc' to its programmed schedule.
 
-
-UI_revert_schedule(actor npc)																		[SI, Exult]
+UI_revert_schedule(actor npc)                                        [SI, Exult]
 npc->revert_schedule()
 
-	Reverts the schedules of 'npc' to those stored in 'STATIC/schedule.dat'. Can be risky for NPCs not in the
-	original games.
-
+    Reverts the schedules of 'npc' to those stored in 'STATIC/schedule.dat'. Can
+    be risky for NPCs not in the original games.
 
 int UI_get_npc_prop(actor npc, int prop)
 int UI_get_npc_prop(actor npc, string prop)
 int npc->get_npc_prop(int prop)
 int npc->get_npc_prop(string prop)
-	
-	Returns the property 'prop' of 'npc'. 'prop' can be an int (in the range of 0-11) or a string. If it is a
-	string, be sure to set a default value with set_npc_prop first! Here is a list of the standard property constants
-	defined in 'src/headers/constants.uc':
-		STRENGTH		= 0			DEXTERITY		= 1			INTELLIGENCE	= 2			HEALTH			= 3,
-		COMBAT			= 4			MANA			= 5			MAX_MANA		= 6			TRAINING		= 7
-		EXPERIENCE		= 8			FOODLEVEL		= 9
 
+    Returns the property 'prop' of 'npc'. 'prop' can be an int (in the range of
+    0-11) or a string. If it is a string, be sure to set a default value with
+    set_npc_prop first! Here is a list of the standard property constants
+    defined in 'src/headers/constants.uc':
+
+        STRENGTH     = 0    DEXTERITY    = 1    INTELLIGENCE    = 2
+        HEALTH       = 3    COMBAT       = 4    MANA            = 5
+        MAX_MANA     = 6    TRAINING     = 7    EXPERIENCE      = 8
+        FOODLEVEL    = 9    
 
 UI_set_npc_prop(actor npc, int prop, int delta)
 UI_set_npc_prop(actor npc, string prop, int delta)
 npc->set_npc_prop(int prop, int delta)
 npc->set_npc_prop(string prop, int delta)
-	
-	Increases property 'prop' of 'npc' by 'delta'. If 'delta' is negative, the property is decreased. Just to be clear:
-	'delta' is the *change* in property 'prop'. 'prop' means the same as for get_npc_prop; if 'prop' is a string and
-	the property does not exist yet, it is treated as being zero when it is created. A list of property constants is
-	included below get_npc_prop intrinsic description.
 
+    Increases property 'prop' of 'npc' by 'delta'. If 'delta' is negative, the
+    property is decreased. Just to be clear: 'delta' is the *change* in
+    property 'prop'. 'prop' means the same as for get_npc_prop; if 'prop' is a
+    string and the property does not exist yet, it is treated as being zero
+    when it is created. A list of property constants is included below
+    'get_npc_prop' intrinsic description.
 
 int UI_apply_damage(int unk1, int damage, int unk2, actor npc)
 
-	Reduces the health of 'npc' by 'damage' hits. 'unk1' and 'unk2' are unknown parameters ignored by Exult. Will
-	always return '1'
-
+    Reduces the health of 'npc' by 'damage' hits. 'unk1' and 'unk2' are unknown
+    parameters ignored by Exult. Will always return '1'
 
 UI_reduce_health(actor npc, int damage)
 npc->reduce_health(int damage)
 
-	Reduces the health of 'npc' by 'damage' hits. In the original, there was a third parameter whose meaning is
-	unknown; hence, this parameter is ignored in Exult.
-
+    Reduces the health of 'npc' by 'damage' hits. In the original, there was a
+    third parameter whose meaning is unknown; hence, this parameter is ignored
+    in Exult.
 
 string UI_get_npc_name(actor npc)
 string npc->get_npc_name()
 string[] UI_get_npc_name(actor npc[])
 
-	Returns the names of all NPCs in 'npc'.
-
+    Returns the names of all NPCs in 'npc'.
 
 UI_is_npc(misc obj)
 obj->is_npc()
 
-	Returns 'true' if 'obj' is an NPC, 'false' otherwise.
-
+    Returns 'true' if 'obj' is an NPC, 'false' otherwise.
 
 bool UI_is_dead(actor npc)
 bool npc->is_dead()
 
-	Returns 'true' if 'npc' is dead, 'false' otherwise. Equivalent to checking if flag 'DEAD' is set.
-
+    Returns 'true' if 'npc' is dead, 'false' otherwise. Equivalent to checking
+    if flag 'DEAD' is set.
 
 int UI_get_npc_number(actor npc)
 int npc->get_npc_number()
 
-	Returns the NPC number of 'npc'. Intended to receive an NPC object, it will works nevertheless even if 'npc' is
-	itself an NPC number.
-
+    Returns the NPC number of 'npc'. Intended to receive an NPC object, it will
+    works nevertheless even if 'npc' is itself an NPC number.
 
 int UI_get_alignment(actor npc)
 int npc->get_alignment()
 
-	Returns the alignment of 'npc'. The following constants are defined in 'src/headers/constants.uc':
-		FRIENDLY		= 0			NEUTRAL			= 1			HOSTILE			= 2			RANDOM_ALIGN	= 3
+    Returns the alignment of 'npc'. The following constants are defined in
+    'src/headers/constants.uc':
 
+        FRIENDLY        = 0    NEUTRAL    = 1    HOSTILE    = 2
+        RANDOM_ALIGN    = 3    
 
 UI_set_alignment(actor npc, int align)
 npc->set_alignment(int align)
 
-	Sets the alignment of 'npc' to 'align'. Allowed values are the same as the return of get_alignment intrinsic.
-
+    Sets the alignment of 'npc' to 'align'. Allowed values are the same as the
+    return of 'get_alignment' intrinsic.
 
 UI_remove_npc(actor npc)
 npc->remove_npc()
 
-	Removes 'npc' from the game world; 'npc' is effectivelly placed in 'limbo', and has its schedule set to 'WAIT'.
-
+    Removes 'npc' from the game world; 'npc' is effectivelly placed in 'limbo',
+    and has its schedule set to 'WAIT'.
 
 UI_kill_npc(actor npc)
 npc->kill_npc()
 
-	Kills 'npc'.
-
+    Kills 'npc'.
 
 int UI_set_to_attack(actor npc, object obj, int proj)
 int npc->set_to_attack(object obj, int proj)
 
-	Prepares 'npc' to attack 'obj' with a *missile* attack using projectile shape 'proj'. 'proj' MUST specify a shape
-	that has an 'ammo' tab in Exult Studio, or nothing will happen. The attack itself is triggered by a script; in an
-	UCC script, use the 'attack' command to actually initiate the attack. Return value is always '0'.
+    Prepares 'npc' to attack 'obj' with a *missile* attack using projectile
+    shape 'proj'. 'proj' MUST specify a shape that has an 'ammo' tab in Exult
+    Studio, or nothing will happen. The attack itself is triggered by a script;
+    in an UCC script, use the 'attack' command to actually initiate the attack.
+    Return value is always '0'.
 
-
-int UI_get_attack_mode(actor npc)																	[SI, Exult]
+int UI_get_attack_mode(actor npc)                                    [SI, Exult]
 int npc->get_attack_mode()
 
-	Gets the attack mode of 'npc'. The return value can be one of the values defined for set_attack_mode intrinsic.
-
+    Gets the attack mode of 'npc'. The return value can be one of the values
+    defined for 'set_attack_mode' intrinsic.
 
 UI_set_attack_mode(actor npc, int mode)
 npc->set_attack_mode(int mode)
 
-	Sets the attack mode of 'npc' to 'mode'. 'mode' can be one of the following:
-		NEAREST			= 0			WEAKEST			= 1			STRONGEST		= 2			BERSERK			= 3
-		PROTECT			= 4			DEFEND			= 5			FLANK			= 6			FLEE			= 7
-		RANDOM			= 8			MANUAL			= 9	
+    Sets the attack mode of 'npc' to 'mode'. 'mode' can be one of the following:
 
+        NEAREST    = 0    WEAKEST    = 1    STRONGEST    = 2    BERSERK    = 3
+        PROTECT    = 4    DEFEND     = 5    FLANK        = 6    FLEE       = 7
+        RANDOM     = 8    MANUAL     = 9    
 
-int UI_get_npc_id(actor npc)																		[SI, Exult]
+int UI_get_npc_id(actor npc)                                         [SI, Exult]
 int npc->get_npc_id()
 
-	Returns the NPC ID of 'npc'.
+    Returns the NPC ID of 'npc'.
 
-
-UI_set_npc_id(actor npc, int id)																	[SI, Exult]
+UI_set_npc_id(actor npc, int id)                                     [SI, Exult]
 npc->set_npc_id(int id)
 
-	Sets the NPC ID of 'npc' to 'id'. Only the lower 5 bits of 'id' are saved, meaning that the only meaninful
-	values are in the 0-31 range.
+    Sets the NPC ID of 'npc' to 'id'. Only the lower 5 bits of 'id' are saved,
+    meaning that the only meaninful values are in the 0-31 range.
 
-
-actor UI_get_oppressor(actor npc)																	[SI, Exult]
+actor UI_get_oppressor(actor npc)                                    [SI, Exult]
 actor npc->get_oppressor()
 
-	Returns the NPC number (*positive* number) of the oppressor of 'npc'. The oppressor can be set through usecode,
-	but it is also set to whomever has attacked (caused damage to) 'npc' last. It is also set when an NPC acquires a
-	new target -- said NPC will be set as its target's oppressor.
+    Returns the NPC number (*positive* number) of the oppressor of 'npc'. The
+    oppressor can be set through usecode, but it is also set to whomever has
+    attacked (caused damage to) 'npc' last. It is also set when an NPC acquires
+    a new target -- said NPC will be set as its target's oppressor.
 
-
-UI_set_oppressor(actor npc, actor opp)																[SI, Exult]
+UI_set_oppressor(actor npc, actor opp)                               [SI, Exult]
 npc->set_oppressor(opp)
 
-	Sets the oppressor of 'npc' to be 'opp'. 'opp' must be an actual NPC, not an egg- or usecode-spawned monster.
-	Also sets the target of 'npc' to be 'opp'.
-	
+    Sets the oppressor of 'npc' to be 'opp'. 'opp' must be an actual NPC, not an
+    egg- or usecode-spawned monster. Also sets the target of 'npc' to be 'opp'.
 
-object UI_get_readied(actor npc, int spot)															[SI, Exult]
+object UI_get_readied(actor npc, int spot)                           [SI, Exult]
 object npc->get_readied(int spot)
 
-	Returns a reference to the item readied in ready spot 'spot' of 'npc'; if there is nothing at that spot, returns
-	'0' instead. Valid values for 'spot' are:
-		LEFT_HAND			= 0			SHIELD_HAND			= 0			OTHER_HAND			= 0
-		RIGHT_HAND			= 1			WEAPON_HAND			= 1			BOTH_HANDS			= 1
-		CLOAK				= 2			NECK				= 3			HEAD				= 4
-		GLOVES				= 5			USECODE_CONTAINER	= 6			ONE_FINGER			= 7
-		OTHER_FINGER		= 8			EARRINGS			= 9			QUIVER				= 10
-		BELT				= 11		TORSO				= 12		FEET				= 13
-		LEGS				= 14		BACKPACK			= 15		BACK_SHIELD			= 16
-		BACK_SPOT			= 17
-	Some of these spots will never be occupied in a BG game; they are 'CLOAK', 'USECODE_CONTAINER', 'EARRINGS',
-	'BACK_SHIELD' and 'BACK_SPOT', although a case could be made to allow 'USECODE_CONTAINER' in BG too.
+    Returns a reference to the item readied in ready spot 'spot' of 'npc'; if
+    there is nothing at that spot, returns '0' instead. Valid values for 'spot'
+    are:
 
+        LEFT_HAND            = 0     SHIELD_HAND    = 0
+        OTHER_HAND           = 0     RIGHT_HAND     = 1
+        WEAPON_HAND          = 1     BOTH_HANDS     = 1
+        CLOAK                = 2     NECK           = 3
+        HEAD                 = 4     GLOVES         = 5
+        USECODE_CONTAINER    = 6     ONE_FINGER     = 7
+        OTHER_FINGER         = 8     EARRINGS       = 9
+        QUIVER               = 10    BELT           = 11
+        TORSO                = 12    FEET           = 13
+        LEGS                 = 14    BACKPACK       = 15
+        BACK_SHIELD          = 16    BACK_SPOT      = 17
+
+    Some of these spots will never be occupied in a BG game; they are 'CLOAK',
+    'USECODE_CONTAINER', 'EARRINGS', 'BACK_SHIELD' and 'BACK_SPOT'. BG-based
+    mods can have items in the 'USECODE_CONTAINER' spot.
 
 bool UI_is_readied(actor npc, int spot, int shape, int frame)
 npc->is_readied(int spot, int shape, int frame)
 
-	Returns 'true' if an object with shape 'shape' and frame 'frame' is readied in ready spot 'spot' of 'npc'. 'frame'
-	can be the wildcard 'FRAME_ANY'. Valid values for 'spot' are:
-		IR_RIGHT_HAND	= 1			IR_WEAPON_HAND	= 1			IR_BOTH_HANDS	= 1			IR_LEFT_HAND	= 2
-		IR_SHIELD_HAND	= 2			IR_OFF_HAND		= 2			IR_NECK			= 3			IR_CLOAK		= 3
-		IR_RIGHT_FINGER	= 6			IR_LEFT_FINGER	= 7			IR_GLOVES		= 6			IR_HEAD			= 9
-		IR_BELT			= 11
-	For SI, it is better to use get_readied intrinsic instead.
+    Returns 'true' if an object with shape 'shape' and frame 'frame' is readied
+    in ready spot 'spot' of 'npc'. 'frame' can be the wildcard 'FRAME_ANY'.
+    Valid values for 'spot' are:
 
+        IR_RIGHT_HAND      = 1     IR_WEAPON_HAND    = 1
+        IR_BOTH_HANDS      = 1     IR_LEFT_HAND      = 2
+        IR_SHIELD_HAND     = 2     IR_OFF_HAND       = 2
+        IR_NECK            = 3     IR_CLOAK          = 3
+        IR_RIGHT_FINGER    = 6     IR_LEFT_FINGER    = 7
+        IR_GLOVES          = 6     IR_HEAD           = 9
+        IR_BELT            = 11    
 
-int UI_get_weapon(actor npc)																		[SI, Exult]
+    For SI, it is better to use 'get_readied' intrinsic instead.
+
+int UI_get_weapon(actor npc)                                         [SI, Exult]
 int npc->get_weapon()
 
-	Returns the shape number of the weapon in the left hand of 'npc' (if any) or '0' if no weapon is readied.
-
+    Returns the shape number of the weapon in the left hand of 'npc' (if any) or
+    '0' if no weapon is readied.
 
 UI_set_opponent(actor npc, object obj)
 npc->set_opponent(object obj)
 
-	Makes 'npc' attack 'obj' if 'npc' is in 'IN_COMBAT' schedule. 'HOSTILE' enemies will attack party members as
-	soon as their target dies.
-
+    Makes 'npc' attack 'obj' if 'npc' is in 'IN_COMBAT' schedule. 'HOSTILE'
+    enemies will attack party members as soon as their target dies.
 
 UI_sit_down(actor npc, object obj)
 npc->sit_down(object obj)
 
-	Makes 'npc' sit on 'obj'. 'obj' must be a chair/seat shape (currently, hardcoded to 873/292). For barge seats,
-	also runs the barge	usecode when everyone in the party is seated.
+    Makes 'npc' sit on 'obj'. 'obj' must be a chair/seat shape (currently,
+    hardcoded to 873/292). For barge seats, also runs the barge	usecode when
+    everyone in the party is seated.
 
-
-UI_get_body_npc(object obj)																			[SI, Exult]
+UI_get_body_npc(object obj)                                          [SI, Exult]
 obj->get_body_npc()
 
-	If 'obj' is the body of an NPC, returns the (negative) NPC number; otherwise, returns '0'.
-
+    If 'obj' is the body of an NPC, returns the (negative) NPC number;
+    otherwise, returns '0'.
 
 actor UI_resurrect(object obj)
 actor obj->resurrect()
 
-	If 'obj' is the body of an NPC, resurrects the NPC and returns a reference to the NPC; otherwise, returns a null
-	('0') reference.
-	
-UI_set_polymorph(actor npc, int shape)																[SI, Exult]
+    If 'obj' is the body of an NPC, resurrects the NPC and returns a reference
+    to the NPC; otherwise, returns a null ('0') reference.
+
+UI_set_polymorph(actor npc, int shape)                               [SI, Exult]
 npc->set_polymorph(int shape)
 
-	Polymorphs 'npc' into shape 'shape'.
+    Polymorphs 'npc' into shape 'shape'.
 
-
-int UI_get_temperature(actor npc)																	[SI]
+int UI_get_temperature(actor npc)                                           [SI]
 int npc->get_temperature()
 
-	Returns the value of the temperature for 'npc'.
+    Returns the value of the temperature for 'npc'.
 
-
-UI_get_temperature(actor npc, int temp)																[SI]
+UI_get_temperature(actor npc, int temp)                                     [SI]
 npc->get_temperature(int temp)
 
-	Sets the temperature of 'npc' to 'temp'.
+    Sets the temperature of 'npc' to 'temp'.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 PARTY MANAGEMENT
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 actor[] UI_get_party_list()
 actor[] UI_get_party_list2()
 
-	Returns an array containing the object references of each of the party's NPCs.
-
+    Returns an array containing the object references of each of the party's
+    NPCs.
 
 UI_add_to_party(actor npc)
 npc->add_to_party()
-	
-	Adds 'npc' to party if there is a slot available, sets schedule to 'follow avatar' and alignment to 'friendly'.
 
+    Adds 'npc' to party if there is a slot available, sets schedule to 'follow
+    avatar' and alignment to 'friendly'.
 
 UI_remove_from_party(actor npc)
 npc->remove_from_party()
-	
-	Removes 'npc' from party and sets alignment to 'neutral'.
 
+    Removes 'npc' from party and sets alignment to 'neutral'.
 
-object[] UI_get_dead_party()																		[BG]
+object[] UI_get_dead_party()                                                [BG]
 
-	Returns an array with the references to the bodies of dead party members within 50 tiles.
+    Returns an array with the references to the bodies of dead party members
+    within 50 tiles.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 AVATAR
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 actor UI_get_avatar_ref()
 
-	Returns a object reference to the avatar.
-
+    Returns a object reference to the avatar.
 
 int UI_in_combat()
 
-	Returns '1' if in combat mode, '0' otherwise.
-
+    Returns '1' if in combat mode, '0' otherwise.
 
 bool UI_is_pc_female()
 
-	Returns 'true' if the avatar is female, 'false' otherwise.
+    Returns 'true' if the avatar is female, 'false' otherwise.
 
+int UI_get_skin_colour()                                                    [SI]
 
-int UI_get_skin_colour()																			[SI]
-
-	Returns the avatar's skin color: white = 0, brown = 1, black = 2.
-
+    Returns the avatar's skin color: white = 0, brown = 1, black = 2.
 
 bool UI_is_pc_inside()
 
-	Returns 'true' if the avatar is inside (i.e., has a roof over the head), 'false' otherwise.
-
+    Returns 'true' if the avatar is inside (i.e., has a roof over the head),
+    'false' otherwise.
 
 int UI_wearing_fellowship()
 
-	Returns '1' is the avatar is wearing a fellowship amulet (shape 955, frame 1), '0' otherwise.
+    Returns '1' is the avatar is wearing a fellowship amulet (shape 955, frame
+    1), '0' otherwise.
 
-
-int UI_approach_avatar(actor npc)																	[SI, Exult]
+int UI_approach_avatar(actor npc)                                    [SI, Exult]
 int npc->approach_avatar()
 
-	Makes 'npc' approach avatar at fairly high speed. Returns '0' if 'npc' is dead or if it is not possible for
-	'npc' to reach the avatar. Returns '1' otherwise. If 'npc' is initially at more than 10 tiles from the avatar,
-	the function will let 'npc' walk for about 1/5 seconds before returning, effectivelly halting the game.
-	NOTICE: In the original, this intrinsic seems to create 'npc' off-screen, while it approaches the avatar due to
-	si_path_run_usecode or the 'TALK' schedule. Need to investigate this further.
+    Makes 'npc' approach avatar at fairly high speed. Returns '0' if 'npc' is
+    dead or if it is not possible for 'npc' to reach the avatar. Returns '1'
+    otherwise. If 'npc' is initially at more than 10 tiles from the avatar, the
+    function will let 'npc' walk for about 1/5 seconds before returning,
+    effectivelly halting the game. NOTICE: In the original, this intrinsic
+    seems to create 'npc' off-screen, while it approaches the avatar due to
+    si_path_run_usecode or the 'TALK' schedule. Need to investigate this
+    further.
 
+UI_call_guards()                                                            [BG]
 
-UI_call_guards()																					[BG]
-
-	Causes guard to come and attack a thieving avatar.
-
+    Causes guard to come and attack a thieving avatar.
 
 UI_attack_avatar()
 
-	Causes everyone nearby to attack thieving avatar.
-	
+    Causes everyone nearby to attack thieving avatar.
 
-UI_save_pos(object obj)																				[SI, Exult]
+UI_save_pos(object obj)                                              [SI, Exult]
 obj->save_pos()
 
-	Saves the current position/map of 'obj'.
-	
+    Saves the current position/map of 'obj'.
 
-UI_teleport_to_saved_pos(object obj)																[SI, Exult]
+UI_teleport_to_saved_pos(object obj)                                 [SI, Exult]
 obj->teleport_to_saved_pos()
 
-	If 'obj' is the avatar, it is teleported to the saved position; if 'obj' is anything else, does nothing.
+    If 'obj' is the avatar, it is teleported to the saved position; if 'obj' is
+    anything else, does nothing.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 WEATHER/TIME
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 int UI_get_timer(int timer)
 
-	If 'timer' < 20 and represents a timer that has been initialized by set_timer intrinsic, returns the number of
-	hours since the timer has been set. Otherwise, the return value is '0'.
-
+    If 'timer' < 20 and represents a timer that has been initialized by
+    'UI_set_timer' intrinsic, returns the number of hours since the timer has
+    been set. Otherwise, the return value is '0'.
 
 UI_set_timer(int timer)
 
-	If 'timer' < 20, initializes the timer timer specified by 'timer'.
-
+    If 'timer' < 20, initializes the timer timer specified by 'timer'.
 
 int UI_game_hour()
 
-	Returns the current game hour (0-23).
-
+    Returns the current game hour (0-23).
 
 int UI_game_minute()
 
-	Returns the current game minute (0-60).
-
+    Returns the current game minute (0-60).
 
 int UI_part_of_day()
 
-	Returns an integer in the 0-7 range corresponding to a 3-hour period since midnight. More specifically, the return
-	value is equal to 'UI_game_hour()%3'. The the following constants are defined in 'src/headers/constants.uc':
-		MIDNIGHT		= 0			EARLY			= 1			DAWN			= 2			MORNING			= 3
-		NOON			= 4			AFTERNOON		= 5			EVENING			= 6			NIGHT			= 7
-	
+    Returns an integer in the 0-7 range corresponding to a 3-hour period since
+    midnight. More specifically, the return value is equal to
+    'UI_game_hour()%3'. The the following constants are defined in
+    'src/headers/constants.uc':
+
+        MIDNIGHT    = 0    EARLY        = 1    DAWN       = 2    MORNING    = 3
+        NOON        = 4    AFTERNOON    = 5    EVENING    = 6    NIGHT      = 7
 
 UI_nap_time(object obj)
 obj->nap_time()
 
-	If 'obj' is an unoccupied bed, causes the avatar to walk to the bed and lay on it, calling usecode function
-	0x622 once that is done. If the bed is occupied, causes one of the party members to pop up and say so. Does
-	nothing if 'obj' is not a bed.
-
+    If 'obj' is an unoccupied bed, causes the avatar to walk to the bed and lay
+    on it, calling usecode function 0x622 once that is done. If the bed is
+    occupied, causes one of the party members to pop up and say so. Does
+    nothing if 'obj' is not a bed.
 
 UI_advance_time(int amount)
 
-	Advances game time by 'amount'/25 game minutes.
+    Advances game time by 'amount'/25 game minutes.
 
+UI_stop_time(int length)                                                    [BG]
 
-UI_stop_time(int length)																			[BG]
-
-	Stops time for ('length'/4 seconds).
-
+    Stops time for ('length'/4 seconds).
 
 int UI_get_weather()
 
-	Returns the current weather state. Return values are:
-		CLEAR_WEATHER	= 0			SNOWING			= 1			RAIN			= 2			SPARKLE			= 3
-		FOG				= 4			OVERCAST		= 5			CLOUDY			= 6
+    Returns the current weather state. Return values are:
 
+        CLEAR_WEATHER    = 0    SNOWING    = 1    RAIN        = 2
+        SPARKLE          = 3    FOG        = 4    OVERCAST    = 5
+        CLOUDY           = 6    
 
 UI_set_weather(int type)
 
-	Sets the current weather to 'type'. Use the return values of get_weather intrinsic for 'type'.
+    Sets the current weather to 'type'. Use the return values of
+    'UI_get_weather' intrinsic for 'type'.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 USER INTERFACE
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 misc[4] UI_click_on_item()
 
-	Displays the targeting square and waits for the player to click on something. The return is a 4 element array
-	whose first	element is the object reference of the clicked item or zero if the player clicked in the world. The
-	last three elements are the (x, y, z) position of the click.
-	If used after a set_intercept_item intrinsic call, returns the preassigned object as the first element of the
-	array and the object's position as the last three.
+    Displays the targeting square and waits for the player to click on
+    something. The return is a 4 element array whose first	element is the
+    object reference of the clicked item or zero if the player clicked in the
+    world. The last three elements are the (x, y, z) position of the click.
 
+    If used after a 'set_intercept_item' intrinsic call, returns the preassigned
+    object as the first element of the array and the object's position as the
+    last three.
 
-UI_set_intercept_item(object obj)																	[Exult]
+UI_set_intercept_item(object obj)                                        [Exult]
 obj->set_intercept_item()
 
-	Sets 'obj' as the return object of the next click_on_item intrinsic call.
-
+    Sets 'obj' as the return object of the next 'UI_click_on_item' intrinsic'
+    call.
 
 int UI_input_numeric_value(int min, int max, int step, int default)
-	
-	Prompts user for numerical input with the bar slider. 'min' is the lowest number allowed, 'max' is the greatest,
-	'step' is the step size and 'default' is the default (initial) value. Returns the user's choice.
 
+    Prompts user for numerical input with the bar slider. 'min' is the lowest
+    number allowed, 'max' is the greatest, 'step' is the step size and
+    'default' is the default (initial) value. Returns the user's choice.
 
 UI_mouse_exists()
 
-	In the original, returned '0' if there was no mouse, '1' otherwise. Exult always returns '1'.
-
+    In the original, returned '0' if there was no mouse, '1' otherwise. Exult
+    always returns '1'.
 
 UI_flash_mouse(int cursor)
 
-	Causes the mouose to change shape to 'cursor' for about half a second. Valid values for 'cursor' are:
-		CURSOR_X			= 1			CURSOR_OUT_OF_RANGE = 2			CURSOR_OUT_OF_AMMO	= 3
-		CURSOR_TOO_HEAVY	= 4			CURSOR_WONT_FIT		= 5
+    Causes the mouose to change shape to 'cursor' for about half a second. Valid
+    values for 'cursor' are:
 
+        CURSOR_X              = 1    CURSOR_OUT_OF_RANGE    = 2
+        CURSOR_OUT_OF_AMMO    = 3    CURSOR_TOO_HEAVY       = 4
+        CURSOR_WONT_FIT       = 5    
 
 UI_cause_light(int length)
 
-	Creates a light which lits the screen and lasts for 'length' game minutes.
+    Creates a light which lits the screen and lasts for 'length' game minutes.
 
+UI_infravision()                                                     [SI, Exult]
 
-UI_infravision()																					[SI, Exult]
-
-	Turns on 'infravision'.
-
+    Turns on 'infravision'.
 
 UI_earthquake(int length)
 
-	Shakes the screen for 'length' ticks. Also plays the earthquake SFX once at the start.
+    Shakes the screen for 'length' ticks. Also plays the earthquake SFX once at
+    the start.
 
+UI_armageddon()                                                             [BG]
 
-UI_armageddon()																						[BG]
-
-	The Armageddon spell from BG. Use with care :-)
-
+    The Armageddon spell from BG. Use with care :-)
 
 UI_restart_game()
 
-	Stops the music and restarts the game from the last save.
-
+    Stops the music and restarts the game from the last save.
 
 UI_run_endgame(bool flag)
 
-	Runs the endgame.
-	****** BG SPECIFIC ******
-	If 'flag' is 'false', the avatar stepped through the Black Gate; if 'true', the avatar destroyed the Black Gate.
-	**** END BG SPECIFIC ****
-	****** SI SPECIFIC ******
-	'flag' is ignored.
-	**** END SI SPECIFIC ****
-	If 'flag' is 'true', also sets the game-completion flag.
+    Runs the endgame.
 
+    ****** BG SPECIFIC ******
+    If 'flag' is 'false', the avatar stepped through the Black Gate; if 'true',
+    the avatar destroyed the Black Gate.
+    **** END BG SPECIFIC ****
 
-UI_error_message([special])																			[SI, Exult]
+    ****** SI SPECIFIC ******
+    'flag' is ignored.
+    **** END SI SPECIFIC ****
 
-	Accepts from 1 to 12 parameters of any type, whether or not they are arrays. Prints all parameters (and all the
-	elements of said parameters, for those that are arrays) to 'stdout.txt'.
+    If 'flag' is 'true', also sets the game-completion flag.
 
+UI_error_message([special])                                          [SI, Exult]
 
-string UI_printf(string out[])																		[Exult]
+    Accepts from 1 to 12 parameters of any type, whether or not they are arrays.
+    Prints all parameters (and all the elements of said parameters, for those
+    that are arrays) to 'stdout.txt'.
 
-	Similar to C's printf. Each instance of "%s" in the first element of 'out' is replaced by another element of
-	'out', and the resulting string is output to 'stdout.txt'. Return is an empty string.
+string UI_printf(string out[])                                           [Exult]
 
+    Similar to C's printf. Each instance of "%s" in the first element of 'out'
+    is replaced by another element of 'out', and the resulting string is output
+    to 'stdout.txt'. Return is an empty string.
 
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 DISPLAY
----------------------------------------------------------------------------------------------------------------------
-UI_center_view(object obj)																			[BG]
+--------------------------------------------------------------------------------
+
+UI_center_view(object obj)                                                  [BG]
 obj->center_view()
 
-	Centers screen around 'obj'.
+    Centers screen around 'obj'.
 
+UI_display_area(int pos[])                                                  [BG]
 
-UI_display_area(int pos[])																			[BG]
+    Displays area pointed by position vector 'pos'. If 'pos' has 3 elements, it
+    is a (x, y, z) vector; with 4 elements, 'pos' is a (x, y, z, map) position
+    vector. If map == -1, Exult uses the current map. Overlays sprite shape 10
+    over the screen.
 
-	Displays area pointed by position vector 'pos'. If 'pos' has 3 elements, it is a (x, y, z) vector; with 4
-	elements, 'pos' is a (x, y, z, map) position vector. If map == -1, Exult uses the current map. Overlays sprite
-	shape 10 over the screen.
-
-
-UI_set_camera(actor npc)																			[SI, Exult]
+UI_set_camera(actor npc)                                             [SI, Exult]
 actor->set_camera()
 
-	Makes the camera follow 'npc'.
+    Makes the camera follow 'npc'.
 
+UI_wizard_eye(int length)                                                   [BG]
 
-UI_wizard_eye(int length)																			[BG]
-
-	Lets the player move the screen around, keeping the avatar in its present location, for a duration equal to
-	(1.5 * 'length') ticks.
-
+    Lets the player move the screen around, keeping the avatar in its present
+    location, for a duration equal to (1.5 * 'length') ticks.
 
 UI_fade_palette(int length, int unk, int type)
 
-	If 'type' is '0', fades the screen to black; if 'type' is '1', fades in from black. In either case, 'length' is the
-	time (in ticks) it takes to fade the screen. The meaning of 'unk' parameter is unknown and it is ignored.
-
+    If 'type' is '0', fades the screen to black; if 'type' is '1', fades in from
+    black. In either case, 'length' is the time (in ticks) it takes to fade the
+    screen. The meaning of 'unk' parameter is unknown and it is ignored.
 
 UI_item_say(object obj, string bark)
 obj->item_say(string bark)
 
-	Displays the string 'bark' near 'obj'.
+    Displays the string 'bark' near 'obj'.
 
-
-UI_clear_item_say(object obj)															[SI, Exult]
+UI_clear_item_say(object obj)                                        [SI, Exult]
 obj->clear_item_say()
 
-	Deletes the string (if any) being displayed near 'obj'.
-
+    Deletes the string (if any) being displayed near 'obj'.
 
 UI_display_runes(int gump, string runes)
 
-	Displays gump 'gump' (from 'gumps.vga') and prints one line of runic text for each element in 'runes'. As of today
-	(2006/02/23), the exact font shape <> gump shape association is hard coded.
-
+    Displays gump 'gump' (from 'gumps.vga') and prints one line of runic text
+    for each element in 'runes'. As of today (2006/02/23), the exact font shape
+    <> gump shape association is hard coded.
 
 UI_book_mode(object obj)
 obj->book_mode()
 
-	Used to display books and scrolls; displays a gump shape (currently hard-coded) based on the shape of 'obj'.
-	If the shape of 'obj' is equal to 797, a scroll gump will be displayed; otherwise, a book gump will be	displayed. 
-	****** SI SPECIFIC ******
-	In SI, there is one additional shape of 'obj' which displays a scroll gump: it is shape 707.
-	Additionally, there are two shapes which will display serpentine runes: shape 707 (seprentine scroll) and shape
-	705	(serpentine book). In both cases, If the avatar's 'READ' flag is set, any serpentine runes will be translated
-	to normal runes.
-	**** END SI SPECIFIC ****
+    Used to display books and scrolls; displays a gump shape (currently
+    hard-coded) based on the shape of 'obj'. If the shape of 'obj' is equal to
+    797, a scroll gump will be displayed; otherwise, a book gump will be
+    displayed.
 
+    ****** SI SPECIFIC ******
+    In SI, there is one additional shape of 'obj' which displays a scroll gump:
+    it is shape 707. Additionally, there are two shapes which will display
+    serpentine runes: shape 707 (seprentine scroll) and shape 705	(serpentine
+    book). In both cases, If the avatar's 'READ' flag is set, any serpentine
+    runes will be translated to normal runes.
+    **** END SI SPECIFIC ****
 
 UI_close_gumps()
 
-	Closes all gumps.
-
+    Closes all gumps.
 
 UI_close_gump(object obj)
 obj->close_gump()
 
-	Closes the gump of 'obj' if it is being displayed.
-
+    Closes the gump of 'obj' if it is being displayed.
 
 bool UI_in_gump_mode()
 
-	Returns 'true' if showing gumps, 'false' otherwise.
+    Returns 'true' if showing gumps, 'false' otherwise.
 
+UI_display_map()                                                            [BG]
 
-UI_display_map()																					[BG]
+    Displays the main game map.
 
-	Displays the main game map.
+UI_si_display_map(int num)                                                  [SI]
 
+    Displays a map on screen specified by 'num'. Currently, the association
+    between map <> 'num' is hard-coded.
 
-UI_si_display_map(int num)																			[SI]
+UI_lightning()                                                              [BG]
 
-	Displays a map on screen specified by 'num'. Currently, the association between map <> 'num' is hard-coded.
-
-
-UI_lightning()																						[BG]
-
-	Creates a lightninig effect (flashes screen, lightning sound).
-
+    Creates a lightninig effect (flashes screen, lightning sound).
 
 UI_sprite_effect(int sprite, int x, int y, int vel_x, int vel_y, int reps)
 
-	Creates a sprite effect from 'SPRITES.VGA'. 'sprite' is the shape number, ('x', 'y') is the starting (x, y)
-	position, ('vel_x', 'vel_y') is the (x, y) speed (i.e., change in coordinates at every tick). If 'reps' < 0, the
-	sprite effect goes through all frames (at the rate of one frame per tick) and deletes itself; otherwise, 'reps'
-	is the total number of ticks the animation will last before deleting itself, looping the sprite's frames if
-	it is needed.
-
+    Creates a sprite effect from 'SPRITES.VGA'. 'sprite' is the shape number,
+    ('x', 'y') is the starting (x, y) position, ('vel_x', 'vel_y') is the (x,
+    y) speed (i.e., change in coordinates at every tick). If 'reps' < 0, the
+    sprite effect goes through all frames (at the rate of one frame per tick)
+    and deletes itself; otherwise, 'reps' is the total number of ticks the
+    animation will last before deleting itself, looping the sprite's frames if
+    it is needed.
 
 UI_obj_sprite_effect(object obj, int sprite, int rel_x, int rel_y, int vel_x, int vel_y, int reps)
 obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y, int reps)
 
-	Creates a sprite effect from 'SPRITES.VGA'. This sprite effect is tied to 'obj'; if 'obj' moves, the sprite
-	will move along. 'sprite' is the sprite's shape number, ('rel_x', 'rel_y') is the relative (x, y) offset of the
-	sprite relative to the position of 'obj', ('vel_x', 'vel_y') is the (x, y) speed (i.e., change in coordinates
-	at every tick, and in addition to any motion of 'obj'). If 'reps' < 0, the	sprite effect goes through all
-	frames (at the rate of one frame per tick) and deletes itself; otherwise, 'reps' is the total number of ticks
-	the animation will last before deleting itself, looping the sprite's frames if it is needed.
+    Creates a sprite effect from 'SPRITES.VGA'. This sprite effect is tied to
+    'obj'; if 'obj' moves, the sprite will move along. 'sprite' is the sprite's
+    shape number, ('rel_x', 'rel_y') is the relative (x, y) offset of the sprite
+    relative to the position of 'obj', ('vel_x', 'vel_y') is the (x, y) speed
+    (i.e., change in coordinates at every tick, and in addition to any motion
+    of 'obj'). If 'reps' < 0, the	sprite effect goes through all frames (at the
+    rate of one frame per tick) and deletes itself; otherwise, 'reps' is the
+    total number of ticks the animation will last before deleting itself,
+    looping the sprite's frames if it is needed.
 
-
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 MISCELLANEOUS
----------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
 UI_explode(object unk1, object obj, int unk2)
 
-	Causes 'obj' to explode like a powder-keg. The meaning of 'unk1' and 'unk2' are unknown, and are hence ignored
-	in Exult.
-
+    Causes 'obj' to explode like a powder-keg. The meaning of 'unk1' and 'unk2'
+    are unknown, and are hence ignored in Exult.
 
 int UI_add_spell(int index, int unk, object obj)
 
-	If 'obj' is a spellbook, adds the spell whose index is 'index' and returns '1' -- unless the spell is already in
-	the spellbook, in which case return value is '0'. If 'obj' is not a spellbook, does nothing and returns '0'.
-	'unk' is a parameter from the original games whose meaning is unknown, hence is unimplemented in Exult.
-
+    If 'obj' is a spellbook, adds the spell whose index is 'index' and returns
+    '1' -- unless the spell is already in the spellbook, in which case return
+    value is '0'. If 'obj' is not a spellbook, does nothing and returns '0'.
+    'unk' is a parameter from the original games whose meaning is unknown,
+    hence is unimplemented in Exult.
 
 int UI_get_array_size([special])
 
-	Accepts a single variable as input. If the input variable is an array, the return value is the number of elements
-	of the array; otherwise, the return is '1'.
+    Accepts a single variable as input. If the input variable is an array, the
+    return value is the number of elements of the array; otherwise, the return
+    is '1'.
 
-
-UI_mark_virtue_stone(object obj)																	[BG]
+UI_mark_virtue_stone(object obj)                                            [BG]
 obj->mark_virtue_stone()
 
-	If 'obj' is a virtue stone, marks it with the location of 'obj' (including map).
+    If 'obj' is a virtue stone, marks it with the location of 'obj' (including
+    map).
 
-
-UI_recall_virtue_stone(object obj)																	[BG]
+UI_recall_virtue_stone(object obj)                                          [BG]
 obj->recall_virtue_stone()
 
-	If 'obj' is a virtue stone, teleports the party to the stored position (including map) and forcefully returns the
-	'obj' to the avatar's inventory if it is on the ground.
+    If 'obj' is a virtue stone, teleports the party to the stored position
+    (including map) and forcefully returns the 'obj' to the avatar's inventory
+    if it is on the ground.
 
+UI_set_orrery(int pos[3], int state)                                        [BG]
 
-UI_set_orrery(int pos[3], int state)																[BG]
+    Sets the position of the orrery in Moonglow. 'pos' is the position of the
+    orrery, 'state' is the orrery's current state (ranging from 0-9).
 
-	Sets the position of the orrery in Moonglow. 'pos' is the position of the orrery, 'state' is the orrery's
-	current state (ranging from 0-9).
-
-
-UI_fire_cannon(object obj, int dir, int ball, int unk, int weapon)									[BG]
+UI_fire_cannon(object obj, int dir, int ball, int unk, int weapon)          [BG]
 obj->fire_cannon(int dir, int ball, int unk, int weapon)
 
-	Causes the cannon 'obj' to fire a ball of shape 'ball' in the direction 'dir'. 'weapon' is the shape number of
-	the weapon information to be used for damage information. In the original, there was an additional parameter
-	with unknown meaning; hence, Exult ignores it.
-
+    Causes the cannon 'obj' to fire a ball of shape 'ball' in the direction
+    'dir'. 'weapon' is the shape number of the weapon information to be used
+    for damage information. In the original, there was an additional parameter
+    with unknown meaning; hence, Exult ignores it.
 
 int UI_is_water(int pos[3])
 
-	Returns '1' if the position specified by 'pos' is a water tile, '0' if it is not.
-
+    Returns '1' if the position specified by 'pos' is a water tile, '0' if it is
+    not.
 
 string UI_a_or_an(string text)
 
-	Returns a string; the string will be "a" or "an" (hence the name of the intrinsic) depending on whether the first
-	letter of 'text' is, respectively, in the set "aeiouyAEIOUY" or not.
-
+    Returns a string; the string will be "a" or "an" (hence the name of the
+    intrinsic) depending on whether the first letter of 'text' is,
+    respectively, in the set "aeiouyAEIOUY" or not.
 
