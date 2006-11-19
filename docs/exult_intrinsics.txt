@@ -78,8 +78,8 @@ All intrinsics can be called as presented in the list. If an intrinsic has at
 least one parameter, it can be called in 'calle' form, with the first parameter
 as its 'object'. Example:
 
-int UI_execute_usecode_array(object obj, int script[]);
-int obj->execute_usecode_array(int script[]);
+    int UI_execute_usecode_array(object obj, int script[]);
+    int obj->execute_usecode_array(int script[]);
 
 The first parameter and the '->' can both be omitted if 'obj' is 'item', and if
 you omit either of them you *must* omit both or the Usecode will fail to
@@ -87,10 +87,10 @@ compile. For stylistic purposes, the 'calle' form should be used only when the
 first parameter is an object or NPC (or 'item'). For all intrinsics with
 'appropriate' parameter types, I have listed both forms in the list below.
 
-Also, you may have noticed that I did not include the parameter type of 'obj'
-when I gave the 'calle' form of execute_usecode_array; since I will only give
-the 'calle' form when the parameter type is 'object' or 'actor', I feel that it
-is unneeded.
+Also, you may have noticed that I did not include_once the parameter type of
+'obj' when I gave the 'calle' form of execute_usecode_array; since I will only
+give the 'calle' form when the parameter type is 'object' or 'actor', I feel
+that it is unneeded.
 
 ================================================================================
 INTRINSIC FUNCTIONS
@@ -593,7 +593,7 @@ int UI_find_direction(misc param1[4], misc param2[4])
 
 int UI_add_cont_items(object obj, int count, int shape, int          [SI, Exult]
         qual, int frame, int unk)
-int obj->remove_cont_items(int count, int shape, int qual, int frame, int unk)
+int obj->add_cont_items(int count, int shape, int qual, int frame, int unk)
 
     Adds 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
     that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
@@ -737,7 +737,7 @@ obj->set_item_flag(int flag)
     most do not.
 
 UI_clear_item_flag(object obj, int flag)
-obj->UI_clear_item_flag(int flag)
+obj->clear_item_flag(int flag)
 
     Clears the flag 'flag' of 'obj'. Many flags have immediate effectswhen
     cleared; most do not.
@@ -1099,8 +1099,8 @@ int npc->get_temperature()
 
     Returns the value of the temperature for 'npc'.
 
-UI_get_temperature(actor npc, int temp)                                     [SI]
-npc->get_temperature(int temp)
+UI_set_temperature(actor npc, int temp)                                     [SI]
+npc->set_temperature(int temp)
 
     Sets the temperature of 'npc' to 'temp'.
 
