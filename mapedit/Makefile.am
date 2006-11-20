@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../imagewin -I$(srcdir)/../conf -I$(srcdir)/../gamemgr \
-	-I$(srcdir)/../files -I$(srcdir)/../server \
+	-I$(srcdir)/../files -I$(srcdir)/../server  -I$(srcdir)/../usecode \
 	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
 if GIMP_PLUGIN
@@ -50,7 +50,9 @@ exult_studio_SOURCES = \
 	shapegroup.cc \
 	shapegroup.h \
 	shapelst.cc \
-	shapelst.h
+	shapelst.h \
+	ucbrowse.cc \
+	ucbrowse.h
 
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)

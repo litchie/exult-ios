@@ -92,6 +92,19 @@ C_EXPORT gboolean on_egg_window_delete_event
 	}
 
 /*
+ *	Egg 'usecode' panel's 'browse' button.
+ */
+C_EXPORT void on_egg_browse_usecode_clicked          
+	(
+	GtkButton *button,
+	gpointer         user_data
+	)
+	{
+	ExultStudio::get_instance()->open_usecode_browser_window();
+	// ++++++++++FINISH++++++++
+	}
+
+/*
  *	Draw shape in egg 'monster' area.
  */
 C_EXPORT gboolean on_egg_monster_draw_expose_event
