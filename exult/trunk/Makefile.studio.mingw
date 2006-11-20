@@ -51,9 +51,10 @@ SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
 MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
 	exult_studio.o locator.o maps.o \
-	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o shapedraw.o \
+	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o \
+	shapedraw.o \
 	shapefile.o shapegroup.o \
-	shapeedit.o shapelst.o studio.o
+	shapeedit.o shapelst.o studio.o ucbrowse.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
 

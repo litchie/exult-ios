@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapegroup.h"
 #include "shapefile.h"
 #include "locator.h"
+#include "ucbrowse.h"
 #include "combo.h"
 #include "Configuration.h"
 #include "objserial.h"
@@ -479,7 +480,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
 	shape_draw(0), gump_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
-	curr_game(0), curr_mod(-1)
+	ucbrowsewin(0), curr_game(0), curr_mod(-1)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -621,9 +622,12 @@ ExultStudio::~ExultStudio()
 	compile_box = 0;
 	if (locwin)
 		delete locwin;
+	locwin = 0;
 	if (combowin)
 		delete combowin;
-	locwin = 0;
+	combowin = 0;
+	if (ucbrowsewin)
+		delete ucbrowsewin;
 	g_object_unref( G_OBJECT( app_xml ) );
 #ifndef WIN32
 	if (server_input_tag >= 0)
