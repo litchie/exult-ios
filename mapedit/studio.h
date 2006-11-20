@@ -38,6 +38,7 @@ class Shape_draw;
 class Object_browser;
 class Shape_group;
 class Locator;
+class Usecode_browser;
 class Combo_editor;
 class Exec_box;
 					// Callback for msgs.
@@ -106,6 +107,8 @@ private:
 					// Compile window:
 	GtkWidget		*compilewin;
 	Exec_box		*compile_box;
+					// Usecode browser:
+	Usecode_browser		*ucbrowsewin;
 					// Which game type:
 	Exult_Game game_type;
 	int curr_game;	// Which game is loaded
@@ -266,7 +269,8 @@ public:
 					// Maps.
 	void new_map_dialog();
 	void setup_maps_list();
-
+					// Usecode browser.
+	void open_usecode_browser_window();
 					// Games.
 	void open_game_dialog(bool createmod=false);
 
