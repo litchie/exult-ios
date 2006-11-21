@@ -1,3 +1,7 @@
+2006-11-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Adding two new intrinsics: UI_book_mode_ex and UI_display_map_ex, as
+	well as documentation for both.
+
 2006-11-17  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* docs/exult_intrinsics.txt: Reformatting file, some other minor fixes.
 
