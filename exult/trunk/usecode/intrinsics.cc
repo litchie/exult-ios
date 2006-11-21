@@ -788,19 +788,7 @@ USECODE_INTRINSIC(display_runes)
 		Usecode_value& lval = !i ? parms[1].get_elem0() 
 					: parms[1].get_elem(i);
 		const char *str = lval.get_str_value();
-#if 0	/* ++++Not sure about this yet.  Compare with orig. */
-		if (si)			// SI:  Add 0x20 to each chr.
-			{
-			char *newstr = strdup(str);
-			for (char *ptr = newstr; *ptr; ptr++)
-				if (*ptr >= 'A' && *ptr <= 'Z')
-					*ptr += 0x20;
-			sign->add_text(i, newstr);
-			delete newstr;
-			}
-		else
-#endif
-			sign->add_text(i, str);
+		sign->add_text(i, str);
 		}
 	int x, y;			// Paint it, and wait for click.
 	Get_click(x, y, Mouse::hand, 0, false, sign);
@@ -1244,6 +1232,21 @@ USECODE_INTRINSIC(si_display_map)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(display_map_ex)
+{
+	int map_shp = parms[0].get_int_value();
+	bool loc = parms[1].get_int_value() != 0;
+
+	// Display map.
+	ShapeID msid(map_shp, 0, SF_SPRITES_VGA);
+	Paint_map map(&msid, loc);
+
+	int xx, yy;
+	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	gwin->paint();
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(kill_npc)
 {
 	// kill_npc(npc).
@@ -1428,7 +1431,7 @@ USECODE_INTRINSIC(get_body_npc)
 
 USECODE_INTRINSIC(add_spell)
 {
-	// add_spell(spell# (0-71), ??, spoolbook).
+	// add_spell(spell# (0-71), ??, spellbook).
 	// Returns 0 if book already has that spell.
 	Game_object *obj = get_item(parms[2]);
 	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
@@ -1494,15 +1497,31 @@ USECODE_INTRINSIC(book_mode)
 
 	// check for avatar read here
 	bool do_serp = gwin->get_main_actor()->get_flag(Obj_flags::read) == false;
+	int fnt = do_serp ? 8 : 4;
 	
 	if (obj->get_shapenum() == 707)		// Serpentine Scroll - Make SI only???
-		gump = new Scroll_gump(do_serp);
+		gump = new Scroll_gump(fnt);
 	else if (obj->get_shapenum() == 705)	// Serpentine Book - Make SI only???
-		gump = new Book_gump(do_serp);
+		gump = new Book_gump(fnt);
 	else if (obj->get_shapenum() == 797)
 		gump = new Scroll_gump();
 	else
 		gump = new Book_gump();
+	set_book(gump);
+	return(no_ret);
+}
+
+USECODE_INTRINSIC(book_mode_ex)
+{
+	// Display book or scroll.
+	Text_gump *gump;
+	bool is_scroll = parms[0].get_int_value() != 0;
+	int fnt = parms[1].get_int_value();
+
+	if (is_scroll)
+		gump = new Scroll_gump(fnt);
+	else
+		gump = new Book_gump(fnt);
 	set_book(gump);
 	return(no_ret);
 }

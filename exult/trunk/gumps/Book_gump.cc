@@ -32,8 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Book_gump::Book_gump
 	(
-	bool serp
-	) : Text_gump(game->get_shape("gumps/book"), serp)
+	int fnt
+	) : Text_gump(game->get_shape("gumps/book"), fnt)
 {
 }
 

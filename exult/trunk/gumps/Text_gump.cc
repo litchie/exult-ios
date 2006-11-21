@@ -70,7 +70,6 @@ int Text_gump::paint_page
 	int start			// Starting offset into text.
 	)
 {
-	const int font = serpentine?8:4;	// Black.
 	const int vlead = 1;		// Extra inter-line spacing.
 	int ypos = 0;
 	int textheight = sman->get_text_height(font) + vlead;
