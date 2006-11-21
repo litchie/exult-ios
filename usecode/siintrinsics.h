@@ -278,8 +278,8 @@
 	USECODE_INTRINSIC_PTR(begin_casting_mode),		// 0xc9 (Exult)
 	USECODE_INTRINSIC_PTR(get_usecode_fun),			// 0xca (Exult)
 	USECODE_INTRINSIC_PTR(get_map_num),			// 0xcb (Exult)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcc
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcd
+	USECODE_INTRINSIC_PTR(display_map_ex),			// 0xcc (Exult)
+	USECODE_INTRINSIC_PTR(book_mode_ex),				// 0xcd (Exult)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xce
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcf
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xd0
