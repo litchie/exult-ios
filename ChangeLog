@@ -1,3 +1,9 @@
+2006-11-23  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* ufcun.h: Fixing UCC bug that caused first obj.say or obj.hide calls to do
+	  fail do perform their intrinsic calls if they were the first intrinsic-
+	  related calls in a usecode file.
+	* All others: Adding C++-style switch statement to UCC.
+
 2006-11-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Adding extra capabilities to UI_book_mode_ex intrinsic, as well as improved
 	documentation for it.
