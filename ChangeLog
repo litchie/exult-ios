@@ -1,4 +1,8 @@
 2006-11-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Adding extra capabilities to UI_book_mode_ex intrinsic, as well as improved
+	documentation for it.
+
+2006-11-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Adding two new intrinsics: UI_book_mode_ex and UI_display_map_ex, as
 	well as documentation for both.
 

@@ -31,8 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Scroll_gump::Scroll_gump
 	(
-	int fnt
-	) : Text_gump(game->get_shape("gumps/scroll"), fnt)
+	int fnt, int gump
+	) : Text_gump(gump < 0 ? game->get_shape("gumps/scroll") : gump, fnt)
 {  
 }
 

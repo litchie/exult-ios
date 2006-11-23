@@ -1517,11 +1517,12 @@ USECODE_INTRINSIC(book_mode_ex)
 	Text_gump *gump;
 	bool is_scroll = parms[0].get_int_value() != 0;
 	int fnt = parms[1].get_int_value();
+	int gumpshp = num_parms >= 3 ? parms[2].get_int_value() : -1;
 
 	if (is_scroll)
-		gump = new Scroll_gump(fnt);
+		gump = new Scroll_gump(fnt, gumpshp);
 	else
-		gump = new Book_gump(fnt);
+		gump = new Book_gump(fnt, gumpshp);
 	set_book(gump);
 	return(no_ret);
 }
