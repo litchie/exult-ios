@@ -43,8 +43,7 @@ vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
 int Uc_function::num_global_statics = 0;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
 	Uc_function::push_answers = -1, Uc_function::pop_answers = -1,
-	Uc_function::show_face = -1, Uc_function::remove_face = -1,
-	Uc_function::class_new = -1, Uc_function::class_delete = -1;
+	Uc_function::show_face = -1, Uc_function::remove_face = -1;
 Uc_function::Intrinsic_type Uc_function::intrinsic_type =
 						Uc_function::unset;
 
@@ -556,8 +555,6 @@ void Uc_function::set_intrinsics
 		remove_answer = 6;
 		push_answers = 7;
 		pop_answers = 8;
-		class_new = 0xbf;
-		class_delete = 0xc0;
 		}
 	else
 		{
@@ -567,8 +564,6 @@ void Uc_function::set_intrinsics
 		remove_answer = 0xd;
 		push_answers = 0xe;
 		pop_answers = 0xf;
-		class_new = 0xcc;
-		class_delete = 0xcd;
 		}
 	show_face = 3;
 	remove_face = 4;
