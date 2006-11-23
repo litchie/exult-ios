@@ -147,6 +147,15 @@ npc->begin_casting_mode()
     Starts casting mode for 'npc'. When the next script starts for 'npc', that
     NPC will display casting frames (shape 859) until the script ends.
 
+int UI_set_to_attack(actor npc, object obj, int proj)
+int npc->set_to_attack(object obj, int proj)
+
+    Prepares 'npc' to attack 'obj' with a *missile* attack using projectile
+    shape 'proj'. 'proj' MUST specify a shape that has an 'ammo' tab in Exult
+    Studio, or nothing will happen. The attack itself is triggered by a script;
+    in an UCC script, use the 'attack' command to actually initiate the attack.
+    Return value is always '0'.
+
 int UI_path_run_usecode(int pos[], function fun, object obj, int event)
 
     If the avatar can walk to to the location specified by 'pos', this intrinsic
@@ -969,15 +978,6 @@ npc->kill_npc()
 
     Kills 'npc'.
 
-int UI_set_to_attack(actor npc, object obj, int proj)
-int npc->set_to_attack(object obj, int proj)
-
-    Prepares 'npc' to attack 'obj' with a *missile* attack using projectile
-    shape 'proj'. 'proj' MUST specify a shape that has an 'ammo' tab in Exult
-    Studio, or nothing will happen. The attack itself is triggered by a script;
-    in an UCC script, use the 'attack' command to actually initiate the attack.
-    Return value is always '0'.
-
 int UI_get_attack_mode(actor npc)                                    [SI, Exult]
 int npc->get_attack_mode()
 
@@ -1405,11 +1405,25 @@ obj->book_mode()
     runes will be translated to normal runes.
     **** END SI SPECIFIC ****
 
-UI_book_mode_ex(bool is_scroll, int font)                                       
+UI_book_mode_ex(bool is_scroll, int font)                                  Exult
+UI_book_mode_ex(bool is_scroll, int font, int gump)
 
     Used to display books and scrolls; displays a book gump if 'show_loc' is
     'false' or a scroll shape if it is 'true'. The font shape in 'FONTS.VGA'
-    used to render the text is specified in 'font'.
+    used to render the text is specified in 'font'. If 'gump' is specified, and
+    is >=0, Exult will use it as being the shape from 'GUMPS.VGA' to display; if
+    'gump' <= -1, Exult will use the default shapes for scrolls and books
+    instead.
+
+    **** IMPORTANT NOTES ****
+    Unlike the 'UI_book_mode' intrinsic, this intrinsic performs *no*
+    translation of any kind if the avatar's 'READ' flag is set. This is an
+    intentional design feature -- for example, text written in Gargish and
+    being displayed in a Gargish font should be translated by more than a mere
+    font substitution. Also, the gump shapes should be 'compatible' with the
+    standard book/scroll shapes as Exult will write the text in the same region
+    of the screen as it does for standard books/scrolls.
+    ** END IMPORTANT NOTES **
 
 UI_close_gumps()
 
@@ -1433,7 +1447,7 @@ UI_si_display_map(int num)                                                  [SI]
     Displays a map on screen specified by 'num'. Currently, the association
     between map <> 'num' is hard-coded.
 
-UI_display_map_ex(int mapshp, bool show_loc)                                    
+UI_display_map_ex(int mapshp, bool show_loc)                               Exult
 
     Displays the sprite shape 'mapshp' centered in the screen. If 'show_loc' is
     'true', Exult will also display a location mark in the map.
