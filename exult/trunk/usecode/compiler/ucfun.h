@@ -44,7 +44,7 @@ class Uc_function : public Uc_design_unit
 	static vector<Uc_intrinsic_symbol *> intrinsics;
 					// Some intrinsic numbers:
 	static int add_answer, remove_answer, push_answers, pop_answers,
-		show_face, remove_face, class_new, class_delete;
+		show_face, remove_face;
 	static int num_global_statics;
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
@@ -152,10 +152,6 @@ public:
 		{ return get_intrinsic(show_face); }
 	static Uc_intrinsic_symbol *get_remove_face()
 		{ return get_intrinsic(remove_face); }
-	static Uc_intrinsic_symbol *get_class_new()
-		{ return get_intrinsic(class_new); }
-	static Uc_intrinsic_symbol *get_class_delete()
-		{ return get_intrinsic(class_delete); }
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(Uc_var_symbol *var);// Add var. to current scope.
