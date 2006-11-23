@@ -444,6 +444,11 @@ const_int:
 								$1, val);
 			enum_val = val;	// In case we're in an enum.
 			}
+		else
+			{
+			char buf[180];
+			yyerror("Integer constant expected.");
+			}
 		}
 	;
 
