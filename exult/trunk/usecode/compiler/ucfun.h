@@ -86,7 +86,11 @@ public:
 			set_intrinsics();
 		}
 	static void set_intrinsic_type(Intrinsic_type ty)
-		{ intrinsic_type = ty; }
+		{
+		intrinsic_type = ty;
+		if (ty != Uc_function::unset)
+			set_intrinsics();
+		}
 	void set_statement(Uc_statement *s)
 		{ statement = s; }
 	const char *get_name()

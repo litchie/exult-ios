@@ -236,8 +236,10 @@ break		return BREAK;
 case		return CASE;
 static		return STATIC_;
 class		return CLASS;
-new		return NEW;
+new			return NEW;
 delete		return DELETE;
+switch		return SWITCH;
+default		return DEFAULT;
 
 converse	return CONVERSE;
 say		return SAY;
