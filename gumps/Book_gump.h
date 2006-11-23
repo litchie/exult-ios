@@ -29,7 +29,7 @@ class Book_gump : public Text_gump
 	UNREPLICATABLE_CLASS_I(Book_gump,Text_gump(0));
 
 public:
-	Book_gump(int fnt = 4);
+	Book_gump(int fnt = 4, int gump = -1);
 					// Paint it and its contents.
 	virtual void paint();
 };
