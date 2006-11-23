@@ -3,6 +3,7 @@
 	  fail do perform their intrinsic calls if they were the first intrinsic-
 	  related calls in a usecode file.
 	* All others: Adding C++-style switch statement to UCC.
+	* Minor optimization for integer constants in UCC.
 
 2006-11-21  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Adding extra capabilities to UI_book_mode_ex intrinsic, as well as improved
