@@ -248,6 +248,74 @@ public:
 	};
 
 /*
+ *	Switch CASE statement:
+ */
+class Uc_switch_case_statement : public Uc_statement
+	{
+	Uc_statement *statements;	// Execute these.
+public:
+	Uc_switch_case_statement(Uc_statement *stmts)
+		: statements(stmts)
+		{  }
+	~Uc_switch_case_statement()
+		{ delete statements; }
+	virtual bool is_default() const
+		{ return false; }
+					// Generate code.
+	virtual int gen_check(std::vector<char>& out, Uc_function *fun)=0;
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	Switch CASE statement:
+ */
+class Uc_switch_default_case_statement : public Uc_switch_case_statement
+	{
+public:
+	Uc_switch_default_case_statement(Uc_statement *stmts)
+		: Uc_switch_case_statement(stmts)
+		{  }
+	~Uc_switch_default_case_statement()
+		{  }
+	virtual bool is_default() const
+		{ return true; }
+					// Generate code.
+	virtual int gen_check(std::vector<char>& out, Uc_function *fun)
+		{  }
+	};
+
+/*
+ *	Switch CASE statement:
+ */
+class Uc_switch_expression_case_statement : public Uc_switch_case_statement
+	{
+	Uc_expression *check;		// The case we are interested in.
+public:
+	Uc_switch_expression_case_statement(Uc_expression *c, Uc_statement *stmts)
+		: check(c), Uc_switch_case_statement(stmts)
+		{  }
+	~Uc_switch_expression_case_statement();
+					// Generate code.
+	virtual int gen_check(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	C++-style switch statement. Just a less wordy form for
+ *	long if/else if blocks which check different values of
+ *	the same variable.
+ */
+class Uc_switch_statement : public Uc_statement
+	{
+	Uc_expression *cond;		// Var to check values of.
+	std::vector<Uc_statement *> cases;		// What to execute.
+public:
+	Uc_switch_statement(Uc_expression *v, std::vector<Uc_statement *> *cs);
+	~Uc_switch_statement();
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
  *	Add string to current message (for conversations).
  */
 class Uc_message_statement : public Uc_statement

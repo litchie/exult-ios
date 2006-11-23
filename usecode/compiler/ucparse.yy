@@ -88,6 +88,7 @@ static bool has_ret = false;
 	class Uc_arrayloop_statement *arrayloop;
 	class Uc_array_expression *exprlist;
 	class std::vector<int> *intlist;
+	class std::vector<Uc_statement *> *stmtlist;
 	int intval;
 	char *strval;
 	}
@@ -99,7 +100,7 @@ static bool has_ret = false;
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
-%token NEW DELETE RUNSCRIPT UCC_INSERT
+%token NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
 
 /*
  *	Script keywords:
@@ -152,13 +153,14 @@ static bool has_ret = false;
 %type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
 %type <stmt> class_decl class_decl_list
 %type <stmt> break_statement converse_statement converse2_statement
-%type <stmt> converse_case script_statement
+%type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
 %type <stmt> delete_statement
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
 %type <exprlist> opt_nonclass_expr_list nonclass_expr_list inserted_script_list
+%type <stmtlist> switch_case_list
 %type <funcall> function_call
 
 %%
@@ -336,6 +338,7 @@ statement:
 	| statement_block
 	| converse_statement
 	| converse2_statement
+	| switch_statement
 	| script_statement
 	| break_statement
 	| label_statement
@@ -849,12 +852,48 @@ string_list:
 		}
 	;
 
-
 converse_options:
 	'(' REMOVE ')'			/* For now, just one.		*/
 		{ $$ = 1; }
 	|
 		{ $$ = 0; }
+	;
+
+switch_statement:
+	SWITCH '('
+			{ cur_fun->push_scope(); }
+			expression ')' '{' switch_case_list '}'
+		{
+		if (Class_unexpected_error($4))
+			$$ = 0;
+		else
+			{
+			$$ = new Uc_switch_statement($4, $7);
+			delete($7);		// a copy has been made.
+			cur_fun->pop_scope();
+			}
+		}
+	;
+
+switch_case_list:
+	switch_case_list switch_case
+		{ $$->push_back($2); }
+	| switch_case
+		{
+		$$ = new vector<Uc_statement *>;
+		$$->push_back($1);
+		}
+	;
+
+switch_case:
+	CASE int_literal ':' statement_list
+		{	$$ = new Uc_switch_expression_case_statement(
+				new Uc_int_expression($2), $4);	}
+	| CASE STRING_LITERAL ':' statement_list
+		{	$$ = new Uc_switch_expression_case_statement(
+				new Uc_string_expression(cur_fun->add_string($2)), $4);	}
+	| DEFAULT ':' statement_list
+		{	$$ = new Uc_switch_default_case_statement($3);	}
 	;
 
 script_statement:			/* Yes, this could be an intrinsic. */

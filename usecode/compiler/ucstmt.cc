@@ -526,6 +526,153 @@ void Uc_converse2_statement::gen
 	}
 
 /*
+ *	Delete.
+ */
+
+inline Uc_switch_expression_case_statement::~Uc_switch_expression_case_statement
+	(
+	)
+	{
+	delete check;
+	}
+
+/*
+ *	Generate code.
+ */
+
+int Uc_switch_expression_case_statement::gen_check
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	check->gen_value(out);
+	out.push_back((char) UC_CMPNE);
+	out.push_back((char) UC_JNE);
+	Write2(out, 0);
+	return out.size() - 2;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_switch_case_statement::gen
+	(
+	vector<char>& out,		// Contains all CASE statements up to
+					//   this point.
+	Uc_function *fun
+	)
+	{
+	statements->gen(out, fun);
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_switch_statement::~Uc_switch_statement
+	(
+	)
+	{
+	delete cond;
+	for (std::vector<Uc_statement *>::const_iterator it = cases.begin();
+					it != cases.end(); it++)
+		delete (*it);
+	}
+
+/*
+ *	Initialize.
+ */
+
+Uc_switch_statement::Uc_switch_statement
+	(
+	Uc_expression *v,
+	std::vector<Uc_statement *> *cs
+	)
+	: cond(v), cases(*cs)
+	{
+	bool has_default = false;
+	for (vector<Uc_statement *>::const_iterator it = cases.begin();
+			it != cases.end(); ++it)
+		{
+		Uc_switch_case_statement *stmt =
+				dynamic_cast<Uc_switch_case_statement *>(*it);
+		if (stmt->is_default())
+			if (has_default)
+				{
+				char buf[255];
+				snprintf(buf, 255, "switch statement already has a default case.");
+				error(buf);
+				}
+			else
+				has_default = true;
+		}
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_switch_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	vector<int> jne_offsets;
+	int def_case = -1;
+	Uc_var_expression *var = new Uc_var_expression(cond->need_var(out, fun));
+	// Generate all checks and jumps first:
+	for (int i = 0; i < cases.size(); i++)
+		{
+		Uc_switch_case_statement *stmt =
+					dynamic_cast<Uc_switch_case_statement *>(cases[i]);
+		if (stmt->is_default())
+			{
+			// Store the index of the default case.
+			def_case = i;
+			jne_offsets.push_back(0);
+			}
+		else
+			{
+			// Generate the conditional jumps and store the location
+			// of the (unfilled) jump offsets.
+			var->gen_value(out);
+			jne_offsets.push_back(stmt->gen_check(out, fun));
+			}
+		}
+	// For all other cases, the default jump.
+	out.push_back((char) UC_JMP);
+	Write2(out, 0);
+	// If we have a default case, store the jmp offset.
+	if (def_case != -1)
+		jne_offsets[def_case] = out.size() - 2;
+	
+	int top = out.size();
+	fun->start_breakable(this);
+	vector<char> stmt_code;
+	fun->adjust_reloffset(out.size());
+	for (int i = 0; i < cases.size(); i++)
+		{
+		// Jump offsets for the conditions:
+		int jmpoffset = top + stmt_code.size() - (jne_offsets[i] + 2);
+		Write2(out, jne_offsets[i], jmpoffset);
+		Uc_switch_case_statement *stmt =
+					dynamic_cast<Uc_switch_case_statement *>(cases[i]);
+		stmt->gen(stmt_code, fun);
+		}
+	fun->adjust_reloffset(-out.size());
+	// If no default case declared, jump to end of switch.
+	if (def_case == -1)
+		Write2(out, top - 2, stmt_code.size());
+
+	fun->end_breakable(this, stmt_code);
+					// Write out body.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	}
+
+/*
  *	Generate code.
  */
 
