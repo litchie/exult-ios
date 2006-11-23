@@ -115,7 +115,6 @@ bool Uc_expression::eval_const
 	)
 	{
 	val = 0;
-	error("Integer constant expected.");
 	return false;
 	}
 
@@ -278,9 +277,18 @@ void Uc_binary_expression::gen_value
 	vector<char>& out
 	)
 	{
-	left->gen_value(out);		// First the left.
-	right->gen_value(out);		// Then the right.
-	out.push_back((char) opcode);
+	int ival;
+	if (eval_const(ival))
+		{
+		Uc_int_expression *iexpr = new Uc_int_expression(ival);
+		iexpr->gen_value(out);
+		}
+	else
+		{
+		left->gen_value(out);		// First the left.
+		right->gen_value(out);		// Then the right.
+		out.push_back((char) opcode);
+		}
 	}
 
 /*
@@ -309,6 +317,14 @@ bool Uc_binary_expression::eval_const
 			return false;
 			}
 		val = val1/val2;
+		return true;
+	case UC_MOD:
+		if (!val2)
+			{
+			error("Division by 0");
+			return false;
+			}
+		val = val1%val2;
 		return true;
 		}
 	val = 0;
