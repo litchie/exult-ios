@@ -101,6 +101,7 @@ static bool has_ret = false;
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
 %token NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
+%token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ
 
 /*
  *	Script keywords:
@@ -138,9 +139,9 @@ static bool has_ret = false;
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
-%type <expr> nonclass_expr opt_delay inserted_script
+%type <expr> nonclass_expr opt_delay appended_element
 %type <intval> opt_int direction int_literal converse_options
-%type <intval> opt_original opt_var opt_shapenum
+%type <intval> opt_original opt_var opt_shapenum assignment_operator
 %type <intlist> string_list
 %type <sym> declared_sym
 %type <var> declared_var param
@@ -159,7 +160,7 @@ static bool has_ret = false;
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
-%type <exprlist> opt_nonclass_expr_list nonclass_expr_list inserted_script_list
+%type <exprlist> opt_nonclass_expr_list nonclass_expr_list appended_element_list
 %type <stmtlist> switch_case_list
 %type <funcall> function_call
 
@@ -634,6 +635,48 @@ assignment_statement:
 		else
 			$$ = new Uc_assignment_statement($1, $3);
 		}
+	| nonclass_expr assignment_operator nonclass_expr ';'
+		{
+		$$ = new Uc_assignment_statement($1, 
+				new Uc_binary_expression($2, $1, $3));
+		}
+	| nonclass_expr UCC_INSERT appended_element_list ';'
+		{
+		$$ = new Uc_assignment_statement(
+				$1, new Uc_array_expression($1, $3));
+		}
+	;
+
+assignment_operator:
+	ADD_EQ
+		{ $$ = UC_ADD; }
+	| SUB_EQ
+		{ $$ = UC_SUB; }
+	| MUL_EQ
+		{ $$ = UC_MUL; }
+	| DIV_EQ
+		{ $$ = UC_DIV; }
+	| MOD_EQ
+		{ $$ = UC_MOD; }
+	;
+
+appended_element_list:
+	appended_element_list UCC_INSERT appended_element
+		{ $$->add($3); }
+	| appended_element
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);
+		}
+	;
+
+appended_element:
+	nonclass_expr
+	| '{' { start_script(); } script_command_list '}'
+		{
+		$$ = $3;
+		end_script();
+		}
 	;
 
 if_statement:
@@ -747,21 +790,7 @@ opt_delay:
 	;
 
 return_statement:
-	RETURN '0' ';'
-		{
-		// Allow return of '0' in functions that return a class.
-		if (!cur_fun->get_has_ret())
-			{
-			char buf[180];
-			sprintf(buf, "Function '%s' can't return a value",
-					cur_fun->get_name());
-			yyerror(buf);
-			$$ = 0;
-			}
-		else
-			$$ = new Uc_return_statement(new Uc_int_expression(0));
-		}
-	| RETURN expression ';'
+	RETURN expression ';'
 		{
 		if (!cur_fun->get_has_ret())
 			{
@@ -779,15 +808,21 @@ return_statement:
 				$$ = new Uc_return_statement($2);
 			else if (!src || !trg)
 				{
-				char buf[210];
-				sprintf(buf, "Function '%s' expects a return of %s '%s' but supplied value is %s'%s'",
-						cur_fun->get_name(),
-						trg ? "class" : "type",
-						trg ? trg->get_name() : "var",
-						src ? "class " : "",
-						src ? src->get_name() : "var");
-				yyerror(buf);
-				$$ = 0;
+				int ival;
+				if (trg && $2->eval_const(ival) && ival == 0)
+					$$ = new Uc_return_statement($2);
+				else
+					{
+					char buf[210];
+					sprintf(buf, "Function '%s' expects a return of %s '%s' but supplied value is %s'%s'",
+							cur_fun->get_name(),
+							trg ? "class" : "type",
+							trg ? trg->get_name() : "var",
+							src ? "class " : "",
+							src ? src->get_name() : "var");
+					yyerror(buf);
+					$$ = 0;
+					}
 				}
 			else if (Incompatible_classes_error(src, trg))
 				$$ = 0;
@@ -916,48 +951,6 @@ script_statement:			/* Yes, this could be an intrinsic. */
 		$$ = new Uc_call_statement(fcall);
 		end_script();
 		}
-	| declared_var UCC_INSERT inserted_script_list ';'
-		{
-		if ($1->get_cls())
-			{
-			char buf[150];
-			sprintf(buf, "Can't convert class '%s' into non-class",
-					$1->get_name());
-			yyerror(buf);
-			}
-		Uc_var_expression *var = new Uc_var_expression($1);
-		$$ = new Uc_assignment_statement(
-				var, new Uc_array_expression(var, $3));
-		}
-	;
-
-inserted_script_list:
-	inserted_script_list UCC_INSERT inserted_script
-		{ $$->add($3); }
-	| inserted_script
-		{
-		$$ = new Uc_array_expression();
-		$$->add($1);
-		}
-	;
-
-inserted_script:
-	declared_var
-		{
-		if ($1->get_cls())
-			{
-			char buf[150];
-			sprintf(buf, "Can't convert class '%s' into non-class",
-					$1->get_name());
-			yyerror(buf);
-			}
-		$$ = new Uc_var_expression($1);
-		}
-	| '{' { start_script(); } script_command_list '}'
-		{
-		$$ = $3;
-		end_script();
-		}
 	;
 
 item:					/* Any object, NPC.	*/
@@ -1009,8 +1002,11 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::descend); }
 	| FRAME nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
-	| ACTOR FRAME int_literal ';'	/* 0-15. ++++Maybe have keywords. */
-		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
+	| ACTOR FRAME nonclass_expr ';'	/* 0-15. ++++Maybe have keywords. */
+		{
+		$$ = new Uc_binary_expression(UC_ADD, new Uc_int_expression(0x61),
+				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(15)));
+		}
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
@@ -1286,10 +1282,15 @@ primary:
 		else
 			$$ = new Uc_arrayelem_expression($1, $3);
 		}
-	| FLAG '[' int_literal ']'
+	| FLAG '[' nonclass_expr ']'
 		{ $$ = new Uc_flag_expression($3); }
 	| function_call
-		{ $$ = $1; }
+		{
+		if ($1)
+			$$ = $1;
+		else
+			$$ = new Uc_int_expression(0);
+		}
 	| UCTRUE
 		{ $$ = new Uc_bool_expression(true); }
 	| UCFALSE
@@ -1383,7 +1384,7 @@ int_literal:				/* A const. integer value.	*/
 		if (!sym)
 			{
 			char buf[150];
-			sprintf(buf, "'%s' is not a const int");
+			sprintf(buf, "'%s' is not a const int", $1->get_name());
 			yyerror(buf);
 			$$ = 0;
 			}
@@ -1500,9 +1501,7 @@ static bool Class_unexpected_error(Uc_expression *expr)
 	{
 	if (expr->is_class())
 		{
-		char buf[150];
-		sprintf(buf, "Can't convert class into non-class");
-		yyerror(buf);
+		yyerror("Can't convert class into non-class");
 		return true;
 		}
 	return false;
@@ -1512,9 +1511,7 @@ static bool Nonclass_unexpected_error(Uc_expression *expr)
 	{
 	if (!expr->is_class())
 		{
-		char buf[150];
-		sprintf(buf, "Can't convert non-class into class.");
-		yyerror(buf);
+		yyerror("Can't convert non-class into class.");
 		return true;
 		}
 	return false;

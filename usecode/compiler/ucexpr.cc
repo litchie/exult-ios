@@ -238,8 +238,17 @@ void Uc_flag_expression::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHF);	// Opcode, flag #.
-	Write2(out, index);
+	int ival;
+	if (flag->eval_const(ival))
+		{
+		out.push_back((char) UC_PUSHF);	// Opcode, flag #.
+		Write2(out, ival);
+		}
+	else
+		{
+		flag->gen_value(out);
+		out.push_back((char) UC_PUSHFVAR);	// Opcode, flag #.
+		}
 	}
 
 /*
@@ -251,8 +260,17 @@ void Uc_flag_expression::gen_assign
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_POPF);
-	Write2(out, index);
+	int ival;
+	if (flag->eval_const(ival))
+		{
+		out.push_back((char) UC_POPF);
+		Write2(out, ival);
+		}
+	else
+		{
+		flag->gen_value(out);
+		out.push_back((char) UC_POPFVAR);	// Opcode, flag #.
+		}
 	}
 
 /*

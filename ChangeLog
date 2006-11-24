@@ -1,3 +1,12 @@
+2006-11-24  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* UCC: Adding assignment operators ('+=', '-=', '*=', '/=', '%='); improved
+	  the functionality of '<<'; allowing getting/setting global flags with
+	  non-constant expressions; allowing non-constant values in 'actor frame'
+	  script command; fixed crash on code like 'var test = fun();' with 'fun'
+	  undeclared; some misc improvements.
+	* Exult: Added two new opcodes that allow getting/setting flags using a
+	  value on the stack.
+
 2006-11-23  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* ufcun.h: Fixing UCC bug that caused first obj.say or obj.hide calls to do
 	  fail do perform their intrinsic calls if they were the first intrinsic-

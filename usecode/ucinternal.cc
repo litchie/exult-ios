@@ -2615,7 +2615,11 @@ int Usecode_internal::run()
 				found_answer = true;
 				break;
 			case 0x42:		// PUSHF.
-				offset = Read2(frame->ip);
+			case 0xC2:		// PUSHF2.
+				if (opcode > 0x80)
+					offset = popi();
+				else
+					offset = Read2(frame->ip);
 				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 					pushi(0);
@@ -2624,7 +2628,11 @@ int Usecode_internal::run()
 				}
 				break;
 			case 0x43:		// POPF.
-				offset = Read2(frame->ip);
+			case 0xC3:		// POPF2.
+				if (opcode > 0x80)
+					offset = popi();
+				else
+					offset = Read2(frame->ip);
 				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 				} else {

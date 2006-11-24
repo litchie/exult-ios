@@ -71,5 +71,7 @@ const char UC_CLASSDEL = 0x59;	// Delete class instance.
 const char UC_AIDXS = 0x5A;		// Pop static array elem.
 const char UC_POPARRS = 0x5B;		// Pop into static array elem.
 const char UC_LOOPTOPS = 0x5C;		// Loop with static array
+const char UC_PUSHFVAR = 0xC2;		// PUSH global flag using stack value.
+const char UC_POPFVAR = 0xC3;		// POP global flag using stack value.
 
 #endif
