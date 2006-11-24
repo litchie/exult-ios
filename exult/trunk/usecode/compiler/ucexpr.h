@@ -144,10 +144,10 @@ public:
  */
 class Uc_flag_expression : public Uc_expression
 	{
-	int index;
+	Uc_expression *flag;
 public:
-	Uc_flag_expression(int i)
-		: index(i)
+	Uc_flag_expression(Uc_expression *f)
+		: flag(f)
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
