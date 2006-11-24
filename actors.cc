@@ -3519,7 +3519,7 @@ bool Actor::figure_hit_points
 			set_flag(Obj_flags::paralyzed);
 		}
 	int sfx;			// Play 'hit' sfx.
-	Monster_info *attminf = attacker->is_monster() ?
+	Monster_info *attminf = (attacker && attacker->is_monster()) ?
 			attacker->get_info().get_monster_info() : 0;
 	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
 					// But only if Ava. involved.
