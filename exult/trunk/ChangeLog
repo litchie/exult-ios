@@ -1,3 +1,6 @@
+2006-11-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed Karnax freeze-up bug.
+
 2006-11-24  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Adding assignment operators ('+=', '-=', '*=', '/=', '%='); improved
 	  the functionality of '<<'; allowing getting/setting global flags with
