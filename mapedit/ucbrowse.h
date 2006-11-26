@@ -34,6 +34,7 @@ class Usecode_browser
 	{
 	GtkWidget *win;			// Main window.
 	std::string choice;		// Set when window is closed.
+	GtkTreeStore *model;
 public:
 	Usecode_browser();
 	~Usecode_browser();
@@ -46,6 +47,7 @@ public:
 		choice = "";
 		show(false);
 		}
+	void setup_list();
 	};
 
 #endif
