@@ -4526,7 +4526,11 @@ void Npc_actor::handle_event
 		{			// Stop if not on current map.
 		if (get_map() != gwin->get_map())
 			dormant = true;
-		else if (schedule && !in_usecode_control())
+		else if (in_usecode_control())
+			// Keep trying if we are in usecode control.
+			gwin->get_tqueue()->add(
+					curtime + gwin->get_std_delay(), this, udata);
+		else if (schedule)
 			schedule->now_what();
 		}
 	else
@@ -4542,7 +4546,11 @@ void Npc_actor::handle_event
 			set_action(0);
 			if (get_map() != gwin->get_map())
 				dormant = true;
-			if (schedule && !in_usecode_control())
+			if (in_usecode_control())
+				// Keep trying if we are in usecode control.
+				gwin->get_tqueue()->add(
+						curtime + gwin->get_std_delay(), this, udata);
+			else if (schedule)
 				if (dormant)
 					schedule->im_dormant();
 				else
