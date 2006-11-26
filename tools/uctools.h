@@ -215,8 +215,8 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },					// bf
 	{ NULL, 0, 0 },					// c0
 	{ NULL, 0, 0 },						// c1
-	{ pushfvar, 0, 0 },					// c2
-	{ popfvar, 0, 0 },					// c3
+	{ "pushfvar", 0, 0 },					// c2
+	{ "popfvar", 0, 0 },					// c3
 	{ NULL, 0, 0 },					// c4
 	{ NULL, 0, 0 },						// c5
 	{ NULL, 0, 0 },			// c6
