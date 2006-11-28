@@ -279,10 +279,11 @@
 	USECODE_INTRINSIC_PTR(get_usecode_fun),			// 0xca (Exult)
 	USECODE_INTRINSIC_PTR(get_map_num),			// 0xcb (Exult)
 	USECODE_INTRINSIC_PTR(display_map_ex),			// 0xcc (Exult)
-	USECODE_INTRINSIC_PTR(book_mode_ex),				// 0xcd (Exult)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xce
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xcf
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xd0
+	USECODE_INTRINSIC_PTR(book_mode_ex),		// 0xcd (Exult)
+	//  Here, Exult supports BG intrinsics for users of UCC.
+	USECODE_INTRINSIC_PTR(stop_time),			// 0xce
+	USECODE_INTRINSIC_PTR(center_view),			// 0xcf
+	USECODE_INTRINSIC_PTR(lightning),			// 0xd0
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xd1
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xd2
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xd3

@@ -43,7 +43,8 @@ extern int Get_click
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
 	char *chr = 0,			// Char. returned if not null.
 	bool drag_ok = false,		// Can drag while here.
-	Paintable *paint = 0		// Paint over everything else.
+	Paintable *paint = 0,		// Paint over everything else.
+	bool rotate_colors = false		// If the palette colors should rotate.
 	);
 
 /*
