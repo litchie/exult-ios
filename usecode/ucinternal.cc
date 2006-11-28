@@ -555,7 +555,7 @@ void Usecode_internal::show_pending_text
 		{
 		int x, y;
 		while (book->show_next_page() && 
-				Get_click(x, y, Mouse::hand, 0, false, book))
+				Get_click(x, y, Mouse::hand, 0, false, book, true))
 			;
 		gwin->paint();
 		}
@@ -1657,7 +1657,7 @@ void Usecode_internal::click_to_continue
 	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
 		{
 		gwin->paint();		// Repaint scenery.
-		Get_click(xx, yy, Mouse::hand, &c, false, conv);
+		Get_click(xx, yy, Mouse::hand, &c, false, conv, true);
 		}
 	conv->clear_text_pending();
 	//	user_choice = 0;		// Clear it.
@@ -1716,7 +1716,7 @@ int Usecode_internal::get_user_choice_num
 		{
 		char chr;		// Allow '1', '2', etc.
 		gwin->paint();		// Paint scenery.
-		int result=Get_click(x, y, Mouse::hand, &chr, false, conv);
+		int result=Get_click(x, y, Mouse::hand, &chr, false, conv, true);
 		if (result<=0) {	// ESC pressed, select 'bye' if poss.
 			choice_num = conv->locate_answer("bye");
 		} else if (chr) {		// key pressed

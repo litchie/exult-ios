@@ -165,7 +165,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char *);
 static void Init();
 static int Play();
-static int Get_click(int& x, int& y, char *chr, bool drag_ok, Paintable *p);
+static int Get_click(int& x, int& y, char *chr, bool drag_ok, Paintable *p, bool rotate_colors = false);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
@@ -1404,10 +1404,12 @@ static int Get_click
 	int& x, int& y,
 	char *chr,			// Char. returned if not null.
 	bool drag_ok,			// Okay to drag/close while here.
-	Paintable *paint		// Paint this each cycle if OpenGL.
+	Paintable *paint,		// Paint this each cycle if OpenGL.
+	bool rotate_colors		// If the palette colors should rotate.
 	)
 	{
 	dragging = false;		// Init.
+	uint32 last_rotate = 0;
 	while (1)
 		{
 		SDL_Event event;
@@ -1417,6 +1419,29 @@ static int Get_click
 		Game::set_ticks(ticks);
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
+		
+		if (rotate_colors)
+			{
+			int scale = gwin->get_fastmouse() ? 1 : 
+							gwin->get_win()->get_scale();
+			int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
+									scale==1?0:1);
+			if (ticks > last_rotate + rot_speed &&
+				!GL_manager::get_instance())	//++++Disable in OGL.
+				{		// (Blits in simulated 8-bit mode.)
+				gwin->get_win()->rotate_colors(0xfc, 3, 0);
+				gwin->get_win()->rotate_colors(0xf8, 4, 0);
+				gwin->get_win()->rotate_colors(0xf4, 4, 0);
+				gwin->get_win()->rotate_colors(0xf0, 4, 0);
+				gwin->get_win()->rotate_colors(0xe8, 8, 0);
+				gwin->get_win()->rotate_colors(0xe0, 8, 1);
+				while (ticks > last_rotate + rot_speed) 
+					last_rotate += rot_speed;
+						// Non palettized needs explicit blit.
+				if (!gwin->get_win()->is_palettized())
+					gwin->set_painted();
+				}
+			}
 
 		// Mouse scale factor
 		int scale = gwin->get_fastmouse() ? 1 
@@ -1542,7 +1567,8 @@ int Get_click
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
 	char *chr,			// Char. returned if not null.
 	bool drag_ok,			// Okay to drag/close while here.
-	Paintable *paint		// Paint this over everything else.
+	Paintable *paint,		// Paint this over everything else.
+	bool rotate_colors		// If the palette colors should rotate.
 	)
 	{
 	if (chr)
@@ -1555,7 +1581,7 @@ int Get_click
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
 	gwin->get_tqueue()->pause(Game::get_ticks());
-	int ret = Get_click(x, y, chr, drag_ok, paint);
+	int ret = Get_click(x, y, chr, drag_ok, paint, rotate_colors);
 	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);

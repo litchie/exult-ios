@@ -1754,7 +1754,7 @@ void Actor::paint
 			ShapeID::paint_outline(xoff, yoff, HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed) |
-		    	(1 << Obj_flags::charmed)))
+		    	(1 << Obj_flags::charmed) | (1 << Obj_flags::paralyzed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
 				ShapeID::paint_outline(xoff,yoff,POISON_PIXEL);
@@ -1763,6 +1763,9 @@ void Actor::paint
 			else if (flags & (1L << Obj_flags::charmed))
 				ShapeID::paint_outline(xoff, yoff,
 								CHARMED_PIXEL);
+			else if (flags & (1L << Obj_flags::paralyzed))
+				ShapeID::paint_outline(xoff, yoff,
+								PARALYZE_PIXEL);
 			else
 				ShapeID::paint_outline(xoff, yoff,
 								PROTECT_PIXEL);

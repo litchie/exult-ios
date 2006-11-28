@@ -1,3 +1,16 @@
+2006-11-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapeid.*, actors.cc: 'paralyze' flag now displays a purple outline. For
+	  the sake of visibility, the SI color was used instead of the BG one.
+	* exult.*, usecode/conversation.cc, usecode/ucinternal.cc: Rotate palette
+	  colors during conversations and during book mode (U7 verified -- e.g., the
+	  SI phoenix).
+	* usecode/bgintrinsics.h: Imported five intrinsics from SI to BG:
+	  show_npc_face0, show_npc_face1, remove_npc_face0, remove_npc_face1 and
+	  set_conversation_slot.
+	* usecode/siintrinsics.h: Imported three intrinsics from BG to SI:
+	  center_view, lightning and stop_time.
+	* docs/exult_intrinsics.txt: Included above modifications.
+
 2006-11-26  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixed Karnax freeze-up bug.
 
