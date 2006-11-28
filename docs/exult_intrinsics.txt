@@ -222,12 +222,12 @@ npc->show_npc_face(int face)
     (unless using the SI avatars). This intrinsic finds a free slot to display
     the face in or uses the second slot if there are no free slots.
 
-UI_show_npc_face0(actor npc, int face)                                      [SI]
+UI_show_npc_face0(actor npc, int face)                               [SI, Exult]
 npc->show_npc_face0(int face)
 
     Like show_npc_face, but always displays the face on slot 0.
 
-UI_show_npc_face1(actor npc, int face)                                      [SI]
+UI_show_npc_face1(actor npc, int face)                               [SI, Exult]
 npc->show_npc_face1(int face)
 
     Like show_npc_face, but always displays the face on slot 1.
@@ -238,17 +238,17 @@ npc->remove_npc_face()
     Deprecated; use UCC's 'npc.hide()' statement instead. Hides npc's portrait.
     See show_npc_face for details.
 
-UI_remove_npc_face0()                                                       [SI]
+UI_remove_npc_face0()                                                [SI, Exult]
 npc->remove_npc_face0()
 
     Deprecated; like remove_npc_face, but removes from slot 0 only.
 
-UI_remove_npc_face1()                                                       [SI]
+UI_remove_npc_face1()                                                [SI, Exult]
 npc->remove_npc_face1()
 
     Deprecated; like remove_npc_face, but removes from slot 1 only.
 
-UI_set_conversation_slot(int slot)                                          [SI]
+UI_set_conversation_slot(int slot)                                   [SI, Exult]
 npc->set_conversation_slot()
 
     Sets the active conversation face to 'slot'. 'slot' must be '0' or '1'.
@@ -1235,7 +1235,7 @@ UI_advance_time(int amount)
 
     Advances game time by 'amount'/25 game minutes.
 
-UI_stop_time(int length)                                                    [BG]
+UI_stop_time(int length)                                             [BG, Exult]
 
     Stops time for ('length'/4 seconds).
 
@@ -1345,7 +1345,7 @@ string UI_printf(string out[])                                           [Exult]
 DISPLAY
 --------------------------------------------------------------------------------
 
-UI_center_view(object obj)                                                  [BG]
+UI_center_view(object obj)                                           [BG, Exult]
 obj->center_view()
 
     Centers screen around 'obj'.
@@ -1452,7 +1452,7 @@ UI_display_map_ex(int mapshp, bool show_loc)                               Exult
     Displays the sprite shape 'mapshp' centered in the screen. If 'show_loc' is
     'true', Exult will also display a location mark in the map.
 
-UI_lightning()                                                              [BG]
+UI_lightning()                                                       [BG, Exult]
 
     Creates a lightninig effect (flashes screen, lightning sound).
 
