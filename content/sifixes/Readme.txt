@@ -19,7 +19,7 @@ Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
 version: 0.15.04
 
-	This document fixes a few of the Usecode bugs that plague
+	This modification fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
 	installed; while it *might* work without the add-on, I woudn't
 	count on it.
@@ -46,25 +46,24 @@ version: 0.15.04
 	or not without. It *might* work.
 	Secondly (and just as importantly), this mod is only guaranteed
 	to work on the latest Exult snapshots. It will *not* work in Exult 1.2.
+
+	With that out of the way: to install the mod, simply unzip the contents
+	of the zip file into your Serpent Isle's 'mods' folder. By default (that
+	is, unless you changed it specifically in your 'Exult.cfg' file), this
+	would be the 'mods' subdirectory of the path you set for Serpent Isle in
+	your 'Exult.cfg' file. There is an optional (but highly recommended)
+	additional step you may want to perform:
 	
-	With that out of the way: there are two ways to install the mod:
-	
-	1) If you are using DOS/Windows, you can use the supplied batch files.
-	   Unzip the mod to your Serpent's Isle folder (so that, for example,
-	   the "Install.bat" file is at "SerpentIsle/SI Fixes/Install.bat").
-	   Make sure that the mod's folder is at the same level as your
-	   STATIC folder! Then run the "Install.bat" file to install. You 
-	   can also run "Make & Install.bat" to compile the usecode and
-	   install -- but you must have UCC to do so, and at a very
-	   specific location too.
-	2) Copy the contents of the "data" folder to your SI's PATCH folder.
-	
+	OPTIONAL: You can create a shortcut to start Exult directly in the
+	SI Fixes mod. To do so, make sure that the command-line is similar to
+	the following example:
+		<path to Exult>\Exult --si --mod sifixes
+
 3	Contributing to this mod
 ----------------------------
 	If you have any bugs that you would like to see fixed -- or that you
-	*have* fixed -- please send it to me! I would love to add these
-	to the mod, so that SI can be made even better than it already is.
-	Use the e-mail above.
+	*have* fixed -- please send them to me! You can either e-mail them
+	to me or you can post them in the Exult Phorum.
 
 4	Using it in your own mods
 -----------------------------
@@ -72,6 +71,12 @@ version: 0.15.04
 	I ask only that you give me proper credit -- and maybe tell me
 	about the mod you are doing, as I might be interested enough to
 	help and/or to include as a part of this mod.
+
+	In previous releases of this mod, the mod's full source was included
+	in the zip file. Starting with version 0.15.04, only the files required
+	to play the mod are included. You can obtain the source of the mod in
+	the Exult source code, available at the 'Downloads' page or through
+	anonymous CVS. It is in the 'content/sifixes' directory.
 
 5	What this mod does
 ----------------------
@@ -141,17 +146,17 @@ version: 0.15.04
 	- Spells. In the original SI, there were no less than *four* "Ex Por"
 	  spells, and a few other spells were out of synch with the manual.
 	  Specifically:
-		Spell			Original SI	Manual/This Mod
+		Spell                Original SI       Manual/This Mod
 		=========================================================
-		Unlock Magic		Ex Por		Ex Por
-		Erstam's Surprise	Ex Por		Ex Jux Hur*
-		Vibrate			Ex Por		Uus Des Por Grav*
-		Imbalance		Ex Por		Kal Vas An Grav**
-		Create Ammo		In Hur Sanct	In Jux Ylem
-		Create Ice		In Sanct Grav	In Frio
-		Fetch			An Frio Xen Ex	Por Ylem
-		Serpent Bond		An Frio Xen Ex	Kal Frio Xen Ex
-		Stop Storm		Rel Hur		An Hur
+		Unlock Magic         Ex Por            Ex Por
+		Erstam's Surprise    Ex Por            Ex Jux Hur*
+		Vibrate              Ex Por            Uus Des Por Grav*
+		Imbalance            Ex Por            Kal Vas An Grav**
+		Create Ammo          In Hur Sanct      In Jux Ylem
+		Create Ice           In Sanct Grav     In Frio
+		Fetch                An Frio Xen Ex    Por Ylem
+		Serpent Bond         An Frio Xen Ex    Kal Frio Xen Ex
+		Stop Storm           Rel Hur           An Hur
 	  
 	    *	Thanks to Neutronium Dragon for the suggestions.
 	    **	Perhaps "Kal Vas In Grav" is a better fit to the spell...
