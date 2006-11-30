@@ -634,6 +634,16 @@ void ExultStudio::set_shape_notebook_frame
 	int frnum			// Frame # to set.
 	)
 	{
+	Shape_file_info *file_info = (Shape_file_info *)
+		gtk_object_get_data(GTK_OBJECT(shapewin), "file_info");
+	int shnum = get_num_entry("shinfo_shape");
+	Vga_file *ifile = file_info->get_ifile();
+	Shape_frame *shape = ifile->get_shape(shnum, frnum);
+	set_spin("shinfo_originx", shape->get_xright(), -shape->get_width(),
+							shape->get_width());
+	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
+							shape->get_height());
+
 	Shape_info *info = (Shape_info *)
 			gtk_object_get_user_data(GTK_OBJECT(shapewin));
 	if (!info)
