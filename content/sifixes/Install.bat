@@ -1,3 +1,0 @@
-@echo Copying files to patch folder...
-@copy /y data\*.* ..\patch >> log.txt && del log.txt
-@echo Mod has been successfully installed!
