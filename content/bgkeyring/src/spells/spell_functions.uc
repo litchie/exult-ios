@@ -73,7 +73,7 @@ greatDouseIgnite (var shapes)
 			var delay = ((get_distance(lightsource) / 3) + 2);
 			//Call the obj's usecode function after delay ticks:
 			script lightsource after delay ticks
-			{	nohalt;					call lightsource->get_usecode_fun(), DOUBLECLICK;}
+			{	nohalt;						call lightsource->get_usecode_fun(), DOUBLECLICK;}
 		}
 	}
 }

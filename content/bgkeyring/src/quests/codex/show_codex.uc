@@ -69,122 +69,38 @@ displayCodex ()
 			var shrine_quests = 0;
 			var displayed_messages = 0;
 			//Display true codex message(s)
-			//Boring and long... I wish gflags could be variables
-			//as well as constants...
 			//The basic idea is this:
 			//	-	Count how many messages have been displayed by the Codex
 			//		in a previous call to this function
 			//	-	Display the messages that haven't been displayed yet, and count
 			//		how many messages are being displayed
-			if (gflags[VIEWED_CODEX_FOR_SACRIFICE])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_SACRIFICE])
+			var msgs = ["@Sacrifice is a virtue only if it is voluntary; to force others to Sacrifice of themselves is a grave injustice.~@Each man must be his own judge when determining how far he is willing to go to help others.@",
+			            "@The laws of the land are imperfect and do not always serve Justice.~@Keep always in mind that obeying or enforcing an unjust law is itself unjust.@",
+			            "@Pride is the bane of Virtue. When one deems himself to be better or to know more than others,~@he is opening the gates to unvirtuous behaviour by disregarding Truth, Love and Courage.@",
+			            "@The path to Spirituality is paved by wisdom and knowledge. Thou hast the need to know the right questions to ask,~@and hast to have learned enough of the world to be able to understand those questions.~@Spirituality is the never-ending search for the answers.@",
+			            "@There is a fine line between Valor and recklessness; wisdom lies in being able to tell one from another.~@Know that discretion is the better part of Valor.@",
+			            "@A life without enlightenment is a form of suffering about which the unenlightened is unaware.~@The enlightened can show their Compassion by fighting against such ignorance.@",
+			            "@Honor is more than being true to his word and being willing to defend one's convictions.~@Honor is also the courage to -revise- one's convictions when they are shown to be flawed or based on false assumptions.@",
+			            "@Honesty starts with one's self. Know thyself well, and maintain not a false assessment of thy knowledge or martial skills.~@Only when this is done can one achieve true enlightenment.@"];
+			for (msg in msgs with index)
 			{
-				gflags[VIEWED_CODEX_FOR_SACRIFICE] = true;
-				gflags[MEDITATED_AT_SACRIFICE] = false;
-				say(codex_opens);
-				say("@Sacrifice is a virtue only if it is voluntary; to force others to Sacrifice of themselves is a grave injustice.~@Each man must be his own judge when determining how far he is willing to go to help others.@");
-				displayed_messages = displayed_messages + 1;
+				var codex_flag = VIEWED_CODEX_BASE + index;
+				var shrine_flag = MEDITATED_AT_SHRINE_BASE + index;
+				if (gflags[codex_flag])
+					shrine_quests += 1;
+				else if (gflags[shrine_flag])
+				{
+					gflags[codex_flag] = true;
+					gflags[shrine_flag] = false;
+					if (displayed_messages > 0)
+						say(page_turning);
+					else
+						say(codex_opens);
+					say(msg);
+					displayed_messages += 1;
+				}
 			}
-			
-			if (gflags[VIEWED_CODEX_FOR_JUSTICE])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_JUSTICE])
-			{
-				gflags[VIEWED_CODEX_FOR_JUSTICE] = true;
-				gflags[MEDITATED_AT_JUSTICE] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@The laws of the land are imperfect and do not always serve Justice.~@Keep always in mind that obeying or enforcing an unjust law is itself unjust.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_HUMILITY])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_HUMILITY])
-			{
-				gflags[VIEWED_CODEX_FOR_HUMILITY] = true;
-				gflags[MEDITATED_AT_HUMILITY] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@Pride is the bane of Virtue. When one deems himself to be better or to know more than others,~@he is opening the gates to unvirtuous behaviour by disregarding Truth, Love and Courage.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_SPIRITUALITY])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_SPIRITUALITY])
-			{
-				gflags[VIEWED_CODEX_FOR_SPIRITUALITY] = true;
-				gflags[MEDITATED_AT_SPIRITUALITY] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@The path to Spirituality is paved by wisdom and knowledge. Thou hast the need to know the right questions to ask,~@and hast to have learned enough of the world to be able to understand those questions.~@Spirituality is the never-ending search for the answers.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_VALOR])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_VALOR])
-			{
-				gflags[VIEWED_CODEX_FOR_VALOR] = true;
-				gflags[MEDITATED_AT_VALOR] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@There is a fine line between Valor and recklessness; wisdom lies in being able to tell one from another.~@Know that discretion is the better part of Valor.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_COMPASSION])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_COMPASSION])
-			{
-				gflags[VIEWED_CODEX_FOR_COMPASSION] = true;
-				gflags[MEDITATED_AT_COMPASSION] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@A life without enlightenment is a form of suffering about which the unenlightened is unaware.~@The enlightened can show their Compassion by fighting against such ignorance.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_HONOR])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_HONOR])
-			{
-				gflags[VIEWED_CODEX_FOR_HONOR] = true;
-				gflags[MEDITATED_AT_HONOR] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@Honor is more than being true to his word and being willing to defend one's convictions.~@Honor is also the courage to -revise- one's convictions when they are shown to be flawed or based on false assumptions.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
-			if (gflags[VIEWED_CODEX_FOR_HONESTY])
-				shrine_quests = shrine_quests + 1;
-			else if (gflags[MEDITATED_AT_HONESTY])
-			{
-				gflags[VIEWED_CODEX_FOR_HONESTY] = true;
-				gflags[MEDITATED_AT_HONESTY] = false;
-				if (displayed_messages > 0)
-					say(page_turning);
-				else
-					say(codex_opens);
-				say("@Honesty starts with one's self. Know thyself well, and maintain not a false assessment of thy knowledge or martial skills.~@Only when this is done can one achieve true enlightenment.@");
-				displayed_messages = displayed_messages + 1;
-			}
-			
+
 			var msg;
 			var single_message = "The Codex of Ultimate Wisdom closes after displaying its message and then returns to the Void, until such a time when it is needed again.";
 			var multi_message = "The Codex of Ultimate Wisdom closes after displaying its messages and then returns to the Void, until such a time when it is needed again.";

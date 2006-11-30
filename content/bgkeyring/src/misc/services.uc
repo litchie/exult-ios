@@ -195,7 +195,7 @@ serviceMultipleSpellHealing ()
 
 		if (targetlist)
 			script item after 8 ticks
-			{	nohalt;			call serviceMultipleSpellHealing, SCRIPTED;}
+			{	nohalt;						call serviceMultipleSpellHealing, SCRIPTED;}
 		else
 			service_healing_spell = "";
 
@@ -209,8 +209,10 @@ serviceMultipleSpellHealing ()
 
 var getServiceHealingDialog (var npcnum)
 {
-	if (npcnum == REYNA)
-		return ["@What is thy need?@",
+	switch (npcnum)
+	{
+		case REYNA:
+			return ["@What is thy need?@",
 				"@I must charge thee ", " gold. Is this price agreeable?@",
 				"@I am sorry, " + getPoliteTitle() + ", but thou dost not have enough gold. Perhaps, I will be able to aid thee next time.@",
 				"@Then I cannot help thee, " + getPoliteTitle() + ". I am truly sorry, but my fees are set.@",
@@ -222,8 +224,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? Some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? Some of thy friends still appear to require mine aid.@",
 				"@I am glad of that, " + getPoliteTitle() + ". I am happy to help those in need, but I would be far happier if there were never a need!@"];
-	else if (npcnum == CSIL)
-		return ["@Which of my services dost thou have need of?@",
+		case CSIL:
+			return ["@Which of my services dost thou have need of?@",
 				"@My price is ", " gold. Is this price agreeable?@",
 				"@Tsk, tsk. Thou dost not have enough gold for the service. I do hope I may help thee another day.@",
 				"@Then thou must look elsewhere for that service.@",
@@ -235,8 +237,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? Some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? Some of thy friends still appear to require mine aid.@",
 				"@Very well. It pleases me that thou art healthy.@"];
-	else if (npcnum == ELAD)
-		return ["@Which of my services dost thou have need of?@",
+		case ELAD:
+			return ["@Which of my services dost thou have need of?@",
 				"@My price is ", " gold. Dost thou agree?@",
 				"@Thou dost not have that much gold! Mayhaps thou couldst return with more and purchase the service then.@",
 				"@Then thou must look elsewhere for that service.@",
@@ -248,8 +250,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? Some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? Some of thy friends still appear to require mine aid.@",
 				"@Though I want thy business, I am pleased to see my services are not needed!@"];
-	else if (npcnum == LEIGH)
-		return ["@Which of my services dost thou have need of?@",
+		case LEIGH:
+			return ["@Which of my services dost thou have need of?@",
 				"@My price is ", " gold. Art thou interested?@",
 				"@Thou dost not have enough gold! Mayhaps thou couldst return when thou hast more.@",
 				"@Then thou must go elsewhere.@",
@@ -261,8 +263,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? Some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? Some of thy friends still appear to require mine aid.@",
 				"@Excellent, thou art uninjured!@"];
-	else if (npcnum == INMANILEM)
-		return ["@To need which of my services?@",
+		case INMANILEM:
+			return ["@To need which of my services?@",
 				"@To charge ", " gold. To still want my services?@",
 				"@To have not that much gold! To perhaps return with more and purchase the service then.@",
 				"@To be sorry. To look elsewhere for that service then.@",
@@ -274,8 +276,8 @@ var getServiceHealingDialog (var npcnum)
 				"@To ask if thou art sure. To see that some of thy friends still appear to be poisoned.@",
 				"@To ask if thou art sure. To see that some of thy friends still appear to require mine aid.@",
 				"@To have no need for my healing.@"];
-	else if (npcnum == CHANTU)
-		return ["@Which of my services dost thou need?@",
+		case CHANTU:
+			return ["@Which of my services dost thou need?@",
 				"@My price is ", " gold. Is this satisfactory?@",
 				"@Thou dost not have any gold. I am truly sorry. I cannot help thee until thou canst provide the proper fee.@ Chantu bows respectfully.",
 				"@Then I am truly sorry. I must charge what I must charge. We do not live in prosperous times.@",
@@ -287,8 +289,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Some of thy friends still appear to be poisoned; I will be here shouldst thou reconsider.@",
 				"@Some of thy friends still appear to require mine aid; I will be here shouldst thou reconsider.@",
 				"@So thou art healthy? 'Tis good news. If thou dost need my services in the future, do not hesitate to return.@"];
-	else if (npcnum == JAANA)
-		return ["@Which of my services dost thou have need of?@",
+		case JAANA:
+			return ["@Which of my services dost thou have need of?@",
 				"@My price is ", " gold. Is this price agreeable?@",
 				"@Thou dost not have that much gold! Mayhaps thou couldst return with more and purchase the service then.@",
 				"@Then thou must look elsewhere for that service.@",
@@ -300,8 +302,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? I believe that some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? I believe that some of thy friends still appear to require mine aid.@",
 				"@Avatar! Thou dost tell me to prepare to heal and then thou dost tell me 'Nobody'! Is this thine idea of a joke? Healing is a serious business!@"];
-	else if (npcnum == LAURIANNA)
-		return ["@Which mode of healing dost thou wish?@",
+		case LAURIANNA:
+			return ["@Which mode of healing dost thou wish?@",
 				"", "",
 				"",
 				"",
@@ -313,8 +315,8 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? Some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? Some of thy friends still appear to require mine aid.@",
 				"@I am glad that thou art not in need of healing!@"];
-	else if (npcnum == LORD_BRITISH)
-		return ["@Of which service dost thou have need?@",
+		case LORD_BRITISH:
+			return ["@Of which service dost thou have need?@",
 				"", "",
 				"",
 				"",
@@ -326,37 +328,38 @@ var getServiceHealingDialog (var npcnum)
 				"@Art thou sure? I can see that some of thy friends still appear to be poisoned.@",
 				"@Art thou sure? I can see that some of thy friends still appear to require mine aid.@",
 				"@'Tis good to hear that thou art well. Do not hesitate to come and see me if thou dost need healing of any kind.@"];
+	}
 }
 
 var getServiceHealingPricelist (var npcnum)
 {
-	if (npcnum == REYNA)
+	switch (npcnum)
 	{
-		if (gflags[GAVE_REYNA_FLOWERS])
-			return [5, 15, 200];
-		else
-			return [10, 30, 400];
-	}
-	else if (npcnum == JAANA)
-	{
-		if ((npcnum->get_npc_object() in UI_get_party_list()) ||
-			(npcnum->get_schedule_type() == WAIT))
+		case REYNA:
+			if (gflags[GAVE_REYNA_FLOWERS])
+				return [5, 15, 200];
+			else
+				return [10, 30, 400];
+		case JAANA:
+			if ((npcnum->get_npc_object() in UI_get_party_list()) ||
+				(npcnum->get_schedule_type() == WAIT))
+				return 0;
+			else
+				return [15, 30, 400];
+		case LAURIANNA:
+		case LORD_BRITISH:
 			return 0;
-		else
+		case CSIL:
+			return [30, 40, 450];
+		case ELAD:
+			return [10, 25, 425];
+		case LEIGH:
+			return [8, 25, 385];
+		case INMANILEM:
+			return [10, 25, 430];
+		case CHANTU:
 			return [15, 30, 400];
-	}
-	else if ((npcnum == LAURIANNA) || (npcnum == LORD_BRITISH))
-		return 0;
-	else if (npcnum == CSIL)
-		return [30, 40, 450];
-	else if (npcnum == ELAD)
-		return [10, 25, 425];
-	else if (npcnum == LEIGH)
-		return [8, 25, 385];
-	else if (npcnum == INMANILEM)
-		return [10, 25, 430];
-	else if (npcnum == CHANTU)
-		return [15, 30, 400];
+	}		
 }
 
 serviceHeal ()
@@ -376,16 +379,16 @@ serviceHeal ()
 				get_item_flag(HEALER),
 				["Cure", "Mass cure", "Heal", "Great heal", "Restoration", "Resurrect", "Mass resurrect"],
 				[1, 2, 3, 5, 7, 8, 8],
-				spellitemGetSpellsUnknown(get_npc_number()));
+				global_spells_unknown[spellitemGetNPCIndex(get_npc_number())]);
 		if (("Cure" in healing_spells) || ("Mass cure" in healing_spells))
-			choices = [choices, "curing"];
+			choices << "curing";
 		if (("Heal" in healing_spells) || ("Great heal" in healing_spells) || ("Restoration" in healing_spells))
-			choices = [choices, "healing"];
+			choices << "healing";
 		if (("Resurrect" in healing_spells) || ("Mass resurrect" in healing_spells))
-			choices = [choices, "resurrection"];
+			choices << "resurrection";
 	}
 	else
-		choices = [choices, "curing", "healing"];
+		choices << ["curing", "healing"];
 
 	say(dialog[1]);
 	var reply = chooseFromMenu2([choices]) - 1;

@@ -28,12 +28,12 @@
 	Sixth circle Spells
 	
 	extern spellCauseFear ();
-	extern spellClone ();
-	extern spellFireRing ();
+	extern spellClone (var target);
+	extern spellFireRing (var target);
 	extern spellFlameStrike ();
 	extern spellMagicStorm ();
-	extern spellPoisonField ();
-	extern spellSleepField ();
+	extern spellPoisonField (var target);
+	extern spellSleepField (var target);
 	extern spellTremor ();
 */
 
@@ -388,45 +388,39 @@ spellTremor ()
 			while (counter < duration)
 			{
 				var rand = UI_die_roll(0, 8);
-				var randusecodearray;
-				var randopcode;
 
-				if (rand >= 6)
-					//Get one of the four cardinal directions:
-					randopcode = (0x30 + directions[UI_get_random(4)]);
-				
 				if (rand == 0)
-					randusecodearray = [SCRIPT_NPC_FRAME + KNEEL, SCRIPT_NPC_FRAME + LEAN, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame KNEEL;		actor frame LEAN;
+										actor frame STAND;};
 				else if (rand == 1)
-					randusecodearray = [SCRIPT_NPC_FRAME + KNEEL, SCRIPT_NPC_FRAME + STAND, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame KNEEL;		actor frame STAND;
+										actor frame STAND;};
 				else if (rand == 2)
-					randusecodearray = [SCRIPT_NPC_FRAME + LEAN, SCRIPT_NPC_FRAME + LIE, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame LEAN;		actor frame LIE;
+										actor frame STAND;};
 				else if (rand == 3)
-					randusecodearray = [SCRIPT_NPC_FRAME + STAND, SCRIPT_NPC_FRAME + STAND, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame STAND;		actor frame STAND;
+										actor frame STAND;};
 				else if (rand == 4)
-					randusecodearray = [SCRIPT_NPC_FRAME + KNEEL, SCRIPT_NPC_FRAME + USE, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame KNEEL;		actor frame USE;
+										actor frame STAND;};
 				else if (rand == 5)
-					randusecodearray = [SCRIPT_NPC_FRAME + USE, SCRIPT_NPC_FRAME + KNEEL, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	actor frame USE;		actor frame KNEEL;
+										actor frame STAND;};
 				else if (rand == 6)
-					randusecodearray = [SCRIPT_FACE_DIR, randopcode, SCRIPT_NPC_FRAME + LEAN, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	face directions[UI_get_random(4)];
+										actor frame LEAN;		actor frame STAND;};
 				else if (rand == 7)
-					randusecodearray = [SCRIPT_FACE_DIR, randopcode, SCRIPT_NPC_FRAME + KNEEL, SCRIPT_NPC_FRAME + STAND];
-
+					usecodearray << {	face directions[UI_get_random(4)];
+										actor frame KNEEL;		actor frame STAND;};
 				else if (rand == 8)
-					randusecodearray = [SCRIPT_FACE_DIR, randopcode, SCRIPT_NPC_FRAME + USE, SCRIPT_NPC_FRAME + STAND];
+					usecodearray << {	face directions[UI_get_random(4)];
+										actor frame USE;	actor frame STAND; };
 
-				usecodearray = [usecodearray, randusecodearray];
 				counter = (counter + 1);
 			}
 			npc->halt_scheduled();
-			npc->execute_usecode_array(usecodearray);
+			npc->run_script(usecodearray);
 		}
 		UI_earthquake((duration * 3));
 	}

@@ -175,15 +175,15 @@ Shrine shape#(0x463) ()
 			
 			//Determine the place where the Avatar will meditate:
 			dir = direction_from(AVATAR);
-			pos[Z] = pos[Z] - 4;
+			pos[Z] -= 4;
 			if (dir in [NORTHWEST, NORTH, NORTHEAST])
-				pos[Y] = pos[Y] - 2;
+				pos[Y] -= 2;
 			else if (dir in [SOUTHWEST, SOUTH, SOUTHEAST])
-				pos[Y] = pos[Y] + 2;
+				pos[Y] += 2;
 			else if (dir == EAST)
-				pos[X] = pos[X] + 4;
+				pos[X] += 4;
 			else
-				pos[X] = pos[X] - 4;
+				pos[X] -= 4;
 			
 			//Make him go there:
 			if (AVATAR->si_path_run_usecode(pos, PATH_SUCCESS, AVATAR, Shrine, true));
@@ -293,107 +293,20 @@ Shrine shape#(0x463) ()
 			abort;
 		}
 		
+		//Basically, there are two flags per shrine which are used in binary
 		var codex_quest_level = CODEX_NOT_STARTED;
-		//Get the Codex Quest level for the shrine. Would be much simpler
-		//if gflags accepted variables as well as constants...
-		//Basically, there are two flags per shrine which are used in bynary
-		if (shrine_frame == SHRINE_SACRIFICE)
-		{
-			if (gflags[VIEWED_CODEX_FOR_SACRIFICE] && gflags[MEDITATED_AT_SACRIFICE])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_SACRIFICE])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_SACRIFICE])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_SACRIFICE] = true;
-		}
-		else if (shrine_frame == SHRINE_JUSTICE)
-		{
-			if (gflags[VIEWED_CODEX_FOR_JUSTICE] && gflags[MEDITATED_AT_JUSTICE])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_JUSTICE])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_JUSTICE])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_JUSTICE] = true;
-		}
-		else if (shrine_frame == SHRINE_HUMILITY)
-		{
-			if (gflags[VIEWED_CODEX_FOR_HUMILITY] && gflags[MEDITATED_AT_HUMILITY])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_HUMILITY])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_HUMILITY])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_HUMILITY] = true;
-		}
-		else if (shrine_frame == SHRINE_SPIRITUALITY)
-		{
-			if (gflags[VIEWED_CODEX_FOR_SPIRITUALITY] && gflags[MEDITATED_AT_SPIRITUALITY])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_SPIRITUALITY])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_SPIRITUALITY])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_SPIRITUALITY] = true;
-		}
-		else if (shrine_frame == SHRINE_VALOR)
-		{
-			if (gflags[VIEWED_CODEX_FOR_VALOR] && gflags[MEDITATED_AT_VALOR])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_VALOR])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_VALOR])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_VALOR] = true;
-		}
-		else if (shrine_frame == SHRINE_COMPASSION)
-		{
-			if (gflags[VIEWED_CODEX_FOR_COMPASSION] && gflags[MEDITATED_AT_COMPASSION])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_COMPASSION])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_COMPASSION])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_COMPASSION] = true;
-		}
-		else if (shrine_frame == SHRINE_HONOR)
-		{
-			if (gflags[VIEWED_CODEX_FOR_HONOR] && gflags[MEDITATED_AT_HONOR])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_HONOR])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_HONOR])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_HONOR] = true;
-		}
-		else if (shrine_frame == SHRINE_HONESTY)
-		{
-			if (gflags[VIEWED_CODEX_FOR_HONESTY] && gflags[MEDITATED_AT_HONESTY])
-				codex_quest_level = FINISHED_QUEST;
-			else if (gflags[VIEWED_CODEX_FOR_HONESTY])
-				codex_quest_level = WENT_TO_CODEX;
-			else if (gflags[MEDITATED_AT_HONESTY])
-				codex_quest_level = GOT_FROM_SHRINE;
-			
-			if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
-				gflags[MEDITATED_AT_HONESTY] = true;
-		}
-		
+		var codex_flag = VIEWED_CODEX_BASE + shrine_frame;
+		var shrine_flag = MEDITATED_AT_SHRINE_BASE + shrine_frame;
+		if (gflags[codex_flag] && gflags[shrine_flag])
+			codex_quest_level = FINISHED_QUEST;
+		else if (gflags[codex_flag])
+			codex_quest_level = WENT_TO_CODEX;
+		else if (gflags[shrine_flag])
+			codex_quest_level = GOT_FROM_SHRINE;
+
+		if ((codex_quest_level == WENT_TO_CODEX) || (codex_quest_level == CODEX_NOT_STARTED))
+			gflags[shrine_flag] = true;
+
 		var xpbonus = 0;
 		//The experience bonus from meditating:
 		if (codex_quest_level == CODEX_NOT_STARTED)

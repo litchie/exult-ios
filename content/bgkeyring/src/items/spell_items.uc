@@ -25,25 +25,11 @@
 
 const int MAX_PREPARED_SPELLS				= 6;
 
-//The list of known spells
-static var spells_unknown_jaana;
-static var spells_unknown_mariah;
-static var spells_unknown_laurianna;
-static var spells_unknown_iolo;
-static var spells_unknown_shamino;
-static var spells_unknown_dupre;
-static var spells_unknown_julia;
-//The list of favorite spells
-static var fav_spells_jaana;
-static var fav_spells_mariah;
-static var fav_spells_laurianna;
-static var fav_spells_iolo;
-static var fav_spells_shamino;
-static var fav_spells_dupre;
-static var fav_spells_julia;
-static var fav_spells_british;
-
 static var initialized;
+//The list of known spells
+static var global_spells_unknown;
+//The list of favorite spells
+static var global_fav_spells;
 
 var prepareSpell (var npc, var spell_array, var talk, var removespells)
 {
@@ -56,7 +42,7 @@ var prepareSpell (var npc, var spell_array, var talk, var removespells)
 	while (true)
 	{
 		var circle = chooseFromMenu2(circle_list) - 2;
-		
+
 		if (circle == -1)
 			break;
 		
@@ -170,7 +156,7 @@ var getFavoriteNameList (var index_array)
 	while (circle > 0)
 	{
 		circle_nums[circle] = circle_nums[circle] - circle_nums[1];
-		circle = circle - 1;
+		circle -= 1;
 	}
 	
 	for (element in index_array)
@@ -181,14 +167,14 @@ var getFavoriteNameList (var index_array)
 			if (element >= circle_nums[circle])
 			{
 				spell_index = element - circle_nums[circle];
-				circle = circle - 1;
+				circle -= 1;
 				break;
 			}
-			circle = circle - 1;
+			circle -= 1;
 		}
 		
 		spell_names = getSpellList(circle);
-		ret_array = [ret_array, spell_names[spell_index + 2]];
+		ret_array << spell_names[spell_index + 2];
 	}
 	
 	if (UI_get_array_size(ret_array) == 1)
@@ -216,7 +202,7 @@ var getFavoriteIndexList (var name_array)
 			circle = circle + 1;
 		}
 		spell_index = getIndexForSpell(circle, element);
-		ret_array = [ret_array, getSpellFunction(circle, 0) - getSpellFunction(0, 0) + spell_index];
+		ret_array << getSpellFunction(circle, 0) - getSpellFunction(0, 0) + spell_index;
 	}
 	
 	if (UI_get_array_size(ret_array) == 1)
@@ -229,129 +215,136 @@ var spellitemGetTalkMain (var npcnum)
 {
 	if (npcnum > 0)
 		npcnum = -npcnum;
-		
-	if (npcnum == JAANA)
-		return ["@That is my spellbook, Avatar.@",
-				"@That is Jaana's spellbook, Avatar.@",
-				"@This is Jaana's spellbook.@",
-				"@How may I help, Avatar?@",
-				"@If thou hast need of my services later, I will be here.@",
-				"@Anything else I can do for thee, Avatar?@"];
-	else if (npcnum == MARIAH)
-		return ["@That is my spellbook, Avatar.@",
-				"@That is Mariah's spellbook, Avatar.@",
-				"@This is Mariah's spellbook.@",
-				"@What dost thou wish me to do, Avatar?@",
-				"@Oh. Never mind, then.@",
-				"@What else dost thou wish me to do, Avatar?@"];
-	else if (npcnum == LAURIANNA)
-		return ["@That is my spellbook, Avatar.@",
-				"@That is Laurianna's spellbook, Avatar.@",
-				"@This is Laurianna's spellbook.@",
-				"@What can I do for thee, Avatar?@",
-				"@Oh. Never mind, then.@",
-				"@Can I do anything else for thee, Avatar?@"];
-	else if (npcnum == IOLO)
-		return ["@That is my lute, Avatar.@",
-				"@That is Iolo's lute, Avatar.@",
-				"@This is Iolo's lute.@",
-				"@What can I do for thee, old friend?@",
-				"@Oh. Never mind, then.@",
-				"@What else dost thou wish me to do, old friend?@"];
-	else if (npcnum == SHAMINO)
-		return ["@That is my ankh, Avatar.@",
-				"@That is Shamino's ankh, Avatar.@",
-				"@This is Shamino's ankh.@",
-				"@Yes, " + getPoliteTitle() + "?@",
-				"@Another time, then.@",
-				"@What else should I do, " + getPoliteTitle() + "?@"];
-	else if (npcnum == DUPRE)
-		return ["@That is my amulet, Avatar.@",
-				"@That is Dupre's amulet, Avatar.@",
-				"@This is Dupre's amulet.@",
-				"@How may I assist thee, Avatar?@",
-				"@I shall speak with thee another time, then.@",
-				"@Anything else, Avatar?@"];
-	else if (npcnum == JULIA)
-		return ["@That is my hammer, Avatar.@",
-				"@That is Julia's hammer, Avatar.@",
-				"@This is Julia's hammer.@",
-				"@Anything I can help you with, Avatar?@",
-				"@Goodbye, " + getAvatarName() + ".@",
-				"@Anything else?@"];
+
+	switch (npcnum)
+	{
+		case JAANA:
+			return ["@That is my spellbook, Avatar.@",
+			        "@That is Jaana's spellbook, Avatar.@",
+			        "@This is Jaana's spellbook.@",
+			        "@How may I help, Avatar?@",
+			        "@If thou hast need of my services later, I will be here.@",
+			        "@Anything else I can do for thee, Avatar?@"];
+		case MARIAH:
+			return ["@That is my spellbook, Avatar.@",
+			        "@That is Mariah's spellbook, Avatar.@",
+			        "@This is Mariah's spellbook.@",
+			        "@What dost thou wish me to do, Avatar?@",
+			        "@Oh. Never mind, then.@",
+			        "@What else dost thou wish me to do, Avatar?@"];
+		case LAURIANNA:
+			return ["@That is my spellbook, Avatar.@",
+			        "@That is Laurianna's spellbook, Avatar.@",
+			        "@This is Laurianna's spellbook.@",
+			        "@What can I do for thee, Avatar?@",
+			        "@Oh. Never mind, then.@",
+			        "@Can I do anything else for thee, Avatar?@"];
+		case IOLO:
+			return ["@That is my lute, Avatar.@",
+			        "@That is Iolo's lute, Avatar.@",
+			        "@This is Iolo's lute.@",
+			        "@What can I do for thee, old friend?@",
+			        "@Oh. Never mind, then.@",
+			        "@What else dost thou wish me to do, old friend?@"];
+		case SHAMINO:
+			return ["@That is my ankh, Avatar.@",
+			        "@That is Shamino's ankh, Avatar.@",
+			        "@This is Shamino's ankh.@",
+			        "@Yes, " + getPoliteTitle() + "?@",
+			        "@Another time, then.@",
+			        "@What else should I do, " + getPoliteTitle() + "?@"];
+		case DUPRE:
+			return ["@That is my amulet, Avatar.@",
+			        "@That is Dupre's amulet, Avatar.@",
+			        "@This is Dupre's amulet.@",
+			        "@How may I assist thee, Avatar?@",
+			        "@I shall speak with thee another time, then.@",
+			        "@Anything else, Avatar?@"];
+		case JULIA:
+			return ["@That is my hammer, Avatar.@",
+			        "@That is Julia's hammer, Avatar.@",
+			        "@This is Julia's hammer.@",
+			        "@Anything I can help you with, Avatar?@",
+			        "@Goodbye, " + getAvatarName() + ".@",
+			        "@Anything else?@"];
+		default:
+			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			abort;
+	}
 }
 var spellitemGetTalkCast (var npcnum)
 {
 	if (npcnum > 0)
 		npcnum = -npcnum;
-		
-	if (npcnum == JAANA)
-		return ["@Dost thou wish me to cast a spell of which circle?@",
-				"@What spell wouldst thou like me to cast?@",
-				"@Maybe thou dost wish for a different circle?@",
-				"@Some other time, perhaps...@",
-				"@Alas, I don't have enough reagents for that spell.",
-				"@I am lacking ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == MARIAH)
-		return ["@Dost thou wish me to cast a spell of which circle?@",
-				"@What spell wouldst thou like me to cast?@",
-				"@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
-				"@Oh. Some other time, perhaps...@",
-				"@Alas, I don't have enough reagents for that spell.",
-				"@I am lacking ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == LAURIANNA)
-		return ["@Dost thou wish me to cast a spell of which circle?@",
-				"@Which spell dost thou wish me to cast?@",
-				"@Thou hast changed thy mind? Fine. Dost thou wish for a different circle perhaps?@",
-				"@Oh. Some other time, perhaps...@",
-				"@Alas, I don't have enough reagents for that spell.",
-				"@I am lacking ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == IOLO)
-		return ["@Should I cast a spell of which circle?@",
-				"@What spell should I cast?@",
-				"@Maybe thou art thinking of a different circle?@",
-				"@Perhaps a song, instead?@",
-				"@Forgive me, but I don't have enough reagents.",
-				"@I need ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == SHAMINO)
-		return ["@Should I cast a spell of which circle?@",
-				"@What spell should I cast?@",
-				"@Perhaps thou wishest a different circle?@",
-				"@Very well.@",
-				"@I don't have enough reagents for the spell.",
-				"@I need ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == DUPRE)
-		return ["@Should I cast a spell of which circle?@",
-				"@What spell should I cast?@",
-				"@Perhaps a different circle?@",
-				"@Ask me another time, then.@",
-				"@I don't have enough reagents for the spell.",
-				"@I need ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else if (npcnum == JULIA)
-		return ["@Should I cast a spell of which circle?@",
-				"@What spell dost thou wish?@",
-				"@A different circle, maybe?@",
-				"@Another time, then.@",
-				"@I don't have the proper reagents for that spell.",
-				"@I am in need of ",
-				"@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
-				"@I must rest a while before I can cast this spell.@"];
-	else
+
+	switch (npcnum)
 	{
-		avatarSpeak("Invalid NPC ID! Stop cheating!");
-		abort;
+		case JAANA:
+			return ["@Dost thou wish me to cast a spell of which circle?@",
+			        "@What spell wouldst thou like me to cast?@",
+			        "@Maybe thou dost wish for a different circle?@",
+			        "@Some other time, perhaps...@",
+			        "@Alas, I don't have enough reagents for that spell.",
+			        "@I am lacking ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case MARIAH:
+			return ["@Dost thou wish me to cast a spell of which circle?@",
+			        "@What spell wouldst thou like me to cast?@",
+			        "@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
+			        "@Oh. Some other time, perhaps...@",
+			        "@Alas, I don't have enough reagents for that spell.",
+			        "@I am lacking ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case LAURIANNA:
+			return ["@Dost thou wish me to cast a spell of which circle?@",
+			        "@Which spell dost thou wish me to cast?@",
+			        "@Thou hast changed thy mind? Fine. Dost thou wish for a different circle perhaps?@",
+			        "@Oh. Some other time, perhaps...@",
+			        "@Alas, I don't have enough reagents for that spell.",
+			        "@I am lacking ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case IOLO:
+			return ["@Should I cast a spell of which circle?@",
+			        "@What spell should I cast?@",
+			        "@Maybe thou art thinking of a different circle?@",
+			        "@Perhaps a song, instead?@",
+			        "@Forgive me, but I don't have enough reagents.",
+			        "@I need ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case SHAMINO:
+			return ["@Should I cast a spell of which circle?@",
+			        "@What spell should I cast?@",
+			        "@Perhaps thou wishest a different circle?@",
+			        "@Very well.@",
+			        "@I don't have enough reagents for the spell.",
+			        "@I need ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case DUPRE:
+			return ["@Should I cast a spell of which circle?@",
+			        "@What spell should I cast?@",
+			        "@Perhaps a different circle?@",
+			        "@Ask me another time, then.@",
+			        "@I don't have enough reagents for the spell.",
+			        "@I need ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		case JULIA:
+			return ["@Should I cast a spell of which circle?@",
+			        "@What spell dost thou wish?@",
+			        "@A different circle, maybe?@",
+			        "@Another time, then.@",
+			        "@I don't have the proper reagents for that spell.",
+			        "@I am in need of ",
+			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
+			        "@I must rest a while before I can cast this spell.@"];
+		default:
+			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			abort;
 	}
 }
 var spellitemGetTalkPrepare (var npcnum)
@@ -359,222 +352,151 @@ var spellitemGetTalkPrepare (var npcnum)
 	if (npcnum > 0)
 		npcnum = -npcnum;
 		
-	if (npcnum == JAANA)
-		return ["@I can prepare up to six spells for quick use.@",
-				"@Dost thou wish me to prepare a spell of which circle?@",
-				"@What spell wouldst thou like me to prepare?@",
-				"@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
-				"@I have already prepared six spells; should I prepare more and ignore those I prepared earlier?@",
-				"@It is done. Should I prepare any other spells?@",
-				"@Fine. Is there anything else?@"];
-	else if (npcnum == MARIAH)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Dost thou wish me to prepare a spell of which circle?@",
-				"@What spell wouldst thou like me to prepare?@",
-				"@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@It is done. Should I prepare any other spells?@",
-				"@Fine. Is there anything else?@"];
-	else if (npcnum == LAURIANNA)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Dost thou wish me to prepare a spell of which circle?@",
-				"@What spell wouldst thou like me to prepare?@",
-				"@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@It is done. Should I prepare any other spells?@",
-				"@Fine. Is there anything else?@"];
-	else if (npcnum == IOLO)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Should I prepare a spell of which circle?@",
-				"@What spell should I prepare?@",
-				"@Maybe thou art thinking of a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@Very well. Should I prepare any other spells?@",
-				"@Perhaps a song, instead?@"];
-	else if (npcnum == SHAMINO)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Should I prepare a spell of which circle?@",
-				"@What spell should I prepare?@",
-				"@Perhaps thou wishest a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@Very well. Should I prepare any other spells?@",
-				"@Very well.@"];
-	else if (npcnum == DUPRE)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Should I prepare a spell of which circle?@",
-				"@What spell should I prepare?@",
-				"@Perhaps thou wishest a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@Very well. Should I prepare any other spells?@",
-				"@Very well.@"];
-	else if (npcnum == JULIA)
-		return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
-				"@Should I prepare a spell of which circle?@",
-				"@What spell should I prepare?@",
-				"@Perhaps thou wishest a different circle?@",
-				"@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
-				"@Very well. Should I prepare any other spells?@",
-				"@Fair enough. Anything else@"];
+	switch (npcnum)
+	{
+		case JAANA:
+			return ["@I can prepare up to six spells for quick use.@",
+			        "@Dost thou wish me to prepare a spell of which circle?@",
+			        "@What spell wouldst thou like me to prepare?@",
+			        "@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
+			        "@I have already prepared six spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@It is done. Should I prepare any other spells?@",
+			        "@Fine. Is there anything else?@"];
+		case MARIAH:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Dost thou wish me to prepare a spell of which circle?@",
+			        "@What spell wouldst thou like me to prepare?@",
+			        "@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@It is done. Should I prepare any other spells?@",
+			        "@Fine. Is there anything else?@"];
+		case LAURIANNA:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Dost thou wish me to prepare a spell of which circle?@",
+			        "@What spell wouldst thou like me to prepare?@",
+			        "@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@It is done. Should I prepare any other spells?@",
+			        "@Fine. Is there anything else?@"];
+		case IOLO:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Should I prepare a spell of which circle?@",
+			        "@What spell should I prepare?@",
+			        "@Maybe thou art thinking of a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@Very well. Should I prepare any other spells?@",
+			        "@Perhaps a song, instead?@"];
+		case SHAMINO:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Should I prepare a spell of which circle?@",
+			        "@What spell should I prepare?@",
+			        "@Perhaps thou wishest a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@Very well. Should I prepare any other spells?@",
+			        "@Very well.@"];
+		case DUPRE:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Should I prepare a spell of which circle?@",
+			        "@What spell should I prepare?@",
+			        "@Perhaps thou wishest a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@Very well. Should I prepare any other spells?@",
+			        "@Very well.@"];
+		case JULIA:
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
+			        "@Should I prepare a spell of which circle?@",
+			        "@What spell should I prepare?@",
+			        "@Perhaps thou wishest a different circle?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@Very well. Should I prepare any other spells?@",
+			        "@Fair enough. Anything else@"];
+		default:
+			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			abort;
+	}
 }
 var spellitemGetTalkHeal (var npcnum)
 {
 	if (npcnum > 0)
 		npcnum = -npcnum;
 		
-	if (npcnum == JAANA)
-		return ["@In which service art thou interested?@",
-				"@I am glad to oblige, " + getPoliteTitle() + "!@",
-				"@Who dost thou wish to be "];
-	else if (npcnum == MARIAH)
-		return ["@What can I do for thee, avatar?@",
-				"@Of course, Avatar!@",
-				"@Who should be "];
-	else if (npcnum == LAURIANNA)
-		return ["@Which mode of healing dost thou wish?@",
-				"@It is my pleasure, Avatar!@",
-				"@Who dost thou wish to be "];
-	else if (npcnum == IOLO)
-		return ["@What dost thou need, my friend?@",
-				"@It is always a pleasure to help, my friend!@",
-				"@Who should be "];
-	else if (npcnum == SHAMINO)
-		return ["@Which spell should I cast?@",
-				"@Glad to help, " + getPoliteTitle() + "@",
-				"@Who should be "];
-	else if (npcnum == DUPRE)
-		return ["@What should I do, " + getPoliteTitle() + "?@",
-				"@Gladly, Avatar.@",
-				"@Who should be "];
-	else if (npcnum == JULIA)
-		return ["@How may I help?@",
-				"@Glad to be of assistance, Avatar.@",
-				"@Who should be "];
-	else if (npcnum == LORD_BRITISH)
-		return ["@Of which service dost thou have need?@",
-				"@Glad to be of assistance, Avatar.@",
-				"@Who dost thou wish to be "];
-}
-
-var spellitemGetSpellsUnknown (var npcnum)
-{
-	if (npcnum > 0)
-		npcnum = -npcnum;
-	
-	if (!initialized)
+	switch (npcnum)
 	{
-		initialized = true;
-		spells_unknown_jaana		= ["Mass resurrect"];
-		spells_unknown_mariah		= ["Mass resurrect"];
-		spells_unknown_laurianna	= [];
-		spells_unknown_iolo			= ["Mass resurrect"];
-		spells_unknown_shamino		= ["Mass resurrect"];
-		spells_unknown_dupre		= ["Mass resurrect"];
-		spells_unknown_julia		= ["Mass resurrect"];
-
-		fav_spells_jaana = [];    
-		fav_spells_mariah = [];   
-		fav_spells_laurianna = [];
-		fav_spells_iolo = [];     
-		fav_spells_shamino = [];  
-		fav_spells_dupre = [];    
-		fav_spells_julia = [];
-		fav_spells_british = [];
-
+		case JAANA:
+			return ["@In which service art thou interested?@",
+			        "@I am glad to oblige, " + getPoliteTitle() + "!@",
+			        "@Who dost thou wish to be "];
+		case MARIAH:
+			return ["@What can I do for thee, avatar?@",
+			        "@Of course, Avatar!@",
+			        "@Who should be "];
+		case LAURIANNA:
+			return ["@Which mode of healing dost thou wish?@",
+			        "@It is my pleasure, Avatar!@",
+			        "@Who dost thou wish to be "];
+		case IOLO:
+			return ["@What dost thou need, my friend?@",
+			        "@It is always a pleasure to help, my friend!@",
+			        "@Who should be "];
+		case SHAMINO:
+			return ["@Which spell should I cast?@",
+			        "@Glad to help, " + getPoliteTitle() + "@",
+			        "@Who should be "];
+		case DUPRE:
+			return ["@What should I do, " + getPoliteTitle() + "?@",
+			        "@Gladly, Avatar.@",
+			        "@Who should be "];
+		case JULIA:
+			return ["@How may I help?@",
+			        "@Glad to be of assistance, Avatar.@",
+			        "@Who should be "];
+		case LORD_BRITISH:
+			return ["@Of which service dost thou have need?@",
+			        "@Glad to be of assistance, Avatar.@",
+			        "@Who dost thou wish to be "];
+		default:
+			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			abort;
 	}
-
-	var ret_spells = ["Mass resurrect"];
-	
-	if (npcnum == JAANA)
-		ret_spells = spells_unknown_jaana;
-	else if (npcnum == MARIAH)
-		ret_spells = spells_unknown_mariah;
-	else if (npcnum == LAURIANNA)
-		ret_spells = spells_unknown_laurianna;
-	else if (npcnum == IOLO)
-		ret_spells = spells_unknown_iolo;
-	else if (npcnum == SHAMINO)
-		ret_spells = spells_unknown_shamino;
-	else if (npcnum == DUPRE)
-		ret_spells = spells_unknown_dupre;
-	else if (npcnum == JULIA)
-		ret_spells = spells_unknown_julia;
-	else if (npcnum == LORD_BRITISH)
-		ret_spells = [];	//LB knows all spells.
-
-	return ret_spells;
 }
 
-spellitemSaveSpellsUnknown (var npcnum, var spells_unknown)
+extern spellitemGetNPCIndex(var npcnum);
+spellitemInit()
+{
+	initialized = true;
+	global_spells_unknown = [0, 0, 0, 0, 0, 0, 0];
+	global_fav_spells = [0, 0, 0, 0, 0, 0, 0];
+
+	global_spells_unknown[spellitemGetNPCIndex(JAANA)]        = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(MARIAH)]       = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(LAURIANNA)]    = [];
+	global_spells_unknown[spellitemGetNPCIndex(IOLO)]         = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(SHAMINO)]      = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(DUPRE)]        = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(JULIA)]        = ["Mass resurrect"];
+	global_spells_unknown[spellitemGetNPCIndex(LORD_BRITISH)] = [];
+
+	global_fav_spells[spellitemGetNPCIndex(JAANA)]        = [];
+	global_fav_spells[spellitemGetNPCIndex(MARIAH)]       = [];
+	global_fav_spells[spellitemGetNPCIndex(LAURIANNA)]    = [];
+	global_fav_spells[spellitemGetNPCIndex(IOLO)]         = [];
+	global_fav_spells[spellitemGetNPCIndex(SHAMINO)]      = [];
+	global_fav_spells[spellitemGetNPCIndex(DUPRE)]        = [];
+	global_fav_spells[spellitemGetNPCIndex(JULIA)]        = [];
+	global_fav_spells[spellitemGetNPCIndex(LORD_BRITISH)] = [];
+}
+
+var spellitemGetNPCIndex(var npcnum)
 {
 	if (npcnum > 0)
 		npcnum = -npcnum;
-	
-	if (npcnum == JAANA)
-		spells_unknown_jaana = spells_unknown;
-	else if (npcnum == MARIAH)
-		spells_unknown_mariah = spells_unknown;
-	else if (npcnum == LAURIANNA)
-		spells_unknown_laurianna = spells_unknown;
-	else if (npcnum == IOLO)
-		spells_unknown_iolo = spells_unknown;
-	else if (npcnum == SHAMINO)
-		spells_unknown_shamino = spells_unknown;
-	else if (npcnum == DUPRE)
-		spells_unknown_dupre = spells_unknown;
-	else if (npcnum == JULIA)
-		spells_unknown_julia = spells_unknown;
-	else if (npcnum == LORD_BRITISH)
-		return;		//LB knows all spells, no need to save anything.
-}
-
-var spellitemGetFavoriteSpells (var npcnum)
-{
-	if (npcnum > 0)
-		npcnum = -npcnum;
-	
-	var ret_spells;
-	
-	if (npcnum == JAANA)
-		ret_spells = fav_spells_jaana;
-	else if (npcnum == MARIAH)
-		ret_spells = fav_spells_mariah;
-	else if (npcnum == LAURIANNA)
-		ret_spells = fav_spells_laurianna;
-	else if (npcnum == IOLO)
-		ret_spells = fav_spells_iolo;
-	else if (npcnum == SHAMINO)
-		ret_spells = fav_spells_shamino;
-	else if (npcnum == DUPRE)
-		ret_spells = fav_spells_dupre;
-	else if (npcnum == JULIA)
-		ret_spells = fav_spells_julia;
-	else if (npcnum == LORD_BRITISH)
-		ret_spells = fav_spells_british;
-
-	return ret_spells;
-}
-
-spellitemSaveFavoriteSpells (var npcnum, var fav_spells)
-{
-	if (npcnum > 0)
-		npcnum = -npcnum;
-	
-	if (npcnum == JAANA)
-		fav_spells_jaana = fav_spells;
-	else if (npcnum == MARIAH)
-		fav_spells_mariah = fav_spells;
-	else if (npcnum == LAURIANNA)
-		fav_spells_laurianna = fav_spells;
-	else if (npcnum == IOLO)
-		fav_spells_iolo = fav_spells;
-	else if (npcnum == SHAMINO)
-		fav_spells_shamino = fav_spells;
-	else if (npcnum == DUPRE)
-		fav_spells_dupre = fav_spells;
-	else if (npcnum == JULIA)
-		fav_spells_julia = fav_spells;
-	else if (npcnum == LORD_BRITISH)
-		fav_spells_british = fav_spells;
+	var npc_array_index = [JAANA, MARIAH, LAURIANNA, IOLO,
+		                   SHAMINO, DUPRE, JULIA, LORD_BRITISH];
+	if (!initialized)
+		spellitemInit();
+	for (npc in npc_array_index with index)
+		if (npc == npcnum)
+			return index;
 }
 
 spellitem_Main ()
@@ -582,8 +504,8 @@ spellitem_Main ()
 	var npcnum = -get_item_quality();
 	var npc = npcnum->get_npc_object();
 	
-	var removespells = spellitemGetSpellsUnknown(npcnum);
-	var fav_spells = spellitemGetFavoriteSpells(npcnum);
+	var removespells = global_spells_unknown[spellitemGetNPCIndex(npcnum)];
+	var fav_spells = global_fav_spells[spellitemGetNPCIndex(npcnum)];
 	
 	
 	var talk_main = spellitemGetTalkMain(npcnum);
@@ -658,7 +580,7 @@ spellitem_Main ()
 							[removespells, healing_spells]
 							);
 						fav_spells = getFavoriteIndexList(fav_spell_names);
-						spellitemSaveFavoriteSpells(npcnum, fav_spells);
+						global_fav_spells[spellitemGetNPCIndex(npcnum)] = fav_spells;
 					}
 					
 					else

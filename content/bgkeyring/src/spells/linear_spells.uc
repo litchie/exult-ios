@@ -29,14 +29,14 @@
 /*
 	Linear Spells
 	
-	extern spellAwaken ();
-	extern spellDouse ();
+	extern spellAwaken (var target);
+	extern spellDouse (var target);
 	extern spellFireworks ();
 	extern spellGlimmer ();
-	extern spellIgnite ();
+	extern spellIgnite (var target);
 	extern spellThunder ();
 	extern spellWeather ();
-	extern spellDetectCharges ();
+	extern spellDetectCharges (var target);
 */
 
 enum linear_spells

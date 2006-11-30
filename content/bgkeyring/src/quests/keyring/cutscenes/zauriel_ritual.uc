@@ -138,8 +138,7 @@ zaurielRitualCutscene ()
 		item->begin_casting_mode();
 		//Zauriel script:
 		script item
-		{
-			//cast spells: freeze party (Vas An Por), create magical barrier around
+		{	//cast spells: freeze party (Vas An Por), create magical barrier around
 			//Laurianna (Vas Ort Sanct Grav) and move party around (Vas In Por):
 			nohalt;						continue;					sfx 110;
 			face NORTH;					say "@Vas An Por@";			actor frame STAND;
@@ -179,8 +178,7 @@ zaurielRitualCutscene ()
 			call zaurielRitualCutscene, PARTING_REMARKS;			wait 2;
 			
 			//Begin combat:
-			call zaurielRitualCutscene, BEGIN_ZAURIEL_COMBAT;
-		}
+			call zaurielRitualCutscene, BEGIN_ZAURIEL_COMBAT;}
 		
 		var party = [UI_get_party_list(), LAURIANNA];
 		var companions = [UI_get_avatar_ref(), SHAMINO->get_npc_object(),
@@ -190,22 +188,18 @@ zaurielRitualCutscene ()
 			if (!(npc in companions))
 			{
 				script npc
-				{
-					nohalt;						continue;					wait 15;
+				{	nohalt;						continue;					wait 15;
 					//Make the spell effects:
 					call zaurielRitualCutscene, SPRITE_EFFECTS_LAURIANNA;	wait 12;
 					//Create the magical barrier:
-					call zaurielRitualCutscene, ERECT_BARRIER;
-				}
+					call zaurielRitualCutscene, ERECT_BARRIER;}
 			}
 		}
 		
 		//Avatar script:
 		script AVATAR
-		{
-			nohalt;						continue;					wait 2;
-			say "@I-I... I can't move!@";
-		}
+		{	nohalt;						continue;					wait 2;
+			say "@I-I... I can't move!@";}
 	}
 	
 	else if (event == SPRITE_EFFECTS_LAURIANNA)

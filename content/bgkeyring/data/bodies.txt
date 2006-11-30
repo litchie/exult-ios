@@ -3,9 +3,9 @@
 #	July 31, 2006 - Derived from shapes/bodies.cc
 #
 %%section bodyshapes
-:1129
+:1099
 %%endsection
 %%section bodylist
-1107:1129/0 		# x Laurianna
-1122:1129/1 		# x Mariah
+1107:1099/0 		# x Laurianna
+1122:1099/1 		# x Mariah
 %%endsection

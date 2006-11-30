@@ -1,3 +1,7 @@
+2006-11-29  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Updating Keyring mod to incorporate some additions to UCC, as well as a new
+	  sprite and gump for Mariah and several bugfixes.
+
 2006-11-28  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapeid.*, actors.cc: 'paralyze' flag now displays a purple outline. For
 	  the sake of visibility, the SI color was used instead of the BG one.
