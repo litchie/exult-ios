@@ -29,11 +29,11 @@
 /*
 	Seventh circle Spells
 	
-	extern spellCreateGold ();
-	extern spellDeathBolt ();
-	extern spellDelayedBlast ();
-	extern spellEnergyField ();
-	extern spellEnergyMist ();
+	extern spellCreateGold (var target);
+	extern spellDeathBolt (var target);
+	extern spellDelayedBlast (var target);
+	extern spellEnergyField (var target);
+	extern spellEnergyMist (var target);
 	extern spellMassCharm ();
 	extern spellMassMight ();
 	extern spellRestoration ();

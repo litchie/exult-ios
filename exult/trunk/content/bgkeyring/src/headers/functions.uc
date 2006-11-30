@@ -140,34 +140,22 @@ pickUpItem()
 		if (UI_is_npc(container))
 		{
 			script AVATAR
-			{
-				face direction;
-				actor frame USE;
-				wait 3;
-				actor frame STAND;
-			}
+			{	face direction;				actor frame USE;
+				wait 3;						actor frame STAND;}
 		}
 		//container is a regular object or just the world, animate the avatar leaning down
 		else
 		{
 			script AVATAR
-			{
-				face direction;
-				actor frame LEAN;
-				wait 3;
-				actor frame STAND;
-			}
+			{	face direction;				actor frame LEAN;
+				wait 3;						actor frame STAND;}
 		}
 
 		//Puts the item in the player's inventory and calls the intended function
 		script item
-		{
-			nohalt;
-			wait 3;
-			call giveToAvatar;
-			wait 2;
-			call func;
-		}
+		{	nohalt;						wait 3;
+			call giveToAvatar;			wait 2;
+			call func;}
 	}
 }
 

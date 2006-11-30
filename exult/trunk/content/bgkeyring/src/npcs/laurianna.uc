@@ -59,21 +59,17 @@ Laurianna 0x494 ()
 		clear_item_flag(MET);
 		
 		script item
-		{
-			nohalt;						call trueFreeze;
+		{	nohalt;						call trueFreeze;
 			wait 2;						face find_direction(AVATAR);
 			wait 2;						say "@Avatar...@";
 			wait 6;
-			call lauriannaPrePotionDialog;
-		}
+			call lauriannaPrePotionDialog;}
 		
 		script AVATAR
-		{
-			nohalt;						call trueFreeze;
+		{	nohalt;						call trueFreeze;
 			wait 6;						face AVATAR->find_direction(item);
 			wait 2;						say "@Yes?@";
-			wait 1;						call trueUnfreeze;
-		}
+			wait 1;						call trueUnfreeze;}
 	}
 	
 	else if (get_npc_id() != 0)
@@ -105,24 +101,20 @@ Laurianna 0x494 ()
 		
 		//SI-style start of dialog, although the NPC does not move to the Avatar:
 		script AVATAR
-		{
-			call trueFreeze;				face AVATAR->find_direction(item);
+		{	call trueFreeze;			face AVATAR->find_direction(item);
 			actor frame STAND;			say bark;
-			wait 10;
-		}
+			wait 10;}
 
 		//Laurianna's response according to flags:
 		if (queststate >= POTION_WAS_USED) bark = "@Hi, Avatar!@";
 		else bark = "@Thou dost have no potions, right?@";
-		
+
 		//SI-style start of dialog, although the NPC does not move to the Avatar:
 		script item
-		{
-			call trueFreeze;				wait 5;
+		{	call trueFreeze;				wait 5;
 			face find_direction(AVATAR);
 			actor frame STAND;			say bark;
-			wait 8;						call Laurianna;
-		}
+			wait 8;						call Laurianna;}
 	}
 	
 	else if (event == SCRIPTED)

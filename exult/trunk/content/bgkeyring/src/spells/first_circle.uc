@@ -31,7 +31,7 @@
 	
 	extern spellAwakenAll ();
 	extern spellCreateFood ();
-	extern spellCure ();
+	extern spellCure (var target);
 	extern spellDetectTrap ();
 	extern spellGreatDouse ();
 	extern spellGreatIgnite ();

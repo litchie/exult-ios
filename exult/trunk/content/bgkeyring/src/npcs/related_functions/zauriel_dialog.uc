@@ -1235,7 +1235,7 @@ zaurielTalkGemSubquest ()
 
 zaurielLastTalk ()
 {
-	ZAURIEL->show_npc_face(0);
+	ZAURIEL->show_npc_face0(0);
 	if (LAURIANNA->get_npc_object() in UI_get_party_list())
 	{
 		//Laurianna is still in the party, so remove her:
@@ -1247,16 +1247,17 @@ zaurielLastTalk ()
 	//The reunion between father and daughter:
 	say("Zauriel is clearly overjoyed to see his daughter returned.");
 	
-	LAURIANNA->show_npc_face(0);
+	LAURIANNA->show_npc_face1(0);
 	say("Laurianna runs to his father and hugs him, relieved to be reunited with her father. @Father! I missed thee so much! I was so afraid...@");
 	
-	ZAURIEL->show_npc_face(0);
+	UI_set_conversation_slot(0);
 	say("@Yes, my child, I know, I could feel thy fear. I am overjoyed that thou art safe once again! How dost thou fare, my child? Art thou well?@");
-	
-	LAURIANNA->show_npc_face(0);
+
+	UI_set_conversation_slot(1);
 	say("@Aye, father. I was on the verge of losing control when the noble Avatar saved me!@");
 	LAURIANNA.hide();
 	
+	UI_set_conversation_slot(0);
 	say("@Avatar, I cannot thank thee enough for saving my beloved daughter from the hands of those fiends! Thank thee!");
 	say("@As for thy reward, I do not have it in my possession; thou canst go to my house and retrieve it thyself.");
 	say("@Thou canst find my house on an island to the northwest of Serpent's Hold; thou mayest take anything thou wishest from it.");
@@ -1284,19 +1285,20 @@ zaurielLastTalk ()
 	say("Zauriel turns towards his daughter. @Thou knowest what is about to happen, knowest thou not?");
 	say("@It is as we spoke before those buffoons interrupted.@");
 	
-	LAURIANNA->show_npc_face(1);
+	LAURIANNA->show_npc_face1(1);
 	say("@Y-yes, father@, says Laurianna with a sad look in her eyes. @But father, is it really necessary? Can't something else be tried??@");
 	
-	ZAURIEL->show_npc_face(0);
-	say("@Thou knowest as well as I that it cannot be helped. It is meant to be this way, and it is the only hope thou hast of a normal life. @Thou dost want that, dost thou not?@");
+	UI_set_conversation_slot(0);
+	say("@Thou knowest as well as I that it cannot be helped. It is meant to be this way, and it is the only hope thou hast of a normal life.~@Thou dost want that, dost thou not?@");
 	
-	LAURIANNA->show_npc_face(1);
+	UI_set_conversation_slot(1);
 	say("@I do indeed. But the price is high...@");
 	
-	ZAURIEL->show_npc_face(0);
-	say("@The price is not thy to pay, so concern thee not with it.@");
+	UI_set_conversation_slot(0);
+	say("@The price is not thine to pay, so concern thee not with it.@");
 	LAURIANNA.hide();
-	
+
+	UI_set_conversation_slot(0);
 	if (chooseFromMenu2(["apologize", "What must be done?", "What is the price?", "Meant to be this way"]))
 		//Ignore the avatar's choice:
 		say("@I sincerely wish that I had time to explain it to thee, but time is of the essence. I am sorry...@");

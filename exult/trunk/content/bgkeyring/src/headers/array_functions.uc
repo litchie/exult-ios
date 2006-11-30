@@ -44,7 +44,7 @@ var getFriendlyTargetList (var caster, var dist)
 				retlist = [retlist, npc];
 		if (align == 0)
 			//Add party to list if caster is friendly:
-			retlist = [retlist, UI_get_party_list()];
+			retlist << UI_get_party_list();
 		return retlist;
 	}
 }
@@ -70,7 +70,7 @@ var getEnemyTargetList (var caster, var dist)
 				retlist = [retlist, npc];
 		if (align != 0)
 			//Add party to list if caster is not friendly:
-			retlist = [retlist, UI_get_party_list()];
+			retlist << UI_get_party_list();
 		return retlist;
 	}
 }
@@ -82,12 +82,8 @@ var removeFromArrayByIndex (var array, var elemindex)
 	var retarray = [];
 
 	for (elem in array with index)
-	{
 		if (index != elemindex)
-		//if (count != elemindex)
-			retarray = [retarray, elem];
-		//count = count + 1;
-	}
+			retarray << elem;
 	return retarray;
 }
 
@@ -95,12 +91,10 @@ var removeFromArrayByIndex (var array, var elemindex)
 var filterListByFlag(var list, var flag, var state)
 {
 	var ret_list = [];
-	
+
 	for (npc in list)
-	{
 		if (npc->get_item_flag(flag) == state)
-			ret_list = [ret_list, npc];
-	}
+			ret_list << npc;
 	return ret_list;
 }
 
@@ -113,10 +107,8 @@ var filterListByEquipedObject(var list, var shapes, var spot)
 		shapes = [shapes];
 	
 	for (npc in list)
-	{
 		if ((npc->get_readied(spot))->get_item_shape() in shapes)
-			ret_list = [ret_list, npc];
-	}
+			ret_list << npc;
 	return ret_list;
 }
 
@@ -129,7 +121,7 @@ var filterListByRelHits(var list, var frac)
 		var hps = 4*npc->get_npc_prop(HEALTH);
 		var str = npc->get_npc_prop(STRENGTH);
 		if (hps<str*frac)
-				ret_list = [ret_list, npc];
+			ret_list << npc;
 	}
 	return ret_list;
 }
@@ -146,10 +138,8 @@ var removeItemsFromList(var list, var removes)
 			removes = [removes];
 		
 		for (spell in list)
-		{
 			if (!(spell in removes))
-				newarray = [newarray, spell];
-		}
+				newarray << spell;
 	}
 	else
 		newarray = list;
@@ -169,10 +159,8 @@ var intersectLists(var list1, var list2)
 			list2 = [list2];
 		
 		for (spell in list1)
-		{
 			if (spell in list2)
-				newarray = [newarray, spell];
-		}
+				newarray << spell;
 	}
 	else
 		newarray = [];
@@ -187,10 +175,8 @@ var filterBodyList(var list, var body)
 	if (UI_get_array_size(list) > 0)
 	{
 		for (currbody in list)
-		{
 			if (currbody->get_body_npc() != body->get_body_npc())
-				newarray = [newarray, currbody];
-		}
+				newarray << currbody;
 	}
 	else
 		newarray = [];
@@ -207,10 +193,8 @@ var removeFromArray(var array, var obj)
 	if (UI_get_array_size(array) > 0)
 	{
 		for (curr in array)
-		{
 			if (curr != obj)
-				newarray = [newarray, curr];
-		}
+				newarray << curr;
 	}
 	else
 		newarray = [];

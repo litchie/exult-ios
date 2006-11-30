@@ -135,6 +135,9 @@ enum laurianna_yew_flags
 //The following flags are used for meditating in shrines:
 enum shrine_meditation_flags
 {
+	// This first value is never actually used as a flag;
+	// it has been defined for convenience only
+	MEDITATED_AT_SHRINE_BASE				= 1544,
 	MEDITATED_AT_SACRIFICE					= 1545,
 	MEDITATED_AT_JUSTICE					= 1546,
 	MEDITATED_AT_HUMILITY					= 1547,
@@ -150,6 +153,9 @@ enum shrine_meditation_flags
 //only two flags per shrine.
 enum codex_quest_flags
 {
+	// This first value has been defined for convenience only,
+	// and is actually used for meditation at the Honesty shrine
+	VIEWED_CODEX_BASE						= 1552,
 	VIEWED_CODEX_FOR_SACRIFICE				= 1553,
 	VIEWED_CODEX_FOR_JUSTICE				= 1554,
 	VIEWED_CODEX_FOR_HUMILITY				= 1555,

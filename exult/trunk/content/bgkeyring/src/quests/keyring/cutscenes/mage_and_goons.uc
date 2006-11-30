@@ -66,16 +66,14 @@ beginCutsceneMageAndGoons ()
 		
 		//Screen fader:
 		script item after 5 ticks call beginCutsceneMageAndGoons, FADE_SCREEN;
-		
+
 		//Find Laundo:
 		mage = LAURIANNA->find_nearest(SHAPE_MAGE_MALE, 80);
 		//Use him to unfade screen and kick-start the rest of the scene:
 		script mage after 10 ticks
-		{
-			nohalt;						call beginCutsceneMageAndGoons, CENTER_VIEW;
+		{	nohalt;						call beginCutsceneMageAndGoons, CENTER_VIEW;
 			wait 2;						call beginCutsceneMageAndGoons, UNFADE_SCREEN;
-			wait 5;						call beginCutsceneMageAndGoons, DISPLAY_REGION;
-		};
+			wait 5;						call beginCutsceneMageAndGoons, DISPLAY_REGION;}
 	}
 	
 	else if (event == FADE_SCREEN)
@@ -113,13 +111,11 @@ beginCutsceneMageAndGoons ()
 
 		//Make Laurianna visible and generate the scripts for the mage and goons:
 		script LAURIANNA after 6 ticks
-		{
-			nohalt;					call trueFreeze;
+		{	nohalt;						call trueFreeze;
 			call beginCutsceneMageAndGoons, MAKE_VISIBLE;
 			wait 4;
-			call beginCutsceneMageAndGoons, GENERATE_SCRIPTS;
-		};
-		
+			call beginCutsceneMageAndGoons, GENERATE_SCRIPTS;}
+
 		//Make the mage and his goons visible:
 		script item after 6 ticks		{nohalt;	call beginCutsceneMageAndGoons, MAKE_VISIBLE;};
 		script gargoyle after 6 ticks	{nohalt;	call beginCutsceneMageAndGoons, MAKE_VISIBLE;};

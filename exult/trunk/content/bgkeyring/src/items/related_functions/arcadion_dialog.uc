@@ -157,8 +157,148 @@ arcadionSwordFormDialog ()
 			else
 			{
 				say("@Which of my powers dost thou seek to use?@");
-				UI_push_answers();
-				add(["Magic", "Fire", "Death", "Return", "none"]);
+				converse(["Magic", "Fire", "Death", "Return", "none"])
+				{
+					case "none":
+						say("@As thou wish, master. I but seek to serve thee.@");
+						break;
+						
+					case "Magic":
+						var part_of_day = UI_part_of_day();
+						if ((part_of_day == NIGHT) || ((part_of_day == MIDNIGHT) || (part_of_day == EARLY)))
+							replenishMana(true);
+						else
+							say("The blade croons quietly, @Alas, master. My energies seem a trifle low. Perhaps if thou were to find some creature to slay, my power would be sufficient. After all, I have needs just as thou dost.@");
+			
+					case "Death":
+						say("@Where is the corpse of which thou dost speak?@ The dark sword begins to vibrate in your hand.*");
+						BLACK_SWORD_FACE.hide();
+						
+						var target = UI_click_on_item();
+						var target_shape = target->get_item_shape();
+						var target_position = target->get_object_position();
+						
+						BLACK_SWORD_FACE->show_npc_face(0);
+						
+						if (target->is_npc())
+						{
+							if ((target_shape == SHAPE_MALE_AVATAR) || (target_shape == SHAPE_FEMALE_AVATAR))
+								say("The daemon speaks with a sanctimonious tone. @I could not in honor take the life of my most wondrous master.@");
+							
+							else if (target_shape == SHAPE_LORD_BRITISH)
+							{
+								killLordBritish(target);
+								return;
+							}
+							
+							else if ((target_shape == SHAPE_BATLIN) || (target_shape == SHAPE_BATLIN2))
+								say("@Alas master, this one is protected by a power greater than mine. His destiny lies elsewhere.@");
+						
+							else if (isUndead(target_shape))
+								say("The sword recoils in something akin to horror. @That creature is beyond even my power. I suggest that thou hackest it to bits, if possible, then burn the pieces.@ Arcadion offers helpfully.");
+							
+							else if (target->get_npc_number() == ZAURIEL)
+								say("The sword recoils in something akin to horror. @This one is beyond even my power. I suggest that thou hackest him to bits, if possible, then burn the pieces.@ Arcadion offers helpfully.");
+							
+							else if (target->get_npc_number() == LAURIANNA)
+								say("The sword recoils in something akin to horror. @Alas, master, I dare not. Her power is so great it would destroy us both were I to kill her.@");
+							
+							else if (target_shape == SHAPE_DRAGON)
+							{
+								if (isCloseEnoughtToKill(target, "The Shade Blade croons sofltly. @Move a little closer to the dragon, and I'll end its life for thee, master.@"))
+								{
+									if (target->get_cont_items(SHAPE_SCROLL, 241, 4))
+									{
+										say("@Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.@");
+										
+										DRACOTHRAXUS_FACE->show_npc_face(0);
+										say("The dragon responds with great resignation. @My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.@");
+										DRACOTHRAXUS_FACE.hide();
+										
+										say("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*");
+									}
+									killAnimation(target);
+									return;
+								}
+							}
+							
+							else if (target_shape == SHAPE_MONSTER_MAGE)
+							{
+								if (isCloseEnoughtToKill(target, "@Move closer to him, and I'll see that his life plagues thee no more.@ The	dark sword sounds almost gleeful at this prospect."))
+								{
+									if (target->get_cont_items(SHAPE_SCROLL, 240, 4))
+										say("@I owe thee quite a favor for this, master. I thank thee for allowing me this, my revenge!@*");
+									
+									killAnimation(target);
+									return;
+								}
+							}
+							
+							else if (target_shape == SHAPE_GOLEM)
+								say("@This creature is not strictly speaking,... living. Thy best course of action would be to smash it to pieces@ You hear a smile in Arcadion's voice.");
+							
+							else if (isWorthyToKill(target_shape))
+							{
+								if (isCloseEnoughtToKill(target, "@I must get closer to this one in order to enjoy its essence.@ The blade hums eagerly as it tugs in the direction of your selected target."))
+								{
+									say("@Very well, master. If thou cannot dispatch this foe thyself, I shall do it for thee.@");
+									killAnimation(target);
+									return;
+								}
+							}
+							
+							else
+								say("The daemon sword abruptly ceases its vibration. @This being is hardly worth a death the likes of which I would visit upon it. Call upon me again when thou art faced with a more worthy opponent.@");
+						}
+						
+						else
+						{
+							if (isCorpseShape(target_shape))
+								say("@Perhaps thou misunderstands my meaning. I do not raise the dead... I slay the living.@ The last is spoken in a sibilant whisper.");
+							
+							else if (!target_shape)
+								say("@Thou wouldst have me destroy the very world around thee. Not a very bright idea for such a virtuous one as thou art thought to be.@ A strangely metallic chuckle escapes from the sword.");
+							
+							else if (target_shape == SHAPE_FERRYMAN)
+								say("The sword recoils in something akin to horror. @That one is beyond even my power.@");
+							
+							else if ((target_shape == SHAPE_DRAFT_HORSE) || (target_shape == SHAPE_WOUNDED_MAN))
+								say("The daemon sword abruptly ceases its vibration. @This being is hardly worth a death the likes of which I would visit upon it. Call upon me again when thou art faced with a more worthy opponent.@");
+							
+							else if (target_shape == SHAPE_BLACK_SWORD)
+								say("@Thou shall not be rid of me quite so easily, my master. However, I do not begrudge thine attempt. Quite to the contrary. I respect thy resourcefulness.@");
+							
+							else if (target_shape == SHAPE_DARK_CORE)
+								say("@Would that I had such power. That artifact would allow me to return to my home plane if only I could unlock its secrets.@");
+			
+							else
+								say("@Hast thou such a grudge against this inanimate object that thou wouldst see it perish forever?@ His voice is laden with undisguised sarcasm. @I cannot take life from that which is already lifeless.@");
+						}
+						
+					case "Return":
+						if (!inIsleOfFire())
+						{
+							say("@Ah... home again. I never tire of rocky little islands. Dost thou truly wish to go to the forsaken Isle of Fire?@");
+							if (askYesNo())
+							{
+								say("@I see. Very well, master. But let us not forget this little favor...@ The gem in the hilt of the sword glows brightly then everything dims.*");
+								script item {wait 1;	call teleportIsleOfFire;}
+								return;
+							}
+							
+							else
+								say("@It is good. Sense returns to the Virtuous Wonder. Thou art truly without peer in the arena of thought, master.@");
+						}
+						
+						else
+							say("@Forgive me, master, but are we not already on or near the Isle of Fire? Though, why one would wish to remain here on this forsaken piece of rock, I have no	idea.@");
+						
+					case "Fire":
+						say("@And what, pray tell, is the intended target of thy immense and most puissant wrath, O' Master of Infinite Destruction?@");
+						BLACK_SWORD_FACE.hide();
+						item->createFire();
+						return;
+				}
 			}
 			
 		case "help" (remove):
@@ -170,147 +310,7 @@ arcadionSwordFormDialog ()
 			
 		case "talismans" (remove):
 			say("@The Talismans of Principle must be placed upon the Dark Core like wedges in a pie.@");
-			
-		case "none":
-			say("@As thou wish, master. I but seek to serve thee.@");
-			UI_pop_answers();
-			
-		case "Magic":
-			var part_of_day = UI_part_of_day();
-			if ((part_of_day == NIGHT) || ((part_of_day == MIDNIGHT) || (part_of_day == EARLY)))
-				replenishMana(true);
-			else
-				say("The blade croons quietly, @Alas, master. My energies seem a trifle low. Perhaps if thou were to find some creature to slay, my power would be sufficient. After all, I have needs just as thou dost.@");
 
-		case "Death":
-			say("@Where is the corpse of which thou dost speak?@ The dark sword begins to vibrate in your hand.*");
-			BLACK_SWORD_FACE.hide();
-			
-			var target = UI_click_on_item();
-			var target_shape = target->get_item_shape();
-			var target_position = target->get_object_position();
-			
-			BLACK_SWORD_FACE->show_npc_face(0);
-			
-			if (target->is_npc())
-			{
-				if ((target_shape == SHAPE_MALE_AVATAR) || (target_shape == SHAPE_FEMALE_AVATAR))
-					say("The daemon speaks with a sanctimonious tone. @I could not in honor take the life of my most wondrous master.@");
-				
-				else if (target_shape == SHAPE_LORD_BRITISH)
-				{
-					killLordBritish(target);
-					return;
-				}
-				
-				else if ((target_shape == SHAPE_BATLIN) || (target_shape == SHAPE_BATLIN2))
-					say("@Alas master, this one is protected by a power greater than mine. His destiny lies elsewhere.@");
-			
-				else if (isUndead(target_shape))
-					say("The sword recoils in something akin to horror. @That creature is beyond even my power. I suggest that thou hackest it to bits, if possible, then burn the pieces.@ Arcadion offers helpfully.");
-				
-				else if (target->get_npc_number() == ZAURIEL)
-					say("The sword recoils in something akin to horror. @This one is beyond even my power. I suggest that thou hackest him to bits, if possible, then burn the pieces.@ Arcadion offers helpfully.");
-				
-				else if (target->get_npc_number() == LAURIANNA)
-					say("The sword recoils in something akin to horror. @Alas, master, I dare not. Her power is so great it would destroy us both were I to kill her.@");
-				
-				else if (target_shape == SHAPE_DRAGON)
-				{
-					if (isCloseEnoughtToKill(target, "The Shade Blade croons sofltly. @Move a little closer to the dragon, and I'll end its life for thee, master.@"))
-					{
-						if (target->get_cont_items(SHAPE_SCROLL, 241, 4))
-						{
-							say("@Ah, Dracothraxus. We meet once again. 'Tis a pity thou shan't survive our meeting this time. Perhaps if thou hadst given the gem to me when first I asked, none of this unpleasantness would be necessary.@");
-							
-							DRACOTHRAXUS_FACE->show_npc_face(0);
-							say("The dragon responds with great resignation. @My will is not mine own in this matter, Arcadion. Mayhap thou art finding too, that thy will is not thine own.@");
-							DRACOTHRAXUS_FACE.hide();
-							
-							say("The daemon, possibly stung by the dragon's repartee, falls silent and goes to its bloody work.*");
-						}
-						killAnimation(target);
-						return;
-					}
-				}
-				
-				else if (target_shape == SHAPE_MONSTER_MAGE)
-				{
-					if (isCloseEnoughtToKill(target, "@Move closer to him, and I'll see that his life plagues thee no more.@ The	dark sword sounds almost gleeful at this prospect."))
-					{
-						if (target->get_cont_items(SHAPE_SCROLL, 240, 4))
-							say("@I owe thee quite a favor for this, master. I thank thee for allowing me this, my revenge!@*");
-						
-						killAnimation(target);
-						return;
-					}
-				}
-				
-				else if (target_shape == SHAPE_GOLEM)
-					say("@This creature is not strictly speaking,... living. Thy best course of action would be to smash it to pieces@ You hear a smile in Arcadion's voice.");
-				
-				else if (isWorthyToKill(target_shape))
-				{
-					if (isCloseEnoughtToKill(target, "@I must get closer to this one in order to enjoy its essence.@ The blade hums eagerly as it tugs in the direction of your selected target."))
-					{
-						say("@Very well, master. If thou cannot dispatch this foe thyself, I shall do it for thee.@");
-						killAnimation(target);
-						return;
-					}
-				}
-				
-				else
-					say("The daemon sword abruptly ceases its vibration. @This being is hardly worth a death the likes of which I would visit upon it. Call upon me again when thou art faced with a more worthy opponent.@");
-			}
-			
-			else
-			{
-				if (isCorpseShape(target_shape))
-					say("@Perhaps thou misunderstands my meaning. I do not raise the dead... I slay the living.@ The last is spoken in a sibilant whisper.");
-				
-				else if (!target_shape)
-					say("@Thou wouldst have me destroy the very world around thee. Not a very bright idea for such a virtuous one as thou art thought to be.@ A strangely metallic chuckle escapes from the sword.");
-				
-				else if (target_shape == SHAPE_FERRYMAN)
-					say("The sword recoils in something akin to horror. @That one is beyond even my power.@");
-				
-				else if ((target_shape == SHAPE_DRAFT_HORSE) || (target_shape == SHAPE_WOUNDED_MAN))
-					say("The daemon sword abruptly ceases its vibration. @This being is hardly worth a death the likes of which I would visit upon it. Call upon me again when thou art faced with a more worthy opponent.@");
-				
-				else if (target_shape == SHAPE_BLACK_SWORD)
-					say("@Thou shall not be rid of me quite so easily, my master. However, I do not begrudge thine attempt. Quite to the contrary. I respect thy resourcefulness.@");
-				
-				else if (target_shape == SHAPE_DARK_CORE)
-					say("@Would that I had such power. That artifact would allow me to return to my home plane if only I could unlock its secrets.@");
-
-				else
-					say("@Hast thou such a grudge against this inanimate object that thou wouldst see it perish forever?@ His voice is laden with undisguised sarcasm. @I cannot take life from that which is already lifeless.@");
-			}
-			
-		case "Return":
-			if (!inIsleOfFire())
-			{
-				say("@Ah... home again. I never tire of rocky little islands. Dost thou truly wish to go to the forsaken Isle of Fire?@");
-				if (askYesNo())
-				{
-					say("@I see. Very well, master. But let us not forget this little favor...@ The gem in the hilt of the sword glows brightly then everything dims.*");
-					script item {wait 1;	call teleportIsleOfFire;}
-					return;
-				}
-				
-				else
-					say("@It is good. Sense returns to the Virtuous Wonder. Thou art truly without peer in the arena of thought, master.@");
-			}
-			
-			else
-				say("@Forgive me, master, but are we not already on or near the Isle of Fire? Though, why one would wish to remain here on this forsaken piece of rock, I have no	idea.@");
-			
-		case "Fire":
-			say("@And what, pray tell, is the intended target of thy immense and most puissant wrath, O' Master of Infinite Destruction?@");
-			BLACK_SWORD_FACE.hide();
-			item->createFire();
-			return;
-			
 		case "bye":
 			say("@Forgive me master, but I shan't be leaving. However, thou mayest cease thy speaking... if thou dost wish it.@*");
 			return;
