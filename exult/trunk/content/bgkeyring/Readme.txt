@@ -17,8 +17,8 @@ Keyring Mod Readme
 1	About this document
 -----------------------
 Author: Marzo Sette Torres Junior
-e-mail: marzojr@taskmail.com.br
-version: 0.10.02
+e-mail: marzojr@yahoo.com
+version: 0.11.02
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -46,31 +46,37 @@ version: 0.10.02
 	Secondly (and just as importantly), this mod is will *not* work in
 	Exult 1.2, nor it will work on any but *the* latest snapshots. There
 	were some bugs I had to fix to get everything working as is.
+
+	With that out of the way: to install the mod, simply unzip the contents
+	of the zip file into your Black Gate's 'mods' folder. By default (that
+	is, unless you changed it specifically in your 'Exult.cfg' file), this
+	would be the 'mods' subdirectory of the path you set for Black Gate in
+	your 'Exult.cfg' file. There are two optional (but highly recommended)
+	additional steps you may want to perform:
 	
-	With that out of the way: there are two ways to install the mod:
-	
-	1) If you are using DOS/Windows, you can use the supplied batch files.
-	   Unzip the mod to your Black Gate folder (so that, for example,
-	   the "Install.bat" file is at "BlackGate/Keyring/Install.bat").
-	   Make sure that the mod's folder is at the same level as your
-	   STATIC folder! Then run the "Install.bat" file to install. You 
-	   can also run "Make & Install.bat" to compile the usecode and
-	   install -- but you must have UCC to do so, and at a very
-	   specific location too.
-	2) Copy the contents of the "data" folder to your BG's PATCH folder.
-	
+	OPTIONAL: You can create a shortcut to start Exult directly in the
+	Keyring mod. To do so, make sure that the command-line is similar to
+	the following example:
+		<path to Exult>\Exult --bg --mod keyring
+	You can use the supplied 'Keyring.ico' file for the shortcut (if you
+	use Windows) or use the supplied 'Keyring.png' file to make your own
+	icon for other OSes.
+
 	OPTIONAL: If you like, you can set new key bindings to BG to use the
 	keyring with a keyboard shortcut. You will have to edit the file
 	"bgdefaultkeys.txt". If you want to make it work like SI does,
 	delete the line "K		try_keys" and add the following two lines:
 		Alt-K		try_keys
 		K		useitem			1100	# Use keyring
+	For the time being, you cannot specify custom key bindings on a per-mod
+	basis, but this may possibly change in future versions of Exult.
 	
 	
 3	Contributing to this mod
 ----------------------------
 	If you have any bugs that you would like to see fixed -- or that you
-	*have* fixed -- please send it to me! Use the e-mail above.
+	*have* fixed -- please send them to me! You can either e-mail them
+	to me or you can post them in the Exult Phorum.
 
 4	Using it in your own mods
 -----------------------------
@@ -78,6 +84,12 @@ version: 0.10.02
 	I ask only that you give me proper credit -- and maybe tell me
 	about the mod you are doing, as I might be interested enough to
 	help and/or to include as a part of this mod.
+
+	In previous releases of this mod, the mod's full source was included
+	in the zip file. Starting with version 0.11.01, only the files required
+	to play the mod are included. You can obtain the source of the mod in
+	the Exult source code, available at the 'Downloads' page or through
+	anonymous CVS. It is in the 'content/bgkeyring' directory.
 
 5	What this mod does
 ----------------------
@@ -97,6 +109,10 @@ version: 0.10.02
 	- An improved Orb of the Moons, allowing you to visit the shrines too.
 	- Innkeepers will reclaim the room keys when you are leaving the inn.
 	  They will also lock the doors and make the beds.
+	- The rudiments of a brand-new spellcasting system which allows NPCs
+	  to cast spells are now in place. Each NPC has his/her own spellcasting
+	  item which can be used to cast spells, and they will use mana and
+	  reagents. There are also some new NPC-only spells.
 
 6	Spoilers
 ------------
@@ -165,6 +181,25 @@ version: 0.10.02
 	
 7	Version history
 -------------------
+version: 0.11.02
+	- Modifications added due to new UCC capabilities.
+version: 0.11.01
+	- New sprite and Gump for Mariah
+	- Lord British's sprite has been retouched by Crysta the Elf.
+	- New data files for the bodies of Laurianna and Mariah.
+	- Bug in Final Fight made former party members useless.
+	- Fixed bug when Innkeepers came to reclaim the key.
+version: 0.11.00
+	- Merged in the 'Iteractions' part of Alun Bestor's 'Quests and
+	  Iteractions' mod. It is released under the GNU General Public
+	  License (with Alun Bestor's permission, of course).
+	- Added in the Crown Jewels of Britannia, with graphics by Crysta
+	  the Elf.
+	- Added new graphics (for spellcasting) to Iolo, Shamino, Dupre and
+	  Julia, by me, and to Lord British (from SI).
+	- Added new 'services' code; first service is healing, and all NPC
+	  healers now use it.
+	- Added Julia's hammer to the host of spellcasting items.
 version: 0.10.04
 	- New NPC spellbook graphics by Crysta the Elf.
 	- Added Dupre's Amulet and Shamino's Ankh (their spellcasting items)
