@@ -85,6 +85,8 @@ eggLockInnDoors ()
 	//Get the innkeeper's index:
 	var egg_quality = get_item_quality();
 	var inn_keeper = inn_keepers[egg_quality];
+	if (inn_keeper->is_dead())
+		abort;
 	
 	//Get the egg's position:
 	var pos = get_object_position();

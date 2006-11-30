@@ -1,9 +1,8 @@
      archive    ../data/shapes.vga
      165/9:     temp/Slate_Roof_2_
-     400/33:    temp/Bodies_
      454/32:    temp/Julia_
      465/32:    temp/Iolo_
-     466/32:    temp/LordBritish_
+     466/32:    temp/Lord_British_
      487/32:    temp/Shamino_
      488/32:    temp/Dupre_
      490/32:    temp/Jaana_
@@ -13,6 +12,7 @@
      668/16:    temp/Sword_Blank_
      810/8:     temp/Bucket_
      863/19:    temp/Kitchen_
+     1099/2:    temp/Bodies_
      1100/5:    temp/Keyring_
      1101/8:    temp/Barrier_
      1102/2:    temp/Book_

@@ -31,13 +31,13 @@
 	Fourth circle Spells
 	
 	extern spellConjure ();
-	extern spellLightning ();
+	extern spellLightning (var target);
 	extern spellMassCurse ();
 	extern spellReveal ();
 	extern spellSeance ();
-	extern spellUnlockMagic ();
-	extern spellRechargeMagic ();
-	extern spellBlink ();
+	extern spellUnlockMagic (var target);
+	extern spellRechargeMagic (var target);
+	extern spellBlink (var target);
 */
 
 enum fourth_circle_spells

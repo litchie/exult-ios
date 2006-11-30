@@ -215,6 +215,6 @@ expireFish ()
 	else
 	{
 		avatarBark("Fish now at " + reduced_quality + " quality");
-		UI_delayed_execute_usecode_array(item, [0x55, 0x0600], FISH_EXPIRY_RATE);
+		script item after FISH_EXPIRY_RATE ticks call 0x600;
 	}
 }

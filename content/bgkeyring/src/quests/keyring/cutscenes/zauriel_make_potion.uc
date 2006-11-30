@@ -96,13 +96,10 @@ zaurielMakePotion ()
 		
 		//Use the Avatar to unfade the screen:
 		script AVATAR
-		{
-			face WEST;
-			wait 2;
+		{	face WEST;					wait 2;
 			call zaurielMakePotion, POTION_UNFADE_SCREEN;
 			wait 5;
-			call zaurielMakePotion, MAKE_POTION;
-		}
+			call zaurielMakePotion, MAKE_POTION;}
 		//Move the party:
 		pos = [0x53D, 0xA46, 0x0];
 		PARTY->move_object(pos);
@@ -261,13 +258,10 @@ zaurielMakePotion ()
 		set_item_frame_rot(STAND_SOUTH);
 		//Use Avatar to unfade screen:
 		script AVATAR
-		{
-			face NORTH;
-			wait 2;
+		{	face NORTH;					wait 2;
 			call zaurielMakePotion, POTION_UNFADE_SCREEN;
 			wait 5;
-			call zaurielMakePotion, BEGIN_DIALOG_2;
-		}
+			call zaurielMakePotion, BEGIN_DIALOG_2;}
 		//Move party:
 		pos = [0x3A2, 0x4E6, 0x0];
 		PARTY->move_object(pos);
@@ -290,13 +284,9 @@ zaurielMakePotion ()
 		var pos = ZAURIEL->get_object_position();
 		UI_sprite_effect(ANIMATION_TELEPORT, pos[X], pos[Y], 0, 0, 0, -1);
 		script ZAURIEL
-		{
-			nohalt;
-			say "@Meet me near Skara Brae!@";
-			sfx SOUND_TELEPORT;
-			wait 6;
-			call zaurielMakePotion, TELEPORT_TO_SKARABRAE;
-		}
+		{	nohalt;						say "@Meet me near Skara Brae!@";
+			sfx SOUND_TELEPORT;			wait 6;
+			call zaurielMakePotion, TELEPORT_TO_SKARABRAE;}
 	}
 	
 	else if (event == TELEPORT_TO_SKARABRAE)

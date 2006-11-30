@@ -60,12 +60,10 @@ killTargetNPC ()
 		body->give_last_created();
 		//Dying sequence:
 		script body
-		{
-			wait 5;
+		{	wait 5;
 			frame CAST_2_SOUTH;
 			wait 2;
-			frame KNEEL_NORTH;
-		}
+			frame KNEEL_NORTH;}
 	}
 	else
 	{
@@ -184,7 +182,7 @@ killTargetNPC ()
 
 Blackrock_Potion shape#(0x450) ()
 {
-	if ((event == DOUBLECLICK) && get_item_frame() ==0)
+	if ((event == DOUBLECLICK) && get_item_frame() == 0)
 	{
 		//Nothing happens if in incomplete form.
 		//Get random party member to ask the Avatar if he is SURE:
@@ -203,9 +201,29 @@ Blackrock_Potion shape#(0x450) ()
 				if (target->get_item_shape() == SHAPE_LAURIANNA_ROOTED)
 				{
 					//Fortunatelly, it is Laurianna
+					if (getQuestState() < PLAYER_KILLED_MAGE)
+					{
+						// Laundo yet alive, so Laurianna is behind an energy shield.
+						avatarSpeak("There is some sort of energy field that prevents you from reaching your intended victim.");
+						return;
+					}
+
 					avatarSpeak("As you approach Laurianna with the potion, she immediatelly begins talking to you. You ignore her protests and force the potion down her throat.");
+					gflags[ACCEPTED_ZAURIEL_QUEST] = false;
+					gflags[ZAURIEL_TOLD_LOCATION] = false;
+					gflags[ZAURIEL_TELEPORTED] = false;
+					gflags[ISLAND_NO_ONE_THERE] = false;
+					gflags[GAVE_GEM_SUBQUEST] = false;
+					gflags[PLAYER_USED_GEM] = false;
 					gflags[LAURIANNA_DRANK_POTION] = true;
-					script item after 1 ticks call Laurianna;
+
+					//Delete any remaining eggs:
+					deleteNearbyEggs(target->get_object_position(), 6);
+
+					//Register that Laundo and his goons are gonners:
+					target->set_npc_id(0);
+	
+					script target after 1 ticks call Laurianna;
 				}
 				else
 				{

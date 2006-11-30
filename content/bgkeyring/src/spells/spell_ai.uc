@@ -274,7 +274,7 @@ aiMain ()
 {
 	//Queue reentry:
 	script item after 10 ticks
-	{nohalt;				call aiMain;}
+	{	nohalt;						call aiMain;}
 
 	if (get_item_flag(DEAD) || get_item_flag(ASLEEP) ||
 		get_item_flag(CHARMED) || get_item_flag(CONFUSION))
@@ -308,7 +308,7 @@ aiMain ()
 				item_shape = spellitem_shapes[i];
 				break;
 			}
-			i = i + 1;
+			i += 1;
 		}
 		//Spellitem missing; leave immediatelly
 		if (count_objects(item_shape, -get_npc_number(), FRAME_ANY) == 0)

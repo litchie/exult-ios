@@ -29,15 +29,15 @@
 /*
 	Third circle Spells
 	
-	extern spellCurse ();
-	extern spellHeal ();
-	extern spellParalyze ();
+	extern spellCurse (var target);
+	extern spellHeal (var target);
+	extern spellParalyze (var target);
 	extern spellPeer ();
-	extern spellPoison ();
+	extern spellPoison (var target);
 	extern spellProtectAll ();
-	extern spellSleep ();
+	extern spellSleep (var target);
 	extern spellSwarm ();
-	extern spellRemoveCurse ();
+	extern spellRemoveCurse (var target);
 */
 
 enum third_circle_spells

@@ -73,14 +73,13 @@ beginCataclysm ()
 			//Laurianna will lie down unconscious and trigger the cataclysm:
 			UI_sprite_effect(1, pos[X], pos[Y], 0, 0, 0, -1);
 			script LAURIANNA
-			{
-				call trueFreeze;	nohalt;				sfx SOUND_BIG_BLAST;
-				wait 2;				say "@Aaahhhh...@";
-				wait 3;				actor frame LEAN;
-				wait 3;				actor frame KNEEL;
-				wait 3;				actor frame LIE;
-				wait 3;				call beginCataclysm, CATACLISM_START;
-			}
+			{	call trueFreeze;			nohalt;
+				sfx SOUND_BIG_BLAST;		wait 2;
+				say "@Aaahhhh...@";			wait 3;
+				actor frame LEAN;			wait 3;
+				actor frame KNEEL;			wait 3;
+				actor frame LIE;			wait 3;
+				call beginCataclysm, CATACLISM_START;}
 		}
 		
 		else
@@ -88,19 +87,15 @@ beginCataclysm ()
 			LAURIANNA->set_schedule_type(DANCE);
 			//Laurianna has gone insane. Not used yet.
 			script LAURIANNA
-			{
-				repeat 20
-				{
-					wait 6;				say "@Tra-la-la...@";
-					wait 6;				say "@Let the world burn!@";
-					wait 6;				say "@Fire is so pretty...@";
-					wait 6;				say "@Look! It burns!@";
-					wait 6;				say "@Wilt thou die? For me?@";
-					wait 6;				say "@Can I burn those flowers?@";
-					wait 6;				say "@Pretty birds. Dead birds.@";
-				};
-			}
-			
+			{	repeat 20
+				{	wait 6;						say "@Tra-la-la...@";
+					wait 6;						say "@Let the world burn!@";
+					wait 6;						say "@Fire is so pretty...@";
+					wait 6;						say "@Look! It burns!@";
+					wait 6;						say "@Wilt thou die? For me?@";
+					wait 6;						say "@Can I burn those flowers?@";
+					wait 6;						say "@Pretty birds. Dead birds.@";};}
+
 			script AVATAR after 18 ticks call beginCataclysm, CATACLISM_START;
 		}
 	}
@@ -134,14 +129,12 @@ beginCataclysm ()
 		UI_play_sound_effect2(SOUND_BIG_BLAST, member);
 		member->reduce_health(HEALTH, UI_die_roll(3, 9));
 		script member
-		{
-			say barks[rand];		wait 2;
-			actor frame LEAN;		wait 2;
-			actor frame KNEEL;		wait 2;
-			actor frame LEAN;		wait 2;
-			actor frame STAND;
-		}
-		
+		{	say barks[rand];			wait 2;
+			actor frame LEAN;			wait 2;
+			actor frame KNEEL;			wait 2;
+			actor frame LEAN;			wait 2;
+			actor frame STAND;}
+
 		//One for the random position:
 		UI_sprite_effect(1, rand_pos[X], rand_pos[Y], 0, 0, 0, -1);
 		UI_sprite_effect(17, rand_pos[X], rand_pos[Y], 0, 0, 0, -1);
@@ -157,14 +150,11 @@ beginCataclysm ()
 			AVATAR->halt_scheduled();
 			//make Avatar lie down to die:
 			script AVATAR
-			{
-				call trueFreeze;
-				say "@Too hurt...@";		wait 6;
-				actor frame LEAN;		wait 2;
-				actor frame KNEEL;		wait 2;
-				actor frame LIE;		wait 6;
-				call beginCataclysm, END_GAME;
-			}
+			{	call trueFreeze;			say "@Too hurt...@";
+				wait 6;						actor frame LEAN;
+				wait 2;						actor frame KNEEL;
+				wait 2;						actor frame LIE;
+				wait 6;						call beginCataclysm, END_GAME;}
 		}
 	}
 

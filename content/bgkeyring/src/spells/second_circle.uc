@@ -27,13 +27,13 @@
 /*
 	Second circle Spells
 	
-	extern spellDestroyTrap ();
-	extern spellEnchant ();
-	extern spellFireBlast ();
+	extern spellDestroyTrap (var target);
+	extern spellEnchant (var target);
+	extern spellFireBlast (var target);
 	extern spellGreatLight ();
 	extern spellMassCure ();
-	extern spellProtection ();
-	extern spellTelekinesis ();
+	extern spellProtection (var target);
+	extern spellTelekinesis (var target);
 	extern spellWizardEye ();
 */
 

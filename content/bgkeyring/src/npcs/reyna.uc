@@ -28,58 +28,6 @@
 //Externs:
 //extern reynaHeal 0x8D2 (var price_heal, var price_cure, var price_resurrect);
 
-//New functions
-askAboutMother (var tomb, var has_flowers)
-{
-	var msg = "";
-	gflags[ASKED_REYNA_ABOUT_MOTHER] = true;
-	if (tomb)
-	{
-		//Check to see if there are flowers at Reyna's mother's grave:
-		var plants = find_nearby(SHAPE_PLANT, 10, MASK_NONE);
-		for (plant in plants)
-		{
-			if (plant->get_item_frame() == 4)
-				//There are:
-				msg = "I realize there are already very beautiful flowers here, but there can never be enough to demonstrate how much she is missed. ";
-		}
-	}
-	
-	say("She looks down at her feet, and then back up at you. It is obvious she is fighting an urge to cry.");
-	say("@Several months ago, my mother passed away in her home town. She was born here in the forests, and had asked to be buried here, near me. Every morning I come out here to visit her and set flowers by her grave.");
-	say("@But,@ a lone tear escapes and trickles down her cheek, @I am the only member of our family who lives nearby. No one else is able to visit or leave flowers very often.");
-	say("@Her grave looks so bare sometimes.@ She looks off into the horizon and sighs. @" + msg + "It would be nice	if there were some way to have more flowers brought to her.@");
-	say("She quickly turns and looks at you.");
-	say("@I am terribly sorry for rambling on like that. Please excuse me, " + getPoliteTitle() + ".@");
-	remove(["mother", "cemetery"]);
-	
-	if (has_flowers)
-		add("have flowers");
-}
-
-giveReynaFlowers ()
-{
-	say("Her eyes light up as she sees the bouquet of flowers.");
-	say("@They are lovely! Thou art too kind, " + getPoliteTitle() + ", to bring flowers for my mother! I cannot wait to set them by her grave.@");
-	UI_remove_party_items(1, SHAPE_PLANT, QUALITY_ANY, 4, true);
-	
-	//Give a random amount of experience for the nice Avatar:
-	var rand = UI_die_roll(1, 6);
-	var exp;
-	if ((rand == 1) || (rand == 2))
-		exp = 9;
-	else if ((rand == 3) || ((rand == 4) || (rand == 5)))
-		exp = 19;
-	else if (rand == 6)
-		exp = 90;
-	
-	giveExperience(exp);
-	
-	//Mark the (one-shot) 50% discount:
-	gflags[GAVE_REYNA_FLOWERS] = true;
-	remove(["have flowers", "brought flowers"]);
-}
-
 Reyna 0x46C ()
 {
 	var avatar_title;
@@ -97,7 +45,7 @@ Reyna 0x46C ()
 	//Get the part of day (used to see if Reyna will heal
 	//while not at the shop):
 	part_of_day = UI_part_of_day();
-	
+
 	//To prevent adding options again and again:
 	dont_add_aimi = false;
 	dont_add_heal = false;
@@ -113,7 +61,7 @@ Reyna 0x46C ()
 	}
 	else
 		item.say("@Hello, " + avatar_title + ",@ says Reyna.");
-	
+
 	tomb = AVATAR->find_nearest(SHAPE_TOMBSTONE, -1);
 	
 	if (tomb)
@@ -132,7 +80,7 @@ Reyna 0x46C ()
 		add("heal");
 		dont_add_heal = true;
 	}
-	
+
 	converse(0)
 	{
 		case "name" (remove):
@@ -141,7 +89,7 @@ Reyna 0x46C ()
 		case "job" (remove):
 			say("@I am a healer. I have chosen to set up shop here near the forest.@");
 			gflags[KNOWS_REYNA_JOB] = true;
-			
+
 			if (!dont_add_heal)
 				add("heal");
 				
@@ -197,18 +145,49 @@ Reyna 0x46C ()
 			if (!gflags[ASKED_REYNA_ABOUT_MOTHER])
 				add("mother");
 				
-		case "mother":
-			askAboutMother(tomb, has_flowers);
-			
-		case "cemetery":
-			askAboutMother(tomb, has_flowers);
-		
-		case "brought flowers":
-			giveReynaFlowers();
-		
-		case "have flowers":
-			giveReynaFlowers();
-			
+		case "mother", "cemetery" (remove):
+			var msg = "";
+			gflags[ASKED_REYNA_ABOUT_MOTHER] = true;
+			if (tomb)
+			{
+				//Check to see if there are flowers at Reyna's mother's grave:
+				var plants = find_nearby(SHAPE_PLANT, 10, MASK_NONE);
+				for (plant in plants)
+				{
+					if (plant->get_item_frame() == 4)
+						//There are:
+						msg = "I realize there are already very beautiful flowers here, but there can never be enough to demonstrate how much she is missed. ";
+				}
+			}
+			say("She looks down at her feet, and then back up at you. It is obvious she is fighting an urge to cry.");
+			say("@Several months ago, my mother passed away in her home town. She was born here in the forests, and had asked to be buried here, near me. Every morning I come out here to visit her and set flowers by her grave.");
+			say("@But,@ a lone tear escapes and trickles down her cheek, @I am the only member of our family who lives nearby. No one else is able to visit or leave flowers very often.");
+			say("@Her grave looks so bare sometimes.@ She looks off into the horizon and sighs. @" + msg + "It would be nice if there were some way to have more flowers brought to her.@");
+			say("She quickly turns and looks at you.");
+			say("@I am terribly sorry for rambling on like that. Please excuse me, " + getPoliteTitle() + ".@");
+
+			if (has_flowers)
+				add("have flowers");
+
+		case "brought flowers", "have flowers" (remove):
+			say("Her eyes light up as she sees the bouquet of flowers.");
+			say("@They are lovely! Thou art too kind, " + getPoliteTitle() + ", to bring flowers for my mother! I cannot wait to set them by her grave.@");
+			UI_remove_party_items(1, SHAPE_PLANT, QUALITY_ANY, 4, true);
+
+			//Give a random amount of experience for the nice Avatar:
+			var rand = UI_die_roll(1, 6);
+			var exp;
+			if ((rand == 1) || (rand == 2))
+				exp = 9;
+			else if ((rand == 3) || ((rand == 4) || (rand == 5)))
+				exp = 19;
+			else if (rand == 6)
+				exp = 90;
+			giveExperience(exp);
+
+			//Mark the (one-shot) 50% discount:
+			gflags[GAVE_REYNA_FLOWERS] = true;
+
 		case "heal":
 			if ((part_of_day == MORNING) || ((part_of_day == NOON) || (part_of_day == AFTERNOON)))
 				//If Reyna is working, so she will heal:

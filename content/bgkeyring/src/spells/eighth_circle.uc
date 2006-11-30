@@ -27,12 +27,12 @@
 /*
 	Eighth circle Spells
 	
-	extern spellDeathVortex ();
+	extern spellDeathVortex (var target);
 	extern spellInvisibilityAll ();
 	extern spellMassDeath ();
-	extern spellResurrect ();
+	extern spellResurrect (var target);
 	extern spellSummon ();
-	extern spellSwordStrike ();
+	extern spellSwordStrike (var target);
 	extern spellTimeStop ();
 	extern spellMassResurrect ();
 */
@@ -224,7 +224,7 @@ spellSummon ()
 	if (event == DOUBLECLICK)
 	{
 		halt_scheduled();
-		item_say("Kal Vas Xen");
+		item_say("@Kal Vas Xen@");
 		if (inMagicStorm())
 		{
 			script item

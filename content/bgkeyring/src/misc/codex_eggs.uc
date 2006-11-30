@@ -114,15 +114,16 @@ eggCodexShrineEntrance ()
 			//Allow Avatar to see the Codex if there is any shrine quest which the Avatar
 			//hasn't completed yet:
 			var in_quest = false;
-			if ((gflags[MEDITATED_AT_SACRIFICE]		&& !gflags[VIEWED_CODEX_FOR_SACRIFICE]	 ) ||
-				(gflags[MEDITATED_AT_JUSTICE]		&& !gflags[VIEWED_CODEX_FOR_JUSTICE]	 ) ||
-				(gflags[MEDITATED_AT_HUMILITY]		&& !gflags[VIEWED_CODEX_FOR_HUMILITY]	 ) ||
-				(gflags[MEDITATED_AT_SPIRITUALITY]	&& !gflags[VIEWED_CODEX_FOR_SPIRITUALITY]) ||
-				(gflags[MEDITATED_AT_VALOR]			&& !gflags[VIEWED_CODEX_FOR_VALOR]		 ) ||
-				(gflags[MEDITATED_AT_COMPASSION]	&& !gflags[VIEWED_CODEX_FOR_COMPASSION]	 ) ||
-				(gflags[MEDITATED_AT_HONOR]			&& !gflags[VIEWED_CODEX_FOR_HONOR]		 ) ||
-				(gflags[MEDITATED_AT_HONESTY]		&& !gflags[VIEWED_CODEX_FOR_HONESTY]	 ))
-				in_quest = true;
+			var i = 0;
+			while (i < 8)
+			{
+				i += 1;
+				if (gflags[MEDITATED_AT_SHRINE_BASE + i] && !gflags[VIEWED_CODEX_BASE + i])
+				{
+					in_quest = true;
+					break;
+				}
+			}
 			//Allow for attunement of white virtue stone:
 			if (gflags[SPIRITUALITY_STONE_QUEST])
 				in_quest = true;
@@ -132,7 +133,7 @@ eggCodexShrineEntrance ()
 			//But not if the Codex Quest is over:
 			if (gflags[RELOCATE_CODEX_QUEST])
 				in_quest = false;
-			
+
 			if (in_quest)
 			{
 				//The Avatar is in a sacred quest, so let him enter:

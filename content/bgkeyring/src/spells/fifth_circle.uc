@@ -29,13 +29,13 @@
 /*
 	Fifth circle Spells
 	
-	extern spellCharm ();
+	extern spellCharm (var target);
 	extern spellDance ();
-	extern spellDispelField ();
-	extern spellExplosion ();
-	extern spellFireField ();
-	extern spellGreatHeal ();
-	extern spellInvisibility ();
+	extern spellDispelField (var target);
+	extern spellExplosion (var target);
+	extern spellFireField (var target);
+	extern spellGreatHeal (var target);
+	extern spellInvisibility (var target);
 	extern spellMassSleep ();
 	extern spellSummonSkeletons ();
 */
@@ -332,7 +332,7 @@ spellSummonSkeletons ()
 	if (event == DOUBLECLICK)
 	{
 		halt_scheduled();
-		item_say("Kal Corp Xen");
+		item_say("@Kal Corp Xen@");
 		if (inMagicStorm())
 		{
 			script item

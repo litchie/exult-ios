@@ -10,7 +10,8 @@
 @mkdir Temp >> log.txt
 
 @set blank=graphics\Blank.png
-@set filenames=Laurianna Rooted_Laurianna Jaana Mariah
+@set filenames=Rooted_Laurianna 
+@rem Laurianna Jaana Mariah Lord_British Iolo Julia
 
 @for /L %%i in (0,1,9) do @for %%f in (%filenames%) do @copy /y %blank% Temp\%%f_0%%i.png >> log.txt
 @for /L %%i in (10,1,31) do @for %%f in (%filenames%) do @copy /y %blank% Temp\%%f_%%i.png >> log.txt
@@ -114,7 +115,7 @@
 @echo Copying mod png's to Temp dir...
 @copy /y graphics\*.png Temp\*.png >> log.txt
 
-@set filenames=Laurianna Jaana Mariah LordBritish Iolo Julia
+@set filenames=Laurianna Jaana Mariah Lord_British Iolo Julia
 
 @for %%f in (%filenames%) do @copy /y Temp\%%f_07.png Temp\%%f_04.png >> log.txt && @copy /y Temp\%%f_08.png Temp\%%f_05.png >> log.txt && @copy /y Temp\%%f_09.png Temp\%%f_06.png >> log.txt && @copy /y Temp\%%f_23.png Temp\%%f_20.png >> log.txt && @copy /y Temp\%%f_24.png Temp\%%f_21.png >> log.txt && @copy /y Temp\%%f_25.png Temp\%%f_22.png >> log.txt
 
