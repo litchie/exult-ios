@@ -23,7 +23,7 @@
 //Menion, the weaponsmith of Serpent's Hold - reimplemented to allow swordmaking
 
 //Menion's training script (He trains strength and combat)
-extern trainWithMenion(var abilities, var price);
+extern trainWithMenion 0x8BE (var abilities, var price);
 Menion 0x4C0 ()
 {
 	var schedule;
