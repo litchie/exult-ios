@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.02
+version: 0.11.03
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -181,6 +181,8 @@ version: 0.11.02
 	
 7	Version history
 -------------------
+version: 0.11.03
+	- Fixed bugs in forging code/Menion's training.
 version: 0.11.02
 	- Modifications added due to new UCC capabilities.
 version: 0.11.01
