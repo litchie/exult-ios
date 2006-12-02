@@ -34,6 +34,9 @@
 #include "items/hammer.uc"
 //Swordblank, reimplemented to allow custom sword forging
 #include "items/swordblank.uc"
+//Trough & well, both reimplemented due changes in bucket code
+#include "items/water_trough.uc"
+#include "items/well.uc"
 
 //Menion, the weaponsmith/trainer in Serpent's Hold (added swordmaking)
 #include "npcs/menion.uc";

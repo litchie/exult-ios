@@ -118,7 +118,6 @@ SwordBlank shape#(0x29C) ()
 						target_offsety = [-1, -2, -1, -2, 1, 1, -4, -4];
 					}
 
-					//Todo: pull vertical trough offsets out of Bucket()
 					gotoObject(target, target_offsetx, target_offsety, 0, SwordBlank, item, 10);
 				}
 				else

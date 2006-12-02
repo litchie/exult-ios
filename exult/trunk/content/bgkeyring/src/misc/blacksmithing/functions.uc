@@ -385,8 +385,8 @@ useSwordOnTrough ()
 {
 	var trough;
 	var swordblank_pos;
-	var offsetx;
-	var offsety;
+	var offsetx = 0;
+	var offsety = 0;
 
 	//Find the nearest horizontal/vertical trough we can
 	trough = AVATAR->find_nearest(SHAPE_TROUGH_HORIZONTAL, 5);
@@ -396,16 +396,32 @@ useSwordOnTrough ()
 		return;
 
 	//Todo: work out horizontal trough offsets
+	var placed = false;
 	if (trough->get_item_shape() == SHAPE_TROUGH_VERTICAL)
 	{
 		offsetx = 1;
 		offsety = -1;
+		placed = true;
+		var pos = trough->get_object_position();
+		if (!isBlackSword(item))
+		{
+			pos[X] += 1;
+			pos[Y] -= 2;
+		}
+		else
+		{
+			pos[X] += 1;
+			pos[Y] -= 1;
+		}
+		pos[Z] += 2;
+		item->set_last_created();
+		if (UI_update_last_created(pos))
+			UI_play_sound_effect(0x49);
 	}
 	else
-	{
-	}
+		placed = placeOnTarget(item, trough, offsetx, offsety, 2);
 
-	if (placeOnTarget(item, trough, 1, 0, 2))
+	if (placed)
 	{
 		swordblank_pos = get_object_position();
 		UI_sprite_effect(9, (swordblank_pos[X] - 3), (swordblank_pos[Y] - 3), 0, 0, 0, -1);
