@@ -727,29 +727,37 @@ int obj->get_item_flag(int flag)
         CANT_DIE              = 14    DANCING             = 15
         DONT_MOVE             = 16    DONT_RENDER         = 16
         SI_ON_MOVING_BARGE    = 17    TEMPORARY           = 18
-        OKAY_TO_LAND          = 21    BG_DONT_MOVE        = 22
-        IN_DUNGEON            = 23    CONFUSED            = 25
-        IN_MOTION             = 26    MET                 = 28
-        SI_TOURNAMENT         = 29    SI_ZOMBIE           = 30
-        POLYMORPH             = 32    TATTOOED            = 33
-        READ                  = 34    PETRA               = 35
-        FREEZE                = 37    
+        SAILOR                = 20    OKAY_TO_LAND        = 21
+        BG_DONT_MOVE          = 22    IN_DUNGEON          = 23
+        CONFUSED              = 25    IN_MOTION           = 26
+        MET                   = 28    SI_TOURNAMENT       = 29
+        SI_ZOMBIE             = 30    POLYMORPH           = 32
+        TATTOOED              = 33    READ                = 34
+        PETRA                 = 35    FREEZE              = 37
 
     'flag' can be, however, any value in the 0-63 range. The values above are
     for NPCs; most of them are not valid for inanimate objects, and some of
     them ('READ', 'PETRA', 'TATTOOED') have no effect on anyone but the avatar.
 
+    The 'SAILOR' flag has a peculiar behaviour in that it actually returns an
+    object reference to the last object to have that flag set or '0' if no
+    object has been set (or the flag has been cleared with 'clear_item_flag'
+    intrinsic.
+
 UI_set_item_flag(object obj, int flag)
 obj->set_item_flag(int flag)
 
     Sets the flag 'flag' of 'obj'. Many flags have immediate effects when set;
-    most do not.
+    most do not. See the 'get_item_flag' entry for flag values.
+
+    In the special case of the 'SAILOR' flag, 'obj' is stored to be returned by
+    future calls of the 'get_item_flag' intrinsic.
 
 UI_clear_item_flag(object obj, int flag)
 obj->clear_item_flag(int flag)
 
     Clears the flag 'flag' of 'obj'. Many flags have immediate effectswhen
-    cleared; most do not.
+    cleared; most do not. See the 'get_item_flag' entry for flag values.
 
 object UI_get_barge(object obj)
 object obj->get_barge()
