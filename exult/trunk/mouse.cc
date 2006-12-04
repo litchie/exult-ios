@@ -326,6 +326,19 @@ void Mouse::set_speed_cursor()
 				break; /* No need to bother checking the rest :P */
 			}
 		}
+
+		bool has_active_nohalt_scr = false;
+		Usecode_script *scr = 0;
+		Actor *act = gwin->get_main_actor();
+		while ((scr = Usecode_script::find_active(act, scr)) != 0)
+			// We should only be here is scripts are nohalt, but just
+			// in case...
+			if (scr->is_no_halt())
+				{
+				has_active_nohalt_scr = true;
+				break;
+				}
+
 		const int base_speed = 200*gwin->get_std_delay();
 		if( speed_section < 0.4 )
 		{
@@ -336,7 +349,7 @@ void Mouse::set_speed_cursor()
 			avatar_speed = base_speed/slow_speed_factor;
 		}
 		else if( speed_section < 0.8 || gwin->in_combat() || nearby_hostile 
-				|| Usecode_script::find(gwin->get_main_actor()))
+				|| has_active_nohalt_scr)
 		{
 			if( gwin->in_combat() )
 				cursor = get_medium_combat_arrow( dir );

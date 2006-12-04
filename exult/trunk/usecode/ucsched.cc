@@ -204,6 +204,25 @@ Usecode_script *Usecode_script::find
 	}
 
 /*
+ *	Search list for one for a given item.
+ *
+ *	Output:	->Usecode_script if found, else 0.
+ */
+
+Usecode_script *Usecode_script::find_active
+	(
+	Game_object *srch,
+	Usecode_script *last_found	// Find next after this.
+	)
+	{
+	Usecode_script *start = last_found ? last_found->next : first;
+	for (Usecode_script *each = start; each; each = each->next)
+		if (each->obj == srch && each->is_activated())
+			return each;	// Found it.
+	return (0);
+	}
+
+/*
  *	Terminate all scripts for a given object.
  */
 

@@ -2799,9 +2799,9 @@ bool Actor::in_usecode_control() const
 		return true;
 	Usecode_script *scr = 0;
 	Actor *act = const_cast<Actor *>(this);
-	while ((scr = Usecode_script::find(act, scr)) != 0)
+	while ((scr = Usecode_script::find_active(act, scr)) != 0)
 		// no_halt scripts seem not to prevent movement.
-		if (scr->is_activated() && !scr->is_no_halt())
+		if (!scr->is_no_halt())
 			return true;
 	return false;
 	}
