@@ -64,6 +64,7 @@ exult_studio_LDADD = \
 	../shapes/libshapes.la 		\
 	../files/libu7file.la		\
 	../server/libserver.la		\
+	../usecode/libusecode.la		\
 	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS)
 
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
