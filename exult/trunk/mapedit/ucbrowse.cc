@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsymtbl.h"
 #include "utils.h"
 
+using std::ifstream;
+
 /*	Columns in our table. */
 enum { NAME_COL, NUM_COL, TYPE_COL, N_COLS };
 
@@ -112,7 +114,6 @@ Usecode_browser::Usecode_browser
 					// Create view, and set our model.
 	GtkWidget *tree = glade_xml_get_widget(app_xml, "usecodes_treeview");
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
-	g_object_unref(G_OBJECT(model));
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
 			"Name", renderer, "text", NAME_COL, NULL);
@@ -161,40 +162,45 @@ void Usecode_browser::show
 void Usecode_browser::setup_list
 	(
 	)
-	{
+{
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *ucfile = studio->get_text_entry("usecodes_file");
-	GtkTreeIter iter;
-	gtk_tree_store_append(model, &iter, NULL);
-	//++++TESTING
-	gtk_tree_store_set(model, &iter, NAME_COL, "AName",
-		NUM_COL, "ANumber", TYPE_COL, "Function", -1);
-#if 0
-	//+++++FINISH
-GtkTreeIter iter1;  /* Parent iter */
-GtkTreeIter iter2;  /* Child iter  */
-
-gtk_tree_store_append (model, &iter1, NULL);  /* Acquire a top-level iterator */
-gtk_tree_store_set (model, &iter1,
-                    TITLE_COLUMN, "The Art of Computer Programming",
-                    AUTHOR_COLUMN, "Donald E. Knuth",
-                    CHECKED_COLUMN, FALSE,
-                    -1);
-
-gtk_tree_store_append (model, &iter2, &iter1);  /* Acquire a child iterator */
-gtk_tree_store_set (model, &iter2,
-                    TITLE_COLUMN, "Volume 1: Fundamental Algorithms",
-                    -1);
-
-gtk_tree_store_append (model, &iter2, &iter1);
-gtk_tree_store_set (model, &iter2,
-                    TITLE_COLUMN, "Volume 2: Seminumerical Algorithms",
-                    -1);
-
-gtk_tree_store_append (model, &iter2, &iter1);
-gtk_tree_store_set (model, &iter2,
-                    TITLE_COLUMN, "Volume 3: Sorting and Searching",
-                    -1);
-#endif
+	ifstream in(ucfile);
+	Usecode_symbol_table symtbl;
+	long magic = Read4(in);		// Test for symbol table.
+	if (!in.good()) {
+		EStudio::Alert("Error reading '%s'.", ucfile);
+		return;
 	}
+	if (magic != UCSYMTBL_MAGIC0 || (magic = Read4(in)) 
+							!= UCSYMTBL_MAGIC1)
+		return;
+	symtbl.read(in);
+	const Usecode_symbol_table::Syms_vector& syms = symtbl.get_symbols();
+	Usecode_symbol_table::Syms_vector::const_iterator siter;
+	for (siter = syms.begin(); siter != syms.end(); ++siter) {
+		Usecode_symbol *sym = *siter;
+		Usecode_symbol::Symbol_kind kind = sym->get_kind();
+		char *kindstr = 0;
+		const char *nm = sym->get_name();
+		if (!nm[0])
+			continue;
+		switch (kind) {
+		case Usecode_symbol::fun_defined:
+			kindstr = "Function";
+			break;
+		case Usecode_symbol::class_scope:
+			kindstr = "Class";
+			break;
+		default:
+			continue;
+		}
+		char num[20];
+		sprintf(num, "%05xH", sym->get_val());
+		GtkTreeIter iter;
+		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_set(model, &iter, NAME_COL, nm,
+			NUM_COL, num, TYPE_COL, kindstr, -1);
+	}
+}
 
