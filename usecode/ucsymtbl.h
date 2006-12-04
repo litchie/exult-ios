@@ -53,6 +53,8 @@ public:
 	Usecode_symbol(const char *nm, Symbol_kind k, int v, int e = -1)
 		: name(nm), kind(k), val(v), extra(e)
 		{  }
+	virtual ~Usecode_symbol()
+		{  }
 	const char *get_name() const
 		{ return name.c_str(); }
 	Symbol_kind get_kind() const
@@ -65,7 +67,9 @@ public:
 
 class Usecode_scope_symbol : public Usecode_symbol
 	{
+public:
 	typedef std::vector<Usecode_symbol *> Syms_vector;
+private:
 	Syms_vector symbols;		// All symbols.
 	std::vector<Usecode_class_symbol*> classes;	// Just the classes.
 	typedef std::map<std::string, Usecode_symbol *> Name_table;
@@ -94,6 +98,8 @@ public:
 		{ return n < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int n);
+	const Syms_vector& get_symbols()
+		{ return symbols; }
 	};
 
 class Usecode_class_symbol : public Usecode_scope_symbol
