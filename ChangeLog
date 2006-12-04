@@ -1,5 +1,6 @@
 2006-12-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
-	Updating documentation of [get|set|clear]_item_flag intrinsics.
+	* Updating documentation of [get|set|clear]_item_flag intrinsics.
+	* Fixed bug #1608149.
 
 2006-12-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixing Keyring bugs in forging code/Menion's training.
