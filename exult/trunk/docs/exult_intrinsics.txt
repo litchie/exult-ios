@@ -174,7 +174,8 @@ int UI_path_run_usecode(int pos[], function fun, object obj, int event)
 
 UI_si_path_run_usecode(actor npc, int pos[], int event,              [SI, Exult]
         object obj, function fun, bool flag)
-npc->si_path_run_usecode(int [], int event, object obj, function fun, bool flag)
+npc->si_path_run_usecode(int pos[], int event, object obj, function fun, bool
+        flag)
 
     Similar to path_run_usecode, the main differences are:
 
@@ -1548,4 +1549,11 @@ string UI_a_or_an(string text)
     Returns a string; the string will be "a" or "an" (hence the name of the
     intrinsic) depending on whether the first letter of 'text' is,
     respectively, in the set "aeiouyAEIOUY" or not.
+
+bool UI_is_dest_reachable(actor npc, int pos[])                          [Exult]
+bool npc->is_dest_reachable(int pos[])
+
+    Returns 'true' if 'npc' can reach the tile specified by 'pos', 'false'
+    otherwise. Returns 'false' if 'pos' has less than two components; if 'pos'
+    has exactly 2 components, the z-coordinate is assumed to be '0'.
 
