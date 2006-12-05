@@ -367,6 +367,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_map_num);
 	USECODE_INTRINSIC_DECL(display_map_ex);
 	USECODE_INTRINSIC_DECL(book_mode_ex);
+	USECODE_INTRINSIC_DECL(is_dest_reachable);
 	
 	/*
 	 *	Other private methods:
