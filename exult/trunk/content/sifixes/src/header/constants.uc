@@ -320,3 +320,13 @@ enum egg_states
 	SOMETHING_ON		= 6,	// Something placed on/near it.
 	EXTERNAL_CRITERIA	= 7		// Appears on Isle of Avatar.  Guessing
 };
+
+enum damage_types
+{
+	NORMAL_DAMAGE		= 0,
+	FIRE_DAMAGE			= 1,
+	MAGIC_DAMAGE		= 2,
+	LIGHTNING_DAMAGE	= 3,
+	ETHEREAL_DAMAGE		= 4,
+	SONIC_DAMAGE		= 5
+};
