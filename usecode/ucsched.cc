@@ -594,10 +594,10 @@ int Usecode_script::exec
 		case hit:		// Hit(hps, ??).
 			{
 			Usecode_value hps = code->get_elem(++i);
-			Usecode_value unk = code->get_elem(++i);
+			Usecode_value type = code->get_elem(++i);
 			Actor *act = usecode->as_actor(obj);
 			if (act)	// ++++Should apply to any object.
-				act->reduce_health(hps.get_int_value());
+				act->reduce_health(hps.get_int_value(), 0, type.get_int_value(), true);
 			break;
 			}
 		case attack:		// Finish 'set_to_attack()'.

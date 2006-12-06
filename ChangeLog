@@ -1,3 +1,12 @@
+2006-12-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.*, intrinsics.cc, ucsched.cc, ucparse.yy, exult_intrinsics.txt:
+	  Implemented damage type parameter of 'apply_damage' and 'reduce_health'
+	  intrinsics and of the 'hit' script opcode. Also implemented the red flash
+	  for lighting damage for even a single hit, as it happened in the original,
+	  as well as flashign red for high amounts of damage.
+	* everything else: Fixing bugs in the mods and updating them to use the
+	  changes above.
+
 2006-12-05  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Adding new 'is_dest_reachable' intrinsic and documentation for it.
 

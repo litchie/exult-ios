@@ -273,9 +273,11 @@ var getSpellBark(var circle, var spell)
 	return "No such spell";
 }
 
-var getSpellRitual(var circle, var spell)
+var getSpellRitual(var circle, var spell, var npc, var target)
 {
 	var scr = new script {	nohalt;		say getSpellBark(circle, spell);	};
+	if (isTargetedSpell(circle, spell))
+		scr << {	face npc->direction_from(target);	};
 
 	switch (circle)
 	{

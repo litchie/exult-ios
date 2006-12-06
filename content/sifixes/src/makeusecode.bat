@@ -1,2 +1,2 @@
 @echo Compiling Usecode...
-@..\..\..\tools\ucc.exe -s -o ..\data\usecode usecode.uc
+@ucc.exe -s -o ..\patch\usecode usecode.uc

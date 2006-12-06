@@ -354,19 +354,18 @@ spellSummonSkeletons ()
 	else if (event == SCRIPTED)
 	{
 		var npclevel = getNPCLevel(item);
+		var minroll = npclevel / 2;
 		if (npclevel < 2)
+		{
 			npclevel = 2;
-
-		var minroll = (npclevel / 2);
-		if (minroll < 1)
 			minroll = 1;
-
+		}
 		var rand = UI_die_roll(minroll, npclevel);
 		while (rand)
 		{
 			var summoned = SHAPE_SKELETON->summon(true);
 			summoned->set_alignment(get_alignment());
-			rand = (rand - 1);
+			rand -= 1;
 		}
 	}
 }

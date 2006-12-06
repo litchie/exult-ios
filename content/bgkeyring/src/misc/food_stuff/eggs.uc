@@ -59,7 +59,7 @@ bakeBread 0x635 ()
 			{
 				var bread_frame;
 				var bread_name;
-                
+
 				bread->set_item_flag(TEMPORARY);
 				//This whole bit has been pulled apart and rewritten to
 				//support multiple kinds of bread

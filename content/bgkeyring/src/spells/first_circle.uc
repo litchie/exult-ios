@@ -321,14 +321,14 @@ spellLocate ()
 		var latstr;
 
 		if (long < 0)
-			longstr = ((" " + absoluteValueOf(long)) + " West");
+			longstr = " " + absoluteValueOf(long) + " West";
 		else
-			longstr = ((" " + absoluteValueOf(long)) + " East");
+			longstr = " " + absoluteValueOf(long) + " East";
 
 		if (lat < 0)
-			latstr = ((" " + absoluteValueOf(lat)) + " North");
+			latstr = " " + absoluteValueOf(lat) + " North";
 		else
-			latstr = ((" " + absoluteValueOf(lat)) + " South");
+			latstr = " " + absoluteValueOf(lat) + " South";
 
 		item_say((latstr + longstr));
 	}

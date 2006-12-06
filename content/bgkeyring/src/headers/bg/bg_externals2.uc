@@ -95,7 +95,8 @@ extern var isCorpseShape 0x847 (var target_shape);
 extern var forceGiveBlackSword 0x70B ();
 extern var inIsleOfFire 0x8E7 ();
 
-extern clearInventory 0x8E6 (var var0000);
+//Deletes container and all objects inside it:
+extern deleteObjectAndContents 0x8E6 (var container);
 //Does... *something*... to bodies (used mainly for FoV NPCs)
 extern makeStuffToBodies 0x6F7 ();
 
