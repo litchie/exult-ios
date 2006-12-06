@@ -195,7 +195,7 @@ BatlinAtWallOfLights 0x73B ()
 				pos = BOYDON->get_object_position();
 				script BOYDON
 				{	nohalt;						wait 7;
-					hit 55;//, BLEED;
+					hit 55, NORMAL_DAMAGE;
 				}
 			}
 			UI_play_sound_effect(0x2A);

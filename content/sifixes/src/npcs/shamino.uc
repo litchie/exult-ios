@@ -86,7 +86,7 @@ Shamino 0x402 ()
 			else
 			{
 				SHAMINO->clear_item_flag(SI_TOURNAMENT);
-				SHAMINO->reduce_health(50, 0);
+				SHAMINO->reduce_health(50, NORMAL_DAMAGE);
 			}
 		}
 	}
