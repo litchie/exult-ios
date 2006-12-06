@@ -182,13 +182,13 @@ firesnakeExplode ()
 			damage = UI_die_roll(10, 20);
 			if (obj->is_npc())
 			{
-				script obj hit damage;//BLEED
+				script obj hit damage, NORMAL_DAMAGE;
 				if (obj->get_alignment() != 2)
 					obj->set_alignment(2);
 				obj->set_schedule_type(IN_COMBAT);
 			}
 			else
-				script obj hit damage;//DONTBLEED
+				script obj hit damage, MAGIC_DAMAGE;
 		}
 	}
 }
