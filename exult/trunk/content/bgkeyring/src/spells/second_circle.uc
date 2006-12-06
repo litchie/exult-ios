@@ -288,7 +288,7 @@ spellTelekinesis (var target)
 		var target_shape = get_item_shape();
 		if (target_shape in usables2)
 			script item
-				call get_usecode_fun(), DOUBLECLICK;
+				call get_usecode_fun();
 
 		else if (!(target_shape in usables))
 			script item

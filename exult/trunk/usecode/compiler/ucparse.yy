@@ -1037,8 +1037,8 @@ script_command:
 		{ $$ = Create_array(Ucscript::sfx, $2); }
 	| FACE nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
-	| HIT nonclass_expr ';'		/* 2nd parm unknown. */
-		{ $$ = Create_array(Ucscript::hit, $2); }
+	| HIT nonclass_expr ',' nonclass_expr ';'
+		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| ATTACK ';'
 		{ $$ = new Uc_int_expression(Ucscript::attack); }
 	| '{' script_command_list '}'

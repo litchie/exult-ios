@@ -501,7 +501,7 @@ Bucket shape#(0x32A) ()
 				target_offsetx = [0, 2, 0, -2];
 				target_offsety = [2, 0, -2, 0];
 
-				script target repeat 50 wait 1;;
+				script target wait 50;
 				gotoObject(target, target_offsetx, target_offsety, 0, useBucketOnNPC, target, SCRIPTED);
 			}
 		}

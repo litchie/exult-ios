@@ -2314,7 +2314,9 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 bool Actor::reduce_health
 	(
 	int delta,			// # points to lose.
-	Actor *attacker			// Attacker, or null.
+	Actor *attacker,		// Attacker, or null.
+	int damage_type,		// Type of damage
+	bool ignore_immunity	// Needed by one intrinsic/script opcode
 	)
 	{
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
@@ -2351,13 +2353,25 @@ bool Actor::reduce_health
 			}
 		}
 	bool defeated = false;
+	if (!ignore_immunity)
+		{
+		switch (is_immune(damage_type))
+			{
+			case 1:		delta = 0; break;	// Is immune
+			case -1:	delta *= 2; break;	// Is vulnerable
+			default:	break;
+			}
+		}
 	int oldhp = properties[static_cast<int>(health)];
 	int maxhp = properties[static_cast<int>(strength)];
 	int val = oldhp - delta;
 	properties[static_cast<int>(health)] = val;
-	if (this == gwin->get_main_actor() && val < maxhp/8 &&
+	if (this == gwin->get_main_actor() &&
 					// Flash red if Avatar badly hurt.
-	    rand()%2)
+			((val < maxhp/8 || delta > maxhp/4) && rand()%2)
+					// Or if lightninig damage.
+			|| (delta &&
+					damage_type == (int)Weapon_info::lightning_damage))
 		gwin->get_pal()->flash_red();
 	else
 		{
@@ -2381,7 +2395,8 @@ bool Actor::reduce_health
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
-	if (delta >= 3 && (!minf || !minf->cant_bleed()) &&
+	if (damage_type == 0 &&		// But only for normal damage.
+		delta >= 3 && (!minf || !minf->cant_bleed()) &&
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gmap->create_ireg_object(blood, 0);
@@ -3482,12 +3497,6 @@ bool Actor::figure_hit_points
 		else if (!winf)
 			damage_type = ainf->get_damage_type();
 		}
-	switch (is_immune(damage_type))
-		{
-		case 1:		hp = 0; break;	// Is immune
-		case -1:	hp *= 2; break;	// Is vulnerable
-		default:	break;
-		}
 	if (powers)			// Special attacks?
 		{
 		if ((powers&Weapon_info::poison) && roll_to_win(
@@ -3543,7 +3552,7 @@ bool Actor::figure_hit_points
 				properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
-	bool defeated = hp > 0 ? reduce_health(hp, attacker) : false;
+	bool defeated = hp > 0 ? reduce_health(hp, attacker, damage_type) : false;
 	if (Combat::show_hits)
 		{
 		eman->remove_text_effect(this);

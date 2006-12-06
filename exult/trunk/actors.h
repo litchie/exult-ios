@@ -388,7 +388,8 @@ public:
 	void set_npc_name(const char *n);
 	void set_property(int prop, int val);
 					// Lose HP's and check for death.
-	bool reduce_health(int delta, Actor *attacker = 0);
+	bool reduce_health(int delta, Actor *attacker = 0,
+			int damage_type = 0, bool ignore_immunity = false);
 	int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	int get_effective_prop(int prop) const;

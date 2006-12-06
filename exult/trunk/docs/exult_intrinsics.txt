@@ -926,17 +926,27 @@ npc->set_npc_prop(string prop, int delta)
     when it is created. A list of property constants is included below
     'get_npc_prop' intrinsic description.
 
-int UI_apply_damage(int unk1, int damage, int unk2, actor npc)
+int UI_apply_damage(int unk, int damage, int type, actor npc)
 
-    Reduces the health of 'npc' by 'damage' hits. 'unk1' and 'unk2' are unknown
-    parameters ignored by Exult. Will always return '1'
+    Reduces the health of 'npc' by 'damage' hits; the damage type is specified
+    by 'type', and can be one of the following values:
 
-UI_reduce_health(actor npc, int damage)
-npc->reduce_health(int damage)
+        normal      = 0    fire         = 1
+        magic       = 2    lightning    = 3
+        ethereal    = 4    sonic        = 5
 
-    Reduces the health of 'npc' by 'damage' hits. In the original, there was a
-    third parameter whose meaning is unknown; hence, this parameter is ignored
-    in Exult.
+    'unk' is an unknown parameter which is ignored by Exult. If the target is
+    immune to the specified damage type, no damage will be applied; a creature
+    vulnerable to the damage type will take double damage. Always returns '1'
+
+UI_reduce_health(actor npc, int damage, int type)
+npc->reduce_health(int damage, int type)
+
+    Reduces the health of 'npc' by 'damage' hits of type given by 'type'. Valid
+    values can be seen below the 'UI_apply_damage' intrinsic. Unlike that
+    intrinsic, the present intrinsic ignores the immunities and vulnerabilities
+    of the target, using only the special hit effects (e.g., bleeding) of the
+    damage type.
 
 string UI_get_npc_name(actor npc)
 string npc->get_npc_name()
