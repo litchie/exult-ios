@@ -362,6 +362,8 @@ int Usecode_script::exec
 			break;
 		case repeat:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
+			// ++++ TESTING.
+			do_another = true;
 			Usecode_value& cntval = code->get_elem(i + 2);
 			int cnt = cntval.get_int_value();
 			if (cnt <= 0)
@@ -374,7 +376,6 @@ int Usecode_script::exec
 				i += offval.get_int_value() - 1;
 				if (i < -1)	// Before start?
 					i = -1;
-				do_another = true;
 				}
 			break;
 			}

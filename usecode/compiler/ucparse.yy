@@ -71,6 +71,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 static bool is_extern = false;	// Marks a function symbol as being an extern
 static Uc_class *class_type = 0;	// For declaration of class variables.
 static bool has_ret = false;
+static int repeat_nesting = 0;
 
 %}
 
@@ -974,18 +975,21 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::resurrect); }
 	| CONTINUE ';'			/* Continue script without painting. */
 		{ $$ = new Uc_int_expression(Ucscript::cont); }
-	| REPEAT nonclass_expr script_command  ';'
+	| REPEAT nonclass_expr { repeat_nesting++; } script_command  ';'
 		{
+		repeat_nesting--;
 		Uc_array_expression *result = new Uc_array_expression();
-		result->concat($3);	// Start with cmnds. to repeat.
+		result->concat($4);	// Start with cmnds. to repeat.
 		int sz = result->get_exprs().size();
-		result->add(new Uc_int_expression(Ucscript::repeat));
+		result->add(new Uc_int_expression(
+			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat));
 					// Then -offset to start.
 		result->add(new Uc_int_expression(-sz));
 		result->add($2);	// Then #times to repeat.
+		if (repeat_nesting)
+			result->add($2);	// Loop var for repeat2.
 		$$ = result;
 		}
-					/* REPEAT2? */
 	| NOP  ';'
 		{ $$ = new Uc_int_expression(Ucscript::nop); }
 	| NOHALT  ';'
