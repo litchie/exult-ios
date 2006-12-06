@@ -135,8 +135,8 @@ spellFireRing (var target)
 				sfx 65;						actor frame SWING_2;
 				actor frame SWING_3;		actor frame SWING_1;}
 				
-			var offset_x = [-1, 0, 1, 2, 2, 2, 1, 0, -1, -2, -2, -2];
-			var offset_y = [-2, -2, -2, -1, 0, 1, 2, 2, 2, 1, 0, -1];
+			var offset_x = [-1,  0,  1,  2,  2,  2,  1,  0, -1, -2, -2, -2];
+			var offset_y = [-2, -2, -2, -1,  0,  1,  2,  2,  2,  1,  0, -1];
 			var counter = 0;
 			while (counter < 12)
 			{

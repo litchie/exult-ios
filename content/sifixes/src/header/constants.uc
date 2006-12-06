@@ -140,6 +140,7 @@ enum item_flags
 	DONT_MOVE			= 16,		// In SI, user can't move. in BG, they're completely invisible.
 	SI_ON_MOVING_BARGE	= 17,		// SI's version of 10?
 	TEMPORARY			= 18,		// Is temporary - this means that the item will be deleted once the party gets beyond a certain range from it (outside the superchunk?)
+	SAILOR				= 20,		// The barge's 'captain'.
 	OKAY_TO_LAND		= 21,		// Used for flying-carpet.
 	IN_DUNGEON			= 23,		// Pretty sure. if set, you won't be accused of stealing food.
 	CONFUSED			= 25,		// ??Guessing.

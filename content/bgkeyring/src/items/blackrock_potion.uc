@@ -108,8 +108,7 @@ killTargetNPC ()
 					body = UI_create_new_object(SHAPE_BODIES_3);
 					body->set_item_frame_rot(get_item_frame_rot());
 					body->set_item_frame(FRAME_MAGEBODY);
-					//Clear inventory:
-					clearInventory(item);
+					deleteObjectAndContents(item);
 					UI_update_last_created(pos);
 				}
 				if (scrollquality == 241)
@@ -122,8 +121,7 @@ killTargetNPC ()
 					body = UI_create_new_object(SHAPE_LARGE_BODIES);
 					body->set_item_frame_rot(get_item_frame_rot());
 					body->set_item_frame(FRAME_DRAGON_BODY);
-					//Clear inventory:
-					clearInventory(item);
+					deleteObjectAndContents(item);
 					UI_update_last_created(pos);
 				}
 				//Create another scroll, with the same quality

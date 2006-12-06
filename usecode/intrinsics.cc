@@ -1670,11 +1670,12 @@ USECODE_INTRINSIC(recall_virtue_stone)
 
 USECODE_INTRINSIC(apply_damage)
 {
-	// apply_damage(??str?, hps, ??type?, NPC);
+	// apply_damage(??str?, hps, type, NPC);
 	int hps = parms[1].get_int_value();
+	int type = parms[2].get_int_value();
 	Actor *npc = as_actor(get_item(parms[3]));
 	if (npc)
-		npc->reduce_health(hps);
+		npc->reduce_health(hps, 0, type);
 	return Usecode_value(1);	// ?? Guessing.
 }
 
@@ -1873,10 +1874,11 @@ USECODE_INTRINSIC(remove_item)
 
 USECODE_INTRINSIC(reduce_health)
 {
-	// Reduce_health(npc, amount, ??property/flags??0?).
+	// Reduce_health(npc, amount, type).
 	Actor *npc = as_actor(get_item(parms[0]));
+	int type = parms[2].get_int_value();
 	if (npc)			// Dies if health goes too low.
-		npc->reduce_health(parms[1].get_int_value());
+		npc->reduce_health(parms[1].get_int_value(), 0, type, true);
 	return no_ret;
 }
 

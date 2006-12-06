@@ -396,66 +396,48 @@ spellBlink (var target)
 	if (event == DOUBLECLICK)
 	{
 		halt_scheduled();
-		var caster_shape = get_item_shape();
 		var destpos = getClickPosition(target);
 		var dir = direction_from(target);
 		UI_item_say(item, "@Rel Por@");
-		if (inMagicStorm() && UI_is_not_blocked(destpos, caster_shape, 0))
+		if (inMagicStorm() && is_dest_reachable(destpos))
 		{
-			var party = UI_get_party_list();
-			var dest_reachable = true;
-			var move_party = false;
-			
-			//Special rules and restrictions for party members:
-			if (get_npc_object() in party)
+			var move_party = (get_npc_object() in UI_get_party_list()) &&
+			                 (get_schedule_type() != IN_COMBAT);
+			script item
+			{	nohalt;						face dir;
+				actor frame SWING_1;		actor frame SWING_2H_2;
+				actor frame SWING_1;		actor frame STAND;}
+
+			var targets;
+			if (move_party)
+				targets = party;
+			else
+				targets = [item];
+
+			for (npc in targets)
 			{
-				//HACK: Here I use path_run_usecode to see if the target destination
-				//is reachable, and then I use it again to cancel the first pathfind.
-				//This prevents bypassing of locked doors and such.
-				dest_reachable = UI_path_run_usecode(destpos, spellBlink, item, PATH_SUCCESS);
-				UI_path_run_usecode(AVATAR->get_object_position(), spellBlink, item, PATH_SUCCESS);
-				//See if the whole party should be moved or just the caster:
-				if (get_schedule_type() != IN_COMBAT)
-					move_party = true;
-			}
-			if (dest_reachable)
-			{
-				script item
-				{	nohalt;						face dir;
-					actor frame SWING_1;		actor frame SWING_2H_2;
-					actor frame SWING_1;		actor frame STAND;}
-				
-				var targets;
-				if (move_party)
-					targets = party;
-				else
-					targets = [item];
-				
-				for (npc in targets)
+				var pos = npc->get_object_position();
+				npc->obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, -1);
+				UI_play_sound_effect2(SOUND_TELEPORT, npc);
+				var field = UI_create_new_object(SHAPE_FIRE_FIELD);
+				if (field)
 				{
-					var pos = npc->get_object_position();
-					npc->obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, -1);
-					UI_play_sound_effect2(SOUND_TELEPORT, npc);
-					var field = UI_create_new_object(SHAPE_FIRE_FIELD);
-					if (field)
-					{
-						//var fieldpos = [pos[X] + 1, pos[Y] + 1, pos[Z]];
-						var fieldpos = [pos[X], pos[Y], pos[Z]];
-						UI_update_last_created(fieldpos);
-						var duration = 50;
-						field->set_item_quality(duration);
-						field->set_item_flag(TEMPORARY);
-						script field after duration ticks
-						{	nohalt;						remove;}
-					}
+					//var fieldpos = [pos[X] + 1, pos[Y] + 1, pos[Z]];
+					var fieldpos = [pos[X], pos[Y], pos[Z]];
+					UI_update_last_created(fieldpos);
+					var duration = 50;
+					field->set_item_quality(duration);
+					field->set_item_flag(TEMPORARY);
+					script field after duration ticks
+					{	nohalt;						remove;}
 				}
-				
-				if (move_party)
-					PARTY->move_object(destpos);
-				else
-					move_object(destpos);
-				return;
-			}			
+			}
+
+			if (move_party)
+				PARTY->move_object(destpos);
+			else
+				move_object(destpos);
+			return;
 		}
 
 		script item

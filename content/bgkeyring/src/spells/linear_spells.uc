@@ -115,9 +115,8 @@ spellDouse (var target)
 		var target_shape = get_item_shape();
 		if (target_shape in [SHAPE_TORCH_LIT, SHAPE_LIT_LAMP, SHAPE_LIGHTSOURCE_LIT, SHAPE_SCONCE_LIT])
 		{
-			target_shape->telekenesis();
 			script item
-			{	nohalt;						call target_shape;}
+			{	nohalt;						call get_usecode_fun(), DOUBLECLICK;}
 			UI_play_sound_effect(46);
 		}
 		else
@@ -208,9 +207,8 @@ spellIgnite (var target)
 		var target_shape = get_item_shape();
 		if (target_shape in [SHAPE_TORCH, SHAPE_LAMPPOST, SHAPE_LIGHTSOURCE, SHAPE_SCONCE])
 		{
-			target_shape->telekenesis();
 			script item
-			{	nohalt;						call target_shape;}
+			{	nohalt;						call get_usecode_fun(), DOUBLECLICK;}
 		}
 		else
 			flashBlocked(60);

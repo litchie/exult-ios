@@ -4,5 +4,3 @@
 @call makevgafiles.bat
 :make_usecode
 @call makeusecode.bat
-@cd..
-@call install.bat
