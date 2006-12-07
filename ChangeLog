@@ -5,6 +5,7 @@
 	* Sime improvements to the 'pace' schedule.
 	* NPC schedules now update every hour, and look back until it finds a
 	  schedule for the NPC.
+	* Added a 'continue' statement in UCC for 'while' and 'for' statements.
 	* Fixed a few bugs and updated a few things in the Keyring mod. Added new
 	  Mariah gump by Crysta.
 

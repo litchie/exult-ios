@@ -178,14 +178,15 @@ void Uc_while_statement::gen
 		fun->adjust_reloffset(-out.size() - 3);
 	}
 	int stmtlen = stmt_code.size();
-					// Get distance back to top, including
-					//   a JNE and a JMP.
-	long dist = stmtlen + (out.size() - top) + 3 + 3;
+					// Still need to write the JNE.
+	int testlen = out.size() - top + 3;
+					// Get distance back to top, including a JMP.
+	long dist = stmtlen + testlen + 3;
 					// Generate JMP back to top.
 	stmt_code.push_back((char) UC_JMP);
 	Write2(stmt_code, -dist);
 	stmtlen = stmt_code.size();	// Get total length.
-	fun->end_breakable(this, stmt_code);
+	fun->end_breakable(this, stmt_code, testlen);
 	out.push_back((char) UC_JNE);	// Put cond. jmp. after test.
 	Write2(out, stmtlen);		// Skip around body if false.
 //	out.append(stmt_code);
@@ -262,7 +263,7 @@ void Uc_arrayloop_statement::gen
 	Write2(stmt_code, -dist);
 	int stmtlen = stmt_code.size();	// Get total length.
 	Write2(out, stmtlen);		// Finally, offset past loop stmt.
-	fun->end_breakable(this, stmt_code);
+	fun->end_breakable(this, stmt_code, testlen);
 					// Write out body.
 	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
 	}
@@ -313,6 +314,19 @@ void Uc_break_statement::gen
 	{
 					// Store our location.
 	fun->add_break(out.size());	//+++++if in an IF???
+	out.push_back((char) UC_JMP);
+	Write2(out, 0);			// To be filled in at end of loop.
+	}
+
+
+void Uc_continue_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+					// Store our location.
+	fun->add_continue(out.size());	//+++++if in an IF???
 	out.push_back((char) UC_JMP);
 	Write2(out, 0);			// To be filled in at end of loop.
 	}
