@@ -377,6 +377,7 @@ void Uc_function::start_breakable
 	{
 	breakables.push_back(s);
 	breaks.push_back(-1);		// Set marker in 'break' list.
+	conts.push_back(-1);		// Set marker in 'continue' list.
 	}
 
 /*
@@ -386,7 +387,8 @@ void Uc_function::start_breakable
 void Uc_function::end_breakable
 	(
 	Uc_statement *s,		// Loop.  For verification.
-	vector<char>& stmt_code
+	vector<char>& stmt_code,
+	int testlen
 	)
 	{
 					// Just make sure things are right.
@@ -406,6 +408,19 @@ void Uc_function::end_breakable
 		}
 	assert(!breaks.empty() && breaks.back() == -1);
 	breaks.pop_back();		// Remove marker (-1).
+					// Fix all the 'continue' statements,
+					//   going backwards.
+	while (!conts.empty() && conts.back() >= 0)
+		{			// Get offset within loop.
+		int cont_offset = conts.back();
+		conts.pop_back();	// Remove from end of list.
+		assert(cont_offset < stmtlen - 2);
+					// Store offset.
+		Write2(stmt_code, cont_offset + 1, 
+						-(cont_offset + 3)-testlen);
+		}
+	assert(!conts.empty() && conts.back() == -1);
+	conts.pop_back();		// Remove marker (-1).
 	}
 
 /*
@@ -423,6 +438,23 @@ void Uc_function::add_break
 		Uc_location::yyerror("'break' is not valid here");
 	else
 		breaks.push_back(op_offset);
+	}
+
+/*
+ *	Store a 'continue' statement's offset so it can be filled in at the end
+ *	of the current loop.
+ */
+
+void Uc_function::add_continue
+	(
+	int op_offset			// Offset in loop's code of JMP.
+	)
+	{
+	assert(op_offset >= 0);
+	if (breakables.empty())		// Not in a loop?
+		Uc_location::yyerror("'continue' is not valid here");
+	else
+		conts.push_back(op_offset);
 	}
 
 /*

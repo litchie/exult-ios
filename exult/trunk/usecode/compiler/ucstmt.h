@@ -169,6 +169,17 @@ public:
 	};
 
 /*
+ *	CONTINUE statement:
+ */
+class Uc_continue_statement : public Uc_statement
+	{
+public:
+	Uc_continue_statement() {  }
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
  *  a LABEL statement:
  */
 class Uc_label_statement : public Uc_statement

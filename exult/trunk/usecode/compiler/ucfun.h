@@ -58,6 +58,9 @@ class Uc_function : public Uc_design_unit
 	vector<int> breaks;		// Offsets of generated breaks in 
 					//   current loop, with loops separated
 					//   by -1's.
+	vector<int> conts;		// Offsets of generated continues in 
+					//   current loop, with loops separated
+					//   by -1's.
 					// Links to called functions:
 	std::vector<Uc_function_symbol *> links;
 	std::map<std::string, Uc_label *> labels;
@@ -178,13 +181,16 @@ public:
 	Uc_label *search_label(char *nm);
 
 	void start_breakable(Uc_statement *s);
-	void end_breakable(Uc_statement *s, vector<char>& stmt_code);
+	void end_breakable(Uc_statement *s, vector<char>& stmt_code,
+			int testlen = 0);
 					// Store 'break' location.
 	void add_break(int op_offset);	// DANGER:  Offset is filled in when
 					//   end_breakable() is called, so the
 					//   string this is in better not have
 					//   been deleted!!!
 					// Link external function.
+					// Store 'break' location.
+	void add_continue(int op_offset);	// See the notes for add_break.
 	int link(Uc_function_symbol *fun);
 	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
