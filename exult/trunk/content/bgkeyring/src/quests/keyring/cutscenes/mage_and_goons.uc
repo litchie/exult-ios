@@ -441,7 +441,7 @@ registerDeathOfMageOrGoon ()
 	//Removes the mage/goon from tournament mode:
 	clear_item_flag(SI_TOURNAMENT);
 	//Kill them:
-	reduce_health(50, true);
+	reduce_health(50, MAGIC_DAMAGE);
 	//Increase Laurianna's NPC ID:
 	var new_id = 1 + LAURIANNA->get_npc_id();
 	LAURIANNA->set_npc_id(new_id);

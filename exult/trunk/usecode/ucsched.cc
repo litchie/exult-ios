@@ -427,16 +427,15 @@ int Usecode_script::exec
 			Actor *act = usecode->as_actor(obj);
 			if (act)
 				act->clear_rest_time();
-			delay = gwin->get_std_delay()*delayval.get_int_value();
+			delay = delay*delayval.get_int_value();
 			break;		
 			}
 		case delay_hours:	// 1 parm., game hours.
 			{
 			Usecode_value& delayval = code->get_elem(++i);
 			delay = delayval.get_int_value();
-					// Convert to real seconds.
-			delay = (delay*3600)/time_factor;
-			delay *= 1000;	// Then to msecs.
+					// Convert to real miliseconds.
+			delay *= 60*delay*ticks_per_minute;
 			break;
 			}
 #if 0

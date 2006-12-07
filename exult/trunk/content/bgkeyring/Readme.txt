@@ -18,19 +18,19 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.03
+version: 0.11.04
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
 	of Virtue add-on. There are also a number of not-so-small changes.
 	There is a lot of original usecode and art in the mod too.
-	
+
 	There are many acknowledgements I have to make. One is for Team
 	Lazarus; I borrowed some ideas for the Shrines and Codex from
 	them. The other acknowledgements are to those that gave me some
 	useful suggestions in the old Phorum thread. They are Crysta the Elf,
 	gruck, Gradilla Dragon, Dominus and Artaxerxes.
-	
+
 	I must also thank Crysta the Elf for some graphics he made/edited,
 	and Sissy Knox for Mariah's gump.
 	The full list is in the version history, below.
@@ -53,7 +53,7 @@ version: 0.11.03
 	would be the 'mods' subdirectory of the path you set for Black Gate in
 	your 'Exult.cfg' file. There are two optional (but highly recommended)
 	additional steps you may want to perform:
-	
+
 	OPTIONAL: You can create a shortcut to start Exult directly in the
 	Keyring mod. To do so, make sure that the command-line is similar to
 	the following example:
@@ -70,8 +70,8 @@ version: 0.11.03
 		K		useitem			1100	# Use keyring
 	For the time being, you cannot specify custom key bindings on a per-mod
 	basis, but this may possibly change in future versions of Exult.
-	
-	
+
+
 3	Contributing to this mod
 ----------------------------
 	If you have any bugs that you would like to see fixed -- or that you
@@ -118,7 +118,7 @@ version: 0.11.03
 ------------
 	So, you can't keep away... very well. Here they are. Proceed at your
 	own peril...
-	
+
 	Keyring Spoilers
 	----------------
 		- The Quest is started by Zauriel. He is located just outside of
@@ -131,7 +131,7 @@ version: 0.11.03
 		  do so *after* you give her Zauriel's Journal.
 		- Using the keyring on the Avatar causes all party keys to be
 		  added to it.
-	
+
 	Shrines of Virtues
 	------------------
 		- The Shrine of Sacrifice starts out defiled; you can restore it
@@ -147,7 +147,7 @@ version: 0.11.03
 		  white Virtue Stone to the Shrine with the Codex. Be sure to
 		  have a way out, or you may be trapped!
 		- Returning to the Shrine after seeing the Codex gives you a reward.
-	
+
 	Shrine of the Codex
 	-------------------
 		- You can only enter if you are in a sacred quest.
@@ -159,28 +159,34 @@ version: 0.11.03
 		  right thing to do.
 		- Try teleporting inside the Shrine and viewing the Codex when you are
 		  not on a quest to see it.
-	
+
 	Improved Orb of the Moons
 	-------------------------
 		- You can now teleport to the Shrines too; just throw the orb far
 		  from you. Here are the new destinations of the Orb:
-		Honesty							Compassion					Valor
-		
-						Moonglow		Britain			Jhelom
-						
-		Humility		New Magincia	(Avatar)		Yew			Justice
-		
-						Skara Brae		Trinsic			Minoc
-						
-		Spirituality					Honor						Sacrifice
-	
+		Honesty                         Compassion                  Valor
+
+		                Moonglow        Britain         Jhelom
+
+		Humility        New Magincia    (Avatar)        Yew         Justice
+
+		                Skara Brae      Trinsic         Minoc
+
+		Spirituality                    Honor                       Sacrifice
+
 	Lock Lake Cleanup
 	-----------------
 		- Eventually, Mack's key will be in possession of Lord Heather. You
 		  can ask him for it.
-	
+
 7	Version history
 -------------------
+version: 0.11.04
+	- Fixed several bugs in usecode, and added an updated tfa.dat file
+	  to make fresh fish work.
+	- Some new art by Crysta.
+	- Reformatted the Orb of the Moons' destination table to use spaces
+	  for aligmnent
 version: 0.11.03
 	- Fixed bugs in forging code/Menion's training.
 version: 0.11.02

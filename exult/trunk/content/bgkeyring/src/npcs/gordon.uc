@@ -200,7 +200,7 @@ Gordon 0x43A ()
 					{
 						payment = num_fish * GORDONS_BUY_PRICE;
 
-						say("\Oh, thou hast some fish to sell me?@ He checks them over.~@Why, I see that thou hast " + num_fish + " lovely fresh fish.@");
+						say("@Oh, thou hast some fish to sell me?@ He checks them over.~@Why, I see that thou hast " + num_fish + " lovely fresh fish.@");
 
 						if (num_fish > 1) say("@At " +  GORDONS_BUY_PRICE + " gold apiece, that comes to " + payment + " gold.@");
 						else say("@I shall pay thee " + payment + " gold for it.@");
@@ -219,7 +219,7 @@ Gordon 0x43A ()
 						num_fish = PARTY->count_objects(SHAPE_FOOD, QUALITY_ANY, FRAME_TROUT);
 						payment = num_fish * GORDONS_BUY_OLD_PRICE;
 						
-						say("\Oh, thou hast some fish to sell me?@ He checks them over.");
+						say("@Oh, thou hast some fish to sell me?@ He checks them over.");
 						if (num_fish > 1)
 						{
 							say("@Fie, thy fish are old and smelly! Didst I not tell thee that I only want fresh ones?");

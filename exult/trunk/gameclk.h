@@ -24,10 +24,9 @@
 #include "tqueue.h"
 
 /*
- *	Time passes 15 times faster in game than in real-life, so
- *	1 real minute = 15 game minutes.
+ *	The number of times that the game clock ticks in one game minute.
  */
-const int time_factor = 15;
+const int ticks_per_minute = 25;
 
 /*
  *	Keep track of time, and of the palette for a given time.

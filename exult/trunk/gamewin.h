@@ -317,7 +317,7 @@ public:
 					// Get all nearby NPC's.
 	void get_nearby_npcs(std::vector<Actor*>& list);
 					// Update NPCs' schedules.
-	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
+	void schedule_npcs(int hour, int backwards = 7, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
 					// Find witness to Avatar's 'crime'.
 	Actor *find_witness(Actor *& closest_npc);
