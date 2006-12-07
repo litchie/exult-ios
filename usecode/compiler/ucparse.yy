@@ -48,6 +48,7 @@ using std::string;
 void yyerror(char *);
 extern int yylex();
 extern void start_script(), end_script();
+extern void start_loop(), end_loop();
 static Uc_array_expression *Create_array(int, Uc_expression *);
 static Uc_array_expression *Create_array(int, Uc_expression *, 
 							Uc_expression *);
@@ -157,7 +158,7 @@ static int repeat_nesting = 0;
 %type <stmt> break_statement converse_statement converse2_statement
 %type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
-%type <stmt> delete_statement
+%type <stmt> delete_statement continue_statement
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
@@ -343,6 +344,7 @@ statement:
 	| switch_statement
 	| script_statement
 	| break_statement
+	| continue_statement
 	| label_statement
 	| goto_statement
 	| delete_statement
@@ -688,8 +690,11 @@ if_statement:
 	;
 
 while_statement:
-	WHILE '(' nonclass_expr ')' statement
-		{ $$ = new Uc_while_statement($3, $5); }
+	WHILE '(' nonclass_expr ')' { start_loop(); } statement
+		{
+		$$ = new Uc_while_statement($3, $6);
+		end_loop();
+		}
 	;
 
 array_loop_statement:
@@ -698,6 +703,7 @@ array_loop_statement:
 		$1->set_statement($3);
 		$1->finish(cur_fun);
 		cur_fun->pop_scope();
+		end_loop();
 		}
 	| start_array_loop WITH IDENTIFIER 
 		{ $1->set_index(cur_fun->add_symbol($3)); }
@@ -706,6 +712,7 @@ array_loop_statement:
 		$1->set_statement($6);
 		$1->finish(cur_fun);
 		cur_fun->pop_scope();
+		end_loop();
 		}
 	| start_array_loop WITH IDENTIFIER 
 		{ $1->set_index(cur_fun->add_symbol($3)); }
@@ -715,6 +722,7 @@ array_loop_statement:
 		{
 		$1->set_statement($9);
 		cur_fun->pop_scope();
+		end_loop();
 		}
 	;
 
@@ -735,7 +743,10 @@ start_array_loop:
 
 start_for:
 	FOR '('
-		{ cur_fun->push_scope(); }
+		{
+		cur_fun->push_scope();
+		start_loop();
+		}
 	;
 
 function_call_statement:
@@ -1083,6 +1094,11 @@ opt_script_delay:
 break_statement:
 	BREAK ';'
 		{ $$ = new Uc_break_statement(); }
+	;
+
+continue_statement:
+	CONTINUE ';'
+		{ $$ = new Uc_continue_statement(); }
 	;
 
 label_statement:

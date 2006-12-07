@@ -213,6 +213,7 @@ extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 %option stack
 %x comment
 %s in_script
+%s in_loop
 
 %%
 
@@ -261,6 +262,9 @@ abort		return ABORT;
 ".original"	return ORIGINAL;
 "shape#"	return SHAPENUM;
 
+<in_loop>{
+continue	return CONTINUE;
+}
 					/* Script commands. */
 <in_script>{
 nop		return NOP;
@@ -384,6 +388,14 @@ void start_script()
 	yy_push_state(in_script);
 	}
 void end_script()
+	{
+	yy_pop_state();
+	}
+void start_loop()
+	{
+	yy_push_state(in_loop);
+	}
+void end_loop()
 	{
 	yy_pop_state();
 	}
