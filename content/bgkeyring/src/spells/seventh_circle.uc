@@ -82,12 +82,7 @@ spellCreateGold (var target)
 	}
 	
 	else if (event == SCRIPTED)
-	{
-		var quant = get_item_quantity();
-		quant = (quant * 10);
 		set_item_shape(SHAPE_GOLD_NUGGET);
-		quant = set_item_quantity(quant);
-	}
 }
 
 spellDeathBolt (var target)

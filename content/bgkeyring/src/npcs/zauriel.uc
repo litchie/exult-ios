@@ -46,7 +46,7 @@ Zauriel 0x48B ()
 	if ((event == DEATH) && (get_item_shape() == SHAPE_DRAGON))
 	{
 		clear_item_flag(SI_TOURNAMENT);
-		script item hit 50;
+		script item hit 50, MAGIC_DAMAGE;
 		script LAURIANNA after 6 ticks call zaurielRitualCutscene, ZAURIEL_DIED;
 		abort;
 	}

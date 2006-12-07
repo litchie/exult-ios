@@ -461,79 +461,106 @@ void Pace_schedule::now_what
 		if (try_street_maintenance())
 			return;		// We no longer exist.
 	
-	if (phase == 0)
+	int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
+	int delay = gwin->get_std_delay();
+	
+	switch (phase)
 		{
-		phase++;
-		if (loc != npc->get_tile())
-			npc->walk_to_tile(loc, gwin->get_std_delay(), gwin->get_std_delay());
-		else
-			npc->start(gwin->get_std_delay(), gwin->get_std_delay());
-		}
-	else
-		{
-		int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
-		bool changedir = false;
-		Tile_coord offset;
-		switch (dir)
+		case 0:
+			phase++;
+			if (loc != npc->get_tile())
+				npc->walk_to_tile(loc, delay, delay);
+			else
+				npc->start(delay, delay);
+			break;
+
+		case 1:
 			{
-			case north:
-			case south:
-				if (which)
-					changedir = true;
-				else
-					offset = Tile_coord(0, dir == south ? 1 : -1, 0);
-				break;
-			case east:
-			case west:
-				if (!which)
-					changedir = true;
-				else
-					offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
-				break;
-			}
-		
-		if (blocked.tx != -1)		// Blocked?
-			{
-			Shape_info& shinfo = npc->get_info();
-			if (dir == north)
-				blocked = blocked + Tile_coord(0, -shinfo.get_3d_ytiles(), 0);
-			else if (dir == west)
-				blocked = blocked + Tile_coord(-shinfo.get_3d_xtiles(), 0, 0);
-			Game_object *obj = Game_object::find_blocking(blocked);
-			blocked.tx = -1;
-			changedir = true;
-			if (obj && obj->as_actor())
+			bool changedir = false;
+			Tile_coord offset;
+			switch (dir)
 				{
-				Monster_info *minfo = npc->get_info().get_monster_info();
-				if (!minfo || !minfo->cant_yell())
+				case north:
+				case south:
+					if (which)
+						changedir = true;
+					else
+						offset = Tile_coord(0, dir == south ? 1 : -1, 0);
+					break;
+				case east:
+				case west:
+					if (!which)
+						changedir = true;
+					else
+						offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
+					break;
+				}
+			if (changedir)
+				{
+				phase = 4;
+				npc->start(delay, delay);
+				return;
+				}
+			if (blocked.tx != -1)		// Blocked?
+				{
+				Shape_info& shinfo = npc->get_info();
+				if (dir == north)
+					blocked = blocked + Tile_coord(0, -shinfo.get_3d_ytiles(), 0);
+				else if (dir == west)
+					blocked = blocked + Tile_coord(-shinfo.get_3d_xtiles(), 0, 0);
+				Game_object *obj = Game_object::find_blocking(blocked);
+				blocked.tx = -1;
+				changedir = true;
+				if (obj && obj->as_actor())
 					{
-					npc->say(first_move_aside, last_move_aside);
-						// Wait longer.
-					npc->start(gwin->get_std_delay(), gwin->get_std_delay());
-					return;
+					Monster_info *minfo = npc->get_info().get_monster_info();
+					if (!minfo || !minfo->cant_yell())
+						{
+						npc->say(first_move_aside, last_move_aside);
+							// Wait longer.
+						npc->start(delay, delay);
+						return;
+						}
 					}
 				}
+			
+			if (changedir)
+				phase++;
+			else
+				{
+				Tile_coord p0 = npc->get_tile() + offset;
+				Frames_sequence *frames = npc->get_frames(dir);
+				int& step_index = npc->get_step_index();
+				if (!step_index)		// First time?  Init.
+					step_index = frames->find_unrotated(npc->get_framenum());
+								// Get next (updates step_index).
+				int frame = frames->get_next(step_index);
+					// One step at a time.
+				npc->step(p0, frame);
+				}
+			npc->start(delay, delay);
+			break;
 			}
-
-		if (changedir)
+		case 2:
+			phase++;
+			npc->change_frame(npc->get_dir_framenum(
+				npc->get_dir_facing(), Actor::standing));
+			npc->start(3*delay, 3*delay);
+			break;
+		case 3:
+		case 4:
 			{
+			phase++;
 			const int facedirs[] = {west, north, north, east, east, south, south, west};
 			npc->change_frame(npc->get_dir_framenum(
 				facedirs[dir], Actor::standing));
-			npc->start(2*gwin->get_std_delay(), 2*gwin->get_std_delay());
-			return;
+			npc->start(3*delay, 3*delay);
+			break;
 			}
-
-		Tile_coord p0 = npc->get_tile() + offset;
-		Frames_sequence *frames = npc->get_frames(dir);
-		int& step_index = npc->get_step_index();
-		if (!step_index)		// First time?  Init.
-			step_index = frames->find_unrotated(npc->get_framenum());
-						// Get next (updates step_index).
-		int frame = frames->get_next(step_index);
-			// One step at a time.
-		npc->step(p0, frame);
-		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+		default:
+			phase = 1;
+			npc->start(2*delay, 2*delay);
+			break;
 		}
 	}
 

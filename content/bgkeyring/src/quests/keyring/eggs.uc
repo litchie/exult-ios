@@ -184,7 +184,7 @@ Liche shape#(354) ()
 		//Remove him from tournament mode:
 		clear_item_flag(SI_TOURNAMENT);
 		//Kill him:
-		script item hit 50;
+		script item hit 50, MAGIC_DAMAGE;
 		//Start loop which will end when the Avatar picks
 		//up at least one Gem of Dispelling:
 		script AVATAR after 10 ticks

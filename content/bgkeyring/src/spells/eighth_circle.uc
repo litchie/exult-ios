@@ -128,8 +128,8 @@ spellMassDeath ()
 				actor frame CAST_1;			actor frame CAST_2;
 				sfx 67;}
 			var nearby_npcs = find_nearby(-1, 25, MASK_NPC);
-			var safenpcs = [UI_get_party_list2(), UI_get_npc_object(LORD_BRITISH),
-							UI_get_npc_object(BATLIN)];
+			var safenpcs = [UI_get_party_list2(), LORD_BRITISH->get_npc_object(),
+							BATLIN->get_npc_object()];
 			var killed_anyone = false;
 			for (npc in nearby_npcs)
 			{
@@ -164,7 +164,7 @@ spellMassDeath ()
 	
 	else if (event == SCRIPTED)
 	{
-		var cantdie = get_item_flag(CANT_DIE);
+		var cantdie = get_item_flag(CANT_DIE) || get_item_flag(DEATH_PROTECTION);
 		if (!cantdie)
 		{
 			var hps = get_npc_prop(HEALTH);

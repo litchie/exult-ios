@@ -2219,7 +2219,7 @@ USECODE_INTRINSIC(nap_time)
 USECODE_INTRINSIC(advance_time)
 {
 	// Incr. clock by (parm[0]*.04min.).
-	gclock->increment(parms[0].get_int_value()/25);
+	gclock->increment(parms[0].get_int_value()/ticks_per_minute);
 	return(no_ret);
 }
 

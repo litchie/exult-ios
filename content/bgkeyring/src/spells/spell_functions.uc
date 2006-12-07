@@ -83,12 +83,13 @@ DeathBoltHit 0xB7F ()
 	//Bail out unless an NPC is hit:
 	if (is_npc())
 	{
+		//See if he can't die:
+		if (get_item_flag(CANT_DIE) || get_item_flag(DEATH_PROTECTION))
+			return;
 		//Get NPC's intelligence:
 		var targetint = get_npc_prop(INTELLIGENCE);
-		//See if he can't die:
-		var cantdie = get_item_flag(CANT_DIE);
 		//Opposed roll to see if we have a corpse in hands:
-		if (UI_roll_to_win(20, targetint) && !cantdie)
-			script item hit 127;
+		if (UI_roll_to_win(20, targetint))
+			script item hit 127, MAGIC_DAMAGE;
 	}
 }

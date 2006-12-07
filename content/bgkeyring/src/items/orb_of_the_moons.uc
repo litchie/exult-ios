@@ -173,7 +173,7 @@ enterMoongate 0x824 (var moongate)
 	if((UI_die_roll(1, 3) == 1) && (!(moongate->get_item_quality() == SPIRITUALITY)))
 	{
 		//Bad moongate, harm avatar
-		AVATAR->reduce_health(HEALTH, 4);
+		AVATAR->reduce_health(HEALTH, 3, ETHEREAL_DAMAGE);
 		
 		//Sound of being hit?
 		UI_play_sound_effect2(SOUND_HIT, item);
@@ -258,7 +258,7 @@ Orb_of_the_Moons shape#(0x311) ()
 							  SHAPE_ORB_MOONGATE_NE_SW, SHAPE_ORB_MOONGATE_HORIZONTAL, SHAPE_ORB_MOONGATE_NW_SE,
 							  SHAPE_ORB_MOONGATE_VERTICAL, SHAPE_ORB_MOONGATE_NE_SW];
 		moongate_shape = moongateshapes[direction + 1];
-		
+
 		//Change the position to make moongate centered on target pos:
 		//target_coords[coordinate] = (target_coords[coordinate] + 2);
 		if ((direction == NORTH) || (direction == SOUTH))
@@ -298,19 +298,19 @@ Orb_of_the_Moons shape#(0x311) ()
 
 		//I prefer to have this done above to make it easier select a target:
 		//UI_close_gumps();
-		
+
 		//Create the moongate:
 		moongate = UI_create_new_object(moongate_shape);
-		
+
 		//Could not create moongate, so bail out:
 		if (!moongate) return;
-		
+
 		//Why was it here AGAIN?
 		//UI_close_gumps();
-		
+
 		//Move the moongate to the target position:
 		UI_update_last_created(target_coords);
-		
+
 		//Undoes the change made above, in preparation
 		//to move the avatar to the right spot:
 		if ((direction == NORTH) || (direction == SOUTH))
@@ -335,19 +335,16 @@ Orb_of_the_Moons shape#(0x311) ()
 		script moongate
 		{
 			frame 0;
-			repeat 11 next frame;;
-			repeat 5
+			repeat 4 next frame;;
+			repeat 6
 			{
-				//The following is due to the sad fact that UCC
-				//doesn't yet support repeat2:
-				frame 4;	next frame;	next frame;	next frame;
-				next frame;	next frame;	next frame;	next frame;
+				repeat 7 next frame;;
+				frame 4;
 			};
-			frame 4;
 			repeat 4 previous frame;;
 			remove;
-		}	
-		
+		}
+
 		//Determine the distance between Avatar and moongate:
 		distance = AVATAR->get_distance(moongate);
 
