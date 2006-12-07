@@ -154,12 +154,12 @@ void Game_clock::increment
 	)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int new_3hour, old_3hour, delta_3hour;
+	int old_hour;
 	long new_min;
 	
-	old_3hour = hour/3;		// Remember current 3-hour period.
-	num_minutes += time_factor/2;	// Round to nearest 15 minutes.
-	num_minutes -= num_minutes%time_factor;
+	old_hour = hour;		// Remember current 3-hour period.
+	num_minutes += 7;		// Round to nearest 15 minutes.
+	num_minutes -= num_minutes%15;
 	new_min = minute + num_minutes;
 	hour += new_min/60;		// Update hour.
 	minute = new_min%60;
@@ -168,14 +168,9 @@ void Game_clock::increment
 	
 	// Update palette to new time.
 	set_time_palette();
-	new_3hour = hour/3;		// New 3-hour period.
-	delta_3hour = new_3hour - old_3hour;
-	if (delta_3hour != 0)		// In a new period?
-	{			// Update NPC schedules.
-		if (Game::get_game_type() == SERPENT_ISLE)
-			delta_3hour = 8;
-		gwin->schedule_npcs(new_3hour, (delta_3hour +7)%8);
-	}
+	// Check to see if we need to update the NPC schedules.
+	if (hour != old_hour)		// Update NPC schedules.
+		gwin->schedule_npcs(hour);
 }
 
 /*
@@ -211,15 +206,11 @@ void Game_clock::handle_event
 		set_time_palette();
 		gwin->mend_npcs();	// Restore HP's each hour.
 		check_hunger();		// Use food, and print complaints.
-		if (hour%3 == 0)	// New 3-hour period?
-		{
-					// Update NPC schedules.
-			gwin->schedule_npcs(hour/3);
-		}
+		gwin->schedule_npcs(hour);
 	}
 	if ((hour != hour_old) || (minute/15 != min_old/15))
 		COUT("Clock updated to " << hour << ':' << minute);
-	curtime += 60*1000/time_factor;		// 15 changes per minute
+	curtime += gwin->get_std_delay()*ticks_per_minute;
 	tqueue->add(curtime, this, udata);
 }
 
@@ -238,7 +229,7 @@ void Game_clock::fake_next_period
 	Game_window *gwin = Game_window::get_instance();
 	set_time_palette();
 	check_hunger();
-	gwin->schedule_npcs(hour/3);
+	gwin->schedule_npcs(hour);
 	gwin->mend_npcs();		// Just do it once, cheater.
 	COUT("The hour is now " << hour);
 }

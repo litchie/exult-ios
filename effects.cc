@@ -1087,7 +1087,7 @@ Weather_effect::Weather_effect
 		eggloc = egg->get_tile();
 	else
 		eggloc = Tile_coord(-1, -1, -1);
-	stop_time = Game::get_ticks() + delay + 1000*((duration*60)/time_factor);
+	stop_time = Game::get_ticks() + delay + duration*gwin->get_std_delay()*ticks_per_minute;
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}

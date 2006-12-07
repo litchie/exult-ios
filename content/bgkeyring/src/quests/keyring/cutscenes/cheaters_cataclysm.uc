@@ -127,7 +127,7 @@ beginCataclysm ()
 		UI_sprite_effect(1, npc_pos[X], npc_pos[Y], 0, 0, 0, -1);
 		UI_sprite_effect(17, npc_pos[X], npc_pos[Y], 0, 0, 0, -1);
 		UI_play_sound_effect2(SOUND_BIG_BLAST, member);
-		member->reduce_health(HEALTH, UI_die_roll(3, 9));
+		member->reduce_health(HEALTH, UI_die_roll(3, 9), MAGIC_DAMAGE);
 		script member
 		{	say barks[rand];			wait 2;
 			actor frame LEAN;			wait 2;

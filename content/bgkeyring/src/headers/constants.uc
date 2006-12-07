@@ -439,3 +439,13 @@ enum npc_rot_frames
 	CAST_1_EAST			= 0x003E,
 	CAST_2_EAST			= 0x003F
 };
+
+enum damage_types
+{
+	NORMAL_DAMAGE		= 0,
+	FIRE_DAMAGE			= 1,
+	MAGIC_DAMAGE		= 2,
+	LIGHTNING_DAMAGE	= 3,
+	ETHEREAL_DAMAGE		= 4,
+	SONIC_DAMAGE		= 5
+};

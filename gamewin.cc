@@ -1180,7 +1180,7 @@ void Game_window::init_actors
 	// Update gamedat if there was a change
 	if (changed)
 		{
-		schedule_npcs(2,7,false);
+		schedule_npcs(6,7,false);
 		write_npcs();
 		}
 
@@ -2398,7 +2398,7 @@ void Game_window::get_nearby_npcs
 
 void Game_window::schedule_npcs
 	(
-	int hour3,			// 0=midnight, 1=3am, 2=6am, etc.
+	int hour,			// 24 hour
 	int backwards,			// Extra periods to look backwards.
 	bool repaint
 	)
@@ -2410,7 +2410,7 @@ void Game_window::schedule_npcs
 		Npc_actor *npc = (Npc_actor *) *it;
 					// Don't want companions leaving.
 		if (npc && npc->get_schedule_type() != Schedule::wait)
-			npc->update_schedule(hour3, backwards);
+			npc->update_schedule(hour/3, backwards, hour%3 == 0 ? -1 : 0);
 		}
 
 	if (repaint)

@@ -107,7 +107,7 @@ sewCloth (var cloth)
 	}
 }
 
-extern Loom shape#(0x261) ();
+extern Loom shape#(0x105) ();
 Thread shape#(0x28E) ()
 {
 	//Player doubleclicked on thread: march them to the thread and pick it up
