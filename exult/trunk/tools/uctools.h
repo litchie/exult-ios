@@ -139,7 +139,7 @@ static opcode_desc opcode_table[] =
 	{ "classdel", 0, 0 },	// 59
 	{ "aidxs", 2, VARREF },	// 5A
 	{ "setstaticarrayelem", 2, IMMED },	// 5B
-	{ "initstaticloop", 0, 0 },	// 5C
+	{ "staticloop", 0, 0 },	// 5C
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5D-5F
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 60-63
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 64-67
