@@ -464,7 +464,15 @@ int Uc_function_symbol::gen_call
 			"# parms. passed (%d) doesn't match '%s' count (%d)",
 			parmcnt, get_name(), parms.size());
 		Uc_location::yyerror(buf);
-		}				
+		}
+	// See if expecting a return value from a function that has none.
+	if (retvalue && !has_ret)
+		{
+		sprintf(buf,
+			"Function '%s' does not have a return value",
+			get_name());
+		Uc_location::yyerror(buf);
+		}
 	if (orig)
 		{
 		if (!itemref)
@@ -518,6 +526,19 @@ int Uc_function_symbol::gen_call
 					// Get offset in function's list.
 		int link = fun->link(this);
 		Write2(out, link);
+		}
+	if (!retvalue && has_ret)
+		{
+		// Function returns a value, but caller does not use it.
+		// Generate the code to pop the result off the stack.
+		static int cnt = 0;
+		char buf[50];
+		sprintf(buf, "_tmpretval_%d", cnt++);
+						// Create a 'tmp' variable.
+		Uc_var_symbol *var = fun->add_symbol(buf);
+		if (!var)
+			return 0;		// Shouldn't happen.  Err. reported.
+		var->gen_assign(out);
 		}
 	return 1;
 	}
