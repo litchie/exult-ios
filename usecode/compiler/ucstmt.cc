@@ -291,11 +291,14 @@ void Uc_return_statement::gen
 	{
 	if (expr)			// Returning something?
 		{
-		expr->gen_value(out);	// Put value on stack.
-		out.push_back((char) UC_SETR);// Pop into ret_value.
-		// +++++ The following isn't needed given the way Exult
-		// +++++ executes UC_SETR
-		//out.push_back((char) UC_RTS);
+		int ival;
+		if (expr->eval_const(ival) && !ival)
+			out.push_back((char) UC_RTS);
+		else
+			{
+			expr->gen_value(out);	// Put value on stack.
+			out.push_back((char) UC_SETR);// Pop into ret_value.
+			}
 		}
 	else
 		out.push_back((char) UC_RET);
