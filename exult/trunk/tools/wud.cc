@@ -81,7 +81,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	// Print mnemonic
 	if( nbytes < 4 )
 		printf("\t");
-        if (pdesc)
+	if (pdesc)
 		printf("\t%s", pdesc->mnemonic);
 	else
 		printf("\tdb %x\t???",ptrc[0]);
@@ -102,6 +102,10 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		printf("\n");
 		break;
 	case IMMED:
+	case ARGNUM:
+	case FUNID:
+	case CLSFUN:
+	case CLSID:
 		// Print immediate operand
 		printf("\t%04XH\t\t\t; %d\n", *(unsigned short*)( ptrc + 1 ), *(short*)( ptrc + 1 ));
 		break;
@@ -138,6 +142,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		}
 		break;
 	case RELATIVE_JUMP:
+	case UNCONDITIONAL_JUMP:
 		// Print jump desination
 //		printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
 		printf("\t%04X\n", *(short*)( ptrc + nbytes - 2) + 
@@ -145,10 +150,12 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 // debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
 	case RELATIVE_JUMP32:
+	case UNCOND_JUMP32:
 		printf("\t%04X\n", *(int*)( ptrc + nbytes - 4) + 
 			    coffset + nbytes);
 		break;
 	case SLOOP:  /* WJP */
+	case STATICSLOOP:
 		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
 			   *(unsigned short*)( ptrc + nbytes - 10 ),
 			   *(unsigned short*)( ptrc + nbytes - 8 ),
@@ -165,10 +172,12 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			   *(int*)( ptrc + nbytes - 4) + coffset + nbytes);
 		break;
 	case IMMED_AND_RELATIVE_JUMP:	/* JSF */
+	case ARGNUM_RELJUMP:
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(short*)( ptrc + 3 ) + coffset + 5);
 		break;
 	case IMMED_RELJUMP32:
+	case ARGNUM_RELJUMP32:
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(int*)( ptrc + 3 ) + coffset + 5);
 		break;
@@ -215,6 +224,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;
 	case IMMED_PAIR:
+	case CLSFUN_VTBL:
 		printf("\t%04XH, %04XH\n", *(unsigned short*)( ptrc + 1 ),
 						*(unsigned short*)( ptrc + 3 ));
 		break;

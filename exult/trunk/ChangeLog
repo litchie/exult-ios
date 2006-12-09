@@ -1,3 +1,9 @@
+2006-12-09  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Adding tons of new paperdoll graphics for BG by Crysta. Also removed
+	  unneeded file.
+	* Improved UCXT data files and intrinsic table.
+	* Improved WUD/WUC opcode table and fixed a few errors.
+
 2006-12-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixing a few stack corruption bugs in UCC.
 	* Changing wud/wuc name of opcode 0x5C.
