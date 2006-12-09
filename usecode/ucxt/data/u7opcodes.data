@@ -55,7 +55,7 @@
 		<name> NEXT </>
 		<asm_nmo> `next\t[%1], [%2], [%3], [%4], %5` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2 atend label%f*_%5)` </>
+		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2) atend label%f*_%5` </>
 		<num_bytes> 10 </>
 		<param_types> {short,short,short,varoffset,offset} </>
 		<num_pop> 0 </>
@@ -73,7 +73,7 @@ TODO: To be done...
 		<name> ASK </>
 		<asm_nmo> `ask\t%1` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `UcAsk` </>
+		<ucs_nmo> `converse (0) atend label%f*_%1` </>
 		<num_bytes> 2 </>
 		<param_types> {offset} </>
 		<num_pop> 0 </>
@@ -88,7 +88,7 @@ It jumps to {offset} if there is no conversation answers available.
 		<name> JNE </>
 		<asm_nmo> `jne\t%1` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `if(!%p1) goto label%f*_%1` </>
+		<ucs_nmo> `if (!%p1) goto label%f*_%1` </>
 		<num_bytes> 2 </>
 		<param_types> {offset} </>
 		<num_pop> 1 </>
@@ -115,7 +115,7 @@ the relative {offset}.
 		<name> CMPS </>
 		<asm_nmo> `cmps\t%1H, %2` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `cmps(%p,)` </>
+		<ucs_nmo> `case %p atend label%f*_%2:` </>
 		<num_bytes> 4 </>
 		<param_types> {short,offset} </>
 		<num_pop> 0xFF </>
@@ -215,7 +215,7 @@ as a 1/0(true/false).
 		<name> OR </>
 		<asm_nmo> `or` </>
 		<asm_comment> `` </>
-		amp;<ucs_nmo> `%p2 || %p1` </>
+		<ucs_nmo> `%p2 || %p1` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 2 </>
@@ -352,7 +352,7 @@ MENTAL NOTE: assert(varoffset&gt;=0 &amp;&amp; varoffset&lt;num_local_variables)
 		<name> ADDSI </>
 		<asm_nmo> `addsi\t%1H` </>
 		<asm_comment> `\t\t\t; %tc1` </>
-		<ucs_nmo> `UcMessage(\"%t1\")` </>
+		<ucs_nmo> `message(\"%t1\")` </>
 		<num_bytes> 2 </>
 		<param_types> {dataoffset} </>
 		<num_pop> 0 </>
@@ -487,7 +487,7 @@ TODO: NOTE: This opcode has been changed... need to redocument.
 		<name> EXIT2 </>
 		<asm_nmo> `exit2` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `exit2()` </>
+		<ucs_nmo> `return` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -501,21 +501,21 @@ Yet Another Return. Exult implements this identically to the RET opcode (0x25).
 		<name> SETR </>
 		<asm_nmo> `setr` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `rr = %p1` </>
+		<ucs_nmo> `return %p1` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 1 </>
 		<num_push> 0 </>
 		<call_effect> 0 </>
 		<!--
-Pops the top most element off the stack and stores it in the return register.
+Pops the top most element off the stack, stores it in the return register and returns from function.
 		-->
 	</>
 	<0x2E>
 		<name> ENUM </>
 		<asm_nmo> `enum` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `enum()` </>
+		<ucs_nmo> `//enum()` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -529,7 +529,7 @@ Part one of the two opcode for...each opcode loop. Details under opcode 0x02.
 		<name> ADDSV </>
 		<asm_nmo> `addsv\t[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `UcMessage(var%1)` </>
+		<ucs_nmo> `message(var%1)` </>
 		<num_bytes> 2 </>
 		<param_types> {varoffset} </>
 		<num_pop> 0 </>
@@ -544,7 +544,7 @@ string register.
 		<name> IN </>
 		<asm_nmo> `in` </>
 		<asm_comment> `\t\t\t\t;` </>
-		<ucs_nmo> `in(%p2, %p1)` </>
+		<ucs_nmo> `%p2 in %p1` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 2 </>
@@ -561,7 +561,7 @@ on the stack.
 		<name> SMTH </>
 		<asm_nmo> `smth\t%1 %2` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `smth(%p2, %p1)` </>
+		<ucs_nmo> `smth(0x%1) atend label%f*_%2` </>
 		<num_bytes> 4 </>
 		<param_types> {short,offset} </>
 		<num_pop> 0 </>
@@ -579,7 +579,7 @@ function of this opcode.
 		<name> RTS </>
 		<asm_nmo> `rts` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `return rr` </>
+		<ucs_nmo> `return 0` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -587,17 +587,14 @@ function of this opcode.
 		<call_effect> 0 </>
 		<return/>
 		<!--
-(ucdump calls this "retr")  Same as RET except pushes the return register
-onto the stack before returning.
-EXULT NOTE: unlike ret, it doesn't show any remaining text in the string
-buffer. Bug?
+Stores the value zero on the return value and returns from the function.
 		-->
 	</>
 	<0x33>
 		<name> SAY </>
 		<asm_nmo> `say` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `UcSay` </>
+		<ucs_nmo> `say()` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -663,7 +660,7 @@ Same as opcode CALLIS (0x38), except no return value.
 		<name> ABRT </>
 		<asm_nmo> `abrt` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `abrt()` </>
+		<ucs_nmo> `abort` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -679,7 +676,7 @@ ABRT also exits all calling functions, effectively stopping the usecode interpre
 		<name> END_CONV </>
 		<asm_nmo> `end_conv` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `end_conv()` </>
+		<ucs_nmo> `break` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
@@ -694,7 +691,7 @@ it means 'end conversation'.
 		<name> PUSHF </>
 		<asm_nmo> `pushf\tflag:[%1]` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `gflags[%1]` </>
+		<ucs_nmo> `gflags[0x%1]` </>
 		<num_bytes> 2 </>
 		<param_types> {flag} </>
 		<num_pop> 0 </>
@@ -706,7 +703,7 @@ it means 'end conversation'.
 		<name> POPF </>
 		<asm_nmo> `popf\tflag:[%1]` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `gflags[%1] = %p1` </>
+		<ucs_nmo> `gflags[0x%1] = %p1` </>
 		<num_bytes> 2 </>
 		<param_types> {flag} </>
 		<num_pop> 1 </>
@@ -745,16 +742,21 @@ TODO: document
 		<name> CALLE </>
 		<asm_nmo> `calle\t%1H` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `calle()` </>
+		<ucs_nmo> `%p1-&gt;Func%1()` </>
 		<num_bytes> 2 </>
 		<param_types> {short} </>
-		<num_pop> 0 </>
-		<num_push> 0 </>
-		<call_effect> 0 </>A
+		<num_pop> 1 </>
+		<num_push> 1 </>
+		<call_effect> 0 </>
 		<!--
-# TODO: Needs more documenting, need to find the pop/push numbers.
-{short} == usecode function number to call
-TODO: document
+Calls the function (short) with "item" being equal to the
+element at the top of the stack. It does not return a
+value on the stack.
+
+In c-style notation, if the topmost element of the stack 
+is AVATAR = -356, and function 0x261 (Func0261) is 
+being called, we would have AVATAR->Func0261() and 
+inside Func0261, "item" would be the avatar.
 		-->
 	</>
 	<0x48>
@@ -834,7 +836,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> LOOP </>
 		<asm_nmo> `next32\t[%1], [%2], [%3], [%4], %5` </>
 		<asm_comment> `\t\t\t;` </>
-		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2 atend label%f*_%n5)` </>
+		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2) atend label%f*_%n5` </>
 		<num_bytes> 12 </>
 		<param_types> {short,short,short,varoffset,offset32} </>
 		<num_pop> 0 </>
@@ -846,7 +848,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> CONV32 </>
 		<asm_nmo> `ask32\t%1` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `UcAsk32` </>
+		<ucs_nmo> `converse (0) atend label%f*_%1` </>
 		<num_bytes> 4 </>
 		<param_types> {offset32} </>
 		<num_pop> 0 </>
@@ -858,7 +860,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> JNE32 </>
 		<asm_nmo> `jne32\t%1` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `if(!%p1) goto label%f*_%n1` </>
+		<ucs_nmo> `if (!%p1) goto label%f*_%n1` </>
 		<num_bytes> 4 </>
 		<param_types> {offset32} </>
 		<num_pop> 1 </>
@@ -882,7 +884,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> CMPS32 </>
 		<asm_nmo> `cmps32\t%1H, %n2` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `cmps32(%p,)` </>
+		<ucs_nmo> `case %p atend label%f*_%2:` </>
 		<num_bytes> 6 </>
 		<param_types> {short,offset32} </>
 		<num_pop> 0xFF </>
@@ -894,7 +896,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> ADDSI32 </>
 		<asm_nmo> `addsi32\t%n1H` </>
 		<asm_comment> `\t\t\t; %tc1` </>
-		<ucs_nmo> `UcMessage(\"%t1\")` </>
+		<ucs_nmo> `message(\"%t1\")` </>
 		<num_bytes> 4 </>
 		<param_types> {dataoffset32} </>
 		<num_pop> 0 </>
@@ -930,7 +932,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> ENUM32 </>
 		<asm_nmo> `enum32` </>
 		<asm_comment> `` </>
-		<ucs_nmo> `enum32()` </>
+		<ucs_nmo> `//enum32()` </>
 		<num_bytes> 0 </>
 		<param_types> {} </>
 		<num_pop> 0 </>
