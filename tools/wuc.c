@@ -368,6 +368,10 @@ int main(int argc,char *argv[])
 														}
 													break;
 												case IMMED:
+												case ARGNUM:
+												case FUNID:
+												case CLSFUN:
+												case CLSID:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
@@ -380,6 +384,7 @@ int main(int argc,char *argv[])
 													emit_dword(word);
 													break;
 												case RELATIVE_JUMP:
+												case UNCONDITIONAL_JUMP:
 													emit_byte(i);
 													read_token(fi);
 													if (pass==1) {
@@ -391,6 +396,7 @@ int main(int argc,char *argv[])
 														emit_word(-1);
 													break;
 												case RELATIVE_JUMP32:
+												case UNCOND_JUMP32:
 													emit_byte(i);
 													read_token(fi);
 													if (pass==1) {
@@ -400,6 +406,7 @@ int main(int argc,char *argv[])
 														emit_dword(-1);
 													break;
 												case IMMED_AND_RELATIVE_JUMP:
+												case ARGNUM_RELJUMP:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
@@ -413,6 +420,7 @@ int main(int argc,char *argv[])
 														emit_word(-1);
 													break;
 												case IMMED_RELJUMP32:
+												case ARGNUM_RELJUMP32:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
@@ -424,6 +432,7 @@ int main(int argc,char *argv[])
 														emit_dword(-1);
 													break;
 												case SLOOP:
+												case STATICSLOOP:
 #if 0
 													emit_byte(0x2E);
 													if (pass == 0) {
