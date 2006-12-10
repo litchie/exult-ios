@@ -58,7 +58,7 @@ public:
 					// Render.
 	virtual void paint();
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
+	virtual int step(Tile_coord t, int frame, bool force = false);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Move to new abs. location.
