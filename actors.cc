@@ -2368,10 +2368,10 @@ bool Actor::reduce_health
 	properties[static_cast<int>(health)] = val;
 	if (this == gwin->get_main_actor() &&
 					// Flash red if Avatar badly hurt.
-			((val < maxhp/8 || delta > maxhp/4) && rand()%2)
+			(((val < maxhp/8 || delta > maxhp/4) && rand()%2)
 					// Or if lightninig damage.
 			|| (delta &&
-					damage_type == (int)Weapon_info::lightning_damage))
+					damage_type == (int)Weapon_info::lightning_damage)))
 		gwin->get_pal()->flash_red();
 	else
 		{
