@@ -1,3 +1,9 @@
+2006-12-10  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Scripted steps now force the step to take place regardless of obstacles or
+	  terrain (FoV & SS verified);
+	* Changed handling of barges to allow movement type of barges above ground
+	  level to 'MOVE_LEVITATE' (FoV & SS verified).
+
 2006-12-09  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Adding tons of new paperdoll graphics for BG by Crysta. Also removed
 	  unneeded file.

@@ -910,7 +910,8 @@ void Barge_object::update_from_studio
 int Barge_object::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int				// Frame (ignored).
+	int frame,				// Frame (ignored).
+	bool force				// Forces the step to happen.
 	)
 	{
 	if (!gathered)			// Happens in SI with turtle.
@@ -918,26 +919,16 @@ int Barge_object::step
 	Tile_coord cur = get_tile();
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
-	if (cur.tz >= 10)
-		{			// Definitely a carpet.
+	if (cur.tz > 0)
 		move_type = MOVE_LEVITATE;
-		boat = 0;
-		}
+	else if (force)
+		move_type = MOVE_ALL;
 	else if (boat) 
-		{
 		move_type = MOVE_SWIM;
-					// Hawk's boat gets grounded in SI.
-		if (Game::get_game_type() == SERPENT_ISLE)
-			{
-			int sx = cur.tx/c_tiles_per_schunk,
-			    sy = cur.ty/c_tiles_per_schunk;
-			if (sx == 8 && sy == 9)	// Hawk's ship.
-				move_type |= MOVE_WALK;
-			}
-		}
-	else move_type = MOVE_WALK;
+	else
+		move_type = MOVE_WALK;
 					// No rising/dropping.
-       	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(), 
+	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(), 
 						4, cur, t, move_type, 0, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.

@@ -113,7 +113,7 @@ public:
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame = -1);
+	virtual int step(Tile_coord t, int frame = -1, bool force = false);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer

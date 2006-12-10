@@ -49,7 +49,7 @@ public:
 		: Monster_actor(nm, shapenum, num, uc)
 		{  }
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
+	virtual int step(Tile_coord t, int frame, bool force = false);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Move to new abs. location.
@@ -69,7 +69,7 @@ public:
 		: Monster_actor(nm, shapenum, num, uc), qsteps(qs), steps(0)
 		{  }
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
+	virtual int step(Tile_coord t, int frame, bool force = false);
 	};
 
 Monster_actor *Monster_actor::in_world = 0;
@@ -330,7 +330,8 @@ void Monster_actor::paint
 int Monster_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int frame			// New frame #.
+	int frame,			// New frame #.
+	bool force
 	)
 	{
 	// If move not allowed do I remove or change destination?
@@ -347,7 +348,7 @@ int Monster_actor::step
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked?
-	if (is_blocked(t))
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
@@ -598,12 +599,13 @@ void Slime_actor::update_frames
 int Slime_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int /* frame */			// New frame # (ignored).
+	int frame,			// New frame # (ignored).
+	bool force
 	)
 	{
 					// Save old pos.
 	Tile_coord oldpos = get_tile();
-	int ret = Monster_actor::step(t, -1);
+	int ret = Monster_actor::step(t, -1, force);
 					// Update surrounding frames (& this).
 	Tile_coord newpos = get_tile();
 	update_frames(oldpos, newpos);
@@ -667,10 +669,11 @@ void Slime_actor::move
 int Quaking_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int frame			// New frame #.
+	int frame,			// New frame #.
+	bool force
 	)
 	{
-	int ret = Monster_actor::step(t, frame);
+	int ret = Monster_actor::step(t, frame, force);
 	if (ret)
 		{
 		steps = (steps + 1)%qsteps;

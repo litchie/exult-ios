@@ -660,7 +660,7 @@ void Usecode_script::step
 					// Get frame (updates frame_index).
 		frame = frames->get_next(frame_index);
 		Tile_coord tile = obj->get_tile().get_neighbor(dir);
-		obj->step(tile, frame);
+		obj->step(tile, frame, true);
 		}
 	else if ((barge = obj->as_barge()) != 0)
 		{
@@ -668,7 +668,7 @@ void Usecode_script::step
 			{
 			Tile_coord t = obj->get_tile().get_neighbor(
 									dir);
-			obj->step(t, 0);
+			obj->step(t, 0, true);
 			}
 		}
 	}
