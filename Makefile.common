@@ -165,6 +165,13 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	data/bg/throwing_axe.shp \
 	data/bg/triple_xbow.shp \
 	data/bg/tseramed_face.shp \
+	data/bg/swamp_boots.shp \
+	data/bg/spellbook.shp \
+	data/bg/av_costume.shp \
+	data/bg/oil_flask.shp \
+	data/bg/love_arrows.shp \
+	data/bg/magebane.shp \
+	data/bg/shieldbacks.shp \
 	data/bg/bg_paperdol.in
 
 FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)

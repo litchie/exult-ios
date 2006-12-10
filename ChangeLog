@@ -3,6 +3,7 @@
 	  terrain (FoV & SS verified);
 	* Changed handling of barges to allow movement type of barges above ground
 	  level to 'MOVE_LEVITATE' (FoV & SS verified).
+	* Adding more BG paperdoll art by Crysta the Elf.
 
 2006-12-09  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Adding tons of new paperdoll graphics for BG by Crysta. Also removed
