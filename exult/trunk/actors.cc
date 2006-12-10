@@ -522,7 +522,8 @@ void Actor::change_frame
 int Actor::is_blocked
 	(
 	Tile_coord& t,			// Tz possibly updated.
-	Tile_coord *f			// Step from here, or curpos if null.
+	Tile_coord *f,			// Step from here, or curpos if null.
+	const int move_flags
 	)
 	{
 	Shape_info& info = get_info();
@@ -537,12 +538,12 @@ int Actor::is_blocked
 		int new_lift;
 		int blocked = nlist->is_blocked(ztiles, t.tz,
 			t.tx%c_tiles_per_chunk, t.ty%c_tiles_per_chunk,
-					new_lift, get_type_flags());
+					new_lift, move_flags | get_type_flags());
 		t.tz = new_lift;
 		return blocked;
 		}
 	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
-			f ? *f : get_tile(), t, get_type_flags());
+			f ? *f : get_tile(), t, move_flags | get_type_flags());
 	}
 
 /*
@@ -3928,7 +3929,8 @@ void Main_actor::get_followers
 int Main_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int frame			// New frame #.
+	int frame,			// New frame #.
+	bool force
 	)
 	{
 	rest_time = 0;			// Reset counter.
@@ -3941,14 +3943,14 @@ int Main_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	Game_object *block;
-	if (is_blocked(t) &&
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this ||
 					// Try to get blocker to move aside.
 	        !block->move_aside(this, get_direction(block)) ||
 					// (May have swapped places.)
 		(t != get_tile() &&
 					// If okay, try one last time.
-		 is_blocked(t))))
+		 is_blocked(t, 0, force ? MOVE_ALL : 0))))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
@@ -4581,7 +4583,8 @@ void Npc_actor::handle_event
 int Npc_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int frame			// New frame #.
+	int frame,			// New frame #.
+	bool force
 	)
 	{
 	if (get_flag(Obj_flags::paralyzed) || get_map() != gmap)
@@ -4602,7 +4605,7 @@ int Npc_actor::step
 		}
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	if (is_blocked(t))
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);

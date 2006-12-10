@@ -142,7 +142,7 @@ public:
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
 					// Blocked moving onto tile 't'?
-	int is_blocked(Tile_coord& t, Tile_coord *f = 0);
+	int is_blocked(Tile_coord& t, Tile_coord *f = 0, const int move_flags = 0);
 	Game_object *find_ammo(int ammo);// Find ammo for desired family.
 	void swap_ammo(Game_object *newammo);
 	bool ready_ammo();		// Find and ready appropriate ammo.
@@ -567,7 +567,7 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
+	virtual int step(Tile_coord t, int frame, bool force = false);
 					// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *olist,
 					Map_chunk *nlist);
@@ -616,7 +616,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
+	virtual int step(Tile_coord t, int frame, bool force = false);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Update chunks after NPC moved.

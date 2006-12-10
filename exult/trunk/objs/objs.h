@@ -300,7 +300,7 @@ public:
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame)
+	virtual int step(Tile_coord t, int frame, bool force = false)
 		{ return 0; }
 	virtual int is_monster()
 		{ return 0; }
