@@ -36,6 +36,7 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 
 	set_shape(npcinfo->head_shape);
 	set_frame(npcinfo->head_frame);
+	translucent = npcinfo->translucent;
 	set_file(SF_PAPERDOL_VGA);
 }
 
@@ -43,6 +44,21 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 void Face_button::double_clicked(int x, int y)
 {
 	actor->show_inventory();
+}
+
+void Face_button::paint
+	(
+	)
+{
+	int px = 0;
+	int py = 0;
+
+	if (parent)
+	{
+		px = parent->get_x();
+		py = parent->get_y();
+	}
+	paint_shape(x+px, y+py, translucent);
 }
 
 void Face_button::update_widget()

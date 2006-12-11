@@ -683,12 +683,13 @@ static void Init
 			if (basegame)
 			{
 				if (arg_modname != "default")
+					// Prints error messages:
 					newgame = basegame->get_mod(arg_modname);
 				else
 					newgame = basegame;
 				arg_modname = "default";
 			}
-			if (!newgame)
+			else
 				cerr << "Game '" << arg_gamename << "' not found." << endl;
 			// Prevent game from being reloaded in case the player
 			// tries to return to the main menu:

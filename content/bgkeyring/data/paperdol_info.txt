@@ -5,9 +5,9 @@
 #
 
 %%section characters
-#id: The index (0-based) in the table. Cannot have duplicate values!!
 #Shp: The NPC's SHAPE number
 #fmale: 1 if female, 0 if male
+#trans: 1 if the shape is translucent, 0 otherwise
 #bsh: Body shape (in paperdol.vga)
 #bf: Body frame
 #hds: Head shape (in paperdol.vga)
@@ -20,20 +20,20 @@
 #cg: For BG only, this is the character's gump when paperdolls are disabled.
 #
 #Format:
-#:Shp/	fmale/		bsh/	bf/		hds/	hf/		hh/		ash/	af/		a2/		as/		cg
+#:Shp/	fmale/		trans/	bsh/	bf/		hds/	hf/		hh/		ash/	af/		a2/		as/		cg
 
 #	Laurianna
-:1103/		1/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
-:1107/		1/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
-:1108/		1/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
+:1103/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
+:1107/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
+:1108/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
 #	Mariah
-:1122/		1/		13/		0/		402/	0/		1/		7/		0/		2/		4/		73
+:1122/		1/		0/		13/		0/		402/	0/		1/		7/		0/		2/		4/		73
 %%endsection
 
 %%section items
-#id: The index (0-based) in the table. Cannot have duplicate values!!
 #wshape: The entry's shape number
 #wf: Object's frame, or -1 for all frames
+#trans: 1 if the shape is translucent, 0 otherwise
 #spot: Where it should go. Takes one of the following values:
 #		head = 0
 #		back = 1
@@ -74,30 +74,30 @@
 #f4: Staff armor arms
 #
 #Format:
-#:wshape/	wf/	  spot/	  type/	 gender/ shape / frame/		f2/		f3/		f4
+#:wshape/	wf/		trans/	spot/	type/	gender/	shape	/	frame/		f2/		f3/		f4
 
 #	New items
 #	New bodies
-:1099/		-1/		3/		1/		0/		135/	0
-:1099/		-1/		8/		1/		0/		135/	1
+:1099/		-1/		1/		3/		1/		0/		135/	0
+:1099/		-1/		1/		8/		1/		0/		135/	1
 #	Jaana's Spellbook
-:1109/		0/		3/		1/		0/		401/	0
+:1109/		0/		1/		3/		1/		0/		401/	0
 #	Mariah's Spellbook
-:1109/		1/		3/		1/		0/		401/	1
+:1109/		1/		1/		3/		1/		0/		401/	1
 #	Laurianna's Spellbook
-:1109/		2/		3/		1/		0/		401/	2
+:1109/		2/		1/		3/		1/		0/		401/	2
 #	Dupre's Amulet
-:1111/		0/		10/		0/		0/		403/	1
+:1111/		0/		1/		10/		0/		0/		403/	1
 #	Shamino's Ankh
-:1111/		1/		10/		0/		0/		403/	0
+:1111/		1/		1/		10/		0/		0/		403/	0
 #	Julia's Hammer
-:1112/		-1/		3/		1/		0/		163/	0
-:1112/		-1/		2/		1/		0/		163/	1
+:1112/		-1/		1/		3/		1/		0/		163/	0
+:1112/		-1/		1/		2/		1/		0/		163/	1
 #	Lord British's Sceptre
-:1126/		-1/		3/		1/		0/		404/	0
-:1126/		-1/		2/		1/		0/		404/	1
+:1126/		-1/		1/		3/		1/		0/		404/	0
+:1126/		-1/		1/		2/		1/		0/		404/	1
 #	Lord British's Crown
-:1127/		-1/		0/		0/		1/		405/	0
+:1127/		-1/		1/		0/		0/		1/		405/	0
 #	Lord British's Amulet
-:1128/		-1/		10/		0/		0/		403/	2
+:1128/		-1/		1/		10/		0/		0/		403/	2
 %%endsection

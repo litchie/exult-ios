@@ -31,12 +31,14 @@ class Face_button : public Gump_button
 {
 protected:
 	Actor *actor;			// Who this represents.
+	bool translucent;
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
 	virtual Actor *get_actor() { return actor; }
 	virtual void double_clicked(int x, int y);
 	virtual void activate() {}
 
+	virtual void paint();
 	virtual void push() {}
 	virtual void unpush() {}
 	virtual void update_widget();
