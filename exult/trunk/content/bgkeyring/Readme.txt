@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.04
+version: 0.11.05
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -181,6 +181,9 @@ version: 0.11.04
 
 7	Version history
 -------------------
+version: 0.11.05
+	- Compatibility update with new BG paperdoll data.
+	- Rewrote the Keyring code to use a static class.
 version: 0.11.04
 	- Fixed several bugs in usecode, and added an updated tfa.dat file
 	  to make fresh fish work.

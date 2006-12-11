@@ -23,13 +23,8 @@
  *	Last Modified: 2006-02-27
  */
 
-//This stores the keys in the keyring:
-static var arraycreated;
-static var keys;
-
 //Constants
 const int KEY_ALAGNER				= 254;	//0x0FE, keys for inn doors.
-
 const int KEY_CHRISTOPHERS_CHEST	= 253;	//Key for Christopher's chest
 
 UseKeyOnChest (var chest)
@@ -40,9 +35,9 @@ UseKeyOnChest (var chest)
 		chest->set_item_shape(SHAPE_CHEST);
 		chest->item_say("Unlocked");
 	
-		if (chest->get_item_quality() == KEY_CHRISTOPHERS_CHEST) gflags[UNLOCKED_CHRISTOPHERS_CHEST] = true;
+		if (chest->get_item_quality() == KEY_CHRISTOPHERS_CHEST)
+			gflags[UNLOCKED_CHRISTOPHERS_CHEST] = true;
 	}
-	
 	//key was used in an unlocked chest:
 	else
 	{
@@ -62,8 +57,7 @@ UseKeyOnChest (var chest)
 		}
 		else
 		{
-			//Lock the chest:
-			
+			//Lock the chest.
 			//Closes the chest's gumps, if open, and those of all contained containers:
 			chest->close_gump();
 			var gump_objs = [761, 799, 801, 802, 803];
@@ -103,11 +97,10 @@ KeyInternal (var target, var keyfits, var barks)
 		//Key was used in a door:
 		if (target_shape in [SHAPE_DOOR_HORIZONTAL, SHAPE_DOOR_VERTICAL, SHAPE_DOOR2_HORIZONTAL, SHAPE_DOOR2_VERTICAL])
 			UseKeyOnDoor(target);
-		
 		//Key was used in a chest:
-		else  UseKeyOnChest(target);
+		else
+			UseKeyOnChest(target);
 	}
-	
 	//key does not fit target:
 	else
 	{
@@ -116,107 +109,142 @@ KeyInternal (var target, var keyfits, var barks)
 	}
 }
 
-AddPartyKeysToKeyring ()
+class Keyring_data
 {
-	event = SCRIPTED;
-	
-	//Count party keys:
-	var party_key_count = PARTY->count_objects(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
-	var party = UI_get_party_list();
-	for (npc in party)
+	var keys;
+	set_keyring_frame (var keyring)
 	{
-		//For each party member, get contained keys
-		var key_coll = npc->get_cont_items(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
-		for (key in key_coll)
+		var count = UI_get_array_size(keys);
+		UI_play_sound_effect2(SOUND_KEY, keyring);
+		// Set the keyring's frame:
+		if (count >= 4)
+			keyring->set_item_frame(4);
+		else
+			keyring->set_item_frame(count);
+	}
+	var is_on_keyring (var target)
+	{
+		return (target in keys);
+	}
+	var add_to_keyring (var keyring, var key)
+	{
+		var qual = key->get_item_quality();
+		switch(qual)
 		{
-			//For each key found, get key quality:
-			var quality = key->get_item_quality();
-			if ((quality != KEY_INN) && (quality != KEY_ALAGNER))
-			{
-				//Do not add inn keys or Alagner's key!
-				//Add key to keyring:
-				key->Keyring();
-				//Remove key:
+			case KEY_INN:
+				//Refuse Inn keys:
+				avatarSay("@I don't think that the innkeeper would like that...@");
+				return false;
+
+			case KEY_ALAGNER:
+				//Refuse Alagner's storeroom key:
+				avatarSay("@I am supposed to return this key to Alagner.@");
+				return false;
+
+			default:
+				if (!is_on_keyring(qual))
+					// Add the key to the keyring:
+					keys << qual;
+				set_keyring_frame(keyring);
+				// Delete the key from the world:
 				key->remove_item();
-			}
+				return true;
 		}
 	}
-	
-	//See how many keys were added to the keyring:
-	party_key_count = party_key_count - PARTY->count_objects(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
-	
-	//Set the frame appropriatelly:
-	if ((party_key_count >= 4) && !(get_item_frame() == 4))
-		set_item_frame(4);
-	else if (party_key_count <= 3)
-		set_item_frame(party_key_count);
-	
-	//Have someone say how many keys were added:
-	randomPartyBark("@" + party_key_count + " keys have been added to the keyring@");
+	dump_keys ()
+	{
+		// Create a bag for the keys:
+		var bag = UI_create_new_object(SHAPE_BAG);
+		for (key in keys)
+		{
+			// Create the keys:
+			var keyobj = UI_create_new_object(SHAPE_KEY);
+			keyobj->set_item_frame(key % 32);
+			// Set their qualities:
+			keyobj->set_item_quality(key);
+			// Place the key in the bag:
+			bag->give_last_created();
+		}
+		// Place the bag at the avatar's feet:
+		UI_update_last_created(AVATAR->get_object_position());
+		// Clear the keyring collection:
+		keys = [];
+	}
+	var add_party_keys (var keyring)
+	{
+		//Count party keys:
+		var oldsize = UI_get_array_size(keys);
+		var party = UI_get_party_list();
+		for (npc in party)
+		{
+			//For each party member, get contained keys
+			var key_coll = npc->get_cont_items(SHAPE_KEY, QUALITY_ANY, FRAME_ANY);
+			for (key in key_coll)
+			{
+				//For each key found, get key quality:
+				var quality = key->get_item_quality();
+				//Do not add inn keys or Alagner's key!
+				if ((quality != KEY_INN) && (quality != KEY_ALAGNER))
+				{
+					//Add key to keyring:
+					if (!is_on_keyring(quality))
+						keys << quality;
+					//Remove key:
+					key->remove_item();
+				}
+			}
+		}
+		
+		// Set the keyring frame and play the add-key sound.
+		set_keyring_frame(keyring);
+
+		//Have someone say how many keys were added:
+		randomPartyBark("@" + oldsize - UI_get_array_size(keys) + " keys have been added to the keyring@");
+		return UI_get_array_size(keys);
+	}
+}
+
+// This function's id is predefined to ensure that the static vars won't be
+// cleared/lost when the usecode is recompiled:
+class<Keyring_data> get_keyring 0xB00 ()
+{
+	//This stores the keys in the keyring:
+	static class<Keyring_data> keyring;
+	static var initialized;
+	if (!initialized)
+	{
+		keyring = new Keyring_data([]);
+		initialized = true;
+	}
+	return keyring;
 }
 
 Keyring shape#(0x44C) ()
 {
-	var target;
-	var target_quality;
-	var keyfits;
-	
-	//We arrived here from Key function: a key was double-clicked and the
-	//target was the keyring; the item var is the key, not the keyring.
-	//Check the shape of item just in case:
-	if ((event == SCRIPTED) && (get_item_shape() == SHAPE_KEY))
-	{
-		//Get key quality:
-		target_quality = get_item_quality();
-		
-		//Check to see if the key array has been initialized yet:
-		if (!(arraycreated))
-		{
-			//Initialize array with current key and set flag:
-			arraycreated = true;
-			keys = [target_quality];
-		}
-		
-		//array has been initialized, so add key if it is not there already:
-		else if (!(target_quality in keys)) keys = keys & target_quality;
-		
-		//Hack to display new frame:
-		target_quality = UI_get_array_size(keys);
-		if (target_quality > 4) target_quality = 4;
-		set_item_quality(target_quality);
-	
-		//Has been moved to the Key function, to display new keyring frame:
-		////Delete the key (it has been added to the keyring after all...):
-		//UI_remove_item(item);
-		return;
-	}
-	
 	//If we did not arive here due to a double-click, leave
-	else if (!(event == DOUBLECLICK)) return;
-	
-	//Prompt user for target:
-	target = UI_click_on_item();
-	
-	//Sunce BG has no native support for adding keys to the keyring when you
+	if (!(event == DOUBLECLICK)) return;
+
+	var target = UI_click_on_item();
+
+	//Since BG has no native support for adding keys to the keyring when you
 	//add the key to the container, we include this here: using the keyring
 	//on the avatar adds all keys to the keyring.
-	if (isAvatar(target))
+	if (target->is_npc())
 	{
-		item->AddPartyKeysToKeyring();
+		if (isAvatar(target))
+			// Add all party keys to the keyring:
+			get_keyring()->add_party_keys(item);
+		else if (target->get_npc_number() == IOLO)
+		{
+			// Just for fun: dumping all keys off the keyring:
+			IOLO.say("@Should I remove ALL the keys from the keyring?@");
+			if (askYesNo())
+				get_keyring()->dump_keys();
+		}
 		return;
 	}
-	
-	//Get target quality:
-	target_quality = target->get_item_quality();
-	
-	//Ensure that the keyring will work:
-	set_item_quality(target_quality);
-	
-	//See if the keyring has a key fits the "lock":
-	if (!(arraycreated)) keyfits = false;
-	else keyfits = (target_quality in keys);
-	
+
 	KeyInternal(target,
-				keyfits,
+				get_keyring()->is_on_keyring(target->get_item_quality()),
 				["@We don't have that key.@", "@It's not on the keyring.@"]);
 }
