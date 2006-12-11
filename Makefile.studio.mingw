@@ -9,7 +9,7 @@ TOOLSPATH=C:/GimpPlugin
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gamemgr:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf:$(SRC)/usecode
 
-VERSION=1.4.01cvs
+VERSION=1.4.02cvs
 
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`

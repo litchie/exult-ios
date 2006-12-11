@@ -60,19 +60,20 @@ void Paperdoll_npc_parser::parse_entry
 	)
 	{
 	Paperdoll_npc npc;
-	int npc_shape = strtol(eptr, &eptr, 0);
-	npc.is_female = strtol(eptr + 1, &eptr, 0) ? true : false;
-	npc.body_shape = strtol(eptr + 1, &eptr, 0);
-	npc.body_frame = strtol(eptr + 1, &eptr, 0);
-	npc.head_shape = strtol(eptr + 1, &eptr, 0);
-	npc.head_frame = strtol(eptr + 1, &eptr, 0);
-	npc.head_frame_helm = strtol(eptr + 1, &eptr, 0);
-	npc.arms_shape = strtol(eptr + 1, &eptr, 0);
-	npc.arms_frame = strtol(eptr + 1, &eptr, 0);
-	npc.arms_frame_2h = strtol(eptr + 1, &eptr, 0);
-	npc.arms_frame_staff = strtol(eptr + 1, &eptr, 0);
+	int npc_shape = ReadInt(eptr, 0);
+	npc.is_female = ReadInt(eptr) ? true : false;
+	npc.translucent = ReadInt(eptr) ? true : false;
+	npc.body_shape = ReadInt(eptr);
+	npc.body_frame = ReadInt(eptr);
+	npc.head_shape = ReadInt(eptr);
+	npc.head_frame = ReadInt(eptr);
+	npc.head_frame_helm = ReadInt(eptr);
+	npc.arms_shape = ReadInt(eptr);
+	npc.arms_frame = ReadInt(eptr);
+	npc.arms_frame_2h = ReadInt(eptr);
+	npc.arms_frame_staff = ReadInt(eptr);
 	if (*eptr)	// BG-style gumps
-		npc.gump_shape = strtol(eptr + 1, 0, 0);
+		npc.gump_shape = ReadInt(eptr);
 	else
 		npc.gump_shape = -1;
 	(*table)[npc_shape] = npc;
@@ -86,20 +87,28 @@ void Paperdoll_item_parser::parse_entry
 	)
 	{
 	Paperdoll_item obj;
-	int world_shape = strtol(eptr, &eptr, 0);
-	obj.world_frame = strtol(eptr + 1, &eptr, 0);
-	obj.spot = strtol(eptr + 1, &eptr, 0);
-	obj.type = (Object_type)strtol(eptr + 1, &eptr, 0);
-	obj.gender = strtol(eptr + 1, &eptr, 0) ? true : false;
-	obj.shape = strtol(eptr + 1, &eptr, 0);
-	obj.frame = strtol(eptr + 1, &eptr, 0);
-	// Not all items have all entries, so check first
+	int world_shape = ReadInt(eptr, 0);
+	obj.world_frame = ReadInt(eptr);
+	obj.translucent = ReadInt(eptr) ? true : false;
+	obj.spot = ReadInt(eptr);
+	obj.type = (Object_type)ReadInt(eptr);
+	obj.gender = ReadInt(eptr) ? true : false;
+	obj.shape = ReadInt(eptr);
+	obj.frame = ReadInt(eptr);
+	// Not all items have all entries, so check first.
+	// Also, ensure sensible defaults.
 	if (*eptr)
-		obj.frame2 = strtol(eptr + 1, &eptr, 0);
+		obj.frame2 = ReadInt(eptr);
+	else
+		obj.frame2 = -1;
 	if (*eptr)
-		obj.frame3 = strtol(eptr + 1, &eptr, 0);
+		obj.frame3 = ReadInt(eptr);
+	else
+		obj.frame3 = -1;
 	if (*eptr)
-		obj.frame4 = strtol(eptr + 1, 0, 0);
+		obj.frame4 = ReadInt(eptr);
+	else
+		obj.frame4 = -1;
 	if (for_patch)
 		{
 		Paperdoll_item *old = 0;
@@ -134,12 +143,12 @@ void Animation_parser::parse_entry
 	)
 	{
 	Animation_info inf;
-	int shapenum = strtol(eptr, &eptr, 0);
-	inf.type = strtol(eptr + 1, &eptr, 0);
+	int shapenum = ReadInt(eptr, 0);
+	inf.type = ReadInt(eptr);
 	if (inf.type == 0)	// FA_LOOPING
 		{
-		inf.first_frame = strtol(eptr + 1, &eptr, 0);
-		inf.frame_count = strtol(eptr + 1, &eptr, 0);
+		inf.first_frame = ReadInt(eptr);
+		inf.frame_count = ReadInt(eptr);
 		if (!*eptr)
 			inf.offset_type = -1;
 		else
@@ -150,7 +159,7 @@ void Animation_parser::parse_entry
 			else
 				{
 				inf.offset_type = 0;	// For safety.
-				inf.offset = strtol(eptr, &eptr, 0);
+				inf.offset = ReadInt(eptr, 0);
 				}
 			}
 		}
