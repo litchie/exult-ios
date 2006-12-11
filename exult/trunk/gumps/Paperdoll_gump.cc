@@ -596,7 +596,7 @@ void Paperdoll_gump::paint_object
 	if (item->gender && !info->is_female) f++;
  
 	ShapeID s(item->shape, f, SF_PAPERDOL_VGA);
-	s.paint_shape(box.x + sx, box.y + sy, 1);
+	s.paint_shape(box.x + sx, box.y + sy, item->translucent);
 	if (cheat.is_selected(obj))	// Outline selected obj.
 		s.paint_outline(box.x + sx, box.y + sy, HIT_PIXEL);
 }
@@ -640,7 +640,7 @@ void Paperdoll_gump::paint_body
 	)
 {
 	ShapeID s(info->body_shape, info->body_frame, SF_PAPERDOL_VGA);
-	s.paint_shape(box.x + bodyx, box.y + bodyy);
+	s.paint_shape(box.x + bodyx, box.y + bodyy, info->translucent);
 }
 
 /*
@@ -654,7 +654,7 @@ void Paperdoll_gump::paint_belt
 {
 	ShapeID s(10, 0, SF_PAPERDOL_VGA);
 	if (!info->is_female) s.set_frame(1);
-	s.paint_shape (box.x + beltmx, box.y + beltmy);
+	s.paint_shape (box.x + beltmx, box.y + beltmy, info->translucent);
 }
 
 /*
@@ -677,7 +677,7 @@ void Paperdoll_gump::paint_head
 		f = info->head_frame_helm;
 
 	ShapeID s(info->head_shape, f, SF_PAPERDOL_VGA);
-	s.paint_shape(box.x + headx, box.y + heady);
+	s.paint_shape(box.x + headx, box.y + heady, info->translucent);
 }
 
 /*
@@ -710,7 +710,7 @@ void Paperdoll_gump::paint_arms
 		break;
 	}
 
-	s.paint_shape (box.x + bodyx, box.y + bodyy);
+	s.paint_shape (box.x + bodyx, box.y + bodyy, info->translucent);
 }
 
 

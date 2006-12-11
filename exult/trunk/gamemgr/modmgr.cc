@@ -250,14 +250,14 @@ BaseGameInfo *ModManager::get_mod(string name, bool checkversion)
 	{
 		if (checkversion && !newgame->is_mod_compatible())
 		{
-			cerr << "Mod '" << name << "' is not compatible with this version of Exult; using normal game instead." << endl;
-			return this;
+			cerr << "Mod '" << name << "' is not compatible with this version of Exult." << endl;
+			return 0;
 		}
 	}
 	if (!newgame)
 	{
-		cerr << "Mod '" << name << "' not found; using normal game instead." << endl;
-		return this;
+		cerr << "Mod '" << name << "' not found." << endl;
+		return 0;
 	}
 	return newgame;
 }

@@ -1,4 +1,15 @@
 2006-12-11  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Added support for turning translucency on/off for paperdolls. New data for
+	  BG and SI paperdolls has been added.
+	* Fixed a couple goofs with new paperdoll art, and added some more art by
+	  Crysta the Elf.
+	* Loading a mod directly from the command line will no longer default to
+	  the original game if the specified mod is not found or is not compatible
+	  with the present Exult version.
+	* Gave a much-needed version increase to Exult, particularly since the
+	  paperdoll data it now expects is not backwards-compatible.
+
+2006-12-11  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Added support for static usecode classes;
 	* Compatibility update for Keyring mod with new BG paperdoll data.
 

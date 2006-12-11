@@ -39,24 +39,26 @@ enum Object_type
 // This contains info on how to render an item when it's in a certain spot
 struct Paperdoll_item
 {
-	int			world_frame;			// Frame in the world (-1 for all)
+	int			world_frame;		// Frame in the world (-1 for all)
 	int			spot;				// Spot placed in
 
-	Object_type		type;				// What type of object is this
+	Object_type	type;				// What type of object is this
 	
-	bool			gender;				// Is this object gender specific
+	bool		translucent;		// If the paperdoll should be drawn translucently or not
+	bool		gender;				// Is this object gender specific
 
 	int			shape;				// The shape (if -1 use world shape and frame)
 	int			frame;				// The frame
 	int			frame2;				// Second Frame (if used)
-	int			frame3;				// Second Frame (if used)
-	int			frame4;				// Second Frame (if used)
+	int			frame3;				// Third Frame (if used)
+	int			frame4;				// Fourth Frame (if used)
 };
 
 // This contain Information about NPC rendering
 struct  Paperdoll_npc
 {
 	bool		is_female;			// Is the NPC Female (or more specifically not male)
+	bool		translucent;		// If the paperdoll should be drawn translucently or not
 
 	// Body info
 	int			body_shape;			// Body Shape
@@ -68,8 +70,8 @@ struct  Paperdoll_npc
 
 	int			arms_shape;			// Shape for Arms
 	int			arms_frame;			// Normal Arms Frame
-	int			arms_frame_2h;			// Frame when holding a two handed weapon
-	int			arms_frame_staff;		// Frame when holding staff style weapon
+	int			arms_frame_2h;		// Frame when holding a two handed weapon
+	int			arms_frame_staff;	// Frame when holding staff style weapon
 	
 	// BG gump info
 	int			gump_shape;
@@ -93,6 +95,13 @@ class Shapeinfo_entry_parser
 	{
 public:
 	virtual void parse_entry(int index, char *eptr, bool for_patch) = 0;
+	virtual int ReadInt(char *&eptr, int off = 1)
+		{
+		int ret = strtol(eptr + off, &eptr, 0);
+		while (isspace(*eptr++))
+			;
+		return ret;
+		}
 	};
 
 /*
@@ -107,8 +116,8 @@ public:
 		{  }
 	virtual void parse_entry(int index, char *eptr, bool for_patch)
 		{
-		int key = strtol(eptr, &eptr, 0);
-		int data = strtol(eptr + 1, 0, 0);
+		int key = ReadInt(eptr, 0);
+		int data = ReadInt(eptr);
 		(*table)[key] = data;
 		}
 	};
@@ -125,7 +134,7 @@ public:
 		{  }
 	virtual void parse_entry(int index, char *eptr, bool for_patch)
 		{
-		int key = strtol(eptr, &eptr, 0);
+		int key = ReadInt(eptr, 0);
 		(*table)[key] = true;
 		}
 	};
@@ -142,8 +151,8 @@ public:
 		{  }
 	virtual void parse_entry(int index, char *eptr, bool for_patch)
 		{
-		int bshape = strtol(eptr, &eptr, 0);
-		int bframe = strtol(eptr + 1, 0, 0);
+		int bshape = ReadInt(eptr, 0);
+		int bframe = ReadInt(eptr);
 		((*table)[index]).first = bshape;
 		((*table)[index]).second = bframe;
 		}

@@ -133,6 +133,7 @@ protected:
 	bool		hit;
 	int		pois;
 	int		prot;
+	int		para;
 public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
 	virtual ~Portrait_button();
@@ -161,6 +162,7 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 	hit = actor->was_hit();
 	pois = actor->get_flag(Obj_flags::poisoned);
 	prot = actor->get_flag(Obj_flags::protection);
+	para = actor->get_flag(Obj_flags::paralyzed);
 
 	gwin->add_dirty(get_rect());
 }
@@ -201,13 +203,15 @@ void Portrait_button::update_widget()
 
 	if (hit != actor->was_hit() ||
 		pois != actor->get_flag(Obj_flags::poisoned) ||
-		prot != actor->get_flag(Obj_flags::protection))
+		prot != actor->get_flag(Obj_flags::protection) ||
+		para != actor->get_flag(Obj_flags::paralyzed))
 	{
 		Rectangle r = get_rect();
 		gwin->add_dirty(r);
 		hit = actor->was_hit();
 		pois = actor->get_flag(Obj_flags::poisoned);
 		prot = actor->get_flag(Obj_flags::protection);
+		para = actor->get_flag(Obj_flags::paralyzed);
 		r = get_rect();
 		gwin->add_dirty(r);
 	}
@@ -246,6 +250,10 @@ void Portrait_button::paint()
 		{
 			sman->paint_outline(px, py, s, PROTECT_PIXEL);
 		}
+		else if (para)
+		{
+			sman->paint_outline(px, py, s, PARALYZE_PIXEL);
+		}
 	}
 
 	if (hp)	hp->paint();
@@ -255,7 +263,7 @@ void Portrait_button::paint()
 Rectangle Portrait_button::get_rect()
 {
 	Rectangle rect = Face_button::get_rect();
-	if (hit || pois || prot) rect.enlarge(2);
+	if (hit || pois || prot || para) rect.enlarge(2);
 
 	if (hp)
 	{
@@ -425,9 +433,7 @@ void Face_stats::create_buttons()
 		// Show faces if in SI, or if paperdolls are allowed
 		if (GAME_SI || sman->can_use_paperdolls() ||
 				// Otherwise, show faces also if the character
-				// has paperdoll information (*risky*, as the
-				// specified face may not exist in bg_paperdoll
-				// file (or a patch), leading to a crash)
+				// has paperdoll information
 				Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum())) {
 			pos += width;
 			party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
