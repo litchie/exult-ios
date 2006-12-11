@@ -35,6 +35,8 @@
 #include "useval.h"
 #include "utils.h"
 #include "ucsymtbl.h"
+#include "gamewin.h"
+#include "ucmachine.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -469,6 +471,7 @@ int Usecode_value::save
 	)
 	{
 	uint8 *ptr = buf;
+	CERR("var type = " << (int)type);
 	switch ((Val_type) type)
 		{
 	case int_type:
@@ -483,6 +486,16 @@ int Usecode_value::save
 		*ptr++ = type;
 		Write4(ptr, 0);
 		break;
+	case class_sym_type:
+		const char *classname = value.cptr->get_name();
+		int len = std::strlen(classname);
+		if (buflen < len + 3)
+			return -1;
+		*ptr++ = type;
+		Write2(ptr, len);
+		std::memcpy(ptr, classname, len);
+		ptr += len;
+		break;
 	case string_type:
 		{
 		int len = std::strlen(value.str);
@@ -495,6 +508,7 @@ int Usecode_value::save
 		break;
 		}
 	case array_type:
+	case class_obj_type:
 		{
 		if (buflen < 3)
 			return -1;
@@ -546,6 +560,17 @@ bool Usecode_value::restore
 		value.ptr = 0; //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
+	case class_sym_type:
+		int len = Read2(ptr);
+		if (buflen < len + 3)
+			return false;
+		char *nm = new char[len + 1];
+		std::memcpy(nm, ptr, len);
+		nm[len] = 0;
+		Game_window *gwin = Game_window::get_instance();
+		value.cptr = gwin->get_usecode()->get_class(nm);
+		ptr += len;
+		return true;
 	case string_type:
 		{
 		int len = Read2(ptr);
@@ -558,12 +583,14 @@ bool Usecode_value::restore
 		return true;
 		}
 	case array_type:
+	case class_obj_type:
 		{
 		if (buflen < 3)
 			return false;
 		int len = Read2(ptr);
 		int remaining = buflen - 3; // already read one byte
-		*this = Usecode_value(len, 0); // create array
+		value.array.cnt = len;	// Stores class, class vars.
+		value.array.elems = new Usecode_value[value.array.cnt];
 		for (int i=0; i < len; i++) {
 			uint8* t = ptr;
 			bool retval = value.array.elems[i].restore(

@@ -1744,9 +1744,15 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 
 		case 'i':	// Party
 		if (actor->get_flag(Obj_flags::in_party))
+			{
 			gwin->get_party_man()->remove_from_party(actor);
+			gwin->revert_schedules(actor);
+			}
 		else
+			{
 			gwin->get_party_man()->add_to_party(actor);
+			actor->set_schedule_type(Schedule::follow_avatar);
+			}
 		break;
 		
 		case 'o':	// Protectee

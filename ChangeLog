@@ -1,3 +1,7 @@
+2006-12-11  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Added support for static usecode classes;
+	* Compatibility update for Keyring mod with new BG paperdoll data.
+
 2006-12-10  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Scripted steps now force the step to take place regardless of obstacles or
 	  terrain (FoV & SS verified);
