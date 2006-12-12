@@ -173,7 +173,7 @@ Usecode_symbol *Usecode_scope_symbol::operator[](int val)
 
 Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
 {
-	if (by_name.empty())
+	if (class_names.empty())
 		setup_class_names();
 	Class_name_table::iterator it = class_names.find(nm);
 	if (it == class_names.end())

@@ -24,6 +24,7 @@
 #include <cassert>
 #include <fstream>
 #include <iomanip>
+#include <vector>
 #include "U7file.h"
 #include "utils.h"
 
@@ -415,6 +416,66 @@ public:
 
 	virtual bool eof() { return (buf_ptr-buf) >= (int)size; } 
 
+};
+
+class OVectorDataSource: public DataSource
+{
+protected:
+	std::vector<unsigned char> buf;
+public:
+	OVectorDataSource() { buf.reserve(512); }
+	virtual ~OVectorDataSource() { }
+	// ++++ FIXME: Maybe the following should do something?
+	virtual uint32 peek() { }
+	virtual uint32 read1() { }
+	virtual uint16 read2() { }
+	virtual uint16 read2high() { }
+	virtual uint32 read4() { }
+	virtual uint32 read4high() { }
+	void read(void *b, int len) { }
+	virtual void seek(unsigned int pos) { }
+	virtual void skip(int pos) { }
+	virtual unsigned int getPos() { }
+	virtual bool eof() { } 
+	
+	virtual void write1(uint32 val)
+	{
+		buf.push_back((unsigned char) (val&0xff));
+	}
+	virtual void write2(uint16 val)
+	{
+		buf.push_back((unsigned char) (val&0xff));
+		buf.push_back((unsigned char) ((val>>8)&0xff));
+	}
+	virtual void write2high(uint16 val)
+	{
+		buf.push_back((unsigned char) ((val>>8)&0xff));
+		buf.push_back((unsigned char) (val&0xff));
+	}
+	virtual void write4(uint32 val)
+	{
+		buf.push_back((unsigned char) (val&0xff));
+		buf.push_back((unsigned char) ((val>>8)&0xff));
+		buf.push_back((unsigned char) ((val>>16)&0xff));
+		buf.push_back((unsigned char) ((val>>24)&0xff));
+	}
+	virtual void write4high(uint32 val)
+	{
+		buf.push_back((unsigned char) ((val>>24)&0xff));
+		buf.push_back((unsigned char) ((val>>16)&0xff));
+		buf.push_back((unsigned char) ((val>>8)&0xff));
+		buf.push_back((unsigned char) (val&0xff));
+	}
+	virtual void write(void *b, int len)
+	{
+		unsigned char *buf_ptr = reinterpret_cast<unsigned char*>(b);
+		buf.reserve(buf.size() + len);
+		for (int i = 0; i < len; i++)
+			buf.push_back(buf_ptr[i]);
+	}
+	
+	virtual unsigned int getSize() { return buf.size(); };
+	unsigned char *getPtr() { return &buf[0]; };
 };
 
 class StackBufferDataSource : protected BufferDataSource

@@ -1216,13 +1216,16 @@ WEATHER/TIME
 
 int UI_get_timer(int timer)
 
-    If 'timer' < 20 and represents a timer that has been initialized by
-    'UI_set_timer' intrinsic, returns the number of hours since the timer has
-    been set. Otherwise, the return value is '0'.
+    If 'timer' represents a timer that has been initialized by a previous call
+    to 'UI_set_timer' intrinsic, returns the number of hours since the timer
+    has been set. Otherwise, the return value is '0'.
 
 UI_set_timer(int timer)
 
-    If 'timer' < 20, initializes the timer timer specified by 'timer'.
+    If the timer 'timer' has not been initialized, this function will initialize
+    it; otherwise, it will reset the timer. Subsequent calls to 'UI_set_timer'
+    intrinsic returns the number of hours since the timer has been
+    initialized/reset.
 
 int UI_game_hour()
 
