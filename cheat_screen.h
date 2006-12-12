@@ -67,6 +67,7 @@ private:
 		CP_Lift = 25,
 		CP_GFlagNum = 26,
 		CP_NFlagNum = 27,
+		CP_TempNum = 28,
 
 		CP_Name = 32
 	};
