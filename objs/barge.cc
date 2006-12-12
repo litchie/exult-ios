@@ -227,7 +227,7 @@ int Barge_object::okay_to_rotate
 	{
 	int lift = get_lift();
 					// Special case for carpet.
-	int move_type = (lift >= 10) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
+	int move_type = (lift > 0) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int xts = get_xtiles(), yts = get_ytiles();
