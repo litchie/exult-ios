@@ -98,8 +98,8 @@ public:
 	virtual int ReadInt(char *&eptr, int off = 1)
 		{
 		int ret = strtol(eptr + off, &eptr, 0);
-		while (isspace(*eptr++))
-			;
+		while (isspace(*eptr))
+			eptr++;
 		return ret;
 		}
 	};
