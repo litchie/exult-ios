@@ -24,6 +24,7 @@ class Usecode_value;
 class Usecode_internal;
 
 #include "tqueue.h"
+#include "databuf.h"
 
 /*
  *	A class for executing usecode at a scheduled time:
@@ -79,9 +80,8 @@ public:
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir);
 					// Save/restore.
-	int save(unsigned char *buf, int buflen);
-	static Usecode_script *restore(Game_object *item,
-					unsigned char *buf, int buflen);
+	int save(DataSource *out);
+	static Usecode_script *restore(Game_object *item, DataSource *in);
 	void print(std::ostream& out);	// Print values.
 	};
 

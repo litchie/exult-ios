@@ -32,6 +32,7 @@
 #include "egg.h"
 #include "actors.h"
 #include "ucscriptop.h"
+#include "databuf.h"
 
 #include <iostream>
 #include <iomanip>
@@ -681,8 +682,7 @@ void Usecode_script::step
 
 int Usecode_script::save
 	(
-	unsigned char *buf,
-	int buflen
+	DataSource *out
 	)
 	{
 					// Get delay to when due.
@@ -690,23 +690,18 @@ int Usecode_script::save
 							this, SDL_GetTicks());
 	if (when < 0)
 		return -1;
-	uint8 *ptr = buf;
-	Write2(ptr, cnt);		// # of values we'll store.
-	Write2(ptr, i);			// Current spot.
+	out->write2(cnt);		// # of values we'll store.
+	out->write2(i);			// Current spot.
 	for (int j = 0; j < cnt; j++)
 		{
 		Usecode_value& val = code->get_elem(j);
-		int len = val.save(ptr, buflen - (ptr - buf));
-		if (len < 0)
+		if (!val.save(out))
 			return -1;
-		ptr += len;
 		}
-	if (buflen - (ptr - buf) < 8)	// Enough room left?
-		return -1;
-	Write2(ptr, frame_index);
-	Write2(ptr, no_halt ? 1 : 0);
-	Write4(ptr, when);
-	return (ptr - buf);
+	out->write2(frame_index);
+	out->write2(no_halt ? 1 : 0);
+	out->write4(when);
+	return out->getSize();
 	}
 
 /*
@@ -719,32 +714,30 @@ int Usecode_script::save
 Usecode_script *Usecode_script::restore
 	(
 	Game_object *item,		// Object this is executed for.
-	unsigned char *buf,
-	int buflen
+	DataSource *in
 	)
 	{
-	uint8 *ptr = buf;
-	int cnt = Read2(ptr);		// Get # instructions.
-	int curindex = Read2(ptr);	// Where it is.
+	int cnt = in->read2();		// Get # instructions.
+	int curindex = in->read2();	// Where it is.
 					// Create empty array.
 	Usecode_value *code = new Usecode_value(cnt, 0);
 	for (int i = 0; i < cnt; i++)
 		{
 		Usecode_value& val = code->get_elem(i);
-		if (!val.restore(ptr, buflen - (ptr - buf)))
+		if (!val.restore(in))
 			{
 			delete code;
 			return 0;
 			}
 		}
-	if (buflen - (ptr - buf) < 8)	// Enough room left?
+	if (in->getSize() - in->getPos() < 8)	// Enough room left?
 		{
 		delete code;
 		return 0;
 		}
-	int frame_index = Read2(ptr);
-	int no_halt = Read2(ptr);
-	int delay = Read4(ptr);
+	int frame_index = in->read2();
+	int no_halt = in->read2();
+	int delay = in->read4();
 	Usecode_script *scr =
 		new Usecode_script(item, code, frame_index, no_halt, delay);
 	scr->i = curindex;		// Set index.

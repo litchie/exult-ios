@@ -27,6 +27,7 @@
 
 #include <vector>	// STL container
 #include <string>	// STL string
+#include "databuf.h"
 
 class Game_object;
 class Usecode_class_symbol;
@@ -175,8 +176,8 @@ public:
 	int add_values(int index, Usecode_value& val2);
 	void print(std::ostream& out, bool shortformat=false); // Print in ASCII.
 					// Save/restore.
-	int save(unsigned char *buf, int len);
-	bool restore(unsigned char *& ptr, int len);
+	bool save(DataSource *out);
+	bool restore(DataSource *in);
 					// Class objects.
 	void class_new(Usecode_class_symbol *cls, int nvars);
 	void class_delete();

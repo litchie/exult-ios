@@ -37,6 +37,7 @@
 #include "ucsymtbl.h"
 #include "gamewin.h"
 #include "ucmachine.h"
+#include "databuf.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -464,72 +465,48 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
  *	Output:	# bytes stored, or -1 if error.
  */
 
-int Usecode_value::save
+bool Usecode_value::save
 	(
-	unsigned char *buf,
-	int buflen
+	DataSource *out
 	)
 	{
-	uint8 *ptr = buf;
-	CERR("var type = " << (int)type);
+	out->write1((int)type);
 	switch ((Val_type) type)
 		{
 	case int_type:
-		if (buflen < 5)
-			return -1;
-		*ptr++ = type;
-		Write4(ptr, value.intval);
+		out->write4(value.intval);
 		break;
 	case pointer_type:
-		if (buflen < 5)
-			return -1;
-		*ptr++ = type;
-		Write4(ptr, 0);
+		out->write4(0);
 		break;
 	case class_sym_type:
 		const char *classname = value.cptr->get_name();
 		int len = std::strlen(classname);
-		if (buflen < len + 3)
-			return -1;
-		*ptr++ = type;
-		Write2(ptr, len);
-		std::memcpy(ptr, classname, len);
-		ptr += len;
+		out->write2(len);
+		out->write((char *)classname, len);
 		break;
 	case string_type:
 		{
 		int len = std::strlen(value.str);
-		if (buflen < len + 3)
-			return -1;
-		*ptr++ = type;
-		Write2(ptr, len);
-		std::memcpy(ptr, value.str, len);
-		ptr += len;
+		out->write2(len);
+		out->write(value.str, len);
 		break;
 		}
 	case array_type:
 	case class_obj_type:
 		{
-		if (buflen < 3)
-			return -1;
-		*ptr++ = type;
 		int len = value.array.cnt;
-		Write2(ptr, len); // first length, then length Usecode_values
-		int remaining = buflen - 3;
+		out->write2(len); // first length, then length Usecode_values
 		for (int i=0; i < len; i++) {
-			int retval = value.array.elems[i].save(ptr, remaining);
-			if (retval == -1)
-				return -1;
-
-			ptr += retval;
-			remaining -= retval;
+			if (!value.array.elems[i].save(out))
+				return false;
 		}
 		break;
 		}
 	default:
-		return -1;
+		return false;
 		}
-	return (ptr - buf);
+	return true;
 	}
 
 /*
@@ -540,65 +517,46 @@ int Usecode_value::save
 
 bool Usecode_value::restore
 	(
-	unsigned char *& ptr,		// Ptr. to data.  Updated past it.
-	int buflen
+	DataSource *in
 	)
 	{
 	undefined = false;
-	type = (Val_type) *ptr++;
+	type = (Val_type) in->read1();
 	switch (type)
 		{
 	case int_type:
-		if (buflen < 5)
-			return false;
-		value.intval = Read4(ptr);
+		value.intval = in->read4();
 		return true;
 	case pointer_type:
-		if (buflen < 5)
-			return false;
-		Read4(ptr);
+		in->read4();
 		value.ptr = 0; //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case class_sym_type:
-		int len = Read2(ptr);
-		if (buflen < len + 3)
-			return false;
+		int len = in->read2();
 		char *nm = new char[len + 1];
-		std::memcpy(nm, ptr, len);
+		in->read(nm, len);
 		nm[len] = 0;
 		Game_window *gwin = Game_window::get_instance();
 		value.cptr = gwin->get_usecode()->get_class(nm);
-		ptr += len;
 		return true;
 	case string_type:
 		{
-		int len = Read2(ptr);
-		if (buflen < len + 3)
-			return false;
+		int len = in->read2();
 		value.str = new char[len + 1];
-		std::memcpy(value.str, ptr, len);
+		in->read(value.str, len);
 		value.str[len] = 0;
-		ptr += len;
 		return true;
 		}
 	case array_type:
 	case class_obj_type:
 		{
-		if (buflen < 3)
-			return false;
-		int len = Read2(ptr);
-		int remaining = buflen - 3; // already read one byte
+		int len = in->read2();
 		value.array.cnt = len;	// Stores class, class vars.
 		value.array.elems = new Usecode_value[value.array.cnt];
-		for (int i=0; i < len; i++) {
-			uint8* t = ptr;
-			bool retval = value.array.elems[i].restore(
-							ptr, remaining);
-			remaining -= (ptr - t);
-			if (!retval)
+		for (int i=0; i < len; i++)
+			if (!value.array.elems[i].restore(in))
 				return false;
-		}
 		return true;
 		}
 	default:

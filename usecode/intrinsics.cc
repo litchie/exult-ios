@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#include <map>
+
 #include "gamemap.h"
 #include "chunks.h"
 #include "Audio.h"
@@ -1748,25 +1750,19 @@ USECODE_INTRINSIC(get_timer)
 {
 	int tnum = parms[0].get_int_value();
 	int ret;
-	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
+	std::map<int, unsigned long>::iterator it = timers.find(tnum);
+	if (it != timers.end() && timers[tnum] > 0)
 					// Return 0 if not set.
-		ret = timers[tnum] > 0 ?
-			(gclock->get_total_hours() - timers[tnum]) : 0;
+		ret = gclock->get_total_hours() - timers[tnum];
 	else
-		{
-		cerr << "Attempt to use invalid timer " << tnum << endl;
 		ret = 0;
-		}
 	return Usecode_value(ret);
 }
 
 USECODE_INTRINSIC(set_timer)
 {
 	int tnum = parms[0].get_int_value();
-	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
-		timers[tnum] = gclock->get_total_hours();
-	else
-		cerr << "Attempt to use invalid timer " << tnum << endl;
+	timers[tnum] = gclock->get_total_hours();
 	return(no_ret);
 }
 
