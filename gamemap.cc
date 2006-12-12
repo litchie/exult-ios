@@ -756,8 +756,8 @@ void Game_map::write_scheduled
 	for (Usecode_script *scr = Usecode_script::find(obj); scr;
 					scr = Usecode_script::find(obj, scr))
 		{
-		unsigned char buf[256];
-		int len = scr->save(buf, sizeof(buf));
+		OVectorDataSource nbuf;
+		int len = scr->save(&nbuf);
 		if (len < 0)
 			cerr << "Error saving Usecode script" << endl;
 		else if (len > 0)
@@ -765,7 +765,7 @@ void Game_map::write_scheduled
 			ireg->write1(IREG_SPECIAL);
 			ireg->write1(IREG_UCSCRIPT);
 			ireg->write2(len);	// Store length.
-			ireg->write(reinterpret_cast<char*>(buf), len);
+			ireg->write(nbuf.getPtr(), len);
 			}
 		}
 	if (write_mark)
@@ -941,7 +941,8 @@ void Read_special_ireg
 	ireg->read(reinterpret_cast<char*>(buf), len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
-		Usecode_script *scr = Usecode_script::restore(obj, buf, len);
+		BufferDataSource *nbuf = new BufferDataSource(buf, len);
+		Usecode_script *scr = Usecode_script::restore(obj, nbuf);
 		if (scr)
 			{
 			scr->start(scr->get_delay());

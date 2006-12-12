@@ -1,3 +1,13 @@
+2006-12-12  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed a bug in the get_class method of the symbol table.
+	* Added a 'OVectorDataSource' vector data source for output of unknown
+	  length to prevent problems with small buffers.
+	* Made Usecode_value and Usecode_script classes use data sources for input
+	  and output to eliminate possible buffer problems.
+	* Removed the limit on usecode timers allowed.
+	* Made usecode static vars refer to its parent function (if any) by name
+	  when possible.
+
 2006-12-11  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Added support for turning translucency on/off for paperdolls. New data for
 	  BG and SI paperdolls has been added.

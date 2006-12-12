@@ -36,6 +36,7 @@
 #include <csignal>
 #endif
 #include <algorithm>       // STL function things
+#include <map>
 
 #include "Gump.h"
 #include "Gump_manager.h"
@@ -68,6 +69,7 @@
 #include "effects.h"
 #include "party.h"
 #include "ucsymtbl.h"
+#include "databuf.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -1765,8 +1767,6 @@ Usecode_internal::Usecode_internal
 		, on_breakpoint(false)
 #endif
 	{
-					// Clear timers.
-	memset((char *) &timers[0], 0, sizeof(timers));
 	sp = stack;
 	ifstream file;                // Read in usecode.
 	std::cout << "Reading usecode file." << std::endl;
@@ -3054,24 +3054,6 @@ bool Usecode_internal::in_usecode_for
 	}
 
 /*
- *	Write out one usecode value.
- */
-
-static void Write_useval
-	(
-	ostream& out,
-	Usecode_value& val
-	)
-	{
-	unsigned char buf[1024];
-	int len = val.save(buf, sizeof(buf));
-	if (len < 0)
-		throw file_exception("Static usecode value overflows buf");
-	else
-		out.write((char *) buf, len);
-	}
-
-/*
  *	Write out global data to 'gamedat/usecode.dat'.
  *	(and 'gamedat/keyring.dat')
  *
@@ -3096,8 +3078,16 @@ void Usecode_internal::write
 	for (i = 0; i < EXULT_PARTY_MAX; i++)
 		Write2(out, partyman->get_member(i));
 					// Timers.
-	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
-		Write4(out, timers[t]);
+	Write4(out, 0xffffffffU);
+	for (std::map<int, unsigned long>::iterator it = timers.begin();
+			it != timers.end(); ++it)
+		{
+		if (!(*it).second)	// Don't write unused timers.
+			continue;
+		Write2(out, (*it).first);
+		Write4(out, (long)(*it).second);
+		}
+	Write2(out, 0xffff);
 	Write2(out, saved_pos.tx);	// Write saved pos.
 	Write2(out, saved_pos.ty);
 	Write2(out, saved_pos.tz);
@@ -3107,10 +3097,12 @@ void Usecode_internal::write
 		throw file_write_exception(USEDAT);
 	out.close();
 	U7open(out, USEVARS);		// Static variables. 1st, globals.
-	Write4(out, statics.size());	// # globals.
+	StreamDataSource *nfile = new StreamDataSource(&out);
+	nfile->write4(statics.size());	// # globals.
 	vector<Usecode_value>::iterator it;
 	for (it = statics.begin(); it != statics.end(); ++it)
-		Write_useval(out, *it);
+		if (!(*it).save(nfile))
+			throw file_exception("Could not write static usecode value");
 					// Now do the local statics.
 	int num_slots = funs.size();
 	for (i = 0; i < num_slots; i++)
@@ -3122,14 +3114,26 @@ void Usecode_internal::write
 			Usecode_function *fun = *fit;
 			if (!fun || fun->statics.empty())
 				continue;
-			Write4(out, fun->id);
-			Write4(out, fun->statics.size());
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[fun->id] : 0;
+			if (fsym)
+				{
+				const char *nm = fsym->get_name();
+				nfile->write4(0xfffffffeU);
+				nfile->write2(strlen(nm));
+				nfile->write((char *)nm, strlen(nm));
+				}
+			else
+				nfile->write4(fun->id);
+			nfile->write4(fun->statics.size());
 			for (it = fun->statics.begin();
 					it != fun->statics.end(); ++it)
-				Write_useval(out, *it);
+				{
+				if (!(*it).save(nfile))
+					throw file_exception("Could not write static usecode value");
+				}
 			}
 		}
-	Write4(out, 0xffffffffU);	// End with -1.
+	nfile->write4(0xffffffffU);	// End with -1.
 	out.flush();
 	if( !out.good() )
 		throw file_write_exception(USEVARS);
@@ -3194,8 +3198,19 @@ void Usecode_internal::read
 		partyman->set_member(i, Read2(in));
 	partyman->link_party();
 					// Timers.
-	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
-		timers[t] = Read4(in);
+	int cnt = Read4(in);
+	if (cnt == 0xffffffffU)
+		{
+		int tmr = 0;
+		while ((tmr = Read2(in)) != 0xffff)
+			timers[tmr] = Read4(in);
+		}
+	else
+		{
+		timers[0] = cnt;
+		for (size_t t = 1; t < 20; t++)
+			timers[t] = Read4(in);
+		}
 	if (!in.good())
 		throw file_read_exception(USEDAT);
 	saved_pos.tx = Read2(in);	// Read in saved position.
@@ -3218,32 +3233,36 @@ void Usecode_internal::read_usevars
 	std::istream& in
 	)
 	{
-	in.seekg(0, ios::end);
-	int size = in.tellg();		// Get file size.
-	in.seekg(0);
-	if (!size)
-		return;
-	unsigned char *buf = new unsigned char[size];	// Get the whole thing.
-	in.read((char *) buf, size);
-	unsigned char *ptr = buf;
-	unsigned char *ebuf = buf + size;
-	int cnt = Read4(ptr);		// Global statics.
+	int cnt = Read4(in);		// Global statics.
+	StreamDataSource *nfile = new StreamDataSource(&in);
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)
-		statics[i].restore(ptr, ebuf - ptr);
+		statics[i].restore(nfile);
 	unsigned long funid;
-	while (ptr < ebuf && (funid = Read4(ptr)) != 0xffffffffU)
+	while (!nfile->eof() && (funid = nfile->read4()) != 0xffffffffU)
 		{
-		int cnt = Read4(ptr);
+		if (funid == 0xfffffffeU)
+			{
+			// ++++ FIXME: Write code for the cases when symtbl == 0 or
+			// fsym == 0 (neither of which *should* happen...)
+			int len = nfile->read2();
+			char nm[len + 1];
+			nfile->read(nm, len);
+			nm[len] = 0;
+			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : 0;
+			if (fsym)
+				funid = fsym->get_val();
+			}
+
+		int cnt = nfile->read4();
 		Usecode_function *fun = find_function(funid);
 		if (!fun)
 			continue;
 		fun->statics.resize(cnt);
 		for (i = 0; i < cnt; i++)
-			fun->statics[i].restore(ptr, ebuf - ptr);
+			fun->statics[i].restore(nfile);
 		}
-	delete [] buf;
 	}
 
 void Usecode_internal::clear_usevars()
