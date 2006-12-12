@@ -332,6 +332,10 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		font->paint_text_fixedwidth(ibuf, "Enter NPC Flag 0-63. (-1 to cancel.)", 0, maxy-9, 8);
 		break;
 
+		case CP_TempNum:
+		font->paint_text_fixedwidth(ibuf, "Enter Temperature 0-63. (-1 to cancel.)", 0, maxy-9, 8);
+		break;
+
 
 		case CP_Name:
 		font->paint_text_fixedwidth(ibuf, "Enter a new Name...", 0, maxy-9, 8);
@@ -1514,7 +1518,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
 		// Skin
-		snprintf (buf, 512, "[1] Skin...%s", "??");
+		snprintf (buf, 512, "[1] Skin...%d", actor->get_skin_color());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
 		// Read
@@ -1679,13 +1683,6 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 			actor->set_type_flag(Actor::tf_bleeding);
 		break;
 		
-		case '3':	// Tournament
-		if (actor->get_flag(Obj_flags::si_tournament))
-			actor->clear_flag(Obj_flags::si_tournament);
-		else
-			actor->set_flag(Obj_flags::si_tournament);
-		break;
-		
 		case 's':	// Sex
 		if (actor->get_type_flag(Actor::tf_sex))
 			actor->clear_type_flag(Actor::tf_sex);
@@ -1766,10 +1763,23 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		else actor->set_ident(i);
 		break;
 		
-		case '1':	// Skin
+		case '1':	// Skin color
+		int num_skins = Game::get_game_type() == BLACK_GATE ? 4 : 3;
+		actor->set_skin_color((actor->get_skin_color()+1)%num_skins);
+		break;
+
+		case '3':	// Tournament
+		if (actor->get_flag(Obj_flags::si_tournament))
+			actor->clear_flag(Obj_flags::si_tournament);
+		else
+			actor->set_flag(Obj_flags::si_tournament);
 		break;
 		
 		case 'y':	// Warmth
+		if (i < -1) mode = CP_InvalidValue;
+		else if (i > 63) mode = CP_InvalidValue;
+		else if (i == -1 || !input[0]) mode = CP_Canceled;
+		else actor->set_temperature(i);
 		break;
 		
 		case '2':	// Polymorph
@@ -1842,7 +1852,7 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 		case 'q':	// Summoned
 		case 'r':	// Bleedin
 		case 'w':	// Freeze
-		//case '3':	// Tournament
+		case '3':	// Tournament
 		activate = true;
 		input[0] = command;
 		break;
@@ -1867,8 +1877,8 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 		// Value
 		case 'y':	// Temp
 		if (!actor->is_in_party()) command = 0;
-		else  mode = CP_NotAvail;
-		input[0] = command;
+		else  mode = CP_TempNum;
+		input[0] = 0;
 		break;
 
 
@@ -1892,8 +1902,10 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 		// Value SI
 		case '1':	// Skin
-		if (Game::get_game_type() != SERPENT_ISLE || actor->get_npc_num()) command = 0;
-		else mode = CP_NotAvail;
+		if ((Game::get_game_type() == BLACK_GATE &&
+				!Shape_manager::get_instance()->can_use_multiracial())
+			|| actor->get_npc_num()) command = 0;
+		else activate = true;
 		input[0] = command;
 		break;
 
