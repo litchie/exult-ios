@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Usecode_browser
 	{
 	GtkWidget *win;			// Main window.
+	GtkWidget *tree;		// The tree-view.
 	std::string choice;		// Set when window is closed.
 	GtkTreeStore *model;
 public:
@@ -42,6 +43,7 @@ public:
 					// Configure when created/resized.
 	const char *get_choice() const
 		{ return choice.c_str(); }
+	void okay();
 	void cancel()
 		{
 		choice = "";
