@@ -53,6 +53,20 @@ void ExultStudio::open_usecode_browser_window
 	}
 
 /*
+ *	Usecode_browser window's okay button.
+ */
+C_EXPORT void on_usecodes_ok_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
+			GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	ucb->okay();
+	}
+
+/*
  *	Usecode_browser window's cancel button.
  */
 C_EXPORT void on_usecodes_cancel_clicked
@@ -112,15 +126,17 @@ Usecode_browser::Usecode_browser
 		G_TYPE_STRING,		// Number.
 		G_TYPE_STRING);		// Type:  function, class.
 					// Create view, and set our model.
-	GtkWidget *tree = glade_xml_get_widget(app_xml, "usecodes_treeview");
+	tree = glade_xml_get_widget(app_xml, "usecodes_treeview");
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
 			"Name", renderer, "text", NAME_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
+	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
 			"Number", renderer, "text", NUM_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
+	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
 			"Type", renderer, "text", TYPE_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
@@ -154,6 +170,37 @@ void Usecode_browser::show
 	else
 		gtk_widget_hide(win);
 	}
+
+/*
+ *	"Okay" button.
+ */
+
+void Usecode_browser::okay
+	(
+	)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+
+	choice = "";
+  	/* This will only work in single or browse selection mode! */
+	GtkTreeSelection *selection = 
+		gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
+  	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+    		gchar *name;
+    		gtk_tree_model_get(model, &iter, NAME_COL, &name, -1);
+		if (name[0])
+			choice = name;
+    		g_free(name);
+		if (choice == "") {	// No name? Get number.
+	    		gtk_tree_model_get(model, &iter, NUM_COL, &name, -1);
+			choice = name;
+			g_free(name);
+		}
+		g_print ("selected row is: %s\n", choice.c_str());
+  	}
+	show(FALSE);
+}
 
 /*
  *	Set up list of usecode entries.
