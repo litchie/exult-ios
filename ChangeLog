@@ -1,3 +1,54 @@
+2006-12-20  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Increased version to 1.4.03CVS due to the enormous number of changes.
+	* Added versioning information to the files loaded through Shapeinfo_lookup.
+	* Added two new intrinsics: set_npc_name and set_usecode_fun, as well as
+	  documentation for them.
+	* shapes/miscinf.*: Added some new data files, with dynamic importing of
+	  shapes allowed. See the data files themselves for more information.
+	    ++++ Important ++++
+	  These data files allow the specification of previously hard-coded data.
+	  This hard-coded data will NO LONGER BE PRESENT for new games, which must
+	  supply their own versions of the data files instead.
+	* gamamgr/bggame.cc, sigame.cc: Updated to use new data files for skins.
+	  In BG, also made the character creation screen use a new palette by using
+	  palette remapping of the shapes to draw. Consequently, said screen uses
+	  shapes from faces.vga (patched with Exult_bg.flx/mr_faces.vga) to draw
+	  the multiracial faces.
+	* expack.cc: You can now specify a shape number for a file in a script by
+	  prefixing the file name with a ':shapenum:'. Shapes following a declared
+	  shape will have their numbers assigned starting from the specified shape.
+	* shapes/vgafile.*: VGA files now support multiple (more than 2) patches
+	  from different sources. Also added support for loading VGA files from
+	  within a flx file (such as Exult_bg.flx). Also, VGA files can now import
+	  specific shapes from another VGA file and remap the shape number to a
+	  different value. Finally, Shape frames can also be painted by remapping
+	  their colors using a palette translation table.
+	* shapeid.*: Renamed a few vars and functions to have more generic names.
+	  Modified the handling of VGA file loading, allowing for independent use
+	  of paperdolls and of multiracial avatars, as well as allowing multiple
+	  patches for paperdol.vga in BG. BG shapes.vga now imports the multiracial
+	  shapes from SI. Likewise, multiracial faces are patched into faces.vga.
+	  Added support for drawing shapes by remapping them into another palette
+	  using a translation table. Finally, BG gumps.vga imports the blue shapes
+	  from the SI gumps.vga file.
+	* shapes/shapevga.*: Modified info table to use a map instead.
+	* gumps/Paperdoll_gump.cc: Use data-file-defined data for the blue shapes.
+	* usecode/ucinternal.cc, conversation.cc: Use new data files and functions
+	  to 'de-hack' multiracial support in BG. Also, the Petra and tattooed flags
+	  also work in BG now, with effects configurable in data files.
+	  Also, added function to retrieve a usecode function's name from its id.
+	* usecode/ucserial.cc: Fixed bug #1616911.
+	* cheat.cc, cheat_screen.cc: Use new functions for changing skin colors.
+	  Allow use of naked, petra and tattooed flags in BG too.
+	* palette.*: Added function to create a translation table between two palettes.
+	  Improved find_color function to allow searching up to a specified index.
+	* imagewin/ibuff8.*, shapes/font.*: Added support for painting shapes by
+	  remapping their colors to another palette using a translation table.
+	* actors.cc: Use new skin data and functions.
+	* actorio.cc: Save/load skin color using its own char (but retain backward
+	  compatibility).
+	* all others: Changed for compatibility with the above changes.
+
 2006-12-12  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a bug in the get_class method of the symbol table.
 	* Added a 'OVectorDataSource' vector data source for output of unknown

@@ -282,11 +282,11 @@ void Palette::fade_out(int cycles)
 }
 
 //	Find index (0-255) of closest color (r,g,b < 64).
-int Palette::find_color(int r, int g, int b) {
+int Palette::find_color(int r, int g, int b, int last) {
 	int best_index = -1;
 	long best_distance = 0xfffffff;
 					// But don't search rotating colors.
-	for (int i = 0; i < 0xe0; i++) {
+	for (int i = 0; i < last; i++) {
 					// Get deltas.
 		long dr = r - pal1[3*i], dg = g - pal1[3*i + 1], 
 							db = b - pal1[3*i + 2];
@@ -299,6 +299,13 @@ int Palette::find_color(int r, int g, int b) {
 	}
 	return best_index;
 }
+
+void Palette::create_palette_map(Palette *to, unsigned char *&buf)
+	{
+	// Assume buf has 256 elements
+	for (int i = 0; i < 256; i++)
+		buf[i] = to->find_color(pal1[3*i], pal1[3*i + 1], pal1[3*i + 2], 256);
+	}
 
 /*
  *	Create a translucency table for this palette seen through a given

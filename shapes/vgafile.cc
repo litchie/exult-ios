@@ -32,9 +32,15 @@
 #include "vgafile.h"
 #include "databuf.h"
 #include "Flex.h"
+#include "U7file.h"
 #include "exceptions.h"
+#include "palette.h"
 
 #include <cassert>
+#include <vector>
+#include <string>
+#include <utility>
+#include <map>
 
 #ifndef UNDER_CE
 using std::cerr;
@@ -45,6 +51,9 @@ using std::ios;
 using std::memcpy;
 using std::memset;
 using std::ostream;
+using std::vector;
+using std::string;
+using std::pair;
 #endif
 
 GL_manager *Shape_frame::glman = 0;
@@ -444,6 +453,28 @@ void Shape_frame::paint_rle
 	}
 
 /*
+ *	Show a Run-Length_Encoded shape mapped to a different palette.
+ */
+
+void Shape_frame::paint_rle_remapped
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff,		// Where to show in iwin.
+	unsigned char *trans
+	)
+	{
+	assert(rle);
+
+	int w = get_width(), h = get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
+			return;
+
+	win->paint_rle_remapped (xoff, yoff, data, trans);
+	return;
+	}
+
+/*
  *	Paint either type of shape.
  */
 
@@ -748,13 +779,14 @@ void Shape_frame::set_offset
 
 Shape_frame *Shape::reflect
 	(
-	DataSource* shapes,		// shapes data source to read.
+	vector<DataSource *> shapes,		// shapes data source to read.
 	int shapenum,			// Shape #.
-	int framenum			// Frame # without the 'reflect' bit.
+	int framenum,			// Frame # without the 'reflect' bit.
+	vector<int> counts
 	)
 	{
 					// Get normal frame.
-	Shape_frame *normal = get(shapes, shapenum, framenum);
+	Shape_frame *normal = get(shapes, shapenum, framenum, counts);
 	if (!normal)
 		return (0);
 					// Reflect it.
@@ -840,52 +872,66 @@ inline void Shape::create_frames_list
 
 Shape_frame *Shape::read
 	(
-	DataSource *shapes1,		// Shapes data source to read.
+	vector<DataSource *> shapes,	// Shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # within shape.
-	DataSource *shapes2,		// Shapes data source to read (alternative).
-	int count1,			// Number of shapes in shapes
-	int count2			// Number of shapes in shapes2
+	vector<int> counts,		// Number of shapes in files.
+	int src
 	)
 	{
-	DataSource *shapes = 0;
+	DataSource *shp = 0;
 	Shape_frame *frame = new Shape_frame();
 					// Figure offset in "shapes.vga".
 	uint32 shapeoff = 0x80 + shapenum*8;
 	uint32 shapelen = 0;
+	
+	// Check backwards for the shape file to use.
+	int i = counts.size();
+	if (src < 0)
+		{
+		vector<DataSource *>::reverse_iterator it = shapes.rbegin();
+		for ( ; it != shapes.rend(); ++it)
+			{
+			i--;
+			if (shapenum < counts[i])
+				{
+				(*it)->seek(shapeoff);
+								// Get location, length.
+				int s = (*it)->read4();
+				shapelen = (*it)->read4();
 
-	// If shapes2 exists and shapenum is valid for shapes2
-	if (shapes2 && (count2 == -1 || shapenum < count2))
-	{
-		shapes2->seek(shapeoff);
+				if (s && shapelen)
+					{
+					shapeoff = s;
+					shp = *it;
+					break;
+					}
+				}
+			}
+		}
+	else if (shapenum < counts[src])
+		{
+		shapes[src]->seek(shapeoff);
 						// Get location, length.
-		int s = shapes2->read4();
-		shapelen = shapes2->read4();
+		int s = shapes[src]->read4();
+		shapelen = shapes[src]->read4();
 
 		if (s && shapelen)
-		{
+			{
 			shapeoff = s;
-			shapes = shapes2;
+			shp = shapes[src];
+			}
 		}
-	}
-	if (shapes == 0)
+	// The shape was not found anywhere, so leave.
+	if (shp == 0)
 	{
-		shapes = shapes1;
-		if (count1 != -1 && shapenum >= count1)
-		{
-			std::cerr << "Shape num out of range: " << shapenum << std::endl;
-			return 0;
-		}
-
-		shapes->seek(shapeoff);
-						// Get location, length.
-		shapeoff = shapes->read4();
-		shapelen = shapes->read4();
+		std::cerr << "Shape num out of range: " << shapenum << std::endl;
+		return 0;
 	}
 	if (!shapelen)
 		return 0;		// Empty shape.
 					// Read it in and get frame count.
-	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
+	int nframes = frame->read(shp, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
 		create_frames_list(nframes);
 	if (!frame->rle)
@@ -894,7 +940,7 @@ Shape_frame *Shape::read
 	    (framenum&32))		// Reflection desired?
 		{
 		delete frame;
-		return (reflect(shapes, shapenum, framenum&0x1f));
+		return (reflect(shapes, shapenum, framenum&0x1f, counts));
 		}
 	return store_frame(frame, framenum);
 	}
@@ -1199,10 +1245,6 @@ void Shape_file::save(DataSource* shape_source)
 	delete [] offsets;
 }
 
-
-
-
-
 /*
  *	Open file.
  */
@@ -1212,96 +1254,223 @@ Vga_file::Vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Patch file, or null.
-	) : shape_source(0), shape_source2(0),
-	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
-	    shapes(0), u7drag_type(u7drag), flex(true)
+	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true)
 	{
 	load(nm, nm2);
 	}
 
 Vga_file::Vga_file
 	(
-	) : shape_source(0), shape_source2(0),
-	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
-	    shapes(0), u7drag_type(-1), flex(true)
+	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true)
 	{
 		// Nothing to see here !!!
 	}
 
+Vga_file::Vga_file
+	(
+	vector<pair<string, int> > sources,
+	int u7drag		// # from u7drag.h, or -1
+	) : num_shapes(0), u7drag_type(u7drag), flex(true)
+	{
+	load(sources);
+	}
 
 /*
  *	Open file.
  */
 
-void Vga_file::load
+bool Vga_file::load
 	(
-	const char *nm,			// Path to file (required).
-	const char *nm2			// Path to patch file (optional).
+	const char *nm,
+	const char *nm2
+	)
+	{
+	vector<pair<string, int> > src;
+	src.push_back(pair<string, int>(string(nm), -1));
+	if (nm2 != 0)
+		src.push_back(pair<string, int>(string(nm2), -1));
+	return load(src);
+	}
+
+DataSource *Vga_file::U7load
+	(
+	pair<string, int> resource,
+	vector<ifstream *> &fs,
+	vector<DataSource *> &shps
+	)
+	{
+	DataSource *source = 0;
+	if (resource.second < 0)
+		{
+		// It is a file.
+		if (U7exists(resource.first))
+			{
+			ifstream *file = new ifstream();
+			U7open(*file, resource.first.c_str());
+			source = new StreamDataSource(file);
+			fs.push_back(file);
+			shps.push_back(source);
+			}
+		}
+	else
+		{
+		// It is a resource.
+		U7object vgaobj(resource.first, resource.second);
+		std::size_t len;
+		try
+			{
+			char *buf = vgaobj.retrieve(len);
+			source = new BufferDataSource(buf, len);
+			}
+		catch (std::exception &e)
+			{
+			CERR("Resource '" << resource.first << "' not found.");
+			delete source;
+			source = 0;
+			}
+		if (source)
+			shps.push_back(source);
+		}
+	return source;
+	}
+
+bool Vga_file::load
+	(
+	vector<pair<string, int> > sources
 	)
 	{
 	reset();
-	if (U7exists(nm))
-	{
-		U7open(file, nm);
-		shape_source = new StreamDataSource(&file);
-		StreamDataSource ds(&file);
-		flex = Flex::is_flex(&ds);
-	}
-	if (nm2 && U7exists(nm2))
-	{
-		U7open(file2, nm2);		// throws an error if it fails
-		shape_source2 = new StreamDataSource(&file2);
-		StreamDataSource ds(&file2);
-		flex = Flex::is_flex(&ds);
-	}
-	if (!shape_source && !shape_source2)
-		throw file_open_exception(get_system_path(nm));
+	int count = sources.size();
+	shape_sources.reserve(count);
+	files.reserve(count);
+	shape_cnts.reserve(count);
+	bool is_good = true;
+	if (!U7exists(sources[0].first.c_str()))
+		is_good = false;
+	for (vector<pair<string, int> >::iterator it = sources.begin();
+		it != sources.end(); ++it)
+		{
+		DataSource *source = U7load(*it, files, shape_sources);
+		if (source)
+			{
+			source->seek(0x54);	// Get # of shapes.
+			int cnt = source->read4();
+			num_shapes = num_shapes > cnt ? num_shapes : cnt;
+			shape_cnts.push_back(cnt);
+			source->seek(0);
+			flex = Flex::is_flex(source);
+			}
+		}
+	if (!shape_sources.size())
+		throw file_open_exception(get_system_path(sources[0].first));
 	if (!flex)			// Just one shape, which we preload.
 		{
-		num_shapes = num_shapes1 = num_shapes2 = 1;
+		CERR("Got here: " << shape_sources.size() << ", " << files.size());
+		num_shapes = 1;
+		shape_cnts.clear();
+		shape_cnts.push_back(1);
 		shapes = new Shape[1];
-		shapes[0].load(shape_source2 ? shape_source2 : shape_source);
-		return;
+		shapes[0].load(shape_sources[shape_sources.size()-1]);
+		return true;
 		}
-	if (shape_source)
-		{
-		shape_source->seek(0x54);	// Get # of shapes.
-		num_shapes = num_shapes1 = shape_source->read4();
-		}
-	if (shape_source2)
-	{
-		shape_source2->seek(0x54);		// Get # of shapes.
-		num_shapes2 = shape_source2->read4();
-		if (num_shapes2 > num_shapes) num_shapes = num_shapes2;
-	}
 					// Set up lists of pointers.
 	shapes = new Shape[num_shapes];
+	return is_good;
+	}
+
+bool Vga_file::is_shape_imported(int shnum)
+	{
+	std::map<int, imported_map>::iterator it =
+			imported_shape_table.find(shnum);
+	return it != imported_shape_table.end();
+	}
+
+bool Vga_file::get_imported_shape_data(int shnum, imported_map& data)
+	{
+	std::map<int, imported_map>::iterator it =
+			imported_shape_table.find(shnum);
+	if (it != imported_shape_table.end())
+		{
+		data = (*it).second;
+		return true;
+		}
+	return false;
+	}
+
+bool Vga_file::import_shapes
+	(
+	pair<string, int> source,
+	vector<pair<int, int> > imports
+	)
+	{
+	DataSource *ds = U7load(source, imported_files, imported_sources);
+	if (ds)
+		{
+		ds->seek(0x54);	// Get # of shapes.
+		int cnt = ds->read4();
+		imported_cnts.push_back(cnt);
+		flex = Flex::is_flex(ds);
+		assert(flex);
+		imported_shapes.reserve(imported_shapes.size() + imports.size());
+		for (vector<pair<int, int> >::iterator it = imports.begin();
+			it != imports.end(); ++it)
+			{
+			imported_map data = {
+					(*it).second,	// The real shape
+					imported_shapes.size(),	// The index of the data pointer.
+					imported_sources.size() - 1};	// The data source index.
+			imported_shape_table[(*it).first] = data;
+			imported_shapes.push_back(new Shape());
+			}
+		return true;
+		}
+	else
+		{
+		// Set up the import table anyway.
+		for (vector<pair<int, int> >::iterator it = imports.begin();
+			it != imports.end(); ++it)
+			{
+			imported_map data = {(*it).second, -1, -1};
+			imported_shape_table[(*it).first] = data;
+			}
+		}
+	return false;
 	}
 
 void Vga_file::reset()
 	{
 	if( shapes )
 		delete [] shapes;
-	if( shape_source )
-		delete shape_source;
-	file.close();
 
-	if( shape_source2 )
-		delete shape_source2;
-
-	if (file2.is_open()) file2.close();
+	for (vector<ifstream *>::iterator it = files.begin();
+			it != files.end(); ++it)
+		if ((*it)->is_open())
+			(*it)->close();
+	files.clear();
+	shape_sources.clear();
+	shape_cnts.clear();
 
 	num_shapes = 0;
-	num_shapes1 = 0;
-	num_shapes2 = 0;
-	shape_source = 0;
-	shape_source2 = 0;
 	shapes = 0;
+	}
+
+void Vga_file::reset_imports()
+	{
+	for (vector<ifstream *>::iterator it = imported_files.begin();
+			it != imported_files.end(); ++it)
+		if ((*it)->is_open())
+			(*it)->close();
+	imported_files.clear();
+	imported_sources.clear();
+	imported_cnts.clear();
+	imported_shapes.clear();
+	imported_shape_table.clear();
 	}
 
 Vga_file::~Vga_file()
 	{
 	reset();
+	reset_imports();
 	}
 
 /*

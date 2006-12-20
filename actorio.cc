@@ -37,6 +37,7 @@
 #include "databuf.h"
 #include "npctime.h"
 #include "ucmachine.h"
+#include "miscinf.h"
 
 using std::ios;
 using std::cout;
@@ -88,10 +89,12 @@ void Actor::read
 					//   ES, so always use it.
 					// iflag1:3 == usecode fun name assigned
 					//   by ES, so use it instead.
+					// iflag1:4 == Extended skin number
 	bool read_sched_usecode = !fix_first && (iflag1&2);
 	bool usecode_name_used = !fix_first && (iflag1&8);
 	if (usecode_name_used || !fix_first && (iflag1&4))
 		usecode_assigned = true;
+	bool extended_skin = !fix_first && (iflag1&16);
 
 	int schunk = nfile->read1();	// Superchunk #.
 					// For multi-map:
@@ -166,13 +169,16 @@ void Actor::read
 
 		if (num == 0)
 		{
-			if (Game::get_avskin() >= 0 && Game::get_avskin() <= 3)
-				set_skin_color (Game::get_avskin());
-			else
-				set_skin_color (((strength_val >> 6)-1) & 0x3);
+			if (!extended_skin)	// We will do it later for extended skins.
+			{
+				if (Game::get_avskin() >= 0 && Game::get_avskin() <= 3)
+					set_skin_color (Game::get_avskin());
+				else
+					set_skin_color (((strength_val >> 6)-1) & 0x3);
+			}
 		}
 		else 
-			set_skin_color (3);
+			set_skin_color (-1);
 	}
 	else
 	{
@@ -180,10 +186,13 @@ void Actor::read
 		
 		if (num == 0)
 		{
-			if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
-				set_skin_color (Game::get_avskin());
-			else
-				set_skin_color ((strength_val >> 5) & 0x3);
+			if (!extended_skin)	// We will do it later for extended skins.
+			{
+				if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
+					set_skin_color (Game::get_avskin());
+				else
+					set_skin_color ((strength_val >> 5) & 0x3);
+			}
 		}
 		else 
 			set_skin_color (-1);
@@ -314,7 +323,8 @@ void Actor::read
 	shnum = nfile->read2();
 	if (!fix_first && shnum)
 	{
-		if (GAME_BG && !sman->can_use_multiracial() && shnum > 1024 && npc_num == 0)
+		// ++++ Testing
+		if (npc_num == 0)
 			set_actor_shape();
 		else
 			set_shape(shnum);		// 16 Bit Shape Number
@@ -365,6 +375,10 @@ void Actor::read
 			usecode_name = nm;
 			usecode = ucmachine->find_function(nm);
 			}
+
+		int skin = nfile->read1();
+		if (extended_skin)
+			set_skin_color(skin);
 	}
 	else
 	{
@@ -376,10 +390,13 @@ void Actor::read
 
 		// Flags2 
 		nfile->skip (4);
+
+		// Extended skins
+		nfile->skip (1);
 	}
 
-	// Skip 15
-	nfile->skip (15);
+	// Skip 14
+	nfile->skip (14);
 
 					// Get (signed) food level.
 	int food_read = static_cast<int>(static_cast<char>(nfile->read1()));
@@ -502,6 +519,9 @@ void Actor::write
 					//   usecode script following this.
 					// iflag1:2 == usecode # assigned by
 					//   ES, so always use it.
+					// iflag1:3 == usecode fun name assigned
+					//   by ES, so use it instead.
+					// iflag1:4 == Extended skin number
 	int iflag1 = objects.is_empty() ? 0 : 1;
 	iflag1 |= 2;			// We're always doing write_scheduled()
 	if (usecode_assigned)	// # assigned by EStudio?
@@ -512,6 +532,8 @@ void Actor::write
 		else
 			iflag1 |= 4;		// Set bit 2.
 	}
+	iflag1 |= 16;	// Set bit 4.
+
 	nfile->write2(iflag1);
 			// Superchunk #.
 	nfile->write1((get_cy()/16)*12 + get_cx()/16);
@@ -654,8 +676,10 @@ void Actor::write
 		nfile->write(nm, size);
 	}
 
-	// Skip 15
-	for (i = 0; i < 15; i++)
+	nfile->write1((char)get_skin_color());
+
+	// Skip 14
+	for (i = 0; i < 14; i++)
 		nfile->write1(0);
 	
 	// Food

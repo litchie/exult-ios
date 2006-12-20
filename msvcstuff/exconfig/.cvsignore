@@ -15,3 +15,4 @@ Makefile.in
 Debug
 Release
 exconfig.lib
+*.user

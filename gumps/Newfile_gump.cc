@@ -41,6 +41,7 @@
 #include "mouse.h"
 #include "party.h"
 #include "Text_button.h"
+#include "miscinf.h"
 
 #ifndef UNDER_CE
 using std::atoi;
@@ -547,14 +548,12 @@ void Newfile_gump::paint
 		sman->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
 
 	// Need to ensure that the avatar's shape actually exists
-	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && 
-		!sman->can_use_multiracial())
+	if (party && !sman->have_si_shapes() &&
+		Shapeinfo_lookup::IsSkinImported(party[0].shape))
 	{
-		party[0].shape_file = SF_SHAPES_VGA;
-
 		// Female if odd, male if even
-		if (party[0].shape %2) party[0].shape = 989;
-		else party[0].shape = 721;
+		if (party[0].shape %2) party[0].shape = Shapeinfo_lookup::GetFemaleAvShape();
+		else party[0].shape = Shapeinfo_lookup::GetMaleAvShape();
 	}
 
 	if (details && party)

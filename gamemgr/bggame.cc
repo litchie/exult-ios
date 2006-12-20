@@ -23,6 +23,9 @@
 #include "SDL_events.h"
 
 #include <typeinfo>
+#include <vector>
+#include <utility>
+#include <string>
 #include "items.h"
 #include "files/U7file.h"
 #include "files/utils.h"
@@ -40,6 +43,7 @@
 #include "Configuration.h"
 #include "shapeid.h"
 #include "modmgr.h"
+#include "miscinf.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -138,10 +142,14 @@ BG_Game::BG_Game()
 
 		add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
 
+		add_resource("files/paperdolvga", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BG_PAPERDOL_VGA);
+		add_resource("files/mrfacesvga", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BG_MR_FACES_VGA);
 		add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", EXULT_BG_FLX_DEFAULTKEYS_TXT);
-		add_resource("config/bodies", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BODIES_BG_TXT);
-		add_resource("config/paperdol_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_PAPERDOL_INFO_BG_TXT);
-		add_resource("config/shape_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_INFO_BG_TXT);
+		add_resource("config/bodies", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BODIES_TXT);
+		add_resource("config/paperdol_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_PAPERDOL_INFO_TXT);
+		add_resource("config/shape_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_INFO_TXT);
+		add_resource("config/shapefiles", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_FILES_TXT);
+		add_resource("config/avatardata", "<DATA>/exult_bg.flx", EXULT_BG_FLX_AVATAR_DATA_TXT);
 
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);
@@ -1538,64 +1546,73 @@ bool BG_Game::new_game(Vga_file &shapes)
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
 
+	Vga_file faces_vga;
 	// Need to know if SI is installed
-	bool si_installed = gamemanager->is_si_installed();
-
-	U7object faces_u7o("<DATA>/exult_bg.flx", EXULT_BG_FLX_MR_INTRO_SHP);
-	size_t shapesize;
-	char *shape_buf = faces_u7o.retrieve(shapesize);
-	BufferDataSource faces_ds(shape_buf, shapesize);
-	Shape_file faces_shape(&faces_ds);
+	bool si_installed = gamemanager->is_si_installed()
+			&& U7exists("<SERPENTISLE_STATIC>/shapes.vga");
+	
+	// List of files to load.
+	std::vector<std::pair<std::string, int> > source;
+	source.push_back(std::pair<std::string, int>(FACES_VGA, -1));
+	// Multiracial faces.
+	str_int_pair resource = game->get_resource("files/mrfacesvga");
+	source.push_back(std::pair<std::string, int>(resource.str, resource.num));
+	source.push_back(std::pair<std::string, int>(PATCH_FACES, -1));
+	faces_vga.load(source);
 
 	const int max_name_len = 16;
 	char npc_name[max_name_len+1];
 	char disp_name[max_name_len+2];
 	npc_name[0] = 0;
-	int sex = 0;
 	int selected = 0;
 	int num_choices = 4;
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
 	SDL_Event event;
 	bool editing = true;
 	bool redraw = true;
 	bool ok = true;
+
+	// Skin info
+	Avatar_default_skin *defskin = Shapeinfo_lookup::GetDefaultAvSkin();
+	Skin_data *skindata =
+		Shapeinfo_lookup::GetSkinInfoSafe(
+				defskin->default_skin, defskin->default_female, si_installed);
+	
+	//gwin->get_pal()->load("<STATIC>/intropal.dat",6);
+	Palette *pal = 	gwin->get_pal();
+	pal->load("<DATA>/exult_bg.flx", EXULT_BG_FLX_U7MENUPAL_PAL);
+	Palette *oldpal = new Palette();
+	oldpal->load("<STATIC>/intropal.dat", 6);
+
+	// Create palette translation table. Maybe make them static?
+	unsigned char *transto = new unsigned char[256];
+	oldpal->create_palette_map(pal, transto);
+	sman->paint_shape(topx,topy,shapes.get_shape(0x2,0), 0, transto);
+
 	do
 	{
 		if (redraw)
 		{
 			win->fill8(0,gwin->get_width(),90,0,menuy);
-			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0), 0, transto);
 
-			Shape_frame *sex_shape = shapes.get_shape(0xA, selected==1?1:0);
-			sman->paint_shape(topx+10,menuy+25,sex_shape);
+			Shape_frame *sex_shape = shapes.get_shape(0xA, selected == 1);
+			sman->paint_shape(topx+10, menuy+25, sex_shape, 0, transto);
 			int sex_width = sex_shape->get_width()+10;
 			if (sex_width > 35) sex_width += 25; 
 			else sex_width = 60;
 
-			if (si_installed)
-			{
-				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
+			sman->paint_shape(topx+sex_width, menuy+25, shapes.get_shape(0xB, skindata->is_female), 0, transto);
 
-				if (sex >= 2)
-				{
-					sman->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
-				}
-				else
-					sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
-			}
-			else
-			{
-				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
-				sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
-			}
+			Shape_frame *portrait = faces_vga.get_shape(skindata->face_shape, skindata->face_frame);
+			sman->paint_shape(topx+290, menuy+61, portrait);
 
-			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
-			if(selected==0)
+			sman->paint_shape(topx+10, topy+180, shapes.get_shape(0x8, selected == 2), 0, transto);
+			sman->paint_shape(centerx+10, topy+180, shapes.get_shape(0x7, selected == 3), 0, transto);
+			if (selected == 0)
 				snprintf(disp_name, max_name_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
-			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
+			font->draw_text(ibuf, topx+60, menuy+10, disp_name, transto);
 			gwin->get_pal()->apply();
 			redraw = false;
 		}
@@ -1616,15 +1633,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 					}
 				}
 				else if(selected==1)
-				{
-					if (si_installed)
-					{
-						sex++;
-						if (sex >= 8) sex = 0;
-					}
-					else
-						sex = !sex;
-				}
+					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
 				else if(selected==2)
 				{
 					editing=false;
@@ -1638,28 +1647,12 @@ bool BG_Game::new_game(Vga_file &shapes)
 				break;
 			case SDLK_LEFT:
 				if(selected==1)
-				{
-					if (si_installed)
-					{
-						sex--;
-						if (sex < 0) sex = 7;
-					}
-					else
-						sex = !sex;
-				}
+					skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, si_installed, true);
 				break;
 
 			case SDLK_RIGHT:
 				if(selected==1)
-				{
-					if (si_installed)
-					{
-						sex++;
-						if (sex >= 8) sex = 0;
-					}
-					else
-						sex = !sex;
-				}
+					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
 				break;
 			case SDLK_ESCAPE:
 				editing = false;
@@ -1724,20 +1717,25 @@ bool BG_Game::new_game(Vga_file &shapes)
 	}
 	while(editing);
 
-	FORGET_ARRAY(shape_buf);
-
 	if(ok)
 	{
 #ifdef DEBUG
-		std::cout << "Skin is: " << (3-(sex/2)) << " Sex is: " << (sex%2) << std::endl;
+		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
 #endif
-		set_avskin(3-(sex/2));
+		set_avskin(skindata->skin_id);
 		set_avname (npc_name);
-		set_avsex (sex%2);
+		set_avsex (skindata->is_female);
 		gwin->get_pal()->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok =gwin->init_gamedat(true);
 	}
+	else
+	{
+		pal->load("<STATIC>/intropal.dat",6);
+		sman->paint_shape(topx,topy,shapes.get_shape(0x2,0));
+		pal->apply();
+	}
+
 	win->fill8(0,gwin->get_width(),90,0,menuy);
 
 	SDL_EnableUNICODE(0);

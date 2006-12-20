@@ -43,6 +43,7 @@
 #include "effects.h"
 #include "chunks.h"
 #include "objiter.h"
+#include "miscinf.h"
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
@@ -416,15 +417,13 @@ void Cheat::toggle_naked (void) const {
 }
 
 void Cheat::change_skin (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && 
-	    !sman->can_use_multiracial())) 
+	if (!enabled) 
 		return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
+	int sex = gwin->get_main_actor()->get_type_flag(Actor::tf_sex);
+	color = Shapeinfo_lookup::GetNextSkin(color, sex, sman->have_si_shapes());
   
-	if (GAME_BG) color = (color+1) %4;
-	else color = (color+1) %3;
-
 	gwin->get_main_actor()->set_skin_color(color);
 	gwin->set_all_dirty();
 }

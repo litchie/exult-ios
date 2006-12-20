@@ -877,6 +877,8 @@ void Shape_chooser::edit_shape_info
 	if (shapes_file)
 		{			// Read info. the first time.
 		shapes_file->read_info(studio->get_game_type(), true);
+		if (!shapes_file->has_info(shnum))
+			shapes_file->set_info(shnum, Shape_info());
 		info = &shapes_file->get_info(shnum);
 		name = studio->get_shape_name(shnum);
 		}

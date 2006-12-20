@@ -22,6 +22,9 @@
 #define MISCINF_H 1
 #include <vector>
 #include <map>
+#include <string>
+
+class Actor;
 
 enum Object_type
 {
@@ -88,114 +91,38 @@ struct Animation_info
 							// If -1, set offset = init_frame
 };
 
-/*
- *	Base parser class shape data.
- */
-class Shapeinfo_entry_parser
-	{
-public:
-	virtual void parse_entry(int index, char *eptr, bool for_patch) = 0;
-	virtual int ReadInt(char *&eptr, int off = 1)
-		{
-		int ret = strtol(eptr + off, &eptr, 0);
-		while (isspace(*eptr))
-			eptr++;
-		return ret;
-		}
-	};
+struct Base_Avatar_info
+{
+	int shape_num;
+	int face_shape;			// Shape and frame for face during the
+	int face_frame;			// normal game.
+};
 
-/*
- *	Parser class for integer shape data.
- */
-class Int_pair_parser: public Shapeinfo_entry_parser
-	{
-	std::map<int, int> *table;
-public:
-	Int_pair_parser(std::map<int, int> *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch)
-		{
-		int key = ReadInt(eptr, 0);
-		int data = ReadInt(eptr);
-		(*table)[key] = data;
-		}
-	};
+struct Avatar_default_skin
+{
+	int default_skin;		// The starting skin color.
+	bool default_female;	// True if the default sex if female.
+};
 
-/*
- *	Parser class for boolean shape data.
- */
-class Bool_parser: public Shapeinfo_entry_parser
-	{
-	std::map<int, bool> *table;
-public:
-	Bool_parser(std::map<int, bool> *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch)
-		{
-		int key = ReadInt(eptr, 0);
-		(*table)[key] = true;
-		}
-	};
+struct Skin_data
+{
+	int skin_id;
+	bool is_female;
+	int shape_num;
+	int naked_shape;
+	int face_shape;			// Shape and frame for face during the
+	int face_frame;			// normal game.
+	int alter_face_shape;	// Shape and frame for face to be used
+	int alter_face_frame;	// when flag 33 is set.
+};
 
-/*
- *	Parser class for body shape data.
- */
-class Body_parser: public Shapeinfo_entry_parser
-	{
-	std::map<int, std::pair<int, int> > *table;
-public:
-	Body_parser(std::map<int, std::pair<int, int> > *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch)
-		{
-		int bshape = ReadInt(eptr, 0);
-		int bframe = ReadInt(eptr);
-		((*table)[index]).first = bshape;
-		((*table)[index]).second = bframe;
-		}
-	};
+struct Usecode_function_data
+{
+	int fun_id;
+	int event_id;
+};
 
-/*
- *	Parser class for information about animation cycles.
- */
-class Animation_parser: public Shapeinfo_entry_parser
-	{
-	std::multimap<int, Animation_info> *table;
-public:
-	Animation_parser(std::multimap<int, Animation_info> *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch);
-	};
-
-/*
- *	Parser class for NPC Paperdoll information.
- */
-class Paperdoll_npc_parser: public Shapeinfo_entry_parser
-	{
-	std::map<int, Paperdoll_npc> *table;
-public:
-	Paperdoll_npc_parser(std::map<int, Paperdoll_npc> *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch);
-	};
-
-/*
- *	Parser class for non-NPC Paperdoll information.
- */
-class Paperdoll_item_parser: public Shapeinfo_entry_parser
-	{
-	std::multimap<int, Paperdoll_item> *table;
-public:
-	Paperdoll_item_parser(std::multimap<int, Paperdoll_item> *tbl)
-		: table(tbl)
-		{  }
-	virtual void parse_entry(int index, char *eptr, bool for_patch);
-	};
+class Shapeinfo_entry_parser;
 
 /*
  *	A class to get the extra information for a given shape.
@@ -204,6 +131,8 @@ class Shapeinfo_lookup
 	{
 	typedef std::vector<char *> Readstrings;
 public:
+	static void reset();
+
 	// Body info:
 	static int find_body(int liveshape, int& deadshape, int& deadframe);
 	static bool Is_body_shape(int shapeid);
@@ -226,6 +155,31 @@ public:
 	static Animation_info *get_animation_cycle_info (int shapenum, int init_frame);
 	static bool get_usecode_events (int shapenum);
 	static bool get_mountain_top (int shapenum);
+
+	static std::vector<std::pair<std::string, int> > *GetFacesSources();
+	static std::vector<std::pair<std::string, int> > *GetPaperdollSources();
+	static std::vector<std::pair<int, int> > *GetImportedSkins();
+	static std::vector<std::pair<int, int> > *GetImportedGumpShapes();
+	static int GetBlueShapeData(int spot);
+	static bool IsSkinImported(int shape);
+
+	static Base_Avatar_info *GetBaseAvInfo(bool sex);
+	static int GetMaleAvShape();
+	static int GetFemaleAvShape();
+	static int GetNextSkin(int skin, bool sex, bool sishapes, bool ignoresex = false);
+	static int GetPrevSkin(int skin, bool sex, bool sishapes, bool ignoresex = false);
+	static Skin_data *GetNextSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false);
+	static Skin_data *GetPrevSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false);
+	static int GetNumSkins(bool sex);
+	static Avatar_default_skin *GetDefaultAvSkin();
+	static std::vector<Skin_data> *GetSkinList();
+	static Skin_data *GetSkinInfo(int skin, bool sex);
+	static Skin_data *GetSkinInfoSafe(int skin, bool sex, bool sishapes);
+	static Skin_data *GetSkinInfoSafe(Actor *npc);
+	static bool IsSkinSelectable(int skin);
+	static bool HasFaceReplacement(int npcid);
+	static Actor *GetFaceReplacement(Actor *npc);
+	static Usecode_function_data *GetAvUsecode(int type);
 private:
 	static void Read_data_file(const char *fname, const char *sections[],
 			Shapeinfo_entry_parser *parsers[],
@@ -233,5 +187,8 @@ private:
 	static void setup_miscinf();
 	static void setup_bodies();
 	static void setup_paperdolls();
+	static void setup_shape_files();
+	static void setup_avatar_data();
 	};
+
 #endif
