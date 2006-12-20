@@ -40,6 +40,7 @@
 #include "shapeid.h"
 #include "items.h"
 #include "data/exult_si_flx.h"
+#include "miscinf.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -124,9 +125,11 @@ SI_Game::SI_Game()
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
 	
 		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", EXULT_SI_FLX_DEFAULTKEYS_TXT);
-		add_resource("config/bodies", "<DATA>/exult_si.flx", EXULT_SI_FLX_BODIES_SI_TXT);
-		add_resource("config/paperdol_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_PAPERDOL_INFO_SI_TXT);
-		add_resource("config/shape_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_SHAPE_INFO_SI_TXT);
+		add_resource("config/bodies", "<DATA>/exult_si.flx", EXULT_SI_FLX_BODIES_TXT);
+		add_resource("config/paperdol_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_PAPERDOL_INFO_TXT);
+		add_resource("config/shape_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_SHAPE_INFO_TXT);
+		add_resource("config/shapefiles", "<DATA>/exult_si.flx", EXULT_SI_FLX_SHAPE_FILES_TXT);
+		add_resource("config/avatardata", "<DATA>/exult_si.flx", EXULT_SI_FLX_AVATAR_DATA_TXT);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);
@@ -1219,13 +1222,13 @@ bool SI_Game::new_game(Vga_file &shapes)
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	Vga_file faces_vga;
-
 	faces_vga.load(FACES_VGA, PATCH_FACES);	
+
 	const int max_len = 16;
 	char npc_name[max_len+1];
 	char disp_name[max_len+2];
 	npc_name[0] = 0;
-	int sex = 0;
+
 	int selected = 0;
 	int num_choices = 4;
 	//pal.load("<STATIC>/intropal.dat",6);
@@ -1233,18 +1236,26 @@ bool SI_Game::new_game(Vga_file &shapes)
 	bool editing = true;
 	bool redraw = true;
 	bool ok = true;
+
+	// Skin info
+	Avatar_default_skin *defskin = Shapeinfo_lookup::GetDefaultAvSkin();
+	Skin_data *skindata =
+		Shapeinfo_lookup::GetSkinInfoSafe(
+				defskin->default_skin, defskin->default_female, true);
+
 	do
 	{
 		if (redraw)
 		{
 			gwin->clear_screen();
-			sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			sman->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
-			Shape_frame *sh = faces_vga.get_shape(0,sex);
-			sman->paint_shape(topx+300,menuy+50,sh);
-			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			sman->paint_shape(topx, topy, menushapes.get_shape(0x2, 0));
+			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0));
+			sman->paint_shape(topx+10, menuy+25, shapes.get_shape(0x19, selected == 1));
+
+			Shape_frame *portrait = faces_vga.get_shape(skindata->face_shape, skindata->face_frame);
+			sman->paint_shape(topx+300, menuy+50, portrait);
+			sman->paint_shape(topx+10, topy+180, shapes.get_shape(0x8, selected == 2));
+			sman->paint_shape(centerx+10, topy+180, shapes.get_shape(0x7, selected == 3));
 			if(selected==0)
 				snprintf(disp_name, max_len+2, "%s_", npc_name);
 			else
@@ -1270,27 +1281,15 @@ bool SI_Game::new_game(Vga_file &shapes)
 					}
 				}
 				else if(selected==1)
-				{
-					++sex;
-					if(sex>5)
-						sex = 0;
-				}
+					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
 				break;
 			case SDLK_LEFT:
 				if(selected==1)
-				{
-					--sex;
-					if(sex<0)
-						sex = 5;
-				}
+					skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, true, true);
 				break;
 			case SDLK_RIGHT:
 				if(selected==1)
-				{
-					++sex;
-					if(sex>5)
-						sex = 0;
-				}
+					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
 				break;
 			case SDLK_ESCAPE:
 				editing = false;
@@ -1359,9 +1358,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 
 	if(ok)
 	{
+		set_avskin(skindata->skin_id);
 		set_avname (npc_name);
-		set_avsex (1-(sex%2));
-		set_avskin (sex/2);
+		set_avsex (skindata->is_female);
 		pal->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok = gwin->init_gamedat(true);

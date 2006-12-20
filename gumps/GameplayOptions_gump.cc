@@ -221,7 +221,7 @@ void GameplayOptions_gump::load_settings()
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
-	paperdolls = sman->get_bg_paperdolls();
+	paperdolls = sman->are_paperdolls_enabled();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	rightclick_close = gumpman->can_right_click_close();
 	doubleright_move = gwin->get_allow_double_right_move();
@@ -297,7 +297,7 @@ void GameplayOptions_gump::save_settings()
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
 	if (GAME_BG && sman->can_use_paperdolls())
-		sman->set_bg_paperdolls(paperdolls!=false);
+		sman->set_paperdoll_status(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", true);
 	gwin->set_allow_double_right_move(doubleright_move != false);

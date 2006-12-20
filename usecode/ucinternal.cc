@@ -655,14 +655,35 @@ void Usecode_internal::show_npc_face
 	Actor *npc = as_actor(get_item(arg1)), *iact = 0;
 	if (!npc)
 		return;
-	int shape = npc->get_face_shapenum();
-	int frame = arg2.get_int_value();
+	
 	if (Game::get_game_type() == BLACK_GATE)
 		{
 		if (npc->get_npc_num() != -1) 
 			npc->set_flag (Obj_flags::met);
 		}
-	else if (Game::get_game_type() == SERPENT_ISLE)
+	
+	// Checks for Petra flag.
+	Actor *facenpc = Shapeinfo_lookup::GetFaceReplacement(npc);
+
+	int shape = facenpc->get_face_shapenum();
+	int frame = arg2.get_int_value();
+
+	if (shape == 0)
+		{
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(gwin->get_main_actor()); 
+		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
+			{
+			shape = skin->alter_face_shape;
+			frame = skin->alter_face_frame;
+			}
+		else
+			{
+			shape = skin->face_shape;
+			frame = skin->face_frame;
+			}
+		}
+
+	if (Game::get_game_type() == SERPENT_ISLE)
 		{			// Special case: Nightmare Smith.
 					//   (But don't mess up Guardian.)
 		if (npc->get_npc_num() == 296 && this->frame->caller_item &&
@@ -3016,6 +3037,21 @@ int Usecode_internal::find_function
 		return -1;
 		}
 	return ucsym->get_val();
+	}
+
+/*
+ *	Lookup function id in symbol table.
+ */
+
+const char *Usecode_internal::find_function_name
+	(
+	int funcid
+	)
+	{
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[funcid] : 0;
+	if (!ucsym)
+		return 0;
+	return ucsym->get_name();
 	}
 
 /*

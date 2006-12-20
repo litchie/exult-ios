@@ -369,6 +369,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(display_map_ex);
 	USECODE_INTRINSIC_DECL(book_mode_ex);
 	USECODE_INTRINSIC_DECL(is_dest_reachable);
+	USECODE_INTRINSIC_DECL(set_npc_name);
+	USECODE_INTRINSIC_DECL(set_usecode_fun);
 	
 	/*
 	 *	Other private methods:
@@ -443,6 +445,7 @@ public:
 	virtual bool call_method(Usecode_value *inst, int id,
 					Game_object *item);
 	virtual int find_function(const char *nm, bool noerr = false);
+	virtual const char *find_function_name(int funcid);
 	virtual void do_speech(int num);// Start speech, or show text.
 	virtual bool in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }

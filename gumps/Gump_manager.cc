@@ -234,8 +234,7 @@ void Gump_manager::add_gump
 	bool paperdoll = false;
 	
 	// overide for paperdolls
-	if (actorgump && (Game::get_game_type() == SERPENT_ISLE ||
-		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
+	if (actorgump && (sman->can_use_paperdolls() && sman->are_paperdolls_enabled()))
 		paperdoll = true;
 	
 	Gump *dragged = gwin->get_dragging_gump();

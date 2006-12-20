@@ -29,6 +29,10 @@
 #include "exult_types.h"
 #include "exult_constants.h"
 #include "imagebuf.h"
+#include <vector>
+#include <utility>
+#include <string>
+#include <map>
 
 class DataSource;
 class StreamDataSource;
@@ -36,6 +40,7 @@ class Shape;
 class Image_buffer8;
 class GL_texshape;
 class GL_manager;
+class Palette;
 
 #ifdef HAVE_OPENGL
 #include "glshape.h"
@@ -101,6 +106,7 @@ public:
 					uint32 shapelen, int frnum);
 					// Paint into given buffer.
 	void paint_rle(Image_buffer8 *win, int px, int py);
+	void paint_rle_remapped(Image_buffer8 *win, int px, int py, unsigned char *trans);
 	void paint(Image_buffer8 *win, int px, int py);
 	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
 					Xform_palette *xforms, int xfcnt);
@@ -111,6 +117,8 @@ public:
 					// Paint to screen.
 	void paint_rle(int px, int py)
 		{ GLRENDER  paint_rle(scrwin, px, py); }
+	void paint_rle_remapped(int px, int py, unsigned char *trans)
+		{ GLRENDER  paint_rle_remapped(scrwin, px, py, trans); }
 	void paint(int px, int py)
 		{ GLRENDER  paint(scrwin, px, py); }
 					// ++++++GL versions of these needed:
@@ -155,12 +163,13 @@ protected:
 	unsigned int frames_size;	// Size of 'frames' (incl. reflects).
 	unsigned int num_frames;	// # of frames (not counting reflects).
 					// Create reflected frame.
-	Shape_frame *reflect(DataSource* shapes, int shnum, int frnum);
+	Shape_frame *reflect(std::vector<DataSource *> shapes, int shnum,
+		int frnum, std::vector<int> counts);
 	void enlarge(int newsize);	// Increase 'frames'.
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
-	Shape_frame *read(DataSource* shapes, int shnum, int frnum, 
-		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1);
+	Shape_frame *read(std::vector<DataSource *> shapes, int shnum,
+		int frnum, std::vector<int> counts, int src = -1);
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -175,12 +184,12 @@ public:
 	void take(Shape *s2);		// Take frames from another shape.
 	void load(DataSource* shape_source);
 	void write(std::ostream& out);	// Write out.
-	Shape_frame *get(DataSource* shapes, int shnum, int frnum, 
-		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
+	Shape_frame *get(std::vector<DataSource *> shapes, int shnum,
+		int frnum, std::vector<int> counts, int src = -1)
 		{ 
 		return (frames && frnum < frames_size && frames[frnum]) ? 
 			frames[frnum] : 
-			read(shapes, shnum, frnum, shapes2, count1, count2); 
+			read(shapes, shnum, frnum, counts, src); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
@@ -219,10 +228,17 @@ public:
  */
 class Vga_file
 	{
-	std::ifstream file;
-	DataSource *shape_source;
-	std::ifstream file2;
-	DataSource *shape_source2;
+	struct imported_map
+		{
+		int realshape;
+		int pointer_offset;
+		int source_offset;
+		};
+	std::vector<std::ifstream *> files;
+	std::vector<DataSource *> shape_sources;
+	std::vector<std::ifstream *> imported_files;
+	std::vector<DataSource *> imported_sources;
+	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;		// # from u7drag.h, or -1.
 	bool flex;			// This is the normal case (all .vga
 					//   files).  If false, file is a
@@ -231,19 +247,29 @@ class Vga_file
 					//   loaded.
 protected:
 	int num_shapes;			// Total # of shapes.
-	int num_shapes1;		// Total # of shapes in file 1.
-	int num_shapes2;		// Total # of shapes in file 2.
-	Shape *shapes;			// List of ->'s to shapes' lists
+	std::vector<int> shape_cnts;	// Total # of shapes in each file.
+	std::vector<int> imported_cnts;	// Total # of shapes in each file.
+	Shape *shapes;				// List of ->'s to shapes' lists
+	std::vector<Shape *> imported_shapes;	// List of ->'s to shapes' lists
 public:
 	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
+	Vga_file(std::vector<std::pair<std::string, int> > sources, int u7drag = -1);
 	Vga_file();
 	int get_u7drag_type() const
 		{ return u7drag_type; }
-	void load(const char *nm, const char *nm2 = 0);
+	DataSource *U7load(std::pair<std::string, int> resource,
+		std::vector<std::ifstream *> &fs, std::vector<DataSource *> &shps);
+	bool load(const char *nm, const char *nm2 = 0);
+	bool load(std::vector<std::pair<std::string, int> > sources);
+	bool import_shapes(std::pair<std::string, int> source,
+		std::vector<std::pair<int, int> > imports);
+	bool is_shape_imported(int shnum);
+	bool get_imported_shape_data(int shnum, imported_map& data);
 	void reset();
+	void reset_imports();
 	virtual ~Vga_file();
 	int get_num_shapes() const
-	{ return num_shapes>num_shapes2?num_shapes:num_shapes2; }
+	{ return num_shapes; }
 	int is_good() const
 		{ return shapes != 0; }
 	bool is_flex() const
@@ -251,40 +277,56 @@ public:
 					// Get shape.
 	Shape_frame *get_shape(int shapenum, int framenum = 0)
 		{
-		assert(shapes!=0);	// Because if shapes is NULL
-					// here, we won't die on the deref
-					// but we will return rubbish.
-		// I've put this assert in _before_ you know...
-		// So this isn't the first time we've had trouble here
-		Shape_frame *r=(shapes[shapenum].get(shape_source, shapenum, 
-			framenum, shape_source2, num_shapes1, num_shapes2));
-#if 0	/* Occurs normally in ExultStudio. */
-		if(!r)
+		Shape_frame *r;
+		imported_map data;
+		if (get_imported_shape_data(shapenum, data))
 			{
-#ifdef DEBUG
-				std::cerr << "get_shape(" <<
-					shapenum << "," <<
-					framenum << ") -> NULL" << std::endl;
-#endif
+			// The shape is imported from another file.
+			// Import table was set but the source could not be opened.
+			if (data.pointer_offset < 0)
+				return 0;
+			r = (imported_shapes[data.pointer_offset]->get(imported_sources,
+					data.realshape, framenum, imported_cnts, data.source_offset));
 			}
-#endif
+		else
+			{
+			assert(shapes!=0);	// Because if shapes is NULL
+						// here, we won't die on the deref
+						// but we will return rubbish.
+			// I've put this assert in _before_ you know...
+			// So this isn't the first time we've had trouble here
+			r = (shapes[shapenum].get(shape_sources, shapenum, 
+				framenum, shape_cnts));
+			}
 		return r;
 		}
 		
 	Shape *extract_shape(int shapenum)
 		{
-		assert(shapes!=0);
+		imported_map data;
+		bool is_imported = get_imported_shape_data(shapenum, data);
+		if (is_imported)
+			assert(imported_shapes.size());	// For safety.
+		else
+			assert(shapes!=0);
 		// Load all frames into memory
 		int count = get_num_frames(shapenum);
 		for(int i=1; i<count; i++)
 			get_shape(shapenum, i);
-		return shapes+shapenum;
+		if (is_imported)
+			return imported_shapes[data.pointer_offset];
+		else
+			return shapes+shapenum;
 		}
 					// Get # frames for a shape.
 	int get_num_frames(int shapenum)
 		{
 		get_shape(shapenum, 0);	// Force it into memory.
-		return shapes[shapenum].num_frames;
+		imported_map data;
+		if (get_imported_shape_data(shapenum, data))
+			return imported_shapes[data.pointer_offset]->num_frames;
+		else
+			return shapes[shapenum].num_frames;
 		}
 					// Create new shape (or del old).
 	virtual Shape *new_shape(int shapenum);	

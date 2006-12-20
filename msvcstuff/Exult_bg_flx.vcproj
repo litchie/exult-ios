@@ -209,10 +209,6 @@
 					RelativePath="..\data\bg\mr_faces.shp"
 					>
 				</File>
-				<File
-					RelativePath="..\data\bg\mr_intro.shp"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter

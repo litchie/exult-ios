@@ -800,6 +800,12 @@ int obj->get_usecode_fun()
     NPC's assigned function (if any) and the correct shape <> function mapping
     for shapes > 1024.
 
+UI_set_usecode_fun(actor npc, function fun)                              [Exult]
+npc->set_usecode_fun(function fun)
+
+    Sets the usecode function for 'npc' to 'fun'. This assignment is done by
+    function name if possible.
+
 int UI_get_map_num(object obj)                                           [Exult]
 int obj->get_map_num()
 
@@ -953,6 +959,11 @@ string npc->get_npc_name()
 string[] UI_get_npc_name(actor npc[])
 
     Returns the names of all NPCs in 'npc'.
+
+UI_set_npc_name(actor npc, string name)
+npc->set_npc_name(string name)
+
+    Sets the name of 'npc' to 'name'.
 
 UI_is_npc(misc obj)
 obj->is_npc()

@@ -92,6 +92,7 @@ public:
 	virtual bool call_method(Usecode_value *inst, int id,
 					Game_object *item) = 0;
 	virtual int find_function(const char *nm, bool noerr = false) = 0;
+	virtual const char *find_function_name(int funcid) = 0;
 	virtual Usecode_class_symbol *get_class(int n) = 0;
 	virtual Usecode_class_symbol *get_class(const char *nm) = 0;
 	virtual int get_shape_fun(int n) = 0;

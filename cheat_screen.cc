@@ -42,6 +42,7 @@
 #include "Configuration.h"
 #include "SDL.h"
 #include "party.h"
+#include "miscinf.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -531,7 +532,7 @@ void CheatScreen::NormalMenu ()
 
 	// Use
 	Shape_manager *sman = Shape_manager::get_instance();
-	if (Game::get_game_type() == SERPENT_ISLE || (sman->can_use_paperdolls() && sman->get_bg_paperdolls()))
+	if (sman->can_use_paperdolls() && sman->are_paperdolls_enabled())
 		snprintf (buf, 512, "[P]aperdolls..: Yes");
 	else
 		snprintf (buf, 512, "[P]aperdolls..:  No");		
@@ -673,9 +674,9 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		case 'p':
 			if (Game::get_game_type() == BLACK_GATE 
 				&& sman->can_use_paperdolls()) {
-				sman->set_bg_paperdolls (sman->get_bg_paperdolls()?false:true);
+				sman->set_paperdoll_status(!sman->are_paperdolls_enabled());
 				config->set("config/gameplay/bg_paperdolls",
-							sman->get_bg_paperdolls() ? "yes" : "no", true);
+							sman->are_paperdolls_enabled() ? "yes" : "no", true);
 			}
 		break;
 
@@ -1494,7 +1495,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);
 
 	// Naked (AV SI ONLY)
-	if (Game::get_game_type() == SERPENT_ISLE && !actor->get_npc_num())
+	if (!actor->get_npc_num())
 	{
 		snprintf (buf, 512, "[7] Naked..%c", actor->get_siflag(Actor::naked)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 104, maxy-27, 8);
@@ -1565,7 +1566,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-36, 8);
 
 	// Patra (AV SI ONLY)
-	if (Game::get_game_type() == SERPENT_ISLE && !actor->get_npc_num())
+	if (!actor->get_npc_num())
 	{
 		snprintf (buf, 512, "[5] Petra..%c", actor->get_flag(Obj_flags::petra)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-27, 8);
@@ -1764,8 +1765,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case '1':	// Skin color
-		int num_skins = Game::get_game_type() == BLACK_GATE ? 4 : 3;
-		actor->set_skin_color((actor->get_skin_color()+1)%num_skins);
+		actor->set_skin_color(
+			Shapeinfo_lookup::GetNextSkin(
+				actor->get_skin_color(), actor->get_type_flag(Actor::tf_sex),
+				Shape_manager::get_instance()->have_si_shapes()));
 		break;
 
 		case '3':	// Tournament
@@ -1895,16 +1898,14 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 		// Toggles SI
 		case '5':	// Petra
 		case '7':	// Naked
-		if (Game::get_game_type() != SERPENT_ISLE || actor->get_npc_num()) command = 0;
+		if (actor->get_npc_num()) command = 0;
 		else activate = true;
 		input[0] = command;
 		break; 
 
 		// Value SI
 		case '1':	// Skin
-		if ((Game::get_game_type() == BLACK_GATE &&
-				!Shape_manager::get_instance()->can_use_multiracial())
-			|| actor->get_npc_num()) command = 0;
+		if (actor->get_npc_num()) command = 0;
 		else activate = true;
 		input[0] = command;
 		break;

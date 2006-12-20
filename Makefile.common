@@ -3,7 +3,7 @@ $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/sm
 $(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src: \
 $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:$(SRC)/gamemgr
 
-VERSION=1.4.02cvs
+VERSION=1.4.03cvs
 
 MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultico.o exultmenu.o \
@@ -103,25 +103,30 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/BGmap.shp \
 	data/bg/defaultkeys.txt	\
 	data/bg/mr_faces.shp \
-	data/bg/mr_intro.shp \
-	data/bg/bodies_bg.txt \
-	data/bg/paperdol_info_bg.txt \
-	data/bg/shape_info_bg.txt
+	data/bg/u7menupal.pal \
+	data/bg/bg_paperdol.vga \
+	data/bg/bg_mr_faces.vga \
+	data/bg/bodies.txt \
+	data/bg/shape_files.txt \
+	data/bg/avatar_data.txt \
+	data/bg/paperdol_info.txt \
+	data/bg/shape_info.txt
 
 EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
 	data/si/flx.in \
 	data/si/SImap.shp \
 	data/si/defaultkeys.txt \
-	data/si/bodies_si.txt \
-	data/si/paperdol_info_si.txt \
-	data/si/shape_info_si.txt
+	data/si/bodies.txt \
+	data/si/shape_files.txt \
+	data/si/avatar_data.txt \
+	data/si/paperdol_info.txt \
+	data/si/shape_info.txt
 
-EXULT_BG_PAPERDOL_VGA = data/bg_paperdol.vga data/bg_paperdol_vga.h
+EXULT_BG_PAPERDOL_VGA = data/bg/bg_paperdol.vga data/bg/bg_paperdol_vga.h
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	data/bg/amulets.shp \
 	data/bg/bgfiredoom.shp \
-	data/bg/blank.shp \
 	data/bg/bluedress.shp \
 	data/bg/caddellite_helmet.shp \
 	data/bg/cleaver.shp \
@@ -174,8 +179,15 @@ EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	data/bg/shieldbacks.shp \
 	data/bg/bg_paperdol.in
 
+EXULT_BG_MR_FACES_VGA = data/bg/bg_mr_faces.vga data/bg/bg_mr_faces_vga.h
+EXULT_BG_MR_FACES_VGA_OBJECTS = \
+	data/bg/mr_faces.shp \
+	data/bg/u7menupal.pal \
+	data/bg/bg_mr_faces.in
+
 FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
+BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
 
 $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -194,6 +206,9 @@ $(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
 
 $(BG_PAPERDOLL): expack$(EXEEXT) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
 	expack$(EXEEXT) -i data/bg/bg_paperdol.in
+
+$(BG_MR_FACES): expack$(EXEEXT) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
+	expack$(EXEEXT) -i data/bg/bg_mr_faces.in
 
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) cmanip.o $(CONF_OBJS) $(FILE_OBJS)
@@ -269,7 +284,7 @@ head2data.test:
 all: $(EXEC)
 
 clean:
-	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg_paperdol.vga data/bg_paperdol_vga.h
+	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
 
 uccrefresh:
 	if test usecode/compiler/ucparse.yy -nt ucparse.cc ; then rm -f ucparse.cc ucparse.h ; fi

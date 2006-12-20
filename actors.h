@@ -287,6 +287,22 @@ public:
 		{ return face_num; }	// It's the NPC's #.
 	int get_usecode() const
 		{ return usecode == -1 ? Game_object::get_usecode() : usecode; }
+	void set_usecode(int funid, const char *nm = 0)
+		{
+		if (funid < 0)
+			{
+			usecode_assigned = false;
+			usecode_name.clear();
+			funid = -1;
+			return;
+			}
+		if (nm)
+			usecode_name = nm;
+		else
+			usecode_name.clear();
+		usecode = funid;
+		usecode_assigned = true;
+		}
 	Schedule *get_schedule() const
 		{ return schedule; }
 	int get_frame_time() const	// Return frame time if moving.
