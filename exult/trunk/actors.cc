@@ -4090,12 +4090,9 @@ void Main_actor::die
 	Actor::set_flag(Obj_flags::dead);
 	gumpman->close_all_gumps();	// Obviously.
 					// Special function for dying:
-	if (Game::get_game_type() == BLACK_GATE)
-		ucmachine->call_usecode(0x60e, this, Usecode_machine::weapon);
-
-		else
-			ucmachine->call_usecode(0x400, this,
-					Usecode_machine::died);
+	Usecode_function_data *info = Shapeinfo_lookup::GetAvUsecode(0);
+	ucmachine->call_usecode(info->fun_id, this,
+			(Usecode_machine::Usecode_events)info->event_id);
 	}
 
 /*
