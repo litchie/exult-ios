@@ -65,7 +65,6 @@
 #	:type/function/event
 #type is one of:
 #	0 for death usecode
-#	1 if main actor is confused (failed copy protection in SI)
 #function is either, the function number or :functionname
 #event is the event id to use or -1 if event is not important
 :0/0x60e/4
