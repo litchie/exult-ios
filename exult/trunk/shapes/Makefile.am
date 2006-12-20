@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin -I$(srcdir)/../audio \
-	$(SDL_CFLAGS) $(FREETYPE2_INCLUDES) \
+	-I$(srcdir)/../data -I$(srcdir)/../usecode -I$(srcdir)/../objs $(SDL_CFLAGS) $(FREETYPE2_INCLUDES) \
 	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libshapes.la

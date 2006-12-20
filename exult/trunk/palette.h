@@ -75,7 +75,8 @@ public:
 		int get_max_val();
 		void fade_in(int cycles);
 		void fade_out(int cycles);
-		int find_color(int r, int g, int b);
+		int find_color(int r, int g, int b, int last = 0xe0);
+		void create_palette_map(Palette *to, unsigned char *&buf);
 		void create_trans_table(unsigned char br, unsigned bg,
 			unsigned bb, int alpha, unsigned char *table);
 		void show();

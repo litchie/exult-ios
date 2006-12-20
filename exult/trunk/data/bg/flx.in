@@ -2,7 +2,11 @@
 BGmap.shp
 defaultkeys.txt
 mr_faces.shp
-mr_intro.shp
-bodies_bg.txt
-paperdol_info_bg.txt
-shape_info_bg.txt
+u7menupal.pal
+bg_paperdol.vga
+bg_mr_faces.vga
+bodies.txt
+paperdol_info.txt
+shape_info.txt
+shape_files.txt
+avatar_data.txt

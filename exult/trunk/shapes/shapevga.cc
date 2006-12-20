@@ -77,13 +77,11 @@ static bool U7open2
 
 void Shapes_vga_file::reload_info
 	(
-	Exult_Game game,		// Which game.
-	int min_info_size
+	Exult_Game game		// Which game.
 	)
 	{
 	info_read = false;
-	info.resize(0);
-	info.resize(min_info_size > num_shapes ? min_info_size : num_shapes);
+	info.clear();
 	read_info(game);
 	}	
 
@@ -294,7 +292,7 @@ Shapes_vga_file::Shapes_vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Path to patch version, or 0.
-	) : Vga_file(nm, u7drag, nm2), info_read(false), info(num_shapes)
+	) : Vga_file(nm, u7drag, nm2), info_read(false)
 	{
 	}
 
@@ -303,15 +301,13 @@ Shapes_vga_file::~Shapes_vga_file()
 	}
 
 
-void Shapes_vga_file::init(int min_info_size)
+void Shapes_vga_file::init()
 {
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_SHAPES))
 		load(SHAPES_VGA, PATCH_SHAPES);
 	else
 		load(SHAPES_VGA);
 	info_read = false;
-	info.resize(0);
-	info.resize(min_info_size > num_shapes ? min_info_size : num_shapes);
 }
 
 /*
@@ -326,7 +322,5 @@ Shape *Shapes_vga_file::new_shape
 	)
 	{
 	Shape *newshape = Vga_file::new_shape(shapenum);
-	if (newshape && shapenum >= info.size())
-		info.resize(shapenum + 1);
 	return newshape;
 	}

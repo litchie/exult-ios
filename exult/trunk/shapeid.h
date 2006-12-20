@@ -38,8 +38,6 @@ enum ShapeFile {
 	SF_FACES_VGA,		// <STATIC>/faces.vga
 	SF_EXULT_FLX,		// <DATA>/exult.flx
 	SF_GAME_FLX,		// <DATA>/bg_data.flx or <DATA>/si_data.flx
-	SF_BG_SIGUMP_FLX,	// BG only for Paperdolls
-	SF_BG_SISHAPES_VGA,	// BG only for Multiracial
 	// Not yet
 	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
 
@@ -64,10 +62,10 @@ class Shape_manager : public Game_singletons
 					//   0xf4 through 0xfe.
 	Xform_palette *invis_xform;	// For showing invisible NPC's.
 	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
-	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
+	bool can_have_paperdolls;	// Set true if the SI paperdoll file 
 					//   is found when playing BG
-	bool bg_paperdolls;		// True if paperdolls are wanted in BG
-	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
+	bool paperdolls_enabled;	// True if paperdolls are on.
+	bool got_si_shapes;	// Set true if the SI shapes file 
 					//   is found when playing BG
 	void read_shape_info();
 public:
@@ -87,25 +85,27 @@ public:
 		{ return xforms[i]; }
 	// BG Only
 	inline bool can_use_paperdolls() const
-	{ return bg_paperdolls_allowed; }
+	{ return can_have_paperdolls; }
 
-	inline bool get_bg_paperdolls() const
-	{ return bg_paperdolls; }
+	inline bool are_paperdolls_enabled() const
+	{ return paperdolls_enabled; }
 
-	inline void set_bg_paperdolls(bool p)
-	{ bg_paperdolls = p; }
+	inline void set_paperdoll_status(bool p)
+	{ paperdolls_enabled = p; }
 
-	inline bool can_use_multiracial() const
-	{ return bg_multiracial_allowed; }
+	inline bool have_si_shapes() const
+	{ return got_si_shapes; }
 
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
-						int translucent = 0)
+						int translucent = 0, unsigned char *trans = 0)
 		{
 		if (!shape || !shape->data)
 			CERR("NULL SHAPE!!!");
 		else if (!shape->rle)
 			shape->paint(xoff, yoff);
+		else if (trans)
+			shape->paint_rle_remapped(xoff, yoff, trans);
 		else if (!translucent)
 			shape->paint_rle(xoff, yoff);
 		else

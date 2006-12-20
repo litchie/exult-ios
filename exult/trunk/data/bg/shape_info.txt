@@ -1,7 +1,12 @@
-#	Various shape information for Serpent Isle.
+#	Various shape information for Black Gate.
 #
 #	February 6, 2006
 #
+
+%%section version
+:1
+%%endsection
+
 %%section explosions
 #Format
 #	:shapenum/spritenum
@@ -42,6 +47,31 @@
 :780/56
 #	Fountains
 :893/36
+#		Black Gate only SFX
+#	Moongates
+:157/77
+:776/77
+:777/77
+:779/77
+#	Sphere generator
+:234/80
+:235/80
+:236/80
+#	Tetrahedron generator
+:242/81
+:243/81
+:244/81
+#	Cube generator
+:238/82
+:239/82
+:240/82
+#	Black gate
+:305/78
+#	Vortex cube
+:786/79
+#	Grandfather clock
+:252/116
+:695/116
 %%endsection
 
 %%section animation
@@ -66,82 +96,35 @@
 :284/1
 #	Energy field
 :768/2
-#	Fountain
-:153/0/0/6/%
-:153/0/6/6/%
-:153/0/12/6/%
-#	Lava
-:184/0/0/6/%
-:184/0/6/6/%
-#	Pennant
-:222/0/0/6/%
-:222/0/6/6/%
-:222/0/12/6/%
-#	Fire
-:289/0/0/6/%
-:289/0/6/6/%
-#	Serpent Statue
-:305/0/0/6/%
-:305/0/6/6/%
-#	Fountain
-:326/0/0/6/%
-:326/0/6/6/%
-:326/0/12/6/%
-#	Flux analyzer
-:456/0/0/6/%
-:456/0/6/6/%
-#	Magic music player
-:614/0/0/6/%
-#	Planets
-:655/0/0/6/%
-:655/0/6/6/%
-:655/0/12/6/%
-:655/0/18/6/%
-:655/0/24/6/%
-#	Grandfather clock
-:695/0/0/6/%
-:695/0/6/6/%
-#	Pulsating object
-:726/0/0/6/%
-:726/0/6/6/%
-:726/0/12/6/%
-:726/0/18/6/%
-:726/0/24/6/%
-#	statue
-:743/0/0/6/%
-:743/0/6/6/%
-#	Severed limb
-:794/0/0/6/%
-:794/0/6/6/%
-:794/0/12/6/%
-:794/0/18/6/%
-:794/0/24/6/%
-#	Burning urn
-:992/0/0/6/%
-:992/0/6/6/%
-#	Magic wave
-:779/0/0/6/1
-:779/0/6/6/0
-#	Bubbles
-:335/0/0/6
-:335/0/6/7
-#	Basin
-:322/0/0/6
-:322/0/6/1
-#	Basin
-:714/0/0/6
-:714/0/6/1
+#	Vertical shaft
+:862/0/0/1/0
+:862/0/1/3/0
+#	Horizontal shaft
+:880/0/0/1/0
+:880/0/1/3/0
+#	Sawmill
+:933/0/0/1/0
+:933/0/1/3/0
 %%endsection
 
 %%section usecode_events
 #List of which items receive usecode events when readied/unreadied.
-:209		#	Quest items
-:296		#	Rings
-:701		#	Lit torch
+:296		#	Ring of invibility
+:297		#	Ring of protection
+:298		#	Ring of regeneration
 :338		#	Lit light source
-:806		#	Black sword
-:990		#	Erinons Axe
-:996		#	Belt of Strength
-:1001		#	Guantlets of Quickness
-:1013		#	Helm of Light
+:701		#	Lit torch
+%%endsection
+
+%%section mountain_tops
+#BG Only; in SI, set the flags 'Occludes', plus 'Poisonous' and 'Field'
+#for dungeons or 'Occludes' plus 'Water' for ice dungeons.
+#In any case (BG or SI), object type MUST be building. Setting the above
+#flags will also work in BG, as long as the shape is not in the list below.
+:983
+:969
+:183
+:182
+:180
+:324
 %%endsection

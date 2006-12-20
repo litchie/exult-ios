@@ -21,10 +21,10 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljp
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
 ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
-ZIP_LIBS=-L$(SRC)/zlib -lz
+ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 
 # Leave this option empty
-EXTRA_OPTIONS=
+EXTRA_OPTIONS=-DDEBUG -DSHOW_USECODE_CONTAINER
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers  -I$(SRC)/conf -I$(SRC)/data \
@@ -61,7 +61,6 @@ install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp data/bg_paperdol.vga $(U7PATH)/data
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data
 	cp data/exult_si.flx $(U7PATH)/data
@@ -78,7 +77,6 @@ dist:   $(EXEC) exconfig.dll
 	cp data/exult.flx $(U7PATH)/Exult/Data
 	cp data/exult_bg.flx $(U7PATH)/Exult/Data
 	cp data/exult_si.flx $(U7PATH)/Exult/Data
-	cp data/bg_paperdol.vga $(U7PATH)/Exult/Data
 	cp data/exultmsg.txt $(U7PATH)/Exult/Data
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt

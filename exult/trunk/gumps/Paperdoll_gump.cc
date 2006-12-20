@@ -82,17 +82,6 @@ short Paperdoll_gump::coords_blue[36] = {
 	76, 26,		/* ears */	76, 33,		/* cloak */
 	73, 53,		/* gloves */	0, 0		/* usecode container */
 };
-short Paperdoll_gump::shapes_blue[36] = {
-	54, 0,		/* head */	54, 0,		/* back */
-	54, 0,		/* belt */	55, 0,		/* lhand */
-	55, 0,		/* lfinger */	54, 0,		/* legs */
-	54, 0,		/* feet */	54, 0,		/* rfinger */
-	54, 0,		/* rhand */	55, 0,		/* torso */
-	54, 0,		/* neck */	54, 0,		/* ammo */
-	55, 0,		/* back2 */	54, 0,		/* back 3 (shield) */
-	54, 0,		/* ears */	54, 0,		/* cloak */
-	54, 0,		/* gloves */	54, 0		/* usecode container */
-};
 short Paperdoll_gump::coords_hot[36] = {
 	76, 20,		/* head */	94, 27,		/* back */
 	92,  61,	/* belt */	38, 55,		/* lhand */
@@ -545,9 +534,8 @@ void Paperdoll_gump::paint_object
 
 		set_to_spot(obj, spot);
 	
-		ShapeID s(shapes_blue[spot*2], shapes_blue[spot*2+1], SF_GUMPS_VGA);
-
-		if (Game::get_game_type() == BLACK_GATE) s.set_file(SF_BG_SIGUMP_FLX);
+		int shnum = Shapeinfo_lookup::GetBlueShapeData(spot);
+		ShapeID s(shnum, 0, SF_GUMPS_VGA);
 
 		s.paint_shape(box.x + coords_blue[spot*2],
 				box.y + coords_blue[spot*2+1]);

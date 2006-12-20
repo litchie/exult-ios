@@ -1932,8 +1932,7 @@ void Actor::activate
 	if (edit())
 		return;
 	// We are serpent if we can use serpent isle paperdolls
-	bool serpent = Game::get_game_type()==SERPENT_ISLE||
-		(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
+	bool serpent = (sman->can_use_paperdolls() && sman->are_paperdolls_enabled());
 	
 	bool show_party_inv = gumpman->showing_gumps(true) || 
 							gwin->in_combat();
@@ -2143,7 +2142,7 @@ void Actor::show_inventory()
 int Actor::inventory_shapenum()
 {
 	// We are serpent if we can use serpent isle paperdolls
-	bool serpent = Game::get_game_type()==SERPENT_ISLE||(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
+	bool serpent = (sman->can_use_paperdolls() && sman->are_paperdolls_enabled());
 	
 	if (!serpent)
 		{	// Can't display paperdolls (or they are disabled)
@@ -4104,49 +4103,26 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
-	if (get_npc_num() != 0 || get_flag (Obj_flags::polymorph))
+	if (get_npc_num() != 0 || get_flag (Obj_flags::polymorph) || get_skin_color() < 0)
 		return;
 
 	int sn;
-
-	ShapeFile the_file = SF_SHAPES_VGA;
 	int female = get_type_flag(tf_sex)?1:0;
-
-	if (Game::get_game_type() == SERPENT_ISLE||sman->can_use_multiracial())
-	{
-		if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
-
-		if (get_skin_color() == 0) // WH
-		{
-			sn = 1028+female+6*get_siflag(naked);
-		}
-		else if (get_skin_color() == 1) // BN
-		{
-			sn = 1026+female+6*get_siflag(naked);
-		}
-		else if (get_skin_color() == 2) // BK
-		{
-			sn = 1024+female+6*get_siflag(naked);
-		}
-		else if (Game::get_game_type() == SERPENT_ISLE)
-		{
-			sn = female?658:747;
-		}
-		else
-		{
-			the_file = SF_SHAPES_VGA;
-			sn = female?989:721;
-		}
-	}
-	else if (female)
-		sn = 989;
+	Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(this);
+	
+	if (!skin ||	// Should never happen, but hey...
+		(!sman->have_si_shapes() &&
+			Shapeinfo_lookup::IsSkinImported(
+				get_siflag(naked) ? skin->naked_shape : skin->shape_num)))
+		sn = Shapeinfo_lookup::GetBaseAvInfo(female)->shape_num;
 	else
-		sn = 721;
+		sn = get_siflag(naked) ? skin->naked_shape : skin->shape_num;
+
 #ifdef DEBUG
 	cerr << "Setting Shape to " << sn << endl;
 #endif
-	set_shape (sn, get_framenum());
-	set_file(the_file);
+	set_shape(sn, get_framenum());
+	set_file(SF_SHAPES_VGA);
 }
 
 // Sets the polymorph to shape
@@ -4159,27 +4135,18 @@ void Actor::set_polymorph (int shape)
 #endif
 	
 	// Want to set to Avatar
-	ShapeFile the_file = SF_SHAPES_VGA;
-	if (shape == 721 || shape == 989)
+	if (shape == Shapeinfo_lookup::GetMaleAvShape() ||
+		shape == Shapeinfo_lookup::GetFemaleAvShape())
 	{
 		Actor *avatar = gwin->get_main_actor();
 		if (!avatar) return;
 
-		int female = get_type_flag(tf_sex)?1:0;
+		int female = avatar->get_type_flag(tf_sex)?1:0;
 
-		if (Game::get_game_type() == SERPENT_ISLE||sman->can_use_multiracial())
-		{
-			if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
-
-			if (get_skin_color() == 0) // WH
-				shape = 1028+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
-			else if (get_skin_color() == 1) // BN
-				shape = 1026+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
-			else if (get_skin_color() == 2) // BK
-				shape = 1024+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
-		}
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(this);
+		shape = avatar->get_siflag(naked) ? skin->naked_shape : skin->shape_num;
 	}
-	set_file(the_file);
+	set_file(SF_SHAPES_VGA);
 
 	if (shape == shape_save)
 	{
@@ -4208,7 +4175,7 @@ void Actor::set_polymorph_default()
 	shape_save = get_shapenum();
 
 	if (get_npc_num() == 28)		// Handle Petra First
-		set_polymorph (721);
+		set_polymorph (Shapeinfo_lookup::GetMaleAvShape());
 	else if (get_flag(Obj_flags::petra))	// Avatar as petra
 		set_polymorph (658);
 	else	// Snake
@@ -4231,9 +4198,9 @@ int Actor::get_shape_real
 		return shape_save!=-1?shape_save:get_shapenum();
 					// Taking guess (6/18/01):
 	if (get_type_flag(Actor::tf_sex))
-		return 989;
+		return Shapeinfo_lookup::GetFemaleAvShape();
 	else
-		return 721;
+		return Shapeinfo_lookup::GetMaleAvShape();
 	}
 
 /*

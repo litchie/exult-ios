@@ -4,9 +4,13 @@
 #	February 4, 2006 - Derived from gumps/Paperdoll_gump_info.cc
 #
 
+%%section version
+:1
+%%endsection
 
 %%section characters
-#Shp: The NPC's SHAPE number
+#Shp: The NPC's SHAPE number; can be also a reference defined in the
+#si avatar_data data file, multiracial_imports section.
 #fmale: 1 if female, 0 if male
 #trans: 1 if the shape is translucent, 0 otherwise
 #bsh: Body shape (in paperdol.vga)

@@ -244,7 +244,8 @@ int Font::paint_text
 	(
 	Image_buffer8 *win,		// Buffer to paint in.
 	const char *text,		// What to draw, 0-delimited.
-	int xoff, int yoff		// Upper-left corner of where to start.
+	int xoff, int yoff,		// Upper-left corner of where to start.
+	unsigned char *trans
 	)
 	{
 	int x = xoff;
@@ -256,7 +257,10 @@ int Font::paint_text
 			Shape_frame *shape = font_shapes->get_frame((unsigned char)chr);
 			if (!shape)
 				continue;
-			shape->paint_rle(x, yoff);
+			if (trans)
+				shape->paint_rle_remapped(x, yoff, trans);
+			else
+				shape->paint_rle(x, yoff);
 			x += shape->get_width() + hor_lead;
 			}
 	return (x - xoff);

@@ -32,11 +32,16 @@
 #include "u7drag.h"
 #include "U7file.h"
 #include "exceptions.h"
+#include "miscinf.h"
+#include <vector>
+#include <utility>
 
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
+using std::vector;
+using std::pair;
 
 Shape_manager *Shape_manager::instance = 0;
 
@@ -75,15 +80,15 @@ void Game_singletons::init
  */
 Shape_manager::Shape_manager
 	(
-	) : bg_paperdolls_allowed(false), bg_multiracial_allowed(false),
-	    bg_paperdolls(false), fonts(0)
+	) : can_have_paperdolls(false), got_si_shapes(false),
+	    paperdolls_enabled(false), fonts(0)
 	{
 	assert(instance == 0);
 	instance = this;
 	std::string str;
 	config->value("config/gameplay/bg_paperdolls", str, "yes");
-	if (str == "yes")
-		bg_paperdolls = true;
+	if (GAME_SI || str == "yes")
+		paperdolls_enabled = true;
 	config->set("config/gameplay/bg_paperdolls", str, true);
 	}
 
@@ -96,19 +101,18 @@ void Shape_manager::read_shape_info
 	)
 	{
 	// Want space for extra shapes if BG multiracial enabled.
-	shapes.init(bg_multiracial_allowed ? 1036 : -1);
+	shapes.init();
 	shapes.read_info(Game::get_game_type());// Read in shape dimensions.
-	if (GAME_SI ||			// Fixup Avatar shapes 1024-1035.
-	    bg_multiracial_allowed)
+	// Fixup Avatar shapes (1024-1035 in default SI).
+	Shape_info& male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
+	Shape_info& female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());
+	
+	vector<Skin_data> *skins = Shapeinfo_lookup::GetSkinList();
+	for (vector<Skin_data>::iterator it = skins->begin();
+			it != skins->end(); ++it)
 		{
-		// Odd are female, even are male.
-		Shape_info& male = shapes.get_info(721);
-		Shape_info& female = shapes.get_info(989);
-		for (int i = 1024; i <= 1035; ++i)
-			{
-			Shape_info& info = shapes.get_info(i);
-			info.copy((i%2) ? female : male);
-			}
+		shapes.set_info((*it).shape_num, (*it).is_female ? female : male);
+		shapes.set_info((*it).naked_shape, (*it).is_female ? female : male);
 		}
 	}
 
@@ -137,49 +141,72 @@ void Shape_manager::load
 	special_pixels[PARALYZE_PIXEL] = pal.find_color(49, 27, 49);
 
 	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
-
-	if (Game::get_game_type()==SERPENT_ISLE)
+	
+	if (!files[SF_PAPERDOL_VGA].load(*Shapeinfo_lookup::GetPaperdollSources()))
 		{
-		files[SF_PAPERDOL_VGA].load(PAPERDOL, PATCH_PAPERDOL);
-		if (!files[SF_PAPERDOL_VGA].is_good())
+		if (GAME_SI)
 			gwin->abort("Can't open 'paperdol.vga' file.");
+		else if (GAME_BG) // NOT for devel. games.
+			std::cerr << "Couldn't open SI 'paperdol.vga'." << std::endl
+					  << "Support for SI Paperdolls in BG is disabled." << std::endl;
+		can_have_paperdolls = false;
 		}
-	else if (Game::get_game_type()==BLACK_GATE) // NOT for devel. games.
+	else
+		can_have_paperdolls = true;
+
+	if (GAME_SI)
+		got_si_shapes = true;
+	else
 		{
-		try
+		// Source for importing SI data.
+		pair<string, int> source;
+		
+		vector<pair<int, int> > *imports;
+		if (can_have_paperdolls)	// Do this only if SI paperdol.vga was found.
 			{
-			// TODO: For now, I am placing a 'paperdol.vga' file in the exult/data folder.
-			// The objective would be to place the aforementioned file inside 'exult_bg.flx',
-			// but I am not sure how it would be loaded here.
-			files[SF_PAPERDOL_VGA].load(
-					"<SERPENTISLE_STATIC>/paperdol.vga",
-					U7exists(PATCH_PAPERDOL) ? PATCH_PAPERDOL : "<DATA>/bg_paperdol.vga");
-			files[SF_BG_SIGUMP_FLX].load(
-					"<SERPENTISLE_STATIC>/gumps.vga");
-			files[SF_BG_SISHAPES_VGA].load(
-					"<SERPENTISLE_STATIC>/shapes.vga");
+			source = pair<string, int>(string("<SERPENTISLE_STATIC>/gumps.vga"), -1);
+			// Gump shapes to import from SI.
+			imports = Shapeinfo_lookup::GetImportedGumpShapes();
 
-			if (files[SF_PAPERDOL_VGA].is_good() && 
-			    files[SF_BG_SIGUMP_FLX].is_good() && 
-			    files[SF_BG_SISHAPES_VGA].is_good())
-				{
-					std::cout << "Support for SI Paperdolls and Multiracial Avatars in BG is enabled." << std::endl;
-				bg_paperdolls_allowed = true;
-				bg_multiracial_allowed = true;
-				}
+			if (imports->size())
+				can_have_paperdolls = files[SF_GUMPS_VGA].import_shapes(source, *imports);
 			else
-				std::cout << "Bad SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
-						  << "Support for SI Paperdolls and Multiracial Avatars in BG is disabled." << std::endl;
-			}
-		catch (const exult_exception &e)	
-			{
-				std::cerr << "Couldn't open SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
-						  << "Support for SI Paperdolls and Multiracial Avatars in BG is disabled." << std::endl;
+				can_have_paperdolls = false;
+			
+			if (can_have_paperdolls)
+				std::cout << "Support for SI Paperdolls is enabled." << std::endl;
+			else
+				std::cerr << "Couldn't open SI 'gumps.vga'." << std::endl
+						  << "Support for SI Paperdolls in BG is disabled." << std::endl;
 			}
 
+		source = pair<string, int>(string("<SERPENTISLE_STATIC>/shapes.vga"), -1);
+		// Skin shapes to import from SI.
+		imports = Shapeinfo_lookup::GetImportedSkins();
+		if (imports->size())
+			got_si_shapes = shapes.import_shapes(source, *imports);
+		else
+			got_si_shapes = false;
+
+		if (got_si_shapes)
+			std::cout << "Support for SI Multiracial Avatars is enabled." << std::endl;
+		else
+			std::cerr << "Couldn't open SI 'shapes.vga'." << std::endl
+					  << "Support for SI Multiracial Avatars is disabled." << std::endl;
 		}
+
 	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
-	files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
+
+	vector<pair<string, int> > source;
+	source.push_back(pair<string, int>(FACES_VGA, -1));
+	if (GAME_BG)
+		{	// Multiracial faces.
+		str_int_pair resource = game->get_resource("files/mrfacesvga");
+		source.push_back(pair<string, int>(string(resource.str), resource.num));
+		}
+	source.push_back(pair<string, int>(PATCH_FACES, -1));
+	files[SF_FACES_VGA].load(source);
+
 	files[SF_EXULT_FLX].load(EXULT_FLX);
 	read_shape_info();
 	const char* gamedata = game->get_resource("files/gameflx").str;
@@ -271,8 +298,7 @@ void Shape_manager::reload_shape_info
 	(
 	)
 	{
-	shapes.reload_info(Game::get_game_type(),
-					bg_multiracial_allowed ? 1036 : -1);
+	shapes.reload_info(Game::get_game_type());
 	}
 
 /*

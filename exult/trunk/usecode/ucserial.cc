@@ -27,6 +27,7 @@
 #include "useval.h"
 #include "utils.h"
 #include "debugmsg.h"
+#include "databuf.h"
 
 /*
 
@@ -75,17 +76,14 @@ int Stack_frame_out
 	Serial_out io(ptr);
 	Stack_frame_io<Serial_out>(io, functionid, ip, call_chain, call_depth,
 							   eventid, caller_item, num_args, num_vars);
-
-	int remaining = Exult_server::maxlength - (ptr - buf);
+	BufferDataSource ds(buf, Exult_server::maxlength);
+	ds.seek(ptr - buf);
 	for (int i = 0; i < num_args + num_vars; i++) {
-		int vallen = locals[i].save(ptr, remaining);
-		// error checking...
-		ptr += vallen;
-		remaining -= vallen;
+		int vallen = locals[i].save(&ds);
 	}
 
-	return Exult_server::Send_data(fd, Exult_server::usecode_debugging, 
-								   buf, ptr - buf);
+	return Exult_server::Send_data(fd, Exult_server::usecode_debugging,
+								   buf, ds.getPos());
 	// locals!
 }
 
@@ -110,16 +108,14 @@ bool Stack_frame_in
 	Stack_frame_io<Serial_in>(io, functionid, ip, call_chain, call_depth,
 							  eventid, caller_item, num_args, num_vars);
 
-	int remaining = datalen - (ptr - data);
+	BufferDataSource ds(data, datalen);
+	ds.seek(ptr - data);
 	locals = new Usecode_value[num_args + num_vars];
 	for (int i = 0; i < num_args + num_vars; i++) {
-		unsigned char *tmpptr = ptr;
-		locals[i].restore(ptr, remaining);
-		// error checking...
-		remaining -= (ptr - tmpptr);
+		locals[i].restore(&ds);
 	}
 
 
-	return (ptr - data) == datalen;
+	return ds.getPos() == datalen;
 	// locals!
 }

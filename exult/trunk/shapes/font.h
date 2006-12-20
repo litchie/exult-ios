@@ -62,7 +62,8 @@ public:
 		int h, int vert_lead = 0, bool pbreak = false,
 		bool center = false, Cursor_info *cursor = 0);
 	int paint_text(Image_buffer8 *win,  
-		const char *text, int xoff, int yoff);
+		const char *text, int xoff, int yoff,
+		unsigned char *trans = 0);
 	int paint_text(Image_buffer8 *win,  
 		const char *text, int textlen, int xoff, int yoff);
 	int paint_text_box_fixedwidth(Image_buffer8 *win,  
@@ -82,8 +83,9 @@ public:
 					int cx, int cy, int vert_lead);
 	int find_xcursor(const char *text, int textlen, int cx);
 
-	int draw_text(Image_buffer8 *win, int x, int y, const char *s)
-		{ return paint_text(win, s, x, y); }
+	int draw_text(Image_buffer8 *win, int x, int y, const char *s,
+		unsigned char *trans = 0)
+		{ return paint_text(win, s, x, y, trans); }
 	int draw_text_box(Image_buffer8 *win, 
 				int x, int y, int w, int h, const char *s)
 		{ return paint_text_box(win, s, x, y, w, h, 0, 0); }

@@ -2,6 +2,11 @@
 #
 #	July 31, 2006 - Derived from shapes/bodies.cc
 #
+
+%%section version
+:1
+%%endsection
+
 %%section bodyshapes
 :400
 :402

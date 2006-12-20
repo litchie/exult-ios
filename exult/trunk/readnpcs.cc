@@ -34,6 +34,7 @@
 #include "fnames.h"
 #include "schedule.h"
 #include "databuf.h"
+#include "miscinf.h"
 //#include "items.h"			/* Debugging only */
 
 #ifndef UNDER_CE
@@ -74,7 +75,7 @@ void Game_window::read_npcs
 		num_npcs1 = num_npcs = 1; 
 		if (Game::get_avname())
 			main_actor->set_npc_name(Game::get_avname());
-		main_actor->set_shape(721);	// FOR NOW.
+		main_actor->set_shape(Shapeinfo_lookup::GetMaleAvShape());
 		main_actor->set_invalid();	// Put in middle of world.
 		main_actor->move(c_num_tiles/2, c_num_tiles/2, 0);
 		}

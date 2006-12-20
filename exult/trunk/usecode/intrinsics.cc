@@ -609,6 +609,16 @@ USECODE_INTRINSIC(get_npc_name)
 	return(u);
 }
 
+USECODE_INTRINSIC(set_npc_name)
+{
+	// Set NPC name.
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return (no_ret);
+	npc->set_npc_name(parms[1].get_str_value());
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(count_objects)
 {
 	// How many?
@@ -3183,6 +3193,20 @@ USECODE_INTRINSIC(get_usecode_fun)
 	if (!obj)
 		return Usecode_value(0);
 	return Usecode_value(obj->get_usecode());
+}
+
+USECODE_INTRINSIC(set_usecode_fun)
+{
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return (no_ret);
+	int usefun = parms[1].get_int_value();
+	Usecode_symbol *ucsym = symtbl ? (*symtbl)[usefun] : 0;
+	if (!ucsym)
+		npc->set_usecode(usefun);
+	else
+		npc->set_usecode(usefun, ucsym->get_name());
+	return (no_ret);
 }
 
 USECODE_INTRINSIC(get_map_num)

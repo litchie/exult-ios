@@ -56,6 +56,11 @@ using std::string;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
+
+/*
+ *	Parse a number, and quit with an error msg. if not found.
+ */
+
 bool is_text_file(const char *fname)
 {
 	int len = strlen(fname);
@@ -232,6 +237,7 @@ int main(int argc, char **argv)
 	char ext[] = "u7o";
 	int index;
 	vector<string>	file_names;
+	file_names.reserve(1200);
   	hname[0] = 0;
 
 	if(argc>2) {
@@ -274,13 +280,34 @@ int main(int argc, char **argv)
 					strip_path (hprefix);
 					make_uppercase (hprefix);
 
+					int shnum = 0;
+					int linenum = 2;
 					while(respfile.good()) {
 						getline(respfile, temp, 1024);
 						if(strlen(temp)>0) {
+							char *ptr = temp;
+							if (*ptr == ':')
+								{
+								ptr++;
+								// Shape # specified.
+								long num = strtol(ptr, &ptr, 0);
+								if (ptr == temp+1)
+									{
+									cerr << "Line " << linenum << ": shapenumber not found. The correct format of a line with specified shape is ':shapenum:filename'." << endl;
+									exit(1);
+									}
+								shnum = num;
+								assert(*ptr == ':');
+								ptr++;
+								}
 							char temp2[1024];
 							strncpy(temp2, path_prefix,1024);
-							strncat(temp2, temp, 1024);
-							file_names.push_back(temp2);
+							strncat(temp2, ptr, 1024);
+							if (shnum >= file_names.size())
+								file_names.resize(shnum + 1);
+							file_names[shnum] = temp2;
+							shnum++;
+							linenum++;
 						}
 					}
 					respfile.close();
@@ -400,29 +427,31 @@ int main(int argc, char **argv)
 			// The files
 				{
 				for(int i=0; i<file_names.size(); i++) {
-					int fsize = get_file_size(file_names[i].c_str());
-					if(fsize) {
-						ifstream infile;
-						try {
-							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
-						} catch (const file_open_exception& e) {
-							cerr << e.what() << endl;
-							exit(1);
-						}
-						StreamDataSource ifs(&infile);
-						char *buf = new char[fsize];
-						ifs.read(buf, fsize);
-						flex.write(buf, fsize);
-						delete [] buf;
-						infile.close();
+					if (file_names[i].size()) {
+						int fsize = get_file_size(file_names[i].c_str());
+						if(fsize) {
+							ifstream infile;
+							try {
+								U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
+							} catch (const file_open_exception& e) {
+								cerr << e.what() << endl;
+								exit(1);
+							}
+							StreamDataSource ifs(&infile);
+							char *buf = new char[fsize];
+							ifs.read(buf, fsize);
+							flex.write(buf, fsize);
+							delete [] buf;
+							infile.close();
 
-						strncpy (hline, file_names[i].c_str(), 1024);
-						strip_path(hline);
-						make_header_name(hline);
-						make_uppercase(hline);
-						header << "#define\t" << hprefix << "_" << hline << "\t\t" << i << std::endl;
+							strncpy (hline, file_names[i].c_str(), 1024);
+							strip_path(hline);
+							make_header_name(hline);
+							make_uppercase(hline);
+							header << "#define\t" << hprefix << "_" << hline << "\t\t" << i << std::endl;
+						}
 					}
-				writer.mark_section_done();
+					writer.mark_section_done();
 				}
 			}
 			if (!writer.close())

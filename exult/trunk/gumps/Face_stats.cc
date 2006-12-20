@@ -400,18 +400,11 @@ void Face_stats::create_buttons()
 	for (i = 0; i < party_size; i++) {
 		int num = partyman->get_member(i);
 		// Show faces if in SI, or if paperdolls are allowed
-		if (GAME_SI || sman->can_use_paperdolls())
+		if (sman->can_use_paperdolls() ||
+				// Otherwise, show faces also if the character
+				// has paperdoll information
+				Shapeinfo_lookup::GetCharacterInfo(gwin->get_npc(num)->get_shapenum()))
 			++num_to_paint;
-		else
-			{
-			// Otherwise, show faces also if the character
-			// has paperdoll information (*risky*, as the
-			// specified face may not exist in bg_paperdoll
-			// file (or a patch), leading to a crash)
-			Actor *act = gwin->get_npc(num);
-			if (Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum()))
-				++num_to_paint;
-			}
 		}
 
 	if (mode == 0) pos = 0;
@@ -431,7 +424,7 @@ void Face_stats::create_buttons()
 		npc_nums[i+1] = partyman->get_member(i);
 		Actor *act = gwin->get_npc(npc_nums[i+1]);
 		// Show faces if in SI, or if paperdolls are allowed
-		if (GAME_SI || sman->can_use_paperdolls() ||
+		if (sman->can_use_paperdolls() ||
 				// Otherwise, show faces also if the character
 				// has paperdoll information
 				Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum())) {
