@@ -24,7 +24,7 @@ ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
 ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 
 # Leave this option empty
-EXTRA_OPTIONS=-DDEBUG -DSHOW_USECODE_CONTAINER
+EXTRA_OPTIONS=
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers  -I$(SRC)/conf -I$(SRC)/data \
