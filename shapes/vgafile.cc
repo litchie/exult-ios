@@ -1353,12 +1353,14 @@ bool Vga_file::load
 		DataSource *source = U7load(*it, files, shape_sources);
 		if (source)
 			{
-			source->seek(0x54);	// Get # of shapes.
-			int cnt = source->read4();
-			num_shapes = num_shapes > cnt ? num_shapes : cnt;
-			shape_cnts.push_back(cnt);
-			source->seek(0);
 			flex = Flex::is_flex(source);
+			if (flex)
+				{
+				source->seek(0x54);	// Get # of shapes.
+				int cnt = source->read4();
+				num_shapes = num_shapes > cnt ? num_shapes : cnt;
+				shape_cnts.push_back(cnt);
+				}
 			}
 		}
 	if (!shape_sources.size())
