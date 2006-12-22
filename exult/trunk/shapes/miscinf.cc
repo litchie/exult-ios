@@ -654,6 +654,7 @@ void Shapeinfo_lookup::Read_data_file
 			char *ptr = section[j];
 			if (!ptr)
 				continue;
+			CERR(section[j]);
 			parsers[i]->parse_entry(j, ptr, true, patch_version);
 			delete[] section[j];
 			}
@@ -752,7 +753,7 @@ void Shapeinfo_lookup::setup_shape_files()
 		new Shaperef_parser(blue_shapes, gumpvars),
 		new Shape_imports_parser(imported_skin_shapes, skinvars)
 		};
-	Read_data_file("shapefiles", sections, parsers, size);
+	Read_data_file("shape_files", sections, parsers, size);
 	// For safety.
 	if (paperdoll_source_table->size() == 0)
 		paperdoll_source_table->push_back(pair<string, int>(string(PAPERDOL), -1));
@@ -790,7 +791,7 @@ void Shapeinfo_lookup::setup_avatar_data()
 		new Int_pair_parser(petra_table),
 		new Avatar_usecode_parser(usecode_funs)
 		};
-	Read_data_file("avatardata", sections, parsers, size);
+	Read_data_file("avatar_data", sections, parsers, size);
 }
 
 /*

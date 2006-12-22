@@ -148,8 +148,8 @@ BG_Game::BG_Game()
 		add_resource("config/bodies", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BODIES_TXT);
 		add_resource("config/paperdol_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_PAPERDOL_INFO_TXT);
 		add_resource("config/shape_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_INFO_TXT);
-		add_resource("config/shapefiles", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_FILES_TXT);
-		add_resource("config/avatardata", "<DATA>/exult_bg.flx", EXULT_BG_FLX_AVATAR_DATA_TXT);
+		add_resource("config/shape_files", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_FILES_TXT);
+		add_resource("config/avatar_data", "<DATA>/exult_bg.flx", EXULT_BG_FLX_AVATAR_DATA_TXT);
 
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);

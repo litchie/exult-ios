@@ -171,7 +171,7 @@ void Actor::read
 		{
 			if (!extended_skin)	// We will do it later for extended skins.
 			{
-				if (Game::get_avskin() >= 0 && Game::get_avskin() <= 3)
+				if (Game::get_avskin() >= 0)
 					set_skin_color (Game::get_avskin());
 				else
 					set_skin_color (((strength_val >> 6)-1) & 0x3);
