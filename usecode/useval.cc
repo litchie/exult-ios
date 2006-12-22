@@ -480,11 +480,13 @@ bool Usecode_value::save
 		out->write4(0);
 		break;
 	case class_sym_type:
+		{
 		const char *classname = value.cptr->get_name();
 		int len = std::strlen(classname);
 		out->write2(len);
 		out->write((char *)classname, len);
 		break;
+		}
 	case string_type:
 		{
 		int len = std::strlen(value.str);
@@ -533,6 +535,7 @@ bool Usecode_value::restore
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case class_sym_type:
+		{
 		int len = in->read2();
 		char *nm = new char[len + 1];
 		in->read(nm, len);
@@ -540,6 +543,7 @@ bool Usecode_value::restore
 		Game_window *gwin = Game_window::get_instance();
 		value.cptr = gwin->get_usecode()->get_class(nm);
 		return true;
+		}
 	case string_type:
 		{
 		int len = in->read2();
