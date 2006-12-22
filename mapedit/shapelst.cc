@@ -948,8 +948,8 @@ void Shape_chooser::edit_shape
 	}
 #endif
 	cmd += fname;
-	cmd += " &";			// Background.
 #ifndef WIN32
+	cmd += " &";			// Background.
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
 		Alert("Can't launch '%s'", studio->get_image_editor());
