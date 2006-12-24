@@ -40,7 +40,7 @@ enum { NAME_COL, NUM_COL, TYPE_COL, N_COLS };
  *	Open browser window.
  */
 
-void ExultStudio::open_usecode_browser_window
+const char *ExultStudio::browse_usecode
 	(
 	)
 	{
@@ -50,6 +50,10 @@ void ExultStudio::open_usecode_browser_window
 		ucbrowsewin->setup_list();
 		}
 	ucbrowsewin->show(true);
+	while (GTK_WIDGET_VISIBLE(ucbrowsewin->get_win()))	// Spin.
+		gtk_main_iteration();	// (Blocks).
+	const char *choice = ucbrowsewin->get_choice();
+	return choice;
 	}
 
 /*
@@ -63,6 +67,22 @@ C_EXPORT void on_usecodes_ok_clicked
 	{
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
 			GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	ucb->okay();
+	}
+
+/*
+ *	Row was double-clicked.
+ */
+C_EXPORT void on_usecodes_treeview_row_activated
+	(
+	GtkTreeView *treeview,
+        GtkTreePath *path,
+        GtkTreeViewColumn *column,
+        gpointer user_data
+	)
+	{
+	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(treeview))));
 	ucb->okay();
 	}
 

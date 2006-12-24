@@ -270,7 +270,7 @@ public:
 	void new_map_dialog();
 	void setup_maps_list();
 					// Usecode browser.
-	void open_usecode_browser_window();
+	const char *browse_usecode();
 					// Games.
 	void open_game_dialog(bool createmod=false);
 

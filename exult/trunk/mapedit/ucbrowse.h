@@ -39,6 +39,8 @@ class Usecode_browser
 public:
 	Usecode_browser();
 	~Usecode_browser();
+	GtkWidget *get_win()
+		{ return win; }
 	void show(bool tf);		// Show/hide.
 					// Configure when created/resized.
 	const char *get_choice() const
