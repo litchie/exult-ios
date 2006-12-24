@@ -116,6 +116,21 @@ C_EXPORT gboolean on_npc_window_delete_event
 	}
 
 /*
+ *	Browse for usecode.
+ */
+C_EXPORT void on_npc_usecode_browse_clicked          
+	(
+	GtkButton *button,
+	gpointer         user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	const char *uc = studio->browse_usecode();
+	if (*uc)
+		studio->set_entry("npc_usecode_entry", uc, true);
+	}
+
+/*
  *	Draw shape in NPC shape area.
  */
 C_EXPORT gboolean on_npc_draw_expose_event

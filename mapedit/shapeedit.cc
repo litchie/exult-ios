@@ -608,6 +608,21 @@ C_EXPORT void on_shinfo_ammo_special_check_toggled
 	}
 
 /*
+ *	Browse for usecode.
+ */
+C_EXPORT void on_shinfo_weapon_uc_browse_clicked          
+	(
+	GtkButton *button,
+	gpointer         user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	const char *uc = studio->browse_usecode();
+	if (*uc)
+		studio->set_entry("shinfo_weapon_uc", uc, true);
+	}
+
+/*
  *	Callback for when a gump is dropped in the container page's draw area.
  */
 

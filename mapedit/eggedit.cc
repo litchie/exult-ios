@@ -100,8 +100,10 @@ C_EXPORT void on_egg_browse_usecode_clicked
 	gpointer         user_data
 	)
 	{
-	ExultStudio::get_instance()->open_usecode_browser_window();
-	// ++++++++++FINISH++++++++
+	ExultStudio *studio = ExultStudio::get_instance();
+	const char *uc = studio->browse_usecode();
+	if (*uc)
+		studio->set_entry("usecode_number", uc, true);
 	}
 
 /*
