@@ -232,7 +232,8 @@ void Usecode_browser::setup_list
 {
 	ExultStudio *studio = ExultStudio::get_instance();
 	const char *ucfile = studio->get_text_entry("usecodes_file");
-	ifstream in(ucfile);
+	ifstream in;
+	U7open(in, ucfile);
 	Usecode_symbol_table symtbl;
 	long magic = Read4(in);		// Test for symbol table.
 	if (!in.good()) {
@@ -254,6 +255,7 @@ void Usecode_browser::setup_list
 			continue;
 		switch (kind) {
 		case Usecode_symbol::fun_defined:
+		case Usecode_symbol::shape_fun:
 			kindstr = "Function";
 			break;
 		case Usecode_symbol::class_scope:
