@@ -654,7 +654,6 @@ void Shapeinfo_lookup::Read_data_file
 			char *ptr = section[j];
 			if (!ptr)
 				continue;
-			CERR(section[j]);
 			parsers[i]->parse_entry(j, ptr, true, patch_version);
 			delete[] section[j];
 			}
