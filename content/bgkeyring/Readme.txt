@@ -181,6 +181,11 @@ version: 0.11.05
 
 7	Version history
 -------------------
+version: 0.11.06
+	- Updated Joneleth and Laundo and his goons to use the new set_usecode_fun
+	  intrinsic.
+	- Fixed resurrection of Laurianna and Mariah.
+	- Fixed WIHH data for NPC spellbooks.
 version: 0.11.05
 	- Compatibility update with new BG paperdoll data.
 	- Rewrote the Keyring code to use a static class.

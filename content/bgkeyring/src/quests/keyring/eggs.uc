@@ -176,7 +176,7 @@ deleteLicheEggs ()
 		deleteNearbyEggs([0x717, 0x825,0x0], 5);
 }
 
-Liche shape#(354) ()
+deathOfJoneleth ()
 {
 	if ((get_npc_id() == ID_JONELETH) && (event == DEATH))
 	{
@@ -191,6 +191,4 @@ Liche shape#(354) ()
 		{	nohalt;						call deleteLicheEggs;}
 		abort;
 	}
-	else
-		Liche.original();
 }

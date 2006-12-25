@@ -204,9 +204,7 @@ class Keyring_data
 	}
 }
 
-// This function's id is predefined to ensure that the static vars won't be
-// cleared/lost when the usecode is recompiled:
-class<Keyring_data> get_keyring 0xB00 ()
+class<Keyring_data> get_keyring ()
 {
 	//This stores the keys in the keyring:
 	static class<Keyring_data> keyring;
