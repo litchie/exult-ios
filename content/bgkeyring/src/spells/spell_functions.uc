@@ -33,6 +33,7 @@ enum npc_wizard_flags
 	//New spell effects:
 	CONFUSION						= 40,	//Under the effects of Consufion spell
 	DEATH_PROTECTION				= 41,	//Protected from death spells
+	MAGIC_PROTECTION				= 42,	//Protected from spells -- e.g., LB's crown
 	//Spellcasting power:
 	ARCHWIZARD						= 45,	//Cheat mode
 	MAGE_CLASS						= 46,	//Full spellcasting capabilities

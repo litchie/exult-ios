@@ -24,6 +24,7 @@
  *	Last Modified: 2006-03-19
  */
 
+const int SHAPE_NEW_BODIES				= 1099;	//0x44B
 const int SHAPE_KEYRING					= 1100;	//0x44C
 const int SHAPE_BARRIER					= 1101;	//0x44D
 const int SHAPE_JOURNAL					= 1102;	//0x44E

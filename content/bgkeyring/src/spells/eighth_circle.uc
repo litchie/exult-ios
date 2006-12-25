@@ -185,7 +185,7 @@ spellResurrect (var target)
 		target->halt_scheduled();
 		halt_scheduled();
 		var canresurrect = false;
-		if (target->get_item_shape() in [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES])
+		if (target->get_item_shape() in [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES])
 		{
 			var target_quality = target->get_item_quality();
 			var quant = target->get_item_quantity(target_shape);
@@ -358,7 +358,7 @@ spellMassResurrect ()
 	}
 	else if (event == SCRIPTED)
 	{
-		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES];
+		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
 		var bodies = [];
 		for (shnum in bodyshapes)
 			bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
