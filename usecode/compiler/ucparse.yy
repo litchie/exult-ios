@@ -1020,7 +1020,7 @@ script_command:
 	| ACTOR FRAME nonclass_expr ';'	/* 0-15. ++++Maybe have keywords. */
 		{
 		$$ = new Uc_binary_expression(UC_ADD, new Uc_int_expression(0x61),
-				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(15)));
+				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(16)));
 		}
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
