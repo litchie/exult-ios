@@ -155,10 +155,12 @@ createMageAndGoons ()
 	monster_equip = [SHAPE_FIREBOLT, SHAPE_LIGHTNING, leather_armor];
 	monster_qualities = [40, 40, 0, 0, 0, 0, 0, 0];
 	
-	monsterCreate(SHAPE_MAGE_MALE, ID_MAGE_OR_GOON, [254, 1170, 0], WEST,
+	var mage = monsterCreate(SHAPE_MAGE_MALE, ID_MAGE_OR_GOON, [254, 1170, 0], WEST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-	
+	mage->set_usecode_fun(registerDeathOfMageOrGoon);
+
+
 	pouch_qualities = [0,
 					   0, 0, 0, 0,
 					   0, 0, 0, 0];
@@ -192,10 +194,11 @@ createMageAndGoons ()
 	monster_equip = [SHAPE_2H_HAMMER, chain_armor];
 	monster_qualities = [0, 0, 0, 0, 0, 0, 0];
 		
-	monsterCreate(SHAPE_GARGOYLE_WARRIOR, ID_MAGE_OR_GOON, [263, 1170, 0], EAST,
+	var garg = monsterCreate(SHAPE_GARGOYLE_WARRIOR, ID_MAGE_OR_GOON, [263, 1170, 0], EAST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-	
+	garg->set_usecode_fun(registerDeathOfMageOrGoon);
+
 	
 	//Create the troll and his equipment:
 	monster_stats = [16, 10, 6, 16, 17];
@@ -211,10 +214,11 @@ createMageAndGoons ()
 	monster_equip = [SHAPE_MORNINGSTAR, SHAPE_SPIKEDSHIELD, leather_armor];
 	monster_qualities = [0, 0, 0, 0, 0, 0, 0, 0];
 	
-	monsterCreate(SHAPE_TROLL, ID_MAGE_OR_GOON, [249, 1164, 0], WEST,
+	var troll = monsterCreate(SHAPE_TROLL, ID_MAGE_OR_GOON, [249, 1164, 0], WEST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-	
+	troll->set_usecode_fun(registerDeathOfMageOrGoon);
+
 	
 	//Create the cyclops and his equipment:
 	monster_stats = [22, 17, 6, 22, 18];
@@ -230,10 +234,11 @@ createMageAndGoons ()
 	monster_equip = [SHAPE_HALBERD, leather_armor];
 	monster_qualities = [0, 0, 0, 0, 0, 0, 0];
 	
-	monsterCreate(SHAPE_CYCLOPS, ID_MAGE_OR_GOON, [241, 1164, 0], EAST,
+	var cyclops = monsterCreate(SHAPE_CYCLOPS, ID_MAGE_OR_GOON, [241, 1164, 0], EAST,
 			monster_stats, monster_equip, monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
-	
+	cyclops->set_usecode_fun(registerDeathOfMageOrGoon);
+
 	
 	//Create the fighter and his equipment:
 	monster_stats = [20, 18, 12, 20, 22];
@@ -249,10 +254,13 @@ createMageAndGoons ()
 	monster_equip = [SHAPE_2H_SWORD, plate_armor];
 	monster_qualities = [0, 0, 0, 0, 0, 0, 0];
 	
-	monsterCreate(SHAPE_FIGHTER_MALE, ID_MAGE_OR_GOON, [240, 1177, 0], WEST,
+	var fighter = monsterCreate(SHAPE_FIGHTER_MALE, ID_MAGE_OR_GOON, [240, 1177, 0], WEST,
 			monster_stats, monster_equip,  monster_qualities,
 			pouch_content, pouch_frames, pouch_quantities, pouch_qualities);
+	fighter->set_usecode_fun(registerDeathOfMageOrGoon);
 }
+
+extern deathOfJoneleth();
 
 var createLichAndGems ()
 {
@@ -299,6 +307,8 @@ var createLichAndGems ()
 	liche->set_item_flag(TEMPORARY);
 	//Place him in WAIT mode:
 	liche->set_schedule_type(WAIT);
+	//Place him in WAIT mode:
+	liche->set_usecode_fun(deathOfJoneleth);
 	//Put him in the correct spot:
 	UI_update_last_created([0x717, 0x825,0x0]);
 	

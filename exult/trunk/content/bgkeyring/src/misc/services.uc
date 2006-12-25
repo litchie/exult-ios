@@ -402,7 +402,10 @@ serviceHeal ()
 			targets = filterListByFlag(UI_get_party_list(), POISONED, true);
 		else if (reply == SERVICE_RESURRECT)
 		{
-			var bodies = [AVATAR->find_nearby(SHAPE_BODIES_1, 25, MASK_NONE), AVATAR->find_nearby(SHAPE_BODIES_2, 25, MASK_NONE)];
+			var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
+			var bodies = [];
+			for (shnum in bodyshapes)
+				bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
 
 			for (body in bodies)
 				if (body->get_body_npc())

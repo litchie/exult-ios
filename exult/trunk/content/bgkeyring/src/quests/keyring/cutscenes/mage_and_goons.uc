@@ -437,75 +437,30 @@ beginCutsceneMageAndGoons ()
 
 registerDeathOfMageOrGoon ()
 {
-	//This is called whenever the mage or one of his goons die
-	//Removes the mage/goon from tournament mode:
-	clear_item_flag(SI_TOURNAMENT);
-	//Kill them:
-	reduce_health(50, MAGIC_DAMAGE);
-	//Increase Laurianna's NPC ID:
-	var new_id = 1 + LAURIANNA->get_npc_id();
-	LAURIANNA->set_npc_id(new_id);
-	if (new_id == 5)
-	{
-		//Everyone is dead; halt scripts for Laurianna:
-		LAURIANNA->halt_scheduled();
-		//Prepare the next portion of the quest:
-		script LAURIANNA after 20 ticks call Laurianna, CLEAR_FLAGS;
-	}
-}
-
-Mage_male shape#(445) ()
-{
 	if ((event == DEATH) &&  (get_npc_id() == ID_MAGE_OR_GOON))
 	{
-		//Laundo has died
-		//Set flag:
-		gflags[MAGE_KILLED] = true;
-		//Halt the fireworks around Laurianna:
-		LAURIANNA->halt_scheduled();
-		//Prepare quest advancement:
-		registerDeathOfMageOrGoon();
+		if (get_item_shape() == SHAPE_MAGE_MALE)
+		{
+			//Laundo has died
+			//Set flag:
+			gflags[MAGE_KILLED] = true;
+			//Halt the fireworks around Laurianna:
+			LAURIANNA->halt_scheduled();
+		}
+		//This is called whenever the mage or one of his goons die
+		//Removes the mage/goon from tournament mode:
+		clear_item_flag(SI_TOURNAMENT);
+		//Kill them:
+		reduce_health(50, MAGIC_DAMAGE);
+		//Increase Laurianna's NPC ID:
+		var new_id = 1 + LAURIANNA->get_npc_id();
+		LAURIANNA->set_npc_id(new_id);
+		if (new_id == 5)
+		{
+			//Everyone is dead; halt scripts for Laurianna:
+			LAURIANNA->halt_scheduled();
+			//Prepare the next portion of the quest:
+			script LAURIANNA after 20 ticks call Laurianna, CLEAR_FLAGS;
+		}
 	}
-	else
-		Mage_male.original();
-}
-
-Gargoyle_warrior shape#(274) ()
-{
-	if ((event == DEATH) && (get_npc_id() == ID_MAGE_OR_GOON))
-		//Agra-Lem has died
-		//Prepare quest advancement:
-		registerDeathOfMageOrGoon();
-	else
-		Gargoyle_warrior.original();
-}
-
-Cyclops shape#(380) ()
-{
-	if ((event == DEATH) && (get_npc_id() == ID_MAGE_OR_GOON))
-		//Laundo's cycloptic goon has died
-		//Prepare quest advancement:
-		registerDeathOfMageOrGoon();
-	else
-		Cyclops.original();
-}
-
-Troll shape#(861) ()
-{
-	if ((event == DEATH) && (get_npc_id() == ID_MAGE_OR_GOON))
-		//Laundo's troll goon has died
-		//Prepare quest advancement:
-		registerDeathOfMageOrGoon();
-	else
-		Troll.original();
-}
-
-Fighter_male shape#(462) ()
-{
-	if ((event == DEATH) && (get_npc_id() == ID_MAGE_OR_GOON))
-		//Laundo's fighter goon has died
-		//Prepare quest advancement:
-		registerDeathOfMageOrGoon();
-	else
-		Fighter_male.original();
 }

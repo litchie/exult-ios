@@ -44,7 +44,11 @@ LB_Sceptre shape#(0x466) ()
 
 LB_Crown shape#(0x467) ()
 {
-	//Figure out a way to do magic-protection
+	// TODO: Implement the magic protection side.
+	if (event == READIED)
+		set_item_flag(MAGIC_PROTECTION);
+	else if (event == UNREADIED)
+		clear_item_flag(MAGIC_PROTECTION);
 }
 
 LB_Amulet shape#(0x468) ()
