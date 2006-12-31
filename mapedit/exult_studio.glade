@@ -18317,6 +18317,7 @@ will be added automatically</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
+			  <signal name="toggled" handler="on_view_uc_functions_toggled" last_modification_time="Sun, 31 Dec 2006 21:06:13 GMT"/>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>
@@ -18338,6 +18339,7 @@ will be added automatically</property>
 			  <property name="active">False</property>
 			  <property name="inconsistent">False</property>
 			  <property name="draw_indicator">True</property>
+			  <signal name="toggled" handler="on_view_uc_classes_toggled" last_modification_time="Sun, 31 Dec 2006 21:08:43 GMT"/>
 			</widget>
 			<packing>
 			  <property name="left_attach">0</property>

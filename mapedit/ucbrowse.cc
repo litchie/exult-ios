@@ -47,6 +47,8 @@ const char *ExultStudio::browse_usecode
 	if (!ucbrowsewin)			// First time?
 		{
 		ucbrowsewin = new Usecode_browser();
+		set_toggle("view_uc_functions", true);
+		set_toggle("view_uc_classes", true);
 		ucbrowsewin->setup_list();
 		}
 	ucbrowsewin->show(true);
@@ -115,6 +117,30 @@ C_EXPORT gboolean on_usecodes_dialog_delete_event
 	
 	ucb->cancel();
 	return TRUE;
+	}
+
+/*
+ *	View classes/functions toggled.
+ */
+C_EXPORT void on_view_uc_classes_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	ucb->setup_list();
+	}
+C_EXPORT void on_view_uc_functions_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
+	ucb->setup_list();
 	}
 
 /*
@@ -244,6 +270,9 @@ void Usecode_browser::setup_list
 							!= UCSYMTBL_MAGIC1)
 		return;
 	symtbl.read(in);
+	gtk_tree_store_clear(model);
+	bool show_funs = studio->get_toggle("view_uc_functions");
+	bool show_classes = studio->get_toggle("view_uc_classes");
 	const Usecode_symbol_table::Syms_vector& syms = symtbl.get_symbols();
 	Usecode_symbol_table::Syms_vector::const_iterator siter;
 	for (siter = syms.begin(); siter != syms.end(); ++siter) {
@@ -256,9 +285,13 @@ void Usecode_browser::setup_list
 		switch (kind) {
 		case Usecode_symbol::fun_defined:
 		case Usecode_symbol::shape_fun:
+			if (!show_funs)
+				continue;
 			kindstr = "Function";
 			break;
 		case Usecode_symbol::class_scope:
+			if (!show_classes)
+				continue;
 			kindstr = "Class";
 			break;
 		default:
