@@ -1,3 +1,8 @@
+2007-01-02    <jeff@mini.nerble.net>
+
+	* mapedit/ucbrowse.cc (Usecode_browser): Sort columns in usecode
+	browser.
+
 2006-12-25  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	A few fixes/updates to the Keyring mod.
 
