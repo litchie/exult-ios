@@ -35,6 +35,8 @@ using std::ifstream;
 
 /*	Columns in our table. */
 enum { NAME_COL, NUM_COL, TYPE_COL, N_COLS };
+/*	Sort ID's. */
+enum { SORTID_NAME, SORTID_NUM, SORTID_TYPE };
 
 /*
  *	Open browser window.
@@ -144,6 +146,36 @@ C_EXPORT void on_view_uc_functions_toggled
 	}
 
 /*
+ *	Comparison for sorting each (text) column.
+ */
+static gint ucbrowser_compare_func 
+	(
+	GtkTreeModel *model,
+	GtkTreeIter  *a,
+	GtkTreeIter  *b,
+	gpointer      userdata
+	)
+{
+	gint colnum = GPOINTER_TO_INT(userdata);
+	gint ret = 0;
+	gchar *name1 = 0, *name2 = 0;
+        gtk_tree_model_get(model, a, colnum, &name1, -1);
+        gtk_tree_model_get(model, b, colnum, &name2, -1);
+
+        if (name1 == NULL || name2 == NULL) {
+		if (name1 == NULL && name2 == NULL)
+            		ret = 0;
+		else
+			ret = (name1 == NULL) ? -1 : 1;
+        } else
+		ret = g_utf8_collate(name1, name2);
+#if 0	/* This was in the example, but it causes crashes. */
+        g_free(name1);
+        g_free(name2);
+#endif
+}
+
+/*
  *	Create usecode browser window.
  */
 
@@ -174,19 +206,34 @@ Usecode_browser::Usecode_browser
 					// Create view, and set our model.
 	tree = glade_xml_get_widget(app_xml, "usecodes_treeview");
 	gtk_tree_view_set_model(GTK_TREE_VIEW(tree), GTK_TREE_MODEL(model));;
+	// Set up sorting.
+	GtkTreeSortable *sortable = GTK_TREE_SORTABLE(model);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_NAME, 
+		ucbrowser_compare_func, GINT_TO_POINTER(NAME_COL), NULL);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_NUM, 
+		ucbrowser_compare_func, GINT_TO_POINTER(NUM_COL), NULL);
+	gtk_tree_sortable_set_sort_func(sortable, SORTID_TYPE, 
+		ucbrowser_compare_func, GINT_TO_POINTER(TYPE_COL), NULL);
+	// Create each column.
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
 			"Name", renderer, "text", NAME_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
+	gtk_tree_view_column_set_sort_column_id(col, SORTID_NAME);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
 			"Number", renderer, "text", NUM_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
+	gtk_tree_view_column_set_sort_column_id(col, SORTID_NUM);
 	renderer = gtk_cell_renderer_text_new();
 	col = gtk_tree_view_column_new_with_attributes(
 			"Type", renderer, "text", TYPE_COL, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), col);
+	gtk_tree_view_column_set_sort_column_id(col, SORTID_TYPE);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree), TRUE);
+					// Set initial sort.
+	gtk_tree_sortable_set_sort_column_id(sortable, SORTID_NAME, 
+							GTK_SORT_ASCENDING);
 	gtk_widget_show(tree);
 	}
 
