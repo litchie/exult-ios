@@ -982,8 +982,8 @@ USECODE_INTRINSIC(move_object)
 	Usecode_value& p = parms[1];
 	Tile_coord tile(p.get_elem(0).get_int_value(),
 			p.get_elem(1).get_int_value(),
-			p.get_elem(2).get_int_value());
-	int map = p.get_array_size() == 3 ? -1 :
+			p.get_array_size() > 2 ? p.get_elem(2).get_int_value() : 0);
+	int map = p.get_array_size() < 4 ? -1 :
 			p.get_elem(3).get_int_value();
 	Actor *ava = gwin->get_main_actor();
 	modified_map = true;
