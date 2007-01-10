@@ -67,13 +67,13 @@ Mariah 0x499 ()
 		if (gflags[BROKE_TETRAHEDRON])
 		{
 			if (item in party)
-				add("leave");
-			else
 			{
-				add("join");
+				add("leave");
 				add("Cast spell");
 			}
-			
+			else
+				add("join");
+
 			converse (0)
 			{
 				case "name" (remove):
