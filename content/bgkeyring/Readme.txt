@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.05
+version: 0.11.07
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -181,6 +181,11 @@ version: 0.11.05
 
 7	Version history
 -------------------
+version: 0.11.07
+	- Fixed reagent bug for linear spells.
+	- Removed Fire Snake spell from the list as it is not castable.
+	- Improved Mass Resurrection spell to work only if there are resurrectable
+	  bodies within range of the spell.
 version: 0.11.06
 	- Updated Joneleth and Laundo and his goons to use the new set_usecode_fun
 	  intrinsic.

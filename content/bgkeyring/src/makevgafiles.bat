@@ -85,11 +85,6 @@
 @if not exist %new_paperdol% goto xtractshapes
 @set varpaperdol=c
 
-@if not exist "..\..\..\..\data\bg_paperdol.vga" goto xtractshapes
-@echo Found base bg_paperdol.vga; using it as base...
-@copy /y ..\..\..\..\data\bg_paperdol.vga ..\data\paperdol.vga >> log.txt
-@set varpaperdol=u
-
 :xtractshapes
 @if not exist %shapes_extract% goto copyshapes
 @echo Extracting shapes from static\shapes.vga...
