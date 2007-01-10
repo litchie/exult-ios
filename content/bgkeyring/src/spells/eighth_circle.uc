@@ -337,10 +337,28 @@ spellTimeStop ()
 
 spellMassResurrect ()
 {
+	var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
+	var bodies = [];
+	for (shnum in bodyshapes)
+		bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
+
 	if (event == DOUBLECLICK)
 	{
 		item_say("@Vas Mani Corp Hur@");
-		if (inMagicStorm())
+
+		var have_resurrectables = false;
+		for (body in bodies)
+		{
+			var qual = body->get_item_quality();
+			var quant = body->get_item_quantity(1);
+			if ((qual != 0) || (quant != 0))
+			{
+				have_resurrectables = true;
+				break;
+			}
+		}
+
+		if (inMagicStorm() && have_resurrectables)
 		{
 			script item
 			{	nohalt;						sfx 64;
@@ -358,10 +376,6 @@ spellMassResurrect ()
 	}
 	else if (event == SCRIPTED)
 	{
-		var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
-		var bodies = [];
-		for (shnum in bodyshapes)
-			bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
 		var body;
 		var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
 		var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
