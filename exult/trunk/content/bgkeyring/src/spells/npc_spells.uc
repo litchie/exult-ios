@@ -614,8 +614,7 @@ var getSpellList(var circle)
 			break;
 		case 8:
 			spell_list = ["Death vortex", "Invisibility all", "Mass death", "Resurrect",
-			              "Summon", "Swordstrike", "Time stop", "Fire snake",
-			              "Mass resurrect"];
+			              "Summon", "Swordstrike", "Time stop", "Mass resurrect"];
 			break;
 	}
 	return ["none", spell_list];
@@ -915,33 +914,37 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 		var lacking_reagents = [];
 		var ret_str;
 
-		for (reagent in needed)
-			if (!npc->count_objects(SHAPE_REAGENT, QUALITY_ANY, reagent - 1))
-				lacking_reagents = [lacking_reagents, reagent];
-
-		var missing_count = UI_get_array_size(lacking_reagents);
-		if (missing_count)
+		if (needed)
 		{
-			var currcount = 0;
-			for (reagent in lacking_reagents)
-			{
-				currcount += 1;
-				if ((currcount == missing_count) && (currcount != 1))
-					ret_str += " and ";
-				else if (currcount != 1)
-					ret_str += ", ";
+			for (reagent in needed)
+				if (!npc->count_objects(SHAPE_REAGENT, QUALITY_ANY, reagent - 1))
+					lacking_reagents = [lacking_reagents, reagent];
 
-				ret_str += "one " + prefixes[reagent] + names[reagent];
+			var missing_count = UI_get_array_size(lacking_reagents);
+			if (missing_count)
+			{
+				var currcount = 0;
+				for (reagent in lacking_reagents)
+				{
+					currcount += 1;
+					if ((currcount == missing_count) && (currcount != 1))
+						ret_str += " and ";
+					else if (currcount != 1)
+						ret_str += ", ";
+	
+					ret_str += "one " + prefixes[reagent] + names[reagent];
+				}
+				ret_str += ".@";
+				return [NOT_ENOUGH_REAGENTS, ret_str];
 			}
-			ret_str += ".@";
-			return [NOT_ENOUGH_REAGENTS, ret_str];
 		}
 		
 		if (npcmana < circle)
 			return [NOT_ENOUGH_MANA, (maxmana < circle)];
-		
-		for (reagent in needed)
-			npc->remove_cont_items(1, SHAPE_REAGENT, QUALITY_ANY, reagent, true);
+
+		if (needed)
+			for (reagent in needed)
+				npc->remove_cont_items(1, SHAPE_REAGENT, QUALITY_ANY, reagent, true);
 	}
 	
 	npc->begin_casting_mode();
