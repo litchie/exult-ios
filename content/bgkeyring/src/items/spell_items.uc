@@ -25,7 +25,6 @@
 
 const int MAX_PREPARED_SPELLS				= 6;
 
-static var initialized;
 //The list of known spells
 static var global_spells_unknown;
 //The list of favorite spells
@@ -36,7 +35,7 @@ var prepareSpell (var npc, var spell_array, var talk, var removespells)
 	var spells = spell_array;
 	var circle_list = getCircleList(npc);
 	var spells_size;
-	
+
 	say(talk[1]);
 	say(talk[2]);
 	while (true)
@@ -463,7 +462,6 @@ var spellitemGetTalkHeal (var npcnum)
 extern spellitemGetNPCIndex(var npcnum);
 spellitemInit()
 {
-	initialized = true;
 	global_spells_unknown = [0, 0, 0, 0, 0, 0, 0];
 	global_fav_spells = [0, 0, 0, 0, 0, 0, 0];
 
@@ -492,8 +490,18 @@ var spellitemGetNPCIndex(var npcnum)
 		npcnum = -npcnum;
 	var npc_array_index = [JAANA, MARIAH, LAURIANNA, IOLO,
 		                   SHAMINO, DUPRE, JULIA, LORD_BRITISH];
-	if (!initialized)
+
+	static var initialized;
+	static var spellsystem_version;
+	const int CURRENT_SPELLSYSTEM_VERSION		= 1;
+
+	if (!initialized || spellsystem_version != CURRENT_SPELLSYSTEM_VERSION)
+	{
+		spellsystem_version = CURRENT_SPELLSYSTEM_VERSION;
+		initialized = true;
 		spellitemInit();
+	}
+
 	for (npc in npc_array_index with index)
 		if (npc == npcnum)
 			return index;
@@ -506,8 +514,7 @@ spellitem_Main ()
 	
 	var removespells = global_spells_unknown[spellitemGetNPCIndex(npcnum)];
 	var fav_spells = global_fav_spells[spellitemGetNPCIndex(npcnum)];
-	
-	
+
 	var talk_main = spellitemGetTalkMain(npcnum);
 	var talk_cast = spellitemGetTalkCast(npcnum);
 	var talk_prepare = spellitemGetTalkPrepare(npcnum);

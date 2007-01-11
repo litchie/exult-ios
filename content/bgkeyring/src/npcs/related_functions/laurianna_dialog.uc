@@ -910,9 +910,16 @@ lauriannaYewDialog ()
 			say("@Dost thou never tire of asking questions whose answers thou knowest already?@");
 			
 		case "job" (remove):
-			say("@I am working as a healer in Reyna's shop. And I can sell thee some reagents.@");
-			add("reagents");
-		
+			if (item in UI_get_party_list())
+				say("@One would think that travelling and fighting by thy side would be enough to divine my present occupation, Avatar.@");
+			else if (get_schedule_type() == WAIT)
+				say("@I am awaiting until thou asketh me to return to thy party.@");
+			else
+			{
+				say("@I am working as a healer in Reyna's shop. And I can sell thee some reagents.@");
+				add("reagents");
+			}
+
 		case "Reyna" (remove):
 			say("@She is the local healer, and is a very nice lady. She has given me lodging in her house in exchange for help running her shop.@");
 			if (isNearby(REYNA))
