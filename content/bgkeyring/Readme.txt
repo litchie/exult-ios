@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.07
+version: 0.11.08
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -181,6 +181,12 @@ version: 0.11.07
 
 7	Version history
 -------------------
+version: 0.11.08
+	- Laurianna no longer sells reagents while she is in the party. She also
+	  won't sell reagents if you kick her out and tell her to wait there.
+	- Mariah now sells spells while on the road.
+	- Added independent usecode versioning for unknown and favorite spell lists
+	  in the spell system to fix older save games.
 version: 0.11.07
 	- Fixed reagent bug for linear spells.
 	- Removed Fire Snake spell from the list as it is not castable.
