@@ -88,14 +88,17 @@ Mariah 0x499 ()
 
 				
 				case "job":
+					add("spells");
 					if (item in party)
 						say("@I am one of thy travelling conpanions, " + avatarname + ". I am also a mage, as thou shouldst remember.@");
+					else if (get_schedule_type() == WAIT)
+						say("@I am waiting to join thy company again.@");
 					else
 					{
 						say("@I sell spells, reagents, and sometimes a few potions here at the Lycaeum. Dost thou wish to buy any of these, " + avatarname + "?@");
-						add(["spells", "reagents", "potions", "Lycaeum"]);
+						add(["reagents", "potions", "Lycaeum"]);
 					}
-				
+
 				case "Cast spell":
 					var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 					if (!spellbook)
