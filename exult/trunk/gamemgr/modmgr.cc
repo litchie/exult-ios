@@ -182,6 +182,10 @@ ModManager::ModManager (Exult_Game game, string name, string menu)
 	string pathname("<" + name + "_MODS>");
 	int ptroff = get_system_path(pathname).length()+1;
 	
+	// If the dir doesn't exist, leave at once.
+	if (!U7exists(pathname))
+		return;
+
 	U7ListFiles(pathname + "/*.cfg", filenames);
 	int num_mods = filenames.size();
 
