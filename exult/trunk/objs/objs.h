@@ -104,7 +104,7 @@ public:
 		: ShapeID(obj2), tx(obj2.tx), ty(obj2.ty), lift(obj2.lift),
 		  quality(obj2.quality), chunk(obj2.chunk)
 		{  }
-	Game_object() : ShapeID()	// Create fake entry.
+	Game_object() : ShapeID(), chunk(0)	// Create fake entry.
 		{  }
 	virtual ~Game_object()
 		{  }
