@@ -92,7 +92,7 @@ void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, i
 		"NEXT",
 		"LAST"
 	};
-	int ncount = sizeof(menuscroller)/sizeof(int);
+	int ncount = sizeof(menuscroller)/sizeof(menuscroller[0]);
 	assert(ncount==4);
 	int max_width = maximum_size(font, menuscroller, ncount, xpos);
 	xpos = xpos - max_width*3/2;
@@ -350,7 +350,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 		"QUOTES",
 		"EXIT"
 	};
-	int num_entries = sizeof(menuchoices)/sizeof(int);
+	int num_entries = sizeof(menuchoices)/sizeof(menuchoices[0]);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width*(num_entries-1)/2;
 	ypos = gwin->get_height()-3*font->get_text_height();
@@ -413,7 +413,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 	char *menuchoices[] = { 
 		"RETURN TO MAIN MENU"
 	};
-	int num_entries = sizeof(menuchoices)/sizeof(int);
+	int num_entries = sizeof(menuchoices)/sizeof(menuchoices[0]);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width*(num_entries-1)/2;
 	ypos = gwin->get_height()-3*font->get_text_height();
