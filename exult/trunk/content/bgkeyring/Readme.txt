@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.08
+version: 0.11.09
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -43,6 +43,7 @@ version: 0.11.08
 	First, I must be explicit that I have tested this mod *only* with
 	Forge of Virtue add-on installed; it will *not* work without that
 	add-on since it uses some of the add-on's data.
+
 	Secondly (and just as importantly), this mod is will *not* work in
 	Exult 1.2, nor it will work on any but *the* latest snapshots. There
 	were some bugs I had to fix to get everything working as is.
@@ -113,6 +114,14 @@ version: 0.11.08
 	  to cast spells are now in place. Each NPC has his/her own spellcasting
 	  item which can be used to cast spells, and they will use mana and
 	  reagents. There are also some new NPC-only spells.
+	- The 'Iteractions' mod by Alun Bestor; you can bake pastries, forge swords,
+	  milk cows, shear sheep...
+	- The 'Avatar Pack' mod by yours truly, with several shiny new portraits
+	  for your avatar.
+	- NPCs can now cast spells too! The system is very rudimentary yet, being
+	  dialog based, but there are plans for major improvements in the future.
+	- Lord British now has his Crown Jewels. They don't do everything they should
+	  yet, but they are unbalanced already if you get your filthy hands on them.
 
 6	Spoilers
 ------------
@@ -181,6 +190,11 @@ version: 0.11.08
 
 7	Version history
 -------------------
+version: 0.11.09
+	- Cool new avatar portraits and sprites. The avatar portraits are SI-style;
+	  I *do* have BG-style versions of the portraits but they don't look nowhere
+	  near as good.
+	- New "angry" portrait for Laurianna glows.
 version: 0.11.08
 	- Laurianna no longer sells reagents while she is in the party. She also
 	  won't sell reagents if you kick her out and tell her to wait there.
