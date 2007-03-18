@@ -330,6 +330,23 @@ public:
 		entry.face_frame = ReadInt(eptr);
 		entry.alter_face_shape = ReadInt(eptr);
 		entry.alter_face_frame = ReadInt(eptr);
+		if (for_patch && !table->empty())
+			{
+			int i;
+			int found = -1;
+			for (i = 0; i < table->size(); i++)
+				if ((*table)[i].skin_id == entry.skin_id &&
+					(*table)[i].is_female == entry.is_female)
+					{
+					found = i;
+					break;
+					}
+			if (found > -1)
+				{
+				(*table)[i] = entry;
+				return;
+				}
+			}
 		table->push_back(entry);
 		}
 	};

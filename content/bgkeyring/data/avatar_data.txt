@@ -1,0 +1,56 @@
+#	New avatars
+#
+#	December 17, 2006
+#
+
+%%section version
+:1
+%%endsection
+
+%%section defaultshape
+#	Setting new blonde avatars as default shapes
+:0/721/297/5
+:1/989/297/4
+%%endsection
+
+%%section baseracesex
+#	Setting the blonde avatars as default
+:0/0
+%%endsection
+
+%%section multiracial_table
+#Format
+#	:skin/sex/shapenum/nakedshape/facenum/faceframe/alterface/alterframe
+#skin = 0-based skin number
+#sex = 1 for female, 0 for male
+#shapenum and nakedshape can be either a shape # or a reference to an imported
+#shape (either in the form of a shape number or on the form %num, as explained
+#in the multiracial_imports section.
+#facenum is the face shape from faces.vga to use
+#faceframe is the frame of the face to use
+#alterface and alterframe indicate the face/frame to use when flag 33 is set
+
+#	Blonde avatars
+:0/0/1028/1034/297/5/297/5
+:0/1/1029/1035/297/4/297/4
+
+#	Raven haired avatars
+:1/0/1036/1042/297/3/297/3
+:1/1/1037/1043/297/2/297/2
+
+#	Brunette avatars
+:2/0/1038/1044/297/1/297/1
+:2/1/1039/1045/297/0/297/0
+
+#	Redhead avatars
+:3/0/1040/1046/297/9/297/9
+:3/1/1041/1047/297/8/297/8
+
+#	Asian avatars
+:4/0/1036/1042/297/7/297/7
+:4/1/1037/1043/297/6/297/6
+
+#	Black avatars
+:5/0/1024/1030/297/11/297/11
+:5/1/1025/1031/297/10/297/10
+%%endsection
