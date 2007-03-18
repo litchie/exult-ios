@@ -1,3 +1,12 @@
+2007-03-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* minsinf.cc: Made multiracial table patches actually be able to change
+	  the built-in skins.
+	* content/bgkeyring: changed storage method of graphics to shp files instead
+	  of pngs and switched scripts to use expack instead of ipack. Added some
+	  instructions on how to build the Keyring mod by yourself. Added several
+	  new avatars to choose from, and improved existing ones. Removed generated
+	  files (most vga files, the usecode file).
+
 2007-01-15  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Don't print errors when looking for mods and the mods dir doesn't exist.
 
