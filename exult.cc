@@ -2176,6 +2176,10 @@ static void Drop_dragged_npc
 	Actor *npc = gwin->get_npc(npcnum);
 	if (!npc)
 		return;
+	if (npc->is_pos_invalid())	// Brand new?
+		npc->clear_flag(Obj_flags::dead);
+	else
+		npc->remove_this(true);	// Remove if already on map.
 	Dragging_info drag(npc);
 	if (drag.drop(x, y))
 		npc->set_unused(false);
