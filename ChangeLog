@@ -1,3 +1,7 @@
+2007-03-21    <jeff@mini.nerble.net>
+
+	* exult.cc: Fixed a couple bugs involving dragging NPC's onto the map.
+
 2007-03-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* minsinf.cc: Made multiracial table patches actually be able to change
 	  the built-in skins.

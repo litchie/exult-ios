@@ -76,7 +76,8 @@ Ctrl-H		cheat_help
 Ctrl-Alt-H	party_heal
 Alt-I		toggle_infravision
 I		inventory
-K		try_keys
+Alt-K		try_keys
+K		useitem			1100	# Use keyring
 Ctrl-L		party_increase_level
 Alt-L		skiplift_decrement
 Ctrl-Alt-M	toggle_map_editor

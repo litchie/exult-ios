@@ -4462,7 +4462,7 @@ void Npc_actor::activate
 	int event
 	)
 	{
-	if (is_dead())
+	if (is_dead() && !cheat.in_map_editor())
 		return;
 					// Converse, etc.
 	Actor::activate(event);
