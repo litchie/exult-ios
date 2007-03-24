@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.04
+version: 0.15.04a
 
 	This modification fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -44,6 +44,7 @@ version: 0.15.04
 	First, I must be explicit that I have tested this mod *only*
 	with Silver Seed add-on installed; I don't know if it will work
 	or not without. It *might* work.
+	
 	Secondly (and just as importantly), this mod is only guaranteed
 	to work on the latest Exult snapshots. It will *not* work in Exult 1.2.
 
@@ -51,8 +52,11 @@ version: 0.15.04
 	of the zip file into your Serpent Isle's 'mods' folder. By default (that
 	is, unless you changed it specifically in your 'Exult.cfg' file), this
 	would be the 'mods' subdirectory of the path you set for Serpent Isle in
-	your 'Exult.cfg' file. There is an optional (but highly recommended)
-	additional step you may want to perform:
+	your 'Exult.cfg' file.  If the folder is not there, simply create an empty
+	folder called 'mods' in your Serpent Isle directory and proceed as above.
+	
+	There is an optional (but highly recommended) additional step you may want
+	to perform:
 	
 	OPTIONAL: You can create a shortcut to start Exult directly in the
 	SI Fixes mod. To do so, make sure that the command-line is similar to
@@ -163,6 +167,8 @@ version: 0.15.04
 	    
 6	Version history
 -------------------
+version: 0.15.04a
+	- Improved installation instructions.
 version: 0.15.04
 	- SI Fixes is now licensed under the GNU General Public License.
 version: 0.15.03
