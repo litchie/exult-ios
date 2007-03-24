@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.09
+version: 0.11.09a
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -52,8 +52,11 @@ version: 0.11.09
 	of the zip file into your Black Gate's 'mods' folder. By default (that
 	is, unless you changed it specifically in your 'Exult.cfg' file), this
 	would be the 'mods' subdirectory of the path you set for Black Gate in
-	your 'Exult.cfg' file. There are two optional (but highly recommended)
-	additional steps you may want to perform:
+	your 'Exult.cfg' file. If the folder is not there, simply create an empty
+	folder called 'mods' in your Black Gate directory and proceed as above.
+	
+	There are two optional (but highly recommended) additional steps you may
+	want to perform:
 
 	OPTIONAL: You can create a shortcut to start Exult directly in the
 	Keyring mod. To do so, make sure that the command-line is similar to
@@ -190,6 +193,8 @@ version: 0.11.09
 
 7	Version history
 -------------------
+version: 0.11.09a
+	- Improved installation instructions.
 version: 0.11.09
 	- Cool new avatar portraits and sprites. The avatar portraits are SI-style;
 	  I *do* have BG-style versions of the portraits but they don't look nowhere
