@@ -18,9 +18,15 @@ Then you proceed with:
   3) Move the 'usecode' file (generated in (1), above) to 'bgkeyring/data'.
 
 Congratulations, the 'bgkeyring/data' directory now contains all that is needed
-to run the Keyring mod. Windows users can run the supplied "Make & Install.bat"
-file (which, despite the name, doesn't install anything anywhere); this batch
-file assumes that UCC and Expack are in your PATH variable.
+to run the Keyring mod.
+
+There are script files for automating this proccess (both in 'bgkeyring/src'):
+  1) Windows users can run the supplied 'make.bat' DOS Batch file;
+
+  2) Users of POSIX-compliant systems can use the supplied 'make.sh' script.
+
+Be aware that both script files file assume that UCC and Expack are somewhere
+in your PATH variable.
 
 To actually use the Keyring mod in Exult, you will need to use the 'Keyring.cfg'
 found in the same directory as this file, as well as needing to know the path to
