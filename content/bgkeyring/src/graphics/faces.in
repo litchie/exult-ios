@@ -1,7 +1,7 @@
-../data/faces.vga
-:139:graphics/faces/Zauriel_Face.shp
-:148:graphics/faces/Lauriannas_Faces.shp
-:294:graphics/faces/Enemy_Faces.shp
-graphics/faces/Codex.shp
-graphics/faces/Shrine_Faces.shp
-graphics/faces/Avatar_Faces.shp
+../../data/faces.vga
+:139:faces/Zauriel_Face.shp
+:148:faces/Lauriannas_Faces.shp
+:294:faces/Enemy_Faces.shp
+:295:faces/Codex.shp
+:296:faces/Shrine_Faces.shp
+:297:faces/Avatar_Faces.shp
