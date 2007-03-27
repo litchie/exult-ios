@@ -1,3 +1,6 @@
+2007-03-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	New vga/usecode generation scripts for Keyring mod.
+
 2007-03-21    <jeff@mini.nerble.net>
 
 	* exult.cc: Fixed a couple bugs involving dragging NPC's onto the map.

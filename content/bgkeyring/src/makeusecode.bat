@@ -1,3 +1,0 @@
-@echo Compiling Usecode...
-@ucc.exe -o ..\data\usecode usecode.uc
-@if errorlevel 1 (@echo Error compiling usecode!) else (@echo Usecode has been successfuly compiled!)
