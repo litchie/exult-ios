@@ -1109,9 +1109,8 @@ void BG_Game::scene_moongate()
 void BG_Game::top_menu()
 {
 	Audio::get_ptr()->start_music(menu_midi,true,INTROMUS);
-		
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal->load("<STATIC>/intropal.dat",0);
+	pal->load("<STATIC>/intropal.dat",6);
 	pal->fade_in(60);	
 }
 
@@ -1517,9 +1516,7 @@ void BG_Game::show_quotes()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
 	quotes.run(gwin);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
 }
 
 void BG_Game::show_credits()
@@ -1529,14 +1526,11 @@ void BG_Game::show_credits()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
 	if(credits.run(gwin)) {	// Watched through the entire sequence?
 		std::ofstream quotesflg;
 		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 		quotesflg.close();
 	}
-		
-	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
 }
 
 bool BG_Game::new_game(Vga_file &shapes)
@@ -1564,6 +1558,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	char npc_name[max_name_len+1];
 	char disp_name[max_name_len+2];
 	npc_name[0] = 0;
+
 	int selected = 0;
 	int num_choices = 4;
 	SDL_Event event;
@@ -1577,7 +1572,6 @@ bool BG_Game::new_game(Vga_file &shapes)
 		Shapeinfo_lookup::GetSkinInfoSafe(
 				defskin->default_skin, defskin->default_female, si_installed);
 	
-	//gwin->get_pal()->load("<STATIC>/intropal.dat",6);
 	Palette *pal = 	gwin->get_pal();
 	pal->load("<DATA>/exult_bg.flx", EXULT_BG_FLX_U7MENUPAL_PAL);
 	Palette *oldpal = new Palette();
@@ -1586,13 +1580,13 @@ bool BG_Game::new_game(Vga_file &shapes)
 	// Create palette translation table. Maybe make them static?
 	unsigned char *transto = new unsigned char[256];
 	oldpal->create_palette_map(pal, transto);
-	sman->paint_shape(topx,topy,shapes.get_shape(0x2,0), 0, transto);
 
 	do
 	{
 		if (redraw)
 		{
-			win->fill8(0,gwin->get_width(),90,0,menuy);
+			gwin->clear_screen();
+			sman->paint_shape(topx,topy,shapes.get_shape(0x2,0), 0, transto);
 			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0), 0, transto);
 
 			Shape_frame *sex_shape = shapes.get_shape(0xA, selected == 1);
@@ -1613,7 +1607,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name, transto);
-			gwin->get_pal()->apply();
+			pal->apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
@@ -1649,7 +1643,6 @@ bool BG_Game::new_game(Vga_file &shapes)
 				if(selected==1)
 					skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, si_installed, true);
 				break;
-
 			case SDLK_RIGHT:
 				if(selected==1)
 					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
@@ -1717,6 +1710,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 	}
 	while(editing);
 
+	gwin->clear_screen();
+
 	if(ok)
 	{
 #ifdef DEBUG
@@ -1725,9 +1720,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);
 		set_avsex (skindata->is_female);
-		gwin->get_pal()->fade_out(c_fade_out_time);
+		pal->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
-		ok =gwin->init_gamedat(true);
+		ok = gwin->init_gamedat(true);
 	}
 	else
 	{
@@ -1736,9 +1731,6 @@ bool BG_Game::new_game(Vga_file &shapes)
 		pal->apply();
 	}
 
-	win->fill8(0,gwin->get_width(),90,0,menuy);
-
 	SDL_EnableUNICODE(0);
-
 	return ok;
 }
