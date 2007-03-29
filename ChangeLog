@@ -1,4 +1,8 @@
-2007-03-18  Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-03-29  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Allow mainshp.flx patches. Also, slightly synched BG and SI new game code,
+	and removed a few unnecessary palette changes in BG title screen.
+
+2007-03-27  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	New vga/usecode generation scripts for Keyring mod.
 
 2007-03-21    <jeff@mini.nerble.net>

@@ -49,6 +49,7 @@
 #define SPRITES_VGA     "<STATIC>/sprites.vga"
 #define PATCH_SPRITES	"<PATCH>/sprites.vga"
 #define MAINSHP_FLX     "<STATIC>/mainshp.flx"
+#define PATCH_MAINSHP     "<PATCH>/mainshp.flx"
 #define ENDSHAPE_FLX    "<STATIC>/endshape.flx"
 #define SHPDIMS		"<STATIC>/shpdims.dat"
 #define PATCH_SHPDIMS	"<PATCH>/shpdims.dat"

@@ -1191,28 +1191,28 @@ Sound Index
 }
 
 void SI_Game::show_quotes()
-	{
-		Audio::get_ptr()->start_music(32,false,MAINSHP_FLX);
-		TextScroller quotes(MAINSHP_FLX, 0x10, 
-			     fontManager.get_font("MENU_FONT"),
-			     menushapes.extract_shape(0x14)
-			    );
-		quotes.run(gwin);
-	}
+{
+	Audio::get_ptr()->start_music(32,false,MAINSHP_FLX);
+	TextScroller quotes(MAINSHP_FLX, 0x10, 
+		     fontManager.get_font("MENU_FONT"),
+		     menushapes.extract_shape(0x14)
+		    );
+	quotes.run(gwin);
+}
 
 void SI_Game::show_credits()
-	{
-		Audio::get_ptr()->start_music(30,false,MAINSHP_FLX);
-		TextScroller credits(MAINSHP_FLX, 0x0E, 
-			     fontManager.get_font("MENU_FONT"),
-			     menushapes.extract_shape(0x14)
-			    );
-		if(credits.run(gwin)) {	// Watched through the entire sequence?
-			std::ofstream quotesflg;
-			U7open(quotesflg, "<SAVEGAME>/quotes.flg");
-			quotesflg.close();
-		}
+{
+	Audio::get_ptr()->start_music(30,false,MAINSHP_FLX);
+	TextScroller credits(MAINSHP_FLX, 0x0E, 
+		     fontManager.get_font("MENU_FONT"),
+		     menushapes.extract_shape(0x14)
+		    );
+	if(credits.run(gwin)) {	// Watched through the entire sequence?
+		std::ofstream quotesflg;
+		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
+		quotesflg.close();
 	}
+}
 
 bool SI_Game::new_game(Vga_file &shapes)
 {
@@ -1231,7 +1231,6 @@ bool SI_Game::new_game(Vga_file &shapes)
 
 	int selected = 0;
 	int num_choices = 4;
-	//pal.load("<STATIC>/intropal.dat",6);
 	SDL_Event event;
 	bool editing = true;
 	bool redraw = true;
@@ -1254,9 +1253,10 @@ bool SI_Game::new_game(Vga_file &shapes)
 
 			Shape_frame *portrait = faces_vga.get_shape(skindata->face_shape, skindata->face_frame);
 			sman->paint_shape(topx+300, menuy+50, portrait);
+
 			sman->paint_shape(topx+10, topy+180, shapes.get_shape(0x8, selected == 2));
 			sman->paint_shape(centerx+10, topy+180, shapes.get_shape(0x7, selected == 3));
-			if(selected==0)
+			if (selected == 0)
 				snprintf(disp_name, max_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_len+2, "%s", npc_name);
@@ -1282,6 +1282,16 @@ bool SI_Game::new_game(Vga_file &shapes)
 				}
 				else if(selected==1)
 					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
+				else if(selected==2)
+				{
+					editing=false;
+					ok = true;
+				}
+				else if(selected==3)
+				{
+					editing = false;
+					ok = false;
+				}
 				break;
 			case SDLK_LEFT:
 				if(selected==1)
@@ -1295,6 +1305,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 				editing = false;
 				ok = false;
 				break;
+			case SDLK_TAB:
 			case SDLK_DOWN:
 				++selected;
 				if(selected==num_choices)
@@ -1354,10 +1365,12 @@ bool SI_Game::new_game(Vga_file &shapes)
 	while(editing);
 
 	gwin->clear_screen();
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 
 	if(ok)
 	{
+#ifdef DEBUG
+		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
+#endif
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);
 		set_avsex (skindata->is_female);
@@ -1365,6 +1378,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 		gwin->clear_screen(true);	
 		ok = gwin->init_gamedat(true);
 	}
+	else
+		sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 
 	SDL_EnableUNICODE(0);
 
