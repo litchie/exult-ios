@@ -75,7 +75,7 @@ unsigned int Game::ticks = 0;
 Game::Game() : menushapes(), xml(0)
 {
 	try {				// Okay to fail if development game.
-		menushapes.load(MAINSHP_FLX);
+		menushapes.load(MAINSHP_FLX, PATCH_MAINSHP);
 	} catch (const exult_exception &e) {
 		if (!is_editing())
 			throw e;
