@@ -147,6 +147,8 @@
 
 #define AUTONOTES	"autonotes.txt"
 
+#define PATCH_KEYS	"<PATCH>/patchkeys.txt"
+
 #define NUM_FONTS	(20)
 
 // U7 game names in "exult.cfg":

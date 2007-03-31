@@ -31,8 +31,7 @@ version: 0.11.10
 	useful suggestions in the old Phorum thread. They are Crysta the Elf,
 	gruck, Gradilla Dragon, Dominus and Artaxerxes.
 
-	I must also thank Crysta the Elf for some graphics he made/edited,
-	and Sissy Knox for Mariah's gump.
+	I must also thank Crysta the Elf for some graphics she made/edited.
 	The full list is in the version history, below.
 
 	Also, the structure of the mod is based on Alun Bestor's Quests and
@@ -66,14 +65,14 @@ version: 0.11.10
 	use Windows) or use the supplied 'Keyring.png' file to make your own
 	icon for other OSes.
 
-	OPTIONAL: If you like, you can set new key bindings to BG to use the
-	keyring with a keyboard shortcut. You will have to edit the file
-	"bgdefaultkeys.txt". If you want to make it work like SI does,
-	delete the line "K		try_keys" and add the following two lines:
-		Alt-K		try_keys
-		K		useitem			1100	# Use keyring
-	For the time being, you cannot specify custom key bindings on a per-mod
-	basis, but this may possibly change in future versions of Exult.
+	OPTIONAL: This mod adds a custom keybinding *patch* file, which alters what
+	two key combinations do:
+		-- The 'K' key calls the Keyring, like SI;
+		-- Again like SI, the 'Alt+K' combination tries all party keys.
+	These changes are loaded by default. You can, if you like, edit these new
+	key bindings to match your preferences; just edit the 'data/patchkeys.txt'
+	file. This file will override your BG settings -- which is why it is such
+	a small file -- but only for the Keyring mod.
 
 
 3	Contributing to this mod

@@ -511,6 +511,7 @@ void Game_window::init_files(bool cycle)
 	} else {
 	  keybinder->LoadFromFile(keyfilename.c_str());
 	}
+	keybinder->LoadFromPatch();
 
 	CYCLE_RED_PLASMA();
 	// initialize .wav SFX pack
