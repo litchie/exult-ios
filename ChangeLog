@@ -1,3 +1,9 @@
+2007-03-31  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Added new title screens for Keyring mod and SI Fixes.
+	* Added build scripts/instructions for SI Fixes. Also, improved the Keyring
+	  make scripts.
+	* Added new avatars from Avatar Pack to Keyring mod.
+
 2007-03-29  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Allow mainshp.flx patches. Also, slightly synched BG and SI new game code,
 	and removed a few unnecessary palette changes in BG title screen.

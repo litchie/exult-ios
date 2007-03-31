@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.09a
+version: 0.11.10
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -193,6 +193,10 @@ version: 0.11.09a
 
 7	Version history
 -------------------
+version: 0.11.10
+	- New title screen for Keyring mod.
+	- Modified avatar bodies to be shape 1098.
+	- Merged updates from the Avatar Pack.
 version: 0.11.09a
 	- Improved installation instructions.
 version: 0.11.09

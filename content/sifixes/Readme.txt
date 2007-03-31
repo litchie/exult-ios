@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.04a
+version: 0.15.05
 
 	This modification fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -62,6 +62,9 @@ version: 0.15.04a
 	SI Fixes mod. To do so, make sure that the command-line is similar to
 	the following example:
 		<path to Exult>\Exult --si --mod sifixes
+	You can use the supplied 'SIFixes.ico' file for the shortcut (if you
+	use Windows) or use the supplied 'SIFixes.png' file to make your own
+	icon for other OSes.
 
 3	Contributing to this mod
 ----------------------------
@@ -167,6 +170,8 @@ version: 0.15.04a
 	    
 6	Version history
 -------------------
+version: 0.15.05
+	- Added SI Fixes title screen.
 version: 0.15.04a
 	- Improved installation instructions.
 version: 0.15.04

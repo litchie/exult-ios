@@ -68,7 +68,6 @@ spellSurprise 0x667 ()
 				call spellFails;}
 		}
 	}
-	
 	else if (event == SCRIPTED)
 	{
 		if (item == AVATAR->get_npc_object())
@@ -142,7 +141,7 @@ spellCreateAmmo 0x66E ()
 				actor frame CAST_2;			call spellFails;}
 		}
 	}
-	if (event == SCRIPTED)
+	else if (event == SCRIPTED)
 	{
 		bows = PARTY->count_objects(SHAPE_BOW, QUALITY_ANY, FRAME_ANY);
 		magicbows = PARTY->count_objects(SHAPE_MAGIC_BOW, QUALITY_ANY, FRAME_ANY);
@@ -398,7 +397,6 @@ spellSerpentBond 0x67D ()
 				actor frame LIE;			call spellFails;}
 		}
 	}
-	
 	else if (event == SCRIPTED)
 	{
 		pos = get_object_position();
