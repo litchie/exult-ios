@@ -53,7 +53,8 @@ class KeyBinder {
 	
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
- public:
+ 	void LoadFromFileInternal(const char* filename);
+public:
 	KeyBinder();
 	~KeyBinder();
 	/* Add keybinding */
@@ -69,6 +70,7 @@ class KeyBinder {
 	bool HandleEvent(SDL_Event &ev);
 	
 	void LoadFromFile(const char* filename);
+	void LoadFromPatch();
 	void LoadDefaults();
 	
 	void ShowHelp();
