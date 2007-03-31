@@ -3,6 +3,8 @@
 	* Added build scripts/instructions for SI Fixes. Also, improved the Keyring
 	  make scripts.
 	* Added new avatars from Avatar Pack to Keyring mod.
+	* You can now patch the keybindings on a per-mod basis. The Keyring mod has
+	  been updated to reflect that.
 
 2007-03-29  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Allow mainshp.flx patches. Also, slightly synched BG and SI new game code,

@@ -549,14 +549,10 @@ void KeyBinder::ParseLine(char *line)
 	AddKeyBinding(k.sym, k.mod, a.action, np, a.params);
 }
 
-void KeyBinder::LoadFromFile(const char* filename)
+void KeyBinder::LoadFromFileInternal(const char* filename)
 {
 	ifstream keyfile;
-	
-	Flush();
-	
-	cout << "Loading keybindings from file " << filename << endl;
-	
+
 	U7open(keyfile, filename, true);
 	char temp[1024]; // 1024 should be long enough
 	while(!keyfile.eof()) {
@@ -569,6 +565,23 @@ void KeyBinder::LoadFromFile(const char* filename)
 		ParseLine(temp);
 	}
 	keyfile.close();
+}
+
+void KeyBinder::LoadFromFile(const char* filename)
+{
+	
+	Flush();
+	
+	cout << "Loading keybindings from file " << filename << endl;
+	LoadFromFileInternal(filename);
+}
+
+void KeyBinder::LoadFromPatch()
+{
+	if (U7exists(PATCH_KEYS)) {
+		cout << "Loading patch keybindings" << endl;
+		LoadFromFileInternal(PATCH_KEYS);
+	}
 }
 
 void KeyBinder::LoadDefaults()
