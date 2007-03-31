@@ -3,29 +3,32 @@
 #	July 31, 2006 - Derived from shapes/bodies.cc
 #
 %%section bodyshapes
+:1098
 :1099
 %%endsection
 %%section bodylist
-1025:1099/0 		# x Black female avatar
-1024:1099/1 		# x Black male avatar
-1029:1099/2 		# x Blonde female avatar
-1028:1099/3 		# x Blonde male avatar
-1039:1099/4 		# x Brunette female avatar
-1038:1099/5 		# x Brunette male avatar
-1037:1099/6 		# x Raven female avatar
-1036:1099/7 		# x Raven male avatar
-1041:1099/8 		# x Redhead female avatar
-1040:1099/9 		# x Redhead male avatar
-1031:1099/10		# x Black female nude
-1030:1099/11		# x Black male nude
-1035:1099/12		# x Blonde female nude
-1034:1099/13		# x Blonde male nude
-1045:1099/14		# x Brunette female nude
-1044:1099/15		# x Brunette male nude
-1043:1099/16		# x Raven female nude
-1042:1099/17		# x Raven male nude
-1047:1099/18		# x Redhead female nude
-1046:1099/19		# x Redhead male nude
-1107:1099/20		# x Laurianna
-1122:1099/21		# x Mariah
+1025:1098/0 		# x Black female avatar
+1024:1098/1 		# x Black male avatar
+1029:1098/2 		# x Blonde female avatar
+1028:1098/3 		# x Blonde male avatar
+1039:1098/4 		# x Brunette female avatar
+1038:1098/5 		# x Brunette male avatar
+1037:1098/6 		# x Raven female avatar
+1036:1098/7 		# x Raven male avatar
+1041:1098/8 		# x Redhead female avatar
+1040:1098/9 		# x Redhead male avatar
+1031:1098/10		# x Black female nude
+1030:1098/11		# x Black male nude
+1035:1098/12		# x Blonde female nude
+1034:1098/13		# x Blonde male nude
+1045:1098/14		# x Brunette female nude
+1044:1098/15		# x Brunette male nude
+1043:1098/16		# x Raven female nude
+1042:1098/17		# x Raven male nude
+1047:1098/18		# x Redhead female nude
+1046:1098/19		# x Redhead male nude
+1049:1098/20		# x Buckethead female nude
+1048:1098/21		# x Buckethead male nude
+1107:1099/0			# x Laurianna
+1122:1099/1			# x Mariah
 %%endsection
