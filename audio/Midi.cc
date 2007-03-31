@@ -138,6 +138,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		// No midi driver so don't fall through
 		if (!midi_driver) return;
 	}
+	
+	// FIXME: Add/replace/play midi/xmidi/etc. tracks from patch dir.
 
 	// Handle FM Synth
 	if (midi_driver->isFMSynth())  {
@@ -755,13 +757,23 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 		}
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
 		{
-			ogg_name = bgconvmusic[num];
+			if (num < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
+				ogg_name = bgconvmusic[num];
+			else
+			{
+				char outputstr[255];
+				snprintf(outputstr, 255, "%02dsi.ogg", num);
+				ogg_name = outputstr;
+			}
 		}
 	}
 
 	if (ogg_name == "") return false;
 
-	ogg_name = get_system_path("<MUSIC>/" + ogg_name);
+	if (U7exists("<PATCH>/music/" + ogg_name))
+		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
+	else
+		ogg_name = get_system_path("<MUSIC>/" + ogg_name);
 
 	Mix_Music *newmusic = Mix_LoadMUS(ogg_name.c_str());
 	if (!newmusic) return false;
