@@ -1,4 +1,4 @@
-Exult 1.4.01cvs text message file.  Written by ExultStudio.
+Exult 1.4.03cvs text message file.  Written by ExultStudio.
 %%section shapes
 0x0:carpet
 0x1:sidewalk
@@ -1024,6 +1024,7 @@ Exult 1.4.01cvs text message file.  Written by ExultStudio.
 0x3fd:time barrier
 0x3fe:surf
 0x3ff:haystack
+0x44a:body
 0x44b:body
 0x44c:keyring
 0x44d:magical barrier
