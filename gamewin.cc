@@ -1650,9 +1650,18 @@ void Game_window::start_actor_alt
 
 		Map_chunk *clist = map->get_chunk_safely(cx, cy);
 		clist->setup_cache();
+		Game_object *block;
+		Tile_coord offset;
+		switch (dir)
+			{
+
+			}
+
 		blocked[dir] = clist->is_blocked (height, 
-			main_actor->get_lift(), tx, ty, nlift, 
-					main_actor->get_type_flags(), 1);
+					main_actor->get_lift(), tx, ty, nlift, 
+					main_actor->get_type_flags(), 1) && 
+			// Better handling for larger avatars:
+			((block=main_actor->find_blocking(dest, dir)) && block!=main_actor);
 	}
 
 	dir = Get_direction (ay - winy, winx - ax);
@@ -1664,9 +1673,10 @@ void Game_window::start_actor_alt
 	else if (blocked[dir])
 	{
 	   	Game_object *block = main_actor->is_moving() ? 0
-			: Game_object::find_blocking(start.get_neighbor(dir));
-		if (block == main_actor || !block || !block->move_aside(
-						main_actor, dir))
+			: main_actor->find_blocking(start.get_neighbor(dir), dir);
+		// We already know the blocking object isn't the avatar, so don't
+		// double check it here.
+		if (!block || !block->move_aside(main_actor, dir))
 			{
 			stop_actor();
 			if (main_actor->get_lift()%5)// Up on something?
