@@ -547,6 +547,42 @@ int Actor::is_blocked
 	}
 
 /*
+ *	An object which blocks the destination tile.
+ */
+
+Game_object *Actor::find_blocking
+	(
+	Tile_coord tile,
+	int dir
+	)
+	{
+	Shape_info& shinfo = get_info();
+	int sizex = shinfo.get_3d_xtiles(), sizey = shinfo.get_3d_ytiles();
+	Tile_coord offset;
+	switch (dir)
+		{
+		case north:
+			offset = Tile_coord(-sizex>>1, -sizey, 0); break;
+		case northeast:
+			offset = Tile_coord(0, -sizey, 0); break;
+		case east:
+			offset = Tile_coord(0, -sizey>>1, 0); break;
+		case southeast:
+			offset = Tile_coord(0, 0, 0); break;
+		case south:
+			offset = Tile_coord(-sizex>>1, 0, 0); break;
+		case southwest:
+			offset = Tile_coord(-sizex, 0, 0); break;
+		case west:
+			offset = Tile_coord(-sizex, -sizey>>1, 0); break;
+		case northwest:
+			offset = Tile_coord(-sizex, -sizey, 0); break;
+		}
+	tile = tile + offset;
+	return Game_object::find_blocking(tile);
+	}
+
+/*
  *	Move an object, and possibly change its shape too.
  */
 inline void Actor::movef
@@ -3943,9 +3979,9 @@ int Main_actor::step
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	Game_object *block;
 	if (is_blocked(t, 0, force ? MOVE_ALL : 0) &&
-	   (!(block = Game_object::find_blocking(t)) || block == this ||
+	   (((block = find_blocking(t, get_direction(t))) && block != this &&
 					// Try to get blocker to move aside.
-	        !block->move_aside(this, get_direction(block)) ||
+	        !block->move_aside(this, get_direction(block))) ||
 					// (May have swapped places.)
 		(t != get_tile() &&
 					// If okay, try one last time.
@@ -4569,7 +4605,9 @@ int Npc_actor::step
 		}
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
+	Game_object *block;
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0) &&
+		(block = find_blocking(t, get_direction(t))) && block != this)
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);

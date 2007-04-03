@@ -143,6 +143,8 @@ public:
 	~Actor();
 					// Blocked moving onto tile 't'?
 	int is_blocked(Tile_coord& t, Tile_coord *f = 0, const int move_flags = 0);
+	Game_object *find_blocking(Tile_coord tile, int dir);
+
 	Game_object *find_ammo(int ammo);// Find ammo for desired family.
 	void swap_ammo(Game_object *newammo);
 	bool ready_ammo();		// Find and ready appropriate ammo.

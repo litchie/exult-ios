@@ -330,6 +330,7 @@ public:
 		entry.face_frame = ReadInt(eptr);
 		entry.alter_face_shape = ReadInt(eptr);
 		entry.alter_face_frame = ReadInt(eptr);
+		entry.copy_info = !(version == 2 && *eptr && !(bool)ReadInt(eptr));
 		if (for_patch && !table->empty())
 			{
 			int i;
@@ -604,7 +605,7 @@ void Shapeinfo_lookup::Read_data_file
 				}
 			else
 				in.seekg(0);
-			static_version = strtol(versioninfo[0]+1, 0, 0);
+			static_version = strtol(versioninfo[0], 0, 0);
 			for (int i=0; i<numsections; i++)
 				{
 				std::size_t loc = in.tellg();
@@ -633,7 +634,7 @@ void Shapeinfo_lookup::Read_data_file
 		// Read version.
 		if (Read_text_msg_file(in, versioninfo, version) != -1)
 			{
-			patch_version = strtol(versioninfo[0]+1, 0, 0);
+			patch_version = strtol(versioninfo[0], 0, 0);
 			for (int j=0; j<versioninfo.size(); j++)
 				delete[] versioninfo[j];
 			}

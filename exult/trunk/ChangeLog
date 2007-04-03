@@ -1,3 +1,10 @@
+2007-04-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Avatar skins can now optionally specify whether or not the shape data
+	  from the avatar's default skins will overwrite the shape data from the
+	  skin's actual shape.
+	* Versioning of text data files actually work now.
+	* Better handling for movement of larger avatars.
+
 2007-03-31  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Added new title screens for Keyring mod and SI Fixes.
 	* Added build scripts/instructions for SI Fixes. Also, improved the Keyring
