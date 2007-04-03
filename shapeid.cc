@@ -111,8 +111,11 @@ void Shape_manager::read_shape_info
 	for (vector<Skin_data>::iterator it = skins->begin();
 			it != skins->end(); ++it)
 		{
-		shapes.set_info((*it).shape_num, (*it).is_female ? female : male);
-		shapes.set_info((*it).naked_shape, (*it).is_female ? female : male);
+		if ((*it).copy_info)
+			{
+			shapes.set_info((*it).shape_num, (*it).is_female ? female : male);
+			shapes.set_info((*it).naked_shape, (*it).is_female ? female : male);
+			}
 		}
 	}
 
