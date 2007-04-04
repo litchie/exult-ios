@@ -1,3 +1,6 @@
+2007-04-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Improved skin scrolling functions.
+
 2007-04-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Avatar skins can now optionally specify whether or not the shape data
 	  from the avatar's default skins will overwrite the shape data from the
