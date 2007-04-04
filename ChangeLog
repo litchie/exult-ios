@@ -1,5 +1,8 @@
 2007-04-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
-	Improved skin scrolling functions.
+	* Improved skin scrolling functions.
+	* ES now saves differential patches for VGA files. This will NOT affect
+	  "patch" VGA files that already exist.
+	* ES now exports to/imports from shp files into VGA files.
 
 2007-04-02  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Avatar skins can now optionally specify whether or not the shape data

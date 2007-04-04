@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <windows.h>
 #endif
 
+#include <iostream>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef XWIN
@@ -51,11 +52,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pngio.h"
 #include "fontgen.h"
 #include "utils.h"
+#include "databuf.h"
 
 using std::cout;
 using std::endl;
 using std::strlen;
 using std::string;
+using std::ifstream;
 using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
@@ -954,6 +957,9 @@ void Shape_chooser::edit_shape
 	if (ret == 127 || ret == -1)
 		Alert("Can't launch '%s'", studio->get_image_editor());
 #else
+	for(string::iterator it = cmd.begin(); it != cmd.end(); ++it)
+		if(*it == '/' )
+			*it =  '\\';
 	PROCESS_INFORMATION	pi;
 	STARTUPINFO		si;
 	std::memset (&si, 0, sizeof(si));
@@ -1349,6 +1355,18 @@ void Shape_chooser::export_all_frames
 	ed->export_all_pngs(fname, shnum);
 }
 
+void Shape_chooser::export_shape
+	(
+	char *fname,
+	gpointer user_data
+	)
+{
+	Shape_chooser *ed = (Shape_chooser *) user_data;
+	int shnum = ed->info[ed->selected].shapenum;
+	Shape *shp = ed->ifile->extract_shape(shnum);
+	Image_file_info::write_file(fname, &shp, 1, true);
+}
+
 /*
  *	Import all frames into current shape.
  */
@@ -1419,6 +1437,30 @@ void Shape_chooser::import_all_frames
 	if (fname[len-4] == '.')
 		fname[len-6] = 0;
 	ed->import_all_pngs(fname, shnum);
+}
+
+void Shape_chooser::import_shape
+	(
+	char *fname,
+	gpointer user_data
+	)
+{
+	if (U7exists(fname))
+		{
+		Shape_chooser *ed = (Shape_chooser *) user_data;
+		if (ed->selected < 0)
+			return;			// Shouldn't happen.
+		int shnum = ed->info[ed->selected].shapenum;
+		int len = strlen(fname);
+		Shape *shp = ed->ifile->extract_shape(shnum);
+		ifstream *file = new ifstream();
+		U7open(*file, fname);
+		DataSource *ds = new StreamDataSource(file);
+		shp->load(ds);
+		ed->render();
+		ed->show();
+		ed->file_info->set_modified();
+		}
 }
 
 /*
@@ -2140,6 +2182,30 @@ static void on_shapes_popup_import_all
 							udata);
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
+static void on_shapes_popup_export_shape
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Choose the shp file name",
+			(File_sel_okay_fun) Shape_chooser::export_shape,
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
+static void on_shapes_popup_import_shape
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Choose the shp file to import",
+			(File_sel_okay_fun) Shape_chooser::import_shape,
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
 static void on_shapes_popup_new_frame
 	(
 	GtkMenuItem *item,
@@ -2314,6 +2380,17 @@ GtkWidget *Shape_chooser::create_popup
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
+		if (!IS_FLAT(info[selected].shapenum) ||
+				file_info != studio->get_vgafile())
+			{
+						// Separator.
+			Add_menu_item(popup);
+						// Export/import shape.
+			Add_menu_item(popup, "Export shape...",
+				GTK_SIGNAL_FUNC(on_shapes_popup_export_shape), this);
+			Add_menu_item(popup, "Import shape...",
+				GTK_SIGNAL_FUNC(on_shapes_popup_import_shape), this);
+			}
 					// Separator.
 		Add_menu_item(popup);
 		Add_menu_item(popup, "New shape",

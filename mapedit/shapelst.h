@@ -179,8 +179,10 @@ public:
 	static void export_frame(char *fname, gpointer user_data);
 	static void import_frame(char *fname, gpointer user_data);
 	static void export_all_frames(char *fname, gpointer user_data);
+	static void export_shape(char *fname, gpointer user_data);
 	void export_all_pngs(char *fname, int shnum);
 	static void import_all_frames(char *fname, gpointer user_data);
+	static void import_shape(char *fname, gpointer user_data);
 	void import_all_pngs(char *fname, int shnum);
 	void new_frame();		// Add/del.
 	void from_font_toggled(bool on);

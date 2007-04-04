@@ -189,7 +189,8 @@ void Image_file_info::write_file
 					// Write all out.
 	for (int shnum = 0; shnum < nshapes; shnum++)
 		{
-		shapes[shnum]->write(out);
+		if (shapes[shnum]->get_modified() || shapes[shnum]->get_from_patch())
+			shapes[shnum]->write(out);
 		writer.mark_section_done();
 		}
 	if (!writer.close())

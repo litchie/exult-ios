@@ -847,6 +847,7 @@ void Shape::resize
 		frames = newframes;
 		}
 	num_frames = newsize;
+	modified = true;
 	}
 
 /*
@@ -876,7 +877,8 @@ Shape_frame *Shape::read
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # within shape.
 	vector<int> counts,		// Number of shapes in files.
-	int src
+	int src,
+	bool patch
 	)
 	{
 	DataSource *shp = 0;
@@ -904,6 +906,8 @@ Shape_frame *Shape::read
 					{
 					shapeoff = s;
 					shp = *it;
+					if (patch || (i && i == counts.size()-1))
+						from_patch = true;
 					break;
 					}
 				}
@@ -920,6 +924,8 @@ Shape_frame *Shape::read
 			{
 			shapeoff = s;
 			shp = shapes[src];
+			if (patch || (src && src == counts.size()-1))
+				from_patch = true;
 			}
 		}
 	// The shape was not found anywhere, so leave.
@@ -1035,6 +1041,8 @@ Shape_frame *Shape::store_frame
 
 Shape::Shape(Shape_frame* fr)
 {
+	modified = false;
+	from_patch = false;
 	num_frames = frames_size = 1;
 	frames = new Shape_frame*[1];
 	frames[0] = fr;
@@ -1049,6 +1057,8 @@ Shape::Shape
 	int n				// # frames.
 	)
 	{
+	modified = false;
+	from_patch = false;
 	create_frames_list(n);
 	}
 
@@ -1081,6 +1091,7 @@ void Shape::take
 	frames_size = sh2->frames_size;
 	num_frames = sh2->num_frames;	
 	sh2->num_frames = sh2->frames_size = 0;
+	modified = true;
 	}
 
 /*
@@ -1125,6 +1136,7 @@ void Shape::set_frame
 	assert (framenum < num_frames);
 	delete frames[framenum];	// Delete existing.
 	frames[framenum] = frame;
+	modified = true;
 	}
 
 /*
@@ -1143,6 +1155,7 @@ void Shape::add_frame
 		frames[i] = frames[i - 1];
 	frames[framenum] = frame;
 	num_frames++;
+	modified = true;
 	}
 
 /*
@@ -1161,6 +1174,7 @@ void Shape::del_frame
 		frames[i - 1] = frames[i];
 	frames[frames_size - 1] = 0;	// Last spot is now free.
 	num_frames--;
+	modified = true;
 	}
 
 /*
@@ -1254,14 +1268,15 @@ Vga_file::Vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Patch file, or null.
-	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true)
+	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true),
+		from_patch(false)
 	{
 	load(nm, nm2);
 	}
 
 Vga_file::Vga_file
 	(
-	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true)
+	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true), from_patch(false)
 	{
 		// Nothing to see here !!!
 	}
@@ -1270,7 +1285,7 @@ Vga_file::Vga_file
 	(
 	vector<pair<string, int> > sources,
 	int u7drag		// # from u7drag.h, or -1
-	) : num_shapes(0), u7drag_type(u7drag), flex(true)
+	) : num_shapes(0), u7drag_type(u7drag), flex(true), from_patch(false)
 	{
 	load(sources);
 	}
@@ -1347,6 +1362,8 @@ bool Vga_file::load
 	bool is_good = true;
 	if (!U7exists(sources[0].first.c_str()))
 		is_good = false;
+	else if (sources.size() == 1 && !sources[0].first.compare(0, 7, "<PATCH>"))
+		from_patch = true;
 	for (vector<pair<string, int> >::iterator it = sources.begin();
 		it != sources.end(); ++it)
 		{
