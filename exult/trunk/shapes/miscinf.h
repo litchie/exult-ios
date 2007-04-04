@@ -132,6 +132,7 @@ class Shapeinfo_entry_parser;
 class Shapeinfo_lookup
 	{
 	typedef std::vector<char *> Readstrings;
+	static Skin_data *ScrollSkins(int skin, bool sex, bool sishapes, bool ignoresex, bool prev, bool sel);
 public:
 	static void reset();
 
@@ -168,10 +169,22 @@ public:
 	static Base_Avatar_info *GetBaseAvInfo(bool sex);
 	static int GetMaleAvShape();
 	static int GetFemaleAvShape();
-	static int GetNextSkin(int skin, bool sex, bool sishapes, bool ignoresex = false);
-	static int GetPrevSkin(int skin, bool sex, bool sishapes, bool ignoresex = false);
-	static Skin_data *GetNextSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false);
-	static Skin_data *GetPrevSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false);
+	static int GetNextSkin(int skin, bool sex, bool sishapes, bool ignoresex = false)
+		{
+		return (ScrollSkins(skin, sex, sishapes, ignoresex, false, false))->skin_id;
+		}
+	static int GetPrevSkin(int skin, bool sex, bool sishapes, bool ignoresex = false)
+		{
+		return (ScrollSkins(skin, sex, sishapes, ignoresex, true, false))->skin_id;
+		}
+	static Skin_data *GetNextSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false)
+		{
+		return ScrollSkins(sk->skin_id, sk->is_female, sishapes, ignoresex, false, true);
+		}
+	static Skin_data *GetPrevSelSkin(Skin_data *sk, bool sishapes, bool ignoresex = false)
+		{
+		return ScrollSkins(sk->skin_id, sk->is_female, sishapes, ignoresex, true, true);
+		}
 	static int GetNumSkins(bool sex);
 	static Avatar_default_skin *GetDefaultAvSkin();
 	static std::vector<Skin_data> *GetSkinList();

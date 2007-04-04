@@ -73,6 +73,7 @@ static vector<Skin_data> *skins_table = 0;
 static map<int, bool> *unselectable_skins = 0;
 static map<int, int> *petra_table = 0;
 static map<int, Usecode_function_data> *usecode_funs = 0;
+static int last_skin = 0;
 
 
 /*
@@ -321,6 +322,8 @@ public:
 		{
 		Skin_data entry;
 		entry.skin_id = ReadInt(eptr, 0);
+		if (entry.skin_id > last_skin)
+			last_skin = entry.skin_id;
 		entry.is_female = ReadInt(eptr) != 0;
 		if ((entry.shape_num = ReadVar(eptr)) < 0)
 			return;
@@ -1115,112 +1118,32 @@ Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(Actor *npc)
 	return GetSkinInfoSafe(skin, sex, Shape_manager::get_instance()->have_si_shapes());
 }
 
-int Shapeinfo_lookup::GetNextSkin(int skin, bool sex, bool sishapes, bool ignoresex)
+Skin_data *Shapeinfo_lookup::ScrollSkins
+	(
+	int skin, bool sex, bool sishapes, bool ignoresex, bool prev, bool sel
+	)
 {
-	Skin_data *sk = GetSkinInfo(skin, sex);
-	if (!sk)
-		return GetDefaultAvSkin()->default_skin;
-
-	vector<Skin_data>::iterator it = skins_table->begin();
-	for ( ; it != skins_table->end(); ++it)
-		if ((*it).skin_id == skin && (*it).is_female == sex)
-			break;
-	++it;
-	vector<Skin_data>::iterator end = it;
-	for ( ; it != skins_table->end(); ++it)
-		if ((ignoresex || (*it).is_female == sex) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return (*it).skin_id;
-
-	for (it = skins_table->begin(); it != end; ++it)
-		if ((ignoresex || (*it).is_female == sex) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return (*it).skin_id;
-	return sk->skin_id;
-}
-
-int Shapeinfo_lookup::GetPrevSkin(int skin, bool sex, bool sishapes, bool ignoresex)
-{
-	Skin_data *sk = GetSkinInfo(skin, sex);
-	if (!sk)
-		return GetDefaultAvSkin()->default_skin;
-
-	vector<Skin_data>::reverse_iterator it = skins_table->rbegin();
-	for ( ; it != skins_table->rend(); ++it)
-		if ((*it).skin_id == skin && (*it).is_female == sex)
-			break;
-	++it;
-	vector<Skin_data>::reverse_iterator end = it;
-	for ( ; it != skins_table->rend(); ++it)
-		if ((ignoresex || (*it).is_female == sex) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return (*it).skin_id;
-
-	for (it = skins_table->rbegin(); it != end; ++it)
-		if ((ignoresex || (*it).is_female == sex) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return (*it).skin_id;
-	return sk->skin_id;
-}
-
-Skin_data *Shapeinfo_lookup::GetNextSelSkin(Skin_data *sk, bool sishapes, bool ignoresex)
-{
-	vector<Skin_data>::iterator it = skins_table->begin();
-	for ( ; it != skins_table->end(); ++it)
-		if ((*it).skin_id == sk->skin_id && (*it).is_female == sk->is_female)
-			break;
-	++it;
-	vector<Skin_data>::iterator end = it;
-	for ( ; it != skins_table->end(); ++it)
-		if (IsSkinSelectable((*it).skin_id) &&
-			(ignoresex || (*it).is_female == sk->is_female) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return &(*it);
-
-	for (it = skins_table->begin(); it != end; ++it)
-		if (IsSkinSelectable((*it).skin_id) &&
-			(ignoresex || (*it).is_female == sk->is_female) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return &(*it);
-	return sk;
-}
-
-Skin_data *Shapeinfo_lookup::GetPrevSelSkin(Skin_data *sk, bool sishapes, bool ignoresex)
-{
-	vector<Skin_data>::reverse_iterator it = skins_table->rbegin();
-	for ( ; it != skins_table->rend(); ++it)
-		if ((*it).skin_id == sk->skin_id && (*it).is_female == sk->is_female)
-			break;
-	++it;
-	vector<Skin_data>::reverse_iterator end = it;
-	for ( ; it != skins_table->rend(); ++it)
-		if (IsSkinSelectable((*it).skin_id) &&
-			(ignoresex || (*it).is_female == sk->is_female) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return &(*it);
-
-	for (it = skins_table->rbegin(); it != end; ++it)
-		if (IsSkinSelectable((*it).skin_id) &&
-			(ignoresex || (*it).is_female == sk->is_female) &&
-			(sishapes ||
-				(!IsSkinImported((*it).shape_num) && 
-					!IsSkinImported((*it).naked_shape))))
-			return &(*it);
-	return sk;
+	if (!base_av_info)
+		setup_avatar_data();
+	bool nsex = sex;
+	int nskin = skin;
+	bool chskin = true;
+	while (true)
+		{
+		if (ignoresex)
+			{
+			nsex = !nsex;
+			chskin = (nsex == base_av_info->default_female);
+			}
+		nskin = (nskin + (prev ? last_skin : 0) + chskin) % (last_skin+1);
+		if (sel && !IsSkinSelectable(nskin))
+			continue;
+		Skin_data *newskin = GetSkinInfo(nskin, nsex);
+		if (newskin && (sishapes ||
+  				(!IsSkinImported(newskin->shape_num) &&
+  					!IsSkinImported(newskin->naked_shape))))
+			return newskin;
+		}
 }
 
 int Shapeinfo_lookup::GetNumSkins(bool sex)
