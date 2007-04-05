@@ -562,9 +562,9 @@ Game_object *Actor::find_blocking
 	switch (dir)
 		{
 		case north:
-			offset = Tile_coord(-sizex>>1, -sizey, 0); break;
+			offset = Tile_coord(-sizex>>1, -sizey+1, 0); break;
 		case northeast:
-			offset = Tile_coord(0, -sizey, 0); break;
+			offset = Tile_coord(0, -sizey+1, 0); break;
 		case east:
 			offset = Tile_coord(0, -sizey>>1, 0); break;
 		case southeast:
@@ -572,11 +572,11 @@ Game_object *Actor::find_blocking
 		case south:
 			offset = Tile_coord(-sizex>>1, 0, 0); break;
 		case southwest:
-			offset = Tile_coord(-sizex, 0, 0); break;
+			offset = Tile_coord(-sizex+1, 0, 0); break;
 		case west:
-			offset = Tile_coord(-sizex, -sizey>>1, 0); break;
+			offset = Tile_coord(-sizex+1, -sizey>>1, 0); break;
 		case northwest:
-			offset = Tile_coord(-sizex, -sizey, 0); break;
+			offset = Tile_coord(-sizex+1, -sizey+1, 0); break;
 		}
 	tile = tile + offset;
 	return Game_object::find_blocking(tile);
