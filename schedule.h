@@ -102,6 +102,8 @@ public:
 		{  }
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
+					// Look for foes.
+	bool seek_foes();
 	};
 
 /*

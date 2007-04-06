@@ -1637,31 +1637,15 @@ void Game_window::start_actor_alt
 	int nlift;
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
-	int height = main_actor->get_info().get_3d_height();
 	
 	Tile_coord start = main_actor->get_tile();
 	int dir;
-	
+
 	for (dir = 0; dir < 8; dir++)
 	{
 		Tile_coord dest = start.get_neighbor(dir);
-		int cx = dest.tx/c_tiles_per_chunk, cy = dest.ty/c_tiles_per_chunk;
-		int tx = dest.tx%c_tiles_per_chunk, ty = dest.ty%c_tiles_per_chunk;
-
-		Map_chunk *clist = map->get_chunk_safely(cx, cy);
-		clist->setup_cache();
-		Game_object *block;
-		Tile_coord offset;
-		switch (dir)
-			{
-
-			}
-
-		blocked[dir] = clist->is_blocked (height, 
-					main_actor->get_lift(), tx, ty, nlift, 
-					main_actor->get_type_flags(), 1) && 
-			// Better handling for larger avatars:
-			((block=main_actor->find_blocking(dest, dir)) && block!=main_actor);
+		blocked[dir] = main_actor->is_blocked(dest, &start,
+							main_actor->get_type_flags());
 	}
 
 	dir = Get_direction (ay - winy, winx - ax);
