@@ -156,36 +156,6 @@ void Conversation::init_faces()
 }
 
 /*
- *	Get face frame in Serpent Isle.
- */
-
-static int SI_get_frame
-	(
-	Actor *main_actor
-	)
-	{
-	int frame;
-	if (main_actor->get_skin_color() == 0) // WH
-	{
-		frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else if (main_actor->get_skin_color() == 1) // BN
-	{
-		frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else if (main_actor->get_skin_color() == 2) // BK
-	{
-		frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else // None
-	{
-		frame = main_actor->get_type_flag(Actor::tf_sex);
-	}
-	return frame;
-	}
-
-
-/*
  *	Show a "face" on the screen.  Npc_text_rect is also set.
  *	If shape < 0, an empty space is shown.
  */
