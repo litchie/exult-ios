@@ -556,30 +556,36 @@ Game_object *Actor::find_blocking
 	int dir
 	)
 	{
-	Shape_info& shinfo = get_info();
-	int sizex = shinfo.get_3d_xtiles(), sizey = shinfo.get_3d_ytiles();
-	Tile_coord offset;
+	Rectangle footprint = get_footprint();
+	Rectangle base = get_footprint();
 	switch (dir)
 		{
 		case north:
-			offset = Tile_coord(-sizex>>1, -sizey+1, 0); break;
+			footprint.shift(0, -1); break;
 		case northeast:
-			offset = Tile_coord(0, -sizey+1, 0); break;
+			footprint.shift(1, -1); break;
 		case east:
-			offset = Tile_coord(0, -sizey>>1, 0); break;
+			footprint.shift(1, 0); break;
 		case southeast:
-			offset = Tile_coord(0, 0, 0); break;
+			footprint.shift(1, 1); break;
 		case south:
-			offset = Tile_coord(-sizex>>1, 0, 0); break;
+			footprint.shift(0, 1); break;
 		case southwest:
-			offset = Tile_coord(-sizex+1, 0, 0); break;
+			footprint.shift(-1, 1); break;
 		case west:
-			offset = Tile_coord(-sizex+1, -sizey>>1, 0); break;
+			footprint.shift(-1, 0); break;
 		case northwest:
-			offset = Tile_coord(-sizex+1, -sizey+1, 0); break;
+			footprint.shift(-1, -1); break;
 		}
-	tile = tile + offset;
-	return Game_object::find_blocking(tile);
+	Game_object *block;
+	for (int i = footprint.x; i < footprint.x+footprint.w; i++)
+		for (int j = footprint.y; j < footprint.y+footprint.h; j++)
+			if (base.has_point(i, j))
+				continue;
+			else if ((block = Game_object::find_blocking(
+					Tile_coord(i, j, get_tile().tz)))!=0)
+				return block;
+	return 0;
 	}
 
 /*
@@ -3179,19 +3185,32 @@ int Actor::move_aside
 	int opp = (dir + 4)%8;		// Don't go in opposite dir. either.
 	Tile_coord to(-1, -1, -1);
 	int i;
-	for (i = 0; i < 8; i++)		// Go through directions.
-		if (i == dir || i == opp)
-			continue;	// Don't go that way.
+	int d = 8;
+	// Try orthogonal directions first.
+	to = cur.get_neighbor((dir + 2)%8);
+	if (!is_blocked(to, 0, get_type_flags()))
+		d = (dir + 2)%8;
+	else
+		{
+		to = cur.get_neighbor((dir + 6)%8);
+		if (!is_blocked(to, 0, get_type_flags()))
+			d = (dir + 6)%8;
 		else
 			{
-			to = cur.get_neighbor(i);
-					// Assume height = 3.
-			if (!Map_chunk::is_blocked(
-						to, 3, get_type_flags()))
-				break;
+			for (i = 0; i < 4; i++)		// Try diagonals now.
+				{
+				to = cur.get_neighbor(2*i+1);
+				if (!is_blocked(to, 0, get_type_flags()))
+					{
+					d = 2*i+1;
+					break;
+					}
+				}
 			}
-	int stepdir = i;		// This is the direction.
-	if (i == 8 || to.tx < 0)	// Failed?  Try to swap places.
+		}
+
+	int stepdir = d;		// This is the direction.
+	if (d == 8 || to.tx < 0)	// Failed?  Try to swap places.
 		return swap_positions(for_actor);
 					// Step, and face direction.
 	step(to, get_dir_framenum(stepdir,static_cast<int>(Actor::standing)));
