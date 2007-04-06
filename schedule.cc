@@ -84,6 +84,44 @@ void Schedule::set_action_sequence
 	}
 
 /*
+ *	Look for nearby enemies.
+ *
+ *	Output:	true if any are found, which means npc's schedule has changed!
+ */
+
+bool Schedule::seek_foes
+	(
+	)
+	{
+	Actor_vector vec;		// Look within 10 tiles (guess).
+	npc->find_nearby_actors(vec, c_any_shapenum, 10);
+	int npc_align = npc->get_effective_alignment();
+	Actor *foe = 0;
+	for (Actor_vector::const_iterator it = vec.begin(); 
+						it != vec.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
+			continue;	// Dead or invisible.
+		if ((npc_align == Npc_actor::friendly &&
+				actor->get_effective_alignment() >= Npc_actor::hostile) ||
+			(npc_align == Npc_actor::hostile &&
+				actor->get_effective_alignment() == Npc_actor::friendly))
+			{
+			foe = actor;
+			break;
+			}
+		}
+	if (foe)
+		{
+		npc->set_schedule_type(Schedule::combat, 0);
+		npc->set_target(foe);
+		return 1;
+		}
+	return 0;
+	}
+
+/*
  *	Look for lamps to light/unlight and shutters to open/close.
  *
  *	Output:	1 if successful, which means npc's schedule has changed!
@@ -506,8 +544,6 @@ void Pace_schedule::now_what
 				Game_object *obj = npc->find_blocking(blocked, dir);
 				if (obj)
 					{
-					blocked.tx = -1;
-					changedir = true;
 					if (obj->as_actor())
 						{
 						Shape_info& shinfo = npc->get_info();
@@ -515,11 +551,18 @@ void Pace_schedule::now_what
 						if (!minfo || !minfo->cant_yell())
 							{
 							npc->say(first_move_aside, last_move_aside);
-								// Wait longer.
-							npc->start(delay, delay);
+								// Ask NPC to move aside.
+							if (obj->move_aside(npc, dir))
+									// Wait longer.
+								npc->start(3*delay, 3*delay);
+							else
+									// Wait longer.
+								npc->start(delay, delay);
 							return;
 							}
 						}
+					blocked.tx = -1;
+					changedir = true;
 					}
 				}
 			
@@ -799,34 +842,8 @@ void Patrol_schedule::now_what
 	if (rand() % 8 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
-	if (seek_combat)	// Check for nearby foes.
-		{
-		Actor_vector vec;		// Look within 10 tiles (guess).
-		npc->find_nearby_actors(vec, c_any_shapenum, 10);
-		int npc_align = npc->get_effective_alignment();
-		Actor *foe = 0;
-		for (Actor_vector::const_iterator it = vec.begin(); 
-							it != vec.end(); ++it)
-			{
-			Actor *actor = *it;
-			if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
-				continue;	// Dead or invisible.
-			if ((npc_align == Npc_actor::friendly &&
-					actor->get_effective_alignment() >= Npc_actor::hostile) ||
-				(npc_align == Npc_actor::hostile &&
-					actor->get_effective_alignment() == Npc_actor::friendly))
-				{
-				foe = actor;
-				break;
-				}
-			}
-		if (foe)
-			{
-			npc->set_schedule_type(Schedule::combat, 0);
-			npc->set_target(foe);
-			return;
-			}
-		}
+	if (seek_combat && seek_foes())	// Check for nearby foes.
+		return;
 	int speed = gwin->get_std_delay();
 	const int PATH_SHAPE = 607;
 	Game_object *path;

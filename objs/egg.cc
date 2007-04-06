@@ -754,6 +754,9 @@ int Egg_object::is_active
 		if (type == teleport ||	// Teleports:  Any tile, exact lift.
 		    type == intermap)
 			return absdeltaz == 0 && area.has_point(tx, ty);
+		else if (type == jukebox)
+			// Guessing. Fixes shrine of Spirituality and Sacrifice.
+			return area.has_point(tx, ty);
 		if (!((absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&

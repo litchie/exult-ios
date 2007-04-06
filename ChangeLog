@@ -1,3 +1,11 @@
+2007-04-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Improved large-avatar handling, fixing a few bugs it introduced for
+	  normal-sized avatars.
+	* Improved Actor::Find_Blocking, and modified Actor::move_aside to check
+	  the orthogonal directions first.
+	* Improved slightly pace schedule.
+	* Jukebox eggs now ignore delta-z when determining if they should hatch.
+
 2007-04-04  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Improved skin scrolling functions.
 	* ES now saves differential patches for VGA files. This will NOT affect
