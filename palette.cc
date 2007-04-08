@@ -127,7 +127,7 @@ void Palette::apply(bool repaint)
 void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	{
 	string name(fname);		// Copy for safety.
-	size_t len;
+	size_t len = 0;
 	char *buf = 0;
 	if (std::strncmp(fname, "<STATIC>/", sizeof("<STATIC>/") - 1) == 0 &&
 					is_system_path_defined("<PATCH>"))

@@ -119,15 +119,7 @@ char*	U7object::retrieve(size_t &len)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
 	if (!uf) return 0;
-	try
-	{
-		return uf->retrieve(objnumber,len);
-	}
-	catch( const exult_exception &err )
-	{
-		return 0;
-	}
-
+	return uf->retrieve(objnumber,len);
 }
 
 bool	U7object::retrieve(const char *fname)
