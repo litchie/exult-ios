@@ -142,7 +142,7 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 			buf = 0;
 		}
 		}
-	if (!buf)			// Not in patch.
+	if (!buf || !len)			// Not in patch.
 		{
 		U7object pal(name.c_str(), index);
 		buf = pal.retrieve(len);// this may throw an exception
