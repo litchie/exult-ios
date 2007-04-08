@@ -1247,7 +1247,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		if (redraw)
 		{
 			gwin->clear_screen();
-			sman->paint_shape(topx, topy, menushapes.get_shape(0x2, 0));
+			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
 			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0));
 			sman->paint_shape(topx+10, menuy+25, shapes.get_shape(0x19, selected == 1));
 
@@ -1379,7 +1379,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		ok = gwin->init_gamedat(true);
 	}
 	else
-		sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+		sman->paint_shape(topx,topy,shapes.get_shape(0x2,0));
 
 	SDL_EnableUNICODE(0);
 
