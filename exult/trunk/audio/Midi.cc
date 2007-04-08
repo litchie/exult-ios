@@ -139,8 +139,6 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		if (!midi_driver) return;
 	}
 	
-	// FIXME: Add/replace/play midi/xmidi/etc. tracks from patch dir.
-
 	// Handle FM Synth
 	if (midi_driver->isFMSynth())  {
 
@@ -152,14 +150,35 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		else if (flex == MAINSHP_FLX) num--;
 	}
 
-	DataSource 	*mid_data;
-	
+	DataSource 	*mid_data = 0;
+
+	// Try in patch dir first.
+	string pflex("<PATCH>/");
+	pflex += flex.c_str() + sizeof("<STATIC>/") - 1;
 	try {
-		mid_data = new ExultDataSource(flex.c_str(),num);
-	}
-	catch( const std::exception & /*err*/ ) {
+		mid_data = new ExultDataSource(pflex.c_str(),num);
+		}
+	catch( const std::exception & /*err*/ )
+		{
+		FORGET_OBJECT(mid_data);
+		}
+
+	// If not in patch dir, or the flex there did not have the
+	// song we want, try the static dir.
+	if (!mid_data || !mid_data->getSize())
+		{
+		try {
+			mid_data = new ExultDataSource(flex.c_str(),num);
+			}
+		catch( const std::exception & /*err*/ )
+			{
+			return;
+			}
+		}
+	
+	// Extra safety.
+	if (!mid_data->getSize())
 		return;
-	}
 
 	XMidiFile midfile(mid_data, setup_timbre_for_track(flex));
 	

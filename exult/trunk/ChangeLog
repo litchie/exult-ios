@@ -1,5 +1,7 @@
 2007-04-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
-	Fixed screwed-up palettes in SI mods with custom mainshp.flx files.
+	* Fixed screwed-up palettes in SI mods with custom mainshp.flx files.
+	* You can now add/change midi music by placing custom ADLIBMUS.DAT and/or
+	  MT32MUS.DAT files in the patch dir.
 
 2007-04-06  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Improved large-avatar handling, fixing a few bugs it introduced for
