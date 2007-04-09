@@ -46,6 +46,7 @@ public:
 	Manip8to16(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
+	SDL_Color *get_colors() { return colors; }
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{
@@ -136,6 +137,7 @@ public:
 	Manip8to32(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
+	SDL_Color *get_colors() { return colors; }
 	uint32 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{

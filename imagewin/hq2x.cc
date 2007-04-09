@@ -32,6 +32,9 @@
 #include <string.h>
 
 
+static void InitLUTs(SDL_Color *cols);
+
+static bool   hq2x_initialized = false;
 static int   RGBtoYUV[256];
 static int   LUT8to32[256];
 static int   YUV1, YUV2;
@@ -115,55 +118,56 @@ inline void Interp10(Dest_pixel *pc, int c1, int c2, int c3,
 		(c3 & 0xFF00FF) ) & 0x0FF00FF0)) >> 4, manip);
 }
 
+#define PTYPES	      Dest_pixel,Manip_pixels
 
-#define PIXEL00_0     StoreRGB(pc, c[5], manip);
-#define PIXEL00_10    Interp1(dest, c[5], c[1]);
-#define PIXEL00_11    Interp1(dest, c[5], c[4]);
-#define PIXEL00_12    Interp1(dest, c[5], c[2]);
-#define PIXEL00_20    Interp2(dest, c[5], c[4], c[2]);
-#define PIXEL00_21    Interp2(dest, c[5], c[1], c[2]);
-#define PIXEL00_22    Interp2(dest, c[5], c[1], c[4]);
-#define PIXEL00_60    Interp6(dest, c[5], c[2], c[4]);
-#define PIXEL00_61    Interp6(dest, c[5], c[4], c[2]);
-#define PIXEL00_70    Interp7(dest, c[5], c[4], c[2]);
-#define PIXEL00_90    Interp9(dest, c[5], c[4], c[2]);
-#define PIXEL00_100   Interp10(dest, c[5], c[4], c[2]);
-#define PIXEL01_0     *((int*)(dest+4)) = c[5];
-#define PIXEL01_10    Interp1(dest+4, c[5], c[3]);
-#define PIXEL01_11    Interp1(dest+4, c[5], c[2]);
-#define PIXEL01_12    Interp1(dest+4, c[5], c[6]);
-#define PIXEL01_20    Interp2(dest+4, c[5], c[2], c[6]);
-#define PIXEL01_21    Interp2(dest+4, c[5], c[3], c[6]);
-#define PIXEL01_22    Interp2(dest+4, c[5], c[3], c[2]);
-#define PIXEL01_60    Interp6(dest+4, c[5], c[6], c[2]);
-#define PIXEL01_61    Interp6(dest+4, c[5], c[2], c[6]);
-#define PIXEL01_70    Interp7(dest+4, c[5], c[2], c[6]);
-#define PIXEL01_90    Interp9(dest+4, c[5], c[2], c[6]);
-#define PIXEL01_100   Interp10(dest+4, c[5], c[2], c[6]);
-#define PIXEL10_0     *((int*)(dest+BpL)) = c[5];
-#define PIXEL10_10    Interp1(dest+BpL, c[5], c[7]);
-#define PIXEL10_11    Interp1(dest+BpL, c[5], c[8]);
-#define PIXEL10_12    Interp1(dest+BpL, c[5], c[4]);
-#define PIXEL10_20    Interp2(dest+BpL, c[5], c[8], c[4]);
-#define PIXEL10_21    Interp2(dest+BpL, c[5], c[7], c[4]);
-#define PIXEL10_22    Interp2(dest+BpL, c[5], c[7], c[8]);
-#define PIXEL10_60    Interp6(dest+BpL, c[5], c[4], c[8]);
-#define PIXEL10_61    Interp6(dest+BpL, c[5], c[8], c[4]);
-#define PIXEL10_70    Interp7(dest+BpL, c[5], c[8], c[4]);
-#define PIXEL10_90    Interp9(dest+BpL, c[5], c[8], c[4]);
-#define PIXEL10_100   Interp10(dest+BpL, c[5], c[8], c[4]);
-#define PIXEL11_0     *((int*)(dest+BpL+4)) = c[5];
-#define PIXEL11_10    Interp1(dest+BpL+4, c[5], c[9]);
-#define PIXEL11_11    Interp1(dest+BpL+4, c[5], c[6]);
-#define PIXEL11_12    Interp1(dest+BpL+4, c[5], c[8]);
-#define PIXEL11_20    Interp2(dest+BpL+4, c[5], c[6], c[8]);
-#define PIXEL11_21    Interp2(dest+BpL+4, c[5], c[9], c[8]);
-#define PIXEL11_22    Interp2(dest+BpL+4, c[5], c[9], c[6]);
-#define PIXEL11_60    Interp6(dest+BpL+4, c[5], c[8], c[6]);
-#define PIXEL11_61    Interp6(dest+BpL+4, c[5], c[6], c[8]);
-#define PIXEL11_70    Interp7(dest+BpL+4, c[5], c[6], c[8]);
-#define PIXEL11_90    Interp9(dest+BpL+4, c[5], c[6], c[8]);
-#define PIXEL11_100   Interp10(dest+BpL+4, c[5], c[6], c[8]);
+#define PIXEL00_0     StoreRGB<PTYPES>(dest, c[5], manip);
+#define PIXEL00_10    Interp1<PTYPES>(dest, c[5], c[1]);
+#define PIXEL00_11    Interp1<PTYPES>(dest, c[5], c[4]);
+#define PIXEL00_12    Interp1<PTYPES>(dest, c[5], c[2]);
+#define PIXEL00_20    Interp2<PTYPES>(dest, c[5], c[4], c[2]);
+#define PIXEL00_21    Interp2<PTYPES>(dest, c[5], c[1], c[2]);
+#define PIXEL00_22    Interp2<PTYPES>(dest, c[5], c[1], c[4]);
+#define PIXEL00_60    Interp6<PTYPES>(dest, c[5], c[2], c[4]);
+#define PIXEL00_61    Interp6<PTYPES>(dest, c[5], c[4], c[2]);
+#define PIXEL00_70    Interp7<PTYPES>(dest, c[5], c[4], c[2]);
+#define PIXEL00_90    Interp9<PTYPES>(dest, c[5], c[4], c[2]);
+#define PIXEL00_100   Interp10<PTYPES>(dest, c[5], c[4], c[2]);
+#define PIXEL01_0     StoreRGB<PTYPES>(dest+1, c[5], manip);
+#define PIXEL01_10    Interp1<PTYPES>(dest+1, c[5], c[3]);
+#define PIXEL01_11    Interp1<PTYPES>(dest+1, c[5], c[2]);
+#define PIXEL01_12    Interp1<PTYPES>(dest+1, c[5], c[6]);
+#define PIXEL01_20    Interp2<PTYPES>(dest+1, c[5], c[2], c[6]);
+#define PIXEL01_21    Interp2<PTYPES>(dest+1, c[5], c[3], c[6]);
+#define PIXEL01_22    Interp2<PTYPES>(dest+1, c[5], c[3], c[2]);
+#define PIXEL01_60    Interp6<PTYPES>(dest+1, c[5], c[6], c[2]);
+#define PIXEL01_61    Interp6<PTYPES>(dest+1, c[5], c[2], c[6]);
+#define PIXEL01_70    Interp7<PTYPES>(dest+1, c[5], c[2], c[6]);
+#define PIXEL01_90    Interp9<PTYPES>(dest+1, c[5], c[2], c[6]);
+#define PIXEL01_100   Interp10<PTYPES>(dest+1, c[5], c[2], c[6]);
+#define PIXEL10_0     StoreRGB<PTYPES>(dest+dline_pixels, c[5], manip);
+#define PIXEL10_10    Interp1<PTYPES>(dest+dline_pixels, c[5], c[7]);
+#define PIXEL10_11    Interp1<PTYPES>(dest+dline_pixels, c[5], c[8]);
+#define PIXEL10_12    Interp1<PTYPES>(dest+dline_pixels, c[5], c[4]);
+#define PIXEL10_20    Interp2<PTYPES>(dest+dline_pixels, c[5], c[8], c[4]);
+#define PIXEL10_21    Interp2<PTYPES>(dest+dline_pixels, c[5], c[7], c[4]);
+#define PIXEL10_22    Interp2<PTYPES>(dest+dline_pixels, c[5], c[7], c[8]);
+#define PIXEL10_60    Interp6<PTYPES>(dest+dline_pixels, c[5], c[4], c[8]);
+#define PIXEL10_61    Interp6<PTYPES>(dest+dline_pixels, c[5], c[8], c[4]);
+#define PIXEL10_70    Interp7<PTYPES>(dest+dline_pixels, c[5], c[8], c[4]);
+#define PIXEL10_90    Interp9<PTYPES>(dest+dline_pixels, c[5], c[8], c[4]);
+#define PIXEL10_100   Interp10<PTYPES>(dest+dline_pixels, c[5], c[8], c[4]);
+#define PIXEL11_0     StoreRGB<PTYPES>(dest+dline_pixels+1, c[5], manip);
+#define PIXEL11_10    Interp1<PTYPES>(dest+dline_pixels+1, c[5], c[9]);
+#define PIXEL11_11    Interp1<PTYPES>(dest+dline_pixels+1, c[5], c[6]);
+#define PIXEL11_12    Interp1<PTYPES>(dest+dline_pixels+1, c[5], c[8]);
+#define PIXEL11_20    Interp2<PTYPES>(dest+dline_pixels+1, c[5], c[6], c[8]);
+#define PIXEL11_21    Interp2<PTYPES>(dest+dline_pixels+1, c[5], c[9], c[8]);
+#define PIXEL11_22    Interp2<PTYPES>(dest+dline_pixels+1, c[5], c[9], c[6]);
+#define PIXEL11_60    Interp6<PTYPES>(dest+dline_pixels+1, c[5], c[8], c[6]);
+#define PIXEL11_61    Interp6<PTYPES>(dest+dline_pixels+1, c[5], c[6], c[8]);
+#define PIXEL11_70    Interp7<PTYPES>(dest+dline_pixels+1, c[5], c[6], c[8]);
+#define PIXEL11_90    Interp9<PTYPES>(dest+dline_pixels+1, c[5], c[6], c[8]);
+#define PIXEL11_100   Interp10<PTYPES>(dest+dline_pixels+1, c[5], c[6], c[8]);
 
 
 
@@ -188,13 +192,17 @@ void Scale_hq2x
 	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
 	)
-++++++++++
-void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
+//void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
 {
   int  i, j, k;
   int  prevline, nextline;
   int  w[10];
   int  c[10];
+
+  if (!hq2x_initialized) {
+	InitLUTs(manip.get_colors());
+	hq2x_initialized = true;
+  }
 
   //   +----+----+----+
   //   |    |    |    |
@@ -207,22 +215,22 @@ void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
   //   | w7 | w8 | w9 |
   //   +----+----+----+
 
-  for (j=0; j<Yres; j++)
+  for (j=0; j<srch; j++)
   {
-    if (j>0)      prevline = -Xres*2; else prevline = 0;
-    if (j<Yres-1) nextline =  Xres*2; else nextline = 0;
+    if (j>0)      prevline = -srcw*2; else prevline = 0;
+    if (j<srch-1) nextline =  srcw*2; else nextline = 0;
 
-    for (i=0; i<Xres; i++)
+    for (i=0; i<srcw; i++)
     {
-      w[2] = *((unsigned short*)(pIn + prevline));
-      w[5] = *((unsigned short*)pIn);
-      w[8] = *((unsigned short*)(pIn + nextline));
+      w[2] = *((unsigned short*)(source + prevline));
+      w[5] = *((unsigned short*)source);
+      w[8] = *((unsigned short*)(source + nextline));
 
       if (i>0)
       {
-        w[1] = *((unsigned short*)(pIn + prevline - 2));
-        w[4] = *((unsigned short*)(pIn - 2));
-        w[7] = *((unsigned short*)(pIn + nextline - 2));
+        w[1] = *((unsigned short*)(source + prevline - 2));
+        w[4] = *((unsigned short*)(source - 2));
+        w[7] = *((unsigned short*)(source + nextline - 2));
       }
       else
       {
@@ -231,11 +239,11 @@ void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
         w[7] = w[8];
       }
 
-      if (i<Xres-1)
+      if (i<srcw-1)
       {
-        w[3] = *((unsigned short*)(pIn + prevline + 2));
-        w[6] = *((unsigned short*)(pIn + 2));
-        w[9] = *((unsigned short*)(pIn + nextline + 2));
+        w[3] = *((unsigned short*)(source + prevline + 2));
+        w[6] = *((unsigned short*)(source + 2));
+        w[9] = *((unsigned short*)(source + nextline + 2));
       }
       else
       {
@@ -2909,14 +2917,14 @@ void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
           break;
         }
       }
-      pIn+=2;
-      dest += 8;
+      source++;
+      dest += 2;
     }
     dest += dline_pixels;
   }
 }
 
-void InitLUTs(SDL_color *cols)
+static void InitLUTs(SDL_Color *cols)
 {
 	int i, Y, u, v;
 	for (i=0; i<256; i++) {
@@ -2929,4 +2937,3 @@ void InitLUTs(SDL_color *cols)
 		LUT8to32[i] = (r<<16) + (g<<8) + b;
   	}
 }
-
