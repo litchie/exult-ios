@@ -115,7 +115,21 @@ void Scale2x_noblur
 	const int dline_pixels		// Pixels (words)/line for dest.
 );
 
+template <class Dest_pixel, class Manip_pixels>
+void Scale_Hq2x
+	(
+	unsigned char *source,		// ->source pixels.
+	int srcx, int srcy,		// Start of rectangle within src.
+	int srcw, int srch,		// Dims. of rectangle.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
+	Dest_pixel *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
+	const Manip_pixels& manip	// Manipulator methods.
+	);
+
 #include "scale.cc"		/* Seems to be needed. */
+#include "hq2x.cc"
 
 #endif
 
