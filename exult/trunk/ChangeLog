@@ -1,3 +1,7 @@
+2007-04-13    <jeff@mini.nerble.net>
+
+	* imagewin/hq2x.cc (srcx): Added Hq2x scaler.
+
 2007-04-08  Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed screwed-up palettes in SI mods with custom mainshp.flx files.
 	* You can now add/change midi music by placing custom ADLIBMUS.DAT and/or
