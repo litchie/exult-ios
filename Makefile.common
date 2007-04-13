@@ -52,7 +52,7 @@ GUMPS_OBJS= Actor_gump.o AudioOptions_gump.o Book_gump.o CombatOptions_gump.o \
 	Slider_gump.o Spellbook_gump.o Stats_gump.o Text_button.o Text_gump.o \
 	VideoOptions_gump.o Yesno_gump.o
 
-IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o imagewin.o imagescl.o iwin8.o \
+IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o hq2x.o imagewin.o imagescl.o iwin8.o \
 	savepcx.o
 
 SHAPES_OBJS=font.o fontvga.o items.o miscinf.o monstinf.o shapeinf.o \
