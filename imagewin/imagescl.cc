@@ -653,7 +653,7 @@ void Image_window::show_scaled8to16_Hq2x
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
