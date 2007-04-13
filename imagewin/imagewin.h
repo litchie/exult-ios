@@ -61,10 +61,11 @@ public:
 		SuperEagle = 5,
 		Super2xSaI = 6,
 		Scale2x = 7,
-		OpenGL = 8,
+		Hq2x = 8,
+		OpenGL = 9,
 
 		NoScaler = -1,
-		NumScalers = 9
+		NumScalers = 10
 	};
 #else
 	enum ScalerType {
@@ -76,10 +77,11 @@ public:
 		SuperEagle = 5,
 		Super2xSaI = 6,
 		Scale2x = 7,
-		OpenGL = 8,
+		Hq2x = 8,
+		OpenGL = 9,
 
 		NoScaler = -1,
-		NumScalers = 8 // no OpenGL. (But leave it in the enum.)
+		NumScalers = 9 // no OpenGL. (But leave it in the enum.)
 };
 #endif
 

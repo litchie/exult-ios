@@ -31,12 +31,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-static void InitLUTs(SDL_Color *cols);
-
-static bool   hq2x_initialized = false;
-static int   RGBtoYUV[256];
-static int   LUT8to32[256];
 static int   YUV1, YUV2;
 const  int   Ymask = 0x00FF0000;
 const  int   Umask = 0x0000FF00;
@@ -169,12 +163,17 @@ inline void Interp10(Dest_pixel *pc, int c1, int c2, int c3,
 #define PIXEL11_90    Interp9<PTYPES>(to+dline_pixels+1, c[5], c[6], c[8], manip);
 #define PIXEL11_100   Interp10<PTYPES>(to+dline_pixels+1, c[5], c[6], c[8], manip);
 
-
-
-inline bool Diff(unsigned char w1, unsigned char w2)
+static int RGBtoYUV(unsigned int r, unsigned int g, unsigned int b)
 {
-  YUV1 = RGBtoYUV[w1];
-  YUV2 = RGBtoYUV[w2];
+	int Y, u, v;
+	Y = (r + g + b) >> 2;
+	u = 128 + ((r - b) >> 2);
+	v = 128 + ((-r + 2*g -b)>>3);
+	return (Y<<16) + (u<<8) + v;
+}
+
+inline bool Diff(int YUV1, int YUV2)
+{
   return ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
            ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
            ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) );
@@ -198,16 +197,14 @@ void Scale_Hq2x
   int  prevline, nextline;
   int  w[10];
   int  c[10];
+  int  yuv[10];
+srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
   int stopy = srcy + srch, stopx = srcx + srcw;
   unsigned char *from = source + srcy*sline_pixels + srcx;
   Dest_pixel *to = dest + 2*srcy*dline_pixels + 2*srcx;
 
   if (stopx > sline_pixels)
 	stopx = sline_pixels;
-  if (!hq2x_initialized) {
-	InitLUTs(manip.get_colors());
-	hq2x_initialized = true;
-  }
 
   //   +----+----+----+
   //   |    |    |    |
@@ -257,10 +254,17 @@ void Scale_Hq2x
         w[9] = w[8];
       }
 
+      for (k=1; k<=9; k++) {
+	unsigned int r, g, b;
+	manip.split_source(w[k], r, g, b);
+        c[k] = (r<<16) + (g<<8) + b;;
+	yuv[k] = RGBtoYUV(r, g, b);
+      }
+
       int pattern = 0;
       int flag = 1;
 
-      YUV1 = RGBtoYUV[w[5]];
+      YUV1 = yuv[5];
 
       for (k=1; k<=9; k++)
       {
@@ -268,7 +272,7 @@ void Scale_Hq2x
 
         if ( w[k] != w[5] )
         {
-          YUV2 = RGBtoYUV[w[k]];
+          YUV2 = yuv[k];
           if ( ( abs((YUV1 & Ymask) - (YUV2 & Ymask)) > trY ) ||
                ( abs((YUV1 & Umask) - (YUV2 & Umask)) > trU ) ||
                ( abs((YUV1 & Vmask) - (YUV2 & Vmask)) > trV ) )
@@ -276,10 +280,12 @@ void Scale_Hq2x
         }
         flag <<= 1;
       }
-
-      for (k=1; k<=9; k++)
-        c[k] = LUT8to32[w[k]];
-
+	if (0)	{	//++++++TESTING
+		StoreRGB<PTYPES>(to, c[5], manip);
+		StoreRGB<PTYPES>(to+1, c[5], manip);
+		StoreRGB<PTYPES>(to+dline_pixels, c[5], manip);
+		StoreRGB<PTYPES>(to+dline_pixels+1, c[5], manip);
+	} else
       switch (pattern)
       {
         case 0:
@@ -441,7 +447,7 @@ void Scale_Hq2x
         case 50:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -459,7 +465,7 @@ void Scale_Hq2x
           PIXEL00_20
           PIXEL01_22
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -474,7 +480,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -488,7 +494,7 @@ void Scale_Hq2x
         case 10:
         case 138:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -561,7 +567,7 @@ void Scale_Hq2x
         case 54:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -579,7 +585,7 @@ void Scale_Hq2x
           PIXEL00_20
           PIXEL01_22
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -594,7 +600,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -608,7 +614,7 @@ void Scale_Hq2x
         case 11:
         case 139:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -624,7 +630,7 @@ void Scale_Hq2x
         case 19:
         case 51:
         {
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL00_11
             PIXEL01_10
@@ -642,7 +648,7 @@ void Scale_Hq2x
         case 178:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
             PIXEL11_12
@@ -659,7 +665,7 @@ void Scale_Hq2x
         case 85:
         {
           PIXEL00_20
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL01_11
             PIXEL11_10
@@ -677,7 +683,7 @@ void Scale_Hq2x
         {
           PIXEL00_20
           PIXEL01_22
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL10_12
             PIXEL11_10
@@ -694,7 +700,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
             PIXEL11_11
@@ -709,7 +715,7 @@ void Scale_Hq2x
         case 73:
         case 77:
         {
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL00_12
             PIXEL10_10
@@ -726,7 +732,7 @@ void Scale_Hq2x
         case 42:
         case 170:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
             PIXEL10_11
@@ -743,7 +749,7 @@ void Scale_Hq2x
         case 14:
         case 142:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
             PIXEL01_12
@@ -824,7 +830,7 @@ void Scale_Hq2x
         case 26:
         case 31:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -832,7 +838,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -848,7 +854,7 @@ void Scale_Hq2x
         case 214:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -857,7 +863,7 @@ void Scale_Hq2x
             PIXEL01_20
           }
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -872,7 +878,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_22
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -880,7 +886,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -893,7 +899,7 @@ void Scale_Hq2x
         case 74:
         case 107:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -902,7 +908,7 @@ void Scale_Hq2x
             PIXEL00_20
           }
           PIXEL01_21
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -915,7 +921,7 @@ void Scale_Hq2x
         }
         case 27:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -931,7 +937,7 @@ void Scale_Hq2x
         case 86:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -948,7 +954,7 @@ void Scale_Hq2x
           PIXEL00_21
           PIXEL01_22
           PIXEL10_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -962,7 +968,7 @@ void Scale_Hq2x
         {
           PIXEL00_10
           PIXEL01_21
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -976,7 +982,7 @@ void Scale_Hq2x
         case 30:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -993,7 +999,7 @@ void Scale_Hq2x
           PIXEL00_22
           PIXEL01_10
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1007,7 +1013,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_22
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1020,7 +1026,7 @@ void Scale_Hq2x
         }
         case 75:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1131,7 +1137,7 @@ void Scale_Hq2x
         }
         case 58:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1139,7 +1145,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1154,7 +1160,7 @@ void Scale_Hq2x
         case 83:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1163,7 +1169,7 @@ void Scale_Hq2x
             PIXEL01_70
           }
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1177,7 +1183,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1185,7 +1191,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1197,7 +1203,7 @@ void Scale_Hq2x
         }
         case 202:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1206,7 +1212,7 @@ void Scale_Hq2x
             PIXEL00_70
           }
           PIXEL01_21
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1219,7 +1225,7 @@ void Scale_Hq2x
         }
         case 78:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1228,7 +1234,7 @@ void Scale_Hq2x
             PIXEL00_70
           }
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1241,7 +1247,7 @@ void Scale_Hq2x
         }
         case 154:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1249,7 +1255,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1264,7 +1270,7 @@ void Scale_Hq2x
         case 114:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1273,7 +1279,7 @@ void Scale_Hq2x
             PIXEL01_70
           }
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1287,7 +1293,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_22
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1295,7 +1301,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1307,7 +1313,7 @@ void Scale_Hq2x
         }
         case 90:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1315,7 +1321,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1323,7 +1329,7 @@ void Scale_Hq2x
           {
             PIXEL01_70
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1331,7 +1337,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1344,7 +1350,7 @@ void Scale_Hq2x
         case 55:
         case 23:
         {
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL00_11
             PIXEL01_0
@@ -1362,7 +1368,7 @@ void Scale_Hq2x
         case 150:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
             PIXEL11_12
@@ -1379,7 +1385,7 @@ void Scale_Hq2x
         case 212:
         {
           PIXEL00_20
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL01_11
             PIXEL11_0
@@ -1397,7 +1403,7 @@ void Scale_Hq2x
         {
           PIXEL00_20
           PIXEL01_22
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL10_12
             PIXEL11_0
@@ -1414,7 +1420,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
             PIXEL11_11
@@ -1429,7 +1435,7 @@ void Scale_Hq2x
         case 109:
         case 105:
         {
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL00_12
             PIXEL10_0
@@ -1446,7 +1452,7 @@ void Scale_Hq2x
         case 171:
         case 43:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
             PIXEL10_11
@@ -1463,7 +1469,7 @@ void Scale_Hq2x
         case 143:
         case 15:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
             PIXEL01_12
@@ -1481,7 +1487,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1494,7 +1500,7 @@ void Scale_Hq2x
         }
         case 203:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1510,7 +1516,7 @@ void Scale_Hq2x
         case 62:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -1527,7 +1533,7 @@ void Scale_Hq2x
           PIXEL00_11
           PIXEL01_10
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1540,7 +1546,7 @@ void Scale_Hq2x
         case 118:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -1557,7 +1563,7 @@ void Scale_Hq2x
           PIXEL00_12
           PIXEL01_22
           PIXEL10_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1571,7 +1577,7 @@ void Scale_Hq2x
         {
           PIXEL00_10
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1584,7 +1590,7 @@ void Scale_Hq2x
         }
         case 155:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1665,7 +1671,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1673,7 +1679,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1685,7 +1691,7 @@ void Scale_Hq2x
         }
         case 158:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1693,7 +1699,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -1707,7 +1713,7 @@ void Scale_Hq2x
         }
         case 234:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1716,7 +1722,7 @@ void Scale_Hq2x
             PIXEL00_70
           }
           PIXEL01_21
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1730,7 +1736,7 @@ void Scale_Hq2x
         case 242:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1739,7 +1745,7 @@ void Scale_Hq2x
             PIXEL01_70
           }
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1751,7 +1757,7 @@ void Scale_Hq2x
         }
         case 59:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1759,7 +1765,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1775,7 +1781,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_22
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1783,7 +1789,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1796,7 +1802,7 @@ void Scale_Hq2x
         case 87:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -1805,7 +1811,7 @@ void Scale_Hq2x
             PIXEL01_20
           }
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1817,7 +1823,7 @@ void Scale_Hq2x
         }
         case 79:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1826,7 +1832,7 @@ void Scale_Hq2x
             PIXEL00_20
           }
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1839,7 +1845,7 @@ void Scale_Hq2x
         }
         case 122:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1847,7 +1853,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1855,7 +1861,7 @@ void Scale_Hq2x
           {
             PIXEL01_70
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -1863,7 +1869,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1875,7 +1881,7 @@ void Scale_Hq2x
         }
         case 94:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1883,7 +1889,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -1891,7 +1897,7 @@ void Scale_Hq2x
           {
             PIXEL01_20
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1899,7 +1905,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -1911,7 +1917,7 @@ void Scale_Hq2x
         }
         case 218:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -1919,7 +1925,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1927,7 +1933,7 @@ void Scale_Hq2x
           {
             PIXEL01_70
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1935,7 +1941,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -1947,7 +1953,7 @@ void Scale_Hq2x
         }
         case 91:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -1955,7 +1961,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -1963,7 +1969,7 @@ void Scale_Hq2x
           {
             PIXEL01_70
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -1971,7 +1977,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -2015,7 +2021,7 @@ void Scale_Hq2x
         }
         case 186:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -2023,7 +2029,7 @@ void Scale_Hq2x
           {
             PIXEL00_70
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -2038,7 +2044,7 @@ void Scale_Hq2x
         case 115:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -2047,7 +2053,7 @@ void Scale_Hq2x
             PIXEL01_70
           }
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -2061,7 +2067,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -2069,7 +2075,7 @@ void Scale_Hq2x
           {
             PIXEL10_70
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -2081,7 +2087,7 @@ void Scale_Hq2x
         }
         case 206:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -2090,7 +2096,7 @@ void Scale_Hq2x
             PIXEL00_70
           }
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -2106,7 +2112,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_10
           }
@@ -2120,7 +2126,7 @@ void Scale_Hq2x
         case 174:
         case 46:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_10
           }
@@ -2137,7 +2143,7 @@ void Scale_Hq2x
         case 147:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_10
           }
@@ -2155,7 +2161,7 @@ void Scale_Hq2x
           PIXEL00_20
           PIXEL01_11
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_10
           }
@@ -2184,7 +2190,7 @@ void Scale_Hq2x
         case 126:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2192,7 +2198,7 @@ void Scale_Hq2x
           {
             PIXEL01_20
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2205,7 +2211,7 @@ void Scale_Hq2x
         }
         case 219:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2215,7 +2221,7 @@ void Scale_Hq2x
           }
           PIXEL01_10
           PIXEL10_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2227,7 +2233,7 @@ void Scale_Hq2x
         }
         case 125:
         {
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL00_12
             PIXEL10_0
@@ -2244,7 +2250,7 @@ void Scale_Hq2x
         case 221:
         {
           PIXEL00_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL01_11
             PIXEL11_0
@@ -2259,7 +2265,7 @@ void Scale_Hq2x
         }
         case 207:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
             PIXEL01_12
@@ -2277,7 +2283,7 @@ void Scale_Hq2x
         {
           PIXEL00_10
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
             PIXEL11_11
@@ -2292,7 +2298,7 @@ void Scale_Hq2x
         case 190:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
             PIXEL11_12
@@ -2307,7 +2313,7 @@ void Scale_Hq2x
         }
         case 187:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
             PIXEL10_11
@@ -2325,7 +2331,7 @@ void Scale_Hq2x
         {
           PIXEL00_11
           PIXEL01_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL10_12
             PIXEL11_0
@@ -2339,7 +2345,7 @@ void Scale_Hq2x
         }
         case 119:
         {
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL00_11
             PIXEL01_0
@@ -2358,7 +2364,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_20
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2372,7 +2378,7 @@ void Scale_Hq2x
         case 175:
         case 47:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2389,7 +2395,7 @@ void Scale_Hq2x
         case 151:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2407,7 +2413,7 @@ void Scale_Hq2x
           PIXEL00_20
           PIXEL01_11
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2421,7 +2427,7 @@ void Scale_Hq2x
         {
           PIXEL00_10
           PIXEL01_10
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2429,7 +2435,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2441,7 +2447,7 @@ void Scale_Hq2x
         }
         case 123:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2450,7 +2456,7 @@ void Scale_Hq2x
             PIXEL00_20
           }
           PIXEL01_10
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2463,7 +2469,7 @@ void Scale_Hq2x
         }
         case 95:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2471,7 +2477,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2486,7 +2492,7 @@ void Scale_Hq2x
         case 222:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2495,7 +2501,7 @@ void Scale_Hq2x
             PIXEL01_20
           }
           PIXEL10_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2509,7 +2515,7 @@ void Scale_Hq2x
         {
           PIXEL00_21
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2517,7 +2523,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2531,7 +2537,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_22
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2539,7 +2545,7 @@ void Scale_Hq2x
           {
             PIXEL10_100
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2551,7 +2557,7 @@ void Scale_Hq2x
         }
         case 235:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2560,7 +2566,7 @@ void Scale_Hq2x
             PIXEL00_20
           }
           PIXEL01_21
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2573,7 +2579,7 @@ void Scale_Hq2x
         }
         case 111:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2582,7 +2588,7 @@ void Scale_Hq2x
             PIXEL00_100
           }
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2595,7 +2601,7 @@ void Scale_Hq2x
         }
         case 63:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2603,7 +2609,7 @@ void Scale_Hq2x
           {
             PIXEL00_100
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2617,7 +2623,7 @@ void Scale_Hq2x
         }
         case 159:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2625,7 +2631,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2640,7 +2646,7 @@ void Scale_Hq2x
         case 215:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2649,7 +2655,7 @@ void Scale_Hq2x
             PIXEL01_100
           }
           PIXEL10_21
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2662,7 +2668,7 @@ void Scale_Hq2x
         case 246:
         {
           PIXEL00_22
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2671,7 +2677,7 @@ void Scale_Hq2x
             PIXEL01_20
           }
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2684,7 +2690,7 @@ void Scale_Hq2x
         case 254:
         {
           PIXEL00_10
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2692,7 +2698,7 @@ void Scale_Hq2x
           {
             PIXEL01_20
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2700,7 +2706,7 @@ void Scale_Hq2x
           {
             PIXEL10_20
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2714,7 +2720,7 @@ void Scale_Hq2x
         {
           PIXEL00_12
           PIXEL01_11
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2722,7 +2728,7 @@ void Scale_Hq2x
           {
             PIXEL10_100
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2734,7 +2740,7 @@ void Scale_Hq2x
         }
         case 251:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2743,7 +2749,7 @@ void Scale_Hq2x
             PIXEL00_20
           }
           PIXEL01_10
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2751,7 +2757,7 @@ void Scale_Hq2x
           {
             PIXEL10_100
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2763,7 +2769,7 @@ void Scale_Hq2x
         }
         case 239:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2772,7 +2778,7 @@ void Scale_Hq2x
             PIXEL00_100
           }
           PIXEL01_12
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2785,7 +2791,7 @@ void Scale_Hq2x
         }
         case 127:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2793,7 +2799,7 @@ void Scale_Hq2x
           {
             PIXEL00_100
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2801,7 +2807,7 @@ void Scale_Hq2x
           {
             PIXEL01_20
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2814,7 +2820,7 @@ void Scale_Hq2x
         }
         case 191:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2822,7 +2828,7 @@ void Scale_Hq2x
           {
             PIXEL00_100
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2836,7 +2842,7 @@ void Scale_Hq2x
         }
         case 223:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2844,7 +2850,7 @@ void Scale_Hq2x
           {
             PIXEL00_20
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2853,7 +2859,7 @@ void Scale_Hq2x
             PIXEL01_100
           }
           PIXEL10_10
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2866,7 +2872,7 @@ void Scale_Hq2x
         case 247:
         {
           PIXEL00_11
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2875,7 +2881,7 @@ void Scale_Hq2x
             PIXEL01_100
           }
           PIXEL10_12
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2887,7 +2893,7 @@ void Scale_Hq2x
         }
         case 255:
         {
-          if (Diff(w[4], w[2]))
+          if (Diff(yuv[4], yuv[2]))
           {
             PIXEL00_0
           }
@@ -2895,7 +2901,7 @@ void Scale_Hq2x
           {
             PIXEL00_100
           }
-          if (Diff(w[2], w[6]))
+          if (Diff(yuv[2], yuv[6]))
           {
             PIXEL01_0
           }
@@ -2903,7 +2909,7 @@ void Scale_Hq2x
           {
             PIXEL01_100
           }
-          if (Diff(w[8], w[4]))
+          if (Diff(yuv[8], yuv[4]))
           {
             PIXEL10_0
           }
@@ -2911,7 +2917,7 @@ void Scale_Hq2x
           {
             PIXEL10_100
           }
-          if (Diff(w[6], w[8]))
+          if (Diff(yuv[6], yuv[8]))
           {
             PIXEL11_0
           }
@@ -2929,16 +2935,3 @@ void Scale_Hq2x
   }
 }
 
-static void InitLUTs(SDL_Color *cols)
-{
-	int i, Y, u, v;
-	for (i=0; i<256; i++) {
-		unsigned int r = cols[i].r, g = cols[i].g, b = cols[i].b;
-
-		Y = (r + g + b) >> 2;
-		u = 128 + ((r - b) >> 2);
-		v = 128 + ((-r + 2*g -b)>>3);
-		RGBtoYUV[i] = (Y<<16) + (u<<8) + v;
-		LUT8to32[i] = (r<<16) + (g<<8) + b;
-  	}
-}

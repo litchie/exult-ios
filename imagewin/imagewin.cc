@@ -64,6 +64,7 @@ const char *Image_window::ScalerNames[] =  {
 		"SuperEagle",
 		"Super2xSaI",
 		"Scale2X",
+		"Hq2x",
 		"OpenGL",
 		0
 };
@@ -297,6 +298,14 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 				&Image_window::show_scaled8to555_Super2xSaI,
 				&Image_window::show_scaled8to16_Super2xSaI,
 				&Image_window::show_scaled8to32_Super2xSaI);
+	}
+	else if (scale == 2 && scaler == Hq2x)
+	{
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_Hq2x,
+				&Image_window::show_scaled8to555_Hq2x,
+				&Image_window::show_scaled8to16_Hq2x,
+				&Image_window::show_scaled8to32_Hq2x);
 	}
 	else if (scale >= 2 && scaler == interlaced)
 	{
