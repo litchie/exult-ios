@@ -191,14 +191,15 @@ void Scale_Hq2x
 	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
 	)
-//void hq2x_32( unsigned char * pIn, int Xres, int Yres, int BpL )
 {
   int  i, j, k;
   int  prevline, nextline;
   int  w[10];
   int  c[10];
   int  yuv[10];
+#if 0
 srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
+#endif
   int stopy = srcy + srch, stopx = srcx + srcw;
   unsigned char *from = source + srcy*sline_pixels + srcx;
   Dest_pixel *to = dest + 2*srcy*dline_pixels + 2*srcx;
@@ -219,6 +220,9 @@ srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
 
   for (j=srcy; j<stopy; j++)
   {
+    unsigned char *from0 = from;		// Save start of line.
+    Dest_pixel *to0 = to;
+
     if (j>0)      prevline = -sline_pixels; else prevline = 0;
     if (j<sheight-1) nextline =  sline_pixels; else nextline = 0;
 
@@ -257,6 +261,8 @@ srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
       for (k=1; k<=9; k++) {
 	unsigned int r, g, b;
 	manip.split_source(w[k], r, g, b);
+	// The following is so the Interp routines work correctly.
+	r &= ~3; g &= ~3;
         c[k] = (r<<16) + (g<<8) + b;;
 	yuv[k] = RGBtoYUV(r, g, b);
       }
@@ -280,12 +286,6 @@ srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
         }
         flag <<= 1;
       }
-	if (0)	{	//++++++TESTING
-		StoreRGB<PTYPES>(to, c[5], manip);
-		StoreRGB<PTYPES>(to+1, c[5], manip);
-		StoreRGB<PTYPES>(to+dline_pixels, c[5], manip);
-		StoreRGB<PTYPES>(to+dline_pixels+1, c[5], manip);
-	} else
       switch (pattern)
       {
         case 0:
@@ -2931,7 +2931,8 @@ srcx = srcy=0; srcw=sline_pixels; srch=sheight;//++++TESTING
       from++;
       to += 2;
     }
-    to += dline_pixels;
+    from = from0 + sline_pixels;
+    to = to0 + 2*dline_pixels;
   }
 }
 
