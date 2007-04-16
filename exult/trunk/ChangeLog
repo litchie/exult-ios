@@ -1,3 +1,7 @@
+2007-04-15    <jeff@mini.nerble.net>
+
+	* imagewin/imagewin.cc (Image_window): Added Hq3x scaler.
+
 2007-04-13    <jeff@mini.nerble.net>
 
 	* imagewin/hq2x.cc (srcx): Added Hq2x scaler.

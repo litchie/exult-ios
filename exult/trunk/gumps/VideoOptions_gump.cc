@@ -129,11 +129,12 @@ void VideoOptions_gump::build_buttons()
 	buttons[0] = new VideoTextToggle (this, restext, colx[4], rowy[0], 59,
 									  resolution, num_resolutions);
 
-	std::string *scalingtext = new std::string[2];
+	std::string *scalingtext = new std::string[3];
 	scalingtext[0] = "x1";
 	scalingtext[1] = "x2";
-	buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 59,
-									  scaling, 2);
+	scalingtext[2] = "x3";
+	buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 
+			59, scaling, 3);
 
 	std::string *enabledtext = new std::string[2];
 	enabledtext[0] = "Disabled";

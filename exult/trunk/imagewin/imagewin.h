@@ -62,10 +62,11 @@ public:
 		Super2xSaI = 6,
 		Scale2x = 7,
 		Hq2x = 8,
-		OpenGL = 9,
+		Hq3x = 9,
+		OpenGL = 10,
 
 		NoScaler = -1,
-		NumScalers = 10
+		NumScalers = 11
 	};
 #else
 	enum ScalerType {
@@ -78,10 +79,11 @@ public:
 		Super2xSaI = 6,
 		Scale2x = 7,
 		Hq2x = 8,
-		OpenGL = 9,
+		Hq3x = 9,
+		OpenGL = 10,
 
 		NoScaler = -1,
-		NumScalers = 9 // no OpenGL. (But leave it in the enum.)
+		NumScalers = 10 // no OpenGL. (But leave it in the enum.)
 };
 #endif
 
@@ -144,7 +146,7 @@ protected:
 					// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
-	bool create_2x_surfaces(int w, int h, uint32 flags,
+	bool create_scale_surfaces(int scale, int w, int h, uint32 flags,
 	    scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
 	bool try_scaler(int w, int h, uint32 flags);
 public:
