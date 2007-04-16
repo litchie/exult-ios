@@ -741,7 +741,7 @@ void Image_window::show_scaled8to16_Hq3x
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(scaled_surface, 3*x, 3*y, 3*w, 3*h);
 	}
 
 void Image_window::show_scaled8to555_Hq3x
@@ -759,7 +759,7 @@ void Image_window::show_scaled8to555_Hq3x
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(scaled_surface, 3*x, 3*y, 3*w, 3*h);
 	}
 
 void Image_window::show_scaled8to565_Hq3x
@@ -777,7 +777,7 @@ void Image_window::show_scaled8to565_Hq3x
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(scaled_surface, 3*x, 3*y, 3*w, 3*h);
 	}
 
 void Image_window::show_scaled8to32_Hq3x
@@ -796,7 +796,7 @@ void Image_window::show_scaled8to32_Hq3x
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(scaled_surface, 3*x, 3*y, 3*w, 3*h);
 	}
 
 //
