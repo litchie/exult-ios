@@ -65,6 +65,7 @@ const char *Image_window::ScalerNames[] =  {
 		"Super2xSaI",
 		"Scale2X",
 		"Hq2x",
+		"Hq3x",
 		"OpenGL",
 		0
 };
@@ -148,15 +149,16 @@ void Image_window::create_surface
 	}
 
 /*
- *	Set up surfaces for 2X scaling.
+ *	Set up surfaces for scaling.
  *	Output:	False if error (reported).
  */
 
-bool Image_window::create_2x_surfaces(int w, int h, uint32 flags,
+bool Image_window::create_scale_surfaces(int scl, int w, int h, uint32 flags,
 	scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32)
 	{
 	int hwdepth;
-		
+
+	scale = scl;
 	if ( SDL_VideoModeOK(w, h, 32, flags))
 		hwdepth = 32;
 	else if ( SDL_VideoModeOK(w, h, 16, flags))
@@ -165,11 +167,11 @@ bool Image_window::create_2x_surfaces(int w, int h, uint32 flags,
 		hwdepth = Get_best_depth();
 	if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8) 
 		{
-		cout << "Doubling from " << ibuf->depth << "bits to "
+		cout << "Scaling from " << ibuf->depth << "bits to "
 				<< hwdepth << " not yet supported." << endl;
 		return false;
 		}
-	else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
+	else if ((scaled_surface = SDL_SetVideoMode(scale*w, scale*h, 
 						hwdepth, flags)) != 0 &&
 		 (unscaled_surface = surface = 
 			SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
@@ -259,49 +261,57 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 #endif
 		}
 	// 2xSaI scaler
-	else if (scale == 2 && scaler ==  SaI)
+	else if (scale >= 2 && scaler ==  SaI)
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_2xSaI,
 				&Image_window::show_scaled8to555_2xSaI,
 				&Image_window::show_scaled8to16_2xSaI,
 				&Image_window::show_scaled8to32_2xSaI);
 	}
-	else if (scale == 2 && scaler == bilinear)	// Bilinear scaler
+	else if (scale >= 2 && scaler == bilinear)	// Bilinear scaler
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_bilinear,
 				&Image_window::show_scaled8to555_bilinear,
 				&Image_window::show_scaled8to16_bilinear,
 				&Image_window::show_scaled8to32_bilinear);
 	}
-	else if (scale == 2 && scaler == BilinearPlus)	// Bilinear Plus scaler
+	else if (scale >= 2 && scaler == BilinearPlus)	// Bilinear Plus scaler
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_BilinearPlus,
 				&Image_window::show_scaled8to555_BilinearPlus,
 				&Image_window::show_scaled8to16_BilinearPlus,
 				&Image_window::show_scaled8to32_BilinearPlus);
 	}
-	else if (scale == 2 && scaler == SuperEagle)
+	else if (scale >= 2 && scaler == SuperEagle)
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_SuperEagle,
 				&Image_window::show_scaled8to555_SuperEagle,
 				&Image_window::show_scaled8to16_SuperEagle,
 				&Image_window::show_scaled8to32_SuperEagle);
 	}
-	else if (scale == 2 && scaler == Super2xSaI)
+	else if (scale >= 2 && scaler == Super2xSaI)
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_Super2xSaI,
 				&Image_window::show_scaled8to555_Super2xSaI,
 				&Image_window::show_scaled8to16_Super2xSaI,
 				&Image_window::show_scaled8to32_Super2xSaI);
 	}
-	else if (scale == 2 && scaler == Hq2x)
+	else if (scale == 3 && scaler == Hq3x)
 	{
-		create_2x_surfaces(w, h, flags, 
+		create_scale_surfaces(3, w, h, flags, 
+				&Image_window::show_scaled8to565_Hq3x,
+				&Image_window::show_scaled8to555_Hq3x,
+				&Image_window::show_scaled8to16_Hq3x,
+				&Image_window::show_scaled8to32_Hq3x);
+	}
+	else if (scale >= 2 && (scaler == Hq2x || scaler == Hq3x))
+	{
+		create_scale_surfaces(2, w, h, flags, 
 				&Image_window::show_scaled8to565_Hq2x,
 				&Image_window::show_scaled8to555_Hq2x,
 				&Image_window::show_scaled8to16_Hq2x,
@@ -329,7 +339,7 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			surface = scaled_surface = 0;
 		}
 	}
-	else if (scale == 2 && scaler == Scale2x)
+	else if (scale >= 2 && scaler == Scale2x)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
 		unscaled_surface = scaled_surface = 
@@ -354,8 +364,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	else if (scale >= 2)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
-		unscaled_surface = scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0);
+		unscaled_surface = scaled_surface = SDL_CreateRGBSurface(
+				SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
 		if (surface && scaled_surface)
 		{
 			show_scaled = &Image_window::show_scaled_point;
