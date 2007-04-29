@@ -1,3 +1,7 @@
+2007-04-28	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* New sprite for male bucket-heade avatar, made by Skutarth. Also, removed
+	  the silly fully-armored paperdoll for the bucket-headed avatars.
+
 2007-04-15    <jeff@mini.nerble.net>
 
 	* imagewin/imagewin.cc (Image_window): Added Hq3x scaler.
