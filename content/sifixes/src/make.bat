@@ -1,4 +1,4 @@
-@expack.exe >> log.txt 2<&1
+@expack.exe >> log.txt 2>&1
 @if errorlevel 9009 (
 	@echo expack was not found; please add it to your PATH environment variable
 	@echo and run this script again.
@@ -6,7 +6,7 @@
 	@exit
 )
 
-@ucc.exe -o usecode %0 >> log.txt 2<&1
+@ucc.exe -o usecode %0 >> log.txt 2>&1
 @if errorlevel 9009 (
 	@echo ucc was not found; please add it to your PATH environment variable
 	@echo and run this script again.
