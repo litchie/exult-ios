@@ -1024,6 +1024,7 @@ Exult 1.4.03cvs text message file.  Written by ExultStudio.
 0x3fd:time barrier
 0x3fe:surf
 0x3ff:haystack
+0x418:Avatar
 0x44a:body
 0x44b:body
 0x44c:keyring

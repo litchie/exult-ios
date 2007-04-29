@@ -27,8 +27,8 @@
 1042:1098/17		# x Raven male nude
 1047:1098/18		# x Redhead female nude
 1046:1098/19		# x Redhead male nude
-1049:1098/20		# x Buckethead female nude
-1048:1098/21		# x Buckethead male nude
+1049:1098/20		# x Buckethead female
+1048:1098/21		# x Buckethead male
 1107:1099/0			# x Laurianna
 1122:1099/1			# x Mariah
 %%endsection
