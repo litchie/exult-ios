@@ -594,7 +594,7 @@ void Shapeinfo_lookup::Read_data_file
 			{
 			snprintf(buf, 50, "<STATIC>/%s.txt", fname);
 			ifstream in;
-			U7open(in, buf, true);
+			U7open(in, buf, false);
 			in.seekg(0, std::ios::end);
 			int size = in.tellg();	// Get file size.
 			in.seekg(0);
@@ -629,7 +629,7 @@ void Shapeinfo_lookup::Read_data_file
 	if (U7exists(buf))
 		{
 		ifstream in;
-		U7open(in, buf, true);
+		U7open(in, buf, false);
 		in.seekg(0, std::ios::end);
 		int size = in.tellg();	// Get file size.
 		in.seekg(0);
