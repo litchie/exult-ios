@@ -32,6 +32,7 @@
 #include "gamemap.h"
 #include "game.h"
 #include "effects.h"
+#include "ucmachine.h"
 
 #ifndef UNDER_CE
 using std::rand;
@@ -222,13 +223,14 @@ Monster_actor *Monster_actor::create
 	int shnum			// Shape to use.
 	)
 	{
+	// Get usecode for shape.
+	int ucnum = ucmachine->get_shape_fun(shnum);
 	if (shnum == 529)		// Slime?
-					// Usecode = shape.
-		return new Slime_actor("", shnum, -1, shnum);
+		return new Slime_actor("", shnum, -1, ucnum);
 	else if (shnum == 501 || (shnum == 380 && GAME_BG))
-		return new Quaking_actor("", shnum, 5, -1, shnum);
+		return new Quaking_actor("", shnum, 5, -1, ucnum);
 	else
-		return new Monster_actor("", shnum, -1, shnum);
+		return new Monster_actor("", shnum, -1, ucnum);
 	}
 
 /*
