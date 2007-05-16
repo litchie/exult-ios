@@ -331,12 +331,12 @@ public:
 
 class Teleport_egg : public Egg_object {
 	short mapnum;			// If not -1.
-	unsigned short destx, desty;
+	unsigned short destx, desty, destz;
 public:
 	Teleport_egg(int shnum, int frnum, unsigned int tx, unsigned int ty,
 		unsigned int tz, unsigned short itype,
-		unsigned char prob, uint16 d1, uint16 d2)
-		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2),
+		unsigned char prob, uint16 d1, uint16 d2, uint16 d3)
+		: Egg_object(shnum, frnum, tx, ty, tz, itype, prob, d1, d2,d3),
 		  mapnum(-1) {
 		if (type == intermap)
 			mapnum = d1&0xff;
@@ -345,6 +345,7 @@ public:
 		int schunk = d1 >> 8;
 		destx = (schunk%12)*c_tiles_per_schunk + (d2&0xff);
 		desty = (schunk/12)*c_tiles_per_schunk + (d2>>8);
+		destz = d3&0xff;
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
 		Tile_coord pos(-1, -1, -1);	// Get position to jump to.
@@ -352,7 +353,7 @@ public:
 		if (mapnum == -1)
  			eggnum = get_quality();
 		if (eggnum == 255) {		// Jump to coords.
-			pos = Tile_coord(destx, desty, 0);
+			pos = Tile_coord(destx, desty, destz);
 		} else {
 			Egg_vector vec;	// Look for dest. egg (frame == 6).
 			if (find_nearby_eggs(vec, 275, 256, eggnum, 6)) {
@@ -488,7 +489,7 @@ Egg_object *Egg_object::create_egg
 	case teleport:
 	case intermap:
 		obj = new Teleport_egg(shnum, frnum, tx, ty, tz, itype, prob,
-						data1, data2);
+						data1, data2, data3);
 		break;
 	case weather:
 		obj = new Weather_egg(shnum, frnum, tx, ty, tz, itype, prob,
