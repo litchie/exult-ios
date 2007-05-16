@@ -1,3 +1,7 @@
+2007-05-15    <jeff@mini.nerble.net>
+
+	* objs/egg.cc (public): Allow setting z-coord in teleport eggs.
+
 2007-05-14	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* miscinf.cc: Fixed problem reading textmsg files with crlf's.
 	* monsters.cc: Monsters with high shapes used wrong usecode function.
