@@ -148,6 +148,7 @@ C_EXPORT void on_teleport_coord_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	studio->set_sensitive("teleport_x", on);
 	studio->set_sensitive("teleport_y", on);
+	studio->set_sensitive("teleport_z", on);
 	studio->set_sensitive("teleport_eggnum", !on);
 	}
 
@@ -221,6 +222,7 @@ void ExultStudio::open_egg_window
 		set_toggle("teleport_coord", true);
 		set_sensitive("teleport_x", true);
 		set_sensitive("teleport_y", true);
+		set_sensitive("teleport_z", true);
 		set_sensitive("teleport_eggnum", false);
 		}
 	gtk_widget_show(eggwin);
@@ -344,6 +346,7 @@ int ExultStudio::init_egg_window
 			set_entry("teleport_y",
 				(schunk/12)*c_tiles_per_schunk +(data2>>8),
 								true);
+			set_entry("teleport_z", data3&0xff, true);
 			set_spin("teleport_eggnum", 0, false);
 			}
 		else			// Egg #.
@@ -351,6 +354,7 @@ int ExultStudio::init_egg_window
 			set_toggle("teleport_coord", false);
 			set_entry("teleport_x", 0, false, false);
 			set_entry("teleport_y", 0, false, false);
+			set_entry("teleport_z", 0, false, false);
 			set_spin("teleport_eggnum", qual);
 			}
 		break;
@@ -478,7 +482,9 @@ int ExultStudio::save_egg_window
 		if (get_toggle("teleport_coord"))
 			{		// Abs. coords.
 			int tx = get_num_entry("teleport_x"),
-			    ty = get_num_entry("teleport_y");
+			    ty = get_num_entry("teleport_y"),
+			    tz = get_num_entry("teleport_z");
+			data3 = tz;
 			data2 = (tx&0xff) + ((ty&0xff)<<8);
 			int sx = tx/c_tiles_per_schunk,
 			    sy = ty/c_tiles_per_schunk;
