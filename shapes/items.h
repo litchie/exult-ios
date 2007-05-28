@@ -64,6 +64,7 @@ const int first_to_battle = 0x39;
 const int last_to_battle = 0x3b;
 const int first_farmer = 0x3f, last_farmer = 0x41;
 const int first_miner = 0x42, last_miner = 0x44;
+const int first_miner_gold = 0x45, last_miner_gold = 0x47;
 const int first_flee = 0x48;
 const int last_flee = 0x4e;
 const int first_lamp_on = 0x63;
