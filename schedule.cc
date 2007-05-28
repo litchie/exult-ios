@@ -1512,8 +1512,23 @@ void Dance_schedule::now_what
 	npc->start(gwin->get_std_delay(), 500);		// Start in 1/2 sec.
 	}
 
+void Tool_schedule::get_tool
+	(
+	)
+	{
+	tool = new Ireg_game_object(toolshape, 0, 0, 0, 0);
+					// Free up both hands.
+	Game_object *obj = npc->get_readied(Actor::rhand);
+	if (obj)
+		obj->remove_this();
+	if ((obj = npc->get_readied(Actor::lhand)) != 0)
+		obj->remove_this();
+	if (!npc->add_readied(tool, Actor::lrhand))
+		npc->add_readied(tool, Actor::lhand);
+	}
+
 /*
- *	Schedule change for mining/farming:
+ *	Schedule change for tool-user (currently only farming).
  */
 
 void Tool_schedule::now_what
@@ -1521,17 +1536,8 @@ void Tool_schedule::now_what
 	)
 	{
 	if (!tool)			// First time?
-		{
-		tool = new Ireg_game_object(toolshape, 0, 0, 0, 0);
-					// Free up both hands.
-		Game_object *obj = npc->get_readied(Actor::rhand);
-		if (obj)
-			obj->remove_this();
-		if ((obj = npc->get_readied(Actor::lhand)) != 0)
-			obj->remove_this();
-		if (!npc->add_readied(tool, Actor::lrhand))
-			npc->add_readied(tool, Actor::lhand);
-		}
+		get_tool();
+
 	if (rand()%4 == 0)		// 1/4 time, walk somewhere.
 		{
 		Loiter_schedule::now_what();
@@ -1545,7 +1551,7 @@ void Tool_schedule::now_what
 		else if (ty == Schedule::farm)
 			npc->say(first_farmer, last_farmer);
 		}
-	signed char frames[12];		// Use pick.
+	signed char frames[12];		// Use tool.
 	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
 	if (cnt)
 		npc->set_action(new Frames_actor_action(frames, cnt));
@@ -1563,6 +1569,35 @@ void Tool_schedule::ending
 	{
 	if (tool)
 		tool->remove_this();	// Should safely remove from NPC.
+	}
+
+/*
+ *	Miners attack ore.
+ */
+
+void Miner_schedule::now_what
+	(
+	)
+	{
+	if (!tool)			// First time?
+		get_tool();
+
+	if (rand()%4 == 0)		// 1/4 time, walk somewhere.
+		{
+		Loiter_schedule::now_what();
+		return;
+		}
+	if (rand()%10 == 0)
+		{
+		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
+		if (ty == Schedule::miner)
+			npc->say(first_miner, last_miner);
+		}
+	signed char frames[12];		// Use pick.
+	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
+	if (cnt)
+		npc->set_action(new Frames_actor_action(frames, cnt));
+	npc->start();			// Get back into time queue.
 	}
 
 /*

@@ -304,14 +304,27 @@ public:
  */
 class Tool_schedule : public Loiter_schedule
 	{
+protected:
 	int toolshape;			// Pick/scythe shape.
 	Game_object *tool;
+	void get_tool();
 public:
 	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12), 
 					toolshape(shnum), tool(0)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
+	};
+
+/*
+ *	Miner.
+ */
+class Miner_schedule : public Tool_schedule
+	{
+public:
+	Miner_schedule(Actor *n) : Tool_schedule(n, 624)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
 	};
 
 /*
