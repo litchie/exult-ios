@@ -1604,7 +1604,7 @@ void Actor::set_schedule_type
 			schedule = new Loiter_schedule(this, 3);
 			break;
 		case Schedule::miner:	// Use a pick.
-			schedule = new Tool_schedule(this, 624);
+			schedule = new Miner_schedule(this);
 			break;
 		case Schedule::hound:
 			ready_best_weapon();
