@@ -38,7 +38,7 @@ public:
 	Virtue_stone_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-			pos(0, 0, 0), map(-1)
+			pos(0, 0, 0), map(0)
 		{  }
 	void set_target_pos(Tile_coord t)	// Set/get position.
 		{ pos = t; }

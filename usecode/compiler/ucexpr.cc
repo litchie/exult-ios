@@ -161,8 +161,17 @@ void Uc_fun_name_expression::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHI);
-	Write2(out, fun->get_usecode_num());
+	int funid = fun->get_usecode_num();
+	if (fun->has_high_id())
+		{
+		out.push_back((char) UC_PUSHI32);
+		Write4(out, funid);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHI);
+		Write2(out, funid);
+		}
 	}
 
 /*
@@ -405,8 +414,16 @@ void Uc_int_expression::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHI);
-	Write2(out, value);
+	if (is_int_32bit(value))
+		{
+		out.push_back((char) UC_PUSHI32);
+		Write4(out, value);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHI);
+		Write2(out, value);
+		}
 	}
 
 /*
@@ -484,8 +501,16 @@ void Uc_string_expression::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHS);
-	Write2(out, offset);
+	if (is_int_32bit(offset))
+		{
+		out.push_back((char) UC_PUSHS32);
+		Write4(out, offset);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHS);
+		Write2(out, offset);
+		}
 	}
 
 /*
@@ -497,8 +522,16 @@ void Uc_string_prefix_expression::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHS);
-	Write2(out, get_string_offset());
+	if (is_int_32bit(get_string_offset()))
+		{
+		out.push_back((char) UC_PUSHS32);
+		Write4(out, offset);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHS);
+		Write2(out, offset);
+		}
 	}
 
 /*

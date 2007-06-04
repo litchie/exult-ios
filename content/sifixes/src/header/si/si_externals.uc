@@ -48,7 +48,7 @@ extern var pointInsideRect 0x8F8 (var point, var upperleft, var lowerright);
 //List of dead bodies nearby:
 extern var getNearbyBodies 0x8FB ();
 
-extern areThereBodiesNearby 0x8FC ();
+extern var areThereBodiesNearby 0x8FC ();
 
 //List the NPC names for joinable NPCs:
 extern var getJoinableNPCNames 0x8FD ();
@@ -89,7 +89,7 @@ extern var getPropValue 0x95C (var npc, var propid);
 //Increases the value of propid for NPC by delta:
 extern setPropValue 0x95E (var npc, var propid, var delta);
 
-extern getArraySize 0x977 (var array);
+extern var getArraySize 0x977 (var array);
 
 //Wrapper for UI_direction_from(AVATAR, obj)
 extern var directionFromAvatar 0x979 (var obj);

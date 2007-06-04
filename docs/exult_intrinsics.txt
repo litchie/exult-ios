@@ -108,12 +108,12 @@ int UI_die_roll(int min, int max)
 
     Returns a random value between 'min' and 'max'.
 
-int UI_roll_to_win(int att, int def)                                        [BG]
+int UI_roll_to_win(int att, int def)
 
-    Rolls a (0-based) 25-sided die. If the result is 0, return value is '0'; if
-    the roll is 24, return value is '1'. For all other values of the die roll,
+    Rolls a (0-based) 30-sided die. If the result is 0, return value is '0'; if
+    the roll is 29, return value is '1'. For all other values of the die roll,
     it adds 'att' and subtracts 'def' from the die roll; if this final value is
-    less than 12, return value is '0'. Otherwise, return is '1'.
+    less than 14, return value is '0'. Otherwise, return is '1'.
 
 --------------------------------------------------------------------------------
 SCRIPTING
@@ -321,6 +321,19 @@ UI_play_music(int track, object obj)
     effect # 24 (musical notes). If 'track' is '255' ('0xFF'), Exult will
     *stop* any music that is playing instead.
 
+int UI_get_music_track()
+
+    If music is enabled and a song is playing, this intrinsic returns the track
+    number of the current song. Otherwise, return value is -1.
+
+     NOTES ABOUT ORIGINAL BG 
+    The return value in the original Black Gate was more complicated; the
+    current song was the return value divided by 256, while the next song (the
+    one that would be resumed after the current one ends) was the remainder of
+    that same division. None of this behaviour is true for Exult, which works
+    as described above.
+     END NOTES ABOUT ORIGINAL BG 
+
 int UI_start_speech(int track)
 
     Starts to play the speech track specified by 'track' and returns '1' if
@@ -489,7 +502,7 @@ int UI_summon(int shape)
     otherwise, the return is '0'. In the originals, there was an additional
     'bool' parameter, but it is unimplemented in Exult.
 
-actor UI_clone(actor npc)                                                   [BG]
+actor UI_clone(actor npc)
 actor npc->clone()
 
     Creates a clone of 'npc'. The clone has alignment set to 'FRIENDLY' and is
@@ -1155,10 +1168,11 @@ npc->remove_from_party()
 
     Removes 'npc' from party and sets alignment to 'neutral'.
 
-object[] UI_get_dead_party()                                                [BG]
+object[] UI_get_dead_party(object obj)
+object[] obj->get_dead_party()
 
     Returns an array with the references to the bodies of dead party members
-    within 50 tiles.
+    within 50 tiles of 'obj'.
 
 --------------------------------------------------------------------------------
 AVATAR
@@ -1362,11 +1376,14 @@ UI_run_endgame(bool flag)
 
     If 'flag' is 'true', also sets the game-completion flag.
 
-UI_error_message([special])                                          [SI, Exult]
+UI_error_message([special])
 
     Accepts from 1 to 12 parameters of any type, whether or not they are arrays.
     Prints all parameters (and all the elements of said parameters, for those
     that are arrays) to 'stdout.txt'.
+
+    The original games accepted only one argument (which could be an array),
+    but, as stated above, Exult doesn't have this limit.
 
 string UI_printf(string out[])                                           [Exult]
 
@@ -1383,7 +1400,7 @@ obj->center_view()
 
     Centers screen around 'obj'.
 
-UI_display_area(int pos[])                                                  [BG]
+UI_display_area(int pos[])
 
     Displays area pointed by position vector 'pos'. If 'pos' has 3 elements, it
     is a (x, y, z) vector; with 4 elements, 'pos' is a (x, y, z, map) position
@@ -1395,10 +1412,11 @@ actor->set_camera()
 
     Makes the camera follow 'npc'.
 
-UI_wizard_eye(int length)                                                   [BG]
+UI_wizard_eye(int length)
 
     Lets the player move the screen around, keeping the avatar in its present
-    location, for a duration equal to (1.5 * 'length') ticks.
+    location, for a duration equal to (1.5 * 'length') ticks. Overlays sprite
+    shape 10 over the screen.
 
 UI_fade_palette(int length, int unk, int type)
 
@@ -1438,7 +1456,7 @@ obj->book_mode()
     runes will be translated to normal runes.
     **** END SI SPECIFIC ****
 
-UI_book_mode_ex(bool is_scroll, int font)                                  Exult
+UI_book_mode_ex(bool is_scroll, int font)                                [Exult]
 UI_book_mode_ex(bool is_scroll, int font, int gump)
 
     Used to display books and scrolls; displays a book gump if 'show_loc' is

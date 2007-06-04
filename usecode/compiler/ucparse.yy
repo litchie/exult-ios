@@ -98,7 +98,7 @@ static int repeat_nesting = 0;
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
+%token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
@@ -693,6 +693,11 @@ while_statement:
 	WHILE '(' nonclass_expr ')' { start_loop(); } statement
 		{
 		$$ = new Uc_while_statement($3, $6);
+		end_loop();
+		}
+	| DO { start_loop(); } statement WHILE '(' nonclass_expr ')' ';'
+		{
+		$$ = new Uc_dowhile_statement($6, $3);
 		end_loop();
 		}
 	;

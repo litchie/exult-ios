@@ -388,7 +388,8 @@ void Uc_function::end_breakable
 	(
 	Uc_statement *s,		// Loop.  For verification.
 	vector<char>& stmt_code,
-	int testlen
+	int testlen,
+	bool dowhile
 	)
 	{
 					// Just make sure things are right.
@@ -410,6 +411,7 @@ void Uc_function::end_breakable
 	breaks.pop_back();		// Remove marker (-1).
 					// Fix all the 'continue' statements,
 					//   going backwards.
+	int baseoffset = dowhile ? stmtlen : 0;
 	while (!conts.empty() && conts.back() >= 0)
 		{			// Get offset within loop.
 		int cont_offset = conts.back();
@@ -417,7 +419,7 @@ void Uc_function::end_breakable
 		assert(cont_offset < stmtlen - 2);
 					// Store offset.
 		Write2(stmt_code, cont_offset + 1, 
-						-(cont_offset + 3)-testlen);
+						baseoffset-(cont_offset + 3)-testlen);
 		}
 	assert(!conts.empty() && conts.back() == -1);
 	conts.pop_back();		// Remove marker (-1).
@@ -504,8 +506,6 @@ void Uc_function::gen
 	std::ostream& out
 	)
 	{
-					// Start with function #.
-	Write2(out, proto->get_usecode_num());
 	vector<char> code;		// Generate code here first.
 	code.reserve(30000);
 	if (statement)
@@ -514,7 +514,7 @@ void Uc_function::gen
 	if (proto->get_has_ret())
 		// Function specifies a return value.
 		// When in doubt, return zero by default.
-		code.push_back((char) UC_RTS);
+		code.push_back((char) UC_RETZ);
 	else
 		code.push_back((char) UC_RET);
 	link_labels(code);
@@ -524,8 +524,35 @@ void Uc_function::gen
 					//   #args + #locals + #links + links +
 					//   codelen.
 	int totallen =  2 + text_data_size + 2 + 2 + 2 + 2*num_links + codelen;
-	Write2(out, totallen);
-	Write2(out, text_data_size);		// Now data.
+
+			// Special cases.
+	bool need_ext_header = (proto->get_usecode_num() == 0xffff) || 
+	                       (proto->get_usecode_num() == 0xfffe);
+
+	// Function # first.
+	if (is_int_32bit(totallen) || proto->has_high_id() || need_ext_header)
+		{
+		totallen += 2;	// Extra space for text_data_size.
+		if (proto->has_high_id())
+			{
+			Write2(out, 0xfffe);
+			Write4(out, proto->get_usecode_num());
+			}
+		else
+			{
+			Write2(out, 0xffff);
+			Write2(out, proto->get_usecode_num());
+			}
+		Write4(out, totallen);
+		Write4(out, text_data_size);
+		}
+	else
+		{
+		Write2(out, proto->get_usecode_num());
+		Write2(out, totallen);
+		Write2(out, text_data_size);
+		}
+		// Now data.
 	out.write(text_data, text_data_size);
 	Write2(out, num_parms);		// Counts.
 	Write2(out, num_locals);

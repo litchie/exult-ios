@@ -194,6 +194,51 @@ void Uc_while_statement::gen
 	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
 	}
 
+
+/*
+ *	Delete.
+ */
+
+Uc_dowhile_statement::~Uc_dowhile_statement
+	(
+	)
+	{
+	delete expr;
+	delete stmt;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_dowhile_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	vector<char> stmt_code;
+	stmt_code.reserve(4000);
+	fun->start_breakable(this);
+	if (stmt) {
+		fun->adjust_reloffset(out.size() + 3);
+		stmt->gen(stmt_code, fun);	// Generate statement's code.
+		fun->adjust_reloffset(-out.size() - 3);
+	}
+	
+	int stmtlen = stmt_code.size();
+					// Still need to write the JNE.
+	expr->gen_value(stmt_code);		// Generate expr. value.
+					// Get distance back to top, including JNE.
+	long dist = stmt_code.size() + 3;
+	stmt_code.push_back((char) UC_JNE);	// Put cond. jmp. after test.
+	Write2(stmt_code, -dist);
+	int testlen = dist - stmtlen;
+	fun->end_breakable(this, stmt_code, testlen, true);
+					// Append code to end.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	}
+
 /*
  *	Delete.
  */
@@ -293,11 +338,11 @@ void Uc_return_statement::gen
 		{
 		int ival;
 		if (expr->eval_const(ival) && !ival)
-			out.push_back((char) UC_RTS);
+			out.push_back((char) UC_RETZ);
 		else
 			{
 			expr->gen_value(out);	// Put value on stack.
-			out.push_back((char) UC_SETR);// Pop into ret_value.
+			out.push_back((char) UC_RETV);
 			}
 		}
 	else
@@ -448,9 +493,17 @@ void Uc_converse_case_statement::gen
 	for (vector<int>::reverse_iterator it = string_offset.rbegin();
 			it != string_offset.rend(); ++it)
 		{
-		// Push strings on stack.
-		out.push_back((char) UC_PUSHS);
-		Write2(out, *it);
+		// Push strings on stack; *it should always be >= 0.
+		if (is_int_32bit(*it))
+			{
+			out.push_back((char) UC_PUSHS32);
+			Write4(out, *it);
+			}
+		else
+			{
+			out.push_back((char) UC_PUSHS);
+			Write2(out, *it);
+			}
 		}
 	out.push_back((char) UC_CMPS);	// Generate comparison.
 	Write2(out, string_offset.size());	// # strings on stack.
@@ -710,8 +763,16 @@ void Uc_message_statement::gen
 		int offset = msg->get_string_offset();
 		if (offset >= 0)
 			{
-			out.push_back((char) UC_ADDSI);
-			Write2(out, offset);
+			if (is_int_32bit(offset))
+				{
+				out.push_back((char) UC_ADDSI32);
+				Write4(out, offset);
+				}
+			else
+				{
+				out.push_back((char) UC_ADDSI);
+				Write2(out, offset);
+				}
 			}
 		else
 			{

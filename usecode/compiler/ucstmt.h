@@ -102,7 +102,7 @@ public:
 	};
 
 /*
- *	An WHILE statement:
+ *	A WHILE statement:
  */
 class Uc_while_statement : public Uc_statement
 	{
@@ -113,6 +113,22 @@ public:
 		: expr(e), stmt(s)
 		{  }
 	~Uc_while_statement();
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	A DO...WHILE statement:
+ */
+class Uc_dowhile_statement : public Uc_statement
+	{
+	Uc_expression *expr;		// What to test.
+	Uc_statement *stmt;		// What to execute.
+public:
+	Uc_dowhile_statement(Uc_expression *e, Uc_statement *s)
+		: expr(e), stmt(s)
+		{  }
+	~Uc_dowhile_statement();
 					// Generate code.
 	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};

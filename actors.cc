@@ -3343,14 +3343,14 @@ bool Actor::roll_to_win
 	int defender			// Points subtracted.
 	)
 	{
-	const int sides = 25;
+	const int sides = 30;
 	int roll = rand()%sides;
 	if (roll == 0)			// Always lose.
 		return false;
 	else if (roll == sides - 1)	// High?  Always win.
 		return true;
 	else
-		return roll + attacker - defender >= sides/2;
+		return roll + attacker - defender >= sides/2 - 1;
 	}
 
 /*
@@ -3516,7 +3516,12 @@ bool Actor::figure_hit_points
 			}
 		}
 	if (missed)
+	{
+		// Play 'graze' sfx
+		int sfx = Audio::game_sfx(5);
+		Audio::get_ptr()->play_sound_effect(sfx);
 		return false;
+	}
 					// Compute hit points to lose.
 	int attacker_str;
 	if (explosion)	//Explosions shouldn't depend on strength
@@ -3585,19 +3590,23 @@ bool Actor::figure_hit_points
 			Get_effective_prop(this, Actor::intelligence)))
 			set_flag(Obj_flags::paralyzed);
 		}
-	int sfx;			// Play 'hit' sfx.
-	Monster_info *attminf = (attacker && attacker->is_monster()) ?
-			attacker->get_info().get_monster_info() : 0;
-	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
-					// But only if Ava. involved.
-		(this == gwin->get_main_actor() || 
-				attacker == gwin->get_main_actor()))
-		Audio::get_ptr()->play_sound_effect(sfx);
-	else if (attminf && (sfx = attminf->get_hitsfx()) >= 0 &&
-					// But only if Ava. involved.
-		(this == gwin->get_main_actor() || 
-				attacker == gwin->get_main_actor()))
-		Audio::get_ptr()->play_sound_effect(sfx);
+	// Play 'hit' sfx, but only if Ava. involved.
+	if (this == gwin->get_main_actor() || 
+				attacker == gwin->get_main_actor())
+	{
+		// "Default" hit sfx.
+		int sfx = Audio::game_sfx(4);
+		// Try weapon hit sfx first.
+		if (winf)
+			sfx = winf->get_hitsfx();
+		Monster_info *attminf = (attacker && attacker->is_monster()) ?
+				attacker->get_info().get_monster_info() : 0;
+		// Try monster hit sfx next.
+		if (sfx < 0 && attminf)
+			sfx = attminf->get_hitsfx();
+		if (sfx >= 0)
+			Audio::get_ptr()->play_sound_effect(sfx);
+	}
 
 	int oldhealth = properties[static_cast<int>(health)];
 	int maxhealth = properties[static_cast<int>(strength)];
@@ -4555,11 +4564,18 @@ void Npc_actor::handle_event
 				curtime + gwin->get_std_delay(), this, udata);
 		return;
 		}
+	// Prevent actor from doing anything if not in the active map.
+	if (get_map() != gwin->get_map())
+		{
+		set_action(0);
+		dormant = true;
+		if (schedule)
+			schedule->im_dormant();
+		return;
+		}
 	if (!action)			// Not doing anything?
 		{			// Stop if not on current map.
-		if (get_map() != gwin->get_map())
-			dormant = true;
-		else if (in_usecode_control())
+		if (in_usecode_control())
 			// Keep trying if we are in usecode control.
 			gwin->get_tqueue()->add(
 					curtime + gwin->get_std_delay(), this, udata);
@@ -4577,17 +4593,12 @@ void Npc_actor::handle_event
 		else
 			{
 			set_action(0);
-			if (get_map() != gwin->get_map())
-				dormant = true;
 			if (in_usecode_control())
 				// Keep trying if we are in usecode control.
 				gwin->get_tqueue()->add(
 						curtime + gwin->get_std_delay(), this, udata);
 			else if (schedule)
-				if (dormant)
-					schedule->im_dormant();
-				else
-					schedule->now_what();
+				schedule->now_what();
 			}
 		}
 	}
