@@ -2305,6 +2305,13 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			}
+			case 0xa4:		// 32-bit CALL.
+			{
+				offset = (sint32)Read4(frame->ip);
+				call_function(offset, frame->eventid);
+				frame_changed = true;
+				break;
+			}
 			case 0x25:		// RET. (End of procedure reached)
 			case 0x2C:		// RET. (Return from procedure)
 				show_pending_text();
@@ -2375,10 +2382,13 @@ int Usecode_internal::run()
 			case 0xae:		// (32 bit version)   
 			{
 				int nextopcode = *(frame->ip);
-				if ((opcode == 0x2e && 
-						(nextopcode != 0x02 && nextopcode != 0x5C))
-					|| (opcode == 0xae && nextopcode != 0x82)) {
-					cerr << "2nd byte in loop isn't a 0x02 (or 0x82)!"<<endl;
+				if ((opcode & 0x80) != (nextopcode & 0x80)) {
+					cerr << "32-bit instruction mixed with 16-bit instruction in loop usecode!" << endl;
+					break;
+				}
+				nextopcode &= 0x7f;
+				if (nextopcode != 0x02 && nextopcode != 0x5c) {
+					cerr << "Invalid 2nd byte in loop!" << endl;
 					break;
 				} else {
 					initializing_loop = true;
@@ -2386,8 +2396,9 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x02:	// LOOP (2nd byte of loop)
-			case 0x5C:	// LOOP (2nd byte of loop) using static array
 			case 0x82:  // (32 bit version)
+			case 0x5c:	// LOOP (2nd byte of loop) using static array
+			case 0xdc:	// (32 bit version)
 			{
 				// Counter (1-based).
 				int local1 = Read2(frame->ip);
@@ -2397,15 +2408,18 @@ int Usecode_internal::run()
 				int local3 = Read2(frame->ip);
 				// Array of values to loop over.
 				int local4;
+				bool is_32bit = (opcode > 0x80);
+				// Mask off 32bit flag.
+				opcode &= 0x7f;
 				if (opcode == 0x5C)
 					local4 = (sint16)Read2(frame->ip);
 				else
 					local4 = Read2(frame->ip);
 				// Get offset to end of loop.
-				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
-				else
+				if (is_32bit)
 					offset = (sint32) Read4(frame->ip); // 32 bit offset
+				else
+					offset = (short) Read2(frame->ip);
 
 				if (local1 < 0 || local1 >= num_locals) {
 					LOCAL_VAR_ERROR(local1);
@@ -2716,11 +2730,15 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x47:		// CALLE.  Stack has caller_item.
+			case 0xc7:		// 32-bit version.
 			{
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				push(ival); // put caller_item back on stack
-				offset = Read2(frame->ip);
+				if (opcode < 0x80)
+					offset = Read2(frame->ip);
+				else
+					offset = (sint32)Read4(frame->ip);
 				call_function(offset, frame->eventid, caller);
 				frame_changed = true;
 				break;

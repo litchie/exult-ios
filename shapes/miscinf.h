@@ -83,12 +83,24 @@ struct  Paperdoll_npc
 struct Animation_info
 {
 	int		type;			// Type of animation; one of FA_LOOPING,
-							// FA_SUNDIAL or FA_ENERGY_FIELD
+	                        // FA_HOURLY, FA_NON_LOOPING, FA_RANDOM_LOOP
+							// or FA_LOOP_RECYCLE
 	int		first_frame;	// First frame of the animation cycle
 	int		frame_count;	// Frame count of the animation cycle
 	int		offset;			// Overall phase shift of the animation
 	int		offset_type;	// If 1, set offset = init_frame % frame_count
-							// If -1, set offset = init_frame
+	                        // If -1, set offset = init_frame
+	int		frame_delay;	// Delay multiplier between frames.
+	int		sfx_info;		// Extra sfx info; exact use dependens on type.
+};
+
+struct SFX_info
+{
+	int		num;
+	bool	rand;			// sfx in range are to be randomly chosen.
+	int		range;			// # of sequential sfx to be used.
+	bool	delay;			// If there is a nonzero interval (possibly random)
+	                        // between two consecutive plays.
 };
 
 struct Base_Avatar_info
@@ -154,7 +166,7 @@ public:
 
 	// Misc info:
 	static int get_explosion_sprite (int shapenum);
-	static int get_shape_sfx (int shapenum);
+	static SFX_info *get_sfx_info (int shapenum);
 	static Animation_info *get_animation_cycle_info (int shapenum, int init_frame);
 	static bool get_usecode_events (int shapenum);
 	static bool get_mountain_top (int shapenum);

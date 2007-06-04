@@ -4,136 +4,327 @@
 #
 
 %%section version
-:1
+:2
 %%endsection
 
 %%section explosions
 #Format
 #	:shapenum/spritenum
 #The 'default' explosion is spritenum 5, and may be left out.
-:399/13			# Delayed blast
-:639/8			# Death Vortex
-:554/19			# Burst Arrow
-:78/4			# Explosion
-:621/4			# Delayed Blast
-:702/1			# Cannon
-:704/1			# Powder Keg
-:565/18			# Starburst
-:287/23			# Swordstrike
+#
+#	 Delayed blast
+#
+:399/13
+
+#	 Death Vortex
+#
+:639/8
+
+#	 Burst Arrow
+#
+:554/19
+
+#	 Explosion
+#
+:78/4
+
+#	 Delayed Blast
+#
+:621/4
+
+#	 Cannon
+#
+:702/1
+
+#	 Powder Keg
+#
+:704/1
+
+#	 Starburst
+#
+:565/18
+
+#	 Swordstrike
+#
+:287/23
 %%endsection
 
 %%section shape_sfx
-#Format
-#	:shapenum/sfxnum
-#	Surf (47 or 49)
-:612/49
-:613/49
-:632/49
-:736/49
-:737/49
-:751/49
-:808/49
-:834/49
-:875/49
-:907/49
-:911/49
-:918/49
-:1012/49
-:1020/49
-:1022/49
-#	Bubbles (54, 56)
-:334/56
-:335/56
-:780/56
+#	Format
+#		:shapenum/sfxnum/delay/range/rand
+#	Only the first two parameters are required.
+#	delay is a flag (either 0 or 1) which indicates extra delay
+#	between successive plays. If it is 1 and the shape does *not*
+#	have an associated animation (e.g., cavern), there will be
+#	a random delay. If the shape *does* have an associated animation,
+#	this flag will be ignored.
+#	range is used to specify a sequence of different sfx used by the
+#	shape: Exult will play sfx ranging from sfxnum to sfxnum + range - 1.
+#	rand is a flag controlling how range is used: if rand is 1, Exult
+#	will randomly play one sfx in the range; if rand is 0, Exult will
+#	play them sequentially, wrapping back to the first sfx.
+#
+#	Surf (109)
+:612/109
+:613/109
+:632/109
+:699/109
+:736/109
+:737/109
+:751/109
+:808/109
+:834/109
+:875/109
+:907/109
+:911/109
+:918/109
+:1012/109
+:1020/109
+:1022/109
+
+#	Bubbles (110 to 114)
+#
+:335/110/0/5/1
+#	Doesn't seem to play sounds
+#:780/110/0/5/1
+
 #	Fountains
-:893/36
+#
+:153/50
+:326/50
+
+#	Moongates
+#
+:157/55
+
+#	Grandfather clock
+#
+:252/117/0/2
+:695/117/0/2
+
+#	Cavern
+#
+:389/103/1
+:391/103/1
+
+#	Magic weapons -- apparently not used
+#
+#:547/75
+#:548/75
+#:559/75
+#:562/75
+
+#	Force Wall
+#
+:728/75
+
+#	Flaming weapons
+#
+:551/45/0/3/1
+:553/45/0/3/1
+:630/45/0/3/1
+
+#	Campfire
+#
+:289/45/0/3/1
+:796/45/0/3/1
+:825/45/0/3/1
+
+#	Burning Urn
+#
+:992/45/0/3/1
+
+#	Fire Field
+#
+:561/45/0/3/1
+:895/45/0/3/1
+
+#	Fire elemental
+#
+:861/45/0/3/1
+
+#	Poison/Sleep Field
+#
+:900/129
+:902/129
+
 %%endsection
 
 %%section animation
-#Format
-#	:shapenum/0/first_frame/frame_count/offset
-#Sundials
-#	:shapenum/1
-#Energy fields
-#	:shapenum/2
-#The dafault animation starts at frame 0, goes through all
-#frames and returns to frame 0 again. This list is only for
-#animations which are NOT like that.
-#For other animation cycles, the animation starts at
-#first_frame, goes through frame_count frames (including the
-#first one) and returns to first_frame. offset is an overall
-#phase shift in the animation. If offset is '%', then Exult
-#will calc offset as sframe%frame_count, where sframe is the
-#frame with which the animation was created. If offset is
-#ommited, Exult will set it equal to sframe.
+#	The dafault animation starts at frame 0, goes through all
+#	frames and returns to frame 0 again. This list is only for
+#	animations which are NOT like that.
 #
-#	Sundial
+#	Format
+#
+#	Wrapping Loop
+#		:shapenum/0/first_frame/frame_count/offset/frame_delay/sfx_delay
+#
+#	For the looping cycles, the animation starts at first_frame,
+#	goes through frame_count frames (including the first one)
+#	and returns to first_frame. offset is an overall phase
+#	shift in the animation. If offset is '%', then Exult will
+#	calculate offset as being sframe % frame_count, where sframe
+#	is the frame with which the animation was created.
+#	If offset is '-1' or if it is ommited, Exult will set it equal
+#	to sframe.
+#	frame_delay is an additional frame delay; time between frames
+#	is multiplied by frame_delay. A value of zero is treated as 1.
+#	sfx_delay indicates the delay (in frames) before the sfx
+#	is played again. If it is '0' (or ommited) then sfx will be
+#	played continuously; if '1' it will play every other frame, etc.
+#	The sfx will always be played at first_frame. If sfx_delay is -1,
+#	the sound effect will be synchronized with the animation, playing
+#	whenever first_frame is being displayed.
+#
+#	Hourly (Sundials)
+#		:shapenum/1
+#
+#	Hourly cycles display the frame equal to the current game hour
+#	(24-hour format); the shape should have 24 frames.
+#
+#	Nonlooping (Energy fields)
+#		:shapenum/2
+#
+#	These cycles start at frame 0 and stop at the last frame
+#	of the shape. They do not wrap around to the first frame.
+#
+#	Random loops (bubbles)
+#		:shapenum/3/first_frame/frame_count
+#
+#	Random loops work similar to Wrapping loops; the main
+#	difference being that the animation stays at first_frame
+#	for random periods of time before continuing. If the shape
+#	has a sfx specified, this sfx will play in synch with the
+#	animation.
+#
+#	Looping Recycle
+#		:shapenum/4/first_frame/frame_count/recycle/sfx_delay
+#
+#	This is similar to the normal looping cycle. The difference is
+#	that, after the first cycle, the animation will continue from
+#	recycle instead of first_frame. Only sfx_delay is optional.
+#
+#	Fire Field
+#
+:561/4/0/16/8
+:895/4/0/16/8
+
+#	Poison Field
+#
+:900/4/0/12/6
+
+#	Sleep Field
+#
+:902/4/0/14/6
+
+#		Sundial
+#
 :284/1
-#	Energy field
+
+#		Energy field
+#
 :768/2
+
 #	Fountain
+#
 :153/0/0/6/%
 :153/0/6/6/%
 :153/0/12/6/%
+
 #	Lava
+#
 :184/0/0/6/%
 :184/0/6/6/%
+
 #	Pennant
+#
 :222/0/0/6/%
 :222/0/6/6/%
 :222/0/12/6/%
+
 #	Fire
+#
 :289/0/0/6/%
 :289/0/6/6/%
+
 #	Serpent Statue
+#
 :305/0/0/6/%
 :305/0/6/6/%
+
 #	Fountain
+#
 :326/0/0/6/%
 :326/0/6/6/%
 :326/0/12/6/%
+
 #	Flux analyzer
+#
 :456/0/0/6/%
 :456/0/6/6/%
+
 #	Magic music player
+#
 :614/0/0/6/%
+
 #	Planets
+#
 :655/0/0/6/%
 :655/0/6/6/%
 :655/0/12/6/%
 :655/0/18/6/%
 :655/0/24/6/%
+
 #	Grandfather clock
-:695/0/0/6/%
-:695/0/6/6/%
+#
+:695/0/0/6/%/3/2
+:695/0/6/6/%/3/2
+
 #	Pulsating object
+#
 :726/0/0/6/%
 :726/0/6/6/%
 :726/0/12/6/%
 :726/0/18/6/%
 :726/0/24/6/%
+
 #	statue
+#
 :743/0/0/6/%
 :743/0/6/6/%
+
 #	Severed limb
+#
 :794/0/0/6/%
 :794/0/6/6/%
 :794/0/12/6/%
 :794/0/18/6/%
 :794/0/24/6/%
+
 #	Burning urn
+#
 :992/0/0/6/%
 :992/0/6/6/%
+
 #	Magic wave
+#
 :779/0/0/6/1
 :779/0/6/6/0
+
 #	Bubbles
-:335/0/0/6
-:335/0/6/7
+#
+:335/3/0/6
+:335/3/6/7
+:780/3/0/8
+
 #	Basin
+#
 :322/0/0/6
 :322/0/6/1
+
 #	Basin
+#
 :714/0/0/6
 :714/0/6/1
 %%endsection

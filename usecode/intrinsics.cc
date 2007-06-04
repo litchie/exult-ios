@@ -709,6 +709,24 @@ USECODE_INTRINSIC(add_party_items)
 	return(u);
 }
 
+USECODE_INTRINSIC(get_music_track)
+{
+	// Returns the song currently playing. In the original BG, this
+	// returned a word: the high byte was the current song and the
+	// low byte could be the current song (most cases) or, in some
+	// cases, the song that was playing before and would be continued
+	// after the current song ends. For example, if you played song 12
+	// and then song 13, this function would return 0xD0C; after
+	// playing song 13, BG would resume playing song 12 because it is
+	// longer than song 13.
+	// In SI, it simply returns the current playing song.
+	// In Exult, we do it the SI way.
+	if (Audio::get_ptr()->get_midi())
+		return Usecode_value(Audio::get_ptr()->get_midi()->get_current_track());
+	else
+		return Usecode_value(-1);
+}
+
 USECODE_INTRINSIC(play_music)
 {
 	// Play music(songnum, item).
@@ -725,7 +743,14 @@ USECODE_INTRINSIC(play_music)
 	else
 		{
 		Audio::get_ptr()->start_music(track, (parms[0].get_int_value()>>8)&0x01);
-					// Show notes.
+
+		// If a number but not an NPC, get out (for e.g.,
+		// SI function 0x1D1).
+		if (parms[1].is_int() &&
+			(parms[1].get_int_value() >= 0 || parms[1].get_int_value() < -356))
+			return no_ret;
+
+		// Show notes.
 		Game_object *obj = get_item(parms[1]);
 		if (obj && !obj->is_pos_invalid())
 			gwin->get_effects()->add_effect(
@@ -1380,17 +1405,19 @@ USECODE_INTRINSIC(display_area)
 					// Center it.
 		int topx = (gwin->get_width() - sprite->get_width())/2,
 		    topy = (gwin->get_height() - sprite->get_height())/2;
-					// Get area to fill.
-		int x = topx, y = topy, w = sprite->get_width(),
-					h = sprite->get_height();
-		if (w > gwin->get_width())
-			{ x = 0; w = gwin->get_width(); }
-		if (h > gwin->get_height())
-			{ y = 0; h = gwin->get_height(); }
+					// Get area to show.
+		int x = 0, y = 0;
+		int w = gwin->get_width(), h = gwin->get_height();
+		int sizex = (w - 320)/2, sizey = (h - 200)/2;
+					// Show only inside the original resolution.
+		if (w > 320)
+			x = sizex;
+		if (h > 200)
+			y = sizey;
 		int save_dungeon = gwin->is_in_dungeon();
 		gwin->set_in_dungeon(0);	// Disable dungeon.
 					// Paint game area.
-		gwin->paint_map_at_tile(x, y, w, h, tx - tw/2, ty - th/2, 4);
+		gwin->paint_map_at_tile(x, y, 320, 200, tx - tw/2, ty - th/2, 4);
 					// Paint sprite #10 (black gate!)
 					//   over it, transparently.
 		sman->paint_shape(topx + sprite->get_xleft(),
@@ -2537,6 +2564,9 @@ USECODE_INTRINSIC(center_view)
 USECODE_INTRINSIC(get_dead_party)
 {
 	// Return list of dead companions' bodies.
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return no_ret;
 	int cnt = partyman->get_dead_count();
 	Usecode_value ret(cnt, 0);
 	for (int i = 0; i < cnt; i++)
@@ -2544,7 +2574,7 @@ USECODE_INTRINSIC(get_dead_party)
 		Game_object *body = gwin->get_body(
 					partyman->get_dead_member(i));
 					// Body within 50 tiles (a guess)?
-		if (body && body->distance(gwin->get_main_actor()) < 50)
+		if (body && body->distance(obj) < 50)
 			{
 			Usecode_value v(body);
 			ret.put_elem(i, v);

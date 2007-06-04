@@ -221,6 +221,7 @@ if		return IF;
 else		return ELSE;
 return		return RETURN;
 while		return WHILE;
+do		return DO;
 for		return FOR;
 in		return UCC_IN;
 with		return WITH;
@@ -343,13 +344,15 @@ se		return SE;
 "/="			{ return DIV_EQ; }
 "%="			{ return MOD_EQ; }
 
-"# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); Uc_location::increment_cur_line(); }
-"#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); Uc_location::increment_cur_line(); }
+"#"[ \t]+[0-9]+[ \t]+\"[^"]*\".*\n	{ Set_location(yytext + 2); Uc_location::increment_cur_line(); }
+"#line"[ \t]+[0-9]+[ \t]+\"[^"]*\".*\n	{ Set_location(yytext + 6); Uc_location::increment_cur_line(); }
 "#include"[ \t]+.*\n		{ Uc_location::increment_cur_line(); Include(yytext + 8); }
 "#game"[ \t]+.*\n		{ Set_game(yytext + 5); Uc_location::increment_cur_line(); }
-"#autonumber"[ \t]+"0x"[0-9a-fA-F]+\n	{ Set_autonum(yytext + 11); Uc_location::increment_cur_line(); }
+"#autonumber"[ \t]+"0x"[0-9a-fA-F]+.*\n	{ Set_autonum(yytext + 11); Uc_location::increment_cur_line(); }
 
-\#.*			/* Ignore other cpp directives. */
+
+\#.*\n		{ Uc_location::yywarning("Unknown directive is being ignored"); Uc_location::increment_cur_line(); }
+\#.*		{ Uc_location::yyerror("Directives require a terminating new-line character before the end of file"); }
 
 [ \t\r]+					/* Ignore spaces. */
 "//".*						/* Comments. */

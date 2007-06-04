@@ -49,7 +49,7 @@ using std::pair;
 using std::string;
 
 static map<int, int> *explosion_sprite_table = 0;
-static map<int, int> *shape_sfx_table = 0;
+static map<int, SFX_info> *shape_sfx_table = 0;
 static multimap<int, Animation_info> *animation_cycle_table = 0;
 static map<int, bool> *usecode_event_table = 0;
 static map<int, bool> *mountain_top_table = 0;
@@ -160,6 +160,36 @@ public:
 		{  }
 	virtual void parse_entry(int index, char *eptr,
 			bool for_patch, int version);
+	};
+
+class SFX_parser: public Shapeinfo_entry_parser
+	{
+	map<int, SFX_info> *table;
+public:
+	SFX_parser(map<int, SFX_info> *tbl)
+		: table(tbl)
+		{  }
+	virtual void parse_entry(int index, char *eptr,
+			bool for_patch, int version)
+		{
+		SFX_info data = {-1, false, 1, false};
+		int key = ReadInt(eptr, 0);
+		data.num = ReadInt(eptr);
+		if (version >= 2)
+			{
+			if (*eptr)
+				{
+				data.delay = ReadInt(eptr) != 0;
+				if (*eptr)
+					{
+					data.range = ReadInt(eptr);
+					if (*eptr)
+						data.rand = ReadInt(eptr) != 0;
+					}
+				}
+			}
+		(*table)[key] = data;
+		}
 	};
 
 class Shape_imports_parser: public Shapeinfo_entry_parser
@@ -518,27 +548,55 @@ void Animation_parser::parse_entry
 	int version
 	)
 	{
-	Animation_info inf;
+	Animation_info inf = {0, 0, 0, 0, -1, 1, 1};
 	int shapenum = ReadInt(eptr, 0);
 	inf.type = ReadInt(eptr);
-	if (inf.type == 0)	// FA_LOOPING
-		{
+	if (inf.type == 0 || inf.type == 3 || inf.type == 4)
+		{	// FA_LOOPING, FA_RANDOM_LOOP, FA_LOOP_RECYCLE
 		inf.first_frame = ReadInt(eptr);
 		inf.frame_count = ReadInt(eptr);
-		if (!*eptr)
-			inf.offset_type = -1;
-		else
+		if (inf.type == 4)
+			{
+			inf.offset = ReadInt(eptr);
+			if (inf.offset < 0)
+				inf.offset = 0;
+			if (*eptr)
+				inf.sfx_info = ReadInt(eptr);
+			if (inf.sfx_info < 1)
+				inf.sfx_info = 1;
+			}
+		else if (inf.type == 0 && *eptr)
 			{
 			eptr++;
-			if (*eptr = '%')
+			if (*eptr == '%')
+				{
 				inf.offset_type = 1;
+				eptr++;
+				}
 			else
 				{
-				inf.offset_type = 0;	// For safety.
-				inf.offset = ReadInt(eptr, 0);
+				int off = ReadInt(eptr, 0);
+				inf.offset_type = off < 0 ? -1 : 0;
+				inf.offset = off < 0 ? 0 : off;
+				}
+			if (version >= 2 && *eptr)
+				{
+				inf.frame_delay = ReadInt(eptr) + 1;
+				if (inf.frame_delay < 1)
+					inf.frame_delay = 1;
+				if (*eptr)
+					inf.sfx_info = ReadInt(eptr) + 1;
+				if (inf.sfx_info < 0)
+					inf.sfx_info = 1;
 				}
 			}
 		}
+	if (inf.frame_count == 0)
+		{	// Sane default.
+		ShapeID shp(shapenum, 0);
+		inf.frame_count = shp.get_num_frames();
+		}
+
 	if (for_patch)
 		{
 		Animation_info *old = Shapeinfo_lookup::get_animation_cycle_info(
@@ -582,7 +640,7 @@ void Shapeinfo_lookup::Read_data_file
 		// Read version.
 		Readstrings versioninfo;
 		Read_text_msg_file(&ds, versioninfo, version);
-		static_version = strtol(versioninfo[0]+1, 0, 0);
+		static_version = strtol(versioninfo[0], 0, 0);
 		for (int j=0; j<versioninfo.size(); j++)
 			delete[] versioninfo[j];
 		for (int i=0; i<numsections; i++)
@@ -602,13 +660,12 @@ void Shapeinfo_lookup::Read_data_file
 			// Read version.
 			if (Read_text_msg_file(in, versioninfo, version) != -1)
 				{
-				static_version = strtol(versioninfo[0]+1, 0, 0);
+				static_version = strtol(versioninfo[0], 0, 0);
 				for (int j=0; j<versioninfo.size(); j++)
 					delete[] versioninfo[j];
 				}
 			else
 				in.seekg(0);
-			static_version = strtol(versioninfo[0], 0, 0);
 			for (int i=0; i<numsections; i++)
 				{
 				std::size_t loc = in.tellg();
@@ -691,7 +748,7 @@ void Shapeinfo_lookup::setup_miscinf
 	)
 	{
 	explosion_sprite_table = new map<int, int>;
-	shape_sfx_table = new map<int, int>;
+	shape_sfx_table = new map<int, SFX_info>;
 	animation_cycle_table = new multimap<int, Animation_info>;
 	usecode_event_table = new map<int, bool>;
 	mountain_top_table = new map<int, bool>;
@@ -699,7 +756,7 @@ void Shapeinfo_lookup::setup_miscinf
 			"animation", "usecode_events", "mountain_tops"};
 	Shapeinfo_entry_parser *parsers[5] = {
 			new Int_pair_parser(explosion_sprite_table),
-			new Int_pair_parser(shape_sfx_table),
+			new SFX_parser(shape_sfx_table),
 			new Animation_parser(animation_cycle_table),
 			new Bool_parser(usecode_event_table),
 			new Bool_parser(mountain_top_table)};
@@ -837,15 +894,15 @@ int Shapeinfo_lookup::get_explosion_sprite (int shapenum)
  *	Output:	-1 if not found.
  */
 
-int Shapeinfo_lookup::get_shape_sfx (int shapenum)
+SFX_info *Shapeinfo_lookup::get_sfx_info (int shapenum)
 	{
 	if (!shape_sfx_table)		// First time?
 		setup_miscinf();
-	map<int, int>::iterator it = shape_sfx_table->find(shapenum);
+	map<int, SFX_info>::iterator it = shape_sfx_table->find(shapenum);
 	if (it != shape_sfx_table->end())
-		return Audio::game_sfx((*it).second);
+		return &((*it).second);
 	else
-		return -1;	// The default.
+		return NULL;	// The default.
 	}
 
 /*
@@ -903,7 +960,7 @@ Animation_info *Shapeinfo_lookup::get_animation_cycle_info
 	for (aniIterator it = itPair.first; it != itPair.second; ++it)
 		{
 		Animation_info& inf = (*it).second;
-		if (inf.type != 0 ||
+		if (inf.type == 1 || inf.type == 2 ||
 			(inf.first_frame <= init_frame &&
 			 inf.first_frame + inf.frame_count > init_frame))
 			return &inf;

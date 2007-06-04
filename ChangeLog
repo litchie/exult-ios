@@ -1,3 +1,61 @@
+2007-06-03	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/virtstone.h: Changed 'default' value for virtue stone map to be map 0.
+	* objs/egg.cc: Fixed bug where sfx eggs would translate the SFX number to
+	  the BG SFX, causing problems in SI.
+	  De-hard-coded field data. Poison and sleep fields no longer activate if
+	  the target is already poisoned/sleeping.
+	* objs/objs.cc: Added some missing sfx when the avatar attacks an object.
+	* shapes/miscinf.*, objs/*: Major work in object sfx; multiple objects can
+	  now play the same sfx (as seen in the originals). Objects can now have
+	  ranges (random or sequential) of sound effects, as well as sport a random
+	  delay between each time the sfx is played.
+	  New animation data and cycles unifies the way fields are handled with
+	  every other animated object, including allowing them to have sfx. Also,
+	  objects can have sfx synchronized with specific frames of the animation
+	  (e.g., grandfather clocks) and can sport delays between each animation
+	  cycle (e.g., bubbles).
+	* shapes/miscinf.*: Modified to read new animation and SFX data.
+	* gumps/misc_buttons.cc: Added missing button SFX.
+	* data/*/shape_info.txt: Added tons of new sfx and animation data.
+	* usecode/compiler/*:
+	* actors.cc: Modified roll_to_win to better match statistical tests.
+	  Added 'graze' and default 'hit' SFX. Modified NPCs to *really* be dormant
+	  when in a different map from main actor.
+	* effects.cc: SFX from weapon data should not be translated in SI.
+	* exult.cc: Wizard_eye only blacks out area outside the original resolution;
+	  this makes it work with SI even without the BG sprite 10 (as it in fact
+	  happens in the original SI -- see the usecode changes below).
+	* gamewin.cc: Fixed a bug(?) where clicking at the rock at [915, 2434, 0]
+	  in BG would display 'key'. Might have unforeseen side effects.
+	* audio/conv.cc: Fixed the BG-to-SI SFX table. The new data is based on the
+	  MT-32 timbres from BG and SI SFX and on the assumption (apparently
+	  correct) that BG SFX uses timbres equal to their SFX number, then matching
+	  (by name) the timbres used by SI SFX.
+	* usecode/*: New intrinsics discovered from original games with rip/wud/wuc:
+	  BG: 0x2d: get_music_track
+	      0x34: error_message
+	  SI: 0x38: get_music_track
+	      0x58: roll_to_win
+	      0x5f: clone
+	      0x61: display_area
+	      0x62: wizard_eye
+	      0xaf: get_dead_party
+	  Note that several of these intrinsics were used in the originals.
+	  Like wizard_eye intrinsic, display_area intrinsic also blacks out only
+	  the area outside original resolution to work as the original SI did.
+	  get_dead_party now searches around the object passed as the parameter
+	  (which was ignored by Exult so far) instead of the avatar.
+	  Added support for usecode functions with 32-bit IDs.
+	* usecode/compiler/*: Added do-while support for UCC. Renamed return opcodes
+	  to make them more intuitive. Added support for 32-bit function IDs, string
+	  offsets and integers. 32-bit jump offsets are NOT implemented yet.
+	  UCC directives are now more tolerant of white-space and (1) issue a
+	  warning if the directive is unknown or (2) raise an error if there is no
+	  new-line after a directive.
+	* docs/exult_intrinsics.txt: Updated with new intrinsic information.
+	* content/sifixes/*: Better 'make.bat'. Updated some files to make SI Fixes
+	  actually compile with non-ancient versions of UCC.
+
 2007-05-15    <jeff@mini.nerble.net>
 
 	* objs/egg.cc (public): Allow setting z-coord in teleport eggs.

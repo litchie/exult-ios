@@ -4,28 +4,67 @@
 #
 
 %%section version
-:1
+:2
 %%endsection
 
 %%section explosions
-#Format
-#	:shapenum/spritenum
-#The 'default' explosion is spritenum 5, and may be left out.
-:399/13			# Delayed blast
-:639/8			# Death Vortex
-:554/19			# Burst Arrow
-:78/4			# Explosion
-:621/4			# Delayed Blast
-:702/1			# Cannon
-:704/1			# Powder Keg
-:565/18			# Starburst
-:287/23			# Swordstrike
+#	Format
+#		:shapenum/spritenum
+#	The 'default' explosion is spritenum 5, and may be left out.
+#
+#	 Delayed blast
+#
+:399/13
+
+#	 Death Vortex
+#
+:639/8
+
+#	 Burst Arrow
+#
+:554/19
+
+#	 Explosion
+#
+:78/4
+
+#	 Delayed Blast
+#
+:621/4
+
+#	 Cannon
+#
+:702/1
+
+#	 Powder Keg
+#
+:704/1
+
+#	 Starburst
+#
+:565/18
+
+#	 Swordstrike
+#
+:287/23
 %%endsection
 
 %%section shape_sfx
-#Format
-#	:shapenum/sfxnum
-#	Surf (47 or 49)
+#	Format
+#		:shapenum/sfxnum/delay/range/rand
+#	Only the first two parameters are required.
+#	delay is a flag (either 0 or 1) which indicates extra delay
+#	between successive plays. If it is 1 and the shape does *not*
+#	have an associated animation (e.g., cavern), there will be
+#	a random delay. If the shape *does* have an associated animation,
+#	this flag will be ignored.
+#	range is used to specify a sequence of different sfx used by the
+#	shape: Exult will play sfx ranging from sfxnum to sfxnum + range - 1.
+#	rand is a flag controlling how range is used: if rand is 1, Exult
+#	will randomly play one sfx in the range; if rand is 0, Exult will
+#	play them sequentially, wrapping back to the first sfx.
+#
+#	Surf (49)
 :612/49
 :613/49
 :632/49
@@ -41,86 +80,259 @@
 :1012/49
 :1020/49
 :1022/49
-#	Bubbles (54, 56)
-:334/56
-:335/56
-:780/56
+
+#	Bubbles (54 to 58)
+#
+:334/54/0/5/1
+:335/54/0/5/1
+#	Doesn't seem to play sounds
+#:780/54/0/5/1
+
 #	Fountains
-:893/36
-#		Black Gate only SFX
+#
+:893/48
+
 #	Moongates
+#
 :157/77
 :776/77
 :777/77
 :779/77
+
+#	Ethereal monster
+#
+:230/79
+
 #	Sphere generator
+#
 :234/80
 :235/80
 :236/80
+
 #	Tetrahedron generator
+#
 :242/81
 :243/81
 :244/81
+
 #	Cube generator
+#
 :238/82
 :239/82
 :240/82
+
 #	Black gate
+#
 :305/78
+
 #	Vortex cube
+#
 :786/79
+
 #	Grandfather clock
-:252/116
-:695/116
+#
+:252/17/0/2
+:695/17/0/2
+
+#	Cavern
+#
+:389/103/1
+:391/103/1
+
+#	Bee
+#
+:494/113
+
+#	Magic weapons
+#
+:547/104
+:548/104
+:559/104
+:562/104
+
+#	Flaming weapons
+#
+:551/20/0/3/1
+:553/20/0/3/1
+:630/20/0/3/1
+
+#	Mechanism
+#
+:685/114
+
+#	Mill Stone
+#
+:711/26
+
+#	Well of Souls
+#
+:748/52
+
+#	Orrery
+#
+:755/114
+:767/114
+
+#	Energy Field
+#
+:768/11
+
+#	Smokebomb
+#
+:769/36
+
+#	The Vortex Cube
+#
+:786/79
+
+#	Water
+#
+:794/50
+
+#	Campfire
+#
+:825/20/0/3/1
+
+#	Fire Field
+#
+:895/20/0/3/1
+
+#	Poison/Sleep Field
+#
+:900/52
+:902/52
+
+#	Water Wheel
+#
+:934/59
+:941/59
+:942/59
+:951/59
+
+#	Prisms
+#
+:968/81
+:981/81
+:1010/11
 %%endsection
 
 %%section animation
-#Format
-#	:shapenum/0/first_frame/frame_count/offset
-#Sundials
-#	:shapenum/1
-#Energy fields
-#	:shapenum/2
-#The dafault animation starts at frame 0, goes through all
-#frames and returns to frame 0 again. This list is only for
-#animations which are NOT like that.
-#For other animation cycles, the animation starts at
-#first_frame, goes through frame_count frames (including the
-#first one) and returns to first_frame. offset is an overall
-#phase shift in the animation. If offset is '%', then Exult
-#will calc offset as sframe%frame_count, where sframe is the
-#frame with which the animation was created. If offset is
-#ommited, Exult will set it equal to sframe.
+#	The dafault animation starts at frame 0, goes through all
+#	frames and returns to frame 0 again. This list is only for
+#	animations which are NOT like that.
 #
-#	Sundial
+#	Format
+#
+#	Wrapping Loop
+#		:shapenum/0/first_frame/frame_count/offset/frame_delay/sfx_delay
+#
+#	For the looping cycles, the animation starts at first_frame,
+#	goes through frame_count frames (including the first one)
+#	and returns to first_frame. offset is an overall phase
+#	shift in the animation. If offset is '%', then Exult will
+#	calculate offset as being sframe % frame_count, where sframe
+#	is the frame with which the animation was created.
+#	If offset is '-1' or if it is ommited, Exult will set it equal
+#	to sframe.
+#	frame_delay is an additional frame delay; time between frames
+#	is multiplied by frame_delay. A value of zero is treated as 1.
+#	sfx_delay indicates the delay (in frames) before the sfx
+#	is played again. If it is '0' (or ommited) then sfx will be
+#	played continuously; if '1' it will play every other frame, etc.
+#	The sfx will always be played at first_frame. If sfx_delay is -1,
+#	the sound effect will be synchronized with the animation, playing
+#	whenever first_frame is being displayed.
+#
+#	Hourly (Sundials)
+#		:shapenum/1
+#
+#	Hourly cycles display the frame equal to the current game hour
+#	(24-hour format); the shape should have 24 frames.
+#
+#	Nonlooping (Energy fields)
+#		:shapenum/2
+#
+#	These cycles start at frame 0 and stop at the last frame
+#	of the shape. They do not wrap around to the first frame.
+#
+#	Random loops (bubbles)
+#		:shapenum/3/first_frame/frame_count
+#
+#	Random loops work similar to Wrapping loops; the main
+#	difference being that the animation stays at first_frame
+#	for random periods of time before continuing. If the shape
+#	has a sfx specified, this sfx will play in synch with the
+#	animation.
+#
+#	Looping Recycle
+#		:shapenum/4/first_frame/frame_count/recycle/sfx_delay
+#
+#	This is similar to the normal looping cycle. The difference is
+#	that, after the first cycle, the animation will continue from
+#	recycle instead of first_frame. Only sfx_delay is optional.
+#
+#	Fire Field
+#
+:895/4/0/16/8
+
+#	Poison Field
+#
+:900/4/0/12/6
+
+#	Sleep Field
+#
+:902/4/0/14/6
+
+#		Sundial
+#
 :284/1
-#	Energy field
+
+#		Energy field
+#
 :768/2
-#	Vertical shaft
-:862/0/0/1/0
-:862/0/1/3/0
-#	Horizontal shaft
-:880/0/0/1/0
-:880/0/1/3/0
-#	Sawmill
-:933/0/0/1/0
-:933/0/1/3/0
+
+#		Vertical shaft
+#
+:862/0/0/1
+:862/0/1/3
+
+#		Horizontal shaft
+#
+:880/0/0/1
+:880/0/1/3
+
+#		Sawmill
+#
+:933/0/0/1
+:933/0/1/3
+
+#		Bubbles
+#
+:334/3/0/8
+:335/3/0/8
+:780/3/0/8
+
+#	Grandfather clock
+#
+:252/0/0/3/-1/3/-1
+:695/0/0/3/-1/3/-1
+
 %%endsection
 
 %%section usecode_events
-#List of which items receive usecode events when readied/unreadied.
-:296		#	Ring of invibility
-:297		#	Ring of protection
-:298		#	Ring of regeneration
-:338		#	Lit light source
-:701		#	Lit torch
+#	List of which items receive usecode events when readied/unreadied.
+:296		#		Ring of invibility
+:297		#		Ring of protection
+:298		#		Ring of regeneration
+:338		#		Lit light source
+:701		#		Lit torch
 %%endsection
 
 %%section mountain_tops
-#BG Only; in SI, set the flags 'Occludes', plus 'Poisonous' and 'Field'
-#for dungeons or 'Occludes' plus 'Water' for ice dungeons.
-#In any case (BG or SI), object type MUST be building. Setting the above
-#flags will also work in BG, as long as the shape is not in the list below.
+#	BG Only; in SI, set the flags 'Occludes', plus 'Poisonous' and 'Field'
+#	for dungeons or 'Occludes' plus 'Water' for ice dungeons.
+#	In any case (BG or SI), object type MUST be building. Setting the above
+#	flags will also work in BG, as long as the shape is not in the list below.
 :983
 :969
 :183

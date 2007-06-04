@@ -1995,7 +1995,9 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 			get_shape_location(obj, ox, oy);
 			if (!s->has_point(x - ox, y - oy))
 				continue;
-			if (!best || best->lt(*obj) == 1 || trans)
+			// Fixes key under rock in BG at [915, 2434, 0]; need to
+			// know if there are side effects.
+			if (!best || best->lt(*obj) != 0 || trans)
 				{
 				bool ftrans = obj->get_info().is_transparent() != 0;
 				if (!ftrans || trans)

@@ -35,14 +35,14 @@ const char UC_PUSHI = 0x1f;
 const char UC_PUSH = 0x21;
 const char UC_CMPEQ = 0x22;
 const char UC_CALL = 0x24;
-const char UC_RET = 0x25;
+const char UC_RET = 0x25;	// No return value.
 const char UC_AIDX = 0x26;
-const char UC_RET2 = 0x2c;
-const char UC_SETR = 0x2d;  // ??
+const char UC_RET2 = 0x2c;	// Identical to UC_RET.
+const char UC_RETV = 0x2d;  // Returns value from stack.
 const char UC_LOOP = 0x2e;
 const char UC_ADDSV = 0x2f;
 const char UC_IN = 0x30;
-const char UC_RTS = 0x32;
+const char UC_RETZ = 0x32;	// Returns zero.
 const char UC_SAY = 0x33;
 const char UC_CALLIS = 0x38;
 const char UC_CALLI = 0x39;
@@ -68,10 +68,26 @@ const char UC_CALLM = 0x56;		// Call method (index is on stack).
 const char UC_CALLMS = 0x57;		// Call method (index is on stack).
 const char UC_CLSCREATE = 0x58;	// Create class instance.
 const char UC_CLASSDEL = 0x59;	// Delete class instance.
-const char UC_AIDXS = 0x5A;		// Pop static array elem.
-const char UC_POPARRS = 0x5B;		// Pop into static array elem.
-const char UC_LOOPTOPS = 0x5C;		// Loop with static array
-const char UC_PUSHFVAR = 0xC2;		// PUSH global flag using stack value.
-const char UC_POPFVAR = 0xC3;		// POP global flag using stack value.
+const char UC_AIDXS = 0x5a;		// Pop static array elem.
+const char UC_POPARRS = 0x5b;		// Pop into static array elem.
+const char UC_LOOPTOPS = 0x5c;		// Loop with static array
+const char UC_PUSHFVAR = 0xc2;		// PUSH global flag using stack value.
+const char UC_POPFVAR = 0xc3;		// POP global flag using stack value.
+
+// 32-bit usecode
+/*	Not used yet -- 32-bit jump offsets
+const char UC_LOOPTOP32 = 0x82;
+const char UC_CONVERSE32 = 0x84;
+const char UC_JNE32 = 0x85;
+const char UC_JMP32 = 0x86;
+const char UC_CMPS32 = 0x87;
+const char UC_LOOP32 = 0xae;
+const char UC_LOOPTOPS = 0xdc;		// Loop with static array
+*/
+const char UC_ADDSI32 = 0x9c;
+const char UC_PUSHS32 = 0x9d;
+const char UC_PUSHI32 = 0x9f;
+const char UC_CALL32 = 0xa4;
+const char UC_CALLE32 = 0xc7;
 
 #endif

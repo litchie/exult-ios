@@ -1747,17 +1747,16 @@ void Wizard_eye
 			    topy = (h - sh)/2;
 			eye.paint_shape(topx + spr->get_xleft(),
 					topy + spr->get_yabove());
-			if (topy > 0)	// Black-fill area around sprite.
+			int sizex = (w - 320)/2, sizey = (h - 200)/2;
+			if (sizey)	// Black-fill area outside original resolution.
 				{
-				gwin->get_win()->fill8(0, w, topy, 0, 0);
-				gwin->get_win()->fill8(0, w, h - topy - sh,
-								0, topy + sh);
+				gwin->get_win()->fill8(0, w, sizey, 0, 0);
+				gwin->get_win()->fill8(0, w, sizey, 0, h - sizey);
 				}
-			if (topx > 0)
+			if (sizex)
 				{
-				gwin->get_win()->fill8(0, topx, sh, 0, topy);
-				gwin->get_win()->fill8(0, w - topx - sw, sh,
-							topx + sw, topy);
+				gwin->get_win()->fill8(0, sizex, 200, 0, sizey);
+				gwin->get_win()->fill8(0, sizex, 200, w - sizex, sizey);
 				}
 			while (ticks > last_repaint+50)last_repaint += 50;
 			}

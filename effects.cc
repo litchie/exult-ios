@@ -480,11 +480,10 @@ void Explosion_effect::handle_event
 		Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 		int sfx;
 		if (weapon == 704)
-			sfx = 9;
+			sfx = Audio::game_sfx(9);
 		else
 			sfx = winf->get_hitsfx() >= 0 ? winf->get_hitsfx() : winf->get_sfx();
-		Audio::get_ptr()->play_sound_effect(
-				Audio::game_sfx(sfx), SDL_MIX_MAXVOLUME, dir);
+		Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir);
 		}
 	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
