@@ -1,4 +1,4 @@
-2007-06-03	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-06-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/virtstone.h: Changed 'default' value for virtue stone map to be map 0.
 	* objs/egg.cc: Fixed bug where sfx eggs would translate the SFX number to
 	  the BG SFX, causing problems in SI.
@@ -60,11 +60,11 @@
 
 	* objs/egg.cc (public): Allow setting z-coord in teleport eggs.
 
-2007-05-14	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-05-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* miscinf.cc: Fixed problem reading textmsg files with crlf's.
 	* monsters.cc: Monsters with high shapes used wrong usecode function.
 
-2007-04-28	v 0.1 ~ Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-04-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* New sprite for male bucket-heade avatar, made by Skutarth. Also, removed
 	  the silly fully-armored paperdoll for the bucket-headed avatars.
 
