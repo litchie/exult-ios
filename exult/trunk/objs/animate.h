@@ -26,6 +26,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_ANIMATE	1
 
 #include "iregobjs.h"
+#include "miscinf.h"
+
+/*
+ *	A class for playing sound effects when certain objects are nearby.
+ */
+class Object_sfx : public Game_singletons
+	{
+	Game_object *obj;		// Object that caused the sound.
+	SFX_info *sfx;
+	int channel;			// ID of sound effect being played.
+	int distance;			// Distance in tiles from Avatar.
+	int dir;			// Direction (0-15) from Avatar.
+	int last_sfx;		// For playing sequential sfx ranges.
+	int repeat;
+public:
+					// Create & start playing sound.
+	Object_sfx(Game_object *o)
+		: obj(o), distance(0), channel(-1), last_sfx(-1)
+		{
+		sfx = Shapeinfo_lookup::get_sfx_info(obj->get_shapenum());
+		if (sfx)
+			{
+			last_sfx = 0;
+			if (!(sfx->rand || sfx->range > 1 || sfx->delay))
+				repeat = -1;
+			else
+				repeat = 0;
+			}
+		}
+	int get_sfxnum()
+		{ return last_sfx; }
+	int get_distance()
+		{ return distance; }
+	bool get_has_delay() const
+		{ return sfx ? sfx->delay : false; }
+	void update();	// Set to new object.
+	void stop();
+	};
 
 /*
  *	An animator:
@@ -37,12 +75,14 @@ protected:
 	unsigned char deltax, deltay;	// If wiggling, deltas from
 					//   original position.
 	bool animating;			// 1 if animation turned on.
-	int sfxnum;			// Sound effects #, or -1 if none.
+	Object_sfx *objsfx;
 	void start_animation();
 public:
-	Animator(Game_object *o, int snum = -1) 
-		: obj(o), deltax(0), deltay(0), animating(false), sfxnum(snum)
-		{  }
+	Animator(Game_object *o) 
+		: obj(o), deltax(0), deltay(0), animating(false)
+		{
+		objsfx = new Object_sfx(obj);
+		}
 	static Animator *create(Game_object *ob);
 	~Animator();
 	void want_animation()		// Want animation on.
@@ -66,24 +106,35 @@ public:
  */
 class Frame_animator : public Animator
 	{
-	unsigned char first_frame;	// First frame of animation.
-	unsigned char frames;		// # of frames.
-	unsigned int created;		// Time created
+	Animation_info *aniinf;
+	bool new_aniinf;
+	char currpos;			// Current position in the animation.
 	unsigned int delay;		// Rate of animation
 	unsigned short last_shape;	// To check if we need to re init
 	unsigned short last_frame;	// To check if we need to re init
 	enum AniType				// Type of animation
 	{
 		FA_LOOPING = 0,
-		FA_SUNDIAL = 1,
-		FA_ENERGY_FIELD = 2
-	} type;
+		FA_HOURLY = 1,
+		FA_NON_LOOPING = 2,
+		FA_RANDOM_LOOP = 3,
+		FA_LOOP_RECYCLE = 4
+	};
 	void Initialize();
 public:
 	Frame_animator(Game_object *o);
-	virtual int get_framenum();
+	~Frame_animator()
+		{
+		if (new_aniinf)
+			delete aniinf;
+		}
+	int get_next_frame();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
+	virtual int get_framenum()
+		{
+		return obj->get_framenum();
+		}
 	};
 
 /*
@@ -100,14 +151,12 @@ public:
 /*
  *	Animate by going through frames, but only do the lower frames once.
  */
-class Field_frame_animator : public Animator
+class Field_frame_animator : public Frame_animator
 	{
-	unsigned char frames;		// # of frames.
-	unsigned char recycle;		// # of frame to recycle at.
 	bool activated;			// Time to check for damage.
 public:
 	friend class Field_object;
-	Field_frame_animator(Game_object *o, int rcy);
+	Field_frame_animator(Game_object *o);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};

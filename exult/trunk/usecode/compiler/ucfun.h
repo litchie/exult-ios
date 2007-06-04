@@ -182,7 +182,7 @@ public:
 
 	void start_breakable(Uc_statement *s);
 	void end_breakable(Uc_statement *s, vector<char>& stmt_code,
-			int testlen = 0);
+			int testlen = 0, bool dowhile = false);
 					// Store 'break' location.
 	void add_break(int op_offset);	// DANGER:  Offset is filled in when
 					//   end_breakable() is called, so the

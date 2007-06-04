@@ -48,130 +48,87 @@ using std::cout;
 
 
 
-
 /*
- *	A class for playing sound effects when certain objects are nearby.
+ *	Stop playing the sound effect if needed.
  */
-class Object_sfx : public Game_singletons
+void Object_sfx::stop()
 	{
-	int sfxnum;			// Sound effect #.
-	int sfx;			// ID of sound effect being played.
-	Game_object *obj;		// Object that caused the sound.
-	int distance;			// Distance in tiles from Avatar.
-	int dir;			// Direction (0-15) from Avatar.
-public:
-					// Create & start playing sound.
-	Object_sfx(int snum, Game_object *o) : sfxnum(snum), distance(0), sfx(-1)
-		{ set_obj(o); }
-//	bool is_active()		// Is sound still active?
-//		{ return sfx.is_active(); }
-	int get_sfxnum()
-		{ return sfxnum; }
-	int get_distance()
-		{ return distance; }
-	void set_obj(Game_object *o);	// Set to new object.
-	void stop(Game_object *o)	// Stop if from given object.
+	if(channel >= 0)
 		{
-		if (o == obj)
-			if(sfx >= 0)
-				{
-				Mix_HaltChannel(sfx);
-				sfx = -1;
-				}
+		Mix_HaltChannel(channel);
+		channel = -1;
 		}
-					// Get sfx to play for given shape.
-	static void play(Game_object *o, int snum, bool stop = false);
-	};
+	}
 
 /*
- *	Set to new object if it's closer than the old object, or we're
- *	inactive.
+ *	Update distance/direction information. Also starts playing
+ *	the sound effect if needed.
  */
-void Object_sfx::set_obj
+void Object_sfx::update
 	(
-	Game_object *o
 	)
 	{
-	if (o->is_pos_invalid())
+	if (obj->is_pos_invalid() || !sfx)
 		return;			// Not on map.
-	Tile_coord apos = gwin->get_main_actor()->get_tile();
-	Tile_coord opos = o->get_tile();
+
 	int active = 0;
-	if(sfx != -1)
-	 	active = Mix_Playing(sfx);
-	int new_distance = apos.distance(opos);
-	if (active && new_distance >= distance && o != obj)
-		return;			// Farther than current source.
-	obj = o;
+	if (channel != -1)
+	 	active = Mix_Playing(channel);
+
+	int sfxnum = sfx->num;
+	if (!active && !repeat && channel != -1)
+		{
+		Mix_HaltChannel(channel);
+		channel = -1;
+		}
+	if (channel == -1 && sfx->range > 1)
+		{
+		if (sfx->rand)
+			sfxnum += (rand() % sfx->range);
+		else
+			{
+			last_sfx = ((last_sfx + 1) % sfx->range);
+			sfxnum += last_sfx;
+			}
+		}
+
 	dir = 0;
-	bool repeat = true;
-	distance = new_distance;
+	bool halt = false;
+
+	Tile_coord apos = gwin->get_main_actor()->get_tile();
+	Tile_coord opos = obj->get_tile();
+	distance = apos.distance(opos);
 	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+
 	if (distance)
 		{			// 160/8 = 20 tiles. 20*20=400.
 		volume = (MIX_MAX_VOLUME*64)/(distance*distance);
 		if (!volume)		// Dead?
-			repeat = false;	// Time to kill it.
+			halt = true;	// Time to kill it.
 		if (volume < 8)
 			volume = 8;
 		else if (volume > MIX_MAX_VOLUME)
 			volume = MIX_MAX_VOLUME;
 		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
 		}
-	if (sfx == -1)		// First time?
-		{	
 
+	if (channel == -1)		// First time?
 					// Start playing, and repeat.
-		sfx = Audio::get_ptr()->play_sound_effect(sfxnum, MIX_MAX_VOLUME, dir, -1);
-		if(sfx >= 0)
-
-			Mix_Volume(sfx, volume);
-		}
-	else				// Set new volume, position.
+		channel = Audio::get_ptr()->play_sound_effect(sfxnum, volume, dir, repeat);
+	else
 		{
-		//Just change the "location" of the sound
-		if(!repeat)
+		if(halt)
 			{
-			Mix_HaltChannel(sfx);
-			sfx = -1;
+			Mix_HaltChannel(channel);
+			channel = -1;
 			}
 		else
 			{
-			Mix_Volume(sfx, volume);
-			Mix_SetPosition(sfx, (dir * 22), 0);
+			//Just change the "location" of the sound
+			Mix_Volume(channel, volume);
+			Mix_SetPosition(channel, (dir * 22), 0);
 			}
 		}
-	}
-
-
-/*
- *	Play a sound, or modify its volume/position.
- */
-
-void Object_sfx::play
-	(
-	Game_object *o,			// Object.
-	int snum,			// Object's sound-effect #.
-	bool stop			// Time to stop.
-	)
-	{
-					// Play a given sfx only once.
-	static map<int, Object_sfx*> play_table;
-					// Already playing?
-	std::map<int, Object_sfx*>::iterator it = play_table.find(snum);
-	if (it == play_table.end())	// No.
-		{			// Start new SFX for it.
-		if (!stop)
-			play_table[snum] = new Object_sfx(snum, o);
-		return;
-		}
-	Object_sfx *sfx = (*it).second;
-	if (stop)
-	{
-		sfx->stop(o);
-	}
-	else
-		sfx->set_obj(o);	// Modify/restart.
 	}
 
 /*
@@ -205,6 +162,8 @@ Animator::~Animator
 	{
 	while (gwin->get_tqueue()->remove(this))
 		;
+	if (objsfx)
+		objsfx->stop();
 	}
 
 /*
@@ -237,7 +196,7 @@ int Animator::get_framenum()
 Frame_animator::Frame_animator
 	(
 	Game_object *o
-	) : Animator(o, Shapeinfo_lookup::get_shape_sfx(o->get_shapenum()))
+	) : Animator(o)
 {
 	Initialize();
 }
@@ -247,43 +206,47 @@ Frame_animator::Frame_animator
  */
 void Frame_animator::Initialize()
 {
-	first_frame = 0;
-	created = 0;
+	currpos = 0;
 	delay = 100;
-	type = FA_LOOPING;
 
 	last_shape = obj->get_shapenum();
 	last_frame = obj->get_framenum();
-	frames = obj->get_num_frames();
 
-	Animation_info *aniinf = Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
-	if (aniinf)
+	aniinf = Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
+	if (!aniinf)
+		{	 // Default animation cycle.
+		new_aniinf = true;
+		aniinf = new Animation_info();
+		aniinf->type = FA_LOOPING;
+		aniinf->first_frame = 0;
+		aniinf->frame_count = obj->get_num_frames();
+		aniinf->offset = 0;
+		aniinf->offset_type = 0;
+		aniinf->frame_delay = 1;
+		aniinf->sfx_info = 0;
+		}
+	else
 		{
-		type = (AniType)aniinf->type;
-		switch (type)
+		new_aniinf = false;
+		delay *= aniinf->frame_delay;
+
+		if (aniinf->type == FA_LOOPING)
 			{
-			case FA_LOOPING:
-				first_frame = aniinf->first_frame;
-				frames = aniinf->frame_count;
-				switch (aniinf->offset)
-					{
-					case -1:
-						created = last_frame;
-						break;
-					case 0:
-						created = aniinf->offset;
-						break;
-					case 1:
-						created = last_frame%frames;
-						break;
-					}
-				break;
-			case FA_ENERGY_FIELD:
-				created = Game::get_ticks();
-				first_frame = last_frame;
-			case FA_SUNDIAL:
-				break;
+			switch (aniinf->offset_type)
+				{
+				case -1:
+					currpos = last_frame - aniinf->first_frame;
+					break;
+				case 0:
+					currpos = aniinf->offset;
+					break;
+				case 1:
+					currpos = last_frame % aniinf->frame_count;
+					break;
+				}
 			}
+		else if (aniinf->type = FA_RANDOM_LOOP)
+			currpos = aniinf->frame_count - 1;
 		}
 }
 
@@ -291,34 +254,36 @@ void Frame_animator::Initialize()
  *	Retrieve current frame
  */
 
-int Frame_animator::get_framenum()
+int Frame_animator::get_next_frame()
 {
-	unsigned int ticks = Game::get_ticks();
 	int framenum = 0;
 
-	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
-		Initialize();
-
-	bool dirty_first = gwin->add_dirty(obj);
-
-	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
-		Initialize();
-
-	switch (type)
+	switch ((AniType)aniinf->type)
 	{
-	case FA_SUNDIAL:
-		framenum = gclock->get_hour() % frames;  
+	case FA_HOURLY:
+		framenum = gclock->get_hour() % aniinf->frame_count;  
 		break;
 
-	case FA_ENERGY_FIELD:
-		framenum = (ticks - created) / delay + first_frame;
-		if (framenum >= frames) framenum = frames-1;
+	case FA_NON_LOOPING:
+		currpos++;
+		if (currpos >= aniinf->frame_count) 
+			currpos = aniinf->frame_count - 1;
+		framenum = aniinf->first_frame + currpos;
 		break;
 
 	case FA_LOOPING:
-		framenum = (ticks / delay) + created;
-		framenum %= frames;
-		framenum += first_frame;
+	case FA_RANDOM_LOOP:
+		currpos++;
+		currpos %= aniinf->frame_count;
+		framenum = aniinf->first_frame + currpos;
+		break;
+
+	case FA_LOOP_RECYCLE:
+		currpos++;
+		currpos %= aniinf->frame_count;
+		if (!currpos)
+			currpos += aniinf->offset - aniinf->first_frame;
+		framenum = aniinf->first_frame + currpos;
 		break;
 	}
 
@@ -339,27 +304,43 @@ void Frame_animator::handle_event
 
 	Game_window *gwin = (Game_window *) udata;
 
-	bool dirty_first = gwin->add_dirty(obj);
-
-	int framenum = get_framenum();
-
-	obj->set_frame(last_frame = framenum);
-
-	if (!dirty_first && !gwin->add_dirty(obj))
-	{				// No longer on screen.
+	if (!gwin->add_dirty(obj))
+	{	// No longer on screen.
 		animating = 0;
-					// Stop playing sound.
-		Object_sfx::play(obj, sfxnum, true);
+		// Stop playing sound.
+		if (objsfx)
+			objsfx->stop();
 		return;
 	}
 
-	if (!framenum && sfxnum >= 0)	// Sound effect?
-		Object_sfx::play(obj, sfxnum);
-					// Add back to queue for next time.
+	int framenum = get_next_frame();
+	obj->set_frame(last_frame = framenum);
+	gwin->add_dirty(obj);
+
+	if (objsfx)
+	{	// Sound effect?
+		if (aniinf->type == FA_RANDOM_LOOP)
+			{
+			if (currpos == 1)
+				objsfx->update();
+			}
+		else
+			{
+			if ((!aniinf->sfx_info && !currpos) ||	// Synch with animation
+					(aniinf->sfx_info &&
+						(currpos % aniinf->sfx_info) == 0))	// skip n frames
+				objsfx->update();
+			}
+	}
+
+	// Add back to queue for next time.
 	if (animating)
 	{
-		// Ensure all animations are synced
-		gwin->get_tqueue()->add(ticks  + delay- (ticks%delay), this, udata);
+		// Ensure all animations are synched
+		int nextticks = ticks + delay - (ticks%delay);
+		if (aniinf->type == FA_RANDOM_LOOP && !currpos)
+			nextticks += delay * (rand() % 20);
+		gwin->get_tqueue()->add(nextticks, this, udata);
 	}
 }
 
@@ -370,7 +351,7 @@ void Frame_animator::handle_event
 Sfx_animator::Sfx_animator
 	(
 	Game_object *o
-	) : Animator(o, Shapeinfo_lookup::get_shape_sfx(o->get_shapenum()))
+	) : Animator(o)
 {
 }
 
@@ -384,26 +365,30 @@ void Sfx_animator::handle_event
 	long udata			// Game window.
 	)
 {
-	const int delay = 200;		// Guessing this will be enough.
+	const int delay = 100;		// Guessing this will be enough.
 	unsigned int ticks = Game::get_ticks();
 
 	Game_window *gwin = (Game_window *) udata;
 	Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(obj));
 	if (rect.w <= 0 || rect.h <= 0)
-	{				// No longer on screen.
+	{	// No longer on screen.
 		animating = 0;
-					// Stop playing sound.
-		Object_sfx::play(obj, sfxnum, true);
+		// Stop playing sound.
+		if (objsfx)
+			objsfx->stop();
 		return;
 	}
 
-	if (sfxnum >= 0)		// Sound effect?
-		Object_sfx::play(obj, sfxnum);
+	if (objsfx)		// Sound effect?
+		objsfx->update();
 					// Add back to queue for next time.
 	if (animating)
-		// Ensure all animations are synced
-		gwin->get_tqueue()->add(ticks  + delay- (ticks%delay), 
-								this, udata);
+		{
+		int nextticks = ticks + delay - (ticks%delay);
+		if (objsfx->get_has_delay())
+			nextticks += delay * (10 + rand() % 30);
+		gwin->get_tqueue()->add(nextticks, this, udata);
+		}
 }
 
 /*
@@ -412,12 +397,9 @@ void Sfx_animator::handle_event
 
 Field_frame_animator::Field_frame_animator
 	(
-	Game_object *o,
-	int rcy				// Frame to start recycling at.
-	) : Animator(o), recycle(rcy), activated(true)
+	Game_object *o
+	) : Frame_animator(o), activated(true)
 	{
-	int shapenum = obj->get_shapenum();
-	frames = obj->get_num_frames();
 	}
 
 /*
@@ -430,21 +412,7 @@ void Field_frame_animator::handle_event
 	long udata			// Game window.
 	)
 	{
-	int delay = 100;		// Delay between frames.
-	Game_window *gwin = (Game_window *) udata;
-	if (!gwin->add_dirty(obj))
-		{			// No longer on screen.
-		animating = 0;
-		return;
-		}
-	int framenum = obj->get_framenum() + 1;
-	if (framenum == frames)
-		framenum = recycle;	// Restart cycle here.
-	obj->set_frame(framenum);
-	gwin->add_dirty(obj);
-					// Add back to queue for next time.
-	if (animating)
-		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	Frame_animator::handle_event(curtime, udata);
 	if (activated && rand()%10 == 0)// Check for damage?
 		obj->activate(0);
 	}

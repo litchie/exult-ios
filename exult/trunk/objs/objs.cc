@@ -38,6 +38,7 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "databuf.h"
+#include "audio.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -1315,6 +1316,15 @@ int Game_object::attack_object
 		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
 	else
 		winf = attacker->get_weapon(wpoints);
+
+	// Play 'hit' sfx, but only if Ava. involved.
+	if (attacker == gwin->get_main_actor())
+	{
+		// "Default" hit sfx.
+		int sfx = Audio::game_sfx(4);
+		Audio::get_ptr()->play_sound_effect(sfx);
+	}
+
 	int usefun;			// Run usecode if present.
 	if (winf && (usefun = winf->get_usecode()) != 0)
 		ucmachine->call_usecode(usefun, this,

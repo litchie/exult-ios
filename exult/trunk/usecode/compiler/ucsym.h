@@ -41,6 +41,13 @@ class Usecode_symbol;
 class Uc_class;
 class Uc_scope;
 
+#include <iostream>
+inline bool is_int_32bit(int val)
+	{
+	int high = val >> 16;
+	return !(high == -1 || high == 0);
+	}
+
 /*
  *	For comparing names:
  */
@@ -262,6 +269,7 @@ private:
 	bool inherited;
 	bool has_ret;
 	Uc_class *ret_type;
+	bool high_id;
 public:
 	friend class Uc_scope;
 	Uc_function_symbol(char *nm, int num,
@@ -273,6 +281,8 @@ public:
 		{ return parms; }
 	int get_usecode_num()
 		{ return usecode_num; }
+	const bool has_high_id()
+		{ return high_id; }
 	void set_method_num(int n)
 		{ method_num = n; }
 	int get_method_num()

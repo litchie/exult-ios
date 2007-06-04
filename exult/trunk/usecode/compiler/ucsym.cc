@@ -262,8 +262,16 @@ int Uc_const_int_symbol::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHI);
-	Write2(out, value);
+	if (is_int_32bit(value))
+		{
+		out.push_back((char) UC_PUSHI32);
+		Write4(out, value);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHI);
+		Write2(out, value);
+		}
 	return 1;
 	}
 
@@ -289,8 +297,16 @@ int Uc_string_symbol::gen_value
 	vector<char>& out
 	)
 	{
-	out.push_back((char) UC_PUSHS);
-	Write2(out, offset);
+	if (is_int_32bit(offset))
+		{
+		out.push_back((char) UC_PUSHS32);
+		Write4(out, offset);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHS);
+		Write2(out, offset);
+		}
 	return 1;
 	}
 
@@ -350,6 +366,7 @@ Uc_function_symbol::Uc_function_symbol
 	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
 	     ret_type(0), has_ret(false), shape_num(shp)
 	{
+	high_id = is_int_32bit(usecode_num);
 	}
 
 /*
@@ -513,6 +530,14 @@ int Uc_function_symbol::gen_call
 			out.push_back((char) UC_CALLM);
 			Write2(out, method_num);
 			}
+		}
+	else if (high_id)
+		{
+		if (itemref)
+			out.push_back((char) UC_CALLE32);
+		else
+			out.push_back((char) UC_CALL32);
+		Write4(out, usecode_num);	// Use fun# directly.
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{

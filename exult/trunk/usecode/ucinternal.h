@@ -222,6 +222,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_cont_items);
 	USECODE_INTRINSIC_DECL(remove_party_items);
 	USECODE_INTRINSIC_DECL(add_party_items);
+	USECODE_INTRINSIC_DECL(get_music_track);
 	USECODE_INTRINSIC_DECL(play_music);
 	USECODE_INTRINSIC_DECL(npc_nearby);
 	USECODE_INTRINSIC_DECL(npc_nearby2);
@@ -330,11 +331,11 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_npc_id);
 	USECODE_INTRINSIC_DECL(add_cont_items);
 	USECODE_INTRINSIC_DECL(remove_cont_items);
+	USECODE_INTRINSIC_DECL(error_message);
 					// Serpent Isle:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(remove_from_area);
 	USECODE_INTRINSIC_DECL(infravision);
-	USECODE_INTRINSIC_DECL(error_message);
 	USECODE_INTRINSIC_DECL(set_polymorph);
 	USECODE_INTRINSIC_DECL(show_npc_face0);
 	USECODE_INTRINSIC_DECL(show_npc_face1);

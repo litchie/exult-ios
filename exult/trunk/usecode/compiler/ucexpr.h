@@ -418,4 +418,22 @@ inline void Write2(vector<char>& out, int pos, unsigned short val)
 	out[pos + 1] = (char) ((val>>8)&0xff);
 	}
 
+/*
+ *	Write a 4-byte value to the end/position of a character stream.
+ */
+
+inline void Write4(vector<char>& out, unsigned int val)
+	{
+	out.push_back((char) (val&0xff));
+	out.push_back((char) ((val>>8)&0xff));
+	out.push_back((char) ((val>>16)&0xff));
+	out.push_back((char) ((val>>24)&0xff));
+	}
+inline void Write4(vector<char>& out, int pos, unsigned int val)
+	{
+	out[pos] = (char) (val&0xff);
+	out[pos + 1] = (char) ((val>>8)&0xff);
+	out[pos + 3] = (char) ((val>>16)&0xff);
+	out[pos + 4] = (char) ((val>>24)&0xff);
+	}
 #endif

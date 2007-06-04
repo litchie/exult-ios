@@ -65,14 +65,14 @@
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED. - add_cont_items??? - GUESS
+	USECODE_INTRINSIC_PTR(get_music_track), // 0x2d UNUSED.
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
 	USECODE_INTRINSIC_PTR(npc_nearby), // 0x2f
 	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x30
 	USECODE_INTRINSIC_PTR(is_npc),  // 0x31
 	USECODE_INTRINSIC_PTR(display_runes), // 0x32
 	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34 UNUSED
+	USECODE_INTRINSIC_PTR(error_message), // 0x34 UNUSED
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
 	USECODE_INTRINSIC_PTR(give_last_created), // 0x36
 	USECODE_INTRINSIC_PTR(is_dead), // 0x37
@@ -183,7 +183,7 @@
 	//	Here, Exult supports SI intrinsics for users of UCC.
 	USECODE_INTRINSIC_PTR(approach_avatar),	// 0xa0
 	USECODE_INTRINSIC_PTR(get_attack_mode),	// 0xa1
-	USECODE_INTRINSIC_PTR(error_message),	// 0xa2
+	USECODE_INTRINSIC_PTR(error_message),	// 0xa2; keeping for compatibility
 	USECODE_INTRINSIC_PTR(get_body_npc),	// 0xa3
 	USECODE_INTRINSIC_PTR(get_npc_id),	// 0xa4
 	USECODE_INTRINSIC_PTR(set_npc_id),	// 0xa5

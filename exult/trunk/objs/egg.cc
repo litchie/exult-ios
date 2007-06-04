@@ -158,8 +158,7 @@ public:
 			dir = Get_direction16(opos.ty - epos.ty, 
 							epos.tx - opos.tx);
 			}
-		Audio::get_ptr()->play_sound_effect(
-			Audio::game_sfx(score), SDL_MIX_MAXVOLUME, dir,
+		Audio::get_ptr()->play_sound_effect(score, SDL_MIX_MAXVOLUME, dir,
 							continuous);
 	}
 };
@@ -1202,19 +1201,9 @@ Field_object::Field_object(int shapenum, int framenum, unsigned int tilex,
 		unsigned int tiley, unsigned int lft, unsigned char ty)
 		: Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
 {
-	int recycle = 0;		// Frame to begin new cycles after 1st.
-	switch (type)
-		{
-	case poison_field:
-		recycle = 6; break;
-	case sleep_field:
-		recycle = 1; break;
-	case fire_field:
-		recycle = 8; break;
-	case caltrops_field:
-		return;			// This doesn't get animated.
-		}
-	set_animator(new Field_frame_animator(this, recycle));
+	Shape_info& info = get_info();
+	if (info.is_animated())
+		set_animator(new Field_frame_animator(this));
 }
 
 /*
@@ -1232,14 +1221,14 @@ bool Field_object::field_effect
 	switch (type)
 		{
 	case poison_field:
-		if (rand()%2)
+		if (rand()%2 && !actor->get_flag(Obj_flags::poisoned))
 			{
 			actor->set_flag(Obj_flags::poisoned);
 			del = true;
 			}
 		break;
 	case sleep_field:
-		if (rand()%2)
+		if (rand()%2 && !actor->get_flag(Obj_flags::asleep))
 			{
 			actor->set_flag(Obj_flags::asleep);
 			del = true;
