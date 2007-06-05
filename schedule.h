@@ -321,8 +321,16 @@ public:
  */
 class Miner_schedule : public Tool_schedule
 	{
+	Game_object *ore;
+	enum {
+		find_ore,
+		attack_ore,
+		ore_attacked,
+		wander
+		} state;
 public:
-	Miner_schedule(Actor *n) : Tool_schedule(n, 624)
+	Miner_schedule(Actor *n) : Tool_schedule(n, 624), 
+					ore(0), state(find_ore)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
