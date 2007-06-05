@@ -1579,25 +1579,76 @@ void Miner_schedule::now_what
 	(
 	)
 	{
+	int delay = 0;
 	if (!tool)			// First time?
 		get_tool();
-
-	if (rand()%4 == 0)		// 1/4 time, walk somewhere.
+	switch (state) {
+	case find_ore:
 		{
-		Loiter_schedule::now_what();
-		return;
+		static int oreshapes[] = {915, 916};
+		Game_object_vector ores;
+		npc->find_closest(ores, oreshapes,
+					sizeof(ores)/sizeof(ores[0]));
+		int cnt = ores.size();
+		if (cnt) {
+			ore = ores[rand()%cnt];
+			Actor_pathfinder_client cost(npc, 2);
+			Actor_action *pact = 
+				Path_walking_actor_action::create_path(
+				     npc->get_tile(), ore->get_tile(), cost);
+			if (pact)
+				{
+				state = attack_ore;
+				npc->set_action(new Sequence_actor_action(pact,
+				    new Face_pos_actor_action(ore, 200)));
+				break;
+				}
 		}
-	if (rand()%10 == 0)
+		ore = 0;
+		state = wander;
+		delay = 1000 + rand()%1000;	// Try again later.
+		break;
+		}
+	case attack_ore:
 		{
-		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
-		if (ty == Schedule::miner)
+		if (ore->is_pos_invalid() || npc->distance(ore) > 2) {
+			state = find_ore;
+			break;
+		}
+		signed char frames[20];		// Use pick.
+		int dir = npc->get_direction(ore);
+		int cnt = npc->get_attack_frames(toolshape, false, dir,
+								frames);
+		if (cnt) {
+			frames[cnt++] = npc->get_dir_framenum(
+						dir, Actor::standing);
+			npc->set_action(new Frames_actor_action(frames, cnt));
+			state = ore_attacked;
+		} else
+			state = wander;
+		break;
+		}
+	case ore_attacked:
+		if (ore->is_pos_invalid()) {
+			state = find_ore;
+			break;
+		}
+		if (rand()%4 == 0) {
 			npc->say(first_miner, last_miner);
 		}
-	signed char frames[12];		// Use pick.
-	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
-	if (cnt)
-		npc->set_action(new Frames_actor_action(frames, cnt));
-	npc->start();			// Get back into time queue.
+		//+++++Change frame, strike gold, etc. here.
+		delay = 500 + rand()%2000;
+		state = attack_ore;
+		break;
+	case wander:
+		if (rand()%2 == 0) {
+			Loiter_schedule::now_what();
+			return;
+		} else
+			state = find_ore;
+		break;
+	}
+	npc->start(gwin->get_std_delay(), delay);
 	}
 
 /*
