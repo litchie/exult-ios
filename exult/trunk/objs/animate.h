@@ -109,6 +109,7 @@ class Frame_animator : public Animator
 	Animation_info *aniinf;
 	bool new_aniinf;
 	char currpos;			// Current position in the animation.
+	unsigned int created;		// Time created
 	unsigned int delay;		// Rate of animation
 	unsigned short last_shape;	// To check if we need to re init
 	unsigned short last_frame;	// To check if we need to re init
