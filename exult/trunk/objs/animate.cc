@@ -246,7 +246,7 @@ void Frame_animator::Initialize()
 					break;
 				}
 			}
-		else if (aniinf->type = FA_RANDOM_LOOP)
+		else if (aniinf->type == FA_RANDOM_LOOP)
 			currpos = aniinf->frame_count - 1;
 		}
 }
