@@ -247,10 +247,7 @@ void Frame_animator::Initialize()
 				}
 			}
 		else if (aniinf->type = FA_RANDOM_LOOP)
-			{
-			created = currpos = aniinf->frame_count - 1;
-			created += aniinf->first_frame;
-			}
+			currpos = aniinf->frame_count - 1;
 		}
 }
 
@@ -276,7 +273,6 @@ int Frame_animator::get_next_frame()
 		break;
 
 	case FA_LOOPING:
-	case FA_RANDOM_LOOP:
 		{
 		unsigned int ticks = Game::get_ticks();
 		framenum = (ticks / delay) + created;
@@ -285,6 +281,11 @@ int Frame_animator::get_next_frame()
 		framenum += aniinf->first_frame;
 		break;
 		}
+	case FA_RANDOM_LOOP:
+		currpos++;
+		currpos %= aniinf->frame_count;
+		framenum = aniinf->first_frame + currpos;
+		break;
 
 	case FA_LOOP_RECYCLE:
 		currpos++;
