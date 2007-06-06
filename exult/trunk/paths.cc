@@ -519,8 +519,9 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	{
 	intelligence = npc->get_property(Actor::intelligence);
 	Shape_info& info1 = npc->get_info();
-	axtiles = info1.get_3d_xtiles();
-	aytiles = info1.get_3d_ytiles();
+	int frame = npc->get_framenum();
+	axtiles = info1.get_3d_xtiles(frame);
+	aytiles = info1.get_3d_ytiles(frame);
 	aztiles = info1.get_3d_height();
 	set_move_flags(npc->get_type_flags());
 	destbox.enlarge(dist);		// How close we need to get.
@@ -539,15 +540,17 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	{
 	intelligence = attacker->get_property(Actor::intelligence);
 	Shape_info& info1 = attacker->get_info();
-	axtiles = info1.get_3d_xtiles();
-	aytiles = info1.get_3d_ytiles();
+	int frame1 = attacker->get_framenum();
+	axtiles = info1.get_3d_xtiles(frame1);
+	aytiles = info1.get_3d_ytiles(frame1);
 	aztiles = info1.get_3d_height();
 	if (!opponent)
 		return;			// Means this isn't usable.
 	set_move_flags(attacker->get_type_flags());
 	Shape_info& info2 = opponent->get_info();
 	Tile_coord opos = opponent->get_tile();
-	int oxtiles = info2.get_3d_xtiles(), oytiles = info2.get_3d_ytiles();
+	int frame2 = opponent->get_framenum();
+	int oxtiles = info2.get_3d_xtiles(frame2), oytiles = info2.get_3d_ytiles(frame2);
 	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,
 							oxtiles, oytiles);
 	destbox.enlarge(reach);		// This is how close we need to get.

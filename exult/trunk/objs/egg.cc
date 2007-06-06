@@ -643,8 +643,9 @@ void Egg_object::set_area
 	case party_footpad:
 		{
 		Shape_info& info = get_info();
-		int xtiles = info.get_3d_xtiles(), 
-		    ytiles = info.get_3d_ytiles();
+		int frame = get_framenum();
+		int xtiles = info.get_3d_xtiles(frame), 
+		    ytiles = info.get_3d_ytiles(frame);
 		area = Rectangle(t.tx - xtiles + 1, t.ty - ytiles + 1,
 							xtiles, ytiles);
 		break;
