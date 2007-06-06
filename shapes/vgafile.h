@@ -165,13 +165,13 @@ protected:
 	bool modified;
 	bool from_patch;
 					// Create reflected frame.
-	Shape_frame *reflect(std::vector<DataSource *> shapes, int shnum,
+	Shape_frame *reflect(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
 		int frnum, std::vector<int> counts);
 	void enlarge(int newsize);	// Increase 'frames'.
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
-	Shape_frame *read(std::vector<DataSource *> shapes, int shnum,
-		int frnum, std::vector<int> counts, int src=-1, bool patch=false);
+	Shape_frame *read(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
+		int frnum, std::vector<int> counts, int src=-1);
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -195,12 +195,12 @@ public:
 		{ from_patch = true; }
 	bool get_from_patch()
 		{ return from_patch; }
-	Shape_frame *get(std::vector<DataSource *> shapes, int shnum,
-		int frnum, std::vector<int> counts, int src=-1, bool patch=false)
+	Shape_frame *get(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
+		int frnum, std::vector<int> counts, int src=-1)
 		{ 
 		return (frames && frnum < frames_size && frames[frnum]) ? 
 			frames[frnum] : 
-			read(shapes, shnum, frnum, counts, src, patch); 
+			read(shapes, shnum, frnum, counts, src); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
@@ -246,9 +246,9 @@ class Vga_file
 		int source_offset;
 		};
 	std::vector<std::ifstream *> files;
-	std::vector<DataSource *> shape_sources;
+	std::vector<std::pair<DataSource *,bool> > shape_sources;
 	std::vector<std::ifstream *> imported_files;
-	std::vector<DataSource *> imported_sources;
+	std::vector<std::pair<DataSource *,bool> > imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;		// # from u7drag.h, or -1.
 	bool flex;			// This is the normal case (all .vga
@@ -262,7 +262,6 @@ protected:
 	std::vector<int> imported_cnts;	// Total # of shapes in each file.
 	Shape *shapes;				// List of ->'s to shapes' lists
 	std::vector<Shape *> imported_shapes;	// List of ->'s to shapes' lists
-	bool from_patch;
 public:
 	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
 	Vga_file(std::vector<std::pair<std::string, int> > sources, int u7drag = -1);
@@ -270,7 +269,7 @@ public:
 	int get_u7drag_type() const
 		{ return u7drag_type; }
 	DataSource *U7load(std::pair<std::string, int> resource,
-		std::vector<std::ifstream *> &fs, std::vector<DataSource *> &shps);
+		std::vector<std::ifstream *> &fs, std::vector<std::pair<DataSource *,bool> > &shps);
 	bool load(const char *nm, const char *nm2 = 0);
 	bool load(std::vector<std::pair<std::string, int> > sources);
 	bool import_shapes(std::pair<std::string, int> source,
@@ -298,8 +297,7 @@ public:
 			if (data.pointer_offset < 0)
 				return 0;
 			r = (imported_shapes[data.pointer_offset]->get(imported_sources,
-					data.realshape, framenum, imported_cnts, data.source_offset,
-					from_patch));
+					data.realshape, framenum, imported_cnts, data.source_offset));
 			}
 		else
 			{
@@ -309,7 +307,7 @@ public:
 			// I've put this assert in _before_ you know...
 			// So this isn't the first time we've had trouble here
 			r = (shapes[shapenum].get(shape_sources, shapenum, 
-				framenum, shape_cnts, -1, from_patch));
+				framenum, shape_cnts, -1));
 			}
 		return r;
 		}
