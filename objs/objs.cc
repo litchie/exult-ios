@@ -425,8 +425,10 @@ int Game_object::swap_positions
 	{
 	Shape_info& inf1 = get_info();
 	Shape_info& inf2 = obj2->get_info();
-	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
-	    inf1.get_3d_ytiles() != inf2.get_3d_ytiles())
+	int frame1 = get_framenum();
+	int frame2 = obj2->get_framenum();
+	if (inf1.get_3d_xtiles(frame1) != inf2.get_3d_xtiles(frame2) ||
+	    inf1.get_3d_ytiles(frame1) != inf2.get_3d_ytiles(frame2))
 		return 0;		// Not the same size.
 	Tile_coord p1 = get_tile();
 	Tile_coord p2 = obj2->get_tile();
@@ -756,7 +758,8 @@ int Game_object::is_closed_door
 	if (!info.is_door())
 		return 0;
 					// Get door's footprint.
-	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+	int frame = get_framenum();
+	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
 					// Get its location.
 	Tile_coord doortile = get_tile();
 	Tile_coord before, after;	// Want tiles to both sides.

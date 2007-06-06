@@ -555,17 +555,19 @@ void Projectile_effect::init
 		Shape_info& info = attacker->get_info();
 		// Start closer to the center of the actor.
 		pos.tz += (info.get_3d_height() * 3)/4;
+		int frame = attacker->get_framenum();
 		if (d.tx < pos.tx)
-			pos.tx += info.get_3d_xtiles();
+			pos.tx += info.get_3d_xtiles(frame);
 		if (d.ty < pos.ty)
-			pos.ty += info.get_3d_ytiles();
+			pos.ty += info.get_3d_ytiles(frame);
 		}
 	if (target)			// Try to set end better.
 		{
 		Shape_info& info = target->get_info();
 		// Aim around the center of the target:
-		d.tx -= info.get_3d_xtiles()/2;
-		d.ty -= info.get_3d_ytiles()/2;
+		int frame = target->get_framenum();
+		d.tx -= info.get_3d_xtiles(frame)/2;
+		d.ty -= info.get_3d_ytiles(frame)/2;
 		d.tz += (info.get_3d_height() * 3)/4;
 		}
 	path = new Zombie();		// Create simple pathfinder.

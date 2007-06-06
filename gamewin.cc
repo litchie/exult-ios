@@ -1640,12 +1640,15 @@ void Game_window::start_actor_alt
 	
 	Tile_coord start = main_actor->get_tile();
 	int dir;
+	bool checkdrop = (main_actor->get_type_flags() & MOVE_LEVITATE) == 0;
 
 	for (dir = 0; dir < 8; dir++)
 	{
 		Tile_coord dest = start.get_neighbor(dir);
 		blocked[dir] = main_actor->is_blocked(dest, &start,
 							main_actor->get_type_flags());
+		if (checkdrop && abs(start.tz - dest.tz) > 1)
+			blocked[dir] = true;
 	}
 
 	dir = Get_direction (ay - winy, winx - ax);

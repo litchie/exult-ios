@@ -1,5 +1,8 @@
 2007-06-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	Fixed coastline desynch bug.
+	* Fixed coastline desynch bug.
+	* Fixed bug #1731542 by forcing the current frame to be passed for the
+	  get_3d_xtiles get_3d_ytiles (thus, ensuring proper bounding boxes).
+	* Fixed bug #1731543.
 
 2007-06-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/virtstone.h: Changed 'default' value for virtue stone map to be map 0.

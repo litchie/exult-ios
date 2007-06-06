@@ -528,7 +528,8 @@ int Actor::is_blocked
 	{
 	Shape_info& info = get_info();
 					// Get dim. in tiles.
-	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+	int frame = get_framenum();
+	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
 	int ztiles = info.get_3d_height();
 	if (xtiles == 1 && ytiles == 1)	// Simple case?
 		{
@@ -3820,7 +3821,8 @@ Monster_actor *Actor::clone
 	{
 	Shape_info& info = get_info();
 					// Base distance on greater dim.
-	int xs = info.get_3d_xtiles(), ys = info.get_3d_ytiles();
+	int frame = get_framenum();
+	int xs = info.get_3d_xtiles(frame), ys = info.get_3d_ytiles(frame);
 					// Find spot.
 	Tile_coord pos = Map_chunk::find_spot(get_tile(), 
 		xs > ys ? xs : ys, get_shapenum(), 0, 1);
