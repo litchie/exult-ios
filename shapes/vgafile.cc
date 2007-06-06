@@ -779,7 +779,7 @@ void Shape_frame::set_offset
 
 Shape_frame *Shape::reflect
 	(
-	vector<DataSource *> shapes,		// shapes data source to read.
+	vector<pair<DataSource *,bool> > shapes,		// shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # without the 'reflect' bit.
 	vector<int> counts
@@ -873,12 +873,11 @@ inline void Shape::create_frames_list
 
 Shape_frame *Shape::read
 	(
-	vector<DataSource *> shapes,	// Shapes data source to read.
+	vector<pair<DataSource *,bool> > shapes,	// Shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # within shape.
 	vector<int> counts,		// Number of shapes in files.
-	int src,
-	bool patch
+	int src
 	)
 	{
 	DataSource *shp = 0;
@@ -891,23 +890,23 @@ Shape_frame *Shape::read
 	int i = counts.size();
 	if (src < 0)
 		{
-		vector<DataSource *>::reverse_iterator it = shapes.rbegin();
+		vector<pair<DataSource *,bool> >::reverse_iterator it = shapes.rbegin();
 		for ( ; it != shapes.rend(); ++it)
 			{
 			i--;
 			if (shapenum < counts[i])
 				{
-				(*it)->seek(shapeoff);
+				DataSource *ds = (*it).first;
+				ds->seek(shapeoff);
 								// Get location, length.
-				int s = (*it)->read4();
-				shapelen = (*it)->read4();
+				int s = ds->read4();
+				shapelen = ds->read4();
 
 				if (s && shapelen)
 					{
 					shapeoff = s;
-					shp = *it;
-					if (patch || (i && i == counts.size()-1))
-						from_patch = true;
+					shp = ds;
+					from_patch = (*it).second;
 					break;
 					}
 				}
@@ -915,17 +914,17 @@ Shape_frame *Shape::read
 		}
 	else if (shapenum < counts[src])
 		{
-		shapes[src]->seek(shapeoff);
+		DataSource *ds = shapes[src].first;
+		ds->seek(shapeoff);
 						// Get location, length.
-		int s = shapes[src]->read4();
-		shapelen = shapes[src]->read4();
+		int s = ds->read4();
+		shapelen = ds->read4();
 
 		if (s && shapelen)
 			{
 			shapeoff = s;
-			shp = shapes[src];
-			if (patch || (src && src == counts.size()-1))
-				from_patch = true;
+			shp = ds;
+			from_patch = shapes[src].second;
 			}
 		}
 	// The shape was not found anywhere, so leave.
@@ -1091,7 +1090,8 @@ void Shape::take
 	frames_size = sh2->frames_size;
 	num_frames = sh2->num_frames;	
 	sh2->num_frames = sh2->frames_size = 0;
-	modified = true;
+	modified = sh2->get_modified();
+	from_patch = sh2->get_from_patch();
 	}
 
 /*
@@ -1268,15 +1268,14 @@ Vga_file::Vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Patch file, or null.
-	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true),
-		from_patch(false)
+	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true)
 	{
 	load(nm, nm2);
 	}
 
 Vga_file::Vga_file
 	(
-	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true), from_patch(false)
+	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true)
 	{
 		// Nothing to see here !!!
 	}
@@ -1285,7 +1284,7 @@ Vga_file::Vga_file
 	(
 	vector<pair<string, int> > sources,
 	int u7drag		// # from u7drag.h, or -1
-	) : num_shapes(0), u7drag_type(u7drag), flex(true), from_patch(false)
+	) : num_shapes(0), u7drag_type(u7drag), flex(true)
 	{
 	load(sources);
 	}
@@ -1311,7 +1310,7 @@ DataSource *Vga_file::U7load
 	(
 	pair<string, int> resource,
 	vector<ifstream *> &fs,
-	vector<DataSource *> &shps
+	vector<pair<DataSource *,bool> > &shps
 	)
 	{
 	DataSource *source = 0;
@@ -1324,7 +1323,8 @@ DataSource *Vga_file::U7load
 			U7open(*file, resource.first.c_str());
 			source = new StreamDataSource(file);
 			fs.push_back(file);
-			shps.push_back(source);
+			shps.push_back(pair<DataSource *,bool>(source,
+							!resource.first.compare(0, 7, "<PATCH>")));
 			}
 		}
 	else
@@ -1344,7 +1344,7 @@ DataSource *Vga_file::U7load
 			source = 0;
 			}
 		if (source)
-			shps.push_back(source);
+			shps.push_back(pair<DataSource *,bool>(source, false));
 		}
 	return source;
 	}
@@ -1362,8 +1362,6 @@ bool Vga_file::load
 	bool is_good = true;
 	if (!U7exists(sources[0].first.c_str()))
 		is_good = false;
-	else if (sources.size() == 1 && !sources[0].first.compare(0, 7, "<PATCH>"))
-		from_patch = true;
 	for (vector<pair<string, int> >::iterator it = sources.begin();
 		it != sources.end(); ++it)
 		{
@@ -1384,12 +1382,11 @@ bool Vga_file::load
 		throw file_open_exception(get_system_path(sources[0].first));
 	if (!flex)			// Just one shape, which we preload.
 		{
-		CERR("Got here: " << shape_sources.size() << ", " << files.size());
 		num_shapes = 1;
 		shape_cnts.clear();
 		shape_cnts.push_back(1);
 		shapes = new Shape[1];
-		shapes[0].load(shape_sources[shape_sources.size()-1]);
+		shapes[0].load(shape_sources[shape_sources.size()-1].first);
 		return true;
 		}
 					// Set up lists of pointers.
@@ -1509,6 +1506,7 @@ Shape *Vga_file::new_shape
 		{
 		shapes[shapenum].reset();
 		shapes[shapenum].num_frames = shapes[shapenum].frames_size = 0;
+		shapes[shapenum].set_modified();
 		}
 	else				// Enlarge list.
 		{
