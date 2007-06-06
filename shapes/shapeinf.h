@@ -324,9 +324,9 @@ public:
 		{ container_gump = (short) sh; }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
-	int get_3d_xtiles(unsigned int framenum = 0)
+	int get_3d_xtiles(unsigned int framenum)
 		{ return dims[(framenum >> 5)&1]; }
-	int get_3d_ytiles(unsigned int framenum = 0)
+	int get_3d_ytiles(unsigned int framenum)
 		{ return dims[1 ^ ((framenum >> 5)&1)]; }
 	int get_3d_height()		// Height (in lifts?).
 		{ return dims[2]; }
