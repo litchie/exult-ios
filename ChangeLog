@@ -1,3 +1,6 @@
+2007-06-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed bug when importing shp files into a VGA file over an existing shape.
+
 2007-06-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed coastline desynch bug.
 	* Fixed bug #1731542 by forcing the current frame to be passed for the
