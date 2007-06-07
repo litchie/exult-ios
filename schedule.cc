@@ -1546,9 +1546,7 @@ void Tool_schedule::now_what
 	if (rand()%10 == 0)
 		{
 		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
-		if (ty == Schedule::miner)
-			npc->say(first_miner, last_miner);
-		else if (ty == Schedule::farm)
+		if (ty == Schedule::farm)
 			npc->say(first_farmer, last_farmer);
 		}
 	signed char frames[12];		// Use tool.
@@ -1589,7 +1587,12 @@ void Miner_schedule::now_what
 		Game_object_vector ores;
 		npc->find_closest(ores, oreshapes,
 					sizeof(ores)/sizeof(ores[0]));
-		int cnt = ores.size();
+		int from, to, cnt = ores.size();
+		// Filter out frame #3 (dust).
+		for (from = to = 0; from < cnt; ++from)
+			if (ores[from]->get_framenum() < 3)
+				ores[to++] = ores[from];
+		cnt = to;
 		if (cnt) {
 			ore = ores[rand()%cnt];
 			Actor_pathfinder_client cost(npc, 2);
@@ -1633,12 +1636,37 @@ void Miner_schedule::now_what
 			state = find_ore;
 			break;
 		}
+		state = attack_ore;
+		if (rand()%6 == 0) {		// Break up piece.
+			int shnum, frnum = ore->get_framenum();
+			if (frnum == 3)
+				state = find_ore;	// Dust.
+			else if (rand()%(4+2*frnum) == 0) {
+				npc->say(first_miner_gold, last_miner_gold);
+				Tile_coord pos = ore->get_tile();
+				ore->remove_this();
+				if (frnum == 0) {	// Gold.
+					shnum = 645;
+					frnum = rand()%2;
+				} else {		// Gem.
+					shnum = 760;
+					frnum = rand()%10;
+				}
+				Game_object *newobj = new Ireg_game_object(
+							shnum, frnum, 0, 0);
+				newobj->move(pos);
+				state = find_ore;
+				break;
+			} else {
+				ore->change_frame(frnum + 1);
+				if (ore->get_framenum() == 3)
+					state = find_ore;// Dust.
+			}
+		}
 		if (rand()%4 == 0) {
 			npc->say(first_miner, last_miner);
 		}
-		//+++++Change frame, strike gold, etc. here.
 		delay = 500 + rand()%2000;
-		state = attack_ore;
 		break;
 	case wander:
 		if (rand()%2 == 0) {
