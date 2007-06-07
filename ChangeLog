@@ -1,3 +1,8 @@
+2007-06-06    <jeff@mini.nerble.net>
+
+	* schedule.cc (Loiter_schedule): Rewrote miner-schedule to be more
+	like the original.
+
 2007-06-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixed bug when importing shp files into a VGA file over an existing shape.
 
