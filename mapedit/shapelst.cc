@@ -1457,6 +1457,7 @@ void Shape_chooser::import_shape
 		U7open(*file, fname);
 		DataSource *ds = new StreamDataSource(file);
 		shp->load(ds);
+		shp->set_modified();
 		ed->render();
 		ed->show();
 		ed->file_info->set_modified();
