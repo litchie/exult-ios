@@ -324,6 +324,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_camera);
 	USECODE_INTRINSIC_DECL(in_combat);
 	USECODE_INTRINSIC_DECL(center_view);
+	USECODE_INTRINSIC_DECL(view_tile);
 	USECODE_INTRINSIC_DECL(get_dead_party);
 	USECODE_INTRINSIC_DECL(play_sound_effect);
 	USECODE_INTRINSIC_DECL(play_sound_effect2);
@@ -353,6 +354,7 @@ class Usecode_internal : public Usecode_machine
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
 	USECODE_INTRINSIC_DECL(set_barge_dir);
+	USECODE_INTRINSIC_DECL(remove_all_spells);
 	USECODE_INTRINSIC_DECL(telekenesis);
 	USECODE_INTRINSIC_DECL(a_or_an);
 	USECODE_INTRINSIC_DECL(add_to_keyring);
@@ -360,7 +362,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_from_keyring);
 	USECODE_INTRINSIC_DECL(save_pos);
 	USECODE_INTRINSIC_DECL(teleport_to_saved_pos);
-	USECODE_INTRINSIC_DECL(get_item_usability);
+	USECODE_INTRINSIC_DECL(get_item_weight);
 	USECODE_INTRINSIC_DECL(get_skin_colour);
 	USECODE_INTRINSIC_DECL(printf);
 					// Exult only:

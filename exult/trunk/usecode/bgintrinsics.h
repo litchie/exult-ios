@@ -166,9 +166,9 @@
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x8f Same as 0x74?
 	USECODE_INTRINSIC_PTR(is_water),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91 ++++ reset_conv_face???
-	USECODE_INTRINSIC_PTR(center_view),	// 0x92
+	USECODE_INTRINSIC_PTR(set_camera),	// 0x92
 	USECODE_INTRINSIC_PTR(get_dead_party),	// 0x93
-	USECODE_INTRINSIC_PTR(center_view),	// 0x94 Guessing: same as 0x92?
+	USECODE_INTRINSIC_PTR(view_tile),	// 0x94
 	USECODE_INTRINSIC_PTR(telekenesis),	// 0x95
 	USECODE_INTRINSIC_PTR(a_or_an),	// 0x96
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x97
@@ -183,7 +183,7 @@
 	//	Here, Exult supports SI intrinsics for users of UCC.
 	USECODE_INTRINSIC_PTR(approach_avatar),	// 0xa0
 	USECODE_INTRINSIC_PTR(get_attack_mode),	// 0xa1
-	USECODE_INTRINSIC_PTR(error_message),	// 0xa2; keeping for compatibility
+	USECODE_INTRINSIC_PTR(center_view),	// 0xa2
 	USECODE_INTRINSIC_PTR(get_body_npc),	// 0xa3
 	USECODE_INTRINSIC_PTR(get_npc_id),	// 0xa4
 	USECODE_INTRINSIC_PTR(set_npc_id),	// 0xa5
@@ -222,9 +222,9 @@
 	USECODE_INTRINSIC_PTR(is_dest_reachable),	// 0xc6
 	USECODE_INTRINSIC_PTR(set_npc_name),	// 0xc7
 	USECODE_INTRINSIC_PTR(set_usecode_fun),	// 0xc8
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc9
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xca
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcb
+	USECODE_INTRINSIC_PTR(get_item_weight),	// 0xc9
+	USECODE_INTRINSIC_PTR(remove_all_spells),	// 0xca
+	USECODE_INTRINSIC_PTR(get_skin_colour),	// 0xcb
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcc
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcd
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xce

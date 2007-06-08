@@ -45,7 +45,7 @@
 	USECODE_INTRINSIC_PTR(play_sound_effect),		// 0x16
 	USECODE_INTRINSIC_PTR(die_roll),			// 0x17
 	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x18
-	USECODE_INTRINSIC_PTR(get_item_usability),		// 0x19
+	USECODE_INTRINSIC_PTR(get_item_weight),		// 0x19
 	USECODE_INTRINSIC_PTR(get_item_frame),			// 0x1a
 	USECODE_INTRINSIC_PTR(set_item_frame),			// 0x1b
 	USECODE_INTRINSIC_PTR(get_item_quality),		// 0x1c
@@ -124,18 +124,18 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x64
 	USECODE_INTRINSIC_PTR(get_body_npc),			// 0x65
 	USECODE_INTRINSIC_PTR(add_spell),			// 0x66
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67 Remove all spells????
+	USECODE_INTRINSIC_PTR(remove_all_spells),	// 0x67
 	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68
 	USECODE_INTRINSIC_PTR(explode),				// 0x69 
 	USECODE_INTRINSIC_PTR(book_mode),			// 0x6a - Known
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x6b
+	USECODE_INTRINSIC_PTR(stop_time),				// 0x6b
 	USECODE_INTRINSIC_PTR(cause_light),			// 0x6c
 	USECODE_INTRINSIC_PTR(get_barge),			// 0x6d
 	USECODE_INTRINSIC_PTR(earthquake),			// 0x6e
 	USECODE_INTRINSIC_PTR(is_pc_female),			// 0x6f - Known
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x70 UNUSED
+	USECODE_INTRINSIC_PTR(armageddon),				// 0x70 UNUSED
 	USECODE_INTRINSIC_PTR(halt_scheduled),			// 0x71
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x72  +++++CauseBlackout (ucdump.c)
+	USECODE_INTRINSIC_PTR(lightning),				// 0x72
 	USECODE_INTRINSIC_PTR(get_array_size),			// 0x73
 	USECODE_INTRINSIC_PTR(save_pos),			// 0x74
 	USECODE_INTRINSIC_PTR(teleport_to_saved_pos),		// 0x75
@@ -198,7 +198,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad UNUSED
 	USECODE_INTRINSIC_PTR(set_camera),			// 0xae
 	USECODE_INTRINSIC_PTR(get_dead_party),			// 0xaf UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb0 UNUSED
+	USECODE_INTRINSIC_PTR(view_tile),				// 0xb0 UNUSED
 	USECODE_INTRINSIC_PTR(telekenesis),			// 0xb1
 	USECODE_INTRINSIC_PTR(a_or_an),				// 0xb2 Return correct article for argument ('a' or 'an')
 	USECODE_INTRINSIC_PTR(set_polymorph),		// 0xb3 Set Polymorph
@@ -229,9 +229,9 @@
 	USECODE_INTRINSIC_PTR(display_map_ex),			// 0xcc (Exult)
 	USECODE_INTRINSIC_PTR(book_mode_ex),		// 0xcd (Exult)
 	//  Here, Exult supports BG intrinsics for users of UCC.
-	USECODE_INTRINSIC_PTR(stop_time),			// 0xce
+	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0xce
 	USECODE_INTRINSIC_PTR(center_view),			// 0xcf
-	USECODE_INTRINSIC_PTR(lightning),			// 0xd0
+	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0xd0
 	USECODE_INTRINSIC_PTR(is_dest_reachable),				// 0xd1
 	USECODE_INTRINSIC_PTR(set_npc_name),				// 0xd2
 	USECODE_INTRINSIC_PTR(set_usecode_fun),				// 0xd3

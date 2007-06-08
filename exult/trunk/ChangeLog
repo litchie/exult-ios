@@ -1,3 +1,22 @@
+2007-06-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug where nearby animations could temporarily stop if an "abort"
+	  took place during a conversation.
+	* More intrinsics uncovered with rip/wud/wuc:
+	  BG: intrinsic 0x92 is *set_camera*, not center_view.
+	      intrinsic 0x94 centers the screen around a (x, y) coordinate;
+	          it has been renamed view_tile.
+	  SI: intrinsic 0x19 is *get_item_weight*, not get_item_usability.
+	      intrinsic 0x67 is definitelly remove_all_spells.
+	      intrinsic 0x6b is stop_time.
+	      intrinsic 0x70 is armageddon (yes, it is there).
+	      intrinsic 0x72 is lightning.
+	      intrinsic 0xb0 is view_tile.
+	  Old center_view intrinsic is still available for both BG and SI.
+	  Also, set_camera intrinsic also centers on objects, not just actors
+	  SI intrinsics remove_all_spells, get_item_weight and get_skin_colour
+	  were made available for BG too.
+	* Updated/fixed a couple errors in intrinsic documentation.
+
 2007-06-06    <jeff@mini.nerble.net>
 
 	* schedule.cc (Loiter_schedule): Rewrote miner-schedule to be more

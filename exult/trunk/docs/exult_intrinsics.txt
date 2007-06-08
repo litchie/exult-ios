@@ -108,12 +108,13 @@ int UI_die_roll(int min, int max)
 
     Returns a random value between 'min' and 'max'.
 
-int UI_roll_to_win(int att, int def)
+bool UI_roll_to_win(int att, int def)
 
-    Rolls a (0-based) 30-sided die. If the result is 0, return value is '0'; if
-    the roll is 29, return value is '1'. For all other values of the die roll,
-    it adds 'att' and subtracts 'def' from the die roll; if this final value is
-    less than 14, return value is '0'. Otherwise, return is '1'.
+    Rolls a (0-based) 30-sided die. If the result is 0, return value is 'false';
+    if the roll is 29, return value is 'true'. For all other values of the die
+    roll, it adds 'att' and subtracts 'def' from the die roll; if this final
+    value is less than 14, return value is 'false'. Otherwise, return is
+    'true'.
 
 --------------------------------------------------------------------------------
 SCRIPTING
@@ -156,14 +157,14 @@ int npc->set_to_attack(object obj, int proj)
     in an UCC script, use the 'attack' command to actually initiate the attack.
     Return value is always '0'.
 
-int UI_path_run_usecode(int pos[], function fun, object obj, int event)
+bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
 
     If the avatar can walk to to the location specified by 'pos', this intrinsic
-    causes him to walk there and returns '1'; otherwise, return value is '0'.
-    When the avatar gets to the destination, Exult will can usecode function
-    'fun', with 'obj' as 'item' and 'event' as the event ID. If 'obj' is not a
-    valid object, the usecode function is ignored. 'pos' can be either a
-    2-dimensional or a 3-dimensional position. Note that the player can
+    causes him to walk there and returns 'true'; otherwise, return value is
+    'false'. When the avatar gets to the destination, Exult will can usecode
+    function 'fun', with 'obj' as 'item' and 'event' as the event ID. If 'obj'
+    is not a valid object, the usecode function is ignored. 'pos' can be either
+    a 2-dimensional or a 3-dimensional position. Note that the player can
     interrupt the path by moving the avatar while it is walking.
 
     ****** SI SPECIFIC ******
@@ -255,13 +256,11 @@ npc->set_conversation_slot()
     Sets the active conversation face to 'slot'. 'slot' must be '0' or '1'.
 
 UI_init_conversation()                                                      [SI]
-npc->init_conversation()
 
     Initializes the face information for a conversation. In Exult, it is usually
     safe to skip it.
 
-UI_end_conversation(int slot)                                               [SI]
-npc->end_conversation()
+UI_end_conversation()                                                       [SI]
 
     Shows any pending text and removes all faces from the screen. Usually safe
     to skip this in Exult.
@@ -334,10 +333,10 @@ int UI_get_music_track()
     as described above.
      END NOTES ABOUT ORIGINAL BG 
 
-int UI_start_speech(int track)
+bool UI_start_speech(int track)
 
-    Starts to play the speech track specified by 'track' and returns '1' if
-    successful; returns '0' if can't play the speech for some reason (e.g.,
+    Starts to play the speech track specified by 'track' and returns 'true' if
+    successful; returns 'false' if can't play the speech for some reason (e.g.,
     speech being disabled).
 
     ****** SI SPECIFIC ******
@@ -456,10 +455,10 @@ object[] obj->get_cont_items(int shape, int qual, int frame)
 CREATION/PLACEMENT/REMOVAL
 --------------------------------------------------------------------------------
 
-int UI_is_not_blocked(int pos[3], int shape, int frame)
+bool UI_is_not_blocked(int pos[3], int shape, int frame)
 
-    Returns '1' if there is enough space to place shape 'shape', frame 'frame'
-    in the position 'pos'; returns '0' otherwise.
+    Returns 'true' if there is enough space to place shape 'shape', frame
+    'frame' in the position 'pos'; returns 'false' otherwise.
 
 actor[] UI_add_party_items(int count, int shape, int qual, int frame)
 
@@ -481,11 +480,11 @@ actor[] UI_add_party_items(int count, int shape, int qual, int frame)
     appended to the list of NPCs that received the items.
     **** END SI SPECIFIC ****
 
-int UI_remove_party_items(int count, int shape, int qual, int frame)
+bool UI_remove_party_items(int count, int shape, int qual, int frame)
 
     Deletes from the party's inventory a total of 'count' units of an item with
-    shape 'shape', quality 'qual' and frame 'frame'. Returns '1' if successful,
-    '0' otherwise. 'qual' and 'frame' can be wildcards:
+    shape 'shape', quality 'qual' and frame 'frame'. Returns 'true' if
+    successful, 'false' otherwise. 'qual' and 'frame' can be wildcards:
 
         qual                     frame
         QUALITY_ANY    = -359    FRAME_ANY      = -359
@@ -494,7 +493,7 @@ int UI_remove_party_items(int count, int shape, int qual, int frame)
     'bool' parameter; its meaning is unknown, and Exult will ignore this last
     parameter if you do place it there.
 
-int UI_summon(int shape)
+object UI_summon(int shape)
 
     Creates a monster with shape 'shape'. The created monster has equipment as
     defined in its equipment record, and has a 'FRIENDLY' alignment. If the
@@ -692,11 +691,11 @@ int obj->get_item_quality()
 
     Returns the quality of 'obj' if the item has one, or zero otherwise.
 
-UI_set_item_quality(object obj, int qual)
-obj->set_item_quality(int qual)
+bool UI_set_item_quality(object obj, int qual)
+bool obj->set_item_quality(int qual)
 
     If the object has a quality, changes quality of 'obj' to 'qual' and returns
-    '1'. Returns '0' otherwise.
+    'true'. Returns 'false' otherwise.
 
 int UI_get_item_quantity(object obj)
 int obj->get_item_quantity()
@@ -706,13 +705,13 @@ int obj->get_item_quantity()
     unimplemented in Exult. UCC does not complain about the missing parameter,
     so it is perhaps best to leave it out.
 
-int UI_set_item_quantity(object obj, int quant)
-int obj->set_item_quantity(int quant)
+bool UI_set_item_quantity(object obj, int quant)
+bool obj->set_item_quantity(int quant)
 
-    If 'obj' has a quantity, sets it to 'quant' and returns '1'; returns '0'
-    otherwise. Setting the quantity to zero will delete the object unless it is
-    in 'limbo' (i.e., not in the game map -- likely because it has been created
-    by Usecode but not yet placed).
+    If 'obj' has a quantity, sets it to 'quant' and returns 'true'; returns
+    'false' otherwise. Setting the quantity to zero will delete the object
+    unless it is in 'limbo' (i.e., not in the game map -- likely because it has
+    been created by Usecode but not yet placed).
 
 int UI_get_lift(object obj)
 int obj->get_lift()
@@ -785,10 +784,10 @@ obj->set_barge_dir(int dir)
     laying on 'obj') to 'dir'. 'dir' can be one of the constants defined for
     'find_direction' intrinsic.
 
-int UI_on_barge()
+bool UI_on_barge()
 
-    Returns '1' if the entire party is inside the same barge as the avatar, '0'
-    otherwise. If the avatar is *not* in a barge, returns '0' too.
+    Returns 'true' if the entire party is inside the same barge as the avatar,
+    'false' otherwise. If the avatar is *not* in a barge, returns '0' too.
 
     ****** SI SPECIFIC ******
     In SI, also forces the party's NPCs to get on board the barge.
@@ -825,10 +824,10 @@ int obj->get_map_num()
     Returns the map number that 'obj' is in. Objects not located in the game map
     have map number equal to '-1'.
 
-int UI_get_item_usability(object obj)                                       [SI]
-int obj->get_item_usability()
+int UI_get_item_weight(object obj)                                   [SI, Exult]
+int obj->get_item_weight()
 
-    Returns '1' if the 'obj' is grabbable, '0' otherwise.
+    Returns the object's weight.
 
 bool UI_is_on_keyring(int qual)                                             [SI]
 
@@ -1088,8 +1087,8 @@ bool UI_is_readied(actor npc, int spot, int shape, int frame)
 npc->is_readied(int spot, int shape, int frame)
 
     Returns 'true' if an object with shape 'shape' and frame 'frame' is readied
-    in ready spot 'spot' of 'npc'. 'frame' can be the wildcard 'FRAME_ANY'.
-    Valid values for 'spot' are:
+    in ready spot 'spot' of 'npc', 'false' otherwise. 'frame' can be the
+    wildcard 'FRAME_ANY'. Valid values for 'spot' are:
 
         IR_RIGHT_HAND      = 1     IR_WEAPON_HAND    = 1
         IR_BOTH_HANDS      = 1     IR_LEFT_HAND      = 2
@@ -1182,38 +1181,39 @@ actor UI_get_avatar_ref()
 
     Returns a object reference to the avatar.
 
-int UI_in_combat()
+bool UI_in_combat()
 
-    Returns '1' if in combat mode, '0' otherwise.
+    Returns 'true' if in combat mode, 'false' otherwise.
 
 bool UI_is_pc_female()
 
     Returns 'true' if the avatar is female, 'false' otherwise.
 
-int UI_get_skin_colour()                                                    [SI]
+int UI_get_skin_colour()                                             [SI, Exult]
 
-    Returns the avatar's skin color: white = 0, brown = 1, black = 2.
+    Returns the avatar's skin color. In the original SI, this was: white = 0,
+    brown = 1, black = 2.
 
 bool UI_is_pc_inside()
 
     Returns 'true' if the avatar is inside (i.e., has a roof over the head),
     'false' otherwise.
 
-int UI_wearing_fellowship()
+bool UI_wearing_fellowship()
 
-    Returns '1' is the avatar is wearing a fellowship amulet (shape 955, frame
-    1), '0' otherwise.
+    Returns 'true' is the avatar is wearing a fellowship amulet (shape 955,
+    frame 1), 'false' otherwise.
 
-int UI_approach_avatar(actor npc)                                    [SI, Exult]
-int npc->approach_avatar()
+bool UI_approach_avatar(actor npc)                                   [SI, Exult]
+bool npc->approach_avatar()
 
-    Makes 'npc' approach avatar at fairly high speed. Returns '0' if 'npc' is
-    dead or if it is not possible for 'npc' to reach the avatar. Returns '1'
-    otherwise. If 'npc' is initially at more than 10 tiles from the avatar, the
-    function will let 'npc' walk for about 1/5 seconds before returning,
-    effectivelly halting the game. NOTICE: In the original, this intrinsic
-    seems to create 'npc' off-screen, while it approaches the avatar due to
-    si_path_run_usecode or the 'TALK' schedule. Need to investigate this
+    Makes 'npc' approach avatar at fairly high speed. Returns 'false' if 'npc'
+    is dead or if it is not possible for 'npc' to reach the avatar. Returns
+    'true' otherwise. If 'npc' is initially at more than 10 tiles from the
+    avatar, the function will let 'npc' walk for about 1/5 seconds before
+    returning, effectivelly halting the game. NOTICE: In the original, this
+    intrinsic seems to create 'npc' off-screen, while it approaches the avatar
+    due to si_path_run_usecode or the 'TALK' schedule. Need to investigate this
     further.
 
 UI_call_guards()                                                            [BG]
@@ -1282,7 +1282,7 @@ UI_advance_time(int amount)
 
     Advances game time by 'amount'/25 game minutes.
 
-UI_stop_time(int length)                                             [BG, Exult]
+UI_stop_time(int length)
 
     Stops time for ('length'/4 seconds).
 
@@ -1326,7 +1326,7 @@ int UI_input_numeric_value(int min, int max, int step, int default)
     number allowed, 'max' is the greatest, 'step' is the step size and
     'default' is the default (initial) value. Returns the user's choice.
 
-UI_mouse_exists()
+bool UI_mouse_exists()
 
     In the original, returned '0' if there was no mouse, '1' otherwise. Exult
     always returns '1'.
@@ -1353,9 +1353,10 @@ UI_earthquake(int length)
     Shakes the screen for 'length' ticks. Also plays the earthquake SFX once at
     the start.
 
-UI_armageddon()                                                             [BG]
+UI_armageddon()
 
-    The Armageddon spell from BG. Use with care :-)
+    The Armageddon spell from BG. Use with care :-) It also exists in the
+    original SI; it seems to leave no survivors there.
 
 UI_restart_game()
 
@@ -1395,7 +1396,7 @@ string UI_printf(string out[])                                           [Exult]
 DISPLAY
 --------------------------------------------------------------------------------
 
-UI_center_view(object obj)                                           [BG, Exult]
+UI_center_view(object obj)                                               [Exult]
 obj->center_view()
 
     Centers screen around 'obj'.
@@ -1407,10 +1408,16 @@ UI_display_area(int pos[])
     vector. If map == -1, Exult uses the current map. Overlays sprite shape 10
     over the screen.
 
-UI_set_camera(actor npc)                                             [SI, Exult]
-actor->set_camera()
+UI_set_camera(object obj)
+obj->set_camera()
 
-    Makes the camera follow 'npc'.
+    Centers the screen on 'obj'. If 'obj' is an NPC, this intrinsic also makes
+    the camera follow it.
+
+UI_view_tile(int[2] pos)
+
+    Centers screen around the (x, y) tile specified in 'pos'; if 'pos' has more
+    than 2 components, they will be ignored. Use UI_display_area instead.
 
 UI_wizard_eye(int length)
 
@@ -1418,11 +1425,12 @@ UI_wizard_eye(int length)
     location, for a duration equal to (1.5 * 'length') ticks. Overlays sprite
     shape 10 over the screen.
 
-UI_fade_palette(int length, int unk, int type)
+UI_fade_palette(int length, int unk, bool type)
 
-    If 'type' is '0', fades the screen to black; if 'type' is '1', fades in from
-    black. In either case, 'length' is the time (in ticks) it takes to fade the
-    screen. The meaning of 'unk' parameter is unknown and it is ignored.
+    If 'type' is 'false', fades the screen to black; if 'type' is 'true', fades
+    in from black. In either case, 'length' is the time (in ticks) it takes to
+    fade the screen. The meaning of 'unk' parameter is unknown and it is
+    ignored.
 
 UI_item_say(object obj, string bark)
 obj->item_say(string bark)
@@ -1503,7 +1511,7 @@ UI_display_map_ex(int mapshp, bool show_loc)                               Exult
     Displays the sprite shape 'mapshp' centered in the screen. If 'show_loc' is
     'true', Exult will also display a location mark in the map.
 
-UI_lightning()                                                       [BG, Exult]
+UI_lightning()
 
     Creates a lightninig effect (flashes screen, lightning sound).
 
@@ -1541,13 +1549,18 @@ UI_explode(object unk1, object obj, int unk2)
     Causes 'obj' to explode like a powder-keg. The meaning of 'unk1' and 'unk2'
     are unknown, and are hence ignored in Exult.
 
-int UI_add_spell(int index, int unk, object obj)
+bool UI_add_spell(int index, int unk, object obj)
 
     If 'obj' is a spellbook, adds the spell whose index is 'index' and returns
-    '1' -- unless the spell is already in the spellbook, in which case return
-    value is '0'. If 'obj' is not a spellbook, does nothing and returns '0'.
-    'unk' is a parameter from the original games whose meaning is unknown,
-    hence is unimplemented in Exult.
+    'true' -- unless the spell is already in the spellbook, in which case
+    return value is 'false'. If 'obj' is not a spellbook, does nothing and
+    returns 'false'. 'unk' is a parameter from the original games whose meaning
+    is unknown, hence is unimplemented in Exult.
+
+UI_remove_all_spells(object obj)                                     [SI, Exult]
+obj->remove_all_spells()
+
+    If 'obj' is a spellbook, this will remove all spells from it.
 
 int UI_get_array_size([special])
 
@@ -1581,10 +1594,10 @@ obj->fire_cannon(int dir, int ball, int unk, int weapon)
     for damage information. In the original, there was an additional parameter
     with unknown meaning; hence, Exult ignores it.
 
-int UI_is_water(int pos[3])
+bool UI_is_water(int pos[3])
 
-    Returns '1' if the position specified by 'pos' is a water tile, '0' if it is
-    not.
+    Returns 'true' if the position specified by 'pos' is a water tile, 'false'
+    if it is not.
 
 string UI_a_or_an(string text)
 
