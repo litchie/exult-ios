@@ -95,8 +95,8 @@ void Object_sfx::update
 	dir = 0;
 	bool halt = false;
 
-	Tile_coord apos = gwin->get_main_actor()->get_tile();
-	Tile_coord opos = obj->get_tile();
+	Tile_coord apos = gwin->get_main_actor()->get_center_tile();
+	Tile_coord opos = obj->get_center_tile();
 	distance = apos.distance(opos);
 	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
 

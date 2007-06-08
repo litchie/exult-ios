@@ -115,6 +115,31 @@ Tile_coord Game_object::get_tile
 	}
 
 /*
+ *	Get tile.
+ */
+
+Tile_coord Game_object::get_center_tile
+	(
+	) const
+	{
+	if (!chunk)
+		{
+#if DEBUG
+		cout << "Asking tile for obj. " << get_shapenum()
+				<< " not on map" << endl;
+#endif
+		return Tile_coord(255*c_tiles_per_chunk, 255*c_tiles_per_chunk,
+								0);
+		}
+	int frame = get_framenum();
+	int dx = (get_info().get_3d_xtiles(frame) >> 1),
+	    dy = (get_info().get_3d_ytiles(frame) >> 1);
+	int x = chunk->cx*c_tiles_per_chunk + tx - dx,
+	    y = chunk->cy*c_tiles_per_chunk + ty - dy;
+	return Tile_coord(x, y, lift);
+	}
+
+/*
  *	Get direction to another object.
  */
 
@@ -123,8 +148,8 @@ int Game_object::get_direction
 	Game_object *o2
 	) const
 	{
-	Tile_coord t1 = get_tile();
-	Tile_coord t2 = o2->get_tile();
+	Tile_coord t1 = get_center_tile();
+	Tile_coord t2 = o2->get_center_tile();
 					// Treat as cartesian coords.
 	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
@@ -138,7 +163,7 @@ int Game_object::get_direction
 	Tile_coord t2
 	) const
 	{
-	Tile_coord t1 = get_tile();
+	Tile_coord t1 = get_center_tile();
 					// Treat as cartesian coords.
 	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
