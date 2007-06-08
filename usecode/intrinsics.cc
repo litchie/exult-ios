@@ -1484,6 +1484,23 @@ USECODE_INTRINSIC(add_spell)
 	return Usecode_value(book->add_spell(parms[0].get_int_value()));
 }
 
+USECODE_INTRINSIC(remove_all_spells)
+{
+	// remove_all_spells(spellbook).
+	// Removes all spells from spellbook.
+	Game_object *obj = get_item(parms[0]);
+	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
+		return Usecode_value(0);
+	Spellbook_object *book = (Spellbook_object *) (obj);
+	if (!book)
+		{
+		cout << "remove_all_spells - Not a spellbook!" << endl;
+		return no_ret;
+		}
+	book->clear_spells();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(sprite_effect)
 {
 	// Display animation from sprites.vga.
@@ -1614,8 +1631,8 @@ USECODE_INTRINSIC(armageddon)
 	for (int i = 1; i < cnt; i++)	// Most everyone dies.
 		{			// Leave LB, Batlin, Hook.
 		Actor *npc = gwin->get_npc(i);
-		if (npc && i != 26 && i != 23 && npc->get_shapenum() != 506 &&
-		    !npc->is_dead())
+		if (npc && !npc->is_dead() && (GAME_SI ||
+				(GAME_BG && (i != 26 && i != 23 && npc->get_shapenum() != 506))))
 			{
 			const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
 			const int numtext = sizeof(text)/sizeof(text[0]);
@@ -2538,7 +2555,21 @@ USECODE_INTRINSIC(set_camera)
 	// Set_camera(actor)
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (actor)
+		{
 		gwin->set_camera_actor(actor);
+		activate_cached(actor->get_tile());	// Mar-10-01 - For Test of Love.
+		}
+	else
+		{
+		Game_object *obj = get_item(parms[0]);
+		if (obj)
+			{
+			Tile_coord t = obj->get_tile();
+			gwin->center_view(t);
+			activate_cached(t);	// Mar-10-01 - For Test of Love.
+			}
+		}
+
 	return no_ret;
 }
 
@@ -2558,6 +2589,19 @@ USECODE_INTRINSIC(center_view)
 		gwin->center_view(t);
 		activate_cached(t);	// Mar-10-01 - For Test of Love.
 		}
+	return no_ret;
+}
+
+USECODE_INTRINSIC(view_tile)
+{
+	// Center view around given item.
+	Tile_coord t;
+	if (!parms[0].is_array() || parms[0].get_array_size() < 2)
+		return no_ret;
+	else
+		t = Tile_coord(parms[0].get_elem(0).get_int_value(),
+		               parms[0].get_elem(1).get_int_value(), 0);
+	gwin->center_view(t);
 	return no_ret;
 }
 
@@ -3146,14 +3190,13 @@ USECODE_INTRINSIC(teleport_to_saved_pos)
 	return no_ret;
 }
 
-USECODE_INTRINSIC(get_item_usability)
+USECODE_INTRINSIC(get_item_weight)
 {
-	// Complete guess:  Returns 1 for grabbable items (for fetch spell).
 	Game_object *obj = get_item(parms[0]);
-	if (!obj || !obj->is_dragable())
+	if (!obj)
 		return Usecode_value(0);
 	else
-		return Usecode_value(1);// Only 1 I'm pretty sure of.
+		return Usecode_value(obj->get_weight());
 }
 
 USECODE_INTRINSIC(get_skin_colour)

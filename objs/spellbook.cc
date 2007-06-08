@@ -180,6 +180,14 @@ int Spellbook_object::add_spell
 	circles[circle] |= (1<<num);
 	return 1;
 	}
+/*
+ *	Remove all spells.
+ */
+
+void Spellbook_object::clear_spells()
+	{
+	memset(circles, 0, sizeof(circles));
+	}
 
 /*
  *	Can we do a given spell?

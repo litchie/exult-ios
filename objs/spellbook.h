@@ -47,6 +47,7 @@ public:
 		unsigned int shapey, unsigned int lft, unsigned char *c,
 		unsigned char bmark);
 	int add_spell(int spell);	// Add a spell.
+	void clear_spells();	// Empties spellbook.
 	bool has_ring(Actor *act);	// Has ring-o-reagents?
 					// Can we do this spell?
 	bool can_do_spell(Actor *act, int spell);

@@ -2938,11 +2938,17 @@ int Usecode_internal::call_usecode
 
 	conv->clear_answers();
 
+	if (call_stack.empty())
+		gwin->get_tqueue()->pause(SDL_GetTicks());
+
 	int ret;
 	if (call_function(id, event, item, true))
 		ret = run();
 	else
 		ret = -1; // failed to call the function
+
+	if (call_stack.empty())
+		gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	set_book(0);
 
