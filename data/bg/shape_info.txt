@@ -150,11 +150,11 @@
 :559/104
 :562/104
 
-#	Flaming weapons
+#	Flaming weapons -- sounds awful, so it is disabled
 #
-:551/20/0/3/1
-:553/20/0/3/1
-:630/20/0/3/1
+#:551/20/0/3/1
+#:553/20/0/3/1
+#:630/20/0/3/1
 
 #	Mechanism
 #
@@ -189,13 +189,13 @@
 #
 :794/50
 
-#	Campfire
+#	Campfire -- sounds awful, so it is disabled
 #
-:825/20/0/3/1
+#:825/20/0/3/1
 
-#	Fire Field
+#	Fire Field -- sounds awful, so it is disabled
 #
-:895/20/0/3/1
+#:895/20/0/3/1
 
 #	Poison/Sleep Field
 #

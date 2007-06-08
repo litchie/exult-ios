@@ -1,3 +1,8 @@
+2007-06-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Disabled fire sfx as it sounds awful.
+	* Modified distance function to calculate distance between the center
+	  tiles of the two objects.
+
 2007-06-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug where nearby animations could temporarily stop if an "abort"
 	  took place during a conversation.
