@@ -118,30 +118,30 @@
 #
 :728/75
 
-#	Flaming weapons
+#	Flaming weapons -- sounds awful, so it is disabled
 #
-:551/45/0/3/1
-:553/45/0/3/1
-:630/45/0/3/1
+#:551/45/0/3/1
+#:553/45/0/3/1
+#:630/45/0/3/1
 
-#	Campfire
+#	Campfire -- sounds awful, so it is disabled
 #
-:289/45/0/3/1
-:796/45/0/3/1
-:825/45/0/3/1
+#:289/45/0/3/1
+#:796/45/0/3/1
+#:825/45/0/3/1
 
-#	Burning Urn
+#	Burning Urn -- sounds awful, so it is disabled
 #
-:992/45/0/3/1
+#:992/45/0/3/1
 
-#	Fire Field
+#	Fire Field -- sounds awful, so it is disabled
 #
-:561/45/0/3/1
-:895/45/0/3/1
+#:561/45/0/3/1
+#:895/45/0/3/1
 
-#	Fire elemental
+#	Fire elemental -- sounds awful, so it is disabled
 #
-:861/45/0/3/1
+#:861/45/0/3/1
 
 #	Poison/Sleep Field
 #
