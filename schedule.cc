@@ -1655,6 +1655,7 @@ void Miner_schedule::now_what
 				Game_object *newobj = new Ireg_game_object(
 							shnum, frnum, 0, 0);
 				newobj->move(pos);
+				newobj->set_flag(Obj_flags::is_temporary);
 				state = find_ore;
 				break;
 			} else {
