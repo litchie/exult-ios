@@ -835,6 +835,7 @@ CheatScreen::Cheat_Prompt CheatScreen::TimeSetLoop ()
 			}
 			else if (mode == CP_Minute)
 			{
+				clock->reset();
 				clock->set_day(day);
 				clock->set_hour(hour);
 				clock->set_minute(val);

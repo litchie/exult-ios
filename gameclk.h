@@ -22,6 +22,7 @@
 #define GAMECLK_H 1
 
 #include "tqueue.h"
+#include "palette.h"
 
 /*
  *	The number of times that the game clock ticks in one game minute.
@@ -37,16 +38,22 @@ class Game_clock : public Time_sensitive
 	short hour, minute;		// Time (0-23, 0-59).
 	int day;			// Keep track of days played.
 	int light_source_level;		// Last set light source level.
+	int old_light_level;		// Last set light source level.
 	unsigned int dungeon;		// Last set 'in_dungeon' value.
-	int storm;			// >0 if storm in progress.
+	int overcast;			// >0 if day is overcast (e.g., from a storm).
+	bool was_overcast;
+	int fog;			// >0 if there is fog.
+	bool was_foggy;
+	Palette_transition *transition;	// For smooth palette transitions.
 	unsigned short time_rate;
 	void set_time_palette();
 	void set_light_source_level(int lev);
 	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
-			light_source_level(0), dungeon(255),
-			storm(0), time_rate(1)
+			light_source_level(0), dungeon(255), time_rate(1),
+			overcast(0), fog(0), transition(0),
+			was_overcast(false), was_foggy(false)
 		{ }
 	int get_hour()
 		{ return hour; }
@@ -72,7 +79,16 @@ public:
 		if (lev != light_source_level || dun != dungeon)
 			set_light_source_level(lev);
 		}
-	void set_storm(bool onoff);	// Start/end storm.
+	void reset()
+		{
+		overcast = fog = 0;
+		was_overcast = was_foggy = false;
+		if (transition)
+			delete transition;
+		transition = 0;
+		}
+	void set_overcast(bool onoff);	// Start/end cloud cover.
+	void set_fog(bool onoff);	// Start/end cloud cover.
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.

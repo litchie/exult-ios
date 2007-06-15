@@ -824,10 +824,10 @@ void ExultStudio::init_shape_notebook
 			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
 					// 'Explode'???
 		set_toggle("shinfo_ammo_bursts", ainfo->bursts());
-		set_toggle("shinfo_ammo_special", ainfo->has_special_behaviour());
+		set_toggle("shinfo_ammo_special", ainfo->is_homing());
 		set_optmenu("shinfo_ammo_drop", ainfo->get_drop_type());
 		ExultStudio::get_instance()->set_sensitive("shinfo_ammo_drop",
-				!ainfo->has_special_behaviour());
+				!ainfo->is_homing());
 		}
 	Armor_info *arinfo = info.get_armor_info();
 	set_toggle("shinfo_armor_check", arinfo != 0);
@@ -1012,12 +1012,12 @@ void ExultStudio::save_shape_notebook
 		ainfo->set_bursts(get_toggle("shinfo_ammo_bursts"));
 		if (get_toggle("shinfo_ammo_special"))
 			{
-			ainfo->set_has_special_behaviour(true);
+			ainfo->set_homing(true);
 			ainfo->set_drop_type(0);
 			}
 		else
 			{
-			ainfo->set_has_special_behaviour(false);
+			ainfo->set_homing(false);
 			ainfo->set_drop_type(get_optmenu("shinfo_ammo_drop"));
 			}
 		}

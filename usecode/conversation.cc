@@ -367,11 +367,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	int height = sman->get_text_height(0);
 	int space_width = sman->get_text_width(0, " ");
 
-	// Checks for Petra flag.
-	Actor *npc = Shapeinfo_lookup::GetFaceReplacement(main_actor);
-
-	// Get main actor's portrait.
-	int shape = npc->get_face_shapenum();
+	// Get main actor's portrait, checking for Petra flag.
+	int shape = Shapeinfo_lookup::GetFaceReplacement(0);
 	int frame = 0;
 
 	if (shape == 0)

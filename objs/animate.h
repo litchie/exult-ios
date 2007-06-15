@@ -35,7 +35,7 @@ class Object_sfx : public Game_singletons
 	{
 	Game_object *obj;		// Object that caused the sound.
 	SFX_info *sfx;
-	int channel;			// ID of sound effect being played.
+	int channel[2];			// ID of sound effect being played.
 	int distance;			// Distance in tiles from Avatar.
 	int dir;			// Direction (0-15) from Avatar.
 	int last_sfx;		// For playing sequential sfx ranges.
@@ -43,13 +43,14 @@ class Object_sfx : public Game_singletons
 public:
 					// Create & start playing sound.
 	Object_sfx(Game_object *o)
-		: obj(o), distance(0), channel(-1), last_sfx(-1)
+		: obj(o), distance(0), last_sfx(-1)
 		{
+		channel[0] = channel[1] = -1;
 		sfx = Shapeinfo_lookup::get_sfx_info(obj->get_shapenum());
 		if (sfx)
 			{
 			last_sfx = 0;
-			if (!(sfx->rand || sfx->range > 1 || sfx->delay))
+			if (!(sfx->range > 1 || sfx->chance != 100))
 				repeat = -1;
 			else
 				repeat = 0;
@@ -59,9 +60,7 @@ public:
 		{ return last_sfx; }
 	int get_distance()
 		{ return distance; }
-	bool get_has_delay() const
-		{ return sfx ? sfx->delay : false; }
-	void update();	// Set to new object.
+	void update(bool play);	// Set to new object.
 	void stop();
 	};
 
@@ -107,28 +106,14 @@ public:
 class Frame_animator : public Animator
 	{
 	Animation_info *aniinf;
-	bool new_aniinf;
-	char currpos;			// Current position in the animation.
+	unsigned short currpos;			// Current position in the animation.
+	unsigned short frame_counter;		// When to increase frame.
 	unsigned int created;		// Time created
-	unsigned int delay;		// Rate of animation
 	unsigned short last_shape;	// To check if we need to re init
 	unsigned short last_frame;	// To check if we need to re init
-	enum AniType				// Type of animation
-	{
-		FA_LOOPING = 0,
-		FA_HOURLY = 1,
-		FA_NON_LOOPING = 2,
-		FA_RANDOM_LOOP = 3,
-		FA_LOOP_RECYCLE = 4
-	};
 	void Initialize();
 public:
 	Frame_animator(Game_object *o);
-	~Frame_animator()
-		{
-		if (new_aniinf)
-			delete aniinf;
-		}
 	int get_next_frame();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);

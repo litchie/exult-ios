@@ -572,7 +572,7 @@ void Projectile_effect::init
 		}
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
-	if (winfo && ainfo && winfo->explodes() && ainfo->has_special_behaviour())
+	if (winfo && ainfo && winfo->explodes() && ainfo->is_homing())
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
 		path->NewPath(pos, d, 0);
@@ -731,7 +731,7 @@ void Projectile_effect::handle_event
 		Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
 		if (winf && winf->explodes())
 			{
-			if (ainf && ainf->has_special_behaviour())
+			if (ainf && ainf->is_homing())
 				eman->add_effect(new Special_projectile(weapon,
 						attacker, target, pos, target->get_tile() + 
 						Tile_coord(0, 0, target->get_info().get_3d_height()/2)));
@@ -1108,6 +1108,24 @@ int Weather_effect::out_of_range
 	return eggloc.distance(avpos) >= dist;
 	}
 
+Fog_effect::~Fog_effect()
+	{
+	gclock->set_fog(false);
+	}
+
+void Fog_effect::handle_event(unsigned long curtime, long udata)
+	{
+	if (start)
+		{
+		start = 0;
+					// Nothing more to do but end.
+		gwin->get_tqueue()->add(stop_time, this, udata);
+		gclock->set_fog(true);
+		}
+	else				// Must be time to stop.
+		eman->remove_effect(this);
+	}
+
 /*
  *	Paint raindrop.
  */
@@ -1197,6 +1215,52 @@ inline void Raindrop::next_random
 	}
 
 /*
+ *	Move snow flake.
+ */
+
+inline void Raindrop::next_flake
+	(
+	Image_window8 *iwin,		// Where to draw.	
+	int scrolltx, int scrollty,	// Tile at top-left corner.
+	Xform_palette& xform,		// Transform array.
+	int w, int h			// Dims. of window.
+	)
+	{
+	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+		      ascrolly = scrollty*(uint32)c_tilesize;
+	int x = ax - ascrollx, y = ay - ascrolly;
+					// Still on screen?  Restore pix.
+	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
+		iwin->put_pixel8(oldpix, x, y);
+	oldpix = 255;
+
+					// Time to restart?
+	if (x < 0 || x >= w || y < 0 || y >= h)
+		{			
+		int r = rand();
+		flake_wobble = rand()%15;
+					// Have a few fall faster.
+		yperx = 1;
+		ax = ascrollx + r%(w - w/8);
+		ay = ascrolly + r%(h - h/4);
+		}
+	else				// Next spot.
+		{
+		flake_wobble = (flake_wobble+1)%15;
+		int delta = 1 + rand()%2;
+		ax += delta;
+		ay += delta + yperx;
+		}
+
+	static char const flake_deltas[5][2] = {{-2, 2}, {-1, 2}, {0, 1}, {1, 0}, {1, -1}};
+	ax += flake_deltas[flake_wobble/3][0];
+	ay += flake_deltas[flake_wobble/3][1];
+					// Save old pixel & paint new.
+	paint(iwin, scrolltx, scrollty, xform);
+	}
+
+
+/*
  *	Rain.
  */
 
@@ -1207,6 +1271,10 @@ void Rain_effect::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
+
+	// Gradual start/end.
+	change_ndrops(curtime);
+
 	if (!gwin->is_main_actor_inside() &&
 	    !gumpman->showing_gumps(true))
 		{			// Don't show rain inside buildings!
@@ -1221,13 +1289,13 @@ void Rain_effect::handle_event
 			drops[i].next(win, scrolltx, scrollty, xform, w, h);
 		gwin->set_painted();
 		}
-	if (curtime < stop_time)	// Keep going?
-		gwin->get_tqueue()->add(curtime + 100, this, udata);
-	else
+	if (curtime >= stop_time)
 		{
 		gwin->set_all_dirty();
 		eman->remove_effect(this);
+		return;
 		}
+	gwin->get_tqueue()->add(curtime + 100, this, udata);
 	}
 
 /*
@@ -1311,14 +1379,14 @@ Storm_effect::Storm_effect
 	int duration,			// In game minutes.
 	int delay,			// In msecs.
 	Game_object *egg		// Egg that caused it, or null.
-	) : Weather_effect(duration, delay, 2, egg), start(1)
+	) : Weather_effect(duration, delay, 2, egg)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// Start raining soon.
+	eman->add_effect(new Clouds_effect(duration, delay));
 	int rain_delay = 20 + rand()%1000;
-	eman->add_effect(new Rain_effect(duration - 1, rain_delay));
+	eman->add_effect(new Rain_effect(duration - 1, rain_delay, 0));
 	int lightning_delay = rain_delay + rand()%500;
-	eman->add_effect(new Lightning_effect(duration - 1, lightning_delay));
+	eman->add_effect(new Lightning_effect(duration - 2, lightning_delay));
 	}
 
 /*
@@ -1334,8 +1402,6 @@ void Storm_effect::handle_event
 	if (start)
 		{
 		start = 0;
-					// Darken sky.
-		gwin->get_clock()->set_storm(true);
 					// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
@@ -1343,17 +1409,70 @@ void Storm_effect::handle_event
 		eman->remove_effect(this);
 	}
 
+void Snow_effect::handle_event(unsigned long curtime, long udata)
+	{
+	Game_window *gwin = Game_window::get_instance();
+
+	// Gradual start/end.
+	change_ndrops(curtime);
+
+	if (!gwin->is_main_actor_inside() &&
+	    !gumpman->showing_gumps(true))
+		{			// Don't show rain inside buildings!
+		Image_window8 *win = gwin->get_win();
+		int w = win->get_width(), h = win->get_height();
+					// Get transform table.
+		Xform_palette& xform = sman->get_xform(8);//++++Experiment.
+		int scrolltx = gwin->get_scrolltx(),
+		    scrollty = gwin->get_scrollty();
+					// Move drops.
+		for (int i = 0; i < num_drops; i++)
+			drops[i].next_flake(win, scrolltx, scrollty, xform, w, h);
+		gwin->set_painted();
+		}
+	if (curtime >= stop_time)
+		{
+		gwin->set_all_dirty();
+		eman->remove_effect(this);
+		return;
+		}
+	gwin->get_tqueue()->add(curtime + 100, this, udata);
+	}
+
 /*
- *	Storm ended.
+ *	Start a snowstorm.
  */
 
-Storm_effect::~Storm_effect
+Snowstorm_effect::Snowstorm_effect
 	(
+	int duration,			// In game minutes.
+	int delay,			// In msecs.
+	Game_object *egg		// Egg that caused it, or null.
+	) : Weather_effect(duration, delay, 1, egg)
+	{
+					// Start snowing soon.
+	eman->add_effect(new Clouds_effect(duration, delay));
+	eman->add_effect(new Snow_effect(duration - 1, 20 + rand()%1000, 0));
+	}
+
+/*
+ *	Start/end of snowstorm.
+ */
+void Snowstorm_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-					// Restore palette.
-	gwin->get_clock()->set_storm(false);
+	if (start)
+		{
+		start = 0;
+					// Nothing more to do but end.
+		gwin->get_tqueue()->add(stop_time, this, udata);
+		}
+	else				// Must be time to stop.
+		eman->remove_effect(this);
 	}
 
 /*
@@ -1517,10 +1636,19 @@ Clouds_effect::Clouds_effect
 	(
 	int duration,			// In game minutes.
 	int delay,			// In msecs.
-	Game_object *egg		// Egg that caused it, or null.
-	) : Weather_effect(duration, delay, 6, egg)
+	Game_object *egg,		// Egg that caused it, or null.
+	int n
+	) : Weather_effect(duration, delay, n, egg), overcast(n != 6)
 	{
+	Game_clock *gclock = Game_window::get_instance()->get_clock();
+	if (overcast)
+		gclock->set_overcast(true);
+	else
+		gclock->set_overcast(false);
+
 	num_clouds = 2 + rand()%5;	// Pick #.
+	if (overcast)
+		num_clouds += rand()%2;
 	clouds = new Cloud *[num_clouds];
 					// Figure wind direction.
 	int dx = rand()%5 - 2;
@@ -1577,6 +1705,17 @@ void Clouds_effect::paint
 	if (!gwin->is_main_actor_inside())
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint();
+	}
+
+/*
+ *	Destructor.
+ */
+
+Clouds_effect::~Clouds_effect()
+	{
+	delete [] clouds;
+	if (overcast)
+		Game_window::get_instance()->get_clock()->set_overcast(false);
 	}
 
 /*

@@ -988,7 +988,7 @@ static void Handle_events
 
 					// Get current time.
 		uint32 ticks = SDL_GetTicks();
-#ifdef WIN32
+#if defined(WIN32) && defined(USE_EXULTSTUDIO)
 		if (ticks - Game::get_ticks() < 10)
 			{
 			// Reducing processor usage with a slight delay.

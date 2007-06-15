@@ -183,7 +183,7 @@ private:
 	unsigned char damage_type;	// Same as for weapons.
 	bool m_no_blocking;		// Can move through walls.
 	unsigned char drop_type;	// What to do to missile when it hits/misses
-	bool special_behaviour;		// For Energy Mist/Death Vortex.
+	bool homing;		// For Energy Mist/Death Vortex.
 	bool m_bursts;				// Burst arrows.
 public:
 	enum Drop_types			// Determines what happens when the missile misses
@@ -220,10 +220,10 @@ public:
 		{ return drop_type; }
 	void set_drop_type(unsigned char drop)
 		{ drop_type = drop; }
-	bool has_special_behaviour() const
-		{ return special_behaviour; }
-	void set_has_special_behaviour(bool sb)
-		{ special_behaviour = sb; }
+	bool is_homing() const
+		{ return homing; }
+	void set_homing(bool sb)
+		{ homing = sb; }
 	bool bursts() const
 		{ return m_bursts; }
 	void set_bursts(bool b)

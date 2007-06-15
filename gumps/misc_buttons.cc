@@ -47,7 +47,7 @@ void Checkmark_button::activate
 	(
 	)
 {
-	Audio::game_sfx(74);
+	Audio::get_ptr()->play_sound_effect(Audio::game_sfx(74));
 	parent->close();
 }
 

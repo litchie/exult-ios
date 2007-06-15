@@ -1,3 +1,31 @@
+2007-06-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* effects.*, gameclk.*, palette.*, objs/egg.cc: Implemented missing weather:
+	  snow, fog and overcast weather. Also changed rain to better match the
+	  originals. Implemented smooth dawn/sunrise/sundown/dusk and smoother
+	  transition to/from overcast/rain/snow/fog weather. Also, fixed bug
+	  which prevented correct palette from being displayed after entering and
+	  then leaving the cheat screen.
+	* cheat_screen.cc, gamewin.cc: Reset weather to default before setting time.
+	* objs/animate.cc, shapes/miscinf.*, data/*/shape_info.txt: Implemented
+	  grandfather clock's horly "bongs". Implemented reading of animation data
+	  from the original games, which is converted to the Exult format.
+	  As a result, most of the animation data in data/*/shape_info.txt has been
+	  rendered reduntant and is commented out, being left as examples of the
+	  Exult format.
+	  Changed the way extra delay between frames of an animation work to better
+	  update object SFX, and likewise for pure SFX animators with random delays.
+	* gumps/misc_buttons.cc: Fixed dumb error.
+	* effects.cc, actors.cc, shapes/shapewrite.cc, shapes/shapeinf.*,
+	  mapedit/shapeedit.cc: Changed missiles' "special behaviour" to "homing".
+	* actors.cc, usecode/ucinternal.cc: Fixed bug which caused Dupre not to
+	  appear in the conversation with Lord Marsten. Unfortunatelly, this means
+	  that the animation bug fixed 2007-06-07 is now back.
+	* monsters.cc: Monsters can also be pure SFX animators now (fixes bees).
+	* actorio.cc: The original games did not store NPC's face shapes in npc.dat
+	* usecode/ucinternal.cc: Unless passed an NPC object, show face equal to the
+	  absolute value of the number passed from within usecode.
+	* mapedit/exult_studio.glade: Fixed display of weather egg data.
+
 2007-06-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Disabled fire sfx as it sounds awful.
 	* Modified distance function to calculate distance between the center
