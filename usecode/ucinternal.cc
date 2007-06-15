@@ -641,6 +641,34 @@ void Usecode_internal::stack_error
 	}
 
 /*
+ *	Gets the face for an NPC.
+ */
+int Usecode_internal::get_face_shape(Usecode_value& arg1, Actor *&npc)
+	{
+	npc = as_actor(get_item(arg1));
+	int num = -1;
+	if (arg1.is_int())
+		{
+		num = abs(arg1.get_int_value());
+		if (num == 356)	// Avatar.
+			num = 0;
+		}
+	else if (npc)
+		num = npc->get_face_shapenum();
+
+	Actor *iact;
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{			// Special case: Nightmare Smith.
+					//   (But don't mess up Guardian.)
+		if (num == 296 && this->frame->caller_item &&
+		    (iact = this->frame->caller_item->as_actor()) != 0 &&
+		    iact->get_npc_num() == 277)
+			num = 277;
+		}
+	return num;
+	}
+
+/*
  *	Show an NPC's face.
  */
 
@@ -652,20 +680,20 @@ void Usecode_internal::show_npc_face
 	)
 	{
 	show_pending_text();
-	Actor *npc = as_actor(get_item(arg1)), *iact = 0;
-	if (!npc)
+	Actor *npc, *iact = 0;
+	int num = get_face_shape(arg1, npc);
+
+	if (num < 0)
 		return;
 	
-	if (Game::get_game_type() == BLACK_GATE)
-		{
+	if (Game::get_game_type() == BLACK_GATE && npc)
+		{	// Only do this if the NPC is the caller item.
 		if (npc->get_npc_num() != -1) 
 			npc->set_flag (Obj_flags::met);
 		}
 	
 	// Checks for Petra flag.
-	Actor *facenpc = Shapeinfo_lookup::GetFaceReplacement(npc);
-
-	int shape = facenpc->get_face_shapenum();
+	int shape = Shapeinfo_lookup::GetFaceReplacement(num);
 	int frame = arg2.get_int_value();
 
 	if (shape == 0)
@@ -683,14 +711,6 @@ void Usecode_internal::show_npc_face
 			}
 		}
 
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{			// Special case: Nightmare Smith.
-					//   (But don't mess up Guardian.)
-		if (npc->get_npc_num() == 296 && this->frame->caller_item &&
-		    (iact = this->frame->caller_item->as_actor()) != 0 &&
-		    iact->get_npc_num() == 277)
-			shape = 277;
-		}
 	if (!conv->get_num_faces_on_screen())
 		gwin->get_effects()->remove_text_effects();
 	// Only non persistent
@@ -717,10 +737,10 @@ void Usecode_internal::remove_npc_face
 	)
 	{
 	show_pending_text();
-	Actor *npc = as_actor(get_item(arg1));
-	if (!npc)
+	Actor *npc;
+	int shape = get_face_shape(arg1, npc);
+	if (shape < 0)
 		return;
-	int shape = npc->get_face_shapenum();
 	conv->remove_face(shape);
 	}
 
@@ -2938,17 +2958,11 @@ int Usecode_internal::call_usecode
 
 	conv->clear_answers();
 
-	if (call_stack.empty())
-		gwin->get_tqueue()->pause(SDL_GetTicks());
-
 	int ret;
 	if (call_function(id, event, item, true))
 		ret = run();
 	else
 		ret = -1; // failed to call the function
-
-	if (call_stack.empty())
-		gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	set_book(0);
 
@@ -3090,7 +3104,7 @@ void Usecode_internal::do_speech
 	speech_track = num;		// Used in Usecode function.
 	if (!Audio::get_ptr()->start_speech(num))
 					// No speech?  Call text function.
-		call_usecode(0x614, gwin->get_main_actor(), double_click);
+		call_usecode(0x614, 0, double_click);
 	}
 
 /*

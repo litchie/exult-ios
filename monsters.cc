@@ -124,7 +124,7 @@ Monster_actor::Monster_actor
 	{
 					// Check for animated shape.
 	Shape_info& info = get_info();
-	if (info.is_animated())
+	if (info.is_animated() || info.has_sfx())
 		animator = Animator::create(this);
 	}
 

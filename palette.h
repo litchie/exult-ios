@@ -29,13 +29,15 @@ const int PALETTE_DUSK = 1;
 const int PALETTE_DAWN = 1;		// Think this is it.
 const int PALETTE_NIGHT = 2;
 const int PALETTE_INVISIBLE = 3;	// When Avatar is invisible.
-					// 4 looks just like #1.
-const int PALETTE_HAZE = 5;
+const int PALETTE_OVERCAST = 4;		// When raining or overcast during daytime
+const int PALETTE_FOG = 5;
 					// 6 looks a little brighter than #2.
 					// 7 is somewhat warmer.  Torch?
 const int PALETTE_RED = 8;		// Used when hit in combat.
 					// 9 has lots of black.
 const int PALETTE_LIGHTNING = 10;
+const int PALETTE_SINGLE_LIGHT = 11;
+const int PALETTE_MANY_LIGHTS = 12;
 
 
 
@@ -52,7 +54,9 @@ class Palette
 
 public:
 		Palette();
+		Palette(Palette *pal);		// Copy constructor.
 		~Palette();
+		void take(Palette *pal);	// Copies a palette into another.
 					// Fade palette in/out.
 		void fade(int cycles, int inout, int pal_num = -1);
 		bool is_faded_out()
@@ -60,6 +64,8 @@ public:
 		void flash_red();	// Flash red for a moment.
 					// Set desired palette.
 		void set(int pal_num, int new_brightness = -1, 
+							bool repaint=true);
+		void set(unsigned char palnew[768], int new_brightness = -1,
 							bool repaint=true);
 		int get_brightness()	// Percentage:  100 = normal.
 			{ return brightness; }
@@ -77,6 +83,7 @@ public:
 		void fade_out(int cycles);
 		int find_color(int r, int g, int b, int last = 0xe0);
 		void create_palette_map(Palette *to, unsigned char *&buf);
+		Palette *create_intermediate(Palette *to, int nsteps, int pos);
 		void create_trans_table(unsigned char br, unsigned bg,
 			unsigned bb, int alpha, unsigned char *table);
 		void show();
@@ -87,6 +94,29 @@ public:
 		unsigned char get_blue(int nr) { return pal1[3*nr + 2]; }
 		void set_palette (unsigned char palnew[768]);
 	};
-	
+
+/*
+ *	Smooth palette transition.
+ */
+
+class Palette_transition
+	{
+	int step, max_steps;
+	int start_hour, start_minute, rate;
+	Palette *start, *end, *current;
+public:
+	Palette_transition(int from, int to, int ch = 0, int cm = 0, int r = 4,
+				int nsteps = 15, int sh = 0, int smin = 0);
+	Palette_transition(Palette *from, Palette *to, int ch = 0, int cm = 0,
+				int r = 4, int nsteps = 15, int sh = 0, int smin = 0);
+	Palette_transition(Palette *from, int to, int ch = 0, int cm = 0,
+				int r = 4, int nsteps = 15, int sh = 0, int smin = 0);
+	~Palette_transition();
+	int get_step() const
+		{ return step; }
+	bool set_step(int hour, int min);
+	Palette *get_current_palette()
+		{ return current; }
+	};
 
 #endif

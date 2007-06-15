@@ -47,6 +47,22 @@ Palette::Palette()
     	{
 	}
 
+Palette::Palette(Palette *pal)
+	: win(Game_window::get_instance()->get_win()), max_val(63)
+    {
+	take(pal);
+	}
+
+void Palette::take(Palette *pal)
+    {
+	palette = pal->palette;
+	brightness = pal->brightness;
+	faded_out = pal->faded_out;
+	fades_enabled = pal->fades_enabled;
+	memcpy(pal1, pal->pal1, 768);
+	memcpy(pal2, pal->pal2, 768);
+	}
+
 Palette::~Palette()
 	{
 	}
@@ -101,7 +117,10 @@ void Palette::set
 	{
 	if ((palette == pal_num || pal_num == -1) &&
 		(brightness == new_brightness || new_brightness == -1))
-		return;			// Already set.
+		{			// Already set.
+		apply(repaint);	// Force apply just in case.
+		return;
+		}
 	if (pal_num != -1)
 		palette = pal_num;	// Store #.
 	if (new_brightness > 0)
@@ -110,6 +129,29 @@ void Palette::set
 		return;			// In the black.
 	
 	load(PALETTES_FLX, palette);	// could throw!
+	set_brightness(brightness);
+	apply(repaint);
+	}
+
+/*
+ *	Read in a palette.
+ */
+
+void Palette::set
+	(
+	unsigned char palnew[768],
+	int new_brightness,		// New percentage, or -1.
+	bool repaint
+	)
+	{
+	memcpy(pal1,palnew,768);
+	memset(pal2,0,768);
+	palette = -1;
+	if (new_brightness > 0)
+		brightness = new_brightness;
+	if (faded_out)
+		return;			// In the black.
+	
 	set_brightness(brightness);
 	apply(repaint);
 	}
@@ -300,11 +342,29 @@ int Palette::find_color(int r, int g, int b, int last) {
 	return best_index;
 }
 
+/*
+ *	Creates a translation table between two palettes.
+ */
+
 void Palette::create_palette_map(Palette *to, unsigned char *&buf)
 	{
 	// Assume buf has 256 elements
 	for (int i = 0; i < 256; i++)
 		buf[i] = to->find_color(pal1[3*i], pal1[3*i + 1], pal1[3*i + 2], 256);
+	}
+
+/*
+ *	Creates a palette in-between two palettes.
+ */
+
+Palette *Palette::create_intermediate(Palette *to, int nsteps, int pos)
+	{
+	unsigned char *palnew = new unsigned char[768];
+	for(int c=0; c < 768; c++)
+		palnew[c] = ((to->pal1[c]-pal1[c])*pos)/nsteps+pal1[c];
+	Palette *ret = new Palette();
+	ret->set(palnew);
+	return ret;
 	}
 
 /*
@@ -360,3 +420,90 @@ int Palette::get_max_val()
 {
 	return max_val;
 }
+
+Palette_transition::Palette_transition
+	(
+	int from, int to,
+	int ch, int cm,
+	int r,
+	int nsteps,
+	int sh, int smin
+	)
+	: current(0), step(0), rate(r),
+	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	{
+	start = new Palette();
+	start->load(PALETTES_FLX, from);
+	end = new Palette();
+	end->load(PALETTES_FLX, to);
+	set_step(ch, cm);
+	}
+
+Palette_transition::Palette_transition
+	(
+	Palette *from, int to,
+	int ch, int cm,
+	int r,
+	int nsteps,
+	int sh, int smin
+	)
+	: current(0), step(0), rate(r),
+	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	{
+	start = new Palette(from);
+	end = new Palette();
+	end->load(PALETTES_FLX, to);
+	set_step(ch, cm);
+	}
+
+Palette_transition::Palette_transition
+	(
+	Palette *from, Palette *to,
+	int ch, int cm,
+	int r,
+	int nsteps,
+	int sh, int smin
+	)
+	: current(0), step(0), rate(r),
+	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	{
+	start = new Palette(from);
+	end = new Palette(to);
+	set_step(ch, cm);
+	}
+
+bool Palette_transition::set_step(int hour, int min)
+	{
+	int new_step = 60 * (hour - start_hour) + min - start_minute;
+	while (new_step < 0)
+		new_step += 60;
+	new_step /= rate;
+
+	if (!current || new_step != step)
+		{
+		step = new_step;
+		if (current)
+			delete current;
+		current = start->create_intermediate(end, max_steps, step);
+		}
+	if (current)
+		current->apply(true);
+	if (step >= max_steps)
+		return false;
+	else
+		return true;
+	}
+
+Palette_transition::~Palette_transition
+	(
+	)
+	{
+	/*
+	Palette *gpal = Game_window::get_instance()->get_pal();
+	gpal->take(current);
+	gpal->apply(true);
+	*/
+	delete start;
+	delete end;
+	delete current;
+	}

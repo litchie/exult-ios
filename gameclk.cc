@@ -29,6 +29,70 @@
 #include "cheat.h"
 #include "game.h"
 
+static inline bool is_light_palette(int pal)
+	{
+	return (pal == PALETTE_SINGLE_LIGHT || pal == PALETTE_MANY_LIGHTS);
+	}
+
+static inline bool is_dark_palette(int pal)
+	{
+	return (pal == PALETTE_DUSK || pal == PALETTE_NIGHT);
+	}
+
+static inline bool is_weather_palette(int pal)
+	{
+	return (pal == PALETTE_OVERCAST || pal == PALETTE_FOG);
+	}
+
+static inline bool is_day_palette(int pal)
+	{
+	return (pal == PALETTE_DAWN || pal == PALETTE_DAY);
+	}
+
+static inline int get_time_palette(int hour, bool dungeon)
+	{
+	if (dungeon || hour < 6)
+		return PALETTE_NIGHT;
+	else if (hour == 6)
+		return PALETTE_DAWN;
+	else if (hour == 7)
+		return PALETTE_DAY;
+	else if (hour < 20)
+		return PALETTE_DAY;
+	else if (hour == 20)
+		return PALETTE_DUSK;
+	else
+		return PALETTE_NIGHT;
+	}
+
+static inline int get_final_palette
+	(
+	int pal,
+	bool cloudy,
+	bool foggy,
+	int light,
+	bool special
+	)
+	{
+	if (light && is_dark_palette(pal))
+		{
+		int light_palette = (light > 1) + PALETTE_SINGLE_LIGHT;
+						// Gump mode, or light spell?
+		if (special)
+			light_palette = PALETTE_MANY_LIGHTS;
+
+		return light_palette;
+		}
+	else if (is_day_palette(pal))
+		{
+		if (foggy)
+			return PALETTE_FOG;
+		else if (cloudy)
+			return PALETTE_OVERCAST;
+		}
+	return pal;
+	}
+
 /*
  *	Set palette.
  */
@@ -39,7 +103,6 @@ void Game_clock::set_time_palette
 	{
 	Game_window *gwin = Game_window::get_instance();
 	Actor *main_actor = gwin->get_main_actor();
-	int new_palette;
 	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
 	{
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
@@ -52,27 +115,59 @@ void Game_clock::set_time_palette
 	}
 
 	dungeon = gwin->is_in_dungeon();
-	if (dungeon || hour < 5)
-		new_palette = PALETTE_NIGHT;
-	else if (hour < 6)
-		new_palette = PALETTE_DAWN;
-	else if (hour < 19)
-		new_palette = storm <= 0 ? PALETTE_DAY : PALETTE_DUSK;
-	else if (hour < 21)
-		new_palette = PALETTE_DUSK;
-	else
-		new_palette = PALETTE_NIGHT;
-	if (light_source_level)
-		{
-		if (new_palette == PALETTE_NIGHT)
-			new_palette = light_source_level == 1 ? PALETTE_DUSK
-							: PALETTE_DAWN;
-		else if (new_palette == PALETTE_DUSK)
-			new_palette = PALETTE_DAWN;
+
+	int new_palette = get_time_palette(hour+1, dungeon),
+		old_palette = get_time_palette(hour, dungeon);
+	bool cloudy = overcast > 0;
+	bool foggy = fog > 0;
+	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);
+	bool light_change = (light_source_level != old_light_level);
+	bool need_new_transition = (weather_change || light_change);
+
+	new_palette = get_final_palette(new_palette, cloudy, foggy,
+				light_source_level, gwin->is_special_light());
+	old_palette = get_final_palette(old_palette, was_overcast, was_foggy,
+				old_light_level, gwin->is_special_light());
+
+	was_overcast = cloudy;
+	was_foggy = foggy;
+	old_light_level = light_source_level;
+
+	if (weather_change)
+		{	// TODO: Maybe implement smoother transition from
+			// weather to/from dawn/sunrise/sundown/dusk.
+			// Right now, it works like the original.
+		if (transition)
+			delete transition;
+		transition = new Palette_transition(old_palette, new_palette,
+							hour, minute, 1, 4, hour, minute);
+		return;
 		}
-					// Gump mode, or light spell?
-	if (gwin->is_special_light() && new_palette == PALETTE_NIGHT)
-		new_palette = PALETTE_DAWN;
+	else if (light_change)
+		{
+		if (transition)
+			{
+			delete transition;
+			transition = 0;
+			}
+		gwin->get_pal()->set(new_palette);
+		return;
+		}
+	if (transition)
+		{
+		if (transition->set_step(hour, minute))
+			return;
+		delete transition;
+		transition = 0;
+		}
+
+	if (old_palette != new_palette)	// Do we have a transition?
+		{
+		transition = new Palette_transition(old_palette, new_palette,
+							hour, minute, 4, 15, hour, 0);
+		return;
+		}
+
 	gwin->get_pal()->set(new_palette);
 	}
 
@@ -102,15 +197,30 @@ void Game_clock::set_light_source_level
 }
 
 /*
- *	Storm ending/starting.
+ *	Cloud cover.
  */
 
-void Game_clock::set_storm
+void Game_clock::set_overcast
 	(
 	bool onoff
 	)
 {
-	storm += (onoff ? 1 : -1);
+	overcast += (onoff ? 1 : -1);
+	set_time_palette();		// Update palette.
+}
+
+/*
+ *	Fog.
+ */
+
+void Game_clock::set_fog
+	(
+	bool onoff
+	)
+{
+	fog += (onoff ? 1 : -1);
+	if (hour < 6 || hour > 20)
+		fog = 0;	// Disable fog at night???
 	set_time_palette();		// Update palette.
 }
 
@@ -167,6 +277,7 @@ void Game_clock::increment
 	hour %= 24;
 	
 	// Update palette to new time.
+	reset();
 	set_time_palette();
 	// Check to see if we need to update the NPC schedules.
 	if (hour != old_hour)		// Update NPC schedules.
@@ -203,11 +314,22 @@ void Game_clock::handle_event
 			hour -= 24;
 			day++;
 		}
-		set_time_palette();
+		// Testing.
+		//set_time_palette();
 		gwin->mend_npcs();	// Restore HP's each hour.
 		check_hunger();		// Use food, and print complaints.
 		gwin->schedule_npcs(hour);
 	}
+
+	if (transition && !transition->set_step(hour, minute))
+		{
+		delete transition;
+		transition = 0;
+		set_time_palette();
+		}
+	else if (hour != hour_old)
+		set_time_palette();
+
 	if ((hour != hour_old) || (minute/15 != min_old/15))
 		COUT("Clock updated to " << hour << ':' << minute);
 	curtime += gwin->get_std_delay()*ticks_per_minute;
@@ -227,6 +349,7 @@ void Game_clock::fake_next_period
 	day += hour/24;			// Update day.
 	hour %= 24;
 	Game_window *gwin = Game_window::get_instance();
+	reset();
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour);

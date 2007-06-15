@@ -119,8 +119,8 @@ int Ammo_info::read
 	damage = *ptr++;
 	unsigned char flags0 = *ptr++;
 	m_no_blocking = (flags0>>3)&1;
-	special_behaviour = ((flags0>>4)&3)==3;
-	drop_type = special_behaviour ? 0 : (flags0>>4)&3;
+	homing = ((flags0>>4)&3)==3;
+	drop_type = homing ? 0 : (flags0>>4)&3;
 	m_bursts = (flags0>>6)&1;
 	ptr++;			// 1 unknown.
 	unsigned char flags1 = *ptr++;

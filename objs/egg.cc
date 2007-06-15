@@ -1078,22 +1078,31 @@ void Egg_object::set_weather
 	int cur = eman->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
+	// Experimenting.
+	if (weather == 3 || cur != weather)
+		eman->remove_weather_effects();
+
 	switch (weather)
 		{
 	case 0:		// Back to normal.
 		eman->remove_weather_effects();
 		break;
-	case 1:		// ++++++++LATER:  Should be snow, I think (jsf).
+	case 1:		// Snow.
+		eman->add_effect(new Snowstorm_effect(len, 0, egg));
+		break;
 	case 2:		// Storm.
-		if (cur != weather)
-			eman->add_effect(new Storm_effect(len, 0, egg));
+		eman->add_effect(new Storm_effect(len, 0, egg));
 		break;
 	case 3:		// (On Ambrosia).
 		eman->remove_weather_effects();
 		eman->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
+	case 4:		// Fog.
+		eman->add_effect(new Fog_effect(len, 0, egg));
+		break;
+	case 5:		// Overcast.
 	case 6:		// Clouds.
-		eman->add_effect(new Clouds_effect(len, 0, egg));
+		eman->add_effect(new Clouds_effect(len, 0, egg, weather));
 		break;
 	default:
 		break;
