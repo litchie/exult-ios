@@ -270,11 +270,11 @@ void Actor::read
 	if ((flags3 >> 2) & 1) 
 		set_flag (Obj_flags::si_zombie);
 
-	face_num = nfile->read2();	// NOTE:  Exult's using 2 bytes, but
-					//   I think orig. used 1.
-	if (fix_first)
-		face_num &= 0xff;	// Just 1 byte in orig.
-	if (!face_num && npc_num > 0)	// Fix older savegames.
+	face_num = nfile->read2();	// NOTE:  Exult's using 2 bytes,
+	if (fix_first)	// Not used in the original.
+		//face_num &= 0xff;	// Just 1 byte in orig.
+		face_num = npc_num;
+	else if (!face_num && npc_num > 0)	// Fix older savegames.
 		face_num = npc_num;
 	nfile->skip(1);	// Unknown
 

@@ -53,10 +53,13 @@ using std::cout;
  */
 void Object_sfx::stop()
 	{
-	if(channel >= 0)
+	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
-		Mix_HaltChannel(channel);
-		channel = -1;
+		if(channel[i] >= 0)
+			{
+			Mix_HaltChannel(channel[i]);
+			channel[i] = -1;
+			}
 		}
 	}
 
@@ -66,29 +69,59 @@ void Object_sfx::stop()
  */
 void Object_sfx::update
 	(
+	bool play
 	)
 	{
-	if (obj->is_pos_invalid() || !sfx)
-		return;			// Not on map.
-
-	int active = 0;
-	if (channel != -1)
-	 	active = Mix_Playing(channel);
-
-	int sfxnum = sfx->num;
-	if (!active && !repeat && channel != -1)
-		{
-		Mix_HaltChannel(channel);
-		channel = -1;
+	if (obj->is_pos_invalid())
+		{			// Not on map.
+		stop();
+		return;
 		}
-	if (channel == -1 && sfx->range > 1)
+
+	if (!sfx)
+		return;
+
+	int active[2] = {0, 0};
+	int rep[2] = {repeat, 0};
+	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
-		if (sfx->rand)
-			sfxnum += (rand() % sfx->range);
-		else
+		if (channel[i] != -1)
+	 		active[i] = Mix_Playing(channel[i]);
+		if (!active[i] && !rep[i] && channel[i] != -1)
 			{
-			last_sfx = ((last_sfx + 1) % sfx->range);
-			sfxnum += last_sfx;
+			Mix_HaltChannel(channel[i]);
+			channel[i] = -1;
+			}
+		}
+	// If neither channel is playing, and we are not going to
+	// play anything now, we have nothing to do.
+	if (!play && channel[0] == -1 && channel[1] == -1)
+		return;
+
+	int sfxnum[2] = {sfx->num, -1};
+	if (play && channel[0] == -1)
+		{
+		if (rand() %100 >= sfx->chance)
+			return;
+		if (sfx->range > 1)
+			{
+			if (sfx->rand)
+				sfxnum[0] += (rand() % sfx->range);
+			else
+				{
+				last_sfx = ((last_sfx + 1) % sfx->range);
+				sfxnum[0] += last_sfx;
+				}
+			}
+		}
+	if (play && channel[1] == -1 && sfx->extra > -1)
+		{
+		Game_clock *gclock = Game_window::get_instance()->get_clock();
+		if (gclock->get_minute() == 0)
+			{	// Play sfx->extra every hour for reps = hour
+			int reps = gclock->get_hour()%12;
+			rep[1] = (reps ? reps : 12) - 1;
+			sfxnum[1] = sfx->extra;
 			}
 		}
 
@@ -112,23 +145,25 @@ void Object_sfx::update
 		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
 		}
 
-	if (channel == -1)		// First time?
-					// Start playing, and repeat.
-		channel = Audio::get_ptr()->play_sound_effect(sfxnum, volume, dir, repeat);
-	else
-		{
-		if(halt)
-			{
-			Mix_HaltChannel(channel);
-			channel = -1;
-			}
+	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
+		if (play && channel[i] == -1 && sfxnum[i] > -1)		// First time?
+						// Start playing, and repeat.
+			channel[i] = Audio::get_ptr()->play_sound_effect(
+						sfxnum[i], volume, dir, rep[i]);
 		else
 			{
-			//Just change the "location" of the sound
-			Mix_Volume(channel, volume);
-			Mix_SetPosition(channel, (dir * 22), 0);
+			if(halt)
+				{
+				Mix_HaltChannel(channel[i]);
+				channel[i] = -1;
+				}
+			else
+				{
+				//Just change the "location" of the sound
+				Mix_Volume(channel[i], volume);
+				Mix_SetPosition(channel[i], (dir * 22), 0);
+				}
 			}
-		}
 	}
 
 /*
@@ -163,7 +198,10 @@ Animator::~Animator
 	while (gwin->get_tqueue()->remove(this))
 		;
 	if (objsfx)
+		{
 		objsfx->stop();
+		delete objsfx;
+		}
 	}
 
 /*
@@ -207,48 +245,31 @@ Frame_animator::Frame_animator
 void Frame_animator::Initialize()
 {
 	created = currpos = 0;
-	delay = 100;
 
 	last_shape = obj->get_shapenum();
 	last_frame = obj->get_framenum();
 
 	aniinf = Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
-	if (!aniinf)
-		{	 // Default animation cycle.
-		new_aniinf = true;
-		aniinf = new Animation_info();
-		aniinf->type = FA_LOOPING;
-		aniinf->first_frame = 0;
-		aniinf->frame_count = obj->get_num_frames();
-		aniinf->offset = 0;
-		aniinf->offset_type = 0;
-		aniinf->frame_delay = 1;
-		aniinf->sfx_info = 0;
-		}
-	else
-		{
-		new_aniinf = false;
-		delay *= aniinf->frame_delay;
+	frame_counter = aniinf->frame_delay;
 
-		if (aniinf->type == FA_LOOPING)
+	if (aniinf->type == FA_LOOPING)
+		{
+		switch (aniinf->offset_type)
 			{
-			switch (aniinf->offset_type)
-				{
-				case -1:
-					created = currpos = last_frame;
-					currpos -= aniinf->first_frame;
-					break;
-				case 0:
-					created = currpos = aniinf->offset;
-					break;
-				case 1:
-					created = currpos = last_frame % aniinf->frame_count;
-					break;
-				}
+			case -1:
+				created = currpos = last_frame;
+				currpos -= aniinf->first_frame;
+				break;
+			case 0:
+				created = currpos = aniinf->offset;
+				break;
+			case 1:
+				created = currpos = last_frame % aniinf->frame_count;
+				break;
 			}
-		else if (aniinf->type == FA_RANDOM_LOOP)
-			currpos = aniinf->frame_count - 1;
 		}
+	else if (aniinf->type == FA_RANDOM_LOOP)
+		currpos = aniinf->frame_count - 1;
 }
 
 /*
@@ -259,7 +280,7 @@ int Frame_animator::get_next_frame()
 {
 	int framenum = 0;
 
-	switch ((AniType)aniinf->type)
+	switch (aniinf->type)
 	{
 	case FA_HOURLY:
 		framenum = gclock->get_hour() % aniinf->frame_count;  
@@ -275,15 +296,18 @@ int Frame_animator::get_next_frame()
 	case FA_LOOPING:
 		{
 		unsigned int ticks = Game::get_ticks();
-		framenum = (ticks / delay) + created;
-		framenum %= aniinf->frame_count;
-		currpos = framenum;
-		framenum += aniinf->first_frame;
+		const int delay = 100;
+		currpos = (ticks / (delay * aniinf->frame_delay)) + created;
+		currpos %= aniinf->frame_count;
+		framenum = aniinf->first_frame + currpos;
 		break;
 		}
 	case FA_RANDOM_LOOP:
-		currpos++;
-		currpos %= aniinf->frame_count;
+		if (currpos || rand()%20 == 0)
+			{
+			currpos++;
+			currpos %= aniinf->frame_count;
+			}
 		framenum = aniinf->first_frame + currpos;
 		break;
 
@@ -292,6 +316,11 @@ int Frame_animator::get_next_frame()
 		currpos %= aniinf->frame_count;
 		if (!currpos)
 			currpos += aniinf->offset - aniinf->first_frame;
+		framenum = aniinf->first_frame + currpos;
+		break;
+
+	case FA_RANDOM_FRAMES:
+		currpos = rand() % aniinf->frame_count;
 		framenum = aniinf->first_frame + currpos;
 		break;
 	}
@@ -309,48 +338,39 @@ void Frame_animator::handle_event
 	long udata			// Game window.
 	)
 {
-	unsigned int ticks = Game::get_ticks();
-
+	const int delay = 100;
 	Game_window *gwin = (Game_window *) udata;
 
-	if (!gwin->add_dirty(obj))
-	{	// No longer on screen.
-		animating = 0;
-		// Stop playing sound.
-		if (objsfx)
-			objsfx->stop();
-		return;
-	}
-
-	int framenum = get_next_frame();
-	obj->set_frame(last_frame = framenum);
-	gwin->add_dirty(obj);
+	if (!--frame_counter)
+		{
+		frame_counter = aniinf->frame_delay;
+		bool dirty_first = gwin->add_dirty(obj);
+		int framenum = get_next_frame();
+		obj->set_frame(last_frame = framenum);
+		if (!dirty_first && !gwin->add_dirty(obj))
+			{	// No longer on screen.
+			animating = 0;
+			// Stop playing sound.
+			if (objsfx)
+				objsfx->stop();
+			return;
+			}
+		}
 
 	if (objsfx)
 	{	// Sound effect?
-		if (aniinf->type == FA_RANDOM_LOOP)
-			{
-			if (currpos == 1)
-				objsfx->update();
-			}
-		else
-			{
-			if ((!aniinf->sfx_info && !currpos) ||	// Synch with animation
+		bool play = (frame_counter == aniinf->frame_delay) &&
+			((aniinf->type == FA_RANDOM_LOOP && currpos == 1) ||
+				((!aniinf->sfx_info && !currpos) ||	// Synch with animation
 					(aniinf->sfx_info &&
-						(currpos % aniinf->sfx_info) == 0))	// skip n frames
-				objsfx->update();
-			}
+						(currpos % aniinf->sfx_info) == 0)));	// skip n frames
+		objsfx->update(play);
 	}
 
 	// Add back to queue for next time.
 	if (animating)
-	{
 		// Ensure all animations are synched
-		int nextticks = ticks + delay - (ticks%delay);
-		if (aniinf->type == FA_RANDOM_LOOP && !currpos)
-			nextticks += delay * (rand() % 20);
-		gwin->get_tqueue()->add(nextticks, this, udata);
-	}
+		gwin->get_tqueue()->add(curtime + delay - (curtime%delay), this, udata);
 }
 
 /*
@@ -375,7 +395,6 @@ void Sfx_animator::handle_event
 	)
 {
 	const int delay = 100;		// Guessing this will be enough.
-	unsigned int ticks = Game::get_ticks();
 
 	Game_window *gwin = (Game_window *) udata;
 	Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(obj));
@@ -389,15 +408,10 @@ void Sfx_animator::handle_event
 	}
 
 	if (objsfx)		// Sound effect?
-		objsfx->update();
+		objsfx->update(true);
 					// Add back to queue for next time.
 	if (animating)
-		{
-		int nextticks = ticks + delay - (ticks%delay);
-		if (objsfx->get_has_delay())
-			nextticks += delay * (10 + rand() % 30);
-		gwin->get_tqueue()->add(nextticks, this, udata);
-		}
+		gwin->get_tqueue()->add(curtime + delay - (curtime%delay), this, udata);
 }
 
 /*
@@ -436,7 +450,7 @@ void Wiggle_animator::handle_event
 	long udata			// Game window.
 	)
 	{
-	int delay = 100;		// Delay between frames.
+	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = (Game_window *) udata;
 	if (!gwin->add_dirty(obj))
 		{			// No longer on screen.

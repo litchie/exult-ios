@@ -125,7 +125,7 @@ Tile_coord Game_object::get_center_tile
 	if (!chunk)
 		{
 #if DEBUG
-		cout << "Asking tile for obj. " << get_shapenum()
+		cout << "Asking center tile for obj. " << get_shapenum()
 				<< " not on map" << endl;
 #endif
 		return Tile_coord(255*c_tiles_per_chunk, 255*c_tiles_per_chunk,

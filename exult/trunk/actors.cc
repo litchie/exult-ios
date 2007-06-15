@@ -3415,11 +3415,11 @@ bool Actor::figure_hit_points
 					// Get bonus ammo points.
 	Ammo_info *ainf = ammo_shape > 0 ? 
 			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;
-	bool special_behaviour = false;
+	bool ishoming = false;
 	if (ainf)
 		{
 		wpoints += ainf->get_damage();
-		special_behaviour = ainf->has_special_behaviour();
+		ishoming = ainf->is_homing();
 		}
 	int usefun;			// See if there's usecode for it.
 	if (winf && (usefun = winf->get_usecode()) != 0)
@@ -3474,7 +3474,7 @@ bool Actor::figure_hit_points
 			attacker->say(magebane_struck);
 			}
 		}
-	if (instant_death || special_behaviour)
+	if (instant_death || ishoming)
 		prob = 200;	// always hits
 
 	if (combat_trace) {
@@ -3535,7 +3535,7 @@ bool Actor::figure_hit_points
 	if (wpoints > 0)		// Some ('curse') do no damage.
 		{
 		if ((wpoints == 127)	// Glass sword?
-			|| (special_behaviour))	//Death Vortex/Energy Mist
+			|| (ishoming))	//Death Vortex/Energy Mist
 			hp = wpoints;	// A killer.
 		else {
 			hp = 1 + rand()%wpoints;
@@ -4567,7 +4567,9 @@ void Npc_actor::handle_event
 		return;
 		}
 	// Prevent actor from doing anything if not in the active map.
-	if (get_map() != gwin->get_map())
+	// ... but not if the NPC is not on the map (breaks pathfinding
+	// from offscreen if NPC not on map).
+	if (get_map() && get_map() != gwin->get_map())
 		{
 		set_action(0);
 		dormant = true;

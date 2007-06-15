@@ -48,6 +48,8 @@ using std::multimap;
 using std::pair;
 using std::string;
 
+using namespace std;
+
 static map<int, int> *explosion_sprite_table = 0;
 static map<int, SFX_info> *shape_sfx_table = 0;
 static multimap<int, Animation_info> *animation_cycle_table = 0;
@@ -172,19 +174,25 @@ public:
 	virtual void parse_entry(int index, char *eptr,
 			bool for_patch, int version)
 		{
-		SFX_info data = {-1, false, 1, false};
+		SFX_info data = {-1, false, 1, 100, -1};
 		int key = ReadInt(eptr, 0);
 		data.num = ReadInt(eptr);
 		if (version >= 2)
 			{
 			if (*eptr)
 				{
-				data.delay = ReadInt(eptr) != 0;
+				data.chance = ReadInt(eptr);
+				if (data.chance < 1 || data.chance > 100)
+					data.chance = 100;
 				if (*eptr)
 					{
 					data.range = ReadInt(eptr);
 					if (*eptr)
+						{
 						data.rand = ReadInt(eptr) != 0;
+						if (*eptr)
+							data.extra = ReadInt(eptr);
+						}
 					}
 				}
 			}
@@ -548,14 +556,14 @@ void Animation_parser::parse_entry
 	int version
 	)
 	{
-	Animation_info inf = {0, 0, 0, 0, -1, 1, 1};
+	Animation_info inf = {FA_LOOPING, 0, 0, 0, -1, 1, 1};
 	int shapenum = ReadInt(eptr, 0);
-	inf.type = ReadInt(eptr);
-	if (inf.type == 0 || inf.type == 3 || inf.type == 4)
-		{	// FA_LOOPING, FA_RANDOM_LOOP, FA_LOOP_RECYCLE
+	inf.type = (AniType)ReadInt(eptr);
+	if (inf.type != FA_HOURLY && inf.type != FA_NON_LOOPING)
+		{
 		inf.first_frame = ReadInt(eptr);
 		inf.frame_count = ReadInt(eptr);
-		if (inf.type == 4)
+		if (inf.type == FA_LOOP_RECYCLE)
 			{
 			inf.offset = ReadInt(eptr);
 			if (inf.offset < 0)
@@ -565,7 +573,7 @@ void Animation_parser::parse_entry
 			if (inf.sfx_info < 1)
 				inf.sfx_info = 1;
 			}
-		else if (inf.type == 0 && *eptr)
+		else if (inf.type == FA_LOOPING && *eptr)
 			{
 			eptr++;
 			if (*eptr == '%')
@@ -591,22 +599,22 @@ void Animation_parser::parse_entry
 				}
 			}
 		}
+	else if (inf.type == FA_NON_LOOPING && version >= 3)
+		{
+		inf.first_frame = ReadInt(eptr);
+		inf.frame_count = ReadInt(eptr);
+		}
 	if (inf.frame_count == 0)
 		{	// Sane default.
 		ShapeID shp(shapenum, 0);
 		inf.frame_count = shp.get_num_frames();
 		}
 
-	if (for_patch)
-		{
-		Animation_info *old = Shapeinfo_lookup::get_animation_cycle_info(
-				shapenum, inf.first_frame);
-		if (old)
-			// Replace existing.
-			*old = inf;
-		else
-			table->insert(pair<int, Animation_info>(shapenum, inf));
-		}
+	Animation_info *old = Shapeinfo_lookup::get_animation_cycle_info(
+			shapenum, inf.first_frame);
+	if (old)
+		// Replace existing.
+		*old = inf;
 	else
 		table->insert(pair<int, Animation_info>(shapenum, inf));
 	}
@@ -740,6 +748,87 @@ void Shapeinfo_lookup::Read_data_file
 	patch_strings.clear();
 	}
 
+static void create_original_cycles
+	(
+	int type,
+	int shapenum,
+	multimap<int, Animation_info> *table
+	)
+	{
+	ShapeID shp(shapenum, 0);
+	Animation_info inf = {FA_LOOPING, 0, shp.get_num_frames(), 0, -1, 1, 1};
+
+	switch (type)
+		{
+		case 0:
+		case 1:
+			break;
+		case 5:
+			inf.type = FA_RANDOM_LOOP;
+			break;
+		case 6:
+			inf.type = FA_RANDOM_FRAMES;
+			break;
+		case 8:
+			inf.type = FA_HOURLY;
+			break;
+		case 9:
+			inf.type = FA_LOOP_RECYCLE;
+			inf.offset = inf.frame_count - 8;
+			break;
+		case 10:
+			inf.type = FA_LOOP_RECYCLE;
+			inf.offset = inf.frame_count - 6;
+			break;
+		case 11:
+			{
+			// First frame doesn't animate.
+			inf.type = FA_LOOPING;
+			int nframes = inf.frame_count-1;
+			inf.frame_count = 1;
+			table->insert(pair<int, Animation_info>(shapenum, inf));
+			inf.first_frame = 1;
+			inf.frame_count = nframes;
+			break;
+			}
+		case 13:
+			inf.type = FA_NON_LOOPING;
+			break;
+		case 14:
+			inf.frame_delay = 4;
+			inf.sfx_info = 0;
+			break;
+		case 15:
+			{
+			int nframes = inf.frame_count;
+			inf.frame_count = 6;
+			inf.offset_type = 1;
+			for (int i = 0; i < nframes/6; i++)
+				{
+				table->insert(pair<int, Animation_info>(shapenum, inf));
+				inf.first_frame += 6;
+				}
+			// There may be one last cycle.
+			inf.frame_count = nframes%6;
+			if (!inf.frame_count)
+				return;
+			break;
+			}
+		default:
+			// Not handled yet. These would be cases 2, 3, 4, 7 and 12:
+			// case 2 seems to be equal to case 0/1 except that
+			//		frames advance randomly (maybe 1 in 4 chance)
+			// case 3 is very strange. I have noted no pattern yet.
+			// case 4 seems to be for case 3 what case 2 is for case 0/1.
+			// case 7 toggles bit 0 of the frame (i.e., new_frame == frame ^ 1)
+			// case 12 seems to advance frames at 1/4 rate.
+			// None of these are used for any animated shape, which is why
+			// I haven't bothered implementing them.
+			return;
+		}
+	table->insert(pair<int, Animation_info>(shapenum, inf));
+	}
+
 /*
  *	Setup misc info tables.
  */
@@ -752,6 +841,27 @@ void Shapeinfo_lookup::setup_miscinf
 	animation_cycle_table = new multimap<int, Animation_info>;
 	usecode_event_table = new map<int, bool>;
 	mountain_top_table = new map<int, bool>;
+
+	// Read original animation info first if there.
+	if (GAME_BG || GAME_SI)
+		{
+		ifstream tfa;
+			// We *should* blow up if TFA not there.
+		U7open(tfa, TFA);
+		tfa.seekg(3*1024);
+		unsigned char buf[512];
+		tfa.read((char *)buf, 512);
+		tfa.close();
+		unsigned char *ptr = buf;
+		for (int i = 0; i < 512; i++, ptr++)
+			{
+			if ((*ptr)&0xf)
+				create_original_cycles((*ptr)&0xf, 2*i, animation_cycle_table);
+			if ((*ptr)&0xf0)
+				create_original_cycles((*ptr) >> 4, 2*i+1, animation_cycle_table);
+			}
+		}
+
 	const char *sections[5] = {"explosions", "shape_sfx",
 			"animation", "usecode_events", "mountain_tops"};
 	Shapeinfo_entry_parser *parsers[5] = {
@@ -960,12 +1070,15 @@ Animation_info *Shapeinfo_lookup::get_animation_cycle_info
 	for (aniIterator it = itPair.first; it != itPair.second; ++it)
 		{
 		Animation_info& inf = (*it).second;
-		if (inf.type == 1 || inf.type == 2 ||
-			(inf.first_frame <= init_frame &&
-			 inf.first_frame + inf.frame_count > init_frame))
+		if (inf.first_frame <= init_frame &&
+				inf.first_frame + inf.frame_count > init_frame)
 			return &inf;
 		}
-	return NULL;
+	ShapeID shp(shapenum, 0);
+	Animation_info inf = {FA_LOOPING, 0, shp.get_num_frames(), 0, -1, 1, 1};
+	animation_cycle_table->insert(pair<int, Animation_info>(shapenum, inf));
+	// Return the one in the table.
+	return get_animation_cycle_info(shapenum, init_frame);
 	}
 
 /*
@@ -1248,16 +1361,16 @@ bool Shapeinfo_lookup::HasFaceReplacement(int npcid)
 		return npcid;
 }
 
-Actor *Shapeinfo_lookup::GetFaceReplacement(Actor *npc)
+int Shapeinfo_lookup::GetFaceReplacement(int facenum)
 {
 	if (!petra_table)
 		setup_avatar_data();
 	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_main_actor()->get_flag(Obj_flags::petra))
 		{
-		map<int, int>::iterator it = petra_table->find(npc->get_npc_num());
+		map<int, int>::iterator it = petra_table->find(facenum);
 		if (it != petra_table->end())
-			return gwin->get_npc((*it).second);
+			return (*it).second;
 		}
-	return npc;
+	return facenum;
 }

@@ -80,11 +80,18 @@ struct  Paperdoll_npc
 	int			gump_shape;
 };
 
+enum AniType				// Type of animation
+{
+	FA_LOOPING = 0,
+	FA_HOURLY = 1,
+	FA_NON_LOOPING = 2,
+	FA_RANDOM_LOOP = 3,
+	FA_LOOP_RECYCLE = 4,
+	FA_RANDOM_FRAMES = 5
+};
 struct Animation_info
 {
-	int		type;			// Type of animation; one of FA_LOOPING,
-	                        // FA_HOURLY, FA_NON_LOOPING, FA_RANDOM_LOOP
-							// or FA_LOOP_RECYCLE
+	AniType	type;
 	int		first_frame;	// First frame of the animation cycle
 	int		frame_count;	// Frame count of the animation cycle
 	int		offset;			// Overall phase shift of the animation
@@ -99,8 +106,8 @@ struct SFX_info
 	int		num;
 	bool	rand;			// sfx in range are to be randomly chosen.
 	int		range;			// # of sequential sfx to be used.
-	bool	delay;			// If there is a nonzero interval (possibly random)
-	                        // between two consecutive plays.
+	int		chance;			// % chance of playing the SFX.
+	int		extra;			// Play this SFX at noon and midnight.
 };
 
 struct Base_Avatar_info
@@ -205,7 +212,7 @@ public:
 	static Skin_data *GetSkinInfoSafe(Actor *npc);
 	static bool IsSkinSelectable(int skin);
 	static bool HasFaceReplacement(int npcid);
-	static Actor *GetFaceReplacement(Actor *npc);
+	static int GetFaceReplacement(int facenum);
 	static Usecode_function_data *GetAvUsecode(int type);
 private:
 	static void Read_data_file(const char *fname, const char *sections[],

@@ -1373,6 +1373,7 @@ void Game_window::read_gwin
 	scrolltx = gin.read2();
 	scrollty = gin.read2();
 					// Read clock.
+	clock->reset();
 	clock->set_day(gin.read2());
 	clock->set_hour(gin.read2());
 	clock->set_minute(gin.read2());

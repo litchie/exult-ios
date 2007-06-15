@@ -239,15 +239,31 @@ public:
 	};
 
 /*
+ *	Fog.
+ */
+class Fog_effect : public Weather_effect
+	{
+	bool start;
+public:
+	Fog_effect(int duration, int delay = 0, Game_object *egg = 0)
+		: Weather_effect(duration, delay, 4, egg), start(true)
+		{  }
+	~Fog_effect();
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
  *	A raindrop:
  */
 class Raindrop
 	{
 	unsigned char oldpix;		// Pixel originally on screen.
 	unsigned char yperx;		// Move this many y-pixels for each x.
+	char flake_wobble;		// Snowflakes wobble around center.
 	long ax, ay;			// Coords. where drawn in abs. pixels.
 public:
-	Raindrop() : oldpix(0xff), yperx(1), ax(-1), ay(-1)
+	Raindrop() : oldpix(0xff), yperx(1), ax(-1), ay(-1), flake_wobble(-1)
 		{  }
 	void paint(Image_window8 *iwin, int scrolltx, int scrollty,
 						Xform_palette& xform);
@@ -255,6 +271,8 @@ public:
 	void next(Image_window8 *iwin, int scrolltx, int scrollty,
 					Xform_palette& xform, int w, int h);
 	void next_random(Image_window8 *iwin, int scrolltx, int scrollty,
+					Xform_palette& xform, int w, int h);
+	void next_flake(Image_window8 *iwin, int scrolltx, int scrollty,
 					Xform_palette& xform, int w, int h);
 	};	
 
@@ -267,11 +285,30 @@ protected:
 #define MAXDROPS 200
 	Raindrop drops[MAXDROPS];	// Drops moving down the screen.
 	int num_drops;			// # to actually use.
+	bool gradual;
+	void change_ndrops(unsigned long curtime)
+		{
+		if (!gradual)
+			return;
+		if ((curtime > stop_time - 2500) && num_drops)
+			{	// End gradually.
+			num_drops -= (rand() % 15);
+			if (num_drops < 0)
+				num_drops = 0;
+			}
+		else if (gradual && curtime < stop_time)	// Keep going?
+			{	// Start gradually.
+			if (num_drops < MAXDROPS)
+				num_drops += (rand() % 5);
+			if (num_drops > MAXDROPS)
+				num_drops = MAXDROPS;
+			}
+		}
 public:
 	Rain_effect(int duration, int delay = 0, 
 		int ndrops = MAXDROPS, int n = -1, Game_object *egg = 0)
 		: Weather_effect(duration, delay, n, egg),
-		  num_drops(ndrops)
+		  num_drops(ndrops), gradual(ndrops == 0)
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
@@ -306,7 +343,32 @@ public:
 	Storm_effect(int duration, int delay = 0, Game_object *egg = 0);
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
-	virtual ~Storm_effect();
+	};
+
+/*
+ *	Snowing.
+ */
+class Snow_effect : public Rain_effect
+	{
+public:
+	Snow_effect(int duration, int delay = 0, Game_object *egg = 0) 
+					// Weather #1.
+		: Rain_effect(duration, delay, 0, 1, egg)
+		{  }
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Snow storm.
+ */
+class Snowstorm_effect : public Weather_effect
+	{
+	int start;			// 1 to start storm.
+public:
+	Snowstorm_effect(int duration, int delay = 0, Game_object *egg = 0);
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -350,14 +412,14 @@ class Clouds_effect : public Weather_effect
 	{
 	int num_clouds;
 	Cloud **clouds;			// ->clouds.
+	bool overcast;
 public:
-	Clouds_effect(int duration, int delay = 0, Game_object *egg = 0);
+	Clouds_effect(int duration, int delay = 0, Game_object *egg = 0, int n = -1);
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
 	virtual void paint();
-	virtual ~Clouds_effect()
-		{ delete [] clouds; }
+	virtual ~Clouds_effect();
 	};
 
 /*

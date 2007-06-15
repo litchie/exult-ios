@@ -4,7 +4,7 @@
 #
 
 %%section version
-:2
+:3
 %%endsection
 
 %%section explosions
@@ -51,18 +51,18 @@
 
 %%section shape_sfx
 #	Format
-#		:shapenum/sfxnum/delay/range/rand
+#		:shapenum/sfxnum/chance/range/rand/extra
 #	Only the first two parameters are required.
-#	delay is a flag (either 0 or 1) which indicates extra delay
-#	between successive plays. If it is 1 and the shape does *not*
-#	have an associated animation (e.g., cavern), there will be
-#	a random delay. If the shape *does* have an associated animation,
-#	this flag will be ignored.
+#	chance is the % chance of playing the sfx at any given moment.
+#	Values of chance not in the [1-100] interval are treated as 100.
 #	range is used to specify a sequence of different sfx used by the
 #	shape: Exult will play sfx ranging from sfxnum to sfxnum + range - 1.
 #	rand is a flag controlling how range is used: if rand is 1, Exult
 #	will randomly play one sfx in the range; if rand is 0, Exult will
 #	play them sequentially, wrapping back to the first sfx.
+#	extra is basicall for the grandfather clock. It is a SFX that will
+#	play every game hour a number of times equal to hour % 12 (or
+#	twelve times for midnight).
 #
 #	Surf (49)
 :612/49
@@ -83,10 +83,14 @@
 
 #	Bubbles (54 to 58)
 #
-:334/54/0/5/1
-:335/54/0/5/1
+:334/54/100/5/1
+:335/54/100/5/1
 #	Doesn't seem to play sounds
-#:780/54/0/5/1
+#:780/54/100/5/1
+
+#	Slimes (54 to 58)
+#
+:529/54/100/5/1
 
 #	Fountains
 #
@@ -131,13 +135,13 @@
 
 #	Grandfather clock
 #
-:252/17/0/2
-:695/17/0/2
+:252/17/100/2/0/19
+:695/17/100/2/0/19
 
 #	Cavern
 #
-:389/103/1
-:391/103/1
+:389/103/5
+:391/103/5
 
 #	Bee
 #
@@ -152,9 +156,9 @@
 
 #	Flaming weapons -- sounds awful, so it is disabled
 #
-#:551/20/0/3/1
-#:553/20/0/3/1
-#:630/20/0/3/1
+#:551/20/50/3/1
+#:553/20/50/3/1
+#:630/20/50/3/1
 
 #	Mechanism
 #
@@ -179,7 +183,7 @@
 
 #	Smokebomb
 #
-:769/36
+:769/52
 
 #	The Vortex Cube
 #
@@ -191,11 +195,11 @@
 
 #	Campfire -- sounds awful, so it is disabled
 #
-#:825/20/0/3/1
+#:825/20/50/3/1
 
 #	Fire Field -- sounds awful, so it is disabled
 #
-#:895/20/0/3/1
+#:895/20/50/3/1
 
 #	Poison/Sleep Field
 #
@@ -217,9 +221,14 @@
 %%endsection
 
 %%section animation
-#	The dafault animation starts at frame 0, goes through all
+#	The "default" animation starts at frame 0, goes through all
 #	frames and returns to frame 0 again. This list is only for
 #	animations which are NOT like that.
+#
+#	Moreover, most of the data are commented, being just examples
+#	and a few data patches (improvements) over the original. The
+#	reason is that the location of the ainmation data of the originals
+#	has been found; this section serves only for data patches.
 #
 #	Format
 #
@@ -250,10 +259,10 @@
 #	(24-hour format); the shape should have 24 frames.
 #
 #	Nonlooping (Energy fields)
-#		:shapenum/2
+#		:shapenum/2/first_frame/frame_count
 #
-#	These cycles start at frame 0 and stop at the last frame
-#	of the shape. They do not wrap around to the first frame.
+#	These cycles start at frame first_frame and stops after going through
+#	frame_count frames; they do not wrap around to the first frame.
 #
 #	Random loops (bubbles)
 #		:shapenum/3/first_frame/frame_count
@@ -271,51 +280,90 @@
 #	that, after the first cycle, the animation will continue from
 #	recycle instead of first_frame. Only sfx_delay is optional.
 #
-#	Fire Field
+#	Random Frames
+#		:shapenum/5/first_frame/frame_count
 #
-:895/4/0/16/8
+#	Randomly selects a frame in the [first_frame, first_frame + frame_count]
+#	interval.
+#
+#	From here on, everything in this section is commented.
+#	Moongates
+#
+#:157/4/0/12/4
+#:776/0/0/12
+#:777/0/0/12
+#:779/4/0/12/4
 
-#	Poison Field
-#
-:900/4/0/12/6
+#	Greer plant
+#:160/3/0/12
 
-#	Sleep Field
+#	Lightning
 #
-:902/4/0/14/6
-
-#		Sundial
-#
-:284/1
-
-#		Energy field
-#
-:768/2
-
-#		Vertical shaft
-#
-:862/0/0/1
-:862/0/1/3
-
-#		Horizontal shaft
-#
-:880/0/0/1
-:880/0/1/3
-
-#		Sawmill
-#
-:933/0/0/1
-:933/0/1/3
-
-#		Bubbles
-#
-:334/3/0/8
-:335/3/0/8
-:780/3/0/8
+#:179/3/0/8
 
 #	Grandfather clock
 #
-:252/0/0/3/-1/3/-1
-:695/0/0/3/-1/3/-1
+#:252/0/0/3/-1/3/-1
+#:695/0/0/3/-1/3/-1
+
+#	Sundial
+#
+#:284/1
+
+#	Bubbles
+#
+#:334/3/0/8
+#:335/3/0/8
+#:780/3/0/8
+
+#	Waves
+#
+#:384/3/0/17
+#:985/3/0/17
+#:1008/3/0/17
+#:1009/3/0/17
+
+#	Light
+#
+#:440/5/0/8
+
+#	Wounded man
+#
+#:447/3/0/32
+
+
+#	Energy field
+#
+#:768/2/0/16
+
+
+#		Vertical shaft
+#
+#:862/0/0/1
+#:862/0/1/3
+
+#		Horizontal shaft
+#
+#:880/0/0/1
+#:880/0/1/3
+
+#	Fire Field
+#
+#:895/4/0/16/8
+
+#	Poison Field
+#
+#:900/4/0/12/6
+
+
+#	Sleep Field
+#
+#:902/4/0/14/6
+
+#		Sawmill
+#
+#:933/0/0/1
+#:933/0/1/3
 
 %%endsection
 
