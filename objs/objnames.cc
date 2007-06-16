@@ -36,7 +36,7 @@ using ::snprintf;
 }
 #else
 #endif
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::strchr;
 #endif
 

@@ -38,7 +38,7 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "databuf.h"
-#include "audio.h"
+#include "Audio.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -53,7 +53,7 @@
 #include "servemsg.h"
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -65,6 +65,16 @@ using std::strchr;
 using std::string;
 using std::set;
 #endif
+
+/*
+ *	Figure attack points against an object, and also run weapon's usecode.
+ */
+
+inline int Game_object::get_usecode() const
+	{
+	return ucmachine->get_shape_fun(get_shapenum());
+	}
+
 
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
@@ -1314,15 +1324,6 @@ int Game_object::get_rotated_frame
 		}
 	else
 		return get_info().get_rotated_frame(curframe, quads);
-	}
-
-/*
- *	Figure attack points against an object, and also run weapon's usecode.
- */
-
-inline int Game_object::get_usecode() const
-	{
-	return ucmachine->get_shape_fun(get_shapenum());
 	}
 
 /*

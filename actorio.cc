@@ -369,11 +369,12 @@ void Actor::read
 		if (usecode_name_used)
 			{	// Support for named functions.
 			int funsize = nfile->read1();
-			char nm[funsize+1];
+			char *nm = new char[funsize+1];
 			nfile->read(nm, funsize);
 			nm[funsize] = 0;
 			usecode_name = nm;
 			usecode = ucmachine->find_function(nm);
+			delete nm;
 			}
 
 		int skin = nfile->read1();
@@ -671,9 +672,10 @@ void Actor::write
 	{	// Support for named functions.
 		int size = usecode_name.size();
 		nfile->write1(size);
-		char nm[size];
+		char *nm = new char[size];
 		std::strncpy(nm, usecode_name.c_str(), size);
 		nfile->write(nm, size);
+		delete nm;
 	}
 
 	nfile->write1((char)get_skin_color());

@@ -47,7 +47,7 @@
 #include "shapeid.h"
 #include "gamemgr/modmgr.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::ifstream;

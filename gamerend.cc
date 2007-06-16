@@ -248,14 +248,13 @@ int Game_render::paint_map
 			{
 			int xoff = Figure_screen_offset(cx, scrolltx);
 			paint_chunk_flats(cx, cy, xoff, yoff);
-
 			if (cheat.in_map_editor())
 				Paint_chunk_outline(gwin, 
 				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
-					// Now the flat RLE terrain.
+	// Now the flat RLE terrain.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
 		int yoff = Figure_screen_offset(cy, scrollty);
@@ -289,7 +288,6 @@ int Game_render::paint_map
 				dx = INCR_CHUNK(dx), dy = DECR_CHUNK(dy))
 			light_sources += paint_chunk_objects(dx, dy);
 		}
-
 	/// Dungeon Blackness (but disable in map editor mode)
 	if (gwin->in_dungeon >= gwin->skip_above_actor && 
 							!cheat.in_map_editor())
@@ -306,7 +304,8 @@ int Game_render::paint_map
 		if (!obj->get_owner() && obj->get_lift() < render_skip)
 			obj->paint_outline(HIT_PIXEL);
 		}
-					// Paint tile grid if desired.
+
+	// Paint tile grid if desired.
 	if (cheat.in_map_editor())
 		{
 		if (cheat.show_tile_grid())
@@ -328,20 +327,19 @@ void Game_window::paint
 	int x, int y, int w, int h	// Rectangle to cover.
 	)
 	{
-	if (!win->ready()) return;
 
+	if (!win->ready()) return;
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = render->paint_map(x, y, w, h);
-
 	effects->paint();		// Draw sprites.
 	if (gump_man->modal_gump_mode())// Modal gumps?
 		{			// Draw text, then gumps.
 		effects->paint_text();
 		gump_man->paint();
-		}
+	}
 	else
 		{			// Draw gumps unless in dont_move mode.
-		if (!main_actor_dont_move())
+			if (!main_actor_dont_move())
 			gump_man->paint();
 		effects->paint_text();	// Draw text over gumps.
 		}
@@ -366,7 +364,7 @@ void Game_window::paint
 		clock->set_light_source(carried_light + (light_sources > 0),
 								in_dungeon);
 		}
-	}
+}
 
 /*
  *	Paint whole window.
@@ -401,8 +399,8 @@ void Game_render::paint_chunk_flats
 	else
 #endif
 		{
-		Image_buffer8 *cflats = olist->get_rendered_flats();
-		if (cflats)
+			Image_buffer8 *cflats = olist->get_rendered_flats();
+	if (cflats)
 			gwin->win->copy8(cflats->get_bits(), 
 				c_chunksize, c_chunksize, xoff, yoff);
 		}
@@ -491,7 +489,6 @@ void Game_window::paint_dirty()
 	Rectangle box = clip_to_win(dirty);
 	if (box.w > 0 && box.h > 0)
 		paint(box);	// (Could create new dirty rects.)
-
 	clear_dirty();
 }
 

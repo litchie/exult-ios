@@ -43,12 +43,21 @@
 #include "servemsg.h"
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::ostream;
 #endif
+
+/*
+ *	Figure attack points against an object, and also run weapon's usecode.
+ */
+
+inline int Game_object::get_usecode() const
+	{
+	return ucmachine->get_shape_fun(get_shapenum());
+	}
 
 /*
  *	Delete all contents.

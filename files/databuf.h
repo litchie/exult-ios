@@ -426,17 +426,17 @@ public:
 	OVectorDataSource() { buf.reserve(512); }
 	virtual ~OVectorDataSource() { }
 	// ++++ FIXME: Maybe the following should do something?
-	virtual uint32 peek() { }
-	virtual uint32 read1() { }
-	virtual uint16 read2() { }
-	virtual uint16 read2high() { }
-	virtual uint32 read4() { }
-	virtual uint32 read4high() { }
+	virtual uint32 peek() { return 0; }
+	virtual uint32 read1() { return 0; }
+	virtual uint16 read2() { return 0; }
+	virtual uint16 read2high() { return 0;  }
+	virtual uint32 read4() { return 0;  }
+	virtual uint32 read4high() { return 0; }
 	void read(void *b, int len) { }
 	virtual void seek(unsigned int pos) { }
 	virtual void skip(int pos) { }
-	virtual unsigned int getPos() { }
-	virtual bool eof() { } 
+	virtual unsigned int getPos() { return 0; }
+	virtual bool eof() { return true; } 
 	
 	virtual void write1(uint32 val)
 	{

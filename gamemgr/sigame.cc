@@ -42,7 +42,7 @@
 #include "data/exult_si_flx.h"
 #include "miscinf.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;

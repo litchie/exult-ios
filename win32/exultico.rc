@@ -1,5 +1,9 @@
 // Exult Resource Script
+#ifdef UNDER_CE
+#include "winres.h"
+#else
 #include "winresrc.h"
+#endif
 
 #define IDI_ICON1                       101
 

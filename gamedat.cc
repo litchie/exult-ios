@@ -58,13 +58,12 @@
 #include "party.h"
 #include "version.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ios;
-using std::localtime;
 using std::memset;
 using std::ofstream;
 using std::ostream;
@@ -77,6 +76,13 @@ using std::strncpy;
 using std::time_t;
 using std::tm;
 using std::time_t;
+#endif
+
+#ifndef UNDER_CE
+using std::localtime;
+using std::time;
+#else
+#include <time.h>
 #endif
 
 // Save game compression level
@@ -451,7 +457,7 @@ void Game_window::write_saveinfo()
 
 	int party_size = party_man->get_count()+1;
 
-	time_t t = std::time(0);
+	time_t t = time(0);
 	struct tm *timeinfo = localtime (&t);	
 
 	U7open(out_stream, GSAVEINFO);		// Open file; throws an exception - Don't care

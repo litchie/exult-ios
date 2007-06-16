@@ -41,6 +41,9 @@
 
 #ifdef WIN32
 #include <windows.h>
+#ifndef UNDER_CE
+#include <direct.h> // For mkdir and chdir
+#endif
 #endif
 
 #include <cassert>
@@ -160,6 +163,7 @@ string get_system_path(const string &path)
 		// See if we can translate this prefix
 		string syspath = path.substr(0, pos);
 		if (is_system_path_defined(syspath)) {
+
 			string new_prefix = path_map[syspath];
 			new_path = new_prefix + path.substr(pos);
 		} else {
@@ -329,7 +333,6 @@ bool U7open
 	if (!is_text) mode |= std::ios::binary;
 #endif
 	string name = get_system_path(fname);
-	
 	int uppercasecount = 0;
 	do {
 		// We first "clear" the stream object. This is done to prevent
@@ -731,3 +734,14 @@ int Find_next_map
 		}
 	return -1;
 	}
+
+#ifdef UNDER_CE
+int errno;
+char *myce_strdup(const char *s)
+{
+   int l = strlen(s);
+   char *newstr = (char *)malloc(sizeof(char)*(l+1));
+   strcpy(newstr, s);
+   return newstr;
+}
+#endif

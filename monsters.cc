@@ -34,7 +34,7 @@
 #include "effects.h"
 #include "ucmachine.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::rand;
 #endif
 

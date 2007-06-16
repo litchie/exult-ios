@@ -59,7 +59,7 @@
 #include "databuf.h"
 #include <fstream>
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;

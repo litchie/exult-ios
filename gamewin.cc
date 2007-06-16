@@ -89,7 +89,7 @@
 #include "servemsg.h"
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -2716,7 +2716,6 @@ void Game_window::setup_game
 	// note: we had to stop the plasma here already, because init_readied
 	// and activate_eggs may update the screen through usecode functions
 	// (Helm of Light, for example)
-
 	Actor *party[9];
 	int cnt = get_party(party, 1);	// Get entire party.
 	for (int i = 0; i < cnt; i++)	// Init. rings.
@@ -2732,10 +2731,9 @@ void Game_window::setup_game
 	olist->setup_cache();
 
 	Tile_coord t = main_actor->get_tile();
-					// Do them immediately.
+	// Do them immediately.
 	if (!map_editing)		// (Unless map-editing.)
 		olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1,-1,true);
-	
 	// Force entire repaint.
 	set_all_dirty();
 	painted = true;			// Main loop uses this.

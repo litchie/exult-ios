@@ -277,7 +277,6 @@ static void get_game_paths(const string &gametitle)
 	string data_directory, static_dir, gamedat_dir, savegame_dir,
 		default_dir, system_path_tag(to_uppercase(gametitle)),
 		config_path("config/disk/game/" + gametitle + "/path");
-
 	config->value(config_path.c_str(), data_directory, ".");
 	if (data_directory == ".")
 		config->set(config_path.c_str(), data_directory, true);
