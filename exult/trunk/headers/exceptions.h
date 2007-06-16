@@ -20,7 +20,11 @@
 #define EXCEPTIONS_H
 
 #ifndef ALPHA_LINUX_CXX
-#  include <cerrno>
+#ifdef UNDER_CE
+extern int errno;
+#else
+#include <cerrno>
+#endif
 #endif
 #include <stdexcept>
 #include <string>

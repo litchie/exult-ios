@@ -34,7 +34,7 @@
 #include "utils.h"
 #include "keyactions.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::pair;
 using std::atoi;
 using std::cerr;

@@ -23,7 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
 
 #include <iostream>			/* For debugging msgs. */
@@ -69,6 +68,7 @@ bool OpenPortFile(const char *gamedat_path, bool writing)
 
 	// The locking is setup to prevent two servers from running for the same gamedat dir
 	// it's also setup so the file is deleted when the server shuts down
+    #ifndef UNDER_CE
 	hPortFile = CreateFile (
 		 filename,
 		 writing?GENERIC_WRITE:GENERIC_READ,
@@ -78,7 +78,19 @@ bool OpenPortFile(const char *gamedat_path, bool writing)
 		 FILE_ATTRIBUTE_TEMPORARY|(writing?FILE_FLAG_DELETE_ON_CLOSE:0),
 		 NULL
 	);
-
+	#else
+	wchar_t *Wfilename = new wchar_t[strlen(filename) + 1];
+	mbstowcs(Wfilename, filename, strlen(filename));
+	hPortFile = CreateFile (
+		 Wfilename,
+		 writing?GENERIC_WRITE:GENERIC_READ,
+		 FILE_SHARE_READ|FILE_SHARE_DELETE|(!writing?FILE_SHARE_WRITE:0),
+		 NULL,
+		 writing?CREATE_ALWAYS:OPEN_EXISTING,
+		 FILE_ATTRIBUTE_TEMPORARY|(writing?FILE_FLAG_DELETE_ON_CLOSE:0),
+		 NULL
+	);
+	#endif
 	if (hPortFile == INVALID_HANDLE_VALUE) return false;
 	return true;
 }

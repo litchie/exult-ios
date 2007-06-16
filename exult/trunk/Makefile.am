@@ -189,6 +189,31 @@ EXTRA_DIST = 	\
 	msvcstuff/exconfig/resource.h \
 	msvcstuff/exconfig/StdAfx.cpp \
 	msvcstuff/exconfig/StdAfx.h \
+	msvc9/expack.vcproj \
+	msvc9/Exult.vcproj \
+	msvc9/Exult.sln \
+	msvc9/Exult_bg_flx.vcproj \
+	msvc9/Exult_flx.vcproj \
+	msvc9/Exult_si_flx.vcproj \
+	msvc9/mklink.vcproj \
+	msvc9/msvc_kludges.cc \
+	msvc9/msvc_kludges.h \
+	msvc9/rip.vcproj \
+	msvc9/shp2pcx.vcproj \
+	msvc9/splitshp.vcproj \
+	msvc9/ucdump.vcproj \
+	msvc9/unistd.h \
+	msvc9/wuc.vcproj \
+	msvc9/wud.vcproj \
+	msvc9/Zip.vcproj \
+	msvc9/exconfig/exconfig.cpp \
+	msvc9/exconfig/exconfig.def \
+	msvc9/exconfig/exconfig.vcproj \
+	msvc9/exconfig/exconfig.h \
+	msvc9/exconfig/exconfig.rc \
+	msvc9/exconfig/resource.h \
+	msvc9/exconfig/StdAfx.cpp \
+	msvc9/exconfig/StdAfx.h \
 	headers/common_types.h \
 	headers/exceptions.h \
 	headers/gamma.h	\

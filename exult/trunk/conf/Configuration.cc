@@ -36,7 +36,7 @@
 #include <sstream>
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::atoi;
 using std::cerr;
 using std::endl;
@@ -44,10 +44,16 @@ using std::string;
 using std::ostream;
 #endif
 
+#ifndef UNDER_CE
+using std::perror;
+#endif
+
 // isspace could be a macro
 #ifndef UNDER_CE
 #ifndef isspace
+#if (_MSC_VER > 1400)
 using std::isspace;
+#endif
 #endif
 #endif
 
@@ -210,7 +216,7 @@ bool Configuration::read_abs_config_file(const string &input_filename, const str
 	while (ifile.good())
 	{
 	    sbuf += line + "\n";
-	    getline(ifile, line);
+		getline(ifile, line);
 	}
 	
 	ifile.close();
@@ -245,13 +251,12 @@ void Configuration::write_back(void)
 	U7open(ofile, filename.c_str(), true);
 	} catch (const file_open_exception &)
 	{
-		std::perror("Failed to write configuration file");
+		perror("Failed to write configuration file");
 		return;
 	}
 	if(ofile.fail())
 	{
-		std::perror("Failed to write configuration file");
-		return;
+		perror("Failed to write configuration file");
 	}
 	ofile << dump() << endl;
 	ofile.close();

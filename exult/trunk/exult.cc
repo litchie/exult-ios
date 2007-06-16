@@ -3,7 +3,6 @@
  **
  **	Written: 7/22/98 - JSF
  **/
-
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
  *  Copyright (C) 2000-2004  The Exult Team
@@ -58,6 +57,10 @@
 #include <csignal>
 #endif
 
+#ifdef UNDER_CE
+#include <gx.h>
+#endif
+
 #include "Audio.h"
 #include "Configuration.h"
 #include "Gump_manager.h"
@@ -94,7 +97,7 @@
 #include "items.h"
 #include "gamemgr/modmgr.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -137,6 +140,14 @@ struct resolution {
 	int y;
 	int scale;
 } res_list[] = { 
+#ifdef UNDER_CE
+	{ 240, 160, 1 },
+	{ 160, 240, 1 },
+	{ 240, 320, 1 },
+	{ 240, 160, 2 },
+	{ 160, 240, 2 },
+	{ 240, 320, 2 },
+#endif
 	{ 320, 200, 1 },
 	{ 320, 240, 1 },
 	{ 400, 300, 1 },
@@ -487,7 +498,6 @@ int exult_main(const char *runpath)
 	config->value("config/disk/save_compression_level", save_compression, 1);
 	if (save_compression < 0 || save_compression > 2) save_compression = 1;
 	config->set("config/disk/save_compression_level", save_compression, true);
-
 #if 0 && USECODE_DEBUGGER
 	// Enable usecode debugger
 	config->value("config/debug/debugger/enable",usecode_debugging);
@@ -588,7 +598,8 @@ static void Init
 	// I don't know if this will be problem in other OSes,
 	// so I leave it Windows-specific for now.
 	// Maybe it would be best to use SDL_putenv instead?
-	putenv("SDL_VIDEO_CENTERED=center");
+	SDL_putenv("SDL_VIDEO_CENTERED=center");
+	// Yes, SDL_putenv is GOOD.  putenv does NOT work with wince. -PTG 2007/06/11
 #endif
 	if (SDL_Init(init_flags) < 0)
 	{
@@ -615,12 +626,19 @@ static void Init
 
 	int w, h, sc, sclr;
 
+#ifdef UNDER_CE
+	// WinCE default resolution is 320x240 with no scaling
+	w = 320;
+	h = 240;
+	sc = 1;
+	sclr = Image_window::SaI;
+#else
 	// Default resolution is 320x200 with 2x scaling
 	w = 320;
 	h = 200;
 	sc = 2;
 	sclr = Image_window::SaI;
-
+#endif
 	int sw, sh, scaleval;
 	string gr, gg, gb, scaler;
 	config->value("config/video/width", sw, w);
@@ -646,7 +664,7 @@ static void Init
 	}
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));
-#if defined(__zaurus__)
+#if defined(__zaurus__) || defined(UNDER_CE)
 	gwin = new Game_window(sw, sh, scaleval, sclr);
 #else
 	if (arg_gamename != "default" || run_bg || run_si)
@@ -698,9 +716,15 @@ static void Init
 		else
 		{
 #if !(defined(__zaurus__))
+#ifdef UNDER_CE
+			gwin->resized(sw, sh, scaleval, sclr);
+			// Ensure proper clipping:
+			gwin->get_win()->set_clip(0, 0, sw, sh);
+#else
 			gwin->resized(400, 300, scaleval, sclr);
 			// Ensure proper clipping:
 			gwin->get_win()->set_clip(0, 0, 400, 300);
+#endif
 #endif
 			ExultMenu exult_menu(gwin);
 			newgame = exult_menu.run();
@@ -758,11 +782,10 @@ static void Init
 		MyMidiPlayer *midi = audio->get_midi();
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
 	}
-
 	gwin->init_files();
 	gwin->read_gwin();
 	gwin->setup_game(arg_edit_mode);	// This will start the scene.
-					// Get scale factor for mouse.
+	// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
 	SDL_GetWMInfo(&info);
@@ -1039,9 +1062,7 @@ static void Handle_events
 			else
 				gwin->paint_dirty();
 			while (ticks > last_repaint+50)last_repaint += 50;
-
 			}
-
 		Mouse::mouse->show();	// Re-display mouse.
 
 					// Rotate less often if scaling and 
@@ -1064,7 +1085,7 @@ static void Handle_events
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update)	// If not, did mouse change?
+		Mouse::mouse_update)	// If not, did mouse change?
 			Mouse::mouse->blit_dirty();
 		}
 	}

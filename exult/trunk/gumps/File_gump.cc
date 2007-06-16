@@ -36,7 +36,7 @@
 #include "mouse.h"
 #include "Yesno_gump.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::memmove;

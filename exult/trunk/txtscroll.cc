@@ -36,7 +36,7 @@
 #include "SDL_events.h"
 #include "SDL_keysym.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::atoi;
 using std::size_t;
 using std::strchr;

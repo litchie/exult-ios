@@ -78,7 +78,7 @@
 #include "debugserver.h"
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -3321,14 +3321,14 @@ void Usecode_internal::read_usevars
 			// ++++ FIXME: Write code for the cases when symtbl == 0 or
 			// fsym == 0 (neither of which *should* happen...)
 			int len = nfile->read2();
-			char nm[len + 1];
+			char *nm = new char[len + 1];
 			nfile->read(nm, len);
 			nm[len] = 0;
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : 0;
 			if (fsym)
 				funid = fsym->get_val();
-			}
-
+			delete nm;
+  		    }
 		int cnt = nfile->read4();
 		Usecode_function *fun = find_function(funid);
 		if (!fun)

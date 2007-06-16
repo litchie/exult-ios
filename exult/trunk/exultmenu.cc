@@ -320,14 +320,15 @@ MenuList *ExultMenu::create_main_menu(int first)
 		int menux = xpos+(i%2)*centerx;
 #endif
 		ModManager *exultgame = (*game_list)[i];
+		char *menustringname = new char[strlen(exultgame->get_menu_string().c_str())+1];
+		strcpy(menustringname, exultgame->get_menu_string().c_str());
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
 			Audio::get_ptr()->can_sfx(exultgame->get_title())?1:0);
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
-							exultgame->get_menu_string().c_str(),
+							menustringname,
 							sfxicon, menux, ypos);
 		entry->set_id(i);
 		menu->add_entry(entry);
-
 		if (exultgame->has_mods())
 		{
 			MenuTextEntry *mod_entry = new MenuTextEntry(navfonton, navfont, "SHOW MODS",
@@ -340,7 +341,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 #endif
 			ypos += 45;
 	}
-	
+
 	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
 			centerx, ypos = gwin->get_height()-5*font->get_text_height());
 
@@ -518,10 +519,9 @@ BaseGameInfo *ExultMenu::run()
 	{
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID,true,EXULT_FLX);
 	}
-	
 	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
-	
+
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
 	int logox = centerx-exultlogo->get_width()/2,
 		logoy = centery-exultlogo->get_height()/2;

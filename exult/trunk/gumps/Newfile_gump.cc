@@ -43,7 +43,7 @@
 #include "Text_button.h"
 #include "miscinf.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::atoi;
 using std::cout;
 using std::endl;
@@ -59,6 +59,13 @@ using std::strcpy;
 using std::strcat;
 using std::time_t;
 using std::tm;
+#endif
+
+#ifndef UNDER_CE
+using std::localtime;
+using std::time;
+#else
+#include <time.h>
 #endif
 
 /*
@@ -1085,8 +1092,8 @@ void Newfile_gump::LoadSaveGameDetails()
 	cur_details->game_hour = gclock->get_hour();
 	cur_details->game_minute = gclock->get_minute();
 	
-	time_t t = std::time(0);
-	struct tm *timeinfo = std::localtime (&t);	
+	time_t t = time(0);
+	struct tm *timeinfo = localtime (&t);	
 
 	cur_details->real_day = timeinfo->tm_mday;
 	cur_details->real_hour = timeinfo->tm_hour;

@@ -36,7 +36,7 @@
 
 namespace FMOpl_Pentagram {
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::malloc;
 using std::free;
 #endif

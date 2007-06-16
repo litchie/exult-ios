@@ -1,3 +1,7 @@
+2007-06-16    <jeff@mini.nerble.net>
+
+	* exult.cc,etc.: Applied Lanaca's PocketPC patches.
+
 2007-06-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Makefile.common: Ensure that changes to "bgintrinsics.h" and "siintrinsics.h"
 	will affect builds of Exult, UCC, WUD and WUC.

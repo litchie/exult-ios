@@ -28,6 +28,9 @@
 #include "rect.h"
 #include "shapeid.h"
 
+#ifdef UNDER_CE
+#include <string.h>
+#endif
 // MenuEntry: a selectable menu entry (a button)
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 {
@@ -313,7 +316,6 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	bool exit_loop = false;
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	SDL_Event event;
-
 	for(int i=0; i<count; i++)
 	  (*entries)[i]->dirty = true;
 
@@ -321,20 +323,17 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	mouse->show();
 	do {
 		mouse_visible = mouse->is_onscreen();
-		if (mouse_visible) mouse->hide();
-
+		if (mouse_visible) mouse->hide(); 
 		// redraw items if they're dirty
 		for(int i=0; i<count; i++) {
 			MenuObject *entry = (*entries)[i];
 			entry->paint(gwin);
 		}
-
 		// redraw mouse if visible
 		if (mouse_visible) {
 			mouse->show();
 			mouse->blit_dirty();
 		}
-
 		SDL_WaitEvent(&event);
 		if(event.type==SDL_MOUSEMOTION) {
 			mouse->hide();

@@ -37,7 +37,7 @@ Boston, MA  02111-1307, USA.
 #include "gamma.h"
 #include <limits.h>
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::memmove;
 #endif
 

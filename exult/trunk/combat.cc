@@ -42,7 +42,7 @@
 #include "Gump_manager.h"
 #include "spellbook.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::rand;
