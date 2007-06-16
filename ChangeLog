@@ -1,6 +1,6 @@
 2007-06-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	Makefile.mingw, Makefile.common: Ensure that changes to "bgintrinsics.h" and
-	"siintrinsics.h" will affect builds of Exult, UCC, WUD and WUC.
+	Makefile.common: Ensure that changes to "bgintrinsics.h" and "siintrinsics.h"
+	will affect builds of Exult, UCC, WUD and WUC.
 
 2007-06-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* effects.*, gameclk.*, palette.*, objs/egg.cc: Implemented missing weather:
