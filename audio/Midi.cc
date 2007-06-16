@@ -46,7 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../conf/Configuration.h"
 extern	Configuration	*config;
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
 using std::endl;

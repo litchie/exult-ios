@@ -367,6 +367,11 @@ bool U7exists(
 
 inline bool U7exists(std::string fname) { return U7exists(fname.c_str()); }
 
+#ifdef UNDER_CE
+inline void perror(const char *errmsg) { return; }
+#define strdup myce_strdup
+char *myce_strdup(const char *s);
+#endif
 
 int U7mkdir(
 	const char *dirname,

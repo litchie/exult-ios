@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "actors.h"
-#include "audio.h"
+#include "Audio.h"
 #include "Gamemenu_gump.h"
 #include "game.h"
 #include "gamewin.h"

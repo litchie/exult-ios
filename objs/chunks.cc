@@ -48,7 +48,7 @@ using std::cout;
 using std::endl;
 #endif
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::memset;
 using std::rand;
 #endif

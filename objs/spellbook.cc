@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "ucmachine.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
 using std::ostream;
 #endif

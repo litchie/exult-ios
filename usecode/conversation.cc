@@ -30,7 +30,7 @@
 #include "miscinf.h"
 #include "data/exult_bg_flx.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
 using std::size_t;

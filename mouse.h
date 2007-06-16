@@ -113,7 +113,7 @@ public:
 			iwin->put(backup, box.x, box.y);	
 			dirty = box;	// Init. dirty to box.
 			}
-		}
+	}
 	void set_shape(int framenum)	// Set to desired shape.
 		{
 		if (framenum != cur_framenum)

@@ -15,7 +15,7 @@
 
 #include "exult_types.h"
 
-#ifndef UNDER_CE
+#ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
 #endif
 
