@@ -1,4 +1,4 @@
-VPATH=$(VPATH):$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
+VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/smooth:$(SRC)/objs:$(SRC)/pathfinder: \
 $(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src: \
 $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:$(SRC)/gamemgr
@@ -199,9 +199,9 @@ $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 expack$(EXEEXT) : expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) expack.o $(FILE_OBJS)
 
-!ifndef EXPACK_CHECK
+#ifndef EXPACK_CHECK
 EXPACK_CHECK=expack$(EXEEXT)
-!endif
+#endif
 
 $(EXULT_FLX): $(EXPACK_CHECK) $(EXULT_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/flx.in
