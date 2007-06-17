@@ -291,6 +291,8 @@ public:
 		{ return shape_num; }
 	int get_num_parms()
 		{ return parms.size(); }
+	void clear_externed()
+		{ externed = false; }
 	void set_externed()
 		{ externed = true; }
 	bool is_externed()
