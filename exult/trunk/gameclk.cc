@@ -74,7 +74,7 @@ static inline int get_final_palette
 	bool special
 	)
 	{
-	if (light && is_dark_palette(pal))
+	if ((light || special) && is_dark_palette(pal))
 		{
 		int light_palette = (light > 1) + PALETTE_SINGLE_LIGHT;
 						// Gump mode, or light spell?
@@ -121,17 +121,20 @@ void Game_clock::set_time_palette
 	bool cloudy = overcast > 0;
 	bool foggy = fog > 0;
 	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);
-	bool light_change = (light_source_level != old_light_level);
+	bool light_change = (light_source_level != old_light_level) ||
+						(gwin->is_special_light() != old_special_light);
+	CERR(gwin->is_special_light() << "\t" << old_special_light << "\t" << light_change);
 	bool need_new_transition = (weather_change || light_change);
 
 	new_palette = get_final_palette(new_palette, cloudy, foggy,
 				light_source_level, gwin->is_special_light());
 	old_palette = get_final_palette(old_palette, was_overcast, was_foggy,
-				old_light_level, gwin->is_special_light());
+				old_light_level, old_special_light);
 
 	was_overcast = cloudy;
 	was_foggy = foggy;
 	old_light_level = light_source_level;
+	old_special_light = gwin->is_special_light();
 
 	if (weather_change)
 		{	// TODO: Maybe implement smoother transition from

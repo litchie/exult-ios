@@ -406,7 +406,14 @@ Uc_function_symbol *Uc_function_symbol::create
 			}
 		else if (sym->is_externed() || is_extern)
 			if (sym->get_num_parms() == p.size())
+			{
+				// If the new symbol is not externed, then the function
+				// has been defined afterwards and we need to update
+				// sym to not be extern anymore.
+				if (!is_extern)
+					sym->clear_externed();
 				num = sym->get_usecode_num();
+			}
 			else
 				num = -1;
 		else
