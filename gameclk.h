@@ -39,6 +39,7 @@ class Game_clock : public Time_sensitive
 	int day;			// Keep track of days played.
 	int light_source_level;		// Last set light source level.
 	int old_light_level;		// Last set light source level.
+	int old_special_light;		// Last set light source level.
 	unsigned int dungeon;		// Last set 'in_dungeon' value.
 	int overcast;			// >0 if day is overcast (e.g., from a storm).
 	bool was_overcast;
@@ -52,7 +53,7 @@ class Game_clock : public Time_sensitive
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
 			light_source_level(0), dungeon(255), time_rate(1),
-			overcast(0), fog(0), transition(0),
+			overcast(0), fog(0), transition(0), old_special_light(false),
 			was_overcast(false), was_foggy(false)
 		{ }
 	int get_hour()
