@@ -121,7 +121,7 @@
 	USECODE_INTRINSIC_PTR(display_area),				// 0x61 UNUSED
 	USECODE_INTRINSIC_PTR(wizard_eye),				// 0x62 UNUSED
 	USECODE_INTRINSIC_PTR(resurrect),	// Guess	// 0x63
-	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x64
+	USECODE_INTRINSIC_PTR(resurrect_npc),			// 0x64
 	USECODE_INTRINSIC_PTR(get_body_npc),			// 0x65
 	USECODE_INTRINSIC_PTR(add_spell),			// 0x66
 	USECODE_INTRINSIC_PTR(remove_all_spells),	// 0x67
@@ -207,9 +207,9 @@
 	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
 	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity
 	USECODE_INTRINSIC_PTR(get_temperature),			// 0xb8
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb9 UNUSED
+	USECODE_INTRINSIC_PTR(get_temperature_zone),	// 0xb9 UNUSED
 	USECODE_INTRINSIC_PTR(set_temperature),			// 0xba
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbb UNUSED
+	USECODE_INTRINSIC_PTR(get_npc_warmth),			// 0xbb UNUSED
 	USECODE_INTRINSIC_PTR(get_npc_id),			// 0xbc - Known
 	USECODE_INTRINSIC_PTR(set_npc_id),			// 0xbd - Known
 	USECODE_INTRINSIC_PTR(get_readied),	// Guess	// 0xbe

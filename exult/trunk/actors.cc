@@ -735,31 +735,32 @@ void Actor::check_temperature
 	temperature += incr;
 	if (temperature > 63)
 		temperature = 63;
-	if (rand()%3 == 0) switch (temperature/10)
-		{
-	case 0:
-		say(1182, 1184);	// A bit chilly.
-		break;
-	case 1:
-		say(1185, 1187);	// It's colder.
-		break;
-	case 2:
-		say(1188, 1190);
-		break;
-	case 3:
-		say(1191, 1193);	// Frostbite.
-		break;
-	case 4:
-		say(1206, 1208);
-		break;
-	case 5:
-		say(1209, 1211);
-		break;
-	case 6:
-		say(1212, 1213);	// Frozen.
-		reduce_health(1 + rand()%3);
-		break;
-		}
+	if (rand()%3 == 0)
+		switch (temperature/10)
+			{
+		case 0:
+			say(1182, 1184);	// A bit chilly.
+			break;
+		case 1:
+			say(1185, 1187);	// It's colder.
+			break;
+		case 2:
+			say(1188, 1190);
+			break;
+		case 3:
+			say(1191, 1193);	// Frostbite.
+			break;
+		case 4:
+			say(1206, 1208);
+			break;
+		case 5:
+			say(1209, 1211);
+			break;
+		case 6:
+			say(1212, 1213);	// Frozen.
+			reduce_health(1 + rand()%3);
+			break;
+			}
 	}
 
 /*
@@ -2771,16 +2772,30 @@ int Actor::figure_warmth
 	{
 	static short hats[5] = {10, 35, -8, 20, 35};
 	static short cloaks[5] = {30, 70, 70, 70, 70};
-	static short boots[7] = {85, 65, 50, 90, 85, 75, 80};
+	static short boots[7] = {85, 65, 50, 95, 85, 75, 80};
 
 	int warmth = -75;		// Base value.
 	int frnum;
 	Game_object *worn = spots[static_cast<int>(head)];
-	if (worn && worn->get_shapenum() == 1004 &&
-	    (frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
-		warmth += hats[frnum];
-	if (worn && worn->get_shapenum() == 1013)
-		warmth += hats[1]; // Helm of Light behaves like fur hat
+	if (worn)
+		switch (worn->get_shapenum())
+			{
+		case 383:	// Magic helm
+		case 541:	// Great helm
+			warmth += 5; break;
+		case 542:	// Crested helm
+			if (worn->get_framenum() == 2)
+				warmth += 15;
+			else
+				warmth += 5;
+			break;
+		case 1004:	// Helm
+			if ((frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
+				warmth += hats[frnum];
+			break;
+		case 1013:	// Helm of light
+			warmth += 10; break;
+			}
 	worn = spots[static_cast<int>(cloak_spot)];	// Cloak.
 	if (worn && worn->get_shapenum() == 227 &&
 	    (frnum = worn->get_framenum()) < sizeof(cloaks)/sizeof(cloaks[0]))
@@ -2789,21 +2804,50 @@ int Actor::figure_warmth
 	if (worn && worn->get_shapenum() == 587 &&
 	    (frnum = worn->get_framenum()) < sizeof(boots)/sizeof(boots[0]))
 		warmth += boots[frnum];
-					// Leather armor?
 	worn = spots[static_cast<int>(torso)];
-	if (worn && worn->get_shapenum() == 569)
-		warmth += 20;
+	if (worn)
+		switch (worn->get_shapenum())
+			{
+		case 419:	// Breastplate
+			warmth -= 9; break;
+		case 569:	// Leather armor
+			warmth += 20; break;
+		case 570:	// Scale armor
+			warmth -= 8; break;
+		case 571:	// Chain armor
+			warmth -= 5; break;
+		case 573:	// Plate armor
+			warmth -= 10; break;
+		case 666:	// Magic armor
+		case 836:	// Antique armor
+			warmth += 5; break;
+			}
 	worn = spots[static_cast<int>(hands2_spot)];// Gloves?
-	if (worn && worn->get_shapenum() == 579)
-		warmth += 7;
+	if (worn)
+		switch (worn->get_shapenum())
+			{
+		case 579:		// Gloves.
+			if (worn->get_framenum() == 0)
+				warmth += 7;
+			else
+				warmth += 20;
+			break;
+		case 574:		// Gauntlets.
+			warmth -= 5; break;
+			}
 	worn = spots[static_cast<int>(legs)];	// Legs?
 	if (worn)
 		switch (worn->get_shapenum())
 			{
+		case 574:		// Leather leggings.
+			warmth += 10; break;
+		case 575:		// Chain leggings.
+		case 576:		// Plate leggings.
+			warmth -= 5; break;
+		case 677:		// Stockings.
+			warmth += 4; break;
 		case 686:		// Magic leggings.
 			warmth += 5; break;
-		case 574:		// Leather.
-			warmth += 10; break;
 			}
 	return warmth;
 	}
@@ -3884,19 +3928,25 @@ Actor *Actor::resurrect
 	Dead_body *body			// Must be this actor's body.
 	)
 	{
-	if (body->get_owner() ||	// Must be on ground.
-	    npc_num <= 0 || gwin->get_body(npc_num) != body)
-		return (0);
-	gwin->set_body(npc_num, 0);	// Clear from gwin's list.
-	Game_object *item;		// Get back all the items.
-	while ((item = body->get_objects().get_first()) != 0)
+	Tile_coord pos;
+	if (body)
 		{
-		body->remove(item);
-		add(item, 1);		// Always succeed at adding.
+		if (body->get_owner() ||	// Must be on ground.
+			npc_num <= 0 || gwin->get_body(npc_num) != body)
+			return (0);
+		gwin->set_body(npc_num, 0);	// Clear from gwin's list.
+		Game_object *item;		// Get back all the items.
+		while ((item = body->get_objects().get_first()) != 0)
+			{
+			body->remove(item);
+			add(item, 1);		// Always succeed at adding.
+			}
+		gwin->add_dirty(body);		// Need to repaint here.
+		pos = body->get_tile();
+		body->remove_this();		// Remove and delete body.
 		}
-	gwin->add_dirty(body);		// Need to repaint here.
-	Tile_coord pos = body->get_tile();
-	body->remove_this();		// Remove and delete body.
+	else
+		pos = Tile_coord(-1, -1, 0);
 	move(pos);			// Move back to life.
 					// Restore health to max.
 	properties[static_cast<int>(health)] = 
@@ -3905,12 +3955,17 @@ Actor *Actor::resurrect
 	Actor::clear_flag(Obj_flags::poisoned);
 	Actor::clear_flag(Obj_flags::paralyzed);
 	Actor::clear_flag(Obj_flags::asleep);
+	Actor::clear_flag(Obj_flags::protection);
+	Actor::clear_flag(Obj_flags::cursed);
+	Actor::clear_flag(Obj_flags::charmed);
 					// Restore to party if possible.
 	partyman->update_party_status(this);
 					// Give a reasonable schedule.
 	set_schedule_type(is_in_party() ? Schedule::follow_avatar
 					: Schedule::loiter);
 					// Stand up.
+	if (!body)
+		return (this);
 	Usecode_script *scr = new Usecode_script(this);
 	(*scr) << (Ucscript::npc_frame + Actor::sleep_frame)
 		<< (Ucscript::npc_frame + Actor::kneel_frame)
