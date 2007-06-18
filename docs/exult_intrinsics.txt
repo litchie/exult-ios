@@ -757,6 +757,13 @@ int obj->get_item_flag(int flag)
     object has been set (or the flag has been cleared with 'clear_item_flag'
     intrinsic.
 
+    With the exception of the OKAY_TO_TAKE, TEMPORARY and INVISIBLE flags, these
+    flags are valid for NPCs only. You can get, set or clear any of those values
+    and Exult will not complain; however, it will also not save the values of
+    the flags except for the three mentioned before. Moreover, the INVISIBLE
+    flag will not be saved for objects unless they are of 'quality flags'
+    class.
+
 UI_set_item_flag(object obj, int flag)
 obj->set_item_flag(int flag)
 
@@ -766,11 +773,25 @@ obj->set_item_flag(int flag)
     In the special case of the 'SAILOR' flag, 'obj' is stored to be returned by
     future calls of the 'get_item_flag' intrinsic.
 
+    With the exception of the OKAY_TO_TAKE, TEMPORARY and INVISIBLE flags, these
+    flags are valid for NPCs only. You can get, set or clear any of those values
+    and Exult will not complain; however, it will also not save the values of
+    the flags except for the three mentioned before. Moreover, the INVISIBLE
+    flag will not be saved for objects unless they are of 'quality flags'
+    class.
+
 UI_clear_item_flag(object obj, int flag)
 obj->clear_item_flag(int flag)
 
     Clears the flag 'flag' of 'obj'. Many flags have immediate effectswhen
     cleared; most do not. See the 'get_item_flag' entry for flag values.
+
+    With the exception of the OKAY_TO_TAKE, TEMPORARY and INVISIBLE flags, these
+    flags are valid for NPCs only. You can get, set or clear any of those values
+    and Exult will not complain; however, it will also not save the values of
+    the flags except for the three mentioned before. Moreover, the INVISIBLE
+    flag will not be saved for objects unless they are of 'quality flags'
+    class.
 
 object UI_get_barge(object obj)
 object obj->get_barge()
@@ -1131,6 +1152,13 @@ actor obj->resurrect()
     If 'obj' is the body of an NPC, resurrects the NPC and returns a reference
     to the NPC; otherwise, returns a null ('0') reference.
 
+UI_resurrect_npc(actor npc)                                                 [SI]
+npc->resurrect_npc()
+
+    Brings NPC back to life. If the NPC has a body, this body will be completely
+    ignored; moreover, the NPC will be back without any equipment that was left
+    on his body when he died.
+
 UI_set_polymorph(actor npc, int shape)                               [SI, Exult]
 npc->set_polymorph(int shape)
 
@@ -1145,6 +1173,19 @@ UI_set_temperature(actor npc, int temp)                                     [SI]
 npc->set_temperature(int temp)
 
     Sets the temperature of 'npc' to 'temp'.
+
+int UI_get_temperature_zone(object obj)                                     [SI]
+int obj->get_temperature_zone()
+
+    Returns 0 if 'obj' is not an NPC. Otherwise, it will return a number between
+    1-5 indicating how cold it is. This number is the same as the frame used for
+    the stats gump.
+
+int UI_get_npc_warmth(object obj)                                           [SI]
+int obj->get_npc_warmth()
+
+    Returns the value of the total warmth for worn equipment if 'obj' is an NPC
+    or -75 otherwise.
 
 --------------------------------------------------------------------------------
 PARTY MANAGEMENT

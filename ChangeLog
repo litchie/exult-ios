@@ -2,6 +2,14 @@
 	* Fixed special lights to work again.
 	* Fixed UCC bug where a function's symbol type in the symbol table be
 	  "extern" if the function was externed before being defined.
+	* Added three new intrinsics from SI discovered with rip/wud/wuc:
+		intrinsic 0x64 is resurrect_npc
+		intrinsic 0xB9 is get_temperature_zone
+		intrinsic 0xBB is get_npc_warmth
+	  This affects UCC, WUD and WUC as well.
+	* actors.cc: Fixed warmth given by several items.
+	* gumps/Stats_gump.cc: Fixed slightly innacurate frame <> temperature map.
+
 
 2007-06-16    <jeff@mini.nerble.net>
 

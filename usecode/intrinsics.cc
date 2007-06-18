@@ -1460,6 +1460,19 @@ USECODE_INTRINSIC(resurrect)
 	return Usecode_value(actor);
 }
 
+USECODE_INTRINSIC(resurrect_npc)
+{
+	// resurrect_npc(npc).
+	// Behaves like the original does.
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor)
+		{			// Want to resurrect after returning.
+		actor->resurrect(0);
+		modified_map = true;
+		}
+	return no_ret;
+}
+
 USECODE_INTRINSIC(get_body_npc)
 {
 	// get_body_npc(body).  Returns npc # (negative).
@@ -2897,6 +2910,24 @@ USECODE_INTRINSIC(set_temperature)
 	if (npc)
 		npc->set_temperature(parms[1].get_int_value());
 	return no_ret;
+}
+
+USECODE_INTRINSIC(get_temperature_zone)
+{
+	// get_temperature_zone(npc).
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		return Usecode_value(npc->get_temperature_zone());
+	return Usecode_value(0);
+}
+
+USECODE_INTRINSIC(get_npc_warmth)
+{
+	// get_npc_warmth(npc).
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		return Usecode_value(npc->figure_warmth());
+	return Usecode_value(-75);
 }
 
 #if 0	/* +++++Not used at the moment. */
