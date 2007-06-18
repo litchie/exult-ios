@@ -83,7 +83,7 @@ public:
 	void reset()
 		{
 		overcast = fog = 0;
-		was_overcast = was_foggy = false;
+		was_overcast = was_foggy = old_special_light = false;
 		if (transition)
 			delete transition;
 		transition = 0;

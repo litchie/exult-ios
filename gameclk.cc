@@ -123,7 +123,6 @@ void Game_clock::set_time_palette
 	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);
 	bool light_change = (light_source_level != old_light_level) ||
 						(gwin->is_special_light() != old_special_light);
-	CERR(gwin->is_special_light() << "\t" << old_special_light << "\t" << light_change);
 	bool need_new_transition = (weather_change || light_change);
 
 	new_palette = get_final_palette(new_palette, cloudy, foggy,
