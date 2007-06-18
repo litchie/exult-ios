@@ -191,15 +191,7 @@ void Stats_gump::paint
 	const int namex = 30, namey = 6, namew = 95;
 	Actor *act = get_actor();	// Check for freezing (SI).
 	if (gwin->get_main_actor()->get_flag(Obj_flags::freeze))
-		{
-		int temp = act->get_temperature();
-		int framenum = temp/10;	// Want it 1-5.
-		if (framenum <= 0)
-			framenum = 1;
-		else if (framenum > 5)
-			framenum = 5;
-		set_frame(framenum);
-		}
+		set_frame(act->get_temperature_zone());
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".

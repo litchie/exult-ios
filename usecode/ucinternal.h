@@ -266,6 +266,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(display_area);
 	USECODE_INTRINSIC_DECL(wizard_eye);
 	USECODE_INTRINSIC_DECL(resurrect);
+	USECODE_INTRINSIC_DECL(resurrect_npc);
 	USECODE_INTRINSIC_DECL(get_body_npc);
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
@@ -351,7 +352,9 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(run_schedule);
 	USECODE_INTRINSIC_DECL(modify_schedule);
 	USECODE_INTRINSIC_DECL(get_temperature);
+	USECODE_INTRINSIC_DECL(get_temperature_zone);
 	USECODE_INTRINSIC_DECL(set_temperature);
+	USECODE_INTRINSIC_DECL(get_npc_warmth);
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
 	USECODE_INTRINSIC_DECL(set_barge_dir);

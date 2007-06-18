@@ -449,6 +449,20 @@ public:
 	int get_temperature() const	// Get/set measure of coldness.
 		{ return temperature; }
 	void set_temperature(int t);
+	int get_temperature_zone() const
+		{
+		// SI-verified.
+		if (temperature < 15)
+			return 1;
+		else if (temperature < 25)
+			return 2;
+		else if (temperature < 40)
+			return 3;
+		else if (temperature < 50)
+			return 4;
+		else
+			return 5;
+		}
 	int figure_warmth();		// Based on what's worn.
 	bool is_unused() const		// Free NPC?
 		{ return unused; }
