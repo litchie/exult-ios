@@ -17,6 +17,9 @@
 		<Platform
 			Name="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 		/>
+		<Platform
+			Name="Pocket PC 2003 (ARMV4)"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -311,7 +314,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="\Exult\junkdata"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -383,6 +386,158 @@
 			Name="Release Install|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="\Exult\junkdata"
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="\Exult\junkdata"
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"

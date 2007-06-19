@@ -30,9 +30,11 @@ class GameplayOptions_gump : public Modal_gump
 
  private:
 	Gump_button* buttons[14];
-
 	int facestats;
 	int fastmouse;
+#ifdef UNDER_CE
+	int dpadopt; 
+#endif
 	int mouse3rd;
 	int doubleclick;
 	int rightclick_close;

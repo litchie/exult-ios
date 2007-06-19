@@ -45,6 +45,7 @@ using std::endl;
 using std::string;
 
 static const int rowy[] = { 4, 17, 134, 30, 43, 56, 69, 82, 95, 108, 121, 147 };
+
 static const int colx[] = { 35, 50, 120, 195, 192 };
 
 static const char* oktext = "OK";
@@ -124,7 +125,11 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 	else if (btn == buttons[1])
 		fastmouse = state;
 	else if (btn == buttons[2])
+#ifdef UNDER_CE
+		dpadopt = state;
+#else
 		mouse3rd = state;
+#endif
 	else if (btn == buttons[3])
 		doubleclick = state;
 	else if (btn == buttons[4])
@@ -187,6 +192,13 @@ void GameplayOptions_gump::build_buttons()
 	textbgcolor[10] = "Dark gray";
 	textbgcolor[11] = "White";
 
+#ifdef UNDER_CE
+	std::string *dpadtext = new std::string[3];
+	dpadtext[0] = "Portrait";
+	dpadtext[1] = "Landscape1";
+	dpadtext[2] = "Landscape2";
+#endif
+
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
 	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, 
@@ -196,8 +208,13 @@ void GameplayOptions_gump::build_buttons()
 											   paperdolls);
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
+#ifdef UNDER_CE
+	buttons[2] = new GameplayTextToggle(this, dpadtext, colx[3]-21, rowy[4], 
+										80, dpadopt, 3);
+#else
 	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
 										   59, mouse3rd);
+#endif
 	buttons[3] = new GameplayEnabledToggle(this, colx[3], rowy[5],
 										   59, doubleclick);
 	buttons[11] = new GameplayEnabledToggle(this, colx[3], rowy[6],
@@ -215,7 +232,11 @@ void GameplayOptions_gump::build_buttons()
 void GameplayOptions_gump::load_settings()
 {
 	fastmouse = gwin->get_fastmouse();
+#ifdef UNDER_CE
+	config->value("config/gameplay/dpadopt", dpadopt, 0);
+#else
 	mouse3rd = gwin->get_mouse3rd();
+#endif
 	cheats = cheat();
 	facestats = Face_stats::get_state() + 1;
 	doubleclick = 0;
@@ -284,8 +305,13 @@ void GameplayOptions_gump::save_settings()
 	config->set("config/video/fps", fps, true);
 	gwin->set_fastmouse(fastmouse!=false);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
+#ifdef UNDER_CE
+	config->set("config/gameplay/dpadopt", dpadopt, true);
+	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
+#else
 	gwin->set_mouse3rd(mouse3rd!=false);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
+#endif
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", true);
@@ -319,7 +345,11 @@ void GameplayOptions_gump::paint()
 	if (GAME_BG)
 		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
 	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+#ifdef UNDER_CE
+	sman->paint_text(2, "D-Pad:", x + colx[0], y + rowy[4] + 1);
+#else
 	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
+#endif
 	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
 	sman->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
 	sman->paint_text(2, "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);

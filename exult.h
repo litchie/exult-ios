@@ -84,5 +84,8 @@ extern GameManager *gamemanager;
 
 extern quitting_time_enum quitting_time;
 
+#ifdef UNDER_CE
+extern std::string WINCE_exepath;
+#endif
 
 #endif

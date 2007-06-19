@@ -26,8 +26,6 @@
 // depending on the OS
 #if defined(__MORPHOS__) || defined(AMIGA)
 #define USER_CONFIGURATION_FILE "PROGDIR:exult.cfg"
-#elif defined(UNDER_CE)
-#define USER_CONFIGURATION_FILE "/Exult/exult.cfg"
 #else
 #define USER_CONFIGURATION_FILE "exult.cfg"
 #endif

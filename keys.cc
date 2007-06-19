@@ -584,6 +584,33 @@ void KeyBinder::LoadFromPatch()
 	}
 }
 
+#ifdef UNDER_CE
+void KeyBinder::WINCE_LoadFromDPADOPT(int opt)
+{
+	if (opt == 1) // Landscape1
+	{
+		ParseLine("up walk_east");
+		ParseLine("down walk_west");
+		ParseLine("left walk_north");
+		ParseLine("right walk_south");
+	}
+	else if (opt == 2) // Landscape2
+	{
+		ParseLine("up walk_west");
+		ParseLine("down walk_east");
+		ParseLine("left walk_south");
+		ParseLine("right walk_north");
+	}
+	else // Portrait (or Normal/Unknown)
+	{
+		ParseLine("up walk_north");
+		ParseLine("down walk_south");
+		ParseLine("left walk_west");
+		ParseLine("right walk_east");
+	}
+}
+#endif
+
 void KeyBinder::LoadDefaults()
 {
 	Flush();
