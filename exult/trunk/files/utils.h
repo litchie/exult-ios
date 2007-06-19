@@ -34,7 +34,6 @@
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);
 #endif
 
-
 /*
  *	Read a 1-byte value.
  */

@@ -72,7 +72,9 @@ public:
 	void LoadFromFile(const char* filename);
 	void LoadFromPatch();
 	void LoadDefaults();
-	
+#ifdef UNDER_CE
+	void WINCE_LoadFromDPADOPT(int opt);
+#endif
 	void ShowHelp();
 	void ShowCheatHelp();
 	
