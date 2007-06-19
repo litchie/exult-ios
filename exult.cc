@@ -130,6 +130,10 @@ bool ignore_crc = false;
 
 const std::string c_empty_string;
 
+#ifdef UNDER_CE
+string WINCE_exepath;
+#endif
+
 #if 0 && USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 extern void initialise_usecode_debugger(void);
@@ -364,11 +368,25 @@ int main
 
 int exult_main(const char *runpath)
 {
+#ifdef UNDER_CE
+	HWND RunningHandle = FindWindow(NULL, _T("Exult Ultima7 Engine"));
+	if (RunningHandle != NULL)
+	{// There's a minimized (probably) instance of Exult ... let's switch to it
+		cerr << "ERROR: Already running.  Switching to running instance..." << std::endl;
+		ShowWindow(RunningHandle, SW_SHOW);
+		return -1;
+	}
+#endif
+
 	string data_path;
 	string music_path;
-
 	// output version info
 	getVersionInfo(cout);
+
+#ifdef UNDER_CE
+	WINCE_exepath = string(runpath).substr(0, string(runpath).find_last_of("\\")+1);
+	int minimizing = 0;
+#endif
 
 	// Read in configuration file
 	config = new Configuration;
@@ -426,7 +444,6 @@ int exult_main(const char *runpath)
 	std::cout << "Data          : " << get_system_path("<DATA>") << std::endl;
 	std::cout << "Digital music : " << get_system_path("<MUSIC>") << std::endl;
 	std::cout << std::endl;
-
 
 	// Check CRCs of our .flx files
 	bool crc_ok = true;
@@ -511,6 +528,10 @@ int exult_main(const char *runpath)
 	cheat.init();
 
 #ifdef UNDER_CE
+	int dpadopt;
+	config->value("config/gameplay/dpadopt", dpadopt, 0);
+	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
+
 	GXOpenInput();
 
 	GXKeyList keys = GXGetDefaultKeys(GX_LANDSCAPEKEYS);
@@ -526,6 +547,7 @@ int exult_main(const char *runpath)
 #endif
 
 	Init();				// Create main window.
+
 	cheat.finish_init();
 	cheat.set_map_editor(arg_edit_mode);	// Start in map-edit mode?
 	if (arg_write_xml)
@@ -535,7 +557,7 @@ int exult_main(const char *runpath)
 	Mouse::mouse->set_shape(Mouse::hand);
 
 	int result = Play();		// start game
-	
+
 #ifdef UNDER_CE
 	GXCloseInput();
 #endif
@@ -678,7 +700,6 @@ static void Init
 	bool disable_fades;
 	config->value("config/video/disable_fades", disable_fades, false);
 	gwin->get_pal()->set_fades_enabled(!disable_fades);
-
 
 	SDL_SetEventFilter(0);
 	// Show the banner

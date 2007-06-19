@@ -171,6 +171,13 @@ string get_system_path(const string &path)
 		}
 	}
 #endif
+#ifdef UNDER_CE
+    if (new_path[0] != '/' && new_path[0] != '\\')
+	{// Its a relative path, so we need to make it into a full path
+		new_path = WINCE_exepath + new_path;
+	}
+#endif
+
 	switch_slashes(new_path);
 #ifdef WIN32
 	if (*(new_path.end()-1) == '/' || *(new_path.end()-1) == '\\') {
