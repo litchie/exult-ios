@@ -1547,7 +1547,7 @@ UI_si_display_map(int num)                                                  [SI]
     Displays a map on screen specified by 'num'. Currently, the association
     between map <> 'num' is hard-coded.
 
-UI_display_map_ex(int mapshp, bool show_loc)                               Exult
+UI_display_map_ex(int mapshp, bool show_loc)                             [Exult]
 
     Displays the sprite shape 'mapshp' centered in the screen. If 'show_loc' is
     'true', Exult will also display a location mark in the map.
