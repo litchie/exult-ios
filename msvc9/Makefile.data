@@ -1,32 +1,38 @@
 EXEC=Exult.exe
 EXEEXT=.exe
 
-EXPACK_CHECK=
-
 !include Makefile.common
 
 # Exult.flx
-build_ex : $(EXULT_FLX)
+build_ex :
+	cd data 
+	..\expack$(EXEEXT) -i flx.in
+	cd ..
 
-install_ex : $(EXULT_FLX)
+install_ex : 
 	copy data\exult.flx "$(EXULT_INSTALL_PATH)\data"
 	
 clean_ex :
-	del $(EXULT_FLX:/=\)
+	del data\exult.flx
 
 rebuild_ex : clean_ex build_ex
 
-reinstall_ex : clean_exe install_ex
+reinstall_ex : clean_ex install_ex
 
 
 # exult_bg.flx
-build_bg : $(EXULT_BG_FLX)
+build_bg : 
+	cd data\bg
+	..\..\expack$(EXEEXT) -i bg_mr_faces.in
+	..\..\expack$(EXEEXT) -i bg_paperdol.in
+	..\..\expack$(EXEEXT) -i flx.in
+	cd ..\..
 
-install_bg : $(EXULT_BG_FLX)
+install_bg : 
 	copy data\exult_bg.flx "$(EXULT_INSTALL_PATH)\data"
 	
 clean_bg :
-	del $(EXULT_BG_FLX:/=\)
+	del data\exult_bg.flx
 
 rebuild_bg : clean_bg build_bg
 
@@ -34,13 +40,16 @@ reinstall_bg : clean_bg install_bg
 
 
 # exult_si.flx
-build_si : $(EXULT_SI_FLX)
+build_si : 
+	cd data\si
+	..\..\expack$(EXEEXT) -i flx.in
+	cd ..\..
 
-install_si : $(EXULT_SI_FLX)
+install_si : 
 	copy data\exult_si.flx "$(EXULT_INSTALL_PATH)\data"
 
 clean_si :
-	del $(EXULT_SI_FLX:/=\)
+	del data\exult_si.flx
 
 rebuild_si : clean_si build_si
 
