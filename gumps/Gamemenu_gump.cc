@@ -107,6 +107,8 @@ void Gamemenu_gump::quit(bool return_to_menu)
 #ifdef UNDER_CE
 		if (Yesno_gump::ask("Do you want to minimize?"))
 		{
+			gwin->clear_screen(true);
+			minimized = true;
 			SDL_WM_IconifyWindow();
 		}
 #endif

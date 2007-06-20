@@ -455,9 +455,18 @@ int Gump_manager::handle_modal_gump_event
 	int scale_factor = gwin->get_fastmouse() ? 1 
 				: gwin->get_win()->get_scale();
 	static bool rightclick;
-
 	switch (event.type)
 	{
+#ifdef UNDER_CE
+	case SDL_ACTIVEEVENT:
+	if ((event.active.state & SDL_APPACTIVE) && event.active.gain && minimized)
+	{
+		minimized = false;
+		gwin->set_all_dirty();
+		gwin->show();
+		gwin->paint();
+	}
+#endif
 	case SDL_MOUSEBUTTONDOWN:
 #ifdef DEBUG
 cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())

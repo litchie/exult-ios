@@ -512,7 +512,12 @@ void Game_window::init_files(bool cycle)
 	  keybinder->LoadFromFile(keyfilename.c_str());
 	}
 	keybinder->LoadFromPatch();
-
+#ifdef UNDER_CE
+	// Take care of special WinCE D-PAD Options
+	int dpadopt;
+	config->value("config/gameplay/dpadopt", dpadopt, 0);
+	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
+#endif
 	CYCLE_RED_PLASMA();
 	// initialize .wav SFX pack
 

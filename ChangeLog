@@ -1,3 +1,7 @@
+2007-06-20	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+    * Fixed PocketPC 'minimize' function querks
+    * Fixed PocketPC dpad keymap loading bug
+        
 2007-06-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* New intrinsic from SI discovered with rip/wud/wuc: intrinsic 0x96 is
 	  'can_avatar_reach_pos'. Since Exult already offers a more powerful variant

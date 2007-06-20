@@ -677,9 +677,9 @@
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -782,9 +782,9 @@
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -1092,9 +1092,9 @@
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\ReleaseNI/"
-				ObjectFile=".\ReleaseNI/"
-				ProgramDataBaseFileName=".\ReleaseNI/"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="2"
@@ -1198,9 +1198,9 @@
 				UsePrecompiledHeader="1"
 				PrecompiledHeaderThrough="msvc_kludges.h"
 				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\ReleaseNI/"
-				ObjectFile=".\ReleaseNI/"
-				ProgramDataBaseFileName=".\ReleaseNI/"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="2"
@@ -3990,11 +3990,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
