@@ -132,6 +132,7 @@ const std::string c_empty_string;
 
 #ifdef UNDER_CE
 string WINCE_exepath;
+bool minimized;
 #endif
 
 #if 0 && USECODE_DEBUGGER
@@ -373,9 +374,12 @@ int exult_main(const char *runpath)
 	if (RunningHandle != NULL)
 	{// There's a minimized (probably) instance of Exult ... let's switch to it
 		cerr << "ERROR: Already running.  Switching to running instance..." << std::endl;
-		ShowWindow(RunningHandle, SW_SHOW);
+		HWND OldHandle = GetForegroundWindow();
+		ShowWindow(RunningHandle, SW_RESTORE);
+		ShowWindow(OldHandle, SW_MINIMIZE);
 		return -1;
 	}
+	minimized = false;
 #endif
 
 	string data_path;
@@ -385,7 +389,6 @@ int exult_main(const char *runpath)
 
 #ifdef UNDER_CE
 	WINCE_exepath = string(runpath).substr(0, string(runpath).find_last_of("\\")+1);
-	int minimizing = 0;
 #endif
 
 	// Read in configuration file
@@ -528,10 +531,6 @@ int exult_main(const char *runpath)
 	cheat.init();
 
 #ifdef UNDER_CE
-	int dpadopt;
-	config->value("config/gameplay/dpadopt", dpadopt, 0);
-	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
-
 	GXOpenInput();
 
 	GXKeyList keys = GXGetDefaultKeys(GX_LANDSCAPEKEYS);
@@ -1366,8 +1365,7 @@ static void Handle_event
 		break;
 		}
 	case SDL_ACTIVEEVENT:
-
-		if (event.active.state & SDL_APPMOUSEFOCUS)
+			if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
 			if (event.active.gain)
 				{
@@ -1453,6 +1451,7 @@ static int Get_click
 	{
 	dragging = false;		// Init.
 	uint32 last_rotate = 0;
+
 	while (1)
 		{
 		SDL_Event event;
@@ -1489,7 +1488,6 @@ static int Get_click
 		// Mouse scale factor
 		int scale = gwin->get_fastmouse() ? 1 
 				: gwin->get_win()->get_scale();
-
 		static bool rightclick;
 		while (SDL_PollEvent(&event))
 			switch (event.type)
