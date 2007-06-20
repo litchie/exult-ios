@@ -199,25 +199,19 @@ $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 expack$(EXEEXT) : expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) expack.o $(FILE_OBJS)
 
-ifndef NO_EXPACK_CHECK
-EXPACK_CHECK=expack$(EXEEXT)
-else
-EXPACK_CHECK=
-endif
-
-$(EXULT_FLX): $(EXPACK_CHECK) $(EXULT_FLX_OBJECTS)
+$(EXULT_FLX): expack$(EXEEXT) $(EXULT_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/flx.in
 
-$(EXULT_BG_FLX): $(EXPACK_CHECK) $(EXULT_BG_FLX_OBJECTS)
+$(EXULT_BG_FLX): expack$(EXEEXT) $(EXULT_BG_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/bg/flx.in
 
-$(EXULT_SI_FLX): $(EXPACK_CHECK) $(EXULT_SI_FLX_OBJECTS)
+$(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/si/flx.in
 
-$(BG_PAPERDOLL): $(EXPACK_CHECK) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
+$(BG_PAPERDOLL): expack$(EXEEXT) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
 	expack$(EXEEXT) -i data/bg/bg_paperdol.in
 
-$(BG_MR_FACES): $(EXPACK_CHECK) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
+$(BG_MR_FACES): expack$(EXEEXT) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
 	expack$(EXEEXT) -i data/bg/bg_mr_faces.in
 
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
