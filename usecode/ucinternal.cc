@@ -1515,6 +1515,24 @@ int Usecode_internal::path_run_usecode
 }
 
 /*
+ *	See if an actor can go to a given location.
+ */
+
+bool Usecode_internal::is_dest_reachable
+	(
+	Actor *npc,
+	Tile_coord dest
+	)
+	{
+	Path_walking_actor_action *action = 
+		new Path_walking_actor_action(0, 6);
+	
+	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest);
+	delete action;
+	return ret;
+	}
+
+/*
  *	Schedule a script.
  */
 
