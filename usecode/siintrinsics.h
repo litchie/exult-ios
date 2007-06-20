@@ -171,7 +171,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x93 ++++Stop_attacking_avatar()??
 	USECODE_INTRINSIC_PTR(path_run_usecode),		// 0x94 - Known
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x95 UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x96
+	USECODE_INTRINSIC_PTR(can_avatar_reach_pos),	// 0x96
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x97 UNUSED
 	USECODE_INTRINSIC_PTR(close_gumps),	// Guess	// 0x98
 	USECODE_INTRINSIC_PTR(item_say),			// 0x99
