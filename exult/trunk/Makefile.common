@@ -199,11 +199,11 @@ $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 expack$(EXEEXT) : expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) expack.o $(FILE_OBJS)
 
-#ifndef NO_EXPACK_CHECK
+ifndef NO_EXPACK_CHECK
 EXPACK_CHECK=expack$(EXEEXT)
-#else
+else
 EXPACK_CHECK=
-#endif
+endif
 
 $(EXULT_FLX): $(EXPACK_CHECK) $(EXULT_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/flx.in
