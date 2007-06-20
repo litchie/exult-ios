@@ -3325,32 +3325,26 @@ USECODE_INTRINSIC(is_dest_reachable)
 {
 	Usecode_value ret(0);
 	Actor *npc = as_actor(get_item(parms[0]));
-	if (!npc)
+	if (!npc || parms[1].get_array_size() < 2)
 		return ret;
-	Tile_coord dest;
-	if (parms[1].is_ptr())
-		{
-		Game_object *obj = get_item(parms[1]);
-		dest = obj->get_tile();
-		}
-	else
-		{
-		Usecode_value& arr = parms[1];
-		int sz = arr.get_array_size();
-		if (sz < 2)
-			return ret;
-		dest = Tile_coord(arr.get_elem(0).get_int_value(),
-			  arr.get_elem(1).get_int_value(),
-			  sz >= 3 ? arr.get_elem(2).get_int_value() : 0);
-		}
-	
-	Path_walking_actor_action *action = 
-		new Path_walking_actor_action(0, 6);
-	
-	if (action->walk_to_tile(npc, npc->get_tile(), dest))
-		ret = Usecode_value(1);
-	
-	delete action;
+	Tile_coord dest = Tile_coord(parms[1].get_elem(0).get_int_value(),
+					parms[1].get_elem(1).get_int_value(),
+					parms[1].get_array_size() == 2 ? 0 :
+							parms[1].get_elem(2).get_int_value());
+	ret = Usecode_value(is_dest_reachable(npc, dest));
+	return ret;
+}
+
+USECODE_INTRINSIC(can_avatar_reach_pos)
+{
+	Usecode_value ret(0);
+	if (parms[1].get_array_size() < 2)
+		return ret;
+	Tile_coord dest = Tile_coord(parms[1].get_elem(0).get_int_value(),
+					parms[1].get_elem(1).get_int_value(),
+					parms[1].get_array_size() == 2 ? 0 :
+							parms[1].get_elem(2).get_int_value());
+	ret = Usecode_value(is_dest_reachable(gwin->get_main_actor(), dest));
 	return ret;
 }
 

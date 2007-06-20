@@ -165,6 +165,7 @@ class Usecode_internal : public Usecode_machine
 		bool always = false, bool companions = false);
 	void create_script(Usecode_value& objval, Usecode_value& codeval,
 								long delay);
+	bool is_dest_reachable(Actor *npc, Tile_coord dest);
 
 	/*
 	 *	Embedded intrinsics
@@ -337,6 +338,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(error_message);
 					// Serpent Isle:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
+	USECODE_INTRINSIC_DECL(can_avatar_reach_pos);
 	USECODE_INTRINSIC_DECL(remove_from_area);
 	USECODE_INTRINSIC_DECL(infravision);
 	USECODE_INTRINSIC_DECL(set_polymorph);

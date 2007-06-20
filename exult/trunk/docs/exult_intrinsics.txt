@@ -1653,3 +1653,10 @@ bool npc->is_dest_reachable(int pos[])
     otherwise. Returns 'false' if 'pos' has less than two components; if 'pos'
     has exactly 2 components, the z-coordinate is assumed to be '0'.
 
+bool UI_can_avatar_reach_pos(int pos[])                                     [SI]
+
+    Returns 'true' if the avatar can reach the tile specified by 'pos', 'false'
+    otherwise. Returns 'false' if 'pos' has less than two components; if 'pos'
+    has exactly 2 components, the z-coordinate is assumed to be '0'. This is
+    similar to, but more limited than, the is_dest_reachable Exult intrinsic.
+
