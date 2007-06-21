@@ -187,7 +187,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	{// Its a relative path, so we need to make it into a full path
 		fname = WINCE_exepath + fname;
 	}
-	std::cout << "config file path: " << fname << "\n";
+	std::cout << "Config file: " << fname << "\n";
 #endif
 	return read_abs_config_file(fname, root);
 }

@@ -28,6 +28,9 @@
 #define USER_CONFIGURATION_FILE "PROGDIR:exult.cfg"
 #else
 #define USER_CONFIGURATION_FILE "exult.cfg"
+  #ifdef UNDER_CE
+  #define EASY_USER_CONFIGURATION_FILE "exult.cfg.txt"
+  #endif
 #endif
 
 #if (defined(MACOS) || defined(MACOSX)) && !defined(EXULT_DATADIR)
