@@ -1,3 +1,16 @@
+2007-06-21	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+    * PocketPC: Added "exult.cfg.txt" as a config file option
+		Exult will look for exult.cfg.txt first (using U7exists)
+		If it is not found, then Exult will use exult.cfg
+		This is so PocketPC users can easily edit the config file by default
+		Most PocketPC devices natively do NOT have the ability to rename extensions
+			or to easily edit anything that is not already a registered type
+		This feature can be made easily available to other OSes by defining
+			EASY_USER_CONFIGURATION_FILE (with the value of 'exult.cfg.txt')
+	* PocketPC: Possibly fixed semi-random 'minimize' bug (when minimizing, some
+			of the main PocketPC GUI would be covered by graphics from Exult).
+			Needs more testing.
+						
 2007-06-20	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
     * Fixed PocketPC 'minimize' function querks
     * Fixed PocketPC dpad keymap loading bug

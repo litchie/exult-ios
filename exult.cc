@@ -373,7 +373,7 @@ int exult_main(const char *runpath)
 	HWND RunningHandle = FindWindow(NULL, _T("Exult Ultima7 Engine"));
 	if (RunningHandle != NULL)
 	{// There's a minimized (probably) instance of Exult ... let's switch to it
-		cerr << "ERROR: Already running.  Switching to running instance..." << std::endl;
+		//cerr << "ERROR: Already running.  Switching to running instance..." << std::endl;
 		HWND OldHandle = GetForegroundWindow();
 		ShowWindow(RunningHandle, SW_RESTORE);
 		ShowWindow(OldHandle, SW_MINIMIZE);
@@ -397,7 +397,14 @@ int exult_main(const char *runpath)
 	if (arg_configfile != "") {
 		config->read_abs_config_file(arg_configfile);
 	} else {
+#ifdef EASY_USER_CONFIGURATION_FILE
+		if (U7exists(EASY_USER_CONFIGURATION_FILE))
+			config->read_config_file(EASY_USER_CONFIGURATION_FILE);
+		else
+			config->read_config_file(USER_CONFIGURATION_FILE);
+#else
 		config->read_config_file(USER_CONFIGURATION_FILE);
+#endif
 	}
 
 	// Setup virtual directories
