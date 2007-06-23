@@ -121,7 +121,12 @@ class Usecode_internal : public Usecode_machine
 	typedef Usecode_value (Usecode_internal::*UsecodeIntrinsicFn)(
 		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
-	int get_face_shape(Usecode_value& arg1, Actor *&npc);
+	int get_face_shape(Usecode_value& arg1, Actor *&npc, int& frame);
+	int get_face_shape(Usecode_value& arg1, Actor *&npc)
+		{
+		int frame;
+		return get_face_shape(arg1, npc, frame);
+		}
 	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2,
 							int slot = -1);
 	void remove_npc_face(Usecode_value& arg1);

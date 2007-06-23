@@ -643,29 +643,57 @@ void Usecode_internal::stack_error
 /*
  *	Gets the face for an NPC.
  */
-int Usecode_internal::get_face_shape(Usecode_value& arg1, Actor *&npc)
+int Usecode_internal::get_face_shape
+	(
+	Usecode_value& arg1,
+	Actor *&npc,
+	int& frame
+	)
 	{
 	npc = as_actor(get_item(arg1));
-	int num = -1;
+	int shape = -1;
 	if (arg1.is_int())
 		{
-		num = abs(arg1.get_int_value());
-		if (num == 356)	// Avatar.
-			num = 0;
+		shape = abs(arg1.get_int_value());
+		if (shape == 356)	// Avatar.
+			shape = 0;
 		}
 	else if (npc)
-		num = npc->get_face_shapenum();
+		shape = npc->get_face_shapenum();
+
+	if (shape < 0)	// No need to do anything else.
+		return shape;
+	
+	// Checks for Petra flag.
+	shape = Shapeinfo_lookup::GetFaceReplacement(shape);
 
 	Actor *iact;
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{			// Special case: Nightmare Smith.
 					//   (But don't mess up Guardian.)
-		if (num == 296 && this->frame->caller_item &&
+		if (shape == 296 && this->frame->caller_item &&
 		    (iact = this->frame->caller_item->as_actor()) != 0 &&
 		    iact->get_npc_num() == 277)
-			num = 277;
+			shape = 277;
 		}
-	return num;
+
+	// Another special case: map face shape 0 to
+	// the avatar's correct face shape and frame:
+	if (shape == 0)
+		{
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(gwin->get_main_actor()); 
+		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
+			{
+			shape = skin->alter_face_shape;
+			frame = skin->alter_face_frame;
+			}
+		else
+			{
+			shape = skin->face_shape;
+			frame = skin->face_frame;
+			}
+		}
+	return shape;
 	}
 
 /*
@@ -681,34 +709,16 @@ void Usecode_internal::show_npc_face
 	{
 	show_pending_text();
 	Actor *npc, *iact = 0;
-	int num = get_face_shape(arg1, npc);
+	int frame = arg2.get_int_value();
+	int shape = get_face_shape(arg1, npc, frame);
 
-	if (num < 0)
+	if (shape < 0)
 		return;
 	
 	if (Game::get_game_type() == BLACK_GATE && npc)
 		{	// Only do this if the NPC is the caller item.
 		if (npc->get_npc_num() != -1) 
 			npc->set_flag (Obj_flags::met);
-		}
-	
-	// Checks for Petra flag.
-	int shape = Shapeinfo_lookup::GetFaceReplacement(num);
-	int frame = arg2.get_int_value();
-
-	if (shape == 0)
-		{
-		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(gwin->get_main_actor()); 
-		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
-			{
-			shape = skin->alter_face_shape;
-			frame = skin->alter_face_frame;
-			}
-		else
-			{
-			shape = skin->face_shape;
-			frame = skin->face_frame;
-			}
 		}
 
 	if (!conv->get_num_faces_on_screen())
