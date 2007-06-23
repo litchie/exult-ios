@@ -1,3 +1,7 @@
+2007-06-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs where avatar faces would not be removed from the screen by
+	  calls to remove_npc_face intrinsic.
+
 2007-06-21	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
     * PocketPC: Added "exult.cfg.txt" as a config file option
 		Exult will look for exult.cfg.txt first (using U7exists)
@@ -14,13 +18,12 @@
 2007-06-20	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
     * Fixed PocketPC 'minimize' function querks
     * Fixed PocketPC dpad keymap loading bug
-        
+
 2007-06-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* New intrinsic from SI discovered with rip/wud/wuc: intrinsic 0x96 is
 	  'can_avatar_reach_pos'. Since Exult already offers a more powerful variant
 	  ('is_dest_reachable', which works for any NPC not just the avatar), this
 	  intrinsic has *not* been made available to BG.
-
 
 2007-06-19	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* Started PocketPC 'minimize' function
