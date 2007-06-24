@@ -3,11 +3,14 @@ EXEEXT=.exe
 
 !include Makefile.common
 
+
 # Exult.flx
-build_ex : 
+build_ex :
+!if !EXIST(data\exult.flx)
 	cd data 
 	..\expack$(EXEEXT) -i flx.in
 	cd ..
+!endif
 
 install_ex : 
 	copy data\exult.flx "$(EXULT_INSTALL_PATH)\data"
@@ -23,11 +26,13 @@ reinstall_ex : clean_ex install_ex
 
 # exult_bg.flx
 build_bg :
+!if !EXIST(data\exult_bg.flx)
 	cd data\bg
 	..\..\expack$(EXEEXT) -i bg_mr_faces.in
 	..\..\expack$(EXEEXT) -i bg_paperdol.in
 	..\..\expack$(EXEEXT) -i flx.in
 	cd ..\..
+!endif
 
 install_bg : 
 	copy data\exult_bg.flx "$(EXULT_INSTALL_PATH)\data"
@@ -43,9 +48,11 @@ reinstall_bg : clean_bg install_bg
 
 # exult_si.flx
 build_si :
+!if !EXIST(data\exult_si.flx)
 	cd data\si
 	..\..\expack$(EXEEXT) -i flx.in
 	cd ..\..
+!endif
 
 install_si : 
 	copy data\exult_si.flx "$(EXULT_INSTALL_PATH)\data"
@@ -61,9 +68,11 @@ reinst_si : clean_si install_si
 
 # exult_pocketpc.flx
 build_pocketpc :
+!if !EXIST(data\exult_pocketpc.flx)
 	cd data\pocketpc
 	..\..\expack$(EXEEXT) -i flx.in
 	cd ..\..
+!endif
 
 install_pocketpc : 
 	copy data\exult_pocketpc.flx "$(EXULT_INSTALL_PATH)\data"
