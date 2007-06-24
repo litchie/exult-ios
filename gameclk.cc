@@ -130,6 +130,17 @@ void Game_clock::set_time_palette
 	old_palette = get_final_palette(old_palette, was_overcast, was_foggy,
 				old_light_level, old_special_light);
 
+	if (gwin->get_pal()->is_faded_out())
+		{
+		if (transition)
+			{
+			delete transition;
+			transition = 0;
+			}
+		gwin->get_pal()->set(old_palette);
+		return;
+		}
+
 	was_overcast = cloudy;
 	was_foggy = foggy;
 	old_light_level = light_source_level;
