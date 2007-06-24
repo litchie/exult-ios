@@ -478,7 +478,13 @@ void Keyboard_gump::injectKeyEvent(char key, SDLKey sdlkey)
 	event.type = SDL_KEYDOWN;
 	event.key.type = SDL_KEYDOWN;
 	event.key.state = SDL_PRESSED;
-	event.key.keysym.mod = SDL_GetModState();
+	event.key.keysym.mod = KMOD_NONE;
+
+	if ( (altDown || ctrlDown) && isupper(key))
+	{ // Its uppercase -- need to convert it to lower case so that ctrl and/or alt work
+		key = tolower(key);
+	}
+
 	if (altDown)
 	{
 		event.key.keysym.mod = (SDLMod)(event.key.keysym.mod | KMOD_ALT);
@@ -491,9 +497,15 @@ void Keyboard_gump::injectKeyEvent(char key, SDLKey sdlkey)
 	}
 
 	if (key == '\0')
+	{
 		event.key.keysym.sym = sdlkey;
+	}
 	else
+	{
+		event.key.keysym.sym = (SDLKey)key;
 		event.key.keysym.unicode = key;
+	}
+
 	SDL_PushEvent(&event);
 }
 
