@@ -737,7 +737,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="\Exult"
 				RegisterOutput="0"
-				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4i|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Debug\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Debug\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Debug\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0"
+				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4i|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Debug\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Debug\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Debug\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0;exult_pocketpc.flx|$(InputDir)\..\data|\Exult\data|0"
 			/>
 			<DebuggerTool
 			/>
@@ -842,7 +842,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="\Exult"
 				RegisterOutput="0"
-				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0"
+				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0;exult_pocketpc.flx|$(InputDir)\..\data|\Exult\data|0"
 			/>
 			<DebuggerTool
 			/>
@@ -1148,7 +1148,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="\Exult"
 				RegisterOutput="0"
-				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4i|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0"
+				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4i|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0;exult_pocketpc.flx|$(InputDir)\..\data|\Exult\data|0"
 			/>
 			<DebuggerTool
 			/>
@@ -1257,7 +1257,7 @@
 				ForceDirty="-1"
 				RemoteDirectory="\Exult"
 				RegisterOutput="0"
-				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0"
+				AdditionalFiles="msvcr90.dll|$(VCInstallDir)ce\dll\armv4|\Exult|0;SDL.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL-1.2.11\lib|\Exult|0;SDL_mixer.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\SDL_mixer-1.2.7\lib|\Exult|0;zlibce.dll|c:\MSVC-Libraries\PocketPC\Release-2K3\zlibce114-all\lib|\Exult|0;exultmsg.txt|$(InputDir)\..\data|\Exult\data|0;exult.flx|$(InputDir)\..\data|\Exult\data|0;exult_bg.flx|$(InputDir)\..\data|\Exult\data|0;exult_si.flx|$(InputDir)\..\data|\Exult\data|0;exult_pocketpc.flx|$(InputDir)\..\data|\Exult\data|0"
 			/>
 			<DebuggerTool
 			/>
@@ -2635,6 +2635,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Keyboard_gump.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\misc_buttons.cc"
 					>
 				</File>
@@ -2767,6 +2771,10 @@
 					</File>
 					<File
 						RelativePath="..\gumps\Jawbone_gump.h"
+						>
+					</File>
+					<File
+						RelativePath="..\gumps\Keyboard_gump.h"
 						>
 					</File>
 					<File

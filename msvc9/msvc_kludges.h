@@ -295,6 +295,9 @@ using std::getline;
 #include "../gumps/Face_stats.h"
 #include "../gumps/File_gump.h"
 #include "../gumps/Gamemenu_gump.h"
+#ifdef UNDER_CE
+  #include "../gumps/Keyboard_gump.h"
+#endif
 #include "../gumps/Gump.h"
 #include "../gumps/Gump_button.h"
 #include "../gumps/Gump_manager.h"

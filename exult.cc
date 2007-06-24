@@ -97,6 +97,10 @@
 #include "items.h"
 #include "gamemgr/modmgr.h"
 
+#ifdef UNDER_CE
+  #include "Keyboard_gump.h"
+#endif
+
 #ifndef UNDER_EMBEDDED_CE
 using std::atof;
 using std::cerr;
@@ -133,6 +137,7 @@ const std::string c_empty_string;
 #ifdef UNDER_CE
 string WINCE_exepath;
 bool minimized;
+Keyboard_gump *gkeyboard;
 #endif
 
 #if 0 && USECODE_DEBUGGER
@@ -550,6 +555,8 @@ int exult_main(const char *runpath)
 	std::cout << "B " << keys.vkB << std::endl;
 	std::cout << "C " << keys.vkC << std::endl;
 	std::cout << "Start " << keys.vkStart << std::endl;
+
+	gkeyboard = new Keyboard_gump();
 #endif
 
 	Init();				// Create main window.
@@ -561,6 +568,12 @@ int exult_main(const char *runpath)
 
 	Mouse::mouse = new Mouse(gwin);
 	Mouse::mouse->set_shape(Mouse::hand);
+
+#ifdef UNDER_CE
+	gkeyboard->autopaint = false;
+	gkeyboard->minimize();
+	gkeyboard->autopaint = true;
+#endif
 
 	int result = Play();		// start game
 
@@ -1145,6 +1158,10 @@ static void Handle_event
 		{
         	if (dont_move_mode)
         		break;
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 1)
 			{
@@ -1234,6 +1251,10 @@ static void Handle_event
 		{
 	        if (dont_move_mode)
         	    break;
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 3)
 			{
@@ -1500,6 +1521,10 @@ static int Get_click
 			switch (event.type)
 				{
 			case SDL_MOUSEBUTTONDOWN:
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 				if (event.button.button == 3)
 					rightclick = true;
 				else if (drag_ok && event.button.button == 1)
@@ -1511,6 +1536,10 @@ static int Get_click
 					}
 				break;
 			case SDL_MOUSEBUTTONUP:
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 				if (event.button.button == 1)
 					{
 					x = event.button.x / scale;

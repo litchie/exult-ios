@@ -429,6 +429,9 @@ void Gump_manager::paint()
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		gmp->gump->paint();
+#ifdef UNDER_CE
+	gkeyboard->paint();
+#endif
 }
 
 
@@ -455,6 +458,7 @@ int Gump_manager::handle_modal_gump_event
 	int scale_factor = gwin->get_fastmouse() ? 1 
 				: gwin->get_win()->get_scale();
 	static bool rightclick;
+
 	switch (event.type)
 	{
 #ifdef UNDER_CE
@@ -472,6 +476,10 @@ int Gump_manager::handle_modal_gump_event
 cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())
 	 << ", " <<	((event.button.y / scale_factor) - gump->get_y()) << ")"<<endl;
 #endif
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
@@ -486,6 +494,10 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 			gump->mousewheel_down();
 		break;
 	case SDL_MOUSEBUTTONUP:
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				break;
+#endif
 		if (event.button.button == 1)
 			gump->mouse_up(event.button.x / scale_factor,
 						event.button.y / scale_factor);
@@ -568,6 +580,9 @@ int Gump_manager::do_modal_gump
 		paint->paint();
 	Mouse::mouse->show();
 	gwin->show();
+#ifdef UNDER_CE
+	gkeyboard->paint();
+#endif
 	do
 	{
 		Delay();		// Wait a fraction of a second.
@@ -586,6 +601,9 @@ int Gump_manager::do_modal_gump
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)	// If not, did mouse change?
 			Mouse::mouse->blit_dirty();
+#ifdef UNDER_CE
+		gkeyboard->paint();
+#endif
 	}
 	while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();
@@ -594,7 +612,6 @@ int Gump_manager::do_modal_gump
 					// Leave mouse off.
 	gwin->paint();
 	gwin->show(true);
-
 	// Resume the game
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 
