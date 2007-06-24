@@ -2193,8 +2193,8 @@ USECODE_INTRINSIC(run_endgame)
 	// If successful enable menu entry and play credits afterwards
 	if(parms[0].get_int_value() != 0) {
 		std::ofstream endgameflg;
-                U7open(endgameflg, "<SAVEGAME>/endgame.flg");
-                endgameflg.close();
+	            U7open(endgameflg, "<SAVEGAME>/endgame.flg");
+	            endgameflg.close();
 		game->show_credits();
 	}
 	quitting_time = QUIT_TIME_YES;

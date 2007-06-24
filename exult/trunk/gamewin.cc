@@ -1872,6 +1872,8 @@ void Game_window::teleport_party
 	// Fixes a rare crash when moving between maps and teleporting:
 	newmap = main_actor->get_map_num();
 	center_view(t);			// Bring pos. into view, and insure all
+	clock->reset();			// Reset and re-display palette.
+	clock->set_palette();
 					//   objs. exist.
 	for (i = 0; i < cnt; i++)
 		{
@@ -2746,9 +2748,9 @@ void Game_window::setup_game
 	Face_stats::load_config(config);
 
 	// Set palette for time-of-day.
+	clock->reset();
 	clock->set_palette();
 	pal->fade(6, 1, -1);		// Fade back in.
-	clock->set_palette();
 }
 
 

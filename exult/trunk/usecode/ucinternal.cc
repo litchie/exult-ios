@@ -495,7 +495,7 @@ Game_object *Usecode_internal::get_item
 	} else if (val >= 0 && val < 0x400)		// Looks like a shape #?
 		{
 		if (!itemref.is_array() &&
- 		    caller_item && val == caller_item->get_shapenum())
+			caller_item && val == caller_item->get_shapenum())
 			obj = caller_item;
 		else
 			return 0;	// Can't be an object.
@@ -3356,7 +3356,7 @@ void Usecode_internal::read_usevars
 			if (fsym)
 				funid = fsym->get_val();
 			delete nm;
-  		    }
+			}
 		int cnt = nfile->read4();
 		Usecode_function *fun = find_function(funid);
 		if (!fun)

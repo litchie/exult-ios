@@ -39,7 +39,15 @@ enum MakePotion_levels
 	BEGIN_DIALOG_1						= 10,
 	MOVE_TO_LBCASTLE					= 11,
 	BEGIN_DIALOG_2						= 12,
-	TELEPORT_TO_SKARABRAE				= 13
+	TELEPORT_TO_SKARABRAE				= 13,
+	WALK_TO_CAULDRON_1					= 14,
+	WALK_TO_CAULDRON_2					= 15,
+	WALK_TO_POTION_1					= 16,
+	WALK_TO_POTION_2					= 17,
+	IS_AT_CAULDRON_1					= 18,
+	IS_AT_CAULDRON_2					= 19,
+	IS_AT_POTION_1						= 20,
+	IS_AT_POTION_2						= 21
 };
 
 zaurielMakePotion ()
@@ -121,52 +129,89 @@ zaurielMakePotion ()
 		say("Zauriel takes the Blackrock and the Silver Serpent venom from you. @Thank thee, Avatar.@");
 		//The cutscene:
 		script ZAURIEL after 3 ticks
-		{	nohalt;								finish;
-			step NORTHEAST;						wait 2;
-			step EAST;
-			actor frame STAND;					wait 2;
-			actor frame LEAN;					wait 2;
-			call zaurielMakePotion, PLACE_BLACKROCK;
-			actor frame STAND;					wait 2;
-			step SOUTHWEST;						wait 2;
-			step WEST;							wait 2;
-			step WEST;
-			actor frame STAND;					wait 2;
-			actor frame USE;
-			call zaurielMakePotion, DELETE_POTIONS;
-			wait 2;
-			actor frame STAND;					wait 2;
-			step NORTHEAST;						wait 2;
-			repeat 2 {step EAST;				wait 2;};
-			actor frame STAND;					wait 2;
-			actor frame USE;					wait 2;
-			call zaurielMakePotion, UPDATE_CAULDRON;
-			actor frame STAND;					wait 2;
-			actor frame USE;					wait 2;
-			call zaurielMakePotion, UPDATE_CAULDRON;
-			actor frame STAND;					wait 2;
-			repeat 2 {step SOUTH;				wait 2;};
-			repeat 2 {step WEST;				wait 2;};
-			actor frame STAND;					wait 2;
-			actor frame USE;
-			call zaurielMakePotion, DELETE_POTIONS;
-			wait 2;
-			actor frame STAND;					wait 2;
-			repeat 2 {step NORTH;				wait 2;};
-			repeat 2 {step EAST;				wait 2;};
-			actor frame STAND;					wait 2;
-			actor frame USE;					wait 2;
-			call zaurielMakePotion, UPDATE_CAULDRON;
-			actor frame STAND;					wait 5;
-			actor frame USE;
-			call zaurielMakePotion, UPDATE_CAULDRON;
-			wait 2;
-			actor frame STAND;					wait 2;
-			call zaurielMakePotion, BEGIN_DIALOG_1;
+		{
+			nohalt;								finish;
+			call zaurielMakePotion, WALK_TO_CAULDRON_1;
 		}
 		
 	}
 	
+	else if (event >= WALK_TO_CAULDRON_1 && event <= WALK_TO_POTION_2)
+	{
+		var pos = [0x537, 0xa46, 0x0];
+		var newevent;
+		switch (event)
+		{
+			case WALK_TO_CAULDRON_1:
+				newevent = IS_AT_CAULDRON_1;
+				break;
+			case WALK_TO_CAULDRON_2:
+				newevent = IS_AT_CAULDRON_2;
+				break;
+			case WALK_TO_POTION_1:
+				pos = [0x534, 0xa47, 0x0];
+				newevent = IS_AT_POTION_1;
+				break;
+			case WALK_TO_POTION_2:
+				pos = [0x534, 0xa49, 0x0];
+				newevent = IS_AT_POTION_2;
+				break;
+		}
+		ZAURIEL->si_path_run_usecode(pos, newevent, ZAURIEL, zaurielMakePotion, true);
+	}
+
+	else if (event >= IS_AT_CAULDRON_1 && event <= IS_AT_POTION_2)
+	{
+		if (event <= IS_AT_CAULDRON_2)
+		{
+			if (event == IS_AT_CAULDRON_1)
+			{
+				script ZAURIEL
+				{
+					nohalt;		finish;
+					actor frame STAND;	face EAST;
+					wait 2;		actor frame LEAN;
+					wait 2;	 	call zaurielMakePotion, PLACE_BLACKROCK;
+					actor frame STAND;	wait 2;
+					call zaurielMakePotion, WALK_TO_POTION_1;
+				};
+			}
+			else
+			{
+				script ZAURIEL
+				{
+					nohalt;		finish;
+					actor frame STAND;	face EAST;
+					repeat 3
+					{
+						actor frame STAND;		wait 2;
+						actor frame USE;		wait 2;
+						call zaurielMakePotion, UPDATE_CAULDRON;
+					};
+					actor frame STAND;	wait 2;
+					call zaurielMakePotion, BEGIN_DIALOG_1;
+				}
+			}
+		}
+		else
+		{
+			var newevent;
+			if (event == IS_AT_POTION_1)
+				newevent = WALK_TO_POTION_2;
+			else
+				newevent = WALK_TO_CAULDRON_2;
+			script ZAURIEL
+			{
+				nohalt;		finish;
+				actor frame STAND;	face WEST;
+				wait 2;		actor frame USE;
+				wait 2;	 	call zaurielMakePotion, DELETE_POTIONS;
+				actor frame STAND;	wait 2;
+				call zaurielMakePotion, newevent;
+			};
+		}
+	}
+
 	else if (event == PLACE_BLACKROCK)
 	{
 		var blackrock = UI_create_new_object(SHAPE_BLACKROCK);

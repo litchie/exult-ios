@@ -142,13 +142,13 @@ zaurielGiveAdvance ()
 	var advance_quality = [0, 0, 0, 0, 0, 0, 0, 0];
 
 	var pouch1 = createContainerWithObjects(SHAPE_BAG, advance_reagent, advance_item_frames, advance_reagent_quantity, advance_quality);
+	var gavereags = forceGiveObjToParty(pouch1);
 	var pouch2 = createContainerWithObjects(SHAPE_BAG, advance_potions, advance_item_frames, advance_potions_quantity, advance_quality);
+	var gavepotns = forceGiveObjToParty(pouch2);
 	
 	say("@In any case, since thou wilt help me, I shall now give thee a selection of reagents and potions to assist thee.");
 	say("@This is an advance payment, but it shall not be deducted from thy upcoming reward. Consider it as a bonus...@");
 	
-	var gavereags = forceGiveObjToParty(pouch1);
-	var gavepotns = forceGiveObjToParty(pouch2);
 	
 	if (gavereags && gavepotns)
 		say("@There is the advance. I have placed it in a couple of bags for thy convenience.@");
@@ -182,14 +182,82 @@ zaurielDestroyComponents ()
 {
 	var shapes = [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST];
 	var pouch = ZAURIEL->get_cont_items(SHAPE_CHEST, QUALITY_ANY, FRAME_ANY);
-	var cont_items;
-	
-	for (shp in shapes with counter)
+
+	for (shp in shapes)
 	{
-		cont_items = ZAURIEL->count_objects(shp[counter], QUALITY_ANY, FRAME_ANY);
-		pouch->remove_cont_items(cont_items, shp[counter], QUALITY_ANY, FRAME_ANY, true);
+		var cnt = ZAURIEL->count_objects(shp, QUALITY_ANY, FRAME_ANY);
+		pouch->remove_cont_items(cnt, shp, QUALITY_ANY, FRAME_ANY, true);
 	}
 	pouch->remove_item();
+}
+
+zaurielMakeGem(var make)
+{
+	UI_remove_answer(["Make gem", "Fix gem"]);
+	say("@Yes, thou hast everything I asked thee. Here, give me the components.@ Zauriel takes the components from you.");
+
+	// What we need to take from party.
+	var spider_eggs = 2;
+	var bee_stringer = 6;
+	var invis_dust = 1;
+	var gems = 1;
+
+	// Check which frame of gem the party has, but make sure
+	// not to include FoV gems here.
+	var framenum = 0;
+	do
+	{
+		if (PARTY->count_objects(SHAPE_GEM, QUALITY_ANY, framenum))
+			break;
+		framenum += 1;
+	} while (framenum < 12);
+
+	if (!make)
+	{
+		// Since we are fixing a gem, we don't need to take everything.
+		spider_eggs -= count_objects(SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY);
+		bee_stringer -= count_objects(SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY);
+		invis_dust -= count_objects(SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY);
+		gems -= count_objects(SHAPE_GEM, QUALITY_ANY, FRAME_ANY);
+	}
+
+	// Remove what is needed to fix the gem
+	if (spider_eggs > 0)
+		UI_remove_party_items(spider_eggs, SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY, true);
+	if (bee_stringer > 0)
+		UI_remove_party_items(bee_stringer, SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY, true);
+	if (invis_dust > 0)
+		UI_remove_party_items(invis_dust, SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY, true);
+	if (gems > 0)
+		UI_remove_party_items(gems, SHAPE_GEM, QUALITY_ANY, framenum, true);
+
+	// Destroy any components Zauriel may still have:
+	zaurielDestroyComponents();
+	giveExperience(100);
+
+	var incantation;
+	var gemdone;
+	if (make)
+	{
+		incantation = "@In Lor Wis Ort Rel Por!@~@Vas An Ort Sanct!@";
+		gemdone = "settles into a glowing stone.";
+	}
+	else
+	{
+		incantation = "@In Bet Ort Rel Vas Ort!@";
+		gemdone = "has a subtler, softer glow than before.";
+	}
+	say("He then quickly intones a magical incantation.~" + incantation);
+	say("After a flash of light, the gathered components vanish and the gem " + gemdone);
+	say("@Here is the gem. Make good use of it.@");
+
+	// Give gem to avatar:
+	UI_set_last_created(get_cont_items(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY));
+	if (!AVATAR->give_last_created())
+	{
+		say("@Since thou art so overburdened, I shall place the gem on the ground.@");
+		UI_update_last_created(AVATAR->get_object_position());
+	}
 }
 
 var zaurielExplainQuest(var doing_quest)
@@ -800,15 +868,22 @@ zaurielTalkGemSubquest ()
 			//See if the party has gems or Gems of Dispelling:
 			have_gem = PARTY->count_objects(SHAPE_GEM, QUALITY_ANY, FRAME_ANY);
 			have_liche_gems = PARTY->count_objects(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY);
-			
+
 			var have_ingredients_fix;
-			
+
 			//Get how many of the ingredients the party has:
 			var spider_eggs = PARTY->count_objects(SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY);
 			var invis_dust = PARTY->count_objects(SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY);
 			var bee_stringer = PARTY->count_objects(SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY);
-			var gems = PARTY->count_objects(SHAPE_GEM, QUALITY_ANY, FRAME_ANY);
-			
+			// See how many gems the party has, but ignore the FoV gems.
+			var gems = 0;
+			var framenum = 0;
+			do
+			{
+				gems += PARTY->count_objects(SHAPE_GEM, QUALITY_ANY, framenum);
+				framenum += 1;
+			} while (framenum < 12);
+
 			if ((spider_eggs >= 2) && (invis_dust) && (bee_stringer >= 6) && (gems))
 				//Enough to make a gem:
 				have_ingredients_make = true;
@@ -991,29 +1066,6 @@ zaurielTalkGemSubquest ()
 					add("scout");
 			}
 			
-		case "Make gem" (remove):
-			say("@Yes, thou hast all required ingredients. Here, let me have them.@ Zauriel takes the ingredients from you.");
-			//Remove what if needed:
-			UI_remove_party_items(2, SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(6, SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(1, SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(1, SHAPE_GEM, QUALITY_ANY, FRAME_ANY, true);
-			say("He then quickly intones a magical incantation.~@In Lor Wis Ort Rel Por!@~@Vas An Ort Sanct!@");
-			say("After a flash of light, the gathered components vanish and the gem settles into a glowing stone.");
-			say("@Here is the gem. Make good use of it.@");
-			
-			//Destroy any components Zauriel might have:
-			zaurielDestroyComponents();
-			giveExperience(100);
-			
-			//Give the gem:
-			UI_set_last_created(get_cont_items(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY));
-			if (!AVATAR->give_last_created())
-			{
-				say("@Since thou art so overburdened, I shall place it on the ground.@");
-				UI_update_last_created(AVATAR->get_object_position());
-			}
-			
 		case "Have gem" (remove):
 			if (have_liche_gems > 1)
 				msg = "gems";
@@ -1180,7 +1232,7 @@ zaurielTalkGemSubquest ()
 				if (have_liche_gems == 1) msg = "it";
 				else msg = "them";
 				
-				say("@After all, neither one of us want anything to happen to " + msg + " in thy journey.@");
+				say("@After all, neither one of us wants anything to happen to " + msg + " in thy journey.@");
 			}
 			else
 			{
@@ -1192,38 +1244,17 @@ zaurielTalkGemSubquest ()
 					UI_update_last_created(AVATAR->get_object_position());
 				}
 			}
-			
-		case "Fix gem" (remove):
-			say("@Yes, thou hast everything I asked thee. Here, give me the components.@ Zauriel takes the components from you.");
-			//Remove what is needed to fix the gem
-			UI_remove_party_items(2 - count_objects(SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY),
-						SHAPE_SPIDER_EGG, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(6 - count_objects(SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY),
-						SHAPE_BEE_STINGER, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(1 - count_objects(SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY),
-						SHAPE_INVISIBILITY_DUST, QUALITY_ANY, FRAME_ANY, true);
-			UI_remove_party_items(1 - count_objects(SHAPE_GEM, QUALITY_ANY, FRAME_ANY),
-						SHAPE_GEM, QUALITY_ANY, FRAME_ANY, true);
-			
-			//Destroy any components Zauriel may still have:
-			zaurielDestroyComponents();
-			giveExperience(100);
-			
-			say("He then quickly intones a magical incantation.~@In Bet Ort Rel Vas Ort!@");
-			say("After a flash of light, the gathered components vanish and the gem has a subtler, softer glow than before.");
-			say("@Here is the gem. Make good use of it.@");
-			//Give gem to avatar:
-			UI_set_last_created(get_cont_items(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY));
-			if (!AVATAR->give_last_created())
-			{
-				say("@Since thou art so overburdened, I shall place the gem on the ground.@");
-				UI_update_last_created(AVATAR->get_object_position());
-			}
-			
+
+		case "Make gem":
+			zaurielMakeGem(true);
+
+		case "Fix gem":
+			zaurielMakeGem(false);
+
 		case "liche" (remove):
 			avatarSpeak("You tell Zauriel that you encountered a liche in Joneleth's house which claimed to own the gems.");
 			AVATAR.hide();
-			
+
 			say("@A liche you said? Alas, I have little doubt that it was Joneleth himself. I thought he had died, but he apparently decided to dabble with the foul arts.");
 			say("@I am afraid I am not surprised by his fate -- he was never that bright to begin with. The Gems of Dispelling notwithstanding, of course.@");
 			

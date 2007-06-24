@@ -1310,8 +1310,8 @@ Skin_data *Shapeinfo_lookup::ScrollSkins
 			continue;
 		Skin_data *newskin = GetSkinInfo(nskin, nsex);
 		if (newskin && (sishapes ||
-  				(!IsSkinImported(newskin->shape_num) &&
-  					!IsSkinImported(newskin->naked_shape))))
+				(!IsSkinImported(newskin->shape_num) &&
+					!IsSkinImported(newskin->naked_shape))))
 			return newskin;
 		}
 }
