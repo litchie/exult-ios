@@ -40,7 +40,9 @@ enum ShapeFile {
 	SF_GAME_FLX,		// <DATA>/bg_data.flx or <DATA>/si_data.flx
 	// Not yet
 	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
-
+#ifdef UNDER_CE
+	SF_POCKETPC_FLX,
+#endif
 	SF_OTHER,		// Other unknown FLX
 	SF_COUNT		// # of preceding entries.
 };

@@ -220,6 +220,11 @@ void Shape_manager::load
 		fonts = new Fonts_vga_file();
 		fonts->init();
 		}
+
+#ifdef UNDER_CE
+	files[SF_POCKETPC_FLX].load(POCKETPC_FLX);
+#endif
+
 					// Get translucency tables.
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 					// RGBA blend colors:

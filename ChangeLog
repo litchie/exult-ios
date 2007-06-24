@@ -1,3 +1,6 @@
+2007-06-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Added on-screen keyboard feature
+
 2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* palette.cc, gameclk.cc: Fixed a few problems with palette transitions and
 	  faded-out palettes.
