@@ -141,7 +141,7 @@ class Game_window
 #ifdef RED_PLASMA
 	// Red plasma animation during game load
 	uint32 load_palette_timer;
-    int plasma_start_color, plasma_cycle_range;
+	int plasma_start_color, plasma_cycle_range;
 #endif
 	
 public:
@@ -166,7 +166,7 @@ public:
 		{ return game_window; }
 	void abort(const char *msg, ...);	// Fatal error.
 	/*
- 	 *	Display:
+	 *	Display:
 	 */
 	void clear_screen(bool update = false);
 	int get_width() const

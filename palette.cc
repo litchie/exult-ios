@@ -44,17 +44,17 @@ Palette::Palette()
 	: win(Game_window::get_instance()->get_win()), 
 	    palette(-1), brightness(100), 
 	    faded_out(false), fades_enabled(true), max_val(63)
-    	{
+	{
 	}
 
 Palette::Palette(Palette *pal)
 	: win(Game_window::get_instance()->get_win()), max_val(63)
-    {
+	{
 	take(pal);
 	}
 
 void Palette::take(Palette *pal)
-    {
+	{
 	palette = pal->palette;
 	brightness = pal->brightness;
 	faded_out = pal->faded_out;

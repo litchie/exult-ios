@@ -1,3 +1,10 @@
+2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamewin.cc, gameclk.*: Fixed a few bugs in palette problems, particularly
+	  when teleporting around.
+	* content/bgkeyring/*/*: Fixed a few bugs in Zauriel's functions, improved
+	  one of the cutscenes.
+	* A few aligning spaces were converted to tabs.
+
 2007-06-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Updated on-screen keyboard colors
 	* PocketPC: Fixed alt & ctrl on-screen keyboard malfunction
