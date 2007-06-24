@@ -1,3 +1,9 @@
+2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* palette.cc, gameclk.cc: Fixed a few problems with palette transitions and
+	  faded-out palettes.
+	* gumps/Paperdoll_gump.cc: Also allow showing of usecode container in BG
+	  if Exult is compiled with -DSHOW_USECODE_CONTAINER
+
 2007-06-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs where avatar faces would not be removed from the screen by
 	  calls to remove_npc_face intrinsic.

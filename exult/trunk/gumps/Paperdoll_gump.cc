@@ -424,11 +424,6 @@ void Paperdoll_gump::paint
 		paint_object      (box, info, Actor::lhand,       lhandx, lhandy);
 		paint_object      (box, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand);
 		paint_object      (box, info, Actor::rhand,       rhandx, rhandy);
-
-		// if debugging show usecode container
-#ifdef SHOW_USECODE_CONTAINER
-		paint_object      (box, info, Actor::ucont_spot,  20,      20 );
-#endif
 	}
 	else
 	{
@@ -476,6 +471,11 @@ void Paperdoll_gump::paint
 		paint_object      (box, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand);
 		paint_object      (box, info, Actor::rhand,       rhandx, rhandy);
 	}
+
+	// if debugging show usecode container
+#ifdef SHOW_USECODE_CONTAINER
+	paint_object      (box, info, Actor::ucont_spot,  20,      20 );
+#endif
 	
 #ifdef SHOW_NONREADIED_OBJECTS
 	Object_iterator iter(container->get_objects());
@@ -779,15 +779,15 @@ Game_object * Paperdoll_gump::find_object
 
 	Game_object *obj;
 	
+		// if debugging show usecode container
+#ifdef SHOW_USECODE_CONTAINER
+	if (obj = check_object      (mx, my, info, Actor::ucont_spot,  20,      20 ))
+		return obj;
+#endif
 	
 	// Must be done in this order (reverse of rendering)
 	if (Game::get_game_type() != BLACK_GATE)
 	{
-		// if debugging show usecode container
-#ifdef SHOW_USECODE_CONTAINER
-		if (obj = check_object      (mx, my, info, Actor::ucont_spot,  20,      20 ))
-			return obj;
-#endif
 
 		if ((obj = check_object      (mx, my, info, Actor::rhand,       rhandx, rhandy)))
 			return obj;
