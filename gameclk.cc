@@ -76,9 +76,9 @@ static inline int get_final_palette
 	{
 	if ((light || special) && is_dark_palette(pal))
 		{
-		int light_palette = (light > 1) + PALETTE_SINGLE_LIGHT;
+		int light_palette = PALETTE_SINGLE_LIGHT;
 						// Gump mode, or light spell?
-		if (special)
+		if (special || (light > 1))
 			light_palette = PALETTE_MANY_LIGHTS;
 
 		return light_palette;
@@ -114,16 +114,17 @@ void Game_clock::set_time_palette
 		return;
 	}
 
-	dungeon = gwin->is_in_dungeon();
-
-	int new_palette = get_time_palette(hour+1, dungeon),
-		old_palette = get_time_palette(hour, dungeon);
+	unsigned int new_dungeon = gwin->is_in_dungeon();
+	int new_palette = get_time_palette(hour+1, new_dungeon),
+	    old_palette = get_time_palette(hour, (dungeon!=255 ? dungeon : new_dungeon));
 	bool cloudy = overcast > 0;
 	bool foggy = fog > 0;
 	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);
-	bool light_change = (light_source_level != old_light_level) ||
-						(gwin->is_special_light() != old_special_light);
-	bool need_new_transition = (weather_change || light_change);
+	bool light_sensitive = is_dark_palette(new_palette) &&
+				is_dark_palette(old_palette);
+	bool light_change = light_sensitive &&
+				((light_source_level != old_light_level) ||
+				 (gwin->is_special_light() != old_special_light));
 
 	new_palette = get_final_palette(new_palette, cloudy, foggy,
 				light_source_level, gwin->is_special_light());
@@ -145,6 +146,7 @@ void Game_clock::set_time_palette
 	was_foggy = foggy;
 	old_light_level = light_source_level;
 	old_special_light = gwin->is_special_light();
+	dungeon = new_dungeon;
 
 	if (weather_change)
 		{	// TODO: Maybe implement smoother transition from
@@ -290,7 +292,6 @@ void Game_clock::increment
 	hour %= 24;
 	
 	// Update palette to new time.
-	reset();
 	set_time_palette();
 	// Check to see if we need to update the NPC schedules.
 	if (hour != old_hour)		// Update NPC schedules.
@@ -362,7 +363,6 @@ void Game_clock::fake_next_period
 	day += hour/24;			// Update day.
 	hour %= 24;
 	Game_window *gwin = Game_window::get_instance();
-	reset();
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour);
