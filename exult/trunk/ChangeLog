@@ -1,4 +1,11 @@
 2007-06-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Updated on-screen keyboard colors
+	* PocketPC: Fixed alt & ctrl on-screen keyboard malfunction
+	* PocketPC: Fixed minimize bug (had to tell SDL to minimize twice to be sure
+				would erase the whole window, in certain PocketPC setups).
+	* MSVC9: Updated Makefile.data so it wouldn't rebuild the flx files every time
+				
+2007-06-24	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Added on-screen keyboard feature
 
 2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
