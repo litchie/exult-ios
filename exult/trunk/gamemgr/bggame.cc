@@ -58,6 +58,10 @@ using std::strlen;
 using std::toupper;
 #endif
 
+#ifdef UNDER_CE
+#include "exult_pocketpc_flx.h"
+#endif
+
 enum
 {
 	ultima_text_shp = 0x0D,
@@ -1580,7 +1584,10 @@ bool BG_Game::new_game(Vga_file &shapes)
 	// Create palette translation table. Maybe make them static?
 	unsigned char *transto = new unsigned char[256];
 	oldpal->create_palette_map(pal, transto);
-
+#ifdef UNDER_CE
+	gkeyboard->autopaint = false;
+	gkeyboard->minimize();
+#endif
 	do
 	{
 		if (redraw)
@@ -1588,7 +1595,6 @@ bool BG_Game::new_game(Vga_file &shapes)
 			gwin->clear_screen();
 			sman->paint_shape(topx,topy,shapes.get_shape(0x2,0), 0, transto);
 			sman->paint_shape(topx+10, menuy+10, shapes.get_shape(0xC, selected == 0), 0, transto);
-
 			Shape_frame *sex_shape = shapes.get_shape(0xA, selected == 1);
 			sman->paint_shape(topx+10, menuy+25, sex_shape, 0, transto);
 			int sex_width = sex_shape->get_width()+10;
@@ -1607,10 +1613,17 @@ bool BG_Game::new_game(Vga_file &shapes)
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name, transto);
+#ifdef UNDER_CE
+			gkeyboard->paint();
+#endif
 			pal->apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
+#ifdef UNDER_CE
+		if (gkeyboard->handle_event(&event))
+			redraw = true;
+#endif
 		if(event.type==SDL_KEYDOWN)
 		{
 			redraw = true;
@@ -1716,6 +1729,10 @@ bool BG_Game::new_game(Vga_file &shapes)
 	{
 #ifdef DEBUG
 		std::cout << "Skin is: " << skindata->skin_id << " Sex is: " << skindata->is_female << std::endl;
+#endif
+#ifdef UNDER_CE
+		gkeyboard->minimize();
+		gkeyboard->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);

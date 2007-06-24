@@ -147,7 +147,9 @@
 #define MAINMENU_TIM "<STATIC>/mainmenu.tim"
 
 #define EXULT_FLX "<DATA>/exult.flx"
-
+#ifdef UNDER_CE
+  #define POCKETPC_FLX "<DATA>/exult_pocketpc.flx"
+#endif
 #define AUTONOTES	"autonotes.txt"
 
 #define PATCH_KEYS	"<PATCH>/patchkeys.txt"
