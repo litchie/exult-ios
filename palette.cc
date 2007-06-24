@@ -118,7 +118,8 @@ void Palette::set
 	if ((palette == pal_num || pal_num == -1) &&
 		(brightness == new_brightness || new_brightness == -1))
 		{			// Already set.
-		apply(repaint);	// Force apply just in case.
+		if (!faded_out)
+			apply(repaint);	// Force apply just in case.
 		return;
 		}
 	if (pal_num != -1)
@@ -297,6 +298,7 @@ void Palette::fade_in(int cycles)
 
 void Palette::fade_out(int cycles)
 {
+	faded_out = true;		// Be sure to set flag.
 	if (fades_enabled)
 	{
 		unsigned char fade_pal[768];
@@ -360,8 +362,20 @@ void Palette::create_palette_map(Palette *to, unsigned char *&buf)
 Palette *Palette::create_intermediate(Palette *to, int nsteps, int pos)
 	{
 	unsigned char *palnew = new unsigned char[768];
-	for(int c=0; c < 768; c++)
-		palnew[c] = ((to->pal1[c]-pal1[c])*pos)/nsteps+pal1[c];
+	if (fades_enabled)
+		{
+		for(int c=0; c < 768; c++)
+			palnew[c] = ((to->pal1[c]-pal1[c])*pos)/nsteps+pal1[c];
+		}
+	else
+		{
+		unsigned char *palold;
+		if (2*pos >= nsteps)
+			palold = to->pal1;
+		else
+			palold = pal1;
+		memcpy(palnew, palold, 768);
+		}
 	Palette *ret = new Palette();
 	ret->set(palnew);
 	return ret;
@@ -479,6 +493,10 @@ bool Palette_transition::set_step(int hour, int min)
 		new_step += 60;
 	new_step /= rate;
 
+	Game_window *gwin = Game_window::get_instance();
+	if (gwin->get_pal()->is_faded_out())
+		return false;
+
 	if (!current || new_step != step)
 		{
 		step = new_step;
@@ -486,6 +504,7 @@ bool Palette_transition::set_step(int hour, int min)
 			delete current;
 		current = start->create_intermediate(end, max_steps, step);
 		}
+
 	if (current)
 		current->apply(true);
 	if (step >= max_steps)
@@ -498,11 +517,6 @@ Palette_transition::~Palette_transition
 	(
 	)
 	{
-	/*
-	Palette *gpal = Game_window::get_instance()->get_pal();
-	gpal->take(current);
-	gpal->apply(true);
-	*/
 	delete start;
 	delete end;
 	delete current;
