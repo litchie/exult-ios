@@ -87,7 +87,10 @@ const struct Action {
 	{ "GAME_MENU", ActionMenuGump, 0, "Game Menu", true, false, NONE, true },
 	{ "OLD_FILE_GUMP",
 	  ActionOldFileGump, 0, "Save/restore", true, false, NONE, true },
-	
+#ifdef UNDER_CE
+	{ "MINIMIZE_GAME", ActionMinimizeGame, 0, "Minimize game", true, false, NONE, true },
+#endif
+
 	{ "REPAINT", ActionRepaint, 0, "Repaint screen", false, false, NONE, true },
 	{ "RESOLUTION_INCREASE", 
 	  ActionResIncrease, 0, "Increase resolution", true, true, NONE, true },

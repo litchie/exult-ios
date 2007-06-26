@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Keyboard_gump.h"
 #include "exult.h"
 #include "exult_pocketpc_flx.h"
+#include "keyactions.h"
 #include <string>
 
 using std::string;
@@ -39,10 +40,31 @@ static const int rowy = 4;
 static const int keywidth = 13;
 static const int keyheight = 13;
 static const int maxkeysinrow = 14;
+static const SDLKey keypadtable[13] = {
+					SDLK_KP7, SDLK_KP8, SDLK_KP9, 
+					SDLK_KP4, SDLK_KP5, SDLK_KP6, SDLK_KP_MINUS, SDLK_KP_PLUS,
+					SDLK_KP1, SDLK_KP2, SDLK_KP3, 
+					SDLK_KP0, SDLK_KP_PERIOD, 
+};
+
+typedef void(*ActionFunc)(int *);
+static const int numhptablekeys = 11;
+static const ActionFunc hotpadtable[numhptablekeys] = {
+	ActionWalkNorthWest,	ActionWalkNorth,	ActionWalkNorthEast,
+	ActionWalkWest,			ActionInventory,	ActionWalkEast,		ActionCombat,	ActionMinimizeGame,
+	ActionWalkSouthWest,	ActionWalkSouth,	ActionWalkSouthEast,
+	};
+
+static const int hotpadtableparams[numhptablekeys] = {
+	1,	1,	1,
+	1,	0,	1,	-1,	-1,
+	1,	1,	1,
+};
+
 static const char Ucharrows[numrows][maxkeysinrow] = { "~!@#$%^&*()_+", "QWERTYUIOP{}|", "ASDFGHJKL:\"", "ZXCVBNM<>?" };
 static const char Lcharrows[numrows][maxkeysinrow] = { "`1234567890-=", "qwertyuiop[]\\", "asdfghjkl;'", "zxcvbnm,./" };
 
-static const enum OtherButtons {	KEYG_STARTOFSHOWN,
+static const enum OtherButtons {	KEYG_STARTOFKEYBOARD,
 									KEYG_CASECHANGE,
 									KEYG_ENTER,
 									KEYG_ALT,
@@ -52,11 +74,12 @@ static const enum OtherButtons {	KEYG_STARTOFSHOWN,
 									KEYG_LARROW,
 									KEYG_RARROW,
 									KEYG_DONE,
-									KEYG_SHOWN_MOVEUPPERLEFT,
-									KEYG_SHOWN_MOVEUPPERRIGHT,
-									KEYG_SHOWN_MOVELOWERLEFT,
-									KEYG_SHOWN_MOVELOWERRIGHT,
-									KEYG_ENDOFSHOWN,
+									KEYG_SHOWPAD,
+									KEYG_KEYBOARD_MOVEUPPERLEFT,
+									KEYG_KEYBOARD_MOVEUPPERRIGHT,
+									KEYG_KEYBOARD_MOVELOWERLEFT,
+									KEYG_KEYBOARD_MOVELOWERRIGHT,
+									KEYG_ENDOFKEYBOARD,
 									KEYG_STARTOFMINIMIZED,
 									KEYG_SHOW,
 									KEYG_MIN_MOVEUPPERLEFT,
@@ -64,11 +87,55 @@ static const enum OtherButtons {	KEYG_STARTOFSHOWN,
 									KEYG_MIN_MOVELOWERLEFT,
 									KEYG_MIN_MOVELOWERRIGHT,
 									KEYG_ENDOFMINIMIZED,
+									KEYG_STARTOFKEYPAD,
+									KEYG_DONEWITHKEYPAD,
+									KEYG_KEYPAD_TOKEYBOARD,
+									KEYG_KEYPAD_TOHOTPAD,
+									KEYG_KEYPAD_MOVEUPPERLEFT,
+									KEYG_KEYPAD_MOVEUPPERRIGHT,
+									KEYG_KEYPAD_MOVELOWERLEFT,
+									KEYG_KEYPAD_MOVELOWERRIGHT,
+									KEYG_KP7,
+									KEYG_KP8,
+									KEYG_KP9,
+									KEYG_KP4,
+									KEYG_KP5,
+									KEYG_KP6,
+									KEYG_KPMINUS,
+									KEYG_KPPLUS,
+									KEYG_KP1,
+									KEYG_KP2,
+									KEYG_KP3,
+									KEYG_KP0,
+									KEYG_KPPERIOD,
+									KEYG_ENDOFKEYPAD,
+									KEYG_STARTOFHOTPAD,
+									KEYG_DONEWITHHOTPAD,
+									KEYG_HOTPAD_TOKEYBOARD,
+									KEYG_HOTPAD_TOKEYPAD,
+									KEYG_HOTPAD_MOVEUPPERLEFT,
+									KEYG_HOTPAD_MOVEUPPERRIGHT,
+									KEYG_HOTPAD_MOVELOWERLEFT,
+									KEYG_HOTPAD_MOVELOWERRIGHT,
+									KEYG_HPNW,
+									KEYG_HPN,
+									KEYG_HPNE,
+									KEYG_HPW,
+									KEYG_HPPAPERDOLL,
+									KEYG_HPE,
+									KEYG_HPCOMBAT,
+									KEYG_HPMINIMIZEGAME,
+									KEYG_HPSW,
+									KEYG_HPS,
+									KEYG_HPSE,
+									KEYG_HPF11,
+									KEYG_HPF12,
+									KEYG_ENDOFHOTPAD,
 									NUMOTHERBUTTONS,
 								};
 static const int OBI_LEN = 4;
 static const int OtherButtonsInfo[NUMOTHERBUTTONS * OBI_LEN] = {
-						 -1,  -1,  -1,  -1, // KEYG_STARTOFSHOWN
+						 -1,  -1,  -1,  -1, // KEYG_STARTOFKEYBOARD
 						  3,  64,  41,  76, // KEYG_CASECHANGE
 					    160,  49, 174,  76, // KEYG_ENTER
 						108,  64, 127,  76, // KEYG_ALT
@@ -78,11 +145,12 @@ static const int OtherButtonsInfo[NUMOTHERBUTTONS * OBI_LEN] = {
 						130,  64, 142,  76, // KEYG_LARROW
 						145,  64, 157,  76, // KEYG_RARROW
 						184,  61, 198,  69, // KEYG_DONE
- 						179,  53, 190,  60, // KEYG_SHOWN_MOVEUPPERLEFT
-						191,  53, 202,  60, // KEYG_SHOWN_MOVEUPPERRIGHT
-						179,  70, 190,  77, // KEYG_SHOWN_MOVELOWERLEFT
-						191,  70, 202,  77, // KEYG_SHOWN_MOVELOWERRIGHT
-					 	 -1,  -1,  -1,  -1, // KEYG_ENDOFSHOWN
+						 3,   34,  15,  46, // KEYG_SHOWPAD
+						179,  53, 190,  60, // KEYG_KEYBOARD_MOVEUPPERLEFT
+						191,  53, 202,  60, // KEYG_KEYBOARD_MOVEUPPERRIGHT
+						179,  70, 190,  77, // KEYG_KEYBOARD_MOVELOWERLEFT
+						191,  70, 202,  77, // KEYG_KEYBOARD_MOVELOWERRIGHT
+					 	 -1,  -1,  -1,  -1, // KEYG_ENDOFKEYBOARD
 					 	 -1,  -1,  -1,  -1, // KEYG_STARTOFMINIMIZED
   						  5,   8,  19,  16, // KEYG_SHOW
 						  0,   0,  11,   7, // KEYG_MIN_MOVEUPPERLEFT
@@ -90,6 +158,50 @@ static const int OtherButtonsInfo[NUMOTHERBUTTONS * OBI_LEN] = {
 						  0,  17,  11,  24, // KEYG_MIN_MOVELOWERLEFT
 						 12,  17,  24,  24, // KEYG_MIN_MOVELOWERRIGHT
 						 -1,  -1,  -1,  -1, // KEYG_ENDOFMINIMIZED
+						 -1,  -1,  -1,  -1, // KEYG_STARTOFKEYPAD
+						 57,  45,  70,  53, // KEYG_DONEWITHKEYPAD
+						 33,  48,  45,  60, // KEYG_KEYPAD_TOKEYBOARD
+						 48,   3,  75,  15, // KEYG_KEYPAD_TOHOTPAD
+						 52,  37,  62,  44, // KEYG_KEYPAD_MOVEUPPERLEFT
+						 64,  37,  75,  44, // KEYG_KEYPAD_MOVEUPPERRIGHT
+						 52,  54,  62,  61, // KEYG_KEYPAD_MOVELOWERLEFT
+						 64,  54,  75,  61, // KEYG_KEYPAD_MOVELOWERRIGHT
+						  3,   4,  15,  15,	// KEYG_KP7
+						 18,   4,  30,  15,	// KEYG_KP8
+						 33,   4,  45,  15,	// KEYG_KP9
+						  3,  19,  15,  30,	// KEYG_KP4
+						 18,  19,  30,  30,	// KEYG_KP5
+						 33,  19,  45,  30,	// KEYG_KP6
+						 48,  19,  60,  30,	// KEYG_KPMINUS
+						 63,  19,  75,  30,	// KEYG_KPPLUS
+						  3,  33,  15,  45,	// KEYG_KP1
+						 18,  33,  30,  45, // KEYG_KP2
+						 33,  33,  45,  45,	// KEYG_KP3
+						  3,  48,  15,  60,	// KEYG_KP0
+						 18,  48,  30,  60,	// KEYG_KPPERIOD
+						 -1,  -1,  -1,  -1, // KEYG_ENDOFKEYPAD
+						 -1,  -1,  -1,  -1, // KEYG_STARTOFHOTPAD
+						 57,  45,  70,  53, // KEYG_DONEWITHHOTPAD
+						 33,  48,  45,  60, // KEYG_HOTPAD_TOKEYBOARD
+						 48,   3,  75,  15, // KEYG_HOTPAD_TOKEYPAD
+						 52,  37,  62,  44, // KEYG_HOTPAD_MOVEUPPERLEFT
+						 64,  37,  75,  44, // KEYG_HOTPAD_MOVEUPPERRIGHT
+						 52,  54,  62,  61, // KEYG_HOTPAD_MOVELOWERLEFT
+						 64,  54,  75,  61, // KEYG_HOTPAD_MOVELOWERRIGHT
+						  3,   4,  15,  15,	// KEYG_HPNW
+						 18,   4,  30,  15,	// KEYG_HPN
+						 33,   4,  45,  15,	// KEYG_HPNE
+						  3,  19,  15,  30,	// KEYG_HPW
+						 18,  19,  30,  30,	// KEYG_HPPAPERDOLL
+						 33,  19,  45,  30,	// KEYG_HPE
+						 48,  19,  60,  30,	// KEYG_HPCOMBAT
+						 63,  19,  75,  30,	// KEYG_HPMINIMIZEGAME
+						  3,  33,  15,  45,	// KEYG_HPSW
+						 18,  33,  30,  45, // KEYG_HPS
+						 33,  33,  45,  45,	// KEYG_HPSE
+						  3,  48,  15,  60,	// KEYG_HPF11
+						 18,  48,  30,  60,	// KEYG_HPF12
+						 -1,  -1,  -1,  -1, // KEYG_ENDOFHOTPAD
 };
 
 Keyboard_gump::Keyboard_gump(int placex, int placey, bool upperCase)
@@ -99,6 +211,8 @@ Keyboard_gump::Keyboard_gump(int placex, int placey, bool upperCase)
 	buttonDown[1] = -1;
 	buttonDown[2] = -1;
 	buttonDown[3] = -1;
+	laststate = KEYG_KEYBOARD;
+	lastpadstate = KEYG_KEYPAD;
 	altDown = false;
 	ctrlDown = false;
 	state = KEYG_HIDDEN;
@@ -115,28 +229,31 @@ Keyboard_gump::Keyboard_gump(int placex, int placey, bool upperCase)
 	}
 	locx = placex;
 	locy = placey;
-	lastlocx = locx;
-	lastlocy = locy;
+	loccorner = 0; // 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
 	hide();
 }
 
-void Keyboard_gump::show(int placex, int placey)
+void Keyboard_gump::show(int corner, int newstate)
 {
-	if (state == KEYG_SHOWN)
-		return;
 	Game_window *gwin = Game_window::get_instance();
-	if (state == KEYG_MINIMIZED)
+	if (state != KEYG_HIDDEN)
 		gwin->add_dirty(RECTX(locx, locy, width+4, height+4));
 
-	width = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYBOARD_SHP, 0)->get_width();
-	height = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYBOARD_SHP, 0)->get_height();
-	locx = placex;
-	locy = placey;
-	if (locx == -1)
-		locx = lastlocx;
-	if (locy == -1)
-		locy = lastlocy;
-	state = KEYG_SHOWN;
+	if (newstate == KEYG_KEYBOARD)
+	{
+		width = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYBOARD_SHP, 0)->get_width();
+		height = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYBOARD_SHP, 0)->get_height();
+	}
+	else if (newstate == KEYG_KEYPAD || newstate == KEYG_HOTPAD)
+	{
+		width = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYPAD_SHP, 0)->get_width();
+		height = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYPAD_SHP, 0)->get_height();
+	}
+	if (corner == -1)
+		corner = loccorner;
+
+	state = newstate;
+	moveToCorner(corner);
 	gwin->add_dirty(RECTX(locx, locy, width+4, height+4));
 	if (autopaint)
 		gwin->paint_dirty();
@@ -144,10 +261,9 @@ void Keyboard_gump::show(int placex, int placey)
 
 void Keyboard_gump::hide()
 {
-	if (state == KEYG_SHOWN)
+	if (state != KEYG_MINIMIZED && state != KEYG_HIDDEN)
 	{
-		lastlocx = locx;
-		lastlocy = locy;
+		laststate = state;
 	}
 	state = KEYG_HIDDEN;
 	Game_window *gwin = Game_window::get_instance();
@@ -164,11 +280,12 @@ void Keyboard_gump::minimize(int placearea)
 	if (state == KEYG_MINIMIZED)
 		return;
 	Game_window *gwin = Game_window::get_instance();
-	if (state == KEYG_SHOWN)
+	if (state != KEYG_HIDDEN)
+	{
 		gwin->add_dirty(RECTX(locx, locy, width+4, height+4));
-	
-	lastlocx = locx;
-	lastlocy = locy;
+		laststate = state;
+	}
+
 	width = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_MINIMIZEDKBD_SHP, 0)->get_width();
 	height = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_MINIMIZEDKBD_SHP, 0)->get_height();
 	
@@ -192,7 +309,7 @@ Keyboard_gump::~Keyboard_gump()
 void Keyboard_gump::paint()
 {
 	Game_window *gwin = Game_window::get_instance();
-	if (state == KEYG_SHOWN)
+	if (state == KEYG_KEYBOARD)
 	{
 		int caseidx = 0; // Uppercase by default
 		if (caseSet == &Lcharrows[0][0])
@@ -205,6 +322,16 @@ void Keyboard_gump::paint()
 		if (ctrlDown)
 			areaHighlight(OtherButtonsInfo[(KEYG_CTRL*OBI_LEN)+0], OtherButtonsInfo[(KEYG_CTRL*OBI_LEN)+1], 
 							OtherButtonsInfo[(KEYG_CTRL*OBI_LEN)+2]+1, OtherButtonsInfo[(KEYG_CTRL*OBI_LEN)+3]+1);
+	}
+	else if (state == KEYG_KEYPAD)
+	{
+		Shape_manager::get_instance()->paint_shape(locx, locy,
+					pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYPAD_SHP, 0), 0);
+	}
+	else if (state == KEYG_HOTPAD)
+	{
+		Shape_manager::get_instance()->paint_shape(locx, locy,
+					pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYPAD_SHP, 1), 0);
 	}
 	else if (state == KEYG_MINIMIZED)
 	{
@@ -275,10 +402,32 @@ void Keyboard_gump::ActivateOtherButton(int button)
 	Game_window *gwin = Game_window::get_instance();
 	if (button == KEYG_SHOW)
 	{
-		show();
+		show(-1, laststate);
+	}
+	else if (button == KEYG_SHOWPAD)
+	{
+		show(-1, lastpadstate);
+	}
+	else if (button == KEYG_KEYPAD_TOKEYBOARD || button == KEYG_HOTPAD_TOKEYBOARD)
+	{
+		lastpadstate = state;
+		show(-1, KEYG_KEYBOARD);
+	}
+	else if (button == KEYG_KEYPAD_TOHOTPAD)
+	{
+		show(-1, KEYG_HOTPAD);
+	}
+	else if (button == KEYG_HOTPAD_TOKEYPAD)
+	{
+		show(-1, KEYG_KEYPAD);
 	}
 	else if (button == KEYG_DONE)
 	{
+		minimize();
+	}
+	else if (button == KEYG_DONEWITHKEYPAD || button == KEYG_DONEWITHHOTPAD)
+	{
+		lastpadstate = state;
 		minimize();
 	}
 	else if (button == KEYG_CASECHANGE)
@@ -319,15 +468,42 @@ void Keyboard_gump::ActivateOtherButton(int button)
 	{
 		ctrlDown = !ctrlDown;
 	}
-	else if (button >= KEYG_SHOWN_MOVEUPPERLEFT && button <= KEYG_SHOWN_MOVELOWERRIGHT)
+	else if (button >= KEYG_KEYBOARD_MOVEUPPERLEFT && button <= KEYG_KEYBOARD_MOVELOWERRIGHT)
 	{
-		moveToCorner(button - KEYG_SHOWN_MOVEUPPERLEFT);
+		show(button - KEYG_KEYBOARD_MOVEUPPERLEFT, state);
 	}
 	else if (button >= KEYG_MIN_MOVEUPPERLEFT && button <= KEYG_MIN_MOVELOWERRIGHT)
 	{
-		show();
-		moveToCorner(button - KEYG_MIN_MOVEUPPERLEFT);
+		show(button - KEYG_MIN_MOVEUPPERLEFT, laststate);
 	}
+	else if (button >= KEYG_KEYPAD_MOVEUPPERLEFT && button <= KEYG_KEYPAD_MOVELOWERRIGHT)
+	{
+		show(button - KEYG_KEYPAD_MOVEUPPERLEFT, state);
+	}
+	else if (button >= KEYG_HOTPAD_MOVEUPPERLEFT && button <= KEYG_HOTPAD_MOVELOWERRIGHT)
+	{
+		show(button - KEYG_HOTPAD_MOVEUPPERLEFT, state);
+	}
+	else if (button >= KEYG_KP7 && button <= KEYG_KPPERIOD)
+	{
+		injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
+	}
+	else if (button >= KEYG_HPNW && button <= KEYG_HPSE)
+	{
+		int params[1];
+		params[0] = hotpadtableparams[button - KEYG_HPNW];
+		(*hotpadtable[button - KEYG_HPNW])(params);
+		injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
+	}
+	else if (button == KEYG_HPF11)
+	{
+		injectKeyEvent('\0', SDLK_F11);
+	}
+	else if (button == KEYG_HPF12)
+	{
+		injectKeyEvent('\0', SDLK_F12);
+	}
+
 }
 
 void Keyboard_gump::moveToCorner(int corner)
@@ -373,12 +549,22 @@ void Keyboard_gump::mouse_down(int mx, int my)
 	buttonDown[3] = -1;
 	int i,l,t,r,b;
 	int start,end;
-	start = KEYG_STARTOFSHOWN+1;
-	end = KEYG_ENDOFSHOWN-1;
+	start = KEYG_STARTOFKEYBOARD+1;
+	end = KEYG_ENDOFKEYBOARD-1;
 	if (state == KEYG_MINIMIZED)
 	{
 		start = KEYG_STARTOFMINIMIZED+1;
 		end = KEYG_ENDOFMINIMIZED+1;
+	}
+	else if (state == KEYG_KEYPAD)
+	{
+		start = KEYG_STARTOFKEYPAD+1;
+		end = KEYG_ENDOFKEYPAD+1;
+	}
+	else if (state == KEYG_HOTPAD)
+	{
+		start = KEYG_STARTOFHOTPAD+1;
+		end = KEYG_ENDOFHOTPAD+1;
 	}
 	for (i = start; i <= end; i++)
 	{
@@ -396,7 +582,7 @@ void Keyboard_gump::mouse_down(int mx, int my)
 			return;
 		}
 	}
-	if (statewhenstarted == KEYG_SHOWN)
+	if (statewhenstarted == KEYG_KEYBOARD)
 	{
 		int row,col;
 		for (row = 0; row < numrows; row++)
@@ -426,12 +612,22 @@ void Keyboard_gump::mouse_up(int mx, int my)
 	int i,l,t,r,b;
 	int start,end;
 	int statewhenstarted = state;
-	start = KEYG_STARTOFSHOWN+1;
-	end = KEYG_ENDOFSHOWN-1;
+	start = KEYG_STARTOFKEYBOARD+1;
+	end = KEYG_ENDOFKEYBOARD-1;
 	if (state == KEYG_MINIMIZED)
 	{
 		start = KEYG_STARTOFMINIMIZED+1;
 		end = KEYG_ENDOFMINIMIZED+1;
+	}
+	else if (state == KEYG_KEYPAD)
+	{
+		start = KEYG_STARTOFKEYPAD+1;
+		end = KEYG_ENDOFKEYPAD+1;
+	}
+	else if (state == KEYG_HOTPAD)
+	{
+		start = KEYG_STARTOFHOTPAD+1;
+		end = KEYG_ENDOFHOTPAD+1;
 	}
 	for (i = start; i <= end; i++)
 	{
@@ -446,7 +642,7 @@ void Keyboard_gump::mouse_up(int mx, int my)
 			ActivateOtherButton(i);
 		}
 	}
-	if (statewhenstarted == KEYG_SHOWN)
+	if (statewhenstarted == KEYG_KEYBOARD)
 	{
 		int row,col;
 		for (row = 0; row < numrows; row++)
