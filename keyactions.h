@@ -29,6 +29,9 @@ void ActionCloseGumps(int* params);
 void ActionCloseOrMenu(int* params);
 void ActionMenuGump(int* params);
 void ActionOldFileGump(int* params);
+#ifdef UNDER_CE
+void ActionMinimizeGame(int* params);
+#endif
 
 void ActionScreenshot(int* params);
 void ActionRepaint(int* params);
