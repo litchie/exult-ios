@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define KEYBOARD_GUMP_NUMBUTTONS 48
 
-enum KEYG_STATES {KEYG_SHOWN, KEYG_MINIMIZED, KEYG_HIDDEN, KEYG_UNKNOWN};
+enum KEYG_STATES {KEYG_KEYBOARD, KEYG_KEYPAD, KEYG_HOTPAD, KEYG_MINIMIZED, KEYG_HIDDEN, KEYG_UNKNOWN};
 enum KEYG_LOCATIONS {KEYG_LOCBOTTOM, KEYG_LOCTOP, KEYG_LOCUNKNOWN};
 class Keyboard_gump
 {
@@ -40,18 +40,19 @@ class Keyboard_gump
 	void injectKeyEvent(char key, SDLKey sdlkey = SDLK_SPACE);
 	void ActivateOtherButton(int button);
 	void areaHighlight(int l, int t, int r, int b);
-	void show(int placex = -1, int placey = -1);
+	void show(int corner = -1, int newstate = KEYG_KEYBOARD);
 	void hide();
 	void minimize(int placearea = KEYG_LOCBOTTOM);
 	bool autopaint;
 	void moveToCorner(int corner);
 	int locx;
 	int locy;
-	int lastlocx;
-	int lastlocy;
+	int loccorner; // 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
 	int width;
 	int height;
 	int state;
+	int laststate;
+	int lastpadstate;
 	int buttonDown[4];
 	bool altDown;
 	bool ctrlDown;

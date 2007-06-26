@@ -77,6 +77,18 @@ void ActionOldFileGump(int *params)
 	delete fileio;
 }
 
+#ifdef UNDER_CE
+// { ActionMinimizeGame, 0, "Minimize game", true, false, NONE },
+void ActionMinimizeGame(int *params)
+{
+	//gwin->clear_screen(true);
+	minimized = true;
+	SDL_WM_IconifyWindow();
+	SDL_Delay(250);
+	SDL_WM_IconifyWindow();
+}
+#endif
+
 // { ActionMenuGump, 0, "GameMenu", true, false, NONE },
 void ActionMenuGump(int *params)
 {

@@ -1,3 +1,8 @@
+2007-06-26	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Added keypad and hotpad keyboards
+		Keypad is basically the numpad on a normal keypad
+		Hotpad enables running and a few other nifty functions
+	
 2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc, gameclk.*: Fixed a few bugs in palette problems, particularly
 	  when teleporting around.
