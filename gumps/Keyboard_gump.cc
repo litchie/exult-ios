@@ -532,7 +532,7 @@ void Keyboard_gump::moveToCorner(int corner)
 		locx = swidth - width;
 		locy = sheight - height;
 	}
-
+	loccorner = corner;
 	if (autopaint)
 	{
 		gwin->paint_dirty();
