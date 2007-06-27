@@ -124,9 +124,8 @@ void Image_window::create_surface
 	uses_palette = true;
 	show_scaled = 0;
 	unscaled_surface = surface = scaled_surface = 0;
-	
-#if defined(__zaurus__) || defined(UNDER_CE)
-	flags &= ~SDL_FULLSCREEN; // Zaurus and/or WinCE would crash in fullscreen mode
+#if defined(__zaurus__)
+	flags &= ~SDL_FULLSCREEN; // Zaurus would crash in fullscreen mode
 #else
 	if (try_scaler(w, h, flags)) return; // everyone else can test the try_scaler function
 #endif
