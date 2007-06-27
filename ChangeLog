@@ -1,3 +1,8 @@
+2007-06-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Fixed scaling problem
+	* PocketPC/Keyboard_gump: Cleaned up Keyboard_gump.h a bit
+			Set private & public appropriately
+
 2007-06-26	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Added keypad and hotpad keyboards
 		Keypad is basically the numpad on a normal keypad

@@ -30,20 +30,21 @@ class Keyboard_gump
  public:
 	Keyboard_gump(int placex = 0, int placey = 0, bool upperCase = true);
 	~Keyboard_gump();
+	int handle_event(SDL_Event *event);
+	void show(int corner = -1, int newstate = KEYG_KEYBOARD);
+	void hide();
+	void paint();
+	void minimize(int placearea = KEYG_LOCBOTTOM);
+	bool autopaint;
 
+private:
 	const char *caseSet;
 	Vga_file pocketpc_vga;
-
-	int handle_event(SDL_Event *event);
 	void mouse_down(int mx, int my);
 	void mouse_up(int mx, int my);
 	void injectKeyEvent(char key, SDLKey sdlkey = SDLK_SPACE);
 	void ActivateOtherButton(int button);
 	void areaHighlight(int l, int t, int r, int b);
-	void show(int corner = -1, int newstate = KEYG_KEYBOARD);
-	void hide();
-	void minimize(int placearea = KEYG_LOCBOTTOM);
-	bool autopaint;
 	void moveToCorner(int corner);
 	int locx;
 	int locy;
@@ -56,7 +57,6 @@ class Keyboard_gump
 	int buttonDown[4];
 	bool altDown;
 	bool ctrlDown;
-	void paint();
 };
 
 #endif
