@@ -99,6 +99,7 @@
 
 #ifdef UNDER_CE
   #include "Keyboard_gump.h"
+  #include "touchscreen.h"
 #endif
 
 #ifndef UNDER_EMBEDDED_CE
@@ -138,6 +139,7 @@ const std::string c_empty_string;
 string WINCE_exepath;
 bool minimized;
 Keyboard_gump *gkeyboard;
+clsTouchscreen *Touchscreen;
 #endif
 
 #if 0 && USECODE_DEBUGGER
@@ -557,6 +559,7 @@ int exult_main(const char *runpath)
 	std::cout << "Start " << keys.vkStart << std::endl;
 
 	gkeyboard = new Keyboard_gump();
+	Touchscreen = new clsTouchscreen();
 #endif
 
 	Init();				// Create main window.
@@ -1161,6 +1164,7 @@ static void Handle_event
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
+			Touchscreen->handle_event(&event);
 #endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 1)
@@ -1254,6 +1258,7 @@ static void Handle_event
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
+			Touchscreen->handle_event(&event);
 #endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 3)
@@ -1522,8 +1527,9 @@ static int Get_click
 				{
 			case SDL_MOUSEBUTTONDOWN:
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
+				if (gkeyboard->handle_event(&event))
+					break;
+				Touchscreen->handle_event(&event);
 #endif
 				if (event.button.button == 3)
 					rightclick = true;
@@ -1537,8 +1543,9 @@ static int Get_click
 				break;
 			case SDL_MOUSEBUTTONUP:
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
+				if (gkeyboard->handle_event(&event))
+					break;
+				Touchscreen->handle_event(&event);
 #endif
 				if (event.button.button == 1)
 					{

@@ -2255,6 +2255,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\touchscreen.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\tqueue.cc"
 					>
 				</File>
@@ -2439,6 +2443,10 @@
 					</File>
 					<File
 						RelativePath="..\tiles.h"
+						>
+					</File>
+					<File
+						RelativePath="..\touchscreen.h"
 						>
 					</File>
 					<File
@@ -3998,11 +4006,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File

@@ -1,4 +1,13 @@
 2007-06-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Added touchscreen class
+			Allows users to set mouse to double click mode
+			Allows users to set mouse to right click mode
+			Users can do both double click and right click modes
+			Added TOUCHSCREEN_MODE action, so it can be mapped to a key
+	* PocketPC: Added double click and right click functions (as noted above)
+		to the keypad and hotpad keyboards
+			
+2007-06-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Fixed scaling problem
 	* PocketPC/Keyboard_gump: Cleaned up Keyboard_gump.h a bit
 			Set private & public appropriately

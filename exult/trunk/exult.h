@@ -88,6 +88,7 @@ extern quitting_time_enum quitting_time;
 extern std::string WINCE_exepath;
 extern bool minimized;
 extern class Keyboard_gump *gkeyboard;
+extern class clsTouchscreen *Touchscreen;
 #endif
 
 #endif
