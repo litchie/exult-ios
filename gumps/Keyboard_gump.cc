@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_events.h"
 
 #include "Keyboard_gump.h"
+#include "touchscreen.h"
 #include "exult.h"
 #include "exult_pocketpc_flx.h"
 #include "keyactions.h"
@@ -108,6 +109,11 @@ static const enum OtherButtons {	KEYG_STARTOFKEYBOARD,
 									KEYG_KP3,
 									KEYG_KP0,
 									KEYG_KPPERIOD,
+									KEYG_KPCLICKDOUBLE,
+									KEYG_KPCLICKRIGHT,
+									KEYG_KPF5,
+									KEYG_KPF6,
+									KEYG_KPF7,
 									KEYG_ENDOFKEYPAD,
 									KEYG_STARTOFHOTPAD,
 									KEYG_DONEWITHHOTPAD,
@@ -130,6 +136,11 @@ static const enum OtherButtons {	KEYG_STARTOFKEYBOARD,
 									KEYG_HPSE,
 									KEYG_HPF11,
 									KEYG_HPF12,
+									KEYG_HPCLICKDOUBLE,
+									KEYG_HPCLICKRIGHT,
+									KEYG_HPF5,
+									KEYG_HPF6,
+									KEYG_HPF7,
 									KEYG_ENDOFHOTPAD,
 									NUMOTHERBUTTONS,
 								};
@@ -179,6 +190,11 @@ static const int OtherButtonsInfo[NUMOTHERBUTTONS * OBI_LEN] = {
 						 33,  33,  45,  45,	// KEYG_KP3
 						  3,  48,  15,  60,	// KEYG_KP0
 						 18,  48,  30,  60,	// KEYG_KPPERIOD
+						  3,  63,  15,  75, // KEYG_KPCLICKDOUBLE
+						 18,  63,  30,  75, // KEYG_KPCLICKRIGHT
+						 33,  63,  45,  75, // KEYG_KPF5
+						 48,  63,  60,  75, // KEYG_KPF6
+						 63,  63,  75,  75, // KEYG_KPF7
 						 -1,  -1,  -1,  -1, // KEYG_ENDOFKEYPAD
 						 -1,  -1,  -1,  -1, // KEYG_STARTOFHOTPAD
 						 57,  45,  70,  53, // KEYG_DONEWITHHOTPAD
@@ -201,6 +217,11 @@ static const int OtherButtonsInfo[NUMOTHERBUTTONS * OBI_LEN] = {
 						 33,  33,  45,  45,	// KEYG_HPSE
 						  3,  48,  15,  60,	// KEYG_HPF11
 						 18,  48,  30,  60,	// KEYG_HPF12
+						  3,  63,  15,  75, // KEYG_HPCLICKDOUBLE
+						 18,  63,  30,  75, // KEYG_HPCLICKRIGHT
+						 33,  63,  45,  75, // KEYG_HPF5
+						 48,  63,  60,  75, // KEYG_HPF6
+						 63,  63,  75,  75, // KEYG_HPF7
 						 -1,  -1,  -1,  -1, // KEYG_ENDOFHOTPAD
 };
 
@@ -337,6 +358,17 @@ void Keyboard_gump::paint()
 	{
 		Shape_manager::get_instance()->paint_shape(locx, locy,
 					pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_MINIMIZEDKBD_SHP, 0), 0);
+	}
+	if (state == KEYG_KEYPAD || state == KEYG_HOTPAD)
+	{
+		int Right, Double;
+		Touchscreen->getModes(&Right, &Double);
+		if (Right)
+			areaHighlight(OtherButtonsInfo[(KEYG_HPCLICKRIGHT*OBI_LEN)+0], OtherButtonsInfo[(KEYG_HPCLICKRIGHT*OBI_LEN)+1], 
+							OtherButtonsInfo[(KEYG_HPCLICKRIGHT*OBI_LEN)+2]+1, OtherButtonsInfo[(KEYG_HPCLICKRIGHT*OBI_LEN)+3]+1);
+		if (Double)
+			areaHighlight(OtherButtonsInfo[(KEYG_HPCLICKDOUBLE*OBI_LEN)+0], OtherButtonsInfo[(KEYG_HPCLICKDOUBLE*OBI_LEN)+1], 
+							OtherButtonsInfo[(KEYG_HPCLICKDOUBLE*OBI_LEN)+2]+1, OtherButtonsInfo[(KEYG_HPCLICKDOUBLE*OBI_LEN)+3]+1);
 	}
 	if (state != KEYG_HIDDEN)
 	{
@@ -494,6 +526,38 @@ void Keyboard_gump::ActivateOtherButton(int button)
 		params[0] = hotpadtableparams[button - KEYG_HPNW];
 		(*hotpadtable[button - KEYG_HPNW])(params);
 		injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
+	}
+	else if (button == KEYG_HPF5 || button == KEYG_KPF5)
+	{
+		injectKeyEvent('\0', SDLK_F5);
+	}
+	else if (button == KEYG_HPF6 || button == KEYG_KPF6)
+	{
+		injectKeyEvent('\0', SDLK_F5);
+	}
+	else if (button == KEYG_HPF7 || button == KEYG_KPF7)
+	{
+		injectKeyEvent('\0', SDLK_F5);
+	}
+	else if (button == KEYG_HPCLICKDOUBLE || button == KEYG_KPCLICKDOUBLE)
+	{
+		int Right,Double;
+		Touchscreen->getModes(&Right, &Double);
+		if (Double)
+			Double = 0;
+		else
+			Double = 1;
+		Touchscreen->setModes(Right, Double);
+	}
+	else if (button == KEYG_HPCLICKRIGHT || button == KEYG_KPCLICKRIGHT)
+	{
+		int Right,Double;
+		Touchscreen->getModes(&Right, &Double);
+		if (Right)
+			Right = 0;
+		else
+			Right = 1;
+		Touchscreen->setModes(Right, Double);
 	}
 	else if (button == KEYG_HPF11)
 	{

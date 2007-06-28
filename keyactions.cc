@@ -46,6 +46,11 @@
 #include "effects.h"
 #include "palette.h"
 
+#ifdef UNDER_CE
+  #include "Keyboard_gump.h"
+  #include "Touchscreen.h"
+#endif
+
 /*
  *	Get the i'th party member, with the 0'th being the Avatar.
  */
@@ -86,6 +91,18 @@ void ActionMinimizeGame(int *params)
 	SDL_WM_IconifyWindow();
 	SDL_Delay(250);
 	SDL_WM_IconifyWindow();
+}
+
+// { ActionTouchscreenMode, 0, "Touchscreen mode", true, false, NONE },
+void ActionTouchscreenMode(int *params)
+{
+	int Right,Double;
+	Touchscreen->getModes(&Right, &Double);
+	if (params[0] == Right)
+		params[0] = 0;
+	if (params[1] == Double)
+		params[1] = 0;
+	Touchscreen->setModes(params[0], params[1]);
 }
 #endif
 
