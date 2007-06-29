@@ -1,0 +1,144 @@
+Exult instructions for Pocket PC
+------------------------------------
+Written by:  Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+
+
+Supported Flavors
+-----------------
+Windows Mobile 5 (ARM5T)
+Pocket PC 2003 (ARM4)
+
+
+Installing
+----------
+1. Decide where you will put the Exult program and the actual Ultima7 game directories.
+2. Edit exult.cfg to correct the game directories
+	If you're going to have it on a memory card the path will start with something like \Storage Card\
+	If you're going to have it somewhere on the device's internal memory the path will start with \
+3. Copy exult.cfg to the same directory as the Exult executable
+4. Copy all contents of this directory to the desired location ( The recommended location is \Exult )
+5. Copy the Ultima7 game directories to the desired location
+6. Send me your success/failure story!
+
+
+To play
+-------
+1. Simply click on Exult (the one with the ankh icon next to it)
+2. I recommend disabling audio to help improve performance.  If you have a 400 MHz processor this may not be a problem
+3. Send me your success/failure story!
+
+
+Easy Config File Editing
+------------------------
+The Pocket PC version of Exult has the ability to use 'exult.cfg.txt' instead of 'exult.cfg'.  Simply move your 'exult.cfg' file off of your PocketPC to a desktop computer and rename it to 'exult.cfg.txt', then copy that file back.  This is so you may easily and natively edit the config file on the PocketPC device.
+
+
+On-Screen Keyboard
+------------------
+The Pocket PC version of Exult has an on-screen keyboard.
+   To open it, when you see the keyboard icon at the bottom of the screen, click on the icon, in the middle.
+   To minimize the keyboard, click on the same icon in the middle that appears on the keyboard on the right.
+   If you want to move the keyboard to a different part of the screen, you can use the show/minimize icon,
+but you can click on the upper left, upper right, lower left, and lower right sections of the icon to move
+the keyboard to those respective locations of the screen.
+   KEYPAD: To access the keypad, click on the key symbol on the left of the keyboard.  To get back to the
+keyboard, click on the keyboard button near the bottom of the keypad.
+   HOTPAD: First, open the keypad, then click on the "Hot" button on the top right.  To get back to the keypad, click on the "Num" button on the top right.  To get back to the keyboard, click on the keyboard button near the bottom of the hotpad.
+   The keyboard, keypad, and hotpad can all be accessed via the push of a key/button ... see the "Keybinder Actions" section below for details.
+
+
+On-Screen Keyboard - Button Overview
+------------------------------------
+Most of the buttons are fairly obvious.  Functions of a few not-so-obvious keys are below.
+	Key - Opens the keypad (or the hotpad, if it was the last pad shown)
+	Large X on the lower right - See the above section "On-Screen Keyboard" for details
+
+
+On-Screen Keyboard, Keypad - Button Overview
+--------------------------------------------
+	Keyboard - Switches to the full keyboard
+	"Hot" - Switches to the hotpad
+	Very Bottom Row, Left to Right
+		Key 1 - Toggles the touchscreen clicking mode "Double click"
+		Key 2 - Toggles the touchscreen clicking mode "Right click"
+		Key 3 - F5 - An action can be mapped to this key
+		Key 4 - F6 - An action can be mapped to this key
+		Key 5 - F7 - An action can be mapped to this key
+	Large X on the lower right - See the above section "On-Screen Keyboard" for details
+
+
+On-Screen Keyboard, Hotpad - Button Overview
+--------------------------------------------
+	Row 1 (Top most), Left to Right
+		Key 1 - Runs northwest
+		Key 2 - Runs north
+		Key 3 - Runs northeast
+		Key 4 - Switches to the keypad
+	Row 2, Left to Right
+		Key 1 - Runs west
+		Key 2 - Opens the Avatar's paperdoll
+		Key 3 - Runs east
+		Key 4 - Toggles combat
+		Key 5 - Minimizes the game		
+	Row 3, Left to Right
+		Key 1 - Runs southwest
+		Key 2 - Runs south
+		Key 3 - Runs southeast
+	Row 4, Left to Right
+		Key 1 - F11 - An action can be mapped to this key
+		Key 2 - F12 - An action can be mapped to this key
+		Key 3 - Switches to the full keyboard
+	Row 4 (Bottom most), Left to Right
+		Key 1 - Toggles the touchscreen clicking mode "Double click"
+		Key 2 - Toggles the touchscreen clicking mode "Right click"
+		Key 3 - F5 - An action can be mapped to this key
+		Key 4 - F6 - An action can be mapped to this key
+		Key 5 - F7 - An action can be mapped to this key
+	Large X on the lower right - See the above section "On-Screen Keyboard" for details
+
+
+Keybinder Actions
+-----------------
+The Pocket PC version of Exult has a few additional keybinder actions.
+	minimize_game	Minimizes the game	No parameters
+	touchscreen_mode	Sets the clicking mode for the touchscreen	2 parameters
+		Parameter 1 - Right click -	0 = Disable Right click
+							1 = Toggle Right click
+		Parameter 2 - Double click -	0 = Disable Double click
+							1 = Toggle Double click
+	keyboard_position	Sets the on-screen keyboard's corner position	1 parameter
+		Parameter 1 - Corner position -	 0 = Toggle upper left
+								 1 = Toggle upper right
+								 2 = Toggle lower left
+								 3 = Toggle lower right
+								-1 = Rotate thru positions
+	keyboard_mode	Sets the on-screen keyboard's mode	1 parameter
+		Parameter 1 - Mode -	 0 = Toggle full keyboard
+						 1 = Toggle keypad
+						 2 = Toggle hotpad
+						 3 = Toggle minmize
+						 4 = Toggle hidden
+						-1 = Rotate thru modes (except hidden)
+Please see the main Exult documentation for details on how to set up the keys.
+
+
+Minimize Game
+-------------
+The Pocket PC version of Exult has a minimize game feature.  This can be accessed in a few ways.
+1. Go to the game menu from the paperdoll menu (click on the disk), click on 'Quit', click 'no'.  Exult will ask you if you want to minimize -- click 'yes'.
+2. Bind a key to "minimize_game" and make use of it!
+3. Use the minimize game button on the hotpad (accessible from the on-screen keyboard)
+
+
+D-PAD Config Utility
+--------------------
+Pocket PC devices frequently rotate the screen to make use of more screen area.  This has an effect on the d-pad.  This can be fixed by using the d-pad option inside of the "Gameplay menu".  "Landscape1" suits most devices.  You can also rebind the keys to fix this issue.
+
+
+Mouse Improvements
+------------------
+Double clicks and right clicks are no longer difficult and/or impossible!  You can set the touchscreen mode to right click and/or double click help gameplay be much smoother.  There are two ways to accomplish this.
+1. Bind some keys to "touchscreen_mode" (see the "Keybinder Actions" section above for details)
+2. Use the buttons from the hotpad (near the lower left)
+
+

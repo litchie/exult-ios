@@ -593,7 +593,14 @@ void KeyBinder::LoadFromPatch()
 #ifdef UNDER_CE
 void KeyBinder::WINCE_LoadFromDPADOPT(int opt)
 {
-	if (opt == 1) // Landscape1
+	if (opt == 0) // Portrait
+	{
+		ParseLine("up walk_north");
+		ParseLine("down walk_south");
+		ParseLine("left walk_west");
+		ParseLine("right walk_east");
+	}
+	else if (opt == 1) // Landscape1
 	{
 		ParseLine("up walk_east");
 		ParseLine("down walk_west");
@@ -607,13 +614,9 @@ void KeyBinder::WINCE_LoadFromDPADOPT(int opt)
 		ParseLine("left walk_south");
 		ParseLine("right walk_north");
 	}
-	else // Portrait (or Normal/Unknown)
-	{
-		ParseLine("up walk_north");
-		ParseLine("down walk_south");
-		ParseLine("left walk_west");
-		ParseLine("right walk_east");
-	}
+/*  // Shouldn't do anything, as the user may have custom keybindings
+	else {}
+*/
 }
 #endif
 

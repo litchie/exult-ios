@@ -8,7 +8,10 @@
 			position and state
 	* PocketPC;Keyboard_gump: Added getState and getCorner accessor functions
 	* PocketPC: Added "KEYBOARD_POSITION" action	
-	* PocketPC: Added "KEYBOARD_MODE" action	
+	* PocketPC: Added "KEYBOARD_MODE" action
+	* Added README.PocketPC
+	* PocketPC: Added "Normal" option to d-pad options (in case someone has
+			custom keybindings)
 
 2007-06-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Added touchscreen class
