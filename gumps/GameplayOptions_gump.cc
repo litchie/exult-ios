@@ -197,6 +197,7 @@ void GameplayOptions_gump::build_buttons()
 	dpadtext[0] = "Portrait";
 	dpadtext[1] = "Landscape1";
 	dpadtext[2] = "Landscape2";
+	dpadtext[3] = "Normal";
 #endif
 
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
