@@ -19,6 +19,8 @@ class clsTouchscreen
 		void handle_event(SDL_Event *event);
 		void setModes(int Right, int Double);
 		void getModes(int *Right, int *Double);
+		int toggleRight(void);
+		int toggleDouble(void);
 	private:
 		void reinterpret_mouse_event(SDL_Event *event);
 		int mode;

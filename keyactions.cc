@@ -104,6 +104,49 @@ void ActionTouchscreenMode(int *params)
 		params[1] = 0;
 	Touchscreen->setModes(params[0], params[1]);
 }
+
+// { "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", true, false, NONE, true },
+void ActionKeyboardPosition(int *params)
+{
+	// 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
+	int corner = params[0];
+	if (corner == -1)
+		corner = gkeyboard->getCorner() + 1;
+	if (corner > 3 || corner < 0)
+		corner = 0;
+
+	gkeyboard->show(corner, -1);
+}
+
+// { "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", true, false, NONE, true },
+void ActionKeyboardMode(int *params)
+{
+	int newstate = params[0];
+	int curstate = gkeyboard->getState();
+	if (newstate == curstate)
+	{
+		if (newstate == KEYG_HIDDEN)
+			newstate = -1;
+		else
+			newstate = KEYG_MINIMIZED;
+	}
+	else if (newstate == -1)
+	{
+		newstate = curstate + 1;
+		(newstate > KEYG_MINIMIZED) && (newstate = KEYG_KEYBOARD);
+	}
+	else if (newstate < -1 || newstate > KEYG_HIDDEN)
+	{
+		newstate = KEYG_KEYBOARD;
+	}
+	switch(newstate)
+	{
+		case KEYG_MINIMIZED:	gkeyboard->minimize();			break;
+		case KEYG_HIDDEN:		gkeyboard->hide();				break;
+		default:				gkeyboard->show(-1, newstate);	break;
+	}
+}
+
 #endif
 
 // { ActionMenuGump, 0, "GameMenu", true, false, NONE },

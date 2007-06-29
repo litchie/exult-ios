@@ -90,6 +90,8 @@ const struct Action {
 #ifdef UNDER_CE
 	{ "MINIMIZE_GAME", ActionMinimizeGame, 0, "Minimize game", true, false, NONE, true },
 	{ "TOUCHSCREEN_MODE", ActionTouchscreenMode, 0, "Touchscreen mode", true, false, NONE, true },
+	{ "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", true, false, NONE, true },
+	{ "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", true, false, NONE, true },
 #endif
 
 	{ "REPAINT", ActionRepaint, 0, "Repaint screen", false, false, NONE, true },
