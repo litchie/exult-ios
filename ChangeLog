@@ -1,4 +1,16 @@
-2007-06-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+2007-06-29	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* ChangeLog: Corrected date for yesterday's entry
+	* PocketPC;touchscreen: Added toggleRight and toggleDouble functions to
+			touchscreen class
+	* PocketPC;Keyboard_gump: Cleaned up ActivateOtherButton function
+				Added per-state ActivateOtherButton functions
+	* PocketPC;Keyboard_gump: Enabled saving & loading of on-screen keyboard
+			position and state
+	* PocketPC;Keyboard_gump: Added getState and getCorner accessor functions
+	* PocketPC: Added "KEYBOARD_POSITION" action	
+	* PocketPC: Added "KEYBOARD_MODE" action	
+
+2007-06-28	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Added touchscreen class
 			Allows users to set mouse to double click mode
 			Allows users to set mouse to right click mode
@@ -9,7 +21,7 @@
 			
 2007-06-27	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Fixed scaling problem
-	* PocketPC/Keyboard_gump: Cleaned up Keyboard_gump.h a bit
+	* PocketPC;Keyboard_gump: Cleaned up Keyboard_gump.h a bit
 			Set private & public appropriately
 
 2007-06-26	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
