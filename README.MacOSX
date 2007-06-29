@@ -57,7 +57,7 @@ The next step is the same whether you compile a release version or CVS:
 This will give you a "exult" binary in the current directory. If you want
 a nice Exult.app (double clickable from the Finder and all), enter this
 command:
-  make Exult_app
+  make bundle
 
 Be warned, the binary created this way is not static linked, that means if
 you copy it to another machine it will most likely not work. So you can only
