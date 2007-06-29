@@ -33,6 +33,24 @@ void clsTouchscreen::setModes(int Right, int Double)
 
 }
 
+int clsTouchscreen::toggleRight(void)
+{
+	if (modeRight)
+		modeRight = 0;
+	else
+		modeRight = 1;
+	return modeRight;
+}
+
+int clsTouchscreen::toggleDouble(void)
+{
+	if (modeDouble)
+		modeDouble = 0;
+	else
+		modeDouble = 1;
+	return modeDouble;
+}
+
 void clsTouchscreen::getModes(int *Right, int *Double)
 {
 	*Right = modeRight;

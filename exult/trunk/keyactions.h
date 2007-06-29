@@ -32,6 +32,8 @@ void ActionOldFileGump(int* params);
 #ifdef UNDER_CE
 void ActionMinimizeGame(int* params);
 void ActionTouchscreenMode(int* params);
+void ActionKeyboardPosition(int* params);
+void ActionKeyboardMode(int* params);
 #endif
 
 void ActionScreenshot(int* params);

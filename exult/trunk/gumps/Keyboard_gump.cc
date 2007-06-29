@@ -232,7 +232,13 @@ Keyboard_gump::Keyboard_gump(int placex, int placey, bool upperCase)
 	buttonDown[1] = -1;
 	buttonDown[2] = -1;
 	buttonDown[3] = -1;
-	laststate = KEYG_KEYBOARD;
+	config->value("config/gameplay/onscreenkeyboardstate", laststate, KEYG_KEYBOARD);
+	config->value("config/gameplay/onscreenkeyboardcorner", loccorner, 0);
+	if (laststate < KEYG_KEYBOARD || laststate >= KEYG_MINIMIZED)
+		laststate = KEYG_KEYBOARD;
+	if (loccorner < 0 || loccorner > 4)
+		loccorner = 0; // 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
+	//if (lastpadstate != KEYG_KEYPAD && lastpadstate != KEYG_HOTPAD)
 	lastpadstate = KEYG_KEYPAD;
 	altDown = false;
 	ctrlDown = false;
@@ -250,8 +256,17 @@ Keyboard_gump::Keyboard_gump(int placex, int placey, bool upperCase)
 	}
 	locx = placex;
 	locy = placey;
-	loccorner = 0; // 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
 	hide();
+}
+
+int Keyboard_gump::getState(void)
+{
+	return state;
+}
+
+int Keyboard_gump::getCorner(void)
+{
+	return loccorner;
 }
 
 void Keyboard_gump::show(int corner, int newstate)
@@ -260,6 +275,12 @@ void Keyboard_gump::show(int corner, int newstate)
 	if (state != KEYG_HIDDEN)
 		gwin->add_dirty(RECTX(locx, locy, width+4, height+4));
 
+	if (newstate == -1)
+	{
+		newstate = state;
+		if (newstate < 0 || newstate > KEYG_HOTPAD)
+			newstate = laststate;
+	}
 	if (newstate == KEYG_KEYBOARD)
 	{
 		width = pocketpc_vga.get_shape(EXULT_POCKETPC_FLX_KEYBOARD_SHP, 0)->get_width();
@@ -275,6 +296,8 @@ void Keyboard_gump::show(int corner, int newstate)
 
 	state = newstate;
 	moveToCorner(corner);
+	config->set("config/gameplay/onscreenkeyboardcorner", loccorner, false);
+	config->set("config/gameplay/onscreenkeyboardstate", state, true);
 	gwin->add_dirty(RECTX(locx, locy, width+4, height+4));
 	if (autopaint)
 		gwin->paint_dirty();
@@ -429,143 +452,156 @@ int Keyboard_gump::handle_event(SDL_Event *event)
 	return 0;
 }
 
+void Keyboard_gump::ActivateOtherButtonMinimized(int button)
+{
+	switch(button)
+	{
+		case KEYG_SHOW:	show(-1, laststate);	break;
+		case KEYG_MIN_MOVEUPPERLEFT:
+		case KEYG_MIN_MOVELOWERLEFT:
+		case KEYG_MIN_MOVEUPPERRIGHT:
+		case KEYG_MIN_MOVELOWERRIGHT:
+			show(button - KEYG_MIN_MOVEUPPERLEFT, laststate);
+			break;
+		default:	break;
+	}
+}
+
+void Keyboard_gump::ActivateOtherButtonKeyboard(int button)
+{
+	switch(button)
+	{
+		case KEYG_SHOWPAD:	show(-1, lastpadstate);	break;
+		case KEYG_DONE:		minimize();				break;
+		case KEYG_CASECHANGE:
+			if (caseSet == &Ucharrows[0][0])
+				caseSet = &Lcharrows[0][0];
+			else
+				caseSet = &Ucharrows[0][0];
+			break;
+		case KEYG_ENTER:	injectKeyEvent('\0', SDLK_RETURN);		break;
+		case KEYG_BACKSPACE:injectKeyEvent('\0', SDLK_BACKSPACE);	break;
+		case KEYG_LARROW:	injectKeyEvent('\0', SDLK_LEFT);		break;
+		case KEYG_RARROW:	injectKeyEvent('\0', SDLK_RIGHT);		break;
+		case KEYG_SPACE:	injectKeyEvent(' ');	break;
+		case KEYG_ALT:		altDown = !altDown;		break;
+		case KEYG_CTRL:		ctrlDown = !ctrlDown;	break;
+		case KEYG_KEYBOARD_MOVEUPPERLEFT:
+		case KEYG_KEYBOARD_MOVELOWERLEFT:
+		case KEYG_KEYBOARD_MOVEUPPERRIGHT:
+		case KEYG_KEYBOARD_MOVELOWERRIGHT:
+			show(button - KEYG_KEYBOARD_MOVEUPPERLEFT, state);
+			break;
+		default:	break;
+	}
+}
+
+void Keyboard_gump::ActivateOtherButtonKeypad(int button)
+{
+	switch(button)
+	{
+		case KEYG_KEYPAD_TOKEYBOARD:
+			lastpadstate = state;
+			show(-1, KEYG_KEYBOARD);
+			break;
+		case KEYG_DONEWITHKEYPAD:
+			lastpadstate = state;
+			minimize();
+			break;
+		case KEYG_KEYPAD_TOHOTPAD:	show(-1, KEYG_HOTPAD);	break;
+		case KEYG_KPF5:		injectKeyEvent('\0', SDLK_F5);	break;
+		case KEYG_KPF6:		injectKeyEvent('\0', SDLK_F6);	break;
+		case KEYG_KPF7:		injectKeyEvent('\0', SDLK_F7);	break;
+		case KEYG_KPCLICKDOUBLE:Touchscreen->toggleDouble();break;
+		case KEYG_KPCLICKRIGHT:	Touchscreen->toggleRight();	break;
+
+		case KEYG_KEYPAD_MOVEUPPERLEFT:
+		case KEYG_KEYPAD_MOVELOWERLEFT:
+		case KEYG_KEYPAD_MOVEUPPERRIGHT:
+		case KEYG_KEYPAD_MOVELOWERRIGHT:
+			show(button - KEYG_KEYPAD_MOVEUPPERLEFT, state);
+			break;
+		case KEYG_KP7:
+		case KEYG_KP8:
+		case KEYG_KP9:
+		case KEYG_KP4:
+		case KEYG_KP5:
+		case KEYG_KP6:
+		case KEYG_KPMINUS:
+		case KEYG_KPPLUS:
+		case KEYG_KP1:
+		case KEYG_KP2:
+		case KEYG_KP3:
+		case KEYG_KP0:
+		case KEYG_KPPERIOD:
+			injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
+			break;
+		default:
+			break;
+	}
+}
+
+void Keyboard_gump::ActivateOtherButtonHotpad(int button)
+{
+	switch(button)
+	{
+		case KEYG_HOTPAD_TOKEYBOARD:
+			lastpadstate = state;
+			show(-1, KEYG_KEYBOARD);
+			break;
+		case KEYG_DONEWITHHOTPAD:
+			lastpadstate = state;
+			minimize();
+			break;
+		case KEYG_HOTPAD_TOKEYPAD:	show(-1, KEYG_KEYPAD);	break;
+		case KEYG_HPF5:		injectKeyEvent('\0', SDLK_F5);	break;
+		case KEYG_HPF6:		injectKeyEvent('\0', SDLK_F6);	break;
+		case KEYG_HPF7:		injectKeyEvent('\0', SDLK_F7);	break;
+		case KEYG_HPF11:	injectKeyEvent('\0', SDLK_F11);	break;
+		case KEYG_HPF12:	injectKeyEvent('\0', SDLK_F12);	break;
+		case KEYG_HPCLICKDOUBLE:Touchscreen->toggleDouble();break;
+		case KEYG_HPCLICKRIGHT:	Touchscreen->toggleRight();	break;
+
+		case KEYG_HOTPAD_MOVEUPPERLEFT:
+		case KEYG_HOTPAD_MOVELOWERLEFT:
+		case KEYG_HOTPAD_MOVEUPPERRIGHT:
+		case KEYG_HOTPAD_MOVELOWERRIGHT:
+			show(button - KEYG_HOTPAD_MOVEUPPERLEFT, state);
+			break;
+		case KEYG_HPNW:
+		case KEYG_HPN:
+		case KEYG_HPNE:
+		case KEYG_HPW:
+		case KEYG_HPPAPERDOLL:
+		case KEYG_HPE:
+		case KEYG_HPCOMBAT:
+		case KEYG_HPMINIMIZEGAME:
+		case KEYG_HPSW:
+		case KEYG_HPS:
+		case KEYG_HPSE:
+			int params[1];
+			params[0] = hotpadtableparams[button - KEYG_HPNW];
+			(*hotpadtable[button - KEYG_HPNW])(params);
+			break;
+		default:
+			break;
+	}
+}
+
 void Keyboard_gump::ActivateOtherButton(int button)
 {
-	Game_window *gwin = Game_window::get_instance();
-	if (button == KEYG_SHOW)
+	switch (state)
 	{
-		show(-1, laststate);
-	}
-	else if (button == KEYG_SHOWPAD)
-	{
-		show(-1, lastpadstate);
-	}
-	else if (button == KEYG_KEYPAD_TOKEYBOARD || button == KEYG_HOTPAD_TOKEYBOARD)
-	{
-		lastpadstate = state;
-		show(-1, KEYG_KEYBOARD);
-	}
-	else if (button == KEYG_KEYPAD_TOHOTPAD)
-	{
-		show(-1, KEYG_HOTPAD);
-	}
-	else if (button == KEYG_HOTPAD_TOKEYPAD)
-	{
-		show(-1, KEYG_KEYPAD);
-	}
-	else if (button == KEYG_DONE)
-	{
-		minimize();
-	}
-	else if (button == KEYG_DONEWITHKEYPAD || button == KEYG_DONEWITHHOTPAD)
-	{
-		lastpadstate = state;
-		minimize();
-	}
-	else if (button == KEYG_CASECHANGE)
-	{
-		if (caseSet == &Ucharrows[0][0])
-			caseSet = &Lcharrows[0][0];
-		else
-			caseSet = &Ucharrows[0][0];
-		//paint();
-		//gwin->show();
-		//gwin->paint();
-	}
-	else if (button == KEYG_ENTER)
-	{
-		injectKeyEvent('\0', SDLK_RETURN);
-	}
-	else if (button == KEYG_BACKSPACE)
-	{
-		injectKeyEvent('\0', SDLK_BACKSPACE);
-	}
-	else if (button == KEYG_LARROW)
-	{
-		injectKeyEvent('\0', SDLK_LEFT);
-	}
-	else if (button == KEYG_RARROW)
-	{
-		injectKeyEvent('\0', SDLK_RIGHT);
-	}
-	else if (button == KEYG_SPACE)
-	{
-		injectKeyEvent(' ');
-	}
-	else if (button == KEYG_ALT)
-	{
-		altDown = !altDown;
-	}
-	else if (button == KEYG_CTRL)
-	{
-		ctrlDown = !ctrlDown;
-	}
-	else if (button >= KEYG_KEYBOARD_MOVEUPPERLEFT && button <= KEYG_KEYBOARD_MOVELOWERRIGHT)
-	{
-		show(button - KEYG_KEYBOARD_MOVEUPPERLEFT, state);
-	}
-	else if (button >= KEYG_MIN_MOVEUPPERLEFT && button <= KEYG_MIN_MOVELOWERRIGHT)
-	{
-		show(button - KEYG_MIN_MOVEUPPERLEFT, laststate);
-	}
-	else if (button >= KEYG_KEYPAD_MOVEUPPERLEFT && button <= KEYG_KEYPAD_MOVELOWERRIGHT)
-	{
-		show(button - KEYG_KEYPAD_MOVEUPPERLEFT, state);
-	}
-	else if (button >= KEYG_HOTPAD_MOVEUPPERLEFT && button <= KEYG_HOTPAD_MOVELOWERRIGHT)
-	{
-		show(button - KEYG_HOTPAD_MOVEUPPERLEFT, state);
-	}
-	else if (button >= KEYG_KP7 && button <= KEYG_KPPERIOD)
-	{
-		injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
-	}
-	else if (button >= KEYG_HPNW && button <= KEYG_HPSE)
-	{
-		int params[1];
-		params[0] = hotpadtableparams[button - KEYG_HPNW];
-		(*hotpadtable[button - KEYG_HPNW])(params);
-		injectKeyEvent('\0', keypadtable[button - KEYG_KP7]);
-	}
-	else if (button == KEYG_HPF5 || button == KEYG_KPF5)
-	{
-		injectKeyEvent('\0', SDLK_F5);
-	}
-	else if (button == KEYG_HPF6 || button == KEYG_KPF6)
-	{
-		injectKeyEvent('\0', SDLK_F5);
-	}
-	else if (button == KEYG_HPF7 || button == KEYG_KPF7)
-	{
-		injectKeyEvent('\0', SDLK_F5);
-	}
-	else if (button == KEYG_HPCLICKDOUBLE || button == KEYG_KPCLICKDOUBLE)
-	{
-		int Right,Double;
-		Touchscreen->getModes(&Right, &Double);
-		if (Double)
-			Double = 0;
-		else
-			Double = 1;
-		Touchscreen->setModes(Right, Double);
-	}
-	else if (button == KEYG_HPCLICKRIGHT || button == KEYG_KPCLICKRIGHT)
-	{
-		int Right,Double;
-		Touchscreen->getModes(&Right, &Double);
-		if (Right)
-			Right = 0;
-		else
-			Right = 1;
-		Touchscreen->setModes(Right, Double);
-	}
-	else if (button == KEYG_HPF11)
-	{
-		injectKeyEvent('\0', SDLK_F11);
-	}
-	else if (button == KEYG_HPF12)
-	{
-		injectKeyEvent('\0', SDLK_F12);
+		case KEYG_MINIMIZED:
+			ActivateOtherButtonMinimized(button);	break;
+		case KEYG_KEYBOARD:
+			ActivateOtherButtonKeyboard(button);	break;
+		case KEYG_KEYPAD:
+			ActivateOtherButtonKeypad(button);	break;
+		case KEYG_HOTPAD:
+			ActivateOtherButtonHotpad(button);	break;
+		default:
+			break;
 	}
 
 }

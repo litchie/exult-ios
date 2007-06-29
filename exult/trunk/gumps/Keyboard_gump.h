@@ -36,6 +36,8 @@ class Keyboard_gump
 	void paint();
 	void minimize(int placearea = KEYG_LOCBOTTOM);
 	bool autopaint;
+	int getState(void);
+	int getCorner(void);
 
 private:
 	const char *caseSet;
@@ -44,6 +46,11 @@ private:
 	void mouse_up(int mx, int my);
 	void injectKeyEvent(char key, SDLKey sdlkey = SDLK_SPACE);
 	void ActivateOtherButton(int button);
+	void ActivateOtherButtonMinimized(int button);
+	void ActivateOtherButtonKeyboard(int button);
+	void ActivateOtherButtonKeypad(int button);
+	void ActivateOtherButtonHotpad(int button);
+
 	void areaHighlight(int l, int t, int r, int b);
 	void moveToCorner(int corner);
 	int locx;
