@@ -515,7 +515,7 @@ void Game_window::init_files(bool cycle)
 #ifdef UNDER_CE
 	// Take care of special WinCE D-PAD Options
 	int dpadopt;
-	config->value("config/gameplay/dpadopt", dpadopt, 0);
+	config->value("config/gameplay/dpadopt", dpadopt, 3);
 	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
 #endif
 	CYCLE_RED_PLASMA();
