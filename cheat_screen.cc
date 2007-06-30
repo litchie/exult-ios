@@ -353,27 +353,28 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 		SDL_WaitEvent(&event);
 	} while (event.type!=SDL_KEYDOWN);
 
+	SDL_keysym& key = event.key.keysym;
+
 	bool shift = false;
-	if (event.key.keysym.mod & KMOD_SHIFT)
+	if (key.mod & KMOD_SHIFT)
 		shift = true;
-	if ((event.key.keysym.sym == SDLK_s) && (event.key.keysym.mod & KMOD_ALT) && (event.key.keysym.mod & KMOD_CTRL))
+	if ((key.sym == SDLK_s) && (key.mod & KMOD_ALT) && (key.mod & KMOD_CTRL))
 	{
 		make_screenshot(true);
 		return false;
 	}
 
-
 	if (mode >= CP_Name)		// Want Text input (len chars)
 	{
-		if (event.key.keysym.sym == SDLK_RETURN)
+		if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
 		{
 			activate = true;
 		}
-		else if((event.key.keysym.sym >= '0' && event.key.keysym.sym <= 'z') || event.key.keysym.sym == ' ')
+		else if((key.sym >= '0' && key.sym <= 'z') || key.sym == ' ')
 		{
 			int curlen = std::strlen(input);
-			char chr = event.key.keysym.sym;
-			if (event.key.keysym.mod & KMOD_SHIFT) {
+			char chr = key.sym;
+			if (key.mod & KMOD_SHIFT) {
 #if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 				if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
 #else
@@ -386,7 +387,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 				input[curlen+1] = 0;
 			}
 		}
-		else if (event.key.keysym.sym == SDLK_BACKSPACE)
+		else if (key.sym == SDLK_BACKSPACE)
 		{
 			int curlen = std::strlen(input);
 			if (curlen) input[curlen-1] = 0;
@@ -395,7 +396,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 	else if (mode >= CP_ChooseNPC)	// Need to grab numerical input
 	{
 		// Browse shape
-		if (mode == CP_Shape && !input[0] && event.key.keysym.sym == 'b')
+		if (mode == CP_Shape && !input[0] && key.sym == 'b')
 		{
 			cheat.shape_browser();
 			input[0] = 'b';
@@ -403,24 +404,33 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 		}
 
 		// Activate (if possible)
-		if (event.key.keysym.sym == SDLK_RETURN)
+		if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
 		{
 			activate = true;
 		}
-		else if (event.key.keysym.sym == '-' && !input[0])
+		else if ((key.sym == '-' || key.sym == SDLK_KP_MINUS) && !input[0])
 		{
 			input[0] = '-';
 		}
-		else if (event.key.keysym.sym >= '0' && event.key.keysym.sym <= '9')
+		else if ((key.sym >= '0' && key.sym <= '9'))
 		{
 			int curlen = std::strlen(input);
 			if(curlen<(len-1))
 			{
-				input[curlen] = event.key.keysym.sym;
+				input[curlen] = key.sym;
 				input[curlen+1] = 0;
 			}
 		}
-		else if (event.key.keysym.sym == SDLK_BACKSPACE)
+		else if (key.sym >= SDLK_KP0 && key.sym <= SDLK_KP9)
+		{
+			int curlen = std::strlen(input);
+			if(curlen<(len-1))
+			{
+				input[curlen] = key.sym - SDLK_KP0 + '0';
+				input[curlen+1] = 0;
+			}
+		}
+		else if (key.sym == SDLK_BACKSPACE)
 		{
 			int curlen = std::strlen(input);
 			if (curlen) input[curlen-1] = 0;
@@ -434,7 +444,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 	}
 	else				// Need the key pressed
 	{
-		command = event.key.keysym.sym;
+		command = key.sym;
 		return true;
 	}
 	return false;

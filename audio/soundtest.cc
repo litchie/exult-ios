@@ -135,7 +135,7 @@ void SoundTester::test_sound()
 			delete scroll;
 			redraw = false;
 		}
-			SDL_WaitEvent(&event);
+		SDL_WaitEvent(&event);
 		if(event.type==SDL_KEYDOWN)
 		{
        			redraw = true;
@@ -147,6 +147,7 @@ void SoundTester::test_sound()
 				break;
 
 			case SDLK_RETURN:
+			case SDLK_KP_ENTER:
 				if (active == 0)
 				{
 					audio->stop_music();
