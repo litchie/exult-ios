@@ -7,6 +7,8 @@
  *		ucc -o usecode <this file>
  */
 
+#game "blackgate"
+
 const int avatar = -356;
 const int lordbrit_id = -23;		// LB's NPC #.
 extern Ask_yes_no 0x90a();
@@ -52,8 +54,7 @@ enum item_flags {			// Bit #'s of flags:
  */
 LB_fun 0x417()
 	{
-	var lb = item;
-	var inparty = UI_get_item_flag(lb, in_party);
+	var inparty = get_item_flag(in_party);
 	static var count;
 
 	LB_fun.original();
@@ -64,16 +65,16 @@ LB_fun 0x417()
 			return;		// Just do it every 3rd time.
 		if (UI_get_array_size(UI_get_party_list()) > 7)
 			return;		// No room.
-		lb.say("One moment, my long-time friend...");
-		lb.say("My years here as sovereign have been pleasant, ",
-			"but I feel my bones growing soft.  ",
-			"Some days I yearn for our old times of adventure.");
-		lb.say("Though my hair hast a bit of grey, my hand is ",
-			"steady, and my eyes sharp.");
-		lb.say("Couldst thou find a place for me on your Quest?");
+		item.say("One moment, my long-time friend...");
+		say("My years here as sovereign have been pleasant, ",
+		    "but I feel my bones growing soft.  ",
+		    "Some days I yearn for our old times of adventure.");
+		say("Though my hair hast a bit of grey, my hand is ",
+		    "steady, and my eyes sharp.");
+		say("Couldst thou find a place for me on your Quest?");
 		if (Ask_yes_no())
 			{
-			UI_add_to_party(lb);
+			add_to_party();
 			count = 0;
 			}
 		}
@@ -81,11 +82,11 @@ LB_fun 0x417()
 		{
 		if (count%3 != 1)
 			return;
-		lb.say("Mayest I continue to aid thee in thy quest, Avatar?");
+		item.say("Mayest I continue to aid thee in thy quest, Avatar?");
 		if (!Ask_yes_no())
 			{
-			UI_remove_from_party(lb);
-			UI_set_schedule_type(lb, 11);	// Loiter.
+			remove_from_party();
+			set_schedule_type(11);	// Loiter.
 			count = 0;
 			}
 		}
