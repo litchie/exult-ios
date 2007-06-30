@@ -33,14 +33,14 @@ enum cast_spell_results
 
 enum reagents
 {
-	BLACK_PEARL						= 0,
-	BLOOD_MOSS						= 1,
-	NIGHTSHADE						= 2,
-	MANDRAKE_ROOT					= 3,
-	GARLIC							= 4,
-	GINSENG							= 5,
-	SPIDER_SILK						= 6,
-	SULPHUROUS_ASH					= 7
+	BLACK_PEARL						= 1,
+	BLOOD_MOSS						= 2,
+	NIGHTSHADE						= 3,
+	MANDRAKE_ROOT					= 4,
+	GARLIC							= 5,
+	GINSENG							= 6,
+	SPIDER_SILK						= 7,
+	SULPHUROUS_ASH					= 8
 
 };
 

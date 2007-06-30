@@ -386,8 +386,7 @@ Uc_function_symbol *Uc_function_symbol::create
 	)
 	{
 	if (shp >= 0x400)
-		// Just for safety.
-		num = -1;
+		num = new_auto_num ? -1 : 0xC00 + shp;
 	else if (shp != -1)
 		num = shp;
 		

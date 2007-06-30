@@ -1,3 +1,13 @@
+2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* (general): Adding missing newlines to end of files. Making numeric keypad
+	  work for number input and return in gumps/menus.
+	* usecode/ucsym.cc: Making shape# work again if using old auto-numbering.
+	* mapedit/*: Allow separate viewing of shape functions in usecode browser.
+	* content/bgkeyring/src/spells/npc_spells.uc: Reagents were being incorrectly
+	  counted and used.
+	* content/*: Updated old usecode to a more modern form. Fixed dialog bugs in
+	  SF island and fixed initial scene.
+
 2007-06-29	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* ChangeLog: Corrected date for yesterday's entry
 	* PocketPC;touchscreen: Added toggleRight and toggleDouble functions to
@@ -31,7 +41,7 @@
 	* PocketPC: Added keypad and hotpad keyboards
 		Keypad is basically the numpad on a normal keypad
 		Hotpad enables running and a few other nifty functions
-	
+
 2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc, gameclk.*: Fixed a few bugs in palette problems, particularly
 	  when teleporting around.

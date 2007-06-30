@@ -1676,6 +1676,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 					selected = num_choices-1;
 				break;
 			case SDLK_RETURN:
+			case SDLK_KP_ENTER:
 				if(selected<2) 
 					++selected;
 				else if(selected==2)

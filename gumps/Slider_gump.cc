@@ -290,6 +290,7 @@ void Slider_gump::key_down(int chr)
 {
 	switch(chr) {
 	case SDLK_RETURN:
+	case SDLK_KP_ENTER:
 		done = 1;
 		break;
 	case SDLK_LEFT:

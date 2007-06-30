@@ -699,6 +699,7 @@ bool Notebook_gump::handle_kbd_event
 	One_note *note = notes[pinfo.notenum];
 	switch (chr) {
 	case SDLK_RETURN:
+	case SDLK_KP_ENTER:
 		note->insert('\n', cursor.offset);
 		++cursor.offset;
 		paint();		// (Not very efficient...)

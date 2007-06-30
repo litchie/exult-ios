@@ -624,6 +624,7 @@ void File_gump::text_input(int chr, int unicode)
 	switch (chr)
 		{
 	case SDLK_RETURN:		// If only 'Save', do it.
+	case SDLK_KP_ENTER:
 		if (!buttons[0] && buttons[1])
 			{
 			buttons[1]->push();
