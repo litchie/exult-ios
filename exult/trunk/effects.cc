@@ -1382,9 +1382,9 @@ Storm_effect::Storm_effect
 	) : Weather_effect(duration, delay, 2, egg)
 	{
 					// Start raining soon.
-	eman->add_effect(new Clouds_effect(duration, delay));
+	eman->add_effect(new Clouds_effect(duration + 1, delay));
 	int rain_delay = 20 + rand()%1000;
-	eman->add_effect(new Rain_effect(duration - 1, rain_delay, 0));
+	eman->add_effect(new Rain_effect(duration + 2, rain_delay, 0));
 	int lightning_delay = rain_delay + rand()%500;
 	eman->add_effect(new Lightning_effect(duration - 2, lightning_delay));
 	}
@@ -1451,8 +1451,8 @@ Snowstorm_effect::Snowstorm_effect
 	) : Weather_effect(duration, delay, 1, egg)
 	{
 					// Start snowing soon.
-	eman->add_effect(new Clouds_effect(duration, delay));
-	eman->add_effect(new Snow_effect(duration - 1, 20 + rand()%1000, 0));
+	eman->add_effect(new Clouds_effect(duration + 1, delay));
+	eman->add_effect(new Snow_effect(duration + 2, 20 + rand()%1000, 0));
 	}
 
 /*

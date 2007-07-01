@@ -3,6 +3,9 @@
 	* usecode/compiler/ucsym.cc: UCC now issues a warning for every function
 	  that gets autonumbered unless '#autonumber' directive is used.
 	* usecode/compiler/uclex.yy: Optimizing lexical scanner a bit.
+	* palette.cc, gameclk.cc: Fixing problems with infravision and (possibly)
+	  invisibility palettes.
+	* effects.cc: Tweaking duration of rain and snow a bit.
 
 2007-06-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* (general): Adding missing newlines to end of files. Making numeric keypad
