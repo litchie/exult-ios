@@ -11,7 +11,7 @@
 
 const int avatar = -356;
 const int lordbrit_id = -23;		// LB's NPC #.
-extern Ask_yes_no 0x90a();
+extern var Ask_yes_no 0x90a();
 
 enum item_flags {			// Bit #'s of flags:
 		invisible = 0,

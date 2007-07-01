@@ -339,7 +339,7 @@ spellFetch 0x67B ()
 	if (event == DOUBLECLICK)
 	{
 		target = UI_click_on_item();
-		isgrabbable = target->get_item_usability();
+		isgrabbable = target->get_item_weight();
 		dir = directionFromAvatar(item);
 		halt_scheduled();
 		item_say("@Por Ylem@");
