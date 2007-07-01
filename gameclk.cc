@@ -105,14 +105,25 @@ void Game_clock::set_time_palette
 	Actor *main_actor = gwin->get_main_actor();
 	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
 	{
+		if (transition)
+			{
+			delete transition;
+			transition = 0;
+			}
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
 		return;
 		}
 
-	if (cheat.in_infravision()) {
+	if (cheat.in_infravision())
+		{
+		if (transition)
+			{
+			delete transition;
+			transition = 0;
+			}
 		gwin->get_pal()->set(PALETTE_DAY);
 		return;
-	}
+		}
 
 	unsigned int new_dungeon = gwin->is_in_dungeon();
 	int new_palette = get_time_palette(hour+1, new_dungeon),
