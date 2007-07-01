@@ -350,19 +350,21 @@ se		return SE;
 "#game"[ \t]+.*\n		{ Set_game(yytext + 5); Uc_location::increment_cur_line(); }
 "#autonumber"[ \t]+"0x"[0-9a-fA-F]+.*\n	{ Set_autonum(yytext + 11); Uc_location::increment_cur_line(); }
 
-
-\#.*\n		{ Uc_location::yywarning("Unknown directive is being ignored"); Uc_location::increment_cur_line(); }
-\#.*		{ Uc_location::yyerror("Directives require a terminating new-line character before the end of file"); }
+\#[^\n]*	{ Uc_location::yyerror("Directives require a terminating new-line character before the end of file"); }
+\#[^\n]*\n	{ Uc_location::yywarning("Unknown directive is being ignored"); Uc_location::increment_cur_line(); }
 
 [ \t\r]+					/* Ignore spaces. */
-"//".*						/* Comments. */
+"//"[^\n]*					/* Comments. */
+"//"[^\n]*\n				/* Comments. */
 "/*"			yy_push_state(comment);
+
 <comment>[^*\n]*				/* All but '*'. */
-<comment>"*"+[^*/\n]*				/* *'s not followed by '/'. */
-<comment>\n		{ Uc_location::increment_cur_line(); }
-<comment>"*/"		yy_pop_state();
-<comment><<EOF>>	{ Uc_location::yyerror("Comment not terminated");
-			yyterminate(); }
+<comment>[^*\n]*\n			{ Uc_location::increment_cur_line(); }
+<comment>"*"+[^*/\n]*			/* *'s not followed by '/'. */
+<comment>"*"+[^*/\n]*\n		{ Uc_location::increment_cur_line(); }
+<comment>"*"+"/"			yy_pop_state();
+<comment><<EOF>>			{ Uc_location::yyerror("Comment not terminated");
+								yyterminate(); }
 \n			{ Uc_location::increment_cur_line(); }
 .			return *yytext;		/* Being lazy. */
 <<EOF>>			{

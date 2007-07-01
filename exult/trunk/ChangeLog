@@ -1,4 +1,10 @@
-2007-06-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-07-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* content/*: Making usecode of the SI Fixes and LB joining mods compile.
+	* usecode/compiler/ucsym.cc: UCC now issues a warning for every function
+	  that gets autonumbered unless '#autonumber' directive is used.
+	* usecode/compiler/uclex.yy: Optimizing lexical scanner a bit.
+
+2007-06-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* (general): Adding missing newlines to end of files. Making numeric keypad
 	  work for number input and return in gumps/menus.
 	* usecode/ucsym.cc: Making shape# work again if using old auto-numbering.
