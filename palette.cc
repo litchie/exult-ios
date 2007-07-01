@@ -117,11 +117,8 @@ void Palette::set
 	{
 	if ((palette == pal_num || pal_num == -1) &&
 		(brightness == new_brightness || new_brightness == -1))
-		{			// Already set.
-		if (!faded_out)
-			apply(repaint);	// Force apply just in case.
+					// Already set.
 		return;
-		}
 	if (pal_num != -1)
 		palette = pal_num;	// Store #.
 	if (new_brightness > 0)
