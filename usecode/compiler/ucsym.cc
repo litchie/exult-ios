@@ -421,6 +421,16 @@ Uc_function_symbol *Uc_function_symbol::create
 			sprintf(buf, "Duplicate declaration of function '%s'.", nm);
 			Uc_location::yyerror(buf);
 			}
+
+	if (num < 0 && !new_auto_num)
+		{
+		char buf[256];
+		sprintf(buf,
+			"Auto-numbering function '%s', but '#autonumber' directive not used.",
+			nm);
+		Uc_location::yywarning(buf);
+		}
+
 	int ucnum = num >= 0 ? num : (last_num + 1);
 			// Set last_num if the function doesn't
 			// have a number:
