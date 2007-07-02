@@ -363,8 +363,9 @@ Uc_function_symbol::Uc_function_symbol
 					//  1 + last_num.
 	std::vector<Uc_var_symbol *>& p,
 	int shp
-	) :  Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
-	     ret_type(0), has_ret(false), shape_num(shp)
+	) :	Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
+		ret_type(0), has_ret(false), shape_num(shp), externed(false),
+		inherited(false), high_id(false)
 	{
 	high_id = is_int_32bit(usecode_num);
 	}
@@ -550,7 +551,10 @@ int Uc_function_symbol::gen_call
 	else if (high_id)
 		{
 		if (itemref)
+			{
+			itemref->gen_value(out);
 			out.push_back((char) UC_CALLE32);
+			}
 		else
 			out.push_back((char) UC_CALL32);
 		Write4(out, usecode_num);	// Use fun# directly.

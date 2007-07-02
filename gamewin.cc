@@ -791,6 +791,22 @@ int Game_window::get_unused_npc
 		{
 		if (!npcs[i])
 			return i;	// (Don't think this happens.)
+		if (i >= 356 && i <= 359)
+		{	// Special, 'reserved' cases.
+			if (cnt > 359)
+				i = 360;
+			else
+			{
+				do
+					{
+					npcs.push_back(new Npc_actor("", 0));
+					npcs[cnt]->set_schedule_type(Schedule::wait);
+					npcs[cnt]->set_unused(true);
+					++cnt;
+					} while (cnt < 360);
+				return cnt;
+			}
+		}
 		if (npcs[i]->is_unused())
 			return i;
 		}

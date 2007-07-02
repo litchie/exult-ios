@@ -659,7 +659,7 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 
 		// NPC Tool
 		case 'n':
-		if (npc < -1) mode = CP_InvalidNPC;
+		if (npc < -1 || (npc >= 356 && npc <= 359)) mode = CP_InvalidNPC;
 		else if (npc == -1) mode = CP_Canceled;
 		else if (!input[0]) NPCLoop(-1);
 		else mode = NPCLoop(npc);
@@ -1206,15 +1206,20 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 	if (command == '-')
 	{
 		num--;
-		if (num < 0) num = 0;
+		if (num < 0)
+			num = 0;
+		else if (num >= 356 && num <= 359)
+			num = 355;
 	}
 	else if (command == '+')
 	{
 		num++;
+		if (num >= 356 && num <= 359)
+			num = 360;
 	}
 	else if (command == '*')	// Change NPC
 	{
-		if (i < -1) mode = CP_InvalidNPC;
+		if (i < -1 || (i >= 356 && i <= 359)) mode = CP_InvalidNPC;
 		else if (i == -1) mode = CP_Canceled;
 		else if (input[0]) num = i;
 	}
