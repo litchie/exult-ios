@@ -193,7 +193,7 @@ void GameplayOptions_gump::build_buttons()
 	textbgcolor[11] = "White";
 
 #ifdef UNDER_CE
-	std::string *dpadtext = new std::string[3];
+	std::string *dpadtext = new std::string[4];
 	dpadtext[0] = "Portrait";
 	dpadtext[1] = "Landscape1";
 	dpadtext[2] = "Landscape2";
@@ -211,7 +211,7 @@ void GameplayOptions_gump::build_buttons()
 										   59, fastmouse);
 #ifdef UNDER_CE
 	buttons[2] = new GameplayTextToggle(this, dpadtext, colx[3]-21, rowy[4], 
-										80, dpadopt, 3);
+										80, dpadopt, 4);
 #else
 	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
 										   59, mouse3rd);
