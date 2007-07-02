@@ -193,9 +193,11 @@ void Npc_chooser::setup_shapes_info
 	for (int index = 0; index < total_cnt; index++)
 		{
 		int npcnum = group ? (*group)[index] : index;
+		if (npcnum >= 356 && npcnum <= 359)
+			continue;
 		int shapenum = npcs[npcnum].shapenum;
-			if (shapenum < 0 || shapenum >= num_shapes)
-				continue;
+		if (shapenum < 0 || shapenum >= num_shapes)
+			continue;
 		Shape_frame *shape = ifile->get_shape(shapenum, 0);
 		if (!shape)
 			continue;

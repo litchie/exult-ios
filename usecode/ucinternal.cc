@@ -486,19 +486,23 @@ Game_object *Usecode_internal::get_item
 	Game_object *obj = NULL;
 	if (val == -356)		// Avatar.
 		return gwin->get_main_actor();
-	if (val < 0 && val > -356)
+	else if (val < -356 && val > -360)	// Special cases.
+		return NULL;
+	if (val < 0 && val > -gwin->get_num_npcs())
 		obj = gwin->get_npc(-val);
-	else if (val >= 0 && val < gwin->get_num_npcs()) {
-		obj = gwin->get_npc(val);
-		CERR("Warning: interpreting positive integer as NPCnum");
-					// Special case:  palace guards.
-	} else if (val >= 0 && val < 0x400)		// Looks like a shape #?
-		{
-		if (!itemref.is_array() &&
+	else if (val >= 0)
+		{			// Special case:  palace guards, Time Lord.
+		if (val < 0x400 && !itemref.is_array() &&
 			caller_item && val == caller_item->get_shapenum())
 			obj = caller_item;
+		else if (val < gwin->get_num_npcs() &&	// Try as NPC.
+				(val < 356 || val > 359))	// Avoid these special cases.
+			{
+			obj = gwin->get_npc(val);
+			CERR("Warning: interpreting positive integer as NPCnum");
+			}
 		else
-			return 0;	// Can't be an object.
+			return NULL;
 		}
 	return obj;
 	}
