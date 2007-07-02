@@ -31,7 +31,7 @@ extern Add_experience 0x911(var incr);	// Add exper. to each party member.
 /*
  *	NPC #'s:
  */
-const int AMY = 0x168;
+const int AMY = -349;
 const int AVATAR = -356;
 
 /*
