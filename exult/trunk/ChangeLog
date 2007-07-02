@@ -1,3 +1,7 @@
+2007-07-02	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Fixed bug with "Normal" option w/ D-PAD
+			Normal option couldn't be selected
+			
 2007-07-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/*: Making usecode of the SI Fixes and LB joining mods compile.
 	* usecode/compiler/ucsym.cc: UCC now issues a warning for every function
