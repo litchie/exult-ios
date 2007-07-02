@@ -6,6 +6,17 @@
 	* palette.cc, gameclk.cc: Fixing problems with infravision and (possibly)
 	  invisibility palettes.
 	* effects.cc: Tweaking duration of rain and snow a bit.
+	* gamewin.cc, cheat_screen.cc, mapedit/npclst.cc, usecode/ucinternal.cc,
+	  content/islefaq/initgame.dat: NPCs with numbers in the [356, 359] range
+	  are hidden by Exult and ES, not being available for new NPCs. Also, these
+	  'reserved' NPC numbers will not be converted to NPCs by intrinsics.
+	  Other than that, negative usecode numbers will be converted to NPCs
+	  whenever possible, like positive numbers; this effectivelly removes the
+	  NPC # limit from Exult.
+	  Finally, the SF Island patch has been remade to avoid using NPCs in the
+	  range mentioned above.
+	* usecode/compiler/ucsym.cc: Fixed Uc_function_symbol constructor not
+	  initializing all class variables.
 
 2007-06-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* (general): Adding missing newlines to end of files. Making numeric keypad

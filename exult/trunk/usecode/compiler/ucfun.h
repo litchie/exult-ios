@@ -188,9 +188,9 @@ public:
 					//   end_breakable() is called, so the
 					//   string this is in better not have
 					//   been deleted!!!
-					// Link external function.
 					// Store 'break' location.
 	void add_continue(int op_offset);	// See the notes for add_break.
+					// Link external function.
 	int link(Uc_function_symbol *fun);
 	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
