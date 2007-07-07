@@ -25,8 +25,10 @@
 //#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
-#define USE_MT32EMU_MIDI
-#define USE_TIMIDITY_MIDI
+#ifndef UNDER_CE
+ #define USE_MT32EMU_MIDI
+ #define USE_TIMIDITY_MIDI
+#endif
 
 #ifndef WIN32
 #error WTF!
