@@ -1,3 +1,8 @@
+2007-07-07	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* PocketPC: Set audio system to just USE_FMOPL_MIDI
+			The theory is, this may reduce crashes, as Timidity doesn't
+				appear to work, and MT32 could be having problems.
+
 2007-07-02	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Fixed bug with "Normal" option w/ D-PAD
 			Normal option couldn't be selected
