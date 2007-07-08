@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.12
+version: 0.11.13
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,9 @@ version: 0.11.12
 
 7	Version history
 -------------------
+version: 0.11.13
+	- Fixed bug which would cause a purple outline to be displayed around NPCs
+	  during some animations in recent snapshots of Exult.
 version: 0.11.12
 	- Fixed a few bugs in Zauriel's gem of dispelling functions. Improved the
 	  functions for making the blackrock potion.
