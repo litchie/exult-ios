@@ -1,3 +1,7 @@
+2007-07-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug which would cause a purple outline to be displayed around NPCs
+	  during some animations in recent snapshots of Exult.
+
 2007-07-07	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* PocketPC: Set audio system to just USE_FMOPL_MIDI
 			The theory is, this may reduce crashes, as Timidity doesn't
