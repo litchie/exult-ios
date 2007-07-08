@@ -39,19 +39,19 @@ var randomIndex(var array)
 //---------------------
 
 //Returns true if the specified object is the avatar, false otherwise.
-var isAvatar(var object)	{ return (UI_get_npc_object(object) == UI_get_avatar_ref()); }
+var isAvatar(var object)	{ return (object->get_npc_object() == UI_get_avatar_ref()); }
 
 //Check if the player has met the specified person (i.e. whether their Met flag has been set).
 //Can take either an NPC constant or an object reference.
-var hasMet(var npc)		{ return UI_get_item_flag(npc, MET); }
+var hasMet(var npc)		{ return npc->get_item_flag(MET); }
 
 //Returns true if the specified NPC is in the party, false otherwise
 //There should be an intrinsic for this, but it doesn't appear to be defined
 //Can take an NPC constant or an object reference.
-var inParty(var npc)		{ npc = UI_get_npc_object(npc); return (npc in UI_get_party_list()); }
+var inParty(var npc)		{ npc = npc->get_npc_object(); return (npc in UI_get_party_list()); }
 
 //quick bark/say functions, useful for testing. See also randomPartySay() and randomPartyBark() (original functions)
-avatarBark(var line)	{ if (canTalk(AVATAR)) UI_item_say(AVATAR, line); }
+avatarBark(var line)	{ if (canTalk(AVATAR)) AVATAR->item_say(line); }
 avatarSay(var line)		{ if (canTalk(AVATAR)) AVATAR.say(line); }
 
 
@@ -65,15 +65,15 @@ var moveToContainer(var object, var container, var dont_check_ownership)
 	var orig_container;
 	
 	//record the previous container
-	orig_container = UI_get_container(object);
+	orig_container = object->get_container();
 	//object was in the world - record its last position
-	if (!orig_container) orig_pos = UI_get_object_position(object);
+	if (!orig_container) orig_pos = object->get_object_position();
 
 	//could not remove the item (protected?)
-	if (!UI_set_last_created(object)) return false;
+	if (!object->set_last_created()) return false;
 
 	//try to put the item into the new container
-	if (UI_give_last_created(container))
+	if (container->give_last_created())
 	{
 		//check if the item was stolen, unless overridden
 		if (!dont_check_ownership) stealItem(object);
@@ -82,7 +82,7 @@ var moveToContainer(var object, var container, var dont_check_ownership)
 	//if it couldn't be put into the new container, just put it back in the original container along with a mouse warning
 	else
 	{
-		if (orig_container) { UI_give_last_created(orig_container); }
+		if (orig_container) { orig_container->give_last_created(); }
 		else { UI_update_last_created(orig_pos); }
 		
 		//UI_flash_mouse(4);
@@ -97,12 +97,12 @@ var moveToLocation(var object, var pos)
 	var orig_container;
 	
 	//record the previous container
-	orig_container = UI_get_container(object);
+	orig_container = object->get_container();
 	//object was in the world - record its last position
-	if (!orig_container) orig_pos = UI_get_object_position(object);
+	if (!orig_container) orig_pos = object->get_object_position();
 
 	//could not remove the item (protected?)
-	if (!UI_set_last_created(object)) return false;
+	if (!object->set_last_created()) return false;
 
 	//try to shift the item
 	if (UI_update_last_created(pos)) return true;
@@ -110,7 +110,7 @@ var moveToLocation(var object, var pos)
 	//if it couldn't be moved, just put it back in the original container/location along with a mouse warning
 	else
 	{
-		if (orig_container) { UI_give_last_created(orig_container); }
+		if (orig_container) { orig_container->give_last_created(); }
 		else { UI_update_last_created(orig_pos); }
 		
 		UI_flash_mouse(CURSOR_WONT_FIT);
@@ -137,7 +137,7 @@ pickUpItem()
 	else
 	{
 		//container is an NPC, animate the avatar frobbing the target
-		if (UI_is_npc(container))
+		if (container->is_npc())
 		{
 			script AVATAR
 			{	face direction;				actor frame USE;
@@ -171,7 +171,7 @@ gotoAndGet(var target)
 	UI_close_gumps();
 
 	//item is contained by someone/thing - march the avatar over to the container and pick it up
-	if (UI_get_container(target))
+	if (target->get_container())
 	{
 		container = getOuterContainer(target);
 		//Avatar is the container - call the target's function immediately.
@@ -206,11 +206,11 @@ var containedBy(var obj, var target)
 {
 	var container;
 
-	container = UI_get_container(obj);
+	container = obj->get_container();
 	while (container)
 	{
 		if (container == target) return true;
-		container = UI_get_container(container);
+		container = container->get_container();
 	}
 	return false;
 }
@@ -225,7 +225,7 @@ var getFacing(var npc)
 	var direction;
 	var framenum;
 	
-	framenum = UI_get_item_frame_rot(npc);
+	framenum = npc->get_item_frame_rot();
 
 	if		(framenum >= EAST_FRAMESET)		direction = EAST;
 	else if (framenum >= WEST_FRAMESET)		direction = WEST;
@@ -242,12 +242,12 @@ var invertDirection(var direction)	{ return (direction + 4) % 8; }
 //--------------------------------------------------
 
 //returns the total amount of gold the party has
-var countGold(var amount)	{ return UI_count_objects(PARTY, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY); }
+var countGold(var amount)	{ return PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY); }
 
 //returns true if the party has <amount> gold, false otherwise
 var hasGold(var amount)
 {
-	var num_gold = UI_count_objects(PARTY, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY);
+	var num_gold = PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY);
 	return (num_gold >= amount);
 }
 
@@ -269,5 +269,5 @@ var giveGold(var amount)	{ return UI_add_party_items(amount, SHAPE_GOLD, QUALITY
 
 //use during script sequences, to prevent the actor from moving according to schedule or player input
 //IMPORTANT: Use nohalt; in these script sequences, otherwise the actor may remain frozen forever if the script is interrupted!
-freeze()	{ UI_set_item_flag(item, PARALYZED); }
-unfreeze()	{ UI_clear_item_flag(item, PARALYZED); }
+freeze()	{ set_item_flag(BG_DONT_MOVE); }
+unfreeze()	{ clear_item_flag(BG_DONT_MOVE); }

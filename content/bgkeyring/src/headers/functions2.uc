@@ -32,11 +32,11 @@ avatarSpeak (var msg)
 }
 
 //Sets BG_DONT_MOVE flag:
-trueFreeze()	{ item->set_item_flag(BG_DONT_MOVE); }
+trueFreeze()	{ set_item_flag(BG_DONT_MOVE); }
 //Clears BG_DONT_MOVE flag:
-trueUnfreeze()	{ item->clear_item_flag(BG_DONT_MOVE); }
+trueUnfreeze()	{ clear_item_flag(BG_DONT_MOVE); }
 //Puts an NPC in casting mode:
-showCastingFrames () { item->begin_casting_mode(); }
+showCastingFrames () { begin_casting_mode(); }
 
 freezeParty ()
 {
