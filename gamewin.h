@@ -431,6 +431,7 @@ private:
 			Shape_file *&map,
 			SaveGame_Details *&details,
 			SaveGame_Party *& party);
+	void restore_flex_files(DataSource &ds, char *basepath);
 public:
 #endif
 	void write_saveinfo();		// Write the save info to gamedat

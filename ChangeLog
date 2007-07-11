@@ -1,3 +1,11 @@
+2007-07-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemap.cc, files/databuf.h: Removed OVectorDataSource in favor of
+	  StreamDataSource + stringstream. Added 'write' virtual method to
+	  DataSource which writes a string to the source.
+	* mapedit/*: Removed unused definitions.
+	* gamedat.cc, gamewin.h: Fixed flex multimap savegames to save an inner
+	  flex (containing the IREG files) for each map after the first.
+
 2007-07-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug which would cause a purple outline to be displayed around NPCs
 	  during some animations in recent snapshots of Exult.

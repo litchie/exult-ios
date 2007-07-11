@@ -194,7 +194,6 @@ int ExultStudio::save_barge_window
 	)
 	{
 	cout << "In save_barge_window()" << endl;
-	unsigned char data[Exult_server::maxlength];
 					// Get barge (null if creating new).
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 							GTK_OBJECT(bargewin));
