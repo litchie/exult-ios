@@ -42,6 +42,7 @@
 #include <stat.h>
 #endif
 
+#include <sstream>
 #include "exceptions.h"
 #include "fnames.h"
 #include "gamewin.h"
@@ -61,6 +62,10 @@
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
+using std::stringstream;
+using std::istream;
+using std::ostream;
+using std::string;
 using std::endl;
 using std::ifstream;
 using std::ios;
@@ -87,6 +92,83 @@ using std::time;
 
 // Save game compression level
 extern int save_compression;
+
+/*
+ *	Write files from flex assuming first 13 characters of
+ *	each flex object are an 8.3 filename.
+ */
+void Game_window::restore_flex_files
+	(
+	DataSource &in,
+	char *basepath
+	)
+	{
+	in.seek(0x54);			// Get to where file count sits.
+	int numfiles = in.read4();
+	in.seek(0x80);			// Get to file info.
+					// Read pos., length of each file.
+	long *finfo = new long[2*numfiles];
+	int i;
+	for (i = 0; i < numfiles; i++)
+		{
+		finfo[2*i] = in.read4();	// The position, then the length.
+		finfo[2*i + 1] = in.read4();
+		}
+	int baselen = strlen(basepath);
+	for (i = 0; i < numfiles; i++)	// Now read each file.
+		{
+					// Get file length.
+		int len = finfo[2*i + 1] - 13;
+		if (len <= 0)
+			continue;
+		in.seek(finfo[2*i]);	// Get to it.
+		char fname[50];		// Set up name.
+		strcpy(fname, basepath);
+		in.read(&fname[baselen], 13);
+		int namelen = strlen(fname);
+					// Watch for names ending in '.'.
+		if (fname[namelen - 1] == '.')
+			fname[namelen - 1] = 0;
+					// Now read the file.
+		char *buf = new char[len];
+		in.read(buf, len);
+		if (!memcmp(&fname[baselen], "map", 3))
+			{
+			// Multimap directory entry.
+			// Just for safety, we will force-terminate the filename
+			// at an appropriate position.
+			namelen = baselen+5;
+			fname[namelen] = 0;
+
+			BufferDataSource ds(buf, len);
+			if (!Flex::is_flex(&ds))
+				// Save is most likely corrupted. Ignore the file but keep
+				// reading the savegame.
+				std::cerr << "Error reading flex: file '" << 
+							fname << "' is not a valid flex file. This probably means a corrupt save game." << endl;
+			else
+				{
+				// fname should be a path hare.
+				U7mkdir(fname, 0755);
+				// Append trailing slash:
+				fname[namelen] = '/';
+				fname[namelen+1] = 0;
+				restore_flex_files(ds, fname);
+				}
+			delete [] buf;
+			continue;
+			}
+		ofstream out;
+		U7open(out, fname);
+		out.write(buf, len);	// Then write it out.
+		delete [] buf;
+		if (!out.good())
+			abort("Error writing '%s'.", fname);
+		out.close();
+		CYCLE_RED_PLASMA();
+		}
+	delete [] finfo;
+	}
 
 /*
  *	Write out the gamedat directory from a saved game.
@@ -161,48 +243,8 @@ void Game_window::restore_gamedat
 
 	cout.flush();
 
-	in.seek(0x54);			// Get to where file count sits.
-	int numfiles = in.read4();
-	in.seek(0x80);			// Get to file info.
-					// Read pos., length of each file.
-	long *finfo = new long[2*numfiles];
-	int i;
-	for (i = 0; i < numfiles; i++)
-		{
-		finfo[2*i] = in.read4();	// The position, then the length.
-		finfo[2*i + 1] = in.read4();
-		}
-	for (i = 0; i < numfiles; i++)	// Now read each file.
-		{
-		// TODO: make flex savegames compatible with multimap.
-		// I haven't yet found a way to do so without breaking older
-		// flex saves. Any takers?
+	restore_flex_files(in, GAMEDAT);
 
-					// Get file length.
-		int len = finfo[2*i + 1] - 13;
-		if (len <= 0)
-			continue;
-		in.seek(finfo[2*i]);	// Get to it.
-		char fname[50];		// Set up name.
-		strcpy(fname, GAMEDAT);
-		in.read(&fname[sizeof(GAMEDAT) - 1], 13);
-		int namelen = strlen(fname);
-					// Watch for names ending in '.'.
-		if (fname[namelen - 1] == '.')
-			fname[namelen - 1] = 0;
-		ofstream out;
-		U7open(out, fname);
-					// Now read the file.
-		char *buf = new char[len];
-		in.read(buf, len);
-		out.write(buf, len);	// Then write it out.
-		delete [] buf;
-		if (!out.good())
-			abort("Error writing '%s'.", fname);
-		out.close();
-		CYCLE_RED_PLASMA();
-		}
-	delete [] finfo;
 	cout.flush();
 
 #ifdef RED_PLASMA
@@ -279,9 +321,9 @@ static long Savefile
 	in.seek(0);
 	char namebuf[13];		// First write 13-byte name.
 	memset(namebuf, 0, sizeof(namebuf));
-	const char *base = strchr(fname, '/');// Want the base name.
+	const char *base = strrchr(fname, '/');// Want the base name.
 	if (!base)
-		base = strchr(fname, '\\');
+		base = strrchr(fname, '\\');
 	if (base)
 		base++;
 	else
@@ -306,7 +348,14 @@ static long SavefileFromDataSource(
 	long len = source.getSize();
 	char namebuf[13];
 	memset(namebuf, 0, sizeof(namebuf));
-	strncpy(namebuf, fname, sizeof(namebuf));
+	const char *base = strrchr(fname, '/');// Want the base name.
+	if (!base)
+		base = strrchr(fname, '\\');
+	if (base)
+		base++;
+	else
+		base = fname;
+	strncpy(namebuf, base, sizeof(namebuf));
 	out.write(namebuf, sizeof(namebuf));
 	char *buf = new char[len];
 	source.read(buf, len);
@@ -314,6 +363,25 @@ static long SavefileFromDataSource(
 	delete [] buf;
 	return len + 13;
 }
+
+inline static void save_gamedat_chunks
+	(
+	Game_map *map,
+	ostream& out,
+	Flex_writer& flex)
+	{
+	for (int schunk = 0; schunk < 12*12; schunk++)
+		{
+		char iname[128];
+		//Check to see if the ireg exists before trying to
+		//save it; prevents crash when creating new maps
+		//for existing games
+		if (U7exists(map->get_schunk_file_name(U7IREG, 
+					schunk, iname)))
+			Savefile(out, iname);
+		flex.mark_section_done();
+		}
+	}
 
 /*
  *	Save 'gamedat' into a given file.
@@ -344,9 +412,12 @@ void Game_window::save_gamedat
 	U7open(out, fname);
 	vector<Game_map*>::iterator it;
 	int count = numsavefiles;	// Count up #files to write.
+	count += 12*12-1;	// First map outputs IREG's directly to
+				// gamedat flex, while all others have a flex
+				// of their own contained in gamedat flex.
 	for (it = maps.begin(); it != maps.end(); ++it)
 		if (*it)
-			count += 12*12;	// IREG's for each map.
+			count++;
 					// Use samename for title.
 	Flex_writer flex(out, savename, count);
 	int i;				// Start with listed files.
@@ -360,14 +431,28 @@ void Game_window::save_gamedat
 		{
 		if (!*it)
 			continue;
-		for (int schunk = 0; schunk < 12*12; schunk++, i++)
+		if (!(*it)->get_num())
+				// Map 0 is a special case.
+			save_gamedat_chunks(*it, out, flex);
+		else
 			{
-			char iname[128];
-			// TODO: make flex savegames compatible with multimap.
-			// I haven't yet found a way to do so without breaking older
-			// flex saves. Any takers?
-			Savefile(out, (*it)->get_schunk_file_name(U7IREG,
-							schunk, iname));
+			// Multimap directory entries. Each map is stored in their
+			// own flex file contained inside the general gamedat flex.
+			char dname[128];
+			// Need to have read/write access here.
+			std::stringstream outbuf(std::ios::in | std::ios::out | std::ios::binary);
+			StreamDataSource outds(dynamic_cast<std::ostream *>(&outbuf));
+			Flex_writer flexbuf(&outds,
+					(*it)->get_mapped_name(GAMEDAT, dname), 12*12);
+			// Save chunks to memory flex...
+			save_gamedat_chunks(*it, outbuf, flexbuf);
+			// ... and then close it.
+			flexbuf.close();
+			StreamDataSource inds(dynamic_cast<std::istream *>(&outbuf));
+			int len = strlen(dname);
+			if (dname[len-1] == '/' || dname[len-1] == '\\')
+				dname[len-1] = 0;	// Should always be the case.
+			SavefileFromDataSource(out, inds, dname);
 			flex.mark_section_done();
 			}
 		}
@@ -1246,9 +1331,7 @@ bool Game_window::save_gamedat_zip
 				//for existing games
 				if (U7exists((*it)->get_schunk_file_name(U7IREG, 
 							schunk, iname)))
-					Save_level1(zipfile, 
-						(*it)->get_schunk_file_name(U7IREG, 
-								schunk, iname));
+					Save_level1(zipfile, iname);
 				}
 			}
 	}
@@ -1285,9 +1368,7 @@ bool Game_window::save_gamedat_zip
 				//for existing games
 				if (U7exists((*it)->get_schunk_file_name(U7IREG, 
 							schunk, iname)))
-					Save_level2(zipfile, 
-						(*it)->get_schunk_file_name(
-							U7IREG, schunk, iname));
+					Save_level2(zipfile, iname);
 			}
 
 		End_level2(zipfile);

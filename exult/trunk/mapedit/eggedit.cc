@@ -413,7 +413,6 @@ int ExultStudio::save_egg_window
 	)
 	{
 	cout << "In save_egg_window()" << endl;
-	unsigned char data[Exult_server::maxlength];
 					// Get egg (null if creating new).
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 							GTK_OBJECT(eggwin));
