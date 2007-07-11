@@ -627,7 +627,6 @@ int ExultStudio::save_npc_window
 	)
 	{
 	cout << "In save_npc_window()" << endl;
-	unsigned char data[Exult_server::maxlength];
 					// Get npc (null if creating new).
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 							GTK_OBJECT(npcwin));

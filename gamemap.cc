@@ -58,6 +58,7 @@
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include "databuf.h"
 #include <fstream>
+#include <sstream>
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
@@ -65,10 +66,12 @@ using std::cout;
 using std::endl;
 using std::istream;
 using std::ifstream;
+using std::istringstream;
 using std::ios;
 using std::memcpy;
 using std::memset;
 using std::ofstream;
+using std::ostringstream;
 using std::rand;
 using std::strcmp;
 using std::strcpy;
@@ -756,7 +759,8 @@ void Game_map::write_scheduled
 	for (Usecode_script *scr = Usecode_script::find(obj); scr;
 					scr = Usecode_script::find(obj, scr))
 		{
-		OVectorDataSource nbuf;
+		ostringstream outbuf(ios::out);
+		StreamDataSource nbuf(&outbuf);
 		int len = scr->save(&nbuf);
 		if (len < 0)
 			cerr << "Error saving Usecode script" << endl;
@@ -765,7 +769,7 @@ void Game_map::write_scheduled
 			ireg->write1(IREG_SPECIAL);
 			ireg->write1(IREG_UCSCRIPT);
 			ireg->write2(len);	// Store length.
-			ireg->write(nbuf.getPtr(), len);
+			ireg->write(outbuf.str());
 			}
 		}
 	if (write_mark)

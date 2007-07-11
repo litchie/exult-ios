@@ -23,6 +23,7 @@
 #endif
 #include <cassert>
 #include <fstream>
+#include <string>
 #include <iomanip>
 #include <vector>
 #include "U7file.h"
@@ -51,6 +52,7 @@ public:
 	virtual void write4(uint32) =0;
 	virtual void write4high(uint32) =0;
 	virtual void write(void *, int) =0;
+	virtual void write(std::string) =0;
 	
 	virtual void seek(unsigned int) =0;
 	virtual void skip(int) =0;
@@ -116,6 +118,9 @@ public:
 	virtual void write4high(uint32 val)  { Write4high(*out, val); };
 
 	virtual void write(void *b, int len) { out->write(reinterpret_cast<char*>(b), len); };
+
+	virtual void write(std::string s)
+		{ out->write(const_cast<char *>(s.c_str()), s.size()); };
 	
 	virtual void seek(unsigned int pos)
 	{
@@ -259,6 +264,10 @@ public:
 		fwrite(b, 1, len, f);
 	};
 	
+	virtual void write(std::string s)
+	{
+		fwrite(const_cast<char *>(s.c_str()), 1, s.size(), f);
+	};
 	
 	virtual void seek(unsigned int pos) { fseek(f, pos, SEEK_SET); };
 	
@@ -404,6 +413,11 @@ public:
 		buf_ptr += len;
 	};
 	
+	virtual void write(std::string s)
+	{
+		write(const_cast<char *>(s.c_str()), s.size());
+	};
+
 	virtual void seek(unsigned int pos) { buf_ptr = const_cast<unsigned char *>(buf)+pos; };
 	
 	virtual void skip(int pos) { buf_ptr += pos; };
@@ -474,6 +488,11 @@ public:
 			buf.push_back(buf_ptr[i]);
 	}
 	
+	virtual void write(std::string s)
+	{
+		write(const_cast<char *>(s.c_str()), s.size());
+	};
+
 	virtual unsigned int getSize() { return buf.size(); };
 	unsigned char *getPtr() { return &buf[0]; };
 };
