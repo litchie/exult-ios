@@ -1,3 +1,11 @@
+2007-07-12  Ryan Nunn <colourles@users.sourceforge.net>
+	* audio/midi_drivers/* : Changes to the MidiDriver code as per Exult 
+	  bug report 1750743, with additional changes to ensure that it actually
+	  works properly in all cases. Also fixed possible problems with sequence
+	  speed being set to 0, notes being cut off early at the end of a song and 
+	  renamed some variables so they properly relfect what they actually are.
+	* msvcstuff/wud.vcproj : Changes so this project compiles
+
 2007-07-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamemap.cc, files/databuf.h: Removed OVectorDataSource in favor of
 	  StreamDataSource + stringstream. Added 'write' virtual method to
