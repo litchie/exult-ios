@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="wud"
 	ProjectGUID="{499B31BD-2481-4E51-BBDC-418479F34642}"
+	RootNamespace="wud"
 	>
 	<Platforms>
 		<Platform
@@ -245,6 +246,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				ForcedIncludeFiles="msvc_kludges.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -395,6 +397,10 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath="..\usecode\ucsymtbl.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\tools\wud.cc"
 				>
 				<FileConfiguration
@@ -444,11 +450,35 @@
 				>
 			</File>
 			<File
+				RelativePath="..\files\Flat.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\Flex.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\IFF.h"
+				>
+			</File>
+			<File
 				RelativePath="..\usecode\siintrinsics.h"
 				>
 			</File>
 			<File
+				RelativePath="..\files\Table.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\U7file.h"
+				>
+			</File>
+			<File
 				RelativePath="..\tools\uctools.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\utils.h"
 				>
 			</File>
 		</Filter>
@@ -457,6 +487,30 @@
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
 		</Filter>
+		<File
+			RelativePath="..\files\Flat.cc"
+			>
+		</File>
+		<File
+			RelativePath="..\files\Flex.cc"
+			>
+		</File>
+		<File
+			RelativePath="..\files\IFF.cc"
+			>
+		</File>
+		<File
+			RelativePath="..\files\Table.cc"
+			>
+		</File>
+		<File
+			RelativePath="..\files\U7file.cc"
+			>
+		</File>
+		<File
+			RelativePath="..\files\utils.cc"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
