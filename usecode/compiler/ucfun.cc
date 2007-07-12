@@ -510,12 +510,15 @@ void Uc_function::gen
 	code.reserve(30000);
 	if (statement)
 		statement->gen(code, this);
-	// Always end with a RET or RTS.
-	if (proto->get_has_ret())
+	char& retcode = code.back();
+	// Always end with a RET or RTS if a return opcode is not
+	// already the last opcode in the code.
+	// Abort is being explicitly kept out of the return opcodes list.
+	if (proto->get_has_ret() && (retcode != UC_RETZ && retcode != UC_RETV))
 		// Function specifies a return value.
 		// When in doubt, return zero by default.
 		code.push_back((char) UC_RETZ);
-	else
+	else if (retcode != UC_RET && retcode != UC_RET2)
 		code.push_back((char) UC_RET);
 	link_labels(code);
 	int codelen = code.size();	// Get its length.

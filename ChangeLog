@@ -1,3 +1,10 @@
+2007-07-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Midi.cc: Don't use exceptions for patch music flexes.
+	* audio/midi_drivers/LowLevelMidiDriver.cpp: Destroy cond also when the
+	  driver is destroyed.
+	* usecode/compiler/ucfun.cc: Only add terminating return opcode to functions
+	  that don't already have one.
+
 2007-07-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/midi_drivers/* : Changes to the MidiDriver code as per Exult 
 	  bug report 1750743, with additional changes to ensure that it actually
