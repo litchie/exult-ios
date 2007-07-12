@@ -155,13 +155,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
 	pflex += flex.c_str() + sizeof("<STATIC>/") - 1;
-	try {
+	if (U7exists(pflex))
 		mid_data = new ExultDataSource(pflex.c_str(),num);
-		}
-	catch( const std::exception & /*err*/ )
-		{
-		FORGET_OBJECT(mid_data);
-		}
 
 	// If not in patch dir, or the flex there did not have the
 	// song we want, try the static dir.
