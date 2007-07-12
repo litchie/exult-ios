@@ -64,6 +64,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
+				ForcedIncludeFiles="msvc_kludges.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -156,6 +157,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
 				CompileAs="0"
+				ForcedIncludeFiles="msvc_kludges.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -341,6 +343,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				CompileAs="0"
+				ForcedIncludeFiles="msvc_kludges.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
