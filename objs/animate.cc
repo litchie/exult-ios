@@ -157,7 +157,7 @@ void Object_sfx::update
 				Mix_HaltChannel(channel[i]);
 				channel[i] = -1;
 				}
-			else
+			else if (channel[i] != -1)
 				{
 				//Just change the "location" of the sound
 				Mix_Volume(channel[i], volume);
