@@ -1,3 +1,9 @@
+2007-08-14    <jeff@mini.nerble.net>
+
+	* objs/animate.cc (Frame_animator): Re-initialize animator if
+	frame got set outside valid range.  Fixed problem with water of
+	ethicality in SI.  (Not sure if this is the best fix...)
+
 2007-07-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Don't use exceptions for patch music flexes.
 	* audio/midi_drivers/LowLevelMidiDriver.cpp: Destroy cond also when the
