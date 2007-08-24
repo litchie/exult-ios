@@ -66,7 +66,7 @@ install: $(EXEC)
 	cp data/exult_si.flx $(U7PATH)/data
 	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/SDL.dll $(U7PATH)
-
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)
 
 dist:   $(EXEC) exconfig.dll
 	mkdir -p $(U7PATH)
@@ -95,6 +95,7 @@ dist:   $(EXEC) exconfig.dll
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
 	cp SDL/README-SDL_mixer.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 	strip exconfig.dll -o $(U7PATH)/exconfig.dll
 	cp win32/exult_installer.iss $(U7PATH)
