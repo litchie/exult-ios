@@ -1,3 +1,7 @@
+2007-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Audio.*, objs/animate.*: Fixed memory leak. Improved sfx cache.
+	  Removed 'repeat' variable from Object_sfx as it was redundant.
+
 2007-08-14    <jeff@mini.nerble.net>
 
 	* objs/animate.cc (Frame_animator): Re-initialize animator if

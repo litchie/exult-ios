@@ -82,7 +82,7 @@ void Object_sfx::update
 		return;
 
 	int active[2] = {0, 0};
-	int rep[2] = {repeat, 0};
+	int rep[2] = {0, 0};
 	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
@@ -144,20 +144,22 @@ void Object_sfx::update
 			volume = MIX_MAX_VOLUME;
 		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
 		}
+	if (play && halt)
+		play = false;
 
 	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		if (play && channel[i] == -1 && sfxnum[i] > -1)		// First time?
-						// Start playing, and repeat.
+						// Start playing.
 			channel[i] = Audio::get_ptr()->play_sound_effect(
 						sfxnum[i], volume, dir, rep[i]);
-		else
+		else if (channel[i] != -1)
 			{
 			if(halt)
 				{
 				Mix_HaltChannel(channel[i]);
 				channel[i] = -1;
 				}
-			else if (channel[i] != -1)
+			else
 				{
 				//Just change the "location" of the sound
 				Mix_Volume(channel[i], volume);
