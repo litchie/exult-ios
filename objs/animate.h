@@ -39,7 +39,6 @@ class Object_sfx : public Game_singletons
 	int distance;			// Distance in tiles from Avatar.
 	int dir;			// Direction (0-15) from Avatar.
 	int last_sfx;		// For playing sequential sfx ranges.
-	int repeat;
 public:
 					// Create & start playing sound.
 	Object_sfx(Game_object *o)
@@ -48,13 +47,7 @@ public:
 		channel[0] = channel[1] = -1;
 		sfx = Shapeinfo_lookup::get_sfx_info(obj->get_shapenum());
 		if (sfx)
-			{
 			last_sfx = 0;
-			if (!(sfx->range > 1 || sfx->chance != 100))
-				repeat = -1;
-			else
-				repeat = 0;
-			}
 		}
 	int get_sfxnum()
 		{ return last_sfx; }
