@@ -82,7 +82,7 @@ using std::max;
 
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
-
+#define MIXER_CHANNELS 32
 
 struct	Chunk
 {
@@ -184,22 +184,209 @@ protected:
 class SFX_cached
 	{
 	int num;			// Sound-effects #.
-	uint8 *buf;			// The data.  It's passed in to us,
-					//   and then we own it.
-	uint32 len;
-	SFX_cached *next;		// Next in chain.
+	Mix_Chunk *data;	// The data.
+	SFX_cached *next;	// Next in chain.
+	int ref_cnt;		// Reference count of the sfx/voice.
 public:
 	friend class Audio;
+	friend class SFX_cache_manager;
 	SFX_cached(int sn, uint8 *b, uint32 l, SFX_cached *oldhead)
-		: num(sn), /*buf(b), */ len(l), next(oldhead)
-		{ 
-			buf = new uint8[l];
-			memcpy(buf, b, l);
-
+		: num(sn), next(oldhead), ref_cnt(1)
+		{
+			if (num < 0)
+				data = Mix_QuickLoad_RAW(b, l);
+			else
+				{
+				SDL_RWops *rwsrc = SDL_RWFromMem(b, l);
+				data = Mix_LoadWAV_RW(rwsrc, 1);
+				}
 		}
 	~SFX_cached()
-		{ 
-		delete [] buf; 
+		{
+		Uint8 *chunkbuf=NULL;
+		if(data->allocated == 0)
+			chunkbuf = data->abuf;
+		Mix_FreeChunk(data);
+
+		//Must be freed after the Mix_FreeChunk
+		if(chunkbuf)
+			delete[] chunkbuf;
+		}
+	void add_ref(void)
+		{ ++ref_cnt; }
+	void release(void)
+		{
+		// Free when refcount is 0
+		if (!--ref_cnt)
+			delete this;
+		}
+	int get_num_refs(void)
+		{ return(ref_cnt); }
+	};
+
+/*
+ *	This is a resource-management class for SFX. Maybe make it a
+ *	template class and use for other resources also?
+ *	Based on code by Sam Lantinga et al on:
+ *	http://www.ibm.com/developerworks/library/l-pirates2/
+ */
+class SFX_cache_manager
+	{
+protected:
+	SFX_cached *cache;
+
+	// Tries to locate a sfx in the cache based on sfx num.
+	SFX_cached *find_sfx(int id)
+		{
+		SFX_cached *prev = 0;
+		for (SFX_cached *each = cache; each; each = each->next)
+			{
+			if (each->num == id)
+				{
+				// Move to head of chain.
+				if (prev)
+					{
+					prev->next = each->next;
+					each->next = cache;
+					cache = each;
+					}
+				return each;
+				}
+			prev = each;
+			}
+		return 0;
+		}
+	
+	// Loads a wave SFX from its digital file and num.
+	SFX_cached *load_sfx(Flex *sfx_file, int id)
+		{
+		size_t wavlen;			// Read .wav file.
+		unsigned char *wavbuf =
+				(unsigned char *) sfx_file->retrieve(id, wavlen);
+		cache = new SFX_cached(id, wavbuf, wavlen, cache);
+		delete[] wavbuf;
+
+		// Perform garbage collection here.
+		garbage_collect();
+		return cache;
+		}
+	
+	// Unloads a given SFX, based on data pointer.
+	void unload(Mix_Chunk *data)
+		{
+		SFX_cached *prev = 0, *each;
+		for (each = cache; each; each = each->next)
+			{
+			if (data == each->data)
+				{
+				// Free the object if not in use
+				if (each->ref_cnt != 1)
+					{
+					CERR("Unloading cached SFX " << each->num
+						<< " while it was still in use! This better be happening because Exult is closing!");
+					while (each->ref_cnt > 1)
+						each->release();
+					}
+
+				// Unlink
+				if (prev)
+					prev->next = each->next;
+				else
+					cache = each->next;
+
+				each->release();
+				break;
+				}
+			prev = each;
+			}
+		}
+public:
+	SFX_cache_manager()
+		{ cache = 0; }
+	~SFX_cache_manager()
+		{ flush(); }
+	
+	// For sounds played through 'play', which include voice and some SFX (?)
+	// in the intro sequences.
+	Mix_Chunk *add_from_data(unsigned char *wavbuf, size_t wavlen)
+		{
+		cache = new SFX_cached(-1, wavbuf, wavlen, cache);
+		cache->add_ref();
+
+		// Perform garbage collection here.
+		garbage_collect();
+		return cache->data;
+		}
+
+	// For SFX played through 'play_wave_sfx'. Searched cache for
+	// the sfx first, then loads from the sfx file if needed.
+	Mix_Chunk *request(Flex *sfx_file, int id)
+		{
+		SFX_cached *sfx = 0;
+		if (id > -1 && sfx_file)
+			{
+			sfx = find_sfx(id);
+			if (!sfx)
+				sfx = load_sfx(sfx_file, id);
+			if (sfx)
+				sfx->add_ref();
+			return sfx->data;
+			}
+		return 0;
+		}
+	
+	// Reduces the ref-count of the data, to a minimum of 1.
+	// Does *not* remove from cache, ever.
+	void release(Mix_Chunk *data)
+		{
+		if (!data)
+			return;
+		SFX_cached *prev = 0, *each;
+		for (each = cache; each; each = each->next)
+			{
+			if (data == each->data)
+				{
+				// Free the object if not in use
+				if (each->ref_cnt == 1)
+					CERR("Tried to release cached but unused SFX");
+				else
+					each->release();
+				break;
+				}
+			prev = each;
+			}
+		}
+	
+	// Empties the cache.
+	void flush(void)
+		{
+		while (cache)
+			unload(cache->data);
+		}
+
+	// Remove unused sounds from the cache.
+	void garbage_collect()
+		{
+		// Maximum 'stable' number of sounds we will cache (actual
+		// count may be higher if all of the cached sounds are
+		// being played).
+		const int max_fixed = 6;
+		SFX_cached *each = cache;
+		SFX_cached *prev = 0;
+		int cnt = 0;
+		while (each)
+			{
+			if (each->ref_cnt == 1 &&
+				(each->num < 0 || cnt >= max_fixed))
+				{	// Remove from cache and unlink.
+				prev->next = each->next;
+				each->release();
+				}
+			else
+				prev = each;
+			cnt++;
+			each = each->next;
+			}
 		}
 	};
 
@@ -236,7 +423,7 @@ Audio	*Audio::get_ptr(void)
 
 Audio::Audio() :
 	truthful_(false),speech_enabled(true), music_enabled(true),
-	effects_enabled(true), SDL_open(false),/*mixer(0),*/midi(0), sfxs(0),
+	effects_enabled(true), SDL_open(false),/*mixer(0),*/midi(0),
 	sfx_file(0), initialized(false)
 {
 	assert(self == NULL);
@@ -257,6 +444,7 @@ Audio::Audio() :
 	allow_music_looping = (s!="no");
 
 	midi = 0;
+	sfxs = new SFX_cache_manager();
 }
 
 void Audio::Init(int _samplerate,int _channels)	
@@ -300,6 +488,8 @@ void Audio::Init(int _samplerate,int _channels)
 	cout << "Audio actual frequency " << actual.freq << ", channels " << (int) actual.channels << endl;
 #endif
 
+	// Allocate a moderate number of mixer channels.
+	Mix_AllocateChannels(MIXER_CHANNELS);
 	//SDL_mixer will always go here when it has played a sound, we want to free up
 	//the memory used as we don't re-play the sound.
 	Mix_ChannelFinished(channel_complete_callback);
@@ -322,6 +512,10 @@ void Audio::Init(int _samplerate,int _channels)
 void Audio::channel_complete_callback(int chan)
 {
 	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
+	SFX_cache_manager *sfxs = Audio::get_ptr()->get_sfx_cache();
+	sfxs->release(done_chunk);
+	/*
+	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
 	Uint8 *chunkbuf=NULL;
 
 	//We need to free these chunks as they were allocated by us and not SDL_Mixer
@@ -334,6 +528,7 @@ void Audio::channel_complete_callback(int chan)
 	//Must be freed after the Mix_FreeChunk
 	if(chunkbuf)
 		delete[] chunkbuf;
+	*/
 }
 
 bool	Audio::can_sfx(const std::string &game) const
@@ -405,12 +600,13 @@ Audio::~Audio()
 		delete midi;
 		midi = 0;
 	}
-	while (sfxs)			// Cached sound effects.
-	{
-		SFX_cached *todel = sfxs;
-		sfxs = todel->next;
-		delete todel;
-	}
+
+	if (effects_enabled) 
+		Mix_HaltChannel(-1);
+
+	if (sfxs)
+		delete sfxs;
+
 	delete sfx_file;
 	CERR("~Audio:  deleted midi");
 
@@ -719,7 +915,7 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {
 	Mix_Chunk *wavechunk;
 
-	if (!audio_enabled || !speech_enabled) return;
+	if (!audio_enabled || !speech_enabled || !len) return;
 
 	bool	own_audio_data=false;
 
@@ -731,10 +927,15 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 	
 	//Play voice sample using RAW sample we created above. ConvertVOC() produced a stereo, 22KHz, 16bit
 	//sample. Currently SDL does not resample very well so we do it in ConvertVOC()
-	wavechunk = Mix_QuickLoad_RAW(sound_data, len);
+	wavechunk = sfxs->add_from_data(sound_data, len);
 	
-	int channel;
-	channel = Mix_PlayChannel(-1, wavechunk, 0);
+	int channel = Mix_PlayChannel(-1, wavechunk, 0);
+	if (channel < 0)
+		{
+		sfxs->release(wavechunk);
+		CERR("No channel was available to play SFX/voice in Audio::play");
+		return;
+		}
 	Mix_SetPosition(channel, 0, 0);
 	Mix_Volume(channel, MIX_MAX_VOLUME - 40);		//Voice is loud compared to other SFX,music
 								//so adjust to match volumes
@@ -966,7 +1167,6 @@ int Audio::play_wave_sfx
 	if (!effects_enabled || !sfx_file /*|| !mixer*/) 
 		return -1;  // no .wav sfx available
 
-	CERR("Playing SFX: " << num);
 #if 0
 	if (Game::get_game_type() == BLACK_GATE)
 		num = bgconv[num];
@@ -977,64 +1177,7 @@ int Audio::play_wave_sfx
 		cerr << "SFX " << num << " is out of range" << endl;
 		return -1;
 	}
-
-	const int max_cached = 6;	// Max. we'll cache.
-
-	SFX_cached *each = sfxs, *prev = 0;
-	int cnt = 0;
-	size_t wavlen;			// Read .wav file.
-	SDL_RWops *rwsrc;
-	bool foundcache=false;
-	unsigned char *wavbuf;
-
-	// First see if we have it already in our cache
-	while (each && each->num != num && each->next)
-	{
-		cnt++;
-		prev = each;
-		each = each->next;
-	}
-	if (each && each->num == num)	// Found it?
-	{
-		// Move to head of chain.
-		if (prev)
-		{
-			prev->next = each->next;
-			each->next = sfxs;
-			sfxs = each;
-		}
-		// Return the cached data
-
-		foundcache = true;
-		wavbuf = new uint8[each->len];
-		memcpy(wavbuf, each->buf, each->len);
-		wavlen = each->len;
-	}
-	if (cnt == max_cached && !foundcache)		// Hit our limit?  Remove last.
-	{
-		prev->next = 0;
-		delete each;
-	}
-
-	// Retrieve the .wav data from the SFX file
-	if(!foundcache)
-	{
-		wavbuf = (unsigned char *) sfx_file->retrieve(num, wavlen);
-		rwsrc = SDL_RWFromMem(wavbuf, wavlen);
-		wave = Mix_LoadWAV_RW(rwsrc, 1);
-		if (!wave) {
-			cerr << "SFX " << num << " is an invalid wave. ";
-		} else {
-			sfxs = new SFX_cached(num, wave->abuf, wave->alen, sfxs);
-		}
-		delete [] wavbuf;
-	}
-	else
-	{
-		wave = Mix_QuickLoad_RAW(wavbuf, wavlen);
-		//Wavbuf will be deleted by the channel_complete_callback function
-	}
-
+	wave = sfxs->request(sfx_file, num);
 	if (!wave)
 	{
 		cerr << "Couldn't play sfx '" << num << "'" << endl;
@@ -1043,7 +1186,14 @@ int Audio::play_wave_sfx
 
 	int sfxchannel;
 	sfxchannel = Mix_PlayChannel(-1, wave, repeat);
+	if (sfxchannel < 0)
+		{
+		sfxs->release(wave);
+		CERR("No channel was available to play sfx '" << num << "'");
+		return -1;
+		}
 
+	CERR("Playing SFX: " << num);
 	Mix_Volume(sfxchannel, volume);
 	Mix_SetPosition(sfxchannel, (dir * 22), 0);
 	return sfxchannel;

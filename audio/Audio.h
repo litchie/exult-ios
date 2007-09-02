@@ -30,6 +30,7 @@
 #define SAMPLERATE	22050
 
 class SFX_cached;
+class SFX_cache_manager;
 class Flex;
 
 /*
@@ -58,7 +59,7 @@ private:
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool allow_music_looping;
 	bool SDL_open;
-	SFX_cached *sfxs;		// ->list of cached .wav snd. effects.
+	SFX_cache_manager *sfxs;		// SFX and voice cache manager
 	MyMidiPlayer *midi;
 	bool initialized;
 	SDL_AudioSpec wanted;
@@ -133,6 +134,8 @@ public:
 
 	Flex *get_sfx_file()                   
 		{ return sfx_file; }
+	SFX_cache_manager *get_sfx_cache() const
+		{ return sfxs; }
 };
 
 #endif
