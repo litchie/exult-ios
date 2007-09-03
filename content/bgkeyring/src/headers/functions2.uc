@@ -32,11 +32,11 @@ avatarSpeak (var msg)
 }
 
 //Sets BG_DONT_MOVE flag:
-trueFreeze()	{ set_item_flag(BG_DONT_MOVE); }
+trueFreeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
 //Clears BG_DONT_MOVE flag:
-trueUnfreeze()	{ clear_item_flag(BG_DONT_MOVE); }
+trueUnfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }
 //Puts an NPC in casting mode:
-showCastingFrames () { begin_casting_mode(); }
+showCastingFrames object#() () { begin_casting_mode(); }
 
 freezeParty ()
 {
@@ -170,7 +170,7 @@ interjectIfPossible (var npcnum, var msg)
 	}
 }
 
-var forceGiveObjToParty(var obj)
+var forceGiveObjToParty (var obj)
 {
 	//Get party list:
 	var party = UI_get_party_list();

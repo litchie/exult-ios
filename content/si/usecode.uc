@@ -20,7 +20,7 @@ const int wait_sched = 15;
 /*
  *	Cantra.  (I want this to override the original code for her.)
  */
-Cantra 0x440()
+Cantra object#(0x440) ()
 	{
 	var cantra = item;
 	if (event != 1 || !get_item_flag(0x1e))
@@ -51,11 +51,11 @@ Cantra 0x440()
 		}
 	}
 
-extern Cure_cantra 0xa00 ();
+extern Cure_cantra object#(0xa00) ();
 /*
  *	This is called when the 'bucket' is used.
  */
-Dump_bucket 0x88a(bucket)
+Dump_bucket 0x88a (bucket)
 	{
 	var target = UI_click_on_item();
 	if (!target)
@@ -79,7 +79,7 @@ Dump_bucket 0x88a(bucket)
  *	Called when correct bucket is dumped on Cantra.
  *	Input:	Item = bucket.
  */
-Cure_cantra 0xa00()
+Cure_cantra object#(0xa00) ()
 	{
 	if (event != 10)
 		return;			// Shouldn't happen.

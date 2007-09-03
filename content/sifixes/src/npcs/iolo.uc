@@ -23,9 +23,9 @@
 
 // externs
 extern singSong 0x9B0 (var song);
-extern ioloShape 0x1D1 ();
+extern ioloShape shape#(0x1D1) ();
 
-Iolo 0x403 ()
+Iolo object#(0x403) ()
 {
 	var iolo_id;
 	var avatar_title;
@@ -214,7 +214,7 @@ Iolo 0x403 ()
 			say("@No truer friend can I have than thee, " + avatar_title + "! Not only thou didst save my wife, but thou hast saved me as well... Thank thee, my friend!@");
 			IOLO->set_npc_id(0);
 			IOLO->add_to_party();
-			script IOLO after 15 ticks call xenkaReturns;
+			script IOLO after 15 ticks call wraperXenkaReturns;
 			remove("join");
 			add(["leave"]);
 		}
@@ -399,7 +399,7 @@ Iolo 0x403 ()
 			UI_sprite_effect(0x1A, pos[X], pos[Y], 0, 0, 0, -1);
 			UI_play_sound_effect(0x51);
 			set_item_quality(3);
-			
+
 			script item after 10 ticks
 			{
 				nohalt;

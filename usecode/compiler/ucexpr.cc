@@ -153,6 +153,28 @@ void Uc_var_expression::gen_assign
 	}
 
 /*
+ *	Returns 1 if the integer corresponds to an object/shape function,
+ *	0 if not or -1 if it was not possible to determine.
+ */
+
+int Uc_fun_name_expression::is_object_function(bool error) const
+	{
+	if (fun->get_function_type() != Uc_function_symbol::utility_fun)
+		return 0;
+	else
+		{
+		if (error)
+			{
+			char buf[180];
+			sprintf(buf, "'%s' must be 'shape#' or 'object#'",
+					fun->get_name());
+			Uc_location::yyerror(buf);
+			}
+		return 1;
+		}
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
@@ -280,6 +302,16 @@ void Uc_flag_expression::gen_assign
 		flag->gen_value(out);
 		out.push_back((char) UC_POPFVAR);	// Opcode, flag #.
 		}
+	}
+
+inline int Uc_var_expression::is_object_function(bool error) const
+	{
+	return var->is_object_function(error);
+	}
+
+inline void Uc_var_expression::set_is_obj_fun(int s)
+	{
+	var->set_is_obj_fun(s);
 	}
 
 /*
@@ -424,6 +456,43 @@ void Uc_int_expression::gen_value
 		out.push_back((char) UC_PUSHI);
 		Write2(out, value);
 		}
+	}
+
+/*
+ *	Returns 1 if the integer corresponds to an object/shape function,
+ *	0 if not or -1 if it was not possible to determine.
+ */
+
+int Uc_int_expression::is_object_function(bool error) const
+	{
+	char buf[150];
+	if (value < 0)
+		{
+		if (error)
+			{
+			sprintf(buf, "Invalid fun. ID (%d): can't call negative function", value);
+			Uc_location::yyerror(buf);
+			}
+		return 2;
+		}
+	else if (value < 0x800)
+		return 0;	// This is always an object/shape function.
+
+	Uc_function_symbol *sym = Uc_function_symbol::search_num(value);
+	if (!sym)
+		return -1;	// Can't determine.
+	else if (sym->get_function_type() == Uc_function_symbol::utility_fun)
+		{
+		if (error)
+			{
+			sprintf(buf,
+					"'%s' (fun. ID %d)  must be 'shape#' or 'object#'",
+					sym->get_name(), value);
+			Uc_location::yyerror(buf);
+			}
+		return 1;
+		}
+	return 0;
 	}
 
 /*
@@ -635,6 +704,40 @@ inline bool Uc_call_expression::is_class() const
 inline Uc_class *Uc_call_expression::get_cls() const
 	{
 	return sym->get_cls();
+	}
+
+/*
+ *	Returns 1 if the integer corresponds to an object/shape function,
+ *	0 if not or -1 if it was not possible to determine.
+ */
+
+int Uc_call_expression::is_object_function(bool error) const
+	{
+	Uc_intrinsic_symbol *fun = dynamic_cast<Uc_intrinsic_symbol *>(sym);
+	if (!fun)
+		return -1;	// Can't determine.
+
+	char buf[150];
+	if (fun == Uc_function::get_get_usecode_fun())
+		return 0;	// It is.
+	else if (fun == Uc_function::get_get_item_shape())
+		{
+		// *Could* be, if not a high shape.
+		// Let's say it is, but issue a warning.
+		if (error)
+			{
+			sprintf(buf, "Shape # is equal to fun. ID only for shapes < 0x400; use UI_get_usecode_fun instead");
+			Uc_location::yywarning(buf);
+			}
+		return -2;
+		}
+		// For now, no other intrinsics return a valid fun ID.
+	if (error)
+		{
+		sprintf(buf, "Return of intrinsic '%s' is not fun. ID", fun->get_name());
+		Uc_location::yyerror(buf);
+		}
+	return 3;
 	}
 
 /*

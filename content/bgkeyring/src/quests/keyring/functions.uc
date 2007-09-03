@@ -260,7 +260,7 @@ createMageAndGoons ()
 	fighter->set_usecode_fun(registerDeathOfMageOrGoon);
 }
 
-extern deathOfJoneleth();
+extern deathOfJoneleth object#() ();
 
 var createLichAndGems ()
 {

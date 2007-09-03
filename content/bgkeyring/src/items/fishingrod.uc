@@ -199,6 +199,7 @@ FishingRod shape#(0x296) ()
 	}
 }
 
+/*
 //This function is responsible for making fish go bad after a certain
 //length of time.
 //Not used: sleeping will not advance the script queue.
@@ -218,3 +219,4 @@ expireFish ()
 		script item after FISH_EXPIRY_RATE ticks call 0x600;
 	}
 }
+*/

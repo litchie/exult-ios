@@ -270,7 +270,7 @@ aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in_comb
 	}
 }
 
-aiMain ()
+aiMain object#() ()
 {
 	//Queue reentry:
 	script item after 10 ticks

@@ -92,7 +92,7 @@ spellDance ()
 			script item
 			{	nohalt;						sfx 67;
 				actor frame SWING_1;		actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellDance;}
+				actor frame SWING_2H_3;		call spellCauseDancing;}
 		}
 		else
 		{
@@ -100,30 +100,6 @@ spellDance ()
 			{	nohalt;						actor frame SWING_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var dist = 25;
-		var nonparty_npcs = getNearbyNonPartyNPCs(dist);
-		for (npc in nonparty_npcs)
-		{
-			var intelligence = npc->get_npc_prop(INTELLIGENCE);
-			if ((intelligence > 5) && (intelligence < 25))
-			{
-				var pos = npc->get_object_position();
-				UI_sprite_effect(16, pos[X], pos[Y], 0, 0, 0, -1);
-				setNonpartySchedule(npc, DANCE);
-				npc->set_item_flag(DANCING);
-				var barks = ["@Dance!@", "@Yeah!@", "@Huh!@", "@Oh, yeah!@", "@I'm bad!@", "@Boogie!@", "@Yow!@"];
-				var rand = UI_die_roll(1, 7);
-				var delay = UI_die_roll(10, 40);
-				delayedBark(npc, barks[rand], delay);
-				delay = UI_die_roll(50, 75);
-				script npc after delay ticks
-				{	nohalt;						call stopDancing;}
-			}
 		}
 	}
 }
@@ -275,7 +251,7 @@ spellInvisibility (var target)
 				actor frame CAST_2;			actor frame SWING_2H_3;}
 				
 			script target after 4 ticks
-			{	nohalt;						call spellInvisibility;}
+			{	nohalt;						call spellSetFlag, INVISIBLE;}
 		}
 		else
 		{
@@ -285,9 +261,6 @@ spellInvisibility (var target)
 				actor frame SWING_2H_3;		call spellFails;}
 		}
 	}
-
-	else if (event == SCRIPTED)
-		set_item_flag(INVISIBLE);
 }
 
 spellMassSleep ()
@@ -304,7 +277,11 @@ spellMassSleep ()
 			{	nohalt;						sfx 65;
 				actor frame STAND;			actor frame SWING_1;
 				actor frame CAST_1;			actor frame SWING_3;
-				actor frame SWING_2H_3;		call spellMassSleep;}
+				actor frame SWING_2H_3;}
+			
+			var targets = getEnemyTargetList(item, 25);
+			for (npc in targets)
+				script npc after 7 ticks call spellSleepEffect;
 		}
 		else
 		{
@@ -318,12 +295,6 @@ spellMassSleep ()
 	
 	else if (event == SCRIPTED)
 	{
-		var targets = getEnemyTargetList(item, 25);
-		for (npc in targets)
-		{
-			npc->halt_scheduled();
-			npc->set_item_flag(ASLEEP);
-		}
 	}
 }
 
@@ -339,7 +310,7 @@ spellSummonSkeletons ()
 			{	nohalt;						actor frame KNEEL;
 				actor frame STAND;			actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
-				sfx 65;						call spellSummonSkeletons;}
+				sfx 65;						call spellSummonSkeletonsEffect;}
 		}
 		else
 		{
@@ -348,24 +319,6 @@ spellSummonSkeletons ()
 				actor frame STAND;			actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var npclevel = getNPCLevel(item);
-		var minroll = npclevel / 2;
-		if (npclevel < 2)
-		{
-			npclevel = 2;
-			minroll = 1;
-		}
-		var rand = UI_die_roll(minroll, npclevel);
-		while (rand)
-		{
-			var summoned = SHAPE_SKELETON->summon(true);
-			summoned->set_alignment(get_alignment());
-			rand -= 1;
 		}
 	}
 }

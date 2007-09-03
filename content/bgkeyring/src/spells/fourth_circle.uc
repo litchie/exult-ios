@@ -63,7 +63,7 @@ spellConjure ()
 			script item
 			{	nohalt;						sfx 65;
 				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;		call spellConjure;}
+				actor frame SWING_3;		call spellConjureEffect;}
 		}
 		else
 		{
@@ -71,32 +71,6 @@ spellConjure ()
 			{	nohalt;						actor frame SWING_1;
 				actor frame SWING_2;		actor frame SWING_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var conjurables = [SHAPE_BIRD, SHAPE_RABBIT, SHAPE_RAT, SHAPE_FOX, SHAPE_SNAKE, SHAPE_DEER, SHAPE_WOLF];
-		var arraysize = UI_get_array_size(conjurables);
-		var npclevel = getNPCLevel(item);
-		if (npclevel > arraysize)
-			npclevel = arraysize;
-
-		if (npclevel < 2)
-			npclevel = 2;
-
-		var minroll = (npclevel / 2);
-		if (minroll < 1)
-			minroll = 1;
-
-		var rand = UI_die_roll(minroll, npclevel);
-		
-		while (rand > 0)
-		{
-			rand = (rand - 1);
-			var rand2 = UI_die_roll(minroll, npclevel);
-			var summoned = conjurables[rand2]->summon(false);
-			summoned->set_alignment(get_alignment());
 		}
 	}
 }
@@ -150,7 +124,7 @@ spellMassCurse ()
 				{
 					var delay = ((get_distance(npc) / 3) + 5);
 					script npc after delay ticks
-					{	nohalt;						call spellMassCurse;}
+					{	nohalt;				call spellSetFlag, CURSED;}
 				}
 		}
 		else
@@ -161,9 +135,6 @@ spellMassCurse ()
 				actor frame SWING_2H_3;		call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		set_item_flag(CURSED);
 }
 
 spellReveal ()
@@ -202,7 +173,7 @@ spellReveal ()
 				for (obj in revealables)
 				{
 					script obj after 5 ticks
-					{	nohalt;						call spellReveal;}
+					{	nohalt;				call spellClearFlag, INVISIBLE;}
 					obj->obj_sprite_effect(13, -1, -1, 0, 0, 0, -1);
 				}
 			}
@@ -217,9 +188,6 @@ spellReveal ()
 				call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		clear_item_flag(INVISIBLE);
 }
 
 spellSeance ()
@@ -272,7 +240,7 @@ spellSeance ()
 			
 			script item after delay ticks
 			{	nohalt;						finish;
-				call spellSeance;}
+				call spellEndSeance;}
 		}
 		else
 		{
@@ -281,22 +249,6 @@ spellSeance ()
 				actor frame SWING_1;		actor frame SWING_3;
 				call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		//I have NO idea why they had one flag per ghost,
-		//instead of having one for them all...
-		gflags[SEANCE_CAINE] = false;
-		gflags[SEANCE_FERRYMAN] = false;
-		gflags[SEANCE_MARKHAM] = false;
-		gflags[SEANCE_HORANCE] = false;
-		gflags[SEANCE_TRENT] = false;
-		gflags[SEANCE_MORDRA] = false;
-		gflags[SEANCE_ROWENA] = false;
-		gflags[SEANCE_PAULETTE] = false;
-		gflags[SEANCE_QUENTON] = false;
-		gflags[SEANCE_FORSYTHE] = false;
 	}
 }
 
@@ -320,13 +272,12 @@ spellUnlockMagic (var target)
 				if (((target_frame + 1) % 4) == 0)
 				{
 					script item
-					{	nohalt;						face dir;
-						actor frame SWING_2;		actor frame SWING_1;
-						actor frame SWING_3;		sfx 66;}
+					{	nohalt;					face dir;
+						actor frame SWING_2;	actor frame SWING_1;
+						actor frame SWING_3;	sfx 66;}
 						
 					script target after 6 ticks
-					{	nohalt;						call spellUnlockMagic;}
-					
+					{	nohalt;					frame get_item_frame() - 3;}
 					return;
 				}
 			}
@@ -335,12 +286,6 @@ spellUnlockMagic (var target)
 		{	nohalt;						face dir;
 			actor frame SWING_2;		actor frame SWING_1;
 			actor frame SWING_3;		call spellFails;}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var target_frame = get_item_frame() - 3;
-		set_item_frame(target_frame);
 	}
 }
 

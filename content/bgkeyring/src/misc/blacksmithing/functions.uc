@@ -21,7 +21,7 @@
  */
 
 //Swordblank was doubleclicked and used on anvil - place it on top of the anvil
-useSwordOnAnvil ()
+useSwordOnAnvil object#() ()
 {
 	var anvil = AVATAR->find_nearest(SHAPE_ANVIL, 5);
 	if (anvil)
@@ -45,7 +45,7 @@ var isBlackSword (var swordblank) {return (swordblank->get_item_frame() >= 8);}
 //Set the base cool frame of the swordblank (this depends on how much it has
 //been worked; it is governed by 3 different quality states, see
 //swordblank_qualities enum)
-setCooledFrame ()
+setCooledFrame object#() ()
 {
 	var target_frame;
 	var quality = get_item_quality();
@@ -75,7 +75,7 @@ setCooledFrame ()
 //More complex than you might think it needs to be, because it's
 //self-calling and there's special frame-selection when a sword
 //reaches its coolest state.
-coolSwordBlank ()
+coolSwordBlank object#() ()
 {
 	var current_frame;
 	var is_blacksword;
@@ -137,14 +137,14 @@ coolSwordBlank ()
 //called *whenever the swordblank is used in a script block*, since that
 //script would otherwise override the cooling-down script and the blank
 //would stay hot forever.
-startCooling ()
+startCooling object#() ()
 {	script item after SWORDBLANK_COOL_SPEED ticks call coolSwordBlank;}
 
 /*
  *	This function controls the heating animation of the swordblank, when
  *	it is heated on a firepit.
  */
-heatSwordBlank ()
+heatSwordBlank object#() ()
 {
 	var current_frame;
 	var is_blacksword;
@@ -199,7 +199,7 @@ heatSwordBlank ()
 //anvil with a hammer - it raises (or lowers) the quality of the
 //swordblank. The only place this function is called from is
 //useHammerOnSwordblank.
-temperSword ()
+temperSword object#() ()
 {
 	//Find the nearest swordblank to the Avatar
 	//(we can't provide swordblank as the <item>, because this would require a
@@ -372,7 +372,7 @@ useHammerOnSwordblank ()
 }
 
 //Swordblank was doubleclicked and used on firepit - place it in the center
-useSwordOnFirepit ()
+useSwordOnFirepit object#() ()
 {
 	var firepit = AVATAR->find_nearest(SHAPE_FIREPIT, 5);
 	if (firepit)
@@ -381,7 +381,7 @@ useSwordOnFirepit ()
 }
 
 //Swordblank was used on a trough of water (item is swordblank)
-useSwordOnTrough ()
+useSwordOnTrough object#() ()
 {
 	var trough;
 	var swordblank_pos;

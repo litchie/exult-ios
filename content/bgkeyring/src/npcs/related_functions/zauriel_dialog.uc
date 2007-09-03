@@ -442,7 +442,7 @@ zaurielTellAboutPotion ()
 			if (blackrock_count)
 			{
 				say("@Since thou hast already all that is required for the potion, I can make it right now.");
-				zaurielMakePotion();
+				item->zaurielMakePotion();
 			}
 			
 			else
@@ -755,7 +755,7 @@ zaurielTalkPreQuest ()
 		case "Make potion" (remove):
 			say("@Ah, thou hast all the needed ingredients to make the potion.");
 			event = CAST_TELEPORT;
-			zaurielMakePotion();
+			item->zaurielMakePotion();
 			
 		case "Where are they?" (remove):
 			say("@There is a small island to the north of Skara Brae; that is where the thugs are located.");

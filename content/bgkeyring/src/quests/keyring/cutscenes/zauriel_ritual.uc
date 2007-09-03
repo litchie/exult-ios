@@ -37,7 +37,7 @@ enum Ritual_levels
 	RITUAL_END							= 9
 };
 
-zaurielTeleportPartyAround ()
+zaurielTeleportPartyAround object#() ()
 {
 	//Get party list and append Laurianna:
 	var party = [UI_get_party_list(), LAURIANNA->get_npc_object()];
@@ -112,7 +112,7 @@ zaurielUnfreezeFormerParty ()
 	}
 }
 
-zaurielRitualCutscene ()
+zaurielRitualCutscene object#() ()
 {
 	var pos;
 	var barrier;

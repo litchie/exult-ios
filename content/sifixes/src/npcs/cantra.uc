@@ -24,7 +24,7 @@
  *	The original code was written by Jeff Freedman (aka "DrCode").
  */
 
-Cantra 0x440()
+Cantra object#(0x440) ()
 {
 	//I prefer to check this flag instead:
 	if (!get_item_flag(SI_ZOMBIE))

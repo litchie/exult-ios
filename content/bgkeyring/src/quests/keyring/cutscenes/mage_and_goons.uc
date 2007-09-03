@@ -41,7 +41,7 @@ enum MageAndGoons_levels
 	PREPARE_NPC							= 12
 };
 
-beginCutsceneMageAndGoons ()
+beginCutsceneMageAndGoons object#() ()
 {
 	var mage;
 	var gargoyle;
@@ -435,7 +435,7 @@ beginCutsceneMageAndGoons ()
 	
 }
 
-registerDeathOfMageOrGoon ()
+registerDeathOfMageOrGoon object#() ()
 {
 	if ((event == DEATH) &&  (get_npc_id() == ID_MAGE_OR_GOON))
 	{

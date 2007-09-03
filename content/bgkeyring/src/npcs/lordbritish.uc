@@ -31,7 +31,7 @@
 //Conversation thread for the crystal and ship deed for the Isle of Fire
 extern giveFVDeedAndCrystal 0x8B5();
 
-giveFoVReward ()
+giveFoVReward object#() ()
 {
 	if (!gflags[LB_REWARDED_FOR_FV])
 	{
@@ -52,7 +52,7 @@ giveFoVReward ()
 		item.say("@I congratulate and thank thee, " + getAvatarName() + ". Thy deeds continue to speak well of thee.@");
 }
 
-Lord_British 0x417 ()
+Lord_British object#(0x417) ()
 {
 	if (event == DOUBLECLICK)
 	{

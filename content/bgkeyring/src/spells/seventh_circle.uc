@@ -64,25 +64,22 @@ spellCreateGold (var target)
 		if (inMagicStorm() && (target->get_item_shape() == SHAPE_LEAD_ORE))
 		{
 			script item
-			{	nohalt;						face dir;
-				sfx 66;						actor frame SWING_1;
+			{	nohalt;					face dir;
+				sfx 66;					actor frame SWING_1;
 				actor frame SWING_3;}
 			var pos = target->get_object_position();
 			UI_sprite_effect(13, pos[X], pos[Y], 0, 0, 0, -1);
 			script target after 5 ticks
-			{	nohalt;						call spellCreateGold;}
+			{	nohalt;			call spellSetShape, SHAPE_GOLD_NUGGET;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;					face dir;
+				actor frame SWING_1;	actor frame SWING_3;
 				call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		set_item_shape(SHAPE_GOLD_NUGGET);
 }
 
 spellDeathBolt (var target)
@@ -253,20 +250,25 @@ spellMassCharm ()
 			script item
 			{	nohalt;						sfx 65;
 				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
-				call spellMassCharm;}
+				actor frame CAST_1;			actor frame SWING_2H_3;}
+
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			var dist = 25;
 			var nonparty_npcs = getNearbyNonPartyNPCs(dist);
 			for (npc in nonparty_npcs)
 			{
+				if (UI_die_roll(1, 3) == 1)
+					continue;
+				if (npc->get_npc_number() in [ANMANIVAS, FORANAMO, AVATAR])
+					continue;
+				var scr = new script {nohalt;};
+				if (npc->get_alignment())
+					scr << {call spellSetFlag, CHARMED;};
+				else
+					scr << {call spellClearFlag, CHARMED;};
 				var delay = ((get_distance(npc) / 4) + 4);
-				if (!(UI_die_roll(1, 3) == 1))
-				{
-					script npc after delay ticks
-					{	nohalt;						call spellMassCharm;}
-				}
+				npc.run_script(scr, delay);
 			}
 		}
 		else
@@ -275,20 +277,6 @@ spellMassCharm ()
 			{	nohalt;						actor frame CAST_1;
 				actor frame CAST_2;			actor frame CAST_1;
 				actor frame SWING_2H_3;		call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var npcnum = get_npc_number();
-		if (!(npcnum in [ANMANIVAS, FORANAMO, AVATAR]))
-		{
-			var align = get_alignment();
-			if (align)
-				set_item_flag(CHARMED);
-			else
-				clear_item_flag(CHARMED);
-
 		}
 	}
 }
@@ -305,7 +293,7 @@ spellMassMight ()
 			{	nohalt;						actor frame CAST_1;
 				sfx 64;						actor frame CAST_2;
 				actor frame CAST_1;			actor frame SWING_2H_3;
-				call spellMassMight;}
+				call  spellSetFlag, MIGHT;}
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 
@@ -314,7 +302,7 @@ spellMassMight ()
 			{
 				var delay = ((get_distance(npc) / 3) + 5);
 				script npc after delay ticks
-				{	nohalt;						call spellMassMight;}
+				{	nohalt;			call spellSetFlag, MIGHT;}
 			}
 		}
 		else
@@ -325,9 +313,6 @@ spellMassMight ()
 				actor frame SWING_2H_3;		call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		set_item_flag(MIGHT);
 }
 
 spellRestoration ()

@@ -27,5 +27,5 @@
 
 extern Keyring shape#(0x44C) ();
 
-extern Zauriel 0x48B ();
-extern Laurianna 0x494 ();
+extern Zauriel object#(0x48B) ();
+extern Laurianna object#(0x494) ();

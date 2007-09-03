@@ -262,6 +262,7 @@ goto		return GOTO;
 abort		return ABORT;
 ".original"	return ORIGINAL;
 "shape#"	return SHAPENUM;
+"object#"	return OBJECTNUM;
 
 <in_loop>{
 continue	return CONTINUE;
@@ -355,17 +356,17 @@ se		return SE;
 
 [ \t\r]+					/* Ignore spaces. */
 "//"[^\n]*					/* Comments. */
-"//"[^\n]*\n				/* Comments. */
+"//"[^\n]*\n	Uc_location::increment_cur_line();
 "/*"			yy_push_state(comment);
 
 <comment>[^*\n]*				/* All but '*'. */
-<comment>[^*\n]*\n			{ Uc_location::increment_cur_line(); }
+<comment>[^*\n]*\n			Uc_location::increment_cur_line();
 <comment>"*"+[^*/\n]*			/* *'s not followed by '/'. */
-<comment>"*"+[^*/\n]*\n		{ Uc_location::increment_cur_line(); }
+<comment>"*"+[^*/\n]*\n		Uc_location::increment_cur_line();
 <comment>"*"+"/"			yy_pop_state();
 <comment><<EOF>>			{ Uc_location::yyerror("Comment not terminated");
 								yyterminate(); }
-\n			{ Uc_location::increment_cur_line(); }
+\n			Uc_location::increment_cur_line();
 .			return *yytext;		/* Being lazy. */
 <<EOF>>			{
 			if (locstack.empty())

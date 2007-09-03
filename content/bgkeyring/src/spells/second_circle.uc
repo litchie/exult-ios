@@ -113,7 +113,7 @@ spellEnchant (var target)
 				sfx 67;						actor frame SWING_2;
 				actor frame SWING_1;		actor frame SWING_3;}
 			script target after 4 ticks
-			{	nohalt;						call spellEnchant;}
+			{	nohalt;						call spellEnchantEffect;}
 		}
 		else
 		{
@@ -122,13 +122,6 @@ spellEnchant (var target)
 				actor frame SWING_2;		actor frame SWING_1;
 				actor frame SWING_3;		call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		for (missile in normal_missiles with index)
-			if (missile == get_item_shape())
-				set_item_shape(magic_missiles[index]);
 	}
 }
 
@@ -171,7 +164,7 @@ spellGreatLight ()
 			script item
 			{	nohalt;						sfx 68;
 				actor frame SWING_1;		actor frame SWING_3;
-				call spellGreatLight;}
+				call spellCauseLight, 500;}
 		}
 		else
 		{
@@ -180,9 +173,6 @@ spellGreatLight ()
 				actor frame SWING_3;		call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		UI_cause_light(5000);
 }
 
 spellMassCure ()
@@ -198,7 +188,15 @@ spellMassCure ()
 			script item
 			{	nohalt;						actor frame SWING_2;
 				actor frame SWING_1;		actor frame SWING_3;
-				sfx 64;						call spellMassCure;}
+				sfx 64;}
+			var targets = getFriendlyTargetList(item, 25);
+			for (npc in targets)
+			{
+				script npc after 6 ticks
+				{	nohalt;
+					call spellClearFlag, POISONED;
+					call spellClearFlag, PARALYZED;}
+			}
 		}
 		else
 		{
@@ -206,16 +204,6 @@ spellMassCure ()
 			{	nohalt;						actor frame SWING_2;
 				actor frame SWING_1;		actor frame SWING_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var targets = getFriendlyTargetList(item, 25);
-		for (npc in targets)
-		{
-			npc->clear_item_flag(POISONED);
-			npc->clear_item_flag(PARALYZED);
 		}
 	}
 }
@@ -236,7 +224,8 @@ spellProtection (var target)
 				actor frame SWING_1;		actor frame SWING_2H_3;}
 			
 			script target after 5 ticks
-			{	nohalt;						call spellProtection;}
+			{	nohalt;
+				call spellClearFlag, PROTECTION;}
 			
 			obj_sprite_effect(13, -2, -2, 0, 0, 0, -1);
 		}
@@ -248,9 +237,6 @@ spellProtection (var target)
 				actor frame SWING_2H_3;		call spellFails;}
 		}
 	}
-
-	else if (event == SCRIPTED)
-		set_item_flag(PROTECTION);
 }
 
 spellTelekinesis (var target)
@@ -283,14 +269,14 @@ spellTelekinesis (var target)
 
 	else if (event == WEAPON)
 	{
-		var usables = [SHAPE_LOOM, SHAPE_THREAD, SHAPE_SPINNING_WHEEL, SHAPE_WOOL, SHAPE_KITE, SHAPE_BUCKET, SHAPE_BELLOWS, SHAPE_KEG, SHAPE_CASK, SHAPE_STRENGTH_TESTER, SHAPE_WELLBASE, SHAPE_WELL, SHAPE_CHAIR, SHAPE_BEDROLL, SHAPE_BED_HORIZONTAL, SHAPE_BED_VERTICAL, SHAPE_ORB];
+		var unusables = [SHAPE_LOOM, SHAPE_THREAD, SHAPE_SPINNING_WHEEL, SHAPE_WOOL, SHAPE_KITE, SHAPE_BUCKET, SHAPE_BELLOWS, SHAPE_KEG, SHAPE_CASK, SHAPE_STRENGTH_TESTER, SHAPE_WELLBASE, SHAPE_WELL, SHAPE_CHAIR, SHAPE_BEDROLL, SHAPE_BED_HORIZONTAL, SHAPE_BED_VERTICAL, SHAPE_ORB];
 		var usables2 = [SHAPE_WINCH_HORIZONTAL, SHAPE_WINCH_VERTICAL, SHAPE_SWITCH, SHAPE_LEVER];
 		var target_shape = get_item_shape();
 		if (target_shape in usables2)
 			script item
 				call get_usecode_fun();
 
-		else if (!(target_shape in usables))
+		else if (!(target_shape in unusables))
 			script item
 				call get_usecode_fun(), DOUBLECLICK;
 	}
@@ -307,7 +293,7 @@ spellWizardEye ()
 			{	nohalt;						actor frame CAST_1;
 				sfx 67;						actor frame CAST_2;
 				actor frame CAST_1;			actor frame SWING_2H_3;
-				call spellWizardEye;}
+				call spellWizardEyeEffect;}
 		}
 		else
 		{
@@ -317,7 +303,4 @@ spellWizardEye ()
 				actor frame SWING_2H_3;		call spellFails;}
 		}
 	}
-
-	else if (event == SCRIPTED)
-		UI_wizard_eye(45, 200);
 }

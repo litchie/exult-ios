@@ -187,6 +187,13 @@ inline int Usecode_internal::get_shape_fun(int n)
 				: 0x1000 + (n - 0x400));
 	}
 
+inline bool Usecode_internal::is_object_fun(int n)
+{
+	if (!symtbl)
+		return (n < 0x800);
+	return symtbl->is_object_fun(n);
+}
+
 bool Usecode_internal::call_function(int funcid,
 					 int eventid,
 					 Game_object *caller,
@@ -206,6 +213,7 @@ bool Usecode_internal::call_function(int funcid,
 		}
 
 	int depth, oldstack, chain;
+	Game_object *oldcaller = caller;
 
 	if (entrypoint)
 	{
@@ -230,7 +238,27 @@ bool Usecode_internal::call_function(int funcid,
 
 	Stack_frame *frame = new Stack_frame(fun, eventid, caller, chain, depth);
 
-	while (frame->num_args > oldstack) // Not enough args pushed?
+	int num_args = frame->num_args;
+	// Many functions have 'itemref' as a 'phantom' arg.
+	// In the originals, this was probably so that the games
+	// could know how much memory the function would need.
+	if (is_object_fun(funcid))
+		{
+		if (--num_args < 0)
+			{
+			// Backwards compatibility with older mods.
+			cerr << "Called usecode function " << hex << setfill((char)0x30) 
+				 << funcid << dec << setfill(' ');
+			cerr << " with negative number of arguments." << endl
+				 << "The mod/game was likely compiled with an outdated version of UCC"
+				 << endl;
+			num_args = 0;
+			}
+		}
+#ifdef DEBUG
+	int added_args = num_args - oldstack;
+#endif
+	while (num_args > oldstack) // Not enough args pushed?
 	{
 		pushi(0); // add zeroes
 		oldstack++;
@@ -238,10 +266,10 @@ bool Usecode_internal::call_function(int funcid,
 
 	// Store args in first num_args locals
 	int i;
-	for (i = 0; i < frame->num_args; i++)
+	for (i = 0; i < num_args; i++)
 	{
 		Usecode_value val = pop();
-		frame->locals[frame->num_args - i - 1] = val;
+		frame->locals[num_args - i - 1] = val;
 	}
 
 	// save stack pointer
@@ -260,7 +288,7 @@ bool Usecode_internal::call_function(int funcid,
  		cout << hex << setfill((char)0x30) 
 			<< funcid << dec << setfill(' ');
 	cout << " (";
-	for (i = 0; i < frame->num_args; i++)
+	for (i = 0; i < num_args; i++)
 	{
 		if (i)
 			cout << ", ";
@@ -268,6 +296,9 @@ bool Usecode_internal::call_function(int funcid,
 	}
 	cout << ") with event " << eventid 
 		 << ", depth " << frame->call_depth << endl;
+	if (added_args)
+		cout << added_args << (const char*)(added_args > 1 ? " args" : " arg")
+			 << " had to be added to the stack for this call" << endl;
 #endif
 
 	return true;

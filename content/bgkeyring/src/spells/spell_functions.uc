@@ -59,27 +59,27 @@ enum npc_wizard_flags
 	AI_TEMPORARY					= 63	//AI will stop casting when it runs out of targets
 };
 
-greatDouseIgnite (var shapes)
+greatDouseIgnite (var obj, var shapes)
 {
 	var dist = 25;
 	for (obj in shapes)
 	{
 		//For each shape # in the array,
 		//Find all nearby objects with that shape...
-		var lsources = find_nearby(obj, dist, MASK_NONE);
+		var lsources = obj->find_nearby(obj, dist, MASK_NONE);
 		for (lightsource in lsources)
 		{
 			//For each object in the array,
 			//calculate a delay based on distance:
-			var delay = ((get_distance(lightsource) / 3) + 2);
+			var delay = ((obj->get_distance(lightsource) / 3) + 2);
 			//Call the obj's usecode function after delay ticks:
 			script lightsource after delay ticks
-			{	nohalt;						call lightsource->get_usecode_fun(), DOUBLECLICK;}
+			{	nohalt;			call lightsource->get_usecode_fun(), DOUBLECLICK;}
 		}
 	}
 }
 
-DeathBoltHit 0xB7F ()
+DeathBoltHit object#(0xB7F) ()
 {
 	//Bail out unless an NPC is hit:
 	if (is_npc())
@@ -94,3 +94,394 @@ DeathBoltHit 0xB7F ()
 			script item hit 127, MAGIC_DAMAGE;
 	}
 }
+
+spellAwakenEffect object#() ()
+{
+	if (is_npc())
+	{
+		halt_scheduled();
+		clear_item_flag(ASLEEP);
+	}
+	else
+		flashBlocked(60);
+}
+
+spellSleepEffect object#() ()
+{
+	if (is_npc())
+	{
+		halt_scheduled();
+		set_item_flag(ASLEEP);
+	}
+	else
+		flashBlocked(60);
+}
+
+spellClearFlag object#() ()
+{
+	clear_item_flag(event);
+}
+
+spellSetFlag object#() ()
+{
+	set_item_flag(event);
+}
+
+spellEnchantEffect object#() ()
+{
+	var normal_missiles = [SHAPE_ARROWS, SHAPE_BOLTS];
+	var magic_missiles = [SHAPE_MAGIC_ARROWS, SHAPE_MAGIC_BOLTS];
+	for (missile in normal_missiles with index)
+		if (missile == get_item_shape())
+			set_item_shape(magic_missiles[index]);
+}
+
+spellHealEffect object#() ()
+{
+	var str = get_npc_prop(STRENGTH);
+	var hps = get_npc_prop(HEALTH);
+	if (hps <= str)
+	{
+		var healquant = ((str - hps) / 2);
+		set_npc_prop(HEALTH, healquant);
+	}
+}
+
+spellCloneEffect object#() ()
+{
+	var summoned = clone();
+	summoned->set_alignment(event);
+}
+
+spellFireRingEffect object#() ()
+{
+	var pos = get_object_position();
+	remove_item();
+	var ring = UI_create_new_object(SHAPE_FIRE_FIELD);
+	if (ring)
+	{
+		ring->set_item_flag(TEMPORARY);
+		UI_update_last_created(pos);
+		var delay = 31;
+		delay = (delay + UI_die_roll(1, 5));
+		script ring after delay ticks
+		{	nohalt;						remove;}
+	}
+}
+
+spellSetShape object#() ()
+{
+	set_item_shape(event);
+}
+
+spellCauseLight object#() ()
+{
+	UI_cause_light(event);
+}
+
+spellCenteredSpriteEffect object#() ()
+{
+	var pos = get_object_position();
+	UI_sprite_effect(event, pos[X], pos[Y], 0, 0, 0, -1);
+}
+
+spellOffCenterSpriteEffect object#() ()
+{
+	var pos = get_object_position();
+	UI_sprite_effect(event, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
+}
+
+spellCreateFoodEffect object#() ()
+{
+	//If the caster is not in party, this was just for 'show', i.e.,
+	//a usecode-schedule display.
+	if (!get_item_flag(IN_PARTY))
+		return;
+
+	var party = UI_get_party_list();
+
+	for (npc in party)
+	{
+		var pos = npc->get_object_position();
+		var fooditem = UI_create_new_object(SHAPE_FOOD);
+		if (fooditem)
+		{
+			fooditem->set_item_frame(UI_die_roll(0, 31));
+			fooditem->set_item_flag(TEMPORARY);
+			UI_update_last_created(pos);
+		}
+	}
+}
+
+spellWizardEyeEffect object#() ()
+{
+	UI_wizard_eye(45, 200);
+}
+
+spellShowMap object#() ()
+{
+	UI_display_map();
+}
+
+
+spellProtectAllEffect object#() ()
+{
+	UI_play_sound_effect(109);
+	var pos = get_object_position();
+	UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
+	var targets = getFriendlyTargetList(item, 25);
+	for (npc in targets)
+		npc->set_item_flag(PROTECTION);
+}
+
+spellSwarmEffect object#() ()
+{
+	var rand = UI_die_roll(7, 10);
+	while (rand > 0)
+	{
+		rand = (rand - 1);
+		UI_summon(SHAPE_FLY, false);
+	}
+}
+
+spellConjureEffect object#() ()
+{
+	var conjurables = [SHAPE_BIRD, SHAPE_RABBIT, SHAPE_RAT, SHAPE_FOX, SHAPE_SNAKE, SHAPE_DEER, SHAPE_WOLF];
+	var arraysize = UI_get_array_size(conjurables);
+	var npclevel = getNPCLevel(item);
+	if (npclevel > arraysize)
+		npclevel = arraysize;
+
+	if (npclevel < 2)
+		npclevel = 2;
+
+	var minroll = (npclevel / 2);
+	if (minroll < 1)
+		minroll = 1;
+
+	var rand = UI_die_roll(minroll, npclevel);
+
+	while (rand > 0)
+	{
+		rand = (rand - 1);
+		var rand2 = UI_die_roll(minroll, npclevel);
+		var summoned = conjurables[rand2]->summon(false);
+		summoned->set_alignment(get_alignment());
+	}
+}
+
+spellEndSeance object#() ()
+{
+	//I have NO idea why they had one flag per ghost,
+	//instead of having one for them all...
+	gflags[SEANCE_CAINE] = false;
+	gflags[SEANCE_FERRYMAN] = false;
+	gflags[SEANCE_MARKHAM] = false;
+	gflags[SEANCE_HORANCE] = false;
+	gflags[SEANCE_TRENT] = false;
+	gflags[SEANCE_MORDRA] = false;
+	gflags[SEANCE_ROWENA] = false;
+	gflags[SEANCE_PAULETTE] = false;
+	gflags[SEANCE_QUENTON] = false;
+	gflags[SEANCE_FORSYTHE] = false;
+}	
+
+spellCauseDancing object#() ()
+{
+	var dist = 25;
+	var nonparty_npcs = getNearbyNonPartyNPCs(dist);
+	for (npc in nonparty_npcs)
+	{
+		var intelligence = npc->get_npc_prop(INTELLIGENCE);
+		if ((intelligence > 5) && (intelligence < 25))
+		{
+			var pos = npc->get_object_position();
+			UI_sprite_effect(16, pos[X], pos[Y], 0, 0, 0, -1);
+			setNonpartySchedule(npc, DANCE);
+			npc->set_item_flag(DANCING);
+			var barks = ["@Dance!@", "@Yeah!@", "@Huh!@", "@Oh, yeah!@", "@I'm bad!@", "@Boogie!@", "@Yow!@"];
+			var rand = UI_die_roll(1, 7);
+			var delay = UI_die_roll(10, 40);
+			delayedBark(npc, barks[rand], delay);
+			delay = UI_die_roll(50, 75);
+			script npc after delay ticks
+			{	nohalt;						call stopDancing;}
+		}
+	}
+}	
+
+spellSummonSkeletonsEffect object#() ()
+{
+	var npclevel = getNPCLevel(item);
+	var minroll = npclevel / 2;
+	if (npclevel < 2)
+	{
+		npclevel = 2;
+		minroll = 1;
+	}
+	var rand = UI_die_roll(minroll, npclevel);
+	while (rand)
+	{
+		var summoned = SHAPE_SKELETON->summon(true);
+		summoned->set_alignment(get_alignment());
+		rand -= 1;
+	}
+}	
+
+spellCauseFearEffect object#() ()
+{
+	var targets = getEnemyTargetList(item, 25);
+	for (npc in targets)
+	{
+		if (npc->get_npc_prop(INTELLIGENCE) > 5)
+		{
+			npc->set_schedule_type(IN_COMBAT);
+			npc->set_attack_mode(FLEE);
+			npc->set_opponent(item);
+		}
+	}
+}
+
+spellMagicStormEffect object#() ()
+{
+	if (gflags[MAGIC_STORM_SPELL] == true)
+	{
+		var targets = getEnemyTargetList(item, 45);
+		var npc = targets[UI_get_random(UI_get_array_size(targets))];
+		if (npc)
+		{
+			script npc
+			{	nohalt;						call callLightning;}
+		}
+		var rand = UI_die_roll(3, 8);
+		script item after rand ticks
+		{	nohalt;						call spellMagicStormEffect;}
+	}
+}	
+
+spellTremorEffect object#() ()
+{
+	var targets = getEnemyTargetList(item, 40);
+	var duration = 12;
+	for (npc in targets)
+	{
+		var counter = 0;
+		var usecodearray = [];
+		var directions = [NORTH, EAST, SOUTH, WEST];
+		while (counter < duration)
+		{
+			var rand = UI_die_roll(0, 8);
+	
+			if (rand == 0)
+				usecodearray << {	actor frame KNEEL;		actor frame LEAN;
+									actor frame STAND;};
+			else if (rand == 1)
+				usecodearray << {	actor frame KNEEL;		actor frame STAND;
+									actor frame STAND;};
+			else if (rand == 2)
+				usecodearray << {	actor frame LEAN;		actor frame LIE;
+									actor frame STAND;};
+			else if (rand == 3)
+				usecodearray << {	actor frame STAND;		actor frame STAND;
+									actor frame STAND;};
+			else if (rand == 4)
+				usecodearray << {	actor frame KNEEL;		actor frame USE;
+									actor frame STAND;};
+			else if (rand == 5)
+				usecodearray << {	actor frame USE;		actor frame KNEEL;
+									actor frame STAND;};
+			else if (rand == 6)
+				usecodearray << {	face directions[UI_get_random(4)];
+									actor frame LEAN;		actor frame STAND;};
+			else if (rand == 7)
+				usecodearray << {	face directions[UI_get_random(4)];
+									actor frame KNEEL;		actor frame STAND;};
+			else if (rand == 8)
+				usecodearray << {	face directions[UI_get_random(4)];
+									actor frame USE;	actor frame STAND; };
+	
+			counter = (counter + 1);
+		}
+		npc->halt_scheduled();
+		npc->run_script(usecodearray);
+	}
+	UI_earthquake((duration * 3));
+}
+
+spellCauseDeath object#() ()
+{
+	var cantdie = get_item_flag(CANT_DIE) || get_item_flag(DEATH_PROTECTION);
+	if (!cantdie)
+	{
+		var hps = get_npc_prop(HEALTH);
+		hurtNPC(item, (hps - 2));
+		hurtNPC(item, 50);
+	}
+}
+
+spellSummonEffect object#() ()
+{
+	var summonables = [SHAPE_SKELETON, SHAPE_DRAGON, SHAPE_GHOST3, SHAPE_MONSTER_TROLL,
+					   SHAPE_MONSTER_MAGE, SHAPE_MONSTER_CYCLOPS, SHAPE_DRAKE,
+					   SHAPE_MONSTER_GARGOYLE, SHAPE_GARGOYLE_WINGED, SHAPE_HEADLESS,
+					   SHAPE_LICHE, SHAPE_MONGBAT, SHAPE_SCORPION];
+	var max_rand2 = [5, 15, 5, 5, 5, 5, 5, 5, 14, 5, 10, 5, 5];
+	var creature_count = [5, 1, 5, 1, 2, 2, 2, 1, 1, 3, 1, 5, 2];
+	var array_size = UI_get_array_size(summonables);
+
+	var rand1 = UI_die_roll(1, array_size);
+	var rand2 = UI_die_roll(1, 100);
+	while (max_rand2[rand1] < rand2)
+	{
+		rand1 = UI_die_roll(1, array_size);
+		rand2 = UI_die_roll(1, 100);
+	}
+
+	var counter = creature_count[rand1];
+	var randmax = (counter / 2);
+	if (randmax < 1)
+		randmax = 1;
+
+	var rand3 = UI_die_roll(1, randmax);
+	if (UI_die_roll(1, 2) == 1)
+		rand3 = (-1 * rand3);
+
+	counter = (counter + rand3);
+	while (counter)
+	{
+		var summoned = summonables[rand1]->summon(true);
+		summoned->set_alignment(get_alignment());
+		counter = (counter - 1);
+	}
+}
+
+spellStopTime object#() ()
+{
+	UI_stop_time(event);
+}
+
+
+spellMassResurrectEffect object#() ()
+{
+	var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
+	var bodies = [];
+	for (shnum in bodyshapes)
+		bodies = [bodies, find_nearby(shnum, 25, MASK_NONE)];
+
+	var body;
+	var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
+	var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
+	for (body in bodies)
+	{
+		var qual = body->get_item_quality();
+		var quant = body->get_item_quantity(1);
+		if ((qual != 0) || (quant != 0))
+		{
+			var pos = get_object_position();
+			UI_sprite_effect(ANIMATION_LIGHTNING, pos[X], pos[Y], 0, 0, 0, -1);
+			UI_sprite_effect(ANIMATION_GREEN_BUBBLES, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
+			var dist = get_distance(body);
+			script body after 2+dist/3 ticks resurrect;
+		}
+	}
+}	

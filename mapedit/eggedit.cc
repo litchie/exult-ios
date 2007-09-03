@@ -101,7 +101,7 @@ C_EXPORT void on_egg_browse_usecode_clicked
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	const char *uc = studio->browse_usecode();
+	const char *uc = studio->browse_usecode(true);
 	if (*uc)
 		studio->set_entry("usecode_number", uc, true);
 	}

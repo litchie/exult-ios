@@ -1,6 +1,25 @@
 2007-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.*, objs/animate.*: Fixed memory leak. Improved sfx cache.
 	  Removed 'repeat' variable from Object_sfx as it was redundant.
+	* usecode/ucxt/data/u7opcodes.data: A few output fixes.
+	* usecode/compiler/uclex.ll: Fixed bug in line numeration of commented lines.
+	* content/*: Compatibiility update for changes in UCC.
+	* usecode/*, usecode/compiler/*, mapedit/*: The original games seem to make
+	  a distinction between 'object' functions (fun id < 0x800) and 'utility'
+	  functions (fun id > 0x800); the former are called in usecode with CALLE
+	  opcode exclusivelly, while the latter use only CALL opcode and inherit the
+	  itemref from the caller function. All 'object' functions have a 'phantom'
+	  parameter in their function headers which is never used and always zero in
+	  the originals. This behavior has been implemented in Exult now.
+	  UCC has been updated to take this behavior in consideration, and you can
+	  now declare object functions by using 'object#' or 'shape#'; the difference
+	  being that the latter is bound to a given shape, whereas the former is not.
+	  'object#' is used like 'shape#', but can have nothing in the parenthesis;
+	  additionally, functions with ids < 0x400 are considered to be 'shape#' and
+	  functions with ids < 0x800 are considered to be 'object#'. UCC will display
+	  tons of warnings and errors related to this to ensure 'proper' coding.
+	  Also, Exult Studio has been updated to accept only 'object#' or 'shape#'
+	  functions for eggs, NPCs, etc.
 
 2007-08-14    <jeff@mini.nerble.net>
 

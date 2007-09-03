@@ -419,6 +419,7 @@ class Usecode_internal : public Usecode_machine
 						 uint8* ip);
 	static int get_opcode_length(int opcode);
 	void stack_trace(std::ostream& out);
+	bool is_object_fun(int n);
 
 #ifdef USECODE_DEBUGGER
 

@@ -25,7 +25,7 @@
 //externs
 extern askGwennoBelongings 0x835 ();
 
-Gwenno 0x495 ()
+Gwenno object#(0x495) ()
 {
 	var avatarname;
 	var gavenecklace;

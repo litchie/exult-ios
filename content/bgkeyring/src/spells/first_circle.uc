@@ -71,21 +71,15 @@ spellAwakenAll ()
 			for (npc in nearby_npcs)
 			{
 				script npc
-				{	nohalt;						call spellAwakenAll;}
+				{	nohalt;				call spellAwakenEffect;}
 			}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;					actor frame SWING_1;
+				actor frame SWING_3;	call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		halt_scheduled();
-		clear_item_flag(ASLEEP);
 	}
 }
 
@@ -100,7 +94,7 @@ spellCreateFood ()
 			script item
 			{	nohalt;						sfx 68;
 				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellCreateFood;}
+				actor frame SWING_3;		call spellCreateFoodEffect;}
 		}
 		else
 		{
@@ -108,28 +102,6 @@ spellCreateFood ()
 			{	nohalt;						actor frame SWING_2;
 				actor frame SWING_1;		actor frame SWING_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		//If the caster is not in party, this was just for 'show', i.e.,
-		//a usecode-schedule display.
-		if (!get_item_flag(IN_PARTY))
-			return;
-
-		var party = UI_get_party_list();
-		
-		for (npc in party)
-		{
-			var pos = npc->get_object_position();
-			var fooditem = UI_create_new_object(SHAPE_FOOD);
-			if (fooditem)
-			{
-				fooditem->set_item_frame(UI_die_roll(0, 31));
-				fooditem->set_item_flag(TEMPORARY);
-				UI_update_last_created(pos);
-			}
 		}
 	}
 }
@@ -151,7 +123,9 @@ spellCure (var target)
 					sfx 64;						actor frame SWING_2;
 					actor frame SWING_1;		actor frame SWING_3;}
 				script target after 6 ticks
-				{	nohalt;						call spellCure;}
+				{	nohalt;
+					call spellClearFlag, POISONED;
+					call spellClearFlag, PARALYZED;}
 				return;
 			}
 		}
@@ -159,12 +133,6 @@ spellCure (var target)
 		{	nohalt;						face dir;
 			actor frame SWING_2;		actor frame SWING_1;
 			actor frame SWING_3;		call spellFails;}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		clear_item_flag(POISONED);
-		clear_item_flag(PARALYZED);
 	}
 }
 
@@ -185,7 +153,7 @@ spellDetectTrap ()
 			for (trap in nearby_traps)
 			{
 				script trap after 5 ticks
-				{	nohalt;						call spellDetectTrap, SCRIPTED;}
+				{	nohalt;			call spellCenteredSpriteEffect, 16;}
 			}
 			
 			var openchests = find_nearby(SHAPE_CHEST, dist, MASK_ALL_UNSEEN);
@@ -196,22 +164,16 @@ spellDetectTrap ()
 				if (trap->get_item_quality() == KEY_PICKABLE_TRAPPED)
 				{
 					script trap after 5 ticks
-					{	nohalt;						call spellDetectTrap, SCRIPTED;}
+					{	nohalt;			call spellCenteredSpriteEffect, 16;}
 				}
 			}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;					actor frame SWING_1;
+				actor frame SWING_3;	call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var pos = get_object_position();
-		UI_sprite_effect(16, pos[X], pos[Y], 0, 0, 0, -1);
 	}
 }
 
@@ -228,7 +190,7 @@ spellGreatDouse ()
 				actor frame SWING_1;		actor frame SWING_3;}
 			
 			var dousables = [SHAPE_TORCH_LIT, SHAPE_LIT_LAMP, SHAPE_LIGHTSOURCE_LIT, SHAPE_SCONCE_LIT];
-			item->greatDouseIgnite(dousables);
+			greatDouseIgnite(item, dousables);
 		}
 		else
 		{
@@ -253,7 +215,7 @@ spellGreatIgnite ()
 				actor frame SWING_2;		actor frame SWING_3;}
 			
 			var ignitables = [SHAPE_TORCH, SHAPE_LAMPPOST, SHAPE_LIGHTSOURCE, SHAPE_SCONCE];
-			item->greatDouseIgnite(ignitables);
+			greatDouseIgnite(item, ignitables);
 		}
 		else
 		{
@@ -276,7 +238,7 @@ spellLight ()
 			script item
 			{	nohalt;						sfx 68;
 				actor frame SWING_1;		actor frame SWING_3;
-				call spellLight;}
+				call spellCauseLight, 500;}
 		}
 		else
 		{
@@ -285,9 +247,6 @@ spellLight ()
 				actor frame SWING_3;		call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		UI_cause_light(500);
 }
 
 spellLocate ()
@@ -297,11 +256,27 @@ spellLocate ()
 		item_say("@In Wis@");
 		if (inMagicStorm())
 		{
+			var pos = get_object_position();
+			var long = ((pos[X] - 0x3A5) / 10);
+			var lat = ((pos[Y] - 0x46E) / 10);
+			var longstr;
+			var latstr;
+	
+			if (long < 0)
+				longstr = " " + absoluteValueOf(long) + " West";
+			else
+				longstr = " " + absoluteValueOf(long) + " East";
+	
+			if (lat < 0)
+				latstr = " " + absoluteValueOf(lat) + " North";
+			else
+				latstr = " " + absoluteValueOf(lat) + " South";
+	
 			script item
 			{	nohalt;						sfx 67;
 				actor frame KNEEL;			actor frame STAND;
 				actor frame CAST_1;			wait 4;
-				call spellLocate;}
+				say latstr + longstr;}
 		}
 		else
 		{
@@ -310,27 +285,6 @@ spellLocate ()
 				actor frame STAND;			actor frame CAST_1;
 				call spellFails;}
 		}
-	}
-
-	else if (event == SCRIPTED)
-	{
-		var pos = get_object_position();
-		var long = ((pos[X] - 0x3A5) / 10);
-		var lat = ((pos[Y] - 0x46E) / 10);
-		var longstr;
-		var latstr;
-
-		if (long < 0)
-			longstr = " " + absoluteValueOf(long) + " West";
-		else
-			longstr = " " + absoluteValueOf(long) + " East";
-
-		if (lat < 0)
-			latstr = " " + absoluteValueOf(lat) + " North";
-		else
-			latstr = " " + absoluteValueOf(lat) + " South";
-
-		item_say((latstr + longstr));
 	}
 }
 
@@ -349,7 +303,7 @@ spellTranslate ()
 			AVATAR->set_item_flag(READ);
 			script AVATAR after 10000 ticks
 			{	nohalt;						finish;
-				call spellTranslate;}
+				call spellClearFlag, READ;}
 		}
 		else
 		{
@@ -358,6 +312,4 @@ spellTranslate ()
 				actor frame SWING_3;		call spellFails;}
 		}
 	}
-	else if (event == SCRIPTED)
-		AVATAR->clear_item_flag(READ);
 }

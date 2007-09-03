@@ -97,7 +97,7 @@ spellHeal (var target)
 				actor frame SWING_1;		actor frame SWING_3;}
 				
 			script target after 5 ticks
-			{	nohalt;						call spellHeal;}
+			{	nohalt;						call spellHealEffect;}
 		}
 		else
 		{
@@ -106,17 +106,6 @@ spellHeal (var target)
 				actor frame KNEEL;			actor frame STAND;
 				actor frame SWING_2;		actor frame SWING_1;
 				actor frame SWING_3;		call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var str = get_npc_prop(STRENGTH);
-		var hps = get_npc_prop(HEALTH);
-		if (hps <= str)
-		{
-			var healquant = ((str - hps) / 2);
-			set_npc_prop(HEALTH, healquant);
 		}
 	}
 }
@@ -159,7 +148,7 @@ spellPeer ()
 			script item
 			{	nohalt;						sfx 67;
 				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			call spellPeer;}
+				actor frame CAST_1;			call spellShowMap;}
 		}
 		else
 		{
@@ -169,9 +158,6 @@ spellPeer ()
 				call spellFails;}
 		}
 	}
-
-	else if (event == SCRIPTED)
-		UI_display_map();
 }
 
 spellPoison (var target)
@@ -211,7 +197,7 @@ spellProtectAll ()
 			script item
 			{	nohalt;						actor frame CAST_1;
 				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellProtectAll;}
+				actor frame SWING_2H_3;		call spellProtectAllEffect;}
 		}
 		else
 		{
@@ -220,16 +206,6 @@ spellProtectAll ()
 				actor frame CAST_2;			actor frame CAST_1;
 				actor frame SWING_2H_3;		call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		UI_play_sound_effect(109);
-		var pos = get_object_position();
-		UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
-		var targets = getFriendlyTargetList(item, 25);
-		for (npc in targets)
-			npc->set_item_flag(PROTECTION);
 	}
 }
 
@@ -271,7 +247,7 @@ spellSwarm ()
 			script item
 			{	nohalt;						actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
-				sfx 65;						call spellSwarm;}
+				sfx 65;						call spellSwarmEffect;}
 		}
 		else
 		{
@@ -279,16 +255,6 @@ spellSwarm ()
 			{	nohalt;						actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var rand = UI_die_roll(7, 10);
-		while (rand > 0)
-		{
-			rand = (rand - 1);
-			UI_summon(SHAPE_FLY, false);
 		}
 	}
 }
@@ -309,7 +275,9 @@ spellRemoveCurse (var target)
 				actor frame CAST_2;			actor frame SWING_2H_3;}
 
 			script target after 5 ticks
-			{	nohalt;						call spellRemoveCurse;}
+			{	nohalt;
+				call spellClearFlag, CURSED;
+				call spellClearFlag, PARALYZED;}
 			
 			obj_sprite_effect(13, -2, -2, 0, 0, 0, -1);
 		}
@@ -320,10 +288,5 @@ spellRemoveCurse (var target)
 				actor frame SWING_1;		actor frame CAST_2;
 				actor frame SWING_2H_3;		call spellFails;}
 		}
-	}
-	else if (event == SCRIPTED)
-	{
-		clear_item_flag(CURSED);
-		clear_item_flag(PARALYZED);
 	}
 }

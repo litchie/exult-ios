@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Jaana 0x405 ()
+Jaana object#(0x405) ()
 {
 	var avatartitle;
 	var avatarname;

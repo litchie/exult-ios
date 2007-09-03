@@ -25,7 +25,7 @@
 
 const int LOCK_LAKE_TIMER				= 0xC;
 
-eggCleanLockLake ()
+eggCleanLockLake object#() ()
 {
 	if (event != EGG)
 		return;
