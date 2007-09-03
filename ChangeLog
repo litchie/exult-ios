@@ -20,6 +20,8 @@
 	  tons of warnings and errors related to this to ensure 'proper' coding.
 	  Also, Exult Studio has been updated to accept only 'object#' or 'shape#'
 	  functions for eggs, NPCs, etc.
+	* cheat_screen.cc: Making setting/clearing in_party flag work correctly in
+	  both, the normal and advanced NPC flag editors.
 
 2007-08-14    <jeff@mini.nerble.net>
 
