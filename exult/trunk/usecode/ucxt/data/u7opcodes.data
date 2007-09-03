@@ -115,7 +115,7 @@ the relative {offset}.
 		<name> CMPS </>
 		<asm_nmo> `cmps\t%1H, %2` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `case %p atend label%f*_%2:` </>
+		<ucs_nmo> `case %p1 atend label%f*_%2:` </>
 		<num_bytes> 4 </>
 		<param_types> {short,offset} </>
 		<num_pop> 0xFF </>
@@ -884,7 +884,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<name> CMPS32 </>
 		<asm_nmo> `cmps32\t%1H, %n2` </>
 		<asm_comment> `\t\t;` </>
-		<ucs_nmo> `case %p atend label%f*_%2:` </>
+		<ucs_nmo> `case %p1 atend label%f*_%2:` </>
 		<num_bytes> 6 </>
 		<param_types> {short,offset32} </>
 		<num_pop> 0xFF </>

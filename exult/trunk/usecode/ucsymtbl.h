@@ -40,7 +40,8 @@ public:
 		fun_extern_defined,	// External, but fun. # was given.
 		class_scope,
 		table_scope,
-		shape_fun
+		shape_fun,
+		object_fun
 	};
 private:
 	friend class Usecode_symbol_table;
@@ -98,6 +99,7 @@ public:
 		{ return n < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int n);
+	bool is_object_fun(int n);
 	const Syms_vector& get_symbols()
 		{ return symbols; }
 	};

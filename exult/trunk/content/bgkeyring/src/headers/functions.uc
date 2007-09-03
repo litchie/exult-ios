@@ -121,18 +121,17 @@ var moveToLocation(var object, var pos)
 
 //generic get-item-from-container/world script, used by item interactions. It is used at the end of a march-to-container script, to play an appropriate animation and transfer the item into the player's inventory.
 //once the item has been picked up, it will call the item's function with event = SCRIPTED.
-pickUpItem()
+pickUpItem object#() ()
 {
 	var container = getOuterContainer(item);
 	var direction = directionFromAvatar(container);
-	var func = get_usecode_fun();
 
 	//The avatar is already carrying the item, call the function immediately and leave it at that
 	//This shouldn't happen, since gotoAndGet() will have picked up this case already - however, it could be the player drags the item into their inventory while walking, so...
 	if (isAvatar(container))
 	{
 		//The brief delay is present in the original scripts, and is purely cosmetic.
-		script item	{ nohalt; wait 1; call func; }
+		script item	{ nohalt; wait 1; call get_usecode_fun(); }
 	}
 	else
 	{
@@ -155,13 +154,13 @@ pickUpItem()
 		script item
 		{	nohalt;						wait 3;
 			call giveToAvatar;			wait 2;
-			call func;}
+			call get_usecode_fun();}
 	}
 }
 
 
 //Pathfind to the target item and pick it up once you get there (using pickUpItem). After this has happened, the item's function will be called with event = SCRIPTED. This is commonly used for item interactions that require the Avatar to be carrying the item first.
-gotoAndGet(var target)
+gotoAndGet (var target)
 {
 	var offsetx;
 	var offsety;
@@ -177,8 +176,7 @@ gotoAndGet(var target)
 		//Avatar is the container - call the target's function immediately.
 		if (isAvatar(container))
 		{
-			func = target->get_usecode_fun();
-			script target { nohalt; wait 1; call func; }
+			script target { nohalt; wait 1; call target->get_usecode_fun(); }
 			return;
 		}
 		else
@@ -202,7 +200,7 @@ gotoAndGet(var target)
 }
 
 //returns true if obj is contained by target, or false otherwise
-var containedBy(var obj, var target)
+var containedBy (var obj, var target)
 {
 	var container;
 
@@ -220,7 +218,7 @@ var containedBy(var obj, var target)
 //-------------------
 
 //returns the direction (N/S/W/E) that the NPC is currently facing
-var getFacing(var npc)
+var getFacing (var npc)
 {
 	var direction;
 	var framenum;
@@ -236,30 +234,30 @@ var getFacing(var npc)
 }
 
 //Simple function to reverse a direction (NORTH becomes SOUTH, etc.)
-var invertDirection(var direction)	{ return (direction + 4) % 8; }
+var invertDirection (var direction)	{ return (direction + 4) % 8; }
 
 //Gold-related functions (for streamlining shopping)
 //--------------------------------------------------
 
 //returns the total amount of gold the party has
-var countGold(var amount)	{ return PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY); }
+var countGold (var amount)	{ return PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY); }
 
 //returns true if the party has <amount> gold, false otherwise
-var hasGold(var amount)
+var hasGold (var amount)
 {
 	var num_gold = PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY);
 	return (num_gold >= amount);
 }
 
 //tries to deduct <amount> from the party's gold: returns true if they had the cash, or false if they can't afford it
-var chargeGold(var amount)
+var chargeGold (var amount)
 {
 	if (hasGold(amount)) return UI_remove_party_items(amount, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY, true);
 	else return false;
 }
 
 //give <amount> gold to the party: returns true if successful, false otherwise
-var giveGold(var amount)	{ return UI_add_party_items(amount, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY, true); }
+var giveGold (var amount)	{ return UI_add_party_items(amount, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY, true); }
 
 
 
@@ -269,5 +267,5 @@ var giveGold(var amount)	{ return UI_add_party_items(amount, SHAPE_GOLD, QUALITY
 
 //use during script sequences, to prevent the actor from moving according to schedule or player input
 //IMPORTANT: Use nohalt; in these script sequences, otherwise the actor may remain frozen forever if the script is interrupted!
-freeze()	{ set_item_flag(BG_DONT_MOVE); }
-unfreeze()	{ clear_item_flag(BG_DONT_MOVE); }
+freeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
+unfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }

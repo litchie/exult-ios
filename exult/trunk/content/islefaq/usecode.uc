@@ -38,7 +38,7 @@ const int AVATAR = -356;
  *	Egg on island created just E. of Trinsic.
  */
 
-new_island_egg0 0x740 ()
+new_island_egg0 object#(0x740) ()
 	{
 					// Get random NPC (or Avatar).
 	var party = UI_get_party_list();
@@ -59,7 +59,7 @@ new_island_egg0 0x740 ()
  *	Egg behind church by the carrots.
  */
 
-new_island_egg1 0x741 ()
+new_island_egg1 object#(0x741) ()
 	{
 	if (!gflags[CHURCH_CARROTS])
 		{
@@ -100,7 +100,7 @@ Random_barks 0xC00 (var barks)
 /*
  *	'DrCode' on island.
  */
-DrCode 0x564 ()
+DrCode object#(0x564) ()
 	{
 	if (event == 0)
 		{
@@ -177,14 +177,14 @@ DrCode 0x564 ()
 /*
  *	'Dominik' on island.
  */
-Dominik 0x565 ()
+Dominik object#(0x565) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...xml",
-		                    "Damn mouse!",
-		                    "...sound font...",
-							"...data dir"]);
+		Random_barks(["...xml",
+		              "Damn mouse!",
+		              "...sound font...",
+		              "...data dir"]);
 		return;
 		}
 	if (event != 1)
@@ -274,13 +274,13 @@ Dominik 0x565 ()
 /*
  *	'Willem' on island.
  */
-Willem 0x566 ()
+Willem object#(0x566) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...Pentagram",
-		                    "...Pagan..",
-							"another world"]);
+		Random_barks(["...Pentagram",
+		              "...Pagan..",
+		              "another world"]);
 		return;
 		}
 	if (event != 1)
@@ -306,13 +306,13 @@ Willem 0x566 ()
 /*
  *	'Fingolfin' on island.
  */
-Fingolfin 0x567 ()
+Fingolfin object#(0x567) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...OSX",
-		                    "...Pentagram..",
-							"SDL"]);
+		Random_barks(["...OSX",
+		              "...Pentagram..",
+		              "SDL"]);
 		return;
 		}
 	if (event != 1)
@@ -336,13 +336,13 @@ Fingolfin 0x567 ()
 /*
  *	'Amy' on island.
  */
-Amy 0x568 ()
+Amy object#(0x568) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...Studio",
-		                    "...Time warp..",
-							"Information"]);
+		Random_barks(["...Studio",
+		              "...Time warp..",
+		              "Information"]);
 		return;
 		}
 	if (event == 2)			// Looking in bushes by Nadir.
@@ -446,14 +446,14 @@ Amy 0x568 ()
 /*
  *	'Colourless' on island.
  */
-Colourless 0x569 ()
+Colourless object#(0x569) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...glide",
-		                    "Winsockets?",
-							"Colorless?",
-							"...hack"]);
+		Random_barks(["...glide",
+		              "Winsockets?",
+		              "Colorless?",
+		              "...hack"]);
 		return;
 		}
 	if (event != 1)
@@ -489,14 +489,14 @@ Colourless 0x569 ()
 /*
  *	'Darke' on island.
  */
-Darke 0x56A ()
+Darke object#(0x56A) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...usecode",
-		                    "...xml..",
-							"bowfluff",
-							"...fluff"]);
+		Random_barks(["...usecode",
+		              "...xml..",
+		              "bowfluff",
+		              "...fluff"]);
 		return;
 		}
 	if (event != 1)
@@ -588,14 +588,14 @@ Darke 0x56A ()
 /*
  *	'EsBee_Ex' on island.
  */
-EsBee_Ex 0x56B ()
+EsBee_Ex object#(0x56B) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...burn",
-		                    "...Rome..",
-							"boom",
-							"...Pyro-X"]);
+		Random_barks(["...burn",
+		              "...Rome..",
+		              "boom",
+		              "...Pyro-X"]);
 		return;
 		}
 	if (event != 1)
@@ -639,14 +639,14 @@ EsBee_Ex 0x56B ()
 /*
  *	Nadir.
  */
-Nadir 0x56C ()
+Nadir object#(0x56C) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...free software",
-		                    "...free beer",
-							"...autoconf",
-							"Follow the GPL!"]);
+		Random_barks(["...free software",
+		              "...free beer",
+		              "...autoconf",
+		              "Follow the GPL!"]);
 		return;
 		}
 	if (event != 1)
@@ -706,13 +706,13 @@ Nadir 0x56C ()
 /*
  *	'Kirben' on island.
  */
-Kirben 0x56D ()
+Kirben object#(0x56D) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...speed",
-		                    "...thrift..",
-							"design"]);
+		Random_barks(["...speed",
+		              "...thrift..",
+		              "design"]);
 		return;
 		}
 	if (event != 1)
@@ -756,13 +756,13 @@ Kirben 0x56D ()
 /*
  *	'BillyG' on island.
  */
-BillyG 0x56E ()
+BillyG object#(0x56E) ()
 	{
 	if (event == 0)
 		{
-		item->Random_barks(["...money",
-		                    "...security hole...",
-							"windows"]);
+		Random_barks(["...money",
+		              "...security hole...",
+		              "windows"]);
 		return;
 		}
 	if (event != 1)

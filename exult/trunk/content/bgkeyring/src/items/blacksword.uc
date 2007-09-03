@@ -25,7 +25,7 @@
 
 #include "items/related_functions/arcadion_dialog.uc"		//Arcadion's dialog (broken into three functions) and related functions
 
-arcadionDialog 0x6F6 ()
+arcadionDialog object#(0x6F6) ()
 {
 	//Completelly reorganized and modularized this function. In the original, all of
 	//the dialog is contained in a single function... I think things could still be
@@ -33,7 +33,7 @@ arcadionDialog 0x6F6 ()
 	//they are the ones to call the dialog), but this is sufficient for the moment:
 	
 	if (!gflags[BROKE_MIRROR])
-		arcadionMirrorFormDialog();
+		item->arcadionMirrorFormDialog();
 	
 	else if (!gflags[COMMANDED_BOND])
 	{
@@ -45,7 +45,7 @@ arcadionDialog 0x6F6 ()
 		}
 		
 		else if (event == SCRIPTED)
-			arcadionGemFormDialog();
+			item->arcadionGemFormDialog();
 	}
 	
 	else
@@ -58,7 +58,7 @@ arcadionDialog 0x6F6 ()
 		}
 		
 		else if (event == SCRIPTED)
-			arcadionSwordFormDialog();
+			item->arcadionSwordFormDialog();
 	}
 }
 
@@ -79,7 +79,7 @@ var isUndead 0x849 (var target_shape)
 	return (target_shape in undead);
 }
 
-teleportIsleOfFire 0x6F9 ()
+teleportIsleOfFire object#(0x6F9) ()
 {
 	if (event == SCRIPTED)
 	{

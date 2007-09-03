@@ -1741,12 +1741,16 @@ bool ExultStudio::get_toggle
 void ExultStudio::set_toggle
 	(
 	char *name,
-	bool val
+	bool val,
+	bool sensitive
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
 	if (btn)
+		{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btn), val);
+		gtk_widget_set_sensitive(btn, sensitive);
+		}
 	}
 
 /*

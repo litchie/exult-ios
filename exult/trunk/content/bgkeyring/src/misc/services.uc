@@ -175,7 +175,7 @@ var promptForPayment (var price, var dialog)
 static var service_healing_targets;
 static var service_healing_spell;
 
-serviceMultipleSpellHealing ()
+serviceMultipleSpellHealing object#() ()
 {
 	if (event == SCRIPTED)
 	{

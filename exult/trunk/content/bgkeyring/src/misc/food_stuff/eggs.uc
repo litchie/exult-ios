@@ -23,7 +23,7 @@
  /*	Egg used on baking hearths to cook dough that is placed upon it;
  *	Reimplemented to add in more dough recipes
  */
-bakeBread 0x635 ()
+bakeBread object#(0x635) ()
 {
 	//egg called this function when dough was placed upon it
 	if (event == EGG)

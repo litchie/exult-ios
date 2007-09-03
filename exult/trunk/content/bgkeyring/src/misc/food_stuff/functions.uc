@@ -23,7 +23,7 @@
 /* Butter-churning behaviours */
 
 //Create the new butter object, beside the churn
-createButter ()
+createButter object#() ()
 {
 	//create the new butter object
 	var butter = UI_create_new_object(SHAPE_FOOD);

@@ -65,7 +65,7 @@ spellAwaken (var target)
 				sfx 64;						actor frame SWING_1;
 				actor frame SWING_3;}
 			script target after 5 ticks
-			{	nohalt;						call spellAwaken;}
+			{	nohalt;						call spellAwakenEffect;}
 		}
 		else
 		{
@@ -74,14 +74,6 @@ spellAwaken (var target)
 				actor frame SWING_1;		actor frame SWING_3;
 				call spellFails;}
 		}
-	}
-
-	else if (event == SCRIPTED)
-	{
-		if (is_npc())
-			clear_item_flag(ASLEEP);
-		else
-			flashBlocked(60);
 	}
 }
 
@@ -135,7 +127,7 @@ spellFireworks ()
 			script item
 			{	nohalt;						actor frame CAST_2;
 				actor frame CAST_1;			sfx 36;
-				call spellFireworks;}
+				call spellOffCenterSpriteEffect, 12;}
 		}
 		else
 		{
@@ -143,12 +135,6 @@ spellFireworks ()
 			{	nohalt;						actor frame CAST_2;
 				actor frame CAST_1;			call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var pos = get_object_position();
-		UI_sprite_effect(12, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 	}
 }
 
@@ -163,7 +149,7 @@ spellGlimmer ()
 			script item
 			{	nohalt;						sfx 68;
 				actor frame SWING_1;		actor frame SWING_3;
-				call spellGlimmer;}
+				call spellCauseLight, 110;}
 		}
 		else
 		{
@@ -172,9 +158,6 @@ spellGlimmer ()
 				actor frame SWING_3;		call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		UI_cause_light(110);
 }
 
 spellIgnite (var target)

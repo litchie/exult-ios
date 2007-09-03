@@ -198,6 +198,24 @@ int Usecode_scope_symbol::get_high_shape_fun(int n)
 }
 
 /*
+ *	See if the function requires an itemref.
+ */
+bool Usecode_scope_symbol::is_object_fun(int n)
+{
+	if (by_val.empty())
+		setup_by_val();
+	Val_table::iterator it = by_val.find(val);
+	// Symbol not found; default to original behavior
+	if (it == by_val.end())
+		return (n < 0x800);
+	Usecode_symbol *sym = (*it).second;
+	if (sym &&
+		(sym->get_kind() == shape_fun || sym->get_kind() == object_fun))
+		return true;
+	return false;
+}
+
+/*
  *	Read from a file.
  */
 void Usecode_class_symbol::read(istream& in)

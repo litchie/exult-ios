@@ -105,7 +105,7 @@ extern var inMagicStorm 0x906();
 
 //Puts <item> in the player's inventory, from world or container.
 //if this is not possible, it will flash the X cursor and restore the item to its original position/container.
-extern giveToAvatar 0x692();
+extern giveToAvatar object#(0x692) ();
 
 
 // Miscellaneous functions

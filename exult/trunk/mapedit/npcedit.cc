@@ -125,7 +125,7 @@ C_EXPORT void on_npc_usecode_browse_clicked
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	const char *uc = studio->browse_usecode();
+	const char *uc = studio->browse_usecode(true);
 	if (*uc)
 		studio->set_entry("npc_usecode_entry", uc, true);
 	}

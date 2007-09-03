@@ -43,7 +43,8 @@ vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
 int Uc_function::num_global_statics = 0;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
 	Uc_function::push_answers = -1, Uc_function::pop_answers = -1,
-	Uc_function::show_face = -1, Uc_function::remove_face = -1;
+	Uc_function::show_face = -1, Uc_function::remove_face = -1,
+	Uc_function::get_item_shape = -1, Uc_function::get_usecode_fun = -1;
 Uc_function::Intrinsic_type Uc_function::intrinsic_type =
 						Uc_function::unset;
 
@@ -557,7 +558,9 @@ void Uc_function::gen
 		}
 		// Now data.
 	out.write(text_data, text_data_size);
-	Write2(out, num_parms);		// Counts.
+		// Counts.
+	Write2(out, num_parms+
+			(get_function_type() != Uc_function_symbol::utility_fun));
 	Write2(out, num_locals);
 	Write2(out, num_links);
 					// Write external links.
@@ -633,6 +636,10 @@ void Uc_function::set_intrinsics
 	for (int i = 0; i < cnt; i++)
 		{
 		char *nm = (char *)table[i];
+		if (!memcmp(nm, "UI_get_usecode_fun", sizeof("UI_get_usecode_fun")))
+			get_usecode_fun = i;
+		else if (!memcmp(nm, "UI_get_item_shape", sizeof("UI_get_item_shape")))
+			get_item_shape = i;
 		Uc_intrinsic_symbol *sym = new Uc_intrinsic_symbol(nm, i);
 		intrinsics[i] = sym;	// Store in indexed list.
 		if (!globals.search(nm))
@@ -653,8 +660,10 @@ Usecode_symbol *Uc_function::create_sym
 	// For now, all externs have their ID given.
 	if (is_externed())
 		kind = Usecode_symbol::fun_extern_defined;
-	if (proto->get_shape_num() != -1)
+	if (proto->get_function_type() == Uc_function_symbol::shape_fun)
 		kind = Usecode_symbol::shape_fun;
+	else if (proto->get_function_type() == Uc_function_symbol::object_fun)
+		kind = Usecode_symbol::object_fun;
 	return new Usecode_symbol(get_name(), kind, get_usecode_num(),
 				proto->get_shape_num());
 	}

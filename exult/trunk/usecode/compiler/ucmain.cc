@@ -150,3 +150,14 @@ void yyerror
 	{
 	Uc_location::yyerror(s);
 	}
+
+/*
+ *	Report warning.
+ */
+void yywarning
+	(
+	char *s
+	)
+	{
+	Uc_location::yywarning(s);
+	}

@@ -176,7 +176,7 @@ lauriannaHeal (var spellbook)
 		say("@I'd love to, but thou hast taken my spellbook.@");
 }
 
-lauriannaPrePotionDialog ()
+lauriannaPrePotionDialog object#() ()
 {
 	//Notice: Laurianna's dialog makes extensive use of the switchFace function
 	//due to her madness. She has FOUR faces all told, which are switched constantly.

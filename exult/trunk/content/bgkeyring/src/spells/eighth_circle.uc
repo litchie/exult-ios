@@ -95,7 +95,7 @@ spellInvisibilityAll ()
 			{
 				var delay = ((get_distance(npc) / 3) + 5);
 				script npc after delay ticks
-				{	nohalt;						call spellInvisibilityAll;}
+				{	nohalt;			call spellSetFlag, INVISIBLE;}
 			}
 		}
 		else
@@ -107,9 +107,6 @@ spellInvisibilityAll ()
 				call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		set_item_flag(INVISIBLE);
 }
 
 spellMassDeath ()
@@ -138,7 +135,7 @@ spellMassDeath ()
 					var delay = ((get_distance(npc) / 3) + 5);
 					npc->halt_scheduled();
 					script npc after delay ticks
-					{	nohalt;					call spellMassDeath;}
+					{	nohalt;					call spellCauseDeath;}
 					killed_anyone = true;
 				}
 			}
@@ -159,17 +156,6 @@ spellMassDeath ()
 			{	nohalt;						actor frame KNEEL;
 				actor frame STAND;			actor frame CAST_1;
 				actor frame CAST_2;			call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var cantdie = get_item_flag(CANT_DIE) || get_item_flag(DEATH_PROTECTION);
-		if (!cantdie)
-		{
-			var hps = get_npc_prop(HEALTH);
-			hurtNPC(item, (hps - 2));
-			hurtNPC(item, 50);
 		}
 	}
 }
@@ -231,7 +217,7 @@ spellSummon ()
 			{	nohalt;						actor frame KNEEL;
 				actor frame STAND;			actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
-				sfx 65;						call spellSummon;}
+				sfx 65;						call spellSummonEffect;}
 		}
 		else
 		{
@@ -240,42 +226,6 @@ spellSummon ()
 				actor frame STAND;			actor frame CAST_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var summonables = [SHAPE_SKELETON, SHAPE_DRAGON, SHAPE_GHOST3, SHAPE_MONSTER_TROLL,
-						   SHAPE_MONSTER_MAGE, SHAPE_MONSTER_CYCLOPS, SHAPE_DRAKE,
-						   SHAPE_MONSTER_GARGOYLE, SHAPE_GARGOYLE_WINGED, SHAPE_HEADLESS,
-						   SHAPE_LICHE, SHAPE_MONGBAT, SHAPE_SCORPION];
-		var max_rand2 = [5, 15, 5, 5, 5, 5, 5, 5, 14, 5, 10, 5, 5];
-		var creature_count = [5, 1, 5, 1, 2, 2, 2, 1, 1, 3, 1, 5, 2];
-		var array_size = UI_get_array_size(summonables);
-		
-		var rand1 = UI_die_roll(1, array_size);
-		var rand2 = UI_die_roll(1, 100);
-		while (max_rand2[rand1] < rand2)
-		{
-			rand1 = UI_die_roll(1, array_size);
-			rand2 = UI_die_roll(1, 100);
-		}
-			
-		var counter = creature_count[rand1];
-		var randmax = (counter / 2);
-		if (randmax < 1)
-			randmax = 1;
-
-		var rand3 = UI_die_roll(1, randmax);
-		if (UI_die_roll(1, 2) == 1)
-			rand3 = (-1 * rand3);
-
-		counter = (counter + rand3);
-		while (counter)
-		{
-			var summoned = summonables[rand1]->summon(true);
-			summoned->set_alignment(get_alignment());
-			counter = (counter - 1);
 		}
 	}
 }
@@ -321,7 +271,7 @@ spellTimeStop ()
 			script item
 			{	nohalt;						sfx 67;
 				actor frame SWING_2H_3;		actor frame CAST_2;
-				call spellTimeStop;}
+				call spellStopTime, 100;}
 		}
 		else
 		{
@@ -330,9 +280,6 @@ spellTimeStop ()
 				actor frame CAST_2;			call spellFails;}
 		}
 	}
-	
-	else if (event == SCRIPTED)
-		UI_stop_time(100);
 }
 
 spellMassResurrect ()
@@ -363,7 +310,7 @@ spellMassResurrect ()
 			script item
 			{	nohalt;						sfx 64;
 				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			call spellMassResurrect;}
+				actor frame CAST_1;			call spellMassResurrectEffect;}
 			UI_play_music(15, 0);
 		}
 		else
@@ -374,25 +321,4 @@ spellMassResurrect ()
 				call spellFails;}
 		}
 	}
-	else if (event == SCRIPTED)
-	{
-		var body;
-		var xoff = [0, 1, 2, 1, 0, -1, -2, -1];
-		var yoff = [2, 1, 0, -1, -2, -1, 0, 1];
-		for (body in bodies)
-		{
-			var qual = body->get_item_quality();
-			var quant = body->get_item_quantity(1);
-			if ((qual != 0) || (quant != 0))
-			{
-				var pos = get_object_position();
-				UI_sprite_effect(ANIMATION_LIGHTNING, pos[X], pos[Y], 0, 0, 0, -1);
-				UI_sprite_effect(ANIMATION_GREEN_BUBBLES, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
-				var dist = get_distance(body);
-				script body after 2+dist/3 ticks call spellMassResurrect, EGG;
-			}
-		}
-	}
-	else
-		resurrect();
-}	
+}

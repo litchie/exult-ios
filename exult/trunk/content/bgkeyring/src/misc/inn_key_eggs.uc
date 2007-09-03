@@ -55,7 +55,7 @@ enum bed_states
 const int EVENT_FIND_EGG				= 20;
 const int EVENT_TALK					= 21;
 
-eggLockInnDoors ()
+eggLockInnDoors object#() ()
 {
 	var polite_title = getPoliteTitle();
 	var inn_keepers = [JAMES, JAMES, MANDY, PAMELA, OPHELIA, BORIS, POLLY,
@@ -297,7 +297,7 @@ eggLockInnDoors ()
 
 
 //New NPC usecode for better handling:
-James 0x42E ()
+James object#(0x42E) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -305,7 +305,7 @@ James 0x42E ()
 		James.original();
 }
 
-Mandy 0x4E7 ()
+Mandy object#(0x4E7) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -313,7 +313,7 @@ Mandy 0x4E7 ()
 		Mandy.original();
 }
 
-Pamela 0x44E ()
+Pamela object#(0x44E) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -321,7 +321,7 @@ Pamela 0x44E ()
 		Pamela.original();
 }
 
-Ophelia 0x47A ()
+Ophelia object#(0x47A) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -329,7 +329,7 @@ Ophelia 0x47A ()
 		Ophelia.original();
 }
 
-Boris 0x482 ()
+Boris object#(0x482) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -337,7 +337,7 @@ Boris 0x482 ()
 		Boris.original();
 }
 
-Polly 0x4B3 ()
+Polly object#(0x4B3) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -345,7 +345,7 @@ Polly 0x4B3 ()
 		Polly.original();
 }
 
-Apollonia 0x413 ()
+Apollonia object#(0x413) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -353,7 +353,7 @@ Apollonia 0x413 ()
 		Apollonia.original();
 }
 
-Rutherford 0x45C ()
+Rutherford object#(0x45C) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	

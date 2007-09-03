@@ -28,7 +28,7 @@
 //Externs:
 extern perrinTrain 0x8CA (var props, var cost);
 
-Perrin 0x4EE ()
+Perrin object#(0x4EE) ()
 {
 	var avatar_name;
 	var avatar_title;

@@ -17,8 +17,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-freeze (){set_item_flag(DONT_MOVE);}
-unfreeze (){clear_item_flag(DONT_MOVE);}
+freeze object#() (){set_item_flag(DONT_MOVE);}
+unfreeze object#() (){clear_item_flag(DONT_MOVE);}
 
 addShaminoToParty ()
 {
@@ -87,7 +87,7 @@ askIoloBelongings ()
 	}
 }
 
-setFurcapFlag ()
+setFurcapFlag object#() ()
 {
 	//We should only be here if the Avatar knew the furcap was
 	//Frigidazzi's and talked to her. If he gave the furcap back,
@@ -240,4 +240,9 @@ dropAllItems (var npc, var pos)
 				UI_update_last_created(pos);
 		}
 	}
+}
+
+wraperXenkaReturns object#() ()
+{
+	xenkaReturns();
 }

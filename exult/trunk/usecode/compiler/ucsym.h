@@ -95,9 +95,11 @@ class Uc_var_symbol : public Uc_symbol
 protected:
 	int offset;			// Within function.  Locals follow
 					//   formal parameters.
+	int is_obj_fun;
 public:
 	friend class Uc_scope;
-	Uc_var_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
+	Uc_var_symbol(char *nm, int off, int obj = -1)
+		: Uc_symbol(nm), offset(off), is_obj_fun(obj)
 		{  }
 	int get_offset()
 		{ return offset; }
@@ -109,6 +111,9 @@ public:
 	virtual int gen_assign(vector<char>& out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
+	virtual int is_object_function(bool error = true) const;
+	virtual void set_is_obj_fun(int s)
+		{ is_obj_fun = s; }
 	};
 
 /*
@@ -256,6 +261,12 @@ class Uc_function_symbol : public Uc_symbol
 					//   function numbers if function already
 					//   has a number of its own.
 public:
+	enum Function_kind
+		{
+		utility_fun, 
+		shape_fun,
+		object_fun
+		};
 					// Keep track of #'s used.
 	typedef std::map<int, Uc_function_symbol *> Sym_nums;
 private:
@@ -270,13 +281,15 @@ private:
 	bool has_ret;
 	Uc_class *ret_type;
 	bool high_id;
+	Function_kind type;
 public:
 	friend class Uc_scope;
 	Uc_function_symbol(char *nm, int num,
-				std::vector<Uc_var_symbol *>& p, int shp = -1);
+				std::vector<Uc_var_symbol *>& p,
+				int shp = 0, Function_kind kind = utility_fun);
 	static Uc_function_symbol *create(char *nm, int num, 
 				std::vector<Uc_var_symbol *>& p, bool is_extern=false,
-				Uc_scope *scope = 0, int shp = -1);
+				Uc_scope *scope = 0, Function_kind kind = utility_fun);
 	const std::vector<Uc_var_symbol *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
@@ -312,6 +325,13 @@ public:
 		last_num = n;
 		new_auto_num = true;
 		}
+	static Uc_function_symbol *search_num(int ucnum)
+		{
+		Sym_nums::const_iterator it = nums_used.find(ucnum);
+		if (it == nums_used.end())	// Unused?  That's good.
+			return 0;
+		return (*it).second;
+		}
 	virtual bool get_has_ret() const
 		{ return has_ret; }
 	virtual void set_has_ret()
@@ -320,6 +340,8 @@ public:
 		{ return ret_type; }
 	virtual bool set_ret_type(Uc_class *r)
 		{ ret_type = r; has_ret = true; }
+	virtual Function_kind get_function_type() const
+		{ return type; }
 	};
 
 /*

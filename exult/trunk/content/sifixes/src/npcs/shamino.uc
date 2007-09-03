@@ -26,7 +26,7 @@ extern askShaminoBelongings 0x863 ();
 
 const int BEATRIX_FACE					= 0xFEE2;
 
-Shamino 0x402 ()
+Shamino object#(0x402) ()
 {
 	var shamino_id;
 	var avatartitle;
@@ -163,7 +163,7 @@ Shamino 0x402 ()
 			say("@Thank thee, Avatar, for restoring my mind! As always, I am ready to provide whatever aid I can, " + avatartitle + ".@");
 			SHAMINO->set_npc_id(0);
 			SHAMINO->add_to_party();
-			script SHAMINO after 15 ticks call xenkaReturns;
+			script SHAMINO after 15 ticks call wraperXenkaReturns;
 			remove("join");
 			add(["leave", "bye"]);
 		}

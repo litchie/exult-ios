@@ -507,7 +507,7 @@ var spellitemGetNPCIndex(var npcnum)
 			return index;
 }
 
-spellitem_Main ()
+spellitem_Main object#() ()
 {
 	var npcnum = -get_item_quality();
 	var npc = npcnum->get_npc_object();

@@ -84,7 +84,7 @@ private:
 	short rotation_speed;	// Added to frame # each cycle (misslies only).
 	short cycle_delay;		// Delay between successive cycles?
 	bool m_no_blocking;		// Can move through walls.
-	short usecode;			// Usecode function, or 0.
+	int usecode;			// Usecode function, or 0.
 	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
 					//   3 = missile-firing.
 	unsigned char range;		// Distance weapon can be used.

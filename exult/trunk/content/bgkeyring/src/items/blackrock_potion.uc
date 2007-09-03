@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-killTargetNPC ()
+killTargetNPC object#() ()
 {
 	var npcshape = get_item_shape();
 	if (npcshape == SHAPE_LORD_BRITISH)

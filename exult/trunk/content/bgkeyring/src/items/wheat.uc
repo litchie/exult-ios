@@ -53,7 +53,7 @@ Wheat shape#(0x2A5) ()
 }
 
 //Create a new flour sack
-createFlour ()
+createFlour object#() ()
 {
 	//create the new flour object
 	var flour = UI_create_new_object(SHAPE_KITCHEN_ITEM);

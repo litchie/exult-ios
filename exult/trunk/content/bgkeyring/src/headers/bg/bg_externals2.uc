@@ -35,7 +35,7 @@ extern var sellAmountToParty 0x8F8(var shapenum, var framenum, var base_quant, v
 extern var chooseFromMenu2 0x90C(var itemnames);
 
 //Generates a poof of smoke and associated sound:
-extern spellFails 0x606 ();
+extern spellFails object#(0x606) ();
 //Returns the level of npc:
 extern var getNPCLevel 0x8F6 (var npc);
 extern var absoluteValueOf 0x932 (var number);
@@ -45,11 +45,11 @@ extern hurtNPC 0x936 (var npc, var damage);
 extern setNonpartySchedule 0x93F (var npc, var sched);
 
 //Makes an NPC stop dancing (from Dance spell):
-extern var stopDancing 0x688 ();
+extern stopDancing object#(0x688) ();
 //Stops magic storm, clears magic storm flag:
-extern var stopMagicStorm 0x68A ();
+extern stopMagicStorm object#(0x68A) ();
 //Used by magic storm; lightning bolt falls on enemy and causes damage:
-extern var callLightning 0x60F ();
+extern callLightning object#(0x60F) ();
 
 //Sees if container has a minimum amount of a given item:
 extern var contHasItemCount 0x931 (var container, var min_count, var shapenum, var quality, var framenum);
@@ -64,7 +64,7 @@ extern door2Vertical shape#(0x1B1) ();
 
 //Moongate-related externs:
 //Plays animation where the avatar leaves a moongate:
-extern var exitMoongate 0x636 ();
+extern exitMoongate object#(0x636) ();
 //Closes a moongate created by the orb of the moons:
 extern closeOrbMoongate 0x821 (var moongate);
 //Returns the position where the player clicked as a respose of UI_click_on_item:
@@ -78,10 +78,10 @@ extern var inGreaterTrinsicArea 0x93E ();
 
 //Blacksword-related externs:
 //Fire power:
-extern createFire 0x6FC ();
-extern teleportIsleOfFire 0x6F9 ();
+extern createFire object#(0x6FC) ();
+extern teleportIsleOfFire object#(0x6F9) ();
 //Death power:
-extern killTarget 0x70F ();
+extern killTarget object#(0x70F) ();
 //The animation (and sound) of the daemon mirror after you
 //say "Bye" to Arcadion:
 extern arcadionMirrorHide 0x843 ();
@@ -92,13 +92,13 @@ extern var swordBlankAndGemInHands 0x846 ();
 //The blacksword doesn't kill corpses:
 extern var isCorpseShape 0x847 (var target_shape);
 //Forces the blacksword into the avatar's inventory:
-extern var forceGiveBlackSword 0x70B ();
+extern forceGiveBlackSword object#(0x70B) ();
 extern var inIsleOfFire 0x8E7 ();
 
 //Deletes container and all objects inside it:
 extern deleteObjectAndContents 0x8E6 (var container);
 //Does... *something*... to bodies (used mainly for FoV NPCs)
-extern makeStuffToBodies 0x6F7 ();
+extern makeStuffToBodies object#(0x6F7) ();
 
 //Reimplemented:
 //Used by Death power to see if the blacksword deems the target to be

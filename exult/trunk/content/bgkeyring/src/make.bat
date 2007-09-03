@@ -1,3 +1,4 @@
+@if "%1"=="--skipflexes" @goto usecode
 @expack.exe > NUL: 2>&1
 @if errorlevel 9009 (
 	@echo expack was not found; please add it to your PATH environment variable
@@ -11,7 +12,7 @@
 	@expack.exe -i graphics/%%f.in > NUL: 2>&1
 	@del ..\data\%%f_*.h > NUL: 2>&1
 )
-
+:usecode
 @if exist usecode.uc (
 	@ucc.exe -o usecode %0 > NUL: 2>&1
 	@if errorlevel 9009 (

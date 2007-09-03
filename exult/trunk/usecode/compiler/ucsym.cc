@@ -132,6 +132,36 @@ int Uc_var_symbol::gen_value
 	return 1;
 	}
 
+int Uc_var_symbol::is_object_function(bool print_error) const
+	{
+	if (print_error)
+		{
+		char buf[180];
+		switch (is_obj_fun)
+			{
+			case -2:
+				sprintf(buf, "Shape # is equal to fun. ID only for shapes < 0x400; use UI_get_usecode_fun instead");
+				Uc_location::yywarning(buf);
+				break;
+			case 1:
+				sprintf(buf, "Var '%s' contains fun. not declared as 'shape#' or 'object#'",
+						name.c_str());
+				Uc_location::yyerror(buf);
+				break;
+			case 2:
+				sprintf(buf, "Var '%s' contains a negative number", name.c_str());
+				Uc_location::yyerror(buf);
+				break;
+			case 3:
+				sprintf(buf, "Return of intrinsics are generally not fun. IDs",
+						name.c_str());
+				Uc_location::yyerror(buf);
+				break;
+			}
+		}
+	return is_obj_fun;
+	}
+
 /*
  *	Create an expression with this value.
  */
@@ -362,10 +392,11 @@ Uc_function_symbol::Uc_function_symbol
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
 	std::vector<Uc_var_symbol *>& p,
-	int shp
+	int shp,
+	Function_kind kind
 	) :	Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
 		ret_type(0), has_ret(false), shape_num(shp), externed(false),
-		inherited(false), high_id(false)
+		inherited(false), high_id(false), type(kind)
 	{
 	high_id = is_int_32bit(usecode_num);
 	}
@@ -383,9 +414,43 @@ Uc_function_symbol *Uc_function_symbol::create
 	std::vector<Uc_var_symbol *>& p,
 	bool is_extern,
 	Uc_scope *scope,
-	int shp
+	Function_kind kind
 	)
 	{
+	// Checking num and kind for backward compatibility.
+	if (num < 0)
+		{
+		// Treat as autonumber request.
+		num = -1;
+		if (kind == shape_fun)
+			{
+			char buf[180];
+			sprintf(buf, "Shape number cannot be negative");
+			Uc_location::yyerror(buf);
+			}
+		}
+	else if (num < 0x400)
+		{
+		if (kind == utility_fun)
+			{
+			char buf[180];
+			sprintf(buf, "Treating function '%s' as being a 'shape#()' function.", nm);
+			Uc_location::yywarning(buf);
+			kind = shape_fun;
+			}
+		}
+	else if (num < 0x800)
+		{
+		if (kind == utility_fun)
+			{
+			char buf[180];
+			sprintf(buf, "Treating function '%s' as being an 'object#()' function.", nm);
+			Uc_location::yywarning(buf);
+			kind = object_fun;
+			}
+		}
+
+	int shp = (kind == shape_fun) ? num : -1;
 	if (shp >= 0x400)
 		num = new_auto_num ? -1 : 0xC00 + shp;
 	else if (shp != -1)
@@ -395,7 +460,36 @@ Uc_function_symbol *Uc_function_symbol::create
 	Uc_function_symbol *sym = (Uc_function_symbol *) (scope ?
 		scope->search(nm) : Uc_function::search_globals(nm));
 	if (sym)
-		if (scope)
+		{
+		if (sym->get_function_type() != kind)
+			{
+			std::string msg = "Incompatible declarations of function '";
+			msg = msg + nm + "': ";
+			switch (sym->get_function_type())
+				{
+				case utility_fun:
+					msg += "new decl. should not use ";
+					if (kind == shape_fun)
+						msg += "'shape#'";
+					else
+						msg += "'object#'";
+					break;
+				case shape_fun:
+					if (kind == utility_fun)
+						msg += "'shape#' missing in new decl.";
+					else
+						msg += "new decl. should use 'shape#' instead of 'object#'";
+					break;
+				case object_fun:
+					if (kind == utility_fun)
+						msg += "'object#' missing in new decl.";
+					else
+						msg += "new decl. should use 'object#' instead of 'shape#'";
+					break;
+				}
+			Uc_location::yyerror(const_cast<char *>(msg.c_str()));
+			}
+		else if (scope)
 			{
 			if (!sym->is_inherited())
 				{
@@ -422,6 +516,7 @@ Uc_function_symbol *Uc_function_symbol::create
 			sprintf(buf, "Duplicate declaration of function '%s'.", nm);
 			Uc_location::yyerror(buf);
 			}
+		}
 
 	if (num < 0 && !new_auto_num)
 		{
@@ -443,7 +538,7 @@ Uc_function_symbol *Uc_function_symbol::create
 	Sym_nums::const_iterator it = nums_used.find(ucnum);
 	if (it == nums_used.end())	// Unused?  That's good.
 		{
-		sym = new Uc_function_symbol(nm, ucnum, p, shp);
+		sym = new Uc_function_symbol(nm, ucnum, p, shp, kind);
 		if (is_extern)
 			sym->set_externed();
 		nums_used[ucnum] = sym;

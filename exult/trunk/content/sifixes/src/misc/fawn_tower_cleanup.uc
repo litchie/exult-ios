@@ -32,7 +32,7 @@ mightyGoblinDies 0x9B7 ()
 	}
 }
 
-eggFawnTowerCleanup 0x72D ()
+eggFawnTowerCleanup object#(0x72D) ()
 {
 	if ((event == EGG) && gflags[CLEARED_FAWN_TOWER])
 	{

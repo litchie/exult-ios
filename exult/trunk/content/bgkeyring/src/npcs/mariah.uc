@@ -24,10 +24,10 @@
  *	Last Modified: 2006-02-27
  */
 
-extern mariahSellSpells 0x8BB ();
+extern mariahSellSpells 0x8BB (var var0000);
 extern mariahSellReagents 0x8BC (var var0000);
 
-Mariah 0x499 ()
+Mariah object#(0x499) ()
 {
 	static var did_post_tetrahedron;
 	if (event == DOUBLECLICK)
@@ -148,7 +148,7 @@ Mariah 0x499 ()
 					}
 				
 				case "spells":
-					MARIAH->mariahSellSpells();
+					mariahSellSpells(MARIAH);
 				
 				case "reagents":
 					mariahSellReagents("Reagents");
@@ -206,7 +206,7 @@ Mariah 0x499 ()
 				
 				case "which day" (remove):
 					say("@Why, today. Thou art in luck. Buy a spell.@");
-					MARIAH->mariahSellSpells();
+					mariahSellSpells(MARIAH);
 				
 				case "reagents":
 					mariahSellReagents("Reagents");

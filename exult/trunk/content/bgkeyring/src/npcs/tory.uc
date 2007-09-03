@@ -25,7 +25,7 @@
  */
 
 const int RIKY_QUEST_EXPERIENCE = 100;	//How much the party gets for returning Riky
-Lady_Tory 0x4C8 ()
+Lady_Tory object#(0x4C8) ()
 {
 	var player_name;
 	var polite_title;

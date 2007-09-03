@@ -46,6 +46,7 @@ using std::strlen;
 using std::string;
 
 void yyerror(char *);
+void yywarning(char *);
 extern int yylex();
 extern void start_script(), end_script();
 extern void start_loop(), end_loop();
@@ -74,6 +75,12 @@ static Uc_class *class_type = 0;	// For declaration of class variables.
 static bool has_ret = false;
 static int repeat_nesting = 0;
 
+struct ID_info
+	{
+	Uc_function_symbol::Function_kind kind;
+	int id;
+	};
+
 %}
 
 %union
@@ -91,6 +98,7 @@ static int repeat_nesting = 0;
 	class Uc_array_expression *exprlist;
 	class std::vector<int> *intlist;
 	class std::vector<Uc_statement *> *stmtlist;
+	struct ID_info *funid;
 	int intval;
 	char *strval;
 	}
@@ -101,8 +109,8 @@ static int repeat_nesting = 0;
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT CLASS
-%token NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
+%token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
 %token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ
 
 /*
@@ -142,8 +150,9 @@ static int repeat_nesting = 0;
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr opt_delay appended_element
-%type <intval> opt_int direction int_literal converse_options
-%type <intval> opt_original opt_var opt_shapenum assignment_operator
+%type <intval> opt_int direction int_literal converse_options opt_var
+%type <intval> opt_original assignment_operator
+%type <funid> opt_funid
 %type <intlist> string_list
 %type <sym> declared_sym
 %type <var> declared_var param
@@ -232,7 +241,7 @@ method:
 			new Uc_class_inst_symbol("this", cur_class, 0));
 		Uc_function_symbol *funsym = 
 			Uc_function_symbol::create($1, -1, *$3, false,
-					cur_class->get_scope());
+					cur_class->get_scope(), Uc_function_symbol::utility_fun);
 		delete $3;		// A copy was made.
 		
 		// Set return type.
@@ -269,38 +278,71 @@ function_body:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	opt_var IDENTIFIER opt_int opt_shapenum '(' opt_param_list ')'
+	opt_var IDENTIFIER opt_funid '(' opt_param_list ')'
 		{
-		if ($3 != -1 && $4 != -1)
+		if ($3->kind != Uc_function_symbol::utility_fun)
 			{
 			char buf[180];
-			sprintf(buf, "parse error: 'shape#(%d)' unexpected", $4);
-			yyerror(buf);
+			if ($1)
+				{
+				sprintf(buf, "Functions declared with '%s#' cannot return a value",
+					$3->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
+				yyerror(buf);
+				}
+			if (!$5->empty())
+				{
+				sprintf(buf, "Functions declared with '%s#' cannot have arguments",
+					$3->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
+				yyerror(buf);
+				}
 			}
-		$$ = Uc_function_symbol::create($2, $3, *$6, is_extern, 0, $4);
+		$$ = Uc_function_symbol::create($2, $3->id, *$5, is_extern, 0, $3->kind);
 		if ($1)
 			$$->set_has_ret();
-		delete $6;		// A copy was made.
+		delete $5;		// A copy was made.
+		delete $3;
 		}
-	| CLASS '<' defined_class '>' IDENTIFIER opt_int opt_shapenum '(' opt_param_list ')'
+	| CLASS '<' defined_class '>' IDENTIFIER opt_int '(' opt_param_list ')'
 		{
-		if ($6 > -1 && $7 > -1)
-			{
-			char buf[180];
-			sprintf(buf, "parse error: 'shape#(%d)' unexpected", $7);
-			yyerror(buf);
-			}
-		$$ = Uc_function_symbol::create($5, $6, *$9, is_extern, 0, $7);
+		$$ = Uc_function_symbol::create($5, $6, *$8, is_extern, 0,
+				Uc_function_symbol::utility_fun);
 		$$->set_ret_type($3);
-		delete $9;		// A copy was made.
+		delete $8;		// A copy was made.
 		}
 	;
 
-opt_shapenum:
+opt_funid:
 	SHAPENUM '(' INT_LITERAL ')'
-		{ $$ = $3; }
+		{
+		$$ = new ID_info();
+		$$->id = $3;
+		if ($3 < 0)
+			{
+			char buf[180];
+			sprintf(buf, "Shape number cannot be negative");
+			yyerror(buf);
+			$$->id = -1;
+			}
+		$$->kind = Uc_function_symbol::shape_fun;
+		}
+	| OBJECTNUM '(' opt_int ')'
+		{
+		$$ = new ID_info();
+		$$->kind = Uc_function_symbol::object_fun;
+		$$->id = $3;
+		}
+	| int_literal
+		{
+		$$ = new ID_info();
+		$$->id = $1;
+		$$->kind = Uc_function_symbol::utility_fun;
+		}
 	|				/* Empty. */
-		{ $$ = -1; }
+		{
+		$$ = new ID_info();
+		$$->kind = Uc_function_symbol::utility_fun;
+		$$->id = -1;
+		}
 	;
 
 opt_int:
@@ -478,8 +520,8 @@ var_decl:
 			{
 			Uc_var_symbol *var = cur_fun ? cur_fun->add_symbol($1)
 							 : cur_class->add_symbol($1);
-			$$ = new Uc_assignment_statement(
-					new Uc_var_expression(var), $3);
+			var->set_is_obj_fun($3->is_object_function(false));
+			$$ = new Uc_assignment_statement(new Uc_var_expression(var), $3);
 			}
 		}
 	;
@@ -630,21 +672,29 @@ assignment_statement:
 				if (Incompatible_classes_error(src, trg))
 					$$ = 0;
 				else
+					{
+					$1->set_is_obj_fun($3->is_object_function(false));
 					$$ = new Uc_assignment_statement($1, $3);
+					}
 				}
 			}
 		else if (Class_unexpected_error($3))
 			$$ = 0;
 		else
+			{
+			$1->set_is_obj_fun($3->is_object_function(false));
 			$$ = new Uc_assignment_statement($1, $3);
+			}
 		}
 	| nonclass_expr assignment_operator nonclass_expr ';'
 		{
+		$1->set_is_obj_fun(-1);
 		$$ = new Uc_assignment_statement($1, 
 				new Uc_binary_expression($2, $1, $3));
 		}
 	| nonclass_expr UCC_INSERT appended_element_list ';'
 		{
+		$1->set_is_obj_fun(-1);
 		$$ = new Uc_assignment_statement(
 				$1, new Uc_array_expression($1, $3));
 		}
@@ -1067,7 +1117,21 @@ script_command:
 
 start_call:
 	CALL nonclass_expr
-		{ $$ = $2; }
+		{
+		if (!$2)
+			$$ = new Uc_int_expression(0);
+		else
+			{
+				// May generate errors.
+			if ($2->is_object_function() == -1)
+				{	// Don't know.
+				char buf[180];
+				sprintf(buf, "Please ensure that 'call' uses a function declared with 'shape#' or 'object#'");
+				yywarning(buf);
+				}
+			$$ = $2;
+			}
+		}
 	;
 
 direction:
@@ -1602,6 +1666,49 @@ static Uc_call_expression *cls_method_call
 	return ret;
 	}
 
+static bool Uc_is_valid_calle
+	(
+	Uc_symbol *sym,
+	Uc_expression *ths,
+	char *nm
+	)
+	{
+	Uc_function_symbol *fun = dynamic_cast<Uc_function_symbol *>(sym);
+	if (!fun)		// Most likely an intrinsic.
+		return true;
+
+	if (fun->get_function_type() == Uc_function_symbol::utility_fun)
+		{
+		if (ths && !ths->is_class())
+			{
+			char buf[150];
+			sprintf(buf, "'%s' is not an object or shape function", nm);
+			yyerror(buf);
+			return false;
+			}
+		else if (ths)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' is not a member of class '%s'",
+					nm, ths->get_cls()->get_name());
+			yyerror(buf);
+			return false;
+			}
+		}
+	else
+		{
+		if (!ths)
+			{
+			char buf[180];
+			sprintf(buf, "'%s' expects an itemref, but none was supplied; using current itemref", nm);
+			ths = new Uc_item_expression();
+			yywarning(buf);
+			return true;
+			}
+		}
+	return true;
+	}
+
 static Uc_call_expression *cls_function_call
 	(
 	Uc_expression *ths,
@@ -1620,7 +1727,11 @@ static Uc_call_expression *cls_function_call
 	
 	// Search for defined functions.
 	if (!sym)
+		{
 		sym = cur_fun->search_up(nm);
+		if (!original && !Uc_is_valid_calle(sym, ths, nm))
+			return 0;
+		}
 
 	// Check for intrinsic name.
 	if (!sym)		

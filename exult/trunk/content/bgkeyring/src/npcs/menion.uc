@@ -24,7 +24,7 @@
 
 //Menion's training script (He trains strength and combat)
 extern trainWithMenion 0x8BE (var abilities, var price);
-Menion 0x4C0 ()
+Menion object#(0x4C0) ()
 {
 	var schedule;
 	var part_of_day;
