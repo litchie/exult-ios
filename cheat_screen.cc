@@ -1761,6 +1761,8 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 			{
 			gwin->get_party_man()->remove_from_party(actor);
 			gwin->revert_schedules(actor);
+			// Just to be sure.
+			actor->clear_flag(Obj_flags::in_party);
 			}
 		else
 			{
@@ -2536,9 +2538,19 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop (int num, Actor *actor)
 			else if (command == 's')	// Set
 			{
 				actor->set_flag(num);
+				if (num == Obj_flags::in_party)
+				{
+					gwin->get_party_man()->add_to_party(actor);
+					actor->set_schedule_type(Schedule::follow_avatar);
+				}
 			}
 			else if (command == 'u')	// Unset
 			{
+				if (num == Obj_flags::in_party)
+				{
+					gwin->get_party_man()->remove_from_party(actor);
+					gwin->revert_schedules(actor);
+				}
 				actor->clear_flag(num);
 			}
 
