@@ -28,12 +28,12 @@
  */
 
 // externs
-extern partySurroundBatlin 0x61D ();
-extern killEveryone 0x7D8 ();
+extern partySurroundBatlin object#(0x61D) ();
+extern killEveryone object#(0x7D8) ();
 
 const int BATLIN_FACE				= -287;
 
-BatlinAtWallOfLights 0x73B ()
+BatlinAtWallOfLights object#(0x73B) ()
 {
 	var pos;
 	var companions = [SHAMINO, DUPRE, IOLO];

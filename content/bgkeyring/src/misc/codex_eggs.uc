@@ -23,7 +23,7 @@
  *	Last Modified: 2006-03-19
  */
 
-eggCodexLenses ()
+eggCodexLenses object#() ()
 {
 	var pos;
 	var quality;
@@ -96,7 +96,7 @@ eggCodexLenses ()
 	}
 }
 
-eggCodexShrineEntrance ()
+eggCodexShrineEntrance object#() ()
 {
 	if (event != EGG)
 		return;
@@ -168,7 +168,7 @@ eggCodexShrineEntrance ()
 	}
 }
 
-eggCodexQuest ()
+eggCodexQuest object#() ()
 {
 	if (event != EGG)
 		return;
@@ -293,7 +293,7 @@ eggCodexQuest ()
 		gflags[CODEX_ALL_ITEMS_IN_PLACE] = false;
 }
 
-eggDeleteTimelord ()
+eggDeleteTimelord object#() ()
 {
 	if (event != EGG)
 		return;
@@ -307,7 +307,7 @@ eggDeleteTimelord ()
 	}
 }
 
-eggReturnedItemsOfPrinciple ()
+eggReturnedItemsOfPrinciple object#() ()
 {
 	if (event != EGG)
 		return;
@@ -323,7 +323,7 @@ eggReturnedItemsOfPrinciple ()
 	}
 }
 
-eggsPartyLocationBarks 0x621 ()
+eggsPartyLocationBarks object#(0x621) ()
 {
 	var qual = get_item_quality();
 	var msg;

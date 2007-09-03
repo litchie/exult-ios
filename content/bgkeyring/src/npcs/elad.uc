@@ -27,7 +27,7 @@
 //Externs:
 //extern eladHeal 0x879 (var price_heal, var price_cure, var price_resurrect);
 
-Elad 0x4A2 ()
+Elad object#(0x4A2) ()
 {
 	if (event == DOUBLECLICK)
 	{

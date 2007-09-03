@@ -18,16 +18,16 @@
  */
 
 //externs:
-extern spellFails 0x606 ();
-extern createImbalanceFields 0x688 ();
-extern serpentbondRemoveNPCsFromParty 0x7D6 ();
-extern serpentbondAddNPCsBackToParty 0x7D7 ();
+extern spellFails object#(0x606) ();
+extern createImbalanceFields object#(0x688) ();
+extern serpentbondRemoveNPCsFromParty object#(0x7D6) ();
+extern serpentbondAddNPCsBackToParty object#(0x7D7) ();
 
 /*
 	Fifth Circle Spells
 */
 
-spellSurprise 0x667 ()
+spellSurprise object#(0x667) ()
 {
 	var nearbynpcs;
 	var party;
@@ -109,7 +109,7 @@ spellSurprise 0x667 ()
 	Sixth Circle Spells
 */
 
-spellCreateAmmo 0x66E ()
+spellCreateAmmo object#(0x66E) ()
 {
 	var obj;
 	var bows;
@@ -177,7 +177,7 @@ spellCreateAmmo 0x66E ()
 	Seventh Circle Spells
 */
 
-spellVibrate 0x676 ()
+spellVibrate object#(0x676) ()
 {
 	var target;
 	var target_shape;
@@ -276,7 +276,7 @@ spellVibrate 0x676 ()
 	Eighth Circle Spells
 */
 
-spellCreateIce 0x678 ()
+spellCreateIce object#(0x678) ()
 {
 	var failed;
 	var target;
@@ -331,7 +331,7 @@ spellCreateIce 0x678 ()
 	}
 }
 
-spellFetch 0x67B ()
+spellFetch object#(0x67B) ()
 {
 	var target;
 	var isgrabbable;
@@ -364,7 +364,7 @@ spellFetch 0x67B ()
 	}
 }
 
-spellSerpentBond 0x67D ()
+spellSerpentBond object#(0x67D) ()
 {
 	var pos;
 	var snakepos;
@@ -422,7 +422,7 @@ spellSerpentBond 0x67D ()
 	}
 }
 
-spellFireSnake 0x67E ()
+spellFireSnake object#(0x67E) ()
 {
 	var target;
 	var dir;
@@ -571,7 +571,7 @@ spellFireSnake 0x67E ()
 	Ninth Circle Spells
 */
 
-spellStopStorm 0x684 ()
+spellStopStorm object#(0x684) ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -595,7 +595,7 @@ spellStopStorm 0x684 ()
 	}
 }
 
-spellImbalance 0x687 ()
+spellImbalance object#(0x687) ()
 {
 	var pos;
 	var delay;

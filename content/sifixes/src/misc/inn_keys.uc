@@ -42,14 +42,14 @@ enum bed_states
 	BED_UNMADE							= 1
 };
 
-extern doorHorizontal 270 ();
-extern doorVertical 376 ();
-extern UseKeyOnDoor 0x281 ();
+extern doorHorizontal object#(270) ();
+extern doorVertical object#(376) ();
+extern UseKeyOnDoor object#(0x281) ();
 
 const int SHAPE_BED_HORIZONTAL			= 696;
 const int SHAPE_BED_VERTICAL			= 1011;
 
-eggLockInnDoors 0xCB0 ()
+eggLockInnDoors object#(0xCB0) ()
 {
 	var egg_quality = UI_get_item_quality(item);
 	if (gflags[BANES_RELEASED] || ((egg_quality == INN_SLEEPING_SOLDIER) && gflags[GOBLIN_SIMON_DEAD]))

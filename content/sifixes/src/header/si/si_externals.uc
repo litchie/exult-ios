@@ -20,18 +20,18 @@
 //Called at the first meeting with Thoxa, when you meet her at the dream world and when
 //she appears before the Banes are released. The SI devs must have been running out of
 //available functions... or maybe out of time to search for them.
-extern gwaniChild 0x363 ();
+extern gwaniChild shape#(0x363) ();
 
 //Calls the ring (???) usecode, which promptly forwards to a function
 //that will start the appropriate speech for the plot:
-extern startSerpentSpeechViaRing 0x377 ();
+extern startSerpentSpeechViaRing shape#(0x377) ();
 
 //Makes all non-automaton party members face item.
 //Better call this as "npc->makePartyFaceNPC();"
-extern makePartyFaceNPC 0x7D1 ();
+extern makePartyFaceNPC object#(0x7D1) ();
 
 //Makes NPC face Avatar:
-extern faceAvatar 0x7D2 ();
+extern faceAvatar object#(0x7D2) ();
 
 //Resurrects Iolo, Shamino and Dupre and adds them back to the party
 extern resurrectCompanions 0x86D ();

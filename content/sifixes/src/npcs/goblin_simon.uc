@@ -17,9 +17,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-GoblinSimon 0x442 ()
+GoblinSimon object#(0x442) ()
 {
-	if ((event == DEATH) && (!G_SIMON->get_item_flag(0x001C)))
+	if ((event == DEATH) && (!G_SIMON->get_item_flag(MET)))
 	{
 		var key = UI_create_new_object(SHAPE_KEY);
 		key->set_item_quality(74);

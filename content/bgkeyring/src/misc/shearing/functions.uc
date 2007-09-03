@@ -21,7 +21,7 @@
  */
 
 //create the wool beside the Avatar
-finishShearing ()
+finishShearing object#() ()
 {
 	var wool = UI_create_new_object(SHAPE_WOOL);
 

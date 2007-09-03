@@ -270,7 +270,7 @@ public:
 	void new_map_dialog();
 	void setup_maps_list();
 					// Usecode browser.
-	const char *browse_usecode();
+	const char *browse_usecode(bool want_objfun = false);
 					// Games.
 	void open_game_dialog(bool createmod=false);
 
@@ -287,7 +287,7 @@ public:
 	void save_preferences();
 					// GTK/Glade utils:
 	bool get_toggle(char *name);
-	void set_toggle(char *name, bool val);
+	void set_toggle(char *name, bool val, bool sensitive = true);
 	void set_bit_toggles(char **names, int num, unsigned char bits);
 	unsigned char get_bit_toggles(char **names, int num);
 	int get_optmenu(char *name);

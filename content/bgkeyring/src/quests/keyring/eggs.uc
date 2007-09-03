@@ -23,7 +23,7 @@
  *	Last Modified: 2006-03-19
  */
 
-eggNoOneThere ()
+eggNoOneThere object#() ()
 {
 	if (event != EGG)
 		return;
@@ -47,7 +47,7 @@ eggNoOneThere ()
 	}
 }
 
-eggDetectGem ()
+eggDetectGem object#() ()
 {
 	if (event != EGG)
 		return;
@@ -55,13 +55,13 @@ eggDetectGem ()
 	{
 		//The player has the gem, so warn him it is time to use it:
 		randomPartySay("@Look, at how brightly the gem is glowing, Avatar! Maybe it is time to use it...@");
-		
+        
 		//Delete the egg:
 		remove_item();
 	}
 }
 
-eggCreateMageAndGoonsGoons ()
+eggCreateMageAndGoonsGoons object#() ()
 {
 	if (event != EGG)
 		return;
@@ -93,7 +93,7 @@ eggCreateMageAndGoonsGoons ()
 	}
 }
 
-eggCreateLiche ()
+eggCreateLiche object#() ()
 {
 	if (event != EGG)
 		return;
@@ -104,7 +104,7 @@ eggCreateLiche ()
 	if ((!liche) && (getQuestState() == TOLD_ABOUT_GEM)) createLichAndGems();
 }
 
-eggLicheDialog ()
+eggLicheDialog object#() ()
 {
 	if (event != EGG)
 		return;
@@ -134,7 +134,7 @@ eggLicheDialog ()
 		script item after 2 ticks call eggLicheDialog;
 }
 
-eggCreateSpiderEggs ()
+eggCreateSpiderEggs object#() ()
 {
 	if (event != EGG)
 		return;
@@ -163,7 +163,7 @@ eggCreateSpiderEggs ()
 	}
 }
 
-deleteLicheEggs ()
+deleteLicheEggs object#() ()
 {
 	//Count the number of gems of dispelling have been picked up:
 	var party_gems = PARTY->count_objects(SHAPE_GEM_OF_DISPELLING, QUALITY_ANY, FRAME_ANY);
@@ -176,7 +176,7 @@ deleteLicheEggs ()
 		deleteNearbyEggs([0x717, 0x825,0x0], 5);
 }
 
-deathOfJoneleth ()
+deathOfJoneleth object#() ()
 {
 	if ((get_npc_id() == ID_JONELETH) && (event == DEATH))
 	{

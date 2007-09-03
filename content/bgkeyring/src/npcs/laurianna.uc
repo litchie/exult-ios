@@ -26,7 +26,7 @@
 
 #include "npcs/related_functions/laurianna_dialog.uc"		//Laurianna's dialog functions
 
-Laurianna 0x494 ()
+Laurianna object#(0x494) ()
 {
 	var queststate = getQuestState();
 	//Leave if Laundo is still alive:
@@ -125,7 +125,7 @@ Laurianna 0x494 ()
 		if (queststate == LAURIANNA_MOVED_TO_YEW) lauriannaYewDialog();
 		else if (queststate == LAURIANNA_IS_CURED) lauriannaPostQuestDialog();
 		else if (queststate == POTION_WAS_USED) lauriannaPostPotionDialog();
-		else lauriannaPrePotionDialog();
+		else item->lauriannaPrePotionDialog();
 	}
 	
 	else if (event == PROXIMITY)

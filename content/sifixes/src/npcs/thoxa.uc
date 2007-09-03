@@ -21,7 +21,7 @@
  *	I was *forced* to reimplement the entire function. Sad...
  */
 
-Thoxa 0x4D3 ()
+Thoxa object#(0x4D3) ()
 {
 	var avatarlocation;
 	var title;

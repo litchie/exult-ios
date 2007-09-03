@@ -61,7 +61,7 @@ spellCauseFear ()
 			{	nohalt;						sfx 65;
 				actor frame KNEEL;			actor frame STAND;
 				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellCauseFear;}
+				actor frame SWING_3;		call spellCauseFearEffect;}
 		}
 		else
 		{
@@ -70,20 +70,6 @@ spellCauseFear ()
 				actor frame STAND;			actor frame SWING_2;
 				actor frame SWING_1;		actor frame SWING_3;
 				call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var targets = getEnemyTargetList(item, 25);
-		for (npc in targets)
-		{
-			if (npc->get_npc_prop(INTELLIGENCE) > 5)
-			{
-				npc->set_schedule_type(IN_COMBAT);
-				npc->set_attack_mode(FLEE);
-				npc->set_opponent(item);
-			}
 		}
 	}
 }
@@ -102,7 +88,7 @@ spellClone (var target)
 			{	nohalt;						actor frame SWING_1;
 				actor frame CAST_2;			actor frame SWING_2H_3;}
 			script target after 4 ticks
-			{	nohalt;						call spellClone;}
+			{	nohalt;						call spellCloneEffect, get_alignment();}
 		}
 		else
 		{
@@ -111,12 +97,6 @@ spellClone (var target)
 				actor frame CAST_2;			actor frame SWING_2H_3;
 				call spellFails;}
 		}
-	}
-
-	else if (event == SCRIPTED)
-	{
-		var summoned = clone();
-		summoned->set_alignment(get_alignment());
 	}
 }
 
@@ -158,7 +138,7 @@ spellFireRing (var target)
 						UI_update_last_created(pos);
 						ring->set_npc_prop(HEALTH, 1);
 						script ring after counter ticks
-						{	nohalt;						call spellFireRing;}
+						{	nohalt;			call spellFireRingEffect;}
 					}
 				}
 			}
@@ -169,21 +149,6 @@ spellFireRing (var target)
 			{	nohalt;						face dir;
 				actor frame SWING_2;		actor frame SWING_3;
 				actor frame SWING_1;		call spellFails;}
-		}
-	}
-	else if (event == SCRIPTED)
-	{
-		var pos = get_object_position();
-		remove_item();
-		var ring = UI_create_new_object(SHAPE_FIRE_FIELD);
-		if (ring)
-		{
-			ring->set_item_flag(TEMPORARY);
-			UI_update_last_created(pos);
-			var delay = 31;
-			delay = (delay + UI_die_roll(1, 5));
-			script ring after delay ticks
-			{	nohalt;						remove;}
 		}
 	}
 }
@@ -251,7 +216,7 @@ spellMagicStorm ()
 				actor frame STAND;}
 				
 			script item after 8 ticks
-			{	nohalt;						call spellMagicStorm;}
+			{	nohalt;						call spellMagicStormEffect;}
 			
 			script item after delay ticks
 			{	nohalt;						call stopMagicStorm;}
@@ -262,23 +227,6 @@ spellMagicStorm ()
 			{	nohalt;						actor frame CAST_1;
 				actor frame CAST_2;			actor frame CAST_1;
 				actor frame SWING_2H_3;		call spellFails;}
-		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		if (gflags[MAGIC_STORM_SPELL] == true)
-		{
-			var targets = getEnemyTargetList(item, 45);
-			var npc = targets[UI_get_random(UI_get_array_size(targets))];
-			if (npc)
-			{
-				script npc
-				{	nohalt;						call callLightning;}
-			}
-			var rand = UI_die_roll(3, 8);
-			script item after rand ticks
-			{	nohalt;						call spellMagicStorm;}
 		}
 	}
 }
@@ -365,7 +313,7 @@ spellTremor ()
 			script item
 			{	nohalt;						actor frame SWING_2H_1;
 				actor frame STAND;			actor frame KNEEL;
-				sfx 67;						call spellTremor;}
+				sfx 67;						call spellTremorEffect;}
 		}
 		else
 		{
@@ -374,54 +322,5 @@ spellTremor ()
 				actor frame STAND;			actor frame KNEEL;
 				call spellFails;}
 		}
-	}
-	
-	else if (event == SCRIPTED)
-	{
-		var targets = getEnemyTargetList(item, 40);
-		var duration = 12;
-		for (npc in targets)
-		{
-			var counter = 0;
-			var usecodearray = [];
-			var directions = [NORTH, EAST, SOUTH, WEST];
-			while (counter < duration)
-			{
-				var rand = UI_die_roll(0, 8);
-
-				if (rand == 0)
-					usecodearray << {	actor frame KNEEL;		actor frame LEAN;
-										actor frame STAND;};
-				else if (rand == 1)
-					usecodearray << {	actor frame KNEEL;		actor frame STAND;
-										actor frame STAND;};
-				else if (rand == 2)
-					usecodearray << {	actor frame LEAN;		actor frame LIE;
-										actor frame STAND;};
-				else if (rand == 3)
-					usecodearray << {	actor frame STAND;		actor frame STAND;
-										actor frame STAND;};
-				else if (rand == 4)
-					usecodearray << {	actor frame KNEEL;		actor frame USE;
-										actor frame STAND;};
-				else if (rand == 5)
-					usecodearray << {	actor frame USE;		actor frame KNEEL;
-										actor frame STAND;};
-				else if (rand == 6)
-					usecodearray << {	face directions[UI_get_random(4)];
-										actor frame LEAN;		actor frame STAND;};
-				else if (rand == 7)
-					usecodearray << {	face directions[UI_get_random(4)];
-										actor frame KNEEL;		actor frame STAND;};
-				else if (rand == 8)
-					usecodearray << {	face directions[UI_get_random(4)];
-										actor frame USE;	actor frame STAND; };
-
-				counter = (counter + 1);
-			}
-			npc->halt_scheduled();
-			npc->run_script(usecodearray);
-		}
-		UI_earthquake((duration * 3));
 	}
 }

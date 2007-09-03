@@ -100,6 +100,6 @@ void Uc_location::yywarning
 	char *s
 	)
 	{
-	cout << "Warning: " << cur_source << ':' << cur_line + 1 << ": " << 
-								s << endl;
+	cout << cur_source << ':' << cur_line + 1 << ": " << 
+								"Warning: " << s << endl;
 	}

@@ -28,7 +28,7 @@
 extern inmanilemHeal 0x89D (var price_heal, var price_cure, var price_resurrect);
 extern scheduleGargishBarks 0x92F (var npc);
 
-Inmanilem 0x4B6 ()
+Inmanilem object#(0x4B6) ()
 {
 	if (event == DOUBLECLICK)
 	{

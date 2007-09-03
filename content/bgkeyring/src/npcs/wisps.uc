@@ -26,7 +26,7 @@
 
 const int QUALITY_ALAGNER_NOTEBOOK		= 2;	//0x002
 const int WISP_FACE						= -256;
-Wisp 0x500 ()
+Wisp object#(0x500) ()
 {
 	var party;
 	var wisp_sched;
@@ -54,14 +54,14 @@ Wisp 0x500 ()
 	
 	if(!gflags[HAD_FIRST_WISP_TALK])
 	{
-		item.say("A ball of light approaches you.~~@'You' are not the entity known as 'Trellek'. 'You' call out in the manner of the species called 'emps'. 'Xorinia' was expecting the entity 'Trellek'.");
+		WISP_FACE.say("A ball of light approaches you.~~@'You' are not the entity known as 'Trellek'. 'You' call out in the manner of the species called 'emps'. 'Xorinia' was expecting the entity 'Trellek'.");
 		say("@But that is not of importance. From the information 'I' have, the local manifestation before 'me' is the entity known as 'Avatar'.");
 		say("The Wisp glows brightly a second or two.~~@'Xorinia' wishes to exchange information with the human entity.@");
 		gflags[HAD_FIRST_WISP_TALK] = true;
 		giveExperience(500);
 	}
 	else
-		item.say("@Once again a local manifestation addresses the Xorinite dimension.@");
+		WISP_FACE.say("@Once again a local manifestation addresses the Xorinite dimension.@");
 
 
 	converse(0)

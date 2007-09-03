@@ -31,7 +31,7 @@ const int SOUND_BUCKET_EMPTY = 40;
 
 //reimplementation of internal function - creates blood/winestains
 //Added in special stain for milk
-makeSpill ()
+makeSpill object#() ()
 {
 	var bucket_frame = get_item_frame();
 	var min_frame = 0;
@@ -213,7 +213,7 @@ useBucketOnTrough ()
 	script item	{ wait 2; frame bucket_new_frame; }
 }
 
-douseAnimation ()
+douseAnimation object#() ()
 {
 	var pos = get_object_position();
 	var dest = [pos[X] - 3, pos[Y] - 4];
@@ -357,7 +357,7 @@ useBucketOnDough ()
 	set_item_frame(FRAME_DOUGH_BALL);
 }
 
-fillBucketFromWell ()
+fillBucketFromWell object#() ()
 {
 	var well = AVATAR->find_nearest(SHAPE_WELL, 10);
 	if (well)

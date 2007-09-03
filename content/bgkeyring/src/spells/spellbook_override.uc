@@ -36,12 +36,12 @@
  *	Last Modified: 2006-02-27
  */
 
-spellAwaken_Override			0x640 () {spellAwaken(UI_click_on_item());}
-spellWeather_Override			0x641 () {spellWeather();}
-spellDouse_Override				0x642 () {spellDouse(UI_click_on_item());}
-spellFireworks_Override			0x643 () {spellFireworks();}
-spellGlimmer_Override			0x644 () {spellGlimmer();}
-spellHelp_Override				0x645 ()
+spellAwaken_Override			object#(0x640) () {spellAwaken(UI_click_on_item());}
+spellWeather_Override			object#(0x641) () {spellWeather();}
+spellDouse_Override				object#(0x642) () {spellDouse(UI_click_on_item());}
+spellFireworks_Override			object#(0x643) () {spellFireworks();}
+spellGlimmer_Override			object#(0x644) () {spellGlimmer();}
+spellHelp_Override				object#(0x645) ()
 {
 	if (event == DOUBLECLICK)
 		//If we came here from a doubleclick, forward to original:
@@ -54,39 +54,39 @@ spellHelp_Override				0x645 ()
 		PARTY->move_object(pos);
 	}
 }
-spellIgnite_Override			0x646 () {spellIgnite(UI_click_on_item());}
-spellThunder_Override			0x647 () {spellThunder();}
+spellIgnite_Override			object#(0x646) () {spellIgnite(UI_click_on_item());}
+spellThunder_Override			object#(0x647) () {spellThunder();}
 
-spellCreateFood_Override		0x648 () {spellCreateFood();}
-spellCure_Override				0x649 () {spellCure(UI_click_on_item());}
-spellDetectTrap_Override		0x64A () {spellDetectTrap();}
-spellGreatDouse_Override		0x64B () {spellGreatDouse();}
-spellGreatIgnite_Override		0x64C () {spellGreatIgnite();}
-spellLight_Override				0x64D () {spellLight();}
-spellLocate_Override			0x64E () {spellLocate();}
-spellAwakenAll_Override			0x64F () {spellAwakenAll();}
+spellCreateFood_Override		object#(0x648) () {spellCreateFood();}
+spellCure_Override				object#(0x649) () {spellCure(UI_click_on_item());}
+spellDetectTrap_Override		object#(0x64A) () {spellDetectTrap();}
+spellGreatDouse_Override		object#(0x64B) () {spellGreatDouse();}
+spellGreatIgnite_Override		object#(0x64C) () {spellGreatIgnite();}
+spellLight_Override				object#(0x64D) () {spellLight();}
+spellLocate_Override			object#(0x64E) () {spellLocate();}
+spellAwakenAll_Override			object#(0x64F) () {spellAwakenAll();}
 
-spellDestroyTrap_Override		0x650 () {spellDestroyTrap(UI_click_on_item());}
-spellEnchant_Override			0x651 () {spellEnchant(UI_click_on_item());}
-spellFireBlast_Override			0x652 () {spellFireBlast(UI_click_on_item());}
-spellGreatLight_Override		0x653 () {spellGreatLight();}
-spellMassCure_Override			0x654 () {spellMassCure();}
-spellProtection_Override		0x655 () {spellProtection(UI_click_on_item());}
-spellTelekinesis_Override		0x656 () {spellTelekinesis(UI_click_on_item());}
-spellWizardEye_Override			0x657 () {spellWizardEye();}
+spellDestroyTrap_Override		object#(0x650) () {spellDestroyTrap(UI_click_on_item());}
+spellEnchant_Override			object#(0x651) () {spellEnchant(UI_click_on_item());}
+spellFireBlast_Override			object#(0x652) () {spellFireBlast(UI_click_on_item());}
+spellGreatLight_Override		object#(0x653) () {spellGreatLight();}
+spellMassCure_Override			object#(0x654) () {spellMassCure();}
+spellProtection_Override		object#(0x655) () {spellProtection(UI_click_on_item());}
+spellTelekinesis_Override		object#(0x656) () {spellTelekinesis(UI_click_on_item());}
+spellWizardEye_Override			object#(0x657) () {spellWizardEye();}
 
-spellCurse_Override				0x658 () {spellCurse(UI_click_on_item());}
-spellHeal_Override				0x659 () {spellHeal(UI_click_on_item());}
-spellSwarm_Override				0x65A () {spellSwarm();}
-spellProtectAll_Override		0x65B () {spellProtectAll();}
-spellParalyze_Override			0x65C () {spellParalyze(UI_click_on_item());}
-spellPeer_Override				0x65D () {spellPeer();}
-spellPoison_Override			0x65E () {spellPoison(UI_click_on_item());}
-spellSleep_Override				0x65F () {spellSleep(UI_click_on_item());}
+spellCurse_Override				object#(0x658) () {spellCurse(UI_click_on_item());}
+spellHeal_Override				object#(0x659) () {spellHeal(UI_click_on_item());}
+spellSwarm_Override				object#(0x65A) () {spellSwarm();}
+spellProtectAll_Override		object#(0x65B) () {spellProtectAll();}
+spellParalyze_Override			object#(0x65C) () {spellParalyze(UI_click_on_item());}
+spellPeer_Override				object#(0x65D) () {spellPeer();}
+spellPoison_Override			object#(0x65E) () {spellPoison(UI_click_on_item());}
+spellSleep_Override				object#(0x65F) () {spellSleep(UI_click_on_item());}
 
-spellConjure_Override			0x660 () {spellConjure();}
-spellLightning_Override			0x661 () {spellLightning(UI_click_on_item());}
-spellMark_Override				0x662 ()
+spellConjure_Override			object#(0x660) () {spellConjure();}
+spellLightning_Override			object#(0x661) () {spellLightning(UI_click_on_item());}
+spellMark_Override				object#(0x662) ()
 {
 	var target;
 	var pos;
@@ -135,44 +135,44 @@ spellMark_Override				0x662 ()
 		}
 	}
 }
-spellMassCurse_Override			0x663 () {spellMassCurse();}
-//spellRecall_Override			0x667 () {spellRecall_Override.original();}
-spellReveal_Override			0x665 () {spellReveal();}
-spellSeance_Override			0x666 () {spellSeance();}
-spellUnlockMagic_Override		0x667 () {spellUnlockMagic(UI_click_on_item());}
+spellMassCurse_Override			object#(0x663) () {spellMassCurse();}
+//spellRecall_Override			object#(0x667) () {item->spellRecall_Override.original();}
+spellReveal_Override			object#(0x665) () {spellReveal();}
+spellSeance_Override			object#(0x666) () {spellSeance();}
+spellUnlockMagic_Override		object#(0x667) () {spellUnlockMagic(UI_click_on_item());}
 
-spellCharm_Override				0x668 () {spellCharm(UI_click_on_item());}
-spellDance_Override				0x669 () {spellDance();}
-spellDispelField_Override		0x66A () {spellDispelField(UI_click_on_item());}
-spellExplosion_Override			0x66B () {spellExplosion(UI_click_on_item());}
-spellGreatHeal_Override			0x66C () {spellGreatHeal(UI_click_on_item());}
-spellInvisibility_Override		0x66D () {spellInvisibility(UI_click_on_item());}
-spellFireField_Override			0x66E () {spellFireField(UI_click_on_item());}
-spellMassSleep_Override			0x66F () {spellMassSleep();}
+spellCharm_Override				object#(0x668) () {spellCharm(UI_click_on_item());}
+spellDance_Override				object#(0x669) () {spellDance();}
+spellDispelField_Override		object#(0x66A) () {spellDispelField(UI_click_on_item());}
+spellExplosion_Override			object#(0x66B) () {spellExplosion(UI_click_on_item());}
+spellGreatHeal_Override			object#(0x66C) () {spellGreatHeal(UI_click_on_item());}
+spellInvisibility_Override		object#(0x66D) () {spellInvisibility(UI_click_on_item());}
+spellFireField_Override			object#(0x66E) () {spellFireField(UI_click_on_item());}
+spellMassSleep_Override			object#(0x66F) () {spellMassSleep();}
 
-spellCauseFear_Override			0x670 () {spellCauseFear();}
-spellClone_Override				0x671 () {spellClone(UI_click_on_item());}
-spellFireRing_Override			0x672 () {spellFireRing(UI_click_on_item());}
-spellFlameStrike_Override		0x673 () {spellFlameStrike();}
-spellMagicStorm_Override		0x674 () {spellMagicStorm();}
-spellPoisonField_Override		0x675 () {spellPoisonField(UI_click_on_item());}
-spellSleepField_Override		0x676 () {spellSleepField(UI_click_on_item());}
-spellTremor_Override			0x677 () {spellTremor();}
+spellCauseFear_Override			object#(0x670) () {spellCauseFear();}
+spellClone_Override				object#(0x671) () {spellClone(UI_click_on_item());}
+spellFireRing_Override			object#(0x672) () {spellFireRing(UI_click_on_item());}
+spellFlameStrike_Override		object#(0x673) () {spellFlameStrike();}
+spellMagicStorm_Override		object#(0x674) () {spellMagicStorm();}
+spellPoisonField_Override		object#(0x675) () {spellPoisonField(UI_click_on_item());}
+spellSleepField_Override		object#(0x676) () {spellSleepField(UI_click_on_item());}
+spellTremor_Override			object#(0x677) () {spellTremor();}
 
-spellCreateGold_Override		0x678 () {spellCreateGold(UI_click_on_item());}
-spellDeathBolt_Override			0x679 () {spellDeathBolt(UI_click_on_item());}
-spellDelayedBlast_Override		0x67A () {spellDelayedBlast(UI_click_on_item());}
-spellEnergyField_Override		0x67B () {spellEnergyField(UI_click_on_item());}
-spellEnergyMist_Override		0x67C () {spellEnergyMist(UI_click_on_item());}
-spellMassCharm_Override			0x67D () {spellMassCharm();}
-spellMassMight_Override			0x67E () {spellMassMight();}
-spellRestoration_Override		0x67F () {spellRestoration();}
+spellCreateGold_Override		object#(0x678) () {spellCreateGold(UI_click_on_item());}
+spellDeathBolt_Override			object#(0x679) () {spellDeathBolt(UI_click_on_item());}
+spellDelayedBlast_Override		object#(0x67A) () {spellDelayedBlast(UI_click_on_item());}
+spellEnergyField_Override		object#(0x67B) () {spellEnergyField(UI_click_on_item());}
+spellEnergyMist_Override		object#(0x67C) () {spellEnergyMist(UI_click_on_item());}
+spellMassCharm_Override			object#(0x67D) () {spellMassCharm();}
+spellMassMight_Override			object#(0x67E) () {spellMassMight();}
+spellRestoration_Override		object#(0x67F) () {spellRestoration();}
 
-//spellArmaggedon_Override		0x680 () {spellArmaggedon_Override.original();}
-spellDeathVortex_Override		0x681 () {spellDeathVortex(UI_click_on_item());}
-spellMassDeath_Override			0x682 () {spellMassDeath();}
-spellInvisibilityAll_Override	0x683 () {spellInvisibilityAll();}
-spellResurrect_Override			0x684 () {spellResurrect(UI_click_on_item());}
-spellSummon_Override			0x685 () {spellSummon();}
-spellSwordStrike_Override		0x686 () {spellSwordStrike(UI_click_on_item());}
-spellTimeStop_Override			0x687 () {spellTimeStop();}
+//spellArmaggedon_Override		object#(0x680) () {item->spellArmaggedon_Override.original();}
+spellDeathVortex_Override		object#(0x681) () {spellDeathVortex(UI_click_on_item());}
+spellMassDeath_Override			object#(0x682) () {spellMassDeath();}
+spellInvisibilityAll_Override	object#(0x683) () {spellInvisibilityAll();}
+spellResurrect_Override			object#(0x684) () {spellResurrect(UI_click_on_item());}
+spellSummon_Override			object#(0x685) () {spellSummon();}
+spellSwordStrike_Override		object#(0x686) () {spellSwordStrike(UI_click_on_item());}
+spellTimeStop_Override			object#(0x687) () {spellTimeStop();}

@@ -31,7 +31,7 @@ enum gordons_prices
 	GORDONS_ROD_PRICE		= 15	//what Gordon will sell his rod for
 };
 
-Gordon 0x43A ()
+Gordon object#(0x43A) ()
 {
 	var polite_title;
 	var wearing_fellowship;

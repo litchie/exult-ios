@@ -66,6 +66,10 @@ public:
 		{ return false; }
 	virtual Uc_class *get_cls() const
 		{ return 0; }
+	virtual int is_object_function(bool error = true) const
+		{ return -1; }
+	virtual void set_is_obj_fun(int s)
+		{	}
 	};
 
 /*
@@ -86,6 +90,8 @@ public:
 	virtual int get_string_offset();// Get offset in text_data.
 	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
 		{ return var; }
+	virtual int is_object_function(bool error = true) const;
+	virtual void set_is_obj_fun(int s);
 	};
 
 /*
@@ -100,6 +106,7 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
+	virtual int is_object_function(bool error = true) const;
 	};
 
 /*
@@ -217,6 +224,7 @@ public:
 	virtual void gen_value(vector<char>& out);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
+	virtual int is_object_function(bool error = true) const;
 	};
 
 /*
@@ -356,6 +364,7 @@ public:
 	void check_params();
 	virtual bool is_class() const;
 	virtual Uc_class *get_cls() const;
+	virtual int is_object_function(bool error = true) const;
 	};
 
 class Uc_class_expression : public Uc_var_expression

@@ -23,7 +23,7 @@
 
 extern askDupreBelongings 0x829 ();
 
-Dupre 0x401 ()
+Dupre object#(0x401) ()
 {
 	var dupre_id;
 	var avatar_title;
@@ -110,7 +110,7 @@ Dupre 0x401 ()
 			say("@I am not as good with words as our friend Iolo, Avatar, so I shall thank thee by fighting at thy side...@");
 			DUPRE->set_npc_id(0);
 			DUPRE->add_to_party();
-			script DUPRE after 15 ticks call xenkaReturns;
+			script DUPRE after 15 ticks call wraperXenkaReturns;
 			remove("join");
 			add(["leave"]);
 		}

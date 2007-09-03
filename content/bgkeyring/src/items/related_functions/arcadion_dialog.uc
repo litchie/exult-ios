@@ -127,7 +127,7 @@ killAnimation (var target)
 		script target {wait 12;		call killTarget;}
 }
 
-arcadionSwordFormDialog ()
+arcadionSwordFormDialog object#() ()
 {
 	BLACK_SWORD_FACE->show_npc_face(0);
 	
@@ -317,7 +317,7 @@ arcadionSwordFormDialog ()
 	}
 }
 
-blackswordCreationAnimation ()
+blackswordCreationAnimation object#() ()
 {
 	//The original used global flags for this; they *could* have used quality instead...
 	//I use event levels since they are available on Exult for UCC scripts.
@@ -354,7 +354,7 @@ blackswordCreationAnimation ()
 	}
 }
 
-arcadionGemFormDialog ()
+arcadionGemFormDialog object#() ()
 {
 	ARCADION_GEM_FACE->show_npc_face(0);
 	
@@ -518,7 +518,7 @@ var isArcadionGemNearby ()
 		return false;
 }
 
-arcadionMirrorFormDialog ()
+arcadionMirrorFormDialog object#() ()
 {
 	ARCADION_MIRROR_FACE->show_npc_face(0);
 	

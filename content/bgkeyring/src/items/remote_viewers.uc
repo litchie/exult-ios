@@ -84,7 +84,7 @@ Gem shape#(0x2F8) ()
 		Gem.original();
 }
 
-extern setOrreryPosition 0x6E1 ();
+extern setOrreryPosition object#(0x6E1) ();
 
 Orrery_Viewer shape#(0x302) ()
 {

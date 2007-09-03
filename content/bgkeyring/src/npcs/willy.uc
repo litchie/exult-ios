@@ -28,7 +28,7 @@ extern buyBread 0x946();
 extern sellBread 0x947();
 extern sellFlour 0x948();
 
-Willy 0x434 ()
+Willy object#(0x434) ()
 {
 	if (event == DOUBLECLICK)
 	{
