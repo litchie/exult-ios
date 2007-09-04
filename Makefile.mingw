@@ -168,6 +168,7 @@ toolsdist: tools
 	cp tools/ucformat.txt $(U7PATH)/Tools/tools
 	u2d $(U7PATH)/Tools/tools/*.txt
 	cp SDL/lib/SDL.dll $(U7PATH)/Tools/tools
+	cp win32/exult_tools_installer.iss $(U7PATH)
 
 allclean: clean toolsclean
 	rm -f exconfig.dll exconfig_rc.o exconfig.o
