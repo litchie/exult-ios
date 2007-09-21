@@ -1,3 +1,7 @@
+2007-09-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Midi.cc: Fixed crash when playing midi music on title screen of mods
+	  with a custom mainshp.flx.
+
 2007-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.*, objs/animate.*: Fixed memory leak. Improved sfx cache.
 	  Removed 'repeat' variable from Object_sfx as it was redundant.
