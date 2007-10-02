@@ -670,14 +670,14 @@ void Actor::use_food
 			return;
 		}
 	int food = get_property(static_cast<int>(food_level));
-	food -= rand()%4;		// Average 1.5 level/hour.
+	food -= (rand()%4);		// Average 1.5 level/hour.
 	set_property(static_cast<int>(food_level), food);
 	if (food <= 0)			// Really low?
 		{
 		if (rand()%4)
 			say(first_starving, first_starving + 2);
-		if (food < 0)		// Set timer for damage.
-			need_timers()->start_hunger();
+					// Set timer for damage.
+		need_timers()->start_hunger();
 		}
 	else if (food <= 4)
 		{
