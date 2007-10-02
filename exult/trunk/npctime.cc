@@ -349,7 +349,7 @@ void Npc_hunger_timer::handle_event
 					// No longer a party member?
 	if (!npc->is_in_party() ||
 					//   or no longer hungry?
-	    npc->get_property(static_cast<int>(Actor::food_level)) >= 0 ||
+	    npc->get_property(static_cast<int>(Actor::food_level)) > 0 ||
 	    npc->is_dead())		// Obviously.
 		{
 		delete this;
@@ -363,9 +363,6 @@ void Npc_hunger_timer::handle_event
 		if (rand()%4)
 			npc->say(first_starving, first_starving + 2);
 		npc->reduce_health(hp);
-
-//		npc->set_property(static_cast<int>(Actor::health),
-//			npc->get_property(static_cast<int>(Actor::health)) - hp);
 		last_time = minute;
 		}
 	gwin->get_tqueue()->add(curtime + 30000, this, 0L);
