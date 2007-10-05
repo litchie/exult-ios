@@ -366,20 +366,23 @@ serviceHeal ()
 {
 	UI_push_answers();
 
-	var dialog = getServiceHealingDialog(get_npc_number());
-	var price_list = getServiceHealingPricelist(get_npc_number());
+	var npcnum = get_npc_number();
+	// Ensure proper initialization:
+	var npcind = spellitemGetNPCIndex(npcnum);
+	var dialog = getServiceHealingDialog(npcnum);
+	var price_list = getServiceHealingPricelist(npcnum);
 	var magicheal = (!get_item_flag(NECROMANCER) && (get_item_flag(MAGE_CLASS) || get_item_flag(BARD_CLASS)));
-	
+
 	var choices = ["none"];
 	var healing_spells = [];
-	
+
 	if (magicheal)
 	{
 		healing_spells = getLeveledSpellList(item,
 				get_item_flag(HEALER),
 				["Cure", "Mass cure", "Heal", "Great heal", "Restoration", "Resurrect", "Mass resurrect"],
 				[1, 2, 3, 5, 7, 8, 8],
-				global_spells_unknown[spellitemGetNPCIndex(get_npc_number())]);
+				global_spells_unknown[npcind]);
 		if (("Cure" in healing_spells) || ("Mass cure" in healing_spells))
 			choices << "curing";
 		if (("Heal" in healing_spells) || ("Great heal" in healing_spells) || ("Restoration" in healing_spells))
