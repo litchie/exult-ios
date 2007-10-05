@@ -401,7 +401,7 @@ lauriannaPrePotionDialog object#() ()
 				else
 				{
 					//But is having second thoughts about using it
-					avatarSpeak("You think for a moment and decide against giving the potion, as it might be dangerous.");
+					AVATAR.say("You think for a moment and decide against giving the potion, as it might be dangerous.");
 					AVATAR.hide();
 					switchFace(0);
 					say("Beaming with joy, Laurianna thanks you. @Thank thee, Avatar, for not making me drink the potion!");

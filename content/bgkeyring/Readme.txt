@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.13
+version: 0.11.14
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,18 @@ version: 0.11.13
 
 7	Version history
 -------------------
+version: 0.11.14
+	- Fixed misidentification bug in Mage & Goons cutscene where Sentri can
+	  be wrongly used by the usecode as if it where Laudo's fighter goon. The
+	  fix also prevents this from potentially happening with possible future
+	  NPCs with the same shape as the other monsters in the cutscene.
+	- Fixed "Unlock Magic" bug where it would not work.
+	- Removed unneccessary function "avatarSpeak" (Exult does all the work it
+	  supposedly did).
+	- Fixed error in reagent lists of "Explosion" and "Great Heal" spells which
+	  rendered them uncastable.
+	- If an NPC is in 'archwizard' (i.e. cheat) mode, you can ask it for reagents
+	  to get a bag full of them.
 version: 0.11.13
 	- Fixed bug which would cause a purple outline to be displayed around NPCs
 	  during some animations in recent snapshots of Exult.

@@ -68,7 +68,8 @@ beginCutsceneMageAndGoons object#() ()
 		script item after 5 ticks call beginCutsceneMageAndGoons, FADE_SCREEN;
 
 		//Find Laundo:
-		mage = LAURIANNA->find_nearest(SHAPE_MAGE_MALE, 80);
+		mage = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_MAGE_MALE, 80, ID_MAGE_OR_GOON);
 		//Use him to unfade screen and kick-start the rest of the scene:
 		script mage after 10 ticks
 		{	nohalt;						call beginCutsceneMageAndGoons, CENTER_VIEW;
@@ -104,10 +105,14 @@ beginCutsceneMageAndGoons object#() ()
 		UI_play_sound_effect2(SOUND_MOONGATE, item);
 		
 		//Get each of the mage's goons:
-		gargoyle = LAURIANNA->find_nearest(SHAPE_GARGOYLE_WARRIOR, 80);
-		cyclops = LAURIANNA->find_nearest(SHAPE_CYCLOPS, 80);
-		troll = LAURIANNA->find_nearest(SHAPE_TROLL, 80);
-		fighter = LAURIANNA->find_nearest(SHAPE_FIGHTER_MALE, 80);
+		gargoyle = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_GARGOYLE_WARRIOR, 80, ID_MAGE_OR_GOON);
+		cyclops = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_CYCLOPS, 80, ID_MAGE_OR_GOON);
+		troll = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_TROLL, 80, ID_MAGE_OR_GOON);
+		fighter = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_FIGHTER_MALE, 80, ID_MAGE_OR_GOON);
 
 		//Make Laurianna visible and generate the scripts for the mage and goons:
 		script LAURIANNA after 6 ticks
@@ -144,11 +149,16 @@ beginCutsceneMageAndGoons object#() ()
 		script LAURIANNA call beginCutsceneMageAndGoons, FIREWORKS_LAURIANNA;
 		
 		//Get references for the mage and his goons:
-		mage = find_nearest(SHAPE_MAGE_MALE, 80);
-		gargoyle = find_nearest(SHAPE_GARGOYLE_WARRIOR, 80);
-		cyclops = find_nearest(SHAPE_CYCLOPS, 80);
-		troll = find_nearest(SHAPE_TROLL, 80);
-		fighter = find_nearest(SHAPE_FIGHTER_MALE, 80);
+		mage = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_MAGE_MALE, 80, ID_MAGE_OR_GOON);
+		gargoyle = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_GARGOYLE_WARRIOR, 80, ID_MAGE_OR_GOON);
+		cyclops = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_CYCLOPS, 80, ID_MAGE_OR_GOON);
+		troll = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_TROLL, 80, ID_MAGE_OR_GOON);
+		fighter = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_FIGHTER_MALE, 80, ID_MAGE_OR_GOON);
 		
 		//Laundo's script; he casts a couple spells and wonders why they failed; then,
 		//he turns to the Avatar and begins to talk:
@@ -318,7 +328,7 @@ beginCutsceneMageAndGoons object#() ()
 					//Quickest way to end the talk:
 					break;
 
-				avatarSpeak("You quickly explain about the Gem of Dispelling to Laundo.");
+				AVATAR.say("You quickly explain about the Gem of Dispelling to Laundo.");
 				AVATAR.hide();
 				say("@Gems of Dispelling? Never heard of them. It doesn't matter anyway.@");
 				
@@ -361,7 +371,7 @@ beginCutsceneMageAndGoons object#() ()
 				
 			case "Laurianna" (remove):
 				say("@Who? Never heard of her.@");
-				avatarSpeak("You explain that Laurianna is the woman with roots just nearby.");
+				AVATAR.say("You explain that Laurianna is the woman with roots just nearby.");
 				AVATAR.hide();
 				say("@Ah, so -that- is her name? Well, it doesn't matter. She won't be going anywhere.");
 				say("@Seest thou the necklace she wears? It is -my- handiwork.@");
@@ -407,11 +417,16 @@ beginCutsceneMageAndGoons object#() ()
 	{
 		//item = AVATAR
 		//Get references to the mage and his goons:
-		mage = LAURIANNA->find_nearest(SHAPE_MAGE_MALE, 80);
-		gargoyle = LAURIANNA->find_nearest(SHAPE_GARGOYLE_WARRIOR, 80);
-		cyclops = LAURIANNA->find_nearest(SHAPE_CYCLOPS, 80);
-		troll = LAURIANNA->find_nearest(SHAPE_TROLL, 80);
-		fighter = LAURIANNA->find_nearest(SHAPE_FIGHTER_MALE, 80);
+		mage = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_MAGE_MALE, 80, ID_MAGE_OR_GOON);
+		gargoyle = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_GARGOYLE_WARRIOR, 80, ID_MAGE_OR_GOON);
+		cyclops = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_CYCLOPS, 80, ID_MAGE_OR_GOON);
+		troll = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_TROLL, 80, ID_MAGE_OR_GOON);
+		fighter = findNearbyMonsterWithID(LAURIANNA->get_object_position(),
+										SHAPE_FIGHTER_MALE, 80, ID_MAGE_OR_GOON);
 
 		//Make them hostile and in combat:
 		script mage		{nohalt;	call beginCutsceneMageAndGoons, PREPARE_NPC;};
@@ -431,6 +446,8 @@ beginCutsceneMageAndGoons object#() ()
 		set_alignment(2);
 		//Puts him in combat mode:
 		set_schedule_type(IN_COMBAT);
+		//Just to be sure:
+		clear_item_flag(DONT_RENDER);
 	}
 	
 }
@@ -455,8 +472,10 @@ registerDeathOfMageOrGoon object#() ()
 		//Increase Laurianna's NPC ID:
 		var new_id = 1 + LAURIANNA->get_npc_id();
 		LAURIANNA->set_npc_id(new_id);
+
 		if (new_id == 5)
 		{
+			LAURIANNA->set_npc_id(5);
 			//Everyone is dead; halt scripts for Laurianna:
 			LAURIANNA->halt_scheduled();
 			//Prepare the next portion of the quest:

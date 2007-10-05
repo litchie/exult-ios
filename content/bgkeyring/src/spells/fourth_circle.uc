@@ -277,7 +277,7 @@ spellUnlockMagic (var target)
 						actor frame SWING_3;	sfx 66;}
 						
 					script target after 6 ticks
-					{	nohalt;					frame get_item_frame() - 3;}
+					{	nohalt;					frame target_frame - 3;}
 					return;
 				}
 			}
