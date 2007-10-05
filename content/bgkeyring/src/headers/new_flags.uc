@@ -103,33 +103,33 @@ enum rune_of_honor_flags
 
 //The following flags are all for the keyring quest:
 //Global Flags:
-const int ACCEPTED_ZAURIEL_QUEST			= 1535;
-const int ZAURIEL_TOLD_LOCATION				= 1536;
-const int ZAURIEL_TELEPORTED				= 1537;
-const int ISLAND_NO_ONE_THERE				= 1538;
-const int GAVE_GEM_SUBQUEST					= 1539;
-const int PLAYER_USED_GEM					= 1540;
-const int MAGE_KILLED						= 1541;
+const int ACCEPTED_ZAURIEL_QUEST			= 0x5FF;
+const int ZAURIEL_TOLD_LOCATION				= 0x600;
+const int ZAURIEL_TELEPORTED				= 0x601;
+const int ISLAND_NO_ONE_THERE				= 0x602;
+const int GAVE_GEM_SUBQUEST					= 0x603;
+const int PLAYER_USED_GEM					= 0x604;
+const int MAGE_KILLED						= 0x605;
 
 //Some of the above flags are cleared when the player meets
 //Laurianna. This is for economy of global flags, as the
 //quest is reaching its end:
 enum laurianna_metaplot_flags
 {
-	LAURIANNA_DRANK_POTION					= 1535,
-	RECEIVED_ZAURIEL_REWARD					= 1536,
-	LAURIANNA_CURED							= 1537,
-	READ_ZAURIEL_JOURNAL					= 1538,
-	LAURIANNA_HAS_JOURNAL					= 1539,
-	LAURIANNA_IN_YEW						= 1540
+	LAURIANNA_DRANK_POTION					= 0x5FF,
+	RECEIVED_ZAURIEL_REWARD					= 0x600,
+	LAURIANNA_CURED							= 0x601,
+	READ_ZAURIEL_JOURNAL					= 0x602,
+	LAURIANNA_HAS_JOURNAL					= 0x603,
+	LAURIANNA_IN_YEW						= 0x604
 };
 
 //some of the above flags are cleared again when Laurianna
 //moves to Yew.  This is for economy of global flags.
 enum laurianna_yew_flags
 {                                               
-	LAURIANNA_READY							= 1535,
-	LAURIANNA_WILL_JOIN						= 1536
+	LAURIANNA_READY							= 0x5FF,
+	LAURIANNA_WILL_JOIN						= 0x600
 };
 
 //The following flags are used for meditating in shrines:
@@ -137,15 +137,15 @@ enum shrine_meditation_flags
 {
 	// This first value is never actually used as a flag;
 	// it has been defined for convenience only
-	MEDITATED_AT_SHRINE_BASE				= 1544,
-	MEDITATED_AT_SACRIFICE					= 1545,
-	MEDITATED_AT_JUSTICE					= 1546,
-	MEDITATED_AT_HUMILITY					= 1547,
-	MEDITATED_AT_SPIRITUALITY				= 1548,
-	MEDITATED_AT_VALOR						= 1549,
-	MEDITATED_AT_COMPASSION					= 1550,
-	MEDITATED_AT_HONOR						= 1551,
-	MEDITATED_AT_HONESTY					= 1552
+	MEDITATED_AT_SHRINE_BASE				= 0x608,
+	MEDITATED_AT_SACRIFICE					= 0x609,
+	MEDITATED_AT_JUSTICE					= 0x60A,
+	MEDITATED_AT_HUMILITY					= 0x60B,
+	MEDITATED_AT_SPIRITUALITY				= 0x60C,
+	MEDITATED_AT_VALOR						= 0x60D,
+	MEDITATED_AT_COMPASSION					= 0x60E,
+	MEDITATED_AT_HONOR						= 0x60F,
+	MEDITATED_AT_HONESTY					= 0x610
 };
 
 //When the following flags are set, the above flags
@@ -155,30 +155,32 @@ enum codex_quest_flags
 {
 	// This first value has been defined for convenience only,
 	// and is actually used for meditation at the Honesty shrine
-	VIEWED_CODEX_BASE						= 1552,
-	VIEWED_CODEX_FOR_SACRIFICE				= 1553,
-	VIEWED_CODEX_FOR_JUSTICE				= 1554,
-	VIEWED_CODEX_FOR_HUMILITY				= 1555,
-	VIEWED_CODEX_FOR_SPIRITUALITY			= 1556,
-	VIEWED_CODEX_FOR_VALOR					= 1557,
-	VIEWED_CODEX_FOR_COMPASSION				= 1558,
-	VIEWED_CODEX_FOR_HONOR					= 1559,
-	VIEWED_CODEX_FOR_HONESTY				= 1560
+	VIEWED_CODEX_BASE						= 0x610,
+	VIEWED_CODEX_FOR_SACRIFICE				= 0x611,
+	VIEWED_CODEX_FOR_JUSTICE				= 0x612,
+	VIEWED_CODEX_FOR_HUMILITY				= 0x613,
+	VIEWED_CODEX_FOR_SPIRITUALITY			= 0x614,
+	VIEWED_CODEX_FOR_VALOR					= 0x615,
+	VIEWED_CODEX_FOR_COMPASSION				= 0x616,
+	VIEWED_CODEX_FOR_HONOR					= 0x617,
+	VIEWED_CODEX_FOR_HONESTY				= 0x618
 };
 
 //Used to prevent cheaters from getting anything
 //out of the Codex:
-enum codex_anti_cheat_flags
+const int IN_CODEX_QUEST					= 0x619;
+
+//Codex mini-quest flags:
+enum codex_quest_flags
 {
-	IN_CODEX_QUEST							= 1561,
-	SEEN_CODEX_ONCE							= 1562,
-	SPIRITUALITY_STONE_QUEST				= 1563,
-	ATTUNED_SPIRITUALITY_STONE				= 1564,
-	CODEX_ALL_EIGHT_SHRINES					= 1565,
-	CODEX_ALL_ITEMS_IN_PLACE				= 1566,
-	RELOCATE_CODEX_QUEST					= 1567
+	SEEN_CODEX_ONCE							= 0x61A,
+	SPIRITUALITY_STONE_QUEST				= 0x61B,
+	ATTUNED_SPIRITUALITY_STONE				= 0x61C,
+	CODEX_ALL_EIGHT_SHRINES					= 0x61D,
+	CODEX_ALL_ITEMS_IN_PLACE				= 0x61E,
+	RELOCATE_CODEX_QUEST					= 0x61F
 };
 
 //New flags for Mack's key when Lock Lake is cleaned:
-const int MACKS_KEY_WITH_COVE_MAYOR			= 0x350;
-const int KNOWS_MACKS_KEY_WITH_COVE_MAYOR	= 0x351;
+const int MACKS_KEY_WITH_COVE_MAYOR			= 0x650;
+const int KNOWS_MACKS_KEY_WITH_COVE_MAYOR	= 0x651;

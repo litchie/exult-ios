@@ -40,8 +40,6 @@ class Npc_timer_list;
 class Frames_sequence;
 class Animator;
 class Actor_attributes;
-					// The range of actors' rect. gumps:
-const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
 /*
  *	An actor:

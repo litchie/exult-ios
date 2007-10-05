@@ -202,11 +202,11 @@ Blackrock_Potion shape#(0x450) ()
 					if (getQuestState() < PLAYER_KILLED_MAGE)
 					{
 						// Laundo yet alive, so Laurianna is behind an energy shield.
-						avatarSpeak("There is some sort of energy field that prevents you from reaching your intended victim.");
+						AVATAR.say("There is some sort of energy field that prevents you from reaching your intended victim.");
 						return;
 					}
 
-					avatarSpeak("As you approach Laurianna with the potion, she immediatelly begins talking to you. You ignore her protests and force the potion down her throat.");
+					AVATAR.say("As you approach Laurianna with the potion, she immediatelly begins talking to you. You ignore her protests and force the potion down her throat.");
 					gflags[ACCEPTED_ZAURIEL_QUEST] = false;
 					gflags[ZAURIEL_TOLD_LOCATION] = false;
 					gflags[ZAURIEL_TELEPORTED] = false;
@@ -227,7 +227,7 @@ Blackrock_Potion shape#(0x450) ()
 				{
 					//Someone else... DAMN YOU AVATAR!
 					var npc_num = target->get_npc_number();
-					avatarSpeak("In a terrible display of strength and brutality, you force the potion down your victim's throat. The effect is swift, and everyone nearby is shocked by your brutal display.");
+					AVATAR.say("In a terrible display of strength and brutality, you force the potion down your victim's throat. The effect is swift, and everyone nearby is shocked by your brutal display.");
 					if (npc_num == BATLIN)
 					{
 						//Batlin is a special case, but he IS affected:

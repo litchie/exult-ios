@@ -981,7 +981,7 @@ zaurielTalkGemSubquest ()
 			//the Gem of Dispelling subquest:
 			giveExperience(100);
 			
-			avatarSpeak("You quickly relate to Zauriel that no one was there when you arrived at the island.");
+			AVATAR.say("You quickly relate to Zauriel that no one was there when you arrived at the island.");
 			AVATAR.hide();
 			
 			say("At first, he has a look of disbelief in his face. @It cannot be! My divinations show that they are -in- the island.@");
@@ -1252,7 +1252,7 @@ zaurielTalkGemSubquest ()
 			zaurielMakeGem(false);
 
 		case "liche" (remove):
-			avatarSpeak("You tell Zauriel that you encountered a liche in Joneleth's house which claimed to own the gems.");
+			AVATAR.say("You tell Zauriel that you encountered a liche in Joneleth's house which claimed to own the gems.");
 			AVATAR.hide();
 
 			say("@A liche you said? Alas, I have little doubt that it was Joneleth himself. I thought he had died, but he apparently decided to dabble with the foul arts.");
