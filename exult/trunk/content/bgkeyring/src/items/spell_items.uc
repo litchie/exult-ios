@@ -267,7 +267,7 @@ var spellitemGetTalkMain (var npcnum)
 			        "@Goodbye, " + getAvatarName() + ".@",
 			        "@Anything else?@"];
 		default:
-			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			AVATAR.say("Invalid NPC ID! Stop cheating!");
 			abort;
 	}
 }
@@ -342,7 +342,7 @@ var spellitemGetTalkCast (var npcnum)
 			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
 			        "@I must rest a while before I can cast this spell.@"];
 		default:
-			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			AVATAR.say("Invalid NPC ID! Stop cheating!");
 			abort;
 	}
 }
@@ -410,7 +410,7 @@ var spellitemGetTalkPrepare (var npcnum)
 			        "@Very well. Should I prepare any other spells?@",
 			        "@Fair enough. Anything else@"];
 		default:
-			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			AVATAR.say("Invalid NPC ID! Stop cheating!");
 			abort;
 	}
 }
@@ -454,7 +454,7 @@ var spellitemGetTalkHeal (var npcnum)
 			        "@Glad to be of assistance, Avatar.@",
 			        "@Who dost thou wish to be "];
 		default:
-			avatarSpeak("Invalid NPC ID! Stop cheating!");
+			AVATAR.say("Invalid NPC ID! Stop cheating!");
 			abort;
 	}
 }
@@ -544,7 +544,7 @@ spellitem_Main object#() ()
 				if (npc != AVATAR)
 					npc.say(talk_main[2]);
 				else
-					avatarSpeak(talk_main[3]);
+					AVATAR.say(talk_main[3]);
 			}
 		}
 		
@@ -562,8 +562,12 @@ spellitem_Main object#() ()
 				npc.say(talk_main[4]);
 				while (true)
 				{
-					var choicelist = ["nothing", "Cast spell", "Prepare spell", healing_spells];
-					
+					var choicelist;
+					if (npc->get_item_flag(ARCHWIZARD))
+						choicelist = ["nothing", "reagents", "Cast spell", "Prepare spell", healing_spells];
+					else
+						choicelist = ["nothing", "Cast spell", "Prepare spell", healing_spells];
+
 					if (UI_get_array_size(fav_spell_names) >= 1)
 						choicelist = [choicelist, fav_spell_names];
 						
@@ -573,7 +577,21 @@ spellitem_Main object#() ()
 						say(talk_main[5]);
 						break;
 					}
-					
+					else if (choice == "reagents")
+					{
+						say("Here thou art!");
+						var pouch = UI_create_new_object(SHAPE_BAG);
+						var nregs = 0;
+						while (nregs < 8)
+						{
+							var reag = UI_create_new_object(SHAPE_REAGENT);
+							reag->set_item_frame(nregs);
+							reag->set_item_quantity(100);
+							pouch->give_last_created();
+							nregs += 1;
+						}
+						AVATAR->give_last_created();
+					}
 					else if (choice == "Cast spell")
 						npcAskSpellToCast(npc,
 							talk_cast,

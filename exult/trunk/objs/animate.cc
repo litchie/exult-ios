@@ -283,6 +283,13 @@ int Frame_animator::get_next_frame()
 	int curframe = obj->get_framenum();
 	int framenum = 0;
 
+	// Re-init if it's outside the range.
+	// ++++++Should we do this for the other cases (jsf)?
+	// ++++++Seeing if it breaks anything (marzo)
+	if (curframe < aniinf->first_frame ||
+		curframe >= aniinf->first_frame + aniinf->frame_count)
+		Initialize();
+
 	switch (aniinf->type)
 	{
 	case FA_HOURLY:
@@ -298,11 +305,6 @@ int Frame_animator::get_next_frame()
 
 	case FA_LOOPING:
 		{
-		// Re-init if it's outside the range.
-		// ++++++Should we do this for the other cases (jsf)?
-		if (curframe < aniinf->first_frame ||
-			curframe >= aniinf->first_frame + aniinf->frame_count)
-			Initialize();
 		unsigned int ticks = Game::get_ticks();
 		const int delay = 100;
 		currpos = (ticks / (delay * aniinf->frame_delay)) + created;

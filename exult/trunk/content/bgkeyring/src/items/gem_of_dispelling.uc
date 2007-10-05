@@ -40,8 +40,8 @@ Gem_Of_Dispelling shape#(0x451) ()
 			//close all gumps:
 			UI_close_gumps();
 			//Description of action:
-			avatarSpeak("You pick up the gem with your hand and firmly crush it -- although, to your surprise, the gem is far easier to crush than you had anticipated.");
-			avatarSpeak("You wait for the spell to take effect as the magical energies course through the Ether.");
+			AVATAR.say("You pick up the gem with your hand and firmly crush it -- although, to your surprise, the gem is far easier to crush than you had anticipated.");
+			say("You wait for the spell to take effect as the magical energies course through the Ether.");
 			AVATAR.hide();
 	
 			//Give the amulet to Laurianna:

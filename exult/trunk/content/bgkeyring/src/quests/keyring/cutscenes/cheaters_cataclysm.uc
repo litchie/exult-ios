@@ -161,7 +161,7 @@ beginCataclysm object#() ()
 	else if (event == END_GAME)
 	{
 		//Thus we reach the end of Britannia:
-		avatarSpeak("With your dying breath, you see the world of Britannia being sundered appart by violent earthquakes... then, darkness surrounds you.");
+		AVATAR.say("With your dying breath, you see the world of Britannia being sundered appart by violent earthquakes... then, darkness surrounds you.");
 		UI_restart_game();
 	}
 }

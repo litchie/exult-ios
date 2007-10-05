@@ -23,12 +23,13 @@
  *	Last Modified: 2006-02-27
  */
 
-avatarSpeak (var msg)
+//Finds a temporary NPC from a given shape and NPC id.
+var findNearbyMonsterWithID (var loc, var shp, var dist, var id)
 {
-	//Show correct gender-based face for Avatar:
-	UI_show_npc_face(AVATAR, UI_is_pc_female());
-	//Have Avatar say his piece:
-	say(msg);
+	var npcs = UI_find_nearby(loc, shp, dist, MASK_NONE);
+	for (npc in npcs)
+		if ((npc->get_npc_number() > 0) && (npc->get_npc_id() == id))
+			return npc;
 }
 
 //Sets BG_DONT_MOVE flag:

@@ -2373,8 +2373,8 @@ bool Actor::reduce_health
 			get_info().has_translucency() &&
 			party_id < 0)	// Don't include Spark here!!
 		return false;
-					// Being a bully (in BG)?
-	if (attacker && attacker->is_in_party() && GAME_BG &&
+					// Being a bully?
+	if (attacker && attacker->is_in_party() &&
 	    npc_num > 0 &&
 	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
 	    !(flags & (1<<Obj_flags::charmed)) && !is_in_party() &&
@@ -2390,10 +2390,12 @@ bool Actor::reduce_health
 			lastcall = curtime;
 			gwin->attack_avatar(1 + rand()%2);
 			}
-		else if (rand()%4 == 0)
+		else if (rand()%10 == 0)
 			{
-			cout << "Rand()%4" << endl;
+			cout << "Rand()%10" << endl;
 			gwin->attack_avatar(1 + rand()%2);
+			// To reduce the guard pile-up.
+			lastcall = curtime;
 			}
 		}
 	bool defeated = false;
@@ -2438,7 +2440,7 @@ bool Actor::reduce_health
 			say(first_ouch, last_ouch);
 		}
 	Game_object_vector vec;		// Create blood.
-	const int blood = 912;
+	const int blood = 912;		// ++++TAG for future de-hard-coding.
 	if (damage_type == 0 &&		// But only for normal damage.
 		delta >= 3 && (!minf || !minf->cant_bleed()) &&
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
