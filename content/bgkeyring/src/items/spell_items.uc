@@ -493,13 +493,31 @@ var spellitemGetNPCIndex(var npcnum)
 
 	static var initialized;
 	static var spellsystem_version;
-	const int CURRENT_SPELLSYSTEM_VERSION		= 1;
+	const int CURRENT_SPELLSYSTEM_VERSION		= 2;
 
 	if (!initialized || spellsystem_version != CURRENT_SPELLSYSTEM_VERSION)
 	{
 		spellsystem_version = CURRENT_SPELLSYSTEM_VERSION;
 		initialized = true;
 		spellitemInit();
+
+		// Ensure flags are set.
+		// Mage-class spellcasting:
+		var mages = [JAANA, MARIAH, LAURIANNA, LORD_BRITISH];
+		for (mage in mages)
+			mage->set_item_flag(MAGE_CLASS);
+		// Bard-class spellcasting:
+		var bards = [IOLO, SHAMINO, DUPRE, JULIA];
+		for (bard in bards)
+			bard->set_item_flag(MAGE_CLASS);
+		// Healers:
+		var healers = [JAANA, LAURIANNA, LORD_BRITISH];
+		for (healer in healers)
+			healer->set_item_flag(HEALER);
+		// Cheaters:
+		var cheaters = [LORD_BRITISH];
+		for (cheat in cheaters)
+			cheat->set_item_flag(ARCHWIZARD);
 	}
 
 	for (npc in npc_array_index with index)
