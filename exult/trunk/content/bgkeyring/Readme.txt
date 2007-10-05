@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.14
+version: 0.11.15
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,8 @@ version: 0.11.14
 
 7	Version history
 -------------------
+version: 0.11.15
+	- Making healing services actually work for LB, Laurianna & Jaana.
 version: 0.11.14
 	- Fixed misidentification bug in Mage & Goons cutscene where Sentri can
 	  be wrongly used by the usecode as if it where Laudo's fighter goon. The
