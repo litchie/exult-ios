@@ -1,3 +1,7 @@
+2007-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed a few bugs in the Keyring mod.
+	* Fixed bugs #1727116 and #1770090
+
 2007-10-02    <jeff@mini.nerble.net>
 
 	* npctime.cc (Npc_hunger_timer): Fixed hunger.

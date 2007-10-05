@@ -185,36 +185,34 @@ Shrine shape#(0x463) ()
 			else
 				pos[X] -= 4;
 			
-			//Make him go there:
-			if (AVATAR->si_path_run_usecode(pos, PATH_SUCCESS, AVATAR, Shrine, true));
-			{
-				UI_set_path_failure(Shrine, AVATAR, PATH_FAILURE);
-				//Create a path egg containing the info about mantra
-				//in the frame and cycles in the quality:
-				pathegg = UI_create_new_object(SHAPE_PATH_EGG);
-				pathegg->set_item_frame(chosen_mantra);
-				pathegg->set_item_flag(TEMPORARY);
-				pathegg->set_item_quality(cycles);
-				pos = get_object_position();
-				UI_update_last_created(pos);
+			//Make Avatar go there:
+			AVATAR->si_path_run_usecode(pos, PATH_SUCCESS, AVATAR, Shrine, true);
+			UI_set_path_failure(Shrine, AVATAR, PATH_FAILURE);
+			//Create a path egg containing the info about mantra
+			//in the frame and cycles in the quality:
+			pathegg = UI_create_new_object(SHAPE_PATH_EGG);
+			pathegg->set_item_frame(chosen_mantra);
+			pathegg->set_item_flag(TEMPORARY);
+			pathegg->set_item_quality(cycles);
+			pos = get_object_position();
+			UI_update_last_created(pos);
 
-				//NPC banthers:
-				var noun = "he";
-				if (UI_is_pc_female())
-					noun = "she";
-				
-				const int BARK_COUNT = 3;
-				var rand = UI_get_random(BARK_COUNT);
-				var delay = UI_die_roll(5, 11);
-				if (inParty(DUPRE) && (rand == 1))
-					script DUPRE after delay ticks say "@Is there a pub nearby?@";
-				else if (inParty(SHAMINO) && (rand == 2))
-					script SHAMINO after delay ticks say "@There " + noun + " goes again...@";
-				else if (inParty(IOLO) && (rand == 3))
-					script IOLO after delay ticks say "@Where is my lute?@";
+			//NPC banthers:
+			var noun = "he";
+			if (UI_is_pc_female())
+				noun = "she";
 
-				abort;
-			}
+			const int BARK_COUNT = 3;
+			var rand = UI_get_random(BARK_COUNT);
+			var delay = UI_die_roll(5, 11);
+			if (inParty(DUPRE) && (rand == 1))
+				script DUPRE after delay ticks say "@Is there a pub nearby?@";
+			else if (inParty(SHAMINO) && (rand == 2))
+				script SHAMINO after delay ticks say "@There " + noun + " goes again...@";
+			else if (inParty(IOLO) && (rand == 3))
+				script IOLO after delay ticks say "@Where is my lute?@";
+
+			abort;
 		}
 	}
 
