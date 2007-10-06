@@ -1287,7 +1287,10 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		else if (i >= nshapes) mode = CP_InvalidShape;
 		else if (input[0] && (input[0] != '-' || input[1]))
 		{
-			actor->set_shape(i);
+			if (actor->get_npc_num() != 0)
+				actor->set_shape(i);
+			else
+				actor->set_polymorph(i);
 			mode = CP_ShapeSet;
 		}
 		break;
@@ -1510,7 +1513,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 		Obj_flags::tournament)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);
 
-	// Naked (AV SI ONLY)
+	// Naked (AV ONLY)
 	if (!actor->get_npc_num())
 	{
 		snprintf (buf, 512, "[7] Naked..%c", actor->get_flag(Obj_flags::naked)?'Y':'N');

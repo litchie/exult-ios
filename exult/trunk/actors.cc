@@ -2621,6 +2621,23 @@ void Actor::set_flag
 		stop();			// Added 7/6/03.
 		set_action(0);	// Force actor to stop current action.
 		break;
+	case Obj_flags::naked:
+		{
+		if (get_npc_num() != 0)	// Ignore for all but avatar.
+			break;
+		int sn;
+		int female = get_type_flag(tf_sex)?1:0;
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(this);
+		
+		if (!skin ||	// Should never happen, but hey...
+			(!sman->have_si_shapes() &&
+				Shapeinfo_lookup::IsSkinImported(skin->naked_shape)))
+			sn = Shapeinfo_lookup::GetBaseAvInfo(female)->shape_num;
+		else
+			sn = skin->naked_shape;
+		set_polymorph(sn);
+		break;
+		}
 		}
 					// Update stats if open.
 	if (gumpman->showing_gumps())
@@ -2675,6 +2692,10 @@ void Actor::clear_flag
 	else if (flag == Obj_flags::bg_dont_move || flag == Obj_flags::dont_move)
 		// Start again after a little while
 		start(gwin->get_std_delay(), gwin->get_std_delay());
+	else if (flag == Obj_flags::polymorph && get_flag(Obj_flags::naked))
+		clear_flag(Obj_flags::naked);
+	else if (flag = Obj_flags::naked && get_flag(Obj_flags::polymorph))
+		clear_flag(Obj_flags::polymorph);
 	
 	set_actor_shape();
 	}
@@ -4190,7 +4211,8 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
-	if (get_npc_num() != 0 || get_flag (Obj_flags::polymorph) || get_skin_color() < 0)
+	if (get_npc_num() != 0 || get_skin_color() < 0 ||
+		(get_flag(Obj_flags::polymorph) && !get_flag(Obj_flags::naked)))
 		return;
 
 	int sn;
