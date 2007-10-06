@@ -116,7 +116,6 @@ protected:
 	Game_object *usecode_target;
 	int usecode_weapon;
 
-	unsigned siflags:32;	// 32 flags used in 'usecode'.
 	unsigned type_flags:32;	// 32 flags used in movement among other things
 
 	unsigned char ident;
@@ -224,14 +223,6 @@ public:
 		{ return oppressor; }
 	void set_oppressor(int opp)
 		{ oppressor = opp; }
-	// This is not even a guess, it's a place holder
-	enum Serpent_flags {		// Bit #'s of flags:
-		// petra = 4,
-		// met = 5,
-		// no_spell_casting = 6,
-		naked = 8,
-		// dont_move = 9
-		};
 	enum type_flags {
 		tf_fly = 4,
 		tf_walk = 5,
@@ -424,12 +415,9 @@ public:
 	Npc_timer_list *need_timers();
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
-	virtual void set_siflag(int flag);
 	void set_type_flag(int flag);
 	virtual void clear_flag(int flag);
-	virtual void clear_siflag(int flag);
 	void clear_type_flag(int flag);
-	virtual int get_siflag(int flag) const;
 	int get_type_flag(int flag) const;
 	void set_type_flags(unsigned short tflags);
 	int get_skin_color () const { return skin_color; }

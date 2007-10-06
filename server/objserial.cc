@@ -203,7 +203,7 @@ static void Npc_actor_io
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
-	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& xflags,		// Extra flags for SI.
 	unsigned long& type_flags,	// Movement flags.
 	short& num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.  Room for 8.
@@ -214,7 +214,7 @@ static void Npc_actor_io
 	int i;
 	for (i = 0; i < 12; i++)
 		io << properties[i];
-	io << attack_mode << alignment << oflags << siflags << type_flags;
+	io << attack_mode << alignment << oflags << xflags << type_flags;
 	io << num_schedules;
 	for (i = 0; i < num_schedules; i++)
 		io << schedules[i].time << schedules[i].type <<
@@ -462,7 +462,7 @@ int Npc_actor_out
 	short attack_mode,
 	short alignment,
 	unsigned long oflags,		// Object flags.
-	unsigned long siflags,		// Extra flags for SI.
+	unsigned long xflags,		// Extra object flags.
 	unsigned long type_flags,	// Movement flags.
 	short num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.
@@ -474,7 +474,7 @@ int Npc_actor_out
 	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, usecodefun,
 		properties, attack_mode, alignment,
-		oflags, siflags, type_flags,
+		oflags, xflags, type_flags,
 		num_schedules, schedules);
 	return Exult_server::Send_data(fd, Exult_server::npc, buf, ptr - buf);
 	}
@@ -501,7 +501,7 @@ int Npc_actor_in
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
-	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& xflags,		// Extra object flags.
 	unsigned long& type_flags,	// Movement flags.
 	short& num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.  Room for 8.
@@ -512,7 +512,7 @@ int Npc_actor_in
 	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, usecodefun,
 		properties, attack_mode, alignment,
-		oflags, siflags, type_flags,
+		oflags, xflags, type_flags,
 		num_schedules, schedules);
 	return (ptr - data) == datalen;
 	}

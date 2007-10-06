@@ -341,6 +341,15 @@ var spellitemGetTalkCast (var npcnum)
 			        "@I am in need of ",
 			        "@Alas, that spell is beyond my power. I must train somewhat to be able to cast it.@",
 			        "@I must rest a while before I can cast this spell.@"];
+		case LORD_BRITISH:
+			return ["@Of which circle is the spell I should cast?@",
+			        "@What would be the spell, I pray thee tell?@",
+			        "@Perhaps it was of a different circle?@",
+			        "@Thou hast changed thy mind again, I see.@",
+			        "@I don't have the reagents for that spell you want.",
+			        "@I still need ",
+			        "@If you are seeing this, the mega-cheat is working wrong. Kindly wanr the programmer.@",
+			        "@I must rest a while before I can cast this spell.@"];
 		default:
 			AVATAR.say("Invalid NPC ID! Stop cheating!");
 			abort;

@@ -156,7 +156,9 @@ enum item_flags
 	TATTOOED	= 33,		// guess (SI).
 	READ		= 34,		// guess (SI).
 	PETRA		= 35,		// guess
-	FREEZE		= 37		// SI.  pretty sure.
+	FREEZE		= 37,		// SI.  pretty sure.
+	NAKED		= 38 		// Exult. Makes the avatar naked given its skin.
+							// Other NPCs should use set_polymorph instead.
 };
 
 //Business activities (taken from the cheat screen)

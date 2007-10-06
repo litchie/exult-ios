@@ -79,7 +79,7 @@ greatDouseIgnite (var obj, var shapes)
 	}
 }
 
-DeathBoltHit object#(0xB7F) ()
+DeathBoltHit object#(0xB8F) ()
 {
 	//Bail out unless an NPC is hit:
 	if (is_npc())
