@@ -1,4 +1,4 @@
-2007-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-10-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a couple bugs in the Keyring mod.
 	* Eliminated the (virtually unused) SIFlags variable, enum and associated
 	  functions from Exult. Its sole use (the naked flag from the cheat screen)
@@ -11,6 +11,7 @@
 	  flag to simply 'tournament'.
 	* Ignore "don't move mode" and "don't render" when map-editing.
 	* Corrected and updated intrinsic documentation.
+	* Making the new naked flag works more like nakedness did in SI.
 
 2007-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a few bugs in the Keyring mod.
