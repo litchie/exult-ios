@@ -407,7 +407,7 @@ void Cheat::toggle_Petra (void) const {
 }
 
 void Cheat::toggle_naked (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
+	if (!enabled) return;
 
 	if (gwin->get_main_actor()->get_flag(Obj_flags::naked))
 		gwin->get_main_actor()->clear_flag(Obj_flags::naked);
