@@ -1,4 +1,18 @@
 2007-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed a couple bugs in the Keyring mod.
+	* Eliminated the (virtually unused) SIFlags variable, enum and associated
+	  functions from Exult. Its sole use (the naked flag from the cheat screen)
+	  has been moved to flag 38 (which was unused in the originals) so that it
+	  can be used from usecode also (to make things easier for skin packs).
+	* Exult Studio now edits more NPC flags, including the SI flags.
+	* Added an SI version of the BG's 'dont_move' flag. Now, flag 16 is named as
+	  'bg_dont_render' (BG) or 'dont_move' (otherwise), while flag 22 is called
+	  'bg_dont_move' (BG) or 'dont_render' (otherwise). Renamed 'si_tournament'
+	  flag to simply 'tournament'.
+	* Ignore "don't move mode" and "don't render" when map-editing.
+	* Corrected and updated intrinsic documentation.
+
+2007-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a few bugs in the Keyring mod.
 	* Fixed bugs #1727116 and #1770090
 

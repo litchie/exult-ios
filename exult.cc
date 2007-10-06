@@ -1145,8 +1145,7 @@ static void Handle_event
 	{
 	// Mouse scale factor
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
-	bool dont_move_mode = gwin->main_actor_dont_move() &&
-				!cheat.in_map_editor();
+	bool dont_move_mode = gwin->main_actor_dont_move();
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();

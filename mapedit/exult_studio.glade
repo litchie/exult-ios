@@ -5745,7 +5745,7 @@ Coordinates</property>
 		<widget class="GtkCheckButton" id="npc_flag_of_16">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Don't move</property>
+		  <property name="label" translatable="yes">Don't render (BG)/Don't move (SI)</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
@@ -5808,7 +5808,7 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="npc_flag_si_00">
+		<widget class="GtkCheckButton" id="npc_flag_si_05">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">Freeze</property>
@@ -5940,7 +5940,7 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="npc_flag_si_08">
+		<widget class="GtkCheckButton" id="npc_flag_si_06">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">Naked</property>
@@ -5984,9 +5984,10 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="npc_flag_of_21">
+		<widget class="GtkCheckButton" id="npc_flag_of_22">
+		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Unused</property>
+		  <property name="label" translatable="yes">Don't move (BG)/Don't render (SI)</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>
@@ -6027,7 +6028,7 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="checkbutton22">
+		<widget class="GtkCheckButton" id="npc_flag_si_03">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">Petra</property>
@@ -6071,7 +6072,7 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="npc_flag_si_03">
+		<widget class="GtkCheckButton" id="npc_flag_si_00">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">Polymorph</property>
@@ -6181,7 +6182,7 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="checkbutton29">
+		<widget class="GtkCheckButton" id="npc_flag_si_01">
 		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="label" translatable="yes">Tattooed</property>
@@ -6291,10 +6292,10 @@ Coordinates</property>
 	      </child>
 
 	      <child>
-		<widget class="GtkCheckButton" id="checkbutton101">
-		  <property name="sensitive">False</property>
+		<widget class="GtkCheckButton" id="npc_flag_si_02">
+		  <property name="visible">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">checkbutton101</property>
+		  <property name="label" translatable="yes">Read</property>
 		  <property name="use_underline">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <property name="focus_on_click">True</property>

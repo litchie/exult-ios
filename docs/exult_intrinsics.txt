@@ -167,6 +167,9 @@ bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
     a 2-dimensional or a 3-dimensional position. Note that the player can
     interrupt the path by moving the avatar while it is walking.
 
+    If you want the path to be uninterruptible, as it often happens in SI, you
+    must set the DONT_MOVE flag (it is flag 16 in SI or 22 in BG).
+
     ****** SI SPECIFIC ******
     In SI, path_run_usecode finds a free spot within 3 tiles of the position
     specified by 'pos'; it also allows a rise/drop of 3 in the z direction.
@@ -178,15 +181,17 @@ UI_si_path_run_usecode(actor npc, int pos[], int event,              [SI, Exult]
 npc->si_path_run_usecode(int pos[], int event, object obj, function fun, bool
         flag)
 
-    Similar to path_run_usecode, the main differences are:
+    Similar to path_run_usecode, the differences are:
 
-        (1)   it is 'npc', not necessarily the avatar, which describes the
+        (1)   it is 'npc', not necessarily the avatar, which walks the
               path;
-        (2)   the path is uninterruptable by the player;
-        (3)   the parameter order;
-        (4)   if 'flag' is 'true', 'fun' will be executed even if the
+        (2)   the parameter order;
+        (3)   if 'flag' is 'true', 'fun' will be executed even if the
               destination is not reachable;
-        (5)   si_path_run_usecode does not return a value.
+        (4)   si_path_run_usecode does not return a value.
+
+    If you want the path to be uninterruptible, as it often happens in SI, you
+    must set the DONT_MOVE flag (it is flag 16 in SI or 22 in BG).
 
     ****** SI SPECIFIC ******
     None of the SI-specific properties of path_run_usecode apply to
@@ -738,19 +743,21 @@ int obj->get_item_flag(int flag)
         ON_MOVING_BARGE       = 10    OKAY_TO_TAKE        = 11
         MIGHT                 = 12    NO_SPELL_CASTING    = 13
         CANT_DIE              = 14    DANCING             = 15
-        DONT_MOVE             = 16    DONT_RENDER         = 16
+        DONT_MOVE             = 16    BG_DONT_RENDER      = 16
         SI_ON_MOVING_BARGE    = 17    TEMPORARY           = 18
         SAILOR                = 20    OKAY_TO_LAND        = 21
-        BG_DONT_MOVE          = 22    IN_DUNGEON          = 23
-        CONFUSED              = 25    IN_MOTION           = 26
-        MET                   = 28    SI_TOURNAMENT       = 29
-        SI_ZOMBIE             = 30    POLYMORPH           = 32
-        TATTOOED              = 33    READ                = 34
-        PETRA                 = 35    FREEZE              = 37
+        BG_DONT_MOVE          = 22    DONT_RENDER         = 22
+        IN_DUNGEON            = 23    CONFUSED            = 25
+        IN_MOTION             = 26    MET                 = 28
+        SI_TOURNAMENT         = 29    SI_ZOMBIE           = 30
+        POLYMORPH             = 32    TATTOOED            = 33
+        READ                  = 34    PETRA               = 35
+        FREEZE                = 37    NAKED               = 38
 
     'flag' can be, however, any value in the 0-63 range. The values above are
     for NPCs; most of them are not valid for inanimate objects, and some of
-    them ('READ', 'PETRA', 'TATTOOED') have no effect on anyone but the avatar.
+    them ('READ', 'PETRA', 'TATTOOED', 'NAKED') have no effect on anyone but
+    the avatar.
 
     The 'SAILOR' flag has a peculiar behaviour in that it actually returns an
     object reference to the last object to have that flag set or '0' if no

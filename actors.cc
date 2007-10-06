@@ -629,7 +629,7 @@ Actor::Actor
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), usecode_target(0), usecode_weapon(0),
-	    siflags(0), type_flags(0), ident(0),
+	    type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false),
@@ -1783,9 +1783,8 @@ void Actor::paint
 	(
 	)
 	{
-					// In BG, dont_move means don't render.
-	if (!(flags & (1L << Obj_flags::dont_move)) ||
-	    Game::get_game_type() == SERPENT_ISLE)
+	int flag = GAME_BG ? Obj_flags::bg_dont_render : Obj_flags::dont_render;
+	if (cheat.in_map_editor() || !(flags & (1L << flag)))
 		{
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
@@ -2043,7 +2042,7 @@ bool Actor::edit
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
 				get_shapenum(), get_framenum(), get_face_shapenum(),
 				name, npc_num, ident, usecode, usecode_name, properties,
-				attack_mode, alignment, flags, siflags, type_flags,
+				attack_mode, alignment, flags, flags2, type_flags,
 				num_schedules, schedules) != -1)
 			{
 			cout << "Sent npc data to ExultStudio" << endl;
@@ -2078,14 +2077,14 @@ void Actor::update_from_studio
 	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
-	unsigned long siflags;		// Extra flags for SI.
+	unsigned long xflags;		// Extra object flags.
 	unsigned long type_flags;	// Movement flags.
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
 			face, name, npc_num, ident, usecode, usecodefun,
 			properties, attack_mode, alignment,
-			oflags, siflags, type_flags, num_schedules, schedules))
+			oflags, xflags, type_flags, num_schedules, schedules))
 		{
 		cout << "Error decoding npc" << endl;
 		return;
@@ -2160,8 +2159,9 @@ void Actor::update_from_studio
 	npc->set_attack_mode((Actor::Attack_mode) attack_mode);
 	npc->set_alignment(alignment);
 	npc->flags = oflags;
-	npc->siflags = siflags;
+	npc->flags2 = xflags;
 	npc->type_flags = type_flags;
+	npc->set_actor_shape();
 	Schedule_change *scheds = num_schedules ? 
 				new Schedule_change[num_schedules] : 0;
 	for (i = 0; i < num_schedules; i++)
@@ -2451,12 +2451,12 @@ bool Actor::reduce_health
 		}
 	if (Actor::is_dying())
 		{
-		if (get_flag(Obj_flags::si_tournament))
+		if (get_flag(Obj_flags::tournament))
 			{
 			ucmachine->call_usecode(get_usecode(), this, 
 							Usecode_machine::died);
 				// Still 'tournament'?  Set hp = 1.
-			if (!is_dead() && get_flag(Obj_flags::si_tournament) &&
+			if (!is_dead() && get_flag(Obj_flags::tournament) &&
 			    get_property(static_cast<int>(health)) < 1)
 				{
 				set_property(static_cast<int>(health), 1);
@@ -2469,7 +2469,7 @@ bool Actor::reduce_health
 		defeated = defeated || is_dead();
 		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep) &&
-					!get_flag(Obj_flags::si_tournament))
+					!get_flag(Obj_flags::tournament))
 		set_flag(Obj_flags::asleep);
 	return defeated;
 	}
@@ -2628,17 +2628,6 @@ void Actor::set_flag
 	set_actor_shape();
 	}
 
-void Actor::set_siflag
-	(
-	int flag
-	)
-	{
-	if (flag >= 0 && flag < 32)
-		siflags |= (static_cast<uint32>(1) << flag);
-
-	set_actor_shape();
-	}
-
 void Actor::set_type_flag
 	(
 	int flag
@@ -2683,22 +2672,10 @@ void Actor::clear_flag
 		}
 	else if (flag == Obj_flags::charmed)
 		set_target(0);			// Need new opponent.
-	else if ((GAME_BG && flag == Obj_flags::bg_dont_move) ||
-			flag == Obj_flags::dont_move)
+	else if (flag == Obj_flags::bg_dont_move || flag == Obj_flags::dont_move)
 		// Start again after a little while
 		start(gwin->get_std_delay(), gwin->get_std_delay());
 	
-	set_actor_shape();
-	}
-
-void Actor::clear_siflag
-	(
-	int flag
-	)
-	{
-	if (flag >= 0 && flag < 32)
-		siflags &= ~(static_cast<uint32>(1) << flag);
-
 	set_actor_shape();
 	}
 
@@ -2716,15 +2693,6 @@ void Actor::clear_type_flag
 /*
  *	Get flags.
  */
-
-int Actor::get_siflag
-	(
-	int flag
-	) const
-	{
-	return (flag >= 0 && flag < 32) ? (siflags & (static_cast<uint32>(1) << flag))
-			!= 0 : 0;
-	}
 
 int Actor::get_type_flag
 	(
@@ -2898,8 +2866,7 @@ void Actor::call_readied_usecode
  */
 bool Actor::in_usecode_control() const
 	{
-	if ((GAME_BG && get_flag(Obj_flags::bg_dont_move))
-			|| get_flag(Obj_flags::dont_move))
+	if (get_flag(Obj_flags::dont_render) || get_flag(Obj_flags::dont_move))
 		return true;
 	Usecode_script *scr = 0;
 	Actor *act = const_cast<Actor *>(this);
@@ -4233,10 +4200,10 @@ void Actor::set_actor_shape()
 	if (!skin ||	// Should never happen, but hey...
 		(!sman->have_si_shapes() &&
 			Shapeinfo_lookup::IsSkinImported(
-				get_siflag(naked) ? skin->naked_shape : skin->shape_num)))
+			get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num)))
 		sn = Shapeinfo_lookup::GetBaseAvInfo(female)->shape_num;
 	else
-		sn = get_siflag(naked) ? skin->naked_shape : skin->shape_num;
+		sn = get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num;
 
 #ifdef DEBUG
 	cerr << "Setting Shape to " << sn << endl;
@@ -4264,7 +4231,7 @@ void Actor::set_polymorph (int shape)
 		int female = avatar->get_type_flag(tf_sex)?1:0;
 
 		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(this);
-		shape = avatar->get_siflag(naked) ? skin->naked_shape : skin->shape_num;
+		shape = avatar->get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num;
 	}
 	set_file(SF_SHAPES_VGA);
 

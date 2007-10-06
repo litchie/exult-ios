@@ -339,7 +339,7 @@ void Game_window::paint
 	}
 	else
 		{			// Draw gumps unless in dont_move mode.
-			if (!main_actor_dont_move())
+		if (!main_actor_dont_move())
 			gump_man->paint();
 		effects->paint_text();	// Draw text over gumps.
 		}

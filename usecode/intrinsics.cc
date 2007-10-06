@@ -2469,12 +2469,7 @@ USECODE_INTRINSIC(set_item_flag)
 	case Obj_flags::bg_dont_move:
 		obj->set_flag(flag);
 					// Get out of combat mode.
-		if (obj == gwin->get_main_actor() && 
-			gwin->in_combat() &&
-			((flag == Obj_flags::bg_dont_move &&
-			  Game::get_game_type() == BLACK_GATE) ||
-			 (flag == Obj_flags::dont_move &&
-			  Game::get_game_type() == SERPENT_ISLE)))
+		if (obj == gwin->get_main_actor() && gwin->in_combat())
 			gwin->toggle_combat();
 					// Show change in status.
 		gwin->set_all_dirty();
@@ -2506,7 +2501,7 @@ USECODE_INTRINSIC(clear_item_flag)
 	if (obj)
 		{
 		obj->clear_flag(flag);
-		if (flag == Obj_flags::dont_move)
+		if (flag == Obj_flags::dont_move || flag == Obj_flags::bg_dont_move)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.
 			gwin->set_all_dirty();

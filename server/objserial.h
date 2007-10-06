@@ -196,7 +196,7 @@ int Npc_actor_out
 	short attack_mode,
 	short alignment,
 	unsigned long oflags,		// Object flags.
-	unsigned long siflags,		// Extra flags for SI.
+	unsigned long xflags,		// Extra object flags.
 	unsigned long type_flags,	// Movement flags.
 	short num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.
@@ -217,7 +217,7 @@ int Npc_actor_in
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
-	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& xflags,		// Extra object flags.
 	unsigned long& type_flags,	// Movement flags.
 	short& num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.  Room for 8.

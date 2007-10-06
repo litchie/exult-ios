@@ -413,8 +413,8 @@ serviceHeal ()
 			for (body in bodies)
 				if (body->get_body_npc())
 				{
-					targets = [targets, body];
-					bodynpcs = [bodynpcs, body->get_body_npc()];
+					targets << body;
+					bodynpcs << body->get_body_npc();
 				}
 		}
 
