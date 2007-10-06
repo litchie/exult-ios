@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.15
+version: 0.11.16
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,10 @@ version: 0.11.15
 
 7	Version history
 -------------------
+version: 0.11.16
+	- I know I said this before, but this time I actually mean it: making
+	  healing services actually work for LB. *sigh*
+	- Making Death Bolt spell work again.
 version: 0.11.15
 	- Making healing services actually work for LB, Laurianna & Jaana.
 version: 0.11.14

@@ -815,7 +815,7 @@ void Combat_schedule::run_away
 	pos.tx += dirx*(8 + rx%8);
 	pos.ty += diry*(8 + ry%8);
 	npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
-	if (fleed == 1 && !npc->get_flag(Obj_flags::si_tournament) &&
+	if (fleed == 1 && !npc->get_flag(Obj_flags::tournament) &&
 					rand()%3 && gwin->add_dirty(npc))
 		{
 		yelled++;

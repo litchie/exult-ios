@@ -301,8 +301,7 @@ bool KeyBinder::DoAction(ActionType a, bool press)
 	
 	// Restrict key actions in dont_move mode
 	if (a.action->allow_during_dont_move
-		|| !Game_window::get_instance()->main_actor_dont_move()
-		|| cheat.in_map_editor())	// But not if map-editing.
+		|| !Game_window::get_instance()->main_actor_dont_move())
 	{
 		if (press)
 			a.action->func(a.params);

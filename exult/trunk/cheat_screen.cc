@@ -99,13 +99,13 @@ const char *CheatScreen::flag_names[64] = {
 	"cant_die",		// 0x0E
 	"dancing",		// 0x0F
 
-	"dont_move",		// 0x10
+	"dont_move/bg_dont_render",		// 0x10
 	"si_on_moving_barge",	// 0x11
 	"is_temporary",		// 0x12
 	0,			// 0x13
 	0,			// 0x14
 	"okay_to_land",		// 0x15
-	"bg_dont_move",	// 0x16
+	"dont_render/bg_dont_move",	// 0x16
 	"in_dungeon",	// 0x17
 
 	0,			// 0x18
@@ -113,7 +113,7 @@ const char *CheatScreen::flag_names[64] = {
 	"in_motion",		// 0x1A
 	0,			// 0x1B
 	"met",			// 0x1C
-	"si_tournament",	// 0x1D
+	"tournament",	// 0x1D
 	"si_zombie",	// 0x1E
 	0,			// 0x1F
 
@@ -123,7 +123,7 @@ const char *CheatScreen::flag_names[64] = {
 	"petra",		// 0x23
 	0,			// 0x24
 	"freeze",		// 0x25
-	0,			// 0x26
+	"naked",	// 0x26
 	0,			// 0x27
 
 	0,			// 0x28
@@ -1507,13 +1507,13 @@ void CheatScreen::FlagMenu (Actor *actor)
 
 	// Tournament (Original is SI only -- allowing for BG in Exult)
 	snprintf (buf, 512, "[3] Tourna.%c", actor->get_flag(
-		Obj_flags::si_tournament)?'Y':'N');
+		Obj_flags::tournament)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);
 
 	// Naked (AV SI ONLY)
 	if (!actor->get_npc_num())
 	{
-		snprintf (buf, 512, "[7] Naked..%c", actor->get_siflag(Actor::naked)?'Y':'N');
+		snprintf (buf, 512, "[7] Naked..%c", actor->get_flag(Obj_flags::naked)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 104, maxy-27, 8);
 	}
 
@@ -1722,10 +1722,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case '7':	// Naked
-		if (actor->get_siflag(Actor::naked))
-			actor->clear_siflag(Actor::naked);
+		if (actor->get_flag(Obj_flags::naked))
+			actor->clear_flag(Obj_flags::naked);
 		else
-			actor->set_siflag(Actor::naked);
+			actor->set_flag(Obj_flags::naked);
 		break;
 		
 		case 't':	// Met
@@ -1790,10 +1790,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 
 		case '3':	// Tournament
-		if (actor->get_flag(Obj_flags::si_tournament))
-			actor->clear_flag(Obj_flags::si_tournament);
+		if (actor->get_flag(Obj_flags::tournament))
+			actor->clear_flag(Obj_flags::tournament);
 		else
-			actor->set_flag(Obj_flags::si_tournament);
+			actor->set_flag(Obj_flags::tournament);
 		break;
 		
 		case 'y':	// Warmth

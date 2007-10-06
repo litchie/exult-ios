@@ -611,9 +611,9 @@ bool Game_window::is_moving
 
 bool Game_window::main_actor_dont_move()
 	{
-	return (main_actor->get_flag(Obj_flags::dont_move) != 0) ||
-			(Game::get_game_type() == BLACK_GATE &&
-			main_actor->get_flag(Obj_flags::bg_dont_move) != 0);
+	return !cheat.in_map_editor() &&	// Not if map-editing.
+			((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
+			(main_actor->get_flag(Obj_flags::dont_render) != 0));
 	}
 
 /*
@@ -1780,7 +1780,8 @@ void Game_window::start_actor
 	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor->in_usecode_control() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
+	if ((!cheat.in_map_editor() && main_actor->in_usecode_control()) ||
+			(gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
 		return;
 //	teleported = 0;
 	if (moving_barge)
@@ -1833,7 +1834,7 @@ void Game_window::start_actor_along_path
 	    moving_barge)		// For now, don't do barges.
 		return;			// Zzzzz....
 					// Animation in progress?
-	if (main_actor->in_usecode_control())
+	if (!cheat.in_map_editor() && main_actor->in_usecode_control())
 		return;
 //	teleported = 0;
 	int lift = main_actor->get_lift();
@@ -2321,7 +2322,7 @@ void Game_window::double_clicked
 //^^^^^^^^^^^^TESTING
 #endif
 					// Animation in progress?
-	if (main_actor_dont_move() && !cheat.in_map_editor())
+	if (main_actor_dont_move())
 		return;
 					// Nothing going on?
 	if (!Usecode_script::get_count())
@@ -2722,9 +2723,9 @@ void Game_window::setup_game
 
 					// Should Avatar be visible?
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Obj_flags::dont_move);
+			main_actor->clear_flag(Obj_flags::bg_dont_render);
 		else
-			main_actor->set_flag(Obj_flags::dont_move);
+			main_actor->set_flag(Obj_flags::bg_dont_render);
 	}
 
 	CYCLE_RED_PLASMA();

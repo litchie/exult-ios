@@ -38,18 +38,19 @@ namespace  Obj_flags
 		no_spell_casting = 13,
 		cant_die = 14,		// Test flag in Monster_info.
 		dancing = 15,		// ??Not sure.
-		dont_move = 16,		// User can't move.  In BG,
-					//   completely invisible.
+		dont_move = 16,			// User can't move.
+		bg_dont_render = 16,	// In BG: also completely invisible.
 		si_on_moving_barge = 17,// SI's version of 10?
 		is_temporary = 18,	// Is temporary
 		okay_to_land = 21,	// Used for flying-carpet.
-		bg_dont_move = 22,	// Exult-only: BG version of SI's dont_move flag
+		bg_dont_move = 22,		// Exult-only: BG version of dont_move flag
+		dont_render = 22,	// Exult-only: Non-BG version of bg_dont_render flag
 		in_dungeon = 23,	// Pretty sure.  If set, you won't
 					//   be accused of stealing food.
 		confused = 25,		// ??Guessing.
 		in_motion = 26,		// ??Guessing (cart, boat)??
 		met = 28,			// Has the npc been met
-		si_tournament = 29,	// Call usecode (eventid=7)
+		tournament = 29,	// Call usecode (eventid=7)
 					// Originally SI-only, but allowed for BG in Exult
 		si_zombie = 30,		// Used for sick Neyobi.
 		// Flags > 31
@@ -57,7 +58,8 @@ namespace  Obj_flags
 		tattooed = 33,			// Guess (SI).
 		read = 34,			// Guess (SI).
 		petra = 35,			// Guess
-		freeze = 37		// SI.  Pretty sure.
+		freeze = 37,		// SI.  Pretty sure.
+		naked = 38			// Exult. Makes the avatar naked given its skin.
 	};
 }
 

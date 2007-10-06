@@ -417,7 +417,7 @@ static bool Get_flag_cbox
 	(
 	GList *list,			// Entry in table of flags.
 	unsigned long *oflags,		// Object flags.
-	unsigned long *siflags,		// Serpent Isle flags.
+	unsigned long *xflags,		// Extra object flags.
 	unsigned long *type_flags,	// Type (movement) flags.
 	GtkCheckButton *& cbox,		// Checkbox returned.
 	unsigned long *& bits,		// ->one of 3 flags above.
@@ -434,7 +434,7 @@ static bool Get_flag_cbox
 		return false;
 					// Which flag.
 	if (strncmp(name + 9, "si", 2) == 0)
-		bits = siflags;
+		bits = xflags;
 	else if (strncmp(name + 9, "of", 2) == 0)
 		bits = oflags;
 	else if (strncmp(name + 9, "tf", 2) == 0)
@@ -527,14 +527,14 @@ int ExultStudio::init_npc_window
 	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
-	unsigned long siflags;		// Extra flags for SI.
+	unsigned long xflags;		// Extra object flags.
 	unsigned long type_flags;	// Movement flags.
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame, face,
 			name, npc_num, ident, usecode, usecodefun, properties,
 			attack_mode, alignment,
-			oflags, siflags, type_flags, num_schedules, schedules))
+			oflags, xflags, type_flags, num_schedules, schedules))
 		{
 		cout << "Error decoding npc" << endl;
 		return 0;
@@ -567,7 +567,7 @@ int ExultStudio::init_npc_window
 		GtkCheckButton *cbox;
 		unsigned long *bits;
 		int fnum;
-		if (Get_flag_cbox(list, &oflags, &siflags, &type_flags, cbox,
+		if (Get_flag_cbox(list, &oflags, &xflags, &type_flags, cbox,
 						bits, fnum))
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), 
 					(*bits&(1<<fnum)) != 0);
@@ -646,7 +646,7 @@ int ExultStudio::save_npc_window
 	short alignment = get_optmenu("npc_alignment");
 
 	unsigned long oflags = 0;	// Object flags.
-	unsigned long siflags = 0;	// Extra flags for SI.
+	unsigned long xflags = 0;	// Extra object flags.
 	unsigned long type_flags = 0;	// Movement flags.
 
 	if (shape < 0 || shape >= vgafile->get_ifile()->get_num_shapes())
@@ -664,7 +664,7 @@ int ExultStudio::save_npc_window
 		GtkCheckButton *cbox;
 		unsigned long *bits;
 		int fnum;
-		if (Get_flag_cbox(list, &oflags, &siflags, &type_flags, cbox,
+		if (Get_flag_cbox(list, &oflags, &xflags, &type_flags, cbox,
 						bits, fnum))
 			if (gtk_toggle_button_get_active(
 						GTK_TOGGLE_BUTTON(cbox)))
@@ -690,7 +690,7 @@ int ExultStudio::save_npc_window
 	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame, face,
 			name, npc_num, ident, usecode, usecodefun,
 			properties, attack_mode, alignment,
-			oflags, siflags, type_flags, 
+			oflags, xflags, type_flags, 
 			num_schedules, schedules) == -1)
 		{
 		cout << "Error sending npc data to server" <<endl;

@@ -214,7 +214,7 @@ void Actor::read
 	if ((intel_val >> 5) & 1) set_flag (Obj_flags::read);
 					// Tournament.
 	if ((intel_val >> 6) & 1) 
-		set_flag (Obj_flags::si_tournament);
+		set_flag (Obj_flags::tournament);
 	if ((intel_val >> 7) & 1) set_flag (Obj_flags::polymorph);
 
 
@@ -355,9 +355,8 @@ void Actor::read
 		if (get_flag(Obj_flags::invisible))	/* Force timer.	*/
 			need_timers()->start_invisibility();
 
-		// SIFlags
-		f = nfile->read2();
-		siflags |= f;
+		// SIFlags -- no longer used.
+		nfile->skip (2);
 
 		// Flags2	But don't set polymorph.
 		bool polym = get_flag(Obj_flags::polymorph)!= false;
@@ -591,7 +590,7 @@ void Actor::write
 	iout = get_property(Actor::intelligence);
 	if (get_flag (Obj_flags::read)) iout |= 1 << 5;
 					// Tournament
-	if (get_flag (Obj_flags::si_tournament)) iout |= 1 << 6;
+	if (get_flag (Obj_flags::tournament)) iout |= 1 << 6;
 	if (get_flag (Obj_flags::polymorph)) iout |= 1 << 7;
 	nfile->write1(iout);
 
@@ -663,7 +662,7 @@ void Actor::write
 	nfile->write4(flags);
 
 	// SIFlags 
-	nfile->write2(siflags);
+	nfile->write2(0);
 
 	// flags2
 	nfile->write4(flags2);

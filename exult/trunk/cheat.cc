@@ -409,10 +409,10 @@ void Cheat::toggle_Petra (void) const {
 void Cheat::toggle_naked (void) const {
 	if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
-	if (gwin->get_main_actor()->get_siflag(Actor::naked))
-		gwin->get_main_actor()->clear_siflag(Actor::naked);
+	if (gwin->get_main_actor()->get_flag(Obj_flags::naked))
+		gwin->get_main_actor()->clear_flag(Obj_flags::naked);
 	else
-		gwin->get_main_actor()->set_siflag(Actor::naked);
+		gwin->get_main_actor()->set_flag(Obj_flags::naked);
 	gwin->set_all_dirty();
 }
 
