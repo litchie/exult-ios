@@ -1,3 +1,8 @@
+2007-10-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fast_pathfinder_client::is_grabable now allows you to pick up objects if
+	  you can path-find to up to 3 tiles away from the object; this seem to be a
+	  better match to the original games.
+
 2007-10-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed a couple bugs in the Keyring mod.
 	* Eliminated the (virtually unused) SIFlags variable, enum and associated

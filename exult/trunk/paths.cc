@@ -434,7 +434,7 @@ int Fast_pathfinder_client::is_grabable
 //No.	from.tz = to.tz;		// Just look along dest's lift.
 	if (from.distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(1, 
+	Fast_pathfinder_client client(3, 
 	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from, to, &client);
