@@ -229,6 +229,7 @@ void Uc_dowhile_statement::gen
 	int stmtlen = stmt_code.size();
 					// Still need to write the JNE.
 	expr->gen_value(stmt_code);		// Generate expr. value.
+	stmt_code.push_back(UC_NOT);	// Need to negate the result.
 					// Get distance back to top, including JNE.
 	long dist = stmt_code.size() + 3;
 	stmt_code.push_back((char) UC_JNE);	// Put cond. jmp. after test.

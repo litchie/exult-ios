@@ -1739,13 +1739,30 @@ USECODE_INTRINSIC(recall_virtue_stone)
 
 USECODE_INTRINSIC(apply_damage)
 {
-	// apply_damage(??str?, hps, type, NPC);
-	int hps = parms[1].get_int_value();
-	int type = parms[2].get_int_value();
+	// apply_damage(base, hps, type, NPC);
 	Actor *npc = as_actor(get_item(parms[3]));
-	if (npc)
-		npc->reduce_health(hps, 0, type);
-	return Usecode_value(1);	// ?? Guessing.
+	if (!npc)	// No valid target.
+		return Usecode_value(0);
+
+	int base = parms[0].get_int_value();
+	int hps = parms[1].get_int_value();
+
+	if (!base && !hps)
+		return Usecode_value(0);	// No damage.
+
+	int dam = 0;
+	int type = parms[2].get_int_value();
+	if (base > 0 &&
+			type != Weapon_info::lightning_damage) // Guess (seems to be right)
+		{
+		base /= 3;	// Seems to be about right.
+		dam = 1 + rand()%base;
+		}
+	if (hps > 0)
+		dam += (1 + rand()%hps);
+
+	npc->reduce_health(dam, 0, type);
+	return Usecode_value(1);
 }
 
 USECODE_INTRINSIC(is_pc_inside)
