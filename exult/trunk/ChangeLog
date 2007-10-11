@@ -1,3 +1,9 @@
+2007-10-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug in UCC do-while loops.
+	* Modified the way apply_damage intrinsic works. This seems to better match
+	  the way it worked in the original games. Docs changed accordingly.
+	* Fixed avatar skins on new games with new maps.
+
 2007-10-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fast_pathfinder_client::is_grabable now allows you to pick up objects if
 	  you can path-find to up to 3 tiles away from the object; this seem to be a

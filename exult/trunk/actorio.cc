@@ -378,7 +378,10 @@ void Actor::read
 
 		int skin = nfile->read1();
 		if (extended_skin)
-			set_skin_color(skin);
+			if (Game::get_avskin() >= 0)
+				set_skin_color (Game::get_avskin());
+			else
+				set_skin_color(skin);
 	}
 	else
 	{
