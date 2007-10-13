@@ -592,20 +592,16 @@ int Usecode_script::exec
 			frame_index = 0;// Reset walking frame index.
 			break;
 			}
-		case hit:		// Hit(hps, ??).
+		case hit:		// Hit(hps, type).
 			{
 			Usecode_value hps = code->get_elem(++i);
 			Usecode_value type = code->get_elem(++i);
-			Actor *act = usecode->as_actor(obj);
-			if (act)	// ++++Should apply to any object.
-				act->reduce_health(hps.get_int_value(), 0, type.get_int_value(), true);
+			obj->reduce_health(hps.get_int_value(), 0, type.get_int_value(), true);
 			break;
 			}
 		case attack:		// Finish 'set_to_attack()'.
 			{
-			Actor *act = usecode->as_actor(obj);
-			if (act)
-				act->usecode_attack();
+			obj->usecode_attack();
 			break;
 			}
 		case resurrect:

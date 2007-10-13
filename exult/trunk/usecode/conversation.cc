@@ -155,6 +155,54 @@ void Conversation::init_faces()
 	last_face_shown = -1;
 }
 
+void Conversation::set_face_rect
+	(
+	Npc_face_info *info,
+	Npc_face_info *prev,
+	int screenw,
+	int screenh
+	)
+{
+	int text_height = sman->get_text_height(0);
+				// Figure starting y-coord.
+				// Get character's portrait.
+	Shape_frame *face = info->shape.get_shapenum() >= 0 ? info->shape.get_shape() : 0;
+	int face_w = 32, face_h = 32;
+	if (face)
+		{
+		face_w = face->get_width(); 
+		face_h = face->get_height();
+		}
+	int starty;
+	if (prev)
+		{
+		starty = prev->text_rect.y + prev->last_text_height;
+		if (starty < prev->face_rect.y + prev->face_rect.h)
+			starty = prev->face_rect.y + prev->face_rect.h;
+		starty += 2*text_height;
+		if (starty + face_h > screenh - 1)
+			starty = screenh - face_h - 1;
+		}
+	else
+		starty = 1;
+	info->face_rect = gwin->clip_to_win(Rectangle(8, starty,
+		face_w + 4, face_h + 4));
+	Rectangle& fbox = info->face_rect;
+				// This is where NPC text will go.
+	info->text_rect = gwin->clip_to_win(Rectangle(
+		fbox.x + fbox.w + 3, fbox.y + 3,
+		screenw - fbox.x - fbox.w - 6, 4*text_height));
+				// No room?  (Serpent?)
+	if (info->text_rect.w < 16 || info->text_rect.h < 16)
+		{		// Show in lower center.
+		int x = screenw/5, y = 3*(screenh/4);
+		info->text_rect = Rectangle(x, y,
+			screenw-(2*x), screenh - y - 4);
+		info->large_face = true;
+		}
+	info->last_text_height = info->text_rect.h;
+}
+
 /*
  *	Show a "face" on the screen.  Npc_text_rect is also set.
  *	If shape < 0, an empty space is shown.
@@ -167,7 +215,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 
 	// Make sure mode is set right.
-	Palette *pal = gwin->get_pal();	// Watch for wierdness (lightning).
+	Palette *pal = gwin->get_pal();	// Watch for weirdness (lightning).
 	if (pal->get_brightness() >= 300)
 		pal->set(-1, 100);
 
@@ -198,46 +246,44 @@ void Conversation::show_face(int shape, int frame, int slot)
 		else
 			delete face_info[slot];
 		face_info[slot] = info;
-					// Get text height.
-		int text_height = sman->get_text_height(0);
-					// Figure starting y-coord.
-					// Get character's portrait.
-		Shape_frame *face = shape >= 0 ? face_sid.get_shape() : 0;
-		int face_w = 32, face_h = 32;
-		if (face)
-			{
-			face_w = face->get_width(); 
-			face_h = face->get_height();
-			}
-		int starty;
-		if (prev)
-			{
-			starty = prev->text_rect.y + prev->last_text_height;
-			if (starty < prev->face_rect.y + prev->face_rect.h)
-				starty = prev->face_rect.y + prev->face_rect.h;
-			starty += 2*text_height;
-			if (starty + face_h > screenh - 1)
-				starty = screenh - face_h - 1;
-			}
-		else
-			starty = 1;
-		info->face_rect = gwin->clip_to_win(Rectangle(8, starty,
-			face_w + 4, face_h + 4));
-		Rectangle& fbox = info->face_rect;
-					// This is where NPC text will go.
-		info->text_rect = gwin->clip_to_win(Rectangle(
-			fbox.x + fbox.w + 3, fbox.y + 3,
-			screenw - fbox.x - fbox.w - 6, 4*text_height));
-					// No room?  (Serpent?)
-		if (info->text_rect.w < 16 || info->text_rect.h < 16)
-			{		// Show in lower center.
-			int x = screenw/5, y = 3*(screenh/4);
-			info->text_rect = Rectangle(x, y,
-				screenw-(2*x), screenh - y - 4);
-			info->large_face = true;
-			}
-		info->last_text_height = info->text_rect.h;
+		set_face_rect(info, prev, screenw, screenh);
 		}
+	gwin->get_win()->set_clip(0, 0, screenw, screenh);
+	paint_faces();			// Paint all faces.
+	gwin->get_win()->clear_clip();
+	}
+
+/*
+ *	Change the frame of the face on given slot.
+ */
+
+void Conversation::change_face_frame(int frame, int slot)
+{
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	// Make sure mode is set right.
+	Palette *pal = gwin->get_pal();	// Watch for weirdness (lightning).
+	if (pal->get_brightness() >= 300)
+		pal->set(-1, 100);
+
+	if (slot >= max_faces || !face_info[slot])
+		return;			// Invalid slot.
+
+	last_face_shown = slot;
+	Npc_face_info *info = face_info[slot];
+					// These are needed in case conversation is done.
+	if (info->shape.get_shapenum() < 0 ||
+		frame > info->shape.get_num_frames())
+		return;		// Invalid frame.
+
+	if (frame == info->shape.get_framenum())
+		return;		// We are done here.
+
+	info->shape.set_frame(frame);
+		// Get screen dims.
+	int screenw = gwin->get_width(), screenh = gwin->get_height();
+	Npc_face_info *prev = slot ? face_info[slot - 1] : 0;
+	set_face_rect(info, prev, screenw, screenh);
+
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
 	paint_faces();			// Paint all faces.
 	gwin->get_win()->clear_clip();
@@ -542,7 +588,7 @@ void Conversation::paint_faces
 					// Use translucency.
 			sman->paint_shape(
 				finfo->face_rect.x + face_xleft,
-				finfo->face_rect.y + face_yabove, face, 1);
+				finfo->face_rect.y + face_yabove, face, finfo->large_face);
 			}
 		if (text)		// Show text too?
 			{

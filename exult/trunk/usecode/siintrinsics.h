@@ -23,15 +23,15 @@
 	USECODE_INTRINSIC_PTR(get_random),			// 0
 	USECODE_INTRINSIC_PTR(execute_usecode_array),		// 1
 	USECODE_INTRINSIC_PTR(delayed_execute_usecode_array),	// 2
-	USECODE_INTRINSIC_PTR(show_npc_face),	// Guess	// 3
-	USECODE_INTRINSIC_PTR(remove_npc_face),	// Guess	// 4
+	USECODE_INTRINSIC_PTR(show_npc_face),		// 3
+	USECODE_INTRINSIC_PTR(remove_npc_face),		// 4
 	USECODE_INTRINSIC_PTR(show_npc_face0),			// 5
 	USECODE_INTRINSIC_PTR(show_npc_face1),			// 6
-	USECODE_INTRINSIC_PTR(remove_npc_face0), // Guess!	// 7
+	USECODE_INTRINSIC_PTR(remove_npc_face0),	// 7
 	USECODE_INTRINSIC_PTR(remove_npc_face1),		// 8
 	USECODE_INTRINSIC_PTR(set_conversation_slot),		// 9
-	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xa
-	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xb
+	USECODE_INTRINSIC_PTR(change_npc_face0),	// UNUSED	// 0xa
+	USECODE_INTRINSIC_PTR(change_npc_face1),	// UNUSED	// 0xb
 	USECODE_INTRINSIC_PTR(add_answer),			// 0xc
 	USECODE_INTRINSIC_PTR(remove_answer),			// 0xd
 	USECODE_INTRINSIC_PTR(push_answers),			// 0xe
@@ -126,7 +126,7 @@
 	USECODE_INTRINSIC_PTR(add_spell),			// 0x66
 	USECODE_INTRINSIC_PTR(remove_all_spells),	// 0x67
 	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68
-	USECODE_INTRINSIC_PTR(explode),				// 0x69 
+	USECODE_INTRINSIC_PTR(attack_object),				// 0x69 
 	USECODE_INTRINSIC_PTR(book_mode),			// 0x6a - Known
 	USECODE_INTRINSIC_PTR(stop_time),				// 0x6b
 	USECODE_INTRINSIC_PTR(cause_light),			// 0x6c
@@ -161,7 +161,7 @@
 	USECODE_INTRINSIC_PTR(restart_game),			// 0x89
 	USECODE_INTRINSIC_PTR(start_speech),			// 0x8a
 	USECODE_INTRINSIC_PTR(run_endgame),			// 0x8b StartEndGame (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x8c UNUSED
+	USECODE_INTRINSIC_PTR(fire_projectile),		// 0x8c - known
 	USECODE_INTRINSIC_PTR(nap_time),			// 0x8d
 	USECODE_INTRINSIC_PTR(advance_time),			// 0x8e
 	USECODE_INTRINSIC_PTR(in_usecode),			// 0x8f
@@ -195,7 +195,7 @@
 	USECODE_INTRINSIC_PTR(get_party_list2),			// 0xaa
 	USECODE_INTRINSIC_PTR(in_combat),			// 0xab
 	USECODE_INTRINSIC_PTR(is_water),			// 0xac
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad UNUSED ++++ reset_conv_face???
 	USECODE_INTRINSIC_PTR(set_camera),			// 0xae
 	USECODE_INTRINSIC_PTR(get_dead_party),			// 0xaf UNUSED
 	USECODE_INTRINSIC_PTR(view_tile),				// 0xb0 UNUSED

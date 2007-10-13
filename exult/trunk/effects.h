@@ -121,12 +121,12 @@ class Explosion_effect : public Sprites_effect
 	Game_object *explode;		// What's exploding, or 0.
 	int weapon;			// Weapon to use for attack values.
 	int projectile;		// The projectile, for e.g., burst arrows
-	Actor *attacker;		//Who is responsible for the explosion;
+	Game_object *attacker;	//Who is responsible for the explosion;
 							//otherwise, explosion and delayed blast spells
 							//would not trigger a response from target
 public:
 	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0, int weap = -1,
-			int proj = 0, Actor *att = 0);
+			int proj = 0, Game_object *att = 0);
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
@@ -136,7 +136,7 @@ public:
  */
 class Projectile_effect : public Special_effect
 	{
-	Actor *attacker;		// Source of attack/spell.
+	Game_object *attacker;		// Source of attack/spell.
 	Game_object *target;		// Target of path.
 	int projectile_shape;		// Shape # of projectile/spell.
 	ShapeID sprite;			// Sprite shape to display.
@@ -148,13 +148,15 @@ class Projectile_effect : public Special_effect
 	bool no_blocking;		// Don't get blocked by things.
 	bool skip_render;	// For delayed blast.
 					// Add dirty rectangle.
+	int speed;			// Extra speed for missiles (cannon).
 	void add_dirty();
 	void init(Tile_coord s, Tile_coord t);
 public:
-	Projectile_effect(Actor *att, Game_object *to, int shnum,
+	Projectile_effect(Game_object *att, Game_object *to, int shnum,
 							int weap = 0, bool no_render = false);
 					// For missile traps:
-	Projectile_effect(Tile_coord s, Tile_coord d, int shnum, int weap);
+	Projectile_effect(Game_object *att, Tile_coord d, int shnum, int weap,
+							bool retpath = false);
 	Projectile_effect(Tile_coord s, Game_object *to, int shnum, int weap,
 							bool retpath = false);
 	~Projectile_effect();
@@ -162,6 +164,9 @@ public:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
 	virtual void paint();
+	void set_speed(int s)
+		{ speed = s; }
+	void set_sprite_shape(int s);
 	};
 
 /*
@@ -169,11 +174,11 @@ public:
  *	Sprites_effect.)
  *	A better name is welcome...
  */
-class Special_projectile : public Special_effect
+class Homing_projectile : public Special_effect
 	{
 	ShapeID sprite;
 	int weapon;		// The weapon's shape number.
-	Actor *attacker;		// Who is responsible for the attack.
+	Game_object *attacker;	// Who is responsible for the attack.
 	Actor *target;			// We'll follow this around if not 0.
 	Tile_coord pos;			// Current position.
 	Tile_coord dest;		// Destination pos for when there is no target.
@@ -183,7 +188,7 @@ class Special_projectile : public Special_effect
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
 	int add_dirty();
 public:
-	Special_projectile(int shnum, Actor *att, Game_object *trg, Tile_coord sp, Tile_coord tp);
+	Homing_projectile(int shnum, Game_object *att, Game_object *trg, Tile_coord sp, Tile_coord tp);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.

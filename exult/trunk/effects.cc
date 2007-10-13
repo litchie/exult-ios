@@ -447,22 +447,20 @@ Explosion_effect::Explosion_effect
 	int weap,			// Weapon to use for damage calcs., or
 					//   -1 for default(704 = poweder keg).
 	int proj,		// Projectile for e.g., burst arrows, 0 otherwise
-	Actor *att		//who is responsible for the explosion
-					//	or 0 for default
+	Game_object *att	//who is responsible for the explosion
+						//	or 0 for default
 							//Different sprites for different explosion types
 	) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
 			p, 0, 0, delay), explode(exp), projectile(proj),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
-{
-	if (exp && exp->get_shapenum() == 704) { // powderkeg
+	{
+	if (exp && exp->get_shapenum() == 704)  // powderkeg
 		exp->set_quality(1); // mark as detonating
-		//blame avatar:
+
+	if (!attacker || !attacker->as_actor())
+			// Blame avatar: if we have no living attacker.
 		attacker = gwin->get_main_actor();
 	}
-	else if (weapon == 702 && Game::get_game_type() == BLACK_GATE)
-		// Cannon, blame avatar:
-		attacker = gwin->get_main_actor();
-}
 
 
 void Explosion_effect::handle_event
@@ -485,7 +483,8 @@ void Explosion_effect::handle_event
 			sfx = winf->get_hitsfx() >= 0 ? winf->get_hitsfx() : winf->get_sfx();
 		Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir);
 		}
-	if (frnum == frames/4) {
+	if (frnum == frames/4)
+		{
 		// this was in ~Explosion_effect before
 		if (explode && !explode->is_pos_invalid())
 			{
@@ -500,14 +499,10 @@ void Explosion_effect::handle_event
 				width/(2*c_tilesize), 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				Game_object *obj = *it;
-				Actor *act = obj->as_actor();
-				if (act)
-					act->attacked(attacker, weapon, projectile);
-				else
-					obj->attacked(attacker, weapon, projectile);
+			Game_object *obj = *it;
+			obj->attacked(attacker->as_actor(), weapon, projectile);
 			}
-	}
+		}
 	Sprites_effect::handle_event(curtime, udata);
 }
 
@@ -536,31 +531,51 @@ void Projectile_effect::init
 	)
 	{
 	no_blocking = false;		// We'll check the ammo & weapon.
+	int sprite_shape = projectile_shape;
 	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(projectile_shape);
 	Weapon_info *winfo = info.get_weapon_info();
 	if (winfo)
 		{
 		if (winfo->get_projectile())	// Different sprite to show?
-			sprite.set_shape(winfo->get_projectile());
+			sprite_shape = winfo->get_projectile();
 		no_blocking = no_blocking || winfo->no_blocking();
 		}
 	Ammo_info *ainfo = info.get_ammo_info();
 	if (ainfo)
 		no_blocking = no_blocking || ainfo->no_blocking();
-	frames = sprite.get_num_frames();
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
 		{
 		Shape_info& info = attacker->get_info();
 		// Start closer to the center of the actor.
+		int dir = attacker->get_direction(d);
 		pos.tz += (info.get_3d_height() * 3)/4;
 		int frame = attacker->get_framenum();
-		if (d.tx < pos.tx)
-			pos.tx += info.get_3d_xtiles(frame);
-		if (d.ty < pos.ty)
-			pos.ty += info.get_3d_ytiles(frame);
+		int dx = info.get_3d_xtiles(frame), dy = info.get_3d_ytiles(frame);
+		switch (dir)
+			{
+			case south:
+				dy = -1;
+			case north:
+				dx /=2; break;
+			case east:
+				dx = -1;
+			case west:
+				dy /= 2; break;
+			case southeast:
+				dy = -1;
+			case northeast:
+				dx = -1; break;
+			case southwest:
+				dy = -1;
+				break;
+			}
+		pos.tx -= dx;
+		pos.ty -= dy;
 		}
+	// To keep missile height, unless there is a target.
+	d.tz = pos.tz;
 	if (target)			// Try to set end better.
 		{
 		Shape_info& info = target->get_info();
@@ -576,9 +591,22 @@ void Projectile_effect::init
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
 		path->NewPath(pos, d, 0);
+	set_sprite_shape(sprite_shape);
+					// Start after a slight delay.
+	gwin->get_tqueue()->add(Game::get_ticks(), this, gwin->get_std_delay()/2);
+	}
+
+void Projectile_effect::set_sprite_shape
+	(
+	int s
+	)
+	{
+	sprite.set_shape(s);
+	frames = sprite.get_num_frames();
 	if (frames >= 24)		// Use frames 8-23, for direction
 		{			//   going clockwise from North.
-		int dir = Get_dir16(s, d);
+		Tile_coord src = path->get_src(), dest = path->get_dest();
+		int dir = Get_dir16(src, dest);
 		sprite.set_frame(8 + dir);
 		}
 	else if (frames == 1 && sprite.get_shapenum() != 704)
@@ -586,10 +614,7 @@ void Projectile_effect::init
 	else
 		skip_render = true;		// We just won't show it.
 	add_dirty();			// Paint immediately.
-					// Start after a slight delay.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, gwin->get_std_delay()/2);
 	}
-
 
 /*
  *	Create a projectile animation.
@@ -597,37 +622,38 @@ void Projectile_effect::init
 
 Projectile_effect::Projectile_effect
 	(
-	Actor *att,			// Source of spell/attack.
+	Game_object *att,		// Source of spell/attack.
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
 	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
 	bool no_render		// If true, prevent rendering of missile.
 	) : attacker(att), target(to), projectile_shape(shnum),
 	    sprite(shnum, 0), weapon(weap), skip_render(no_render),
-	    return_path(false)
+	    return_path(false), speed(0)
 	{
 	init(att->get_tile(), to->get_tile());
 	}
 
 /*
- *	Constructor used by missile eggs.
+ *	Constructor used by missile eggs & fire_projectile intrinsic.
  */
 
 Projectile_effect::Projectile_effect
 	(
-	Tile_coord s,			// Start here.
+	Game_object *att,		// Source of spell/attack.
 	Tile_coord d,			// End here.
 	int shnum,			// Projectile shape
-	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(0), projectile_shape(shnum),
+	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
+	bool retpath			// Return of a boomerang.
+	) : attacker(att), target(0), projectile_shape(shnum),
 	    sprite(shnum, 0), weapon(weap), skip_render(false),
-	    return_path(false)
+	    return_path(retpath), speed(0)
 	{
-	init(s, d);
+	init(att->get_tile(), d);
 	}
 
 /* 
- *	Another used by missile eggs.
+ *	Another used by missile eggs and for 'boomerangs'.
  */
 
 Projectile_effect::Projectile_effect
@@ -639,7 +665,7 @@ Projectile_effect::Projectile_effect
 	bool retpath			// Return of a boomerang.
 	) : attacker(0), target(to), projectile_shape(shnum),
 	    sprite(shnum, 0), weapon(weap), skip_render(false),
-	    return_path(retpath)
+	    return_path(retpath), speed(0)
 	{
 	init(s, to->get_tile());
 	}
@@ -717,7 +743,7 @@ void Projectile_effect::handle_event
 	if (winf && winf->get_cycle_delay())	// This slows down the missile.
 		delay *= (1 + winf->get_cycle_delay());	// Guessing how to do it.
 	bool path_finished;
-	int missile_speed = (winf ? winf->get_missile_speed() : 0);
+	int missile_speed = speed + (winf ? winf->get_missile_speed() : 0);
 	for (int i = 0; i <= missile_speed; i++)
 		{	// This speeds up the missile.
 		path_finished = !(path->GetNextStep(pos) == true) ||	// Get next spot.
@@ -732,7 +758,7 @@ void Projectile_effect::handle_event
 		if (winf && winf->explodes())
 			{
 			if (ainf && ainf->is_homing())
-				eman->add_effect(new Special_projectile(weapon,
+				eman->add_effect(new Homing_projectile(weapon,
 						attacker, target, pos, target->get_tile() + 
 						Tile_coord(0, 0, target->get_info().get_3d_height()/2)));
 			else
@@ -748,22 +774,34 @@ void Projectile_effect::handle_event
 			target = 0;	// Takes care of attack.
 			}
 		if (return_path)	// Returned a boomerang?
-			target->add(gmap->create_ireg_object(weapon, 0));
+			{
+			Ireg_game_object *obj =
+					gmap->create_ireg_object(sprite.get_shapenum(), 0);
+			if (!target || !target->add(obj))
+				{
+				obj->set_flag(Obj_flags::okay_to_take);
+				obj->set_flag(Obj_flags::is_temporary);
+				obj->move(epos.tx, epos.ty, epos.tz, 0);
+				}
+			}
 		else
 			{		// Not teleported away ?
 			if (target && epos.distance(target->get_tile()) < 50)
-				target->attacked(attacker, weapon, 
+				target->attacked(attacker->as_actor(), weapon, 
 							projectile_shape);
-			if (attacker && // Check for `boomerangs'
-			    weapon == projectile_shape && 
-			    epos.distance(attacker->get_tile() ) < 50)
+			if (attacker &&	// Check for `boomerangs'
+			    epos.distance(attacker->get_tile()) < 50)
 				{ 	// not teleported away
 				Weapon_info *winf = 
 				   ShapeID::get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
-					eman->add_effect(new Projectile_effect(
-						pos, attacker, weapon, weapon,
-									true));
+					{
+					Projectile_effect *proj = new Projectile_effect(
+								pos, attacker, projectile_shape, weapon, true);
+					proj->set_speed(speed);
+					proj->set_sprite_shape(sprite.get_shapenum());
+					eman->add_effect(proj);
+					}
 				}
 			}
 		add_dirty();
@@ -796,10 +834,10 @@ void Projectile_effect::paint
  *	Create a 'death vortex' or an 'energy mist'.
  */
 
-Special_projectile::Special_projectile	// A better name is welcome...
+Homing_projectile::Homing_projectile	// A better name is welcome...
 	(
 	int shnum,				// The projectile shape.
-	Actor *att,				// Who cast the spell.
+	Game_object *att,		// Who cast the spell.
 	Game_object *trg,		// What to aim for.
 	Tile_coord sp,			// Where to start.
 	Tile_coord tp			// Target pos, if trg isn't an actor.
@@ -825,7 +863,7 @@ Special_projectile::Special_projectile	// A better name is welcome...
  *	Output:	Width in pixels.
  */
 
-inline int Special_projectile::add_dirty
+inline int Homing_projectile::add_dirty
 	(
 	)
 	{
@@ -841,7 +879,7 @@ inline int Special_projectile::add_dirty
  *	Animation.
  */
 
-void Special_projectile::handle_event
+void Homing_projectile::handle_event
 	(
 	unsigned long curtime,		// Current time of day.
 	long udata
@@ -910,7 +948,7 @@ void Special_projectile::handle_event
 			if (!npc->is_in_party())
 				//Still powerful, but no longer overkill...
 				//also makes the enemy react, which is good
-				npc->attacked(attacker, weapon, weapon);
+				npc->attacked(attacker->as_actor(), weapon, weapon);
 			}
 		}
 	sprite.set_frame((sprite.get_framenum() + 1)%frames);
@@ -928,7 +966,7 @@ void Special_projectile::handle_event
  *	Render.
  */
 
-void Special_projectile::paint
+void Homing_projectile::paint
 	(
 	)
 	{

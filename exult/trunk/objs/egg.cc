@@ -99,7 +99,7 @@ void Missile_launcher::handle_event
 		Tile_coord dest = src;
 		dest.tx += 20*dx;
 		dest.ty += 20*dy;
-		proj = new Projectile_effect(src, dest, shapenum, weapon);
+		proj = new Projectile_effect(egg, dest, shapenum, weapon);
 		}
 	else				// Target a party member.
 		{

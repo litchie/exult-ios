@@ -1086,7 +1086,7 @@ USECODE_INTRINSIC(set_to_attack)
 	// set_to_attack(fromnpc, toitem, anim_shape_in_shapesdotvga).
 	// ???? When it reaches toitem, toitem is 'attacked' by anim_shape.
 	//   Returns??}
-	Actor *from = as_actor(get_item(parms[0]));
+	Game_object *from = get_item(parms[0]);
 	Game_object *to = get_item(parms[1]);
 	if (!from || !to)
 		return Usecode_value(0);
@@ -1541,17 +1541,29 @@ USECODE_INTRINSIC(obj_sprite_effect)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(explode)
+USECODE_INTRINSIC(attack_object)
 {
-	// Explode(obj??, item-to-explode, powder-keg-shape).
-	Game_object *exp = get_item(parms[1]);
-	if (!exp)
+	// attack_object(attacker, target, wshape).
+	Game_object *att = get_item(parms[0]);
+	Game_object *trg = get_item(parms[1]);
+	int wshape = parms[2].get_int_value();
+	
+	if (!att || !trg)
 		return Usecode_value(0);
-					// Use container if it's in one.
-	Tile_coord pos = exp->get_outermost()->get_tile();
-					// Sprite 1,4,5 look like explosions.
-	gwin->get_effects()->add_effect(new Explosion_effect(pos, exp));
-	return Usecode_value(1);
+	Shape_info& info = ShapeID::get_info(wshape);
+	Weapon_info *winfo = info.get_weapon_info();
+	if (!winfo)
+		return Usecode_value(0);
+
+		// Powder keg is a special case.
+	if (trg->get_shapenum() == 704 && !trg->get_quality())
+		if (wshape == 704)
+			trg->set_quality(2);	// Do not explode it.
+		else
+			trg->set_quality(0);
+	
+	att->set_usecode_to_attack(trg, wshape);
+	return Usecode_value(att->usecode_attack());
 }
 
 USECODE_INTRINSIC(book_mode)
@@ -1739,9 +1751,9 @@ USECODE_INTRINSIC(recall_virtue_stone)
 
 USECODE_INTRINSIC(apply_damage)
 {
-	// apply_damage(base, hps, type, NPC);
-	Actor *npc = as_actor(get_item(parms[3]));
-	if (!npc)	// No valid target.
+	// apply_damage(base, hps, type, obj);
+	Game_object *obj = get_item(parms[3]);
+	if (!obj)	// No valid target.
 		return Usecode_value(0);
 
 	int base = parms[0].get_int_value();
@@ -1752,16 +1764,21 @@ USECODE_INTRINSIC(apply_damage)
 
 	int dam = 0;
 	int type = parms[2].get_int_value();
-	if (base > 0 &&
-			type != Weapon_info::lightning_damage) // Guess (seems to be right)
+	if (hps == 127)
+		dam = 127;
+	else
 		{
-		base /= 3;	// Seems to be about right.
-		dam = 1 + rand()%base;
+		if (base > 0 &&
+				type != Weapon_info::lightning_damage) // Guess (seems to be right)
+			{
+			base /= 3;	// Seems to be about right.
+			dam = 1 + rand()%base;
+			}
+		if (hps > 0)
+			dam += (1 + rand()%hps);
 		}
-	if (hps > 0)
-		dam += (1 + rand()%hps);
 
-	npc->reduce_health(dam, 0, type);
+	obj->reduce_health(dam, 0, type);
 	return Usecode_value(1);
 }
 
@@ -1954,11 +1971,11 @@ USECODE_INTRINSIC(remove_item)
 
 USECODE_INTRINSIC(reduce_health)
 {
-	// Reduce_health(npc, amount, type).
-	Actor *npc = as_actor(get_item(parms[0]));
+	// Reduce_health(obj, amount, type).
+	Game_object *obj = get_item(parms[0]);
 	int type = parms[2].get_int_value();
-	if (npc)			// Dies if health goes too low.
-		npc->reduce_health(parms[1].get_int_value(), 0, type, true);
+	if (obj)			// Dies if health goes too low.
+		obj->reduce_health(parms[1].get_int_value(), 0, type, true);
 	return no_ret;
 }
 
@@ -2218,34 +2235,32 @@ USECODE_INTRINSIC(run_endgame)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(fire_cannon)
+USECODE_INTRINSIC(fire_projectile)
 {
-	// fire_cannon(cannon, dir, ballshape, dist?, cannonshape, cannonshape)
+	// fire_projectile(attacker, dir, missile, dist?, wshape, ashape)
 
-	Game_object *cannon = get_item(parms[0]);
+	Game_object *attacker = get_item(parms[0]);
 					// Get direction (0,2,4, or 6).
 	int dir = parms[1].get_int_value();
-	dir = dir/2;			// 0, 1, 2, 3.
-	int ball = parms[2].get_int_value();
-	int dist = parms[3].get_int_value();
-	int cshape = parms[4].get_int_value();
-	Tile_coord pos = cannon->get_tile();
-	short blastoff[8] = {-2, -5, 1, -2, -2, 1, -5, -2};
-	Tile_coord blastpos = pos + Tile_coord(
-				blastoff[2*dir], blastoff[2*dir + 1], 0);
-					// Sprite 5 is a small explosion.
-	gwin->get_effects()->add_effect(new Sprites_effect(5, blastpos));
+	int missile = parms[2].get_int_value();	// Sprite to use for missile.
+	int dist = parms[3].get_int_value();	// ++++Not too sure about this.
+	int wshape = parms[4].get_int_value();	// What to use for weapon info.
+	int ashape = parms[5].get_int_value();	// What to use for ammo info.
+
+	Tile_coord pos = attacker->get_tile();
+	Tile_coord adj = pos.get_neighbor(dir%8);
+				// Make it go dist tiles.
+	int dx = adj.tx - pos.tx, dy = adj.ty - pos.ty;
 	Tile_coord dest = pos;
-	switch (dir)			// Figure where to aim.
-		{
-	case 0:	dest.ty -= dist; break;
-	case 1: dest.tx += dist; break;
-	case 2: dest.ty += dist; break;
-	case 3: dest.tx -= dist; break;
-		}
-					// Shoot cannonball.
-	gwin->get_effects()->add_effect(
-			new Projectile_effect(blastpos, dest, ball, cshape));
+	dest.tx += dist*dx;
+	dest.ty += dist*dy;
+
+					// Fire missile.
+	Projectile_effect *proj = 
+			new Projectile_effect(attacker, dest, ashape, wshape, false);
+	proj->set_speed(3);
+	proj->set_sprite_shape(missile);
+	gwin->get_effects()->add_effect(proj);
 	return no_ret;
 }
 
@@ -2754,6 +2769,20 @@ USECODE_INTRINSIC(remove_npc_face1)
 {
 	show_pending_text();
 	conv->remove_slot_face(1);
+	return no_ret;
+}
+
+USECODE_INTRINSIC(change_npc_face0)
+{
+	show_pending_text();
+	conv->change_face_frame(parms[0].get_int_value(), 0);
+	return no_ret;
+}
+
+USECODE_INTRINSIC(change_npc_face1)
+{
+	show_pending_text();
+	conv->change_face_frame(parms[0].get_int_value(), 1);
 	return no_ret;
 }
 
