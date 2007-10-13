@@ -1327,45 +1327,51 @@ int Game_object::get_rotated_frame
 	}
 
 /*
- *	Figure attack points against an object, and also run weapon's usecode.
+ *	This method should be called to decrement health from attacks, traps.
+ *
+ *	Output:	true if destroyed.
  */
 
-int Game_object::attack_object
+bool Game_object::reduce_health
 	(
-	Actor *attacker,
-	int weapon_shape,		// Weapon shape, or 0 to use readied.
-	int ammo_shape
+	int delta,			// # points to lose.
+	Actor *attacker,	// Attacker, or null.
+	int damage_type,	// Type of damage.
+	bool ignore_immunity			// Was hit by a cannon in BG.
 	)
 	{
-	int wpoints = 0;
-	Weapon_info *winf;
-	if (weapon_shape > 0)
-		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
-	else if (ammo_shape > 0)	// Not sure about all this...
-		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
+	int hp = get_effective_obj_hp();	// Returns 0 if doesn't have HP's or is
+					//   indestructible,
+	if (!hp)			//   with exceptions:
+		{
+			// Detonate Powder kegs... but not if the weapon is
+			// the BG cannon, as it detonates them via usecode.
+		if (get_shapenum() == 704)
+			{
+			// cause chain reaction
+
+			// marked already detonating powderkegs with quality
+			if (get_quality()==0)
+				{
+				Tile_coord pos = get_tile();
+				eman->add_effect(
+					new Explosion_effect(pos, this));
+				}
+			}
+		return false;
+		}
+	else if (delta >= hp)
+		{
+		// object destroyed
+		eman->remove_text_effect(this);
+		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
+		return true;
+		}
 	else
-		winf = attacker->get_weapon(wpoints);
-
-	// Play 'hit' sfx, but only if Ava. involved.
-	if (attacker == gwin->get_main_actor())
-	{
-		// "Default" hit sfx.
-		int sfx = Audio::game_sfx(4);
-		Audio::get_ptr()->play_sound_effect(sfx);
-	}
-
-	int usefun;			// Run usecode if present.
-	if (winf && (usefun = winf->get_usecode()) != 0)
-		ucmachine->call_usecode(usefun, this,
-					Usecode_machine::weapon);
-	if (!wpoints && winf)
-		wpoints = winf->get_damage();
-	if (!wpoints)			// Telekenesis should NOT destroy!
-		return 0;
-	if (attacker && !(winf && winf->explodes()))
-		wpoints += attacker->get_level() +
-			attacker->get_effective_prop((int) Actor::strength);
-	return wpoints;
+		{
+		set_obj_hp(hp - delta);
+		return false;
+		}
 	}
 
 /*
@@ -1381,63 +1387,90 @@ Game_object *Game_object::attacked
 	int ammo_shape
 	)
 	{
-	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
+	int wpoints = 0;
 	int shnum = get_shapenum();
-	int frnum = get_framenum();
 
-	int hp = get_effective_obj_hp();	// Returns 0 if doesn't have HP's or is
-					//   indestructible,
-	if (!hp) {			//   with exceptions:
-		if (shnum == 704 && // Detonate Powder kegs... but not if the weapon is
-							// the BG cannon, as it detonates them via usecode.
-			!((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702)))
+	Weapon_info *winf;
+	if (weapon_shape > 0)
+		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
+	else if (ammo_shape > 0)	// Not sure about all this...
+		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
+	else
+		winf = attacker->get_weapon(wpoints);
+
+	bool explodes = winf->explodes();
+	// Play 'hit' sfx, but only if Ava. involved.
+	if (attacker == gwin->get_main_actor() && !explodes)
+	{
+		// "Default" hit sfx.
+		int sfx = Audio::game_sfx(4);
+		Audio::get_ptr()->play_sound_effect(sfx);
+	}
+
+	int usefun;			// Run usecode if present.
+	if (winf && (usefun = winf->get_usecode()) != 0)
+		ucmachine->call_usecode(usefun, this,
+					Usecode_machine::weapon);
+	if (!wpoints && winf)
+		wpoints = winf->get_damage();
+
+	if (wpoints && attacker && !(winf && winf->explodes()))
+		wpoints += attacker->get_level() +
+			attacker->get_effective_prop((int) Actor::strength);
+
+	if (shnum == 735 && ammo_shape == 722)
+		{	// Arrows hitting archery practice target.
+		int frnum = get_framenum();
+		int newframe = !frnum ? (3*(rand()%8) + 1)
+				: ((frnum%3) != 0 ? frnum + 1 : frnum);
+		change_frame(newframe);
+		}
+	else if (shnum == 704)
 		{
-			// cause chain reaction
-
-			// marked already detonating powderkegs with quality
-			if (get_quality()==0) {
-				Tile_coord pos = get_tile();
-				eman->add_effect(
-					new Explosion_effect(pos, this));
+		if ((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))
+			// Prevent detonation of power kegs by cannon as it does so
+			// in usecode.
+			return this;
+		else if (get_quality()==2)
+			{	// Detonated through attack_item intrinsic.
+			remove_this();
+			return 0;
 			}
 		}
-					// Arrow hitting practice targt?
-		else if (shnum == 735 && ammo_shape == 722) {
-			int newframe = !frnum ? (3*(rand()%8) + 1)
-					: ((frnum%3) != 0 ? frnum + 1 : frnum);
-			change_frame(newframe);
-		}
-	}
 
-	string name = "<trap>";
-	if (attacker)
-		name = attacker->get_name();
+	bool destroyed = wpoints ?
+		reduce_health(wpoints, attacker, winf->get_damage_type()) : false;
 
-	if (hp == 0) { // indestructible
-		if (combat_trace) {
+	if (combat_trace)
+		{
+		string name = "<trap>";
+		if (attacker)
+			name = attacker->get_name();
+		int hp = get_effective_obj_hp();
+		if (destroyed)
+			cout << name << " attacks " << get_name()
+				 << " for " << wpoints
+				 << " hit points, destroying the object" << endl;
+		else if (hp == 0)
+			{ // indestructible
 			cout << name << " attacks " << get_name()
 				 << ". No effect." << endl;
+			return this;
+			}
+		else
+			cout << name << " hits " << get_name()
+				 << " for " << wpoints << " hit points, leaving "
+				 << hp - wpoints << " remaining" << endl;
 		}
-		return this;
-	}
 
-	if (combat_trace) {
-		cout << name << " hits " << get_name()
-			 << " for " << wpoints << " hit points, leaving "
-			 << hp - wpoints << " remaining" << endl;
-	}
-
-	if (wpoints >= hp) {
-		// object destroyed
-		eman->remove_text_effect(this);
+	if (destroyed)
+		{
 		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
 		return 0;
-	} else {
-		set_obj_hp(hp - wpoints);
-
+		}
+	else
 		return this;
 	}
-}
 
 /*
  *	Move to a new absolute location.  This should work even if the old

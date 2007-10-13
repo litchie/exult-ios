@@ -1,3 +1,30 @@
+2007-10-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* effects.*: Projectiles and explosions now require a Game_object attacker
+	  instead of an actor. Also, a projectile sprite can now be different from
+	  the ammo info to be used when it hits, and the speed of the projectile can
+	  be adjusted separately. Renamed 'Special_projectile' to be the (better,
+	  but still not ideal) 'Homing_projectile'.
+	* actor.cc, objs/*: Allow use of hand weapons in usecode_attack. Allowing
+	  all ireg objects to make usecode attacks. Added reduce_health virtual
+	  method to Game_objects.
+	* All others: more intrinsics uncovered/improved with rip/wud/wuc combo:
+	  - Intrinsics 'apply_damage' and 'reduce_health', as well as UCC script 'hit'
+	    opcode now cause damage to objects too.
+	  - 'fire_cannon' intrinsic renamed to 'fire_projectile'; unknown parameters
+	    have been decoded and implemented. Also, this intrinsic is confirmed to
+		be present in SI as intrinsic 0x8C.
+	  - 'explode' intrinsic renamed to 'attack_object'; unknown parameters have
+	    been decoded and implemented.
+	  - SI Intrinsics 0xA and 0xB are, respectively, 'change_npc_face0' and
+	    'change_npc_face1'. They take a frame as a parameter and change the face
+	    in the corresponding slot to this frame. Exult also makes them available
+	    for BG.
+	  - 'set_to_attack' intrinsic and script 'attack' opcode can also be used
+	    with non-actor objects.
+	  The intrinsic documentation has been updated accordingly. These changes
+	  also affect UCC.
+	  Finally, changed translucency in faces to affect only large faces.
+
 2007-10-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug in UCC do-while loops.
 	* Modified the way apply_damage intrinsic works. This seems to better match
