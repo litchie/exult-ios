@@ -112,9 +112,6 @@ protected:
 	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
-	// These 2 are set by the Usecode function 'set_to_attack':
-	Game_object *usecode_target;
-	int usecode_weapon;
 
 	unsigned type_flags:32;	// 32 flags used in movement among other things
 
@@ -395,7 +392,7 @@ public:
 	void set_npc_name(const char *n);
 	void set_property(int prop, int val);
 					// Lose HP's and check for death.
-	bool reduce_health(int delta, Actor *attacker = 0,
+	virtual bool reduce_health(int delta, Actor *attacker = 0,
 			int damage_type = 0, bool ignore_immunity = false);
 	int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
@@ -467,9 +464,7 @@ public:
 		{ usecode_dir = d&7; }
 	int get_usecode_dir() const
 		{ return usecode_dir; }
-	void set_usecode_to_attack(Game_object *t, int w)
-		{ usecode_target = t; usecode_weapon = w; }
-	void usecode_attack();
+	virtual bool usecode_attack();
 	virtual Actor *as_actor()	// An actor?
 		{ return this; }
 	void init_readied();		// Call Usecode to init. readied objs.

@@ -51,6 +51,7 @@ class Conversation : public Game_singletons, public Paintable{
   inline int get_num_faces_on_screen() const { return num_faces; }
   void init_faces();
   void show_face(int shape, int frame, int slot = -1);
+  void change_face_frame(int frame, int slot);
   void remove_face(int shape);
   void remove_slot_face(int slot); // SI.
   void remove_last_face();	// SI.
@@ -75,6 +76,7 @@ class Conversation : public Game_singletons, public Paintable{
   bool stack_empty() const { return !answer_stack.size(); }
 
  private:
+  void set_face_rect(Npc_face_info *info, Npc_face_info *prev, int screenw, int screenh);
   void show_avatar_choices(int num_choices, char **choices);
   void add_answer(const char *str);
   void remove_answer(const char *str);

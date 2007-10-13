@@ -84,9 +84,6 @@ private:
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
 	uint32 render_seq;		// Render sequence #.
-protected:
-					// Handle attack on an object.
-	int attack_object(Actor *attacker, int weapon_shape, int ammo_shape);
 public:
 	friend class T_Object_list<Game_object *>;
 	friend class T_Object_iterator<Game_object *>;
@@ -306,6 +303,12 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
+	virtual bool reduce_health(int delta, Actor *attacker = 0,
+			int damage_type = 0, bool ignore_immunity = false);
+	virtual void set_usecode_to_attack(Game_object *t, int w)
+		{  }
+	virtual bool usecode_attack()
+		{ return false; }
 	virtual void write_ireg(DataSource* out)
 		{  }
 				// Get size of IREG. Returns -1 if can't write to buffer

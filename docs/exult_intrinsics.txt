@@ -149,13 +149,14 @@ npc->begin_casting_mode()
     Starts casting mode for 'npc'. When the next script starts for 'npc', that
     NPC will display casting frames (shape 859) until the script ends.
 
-int UI_set_to_attack(actor npc, object obj, int proj)
-int npc->set_to_attack(object obj, int proj)
+int UI_set_to_attack(object attacker, object target, int weapon)
+int attacker->set_to_attack(object target, int weapon)
 
-    Prepares 'npc' to attack 'obj' with a *missile* attack using projectile
-    shape 'proj'. 'proj' MUST specify a shape that has an 'ammo' tab in Exult
-    Studio, or nothing will happen. The attack itself is triggered by a script;
-    in an UCC script, use the 'attack' command to actually initiate the attack.
+    Prepares 'attacker' to attack 'target' with an attack using 'weapon' as a
+    weapon. 'weapon' MUST specify a shape that has an 'ammo' or 'weapon' tab in
+    Exult Studio, or nothing will happen. This intrinsic does not animate
+    'attacker' in any way. The attack itself is triggered by a script; in an
+    UCC script, use the 'attack' command to actually initiate the attack.
     Return value is always '0'.
 
 bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
@@ -260,6 +261,14 @@ UI_set_conversation_slot(int slot)                                   [SI, Exult]
 npc->set_conversation_slot()
 
     Sets the active conversation face to 'slot'. 'slot' must be '0' or '1'.
+
+UI_change_npc_face0(int frame)                                       [SI, Exult]
+
+    Changes the frame of face in slot 0 to 'frame'.
+
+UI_change_npc_face1(int frame)                                       [SI, Exult]
+
+    Changes the frame of face in slot 1 to 'frame'.
 
 UI_init_conversation()                                                      [SI]
 
@@ -466,7 +475,7 @@ bool UI_is_not_blocked(int pos[3], int shape, int frame)
     Returns 'true' if there is enough space to place shape 'shape', frame
     'frame' in the position 'pos'; returns 'false' otherwise.
 
-actor[] UI_add_party_items(int count, int shape, int qual, int frame)
+actor[] UI_add_party_items(int count, int shape, int qual, int frame, bool unk)
 
     Creates a total of 'count' units of an item with shape 'shape', quality
     'qual' and frame 'frame' and distributes these items between party members.
@@ -477,8 +486,8 @@ actor[] UI_add_party_items(int count, int shape, int qual, int frame)
         QUALITY_ANY    = -359    FRAME_ANY      = -359
 
     Note, however, that 'shape' CANNOT be a wildcard. In the original game,
-    there is a fifth 'bool' parameter; its meaning is unknown, and Exult will
-    ignore this last parameter if you do place it there.
+    there is a fifth 'bool' parameter; its meaning is unknown. You can ommit it
+    from the list if you wish.
 
     ****** SI SPECIFIC ******
     If the party cannot hold all added objects, the remaining items are placed
@@ -486,7 +495,7 @@ actor[] UI_add_party_items(int count, int shape, int qual, int frame)
     appended to the list of NPCs that received the items.
     **** END SI SPECIFIC ****
 
-bool UI_remove_party_items(int count, int shape, int qual, int frame)
+bool UI_remove_party_items(int count, int shape, int qual, int frame, bool unk)
 
     Deletes from the party's inventory a total of 'count' units of an item with
     shape 'shape', quality 'qual' and frame 'frame'. Returns 'true' if
@@ -496,8 +505,8 @@ bool UI_remove_party_items(int count, int shape, int qual, int frame)
         QUALITY_ANY    = -359    FRAME_ANY      = -359
 
     Note, however, that 'shape' CANNOT. In the original game, there is a fifth
-    'bool' parameter; its meaning is unknown, and Exult will ignore this last
-    parameter if you do place it there.
+    'bool' parameter; its meaning is unknown. You can ommit it from the list if
+    you wish.
 
 object UI_summon(int shape)
 
@@ -620,8 +629,8 @@ int UI_find_direction(misc param1[4], misc param2[4])
         SOUTH    = 4    SOUTHWEST    = 5    WEST    = 6    NORTHWEST    = 7
 
 int UI_add_cont_items(object obj, int count, int shape, int          [SI, Exult]
-        qual, int frame, int unk)
-int obj->add_cont_items(int count, int shape, int qual, int frame, int unk)
+        qual, int frame, bool unk)
+int obj->add_cont_items(int count, int shape, int qual, int frame, bool unk)
 
     Adds 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
     that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
@@ -634,8 +643,8 @@ int obj->add_cont_items(int count, int shape, int qual, int frame, int unk)
     Return value is the number of objects actually added.
 
 int UI_remove_cont_items(object obj, int count, int shape,           [SI, Exult]
-        int qual, int frame, int unk)
-int obj->remove_cont_items(int count, int shape, int qual, int frame, int unk)
+        int qual, int frame, bool unk)
+int obj->remove_cont_items(int count, int shape, int qual, int frame, bool unk)
 
     Removes 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
     that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
@@ -872,6 +881,47 @@ bool UI_remove_from_keyring(int qual)                                [Exult: SI]
     Removes key with quality 'qual' from the keyring. Returns 'true' if the key
     exists (and therefore was removed), 'false' otherwise.
 
+int UI_apply_damage(int base, int hits, int type, object obj)
+
+    Causes damage to 'obj'. Total damage is random: a random integer from 1 to
+    1/3 of 'base' (round down) plus another random integer from 1 to 'hits'.
+    The damage is of type 'type', and can be one of the following values:
+
+        normal      = 0    fire         = 1
+        magic       = 2    lightning    = 3
+        ethereal    = 4    sonic        = 5
+
+    If the target is immune to the specified damage type, no damage will be
+    applied; a creature vulnerable to the damage type will take double damage.
+    Returns '1' if any damage is caused on a valid target, '0' otherwise.
+
+UI_reduce_health(object obj, int hits, int type)
+obj->reduce_health(int hits, int type)
+
+    Causes 'hits' damage of type 'type' to 'obj'. Valid values can be seen below
+    the 'UI_apply_damage' intrinsic. Unlike that intrinsic, the present
+    intrinsic ignores the immunities and vulnerabilities of the target, using
+    only the special hit effects (e.g., bleeding) of the damage type.
+
+int UI_attack_object(object attacker, object target, int weapon)
+int attacker->attack_object(object target, int weapon)
+
+    Causes 'attacker' to attack 'target' using the shape 'weapon' as a weapon.
+    This does not animate 'attacker' in any way. 'weapon' MUST specify a shape
+    that has an 'ammo' or 'weapon' tab in Exult Studio, or nothing will happen.
+    Returns '0' if 'attacker' or 'target' are not valid objects or if 'weapon'
+    does not have any weapon information, '1' otherwise.
+
+UI_fire_projectile(object obj, int dir, int proj, int dist, int weapon, int
+        ammo)
+obj->fire_projectile(int dir, int proj, int weapon, int ammo)
+
+    Causes the object 'obj' to fire a projectile of shape 'proj' in the
+    direction 'dir'. The missile will travel up to 'dist' tiles. 'weapon' is
+    the shape whose weapon information is to be used; likewise, 'ammo' is the
+    shape whose ammunition information is to be used. The projectiles fired by
+    this intrinsic travel with increased speed.
+
 --------------------------------------------------------------------------------
 NPCs
 --------------------------------------------------------------------------------
@@ -972,29 +1022,6 @@ npc->set_npc_prop(string prop, int delta)
     string and the property does not exist yet, it is treated as being zero
     when it is created. A list of property constants is included below
     'get_npc_prop' intrinsic description.
-
-int UI_apply_damage(int base, int hits, int type, actor npc)
-
-    Reduces the health of 'npc'. Total damage is random: a random integer from 1
-    to 1/3 of 'base' (round down) plus another random integer from 1 to 'hits'.
-    The damage is of type 'type', and can be one of the following values:
-
-        normal      = 0    fire         = 1
-        magic       = 2    lightning    = 3
-        ethereal    = 4    sonic        = 5
-
-    If the target is immune to the specified damage type, no damage will be
-    applied; a creature vulnerable to the damage type will take double damage.
-    Returns '1' if any damage is caused on a valid target, '0' otherwise.
-
-UI_reduce_health(actor npc, int damage, int type)
-npc->reduce_health(int damage, int type)
-
-    Reduces the health of 'npc' by 'damage' hits of type given by 'type'. Valid
-    values can be seen below the 'UI_apply_damage' intrinsic. Unlike that
-    intrinsic, the present intrinsic ignores the immunities and vulnerabilities
-    of the target, using only the special hit effects (e.g., bleeding) of the
-    damage type.
 
 string UI_get_npc_name(actor npc)
 string npc->get_npc_name()
@@ -1594,11 +1621,6 @@ obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y,
 MISCELLANEOUS
 --------------------------------------------------------------------------------
 
-UI_explode(object unk1, object obj, int unk2)
-
-    Causes 'obj' to explode like a powder-keg. The meaning of 'unk1' and 'unk2'
-    are unknown, and are hence ignored in Exult.
-
 bool UI_add_spell(int index, int unk, object obj)
 
     If 'obj' is a spellbook, adds the spell whose index is 'index' and returns
@@ -1635,14 +1657,6 @@ UI_set_orrery(int pos[3], int state)                                        [BG]
 
     Sets the position of the orrery in Moonglow. 'pos' is the position of the
     orrery, 'state' is the orrery's current state (ranging from 0-9).
-
-UI_fire_cannon(object obj, int dir, int ball, int unk, int weapon)          [BG]
-obj->fire_cannon(int dir, int ball, int unk, int weapon)
-
-    Causes the cannon 'obj' to fire a ball of shape 'ball' in the direction
-    'dir'. 'weapon' is the shape number of the weapon information to be used
-    for damage information. In the original, there was an additional parameter
-    with unknown meaning; hence, Exult ignores it.
 
 bool UI_is_water(int pos[3])
 

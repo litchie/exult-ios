@@ -277,7 +277,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
 	USECODE_INTRINSIC_DECL(obj_sprite_effect);
-	USECODE_INTRINSIC_DECL(explode);
+	USECODE_INTRINSIC_DECL(attack_object);
 	USECODE_INTRINSIC_DECL(book_mode);
 	USECODE_INTRINSIC_DECL(stop_time);
 	USECODE_INTRINSIC_DECL(cause_light);
@@ -311,7 +311,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(start_speech);
 	USECODE_INTRINSIC_DECL(is_water);
 	USECODE_INTRINSIC_DECL(run_endgame);
-	USECODE_INTRINSIC_DECL(fire_cannon);
+	USECODE_INTRINSIC_DECL(fire_projectile);
 	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(in_usecode);
@@ -352,6 +352,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_npc_face0);
 	USECODE_INTRINSIC_DECL(remove_npc_face1);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
+	USECODE_INTRINSIC_DECL(change_npc_face0);
+	USECODE_INTRINSIC_DECL(change_npc_face1);
 	USECODE_INTRINSIC_DECL(init_conversation);
 	USECODE_INTRINSIC_DECL(end_conversation);
 	USECODE_INTRINSIC_DECL(set_new_schedules);

@@ -34,20 +34,25 @@ class Ireg_game_object : public Game_object
 protected:
 	unsigned flags:32;		// 32 flags used in 'usecode'.
 	unsigned flags2:32;		// Another 32 flags used in 'usecode'.
+	// These 2 are set by the Usecode function 'set_to_attack':
+	Game_object *usecode_target;
+	int usecode_weapon;
 public:
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 				owner(0), flags(0), flags2(0), lowlift(-1), 
-				highshape (-1)
+				highshape (-1), usecode_target(0), usecode_weapon(0)
 		{  }
 					// Copy constructor.
 	Ireg_game_object(const Ireg_game_object& obj2)
 		: Game_object(obj2), owner(0), flags(0), flags2(0),
-					lowlift(-1), highshape (-1)
+					lowlift(-1), highshape (-1),
+					usecode_target(0), usecode_weapon(0)
 		{  }
 					// Create fake entry.
-	Ireg_game_object() : owner(0), flags(0), flags2(0), lowlift(-1), highshape (-1)
+	Ireg_game_object() : owner(0), flags(0), flags2(0), lowlift(-1),
+				highshape (-1), usecode_target(0), usecode_weapon(0)
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
@@ -109,6 +114,9 @@ public:
 	virtual void set_high_shape(int s) { highshape = s;};
 	virtual int get_low_lift() const { return lowlift; };
 	virtual void set_low_lift(int l) { lowlift = l;};
+	virtual void set_usecode_to_attack(Game_object *t, int w)
+		{ usecode_target = t; usecode_weapon = w; }
+	virtual bool usecode_attack();
 	};
 
 #endif

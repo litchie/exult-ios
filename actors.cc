@@ -628,8 +628,7 @@ Actor::Actor
 	    dormant(true), hit(false), combat_protected(false), 
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), usecode_target(0), usecode_weapon(0),
-	    type_flags(0), ident(0),
+	    usecode_dir(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false),
@@ -2901,20 +2900,19 @@ bool Actor::in_usecode_control() const
 /*
  *	Attack using the usecode_target and usecode_weapon fields set by
  *	the 'set_to_attack' intrinsic.
- *	Note:	I think this is only for weapons that fire (jsf).
  */
-void Actor::usecode_attack
+bool Actor::usecode_attack
 	(
 	)
 	{
 	if (!usecode_target)
-		return;
+		return false;
 	Shape_info& info = ShapeID::get_info(usecode_weapon);
 	Weapon_info *winfo = info.get_weapon_info();
 	Game_object *trg = usecode_target;
 	usecode_target = 0;
 	if (!winfo)
-		return;
+		return false;
 	int projectile_shape = winfo->get_projectile();
 	int ammo_shape = winfo->get_ammo_consumed();
 	// Not sure if we need all these.
@@ -2930,7 +2928,7 @@ void Actor::usecode_attack
 							projectile_shape)))
 			{
 			Mouse::mouse->flash_shape(Mouse::outofammo);
-			return;
+			return false;
 			}
 		}
 	else if (uses_charges)
@@ -2944,7 +2942,7 @@ void Actor::usecode_attack
 					!weapon->get_quality())
 				{
 				Mouse::mouse->flash_shape(Mouse::outofammo);
-				return;
+				return false;
 				}
 			}
 		weapon->set_quality(weapon->get_quality() - 1);
@@ -2967,10 +2965,17 @@ void Actor::usecode_attack
 			}
 		}
 
-	if (ammo_shape)
+	if (ammo_shape)		// We have a projectile, so use it.
 		gwin->get_effects()->add_effect(
 				new Projectile_effect(this, trg,
 					ammo_shape, usecode_weapon, skip_render));
+	else if (distance(trg) <= strike_range)		// Short-range weapons.
+		if (winfo->explodes())	// Cause explosion instead.
+			eman->add_effect(new Explosion_effect(trg->get_tile(),
+					0, 0, usecode_weapon, 0, this));
+		else	// Attack target.
+			trg->attacked(this, usecode_weapon);
+	return true;
 	}
 
 /*
