@@ -1,4 +1,10 @@
 2007-10-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Changed the way that distance is calculated. It now includes object size
+	  and z-coordinate into consideration, and results are U7 & SI verified.
+	* Implemented intelligence/shape type check to prevent animals from opening
+	  doors when pathfinding.
+
+2007-10-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* effects.*: Projectiles and explosions now require a Game_object attacker
 	  instead of an actor. Also, a projectile sprite can now be different from
 	  the ammo info to be used when it hits, and the speed of the projectile can

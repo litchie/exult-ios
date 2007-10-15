@@ -338,8 +338,8 @@ USECODE_INTRINSIC(get_distance)
 	Game_object *obj0 = get_item(parms[0]);
 	Game_object *obj1 = get_item(parms[1]);
 	Usecode_value u((obj0 && obj1) ? 
-		obj0->get_outermost()->get_tile().distance(
-				obj1->get_outermost()->get_tile()) : 0);
+		obj0->get_outermost()->distance(
+				obj1->get_outermost()) : 0);
 	return(u);
 }
 
@@ -785,8 +785,7 @@ USECODE_INTRINSIC(npc_nearby2)
 
 	Game_object *npc = get_item(parms[0]);
 	int is_near = (npc != 0 && 
-		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
-								< 40 &&
+		npc->distance(gwin->get_main_actor()) < 40 &&
 					// FALSE if asleep.
 		!npc->get_flag(Obj_flags::asleep));
 	Usecode_value u(is_near);
@@ -2686,9 +2685,7 @@ USECODE_INTRINSIC(play_sound_effect2)
 	int dir = 0;
 	if (obj && !obj->is_pos_invalid())
 		{
-		Tile_coord apos = gwin->get_main_actor()->get_tile();
-		Tile_coord opos = obj->get_tile();
-		int dist = apos.distance(opos);
+		int dist = obj->distance(gwin->get_main_actor());
 		if (dist)
 			{		// 160/8 = 20 tiles. 20*20=400.
 			volume = (SDL_MIX_MAXVOLUME*64)/(dist*dist);
@@ -2696,6 +2693,8 @@ USECODE_INTRINSIC(play_sound_effect2)
 				volume = 8;
 			else if (volume > SDL_MIX_MAXVOLUME)
 				volume = SDL_MIX_MAXVOLUME;
+			Tile_coord apos = gwin->get_main_actor()->get_tile();
+			Tile_coord opos = obj->get_tile();
 			dir = Get_direction16(apos.ty - opos.ty,
 						opos.tx - apos.tx);
 			}
