@@ -419,7 +419,7 @@ inline bool Clear_to_leader
 	)
 	{
 	Tile_coord dest = leader->get_tile();
-	int dist = dest.distance(from);
+	int dist = leader->distance(from);
 	if (dist > 4)
 		return false;		// Too far.
 	while (--dist)			// Check tiles up to there.
@@ -553,7 +553,7 @@ inline bool Is_step_okay
 	if (difftz > 4)			// More than 2?
 		return false;		// We'll want to find best dir.
 					// How close in XY?
-	int dist = to.distance(leader->get_tile());
+	int dist = leader->distance(to);
 	if (dist == 1)
 		return (difftz <= 1);	// 1 tile away, so want dz <= 1.
 	if (!Clear_to_leader(npc, leader, to))

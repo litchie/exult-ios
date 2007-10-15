@@ -279,9 +279,11 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	reached_end = false;
 	frames->decrement(step_index);	// We didn't take the step.
 					// Blocked by a door?
-	if (actor->get_tile().distance(tile) == 1 &&
-	    !cheat.in_map_editor())	// And NOT map-editing?
-					// +++++Check for intelligence?
+	if (actor->distance(tile) <= 2 &&
+	    !cheat.in_map_editor() &&	// And NOT map-editing?
+		(actor->get_info().get_shape_class() == Shape_info::human ||
+			actor->get_effective_prop(Actor::intelligence) > 7))
+				// +++++Check for intelligence; guessing how to do it.
 		{
 		Game_object *door = Game_object::find_door(tile);
 		if (door != 0 && door->is_closed_door() &&
@@ -532,7 +534,7 @@ int Approach_actor_action::handle_event
 			" approach: Checking dest_obj. pos" <<
 					endl;
 #endif
-		if (dest_obj->get_tile().distance(orig_dest_pos) > 2)
+		if (dest_obj->distance(orig_dest_pos) > 2)
 			return 0;	// Moved too much, so stop.
 		if (for_projectile &&
 		    Fast_pathfinder_client::is_straight_path(actor, dest_obj))

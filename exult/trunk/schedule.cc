@@ -394,7 +394,7 @@ void Follow_avatar_schedule::now_what
 	Actor *av = gwin->get_main_actor();
 	Tile_coord leaderpos = av->get_tile();
 	Tile_coord pos = npc->get_tile();
-	int dist2lead = leaderpos.distance(pos);
+	int dist2lead = av->distance(pos);
 	if (!av->is_moving() &&		// Avatar stopped.
 	    dist2lead <= 6)		// And we're already close enough.
 		return;
@@ -1692,7 +1692,7 @@ void Hound_schedule::now_what
 	Tile_coord avpos = av->get_tile(),
 		   npcpos = npc->get_tile();
 					// How far away is Avatar?
-	int dist = npcpos.distance(avpos);
+	int dist = npc->distance(av);
 	if (dist > 20 || dist < 3)	// Too far, or close enough?
 		{			// Check again in a few seconds.
 		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
@@ -2456,7 +2456,7 @@ void Shy_schedule::now_what
 	Tile_coord avpos = av->get_tile(),
 		   npcpos = npc->get_tile();
 					// How far away is Avatar?
-	int dist = npcpos.distance(avpos);
+	int dist = npc->distance(av);
 	if (dist > 10)			// Far enough?
 		{			// Check again in a few seconds.
 		if (rand()%3)		// Just wait.
@@ -3955,7 +3955,7 @@ void Walk_to_schedule::now_what
 	(
 	)
 	{
-	if (npc->get_tile().distance(dest) <= 3)
+	if (npc->distance(dest) <= 3)
 		{			// Close enough!
 		npc->set_schedule_type(new_schedule);
 		return;
