@@ -114,9 +114,9 @@ public:
 	Tile_coord get_tile() const;	// Get location in abs. tiles.
 	Tile_coord get_center_tile() const;	// Get center location in abs. tiles.
 					// Get distance to another object.
-	int distance(Game_object *o2) const
-		{ return get_center_tile().distance(
-					o2->get_center_tile()); }
+	int distance(Game_object *o2) const;
+					// Get direction to another object.
+	int distance(Tile_coord t2) const;
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
 	int get_direction(Tile_coord t2) const;

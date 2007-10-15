@@ -1256,9 +1256,8 @@ void Combat_schedule::ending
 						it != opponents.end(); ++it)
 			{
 			Actor *opp = *it;
-			Tile_coord opppos = opp->get_tile();
-			if (opppos.distance(pos) < (300/2)/c_tilesize &&
-			    Fast_pathfinder_client::is_grabable(pos, opppos))
+			if (opp->distance(npc) < (300/2)/c_tilesize &&
+			    Fast_pathfinder_client::is_grabable(pos, opp->get_tile()))
 				{
 				found = true;
 				break;

@@ -786,11 +786,11 @@ void Projectile_effect::handle_event
 			}
 		else
 			{		// Not teleported away ?
-			if (target && epos.distance(target->get_tile()) < 50)
+			if (target && target->distance(epos) < 50)
 				target->attacked(attacker->as_actor(), weapon, 
 							projectile_shape);
 			if (attacker &&	// Check for `boomerangs'
-			    epos.distance(attacker->get_tile()) < 50)
+			    attacker->distance(epos) < 50)
 				{ 	// not teleported away
 				Weapon_info *winf = 
 				   ShapeID::get_info(weapon).get_weapon_info();

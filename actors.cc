@@ -1089,7 +1089,7 @@ void Actor::follow
 	else				// Leader stopped?
 		{
 		goal = leaderpos;	// Aim for leader.
-		if (gwin->walk_in_formation && pos.distance(leaderpos) <= 6)
+		if (gwin->walk_in_formation && distance(leader) <= 6)
 			return;		// In formation, & close enough.
 //		cout << "Follow:  Leader is stopped" << endl;
 		// +++++For formation, why not get correct positions?
@@ -1116,7 +1116,7 @@ void Actor::follow
 	bool leaderpath = leader->action && 
 				leader->action->following_smart_path();
 					// Get leader's distance from goal.
-	int leaderdist = goal.distance(leaderpos);
+	int leaderdist = leader->distance(goal);
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
@@ -1130,7 +1130,7 @@ void Actor::follow
 		speed -= 20;		// Speed up if too far.
 					// Get window rect. in tiles.
 	Rectangle wrect = gwin->get_win_tile_rect();
-	int dist2lead = pos.distance(leaderpos);
+	int dist2lead = leader->distance(pos);
 					// Getting kind of far away?
 	if (dist2lead > wrect.w + wrect.w/2 &&
 	    party_id >= 0 &&		// And a member of the party.
