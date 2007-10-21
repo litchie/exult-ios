@@ -1,16 +1,17 @@
 Exult Documentation
-last changed: 08 April 2006(GMT)
+last changed: 21 October 2007(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 08 April 2006
-0.2. - 14 March 2005
-0.3. - 14 August 2004
-0.4. - 23 May 2004
-0.5. - 11 February 2004
-0.6. - 12 December 2003
+0.1. - 21 October 2007
+0.2. - 08 April 2006
+0.3. - 14 March 2005
+0.4. - 14 August 2004
+0.5. - 23 May 2004
+0.6. - 11 February 2004
+0.7. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -56,6 +57,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 7. OS specific notes
 7.1. How to get the Zaurus port working
 7.2. Error Log
+7.3. Making Digital Sound work on Mac OSX
 
 8. Zaurus Guide
 8.1. Author of this Guide
@@ -77,6 +79,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9.5. Manual installation of the BG floppy disks
 9.6. Manual installation of the SI floppy disks
 9.7. Installing the CD-ROM versions of Ultima VII
+9.8. Fixing permissions of Ultima Collection on *nix systems
 
 10. Credits and Contact
 10.1. Thanks
@@ -86,30 +89,36 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 08 April 2006
+0.1. - 21 October 2007
+* 7.3. Making Digital Sound work on Mac OSX added.
+* 9.8. Fixing permissions of Ultima Collection on *nix systems added.
+
+
+
+0.2. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.3. Path-Settings synched the path settings with the new Installation section.
 * 9. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.2. - 14 March 2005
+0.3. - 14 March 2005
 * 8. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.3. - 14 August 2004
+0.4. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.4. - 23 May 2004
+0.5. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 7.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.5. - 11 February 2004
+0.6. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.3. Path-Settings fixed some outdated instructions.
 * 3.5. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -120,7 +129,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.6. - 12 December 2003
+0.7. - 12 December 2003
 * 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.3. Path-Settings moved stuff over to next point.
 * 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
@@ -498,7 +507,7 @@ Note: path settings in exult.cfg are the same on all operating systems. Of cours
 
 
 2.4. Further directory customizations
-You can also specify whereExult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful if you want to exercise absolute control. Some explanation what these dirs are for:
+You can also specify where Exult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful if you want to exercise absolute control. Some explanation what these dirs are for:
 * Savegames this is where Exult stores your savegames. Normally you find these in the dir set in <path>.
 * Static the most important dir. Here you have the data files from the original game. You should never touch these files.
 * Gamedat contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.
@@ -539,7 +548,7 @@ Exult offers some "hidden" command line options:
 * --si Starts the game with the Serpent Isle menu
 * --nomenu Skips game menu.
 * --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
-* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
+* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nevertheless. Don't try this if you don't know what you are doing.
 * --game gamename Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
 
@@ -668,7 +677,7 @@ Nadir implemented keyboard walking in the post 1.0 versions of Exult. The Avatar
 
 
 5.2. Keyboard commands
-All key commands of Exultcan be changed for either BG or SI. However, there is a default setting which closely follows the original with the addition of some improvements.
+All key commands of Exult can be changed for either BG or SI. However, there is a default setting which closely follows the original with the addition of some improvements.
 To change your key bindings first edit the file defaultkeys.txt in your Exult directory, change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg to use that file. You can even choose if you want to change your key bindings for BG or SI. See the keys settings at 2.2.. Change (default) to my_keys.txt.
 During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS). 'KP' means keypad.
 
@@ -865,6 +874,10 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 
+7.3. Making Digital Sound work on Mac OSX
+OSX does not have built-in support for ogg files. You need to go to http://xiph.org/quicktime/download.html to download and install xiphqt.
+
+
 
 --------------------------------------------------------------------------------
 
@@ -878,11 +891,11 @@ Introduced in April 2002, this PDA is really a pico-computer (one degree of magn
 
 
 8.3. Zaurus SL5x00 and ROMs
-Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12, but will work with some modifications on more recent ROMs. It has been reported to work on the SL5000-D (the earlier and less capable version). The package will not run of-the-shelf using the latest ROM (no matter what version of the Zaurus you use) unless you make a couple of changes. More detailed information on how to fix this problem will be found further down this document.
+Sharp occasionally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12, but will work with some modifications on more recent ROMs. It has been reported to work on the SL5000-D (the earlier and less capable version). The package will not run of-the-shelf using the latest ROM (no matter what version of the Zaurus you use) unless you make a couple of changes. More detailed information on how to fix this problem will be found further down this document.
 
 
 8.4. Exult and Zaurus
-Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use thespecially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
+Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use the specially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
 
 
 8.5. Installing new packages
@@ -902,7 +915,7 @@ As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20
 
 
 8.9. Solving the problems with the latest ROM
-In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. First, open a terminal (install one if you don't have one).
+In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurrence of /home/root/ is replaced with /home/zaurus. First, open a terminal (install one if you don't have one).
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
 The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
 And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
@@ -943,7 +956,7 @@ The installer will start and ask you on which drive to install Ultima VII to. Ch
 We assume you followed the above guide on how to 0.1. , so you should have BG/SI installed to C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 Insert the add-on floppy disk in your floppy drive, start DosBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
 Now you have to choose the drive where you installed the game to. Choose C and the installer will find the correct directory of BG/SI and will ask for your confirmation to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer. Close DosBox. FoV is then installed in C:\Exult\ULTIMA7. SS is then installed in C:\Exult\SERPENT.
-Unfortunately you might run into a DosBox when installing the add-ons in DosBox. You might have to rename the file C:\Exult\ULTIMA7\static\usecode.new to just C:\Exult\ULTIMA7\static\usecode (or C:\Exult\SERPENT\static\usecode.new to just C:\Exult\SERPENT\static\usecode)
+Unfortunately you might run into a DosBox bug when installing the add-ons in DosBox. You might have to rename the file C:\Exult\ULTIMA7\static\usecode.new to just C:\Exult\ULTIMA7\static\usecode (or C:\Exult\SERPENT\static\usecode.new to just C:\Exult\SERPENT\static\usecode)
 
 
 9.5. Manual installation of the BG floppy disks
@@ -963,6 +976,11 @@ There are a couple of CD-ROM versions of Ultima VII. These all come with the add
 * Ultima Collection From the CD just copy the folders Serpent and Ultima7 to C:\Exult. Don't bother with the Ultima Collection installer.
 * The Complete Ultima VII (EA presents CD-Rom Classics) On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to C:\Exult\SERPENT and unzip Ultima7.zip to C:\Exult\ULTIMA7.
 
+
+
+9.8. Fixing permissions of Ultima Collection on *nix systems
+If you are following the above guide and copied the games from the Ultima Collection CD you might run into a permissions problem on *nix systems, including Mac OSX. You need to set group permissions to read and write.
+On OSX select both game folders, bring up info, go to Ownership and Permissions, expand details, change Access under Group from read only to read and write, then click Apply.
 
 
 
