@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="08 April 2006(GMT)">
+<faqs title="Exult" changed="21 October 2007(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="21102007">
+			<header>- 21 October 2007</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> neither the BeOS nor the Amiga port are available 
+					anymore, but we do have the PocketPC snapshots.</li>
+				<li><ref1 target="compile_snapshot"/> compile instructions for Linux are in INSTALL.</li>
+				<li><ref1 target="what_platforms"/> Amiga port is not downloadable.</li>	
+				<li><ref1 target="pocketpc_port"/> Lanica ported to PocketPC.</li>	
+				<li><ref1 target="known_issues"/> bug with summoning Chaos Hierophant in 1.2.</li>
+				<li><ref1 target="who_speaks"/> added since there was confusion about this before.</li>
+				<li><ref1 target="contact"/> removed a defunct eMail address.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="08042006">
 			<header>- 08 April 2006</header>
 			<body>
@@ -11,8 +26,7 @@
 				<li><ref1 target="alagnar_dead"/> a bug that also exists in the original.</li>
 				</ul>
 			</body>
-		</sub>
-		
+		</sub>		
 		<sub name="04102004">
 			<header>- 04 October 2004</header>
 			<body>
@@ -109,7 +123,7 @@
 					modifications you make are contributed back to the main code, so that
 					everyone can benefit from them. If you want to work on <Exult/> please contact 
 					us via our
-					<extref target="http://exult.sourceforge.net/forum/post.php?f=1">fourm</extref>.<br/>
+					<extref target="http://exult.sourceforge.net/forum/post.php?f=1">forum</extref>.<br/>
  					More information on the GNU GPL at
  					<extref target="http://www.gnu.org/copyleft/gpl.html"/>.
 				</para>
@@ -121,7 +135,7 @@
 				<para>
 					No the <Exult/> team will not accept donations. For us there are greater legal matters 
 					involved, which none of us particularly want to explore. We do not want to risk the 
-					wrath of EA for directly profitting off <Exult/>.<br/>
+					wrath of EA for directly profiting off <Exult/>.<br/>
 					If you want to donate to anyone, donate to 
 					<extref target="http://sourceforge.net/donate/">Sourceforge</extref>. 
 					We wouldn't be here if it weren't for them. 
@@ -176,7 +190,7 @@
 				<para>
 					Seriously <Pentagram/> is slowly progressing and you can find snapshots of the code and
 					Win32 binaries for it on the <Pentagram/>
-					<extref target="http://pentagram.sourceforge.net/snapshots/">snapshots page</extref>.
+					<extref target="http://pentagram.sourceforge.net/snapshots/"> snapshots page</extref>.
 				</para>
 				<para>
 					On the official <Pentagram/> homepage at <extref target="http://pentagram.sourceforge.net/"/>
@@ -211,12 +225,8 @@
 					Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree
 					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
-					A BeOS binary snapshot can be found at
-					<extref target="http://digilander.iol.it/burton666/exult-beos.zip"/>. Jack Burton
-					provides this weekly or whenever it compiles for him. Thanks!<br/>
-					There is also a version available for AmigaOS/MorphOS at
-					<extref target="http://www.muenster.de/~tomjoad/exult.html"/>. Please see
-					<ref target="what_platforms"/> for some more information on this port.
+					Lanica Dragon also provides snapshots for the PocketPC port at 
+					<extref target="http://exult.sourceforge.net/download.php"/>.
 				</para>
 			</body>
 		</sub>
@@ -245,7 +255,8 @@
 			<body>
 				<para>
 					The source code snapshots contain a file called "README.OS" (like Readme.win32,
-					Readme.MacOS) that explains everything.
+					Readme.MacOS) that explains everything. The instructions for Linux systems are 
+					traditionally in the file called INSTALL.
 				</para>
 			</body>
 		</sub>
@@ -272,8 +283,9 @@
 					OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 				</para>
 				<para>
-					Ruediger Hanke's ported <Exult/> to MorphOS and AmigaOS. You can get this
-					version at <extref target="http://www.muenster.de/~tomjoad/exult.html"/>.
+					Ruediger Hanke's ported <Exult/> to MorphOS and AmigaOS. You can find the
+					homepage for this version at <extref target="http://www.muenster.de/~tomjoad/exult.html"/>.
+					Unfortunately the download is no longer available and thus the port is probably abandoned.
 				 </para>
 				 <para>
 					Recently Artaxerxes started working on a port for
@@ -289,10 +301,8 @@
 			<header>Will a port for Pocket PC be available anytime?</header>
 			<body>
 				<para>
-					We are, actually Colourless is, looking into it. Porting to Pocket PC is not very
-					easy, especially when you consider that Colourless doesn't have a Pocket PC. So 
-					please be patient and don't pester Colourless anymore about it. When it's ready 
-					for testing you will find an announcement on the homepage and the forum.
+					Lanica Dragon successfully ported <Exult/> to the PocketPC and made snapshots 
+					available on our download page.
 				</para>
 			</body>
 		</sub>
@@ -854,6 +864,9 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
+					<li>In <Exult/> version 1.2 there actually seems to be a bug that prevents you 
+						from summoning the Chaos Hierophant later in the game, when you "touched"
+						the body of him by clicking once on it. This has been fixed in snapshots.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
@@ -920,7 +933,7 @@
 					some questions quite frequently as people think these are bugs with <Exult/>.
 				</para>
 				<para>
-					Most of the times the problem is that people don't play the game regulary but depend
+					Most of the times the problem is that people don't play the game regularly but depend
 					overly on walkthroughs and don't read what NPCs in the game tell you to do.
 				</para>
 				<para>
@@ -931,6 +944,17 @@
 					We added a mark to the question (BG/FoV/SI/SS) to show which Ultima 7 game is
 					affected by this. See <extref doc="docs" target="terms"/> to learn which game 
 					these marks point to.
+				</para>
+			</body>
+		</sub>
+		<sub name="who_speaks">
+			<header>Why don't all NPCs have audible speech (BG+SI)?</header>
+			<body>
+				<para>
+					The documentation and installation files of the original may be a bit misleading.
+					There are only a few NPCs in the games that have audible speech. In BG only the 
+					Guardian can be heard during the game. Apart from the Intro you can only hear the
+					Guardian and the Great Earth Serpent in SI.
 				</para>
 			</body>
 		</sub>
@@ -1074,7 +1098,7 @@
 					If possible don't just play following the walkthrough, but go out and explore
 					Serpent Isle. It's hard to imagine someone could miss the cave to the east of
 					Monitor...
-				</para>
+				</para>		
 			</body>
 		</sub>
 		<sub name="xenka_sacrifice">
@@ -1126,7 +1150,7 @@
 					recommend to get it without cheating and to stand right next to it.
 				</para>
 				<para>
-					Just picking it up and not transfering it to the inventory at once, but instead 
+					Just picking it up and not transferring it to the inventory at once, but instead 
 					putting it on the ground again could break later plot. Willem coded a workaround
 					in <Exult/> so the problem might disappear.
 				</para>
@@ -1180,10 +1204,12 @@
 				<para>
 					This FAQ is maintained by Dominus Dragon of the
 					<extref target="http://www.udic.org">UDIC</extref>
-					AKA <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
+					AKA Dominik Reichardt.
 					Feel free to contact me with improvements or complaints regarding
 					the FAQ. I am part of the <Exult/> Team though I only
 					write the FAQ and Documentation and don't code at all.
+					Best way to contact me is through our forum at 
+					<extref target="http://exult.sourceforge.net/forum/"/>.
 				</para>
 			</body>
 		</sub>
