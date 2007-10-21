@@ -1,3 +1,8 @@
+2007-10-21 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
+	* docs/ReadMe.html,FAQ.html: updated documentation and FAQ
+	* Readme, FAQ: updated
+	
 2007-10-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changed the way that distance is calculated. It now includes object size
 	  and z-coordinate into consideration, and results are U7 & SI verified.

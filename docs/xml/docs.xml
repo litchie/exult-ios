@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="08 April 2006(GMT)">
+<readme title="Exult" changed="21 October 2007(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="21102007">
+			<header>- 21 October 2007</header>
+			<body>
+				<ul>
+				<li><ref1 target="osx_digital"/> added.</li>
+				<li><ref1 target="cd_permissions"/> added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="08042006">
 			<header>- 08 April 2006</header>
 			<body>
@@ -13,7 +22,7 @@
 				</ul>
 			</body>
 		</sub>
-<sub name="14032005">
+		<sub name="14032005">
 			<header>- 14 March 2005</header>
 			<body>
 				<ul>
@@ -569,7 +578,7 @@
 			<header>Further directory customizations</header>
 			<body>
 				<para>
-					You can also specify where<Exult/> reads and stores the game specific data, like the files
+					You can also specify where <Exult/> reads and stores the game specific data, like the files
 					in the Static and Gamedat directory and the save games.<br/>
 					This is <strong>optional and not required</strong> but may be useful if you want to exercise absolute control.<br/>
 					Some explanation what these dirs are for:
@@ -649,7 +658,7 @@
 					<li>--nocrc<br/>
 						Recently we added a crc check that <Exult/> doesn't start when the
 						exult*.flx files in the data dir aren't the same it got compiled with.
-						This parameter lets the game start nethertheless. Don't try this if you
+						This parameter lets the game start nevertheless. Don't try this if you
 						don't know what you are doing.</li>
 					<li>--game gamename<br/>
 						Loads a game specified in exult.cfg when there are other games made
@@ -995,7 +1004,7 @@
 			<header>Keyboard commands</header>
 			<body>
 				<para>
-					All key commands of <Exult/>can be changed for either BG or SI. However, there
+					All key commands of <Exult/> can be changed for either BG or SI. However, there
 					is a default setting which closely follows the original with the addition of
 					some improvements.
 				</para>
@@ -1324,6 +1333,16 @@
 				</ul>
 			</body>
 		</sub>
+		<sub name="osx_digital">
+			<header>Making Digital Sound work on Mac OSX</header>
+			<body>
+				<para>
+					OSX does not have built-in support for ogg files. You need to go to
+					<extref target="http://xiph.org/quicktime/download.html"/> to download 
+					and install xiphqt.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Zaurus Guide">
 		<sub name="author_zaurus">
@@ -1354,7 +1373,7 @@
 			<header>Zaurus SL5x00 and ROMs</header>
 			<body>
 				<para>
-					Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new 
+					Sharp occasionally releases new versions of its ROM for Zaurus. Consider a new 
 					ROM like a new Linux distribution: new packages, new look, new kernel etc. It is 
 					possible to update the ROM thanks to information found on the Zaurus web site 
 					mentioned earlier. The current <Exult/> package for the Zaurus is created for 
@@ -1375,7 +1394,7 @@
 					in particular). In order to play <Exult/> on your Zaurus, you need to
 					install the SDL library as well as the SDL-mixer library. Do not use
 					the stock versions found on <extref target="http://www.libsdl.org"/>.
-					Rather, use thespecially prepared versions for Zaurus found on
+					Rather, use the specially prepared versions for Zaurus found on
 					<extref target="http://www.gnurou.org"/>. These versions support more
 					features and are the only tested ones.
 				</para>
@@ -1451,7 +1470,7 @@
 					package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able 
 					to change it. "su" is a command to become superuser (root).<br/>
 					Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but 
-					you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is 
+					you also want to edit the ~/.exult.cfg so that every occurrence of /home/root/ is 
 					replaced with /home/zaurus.<br/>
 					First, open a terminal (install one if you don't have one).
 				</para>
@@ -1637,7 +1656,7 @@
 					<strong>C:\Exult\SERPENT</strong>.
 				</para>
 				<para>
-					Unfortunately you might run into a DosBox when installing the add-ons in DosBox. You might 
+					Unfortunately you might run into a DosBox bug when installing the add-ons in DosBox. You might 
 					have to rename the file <strong>C:\Exult\ULTIMA7\static\usecode.new</strong> to just
 					<strong>C:\Exult\ULTIMA7\static\usecode</strong> (or 
 					<strong>C:\Exult\SERPENT\static\usecode.new</strong> to just 
@@ -1726,6 +1745,21 @@
 					On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to 
 					<strong>C:\Exult\SERPENT</strong> and unzip Ultima7.zip to <strong>C:\Exult\ULTIMA7</strong>.</li>
 				</ul>
+			</body>
+		</sub>
+		<sub name="cd_permissions">
+			<header>Fixing permissions of Ultima Collection on *nix systems</header>
+			<body>
+				<para>
+					If you are following the above guide and copied the games from the 
+					Ultima Collection CD you might run into a permissions problem on *nix systems, 
+					including Mac OSX. You need to set group permissions to read and write.
+				</para>
+				<para>
+					On OSX select both game folders, bring up info, go to Ownership and Permissions,
+					expand details, change Access under Group from read only to read and write, then 
+					click Apply.
+				</para>
 			</body>
 		</sub>
 	</section>
