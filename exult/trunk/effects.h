@@ -121,6 +121,7 @@ class Explosion_effect : public Sprites_effect
 	Game_object *explode;		// What's exploding, or 0.
 	int weapon;			// Weapon to use for attack values.
 	int projectile;		// The projectile, for e.g., burst arrows
+	int exp_sfx;		// Explosion SFX.
 	Game_object *attacker;	//Who is responsible for the explosion;
 							//otherwise, explosion and delayed blast spells
 							//would not trigger a response from target
@@ -186,6 +187,8 @@ class Homing_projectile : public Special_effect
 	int frames;			// # frames.
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
+	int sfx;
+	int channel;
 	int add_dirty();
 public:
 	Homing_projectile(int shnum, Game_object *att, Game_object *trg, Tile_coord sp, Tile_coord tp);

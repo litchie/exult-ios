@@ -110,6 +110,12 @@ struct SFX_info
 	int		extra;			// Play this SFX at noon and midnight.
 };
 
+struct Explosion_info
+{
+	int		sprite;			// Explosion sprite.
+	int		sfxnum;			// SFX to play or 255 for none.
+};
+
 struct Base_Avatar_info
 {
 	int shape_num;
@@ -173,6 +179,7 @@ public:
 
 	// Misc info:
 	static int get_explosion_sprite (int shapenum);
+	static int get_explosion_sfx (int shapenum);
 	static SFX_info *get_sfx_info (int shapenum);
 	static Animation_info *get_animation_cycle_info (int shapenum, int init_frame);
 	static bool get_usecode_events (int shapenum);

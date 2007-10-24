@@ -24,23 +24,23 @@ extern healByAmount 0x976 (var target, var amount);
 
 enum potions
 {
-	SLEEP_POTION		= 0,
-	HEALING_POTION		= 1,
-	CURING_POTION		= 2,
-	POISION_POTION		= 3,
-	AWAKENING_POTION	= 4,
-	PROTECTION_POTION	= 5,
-	LIGHT_POTION		= 6,
-	INVISIBILITY_POTION	= 7,
-	MANA_POTION			= 8,
-	WARMTH_POTION		= 9
+	SLEEP_POTION = 0,
+	HEALING_POTION = 1,
+	CURING_POTION = 2,
+	POISION_POTION = 3,
+	AWAKENING_POTION = 4,
+	PROTECTION_POTION = 5,
+	LIGHT_POTION = 6,
+	INVISIBILITY_POTION = 7,
+	MANA_POTION = 8,
+	WARMTH_POTION = 9
 };
 
 Potion shape#(0x154) ()
 {
 	var itemframe;
 	var target;
-	
+
 	if (event == DOUBLECLICK)
 	{
 		itemframe = get_item_frame();
@@ -53,17 +53,18 @@ Potion shape#(0x154) ()
 			if (itemframe == SLEEP_POTION)
 			{
 				var npcnum = target->get_npc_number();
-				if ((getAvatarLocationID() == SPINEBREAKER_MOUNTAINS) && ((npcnum == IOLO) || (npcnum == SHAMINO) || (npcnum == DUPRE)))
+				if ((getAvatarLocationID() == SPINEBREAKER_MOUNTAINS) &&
+				    ((npcnum == IOLO) || (npcnum == SHAMINO) || (npcnum == DUPRE)))
 				{
 					npcnum.say("@But we are so close to Batlin now, Avatar! I don't want to miss all the action!@");
 					abort;
 				}
 				target->set_item_flag(ASLEEP);
 			}
-			
+
 			else if (itemframe == HEALING_POTION)
 				healByAmount(target, UI_die_roll(3, 12));
-			
+
 			else if (itemframe == CURING_POTION)
 			{
 				target->clear_item_flag(POISONED);
@@ -72,7 +73,7 @@ Potion shape#(0x154) ()
 				target->clear_item_flag(CHARMED);
 				target->clear_item_flag(CURSED);
 			}
-			
+
 			else if (itemframe == POISION_POTION)
 				target->set_item_flag(POISONED);
 
@@ -100,7 +101,7 @@ Potion shape#(0x154) ()
 					AVATAR->set_npc_prop(MANA, recover);
 				}
 			}
-			
+
 			else if (itemframe == WARMTH_POTION)
 				target->set_temperature(0);
 

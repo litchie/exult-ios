@@ -243,7 +243,10 @@ public:
 		magic = 6,		// Max. mana.
 		training = 7,		// Training points.
 		exp = 8,		// Experience.
-		food_level = 9
+		food_level = 9,
+		sex_flag = 10,	// Seems to be get/set sex type flag in SI.
+		missile_weapon = 11	// Pretty sure it returns 1 if wearing
+					// weapon with uses >= 2, 0 otherwise.
 		};
 	enum Frames {			// Frames 0-15.  16-31 are the same,
 					//   only S instead of N.
@@ -394,8 +397,7 @@ public:
 					// Lose HP's and check for death.
 	virtual bool reduce_health(int delta, Actor *attacker = 0,
 			int damage_type = 0, bool ignore_immunity = false);
-	int get_property(int prop) const
-		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+	int get_property(int prop) const;
 	int get_effective_prop(int prop) const;
 	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 

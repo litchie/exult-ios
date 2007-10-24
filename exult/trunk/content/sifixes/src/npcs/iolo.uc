@@ -16,9 +16,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *	I decided to reimplement Iolo's usecode entirely. I could have left some things
- *	for the original to handle, but it wouldn't allow me to do what I wanted: which
- *	was to make him refuse to leave while on Spinebreaker Mountains.
+ *	I decided to reimplement Iolo's usecode entirely. I could have left some
+ *	things for the original to handle, but it wouldn't allow me to do what I
+ *	wanted the most: to have him refuse to leave while on Spinebreaker Mountains.
  */
 
 // externs
@@ -31,11 +31,11 @@ Iolo object#(0x403) ()
 	var avatar_title;
 	var avatar_name;
 	var trainer;
-	
+
 	iolo_id = IOLO->get_npc_id();
 	avatar_title = getPoliteTitle();
 	avatar_name = getAvatarName();
-	
+
 	if (event == DEATH)
 	{
 		if (gflags[MONITOR_TRAINING])
@@ -52,24 +52,25 @@ Iolo object#(0x403) ()
 			return;
 		}
 	}
-	
+
 	else if (event == DOUBLECLICK)
 	{
 		delayedBark(AVATAR, "@Dear friend...@", 0);
 		IOLO->makePartyFaceNPC();
-		
+
 		if (!IOLO->get_item_flag(SI_ZOMBIE))
 		{
-			if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
+			if (gflags[EQUIPMENT_EXCHANGED] && !gflags[IOLO_MADE_EQUIPMENT_LIST])
 			{
 				var freed = false;
 				var doors = IOLO->find_nearby(SHAPE_DOOR_VERTICAL, 15, 0);
 				var door;
 				var index;
 				var max;
-				
+
 				for (door in doors with index to max)
-					if ((door->get_item_quality() == 104) && (getDoorState(door) != 2))
+					if ((door->get_item_quality() == 104) &&
+					    (getDoorState(door) != 2))
 						freed = true;
 
 				doors = IOLO->find_nearby(SHAPE_DOOR_HORIZONTAL, 15, 0);
@@ -107,7 +108,7 @@ Iolo object#(0x403) ()
 			delayedBark(IOLO, barks[rand1], 2);
 		}
 	}
-	
+
 	else if (event == STARTED_TALKING)
 	{
 		IOLO->clear_item_say();
@@ -143,7 +144,7 @@ Iolo object#(0x403) ()
 			AVATAR->clear_item_flag(DONT_MOVE);
 			abort;
 		}
-		if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
+		if (gflags[EQUIPMENT_EXCHANGED] && !gflags[IOLO_MADE_EQUIPMENT_LIST])
 		{
 			IOLO->show_npc_face0(0);
 			say("@I thank thee for freeing me from this hellhole! The natives of this place are ignorant sots. Imagine, thinking me to be a sorcerer!@");
@@ -187,7 +188,7 @@ Iolo object#(0x403) ()
 			IOLO->run_schedule();
 			add("join");
 		}
-		
+
 		if (iolo_id == BOOTED_FOR_FREEDOM)
 		{
 			remove("join");
@@ -200,7 +201,7 @@ Iolo object#(0x403) ()
 				UI_remove_npc_face1();
 				UI_set_conversation_slot(0);
 			}
-			
+
 			say("@The Sorcerer Gustacio hath been instructing me somewhat in the magic of this land, " + avatar_title + ". I think that he doth have information that shall interest thee.@");
 			gflags[AFTER_FREEDOM_NEWS] = true;
 			IOLO->set_npc_id(0);
@@ -223,7 +224,7 @@ Iolo object#(0x403) ()
 			say("@Wouldst thou enjoy some idle conversation, " + avatar_title + ", or shall I embrace my lute and provide a musical interlude?@");
 			add("a song");
 		}
-		
+
 		if (SHAMINO->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Shamino's whereabouts");
 
@@ -242,7 +243,7 @@ Iolo object#(0x403) ()
 		{
 			case "belongings" (remove):
 				askIoloBelongings();
-			
+
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
@@ -272,14 +273,14 @@ Iolo object#(0x403) ()
 					say("@I would be glad to accompany thee, " + avatar_title + ". However, I am an old man, and I can see that thou hast many companions at thy side.@");
 					say("@I think that perhaps I should remain where I am...@");
 				}
-			
+
 			case "leave" (remove):
 				if (!gflags[EQUIPMENT_EXCHANGED])
 					say("@Thy concern for an old man is appreciated, my old friend. However, we have barely begun this adventure, and I am spry enough to keep up with thee!@");
-				
+
 				else if (getAvatarLocationID() == SPINEBREAKER_MOUNTAINS)
 					say("@Thy concern for an old man is appreciated, my old friend. However, we have very close to Batlin now, and I am spry enough to keep up with thee!@");
-				
+
 				else
 				{
 					add("join");
@@ -289,9 +290,11 @@ Iolo object#(0x403) ()
 					askIoloBelongings();
 					npcAskWhereToWait(IOLO);
 				}
-			
+
 			case "Gwenno" (remove):
-				if (GWENNO->get_item_flag(IN_PARTY) || (npcNearbyAndVisible(GWENNO) && (!GWENNO->get_item_flag(SI_ZOMBIE))))
+				if (GWENNO->get_item_flag(IN_PARTY) ||
+				    (npcNearbyAndVisible(GWENNO) &&
+					    !GWENNO->get_item_flag(SI_ZOMBIE)))
 					say("@No truer friend have I had in all of my life than thee, " + avatar_name + ". With my lady love Gwenno returned to my side where she doth belong, my life is once again complete.@");
 
 				else if (!gflags[TALKED_TO_GWANI_ABOUT_GWENNO])
@@ -308,7 +311,7 @@ Iolo object#(0x403) ()
 
 				else
 					say("@My soul is at peace. Joy is to know Gwenno, and to have her once more in thriving good health.@");
-			
+
 			case "a song" (remove):
 				if (BYRIN->get_item_flag(MET))
 				{
@@ -344,7 +347,7 @@ Iolo object#(0x403) ()
 						if (gflags[HEARD_WHITE_DRAGON_SONG] == false)
 							songlist = (songlist & 6);
 					}
-					
+
 					if (songlist == [])
 						say("@I'm sorry... Thou hast heard all of my songs.@");
 					else
@@ -355,7 +358,7 @@ Iolo object#(0x403) ()
 				}
 				else
 					say("@I cannot think of anything to sing at the moment, " + avatar_title + ". Perhaps if thou didst ask me later...@");
-			
+
 			case "Shamino's whereabouts" (remove):
 				if (gflags[SHAMINO_RESURRECTED_BY_MONKS])
 				{
@@ -366,22 +369,22 @@ Iolo object#(0x403) ()
 					say("@I think he was more disturbed by thine abrupt departure than he cared to show.@");
 
 				say("@He went west into the woods, to be alone.@");
-			
+
 			case "Dupre's whereabouts" (remove):
 				say("@At the nearest tavern, of course!@");
-			
+
 			case "Boydon's whereabouts" (remove):
 				say("@Um... well, I am not sure. Perhaps Dupre or Shamino might know.@");
-			
+
 			case "bye":
 				delayedBark(AVATAR, "@Thanks!@", 0);
 				delayedBark(IOLO, "@A pleasure!@", 2);
 				UI_remove_npc_face0();
 				break;
-			
+
 		}
 	}
-	
+
 	else if (event == EGG)
 	{
 		var avatar_location = getAvatarLocationID();
@@ -394,7 +397,7 @@ Iolo object#(0x403) ()
 
 			UI_remove_npc_face0();
 			delayedBark(IOLO, "@Pleasant dreams!@", 2);
-			
+
 			var pos = CLONE_IOLO->get_object_position();
 			UI_sprite_effect(0x1A, pos[X], pos[Y], 0, 0, 0, -1);
 			UI_play_sound_effect(0x51);
@@ -403,9 +406,11 @@ Iolo object#(0x403) ()
 			script item after 10 ticks
 			{
 				nohalt;
-				call 0x6D9;		//Note: this function is HEAVILY overused. I am hesitant to give it a name...
-								//If the items quality is 3 (as is the case here), it moves CLONE_IOLO elsewhere
-								//(likely back to the Test of Purity). Note that is moves *CLONE_IOLO*, not item!
+				call 0x6D9; // Note: this function is HEAVILY overused.
+				            // I am hesitant to give it a name...
+				// If the items quality is 3 (as is the case here), it moves
+				// CLONE_IOLO elsewhere (likely back to the Test of Purity).
+				// Note that is moves *CLONE_IOLO*, not item!
 			}
 			abort;
 		}
@@ -426,14 +431,16 @@ Iolo object#(0x403) ()
 			abort;
 		}
 	}
-	
+
 	else if (event == PROXIMITY)
 	{
 		if (IOLO->get_schedule_type() == PATROL)
 		{
-			if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[IOLO_MADE_EQUIPMENT_LIST]))
+			if (gflags[EQUIPMENT_EXCHANGED] && !gflags[IOLO_MADE_EQUIPMENT_LIST])
 			{
-				var barks2 = ["@Woe is me!@", "@I feel cold.@", "@I am hungry.@", "@Release me!@", "@I'm innocent!@", "@Pity an old man...@"];
+				var barks2 = ["@Woe is me!@", "@I feel cold.@", "@I am hungry.@",
+				              "@Release me!@", "@I'm innocent!@",
+				              "@Pity an old man...@"];
 				delayedBark(IOLO, barks2[UI_get_random(UI_get_array_size(barks2))], 0);
 			}
 		}

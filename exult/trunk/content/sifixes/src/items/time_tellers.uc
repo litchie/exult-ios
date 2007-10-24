@@ -37,7 +37,7 @@ DeskItem shape#(0x2A3) ()
 			else
 			{
 				bark = "@" + bark + "@";
-				UI_item_say(0xFE9C, bark);
+				UI_item_say(AVATAR, bark);
 			}
 			return;
 		}

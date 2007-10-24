@@ -165,7 +165,7 @@ uint8 visible_frames[16] = {
 	Actor::bow_frame,		// When you can't kneel.
 	Actor::standing,		// Can't lie.
 	Actor::strike2_frame,		// Can't raise hands.
-	Actor::strike2_frame };
+	Actor::ready_frame };	// Can't strech arms outward.
 
 Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
@@ -1879,52 +1879,36 @@ int Actor::figure_weapon_pos
 	get_info().get_weapon_offset(myframe & 0x1f, actor_x,
 			actor_y);
 	// Get weapon frames for actor frame:
-	switch (myframe)
+	switch (myframe & 0x1f)
 	{
 		case 4:
 		case 7:
 		case 22:
 		case 25:
-		case 36:
-		case 39:
-		case 54:
-		case 57:
 			weapon_frame = 4;
 			break;
 		case 5:
 		case 8:
 		case 21:
 		case 24:
-		case 37:
-		case 40:
-		case 53:
-		case 56:
 			weapon_frame = 3;
 			break;
 		case 6:
 		case 9:
 		case 20:
 		case 23:
-		case 38:
-		case 41:
-		case 52:
-		case 55:
 			weapon_frame = 2;
 			break;
 		//The next cases (before the default) are here to make use of all
 		//the frames of the "casting frames" shape (shape 859):
 		case 14:
 		case 30:
-		case 46:
-		case 62:
 			weapon_frame = 5;
 			break;
 		case 15:
-		case 47:
 			weapon_frame = 6;
 			break;
 		case 31:
-		case 63:
 			weapon_frame = 7;
 			break;
 		
@@ -1946,10 +1930,8 @@ int Actor::figure_weapon_pos
 		weapon_y = wy - actor_y;
 		// Need to swap offsets if actor's shape is reflected
 		if(myframe & 32)
-			{
 			swap(weapon_x, weapon_y);
 					// Combat frames are already done.
-			}
 #if 0	/* +++++Philanderer's Wand looks strange. */
 					// Watch for valid frame.
 		int nframes = gwin->get_shape_num_frames(
@@ -2283,8 +2265,13 @@ void Actor::set_property
 		break;
 		}
 	case food_level:
+#if 0
 		if (val > 36)		// Looks like max. in usecode.
-			val = 36;
+			val = 36;		// ++++Never seems to get this high, though (marzo)
+#else
+		if (val > 31)		// Never seems to get above this.
+			val = 31;
+#endif
 		else if (val < 0)
 			val = 0;
 		properties[prop] = val;
@@ -2296,8 +2283,16 @@ void Actor::set_property
 	case training:			// Don't let this go negative.
 		properties[prop] = val < 0 ? 0 : val;
 		break;
+	case sex_flag:
+		// Doesn't seem to be settable in original BG except by hex-editing
+		// the save game, but there is no problem in allowing it in Exult.
+		if (val > 0)
+			set_type_flag(tf_sex);
+		else
+			clear_type_flag(tf_sex);
+		break;
 	default:
-		if (prop >= 0 && prop < 12)
+		if (prop >= 0 && prop < missile_weapon)
 			properties[prop] = val;
 		break;
 		}
@@ -2474,6 +2469,28 @@ bool Actor::reduce_health
 	}
 
 /*
+ *	Get a property.
+ */
+
+int Actor::get_property(int prop) const
+	{
+	if (prop == Actor::sex_flag)
+		// Correct in BG and SI, but the flag is never normally set
+		// for anyone but avatar in BG.
+		return get_type_flag(Actor::tf_sex);
+	else if (prop == Actor::missile_weapon)
+		{
+		// Seems to give the same results as in the originals.
+		Game_object *weapon = get_readied(lhand);
+		Weapon_info *winf = weapon ? weapon->get_info().get_weapon_info() : 0;
+		if (!winf)
+			return 0;
+		return (winf->get_uses() >= 2);
+		}
+	return (prop >= 0 && prop < Actor::sex_flag) ? properties[prop] : 0;
+	}
+
+/*
  *	Get a property, modified by flags.
  */
 
@@ -2482,7 +2499,7 @@ int Actor::get_effective_prop
 	int prop				// Property #.
 	) const
 	{
-	int val = properties[prop];
+	int val = get_property(prop);
 	switch (prop)
 		{
 	case Actor::dexterity:

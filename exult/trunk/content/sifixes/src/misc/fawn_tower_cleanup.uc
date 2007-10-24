@@ -40,14 +40,14 @@ eggFawnTowerCleanup object#(0x72D) ()
 		var goblineggs = objpos->find_nearby(SHAPE_EGG, 50, 16);
 		var index;
 		var max;
-		
+
 		if (!gflags[BANES_RELEASED])
 		{
 			var dishes = find_nearby(SHAPE_BROKEN_DISH, 50, 0);
 			var dish;
 			for (dish in dishes with index to max)
 				dish->remove_item();
-			
+
 			var egg;
 			for (egg in goblineggs with index to max)
 				script egg setegg EXTERNAL_CRITERIA, 1;
