@@ -2577,8 +2577,8 @@ void Shape_chooser::update_statusbar
 		{
 		int shapenum = info[selected].shapenum;
 		int nframes = ifile->get_num_frames(shapenum);
-		g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
-						shapenum, nframes);
+		g_snprintf(buf, sizeof(buf), "Shape %d (0x%03x, %d frames)",
+						shapenum, shapenum, nframes);
 		ExultStudio *studio = ExultStudio::get_instance();
 		if (shapes_file && studio->get_shape_name(shapenum))
 			{
@@ -2591,8 +2591,9 @@ void Shape_chooser::update_statusbar
 		}
 	else if (!info.empty() && !group)
 		{
-		g_snprintf(buf, sizeof(buf), "Shapes %d to %d",
-			info[rows[row0].index0].shapenum, last_shape);
+		int first_shape = info[rows[row0].index0].shapenum;
+		g_snprintf(buf, sizeof(buf), "Shapes %d to %d (0x%03x to 0x%03x)",
+			first_shape, last_shape, first_shape, last_shape);
 		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
 								sbar_sel, buf);
 		}

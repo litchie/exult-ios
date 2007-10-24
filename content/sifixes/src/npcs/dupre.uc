@@ -16,9 +16,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- *	I decided to reimplement Dupre's usecode entirely. I could have left some things
- *	for the original to handle, but it wouldn't allow me to do what I wanted: which
- *	was to make him refuse to leave while on Spinebreaker Mountains.
+ *	I decided to reimplement Dupre's usecode entirely. I could have left some
+ *	things for the original to handle, but it wouldn't allow me to do what I
+ *	wanted the most: have him refuse to leave while on Spinebreaker Mountains.
  */
 
 extern askDupreBelongings 0x829 ();
@@ -29,7 +29,7 @@ Dupre object#(0x401) ()
 	var avatar_title;
 	var avatar_name;
 	var trainer;
-	
+
 	dupre_id = DUPRE->get_npc_id();
 	avatar_title = getPoliteTitle();
 	avatar_name = getAvatarName();
@@ -50,7 +50,7 @@ Dupre object#(0x401) ()
 			return;
 		}
 	}
-	
+
 	else if (event == DOUBLECLICK)
 	{
 		AVATAR->item_say("@Dupre...@");
@@ -62,17 +62,18 @@ Dupre object#(0x401) ()
 		}
 		else
 		{
-			var barks = ["@Bring to me a woman!@", "@I will slay you all!@", "@Fulfill thy desires!@", "@I must have ale!@"];
+			var barks = ["@Bring to me a woman!@", "@I will slay you all!@",
+			             "@Fulfill thy desires!@", "@I must have ale!@"];
 			var rand1 = UI_get_random(UI_get_array_size(barks));
 			delayedBark(DUPRE, barks[rand1], 2);
 		}
 	}
-	
+
 	else if (event == STARTED_TALKING)
 	{
 		DUPRE->show_npc_face0(0);
 		DUPRE->clear_item_say();
-		
+
 		if (DUPRE->get_item_flag(IN_PARTY))
 		{
 			DUPRE->set_schedule_type(FOLLOW_AVATAR);
@@ -83,7 +84,7 @@ Dupre object#(0x401) ()
 			DUPRE->run_schedule();
 			add("join");
 		}
-		
+
 		if (dupre_id == BOOTED_FOR_FREEDOM)
 		{
 			say("@How good to see thee again, " + avatar_title + "! Knowing that thou wouldst soon return, I have waited for thee at this establishment.@");
@@ -116,7 +117,8 @@ Dupre object#(0x401) ()
 		}
 		else
 		{
-			if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[DUPRE_MADE_EQUIPMENT_LIST]))
+			if (gflags[EQUIPMENT_EXCHANGED] &&
+			    !gflags[DUPRE_MADE_EQUIPMENT_LIST])
 			{
 				say("@" + avatar_name + "! I thought I would never find thee!@");
 				say("@When that strange storm struck, there was a flash, and then I found myself in a wilderness.@");
@@ -151,7 +153,8 @@ Dupre object#(0x401) ()
 		if (BOYDON->get_npc_id() == BOOTED_FOR_FREEDOM)
 			add("Boydon's whereabouts");
 
-		if (gflags[DUPRE_HAS_BELONGINGS] && (!DUPRE->get_item_flag(IN_PARTY)) && DUPRE->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
+		if (gflags[DUPRE_HAS_BELONGINGS] && !DUPRE->get_item_flag(IN_PARTY) &&
+		    DUPRE->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
 			add("belongings");
 
 		add(["bye"]);
@@ -159,9 +162,10 @@ Dupre object#(0x401) ()
 		{
 			case "belongings" (remove):
 				askDupreBelongings();
-			
+
 			case "good news" (remove):
-				if (IOLO->get_item_flag(IN_PARTY) || (IOLO->UI_get_npc_id() == BOOTED_FOR_FREEDOM))
+				if (IOLO->get_item_flag(IN_PARTY) ||
+				    (IOLO->UI_get_npc_id() == BOOTED_FOR_FREEDOM))
 					say("@But I should let Iolo tell thee...@");
 
 				else
@@ -171,7 +175,7 @@ Dupre object#(0x401) ()
 					say("@I think thy survival shall impress him...@");
 					gflags[AFTER_FREEDOM_NEWS] = true;
 				}
-			
+
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
@@ -194,14 +198,14 @@ Dupre object#(0x401) ()
 					say("@But thou hast so many companions, " + avatar_name + "! I shall only be in thy way.@");
 					say("@'Twould be better for me to remain where I am, " + avatar_title + ".@");
 				}
-			
+
 			case "leave" (remove):
 				if (!gflags[EQUIPMENT_EXCHANGED])
 					say("@Leave thee at a time such as this? Surely, thou dost jest. Onward!@");
 
 				else if (getAvatarLocationID() == SPINEBREAKER_MOUNTAINS)
 					say("@Leave when we are so close to Batlin? Surely, thou dost jest. Onward!@");
-					
+
 				else
 				{
 					add("join");
@@ -210,24 +214,25 @@ Dupre object#(0x401) ()
 					askDupreBelongings();
 					npcAskWhereToWait(DUPRE);
 				}
-			
+
 			case "Shamino's whereabouts" (remove):
 				if (gflags[SHAMINO_RESURRECTED_BY_MONKS])
 					say("@I have exciting news -- the monks have returned Shamino to us again, healthy and whole! This he can explain to thee.@");
 
 				say("@Not being as patient as I am, " + avatar_title + ", our good friend Shamino hath gone into the woods to hunt wild game.@");
 				say("@He went west from here, towards the magic woods.@");
-			
+
 			case "Iolo's whereabouts" (remove):
 				say("@The good bard was very disturbed by thy sudden departure, and hath been questioning the Mages constantly as to thy fate.@");
 				say("@He hath gained the friendship of the Sorcerer Gustacio, and hath taken to aiding that worthy in his studies. We can find him there.@");
-			
+
 			case "Boydon's whereabouts" (remove):
 				say("@Thou wouldst never believe it! Boydon hath become very friendly with young Bucia of the Canton, and spends much time with her.@");
 				say("@If we can find her, then we shall find him!@");
-			
+
 			case "bye":
-				if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[DUPRE_MADE_EQUIPMENT_LIST]))
+				if (gflags[EQUIPMENT_EXCHANGED] &&
+				    !gflags[DUPRE_MADE_EQUIPMENT_LIST])
 				{
 					say("@Before we go any farther, Avatar, I think we should take stock of our supplies.@");
 					say("@That blasted storm exchanged all of mine equipment for useless refuse! Even mine enchanted shield!@");
@@ -246,10 +251,10 @@ Dupre object#(0x401) ()
 				delayedBark(AVATAR, "@That's all for now.@", 0);
 				delayedBark(DUPRE, "@Yes, " + avatar_title + ".", 2);
 				break;
-			
+
 		}
 	}
-	
+
 	else if (event == EGG)
 	{
 		if (getAvatarLocationID() == TOLERANCE)

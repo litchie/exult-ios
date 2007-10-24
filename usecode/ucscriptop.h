@@ -29,11 +29,13 @@ namespace Ucscript
 enum Ucscript_ops
 	{
 	cont = 		0x01,		// Continue without painting.
+	reset =		0x0a,		// Resets script ip.
 	repeat = 	0x0b,		// Loop(offset, cnt).
 	repeat2 =	0x0c,		// Loop(offset, cnt1, cnt2).
 	nop =		0x21,		// Not sure about this.
 	dont_halt =	0x23,		// Not right?
 	delay_ticks =	0x27,		// Delay(ticks).
+	delay_minutes =	0x28,		// Delay(minutes).
 	delay_hours =	0x29,		// Delay nn game hours.
 	finish =	0x2c,		// Finish script if killed.
 	remove =	0x2d,		// Remove item & halt.
@@ -61,6 +63,7 @@ enum Ucscript_ops
 	speech =	0x56,		// Speech(track#).
 	sfx =		0x58,		// Sound_effect(#).
 	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
+	weather =	0x5A,		// Set weather(type).
 	npc_frame =	0x61,		// 61-70:  Set frame, but w/ cur. dir.
 	hit =		0x78,		// Hit(hps, ??).  Item attacked.
 	attack = 	0x7a,		// Attack using vals from

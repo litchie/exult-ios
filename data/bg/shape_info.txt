@@ -4,49 +4,55 @@
 #
 
 %%section version
-:3
+:4
 %%endsection
 
 %%section explosions
 #	Format
-#		:shapenum/spritenum
-#	The 'default' explosion is spritenum 5, and may be left out.
+#		:shapenum/spritenum/sfxnum
+#	If a shape is not in the list below, it will use the 'default'
+#	explosion (spritenum 5) with no sound effect (sfxnum -1).
+#   You can leave sfxnum out, in which case there will be no SFX.
 #
 #	 Delayed blast
 #
-:399/13
+:399/13/65
 
 #	 Death Vortex
 #
-:639/8
+:639/8/63
 
 #	 Burst Arrow
 #
-:554/19
+:554/19/7
 
 #	 Explosion
 #
-:78/4
+:78/4/8
 
 #	 Delayed Blast
 #
-:621/4
+:621/4/9
 
 #	 Cannon
 #
-:702/1
+:702/4/9
 
 #	 Powder Keg
 #
-:704/1
+:704/4/9
 
 #	 Starburst
 #
-:565/18
+:565/18/7
 
 #	 Swordstrike
 #
-:287/23
+:287/23/65
+
+#	 Fire Bolt
+#
+:856/5/65
 %%endsection
 
 %%section shape_sfx

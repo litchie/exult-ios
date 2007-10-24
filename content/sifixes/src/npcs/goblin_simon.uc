@@ -25,6 +25,6 @@ GoblinSimon object#(0x442) ()
 		key->set_item_quality(74);
 		G_SIMON->give_last_created();
 	}
-	
+
 	GoblinSimon.original();
 }

@@ -50,7 +50,7 @@ using std::string;
 
 using namespace std;
 
-static map<int, int> *explosion_sprite_table = 0;
+static map<int, Explosion_info> *explosion_sprite_table = 0;
 static map<int, SFX_info> *shape_sfx_table = 0;
 static multimap<int, Animation_info> *animation_cycle_table = 0;
 static map<int, bool> *usecode_event_table = 0;
@@ -133,6 +133,25 @@ public:
 		{
 		int key = ReadInt(eptr, 0);
 		(*table)[key] = true;
+		}
+	};
+
+class Explosion_info_parser: public Shapeinfo_entry_parser
+	{
+	map<int, Explosion_info> *table;
+public:
+	Explosion_info_parser(map<int, Explosion_info> *tbl)
+		: table(tbl)
+		{  }
+	virtual void parse_entry(int index, char *eptr,
+			bool for_patch, int version)
+		{
+		Explosion_info data = {5, -1};
+		int shape = ReadInt(eptr, 0);
+		data.sprite = ReadInt(eptr);
+		if (version > 3 && *eptr)
+			data.sfxnum = ReadInt(eptr);
+		(*table)[shape] = data;
 		}
 	};
 
@@ -836,7 +855,7 @@ void Shapeinfo_lookup::setup_miscinf
 	(
 	)
 	{
-	explosion_sprite_table = new map<int, int>;
+	explosion_sprite_table = new map<int, Explosion_info>;
 	shape_sfx_table = new map<int, SFX_info>;
 	animation_cycle_table = new multimap<int, Animation_info>;
 	usecode_event_table = new map<int, bool>;
@@ -865,7 +884,7 @@ void Shapeinfo_lookup::setup_miscinf
 	const char *sections[5] = {"explosions", "shape_sfx",
 			"animation", "usecode_events", "mountain_tops"};
 	Shapeinfo_entry_parser *parsers[5] = {
-			new Int_pair_parser(explosion_sprite_table),
+			new Explosion_info_parser(explosion_sprite_table),
 			new SFX_parser(shape_sfx_table),
 			new Animation_parser(animation_cycle_table),
 			new Bool_parser(usecode_event_table),
@@ -991,11 +1010,28 @@ int Shapeinfo_lookup::get_explosion_sprite (int shapenum)
 	{
 	if (!explosion_sprite_table)		// First time?
 		setup_miscinf();
-	map<int, int>::iterator it = explosion_sprite_table->find(shapenum);
+	map<int, Explosion_info>::iterator it = explosion_sprite_table->find(shapenum);
 	if (it != explosion_sprite_table->end())
-		return (*it).second;
+		return ((*it).second).sprite;
 	else
 		return 5;	// The default.
+	}
+
+/*
+ *	Lookup a shape's explosion sfx.
+ *
+ *	Output:	5 if not found.
+ */
+
+int Shapeinfo_lookup::get_explosion_sfx (int shapenum)
+	{
+	if (!explosion_sprite_table)		// First time?
+		setup_miscinf();
+	map<int, Explosion_info>::iterator it = explosion_sprite_table->find(shapenum);
+	if (it != explosion_sprite_table->end())
+		return ((*it).second).sfxnum;
+	else
+		return -1;	// The default.
 	}
 
 /*

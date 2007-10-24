@@ -61,11 +61,11 @@ MonitorBanquet object#(0x1C3) ()
 		AVATAR->si_path_run_usecode([0x41F, 0xA7C, 0x0], PATH_SUCCESS, item, MonitorBanquet, true);
 		UI_set_path_failure(MonitorBanquet, item, PATH_FAILURE);
 		gflags[MONITOR_BANQUET_STARTED] = true;
-		//In the original, the avatar's position is used instead of
-		//a hardcoded one. I preferred the hardcoded one -- this
-		//allows higher resolutions to work if the player is too far
-		//away when double-clicking the doors.
-		//var objpos = [AVATAR->get_object_position(), QUALITY_ANY, 6];
+		// In the original, the avatar's position is used instead of
+		// a hardcoded one. I preferred the hardcoded one -- this
+		// allows higher resolutions to work if the player is too far
+		// away when double-clicking the doors.
+		// var objpos = [AVATAR->get_object_position(), QUALITY_ANY, 6];
 		var objpos = [0x41F, 0xA7C, 0x0, QUALITY_ANY, 6];
 		var eggs = objpos->find_nearby(SHAPE_EGG, 40, 16);
 		var egg;
@@ -102,14 +102,14 @@ MonitorBanquet object#(0x1C3) ()
 			}
 		}
 		
-		//This is the offending code which deletes the trainer's egg.
-		//It seems specifically tailored to delete -it- in special,
-		//as there are no other nearby eggs that fit. It is likely
-		//an error; I have assumed that they meant to delete the
-		//nearby eggs with frame *6* and any quality -- which were
-		//used to create the NPCs above anyway, and never get used
-		//in the game again.
-		//objpos = [AVATAR->get_object_position(), 0, 7];
+		// This is the offending code which deletes the trainer's egg.
+		// It seems specifically tailored to delete -it- in special,
+		// as there are no other nearby eggs that fit. It is likely
+		// an error; I have assumed that they meant to delete the
+		// nearby eggs with frame *6* and any quality -- which were
+		// used to create the NPCs above anyway, and never get used
+		// in the game again.
+		// objpos = [AVATAR->get_object_position(), 0, 7];
 		objpos = [0x41F, 0xA7C, 0x0, QUALITY_ANY, 6];
 		eggs = objpos->find_nearby(SHAPE_EGG, 40, 16);
 		for (egg in eggs with index to max)

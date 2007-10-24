@@ -24,7 +24,7 @@
 
 extern askShaminoBelongings 0x863 ();
 
-const int BEATRIX_FACE					= 0xFEE2;
+const int BEATRIX_FACE = 0xFEE2;
 
 Shamino object#(0x402) ()
 {
@@ -38,12 +38,12 @@ Shamino object#(0x402) ()
 	var delta;
 	var frigmessage;
 	var frigpresents;
-	
+
 	shamino_id = SHAMINO->get_npc_id();
 	avatartitle = getPoliteTitle();
 	avatarfemale = UI_is_pc_female();
 	avatarname = getAvatarName();
-	
+
 	if ((event == DEATH) && SHAMINO->get_item_flag(SI_TOURNAMENT))
 	{
 		if (gflags[MONITOR_TRAINING])
@@ -61,7 +61,9 @@ Shamino object#(0x402) ()
 		}
 		else if (gflags[BEATRIX_PROTECTION])
 		{
-			if ((getAvatarLocationID() != SHAMINOS_CASTLE) && ((!gflags[BANES_RELEASED]) && (getAvatarLocationID() != SPINEBREAKER_MOUNTAINS)))
+			if ((getAvatarLocationID() != SHAMINOS_CASTLE) &&
+			    (!gflags[BANES_RELEASED] &&
+				    (getAvatarLocationID() != SPINEBREAKER_MOUNTAINS)))
 			{
 				BEATRIX_FACE->show_npc_face0(0);
 				say("@Do not die, my sweet King...@");
@@ -119,7 +121,7 @@ Shamino object#(0x402) ()
 			SHAMINO->run_schedule();
 			add("join");
 		}
-		
+
 		SHAMINO->show_npc_face0(0);
 		if (gflags[EQUIPMENT_EXCHANGED] && (!gflags[SHAMINO_MADE_EQUIPMENT_LIST]))
 		{
@@ -127,7 +129,7 @@ Shamino object#(0x402) ()
 			say("@I have been searching all over for thee! That storm hath left me quite disconcerted. I can find neither Iolo nor Dupre.@");
 			say("@And, to make matters worse, nothing remains of the equipment that Lord British gave us! It hath all been replaced by strange items that I do not recognize.@");
 			say("@Perhaps thou shouldst inspect thine equipment as well! I shall make a list of what we have.@");
-			
+
 			giveItemsToPartyMember(AVATAR, 1, SHAPE_SCROLL, 189, 0, 0, true);
 			gflags[SHAMINO_MADE_EQUIPMENT_LIST] = true;
 			delayedBark(SHAMINO, "@Such strangeness!@", 0);
@@ -173,24 +175,26 @@ Shamino object#(0x402) ()
 
 			if (DUPRE->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Dupre's whereabouts");
-	
+
 			if (IOLO->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Iolo's whereabouts");
-	
+
 			if (BOYDON->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Boydon's whereabouts");
-	
-			if ((!SHAMINO->get_item_flag(IN_PARTY)) && (SHAMINO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY) && (gflags[SHAMINO_HAS_BELONGINGS] == true)))
+
+			if (!SHAMINO->get_item_flag(IN_PARTY) &&
+			    (SHAMINO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY) &&
+				    gflags[SHAMINO_HAS_BELONGINGS]))
 				add("belongings");
-	
+
 			add(["bye"]);
 		}
-		
+
 		converse (0)
 		{
 			case "belongings" (remove):
 				askShaminoBelongings();
-			
+
 			case "How didst thou arrive?" (remove):
 				say("@The monks came and brought me here, saying that it was vitally important for me to be here.@");
 				say("@The one called Karnax said that I must fulfill my purpose, or the world itself would be in jeopardy...@");
@@ -238,7 +242,7 @@ Shamino object#(0x402) ()
 
 				if (frigmessage && frigpresents)
 					addShaminoToParty();
-					
+
 			case "presents" (remove):
 				frigpresents = true;
 				if (avatarfemale)
@@ -264,7 +268,7 @@ Shamino object#(0x402) ()
 
 				if (frigmessage && frigpresents)
 					addShaminoToParty();
-					
+
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
@@ -287,7 +291,7 @@ Shamino object#(0x402) ()
 					say("@I would join with thee, old friend, but I can see that thou already hast a large party.@");
 					say("@A woodsman like myself would feel uncomfortable travelling with such a large group. I will remain here, instead.@");
 				}
-			
+
 			case "leave" (remove):
 				if (!gflags[EQUIPMENT_EXCHANGED])
 					say("@But we have barely begun, Avatar! How can I stand idly here while the adventure awaits?@");
@@ -302,18 +306,18 @@ Shamino object#(0x402) ()
 					askShaminoBelongings();
 					npcAskWhereToWait(SHAMINO);
 				}
-			
+
 			case "Dupre's whereabouts" (remove):
 				say("@Thou knowest our good friend! He hath deposited himself at the Blue Boar Inn, and hath been trying out the local brews!@");
-			
+
 			case "Iolo's whereabouts" (remove):
 				say("@Iolo hath struck up a friendship with the Mage Gustacio, from whom he is learning much about the storms which plague this land.@");
 				say("@I expect we could find him at Gustacio's manor.@");
-			
+
 			case "Boydon's whereabouts" (remove):
 				say("@Why, that magical creation doth have a budding romance with the shopgirl from the Canton!@");
 				say("@If the shop is open when we arrive there, Boydon will almost certainly be there.@");
-			
+
 			case "bye":
 				UI_remove_npc_face0();
 				delayedBark(AVATAR, "@Thanks!@", 0);
@@ -321,23 +325,23 @@ Shamino object#(0x402) ()
 				break;
 		}
 	}
-	
+
 	else if (event == EGG)
 	{
 		var location_id = getAvatarLocationID();
-		
-		//Does anyone know if this ever happens? Or where should it happen?
+
+		// Does anyone know if this ever happens? Or where should it happen?
 		if (location_id == TOLERANCE)
 		{
-			//In the original, it was Iolo's face which appeared... which is
-			//likely an error, as this is in Shamino's usecode...
+			// In the original, it was Iolo's face which appeared... which is
+			// likely an error, as this is in Shamino's usecode...
 			SHAMINO->show_npc_face0(0);
 			say("@We are beset by dragons, Avatar! We must slay them quickly!@");
 			UI_remove_npc_face0();
 			delayedBark(SHAMINO, "@I hate dragons!@", 2);
 			abort;
 		}
-		
+
 		else if (location_id == SHAMINOS_CASTLE)
 		{
 			SHAMINO->show_npc_face0(0);

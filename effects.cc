@@ -452,6 +452,7 @@ Explosion_effect::Explosion_effect
 							//Different sprites for different explosion types
 	) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
 			p, 0, 0, delay), explode(exp), projectile(proj),
+			exp_sfx(Shapeinfo_lookup::get_explosion_sfx(proj ? proj : weap >= 0 ? weap : 704)),
 			weapon(weap >= 0 ? weap : 704), attacker(att)
 	{
 	if (exp && exp->get_shapenum() == 704)  // powderkeg
@@ -474,14 +475,7 @@ void Explosion_effect::handle_event
 		{
 		Tile_coord apos = gwin->get_main_actor()->get_tile();
 		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-
-		Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
-		int sfx;
-		if (weapon == 704)
-			sfx = Audio::game_sfx(9);
-		else
-			sfx = winf->get_hitsfx() >= 0 ? winf->get_hitsfx() : winf->get_sfx();
-		Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir);
+		Audio::get_ptr()->play_sound_effect(exp_sfx, SDL_MIX_MAXVOLUME, dir);
 		}
 	if (frnum == frames/4)
 		{
@@ -841,7 +835,9 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	Game_object *trg,		// What to aim for.
 	Tile_coord sp,			// Where to start.
 	Tile_coord tp			// Target pos, if trg isn't an actor.
-	) : sprite(Shapeinfo_lookup::get_explosion_sprite(shnum), 0, SF_SPRITES_VGA), next_damage_time(0)
+	) : sprite(Shapeinfo_lookup::get_explosion_sprite(shnum), 0, SF_SPRITES_VGA),
+		next_damage_time(0), sfx(Shapeinfo_lookup::get_explosion_sfx(shnum)),
+		channel(-1)
 	{
 	weapon = shnum;
 	attacker = att;
@@ -855,6 +851,9 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	stop_time = Game::get_ticks() + 20*1000;
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	Tile_coord apos = gwin->get_main_actor()->get_tile();
+	int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
+	channel = Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir, -1);
 	}
 
 /*
@@ -952,11 +951,43 @@ void Homing_projectile::handle_event
 			}
 		}
 	sprite.set_frame((sprite.get_framenum() + 1)%frames);
+
 	add_dirty();			// Paint new.
 	if (curtime < stop_time)	// Keep going?
+		{
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
+		if (channel < 0)
+			return;
+		int distance = gwin->get_main_actor()->distance(pos);
+		int dir = 0;
+		int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+
+		if (distance)
+			{			// 160/8 = 20 tiles. 20*20=400.
+			volume = (MIX_MAX_VOLUME*64)/(distance*distance);
+			if (!volume)		// Dead?
+				{
+				Mix_HaltChannel(channel);
+				channel = -1;
+				return;
+				}
+			if (volume < 8)
+				volume = 8;
+			else if (volume > MIX_MAX_VOLUME)
+				volume = MIX_MAX_VOLUME;
+			Tile_coord apos = gwin->get_main_actor()->get_center_tile();
+			dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
+			}
+		Mix_Volume(channel, volume);
+		Mix_SetPosition(channel, (dir * 22), 0);
+		}
 	else
 		{
+		if (channel >= 0)
+			{
+			Mix_HaltChannel(channel);
+			channel = -1;
+			}
 		gwin->set_all_dirty();
 		eman->remove_effect(this);
 		}
