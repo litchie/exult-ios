@@ -1,9 +1,30 @@
+2007-10-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* effects.*, shapes/miscinf.*, data/*: Added ability to specify explosion
+	  SFX based on shape. This seems to better match the originals' behavior.
+	* usecode/*: Added a few usecode script opcodes and modified the behavior
+	  of another, all based on the originals:
+	  - music opcode causes it to loop indefinitely if the high-byte is nonzero.
+	  - reset opcode (0xa) which causes a script to go back to the start.
+	  - delay_minutes (0x28) which works like its name suggests.
+	  - weather opcode (0x5A) which allows scripts to change weather.
+	  delay_hours has also been fixed so now it works.
+	* actors.*: Removed a few redundant cases from Actor::figure_weapon_pos.
+	  Changed maximum value of food stat and added new behavior for set/get_prop
+	  based on original games: prop 10 gets/sets sex flag, prop 11 gets if the
+	  NPC is using a weapon with uses >= 2.
+	* actorio.cc: Sex type flag seems to be reversed in initial SI savegame,
+	  absent for BG; this has been verified with get_prop intrinsic, as above.
+	* mapedit/*: Added hex display of shapes and shape ranges in shape browser.
+	* content/sifixes/*: General reformatting (particularly the comments were
+	  word-wrapped at about 80 chars width) and code update. Also, added tons of
+	  global flags compiled by Malignant Manor; dozens more still to come.
+
 2007-10-21 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
 	* docs/ReadMe.html,FAQ.html: updated documentation and FAQ
 	* Readme, FAQ: updated
 	
-2007-10-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-10-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changed the way that distance is calculated. It now includes object size
 	  and z-coordinate into consideration, and results are U7 & SI verified.
 	* Implemented intelligence/shape type check to prevent animals from opening

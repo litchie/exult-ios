@@ -21,7 +21,7 @@ FawnStorm object#(0x6BC) ()
 {
 	var pathegg = getPathEgg(2, 1);
 	var lute;
-	
+
 	if (event == SCRIPTED)
 	{
 		var quality = pathegg->get_item_quality();
@@ -39,7 +39,7 @@ FawnStorm object#(0x6BC) ()
 					pos[X] = pos[X] + (pos[Z] / 2);
 					pos[Y] = pos[Y] + (pos[Z] / 2);
 					UI_sprite_effect(21, pos[X], pos[Y], 0, 0, 0, -1);
-					
+
 					var dir = IOLO->find_direction(lute);
 					script IOLO
 					{	nohalt;					wait 1;
@@ -70,13 +70,13 @@ FawnStorm object#(0x6BC) ()
 				lute->set_last_created();
 				IOLO->give_last_created();
 			}
-			
+
 			script IOLO
 			{	nohalt;					actor frame STAND;}
-			
+
 			script pathegg after 3 ticks
 			{	nohalt;					call FawnStorm;}
-			
+
 			pathegg->set_item_quality(quality + 1);
 			AVATAR->clear_item_flag(DONT_MOVE);
 			delayedBark(IOLO, "@A lute!@", 0);

@@ -17,15 +17,15 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-//externs:
+// externs:
 extern spellFails object#(0x606) ();
 extern createImbalanceFields object#(0x688) ();
 extern serpentbondRemoveNPCsFromParty object#(0x7D6) ();
 extern serpentbondAddNPCsBackToParty object#(0x7D7) ();
 
 /*
-	Fifth Circle Spells
-*/
+ *	Fifth Circle Spells
+ */
 
 spellSurprise object#(0x667) ()
 {
@@ -106,8 +106,8 @@ spellSurprise object#(0x667) ()
 
 
 /*
-	Sixth Circle Spells
-*/
+ *	Sixth Circle Spells
+ */
 
 spellCreateAmmo object#(0x66E) ()
 {
@@ -158,10 +158,10 @@ spellCreateAmmo object#(0x66E) ()
 			amount = (getNPCLevel(AVATAR) * 8);
 			rand = UI_die_roll(amount, (amount + 20));
 			
-			//Original:
-			//const int MAX_AMMO				= 99;
-			//Why not allow a level 10 avatar create 100 arrows?
-			const int MAX_AMMO				= 100;
+            // Original:
+            // const int MAX_AMMO = 99;
+            // Why not allow a level 10 avatar create 100 arrows?
+			const int MAX_AMMO = 100;
 			if (rand > MAX_AMMO)
 				rand = MAX_AMMO;
 
@@ -174,8 +174,8 @@ spellCreateAmmo object#(0x66E) ()
 
 
 /*
-	Seventh Circle Spells
-*/
+ *	Seventh Circle Spells
+ */
 
 spellVibrate object#(0x676) ()
 {
@@ -219,8 +219,8 @@ spellVibrate object#(0x676) ()
 		var array_size = UI_get_array_size(npcitems);
 		var index;
 		var mincount;
-		mincount = count_objects(SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY) +
-				   count_objects(SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
+		mincount = count_objects(SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY)
+		         + count_objects(SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
 		
 		if (array_size > mincount)
 		{
@@ -228,13 +228,15 @@ spellVibrate object#(0x676) ()
 			{
 				index = index + 1;
 				target_shape = npcitems[index]->get_item_shape();
-				if ((target_shape != SHAPE_PATH_EGG) && (target_shape != SHAPE_USECODE_CONTAINER))
+				if ((target_shape != SHAPE_PATH_EGG) &&
+				    (target_shape != SHAPE_USECODE_CONTAINER))
 					break;
 			}
 			
-			//Just for safety:
+			// Just for safety:
 			target_shape = npcitems[index]->get_item_shape();
-			if ((target_shape == SHAPE_PATH_EGG) || (target_shape == SHAPE_USECODE_CONTAINER))
+			if ((target_shape == SHAPE_PATH_EGG) ||
+			    (target_shape == SHAPE_USECODE_CONTAINER))
 				return;
 			
 			if (index <= array_size)
@@ -273,8 +275,8 @@ spellVibrate object#(0x676) ()
 
 
 /*
-	Eighth Circle Spells
-*/
+ *	Eighth Circle Spells
+ */
 
 spellCreateIce object#(0x678) ()
 {
@@ -343,11 +345,7 @@ spellFetch object#(0x67B) ()
 		dir = directionFromAvatar(item);
 		halt_scheduled();
 		item_say("@Por Ylem@");
-		//Original:
-		//if (notInMagicStorm() && ((isgrabbable < 2) && (isgrabbable > 0)))
-		//It seems that at some point, they were considering to have more
-		//usability flags in SI... but thanks to EA, we'll never know.
-		if (notInMagicStorm() && (isgrabbable == 1))
+		if (notInMagicStorm() && ((isgrabbable < 2) && (isgrabbable > 0)))
 		{
 			script item
 			{	nohalt;						face dir;
@@ -403,11 +401,14 @@ spellSerpentBond object#(0x67D) ()
 		snakepos = [pos[X] + 2, pos[Y] + 2, pos[Z]];
 		
 		var insnakemaze = false;
-		//Check to see if the Avatar is inside the snake maze:
-		if ((pos[X] > 0x550) && (pos[X] < 0x573) && (pos[Y] > 0x1EA) && (pos[Y] < 0x212))
+		// Check to see if the Avatar is inside the snake maze:
+		if ((pos[X] > 0x550) && (pos[X] < 0x573) &&
+		    (pos[Y] > 0x1EA) && (pos[Y] < 0x212))
 			insnakemaze = true;
 
-		if ((getAvatarLocationID() != DREAM_WORLD) && (insnakemaze == false) && UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
+		if ((getAvatarLocationID() != DREAM_WORLD) &&
+		    (insnakemaze == false) &&
+			UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
 		{
 			if (get_item_flag(POLYMORPH))
 				AVATAR->set_polymorph(SHAPE_MALE_AVATAR);
@@ -524,17 +525,18 @@ spellFireSnake object#(0x67E) ()
 			pos = [field_x, field_y, field_z];
 			
 			
-			if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0) && get_distance(oldfield) > 1)
+			if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0) &&
+			    get_distance(oldfield) > 1)
 			{
-				//Try going up:
+				// Try going up:
 				pos[Z] = field_z + 1;
 				if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0))
 				{
-					//Try going down:
+					// Try going down:
 					pos[Z] = field_z - 1;
 					if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0))
 					{
-						//Force the issue:
+						// Force the issue:
 						pos[Z] = field_z;
 					}
 				}
@@ -549,14 +551,14 @@ spellFireSnake object#(0x67E) ()
 			
 			if (get_distance(oldfield) == 0)
 			{
-				//oldfield->firesnakeExplode();
-				UI_explode(oldfield, oldfield, 0x20);
+				// oldfield->firesnakeExplode();
+				oldfield->attack_object(oldfield, 704);
 				return;
 			}
 			else if (UI_get_distance(field, item) == 0)
 			{
-				//field->firesnakeExplode();
-				UI_explode(field, field, 0x20);
+				// field->firesnakeExplode();
+				field->attack_object(field, 704);
 				return;
 			}
 			
@@ -568,8 +570,8 @@ spellFireSnake object#(0x67E) ()
 }
 
 /*
-	Ninth Circle Spells
-*/
+ *	Ninth Circle Spells
+ */
 
 spellStopStorm object#(0x684) ()
 {

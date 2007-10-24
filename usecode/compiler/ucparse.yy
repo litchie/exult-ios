@@ -119,7 +119,7 @@ struct ID_info
 					/* Script commands. */
 %token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
 %token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
-%token ATTACK FINISH RESURRECT SETEGG
+%token ATTACK FINISH RESURRECT SETEGG MINUTES RESET WEATHER
 %token NORTH SOUTH EAST WEST NE NW SE SW
 
 /*
@@ -1041,6 +1041,8 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::resurrect); }
 	| CONTINUE ';'			/* Continue script without painting. */
 		{ $$ = new Uc_int_expression(Ucscript::cont); }
+	| RESET ';'			/* Go back to the beginning of the script */
+		{ $$ = new Uc_int_expression(Ucscript::reset); }
 	| REPEAT nonclass_expr { repeat_nesting++; } script_command  ';'
 		{
 		repeat_nesting--;
@@ -1062,6 +1064,8 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::dont_halt); }
 	| WAIT nonclass_expr  ';'		/* Ticks. */
 		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
+	| WAIT nonclass_expr MINUTES  ';'	/* Game minutes. */
+		{ $$ = Create_array(Ucscript::delay_minutes, $2); }
 	| WAIT nonclass_expr HOURS  ';'	/* Game hours. */
 		{ $$ = Create_array(Ucscript::delay_hours, $2); }
 	| REMOVE ';'			/* Remove item. */
@@ -1107,6 +1111,8 @@ script_command:
 		{ $$ = Create_array(Ucscript::sfx, $2); }
 	| FACE nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
+	| WEATHER nonclass_expr ';'
+		{ $$ = Create_array(Ucscript::weather, $2); }
 	| HIT nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| ATTACK ';'

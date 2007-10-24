@@ -296,7 +296,14 @@ void Actor::read
 
 	// First time round, all the flags are garbage
 	if (fix_first)
+		{
 		set_type_flags (1 << Actor::tf_walk);
+		// Correct for SI, no problems for BG:
+		if (tflags & (1 << Actor::tf_sex))
+			clear_type_flag (Actor::tf_sex);
+		else
+			set_type_flag (Actor::tf_sex);
+		}
 	else
 		set_type_flags (tflags);
 
@@ -486,6 +493,7 @@ void Actor::read
 	if (get_type_flag(tf_walk)) cout << "walk ";
 	if (get_type_flag(tf_ethereal)) cout << "ethereal ";
 	if (get_type_flag(tf_in_party)) cout << "in party ";
+	if (get_type_flag(tf_sex)) cout << "female ";
 	cout << endl;
 
 #endif

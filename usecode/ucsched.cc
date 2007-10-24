@@ -33,6 +33,7 @@
 #include "actors.h"
 #include "ucscriptop.h"
 #include "databuf.h"
+#include "effects.h"
 
 #include <iostream>
 #include <iomanip>
@@ -360,6 +361,10 @@ int Usecode_script::exec
 			do_another = true;
 			gwin->set_painted();	// Want to paint when done.
 			break;
+		case reset:
+			do_another = finish ? false : true;	// Guessing.
+			i = -1;		// Matches originals.
+			break;
 		case repeat:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
 			// ++++ TESTING.
@@ -430,18 +435,24 @@ int Usecode_script::exec
 			delay = delay*delayval.get_int_value();
 			break;		
 			}
+		case delay_minutes:	// 1 parm., game minutes.
+			{
+			Usecode_value& delayval = code->get_elem(++i);
+					// Convert to real miliseconds.
+			delay = delay*ticks_per_minute*delayval.get_int_value();
+			break;
+			}
 		case delay_hours:	// 1 parm., game hours.
 			{
 			Usecode_value& delayval = code->get_elem(++i);
-			delay = delayval.get_int_value();
 					// Convert to real miliseconds.
-			delay *= 60*delay*ticks_per_minute;
+			delay = delay*60*ticks_per_minute*delayval.get_int_value();
 			break;
 			}
 #if 0
 		case finish:		// Quit if there's already scheduled
 					//   code for item?
-					// Or supercede the existing one?
+					// Or supersede the existing one?
 			break;
 #endif
 		case Ucscript::remove:	// Remove obj.
@@ -527,7 +538,9 @@ int Usecode_script::exec
 		case music:		// Unknown.
 			{
 			Usecode_value& val = code->get_elem(++i);
-			Audio::get_ptr()->start_music(val.get_int_value(), false);
+			int song = val.get_int_value();
+			// Verified.
+			Audio::get_ptr()->start_music(song&0xff, (song >> 8));
 			break;
 			}
 		case Ucscript::usecode:	// Call?
@@ -589,6 +602,16 @@ int Usecode_script::exec
 			usecode->set_item_frame(obj, obj->get_dir_framenum(
 				dir, obj->get_framenum()), 1, 1);
 			frame_index = 0;// Reset walking frame index.
+			break;
+			}
+		case weather:
+			{
+					// Set weather to that type.
+			Usecode_value& val = code->get_elem(++i);
+			int type = val.get_int_value()&0xff;
+				// Seems to match the originals:
+			if (val == 0xff || gwin->get_effects()->get_weather() != 0)
+				Egg_object::set_weather(val.get_int_value());
 			break;
 			}
 		case hit:		// Hit(hps, type).

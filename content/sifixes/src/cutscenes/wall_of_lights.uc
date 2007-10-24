@@ -31,7 +31,7 @@
 extern partySurroundBatlin object#(0x61D) ();
 extern killEveryone object#(0x7D8) ();
 
-const int BATLIN_FACE				= -287;
+const int BATLIN_FACE = -287;
 
 BatlinAtWallOfLights object#(0x73B) ()
 {
@@ -51,7 +51,7 @@ BatlinAtWallOfLights object#(0x73B) ()
 		pos[Y] = pos[Y] + 10;
 		for (npc in companions with index to max)
 		{
-			//Absolutely ensure that the companions will be there for the scene:
+			// Absolutely ensure that the companions will be there for the scene:
 			npc->clear_item_flag(DEAD);
 			npc->clear_item_flag(ASLEEP);
 			npc->clear_item_flag(CHARMED);
@@ -62,7 +62,7 @@ BatlinAtWallOfLights object#(0x73B) ()
 			npc->clear_item_flag(DONT_MOVE);
 			npc->clear_item_flag(CONFUSED);
 			
-			//Do not let even the Avatar prevent them from being there:
+			// Do not let even the Avatar prevent them from being there:
 			npc->set_item_flag(SI_TOURNAMENT);
 			
 			if (npc->get_distance(AVATAR) > 15)

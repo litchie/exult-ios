@@ -34,7 +34,7 @@ eggBaneHolocaust object#(0x6B1) ()
 			key->set_item_quality(qualities[getIndexForElement(npcnum, inn_keepers)]);
 			npcnum->give_last_created();
 		}
-		
+
 		eggBaneHolocaust.original();
 	}
 }
