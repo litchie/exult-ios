@@ -1,4 +1,7 @@
 2007-10-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixing recently introduced distance calculation bug.
+
+2007-10-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* effects.*, shapes/miscinf.*, data/*: Added ability to specify explosion
 	  SFX based on shape. This seems to better match the originals' behavior.
 	* usecode/*: Added a few usecode script opcodes and modified the behavior
