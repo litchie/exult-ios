@@ -1074,7 +1074,7 @@ void Egg_object::set_weather
 	)
 	{
 	if (!len)			// Means continuous.
-		len = 120;		// How about a couple game hours?
+		len = 6000;		// Confirmed from originals.
 	int cur = eman->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;

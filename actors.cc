@@ -3681,11 +3681,10 @@ bool Actor::figure_hit_points
 		sprintf(hpmsg, "-%d(%d)", hp, newhp);
 		eman->add_text(hpmsg, this);
 		}
-	string name = "<trap>";
-	if (attacker)
-		name = attacker->get_name();
-
 	if (combat_trace) {
+		string name = "<trap>";
+		if (attacker)
+			name = attacker->get_name();
 		cout << name << " hits " << get_name()
 			 << " for " << hp << " hit points, leaving "
 			 <<	properties[static_cast<int>(health)] << " remaining" << endl;
@@ -4002,7 +4001,7 @@ void Main_actor::handle_event
 		if (delay)		// Keep going with same action.
 			gwin->get_tqueue()->add(
 					curtime + delay, this, udata);
-		else if (in_usecode_control())
+		else if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
 			// Keep trying if we are in usecode control.
 			gwin->get_tqueue()->add(
 					curtime + gwin->get_std_delay(), this, udata);
@@ -4013,7 +4012,7 @@ void Main_actor::handle_event
 				schedule->now_what();
 			}
 		}
-	else if (in_usecode_control())
+	else if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
 		// Keep trying if we are in usecode control.
 		gwin->get_tqueue()->add(
 				curtime + gwin->get_std_delay(), this, udata);
@@ -4075,19 +4074,22 @@ int Main_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	Game_object *block;
-	if (is_blocked(t, 0, force ? MOVE_ALL : 0) &&
-	   (((block = find_blocking(t, get_direction(t))) && block != this &&
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
+		{
+		if (abs(t.tz - get_tile().tz) > 1 ||
+			(((block = find_blocking(t, get_direction(t))) && block != this &&
 					// Try to get blocker to move aside.
 	        !block->move_aside(this, get_direction(block))) ||
-					// (May have swapped places.)
-		(t != get_tile() &&
-					// If okay, try one last time.
-		 is_blocked(t, 0, force ? MOVE_ALL : 0))))
-		{
-		if (schedule)		// Tell scheduler.
-			schedule->set_blocked(t);
-		stop();
-		return (0);
+						// (May have swapped places.)
+			(t != get_tile() &&
+						// If okay, try one last time.
+			 is_blocked(t, 0, force ? MOVE_ALL : 0))))
+			{
+			if (schedule)		// Tell scheduler.
+				schedule->set_blocked(t);
+			stop();
+			return (0);
+			}
 		}
 	if (poison && t.tz == 0)
 		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
@@ -4645,9 +4647,18 @@ void Npc_actor::handle_event
 			schedule->im_dormant();
 		return;
 		}
+	// Should try seeking foes?
+	if (schedule &&
+			party_id < 0 &&
+			(schedule_type != Schedule::combat ||	// Not if already in combat.
+						// Patrol schedule already does this.
+				schedule_type != Schedule::patrol) &&
+			!rand()%3)	// Don't do it every time.
+		schedule->seek_foes();
+
 	if (!action)			// Not doing anything?
-		{			// Stop if not on current map.
-		if (in_usecode_control())
+		{
+		if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
 			// Keep trying if we are in usecode control.
 			gwin->get_tqueue()->add(
 					curtime + gwin->get_std_delay(), this, udata);
@@ -4665,7 +4676,7 @@ void Npc_actor::handle_event
 		else
 			{
 			set_action(0);
-			if (in_usecode_control())
+			if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
 				// Keep trying if we are in usecode control.
 				gwin->get_tqueue()->add(
 						curtime + gwin->get_std_delay(), this, udata);
@@ -4708,18 +4719,21 @@ int Npc_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	Game_object *block;
-	if (is_blocked(t, 0, force ? MOVE_ALL : 0) &&
-		(block = find_blocking(t, get_direction(t))) && block != this)
+	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
-		if (schedule)		// Tell scheduler.
-			schedule->set_blocked(t);
-		stop();
-					// Offscreen, but not in party?
-		if (!gwin->add_dirty(this) && party_id < 0 &&
-					// And > a screenful away?
-		    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
-			dormant = true;	// Go dormant.
-		return (0);		// Done.
+		if (abs(t.tz - get_tile().tz) > 1 ||
+			(block = find_blocking(t, get_direction(t))) && block != this)
+			{
+			if (schedule)		// Tell scheduler.
+				schedule->set_blocked(t);
+			stop();
+						// Offscreen, but not in party?
+			if (!gwin->add_dirty(this) && party_id < 0 &&
+						// And > a screenful away?
+				distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
+				dormant = true;	// Go dormant.
+			return (0);		// Done.
+			}
 		}
 	if (poison && t.tz == 0)
 		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
