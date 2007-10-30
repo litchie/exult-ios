@@ -200,13 +200,13 @@ void Monster_actor::equip
 		int frnum = (elem.shapenum == 377) ? 
 			Find_monster_food(get_shapenum()) : 0;
 		Shape_info& einfo = ShapeID::get_info(elem.shapenum);
-		if (einfo.has_quality())
+		Weapon_info *winfo = einfo.get_weapon_info();
+		if (einfo.has_quality() && winfo && winfo->uses_charges())
 			create_quantity(1, elem.shapenum, elem.quantity,
 				frnum, temporary);
 		else
 			create_quantity(elem.quantity,
 				elem.shapenum, c_any_qual, frnum, temporary);
-		Weapon_info *winfo = einfo.get_weapon_info();
 		int ammo = winfo ? winfo->get_ammo_consumed() : 0;
 		if (ammo)		// Weapon requires ammo.
 			create_quantity(5 + rand()%25, ammo, c_any_qual, 0,

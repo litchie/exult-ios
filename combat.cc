@@ -879,12 +879,13 @@ void Combat_schedule::set_weapon
 		}
 	if (!info)			// Still nothing.
 		{
-		set_hand_to_hand();
 		if (spellbook)		// Did we find a spellbook?
 			{
 			projectile_range = 10;	// Guessing.
 			no_blocking = true;
 			}
+		else	// Don't do this if using spellbook.
+			set_hand_to_hand();
 		}
 	else
 		{
