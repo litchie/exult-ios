@@ -1,4 +1,17 @@
-2007-10-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2007-10-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* monsters.cc: Setting quality for monster equipment only if it is a weapon
+	  that uses charges.
+	* actors.cc: Preventing actors from taking a step if it would change their
+	  z coordinate by more than 1. NPCs now look for combat more often. Lastly,
+	  paralyze flag completely prevents movement.
+	* gamewin.cc: Paralyze flag completely prevents avatar from moving.
+	* combat.cc: Entering combat mode with a readied spellbook no longer makes
+	  it disappear with SI paperdolls.
+	* schedule.cc: Scripts in patrol schedule are no longer dont_halt.
+	* egg.cc: Increased duration of continuous weather eggs to 100 hours.
+	  This has been confirmed in the originals.
+
+2007-10-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixing recently introduced distance calculation bug.
 
 2007-10-23	Marzo Sette Torres Junior <marzojr@yahoo.com>

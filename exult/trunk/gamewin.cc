@@ -1780,8 +1780,11 @@ void Game_window::start_actor
 	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if ((!cheat.in_map_editor() && main_actor->in_usecode_control()) ||
-			(gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
+	if (!cheat.in_map_editor() &&
+		(main_actor->in_usecode_control() ||
+		 main_actor->get_flag(Obj_flags::paralyzed)))
+		return;
+	if (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game())
 		return;
 //	teleported = 0;
 	if (moving_barge)

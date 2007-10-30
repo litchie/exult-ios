@@ -950,8 +950,7 @@ void Patrol_schedule::now_what
 				// Scripts for all actions. At worst, display standing frame
 				// once the path egg is reached.
 				Usecode_script *scr = new Usecode_script(npc);
-				(*scr) << Ucscript::dont_halt
-					<< Ucscript::npc_frame + Actor::standing;
+				(*scr) << Ucscript::npc_frame + Actor::standing;
 							// Quality = type.  (I think high bits
 							// are flags).
 				int qual = path->get_quality();
@@ -1174,8 +1173,7 @@ void Patrol_schedule::now_what
 					}
 				// Standing up animation.
 				Usecode_script *scr = new Usecode_script(npc);
-				(*scr) << Ucscript::dont_halt <<
-					Ucscript::delay_ticks << 2 <<
+				(*scr) << Ucscript::delay_ticks << 2 <<
 					Ucscript::npc_frame + Actor::bow_frame <<
 					Ucscript::delay_ticks << 2 <<
 					Ucscript::npc_frame + Actor::standing;
@@ -1211,8 +1209,7 @@ void Patrol_schedule::now_what
 				if (pace_count > 0 && pace_count == 6)
 					{
 					Usecode_script *scr = new Usecode_script(npc);
-					(*scr) << Ucscript::dont_halt
-						<< Ucscript::npc_frame + Actor::standing;
+					(*scr) << Ucscript::npc_frame + Actor::standing;
 					scr->start();	// Start next tick.
 					state = 0;
 					npc->start(speed, 2*speed);
