@@ -614,7 +614,7 @@ int Usecode_script::exec
 			Usecode_value& val = code->get_elem(++i);
 			int type = val.get_int_value()&0xff;
 				// Seems to match the originals:
-			if ((type == 0xff || gwin->get_effects()->get_weather() != 0)
+			if (type == 0xff || gwin->get_effects()->get_weather() != 0)
 				Egg_object::set_weather(type == 0xff ? 0 : type);
 			break;
 			}
