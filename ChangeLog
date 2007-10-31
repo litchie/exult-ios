@@ -1,3 +1,8 @@
+2007-10-31	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed a few opcode bugs. Also, swapped the purpose of cnt1 and cnt2 in the
+	repeat2 script opcode and removed the initial "reset" of the counter. Both
+	changes are verified in the originals.
+
 2007-10-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixed crash whan attacking objects bare-handed.
 

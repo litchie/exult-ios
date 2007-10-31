@@ -1053,9 +1053,9 @@ script_command:
 			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat));
 					// Then -offset to start.
 		result->add(new Uc_int_expression(-sz));
-		result->add($2);	// Then #times to repeat.
+		result->add($2);	// Loop var for repeat2.
 		if (repeat_nesting)
-			result->add($2);	// Loop var for repeat2.
+			result->add($2);	// Then #times to repeat.
 		$$ = result;
 		}
 	| NOP  ';'
