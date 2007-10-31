@@ -362,8 +362,8 @@ int Usecode_script::exec
 			gwin->set_painted();	// Want to paint when done.
 			break;
 		case reset:
-			do_another = finish ? false : true;	// Guessing.
-			i = -1;		// Matches originals.
+			if (!finish)	// Appears to be right.
+				i = -1;		// Matches originals.
 			break;
 		case repeat:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
@@ -386,21 +386,25 @@ int Usecode_script::exec
 			}
 		case repeat2:		// Loop with 3 parms.???
 			{		// Loop(offset, cnt1, cnt2?).
-				//Guessing: loop cnt1 each round. use cnt2 as loop var.
+				//Guessing: loop cnt2 each round. use cnt1 as loop var.
 				//This is necessary for loop nesting.
 				//(used in mining machine, orb of the moons)
 
-				// maybe cnt1 and cnt2 should be swapped... not sure
+				// Swapped cnt1 and cnt2 -- seems to better match
+				// the originals.
 
 			do_another = true;
-			Usecode_value& cntval = code->get_elem(i + 3);
-			Usecode_value& origval = code->get_elem(i + 2);
+			Usecode_value& cntval = code->get_elem(i + 2);
+			Usecode_value& origval = code->get_elem(i + 3);
 			int cnt = cntval.get_int_value();
 			int orig = origval.get_int_value();
-			if (cnt > orig) { // ++++ First pass? Set to orig or not?
+#if 0
+			// Doesn't seem to happen in the originals.
+			if (cnt > orig) { // ++++ First pass? Set 1to orig or not?
 				cntval = origval;
 				cnt = orig;
 			}
+#endif
 			if (cnt <= 0) {
 					// Done.
 				i += 3;
@@ -610,8 +614,8 @@ int Usecode_script::exec
 			Usecode_value& val = code->get_elem(++i);
 			int type = val.get_int_value()&0xff;
 				// Seems to match the originals:
-			if (val == 0xff || gwin->get_effects()->get_weather() != 0)
-				Egg_object::set_weather(val.get_int_value());
+			if ((type == 0xff || gwin->get_effects()->get_weather() != 0)
+				Egg_object::set_weather(type == 0xff ? 0 : type);
 			break;
 			}
 		case hit:		// Hit(hps, type).
