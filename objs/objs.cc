@@ -1483,7 +1483,7 @@ Game_object *Game_object::attacked
 	else
 		winf = attacker->get_weapon(wpoints);
 
-	bool explodes = winf->explodes();
+	bool explodes = winf ? winf->explodes() : false;
 	// Play 'hit' sfx, but only if Ava. involved.
 	if (attacker == gwin->get_main_actor() && !explodes)
 	{
@@ -1499,7 +1499,7 @@ Game_object *Game_object::attacked
 	if (!wpoints && winf)
 		wpoints = winf->get_damage();
 
-	if (wpoints && attacker && !(winf && winf->explodes()))
+	if (wpoints && attacker && !explodes)
 		wpoints += attacker->get_level() +
 			attacker->get_effective_prop((int) Actor::strength);
 
@@ -1524,7 +1524,8 @@ Game_object *Game_object::attacked
 		}
 
 	bool destroyed = wpoints ?
-		reduce_health(wpoints, attacker, winf->get_damage_type()) : false;
+		reduce_health(wpoints, attacker,
+				winf ? winf->get_damage_type() : 0) : false;
 
 	if (combat_trace)
 		{
