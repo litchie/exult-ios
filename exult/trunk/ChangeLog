@@ -1,3 +1,6 @@
+2007-10-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed crash whan attacking objects bare-handed.
+
 2007-10-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* monsters.cc: Setting quality for monster equipment only if it is a weapon
 	  that uses charges.
