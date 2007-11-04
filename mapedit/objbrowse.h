@@ -42,6 +42,7 @@ protected:
 	Shape_file_info *file_info;	// Our creator (or null).
 	GtkWidget *find_text;		// For searching.
 	GtkWidget *loc_down, *loc_up;	// 'Locate' buttons.
+	GtkWidget *loc_q;		// 'Locate' quality/quantity.
 					// 'Move' buttons:
 	GtkWidget *move_down, *move_up;
 	int config_width, config_height;// For storing prev. dims.
