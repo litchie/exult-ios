@@ -1035,6 +1035,7 @@ static void Handle_events
 	uint32 last_repaint = 0;	// For insuring animation repaints.
 	uint32 last_rotate = 0;
 	uint32 last_rest = 0;
+	uint32 last_fps = 0;
 	/*
 	 *	Main event loop.
 	 */
@@ -1063,6 +1064,17 @@ static void Handle_events
 			}
 #endif
 		Game::set_ticks(ticks);
+#ifdef DEBUG
+		if (last_fps == 0 || ticks >= last_fps + 10000) {
+			float fps = (float)gwin->blits*1000.0/
+							(ticks - last_fps);
+			cerr << "***#ticks = " << ticks - last_fps <<
+				", blits = " << gwin->blits << ", ";
+			cerr << "FPS:  " << fps << endl;
+			last_fps = ticks;
+			gwin->blits = 0;
+		}
+#endif
 
 		SDL_Event event;
 		while (!quitting_time && SDL_PollEvent(&event))
@@ -1097,7 +1109,11 @@ static void Handle_events
 		}
 
 					// Show animation every 1/20 sec.
+#if 0
 		if (ticks > last_repaint + 50 || gwin->was_painted())
+#else	/* (jsf) Experimenting with this: */
+		if (gwin->is_dirty())
+#endif
 					// This avoids jumpy walking:
 			{		// OpenGL?  Repaint all each time.
 			if (GL_manager::get_instance())
@@ -1107,7 +1123,6 @@ static void Handle_events
 			while (ticks > last_repaint+50)last_repaint += 50;
 			}
 		Mouse::mouse->show();	// Re-display mouse.
-
 					// Rotate less often if scaling and 
 					//   not paletized.
 		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||

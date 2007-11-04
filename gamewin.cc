@@ -325,7 +325,8 @@ Game_window::Game_window
 	    background_noise(new Background_noise(this)),
 	    double_click_closes_gumps(false),
 	    removed(new Deleted_objects()),
-	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
+	    skip_lift(16), paint_eggs(false), debug(0), blits(0),
+	    camera_actor(0)
 #ifdef RED_PLASMA
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
 #endif

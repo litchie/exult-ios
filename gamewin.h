@@ -155,6 +155,7 @@ public:
 	bool armageddon;		// Spell was cast.
 	bool walk_in_formation;		// Use Party_manager for walking.
 	int debug;
+	uint32 blits;			// For frame-counting.
 	/*
 	 *	Class maintenance:
 	 */
@@ -336,6 +337,7 @@ public:
 		if (painted || force)
 			{
 			win->show();
+			++blits;
 			painted = false;
 			return true;
 			}
@@ -343,6 +345,8 @@ public:
 		}
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
+	bool is_dirty()
+		{ return dirty.w > 0; }
 					// Paint scene at given tile.
 	void paint_map_at_tile(int x, int y, int w, int h,
 				int toptx, int topty, int skip_above = 31);
