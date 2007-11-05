@@ -883,7 +883,8 @@ void Game_window::clear_world
 bool Game_window::locate_shape
 	(
 	int shapenum,			// Desired shape.
-	bool upwards			// If true, search upwards.
+	bool upwards,			// If true, search upwards.
+	int qual			// Quality/quantity.
 	)
 	{
 					// Get (first) selected object.
@@ -894,7 +895,7 @@ bool Game_window::locate_shape
 	effects->center_text(msg);
 	paint();
 	show();
-	Game_object *obj = map->locate_shape(shapenum, upwards, start);
+	Game_object *obj = map->locate_shape(shapenum, upwards, start, qual);
 	if (!obj)
 		{
 		effects->center_text("Not found");

@@ -1902,6 +1902,13 @@ int ExultStudio::get_num_entry
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
+	return get_num_entry(field);
+	}
+int ExultStudio::get_num_entry
+	(
+	GtkWidget *field
+	)
+	{
 	if (!field)
 		return -1;
 	const gchar *txt = gtk_entry_get_text(GTK_ENTRY(field));
@@ -1909,6 +1916,8 @@ int ExultStudio::get_num_entry
 		return -1;
 	while (*txt == ' ')
 		txt++;			// Skip space.
+	if (!*txt)
+		return -1;
 	if (txt[0] == '0' && txt[1] == 'x')
 		return (int) strtoul(txt + 2, 0, 16);	// Hex.
 	else

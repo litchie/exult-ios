@@ -60,6 +60,8 @@ public:
 		{ return selected < 0 ? -1 : index0 + selected; }
 	GtkWidget *get_find_text()	// Get 'find' text widget.
 		{ return find_text; }
+	GtkWidget *get_loc_q()
+		{ return loc_q; }
 	virtual void load()		// Load from file data.
 		{  }
 	virtual void setup_info(bool savepos = true)
@@ -86,7 +88,8 @@ public:
 		{			// OR together what you want.
 		find_controls = 1,
 		locate_controls = 2,
-		move_controls = 4
+		locate_quality = 4,
+		move_controls = 8
 		};
 	GtkWidget *create_controls(int controls);
 					// Virtuals for controls.

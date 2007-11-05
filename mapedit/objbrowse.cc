@@ -396,18 +396,20 @@ GtkWidget *Object_browser::create_controls
 		loc_up = Create_arrow_button(GTK_ARROW_UP,
 	                    	GTK_SIGNAL_FUNC(on_loc_up), this);
 		gtk_box_pack_start(GTK_BOX (bbox), loc_up, TRUE, TRUE, 2);
-						// Quality/quantity:
-		GtkWidget *lbl = gtk_label_new(" Q:");
-		gtk_misc_set_alignment(GTK_MISC(lbl), 0.9, 0.5);
-		gtk_box_pack_start(GTK_BOX(lbox), lbl, TRUE, TRUE, 0);
-		gtk_widget_show(lbl);
-		loc_q = gtk_entry_new ();
-		gtk_editable_set_editable(GTK_EDITABLE(loc_q), TRUE);
-		gtk_entry_set_visibility(GTK_ENTRY(loc_q), TRUE);
-		GTK_OBJECT_SET_FLAGS(loc_q, GTK_CAN_FOCUS);
-		gtk_widget_show (loc_q);
-		gtk_box_pack_start(GTK_BOX(lbox), loc_q, TRUE, TRUE, 4);
-		gtk_widget_set_size_request (loc_q, 64, -1);
+		if (controls & (int) locate_quality)
+			{
+			GtkWidget *lbl = gtk_label_new(" Q:");
+			gtk_misc_set_alignment(GTK_MISC(lbl), 0.9, 0.5);
+			gtk_box_pack_start(GTK_BOX(lbox), lbl, TRUE, TRUE, 0);
+			gtk_widget_show(lbl);
+			loc_q = gtk_entry_new ();
+			gtk_editable_set_editable(GTK_EDITABLE(loc_q), TRUE);
+			gtk_entry_set_visibility(GTK_ENTRY(loc_q), TRUE);
+			GTK_OBJECT_SET_FLAGS(loc_q, GTK_CAN_FOCUS);
+			gtk_widget_show (loc_q);
+			gtk_box_pack_start(GTK_BOX(lbox), loc_q, TRUE, TRUE,4);
+			gtk_widget_set_size_request (loc_q, 64, -1);
+			}
 		}
 	/*
 	 *	The 'Move' controls.

@@ -1,5 +1,7 @@
 2007-11-04    <jeff@mini.nerble.net>
 
+	* server/server.cc: Support 'locate' with 'quality' in ES.
+
 	* exult.cc: Show FPS.  Also, made an experimental change to the
 	event'loop's rendering condition.
 
