@@ -1902,11 +1902,12 @@ int ExultStudio::get_num_entry
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
-	return get_num_entry(field);
+	return get_num_entry(field, 0);
 	}
 int ExultStudio::get_num_entry
 	(
-	GtkWidget *field
+	GtkWidget *field,
+	int if_empty
 	)
 	{
 	if (!field)
@@ -1917,7 +1918,7 @@ int ExultStudio::get_num_entry
 	while (*txt == ' ')
 		txt++;			// Skip space.
 	if (!*txt)
-		return -1;
+		return if_empty;
 	if (txt[0] == '0' && txt[1] == 'x')
 		return (int) strtoul(txt + 2, 0, 16);	// Hex.
 	else
