@@ -297,6 +297,7 @@ public:
 	void set_spin(char *name, int low, int high);
 	void set_spin(char *name, int val, int low, int high);
 	int get_num_entry(char *name);
+	static int get_num_entry(GtkWidget *field);
 	const gchar *get_text_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
 						bool sensitive = true);

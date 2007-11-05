@@ -1706,7 +1706,8 @@ Game_object *Game_map::locate_shape
 	(
 	int shapenum,			// Desired shape.
 	bool upwards,			// If true, search upwards.
-	Game_object *start		// Start here if !0.
+	Game_object *start,		// Start here if !0.
+	int qual			// Quality, or c_any_qual
 	)
 	{
 	int cx = -1, cy = 0;		// Before chunk to search.
@@ -1729,14 +1730,18 @@ Game_object *Game_map::locate_shape
 			{
 			Recursive_object_iterator_backwards next(start);
 			while ((obj = next.get_next()) != 0)
-				if (obj->get_shapenum() == shapenum)
+				if (obj->get_shapenum() == shapenum &&
+				    (qual == c_any_qual ||
+				     obj->get_quality() == qual))
 					break;
 			}
 		else
 			{
 			Recursive_object_iterator next(start);
 			while ((obj = next.get_next()) != 0)
-				if (obj->get_shapenum() == shapenum)
+				if (obj->get_shapenum() == shapenum &&
+				    (qual == c_any_qual ||
+				     obj->get_quality() == qual))
 					break;
 			}
 		}
@@ -1761,14 +1766,18 @@ Game_object *Game_map::locate_shape
 			Recursive_object_iterator_backwards next(
 							chunk->get_objects());
 			while ((obj = next.get_next()) != 0)
-				if (obj->get_shapenum() == shapenum)
+				if (obj->get_shapenum() == shapenum &&
+				    (qual == c_any_qual ||
+				     obj->get_quality() == qual))
 					break;
 			}
 		else
 			{
 			Recursive_object_iterator next(chunk->get_objects());
 			while ((obj = next.get_next()) != 0)
-				if (obj->get_shapenum() == shapenum)
+				if (obj->get_shapenum() == shapenum &&
+				    (qual == c_any_qual ||
+				     obj->get_quality() == qual))
 					break;
 			}
 		}
