@@ -427,9 +427,10 @@ static void Handle_client_message
 	case Exult_server::locate_shape:
 		{
 		int shnum = Read2(ptr);
+		int qual = (short) Read2(ptr);
 		bool up = *ptr++ ? true : false;
-		bool okay = gwin->locate_shape(shnum, up);
-		ptr = &data[2];		// Send back reply.
+		bool okay = gwin->locate_shape(shnum, up, qual);
+		ptr = &data[4];		// Send back reply.
 		ptr++;			// Skip 'up' flag.
 		*ptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket, 
