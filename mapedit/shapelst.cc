@@ -2325,7 +2325,7 @@ void Shape_chooser::locate
 		return;			// Shouldn't happen.
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
-	int qual = ExultStudio::get_num_entry(get_loc_q());
+	int qual = ExultStudio::get_num_entry(get_loc_q(), -1);
 	Write2(ptr, info[selected].shapenum);
 	Write2(ptr, qual == -1 ? c_any_qual : qual);
 	*ptr++ = upwards ? 1 : 0;
