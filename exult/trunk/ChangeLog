@@ -1,3 +1,19 @@
+2007-11-06  Ryan Nunn <colourles@users.sourceforge.net>
+	* effects.cc, exult.cc, gamerend.cc, gamewin.cc, gamewin.h : Two words:
+	  "Smooth Scrolling". Some more words: It's a bit of a hack but it works
+	  really well. The screen position is interpolated based on the camera 
+	  actor's animation rate or get_std_delay() if it's not set. The camera 
+	  actor's position is also interpolated (though in a really hacky manner)
+	  so the avatar's movement isn't jerky. All other objects do NOT have their
+	  movement interpolated, but just smooth avatar movement is a HUGE 
+	  improvement. Added config key "config/gameplay/smooth_scrolling"
+	  to control this. This is enabled by default for now. Code diffs should 
+	  highlight how things have changed.
+	* actors.cc : Added a slight hack to Main_actor::handle_event to stop
+	  some 'double stepping' that was looking really bad with smooth 
+	  scrolling. See the comment in the code for details
+	* gumps/GameplayOptions_gump.* : Added toggle for smooth scrolling.
+
 2007-11-04    <jeff@mini.nerble.net>
 
 	* server/server.cc: Support 'locate' with 'quality' in ES.

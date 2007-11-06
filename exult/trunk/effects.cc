@@ -431,8 +431,8 @@ void Sprites_effect::paint
 		return;
 	int lp = pos.tz/2;		// Account for lift.
 	sprite.paint_shape(
-		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize);
+		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize - gwin->get_scrolltx_lo(),
+		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize - gwin->get_scrolltx_lo());
 	}
 
 /*
@@ -820,8 +820,8 @@ void Projectile_effect::paint
 		return;
 	int liftpix = pos.tz*c_tilesize/2;
 	sprite.paint_shape(
-		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix - gwin->get_scrolltx_lo(),
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix - gwin->get_scrollty_lo());
 	}
 
 /*
@@ -1003,8 +1003,8 @@ void Homing_projectile::paint
 	{
 	int liftpix = pos.tz*c_tilesize/2;
 	sprite.paint_shape(
-		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix - gwin->get_scrolltx_lo(),
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix - gwin->get_scrollty_lo());
 	}
 
 /*
@@ -1136,8 +1136,8 @@ void Text_effect::paint
 	const char *ptr = msg.c_str();
 	int len = strlen(ptr);
 	sman->paint_text(0, ptr, len, 
-		(pos.tx - gwin->get_scrolltx())*c_tilesize,
-				(pos.ty - gwin->get_scrollty())*c_tilesize);
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - gwin->get_scrolltx_lo(),
+				(pos.ty - gwin->get_scrollty())*c_tilesize - gwin->get_scrollty_lo());
 	}
 
 /*
@@ -1693,8 +1693,8 @@ void Cloud::paint
 	{
 	Game_window *gwin = Game_window::get_instance();
 	if (count > 0)			// Might not have been started.
-		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
-			wy - gwin->get_scrollty()*c_tilesize);
+		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize - gwin->get_scrolltx_lo(), 
+			wy - gwin->get_scrollty()*c_tilesize - gwin->get_scrollty_lo());
 	}
 
 /*

@@ -518,5 +518,35 @@ public:
 	void setup_load_palette();
 	void cycle_load_palette();
 #endif
+
+private:
+	//
+	// Interpolated painting stuff, for smooth scrolling
+	//
+
+	// These are saved scroll positions
+	int scrolltx_l, scrollty_l;		
+	int scrolltx_lp, scrollty_lp;
+	// These are the pixel offset that needs to be subtracted from shape positions due to smooth scrolling
+	int scrolltx_lo, scrollty_lo;	
+	// Delta for camera actor position in pixels due to lerping of position
+	int avposx_ld, avposy_ld;		
+	// Is lerping enabled
+	bool lerping_enabled;
+
+public:
+	// Reset (well update really) saved lerp scroll positions
+	void lerp_reset();
+
+	// (Re)paint the entire screen using a lerp factor 0-0x10000
+	void paint_lerped(int factor);
+
+	inline int get_scrolltx_lo() const
+		{ return scrolltx_lo; }
+	inline int get_scrollty_lo() const
+		{ return scrollty_lo; }
+
+	bool is_lerping_enabled() const { return lerping_enabled; }
+	void set_lerping_enabled(int e) { lerping_enabled = e; }
 	};
 #endif
