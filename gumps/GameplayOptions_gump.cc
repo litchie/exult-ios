@@ -44,7 +44,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 4, 17, 134, 30, 43, 56, 69, 82, 95, 108, 121, 147 };
+static const int rowy[] = { 4, 16, 124, 28, 40, 52, 64, 76, 88, 100, 112, 148, 136 };
 
 static const int colx[] = { 35, 50, 120, 195, 192 };
 
@@ -146,6 +146,8 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		doubleright_move = state;
 	else if (btn == buttons[13])
 		gumps_pause = state;
+	else if (btn == buttons[14])
+		smooth_scrolling = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -228,6 +230,8 @@ void GameplayOptions_gump::build_buttons()
 										   59, cheats);
 	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
 										59, frames, num_framerates);
+	buttons[14] = new GameplayEnabledToggle(this, colx[3], rowy[12],
+										   59, smooth_scrolling);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -270,6 +274,7 @@ void GameplayOptions_gump::load_settings()
 	for (i=0; i < num_framerates; i++) {
 		frametext[i] = framestring(framerates[i]);
 	}
+	smooth_scrolling = gwin->is_lerping_enabled();
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
@@ -332,6 +337,8 @@ void GameplayOptions_gump::save_settings()
 	gumpman->set_gumps_dont_pause_game(!gumps_pause);
 	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", true);
 
+	gwin->set_lerping_enabled(smooth_scrolling);
+	config->set("config/gameplay/smooth_scrolling", smooth_scrolling?"yes":"no",true);
 }
 
 void GameplayOptions_gump::paint()
@@ -357,6 +364,7 @@ void GameplayOptions_gump::paint()
 	sman->paint_text(2, "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
 	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[9] + 1);
 	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[10] + 1);
+	sman->paint_text(2, "Smooth scrolling:", x + colx[0], y + rowy[12] + 1);
 	gwin->set_painted();
 }
 

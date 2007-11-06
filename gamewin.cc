@@ -330,6 +330,8 @@ Game_window::Game_window
 #ifdef RED_PLASMA
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
 #endif
+		,scrolltx_l(0), scrollty_l(0), scrolltx_lp(0), scrollty_lp(0),  scrolltx_lo(0), scrollty_lo(0),
+		avposx_ld(0), avposy_ld(0), lerping_enabled(false)
 	{
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
@@ -390,6 +392,11 @@ Game_window::Game_window
 	walk_in_formation = true;	// Testing time++++++++++.
 	config->set("config/gameplay/formation", walk_in_formation?"yes":"no",
 								true);
+
+	// For now this is being set to default enabled because everyone wants it...
+	config->value("config/gameplay/smooth_scrolling", str, "yes");
+	lerping_enabled = str == "yes";	
+	config->set("config/gameplay/smooth_scrolling", lerping_enabled?"yes":"no",true);
 	}
 
 /*
@@ -495,8 +502,10 @@ void Game_window::init_files(bool cycle)
 					// Force clock to start.
 	tqueue->add(timer, clock, reinterpret_cast<long>(this));
 					// Go to starting chunk
-	scrolltx = game->get_start_tile_x();
-	scrollty = game->get_start_tile_y();
+	scrolltx_lp = scrolltx_l = scrolltx = game->get_start_tile_x();
+	scrollty_lp = scrollty_l = scrollty = game->get_start_tile_y();
+	scrolltx_lo = scrollty_lo = 0;
+	avposx_ld = avposy_ld = 0;
 		
 	// initialize keybinder
 	if (keybinder)
@@ -1165,10 +1174,21 @@ inline void Get_shape_location
 void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 {
 	Get_shape_location(obj->get_tile(), scrolltx, scrollty, x, y);
+	Actor *a = obj->as_actor();
+	// Smooth scroll the avatar as well, if possible
+	if (obj == get_camera_actor())
+	{
+		x += avposx_ld;
+		y += avposy_ld;
+	}
+	x -= scrolltx_lo;
+	y -= scrollty_lo;
 }
 void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
 {
 	Get_shape_location(t, scrolltx, scrollty, x, y);
+	x -= scrolltx_lo;
+	y -= scrollty_lo;
 }
 
 /*
@@ -1393,8 +1413,10 @@ void Game_window::read_gwin
 	StreamDataSource gin(&gin_stream);
 
 					// Start with scroll coords (in tiles).
-	scrolltx = gin.read2();
-	scrollty = gin.read2();
+	scrolltx_lp = scrolltx_l = scrolltx = gin.read2();
+	scrollty_lp = scrollty_l = scrollty = gin.read2();
+	scrolltx_lo = scrollty_lo = 0;
+	avposx_ld = avposy_ld = 0;
 					// Read clock.
 	clock->reset();
 	clock->set_day(gin.read2());

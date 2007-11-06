@@ -1039,6 +1039,7 @@ static void Handle_events
 	/*
 	 *	Main event loop.
 	 */
+	int last_x=-1, last_y=-1;
 	while (!quitting_time)
 		{
 #ifdef USE_EXULTSTUDIO
@@ -1108,20 +1109,50 @@ static void Handle_events
 			show_items_clicked = false;
 		}
 
-					// Show animation every 1/20 sec.
-#if 0
-		if (ticks > last_repaint + 50 || gwin->was_painted())
-#else	/* (jsf) Experimenting with this: */
-		if (gwin->is_dirty())
-#endif
-					// This avoids jumpy walking:
-			{		// OpenGL?  Repaint all each time.
-			if (GL_manager::get_instance())
-				gwin->paint();
-			else
-				gwin->paint_dirty();
-			while (ticks > last_repaint+50)last_repaint += 50;
+		// Is lerping (smooth scrolling) enabled
+		if (gwin->is_lerping_enabled())
+		{
+			// Lerping stuff...
+			// Always repaint,
+			Actor *act = gwin->get_camera_actor();
+			int mswait = act->get_frame_time();
+			if (mswait <= 0) mswait = gwin->get_std_delay();
+
+			// Force a reset if position changed
+			if (last_x != gwin->get_scrolltx() || last_y != gwin->get_scrollty())
+			{
+				//printf ("%i: %i -> %i, %i -> %i\n", ticks, last_x, gwin->get_scrolltx(), last_y, gwin->get_scrollty());
+				gwin->lerp_reset();
+				last_repaint = ticks;
 			}
+			last_x = gwin->get_scrolltx();
+			last_y = gwin->get_scrollty();
+
+			while (ticks > last_repaint+mswait)
+			{
+				gwin->lerp_reset();
+				last_repaint += mswait;
+			}
+
+			gwin->paint_lerped(((ticks-last_repaint)*0x10000)/mswait);
+		}
+		else // No lerping
+		{
+		// Show animation every 1/20 sec.
+#if 0
+			if (ticks > last_repaint + 50 || gwin->was_painted())
+#else	/* (jsf) Experimenting with this: */
+			if (gwin->is_dirty())
+#endif
+						// This avoids jumpy walking:
+				{		// OpenGL?  Repaint all each time.
+				if (GL_manager::get_instance())
+					gwin->paint();
+				else
+					gwin->paint_dirty();
+				while (ticks > last_repaint+50)last_repaint += 50;
+				}
+		}
 		Mouse::mouse->show();	// Re-display mouse.
 					// Rotate less often if scaling and 
 					//   not paletized.
