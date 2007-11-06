@@ -151,14 +151,14 @@ static void Paint_selected_chunks
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
-		int yoff = Figure_screen_offset(cy, gwin->get_scrollty());
+		int yoff = Figure_screen_offset(cy, gwin->get_scrollty()) - gwin->get_scrollty_lo();
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
 			Map_chunk *chunk = map->get_chunk(cx, cy);
 			if (!chunk->is_selected())
 				continue;
 			int xoff = Figure_screen_offset(
-						cx, gwin->get_scrolltx());
+						cx, gwin->get_scrolltx()) - gwin->get_scrolltx_lo();
 			win->fill_translucent8(0, c_chunksize, c_chunksize,
 				xoff, yoff, xform);
 			}
@@ -182,10 +182,10 @@ void Game_render::paint_terrain_only
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
-		int yoff = Figure_screen_offset(cy, gwin->scrollty);
+		int yoff = Figure_screen_offset(cy, gwin->scrollty) - gwin->get_scrollty_lo();
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
-			int xoff = Figure_screen_offset(cx, gwin->scrolltx);
+			int xoff = Figure_screen_offset(cx, gwin->scrolltx) - gwin->get_scrolltx_lo();
 			Map_chunk *chunk = map->get_chunk(cx, cy);
 			chunk->get_terrain()->render_all(cx, cy);
 			if (cheat.in_map_editor())
@@ -226,9 +226,9 @@ int Game_render::paint_map
 	int start_chunky = (scrollty + y/c_tilesize - 1)/c_tiles_per_chunk;
 	start_chunky = (start_chunky + c_num_chunks)%c_num_chunks;
 					// End 8 tiles to right.
-	int stop_chunkx = 1 + (scrolltx + (x + w + c_tilesize - 2)/c_tilesize + 
+	int stop_chunkx = 2 + (scrolltx + (x + w + c_tilesize - 2)/c_tilesize + 
 					c_tiles_per_chunk/2)/c_tiles_per_chunk;
-	int stop_chunky = 1 + (scrollty + (y + h + c_tilesize - 2)/c_tilesize + 
+	int stop_chunky = 2 + (scrollty + (y + h + c_tilesize - 2)/c_tilesize + 
 					c_tiles_per_chunk/2)/c_tiles_per_chunk;
 					// Wrap around the world:
 	stop_chunkx = (stop_chunkx + c_num_chunks)%c_num_chunks;
@@ -243,10 +243,10 @@ int Game_render::paint_map
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
-		int yoff = Figure_screen_offset(cy, scrollty);
+		int yoff = Figure_screen_offset(cy, scrollty) - gwin->get_scrollty_lo();
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
-			int xoff = Figure_screen_offset(cx, scrolltx);
+			int xoff = Figure_screen_offset(cx, scrolltx) - gwin->get_scrolltx_lo();
 			paint_chunk_flats(cx, cy, xoff, yoff);
 			if (cheat.in_map_editor())
 				Paint_chunk_outline(gwin, 
@@ -257,10 +257,10 @@ int Game_render::paint_map
 	// Now the flat RLE terrain.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
-		int yoff = Figure_screen_offset(cy, scrollty);
+		int yoff = Figure_screen_offset(cy, scrollty) -  - gwin->get_scrollty_lo();
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
-			int xoff = Figure_screen_offset(cx, scrolltx);
+			int xoff = Figure_screen_offset(cx, scrolltx) -  - gwin->get_scrolltx_lo();
 			paint_chunk_flat_rles(cx, cy, xoff, yoff);
 
 			if (cheat.in_map_editor())
@@ -375,6 +375,79 @@ void Game_window::paint()
 	set_all_dirty();
 	paint_dirty();
 	}
+
+void Game_window::lerp_reset()
+{
+	scrolltx_lp = scrolltx_l;
+	scrollty_lp = scrollty_l;
+	scrolltx_l = scrolltx;
+	scrollty_l = scrollty;
+}
+
+void Game_window::paint_lerped(int factor)
+{
+	if (factor < 0) factor = 0;
+	if (factor > 0x10000) factor = 0x10000;
+
+	int saved_scrolltx = scrolltx;
+	int saved_scrollty = scrollty;
+
+	scrolltx = scrolltx_l;
+	scrollty = scrollty_l;
+
+	int dx = (scrolltx_lp-scrolltx);
+	int dy = (scrollty_lp-scrollty);
+
+	// wrap around fixing...
+	while (dx < -c_num_tiles/2) dx += c_num_tiles;
+	while (dx > c_num_tiles/2) dx -= c_num_tiles;
+	while (dy < -c_num_tiles/2) dy += c_num_tiles;
+	while (dy > c_num_tiles/2) dy -= c_num_tiles;
+
+	// Only allow lerping to occur within say a 4 tile limit
+	if (dx > -4 && dx < 4 && dy > -4 && dy < 4)
+	{
+		dx *= c_tilesize;
+		dy *= c_tilesize;
+		scrolltx *= c_tilesize;
+		scrollty *= c_tilesize;
+
+		scrolltx = scrolltx + (dx*(0x10000-factor))/0x10000;
+		scrollty = scrollty + (dy*(0x10000-factor))/0x10000;
+		
+		dx = scrolltx%c_tilesize;
+		dy = scrollty%c_tilesize;
+
+		avposx_ld = scrolltx - saved_scrolltx*c_tilesize;
+		avposy_ld = scrollty - saved_scrollty*c_tilesize;
+
+		while (avposx_ld < -c_num_tiles*c_tilesize/2) avposx_ld += c_num_tiles*c_tilesize;
+		while (avposx_ld > c_num_tiles*c_tilesize/2) avposx_ld -= c_num_tiles*c_tilesize;
+		while (avposy_ld < -c_num_tiles*c_tilesize/2) avposy_ld += c_num_tiles*c_tilesize;
+		while (avposy_ld > c_num_tiles*c_tilesize/2) avposy_ld -= c_num_tiles*c_tilesize;
+
+		scrolltx = ((scrolltx/c_tilesize)+c_num_tiles)%c_num_tiles;
+		scrollty = ((scrollty/c_tilesize)+c_num_tiles)%c_num_tiles;
+
+		//printf ("f %05x %i-%i %i.%i\n", factor, scrolltx_lp, scrolltx_l, scrolltx, dx);
+	}
+	else
+	{
+		dx = 0;
+		dy = 0;
+	}
+
+	// Set pixel offset needed for lerping 
+	scrolltx_lo = dx;
+	scrollty_lo = dy;
+
+	paint();
+
+	scrolltx = saved_scrolltx;
+	scrollty = saved_scrollty;
+	scrolltx_lo = scrollty_lo = 0;
+	avposx_ld = avposy_ld = 0;
+}
 
 /*
  *	Paint the flat (non-rle) shapes in a chunk.
@@ -522,9 +595,9 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 		{
 			// Coord of the left edge
 			const int xoff = 
-				Figure_screen_offset(cx, gwin->scrolltx) - off;
+				Figure_screen_offset(cx, gwin->scrolltx) - off - gwin->get_scrolltx_lo();
 			// Coord of the top edge 
-			int y = Figure_screen_offset(cy, gwin->scrollty) - off;
+			int y = Figure_screen_offset(cy, gwin->scrollty) - off - gwin->get_scrollty_lo();
 
 			// Need the chunk cache (needs to be setup!)
 			Map_chunk *mc = gwin->map->get_chunk(cx, cy);
