@@ -532,7 +532,7 @@ private:
 	// Delta for camera actor position in pixels due to lerping of position
 	int avposx_ld, avposy_ld;		
 	// Is lerping enabled
-	bool lerping_enabled;
+	int lerping_enabled;
 
 public:
 	// Reset (well update really) saved lerp scroll positions
@@ -546,7 +546,7 @@ public:
 	inline int get_scrollty_lo() const
 		{ return scrollty_lo; }
 
-	bool is_lerping_enabled() const { return lerping_enabled; }
+	int is_lerping_enabled() const { return lerping_enabled; }
 	void set_lerping_enabled(int e) { lerping_enabled = e; }
 	};
 #endif

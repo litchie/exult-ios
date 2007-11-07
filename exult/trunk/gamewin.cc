@@ -331,7 +331,7 @@ Game_window::Game_window
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
 #endif
 		,scrolltx_l(0), scrollty_l(0), scrolltx_lp(0), scrollty_lp(0),  scrolltx_lo(0), scrollty_lo(0),
-		avposx_ld(0), avposy_ld(0), lerping_enabled(false)
+		avposx_ld(0), avposy_ld(0), lerping_enabled(0)
 	{
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
@@ -394,9 +394,8 @@ Game_window::Game_window
 								true);
 
 	// For now this is being set to default enabled because everyone wants it...
-	config->value("config/gameplay/smooth_scrolling", str, "yes");
-	lerping_enabled = str == "yes";	
-	config->set("config/gameplay/smooth_scrolling", lerping_enabled?"yes":"no",true);
+	config->value("config/gameplay/smooth_scrolling", lerping_enabled, 75);
+	config->set("config/gameplay/smooth_scrolling", lerping_enabled, true);
 	}
 
 /*

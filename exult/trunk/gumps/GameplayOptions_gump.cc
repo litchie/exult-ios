@@ -202,6 +202,13 @@ void GameplayOptions_gump::build_buttons()
 	dpadtext[3] = "Normal";
 #endif
 
+	std::string *smooth_text = new std::string[5];
+	smooth_text[0] = "Disabled";
+	smooth_text[1] = "25%";
+	smooth_text[2] = "50%";
+	smooth_text[3] = "75%";
+	smooth_text[4] = "100%";
+
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
 	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, 
@@ -230,8 +237,8 @@ void GameplayOptions_gump::build_buttons()
 										   59, cheats);
 	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
 										59, frames, num_framerates);
-	buttons[14] = new GameplayEnabledToggle(this, colx[3], rowy[12],
-										   59, smooth_scrolling);
+	buttons[14] = new GameplayTextToggle(this, smooth_text, colx[3], rowy[12],
+										   59, smooth_scrolling, 5);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -274,7 +281,7 @@ void GameplayOptions_gump::load_settings()
 	for (i=0; i < num_framerates; i++) {
 		frametext[i] = framestring(framerates[i]);
 	}
-	smooth_scrolling = gwin->is_lerping_enabled();
+	smooth_scrolling = gwin->is_lerping_enabled()/25;
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
@@ -337,8 +344,10 @@ void GameplayOptions_gump::save_settings()
 	gumpman->set_gumps_dont_pause_game(!gumps_pause);
 	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", true);
 
-	gwin->set_lerping_enabled(smooth_scrolling);
-	config->set("config/gameplay/smooth_scrolling", smooth_scrolling?"yes":"no",true);
+	if (smooth_scrolling < 0) smooth_scrolling = 0;
+	else if (smooth_scrolling > 4) smooth_scrolling = 4;
+	gwin->set_lerping_enabled(smooth_scrolling*25);
+	config->set("config/gameplay/smooth_scrolling", smooth_scrolling*25,true);
 }
 
 void GameplayOptions_gump::paint()
