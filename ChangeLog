@@ -1,3 +1,12 @@
+2007-11-07  Ryan Nunn <colourles@users.sourceforge.net>
+	* exult.cc, gamewin.*, gumps/GameplayOptions_gump.cc : Made lerping a 
+	  percentage value. Default now to 75% that makes things not quite as 
+	  smooth as they were before and seems to be a reasonable tradeoff. 
+	  GameplayObjects now has options for disabled, 25%, 50%, 75% and 100%
+    * actors.cc : Fixing avatar combat problems, but this really needs a 
+      proper solution to my double step problem. The code i've written seems to
+      have a few unintended consequences causing extra long pauses when moving
+	
 2007-11-06  Ryan Nunn <colourles@users.sourceforge.net>
 	* effects.cc, exult.cc, gamerend.cc, gamewin.cc, gamewin.h : Two words:
 	  "Smooth Scrolling". Some more words: It's a bit of a hack but it works

@@ -4021,7 +4021,7 @@ void Main_actor::handle_event
 		// If we weren't already at the destionation, and we are now at the destionation
 		// make sure we stay classed as 'moving' till another frame_time elapses. This will
 		// stop exult from calling gwin->start_actor() right away causing a double step
-		if (delay == 0 && !action_was_ended) delay = frame_time;
+		if (delay == 0 && !action_was_ended && action->get_dest(dest) && get_tile() == dest) delay = frame_time;
 #else
 		int delay = action->handle_event(this);
 #endif
