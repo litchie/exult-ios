@@ -1,3 +1,8 @@
+2007-12-05    <jeff@mini.nerble.net>
+
+	* mapedit/eggedit.cc, mapedit/exult_studio.glade: Support z-coord
+	in intermap teleport eggs.
+
 2007-11-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* exult.cc, gamewin.*, gumps/GameplayOptions_gump.cc : Made lerping a 
 	  percentage value. Default now to 75% that makes things not quite as 

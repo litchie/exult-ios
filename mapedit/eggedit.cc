@@ -346,7 +346,7 @@ int ExultStudio::init_egg_window
 			set_entry("teleport_y",
 				(schunk/12)*c_tiles_per_schunk +(data2>>8),
 								true);
-			set_entry("teleport_z", data3&0xff, true);
+			set_entry("teleport_z", data3&0xff);
 			set_spin("teleport_eggnum", 0, false);
 			}
 		else			// Egg #.
@@ -374,9 +374,10 @@ int ExultStudio::init_egg_window
 		int mapnum = data1&0xff, schunk = data1>>8;
 		set_spin("intermap_mapnum", mapnum);
 		set_entry("intermap_x",
-				(schunk%12)*c_tiles_per_schunk + (data2&0xff));
+			(schunk%12)*c_tiles_per_schunk + (data2&0xff), true);
 		set_entry("intermap_y",
-				(schunk/12)*c_tiles_per_schunk + (data2>>8));
+			(schunk/12)*c_tiles_per_schunk + (data2>>8), true);
+		set_entry("intermap_z", data3&0xff);
 		break;
 		}
 	default:
@@ -506,7 +507,9 @@ int ExultStudio::save_egg_window
 		{
 		int tx = get_num_entry("intermap_x"),
 		    ty = get_num_entry("intermap_y"),
+		    tz = get_num_entry("intermap_z"),
 		    mapnum = get_spin("intermap_mapnum");
+		data3 = tz;
 		data2 = (tx&0xff) + ((ty&0xff)<<8);
 		int sx = tx/c_tiles_per_schunk,
 		    sy = ty/c_tiles_per_schunk;
