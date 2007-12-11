@@ -39,18 +39,24 @@ public:
 	int operator!=(Tile_coord t2)
 		{ return !(*this == t2); }
 	int distance(Tile_coord t2)	// Distance to another tile?
+		{
+		int delta = distance_2d(t2);
+		int dz = t2.tz - tz;
+		if (dz < 0)
+			dz = -dz;
+					// Take larger abs. value.
+		return (delta > dz ? delta : dz);
+		}
+	int distance_2d(Tile_coord t2)	// For pathfinder.
 		{			// Handle wrapping round the world.
 		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
 		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
-		int dz = t2.tz - tz;
 		if (dy >= c_num_tiles/2)// World-wrapping.
 			dy = c_num_tiles - dy;
 		if (dx >= c_num_tiles/2)
 			dx = c_num_tiles - dx;
-		if (dz < 0)
-			dz = -dz;
 					// Take larger abs. value.
-		return (dy > dx && dy > dz ? dy : (dx > dz ? dx : dz));
+		return (dy > dx ? dy : dx);
 		}
 					// Get neighbor in given dir (0-7).
 	inline Tile_coord get_neighbor(int dir)
