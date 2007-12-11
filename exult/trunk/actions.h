@@ -28,6 +28,7 @@ class Game_object;
 class Tile_coord;
 class PathFinder;
 class Pathfinder_client;
+class Path_walking_actor_action;
 class If_else_path_actor_action;
 
 /*
@@ -66,6 +67,8 @@ public:
 	virtual int following_smart_path()
 		{ return 0; }
 	virtual If_else_path_actor_action *as_usecode_path()
+		{ return 0; }
+	virtual int get_speed() const
 		{ return 0; }
 	};
 
@@ -117,6 +120,8 @@ public:
 	virtual int get_dest(Tile_coord& dest);
 					// Check for Astar.
 	virtual int following_smart_path();
+	virtual int get_speed() const
+		{ return speed; }
 	};
 
 /*
@@ -221,6 +226,8 @@ public:
 	virtual int handle_event(Actor *actor);
 	int get_index()
 		{ return index; }
+	virtual int get_speed() const
+		{ return speed; }
 	};
 
 /*
@@ -256,6 +263,8 @@ public:
 					// Create with up to 4.
 	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
 				Actor_action *a2 = 0, Actor_action *a3 = 0);
+	virtual int get_speed() const
+		{ return speed; }
 	void set_speed(int spd)
 		{ speed = spd; }
 	virtual ~Sequence_actor_action();
@@ -281,6 +290,8 @@ public:
 	Object_animate_actor_action(Game_object *o, int nframes, int cy, int spd);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	virtual int get_speed() const
+		{ return speed; }
 	};
 
 /*
@@ -301,6 +312,8 @@ public:
 					// To put down an object:
 	Pickup_actor_action(Game_object *o, Tile_coord opos, int spd);
 	virtual int handle_event(Actor *actor);
+	virtual int get_speed() const
+		{ return speed; }
 	};
 	
 
@@ -317,6 +330,8 @@ public:
 					// To pick up an object:
 	Face_pos_actor_action(Game_object *o, int spd);
 	virtual int handle_event(Actor *actor);
+	virtual int get_speed() const
+		{ return speed; }
 	};
 	
 

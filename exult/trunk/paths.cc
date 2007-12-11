@@ -169,7 +169,7 @@ int Actor_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return tile.distance(goal) <= dist &&
+	return tile.distance_2d(goal) <= dist &&
 		(goal.tz == -1 || tile.tz == goal.tz);
 	}
 
@@ -252,7 +252,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 					// Get center.
 		int cx = scr.x + scr.w/2, cy = scr.y + scr.h/2;
 					// More than 4 screens away?
-		if (best.distance(Tile_coord(cx, cy, 0)) > 4*scr.w)
+		if (best.distance_2d(Tile_coord(cx, cy, 0)) > 4*scr.w)
 			{
 			best.tx = best.ty = -1;
 			return;
@@ -267,7 +267,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 		else if (best.ty < cy - scr.h)
 			best.ty = scr.y - 1;
 					// Give up if it doesn't look right.
-		if (best.distance(Tile_coord(cx, cy, 0)) > scr.w)
+		if (best.distance_2d(Tile_coord(cx, cy, 0)) > scr.w)
 			best.tx = best.ty = -1;
 		}
 	}
@@ -402,7 +402,7 @@ int Fast_pathfinder_client::estimate_cost
 	Tile_coord& to
 	)
 	{
-	return from.distance(to);	// Distance() does world-wrapping.
+	return from.distance_2d(to);	// Distance() does world-wrapping.
 	}
 
 /*

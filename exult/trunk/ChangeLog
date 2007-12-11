@@ -1,3 +1,11 @@
+2007-12-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc, actions.h: Fixed crash when avatar finishes a usecode path.
+	  Double-stepping problem is completelly fixed, resulting in perfectly
+	  smooth scrolling if it is enabled. Also, added slight delay at the end
+	  of all acions, whether they are done by the avatar or by other NPCs.
+	* paths.cc, tiles.h, objs/objs.cc: Fixed distance function so it actualy
+	  does what it should. Added back a 2d distance function for pathfinders.
+
 2007-12-05    <jeff@mini.nerble.net>
 
 	* mapedit/eggedit.cc, mapedit/exult_studio.glade: Support z-coord

@@ -150,41 +150,27 @@ Tile_coord Game_object::get_center_tile
 	}
 
 #define DELTA_CHECK(delta1, size1, size2, coord1, coord2) {	\
-	if (delta1 > 0)	\
+	if (delta1 < 0)	\
 		{	\
-		int size = size1 > 0 ? size1-1 : 0;	\
-		if (coord1 + size > coord2)	\
+		if (coord1 + size1 > coord2)	\
 			coord1 = coord2;	\
 		else	\
-			coord1 += size;	\
+			coord1 += size1;	\
 		}	\
-	else if (delta1 < 0)	\
+	else if (delta1 > 0)	\
 		{	\
-		int size = size2 > 0 ? size2-1 : 0;	\
-		if (coord2 + size > coord1)	\
+		if (coord2 + size2 > coord1)	\
 			coord2 = coord1;	\
 		else	\
-			coord2 += size;	\
+			coord2 += size2;	\
 		}	\
 	}
 
 #define DELTA_WRAP_CHECK(delta1, size1, size2, coord1, coord2) {	\
 	if (delta1 > 0)	\
-		{	\
-		int size = size1 > 0 ? size1-1 : 0;	\
-		if (Tile_coord::gte((coord1 - size + c_num_tiles)%c_num_tiles, coord2))	\
-			coord1 = coord2;	\
-		else	\
-			coord1 -= size;	\
-		}	\
+		coord1 = (coord1 - size1 + c_num_tiles)%c_num_tiles;	\
 	else if (delta1 < 0)	\
-		{	\
-		int size = size2 > 0 ? size2-1 : 0;	\
-		if (Tile_coord::gte((coord2 - size + c_num_tiles)%c_num_tiles, coord1))	\
-			coord2 = coord1;	\
-		else	\
-			coord2 -= size;	\
-		}	\
+		coord2 = (coord2 - size2 + c_num_tiles)%c_num_tiles;	\
 	}
 
 /*
@@ -203,10 +189,10 @@ int Game_object::distance
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 		dy = Tile_coord::delta(t1.ty, t2.ty),
 		dz = t1.tz - t2.tz;
-	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1),
-			info2.get_3d_xtiles(f2), t1.tx, t2.tx)
-	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1),
-			info2.get_3d_ytiles(f2), t1.ty, t2.ty)
+	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1)-1,
+			info2.get_3d_xtiles(f2)-1, t1.tx, t2.tx)
+	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1)-1,
+			info2.get_3d_ytiles(f2)-1, t1.ty, t2.ty)
 	DELTA_CHECK(dz, info1.get_3d_height(),
 			info2.get_3d_height(), t1.tz, t2.tz)
 	return t1.distance(t2);
@@ -228,8 +214,8 @@ int Game_object::distance
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 		dy = Tile_coord::delta(t1.ty, t2.ty),
 		dz = t1.tz - t2.tz;
-	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1), 1, t1.tx, t2.tx)
-	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1), 1, t1.ty, t2.ty)
+	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1)-1, 0, t1.tx, t2.tx)
+	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1)-1, 0, t1.ty, t2.ty)
 	DELTA_CHECK(dz, info1.get_3d_height(), 0, t1.tz, t2.tz)
 	return t1.distance(t2);
 	}
