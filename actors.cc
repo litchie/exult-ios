@@ -3997,48 +3997,21 @@ void Main_actor::handle_event
 	{
 	if (action)			// Doing anything?
 		{			// Do what we should.
-#if 1
-		// This code is a slight hack to force the avatar to wait 1 frame after
-		// completing a path action. This fixes a problem where the avatar would 
-		// instantly take another step after the path has finished. Normally 
-		// it's not a big problem, but with smooth scrolling enabled it causes
-		// jerky movement after every 8 steps where the avatar takes 2 steps in
-		// one frame
-		// - Colourless
-
-		// Are we at dest?
-		Tile_coord dest;
-		bool action_was_ended = false;
-		int delay = 0;
-
-		// If we are already at the destination tile then we do nothing
-		if (action->get_dest(dest) && get_tile() == dest)
-			action_was_ended = true;
-		// otherwise execute the action like normal
-		else
-			delay = action->handle_event(this);
-
-		// If we weren't already at the destionation, and we are now at the destionation
-		// make sure we stay classed as 'moving' till another frame_time elapses. This will
-		// stop exult from calling gwin->start_actor() right away causing a double step
-		if (delay == 0 && !action_was_ended && action->get_dest(dest) && get_tile() == dest) delay = frame_time;
-#else
+		int speed = action->get_speed();
 		int delay = action->handle_event(this);
-#endif
-
-		if (delay)		// Keep going with same action.
-			gwin->get_tqueue()->add(
-					curtime + delay, this, udata);
-		else if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
-			// Keep trying if we are in usecode control.
-			gwin->get_tqueue()->add(
-					curtime + gwin->get_std_delay(), this, udata);
-		else
-			{
+		if (!delay)
+			{	// Action finished.
+				// This makes for a smoother scrolling and prevents the
+				// avatar from skipping a step when walking.
+			frame_time = speed;
+			if (!frame_time)	// Not a path. Add a delay anyway.
+				frame_time = gwin->get_std_delay();
+			delay = frame_time;
 			set_action(0);
-			if (schedule)
-				schedule->now_what();
 			}
+
+		gwin->get_tqueue()->add(
+				curtime + delay, this, udata);
 		}
 	else if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
 		// Keep trying if we are in usecode control.
@@ -4697,20 +4670,20 @@ void Npc_actor::handle_event
 		{			// Do what we should.
 		int delay = party_id < 0 ? gwin->is_time_stopped() : 0;
 		if (delay <= 0)		// Time not stopped?
-			delay = action->handle_event(this);
-		if (delay)		// Keep going with same action.
-			gwin->get_tqueue()->add(
-					curtime + delay, this, udata);
-		else
 			{
-			set_action(0);
-			if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
-				// Keep trying if we are in usecode control.
-				gwin->get_tqueue()->add(
-						curtime + gwin->get_std_delay(), this, udata);
-			else if (schedule)
-				schedule->now_what();
+			int speed = action->get_speed();
+			delay = action->handle_event(this);
+			if (!delay)
+				{	// Action finished. Add a slight delay.
+				frame_time = speed;
+				if (!frame_time)	// Not a path. Add a delay anyway.
+					frame_time = gwin->get_std_delay();
+				delay = frame_time;
+				set_action(0);
+				}
 			}
+		gwin->get_tqueue()->add(
+				curtime + delay, this, udata);
 		}
 	}
 
