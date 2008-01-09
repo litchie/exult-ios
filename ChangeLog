@@ -1,3 +1,6 @@
+2008-01-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: fix --buildmap
+
 2007-12-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc, actions.h: Fixed crash when avatar finishes a usecode path.
 	  Double-stepping problem is completelly fixed, resulting in perfectly

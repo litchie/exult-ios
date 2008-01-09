@@ -5,7 +5,7 @@
  **/
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2004  The Exult Team
+ *  Copyright (C) 2000-2008  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -708,20 +708,25 @@ static void Init
 	}
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));
-#if defined(__zaurus__) || defined(UNDER_CE)
-	gwin = new Game_window(sw, sh, scaleval, sclr);
-#else
-	if (arg_gamename != "default" || run_bg || run_si)
-		gwin = new Game_window(sw, sh, scaleval, sclr);
-	else
-		gwin = new Game_window(400, 300, scaleval, sclr);
-#endif
-	current_res = find_resolution(sw, sh, scaleval);
-	Audio::Init();
 
-	bool disable_fades;
-	config->value("config/video/disable_fades", disable_fades, false);
-	gwin->get_pal()->set_fades_enabled(!disable_fades);
+	if (arg_buildmap < 0) {
+
+#if defined(__zaurus__) || defined(UNDER_CE)
+		gwin = new Game_window(sw, sh, scaleval, sclr);
+#else
+		if (arg_gamename != "default" || run_bg || run_si)
+			gwin = new Game_window(sw, sh, scaleval, sclr);
+		else
+			gwin = new Game_window(400, 300, scaleval, sclr);
+#endif
+
+		current_res = find_resolution(sw, sh, scaleval);
+		Audio::Init();
+
+		bool disable_fades;
+		config->value("config/video/disable_fades", disable_fades, false);
+		gwin->get_pal()->set_fades_enabled(!disable_fades);
+	}
 
 	SDL_SetEventFilter(0);
 	// Show the banner
@@ -779,8 +784,10 @@ static void Init
 			exit(1);
 		}
 
-		if (arg_buildmap >= 0)
+		if (arg_buildmap >= 0) {
 			BuildGameMap(newgame);
+			exit(0);
+		}
 
 		gwin->resized(sw, sh, scaleval, sclr);
 		// Ensure proper clipping:
