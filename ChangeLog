@@ -1,3 +1,8 @@
+2008-01-09    <jeff@mini.nerble.net>
+
+	* objs/objs.cc: Fixed macro bug in DELTA_WRAP_CHECK that affected
+	the 'distance' computation.
+
 2008-01-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: fix --buildmap
 
