@@ -150,27 +150,27 @@ Tile_coord Game_object::get_center_tile
 	}
 
 #define DELTA_CHECK(delta1, size1, size2, coord1, coord2) {	\
-	if (delta1 < 0)	\
+	if ((delta1) < 0)	\
 		{	\
-		if (coord1 + size1 > coord2)	\
+		if (coord1 + (size1) > coord2)	\
 			coord1 = coord2;	\
 		else	\
-			coord1 += size1;	\
+			coord1 += (size1);	\
 		}	\
-	else if (delta1 > 0)	\
+	else if ((delta1) > 0)	\
 		{	\
-		if (coord2 + size2 > coord1)	\
+		if (coord2 + (size2) > coord1)	\
 			coord2 = coord1;	\
 		else	\
-			coord2 += size2;	\
+			coord2 += (size2);	\
 		}	\
 	}
 
 #define DELTA_WRAP_CHECK(delta1, size1, size2, coord1, coord2) {	\
-	if (delta1 > 0)	\
-		coord1 = (coord1 - size1 + c_num_tiles)%c_num_tiles;	\
-	else if (delta1 < 0)	\
-		coord2 = (coord2 - size2 + c_num_tiles)%c_num_tiles;	\
+	if ((delta1) > 0)	\
+		coord1 = (coord1 - (size1) + c_num_tiles)%c_num_tiles;	\
+	else if ((delta1) < 0)	\
+		coord2 = (coord2 - (size2) + c_num_tiles)%c_num_tiles;	\
 	}
 
 /*
