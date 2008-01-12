@@ -149,7 +149,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
-	) : reached_end(false), path(p), from_offscreen(false),
+	) : reached_end(false), path(p), from_offscreen(false), speed(0),
 	    subseq(0), blocked(0), max_blocked(maxblk)
 	{
 	if (!path)

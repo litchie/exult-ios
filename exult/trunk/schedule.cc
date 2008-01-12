@@ -1339,13 +1339,9 @@ void Talk_schedule::now_what
 			cout << "Talk: Failed to find path for " << 
 						npc->get_name() << endl;
 #endif
-#if 0	// ++++ Testing.
-			npc->follow(gwin->get_main_actor());
-#else
 			// No path found; try again a little later.
 			npc->start(speed, 500);
 			return;
-#endif
 			}
 		else
 			{
@@ -1374,8 +1370,10 @@ void Talk_schedule::now_what
 		return;
 		}
 	case 3:				// Talk.
+		{
+		int dist = npc->distance(gwin->get_main_actor());
 					// Got to be close & reachable.
-		if (npc->distance(gwin->get_main_actor()) > 5 ||
+		if (dist > 5 ||
 			!Fast_pathfinder_client::is_grabable(npc->get_tile(),
 				gwin->get_main_actor()->get_tile()))
 			{
@@ -1389,6 +1387,7 @@ void Talk_schedule::now_what
 		phase++;
 		npc->start(speed, 250);	// Wait another 1/4 sec.
 		break;
+		}
 	case 4:
 		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
