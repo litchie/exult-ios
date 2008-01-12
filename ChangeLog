@@ -1,3 +1,8 @@
+2008-01-11    <jeff@mini.nerble.net>
+
+	* actions.cc (Path_walking_actor_action): 'speed' wasn't being
+	initialized, sometimes causing SI to hang at start.
+
 2008-01-09    <jeff@mini.nerble.net>
 
 	* objs/objs.cc: Fixed macro bug in DELTA_WRAP_CHECK that affected
