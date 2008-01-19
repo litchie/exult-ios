@@ -43,6 +43,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wuc", "wuc.vcproj", "{85D7D
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wud", "wud.vcproj", "{499B31BD-2481-4E51-BBDC-418479F34642}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Exult_Studio", "Exult_Studio.vcproj", "{D9AE158C-0752-4B98-B909-B1B2018A3428}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Install|Win32 = Debug Install|Win32
@@ -163,6 +165,14 @@ Global
 		{499B31BD-2481-4E51-BBDC-418479F34642}.Release Install|Win32.Build.0 = Release Install|Win32
 		{499B31BD-2481-4E51-BBDC-418479F34642}.Release|Win32.ActiveCfg = Release|Win32
 		{499B31BD-2481-4E51-BBDC-418479F34642}.Release|Win32.Build.0 = Release|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Debug Install|Win32.ActiveCfg = Debug|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Debug Install|Win32.Build.0 = Debug|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Debug|Win32.Build.0 = Debug|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Release Install|Win32.ActiveCfg = Release|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Release Install|Win32.Build.0 = Release|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Release|Win32.ActiveCfg = Release|Win32
+		{D9AE158C-0752-4B98-B909-B1B2018A3428}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

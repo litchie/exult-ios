@@ -166,8 +166,7 @@ bool Dragging_info::start
 			{
 		    	if (!cheat.in_hack_mover() && 
 				!Fast_pathfinder_client::is_grabable(
-				   gwin->get_main_actor()->get_tile(), 
-							obj->get_tile()))
+				   gwin->get_main_actor(), obj))
 				{
 				Mouse::mouse->flash_shape(Mouse::blocked);
 				obj = 0;
@@ -192,8 +191,7 @@ bool Dragging_info::start
 			Main_actor *main_actor = gwin->get_main_actor();
 			// Check the range
 			if (!cheat.in_hack_mover() &&
-			    !Fast_pathfinder_client::is_grabable(
-			    main_actor->get_tile(), owner_obj->get_tile())) 
+			    !Fast_pathfinder_client::is_grabable(main_actor, owner_obj))
 				{
 				obj = 0;
 				gump = 0;
@@ -393,8 +391,7 @@ bool Dragging_info::drop_on_gump
 	Main_actor *main_actor = gwin->get_main_actor(); 
 	// Check the range
 	if (owner_obj && !cheat.in_hack_mover() &&
-		!Fast_pathfinder_client::is_grabable(main_actor->get_tile(),
-											 owner_obj->get_tile()))
+		!Fast_pathfinder_client::is_grabable(main_actor, owner_obj))
 		{	  		// Object was not grabable
 		Mouse::mouse->flash_shape(Mouse::outofrange);
 		return false;
@@ -682,8 +679,8 @@ int Game_window::drop_at_lift
 			lift, move_flags, max_drop) ||
 	   (!cheat.in_hack_mover() &&
 					// Check for path to location.
-	    !Fast_pathfinder_client::is_grabable(
-		main_actor->get_tile(), Tile_coord(tx, ty, lift))))
+	    !Fast_pathfinder_client::is_grabable(main_actor, 
+			Tile_coord(tx, ty, lift))))
 		return 0;
 
 	to_drop->set_invalid();

@@ -16,7 +16,7 @@ using EStudio::Create_arrow_button;
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
 	: group(grp), file_info(fi), popup(0),
 	selected(-1), vscroll(0), hscroll(0), find_text(0), index0(0),
-	loc_down(0), loc_up(0), loc_q(0),
+	loc_down(0), loc_up(0), loc_q(0), loc_f(0),
 	move_down(0), move_up(0), config_width(0), config_height(0)
 {
 	widget = 0;
@@ -396,6 +396,20 @@ GtkWidget *Object_browser::create_controls
 		loc_up = Create_arrow_button(GTK_ARROW_UP,
 	                    	GTK_SIGNAL_FUNC(on_loc_up), this);
 		gtk_box_pack_start(GTK_BOX (bbox), loc_up, TRUE, TRUE, 2);
+		if (controls & (int) locate_frame)
+			{
+			GtkWidget *lbl = gtk_label_new(" F:");
+			gtk_misc_set_alignment(GTK_MISC(lbl), 0.9, 0.5);
+			gtk_box_pack_start(GTK_BOX(lbox), lbl, TRUE, TRUE, 0);
+			gtk_widget_show(lbl);
+			loc_f = gtk_entry_new ();
+			gtk_editable_set_editable(GTK_EDITABLE(loc_f), TRUE);
+			gtk_entry_set_visibility(GTK_ENTRY(loc_f), TRUE);
+			GTK_OBJECT_SET_FLAGS(loc_f, GTK_CAN_FOCUS);
+			gtk_widget_show (loc_f);
+			gtk_box_pack_start(GTK_BOX(lbox), loc_f, TRUE, TRUE,4);
+			gtk_widget_set_size_request (loc_f, 64, -1);
+			}
 		if (controls & (int) locate_quality)
 			{
 			GtkWidget *lbl = gtk_label_new(" Q:");

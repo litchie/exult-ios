@@ -149,28 +149,44 @@ Tile_coord Game_object::get_center_tile
 	return Tile_coord(x, y, lift);
 	}
 
-#define DELTA_CHECK(delta1, size1, size2, coord1, coord2) {	\
-	if ((delta1) < 0)	\
-		{	\
-		if (coord1 + (size1) > coord2)	\
-			coord1 = coord2;	\
-		else	\
-			coord1 += (size1);	\
-		}	\
-	else if ((delta1) > 0)	\
-		{	\
-		if (coord2 + (size2) > coord1)	\
-			coord2 = coord1;	\
-		else	\
-			coord2 += (size2);	\
-		}	\
+static inline void delta_check
+	(
+	int delta1,
+	int size1,
+	int size2,
+	short& coord1,
+	short& coord2
+	)
+	{
+	if (delta1 < 0)
+		{
+		if (coord1 + size1 > coord2)
+			coord1 = coord2;
+		else
+			coord1 += size1;
+		}
+	else if (delta1 > 0)
+		{
+		if (coord2 + size2 > coord1)
+			coord2 = coord1;
+		else
+			coord2 += size2;
+		}
 	}
 
-#define DELTA_WRAP_CHECK(delta1, size1, size2, coord1, coord2) {	\
-	if ((delta1) > 0)	\
-		coord1 = (coord1 - (size1) + c_num_tiles)%c_num_tiles;	\
-	else if ((delta1) < 0)	\
-		coord2 = (coord2 - (size2) + c_num_tiles)%c_num_tiles;	\
+static inline void delta_wrap_check
+	(
+	int delta1,
+	int size1,
+	int size2,
+	short& coord1,
+	short& coord2
+	)
+	{
+	if (delta1 > 0)
+		coord1 = (coord1 - size1 + c_num_tiles)%c_num_tiles;
+	else if (delta1 < 0)
+		coord2 = (coord2 - size2 + c_num_tiles)%c_num_tiles;
 	}
 
 /*
@@ -189,12 +205,12 @@ int Game_object::distance
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 		dy = Tile_coord::delta(t1.ty, t2.ty),
 		dz = t1.tz - t2.tz;
-	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1)-1,
-			info2.get_3d_xtiles(f2)-1, t1.tx, t2.tx)
-	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1)-1,
-			info2.get_3d_ytiles(f2)-1, t1.ty, t2.ty)
-	DELTA_CHECK(dz, info1.get_3d_height(),
-			info2.get_3d_height(), t1.tz, t2.tz)
+	delta_wrap_check(dx, info1.get_3d_xtiles(f1)-1,
+			info2.get_3d_xtiles(f2)-1, t1.tx, t2.tx);
+	delta_wrap_check(dy, info1.get_3d_ytiles(f1)-1,
+			info2.get_3d_ytiles(f2)-1, t1.ty, t2.ty);
+	delta_check(dz, info1.get_3d_height(),
+			info2.get_3d_height(), t1.tz, t2.tz);
 	return t1.distance(t2);
 	}
 
@@ -214,9 +230,9 @@ int Game_object::distance
 	int dx = Tile_coord::delta(t1.tx, t2.tx),
 		dy = Tile_coord::delta(t1.ty, t2.ty),
 		dz = t1.tz - t2.tz;
-	DELTA_WRAP_CHECK(dx, info1.get_3d_xtiles(f1)-1, 0, t1.tx, t2.tx)
-	DELTA_WRAP_CHECK(dy, info1.get_3d_ytiles(f1)-1, 0, t1.ty, t2.ty)
-	DELTA_CHECK(dz, info1.get_3d_height(), 0, t1.tz, t2.tz)
+	delta_wrap_check(dx, info1.get_3d_xtiles(f1)-1, 0, t1.tx, t2.tx);
+	delta_wrap_check(dy, info1.get_3d_ytiles(f1)-1, 0, t1.ty, t2.ty);
+	delta_check(dz, info1.get_3d_height(), 0, t1.tz, t2.tz);
 	return t1.distance(t2);
 	}
 

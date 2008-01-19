@@ -169,8 +169,8 @@ int Actor_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return tile.distance_2d(goal) <= dist &&
-		(goal.tz == -1 || tile.tz == goal.tz);
+	return tile.distance(goal) <= dist &&
+		(goal.tz == -1);
 	}
 
 /*
@@ -415,11 +415,13 @@ int Fast_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	if (tile.distance(goal) > dist)
+	if (tile.distance_2d(goal) > dist)
 		return 0;		// Not close enough.
 	int dz = tile.tz - goal.tz;	// Want to be within 1 story.
 	return dz <= 5 && dz >= -5;
 	}
+
+#define MAX_GRAB_DIST 3
 
 /*
  *	Just test to see if an object can be grabbed.
@@ -431,13 +433,40 @@ int Fast_pathfinder_client::is_grabable
 	Tile_coord to			// To this spot.
 	)
 	{
-//No.	from.tz = to.tz;		// Just look along dest's lift.
 	if (from.distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(3, 
+	Fast_pathfinder_client client(MAX_GRAB_DIST, 
 	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from, to, &client);
+	}
+
+int Fast_pathfinder_client::is_grabable
+	(
+	Game_object *from,		// From this object.
+	Game_object *to			// To this object.
+	)
+	{
+	if (from->distance(to) <= 1)
+		return 1;		// Already okay.
+	Fast_pathfinder_client client(MAX_GRAB_DIST, 
+	   Game_window::get_instance()->get_main_actor()->get_type_flags());
+	Astar path;
+	return path.NewPath(from->get_tile(), to->get_tile(), &client);
+	}
+
+int Fast_pathfinder_client::is_grabable
+	(
+	Game_object *from,		// From this object.
+	Tile_coord to			// To this spot.
+	)
+	{
+	if (from->distance(to) <= 1)
+		return 1;		// Already okay.
+	Fast_pathfinder_client client(MAX_GRAB_DIST, 
+	   Game_window::get_instance()->get_main_actor()->get_type_flags());
+	Astar path;
+	return path.NewPath(from->get_tile(), to, &client);
 	}
 
 /*

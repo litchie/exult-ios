@@ -1,3 +1,13 @@
+2008-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Added overloaded methods for Fast_pathfinder_client::is_grabable to make
+	  use of the new distance function.
+	* Exult Studio/Exult can now search for a shape of a given frame as well.
+	* Fixed can_avatar_reach_pos intrinsic.
+	* Switched from DELTA_WRAP_CHECK and DELTA_CHECK macros to static inline
+	  functions to prevent possible undetected problems.
+	* Update of MSVC projects, including a new project for ES (though I doubt
+	  it compiles).
+
 2008-01-11    <jeff@mini.nerble.net>
 
 	* actions.cc (Path_walking_actor_action): 'speed' wasn't being

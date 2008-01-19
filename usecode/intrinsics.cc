@@ -3378,12 +3378,12 @@ USECODE_INTRINSIC(is_dest_reachable)
 USECODE_INTRINSIC(can_avatar_reach_pos)
 {
 	Usecode_value ret(0);
-	if (parms[1].get_array_size() < 2)
+	if (parms[0].get_array_size() < 2)
 		return ret;
-	Tile_coord dest = Tile_coord(parms[1].get_elem(0).get_int_value(),
-					parms[1].get_elem(1).get_int_value(),
-					parms[1].get_array_size() == 2 ? 0 :
-							parms[1].get_elem(2).get_int_value());
+	Tile_coord dest = Tile_coord(parms[0].get_elem(0).get_int_value(),
+					parms[0].get_elem(1).get_int_value(),
+					parms[0].get_array_size() == 2 ? 0 :
+							parms[0].get_elem(2).get_int_value());
 	ret = Usecode_value(is_dest_reachable(gwin->get_main_actor(), dest));
 	return ret;
 }

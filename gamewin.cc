@@ -892,6 +892,7 @@ bool Game_window::locate_shape
 	(
 	int shapenum,			// Desired shape.
 	bool upwards,			// If true, search upwards.
+	int frnum,			// Frame.
 	int qual			// Quality/quantity.
 	)
 	{
@@ -903,7 +904,7 @@ bool Game_window::locate_shape
 	effects->center_text(msg);
 	paint();
 	show();
-	Game_object *obj = map->locate_shape(shapenum, upwards, start, qual);
+	Game_object *obj = map->locate_shape(shapenum, upwards, start, frnum, qual);
 	if (!obj)
 		{
 		effects->center_text("Not found");
@@ -2365,9 +2366,7 @@ void Game_window::double_clicked
 			if (obj && !obj->as_actor() &&
 			!cheat.in_hack_mover() &&
 			//!Is_sign(obj->get_shapenum()) &&
-			!Fast_pathfinder_client::is_grabable(
-				main_actor->get_tile(),
-				obj->get_tile()))
+			!Fast_pathfinder_client::is_grabable(main_actor, obj))
 			{
 			Mouse::mouse->flash_shape(Mouse::blocked);
 			return;
@@ -2536,8 +2535,7 @@ Actor *Game_window::find_witness
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist >= closest_witness_dist ||
-		    !Fast_pathfinder_client::is_grabable(
-				npc->get_tile(), main_actor->get_tile()))
+		    !Fast_pathfinder_client::is_grabable(npc, main_actor))
 			continue;
 					// Looking toward Avatar?
 		int dir = npc->get_direction(main_actor);

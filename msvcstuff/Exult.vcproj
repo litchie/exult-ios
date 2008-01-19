@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Exult"
 	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
 	RootNamespace="Exult"
@@ -146,7 +146,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
-				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
+				PreprocessorDefinitions="_DEBUG;DEBUG;_CONSOLE;EXULT;WIN32;USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="false"
@@ -1575,6 +1575,10 @@
 				Name="imagewin"
 				>
 				<File
+					RelativePath="..\imagewin\hq2x.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\imagewin\ibuf16.cc"
 					>
 				</File>
@@ -2003,6 +2007,10 @@
 					</File>
 					<File
 						RelativePath="..\usecode\ucscriptop.h"
+						>
+					</File>
+					<File
+						RelativePath="..\usecode\ucsymtbl.h"
 						>
 					</File>
 					<File

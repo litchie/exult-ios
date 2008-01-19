@@ -1374,8 +1374,8 @@ void Talk_schedule::now_what
 		int dist = npc->distance(gwin->get_main_actor());
 					// Got to be close & reachable.
 		if (dist > 5 ||
-			!Fast_pathfinder_client::is_grabable(npc->get_tile(),
-				gwin->get_main_actor()->get_tile()))
+			!Fast_pathfinder_client::is_grabable(npc,
+				gwin->get_main_actor()))
 			{
 			phase = 0;
 			npc->start(speed, 500);

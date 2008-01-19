@@ -196,7 +196,7 @@ public:
 	void find_unused_shapes(unsigned char *found, int foundlen);
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
-						Game_object *start, int qual);
+						Game_object *start, int frnum, int qual);
 	static bool write_minimap();
 
 				// Do a cache out. (cx, cy) is the center

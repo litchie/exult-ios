@@ -244,7 +244,7 @@ public:
 	 */
 	Map_patch_collection *get_map_patches();
 					// Locate shape (for EStudio).
-	bool locate_shape(int shapenum, bool upwards, int qual);
+	bool locate_shape(int shapenum, bool upwards, int frnum, int qual);
 	void send_location();		// Send our location to EStudio.
 	/*
 	 *	Gameplay data:
