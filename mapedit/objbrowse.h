@@ -43,6 +43,7 @@ protected:
 	GtkWidget *find_text;		// For searching.
 	GtkWidget *loc_down, *loc_up;	// 'Locate' buttons.
 	GtkWidget *loc_q;		// 'Locate' quality/quantity.
+	GtkWidget *loc_f;		// 'Locate' frame
 					// 'Move' buttons:
 	GtkWidget *move_down, *move_up;
 	int config_width, config_height;// For storing prev. dims.
@@ -62,6 +63,8 @@ public:
 		{ return find_text; }
 	GtkWidget *get_loc_q()
 		{ return loc_q; }
+	GtkWidget *get_loc_f()
+		{ return loc_f; }
 	virtual void load()		// Load from file data.
 		{  }
 	virtual void setup_info(bool savepos = true)
@@ -89,7 +92,8 @@ public:
 		find_controls = 1,
 		locate_controls = 2,
 		locate_quality = 4,
-		move_controls = 8
+		move_controls = 8,
+		locate_frame = 16
 		};
 	GtkWidget *create_controls(int controls);
 					// Virtuals for controls.
