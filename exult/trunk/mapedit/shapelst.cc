@@ -2326,8 +2326,10 @@ void Shape_chooser::locate
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	int qual = ExultStudio::get_num_entry(get_loc_q(), -1);
+	int frnum = ExultStudio::get_num_entry(get_loc_f(), -1);
 	Write2(ptr, info[selected].shapenum);
-	Write2(ptr, qual == -1 ? c_any_qual : qual);
+	Write2(ptr, frnum < 0 ? c_any_framenum : frnum);
+	Write2(ptr, qual < 0 ? c_any_qual : qual);
 	*ptr++ = upwards ? 1 : 0;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->send_to_server(
@@ -2523,7 +2525,7 @@ Shape_chooser::Shape_chooser
 				GTK_SIGNAL_FUNC(all_frames_toggled), this);
 					// Add search controls to bottom.
 	gtk_box_pack_start(GTK_BOX(vbox), 
-		create_controls(find_controls|locate_controls|locate_quality),
+		create_controls(find_controls|locate_controls|locate_quality|locate_frame),
 						FALSE, FALSE, 0);
 	}
 

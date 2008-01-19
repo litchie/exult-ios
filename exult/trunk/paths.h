@@ -104,6 +104,8 @@ public:
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
 	static int is_grabable(Tile_coord from, Tile_coord to);
+	static int is_grabable(Game_object *from, Game_object *to);
+	static int is_grabable(Game_object *from, Tile_coord to);
 					// Check for unblocked straight path.
 	static int is_straight_path(Tile_coord from, Tile_coord to);
 	static int is_straight_path(Game_object *from, Game_object *to);

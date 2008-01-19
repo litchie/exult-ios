@@ -1569,10 +1569,14 @@ bool Usecode_internal::is_dest_reachable
 	Tile_coord dest
 	)
 	{
+	if (dest.tz < 0)
+		return false;
+	if (npc->distance(dest) <= 1)	// Already OK.
+		return true;
 	Path_walking_actor_action *action = 
 		new Path_walking_actor_action(0, 6);
 	
-	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest);
+	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1);
 	delete action;
 	return ret;
 	}
