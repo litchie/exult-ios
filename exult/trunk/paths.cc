@@ -169,8 +169,7 @@ int Actor_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return tile.distance(goal) <= dist &&
-		(goal.tz == -1);
+	return (goal.tz==-1 ? tile.distance_2d(goal) : tile.distance(goal))<= dist;
 	}
 
 /*
