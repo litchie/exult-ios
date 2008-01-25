@@ -23,7 +23,7 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -lti
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
 ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
-ZIP_LIBS=-L$(SRC)/zlib lz
+ZIP_LIBS=-L$(SRC)/zlib -lz
 ### To link zlib statically, comment the previous line and uncomment the next one.
 #ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 
@@ -54,7 +54,7 @@ GIMP_LIBS = `pkg-config --libs gimpui-2.0`
 
 ### Combined Exult Studio includes and libs.
 ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
-ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lpng
+ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
 # Leave this option empty
 EXTRA_OPTIONS=
@@ -74,7 +74,7 @@ CFLAGS= -O3 -mms-bitfields
 CC=gcc
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows -lws2_32 $(ES_LIBS)
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -lws2_32 -mwindows
 
 EXEC=Exult.exe
 EXEEXT=.exe
@@ -88,8 +88,7 @@ ES_SERVER_OBJS=objserial.o servemsg.o servewin32.o
 MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
 	exult_studio.o locator.o maps.o \
 	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o \
-	shapedraw.o \
-	shapefile.o shapegroup.o \
+	shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o ucbrowse.o \
 	ucsymtbl.o
 
@@ -118,7 +117,7 @@ exconfig.dll: win32/exconfig.def $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfi
 	dllwrap --def win32/exconfig.def -o $@ $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfig.o -lstdc++
 
 exult_studio$(EXEEXT): $(BG_PAPERDOLL) $(FLEXES) $(ES_OBJS) $(EXP_FILE)
-	$(CXX) $(EXP_FILE) -o $@ $(ES_OBJS) $(LIBS)
+	$(CXX) $(EXP_FILE) -o $@ $(ES_OBJS) $(ES_LIBS)
 
 $(EXP_FILE): $(ES_OBJS)
 	dlltool --output-exp $@ $(ES_OBJS) -D exult_studio$(EXEEXT)
