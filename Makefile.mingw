@@ -3,6 +3,8 @@
 
 # Where is Ultima 7 installed
 U7PATH=C:/Ultima7
+# Only used for snapshots
+TOOLSPATH=C:/GimpPlugin
 
 # Base of the exult source
 SRC=.
@@ -21,29 +23,88 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -lti
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
 ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
-ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
+ZIP_LIBS=-L$(SRC)/zlib lz
+### To link zlib statically, comment the previous line and uncomment the next one.
+#ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
+
+
+### GTK+ libs and includes, for Exult Studio.
+# If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
+GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
+# If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
+GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
+
+### Glade libs and includes, for Exult Studio.
+# If this doesn't work, insert output of 'pkg-config --cflags libglade-2.0' manually
+LIBGLADE_INCLUDES = `pkg-config --cflags libglade-2.0`
+# If this doesn't work, insert output of 'pkg-config --libs libglade-2.0' manually
+LIBGLADE_LIBS = `pkg-config --libs libglade-2.0`
+
+### FREETYPE2 libs and includes, for Exult Studio.
+# If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
+FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
+# If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
+FREETYPE2_LIBS = `pkg-config --libs freetype2`
+
+### GIMP libs and includes, for Exult Studio.
+# If this doesn't work, insert output of 'pkg-config --cflags gimpui-2.0' manually
+GIMP_INCLUDES = `pkg-config --cflags gimpui-2.0`
+# If this doesn't work, insert output of 'pkg-config --libs gimpui-2.0' manually
+GIMP_LIBS = `pkg-config --libs gimpui-2.0`
+
+### Combined Exult Studio includes and libs.
+ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
+ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lpng
 
 # Leave this option empty
 EXTRA_OPTIONS=
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers  -I$(SRC)/conf -I$(SRC)/data \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf -I$(SRC)/data \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gamemgr -I$(SRC)/gumps -I$(SRC)/headers \
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
-	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	-I$(SRC)/mapedit $(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 \
+	$(ZIP_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS)
 
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
+CXXFLAGS=-O3 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
 CXX=g++
 
+CFLAGS= -O3 -mms-bitfields
+CC=gcc
+
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows -lws2_32
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows -lws2_32 $(ES_LIBS)
 
 EXEC=Exult.exe
 EXEEXT=.exe
 
+EXP_FILE=exult_studio.exp
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 ICON_OBJS=exultico.o
+
+ES_SERVER_OBJS=objserial.o servemsg.o servewin32.o
+
+MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
+	exult_studio.o locator.o maps.o \
+	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o \
+	shapedraw.o \
+	shapefile.o shapegroup.o \
+	shapeedit.o shapelst.o studio.o ucbrowse.o \
+	ucsymtbl.o
+
+ES_FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
+
+ES_GAMEMGR_OBJS=modmgr.o
+
+ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
+
+ES_SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
+
+MISC_OBJS=exultstudioico.o windrag.o
+
+ES_OBJS=$(MAPEDIT_OBJS) $(ES_FILES_OBJS) $(ES_GAMEMGR_OBJS) $(ES_IMAGEWIN_OBJS) $(ES_SHAPES_OBJS) \
+	$(ES_SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
 
 include Makefile.common
 
@@ -56,6 +117,17 @@ exconfig_rc.o: win32/exconfig.rc
 exconfig.dll: win32/exconfig.def $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfig.o
 	dllwrap --def win32/exconfig.def -o $@ $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfig.o -lstdc++
 
+exult_studio$(EXEEXT): $(BG_PAPERDOLL) $(FLEXES) $(ES_OBJS) $(EXP_FILE)
+	$(CXX) $(EXP_FILE) -o $@ $(ES_OBJS) $(LIBS)
+
+$(EXP_FILE): $(ES_OBJS)
+	dlltool --output-exp $@ $(ES_OBJS) -D exult_studio$(EXEEXT)
+
+exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
+	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
+
+u7shp$(EXEEXT) : u7shp.o
+	$(CXX) -o $(@) $+ $(GTK_LIBS) $(GIMP_LIBS) -mwindows
 
 install: $(EXEC)
 	mkdir -p $(U7PATH)
@@ -170,10 +242,54 @@ toolsdist: tools
 	cp SDL/lib/SDL.dll $(U7PATH)/Tools/tools
 	cp win32/exult_tools_installer.iss $(U7PATH)
 
-allclean: clean toolsclean
+studioclean:
+	rm -f $(ES_OBJS) $(EXP_FILE) exult_studio$(EXEEXT) u7shp$(EXEEXT) u7shp.o
+
+studioinstall: exult_studio$(EXEEXT)
+	mkdir -p $(U7PATH)
+	strip exult_studio$(EXEEXT) -o $(U7PATH)/exult_studio$(EXEEXT)
+	mkdir -p $(U7PATH)/data
+	cp mapedit/exult_studio.glade $(U7PATH)/data
+	mkdir -p $(U7PATH)/data/estudio
+	mkdir -p $(U7PATH)/data/estudio/new
+	cp data/estudio/new/*.flx $(U7PATH)/data/estudio/new
+	cp data/estudio/new/*.vga $(U7PATH)/data/estudio/new
+	cp data/estudio/new/*.shp $(U7PATH)/data/estudio/new
+
+maptools: u7shp$(EXEEXT)
+
+maptoolsinstall: maptools
+	strip u7shp$(EXEEXT) -o $(HOME)/u7shp$(EXEEXT)
+
+maptoolsdist: maptools
+	mkdir -p $(TOOLSPATH)
+	strip u7shp$(EXEEXT) -o $(TOOLSPATH)/u7shp$(EXEEXT)
+	cp mapedit/gimpwin32.txt $(TOOLSPATH)
+	u2d $(TOOLSPATH)/*.txt
+
+studiodist: exult_studio$(EXEEXT)
+	mkdir -p $(U7PATH)
+	mkdir -p $(U7PATH)/Studio
+	strip exult_studio$(EXEEXT) -o  $(U7PATH)/Studio/exult_studio$(EXEEXT)
+	mkdir -p $(U7PATH)/Studio/data
+	cp docs/exult_studio.html $(U7PATH)/Studio
+	cp docs/exult_studio.txt $(U7PATH)/Studio
+	mkdir -p $(U7PATH)/Studio/images
+	cp docs/images/*.gif $(U7PATH)/Studio/images
+	cp docs/images/studio*.png $(U7PATH)/Studio/images
+	cp mapedit/exult_studio.glade $(U7PATH)/Studio/data
+	mkdir -p $(U7PATH)/Studio/data/estudio
+	mkdir -p $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.flx $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.vga $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.shp $(U7PATH)/Studio/data/estudio/new
+	u2d $(U7PATH)/Studio/*.txt
+	cp win32/exult_studio_installer.iss $(U7PATH)
+
+allclean: clean toolsclean studioclean
 	rm -f exconfig.dll exconfig_rc.o exconfig.o
 
-allinstall: install toolsinstall
+allinstall: install toolsinstall studioinstall
 
 run:
 	start $(EXEC)
