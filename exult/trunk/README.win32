@@ -53,16 +53,15 @@ Change to the directory where you unpacked the Exult source code.
 Open makefile.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult to be installed to.
 (ie C:/Games/Ultima7 )
 
-If you are compiling Exult Studio, open makefile.studio.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult Studio to be installed to. 
-(It must be the same directory that Exult is installed into to!)
-(ie C:/Games/Ultima7 )
+If you are compiling Exult Studio, it will be installed to the same directory that Exult when you compile it. You can change that directory in the same way.
 
 Type 'make -f makefile.mingw install' without quotes to compile and install Exult for Windows
 
 Type 'make -f makefile.mingw toolsinstall' without quotes to compile and install the Exult Tools for Windows
 
-Type 'make -f makefile.studio.mingw install' without quotes to compile and install Exult Studio for Windows
+Type 'make -f makefile.mingw studioinstall' without quotes to compile and install Exult Studio for Windows
 Copy over the required library files (*.dll) from the bin directory of MinGW to the installation directory of Exult Studio
+Alternativelly, you can set your PATH environment variable to include the MinGW bin directory instead of copying the files.
 
 Once compile has finished and been installed exit MSYS
 
