@@ -1317,7 +1317,7 @@ void Talk_schedule::now_what
 	if (phase != 0 && phase != 4 &&
 	    npc->distance(gwin->get_main_actor()) < 8)
 		phase = 3;
-	int speed = gwin->get_std_delay() << 1;
+	int speed = gwin->get_std_delay();
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
@@ -1330,9 +1330,9 @@ void Talk_schedule::now_what
 			}
 					// Aim for within 5 tiles.
 		Actor_pathfinder_client cost(npc, 5);
-		Actor_action *pact = Path_walking_actor_action::create_path(
+		Actor_action *pact = Approach_actor_action::create_path(
 			npc->get_tile(),
-			gwin->get_main_actor()->get_tile(), cost);
+			gwin->get_main_actor(), 5, cost);
 		if (!pact)
 			{
 #ifdef DEBUG
@@ -1345,12 +1345,12 @@ void Talk_schedule::now_what
 			}
 		else
 			{
-		if (rand()%3 == 0)
-			npc->say(first_talk, last_talk);
+			if (rand()%3 == 0)
+				npc->say(first_talk, last_talk);
 					// Walk there, and retry if
 					//   blocked.
 			npc->set_action(pact);
-			npc->start(speed, 250);	// Start walking.
+			npc->start(speed);	// Start walking.
 			}
 		phase++;
 		return;
@@ -1493,12 +1493,13 @@ void Dance_schedule::now_what
 	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
 	Tile_coord cur = npc->get_tile();
-	int dir = static_cast<int>(Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx));
+	int dir = static_cast<int>(Get_direction4(cur.ty - dest.ty, 
+							dest.tx - cur.tx));
 	signed char frames[4];
 	for (int i = 0; i < 4; i++)
 					// Spin with 'hands outstretched'.
 		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 
-										  npc->get_shapenum() == 846 ? 15 : 9);
+					npc->get_shapenum() == 846 ? 15 : 9);
 					// Create action to walk.
 	Actor_action *walk = new Path_walking_actor_action(new Zombie());
 	walk->walk_to_tile(npc, cur, dest);

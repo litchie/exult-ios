@@ -500,17 +500,45 @@ Approach_actor_action::Approach_actor_action
 	(
 	PathFinder *p,			// Path to follow.
 	Game_object *d,			// Destination object.
+	int gdist,			// Stop when this close to dest.
 	bool for_proj			// Check for projectile path.
 	) : Path_walking_actor_action(p, 0),	// (Stop if blocked.)
 	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0),
-	    for_projectile(for_proj)
+	    goal_dist(gdist), for_projectile(for_proj)
 	{
 					// Get length of path.
 	int nsteps = path->get_num_steps();
+	cout << "Aproach nsteps is " << nsteps << "." << endl;
 	if (nsteps >= 6)		// (May have to play with this).
 		check_step = nsteps > 18 ? 9 : nsteps/2;
 	else
 		check_step = 10000;
+	}
+
+/*
+ *	Create action for walking towards a given (moving) object using Astar.
+ *	Note:  This is a static method.
+ *
+ *	Output:	Action if successful, else 0.
+ */
+
+Approach_actor_action *Approach_actor_action::create_path
+	(
+	Tile_coord src,			// Starting position.
+	Game_object *dest,		// Destination.
+	int gdist,			// Stop when this close to dest.
+	Pathfinder_client& cost		// Cost for Astar.
+	)
+	{
+	Astar *path = new Astar();
+					// Get to within 1 tile.
+	if (path->NewPath(src, dest->get_tile(), &cost))
+		return new Approach_actor_action(path, dest, gdist);
+	else
+		{
+		delete path;
+		return 0;
+		}
 	}
 
 /*
@@ -527,11 +555,15 @@ int Approach_actor_action::handle_event
 	int delay = Path_walking_actor_action::handle_event(actor);
 	if (!delay)			// Done or blocked.
 		return 0;
+					// Close enough?
+	if (goal_dist >= 0 && actor->distance(dest_obj) <= goal_dist)
+		return 0;
 	if (++cur_step == check_step)	// Time to check.
 		{
 #ifdef DEBUG
 		cout << actor->get_name() << 
-			" approach: Checking dest_obj. pos" <<
+			" approach: Dist. to dest is " <<
+			actor->distance(dest_obj) << 
 					endl;
 #endif
 		if (dest_obj->distance(orig_dest_pos) > 2)
@@ -542,12 +574,8 @@ int Approach_actor_action::handle_event
 					// Figure next check.
 		int nsteps = path->get_num_steps();
 		if (nsteps >= 6)
-#if 0	// ++++ Testing
-			check_step += nsteps/2;
-#else
 			// Try checking more often.
 			check_step += 3;
-#endif
 		}
 	return delay;
 	}
