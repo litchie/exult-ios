@@ -131,13 +131,16 @@ public:
 class Approach_actor_action : public Path_walking_actor_action
 	{
 	Game_object *dest_obj;		// Destination object.
+	int goal_dist;			// Stop if within this distance.
 	Tile_coord orig_dest_pos;	// Dest_obj's pos. when we start.
 	int cur_step;			// Count steps.
 	int check_step;			// Check at this step.
 	bool for_projectile;		// Check for proj. path.
 public:
-	Approach_actor_action(PathFinder *p, Game_object *d, bool for_proj =
-								false);
+	Approach_actor_action(PathFinder *p, Game_object *d, 
+			int gdist = -1, bool for_proj = false);
+	static Approach_actor_action *create_path(Tile_coord src,
+		Game_object *dest, int gdist, Pathfinder_client& cost);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	};
@@ -175,24 +178,6 @@ public:
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	};
-
-#if 0	/* +++Maybe not needed. */
-/*
- *	Approach an enemy during combat.
- */
-class Combat_path_actor_action : public Actor_action
-	{
-	PathFinder *path;		// Allocated pathfinder.
-	int frame_index;		// Index within frame sequence.
-public:
-	Combat_path_walking_actor_action(PathFinder *p);
-	virtual ~Combat_path_walking_actor_action();
-					// Handle time event.
-	virtual int handle_event(Actor *actor);
-					// Get destination, or ret. 0.
-	virtual int get_dest(Tile_coord& dest);
-	};
-#endif
 
 /*
  *	Activate an object.

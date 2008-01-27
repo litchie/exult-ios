@@ -1,3 +1,8 @@
+2008-01-27    <jeff@mini.nerble.net>
+
+	* schedule.cc, actions.cc, actions.h: Made the 'talk' schedule
+	more aggressive, so it's harder for the Avatar to get away.
+
 2008-01-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	"Fixed" operator precedence rules for UCC to be more like those of C/C++.
 	Making UCC emit bytes for script opcodes as the originals do; UCC is
