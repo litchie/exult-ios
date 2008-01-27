@@ -176,8 +176,9 @@ public:
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 					// Add int constant.
-	Uc_symbol *add_int_const_symbol(char *nm, int value);
-	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
+	Uc_symbol *add_int_const_symbol(char *nm, int value, bool want_byte = false);
+	static Uc_symbol *add_global_int_const_symbol(char *nm, int val,
+			bool want_byte = false);
 	static void add_global_static(char *nm);
 	static void add_global_static(char *nm, Uc_class *c);
 	int add_string(char *text);
