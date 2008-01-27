@@ -1,3 +1,12 @@
+2008-01-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	"Fixed" operator precedence rules for UCC to be more like those of C/C++.
+	Making UCC emit bytes for script opcodes as the originals do; UCC is
+	now able to declare byte constants with 'const char' and 'const byte'.
+	For the same reasons, functions called with CALLE are also linked in the
+	same way as functions called with CALL; functions with 32-bit function ids,
+	as well as class methods, are not linked. Finally, function IDs/shapes can
+	now be specified through defined constants.
+
 2008-01-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	MinGW specific: Removed Makefile.studio.mingw file; compilation in MinGW now
 	uses only Makefile.mingw. Compilation/distribution os ES and the GIMP plug-in

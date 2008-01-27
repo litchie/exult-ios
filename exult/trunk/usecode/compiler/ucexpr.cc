@@ -339,7 +339,7 @@ void Uc_binary_expression::gen_value
 	int ival;
 	if (eval_const(ival))
 		{
-		Uc_int_expression *iexpr = new Uc_int_expression(ival);
+		Uc_int_expression *iexpr = new Uc_int_expression(ival, want_byte);
 		iexpr->gen_value(out);
 		}
 	else
@@ -446,15 +446,20 @@ void Uc_int_expression::gen_value
 	vector<char>& out
 	)
 	{
-	if (is_int_32bit(value))
+	if (want_byte)
 		{
-		out.push_back((char) UC_PUSHI32);
-		Write4(out, value);
+		out.push_back((char) UC_PUSHB);
+		Write1(out, value);
 		}
-	else
+	else if (!is_int_32bit(value))
 		{
 		out.push_back((char) UC_PUSHI);
 		Write2(out, value);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHI32);
+		Write4(out, value);
 		}
 	}
 

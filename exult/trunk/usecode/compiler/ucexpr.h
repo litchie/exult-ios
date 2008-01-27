@@ -169,9 +169,11 @@ class Uc_binary_expression : public Uc_expression
 	{
 	int opcode;			// Should be the UC_<opcode>
 	Uc_expression *left, *right;	// Operands to add, sub, etc.
+	bool want_byte;		// If we want to use pushb instead of pushi.
 public:
-	Uc_binary_expression(int o, Uc_expression *l, Uc_expression *r)
-		: opcode(o), left(l), right(r)
+	Uc_binary_expression(int o, Uc_expression *l, Uc_expression *r,
+						bool b = false)
+		: opcode(o), left(l), right(r), want_byte(b)
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
@@ -217,9 +219,13 @@ public:
 class Uc_int_expression : public Uc_expression
 	{
 	int value;
+	bool want_byte;
 public:
-	Uc_int_expression(int v) : value(v)
-		{  }
+	Uc_int_expression(int v, bool b = false) : value(v), want_byte(b)
+		{
+		if (want_byte)
+			value &= 0xff;
+		}
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
 					// Evaluate constant.
@@ -411,6 +417,19 @@ public:
 					// Gen. code to put result on stack.
 	virtual void gen_value(vector<char>& out);
 	};
+
+/*
+ *	Write a byte value to the end/position of a character stream.
+ */
+
+inline void Write1(vector<char>& out, unsigned short val)
+	{
+	out.push_back((char) (val&0xff));
+	}
+inline void Write1(vector<char>& out, int pos, unsigned short val)
+	{
+	out[pos] = (char) (val&0xff);
+	}
 
 /*
  *	Write a 2-byte value to the end/position of a character stream.

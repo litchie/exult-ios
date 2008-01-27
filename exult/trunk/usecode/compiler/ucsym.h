@@ -200,9 +200,14 @@ public:
 class Uc_const_int_symbol : public Uc_symbol
 	{
 	int value;
+	bool want_byte;
 public:
-	Uc_const_int_symbol(char *nm, int v) : Uc_symbol(nm), value(v)
-		{  }
+	Uc_const_int_symbol(char *nm, int v, bool b = false)
+		: Uc_symbol(nm), value(v), want_byte(b)
+		{
+		if (want_byte)
+			value &= 0xff;
+		}
 					// Gen. code to put result on stack.
 	virtual int gen_value(vector<char>& out);
 					// Return var/int expression.
