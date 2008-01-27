@@ -292,15 +292,20 @@ int Uc_const_int_symbol::gen_value
 	vector<char>& out
 	)
 	{
-	if (is_int_32bit(value))
+	if (want_byte)
 		{
-		out.push_back((char) UC_PUSHI32);
-		Write4(out, value);
+		out.push_back((char) UC_PUSHB);
+		Write1(out, value);
 		}
-	else
+	else if (!is_int_32bit(value))
 		{
 		out.push_back((char) UC_PUSHI);
 		Write2(out, value);
+		}
+	else
+		{
+		out.push_back((char) UC_PUSHI32);
+		Write4(out, value);
 		}
 	return 1;
 	}
@@ -313,7 +318,7 @@ Uc_expression *Uc_const_int_symbol::create_expression
 	(
 	)
 	{
-	return new Uc_int_expression(value);
+	return new Uc_int_expression(value, want_byte);
 	}
 
 /*
@@ -656,15 +661,17 @@ int Uc_function_symbol::gen_call
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{
+		// The originals would need this.
+		fun->link(this);
 		itemref->gen_value(out);
 		out.push_back((char) UC_CALLE);
 		Write2(out, usecode_num);	// Use fun# directly.
 		}
 	else				// Normal CALL.
 		{			// Called function sets return.
-		out.push_back((char) UC_CALL);
-					// Get offset in function's list.
+		// Add to externs list.
 		int link = fun->link(this);
+		out.push_back((char) UC_CALL);
 		Write2(out, link);
 		}
 	if (!retvalue && has_ret)

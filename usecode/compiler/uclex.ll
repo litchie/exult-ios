@@ -228,6 +228,8 @@ with		return WITH;
 to		return TO;
 var		return VAR;
 int		return UCC_INT;
+char	return UCC_CHAR;
+byte	return UCC_CHAR;
 const		return UCC_CONST;
 string		return STRING;
 enum		return ENUM;

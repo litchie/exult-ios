@@ -74,6 +74,7 @@ static bool is_extern = false;	// Marks a function symbol as being an extern
 static Uc_class *class_type = 0;	// For declaration of class variables.
 static bool has_ret = false;
 static int repeat_nesting = 0;
+static bool byte_const = false;
 
 struct ID_info
 	{
@@ -107,7 +108,7 @@ struct ID_info
  *	Keywords:
  */
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR UCC_INT UCC_CONST STRING ENUM
+%token VAR UCC_INT UCC_CHAR UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
@@ -117,7 +118,7 @@ struct ID_info
  *	Script keywords:
  */
 					/* Script commands. */
-%token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
+%token CONTINUE REPEAT NOP NOHALT WAIT /*REMOVE*/ RISE DESCEND FRAME HATCH
 %token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
 %token ATTACK FINISH RESURRECT SETEGG MINUTES RESET WEATHER
 %token NORTH SOUTH EAST WEST NE NW SE SW
@@ -137,12 +138,15 @@ struct ID_info
 /*
  *	Expression precedence rules (lowest to highest):
  */
+%left UCC_INSERT ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ
 %left AND OR
-%left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' UCC_IN
+%left EQUALS NEQUALS
+%left LTEQUALS GTEQUALS '<' '>' UCC_IN
 %left '-' '+' '&'
 %left '*' '/' '%'
-%left NOT
-%left UCC_POINTS UCC_SCOPE UCC_INSERT
+%right NOT ADDRESSOF UMINUS UPLUS NEW DELETE
+%left UCC_POINTS '.' '(' ')' '[' ']'
+%left UCC_SCOPE
 
 /*
  *	Production types:
@@ -151,7 +155,7 @@ struct ID_info
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr opt_delay appended_element
 %type <intval> opt_int direction int_literal converse_options opt_var
-%type <intval> opt_original assignment_operator
+%type <intval> opt_original assignment_operator const_int_val opt_const_int_val
 %type <funid> opt_funid
 %type <intlist> string_list
 %type <sym> declared_sym
@@ -312,7 +316,7 @@ function_proto:
 	;
 
 opt_funid:
-	SHAPENUM '(' INT_LITERAL ')'
+	SHAPENUM '(' const_int_val ')'
 		{
 		$$ = new ID_info();
 		$$->id = $3;
@@ -325,23 +329,47 @@ opt_funid:
 			}
 		$$->kind = Uc_function_symbol::shape_fun;
 		}
-	| OBJECTNUM '(' opt_int ')'
+	| OBJECTNUM '(' opt_const_int_val ')'
 		{
 		$$ = new ID_info();
 		$$->kind = Uc_function_symbol::object_fun;
 		$$->id = $3;
 		}
-	| int_literal
+	| opt_const_int_val
 		{
 		$$ = new ID_info();
 		$$->id = $1;
 		$$->kind = Uc_function_symbol::utility_fun;
 		}
+	;
+
+opt_const_int_val:
+	const_int_val
 	|				/* Empty. */
+		{ $$ = -1; }
+	;
+
+const_int_val:
+	INT_LITERAL
+	| IDENTIFIER
 		{
-		$$ = new ID_info();
-		$$->kind = Uc_function_symbol::utility_fun;
-		$$->id = -1;
+		Uc_symbol *sym = Uc_function::search_globals($1);
+		Uc_const_int_symbol *var;
+		char buf[180];
+		if (!var)
+			{
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			$$ = -1;
+			}
+		else if ((var = dynamic_cast<Uc_const_int_symbol *>(sym)) == 0)
+			{
+			sprintf(buf, "'%s' is not a constant integer", $1);
+			yyerror(buf);
+			$$ = -1;
+			}
+		else
+			$$ = var->get_value();
 		}
 	;
 
@@ -469,7 +497,9 @@ enum_item:
 	;
 
 const_int_decl:
-	UCC_CONST UCC_INT const_int_decl_list ';'
+	UCC_CONST UCC_INT {byte_const = false;} const_int_decl_list ';'
+	| UCC_CONST UCC_CHAR {byte_const = true;} const_int_decl_list ';'
+		{ byte_const = false; }
 	;
 
 const_int_decl_list:
@@ -484,10 +514,10 @@ const_int:
 		if ($3->eval_const(val))
 			{
 			if (cur_fun)
-				cur_fun->add_int_const_symbol($1, val);
+				cur_fun->add_int_const_symbol($1, val, byte_const);
 			else		// Global.
 				Uc_function::add_global_int_const_symbol(
-								$1, val);
+								$1, val, byte_const);
 			enum_val = val;	// In case we're in an enum.
 			}
 		else
@@ -1036,13 +1066,13 @@ script_command_list:
 
 script_command:
 	FINISH ';'
-		{ $$ = new Uc_int_expression(Ucscript::finish); }
+		{ $$ = new Uc_int_expression(Ucscript::finish, true); }
 	| RESURRECT ';'
-		{ $$ = new Uc_int_expression(Ucscript::resurrect); }
+		{ $$ = new Uc_int_expression(Ucscript::resurrect, true); }
 	| CONTINUE ';'			/* Continue script without painting. */
-		{ $$ = new Uc_int_expression(Ucscript::cont); }
+		{ $$ = new Uc_int_expression(Ucscript::cont, true); }
 	| RESET ';'			/* Go back to the beginning of the script */
-		{ $$ = new Uc_int_expression(Ucscript::reset); }
+		{ $$ = new Uc_int_expression(Ucscript::reset, true); }
 	| REPEAT nonclass_expr { repeat_nesting++; } script_command  ';'
 		{
 		repeat_nesting--;
@@ -1050,7 +1080,7 @@ script_command:
 		result->concat($4);	// Start with cmnds. to repeat.
 		int sz = result->get_exprs().size();
 		result->add(new Uc_int_expression(
-			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat));
+			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat, true));
 					// Then -offset to start.
 		result->add(new Uc_int_expression(-sz));
 		result->add($2);	// Loop var for repeat2.
@@ -1059,9 +1089,9 @@ script_command:
 		$$ = result;
 		}
 	| NOP  ';'
-		{ $$ = new Uc_int_expression(Ucscript::nop); }
+		{ $$ = new Uc_int_expression(Ucscript::nop, true); }
 	| NOHALT  ';'
-		{ $$ = new Uc_int_expression(Ucscript::dont_halt); }
+		{ $$ = new Uc_int_expression(Ucscript::dont_halt, true); }
 	| WAIT nonclass_expr  ';'		/* Ticks. */
 		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
 	| WAIT nonclass_expr MINUTES  ';'	/* Game minutes. */
@@ -1069,36 +1099,38 @@ script_command:
 	| WAIT nonclass_expr HOURS  ';'	/* Game hours. */
 		{ $$ = Create_array(Ucscript::delay_hours, $2); }
 	| REMOVE ';'			/* Remove item. */
-		{ $$ = new Uc_int_expression(Ucscript::remove); }
+		{ $$ = new Uc_int_expression(Ucscript::remove, true); }
 	| RISE ';'			/* For flying barges. */
-		{ $$ = new Uc_int_expression(Ucscript::rise); }
+		{ $$ = new Uc_int_expression(Ucscript::rise, true); }
 	| DESCEND ';'
-		{ $$ = new Uc_int_expression(Ucscript::descend); }
+		{ $$ = new Uc_int_expression(Ucscript::descend, true); }
 	| FRAME nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
 	| ACTOR FRAME nonclass_expr ';'	/* 0-15. ++++Maybe have keywords. */
 		{
 		$$ = new Uc_binary_expression(UC_ADD, new Uc_int_expression(0x61),
-				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(16)));
+				new Uc_binary_expression(
+						UC_MOD, $3, new Uc_int_expression(16), true),
+				true);	// Want byte.
 		}
 	| HATCH ';'			/* Assumes item is an egg. */
-		{ $$ = new Uc_int_expression(Ucscript::egg); }
+		{ $$ = new Uc_int_expression(Ucscript::egg, true); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
-		{ $$ = new Uc_int_expression(Ucscript::next_frame_max); }
+		{ $$ = new Uc_int_expression(Ucscript::next_frame_max, true); }
 	| NEXT FRAME CYCLE ';'		/* Next, or back to 0. */
-		{ $$ = new Uc_int_expression(Ucscript::next_frame); }
+		{ $$ = new Uc_int_expression(Ucscript::next_frame, true); }
 	| PREVIOUS FRAME ';'		/* Prev. but stop at 0. */
-		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min); }
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min, true); }
 	| PREVIOUS FRAME CYCLE ';'
-		{ $$ = new Uc_int_expression(Ucscript::prev_frame); }
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame, true); }
 	| SAY nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::say, $2); }
 	| STEP nonclass_expr ';'		/* Step in given direction (0-7). */
 		{ $$ = Create_array(Ucscript::step, $2); }
 	| STEP direction ';'
-		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
+		{ $$ = new Uc_int_expression(Ucscript::step_n + $2, true); }
 	| MUSIC nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
 	| start_call ';'
@@ -1116,7 +1148,7 @@ script_command:
 	| HIT nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| ATTACK ';'
-		{ $$ = new Uc_int_expression(Ucscript::attack); }
+		{ $$ = new Uc_int_expression(Ucscript::attack, true); }
 	| '{' script_command_list '}'
 		{ $$ = $2; }
 	;
@@ -1295,7 +1327,14 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
 	| nonclass_expr '&' nonclass_expr	/* append arrays */
 		{ $$ = new Uc_binary_expression(UC_ARRA, $1, $3); }
-	| '-' primary
+	| '+' primary %prec UPLUS
+		{
+		if (Class_unexpected_error($2))
+			$$ = 0;
+		else
+			$$ = $2;
+		}
+	| '-' primary %prec UMINUS
 		{
 		if (Class_unexpected_error($2))
 			$$ = 0;
@@ -1317,7 +1356,7 @@ expression:
 	;
 
 addressof:
-	'&' IDENTIFIER
+	'&' IDENTIFIER %prec ADDRESSOF
 		{	// A way to retrieve the function's assigned
 			// usecode number
 		Uc_symbol *sym = cur_fun->search_up($2);
@@ -1558,7 +1597,7 @@ static Uc_array_expression *Create_array
 	)
 	{
 	Uc_array_expression *arr = new Uc_array_expression();
-	arr->add(new Uc_int_expression(e1));
+	arr->add(new Uc_int_expression(e1, true));
 	arr->add(e2);
 	return arr;
 	}
@@ -1570,7 +1609,7 @@ static Uc_array_expression *Create_array
 	)
 	{
 	Uc_array_expression *arr = new Uc_array_expression();
-	arr->add(new Uc_int_expression(e1));
+	arr->add(new Uc_int_expression(e1, true));
 	arr->add(e2);
 	arr->add(e3);
 	return arr;
