@@ -1,3 +1,7 @@
+2008-02-03    <jeff@mini.nerble.net>
+
+	* actors.cc: Fixed bug where companions would walk on water.
+
 2008-01-27    <jeff@mini.nerble.net>
 
 	* schedule.cc, actions.cc, actions.h: Made the 'talk' schedule
