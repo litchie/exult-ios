@@ -3986,6 +3986,30 @@ Actor *Actor::resurrect
 	}
 
 /*
+ *	Check to see if an actor taking a step is really blocked.
+ */
+
+bool Actor::is_really_blocked
+	(
+	Tile_coord& t,
+	bool force
+	)
+	{
+	if (abs(t.tz - get_tile().tz) > 1)
+		return true;
+	Game_object *block = find_blocking(t, get_direction(t));
+	if (!block)
+		return true;		// IE, water.
+	if (block == this)
+		return false;
+					// Try to get blocker to move aside.
+	if (block->move_aside(this, get_direction(block)))
+		return false;
+	// (May have swapped places.)  If okay, try one last time.
+	return (t != get_tile() && is_blocked(t, 0, force ? MOVE_ALL : 0));
+	}
+
+/*
  *	Handle a time event (for animation).
  */
 
@@ -4077,14 +4101,7 @@ int Main_actor::step
 	Game_object *block;
 	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
-		if (abs(t.tz - get_tile().tz) > 1 ||
-			(((block = find_blocking(t, get_direction(t))) && block != this &&
-					// Try to get blocker to move aside.
-	        !block->move_aside(this, get_direction(block))) ||
-						// (May have swapped places.)
-			(t != get_tile() &&
-						// If okay, try one last time.
-			 is_blocked(t, 0, force ? MOVE_ALL : 0))))
+		if (is_really_blocked(t, force))
 			{
 			if (schedule)		// Tell scheduler.
 				schedule->set_blocked(t);
@@ -4722,8 +4739,7 @@ int Npc_actor::step
 	Game_object *block;
 	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
-		if (abs(t.tz - get_tile().tz) > 1 ||
-			(block = find_blocking(t, get_direction(t))) && block != this)
+		if (is_really_blocked(t, force))
 			{
 			if (schedule)		// Tell scheduler.
 				schedule->set_blocked(t);
