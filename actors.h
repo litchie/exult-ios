@@ -129,6 +129,7 @@ protected:
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
+	bool is_really_blocked(Tile_coord& t, bool force);
 public:
 	friend class Clear_casting;
 	friend class Clear_hit;
