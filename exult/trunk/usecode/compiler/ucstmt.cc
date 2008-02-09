@@ -33,8 +33,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "opcodes.h"
 #include "utils.h"
 #include "ucfun.h"
+#include "basic_block.h"
 
 using std::vector;
+using std::map;
 using std::string;
 
 int Uc_converse2_statement::nest = 0;
@@ -59,15 +61,20 @@ Uc_block_statement::~Uc_block_statement
 
 void Uc_block_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 	for (std::vector<Uc_statement *>::const_iterator it = statements.begin();
 					it != statements.end(); it++)
 		{
 		Uc_statement *stmt = *it;
-		stmt->gen(out, fun);
+		stmt->gen(fun, blocks, curr, end, labels, start, exit);
 		}
 	}
 
@@ -91,12 +98,17 @@ Uc_assignment_statement::~Uc_assignment_statement
 
 void Uc_assignment_statement::gen
 	(
-	vector<char>& out,
-	Uc_function * /* fun */
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	value->gen_value(out);		// Get value on stack.
-	target->gen_assign(out);
+	value->gen_value(curr);		// Get value on stack.
+	target->gen_assign(curr);
 	}
 
 /*
@@ -105,31 +117,42 @@ void Uc_assignment_statement::gen
 
 void Uc_if_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-					// Gen JNE (or CMPS) past IF code.
-	int jne_offset = expr->gen_jmp_if_false(out, 0);
+	if (!if_stmt && !else_stmt)	// Optimize whole block away.
+		return;
+		// The basic block for the if code.
+	Basic_block *if_block = new Basic_block();
+	blocks.push_back(if_block);
+		// Gen test code & JNE.
+	expr->gen_value(curr);
+	curr->set_targets(UC_JNE, if_block);
 	if (if_stmt)
-		if_stmt->gen(out, fun);
-	int jmp_past_else_offset = -1;	// Where following JMP offset is.
-	if (else_stmt)			// JMP past ELSE code.
+		if_stmt->gen(fun, blocks, if_block, end, labels, start, exit);
+		// The basic block after the if/else blocks.
+	Basic_block *past_if = new Basic_block();
+	if (else_stmt)
 		{
-		out.push_back((char) UC_JMP);
-		jmp_past_else_offset = out.size();
-		Write2(out, 0);		// Write place-holder for offset.
+			// The basic block for the else code.
+		Basic_block *else_block = new Basic_block();
+		blocks.push_back(else_block);
+		curr->set_ntaken(else_block);
+			// JMP past ELSE code.
+		if_block->set_targets(UC_JMP, past_if);
+			// Generate else code.
+		else_stmt->gen(fun, blocks, else_block, end, labels, start, exit);
+		else_block->set_taken(past_if);
 		}
-	int if_end = out.size();
-					// Fixup JNE at start.
-	Write2(out, jne_offset, if_end - (jne_offset + 2));
-	if (else_stmt)			// Generate ELSE.
-		{
-		else_stmt->gen(out, fun);
-		int else_end = out.size();
-		Write2(out, jmp_past_else_offset,
-					else_end - (jmp_past_else_offset + 2));
-		}
+	else
+		curr->set_ntaken(past_if);
+	blocks.push_back(curr = past_if);
 	}
 
 /*
@@ -143,6 +166,39 @@ Uc_if_statement::~Uc_if_statement
 	delete expr;
 	delete if_stmt;
 	delete else_stmt;
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_breakable_statement::~Uc_breakable_statement
+	(
+	)
+	{
+	delete stmt;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_breakable_statement::gen
+	(
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
+	)
+	{
+	if (!stmt)	// Optimize whole statement away.
+		return;
+	Basic_block *past_block = new Basic_block();
+	stmt->gen(fun, blocks, curr, end, labels, past_block, past_block);
+	blocks.push_back(curr = past_block);
 	}
 
 /*
@@ -163,35 +219,35 @@ Uc_while_statement::~Uc_while_statement
 
 void Uc_while_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	int top = out.size();		// Get current position.
-	expr->gen_value(out);		// Generate expr. value.
-	vector<char> stmt_code;
-	stmt_code.reserve(4000);
-	fun->start_breakable(this);
-	if (stmt) {
-		fun->adjust_reloffset(out.size() + 3);
-		stmt->gen(stmt_code, fun);	// Generate statement's code.
-		fun->adjust_reloffset(-out.size() - 3);
-	}
-	int stmtlen = stmt_code.size();
-					// Still need to write the JNE.
-	int testlen = out.size() - top + 3;
-					// Get distance back to top, including a JMP.
-	long dist = stmtlen + testlen + 3;
-					// Generate JMP back to top.
-	stmt_code.push_back((char) UC_JMP);
-	Write2(stmt_code, -dist);
-	stmtlen = stmt_code.size();	// Get total length.
-	fun->end_breakable(this, stmt_code, testlen);
-	out.push_back((char) UC_JNE);	// Put cond. jmp. after test.
-	Write2(out, stmtlen);		// Skip around body if false.
-//	out.append(stmt_code);
-					// Append code to end.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	if (!stmt)	// Optimize whole loop away.
+		return;
+		// The start of a loop is a jump target and needs
+		// a new basic block.
+	Basic_block *while_top = new Basic_block();
+	curr->set_taken(while_top);
+	blocks.push_back(while_top);
+		// Gen test code.
+	expr->gen_value(while_top);
+		// Need new block as it is past a JNE (the test).
+	Basic_block *while_block = new Basic_block();
+	blocks.push_back(while_block);
+		// Basic block past while body.
+	Basic_block *past_while = new Basic_block();
+	while_top->set_targets(UC_JNE, while_block, past_while);
+		// Generate while body.
+	stmt->gen(fun, blocks, while_block, end, labels, while_top, past_while);
+		// JMP back to top.
+	while_block->set_targets(UC_JMP, while_top);
+	blocks.push_back(curr = past_while);
 	}
 
 
@@ -213,31 +269,86 @@ Uc_dowhile_statement::~Uc_dowhile_statement
 
 void Uc_dowhile_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	vector<char> stmt_code;
-	stmt_code.reserve(4000);
-	fun->start_breakable(this);
-	if (stmt) {
-		fun->adjust_reloffset(out.size() + 3);
-		stmt->gen(stmt_code, fun);	// Generate statement's code.
-		fun->adjust_reloffset(-out.size() - 3);
+	if (!stmt)	// Optimize whole loop away.
+		return;
+		// The start of a loop is a jump target and needs
+		// a new basic block.
+	Basic_block *do_block = new Basic_block();
+	curr->set_taken(do_block);
+	blocks.push_back(do_block);
+		// Need new block for test as it is a jump target.
+	Basic_block *do_test = new Basic_block();
+		// Gen test code.
+	expr->gen_value(do_test);
+		// Basic block past while body.
+	Basic_block *past_do = new Basic_block();
+		// Jump back to top.
+	Basic_block *do_jmp = new Basic_block();
+	do_jmp->set_targets(UC_JMP, do_block);
+	do_test->set_targets(UC_JNE, do_jmp, past_do);
+		// Generate while body.
+	stmt->gen(fun, blocks, do_block, end, labels, do_test, past_do);
+	do_block->set_targets(-1, do_test);
+
+	blocks.push_back(do_test);
+	blocks.push_back(do_jmp);
+	blocks.push_back(curr = past_do);
 	}
-	
-	int stmtlen = stmt_code.size();
-					// Still need to write the JNE.
-	expr->gen_value(stmt_code);		// Generate expr. value.
-	stmt_code.push_back(UC_NOT);	// Need to negate the result.
-					// Get distance back to top, including JNE.
-	long dist = stmt_code.size() + 3;
-	stmt_code.push_back((char) UC_JNE);	// Put cond. jmp. after test.
-	Write2(stmt_code, -dist);
-	int testlen = dist - stmtlen;
-	fun->end_breakable(this, stmt_code, testlen, true);
-					// Append code to end.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+
+/*
+ *	Delete.
+ */
+
+Uc_infinite_loop_statement::~Uc_infinite_loop_statement
+	(
+	)
+	{
+	delete stmt;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_infinite_loop_statement::gen
+	(
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
+	)
+	{
+	if (!stmt)	// Optimize whole loop away.
+		return;
+		// The start of a loop is a jump target and needs
+		// a new basic block.
+	Basic_block *loop_top = new Basic_block();
+	curr->set_taken(loop_top);
+	blocks.push_back(loop_top);
+		// Local copy.
+	Basic_block *loop_body = loop_top;
+		// Basic block past loop body.
+	Basic_block *past_loop = new Basic_block();
+		// Generate loop body.
+	stmt->gen(fun, blocks, loop_body, end, labels, loop_top, past_loop);
+		// Jump back to top.
+	loop_body->set_targets(UC_JMP, loop_top);
+
+	blocks.push_back(curr = past_loop);
+	if (past_loop->is_orphan())
+		warning("No 'break' statements will be executed for infinite loop");
 	}
 
 /*
@@ -279,39 +390,42 @@ void Uc_arrayloop_statement::finish
 
 void Uc_arrayloop_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 	if (!stmt)
 		return;			// Nothing useful to do.
-	out.push_back((char) UC_LOOP);	// Start of loop.
-	int top = out.size();		// This is where to jump back to.
-	if (array->is_static())
-		out.push_back((char) UC_LOOPTOPS);
-	else
-		out.push_back((char) UC_LOOPTOP);
-	Write2(out, index->get_offset());// Counter, total-count variables.
-	Write2(out, array_size->get_offset());
-	Write2(out, var->get_offset());	// Loop variable, than array.
-	Write2(out, array->get_offset());
-					// Still need to write offset to end.
-	int testlen = out.size() + 2 - top;
-	vector<char> stmt_code;
-	stmt_code.reserve(4000);
-	fun->start_breakable(this);
-	fun->adjust_reloffset(out.size() + 2);
-	stmt->gen(stmt_code, fun);	// Generate statement's code.
-	fun->adjust_reloffset(-out.size() - 2);
-					// Back to top includes JMP at end.
-	int dist = testlen + stmt_code.size() + 3;
-	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
-	Write2(stmt_code, -dist);
-	int stmtlen = stmt_code.size();	// Get total length.
-	Write2(out, stmtlen);		// Finally, offset past loop stmt.
-	fun->end_breakable(this, stmt_code, testlen);
-					// Write out body.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+		// Start of loop.
+	WriteOp(curr, (char) UC_LOOP);
+		// The start of a loop is a jump target and needs
+		// a new basic block.
+	Basic_block *for_top = new Basic_block();
+	curr->set_taken(for_top);
+	blocks.push_back(for_top);
+	WriteJumpParam2(for_top, index->get_offset());// Counter, total-count variables.
+	WriteJumpParam2(for_top, array_size->get_offset());
+	WriteJumpParam2(for_top, var->get_offset());	// Loop variable, than array.
+	WriteJumpParam2(for_top, array->get_offset());
+
+		// Body of FOR loop.
+	Basic_block *for_body = new Basic_block();
+	blocks.push_back(for_body);
+		// Block immediatelly after FOR.
+	Basic_block *past_for = new Basic_block();
+	int opcode = array->is_static() ? UC_LOOPTOPS : UC_LOOPTOP;
+	for_top->set_targets(opcode, for_body, past_for);
+		// Generate FOR body.
+	stmt->gen(fun, blocks, for_body, end, labels, for_top, past_for);
+		// Jump back to top.
+	for_body->set_targets(UC_JMP, for_top);
+
+	blocks.push_back(curr = past_for);
 	}
 
 /*
@@ -331,23 +445,31 @@ Uc_return_statement::~Uc_return_statement
 
 void Uc_return_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 	if (expr)			// Returning something?
 		{
 		int ival;
 		if (expr->eval_const(ival) && !ival)
-			out.push_back((char) UC_RETZ);
+			WriteOp(curr, (char) UC_RETZ);
 		else
 			{
-			expr->gen_value(out);	// Put value on stack.
-			out.push_back((char) UC_RETV);
+			expr->gen_value(curr);	// Put value on stack.
+			WriteOp(curr, (char) UC_RETV);
 			}
 		}
 	else
-		out.push_back((char) UC_RET);
+		WriteOp(curr, (char) UC_RET);
+	curr->set_targets(-1, end);
+	curr = new Basic_block();
+	blocks.push_back(curr);
 	}
 
 
@@ -357,63 +479,86 @@ void Uc_return_statement::gen
 
 void Uc_break_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-					// Store our location.
-	fun->add_break(out.size());	//+++++if in an IF???
-	out.push_back((char) UC_JMP);
-	Write2(out, 0);			// To be filled in at end of loop.
+	curr->set_targets(UC_JMP, exit);
+	curr = new Basic_block();
+	blocks.push_back(curr);
 	}
 
 
 void Uc_continue_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-					// Store our location.
-	fun->add_continue(out.size());	//+++++if in an IF???
-	out.push_back((char) UC_JMP);
-	Write2(out, 0);			// To be filled in at end of loop.
+	curr->set_targets(UC_JMP, start);
+	curr = new Basic_block();
+	blocks.push_back(curr);
 	}
 
 
 void Uc_label_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
-{
-	// use reloffset to compensate for jumps to points in separately
-	// generated blocks of code
-	label->set_offset(out.size() + fun->get_reloffset());
+	{
+	map<string, Basic_block*>::iterator it = labels.find(label->get_name());
+	// Should never fail, but...
+	assert(it != labels.end());
+	Basic_block *block = it->second;
+	curr->set_taken(block);
+	blocks.push_back(curr = block);
 
 	// no code
-}
+	}
 
 
 void Uc_goto_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
-{
-	Uc_label *l = fun->search_label(label);
-	if (l) {
-		// use reloffset to compensate for jumps to points in separately
-		// generated blocks of code
-		l->add_reference(out.size() + fun->get_reloffset());
-		out.push_back((char) UC_JMP);
-		Write2(out, 0); // will be filled in later
-	} else {
+	{
+	map<string, Basic_block*>::iterator it = labels.find(label);
+	if (it != labels.end())
+		{
+		Basic_block *l = it->second;
+		curr->set_targets(UC_JMP, l);
+		curr = new Basic_block();
+		blocks.push_back(curr);
+		}
+	else
+		{
 		char buf[255];
 		snprintf(buf, 255, "Undeclared label: '%s'", label);
 		error(buf);
+		}
 	}
-}
 
 /*
  *	Delete.
@@ -432,31 +577,34 @@ Uc_converse_statement::~Uc_converse_statement
 
 void Uc_converse_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	long top = out.size();		// Get current position.
-	vector<char> stmt_code;
-	fun->start_breakable(this);
-	if (stmt) {
-		fun->adjust_reloffset(out.size() + 3);
-		stmt->gen(stmt_code, fun);	// Generate statement's code.
-		fun->adjust_reloffset(-out.size() - 3);
-	}
-	int stmtlen = stmt_code.size();
-					// Get distance back to top, including
-					//   a CONVERSE & JMP back to top.
-	long dist = stmtlen + 3 + 3;
-	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
-	Write2(stmt_code, -dist);
-	stmtlen = stmt_code.size();	// Get total length.
-	fun->end_breakable(this, stmt_code);
-	out.push_back((char) UC_CONVERSE);	// Put CONVERSE at top.
-	Write2(out, stmtlen);		// Skip around body if no choices.
-					// Write out body.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
-	out.push_back((char) UC_CONVERSELOC);	// Past CONVERSE loop.
+	if (!stmt)	// Optimize whole loop away.
+		return;
+		// The start of a CONVERSE loop is a jump target and needs
+		// a new basic block.
+	Basic_block *conv_top = new Basic_block();
+	curr->set_taken(conv_top);
+	blocks.push_back(conv_top);
+		// Need new block as it is past a jump.
+	Basic_block *conv_body = new Basic_block();
+	blocks.push_back(conv_body);
+		// Block past the CONVERSE loop.
+	Basic_block *past_conv = new Basic_block();
+	WriteOp(past_conv, (char) UC_CONVERSELOC);
+	conv_top->set_targets(UC_CONVERSE, conv_body, past_conv);
+		// Generate loop body.
+	stmt->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
+		// Jump back to top.
+	conv_body->set_targets(UC_JMP, conv_top);
+	blocks.push_back(curr = past_conv);
 	}
 
 /*
@@ -464,8 +612,11 @@ void Uc_converse_statement::gen
  */
 static void Call_intrinsic
 	(
-	vector<char>& out,
-	Uc_function *fun,		// Function we're in.
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Uc_intrinsic_symbol *intr,	// What to call.
 	Uc_expression *parm0 = 0	// Parm, or null.
 	)
@@ -476,7 +627,7 @@ static void Call_intrinsic
 		parms->add(parm0);
 	Uc_call_expression *fcall = new Uc_call_expression(intr, parms, fun);
 	Uc_call_statement fstmt(fcall);
-	fstmt.gen(out, fun);
+	fstmt.gen(fun, blocks, curr, end, labels);
 	parms->clear();			// DON'T want to delete parm0.
 	}
 
@@ -486,30 +637,41 @@ static void Call_intrinsic
 
 void Uc_converse_case_statement::gen
 	(
-	vector<char>& out,		// Contains all CASE statements up to
-					//   this point.
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
+	if (!remove && !statements)	// Optimize whole case away.
+		return;
+
 	for (vector<int>::reverse_iterator it = string_offset.rbegin();
 			it != string_offset.rend(); ++it)
 		{
 		// Push strings on stack; *it should always be >= 0.
 		if (is_int_32bit(*it))
 			{
-			out.push_back((char) UC_PUSHS32);
-			Write4(out, *it);
+			WriteOp(curr, (char) UC_PUSHS32);
+			WriteOpParam4(curr, *it);
 			}
 		else
 			{
-			out.push_back((char) UC_PUSHS);
-			Write2(out, *it);
+			WriteOp(curr, (char) UC_PUSHS);
+			WriteOpParam2(curr, *it);
 			}
 		}
-	out.push_back((char) UC_CMPS);	// Generate comparison.
-	Write2(out, string_offset.size());	// # strings on stack.
-	int to_top_index = out.size();	// Remember this spot to fill in.
-	Write2(out, 0);			// Place holder.
+		// New basic block for CASE body.
+	Basic_block *case_body = new Basic_block();
+	blocks.push_back(case_body);
+		// Past CASE body.
+	Basic_block *past_case = new Basic_block();
+	curr->set_targets(UC_CMPS, case_body, past_case);
+	WriteJumpParam2(curr, string_offset.size());	// # strings on stack.
+
 	if (remove)			// Remove answer?
 		{
 		if (string_offset.size() > 1)
@@ -521,25 +683,19 @@ void Uc_converse_case_statement::gen
 				Uc_string_expression *str = new Uc_string_expression(*it);
 				strlist->add(str);
 				}
-			Call_intrinsic(out, fun,
+			Call_intrinsic(fun, blocks, case_body, end, labels,
 					Uc_function::get_remove_answer(), strlist);
 			}
 		else
-			Call_intrinsic(out, fun,
+			Call_intrinsic(fun, blocks, case_body, end, labels,
 					Uc_function::get_remove_answer(),
 					new Uc_string_expression(string_offset[0]));
 		}
 	if (statements)			// Generate statement's code.
-		statements->gen(out, fun);
-					// Get distance back to top, including
-					//   this JMP
-					//   and the CONVERSE above 'out' code.
-	long dist = out.size() + 3 + 3;
-					// Generate JMP to start of conv.
-	out.push_back((char) UC_JMP);
-	Write2(out, -dist);
-					// Fill in offset in CMPS.
-	Write2(out, to_top_index, out.size() - (to_top_index + 2));
+		statements->gen(fun, blocks, case_body, end, labels, start, exit);
+		// Jump back to converse top.
+	case_body->set_targets(UC_JMP, start);
+	blocks.push_back(curr = past_case);
 	}
 
 /*
@@ -560,40 +716,46 @@ Uc_converse2_statement::~Uc_converse2_statement
 
 void Uc_converse2_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
+	if (!cases)	// Nothing to do; optimize whole block away.
+		return;
 	if (nest++ > 0)			// Not the outermost?
 					// Generate a 'push_answers()'.
-		Call_intrinsic(out, fun, Uc_function::get_push_answers());
+		Call_intrinsic(fun, blocks, curr, end, labels,
+				Uc_function::get_push_answers());
 	if (answers)			// Add desired answers.
-		Call_intrinsic(out, fun, 
+		Call_intrinsic(fun, blocks, curr, end, labels,
 				Uc_function::get_add_answer(), answers);
-	vector<char> stmt_code;
-	fun->start_breakable(this);
-	if (cases) 
-		{
-		fun->adjust_reloffset(out.size() + 3);
-		cases->gen(stmt_code, fun);	// Generate statement's code.
-		fun->adjust_reloffset(-out.size() - 3);
-		}
-	int stmtlen = stmt_code.size();
-					// Get distance back to top, including
-					//   a CONVERSE & JMP back to top.
-	long dist = stmtlen + 3 + 3;
-	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
-	Write2(stmt_code, -dist);
-	stmtlen = stmt_code.size();	// Get total length.
-	fun->end_breakable(this, stmt_code);
-	out.push_back((char) UC_CONVERSE);	// Put CONVERSE at top.
-	Write2(out, stmtlen);		// Skip around body if no choices.
-					// Write out body.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
-	out.push_back((char) UC_CONVERSELOC);	// Past CONVERSE loop.
+		// The start of a CONVERSE loop is a jump target and needs
+		// a new basic block.
+	Basic_block *conv_top = new Basic_block();
+	curr->set_taken(conv_top);
+	blocks.push_back(conv_top);
+		// Need new block as it is past a jump.
+	Basic_block *conv_body = new Basic_block();
+	blocks.push_back(conv_body);
+		// Block past the CONVERSE loop.
+	Basic_block *past_conv = new Basic_block();
+	WriteOp(past_conv, (char) UC_CONVERSELOC);
+	conv_top->set_targets(UC_CONVERSE, conv_body, past_conv);
+		// Generate loop body.
+	cases->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
+		// Jump back to top.
+	conv_body->set_targets(UC_JMP, conv_top);
+	blocks.push_back(curr = past_conv);
+
 	if (--nest > 0)			// Not the outermost?
 					// Generate a 'pop_answers()'.
-		Call_intrinsic(out, fun, Uc_function::get_pop_answers());
+		Call_intrinsic(fun, blocks, curr, end, labels,
+				Uc_function::get_pop_answers());
 	}
 
 /*
@@ -613,15 +775,20 @@ inline Uc_switch_expression_case_statement::~Uc_switch_expression_case_statement
 
 int Uc_switch_expression_case_statement::gen_check
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *case_block		// Pointer to the case statements.
 	)
 	{
-	check->gen_value(out);
-	out.push_back((char) UC_CMPNE);
-	out.push_back((char) UC_JNE);
-	Write2(out, 0);
-	return out.size() - 2;
+	check->gen_value(curr);
+	WriteOp(curr, (char) UC_CMPNE);
+	Basic_block *block = new Basic_block();
+	curr->set_targets(UC_JNE, block, case_block);
+	blocks.push_back(curr = block);
+	return 1;
 	}
 
 /*
@@ -630,12 +797,16 @@ int Uc_switch_expression_case_statement::gen_check
 
 void Uc_switch_case_statement::gen
 	(
-	vector<char>& out,		// Contains all CASE statements up to
-					//   this point.
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	statements->gen(out, fun);
+	statements->gen(fun, blocks, curr, end, labels, start, exit);
 	}
 
 /*
@@ -687,60 +858,56 @@ Uc_switch_statement::Uc_switch_statement
 
 void Uc_switch_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	vector<int> jne_offsets;
-	int def_case = -1;
-	Uc_var_expression *var = new Uc_var_expression(cond->need_var(out, fun));
-	// Generate all checks and jumps first:
+	Uc_var_expression *var = new Uc_var_expression(cond->need_var(curr, fun));
+	vector<Basic_block *> case_blocks;
+	Basic_block *def_case = 0;
 	for (int i = 0; i < cases.size(); i++)
 		{
 		Uc_switch_case_statement *stmt =
 					dynamic_cast<Uc_switch_case_statement *>(cases[i]);
-		if (stmt->is_default())
+		if (stmt->is_default())	// Store the default case iterator.
 			{
-			// Store the index of the default case.
-			def_case = i;
-			jne_offsets.push_back(0);
+			def_case = new Basic_block();
+			case_blocks.push_back(def_case);
 			}
 		else
 			{
-			// Generate the conditional jumps and store the location
-			// of the (unfilled) jump offsets.
-			var->gen_value(out);
-			jne_offsets.push_back(stmt->gen_check(out, fun));
+			// Generate the conditional jumps and the case basic blocks.
+			var->gen_value(curr);
+				// Case block.
+			Basic_block *case_code = new Basic_block();
+			stmt->gen_check(fun, blocks, curr, end, labels, case_code);
+			case_blocks.push_back(case_code);
 			}
 		}
-	// For all other cases, the default jump.
-	out.push_back((char) UC_JMP);
-	Write2(out, 0);
-	// If we have a default case, store the jmp offset.
-	if (def_case != -1)
-		jne_offsets[def_case] = out.size() - 2;
-	
-	int top = out.size();
-	fun->start_breakable(this);
-	vector<char> stmt_code;
-	fun->adjust_reloffset(out.size());
+		// Past SWITCH block.
+	Basic_block *past_switch = new Basic_block();
+		// For all other cases, the default jump.
+	if (def_case)
+		curr->set_targets(UC_JMP, def_case);
+	else
+		curr->set_targets(UC_JMP, past_switch);
 	for (int i = 0; i < cases.size(); i++)
 		{
-		// Jump offsets for the conditions:
-		int jmpoffset = top + stmt_code.size() - (jne_offsets[i] + 2);
-		Write2(out, jne_offsets[i], jmpoffset);
 		Uc_switch_case_statement *stmt =
 					dynamic_cast<Uc_switch_case_statement *>(cases[i]);
-		stmt->gen(stmt_code, fun);
+		Basic_block *block = case_blocks[i];
+			// Link cases (for fall-through).
+		if (i > 0)
+			curr->set_taken(block);
+		blocks.push_back(curr = block);
+		stmt->gen(fun, blocks, curr, end, labels, start, past_switch);
 		}
-	fun->adjust_reloffset(-out.size());
-	// If no default case declared, jump to end of switch.
-	if (def_case == -1)
-		Write2(out, top - 2, stmt_code.size());
-
-	fun->end_breakable(this, stmt_code);
-					// Write out body.
-	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	blocks.push_back(curr = past_switch);
 	}
 
 /*
@@ -749,8 +916,13 @@ void Uc_switch_statement::gen
 
 void Uc_message_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 	if (!msgs)
@@ -766,22 +938,22 @@ void Uc_message_statement::gen
 			{
 			if (is_int_32bit(offset))
 				{
-				out.push_back((char) UC_ADDSI32);
-				Write4(out, offset);
+				WriteOp(curr, (char) UC_ADDSI32);
+				WriteOpParam4(curr, offset);
 				}
 			else
 				{
-				out.push_back((char) UC_ADDSI);
-				Write2(out, offset);
+				WriteOp(curr, (char) UC_ADDSI);
+				WriteOpParam2(curr, offset);
 				}
 			}
 		else
 			{
-			Uc_var_symbol *var = msg->need_var(out, fun);
+			Uc_var_symbol *var = msg->need_var(curr, fun);
 			if (var)	// Shouldn't fail.
 				{
-				out.push_back((char) UC_ADDSV);
-				Write2(out, var->get_offset());
+				WriteOp(curr, (char) UC_ADDSV);
+				WriteOpParam2(curr, var->get_offset());
 				}
 			}
 		}
@@ -793,13 +965,18 @@ void Uc_message_statement::gen
 
 void Uc_say_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 					// Add the messages.
-	Uc_message_statement::gen(out, fun);
-	out.push_back((char) UC_SAY);		// Show on screen.
+	Uc_message_statement::gen(fun, blocks, curr, end, labels, start, exit);
+	WriteOp(curr, (char) UC_SAY);		// Show on screen.
 	}
 
 /*
@@ -832,24 +1009,37 @@ Uc_call_statement::~Uc_call_statement
 
 void Uc_call_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	function_call->gen_value(out);	// (We set 'no_return'.)
+	function_call->gen_value(curr);	// (We set 'no_return'.)
 	}
 
 /*
  *	Generate code.
  */
 
-void Uc_opcode_statement::gen
+void Uc_abort_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	out.push_back((char) opcode);
+	WriteOp(curr, (char) UC_ABRT);
+	curr->set_targets(-1, end);
+	curr = new Basic_block();
+	blocks.push_back(curr);
 	}
 
 /*
@@ -858,11 +1048,16 @@ void Uc_opcode_statement::gen
 
 void Uc_delete_statement::gen
 	(
-	vector<char>& out,
-	Uc_function *fun
+	Uc_function *fun,
+	vector<Basic_block *>& blocks,		// What we are producing.
+	Basic_block *&curr,			// Active block; will usually be *changed*.
+	Basic_block *&end,			// Fictitious exit block for function.
+	map<string, Basic_block*>& labels,	// Label map for goto statements.
+	Basic_block *start,			// Block used for 'continue' statements.
+	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
 	if (!expr)
 		return;
-	expr->gen_value(out);
+	expr->gen_value(curr);
 	}

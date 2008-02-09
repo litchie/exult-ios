@@ -37,6 +37,7 @@ class Uc_class_inst_symbol;
 class Uc_function;
 class Uc_function_symbol;
 class Uc_class;
+class Basic_block;
 
 /*
  *	Base class for expressions.
@@ -49,17 +50,15 @@ public:
 		{  }
 	virtual ~Uc_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out) = 0;
+	virtual void gen_value(Basic_block *out) = 0;
 					// Gen code to push value(s).
-	virtual int gen_values(vector<char>& out);
-					// Gen. code to jmp if this is false.
-	virtual int gen_jmp_if_false(vector<char>& out, int offset);
+	virtual int gen_values(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 					// Get/create var == this.
-	virtual Uc_var_symbol *need_var(vector<char>& out, Uc_function *fun);
+	virtual Uc_var_symbol *need_var(Basic_block *out, Uc_function *fun);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	virtual bool is_class() const
@@ -84,11 +83,11 @@ public:
 	Uc_var_expression(Uc_var_symbol *v) : var(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	virtual int get_string_offset();// Get offset in text_data.
-	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
+	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *)
 		{ return var; }
 	virtual int is_object_function(bool error = true) const;
 	virtual void set_is_obj_fun(int s);
@@ -105,7 +104,7 @@ public:
 	Uc_fun_name_expression(Uc_function_symbol *f) : fun(f)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	virtual int is_object_function(bool error = true) const;
 	};
 
@@ -124,9 +123,9 @@ public:
 	~Uc_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	};
 
 /*
@@ -141,9 +140,9 @@ public:
 	~Uc_static_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	};
 
 /*
@@ -157,9 +156,9 @@ public:
 		: flag(f)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	};
 
 /*
@@ -176,7 +175,7 @@ public:
 		: opcode(o), left(l), right(r), want_byte(b)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	};
@@ -193,7 +192,8 @@ public:
 		: opcode(o), operand(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
+	virtual bool eval_const(int& val);
 	};
 
 /*
@@ -208,9 +208,7 @@ public:
 		: operand(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
-					// Gen. code to jmp if this is false.
-	virtual int gen_jmp_if_false(vector<char>& out, int offset);
+	virtual void gen_value(Basic_block *out);
 	};
 
 /*
@@ -227,7 +225,7 @@ public:
 			value &= 0xff;
 		}
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	virtual int is_object_function(bool error = true) const;
@@ -243,7 +241,7 @@ public:
 	Uc_bool_expression(bool t) : tf(t)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	};
 
 /*
@@ -254,9 +252,9 @@ class Uc_event_expression : public Uc_expression
 public:
 	Uc_event_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(vector<char>& out);
+	virtual void gen_assign(Basic_block *out);
 	};
 
 /*
@@ -267,7 +265,7 @@ class Uc_item_expression : public Uc_expression
 public:
 	Uc_item_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	};
 
 /*
@@ -280,7 +278,7 @@ public:
 	Uc_string_expression(int o) : offset(o)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 	};
@@ -299,7 +297,7 @@ public:
 		: fun(f), prefix(pre), offset(-1)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	virtual int get_string_offset();// Get offset in text_data.
 	};
 
@@ -324,9 +322,9 @@ public:
 	const std::vector<Uc_expression*>& get_exprs()
 		{ return exprs; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 					// Gen code to push value(s).
-	virtual int gen_values(vector<char>& out);
+	virtual int gen_values(Basic_block *out);
 	};
 
 /*
@@ -364,7 +362,7 @@ public:
 	void set_no_return()
 		{ return_value = false; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	void set_call_scope(Uc_class *s)
 		{ meth_scope = s; }
 	void check_params();
@@ -379,9 +377,9 @@ public:
 	Uc_class_expression(Uc_var_symbol *v)
 		: Uc_var_expression(v)
 		{  }
-	virtual void gen_value(vector<char>& out);
-	virtual void gen_assign(vector<char>& out);
-	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
+	virtual void gen_value(Basic_block *out);
+	virtual void gen_assign(Basic_block *out);
+	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *)
 		{ return 0; }
 	virtual bool is_class() const
 		{ return true; }
@@ -400,7 +398,7 @@ public:
 	~Uc_new_expression()
 		{ delete parms; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	};
 
 /*
@@ -415,7 +413,7 @@ public:
 	~Uc_del_expression()
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(vector<char>& out);
+	virtual void gen_value(Basic_block *out);
 	};
 
 /*

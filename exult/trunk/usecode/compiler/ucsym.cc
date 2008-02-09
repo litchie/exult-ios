@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucexpr.h"
 #include "ucfun.h"
 #include "ucclass.h"
+#include "basic_block.h"
 
 using std::strcmp;
 
@@ -49,7 +50,7 @@ bool Uc_function_symbol::new_auto_num = false;
 
 int Uc_symbol::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	return 0;
@@ -63,7 +64,7 @@ int Uc_symbol::gen_assign
 
 int Uc_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	return 0;
@@ -77,7 +78,7 @@ int Uc_symbol::gen_value
 
 int Uc_symbol::gen_call
 	(
-	vector<char>& out,
+	Basic_block *out,
 	Uc_function *fun,
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
@@ -108,11 +109,11 @@ Uc_expression *Uc_symbol::create_expression
 
 int Uc_var_symbol::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_POP);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_POP);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -124,11 +125,11 @@ int Uc_var_symbol::gen_assign
 
 int Uc_var_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_PUSH);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_PUSH);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -192,11 +193,11 @@ Uc_expression *Uc_class_inst_symbol::create_expression
 
 int Uc_static_var_symbol::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_POPSTATIC);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_POPSTATIC);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -208,11 +209,11 @@ int Uc_static_var_symbol::gen_assign
 
 int Uc_static_var_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_PUSHSTATIC);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_PUSHSTATIC);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -257,11 +258,11 @@ Uc_class_symbol *Uc_class_symbol::create
 
 int Uc_class_var_symbol::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_POPCLSVAR);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_POPCLSVAR);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -273,11 +274,11 @@ int Uc_class_var_symbol::gen_assign
 
 int Uc_class_var_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_PUSHCLSVAR);
-	Write2(out, offset);
+	WriteOp(out, (char) UC_PUSHCLSVAR);
+	WriteOpParam2(out, offset);
 	return 1;
 	}
 
@@ -289,23 +290,23 @@ int Uc_class_var_symbol::gen_value
 
 int Uc_const_int_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (want_byte)
 		{
-		out.push_back((char) UC_PUSHB);
-		Write1(out, value);
+		WriteOp(out, (char) UC_PUSHB);
+		WriteOpParam1(out, value);
 		}
-	else if (!is_int_32bit(value))
+	else if (!is_sint_32bit(value))
 		{
-		out.push_back((char) UC_PUSHI);
-		Write2(out, value);
+		WriteOp(out, (char) UC_PUSHI);
+		WriteOpParam2(out, value);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHI32);
-		Write4(out, value);
+		WriteOp(out, (char) UC_PUSHI32);
+		WriteOpParam4(out, value);
 		}
 	return 1;
 	}
@@ -329,18 +330,18 @@ Uc_expression *Uc_const_int_symbol::create_expression
 
 int Uc_string_symbol::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (is_int_32bit(offset))
 		{
-		out.push_back((char) UC_PUSHS32);
-		Write4(out, offset);
+		WriteOp(out, (char) UC_PUSHS32);
+		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHS);
-		Write2(out, offset);
+		WriteOp(out, (char) UC_PUSHS);
+		WriteOpParam2(out, offset);
 		}
 	return 1;
 	}
@@ -364,7 +365,7 @@ Uc_expression *Uc_string_symbol::create_expression
 
 int Uc_intrinsic_symbol::gen_call
 	(
-	vector<char>& out,
+	Basic_block *out,
 	Uc_function *fun,
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
@@ -381,9 +382,9 @@ int Uc_intrinsic_symbol::gen_call
 		}
 					// ++++ parmcnt == num_parms.
 					// Opcode depends on val. returned.
-	out.push_back((char) (retvalue ? UC_CALLIS : UC_CALLI));
-	Write2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
-	out.push_back((char) parmcnt);	// Parm. count is 1.
+	WriteOp(out, (char) (retvalue ? UC_CALLIS : UC_CALLI));
+	WriteOpParam2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
+	WriteOpParam1(out, (char) parmcnt);	// Parm. count is 1.
 	return 1;
 	}
 
@@ -580,7 +581,7 @@ Uc_expression *Uc_function_symbol::create_expression
 
 int Uc_function_symbol::gen_call
 	(
-	vector<char>& out,
+	Basic_block *out,
 	Uc_function *fun,
 	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE or method.
@@ -616,8 +617,8 @@ int Uc_function_symbol::gen_call
 			}
 		else
 			itemref->gen_value(out);
-		out.push_back((char) UC_CALLO);
-		Write2(out, usecode_num);	// Use fun# directly.
+		WriteOp(out, (char) UC_CALLO);
+		WriteOpParam2(out, usecode_num);	// Use fun# directly.
 		}
 	else if (method_num >= 0)		// Class method?
 		{
@@ -638,14 +639,14 @@ int Uc_function_symbol::gen_call
 			itemref->gen_value(out);
 		if (scope_vtbl)
 			{
-			out.push_back((char) UC_CALLMS);
-			Write2(out, method_num);
-			Write2(out, scope_vtbl->get_num());
+			WriteOp(out, (char) UC_CALLMS);
+			WriteOpParam2(out, method_num);
+			WriteOpParam2(out, scope_vtbl->get_num());
 			}
 		else
 			{
-			out.push_back((char) UC_CALLM);
-			Write2(out, method_num);
+			WriteOp(out, (char) UC_CALLM);
+			WriteOpParam2(out, method_num);
 			}
 		}
 	else if (high_id)
@@ -653,26 +654,26 @@ int Uc_function_symbol::gen_call
 		if (itemref)
 			{
 			itemref->gen_value(out);
-			out.push_back((char) UC_CALLE32);
+			WriteOp(out, (char) UC_CALLE32);
 			}
 		else
-			out.push_back((char) UC_CALL32);
-		Write4(out, usecode_num);	// Use fun# directly.
+			WriteOp(out, (char) UC_CALL32);
+		WriteOpParam4(out, usecode_num);	// Use fun# directly.
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{
 		// The originals would need this.
 		fun->link(this);
 		itemref->gen_value(out);
-		out.push_back((char) UC_CALLE);
-		Write2(out, usecode_num);	// Use fun# directly.
+		WriteOp(out, (char) UC_CALLE);
+		WriteOpParam2(out, usecode_num);	// Use fun# directly.
 		}
 	else				// Normal CALL.
 		{			// Called function sets return.
 		// Add to externs list.
 		int link = fun->link(this);
-		out.push_back((char) UC_CALL);
-		Write2(out, link);
+		WriteOp(out, (char) UC_CALL);
+		WriteOpParam2(out, link);
 		}
 	if (!retvalue && has_ret)
 		{

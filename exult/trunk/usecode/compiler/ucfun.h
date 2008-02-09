@@ -52,15 +52,6 @@ class Uc_function : public Uc_design_unit
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
 	int num_statics;		// Counts local statics.
-					// Stack of loops (where 'break' can
-					//   be used.
-	vector<Uc_statement *> breakables;
-	vector<int> breaks;		// Offsets of generated breaks in 
-					//   current loop, with loops separated
-					//   by -1's.
-	vector<int> conts;		// Offsets of generated continues in 
-					//   current loop, with loops separated
-					//   by -1's.
 					// Links to called functions:
 	std::vector<Uc_function_symbol *> links;
 	std::map<std::string, Uc_label *> labels;
@@ -69,8 +60,6 @@ class Uc_function : public Uc_design_unit
 					// Map string to its offset.
 	std::map<std::string, int> text_map;
 	Uc_statement *statement;	// Statement(s) in function.
-
-	int reloffset; // relative offset of the code being generated
 public:
 	enum Intrinsic_type
 		{
@@ -116,8 +105,6 @@ public:
 		{ return proto->get_cls(); }
 	virtual Uc_function_symbol::Function_kind get_function_type() const
 		{ return proto->get_function_type(); }
-	void adjust_reloffset(int diff) { reloffset += diff; }
-	int get_reloffset() const { return reloffset; }
 	Uc_scope *get_parent()
 		{ return cur_scope->get_parent(); }
 	void push_scope()		// Start a new scope.
@@ -187,17 +174,6 @@ public:
 	void add_label(Uc_label* l) { labels[l->get_name()] = l; }
 	Uc_label *search_label(char *nm);
 
-	void start_breakable(Uc_statement *s);
-	void end_breakable(Uc_statement *s, vector<char>& stmt_code,
-			int testlen = 0, bool dowhile = false);
-					// Store 'break' location.
-	void add_break(int op_offset);	// DANGER:  Offset is filled in when
-					//   end_breakable() is called, so the
-					//   string this is in better not have
-					//   been deleted!!!
-					// Store 'break' location.
-	void add_continue(int op_offset);	// See the notes for add_break.
-					// Link external function.
 	int link(Uc_function_symbol *fun);
 	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
