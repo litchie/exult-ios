@@ -83,6 +83,19 @@ void Uc_location::error
 	}
 
 /*
+ *	Print warning for stored position.
+ */
+
+void Uc_location::warning
+	(
+	char *s
+	)
+	{
+	cout << source << ':' << line + 1 << ": " << 
+								"Warning: " << s << endl;
+	}
+
+/*
  *	Print error for current parse location.
  */
 

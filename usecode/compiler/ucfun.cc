@@ -28,15 +28,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 #include <cassert>
+#include <string>
+#include <vector>
+#include <map>
 #include "ucfun.h"
 #include "ucstmt.h"
 #include "utils.h"
 #include "opcodes.h"
 #include "ucexpr.h"			/* Needed only for Write2(). */
 #include "ucsymtbl.h"
+#include "basic_block.h"
 
 using std::strlen;
 using std::memcpy;
+using std::string;
+using std::vector;
+using std::map;
+using std::pair;
 
 Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
 vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
@@ -58,7 +66,7 @@ Uc_function::Uc_function
 	Uc_scope *parent
 	) : top(parent), proto(p), cur_scope(&top), num_parms(0),
 	    num_locals(0), num_statics(0), text_data(0), text_data_size(0),
-	    statement(0), reloffset(0)
+	    statement(0)
 	{
 	char *nm = (char *) proto->get_name();
 	add_global_function_symbol(proto, parent);// Add prototype to globals.
@@ -369,98 +377,6 @@ int Uc_function::find_string_prefix
 	return (*exist).second;		// Return offset.
 	}
 
-/*
- *	Start a loop.
- */
-
-void Uc_function::start_breakable
-	(
-	Uc_statement *s			// Loop.
-	)
-	{
-	breakables.push_back(s);
-	breaks.push_back(-1);		// Set marker in 'break' list.
-	conts.push_back(-1);		// Set marker in 'continue' list.
-	}
-
-/*
- *	Fix up stuff when a loop's body has been generated.
- */
-
-void Uc_function::end_breakable
-	(
-	Uc_statement *s,		// Loop.  For verification.
-	vector<char>& stmt_code,
-	int testlen,
-	bool dowhile
-	)
-	{
-					// Just make sure things are right.
-	assert(!breakables.empty() && s == breakables.back());
-	breakables.pop_back();
-	int stmtlen = stmt_code.size();
-					// Fix all the 'break' statements,
-					//   going backwards.
-	while (!breaks.empty() && breaks.back() >= 0)
-		{			// Get offset within loop.
-		int break_offset = breaks.back();
-		breaks.pop_back();	// Remove from end of list.
-		assert(break_offset < stmtlen - 2);
-					// Store offset.
-		Write2(stmt_code, break_offset + 1, 
-						stmtlen - (break_offset + 3));
-		}
-	assert(!breaks.empty() && breaks.back() == -1);
-	breaks.pop_back();		// Remove marker (-1).
-					// Fix all the 'continue' statements,
-					//   going backwards.
-	int baseoffset = dowhile ? stmtlen : 0;
-	while (!conts.empty() && conts.back() >= 0)
-		{			// Get offset within loop.
-		int cont_offset = conts.back();
-		conts.pop_back();	// Remove from end of list.
-		assert(cont_offset < stmtlen - 2);
-					// Store offset.
-		Write2(stmt_code, cont_offset + 1, 
-						baseoffset-(cont_offset + 3)-testlen);
-		}
-	assert(!conts.empty() && conts.back() == -1);
-	conts.pop_back();		// Remove marker (-1).
-	}
-
-/*
- *	Store a 'break' statement's offset so it can be filled in at the end
- *	of the current loop.
- */
-
-void Uc_function::add_break
-	(
-	int op_offset			// Offset in loop's code of JMP.
-	)
-	{
-	assert(op_offset >= 0);
-	if (breakables.empty())		// Not in a loop?
-		Uc_location::yyerror("'break' is not valid here");
-	else
-		breaks.push_back(op_offset);
-	}
-
-/*
- *	Store a 'continue' statement's offset so it can be filled in at the end
- *	of the current loop.
- */
-
-void Uc_function::add_continue
-	(
-	int op_offset			// Offset in loop's code of JMP.
-	)
-	{
-	assert(op_offset >= 0);
-	if (breakables.empty())		// Not in a loop?
-		Uc_location::yyerror("'continue' is not valid here");
-	else
-		conts.push_back(op_offset);
-	}
 
 /*
  *	Lookup/add a link to an external function.
@@ -500,6 +416,217 @@ void Uc_function::link_labels(vector<char>& code)
 	}
 }
 
+static int Remove_dead_blocks
+	(
+	vector<Basic_block *>& blocks
+	)
+	{
+	int niter = 0;
+	while (1)
+		{
+		niter++;
+		int i = 0;
+		int nremoved = 0;
+		while (i < blocks.size())
+			{
+			Basic_block *&block = blocks[i];
+			if (block->is_end_block())
+				{
+				++i;
+				continue;
+				}
+			bool remove = false;
+			if (block->is_orphan())
+				{	// Remove unreachable block.
+				block->unlink_descendants();
+				remove = true;
+				}
+			else if (i > 0 && block->is_empty_block())
+				{	// Link predecessors directly to decendants.
+				block->link_through_block();
+				remove = true;
+				}
+			if (remove)
+				{
+				++nremoved;
+				delete block;
+				vector<Basic_block *>::iterator it = blocks.begin() + i;
+				blocks.erase(it);
+				continue;
+				}
+			i++;
+			}
+		if (!nremoved)
+			break;
+		}
+	return niter;
+	}
+
+static int Optimize_jumps
+	(
+	vector<Basic_block *>& blocks
+	)
+	{
+	int niter = 0;
+	while (1)
+		{
+		niter++;
+		int i = 0;
+		int nremoved = 0;
+		while (i < blocks.size() - 1)
+			{
+			Basic_block *block = blocks[i];
+			Basic_block *aux = block->get_taken();
+			if (aux == blocks[i+1])
+				{
+				bool remove = false;
+				if (block->is_fallthrough_block() || block->is_jump_block())
+					{	// Fall-through block followed by block which descends
+						// from current block or jump immediatelly followed
+						// by its target.
+					if (aux->has_single_predecessor())
+						{	// Child block has single ancestor.
+							// Merge it with current block.
+						block->merge_taken();
+						remove = true;
+						}
+					else if (block->get_opcode() != -1)
+						{	// Optimize the jump away.
+						++nremoved;
+						block->clear_jump();
+						continue;
+						}
+					}
+				else if (i < blocks.size() - 2
+						&& block->is_conditionaljump_block()
+						&& aux->is_simple_jump_block()
+						&& aux->has_single_predecessor()
+						&& block->get_ntaken() == blocks[i+2])
+					{	// Conditional jump followed by jump block which
+						// descends solely from current block.
+						// Reverse condition.
+					int opcode = block->get_last_instruction();
+					switch (opcode)
+						{
+						case UC_CMPG:	opcode = UC_CMPLE; break;
+						case UC_CMPL:	opcode = UC_CMPGE; break;
+						case UC_CMPGE:	opcode = UC_CMPL; break;
+						case UC_CMPLE:	opcode = UC_CMPG; break;
+						case UC_CMPNE:	opcode = UC_CMPEQ; break;
+						case UC_CMPEQ:	opcode = UC_CMPNE; break;
+						case UC_NOT:	break;
+						default:		opcode = -1; break;
+						}
+					if (opcode == -1)
+						WriteOp(block, (char) UC_NOT);
+					else
+						{
+						PopOpcode(block);
+						if (opcode != UC_NOT)
+							WriteOp(block, opcode);
+						}
+						// Set destinations.
+					block->set_taken(block->get_ntaken());
+					block->set_ntaken(aux->get_taken());
+					remove = true;
+					}
+				if (remove)
+					{
+					++nremoved;
+					aux->unlink_descendants();
+					vector<Basic_block *>::iterator it = blocks.begin() + i + 1;
+					delete *it;
+					blocks.erase(it);
+					continue;
+					}
+				}
+			i++;
+			}
+		if (!nremoved)
+			break;
+		}
+	return niter;
+	}
+
+static inline int Compute_locations
+	(
+	vector<Basic_block *>& blocks,
+	vector<int>& locs
+	)
+	{
+	locs.reserve(blocks.size());
+	locs.push_back(0);	// First block is at zero.
+		// Get locations.
+	Basic_block *back = blocks.back();
+	for (vector<Basic_block *>::iterator it = blocks.begin();
+			*it != back; ++it)
+		locs.push_back(locs.back() + (*it)->get_block_size());
+	return locs.back() + back->get_block_size();
+	}
+
+static inline int Compute_jump_distance
+	(
+	Basic_block *block,
+	vector<int>& locs
+	)
+	{
+	int dest;
+	if (block->is_jump_block())
+		dest = block->get_taken_index();
+	else
+		dest = block->get_ntaken_index();
+	return locs[dest] - (locs[block->get_index()] + block->get_block_size());
+	}
+
+static int Set_32bit_jump_flags
+	(
+	vector<Basic_block *>& blocks
+	)
+	{
+	int niter = 0;
+	while (1)
+		{
+		niter++;
+		int nchanged = 0;
+		vector<int> locs;
+		Compute_locations(blocks, locs);
+			// Determine base distances and which are 32-bit.
+		for (vector<Basic_block *>::iterator it = blocks.begin();
+				it != blocks.end(); ++it)
+			{
+			Basic_block *block = *it;
+				// If the jump is already 32-bit, or if there is
+				// no jump (just a fall-through), then there is
+				// nothing to do.
+			if (block->does_not_jump() || block->is_32bit_jump())
+				continue;
+			if (is_sint_32bit(Compute_jump_distance(block, locs)))
+				{
+				nchanged++;
+				block->set_32bit_jump();
+#if 0
+				// Doing this not only is unneccessary, but it also
+				// slows UCC down to a crawl for large functions
+				// with lots of blocks. In the absence of this block,
+				// most cases will work correctly with one iteraction.
+				// The only problematic cases are borderline jumps
+				// with offsets very close to requiring 32-bit integers
+				// and which might be pushed over the edge by the
+				// increased block lengths. These cases are dealt with
+				// by the multiple passes.
+				if (block->get_jump_size())
+					// Adjust positions of all that follow.
+					for (int j = i + 1; j < blocks.size(); j++)
+						locs[j] += 2;
+#endif
+				}
+			}
+		if (!nchanged)
+			break;
+		}
+	return niter;
+	}
+
 /*
  *	Generate Usecode.
  */
@@ -509,19 +636,67 @@ void Uc_function::gen
 	std::ostream& out
 	)
 	{
-	vector<char> code;		// Generate code here first.
-	code.reserve(30000);
+	map<string, Basic_block *> label_blocks;
+	for (map<string, Uc_label *>::iterator it = labels.begin();
+			it != labels.end(); ++it)
+		{	// Fill up label <==> basic block map.
+		Uc_label *l = it->second;
+		label_blocks.insert(pair<string, Basic_block *>(l->get_name(),
+				new Basic_block()));
+		}
+	Basic_block *initial = new Basic_block(-1);
+	Basic_block *endblock = new Basic_block(-1);
+	vector<Basic_block *> fun_blocks;
+	fun_blocks.reserve(300);
+	Basic_block *current = new Basic_block();
+	initial->set_taken(current);
+	fun_blocks.push_back(current);
 	if (statement)
-		statement->gen(code, this);
-	char& retcode = code.back();
-	// Always end with a RET or RTS if a return opcode is not
-	// already the last opcode in the code.
-	// Abort is being explicitly kept out of the return opcodes list.
-	if (proto->get_has_ret() && (retcode != UC_RETZ && retcode != UC_RETV))
+		statement->gen(this, fun_blocks, current, endblock, label_blocks);
+	assert(initial->no_parents());
+	if (!fun_blocks.back()->is_end_block())
+		fun_blocks.back()->set_targets(-1, endblock);
+	label_blocks.clear();	// No longer needed.
+		// First round of optimizations.
+	Remove_dead_blocks(fun_blocks);
+		// Second round of optimizations.
+	Optimize_jumps(fun_blocks);
+		// Set block indices.
+	for (int i = 0; i < fun_blocks.size(); i++)
+		{
+		Basic_block *block = fun_blocks[i];
+		block->set_index(i);
+		block->link_predecessors();
+		}
+		// Mark blocks for 32-bit usecode jump sizes.
+	Set_32bit_jump_flags(fun_blocks);
+	vector<int> locs;
+		// Get locations.
+	int size = Compute_locations(fun_blocks, locs) + 1;
+
+	vector<char> code;		// Generate code here first.
+	code.reserve(size);
+		// Output code.
+	for (vector<Basic_block *>::iterator it = fun_blocks.begin();
+			it != fun_blocks.end(); ++it)
+		{
+		Basic_block *block = *it;
+		block->write(code);
+		if (block->does_not_jump())
+			continue;	// Not a jump.
+		int dist = Compute_jump_distance(block, locs);
+		if (is_sint_32bit(dist))
+			Write4(code, dist);
+		else
+			Write2(code, dist);
+		}
+
+	// Always end with a RET or RTS if a return opcode.
+	if (proto->get_has_ret())
 		// Function specifies a return value.
 		// When in doubt, return zero by default.
 		code.push_back((char) UC_RETZ);
-	else if (retcode != UC_RET && retcode != UC_RET2)
+	else
 		code.push_back((char) UC_RET);
 	link_labels(code);
 	int codelen = code.size();	// Get its length.

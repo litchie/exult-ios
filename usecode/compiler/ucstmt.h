@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UCSTMT
 
 #include <vector>
+#include <map>
 #include "ucloc.h"
 #include "uclabel.h"
 
@@ -35,6 +36,7 @@ class Uc_array_expression;
 class Uc_function;
 class Uc_var_symbol;
 class Uc_del_expression;
+class Basic_block;
 
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
@@ -50,7 +52,10 @@ public:
 		{  }
 	virtual ~Uc_statement() {  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun) = 0;
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0) = 0;
 	};
 
 /*
@@ -66,7 +71,10 @@ public:
 	void add(Uc_statement *stmt)
 		{ statements.push_back(stmt); }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -81,7 +89,10 @@ public:
 		{  }
 	~Uc_assignment_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -98,7 +109,28 @@ public:
 		{  }
 	~Uc_if_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
+	};
+
+/*
+ *	A generic breakable statement:
+ */
+class Uc_breakable_statement : public Uc_statement
+	{
+	Uc_statement *stmt;		// What to execute.
+public:
+	Uc_breakable_statement(Uc_statement *s)
+		: stmt(s)
+		{  }
+	~Uc_breakable_statement();
+					// Generate code.
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -114,7 +146,10 @@ public:
 		{  }
 	~Uc_while_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -130,7 +165,28 @@ public:
 		{  }
 	~Uc_dowhile_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
+	};
+
+/*
+ *	An infinite loop statement:
+ */
+class Uc_infinite_loop_statement : public Uc_statement
+	{
+	Uc_statement *stmt;		// What to execute.
+public:
+	Uc_infinite_loop_statement(Uc_statement *s)
+		: stmt(s)
+		{  }
+	~Uc_infinite_loop_statement();
+					// Generate code.
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -156,7 +212,10 @@ public:
 		{ array_size = as; }
 	void finish(Uc_function *fun);	// Create tmps. if necessary.
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -170,7 +229,10 @@ public:
 		{  }
 	~Uc_return_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -181,7 +243,10 @@ class Uc_break_statement : public Uc_statement
 public:
 	Uc_break_statement() {  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -192,7 +257,10 @@ class Uc_continue_statement : public Uc_statement
 public:
 	Uc_continue_statement() {  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -204,7 +272,10 @@ class Uc_label_statement : public Uc_statement
  public:
 	Uc_label_statement(Uc_label *l) : label(l)
 		{ }
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 };
 
 /*
@@ -216,7 +287,10 @@ class Uc_goto_statement : public Uc_statement
  public:
 	Uc_goto_statement(char *l) : label(l)
 		{ }
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 };
 
 
@@ -234,7 +308,10 @@ public:
 		{  }
 	~Uc_converse_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -252,7 +329,10 @@ public:
 	~Uc_converse_case_statement()
 		{ delete statements; }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -271,7 +351,10 @@ public:
 		{  }
 	~Uc_converse2_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -289,8 +372,14 @@ public:
 	virtual bool is_default() const
 		{ return false; }
 					// Generate code.
-	virtual int gen_check(std::vector<char>& out, Uc_function *fun)=0;
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual int gen_check(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *case_block = 0)=0;
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -307,7 +396,10 @@ public:
 	virtual bool is_default() const
 		{ return true; }
 					// Generate code.
-	virtual int gen_check(std::vector<char>& out, Uc_function *fun)
+	virtual int gen_check(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *case_block = 0)
 		{  }
 	};
 
@@ -323,7 +415,10 @@ public:
 		{  }
 	~Uc_switch_expression_case_statement();
 					// Generate code.
-	virtual int gen_check(std::vector<char>& out, Uc_function *fun);
+	virtual int gen_check(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *case_block = 0);
 	};
 
 /*
@@ -339,7 +434,10 @@ public:
 	Uc_switch_statement(Uc_expression *v, std::vector<Uc_statement *> *cs);
 	~Uc_switch_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -351,7 +449,10 @@ class Uc_message_statement : public Uc_statement
 public:
 	Uc_message_statement(Uc_array_expression *m) : msgs(m) {  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -363,7 +464,10 @@ public:
 	Uc_say_statement(Uc_array_expression *m) : Uc_message_statement(m) 
 		{  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -376,20 +480,25 @@ public:
 	Uc_call_statement(Uc_call_expression *f);
 	~Uc_call_statement();
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
- *	Statement that just represents a single opcode.
+ *	Statement that represents an abort opcode.
  */
-class Uc_opcode_statement : public Uc_statement
+class Uc_abort_statement : public Uc_statement
 	{
-	int opcode;
 public:
-	Uc_opcode_statement(int op) : opcode(op)
+	Uc_abort_statement()
 		{  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 /*
@@ -402,7 +511,10 @@ public:
 	Uc_delete_statement(Uc_del_expression *e) : expr(e)
 		{  }
 					// Generate code.
-	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
+			Basic_block *&curr, Basic_block *&end,
+			std::map<std::string, Basic_block*>& labels,
+			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
 #endif

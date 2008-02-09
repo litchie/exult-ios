@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucfun.h"
 #include "ucclass.h"
 #include "ucloc.h"
+#include "ucloc.h"
+#include "basic_block.h"
 
 /*
  *	Default.  Just push the one value.
@@ -44,29 +46,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Uc_expression::gen_values
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	gen_value(out);			// Gen. result on stack.
 	return 1;
-	}
-
-/*
- *	Default jmp-if-false generation.
- *
- *	Output:	offset where offset is stored.
- */
-
-int Uc_expression::gen_jmp_if_false
-	(
-	vector<char>& out,
-	int offset			// Offset to jmp (relative).
-	)
-	{
-	gen_value(out);			// Gen. result on stack.
-	out.push_back((char) UC_JNE);		// Pop and jmp if false.
-	Write2(out, offset);
-	return out.size() - 2;
 	}
 
 /*
@@ -75,7 +59,7 @@ int Uc_expression::gen_jmp_if_false
 
 void Uc_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	error("Can't assign to this expression");
@@ -87,7 +71,7 @@ void Uc_expression::gen_assign
 
 Uc_var_symbol *Uc_expression::need_var
 	(
-	vector<char>& out,
+	Basic_block *out,
 	Uc_function *fun
 	)
 	{
@@ -124,7 +108,7 @@ bool Uc_expression::eval_const
 
 void Uc_var_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	char buf[150];
@@ -141,7 +125,7 @@ void Uc_var_expression::gen_value
 
 void Uc_var_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	char buf[150];
@@ -180,19 +164,19 @@ int Uc_fun_name_expression::is_object_function(bool error) const
 
 void Uc_fun_name_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int funid = fun->get_usecode_num();
 	if (fun->has_high_id())
 		{
-		out.push_back((char) UC_PUSHI32);
-		Write4(out, funid);
+		WriteOp(out, (char) UC_PUSHI32);
+		WriteOpParam4(out, funid);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHI);
-		Write2(out, funid);
+		WriteOp(out, (char) UC_PUSHI);
+		WriteOpParam2(out, funid);
 		}
 	}
 
@@ -202,14 +186,14 @@ void Uc_fun_name_expression::gen_value
 
 void Uc_arrayelem_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.push_back((char) UC_AIDX);	// Opcode, var #.
-	Write2(out, array->get_offset());
+	WriteOp(out, (char) UC_AIDX);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
 	}
 
 /*
@@ -218,14 +202,14 @@ void Uc_arrayelem_expression::gen_value
 
 void Uc_arrayelem_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.push_back((char) UC_POPARR);	// Opcode, var #.
-	Write2(out, array->get_offset());
+	WriteOp(out, (char) UC_POPARR);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
 	}
 
 /*
@@ -234,14 +218,14 @@ void Uc_arrayelem_expression::gen_assign
 
 void Uc_static_arrayelem_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.push_back((char) UC_AIDXS);	// Opcode, var #.
-	Write2(out, array->get_offset());
+	WriteOp(out, (char) UC_AIDXS);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
 	}
 
 /*
@@ -250,14 +234,14 @@ void Uc_static_arrayelem_expression::gen_value
 
 void Uc_static_arrayelem_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.push_back((char) UC_POPARRS);	// Opcode, var #.
-	Write2(out, array->get_offset());
+	WriteOp(out, (char) UC_POPARRS);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
 	}
 
 /*
@@ -266,19 +250,19 @@ void Uc_static_arrayelem_expression::gen_assign
 
 void Uc_flag_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int ival;
 	if (flag->eval_const(ival))
 		{
-		out.push_back((char) UC_PUSHF);	// Opcode, flag #.
-		Write2(out, ival);
+		WriteOp(out, (char) UC_PUSHF);	// Opcode, flag #.
+		WriteOpParam2(out, ival);
 		}
 	else
 		{
 		flag->gen_value(out);
-		out.push_back((char) UC_PUSHFVAR);	// Opcode, flag #.
+		WriteOp(out, (char) UC_PUSHFVAR);	// Opcode
 		}
 	}
 
@@ -288,19 +272,19 @@ void Uc_flag_expression::gen_value
 
 void Uc_flag_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int ival;
 	if (flag->eval_const(ival))
 		{
-		out.push_back((char) UC_POPF);
-		Write2(out, ival);
+		WriteOp(out, (char) UC_POPF);	// Opcode, flag #.
+		WriteOpParam2(out, ival);
 		}
 	else
 		{
 		flag->gen_value(out);
-		out.push_back((char) UC_POPFVAR);	// Opcode, flag #.
+		WriteOp(out, (char) UC_POPFVAR);	// Opcode
 		}
 	}
 
@@ -333,7 +317,7 @@ int Uc_var_expression::get_string_offset
 
 void Uc_binary_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int ival;
@@ -346,7 +330,7 @@ void Uc_binary_expression::gen_value
 		{
 		left->gen_value(out);		// First the left.
 		right->gen_value(out);		// Then the right.
-		out.push_back((char) opcode);
+		WriteOp(out, (char) opcode);
 		}
 	}
 
@@ -368,7 +352,7 @@ bool Uc_binary_expression::eval_const
 		{
 	case UC_ADD:	val = val1 + val2; return true;
 	case UC_SUB:	val = val1 - val2; return true;
-	case UC_MUL:	val = val1*val2; return true;
+	case UC_MUL:	val = val1 * val2; return true;
 	case UC_DIV:
 		if (!val2)
 			{
@@ -385,6 +369,14 @@ bool Uc_binary_expression::eval_const
 			}
 		val = val1%val2;
 		return true;
+	case UC_CMPG:	val = val1 > val2; return true;
+	case UC_CMPL:	val = val1 < val2; return true;
+	case UC_CMPGE:	val = val1 >= val2; return true;
+	case UC_CMPLE:	val = val1 <= val2; return true;
+	case UC_CMPNE:	val = val1 != val2; return true;
+	case UC_CMPEQ:	val = val1 == val2; return true;
+	case UC_AND:	val = val1 && val2; return true;
+	case UC_OR:		val = val1 || val2; return true;
 		}
 	val = 0;
 	error("This operation not supported for integer constants");
@@ -397,11 +389,43 @@ bool Uc_binary_expression::eval_const
 
 void Uc_unary_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	operand->gen_value(out);
-	out.push_back((char) opcode);
+	int ival;
+	if (eval_const(ival))
+		{
+		Uc_int_expression *iexpr = new Uc_int_expression(ival);
+		iexpr->gen_value(out);
+		}
+	else
+		{
+		operand->gen_value(out);
+		WriteOp(out, (char) opcode);
+		}
+	}
+
+/*
+ *	Evaluate constant.
+ *
+ *	Output:	true if successful, with result returned in 'val'.
+ */
+
+bool Uc_unary_expression::eval_const
+	(
+	int& val			// Value returned here.
+	)
+	{
+	int val1;			// Get each side.
+	if (!operand->eval_const(val1))
+		return false;
+	switch (opcode)
+		{
+	case UC_NOT:	val = !val1; return true;
+		}
+	val = 0;
+	error("This operation not supported for integer constants");
+	return false;
 	}
 
 /*
@@ -410,31 +434,10 @@ void Uc_unary_expression::gen_value
 
 void Uc_response_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	error("Must use UcResponse in 'if (UcResponse == ...)'");
-	}
-
-/*
- *	Jmp-if-false generation for getting conversation response & comparing
- *	to a string or strings.
- *
- *	Output:	offset where offset is stored.
- */
-
-int Uc_response_expression::gen_jmp_if_false
-	(
-	vector<char>& out,
-	int offset			// Offset to jmp (relative).
-	)
-	{
-					// Push string(s) on stack.
-	int cnt = operand->gen_values(out);
-	out.push_back((char) UC_CMPS);
-	Write2(out, cnt);		// # strings on stack.
-	Write2(out, offset);		// Offset to jmp if false.
-	return out.size() - 2;
 	}
 
 /*
@@ -443,23 +446,23 @@ int Uc_response_expression::gen_jmp_if_false
 
 void Uc_int_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (want_byte)
 		{
-		out.push_back((char) UC_PUSHB);
-		Write1(out, value);
+		WriteOp(out, (char) UC_PUSHB);
+		WriteOpParam1(out, value);
 		}
-	else if (!is_int_32bit(value))
+	else if (!is_sint_32bit(value))
 		{
-		out.push_back((char) UC_PUSHI);
-		Write2(out, value);
+		WriteOp(out, (char) UC_PUSHI);
+		WriteOpParam2(out, value);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHI32);
-		Write4(out, value);
+		WriteOp(out, (char) UC_PUSHI32);
+		WriteOpParam4(out, value);
 		}
 	}
 
@@ -521,13 +524,13 @@ bool Uc_int_expression::eval_const
 
 void Uc_bool_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (tf)
-		out.push_back((char) UC_PUSHTRUE);
+		WriteOp(out, (char) UC_PUSHTRUE);
 	else
-		out.push_back((char) UC_PUSHFALSE);
+		WriteOp(out, (char) UC_PUSHFALSE);
 	}
 
 /*
@@ -536,10 +539,10 @@ void Uc_bool_expression::gen_value
 
 void Uc_event_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_PUSHEVENTID);
+	WriteOp(out, (char) UC_PUSHEVENTID);
 	}
 
 /*
@@ -548,10 +551,10 @@ void Uc_event_expression::gen_value
 
 void Uc_event_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_POPEVENTID);
+	WriteOp(out, (char) UC_POPEVENTID);
 	}
 
 /*
@@ -560,10 +563,10 @@ void Uc_event_expression::gen_assign
 
 void Uc_item_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
-	out.push_back((char) UC_PUSHITEMREF);
+	WriteOp(out, (char) UC_PUSHITEMREF);
 	}
 
 /*
@@ -572,18 +575,18 @@ void Uc_item_expression::gen_value
 
 void Uc_string_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (is_int_32bit(offset))
 		{
-		out.push_back((char) UC_PUSHS32);
-		Write4(out, offset);
+		WriteOp(out, (char) UC_PUSHS32);
+		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHS);
-		Write2(out, offset);
+		WriteOp(out, (char) UC_PUSHS);
+		WriteOpParam2(out, offset);
 		}
 	}
 
@@ -593,18 +596,18 @@ void Uc_string_expression::gen_value
 
 void Uc_string_prefix_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (is_int_32bit(get_string_offset()))
 		{
-		out.push_back((char) UC_PUSHS32);
-		Write4(out, offset);
+		WriteOp(out, (char) UC_PUSHS32);
+		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		out.push_back((char) UC_PUSHS);
-		Write2(out, offset);
+		WriteOp(out, (char) UC_PUSHS);
+		WriteOpParam2(out, offset);
 		}
 	}
 
@@ -667,12 +670,12 @@ void Uc_array_expression::concat
 
 void Uc_array_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int actual = Uc_array_expression::gen_values(out);
-	out.push_back((char) UC_ARRC);
-	Write2(out, actual);
+	WriteOp(out, (char) UC_ARRC);
+	WriteOpParam2(out, actual);
 	}
 
 /*
@@ -683,7 +686,7 @@ void Uc_array_expression::gen_value
 
 int Uc_array_expression::gen_values
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int actual = 0;			// (Just to be safe.)
@@ -818,7 +821,7 @@ void Uc_call_expression::check_params()
 
 void Uc_call_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (ind)			// Indirect?
@@ -832,7 +835,7 @@ void Uc_call_expression::gen_value
 		else
 			itemref->gen_value(out);
 		ind->gen_value(out);	// Function #.
-		out.push_back((char) UC_CALLIND);
+		WriteOp(out, (char) UC_CALLIND);
 		return;
 		}
 	if (!sym)
@@ -850,7 +853,7 @@ void Uc_call_expression::gen_value
 
 void Uc_class_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!var->gen_value(out))
@@ -868,7 +871,7 @@ inline Uc_class *Uc_class_expression::get_cls() const
 
 void Uc_class_expression::gen_assign
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	if (!var->gen_assign(out))
@@ -917,13 +920,13 @@ Uc_new_expression::Uc_new_expression
 
 void Uc_new_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	int actual = parms->gen_values(out);
-	out.push_back((char)UC_CLSCREATE);
 	Uc_class *cls = var->get_cls();
-	Write2(out, cls->get_num());
+	WriteOp(out, (char) UC_CLSCREATE);
+	WriteOpParam2(out, cls->get_num());
 	}
 
 /*
@@ -932,9 +935,9 @@ void Uc_new_expression::gen_value
 
 void Uc_del_expression::gen_value
 	(
-	vector<char>& out
+	Basic_block *out
 	)
 	{
 	cls->gen_value(out);
-	out.push_back((char)UC_CLASSDEL);
+	WriteOp(out, (char) UC_CLASSDEL);
 	}

@@ -40,12 +40,18 @@ class Uc_function;
 class Usecode_symbol;
 class Uc_class;
 class Uc_scope;
+class Basic_block;
 
 #include <iostream>
 inline bool is_int_32bit(int val)
 	{
 	int high = val >> 16;
 	return !(high == -1 || high == 0);
+	}
+
+inline bool is_sint_32bit(int val)
+	{
+	return (val < -32768 || val > 32767);
 	}
 
 /*
@@ -70,11 +76,11 @@ public:
 		{  }
 	const char *get_name() { return name.c_str(); }
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(vector<char>& out);
+	virtual int gen_assign(Basic_block *out);
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
+	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue, Uc_class *scope_vtbl = 0);
 	virtual int get_string_offset()	// Get offset in text_data.
@@ -106,9 +112,9 @@ public:
 	void set_offset(int off)
 		{ offset = off; }
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(vector<char>& out);
+	virtual int gen_assign(Basic_block *out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 	virtual int is_object_function(bool error = true) const;
@@ -141,9 +147,9 @@ public:
 	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(vector<char>& out);
+	virtual int gen_assign(Basic_block *out);
 	virtual bool is_static() const
 		{ return true; }
 	};
@@ -189,9 +195,9 @@ public:
 	Uc_class_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(vector<char>& out);
+	virtual int gen_assign(Basic_block *out);
 	};
 
 /*
@@ -209,7 +215,7 @@ public:
 			value &= 0xff;
 		}
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 	int get_value() const
@@ -227,7 +233,7 @@ public:
 	Uc_string_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(vector<char>& out);
+	virtual int gen_value(Basic_block *out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 					// Return var/int expression.
@@ -250,7 +256,7 @@ public:
 	int get_num_parms()		// ++++Not valid yet.
 		{ return num_parms; }
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
+	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue, Uc_class *scope_vtbl = 0);
 	};
@@ -322,7 +328,7 @@ public:
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
+	virtual int gen_call(Basic_block *out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue, Uc_class *scope_vtbl = 0);
 	static void set_last_num(int n)

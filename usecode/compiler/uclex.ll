@@ -214,6 +214,7 @@ extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 %x comment
 %s in_script
 %s in_loop
+%s in_breakable
 
 %%
 
@@ -236,7 +237,6 @@ enum		return ENUM;
 extern		return EXTERN;
 true		return UCTRUE;
 false		return UCFALSE;
-break		return BREAK;
 case		return CASE;
 static		return STATIC_;
 class		return CLASS;
@@ -267,7 +267,11 @@ abort		return ABORT;
 "shape#"	return SHAPENUM;
 "object#"	return OBJECTNUM;
 
+<in_breakable>{
+break		return BREAK;
+}
 <in_loop>{
+break		return BREAK;
 continue	return CONTINUE;
 }
 					/* Script commands. */
@@ -407,6 +411,14 @@ void start_loop()
 	yy_push_state(in_loop);
 	}
 void end_loop()
+	{
+	yy_pop_state();
+	}
+void start_breakable()
+	{
+	yy_push_state(in_breakable);
+	}
+void end_breakable()
 	{
 	yy_pop_state();
 	}

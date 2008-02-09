@@ -50,6 +50,7 @@ void yywarning(char *);
 extern int yylex();
 extern void start_script(), end_script();
 extern void start_loop(), end_loop();
+extern void start_breakable(), end_breakable();
 static Uc_array_expression *Create_array(int, Uc_expression *);
 static Uc_array_expression *Create_array(int, Uc_expression *, 
 							Uc_expression *);
@@ -168,7 +169,7 @@ struct ID_info
 %type <stmt> special_method_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
 %type <stmt> class_decl class_decl_list
-%type <stmt> break_statement converse_statement converse2_statement
+%type <stmt> break_statement converse_statement
 %type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
 %type <stmt> delete_statement continue_statement
@@ -356,7 +357,7 @@ const_int_val:
 		Uc_symbol *sym = Uc_function::search_globals($1);
 		Uc_const_int_symbol *var;
 		char buf[180];
-		if (!var)
+		if (!sym)
 			{
 			sprintf(buf, "'%s' not declared", $1);
 			yyerror(buf);
@@ -410,7 +411,6 @@ statement:
 	| return_statement
 	| statement_block
 	| converse_statement
-	| converse2_statement
 	| switch_statement
 	| script_statement
 	| break_statement
@@ -424,7 +424,7 @@ statement:
 		{ $$ = new Uc_message_statement($3); }
 	| answer_statement
 	| ABORT ';'
-		{ $$ = new Uc_opcode_statement(UC_ABRT); }
+		{ $$ = new Uc_abort_statement(); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
 	;
@@ -764,37 +764,100 @@ appended_element:
 
 if_statement:
 	IF '(' expression ')' statement %prec IF
-		{ $$ = new Uc_if_statement($3, $5, 0); }
+		{
+		int val;
+		if ($3->eval_const(val))
+			{
+			if (val)
+				{
+				yywarning("'if' clause will always be executed");
+				$$ = $5;
+				}
+			else
+				{		// Return empty statement block.
+				yywarning("'if' clause will never be executed");
+				$$ = new Uc_block_statement();
+				}
+			}
+		else
+			$$ = new Uc_if_statement($3, $5, 0);
+		}
 	| IF '(' expression ')' statement ELSE statement
-		{ $$ = new Uc_if_statement($3, $5, $7); }
+		{
+		int val;
+		if ($3->eval_const(val))
+			{
+			if (val)
+				{
+				yywarning("'else' clause will never be executed");
+				$$ = $5;
+				}
+			else
+				{
+				yywarning("'if' clause will never be executed");
+				$$ = $7;
+				}
+			}
+		else
+			$$ = new Uc_if_statement($3, $5, $7);
+		}
 	;
 
 while_statement:
 	WHILE '(' nonclass_expr ')' { start_loop(); } statement
 		{
-		$$ = new Uc_while_statement($3, $6);
+		int val;
+		if ($3->eval_const(val))
+			{
+			if (val)
+				{
+				yywarning("Infinite loop detected");
+				$$ = new Uc_infinite_loop_statement($6);
+				}
+			else
+				{		// Return empty statement block.
+				yywarning("Body of 'while' statement will never be executed");
+				$$ = new Uc_block_statement();
+				}
+			}
+		else
+			$$ = new Uc_while_statement($3, $6);
 		end_loop();
 		}
 	| DO { start_loop(); } statement WHILE '(' nonclass_expr ')' ';'
 		{
-		$$ = new Uc_dowhile_statement($6, $3);
+		int val;
+		if ($6->eval_const(val))
+			{
+			if (val)
+				{
+				yywarning("Infinite loop detected");
+				$$ = new Uc_infinite_loop_statement($3);
+				}
+			else		// Optimize loop away.
+				$$ = new Uc_breakable_statement($3);
+			}
+		else
+			$$ = new Uc_dowhile_statement($6, $3);
 		end_loop();
 		}
 	;
 
 array_loop_statement:
-	start_array_loop ')' statement
+	start_array_loop ')' { start_loop(); } statement
 		{
-		$1->set_statement($3);
+		end_loop();
+		$1->set_statement($4);
 		$1->finish(cur_fun);
 		cur_fun->pop_scope();
 		end_loop();
 		}
 	| start_array_loop WITH IDENTIFIER 
 		{ $1->set_index(cur_fun->add_symbol($3)); }
-					')' statement
+					')' { start_loop(); } statement
 		{
-		$1->set_statement($6);
+		end_loop();
+		$1->set_statement($7);
 		$1->finish(cur_fun);
 		cur_fun->pop_scope();
 		end_loop();
@@ -803,9 +866,10 @@ array_loop_statement:
 		{ $1->set_index(cur_fun->add_symbol($3)); }
 				TO IDENTIFIER 
 		{ $1->set_array_size(cur_fun->add_symbol($6)); }
-						')' statement
+						')' { start_loop(); } statement
 		{
-		$1->set_statement($9);
+		end_loop();
+		$1->set_statement($10);
 		cur_fun->pop_scope();
 		end_loop();
 		}
@@ -944,17 +1008,26 @@ return_statement:
 	;
 
 converse_statement:
-	CONVERSE statement
-		{ $$ = new Uc_converse_statement($2); }
-	;
-
-converse2_statement:			/* A less wordy form.		*/
-	CONVERSE '(' expression ')' '{' converse_case_list '}'
+	start_conv statement
 		{
+		end_loop();
+		$$ = new Uc_converse_statement($2);
+		}
+	
+	| start_conv '(' expression ')' '{' converse_case_list '}'
+		{
+		end_loop();
 		if (Class_unexpected_error($3))
 			$$ = 0;
 		else
 			$$ = new Uc_converse2_statement($3, $6);
+		}
+	;
+
+start_conv:
+	CONVERSE
+		{
+		start_loop();
 		}
 	;
 
@@ -999,14 +1072,16 @@ converse_options:
 switch_statement:
 	SWITCH '('
 			{ cur_fun->push_scope(); }
-			expression ')' '{' switch_case_list '}'
+			expression ')' '{'
+			{ start_breakable(); } switch_case_list '}'
 		{
 		if (Class_unexpected_error($4))
 			$$ = 0;
 		else
 			{
-			$$ = new Uc_switch_statement($4, $7);
-			delete($7);		// a copy has been made.
+			end_breakable();
+			$$ = new Uc_switch_statement($4, $8);
+			delete($8);		// a copy has been made.
 			cur_fun->pop_scope();
 			}
 		}
@@ -1228,7 +1303,10 @@ label_statement:
 
 goto_statement:
 	GOTO IDENTIFIER
-		{ $$ = new Uc_goto_statement($2); }
+		{
+		yywarning("You *really* shouldn't using goto statements...");
+		$$ = new Uc_goto_statement($2);
+		}
 	;
 
 delete_statement:

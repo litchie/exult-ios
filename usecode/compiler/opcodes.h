@@ -71,23 +71,23 @@ const char UC_CLASSDEL = 0x59;	// Delete class instance.
 const char UC_AIDXS = 0x5a;		// Pop static array elem.
 const char UC_POPARRS = 0x5b;		// Pop into static array elem.
 const char UC_LOOPTOPS = 0x5c;		// Loop with static array
-const char UC_PUSHFVAR = 0xc2;		// PUSH global flag using stack value.
-const char UC_POPFVAR = 0xc3;		// POP global flag using stack value.
+const char UC_PUSHFVAR = (char)0xc2;		// PUSH global flag using stack value.
+const char UC_POPFVAR = (char)0xc3;		// POP global flag using stack value.
 
 // 32-bit usecode
-/*	Not used yet -- 32-bit jump offsets
-const char UC_LOOPTOP32 = 0x82;
-const char UC_CONVERSE32 = 0x84;
-const char UC_JNE32 = 0x85;
-const char UC_JMP32 = 0x86;
-const char UC_CMPS32 = 0x87;
-const char UC_LOOP32 = 0xae;
-const char UC_LOOPTOPS = 0xdc;		// Loop with static array
+const char UC_LOOPTOP32 = (char)0x82;
+const char UC_CONVERSE32 = (char)0x84;
+const char UC_JNE32 = (char)0x85;
+const char UC_JMP32 = (char)0x86;
+const char UC_CMPS32 = (char)0x87;
+const char UC_LOOPTOPS32 = (char)0xdc;		// Loop with static array
+/*	No real reason for this.
+ *	const char UC_LOOP32 = 0xae;
 */
-const char UC_ADDSI32 = 0x9c;
-const char UC_PUSHS32 = 0x9d;
-const char UC_PUSHI32 = 0x9f;
-const char UC_CALL32 = 0xa4;
-const char UC_CALLE32 = 0xc7;
+const char UC_ADDSI32 = (char)0x9c;
+const char UC_PUSHS32 = (char)0x9d;
+const char UC_PUSHI32 = (char)0x9f;
+const char UC_CALL32 = (char)0xa4;
+const char UC_CALLE32 = (char)0xc7;
 
 #endif
