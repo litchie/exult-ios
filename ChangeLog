@@ -1,3 +1,15 @@
+2008-02-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Exult: Removing 32-bit match check for init_loop opcode.
+	* UCC: Fixed the use of declared constants for function IDs/shapes.
+	  Added several contant-expression optimizations, particularly for while
+	  and do...while loops. Added 32-bit-detectino routine which works correctly
+	  considering signed 16-bit bounds. Also, allowing 'continue' statements on
+	  'for' and 'converse' loops as well as disallowing 'break' statements
+	  except for loops and switches. Finally, modified code generation to use
+	  basic blocks instead; this allows for some small code optimizations to be
+	  performed (e.g., 'if (cond) break; else statements' having only one jump
+	  instead of 3) as well as finally being able to use 32-bit jumps with UCC.
+
 2008-02-03    <jeff@mini.nerble.net>
 
 	* actors.cc: Fixed bug where companions would walk on water.

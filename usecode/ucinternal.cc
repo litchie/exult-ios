@@ -1468,9 +1468,7 @@ Game_object *Usecode_internal::create_object
 	else
 	{
 		if (Shapeinfo_lookup::Is_body_shape(shapenum))
-		{
 			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
-		}
 		else
 		{
 			obj = gmap->create_ireg_object(shapenum, 0);
@@ -2469,10 +2467,14 @@ int Usecode_internal::run()
 			case 0xae:		// (32 bit version)   
 			{
 				int nextopcode = *(frame->ip);
+				// No real reason to have 32-bit version of this instruction;
+				// keeping it for backward compatibility only.
+#if 0
 				if ((opcode & 0x80) != (nextopcode & 0x80)) {
 					cerr << "32-bit instruction mixed with 16-bit instruction in loop usecode!" << endl;
 					break;
 				}
+#endif
 				nextopcode &= 0x7f;
 				if (nextopcode != 0x02 && nextopcode != 0x5c) {
 					cerr << "Invalid 2nd byte in loop!" << endl;

@@ -50,6 +50,7 @@ public:
 	const char *get_source()
 		{ return source; }
 	void error(char *s);		// Print error.
+	void warning(char *s);		// Print warning.
 	static void yyerror(char *s);	// Print error at cur. location.
 	static void yywarning(char *s);
 	static int get_num_errors()
