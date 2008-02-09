@@ -441,8 +441,10 @@ static int Remove_dead_blocks
 				block->unlink_descendants();
 				remove = true;
 				}
-			else if (i > 0 && block->is_empty_block())
+			else if (block->is_empty_block())
 				{	// Link predecessors directly to decendants.
+					// May link a block to the initial block, or
+					// may link the initial and ending blocks.
 				block->link_through_block();
 				remove = true;
 				}
@@ -656,7 +658,10 @@ void Uc_function::gen
 	assert(initial->no_parents());
 	if (!fun_blocks.back()->is_end_block())
 		fun_blocks.back()->set_targets(-1, endblock);
-	label_blocks.clear();	// No longer needed.
+		// No longer needed. Since all entries should be present in
+		// the fun_blocks vector (even if as unreachable childless
+		// empty blocks), we don't need to delete the contained blocks.
+	label_blocks.clear();
 		// First round of optimizations.
 	Remove_dead_blocks(fun_blocks);
 		// Second round of optimizations.
@@ -690,6 +695,14 @@ void Uc_function::gen
 		else
 			Write2(code, dist);
 		}
+
+		// Free up the blocks.
+	for (vector<Basic_block *>::iterator it = fun_blocks.begin();
+			it != fun_blocks.end(); ++it)
+		delete *it;
+	fun_blocks.clear();
+	delete initial;
+	delete endblock;
 
 	// Always end with a RET or RTS if a return opcode.
 	if (proto->get_has_ret())
