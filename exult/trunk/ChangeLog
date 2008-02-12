@@ -1,3 +1,10 @@
+2008-02-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	UCC: Removing old way of handling labels. Improved dead-block detection.
+	Fixed bug in IF statements without a corresponding ELSE statement. Fixed
+	a few leaks. Eliminated premature while(0) and if (0) optimizations since
+	a GOTO statement may point to somewhere inside these otherwise unreachable
+	blocks.
+
 2008-02-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Exult: Removing 32-bit match check for init_loop opcode.
 	* UCC: Fixed the use of declared constants for function IDs/shapes.

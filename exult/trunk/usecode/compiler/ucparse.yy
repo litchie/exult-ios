@@ -51,6 +51,7 @@ extern int yylex();
 extern void start_script(), end_script();
 extern void start_loop(), end_loop();
 extern void start_breakable(), end_breakable();
+extern void start_fun_id(), end_fun_id();
 static Uc_array_expression *Create_array(int, Uc_expression *);
 static Uc_array_expression *Create_array(int, Uc_expression *, 
 							Uc_expression *);
@@ -139,7 +140,7 @@ struct ID_info
 /*
  *	Expression precedence rules (lowest to highest):
  */
-%left UCC_INSERT ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ
+%left UCC_INSERT ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ '='
 %left AND OR
 %left EQUALS NEQUALS
 %left LTEQUALS GTEQUALS '<' '>' UCC_IN
@@ -283,29 +284,30 @@ function_body:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	opt_var IDENTIFIER opt_funid '(' opt_param_list ')'
+	opt_var IDENTIFIER { start_fun_id(); } opt_funid '(' opt_param_list ')'
 		{
-		if ($3->kind != Uc_function_symbol::utility_fun)
+		end_fun_id();
+		if ($4->kind != Uc_function_symbol::utility_fun)
 			{
 			char buf[180];
 			if ($1)
 				{
 				sprintf(buf, "Functions declared with '%s#' cannot return a value",
-					$3->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
+					$4->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
 				yyerror(buf);
 				}
-			if (!$5->empty())
+			if (!$6->empty())
 				{
 				sprintf(buf, "Functions declared with '%s#' cannot have arguments",
-					$3->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
+					$4->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
 				yyerror(buf);
 				}
 			}
-		$$ = Uc_function_symbol::create($2, $3->id, *$5, is_extern, 0, $3->kind);
+		$$ = Uc_function_symbol::create($2, $4->id, *$6, is_extern, 0, $4->kind);
 		if ($1)
 			$$->set_has_ret();
-		delete $5;		// A copy was made.
-		delete $3;
+		delete $6;		// A copy was made.
+		delete $4;
 		}
 	| CLASS '<' defined_class '>' IDENTIFIER opt_int '(' opt_param_list ')'
 		{
@@ -774,10 +776,11 @@ if_statement:
 				$$ = $5;
 				}
 			else
-				{		// Return empty statement block.
-				yywarning("'if' clause will never be executed");
-				$$ = new Uc_block_statement();
+				{	// Need this because of those pesky GOTOs...
+				yywarning("'if' clause may never be executed");
+				$$ = new Uc_if_statement(0, $5, 0);
 				}
+			delete $3;
 			}
 		else
 			$$ = new Uc_if_statement($3, $5, 0);
@@ -789,14 +792,17 @@ if_statement:
 			{
 			if (val)
 				{
-				yywarning("'else' clause will never be executed");
-				$$ = $5;
+					// Need this because of those pesky GOTOs...
+				yywarning("'else' clause may never be executed");
+				$$ = new Uc_if_statement(new Uc_int_expression(val), $5, $7);
 				}
 			else
 				{
-				yywarning("'if' clause will never be executed");
-				$$ = $7;
+					// Need this because of those pesky GOTOs...
+				yywarning("'if' clause may never be executed");
+				$$ = new Uc_if_statement(0, $5, $7);
 				}
+			delete $3;
 			}
 		else
 			$$ = new Uc_if_statement($3, $5, $7);
@@ -815,10 +821,11 @@ while_statement:
 				$$ = new Uc_infinite_loop_statement($6);
 				}
 			else
-				{		// Return empty statement block.
-				yywarning("Body of 'while' statement will never be executed");
-				$$ = new Uc_block_statement();
+				{	// Need this because of those pesky GOTOs...
+				yywarning("Body of 'while' statement may never be executed");
+				$$ = new Uc_while_statement(0, $6);
 				}
+			delete $3;
 			}
 		else
 			$$ = new Uc_while_statement($3, $6);
@@ -836,6 +843,7 @@ while_statement:
 				}
 			else		// Optimize loop away.
 				$$ = new Uc_breakable_statement($3);
+			delete $6;
 			}
 		else
 			$$ = new Uc_dowhile_statement($6, $3);
@@ -1286,17 +1294,17 @@ continue_statement:
 label_statement:
 	IDENTIFIER ':'
 		{
-			Uc_label *label = cur_fun->search_label($1);
-			if (label) {
-				char buf[150];
-				sprintf(buf, "duplicate label: '%s'", $1);
-				yyerror(buf);
-				$$ = 0;
+		if (cur_fun->search_label($1))
+			{
+			char buf[150];
+			sprintf(buf, "duplicate label: '%s'", $1);
+			yyerror(buf);
+			$$ = 0;
 			}
-			else {
-				label = new Uc_label($1);
-				cur_fun->add_label(label);
-				$$ = new Uc_label_statement(label);
+		else
+			{
+			cur_fun->add_label($1);
+			$$ = new Uc_label_statement($1);
 			}
 		}
 	;

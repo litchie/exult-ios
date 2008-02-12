@@ -99,12 +99,12 @@ public:
 		out.insert(out.end(), params.begin(), params.end());
 		}
 #if 0	// For debugging.
-	void write_text()
+	void write_text() const
 		{
-		cout << setw(2) << setfill('0') << (int)(opcode) << ' ';
-		for (vector<char>::iterator it = params.begin();
+		cout << setw(2) << setfill('0') << (int)((unsigned char)opcode) << ' ';
+		for (vector<char>::const_iterator it = params.begin();
 				it != params.end(); ++it)
-			cout << setw(2) << setfill('0') << (int)(*it) << ' ';
+			cout << setw(2) << setfill('0') << (int)((unsigned char)*it) << ' ';
 		if (is_jump)
 			cout << "<offset>";
 		}
@@ -173,16 +173,15 @@ protected:
 				// or the 32-bit versions of these instructions.
 
 	vector<Opcode *> instructions;	// The instructions of the block
+	bool reachable;
 public:
 	Basic_block()
-		:	index(0), taken(0), ntaken(0),
-			taken_index(-1), ntaken_index(-1),
-			jmp_op(0)
+		:	index(0), taken(0), ntaken(0), taken_index(-1), ntaken_index(-1),
+			jmp_op(0), reachable(false)
 		{ instructions.reserve(100); }
 	Basic_block(int ind, Basic_block *t = 0, Basic_block *n = 0, int ins = -1)
-		:	index(ind), taken(t), ntaken(n),
-			taken_index(-1), ntaken_index(-1),
-			jmp_op(new Opcode(ins))
+		:	index(ind), taken(t), ntaken(n), taken_index(-1), ntaken_index(-1),
+			jmp_op(new Opcode(ins)), reachable(false)
 		{ if (index != -1) instructions.reserve(100); }
 	~Basic_block()
 		{
@@ -246,17 +245,17 @@ public:
 		{ return predecessors.empty(); }
 	bool is_orphan() const
 		{ return index >= 0 && no_parents(); }
-	bool is_unreachable() const
+	bool is_reachable() const
+		{ return reachable; }
+	void mark_reachable()
 		{
-		if (is_orphan())
-			return true;
-		for (set<Basic_block *>::iterator it = predecessors.begin();
-				it != predecessors.end(); ++it)
-			// Recursivelly determine if the block is reachable.
-			if (!(*it)->is_unreachable())
-				return false;
-		// Block descends from orphan blocks, and is unreachable.
-		return true;
+		if (reachable)
+			return;
+		reachable = true;
+		if (taken)
+			taken->mark_reachable();
+		if (ntaken)
+			ntaken->mark_reachable();
 		}
 	Basic_block *get_taken()
 		{ return taken; }
@@ -393,13 +392,13 @@ public:
 			jmp_op->write(out);
 		}
 #if 0	// For debugging.
-	void check()
+	void check() const
 		{
 		cout << hex << setw(8) << setfill('0') << (int)(this)
 			 << '\t' << setw(8) << setfill('0') << (int)(taken)
 			 << '\t' << setw(8) << setfill('0') << (int)(ntaken)
 			 << '\t';
-		for (vector<Opcode *>::iterator it = instructions.begin();
+		for (vector<Opcode *>::const_iterator it = instructions.begin();
 				it != instructions.end(); ++it)
 			(*it)->write_text();
 		if (jmp_op)
