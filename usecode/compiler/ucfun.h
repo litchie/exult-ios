@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UCFUN
 #define INCL_UCFUN
 
+#include <set>
 #include "ucsym.h"
-#include "uclabel.h"
 
 class Uc_location;
 class Uc_statement;
@@ -54,7 +54,7 @@ class Uc_function : public Uc_design_unit
 	int num_statics;		// Counts local statics.
 					// Links to called functions:
 	std::vector<Uc_function_symbol *> links;
-	std::map<std::string, Uc_label *> labels;
+	std::set<std::string> labels;
 	char *text_data;		// All strings.
 	int text_data_size;
 					// Map string to its offset.
@@ -171,11 +171,10 @@ public:
 	int add_string(char *text);
 	int find_string_prefix(Uc_location& loc, const char *text);
 					// Start/end loop.
-	void add_label(Uc_label* l) { labels[l->get_name()] = l; }
-	Uc_label *search_label(char *nm);
+	void add_label(char *nm) { labels.insert(nm); }
+	bool search_label(char *nm) { return labels.find(nm) != labels.end(); }
 
 	int link(Uc_function_symbol *fun);
-	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
 	virtual Usecode_symbol *create_sym();
 	};

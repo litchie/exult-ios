@@ -66,7 +66,7 @@ void Uc_block_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -103,7 +103,7 @@ void Uc_assignment_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -122,7 +122,7 @@ void Uc_if_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -132,20 +132,36 @@ void Uc_if_statement::gen
 		return;
 		// The basic block for the if code.
 	Basic_block *if_block = new Basic_block();
-	blocks.push_back(if_block);
-		// Gen test code & JNE.
-	expr->gen_value(curr);
-	curr->set_targets(UC_JNE, if_block);
-	if (if_stmt)
-		if_stmt->gen(fun, blocks, if_block, end, labels, start, exit);
 		// The basic block after the if/else blocks.
 	Basic_block *past_if = new Basic_block();
+	blocks.push_back(if_block);
+	int ival;
+	bool const_expr = !expr || expr->eval_const(ival);
+	if (!expr)
+			// IF body unreachable except by GOTO statements.
+			// Skip IF block.
+		curr->set_targets(UC_JMP, past_if);
+	else if (ival)
+			// ELSE block unreachable except by GOTO statements.
+			// Fall-through to IF block.
+		curr->set_targets(-1, if_block);
+	else
+		{
+			// Gen test code & JNE.
+		expr->gen_value(curr);
+		curr->set_targets(UC_JNE, if_block);
+		}
+	if (if_stmt)
+		if_stmt->gen(fun, blocks, if_block, end, labels, start, exit);
 	if (else_stmt)
 		{
 			// The basic block for the else code.
 		Basic_block *else_block = new Basic_block();
 		blocks.push_back(else_block);
-		curr->set_ntaken(else_block);
+		if (!expr)	// Go directly to else block instead.
+			curr->set_taken(else_block);
+		else if (!ival)	// Only for JNE.
+			curr->set_ntaken(else_block);
 			// JMP past ELSE code.
 		if_block->set_targets(UC_JMP, past_if);
 			// Generate else code.
@@ -153,7 +169,11 @@ void Uc_if_statement::gen
 		else_block->set_taken(past_if);
 		}
 	else
-		curr->set_ntaken(past_if);
+		{
+		if (!const_expr)	// Need to go to past-if block too.
+			curr->set_ntaken(past_if);
+		if_block->set_targets(-1, past_if);
+		}
 	blocks.push_back(curr = past_if);
 	}
 
@@ -190,7 +210,7 @@ void Uc_breakable_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -224,7 +244,7 @@ void Uc_while_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -235,18 +255,28 @@ void Uc_while_statement::gen
 		// The start of a loop is a jump target and needs
 		// a new basic block.
 	Basic_block *while_top = new Basic_block();
-	curr->set_taken(while_top);
-	blocks.push_back(while_top);
-		// Gen test code.
-	expr->gen_value(while_top);
-		// Need new block as it is past a JNE (the test).
-	Basic_block *while_block = new Basic_block();
-	blocks.push_back(while_block);
 		// Basic block past while body.
 	Basic_block *past_while = new Basic_block();
-	while_top->set_targets(UC_JNE, while_block, past_while);
+		// Need new block past a JNE (the test) or JMP.
+	Basic_block *while_block = new Basic_block();
+		// Fall-through to WHILE top.
+	curr->set_taken(while_top);
+	blocks.push_back(while_top);
+	blocks.push_back(while_block);
+	if (!expr)
+			// While body unreachable except through GOTO statements.
+			// Skip WHILE body by default.
+		while_top->set_targets(UC_JMP, past_while);
+	else
+		{
+			// Gen test code.
+		expr->gen_value(while_top);
+			// Link WHILE top to WHILE body and past-WHILE blocks.
+		while_top->set_targets(UC_JNE, while_block, past_while);
+		}
 		// Generate while body.
 	stmt->gen(fun, blocks, while_block, end, labels, while_top, past_while);
+	
 		// JMP back to top.
 	while_block->set_targets(UC_JMP, while_top);
 	blocks.push_back(curr = past_while);
@@ -274,7 +304,7 @@ void Uc_dowhile_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -326,7 +356,7 @@ void Uc_infinite_loop_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -395,7 +425,7 @@ void Uc_arrayloop_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -450,7 +480,7 @@ void Uc_return_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -484,7 +514,7 @@ void Uc_break_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -501,7 +531,7 @@ void Uc_continue_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -518,13 +548,13 @@ void Uc_label_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	map<string, Basic_block*>::iterator it = labels.find(label->get_name());
+	map<string, Basic_block*>::iterator it = labels.find(label);
 	// Should never fail, but...
 	assert(it != labels.end());
 	Basic_block *block = it->second;
@@ -540,7 +570,7 @@ void Uc_goto_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -557,7 +587,7 @@ void Uc_goto_statement::gen
 	else
 		{
 		char buf[255];
-		snprintf(buf, 255, "Undeclared label: '%s'", label);
+		snprintf(buf, 255, "Undeclared label: '%s'", label.c_str());
 		error(buf);
 		}
 	}
@@ -582,7 +612,7 @@ void Uc_converse_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -617,7 +647,7 @@ static void Call_intrinsic
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Uc_intrinsic_symbol *intr,	// What to call.
 	Uc_expression *parm0 = 0	// Parm, or null.
@@ -642,7 +672,7 @@ void Uc_converse_case_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -721,7 +751,7 @@ void Uc_converse2_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -780,7 +810,7 @@ int Uc_switch_expression_case_statement::gen_check
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *case_block		// Pointer to the case statements.
 	)
@@ -802,7 +832,7 @@ void Uc_switch_case_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -863,7 +893,7 @@ void Uc_switch_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -921,7 +951,7 @@ void Uc_message_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -970,7 +1000,7 @@ void Uc_say_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -1014,7 +1044,7 @@ void Uc_call_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -1032,7 +1062,7 @@ void Uc_abort_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.
@@ -1053,7 +1083,7 @@ void Uc_delete_statement::gen
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
 	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *&end,			// Fictitious exit block for function.
+	Basic_block *end,			// Fictitious exit block for function.
 	map<string, Basic_block*>& labels,	// Label map for goto statements.
 	Basic_block *start,			// Block used for 'continue' statements.
 	Basic_block *exit			// Block used for 'break' statements.

@@ -212,6 +212,7 @@ extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
 %option stack
 %x comment
+%s fun_id
 %s in_script
 %s in_loop
 %s in_breakable
@@ -264,8 +265,10 @@ item		return ITEM;
 goto		return GOTO;
 abort		return ABORT;
 ".original"	return ORIGINAL;
+<fun_id>{
 "shape#"	return SHAPENUM;
 "object#"	return OBJECTNUM;
+}
 
 <in_breakable>{
 break		return BREAK;
@@ -419,6 +422,14 @@ void start_breakable()
 	yy_push_state(in_breakable);
 	}
 void end_breakable()
+	{
+	yy_pop_state();
+	}
+void start_fun_id()
+	{
+	yy_push_state(fun_id);
+	}
+void end_fun_id()
 	{
 	yy_pop_state();
 	}

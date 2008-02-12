@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 #include "ucfun.h"
 #include "ucstmt.h"
 #include "utils.h"
@@ -99,26 +100,8 @@ Uc_function::~Uc_function
 	{
 	delete statement;
 	delete proto;
-
-	std::map<std::string, Uc_label*>::iterator iter;
-	for (iter = labels.begin(); iter != labels.end(); ++iter)
-		delete iter->second;
+	labels.clear();
 	}
-
-/*
- *  Find a label in this function
- *
- *  Output: label, or 0 if not found
- */
-
-Uc_label *Uc_function::search_label(char *nm)
-{
-	std::map<std::string,Uc_label*>::iterator iter;
-	iter = labels.find(nm);
-	if (iter != labels.end())
-		return iter->second;
-	return 0;
-}
 
 /*
  *	Add a new variable to the current scope.
@@ -398,24 +381,6 @@ int Uc_function::link
 	return offset;
 	}
 
-
-void Uc_function::link_labels(vector<char>& code)
-{
-	std::map<std::string, Uc_label*>::iterator iter;
-	for (iter = labels.begin(); iter != labels.end(); ++iter) {
-		Uc_label *label = iter->second;
-		if (label->is_valid()) {
-			int target = label->get_offset(); 
-			std::vector<int>& references = label->get_references();
-			std::vector<int>::iterator i;
-			for (i = references.begin(); i != references.end(); ++i) {
-				int offset = (*i) + 1;
-				Write2(code, offset, target - (offset + 2));
-			}
-		}
-	}
-}
-
 static int Remove_dead_blocks
 	(
 	vector<Basic_block *>& blocks
@@ -429,16 +394,17 @@ static int Remove_dead_blocks
 		int nremoved = 0;
 		while (i < blocks.size())
 			{
-			Basic_block *&block = blocks[i];
+			Basic_block *block = blocks[i];
 			if (block->is_end_block())
 				{
 				++i;
 				continue;
 				}
 			bool remove = false;
-			if (block->is_orphan())
+			if (!block->is_reachable())
 				{	// Remove unreachable block.
 				block->unlink_descendants();
+				block->unlink_predecessors();
 				remove = true;
 				}
 			else if (block->is_empty_block())
@@ -451,9 +417,9 @@ static int Remove_dead_blocks
 			if (remove)
 				{
 				++nremoved;
-				delete block;
 				vector<Basic_block *>::iterator it = blocks.begin() + i;
 				blocks.erase(it);
+				delete block;
 				continue;
 				}
 			i++;
@@ -536,9 +502,10 @@ static int Optimize_jumps
 					{
 					++nremoved;
 					aux->unlink_descendants();
+					aux->unlink_predecessors();
 					vector<Basic_block *>::iterator it = blocks.begin() + i + 1;
-					delete *it;
 					blocks.erase(it);
+					delete aux;
 					continue;
 					}
 				}
@@ -639,13 +606,10 @@ void Uc_function::gen
 	)
 	{
 	map<string, Basic_block *> label_blocks;
-	for (map<string, Uc_label *>::iterator it = labels.begin();
+	for (std::set<string>::iterator it = labels.begin();
 			it != labels.end(); ++it)
-		{	// Fill up label <==> basic block map.
-		Uc_label *l = it->second;
-		label_blocks.insert(pair<string, Basic_block *>(l->get_name(),
-				new Basic_block()));
-		}
+			// Fill up label <==> basic block map.
+		label_blocks.insert(pair<string, Basic_block *>(*it, new Basic_block()));
 	Basic_block *initial = new Basic_block(-1);
 	Basic_block *endblock = new Basic_block(-1);
 	vector<Basic_block *> fun_blocks;
@@ -655,12 +619,25 @@ void Uc_function::gen
 	fun_blocks.push_back(current);
 	if (statement)
 		statement->gen(this, fun_blocks, current, endblock, label_blocks);
-	assert(initial->no_parents());
+	assert(initial->no_parents() && endblock->is_childless());
 	if (!fun_blocks.back()->is_end_block())
 		fun_blocks.back()->set_targets(-1, endblock);
-		// No longer needed. Since all entries should be present in
-		// the fun_blocks vector (even if as unreachable childless
-		// empty blocks), we don't need to delete the contained blocks.
+		// Mark all blocks reachable from initial block.
+	initial->mark_reachable();
+		// Labels map is no longer needed.
+	for (map<string, Basic_block *>::iterator it = label_blocks.begin();
+			it != label_blocks.end(); ++it)
+		{
+		Basic_block *label = it->second;
+		if (!label->is_reachable())
+			{	// Label can't be reached from the initial block.
+				// Remove it from map and unlink references to it.
+			label_blocks.erase(it);
+			label->unlink_descendants();
+			label->unlink_predecessors();
+			delete label;
+			}
+		}
 	label_blocks.clear();
 		// First round of optimizations.
 	Remove_dead_blocks(fun_blocks);
@@ -711,7 +688,6 @@ void Uc_function::gen
 		code.push_back((char) UC_RETZ);
 	else
 		code.push_back((char) UC_RET);
-	link_labels(code);
 	int codelen = code.size();	// Get its length.
 	int num_links = links.size();
 					// Total: text_data_size + data + 
