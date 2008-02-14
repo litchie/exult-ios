@@ -402,7 +402,7 @@ static int Remove_dead_blocks
 				block->unlink_predecessors();
 				remove = true;
 				}
-			else if (block->is_empty_block())
+			else if (block->is_empty_block() && block->is_forced_target())
 				{	// Link predecessors directly to decendants.
 					// May link a block to the initial block, or
 					// may link the initial and ending blocks.
