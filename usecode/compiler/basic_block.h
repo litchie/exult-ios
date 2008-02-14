@@ -98,7 +98,7 @@ public:
 		Write1(out, opcode);
 		out.insert(out.end(), params.begin(), params.end());
 		}
-#if 0	// For debugging.
+#ifdef DEBUG	// For debugging.
 	void write_text() const
 		{
 		cout << setw(2) << setfill('0') << (int)((unsigned char)opcode) << ' ';
@@ -123,6 +123,11 @@ public:
 		{ return is_jump && (opcode & 0x80) != 0; }
 	void set_32bit()		// Only matters for jumps.
 		{ if (is_jump) opcode |= 0x80; }
+	bool is_return() const
+		{ return opcode == UC_RET || opcode == UC_RET2
+				|| opcode == UC_RETV || opcode == UC_RETZ; }
+	bool is_abort() const
+		{ return opcode == UC_ABRT; }
 	};
 
 /*
@@ -208,6 +213,8 @@ public:
 		{ return jmp_op ? jmp_op->is_32bit() : false; }
 	bool does_not_jump() const
 		{ return jmp_op == 0; }
+	bool ends_in_return() const
+		{ return instructions.size() && instructions.back()->is_return(); }
 	int get_jump_size() const
 		{
 		if (!jmp_op)
@@ -239,6 +246,13 @@ public:
 		{ return !jmp_op && (instructions.empty()); }
 	bool is_end_block() const
 		{ return !jmp_op && taken && (taken->index == -1); }
+	int get_return_opcode() const
+		{ return ends_in_return() ? instructions.back()->get_opcode() : -1; }
+	bool is_simple_return_block() const
+		{ return instructions.size() == 1 && instructions.back()->is_return(); }
+	bool is_simple_abort_block() const
+		{ return is_end_block()
+			&& instructions.size() == 1 && instructions.back()->is_abort(); }
 	bool is_childless() const
 		{ return !taken && !ntaken; }
 	bool no_parents() const
@@ -391,7 +405,7 @@ public:
 		if (jmp_op)
 			jmp_op->write(out);
 		}
-#if 0	// For debugging.
+#ifdef DEBUG	// For debugging.
 	void check() const
 		{
 		cout << hex << setw(8) << setfill('0') << (int)(this)

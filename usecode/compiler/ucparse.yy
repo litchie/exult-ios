@@ -155,8 +155,8 @@ struct ID_info
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
-%type <expr> nonclass_expr opt_delay appended_element
-%type <intval> opt_int direction int_literal converse_options opt_var
+%type <expr> nonclass_expr opt_delay appended_element int_literal
+%type <intval> opt_int direction converse_options opt_var
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
 %type <funid> opt_funid
 %type <intlist> string_list
@@ -276,9 +276,14 @@ function:
 	;
 
 function_body:
-		statement_block
-		{ 
-		cur_fun->set_statement($1);
+	'{' statement_list '}'
+		{
+		cur_fun->set_statement($2);
+		}
+	| '{' statement_list label_statement '}'
+		{	// Function ends in label.
+		$2->add($3);
+		cur_fun->set_statement($2);
 		}
 	;
 
@@ -377,19 +382,40 @@ const_int_val:
 	;
 
 opt_int:
-	int_literal
+	const_int_val
 	|				/* Empty. */
 		{ $$ = -1; }
 	;
 
 statement_block:
-	'{' 
-		{ cur_fun->push_scope(); }
-	statement_list '}'
+	statement_block_start statement_list '}'
 		{
-		$$ = $3;
+		$$ = $2;
 		cur_fun->pop_scope();
 		}
+	| statement_block_start statement_list label_statement '}'
+		{	// Block ends in label.
+		$2->add($3);
+		$$ = $2;
+		cur_fun->pop_scope();
+		}
+	| label_statement statement
+		{	// Label followed by statements; "grab" next statement for label.
+		if ($2)
+			{
+			Uc_block_statement *stmt = new Uc_block_statement();
+			stmt->add($1);
+			stmt->add($2);
+			$$ = stmt;
+			}
+		else	// This is the case for the "null" statement ';'.
+			$$ = $1;
+		}
+	;
+
+statement_block_start:
+	'{' 
+		{ cur_fun->push_scope(); }
 	;
 
 statement_list:
@@ -417,7 +443,6 @@ statement:
 	| script_statement
 	| break_statement
 	| continue_statement
-	| label_statement
 	| goto_statement
 	| delete_statement
 	| SAY  '(' opt_nonclass_expr_list ')' ';'
@@ -1107,8 +1132,7 @@ switch_case_list:
 
 switch_case:
 	CASE int_literal ':' statement_list
-		{	$$ = new Uc_switch_expression_case_statement(
-				new Uc_int_expression($2), $4);	}
+		{	$$ = new Uc_switch_expression_case_statement($2, $4);	}
 	| CASE STRING_LITERAL ':' statement_list
 		{	$$ = new Uc_switch_expression_case_statement(
 				new Uc_string_expression(cur_fun->add_string($2)), $4);	}
@@ -1597,6 +1621,7 @@ param:
 
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
+		{ $$ = new Uc_int_expression($1); }
 	| declared_sym
 		{
 		Uc_const_int_symbol *sym = 
@@ -1609,7 +1634,7 @@ int_literal:				/* A const. integer value.	*/
 			$$ = 0;
 			}
 		else
-			$$ = sym->get_value();
+			$$ = new Uc_int_expression(sym->get_value(), sym->byte_wanted());
 		}
 	;
 

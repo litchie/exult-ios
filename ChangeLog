@@ -1,3 +1,11 @@
+2008-02-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	UCC: Labels now start their own single-statement block. This allows code
+	like 'if (expression) label: statement' to work as in C/C++. Fixed bug in
+	swith statements where last case was not correctly linked to the switch end
+	block. Added a few more block optimizations (double jumps, double rets of
+	the same type, double aborts). Fixed crash on empty functions. End-function
+	return is only added if there isn't one already.
+
 2008-02-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Removing old way of handling labels. Improved dead-block detection.
 	Fixed bug in IF statements without a corresponding ELSE statement. Fixed
