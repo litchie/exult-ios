@@ -395,11 +395,6 @@ static int Remove_dead_blocks
 		while (i < blocks.size())
 			{
 			Basic_block *block = blocks[i];
-			if (block->is_end_block())
-				{
-				++i;
-				continue;
-				}
 			bool remove = false;
 			if (!block->is_reachable())
 				{	// Remove unreachable block.
@@ -432,7 +427,8 @@ static int Remove_dead_blocks
 
 static int Optimize_jumps
 	(
-	vector<Basic_block *>& blocks
+	vector<Basic_block *>& blocks,
+	bool returns
 	)
 	{
 	int niter = 0;
@@ -441,13 +437,46 @@ static int Optimize_jumps
 		niter++;
 		int i = 0;
 		int nremoved = 0;
-		while (i < blocks.size() - 1)
+		while (i < (int)blocks.size() - 1)
 			{
 			Basic_block *block = blocks[i];
 			Basic_block *aux = block->get_taken();
-			if (aux == blocks[i+1])
+			bool remove = false;
+			if (block->is_jump_block())
+				{	// Unconditional jump block.
+				if (aux->is_simple_jump_block())
+					{	// Double-jump. Merge the jumps in a single one.
+					block->set_taken(aux->get_taken());
+					++nremoved;
+					continue;
+					}
+				else if (aux->is_end_block())
+					{	// Jump to end-block.
+					if (aux->is_empty_block())
+						{	// No return opcode in end block; add one.
+						WriteOp(block, returns ? UC_RETZ : UC_RET);
+						remove = true;
+						}
+					else if (aux->is_simple_return_block())
+						{	// Copy return opcode from end block.
+						WriteOp(block, aux->get_return_opcode());
+						remove = true;
+						}
+					else if (aux->is_simple_abort_block())
+						{	// Copy abort code.
+						WriteOp(block, UC_ABRT);
+						remove = true;
+						}
+					if (remove)
+						{	// Set destination to end block.
+						block->set_targets(-1, aux->get_taken());
+						++nremoved;
+						continue;
+						}
+					}
+				}
+			else if (aux == blocks[i+1])
 				{
-				bool remove = false;
 				if (block->is_fallthrough_block() || block->is_jump_block())
 					{	// Fall-through block followed by block which descends
 						// from current block or jump immediatelly followed
@@ -465,7 +494,7 @@ static int Optimize_jumps
 						continue;
 						}
 					}
-				else if (i < blocks.size() - 2
+				else if (i < (int)blocks.size() - 2
 						&& block->is_conditionaljump_block()
 						&& aux->is_simple_jump_block()
 						&& aux->has_single_predecessor()
@@ -498,16 +527,25 @@ static int Optimize_jumps
 					block->set_ntaken(aux->get_taken());
 					remove = true;
 					}
-				if (remove)
-					{
-					++nremoved;
-					aux->unlink_descendants();
-					aux->unlink_predecessors();
-					vector<Basic_block *>::iterator it = blocks.begin() + i + 1;
-					blocks.erase(it);
-					delete aux;
-					continue;
-					}
+				}
+			else if (block->is_end_block() && (aux = blocks[i+1])->is_end_block()
+					&& block->ends_in_return() && aux->is_simple_return_block()
+					&& block->get_return_opcode() == aux->get_return_opcode())
+				{
+				block->set_taken(aux);
+				PopOpcode(block);
+				++nremoved;
+				continue;
+				}
+			if (remove)
+				{
+				++nremoved;
+				aux->unlink_descendants();
+				aux->unlink_predecessors();
+				vector<Basic_block *>::iterator it = blocks.begin() + i + 1;
+				blocks.erase(it);
+				delete aux;
+				continue;
 				}
 			i++;
 			}
@@ -642,7 +680,9 @@ void Uc_function::gen
 		// First round of optimizations.
 	Remove_dead_blocks(fun_blocks);
 		// Second round of optimizations.
-	Optimize_jumps(fun_blocks);
+	Optimize_jumps(fun_blocks, proto->get_has_ret());
+		// Third round of optimizations.
+	Remove_dead_blocks(fun_blocks);
 		// Set block indices.
 	for (int i = 0; i < fun_blocks.size(); i++)
 		{
@@ -650,27 +690,42 @@ void Uc_function::gen
 		block->set_index(i);
 		block->link_predecessors();
 		}
-		// Mark blocks for 32-bit usecode jump sizes.
-	Set_32bit_jump_flags(fun_blocks);
-	vector<int> locs;
-		// Get locations.
-	int size = Compute_locations(fun_blocks, locs) + 1;
-
 	vector<char> code;		// Generate code here first.
-	code.reserve(size);
-		// Output code.
-	for (vector<Basic_block *>::iterator it = fun_blocks.begin();
-			it != fun_blocks.end(); ++it)
+	if (fun_blocks.size())
 		{
-		Basic_block *block = *it;
-		block->write(code);
-		if (block->does_not_jump())
-			continue;	// Not a jump.
-		int dist = Compute_jump_distance(block, locs);
-		if (is_sint_32bit(dist))
-			Write4(code, dist);
+			// Mark blocks for 32-bit usecode jump sizes.
+		Set_32bit_jump_flags(fun_blocks);
+		vector<int> locs;
+			// Get locations.
+		int size = Compute_locations(fun_blocks, locs) + 1;
+
+		code.reserve(size);
+			// Output code.
+		for (vector<Basic_block *>::iterator it = fun_blocks.begin();
+				it != fun_blocks.end(); ++it)
+			{
+			Basic_block *block = *it;
+			block->write(code);
+			if (block->does_not_jump())
+				continue;	// Not a jump.
+			int dist = Compute_jump_distance(block, locs);
+			if (is_sint_32bit(dist))
+				Write4(code, dist);
+			else
+				Write2(code, dist);
+			}
+		}
+
+	if (fun_blocks.empty() || !fun_blocks.back()->ends_in_return())
+		{
+		// Always end with a RET or RTS if a return opcode
+		// is not the last opcode in the function.
+		if (proto->get_has_ret())
+			// Function specifies a return value.
+			// When in doubt, return zero by default.
+			code.push_back((char) UC_RETZ);
 		else
-			Write2(code, dist);
+			code.push_back((char) UC_RET);
 		}
 
 		// Free up the blocks.
@@ -680,14 +735,6 @@ void Uc_function::gen
 	fun_blocks.clear();
 	delete initial;
 	delete endblock;
-
-	// Always end with a RET or RTS if a return opcode.
-	if (proto->get_has_ret())
-		// Function specifies a return value.
-		// When in doubt, return zero by default.
-		code.push_back((char) UC_RETZ);
-	else
-		code.push_back((char) UC_RET);
 	int codelen = code.size();	// Get its length.
 	int num_links = links.size();
 					// Total: text_data_size + data + 

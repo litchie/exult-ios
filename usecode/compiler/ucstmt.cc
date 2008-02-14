@@ -935,10 +935,11 @@ void Uc_switch_statement::gen
 		Basic_block *block = case_blocks[i];
 			// Link cases (for fall-through).
 		if (i > 0)
-			curr->set_taken(block);
+			curr->set_targets(-1, block);
 		blocks.push_back(curr = block);
 		stmt->gen(fun, blocks, curr, end, labels, start, past_switch);
 		}
+	curr->set_targets(-1, past_switch);
 	blocks.push_back(curr = past_switch);
 	}
 
