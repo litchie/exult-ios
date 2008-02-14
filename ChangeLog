@@ -5,6 +5,7 @@
 	block. Added a few more block optimizations (double jumps, double rets of
 	the same type, double aborts). Fixed crash on empty functions. End-function
 	return is only added if there isn't one already.
+	*** UCC: Fixed bug when a block is empty but is target of conditional jumps.
 
 2008-02-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Removing old way of handling labels. Improved dead-block detection.
