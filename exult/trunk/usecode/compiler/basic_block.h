@@ -246,6 +246,16 @@ public:
 		{ return !jmp_op && (instructions.empty()); }
 	bool is_end_block() const
 		{ return !jmp_op && taken && (taken->index == -1); }
+	bool is_forced_target() const
+		{
+		for (set<Basic_block *>::const_iterator it = predecessors.begin();
+				it != predecessors.end(); ++it)
+			{
+			Basic_block *block = *it;
+			if (!block->is_jump_block() && !block->is_fallthrough_block())
+				return false;
+			}
+		}
 	int get_return_opcode() const
 		{ return ends_in_return() ? instructions.back()->get_opcode() : -1; }
 	bool is_simple_return_block() const
