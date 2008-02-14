@@ -220,6 +220,8 @@ public:
 	virtual Uc_expression *create_expression();
 	int get_value() const
 		{ return value; }
+	bool byte_wanted() const
+		{ return want_byte; }
 	};
 
 /*
