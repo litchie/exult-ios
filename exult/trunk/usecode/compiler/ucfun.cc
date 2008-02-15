@@ -392,7 +392,7 @@ static int Remove_dead_blocks
 		niter++;
 		int i = 0;
 		int nremoved = 0;
-		while (i < blocks.size())
+		while (i + 1 < blocks.size())
 			{
 			Basic_block *block = blocks[i];
 			bool remove = false;
@@ -437,7 +437,7 @@ static int Optimize_jumps
 		niter++;
 		int i = 0;
 		int nremoved = 0;
-		while (i < (int)blocks.size() - 1)
+		while (i + 1 < blocks.size())
 			{
 			Basic_block *block = blocks[i];
 			Basic_block *aux = block->get_taken();
@@ -494,7 +494,7 @@ static int Optimize_jumps
 						continue;
 						}
 					}
-				else if (i < (int)blocks.size() - 2
+				else if (i + 2 < blocks.size()
 						&& block->is_conditionaljump_block()
 						&& aux->is_simple_jump_block()
 						&& aux->has_single_predecessor()

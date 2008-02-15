@@ -106,6 +106,7 @@ public:
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
 	virtual int is_object_function(bool error = true) const;
+	virtual bool eval_const(int& val);
 	};
 
 /*
@@ -242,6 +243,8 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
+	virtual bool eval_const(int& val)
+		{ val = (int)tf; return true; }
 	};
 
 /*
