@@ -6,6 +6,10 @@
 	the same type, double aborts). Fixed crash on empty functions. End-function
 	return is only added if there isn't one already.
 	*** UCC: Fixed bug when a block is empty but is target of conditional jumps.
+	*** UCC: Fixed bug that caused removal of last block. Uc_fun_name_expression
+	and Uc_bool_expression are constants, so they should evaluate to true.
+	Uc_binary_expression and Uc_unary_expression failed to set return if their
+	inner expressions were not constants.
 
 2008-02-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Removing old way of handling labels. Improved dead-block detection.
