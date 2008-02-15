@@ -159,6 +159,20 @@ int Uc_fun_name_expression::is_object_function(bool error) const
 	}
 
 /*
+ *	Evaluate constant.
+ *
+ *	Output:	true if successful, with result returned in 'val'.
+ */
+bool Uc_fun_name_expression::eval_const
+	(
+	int& val
+	)
+	{
+	val = fun->get_usecode_num();
+	return true;
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
@@ -347,7 +361,10 @@ bool Uc_binary_expression::eval_const
 	{
 	int val1, val2;			// Get each side.
 	if (!left->eval_const(val1) || !right->eval_const(val2))
+		{
+		val = 0;
 		return false;
+		}
 	switch (opcode)
 		{
 	case UC_ADD:	val = val1 + val2; return true;
@@ -418,7 +435,10 @@ bool Uc_unary_expression::eval_const
 	{
 	int val1;			// Get each side.
 	if (!operand->eval_const(val1))
+		{
+		val = 0;
 		return false;
+		}
 	switch (opcode)
 		{
 	case UC_NOT:	val = !val1; return true;
