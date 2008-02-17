@@ -152,9 +152,14 @@ public:
 	Uc_var_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(char *nm, Uc_struct_symbol *s);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(Uc_var_symbol *var);// Add var. to current scope.
-	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var,
-			Uc_struct_symbol *struc = 0);	// Add alias to current scope.
+		// Add alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var);
+		// Add class alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var, Uc_class *c);
+		// Add struct alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var, Uc_struct_symbol *s);
 	void add_static(char *nm);	// Add static var. to current scope.
+	void add_static(char *nm, Uc_struct_symbol *type);	// Add static struct to current scope.
 	void add_static(char *nm, Uc_class *c);	// Add static cls. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent=0)
 		{ return cur_scope->add_function_symbol(fun, parent); }
@@ -172,6 +177,7 @@ public:
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val,
 			bool want_byte = false);
 	static void add_global_static(char *nm);
+	static void add_global_static(char *nm, Uc_struct_symbol *type);
 	static void add_global_static(char *nm, Uc_class *c);
 	int add_string(char *text);
 	int find_string_prefix(Uc_location& loc, const char *text);

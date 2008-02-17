@@ -1,3 +1,8 @@
+2008-02-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	UCC: Fixed usecode structs generating wrong indices into array. Fixed aliases
+	to structs and classes so they can be of differing base types. Static structs
+	can now be dlaclared.
+
 2008-02-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/ucsched.*, usecode/ucscriptop.h: Implemented two new opcodes from
 	  the originals: wait_while_near and wait_while_far, which cause the script

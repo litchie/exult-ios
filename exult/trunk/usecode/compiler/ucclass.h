@@ -54,8 +54,14 @@ public:
 	int get_num() { return num; }
 	Uc_var_symbol *add_symbol(char *nm);	// Add class variable.
 	Uc_var_symbol *add_symbol(char *nm, Uc_struct_symbol *s);	// Add class struct.
-	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var,
-			Uc_struct_symbol *struc = 0);	// Add class variable alias.
+		// Add alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var);
+		// Add struct alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var, Uc_struct_symbol *s);
+#if 0	// ++++ Not yet.
+	// Add class alias to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var, Uc_class *c);
+#endif
 	void add_method(Uc_function *m);
 	void gen(std::ostream& out);	// Generate Usecode.
 	virtual Usecode_symbol *create_sym();
