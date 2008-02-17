@@ -44,9 +44,11 @@ Mariah object#(0x499) ()
 		else
 		{
 			if (gflags[BROKE_TETRAHEDRON])
-				MARIAH.say("@Yes, " + avatarname + "? How may I help thee?@ Mariah greets you.");
+				MARIAH.say("@Yes, ", avatarname,
+					"? How may I help thee?@ Mariah greets you.");
 			else
-				MARIAH.say("@Yes, " + avatartitle + "?@ Mariah smiles, a trifle too sweetly.");
+				MARIAH.say("@Yes, ", avatartitle,
+					"?@ Mariah smiles, a trifle too sweetly.");
 		}
 		
 		if (!did_post_tetrahedron)
@@ -84,18 +86,21 @@ Mariah object#(0x499) ()
 						MARIAH->show_npc_face(0);
 					}
 					else
-						say("@Hast thou already forgotten me, " + avatarname + "? I am Mariah.@");
+						say("@Hast thou already forgotten me, ", avatarname,
+							"? I am Mariah.@");
 
 				
 				case "job":
 					add("spells");
 					if (item in party)
-						say("@I am one of thy travelling conpanions, " + avatarname + ". I am also a mage, as thou shouldst remember.@");
+						say("@I am one of thy travelling conpanions, ",
+							avatarname, ". I am also a mage, as thou shouldst remember.@");
 					else if (get_schedule_type() == WAIT)
 						say("@I am waiting to join thy company again.@");
 					else
 					{
-						say("@I sell spells, reagents, and sometimes a few potions here at the Lycaeum. Dost thou wish to buy any of these, " + avatarname + "?@");
+						say("@I sell spells, reagents, and sometimes a few potions here at the Lycaeum. Dost thou wish to buy any of these, ",
+							avatarname, "?@");
 						add(["reagents", "potions", "Lycaeum"]);
 					}
 
@@ -120,7 +125,8 @@ Mariah object#(0x499) ()
 					var partysize = UI_get_array_size(party);
 					if (partysize < 8)
 					{
-						say("@I would be honored to join thee, " + avatartitle + "!@");
+						say("@I would be honored to join thee, ",
+							avatartitle, "!@");
 						add_to_party();
 						add("leave");
 						remove("join");
@@ -141,7 +147,8 @@ Mariah object#(0x499) ()
 					}
 					else
 					{
-						say("@I shall obey thy wish. I would be happy to re-join if thou shouldst ask. Fair days ahead, friend " + avatarname + ".@*");
+						say("@I shall obey thy wish. I would be happy to re-join if thou shouldst ask. Fair days ahead, friend ",
+							avatarname, ".@*");
 						remove_from_party();
 						set_schedule_type(LOITER);
 						abort;
@@ -154,14 +161,18 @@ Mariah object#(0x499) ()
 					mariahSellReagents("Reagents");
 				
 				case "potions":
-					say("@I am afraid, " + avatarname + ", that I have a very meager selection.@");
+					say("@I am afraid, ", avatarname,
+						", that I have a very meager selection.@");
 					mariahSellReagents("Potions");
 				
 				case "Lycaeum" (remove):
-					say("She shakes her head sadly. @I have not been `myself' for so long that I no longer recognize this town.@ Her eyes widen.~~ @There are so many buildings around the Lycaeum now, hast thou seen them?@~~She pauses, looking at you.~~@By the way, old friend. I assume thou art responsible for returning the ether to its normal state. I thank thee.@");
+					say("She shakes her head sadly. @I have not been `myself' for so long that I no longer recognize this town.@ Her eyes widen.",
+						"~~ @There are so many buildings around the Lycaeum now, hast thou seen them?@",
+						"~~She pauses, looking at you.",
+						"~~@By the way, old friend. I assume thou art responsible for returning the ether to its normal state. I thank thee.@");
 				
 				case "bye":
-					say("@Fair days ahead, friend " + avatarname + ".@*");
+					say("@Fair days ahead, friend ", avatarname, ".@*");
 					abort;
 				
 			}
@@ -181,7 +192,8 @@ Mariah object#(0x499) ()
 						say("@Yes, thou mayest tell me thy name,@ she says, glancing around the building. @Are not the many books beautiful?@");
 				
 				case "job":
-					say("She smiles. @I have a very important job, I do. My, are not those shelves lovely? So neat and orderly.@ She looks back at you.~~@Be careful! The ink wells are full, and the quills so sharp.@ She giggles.");
+					say("She smiles. @I have a very important job, I do. My, are not those shelves lovely? So neat and orderly.@ She looks back at you.",
+						"~~@Be careful! The ink wells are full, and the quills so sharp.@ She giggles.");
 					add(["shelves", "ink wells", "quills"]);
 				
 				case "shelves" (remove):
@@ -201,7 +213,8 @@ Mariah object#(0x499) ()
 					add("sell");
 				
 				case "sell" (remove):
-					say("@Yes,@ she agrees, @I do indeed sell. I even spell. In fact, I even sell spells! But, if thou desirest reagents, thou art out of luck, for I only sell those during one of the seven weekdays. Wouldst thou like to know which day?~~@What a lovely set of books thou must have! I have just the item for thee to match thy shelves -- a potion. If thou wilt buy a spell or reagent from me, I will sell thee a potion for only its normal price!@");
+					say("@Yes,@ she agrees, @I do indeed sell. I even spell. In fact, I even sell spells! But, if thou desirest reagents, thou art out of luck, for I only sell those during one of the seven weekdays. Wouldst thou like to know which day?",
+						"~~@What a lovely set of books thou must have! I have just the item for thee to match thy shelves -- a potion. If thou wilt buy a spell or reagent from me, I will sell thee a potion for only its normal price!@");
 					add(["which day", "reagents", "potions"]);
 				
 				case "which day" (remove):

@@ -86,7 +86,8 @@ Willy object#(0x434) ()
 							{
 								SPARK.say("@I want some!@*");
 								item.say("@Here thou art, laddie.@ Willy hands Spark a pastry and the boy devours it in one gulp.*");
-								SPARK.say("@Mmmmm! I say, " + getAvatarName() + ", I think we need a lot of this for the road. We had best buy some, all right?@*");
+								SPARK.say("@Mmmmm! I say, ", getAvatarName(),
+									", I think we need a lot of this for the road. We had best buy some, all right?@*");
 								SPARK.hide();
 							}
 						}
@@ -163,7 +164,8 @@ Willy object#(0x434) ()
 			case "hire" (remove):
 				if (schedule == BAKE)
 				{
-					say("@Thou couldst work for me here in the shoppe making bread. Or I will buy sacks of flour from thee. Thou couldst buy them wholesale in Paws, and I will pay thee " + FLOUR_SELL_PRICE + " gold per sack.@");
+					say("@Thou couldst work for me here in the shoppe making bread. Or I will buy sacks of flour from thee. Thou couldst buy them wholesale in Paws, and I will pay thee ",
+						FLOUR_SELL_PRICE, " gold per sack.@");
 
 					say("@Dost thou wish to work here in the shoppe for me?@ Willy asks hopefully.");
 					if (askYesNo())
@@ -190,7 +192,8 @@ Willy object#(0x434) ()
 				sellFlour();
 
 			case "bye":
-				say("@Good day to thee, " + getPoliteTitle() + ", and bon appetit!@*");
+				say("@Good day to thee, ", getPoliteTitle(),
+					", and bon appetit!@*");
 				return;
 		}
 	}
@@ -234,7 +237,9 @@ sellFlour 0x948()
 		}
 		else
 		{
-			say("@Beautiful flour! " + total_sacks + "! That means I owe thee " + payment + " gold. Here thou art! I shall take the flour from thee now!@");
+			say("@Beautiful flour! ", total_sacks,
+				"! That means I owe thee ", payment,
+				" gold. Here thou art! I shall take the flour from thee now!@");
 
 			if (giveGold(payment))
 			{
@@ -301,7 +306,8 @@ sellBread 0x947()
 		else
 		{
 			var payment = BREAD_SELL_PRICE * chargeable_bread;
-			say("@Scrumptious! " + num_bread + " loaves! That means I owe thee " + payment + " gold.");
+			say("@Scrumptious! ", num_bread, " loaves! That means I owe thee ",
+				payment, " gold.");
 
 			if (giveGold(payment))
 			{

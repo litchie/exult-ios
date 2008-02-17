@@ -49,12 +49,13 @@ Lady_Tory object#(0x4C8) ()
 			gflags[MET_TORY] = true;
 		}
 		else
-			item.say("Tory smiles and reaches out to you. @Hello, " + player_name + ". I sense thou art troubled.@");
+			item.say("Tory smiles and reaches out to you. @Hello, ", player_name,
+				". I sense thou art troubled.@");
 
 		converse([])
 		{
 			case "name" (remove):
-				say("@I am Lady Tory, " + polite_title + ".@");
+				say("@I am Lady Tory, ", polite_title, ".@");
 
 				if (!gflags[HEARD_ABOUT_RIKY])
 				{
@@ -76,12 +77,15 @@ Lady_Tory object#(0x4C8) ()
 						if (PARTY->count_objects(SHAPE_BABY, QUALITY_ANY, FRAME_RIKY))
 						{
 							giveExperience(RIKY_QUEST_EXPERIENCE);
-							say("@I cannot begin to express my gratitude, " + polite_title + ". Thank thee ever so much!@~She begins sobbing for joy. @Pl-please set him back gently in the cradle.@");
+							say("@I cannot begin to express my gratitude, ",
+								polite_title, ". Thank thee ever so much!@",
+								"~She begins sobbing for joy. @Pl-please set him back gently in the cradle.@");
 							gflags[RESCUED_RIKY] = true;
 						}
 						//Carrying some baby, but it ain't him
 						else if (PARTY->count_objects(SHAPE_BABY, QUALITY_ANY, FRAME_ANY))
-							say("@Why, that's not my little Riky, " + polite_title + ". Thou hast someone else's child. Oh, where could my boy have been taken?@ she says, crying.");
+							say("@Why, that's not my little Riky, ", polite_title,
+								". Thou hast someone else's child. Oh, where could my boy have been taken?@ she says, crying.");
 						else
 						{
 							say("@But, I see no child with thee. Thine humor is quite dark. Please return when thou art carrying my baby boy!@*");
@@ -96,7 +100,8 @@ Lady_Tory object#(0x4C8) ()
 					gflags[HEARD_ABOUT_RIKY] = true;
 
 					say("@My poor baby boy. He -- he was taken one night by cruel harpies who wanted a child for their own. I -- I know not where they have taken him, but I have heard some of the knights mention that a group of the vile women-birds cluster around the shrine of Honor. But, they have not yet been able to defeat them.@ She sniffs.");
-					say("@But thou " + polite_title + ", thou wilt help me get my child back. Oh, please, wilt thou?@");
+					say("@But thou ", polite_title,
+						", thou wilt help me get my child back. Oh, please, wilt thou?@");
 					if (askYesNo())
 						say("@I cannot thank thee enough for helping me!@ She appears to have cheered up greatly.");
 					else
@@ -165,10 +170,13 @@ Lady_Tory object#(0x4C8) ()
 				add("Sir Jordan");
 
 			case "Sir Jordan" (remove):
-				say("@He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.~~@However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.@*");
+				say("@He is a wonder. Despite his blindness, he fights with amazing deftness. In fact, he also enjoys toying with mechanical items, and his loss of eyesight does not seem to affect that, either.",
+					"~~@However, I sense in him a very recent change, remarkably like that in Sir Richter. He would be an interesting one to speak with. Thou mayest find him at Iolo's South.@*");
 				if (isNearby(IOLO))
 				{
-					IOLO.say("Iolo smiles proudly.~~@My shop has, er, grown a bit since thou wert here last, " + player_name + ".@");
+					IOLO.say("Iolo smiles proudly.",
+						"~~@My shop has, er, grown a bit since thou wert here last, ",
+						player_name, ".@");
 					IOLO.hide();
 				}
 

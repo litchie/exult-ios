@@ -53,6 +53,9 @@ public:
 		{ return &scope; }
 	int get_num() { return num; }
 	Uc_var_symbol *add_symbol(char *nm);	// Add class variable.
+	Uc_var_symbol *add_symbol(char *nm, Uc_struct_symbol *s);	// Add class struct.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var,
+			Uc_struct_symbol *struc = 0);	// Add class variable alias.
 	void add_method(Uc_function *m);
 	void gen(std::ostream& out);	// Generate Usecode.
 	virtual Usecode_symbol *create_sym();

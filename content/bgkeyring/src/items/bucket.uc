@@ -118,9 +118,9 @@ useBucketOnNPC ()
 	script AVATAR
 	{
 		face direction;
-		actor frame SWING_3;
-		actor frame USE;
-		actor frame STAND;
+		actor frame strike_1h;
+		actor frame ready;
+		actor frame standing;
 	}
 
 	//target getting peevish
@@ -195,9 +195,9 @@ useBucketOnTrough ()
 	script AVATAR
 	{
 		face directionFromAvatar(trough);
-		actor frame LEAN;
+		actor frame bowing;
 		wait 2;
-		actor frame STAND;
+		actor frame standing;
 	}
 
 	//change the trough's frame
@@ -258,8 +258,8 @@ useBucketOnDousable ()
 				previous frame cycle;}
 
 		script AVATAR
-		{	face target_direction;			actor frame LEAN;
-			wait 2;							actor frame STAND;}
+		{	face target_direction;			actor frame bowing;
+			wait 2;							actor frame standing;}
 	}
 
 	else if (target_shape == SHAPE_LIGHTSOURCE_LIT || target_shape == SHAPE_SCONCE_LIT || target_shape == SHAPE_TORCH_LIT)
@@ -270,8 +270,8 @@ useBucketOnDousable ()
 		{
 			sprite_offset = 2;
 			script AVATAR
-			{	face target_direction;			actor frame SWING_3;
-				actor frame STAND;				wait 1;
+			{	face target_direction;			actor frame strike_1h;
+				actor frame standing;				wait 1;
 				say "@I can't douse it.@";}
 		}
 		else
@@ -298,8 +298,8 @@ useBucketOnDousable ()
 
 			//play lean-down animation?
 			script AVATAR
-			{	face target_direction;			actor frame SWING_3;
-				actor frame USE;				actor frame STAND;}
+			{	face target_direction;			actor frame strike_1h;
+				actor frame ready;				actor frame standing;}
 				
 		}
 
@@ -331,8 +331,8 @@ useBucketOnDousable ()
 
 		//bend down?
 		script AVATAR
-		{	face target_direction;			actor frame LEAN;
-			wait 2;							actor frame STAND;}
+		{	face target_direction;			actor frame bowing;
+			wait 2;							actor frame standing;}
 
 		UI_sprite_effect(9, target_pos[X], target_pos[Y], 0, 0, 0, -1);
 		UI_play_sound_effect(0x2E);
@@ -352,8 +352,8 @@ useBucketOnDough ()
 	//lean down in direction of dough?
 	script AVATAR
 	{	face directionFromAvatar(item);
-		actor frame LEAN;					wait 2;
-		actor frame STAND;}
+		actor frame bowing;					wait 2;
+		actor frame standing;}
 	set_item_frame(FRAME_DOUGH_BALL);
 }
 
@@ -371,13 +371,13 @@ fillBucketFromWell object#() ()
 			next frame cycle;		wait 2;
 			frame well_frame;}
 		script AVATAR
-		{	actor frame USE;		wait 1;
-			actor frame SWING_2;	wait 1;
-			actor frame SWING_1;	wait 1;
-			actor frame SWING_3;	wait 1;
-			actor frame USE;		face EAST;
-			wait 1;					actor frame SWING_3;
-			wait 2;					actor frame STAND;}
+		{	actor frame ready;		wait 1;
+			actor frame reach_1h;	wait 1;
+			actor frame raise_1h;	wait 1;
+			actor frame strike_1h;	wait 1;
+			actor frame ready;		face east;
+			wait 1;					actor frame strike_1h;
+			wait 2;					actor frame standing;}
 		
 		script item frame WALK_1_NORTH;
 		UI_play_sound_effect(0x28);
@@ -410,12 +410,12 @@ useBucketOnWell ()
 
 	//animate the avatar
 	script AVATAR
-	{	face EAST;					actor frame SWING_3;
-		wait 2;						face SOUTH;
-		wait 1;						actor frame SWING_1;
-		wait 1;						actor frame SWING_2;
-		wait 1;						actor frame USE;
-		wait 1;						actor frame SWING_3;
+	{	face east;					actor frame strike_1h;
+		wait 2;						face south;
+		wait 1;						actor frame raise_1h;
+		wait 1;						actor frame reach_1h;
+		wait 1;						actor frame ready;
+		wait 1;						actor frame strike_1h;
 		wait 4;}
 
 	//place the full bucket nearby
@@ -426,8 +426,8 @@ useBucketOnWell ()
 useBucketOnGround ()
 {
 	script AVATAR
-	{	face NORTH;					actor frame LEAN;
-		wait 3;						actor frame STAND;}
+	{	face north;					actor frame bowing;
+		wait 3;						actor frame standing;}
 	script item
 	{	wait 3;						call makeSpill;}
 }

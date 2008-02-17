@@ -66,16 +66,16 @@ spellCharm (var target)
 			set_to_attack(target, SHAPE_SPELL_CHARM);
 			script item
 			{	nohalt;						face dir;
-				sfx 68;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+				sfx 68;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame raise_1h;		actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -91,14 +91,14 @@ spellDance ()
 			item_say("@Everybody DANCE now!@");
 			script item
 			{	nohalt;						sfx 67;
-				actor frame SWING_1;		actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellCauseDancing;}
+				actor frame raise_1h;		actor frame cast_out;
+				actor frame strike_2h;		call spellCauseDancing;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -117,8 +117,8 @@ spellDispelField (var target)
 		{
 			script item
 			{	nohalt;						sfx 65;
-				face dir;					actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;}
+				face dir;					actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;}
 				
 			if (target->get_item_shape() in fields)
 			{
@@ -130,8 +130,8 @@ spellDispelField (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -149,17 +149,17 @@ spellExplosion (var target)
 			set_to_attack(target, SHAPE_SPELL_EXPLOSION);
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_3;
-				actor frame SWING_3;		attack;
-				actor frame STAND;}
+				sfx 65;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_1h;
+				actor frame strike_1h;		attack;
+				actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_3;		call spellFails;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -176,8 +176,8 @@ spellFireField (var target)
 		{
 			script item
 			{	nohalt;						sfx 65;
-				face dir;					actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;}
+				face dir;					actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;}
 				
 			var field = UI_create_new_object(SHAPE_FIRE_FIELD);
 			if (field)
@@ -198,8 +198,8 @@ spellFireField (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;		call spellFails;}
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -216,8 +216,8 @@ spellGreatHeal (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		sfx 64;}
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		sfx 64;}
 			if (target->is_npc())
 			{
 				var str = target->get_npc_prop(STRENGTH);
@@ -229,8 +229,8 @@ spellGreatHeal (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -247,8 +247,8 @@ spellInvisibility (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 67;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;}
+				sfx 67;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;}
 				
 			script target after 4 ticks
 			{	nohalt;						call spellSetFlag, INVISIBLE;}
@@ -257,8 +257,8 @@ spellInvisibility (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -275,9 +275,9 @@ spellMassSleep ()
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			script item
 			{	nohalt;						sfx 65;
-				actor frame STAND;			actor frame SWING_1;
-				actor frame CAST_1;			actor frame SWING_3;
-				actor frame SWING_2H_3;}
+				actor frame standing;			actor frame raise_1h;
+				actor frame cast_up;			actor frame strike_1h;
+				actor frame strike_2h;}
 			
 			var targets = getEnemyTargetList(item, 25);
 			for (npc in targets)
@@ -286,9 +286,9 @@ spellMassSleep ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame STAND;
-				actor frame SWING_1;		actor frame CAST_1;
-				actor frame SWING_3;		actor frame SWING_2H_3;
+			{	nohalt;						actor frame standing;
+				actor frame raise_1h;		actor frame cast_up;
+				actor frame strike_1h;		actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -307,17 +307,17 @@ spellSummonSkeletons ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				sfx 65;						call spellSummonSkeletonsEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}

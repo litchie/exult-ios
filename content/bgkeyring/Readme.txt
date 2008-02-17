@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.16
+version: 0.11.17
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,8 @@ version: 0.11.16
 
 7	Version history
 -------------------
+version: 0.11.17
+	- Compatibility update with new Exult snapshot.
 version: 0.11.16
 	- I know I said this before, but this time I actually mean it: making
 	  healing services actually work for LB. *sigh*

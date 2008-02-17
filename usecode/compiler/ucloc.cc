@@ -54,7 +54,7 @@ void Uc_location::set_cur
 	cur_line = l;
 	cur_source = 0;			// See if already here.
 	for (std::vector<char *>::const_iterator it = source_names.begin();
-			it != source_names.end(); it++)
+			it != source_names.end(); ++it)
 		if (strcmp(s, *it) == 0)
 			{
 			cur_source = *it;

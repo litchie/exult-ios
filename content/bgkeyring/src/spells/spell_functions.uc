@@ -373,32 +373,32 @@ spellTremorEffect object#() ()
 			var rand = UI_die_roll(0, 8);
 	
 			if (rand == 0)
-				usecodearray << {	actor frame KNEEL;		actor frame LEAN;
-									actor frame STAND;};
+				usecodearray << {	actor frame kneeling;		actor frame bowing;
+									actor frame standing;};
 			else if (rand == 1)
-				usecodearray << {	actor frame KNEEL;		actor frame STAND;
-									actor frame STAND;};
+				usecodearray << {	actor frame kneeling;		actor frame standing;
+									actor frame standing;};
 			else if (rand == 2)
-				usecodearray << {	actor frame LEAN;		actor frame LIE;
-									actor frame STAND;};
+				usecodearray << {	actor frame bowing;		actor frame sleeping;
+									actor frame standing;};
 			else if (rand == 3)
-				usecodearray << {	actor frame STAND;		actor frame STAND;
-									actor frame STAND;};
+				usecodearray << {	actor frame standing;		actor frame standing;
+									actor frame standing;};
 			else if (rand == 4)
-				usecodearray << {	actor frame KNEEL;		actor frame USE;
-									actor frame STAND;};
+				usecodearray << {	actor frame kneeling;		actor frame ready;
+									actor frame standing;};
 			else if (rand == 5)
-				usecodearray << {	actor frame USE;		actor frame KNEEL;
-									actor frame STAND;};
+				usecodearray << {	actor frame ready;		actor frame kneeling;
+									actor frame standing;};
 			else if (rand == 6)
 				usecodearray << {	face directions[UI_get_random(4)];
-									actor frame LEAN;		actor frame STAND;};
+									actor frame bowing;		actor frame standing;};
 			else if (rand == 7)
 				usecodearray << {	face directions[UI_get_random(4)];
-									actor frame KNEEL;		actor frame STAND;};
+									actor frame kneeling;		actor frame standing;};
 			else if (rand == 8)
 				usecodearray << {	face directions[UI_get_random(4)];
-									actor frame USE;	actor frame STAND; };
+									actor frame ready;	actor frame standing; };
 	
 			counter = (counter + 1);
 		}

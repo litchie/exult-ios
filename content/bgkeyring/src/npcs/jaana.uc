@@ -61,7 +61,7 @@ Jaana object#(0x405) ()
 			gflags[MET_JAANA] = true;
 		}
 		else
-			item.say("@Yes, " + avatarname + "?@ Jaana asks.");
+			item.say("@Yes, ", avatarname, "?@ Jaana asks.");
 
 		var spellbook = get_cont_items(SHAPE_SPELL_SPELLBOOK, -get_npc_number(), FRAME_ANY);
 		if (!spellbook)
@@ -134,7 +134,7 @@ Jaana object#(0x405) ()
 						else if (choice == "Great heal") price = 30;
 						else if (choice == "Restoration") price = 150;
 						else if (choice == "Resurrect") price = 400;
-						say("@My price is " + price + " gold. Is this price agreeable?@");
+						say("@My price is ", price, " gold. Is this price agreeable?@");
 						
 						doheal = false;
 						if (askYesNo())
@@ -154,7 +154,7 @@ Jaana object#(0x405) ()
 						if (doheal)
 						{
 							if ((choice == "Restoration") || (choice == "Mass cure"))
-								say("@I am glad to help, " + avatartitle + "!@");
+								say("@I am glad to help, ", avatartitle, "!@");
 							
 							else
 							{
@@ -194,7 +194,7 @@ Jaana object#(0x405) ()
 				var partysize = UI_get_array_size(party);
 				if (partysize < 8)
 				{
-					say("@I would be honored to join thee, " + avatartitle + "!@");
+					say("@I would be honored to join thee, ", avatartitle, "!@");
 					add_to_party();
 					add("leave");
 					remove("join");
@@ -295,7 +295,8 @@ Jaana object#(0x405) ()
 					
 					item.say("@Oh, pardon -me-, sir. Thine immaturity confused me for a moment.@*");
 					
-					DUPRE.say("@Art thou going to let her get away with that, " + avatarname + "?@");
+					DUPRE.say("@Art thou going to let her get away with that, ",
+						avatarname, "?@");
 					
 					if (askYesNo())
 						say("Dupre is speechless and turns away in a huff.*");
@@ -312,7 +313,7 @@ Jaana object#(0x405) ()
 				break;
 			
 		}
-		say("@Goodbye, " + avatartitle + ".@*");
+		say("@Goodbye, ", avatartitle, ".@*");
 	}
 	else if (event == PROXIMITY)
 		scheduleBarks(item);

@@ -2406,6 +2406,7 @@ int Usecode_internal::run()
 				break;
 			case 0x26:		// AIDX.
 			case 0x5A:		// AIDXS.
+			case 0x5D:		// AIDXTHV.
 			{
 				sval = popi();	// Get index into array.
 				sval--;		// It's 1 based.
@@ -2419,6 +2420,15 @@ int Usecode_internal::run()
 						break;
 					}
 					val = &(frame->locals[offset]);
+				} else if (opcode == 0x5d) {
+					offset = Read2(frame->ip);
+					Usecode_value& ths = frame->get_this();
+					if (offset < 0 || offset >= ths.get_class_var_count()) {
+						cerr << "Class variable #" << (offset) << " out of range!";\
+						CERR_CURRENT_IP();
+						break;
+					}
+					val = &(ths.nth_class_var(offset));
 				} else {
 					offset = (sint16)Read2(frame->ip);
 					if (offset < 0) {// Global static.
@@ -2444,13 +2454,12 @@ int Usecode_internal::run()
 					pushi(0);
 					break;
 				}
-				if (val->is_array()) {
+				if (val->is_array() && sval >= val->get_array_size())
+					pushi(0);	// Matches originals.
+				else if (sval == 0) // needed for SS keyring (among others)
+					push(val->get_elem0());
+				else
 					push(val->get_elem(sval));
-				} else if (sval == 0) {
-					push(*val); // needed for SS keyring (among others)
-				} else {
-					pushi(0);  // guessing... probably unnecessary
-				}
 				break;
 			}
 			case 0x2d:		// RET. (Return from function)
@@ -2476,7 +2485,8 @@ int Usecode_internal::run()
 				}
 #endif
 				nextopcode &= 0x7f;
-				if (nextopcode != 0x02 && nextopcode != 0x5c) {
+				if (nextopcode != 0x02 && nextopcode != 0x5c &&
+						nextopcode != 0x5f) {
 					cerr << "Invalid 2nd byte in loop!" << endl;
 					break;
 				} else {
@@ -2488,6 +2498,8 @@ int Usecode_internal::run()
 			case 0x82:  // (32 bit version)
 			case 0x5c:	// LOOP (2nd byte of loop) using static array
 			case 0xdc:	// (32 bit version)
+			case 0x5f:	// LOOP (2nd byte of loop) using class member array
+			case 0xdf:	// (32 bit version)
 			{
 				// Counter (1-based).
 				int local1 = Read2(frame->ip);
@@ -2510,6 +2522,7 @@ int Usecode_internal::run()
 				else
 					offset = (short) Read2(frame->ip);
 
+
 				if (local1 < 0 || local1 >= num_locals) {
 					LOCAL_VAR_ERROR(local1);
 					break;
@@ -2522,7 +2535,7 @@ int Usecode_internal::run()
 					LOCAL_VAR_ERROR(local3);
 					break;
 				}
-				if (opcode == 0x5C) {
+				if (opcode == 0x5c) {
 					if (local4 < 0) {// Global static.
 						if (-local4 >= statics.size()) {
 							cerr << "Global static variable #" << (-local4) << " out of range!";\
@@ -2536,6 +2549,13 @@ int Usecode_internal::run()
 							break;
 						}
 					}
+				} else if (opcode == 0x5f) {
+					Usecode_value& ths = frame->get_this();
+					if (local4 < 0 || local4 >= ths.get_class_var_count()) {
+						cerr << "Class variable #" << (local4) << " out of range!";\
+						CERR_CURRENT_IP();
+						break;
+					}
 				} else {
 					if (local4 < 0 || local4 >= num_locals) {
 						LOCAL_VAR_ERROR(local4);
@@ -2547,7 +2567,9 @@ int Usecode_internal::run()
 				Usecode_value& arr = opcode == 0x5C ? 
 						(local4 < 0 ? statics[-local4]
 							: frame->function->statics[local4])
-						: frame->locals[local4];
+						: (opcode == 0x5f ?
+							frame->get_this().nth_class_var(local4) :
+							frame->locals[local4]);
  				if (initializing_loop && arr.is_undefined())
 				{	// If the local 'array' is not initialized, do not loop
 					// (verified in FoV and SS):
@@ -2568,72 +2590,72 @@ int Usecode_internal::run()
 
 					next = 0;
 				}
-				else if (GAME_SI)
-				{
-					// in SI, the loop-array can be modified in-loop, it seems
-					// (conv. with Spektran, 044D:00BE)
-				   
-					// so, check for changes of the array size, and adjust
-					// total count and next value accordingly.
 
-					int cnt = arr.is_array() ? arr.get_array_size() : 1;
+				// in SI, the loop-array can be modified in-loop, it seems
+				// (conv. with Spektran, 044D:00BE)
+			   
+				// so, check for changes of the array size, and adjust
+				// total count and next value accordingly.
 
-					if (cnt != frame->locals[local2].get_int_value()) {
+				// Allowing this for BG too.
+
+				int cnt = arr.is_array() ? arr.get_array_size() : 1;
+
+				if (cnt != frame->locals[local2].get_int_value()) {
+				
+					// update new total count
+					frame->locals[local2] = Usecode_value(cnt);
 					
-						// update new total count
-						frame->locals[local2] = Usecode_value(cnt);
-						
-						if (std::abs(cnt-frame->locals[local2].get_int_value())==1)
-						{
-							// small change... we can fix this
-							Usecode_value& curval = arr.is_array() ?
-								arr.get_elem(next - 1) : arr;
-							
-							if (curval != frame->locals[local3]) {
-								if (cnt>frame->locals[local2].get_int_value()){
-									//array got bigger, it seems
-									//addition occured before the current value
-									next++;
-								} else {
-									//array got smaller
-									//deletion occured before the current value
-									next--;
-								}
-							} else {
-								//addition/deletion was after the current value
-								//so don't need to update 'next'
-							}
-						}
-						else
-						{
-								// big change... 
-								// just update total count to make sure
-								// we don't crash
-						}
-					}
-
-					if (cnt != frame->locals[local2].get_int_value()) {
-
-						// update new total count
-						frame->locals[local2] = Usecode_value(cnt);
-
+					if (std::abs(cnt-frame->locals[local2].get_int_value())==1)
+					{
+						// small change... we can fix this
 						Usecode_value& curval = arr.is_array() ?
 							arr.get_elem(next - 1) : arr;
 						
 						if (curval != frame->locals[local3]) {
-							if (cnt > frame->locals[local2].get_int_value()) {
-								// array got bigger, it seems
-								// addition occured before the current value
+							if (cnt>frame->locals[local2].get_int_value()){
+								//array got bigger, it seems
+								//addition occured before the current value
 								next++;
 							} else {
-								// array got smaller
-								// deletion occured before the current value
+								//array got smaller
+								//deletion occured before the current value
 								next--;
 							}
 						} else {
-							// addition/deletion was after the current value
-							// so don't need to update 'next'
+							//addition/deletion was after the current value
+							//so don't need to update 'next'
 						}
+					}
+					else
+					{
+							// big change... 
+							// just update total count to make sure
+							// we don't crash
+					}
+				}
+
+				if (cnt != frame->locals[local2].get_int_value()) {
+
+					// update new total count
+					frame->locals[local2] = Usecode_value(cnt);
+
+					Usecode_value& curval = arr.is_array() ?
+						arr.get_elem(next - 1) : arr;
+					
+					if (curval != frame->locals[local3]) {
+						if (cnt > frame->locals[local2].get_int_value()) {
+							// array got bigger, it seems
+							// addition occured before the current value
+							next++;
+						} else {
+							// array got smaller
+							// deletion occured before the current value
+							next--;
+						}
+					} else {
+						// addition/deletion was after the current value
+						// so don't need to update 'next'
 					}
 				}
 
@@ -2779,6 +2801,7 @@ int Usecode_internal::run()
 				break;
 			case 0x46:		// Set array element.
 			case 0x5B:		// Set static array element.
+			case 0x5E:		// Set class member array element.
 			{
 				Usecode_value *arr;
 				if (opcode == 0x46) {
@@ -2789,6 +2812,15 @@ int Usecode_internal::run()
 						break;
 					}
 					arr = &(frame->locals[offset]);
+				} else if (opcode == 0x5e) {
+					offset = Read2(frame->ip);
+					Usecode_value& ths = frame->get_this();
+					if (offset < 0 || offset >= ths.get_class_var_count()) {
+						cerr << "Class variable #" << (offset) << " out of range!";\
+						CERR_CURRENT_IP();
+						break;
+					}
+					arr = &(ths.nth_class_var(offset));
 				} else {
 					offset = (sint16)Read2(frame->ip);
 					if (offset < 0) {// Global static.

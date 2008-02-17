@@ -130,8 +130,8 @@ spellMark_Override				object#(0x662) ()
 			//The stone is in the forbidden zone, so the spell fails:
 			item_say("@Kal Por Ylem@");
 			script item
-			{	actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }

@@ -125,7 +125,7 @@ displayCodex object#() ()
 				{
 					//The Vortex Cube and the three Items of Principle are
 					//in their respective positions
-					say(ominous_turning + single_line);
+					say(ominous_turning, single_line);
 					say("@Speak ye the three-part Word of Passage!@");
 					var choices = ["Infinity", "Singularity", "British",
 								   "Avidus", "Malum", "Ignavus", "Veramocor",
@@ -169,12 +169,15 @@ displayCodex object#() ()
 					}
 					else if (choice in ["Infinity", "Singularity", "British"])
 					{
-						say("In an ominous tone, you speak the word of your choice: @" + choice + "!@");
+						say("In an ominous tone, you speak the word of your choice: @",
+							choice, "!@");
 						say("After a while, you realize that nothing happened at all.");
 					}
 					else
 					{
-						say("In an ominous tone, you speak the Word of Power: @" + choice + "!@ The ground trembles for a while afterwards.");
+						say("In an ominous tone, you speak the Word of Power: @",
+							choice,
+							"!@ The ground suddenly trembles.");
 						UI_earthquake(12);
 						say("After a while, you realize that nothing else happened.");
 					}
@@ -183,8 +186,10 @@ displayCodex object#() ()
 				}
 				else
 				{
-					say(ominous_turning + "you can see the instructions to relocating the Codex in the Void.");
-					say("@Look ye at the Codex symbol in the middle of this shrine. There shall ye place the Items of Principle.~@Each item must sit atop the circle which represents the same Principle.");
+					say(ominous_turning,
+						"you can see the instructions to relocating the Codex in the Void.");
+					say("@Look ye at the Codex symbol in the middle of this shrine. There shall ye place the Items of Principle.",
+						"~@Each item must sit atop the circle which represents the same Principle.");
 					say("@Place then the Vortex Cube midway between the Items of Principle and the two Lenses, and read again from this Codex.@");
 					if (displayed_messages == 0)
 						msg = single_message;
@@ -192,9 +197,12 @@ displayCodex object#() ()
 			}
 			else if (shrine_quests + displayed_messages == 8)
 			{
-				say(ominous_turning + "the displayed message is none other than the one you need the most.");
-				say("@Know ye, seeker, that this Codex is in peril!~@A malevolent entity called 'The Guardian' seeks to pervert this Codex and turn it into a weapon of conquest and oppression.");
-				say("@In order to prevent this, this Codex -must- be relocated unto another position in the Void.~@Bring thou the Vortex Cube unto this shrine, together with the Book of Truth, the Candle of Love and the Bell of Courage, and read once more from this Codex!@");
+				say(ominous_turning,
+					"the displayed message is none other than the one you need the most.");
+				say("@Know ye, seeker, that this Codex is in peril!",
+					"~@A malevolent entity called 'The Guardian' seeks to pervert this Codex and turn it into a weapon of conquest and oppression.");
+				say("@In order to prevent this, this Codex -must- be relocated unto another position in the Void.",
+					"~@Bring thou the Vortex Cube unto this shrine, together with the Book of Truth, the Candle of Love and the Bell of Courage, and read once more from this Codex!@");
 				//The player visited all eight shrines, viewed all eight messages:
 				gflags[CODEX_ALL_EIGHT_SHRINES] = true;
 				giveExperience(50);
@@ -249,7 +257,8 @@ displayCodex object#() ()
 				}
 				else
 				{
-					say("@Bring ye the Virtue Stone of Spirituality unto this shrine. Once that is done, read again from this Codex~@and learn how to attune the stone to the Shrine of Spirituality.@");
+					say("@Bring ye the Virtue Stone of Spirituality unto this shrine. Once that is done, read again from this Codex",
+						"~@and learn how to attune the stone to the Shrine of Spirituality.@");
 					gflags[SPIRITUALITY_STONE_QUEST] = true;
 				}
 				if (displayed_messages > 1)
@@ -271,7 +280,7 @@ displayCodex object#() ()
 		else
 		{
 			//Cheater, cheater, compulsive cheater :-)
-			say(ominous_turning + single_line);
+			say(ominous_turning, single_line);
 			say("@CHEATERS NEVER WIN!@");
 		}
 		//Remove Codex:

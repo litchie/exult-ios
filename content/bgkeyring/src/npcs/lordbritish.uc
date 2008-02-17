@@ -49,7 +49,8 @@ giveFoVReward object#() ()
 			AVATAR->set_npc_prop(HEALTH, 60 - hps);
 	}
 	else
-		item.say("@I congratulate and thank thee, " + getAvatarName() + ". Thy deeds continue to speak well of thee.@");
+		item.say("@I congratulate and thank thee, ", getAvatarName(),
+			". Thy deeds continue to speak well of thee.@");
 }
 
 Lord_British object#(0x417) ()
@@ -67,7 +68,8 @@ Lord_British object#(0x417) ()
 		//Oops...
 		if (gflags[CAST_ARMAGEDDON])
 		{
-			item.say("@Fool!! What possessed thee to cast that damned Armageddon Spell? I knew it was dangerous! Thou didst know it was dangerous!! Now look at us! We are all alone on the entire planet! Britannia is ruined! What kind of Avatar art thou!?! Now, with no Moongates working, we are both forced to spend eternity in this blasted wasteland!~~@Of course, it could be viewed as a clever solution to all of our problems. After all, not even this so-called Guardian would want Britannia now!@*");
+			item.say("@Fool!! What possessed thee to cast that damned Armageddon Spell? I knew it was dangerous! Thou didst know it was dangerous!! Now look at us! We are all alone on the entire planet! Britannia is ruined! What kind of Avatar art thou!?! Now, with no Moongates working, we are both forced to spend eternity in this blasted wasteland!",
+				"~~@Of course, it could be viewed as a clever solution to all of our problems. After all, not even this so-called Guardian would want Britannia now!@*");
 			abort;
 		}
 		else if (gflags[BANISHED_EXODUS])
@@ -87,11 +89,11 @@ Lord_British object#(0x417) ()
 				script item
 				{	call trueFreeze;			face inv_dir;
 					//wait 6;					call giveFoVReward;
-					wait 1;						actor frame USE;
-					wait 1;						actor frame SWING_2H_3;
+					wait 1;						actor frame ready;
+					wait 1;						actor frame strike_2h;
 					wait 2;						call giveFoVReward;
-					wait 4;						actor frame USE;
-					wait 1;						actor frame STAND;
+					wait 4;						actor frame ready;
+					wait 1;						actor frame standing;
 					//wait 16;					call giveFoVReward;
 					wait 11;					call giveFoVReward;
 					call trueUnfreeze;}
@@ -99,10 +101,10 @@ Lord_British object#(0x417) ()
 				//Avatar kneels
 				script AVATAR
 				{	call trueFreeze;			face dir;
-					wait 1;						actor frame LEAN;
-					wait 1;						actor frame KNEEL;
-					wait 6;						actor frame LEAN;
-					wait 1;						actor frame STAND;
+					wait 1;						actor frame bowing;
+					wait 1;						actor frame kneeling;
+					wait 6;						actor frame bowing;
+					wait 1;						actor frame standing;
 					call trueUnfreeze;}
 				abort;
 			}
@@ -126,12 +128,13 @@ Lord_British object#(0x417) ()
 
 		if (!gflags[MET_LORD_BRITISH])
 		{
-			item.say("You see your old friend Lord British, looking a bit older than when you last saw him. His eyes gleam at the sight of you.~~@Welcome, my friend,@ he says, embracing you. @Please. Tell me what brings thee to Britannia! Or, more importantly, what 'brought' thee here?@");
+			item.say("You see your old friend Lord British, looking a bit older than when you last saw him. His eyes gleam at the sight of you.",
+				"~~@Welcome, my friend,@ he says, embracing you. @Please. Tell me what brings thee to Britannia! Or, more importantly, what 'brought' thee here?@");
 			gflags[MET_LORD_BRITISH] = true;
 			add(["red Moongate", "Orb of the Moons"]);
 		}
 		else
-			item.say("@Yes, " + avatarname + "?@ Lord British asks.");
+			item.say("@Yes, ", avatarname, "?@ Lord British asks.");
 			
 		converse(0)
 		{
@@ -155,16 +158,21 @@ Lord_British object#(0x417) ()
 				gflags[ASKED_LB_ABOUT_HEAL] = true;
 	
 			case "Britannia" (remove):
-				say("@The state of the land could not be more prosperous. Dost thou realize that thou hast been away for 200 Britannian years?@ Lord British wags a finger at you.~~ @I am certain that thy friends have rued thine absence. 'Tis a shame thou didst stay away so long! But... I am so very happy to see thee. Britannia is prosperous and abundant. Look around thee. Explore the newly refurbished castle. Travel the land. Peace is prominent in all quarters.~~@Yes, Britannia has never been better. Well, almost never.@");
+				say("@The state of the land could not be more prosperous. Dost thou realize that thou hast been away for 200 Britannian years?@ Lord British wags a finger at you.",
+					"~~ @I am certain that thy friends have rued thine absence. 'Tis a shame thou didst stay away so long! But... I am so very happy to see thee. Britannia is prosperous and abundant. Look around thee. Explore the newly refurbished castle. Travel the land. Peace is prominent in all quarters.",
+					"~~@Yes, Britannia has never been better. Well, almost never.@");
 				add(["friends", "castle", "almost never"]);
 				if (!gflags[ASKED_LB_ABOUT_MAGIC] && !asked_about_magic)
 					add("magic");
 
 			case "almost never" (remove):
-				say("@Well, 'things' are indeed fine. It is the 'people' I am concerned about.~~@There is something wrong in Britannia, but I do not know what it is. Something is hanging over the heads of the Britannian people. They are unhappy. One can see it in their eyes. There is nothing that is unifying the population, since there has been peace for so long.~~@Perhaps thou couldst determine what is happening. I implore thee to go out amongst the people. Watch them in their daily tasks. Speak with them. Work with them. Break bread with them. Perhaps they need someone like the Avatar to take an interest in their lives.@");
+				say("@Well, 'things' are indeed fine. It is the 'people' I am concerned about.",
+					"~~@There is something wrong in Britannia, but I do not know what it is. Something is hanging over the heads of the Britannian people. They are unhappy. One can see it in their eyes. There is nothing that is unifying the population, since there has been peace for so long.",
+					"~~@Perhaps thou couldst determine what is happening. I implore thee to go out amongst the people. Watch them in their daily tasks. Speak with them. Work with them. Break bread with them. Perhaps they need someone like the Avatar to take an interest in their lives.@");
 			
 			case "red Moongate" (remove):
-				say("You relate the story of how a red Moongate appeared behind your house and mysteriously took you to Trinsic.~~Lord British's brow creases as you speak. Finally he says, @I did not send the red Moongate to fetch thee. Someone or something must have activated that Moongate. And that is strange indeed, because we have been having a bit of trouble with Moongates as of late. In fact, we have been having trouble with magic in general!@");
+				say("You relate the story of how a red Moongate appeared behind your house and mysteriously took you to Trinsic.",
+					"~~Lord British's brow creases as you speak. Finally he says, @I did not send the red Moongate to fetch thee. Someone or something must have activated that Moongate. And that is strange indeed, because we have been having a bit of trouble with Moongates as of late. In fact, we have been having trouble with magic in general!@");
 				if (!asked_about_moongates)
 					add("Moongates");
 				if (!asked_about_magic)
@@ -191,7 +199,9 @@ Lord_British object#(0x417) ()
 					add("magic");
 
 			case "castle" (remove):
-				say("@Yes, it has been redecorated since thy last visit. The architects and workers did a splendid job.@~~The ruler leans toward you with a sour look on his face.~~ @The only mar in the entire complex is that damn nursery!@");
+				say("@Yes, it has been redecorated since thy last visit. The architects and workers did a splendid job.@",
+					"~~The ruler leans toward you with a sour look on his face.",
+					"~~ @The only mar in the entire complex is that damn nursery!@");
 				add("nursery");
 
 			case "nursery" (remove):
@@ -203,7 +213,8 @@ Lord_British object#(0x417) ()
 					say("@Indeed. Then it seems that Trinsic has not changed much since I saw it last.@ His eyes twinkle.");
 				else
 				{
-					say("@Murder? In Trinsic?@ The ruler looks concerned.~~@I have heard nothing about it. Art thou investigating it?@");
+					say("@Murder? In Trinsic?@ The ruler looks concerned.",
+						"~~@I have heard nothing about it. Art thou investigating it?@");
 					if (askYesNo())
 						say("@Very good. It pleases me that thou art concerned about my people.@");
 					else
@@ -234,7 +245,8 @@ Lord_British object#(0x417) ()
 				say("@He is a druid who began The Fellowship about twenty years ago. He is highly intelligent, and is a warm and gentle human being.@");
 
 			case "Hook" (remove):
-				say("@A man with a hook?@ The king rubs his chin.~~@No, I do not recall ever meeting a man with a hook.@");
+				say("@A man with a hook?@ The king rubs his chin.",
+					"~~@No, I do not recall ever meeting a man with a hook.@");
 
 			case "Crown Jewel" (remove):
 				say("@I am afraid I cannot possibly know of every ship that comes through our ports. Thou shouldst check with Clint the Shipwright if thou hast not done so.@");
@@ -283,7 +295,8 @@ Lord_British object#(0x417) ()
 				say("@A rather violent place, by all accounts. I have not had the pleasure of a visit in quite a while.@");
 
 			case "magic" (remove):
-				say("@Something is awry. Magic has not been working for the longest time. I even have trouble creating food with magic! It must be something to do with the magical ether.~~@There are those who say that magic is dying, what with the trouble with the Moongates and the situation with Nystul. I am beginning to suspect that they might be right!@");
+				say("@Something is awry. Magic has not been working for the longest time. I even have trouble creating food with magic! It must be something to do with the magical ether.",
+					"~~@There are those who say that magic is dying, what with the trouble with the Moongates and the situation with Nystul. I am beginning to suspect that they might be right!@");
 				say("Lord British studies you a moment.");
 				say("@Perhaps magic will work much better for thee. Thou hast not been in Britannia long. It is possible that whatever has affected magic has not made its mark upon thee yet. Please try it. A spellbook is stored with the rest of thine equipment.@");
 				gflags[ASKED_LB_ABOUT_MAGIC] = true;
@@ -298,7 +311,8 @@ Lord_British object#(0x417) ()
 					if(!gflags[MET_NYSTUL])
 						say("@Er... try talking to him.@");
 					else
-						say("The king lowers his voice.~~@He is acting oddly, isn't he? Something has happened to his mind. He doesn't seem to be able to concentrate on magic anymore.@");
+						say("The king lowers his voice.",
+							"~~@He is acting oddly, isn't he? Something has happened to his mind. He doesn't seem to be able to concentrate on magic anymore.@");
 				}
 				else
 					say("@He is beginning to act much more normally.@");
@@ -309,7 +323,8 @@ Lord_British object#(0x417) ()
 				asked_about_moongates = true;
 
 			case "mad mage" (remove):
-				say("The ruler leans forward and speaks quietly.~~@There is a mad mage in Cove by the name of Rudyom. Dost thou remember him? Rudyom was working with a magical substance called 'blackrock'. Before he went mad, he claimed that this mineral could solve the problems of the Moongates. I suggest that thou shouldst go to Cove and find him. Try to learn what it was he was doing with this blackrock material. It could be our only hope.@");
+				say("The ruler leans forward and speaks quietly.",
+					"~~@There is a mad mage in Cove by the name of Rudyom. Dost thou remember him? Rudyom was working with a magical substance called 'blackrock'. Before he went mad, he claimed that this mineral could solve the problems of the Moongates. I suggest that thou shouldst go to Cove and find him. Try to learn what it was he was doing with this blackrock material. It could be our only hope.@");
 				gflags[LEARNED_ABOUT_BLACKROCK] = true;
 				giveExperience(20);
 				add("Rudyom");
@@ -335,7 +350,8 @@ Lord_British object#(0x417) ()
 				add(["storeroom", "study"]);
 
 			case "storeroom" (remove):
-				say("@I am sure thou canst find it.@~~The ruler smiles slyly. @Consider it something of a game!@");
+				say("@I am sure thou canst find it.@",
+					"~~The ruler smiles slyly. @Consider it something of a game!@");
 
 			case "study" (remove):
 				say("@'Tis in the western end of the castle.@");
@@ -345,7 +361,9 @@ Lord_British object#(0x417) ()
 				serviceHeal();
 
 			case "Weston":			
-				say("Lord British listens to your story about Weston. He looks concerned.~~@I do not recall this case. Let me check... Hmmm...@ He quickly scans a large scroll.~~@Imprisoned for the theft of one apple from the Royal Orchards... Ludicrous! Someone must have usurped mine authority. Thou mayest consider this man pardoned. An investigation will commence immediately into the circumstances surrounding his arrest, and into this fellow, Figg. My thanks to thee, Avatar.@");
+				say("Lord British listens to your story about Weston. He looks concerned.",
+					"~~@I do not recall this case. Let me check... Hmmm...@ He quickly scans a large scroll.",
+					"~~@Imprisoned for the theft of one apple from the Royal Orchards... Ludicrous! Someone must have usurped mine authority. Thou mayest consider this man pardoned. An investigation will commence immediately into the circumstances surrounding his arrest, and into this fellow, Figg. My thanks to thee, Avatar.@");
 				gflags[WESTON_FREED] = true;
 				giveExperience(20);
 				WESTON->remove_npc();	//deletes him from the universe (poor man)
@@ -356,11 +374,13 @@ Lord_British object#(0x417) ()
 				add("island");
 			
 			case "island" (remove):
-				say("@Yes, " + avatarname + ". I felt a great disturbance in the ether when this island arose from the sea. The island is none other than the Isle of Fire where thou defeated the Hellspawn Exodus.@");
+				say("@Yes, ", avatarname,
+					". I felt a great disturbance in the ether when this island arose from the sea. The island is none other than the Isle of Fire where thou defeated the Hellspawn Exodus.@");
 				add(["Isle of Fire", "Exodus"]);
 
 			case "Isle of Fire" (remove):
-				say("@" + avatarname + ", thou shouldst know that when I created the shrines of the Virtues, I also set upon this island three great shrines, dedicated to the Priciples of Truth, Love, and Courage.");
+				say("@", avatarname,
+					", thou shouldst know that when I created the shrines of the Virtues, I also set upon this island three great shrines, dedicated to the Priciples of Truth, Love, and Courage.");
 				say("They reside within the walls of the Castle of Fire. I never revealed this to thee before as I thought them forever lost when the Isle of Fire mysteriously sank beneath the waves.");
 				say("The shrines are meant for the use of an Avatar only, and therefore a talisman will be necessary to use one.");
 				say("The talismans are guarded by tests that thou shouldst have no problem passing if thou wishest to seek their counsel.@");
@@ -370,7 +390,7 @@ Lord_British object#(0x417) ()
 				say("@Thy battle with that strange mixture of machine and spirit is now legendary. Do be careful if thou art going to the isle, for the remains of that being now reside in one of the chambers of the Castle of Fire.@");
 			
 			case "bye":
-				say("@Goodbye, " + avatarname + ". Do come back soon.@*");
+				say("@Goodbye, ", avatarname, ". Do come back soon.@*");
 				return;
 		}
 	}

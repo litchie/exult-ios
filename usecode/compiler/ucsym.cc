@@ -229,6 +229,42 @@ Uc_expression *Uc_static_class_symbol::create_expression
 	}
 
 /*
+ *	Check for a duplicate symbol and print an error.
+ *
+ *	Output:	true if dup., with error printed.
+ */
+
+bool Uc_struct_symbol::is_dup
+	(
+	char *nm
+	)
+	{
+	int index = search(nm);
+	if (index >= 0)			// Already declared?
+		{
+		char msg[180];
+		sprintf(msg, "Symbol '%s' already declared", nm);
+		Uc_location::yyerror(msg);
+		return true;
+		}
+	return false;
+	}
+
+Uc_struct_symbol::~Uc_struct_symbol()
+	{
+	for (Var_map::iterator it = vars.begin(); it != vars.end(); ++it)
+		delete it->first;
+	vars.clear();
+	}
+
+void Uc_struct_symbol::merge_struct(Uc_struct_symbol *other)
+	{
+	for (Var_map::iterator it = other->vars.begin();
+			it != other->vars.end(); ++it)
+		add(it->first);
+	}
+
+/*
  *	Create new class symbol and store in global table.
  */
 
@@ -261,7 +297,7 @@ int Uc_class_var_symbol::gen_assign
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_POPCLSVAR);
+	WriteOp(out, (char) UC_POPTHV);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -277,7 +313,7 @@ int Uc_class_var_symbol::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHCLSVAR);
+	WriteOp(out, (char) UC_PUSHTHV);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -704,10 +740,10 @@ Uc_scope::~Uc_scope
 	)
 	{
 	for (std::map<char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
-				it != symbols.end(); it++)
+				it != symbols.end(); ++it)
 		delete (*it).second;
 	for (std::vector<Uc_scope *>::iterator it = scopes.begin();
-				it != scopes.end(); it++)
+				it != scopes.end(); ++it)
 		delete *it;
 	}
 

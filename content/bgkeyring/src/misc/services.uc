@@ -84,7 +84,8 @@ var giveItemsToParty (var quantity, var shapenum, var quality, var framenum, var
 			else if (delta == 1)
 				say("@Since not one of you can hold another, I shall place this last remaining one upon the ground.@");
 			else
-				say("@Since thou art so encumbered, I shall place the remaining " + delta + " of these upon the ground.@");
+				say("@Since thou art so encumbered, I shall place the remaining ",
+				    delta, " of these upon the ground.@");
 			
 			var pos = AVATAR->get_object_position();
 			var groundobjs = shapenum->create_new_object();
@@ -154,7 +155,7 @@ var promptForPayment (var price, var dialog)
 {
 	if (price > 0)
 	{
-		say(dialog[2] + price + dialog[3]);
+		say(dialog[2], price, dialog[3]);
 		if (askYesNo())
 		{
 			if (!hasGold(price))
@@ -441,11 +442,11 @@ serviceHeal ()
 			if (numtargets > 1 && price_list)
 			{
 				if (reply == SERVICE_HEAL)
-					say(dialog[6] + "healed" + dialog[7]);
+					say(dialog[6], "healed", dialog[7]);
 				else if (reply == SERVICE_CURE)
-					say(dialog[6] + "cured of poison" + dialog[7]);
+					say(dialog[6], "cured of poison", dialog[7]);
 				else if (reply == SERVICE_RESURRECT)
-					say(dialog[6] + "resurrected" + dialog[7]);
+					say(dialog[6], "resurrected", dialog[7]);
 				choice = chooseFromMenu2(["Nobody", "Everyone", namelist]) - 1;
 				heal_everyone = (choice == 1);
 				if (choice > 1)

@@ -44,7 +44,7 @@ FawnStorm object#(0x6BC) ()
 					script IOLO
 					{	nohalt;					wait 1;
 						face dir;				say "@Look, Avatar!@";
-						wait 5;  				actor frame LEAN;
+						wait 5;  				actor frame bowing;
 						wait 9;					call FawnStorm;}
 					pathegg->set_item_quality(quality + 1);
 					UI_set_weather(0);
@@ -72,7 +72,7 @@ FawnStorm object#(0x6BC) ()
 			}
 
 			script IOLO
-			{	nohalt;					actor frame STAND;}
+			{	nohalt;					actor frame standing;}
 
 			script pathegg after 3 ticks
 			{	nohalt;					call FawnStorm;}

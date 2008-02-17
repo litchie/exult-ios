@@ -44,8 +44,8 @@ spellSurprise object#(0x667) ()
 		if (notInMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_3;
-				actor frame SWING_3;		actor frame SWING_2H_2;
+			{	nohalt;						actor frame strike_2h;
+				actor frame strike_1h;		actor frame reach_2h;
 				sfx 20;						wait 5;
 				call spellSurprise;}
 			nearbynpcs = find_nearby(SHAPE_ANY, 30, 8);
@@ -63,8 +63,8 @@ spellSurprise object#(0x667) ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_3;
-				actor frame SWING_3;		actor frame SWING_2H_2;
+			{	nohalt;						actor frame strike_2h;
+				actor frame strike_1h;		actor frame reach_2h;
 				call spellFails;}
 		}
 	}
@@ -126,9 +126,9 @@ spellCreateAmmo object#(0x66E) ()
 		if (notInMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame LEAN;
-				actor frame CAST_2;			actor frame LEAN;
-				actor frame CAST_2;			sfx 67;}
+			{	nohalt;						actor frame bowing;
+				actor frame cast_out;			actor frame bowing;
+				actor frame cast_out;			sfx 67;}
 			obj = getPathEgg(0, 4);
 			script obj after 10 ticks
 			{	nohalt;						call spellCreateAmmo;}
@@ -136,9 +136,9 @@ spellCreateAmmo object#(0x66E) ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame LEAN;
-				actor frame CAST_2;			actor frame LEAN;
-				actor frame CAST_2;			call spellFails;}
+			{	nohalt;						actor frame bowing;
+				actor frame cast_out;			actor frame bowing;
+				actor frame cast_out;			call spellFails;}
 		}
 	}
 	else if (event == SCRIPTED)
@@ -194,9 +194,9 @@ spellVibrate object#(0x676) ()
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2H_1;		actor frame SWING_2H_2;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_2H_3;		sfx 67;}
+				actor frame raise_2h;		actor frame reach_2h;
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_2h;		sfx 67;}
 			script target after 10 ticks
 			{	nohalt;						call spellVibrate;}
 		}
@@ -204,9 +204,9 @@ spellVibrate object#(0x676) ()
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2H_1;		actor frame SWING_2H_2;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame raise_2h;		actor frame reach_2h;
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 	if (event == SCRIPTED)
@@ -307,8 +307,8 @@ spellCreateIce object#(0x678) ()
 				if (UI_update_last_created(pos))
 				{
 					script item
-					{	nohalt;						actor frame SWING_1;
-						actor frame SWING_2;		actor frame SWING_3;}
+					{	nohalt;						actor frame raise_1h;
+						actor frame reach_1h;		actor frame strike_1h;}
 						
 					field->set_item_flag(TEMPORARY);
 					script field after 200 ticks
@@ -326,8 +326,8 @@ spellCreateIce object#(0x678) ()
 		if (failed)
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -373,11 +373,11 @@ spellSerpentBond object#(0x67D) ()
 		if (notInMagicStorm() && (!AVATAR->get_item_flag(PETRA)))
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_1;
-				actor frame SWING_2H_2;		actor frame SWING_2H_3;
-				actor frame SWING_2H_2;		actor frame STAND;
-				actor frame KNEEL;			actor frame LIE;
-				actor frame LIE;			call serpentbondRemoveNPCsFromParty;
+			{	nohalt;						actor frame raise_2h;
+				actor frame reach_2h;		actor frame strike_2h;
+				actor frame reach_2h;		actor frame standing;
+				actor frame kneeling;			actor frame sleeping;
+				actor frame sleeping;			call serpentbondRemoveNPCsFromParty;
 				sfx 67;}
 			
 			script getPathEgg(5, 1) after 300 ticks
@@ -388,11 +388,11 @@ spellSerpentBond object#(0x67D) ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_1;
-				actor frame SWING_2H_2;		actor frame SWING_2H_3;
-				actor frame SWING_2H_2;		actor frame STAND;
-				actor frame KNEEL;			actor frame LIE;
-				actor frame LIE;			call spellFails;}
+			{	nohalt;						actor frame raise_2h;
+				actor frame reach_2h;		actor frame strike_2h;
+				actor frame reach_2h;		actor frame standing;
+				actor frame kneeling;			actor frame sleeping;
+				actor frame sleeping;			call spellFails;}
 		}
 	}
 	else if (event == SCRIPTED)
@@ -456,8 +456,8 @@ spellFireSnake object#(0x67E) ()
 			}
 			
 			script item
-			{	face dir;					actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;}
+			{	face dir;					actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;}
 			field = UI_create_new_object(SHAPE_FIRE_FIELD);
 			if (field)
 			{
@@ -492,8 +492,8 @@ spellFireSnake object#(0x67E) ()
 		else
 		{
 			script item
-			{	face dir;					actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	face dir;					actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -582,8 +582,8 @@ spellStopStorm object#(0x684) ()
 		if (notInMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		sfx 57;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		sfx 57;}
 			
 			if (UI_get_weather() != 3)
 				UI_set_weather(0);
@@ -591,8 +591,8 @@ spellStopStorm object#(0x684) ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -613,9 +613,9 @@ spellImbalance object#(0x687) ()
 			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3,  3, 0, -1);
 			obj_sprite_effect(26,				   -2, -2,  0,  0, 0, -1);
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2H_2;		actor frame KNEEL;
-				actor frame KNEEL;			actor frame SWING_2H_2;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_2h;		actor frame kneeling;
+				actor frame kneeling;			actor frame reach_2h;
 				sfx 67;}
 			delay = (15 + getNPCLevel(AVATAR));
 			while (delay != 0)
@@ -628,9 +628,9 @@ spellImbalance object#(0x687) ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2H_2;		actor frame KNEEL;
-				actor frame KNEEL;			actor frame SWING_2H_2;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_2h;		actor frame kneeling;
+				actor frame kneeling;			actor frame reach_2h;
 				call spellFails;}
 		}
 	}

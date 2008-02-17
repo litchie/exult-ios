@@ -63,7 +63,9 @@ Gordon object#(0x43A) ()
 			gflags[MET_GORDON] = true;
 		}
 		//Meeting Gordon again
-		else item.say("@How art thou this fine day, " + polite_title + "?@ asks Gordon.");
+		else
+			item.say("@How art thou this fine day, ", polite_title,
+			         "?@ asks Gordon.");
 
 		add(["name", "job", "bye"]);
 		if (gflags[HIRED_BY_GORDON])
@@ -91,7 +93,8 @@ Gordon object#(0x43A) ()
 				}
 				else
 				{
-					say("@I have the best fish and chips thou shalt taste in all of Britannia. My price is only " + GORDONS_SELL_PRICE + " gold coins per serving. Wouldst thou like to have some?@");
+					say("@I have the best fish and chips thou shalt taste in all of Britannia. My price is only ",
+					    GORDONS_SELL_PRICE, " gold coins per serving. Wouldst thou like to have some?@");
 
 					if (askYesNo())
 					{
@@ -162,18 +165,21 @@ Gordon object#(0x43A) ()
 				say("@I saw thee receive thy medallion. I can certainly say the Fellowship has done wonders for my life and I know it will be the same for thee as well.@ He gives thee a knowing grin.");
 
 			case "bye":
-				say("@Have a pleasant day, " + polite_title + ".@ *");
+				say("@Have a pleasant day, ", polite_title, ".@ *");
 				break;
 
 
 			//From this point on is added functionality
 			case "fishing" (remove):
 			
-				say("@Aye, one of the reasons my fish and chips are so popular is that I use fresh fish. But I cannot mind the stall and go fishing at the same time! Lately I have been forced to buy day-old fish from Fred... 'tis not the same.@~He thinks a moment. @You know, I would be willing to pay thee if thou wouldst bring me freshly-caught fish. Wouldst thou?@");
+				say("@Aye, one of the reasons my fish and chips are so popular is that I use fresh fish. But I cannot mind the stall and go fishing at the same time! Lately I have been forced to buy day-old fish from Fred... 'tis not the same.@",
+				    "~He thinks a moment. @You know, I would be willing to pay thee if thou wouldst bring me freshly-caught fish. Wouldst thou?@");
 
 				if (askYesNo())
 				{
-					say("@Excellent! I shall pay thee " + GORDONS_BUY_PRICE + " gold coins per fish. There are some good fishing spots in the streams to the east.~Remember, only the freshest fish will do.@");
+					say("@Excellent! I shall pay thee ", GORDONS_BUY_PRICE,
+					    " gold coins per fish. There are some good fishing spots in the streams to the east.",
+					    "~Remember, only the freshest fish will do.@");
 
 					gflags[HIRED_BY_GORDON] = true;
 					add("sell fish");
@@ -200,17 +206,26 @@ Gordon object#(0x43A) ()
 					{
 						payment = num_fish * GORDONS_BUY_PRICE;
 
-						say("@Oh, thou hast some fish to sell me?@ He checks them over.~@Why, I see that thou hast " + num_fish + " lovely fresh fish.@");
+						say("@Oh, thou hast some fish to sell me?@ He checks them over.",
+						    "~@Why, I see that thou hast ",
+						    num_fish, " lovely fresh fish.@");
 
-						if (num_fish > 1) say("@At " +  GORDONS_BUY_PRICE + " gold apiece, that comes to " + payment + " gold.@");
-						else say("@I shall pay thee " + payment + " gold for it.@");
+						if (num_fish > 1)
+							say("@At ",  GORDONS_BUY_PRICE,
+							    " gold apiece, that comes to ",
+							    payment, " gold.@");
+						else
+							say("@I shall pay thee ", payment, " gold for it.@");
 
 						if (giveGold(payment))
 						{
 							UI_remove_party_items(num_fish, SHAPE_FOOD, QUALITY_FRESHFISH, FRAME_TROUT, true);
-							say("He gives you the gold and takes the fish from you.~@Thank thee " + polite_title + ", and do bring me more if thou catchest any.@");
+							say("He gives you the gold and takes the fish from you.",
+							    "@Thank thee ", polite_title,
+							    ", and do bring me more if thou catchest any.@");
 						}
-						else say("@But thou art carrying too much for me to pay thee! Come back when thou art less burdened.@");
+						else
+							say("@But thou art carrying too much for me to pay thee! Come back when thou art less burdened.@");
 					}
 
 					//see if they have any old fish
@@ -223,12 +238,14 @@ Gordon object#(0x43A) ()
 						if (num_fish > 1)
 						{
 							say("@Fie, thy fish are old and smelly! Didst I not tell thee that I only want fresh ones?");
-							say("@I suppose they are better than nothing though. I shall give thee " + payment + " gold for them, dost thou accept?@");
+							say("@I suppose they are better than nothing though. I shall give thee ",
+							    payment, " gold for them, dost thou accept?@");
 						}
 						else
 						{
 							say("@Fie, this fish is old and smelly! Didst I not tell thee that I only want fresh ones?");
-							say("@I suppose 'tis better than nothing though. I shall give thee " + payment + " gold for it, dost thou accept?@");
+							say("@I suppose 'tis better than nothing though. I shall give thee ",
+							    payment, " gold for it, dost thou accept?@");
 						}
 
 						if (askYesNo())
@@ -236,7 +253,9 @@ Gordon object#(0x43A) ()
 							if (giveGold(payment))
 							{
 								UI_remove_party_items(num_fish, SHAPE_FOOD, QUALITY_ANY, FRAME_TROUT, true);
-								say("He gives you the gold and takes the fish from you.~@Thank thee " + polite_title + ". Please bring me fresh ones next time, if thou catchest any.@");
+								say("He gives you the gold and takes the fish from you.",
+								    "~@Thank thee ", polite_title,
+								    ". Please bring me fresh ones next time, if thou catchest any.@");
 							}
 							else say("@But thou art carrying too much for me to pay thee! Come back when thou art less burdened.@");
 						}
@@ -259,7 +278,8 @@ Gordon object#(0x43A) ()
 				//Fellowship members have it easy
 				else if (wearing_fellowship)
 				{
-					say("@Ah, thou hast no fishing pole? Well...I suppose I should be glad to lend my spare to a fellow member...~Wouldst thou like to have it?@");
+					say("@Ah, thou hast no fishing pole? Well...I suppose I should be glad to lend my spare to a fellow member...",
+					    "~Wouldst thou like to have it?@");
 					if (askYesNo())
 					{
 						if (UI_add_party_items(1, SHAPE_FISHING_ROD, QUALITY_ANY, FRAME_ANY, true))
@@ -276,7 +296,11 @@ Gordon object#(0x43A) ()
 				//Everyone else has to pay
 				else
 				{
-					say("@Ah, thou hast no fishing pole?@ He gets a calculating gleam in his eye.~@I happen to have a spare...which I could sell to thee for only " + GORDONS_ROD_PRICE + " gold coins. It should pay for itself soon enough!~Wouldst thou like to have it?@");
+					say("@Ah, thou hast no fishing pole?@ He gets a calculating gleam in his eye.",
+					    "~@I happen to have a spare...which I could sell to thee for only ",
+					    GORDONS_ROD_PRICE,
+					    " gold coins. It should pay for itself soon enough!",
+						"~Wouldst thou like to have it?@");
 					if (askYesNo())
 					{
 						if (hasGold(GORDONS_ROD_PRICE))
@@ -291,7 +315,8 @@ Gordon object#(0x43A) ()
 								say("@Ahh, but thou art carrying too much! Return when thou hast relieved thy burden.@");
 						}
 						else
-							say("@But thou dost not have enough gold!~Methinks thou shouldst consider joining the Fellowship, to better manage thine assets.@");
+							say("@But thou dost not have enough gold!",
+								"~Methinks thou shouldst consider joining the Fellowship, to better manage thine assets.@");
 					}
 					else
 						say ("@Suit thyself. Ask me again if thou changest thy mind.@");

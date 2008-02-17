@@ -38,7 +38,7 @@ Leigh object#(0x4C9) ()
 			gflags[MET_LEIGH] = true;
 		}
 		else
-			item.say("@Greetings, " + avatartitle + ".@ Leigh smiles at you.");
+			item.say("@Greetings, ", avatartitle, ".@ Leigh smiles at you.");
 
 		add(["name", "job", "bye"]);
 		if (gflags[CAN_EXAMINE_STONE_CHIPS] && gflags[KNOWS_LEIGH_IS_HEALER])
@@ -95,7 +95,8 @@ Leigh object#(0x4C9) ()
 						say("She looks at you, puzzled. @Did I not do that already?@");
 					else
 					{
-						say("She takes the stone chips from you and examines them. Using several vials of strange and unusual mixtures, she analyzes the blood. Finally, after a few silent minutes, she looks up, grinning.~~@I have determined the nature of the blood. It is definitely not human. In fact,@ she looks back down at the sample and raises one eyebrow, @it is gargoyle blood.@");
+						say("She takes the stone chips from you and examines them. Using several vials of strange and unusual mixtures, she analyzes the blood. Finally, after a few silent minutes, she looks up, grinning.",
+							"~~@I have determined the nature of the blood. It is definitely not human. In fact,@ she looks back down at the sample and raises one eyebrow, @it is gargoyle blood.@");
 						add("gargoyle blood");
 						gflags[EXAMINED_CHIPS] = true;
 					}
@@ -104,10 +105,12 @@ Leigh object#(0x4C9) ()
 					say("@I am afraid that I must be able to see them to examine them.@");
 			
 			case "gargoyle blood" (remove):
-				say("She appears thoughtful.~~@What is odd, " + avatartitle + ", is that there is only one gargoyle in Serpent's Hold. But I cannot imagine Sir Horffe would have had anything to do with this wanton destruction.@");
+				say("She appears thoughtful.",
+					"~~@What is odd, ", avatartitle,
+					", is that there is only one gargoyle in Serpent's Hold. But I cannot imagine Sir Horffe would have had anything to do with this wanton destruction.@");
 			
 			case "bye":
-				say("@Farewell, " + avatartitle + ".@*");
+				say("@Farewell, ", avatartitle, ".@*");
 				break;
 		}
 	}

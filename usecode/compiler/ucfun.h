@@ -150,7 +150,10 @@ public:
 		{ return get_intrinsic(get_item_shape); }
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(char *nm, Uc_class *c);// Add var. to current scope.
+	Uc_var_symbol *add_symbol(char *nm, Uc_struct_symbol *s);// Add var. to current scope.
 	Uc_var_symbol *add_symbol(Uc_var_symbol *var);// Add var. to current scope.
+	Uc_var_symbol *add_alias(char *nm, Uc_var_symbol *var,
+			Uc_struct_symbol *struc = 0);	// Add alias to current scope.
 	void add_static(char *nm);	// Add static var. to current scope.
 	void add_static(char *nm, Uc_class *c);	// Add static cls. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun, Uc_scope *parent=0)
@@ -160,6 +163,8 @@ public:
 		{ return globals.add_function_symbol(fun, parent); }
 	static void add_global_class_symbol(Uc_class_symbol *c)
 		{ globals.add(c); }
+	static void add_global_struct_symbol(Uc_struct_symbol *s)
+		{ globals.add(s); }
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 					// Add int constant.

@@ -117,7 +117,8 @@ Iolo object#(0x403) ()
 		{
 			UI_init_conversation();
 			IOLO->show_npc_face0(0);
-			say("@'Twas a fearsome passage, " + avatar_name + ". After we sailed between the Serpent Pillars, I could have sworn that we were flying...@");
+			say("@'Twas a fearsome passage, ", avatar_name,
+				". After we sailed between the Serpent Pillars, I could have sworn that we were flying...@");
 			say("@Yet here we are on the ship. I wonder if I lost anything...@");
 			DUPRE->show_npc_face1(0);
 			say("@We may be on the ship, but the ship is upon dry land! I think that thou art correct, Iolo. We did fly!@");
@@ -132,7 +133,8 @@ Iolo object#(0x403) ()
 			say("@And that fiend, Batlin, I hope!@");
 			UI_remove_npc_face1();
 			UI_set_conversation_slot(0);
-			say("@Look, " + avatar_name + "! A strange storm is nearly upon us. This is certainly not Britannia!@");
+			say("@Look, ", avatar_name,
+				"! A strange storm is nearly upon us. This is certainly not Britannia!@");
 			UI_remove_npc_face0();
 			delayedBark(SHAMINO, "@Where are we?@", 5);
 			delayedBark(DUPRE, "@Let us find Batlin!@", 15);
@@ -148,7 +150,8 @@ Iolo object#(0x403) ()
 		{
 			IOLO->show_npc_face0(0);
 			say("@I thank thee for freeing me from this hellhole! The natives of this place are ignorant sots. Imagine, thinking me to be a sorcerer!@");
-			say("@Hast thou looked in thy packs since the storm, " + avatar_title + "? Nothing in my backpack is as it was when Lord British gave us the list, Avatar!@");
+			say("@Hast thou looked in thy packs since the storm, ", avatar_title,
+				"? Nothing in my backpack is as it was when Lord British gave us the list, Avatar!@");
 			if (npcNearbyAndVisible(SHAMINO))
 			{
 				SHAMINO->show_npc_face1(0);
@@ -192,7 +195,8 @@ Iolo object#(0x403) ()
 		if (iolo_id == BOOTED_FOR_FREEDOM)
 		{
 			remove("join");
-			say("@Thank the Virtues! Thou art whole and hale, " + avatar_title + "!@");
+			say("@Thank the Virtues! Thou art whole and hale, ",
+				avatar_title, "!@");
 			say("@I feared that I had lost both thee and my beloved wife, but thou hast survived the depths even as Dupre assured me that thou wouldst...@");
 			if (npcNearbyAndVisible(GUSTACIO))
 			{
@@ -202,7 +206,8 @@ Iolo object#(0x403) ()
 				UI_set_conversation_slot(0);
 			}
 
-			say("@The Sorcerer Gustacio hath been instructing me somewhat in the magic of this land, " + avatar_title + ". I think that he doth have information that shall interest thee.@");
+			say("@The Sorcerer Gustacio hath been instructing me somewhat in the magic of this land, ",
+				avatar_title, ". I think that he doth have information that shall interest thee.@");
 			gflags[AFTER_FREEDOM_NEWS] = true;
 			IOLO->set_npc_id(0);
 			IOLO->add_to_party();
@@ -212,7 +217,8 @@ Iolo object#(0x403) ()
 		}
 		else if (iolo_id == CURED_OF_INSANITY)
 		{
-			say("@No truer friend can I have than thee, " + avatar_title + "! Not only thou didst save my wife, but thou hast saved me as well... Thank thee, my friend!@");
+			say("@No truer friend can I have than thee, ", avatar_title,
+				"! Not only thou didst save my wife, but thou hast saved me as well... Thank thee, my friend!@");
 			IOLO->set_npc_id(0);
 			IOLO->add_to_party();
 			script IOLO after 15 ticks call wraperXenkaReturns;
@@ -221,7 +227,8 @@ Iolo object#(0x403) ()
 		}
 		else
 		{
-			say("@Wouldst thou enjoy some idle conversation, " + avatar_title + ", or shall I embrace my lute and provide a musical interlude?@");
+			say("@Wouldst thou enjoy some idle conversation, ", avatar_title,
+				", or shall I embrace my lute and provide a musical interlude?@");
 			add("a song");
 		}
 
@@ -249,7 +256,8 @@ Iolo object#(0x403) ()
 				{
 					if (npcNearbyAndVisible(SCHMED))
 					{
-						say("@But " + avatar_title + ", the Guardian of the Test is standing right here. If thou desirest to cheat, thou shouldst at least do so covertly...@");
+						say("@But ", avatar_title,
+							", the Guardian of the Test is standing right here. If thou desirest to cheat, thou shouldst at least do so covertly...@");
 						SCHMED->show_npc_face1(0);
 						say("@No cheating, stranger!@");
 						UI_remove_npc_face1();
@@ -264,13 +272,15 @@ Iolo object#(0x403) ()
 				if (UI_get_array_size(UI_get_party_list2()) < 5)
 				{
 					add("leave");
-					say("@'Tis always an adventure to travel with thee, " + avatar_name + "! I shall be proud to accompany thee.@");
+					say("@'Tis always an adventure to travel with thee, ",
+						avatar_name, "! I shall be proud to accompany thee.@");
 					IOLO->add_to_party();
 					gflags[IOLO_HAS_BELONGINGS] = true;
 				}
 				else
 				{
-					say("@I would be glad to accompany thee, " + avatar_title + ". However, I am an old man, and I can see that thou hast many companions at thy side.@");
+					say("@I would be glad to accompany thee, ", avatar_title,
+						". However, I am an old man, and I can see that thou hast many companions at thy side.@");
 					say("@I think that perhaps I should remain where I am...@");
 				}
 
@@ -295,13 +305,15 @@ Iolo object#(0x403) ()
 				if (GWENNO->get_item_flag(IN_PARTY) ||
 				    (npcNearbyAndVisible(GWENNO) &&
 					    !GWENNO->get_item_flag(SI_ZOMBIE)))
-					say("@No truer friend have I had in all of my life than thee, " + avatar_name + ". With my lady love Gwenno returned to my side where she doth belong, my life is once again complete.@");
+					say("@No truer friend have I had in all of my life than thee, ",
+						avatar_name, ". With my lady love Gwenno returned to my side where she doth belong, my life is once again complete.@");
 
 				else if (!gflags[TALKED_TO_GWANI_ABOUT_GWENNO])
 					say("@I miss Gwenno so much, Avatar. I hope that it is not long before we find her and I may hold her in mine arms again.@");
 
 				else if (!gflags[FREED_GWENNOS_BODY])
-					say("@Mine heart is broken! My life hath no meaning without my lady love! Oh, " + avatar_name + ", how could our good and noble quest have ended in such tragedy!@");
+					say("@Mine heart is broken! My life hath no meaning without my lady love! Oh, ",
+						avatar_name, ", how could our good and noble quest have ended in such tragedy!@");
 
 				else if (gflags[GWENNO_IS_DEAD])
 					say("@Now that we have succeeded in freeing Gwenno's body, perhaps the Monks of Monk Isle -- the self-professed masters of life and death -- may be able to help her.@");
@@ -357,7 +369,8 @@ Iolo object#(0x403) ()
 					}
 				}
 				else
-					say("@I cannot think of anything to sing at the moment, " + avatar_title + ". Perhaps if thou didst ask me later...@");
+					say("@I cannot think of anything to sing at the moment, ",
+						avatar_title, ". Perhaps if thou didst ask me later...@");
 
 			case "Shamino's whereabouts" (remove):
 				if (gflags[SHAMINO_RESURRECTED_BY_MONKS])

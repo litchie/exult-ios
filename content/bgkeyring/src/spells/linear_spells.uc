@@ -62,8 +62,8 @@ spellAwaken (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 64;						actor frame SWING_1;
-				actor frame SWING_3;}
+				sfx 64;						actor frame raise_1h;
+				actor frame strike_1h;}
 			script target after 5 ticks
 			{	nohalt;						call spellAwakenEffect;}
 		}
@@ -71,7 +71,7 @@ spellAwaken (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -90,14 +90,14 @@ spellDouse (var target)
 			set_to_attack(target, SHAPE_DOUSE);
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -125,15 +125,15 @@ spellFireworks ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame CAST_2;
-				actor frame CAST_1;			sfx 36;
+			{	nohalt;						actor frame cast_out;
+				actor frame cast_up;			sfx 36;
 				call spellOffCenterSpriteEffect, 12;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_2;
-				actor frame CAST_1;			call spellFails;}
+			{	nohalt;						actor frame cast_out;
+				actor frame cast_up;			call spellFails;}
 		}
 	}
 }
@@ -148,14 +148,14 @@ spellGlimmer ()
 		{
 			script item
 			{	nohalt;						sfx 68;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellCauseLight, 110;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -173,15 +173,15 @@ spellIgnite (var target)
 			set_to_attack(target, SHAPE_IGNITE);
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		attack;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 
@@ -207,14 +207,14 @@ spellThunder ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_2;
-				actor frame SWING_2H_3;		sfx 62;}
+			{	nohalt;						actor frame reach_2h;
+				actor frame strike_2h;		sfx 62;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_2;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame reach_2h;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -228,8 +228,8 @@ spellWeather ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		sfx 68;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		sfx 68;}
 			var weather_array = [0, 1, 2];
 			if (UI_get_weather() == 0)
 				UI_set_weather(weather_array[UI_die_roll(2, 3)]);
@@ -239,8 +239,8 @@ spellWeather ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -259,15 +259,15 @@ spellDetectCharges (var target)
 			var bark = "@" + target->get_item_quality() + " charges left@";
 			script item
 			{	nohalt;						sfx 67;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame USE;			wait 4;
+				actor frame cast_up;			actor frame cast_out;
+				actor frame ready;			wait 4;
 				say bark;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame USE;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame ready;
 				call spellFails;}
 		}
 	}

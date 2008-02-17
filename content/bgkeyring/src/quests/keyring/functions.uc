@@ -333,7 +333,7 @@ var createLichAndGems ()
 	liche->give_last_created();
 	
 	//Make Joneleth face south:
-	script liche face SOUTH;
+	script liche face south;
 	
 	return liche;
 }

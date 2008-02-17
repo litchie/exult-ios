@@ -39,29 +39,29 @@ SwordInAStone shape#(0x315) ()
 			nohalt;
 			call freeze;	//keep the avatar still, so they don't try to wander off
 			face directionFromAvatar(item);
-			actor frame STAND;
+			actor frame standing;
 
 			//Get psyched
-			actor frame LEAN; wait 7;
-			actor frame STAND;
+			actor frame bowing; wait 7;
+			actor frame standing;
 
 			//Start pulling (loop the animations so they don't time out)
-			repeat 1	{ actor frame SWING_2H_3; wait 4; };
+			repeat 1	{ actor frame strike_2h; wait 4; };
 			say "@Nnnngggh...@";
-			repeat 1	{ actor frame SWING_2H_1; wait 7; };
-			actor frame SWING_2H_3;
+			repeat 1	{ actor frame raise_2h; wait 7; };
+			actor frame strike_2h;
 			wait 5;
 
 			//Oops, looks like you overdid it a bit
-			actor frame STAND;
-			actor frame LEAN; wait 2;
+			actor frame standing;
+			actor frame bowing; wait 2;
 
 			//Not as young as we used to be, eh?
 			say "@Argh, my back...@";
-			repeat 3	{ actor frame LEAN; wait 5; };
+			repeat 3	{ actor frame bowing; wait 5; };
 
-			actor frame LEAN; wait 2;
-			actor frame STAND;
+			actor frame bowing; wait 2;
+			actor frame standing;
 
 			call unfreeze;	//Let the player move around again now
 		}
@@ -117,7 +117,8 @@ TripleCrossbow shape#(0x287) ()
 	{
 		if (inParty(IOLO))
 		{
-			IOLO.say("@I know what thou thinkest. Thou thinkest: 'Hath he fired 60 bolts, or only 57?'~@Well, to tell thee truthfully, in all this excitement I rather lost track myself.");
+			IOLO.say("@I know what thou thinkest. Thou thinkest: 'Hath he fired 60 bolts, or only 57?'",
+				"~@Well, to tell thee truthfully, in all this excitement I rather lost track myself.");
 			IOLO.say("@But being as this is a triple crossbow, the most powerful ranged weapon in Britannia, and would blow thine head clean off, thou must ask thyself a question: 'Do I feel lucky?'");
 			IOLO.say("@Well dost thou, punk?@*");
 			IOLO.hide();

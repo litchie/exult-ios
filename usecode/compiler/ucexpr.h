@@ -63,6 +63,10 @@ public:
 	virtual bool eval_const(int& val);
 	virtual bool is_class() const
 		{ return false; }
+	virtual int get_type() const
+		{ return 0; }
+	virtual Uc_var_symbol * get_var() const
+		{ return 0; }
 	virtual Uc_class *get_cls() const
 		{ return 0; }
 	virtual int is_object_function(bool error = true) const
@@ -89,8 +93,11 @@ public:
 	virtual int get_string_offset();// Get offset in text_data.
 	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *)
 		{ return var; }
+	virtual Uc_var_symbol * get_var() const
+		{ return var; }
 	virtual int is_object_function(bool error = true) const;
 	virtual void set_is_obj_fun(int s);
+	virtual int get_type() const;
 	};
 
 /*
@@ -139,6 +146,23 @@ public:
 		: Uc_arrayelem_expression(a, i)
 		{  }
 	~Uc_static_arrayelem_expression()
+		{ delete index; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(Basic_block *out);
+					// Gen. to assign from stack.
+	virtual void gen_assign(Basic_block *out);
+	};
+
+/*
+ *	An array element of a class member array.
+ */
+class Uc_class_arrayelem_expression : public Uc_arrayelem_expression
+	{
+public:
+	Uc_class_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
+		: Uc_arrayelem_expression(a, i)
+		{  }
+	~Uc_class_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);

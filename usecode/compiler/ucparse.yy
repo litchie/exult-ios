@@ -71,9 +71,11 @@ std::vector<Uc_design_unit *> units;	// THIS is what we produce.
 
 static Uc_function *cur_fun = 0;	// Current function being parsed.
 static Uc_class *cur_class = 0;		// ...or, current class being parsed.
+static Uc_struct_symbol *cur_struct = 0;		// ...or, current struct being parsed.
 static int enum_val = -1;		// Keeps track of enum elements.
 static bool is_extern = false;	// Marks a function symbol as being an extern
 static Uc_class *class_type = 0;	// For declaration of class variables.
+static Uc_struct_symbol *struct_type = 0;	// For declaration of struct variables.
 static bool has_ret = false;
 static int repeat_nesting = 0;
 static bool byte_const = false;
@@ -91,6 +93,7 @@ struct ID_info
 	class Uc_symbol *sym;
 	class Uc_var_symbol *var;
 	class Uc_class *cls;
+	class Uc_struct_symbol *struc;
 	class Uc_expression *expr;
 	class Uc_call_expression *funcall;
 	class Uc_function_symbol *funsym;
@@ -110,7 +113,7 @@ struct ID_info
  *	Keywords:
  */
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR UCC_INT UCC_CHAR UCC_CONST STRING ENUM
+%token VAR ALIAS STRUCT UCC_INT UCC_CHAR UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
@@ -122,8 +125,10 @@ struct ID_info
 					/* Script commands. */
 %token CONTINUE REPEAT NOP NOHALT WAIT /*REMOVE*/ RISE DESCEND FRAME HATCH
 %token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
-%token ATTACK FINISH RESURRECT SETEGG MINUTES RESET WEATHER
+%token ATTACK FINISH RESURRECT SETEGG MINUTES RESET WEATHER NEAR FAR
 %token NORTH SOUTH EAST WEST NE NW SE SW
+%token STANDING STEP_RIGHT STEP_LEFT READY RAISE_1H REACH_1H STRIKE_1H RAISE_2H
+%token REACH_2H STRIKE_2H SITTING BOWING KNEELING SLEEPING CAST_UP CAST_OUT
 
 /*
  *	Other tokens:
@@ -147,6 +152,7 @@ struct ID_info
 %left '-' '+' '&'
 %left '*' '/' '%'
 %right NOT ADDRESSOF UMINUS UPLUS NEW DELETE
+%left UCC_SYM
 %left UCC_POINTS '.' '(' ')' '[' ']'
 %left UCC_SCOPE
 
@@ -156,20 +162,21 @@ struct ID_info
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr opt_delay appended_element int_literal
-%type <intval> opt_int direction converse_options opt_var
+%type <intval> opt_int direction converse_options opt_var actor_frames
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
 %type <funid> opt_funid
 %type <intlist> string_list
 %type <sym> declared_sym
 %type <var> declared_var param
 %type <cls> opt_inheritance defined_class
+%type <struc> defined_struct
 %type <funsym> function_proto function_decl
 %type <varvec> param_list opt_param_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> special_method_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list stmt_declaration
-%type <stmt> class_decl class_decl_list
+%type <stmt> class_decl class_decl_list struct_decl_list struct_decl
 %type <stmt> break_statement converse_statement
 %type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
@@ -199,6 +206,7 @@ global_decl:
 	| enum_decl
 	| static_decl
 	| class_definition
+	| struct_definition
 	;
 
 class_definition:
@@ -229,6 +237,12 @@ class_item_list:
 class_item:
 	VAR { has_ret = true; } class_var_def
 		{ has_ret = false; }
+	| VAR alias_tok IDENTIFIER '=' declared_var ';'
+		{ cur_class->add_alias($3, $5, struct_type); }
+	| STRUCT '<' defined_struct '>' { struct_type = $3; } struct_decl_list ';'
+		{ struct_type = 0; }
+	| STRUCT '<' defined_struct '>' alias_tok IDENTIFIER '=' declared_var ';'
+		{ cur_class->add_alias($6, $8); }
 	| CLASS '<' defined_class '>' { class_type = $3; } method
 		{ class_type = 0; }
 	| method
@@ -236,7 +250,6 @@ class_item:
 
 class_var_def:
 	var_decl_list ';'
-		{ ; }
 	| method
 	;
 
@@ -264,6 +277,31 @@ method:
 		cur_class->add_method(cur_fun);
 		cur_fun = 0;
 		}
+	;
+
+struct_definition:
+	STRUCT IDENTIFIER 
+		{ cur_struct = new Uc_struct_symbol($2); }
+		'{' struct_item_list '}'
+		{
+		// Add to 'globals' symbol table.
+		Uc_function::add_global_struct_symbol(cur_struct);
+		cur_struct = 0;
+		}
+	;
+
+struct_item_list:
+	struct_item_list struct_item
+	|				/* Empty */
+	;
+
+struct_item:
+	VAR IDENTIFIER ';'
+		{ cur_struct->add($2); }
+	| STRUCT '<' defined_struct '>' ';'
+		{ cur_struct->merge_struct($3); }
+	| STRUCT '<' defined_struct '>' IDENTIFIER ';'
+		{ cur_struct->merge_struct($3); }
 	;
 
 function:
@@ -456,11 +494,30 @@ statement:
 		{ $$ = 0; }
 	;
 
+alias_tok:
+	ALIAS
+	| '&'
+	;
+
 stmt_declaration:
 	VAR var_decl_list ';'
 		{ $$ = $2; }
+	| VAR alias_tok IDENTIFIER '=' declared_var ';'
+		{ cur_fun->add_alias($3, $5, struct_type); $$ = 0; }
+	| STRUCT '<' defined_struct '>' { struct_type = $3; } struct_decl_list ';'
+		{ struct_type = 0; $$ = $6; }
+	| STRUCT '<' defined_struct '>' alias_tok IDENTIFIER '=' declared_var ';'
+		{ cur_fun->add_alias($6, $8); $$ = 0; }
 	| CLASS '<' defined_class '>' { class_type = $3; } class_decl_list ';'
 		{ class_type = 0; $$ = $6; }
+	| CLASS '<' defined_class '>' alias_tok IDENTIFIER '=' declared_var ';'
+		{
+		if (!$8->get_cls())
+			yyerror("Can't convert non-class into class.");
+		else if (!Incompatible_classes_error($8->get_cls(), $3))
+			cur_fun->add_alias($6, $8);
+		$$ = 0;
+		}
 	| STRING string_decl_list ';'
 		{ $$ = 0; }
 	| const_int_decl
@@ -633,6 +690,57 @@ class_decl:
 		}
 	;
 
+struct_decl_list:
+	struct_decl_list ',' struct_decl
+		{
+		if (!$3)
+			$$ = $1;
+		else if (!$1)
+			$$ = $3;
+		else		/*	Both nonzero; need a list.	*/
+			{
+			Uc_block_statement *b = dynamic_cast<Uc_block_statement *>($1);
+			if (!b)
+				{
+				b = new Uc_block_statement();
+				b->add($1);
+				}
+			b->add($3);
+			$$ = b;
+			}
+		}
+	| struct_decl
+		{ $$ = $1; }
+
+struct_decl:
+	IDENTIFIER
+		{
+		if (cur_fun)
+			cur_fun->add_symbol($1, struct_type);
+		else
+			cur_class->add_symbol($1, struct_type);
+		$$ = 0;
+		}
+	| IDENTIFIER '=' nonclass_expr
+		{
+		if (cur_class && !cur_fun)
+			{
+			char buf[180];
+			sprintf(buf, "Initialization of class member struct '%s' must be done through constructor", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			{
+			Uc_var_symbol *var = cur_fun ? cur_fun->add_symbol($1, struct_type)
+							 : cur_class->add_symbol($1, struct_type);
+			var->set_is_obj_fun($3->is_object_function(false));
+			$$ = new Uc_assignment_statement(new Uc_var_expression(var), $3);
+			}
+		}
+	;
+
+
 class_expr:
 	new_expr
 		{ $$ = $1; }
@@ -646,8 +754,7 @@ class_expr:
 			yyerror(buf);
 			sym = cur_fun->add_symbol($1);
 			}
-		Uc_class_inst_symbol *c = dynamic_cast<Uc_class_inst_symbol *>(sym);
-		if (!c)
+		else if (!sym->get_sym_type() == Uc_symbol::Class)
 			{
 			char buf[150];
 			sprintf(buf, "'%s' not a class", $1);
@@ -655,7 +762,12 @@ class_expr:
 			$$ = 0;
 			}
 		else
-			$$ = new Uc_class_expression(c);
+			{
+				// Tests above guarantee this will always work.
+			Uc_class_inst_symbol *cls =
+					dynamic_cast<Uc_class_inst_symbol *>(sym->get_sym());
+			$$ = new Uc_class_expression(cls);
+			}
 		}
 	;
 
@@ -797,12 +909,12 @@ if_statement:
 			{
 			if (val)
 				{
-				yywarning("'if' clause will always be executed");
+				$3->warning("'if' clause will always be executed");
 				$$ = $5;
 				}
 			else
 				{	// Need this because of those pesky GOTOs...
-				yywarning("'if' clause may never be executed");
+				$3->warning("'if' clause may never be executed");
 				$$ = new Uc_if_statement(0, $5, 0);
 				}
 			delete $3;
@@ -818,13 +930,13 @@ if_statement:
 			if (val)
 				{
 					// Need this because of those pesky GOTOs...
-				yywarning("'else' clause may never be executed");
+				$3->warning("'else' clause may never be executed");
 				$$ = new Uc_if_statement(new Uc_int_expression(val), $5, $7);
 				}
 			else
 				{
 					// Need this because of those pesky GOTOs...
-				yywarning("'if' clause may never be executed");
+				$3->warning("'if' clause may never be executed");
 				$$ = new Uc_if_statement(0, $5, $7);
 				}
 			delete $3;
@@ -842,12 +954,12 @@ while_statement:
 			{
 			if (val)
 				{
-				yywarning("Infinite loop detected");
+				$3->warning("Infinite loop detected");
 				$$ = new Uc_infinite_loop_statement($6);
 				}
 			else
 				{	// Need this because of those pesky GOTOs...
-				yywarning("Body of 'while' statement may never be executed");
+				$3->warning("Body of 'while' statement may never be executed");
 				$$ = new Uc_while_statement(0, $6);
 				}
 			delete $3;
@@ -863,7 +975,7 @@ while_statement:
 			{
 			if (val)
 				{
-				yywarning("Infinite loop detected");
+				$6->warning("Infinite loop detected");
 				$$ = new Uc_infinite_loop_statement($3);
 				}
 			else		// Optimize loop away.
@@ -1195,6 +1307,20 @@ script_command:
 			result->add($2);	// Then #times to repeat.
 		$$ = result;
 		}
+	| REPEAT nonclass_expr ',' nonclass_expr { repeat_nesting++; }
+		script_command  ';'
+		{	// Allow setting a different initial number of repeats.
+		repeat_nesting--;
+		Uc_array_expression *result = new Uc_array_expression();
+		result->concat($6);	// Start with cmnds. to repeat.
+		int sz = result->get_exprs().size();
+		result->add(new Uc_int_expression(Ucscript::repeat2, true));
+					// Then -offset to start.
+		result->add(new Uc_int_expression(-sz));
+		result->add($2);	// Loop var for repeat2.
+		result->add($4);	// Then #times to repeat.
+		$$ = result;
+		}
 	| NOP  ';'
 		{ $$ = new Uc_int_expression(Ucscript::nop, true); }
 	| NOHALT  ';'
@@ -1205,6 +1331,10 @@ script_command:
 		{ $$ = Create_array(Ucscript::delay_minutes, $2); }
 	| WAIT nonclass_expr HOURS  ';'	/* Game hours. */
 		{ $$ = Create_array(Ucscript::delay_hours, $2); }
+	| WAIT WHILE NEAR nonclass_expr ';'	/* Wait while avatar is near. */
+		{ $$ = Create_array(Ucscript::wait_while_near, $4); }
+	| WAIT WHILE FAR nonclass_expr ';'	/* Wait while avatar is far. */
+		{ $$ = Create_array(Ucscript::wait_while_far, $4); }
 	| REMOVE ';'			/* Remove item. */
 		{ $$ = new Uc_int_expression(Ucscript::remove, true); }
 	| RISE ';'			/* For flying barges. */
@@ -1213,13 +1343,14 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::descend, true); }
 	| FRAME nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
-	| ACTOR FRAME nonclass_expr ';'	/* 0-15. ++++Maybe have keywords. */
+	| ACTOR FRAME nonclass_expr ';'
 		{
 		$$ = new Uc_binary_expression(UC_ADD, new Uc_int_expression(0x61),
-				new Uc_binary_expression(
-						UC_MOD, $3, new Uc_int_expression(16), true),
+				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(16)),
 				true);	// Want byte.
 		}
+	| ACTOR FRAME actor_frames ';'
+		{ $$ = new Uc_int_expression(UC_ADD + ($3 & 15), true); }
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg, true); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
@@ -1235,11 +1366,41 @@ script_command:
 	| SAY nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::say, $2); }
 	| STEP nonclass_expr ';'		/* Step in given direction (0-7). */
-		{ $$ = Create_array(Ucscript::step, $2); }
+		{
+		$$ = Create_array(Ucscript::step,
+				new Uc_binary_expression(UC_ADD, $2,
+					new Uc_int_expression(0x30), true),
+				new Uc_int_expression(0));
+		}
+	| STEP nonclass_expr ',' nonclass_expr ';'	/* Step + dz. */
+		{
+		$$ = Create_array(Ucscript::step,
+				new Uc_binary_expression(UC_ADD,
+					new Uc_binary_expression(UC_MOD, $2,
+						new Uc_int_expression(8)),		// dir is 0-7.
+					new Uc_int_expression(0x30), true),
+				new Uc_binary_expression(UC_MOD, $4,
+					new Uc_int_expression(16)));		// Allow max |dz| == 15.
+		}
 	| STEP direction ';'
 		{ $$ = new Uc_int_expression(Ucscript::step_n + $2, true); }
 	| MUSIC nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
+	| MUSIC nonclass_expr ',' nonclass_expr ';'
+		{
+			// This is the 'repeat' flag.
+		Uc_expression *expr;
+		int ival;
+		if ($4->eval_const(ival))
+			expr = new Uc_int_expression(ival ? 256 : 0);
+		else	// Argh.
+			expr = new Uc_binary_expression(UC_MUL,
+					new Uc_int_expression(256),
+					new Uc_binary_expression(UC_CMPNE, $4,
+						new Uc_bool_expression(false)));
+		$$ = Create_array(Ucscript::music,
+				new Uc_binary_expression(UC_ADD, $2, expr));
+		}
 	| start_call ';'
 		{ $$ = Create_array(Ucscript::usecode, $1); }
 	| start_call ',' nonclass_expr ';'
@@ -1250,6 +1411,8 @@ script_command:
 		{ $$ = Create_array(Ucscript::sfx, $2); }
 	| FACE nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
+	| FACE direction ';'
+		{ $$ = Create_array(Ucscript::face_dir, new Uc_int_expression($2)); }
 	| WEATHER nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::weather, $2); }
 	| HIT nonclass_expr ',' nonclass_expr ';'
@@ -1298,6 +1461,41 @@ direction:
 		{ $$ = 7; }
 	;
 
+actor_frames:
+	STANDING
+		{ $$ = 0; }
+	| STEP_RIGHT
+		{ $$ = 1; }
+	| STEP_LEFT
+		{ $$ = 2; }
+	| READY
+		{ $$ = 3; }
+	| RAISE_1H
+		{ $$ = 4; }
+	| REACH_1H
+		{ $$ = 5; }
+	| STRIKE_1H
+		{ $$ = 6; }
+	| RAISE_2H
+		{ $$ = 7; }
+	| REACH_2H
+		{ $$ = 8; }
+	| STRIKE_2H
+		{ $$ = 9; }
+	| SITTING
+		{ $$ = 10; }
+	| BOWING
+		{ $$ = 11; }
+	| KNEELING
+		{ $$ = 12; }
+	| SLEEPING
+		{ $$ = 13; }
+	| CAST_UP
+		{ $$ = 14; }
+	| CAST_OUT
+		{ $$ = 15; }
+	;
+
 opt_script_delay:
 	AFTER nonclass_expr TICKS
 		{ $$ = $2; }
@@ -1344,7 +1542,8 @@ goto_statement:
 delete_statement:
 	DELETE declared_var ';'
 		{
-		Uc_class_inst_symbol *cls = dynamic_cast<Uc_class_inst_symbol *>($2);
+		Uc_class_inst_symbol *cls =
+				dynamic_cast<Uc_class_inst_symbol *>($2->get_sym());
 		if (!cls)
 			{
 			char buf[150];
@@ -1400,6 +1599,39 @@ nonclass_expr:
 expression:
 	primary
 		{ $$ = $1; }
+	| primary hierarchy_tok IDENTIFIER
+		{
+		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1);
+		if (!expr || $1->get_type() != Uc_symbol::Struct)
+			{
+			yyerror("Expression is not a 'struct'");
+			$$ = new Uc_int_expression(0);
+			}
+		else
+			{
+			Uc_var_symbol *var = expr->get_var();
+			Uc_struct_symbol *base = var->get_struct();
+			int offset = base ? base->search($3) : -1;
+			if (offset < 0)
+				{
+				char buf[150];
+				sprintf(buf, "'%s' does not belong to struct '%s'",
+						$3, base->get_name());
+				yyerror(buf);
+				$$ = new Uc_int_expression(0);
+				}
+			else
+				{
+				Uc_int_expression *index = new Uc_int_expression(offset);
+				if (var->is_static())
+					$$ = new Uc_static_arrayelem_expression(var, index);
+				else if (var->get_sym_type() == Uc_symbol::Member_var)
+					$$ = new Uc_class_arrayelem_expression(var, index);
+				else
+					$$ = new Uc_arrayelem_expression(var, index);
+				}
+			}
+		}
 	| nonclass_expr '+' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_ADD, $1, $3); }
 	| nonclass_expr '-' nonclass_expr
@@ -1523,6 +1755,8 @@ primary:
 			}
 		else if ($1->is_static())
 			$$ = new Uc_static_arrayelem_expression($1, $3);
+		else if ($1->get_sym_type() == Uc_symbol::Member_var)
+			$$ = new Uc_class_arrayelem_expression($1, $3);
 		else
 			$$ = new Uc_arrayelem_expression($1, $3);
 		}
@@ -1634,8 +1868,12 @@ int_literal:				/* A const. integer value.	*/
 			$$ = 0;
 			}
 		else
-			$$ = new Uc_int_expression(sym->get_value(), sym->byte_wanted());
+			$$ = sym->create_expression();
 		}
+	| UCTRUE
+		{ $$ = new Uc_bool_expression(true); }
+	| UCFALSE
+		{ $$ = new Uc_bool_expression(false); }
 	;
 
 opt_var:
@@ -1646,7 +1884,7 @@ opt_var:
 	;
 
 declared_var_value:
-	declared_sym
+	declared_sym %prec UCC_SYM
 		{
 		$$ = $1->create_expression();
 		if (!$$)
@@ -1660,7 +1898,7 @@ declared_var_value:
 	;
 
 declared_var:
-	declared_sym
+	declared_sym %prec UCC_SYM
 		{
 		Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>($1);
 		if (!var)
@@ -1693,6 +1931,23 @@ declared_sym:
 defined_class:
 	IDENTIFIER
 		{ $$ = Find_class($1); }
+	;
+
+defined_struct:
+	IDENTIFIER
+		{
+		Uc_struct_symbol *sym = dynamic_cast<Uc_struct_symbol *>(
+				Uc_function::search_globals($1));
+		if (!sym)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not found, or is not a struct.", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = sym;
+		}
 	;
 
 %%

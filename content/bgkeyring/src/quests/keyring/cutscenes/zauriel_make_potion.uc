@@ -64,15 +64,15 @@ zaurielMakePotion object#() ()
 		//Teleportation spell:
 		script item
 		{	nohalt;						finish;
-			face SOUTH;					call showCastingFrames;
-			actor frame CAST_1;			wait 2;						say "@Vas In Por@";
+			face south;					call showCastingFrames;
+			actor frame cast_up;			wait 2;						say "@Vas In Por@";
 			next frame;					wait 2;						previous frame;
 			wait 2;						next frame;					wait 2;
 			previous frame;				sfx SOUND_TELEPORT;
 			call zaurielMakePotion, TELEPORT_WIDGETS;
 			wait 8;
 			call zaurielMakePotion, POTION_FADE_SCREEN;
-			actor frame STAND;
+			actor frame standing;
 			wait 5;
 			call zaurielMakePotion, MOVE_TO_LAB;}
 		abort;
@@ -104,7 +104,7 @@ zaurielMakePotion object#() ()
 		
 		//Use the Avatar to unfade the screen:
 		script AVATAR
-		{	face WEST;					wait 2;
+		{	face west;					wait 2;
 			call zaurielMakePotion, POTION_UNFADE_SCREEN;
 			wait 5;
 			call zaurielMakePotion, MAKE_POTION;}
@@ -169,10 +169,10 @@ zaurielMakePotion object#() ()
 				script ZAURIEL
 				{
 					nohalt;		finish;
-					actor frame STAND;	face EAST;
-					wait 2;		actor frame LEAN;
+					actor frame standing;	face east;
+					wait 2;		actor frame bowing;
 					wait 2;	 	call zaurielMakePotion, PLACE_BLACKROCK;
-					actor frame STAND;	wait 2;
+					actor frame standing;	wait 2;
 					call zaurielMakePotion, WALK_TO_POTION_1;
 				};
 			}
@@ -181,14 +181,14 @@ zaurielMakePotion object#() ()
 				script ZAURIEL
 				{
 					nohalt;		finish;
-					actor frame STAND;	face EAST;
+					actor frame standing;	face east;
 					repeat 3
 					{
-						actor frame STAND;		wait 2;
-						actor frame USE;		wait 2;
+						actor frame standing;		wait 2;
+						actor frame ready;		wait 2;
 						call zaurielMakePotion, UPDATE_CAULDRON;
 					};
-					actor frame STAND;	wait 2;
+					actor frame standing;	wait 2;
 					call zaurielMakePotion, BEGIN_DIALOG_1;
 				}
 			}
@@ -203,10 +203,10 @@ zaurielMakePotion object#() ()
 			script ZAURIEL
 			{
 				nohalt;		finish;
-				actor frame STAND;	face WEST;
-				wait 2;		actor frame USE;
+				actor frame standing;	face west;
+				wait 2;		actor frame ready;
 				wait 2;	 	call zaurielMakePotion, DELETE_POTIONS;
-				actor frame STAND;	wait 2;
+				actor frame standing;	wait 2;
 				call zaurielMakePotion, newevent;
 			};
 		}
@@ -279,15 +279,15 @@ zaurielMakePotion object#() ()
 		//Teleportation animation:
 		script item
 		{	nohalt;						finish;
-			face SOUTH;					call showCastingFrames;
-			actor frame CAST_1;			wait 2;						say "@Vas In Por@";
+			face south;					call showCastingFrames;
+			actor frame cast_up;			wait 2;						say "@Vas In Por@";
 			next frame;					wait 2;						previous frame;
 			wait 2;						next frame;					wait 2;
 			previous frame;				sfx SOUND_TELEPORT;
 			call zaurielMakePotion, TELEPORT_WIDGETS;
 			wait 8;
 			call zaurielMakePotion, POTION_FADE_SCREEN;
-			actor frame STAND;
+			actor frame standing;
 			wait 5;
 			call zaurielMakePotion, MOVE_TO_LBCASTLE;
 		}
@@ -303,7 +303,7 @@ zaurielMakePotion object#() ()
 		set_item_frame_rot(STAND_SOUTH);
 		//Use Avatar to unfade screen:
 		script AVATAR
-		{	face NORTH;					wait 2;
+		{	face north;					wait 2;
 			call zaurielMakePotion, POTION_UNFADE_SCREEN;
 			wait 5;
 			call zaurielMakePotion, BEGIN_DIALOG_2;}

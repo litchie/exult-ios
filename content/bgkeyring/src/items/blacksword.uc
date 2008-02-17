@@ -95,7 +95,7 @@ teleportIsleOfFire object#(0x6F9) ()
 				UI_fade_palette(12, 1, 0);
 				PARTY->move_object(dest);
 				script AVATAR
-				{	face NORTH;				wait 1;
+				{	face north;				wait 1;
 					call teleportIsleOfFire;}
 			}
 		}

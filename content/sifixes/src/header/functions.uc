@@ -74,7 +74,8 @@ askIoloBelongings ()
 			{
 				give_return = cumulative_result[2];
 				if (give_return > 1)
-					say("@Since thou canst not carry these remaining " + give_return + " items, I will place them at thy feet.@");
+					say("@Since thou canst not carry these remaining ",
+					give_return, " items, I will place them at thy feet.@");
 
 				else
 					say("@Since thou dost not have enough room for this last item, I will place it at thy feet.@");

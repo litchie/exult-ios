@@ -24,7 +24,13 @@
  *	Last Modified: 2006-02-27
  */
 
-switchFace (var facenum) {LAURIANNA.hide();	LAURIANNA->show_npc_face(facenum);}
+switchFace (var facenum, var slot)
+{
+	if (!slot)
+		UI_change_npc_face0(facenum);
+	else
+		UI_change_npc_face1(facenum);
+}
 
 var lauriannaAskJoin ()
 {
@@ -79,7 +85,8 @@ lauriannaGiveKeyring ()
 {
 	if (gflags[LAURIANNA_HAS_JOURNAL])
 	{
-		say("@Thank thee for all thy help, " + getPoliteTitle() + ". As a token of my appreciation, I shall give thee this keyring.");
+		say("@Thank thee for all thy help, ", getPoliteTitle(),
+			". As a token of my appreciation, I shall give thee this keyring.");
 		say("@I had crafted it for father, since he always lost his keys -- but alas, I never had the opportunity to give it to him.");
 		say("@It is magical -- any keys added to it will disappear. Whenever thou hast need of a key, it will magically reappear, ready for use.");
 		say("@I hope that thou dost find it useful...@");
@@ -178,10 +185,11 @@ lauriannaHeal (var spellbook)
 
 lauriannaPrePotionDialog object#() ()
 {
-	//Notice: Laurianna's dialog makes extensive use of the switchFace function
-	//due to her madness. She has FOUR faces all told, which are switched constantly.
-	//I prefer to have this single comment here, at the top, than write comments
-	//all over the code saying basically the same thing...
+	// Notice: Laurianna's dialog makes extensive use of the UI_change_npc_face0
+	// intrinsic due to her madness. She has FOUR faces all told, which are
+	// switched constantly.
+	// I prefer to have this single comment here, at the top, than to write
+	// comments all over the code saying basically the same thing...
 	if (!get_item_flag(MET))
 	{
 		giveExperience(100);
@@ -195,12 +203,14 @@ lauriannaPrePotionDialog object#() ()
 		say("You presume that this is Laurianna, Zauriel's daughter. As if reading her mind, she speaks just as these thoughts flash across your head.");
 		say("@Y-yes, m-my name is Laurianna. Thou hast met my f-father, hast thou not?@");
 		say("She gives a sideways glance to the emptiness at her side and quickly brings her arm up, as if trying to defend from an unseen attack.");
-		say("Without waiting for a reply, she continues. @Thou seemest to be very familiar to me, " + getPoliteTitle() + ".");
-		say("@I believe it is of thee that father oft spoke to me -- thou art " + getAvatarName() + ", the Avatar, art thou not?@");
+		say("Without waiting for a reply, she continues. @Thou seemest to be very familiar to me, ",
+			getPoliteTitle(), ".");
+		say("@I believe it is of thee that father oft spoke to me -- thou art ",
+			getAvatarName(), ", the Avatar, art thou not?@");
 		if (askYesNo())
 		{
 			//Honest avatar
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("A large and welcoming smile appears in her face. @Then it is all about to end.");
 			say("@Father says he has a way of banishing these daemons that torment me, and that thou wouldst have to rescue me before he could use it!@");
 			giveExperience(50);
@@ -208,9 +218,9 @@ lauriannaPrePotionDialog object#() ()
 		else
 		{
 			//Chide lying avatar
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("She seems annoyed at you. @Oh, Avatar, I thought Honesty was one of the virtues thou didst have to master!");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@But in any case, I am glad that thou art here. Because now that thou hast rescued me --");
 			say("@as father said thou wouldst -- the daemons that torment me can be finally dealt with!@");
 		}
@@ -234,145 +244,149 @@ lauriannaPrePotionDialog object#() ()
 	converse(0)
 	{
 		case "name" (remove):
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("@I already told thee that! I am still Laurianna, daughter of Zauriel.@");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("She looks nervously around as if something had drawn her attention. @No, I must remain calm! I am sorry!@");
 			
 		case "job" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@Right now is to be a little plant in this lovely island!@ she replies with an unusual dose of cheerfulness for someone rooted to the ground.");
 			add("plant");
 			
 		case "bye" (remove):
-			switchFace(3);
-			say("She speaks with terrible wrath, in a tone that makes you quiver. @Thou shalt -not- abandon me here! I shall -kill- thee before thou dost!@~The air crackles full of magical energy as she says that, and you feel terribly cold for a moment.");
-			switchFace(2);
+			UI_change_npc_face0(3);
+			say("She speaks with terrible wrath, in a tone that makes you quiver. @Thou shalt -not- abandon me here! I shall -kill- thee before thou dost!@",
+				"~The air crackles full of magical energy as she says that, and you feel terribly cold for a moment.");
+			UI_change_npc_face0(2);
 			if (UI_is_pc_female()) msg = "her";
 			else msg = "his";
 			
-			say("@No!@ she screams, seemingly trying to get a hold of herself. @Bad daemons, thou shalt not force me to take " + msg + " life!@");
-			switchFace(0);
-			say("@I am sorry, " + getPoliteTitle() + "! Sometimes these daemons almost get the best of me!@ she ends with a smile.");
+			say("@No!@ she screams, seemingly trying to get a hold of herself. @Bad daemons, thou shalt not force me to take ",
+				msg, " life!@");
+			UI_change_npc_face0(0);
+			say("@I am sorry, ", getPoliteTitle(),
+				"! Sometimes these daemons almost get the best of me!@ she ends with a smile.");
 			add("daemons");
 			
 		case "daemons" (remove):
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("@Do not speak of them so openly! They are mean!@ she speaks urgently to you, in a half-whispered voice.");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@Father says that they are not real, that they are 'figments of my imagination'.@ she says in even tone.");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@Little does he know...@ she adds in a whisper, giving a sideways glance to empty space.");
 			add(["mean", "imagination"]);
 			
 		case "rooted" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@Seest thou not my lovely roots? Look at them! They are so pretty...@ she gives an adoring look to the roots sprouting from her feet.");
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("@That mean mage made these so I could not escape. It is good that he is dead!@ She glances at the mage's corpse and it immediately explodes in flames.");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("Realizing what she did, she curls up in a ball, screaming. @Bad daemons! Look what thou didst make me do!@ You can't help but feel pity.");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("After a moment, she rises with a smile and the mage's body stops burning immediately -- and to your astonishment, the flames turn into doves that fly away.");
 			rand_npc = randomPartyMember();
 			
-			rand_npc.say("@She seems to be as dangerous and insane as Zauriel told us!@, " + UI_get_npc_name(rand_npc) + " whispers to you.");
+			rand_npc.say("@She seems to be as dangerous and insane as Zauriel told us!@, ",
+				UI_get_npc_name(rand_npc), " whispers to you.");
 			rand_npc.hide();
 			
 			add(["mage", "daemons", "pretty roots"]);
 			
 		case "Rescued as father said?" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@Indeed! Thou hast rescued me! My father sees past, present and future, and he told me thou wouldst rescue me from this mage!");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@But alas, I cannot go anywhere. Not since that mage turned me into a plant...");
 			add(["plant", "Past, present and future"]);
 			
 		case "plant" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("Laurianna beams with uncontained joy. @Yes, I am a plant! A lovely rose! A lovely -red- rose!@");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("She shakes her head sadly. @But alas, roses can't talk or walk. Or see. So I won't see my father again...@");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("Smiling once again, she adds @Maybe I can change that! I can make all roses walk, talk and see! I then could be a rose and still see my father!@");
 			add(["rose", "Change all roses?"]);
 			
 		case "mean" (remove):
-			switchFace(3);
+			UI_change_npc_face0(3);
 			say("She screams with uncontrolled rage. @Don't insult them! They can get very angry with thee!@ You can feel the surge in magical energies as she speaks.");
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("She calms down a little. @Knowest thou nothing about daemons? They can get angry very quickly.@ she adds in a whisper.");
 			
 		case "imagination" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@I have a very good imagination! I used to paint pretty portraits of dead rabbits when I was little!");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@Alas, no -- those were the daemons. I love rabbits!@ she adds quickly.");
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("In a deep tone, with what can only be termed an 'evil' smile, she adds @Dead rabbits...@");
 			add("rabbits");
 			
 		case "mage" (remove):
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@He was nice. He wanted to take my powers so I would not have to have them anymore.");
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("With a smirk, she adds @I hope he burns in the Abyss for it...");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@I think he wanted to kill a king with my powers!@ she adds with a most paradoxical smile.");
 			add("king", "powers");
 			
 		case "pretty roots" (remove):
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@Art they not pretty?@ She looks adoringly at the roots. @I think that they will go away if the necklace is destroyed...@");
 			
 		case "Past, present and future" (remove):
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@He knows everything!@ she intones in a solemn tone, and with an unreadable expression. You can't help but feel that this is not entirely as she claims.");
 			
 		case "rose" (remove):
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("@Beware, for this rose has thorns!@ she speaks menacingly, and then cackles.");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@But still is a very pretty rose!@ she adds smiling.");
 			
 		case "Change all roses?" (remove):
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@I suppose I could. But then they would not be roses anymore, would they?@");
 			
 		case "rabbits" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("@Thou knowest, those cute little furballs that eat carrots.");
-			switchFace(2);
+			UI_change_npc_face0(2);
 			say("@They taste very good too. And are fun to burn!@ she adds smirking.");
 			
 		case "king" (remove):
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@Oh, thou knowest which king: thy liege, Lord British.@");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("She motions you to come closer and whispers something to you. @Between thou and me, I think that he is more than a little mad...@");
 			
 		case "powers" (remove):
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("She gives a broad smile. @I am very powerful! I could kill thee with but a thought if I so wanted!");
 			say("@In fact, I am so powerful I can barely control my own powers!@ She speaks with such pride that you could almost believe that this is a good thing...");
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("@But thou knowest that already, since thou hast spoken to father...@");
 		
 		case "necklace" (remove):
-			switchFace(3);
+			UI_change_npc_face0(3);
 			say("@It is mine, -mine- I tell thee! Do not try to touch it!@ As she speaks the sentence, the weather takes a quick turn for the worse. A storm forms almost immediately, and lightning starts to strike nearby.");
-			switchFace(0);
+			UI_change_npc_face0(0);
 			say("Then, almost as soon as it began, the storm dissipates. @Thou mayest admire it, but please leave it alone!@");
 			randomPartySay("@Maybe we should give her the potion first, Avatar...@");
 			
 		case "potion":
-			switchFace(1);
+			UI_change_npc_face0(1);
 			say("When you mention Zauriel's potion, her expression becomes unreadable. She gives you a serious look, and stays silent for a while.");
 			say("She seems to be struggling with some inner daemons, and her face starts to show it. Apparently, she is struggling with the idea of taking the potion.");
 			if (!PARTY->count_objects(SHAPE_BLACKROCK_POTION, QUALITY_ANY, FRAME_ANY))
 			{
 				//Player doesn't have the potion
-				switchFace(0);
+				UI_change_npc_face0(0);
 				say("With a look of relief, she talks again. @Ah, fortunately thou hast not the potion with thee! Farewell!@");
 				script item after 4 ticks say "@Leave me be!@";
 				break;
@@ -381,7 +395,7 @@ lauriannaPrePotionDialog object#() ()
 			else
 			{
 				//Player has potion...
-				switchFace(1);
+				UI_change_npc_face0(1);
 				say("Laurianna's face becomes resigned after a while. @Alas, I know that my father wants me to drink it... here, let me have it...@");
 				randomPartySay("@Thou dost remember that this potion has Silver Serpent venom in it, dost thou not, Avatar? Art thou sure thou wishest to take the risk?@");
 				if (askYesNo())
@@ -403,11 +417,11 @@ lauriannaPrePotionDialog object#() ()
 					//But is having second thoughts about using it
 					AVATAR.say("You think for a moment and decide against giving the potion, as it might be dangerous.");
 					AVATAR.hide();
-					switchFace(0);
+					UI_change_npc_face0(0);
 					say("Beaming with joy, Laurianna thanks you. @Thank thee, Avatar, for not making me drink the potion!");
-					switchFace(2);
+					UI_change_npc_face0(2);
 					say("@I don't kill rabbits when I am under its effects...@ she adds in a whispered tone, which makes you wonder if you did the right thing.");
-					switchFace(0);
+					UI_change_npc_face0(0);
 					say("@Farewell!@");
 					script item after 4 ticks say "@Leave me be!@";
 					break;
@@ -459,7 +473,7 @@ lauriannaPostPotionDialog ()
 		else if (!in_party) say("@Wouldst thou take me to my father, please?@");
 		else
 		{
-			say("@How can I be of assistance, " + getPoliteTitle() + "?@");
+			say("@How can I be of assistance, ", getPoliteTitle(), "?@");
 			add("Cast spell", "heal");
 		}
 	}
@@ -523,7 +537,7 @@ lauriannaPostPotionDialog ()
 		case "join" (remove):
 			if (!has_amulet && (party_size < 8))
 			{
-				say("@Of course, " + getPoliteTitle() + ", I would be honored");
+				say("@Of course, ", getPoliteTitle(), ", I would be honored");
 				say("@Thou wilt take me to my father, wilt thou not?@");
 				if (askYesNo())
 				{
@@ -576,7 +590,7 @@ lauriannaPostPotionDialog ()
 				{
 					call trueFreeze;
 					sfx SOUND_TELEPORT;			wait 4;
-					face SOUTH;					actor frame STAND;
+					face south;					actor frame standing;
 					say "@Father!@";			wait 4;
 				}
 				
@@ -584,7 +598,7 @@ lauriannaPostPotionDialog ()
 				{
 					call trueFreeze;
 					sfx SOUND_TELEPORT;			wait 8;
-					face NORTH;					say "@My beloved child!@";
+					face north;					say "@My beloved child!@";
 					wait 8;						call Zauriel;
 				}
 				
@@ -671,7 +685,7 @@ lauriannaPostQuestDialog ()
 			say("@I think I shall move to Yew. I always loved trees. Who knows, maybe the monks in Empath Abbey can help me find myself...");
 			say("@If thou hast ever the need of my services, or simply want to talk to me, come find me there.");
 			lauriannaGiveKeyring();
-			say("@Farewell, " + getAvatarName() + "!@");
+			say("@Farewell, ", getAvatarName(), "!@");
 			break;
 			
 		case "No longer who thou wert?" (remove):
@@ -695,7 +709,8 @@ lauriannaPostQuestDialog ()
 					msg = "should";
 				else
 					msg = "now that";
-				say("@And he was terribly afraid of what he might do " + msg + " the Ether be restored...@");
+				say("@And he was terribly afraid of what he might do ", msg,
+					" the Ether be restored...@");
 				add(["Past misdeeds?", "Might do?"]);
 			}
 			else
@@ -723,7 +738,8 @@ lauriannaPostQuestDialog ()
 			say("@So yes, he would have slain thee...@");
 			
 		case "Past misdeeds?" (remove):
-			say("@Before he was affected by the damaged Ether, he was quite insane.~@Worse, he was in an active quest to wrest Britannia from the hands of Lord British.");
+			say("@Before he was affected by the damaged Ether, he was quite insane.",
+				"~@Worse, he was in an active quest to wrest Britannia from the hands of Lord British.");
 			say("@There is no telling how many lives he destroyed in that period... especially since the first part of his journal has long been destroyed.@");
 			add("journal");
 			
@@ -1000,9 +1016,11 @@ lauriannaYewDialog ()
 		
 		case "bye":
 			if (!in_party)
-				say("@Farewell, " + getPoliteTitle() + ". I hope I'll see thee again soon!@");
+				say("@Farewell, ", getPoliteTitle(),
+					". I hope I'll see thee again soon!@");
 			else
-				say("@If thou hast need of anything, " + getPoliteTitle() + ", let me know.@");
+				say("@If thou hast need of anything, ", getPoliteTitle(),
+					", let me know.@");
 			break;
 	}
 	item_say("@Goodbye!@");

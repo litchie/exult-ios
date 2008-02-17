@@ -61,10 +61,10 @@ Bellows shape#(0x1AF) ()
 			face directionFromAvatar(item);
 			repeat (NUM_BELLOWS_PUMPS - 1)
 			{
-				actor frame STAND;
-				actor frame LEAN;
+				actor frame standing;
+				actor frame bowing;
 				wait 3;
-				actor frame STAND;
+				actor frame standing;
 			};
 		}
 

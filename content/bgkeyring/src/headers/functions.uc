@@ -139,15 +139,15 @@ pickUpItem object#() ()
 		if (container->is_npc())
 		{
 			script AVATAR
-			{	face direction;				actor frame USE;
-				wait 3;						actor frame STAND;}
+			{	face direction;				actor frame ready;
+				wait 3;						actor frame standing;}
 		}
 		//container is a regular object or just the world, animate the avatar leaning down
 		else
 		{
 			script AVATAR
-			{	face direction;				actor frame LEAN;
-				wait 3;						actor frame STAND;}
+			{	face direction;				actor frame bowing;
+				wait 3;						actor frame standing;}
 		}
 
 		//Puts the item in the player's inventory and calls the intended function
