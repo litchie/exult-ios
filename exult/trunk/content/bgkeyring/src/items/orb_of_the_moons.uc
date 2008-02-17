@@ -335,13 +335,13 @@ Orb_of_the_Moons shape#(0x311) ()
 		script moongate
 		{
 			frame 0;
-			repeat 4 next frame;;
+			repeat 3 next frame;;
 			repeat 6
 			{
-				repeat 7 next frame;;
+				repeat 6 next frame;;
 				frame 4;
 			};
-			repeat 4 previous frame;;
+			repeat 3 previous frame;;
 			remove;
 		}
 

@@ -56,13 +56,13 @@ shearSheep ()
 
 		repeat 6
 		{
-			actor frame STAND;
-			actor frame SWING_2;
+			actor frame standing;
+			actor frame reach_1h;
 			sfx SOUND_SHEARING;
-			actor frame SWING_3;
+			actor frame strike_1h;
 			wait 2;
 		};
-		actor frame STAND;
+		actor frame standing;
 
 		call unfreeze;	//unparalyze again
 	}

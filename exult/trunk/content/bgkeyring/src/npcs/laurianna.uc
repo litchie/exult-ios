@@ -102,7 +102,7 @@ Laurianna object#(0x494) ()
 		//SI-style start of dialog, although the NPC does not move to the Avatar:
 		script AVATAR
 		{	call trueFreeze;			face AVATAR->find_direction(item);
-			actor frame STAND;			say bark;
+			actor frame standing;			say bark;
 			wait 10;}
 
 		//Laurianna's response according to flags:
@@ -113,7 +113,7 @@ Laurianna object#(0x494) ()
 		script item
 		{	call trueFreeze;				wait 5;
 			face find_direction(AVATAR);
-			actor frame STAND;			say bark;
+			actor frame standing;			say bark;
 			wait 8;						call Laurianna;}
 	}
 	

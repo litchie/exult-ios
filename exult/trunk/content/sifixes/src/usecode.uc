@@ -99,7 +99,8 @@
 // Fixes bugs with the misplaced item list
 #include "items/scroll.uc"
 // Changes watches/sundials to 24 hour time
-// #include "items/time_tellers.uc"
+// if you ask Shamino to do it.
+#include "items/time_tellers.uc"
 
 // Fixes to spells the Avatar can cast
 #include "spells/spells.uc"

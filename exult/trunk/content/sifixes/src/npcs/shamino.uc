@@ -145,7 +145,8 @@ Shamino object#(0x402) ()
 		{
 			say("@Thou hast escaped the foul mages' prison swiftly, indeed. Most wonderful!@");
 			say("@Of course, I never doubted that thou wouldst return...@");
-			say("@I also have news, " + avatartitle + ". I bear a message, as well as two presents.@");
+			say("@I also have news, ", avatartitle,
+				". I bear a message, as well as two presents.@");
 			frigmessage = false;
 			frigpresents = false;
 			add(["message", "presents"]);
@@ -162,7 +163,8 @@ Shamino object#(0x402) ()
 		}
 		else if (shamino_id == CURED_OF_INSANITY)
 		{
-			say("@Thank thee, Avatar, for restoring my mind! As always, I am ready to provide whatever aid I can, " + avatartitle + ".@");
+			say("@Thank thee, Avatar, for restoring my mind! As always, I am ready to provide whatever aid I can, ",
+				avatartitle, ".@");
 			SHAMINO->set_npc_id(0);
 			SHAMINO->add_to_party();
 			script SHAMINO after 15 ticks call wraperXenkaReturns;
@@ -171,7 +173,8 @@ Shamino object#(0x402) ()
 		}
 		else
 		{
-			say("@I am ready to provide whatever aid I can, " + avatartitle + ".@");
+			say("@I am ready to provide whatever aid I can, ",
+				avatartitle, ".@");
 
 			if (DUPRE->get_npc_id() == BOOTED_FOR_FREEDOM)
 				add("Dupre's whereabouts");
@@ -189,9 +192,18 @@ Shamino object#(0x402) ()
 
 			add(["bye"]);
 		}
+		
+		add("time");
 
 		converse (0)
 		{
+			case "time":
+				say("@What time format dost thou prefer, avatar?@");
+				gflags[TIME_FORMAT_24_HOURS] = chooseFromMenu2(["12 hour", "24 hour"]) - 1;
+				var msg = 12 * (gflags[TIME_FORMAT_24_HOURS] + 1);
+				say("@Watches and sundials will now use ",
+					msg, "-hour format.@");
+
 			case "belongings" (remove):
 				askShaminoBelongings();
 
@@ -236,7 +248,8 @@ Shamino object#(0x402) ()
 				else
 				{
 					say("@The Sorceress Frigidazzi met secretly with me, and expressed her sorrow at what had been done to thee.@");
-					say("@I think she likes thee, " + avatartitle + ". But with that MageLord around, she doth not dare to see thee again!@");
+					say("@I think she likes thee, ", avatartitle,
+						". But with that MageLord around, she doth not dare to see thee again!@");
 					say("@As a sign of her regret for what hath happened -- jail and all -- she sent three gifts to thee.@");
 				}
 
@@ -272,7 +285,8 @@ Shamino object#(0x402) ()
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
-					say("@And disregard the rules of the Test of Knighthood? " + avatartitle + ", I am shocked.@");
+					say("@And disregard the rules of the Test of Knighthood? ",
+						avatartitle, ", I am shocked.@");
 					npcSpeakIfNearby(SCHMED, "@Thou must go alone.@");
 					delayedBark(SCHMED, "@Alone!@", 0);
 					delayedBark(SHAMINO, "@Shocked!@", 2);

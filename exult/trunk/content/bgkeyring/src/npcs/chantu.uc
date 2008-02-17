@@ -64,7 +64,8 @@ Chantu object#(0x411) ()
 				if (UI_wearing_fellowship())
 				{
 					say("Chantu notices your medallion and his eyes widen.");
-					say("@Excuse me, " + getPoliteTitle() + ", I did not mean to offend thee.@");
+					say("@Excuse me, ", getPoliteTitle(),
+					    ", I did not mean to offend thee.@");
 				}
 			
 			case "Klog" (remove):

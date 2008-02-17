@@ -1,3 +1,60 @@
+2008-02-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/ucsched.*, usecode/ucscriptop.h: Implemented two new opcodes from
+	  the originals: wait_while_near and wait_while_far, which cause the script
+	  to halt depending on the avatar's distance from the script object. Step
+	  opcode 0x53 has been revised with a (verified) delta-z parameter. Due to
+	  SI's buggy usecode, which neglects to add this extra parameter on any of
+	  the uses of this opcode, most of the steps taken with this opcode will
+	  fail to happen -- which incidentally also happens in the original games.
+	* usecode/ucinternal.cc: Added opcodes to perform the following operations
+	  with usecode class member variables: array loop, aidx, set array elem.
+	  Also slightly modified aidx so that it exactly matches the originals.
+	  Allowing array size changes in BG too, as it is possible, even if it is
+	  not used, in the original.
+	* usecode/compiler/*: Added usecode structs; they are defined like classes,
+	  except that they cannot have member functions and do not have inheritance.
+	  They also have minimal type-checking, unlike classes, being thin wrappers
+	  around normal usecode arrays. Example definition and use:
+		struct Tile { var x; var y; var z; }	// Definition
+		struct<Tile> pos = get_object_position();
+		pos.x += 1;
+	  Structs with struct members simply merge the variables of the inner struct.
+	  For example, using the Tile struct above,
+		struct Obj { var object; struct<Tile> pos; }
+	  is completely equivalent to
+		struct Obj { var object; var x; var y; var z; }
+	  In fact, the 'pos' member struct can be defined without a name:
+		struct Obj { var object; struct<Tile>; }
+	  Also added reference or alias variables, which are a relabelling of the
+	  variable. This can be used to 'cast' a var to a struct or from a struct
+	  to another. Syntax:
+	    var alias varname = declared_var;
+	    struct<defined_struct> alias varname = declared_var;
+	    class<defined_class> alias varname = declared_class;
+	  In all cases, an ampersand ('&') can replace the word 'alias'. These are
+	  compile-time references only, not dynamical ones.
+	  Improved localization of errors/warnings for a few statements.
+	  Added ability to specify initial counter for inner repeat script command.
+	  Also added 'wait while near' and 'wait while far' script commands which
+	  take a parameter (distance); they are the UCC version of the new script
+	  opcodes wait_while_near and wait_while_far, mentioned above.
+	  Defined built-in constants for 'actor frame' script command.
+	  Added ability to specify delta-z for 'step' script command.
+	  'music' script command now allows the use of a 'repeat' flag, based on
+	  previously implemented behavior.
+	  Script command 'face' can now use the same built-in constants as 'step'.
+	  Usecode 'true' and 'false' can be used as (very limited) int literals.
+	  Made a general replacement of postfix increments of STL iterators in favor
+	  of the faster prefix increment.
+	  Fixed recently-introduced bug in handling of array loops which would end
+	  without any of their operators.
+	* content/*/src/*: General switch to 'step', 'face' and 'actor frame'
+	  built-in constants, which in some cases mean using a different flavor of
+	  'step' than was being used. General reformat of dialogs for readability.
+	  In SI Fixes, you can now ask Shamino to set your watch to 24-hour format
+	  if you prefer. In Keyring, Laurianna now uses UI_change_npc_faceX instead
+	  of the old method.
+
 2008-02-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Labels now start their own single-statement block. This allows code
 	like 'if (expression) label: statement' to work as in C/C++. Fixed bug in

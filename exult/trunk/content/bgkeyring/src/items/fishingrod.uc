@@ -76,18 +76,18 @@ FishingRod shape#(0x296) ()
 				nohalt;
 				call freeze;
 				face direction;
-				actor frame SWING_2H_2;
-				actor frame SWING_2H_3;
+				actor frame reach_2h;
+				actor frame strike_2h;
 				sfx SOUND_FISHING;
 
 				//prevents the animation 'timing out' and reverting to standing
-				repeat 2	{ actor frame SWING_2H_3; wait 5; };
+				repeat 2	{ actor frame strike_2h; wait 5; };
 
 				//call this function again, as event SCRIPTED, to determine
 				//if fish were caught
 				call FishingRod;
-				actor frame USE;
-				actor frame STAND;
+				actor frame ready;
+				actor frame standing;
 				call unfreeze;
 			}
 		}
@@ -169,7 +169,8 @@ FishingRod shape#(0x296) ()
 			{
 				//Spark, butting his head in as usual
 				if (inParty(SPARK) && canTalk(SPARK))
-					SPARK.say("@The fish doth not seem to be biting, thou shouldst try somewhere else!~@My father took me fishing sometimes -- thou canst find good spots near bridges, where thou canst see the fishes beneath the water.@");
+					SPARK.say("@The fish doth not seem to be biting, thou shouldst try somewhere else!",
+						"~@My father took me fishing sometimes -- thou canst find good spots near bridges, where thou canst see the fishes beneath the water.@");
 				else
 					randomPartySay("@Methinks there are no fish in these waters. Let us try in a better spot!@");
 			}

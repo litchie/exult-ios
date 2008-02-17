@@ -84,7 +84,7 @@ Uc_function::Uc_function
 	const std::vector<Uc_var_symbol *>& parms = proto->get_parms();
 	// Add backwards.
 	for (std::vector<Uc_var_symbol *>::const_reverse_iterator it = parms.rbegin();
-				it != parms.rend(); it++)
+				it != parms.rend(); ++it)
 		add_symbol(*it);
 	num_parms = num_locals;		// Set counts.
 	num_locals = 0;
@@ -150,6 +150,26 @@ Uc_var_symbol *Uc_function::add_symbol
 
 Uc_var_symbol *Uc_function::add_symbol
 	(
+	char *nm,
+	Uc_struct_symbol *s
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, num_parms + num_locals++, s);
+	cur_scope->add(var);
+	return var;
+	}
+
+/*
+ *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_symbol
+	(
 	Uc_var_symbol *var
 	)
 	{
@@ -159,6 +179,31 @@ Uc_var_symbol *Uc_function::add_symbol
 	var->set_offset(num_parms + num_locals++);
 	cur_scope->add(var);
 	return var;
+	}
+
+/*
+ *	Add an alias to variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_alias
+	(
+	char *nm,
+	Uc_var_symbol *var,
+	Uc_struct_symbol *struc
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_alias_symbol *alias;
+	if (struc)
+		alias = new Uc_struct_alias_symbol(nm, var, struc);
+	else
+		alias = new Uc_alias_symbol(nm, var);
+	cur_scope->add(alias);
+	return alias;
 	}
 
 /*
@@ -373,7 +418,7 @@ int Uc_function::link
 	)
 	{
 	for (std::vector<Uc_function_symbol *>::const_iterator it = links.begin();
-						it != links.end(); it++)
+						it != links.end(); ++it)
 		if (*it == fun)		// Found it?  Return offset.
 			return (it - links.begin());
 	int offset = links.size();	// Going to add it.
@@ -778,7 +823,7 @@ void Uc_function::gen
 	Write2(out, num_links);
 					// Write external links.
 	for (std::vector<Uc_function_symbol *>::const_iterator it = 
-				links.begin(); it != links.end(); it++)
+				links.begin(); it != links.end(); ++it)
 		Write2(out, (*it)->get_usecode_num());
 	char *ucstr = &code[0];		// Finally, the code itself.
 	out.write(ucstr, codelen);

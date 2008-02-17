@@ -65,7 +65,7 @@ spellAwakenAll ()
 			UI_sprite_effect(7, (pos[X] - pos[Z]/2), (pos[Y] - pos[Z]/2), 0, 0, 0, -1);
 			script item
 			{	nohalt;						sfx 68;
-				actor frame SWING_1;		actor frame SWING_3;}
+				actor frame raise_1h;		actor frame strike_1h;}
 			var dist = 25;
 			var nearby_npcs = find_nearby(-1, dist, MASK_NPC);
 			for (npc in nearby_npcs)
@@ -77,8 +77,8 @@ spellAwakenAll ()
 		else
 		{
 			script item
-			{	nohalt;					actor frame SWING_1;
-				actor frame SWING_3;	call spellFails;}
+			{	nohalt;					actor frame raise_1h;
+				actor frame strike_1h;	call spellFails;}
 		}
 	}
 }
@@ -93,14 +93,14 @@ spellCreateFood ()
 		{
 			script item
 			{	nohalt;						sfx 68;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellCreateFoodEffect;}
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		call spellCreateFoodEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -120,8 +120,8 @@ spellCure (var target)
 			{
 				script item
 				{	nohalt;						face dir;
-					sfx 64;						actor frame SWING_2;
-					actor frame SWING_1;		actor frame SWING_3;}
+					sfx 64;						actor frame reach_1h;
+					actor frame raise_1h;		actor frame strike_1h;}
 				script target after 6 ticks
 				{	nohalt;
 					call spellClearFlag, POISONED;
@@ -131,8 +131,8 @@ spellCure (var target)
 		}
 		script item
 		{	nohalt;						face dir;
-			actor frame SWING_2;		actor frame SWING_1;
-			actor frame SWING_3;		call spellFails;}
+			actor frame reach_1h;		actor frame raise_1h;
+			actor frame strike_1h;		call spellFails;}
 	}
 }
 
@@ -146,7 +146,7 @@ spellDetectTrap ()
 		{
 			script item
 			{	nohalt;						sfx 66;
-				actor frame SWING_1;		actor frame SWING_3;}
+				actor frame raise_1h;		actor frame strike_1h;}
 			var npclevel = getNPCLevel(item);
 			var dist = (21 + npclevel);
 			var nearby_traps = find_nearby(SHAPE_TRAP, dist, MASK_ALL_UNSEEN);
@@ -171,8 +171,8 @@ spellDetectTrap ()
 		else
 		{
 			script item
-			{	nohalt;					actor frame SWING_1;
-				actor frame SWING_3;	call spellFails;}
+			{	nohalt;					actor frame raise_1h;
+				actor frame strike_1h;	call spellFails;}
 		}
 	}
 }
@@ -186,8 +186,8 @@ spellGreatDouse ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;}
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;}
 			
 			var dousables = [SHAPE_TORCH_LIT, SHAPE_LIT_LAMP, SHAPE_LIGHTSOURCE_LIT, SHAPE_SCONCE_LIT];
 			greatDouseIgnite(item, dousables);
@@ -195,8 +195,8 @@ spellGreatDouse ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -211,8 +211,8 @@ spellGreatIgnite ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;}
 			
 			var ignitables = [SHAPE_TORCH, SHAPE_LAMPPOST, SHAPE_LIGHTSOURCE, SHAPE_SCONCE];
 			greatDouseIgnite(item, ignitables);
@@ -220,8 +220,8 @@ spellGreatIgnite ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -237,14 +237,14 @@ spellLight ()
 		{
 			script item
 			{	nohalt;						sfx 68;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellCauseLight, 500;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -274,15 +274,15 @@ spellLocate ()
 	
 			script item
 			{	nohalt;						sfx 67;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			wait 4;
+				actor frame kneeling;			actor frame standing;
+				actor frame cast_up;			wait 4;
 				say latstr + longstr;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
 				call spellFails;}
 		}
 	}
@@ -297,9 +297,9 @@ spellTranslate ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		actor frame SWING_3;
-				actor frame STAND;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		actor frame strike_1h;
+				actor frame standing;}
 			AVATAR->set_item_flag(READ);
 			script AVATAR after 10000 ticks
 			{	nohalt;						finish;
@@ -308,8 +308,8 @@ spellTranslate ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }

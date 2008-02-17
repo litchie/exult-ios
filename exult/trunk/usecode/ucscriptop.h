@@ -34,9 +34,13 @@ enum Ucscript_ops
 	repeat2 =	0x0c,		// Loop(offset, cnt1, cnt2).
 	nop =		0x21,		// Not sure about this.
 	dont_halt =	0x23,		// Not right?
+	wait_while_near = 0x24,	// wait_while_near(dist). Halt on opcode for as long
+							// as avatar is within dist tiles.
 	delay_ticks =	0x27,		// Delay(ticks).
 	delay_minutes =	0x28,		// Delay(minutes).
 	delay_hours =	0x29,		// Delay nn game hours.
+	wait_while_far = 0x2b,	// wait_while_far(dist). Halt on opcode for as long
+							// as avatar is further than dist tiles.
 	finish =	0x2c,		// Finish script if killed.
 	remove =	0x2d,		// Remove item & halt.
 	step_n = 	0x30,		// Step in given direction.
@@ -65,7 +69,7 @@ enum Ucscript_ops
 	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
 	weather =	0x5A,		// Set weather(type).
 	npc_frame =	0x61,		// 61-70:  Set frame, but w/ cur. dir.
-	hit =		0x78,		// Hit(hps, ??).  Item attacked.
+	hit =		0x78,		// Hit(hps, type).  Item attacked.
 	attack = 	0x7a,		// Attack using vals from
 					//   set_to_attack intrinsic.
 	/*

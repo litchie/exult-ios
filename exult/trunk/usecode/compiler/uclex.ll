@@ -229,6 +229,8 @@ in		return UCC_IN;
 with		return WITH;
 to		return TO;
 var		return VAR;
+alias	return ALIAS;
+struct	return STRUCT;
 int		return UCC_INT;
 char	return UCC_CHAR;
 byte	return UCC_CHAR;
@@ -304,9 +306,9 @@ face		return FACE;
 weather		return WEATHER;
 hit		return HIT;
 attack		return ATTACK;
+near	return NEAR;
+far		return FAR;
 actor		return ACTOR;
-}
-
 north		return NORTH;
 south		return SOUTH;
 east		return EAST;
@@ -315,6 +317,24 @@ nw		return NW;
 ne		return NE;
 sw		return SW;
 se		return SE;
+standing	return STANDING;
+step_right	return STEP_RIGHT;
+step_left	return STEP_LEFT;
+ready		return READY;
+raise_1h	return RAISE_1H;
+reach_1h	return REACH_1H;
+strike_1h	return STRIKE_1H;
+raise_2h	return RAISE_2H;
+reach_2h	return REACH_2H;
+strike_2h	return STRIKE_2H;
+sitting		return SITTING;
+bowing		return BOWING;
+kneeling	return KNEELING;
+sleeping	return SLEEPING;
+cast_up		return CAST_UP;
+cast_out	return CAST_OUT;
+}
+
 
 "&&"		return AND;
 "||"		return OR;

@@ -118,7 +118,7 @@ Zauriel object#(0x48B) ()
 		script AVATAR
 		{
 			call trueFreeze;			face AVATAR->find_direction(item);
-			actor frame STAND;			say bark;
+			actor frame standing;			say bark;
 			wait 10;
 		}
 		
@@ -135,7 +135,7 @@ Zauriel object#(0x48B) ()
 		{
 			call trueFreeze;			wait 5;
 			face find_direction(AVATAR);
-			actor frame STAND;			say bark;
+			actor frame standing;			say bark;
 			wait 8;						call Zauriel;
 		}
 		
@@ -174,7 +174,7 @@ Zauriel object#(0x48B) ()
 				script LAURIANNA
 				{
 					sfx SOUND_TELEPORT;			wait 4;
-					face SOUTH;					actor frame STAND;
+					face south;					actor frame standing;
 					say "@Father!@";			wait 4;
 				}
 			}

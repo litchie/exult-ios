@@ -262,6 +262,38 @@ void Uc_static_arrayelem_expression::gen_assign
  *	Generate code to evaluate expression and leave result on stack.
  */
 
+void Uc_class_arrayelem_expression::gen_value
+	(
+	Basic_block *out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	WriteOp(out, (char) UC_AIDXTHV);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_class_arrayelem_expression::gen_assign
+	(
+	Basic_block *out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	WriteOp(out, (char) UC_POPARRTHV);	// Opcode, var #.
+	WriteOpParam2(out, array->get_offset());
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
 void Uc_flag_expression::gen_value
 	(
 	Basic_block *out
@@ -311,6 +343,12 @@ inline void Uc_var_expression::set_is_obj_fun(int s)
 	{
 	var->set_is_obj_fun(s);
 	}
+
+int Uc_var_expression::get_type() const
+	{
+	return var->get_sym_type();
+	}
+
 
 /*
  *	Get offset in function's text_data.
@@ -656,7 +694,7 @@ Uc_array_expression::~Uc_array_expression
 	)
 	{
 	for (std::vector<Uc_expression *>::iterator it = exprs.begin(); 
-						it != exprs.end(); it++)
+						it != exprs.end(); ++it)
 		delete (*it);
 	}
 
@@ -677,7 +715,7 @@ void Uc_array_expression::concat
 	else
 		{
 		for (std::vector<Uc_expression *>::iterator it = 
-			arr->exprs.begin(); it != arr->exprs.end(); it++)
+			arr->exprs.begin(); it != arr->exprs.end(); ++it)
 			add(*it);
 		arr->exprs.clear();	// Don't want to delete elements.
 		delete arr;		// But this array is history.
@@ -712,7 +750,7 @@ int Uc_array_expression::gen_values
 	int actual = 0;			// (Just to be safe.)
 					// Push backwards, so #0 pops first.
 	for (std::vector<Uc_expression *>::reverse_iterator it = 
-				exprs.rbegin(); it != exprs.rend(); it++)
+				exprs.rbegin(); it != exprs.rend(); ++it)
 		{
 		Uc_expression *expr = *it;
 		if (expr)

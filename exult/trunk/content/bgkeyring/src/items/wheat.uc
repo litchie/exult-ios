@@ -74,7 +74,9 @@ createFlour object#() ()
 	{
 		if (!gflags[THURSTON_WARNED_ABOUT_MILLING])
 		{
-			THURSTON.say("Thurston approaches you, obviously angry and embarrassed of his anger.~@I do not want to be rude " + getPoliteTitle() + "...but it is my livelihood to run the mill and grind the wheat. So I ask thou, leavest the job to me!");
+			THURSTON.say("Thurston approaches you, obviously angry and embarrassed of his anger.",
+			             "~@I do not want to be rude ", getPoliteTitle(),
+			             "...but it is my livelihood to run the mill and grind the wheat. So I ask thou, leavest the job to me!");
 			THURSTON.say("@I shall be happy to sell thee all the flour thou couldst want.@");
 			THURSTON.hide();
 			gflags[THURSTON_WARNED_ABOUT_MILLING] = true;
@@ -109,8 +111,8 @@ Millstone shape#(0x2C7) ()
 			repeat 3
 			{
 				sfx SOUND_GRIND;
-				actor frame USE; wait 2;
-				actor frame STAND; wait 2;
+				actor frame ready; wait 2;
+				actor frame standing; wait 2;
 			};
 			call unfreeze;
 		}

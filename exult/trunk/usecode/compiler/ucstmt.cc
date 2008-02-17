@@ -53,7 +53,7 @@ Uc_block_statement::~Uc_block_statement
 	{
 					// Delete all the statements.
 	for (std::vector<Uc_statement *>::const_iterator it = statements.begin();
-					it != statements.end(); it++)
+					it != statements.end(); ++it)
 		delete (*it);
 	}
 
@@ -73,7 +73,7 @@ void Uc_block_statement::gen
 	)
 	{
 	for (std::vector<Uc_statement *>::const_iterator it = statements.begin();
-					it != statements.end(); it++)
+					it != statements.end(); ++it)
 		{
 		Uc_statement *stmt = *it;
 		stmt->gen(fun, blocks, curr, end, labels, start, exit);
@@ -440,18 +440,24 @@ void Uc_arrayloop_statement::gen
 	Basic_block *for_top = new Basic_block();
 	curr->set_taken(for_top);
 	blocks.push_back(for_top);
-	WriteJumpParam2(for_top, index->get_offset());// Counter, total-count variables.
-	WriteJumpParam2(for_top, array_size->get_offset());
-	WriteJumpParam2(for_top, var->get_offset());	// Loop variable, than array.
-	WriteJumpParam2(for_top, array->get_offset());
-
 		// Body of FOR loop.
 	Basic_block *for_body = new Basic_block();
 	blocks.push_back(for_body);
 		// Block immediatelly after FOR.
 	Basic_block *past_for = new Basic_block();
-	int opcode = array->is_static() ? UC_LOOPTOPS : UC_LOOPTOP;
+	int opcode;
+	if (array->is_static())
+		opcode = UC_LOOPTOPS;
+	else if (array->get_sym_type() == Uc_symbol::Member_var)
+		opcode = UC_LOOPTOPTHV;
+	else
+		opcode = UC_LOOPTOP;
 	for_top->set_targets(opcode, for_body, past_for);
+	WriteJumpParam2(for_top, index->get_offset());// Counter, total-count variables.
+	WriteJumpParam2(for_top, array_size->get_offset());
+	WriteJumpParam2(for_top, var->get_offset());	// Loop variable, than array.
+	WriteJumpParam2(for_top, array->get_offset());
+
 		// Generate FOR body.
 	stmt->gen(fun, blocks, for_body, end, labels, for_top, past_for);
 		// Jump back to top.
@@ -851,7 +857,7 @@ Uc_switch_statement::~Uc_switch_statement
 	{
 	delete cond;
 	for (std::vector<Uc_statement *>::const_iterator it = cases.begin();
-					it != cases.end(); it++)
+					it != cases.end(); ++it)
 		delete (*it);
 	}
 

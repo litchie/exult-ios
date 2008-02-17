@@ -47,17 +47,19 @@ Perrin object#(0x4EE) ()
 			gflags[MET_PERRIN] = true;
 		}
 		else
-			item.say("@Glorious day, " + avatar_name + ".@ Perrin grins.");
+			item.say("@Glorious day, ", avatar_name, ".@ Perrin grins.");
 
 
 		converse (0)
 		{
 			case "name" (remove):
-				say("@Please, " + avatar_title + ", call me Perrin. I reside here in Empath Abbey.@");
+				say("@Please, ", avatar_title,
+					", call me Perrin. I reside here in Empath Abbey.@");
 				add("Empath Abbey");
 				
 			case "job" (remove):
-				say("@I am a scholar, " + avatar_title + ". Dost thou want training in the realm of books?@");
+				say("@I am a scholar, ", avatar_title,
+					". Dost thou want training in the realm of books?@");
 
 				if (askYesNo())
 				{
@@ -69,7 +71,7 @@ Perrin object#(0x4EE) ()
 						perrinTrain([INTELLIGENCE, MAX_MANA], 45);
 	
 					else
-						say("@Very well, " + avatar_title + ".@");
+						say("@Very well, ", avatar_title, ".@");
 				}		
 				else say("@Forgive me, I am a bit overzealous in my search for students. I hope thou wilt return in the future.@");
 
@@ -108,7 +110,8 @@ Perrin object#(0x4EE) ()
 				gflags[KNOWS_REYNA_LOVES_ANIMALS] = true;
 
 			case "bye" (remove):
-				say("@Goodbye, " + avatar_name + ". Best of luck in thy journeys.@*");
+				say("@Goodbye, ", avatar_name,
+					". Best of luck in thy journeys.@*");
 				break;
 		}
 	}

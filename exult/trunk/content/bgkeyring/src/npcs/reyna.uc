@@ -60,7 +60,7 @@ Reyna object#(0x46C) ()
 		gflags[MET_REYNA] = true;
 	}
 	else
-		item.say("@Hello, " + avatar_title + ",@ says Reyna.");
+		item.say("@Hello, ", avatar_title, ",@ says Reyna.");
 
 	tomb = AVATAR->find_nearest(SHAPE_TOMBSTONE, -1);
 	
@@ -98,7 +98,8 @@ Reyna object#(0x46C) ()
 				add("animals");
 			
 		case "forest" (remove):
-			say("@I wanted to live and work here because the land is very beautiful. I have found many things to do and see. Unfortunately, the forest is so spread out that I have yet to meet many of the others who live in this area. I do know that the Abbey is just across the way from mine house.~~@And somewhere nearby is a scholar.@ She appears thoughtful for a moment. @Also, I believe there is a prison just east of the Abbey.");
+			say("@I wanted to live and work here because the land is very beautiful. I have found many things to do and see. Unfortunately, the forest is so spread out that I have yet to meet many of the others who live in this area. I do know that the Abbey is just across the way from mine house.",
+				"~~@And somewhere nearby is a scholar.@ She appears thoughtful for a moment. @Also, I believe there is a prison just east of the Abbey.");
 			add(["Abbey", "scholar", "prison"]);
 			
 		case "prison" (remove):
@@ -129,7 +130,8 @@ Reyna object#(0x46C) ()
 				say("@She is one of the monks who lives at the Abbey. At this time, she is the only other person I have actually met here in the forest.@");
 			
 		case "Abbey" (remove):
-			say("@That is how this area -- Empath Abbey -- got its name, from the monks who live at the abbey of the Brotherhood of the Rose. They are said to make delicious wine. One of the monks cares for a beautiful garden in her spare time. In fact, I often buy flowers from her.~~ But,@ she grins, @as for the other monks, all that I	ever see them do is make wine and wander the countryside.@");
+			say("@That is how this area -- Empath Abbey -- got its name, from the monks who live at the abbey of the Brotherhood of the Rose. They are said to make delicious wine. One of the monks cares for a beautiful garden in her spare time. In fact, I often buy flowers from her.",
+				"~~ But,@ she grins, @as for the other monks, all that I ever see them do is make wine and wander the countryside.@");
 			gflags[0x015A] = true;
 			add(["flowers", "others"]);
 			
@@ -162,16 +164,20 @@ Reyna object#(0x46C) ()
 			say("She looks down at her feet, and then back up at you. It is obvious she is fighting an urge to cry.");
 			say("@Several months ago, my mother passed away in her home town. She was born here in the forests, and had asked to be buried here, near me. Every morning I come out here to visit her and set flowers by her grave.");
 			say("@But,@ a lone tear escapes and trickles down her cheek, @I am the only member of our family who lives nearby. No one else is able to visit or leave flowers very often.");
-			say("@Her grave looks so bare sometimes.@ She looks off into the horizon and sighs. @" + msg + "It would be nice if there were some way to have more flowers brought to her.@");
+			say("@Her grave looks so bare sometimes.@ She looks off into the horizon and sighs. @",
+				msg,
+				"It would be nice if there were some way to have more flowers brought to her.@");
 			say("She quickly turns and looks at you.");
-			say("@I am terribly sorry for rambling on like that. Please excuse me, " + getPoliteTitle() + ".@");
+			say("@I am terribly sorry for rambling on like that. Please excuse me, ",
+				getPoliteTitle(), ".@");
 
 			if (has_flowers)
 				add("have flowers");
 
 		case "brought flowers", "have flowers" (remove):
 			say("Her eyes light up as she sees the bouquet of flowers.");
-			say("@They are lovely! Thou art too kind, " + getPoliteTitle() + ", to bring flowers for my mother! I cannot wait to set them by her grave.@");
+			say("@They are lovely! Thou art too kind, ", getPoliteTitle(),
+				", to bring flowers for my mother! I cannot wait to set them by her grave.@");
 			UI_remove_party_items(1, SHAPE_PLANT, QUALITY_ANY, 4, true);
 
 			//Give a random amount of experience for the nice Avatar:
@@ -212,7 +218,8 @@ Reyna object#(0x46C) ()
 			{
 				//Reyna won't heal if she is not at the shop unless it is
 				//an emergency:
-				say("@I am sorry, " + avatar_title + ", but, unless this is an emergency, I would prefer to wait until my shop is open.@");
+				say("@I am sorry, ", avatar_title,
+					", but, unless this is an emergency, I would prefer to wait until my shop is open.@");
 				add("emergency");
 			}
 			
@@ -238,13 +245,14 @@ Reyna object#(0x46C) ()
 				msg = " and your companions";
 			else
 				msg = "";
-			say("She quickly examines you" + msg + ".");
+			say("She quickly examines you", msg, ".");
 			
 			if (is_emergency == true)
 			{
 				//It is an emercency, so set flag:
 				gflags[REYNA_EMERGENCY] = true;
-				say("@Thou art correct, " + avatar_title + ". This is a true emergency!@");
+				say("@Thou art correct, ", avatar_title,
+					". This is a true emergency!@");
 				add("heal");
 			}
 			else
@@ -252,10 +260,12 @@ Reyna object#(0x46C) ()
 				say("@I am sorry, but thy wounds are not mortal. Perhaps thou canst visit me when my shop is open.@");
 			
 		case "animals" (remove):
-			say("She smiles shyly.~~@I very much love animals. When I was very young, I found an ailing dove that I was unable to nurse back to health. Since that time, I began to study the healing arts, so that I would be able to help other animals who might need healing.~~ @Of course,@ she laughs, @now that I have the skills, I use them to help people, too.@");
+			say("She smiles shyly.",
+				"~~@I very much love animals. When I was very young, I found an ailing dove that I was unable to nurse back to health. Since that time, I began to study the healing arts, so that I would be able to help other animals who might need healing.",
+				"~~@Of course,@ she laughs, @now that I have the skills, I use them to help people, too.@");
 			
 		case "bye":
-			say("@Goodbye, " + avatar_title + ".");
+			say("@Goodbye, ", avatar_title, ".");
 			if (gflags[GAVE_REYNA_FLOWERS])
 			{
 				say("@I thank thee for the bouquet!");

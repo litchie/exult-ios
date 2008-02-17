@@ -170,6 +170,10 @@ version: 0.15.05
 	    
 6	Version history
 -------------------
+version: 0.15.06
+	- Compatibility update.
+	- You can now ask Shamino to set the time format of your watch to 24-hour
+	  time if you prefer. He can switch it back too, if you change your mind.
 version: 0.15.05
 	- Added SI Fixes title screen.
 version: 0.15.04a

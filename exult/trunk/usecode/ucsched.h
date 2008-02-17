@@ -78,7 +78,7 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	int exec(Usecode_internal *usecode, bool finish);
 					// Move object in given direction.
-	void step(Usecode_internal *usecode, int dir);
+	void step(Usecode_internal *usecode, int dir, int dz);
 					// Save/restore.
 	int save(DataSource *out);
 	static Usecode_script *restore(Game_object *item, DataSource *in);

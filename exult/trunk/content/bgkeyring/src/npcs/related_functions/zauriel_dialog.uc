@@ -163,7 +163,8 @@ zaurielGiveAdvance ()
 		var msg = "it";
 		if ((!gavereags) && (!gavepotns)) msg = "them";
 		
-		say("@I placed the advance in these bags. Since thee and thy party are too encumbered, I shall place " + msg + " on the ground.@");
+		say("@I placed the advance in these bags. Since thee and thy party are too encumbered, I shall place ",
+			msg, " on the ground.@");
 	}
 }
 
@@ -247,8 +248,9 @@ zaurielMakeGem(var make)
 		incantation = "@In Bet Ort Rel Vas Ort!@";
 		gemdone = "has a subtler, softer glow than before.";
 	}
-	say("He then quickly intones a magical incantation.~" + incantation);
-	say("After a flash of light, the gathered components vanish and the gem " + gemdone);
+	say("He then quickly intones a magical incantation.~", incantation);
+	say("After a flash of light, the gathered components vanish and the gem ",
+		gemdone);
 	say("@Here is the gem. Make good use of it.@");
 
 	// Give gem to avatar:
@@ -270,7 +272,8 @@ var zaurielExplainQuest(var doing_quest)
 	converse(0)
 	{
 		case "events" (remove):
-			say("@There are three events that, when combined, yield the present threat: My daughter's enormous innate power, her insanity and her kidnapping.~@Of which of these wishest thou to hear first?@");
+			say("@There are three events that, when combined, yield the present threat: My daughter's enormous innate power, her insanity and her kidnapping.",
+				"~@Of which of these wishest thou to hear first?@");
 			add(["daughter?", "power", "insanity", "kidnap"]);
 			
 		case "daughter?" (remove):
@@ -280,7 +283,8 @@ var zaurielExplainQuest(var doing_quest)
 			if (gflags[BROKE_TETRAHEDRON]) msg = "had been plaguing";
 			else msg = "plague";
 			say("@Laurianna's power is enormous -- being the result of having two powerful mages as parents,");
-			say("@as well as being born under the influence of the damaged Ether waves that " + msg + " the land.");
+			say("@as well as being born under the influence of the damaged Ether waves that ",
+				msg, " the land.");
 			say("@If that were not enough, her powers have grown overmuch as she aged, and now they have far outstripped her ability to control them.");
 			say("@She is trying to control her powers for the moment, but she will ultimately fail.");
 			say("@And when she does, the result will most likely be massive destruction in a widespread area.");
@@ -354,7 +358,8 @@ var zaurielExplainQuest(var doing_quest)
 			say("Zauriel glares at you with anger and speaks with an icy cold tone. @None of which I feel like sharing, 'Avatar'@.");
 			if (UI_is_pc_female()) msg = "she";
 			else msg = "he";
-			say("Zauriel's face softens, and he speaks with great sadness. @I apologize, Avatar. Here I am, lashing out at " + msg + " whose aid I am trying to enlist...");
+			say("Zauriel's face softens, and he speaks with great sadness. @I apologize, Avatar. Here I am, lashing out at ",
+				msg, " whose aid I am trying to enlist...");
 			say("@Dost thou not realize how sore of subject this is? I would prefer to avoid speaking about it if I can help it...@");
 			
 		case "mage" (remove):
@@ -469,7 +474,8 @@ zaurielTellAboutPotion ()
 				else
 					msg = "one piece";
 				
-				say("@Thou wilt need to gather one vial of Silver Serpent Venom and " + msg + " of Blackrock ore.@");
+				say("@Thou wilt need to gather one vial of Silver Serpent Venom and ",
+					msg, " of Blackrock ore.@");
 			}
 			
 			add("Silver Serpent Venom");
@@ -517,7 +523,8 @@ zaurielTalkPreQuest ()
 		
 		//present his intro, which is rather long and involves Iolo, Shamino and Dupre:
 		say("This strange man seems to be trying very hard not to show his face. For a while, he just seems to stare at you and your companions.");
-		say("With a nod of approval, he finally speaks. @Welcome, " + player_name + ", and well met.");
+		say("With a nod of approval, he finally speaks. @Welcome, ", player_name,
+			", and well met.");
 		say("@Let me first congratulate thee on thy timing, for I have been expecting thee for barely a couple of hours when thou didst arrive.");
 		say("@I knew that if I stood in front of Lord British's castle for long enough, I was bound to run into thee,");
 		say("@but it is fortunate that is has been sooner rather than later.@");
@@ -577,11 +584,13 @@ zaurielTalkPreQuest ()
 			//Neither Shamino nor Dupre in party:
 			else msg = "companions Shamino and Dupre -- their assistance";
 				
-			say("@If I were thee, I would be quick to find thine old " + msg + " shall be an invaluable asset in thy quest.");
+			say("@If I were thee, I would be quick to find thine old ", msg,
+				" shall be an invaluable asset in thy quest.");
 		}
 		
 		say("@And yes, I do realize how unsettling it must be to meet someone who knows so much about thee and thy friends.");
-		say("@It is just that I have an active interest in thee and thy career.~@Thine exploits and adventures make a formidable tale that I hope to preserve for posterity.@");
+		say("@It is just that I have an active interest in thee and thy career.",
+			"~@Thine exploits and adventures make a formidable tale that I hope to preserve for posterity.@");
 		
 		//Player has now met Zauriel:
 		set_item_flag(MET);
@@ -804,7 +813,8 @@ zaurielTalkPreQuest ()
 			if (reward_counter > 20)
 			{
 				say("@Thy dogged perseverance will not aid thee in extracting any more information about the reward.");
-				say("@As I said " + reward_counter + " times now, the reward is very ample and will be well worth thy time.@");
+				say("@As I said ", reward_counter,
+					" times now, the reward is very ample and will be well worth thy time.@");
 			}
 			else
 			{
@@ -986,7 +996,8 @@ zaurielTalkGemSubquest ()
 			
 			say("At first, he has a look of disbelief in his face. @It cannot be! My divinations show that they are -in- the island.@");
 			say("Then, his expression changes as if he was struck by lightning. @Unless...@");
-			say("Zauriel quickly makes a few magical gestures and intones an incantation.~@In Wis Quas Hur!@");
+			say("Zauriel quickly makes a few magical gestures and intones an incantation.",
+				"~@In Wis Quas Hur!@");
 			say("You are unsettled as Zauriel stares into the void, his gaze directed towards the far away island as if he could see it.");
 			say("He finally turns towards you shaking his head. @Of course thou didst not see anything in the island. I should have expected that.@");
 			add("What didst thou see?");
@@ -999,7 +1010,8 @@ zaurielTalkGemSubquest ()
 			add("Might work");
 			
 		case "Might work" (remove):
-			say("@Yes, it might indeed@ Zauriel answers eagerly.~Seeming to realize that you have no idea what he is talking about, Zauriel quickly elaborates.");
+			say("@Yes, it might indeed@ Zauriel answers eagerly.",
+				"~Seeming to realize that you have no idea what he is talking about, Zauriel quickly elaborates.");
 			say("@Gems of Dispelling! I haven't given them much thought for almost 20 years now! They might prove to be a way out of this conundrum!@");
 			add("Gems of Dispelling");
 			
@@ -1071,7 +1083,8 @@ zaurielTalkGemSubquest ()
 				msg = "gems";
 			else
 				msg = "gem";
-			say("@Let me examine thy " + msg + ".@ Zauriel takes the " + msg + " from you.");
+			say("@Let me examine thy ", msg, ".@ Zauriel takes the ", msg,
+				" from you.");
 			//Here, Zauriel will appraise the gems the Avatar found
 			//in Joneleth's body:
 			var gems = [];
@@ -1124,7 +1137,7 @@ zaurielTalkGemSubquest ()
 				//None of the gems are ready for use
 				if (have_liche_gems == 1) msg = "@Unfortunately, thy gem is not";
 				else msg = "@Alas, none of thy gems are";
-				say(msg + " ready for use yet.");
+				say(msg, " ready for use yet.");
 				//Determine (based on quality) what will be needed
 				//to fix the best gem:
 				if (low_qual < 10)
@@ -1141,7 +1154,8 @@ zaurielTalkGemSubquest ()
 						msg = "one giant spider egg";
 						quantities = [1, 6, 1];
 					}
-					say("@More accurately, thou shalt need to gather " + msg + " if I am to fix the gem.");
+					say("@More accurately, thou shalt need to gather ", msg,
+						" if I am to fix the gem.");
 				}
 				
 				else if (low_qual < 20)
@@ -1165,7 +1179,8 @@ zaurielTalkGemSubquest ()
 						quantities = [2, 6, 0];
 					}
 					
-					say("@Specifically, I need thee to gather " + msg + " in order to repair the gem.");
+					say("@Specifically, I need thee to gather ", msg,
+						" in order to repair the gem.");
 				}
 				
 				else if (low_qual < 30)
@@ -1173,7 +1188,8 @@ zaurielTalkGemSubquest ()
 					if (have_liche_gems == 1) msg = "gem";
 					else msg = "best gem";
 					
-					say("@Thy " + msg + " is badly damaged, but I can still work with it -- but thou wilt have to gather many components to make it work.");
+					say("@Thy ", msg,
+						" is badly damaged, but I can still work with it -- but thou wilt have to gather many components to make it work.");
 					if (rand < 3)
 					{
 						msg = "six bee stingers";
@@ -1192,7 +1208,8 @@ zaurielTalkGemSubquest ()
 						quantities = [1, 5, 0];
 					}
 					
-					say("@In other words, thou hast to gather " + msg + " before I can work on the gem.");
+					say("@In other words, thou hast to gather ", msg,
+						" before I can work on the gem.");
 				}
 				
 				else
@@ -1200,7 +1217,8 @@ zaurielTalkGemSubquest ()
 					if (have_liche_gems == 1) msg = "gem";
 					else msg = "best gem";
 					
-					say("@Thy " + msg + " is so damaged it is almost beyond recovery... after all thy hard work defeating the liche.");
+					say("@Thy ", msg,
+						" is so damaged it is almost beyond recovery... after all thy hard work defeating the liche.");
 					
 					if (rand < 3)
 					{
@@ -1220,19 +1238,22 @@ zaurielTalkGemSubquest ()
 						quantities = [1, 1, 0];
 					}
 					
-					say("@In the end, thou hast to gather " + msg + " before I can work on the gem... which is almost as much as is needed for creating a new gem.");
+					say("@In the end, thou hast to gather ", msg,
+						" before I can work on the gem... which is almost as much as is needed for creating a new gem.");
 				}
 				zaurielCreateComponents(quantities);
 				
 				if (have_liche_gems == 1) msg = "the gem";
 				else msg = "all of the gems";
 				
-				say("@In any case, I shall keep in my possession " + msg + " thou hast.");
+				say("@In any case, I shall keep in my possession ", msg,
+					" thou hast.");
 				
 				if (have_liche_gems == 1) msg = "it";
 				else msg = "them";
 				
-				say("@After all, neither one of us wants anything to happen to " + msg + " in thy journey.@");
+				say("@After all, neither one of us wants anything to happen to ",
+					msg, " in thy journey.@");
 			}
 			else
 			{
@@ -1320,7 +1341,8 @@ zaurielLastTalk ()
 	say("@Y-yes, father@, says Laurianna with a sad look in her eyes. @But father, is it really necessary? Can't something else be tried??@");
 	
 	UI_set_conversation_slot(0);
-	say("@Thou knowest as well as I that it cannot be helped. It is meant to be this way, and it is the only hope thou hast of a normal life.~@Thou dost want that, dost thou not?@");
+	say("@Thou knowest as well as I that it cannot be helped. It is meant to be this way, and it is the only hope thou hast of a normal life.",
+		"~@Thou dost want that, dost thou not?@");
 	
 	UI_set_conversation_slot(1);
 	say("@I do indeed. But the price is high...@");

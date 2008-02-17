@@ -66,12 +66,12 @@ Gem_Of_Dispelling shape#(0x451) ()
 			script AVATAR
 			{
 				nohalt;						finish;
-				wait 1;						actor frame STAND;
-				wait 2;						actor frame SWING_2H_1;
+				wait 1;						actor frame standing;
+				wait 2;						actor frame raise_2h;
 				sfx SOUND_GLASS_SHATTER;
-				wait 2;						actor frame SWING_2H_3;
-				wait 2;						actor frame SWING_2H_1;
-				wait 1;						actor frame STAND;
+				wait 2;						actor frame strike_2h;
+				wait 2;						actor frame raise_2h;
+				wait 1;						actor frame standing;
 				call beginCutsceneMageAndGoons, BEGIN_CUTSCENE;
 			}
 		}

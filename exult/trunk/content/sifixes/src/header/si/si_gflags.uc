@@ -370,3 +370,5 @@ enum Teleport_storm_objects
 	// New flag to fix bug with fur cap:
 	GAVE_FURCAP_BACK = 0x350
 };
+
+const int TIME_FORMAT_24_HOURS = 0x400;

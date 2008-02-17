@@ -107,7 +107,7 @@ Baiyanda object#(0x48F) ()
 					if (str > hps)
 					{
 						npcnumber->set_npc_prop(HEALTH, str - hps);
-						say("@All right, " + npcname + " healed now!@");
+						say("@All right, ", npcname, " healed now!@");
 					}
 					else
 					{
@@ -116,12 +116,12 @@ Baiyanda object#(0x48F) ()
 							if (npcnumber == AVATAR)
 								say("@Thou not hurt!@");
 							else
-								say("@" + npcname + " not hurt! Thou play trick?@");
+								say("@", npcname, " not hurt! Thou play trick?@");
 						}
 						else if (npcnumber == AVATAR)
 							say("@Thou poisoned bad! I fix.@");
 						else
-							say("@" + npcname + " poisoned bad! I fix.@");
+							say("@", npcname, " poisoned bad! I fix.@");
 					}
 					if (poisoned == true)
 					{

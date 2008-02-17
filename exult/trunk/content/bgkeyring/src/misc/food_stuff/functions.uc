@@ -80,15 +80,15 @@ churnButter ()
 		face directionFromAvatar(item);
 
 		//Lean down to put the milk into the churn
-		actor frame STAND;			actor frame LEAN;			wait 3;
-		actor frame STAND;			wait 1;
+		actor frame standing;			actor frame bowing;			wait 3;
+		actor frame standing;			wait 1;
 
 		//pump and grind
 		repeat 3
-		{	wait 1;						actor frame SWING_3;
-			wait 1;						actor frame USE;
-			wait 1;						actor frame SWING_2;};
-		actor frame STAND;			call unfreeze;
+		{	wait 1;						actor frame strike_1h;
+			wait 1;						actor frame ready;
+			wait 1;						actor frame reach_1h;};
+		actor frame standing;			call unfreeze;
 	}
 
 	//Play the churn animation

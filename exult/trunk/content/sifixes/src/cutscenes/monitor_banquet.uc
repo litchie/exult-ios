@@ -85,7 +85,7 @@ MonitorBanquet object#(0x1C3) ()
 				LUCILLA->move_object(pos);
 				LUCILLA->set_schedule_type(WAIT);
 				script LUCILLA
-				{	face WEST;					actor frame STAND;}
+				{	face west;					actor frame standing;}
 			}
 			else
 			{
@@ -97,7 +97,7 @@ MonitorBanquet object#(0x1C3) ()
 					npc->set_schedule_type(WAIT);
 					script npc
 					{	face dir;					continue;
-						actor frame SIT;}
+						actor frame sitting;}
 				}
 			}
 		}

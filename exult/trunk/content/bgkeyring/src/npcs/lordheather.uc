@@ -121,7 +121,8 @@ LordHeather object#(0x44D) ()
 					else
 						msg = "a man like thee";
 
-					say("@I do hope thou canst help her. She needs " + msg + " to bring her out of her depression.@");
+					say("@I do hope thou canst help her. She needs ", msg,
+						" to bring her out of her depression.@");
 				}
 			
 			case "bill" (remove):

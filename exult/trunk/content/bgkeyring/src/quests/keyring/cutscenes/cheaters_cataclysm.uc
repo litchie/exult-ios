@@ -76,9 +76,9 @@ beginCataclysm object#() ()
 			{	call trueFreeze;			nohalt;
 				sfx SOUND_BIG_BLAST;		wait 2;
 				say "@Aaahhhh...@";			wait 3;
-				actor frame LEAN;			wait 3;
-				actor frame KNEEL;			wait 3;
-				actor frame LIE;			wait 3;
+				actor frame bowing;			wait 3;
+				actor frame kneeling;			wait 3;
+				actor frame sleeping;			wait 3;
 				call beginCataclysm, CATACLISM_START;}
 		}
 		
@@ -130,10 +130,10 @@ beginCataclysm object#() ()
 		member->reduce_health(HEALTH, UI_die_roll(3, 9), MAGIC_DAMAGE);
 		script member
 		{	say barks[rand];			wait 2;
-			actor frame LEAN;			wait 2;
-			actor frame KNEEL;			wait 2;
-			actor frame LEAN;			wait 2;
-			actor frame STAND;}
+			actor frame bowing;			wait 2;
+			actor frame kneeling;			wait 2;
+			actor frame bowing;			wait 2;
+			actor frame standing;}
 
 		//One for the random position:
 		UI_sprite_effect(1, rand_pos[X], rand_pos[Y], 0, 0, 0, -1);
@@ -151,9 +151,9 @@ beginCataclysm object#() ()
 			//make Avatar lie down to die:
 			script AVATAR
 			{	call trueFreeze;			say "@Too hurt...@";
-				wait 6;						actor frame LEAN;
-				wait 2;						actor frame KNEEL;
-				wait 2;						actor frame LIE;
+				wait 6;						actor frame bowing;
+				wait 2;						actor frame kneeling;
+				wait 2;						actor frame sleeping;
 				wait 6;						call beginCataclysm, END_GAME;}
 		}
 	}
