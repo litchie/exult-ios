@@ -313,6 +313,12 @@ void Usecode_script::handle_event
 	)
 	{
 	Actor *act = obj->as_actor();
+	if (act && !is_activated())
+		{	// ++++ Testing to see if this makes it harder
+			// to outrun teleport storm at start of SI.
+		act->stop();
+		act->set_action(0);
+		}
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->set_casting_mode(Actor::show_casting_frames);
 	Usecode_internal *usecode = (Usecode_internal *) udata;
@@ -332,6 +338,20 @@ void Usecode_script::handle_event
 	if (act && act->get_casting_mode() == Actor::show_casting_frames)
 		act->end_casting_mode(delay);
 	delete this;			// Hope this is safe.
+	}
+
+static inline bool IsActorNear
+	(
+	Actor *avatar,
+	Game_object *obj,
+	int maxdist
+	)
+	{
+	if (obj->get_tile().distance_2d(avatar->get_tile()) > maxdist ||
+		(obj->get_info().get_shape_class() == Shape_info::hatchable &&
+			obj->get_lift() != avatar->get_lift()))
+		return false;
+	return true;
 	}
 
 /*
@@ -415,6 +435,20 @@ int Usecode_script::exec
 				Usecode_value& offval = code->get_elem(i + 1);
 				i += offval.get_int_value() - 1;
 				}
+			break;
+			}
+		case Ucscript::wait_while_near:
+			{
+			int dist = code->get_elem(++i).get_int_value();
+			if (!finish && IsActorNear(gwin->get_main_actor(), obj, dist))
+				i -= 2;		// Stay in this opcode.
+			break;
+			}
+		case Ucscript::wait_while_far:
+			{
+			int dist = code->get_elem(++i).get_int_value();
+			if (!finish && !IsActorNear(gwin->get_main_actor(), obj, dist))
+				i -= 2;		// Stay in this opcode.
 			break;
 			}
 		case nop:		// Just a nop.
@@ -531,12 +565,22 @@ int Usecode_script::exec
 			}
 		case Ucscript::step:	// Parm. is dir. (0-7).  0=north.
 			{
-					// Get dir.
-			Usecode_value& val = code->get_elem(++i);
+				// Get dir.
+			int val = code->get_elem(++i).get_int_value();
+				// Height change (verified).
+			int dz = i < code->get_array_size() ?
+					code->get_elem(++i).get_int_value() : 0;
+				// Watch for buggy SI usecode!
+			int destz = obj->get_lift() + dz;
+			if (destz < 0 || dz > 15 || dz < -15)
+				{	// Here, the originals would flash the step frame,
+					// but not step or change height. Not worth emulating.
+					// I am also allowing a high limit to height change.
+				do_another = true;
+				break;
+				}
 					// It may be 0x3x.
-			step(usecode, val.get_int_value()&7);
-			//+++++Might be a 2nd parm, diff in altitude.
-			// ++++++++++Investigate.
+			step(usecode, val >= 0 ? val & 7 : -1, dz);
 			break;
 			}
 		case music:		// Unknown.
@@ -622,7 +666,7 @@ int Usecode_script::exec
 			{
 			Usecode_value hps = code->get_elem(++i);
 			Usecode_value type = code->get_elem(++i);
-			obj->reduce_health(hps.get_int_value(), 0, type.get_int_value(), true);
+			obj->reduce_health(hps.get_int_value(), 0, type.get_int_value());
 			break;
 			}
 		case attack:		// Finish 'set_to_attack()'.
@@ -648,7 +692,7 @@ int Usecode_script::exec
 				}
 			else if (opcode >= 0x30 && opcode < 0x38)
 				{	// Step in dir. opcode&7.
-				step(usecode, opcode&7);
+				step(usecode, opcode&7, 0);
 				do_another = true;	// Guessing.
 				}
 			else
@@ -670,7 +714,8 @@ int Usecode_script::exec
 void Usecode_script::step
 	(
 	Usecode_internal *usecode,
-	int dir				// 0-7.
+	int dir,			// 0-7.
+	int dz
 	)
 	{
 	int frame = obj->get_framenum();
@@ -678,19 +723,28 @@ void Usecode_script::step
 	Actor *act = usecode->as_actor(obj);
 	if (act)
 		{
+		Tile_coord tile = obj->get_tile();
+		if (dir != -1)
+			tile.get_neighbor(dir);
+		tile.tz += dz;
 		act->clear_rest_time();
 		Frames_sequence *frames = act->get_frames(dir);
 					// Get frame (updates frame_index).
 		frame = frames->get_next(frame_index);
-		Tile_coord tile = obj->get_tile().get_neighbor(dir);
+		if (tile.tz < 0)
+			tile.tz = 0;
 		obj->step(tile, frame, true);
 		}
 	else if ((barge = obj->as_barge()) != 0)
 		{
 		for (int i = 0; i < 4; i++)
 			{
-			Tile_coord t = obj->get_tile().get_neighbor(
-									dir);
+			Tile_coord t = obj->get_tile();
+			if (dir != -1)
+				t.get_neighbor(dir);
+			t.tz += dz/4 + (!i ? dz % 4 : 0);
+			if (t.tz < 0)
+				t.tz = 0;
 			obj->step(t, 0, true);
 			}
 		}

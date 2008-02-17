@@ -115,7 +115,7 @@ Thoxa object#(0x4D3) ()
 		{
 			if ((avatarlocation == MONK_ISLE) && (!met_thoxa))
 			{
-				say("@Welcome to Monk Isle, my " + title + ".@");
+				say("@Welcome to Monk Isle, my ", title, ".@");
 				say("@Thou mayest tarry with us for as long as thou dost wish, but remember... The Sands of Time wait for no one, not even thee.@");
 				say("@Whilst thou art here, thou wilt learn that the life of a monk is governed by the bells. Not all of our membership may speak to thee, the novices are bound by a vow of silence to help them better contemplate the mysteries.@");
 				add(["Sands of Time", "bells", "mysteries"]);
@@ -125,10 +125,12 @@ Thoxa object#(0x4D3) ()
 		if (gflags[TALKED_TO_GREAT_HIEROPHANT] &&
 		    !gflags[TALKED_TO_CHAOS_HIEROPHANT])
 		{
-			say("@I see... Thou hast made great progress in thy quest, my " + title + ". But before thou canst continue, thou must seek the wisdom of the last child of Chaos. He alone holds the key to the location of the Chaos Hierophant.@");
+			say("@I see... Thou hast made great progress in thy quest, my ",
+				title, ". But before thou canst continue, thou must seek the wisdom of the last child of Chaos. He alone holds the key to the location of the Chaos Hierophant.@");
 
 			if (SETHYS->get_item_flag(MET))
-				say("@Thou didst meet him in his imprisonment, my " + title + ". Yet he remains a prisoner out of time. Seek him within the Shrine that is his home.@");
+				say("@Thou didst meet him in his imprisonment, my ", title,
+					". Yet he remains a prisoner out of time. Seek him within the Shrine that is his home.@");
 			else
 				say("@He remains a prisoner out of time, imprisoned within the Shrine that is his home.@");
 		}

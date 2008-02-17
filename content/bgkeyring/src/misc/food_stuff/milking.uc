@@ -56,14 +56,14 @@ milkCow ()
 
 	script AVATAR
 	{	nohalt;						call freeze;
-		face WEST;
+		face west;
 		//lean down to place the bucket
-		actor frame STAND;			actor frame LEAN;			wait 2;
-		actor frame STAND;	wait 2;
+		actor frame standing;			actor frame bowing;			wait 2;
+		actor frame standing;	wait 2;
 
 		repeat 3
-		{	sfx SOUND_MILKING;			actor frame USE;			wait 2;
-			actor frame STAND;			wait 2;};
+		{	sfx SOUND_MILKING;			actor frame ready;			wait 2;
+			actor frame standing;			wait 2;};
 
 		say "@That's a good girl!@";	call unfreeze;
 	}
@@ -94,7 +94,7 @@ gotoCow (var cow, var milktype)
 	//doesn't stop the GRAZE schedule from making the cow wander off, so
 	//we actually have to paralyze them to keep them still.
 	script cow
-	{	nohalt;						call freeze;				face EAST;}
+	{	nohalt;						call freeze;				face east;}
 
 	//Go to the cow's udder region (either side will do)
 	var cow_offsetx = [-2, -2];

@@ -95,7 +95,8 @@ Shrine shape#(0x463) ()
 			if (shrine_frame == SHRINE_SACRIFICE_DEFILED)
 			{
 				//The shrine of sacrifice starts defiled, and covered in blood
-				AVATAR.say("You stand before the Shrine of Sacrifice. The Shrine is broken and defiled, with blood stains all over the altar.~Whatever peace there once was here is now long gone.");
+				AVATAR.say("You stand before the Shrine of Sacrifice. The Shrine is broken and defiled, with blood stains all over the altar.",
+					"~Whatever peace there once was here is now long gone.");
 				say("Do you wish to say anything?");
 				//Not saying anything leaves it defiled
 				if (askYesNo())
@@ -116,7 +117,9 @@ Shrine shape#(0x463) ()
 							choices = [choices, forgotten_mantras]; 
 						
 						choice = askForResponse(choices);
-						say("In an ominous tone, you speak the mantra: @" + choice + "!@~After waiting for a while, you realize nothing has happened.");
+						say("In an ominous tone, you speak the mantra: @",
+							choice, "!@",
+							"~After waiting for a while, you realize nothing has happened.");
 						if (isNearby(DUPRE) && choice == "Ni")
 							DUPRE.say("@We are the knights who say... Ni!@");
 						
@@ -126,7 +129,8 @@ Shrine shape#(0x463) ()
 						//This is a wise Avatar!
 						say("Which Word of Power do you speak?");
 						choice = askForResponse(words_of_power);
-						say("In an ominous tone, you speak the Word of Power: @" + choice + "!@ The ground trembles for a while afterwards.");
+						say("In an ominous tone, you speak the Word of Power: @",
+							choice, "!@ The ground suddenly trembles.");
 						UI_earthquake(12);
 						
 						if (choice == "Avidus")
@@ -152,7 +156,8 @@ Shrine shape#(0x463) ()
 			}
 			//Normal shrines:
 			SHRINE_FACES->show_npc_face(shrine_frame - 1);
-			say("You stand before the Shrine of " + shrines[shrine_frame] + ". The Shrine is a quiet and peaceful place, amidst the turmoil that is Britannia nowadays.");
+			say("You stand before the Shrine of ", shrines[shrine_frame],
+				". The Shrine is a quiet and peaceful place, amidst the turmoil that is Britannia nowadays.");
 			say("A mystical voice sounds inside your head as you approach the altar. @Welcome, seeker. Dost thou wish to meditate at this altar?@");
 			if (!askYesNo())
 				//Avatar doesn't wish to meditate, so leave:
@@ -235,17 +240,17 @@ Shrine shape#(0x463) ()
 		script item
 		{	nohalt;						finish;
 			call trueFreeze;			face dir;
-			actor frame STAND;			wait 2;
-			actor frame LEAN;			wait 2;
+			actor frame standing;			wait 2;
+			actor frame bowing;			wait 2;
 			repeat cycles - 1
-			{	actor frame KNEEL;			wait 3;
+			{	actor frame kneeling;			wait 3;
 				say mantra;					wait 3;
-				actor frame KNEEL;			wait 3;
-				actor frame KNEEL;			wait 3;
-				//actor frame KNEEL;			wait 3;
+				actor frame kneeling;			wait 3;
+				actor frame kneeling;			wait 3;
+				//actor frame kneeling;			wait 3;
 			};
-			actor frame LEAN;			wait 2;
-			actor frame STAND;			wait 2;
+			actor frame bowing;			wait 2;
+			actor frame standing;			wait 2;
 			call Shrine, SCRIPTED;
 			call trueUnfreeze;
 		}
@@ -319,7 +324,8 @@ Shrine shape#(0x463) ()
 		if (codex_quest_level == CODEX_NOT_STARTED)
 		{
 			//Got a sacred quest to see the Codex:
-			say("A mystical voice sounds inside your head, and a sacred quest is ordained. @Go thou to the Codex, seeker, to learn about " + shrines[shrine_frame] + "!@");
+			say("A mystical voice sounds inside your head, and a sacred quest is ordained. @Go thou to the Codex, seeker, to learn about ",
+			    shrines[shrine_frame] + "!@");
 		}
 		else if (codex_quest_level == WENT_TO_CODEX)
 		{

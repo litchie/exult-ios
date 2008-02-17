@@ -163,16 +163,16 @@ beginCutsceneMageAndGoons object#() ()
 		//Laundo's script; he casts a couple spells and wonders why they failed; then,
 		//he turns to the Avatar and begins to talk:
 		script mage
-		{	wait 2;						actor frame CAST_1;			wait 2;
-			actor frame CAST_2;			wait 2;						actor frame CAST_1;
-			wait 2;						actor frame CAST_2;			wait 2;
-			say "@An Sanct Ort!@";		wait 2;						actor frame STAND;
-			wait 2;						actor frame CAST_1;			wait 2;
-			actor frame CAST_2;			wait 2;						actor frame CAST_1;
-			wait 2;						actor frame CAST_2;			wait 2;
+		{	wait 2;						actor frame cast_up;			wait 2;
+			actor frame cast_out;			wait 2;						actor frame cast_up;
+			wait 2;						actor frame cast_out;			wait 2;
+			say "@An Sanct Ort!@";		wait 2;						actor frame standing;
+			wait 2;						actor frame cast_up;			wait 2;
+			actor frame cast_out;			wait 2;						actor frame cast_up;
+			wait 2;						actor frame cast_out;			wait 2;
 			say "@An Ort Sanct!@";
-			wait 2;						actor frame STAND;			wait 2;
-			face EAST;					say "@Damn! Why doesn't it work?@";
+			wait 2;						actor frame standing;			wait 2;
+			face east;					say "@Damn! Why doesn't it work?@";
 			wait 18;					say "@The spell is correct!@";
 			wait 18;					say "@It -should- work!@";
 			wait 18;					say "@Something -must- protect her!@";
@@ -184,34 +184,34 @@ beginCutsceneMageAndGoons object#() ()
 		//Agra-Lem's script. He patrols around until he sees the Avatar and gang;
 		//then he sounds the alarm:
 		script gargoyle
-		{	repeat 4 {step WEST;		wait 2;};
-			actor frame STAND;			wait 1;						face NORTH;
-			wait 1;						face EAST;					wait 1;
-			repeat 5 {step EAST;		wait 2;};
-			actor frame STAND;			wait 1;						face NORTH;
-			wait 1;						face WEST;					wait 1;
-			repeat 2 {step WEST;		wait 2;};
-			actor frame STAND;			wait 1;						face NORTH;
-			wait 1;						actor frame STAND;
-			repeat 3 {step NORTH;		wait 2;};
-			actor frame STAND;			wait 1;						face EAST;
-			wait 1;						face SOUTH;					wait 1;
-			repeat 4 {step SOUTH;		wait 2;};
+		{	repeat 4 {step west;		wait 2;};
+			actor frame standing;			wait 1;						face north;
+			wait 1;						face east;					wait 1;
+			repeat 5 {step east;		wait 2;};
+			actor frame standing;			wait 1;						face north;
+			wait 1;						face west;					wait 1;
+			repeat 2 {step west;		wait 2;};
+			actor frame standing;			wait 1;						face north;
+			wait 1;						actor frame standing;
+			repeat 3 {step north;		wait 2;};
+			actor frame standing;			wait 1;						face east;
+			wait 1;						face south;					wait 1;
+			repeat 4 {step south;		wait 2;};
 			wait 2;						say "@!!!@";				wait 6;
 			say "@To see intruders!@";
-			repeat 2 {step WEST;		wait 2;};
+			repeat 2 {step west;		wait 2;};
 			call beginCutsceneMageAndGoons, GARGOYLE_WARNS;}
 		
 		//The cyclop's script. He just plays a game of Dragon, Sword, Gold
 		//with the troll:
 		script cyclops
-		{	actor frame SWING_1;		wait 4;						say "@Dragon...@";
-			actor frame USE;			wait 4;
-			actor frame SWING_1;		wait 4;						say "@... sword...@";
-			actor frame USE;			wait 4;
-			actor frame SWING_1;		wait 4;						say "@... gold!@";
-			actor frame SWING_3;		wait 4;
-			actor frame STAND;			wait 8;						say "@Damn!@";
+		{	actor frame raise_1h;		wait 4;						say "@Dragon...@";
+			actor frame ready;			wait 4;
+			actor frame raise_1h;		wait 4;						say "@... sword...@";
+			actor frame ready;			wait 4;
+			actor frame raise_1h;		wait 4;						say "@... gold!@";
+			actor frame strike_1h;		wait 4;
+			actor frame standing;			wait 8;						say "@Damn!@";
 			wait 56;					say "@Yer cheatin'!@";
 			wait 18;					say "@Yer winnin' always!@";
 			wait 22;					say "@Huh?@";}
@@ -220,18 +220,18 @@ beginCutsceneMageAndGoons object#() ()
 		//with the cyclops:
 		script troll
 		{	wait 5;
-			actor frame SWING_1;		wait 4;						say "@Dragon...@";
-			actor frame USE;			wait 4;
-			actor frame SWING_1;		wait 4;						say "@... sword...@";
-			actor frame USE;			wait 4;
-			actor frame SWING_1;		wait 4;						say "@... gold!@";
-			actor frame SWING_3;		wait 4;
-			actor frame STAND;			wait 6;						say "@Haha! My sword...@";
+			actor frame raise_1h;		wait 4;						say "@Dragon...@";
+			actor frame ready;			wait 4;
+			actor frame raise_1h;		wait 4;						say "@... sword...@";
+			actor frame ready;			wait 4;
+			actor frame raise_1h;		wait 4;						say "@... gold!@";
+			actor frame strike_1h;		wait 4;
+			actor frame standing;			wait 6;						say "@Haha! My sword...@";
 			wait 18;					say "@... kills yer dragon!@";
 			wait 18;					say "@I win again!@";
 			wait 22;					say "@Am not!@";
 			wait 18;					say "@Yer too dumb!@";
-			wait 14;					face EAST;
+			wait 14;					face east;
 			say "@Intruders? Kill!@";}
 		
 		//The human is having second doubts, but he is there for
@@ -239,11 +239,11 @@ beginCutsceneMageAndGoons object#() ()
 		script fighter
 		{	wait 4;						say "@What am I doing here?@";
 			wait 10;					say "@I mean, look who is around...@";
-			face NORTH;
+			face north;
 			wait 16;					say "@One dumb troll...@";
 			wait 16;					say "@... a dumber cyclops...@";
 			wait 16;					say "@... one pissed-off gargoyle...@";
-			face EAST;
+			face east;
 			wait 16;					say "@... and a mad mage.@";
 			wait 20;					say "@The only good thing...@";
 			wait 16;					say "@... is the gold I get.@";

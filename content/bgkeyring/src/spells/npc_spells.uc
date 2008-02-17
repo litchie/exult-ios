@@ -288,21 +288,21 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 				case SPELL_DOUSE:
 				case SPELL_GLIMMER:
 				case SPELL_WEATHER:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;	};
 					break;
 				case SPELL_FIREWORKS:
-					scr << {	actor frame CAST_2;		actor frame CAST_1;	};
+					scr << {	actor frame cast_out;		actor frame cast_up;	};
 					break;
 				case SPELL_IGNITE:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_THUNDER:
-					scr << {	actor frame SWING_2H_2;	actor frame SWING_2H_3;	};
+					scr << {	actor frame reach_2h;	actor frame strike_2h;	};
 					break;
 				case SPELL_DETECT_CHARGES:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame USE;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame ready;	};
 					break;
 			}
 			break;
@@ -312,25 +312,25 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 				case SPELL_AWAKEN_ALL:
 				case SPELL_DETECT_TRAP:
 				case SPELL_LIGHT:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;	};
 					break;
 				case SPELL_CREATE_FOOD:
 				case SPELL_CURE:
 				case SPELL_GREAT_DOUSE:
-					scr << {	actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_GREAT_IGNITE:
-					scr << {	actor frame SWING_1;	actor frame SWING_2;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame reach_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_LOCATE:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame CAST_1;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame cast_up;	};
 					break;
 				case SPELL_TRANSLATE:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;
+								actor frame strike_1h;	};
 					break;
 			}
 			break;
@@ -338,29 +338,29 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			switch (spell)
 			{
 				case SPELL_DESTROY_TRAP:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_ENCHANT:
 				case SPELL_MASS_CURE:
-					scr << {	actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_FIRE_BLAST:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	actor frame strike_2h;	};
 					break;
 				case SPELL_GREAT_LIGHT:
 				case SPELL_TELEKINESIS:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;	};
 					break;
 				case SPELL_PROTECTION:
-					scr << {	actor frame CAST_1;		actor frame SWING_1;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame raise_1h;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_WIZARD_EYE:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;		actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;		actor frame strike_2h;	};
 					break;
 			}
 			break;
@@ -369,31 +369,31 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			{
 				case SPELL_CURSE:
 				case SPELL_REMOVE_CURSE:
-					scr << {	actor frame SWING_1;	actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_HEAL:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_PARALYZE:
 				case SPELL_POISON:
 				case SPELL_SLEEP:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_PEER:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;	};
 					break;
 				case SPELL_PROTECT_ALL:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;		actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;		actor frame strike_2h;	};
 					break;
 				case SPELL_SWARM:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 			}
 			break;
@@ -402,30 +402,30 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			{
 				case SPELL_CONJURE:
 				case SPELL_REVEAL:
-					scr << {	actor frame SWING_1;	actor frame SWING_2;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame reach_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_LIGHTNING:
-					scr << {	actor frame SWING_1;	actor frame CAST_1;
-								actor frame CAST_2;		actor frame SWING_2H_3;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_up;
+								actor frame cast_out;		actor frame strike_2h;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_MASS_CURSE:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;		actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;		actor frame strike_2h;	};
 					break;
 				case SPELL_SEANCE:
 				case SPELL_UNLOCK_MAGIC:
-					scr << {	actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_RECHARGE_MAGIC:
-					scr << {	actor frame CAST_2;		actor frame CAST_1;
-								actor frame USE;	};
+					scr << {	actor frame cast_out;		actor frame cast_up;
+								actor frame ready;	};
 					break;
 				case SPELL_BLINK:
-					scr << {	actor frame SWING_1;	actor frame SWING_2H_2;
-								actor frame SWING_1;	};
+					scr << {	actor frame raise_1h;	actor frame reach_2h;
+								actor frame raise_1h;	};
 					break;
 			}
 			break;
@@ -434,33 +434,33 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			{
 				case SPELL_CHARM:
 				case SPELL_DANCE:
-					scr << {	actor frame SWING_1;	actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_DISPEL_FIELD:
 				case SPELL_INVISIBILITY:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_EXPLOSION:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_3;	actor frame SWING_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_1h;	actor frame strike_1h;	};
 					break;
 				case SPELL_FIRE_FIELD:
-					scr << {	actor frame SWING_1;	actor frame SWING_2;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame reach_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_GREAT_HEAL:
-					scr << {	actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_MASS_SLEEP:
-					scr << {	actor frame SWING_1;	actor frame CAST_1;
-								actor frame SWING_3;	actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_up;
+								actor frame strike_1h;	actor frame strike_2h;	};
 					break;
 				case SPELL_SUMMON_SKELETONS:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame CAST_1;		actor frame CAST_2;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame cast_up;		actor frame cast_out;	};
 					break;
 			}
 			break;
@@ -468,35 +468,35 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			switch (spell)
 			{
 				case SPELL_CAUSE_FEAR:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame SWING_2;	actor frame SWING_1;
-								actor frame SWING_3;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame reach_1h;	actor frame raise_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_CLONE:
-					scr << {	actor frame SWING_1;	actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_FIRE_RING:
-					scr << {	actor frame SWING_2;	actor frame SWING_3;
-								actor frame SWING_1;	};
+					scr << {	actor frame reach_1h;	actor frame strike_1h;
+								actor frame raise_1h;	};
 					break;
 				case SPELL_FLAME_STRIKE:
-					scr << {	actor frame LEAN;		actor frame KNEEL;
-								actor frame LEAN;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame bowing;		actor frame kneeling;
+								actor frame bowing;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_MAGIC_STORM:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;		actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;		actor frame strike_2h;	};
 					break;
 				case SPELL_POISON_FIELD:
 				case SPELL_SLEEP_FIELD:
-					scr << {	actor frame SWING_1;	actor frame SWING_2;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame reach_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_TREMOR:
-					scr << {	actor frame SWING_2H_1;	actor frame STAND;
-								actor frame KNEEL;	};
+					scr << {	actor frame raise_2h;	actor frame standing;
+								actor frame kneeling;	};
 					break;
 			}
 			break;
@@ -504,30 +504,30 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			switch (spell)
 			{
 				case SPELL_CREATE_GOLD:
-					scr << {	actor frame SWING_1;	actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame strike_1h;	};
 					break;
 				case SPELL_DEATH_BOLT:
 				case SPELL_ENERGY_MIST:
 				case SPELL_MASS_CHARM:
 				case SPELL_MASS_MIGHT:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame CAST_1;		actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame cast_up;		actor frame strike_2h;	};
 					break;
 				case SPELL_DELAYED_BLAST:
-					scr << {	actor frame SWING_2H_3;	actor frame CAST_2;
-								actor frame CAST_1;	};
+					scr << {	actor frame strike_2h;	actor frame cast_out;
+								actor frame cast_up;	};
 					break;
 				case SPELL_ENERGY_FIELD:
-					scr << {	actor frame SWING_1;	actor frame SWING_2;
-								actor frame SWING_3;	};
+					scr << {	actor frame raise_1h;	actor frame reach_1h;
+								actor frame strike_1h;	};
 					break;
 				case SPELL_RESTORATION:
-					scr << {	actor frame SWING_1;	actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_MASS_DISPEL_FIELD:
-					scr << {	actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 			}
 			break;
@@ -535,34 +535,34 @@ var getSpellRitual(var circle, var spell, var npc, var target)
 			switch (spell)
 			{
 				case SPELL_DEATH_VORTEX:
-					scr << {	actor frame CAST_1;		actor frame SWING_3;	};
+					scr << {	actor frame cast_up;		actor frame strike_1h;	};
 					break;
 				case SPELL_INVISIBILITY_ALL:
-					scr << {	actor frame SWING_1;	actor frame STAND;
-								actor frame CAST_1;		actor frame STAND;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame standing;
+								actor frame cast_up;		actor frame standing;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_MASS_DEATH:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame CAST_1;		actor frame CAST_2;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame cast_up;		actor frame cast_out;	};
 					break;
 				case SPELL_RESURRECT:
 				case SPELL_MASS_RESURRECT:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame CAST_1;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame cast_up;	};
 					break;
 				case SPELL_SUMMON:
-					scr << {	actor frame KNEEL;		actor frame STAND;
-								actor frame CAST_1;		actor frame CAST_2;
-								actor frame SWING_2H_3;	};
+					scr << {	actor frame kneeling;		actor frame standing;
+								actor frame cast_up;		actor frame cast_out;
+								actor frame strike_2h;	};
 					break;
 				case SPELL_SWORDSTRIKE:
-					scr << {	actor frame SWING_1;	actor frame STAND;
-								actor frame CAST_1;		actor frame STAND;
-								actor frame SWING_3;	actor frame SWING_2H_3;	};
+					scr << {	actor frame raise_1h;	actor frame standing;
+								actor frame cast_up;		actor frame standing;
+								actor frame strike_1h;	actor frame strike_2h;	};
 					break;
 				case SPELL_TIME_STOP:
-					scr << {	actor frame SWING_2H_3;	actor frame CAST_2;	};
+					scr << {	actor frame strike_2h;	actor frame cast_out;	};
 					break;
 			}
 			break;
@@ -962,7 +962,7 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 		npc->(*spell_function)();
 	
 	//Return NPC to standing frame once spellcasting is done
-	script npc after 12 ticks actor frame STAND;
+	script npc after 12 ticks actor frame standing;
 	if (!(npc in party) || npc->get_item_flag(ARCHWIZARD))
 		circle = 0;
 	return [CASTING_SUCCESSFUL, circle];
@@ -1015,7 +1015,7 @@ npcAskSpellToCast (var npc, var talk, var removespells)
 						//Not enough reagents; casting_return[2] is the string telling which
 						//reagents are missing:
 						say(talk[5]);
-						say(talk[6] + casting_return[2]);
+						say(talk[6], casting_return[2]);
 						break;
 					case NOT_ENOUGH_MANA:
 						//Not enough mana; casting_return[2] tells if the mana cost is higher
@@ -1059,7 +1059,7 @@ npcCastSpellDialog (var npc, var spell, var talk)
 			//Not enough reagents; casting_return[2] is the string telling which
 			//reagents are missing:
 			npc.say(talk[5]);
-			say(talk[6] + casting_return[2]);
+			say(talk[6], casting_return[2]);
 			break;
 		case NOT_ENOUGH_MANA:
 			if (casting_return[2])

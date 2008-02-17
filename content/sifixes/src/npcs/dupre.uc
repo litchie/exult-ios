@@ -87,7 +87,8 @@ Dupre object#(0x401) ()
 
 		if (dupre_id == BOOTED_FOR_FREEDOM)
 		{
-			say("@How good to see thee again, " + avatar_title + "! Knowing that thou wouldst soon return, I have waited for thee at this establishment.@");
+			say("@How good to see thee again, ", avatar_title,
+				"! Knowing that thou wouldst soon return, I have waited for thee at this establishment.@");
 
 			if (npcNearbyAndVisible(ROCCO))
 			{
@@ -97,7 +98,7 @@ Dupre object#(0x401) ()
 			}
 			if (!gflags[AFTER_FREEDOM_NEWS])
 			{
-				say("@And I have good news for thee, " + avatar_title + ".@");
+				say("@And I have good news for thee, ", avatar_title, ".@");
 				add("good news");
 			}
 			DUPRE->set_npc_id(0);
@@ -120,7 +121,7 @@ Dupre object#(0x401) ()
 			if (gflags[EQUIPMENT_EXCHANGED] &&
 			    !gflags[DUPRE_MADE_EQUIPMENT_LIST])
 			{
-				say("@" + avatar_name + "! I thought I would never find thee!@");
+				say("@", avatar_name, "! I thought I would never find thee!@");
 				say("@When that strange storm struck, there was a flash, and then I found myself in a wilderness.@");
 				say("@Fearing to be slain by the Goblins patrolling the woods, I instead took shelter in this walled city. But these Pikemen insist on escorting me to their leader!@");
 
@@ -179,7 +180,8 @@ Dupre object#(0x401) ()
 			case "join" (remove):
 				if (gflags[BEGAN_KNIGHTS_TEST] && (!gflags[SLAIN_WOLF]))
 				{
-					say("@But Sir Shmed said that the Test is only for one, " + avatar_title + "! I cannot come with thee.@");
+					say("@But Sir Shmed said that the Test is only for one, ",
+						avatar_title, "! I cannot come with thee.@");
 					npcSpeakIfNearby(SCHMED, "@Thou must enter alone, stranger.@");
 					delayedBark(SCHMED, "@Alone!@", 0);
 					delayedBark(DUPRE, "@Be brave!@", 0);
@@ -195,8 +197,10 @@ Dupre object#(0x401) ()
 				}
 				else
 				{
-					say("@But thou hast so many companions, " + avatar_name + "! I shall only be in thy way.@");
-					say("@'Twould be better for me to remain where I am, " + avatar_title + ".@");
+					say("@But thou hast so many companions, ", avatar_name,
+						"! I shall only be in thy way.@");
+					say("@'Twould be better for me to remain where I am, ",
+						avatar_title, ".@");
 				}
 
 			case "leave" (remove):
@@ -219,7 +223,8 @@ Dupre object#(0x401) ()
 				if (gflags[SHAMINO_RESURRECTED_BY_MONKS])
 					say("@I have exciting news -- the monks have returned Shamino to us again, healthy and whole! This he can explain to thee.@");
 
-				say("@Not being as patient as I am, " + avatar_title + ", our good friend Shamino hath gone into the woods to hunt wild game.@");
+				say("@Not being as patient as I am, ", avatar_title,
+					", our good friend Shamino hath gone into the woods to hunt wild game.@");
 				say("@He went west from here, towards the magic woods.@");
 
 			case "Iolo's whereabouts" (remove):

@@ -498,7 +498,7 @@ var spellitemGetNPCIndex(var npcnum)
 	if (npcnum > 0)
 		npcnum = -npcnum;
 	var npc_array_index = [JAANA, MARIAH, LAURIANNA, IOLO,
-		                   SHAMINO, DUPRE, JULIA, LORD_BRITISH];
+	                       SHAMINO, DUPRE, JULIA, LORD_BRITISH];
 
 	static var initialized;
 	static var spellsystem_version;

@@ -83,7 +83,8 @@ Csil object#(0x423) ()
 				if (askYesNo())
 					say("@Good. I thought so.@");
 				else
-					say("@No? Hmmm.@ Csil looks concerned. @Well, I cannot believe in the archaic tradition of bleeding a person until the sickness has left his body. There must be another way...@~~Csil looks at his notes, worried that his theory is invalid.");
+					say("@No? Hmmm.@ Csil looks concerned. @Well, I cannot believe in the archaic tradition of bleeding a person until the sickness has left his body. There must be another way...@",
+						"~~Csil looks at his notes, worried that his theory is invalid.");
 			
 			case "others" (remove):
 				say("@There is a group of people who do not encourage my studies. We do not get along at all. I think they have something against healers which goes beyond simple distrust. Dost thou know whom I mean?@");

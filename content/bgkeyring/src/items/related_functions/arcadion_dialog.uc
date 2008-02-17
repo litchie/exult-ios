@@ -35,7 +35,7 @@ killLordBritish (var lordbritish)
 	{
 		//The dialog with Lord British:
 		say("@Yes! I have long sought the end of Lord British, my traitorous master.@");
-		LORD_BRITISH.say("@" + getAvatarName() + ", for what reason art thou brandishing that black sword in my presence?@");
+		LORD_BRITISH.say("@", getAvatarName(), ", for what reason art thou brandishing that black sword in my presence?@");
 		AVATAR->show_npc_face(UI_is_pc_female());
 		say("The daemon responds, using your mouth. @This blade is thy doom,...@ You spit the words, @Lord British!@");
 		LORD_BRITISH.say("Lord British looks truly taken aback, his eyes narrow calculatingly. @What foul treachery is this?@");
@@ -50,10 +50,10 @@ killLordBritish (var lordbritish)
 		//Avatar strikes his liege:
 		script AVATAR
 		{
-			face dir;					actor frame USE;			wait 2;
-			actor frame SWING_2H_1;		wait 2;						actor frame SWING_2H_2;
-			wait 1;						actor frame SWING_2H_3;		wait 2;
-			actor frame STAND;
+			face dir;					actor frame ready;			wait 2;
+			actor frame raise_2h;		wait 2;						actor frame reach_2h;
+			wait 1;						actor frame strike_2h;		wait 2;
+			actor frame standing;
 		}
 		
 		//Lord British is awake:
@@ -65,7 +65,7 @@ killLordBritish (var lordbritish)
 			//Lord British tries to defend himself, but dies anyway:
 			script lordbritish
 			{
-				face dir;					wait 3;						actor frame USE;
+				face dir;					wait 3;						actor frame ready;
 				wait 7;						call killTarget;
 			}
 		}
@@ -101,10 +101,10 @@ killAnimation (var target)
 	//Avatar strikes his foe:
 	script AVATAR
 	{
-		face dir;					actor frame USE;			wait 1;
-		actor frame SWING_2H_1;		wait 1;						actor frame SWING_2H_2;
-		wait 1;						actor frame SWING_2H_3;		wait 2;
-		actor frame STAND;
+		face dir;					actor frame ready;			wait 1;
+		actor frame raise_2h;		wait 1;						actor frame reach_2h;
+		wait 1;						actor frame strike_2h;		wait 2;
+		actor frame standing;
 	}
 	
 	//Target is awake:
@@ -116,9 +116,9 @@ killAnimation (var target)
 		//Target tries to defend itself and dies anyway:
 		script target
 		{
-			face dir;					wait 2;						actor frame USE;
-			wait 4;						actor frame LEAN;			wait 1;
-			actor frame KNEEL;			wait 1;						call killTarget;
+			face dir;					wait 2;						actor frame ready;
+			wait 4;						actor frame bowing;			wait 1;
+			actor frame kneeling;			wait 1;						call killTarget;
 		}
 	}
 	
@@ -326,8 +326,8 @@ blackswordCreationAnimation object#() ()
 	{
 		script AVATAR
 		{
-			face SOUTH;					actor frame SWING_2H_3;		wait 1;
-			actor frame SWING_2H_2;		wait 1;						actor frame SWING_2H_1;
+			face south;					actor frame strike_2h;		wait 1;
+			actor frame reach_2h;		wait 1;						actor frame raise_2h;
 			wait 1;
 		}
 		
@@ -441,7 +441,7 @@ arcadionGemFormDialog object#() ()
 				msg = "the mage Erethian";
 			else
 				msg = "Erethian";
-			say("@It would seem that " + msg + " was correct in his assumption that should I enter this gem, my power would not be set free to use as I wish, instead it is at the beck and call of the one who possesses the gem.@");
+			say("@It would seem that ", msg, " was correct in his assumption that should I enter this gem, my power would not be set free to use as I wish, instead it is at the beck and call of the one who possesses the gem.@");
 			gflags[ARCADION_SLAVE] = true;
 			add("power");
 			
@@ -532,7 +532,7 @@ arcadionMirrorFormDialog object#() ()
 		else msg = "the mage";
 		
 		ERETHIAN_FACE->show_npc_face(1);
-		say("Surprised, " + msg + " looks around and says, @I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!@ The old man waves his hand, negligently.");
+		say("Surprised, ", msg, " looks around and says, @I don't recall summoning thee. Nevermind, I have no need of thee at the current time. Begone!@ The old man waves his hand, negligently.");
 		
 		ARCADION_MIRROR_FACE->show_npc_face(0);
 		say("Through a tightly clenched smile, the figure replies, @Very well...@ And after a significant pause, @Master.@*");

@@ -62,14 +62,14 @@ spellDeathVortex (var target)
 			set_to_attack(target, SHAPE_DEATH_VORTEX);
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame CAST_1;
-				actor frame SWING_3;		attack;}
+				sfx 65;						actor frame cast_up;
+				actor frame strike_1h;		attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame SWING_3;
+				actor frame cast_up;			actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -86,10 +86,10 @@ spellInvisibilityAll ()
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			script item
-			{	nohalt;						actor frame SWING_1;
-				sfx 67;						actor frame STAND;
-				actor frame CAST_1;			actor frame STAND;
-				actor frame SWING_2H_3;}
+			{	nohalt;						actor frame raise_1h;
+				sfx 67;						actor frame standing;
+				actor frame cast_up;			actor frame standing;
+				actor frame strike_2h;}
 			var targets = getFriendlyTargetList(item, 25);
 			for (npc in targets)
 			{
@@ -101,9 +101,9 @@ spellInvisibilityAll ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame STAND;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame standing;			actor frame cast_up;
+				actor frame standing;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -121,8 +121,8 @@ spellMassDeath ()
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			script item
 			{	nohalt;						sfx 65;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			actor frame CAST_2;
+				actor frame kneeling;			actor frame standing;
+				actor frame cast_up;			actor frame cast_out;
 				sfx 67;}
 			var nearby_npcs = find_nearby(-1, 25, MASK_NPC);
 			var safenpcs = [UI_get_party_list2(), LORD_BRITISH->get_npc_object(),
@@ -153,9 +153,9 @@ spellMassDeath ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame CAST_2;			call spellFails;}
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
+				actor frame cast_out;			call spellFails;}
 		}
 	}
 }
@@ -189,8 +189,8 @@ spellResurrect (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 64;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;}
+				sfx 64;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;}
 			UI_play_music(15, 0);
 			UI_sprite_effect(17, pos[X], pos[Y], 0, 0, 0, -1);
 			UI_sprite_effect(13, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
@@ -199,8 +199,8 @@ spellResurrect (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			call spellFails;}
+				actor frame kneeling;			actor frame standing;
+				actor frame cast_up;			call spellFails;}
 		}
 	}
 }
@@ -214,17 +214,17 @@ spellSummon ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				sfx 65;						call spellSummonEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -243,19 +243,19 @@ spellSwordStrike (var target)
 			set_to_attack(target, SHAPE_SWORDSTRIKE);
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame SWING_1;
-				actor frame STAND;			actor frame CAST_1;
-				actor frame STAND;			actor frame SWING_3;
-				actor frame SWING_2H_3;		attack;
-				actor frame STAND;}
+				sfx 65;						actor frame raise_1h;
+				actor frame standing;			actor frame cast_up;
+				actor frame standing;			actor frame strike_1h;
+				actor frame strike_2h;		attack;
+				actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame STAND;
-				actor frame CAST_1;			actor frame STAND;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame raise_1h;		actor frame standing;
+				actor frame cast_up;			actor frame standing;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -270,14 +270,14 @@ spellTimeStop ()
 		{
 			script item
 			{	nohalt;						sfx 67;
-				actor frame SWING_2H_3;		actor frame CAST_2;
+				actor frame strike_2h;		actor frame cast_out;
 				call spellStopTime, 100;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_3;
-				actor frame CAST_2;			call spellFails;}
+			{	nohalt;						actor frame strike_2h;
+				actor frame cast_out;			call spellFails;}
 		}
 	}
 }
@@ -309,15 +309,15 @@ spellMassResurrect ()
 		{
 			script item
 			{	nohalt;						sfx 64;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame CAST_1;			call spellMassResurrectEffect;}
+				actor frame kneeling;			actor frame standing;
+				actor frame cast_up;			call spellMassResurrectEffect;}
 			UI_play_music(15, 0);
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame CAST_1;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame cast_up;
 				call spellFails;}
 		}
 	}

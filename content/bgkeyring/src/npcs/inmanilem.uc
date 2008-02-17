@@ -97,7 +97,8 @@ Inmanilem object#(0x4B6) ()
 				say("@There is a rival now -- The Fellowship. To know not if it is good or bad, but to know I do not follow it!@");
 			
 			case "conflicts" (remove):
-				say("@To know only of one dissatisfied gargoyle. To have always been problem, but now acting hostile and aggressive. To be named Silamo, the gardener.~~@To recommend you talk to Silamo.@");
+				say("@To know only of one dissatisfied gargoyle. To have always been problem, but now acting hostile and aggressive. To be named Silamo, the gardener.",
+					"~~@To recommend you talk to Silamo.@");
 				gflags[KNOWS_SILAMO_UNHAPPY] = true;
 			
 			case "bye":

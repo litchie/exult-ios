@@ -66,16 +66,16 @@ spellCurse (var target)
 			set_to_attack(target, SHAPE_CURSE);
 			script item
 			{	nohalt;						face dir;
-				sfx 67;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+				sfx 67;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame raise_1h;		actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -92,9 +92,9 @@ spellHeal (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame KNEEL;			sfx 64;
-				actor frame STAND;			actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;}
+				actor frame kneeling;			sfx 64;
+				actor frame standing;			actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;}
 				
 			script target after 5 ticks
 			{	nohalt;						call spellHealEffect;}
@@ -103,9 +103,9 @@ spellHeal (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+				actor frame kneeling;			actor frame standing;
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -123,15 +123,15 @@ spellParalyze (var target)
 			set_to_attack(target, SHAPE_PARALYZE);
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
-				actor frame SWING_3;		attack;
-				actor frame STAND;}
+				actor frame raise_1h;		actor frame strike_1h;
+				actor frame strike_1h;		attack;
+				actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -147,14 +147,14 @@ spellPeer ()
 		{
 			script item
 			{	nohalt;						sfx 67;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			call spellShowMap;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame cast_up;			call spellShowMap;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
 				call spellFails;}
 		}
 	}
@@ -172,15 +172,15 @@ spellPoison (var target)
 			set_to_attack(target, SHAPE_POISON);
 			script item
 			{	nohalt;						face dir;
-				sfx 110;					actor frame SWING_1;
-				actor frame SWING_3;		actor frame SWING_3;
-				attack;						actor frame STAND;}
+				sfx 110;					actor frame raise_1h;
+				actor frame strike_1h;		actor frame strike_1h;
+				attack;						actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -195,16 +195,16 @@ spellProtectAll ()
 		{
 			halt_scheduled();
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellProtectAllEffect;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellProtectAllEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -222,15 +222,15 @@ spellSleep (var target)
 			set_to_attack(target, SHAPE_SPELL_SLEEP);
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
-				actor frame SWING_3;		attack;
-				actor frame STAND;}
+				actor frame raise_1h;		actor frame strike_1h;
+				actor frame strike_1h;		attack;
+				actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -245,15 +245,15 @@ spellSwarm ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				sfx 65;						call spellSwarmEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -271,8 +271,8 @@ spellRemoveCurse (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 109;					actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;}
+				sfx 109;					actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;}
 
 			script target after 5 ticks
 			{	nohalt;
@@ -285,8 +285,8 @@ spellRemoveCurse (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame raise_1h;		actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }

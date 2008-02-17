@@ -141,8 +141,8 @@ zaurielRitualCutscene object#() ()
 		{	//cast spells: freeze party (Vas An Por), create magical barrier around
 			//Laurianna (Vas Ort Sanct Grav) and move party around (Vas In Por):
 			nohalt;						continue;					sfx 110;
-			face NORTH;					say "@Vas An Por@";			actor frame STAND;
-			wait 1;						actor frame CAST_1;			wait 1;
+			face north;					say "@Vas An Por@";			actor frame standing;
+			wait 1;						actor frame cast_up;			wait 1;
 			next frame;					wait 1;						previous frame;
 			sfx 108;					say "@Vas Ort Sanct Grav@";	wait 2;
 			next frame;					wait 2;						previous frame;
@@ -153,7 +153,7 @@ zaurielRitualCutscene object#() ()
 			call zaurielTeleportPartyAround;
 			
 			//Long casting ritual:
-			wait 2;						actor frame SWING_2H_1;		wait 2;
+			wait 2;						actor frame raise_2h;		wait 2;
 			next frame;					wait 2;						next frame;
 			wait 3;
 			
@@ -161,7 +161,7 @@ zaurielRitualCutscene object#() ()
 			call zaurielRitualCutscene, SPRITE_EFFECTS_ZAURIEL;
 			
 			//Cast the dragon form spell (Rel An-Quas Ailem In BAL-ZEN)
-			actor frame STAND;			say "@Rel An-Quas...@";		actor frame CAST_1;
+			actor frame standing;			say "@Rel An-Quas...@";		actor frame cast_up;
 			wait 2;						sfx 66;						wait 2;
 			next frame;					wait 2;						previous frame;
 			wait 2;						say "@...Ailem In BAL-ZEN@";wait 2;
@@ -172,7 +172,7 @@ zaurielRitualCutscene object#() ()
 			//Finish the ritual:
 			next frame;					sfx 64;						wait 2;
 			previous frame;				wait 2;						next frame;
-			wait 2;						face WEST;					wait 2;
+			wait 2;						face west;					wait 2;
 			
 			//Say last words and wait a bit:
 			call zaurielRitualCutscene, PARTING_REMARKS;			wait 2;

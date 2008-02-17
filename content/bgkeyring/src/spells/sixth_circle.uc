@@ -59,16 +59,16 @@ spellCauseFear ()
 		{
 			script item
 			{	nohalt;						sfx 65;
-				actor frame KNEEL;			actor frame STAND;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellCauseFearEffect;}
+				actor frame kneeling;			actor frame standing;
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		call spellCauseFearEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame KNEEL;
-				actor frame STAND;			actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame kneeling;
+				actor frame standing;			actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -85,16 +85,16 @@ spellClone (var target)
 		if (inMagicStorm() && (target->is_npc() && (!(UI_get_item_flag(0, 27) == -1))))
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;}
 			script target after 4 ticks
 			{	nohalt;						call spellCloneEffect, get_alignment();}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -112,8 +112,8 @@ spellFireRing (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame SWING_2;
-				actor frame SWING_3;		actor frame SWING_1;}
+				sfx 65;						actor frame reach_1h;
+				actor frame strike_1h;		actor frame raise_1h;}
 				
 			var offset_x = [-1,  0,  1,  2,  2,  2,  1,  0, -1, -2, -2, -2];
 			var offset_y = [-2, -2, -2, -1,  0,  1,  2,  2,  2,  1,  0, -1];
@@ -147,8 +147,8 @@ spellFireRing (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2;		actor frame SWING_3;
-				actor frame SWING_1;		call spellFails;}
+				actor frame reach_1h;		actor frame strike_1h;
+				actor frame raise_1h;		call spellFails;}
 		}
 	}
 }
@@ -163,9 +163,9 @@ spellFlameStrike ()
 		{
 			script item
 			{	nohalt;						sfx 65;
-				actor frame LEAN;			actor frame KNEEL;
-				actor frame LEAN;			actor frame CAST_2;
-				actor frame SWING_2H_3;}
+				actor frame bowing;			actor frame kneeling;
+				actor frame bowing;			actor frame cast_out;
+				actor frame strike_2h;}
 				
 			var targets = getEnemyTargetList(item, 25);
 			for (npc in targets)
@@ -190,9 +190,9 @@ spellFlameStrike ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame LEAN;
-				actor frame KNEEL;			actor frame LEAN;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame bowing;
+				actor frame kneeling;			actor frame bowing;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -211,9 +211,9 @@ spellMagicStorm ()
 			UI_set_weather(2);
 			script item
 			{	nohalt;						sfx 65;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
-				actor frame STAND;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;
+				actor frame standing;}
 				
 			script item after 8 ticks
 			{	nohalt;						call spellMagicStormEffect;}
@@ -224,9 +224,9 @@ spellMagicStorm ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -243,8 +243,8 @@ spellPoisonField (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 110;					actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;}
+				sfx 110;					actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;}
 			var field = UI_create_new_object(SHAPE_POISON_FIELD);
 			if (field)
 			{
@@ -260,8 +260,8 @@ spellPoisonField (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;		call spellFails;}
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -278,8 +278,8 @@ spellSleepField (var target)
 		{
 			script item
 			{	nohalt;						sfx 65;
-				face dir;					actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;}
+				face dir;					actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;}
 				
 			var field_x = (target[X + 1] + 1);
 			var field_y = (target[Y + 1] + 1);
@@ -296,8 +296,8 @@ spellSleepField (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;		call spellFails;}
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -311,15 +311,15 @@ spellTremor ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_1;
-				actor frame STAND;			actor frame KNEEL;
+			{	nohalt;						actor frame raise_2h;
+				actor frame standing;			actor frame kneeling;
 				sfx 67;						call spellTremorEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2H_1;
-				actor frame STAND;			actor frame KNEEL;
+			{	nohalt;						actor frame raise_2h;
+				actor frame standing;			actor frame kneeling;
 				call spellFails;}
 		}
 	}

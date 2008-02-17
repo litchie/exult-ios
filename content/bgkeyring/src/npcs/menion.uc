@@ -48,12 +48,12 @@ Menion object#(0x4C0) ()
 			gflags[MET_MENION] = true;
 		}
 		else
-			item.say("@Greetings, " + polite_title + ",@ says Menion.");
+			item.say("@Greetings, ", polite_title, ",@ says Menion.");
 
 		converse(0)
 		{
 			case "name" (remove):
-				say("@I am Menion, " + polite_title + ".@ He shakes your hand.");
+				say("@I am Menion, ", polite_title, ".@ He shakes your hand.");
 
 			case "job":
 				say("@I am a trainer. I help warriors become bigger and stronger and better fighters. I also forge swords to match the strength in my students' arms.@");
@@ -64,7 +64,8 @@ Menion object#(0x4C0) ()
 				add("force");
 
 			case "force" (remove):
-				say("@Yes, " + polite_title + ". The key to effective fighting is striking hard and accurately at one's foe.@");
+				say("@Yes, ", polite_title,
+					". The key to effective fighting is striking hard and accurately at one's foe.@");
 				add(["hard", "accurately"]);
 		
 			case "hard" (remove):
@@ -76,7 +77,8 @@ Menion object#(0x4C0) ()
 			case "train" (remove):
 				if (schedule == TEND_SHOP)
 				{
-					say("@I will train thee for " + MENION_TRAINING_PRICE + " gold. Wilt thou pay?@");
+					say("@I will train thee for ", MENION_TRAINING_PRICE,
+						" gold. Wilt thou pay?@");
 					if (askYesNo())
 						trainWithMenion([STRENGTH, COMBAT], MENION_TRAINING_PRICE);
 					else
@@ -126,7 +128,8 @@ Menion object#(0x4C0) ()
 					{
 						say("He takes the blank from you, balancing it on his fingertips and then peering down the length of the blade, angling it in the light.");
 						say("@Thou hast forged a fine blade indeed in this one! She is weighted well, and should keep her edge faithfully. All that she needs now is the pommel.@");
-						say("@Menion slips an ornate pommel onto the tang of the blade, pinning it fast and binding it with straps of leather.~After a little work he presents to you the completed sword, and bows with a sheepish sense of ceremony.");
+						say("@Menion slips an ornate pommel onto the tang of the blade, pinning it fast and binding it with straps of leather.",
+							"~After a little work he presents to you the completed sword, and bows with a sheepish sense of ceremony.");
 
 						//reward the player for their persistence
 						if (!gflags[GOT_SWORDSMITHING_XP])
@@ -136,7 +139,7 @@ Menion object#(0x4C0) ()
 						}
 
 						if (UI_add_party_items(1, SHAPE_CUSTOM_SWORD, QUALITY_ANY, FRAME_ANY))
-							say("@May thy blade stay true, " + polite_title + "!@");
+							say("@May thy blade stay true, ", polite_title, "!@");
 						//Bugger, they couldn't carry it. Now we need to do more work.
 						else
 						{
@@ -147,11 +150,14 @@ Menion object#(0x4C0) ()
 
 					//swordblank still needs more work
 					else if (UI_count_objects(AVATAR, SHAPE_SWORDBLANK, QUALITY_ANY, 6))
-						say("He examines the blank critically, turning it this way and that. @Thou hast the makings of a fine blade, but it needs more tempering before it is ready.~Remember, once thou art finally satisfied with the edge, thou must quickly quench the blade in water to harden it.@");
+						say("He examines the blank critically, turning it this way and that. @Thou hast the makings of a fine blade, but it needs more tempering before it is ready.",
+							"~Remember, once thou art finally satisfied with the edge, thou must quickly quench the blade in water to harden it.@");
 
 					//hasn't come along well at all
 					else if (UI_count_objects(AVATAR, SHAPE_SWORDBLANK, QUALITY_ANY, 0))
-						say("@Why, I cannot see that thou hast made any impression on this blank at all! Put thy muscles to work, " + polite_title + ", only with a strong arm and strong hammer canst thou craft a fine blade.@");
+						say("@Why, I cannot see that thou hast made any impression on this blank at all! Put thy muscles to work, ",
+							polite_title,
+							", only with a strong arm and strong hammer canst thou craft a fine blade.@");
 
 					//ok, what the fuck kind of swordblank DO they have?
 					else
@@ -160,7 +166,8 @@ Menion object#(0x4C0) ()
 						if (swordblank)
 						{
 							if (isBlackSword(swordblank))
-								say("He looks the Black Sword over curiously. As he starts to run a finger along the blade, he suddenly shivers with cold -- or fear -- and hands sword back to you quickly.~@Such a blade is born of dark magics, and is beyond my ken!@");
+								say("He looks the Black Sword over curiously. As he starts to run a finger along the blade, he suddenly shivers with cold -- or fear -- and hands sword back to you quickly.",
+									"~@Such a blade is born of dark magics, and is beyond my ken!@");
 							else
 							{
 								//it must be too hot
@@ -180,7 +187,7 @@ Menion object#(0x4C0) ()
 				if (UI_add_party_items(1, SHAPE_CUSTOM_SWORD, QUALITY_ANY, FRAME_ANY))
 				{
 					say("@But of course!@ He fetches the sword and presents it to you.");
-					say("@May thy blade stay true, " + polite_title + "!@");
+					say("@May thy blade stay true, ", polite_title, "!@");
 					gflags[MENION_HAS_SWORD] = false;
 				}
 				else

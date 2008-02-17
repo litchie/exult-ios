@@ -125,7 +125,8 @@ Gwenno object#(0x495) ()
 
 		if (IOLO->get_item_flag(SI_ZOMBIE) && gflags[INSANITY_BANE_DEAD])
 		{
-			say("@A thousand thanks for bringing back mine husband, " + avatarname + ".@");
+			say("@A thousand thanks for bringing back mine husband, ",
+				avatarname, ".@");
 			say("@I grieve that his wits seem to have left him. But at least he is safe with me.@");
 			say("@I shall do all that I can to aid thee in restoring him. Or gladly care for him all the remainder of my days... even as he is.@");
 		}
@@ -133,13 +134,13 @@ Gwenno object#(0x495) ()
 		if (!GWENNO->get_item_flag(MET))
 		{
 			GWENNO->set_item_flag(MET);
-			say("@What a relief to see thee again, " + avatarname + ".@");
+			say("@What a relief to see thee again, ", avatarname, ".@");
 			say("@I fear that thy work hath only begun. Batlin's deeds have only worsened the storms.@");
 			say("@As the sand dwindles within the Hourglass of Fate, the danger will only increase. Thou must find the answer quickly, Avatar!@");
 		}
 		else
 		{
-			say("@I have been doing much study, " + avatarname + ".@");
+			say("@I have been doing much study, ", avatarname, ".@");
 			say("@There is much I must tell thee before the sand runs down in the Hourglass of Fate.@");
 		}
 
@@ -194,7 +195,7 @@ Gwenno object#(0x495) ()
 
 			case "leave" (remove):
 				add("join");
-				say("@I understand, " + avatarname + "...@");
+				say("@I understand, ", avatarname, "...@");
 				GWENNO->remove_from_party();
 				npcAskWhereToWait(GWENNO);
 
@@ -234,7 +235,8 @@ Gwenno object#(0x495) ()
 				add(["New Sosaria", "change subject"]);
 
 			case "New Sosaria" (remove):
-				say("@According to the Mages of Moonshade, New Sosaria is the name of this land, " + avatarname + ", though 'tis often called Serpent Isle.@");
+				say("@According to the Mages of Moonshade, New Sosaria is the name of this land, ",
+					avatarname, ", though 'tis often called Serpent Isle.@");
 				say("@The forefathers of all the people here were dissenters of Lord British's rule.@");
 				add(["Serpent Isle", "Lord British's rule"]);
 

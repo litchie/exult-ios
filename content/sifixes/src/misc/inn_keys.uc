@@ -90,7 +90,7 @@ eggLockInnDoors object#(0xCB0) ()
 
 			script inn_keeper
 			{	call freeze;		face inn_keeper->direction_from(AVATAR);
-				actor frame STAND;}
+				actor frame standing;}
 		}
 
 		else
@@ -209,21 +209,24 @@ eggLockInnDoors object#(0xCB0) ()
 		{
 			if (UI_is_pc_inside())
 			{
-				inn_keeper.say("@I take it that thou art checking out then, " + polite_title + "?@");
+				inn_keeper.say("@I take it that thou art checking out then, ",
+					polite_title, "?@");
 				if (askYesNo())
 				{
 					say("@Here, let me have the room keys then. Worry not, I shall lock the doors myself.@");
-					say("@I hope thou didst enjoy thy stay at the " + inn_names[egg_quality] + "!@");
+					say("@I hope thou didst enjoy thy stay at the ",
+					    inn_names[egg_quality], "!@");
 					msg = "@Do come back!!@";
 				}
 				else
 				{
-					say("@Come back inside, then, and enjoy thy room, " + polite_title + "!@");
+					say("@Come back inside, then, and enjoy thy room, ",
+						polite_title, "!@");
 
 					inn_keeper->run_schedule();
 					script inn_keeper after 2 ticks
 					{	nohalt;						call unfreeze;
-						actor frame STAND;			say "@Enjoy thy stay!@";}
+						actor frame standing;			say "@Enjoy thy stay!@";}
 
 					AVATAR->halt_scheduled();
 					pos = get_object_position();
@@ -244,7 +247,8 @@ eggLockInnDoors object#(0xCB0) ()
 			}
 			else
 			{
-				inn_keeper.say("@Where didst thou go carrying my keys? Here, let me have them at once!~@Thank thee. Please don't -ever- do this again!@");
+				inn_keeper.say("@Where didst thou go carrying my keys? Here, let me have them at once!",
+					"~@Thank thee. Please don't -ever- do this again!@");
 				msg = "@Don't do this again!@";
 			}
 
@@ -254,7 +258,7 @@ eggLockInnDoors object#(0xCB0) ()
 			inn_keeper->run_schedule();
 			script inn_keeper after 2 ticks
 			{	nohalt;						call unfreeze;
-				actor frame STAND;			say msg;}
+				actor frame standing;			say msg;}
 		}
 	}
 

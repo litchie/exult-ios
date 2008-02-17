@@ -62,7 +62,8 @@ Resurrect 0x8FE ()
 					flag_dont_resurrect = true;
 
 				if (flag_dont_resurrect)
-					say("@I am sorry, my "+ msg +", but " + name + "'s body vanished when I tried to raise it! It seems that it was but a cruel of illusion...@");
+					say("@I am sorry, my ", msg, ", but ", name,
+						"'s body vanished when I tried to raise it! It seems that it was but a cruel of illusion...@");
 			}
 
 			if (!flag_dont_resurrect && (npc == DUPRE) &&
@@ -70,7 +71,8 @@ Resurrect 0x8FE ()
 			{
 				// Prevent resurrection of Dupre after the Crematorium:
 				flag_dont_resurrect = true;
-				say("@I am sorry, my " + msg + ", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to rause it...@");
+				say("@I am sorry, my ", msg,
+					", but I cannot -- this isn't Dupre's body, but merely shadow of him. See how it diappears when I try to rause it...@");
 			}
 
 			var pos = npc->get_object_position();
@@ -96,7 +98,7 @@ Resurrect 0x8FE ()
 
 				if (body->UI_resurrect())
 				{
-					say("@Now thy friend " + name + " doth live again.@");
+					say("@Now thy friend ", name, " doth live again.@");
 					if (npc->get_item_flag(IN_PARTY) &&
 					    npc->get_item_flag(SI_ZOMBIE))
 						npc->remove_from_party();
@@ -113,7 +115,7 @@ Resurrect 0x8FE ()
 						gflags[GWENNO_IS_DEAD] = false;
 				}
 				else
-					say("@Thy friend " + name + " hath been lost forever.@");
+					say("@Thy friend ", name, " hath been lost forever.@");
 			}
 		}
 	}

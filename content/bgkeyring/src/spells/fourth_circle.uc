@@ -62,14 +62,14 @@ spellConjure ()
 		{
 			script item
 			{	nohalt;						sfx 65;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;		call spellConjureEffect;}
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_1h;		call spellConjureEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -88,17 +88,17 @@ spellLightning (var target)
 			set_to_attack(target, SHAPE_LIGHTNING);
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame CAST_1;
-				sfx 65;						actor frame CAST_2;
-				actor frame SWING_2H_3;		actor frame SWING_2H_3;
-				attack;						actor frame STAND;}
+				actor frame raise_1h;		actor frame cast_up;
+				sfx 65;						actor frame cast_out;
+				actor frame strike_2h;		actor frame strike_2h;
+				attack;						actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+				actor frame raise_1h;		actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -115,9 +115,9 @@ spellMassCurse ()
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 			script item
-			{	nohalt;						actor frame CAST_1;
-				sfx 65;						actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;}
+			{	nohalt;						actor frame cast_up;
+				sfx 65;						actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;}
 			var targets = getEnemyTargetList(item, 31);
 			for (npc in targets)
 				if (!(UI_die_roll(1, 3) == 1))
@@ -130,9 +130,9 @@ spellMassCurse ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -148,8 +148,8 @@ spellReveal ()
 		{
 			script item
 			{	nohalt;						sfx 67;
-				actor frame SWING_1;		actor frame SWING_2;
-				actor frame SWING_3;}
+				actor frame raise_1h;		actor frame reach_1h;
+				actor frame strike_1h;}
 				
 			var findpos = get_object_position();
 			var offset_x = [-15, -15, -15, -5, -5, -5, 5, 5, 5, 15, 15, 15];
@@ -183,8 +183,8 @@ spellReveal ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -200,8 +200,8 @@ spellSeance ()
 		{
 			script item
 			{	nohalt;						sfx 67;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;}
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;}
 				
 			var pos = get_object_position();
 			var sprite_x = (pos[X] - 2);
@@ -222,19 +222,19 @@ spellSeance ()
 			gflags[SEANCE_FORSYTHE] = true;
 			
 			var hour = UI_game_hour();
-			var minutes = UI_game_minute();
+			var minute = UI_game_minute();
 			var delay;
 			
 			if (hour < 6)
 			{
 				delay = ((6 - hour) * 60);
-				delay = (delay + (60 - minutes));
+				delay = (delay + (60 - minute));
 				delay = (delay * 25);
 			}
 			else
 			{
 				delay = ((23 - hour) * 60);
-				delay = (delay + (60 - minutes));
+				delay = (delay + (60 - minute));
 				delay = (delay * 25);
 			}
 			
@@ -245,8 +245,8 @@ spellSeance ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -273,8 +273,8 @@ spellUnlockMagic (var target)
 				{
 					script item
 					{	nohalt;					face dir;
-						actor frame SWING_2;	actor frame SWING_1;
-						actor frame SWING_3;	sfx 66;}
+						actor frame reach_1h;	actor frame raise_1h;
+						actor frame strike_1h;	sfx 66;}
 						
 					script target after 6 ticks
 					{	nohalt;					frame target_frame - 3;}
@@ -284,8 +284,8 @@ spellUnlockMagic (var target)
 		}
 		script item
 		{	nohalt;						face dir;
-			actor frame SWING_2;		actor frame SWING_1;
-			actor frame SWING_3;		call spellFails;}
+			actor frame reach_1h;		actor frame raise_1h;
+			actor frame strike_1h;		call spellFails;}
 	}
 }
 
@@ -312,15 +312,15 @@ spellRechargeMagic (var target)
 			UI_sprite_effect(ANIMATION_PURPLE_BUBBLES, target[X + 1], target[Y + 1], 0, 0, 0, -1);
 			script item
 			{	nohalt;						face dir;
-				sfx 67;						actor frame CAST_2;
-				actor frame CAST_1;			actor frame USE;}
+				sfx 67;						actor frame cast_out;
+				actor frame cast_up;			actor frame ready;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame USE;			call spellFails;}
+				actor frame cast_out;			actor frame cast_up;
+				actor frame ready;			call spellFails;}
 		}
 	}
 }
@@ -350,8 +350,8 @@ spellBlink (var target)
 			                 (get_schedule_type() != IN_COMBAT);
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_2H_2;
-				actor frame SWING_1;		actor frame STAND;}
+				actor frame raise_1h;		actor frame reach_2h;
+				actor frame raise_1h;		actor frame standing;}
 
 			var targets;
 			if (move_party)
@@ -387,8 +387,8 @@ spellBlink (var target)
 
 		script item
 		{	nohalt;						face dir;
-			actor frame SWING_1;		actor frame SWING_2H_2;
-			actor frame SWING_1;		call spellFails;}
+			actor frame raise_1h;		actor frame reach_2h;
+			actor frame raise_1h;		call spellFails;}
 	}
 	
 	else if (event == SCRIPTED)

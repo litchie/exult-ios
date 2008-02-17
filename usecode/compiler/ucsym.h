@@ -39,6 +39,7 @@ class Uc_expression;
 class Uc_function;
 class Usecode_symbol;
 class Uc_class;
+class Uc_struct_symbol;
 class Uc_scope;
 class Basic_block;
 
@@ -71,6 +72,16 @@ class Uc_symbol
 protected:
 	std::string name;			// This will be the key.
 public:
+	enum Sym_types
+		{
+		Generic = 0,
+		Constant,
+		String,
+		Variable,
+		Struct,
+		Class,		// Class *instances*.
+		Member_var
+		};
 	friend class Uc_scope;
 	Uc_symbol(char *nm) : name(nm)
 		{  }
@@ -89,8 +100,14 @@ public:
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const
 		{ return 0; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return 0; }
 	virtual bool is_static() const
 		{ return false; }
+	virtual int get_sym_type() const
+		{ return Generic; }
+	virtual Uc_symbol *get_sym()
+		{ return this; }
 	};
 
 /*
@@ -120,6 +137,27 @@ public:
 	virtual int is_object_function(bool error = true) const;
 	virtual void set_is_obj_fun(int s)
 		{ is_obj_fun = s; }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Variable; }
+	};
+
+/*
+ *	A struct variable (weakly typed) that can be assigned to.
+ *	Basically, a wrapper around an usecode array.
+ */
+class Uc_struct_var_symbol : public Uc_var_symbol
+	{
+protected:
+	Uc_struct_symbol *type;
+public:
+	friend class Uc_scope;
+	Uc_struct_var_symbol(char *nm, int off, Uc_struct_symbol *t)
+		: Uc_var_symbol(nm, off), type(t)
+		{  }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Struct; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return type; }
 	};
 
 /*
@@ -136,6 +174,8 @@ public:
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const
 		{ return cls; }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Class; }
 	};
 
 /*
@@ -170,6 +210,63 @@ public:
 		{ return cls; }
 	virtual bool is_static() const
 		{ return true; }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Class; }
+	};
+
+/*
+ *	A symbol alias.
+ */
+class Uc_alias_symbol : public Uc_var_symbol
+	{
+protected:
+	Uc_var_symbol *var;
+public:
+	friend class Uc_scope;
+	Uc_alias_symbol(char *nm, Uc_var_symbol* v)
+		: Uc_var_symbol(nm, v->get_offset()), var(v)
+		{  }
+					// Gen. code to put result on stack.
+	virtual int gen_value(Basic_block *out)
+		{ return var->gen_value(out); }
+					// Gen. to assign from stack.
+	virtual int gen_assign(Basic_block *out)
+		{ return var->gen_assign(out); }
+					// Return var/int expression.
+	virtual Uc_expression *create_expression()
+		{ return var->create_expression(); }
+	virtual Uc_class *get_cls() const
+		{ return var->get_cls(); }
+	virtual bool is_static() const
+		{ return var->is_static(); }
+	virtual int is_object_function(bool error = true) const
+		{ return var->is_object_function(); }
+	virtual void set_is_obj_fun(int s)
+		{ var->set_is_obj_fun(s); }
+	virtual Uc_symbol *get_sym()
+		{ return var; }
+	virtual int get_sym_type() const
+		{ return var->get_sym_type(); }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return var->get_struct(); }
+	};
+
+/*
+ *	A symbol alias with a struct type.
+ */
+class Uc_struct_alias_symbol : public Uc_alias_symbol
+	{
+protected:
+	Uc_struct_symbol *type;
+public:
+	friend class Uc_scope;
+	Uc_struct_alias_symbol(char *nm, Uc_var_symbol* v, Uc_struct_symbol *t)
+		: Uc_alias_symbol(nm, v), type(t)
+		{  }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Struct; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return type; }
 	};
 
 /*
@@ -186,6 +283,46 @@ public:
 		{ return cls; }
 	};
 
+/* 
+ *	This represents a usecode struct (vaguely like in C++).
+ *	Performs no checks whatsoever about the size of assigned
+ *	usecode variable -- this is left to Exult.
+ */
+class Uc_struct_symbol : public Uc_symbol
+	{
+	typedef std::map<char *, int, String_compare> Var_map;
+	Var_map vars;
+	int num_vars;			// # member variables.
+public:
+	Uc_struct_symbol(char *nm)
+		: Uc_symbol(nm), num_vars(0)
+		{  }
+	~Uc_struct_symbol();
+	int add(char *nm)
+		{
+		if (is_dup(nm))
+			return 0;
+			// Add struct variable.
+		vars[nm] = num_vars; 
+		return num_vars++;
+		}
+	void merge_struct(Uc_struct_symbol *other);
+	const char *get_name() const
+		{ return name.c_str(); }
+	int get_num_vars() const
+		{ return num_vars; }
+	int search(const char *nm)
+		{
+		char *nm1 = (char *) nm;
+		Var_map::const_iterator it = vars.find(nm1);
+		if (it == vars.end())
+			return -1;
+		else
+			return (*it).second;
+		}
+	bool is_dup(char *nm);		// Already declared?
+	};
+
 /*
  *	A class member variable.
  */
@@ -198,6 +335,8 @@ public:
 	virtual int gen_value(Basic_block *out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(Basic_block *out);
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Member_var; }
 	};
 
 /*
@@ -222,6 +361,8 @@ public:
 		{ return value; }
 	bool byte_wanted() const
 		{ return want_byte; }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Constant; }
 	};
 
 /*
@@ -240,6 +381,8 @@ public:
 		{ return offset; }
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
+	virtual int get_sym_type() const
+		{ return Uc_symbol::String; }
 	};
 
 /*

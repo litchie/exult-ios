@@ -54,9 +54,11 @@ Wisp object#(0x500) ()
 	
 	if(!gflags[HAD_FIRST_WISP_TALK])
 	{
-		WISP_FACE.say("A ball of light approaches you.~~@'You' are not the entity known as 'Trellek'. 'You' call out in the manner of the species called 'emps'. 'Xorinia' was expecting the entity 'Trellek'.");
+		WISP_FACE.say("A ball of light approaches you.",
+			"~~@'You' are not the entity known as 'Trellek'. 'You' call out in the manner of the species called 'emps'. 'Xorinia' was expecting the entity 'Trellek'.");
 		say("@But that is not of importance. From the information 'I' have, the local manifestation before 'me' is the entity known as 'Avatar'.");
-		say("The Wisp glows brightly a second or two.~~@'Xorinia' wishes to exchange information with the human entity.@");
+		say("The Wisp glows brightly a second or two.",
+			"~~@'Xorinia' wishes to exchange information with the human entity.@");
 		gflags[HAD_FIRST_WISP_TALK] = true;
 		giveExperience(500);
 	}
@@ -71,7 +73,8 @@ Wisp object#(0x500) ()
 			add("Wisp");
 			
 		case "Wisp" (remove):
-			say("@This label has been implemented by human entities to name manifestations from the Xorinite dimension since the time when this dimension was discovered by Xorinite manifestations. Another common name is 'Will-o-the-wisp'.~~ @The preceding sample of information was provided without charge. Usually there is a fee for information.@");
+			say("@This label has been implemented by human entities to name manifestations from the Xorinite dimension since the time when this dimension was discovered by Xorinite manifestations. Another common name is 'Will-o-the-wisp'.",
+				"~~ @The preceding sample of information was provided without charge. Usually there is a fee for information.@");
 
 		case "information" (remove):
 			say("@The Undrian Council seeks information regarding a certain entity by the name of 'Alagner'. 'You' have access to this information. 'I' have information regarding a certain entity which 'you' are seeking. The Undrian Council proposes a trade.@");
@@ -111,7 +114,10 @@ Wisp object#(0x500) ()
 				say("@The entity known as 'Time Lord' is a being from the space/time dimension. The Xorinite Dimension has been communicating with 'Time Lord' for what 'humans' call 'centuries'.@");
 
 		case "notebook" (remove):
-			say("@The human entity is welcomed by 'Xorinia'. 'You' have brought the item 'notebook'. 'I' shall now absorb the information contained therein.@~~The Wisp glows brightly for a few seconds. The notebook remains in your possession.~~@'I' have completed my absorption of the information. 'You' may now return the item 'notebook' to the entity 'Alagner'.~~@And now for the exchange of information and delivery of a message.@");
+			say("@The human entity is welcomed by 'Xorinia'. 'You' have brought the item 'notebook'. 'I' shall now absorb the information contained therein.@",
+				"~~The Wisp glows brightly for a few seconds. The notebook remains in your possession.",
+				"~~@'I' have completed my absorption of the information. 'You' may now return the item 'notebook' to the entity 'Alagner'.",
+				"~~@And now for the exchange of information and delivery of a message.@");
 			gflags[DELIVERED_NOTEBOOK_TO_WISPS] = true;
 			giveExperience(700);
 			add(["exchange", "message"]);
@@ -122,17 +128,22 @@ Wisp object#(0x500) ()
 			add("Time Lord");
 			
 		case "exchange" (remove):
-			say("@Now for the information 'you' seek. 'This' dimension known as 'Britannia' is under attack by an entity called 'The Guardian'.~~@'The Guardian' lives in another dimension. 'Xorinia' sometimes trades information with this entity. Do 'you' want to know more about 'The Guardian'?@");
+			say("@Now for the information 'you' seek. 'This' dimension known as 'Britannia' is under attack by an entity called 'The Guardian'.",
+				"~~@'The Guardian' lives in another dimension. 'Xorinia' sometimes trades information with this entity. Do 'you' want to know more about 'The Guardian'?@");
 			if(askYesNo())
 			{
-				say("@'Xorinia' has digested information about 'The Guardian' and can state the following facts:~~@'The Guardian' possesses qualities which human entities label 'vain', 'greedy', 'egocentric', and 'malevolent'. 'The Guardian' thrives on power and domination. 'The Guardian' takes 'pleasure' from conquering other worlds. His sensory organs are now focused on 'this' dimension known as 'Britannia'.~~@'The Guardian' is attempting to enter 'this' dimension by means of an item human entities call a 'Moongate'. This 'Moongate' is not a 'red' color or 'blue' color 'Moongate', which 'Xorinia' knows is the standard form of this item. 'The Guardian' is building a 'Moongate' of the color 'black'.@");
+				say("@'Xorinia' has digested information about 'The Guardian' and can state the following facts:",
+					"~~@'The Guardian' possesses qualities which human entities label 'vain', 'greedy', 'egocentric', and 'malevolent'. 'The Guardian' thrives on power and domination. 'The Guardian' takes 'pleasure' from conquering other worlds. His sensory organs are now focused on 'this' dimension known as 'Britannia'.",
+					"~~@'The Guardian' is attempting to enter 'this' dimension by means of an item human entities call a 'Moongate'. This 'Moongate' is not a 'red' color or 'blue' color 'Moongate', which 'Xorinia' knows is the standard form of this item. 'The Guardian' is building a 'Moongate' of the color 'black'.@");
 				add("Black Gate");
 			}
 			else
 				say("@'Xorinia' always responds to free information. Transaction complete.@*");
 
 		case "Black Gate" (remove):
-			say("@The 'Black Gate' will be fully functional when the phenomenon known as 'Astronomical Alignment' next occurs.~~ @Although 'Xorinia' does not normally seek to influence actions of other manifestations, 'Xorinia' warns 'you' that if 'The Guardian' enters 'this' dimension, it will be the end of the dimension known as 'Britannia'. 'The Guardian' is powerful in 'his' own dimension. In 'your' dimension, 'he' will be unstoppable.~~@The Undrian Council sincerely hopes this information is useful. Transaction complete.@*");
+			say("@The 'Black Gate' will be fully functional when the phenomenon known as 'Astronomical Alignment' next occurs.",
+				"~~ @Although 'Xorinia' does not normally seek to influence actions of other manifestations, 'Xorinia' warns 'you' that if 'The Guardian' enters 'this' dimension, it will be the end of the dimension known as 'Britannia'. 'The Guardian' is powerful in 'his' own dimension. In 'your' dimension, 'he' will be unstoppable.",
+				"~~@The Undrian Council sincerely hopes this information is useful. Transaction complete.@*");
 			gflags[LEARNED_ABOUT_ALIGNMENT] = true;
 
 		case "bye":

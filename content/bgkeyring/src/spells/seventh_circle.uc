@@ -65,8 +65,8 @@ spellCreateGold (var target)
 		{
 			script item
 			{	nohalt;					face dir;
-				sfx 66;					actor frame SWING_1;
-				actor frame SWING_3;}
+				sfx 66;					actor frame raise_1h;
+				actor frame strike_1h;}
 			var pos = target->get_object_position();
 			UI_sprite_effect(13, pos[X], pos[Y], 0, 0, 0, -1);
 			script target after 5 ticks
@@ -76,7 +76,7 @@ spellCreateGold (var target)
 		{
 			script item
 			{	nohalt;					face dir;
-				actor frame SWING_1;	actor frame SWING_3;
+				actor frame raise_1h;	actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -95,16 +95,16 @@ spellDeathBolt (var target)
 			set_to_attack(target, SHAPE_DEATH_BOLT_NEW);
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			sfx 65;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		attack;}
+				actor frame cast_up;			sfx 65;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
+				actor frame cast_up;			actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -140,8 +140,8 @@ spellDelayedBlast (var target)
 					
 					script item
 					{	nohalt;						face dir;
-						sfx 65;						actor frame SWING_2H_3;
-						actor frame CAST_2;			actor frame CAST_1;}
+						sfx 65;						actor frame strike_2h;
+						actor frame cast_out;			actor frame cast_up;}
 					UI_sprite_effect(13, sprite_pos[X], sprite_pos[Y], 0, 0, 0, -1);
 				}
 				else
@@ -157,8 +157,8 @@ spellDelayedBlast (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2H_3;		actor frame CAST_2;
-				actor frame CAST_1;			call spellFails;}
+				actor frame strike_2h;		actor frame cast_out;
+				actor frame cast_up;			call spellFails;}
 		}
 	}
 }
@@ -179,8 +179,8 @@ spellEnergyField (var target)
 		if (inMagicStorm() && notblocked)
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;}
 			var field = UI_create_new_object(SHAPE_ENERGY_FIELD);
 			if (field)
 			{
@@ -204,8 +204,8 @@ spellEnergyField (var target)
 		if (failed)
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_2;		actor frame SWING_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame reach_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -224,16 +224,16 @@ spellEnergyMist (var target)
 			set_to_attack(target, SHAPE_ENERGY_MYST);
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		attack;}
+				sfx 65;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
+				actor frame cast_up;			actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -249,8 +249,8 @@ spellMassCharm ()
 		{
 			script item
 			{	nohalt;						sfx 65;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;}
 
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
@@ -274,9 +274,9 @@ spellMassCharm ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -290,9 +290,9 @@ spellMassMight ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				sfx 64;						actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				sfx 64;						actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;
 				call  spellSetFlag, MIGHT;}
 			var pos = get_object_position();
 			UI_sprite_effect(7, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
@@ -308,9 +308,9 @@ spellMassMight ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -324,8 +324,8 @@ spellRestoration ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				sfx 64;}
 			var targets = getFriendlyTargetList(item, 25);
 			for (npc in targets)
@@ -341,8 +341,8 @@ spellRestoration ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame raise_1h;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -359,8 +359,8 @@ spellMassDispelField ()
 		{
 			script item
 			{	nohalt;						sfx 65;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;}
 				
 			var dist = 25;
 			for (obj in field_shapes)
@@ -379,8 +379,8 @@ spellMassDispelField ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}

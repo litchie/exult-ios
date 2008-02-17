@@ -62,8 +62,8 @@ const char UC_PUSHSTATIC = 0x50;	// Push static.
 const char UC_POPSTATIC = 0x51;		// Pop static.
 const char UC_CALLO = 0x52;		// Call original.
 const char UC_CALLIND = 0x53;		// Call indirect.  Addr. on stack.
-const char UC_PUSHCLSVAR = 0x54;	// Push this->var.
-const char UC_POPCLSVAR = 0x55;		// Pop this->var.
+const char UC_PUSHTHV = 0x54;	// Push this->var.
+const char UC_POPTHV = 0x55;		// Pop this->var.
 const char UC_CALLM = 0x56;		// Call method (index is on stack).
 const char UC_CALLMS = 0x57;		// Call method (index is on stack).
 const char UC_CLSCREATE = 0x58;	// Create class instance.
@@ -71,6 +71,9 @@ const char UC_CLASSDEL = 0x59;	// Delete class instance.
 const char UC_AIDXS = 0x5a;		// Pop static array elem.
 const char UC_POPARRS = 0x5b;		// Pop into static array elem.
 const char UC_LOOPTOPS = 0x5c;		// Loop with static array
+const char UC_AIDXTHV = 0x5d;		// Pop this->var array elem.
+const char UC_POPARRTHV = 0x5e;		// Pop this->var array elem.
+const char UC_LOOPTOPTHV = 0x5f;		// Loop with this->var array.
 const char UC_PUSHFVAR = (char)0xc2;		// PUSH global flag using stack value.
 const char UC_POPFVAR = (char)0xc3;		// POP global flag using stack value.
 
@@ -81,6 +84,7 @@ const char UC_JNE32 = (char)0x85;
 const char UC_JMP32 = (char)0x86;
 const char UC_CMPS32 = (char)0x87;
 const char UC_LOOPTOPS32 = (char)0xdc;		// Loop with static array
+const char UC_LOOPTOPTHV32 = (char)0xdf;		// Loop with this->var array.
 /*	No real reason for this.
  *	const char UC_LOOP32 = 0xae;
 */

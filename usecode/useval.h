@@ -187,6 +187,10 @@ public:
 		return (type == class_obj_type && n + 1 < value.array.cnt) ?
 			value.array.elems[n + 1] : zval;
 		}
+	int get_class_var_count()
+		{			// Note:  Elem. 0 is the ->class.
+		return type == class_obj_type ? value.array.cnt -1 : 0;
+		}
 	Usecode_class_symbol *get_class_ptr() const
 		{ return (type == class_obj_type) ? 
 			value.array.elems[0].value.cptr : 0;

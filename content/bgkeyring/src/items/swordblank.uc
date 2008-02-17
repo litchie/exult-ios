@@ -133,8 +133,8 @@ SwordBlank shape#(0x29C) ()
 	{
 		//Animate the avatar
 		script AVATAR
-		{	face NORTH;					actor frame LEAN;
-			wait 3;						actor frame STAND;}
+		{	face north;					actor frame bowing;
+			wait 3;						actor frame standing;}
 
 		//Do the swordblank's scripting
 		script item
@@ -153,8 +153,8 @@ SwordBlank shape#(0x29C) ()
 		script AVATAR
 		{	//This is hardcoded because I can't be bothered finding
 			//the nearest firepit just to measure the direction
-			face NORTH;					actor frame LEAN;
-			wait 3;						actor frame STAND;}
+			face north;					actor frame bowing;
+			wait 3;						actor frame standing;}
 
 		//Do the swordblank's scripting
 		script item
@@ -171,8 +171,8 @@ SwordBlank shape#(0x29C) ()
 	{
 		//Animate the avatar
 		script AVATAR
-		{	face WEST;					actor frame LEAN;
-			wait 10;					frame STAND;}
+		{	face west;					actor frame bowing;
+			wait 10;					actor frame standing;}
 
 		//Do the swordblank's scripting
 		script item

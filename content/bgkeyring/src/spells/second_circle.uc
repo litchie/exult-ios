@@ -61,8 +61,8 @@ spellDestroyTrap (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;}
 			var nearby_traps = target->find_nearby(SHAPE_TRAP, 2, MASK_ALL_UNSEEN);
 			for (trap in nearby_traps)
 			{
@@ -88,8 +88,8 @@ spellDestroyTrap (var target)
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
 				call spellFails;}
 		}
 	}
@@ -110,8 +110,8 @@ spellEnchant (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 67;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;}
+				sfx 67;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;}
 			script target after 4 ticks
 			{	nohalt;						call spellEnchantEffect;}
 		}
@@ -119,8 +119,8 @@ spellEnchant (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_2;		actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+				actor frame reach_1h;		actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -138,17 +138,17 @@ spellFireBlast (var target)
 			set_to_attack(target, SHAPE_FIREBOLT);
 			script item
 			{	nohalt;						face dir;
-				sfx 65;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame SWING_2H_3;
-				actor frame SWING_2H_3;		attack;
-				actor frame STAND;}
+				sfx 65;						actor frame cast_up;
+				actor frame cast_out;			actor frame strike_2h;
+				actor frame strike_2h;		attack;
+				actor frame standing;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame CAST_2;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame cast_up;			actor frame cast_out;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -163,14 +163,14 @@ spellGreatLight ()
 		{
 			script item
 			{	nohalt;						sfx 68;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellCauseLight, 500;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_1;
-				actor frame SWING_3;		call spellFails;}
+			{	nohalt;						actor frame raise_1h;
+				actor frame strike_1h;		call spellFails;}
 		}
 	}
 }
@@ -186,8 +186,8 @@ spellMassCure ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				sfx 64;}
 			var targets = getFriendlyTargetList(item, 25);
 			for (npc in targets)
@@ -201,8 +201,8 @@ spellMassCure ()
 		else
 		{
 			script item
-			{	nohalt;						actor frame SWING_2;
-				actor frame SWING_1;		actor frame SWING_3;
+			{	nohalt;						actor frame reach_1h;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -220,8 +220,8 @@ spellProtection (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				sfx 109;					actor frame CAST_1;
-				actor frame SWING_1;		actor frame SWING_2H_3;}
+				sfx 109;					actor frame cast_up;
+				actor frame raise_1h;		actor frame strike_2h;}
 			
 			script target after 5 ticks
 			{	nohalt;
@@ -233,8 +233,8 @@ spellProtection (var target)
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame CAST_1;			actor frame SWING_1;
-				actor frame SWING_2H_3;		call spellFails;}
+				actor frame cast_up;			actor frame raise_1h;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }
@@ -255,14 +255,14 @@ spellTelekinesis (var target)
 			set_to_attack(target, SHAPE_TELEKINESIS);
 			script item
 			{	nohalt;						face dir;
-				sfx 67;						actor frame SWING_1;
-				actor frame SWING_3;		attack;}
+				sfx 67;						actor frame raise_1h;
+				actor frame strike_1h;		attack;}
 		}
 		else
 		{
 			script item
 			{	nohalt;						face dir;
-				actor frame SWING_1;		actor frame SWING_3;
+				actor frame raise_1h;		actor frame strike_1h;
 				call spellFails;}
 		}
 	}
@@ -290,17 +290,17 @@ spellWizardEye ()
 		if (inMagicStorm())
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				sfx 67;						actor frame CAST_2;
-				actor frame CAST_1;			actor frame SWING_2H_3;
+			{	nohalt;						actor frame cast_up;
+				sfx 67;						actor frame cast_out;
+				actor frame cast_up;			actor frame strike_2h;
 				call spellWizardEyeEffect;}
 		}
 		else
 		{
 			script item
-			{	nohalt;						actor frame CAST_1;
-				actor frame CAST_2;			actor frame CAST_1;
-				actor frame SWING_2H_3;		call spellFails;}
+			{	nohalt;						actor frame cast_up;
+				actor frame cast_out;			actor frame cast_up;
+				actor frame strike_2h;		call spellFails;}
 		}
 	}
 }

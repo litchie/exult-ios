@@ -93,6 +93,51 @@ Uc_var_symbol *Uc_class::add_symbol
 	}
 
 /*
+ *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_class::add_symbol
+	(
+	char *nm,
+	Uc_struct_symbol *s
+	)
+	{
+	if (scope.is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, num_vars++, s);
+	scope.add(var);
+	return var;
+	}
+
+/*
+ *	Add alias to class variable.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_class::add_alias
+	(
+	char *nm,
+	Uc_var_symbol *var,
+	Uc_struct_symbol *struc
+	)
+	{
+	if (scope.is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_alias_symbol *alias;
+	if (struc)
+		alias = new Uc_struct_alias_symbol(nm, var, struc);
+	else
+		alias = new Uc_alias_symbol(nm, var);
+	scope.add(alias);
+	return alias;
+	}
+
+/*
  *	Add method.
  */
 
@@ -137,7 +182,7 @@ void Uc_class::gen
 	)
 	{
 	vector<Uc_function *>::iterator it;
-	for (it = methods.begin(); it != methods.end(); it++)
+	for (it = methods.begin(); it != methods.end(); ++it)
 		{
 		Uc_function *m = *it;
 		if (m->get_parent() == &scope)
@@ -157,7 +202,7 @@ Usecode_symbol *Uc_class::create_sym
 	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(), 
 				Usecode_symbol::class_scope, num, num_vars);
 	vector<Uc_function *>::iterator it;
-	for (it = methods.begin(); it != methods.end(); it++)
+	for (it = methods.begin(); it != methods.end(); ++it)
 		{
 		Uc_function *m = *it;
 		cs->add_sym(m->create_sym());

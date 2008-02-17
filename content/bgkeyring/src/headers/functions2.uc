@@ -221,13 +221,17 @@ sellItems (var options, var shapes, var frames, var price, var quantity, var art
 			isplural = false;
 			
 		//Inform price to player:
-		say("@^" + makeSellPriceString(articles[choice_index], options[choice_index], isplural, price[choice_index], quantity_text[choice_index]) + dialog[1]);
-		
+		say("@^",
+			makeSellPriceString(articles[choice_index], options[choice_index],
+						isplural, price[choice_index],
+						quantity_text[choice_index]),
+			dialog[1]);
+
 		//See if player agrees with price:
 		if (askYesNo())
 		{
 			//Ask for quantity:
-			say(dialog[2] + quantity_tokens[choice_index] + dialog[3]);
+			say(dialog[2], quantity_tokens[choice_index], dialog[3]);
 			
 			//Sell everything to the party:
 			sell_result = sellAmountToParty(shapes[choice_index], frames[choice_index], quantity[choice_index], price[choice_index], 32, 1, true);

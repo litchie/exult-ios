@@ -58,7 +58,7 @@ Camille object#(0x4B1) ()
 			gflags[MET_CAMILLE] = true;
 		}
 		else
-			item.say("@How art thou, " + getPoliteTitle() + "?@ Camille asks.");
+			item.say("@How art thou, ", getPoliteTitle(), "?@ Camille asks.");
 
 		converse(0)
 		{
@@ -95,7 +95,9 @@ Camille object#(0x4B1) ()
 					else
 					{
 						//Man, she's such a sweetie!
-						say("@I am sorry, Avatar.@ She shakes her head sadly. @Thou dost not have the gold to be able to taste them.@~~ She stares at you for a moment, obviously thoughtful. Lowering her voice, she says,~~@Go ahead, Avatar, take one.@");
+						say("@I am sorry, Avatar.@ She shakes her head sadly. @Thou dost not have the gold to be able to taste them.@",
+						    "~~She stares at you for a moment, obviously thoughtful. Lowering her voice, she says,",
+							"~~@Go ahead, Avatar, take one.@");
 						if (UI_add_party_items(1, SHAPE_FOOD, QUALITY_ANY, FRAME_CARROTS, true))
 							say("Smiling gently, she hands you a carrot.");
 						else
@@ -167,8 +169,10 @@ Camille object#(0x4B1) ()
 						TOBIAS.say("@Oh come on, mother, take it! Thou canst not go inflicting thy charity on everyone else and not expect someone to do the same to thee!@");
 						TOBIAS.hide();
 					}
-					say("You see a cloud lift from her brow as her guilt gives way to reluctant happiness, and she sighs and looks sheepish.~@Oh, I do thank thee Avatar! I shall take Tobias to lunch at the Salty Dog!@");
-					say("@I am sorry that I have not the good grace to accept thy charity as it should be taken...~@I suppose we have worked to support ourselves for so long that it is sometimes hard to accept the gift of help from others. But I thank thee kindly, and so does Tobias!@ She smiles gratefully.");
+					say("You see a cloud lift from her brow as her guilt gives way to reluctant happiness, and she sighs and looks sheepish.",
+					    "~@Oh, I do thank thee Avatar! I shall take Tobias to lunch at the Salty Dog!@");
+					say("@I am sorry that I have not the good grace to accept thy charity as it should be taken...",
+					    "~@I suppose we have worked to support ourselves for so long that it is sometimes hard to accept the gift of help from others. But I thank thee kindly, and so does Tobias!@ She smiles gratefully.");
 				}
 				else
 				{

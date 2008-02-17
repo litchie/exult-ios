@@ -180,17 +180,19 @@ eggLockInnDoors object#() ()
 				//Make innkeeper revert to normal schedule and unfreeze him:
 				script inn_keeper after 2 ticks
 				{	nohalt;						call trueUnfreeze;
-					actor frame STAND;			say "@Do come back!!@";}
+					actor frame standing;			say "@Do come back!!@";}
 
 				//The innkeeper has reached destination (or gave up
 				//trying and called the usecode anyway...)
-				inn_keeper.say("@I take it that thou art checking out then, " + polite_title + "?@");
+				inn_keeper.say("@I take it that thou art checking out then, ",
+				               polite_title + "?@");
 				//Ask Avatar is he is checking out:
 				if (askYesNo())
 				{
 					//Yes he is;
 					say("@Here, let me have the room keys then. Worry not, I shall lock the doors myself.@");
-					say("@I hope thou didst enjoy thy stay at the " + inn_names[egg_quality] + "!@");
+					say("@I hope thou didst enjoy thy stay at the ",
+					    inn_names[egg_quality], "!@");
 					
 					//Unfreeze Avatar:
 					AVATAR->trueUnfreeze();
@@ -198,7 +200,8 @@ eggLockInnDoors object#() ()
 				else
 				{
 					//No, he is not;
-					say("@Come back inside, then, and enjoy thy room, " + polite_title + "!@");
+					say("@Come back inside, then, and enjoy thy room, ",
+					    polite_title, "!@");
 					var step_to = step_directions[egg_quality];
 					//Halt scripts:
 					AVATAR->halt_scheduled();

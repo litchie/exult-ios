@@ -363,11 +363,11 @@ useHammerOnSwordblank ()
 		//Swing that hammer good
 		script AVATAR
 		{	face directionFromAvatar(item);
-			actor frame USE;			actor frame SWING_1;
-			actor frame SWING_3;		sfx SOUND_HAMMER_SWORD;	//Clang
+			actor frame ready;			actor frame raise_1h;
+			actor frame strike_1h;		sfx SOUND_HAMMER_SWORD;	//Clang
 			//Set the effect that the bashing is having on the swordblank
-			call temperSword;			actor frame USE;
-			actor frame STAND;}
+			call temperSword;			actor frame ready;
+			actor frame standing;}
 	}
 }
 
@@ -434,7 +434,8 @@ useSwordOnTrough object#() ()
 			if (get_item_quality() == SWORDBLANK_QUENCH)
 			{
 				set_item_quality(SWORDBLANK_READY);
-				AVATAR.say("The water hisses and bubbles as you sink the red-hot swordblank into it.~When you draw it out, the cold blade feels lighter in your hand and has taken on an deadly sheen.");
+				AVATAR.say("The water hisses and bubbles as you sink the red-hot swordblank into it.",
+					"~When you draw it out, the cold blade feels lighter in your hand and has taken on an deadly sheen.");
 			}
 			item->setCooledFrame();
 		}
