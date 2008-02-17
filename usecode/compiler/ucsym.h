@@ -195,6 +195,25 @@ public:
 	};
 
 /*
+ *	A struct variable (weakly typed) that can be assigned to.
+ *	Basically, a wrapper around an usecode array.
+ */
+class Uc_static_struct_var_symbol : public Uc_static_var_symbol
+	{
+protected:
+	Uc_struct_symbol *type;
+public:
+	friend class Uc_scope;
+	Uc_static_struct_var_symbol(char *nm, int off, Uc_struct_symbol *t)
+		: Uc_static_var_symbol(nm, off), type(t)
+		{  }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Struct; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return type; }
+	};
+
+/*
  *	A static (persistent) class.
  */
 class Uc_static_class_symbol : public Uc_static_var_symbol
@@ -208,8 +227,6 @@ public:
 	virtual Uc_expression *create_expression();
 	virtual Uc_class *get_cls() const
 		{ return cls; }
-	virtual bool is_static() const
-		{ return true; }
 	virtual int get_sym_type() const
 		{ return Uc_symbol::Class; }
 	};
@@ -233,10 +250,6 @@ public:
 	virtual int gen_assign(Basic_block *out)
 		{ return var->gen_assign(out); }
 					// Return var/int expression.
-	virtual Uc_expression *create_expression()
-		{ return var->create_expression(); }
-	virtual Uc_class *get_cls() const
-		{ return var->get_cls(); }
 	virtual bool is_static() const
 		{ return var->is_static(); }
 	virtual int is_object_function(bool error = true) const
@@ -246,9 +259,11 @@ public:
 	virtual Uc_symbol *get_sym()
 		{ return var; }
 	virtual int get_sym_type() const
-		{ return var->get_sym_type(); }
+		{ return Uc_symbol::Variable; }
 	virtual Uc_struct_symbol *get_struct() const
-		{ return var->get_struct(); }
+		{ return 0; }
+	virtual Uc_class *get_cls() const
+		{ return 0; }
 	};
 
 /*
@@ -267,6 +282,28 @@ public:
 		{ return Uc_symbol::Struct; }
 	virtual Uc_struct_symbol *get_struct() const
 		{ return type; }
+	};
+
+/*
+ *	A symbol alias with a struct type.
+ */
+class Uc_class_alias_symbol : public Uc_alias_symbol
+	{
+protected:
+	Uc_class *cls;
+public:
+	friend class Uc_scope;
+	Uc_class_alias_symbol(char *nm, Uc_var_symbol* v, Uc_class *c)
+		: Uc_alias_symbol(nm, v), cls(c)
+		{  }
+	virtual int get_sym_type() const
+		{ return Uc_symbol::Class; }
+	virtual Uc_class *get_cls() const
+		{ return cls; }
+	virtual int is_object_function(bool error = true) const
+		{ return false; }
+	virtual void set_is_obj_fun(int s)
+		{  }
 	};
 
 /*
@@ -303,8 +340,8 @@ public:
 		if (is_dup(nm))
 			return 0;
 			// Add struct variable.
-		vars[nm] = num_vars; 
-		return num_vars++;
+		vars[nm] = ++num_vars; 
+		return num_vars;
 		}
 	void merge_struct(Uc_struct_symbol *other);
 	const char *get_name() const

@@ -238,11 +238,11 @@ class_item:
 	VAR { has_ret = true; } class_var_def
 		{ has_ret = false; }
 	| VAR alias_tok IDENTIFIER '=' declared_var ';'
-		{ cur_class->add_alias($3, $5, struct_type); }
+		{ cur_class->add_alias($3, $5); }
 	| STRUCT '<' defined_struct '>' { struct_type = $3; } struct_decl_list ';'
 		{ struct_type = 0; }
 	| STRUCT '<' defined_struct '>' alias_tok IDENTIFIER '=' declared_var ';'
-		{ cur_class->add_alias($6, $8); }
+		{ cur_class->add_alias($6, $8, $3); }
 	| CLASS '<' defined_class '>' { class_type = $3; } method
 		{ class_type = 0; }
 	| method
@@ -503,11 +503,11 @@ stmt_declaration:
 	VAR var_decl_list ';'
 		{ $$ = $2; }
 	| VAR alias_tok IDENTIFIER '=' declared_var ';'
-		{ cur_fun->add_alias($3, $5, struct_type); $$ = 0; }
+		{ cur_fun->add_alias($3, $5); $$ = 0; }
 	| STRUCT '<' defined_struct '>' { struct_type = $3; } struct_decl_list ';'
 		{ struct_type = 0; $$ = $6; }
 	| STRUCT '<' defined_struct '>' alias_tok IDENTIFIER '=' declared_var ';'
-		{ cur_fun->add_alias($6, $8); $$ = 0; }
+		{ cur_fun->add_alias($6, $8, $3); $$ = 0; }
 	| CLASS '<' defined_class '>' { class_type = $3; } class_decl_list ';'
 		{ class_type = 0; $$ = $6; }
 	| CLASS '<' defined_class '>' alias_tok IDENTIFIER '=' declared_var ';'
@@ -515,7 +515,8 @@ stmt_declaration:
 		if (!$8->get_cls())
 			yyerror("Can't convert non-class into class.");
 		else if (!Incompatible_classes_error($8->get_cls(), $3))
-			cur_fun->add_alias($6, $8);
+				// Alias may be of different (compatible) class.
+			cur_fun->add_alias($6, $8, $3);
 		$$ = 0;
 		}
 	| STRING string_decl_list ';'
@@ -773,6 +774,10 @@ class_expr:
 
 static_decl:
 	STATIC_ VAR static_var_decl_list ';'
+	| STATIC_ STRUCT '<' defined_struct '>'
+		{ struct_type = $4; }
+		static_struct_var_decl_list ';'
+		{ struct_type = 0; }
 	| STATIC_ CLASS '<' defined_class '>'
 		{ class_type = $4; }
 		static_cls_decl_list ';'
@@ -791,6 +796,21 @@ static_var:
 			cur_fun->add_static($1);
 		else
 			Uc_function::add_global_static($1);
+		}
+	;
+
+static_struct_var_decl_list:
+	static_struct_var
+	| static_struct_var_decl_list ',' static_struct_var
+	;
+
+static_struct_var:
+	IDENTIFIER
+		{
+		if (cur_fun)
+			cur_fun->add_static($1, struct_type);
+		else
+			Uc_function::add_global_static($1, struct_type);
 		}
 	;
 

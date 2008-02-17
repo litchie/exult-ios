@@ -190,18 +190,57 @@ Uc_var_symbol *Uc_function::add_symbol
 Uc_var_symbol *Uc_function::add_alias
 	(
 	char *nm,
-	Uc_var_symbol *var,
+	Uc_var_symbol *var
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_alias_symbol *alias = new Uc_alias_symbol(nm, var);
+	cur_scope->add(alias);
+	return alias;
+	}
+
+/*
+ *	Add an alias to variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_alias
+	(
+	char *nm,
+	Uc_var_symbol *v,
 	Uc_struct_symbol *struc
 	)
 	{
 	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_alias_symbol *alias;
-	if (struc)
-		alias = new Uc_struct_alias_symbol(nm, var, struc);
-	else
-		alias = new Uc_alias_symbol(nm, var);
+	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
+	Uc_alias_symbol *alias = new Uc_struct_alias_symbol(nm, var, struc);
+	cur_scope->add(alias);
+	return alias;
+	}
+
+/*
+ *	Add an alias to variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_alias
+	(
+	char *nm,
+	Uc_var_symbol *v,
+	Uc_class *c
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>(v->get_sym());
+	Uc_alias_symbol *alias = new Uc_class_alias_symbol(nm, var, c);
 	cur_scope->add(alias);
 	return alias;
 	}
@@ -219,6 +258,23 @@ void Uc_function::add_static
 		return;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_static_var_symbol(nm, num_statics++);
+	cur_scope->add(var);
+	}
+
+/*
+ *	Add a new static struct variable to the current scope.
+ */
+
+void Uc_function::add_static
+	(
+	char *nm,
+	Uc_struct_symbol *type
+	)
+	{
+	if (cur_scope->is_dup(nm))
+		return;
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_struct_var_symbol(nm, num_statics++, type);
 	cur_scope->add(var);
 	}
 
@@ -314,6 +370,25 @@ void Uc_function::add_global_static
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_static_var_symbol(nm, 
 							-num_global_statics);
+	globals.add(var);
+	}
+
+/*
+ *	Add a global static.
+ */
+
+void Uc_function::add_global_static
+	(
+	char *nm,
+	Uc_struct_symbol *type
+	)
+	{
+	if (globals.is_dup(nm))
+		return;
+	num_global_statics++;		// These start with 1.
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_struct_var_symbol(nm, 
+							-num_global_statics, type);
 	globals.add(var);
 	}
 
