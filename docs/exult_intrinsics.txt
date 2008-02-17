@@ -1544,8 +1544,8 @@ obj->book_mode()
 UI_book_mode_ex(bool is_scroll, int font)                                [Exult]
 UI_book_mode_ex(bool is_scroll, int font, int gump)
 
-    Used to display books and scrolls; displays a book gump if 'show_loc' is
-    'false' or a scroll shape if it is 'true'. The font shape in 'FONTS.VGA'
+    Used to display books and scrolls; displays a book gump if 'is_scroll' is
+    'false' or a scroll gump if it is 'true'. The font shape in 'FONTS.VGA'
     used to render the text is specified in 'font'. If 'gump' is specified, and
     is >=0, Exult will use it as being the shape from 'GUMPS.VGA' to display; if
     'gump' <= -1, Exult will use the default shapes for scrolls and books
@@ -1603,19 +1603,20 @@ UI_sprite_effect(int sprite, int x, int y, int vel_x, int vel_y, int reps)
     it is needed.
 
 UI_obj_sprite_effect(object obj, int sprite, int rel_x, int rel_y, int vel_x,
-        int vel_y, int reps)
+        int vel_y, int frnum, int reps)
 obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y,
-        int reps)
+        int frnum, int reps)
 
     Creates a sprite effect from 'SPRITES.VGA'. This sprite effect is tied to
     'obj'; if 'obj' moves, the sprite will move along. 'sprite' is the sprite's
     shape number, ('rel_x', 'rel_y') is the relative (x, y) offset of the sprite
     relative to the position of 'obj', ('vel_x', 'vel_y') is the (x, y) speed
     (i.e., change in coordinates at every tick, and in addition to any motion
-    of 'obj'). If 'reps' < 0, the sprite effect goes through all frames (at the
-    rate of one frame per tick) and deletes itself; otherwise, 'reps' is the
-    total number of ticks the animation will last before deleting itself,
-    looping the sprite's frames if it is needed.
+    of 'obj'). 'frnum' is the initial frame of the sprite effect. If 'reps' <
+    0, the sprite effect goes through all frames (at the rate of one frame per
+    tick) and deletes itself; otherwise, 'reps' is the total number of ticks
+    the animation will last before deleting itself, looping the sprite's frames
+    if it is needed.
 
 --------------------------------------------------------------------------------
 MISCELLANEOUS
