@@ -80,10 +80,16 @@ static bool has_ret = false;
 static int repeat_nesting = 0;
 static bool byte_const = false;
 
-struct ID_info
+struct Fun_id_info
 	{
 	Uc_function_symbol::Function_kind kind;
 	int id;
+	};
+
+struct Member_selector
+	{
+	Uc_expression *expr;
+	char *name;
 	};
 
 %}
@@ -104,7 +110,8 @@ struct ID_info
 	class Uc_array_expression *exprlist;
 	class std::vector<int> *intlist;
 	class std::vector<Uc_statement *> *stmtlist;
-	struct ID_info *funid;
+	struct Fun_id_info *funid;
+	struct Member_selector *membersel;
 	int intval;
 	char *strval;
 	}
@@ -165,6 +172,7 @@ struct ID_info
 %type <intval> opt_int direction converse_options opt_var actor_frames
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
 %type <funid> opt_funid
+%type <membersel> member_selector
 %type <intlist> string_list
 %type <sym> declared_sym
 %type <var> declared_var param
@@ -364,7 +372,7 @@ function_proto:
 opt_funid:
 	SHAPENUM '(' const_int_val ')'
 		{
-		$$ = new ID_info();
+		$$ = new Fun_id_info();
 		$$->id = $3;
 		if ($3 < 0)
 			{
@@ -377,13 +385,13 @@ opt_funid:
 		}
 	| OBJECTNUM '(' opt_const_int_val ')'
 		{
-		$$ = new ID_info();
+		$$ = new Fun_id_info();
 		$$->kind = Uc_function_symbol::object_fun;
 		$$->id = $3;
 		}
 	| opt_const_int_val
 		{
-		$$ = new ID_info();
+		$$ = new Fun_id_info();
 		$$->id = $1;
 		$$->kind = Uc_function_symbol::utility_fun;
 		}
@@ -561,8 +569,18 @@ var_decl_list:
 	;
 
 enum_decl:				/* Decls. the elems, not the enum. */
-	ENUM IDENTIFIER { enum_val = -1; } '{' enum_item_list '}' ';'
+	ENUM IDENTIFIER { enum_val = -1; }
+			opt_enum_type '{' enum_item_list '}' ';'
+		{byte_const = false;}
 	;
+
+opt_enum_type:
+	':' UCC_INT
+		{byte_const = false;}
+	| ':' UCC_CHAR
+		{byte_const = true;}
+	|			/* Empty. */
+		{byte_const = false;}
 
 enum_item_list:
 	enum_item_list ',' enum_item
@@ -575,9 +593,9 @@ enum_item:
 		{			/* Increment last value.	*/
 		++enum_val;
 		if (cur_fun)
-			cur_fun->add_int_const_symbol($1, enum_val);
+			cur_fun->add_int_const_symbol($1, enum_val, byte_const);
 		else			// Global.
-			Uc_function::add_global_int_const_symbol($1, enum_val);
+			Uc_function::add_global_int_const_symbol($1, enum_val, byte_const);
 		}
 	;
 
@@ -1619,39 +1637,6 @@ nonclass_expr:
 expression:
 	primary
 		{ $$ = $1; }
-	| primary hierarchy_tok IDENTIFIER
-		{
-		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1);
-		if (!expr || $1->get_type() != Uc_symbol::Struct)
-			{
-			yyerror("Expression is not a 'struct'");
-			$$ = new Uc_int_expression(0);
-			}
-		else
-			{
-			Uc_var_symbol *var = expr->get_var();
-			Uc_struct_symbol *base = var->get_struct();
-			int offset = base ? base->search($3) : -1;
-			if (offset < 0)
-				{
-				char buf[150];
-				sprintf(buf, "'%s' does not belong to struct '%s'",
-						$3, base->get_name());
-				yyerror(buf);
-				$$ = new Uc_int_expression(0);
-				}
-			else
-				{
-				Uc_int_expression *index = new Uc_int_expression(offset);
-				if (var->is_static())
-					$$ = new Uc_static_arrayelem_expression(var, index);
-				else if (var->get_sym_type() == Uc_symbol::Member_var)
-					$$ = new Uc_class_arrayelem_expression(var, index);
-				else
-					$$ = new Uc_arrayelem_expression(var, index);
-				}
-			}
-		}
 	| nonclass_expr '+' nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_ADD, $1, $3); }
 	| nonclass_expr '-' nonclass_expr
@@ -1761,6 +1746,40 @@ expression_list:
 primary:
 	INT_LITERAL
 		{ $$ = new Uc_int_expression($1); }
+	| member_selector
+		{
+		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1->expr);
+		if (!expr || $1->expr->get_type() != Uc_symbol::Struct)
+			{
+			yyerror("Expression is not a 'struct'");
+			$$ = new Uc_int_expression(0);
+			}
+		else
+			{
+			Uc_var_symbol *var = expr->get_var();
+			Uc_struct_symbol *base = var->get_struct();
+			int offset = base ? base->search($1->name) : -1;
+			if (offset < 0)
+				{
+				char buf[150];
+				sprintf(buf, "'%s' does not belong to struct '%s'",
+						$1->name, base->get_name());
+				yyerror(buf);
+				$$ = new Uc_int_expression(0);
+				}
+			else
+				{
+				Uc_int_expression *index = new Uc_int_expression(offset);
+				if (var->is_static())
+					$$ = new Uc_static_arrayelem_expression(var, index);
+				else if (var->get_sym_type() == Uc_symbol::Member_var)
+					$$ = new Uc_class_arrayelem_expression(var, index);
+				else
+					$$ = new Uc_arrayelem_expression(var, index);
+				}
+			}
+		delete $1;
+		}
 	| declared_var_value
 		{ $$ = $1; }
 	| declared_var '[' expression ']'
@@ -1813,10 +1832,19 @@ hierarchy_tok:
 	| '.'
 	;
 
-function_call:
-	primary hierarchy_tok IDENTIFIER opt_original '(' opt_expression_list ')'
+member_selector:
+	primary hierarchy_tok IDENTIFIER
 		{
-		$$ = cls_function_call($1, cur_class, $3, $4, $6);
+		$$ = new Member_selector();
+		$$->expr = $1; $$->name = $3;
+		}
+	;
+
+function_call:
+	member_selector opt_original '(' opt_expression_list ')'
+		{
+		$$ = cls_function_call($1->expr, cur_class, $1->name, $2, $4);
+		delete $1;
 		}
 	| IDENTIFIER opt_original '(' opt_expression_list ')'
 		{

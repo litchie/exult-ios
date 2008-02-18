@@ -1,4 +1,11 @@
 2008-02-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	UCC: Improved handling of structs. Added a manner of specifying the integer
+	size of enums with the (optional) constructs
+		enum IDENTIFIER : int { const list };
+		enum IDENTIFIER : byte { const list };
+		enum IDENTIFIER : char { const list };
+
+2008-02-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.cc: Fixed occasional segfault when doing garbage collection
 	  on SFX cache.
 	* pathfinder/Zombie.cc: End path if new z coordinate is less than zero.
