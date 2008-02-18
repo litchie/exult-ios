@@ -1,3 +1,9 @@
+2008-02-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Audio.cc: Fixed occasional segfault when doing garbage collection
+	  on SFX cache.
+	* pathfinder/Zombie.cc: End path if new z coordinate is less than zero.
+	* Others: Switched iterator postfix increment to faster prefix increment.
+
 2008-02-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Fixed usecode structs generating wrong indices into array. Fixed aliases
 	to structs and classes so they can be of differing base types. Static structs

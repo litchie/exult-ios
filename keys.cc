@@ -351,7 +351,7 @@ void KeyBinder::ShowHelp()
 	
 	std::vector<string>::iterator iter;
 	
-	for (iter = keyhelp.begin(); iter != keyhelp.end(); iter++)
+	for (iter = keyhelp.begin(); iter != keyhelp.end(); ++iter)
 		scroll->add_text(iter->c_str());
 	
 	scroll->paint();
@@ -371,7 +371,7 @@ void KeyBinder::ShowCheatHelp()
 	
 	std::vector<string>::iterator iter;
 	
-	for (iter = cheathelp.begin(); iter != cheathelp.end(); iter++)
+	for (iter = cheathelp.begin(); iter != cheathelp.end(); ++iter)
 		scroll->add_text(iter->c_str());
 	
 	scroll->paint();

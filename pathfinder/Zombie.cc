@@ -142,6 +142,13 @@ int Zombie::GetNextStep(Tile_coord& n, bool& done)
 	*major_coord = (*major_coord + c_num_tiles)%c_num_tiles;
 	*minor_coord1 = (*minor_coord1 + c_num_tiles)%c_num_tiles;
 	*minor_coord2 = (*minor_coord2 + c_num_tiles)%c_num_tiles;
+	if (cur.tz < 0)		// We are below ground level.
+		{
+		cur.tz = 0;
+		major_distance = 0;
+		done = true;
+		return (0);
+		}
 	n = cur;			// Return new tile.
 	done = (major_distance <= 0);	// Indicate if this is the last one.
 	return (1);
