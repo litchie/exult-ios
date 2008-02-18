@@ -362,6 +362,7 @@ public:
 		{
 		while (cache)
 			unload(cache->data);
+		cache = 0;
 		}
 
 	// Remove unused sounds from the cache.
@@ -385,7 +386,9 @@ public:
 			else
 				prev = each;
 			cnt++;
-			each = each->next;
+			// Causes occasional segfault:
+			//each = each->next;
+			each = prev->next;
 			}
 		}
 	};
@@ -507,8 +510,6 @@ void Audio::Init(int _samplerate,int _channels)
 
 }
 
-//Free up memory used by the just played WAV. We only ever play a sound
-//once and discard it.
 void Audio::channel_complete_callback(int chan)
 {
 	Mix_Chunk *done_chunk = Mix_GetChunk(chan);

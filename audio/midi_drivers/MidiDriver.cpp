@@ -136,7 +136,7 @@ MidiDriver *MidiDriver::createInstance(std::string desired_driver,uint32 sample_
 		std::vector<const MidiDriver::MidiDriverDesc*>::iterator it;
 
 		// Ok, it hasn't so search for the driver
-		for (it = midi_drivers.begin(); it < midi_drivers.end(); it++) {
+		for (it = midi_drivers.begin(); it < midi_drivers.end(); ++it) {
 
 			// Found it (case insensitive)
 			if (!Pentagram::strcasecmp(drv, (*it)->name)) {

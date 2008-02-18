@@ -315,11 +315,12 @@ public:
 	dereferences the Search_node* stored). This might cause an endless
 	loop.
 	*/
-		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end();) {
+		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end();)
+			{
 			Search_node *sn = *X;
-			X++;
+			++X;
 			delete sn; // only delete this _after_ iterating
-}
+			}
 #endif
 		lookup.clear();		// Remove all nodes.
 		}
