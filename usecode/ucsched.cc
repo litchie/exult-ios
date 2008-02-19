@@ -313,12 +313,6 @@ void Usecode_script::handle_event
 	)
 	{
 	Actor *act = obj->as_actor();
-	if (act && !is_activated())
-		{	// ++++ Testing to see if this makes it harder
-			// to outrun teleport storm at start of SI.
-		act->stop();
-		act->set_action(0);
-		}
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->set_casting_mode(Actor::show_casting_frames);
 	Usecode_internal *usecode = (Usecode_internal *) udata;
