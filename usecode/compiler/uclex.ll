@@ -340,7 +340,7 @@ cast_out	return CAST_OUT;
 "||"		return OR;
 "!"		return NOT;
 
-[a-zA-Z][a-zA-Z0-9_]*	{
+[a-zA-Z_][a-zA-Z0-9_]*	{
 			yylval.strval = strdup(yytext);
 			return IDENTIFIER;
 			}
