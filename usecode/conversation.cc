@@ -588,7 +588,7 @@ void Conversation::paint_faces
 					// Use translucency.
 			sman->paint_shape(
 				finfo->face_rect.x + face_xleft,
-				finfo->face_rect.y + face_yabove, face, finfo->large_face);
+				finfo->face_rect.y + face_yabove, face, true);
 			}
 		if (text)		// Show text too?
 			{
