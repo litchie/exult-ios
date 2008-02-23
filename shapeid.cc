@@ -85,11 +85,6 @@ Shape_manager::Shape_manager
 	{
 	assert(instance == 0);
 	instance = this;
-	std::string str;
-	config->value("config/gameplay/bg_paperdolls", str, "yes");
-	if (GAME_SI || str == "yes")
-		paperdolls_enabled = true;
-	config->set("config/gameplay/bg_paperdolls", str, true);
 	}
 
 /*
@@ -211,10 +206,13 @@ void Shape_manager::load
 	files[SF_FACES_VGA].load(source);
 
 	files[SF_EXULT_FLX].load(EXULT_FLX);
-	read_shape_info();
+
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;
 	files[SF_GAME_FLX].load(gamedata);
+
+	read_shape_info();
+
 	if (!fonts)
 		{
 		fonts = new Fonts_vga_file();
