@@ -1388,7 +1388,7 @@ script_command:
 				true);	// Want byte.
 		}
 	| ACTOR FRAME actor_frames ';'
-		{ $$ = new Uc_int_expression(UC_ADD + ($3 & 15), true); }
+		{ $$ = new Uc_int_expression(0x61 + ($3 & 15), true); }
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg, true); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
