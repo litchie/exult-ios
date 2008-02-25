@@ -1,3 +1,6 @@
+2008-02-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	UCC: Fixed actor frame keyword bug.
+
 2008-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed palette rotation bug on portraits by making them all translucent.
 	* Fixed crash on SI when BG Paperdolls are turned off and a character's gump
