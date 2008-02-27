@@ -231,10 +231,9 @@ Blackrock_Potion shape#(0x450) ()
 					if (npc_num == BATLIN)
 					{
 						//Batlin is a special case, but he IS affected:
-						UI_show_npc_face(0xFFE6, 0x0000);
-						say("Batlin squirms and contorts for a while, and chokes @Damn thee, Avatar!@ very faintly. In what appears to be a spasm, Batlin makes a gesture and vanishes before your eyes.");
+						BATLIN.say("Batlin squirms and contorts for a while, and chokes @Damn thee, Avatar!@ very faintly. In what appears to be a spasm, Batlin makes a gesture and vanishes before your eyes.");
 						gflags[0x00DA] = true;
-						UI_remove_npc(UI_get_npc_object(0xFFE6));
+						UI_remove_npc(UI_get_npc_object(BATLIN));
 					}
 					else
 					{

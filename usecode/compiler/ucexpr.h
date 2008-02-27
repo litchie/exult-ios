@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include <string>
 #include "ucloc.h"
+#include "opcodes.h"
 
 using std::vector;
 
@@ -193,11 +194,11 @@ class Uc_binary_expression : public Uc_expression
 	{
 	int opcode;			// Should be the UC_<opcode>
 	Uc_expression *left, *right;	// Operands to add, sub, etc.
-	bool want_byte;		// If we want to use pushb instead of pushi.
+	int intop;		// If we want to use pushb or pushi32 instead of pushi.
 public:
 	Uc_binary_expression(int o, Uc_expression *l, Uc_expression *r,
-						bool b = false)
-		: opcode(o), left(l), right(r), want_byte(b)
+						int iop = UC_PUSHI)
+		: opcode(o), left(l), right(r), intop(iop)
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
@@ -242,12 +243,16 @@ public:
 class Uc_int_expression : public Uc_expression
 	{
 	int value;
-	bool want_byte;
+	int opcode;
 public:
-	Uc_int_expression(int v, bool b = false) : value(v), want_byte(b)
+	Uc_int_expression(int v, int op = UC_PUSHI) : opcode(op)
 		{
-		if (want_byte)
-			value &= 0xff;
+		if (opcode == UC_PUSHB)
+			value = (char)(v & 0xff);
+		else if (opcode == UC_PUSHI)
+			value = (short)(v & 0xffff);
+		else
+			value = (int)(v & 0xffffffff);
 		}
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);

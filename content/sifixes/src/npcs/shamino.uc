@@ -24,7 +24,7 @@
 
 extern askShaminoBelongings 0x863 ();
 
-const int BEATRIX_FACE = 0xFEE2;
+const int BEATRIX_FACE = -286;
 
 Shamino object#(0x402) ()
 {

@@ -323,13 +323,13 @@ Uc_symbol *Uc_function::add_int_const_symbol
 	(
 	char *nm,
 	int value,
-	bool want_byte
+	int opcode
 	)
 	{
 	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, want_byte);
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, opcode);
 	cur_scope->add(var);
 	return var;
 	}
@@ -344,13 +344,13 @@ Uc_symbol *Uc_function::add_global_int_const_symbol
 	(
 	char *nm,
 	int value,
-	bool want_byte
+	int opcode
 	)
 	{
 	if (globals.is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, want_byte);
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value, opcode);
 	globals.add(var);
 	return var;
 	}

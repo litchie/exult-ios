@@ -23,7 +23,7 @@
  *	Last Modified: 2006-03-19
  */
 
-const int SHRINE_FACES					= 0xFED8;	//-296;
+const int SHRINE_FACES					= -296;
 //Each shrine with its own 'face':
 enum shrines
 {

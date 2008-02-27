@@ -105,9 +105,9 @@ enum wildcards
 enum times
 {
 	MINUTE	= 25,
-	HOUR	= 1500,
-	DAY		= 360000
+	HOUR	= 1500
 };
+const long DAY		= 36000;
 /*
 Examples:
 UI_advance_time(30 * MINUTE);	//advance time by 30 game minutes

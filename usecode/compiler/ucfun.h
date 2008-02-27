@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <set>
 #include "ucsym.h"
+#include "opcodes.h"
 
 class Uc_location;
 class Uc_statement;
@@ -173,9 +174,9 @@ public:
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 					// Add int constant.
-	Uc_symbol *add_int_const_symbol(char *nm, int value, bool want_byte = false);
+	Uc_symbol *add_int_const_symbol(char *nm, int value, int opcode = UC_PUSHI);
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val,
-			bool want_byte = false);
+			int opcode = UC_PUSHI);
 	static void add_global_static(char *nm);
 	static void add_global_static(char *nm, Uc_struct_symbol *type);
 	static void add_global_static(char *nm, Uc_class *c);

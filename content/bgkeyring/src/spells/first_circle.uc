@@ -257,15 +257,15 @@ spellLocate ()
 		if (inMagicStorm())
 		{
 			var pos = get_object_position();
-			var long = ((pos[X] - 0x3A5) / 10);
+			var longi = ((pos[X] - 0x3A5) / 10);
 			var lat = ((pos[Y] - 0x46E) / 10);
 			var longstr;
 			var latstr;
-	
-			if (long < 0)
-				longstr = " " + absoluteValueOf(long) + " West";
+
+			if (longi < 0)
+				longstr = " " + absoluteValueOf(longi) + " West";
 			else
-				longstr = " " + absoluteValueOf(long) + " East";
+				longstr = " " + absoluteValueOf(longi) + " East";
 	
 			if (lat < 0)
 				latstr = " " + absoluteValueOf(lat) + " North";

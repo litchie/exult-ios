@@ -19,7 +19,7 @@
 
 enum location_ids
 {
-	THE_WILDERNESS = 0xFFFF,
+	THE_WILDERNESS = -1,
 	WHITE_DRAGON_CASTLE = 0x0,
 	// Defined in "In Wis" usecode, but not in the function below:
 	CLAW = 0x1,
