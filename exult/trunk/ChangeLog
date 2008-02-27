@@ -1,3 +1,13 @@
+2008-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* UCC: Added integer casting: '(byte)', '(char)', '(int)' and '(long)' will
+	  force, respectfully, 8-bit, 8-bit, 16-bit and 32-bit integers. Default is
+	  16-bit integer, and warnings will be issued in some cases. UCC does *not*
+	  try to guess integer sizes anymore, except for function IDs and jump
+	  offsets, to prevent past problems.
+	* Keyring/SI Fixes: Eliminated compilation warnings due to the UCC changes.
+	  Fixed 10-fold error in (unused) DAY constant. Added new diagonal moongates
+	  to keyring.
+
 2008-02-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	UCC: Fixed actor frame keyword bug.
 

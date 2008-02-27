@@ -375,7 +375,7 @@ void Uc_binary_expression::gen_value
 	int ival;
 	if (eval_const(ival))
 		{
-		Uc_int_expression *iexpr = new Uc_int_expression(ival, want_byte);
+		Uc_int_expression *iexpr = new Uc_int_expression(ival, intop);
 		iexpr->gen_value(out);
 		}
 	else
@@ -507,21 +507,13 @@ void Uc_int_expression::gen_value
 	Basic_block *out
 	)
 	{
-	if (want_byte)
-		{
-		WriteOp(out, (char) UC_PUSHB);
+	WriteOp(out, (char) opcode);
+	if (opcode == UC_PUSHB)
 		WriteOpParam1(out, value);
-		}
-	else if (!is_sint_32bit(value))
-		{
-		WriteOp(out, (char) UC_PUSHI);
+	else if (opcode == UC_PUSHI)
 		WriteOpParam2(out, value);
-		}
 	else
-		{
-		WriteOp(out, (char) UC_PUSHI32);
 		WriteOpParam4(out, value);
-		}
 	}
 
 /*

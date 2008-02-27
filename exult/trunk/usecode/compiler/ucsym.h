@@ -32,7 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <map>
 #include <vector>
+#include <iostream>
 using std::vector;
+#include "opcodes.h"
 
 class Uc_array_expression;
 class Uc_expression;
@@ -43,7 +45,6 @@ class Uc_struct_symbol;
 class Uc_scope;
 class Basic_block;
 
-#include <iostream>
 inline bool is_int_32bit(int val)
 	{
 	int high = val >> 16;
@@ -382,13 +383,17 @@ public:
 class Uc_const_int_symbol : public Uc_symbol
 	{
 	int value;
-	bool want_byte;
+	int opcode;
 public:
-	Uc_const_int_symbol(char *nm, int v, bool b = false)
-		: Uc_symbol(nm), value(v), want_byte(b)
+	Uc_const_int_symbol(char *nm, int v, int op = UC_PUSHI)
+		: Uc_symbol(nm), opcode(op)
 		{
-		if (want_byte)
-			value &= 0xff;
+		if (opcode == UC_PUSHB)
+			value = (char)(v & 0xff);
+		else if (opcode == UC_PUSHI)
+			value = (short)(v & 0xffff);
+		else
+			value = (int)(v & 0xffffffff);
 		}
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -396,8 +401,8 @@ public:
 	virtual Uc_expression *create_expression();
 	int get_value() const
 		{ return value; }
-	bool byte_wanted() const
-		{ return want_byte; }
+	bool get_opcode() const
+		{ return opcode; }
 	virtual int get_sym_type() const
 		{ return Uc_symbol::Constant; }
 	};

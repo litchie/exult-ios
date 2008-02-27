@@ -144,9 +144,9 @@ enum wildcards
 enum times
 {
 	MINUTE = 25,
-	HOUR = 1500,
-	DAY = 360000
+	HOUR = 1500
 };
+const long DAY = 36000;
 
 /*
  *	Examples:
