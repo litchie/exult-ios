@@ -52,8 +52,8 @@ const int SOUND_HIT						= 62;	//0x003E
 const int SOUND_TELEPORT				= 72;
 
 //Some faces:
-const int DRACOTHRAXUS_FACE				= 0xFEDB;
-const int BLACK_SWORD_FACE				= 0xFEDC;
-const int ARCADION_GEM_FACE				= 0xFEDD;
-const int ARCADION_MIRROR_FACE			= 0xFEDE;
-const int ERETHIAN_FACE					= 0xFEE2;
+const int DRACOTHRAXUS_FACE				= -293;
+const int BLACK_SWORD_FACE				= -292;
+const int ARCADION_GEM_FACE				= -291;
+const int ARCADION_MIRROR_FACE			= -290;
+const int ERETHIAN_FACE					= -286;

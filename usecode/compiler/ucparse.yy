@@ -78,7 +78,7 @@ static Uc_class *class_type = 0;	// For declaration of class variables.
 static Uc_struct_symbol *struct_type = 0;	// For declaration of struct variables.
 static bool has_ret = false;
 static int repeat_nesting = 0;
-static bool byte_const = false;
+static std::vector<int> const_opcode;
 
 struct Fun_id_info
 	{
@@ -120,7 +120,7 @@ struct Member_selector
  *	Keywords:
  */
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR ALIAS STRUCT UCC_INT UCC_CHAR UCC_CONST STRING ENUM
+%token VAR ALIAS STRUCT UCC_CHAR UCC_INT UCC_LONG UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
@@ -158,7 +158,7 @@ struct Member_selector
 %left LTEQUALS GTEQUALS '<' '>' UCC_IN
 %left '-' '+' '&'
 %left '*' '/' '%'
-%right NOT ADDRESSOF UMINUS UPLUS NEW DELETE
+%right NOT ADDRESSOF UMINUS UPLUS NEW DELETE UCC_CAST
 %left UCC_SYM
 %left UCC_POINTS '.' '(' ')' '[' ']'
 %left UCC_SCOPE
@@ -171,6 +171,7 @@ struct Member_selector
 %type <expr> nonclass_expr opt_delay appended_element int_literal
 %type <intval> opt_int direction converse_options opt_var actor_frames
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
+%type <intval> const_int_type int_cast
 %type <funid> opt_funid
 %type <membersel> member_selector
 %type <intlist> string_list
@@ -571,16 +572,26 @@ var_decl_list:
 enum_decl:				/* Decls. the elems, not the enum. */
 	ENUM IDENTIFIER { enum_val = -1; }
 			opt_enum_type '{' enum_item_list '}' ';'
-		{byte_const = false;}
+		{ const_opcode.pop_back(); }
+	;
+
+const_int_type:
+	UCC_INT
+		{ $$ = UC_PUSHI; }
+	| UCC_CHAR
+		{ $$ = UC_PUSHB; }
+	| UCC_LONG
+		{ $$ = UC_PUSHI32; }
+	| UCC_LONG UCC_INT
+		{ $$ = UC_PUSHI32; }
 	;
 
 opt_enum_type:
-	':' UCC_INT
-		{byte_const = false;}
-	| ':' UCC_CHAR
-		{byte_const = true;}
+	':' const_int_type
+		{ const_opcode.push_back($2); }
 	|			/* Empty. */
-		{byte_const = false;}
+		{ const_opcode.push_back(UC_PUSHI); }
+	;
 
 enum_item_list:
 	enum_item_list ',' enum_item
@@ -592,17 +603,18 @@ enum_item:
 	| IDENTIFIER
 		{			/* Increment last value.	*/
 		++enum_val;
+		int op = const_opcode.back();
 		if (cur_fun)
-			cur_fun->add_int_const_symbol($1, enum_val, byte_const);
+			cur_fun->add_int_const_symbol($1, enum_val, op);
 		else			// Global.
-			Uc_function::add_global_int_const_symbol($1, enum_val, byte_const);
+			Uc_function::add_global_int_const_symbol($1, enum_val, op);
 		}
 	;
 
 const_int_decl:
-	UCC_CONST UCC_INT {byte_const = false;} const_int_decl_list ';'
-	| UCC_CONST UCC_CHAR {byte_const = true;} const_int_decl_list ';'
-		{ byte_const = false; }
+	UCC_CONST const_int_type { const_opcode.push_back($2); }
+		const_int_decl_list ';'
+		{ const_opcode.pop_back(); }
 	;
 
 const_int_decl_list:
@@ -616,11 +628,11 @@ const_int:
 		int val;		// Get constant.
 		if ($3->eval_const(val))
 			{
+			int op = const_opcode.back();
 			if (cur_fun)
-				cur_fun->add_int_const_symbol($1, val, byte_const);
+				cur_fun->add_int_const_symbol($1, val, op);
 			else		// Global.
-				Uc_function::add_global_int_const_symbol(
-								$1, val, byte_const);
+				Uc_function::add_global_int_const_symbol($1, val, op);
 			enum_val = val;	// In case we're in an enum.
 			}
 		else
@@ -680,6 +692,7 @@ class_decl_list:
 		}
 	| class_decl
 		{ $$ = $1; }
+	;
 
 class_decl:
 	IDENTIFIER
@@ -730,6 +743,7 @@ struct_decl_list:
 		}
 	| struct_decl
 		{ $$ = $1; }
+	;
 
 struct_decl:
 	IDENTIFIER
@@ -969,7 +983,7 @@ if_statement:
 				{
 					// Need this because of those pesky GOTOs...
 				$3->warning("'else' clause may never be executed");
-				$$ = new Uc_if_statement(new Uc_int_expression(val), $5, $7);
+				$$ = new Uc_if_statement(new Uc_int_expression(val == 0), $5, $7);
 				}
 			else
 				{
@@ -1323,13 +1337,13 @@ script_command_list:
 
 script_command:
 	FINISH ';'
-		{ $$ = new Uc_int_expression(Ucscript::finish, true); }
+		{ $$ = new Uc_int_expression(Ucscript::finish, UC_PUSHB); }
 	| RESURRECT ';'
-		{ $$ = new Uc_int_expression(Ucscript::resurrect, true); }
+		{ $$ = new Uc_int_expression(Ucscript::resurrect, UC_PUSHB); }
 	| CONTINUE ';'			/* Continue script without painting. */
-		{ $$ = new Uc_int_expression(Ucscript::cont, true); }
+		{ $$ = new Uc_int_expression(Ucscript::cont, UC_PUSHB); }
 	| RESET ';'			/* Go back to the beginning of the script */
-		{ $$ = new Uc_int_expression(Ucscript::reset, true); }
+		{ $$ = new Uc_int_expression(Ucscript::reset, UC_PUSHB); }
 	| REPEAT nonclass_expr { repeat_nesting++; } script_command  ';'
 		{
 		repeat_nesting--;
@@ -1337,7 +1351,7 @@ script_command:
 		result->concat($4);	// Start with cmnds. to repeat.
 		int sz = result->get_exprs().size();
 		result->add(new Uc_int_expression(
-			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat, true));
+			repeat_nesting ? Ucscript::repeat2 : Ucscript::repeat, UC_PUSHB));
 					// Then -offset to start.
 		result->add(new Uc_int_expression(-sz));
 		result->add($2);	// Loop var for repeat2.
@@ -1352,7 +1366,7 @@ script_command:
 		Uc_array_expression *result = new Uc_array_expression();
 		result->concat($6);	// Start with cmnds. to repeat.
 		int sz = result->get_exprs().size();
-		result->add(new Uc_int_expression(Ucscript::repeat2, true));
+		result->add(new Uc_int_expression(Ucscript::repeat2, UC_PUSHB));
 					// Then -offset to start.
 		result->add(new Uc_int_expression(-sz));
 		result->add($2);	// Loop var for repeat2.
@@ -1360,9 +1374,9 @@ script_command:
 		$$ = result;
 		}
 	| NOP  ';'
-		{ $$ = new Uc_int_expression(Ucscript::nop, true); }
+		{ $$ = new Uc_int_expression(Ucscript::nop, UC_PUSHB); }
 	| NOHALT  ';'
-		{ $$ = new Uc_int_expression(Ucscript::dont_halt, true); }
+		{ $$ = new Uc_int_expression(Ucscript::dont_halt, UC_PUSHB); }
 	| WAIT nonclass_expr  ';'		/* Ticks. */
 		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
 	| WAIT nonclass_expr MINUTES  ';'	/* Game minutes. */
@@ -1374,40 +1388,40 @@ script_command:
 	| WAIT WHILE FAR nonclass_expr ';'	/* Wait while avatar is far. */
 		{ $$ = Create_array(Ucscript::wait_while_far, $4); }
 	| REMOVE ';'			/* Remove item. */
-		{ $$ = new Uc_int_expression(Ucscript::remove, true); }
+		{ $$ = new Uc_int_expression(Ucscript::remove, UC_PUSHB); }
 	| RISE ';'			/* For flying barges. */
-		{ $$ = new Uc_int_expression(Ucscript::rise, true); }
+		{ $$ = new Uc_int_expression(Ucscript::rise, UC_PUSHB); }
 	| DESCEND ';'
-		{ $$ = new Uc_int_expression(Ucscript::descend, true); }
+		{ $$ = new Uc_int_expression(Ucscript::descend, UC_PUSHB); }
 	| FRAME nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
 	| ACTOR FRAME nonclass_expr ';'
 		{
 		$$ = new Uc_binary_expression(UC_ADD, new Uc_int_expression(0x61),
 				new Uc_binary_expression(UC_MOD, $3, new Uc_int_expression(16)),
-				true);	// Want byte.
+				UC_PUSHB);	// Want byte.
 		}
 	| ACTOR FRAME actor_frames ';'
-		{ $$ = new Uc_int_expression(0x61 + ($3 & 15), true); }
+		{ $$ = new Uc_int_expression(0x61 + ($3 & 15), UC_PUSHB); }
 	| HATCH ';'			/* Assumes item is an egg. */
-		{ $$ = new Uc_int_expression(Ucscript::egg, true); }
+		{ $$ = new Uc_int_expression(Ucscript::egg, UC_PUSHB); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
-		{ $$ = new Uc_int_expression(Ucscript::next_frame_max, true); }
+		{ $$ = new Uc_int_expression(Ucscript::next_frame_max, UC_PUSHB); }
 	| NEXT FRAME CYCLE ';'		/* Next, or back to 0. */
-		{ $$ = new Uc_int_expression(Ucscript::next_frame, true); }
+		{ $$ = new Uc_int_expression(Ucscript::next_frame, UC_PUSHB); }
 	| PREVIOUS FRAME ';'		/* Prev. but stop at 0. */
-		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min, true); }
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min, UC_PUSHB); }
 	| PREVIOUS FRAME CYCLE ';'
-		{ $$ = new Uc_int_expression(Ucscript::prev_frame, true); }
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame, UC_PUSHB); }
 	| SAY nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::say, $2); }
 	| STEP nonclass_expr ';'		/* Step in given direction (0-7). */
 		{
 		$$ = Create_array(Ucscript::step,
 				new Uc_binary_expression(UC_ADD, $2,
-					new Uc_int_expression(0x30), true),
+					new Uc_int_expression(0x30), UC_PUSHB),
 				new Uc_int_expression(0));
 		}
 	| STEP nonclass_expr ',' nonclass_expr ';'	/* Step + dz. */
@@ -1416,12 +1430,12 @@ script_command:
 				new Uc_binary_expression(UC_ADD,
 					new Uc_binary_expression(UC_MOD, $2,
 						new Uc_int_expression(8)),		// dir is 0-7.
-					new Uc_int_expression(0x30), true),
+					new Uc_int_expression(0x30), UC_PUSHB),
 				new Uc_binary_expression(UC_MOD, $4,
 					new Uc_int_expression(16)));		// Allow max |dz| == 15.
 		}
 	| STEP direction ';'
-		{ $$ = new Uc_int_expression(Ucscript::step_n + $2, true); }
+		{ $$ = new Uc_int_expression(Ucscript::step_n + $2, UC_PUSHB); }
 	| MUSIC nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
 	| MUSIC nonclass_expr ',' nonclass_expr ';'
@@ -1456,7 +1470,7 @@ script_command:
 	| HIT nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| ATTACK ';'
-		{ $$ = new Uc_int_expression(Ucscript::attack, true); }
+		{ $$ = new Uc_int_expression(Ucscript::attack, UC_PUSHB); }
 	| '{' script_command_list '}'
 		{ $$ = $2; }
 	;
@@ -1633,6 +1647,7 @@ nonclass_expr:
 		else
 			$$ = $1;
 		}
+	;
 
 expression:
 	primary
@@ -1723,7 +1738,11 @@ addressof:
 			$$ = 0;
 			}
 		else		/* Output the function's assigned number */
-			$$ = new Uc_int_expression(fun->get_usecode_num());
+			{
+			int funid = fun->get_usecode_num();
+			int op = is_int_32bit(funid) ? UC_PUSHI32 : UC_PUSHI;
+			$$ = new Uc_int_expression(funid, op);
+			}
 		}
 	;
 
@@ -1743,9 +1762,33 @@ expression_list:
 		}
 	;
 
+int_cast:
+	'(' const_int_type ')'
+		{ $$ = $2; }
+	;
+
 primary:
 	INT_LITERAL
-		{ $$ = new Uc_int_expression($1); }
+		{
+		int op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
+		if (is_sint_32bit($1) && op != UC_PUSHI32)
+			{
+			char buf[150];
+			if (is_int_32bit($1))
+				{
+				sprintf(buf, "Literal integer '%d' cannot be represented as 16-bit integer. Assuming '(long)' cast.",
+						$1);
+				op = UC_PUSHI32;
+				}
+			else
+				sprintf(buf, "Interpreting integer '%d' as the signed 16-bit integer '%d'. If this is incorrect, use '(long)' cast.",
+						$1, (short)$1);
+			yywarning(buf);
+			}
+		$$ = new Uc_int_expression($1, op);
+		}
+	| int_cast INT_LITERAL %prec UCC_CAST
+		{ $$ = new Uc_int_expression($2, $1); }
 	| member_selector
 		{
 		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1->expr);
@@ -1900,10 +1943,30 @@ param:
 		{ $$ = new Uc_var_symbol($2, 0); }
 	| CLASS '<' defined_class '>' IDENTIFIER
 		{ $$ = new Uc_class_inst_symbol($5, $3, 0); }
+	;
 
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
-		{ $$ = new Uc_int_expression($1); }
+		{
+		int op = const_opcode.size() ? const_opcode.back() : UC_PUSHI;
+		if (is_sint_32bit($1) && op != UC_PUSHI32)
+			{
+			char buf[150];
+			if (is_int_32bit($1))
+				{
+				sprintf(buf, "Literal integer '%d' cannot be represented as 16-bit integer. Assuming '(long)' cast.",
+						$1);
+				op = UC_PUSHI32;
+				}
+			else
+				sprintf(buf, "Interpreting integer '%d' as the signed 16-bit integer '%d'. If this is incorrect, use '(long)' cast.",
+						$1, (short)$1);
+			yywarning(buf);
+			}
+		$$ = new Uc_int_expression($1, op);
+		}
+	| int_cast INT_LITERAL %prec UCC_CAST
+		{ $$ = new Uc_int_expression($2, $1); }
 	| declared_sym
 		{
 		Uc_const_int_symbol *sym = 
@@ -2011,7 +2074,7 @@ static Uc_array_expression *Create_array
 	)
 	{
 	Uc_array_expression *arr = new Uc_array_expression();
-	arr->add(new Uc_int_expression(e1, true));
+	arr->add(new Uc_int_expression(e1, UC_PUSHB));
 	arr->add(e2);
 	return arr;
 	}
@@ -2023,7 +2086,7 @@ static Uc_array_expression *Create_array
 	)
 	{
 	Uc_array_expression *arr = new Uc_array_expression();
-	arr->add(new Uc_int_expression(e1, true));
+	arr->add(new Uc_int_expression(e1, UC_PUSHB));
 	arr->add(e2);
 	arr->add(e3);
 	return arr;

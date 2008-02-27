@@ -157,17 +157,20 @@ BatlinAtWallOfLights object#(0x73B) ()
 			
 		else if (pathegg_quality == 7)
 		{
-			UI_show_npc_face0(0xFEDE, 0x0000);
+			const int ANARCHY = -290;
+			const int WANTONNESS = -291;
+			const int INSANITY = -292;
+			UI_show_npc_face0(ANARCHY, 0);
 			say("@I am Anarchy! Hahaha!@");
 			say("@The world shall quail before me! Wrong shall become right! And right shall become lost! Nothing shall escape my touch!@");
 			UI_remove_npc_face0();
 			
-			UI_show_npc_face0(0xFEDD, 0x0000);
+			UI_show_npc_face0(WANTONNESS, 0);
 			say("@Hahaha! I am the Wantonness Bane!@");
 			say("@Wherever I pass, people shall frolic and sate their wild desires! I shall drive thee to feed thy darkest hungers!@");
 			UI_remove_npc_face0();
 			
-			UI_show_npc_face0(0xFEDC, 0x0000);
+			UI_show_npc_face0(INSANITY, 0);
 			say("@I -- hahaha! -- am the Insanity Bane! Hahaha!@");
 			say("@All those who fall within my shadow shall have their reason clouded and their wits addled! Their greatest love shall lie in the rubbish they once loathed! Hahaha!@");
 			UI_remove_npc_face0();
