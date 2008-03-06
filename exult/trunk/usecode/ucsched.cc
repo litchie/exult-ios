@@ -719,7 +719,7 @@ void Usecode_script::step
 		{
 		Tile_coord tile = obj->get_tile();
 		if (dir != -1)
-			tile.get_neighbor(dir);
+			tile = tile.get_neighbor(dir);
 		tile.tz += dz;
 		act->clear_rest_time();
 		Frames_sequence *frames = act->get_frames(dir);
@@ -735,7 +735,7 @@ void Usecode_script::step
 			{
 			Tile_coord t = obj->get_tile();
 			if (dir != -1)
-				t.get_neighbor(dir);
+				t = t.get_neighbor(dir);
 			t.tz += dz/4 + (!i ? dz % 4 : 0);
 			if (t.tz < 0)
 				t.tz = 0;
