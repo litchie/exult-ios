@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sched.h>
 
 
-// Enable the following switch to make ScummVM try to use native MIDI hardware
+// Enable the following switch to make Exult try to use native MIDI hardware
 // on your computer for MIDI output. This is currently quite hackish, in 
 // particular you have no way to specify which device is used (it just always
 // uses the first output device it can find), nor is there a switch to
@@ -65,7 +65,7 @@ int CoreAudioMidiDriver::open()
 	if (dests > 0 && mClient) {
 		mDest = MIDIGetDestination(0);
 		err = MIDIOutputPortCreate( mClient, 
-									CFSTR("scummvm_output_port"), 
+									CFSTR("exult_output_port"), 
 									&mOutPort);
 	}
 #endif
@@ -76,16 +76,15 @@ int CoreAudioMidiDriver::open()
 		Component compid;
 	
 		// Open the Music Device
-		compdesc.componentType = kAudioUnitComponentType;
-		compdesc.componentSubType = kAudioUnitSubType_MusicDevice;
-		compdesc.componentManufacturer = kAudioUnitID_DLSSynth;
+		compdesc.componentType = kAudioUnitType_MusicDevice;
+		compdesc.componentSubType = kAudioUnitSubType_DLSSynth;
+		compdesc.componentManufacturer = kAudioUnitManufacturer_Apple;
 		compdesc.componentFlags = 0;
 		compdesc.componentFlagsMask = 0;
 		compid = FindNextComponent(NULL, &compdesc);
 		au_MusicDevice = static_cast<AudioUnit>(OpenComponent(compid));
 	
-		// open the output unit
-		au_output = static_cast<AudioUnit>(OpenDefaultComponent(kAudioUnitComponentType, kAudioUnitSubType_Output));
+		au_output = static_cast<AudioUnit>(OpenDefaultComponent(kAudioUnitType_Output, kAudioUnitSubType_DefaultOutput));
 	
 		// connect the units
 		auconnect.sourceAudioUnit = au_MusicDevice;
