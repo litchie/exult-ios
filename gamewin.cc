@@ -796,30 +796,25 @@ int Game_window::get_unused_npc
 	)
 	{
 	int cnt = npcs.size();		// Get # in list.
-	for (int i = 0; i < cnt; i++)
+	int i = 0;
+	for ( ; i < cnt; i++)
 		{
-		if (!npcs[i])
-			return i;	// (Don't think this happens.)
 		if (i >= 356 && i <= 359)
+			continue;	// Never return these.
+		if (!npcs[i] || npcs[i]->is_unused())
+			break;
+		}
+	if (i >= 356 && i <= 359)
 		{	// Special, 'reserved' cases.
-			if (cnt > 359)
-				i = 360;
-			else
+		i = 360;
+		do
 			{
-				do
-					{
-					npcs.push_back(new Npc_actor("", 0));
-					npcs[cnt]->set_schedule_type(Schedule::wait);
-					npcs[cnt]->set_unused(true);
-					++cnt;
-					} while (cnt < 360);
-				return cnt;
-			}
+			npcs.push_back(new Npc_actor("Reserved", 0));
+			npcs[cnt]->set_schedule_type(Schedule::wait);
+			npcs[cnt]->set_unused(true);
+			} while (++cnt < 360);
 		}
-		if (npcs[i]->is_unused())
-			return i;
-		}
-	return cnt;			// First free one is past the end.
+	return i;			// First free one is past the end.
 	}
 
 /*
