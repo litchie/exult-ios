@@ -1,3 +1,7 @@
+2008-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixing bug that caused reserved NPC #356 to be available when creating
+	a new NPC.
+
 2008-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Added integer casting: '(byte)', '(char)', '(int)' and '(long)' will
 	  force, respectfully, 8-bit, 8-bit, 16-bit and 32-bit integers. Default is
