@@ -500,17 +500,14 @@ int exult_main(const char *runpath)
 
 
 	// Convert from old format if needed
-	vector<string> vs=config->listkeys("config/disk/game",false);
-	if(vs.size()==0)
-	{
+	vector<string> vs = config->listkeys("config/disk/game",false);
+	if (vs.size() == 0 && config->key_exists("config/disk/u7path"))
+		{
 		// Convert from the older format
 		string data_directory;
-		config->value("config/disk/u7path",data_directory,".");
+		config->value("config/disk/u7path",data_directory,"./blackgate");
 		config->set("config/disk/game/blackgate/path",data_directory,true);
-		const string	s(CFG_BG_NAME);
-		config->set("config/disk/game/blackgate/title",s,true);
-		vs.push_back(s);
-	}
+		}
 
 	// Enable tracing of intrinsics?
 	config->value("config/debug/trace/intrinsics",intrinsic_trace);

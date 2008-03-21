@@ -281,8 +281,8 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	config_path.AddString("exult.cfg");
 	config_path.GetString(p, p_size);
 
-	const static char *si_pathdef = "";
-	const static char *bg_pathdef = "";
+	const static char *si_pathdef = CFG_SI_NAME;
+	const static char *bg_pathdef = CFG_BG_NAME;
 
 	MessageBoxDebug (NULL, ExultDir, p, MB_OK);
 

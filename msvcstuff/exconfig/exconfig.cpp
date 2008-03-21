@@ -239,8 +239,8 @@ EXCONFIG_API LONG APIENTRY GetPaths(HWND hwnd, LPLONG lpIValue, LPSTR lpszValue)
 	path.AddString("exult.cfg");
 	path.GetString(p);
 
-	char *si_pathdef = "";
-	char *bg_pathdef = "";
+	char *si_pathdef = CFG_SI_NAME;
+	char *bg_pathdef = CFG_BG_NAME;
 
 	MessageBoxDebug (hwnd, lpszValue, p, MB_OK);
 

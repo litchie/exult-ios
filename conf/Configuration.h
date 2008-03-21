@@ -50,6 +50,8 @@ public:
 	void	value(const char *key, int &ret, int defaultvalue=0) const
 			{ value(std::string(key), ret, defaultvalue); };
 	
+	bool	key_exists(const std::string &key) const;
+
 	void    set(const std::string &key, const std::string &value, bool write_to_file);
 	void    set(const char *key,const char *value,bool write_to_file);
 	void    set(const char *key,const std::string &value,bool write_to_file);

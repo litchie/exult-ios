@@ -310,8 +310,8 @@ MenuList *ExultMenu::create_main_menu(int first)
 #if !(defined(__zaurus__))
 	xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
 #endif
-	std::vector<ModManager *> *game_list = gamemanager->get_game_list();
-	int num_choices = game_list->size();
+	std::vector<ModManager *>& game_list = gamemanager->get_game_list();
+	int num_choices = game_list.size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
 #if defined(__zaurus__)
@@ -319,7 +319,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 #else
 		int menux = xpos+(i%2)*centerx;
 #endif
-		ModManager *exultgame = (*game_list)[i];
+		ModManager *exultgame = game_list[i];
 		char *menustringname = new char[strlen(exultgame->get_menu_string().c_str())+1];
 		strcpy(menustringname, exultgame->get_menu_string().c_str());
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
@@ -377,8 +377,8 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 	xpos = centerx/2;
 #endif
 	
-	std::vector<ModInfo *> *mod_list = selgame->get_mod_list();
-	int num_choices = mod_list->size();
+	std::vector<ModInfo *>& mod_list = selgame->get_mod_list();
+	int num_choices = mod_list.size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
 #if defined(__zaurus__)
@@ -386,7 +386,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 #else
 		int menux = xpos+(i%2)*centerx;
 #endif
-		ModInfo *exultmod = (*mod_list)[i];
+		ModInfo *exultmod = mod_list[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							exultmod->get_menu_string().c_str(),
 							0, menux, ypos);
@@ -439,7 +439,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 	gpal->apply();
 
-	int first_mod = 0, num_choices = selgame->get_mod_list()->size()-1,
+	int first_mod = 0, num_choices = selgame->get_mod_list().size()-1,
 		last_page = num_choices-num_choices%PAGE_SIZE;
 	MenuList *menu = create_mods_menu(selgame, first_mod);
 	menu->set_selection(0);
