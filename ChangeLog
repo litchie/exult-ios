@@ -1,3 +1,8 @@
+2008-03-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exultmenu.cc: Was missing in previous commit; updated mod manager to use
+	  vectors and classes instead of pointer to vectors and classes.
+	* All: Fixed default game directory to be the Exult.cfg-defined game name.
+
 2008-03-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* studio.cc: Fixed long-standing mod-manager crash.
 	* all: Updated/reformatted mod manager files to use vectors and classes

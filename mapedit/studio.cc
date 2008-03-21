@@ -1165,8 +1165,9 @@ void ExultStudio::set_game_path(string gamename, string modname)
 		exit(1);
 		}
 
-	string config_path("config/disk/game/" + gamename + "/path"), gamepath;
-	config->value(config_path.c_str(), gamepath, "");
+	string config_path("config/disk/game/" + gamename + "/path"), gamepath,
+		def_path("./" + gamename);
+	config->value(config_path.c_str(), gamepath, def_path.c_str());
 					// Set top-level path.
 	add_system_path("<GAME>", gamepath);
 	gameinfo->setup_game_paths();
