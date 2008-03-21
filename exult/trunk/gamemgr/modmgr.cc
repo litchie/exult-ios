@@ -275,10 +275,11 @@ BaseGameInfo *ModManager::get_mod(string name, bool checkversion)
  */
 static void get_game_paths(const string &gametitle)
 	{
-	string data_directory, static_dir, gamedat_dir, savegame_dir, default_dir,
-		system_path_tag(to_uppercase(gametitle)), config_path;
-	default_dir = "./" + gametitle;
-	config_path = "config/disk/game/" + default_dir;
+	string data_directory, static_dir, gamedat_dir, savegame_dir,
+		default_dir("./" + gametitle),
+		system_path_tag(to_uppercase(gametitle)), config_path,
+		base_cfg_path("config/disk/game/" + gametitle);
+	config_path = base_cfg_path + "/path";
 	config->value(config_path.c_str(), data_directory, default_dir.c_str());
 	if (data_directory == default_dir)
 		config->set(config_path.c_str(), data_directory, true);
@@ -287,7 +288,7 @@ static void get_game_paths(const string &gametitle)
 		<< " game directories to: " << data_directory << endl;
 #endif
 
-	config_path = "config/disk/game/" + gametitle + "/static_path";
+	config_path = base_cfg_path + "/static_path";
 	default_dir = data_directory + "/static";
 	config->value(config_path.c_str(), static_dir, default_dir.c_str());
 	add_system_path("<" + system_path_tag + "_STATIC>", static_dir);
@@ -298,7 +299,7 @@ static void get_game_paths(const string &gametitle)
 
 	const char *home = 0;		// Will get $HOME.
 	string home_game("");		// Gets $HOME/.exult/gametitle.
-	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
+	config_path = base_cfg_path + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	config->value(config_path.c_str(), gamedat_dir, "");
 #if (!defined(WIN32) && !defined(MACOS))
@@ -331,7 +332,7 @@ static void get_game_paths(const string &gametitle)
 		<< " gamedat directory to: " << gamedat_dir << endl;
 #endif
 
-	config_path = "config/disk/game/" + gametitle + "/savegame_path";
+	config_path = base_cfg_path + "/savegame_path";
 	if (home_game == "")
 		config->value(config_path.c_str(), savegame_dir, 
 						data_directory.c_str());
@@ -347,14 +348,14 @@ static void get_game_paths(const string &gametitle)
 		<< " savegame directory to: " << savegame_dir << endl;
 #endif
 
-	config_path = "config/disk/game/" + gametitle + "/patch";
+	config_path = base_cfg_path + "/patch";
 	string patch_directory;
 	default_dir = data_directory + "/patch";
 	config->value(config_path.c_str(), patch_directory, 
 							default_dir.c_str());
 	add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
 
-	config_path = "config/disk/game/" + gametitle + "/mods";
+	config_path = base_cfg_path + "/mods";
 	string mods_directory;
 	default_dir = data_directory + "/mods";
 	config->value(config_path.c_str(), mods_directory, 
