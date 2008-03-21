@@ -4,10 +4,16 @@ Exult instructions for Windows
 
 To play
 ---------
-Copy exult.exe into your Ultima 7 directory.
-If you are currently playing a game of Ultima 7, be sure 
- to remove the gamedat directory. (don't forget to back
- it up first...)
+First you need to get Ultima 7 or Serpent Isle. Either you own
+it already, or you buy it somewhere.  Then you must install it.
+Note that the Ultima Collection already contains an installed
+copy of Ultima 7 (In the Ultima7 directory) and of Serpent Isle
+(In the Serpent directory).
+
+From the Ultima7 or Serpent folder on your PC, copy the STATIC
+sub folder to the 'blackgate' or 'serpentisle' sub folder (as
+appropriate) of the folder you installed Exult in (you will
+likely have to create the sub folders yourself).
 Run exult.exe
 Have fun!
 
