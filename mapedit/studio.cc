@@ -989,7 +989,7 @@ void on_gameselect_gamelist_cursor_changed
 	GtkTreeViewColumn *column;
 	gtk_tree_store_clear(model);
 
-	std::vector<ModInfo *> *mods = gamemanager->get_game(gamenum)->get_mod_list();
+	std::vector<ModInfo *>& mods = gamemanager->get_game(gamenum)->get_mod_list();
 	GtkTreeIter iter;
 
 	gtk_tree_store_append(model, &iter, NULL);
@@ -998,9 +998,9 @@ void on_gameselect_gamelist_cursor_changed
 		1, -1,
 		-1);
 
-	for (int j=0; j<mods->size(); j++)
+	for (int j=0; j < mods.size(); j++)
 	{
-		ModInfo *currmod = (*mods)[j];
+		ModInfo *currmod = mods[j];
 		string modname = currmod->get_menu_string();
 		string::size_type t = modname.find("\n", 0);
 		if (t!=string::npos)
@@ -1019,12 +1019,12 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(
 						treeview);
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
-	std::vector<ModManager *> *games = gamemanager->get_game_list();
+	std::vector<ModManager *>& games = gamemanager->get_game_list();
 	GtkTreeIter iter;
 	GtkTreePath *path;
-	for (int j=0; j<games->size(); j++)
+	for (int j=0; j < games.size(); j++)
 	{
-		ModManager *currgame = (*games)[j];
+		ModManager *currgame = games[j];
 		string gamename = currgame->get_menu_string();
 		string::size_type t = gamename.find("\n", 0);
 		if (t!=string::npos)
@@ -1132,35 +1132,38 @@ void ExultStudio::set_game_path(string gamename, string modname)
 
 	// Extra safety net for BG and SI:
 	if (gamename == CFG_BG_NAME)
-		if (!gamemanager->is_bg_installed())
 		{
+		if (!gamemanager->is_bg_installed())
+			{
 			cerr << "Black Gate not found." << endl;
 			exit(1);
+			}
 		}
 	else if (gamename == CFG_SI_NAME)
-		if (!gamemanager->is_si_installed())
 		{
+		if (!gamemanager->is_si_installed())
+			{
 			cerr << "Serpent Isle not found." << endl;
 			exit(1);
+			}
 		}
 
 	BaseGameInfo *gameinfo = 0;
 	curr_game = gamemanager->find_game_index(gamename);
 	ModManager *basegame = gamemanager->get_game(curr_game);
 	if (basegame)
-	{
-		if (modname != "")
-			curr_mod = basegame->find_mod_index(modname);
+		{
+		curr_mod = modname.empty() ? -1 : basegame->find_mod_index(modname);
 		if (curr_mod > -1)
 			gameinfo = basegame->get_mod(curr_mod);
 		else
 			gameinfo = basegame;
-	}
+		}
 	else
-	{
+		{	// This really should never happen.
 		cerr << "Game '" << gamename << "' not found." << endl;
 		exit(1);
-	}
+		}
 
 	string config_path("config/disk/game/" + gamename + "/path"), gamepath;
 	config->value(config_path.c_str(), gamepath, "");

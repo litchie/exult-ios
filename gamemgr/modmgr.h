@@ -63,18 +63,22 @@ public:
 
 class ModManager : public BaseGameInfo {
 protected:
-	std::vector<ModInfo *> *modlist;
+	std::vector<ModInfo *> modlist;
 public:
 	ModManager (Exult_Game game, string name, string menu);
 	~ModManager ();
 
-	std::vector<ModInfo *> *get_mod_list () { return modlist; }
+	std::vector<ModInfo *>& get_mod_list () { return modlist; }
 	ModInfo *find_mod (string name);
 	int find_mod_index (string name);
 
-	bool has_mods () const { return modlist->size()>0; }
+	bool has_mods () const { return modlist.size() > 0; }
 	ModInfo *get_mod (int i) const
-	{  if (i>=0 && i<modlist->size()) return (*modlist)[i]; }
+		{
+		if (i >= 0 && i < modlist.size())
+			return modlist[i];
+		return 0;
+		}
 	BaseGameInfo *get_mod(string name, bool checkversion=true);
 	void add_mod (string mod, Configuration *modconfig);
 };
@@ -82,7 +86,7 @@ public:
 class GameManager {
 	UNREPLICATABLE_CLASS(GameManager);
 protected:
-	std::vector<ModManager *> *games;
+	std::vector<ModManager *> games;
 	bool bg_installed;
 	bool si_installed;
 	void set_bg_installed ();
@@ -91,10 +95,14 @@ public:
 	GameManager ();
 	~GameManager ();
 
-	std::vector<ModManager *> *get_game_list () { return games; }
-	int get_game_count () const { return games->size(); }
+	std::vector<ModManager *>& get_game_list () { return games; }
+	int get_game_count () const { return games.size(); }
 	ModManager *get_game (int i) const
-	{ if (i>=0 && i<games->size()) return (*games)[i]; }
+		{
+		if (i >= 0 && i < games.size())
+			return games[i];
+		return 0;
+		}
 	bool is_bg_installed () const { return bg_installed; };
 	bool is_si_installed () const { return si_installed; };
 	ModManager *find_game (string name);

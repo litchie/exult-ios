@@ -4,15 +4,19 @@ Exult instructions for Mac OS X
 
 To play
 -------
-First you need to get Ultima 7. Either you own it already, or
-you buy it somewhere. Then you must install it on a DOS/Windows
-machine in order to get the data file. A good way is to use a
-PC emulator for this, e.g. Virtual PC, Real PC or SoftWindows.
+First you need to get Ultima 7 or Serpent Isle. Either you own
+it already, or you buy it somewhere. Then you must install it
+on a DOS/Windows machine in order to get the data file.
+A good way is to use a PC emulator for this, e.g. Virtual PC,
+Real PC or SoftWindows.
 Note that the Ultima Collection already contains an installed
-copy of Ultima 7. (In the Ultima7/ directory.)
+copy of Ultima 7 (In the Ultima7/ directory) and of Serpent Isle
+(In the Serpent/ directory).
 
-From the Ultima7 folder on your PC, copy the STATIC sub folder
-to the folder that contains the ExultMac application.
+From the Ultima7 or Serpent folder on your PC, copy the STATIC
+sub folder to the 'blackgate' or 'serpentisle' sub folder (as
+appropriate) of the ExultMac application folder (you will
+likely have to create the sub folders yourself).
 
 Now run ExultMac, and have fun!
 
