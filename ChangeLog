@@ -1,3 +1,10 @@
+2008-03-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* studio.cc: Fixed long-standing mod-manager crash.
+	* all: Updated/reformatted mod manager files to use vectors and classes
+	  instead of pointer to vectors and classes. Improved default game directory
+	  to be the Exult.cfg-defined game name (e.g., BG and SI have default dirs
+	  './blackgate' and './serpentisle'). Some readmes were updated accordingly.
+
 2008-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixing bug that caused reserved NPC #356 to be available when creating
 	a new NPC.
