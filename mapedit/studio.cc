@@ -410,7 +410,7 @@ C_EXPORT gint on_main_window_configure_event
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Configure "Hide lift" spin range.
 	studio->set_spin("hide_lift_spin", 
-				studio->get_spin("hide_lift_spin"), 1, 16);
+				studio->get_spin("hide_lift_spin"), 1, 255);
 	return FALSE;
 	}
 
@@ -1580,7 +1580,7 @@ void ExultStudio::set_edit_terrain
 		if (browser)
 			browser->end_terrain_editing();
 					// FOR NOW, skip_lift is reset.
-		set_spin("hide_lift_spin", 16, true);
+		set_spin("hide_lift_spin", 255, true);
 		}
 	else				// Disable "Hide lift".
 		set_sensitive("hide_lift_spin", false);

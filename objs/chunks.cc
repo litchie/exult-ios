@@ -1506,7 +1506,7 @@ int Map_chunk::is_roof(int tx, int ty, int lift)
 #else		/* But this is even worse! */
 	int height = get_lowest_blocked (lift+2, tx, ty);
 #endif
-	if (height == -1) return 31;
+	if (height == -1) return 255;
 	return height;
 }
 
