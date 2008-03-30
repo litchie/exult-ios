@@ -354,7 +354,7 @@ static void Handle_client_message
 		{			// 1=on, 0=off, -1=undo.
 		int onoff = (short) Read2(ptr);
 					// skip_lift==0 <==> terrain-editing.
-		gwin->skip_lift = onoff == 1 ? 0 : 16;
+		gwin->skip_lift = onoff == 1 ? 0 : 256;
 		static char *msgs[3] = {"Terrain-Editing Aborted",
 					"Terrain-Editing Done",
 					"Terrain-Editing Enabled"};

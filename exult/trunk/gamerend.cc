@@ -521,7 +521,7 @@ int Game_render::paint_chunk_objects
 		if (obj->render_seq != render_seq)
 			paint_object(obj);
 
-	skip = 31;			// Back to a safe #.
+	skip = 255;			// Back to a safe #.
 	return light_sources;
 	}
 

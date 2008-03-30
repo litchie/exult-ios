@@ -604,15 +604,15 @@ void Cheat::move_selected_objs(int dx, int dy, int dz) {
 		}
 	if (lowz + dz < 0)		// Too low?
 		dz = -lowz;
-	if (highz + dz > 15)		// Too high?
-		dz = 15 - highz;
+	if (highz + dz > 255)		// Too high?
+		dz = 255 - highz;
 					// Add back in new locations.
 	for (it = selected.begin(); it != selected.end(); ++it)
 		{
 		Tile_coord tile = tiles[it - selected.begin()];
 		int newtx = (tile.tx + dx + c_num_tiles)%c_num_tiles;
 		int newty = (tile.ty + dy + c_num_tiles)%c_num_tiles;
-		int newtz = (tile.tz + dz + 16)%16;
+		int newtz = (tile.tz + dz + 256)%256;
 		(*it)->set_invalid();
 		(*it)->move(newtx, newty, newtz);
 		}

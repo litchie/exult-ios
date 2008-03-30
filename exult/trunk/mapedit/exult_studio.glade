@@ -647,7 +647,7 @@
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 13 1 4 4</property>
+			      <property name="adjustment">0 0 255 1 4 4</property>
 			      <signal name="changed" handler="on_edit_lift_spin_changed"/>
 			    </widget>
 			    <packing>
@@ -712,7 +712,7 @@
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">12 0 13 1 4 4</property>
+			      <property name="adjustment">255 0 255 1 10 10</property>
 			      <signal name="changed" handler="on_hide_lift_spin_changed"/>
 			    </widget>
 			    <packing>
@@ -8663,7 +8663,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 15 1 3 3</property>
+		  <property name="adjustment">0 0 255 1 10 10</property>
 		  <signal name="changed" handler="on_obj_pos_changed"/>
 		</widget>
 		<packing>
