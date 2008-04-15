@@ -64,6 +64,8 @@ public:
 				tiles.y -= c_tiles_per_chunk;
 				tiles.x = start_tx;
 				curcy = INCR_CHUNK(curcy);
+				if (curcy == stopcy)
+					return 0;
 				curcx = startcx;
 				}
 		Rectangle cr(0, 0, c_tiles_per_chunk, c_tiles_per_chunk);
