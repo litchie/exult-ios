@@ -1,3 +1,11 @@
+2008-04-14    <jeff@mini.nerble.net>
+
+	* objs/chunks.cc (Chunk_cache): The 'blocking' detection now
+	handles lifts >= 15, and should save a bit of memory for chunks
+	with lifts < 8.
+
+	* objs/citerate.h (public): Fixed bug when size is 1x1.
+
 2008-03-30    <jeff@mini.nerble.net>
 
 	* cheat.cc, etc: Support higher lifts, up to 255.  Note that the

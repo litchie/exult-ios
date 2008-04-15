@@ -445,7 +445,7 @@ bool Dragging_info::drop_on_map
 	Game_object *to_drop		// == obj if whole thing.
 	)
 	{
-	int max_lift = cheat.in_hack_mover() ? 13 :
+	int max_lift = cheat.in_hack_mover() ? 255 :
 					gwin->get_main_actor()->get_lift() + 5;
 	int skip = gwin->get_render_skip_lift();
 	if (max_lift >= skip)		// Don't drop where we cannot see.

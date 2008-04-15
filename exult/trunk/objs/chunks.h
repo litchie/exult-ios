@@ -52,8 +52,10 @@ using std::vector;
 class Chunk_cache : public Game_singletons
 	{
 	Map_chunk *obj_list;
-	unsigned long blocked[256];	// For each tile, 2 bits for each lift
-					//   level for #objs blocking there.
+	typedef uint16 *blocked8z;	// For each tile, 2 bits for each lift
+					//   level for #objs blocking there, so
+					//   8 lifts are represented.
+	vector<blocked8z> blocked;	// One for each 8 lifts.
 	vector<Egg_object*> egg_objects;// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
@@ -66,9 +68,16 @@ class Chunk_cache : public Game_singletons
 	~Chunk_cache();
 	int get_num_eggs()
 		{ return egg_objects.size(); }
+	blocked8z new_blocked_level(int zlevel);
+	blocked8z need_blocked_level(int zlevel)
+		{ return (zlevel >= blocked.size() || !blocked[zlevel])
+			? new_blocked_level(zlevel) : blocked[zlevel];
+		}
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
-					int lift, int ztiles, bool set);
+					int lift, int ztiles);
+	void clear_blocked(int startx, int starty, int endx, int endy,
+					int lift, int ztiles);
 					// Add/remove object.
 	void update_object(Map_chunk *chunk,
 						Game_object *obj, bool add);
@@ -78,28 +87,12 @@ class Chunk_cache : public Game_singletons
 	void update_egg(Map_chunk *chunk, Egg_object *egg, bool add);
 					// Set up with chunk's data.
 	void setup(Map_chunk *chunk);
-#if 0	/* OLD WAY.  Goes away. */
-					// Set blocked tile's bits.
-	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
-		{
-		unsigned short val = (((1 << ztiles) - 1) << lift);
-		unsigned short inter = blocked[ty*c_tiles_per_chunk + tx]&val;
-		if (inter)
-			intersects(tx, ty, inter);
-		blocked[ty*c_tiles_per_chunk + tx] |= val;
-		}
-					// Clear blocked tile's bits.
-	void clear_blocked_tile(int tx, int ty, int lift, int ztiles)
-		{
-		blocked[ty*c_tiles_per_chunk + tx] &= 
-					~(((1 << ztiles) - 1) << lift);
-		}
-#endif
+	void set_tflags(int tx, int ty, int maxz);	// Setup flags.
 					// Get highest lift blocked below a
 					//   given level for a desired tile.
-	int get_highest_blocked(int lift, unsigned long tflags);
+	int get_highest_blocked(int lift);
 	int get_highest_blocked(int lift, int tx, int ty);
-	int get_lowest_blocked(int lift, unsigned long tflags);
+	int get_lowest_blocked(int lift);
 	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied or inaccessible
 					//   to an NPC?
@@ -125,8 +118,9 @@ public:
 					// Is there something on this tile?
 	inline bool is_tile_occupied(int tx, int ty, int tz)
 		{
-		return (blocked[ty*c_tiles_per_chunk + tx] & (3 << (2*tz))) 
-									!= 0;
+		blocked8z b8 = tz/8 < blocked.size() ? blocked[tz/8] : 0;
+		return (b8 && b8[ty*c_tiles_per_chunk + tx] & 
+				(3 << (2*(tz%8)))) != 0;
 		}
 	};
 
@@ -211,8 +205,14 @@ public:
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
 						int lift, int ztiles, bool set)
-		{ need_cache()->set_blocked(startx, starty, endx, endy,
-							lift, ztiles, set); }
+		{ Chunk_cache *cache = need_cache();
+		  if (set)
+			cache->set_blocked(startx, starty, endx, endy,
+							lift, ztiles); 
+		  else
+			cache->clear_blocked(startx, starty, endx, endy,
+							lift, ztiles);
+		}
 					// Get highest lift blocked.
 	int get_highest_blocked(int lift, int tx, int ty)
 		{ return need_cache()->get_highest_blocked(lift, tx, ty); }
