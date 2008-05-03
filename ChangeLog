@@ -1,3 +1,7 @@
+2008-05-03    <jeff@mini.nerble.net>
+
+	* effects.cc (Projectile_effect): Fixed crash involving trap.
+
 2008-04-14    <jeff@mini.nerble.net>
 
 	* objs/chunks.cc (Chunk_cache): The 'blocking' detection now
