@@ -781,8 +781,9 @@ void Projectile_effect::handle_event
 		else
 			{		// Not teleported away ?
 			if (target && target->distance(epos) < 50)
-				target->attacked(attacker->as_actor(), weapon, 
-							projectile_shape);
+				target->attacked(
+					attacker?attacker->as_actor():0,
+					weapon, projectile_shape);
 			if (attacker &&	// Check for `boomerangs'
 			    attacker->distance(epos) < 50)
 				{ 	// not teleported away
@@ -790,10 +791,14 @@ void Projectile_effect::handle_event
 				   ShapeID::get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
 					{
-					Projectile_effect *proj = new Projectile_effect(
-								pos, attacker, projectile_shape, weapon, true);
+					Projectile_effect *proj = 
+						new Projectile_effect(
+						  pos, attacker, 
+						  projectile_shape, 
+						  weapon, true);
 					proj->set_speed(speed);
-					proj->set_sprite_shape(sprite.get_shapenum());
+					proj->set_sprite_shape(
+						sprite.get_shapenum());
 					eman->add_effect(proj);
 					}
 				}
