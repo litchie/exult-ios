@@ -1111,7 +1111,14 @@ Animation_info *Shapeinfo_lookup::get_animation_cycle_info
 			return &inf;
 		}
 	ShapeID shp(shapenum, 0);
-	Animation_info inf = {FA_LOOPING, 0, shp.get_num_frames(), 0, -1, 1, 1};
+	int nframes = shp.get_num_frames();
+	if (init_frame >= nframes)
+		{			// Too big?  Maybe rotated.
+		init_frame &= ~(1<<5);
+		if (init_frame >= nframes)
+			init_frame = 0;	// Avoid infinite recursion.
+		}
+	Animation_info inf = {FA_LOOPING, 0, nframes, 0, -1, 1, 1};
 	animation_cycle_table->insert(pair<int, Animation_info>(shapenum, inf));
 	// Return the one in the table.
 	return get_animation_cycle_info(shapenum, init_frame);

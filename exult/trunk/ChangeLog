@@ -1,3 +1,11 @@
+2008-05-23    <jeff@mini.nerble.net>
+
+	* shapes/miscinf.cc: Don't infinite loop if animated object has
+	been rotated.
+
+	* objs/barge.cc (Barge_object): Changed criteria for gathering
+	'barge' objects so flags aren't caught (but the ice-raft still works).
+
 2008-05-03    <jeff@mini.nerble.net>
 
 	* effects.cc (Projectile_effect): Fixed crash involving trap.
