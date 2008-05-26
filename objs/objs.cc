@@ -354,10 +354,12 @@ int Game_object::get_effective_obj_hp(int weapon_shape) const
 		else if (shnum == 270 || shnum == 376) // more doors
 			{
 			if (get_quality()==0 || weapon_shape==704 ||
-				((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))) 
+			   ((Game::get_game_type() == BLACK_GATE) && 
+						(weapon_shape == 702))) 
 				// only 'normal' doors (or powderkeg/cannon)
 				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
-					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
+						// no magic or steel doors
+				    (frnum >= 16 && frnum <= 18))
 					hps = 6;
 			}
 					// Serpent statue at end of SI:
@@ -1431,9 +1433,10 @@ bool Game_object::reduce_health
 					//   indestructible,
 	if (!hp)			//   with exceptions:
 		{
+		int shnum = get_shapenum();
 			// Detonate Powder kegs... but not if the weapon is
 			// the BG cannon, as it detonates them via usecode.
-		if (get_shapenum() == 704)
+		if (shnum == 704)
 			{
 			// cause chain reaction
 
@@ -1445,6 +1448,12 @@ bool Game_object::reduce_health
 					new Explosion_effect(pos, this));
 				}
 			}
+					// Fire destroys ice.
+		if (Game::get_game_type() == SERPENT_ISLE &&
+				(shnum == 232 || shnum == 755) &&
+				damage_type == (int)Weapon_info::fire_damage)
+			return true;
+
 		return false;
 		}
 	else if (delta >= hp)

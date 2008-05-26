@@ -1,3 +1,8 @@
+2008-05-26    <jeff@mini.nerble.net>
+
+	* objs/objs.cc: In SI, fire-damage destroys ice wall and blocks,
+	so you can free Gwenno.
+
 2008-05-23    <jeff@mini.nerble.net>
 
 	* shapes/miscinf.cc: Don't infinite loop if animated object has
