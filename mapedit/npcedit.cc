@@ -269,7 +269,7 @@ static bool Get_schedule_line
 	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
 	g_free(lname);
 					// User data = schedule #.
-	sched.type = (int) gtk_object_get_user_data(GTK_OBJECT(label));
+	sched.type = (sintptr) gtk_object_get_user_data(GTK_OBJECT(label));
 	if (sched.type < 0 || sched.type > 31)
 		return false;
 					// Get location.
@@ -637,7 +637,7 @@ int ExultStudio::save_npc_window
 	int shape = get_num_entry("npc_shape");
 	int frame = get_num_entry("npc_frame");
 	GtkWidget *fw = glade_xml_get_widget(app_xml, "npc_face_frame");
-	int face = (int) gtk_object_get_user_data(GTK_OBJECT(fw));
+	int face = (sintptr) gtk_object_get_user_data(GTK_OBJECT(fw));
 	int usecode = get_num_entry("npc_usecode_entry");
 	std::string usecodefun = "";
 	if (!usecode)
@@ -763,7 +763,7 @@ void ExultStudio::show_npc_face
 		return;
 	npc_face_draw->configure();
 	GtkWidget *frame = glade_xml_get_widget(app_xml, "npc_face_frame");
-	int shnum = (int) gtk_object_get_user_data(GTK_OBJECT(frame));
+	int shnum = (sintptr) gtk_object_get_user_data(GTK_OBJECT(frame));
 	npc_face_draw->draw_shape_centered(shnum, 0);
 	if (w != -1)
 		npc_face_draw->show(x, y, w, h);

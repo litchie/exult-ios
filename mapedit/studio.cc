@@ -2358,7 +2358,7 @@ C_EXPORT gboolean on_prefs_background_expose_event
 	gpointer data
 	)
 	{
-	guint32 color = (guint32) gtk_object_get_user_data(GTK_OBJECT(widget));
+	guint32 color = (uintptr) gtk_object_get_user_data(GTK_OBJECT(widget));
 	GdkGC *gc = (GdkGC *) 
 			gtk_object_get_data(GTK_OBJECT(widget), "color_gc");
 	if (!gc)
@@ -2420,7 +2420,7 @@ void ExultStudio::save_preferences
 	config->set("config/estudio/default_game", default_game, true);
 	GtkWidget *backgrnd = glade_xml_get_widget(app_xml,
 							"prefs_background");
-	background_color = (guint32) gtk_object_get_user_data(
+	background_color = (uintptr) gtk_object_get_user_data(
 						GTK_OBJECT(backgrnd));
 	config->set("config/estudio/background_color", background_color, true);
 					// Set background color.
