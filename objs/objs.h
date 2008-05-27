@@ -94,14 +94,14 @@ public:
 	Game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: ShapeID(shapenum, framenum), tx(tilex), ty(tiley),
-			lift(lft), quality(0), chunk(0)
+			lift(lft), quality(0), chunk(0), render_seq(0)
 		{  }
 					// Copy constructor.
 	Game_object(const Game_object& obj2)
 		: ShapeID(obj2), tx(obj2.tx), ty(obj2.ty), lift(obj2.lift),
-		  quality(obj2.quality), chunk(obj2.chunk)
+		  quality(obj2.quality), chunk(obj2.chunk), render_seq(0)
 		{  }
-	Game_object() : ShapeID(), chunk(0)	// Create fake entry.
+	Game_object() : ShapeID(), chunk(0), render_seq(0)	// Create fake entry.
 		{  }
 	virtual ~Game_object()
 		{  }
