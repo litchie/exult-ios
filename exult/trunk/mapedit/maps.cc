@@ -65,7 +65,7 @@ static void on_map_activate
 	{
 	unsigned char data[50];
 	unsigned char *ptr = &data[0];
-	Write2(ptr, (int) udata);
+	Write2(ptr, (uintptr) udata);
 	ExultStudio::get_instance()->send_to_server(Exult_server::goto_map,
 					&data[0], ptr - data);
 	}
@@ -218,7 +218,7 @@ void ExultStudio::setup_maps_list
 			}
 		if (gtk_check_menu_item_get_active(
 					GTK_CHECK_MENU_ITEM(item)))
-			curmap = (int) gtk_object_get_user_data(
+			curmap = (sintptr) gtk_object_get_user_data(
 							GTK_OBJECT(item));
 		GList *prev = g_list_previous(each);
 		gtk_container_remove(GTK_CONTAINER(maps), GTK_WIDGET(item));
