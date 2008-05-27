@@ -45,6 +45,8 @@ Palette::Palette()
 	    palette(-1), brightness(100), 
 	    faded_out(false), fades_enabled(true), max_val(63)
 	{
+	memset(pal1, 0, 768);
+	memset(pal2, 0, 768);
 	}
 
 Palette::Palette(Palette *pal)
