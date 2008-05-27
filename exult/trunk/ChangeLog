@@ -1,5 +1,6 @@
 2008-05-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: some 64-bit and/or gcc 4.1 compilation fixes
+	* objs/chunks.cc: delete[] vs delete
 
 2008-05-26    <jeff@mini.nerble.net>
 

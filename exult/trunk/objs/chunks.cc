@@ -74,7 +74,7 @@ Chunk_cache::~Chunk_cache
 	{
 	for (vector<blocked8z>::iterator it = blocked.begin();
 				it != blocked.end(); ++it)
-		delete *it;
+		delete[] *it;
 	}
 
 /*
