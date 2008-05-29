@@ -1555,14 +1555,18 @@ USECODE_INTRINSIC(attack_object)
 		return Usecode_value(0);
 
 		// Powder keg is a special case.
-	if (trg->get_shapenum() == 704 && !trg->get_quality())
-		if (wshape == 704)
-			trg->set_quality(2);	// Do not explode it.
-		else
-			trg->set_quality(0);
-	
-	att->set_usecode_to_attack(trg, wshape);
-	return Usecode_value(att->usecode_attack());
+	if (wshape == 704)
+		{	// Needed for gwani horn (and possibly others).
+		Tile_coord pos = trg->get_outermost()->get_tile();
+		gwin->get_effects()->add_effect(new Explosion_effect(pos, trg,
+				0, wshape, -1, att));
+		return Usecode_value(1);
+		}
+	else
+		{
+		att->set_usecode_to_attack(trg, wshape);
+		return Usecode_value(att->usecode_attack());
+		}
 }
 
 USECODE_INTRINSIC(book_mode)
