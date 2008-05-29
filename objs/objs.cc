@@ -1448,12 +1448,6 @@ bool Game_object::reduce_health
 					new Explosion_effect(pos, this));
 				}
 			}
-					// Fire destroys ice.
-		if (Game::get_game_type() == SERPENT_ISLE &&
-				(shnum == 232 || shnum == 755) &&
-				damage_type == (int)Weapon_info::fire_damage)
-			return true;
-
 		return false;
 		}
 	else if (delta >= hp)
