@@ -1,5 +1,6 @@
 2008-05-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: initialize variables
+	* schedule.cc: don't access member variable after being deleted
 
 2008-05-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/objs.cc: Removed fire-vs-ice effect previously introduced.
