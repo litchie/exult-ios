@@ -1,5 +1,5 @@
 2008-05-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
-	* gamewin.cc: initialize variable
+	* various: initialize variables
 
 2008-05-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/objs.cc: Removed fire-vs-ice effect previously introduced.

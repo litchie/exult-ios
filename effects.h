@@ -346,7 +346,7 @@ public:
  */
 class Storm_effect : public Weather_effect
 	{
-	int start;			// 1 to start storm.
+	bool start;			// 1 to start storm.
 public:
 	Storm_effect(int duration, int delay = 0, Game_object *egg = 0);
 					// Execute when due.
