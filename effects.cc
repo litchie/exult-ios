@@ -1453,7 +1453,7 @@ Storm_effect::Storm_effect
 	int duration,			// In game minutes.
 	int delay,			// In msecs.
 	Game_object *egg		// Egg that caused it, or null.
-	) : Weather_effect(duration, delay, 2, egg)
+	) : Weather_effect(duration, delay, 2, egg), start(true)
 	{
 					// Start raining soon.
 	eman->add_effect(new Clouds_effect(duration + 1, delay));
