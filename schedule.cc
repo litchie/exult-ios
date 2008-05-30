@@ -193,7 +193,7 @@ int Schedule::try_street_maintenance
 					// Set actor to walk there.
 	npc->set_schedule_type(Schedule::street_maintenance,
 			new Street_maintenance_schedule(npc, pact, found));
-	street_maintenance_failures = 0;// We did it, so clear failures.
+	// Warning: we are deleted here
 	return 1;
 	}
 
