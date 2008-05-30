@@ -1191,7 +1191,7 @@ void Fog_effect::handle_event(unsigned long curtime, long udata)
 	{
 	if (start)
 		{
-		start = 0;
+		start = false;
 					// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		gclock->set_fog(true);
@@ -1475,7 +1475,7 @@ void Storm_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	if (start)
 		{
-		start = 0;
+		start = false;
 					// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
