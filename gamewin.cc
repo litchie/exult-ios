@@ -317,7 +317,7 @@ Game_window::Game_window
 	    painted(false), focus(true),
 	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
-	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
+	    npcs(0), bodies(0), dirty(0,0,0,0), mouse3rd(false), fastmouse(false),
 	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
 	    special_light(0),
 	    dragging(0),
