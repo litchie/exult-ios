@@ -631,8 +631,8 @@ Actor::Actor
 	    usecode_dir(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
-	    weapon_rect(0, 0, 0, 0), rest_time(0), casting_mode(false),
-	    atts(0), usecode_name("")
+	    weapon_rect(0, 0, 0, 0), temperature(0), rest_time(0),
+	    casting_mode(false), atts(0), usecode_name("")
 	{
 	set_shape(shapenum, 0); 
 	init();

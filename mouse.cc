@@ -112,7 +112,7 @@ void Mouse::Init()
 	box.w = maxw;
 	box.h = maxh;
 	
-	onscreen = 0;                   // initially offscreen
+	onscreen = false;                   // initially offscreen
 }
 
 /*
@@ -136,7 +136,7 @@ void Mouse::show
 {
 	if (!onscreen)
 	{
-		onscreen = 1;
+		onscreen = true;
 					// Save background.
 		iwin->get(backup, box.x, box.y);
 					// Paint new location.
