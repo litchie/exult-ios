@@ -1,3 +1,6 @@
+2008-05-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* various: initialize variables, minor clean-up 
+
 2008-05-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: initialize variables
 	* schedule.cc: don't access member variable after being deleted

@@ -43,8 +43,7 @@ protected:
 	int mousex, mousey;		// Last place where mouse was.
 	int cur_framenum;		// Frame # of current shape.
 	Shape_frame *cur;		// Current shape.
-	unsigned char focus;		// 1 if we have focus.
-	unsigned char onscreen;		// 1 if mouse is drawn on screen.
+	bool onscreen;			// true if mouse is drawn on screen.
 	static short short_arrows[8];	// Frame #'s of short arrows, indexed
 					//   by direction (0-7, 0=east).
 	static short med_arrows[8];	// Medium arrows.
@@ -109,7 +108,7 @@ public:
 		{
 		if (onscreen)
 			{
-			onscreen = 0;
+			onscreen = false;
 			iwin->put(backup, box.x, box.y);	
 			dirty = box;	// Init. dirty to box.
 			}
