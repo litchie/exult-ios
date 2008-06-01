@@ -1,3 +1,7 @@
+2008-06-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* conf/Configuration.cc: Recognize paths starting with "../" as relative
+	  paths. This should fix bug #1738138.
+
 2008-05-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: initialize variables, minor clean-up 
 

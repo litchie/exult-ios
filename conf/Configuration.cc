@@ -159,9 +159,9 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	
 	fname=input_filename;
 	// Don't frob the filename if it starts with a dot and
-	// a slash.
+	// a slash or with two dots and a slash.
 	// Or if it's not a relative path.
-	if((fname.find("./")!=0) && (fname[0]!='/'))
+	if((fname.find("./")!=0) && (fname.find("../")!=0) && (fname[0]!='/'))
 	{
 #if ((defined XWIN) || (defined BEOS) || (defined MACOSX))
 		const char *f1=getenv("HOME");
