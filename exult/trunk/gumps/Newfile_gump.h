@@ -182,7 +182,7 @@ protected:
 
 public:
 	Newfile_gump();
-	~Newfile_gump();
+	virtual ~Newfile_gump();
 
 	void load();			// 'Load' was clicked.
 	void save();			// 'Save' was clicked.

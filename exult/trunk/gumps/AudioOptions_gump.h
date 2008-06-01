@@ -44,7 +44,7 @@ class AudioOptions_gump : public Modal_gump
 
  public:
 	AudioOptions_gump();
-	~AudioOptions_gump();
+	virtual ~AudioOptions_gump();
 
 					// Paint it and its contents.
 	virtual void paint();

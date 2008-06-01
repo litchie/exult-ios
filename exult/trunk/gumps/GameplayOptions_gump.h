@@ -51,7 +51,7 @@ class GameplayOptions_gump : public Modal_gump
 
  public:
 	GameplayOptions_gump();
-	~GameplayOptions_gump();
+	virtual ~GameplayOptions_gump();
 
 					// Paint it and its contents.
 	virtual void paint();

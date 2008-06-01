@@ -40,6 +40,7 @@ public:
 		: Gump(cont, initx, inity, shnum, shfile), done(false),
 		  pushed(0)
 		{  }
+	virtual ~Modal_gump() {  }
 					// Create centered.
 	Modal_gump(Container_game_object *cont, int shnum, 
 			   ShapeFile shfile = SF_GUMPS_VGA)

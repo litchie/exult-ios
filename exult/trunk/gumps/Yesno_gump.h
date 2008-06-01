@@ -46,7 +46,7 @@ protected:
 public:
 	friend class Yesno_button;
 	Yesno_gump(const std::string &txt);
-	~Yesno_gump();
+	virtual ~Yesno_gump();
 	int get_answer()
 		{ return answer; }
 					// Paint it and its contents.

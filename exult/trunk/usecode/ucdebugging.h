@@ -44,6 +44,7 @@ class Breakpoint
 	bool once; // delete when triggered
 
 	virtual Breakpoint_type get_type() const =0;
+	virtual ~Breakpoint() {  }
 
 	virtual bool check(Stack_frame *frame) const =0;
 
@@ -57,6 +58,7 @@ class AnywhereBreakpoint : public Breakpoint
 {
  public:
 	AnywhereBreakpoint();
+	virtual ~AnywhereBreakpoint() {  }
 
 	virtual Breakpoint_type get_type() const { return BP_anywhere; }
 	virtual bool check(Stack_frame *frame) const { return true; }
@@ -68,6 +70,7 @@ class LocationBreakpoint : public Breakpoint
 {
  public:
 	LocationBreakpoint(int functionid, int ip, bool once = false);
+	virtual ~LocationBreakpoint() {  }
 
 	virtual Breakpoint_type get_type() const { return BP_location; }
 	virtual bool check(Stack_frame *frame) const;
@@ -84,6 +87,7 @@ class StepoverBreakpoint : public Breakpoint
 {
  public:
 	StepoverBreakpoint(Stack_frame *frame);
+	virtual ~StepoverBreakpoint() {  }
 
 	virtual Breakpoint_type get_type() const { return BP_stepover; }
 	virtual bool check(Stack_frame *frame) const;
@@ -100,6 +104,7 @@ class FinishBreakpoint : public Breakpoint
 {
  public:
 	FinishBreakpoint(Stack_frame *frame);
+	virtual ~FinishBreakpoint() {  }
 
 	virtual Breakpoint_type get_type() const { return BP_finish; }
 	virtual bool check(Stack_frame *frame) const;

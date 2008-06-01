@@ -61,6 +61,7 @@ public:
 	virtual bool eof() =0;
 	virtual void flush() { }
 	virtual bool good() { return true; }
+	virtual void clear_error() { }
 
 	void readline(std::string &str)
 	{
@@ -157,6 +158,13 @@ public:
 	virtual bool eof() { return in->peek() == std::char_traits<char>::eof(); }
 	virtual void flush() { if (out) out->flush(); }
 	virtual bool good() { return in ? in->good() : out->good(); }
+	virtual void clear_error()
+		{
+		if (in)
+			in->clear();
+		else
+			out->clear();
+		}
 };
 
 class FileDataSource: public DataSource

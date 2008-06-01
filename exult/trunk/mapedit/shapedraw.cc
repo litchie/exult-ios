@@ -122,10 +122,11 @@ void Shape_draw::draw_shape_centered
 	)
 	{
 	iwin->fill8(255);		// Background (transparent) color.
-	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
+	if (shapenum < 0 || shapenum >= ifile->get_num_shapes()
+		|| framenum >= ifile->get_num_frames(shapenum))
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
-	if (!shape)
+	if (!shape || shape->is_empty())
 		return;
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;

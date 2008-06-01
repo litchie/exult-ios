@@ -79,7 +79,7 @@ class Notebook_gump : public Gump
 	void down_arrow();
 public:
 	Notebook_gump();
-	~Notebook_gump();
+	virtual ~Notebook_gump();
 	static void clear();
 	static Notebook_gump *create();
 	static Notebook_gump *get_instance() { return instance; }
