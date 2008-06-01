@@ -15,6 +15,7 @@
 	* files/databuf.h: Added clear_error virtual method to DataBuffer classes.
 	* docs/u7tech.txt: Full documentation of upcoming changes to *.dat files,
 	  based on the original games. Some changes for u7iregXX documentation.
+	* tools/ucdump.c, tools/mklink.c: Eliminating a few warnings.
 
 2008-05-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: initialize variables, minor clean-up 
