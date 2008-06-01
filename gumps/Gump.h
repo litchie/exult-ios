@@ -150,6 +150,7 @@ public:
 								Gump *from)
 		: Gump(cont, initx, inity, this)
 		{  }
+	virtual ~Container_gump() {  }
 	virtual Gump *clone(Container_game_object *cont, int initx, int inity)
 		{ return new Container_gump(cont, initx, inity, this); }
 };

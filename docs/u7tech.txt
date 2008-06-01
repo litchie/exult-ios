@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.24 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.25 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -408,7 +408,7 @@ ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
   $1B       Empty
   $1C       "You have but one path to the answer"
   $1D       Small intro screen 
-  $1E	    Guardian's mouth
+  $1E       Guardian's mouth
   $1F       Guardian's forehead
   $20       Guardian's eyes
   $21       Guardian "emerging 1" (frames 0-9)
@@ -466,8 +466,8 @@ ENDSCORE.DAT: A RIFF file containing what _appears_ to be some kind of midi
 INTRO.DAT / ENDGAME.DAT: iff file with intro/endgame animation data
   (contains FLIC animations, font, shape, speeches)
 INTROADM.DAT: MIDI file containing 6 midi tracks for the introductory sequence.
-	I suspect this to be a flex file, and further suspect it to be for the
-	adlib sound card.
+    I suspect this to be a flex file, and further suspect it to be for the
+    adlib sound card.
 INTRORDM.DAT: The same, but I'm guessing that this is for the roland MT32.
 INTROSND.DAT: VOC file. The Guardian's chilling initial announcement.
 ADLIB.ADV:    driver for the Adlib sound card
@@ -481,96 +481,157 @@ WIHH.DAT:     wihh entries for the game shapes
   offset  = int16  (0 if no object associated with the shape)
   (the offsets are relative to the beginning of the file and point to objects:)
   object  = 32 int16's (meaning? one per shape frame?)
-WEAPONS.DAT:  weapons enumeration (jsf)
-  weapon    = 21 bytes (meaning?)
-  type	    = int16 (shape type)
-  ????      = int16 (negative, or same type shape
-	        as ammo.  Is it extra points to hit?).
-  ammo	    = int16 (shape type) Same as type if ammo not required.
+WEAPONS.DAT:  weapons enumeration (jsf, Marzo)
+  weapon    = type, family, ammo, damage, flags0, range, flags1, flags2, powers,
+              1 byte (0), usecode, strikeSFX, hitSFX, 2 bytes (0)
+  type      = int16 (shape type)
+  family    = int16 (if positive, consume ammo of this family if in in quiver;
+                     if -3, consume item quantity when ranged;
+                     if -2, consume item quality;
+                     if -1, weapon is the ammo)
+  ammo      = int16 (if positive, shape to be used for missile when fired;
+                     if -3, use weapon shape for projectile;
+                     if -1, projectile is invisible)
   damage    = 1 byte, positive.
-  flags0?   = 1 byte, bit flags:
-	      01 == returns?
-	      10 == fire?
-	      20 == magic?
-	      38 == breaks?
-  type??      New guess:  High nibble >looks< like the range in tiles.
-	      1 byte, guessing:
-	      0x01 == flamestrike.
-	      0x02 == flaming oil.
-	      0x04 == starburst
-	      0x18 == ???animals, serpentine dagger?????, torch.
-	      0x19 == glass sword.
-	      0x1a == dagger, hammer, knives
-	      0x1c == throwing axe.
-	      0x1e == slime
-	      0x20 == striking (scythe, rake, shovel, sword, staff,axe).
-	      0x21 == black sword, death scythe.
-	      0x24 == spear
-	      0x28 == corpser, halberd 2-handed sword, hoe, lightning
-		      whip
-	      0x36 == glimmer
-	      0x3e == sea serpent
-	      0x47 == gazer, reveal.
-	      0x56 == light
-	      0x57 == ether.
-	      0x66 == blowgun, reaper, arrow, fireball, lightning,
-		      unlock magic
-	      0x67 == dragon breath, enchant missiles.
-	      0x86 == magic axe, cannon, boomerang, fire wand, sling,
-		      destroy trap, dispel field, lightning want
-	      0x8f == hawk
-	      0x97 == delayed explosion, heal
-	      0xa6 == bow, firedoom staff, magician's wand, firewand,
-		      sling, dispel-field, lightning-wand.
-	      0xc6 == fire bolt, triple crossbow.
-	      0xc7 == heal, sleep
-	      0xce == crossbow
-	      0xe6 == musket
-	      0xf6 == death vortex, paralyze, swordstrike
-	      0xf7 == death bolt, dispel magic, douse, energy mist,
-	              ignite, poison, telekinesis
-  	      0xf8 == explosions.
-	      0xfe == juggernaut hammer, curse, magic bow, light
-	      0xff == magic boomerang, charm
-  unknown(2 bytes) Usually 4 and 7.
-  flags1	= 1 byte, bit flags (special powers), meaning:
-		  0x01 == sleep
-		  0x02 == charm
-		  0x04 == curse
-		  0x08 == poison
-		  0x10 == paralyze
-		  0x20 == scare? remove mana? (ghosts/magebane have this).
-		  0x40 == ?? (insects have this).
-  zero	    = 1 byte, always 0.
-  usecode   = int16 (Usecode function.  ??Call upon strike with event=4.??)
+  flags0    = 1 byte, bit flags:
+          b0 == lucky (easier to hit with)
+          b1 == explodes
+          b2 == no blocking?
+          b3 == delete depleted weapon if family == -2
+          [b4..b7]: damage type
+                    0 == normal damage, causes bleeding
+                    1 == fire damage
+                    2 == magic damage
+                    3 == lightning damage, ignores armor
+                    4 == ethereal damage, ignores armor
+                    5 == sonic/poison damage, ignores armor
+                    6, 7 == unnamed/unused damage types, they nevertheless work
+                            (even immunity and vulnerability flags)
+  range     = 1 byte
+          b0 == always hits
+          [b1..b2]: uses
+                    0 == hand-to-hand weapon
+                    1 == poor thrown (seems to be +6-dist to hit)
+                    2 == thrown (seems to be +6-dist/2 to hit)
+                    3 == ranged (seems to be +6-dist/4 to hit; unsure about it)
+          [b3..b7]: Strike range for uses < 3; max range for uses == 3;
+		            for 0 < uses < 3, if farther away than this, throw weapon
+  flags1    = 1 byte
+          b0 == returns
+          b1 == must target object, unless if through an usecode attack
+                (e.g., firedoom staff can attack empty tile, bow can't)
+          [b2..b3]: Very fast missile if nonzero, check missile speed otherwise
+          [b4..b7]: Missile rotation: # of frames added each step
+  flags2    = 1 byte
+          [b0..b1]: Actor frames to use on melee
+          [b2..b3]: Actor frames to use on ranged
+          b4 == unknown
+          [b5..b7]: missile speed
+                    0 == fast
+                    1, 2 == medium (seems to be no difference between 1 and 2)
+                    3+ == slow (they all seem equally slow)
+  powers    = 1 byte, bit flags (special powers), meaning:
+          b0 == sleep
+          b1 == charm
+          b2 == curse
+          b3 == poison
+          b4 == paralyze
+          b5 == magebane
+          b6 == ?? (insects have this).
+          b7 == harmless (SI)
+  usecode   = int16 (Usecode function.  Called upon strike with event=4.)
   strikeSFX = int16.  1 + SFX# to play during attack.
-  hitSFX    = int16.  1 + SFX# to play when hit.
+  hitSFX?   = int16.  Doesn't seem to be used in the originals.
 
 AMMO.DAT:     ammunitions enumeration
-  ammunition= type, family, type2, id, flags
+  ammunition= type, family, type2, damage, flags0, 1 byte (0), damtype, powers,
+              2 bytes (0)
   type      = int16 (shape type)
   family    = int16 (shape type of the base ammunition eg: lucky arrow->arrow)
-  type2     = int16 (always same as type)
+  type2     = int16 (if -1, do not show sprite [does not override weapon setting];
+                     if -3, use ammo type as projectile;
+					 otherwise, shape to use as projectile)
   damage    = byte (extra damage)
-  flags     = 6 bytes (meaning?)
+  flags0    = byte
+          b0 == lucky (easier to hit with; accumulates with weapon setting)
+          b1 == always hits (OR'ed with weapon setting)
+          b2 == returns (OR'ed with weapon setting)
+          b3 == no blocking?
+          [b4..b5]: drop type
+                    0 to drop on misses
+                    1 to drop always
+                    2 to drop always
+                    3 means homing (e.g., death vortex) IF also explodes
+          b6 == Explodes/bursts (OR'ed with weapon's)
+          b7 == ???
+  damtype   = 1 byte
+          [b0..b3]: ???
+		  [b4-b7]: damage type, like a weapon's; used instead of weapon's
+		           damage type unless == 0
+  powers    = 1 byte, exactly like weapon's. A harmless missile may call usecode
+              0x7e1 on hit in SI.
 ARMOR.DAT:    armors enumeration
-  armor     = type, defence, flags
+  armor     = type, defense, 1 byte (0), immunity, 5 bytes (0)
   type      = int16 (shape type)
-  defence   = byte (points of damage removed from a successful attack)
-  flags     = 7 bytes (meaning? always 0s except for kite shield)
+  defense   = byte (points of damage removed from a successful attack;
+              seems to be randomized, and ignored by some damage types)
+  immunity  = 1 byte, bit flags (bit i means immune to damage type i)
 MONSTERS.DAT: monsters enumeration
-  monster   = type, str, dex, int, com, ar, unknown
+  monster   = type, str, dex, int, com, ar, 1 byte(?), wp, flags, vulnerab,
+              immunity, flags2, attack+?, equip, 2 bytes(0), sfx, 7 bytes(0)
   type      = int16 (shape type)
-  str       = byte (strength,     divided by 4 for display)
-  dex       = byte (dexterity,    divided by 4 for display)
-  int       = byte (intelligence, divided by 4 for display)
-  com       = byte (combat skill, divided by 4 for display)
-  ar        = byte (armor,        divided by 16 for display)
-  unknown   = 18 bytes (meaning?)
+  str       = byte
+          b0 == immune to sleep
+		  b1 == immune to charm
+		  [b2..b7]: strength
+  dex       = byte
+          b0 == immune to curse
+		  b1 == immune to paralysis
+		  [b2..b7]: dexterity
+  int       = byte
+          b0 == immune to poison
+		  b1 == ???
+		  [b2..b7]: intelligence
+  com       = byte
+          [b0..b1] == alignment
+		  [b2..b7]: combat skill
+  ar        = byte
+          b0 == may split when killed (unless killed by vulnerability)
+		  b1 == can't die
+		  b2 == immune to sleep/charm/curse/paralysis
+		  b3 == Protected from death spells?
+		  [b4..b7]: armor
+  wp        = byte
+          [b0..b3]: reach
+          [b4..b7]: damage (only if not using weapon???)
+  flags     = 1 byte, bit flags
+          b0 == flies
+          b1 == swims
+          b2 == walks
+          b3 == ethereal
+          b4 == no body
+          b5 == ???
+          b6 == start invisible
+          b7 == see invisible
+  vulnerab  = 1 byte, bit flags (bit i means double damage of damage type i)
+  immunity  = 1 byte, bit flags (bit i means immune to damage type i)
+  flags2    = 1 byte, bit flags
+          b5 == can't yell
+          b6 == doesn't bleed
+  attack    = byte, partially unknown
+          [b0..b2]: Sets initial attack mode based on chance.
+          [b3..b7]: ???
+  equip     = byte, record number in EQUIP.DAT
+  sfx       = byte, sfx to play when striking
 EQUIP.DAT:  equipment enumeration
   equipment = 60 bytes (meaning?)
 READY.DAT:  weapon ready enumeration
-  ready     = 9 bytes (meaning?)
+  ready     = type, ready, 6 bytes (0)
+  type      = int16 (shape type)
+  ready     = byte
+          b0 == is spell
+          [b1..b2]: zero
+          [b3..b7]: weapon slot
 SCHEDULE.DAT: schedule file
   schedules = count, activities, sched_types
   count     = longint (number of activities = number of npc with schedule)
@@ -655,7 +716,8 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   shapeID   = int16 [b0..b9=shapeType  (0..$400-1)
                     bA..bE=shapeFrame (0..$20-1)
                     bF=0]
-  lift      = byte [b0..b3=? (inside:6, outside:0..3 - same for all items in region)
+  lift      = byte [b0..b3=? (inside:6, outside:0..3 - same for all items
+                              in region, 4 seems to be unused NPC)
                     b4..b7=lift level]
   quality   = byte (quality of the item)
 
@@ -678,18 +740,36 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   proba     = byte (? always 00 or current region number)
   data1     = quality, quantity
   data2     = resist, flags
-  quality   = byte (00:no key 01:Dead NPC 02..F9:matching key FA..FF:trap)
-              Exult: qual=2 for bodies of killed monsters
-  quantity  = byte (00 or 01 or npc#-$80 if corpse can become NPC)
+  quality   = byte (00: no key 01..F9: matching key FA..FF: trap
+                    for corpse, 00..01: npc# >> 7 02: can't be raised)
+              Exult: for corpse, 00: dead NPC 01..FF: unused
+  quantity  = byte (00 or 01 or npc# & $7F if corpse can become NPC)
   resist    = byte (attack/lockpicking resistance points)
   flags     = byte [b0:invisible
                     b1..b2:0
-                    b3:?
-                    b4..b6:0
-                    b7:?]
+                    b3:okay to take
+                    b4:?
+                    b5:halt flag?
+                    b6:0
+                    b7:set if human NPC is carrying lit light sources]
   note: key-locked containers cannot be lockpicked but can be attacked if
   resistance points are > 0
 
+  for actors:
+  type      = referent of the first item in the container (0000 if empty)
+  proba     = byte (? always 00 or current region number)
+  data1     = attack, quantity
+  data2     = hps, flags
+  attack    = byte (the NPC's attack mode)
+  quantity  = byte (?)
+  hps       = byte (actor's current health)
+  flags     = byte [b0:invisible
+                    b1..b2:0
+                    b3:okay to take
+                    b4:?
+                    b5:halt flag?
+                    b6:0
+                    b7:set if human NPC is carrying lit light sources]
 
   for barges:
   type      = sizeX, sizeY
@@ -708,9 +788,8 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   circle    = byte [b0=book contains spell 1 of this circle
                     ...
                     b7=book contains spell 8 of this circle]
-  flags     = longint  [b0..b1D=?
-                        b1E=infinite spellbook
-                        b1F=?]
+  flags     = longint  [b0..b17=?
+                        b18..b1f=bookmarked spell]
 
   for all egg items: (if shapeID represents an Egg)
   type      = int16 [b0..b3=egg type
@@ -730,7 +809,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
                     b2..b7:number]
   workType  = byte
   data2     = int16 (type of creature, 6 bits frame, 10 bits shape)
-  data3	    = int16 (Exult:  data3>0 => data3 is shape, data2(7:0) is frame)
+  data3     = int16 (Exult:  data3>0 => data3 is shape, data2(7:0) is frame)
 
   for jukebox egg (2):
   data1     = score, flags
@@ -792,7 +871,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
 
   for intermap egg (11) (Exult only):
   data1     = map, schunk
-  map	    = byte
+  map       = byte
   schunk    = byte
   data2     = x, y (coordinates inside region)
   x         = byte
@@ -835,13 +914,13 @@ U7NBUF.DAT: Cache file for NPCs in use
   game. The NPCs shape & inventory are in U7IBUF under the given referent.
   npcBlock  = index, referent, status, str, dexterity, intel, combat, activity,
               DAM, 3-bytes?, status2, index2, 2-bytes?, exper, training, primary,
-              secondary, oppressor, I-Vr, S-Vr, status3, 5-bytes?, acty?, SN, V1,
-              V2, 29-bytes?, food, 7-bytes?, name
+              secondary, oppressor, I-Vr, S-Vr, status3, byte?, target, weapon,
+              acty?, SN, V1, V2, 29-bytes?, food, 7-bytes?, name
   index     = int16 (meaning? 1-based?)
   status    = int16 [b0: ?
                     b1..b2: Heading direction (N,E,S,W)
                     b3..b4: Follow/Alignment (Neutral,Good,Evil,Chaotic)
-                    b5,b6: ?
+                    b5,b6: True alignment (stored when NPC is charmed)
                     b7: Asleep
                     b8: Charmed
                     b9: Cursed
@@ -891,11 +970,20 @@ U7NBUF.DAT: Cache file for NPCs in use
                     b8: Want Primary
                     b9: Sex (M/F)
                     bA: Bleeding
-                    bB: In Party?
-                    bC: ?
+                    bB: In Party
+                    bC: Might
                     bD: In Action
                     bE: Conjured
                     bF: Summonned]
+  target    = XY
+  XY = X, Y
+     | referent (of target object)
+  X         = byte (X coordinate delta to target tile)
+  Y         = byte (Y coordinate delta to target tile)
+  weapon    = int16 [b0..b3: 1-based index of weapon in weapons.dat
+                    b4: ?
+                    b5: Set if targetting tile
+                    b6..b7: ?]
   food      = byte (food level)
   SN        = byte (meaning?)
   V1        = int16 (meaning?)

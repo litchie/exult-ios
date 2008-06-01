@@ -233,8 +233,8 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	ip = param_ip; //restore IP back to opcode parameters
 
 	// special cases:
-	switch (opcode) {
-	case 0x05:		// JNE.
+	switch (opcode & 0x7f) {
+	case 0x05:		// JNE/JNE32.
 		{
 			Usecode_value val;
 			if (sp <= stack)
@@ -249,27 +249,30 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 			break;
 		}
 
-		/*
-		  maybe predict this?
-	case 0x07:		// CMPS.
+		/*  maybe predict this?
+	case 0x07:		// CMPS/CMPS32.
 		{
 			int cnt = Read2(ip);	// # strings.
-			offset = (short) Read2(ip);
 			bool matched = false;
 			
 			// only try to match if we haven't found an answer yet
 			while (!matched && !found_answer && cnt-- > 0) {
-				Usecode_value s = pop();
+				Usecode_value s;
+				if (sp + cnt <= stack)
+					s = Usecode_value(0);
+				else
+					s = *(sp - cnt - 1); 
 				const char *str = s.get_str_value();
 				if (str && strcmp(str, user_choice) == 0) {
 					matched = true;
 					found_answer = true;
 				}
 			}
-			while (cnt-- > 0)	// Pop rest of stack.
-				pop();
-			if (!matched)		// Jump if no match.
-				ip += offset;
+			if (val.is_false())
+				std::printf("\t\t(jump taken)");
+			else
+				std::printf("\t\t(jump not taken)");
+			break;
 		}
 		break;
 		*/

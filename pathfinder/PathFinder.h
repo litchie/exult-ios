@@ -29,6 +29,7 @@ class Pathfinder_client
 private:
 	int		move_flags;
 public:
+	virtual ~Pathfinder_client() {  }
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.

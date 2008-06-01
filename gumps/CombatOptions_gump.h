@@ -36,7 +36,7 @@ class CombatOptions_gump : public Modal_gump
 	void build_buttons();
  public:
 	CombatOptions_gump();
-	~CombatOptions_gump();
+	virtual ~CombatOptions_gump();
 
 					// Paint it and its contents.
 	virtual void paint();

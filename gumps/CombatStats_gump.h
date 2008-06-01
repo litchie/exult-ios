@@ -34,7 +34,7 @@ class CombatStats_gump : public Gump
 
 public:
 	CombatStats_gump(int initx, int inity);
-	~CombatStats_gump();
+	virtual ~CombatStats_gump();
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,

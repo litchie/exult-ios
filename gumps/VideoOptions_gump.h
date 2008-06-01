@@ -43,7 +43,7 @@ class VideoOptions_gump : public Modal_gump
 
  public:
 	VideoOptions_gump();
-	~VideoOptions_gump();
+	virtual ~VideoOptions_gump();
 
 					// Paint it and its contents.
 	virtual void paint();

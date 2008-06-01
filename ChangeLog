@@ -1,6 +1,20 @@
 2008-06-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* conf/Configuration.cc: Recognize paths starting with "../" as relative
 	  paths. This should fix bug #1738138.
+	* mapedit/shapedraw.cc: Extra safety when drawing centered shapes.
+	* gameclk.h, shapes/vgafile.cc: Change initialization order in constructors
+	  to reduce number of GCC 4.x warnings. Also, added code to recover memory
+	  used by shape_sources when reseting Vga_file.
+	* cheat.cc, shapeid.h, usecode/ucdebugging.h, usecode/conversation.h,
+	  pathfinder/PathFinder.h, gumps/*.h: Added virtual destructors to virtual
+	  base classes and their derived classes.
+	* objs/mappatch.cc: Replacing iterator++ with faster ++iterator.
+	* cheat_screen.cc, objs/flags.h: Correcting flags based on original games.
+	* actorio.cc: Removed double-check on monster death before write.
+	* usecode/ucdisasm.cc: Added some more special cases.
+	* files/databuf.h: Added clear_error virtual method to DataBuffer classes.
+	* docs/u7tech.txt: Full documentation of upcoming changes to *.dat files,
+	  based on the original games. Some changes for u7iregXX documentation.
 
 2008-05-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: initialize variables, minor clean-up 

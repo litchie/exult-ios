@@ -52,9 +52,9 @@ class Game_clock : public Time_sensitive
 	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
-			light_source_level(0), dungeon(255), time_rate(1),
-			overcast(0), fog(0), transition(0), old_special_light(false),
-			was_overcast(false), was_foggy(false), old_light_level(0)
+			light_source_level(0), old_light_level(0), old_special_light(false),
+			dungeon(255), overcast(0), was_overcast(false), fog(0),
+			was_foggy(false), transition(0), time_rate(1)
 		{ }
 	int get_hour()
 		{ return hour; }

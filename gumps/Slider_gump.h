@@ -47,7 +47,7 @@ protected:
 
 public:
 	Slider_gump(int mival, int mxval, int step, int defval);
-	~Slider_gump();
+	virtual ~Slider_gump();
 	int get_val()			// Get last value set.
 		{ return val; }
 					// An arrow was clicked on.

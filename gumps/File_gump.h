@@ -43,7 +43,7 @@ protected:
 
 public:
 	File_gump();
-	~File_gump();
+	virtual ~File_gump();
 					// Find savegame index of text field.
 	int get_save_index(Gump_text *txt);
 	void remove_focus();		// Unfocus text.

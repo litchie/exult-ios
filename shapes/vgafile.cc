@@ -328,8 +328,8 @@ Shape_frame::Shape_frame
 	int w, int h,			// Dimensions.
 	int xoff, int yoff,		// Xleft, yabove.
 	bool setrle			// Run-length-encode.
-	) : xleft(xoff), yabove(yoff), xright(w - xoff - 1),
-	    ybelow(h - yoff - 1), rle(setrle)
+	) : rle(setrle), xleft(xoff), xright(w - xoff - 1), yabove(yoff),
+	    ybelow(h - yoff - 1)
 #ifdef HAVE_OPENGL
 		, glshape(0)
 #endif
@@ -1268,14 +1268,14 @@ Vga_file::Vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Patch file, or null.
-	) : num_shapes(0), shapes(0), u7drag_type(u7drag), flex(true)
+	) : u7drag_type(u7drag), flex(true), num_shapes(0), shapes(0)
 	{
 	load(nm, nm2);
 	}
 
 Vga_file::Vga_file
 	(
-	) : num_shapes(0), shapes(0), u7drag_type(-1), flex(true)
+	) : u7drag_type(-1), flex(true), num_shapes(0), shapes(0)
 	{
 		// Nothing to see here !!!
 	}
@@ -1284,7 +1284,7 @@ Vga_file::Vga_file
 	(
 	vector<pair<string, int> > sources,
 	int u7drag		// # from u7drag.h, or -1
-	) : num_shapes(0), u7drag_type(u7drag), flex(true)
+	) : u7drag_type(u7drag), flex(true), num_shapes(0)
 	{
 	load(sources);
 	}
@@ -1463,6 +1463,9 @@ void Vga_file::reset()
 		if ((*it)->is_open())
 			(*it)->close();
 	files.clear();
+	for (vector<pair<DataSource *,bool> >::iterator it = shape_sources.begin();
+			it != shape_sources.end(); ++it)
+		delete it->first;
 	shape_sources.clear();
 	shape_cnts.clear();
 

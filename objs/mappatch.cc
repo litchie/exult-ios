@@ -101,7 +101,7 @@ Map_patch_collection::~Map_patch_collection
 	)
 	{
 	for (Map_patch_map::iterator it1 = patches.begin();
-						it1 != patches.end(); it1++)
+						it1 != patches.end(); ++it1)
 		{
 		Map_patch_list& lst = (*it1).second;
 		while (!lst.empty())
@@ -144,7 +144,7 @@ void Map_patch_collection::apply
 		{
 		Map_patch_list& lst = (*it1).second;
 		for (Map_patch_list::const_iterator it2 = lst.begin();
-						it2 != lst.end(); it2++)
+						it2 != lst.end(); ++it2)
 			(*it2)->apply();	// Apply each one in list.
 		}
 	}
