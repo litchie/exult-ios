@@ -30,7 +30,7 @@ class Jawbone_gump : public Gump {
  public:
 	Jawbone_gump(Jawbone_object *cont, int initx, int inity);
 
-	~Jawbone_gump() {}
+	virtual ~Jawbone_gump() {}
 
 	// Find the object the mouse is over
 	virtual Game_object *find_object(int mx, int my);

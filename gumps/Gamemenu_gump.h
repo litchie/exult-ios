@@ -32,7 +32,7 @@ class Gamemenu_gump : public Modal_gump
 
  public:
 	Gamemenu_gump();
-	~Gamemenu_gump();
+	virtual ~Gamemenu_gump();
 
 					// Paint it and its contents.
 	virtual void paint();

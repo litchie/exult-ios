@@ -35,7 +35,7 @@ namespace  Obj_flags
 		on_moving_barge = 10,	// ??Guessing.
 		okay_to_take = 11,	// Okay to take??
 		might = 12,		// Double strength, dext, intel.
-		no_spell_casting = 13,
+		immunities = 13,		// Test flag in Monster_info.
 		cant_die = 14,		// Test flag in Monster_info.
 		dancing = 15,		// ??Not sure.
 		dont_move = 16,			// User can't move.
@@ -53,11 +53,13 @@ namespace  Obj_flags
 		tournament = 29,	// Call usecode (eventid=7)
 					// Originally SI-only, but allowed for BG in Exult
 		si_zombie = 30,		// Used for sick Neyobi.
+		no_spell_casting = 31,	// Known (cheat screen).
 		// Flags > 31
 		polymorph = 32,		// SI.  Pretty sure about this.
 		tattooed = 33,			// Guess (SI).
 		read = 34,			// Guess (SI).
 		petra = 35,			// Guess
+		fly = 36,			// Known (cheat screen). Get/set/clear fly type flag.
 		freeze = 37,		// SI.  Pretty sure.
 		naked = 38			// Exult. Makes the avatar naked given its skin.
 	};

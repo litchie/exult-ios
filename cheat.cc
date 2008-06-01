@@ -795,7 +795,7 @@ public:
 		x = (gwin->get_width() - w)/2 + map->get_xleft();
 		y = (gwin->get_height() - h)/2 + map->get_yabove();
 	}
-	~Cheat_map() { delete mini; }
+	virtual ~Cheat_map() { delete mini; }
 
 	virtual void paint() {
 	sman->paint_shape(x, y, map, true);

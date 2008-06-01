@@ -102,7 +102,7 @@ public:
 	Paperdoll_gump(Container_game_object *cont, int initx, int inity, 
 								int shnum);
 
-	~Paperdoll_gump();
+	virtual ~Paperdoll_gump();
 
 	// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);

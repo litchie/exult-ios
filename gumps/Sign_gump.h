@@ -36,7 +36,7 @@ protected:
 
 public:
 	Sign_gump(int shapenum, int nlines);
-	~Sign_gump();
+	virtual ~Sign_gump();
 					// Set a line of text.
 	void add_text(int line, const std::string &txt);
 					// Paint it and its contents.

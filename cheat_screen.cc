@@ -95,7 +95,7 @@ const char *CheatScreen::flag_names[64] = {
 	"on_moving_barge",	// 0x0A
 	"okay_to_take",		// 0x0B
 	"might",		// 0x0C
-	"no_spell_casting",	//0x0D
+	"immunities",	//0x0D
 	"cant_die",		// 0x0E
 	"dancing",		// 0x0F
 
@@ -111,7 +111,7 @@ const char *CheatScreen::flag_names[64] = {
 	0,			// 0x18
 	"confused",		// 0x19
 	"in_motion",		// 0x1A
-	0,			// 0x1B
+	"no_spell_casting",			// 0x1B
 	"met",			// 0x1C
 	"tournament",	// 0x1D
 	"si_zombie",	// 0x1E

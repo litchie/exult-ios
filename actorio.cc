@@ -730,8 +730,10 @@ void Monster_actor::write
 	DataSource* nfile			// Generally 'npc.dat'.
 	)
 	{
+	/*	// This is checked in Game_window::write_npcs.
 	if (Actor::is_dead())		// Not alive?
 		return;
+	*/
 	Actor::write(nfile);		// Now write.
 	}
 

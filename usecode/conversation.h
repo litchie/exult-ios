@@ -33,7 +33,7 @@ class Game_window;
 class Conversation : public Game_singletons, public Paintable{
  public:
   Conversation();
-  ~Conversation();
+  virtual ~Conversation();
 
  private:
 

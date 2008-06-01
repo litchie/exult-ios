@@ -39,7 +39,7 @@ public:
 	Text_gump(int shapenum, int fnt = 4) : Gump(0, shapenum),
 				text(0), textlen(0), curtop(0), curend(0), font(fnt)
 		{  }
-	~Text_gump()
+	virtual ~Text_gump()
 		{ delete [] text; }
 	void add_text(const char *str);	// Append text.
 	int paint_page(Rectangle box, int start);

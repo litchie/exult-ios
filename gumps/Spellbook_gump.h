@@ -60,7 +60,7 @@ class Spellbook_gump : public Spelltype_gump
 public:
 	friend class Bookmark_button;
 	Spellbook_gump(Spellbook_object *b);
-	~Spellbook_gump();
+	virtual ~Spellbook_gump();
 	virtual void do_spell(int spell);	// Perform spell.
 	void change_page(int delta);	// Page forward/backward.
 	virtual void select_spell(int spell);	// Set bookmark.
@@ -83,7 +83,7 @@ class Spellscroll_gump : public Spelltype_gump
 	int spwidth, spheight;		// Dimensions of a spell shape.
 public:
 	Spellscroll_gump(Game_object *s);
-	~Spellscroll_gump();
+	virtual ~Spellscroll_gump();
 	virtual void do_spell(int spell);	// Perform spell.
 	virtual void select_spell(int)
 		{  }
