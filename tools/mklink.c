@@ -271,7 +271,7 @@ void fix_tree(u16b *tree, u16b *tree_size)
 int main(void)
 {
 	FILE *usecode, *linkdep1, *linkdep2;
-	u16b func_num, data_size, max_func;
+	u16b func_num, data_size, max_func = 0;
 	u16b total_size, lnk2_written = 0;
 	u16b *func_tree, tree_size;
 	usecode_func *u_ptr;
