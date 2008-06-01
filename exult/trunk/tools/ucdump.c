@@ -868,7 +868,7 @@ void process_data_seg(FILE* f, unsigned short ds)
 		int len;
 		unsigned short localoff = 0;
 		/* Print all parts of the string - wrapping them around */
-		while( (len = ( strlen(pp) > 70 )) ? 70 : strlen(pp) )
+		while( (len = ( strlen((char*)pp) > 70 )) ? 70 : strlen((char*)pp) )
 		{
 			/* TODO! Escape characters if ' is part of the string */
 			memcpy(tempstr, pp, len);
@@ -990,13 +990,13 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			int len;
 			/* Print data string operand - first characters only */
 			pstr = pdataseg + *(unsigned short*)( ptrc + 1 );
-			len = strlen(pstr);
+			len = strlen((char*)pstr);
 			if( len > 20 )
 				len = 20 - 3;
 			printf("\t%04XH\t\t\t; ", *(unsigned short*)( ptrc + 1 ));
 			for( i = 0; i < len; i++ )
 				printf("%c", pstr[i]);
-			if( len < strlen(pstr) )
+			if( len < strlen((char*)pstr) )
 				/* String truncated */
 				printf("...");
 			printf("\n");
@@ -1354,7 +1354,7 @@ int main(int ac, char** av)
 						printf("Undefined opcodes found\n");
 						found = 1;
 					}
-					printf("0x%02lx (%d times)\n", i, opcode_buf[i]);
+					printf("0x%02x (%d times)\n", (unsigned)i, opcode_buf[i]);
 				}
 		}
 		if( intrinsic_buf )
@@ -1368,7 +1368,7 @@ int main(int ac, char** av)
 						printf("Undefined intrinsic functions found\n");
 						found = 1;
 					}
-					printf("0x%02lx (%d times)\n", i, intrinsic_buf[i]);
+					printf("0x%02x (%d times)\n", (unsigned)i, intrinsic_buf[i]);
 				}
 		}
 	}
