@@ -132,7 +132,7 @@ enum item_flags
 	ON_MOVING_BARGE		= 10,		// ??Guessing.
 	OKAY_TO_TAKE		= 11,		// The item does not belong to anyone, and won't trigger stealing behaviour if you take it.
 	MIGHT				= 12,		// Double strength, dext, intel.
-	NO_SPELL_CASTING	= 13,
+	IMMUNITIES			= 13,		// Lots of imunities; can be gotten only.
 	CANT_DIE			= 14,		// Test flag in monster_info.
 	DANCING				= 15,		// ??Not sure.
 	//DONT_MOVE			= 16,		// SI: user can't move.
@@ -152,6 +152,7 @@ enum item_flags
 	SI_ZOMBIE			= 30,		// Used for sick Neyobi, insane party members/Cantra.
 
 	//Flags > 31 appear to be SI flags only
+	NO_SPELL_CASTING	= 31,
 	POLYMORPH	= 32,		// SI.  pretty sure about this.
 	TATTOOED	= 33,		// guess (SI).
 	READ		= 34,		// guess (SI).

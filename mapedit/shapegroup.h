@@ -65,6 +65,17 @@ public:
 		monsters_group,
 		weapons_group,
 		containers_group,
+		animation_group,
+		body_group,
+		explosion_group,
+		npcflags_group,
+		npcpaperdoll_group,
+		sfx_group,
+		content_rules_group,
+		framehps_group,
+		framenames_group,
+		objpaperdoll_group,
+		warmth_group,
 		last_builtin_group
 		};
 	};

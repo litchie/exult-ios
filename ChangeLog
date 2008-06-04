@@ -1,3 +1,114 @@
+2008-06-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	BIG Commit (TM). Quite likely, there are a lot of bugs.
+	* Version bump to 1.04.05cvs due to massive internal changes and also due to
+	  the fact that pre-1.04.05cvs animation data is INCOMPATIBLE with CVS head
+	  and WILL NOT WORK. Also, pre-1.04.05cvs versions of Exult WILL CHOKE and
+	  most likely die with this new data.
+	* Warning: previous versions of Exult Studio lost information when it saved
+	  weapons.dat, monsters.dat and ammo.dat data files. There is a command to
+	  fix this by reloading the static data; this will only affect shapes that
+	  had this data in the original: the Death Scythe would be reset, but if you
+	  gave weapon data to a door, it would not be reset.
+	* msvcstuff/*: Added new files to projects.
+	* Makefile.mingw: 'turbo', configurable makefile. Command-line parameters
+	  or environment variables can now be used to specify the workings of a
+	  MinGW compilation.
+	* De-hard-coded data:
+	  - What items are lightweight (i.e., weight 1/10 normal) such as coins;
+	  - What items have quantity-dependent frames (e.g., arrows);
+	  - What items constitute 'locked' containers (such as locked chests);
+	  - What items are volatile explosives (such as the powder keg);
+	  - The frame of food items (shape 377) dropped by monsters;
+	  - Creatures which don't eat;
+	  - Creatures immune to freezing;
+	  - Content rules for containers (such as the Jawbone, which accepts only
+	    teeth, and urns, which reject everything);
+	  - Frame- and quality-dependent hit points for otherwise indestructible
+	    objects (such as powder keg being destroyed if quality == 0, but not
+	    otherwise, or wooden doors being destructible but metal doors not);
+	  - Frame- and quality-dependent names (for example, SI urns and bodies
+	    showing the NPC name, reagents, several SI quest items, etc);
+	  - How much warmth is given by worn items. Such data is also included for
+	    BG items by default, and is based on SI data.
+	* Changed formats:
+	  - Creatures that can teleport, summon or turn invisible no longer have
+	    their data saved to monsters.dat; this is because non-monsters can also
+	    have these capabilities. Instead, it is saved to shape_info.txt. For
+	    backward compatibility, the monster.dat data is still read.
+	  - As mentioned above, animation data has changed dramaticaly and is not
+	    backwards-compatible. Exult will ignore old data, and previous versions
+	    of Exult will most likely crash if given the new data.
+	  - Due to a New Thing (tm) being tried for dead bodies, the first frame of
+	    any body shape should be empty (as it is for all bodies in the original
+		games).
+	* Changed/modified intrinsics:
+	  - get_npc_prop/set_npc_prop: You can now get/set an object's health. This
+	    is done, for example, by the serpent statue at the end of SI, but it can
+	    be done in BG or SI for any objects that have hit points.
+	    Additionally, experience changes are divided by 2 -- this happens in the
+	    original games, and reduces overall XP inflation.
+	  - set_to_attack: Can be used to attack tiles, not just objects. The originals
+	    can do this, but never did so.
+	  - attack_object: Finally fully implemented, it now just forwards the call
+	    to Combat_schedule::attack_target.
+	  - apply_damage: Forwards to Actor::apply_damage or Game_object::apply_damage.
+	  - fire_projectile: Last unknown parameter is attack value to use when the
+	    missile reaches its target.
+	  - get_item_flag: Flags 13 (power safe) and 14 (immune to death magic) have
+	    been implemented. no_spell_casting is actually flag 31 in SI.
+	  - play_sound_effect2: Sound volume is now adjusted for distance, even if
+	    relative changes.
+	  - remove_item: Will no longer delete NPCs, just remove them from map.
+	* New things allowed in BG:
+	  - You can now get/set temperature. If the gump shape has enough frames,
+	    it will also change like in SI. The following intrinsics can be called
+	    from BG now: get_temperature, set_temperature, get_temperature_zone,
+		get_npc_warmth.
+	* General changes: Most shape data previously available in shapes/miscinf.cc
+	  has been moved out. Likewise, the shape information classes from the file
+	  shapes/shapeinf.* have been moved out, so that this file contains only the
+	  Shape_info class. The shapes/*inf.* files (except for miscinf.*) have
+	  single classes that each handle a set of correlated data (basically,
+	  sections in text data files or U7/SI dat files). These classes were
+	  structured for editing and allowing the use of differential patches.
+	  The ready.dat data has been conceptually split into a spot and flag.
+	* The attack/damage system has been overhauled based on statistical data
+	  gathered from the originals, as well as a series of carefully crafted
+	  tests to determine sequencing as much as possible. There is also a lot of
+	  new data implemented. This affects combat as well as several intrinsics.
+	  NPCs with tournament flag will be extremely tough now.
+	* Dead NPCs will kneel and die, while NPCs put to sleep will kneel and lie
+	  down. NPCs can also become unconscious from damage. Also, flying NPCs will
+	  fall to the ground and take damage in these cases.
+	* Dead bodies have been extended to store 16-bit NPC numbers.
+	* Non-actors are no longer able to use set_to_attack/attack usecode.
+	* The experience formula is now a near-exact match to the original games'.
+	* Improved readying new weapons. Works very close to the original games,
+	  including the fact that readying a 1-handed weapon also readies a shield
+	  if the off-hand is free.
+	* Monster stats are randomized; the randomization is based on statistical
+	  tests in the original games. The same applies to initial monster attack
+	  modes.
+	* Prevented the use of objects (including keys) is they are contained in a
+	  locked container. You also can't put objects inside locked containers
+	  anymore, nor can you take them out, nor can they be found by most usecode
+	  intrinsics. This is likely to cause problems...
+	* Item names in SI and SS are remapped the other way around now: SI messages
+	  are remapped to SS message IDs instead of having some message IDs in SS be
+	  remapped from SI values. This is done when the messages are read.
+	* Changed SFX distance formula to give a more realistic fall-off.
+	* Exult Studio can now recognize and edit all of the data from the original
+	  *.dat files as well as all de-hard-coded data present in the following
+	  files: bodies.txt, paperdol_info.txt, shape_info.txt; this includes the
+	  data de-hard-coded mentioned above.
+	* First steps towards the ability to browse for games: consolidated the way
+	  games are handled, by using the identity of a game to detect the flexes it
+	  uses. Also allowed concurrent use of BG and FoV, Si and SS; Exult will now
+	  recognize "forgeofvirtue" and "silverseed" as well as "blackgate" and
+	  "serpentisle", and the parameters "--fov" and "--ss" in addition to "--bg"
+	  and "--si". The older parameters will still load FoV and SS if the unmodded
+	  games are not installed.
+
 2008-06-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* conf/Configuration.cc: Recognize paths starting with "../" as relative
 	  paths. This should fix bug #1738138.

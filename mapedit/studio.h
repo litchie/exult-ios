@@ -21,12 +21,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <vector>
+#include <map>
 #include <string>
 #include "vgafile.h"
 #include "servemsg.h"
 #include "exult_constants.h"
 
 using std::string;
+using std::map;
 
 class Shape_info;
 class Shapes_vga_file;
@@ -74,6 +76,7 @@ private:
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
 	Shape_file_info		*gumpfile;	// 'gumps.vga'.
+	Shape_file_info		*spritefile;	// 'sprites.vga'.
 	Object_browser		*browser;
 	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
 					// Barge editor:
@@ -98,7 +101,8 @@ private:
 	Shape_draw		*cont_draw;
 					// Shape info. editor:
 	GtkWidget		*shapewin;
-	Shape_draw		*shape_draw, *gump_draw;
+	Shape_draw		*shape_draw, *gump_draw, *npcgump_draw,
+					*body_draw, *explosion_draw;
 	GtkWidget		*equipwin;
 					// Map locator:
 	Locator			*locwin;
@@ -111,6 +115,7 @@ private:
 	Usecode_browser		*ucbrowsewin;
 					// Which game type:
 	Exult_Game game_type;
+	bool expansion;
 	int curr_game;	// Which game is loaded
 	int curr_mod;	// Which mod is loaded, or -1 for none
 	// For Win32 DND
@@ -131,6 +136,7 @@ private:
 	gint			server_input_tag;
 	Msg_callback		waiting_for_server;
 	void			*waiting_client;
+	map<string, int> misc_name_map;
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -138,6 +144,8 @@ public:
 	
 	static ExultStudio *get_instance()
 		{ return self; }
+	int find_misc_name(const char *id) const;
+	int add_misc_name(const char *id);
 	GladeXML *get_xml()
 		{ return app_xml; }
 	int get_server_socket() const
@@ -257,6 +265,9 @@ public:
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void show_shinfo_gump(int x = 0, int y = 0, int w = -1, int h = -1);
+	void show_shinfo_npcgump(int x = 0, int y = 0, int w = -1, int h = -1);
+	void show_shinfo_body(int x = 0, int y = 0, int w = -1, int h = -1);
+	void show_shinfo_explosion(int x = 0, int y = 0, int w = -1, int h = -1);
 					// Map locator.
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
@@ -291,7 +302,7 @@ public:
 	void set_bit_toggles(char **names, int num, unsigned char bits);
 	unsigned char get_bit_toggles(char **names, int num);
 	int get_optmenu(char *name);
-	void set_optmenu(char *name, int val);
+	void set_optmenu(char *name, int val, bool sensitive = true);
 	int get_spin(char *name);
 	void set_spin(char *name, int val, bool sensitive = true);
 	void set_spin(char *name, int low, int high);
@@ -311,6 +322,9 @@ public:
 			const char *choice1 = 0,const char *choice2 = 0);
 	int find_palette_color(int r, int g, int b);
 	Exult_Game get_game_type() const { return game_type; }
+	bool has_expansion() const { return expansion; }
+	void set_shapeinfo_modified()
+		{ shape_info_modified = true; }
 };
 
 					// Utilities:

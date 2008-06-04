@@ -205,6 +205,34 @@
 			Name="shapes"
 			>
 			<File
+				RelativePath="..\shapes\ammoinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\aniinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\armorinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\bodyinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\continf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\effhpinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\expinf.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\shapes\font.cc"
 				>
 			</File>
@@ -217,6 +245,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\shapes\frnameinf.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\shapes\items.cc"
 				>
 			</File>
@@ -225,7 +257,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\shapes\npcdollinf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\objdollinf.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\shapes\pngio.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\sfxinf.cc"
 				>
 			</File>
 			<File
@@ -248,9 +292,45 @@
 				RelativePath="..\shapes\vgafile.cc"
 				>
 			</File>
+			<File
+				RelativePath="..\shapes\warminf.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapes\weaponinf.cc"
+				>
+			</File>
 			<Filter
 				Name="shapes h"
 				>
+				<File
+					RelativePath="..\shapes\ammoinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\aniinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\armorinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\bodyinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\continf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\effhpinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\expinf.h"
+					>
+				</File>
 				<File
 					RelativePath="..\shapes\font.h"
 					>
@@ -264,6 +344,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\frnameinf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\items.h"
 					>
 				</File>
@@ -272,7 +356,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\npcdollinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\objdollinf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\pngio.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\sfxinf.h"
 					>
 				</File>
 				<File
@@ -289,6 +385,14 @@
 				</File>
 				<File
 					RelativePath="..\shapes\vgafile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\warminf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\weaponinf.h"
 					>
 				</File>
 			</Filter>

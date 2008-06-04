@@ -41,6 +41,12 @@
 #include "game.h"
 #include "Gump_manager.h"
 #include "spellbook.h"
+#include "animate.h"
+#include "ucsched.h"
+#include "ucscriptop.h"
+#include "cheat.h"
+#include "ammoinf.h"
+#include "weaponinf.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -60,6 +66,18 @@ bool Combat::show_hits = false;
 extern bool combat_trace;
 
 const int dex_to_attack = 30;
+
+static inline bool not_in_melee_range
+	(
+	const Weapon_info *winf,		// 0 for monsters or natural weaponry.
+	int dist,
+	int reach
+	)
+	{
+	if (!winf)
+		return dist > reach;
+	return (winf->get_uses() == Weapon_info::ranged) || (dist > reach);
+	}
 
 /*
  *	Is a given ammo shape in a given family.
@@ -130,6 +148,53 @@ void Combat_schedule::monster_died
 	}
 
 /*
+ *	This (static) method is called to stop attacking a given NPC.
+ *	This can happen because the NPC died, fell asleep or became
+ *	invisible.
+ */
+
+void Combat_schedule::stop_attacking_npc
+	(
+	Game_object *npc
+	)
+	{
+	Actor_vector nearby;		// Get all nearby NPC's.
+	gwin->get_nearby_npcs(nearby);
+	for (Actor_vector::const_iterator it = nearby.begin(); 
+						it != nearby.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (actor->get_target() == npc)
+			actor->set_target(0);
+		}
+	}
+
+/*
+ *	This (static) method is called to stop attacking a given NPC.
+ *	This can happen because the NPC died or fell asleep.
+ */
+
+void Combat_schedule::stop_attacking_invisible
+	(
+	Game_object *npc
+	)
+	{
+	Actor_vector nearby;		// Get all nearby NPC's.
+	gwin->get_nearby_npcs(nearby);
+	for (Actor_vector::const_iterator it = nearby.begin(); 
+						it != nearby.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (actor->get_target() == npc)
+			{
+			Monster_info *minf = actor->get_info().get_monster_info();
+			if ((minf && minf->get_flags() & (1<<Monster_info::see_invisible))==0)
+				actor->set_target(0);
+			}
+		}
+	}
+
+/*
  *	Can a given shape teleport? summon?  turn invisible?
  */
 
@@ -138,21 +203,9 @@ static bool Can_teleport
 	Actor *npc
 	)
 	{
-	Monster_info *minfo;
-	int shnum = npc->get_shapenum();
-	switch (shnum)
-		{
-	case 534:			// Wisp.
-	case 154:
-	case 445:
-	case 446:			// Mages.
-	case 354:
-	case 519:			// Liche.
-		return true;
-	default:
-		minfo = ShapeID::get_info(shnum).get_monster_info();
-		return minfo ? minfo->can_teleport() : false;
-		}
+	if (npc->get_flag(Obj_flags::no_spell_casting))
+		return false;
+	return npc->get_info().can_teleport();
 	}
 
 static bool Can_summon
@@ -160,20 +213,9 @@ static bool Can_summon
 	Actor *npc
 	)
 	{
-	Monster_info *minfo;
-	int shnum = npc->get_shapenum();
-	switch (shnum)
-		{
-	case 154:
-	case 445:
-	case 446:			// Mages.
-	case 354:
-	case 519:			// Liche.
-		return true;
-	default:
-		minfo = ShapeID::get_info(shnum).get_monster_info();
-		return minfo ? minfo->can_summon() : false;
-		}
+	if (npc->get_flag(Obj_flags::no_spell_casting))
+		return false;
+	return npc->get_info().can_summon();
 	}
 
 static bool Can_be_invisible
@@ -181,23 +223,9 @@ static bool Can_be_invisible
 	Actor *npc
 	)
 	{
-	Monster_info *minfo;
-	int shnum = npc->get_shapenum();
-	switch (shnum)
-		{
-	case 504:			// Dragon.
-	case 299:
-	case 317:			// Ghosts.
-	case 154:
-	case 445:
-	case 446:			// Mages.
-	case 354:
-	case 519:			// Liche.
-		return true;
-	default:
-		minfo = ShapeID::get_info(shnum).get_monster_info();
-		return minfo ? minfo->can_be_invisible() : false;
-		}
+	if (npc->get_flag(Obj_flags::no_spell_casting))
+		return false;
+	return npc->get_info().can_be_invisible();
 	}
 
 /*
@@ -247,11 +275,13 @@ bool Combat_schedule::summon
 	(
 	)
 	{
+#if 0	// ++++Testing
 	unsigned int curtime = SDL_GetTicks();
 	if (curtime < summon_time)
 		return false;
 	// Not again for 30-40 seconds.
 	summon_time = curtime + 30000 + rand()%10000;
+#endif
 	ucmachine->call_usecode(0x685,
 			    npc, Usecode_machine::double_click);
 	return true;
@@ -265,6 +295,7 @@ bool Combat_schedule::be_invisible
 	(
 	)
 	{
+#if 0	// ++++ Testing.
 	unsigned int curtime = SDL_GetTicks();
 	if (curtime < invisible_time)
 		return false;
@@ -272,6 +303,10 @@ bool Combat_schedule::be_invisible
 	invisible_time = curtime + 40000 + rand()%20000;
 	if (npc->get_flag(Obj_flags::invisible))
 		return false;	// Also don't to it again for a while.
+#endif
+	new Object_sfx(npc, Audio::game_sfx(44));
+	gwin->get_effects()->add_effect(
+		new Sprites_effect(12, npc, 0, 0, 0, 0, 0, -1));
 	npc->set_flag(Obj_flags::invisible);
 	return true;
 	}
@@ -292,6 +327,27 @@ inline bool Off_screen
 	return (!screen.has_point(t.tx, t.ty));
 	}
 
+static inline bool is_enemy
+	(
+	int align, int other
+	)
+	{
+	switch (align)
+		{
+		case Npc_actor::friendly:
+			return other == Npc_actor::hostile
+				|| other == Npc_actor::unknown_align; 
+		case Npc_actor::hostile:
+			return other == Npc_actor::friendly
+				|| other == Npc_actor::unknown_align; 
+		case Npc_actor::neutral:
+			return false; 
+		case Npc_actor::unknown_align:
+			return other == Npc_actor::hostile
+				|| other == Npc_actor::friendly; 
+		}
+	}
+
 /*
  *	Find nearby opponents in the 9 surrounding chunks.
  */
@@ -308,22 +364,19 @@ void Combat_schedule::find_opponents
 					// See if we're a party member.
 	bool in_party = npc->is_in_party();
 	int npc_align = npc->get_effective_alignment();
+	Monster_info *minf = npc->get_info().get_monster_info();
+	bool see_invisible = minf ?
+		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
 	for (Actor_vector::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
-		if (actor->is_dead() || 
-		    (actor->get_flag(Obj_flags::invisible) && rand()%10))
-			continue;	// Dead or invisible.
-		if (npc_align == Npc_actor::friendly &&
-		    actor->get_effective_alignment() >= Npc_actor::hostile)
+		if (actor->is_dead() || actor->get_flag(Obj_flags::asleep) ||
+		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
+			continue;	// Dead, sleeping or invisible.
+		if (is_enemy(npc_align, actor->get_effective_alignment()))
 			opponents.push_back(actor);
-		else if (npc_align >= Npc_actor::hostile &&
-			(actor->is_in_party() ||
-			 actor->get_effective_alignment() == 
-						Npc_actor::friendly))
-			opponents.push_back(actor);
-		else if (in_party)
+		else if (!in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
 			if (t && t->get_flag(Obj_flags::in_party))
@@ -339,7 +392,7 @@ void Combat_schedule::find_opponents
 		if (oppnpc && oppnpc != npc)
 			opponents.push_back(oppnpc);
 	}
-}		
+}
 
 /*
  *	Find 'protected' party member's attackers.
@@ -523,7 +576,9 @@ void Combat_schedule::approach_foe
 					//  and we try to reach target.
 	)
 	{
-	int dist = for_projectile ? 1 : max_range;
+	int points;
+	Weapon_info *winf = npc->get_weapon(points, weapon_shape, weapon);
+	int dist = for_projectile ? 1 : winf ? winf->get_range() : 3;
 	Game_object *opponent = npc->get_target();
 					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
@@ -537,7 +592,7 @@ void Combat_schedule::approach_foe
 	Game_window *gwin = Game_window::get_instance();
 					// Time to run?
 	if (mode == Actor::flee || 
-	    (mode != Actor::beserk && 
+	    (mode != Actor::berserk && 
 	        (npc->get_type_flags()&MOVE_ALL) != 0 &&
 		npc != gwin->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
@@ -616,10 +671,6 @@ void Combat_schedule::approach_foe
 			}
 		}
 	int extra_delay = 0;
-	if (rand()%5 == 0 && Can_summon(npc) && summon())
-		extra_delay = 5000;
-	else if (rand()%10 == 0 && Can_be_invisible(npc))
-		(void) be_invisible();
 					// Walk there, & check half-way.
 	npc->set_action(new Approach_actor_action(path, opponent,
 							for_projectile));
@@ -647,18 +698,21 @@ static Game_object *Get_usable_weapon
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return 0;		// Not a weapon.
-	int ammo = winf->get_ammo_consumed();
-	if (ammo)			// Check for readied ammo.
-		{//+++++Needs improvement.  Ammo could be in pack.
-		Game_object *aobj = npc->get_readied(Actor::ammo);
-		if (!aobj || !In_ammo_family(aobj->get_shapenum(), ammo))
+	Game_object *aobj;	// Check ranged first.
+	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
+			winf->get_ammo_consumed(), winf->get_projectile(),
+			true, &aobj, GAME_BG);
+	if (need_ammo)
+		{
+		if (!aobj)	// Try melee.
+			need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
+					winf->get_ammo_consumed(), winf->get_projectile(),
+					false, &aobj, GAME_BG);
+		if (need_ammo && !aobj)
 			return 0;
 		}
-	else if (winf->uses_charges() && info.has_quality())
-		if (bobj->get_quality() <= 0)
-			return 0;	// No charges left.
 	if (info.get_ready_type() == two_handed_weapon &&
-	    npc->get_readied(Actor::rhand) != 0)
+		npc->get_readied(Actor::rhand) != 0)
 		return 0;		// Needs two free hands.
 	return bobj;
 	}
@@ -707,63 +761,64 @@ void Combat_schedule::start_strike
 	)
 	{
 	Game_object *opponent = npc->get_target();
-	Rectangle npctiles = npc->get_footprint(),
-		  opptiles = opponent->get_footprint();
-	Rectangle stiles = npctiles,	// Get copy for weapon range.
-		  ptiles = npctiles;
 	bool check_lof = !no_blocking;
 					// Get difference in lift.
-	int dz = npc->get_lift() - opponent->get_lift();
-	if (dz < 0)
-		dz = -dz;
-					// Close enough to strike?
-	if (strike_range && dz < 5 &&	// Same floor?
-		stiles.enlarge(strike_range).intersects(opptiles))
+	Weapon_info *winf = weapon_shape >= 0 ?
+			ShapeID::get_info(weapon_shape).get_weapon_info() : 0;
+	int dist = npc->distance(opponent);
+	int reach;
+	if (!winf)
 		{
-		check_lof = (strike_range > 1);
-		state = strike;
+		Monster_info *minf = npc->get_info().get_monster_info();
+		reach = minf ? minf->get_reach() : Monster_info::get_default()->get_reach();
 		}
-	else if (!projectile_range ||
-					// Enlarge to projectile range.
-		 !ptiles.enlarge(projectile_range).intersects(opptiles))
+	else
+		reach = winf->get_range();
+	bool ranged = not_in_melee_range(winf, dist, reach);
+		// Out of range?
+	if (npc->get_effective_range(winf, reach) < dist)
 		{
 		state = approach;
 		approach_foe();		// Get a path.
 		return;
 		}
-	else				// See if we can fire spell/projectile.
+	else if (ranged)
 		{
-		Game_object *aobj;
 		bool weapon_dead = false;
 		if (spellbook)
 			weapon_dead = !spellbook->can_do_spell(npc);
-		else if (ammo_shape &&
-		    (!(aobj = npc->get_readied(Actor::ammo)) ||
-			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
-			{
-			if (!npc->ready_ammo())	// Look in pack for ammo.
+		else if (winf)
+			{		// See if we can fire spell/projectile.
+			Game_object *ammo = 0;
+			int need_ammo = npc->get_weapon_ammo(weapon_shape,
+					winf->get_ammo_consumed(), winf->get_projectile(),
+					ranged, &ammo, GAME_BG);
+			if (need_ammo && !ammo && !npc->ready_ammo())
 				weapon_dead = true;
-			}
-		else if (uses_charges && weapon && weapon->get_quality() <= 0)
-			weapon_dead = true;
-		if (weapon_dead)
-			{		// Out of ammo/reagents/charges.
-			if (npc->get_schedule_type() != Schedule::duel)
-				{	// Look in pack for ammo.
-				if (Swap_weapons(npc))
-					Combat_schedule::set_weapon();
-				else
-					set_hand_to_hand();
+			if (weapon_dead)
+				{		// Out of ammo/reagents/charges.
+				if (npc->get_schedule_type() != Schedule::duel)
+					{	// Look in pack for ammo.
+					if (Swap_weapons(npc))
+						Combat_schedule::set_weapon();
+					else
+						set_hand_to_hand();
+					}
+				if (!npc->get_info().has_strange_movement())
+					npc->change_frame(npc->get_dir_framenum(
+								Actor::standing));
+				state = approach;
+				npc->set_target(0);
+				npc->start(200, 500);
+				return;
 				}
-			if (!npc->get_info().has_strange_movement())
-				npc->change_frame(npc->get_dir_framenum(
-							Actor::standing));
-			state = approach;
-			npc->set_target(0);
-			npc->start(200, 500);
-			return;
+			state = fire;		// Clear to go.
 			}
-		state = fire;		// Clear to go.
+		}
+	else
+		{
+		check_lof = (reach > 1);
+		state = strike;
 		}
 	// At this point, we're within range, with state set.
 	if (check_lof &&
@@ -780,20 +835,244 @@ void Combat_schedule::start_strike
 	}
 	int dir = npc->get_direction(opponent);
 	signed char frames[12];		// Get frames to show.
-	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
-							dir, frames);
+	int cnt = npc->get_attack_frames(weapon_shape, ranged, dir, frames);
 	if (cnt)
 		npc->set_action(new Frames_actor_action(frames, cnt, gwin->get_std_delay()));
 	npc->start();			// Get back into time queue.
-	int sfx;			// Play sfx.
-	Game_window *gwin = Game_window::get_instance();
-	Weapon_info *winf = ShapeID::get_info(weapon_shape).get_weapon_info();
-	if (winf && (sfx = winf->get_sfx()) >= 0 &&
-					// But only if Ava. involved.
-	    (npc == gwin->get_main_actor() || 
-				opponent == gwin->get_main_actor()))
-		Audio::get_ptr()->play_sound_effect(sfx);
+	int sfx = -1;			// Play sfx.
+	if (winf)
+		sfx = winf->get_sfx();
+	if (sfx < 0 || !winf)
+		{
+		Monster_info *minf = ShapeID::get_info(
+				npc->get_shapenum()).get_monster_info();
+		if (minf)
+			sfx = minf->get_hitsfx();
+		}
+	if (sfx >= 0)
+		{
+		int delay = ranged ? cnt : cnt/2;
+		new Object_sfx(npc, sfx, delay * gwin->get_std_delay());
+		}
 	dex_points -= dex_to_attack;
+	}
+
+/*
+ *	This static method causes the NPC to attack a given target/tile
+ *	using the given weapon shape as weapon. This does not add
+ *	an attack animation; rather, it is the actual strike attempt.
+ *
+ *	This function is called from (a) an intrinsic, (b) a script opcode
+ *	or (c) the combat schedule.
+ *
+ *	Output:	Returns false the attack cannot be realized (no ammo,
+ *	out of range, etc.) or if a melee attack misses, true otherwise.
+ */
+
+bool Combat_schedule::attack_target
+	(
+	Game_object *attacker,		// Who/what is attacking.
+	Game_object *target,		// Who/what is being attacked.
+	Tile_coord tile,			// What tile is under fire, if no target.
+	int weapon,					// What is being used as weapon.
+								// or < 0 for none.
+	bool combat					// We got here from combat schedule.
+	)
+	{
+	// Bail out if no attacker or if no target and no valid tile.
+	if (!attacker || (!target && tile.tx == -1))
+		return false;
+
+	// Do not proceed if target is dead.
+	Actor *att = attacker->as_actor();
+	if (att && att->is_dead())
+		return false;
+	bool flash_mouse = !combat && att && gwin->get_main_actor() == att
+			&& att->get_attack_mode() != Actor::manual;
+
+	Shape_info& info = ShapeID::get_info(weapon);
+	const Weapon_info *winf = weapon >= 0 ? info.get_weapon_info() : 0;
+
+	int reach;
+	int family = -1;	// Ammo, is needed, is the weapon itself.
+	int proj = -1;	// This is what we will use as projectile sprite.
+	if (!winf)
+		{
+		Monster_info *minf = attacker->get_info().get_monster_info();
+		reach = minf ? minf->get_reach() : Monster_info::get_default()->get_reach();
+		}
+	else
+		{
+		reach = winf->get_range();
+		proj = winf->get_projectile();
+		family = winf->get_ammo_consumed();
+		}
+	int dist = target ? attacker->distance(target) : attacker->distance(tile);
+	bool ranged = not_in_melee_range(winf, dist, reach);
+		// Out of range?
+	if (attacker->get_effective_range(winf, reach) < dist)
+		{
+		// We are out of range.
+		if (flash_mouse)
+			Mouse::mouse->flash_shape(Mouse::outofrange);
+		return false;
+		}
+
+		// See if we need ammo.
+	Game_object *ammo = 0;
+	int need_ammo = attacker->get_weapon_ammo(weapon, family,
+			proj, ranged, &ammo, GAME_BG);
+	if (need_ammo && !ammo)
+		{
+		if (flash_mouse)
+			Mouse::mouse->flash_shape(Mouse::outofammo);
+		// We don't have ammo, so bail out.
+		return false;
+		}
+
+		// proj == -3 means use weapon shape for projectile sprite.
+	if (proj == -3)
+		proj = weapon;
+	const Ammo_info *ainf;
+	int basesprite;
+	if (need_ammo && family >= 0)
+		{
+			// ammo should be nonzero here.
+		ainf = ammo->get_info().get_ammo_info();
+		basesprite = ammo->get_shapenum();
+		}
+	else
+		{
+		ainf = info.get_ammo_info();
+		basesprite = weapon;
+		}
+	if (ainf)
+		{
+		int sprite = ainf->get_sprite_shape();
+		if (sprite == -3)
+			proj = basesprite;
+		else if (sprite != -1 && sprite != ainf->get_family_shape())
+			proj = sprite;
+		}
+	else
+		ainf = Ammo_info::get_default();	// So we don't need to keep checking.
+
+		// By now, proj should be >=0 or -1 for none.
+	assert(proj >= -1);
+	if (!winf)	// So we don't have to keep checking.
+		winf = Weapon_info::get_default();
+	if (need_ammo)
+		{
+		// We should only ever get here for containers and NPCs.
+		// Also, ammo should never be zero in this branch.
+		bool need_new_weapon = false;
+		bool ready = att ? att->find_readied(ammo) >= 0 : false;
+
+		// Time to use up ammo.
+		if (winf->uses_charges())
+			{
+			if (ammo->get_info().has_quality())
+				ammo->set_quality(ammo->get_quality() - need_ammo);
+			if (winf->delete_depleted() &&
+					(!ammo->get_quality() || !ammo->get_info().has_quality()))
+				{
+				// Call unready usecode if needed.
+				if (att)
+					att->remove(ammo);
+				ammo->remove_this();
+				need_new_weapon = true;
+				}
+			}
+		else
+			{
+			int quant = ammo->get_quantity();
+				// Call unready usecode if needed.
+			if (att && quant == need_ammo)
+				att->remove(ammo);
+			ammo->modify_quantity(-need_ammo, &need_new_weapon);
+			}
+
+		if (att && need_new_weapon && ready)
+			{
+			// Readied weapon was depleted; we need a new one.
+			if (winf->returns() || ainf->returns())
+				{	// Weapon will return, so wait for it.
+				if (combat)
+					{	// We got here due to combat schedule.
+					Combat_schedule *sched = 
+						dynamic_cast<Combat_schedule *>(att->get_schedule());
+					if (sched)	// May not need this check.
+						sched->set_state(wait_return);
+					}
+				}
+				// Try readying ammo first.
+			else if (att && !att->ready_ammo())
+				{	// Need new weapon.
+				att->ready_best_weapon();
+					// Tell schedule about it.
+				att->get_schedule()->set_weapon(true);
+				}
+			}
+		}
+
+	Actor *trg = target ? target->as_actor() : 0;
+	bool trg_party = trg ? trg->is_in_party() : false;
+	bool att_party = att ? att->is_in_party() : false;
+	int attval = att ? att->get_effective_prop(static_cast<int>(Actor::combat)) : 0;
+	// These two give the correct statistics:
+	attval += (winf->lucky() ? 3 : 0);
+	attval += (ainf->lucky() ? 3 : 0);
+	int bias = trg_party ? Combat::difficulty :
+			(att_party ? -Combat::difficulty : 0);
+	attval += 2*bias;	// Apply all bias to the attack value.
+	if (ranged)
+		{
+		int uses = winf->get_uses();
+		attval += 6;
+		// This seems reasonably close to how the originals do it,
+		// although the error bands of the statistics are too wide here.
+		if (uses == Weapon_info::poor_thrown)
+			attval -= dist;
+		else if (uses == Weapon_info::good_thrown)
+			attval -= dist/2;
+		int speed = winf->get_missile_speed();
+		// We need to pass the attack value here to guard against
+		// the possibility of the attacker's combat be lowered
+		// (e.g., due to being paralyzed) while the projectile is
+		// in flight and before it hits.
+		Projectile_effect *projectile;
+		if (target)
+			projectile = new Projectile_effect(attacker, target, weapon,
+					ammo ? ammo->get_shapenum() : -1, proj, attval);
+		else
+			projectile = new Projectile_effect(attacker, tile, weapon,
+					ammo ? ammo->get_shapenum() : -1, proj, attval);
+		gwin->get_effects()->add_effect(projectile);
+		return true;
+		}
+	else if (target)
+		{
+		// Do nothing when attacking tiles in melee.
+		bool autohit = winf->autohits() || ainf->autohits();
+		// godmode effects:
+		if (cheat.in_god_mode())
+			autohit = trg_party ? false : (att_party ? true : autohit);
+		if (!autohit && !target->try_to_hit(attacker, attval))
+			return false;	// Missed.
+		target->play_hit_sfx(weapon, false);
+		//if (weapon == 704)	// Powder keg.
+		if (info.is_explosive())	// Powder keg.
+			{	// Blow up *instead*.
+			Tile_coord offset(0, 0, target->get_info().get_3d_height()/2);
+			eman->add_effect(new Explosion_effect(target->get_tile() + offset,
+					target, 0, weapon, -1, attacker));
+			}
+		else
+			target->attacked(attacker, weapon,
+					ammo ? ammo->get_shapenum() : -1, false);
+		return true;
+		}
+	return false;
 	}
 
 /*
@@ -880,25 +1159,14 @@ void Combat_schedule::set_weapon
 	if (!info)			// Still nothing.
 		{
 		if (spellbook)		// Did we find a spellbook?
-			{
-			projectile_range = 10;	// Guessing.
 			no_blocking = true;
-			}
 		else	// Don't do this if using spellbook.
 			set_hand_to_hand();
 		}
 	else
 		{
-		projectile_shape = info->get_projectile();
-		ammo_shape = info->get_ammo_consumed();
-		uses_charges = info->uses_charges() && weapon &&
-					weapon->get_info().has_quality();
-		strike_range = info->get_striking_range();
-		projectile_range = info->get_projectile_range();
-
-		returns = info->returns();
-		is_thrown = info->is_thrown();
 #if 0	/* NO GOOD.  The original doesn't seem to use this flag. */
+		ammo_shape = info->get_ammo_consumed();
 		no_blocking = info->no_blocking();
 		if (ammo_shape)
 			{
@@ -912,8 +1180,6 @@ void Combat_schedule::set_weapon
 		no_blocking = false;
 #endif
 		}
-	max_range = projectile_range > strike_range ? projectile_range
-					: strike_range;
 	if (state == strike || state == fire)
 		state = approach;	// Got to restart attack.
 	}
@@ -928,10 +1194,8 @@ void Combat_schedule::set_hand_to_hand
 	)
 	{
 	weapon = 0;
-	projectile_shape = ammo_shape = 0;
-	projectile_range = 0;
-	strike_range = 1;	// Can always bite.
-	is_thrown = returns = no_blocking = uses_charges = false;
+	weapon_shape = -1;
+	no_blocking = false;
 				// Put aside weapon.
 	Game_object *weapon = npc->get_readied(Actor::lhand);
 	if (weapon)
@@ -961,50 +1225,19 @@ inline int Need_new_opponent
 	{
 	Game_object *opponent = npc->get_target();
 	Actor *act;
+	Monster_info *minf = npc->get_info().get_monster_info();
+	bool see_invisible = minf ?
+		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
 					// Nonexistent or dead?
 	if (!opponent || 
 	    ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
 					// Or invisible?
-	    (opponent->get_flag(Obj_flags::invisible) && rand()%4 == 0))
+	    (!see_invisible && opponent->get_flag(Obj_flags::invisible)
+			&& rand()%4 == 0))
 		return 1;
 					// See if off screen.
 	return Off_screen(gwin, opponent) && !Off_screen(gwin, npc);
 	}
-
-/*
- *	Use one unit of ammo.  NOTE:  static method.
- *
- *	Output:	Actual ammo shape.
- *		0 if failed.
- */
-
-int Combat_schedule::use_ammo
-	(
-	Actor *npc,
-	int ammo,			// Ammo family shape.
-	int proj			// Projectile shape.
-	)
-	{
-	Game_object *aobj = npc->get_readied(Actor::ammo);
-	if (!aobj)
-		return 0;
-	int actual_ammo = aobj->get_shapenum();
-	if (!In_ammo_family(actual_ammo, ammo))
-		return 0;
-	npc->remove(aobj);		// Remove all.
-	int quant = aobj->get_quantity();
-	Shape_info& info = ShapeID::get_info(proj);
-	if (GAME_BG && info.get_ready_type() == triple_crossbow_bolts)
-		aobj->modify_quantity(-3);	// Triple crossbows use 3x the ammo.
-	else
-		aobj->modify_quantity(-1);	// Reduce amount.
-	if (quant > 1)			// Still some left?  Put back.
-		npc->add_readied(aobj, Actor::ammo);
-					// Use actual shape unless a different
-					//   projectile was specified.
-	return ammo != actual_ammo ? actual_ammo : proj;
-	}
-
 
 /*
  *	Create.
@@ -1016,11 +1249,8 @@ Combat_schedule::Combat_schedule
 	Schedule_types 
 	prev_sched
 	) : Schedule(n), state(initial), prev_schedule(prev_sched),
-		weapon(0), weapon_shape(0),
-		ammo_shape(0), projectile_shape(0), spellbook(0),
-		strike_range(0), projectile_range(0), max_range(0),
-		practice_target(0), is_thrown(false), yelled(0),
-		no_blocking(false), uses_charges(false),
+		weapon(0), weapon_shape(-1), spellbook(0),
+		practice_target(0), yelled(0), no_blocking(false),
 		started_battle(false), fleed(0), failures(0), teleport_time(0),
 		summon_time(0),
 		dex_points(0), alignment(n->get_effective_alignment())
@@ -1088,7 +1318,19 @@ void Combat_schedule::now_what
 		if (!opponent)
 			approach_foe();
 		else if (dex_points >= dex_to_attack)
-			start_strike();
+			{
+			int effint = npc->get_effective_prop(Actor::intelligence);
+			if (!npc->get_flag(Obj_flags::invisible)
+					&& Can_be_invisible(npc) && rand()%300 < effint)
+				{
+				(void) be_invisible();
+				dex_points -= dex_to_attack;
+				}
+			else if (Can_summon(npc) && rand()%600 < effint && summon())
+				dex_points -= dex_to_attack;
+			else
+				start_strike();
+			}
 		else
 			{
 #if 0
@@ -1101,77 +1343,43 @@ void Combat_schedule::now_what
 			}
 		break;
 	case strike:			// He hasn't moved away?
+		{
 		state = approach;
 					// Back into queue.
 		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
-		if (npc->get_footprint().enlarge(strike_range).intersects(
-					opponent->get_footprint()))
-			{
-			int dir = npc->get_direction(opponent);
-			if (!strange)	// Avoid messing up slimes.
-				npc->change_frame(npc->get_dir_framenum(dir,
-							Actor::ready_frame));
-					// Glass sword?  Only 1 use.
-			if (weapon_shape == 604)
-				{
-				npc->remove_quantity(1, weapon_shape,
-						c_any_qual, c_any_framenum);
-				Combat_schedule::set_weapon();
-				}
-					// This may delete us!
-			Actor *safenpc = npc;
-			safenpc->set_target(opponent->attacked(npc));
-					// Strike but once at objects.
+		Actor *safenpc = npc;
+			// Change back to ready frame.
+		signed char frame =
+				(signed char)npc->get_dir_framenum(Actor::ready_frame);
+		int delay = gwin->get_std_delay();
+		npc->set_action(new Frames_actor_action(&frame, 1, delay));
+		npc->start(delay, delay);
+		if (attack_target(npc, opponent, Tile_coord(-1, -1, 0), weapon_shape, true))
+			{		// Strike but once at objects.
 			Game_object *newtarg = safenpc->get_target();
 			if (newtarg && !newtarg->as_actor())
 				safenpc->set_target(0);
 			return;		// We may no longer exist!
 			}
 		break;
+		}
 	case fire:			// Range weapon.
 		{
 		failures = 0;
 		state = approach;
-					// Save shape (it might change).
-		int ashape = ammo_shape, wshape = weapon_shape,
-		    pshape = projectile_shape;
-		int delay = spellbook ? 6*gwin->get_std_delay() 
-				: gwin->get_std_delay();
-		if (is_thrown)		// Throwing the weapon?
-			{
-			if (returns)	// Boomerang?
-				{
-				ashape = wshape;
-				delay = (1 + npc->distance(opponent))*
-							gwin->get_std_delay();
-				state = wait_return;
-				}
-			if (npc->remove_quantity(1, wshape,
-					c_any_qual, c_any_framenum) == 0)
-				{
-				npc->add_dirty();
-				ashape = wshape;
-				Combat_schedule::set_weapon();
-				}
-			}
-		else if (spellbook)
+		if (spellbook)
 			{		// Cast the spell.
-			ashape = 0;	// Just to be on the safe side...
 			if (!spellbook->do_spell(npc, true))
 				Combat_schedule::set_weapon();
 			}
-		else if (uses_charges)
-			{
-			weapon->set_quality(weapon->get_quality() - 1);
-			ashape = pshape ? pshape : wshape;
-			}
 		else
-			ashape = ashape ? use_ammo(npc, ashape, pshape)
-				: (pshape ? pshape : wshape);
-		if (ashape > 0)
-			gwin->get_effects()->add_effect(
-				new Projectile_effect(npc, opponent,
-							ashape, wshape));
+			attack_target(npc, opponent, Tile_coord(-1, -1, 0), weapon_shape, true);
+		int delay = spellbook ? 6*gwin->get_std_delay() 
+				: gwin->get_std_delay();
+			// Change back to ready frame.
+		signed char frame =
+				(signed char)npc->get_dir_framenum(Actor::ready_frame);
+		npc->set_action(new Frames_actor_action(&frame, 1, delay));
 		npc->start(gwin->get_std_delay(), delay);
 		break;
 		}

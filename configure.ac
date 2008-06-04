@@ -10,7 +10,7 @@ AC_INIT(exult.cc)
 PACKAGE=exult
 VER_MAJOR=1
 VER_MINOR=4
-VER_EXTRA=.03cvs
+VER_EXTRA=.05cvs
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 # check host/target systems
@@ -64,6 +64,7 @@ case "$host_os" in
 			enable_debug="no"
 			enable_data="yes"
 		else
+			AC_PATH_XTRA
 			AC_MSG_RESULT(X11 (GNU/Linux))
 		fi
 		;;

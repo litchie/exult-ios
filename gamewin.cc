@@ -48,7 +48,6 @@
 #include "monsters.h"
 #include "animate.h"
 #include "barge.h"
-#include "miscinf.h"
 #include "cheat.h"
 #include "chunkter.h"
 #include "combat_opts.h"
@@ -439,6 +438,11 @@ Game_window::~Game_window
 	delete usecode;
 	delete removed;
 	delete clock;
+	delete npc_prox;
+	delete effects;
+	delete map;
+	delete render;
+	delete removed;
 	}
 
 /*
@@ -709,6 +713,7 @@ void Game_window::toggle_combat
 		main_actor->set_schedule_type(newsched);
 	if (combat)			// Get rid of flee modes.
 		{
+		main_actor->ready_best_weapon();
 		set_moving_barge(0);	// And get out of barge mode.
 		Actor *all[9];
 		int cnt = get_party(all, 1);
@@ -2061,6 +2066,20 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 	return (best);
 	}
 
+static inline string Get_object_name(Game_object *obj)
+	{
+	if (obj == Game_window::get_instance()->get_main_actor())
+		{
+		if (GAME_BG)
+			return misc_names[0x42];
+		else if (GAME_SI)
+			return misc_names[0x4e];
+		else
+			return obj->get_name();
+		}
+	return obj->get_name();
+	}
+
 /*
  *	Show the name of the item the mouse is clicked on.
  */
@@ -2097,28 +2116,27 @@ void Game_window::show_items
 	else				// All other cases:  unselect.
 		cheat.clear_selected();	
 
-					// Do we want the NPC number?
+		// Do we have an NPC?
 	Actor *npc = obj ? obj->as_actor() : 0;
 	if (npc && cheat.number_npcs() &&
 	    (npc->get_npc_num() > 0 || npc==main_actor))
 	{
 		char str[64];
-		std::string namestr = obj->get_name();
+		std::string namestr = Get_object_name(obj);
 		snprintf (str, 64, "(%i) %s", npc->get_npc_num(), 
 				  namestr.c_str());
 		effects->add_text(str, obj);
 	}
 	else if (obj)
 	{			// Show name.
-		std::string namestr = obj->get_name();
+		std::string namestr = Get_object_name(obj);
 		const char *objname = namestr.c_str();
-		Actor *actor;		// Combat, and an NPC?
-		if (in_combat() && Combat::mode != Combat::original &&
-		    (actor = obj->as_actor()) != 0)
+			// Combat and an NPC?
+		if (in_combat() && Combat::mode != Combat::original && npc)
 			{
 			char buf[128];
 			sprintf(buf, "%s (%d)", objname, 
-					actor->get_property(Actor::health));
+					npc->get_property(Actor::health));
 			objname = &buf[0];
 			}
 		effects->add_text(objname, obj);
@@ -2256,7 +2274,7 @@ void Game_window::paused_combat_select
 	Actor *target = obj->as_actor();
 					// Don't attack party or body.
 	if ((target && target->is_in_party()) ||
-			Shapeinfo_lookup::Is_body_shape(obj->get_shapenum()))
+			obj->get_info().is_body_shape())
 		{
 		Mouse::mouse->flash_shape(Mouse::redx);
 		return;
@@ -2377,7 +2395,7 @@ void Game_window::double_clicked
 					// But don't attack party members.
 		if ((!npc || !npc->is_in_party()) &&
 					// Or bodies.
-				!Shapeinfo_lookup::Is_body_shape(obj->get_shapenum()))
+				!obj->get_info().is_body_shape())
 			{		// In combat mode.
 			// Want everyone to be in combat.
 			combat = 0;
@@ -2450,7 +2468,7 @@ void Game_window::schedule_npcs
 	{
 					// Go through npc's, skipping Avatar.
 	for (Actor_vector::iterator it = npcs.begin() + 1; 
-						it != npcs.end(); it++)
+						it != npcs.end(); ++it)
 		{
 		Npc_actor *npc = (Npc_actor *) *it;
 					// Don't want companions leaving.
@@ -2472,7 +2490,7 @@ void Game_window::mend_npcs
 	{
 					// Go through npc's.
 	for (Actor_vector::iterator it = npcs.begin(); 
-						it != npcs.end(); it++)
+						it != npcs.end(); ++it)
 		{
 		Npc_actor *npc = (Npc_actor *) *it;
 		if (npc)

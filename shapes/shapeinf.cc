@@ -28,135 +28,50 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "shapeinf.h"
+#include "ammoinf.h"
+#include "aniinf.h"
+#include "armorinf.h"
+#include "bodyinf.h"
+#include "continf.h"
+#include "effhpinf.h"
+#include "expinf.h"
+#include "frnameinf.h"
 #include "monstinf.h"
+#include "npcdollinf.h"
+#include "objdollinf.h"
+#include "sfxinf.h"
+#include "warminf.h"
+#include "weaponinf.h"
 
 #include "utils.h"
-#include <iomanip>	/* Debugging */
-using std::cout;
+#include <vector>
+#include <map>
+#include <string>
+
+using std::vector;
+using std::cerr;
 using std::endl;
 
-/*
- *	Read in a weapon-info entry from 'weapons.dat'.
- *
- *	Output:	Shape # this entry describes.
- */
-
-int Weapon_info::read
-	(
-	std::istream& in,			// Read from here.
-	bool bg
-	)
+Shape_info::Shape_info() : weight(0), volume(0),
+	ready_type(0), occludes_flag(false), weapon_offsets(0), 
+	armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
+	explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
+	actor_flags(0), shape_flags(0), modified_flags(0),
+	frompatch_flags(0), have_static_flags(0)
 	{
-	uint8 buf[21];			// Entry length.
-	in.read((char *) buf, sizeof(buf));
-	uint8 *ptr = buf;
-	int shapenum = Read2(ptr);	// Bytes 0-1.
-	ammo = Read2(ptr);		// This is ammo family, or a neg. #.
-					// Shape to strike with, or projectile
-					//   shape if shoot/throw.
-	projectile = Read2(ptr);
-#if 0
-		extern char **item_names;
-		cout << dec << "Weapon " //  << item_names[shapenum]
-			<< '(' << shapenum << ')' << endl;
-#endif
-					// +++++Wonder what strike < 0 means.
-	if (projectile == shapenum || projectile < 0)
-		projectile = 0;		// Means no projectile thrown.
-	damage = *ptr++;
-	unsigned char flags0 = *ptr++;
-	m_explodes = (flags0>>1)&1;
-	m_no_blocking = (flags0>>2)&1;
-	damage_type = (flags0>>4)&15;
-	range = *ptr++;
-	uses = (range>>1)&3;		// Throwable, etc.:
-	range = range>>3;
-	unsigned char flags1 = *ptr++;
-	m_returns = (flags1&1);
-	missile_speed = (flags1>>1)&7;
-	rotation_speed = (flags1>>4)&15;
-#if 0
-	// Testing if 'throwable'.  Looks like ammo==-3 => throwable UNLESS
-	//   uses == 0.
-	extern char **item_names;
-	if ((ammo == -3) != (uses == 1 || uses == 2))
-		cout << "Shape #" << shapenum << "(" << item_names[shapenum]
-			<< ") has ammo = " << ammo << " and uses = "
-			<< (int) uses << endl;
-#endif
-	unsigned char flags2 = *ptr++;
-	actor_frames = (flags2&15);
-	cycle_delay =  (flags2>>4)&15;
-	powers = *ptr++;
-	*ptr++;				// Skip (0).
-	usecode = Read2(ptr);
-					// BG:  Subtract 1 from each sfx.
-	int sfx_delta = bg ? -1 : 0;
-	sfx = Read2(ptr) + sfx_delta;
-	hitsfx = Read2(ptr) + sfx_delta;
-	if (hitsfx == 123 && !bg)	// SerpentIsle:  Does not sound right.
-		hitsfx = 61;		// Sounds more like a weapon.
-	return shapenum;
-	}
-
-/*
- *	Read in an ammo-info entry from 'ammo.dat'.
- *
- *	Output:	Shape # this entry describes.
- */
-
-int Ammo_info::read
-	(
-	std::istream& in		// Read from here.
-	)
-	{
-	uint8 buf[13];			// Entry length.
-	in.read((char *) buf, sizeof(buf));
-	uint8 *ptr = buf;
-	int shapenum = Read2(ptr);	// Bytes 0-1.
-	family_shape = Read2(ptr);
-	type2 = Read2(ptr);		// How the missile looks like
-	damage = *ptr++;
-	unsigned char flags0 = *ptr++;
-	m_no_blocking = (flags0>>3)&1;
-	homing = ((flags0>>4)&3)==3;
-	drop_type = homing ? 0 : (flags0>>4)&3;
-	m_bursts = (flags0>>6)&1;
-	ptr++;			// 1 unknown.
-	unsigned char flags1 = *ptr++;
-	damage_type = (flags1>>4)&15;
-	powers = *ptr++;
-					// Last 2 unknown.
-	return shapenum;
-	}
-
-/*
- *	Read in an armor-info entry from 'armor.dat'.
- *
- *	Output:	Shape # this entry describes.
- */
-
-int Armor_info::read
-	(
-	std::istream& in		// Read from here.
-	)
-	{
-	uint8 buf[10];			// Entry length.
-	in.read((char *) buf, sizeof(buf));
-	uint8 *ptr = buf;
-	int shapenum = Read2(ptr);	// Bytes 0-1.
-	prot = *ptr++;			// Protection value.
-	ptr++;				// Unknown.
-	immune = *ptr++;		// Immunity flags.
-					// Last 5 are unknown/unused.
-	return shapenum;
+	tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
+	dims[0] = dims[1] = dims[2] = 0;
 	}
 
 /*
  *	Not supported:
  */
-Shape_info::Shape_info(const Shape_info & other) : weapon_offsets(0), 
-		armor(0), weapon(0), ammo(0), monstinf(0)
+Shape_info::Shape_info(const Shape_info & other) : weight(0), volume(0),
+		ready_type(0), occludes_flag(false), weapon_offsets(0), 
+		armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
+		explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
+		actor_flags(0), shape_flags(0), modified_flags(0),
+		frompatch_flags(0), have_static_flags(0)
 	{ copy(other); }
 const Shape_info & Shape_info::operator = (const Shape_info & other)
 	{ copy(other); return *this; }
@@ -172,6 +87,15 @@ Shape_info::~Shape_info()
 	if(weapon_offsets)
 		delete [] weapon_offsets;
 	delete monstinf;
+	delete npcpaperdoll;
+	delete sfxinf;
+	delete aniinf;
+	delete explosion;
+	delete body;
+	clear_paperdoll_info();
+	clear_effective_hp_info();
+	clear_frame_name_info();
+	clear_warmth_info();
 	}
 
 /*
@@ -195,6 +119,12 @@ void Shape_info::copy
 	ready_type = inf2.ready_type;
 	occludes_flag = inf2.occludes_flag;
 	container_gump = inf2.container_gump;
+	shape_flags = inf2.shape_flags;
+	monster_food = inf2.monster_food;
+	actor_flags = inf2.actor_flags;
+	modified_flags = inf2.modified_flags;
+	frompatch_flags = inf2.frompatch_flags;
+	have_static_flags = inf2.have_static_flags;
 	// Allocated fields.
 	delete [] weapon_offsets;
 	if (inf2.weapon_offsets)
@@ -212,69 +142,352 @@ void Shape_info::copy
 	weapon = inf2.weapon ? new Weapon_info(*inf2.weapon) : 0;
 	delete monstinf;
 	monstinf = inf2.monstinf ? new Monster_info(*inf2.monstinf) : 0;
+	delete npcpaperdoll;
+	npcpaperdoll = inf2.npcpaperdoll ?
+			new Paperdoll_npc(*inf2.npcpaperdoll) : 0;
+
+	copy_vector_info(inf2.objpaperdoll, objpaperdoll);
+	copy_vector_info(inf2.hpinf, hpinf);
+	copy_vector_info(inf2.cntrules, cntrules);
+	copy_vector_info(inf2.nameinf, nameinf);
+	copy_vector_info(inf2.warminf, warminf);
+
+	delete sfxinf;
+	sfxinf = inf2.sfxinf ? new SFX_info(*inf2.sfxinf) : 0;
+	delete explosion;
+	explosion = inf2.explosion ? new Explosion_info(*inf2.explosion) : 0;
+	delete aniinf;
+	aniinf = inf2.aniinf ? new Animation_info(*inf2.aniinf) : 0;
+	delete body;
+	body = inf2.body ? new Body_info(*inf2.body) : 0;
 	}
 
 /*
- *	Create/delete 'info' for weapons, ammo, etc.
- *
- *	Output: Possibly updated ->info .
+ *	Get (safely) a specified information set.
  */
+// Get armor protection.
+int Shape_info::get_armor() const
+	{
+	return armor ? armor->prot : 0;
+	}
 
-Weapon_info *Shape_info::set_weapon_info(bool tf)
+// Get armor-granted immunities.
+int Shape_info::get_armor_immunity() const
 	{
-	if (!tf)
-		{
-		delete weapon;
-		weapon = 0;
-		}
-	else
-		{
-		if (!weapon)
-			weapon = new Weapon_info();
-		}
-	return weapon;
+	return armor ? armor->immune : 0;
 	}
-Ammo_info *Shape_info::set_ammo_info(bool tf)
+
+// Get sprite of explosion.
+int Shape_info::get_explosion_sprite() const
 	{
-	if (!tf)
-		{
-		delete ammo;
-		ammo = 0;
-		}
-	else
-		{
-		if (!ammo)
-			ammo = new Ammo_info();
-		}
-	return ammo;
+	return explosion ? explosion->sprite : 5;
 	}
-Armor_info *Shape_info::set_armor_info(bool tf)
+
+// Get sfx of explosion.
+int Shape_info::get_explosion_sfx() const
 	{
-	if (!tf)
-		{
-		delete armor;
-		armor = 0;
-		}
-	else
-		{
-		if (!armor)
-			armor = new Armor_info();
-		}
-	return armor;
+	return explosion ? explosion->sfxnum : -1;
 	}
-Monster_info *Shape_info::set_monster_info(bool tf)
+
+int Shape_info::get_body_shape() const
 	{
-	if (!tf)
+	return body ? body->bshape : 400;
+	}
+
+int Shape_info::get_body_frame() const
+	{
+	return body ? body->bframe : 3;
+	}
+
+Weapon_info *Shape_info::get_weapon_info_safe() const
+	{
+	return weapon ? weapon :
+			const_cast<Weapon_info *>(Weapon_info::get_default());
+	}
+
+Ammo_info *Shape_info::get_ammo_info_safe() const
+	{
+	return ammo ? ammo :
+			const_cast<Ammo_info *>(Ammo_info::get_default());
+	}
+
+Monster_info *Shape_info::get_monster_info_safe() const
+	{
+	return monstinf ? monstinf :
+			const_cast<Monster_info *>(Monster_info::get_default());
+	}
+
+Animation_info *Shape_info::get_animation_info_safe
+	(
+	int shnum,
+	int nframes
+	)
+	{
+	if (!aniinf)
+		aniinf = Animation_info::create_from_tfa(0, nframes);
+	return aniinf;
+	}
+
+bool Shape_info::has_paperdoll_info() const
+	{
+	return objpaperdoll.size() != 0;
+	}
+
+std::vector<Paperdoll_item>& Shape_info::set_paperdoll_info(bool tf)
+	{
+	return set_vector_info(tf, objpaperdoll);
+	}
+
+void Shape_info::clean_invalid_paperdolls()
+	{
+	return clean_vector(objpaperdoll);
+	}
+
+void Shape_info::clear_paperdoll_info()
+	{
+	objpaperdoll.clear();
+	}
+
+void Shape_info::add_paperdoll_info(Paperdoll_item& add)
+	{
+	add_vector_info(add, objpaperdoll);
+	}
+
+bool Shape_info::has_content_rules() const
+	{
+	return cntrules.size() != 0;
+	}
+
+std::vector<Content_rules>& Shape_info::set_content_rules(bool tf)
+	{
+	return set_vector_info(tf, cntrules);
+	}
+
+void Shape_info::clean_invalid_content_rules()
+	{
+	return clean_vector(cntrules);
+	}
+
+void Shape_info::clear_content_rules()
+	{
+	cntrules.clear();
+	}
+
+void Shape_info::add_content_rule(Content_rules& add)
+	{
+	add_vector_info(add, cntrules);
+	}
+
+bool Shape_info::has_effective_hp_info() const
+	{
+	return hpinf.size() != 0;
+	}
+
+std::vector<Effective_hp_info>& Shape_info::set_effective_hp_info(bool tf)
+	{
+	return set_vector_info(tf, hpinf);
+	}
+
+void Shape_info::clean_invalid_hp_info()
+	{
+	return clean_vector(hpinf);
+	}
+
+void Shape_info::clear_effective_hp_info()
+	{
+	hpinf.clear();
+	}
+
+void Shape_info::add_effective_hp_info(Effective_hp_info& add)
+	{
+	add_vector_info(add, hpinf);
+	}
+
+bool Shape_info::has_frame_name_info() const
+	{
+	return nameinf.size() != 0;
+	}
+
+std::vector<Frame_name_info>& Shape_info::set_frame_name_info(bool tf)
+	{
+	return set_vector_info(tf, nameinf);
+	}
+
+void Shape_info::clean_invalid_name_info()
+	{
+	return clean_vector(nameinf);
+	}
+
+void Shape_info::clear_frame_name_info()
+	{
+	nameinf.clear();
+	}
+
+void Shape_info::add_frame_name_info(Frame_name_info& add)
+	{
+	add_vector_info(add, nameinf);
+	}
+
+bool Shape_info::has_warmth_info() const
+	{
+	return warminf.size() != 0;
+	}
+
+std::vector<Warmth_info>& Shape_info::set_warmth_info(bool tf)
+	{
+	return set_vector_info(tf, warminf);
+	}
+
+void Shape_info::clean_invalid_warmth_info()
+	{
+	return clean_vector(warminf);
+	}
+
+void Shape_info::clear_warmth_info()
+	{
+	warminf.clear();
+	}
+
+void Shape_info::add_warmth_info(Warmth_info& add)
+	{
+	add_vector_info(add, warminf);
+	}
+
+template <class T>
+static T *Search_vector_data_double_wildcards
+	(
+	vector<T>& vec,
+	int frame, int quality,
+	short T::*fr, short T::*qual
+	)
+	{
+	if (!vec.size())
+		return 0;	// No name.
+	T inf;
+	inf.*fr = frame;
+	inf.*qual = quality;
+	typename vector<T>::iterator it;
+		// Try finding exact match first.
+	it = std::lower_bound(vec.begin(), vec.end(), inf);
+	if (it == vec.end())	// Nowhere to be found.
+		return 0;
+	else if (*it == inf)	// Have it already.
+		return &*it;
+		// We only have to search forward for a match.
+	if (quality != -1)
 		{
-		delete monstinf;
-		monstinf = 0;
+		if ((*it).*fr == frame)
+			{	// Maybe quality is to blame. Try wildcard quality.
+			inf.*qual = -1;
+			it = std::lower_bound(it, vec.end(), inf);
+			if (it == vec.end())	// Nowhere to be found.
+				return 0;
+			else if (*it == inf)	// We got it!
+				return &*it;
+			}
+		// Maybe frame is to blame? Try search for specific
+		// quality with wildcard frame.
+		inf.*qual = quality;
+		inf.*fr = -1;
+		it = std::lower_bound(it, vec.end(), inf);
+		if (it == vec.end())	// Nowhere to be found.
+			return 0;
+		else if (*it == inf)	// We got it!
+			return &*it;
+		inf.*qual = -1;
 		}
-	else
-		{
-		if (!monstinf)
-			monstinf = new Monster_info();
-		}
-	return monstinf;
+		// *Still* haven't found it. Last try: wildcard frame *and* quality.
+	inf.*fr = -1;
+	it = std::lower_bound(it, vec.end(), inf);
+	if (it == vec.end() || *it != inf)	// It just isn't there.
+		return 0;
+	else	// At last!
+		return &*it;
+	}
+
+Frame_name_info *Shape_info::get_frame_name(int frame, int quality)
+	{
+	return Search_vector_data_double_wildcards(nameinf,
+			frame, quality,
+			&Frame_name_info::frame, &Frame_name_info::quality);
+	}
+
+int Shape_info::get_effective_hps(int frame, int quality)
+	{
+	Effective_hp_info *inf = Search_vector_data_double_wildcards(hpinf,
+			frame, quality,
+			&Effective_hp_info::frame, &Effective_hp_info::quality);
+	return inf ? inf->hps : 0;	// Default to indestructible.
+	}
+
+Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot)
+	{
+	if (!objpaperdoll.size())
+		return 0;	// No warmth.
+	Paperdoll_item inf;
+	inf.world_frame = frame;
+	inf.spot = spot;
+	vector<Paperdoll_item>::iterator it;
+		// Try finding exact match first.
+	it = std::lower_bound(objpaperdoll.begin(), objpaperdoll.end(), inf);
+	if (it == objpaperdoll.end())	// Nowhere to be found.
+		return 0;
+	else if (*it == inf && !it->is_invalid())	// Have it already.
+		return &*it;
+		// Time for wildcard world frame.
+	inf.world_frame = -1;
+	it = std::lower_bound(it, objpaperdoll.end(), inf);
+	if (it == objpaperdoll.end() || *it != inf	// It just isn't there...
+			 || it->is_invalid())	// ... or it is invalid.
+		return 0;
+	else	// At last!
+		return &*it;
+	}
+
+template <class T, typename U>
+static T *Search_vector_data_single_wildcard
+	(
+	vector<T>& vec,
+	int src,
+	U T::*dat
+	)
+	{
+	if (!vec.size())	// Not found.
+		return 0;
+	T inf;
+	inf.*dat = src;
+	typename vector<T>::iterator it;
+		// Try finding exact match first.
+	it = std::lower_bound(vec.begin(), vec.end(), inf);
+	if (it == vec.end())	// Nowhere to be found.
+		return 0;
+	else if (*it == inf)	// Have it already.
+		return &*it;
+		// Try wildcard shape.
+	inf.*dat = -1;
+	it = std::lower_bound(it, vec.end(), inf);
+	if (it == vec.end() || *it != inf)	// It just isn't there.
+		return 0;
+	else	// At last!
+		return &*it;
+	}
+
+bool Shape_info::is_shape_accepted(int shape)
+	{
+	Content_rules *inf = Search_vector_data_single_wildcard(cntrules,
+			shape, &Content_rules::shape);
+#if DEBUG
+	if (inf && !inf->accept)
+		cerr << "Shape '" << shape << "' was REJECTED" << endl;
+#endif
+	return inf ? inf->accept : true;	// Default to true.
+	}
+
+int Shape_info::get_object_warmth(int frame)
+	{
+	Warmth_info *inf = Search_vector_data_single_wildcard(warminf,
+			frame, &Warmth_info::frame);
+	return inf ? inf->warmth : 0;	// Default to no warmth.
 	}
 
 /*

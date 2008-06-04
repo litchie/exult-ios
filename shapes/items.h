@@ -33,10 +33,10 @@ extern char **item_names;		// The game items' names.
 extern int num_item_names;
 extern char **text_msgs;		// Msgs. (0x400 - ).
 extern int num_text_msgs;
-extern char **misc_names;		// Frames, etc (0x500 - ).
+extern char **misc_names;		// Frames, etc (0x500 - 0x5ff/0x685 (BG/SI)).
 extern int num_misc_names;
 
-void Setup_text();
+void Setup_text(bool si, bool expansion);
 void Free_text();
 void Write_text_file();
 void Set_item_name(int num, const char *name);
@@ -86,7 +86,8 @@ const int first_starving = 0x7b;	// Starving.
 const int heard_something = 0x95;
 const int first_awakened = 0x95;
 const int last_awakened = 0x9a;
-const int magebane_struck = 0x9b;	// (SI only).
+const int first_magebane_struck = 0x9b;	// (SI only).
+const int last_magebane_struck = 0x9d;	// (SI only).
 
 //	Messages in exultmsg.txt ( - 0x400):
 const int first_chair_thief = 0x100, last_chair_thief = 0x104;

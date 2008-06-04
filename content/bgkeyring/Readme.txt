@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.17
+version: 0.11.19
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,12 @@ version: 0.11.17
 
 7	Version history
 -------------------
+version: 0.11.19
+	- Compatibility update with Exult 1.4.05cvs: frame names for several shapes,
+	  differential *.dat files, added back data lost due to bad behavior of older
+	  versions of ES. Julia's hammer is now 'lucky'.
+version: 0.11.18
+	- New diagonal moongates that do not stick out like sore thumbs.
 version: 0.11.17
 	- Compatibility update with new Exult snapshot.
 version: 0.11.16

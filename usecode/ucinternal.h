@@ -80,7 +80,7 @@ class Usecode_internal : public Usecode_machine
 	std::deque<Stack_frame*> call_stack; // the call stack
 	Stack_frame *frame;		// One intrinsic uses this for now...
 	bool modified_map;		// We add/deleted/moved an object.
-	std::map<int, unsigned long> timers;	// Each has time in hours when set.
+	std::map<int, uint32> timers;	// Each has time in hours when set.
 	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.

@@ -226,6 +226,52 @@ inline uint32 Read4high
 	}
 #endif
 
+inline int ReadInt(std::istream& in, int def = 0)
+	{
+	int num;
+	if (in.eof())
+		return def;
+	in >> num;
+	if (in.fail())
+		return def;
+	in.ignore(0xffffff, '/');
+	return num;
+	}
+
+inline void WriteInt
+	(
+	std::ostream& out,
+	int num,
+	bool final = false
+	)
+	{
+	out << num;
+	if (final)
+		out << std::endl;
+	else
+		out << '/';
+	}
+
+inline std::string ReadStr(char *&eptr, int off = 1)
+	{
+	eptr += off;
+	char *pos = strchr(eptr, '/');
+	char buf[150];
+	strncpy(buf, eptr, pos - eptr);
+	buf[pos - eptr] = 0;
+	eptr = pos;
+	return std::string(buf);
+	}
+
+inline std::string ReadStr(std::istream& in)
+	{
+	char buf[250];
+	in.getline(buf, sizeof(buf)/sizeof(buf[0]), '/');
+	int size = in.gcount();
+	buf[size] = 0;
+	return std::string(buf);
+	}
+
 /*
  *	Write a 1-byte value.
  */
@@ -409,5 +455,18 @@ int Log2(uint32 n);
 char *newstrdup(const char *s);
 char *Get_mapped_name(const char *from, int num, char *to);
 int Find_next_map(int start, int maxtry);
+
+
+inline int bitcount (unsigned char n)
+	{
+#define TWO(c)     (0x1u << (c))
+#define MASK(c)    (((unsigned int)(-1)) / (TWO(TWO(c)) + 1u))
+#define COUNT(x,c) ((x) & MASK(c)) + (((x) >> (TWO(c))) & MASK(c))
+	// Only works for 8-bit numbers.
+	n = COUNT(n, 0);
+	n = COUNT(n, 1);
+	n = COUNT(n, 2);
+	return n;
+	}
 
 #endif	/* _UTILS_H_ */

@@ -41,8 +41,9 @@ class Jawbone_object : public Container_game_object {
 	virtual void remove(Game_object *obj);
 
 					// Under attack. -> do nothing
-	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
-								  int ammo_shape = 0) { return this; }
+	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
+					int ammo_shape = -1, bool explosion = false)
+		{ return this; }
 
  private:
 

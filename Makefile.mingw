@@ -23,54 +23,79 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -lti
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
 ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
-ZIP_LIBS=-L$(SRC)/zlib -lz
-### To link zlib statically, comment the previous line and uncomment the next one.
-#ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
+ifndef STATIC_ZLIB
+	ZIP_LIBS=-L$(SRC)/zlib -lz
+else
+	ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
+endif
 
 
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
-GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
+GTK_INCLUDES=`pkg-config --cflags gtk+-win32-2.0`
 # If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
-GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
+GTK_LIBS=`pkg-config --libs gtk+-win32-2.0`
 
 ### Glade libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags libglade-2.0' manually
-LIBGLADE_INCLUDES = `pkg-config --cflags libglade-2.0`
+LIBGLADE_INCLUDES=`pkg-config --cflags libglade-2.0`
 # If this doesn't work, insert output of 'pkg-config --libs libglade-2.0' manually
-LIBGLADE_LIBS = `pkg-config --libs libglade-2.0`
+LIBGLADE_LIBS=`pkg-config --libs libglade-2.0`
 
 ### FREETYPE2 libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
-FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
+FREETYPE2_INCLUDES=`pkg-config --cflags freetype2`
 # If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
-FREETYPE2_LIBS = `pkg-config --libs freetype2`
+FREETYPE2_LIBS=`pkg-config --libs freetype2`
 
 ### GIMP libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags gimpui-2.0' manually
-GIMP_INCLUDES = `pkg-config --cflags gimpui-2.0`
+GIMP_INCLUDES=`pkg-config --cflags gimpui-2.0`
 # If this doesn't work, insert output of 'pkg-config --libs gimpui-2.0' manually
-GIMP_LIBS = `pkg-config --libs gimpui-2.0`
+GIMP_LIBS=`pkg-config --libs gimpui-2.0`
 
 ### Combined Exult Studio includes and libs.
 ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
 ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
-# Leave this option empty
-EXTRA_OPTIONS=
+ifdef DEBUG_SYMBOLS
+	DEBUG_LEVEL=-ggdb3
+endif
 
-CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
+ifdef DEBUG
+	DEF_DEBUG=-DDEBUG
+endif
+
+ifdef MT32EMU
+	USE_MT32EMU_MIDI=-DUSE_MT32EMU_MIDI
+endif
+
+ifdef USECODE_CONTAINER
+	SHOW_USECODE_CONTAINER=-DSHOW_USECODE_CONTAINER
+endif
+
+EXTRA_OPTIONS=$(DEBUG_LEVEL) $(DEF_DEBUG) $(USE_MT32EMU_MIDI) $(SHOW_USECODE_CONTAINER)
+
+CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf -I$(SRC)/data \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gamemgr -I$(SRC)/gumps -I$(SRC)/headers \
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit $(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 \
-	$(ZIP_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS)
+	$(ZIP_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS))
 
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
+ifndef OPT_LEVEL
+	OPT_LEVEL=-O2
+endif
+
+ifdef DEBUG_SYMBOLS
+	OPT_LEVEL=
+endif
+
+CXXFLAGS=$(strip $(OPT_LEVEL) -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI)
 CXX=g++
 
-CFLAGS= -O2 -mms-bitfields
+CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LFLAGS=
@@ -98,12 +123,15 @@ ES_GAMEMGR_OBJS=modmgr.o
 
 ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-ES_SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
+ES_SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o shapeinf.o shapevga.o \
+	shapewrite.o u7drag.o vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o \
+	continf.o effhpinf.o expinf.o frnameinf.o monstinf.o npcdollinf.o objdollinf.o \
+	sfxinf.o warminf.o weaponinf.o
 
 MISC_OBJS=exultstudioico.o windrag.o
 
 ES_OBJS=$(MAPEDIT_OBJS) $(ES_FILES_OBJS) $(ES_GAMEMGR_OBJS) $(ES_IMAGEWIN_OBJS) $(ES_SHAPES_OBJS) \
-	$(ES_SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
+	$(ES_SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS) $(ZIP_OBJS)
 
 include Makefile.common
 
@@ -131,6 +159,17 @@ u7shp$(EXEEXT) : u7shp.o
 install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)/data
+	cp data/exult.flx $(U7PATH)/data
+	cp data/exult_bg.flx $(U7PATH)/data
+	cp data/exult_si.flx $(U7PATH)/data
+	cp data/exultmsg.txt $(U7PATH)/data
+	cp SDL/lib/SDL.dll $(U7PATH)
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)
+
+debug: $(EXEC)
+	mkdir -p $(U7PATH)
+	cp $(EXEC) $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
 	cp data/exult.flx $(U7PATH)/data
 	cp data/exult_bg.flx $(U7PATH)/data

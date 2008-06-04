@@ -36,7 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include <map>
 #include <string>
-#include "miscinf.h"
+#include "aniinf.h"
+#include "sfxinf.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::map;
@@ -47,11 +48,106 @@ using std::cout;
 #endif
 
 
+static inline bool Get_sfx_volume
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	int& distance,
+	int& volume,
+	int& dir
+	)
+	{
+	//distance = gwin->get_main_actor()->distance(obj);
+	distance = gwin->get_main_actor()->sound_distance(obj);
+
+	if (distance)
+		{			// 160/8 = 20 tiles. 20*20=400.
+		volume = (MIX_MAX_VOLUME*64)/(3*distance);
+		if (!volume)		// Dead?
+			return true;	// Time to kill it.
+		if (volume < 8)
+			volume = 8;
+		else if (volume > MIX_MAX_VOLUME)
+			volume = MIX_MAX_VOLUME;
+		Tile_coord apos = gwin->get_main_actor()->get_center_tile();
+		Tile_coord opos = obj->get_center_tile();
+		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
+		}
+	return false;
+	}
+
+/*
+ *	Play SFX.
+ */
+
+Object_sfx::Object_sfx(Game_object *o, int s, int delay)
+	: obj(o), distance(-1), channel(-1), sfx(s)
+	{	// Start immediatelly.
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
+	}
+
+void Object_sfx::stop()
+	{
+	while (gwin->get_tqueue()->remove(this))
+		;
+	if(channel >= 0)
+		{
+		if (Mix_Playing(channel))
+			Mix_HaltChannel(channel);
+		channel = -1;
+		}
+	delete this;
+	}
+
+void Object_sfx::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	const int delay = 100;		// Guessing this will be enough.
+
+	bool active = channel != -1 ? Mix_Playing(channel) : false;
+
+	if (obj->is_pos_invalid() || distance >= 0 && !active)
+		{	// Quitting time.
+		stop();
+		return;
+		}
+
+	dir = 0;
+	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
+
+	if (!halt && channel == -1 && sfx > -1)		// First time?
+					// Start playing.
+		channel = Audio::get_ptr()->play_sound_effect(
+					sfx, volume, dir, 0);
+	else if (channel != -1)
+		{
+		if (halt)
+			{
+			Mix_HaltChannel(channel);
+			channel = -1;
+			}
+		else
+			{
+			//Just change the "location" of the sound
+			Mix_Volume(channel, volume);
+			Mix_SetPosition(channel, (dir * 22), 0);
+			}
+		}
+
+	if (channel != -1)
+		gwin->get_tqueue()->add(curtime + delay - (curtime%delay), this, udata);
+	else
+		stop();
+	}
 
 /*
  *	Stop playing the sound effect if needed.
  */
-void Object_sfx::stop()
+void Shape_sfx::stop()
 	{
 	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
@@ -67,7 +163,7 @@ void Object_sfx::stop()
  *	Update distance/direction information. Also starts playing
  *	the sound effect if needed.
  */
-void Object_sfx::update
+void Shape_sfx::update
 	(
 	bool play
 	)
@@ -78,16 +174,15 @@ void Object_sfx::update
 		return;
 		}
 
-	if (!sfx)
+	if (!sfxinf)
 		return;
 
 	int active[2] = {0, 0};
-	int rep[2] = {0, 0};
 	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
 	 		active[i] = Mix_Playing(channel[i]);
-		if (!active[i] && !rep[i] && channel[i] != -1)
+		if (!active[i] && channel[i] != -1)
 			{
 			Mix_HaltChannel(channel[i]);
 			channel[i] = -1;
@@ -98,52 +193,29 @@ void Object_sfx::update
 	if (!play && channel[0] == -1 && channel[1] == -1)
 		return;
 
-	int sfxnum[2] = {sfx->num, -1};
+	int sfxnum[2] = {-1, -1};
 	if (play && channel[0] == -1)
 		{
-		if (rand() %100 >= sfx->chance)
+		if (!sfxinf->time_to_play())
 			return;
-		if (sfx->range > 1)
-			{
-			if (sfx->rand)
-				sfxnum[0] += (rand() % sfx->range);
-			else
-				{
-				last_sfx = ((last_sfx + 1) % sfx->range);
-				sfxnum[0] += last_sfx;
-				}
-			}
+		sfxnum[0] = sfxinf->get_next_sfx(last_sfx);
 		}
-	if (play && channel[1] == -1 && sfx->extra > -1)
+	int rep[2] = {0, 0};
+	if (play && channel[1] == -1 && sfxinf->play_horly_ticks())
 		{
 		Game_clock *gclock = Game_window::get_instance()->get_clock();
 		if (gclock->get_minute() == 0)
 			{	// Play sfx->extra every hour for reps = hour
 			int reps = gclock->get_hour()%12;
 			rep[1] = (reps ? reps : 12) - 1;
-			sfxnum[1] = sfx->extra;
+			sfxnum[1] = sfxinf->get_extra_sfx();
 			}
 		}
 
 	dir = 0;
-	bool halt = false;
-
-	distance = gwin->get_main_actor()->distance(obj);
 	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
 
-	if (distance)
-		{			// 160/8 = 20 tiles. 20*20=400.
-		volume = (MIX_MAX_VOLUME*64)/(distance*distance);
-		if (!volume)		// Dead?
-			halt = true;	// Time to kill it.
-		if (volume < 8)
-			volume = 8;
-		else if (volume > MIX_MAX_VOLUME)
-			volume = MIX_MAX_VOLUME;
-		Tile_coord apos = gwin->get_main_actor()->get_center_tile();
-		Tile_coord opos = obj->get_center_tile();
-		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
-		}
 	if (play && halt)
 		play = false;
 
@@ -245,34 +317,39 @@ Frame_animator::Frame_animator
  *	Initialize a frame animator.
  */
 void Frame_animator::Initialize()
-{
-	created = currpos = 0;
-
+	{
 	last_shape = obj->get_shapenum();
-	last_frame = obj->get_framenum();
+		// Catch rotated objects here.
+	last_frame = obj->get_framenum() & ~(1<<5);
+	int rotflag = obj->get_framenum() & (1<<5);
 
-	aniinf = Shapeinfo_lookup::get_animation_cycle_info(last_shape, last_frame);
-	frame_counter = aniinf->frame_delay;
+	ShapeID shp(last_shape, last_frame);
+	aniinf = obj->get_info().get_animation_info_safe(last_shape,
+				shp.get_num_frames());
+	int cnt = aniinf->get_frame_count();
+	if (cnt < 0)
+		nframes = shp.get_num_frames();
+	else
+		nframes = cnt;
+	if (nframes == shp.get_num_frames())
+		first_frame = 0;
+	else
+		first_frame = last_frame - (last_frame%nframes);
+		// Ensure proper bounds.
+	if (first_frame + nframes >= shp.get_num_frames())
+		nframes = shp.get_num_frames() - first_frame;
+	assert(nframes > 0);
 
-	if (aniinf->type == FA_LOOPING)
-		{
-		switch (aniinf->offset_type)
-			{
-			case -1:
-				created = currpos = last_frame;
-				currpos -= aniinf->first_frame;
-				break;
-			case 0:
-				created = currpos = aniinf->offset;
-				break;
-			case 1:
-				created = currpos = last_frame % aniinf->frame_count;
-				break;
-			}
-		}
-	else if (aniinf->type == FA_RANDOM_LOOP)
-		currpos = aniinf->frame_count - 1;
-}
+	frame_counter = aniinf->get_frame_delay();
+
+	if (aniinf->get_type() == Animation_info::FA_TIMESYNCHED)
+		created = currpos = last_frame%nframes;
+	else
+		created = currpos = 0;
+		// Add rotate flag back.
+	first_frame |= rotflag;
+	last_frame |= rotflag;
+	}
 
 /*
  *	Retrieve current frame
@@ -280,58 +357,59 @@ void Frame_animator::Initialize()
 
 int Frame_animator::get_next_frame()
 {
-	int curframe = obj->get_framenum();
-	int framenum = 0;
-
 	// Re-init if it's outside the range.
 	// ++++++Should we do this for the other cases (jsf)?
 	// ++++++Seeing if it breaks anything (marzo)
-	if (curframe < aniinf->first_frame ||
-		curframe >= aniinf->first_frame + aniinf->frame_count)
+	int curframe = obj->get_framenum();
+	if (curframe < first_frame ||
+		curframe >= first_frame + nframes)
 		Initialize();
 
-	switch (aniinf->type)
+	if (nframes == 1)	// No reason to do anything else.
+		return first_frame;
+
+	int framenum;
+	switch (aniinf->get_type())
 	{
-	case FA_HOURLY:
-		framenum = gclock->get_hour() % aniinf->frame_count;  
+	case Animation_info::FA_HOURLY:
+		framenum = gclock->get_hour() % nframes;  
 		break;
 
-	case FA_NON_LOOPING:
+	case Animation_info::FA_NON_LOOPING:
 		currpos++;
-		if (currpos >= aniinf->frame_count) 
-			currpos = aniinf->frame_count - 1;
-		framenum = aniinf->first_frame + currpos;
+		if (currpos >= nframes) 
+			currpos = nframes - 1;
+		framenum = first_frame + currpos;
 		break;
 
-	case FA_LOOPING:
+	case Animation_info::FA_TIMESYNCHED:
 		{
 		unsigned int ticks = Game::get_ticks();
 		const int delay = 100;
-		currpos = (ticks / (delay * aniinf->frame_delay)) + created;
-		currpos %= aniinf->frame_count;
-		framenum = aniinf->first_frame + currpos;
+		currpos = (ticks / (delay * aniinf->get_frame_delay())) + created;
+		currpos %= nframes;
+		framenum = first_frame + currpos;
 		break;
 		}
-	case FA_RANDOM_LOOP:
-		if (currpos || rand()%20 == 0)
+
+	case Animation_info::FA_LOOPING:
+		{
+		int chance = aniinf->get_freeze_first_chance();
+		if (currpos || chance == 100
+			|| (chance && rand()%100 < chance))
 			{
 			currpos++;
-			currpos %= aniinf->frame_count;
+			currpos %= nframes;
+			if (!currpos)
+				currpos += aniinf->get_recycle();
 			}
-		framenum = aniinf->first_frame + currpos;
+		framenum = first_frame + currpos;
 		break;
+		}
 
-	case FA_LOOP_RECYCLE:
-		currpos++;
-		currpos %= aniinf->frame_count;
-		if (!currpos)
-			currpos += aniinf->offset - aniinf->first_frame;
-		framenum = aniinf->first_frame + currpos;
-		break;
-
-	case FA_RANDOM_FRAMES:
-		currpos = rand() % aniinf->frame_count;
-		framenum = aniinf->first_frame + currpos;
+	case Animation_info::FA_RANDOM_FRAMES:
+		currpos = rand() % nframes;
+		framenum = first_frame + currpos;
 		break;
 	}
 
@@ -353,7 +431,7 @@ void Frame_animator::handle_event
 
 	if (!--frame_counter)
 		{
-		frame_counter = aniinf->frame_delay;
+		frame_counter = aniinf->get_frame_delay();
 		bool dirty_first = gwin->add_dirty(obj);
 		int framenum = get_next_frame();
 		obj->set_frame(last_frame = framenum);
@@ -368,14 +446,26 @@ void Frame_animator::handle_event
 		}
 
 	if (objsfx)
-	{	// Sound effect?
-		bool play = (frame_counter == aniinf->frame_delay) &&
-			((aniinf->type == FA_RANDOM_LOOP && currpos == 1) ||
-				((!aniinf->sfx_info && !currpos) ||	// Synch with animation
-					(aniinf->sfx_info &&
-						(currpos % aniinf->sfx_info) == 0)));	// skip n frames
+		{	// Sound effect?
+		bool play;
+		if (frame_counter != aniinf->get_frame_delay())
+			play = false;
+		else if (aniinf->get_sfx_delay() < 0)
+			{	// Only in synch with animation.
+			if (aniinf->get_freeze_first_chance() < 100)
+				// Not in (frozen) first frame.
+				play = (currpos == 1);
+			else
+				play = (currpos == 0);
+			}
+		else if (aniinf->get_sfx_delay() > 1)
+				// Skip (sfx_delay-1) frames.
+			play = (currpos % aniinf->get_sfx_delay()) == 0;
+		else
+			// Continuous.
+			play = true;
 		objsfx->update(play);
-	}
+		}
 
 	// Add back to queue for next time.
 	if (animating)

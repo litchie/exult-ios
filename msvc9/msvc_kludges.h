@@ -14,7 +14,7 @@
 #define HAVE_SSTREAM 1
 
 // Firstly some things that need to be defined
-#define VERSION "1.4.03cvs"
+#define VERSION "1.4.05cvs"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
@@ -334,6 +334,20 @@ using std::getline;
 #include "../shapes/shapevga.h"
 #include "../shapes/u7drag.h"
 #include "../shapes/vgafile.h"
+#include "../shapes/ammoinf.h"
+#include "../shapes/aniinf.h"
+#include "../shapes/armorinf.h"
+#include "../shapes/bodyinf.h"
+#include "../shapes/continf.h"
+#include "../shapes/effhpinf.h"
+#include "../shapes/expinf.h"
+#include "../shapes/frnameinf.h"
+#include "../shapes/monstinf.h"
+#include "../shapes/npcdollinf.h"
+#include "../shapes/objdollinf.h"
+#include "../shapes/sfxinf.h"
+#include "../shapes/warminf.h"
+#include "../shapes/weaponinf.h"
 
 #endif //USING_PRECOMPILED_HEADER
 

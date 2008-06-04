@@ -65,7 +65,7 @@ public:
 		for (int i = first; i < cnt; ++i)
 			atts[i] = allatts[first + i];
 		}
-	~Stats_extra_gump()
+	virtual ~Stats_extra_gump()
 		{  }
 
 	virtual void paint();
@@ -191,7 +191,14 @@ void Stats_gump::paint
 	const int namex = 30, namey = 6, namew = 95;
 	Actor *act = get_actor();	// Check for freezing (SI).
 	if (gwin->get_main_actor()->get_flag(Obj_flags::freeze))
-		set_frame(act->get_temperature_zone());
+		{
+		int frame = act->get_temperature_zone();
+		if (get_num_frames() < frame+1)	// Prevent problems in BG.
+			frame = get_num_frames()-1;
+		if (frame < 0)
+			frame = 0;
+		set_frame(frame);
+		}
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".

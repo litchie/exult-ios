@@ -127,7 +127,7 @@ class Explosion_effect : public Sprites_effect
 							//would not trigger a response from target
 public:
 	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0, int weap = -1,
-			int proj = 0, Game_object *att = 0);
+			int proj = -1, Game_object *att = 0);
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
@@ -139,9 +139,9 @@ class Projectile_effect : public Special_effect
 	{
 	Game_object *attacker;		// Source of attack/spell.
 	Game_object *target;		// Target of path.
+	int weapon;			// Shape # of firing weapon.
 	int projectile_shape;		// Shape # of projectile/spell.
 	ShapeID sprite;			// Sprite shape to display.
-	int weapon;			// Shape # of firing weapon, or 0.
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.
@@ -149,17 +149,21 @@ class Projectile_effect : public Special_effect
 	bool no_blocking;		// Don't get blocked by things.
 	bool skip_render;	// For delayed blast.
 					// Add dirty rectangle.
-	int speed;			// Extra speed for missiles (cannon).
+	int speed;			// Missile speed.
+	int attval;			// Attack value of projectile.
+	bool autohit;
 	void add_dirty();
 	void init(Tile_coord s, Tile_coord t);
 public:
-	Projectile_effect(Game_object *att, Game_object *to, int shnum,
-							int weap = 0, bool no_render = false);
+	Projectile_effect(Game_object *att, Game_object *to, int weap,
+					int proj, int spr, int attpts = 60, int speed = -1);
 					// For missile traps:
-	Projectile_effect(Game_object *att, Tile_coord d, int shnum, int weap,
-							bool retpath = false);
-	Projectile_effect(Tile_coord s, Game_object *to, int shnum, int weap,
-							bool retpath = false);
+	Projectile_effect(Game_object *att, Tile_coord d, int weap,
+					int proj, int spr, int attpts = 60, int speed = -1,
+					bool retpath = false);
+	Projectile_effect(Tile_coord s, Game_object *to, int weap,
+					int proj, int spr, int attpts = 60, int speed = -1,
+					bool retpath = false);
 	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
@@ -271,7 +275,7 @@ class Raindrop
 	char flake_wobble;		// Snowflakes wobble around center.
 	long ax, ay;			// Coords. where drawn in abs. pixels.
 public:
-	Raindrop() : oldpix(0xff), yperx(1), ax(-1), ay(-1), flake_wobble(-1)
+	Raindrop() : oldpix(0xff), yperx(1), flake_wobble(-1), ax(-1), ay(-1)
 		{  }
 	void paint(Image_window8 *iwin, int scrolltx, int scrollty,
 						Xform_palette& xform);

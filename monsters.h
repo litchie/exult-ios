@@ -72,7 +72,7 @@ public:
 							Game_object *& obj);
 	virtual int is_monster()
 		{ return 1; }
-	virtual void die(Actor *attacker);		// We're dead.
+	virtual void die(Game_object *attacker);		// We're dead.
 	void write(DataSource* nfile);// Write out (to 'monsnpc.dat').
 	};
 

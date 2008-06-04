@@ -572,7 +572,7 @@ int Chunk_cache::is_blocked
 		}
 	if (new_lift <= lift)		// Not going up?  See if falling.
 		{
-		new_lift =  (move_flags & MOVE_NODROP) ? lift :
+		new_lift =  (move_flags & MOVE_LEVITATE) ? lift :
 				get_highest_blocked(lift) + 1;
 					// Don't allow fall of > max_drop.
 		if (lift - new_lift > max_drop)
@@ -600,7 +600,7 @@ int Chunk_cache::is_blocked
 		Check_terrain (obj_list, tx, ty, ter);
 		if (ter & 2)		// Water
 		{
-			if (move_flags & (MOVE_FLY+MOVE_SWIM))
+			if (move_flags & (MOVE_FLY|MOVE_SWIM))
 				return 0;
 			else
 				return 1;
@@ -1436,7 +1436,7 @@ void Map_chunk::setup_dungeon_levels
 		Shape_info& shinf = each->get_info();
 		if (shinf.get_shape_class() == Shape_info::building &&
 			(shinf.is_poisonous() && shinf.is_field()) ||
-			(Shapeinfo_lookup::get_mountain_top(shnum) &&
+			(shinf.is_mountain_top() &&
 			(Game::get_game_type() == BLACK_GATE)))
 		{
 			// SI shape 941, frame 0 => do whole chunk (I think).
