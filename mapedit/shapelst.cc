@@ -53,6 +53,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fontgen.h"
 #include "utils.h"
 #include "databuf.h"
+#include "items.h"
+#include "frnameinf.h"
 
 using std::cout;
 using std::endl;
@@ -999,7 +1001,7 @@ gint Shape_chooser::check_editing_files
 	{
 	bool modified = false;
 	for (std::vector<Editing_file*>::iterator it = editing_files.begin();
-				it != editing_files.end(); it++)
+				it != editing_files.end(); ++it)
 		{
 		Editing_file *ed = *it;
 		struct stat fs;		// Check mod. time of file.
@@ -2055,6 +2057,7 @@ void Shape_chooser::frame_changed
 			chooser->scroll_to_frame();
 		chooser->render();
 		chooser->show();
+		chooser->update_statusbar();
 		}
 	}
 
@@ -2292,7 +2295,9 @@ void Shape_chooser::search
 	int total = get_count();
 	if (!total)
 		return;			// Empty.
+		// Read info if not read.
 	ExultStudio *studio = ExultStudio::get_instance();
+	shapes_file->read_info(studio->get_game_type(), true);
 					// Start with selection, or top.
 	int start = selected >= 0 ? selected : rows[row0].index0;
 	int i;
@@ -2304,6 +2309,27 @@ void Shape_chooser::search
 		char *nm = studio->get_shape_name(shnum);
 		if (nm && search_name(nm, srch))
 			break;		// Found it.
+		Shape_info& info = shapes_file->get_info(shnum);
+		if (info.has_frame_name_info())
+			{
+			bool found = false;
+			std::vector<Frame_name_info>& nminf = info.get_frame_name_info();
+			for (std::vector<Frame_name_info>::iterator it = nminf.begin();
+					it != nminf.end(); ++it)
+				{
+				int type = it->get_type(), msgid = it->get_msgid();
+				if (type == -255 || type == -1 || msgid >= num_misc_names
+					|| !misc_names[msgid])
+					continue;	// Keep looking.
+				if (search_name(misc_names[msgid], srch))
+					{
+					found = true;
+					break;		// Found it.
+					}
+				}
+			if (found)
+				break;
+			}
 		}
 	if (i == stop)
 		return;			// Not found.
@@ -2584,11 +2610,62 @@ void Shape_chooser::update_statusbar
 		g_snprintf(buf, sizeof(buf), "Shape %d (0x%03x, %d frames)",
 						shapenum, shapenum, nframes);
 		ExultStudio *studio = ExultStudio::get_instance();
-		if (shapes_file && studio->get_shape_name(shapenum))
+		if (shapes_file)
 			{
-			int len = strlen(buf);
-			g_snprintf(buf + len, sizeof(buf) - len, 
-				":  '%s'", studio->get_shape_name(shapenum));
+			const char *nm;
+			if ((nm = studio->get_shape_name(shapenum)))
+				{
+				int len = strlen(buf);
+				g_snprintf(buf + len, sizeof(buf) - len, 
+					":  '%s'", nm);
+				}
+			shapes_file->read_info(studio->get_game_type(), true);
+			int frnum = info[selected].framenum;
+			Shape_info& inf = shapes_file->get_info(shapenum);
+			Frame_name_info *nminf;
+			if (inf.has_frame_name_info() &&
+					(nminf = inf.get_frame_name(frnum, -1)) != 0)
+				{
+				int type = nminf->get_type(), msgid = nminf->get_msgid();
+				if (type >= 0 && msgid < num_misc_names)
+					{
+					const char *msgstr = misc_names[msgid];
+					int len = strlen(buf);
+						// For safety.
+					if (!nm) nm = "";
+					if (!msgstr) msgstr = "";
+					if (type > 0)
+						{
+						const char *otmsgstr;
+						if (type > 2)
+							otmsgstr = "<NPC Name>";
+						else
+							{
+							int otmsg = nminf->get_othermsg();
+							otmsgstr = otmsg == -255 ? nm :
+								(otmsg == -1 || otmsg >= num_misc_names ? "" :
+								misc_names[otmsg]);
+							if (!otmsgstr) otmsgstr = "";
+							}
+						const char *prefix = 0, *suffix = 0;
+						if (type & 1)
+							{
+							prefix = otmsgstr;
+							suffix = msgstr;
+							}
+						else
+							{
+							prefix = msgstr;
+							suffix = otmsgstr;
+							}
+						g_snprintf(buf + len, sizeof(buf) - len, 
+							"  -  '%s%s'", prefix, suffix);
+						}
+					else
+						g_snprintf(buf + len, sizeof(buf) - len, 
+							"  -  '%s'", msgstr);
+					}
+				}
 			}
 		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
 							sbar_sel, buf);

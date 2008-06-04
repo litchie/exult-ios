@@ -29,24 +29,45 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "miscinf.h"
 
 /*
+ *	A class for playing sound effects that get updated by position
+ *	and distance. Adds itself to time-queue, deletes itself when done.
+ */
+class Object_sfx : public Time_sensitive, public Game_singletons
+	{
+	Game_object *obj;	// Object that caused the sound.
+	int sfx;			// ID of sound effect being played.
+	int channel;		// Channel of sfx being played.
+	int distance;		// Distance in tiles from Avatar.
+	int dir;			// Direction (0-15) from Avatar.
+public:
+	Object_sfx(Game_object *o, int sfx, int delay = 20);
+	void stop();
+	int get_sfxnum()
+		{ return sfx; }
+	int get_distance()
+		{ return distance; }
+	virtual void handle_event(unsigned long time, long udata);
+	};
+
+/*
  *	A class for playing sound effects when certain objects are nearby.
  */
-class Object_sfx : public Game_singletons
+class Shape_sfx : public Game_singletons
 	{
 	Game_object *obj;		// Object that caused the sound.
-	SFX_info *sfx;
+	SFX_info *sfxinf;
 	int channel[2];			// ID of sound effect being played.
 	int distance;			// Distance in tiles from Avatar.
 	int dir;			// Direction (0-15) from Avatar.
 	int last_sfx;		// For playing sequential sfx ranges.
 public:
 					// Create & start playing sound.
-	Object_sfx(Game_object *o)
+	Shape_sfx(Game_object *o)
 		: obj(o), distance(0), last_sfx(-1)
 		{
 		channel[0] = channel[1] = -1;
-		sfx = Shapeinfo_lookup::get_sfx_info(obj->get_shapenum());
-		if (sfx)
+		sfxinf = obj->get_info().get_sfx_info();
+		if (sfxinf)
 			last_sfx = 0;
 		}
 	int get_sfxnum()
@@ -67,13 +88,13 @@ protected:
 	unsigned char deltax, deltay;	// If wiggling, deltas from
 					//   original position.
 	bool animating;			// 1 if animation turned on.
-	Object_sfx *objsfx;
+	Shape_sfx *objsfx;
 	void start_animation();
 public:
 	Animator(Game_object *o) 
 		: obj(o), deltax(0), deltay(0), animating(false)
 		{
-		objsfx = new Object_sfx(obj);
+		objsfx = new Shape_sfx(obj);
 		}
 	static Animator *create(Game_object *ob);
 	~Animator();
@@ -99,7 +120,9 @@ public:
 class Frame_animator : public Animator
 	{
 	Animation_info *aniinf;
+	unsigned short first_frame;	// Initial frame of animation cycle
 	unsigned short currpos;			// Current position in the animation.
+	unsigned short nframes;		// Number of frames in cycle.
 	unsigned short frame_counter;		// When to increase frame.
 	unsigned int created;		// Time created
 	unsigned short last_shape;	// To check if we need to re init

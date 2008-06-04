@@ -52,10 +52,10 @@ const int REAGENTS = 842;		// Shape #.
 #define SCROLLSPELLS  66		// First group of scroll spells (SI).
 
 /*
- *	And in 'text.flx':
+ *	And in 'text.flx' (indices are offset from 0x500):
  */
-#define CIRCLE ((GAME_BG ? 0x545 : 0x551) - misc_name0)
-#define CIRCLENUM ((GAME_BG ? 0x545 : 0x552) - misc_name0)
+#define CIRCLE ((GAME_BG ? 0x45 : 0x51))
+#define CIRCLENUM ((GAME_BG ? 0x45 : 0x52))
 
 /*
  *	Get circle, given a spell #.

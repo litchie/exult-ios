@@ -36,6 +36,7 @@
 #include "ucsched.h"
 #include "cheat.h"
 #include "ready.h"
+#include "weaponinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -49,6 +50,21 @@ using std::endl;
 using std::rand;
 using std::ostream;
 #endif
+
+/*
+ *	Determines if a shape can be added/found inside a container.
+ */
+static inline bool Can_be_added
+	(
+	Container_game_object *cont,
+	int shapenum
+	)
+	{
+	Shape_info& info = cont->get_info();
+	return !(cont->get_shapenum() == shapenum	// Shape can't be inside itself.
+			|| info.is_container_locked()	// Locked container.
+			|| !info.is_shape_accepted(shapenum));	// Shape can't be inside.
+	}
 
 /*
  *	Figure attack points against an object, and also run weapon's usecode.
@@ -104,18 +120,12 @@ bool Container_game_object::add
 					//   cause obj to be deleted.
 	)
 	{
-	if (!dont_check)
-		{			// Can't put a bag in a bag.
-		int shnum = get_shapenum();
-		if (shnum == obj->get_shapenum() ||
-		    shnum == 522 ||	// Can't put into locked chest.
-		    (shnum == 798 && GAME_BG))	// Or sealed box.
+	Shape_info& info = get_info();
+	if (get_shapenum() == obj->get_shapenum()	// Shape can't be inside itself.
+			|| (!dont_check && info.is_container_locked()))	// Locked container.
 		return false;
-		}
-	// ugly hack for SI urn (shouldn't be a container)
-	if (Game::get_game_type() == SERPENT_ISLE && get_shapenum() == 914) {
+	if (!info.is_shape_accepted(obj->get_shapenum()))	// Shape can't be inside.
 		return false;
-	}
 
 	// Always check this. ALWAYS!
 	Game_object *parent = this;
@@ -199,52 +209,6 @@ static int Add2keyring
 	}
 
 /*
- *	Get information about whether a shape is a 'quantity' shape, and
- *	whether we need to match its framenum to combine it with another.
- *
- *	Output:	True if a 'quantity' shape.
- */
-
-static bool Get_combine_info
-	(
-	int shapenum,
-	int framenum,
-	bool& quantity_frame		// Rets. true if frame depends on quan.
-	)
-	{
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = ShapeID::get_info(shapenum);
-	quantity_frame = false;
-	if (!info.has_quantity())
-		return false;
-	switch (shapenum)		// Which shapes have frames depending
-		{			//   on their quantity?
-	case 644:			// Coins.
-	case 627:			// Lockpicks.
-	case 581:			// Ammunition.
-	case 554:			// Burst arrows.
-	case 556:			// Magic arrows.
-	case 558:			// Lucky arrows.
-	case 560:			// Love arrows.
-	case 568:			// Tseramed arrows.
-	case 722:			// Arrows.
-	case 723:			// Bolts.
-	case 417:			// Magic bolts.
-	case 948:			// Bolts.  (or SI filari).
-		quantity_frame = true;
-		break;
-	case 951:			// Monetari/guilders:
-	case 952:
-		if (GAME_SI)
-			quantity_frame = true;
-		break;
-	default:
-		break;
-		}
-	return true;
-	}
-
-/*
  *	Recursively add a quantity of an item to those existing in
  *	this container, and create new objects if necessary.
  *
@@ -260,7 +224,7 @@ int Container_game_object::add_quantity
 	int dontcreate			// If 1, don't create new objs.
 	)
 {
-	if (delta <= 0)
+	if (delta <= 0 || !Can_be_added(this, shapenum))
 		return delta;
 
 	int cant_add = 0;		// # we can't add due to weight.
@@ -280,9 +244,9 @@ int Container_game_object::add_quantity
 			delta -= cant_add;
 			}
 		}
-	bool has_quantity_frame;	// Quantity-type shape?
-	bool has_quantity = Get_combine_info(
-				shapenum, framenum, has_quantity_frame);
+	Shape_info& info = ShapeID::get_info(shapenum);
+	bool has_quantity = info.has_quantity();	// Quantity-type shape?
+	bool has_quantity_frame = has_quantity ? info.has_quantity_frames() : false;
 					// Note:  quantity is ignored for
 					//   figuring volume.
 	Game_object *obj;
@@ -329,9 +293,9 @@ int Container_game_object::create_quantity
 	bool temporary			// Create temporary quantity
 	)
 	{
+	if (!Can_be_added(this, shnum))
+		return delta;
 			// Usecode container?
-			// Modified to check for correct flag instead of
-			// relying on shape number.
 	Shape_info& info = ShapeID::get_info(get_shapenum());
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{
@@ -394,7 +358,7 @@ int Container_game_object::remove_quantity
 	int framenum			// Frame, or c_any_framenum for any.
 	)
 	{
-	if (objects.is_empty())
+	if (objects.is_empty() || !Can_be_added(this, shapenum))
 		return delta;		// Empty.
 	Game_object *obj = objects.get_first();
 	Game_object *last = obj->get_prev();	// Save last.
@@ -432,7 +396,7 @@ Game_object *Container_game_object::find_item
 	int framenum			// Frame, or c_any_framenum for any.
 	)
 	{
-	if (objects.is_empty())
+	if (objects.is_empty() || !Can_be_added(this, shapenum))
 		return 0;		// Empty.
 	Game_object *obj;
 	Object_iterator next(objects);
@@ -742,6 +706,8 @@ int Container_game_object::count_objects
 	int framenum			// Frame#, or c_any_framenum for any.
 	)
 	{
+	if (!Can_be_added(this, shapenum))
+		return 0;
 	int total = 0;
 	Game_object *obj;
 	Object_iterator next(objects);
@@ -823,14 +789,7 @@ void Container_game_object::write_ireg
 	Write2(ptr, tword);
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = get_quality();
-	int npc = get_live_npc_num();	// If body, get source.
-	int quant;
-	if (Game::get_game_type() == SERPENT_ISLE)
-		quant = npc + 0x80;
-	else
-		quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
-
-	*ptr++ = quant&0xff;		// "Quantity".
+	*ptr++ = 0;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
 	*ptr++ = (unsigned char)resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
@@ -946,3 +905,48 @@ void Container_game_object::remove_this(int nodel)
 
 	Ireg_game_object::remove_this(nodel);
 }
+
+/*
+ *	Find ammo used by weapon.
+ *
+ *	Output:	->object if found. Additionally, is_readied is set to
+ *	true if the ammo is readied.
+ */
+
+Game_object *Container_game_object::find_weapon_ammo
+	(
+	int weapon,			// Weapon shape.
+	int needed,
+	bool recursive
+	)
+	{
+	if (weapon < 0 || !Can_be_added(this, weapon))
+		return 0;
+	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	if (!winf)
+		return 0;
+	int family = winf->get_ammo_consumed();
+	if (family >= 0)
+		return 0;
+
+	Game_object_vector vec;		// Get list of all possessions.
+	vec.reserve(50);
+	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+				it != vec.end(); ++it)
+		{
+		Game_object *obj = *it;
+		if (obj->get_shapenum() != weapon)
+			continue;
+		Shape_info& inf = obj->get_info();
+		if (family == -2)
+			{
+			if (!inf.has_quality() || obj->get_quality() >= needed)
+				return obj;
+			}
+			// Family -1 and family -3.
+		else if (obj->get_quantity() >= needed)
+			return obj;
+		}
+	return 0;
+	}

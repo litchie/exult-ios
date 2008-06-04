@@ -310,7 +310,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 #if !(defined(__zaurus__))
 	xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
 #endif
-	std::vector<ModManager *>& game_list = gamemanager->get_game_list();
+	std::vector<ModManager>& game_list = gamemanager->get_game_list();
 	int num_choices = game_list.size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
@@ -319,17 +319,17 @@ MenuList *ExultMenu::create_main_menu(int first)
 #else
 		int menux = xpos+(i%2)*centerx;
 #endif
-		ModManager *exultgame = game_list[i];
-		char *menustringname = new char[strlen(exultgame->get_menu_string().c_str())+1];
-		strcpy(menustringname, exultgame->get_menu_string().c_str());
+		ModManager& exultgame = game_list[i];
+		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
+		strcpy(menustringname, exultgame.get_menu_string().c_str());
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
-			Audio::get_ptr()->can_sfx(exultgame->get_title())?1:0);
+			Audio::get_ptr()->can_sfx(exultgame.get_title())?1:0);
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							menustringname,
 							sfxicon, menux, ypos);
 		entry->set_id(i);
 		menu->add_entry(entry);
-		if (exultgame->has_mods())
+		if (exultgame.has_mods())
 		{
 			MenuTextEntry *mod_entry = new MenuTextEntry(navfonton, navfont, "SHOW MODS",
 								menux, ypos+entry->get_height()+4);
@@ -377,7 +377,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 	xpos = centerx/2;
 #endif
 	
-	std::vector<ModInfo *>& mod_list = selgame->get_mod_list();
+	std::vector<ModInfo>& mod_list = selgame->get_mod_list();
 	int num_choices = mod_list.size();
 	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
 	for(int i=first; i<last; i++) {
@@ -386,15 +386,15 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 #else
 		int menux = xpos+(i%2)*centerx;
 #endif
-		ModInfo *exultmod = mod_list[i];
+		ModInfo& exultmod = mod_list[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
-							exultmod->get_menu_string().c_str(),
+							exultmod.get_menu_string().c_str(),
 							0, menux, ypos);
 		entry->set_id(i);
-		entry->set_enabled(exultmod->is_mod_compatible());
+		entry->set_enabled(exultmod.is_mod_compatible());
 		menu->add_entry(entry);
 
-		if (!exultmod->is_mod_compatible())
+		if (!exultmod.is_mod_compatible())
 		{
 			MenuGameEntry *incentry = new MenuGameEntry(navfonton, navfont, "WRONG EXULT VERSION",
 								0, menux, ypos+entry->get_height()+4);
@@ -501,7 +501,7 @@ BaseGameInfo *ExultMenu::run()
 		font->center_text(gwin->get_win()->get_ib8(),
 					centerx, topy+20, "WARNING");
 		font->center_text(gwin->get_win()->get_ib8(),
-					centerx, topy+40, "Could not find the data files for either");
+					centerx, topy+40, "Could not find the static data for either");
 		font->center_text(gwin->get_win()->get_ib8(),
 					centerx, topy+50, "\"The Black Gate\" or \"Serpent Isle\".");
 		font->center_text(gwin->get_win()->get_ib8(),

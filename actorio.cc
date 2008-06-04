@@ -37,7 +37,6 @@
 #include "databuf.h"
 #include "npctime.h"
 #include "ucmachine.h"
-#include "miscinf.h"
 
 using std::ios;
 using std::cout;

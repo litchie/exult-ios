@@ -4,7 +4,7 @@
 #
 
 %%section version
-:4
+:5
 %%endsection
 
 %%section explosions
@@ -231,155 +231,68 @@
 #	frames and returns to frame 0 again. This list is only for
 #	animations which are NOT like that.
 #
-#	Moreover, most of the data are commented, being just examples
-#	and a few data patches (improvements) over the original. The
-#	reason is that the location of the ainmation data of the originals
-#	has been found; this section serves only for data patches.
-#
 #	Format
 #
-#	Wrapping Loop
-#		:shapenum/0/first_frame/frame_count/offset/frame_delay/sfx_delay
-#
-#	For the looping cycles, the animation starts at first_frame,
-#	goes through frame_count frames (including the first one)
-#	and returns to first_frame. offset is an overall phase
-#	shift in the animation. If offset is '%', then Exult will
-#	calculate offset as being sframe % frame_count, where sframe
-#	is the frame with which the animation was created.
-#	If offset is '-1' or if it is ommited, Exult will set it equal
-#	to sframe.
-#	frame_delay is an additional frame delay; time between frames
-#	is multiplied by frame_delay. A value of zero is treated as 1.
-#	sfx_delay indicates the delay (in frames) before the sfx
-#	is played again. If it is '0' (or ommited) then sfx will be
-#	played continuously; if '1' it will play every other frame, etc.
-#	The sfx will always be played at first_frame. If sfx_delay is -1,
-#	the sound effect will be synchronized with the animation, playing
-#	whenever first_frame is being displayed.
-#
-#	Hourly (Sundials)
+#	Time Synchronized Loop
+#		:shapenum/0/frame_count/frame_delay/sfx_delay
+#	Hourly Loop (e.g., Sundials)
 #		:shapenum/1
-#
-#	Hourly cycles display the frame equal to the current game hour
-#	(24-hour format); the shape should have 24 frames.
-#
-#	Nonlooping (Energy fields)
-#		:shapenum/2/first_frame/frame_count
-#
-#	These cycles start at frame first_frame and stops after going through
-#	frame_count frames; they do not wrap around to the first frame.
-#
-#	Random loops (bubbles)
-#		:shapenum/3/first_frame/frame_count
-#
-#	Random loops work similar to Wrapping loops; the main
-#	difference being that the animation stays at first_frame
-#	for random periods of time before continuing. If the shape
-#	has a sfx specified, this sfx will play in synch with the
-#	animation.
-#
-#	Looping Recycle
-#		:shapenum/4/first_frame/frame_count/recycle/sfx_delay
-#
-#	This is similar to the normal looping cycle. The difference is
-#	that, after the first cycle, the animation will continue from
-#	recycle instead of first_frame. Only sfx_delay is optional.
-#
+#	Nonlooping (e.g., Energy fields)
+#		:shapenum/2/frame_count/frame_delay/sfx_delay
+#	Looping
+#		:shapenum/3/frame_count/frame_delay/sfx_delay/freeze_first/recycle
 #	Random Frames
-#		:shapenum/5/first_frame/frame_count
+#		:shapenum/4/frame_count/frame_delay/sfx_delay
 #
-#	Randomly selects a frame in the [first_frame, first_frame + frame_count]
-#	interval.
+#	frame_count is the number of frames in each animation cycle; that
+#	is, the shape will be divided into sets of frame_count frames which
+#	animate independently from each other. If this field is less than zero,
+#	Exult will set it equal to the number of frames of the shape.
 #
-#	From here on, everything in this section is commented.
-#	Moongates
+#	frame_delay is an additional frame delay; time between frames
+#	is multiplied by frame_delay. MUST be positive.
 #
-#:157/4/0/12/4
-#:776/0/0/12
-#:777/0/0/12
-#:779/4/0/12/4
-
-#	Greer plant
-#:160/3/0/12
-
-#	Lightning
+#	sfx_delay indicates the delay (in frames) before the sfx
+#	is played again. If it is zero or one, the sfx will be played
+#	continuously; if it is negative, it will be played only synchronized
+#	with the animation (this means frame 0 or 1; see freeze_first).
+#	On all other cases, the sfx will be played every sfx_delay frames.
 #
-#:179/3/0/8
-
-#	Grandfather clock
+#	freeze_first is the % chance of advancing the first frame of the loop;
+#	this means that if freeze_first is zero, the animation will stop at the
+#	first frame. Converselly, if freeze_first is 100, it will always advance.
 #
-#:252/0/0/3/-1/3/-1
-#:695/0/0/3/-1/3/-1
-
-#	Sundial
+#	recycle is the offset at which the animation will resume after reaching
+#	the last frame of the loop; for example, recycle 0 means the initial
+#	frame of the loop, recycle 1 means the second frame of the loop, etc.
 #
-#:284/1
-
-#	Bubbles
-#
-#:334/3/0/8
-#:335/3/0/8
-#:780/3/0/8
-
-#	Waves
-#
-#:384/3/0/17
-#:985/3/0/17
-#:1008/3/0/17
-#:1009/3/0/17
-
-#	Light
-#
-#:440/5/0/8
-
-#	Wounded man
-#
-#:447/3/0/32
-
-
-#	Energy field
-#
-#:768/2/0/16
-
-
-#		Vertical shaft
-#
-#:862/0/0/1
-#:862/0/1/3
-
-#		Horizontal shaft
-#
-#:880/0/0/1
-#:880/0/1/3
-
-#	Fire Field
-#
-#:895/4/0/16/8
-
-#	Poison Field
-#
-#:900/4/0/12/6
-
-
-#	Sleep Field
-#
-#:902/4/0/14/6
-
-#		Sawmill
-#
-#:933/0/0/1
-#:933/0/1/3
-
+#	Since BG needs no data patches, this section is empty in this data file.
 %%endsection
 
 %%section usecode_events
 #	List of which items receive usecode events when readied/unreadied.
-:296		#		Ring of invibility
-:297		#		Ring of protection
-:298		#		Ring of regeneration
-:338		#		Lit light source
-:701		#		Lit torch
+#
+#	Format
+#		:shapenum/event
+#
+#	'event' is nonzero to receive usecode events, zero otherwise.
+#
+#	Quest items
+#
+#		Ring of invibility
+:296/1
+
+#		Ring of protection
+:297/1
+
+#		Ring of regeneration
+:298/1
+
+#		Lit light source
+:338/1
+
+#		Lit torch
+:701/1
 %%endsection
 
 %%section mountain_tops
@@ -387,10 +300,435 @@
 #	for dungeons or 'Occludes' plus 'Water' for ice dungeons.
 #	In any case (BG or SI), object type MUST be building. Setting the above
 #	flags will also work in BG, as long as the shape is not in the list below.
-:983
-:969
-:183
-:182
-:180
-:324
+#
+#	Format
+#		:shapenum/flag
+#
+#	'flag' is nonzero for mountain tops, zero otherwise.
+#
+:983/1
+:969/1
+:183/1
+:182/1
+:180/1
+:324/1
+%%endsection
+
+%%section effective_hps
+#	Effective HPs for objects which otherwise don't have them
+#	(e.g., doors, powder keg). If the object does not have
+#	HPs, they default to being indestructable; the list below
+#	is only for those which are *not* indestructable.
+#
+#	Format
+#		:shapenum/frame/quality/hps
+#
+#	If frame is -1, this entry will be used for all frames.
+#	Likewise, if quality is -1, the quality will be ignored.
+#	If the object does not have a quality, it will also be
+#	ignored (and treated as -1).
+#	If hps are zero, the object will be indestructable.
+#
+#		Locked chest.
+#
+:522/-1/0/4
+:522/-1/255/4
+
+#		Vertical Door - 270.
+#
+:270/0/0/6
+:270/1/0/6
+:270/2/0/6
+:270/8/0/6
+:270/9/0/6
+:270/10/0/6
+:270/16/0/6
+:270/17/0/6
+:270/18/0/6
+
+#		Horizontal Door - 376.
+#
+:376/0/0/6
+:376/1/0/6
+:376/2/0/6
+:376/8/0/6
+:376/9/0/6
+:376/10/0/6
+:376/16/0/6
+:376/17/0/6
+:376/18/0/6
+
+#		Vertical Door - 432.
+#
+:432/0/0/6
+:432/1/0/6
+:432/2/0/6
+:432/4/0/6
+:432/5/0/6
+:432/6/0/6
+
+#		Horizontal Door - 433.
+#
+:433/0/0/6
+:433/1/0/6
+:433/2/0/6
+:433/4/0/6
+:433/5/0/6
+:433/6/0/6
+
+#		Powder keg
+#
+:704/-1/0/4
+%%endsection
+
+%%section lightweight_object
+#	Indicates which objects are lightweight -- that is, which objects
+#	weight one-tenth of what their shape data would otherwise indicate.
+#	In the originals, this was for coins and reagents.
+#	Indicates which objects are lightweight -- that is, which objects
+#	weight one-tenth of what their shape data would otherwise indicate.
+#	In the originals, this was for coins and reagents.
+#
+#	Format
+#		:shapenum/light
+#
+#	'light' is nonzero for very light objects, zero otherwise.
+:644/1
+:842/1
+%%endsection
+
+%%section monster_food
+#	Which frame is to be used for food if a monster specifies it as equpment.
+#
+#	Format
+#		:shapenum/food_frame
+#
+#	food_frame: Frame to be used for food carried by monsters. If this is -1,
+#	a random frame will be used. Monsters not listed have a -1 by default.
+#
+#
+#		Chicken.
+#
+:498/10
+
+#		Cow - beef.
+#
+:500/9
+
+#		Deer - venison.
+#
+:502/14
+
+#		Fish.
+#
+:509/12
+
+#		Rabbit - same as cow?
+#
+:811/9
+
+#		Sheep - mutton.
+#
+:970/8
+
+#		Horse - ribs.
+#
+:727/23
+
+#		Boar - pork.
+#
+:329/11
+
+%%section actor_flags
+#	Lots of monster/actor data which was hardcoded in the originals.
+#
+#	Format
+#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis
+#
+#	The fields are flags which are true if nonzero, false otherwise.
+#	The default for actors not on the list is false.
+#	dont_eat: nonzero if actor does not need food, zero otherwise.
+#	cold_immune: nonzero if actor is immune to cold, zero otherwise.
+#	summons: nonzero if actor can summon allies, zero otherwise.
+#	teleports: nonzero if actor can teleport, zero otherwise.
+#	turn_invis: nonzero if actor can become invisible, zero otherwise.
+#
+#
+#		Mages
+#
+:154/0/0/1/1/1
+:445/0/0/1/1/1
+:446/0/0/1/1/1
+
+#		Ghosts
+#
+:299/0/0/0/1/1
+:317/0/0/0/1/1
+
+#		Liches
+#
+:354/0/0/1/1/1
+:519/0/0/1/1/1
+
+#		Dragon
+#
+:504/0/0/0/0/1
+
+#		Gazer
+#
+:511/0/0/0/0/1
+
+#		Kissme
+#
+:382/0/0/0/1/0
+
+#		Wisp
+#
+:534/0/0/0/1/0
+%%endsection
+
+%%section warmth_data
+#	How much protection from cold is given by a given piece of clothing.
+#
+#	Format
+#		:shapenum/frame/warmth
+#
+#	If frame is -1, this entry will be used for all unlisted frames.
+#	The default warmth is zero.
+#
+#		Helms.
+#
+:383/-1/5
+:539/-1/5
+:541/-1/5
+:542/-1/5
+:1004/-1/10
+
+#		Boots.
+#
+:587/0/85
+:587/1/65
+:588/-1/80
+
+#		Torso.
+#
+:569/-1/20
+:570/-1/-8
+:571/-1/-5
+:573/-1/-10
+:666/-1/5
+:836/-1/5
+
+#		Gloves.
+#
+579:/-1/7
+580:/-1/-5
+
+#		Legs.
+#
+:353/-1/-5
+:574/-1/10
+:575/-1/-5
+:576/-1/-5
+:677/-1/4
+:686/-1/5
+%%endsection
+
+%%section quantity_frames
+#	Whether shapes have quantity-dependent frames (e.g., coins, arrows).
+#	Weapons ignore this property. Objects with ammo data start from frame 24;
+#	other objects start from frame zero. Default is to NOT have quantity frames.
+#
+#	Format
+#		:shapenum/quantfr
+#
+#	If quantfr is nonzero, the shape has quantity frames.
+#
+#		Bolts.
+#
+:417/1
+:723/1
+:948/1
+
+#		Arrows.
+#
+:554/1
+:556/1
+:558/1
+:560/1
+:568/1
+:722/1
+
+#		Musket ammo.
+#
+:581/1
+
+#		Lockpicks.
+#
+:627/1
+
+#		Money.
+#
+:644/1
+%%endsection
+
+%%section locked_containers
+#	Whether a container is locked and can't be opened or added to.
+#
+#	Format
+#		:shapenum/locked
+#
+#	locked is nonzero if the container is locked, zero otherwise.
+#
+#		Locked/sealed containers.
+#
+:552/1
+:798/1
+%%endsection
+
+%%section content_rules
+#	What shapes a give container will accept.
+#
+#	Format
+#		:shapenum/shnum/accept
+#
+#	shnum is the shape number which is being added to the container or < 0
+#	for any shape (default rule).
+#
+#	accept is nonzero if the container accepts the shape, zero otherwise.
+#
+%%endsection
+
+%%section volatile_explosive
+#	List of which items which blow up readily (such as powder keg in the originals).
+#	Exult expects the object to be a 'quality' object with effective hps that make
+#	it indestructible for quality 1 but destructible for quality 0.
+#
+#	Format
+#		:shapenum/explosive
+#
+#	'explosive' is nonzero if the shape blows up easily, zero otherwise.
+:704/1
+%%endsection
+
+%%section framenames
+#
+#	THIS SECTION SHOULD ***NOT*** BE EDITED MANUALLY!!!!!
+#
+#	Format:
+#		:shapenum/frnum/qual/-255
+#		:shapenum/frnum/qual/-1
+#		:shapenum/frnum/qual/0/msgid
+#		:shapenum/frnum/qual/type/msgid/defmsg
+#
+#	frnum is the frame for which the entry apllies, or < 0 for any frame.
+#
+#	qual is the quality for which the entry apllies, or < 0 for any quality.
+#
+#	If type is -255, use default shape name instead. If type is -1, display
+#	no name at all. If type is 0, display msgid and that is it.
+#
+#	If type is 1 or 2, the name will be prefixed (type 1) or suffixed (type 2)
+#	by the message indicated by extramsg.
+#
+#	If type is 3 or 4, the name will be prefixed (type 3) or suffixed (type 4)
+#	by the corresponding NPC name. The corresponding NPC must have NPC # > 0,
+#	not be unused and (for dead bodies) be met, or defmsg will be used instead.
+#	For dead bodies, the corresponding NPC is the NPC to which it will become
+#	when resurrected; for all others, this is the object's quality (hence, it
+#	is limited to 255 NPCs and the object MUST have a quality).
+#
+#	msgid and defmsg are the name index in misc_names section of TEXT.FLX
+#	or of TEXTMSG.TXT; for SI without SS, this is actually the corresponding
+#	SS index. If defmsg is -1, the default name will be empty; if it is -255,
+#	Exult will use the default shape name.
+#
+#	Food items.
+#
+:377/0/-1/0/11
+:377/1/-1/0/12
+:377/2/-1/0/13
+:377/3/-1/0/14
+:377/4/-1/0/15
+:377/5/-1/0/16
+:377/6/-1/0/17
+:377/7/-1/0/18
+:377/8/-1/0/19
+:377/9/-1/0/20
+:377/10/-1/0/21
+:377/11/-1/0/22
+:377/12/-1/0/23
+:377/13/-1/0/24
+:377/14/-1/0/25
+:377/15/-1/0/26
+:377/16/-1/0/27
+:377/17/-1/0/28
+:377/18/-1/0/29
+:377/19/-1/0/30
+:377/20/-1/0/31
+:377/21/-1/0/32
+:377/22/-1/0/33
+:377/23/-1/0/34
+:377/24/-1/0/35
+:377/25/-1/0/36
+:377/26/-1/0/37
+:377/27/-1/0/38
+:377/28/-1/0/39
+:377/29/-1/0/40
+:377/30/-1/0/41
+:377/31/-1/0/42
+
+#	Sextants.
+#
+:650/0/-1/0/44
+:650/1/-1/0/43
+
+#	Desk items.
+#
+:675/0/-1/0/45
+:675/1/-1/0/46
+:675/2/-1/0/47
+:675/3/-1/0/48
+:675/4/-1/0/49
+:675/5/-1/0/50
+:675/6/-1/0/51
+:675/7/-1/0/52
+:675/8/-1/0/53
+:675/9/-1/0/54
+:675/10/-1/0/55
+:675/11/-1/0/56
+:675/12/-1/0/57
+:675/13/-1/0/58
+:675/14/-1/0/59
+:675/15/-1/0/60
+:675/16/-1/0/61
+:675/17/-1/0/62
+:675/18/-1/0/63
+:675/19/-1/0/64
+:675/20/-1/0/65
+
+#	Reagents.
+#
+:842/0/-1/0/0
+:842/1/-1/0/1
+:842/2/-1/0/2
+:842/3/-1/0/3
+:842/4/-1/0/4
+:842/5/-1/0/5
+:842/6/-1/0/6
+:842/7/-1/0/7
+
+#	Blood.
+#
+:912/0/-1/-255
+:912/1/-1/-255
+:912/2/-1/-255
+:912/3/-1/-255
+:912/-1/-1/-1
+
+#	Amulets.
+#
+:955/0/-1/0/8
+:955/1/-1/0/9
+:955/2/-1/0/10
 %%endsection

@@ -104,6 +104,9 @@ public:
 	virtual int get_obj_hp() const { return resistance; }
 	virtual void set_obj_hp(int hp) { resistance = (char)hp; }
 
+	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
+			bool recursive = false);
+
 	bool extract_contents();
 
 	virtual void delete_contents();

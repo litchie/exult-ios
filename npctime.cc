@@ -362,7 +362,7 @@ void Npc_hunger_timer::handle_event
 		int hp = rand()%3;
 		if (rand()%4)
 			npc->say(first_starving, first_starving + 2);
-		npc->reduce_health(hp);
+		npc->reduce_health(hp, Weapon_data::sonic_damage);
 		last_time = minute;
 		}
 	gwin->get_tqueue()->add(curtime + 30000, this, 0L);
@@ -412,7 +412,7 @@ void Npc_poison_timer::handle_event
 		return;
 		}
 	int penalty = rand()%3;
-	npc->reduce_health(penalty);
+	npc->reduce_health(penalty, Weapon_data::sonic_damage);
 
 //	npc->set_property(static_cast<int>(Actor::health),
 //		npc->get_property(static_cast<int>(Actor::health)) - penalty);
@@ -431,8 +431,11 @@ void Npc_sleep_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
-	if (curtime >= end_time ||	// Long enough?  Or cured?
+		// But not someone beaten into inconsciousness.
+	if (npc->get_property(static_cast<int>(Actor::health)) >= 0
+		&& (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)
+		)
 		{
 					// Avoid waking Penumbra.
 		if (npc->get_schedule_type() != Schedule::sleep &&

@@ -157,8 +157,16 @@
 #define NUM_FONTS	(20)
 
 // U7 game names in "exult.cfg":
-#define CFG_SI_NAME		"serpentisle"
 #define CFG_BG_NAME		"blackgate"
+#define CFG_FOV_NAME	"forgeofvirtue"
+#define CFG_SI_NAME		"serpentisle"
+#define CFG_SS_NAME		"silverseed"
+
+// U7 game titles in "exult.cfg":
+#define CFG_BG_TITLE	"ULTIMA VII\nTHE BLACK GATE"
+#define CFG_FOV_TITLE	"ULTIMA VII\nTHE FORGE OF VIRTUE"
+#define CFG_SI_TITLE	"ULTIMA VII PART 2\nSERPENT ISLE"
+#define CFG_SS_TITLE	"ULTIMA VII PART 2\nTHE SILVER SEED"
 
 #endif
 

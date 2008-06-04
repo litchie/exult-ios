@@ -24,13 +24,33 @@
 #endif
 
 #include <iomanip>			/* For debugging only. */
+#include <sstream>
 #include "shapevga.h"
+#include "ammoinf.h"
+#include "aniinf.h"
+#include "armorinf.h"
+#include "bodyinf.h"
+#include "continf.h"
+#include "effhpinf.h"
+#include "expinf.h"
+#include "frnameinf.h"
 #include "monstinf.h"
+#include "npcdollinf.h"
+#include "objdollinf.h"
+#include "sfxinf.h"
+#include "warminf.h"
+#include "weaponinf.h"
+#include "data/exult_bg_flx.h"
+#include "data/exult_si_flx.h"
 #include "utils.h"
+#include "databuf.h"
+#include "msgfile.h"
+#include "U7file.h"
 #include "exceptions.h"
 
 using std::ifstream;
 using std::ios;
+using namespace std;
 
 // For convienience
 #define patch_exists(p) (have_patch_path && U7exists(p))
@@ -69,6 +89,418 @@ static bool U7open2
 #endif
 		}
 	return true;
+	}
+
+/*
+ *	Get # entries of binary data file (with Exult extension).
+ */
+
+static inline int Read_count(ifstream& in)
+	{
+	int cnt = Read1(in);	// How the originals did it.
+	if (cnt == 255)
+		cnt = Read2(in);	// Exult extension.
+	return cnt;
+	}
+
+// Base class.
+class Base_reader
+	{
+protected:
+	map<int, Shape_info>& info;
+	bool haveversion;
+	virtual int read_data(istream& in, int index, int version, bool patch, bool bg)
+		{ return -1; }
+public:
+	Base_reader(map<int, Shape_info>& nfo, bool h)
+		:	info(nfo), haveversion(h)
+		{  }
+	virtual ~Base_reader() {  }
+		// Text data file.
+	void parse(vector<char *> strings, int version, bool patch, bool bg)
+		{
+		for (int j=0; j<strings.size(); j++)
+			{
+			char *ptr = strings[j];
+			if (!ptr)
+				continue;
+			istringstream strin(string(ptr), ios::in);
+			read_data(strin, j, version, patch, bg);
+			delete[] strings[j];
+			}
+		strings.clear();
+		}
+		// Binary data file.
+	void read(const char *fname, bool patch, bool bg)
+		{
+		if (!U7exists(fname))
+			return;
+		ifstream fin;
+		U7open(fin, fname);
+		int vers = 0;
+		if (haveversion)
+			vers = Read1(fin);
+		int cnt = Read_count(fin);
+		for (int j = 0; j < cnt; j++)
+			read_data(fin, j, vers, patch, bg);
+		fin.close();
+		}
+	};
+
+template <typename T>
+class Text_reader_functor
+	{
+public:
+	int operator()(std::istream& in, int index, int version, bool patch, 
+			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+		{
+		int shapenum = ReadInt(in);
+		info[shapenum].*pt = ReadInt(in);
+		return shapenum;
+		}
+	};
+
+template <typename T, int bit>
+class Bit_text_reader_functor
+	{
+public:
+	int operator()(std::istream& in, int index, int version, bool patch, 
+			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+		{
+		int shapenum = ReadInt(in);
+			// For backwards compatibility.
+		if (!patch || ReadInt(in, 1) != 0)
+			info[shapenum].*pt |= (1 << bit);
+		return shapenum;
+		}
+	};
+
+template <typename T, int pad>
+class Binary_reader_functor
+	{
+public:
+	int operator()(std::istream& in, int index, int version, bool patch, 
+			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+		{
+		int shapenum = Read2(in);
+		in.read((char *)(&(info[shapenum].*pt)), sizeof(T)/sizeof(char));
+		if (pad > 0)	// Skip some bytes.
+			in.seekg(pad, std::ios::cur);
+		return shapenum;
+		}
+	};
+
+template <typename T, T Shape_info::*data, int flag,
+          class Functor = Text_reader_functor<T> >
+class Functor_data_reader : public Base_reader
+	{
+protected:
+	Functor reader;
+	virtual int read_data(istream& in, int index, int version, bool patch, bool bg)
+		{
+		int shapenum = reader(in, index, version, patch, bg, info, data);
+		if (patch)
+			info[shapenum].frompatch_flags |= flag;
+		return shapenum;
+		}
+public:
+	Functor_data_reader(map<int, Shape_info>& nfo, bool h=false)
+		:	Base_reader(nfo, h)
+		{  }
+	virtual ~Functor_data_reader()
+		{  }
+	};
+
+// Truly deviating case.
+class Actor_flags_reader : public Base_reader
+	{
+protected:
+	virtual int read_data(istream& in, int index, int version, bool patch, bool bg)
+		{
+		int shapenum = ReadInt(in);
+		int size = 8*sizeof(unsigned char);	// Bit count.
+		int bit = 0;
+		unsigned char flags = 0;
+		while (in.good() && bit < size)
+			{
+			if (ReadInt(in) != 0)
+				flags |= (1U << bit);
+			else
+				flags &= ~(1U << bit);
+			bit++;
+			}
+		// Here starts the deviating part.
+		// We already have monster data by this point.
+		Monster_info *minf= info[shapenum].monstinf;
+		if (minf)
+			{
+			// Deprecating old Monster_info based flags for these powers:
+			if (minf->can_teleport())
+				flags |= Shape_info::teleports;
+			if (minf->can_summon())
+				flags |= Shape_info::summons;
+			if (minf->can_be_invisible())
+				flags |= Shape_info::turns_invisible;
+			}
+		info[shapenum].actor_flags = flags;
+		if (patch)
+			info[shapenum].frompatch_flags |= actor_flags_flag;
+		return shapenum;
+		}
+public:
+	Actor_flags_reader(map<int, Shape_info>& nfo, bool h=false)
+		:	Base_reader(nfo, h)
+		{  }
+	virtual ~Actor_flags_reader() {  }
+	};
+
+template <typename T, T *Shape_info::*data>
+class Class_data_reader : public Base_reader
+	{
+protected:
+	int read_data(std::istream& in, int index, int version, bool patch, bool bg)
+		{
+		T *cls = new T();
+		cls->set_patch(patch);	// Set patch flag.
+		int shapenum = cls->read(in, index, version, bg);
+		if (shapenum < 0)
+			{
+			delete cls;
+			return -1;
+			}
+		T *&pt = info[shapenum].*data;
+		if (cls->is_invalid() && pt)
+			{	// 'Delete old' flag.
+			delete pt;
+			pt = 0;
+			delete cls;
+			return -1;
+			}
+		if (!patch)		// This is a static data file.
+			info[shapenum].have_static_flags |= T::get_info_flag();
+		// Delete old.
+		delete pt;
+		pt = cls;
+		return shapenum;
+		}
+public:
+	Class_data_reader(map<int, Shape_info>& nfo, bool h=false)
+		:	Base_reader(nfo, h)
+		{  }
+	virtual ~Class_data_reader() {  }
+	};
+
+template <typename T, vector<T> Shape_info::*data>
+class Vector_data_reader : public Base_reader
+	{
+protected:
+	int read_data(std::istream& in, int index, int version, bool patch, bool bg)
+		{
+		T cls;
+		cls.set_patch(patch);
+		int shapenum = cls.read(in, index, version, bg);
+		vector<T>& vec = info[shapenum].*data;
+		Shape_info::add_vector_info(cls, vec);
+		return shapenum;
+		}
+public:
+	Vector_data_reader(map<int, Shape_info>& nfo, bool h=false)
+		:	Base_reader(nfo, h)
+		{  }
+	virtual ~Vector_data_reader() {  }
+	};
+
+/*
+ *	Reads text data file and parses it according to passed
+ *	parser functions.
+ */
+
+static void Read_text_data_file
+	(
+	map<int, Shape_info>& info,		// The info map.
+	const char *fname,				// Name of file to read, sans extension
+	Base_reader *parsers[],	// What to use to parse data.
+	const char *sections[],			// The names of the sections
+	int numsections,				// Number of sections
+	bool editing,
+	Exult_Game game_type,
+	int resource
+	)
+	{
+	int static_version = 1;
+	int patch_version = 1;
+	vector<vector<char *> > static_strings;
+	vector<vector<char *> > patch_strings;
+	char buf[50];
+	if (game_type == BLACK_GATE || game_type == SERPENT_ISLE)
+		{
+		/*	++++ Not because of ES.
+		snprintf(buf, 50, "config/%s", fname);
+		str_int_pair resource = game->get_resource(buf);
+		U7object txtobj(resource.str, resource.num);
+		*/
+		snprintf(buf, 50, "<DATA>/exult_%s.flx", 
+				game_type == BLACK_GATE ? "bg" : "si");
+		U7object txtobj(buf, resource);
+		std::size_t len;
+		char *txt = txtobj.retrieve(len);
+		BufferDataSource ds(txt, len);
+		static_version = Read_text_msg_file_sections(&ds,
+				static_strings, sections, numsections);
+		delete [] txt;
+		}
+	else
+		{
+		try
+			{
+			snprintf(buf, 50, "<STATIC>/%s.txt", fname);
+			ifstream in;
+			U7open(in, buf, false);
+			static_version = Read_text_msg_file_sections(in,
+					static_strings, sections, numsections);
+			in.close();
+			}
+		catch (std::exception &e)
+			{
+			if (!editing)
+				throw e;
+			}
+		}
+	patch_strings.resize(numsections);
+	snprintf(buf, 50, "<PATCH>/%s.txt", fname);
+	if (U7exists(buf))
+		{
+		ifstream in;
+		U7open(in, buf, false);
+		patch_version = Read_text_msg_file_sections(in, patch_strings,
+				sections, numsections);
+		in.close();
+		}
+	bool bg = game_type == BLACK_GATE;
+	for (int i = 0; i < numsections; i++)
+		{
+		parsers[i]->parse(static_strings[i], static_version, false, bg);
+		parsers[i]->parse(patch_strings[i], patch_version, true, bg);
+		delete parsers[i];
+		}
+	static_strings.clear();
+	patch_strings.clear();
+	}
+
+void Shapes_vga_file::Read_Shapeinf_text_data_file
+	(
+	bool editing,
+	Exult_Game game_type
+	)
+	{
+	const char *sections[] = {"explosions", "shape_sfx", "animation",
+			"usecode_events", "mountain_tops", "monster_food", "actor_flags",
+			"effective_hps", "lightweight_object", "warmth_data",
+			"quantity_frames", "locked_containers", "content_rules",
+			"volatile_explosive", "framenames"
+			};
+	Base_reader *readers[] = {
+			new Class_data_reader<Explosion_info, &Shape_info::explosion>(info),
+			new Class_data_reader<SFX_info, &Shape_info::sfxinf>(info),
+			new Class_data_reader<Animation_info, &Shape_info::aniinf>(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				usecode_events_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::usecode_events> >(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				mountain_top_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::mountain_top> >(info),
+			new Functor_data_reader<short, &Shape_info::monster_food,
+				monster_food_flag>(info),
+			new Actor_flags_reader(info),
+			new Vector_data_reader<Effective_hp_info, &Shape_info::hpinf>(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				lightweight_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::lightweight> >(info),
+			new Vector_data_reader<Warmth_info, &Shape_info::warminf>(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				quantity_frames_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::quantity_frames> >(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				is_locked_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::is_locked> >(info),
+			new Vector_data_reader<Content_rules, &Shape_info::cntrules>(info),
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				is_volatile_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::is_volatile> >(info),
+			new Vector_data_reader<Frame_name_info, &Shape_info::nameinf>(info)
+			};
+	int numsections = sizeof(sections)/sizeof(sections[0]);
+	int numreaders = sizeof(readers)/sizeof(readers[0]);
+	assert(numsections == numreaders);
+	int flxres = game_type == BLACK_GATE ?
+			EXULT_BG_FLX_SHAPE_INFO_TXT : EXULT_SI_FLX_SHAPE_INFO_TXT;
+
+	Read_text_data_file(info, "shape_info", readers, sections,
+			numsections, editing, game_type, flxres);
+	}
+
+void Shapes_vga_file::Read_Bodies_text_data_file
+	(
+	bool editing,
+	Exult_Game game_type
+	)
+	{
+	const char *sections[] = {"bodyshapes", "bodylist"};
+	Base_reader *readers[] = {
+			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
+				is_body_flag, Bit_text_reader_functor<unsigned char,
+						Shape_info::is_body> >(info),
+			new Class_data_reader<Body_info, &Shape_info::body>(info)
+			};
+	int numsections = sizeof(sections)/sizeof(sections[0]);
+	int numreaders = sizeof(readers)/sizeof(readers[0]);
+	assert(numsections == numreaders);
+	int flxres = game_type == BLACK_GATE ?
+			EXULT_BG_FLX_BODIES_TXT : EXULT_SI_FLX_BODIES_TXT;
+
+	Read_text_data_file(info, "bodies", readers, sections,
+			numsections, editing, game_type, flxres);
+	}
+
+void Shapes_vga_file::Read_Paperdoll_text_data_file
+	(
+	bool editing,
+	Exult_Game game_type
+	)
+	{
+	const char *sections[] = {"characters", "items"};
+	Base_reader *readers[] = {
+			new Class_data_reader<Paperdoll_npc, &Shape_info::npcpaperdoll>(info),
+			new Vector_data_reader<Paperdoll_item, &Shape_info::objpaperdoll>(info)
+			};
+	int numsections = sizeof(sections)/sizeof(sections[0]);
+	int numreaders = sizeof(readers)/sizeof(readers[0]);
+	assert(numsections == numreaders);
+	int flxres = game_type == BLACK_GATE ?
+			EXULT_BG_FLX_PAPERDOL_INFO_TXT : EXULT_SI_FLX_PAPERDOL_INFO_TXT;
+
+	Read_text_data_file(info, "paperdol_info", readers, sections,
+			numsections, editing, game_type, flxres);
+	}
+
+/*
+ *	Reload static data for weapons, ammo and mosters to
+ *	fix data that was lost by earlier versions of ES.
+ */
+void Shapes_vga_file::fix_old_shape_info
+	(
+	Exult_Game game		// Which game.
+	)
+	{
+	if (!info_read)	// Read info first.
+		read_info(game, true);
+	bool bg = game == BLACK_GATE;
+	Class_data_reader<Weapon_info, &Shape_info::weapon> weapon(info);
+	weapon.read(WEAPONS, false, bg);
+	Class_data_reader<Ammo_info, &Shape_info::ammo> ammo(info);
+	ammo.read(AMMO, false, bg);
+	Class_data_reader<Monster_info, &Shape_info::monstinf> monstinf(info);
+	monstinf.read(MONSTERS, false, bg);
 	}
 
 /*
@@ -133,71 +565,34 @@ void Shapes_vga_file::read_info
 			info[i].set_tfa_data();
 			}
 
-	ifstream ready;
-	if (U7open2(ready, patch_name(PATCH_READY), READY, editing))
-		{
-		cnt = Read1(ready);		// Get # entries.
-		for (i = 0; i < cnt; i++)
+	if (game == BLACK_GATE || game == SERPENT_ISLE)
+		{	// Animation data at the end of BG and SI TFA.DAT
+		ifstream stfa;
+			// We *should* blow up if TFA not there.
+		U7open(stfa, TFA);
+		stfa.seekg(3*1024);
+		unsigned char buf[512];
+		stfa.read((char *)buf, 512);
+		stfa.close();
+		unsigned char *ptr = buf;
+		for (int i = 0; i < 512; i++, ptr++)
 			{
-			unsigned short shapenum = Read2(ready);
-			unsigned char type = Read1(ready);
-			info[shapenum].ready_type = type;
-			ready.seekg(6, ios::cur);// Skip 9 bytes.
+			int val = *ptr;
+			int shape = 2*i;
+			while (val)
+				{
+				if (val&0xf)
+					{
+					delete info[shape].aniinf;
+					info[shape].aniinf = Animation_info::create_from_tfa(
+								val&0xf, get_num_frames(shape));
+					}
+				val >>= 4;
+				shape++;
+				}
 			}
-		ready.close();
 		}
-	ifstream armor;
-	if (U7open2(armor, patch_name(PATCH_ARMOR), ARMOR, editing))
-		{
-		cnt = Read1(armor);
-		for (i = 0; i < cnt; i++)
-			{
-			Armor_info *ainf = new Armor_info();
-			unsigned short shapenum = ainf->read(armor);
-			info[shapenum].armor = ainf;
-			}
-		armor.close();
-		}
-	ifstream weapon;
-	if (U7open2(weapon, patch_name(PATCH_WEAPONS), WEAPONS, editing))
-		{
-		cnt = Read1(weapon);
-		for (i = 0; i < cnt; i++)
-			{
-			Weapon_info *winf = new Weapon_info();
-			unsigned short shapenum = winf->read(weapon, 
-					game == BLACK_GATE);
-			info[shapenum].weapon = winf;
-			}
-		weapon.close();	
-		}
-	ifstream ammo;
-	if (U7open2(ammo, patch_name(PATCH_AMMO), AMMO, editing))
-		{
-		cnt = Read1(ammo);
-		for (i = 0; i < cnt; i++)
-			{
-			Ammo_info *ainf = new Ammo_info();
-			unsigned short shapenum = ainf->read(ammo);
-			info[shapenum].ammo = ainf;
-			}
-		ammo.close();
-		}
-	ifstream container;
-	if (U7open2(container, patch_name(PATCH_CONTAINER), CONTAINER,editing))
-		{
-		int vers = Read1(container);
-		cnt = Read1(container);
-		for (i = 0; i < cnt; i++)
-			{
-			uint8 buf[4];
-			uint8 *ptr = &buf[0];
-			container.read((char *)&buf[0], sizeof(buf));
-			int shapenum = Read2(ptr);
-			info[shapenum].container_gump = Read2(ptr);
-			}
-		container.close();
-		}
+
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[c_max_shapes];
@@ -230,22 +625,30 @@ void Shapes_vga_file::read_info
 				}
 		wihh.close();
 		}
-	ifstream mfile;			// Now get monster info.
-	if (U7open2(mfile, patch_name(PATCH_MONSTERS), MONSTERS, editing))
+
+	ifstream(occ);			// Read flags from occlude.dat.
+	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing))
 		{
-		int num_monsters = Read1(mfile);
-		for (i = 0; i < num_monsters; i++)
+		unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
+			// Ensure sensible defaults.
+		memset(&occbits[0], 0, sizeof(occbits));
+		occ.read((char *)occbits, sizeof(occbits));
+		for (i = 0; i < occ.gcount(); i++)
 			{
-			Monster_info *minf = new Monster_info();
-			int shnum = minf->read(mfile, game == BLACK_GATE);
-			info[shnum].monstinf = minf;
+			unsigned char bits = occbits[i];
+			int shnum = i*8;	// Check each bit.
+			for (int b = 0; bits; b++, bits = bits>>1)
+				if (bits&1)
+					info[shnum + b].occludes_flag = true;
 			}
-		mfile.close();
 		}
-					// Get 'equip.dat'.
+
+			// Get 'equip.dat'.
+	ifstream mfile;
 	if (U7open2(mfile, patch_name(PATCH_EQUIP), EQUIP, editing))
 		{
-		int num_recs = Read1(mfile);
+			// Get # entries (with Exult extension).
+		int num_recs = Read_count(mfile);
 		Monster_info::reserve_equip(num_recs);
 		for (i = 0; i < num_recs; i++)
 			{
@@ -263,24 +666,37 @@ void Shapes_vga_file::read_info
 			}
 		mfile.close();
 		}
-	ifstream(occ);			// Read flags from occlude.dat.
-	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing))
-		{
-		unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
-			// Ensure sensible defaults.
-		memset(&occbits[0], 0, sizeof(occbits));
-		occ.read((char *)occbits, sizeof(occbits));
-		for (i = 0; i < occ.gcount(); i++)
-			{
-			unsigned char bits = occbits[i];
-			int shnum = i*8;	// Check each bit.
-			for (int b = 0; bits; b++, bits = bits>>1)
-				if (bits&1)
-					{
-					info[shnum + b].occludes_flag = true;
-					}
-			}
-		}
+
+	bool bg = game == BLACK_GATE;
+	Class_data_reader<Armor_info, &Shape_info::armor> armor(info);
+	armor.read(ARMOR, false, bg);
+	armor.read(PATCH_ARMOR, true, bg);
+
+	Class_data_reader<Weapon_info, &Shape_info::weapon> weapon(info);
+	weapon.read(WEAPONS, false, bg);
+	weapon.read(PATCH_WEAPONS, true, bg);
+
+	Class_data_reader<Ammo_info, &Shape_info::ammo> ammo(info);
+	ammo.read(AMMO, false, bg);
+	ammo.read(PATCH_AMMO, true, bg);
+
+	Class_data_reader<Monster_info, &Shape_info::monstinf> monstinf(info);
+	monstinf.read(MONSTERS, false, bg);
+	monstinf.read(PATCH_MONSTERS, true, bg);
+
+	Functor_data_reader<short, &Shape_info::container_gump, container_gump_flag,
+		Binary_reader_functor<short, 0> > container(info, true);
+	container.read(CONTAINER, false, bg);
+	container.read(PATCH_CONTAINER, true, bg);
+
+	Functor_data_reader<unsigned char, &Shape_info::ready_type, ready_type_flag,
+		Binary_reader_functor<unsigned char, 6> > ready(info);
+	ready.read(READY, false, bg);
+	ready.read(PATCH_READY, true, bg);
+
+	Read_Shapeinf_text_data_file(editing, game);
+	Read_Bodies_text_data_file(editing, game);
+	Read_Paperdoll_text_data_file(editing, game);
 	}
 
 /*

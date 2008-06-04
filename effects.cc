@@ -35,7 +35,9 @@
 #include "game.h"
 #include "Gump.h"
 #include "egg.h"
-#include "miscinf.h"
+#include "shapeinf.h"
+#include "ammoinf.h"
+#include "weaponinf.h"
 
 #include "SDL_timer.h"
 
@@ -435,6 +437,26 @@ void Sprites_effect::paint
 		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize - gwin->get_scrolltx_lo());
 	}
 
+static inline int get_explosion_shape
+	(
+	int weap,
+	int proj
+	)
+	{
+	int shp = proj >= 0 ? proj : (weap >= 0 ? weap : 704);
+	return ShapeID::get_info(shp).get_explosion_sprite();
+	}
+
+static inline int get_explosion_sfx
+	(
+	int weap,
+	int proj
+	)
+	{
+	int shp = proj >= 0 ? proj : (weap >= 0 ? weap : 704);
+	return ShapeID::get_info(shp).get_explosion_sfx();
+	}
+
 /*
  *	Start explosion.
  */
@@ -445,17 +467,17 @@ Explosion_effect::Explosion_effect
 	Game_object *exp,
 	int delay,			// Delay before starting (msecs).
 	int weap,			// Weapon to use for damage calcs., or
-					//   -1 for default(704 = poweder keg).
+					//   -1 for default(704 = powder keg).
 	int proj,		// Projectile for e.g., burst arrows, 0 otherwise
 	Game_object *att	//who is responsible for the explosion
 						//	or 0 for default
 							//Different sprites for different explosion types
-	) : Sprites_effect(Shapeinfo_lookup::get_explosion_sprite(proj ? proj : weap >= 0 ? weap : 704),
-			p, 0, 0, delay), explode(exp), projectile(proj),
-			exp_sfx(Shapeinfo_lookup::get_explosion_sfx(proj ? proj : weap >= 0 ? weap : 704)),
-			weapon(weap >= 0 ? weap : 704), attacker(att)
+	) : Sprites_effect(get_explosion_shape(weap, proj), p, 0, 0, delay),
+		explode(exp), projectile(proj), exp_sfx(get_explosion_sfx(weap, proj)),
+		weapon(weap >= 0 ? weap : (proj >= 0 ? proj : 704)), attacker(att)
 	{
-	if (exp && exp->get_shapenum() == 704)  // powderkeg
+	//if (exp && exp->get_shapenum() == 704)  // powderkeg
+	if (exp && exp->get_info().is_explosive())  // powderkeg
 		exp->set_quality(1); // mark as detonating
 
 	if (!attacker || !attacker->as_actor())
@@ -494,7 +516,7 @@ void Explosion_effect::handle_event
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
 			Game_object *obj = *it;
-			obj->attacked(attacker->as_actor(), weapon, projectile);
+			obj->attacked(attacker, weapon, projectile, true);
 			}
 		}
 	Sprites_effect::handle_event(curtime, udata);
@@ -525,66 +547,45 @@ void Projectile_effect::init
 	)
 	{
 	no_blocking = false;		// We'll check the ammo & weapon.
-	int sprite_shape = projectile_shape;
 	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(projectile_shape);
 	Weapon_info *winfo = info.get_weapon_info();
 	if (winfo)
 		{
-		if (winfo->get_projectile())	// Different sprite to show?
-			sprite_shape = winfo->get_projectile();
 		no_blocking = no_blocking || winfo->no_blocking();
+		if (speed < 0)
+			speed = winfo->get_missile_speed();
+		autohit = winfo->autohits();
 		}
+	if (speed < 0)
+		speed = 4;
 	Ammo_info *ainfo = info.get_ammo_info();
 	if (ainfo)
+		{
 		no_blocking = no_blocking || ainfo->no_blocking();
-	pos = s;			// Get starting position.
+		autohit = autohit || ainfo->autohits();
+		}
 	if (attacker)			// Try to set start better.
 		{
-		Shape_info& info = attacker->get_info();
-		// Start closer to the center of the actor.
-		int dir = attacker->get_direction(d);
-		pos.tz += (info.get_3d_height() * 3)/4;
-		int frame = attacker->get_framenum();
-		int dx = info.get_3d_xtiles(frame), dy = info.get_3d_ytiles(frame);
-		switch (dir)
-			{
-			case south:
-				dy = -1;
-			case north:
-				dx /=2; break;
-			case east:
-				dx = -1;
-			case west:
-				dy /= 2; break;
-			case southeast:
-				dy = -1;
-			case northeast:
-				dx = -1; break;
-			case southwest:
-				dy = -1;
-				break;
-			}
-		pos.tx -= dx;
-		pos.ty -= dy;
+		int dir = target ?
+				attacker->get_direction(target) :
+				attacker->get_direction(d);
+		pos = attacker->get_missile_tile(dir);
 		}
-	// To keep missile height, unless there is a target.
-	d.tz = pos.tz;
+	else
+		pos = s;			// Get starting position.
+
 	if (target)			// Try to set end better.
-		{
-		Shape_info& info = target->get_info();
-		// Aim around the center of the target:
-		int frame = target->get_framenum();
-		d.tx -= info.get_3d_xtiles(frame)/2;
-		d.ty -= info.get_3d_ytiles(frame)/2;
-		d.tz += (info.get_3d_height() * 3)/4;
-		}
+		d = target->get_center_tile();
+	else
+		d.tz = pos.tz;
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	if (winfo && ainfo && winfo->explodes() && ainfo->is_homing())
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
 		path->NewPath(pos, d, 0);
+	int sprite_shape = sprite.get_shapenum();
 	set_sprite_shape(sprite_shape);
 					// Start after a slight delay.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, gwin->get_std_delay()/2);
@@ -595,6 +596,13 @@ void Projectile_effect::set_sprite_shape
 	int s
 	)
 	{
+	if (s < 0)
+		{
+		skip_render = true;
+		sprite.set_shape(s);
+		sprite.set_frame(0);
+		return;
+		}
 	sprite.set_shape(s);
 	frames = sprite.get_num_frames();
 	if (frames >= 24)		// Use frames 8-23, for direction
@@ -603,7 +611,8 @@ void Projectile_effect::set_sprite_shape
 		int dir = Get_dir16(src, dest);
 		sprite.set_frame(8 + dir);
 		}
-	else if (frames == 1 && sprite.get_shapenum() != 704)
+	//else if (frames == 1 && sprite.get_shapenum() != 704)
+	else if (frames == 1 && sprite.get_info().is_explosive())
 		sprite.set_frame(0);	// (Don't show powder keg!)
 	else
 		skip_render = true;		// We just won't show it.
@@ -613,17 +622,18 @@ void Projectile_effect::set_sprite_shape
 /*
  *	Create a projectile animation.
  */
-
 Projectile_effect::Projectile_effect
 	(
 	Game_object *att,		// Source of spell/attack.
 	Game_object *to,		// End here, 'attack' it with shape.
-	int shnum,			// Projectile shape # in 'shapes.vga'.
-	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
-	bool no_render		// If true, prevent rendering of missile.
-	) : attacker(att), target(to), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap), skip_render(no_render),
-	    return_path(false), speed(0)
+	int weap,			// Weapon (bow, gun, etc.) shape.
+	int proj,			// Projectile shape # in 'shapes.vga'.
+	int spr,			// Shape to render on-screen or -1 for none.
+	int attpts,			// Attack points of projectile.
+	int spd				// Projectile speed, or -1 to use default.
+	) : attacker(att), target(to), weapon(weap), projectile_shape(proj),
+	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
+	    return_path(false), autohit(false)
 	{
 	init(att->get_tile(), to->get_tile());
 	}
@@ -636,12 +646,15 @@ Projectile_effect::Projectile_effect
 	(
 	Game_object *att,		// Source of spell/attack.
 	Tile_coord d,			// End here.
-	int shnum,			// Projectile shape
-	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
+	int weap,			// Weapon (bow, gun, etc.) shape.
+	int proj,			// Projectile shape # in 'shapes.vga'.
+	int spr,			// Shape to render on-screen or -1 for none.
+	int attpts,			// Attack points of projectile.
+	int spd,			// Projectile speed, or -1 to use default.
 	bool retpath			// Return of a boomerang.
-	) : attacker(att), target(0), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap), skip_render(false),
-	    return_path(retpath), speed(0)
+	) : attacker(att), target(0), weapon(weap), projectile_shape(proj),
+	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
+	    return_path(false), autohit(false)
 	{
 	init(att->get_tile(), d);
 	}
@@ -654,12 +667,15 @@ Projectile_effect::Projectile_effect
 	(
 	Tile_coord s,			// Start here.
 	Game_object *to,		// End here, 'attack' it with shape.
-	int shnum,			// Projectile shape
-	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
+	int weap,			// Weapon (bow, gun, etc.) shape.
+	int proj,			// Projectile shape # in 'shapes.vga'.
+	int spr,			// Shape to render on-screen or -1 for none.
+	int attpts,			// Attack points of projectile.
+	int spd,			// Projectile speed, or -1 to use default.
 	bool retpath			// Return of a boomerang.
-	) : attacker(0), target(to), projectile_shape(shnum),
-	    sprite(shnum, 0), weapon(weap), skip_render(false),
-	    return_path(retpath), speed(0)
+	) : attacker(0), target(to), weapon(weap), projectile_shape(proj),
+	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
+	    return_path(retpath), autohit(false)
 	{
 	init(s, to->get_tile());
 	}
@@ -734,11 +750,8 @@ void Projectile_effect::handle_event
 		int new_frame = sprite.get_framenum() + winf->get_rotation_speed();
 		sprite.set_frame(new_frame > 23 ? ((new_frame - 8)%16) + 8 : new_frame);
 		}
-	if (winf && winf->get_cycle_delay())	// This slows down the missile.
-		delay *= (1 + winf->get_cycle_delay());	// Guessing how to do it.
 	bool path_finished;
-	int missile_speed = speed + (winf ? winf->get_missile_speed() : 0);
-	for (int i = 0; i <= missile_speed; i++)
+	for (int i = 0; i < speed; i++)
 		{	// This speeds up the missile.
 		path_finished = !(path->GetNextStep(pos) == true) ||	// Get next spot.
 				// If missile egg, detect target.
@@ -746,27 +759,10 @@ void Projectile_effect::handle_event
 		if (path_finished)
 			break;
 		}
+	Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
 	if (path_finished)
-		{			// Done? 
-		Ammo_info *ainf = ShapeID::get_info(projectile_shape).get_ammo_info();
-		if (winf && winf->explodes())
-			{
-			if (ainf && ainf->is_homing())
-				eman->add_effect(new Homing_projectile(weapon,
-						attacker, target, pos, target->get_tile() + 
-						Tile_coord(0, 0, target->get_info().get_3d_height()/2)));
-			else
-				eman->add_effect(new Explosion_effect(epos,
-						0, 0, weapon, 0, attacker));
-			target = 0;	// Takes care of attack.
-			}
-		else if (ainf && ainf->bursts())
-			{
-			eman->add_effect(new Explosion_effect(epos + 
-					Tile_coord(0, 0, target->get_info().get_3d_height()/2),
-						0, 0, weapon, projectile_shape, attacker));
-			target = 0;	// Takes care of attack.
-			}
+		{			// Done?
+		bool explodes = (winf && winf->explodes()) || (ainf && ainf->explodes());
 		if (return_path)	// Returned a boomerang?
 			{
 			Ireg_game_object *obj =
@@ -775,31 +771,67 @@ void Projectile_effect::handle_event
 				{
 				obj->set_flag(Obj_flags::okay_to_take);
 				obj->set_flag(Obj_flags::is_temporary);
-				obj->move(epos.tx, epos.ty, epos.tz, 0);
+				obj->move(epos.tx, epos.ty, epos.tz, -1);
 				}
+			}
+		else if (explodes)	// Do this here (don't want to explode
+			{				// returning weapon).
+			Tile_coord offset(0, 0, target->get_info().get_3d_height()/2);
+			if (ainf && ainf->is_homing())
+				eman->add_effect(new Homing_projectile(weapon,
+						attacker, target, pos, target->get_tile() + offset));
+			else
+				eman->add_effect(new Explosion_effect(epos + offset,
+						0, 0, weapon, projectile_shape, attacker));
+			target = 0;	// Takes care of attack.
 			}
 		else
 			{		// Not teleported away ?
-			if (target && target->distance(epos) < 50)
-				target->attacked(
-					attacker?attacker->as_actor():0,
-					weapon, projectile_shape);
-			if (attacker &&	// Check for `boomerangs'
-			    attacker->distance(epos) < 50)
+			bool returns = (winf && winf->returns()) || (ainf && ainf->returns());
+			bool hit = false;
+			if (target && target->distance(epos) < 3 &&
+				(hit = (autohit || target->try_to_hit(attacker, attval))))
+				{
+				target->play_hit_sfx(weapon, true);
+				target->attacked(attacker, weapon, projectile_shape, false);
+				}
+			if (returns && attacker &&	// `boomerangs'
+					attacker->distance(epos) < 50)
 				{ 	// not teleported away
-				Weapon_info *winf = 
-				   ShapeID::get_info(weapon).get_weapon_info();
-				if (winf && winf->returns())
+				Projectile_effect *proj = new Projectile_effect(
+							pos, attacker, weapon, projectile_shape,
+							sprite.get_shapenum(), attval, speed, true);
+				proj->set_speed(speed);
+				proj->set_sprite_shape(sprite.get_shapenum());
+				eman->add_effect(proj);
+				}
+			else
+				{	// See if we should drop projectile.
+				bool drop = false;
+					// Seems to match originals quite well.
+				if (!winf)
+					drop = true;
+				else if (ainf)
 					{
-					Projectile_effect *proj = 
-						new Projectile_effect(
-						  pos, attacker, 
-						  projectile_shape, 
-						  weapon, true);
-					proj->set_speed(speed);
-					proj->set_sprite_shape(
-						sprite.get_shapenum());
-					eman->add_effect(proj);
+					int ammo = winf->get_ammo_consumed(),
+						type = ainf->get_drop_type();
+					drop = (ammo >= 0 || ammo == -3) &&
+						(type == Ammo_info::always_drop ||
+						(!hit && type != Ammo_info::never_drop));
+					}
+				if (drop)
+					{
+					Tile_coord pos = Map_chunk::find_spot(epos, 3,
+								sprite.get_shapenum(), 0, 1);
+					if (pos.tx != -1)
+						{
+						Game_object *aobj = gmap->create_ireg_object(
+									sprite.get_shapenum(), 0);
+						if (!attacker || attacker->get_flag(Obj_flags::is_temporary))
+							aobj->set_flag(Obj_flags::is_temporary);
+						aobj->set_flag(Obj_flags::okay_to_take);
+						aobj->move(pos);
+						}
 					}
 				}
 			}
@@ -840,8 +872,8 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	Game_object *trg,		// What to aim for.
 	Tile_coord sp,			// Where to start.
 	Tile_coord tp			// Target pos, if trg isn't an actor.
-	) : sprite(Shapeinfo_lookup::get_explosion_sprite(shnum), 0, SF_SPRITES_VGA),
-		next_damage_time(0), sfx(Shapeinfo_lookup::get_explosion_sfx(shnum)),
+	) : sprite(ShapeID::get_info(shnum).get_explosion_sprite(), 0, SF_SPRITES_VGA),
+		next_damage_time(0), sfx(ShapeID::get_info(shnum).get_explosion_sfx()),
 		channel(-1)
 	{
 	weapon = shnum;
@@ -952,7 +984,7 @@ void Homing_projectile::handle_event
 			if (!npc->is_in_party())
 				//Still powerful, but no longer overkill...
 				//also makes the enemy react, which is good
-				npc->attacked(attacker->as_actor(), weapon, weapon);
+				npc->attacked(attacker, weapon, weapon, true);
 			}
 		}
 	sprite.set_frame((sprite.get_framenum() + 1)%frames);

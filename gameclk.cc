@@ -327,7 +327,8 @@ void Game_clock::handle_event
 	if (!gwin->is_time_stopped() && !cheat.in_map_editor())
 		{
 		minute += time_rate;
-		if (Game::get_game_type() == SERPENT_ISLE)
+		// ++++ TESTING
+		// if (Game::get_game_type() == SERPENT_ISLE)
 			Check_freezing();
 		}
 

@@ -26,25 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Add an object.
 bool Jawbone_object::add(Game_object *obj, bool dont_check, bool combine)
 {
-	if (obj->get_shapenum() != 559)
-		return false; // not a serpent tooth
+	if (!Container_game_object::add(obj, dont_check, combine))
+		return false; // Can't be added to.
 
 	find_teeth();
-	if (teeth[obj->get_framenum()])
-		return false; // already have this one
-
-	if (Container_game_object::add(obj, dont_check)) {
-		
-
-		teeth[obj->get_framenum()] = obj;
-		toothcount++;
-
-		update_frame();
-
-		return true;
-	} 
-
-	return false;
+	update_frame();
 }
 
 // Remove an object.
@@ -57,7 +43,7 @@ void Jawbone_object::remove(Game_object *obj)
 }
 
 void Jawbone_object::find_teeth()
-{
+	{
 	for (int i=0; i<19; i++)
 		teeth[i] = 0;
 	toothcount = 0;
@@ -70,18 +56,15 @@ void Jawbone_object::find_teeth()
 	Object_iterator next(objects);
 
 	while ((obj = next.get_next()) != 0)
-	{
-		if (obj->get_shapenum() != 559) {
-//			obj = obj->get_next();
+		{
+		if (obj->get_shapenum() != 559)
 			continue; // not a serpent tooth... (shouldn't happen)
-		}
-
-		toothcount++;
 		teeth[obj->get_framenum()] = obj;
-
-//		obj = obj->get_next();
+		}
+	for (int i=0; i<19; i++)
+		if (teeth[i])
+			toothcount++;
 	}
-}
 
 void Jawbone_object::update_frame()
 {

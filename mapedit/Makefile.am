@@ -63,9 +63,10 @@ exult_studio_LDADD = \
 	../gamemgr/libgamemgr.la	\
 	../shapes/libshapes.la 		\
 	../files/libu7file.la		\
+	../files/zip/libminizip.la		\
 	../server/libserver.la		\
 	../usecode/libusecode.la		\
-	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS)
+	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS) $(ZLIB_LIBS)
 
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 exult_studio_LDFLAGS = -export-dynamic		# For libglade 2.x

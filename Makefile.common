@@ -6,7 +6,7 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:	\
 $(SRC)/gamemgr
 
-VERSION=1.4.04cvs
+VERSION=1.4.05cvs
 
 MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultico.o exultmenu.o \
@@ -60,8 +60,9 @@ GUMPS_OBJS= Actor_gump.o AudioOptions_gump.o Book_gump.o CombatOptions_gump.o \
 IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o hq2x.o imagewin.o imagescl.o iwin8.o \
 	savepcx.o
 
-SHAPES_OBJS=font.o fontvga.o items.o miscinf.o monstinf.o shapeinf.o \
-	shapevga.o u7drag.o vgafile.o
+SHAPES_OBJS=font.o fontvga.o items.o miscinf.o shapeinf.o shapevga.o u7drag.o \
+	vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o expinf.o \
+	frnameinf.o monstinf.o npcdollinf.o objdollinf.o sfxinf.o warminf.o weaponinf.o
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o  contain.o egg.o iregobjs.o \
 	jawbone.o mappatch.o objiter.o objnames.o objs.o spellbook.o virstone.o
@@ -288,7 +289,9 @@ CONFREGRESS_OBJS=$(CONF_OBJS) xmain.o utils.o
 confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(CONFREGRESS_OBJS)
 
-head2data$(EXEEXT) : head2data.o $(FILE_OBJS)
+head2data.* : head2data.cc bgintrinsics.h siintrinsics.h
+
+head2data$(EXEEXT) : head2data.o $(FILE_OBJS) bgintrinsics.h siintrinsics.h
 	$(CXX) $(LFLAGS) -o $(@) head2data.o $(FILE_OBJS)
 
 head2data.test: 

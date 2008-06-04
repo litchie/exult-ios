@@ -113,6 +113,10 @@ public:
 		{ return lift; }
 	Tile_coord get_tile() const;	// Get location in abs. tiles.
 	Tile_coord get_center_tile() const;	// Get center location in abs. tiles.
+		// Get missile start location in abs. tiles given dir.
+	Tile_coord get_missile_tile(int dir) const;
+					// Get distance to another object.
+	int sound_distance(Game_object *o2) const;
 					// Get distance to another object.
 	int distance(Game_object *o2) const;
 					// Get direction to another object.
@@ -154,6 +158,7 @@ public:
 		{ chunk = 0; }
 	bool is_pos_invalid() const
 		{ return chunk == 0; }
+	bool inside_locked() const;
 	void set_chunk(Map_chunk *c)
 		{ chunk = c; }
 					// Get frame for desired direction.
@@ -235,7 +240,7 @@ public:
 	virtual std::string get_name() const;
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
-	virtual Container_game_object *get_owner()
+	virtual Container_game_object *get_owner() const
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
 		{  }
@@ -299,16 +304,26 @@ public:
 		{ return 0; }
 	virtual int is_monster()
 		{ return 0; }
+	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
+			bool recursive = false)
+		{ return 0; }
+	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
+	int get_weapon_ammo(int weapon, int family, int proj, bool ranged,
+			Game_object **ammo = 0, bool bg = false, bool recursive = false);
+	void play_hit_sfx(int weapon, bool ranged);
+	virtual bool try_to_hit(Game_object *attacker, int attval)
+		{ return true; }
 					// Under attack.
-	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
-					int ammo_shape = 0);
+	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = -1,
+					int ammo_shape = -1, bool explosion = false);
+					// Hit-point algorithm:
+	virtual int figure_hit_points(Game_object *attacker, int weapon_shape = -1, 
+							int ammo_shape = -1, bool explosion = false);
+	virtual int apply_damage(Game_object *attacker,	int str,
+					int wpoints, int type, int bias = 0, int *exp = 0);
+	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
+			int *exp = 0);
 					// Write out to IREG file.
-	virtual bool reduce_health(int delta, Actor *attacker = 0,
-			int damage_type = 0, bool ignore_immunity = false);
-	virtual void set_usecode_to_attack(Game_object *t, int w)
-		{  }
-	virtual bool usecode_attack()
-		{ return false; }
 	virtual void write_ireg(DataSource* out)
 		{  }
 				// Get size of IREG. Returns -1 if can't write to buffer
@@ -319,7 +334,7 @@ public:
 		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
-	virtual int get_live_npc_num()
+	virtual int get_live_npc_num() const
 		{ return -1; }
 
 	virtual void delete_contents() { }

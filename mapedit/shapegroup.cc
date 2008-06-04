@@ -77,28 +77,83 @@ Shape_group::Shape_group
 		{
 	case ammo_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_ammo_info())
+			if (vgafile->get_info(i).has_ammo_info())
 				add(i);
 		break;
 	case armour_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_armor_info())
+			if (vgafile->get_info(i).has_armor_info())
 				add(i);
 		break;
 	case monsters_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_monster_info())
+			if (vgafile->get_info(i).has_monster_info())
 				add(i);
 		break;
 	case weapons_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_weapon_info() &&
-			    !vgafile->get_info(i).get_monster_info())
+			if (vgafile->get_info(i).has_weapon_info() &&
+			    !vgafile->get_info(i).has_monster_info())
 				add(i);
 		break;
 	case containers_group:
 		for (i = 0; i < cnt; i++)
 			if (vgafile->get_info(i).get_container_gump() >= 0)
+				add(i);
+		break;
+	case animation_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_animation_info())
+				add(i);
+		break;
+	case body_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_body_info())
+				add(i);
+		break;
+	case explosion_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_explosion_info())
+				add(i);
+		break;
+	case npcflags_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_actor_flags())
+				add(i);
+		break;
+	case npcpaperdoll_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_npc_paperdoll_info())
+				add(i);
+		break;
+	case sfx_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_sfx_info())
+				add(i);
+		break;
+	case content_rules_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_content_rules())
+				add(i);
+		break;
+	case framehps_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_effective_hp_info())
+				add(i);
+		break;
+	case framenames_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_frame_name_info())
+				add(i);
+		break;
+	case objpaperdoll_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_paperdoll_info())
+				add(i);
+		break;
+	case warmth_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_warmth_info())
 				add(i);
 		break;
 		}
@@ -249,49 +304,40 @@ Shape_group *Shape_group_file::get_builtin
 	)
 	{
 	int type;
-	switch (menindex)
-		{
-	case 0:
-		type = Shape_group::ammo_group; break;
-	case 1:
-		type = Shape_group::armour_group; break;
-	case 2:
-		type = Shape_group::monsters_group; break;
-	case 3:
-		type = Shape_group::weapons_group; break;
-	case 4:
-		type = Shape_group::containers_group; break;
-	// Separator.
-	case 6:
-		type = Shape_info::unusable; break;
-	case 7:
-		type = Shape_info::quality; break;
-	case 8:
-		type = Shape_info::quantity; break;
-	case 9:
-		type = Shape_info::has_hp; break;
-	case 10:
-		type = Shape_info::quality_flags; break;
-	case 11:
-		type = Shape_info::container; break;
-	case 12:
-		type = Shape_info::hatchable; break;
-	case 13:
-		type = Shape_info::spellbook; break;
-	case 14:
-		type = Shape_info::barge; break;
-	case 15:
-		type = Shape_info::virtue_stone; break;
-	case 16:
-		type = Shape_info::monster; break;
-	case 17:
-		type = Shape_info::human; break;
-	case 18:
-		type = Shape_info::building; break;
-	default:
-		type = -1;
-		break;
-		}
+	if (menindex < 16)
+		type = menindex + Shape_group::ammo_group;
+	else switch (menindex - 17)
+			{
+		case 0:
+			type = Shape_info::unusable; break;
+		case 1:
+			type = Shape_info::quality; break;
+		case 2:
+			type = Shape_info::quantity; break;
+		case 3:
+			type = Shape_info::has_hp; break;
+		case 4:
+			type = Shape_info::quality_flags; break;
+		case 5:
+			type = Shape_info::container; break;
+		case 6:
+			type = Shape_info::hatchable; break;
+		case 7:
+			type = Shape_info::spellbook; break;
+		case 8:
+			type = Shape_info::barge; break;
+		case 9:
+			type = Shape_info::virtue_stone; break;
+		case 10:
+			type = Shape_info::monster; break;
+		case 11:
+			type = Shape_info::human; break;
+		case 12:
+			type = Shape_info::building; break;
+		default:
+			type = -1;
+			break;
+			}
 	if (type < 0 || type >= Shape_group::last_builtin_group)
 		return 0;
 	if (builtins.size() <= type)
@@ -327,7 +373,7 @@ void Shape_group_file::write
 		unsigned char *ptr = buf + strlen(nm) + 1;
 		Write2(ptr, sz);	// # entries.
 		for (vector<int>::iterator it = grp->begin();
-						it != grp->end(); it++)
+						it != grp->end(); ++it)
 			Write2(ptr, *it);
 		assert(ptr - buf == len);
 					// Write out to file.

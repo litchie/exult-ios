@@ -58,6 +58,8 @@
 #include "stackframe.h"
 #include "party.h"
 #include "ucsymtbl.h"
+#include "animate.h"
+#include "combat.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
@@ -312,7 +314,7 @@ USECODE_INTRINSIC(set_item_quantity)
 		int oldquant = obj->get_quantity();
 		int delta = newquant - oldquant;
 					// Note:  This can delete the obj.
-		int newdelta = obj->modify_quantity(delta);
+		obj->modify_quantity(delta);
 		}
 	return(ret);
 }
@@ -437,10 +439,16 @@ USECODE_INTRINSIC(remove_from_party)
 USECODE_INTRINSIC(get_npc_prop)
 {
 	// Get NPC prop (item, prop_id).
-	//   (9 is food level).
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (!npc)
+	Game_object *obj = get_item(parms[0]);
+	Actor *npc = as_actor(obj);
+	if (!obj)
 		return Usecode_value(0);
+	if (!npc)
+		{
+		if (parms[1].get_int_value() == static_cast<int>(Actor::health))
+			return Usecode_value(obj->get_obj_hp());
+		return Usecode_value(0);
+		}
 	const char *att = parms[1].get_str_value();
 	if (att)
 		return Usecode_value(npc->get_attribute(att));
@@ -452,7 +460,8 @@ USECODE_INTRINSIC(get_npc_prop)
 USECODE_INTRINSIC(set_npc_prop)
 {
 	// Set NPC prop (item, prop_id, delta_value).
-	Actor *npc = as_actor(get_item(parms[0]));
+	Game_object *obj = get_item(parms[0]);
+	Actor *npc = as_actor(obj);
 	if (npc)
 		{			// NOTE: 3rd parm. is a delta!
 		const char *att = parms[1].get_str_value();
@@ -462,10 +471,22 @@ USECODE_INTRINSIC(set_npc_prop)
 		else
 			{
 			int prop = parms[1].get_int_value();
-			npc->set_property(prop, npc->get_property(prop) +
-						parms[2].get_int_value());
+			int delta = parms[2].get_int_value();
+			if (prop == static_cast<int>(Actor::exp))
+				delta /= 2;	// Verified.
+			npc->set_property(prop, npc->get_property(prop) + delta);
 			}
 		return Usecode_value(1);// SI needs return.
+		}
+	else if (obj)
+		{	// Verified. Needed by serpent statue at end of SI.
+		int prop = parms[1].get_int_value();
+		int delta = parms[2].get_int_value();
+		if (prop == static_cast<int>(Actor::health))
+			{
+			obj->set_obj_hp(obj->get_obj_hp() + delta);
+			return Usecode_value(1);
+			}
 		}
 	return Usecode_value(0);
 }
@@ -818,7 +839,6 @@ USECODE_INTRINSIC(display_runes)
 	if (!cnt)
 		cnt = 1;		// Try with 1 element.
 	Sign_gump *sign = new Sign_gump(parms[0].get_int_value(), cnt);
-	bool si = Game::get_game_type()== SERPENT_ISLE;
 	for (int i = 0; i < cnt; i++)
 		{			// Paint each line.
 		Usecode_value& lval = !i ? parms[1].get_elem0() 
@@ -1082,16 +1102,41 @@ USECODE_INTRINSIC(clear_item_say)
 
 USECODE_INTRINSIC(set_to_attack)
 {
-	// set_to_attack(fromnpc, toitem, anim_shape_in_shapesdotvga).
-	// ???? When it reaches toitem, toitem is 'attacked' by anim_shape.
-	//   Returns??}
-	Game_object *from = get_item(parms[0]);
-	Game_object *to = get_item(parms[1]);
-	if (!from || !to)
+	// set_to_attack(fromnpc, to, weaponshape).
+	// fromnpc attacks the target 'to' with weapon weaponshape.
+	// 'to' can be a game object or the return of a click_on_item
+	// call (including the possibility of being a tile target).
+	Actor *from = as_actor(get_item(parms[0]));
+	if (!from)
 		return Usecode_value(0);
 	int shnum = parms[2].get_int_value();
-	from->set_usecode_to_attack(to, shnum);
-	return Usecode_value(0);	// Not sure what this should be.
+	if (shnum < 0)
+		return Usecode_value(0);
+	Weapon_info *winf = ShapeID::get_info(shnum).get_weapon_info();
+	if (!winf)
+		return Usecode_value(0);
+
+	Usecode_value& tval = parms[1];
+	Game_object *to = get_item(tval.get_elem0());
+	int nelems;
+	if (to)
+		{
+		// It is an object.
+		from->set_attack_target(to, shnum);
+		return Usecode_value(1);
+		}
+	else if (tval.is_array() && (nelems = tval.get_array_size()) >= 3)
+		{
+		// Tile return of click_on_item. Allowing size to be < 4 for safety.
+		Tile_coord trg = Tile_coord(
+				tval.get_elem(1).get_int_value(),
+				tval.get_elem(2).get_int_value(),
+				nelems >= 4 ? tval.get_elem(3).get_int_value() : 0);
+		from->set_attack_target(trg, shnum);
+		return Usecode_value(1);
+		}
+
+	return Usecode_value(0);	// Failure.
 }
 
 USECODE_INTRINSIC(get_lift)
@@ -1187,6 +1232,7 @@ public:
 		x = (gwin->get_width() - s->get_width())/2 + s->get_xleft();
 		y = (gwin->get_height() - s->get_height())/2 + s->get_yabove();
 		}
+	virtual ~Paint_centered() {  }
 	virtual void paint()
 		{
 		sid->paint_shape(x, y);
@@ -1201,6 +1247,7 @@ class Paint_map : public Paint_centered
 public:
 	Paint_map(ShapeID *s, bool loc) : Paint_centered(s), show_loc(loc)
 		{  }
+	virtual ~Paint_map() {  }
 	virtual void paint()
 		{
 		Paint_centered::paint();
@@ -1214,6 +1261,9 @@ public:
 			} else if (Game::get_game_type()==SERPENT_ISLE) {
 				xx = (int)(t.tx/16.0 + 18 + 0.5);
 				yy = (int)(t.ty/16.0 + 9.4 + 0.5);
+			} else {
+				xx = (int)(t.tx/16.0 + 5 + 0.5);
+				yy = (int)(t.ty/16.0 + 5 + 0.5);
 			}
 			Shape_frame *s = sid->get_shape();
 			xx += x - s->get_xleft();
@@ -1549,24 +1599,8 @@ USECODE_INTRINSIC(attack_object)
 	
 	if (!att || !trg)
 		return Usecode_value(0);
-	Shape_info& info = ShapeID::get_info(wshape);
-	Weapon_info *winfo = info.get_weapon_info();
-	if (!winfo)
-		return Usecode_value(0);
-
-		// Powder keg is a special case.
-	if (wshape == 704)
-		{	// Needed for gwani horn (and possibly others).
-		Tile_coord pos = trg->get_outermost()->get_tile();
-		gwin->get_effects()->add_effect(new Explosion_effect(pos, trg,
-				0, wshape, -1, att));
-		return Usecode_value(1);
-		}
-	else
-		{
-		att->set_usecode_to_attack(trg, wshape);
-		return Usecode_value(att->usecode_attack());
-		}
+	Tile_coord tile(-1, -1, 0);
+	return Usecode_value(Combat_schedule::attack_target(att, trg, tile, wshape));
 }
 
 USECODE_INTRINSIC(book_mode)
@@ -1754,34 +1788,16 @@ USECODE_INTRINSIC(recall_virtue_stone)
 
 USECODE_INTRINSIC(apply_damage)
 {
-	// apply_damage(base, hps, type, obj);
+	// apply_damage(str, hps, type, obj);
 	Game_object *obj = get_item(parms[3]);
 	if (!obj)	// No valid target.
 		return Usecode_value(0);
 
 	int base = parms[0].get_int_value();
 	int hps = parms[1].get_int_value();
-
-	if (!base && !hps)
-		return Usecode_value(0);	// No damage.
-
-	int dam = 0;
 	int type = parms[2].get_int_value();
-	if (hps == 127)
-		dam = 127;
-	else
-		{
-		if (base > 0 &&
-				type != Weapon_info::lightning_damage) // Guess (seems to be right)
-			{
-			base /= 3;	// Seems to be about right.
-			dam = 1 + rand()%base;
-			}
-		if (hps > 0)
-			dam += (1 + rand()%hps);
-		}
 
-	obj->reduce_health(dam, 0, type);
+	obj->apply_damage(0, base, hps, type);
 	return Usecode_value(1);
 }
 
@@ -1833,7 +1849,7 @@ USECODE_INTRINSIC(set_orrery)
 		Game_object_vector planets;	// Remove existing planets.
 		brit->find_nearby(planets, 988, 24, 0);
 		for (Game_object_vector::iterator it = planets.begin(); 
-						it != planets.end(); it++)
+						it != planets.end(); ++it)
 			{
 			Game_object *p = *it;
 			if (p->get_framenum() <= 7)	// Leave the sun.
@@ -1854,7 +1870,7 @@ USECODE_INTRINSIC(get_timer)
 {
 	int tnum = parms[0].get_int_value();
 	int ret;
-	std::map<int, unsigned long>::iterator it = timers.find(tnum);
+	std::map<int, uint32>::iterator it = timers.find(tnum);
 	if (it != timers.end() && timers[tnum] > 0)
 					// Return 0 if not set.
 		ret = gclock->get_total_hours() - timers[tnum];
@@ -1905,6 +1921,8 @@ USECODE_INTRINSIC(flash_mouse)
 		shape = Mouse::tooheavy; break;
 	case 5:
 		shape = Mouse::wontfit; break;
+	case 7:
+		shape = Mouse::blocked; break;
 	case 0:
 	case 1:
 	default:
@@ -1978,7 +1996,7 @@ USECODE_INTRINSIC(reduce_health)
 	Game_object *obj = get_item(parms[0]);
 	int type = parms[2].get_int_value();
 	if (obj)			// Dies if health goes too low.
-		obj->reduce_health(parms[1].get_int_value(), 0, type, true);
+		obj->reduce_health(parms[1].get_int_value(), type);
 	return no_ret;
 }
 
@@ -2240,30 +2258,28 @@ USECODE_INTRINSIC(run_endgame)
 
 USECODE_INTRINSIC(fire_projectile)
 {
-	// fire_projectile(attacker, dir, missile, dist?, wshape, ashape)
+	// fire_projectile(attacker, dir, missile, attval, wshape, ashape)
 
 	Game_object *attacker = get_item(parms[0]);
-					// Get direction (0,2,4, or 6).
+					// Get direction (0-7).
 	int dir = parms[1].get_int_value();
 	int missile = parms[2].get_int_value();	// Sprite to use for missile.
-	int dist = parms[3].get_int_value();	// ++++Not too sure about this.
+	int attval = parms[3].get_int_value();	// Attack value.
 	int wshape = parms[4].get_int_value();	// What to use for weapon info.
 	int ashape = parms[5].get_int_value();	// What to use for ammo info.
 
-	Tile_coord pos = attacker->get_tile();
+	Tile_coord pos = attacker->get_missile_tile(dir);
 	Tile_coord adj = pos.get_neighbor(dir%8);
 				// Make it go dist tiles.
 	int dx = adj.tx - pos.tx, dy = adj.ty - pos.ty;
 	Tile_coord dest = pos;
+	int dist = 31;
 	dest.tx += dist*dx;
 	dest.ty += dist*dy;
 
 					// Fire missile.
-	Projectile_effect *proj = 
-			new Projectile_effect(attacker, dest, ashape, wshape, false);
-	proj->set_speed(3);
-	proj->set_sprite_shape(missile);
-	gwin->get_effects()->add_effect(proj);
+	gwin->get_effects()->add_effect(new Projectile_effect(attacker,
+					dest, wshape, ashape, missile, attval, 4));
 	return no_ret;
 }
 
@@ -2472,10 +2488,15 @@ USECODE_INTRINSIC(get_item_flag)
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
 		}
+	else if (fnum == (int) Obj_flags::immunities)
+		{
+		Monster_info *inf = obj->get_info().get_monster_info();
+		return Usecode_value(inf != 0 && inf->power_safe());
+		}
 	else if (fnum == (int) Obj_flags::cant_die)
 		{
 		Monster_info *inf = obj->get_info().get_monster_info();
-		return Usecode_value(inf != 0 && inf->cant_die());
+		return Usecode_value(inf != 0 && inf->death_safe());
 		}
 					// +++++0x18 is used in testing for
 					//   blocked gangplank. What is it?????
@@ -2685,31 +2706,11 @@ USECODE_INTRINSIC(play_sound_effect2)
 	if (num_parms < 2) return(no_ret);
 	// Play music(songnum, item).
 	Game_object *obj = get_item(parms[1]);
-	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
-	int dir = 0;
-	if (obj && !obj->is_pos_invalid())
-		{
-		int dist = obj->distance(gwin->get_main_actor());
-		if (dist)
-			{		// 160/8 = 20 tiles. 20*20=400.
-			volume = (SDL_MIX_MAXVOLUME*64)/(dist*dist);
-			if (volume < 8)
-				volume = 8;
-			else if (volume > SDL_MIX_MAXVOLUME)
-				volume = SDL_MIX_MAXVOLUME;
-			Tile_coord apos = gwin->get_main_actor()->get_tile();
-			Tile_coord opos = obj->get_tile();
-			dir = Get_direction16(apos.ty - opos.ty,
-						opos.tx - apos.tx);
-			}
-		}
+	new Object_sfx(obj, parms[0].get_int_value());
 #ifdef DEBUG
 	cout << "Sound effect(2) " << parms[0].get_int_value() << 
-		" request in usecode with volume = " << volume 
-		<< ", dir = " << dir << endl;
+		" request in usecode" << endl;
 #endif
-	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value(), volume,
-									dir);
 	return(no_ret);
 }
 
@@ -3183,8 +3184,8 @@ USECODE_INTRINSIC(remove_from_area)
 	Game_object_vector vec;		// Find objects.
 	Map_chunk::find_in_area(vec, area, shnum, frnum);
 					// Remove them.
-	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
-								it++)
+	for (Game_object_vector::iterator it = vec.begin();
+		it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
 		gwin->add_dirty(obj);

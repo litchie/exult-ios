@@ -29,85 +29,135 @@
 using std::string;
 class Configuration;
 
-class BaseGameInfo {
+class BaseGameInfo
+	{
 protected:
 	Exult_Game type;	// Game type
 	string title;		// The *Game* title
 	string mod_title;	// Internal mod name, the mod's title
 	string menustring;	// Text displayed in mods menu
+	bool expansion; 	// For FoV/SS ONLY.
 public:
-	BaseGameInfo () : title(""), mod_title(""), menustring("") {}
-	~BaseGameInfo () {}
+	BaseGameInfo () : type(NONE), title(""), mod_title(""),
+		menustring(""), expansion(false)
+		{  }
+	BaseGameInfo (const Exult_Game ty, const char *t, const char *mt,
+		const char *ms, bool exp)
+		: type(ty), title(t), mod_title(mt), menustring(ms), expansion(exp)
+		{  }
+	BaseGameInfo (const BaseGameInfo& other)
+		: type(other.type), title(other.title), mod_title(other.mod_title),
+		  menustring(other.menustring), expansion(other.expansion)
+		{  }
+	~BaseGameInfo () {  }
 
 	string get_title () const { return title; }
 	string get_mod_title () const { return mod_title; }
 	string get_menu_string () const { return menustring; }
 	Exult_Game get_game_type () const { return type; }
+	// For FoV/SS ONLY.
+	bool have_expansion () const { return expansion; }
 	void set_title (string name) { title = name; }
 	void set_mod_title (string mod) { mod_title = mod; }
 	void set_menu_string (string menu) { menustring = menu; }
 	void set_game_type (Exult_Game game) { type = game; }
+	// For FoV/SS ONLY.
+	void set_expansion (bool exp) { expansion = exp; }
 	
 	void setup_game_paths ();
-};
+	};
 
-class ModInfo : public BaseGameInfo {
+class ModInfo : public BaseGameInfo
+	{
 protected:
 	bool compatible;
 public:
-	ModInfo (Exult_Game game, string name, string mod, Configuration *modconfig);
+	ModInfo (Exult_Game game, string name, string mod, bool exp,
+			const Configuration& modconfig);
+	ModInfo (const ModInfo& other)
+		: BaseGameInfo(other.type, other.title.c_str(),
+		  other.mod_title.c_str(), other.menustring.c_str(),
+		  other.expansion), compatible(other.compatible)
+		{  }
 	~ModInfo () {}
 
 	bool is_mod_compatible () const { return compatible; }
-};
+	};
 
-class ModManager : public BaseGameInfo {
+class ModManager : public BaseGameInfo
+	{
 protected:
-	std::vector<ModInfo *> modlist;
+	std::vector<ModInfo> modlist;
 public:
-	ModManager (Exult_Game game, string name, string menu);
-	~ModManager ();
+	ModManager (string name, string menu);
+	ModManager () {  }
+	ModManager (const ModManager& other)
+		: BaseGameInfo(other.type, other.title.c_str(),
+		  other.mod_title.c_str(), other.menustring.c_str(),
+		  other.expansion)
+		{
+		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
+				it != other.modlist.end(); ++it)
+			modlist.push_back(*it);
+		}
+	~ModManager ()
+		{ modlist.clear(); }
 
-	std::vector<ModInfo *>& get_mod_list () { return modlist; }
+	std::vector<ModInfo>& get_mod_list () { return modlist; }
 	ModInfo *find_mod (string name);
 	int find_mod_index (string name);
 
 	bool has_mods () const { return modlist.size() > 0; }
-	ModInfo *get_mod (int i) const
+	ModInfo *get_mod (int i)
 		{
 		if (i >= 0 && i < modlist.size())
-			return modlist[i];
+			return &(modlist[i]);
 		return 0;
 		}
 	BaseGameInfo *get_mod(string name, bool checkversion=true);
-	void add_mod (string mod, Configuration *modconfig);
-};
+	void add_mod (string mod, Configuration& modconfig);
+	};
 
-class GameManager {
+class GameManager
+	{
 	UNREPLICATABLE_CLASS(GameManager);
 protected:
-	std::vector<ModManager *> games;
-	bool bg_installed;
-	bool si_installed;
-	void set_bg_installed ();
-	void set_si_installed ();
+	// -> to original games.
+	ModManager *bg;
+	ModManager *fov;
+	ModManager *si;
+	ModManager *ss;
+	std::vector<ModManager> games;
+	void print_found(ModManager *game, const char *flex,
+			const char *title, const char *cfgname);
 public:
 	GameManager ();
-	~GameManager ();
+	~GameManager ()
+		{ games.clear(); }
 
-	std::vector<ModManager *>& get_game_list () { return games; }
+	std::vector<ModManager>& get_game_list () { return games; }
 	int get_game_count () const { return games.size(); }
-	ModManager *get_game (int i) const
+	ModManager *get_game (int i)
 		{
 		if (i >= 0 && i < games.size())
-			return games[i];
+			return &(games[i]);
 		return 0;
 		}
-	bool is_bg_installed () const { return bg_installed; };
-	bool is_si_installed () const { return si_installed; };
+	bool is_bg_installed () const { return bg != 0; };
+	bool is_fov_installed () const { return fov != 0; };
+	bool is_si_installed () const { return si != 0; };
+	bool is_ss_installed () const { return ss != 0; };
 	ModManager *find_game (string name);
+	ModManager *get_bg ()
+		{ return bg ? bg : fov ? fov : 0; }
+	ModManager *get_fov ()
+		{ return fov ? fov : 0; }
+	ModManager *get_si ()
+		{ return si ? si : ss ? ss : 0; }
+	ModManager *get_ss ()
+		{ return ss ? ss : 0; }
 	int find_game_index (string name);
 	void add_game (string name, string menu);
-};
+	};
 
 #endif

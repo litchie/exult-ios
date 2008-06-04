@@ -100,36 +100,13 @@ Game *Game::create_game(BaseGameInfo *mygame)
 	mygame->setup_game_paths();
 	gametitle = mygame->get_title();
 	modtitle = mygame->get_mod_title();
+	game_type = mygame->get_game_type();
+	expansion = mygame->have_expansion();
 
 	// See if map-editing.
 	string d("config/disk/game/" + gametitle + "/editing");
 	config->value(d.c_str(), editing_flag, false);
 
-	// Discover the game we are running (BG, SI, ...)
-	// We do this, because we don't really trust config :-)
-	if (game_type != EXULT_DEVEL_GAME) {
-		char *static_identity = Game_window::get_game_identity(
-								INITGAME);
-
-		if (!strcmp(static_identity,"ULTIMA7")) {
-			game_type = BLACK_GATE;
-			expansion = false;
-		} else if (!strcmp(static_identity, "FORGE")) {
-			game_type = BLACK_GATE;
-			expansion = true;
-		} else if (!strcmp(static_identity, "SERPENT ISLE")) {
-			game_type = SERPENT_ISLE;
-			expansion = false;
-		} else if (!strcmp(static_identity, "SILVER SEED")) {
-			game_type = SERPENT_ISLE;
-			expansion = true;
-		} else if (game_type == NONE && mygame &&
-				mygame->get_game_type() == EXULT_DEVEL_GAME) {
-			game_type = EXULT_DEVEL_GAME;
-			expansion = false;
-		}
-		delete[] static_identity;
-	}
 	// Need to do this here. Maybe force on for EXULT_DEVEL_GAME too?
 	std::string str;
 	config->value("config/gameplay/bg_paperdolls", str, "yes");

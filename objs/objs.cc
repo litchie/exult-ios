@@ -38,7 +38,11 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "databuf.h"
+#include "animate.h"
 #include "Audio.h"
+#include "ready.h"
+#include "ammoinf.h"
+#include "weaponinf.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -142,11 +146,53 @@ Tile_coord Game_object::get_center_tile
 								0);
 		}
 	int frame = get_framenum();
-	int dx = (get_info().get_3d_xtiles(frame) >> 1),
-	    dy = (get_info().get_3d_ytiles(frame) >> 1);
+	int dx = (get_info().get_3d_xtiles(frame)-1) >> 1,
+	    dy = (get_info().get_3d_ytiles(frame)-1) >> 1,
+		dz = (get_info().get_3d_height()*3)/4;
 	int x = chunk->cx*c_tiles_per_chunk + tx - dx,
 	    y = chunk->cy*c_tiles_per_chunk + ty - dy;
-	return Tile_coord(x, y, lift);
+	return Tile_coord(x, y, lift + dz);
+	}
+
+Tile_coord Game_object::get_missile_tile
+	(
+	int dir
+	) const
+	{
+	if (!chunk)
+		{
+#if DEBUG
+		cout << "Asking missile tile for obj. " << get_shapenum()
+				<< " not on map" << endl;
+#endif
+		return Tile_coord(255*c_tiles_per_chunk, 255*c_tiles_per_chunk,
+								0);
+		}
+	int frame = get_framenum();
+	int dx = get_info().get_3d_xtiles(frame)-1,
+	    dy = get_info().get_3d_ytiles(frame)-1,
+		dz = (get_info().get_3d_height()*3)/4;
+	/*switch (dir)
+		{
+		case south:
+			dy = -1;
+		case north:
+			dx /=2; break;
+		case east:
+			dx = -1;
+		case west:
+			dy /= 2; break;
+		case southeast:
+			dy = -1;
+		case northeast:
+			dx = -1; break;
+		case southwest:
+			dy = -1;
+			break;
+		}*/
+	int x = chunk->cx*c_tiles_per_chunk + tx - dx,
+	    y = chunk->cy*c_tiles_per_chunk + ty - dy;
+	return Tile_coord(x, y, lift + dz);
 	}
 
 static inline void delta_check
@@ -190,6 +236,31 @@ static inline void delta_wrap_check
 	}
 
 /*
+ *	Calculate effective distance for sound purposes.
+ *	Gives a more realistic fall-off.
+ */
+
+int Game_object::sound_distance
+	(
+	Game_object *o2
+	) const
+	{
+	Tile_coord t1 = get_tile(), t2 = o2->get_tile();
+	Shape_info& info1 = get_info(), info2 = o2->get_info();
+	int f1 = get_framenum(), f2 = o2->get_framenum();
+	int dx = Tile_coord::delta(t1.tx, t2.tx),
+		dy = Tile_coord::delta(t1.ty, t2.ty),
+		dz = t1.tz - t2.tz;
+	delta_wrap_check(dx, info1.get_3d_xtiles(f1)-1,
+			info2.get_3d_xtiles(f2)-1, t1.tx, t2.tx);
+	delta_wrap_check(dy, info1.get_3d_ytiles(f1)-1,
+			info2.get_3d_ytiles(f2)-1, t1.ty, t2.ty);
+	delta_check(dz, info1.get_3d_height(),
+			info2.get_3d_height(), t1.tz, t2.tz);
+	return abs(t1.tx - t2.tx) + abs(t1.ty - t2.ty) + abs(t1.tz - t2.tz);
+	}
+
+/*
  *	Calculate distance to object taking 3D size in consideration.
  *	U7 & SI verified.
  */
@@ -213,7 +284,6 @@ int Game_object::distance
 			info2.get_3d_height(), t1.tz, t2.tz);
 	return t1.distance(t2);
 	}
-
 /*
  *	Calculate distance to tile taking 3D size in consideration.
  *	U7 & SI verified.
@@ -333,45 +403,81 @@ int Game_object::get_quantity
 		return 1;
 	}
 
+/*
+ *	Get effective maximum range for weapon.
+ */
+int Game_object::get_effective_range
+	(
+	const Weapon_info *winf,
+	int reach
+	)
+	{
+	if (reach < 0)
+		{
+		if (!winf)
+			return 3;
+		reach = winf->get_range();
+		}
+	int uses = winf ? winf->get_uses() : Weapon_info::melee;
+	if (!uses || uses == Weapon_info::ranged)
+		return reach;
+	else
+		return 31;
+	}
+
+/*
+ *	Checks to see if the object has ammo for a weapon.
+ *	Output is ammount of ammo needed and -> to ammo
+ *	object, if the argument is not null.
+ */
+int Game_object::get_weapon_ammo
+	(
+	int weapon,
+	int family,
+	int proj,
+	bool ranged,
+	Game_object **ammo,
+	bool bg,
+	bool recursive
+	)
+	{
+	if (ammo)
+		*ammo = 0;
+	if (weapon < 0)
+		return false;	// Bare hands.
+	// See if we need ammo.
+	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	if (!winf)
+		// No ammo needed.
+		return 0;
+	int uses = winf->get_uses();
+	int need_ammo = 0;
+		// This seems to match perfectly the originals.
+	if (family == -1 || !ranged)
+		need_ammo = !uses && winf->uses_charges();
+	else
+		need_ammo = 1;
+	if (bg && need_ammo && family >= 0 && proj >= 0)
+		{
+		// BG triple crossbows uses 3x ammo.
+		Shape_info& info = ShapeID::get_info(winf->get_projectile());
+		if (info.get_ready_type() == triple_crossbow_bolts)
+			need_ammo = 3;
+		}
+
+	if (ammo)
+		*ammo = find_weapon_ammo(weapon, need_ammo, recursive);
+	return need_ammo;
+	}
+
 int Game_object::get_effective_obj_hp(int weapon_shape) const
 {
  	int hps = get_obj_hp();
- 	if (!hps)
+	if (!hps)
 		{
-		// some special cases
-		// guessing these don't have hitpoints by default because
-		// doors need their 'quality' field for something else
-		int shnum = get_shapenum();
-		int frnum = get_framenum();
-		if (shnum == 432 || shnum == 433) // doors
-			{
-			if (get_quality()==0 || weapon_shape==704 ||
-				((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))) 
-				// only 'normal' doors (or powderkeg/cannon)
-				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
-					hps = 6;
-			}
-		else if (shnum == 270 || shnum == 376) // more doors
-			{
-			if (get_quality()==0 || weapon_shape==704 ||
-			   ((Game::get_game_type() == BLACK_GATE) && 
-						(weapon_shape == 702))) 
-				// only 'normal' doors (or powderkeg/cannon)
-				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
-						// no magic or steel doors
-				    (frnum >= 16 && frnum <= 18))
-					hps = 6;
-			}
-					// Serpent statue at end of SI:
-		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
-			hps = 1;
-#if 0
-		else if (shnum == 522 && frnum < 2)
-			{ // locked normal chest
-			if (get_quality() == 0 || get_quality() == 255)
-				hps = 6;
-			}
-#endif
+		Shape_info& inf = get_info();
+		int qual = inf.has_quality() ? get_quality() : -1;
+		hps = inf.get_effective_hps(get_framenum(), qual);
 		}
 	return hps;
 }
@@ -404,6 +510,23 @@ int Game_object::get_volume
 	}
 
 /*
+ *	Returns true if the object is inside a locked container.
+ */
+bool Game_object::inside_locked() const
+	{
+	const Game_object *top = this;
+	const Game_object *above;
+	while ((above = top->get_owner()) != 0)
+		{
+		if (above->get_info().is_container_locked())
+			return true;
+		top = above;
+		}
+	return false;
+	}
+
+
+/*
  *	Add or remove from object's 'quantity', and delete if it goes to 0.
  *	Also, this sets the correct frame, even if delta == 0.
  *
@@ -428,7 +551,7 @@ int Game_object::modify_quantity
 			*del = true;
 		return (delta + 1);
 		}
-	int quant = quality&0x7f;	// Get current quality.
+	int quant = quality&0x7f;	// Get current quantity.
 	if (!quant)
 		quant = 1;		// Might not be set.
 	int newquant = quant + delta;
@@ -446,18 +569,18 @@ int Game_object::modify_quantity
 		}
 	int oldvol = get_volume();	// Get old volume used.
 	quality = (char) newquant;	// Store new value.
-	int shapenum = get_shapenum();
-					// Set appropriate shape.
-	int num_frames = get_num_frames();
-	int new_frame = newquant - 1;
-	if (new_frame > 7)		// Range is 0-7.
-		new_frame = 7;
-	if (shapenum == 565 ||		// Starbursts are special.
-	    shapenum == 636)		// So are serpentine daggers.
+					// Set appropriate frame.
+	if (get_info().has_weapon_info())	// Starbursts, serpent(ine) daggers, knives.
 		set_frame(0);		// (Fixes messed-up games.)
-	else if (shapenum != 842)	// Leave reagants alone.
-					// Guessing:  Works for ammo, arrows.
-		set_frame(num_frames == 32 ? 24 + new_frame : new_frame);
+	else if (get_info().has_quantity_frames())
+		{
+			// This is actually hard-coded in the originals, but doing
+			// it this way is consistent with musket ammo.
+		int base = get_info().has_ammo_info() ? 24 : 0;
+			// Verified.
+		int new_frame = newquant > 12 ? 7 : (newquant > 6 ? 6 : newquant - 1);
+		set_frame(base + new_frame);
+		}
 
 	Container_game_object *owner = get_owner();
 	if (owner)			// Update owner's volume.
@@ -1127,13 +1250,10 @@ int Game_object::get_weight
 	int quant			// Quantity.
 	)
 	{
-	int wt = quant * ShapeID::get_info(shnum).get_weight();
-					// Special case:  reagents, coins.
-	if (shnum == 842 || shnum == 644 || 
-	    (Game::get_game_type() == SERPENT_ISLE &&
-					// Monetari/guilders/filari:
-	     (shnum == 951 || shnum == 952 || shnum == 948)))
-	{
+	Shape_info& inf = ShapeID::get_info(shnum);
+	int wt = quant * inf.get_weight();
+	if (inf.is_lightweight())
+	{			// Special case:  reagents, coins.
 		wt /= 10;
 		if (wt <= 0) wt = 1;
 	}
@@ -1201,13 +1321,10 @@ int Game_object::drop
 	Game_object *obj		// This may be deleted.
 	)
 	{
+	Shape_info& inf = get_info();
 	int shapenum = get_shapenum();	// It's possible if shapes match.
-	if (obj->get_shapenum() != shapenum ||
-	    !Has_quantity(shapenum) ||
-					// ++++Really should use 
-					//   Get_combine_info in contain.cc
-					// Reagents are a special case.
-	    (shapenum == 842 && get_framenum() != obj->get_framenum()))
+	if (obj->get_shapenum() != shapenum || !inf.has_quantity() ||
+	    (!inf.has_quantity_frames() && get_framenum() != obj->get_framenum()))
 		return (0);
 	int objq = obj->get_quantity();
 	int total_quant = get_quantity() + objq;
@@ -1416,51 +1533,180 @@ int Game_object::get_rotated_frame
 	}
 
 /*
- *	This method should be called to decrement health from attacks, traps.
+ *	This method should be called to cause damage from traps, attacks.
  *
- *	Output:	true if destroyed.
+ *	Output:	Hits taken.
  */
-
-bool Game_object::reduce_health
+int Game_object::apply_damage
 	(
-	int delta,			// # points to lose.
-	Actor *attacker,	// Attacker, or null.
-	int damage_type,	// Type of damage.
-	bool ignore_immunity			// Was hit by a cannon in BG.
+	Game_object *attacker,	// Attacker, or null.
+	int str,		// Attack strength.
+	int wpoints,	// Weapon bonus.
+	int type,		// Damage type.
+	int bias,		// Different combat difficulty.
+	int *exp
 	)
 	{
-	int hp = get_effective_obj_hp();	// Returns 0 if doesn't have HP's or is
-					//   indestructible,
-	if (!hp)			//   with exceptions:
+	if (exp)
+		exp = 0;
+	int damage = 0;
+	if (wpoints = 127)
+		damage = 127;
+	else
 		{
-		int shnum = get_shapenum();
-			// Detonate Powder kegs... but not if the weapon is
-			// the BG cannon, as it detonates them via usecode.
-		if (shnum == 704)
+		if (type != Weapon_data::lightning_damage && str > 0)
 			{
-			// cause chain reaction
-
-			// marked already detonating powderkegs with quality
-			if (get_quality()==0)
-				{
-				Tile_coord pos = get_tile();
-				eman->add_effect(
-					new Explosion_effect(pos, this));
-				}
+			int base = str/3;
+			damage = base ? 1 + rand()%base : 0;
 			}
-		return false;
+		if (wpoints > 0)
+			damage += (1 + rand()%wpoints);
 		}
-	else if (delta >= hp)
+
+	if (damage <= 0)
+		{
+		int sfx = Audio::game_sfx(5);
+		new Object_sfx(this, sfx);
+		return 0;
+		}
+	return reduce_health(damage, type, attacker);
+	}
+
+/*
+ *	This method should be called to decrement health directly.
+ *
+ *	Output:	Hits taken.
+ */
+
+int Game_object::reduce_health
+	(
+	int delta,			// # points to lose.
+	int type,		// Type of damage.
+	Game_object *attacker,	// Attacker, or null.
+	int *exp
+	)
+	{
+	if (exp)
+		*exp = 0;
+		// Returns 0 if doesn't have HP's or is indestructible.
+	int hp = get_effective_obj_hp();
+	if (!hp	|| 	// Object is indestructible.
+				// These damage types do not affect objects.
+			type == Weapon_data::lightning_damage ||
+			type == Weapon_data::ethereal_damage)
+		return 0;
+	//if (get_shapenum() == 704 &&
+	if (get_info().is_explosive() &&
+			(type == Weapon_data::fire_damage || delta >= hp))
+		{	// Cause chain reaction.
+		set_quality(1);	// Make it indestructible.
+		Tile_coord offset(0, 0, get_info().get_3d_height()/2);
+		eman->add_effect(new Explosion_effect(get_tile() + offset,
+				this, 0, get_shapenum(), -1, attacker));
+		return delta;	// Will be destroyed in Explosion_effect.
+		}
+	if (delta < hp)
+		set_obj_hp(hp - delta);
+	else
 		{
 		// object destroyed
 		eman->remove_text_effect(this);
 		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
-		return true;
+		}
+	return delta;
+	}
+
+/*
+ *	Being attacked.
+ *
+ *	Output:	Hits taken or < 0 for explosion.
+ */
+
+int Game_object::figure_hit_points
+	(
+	Game_object *attacker,
+	int weapon_shape,		// < 0 for readied weapon.
+	int ammo_shape,			// < 0 for no ammo shape.
+	bool explosion			// If this is an explosion attacking.
+	)
+	{
+	const Weapon_info *winf;
+	Ammo_info *ainf;
+
+	int wpoints = 0;
+	if (weapon_shape >= 0)
+		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
+	else
+		winf = 0;
+	if (ammo_shape >= 0)
+		ainf = ShapeID::get_info(ammo_shape).get_ammo_info();
+	else
+		ainf = 0;
+	if (!winf && weapon_shape < 0)
+		{
+		Actor *npc = attacker ? attacker->as_actor() : 0;
+		winf = npc ? npc->get_weapon(wpoints) : 0;
+		}
+
+	int usecode = -1;
+	int type = Weapon_data::normal_damage;
+	bool explodes = false;
+
+	if (winf)
+		{
+		wpoints = winf->get_damage();
+		usecode = winf->get_usecode();
+		type = winf->get_damage_type();
+		explodes = winf->explodes();
 		}
 	else
+		wpoints = 1;	// Give at least one, but only if there's no weapon
+	if (ainf)
 		{
-		set_obj_hp(hp - delta);
-		return false;
+		wpoints += ainf->get_damage();
+			// Replace damage type.
+		if (ainf->get_damage_type() != Weapon_data::normal_damage)
+			type = ainf->get_damage_type();
+		explodes = explodes || ainf->explodes();
+		}
+
+	if (explodes && !explosion)	// Explosions shouldn't explode again.
+		{	// Time to explode.
+		Tile_coord offset(0, 0, get_info().get_3d_height()/2);
+		eman->add_effect(new Explosion_effect(get_tile() + offset,
+				0, 0, weapon_shape, ammo_shape, attacker));
+		return -1;
+		}
+
+	int delta = 0;
+	int effstr = attacker && attacker->as_actor()
+		? attacker->as_actor()->get_effective_prop(Actor::strength) : 0;
+	if (winf && (winf->get_powers() & Weapon_data::no_damage) == 0)
+		delta = apply_damage(attacker, effstr, wpoints, type);
+		
+		// Objects are not affected by weapon powers.
+
+		// Object may be in the remove list by this point.
+	if (usecode >= 0)
+		ucmachine->call_usecode(usecode, this,
+					Usecode_machine::weapon);
+	return delta;
+	}
+
+void Game_object::play_hit_sfx(int weapon, bool ranged)
+	{
+	Weapon_info *winf = weapon >= 0 ?
+			ShapeID::get_info(weapon).get_weapon_info() : 0;
+	if (winf && winf->get_damage())
+		{
+		int sfx;
+		if (ranged)
+			sfx = Audio::game_sfx(1);
+		else if (weapon == 604)	// Glass sword.
+			sfx = Audio::game_sfx(37);
+		else
+			sfx = Audio::game_sfx(4);
+		new Object_sfx(this, sfx);
 		}
 	}
 
@@ -1472,41 +1718,13 @@ bool Game_object::reduce_health
 
 Game_object *Game_object::attacked
 	(
-	Actor *attacker,
-	int weapon_shape,		// Weapon shape, or 0 to use readied
-	int ammo_shape
+	Game_object *attacker,
+	int weapon_shape,		// < 0 for readied weapon.
+	int ammo_shape,			// < 0 for no ammo shape.
+	bool explosion			// If this is an explosion attacking.
 	)
 	{
-	int wpoints = 0;
 	int shnum = get_shapenum();
-
-	Weapon_info *winf;
-	if (weapon_shape > 0)
-		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
-	else if (ammo_shape > 0)	// Not sure about all this...
-		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
-	else
-		winf = attacker->get_weapon(wpoints);
-
-	bool explodes = winf ? winf->explodes() : false;
-	// Play 'hit' sfx, but only if Ava. involved.
-	if (attacker == gwin->get_main_actor() && !explodes)
-	{
-		// "Default" hit sfx.
-		int sfx = Audio::game_sfx(4);
-		Audio::get_ptr()->play_sound_effect(sfx);
-	}
-
-	int usefun;			// Run usecode if present.
-	if (winf && (usefun = winf->get_usecode()) != 0)
-		ucmachine->call_usecode(usefun, this,
-					Usecode_machine::weapon);
-	if (!wpoints && winf)
-		wpoints = winf->get_damage();
-
-	if (wpoints && attacker && !explodes)
-		wpoints += attacker->get_level() +
-			attacker->get_effective_prop((int) Actor::strength);
 
 	if (shnum == 735 && ammo_shape == 722)
 		{	// Arrows hitting archery practice target.
@@ -1515,52 +1733,34 @@ Game_object *Game_object::attacked
 				: ((frnum%3) != 0 ? frnum + 1 : frnum);
 		change_frame(newframe);
 		}
-	else if (shnum == 704)
-		{
-		if ((Game::get_game_type() == BLACK_GATE) && (weapon_shape == 702))
-			// Prevent detonation of power kegs by cannon as it does so
-			// in usecode.
-			return this;
-		else if (get_quality()==2)
-			{	// Detonated through attack_item intrinsic.
-			remove_this();
-			return 0;
-			}
-		}
 
-	bool destroyed = wpoints ?
-		reduce_health(wpoints, attacker,
-				winf ? winf->get_damage_type() : 0) : false;
+	int oldhp = get_effective_obj_hp();
+	int delta = figure_hit_points(attacker, weapon_shape, ammo_shape, explosion);
+	int newhp = get_effective_obj_hp();
 
 	if (combat_trace)
 		{
 		string name = "<trap>";
 		if (attacker)
 			name = attacker->get_name();
-		int hp = get_effective_obj_hp();
-		if (destroyed)
-			cout << name << " attacks " << get_name()
-				 << " for " << wpoints
-				 << " hit points, destroying the object" << endl;
-		else if (hp == 0)
-			{ // indestructible
-			cout << name << " attacks " << get_name()
-				 << ". No effect." << endl;
+		cout << name << " attacks " << get_name();
+		if (oldhp < delta)
+			{
+			cout << ", destroying it." << endl;
+			return 0;
+			}
+		else if (!delta || oldhp == newhp)
+			{	// undamaged/indestructible
+			cout << " to no effect." << endl;
 			return this;
 			}
+		else if (delta < 0)
+			cout << " causing an explosion." << endl;
 		else
-			cout << name << " hits " << get_name()
-				 << " for " << wpoints << " hit points, leaving "
-				 << hp - wpoints << " remaining" << endl;
+			cout << " for " << delta << " hit points, leaving "
+				<< newhp << " remaining." << endl;
 		}
-
-	if (destroyed)
-		{
-		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
-		return 0;
-		}
-	else
-		return this;
+	return this;
 	}
 
 /*

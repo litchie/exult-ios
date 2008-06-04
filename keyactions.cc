@@ -398,12 +398,18 @@ void ActionTryKeys(int *params)
 	for (int i = 0; i < party_cnt; i++) {
 		Actor *act = party[i];
 		Game_object_vector keys;		// Get keys.
-		if (act->get_objects(keys, 641, qual, c_any_framenum)) {
-			// intercept the click_on_item call made by the key-usecode
-			gwin->get_usecode()->intercept_click_on_item(obj);
-			keys[0]->activate();
-			return;
-		}
+		if (act->get_objects(keys, 641, qual, c_any_framenum))
+			{
+			int i;
+			for (i = 0; i < keys.size(); i++)
+				if (!keys[i]->inside_locked())
+					{
+					// intercept the click_on_item call made by the key-usecode
+					gwin->get_usecode()->intercept_click_on_item(obj);
+					keys[0]->activate();
+					return;
+					}
+			}
 	}
 	Mouse::mouse->flash_shape(Mouse::redx);	// Nothing matched.
 }

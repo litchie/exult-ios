@@ -17,8 +17,6 @@ libshapes_la_SOURCES = \
 	items.h \
 	miscinf.cc \
 	miscinf.h \
-	monstinf.cc \
-	monstinf.h \
 	pngio.cc \
 	pngio.h \
 	shapeinf.cc \
@@ -29,7 +27,35 @@ libshapes_la_SOURCES = \
 	u7drag.cc \
 	u7drag.h \
 	vgafile.cc \
-	vgafile.h
+	vgafile.h	\
+	ammoinf.cc	\
+	ammoinf.h	\
+	aniinf.cc	\
+	aniinf.h	\
+	armorinf.cc	\
+	armorinf.h	\
+	bodyinf.cc	\
+	bodyinf.h	\
+	continf.cc	\
+	continf.h	\
+	effhpinf.cc	\
+	effhpinf.h	\
+	expinf.cc	\
+	expinf.h	\
+	frnameinf.cc	\
+	frnameinf.h	\
+	monstinf.cc	\
+	monstinf.h	\
+	npcdollinf.cc	\
+	npcdollinf.h	\
+	objdollinf.cc	\
+	objdollinf.h	\
+	sfxinf.cc	\
+	sfxinf.h	\
+	warminf.cc	\
+	warminf.h	\
+	weaponinf.cc	\
+	weaponinf.h
 
 CLEANFILES = *~
 
