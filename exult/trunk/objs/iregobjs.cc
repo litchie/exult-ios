@@ -101,62 +101,10 @@ void Ireg_game_object::remove_this
 			chunk->remove(this);
 		}
 	if (!nodel)
-	{
+		{
 		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
 		gwin->delete_object(this);
-	}
-	}
-
-/*
- *	Attack using the usecode_target and usecode_weapon fields set by
- *	the 'set_to_attack' intrinsic. Doesn't use ammo.
- */
-bool Ireg_game_object::usecode_attack
-	(
-	)
-	{
-	if (!usecode_target)
-		return false;
-	Shape_info& info = ShapeID::get_info(usecode_weapon);
-	Weapon_info *winfo = info.get_weapon_info();
-	Game_object *target = usecode_target;
-	usecode_target = 0;
-	if (!winfo)
-		return false;
-	int projectile_shape = winfo->get_projectile();
-	int ashape = winfo->get_ammo_consumed();
-	bool uses_charges = winfo->uses_charges() && info.has_quality();
-	bool skip_render = false;
-	if (!ashape)
-		{
-			// Get shape, but don't use ammo.
-		if (uses_charges || projectile_shape)
-			ashape = projectile_shape;
-		else if (winfo->get_uses() == 3)
-			ashape = usecode_weapon;
-		else
-			{	// see if it looks like a projectile:
-			ShapeID id(usecode_weapon, 0, SF_SHAPES_VGA);
-			if (id.get_num_frames() >= 24)
-				{	// Yes, but don't render it.
-				ashape = usecode_weapon;
-				skip_render = true;
-				}
-			}
 		}
-	if (ashape)		// Missile attack.
-		gwin->get_effects()->add_effect(
-				new Projectile_effect(this, target,
-					ashape, usecode_weapon, skip_render));
-	else if (this->distance(target) <= winfo->get_striking_range())
-		{		// Hand weapons.
-		if (winfo->explodes())		// Cause explosion instead.
-			eman->add_effect(new Explosion_effect(target->get_tile(),
-					0, 0, usecode_weapon, 0, this));
-		else	// Attack with weapon.
-			target->attacked(0, usecode_weapon);
-		}
-	return true;
 	}
 
 /*

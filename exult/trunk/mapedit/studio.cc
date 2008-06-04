@@ -62,6 +62,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "execbox.h"
 #include "items.h"
+#include "databuf.h"
 #include "modmgr.h"
 
 using std::cerr;
@@ -70,6 +71,7 @@ using std::endl;
 using std::string;
 using std::vector;
 using std::ofstream;
+using std::ifstream;
 
 ExultStudio *ExultStudio::self = 0;
 Configuration *config = 0;
@@ -238,6 +240,42 @@ on_compile_usecode_menu_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->compile();
+}
+
+C_EXPORT void
+on_fix_old_shape_info_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Shape_file_info *vga = studio->get_vgafile();
+	if (!vga)
+		return;
+	Vga_file *ifile = vga->get_ifile();
+	if (!ifile)
+		return;
+	Shapes_vga_file *svga = dynamic_cast<Shapes_vga_file *>(ifile);
+	if (!svga)
+		return;
+	std::string msg = "Older versions of Exult Studio lost information when saving the following files:\n";
+	msg += "\t\t\"AMMO.DAT\", \"MONSTERS.DAT\", \"WEAPONS.DAT\"\n";
+	msg += "If you click \"yes\", Exult Studio will reload the STATIC version of the above\n";
+	msg += "data files to recover the lost data. This will overwrite any modifications you\n";
+	msg += "may have done to the data of the shapes in the aforementioned files. For example,\n";
+	msg += "the Death Scythe's weapon information would be reloaded from the static file,\n";
+	msg += "but if you had added weapon information to a moongate, it would remain intact.\n\n";
+	msg += "\t\tAre you sure you want to proceed?";
+	int choice = studio->prompt(msg.c_str(), "Yes", "No", 0);
+	if (choice == 1)	// No?
+		return;
+	svga->fix_old_shape_info(studio->get_game_type());
+	studio->set_shapeinfo_modified();
+	choice = studio->prompt(
+		"The data has been reloaded. You should save shape information now.\n\n"
+		"\t\tDo you wish to save the shape information now?",
+		"Yes", "No", 0);
+	if (choice == 1)	// No?
+		return;
+	studio->write_shape_info(true);
 }
 
 C_EXPORT void
@@ -468,7 +506,7 @@ C_EXPORT gboolean on_main_window_focus_in_event
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	glade_path(0), shape_info_modified(false),
 	shape_names_modified(false),
-	vgafile(0), facefile(0), gumpfile(0),
+	vgafile(0), facefile(0), gumpfile(0), spritefile(0),
 	eggwin(0), egg_ctx(0), egg_monster_draw(0),
 	egg_status_id(0),
 	bargewin(0), barge_ctx(0), barge_status_id(0),
@@ -476,11 +514,11 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	static_path(0), image_editor(0), default_game(0), background_color(0),
 	browser(0), palbuf(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE),
+	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE), expansion(false),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
-	shape_draw(0), gump_draw(0),
+	shape_draw(0), gump_draw(0), body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
-	ucbrowsewin(0), curr_game(0), curr_mod(-1)
+	ucbrowsewin(0), curr_game(0), curr_mod(-1), npcgump_draw(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -611,6 +649,9 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(shapewin);
 	delete shape_draw;
 	delete gump_draw;
+	delete npcgump_draw;
+	delete body_draw;
+	delete explosion_draw;
 	shapewin = 0;
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
@@ -867,7 +908,7 @@ void ExultStudio::new_game()
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
 
-void on_gameselect_ok_clicked
+C_EXPORT void on_gameselect_ok_clicked
 	(
 	GtkToggleButton *button,
 	gpointer	  user_data
@@ -924,9 +965,9 @@ void on_gameselect_ok_clicked
 		U7mkdir(d.c_str(), 0755);
 		// Create mod cfg file:
 		string cfgfile = pathname + ".cfg";
-		Configuration *modcfg = new Configuration(cfgfile, "modinfo");
-		modcfg->set("mod_info/display_string", modmenustr, true);
-		modcfg->set("mod_info/required_version", VERSION, true);
+		Configuration modcfg(cfgfile, "modinfo");
+		modcfg.set("mod_info/display_string", modmenustr, true);
+		modcfg.set("mod_info/required_version", VERSION, true);
 
 		// Add mod to base game's list:
 		game->add_mod(modtitle, modcfg);
@@ -945,8 +986,9 @@ void on_gameselect_ok_clicked
 			gtk_tree_model_get_iter(model, &iter, path);
 			gtk_tree_model_get(model, &iter, 0, &text, 1, &modnum,-1);
 			g_free(text);
+			gtk_tree_path_free(path);
 		}
-		ModInfo *mod = modnum>-1?game->get_mod(modnum):0;
+		ModInfo *mod = modnum > -1 ? game->get_mod(modnum) : 0;
 		modtitle = mod?mod->get_mod_title():"";
 	}
 
@@ -958,7 +1000,7 @@ void on_gameselect_ok_clicked
 /*
  *	A different game was chosen.
  */
-void on_gameselect_gamelist_cursor_changed
+C_EXPORT void on_gameselect_gamelist_cursor_changed
 	(
 	GtkTreeView *treeview,
 	gpointer     user_data
@@ -989,7 +1031,7 @@ void on_gameselect_gamelist_cursor_changed
 	GtkTreeViewColumn *column;
 	gtk_tree_store_clear(model);
 
-	std::vector<ModInfo *>& mods = gamemanager->get_game(gamenum)->get_mod_list();
+	std::vector<ModInfo>& mods = gamemanager->get_game(gamenum)->get_mod_list();
 	GtkTreeIter iter;
 
 	gtk_tree_store_append(model, &iter, NULL);
@@ -1000,8 +1042,8 @@ void on_gameselect_gamelist_cursor_changed
 
 	for (int j=0; j < mods.size(); j++)
 	{
-		ModInfo *currmod = mods[j];
-		string modname = currmod->get_menu_string();
+		ModInfo& currmod = mods[j];
+		string modname = currmod.get_menu_string();
 		string::size_type t = modname.find("\n", 0);
 		if (t!=string::npos)
 			modname.replace(t, 1, " ");
@@ -1019,13 +1061,13 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(
 						treeview);
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
-	std::vector<ModManager *>& games = gamemanager->get_game_list();
+	std::vector<ModManager>& games = gamemanager->get_game_list();
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	for (int j=0; j < games.size(); j++)
 	{
-		ModManager *currgame = games[j];
-		string gamename = currgame->get_menu_string();
+		ModManager& currgame = games[j];
+		string gamename = currgame.get_menu_string();
 		string::size_type t = gamename.find("\n", 0);
 		if (t!=string::npos)
 			gamename.replace(t, 1, " ");
@@ -1130,40 +1172,58 @@ void ExultStudio::set_game_path(string gamename, string modname)
 					// Finish up external edits.
 	Shape_chooser::clear_editing_files();
 
-	// Extra safety net for BG and SI:
+	ModManager *basegame = 0;
 	if (gamename == CFG_BG_NAME)
 		{
-		if (!gamemanager->is_bg_installed())
+		if ((basegame = gamemanager->get_bg()) == 0)
 			{
 			cerr << "Black Gate not found." << endl;
 			exit(1);
 			}
 		}
+	else if (gamename == CFG_FOV_NAME)
+		{
+		if ((basegame = gamemanager->get_fov()) == 0)
+			{
+			cerr << "Forge of Virtue not found." << endl;
+			exit(1);
+			}
+		}
 	else if (gamename == CFG_SI_NAME)
 		{
-		if (!gamemanager->is_si_installed())
+		if ((basegame = gamemanager->get_si()) == 0)
 			{
 			cerr << "Serpent Isle not found." << endl;
 			exit(1);
 			}
 		}
-
-	BaseGameInfo *gameinfo = 0;
-	curr_game = gamemanager->find_game_index(gamename);
-	ModManager *basegame = gamemanager->get_game(curr_game);
-	if (basegame)
+	else if (gamename == CFG_SS_NAME)
 		{
-		curr_mod = modname.empty() ? -1 : basegame->find_mod_index(modname);
-		if (curr_mod > -1)
-			gameinfo = basegame->get_mod(curr_mod);
-		else
-			gameinfo = basegame;
+		if ((basegame = gamemanager->get_ss()) == 0)
+			{
+			cerr << "Silver Seed not found." << endl;
+			exit(1);
+			}
 		}
 	else
-		{	// This really should never happen.
-		cerr << "Game '" << gamename << "' not found." << endl;
-		exit(1);
+		{
+		if ((curr_game = gamemanager->find_game_index(gamename)) < 0)
+			{
+			cerr << "Game '" << gamename << "' not found." << endl;
+			exit(1);
+			}
+		basegame = gamemanager->get_game(curr_game);
 		}
+
+	assert(basegame);
+	BaseGameInfo *gameinfo = 0;
+	curr_mod = modname.empty() ? -1 : basegame->find_mod_index(modname);
+	if (curr_mod > -1)
+		gameinfo = basegame->get_mod(curr_mod);
+	else
+		gameinfo = basegame;
+		// This really should never happen.
+	assert(gameinfo);
 
 	string config_path("config/disk/game/" + gamename + "/path"), gamepath,
 		def_path("./" + gamename);
@@ -1171,6 +1231,8 @@ void ExultStudio::set_game_path(string gamename, string modname)
 					// Set top-level path.
 	add_system_path("<GAME>", gamepath);
 	gameinfo->setup_game_paths();
+	game_type = gameinfo->get_game_type();
+	expansion = gameinfo->have_expansion();
 	if (static_path)
 		g_free(static_path);
 					// Set up path to static.
@@ -1180,8 +1242,8 @@ void ExultStudio::set_game_path(string gamename, string modname)
 		U7mkdir(patch_path.c_str(), 0755);
 					// Clear file cache!
 	U7FileManager::get_ptr()->reset();
-	game_type = gameinfo->get_game_type();
-	delete palbuf;			// Delete old.
+
+	delete [] palbuf;			// Delete old.
 	string palname("<PATCH>/");	// 1st look in patch for palettes.
 	palname += "palettes.flx";
 	size_t len;
@@ -1209,7 +1271,12 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
 	gumpfile = open_shape_file("gumps.vga");
-	Setup_text();			// Read in shape names.
+	spritefile = open_shape_file("sprites.vga");
+	Setup_text(game_type == SERPENT_ISLE, expansion);	// Read in shape names.
+	misc_name_map.clear();
+	for (int i = 0; i < num_misc_names; i++)
+		if (misc_names[i] != 0)
+			misc_name_map.insert(std::pair<string, int>(string(misc_names[i]), i));
 	setup_file_list();		// Set up file-list window.
 	set_browser("", 0);		// No browser.
 	connect_to_server();		// Connect to server with 'gamedat'.
@@ -1813,12 +1880,16 @@ int ExultStudio::get_optmenu
 void ExultStudio::set_optmenu
 	(
 	char *name,
-	int val
+	int val,
+	bool sensitive
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
 	if (btn)
+		{
 		gtk_option_menu_set_history(GTK_OPTION_MENU(btn), val);
+		gtk_widget_set_sensitive(btn, sensitive);
+		}
 	}
 
 /*
@@ -2332,7 +2403,7 @@ on_prefs_background_choose_clicked	(GtkButton *button,
 	gtk_window_set_modal(GTK_WINDOW(colorsel), true);
 					// Set mouse click handler.
 	gtk_signal_connect_object(GTK_OBJECT(colorsel->ok_button), "clicked",
-		GTK_SIGNAL_FUNC(ExultStudio::background_color_okay), 
+		GTK_SIGNAL_FUNC(ExultStudio::background_color_okay),
 						GTK_OBJECT(colorsel));
 	gtk_signal_connect_object(GTK_OBJECT(colorsel->cancel_button),
 		"clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
@@ -2782,3 +2853,11 @@ int ExultStudio::find_palette_color(int r, int g, int b)
 	return best_index;
 }
 
+// HACK. NPC Paperdolls need this, but miscinf has too many
+// Exult-dependant stuff to be included in ES. Thus, Exult
+// defines the working version of this function.
+// Maybe we should do something about this...
+int get_skinvar(std::string key)
+	{
+	return -1;
+	}

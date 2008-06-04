@@ -40,6 +40,7 @@
 #include "ucsched.h"
 #include "Gump_manager.h"
 #include "databuf.h"
+#include "weaponinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -99,7 +100,7 @@ void Missile_launcher::handle_event
 		Tile_coord dest = src;
 		dest.tx += 20*dx;
 		dest.ty += 20*dy;
-		proj = new Projectile_effect(egg, dest, shapenum, weapon);
+		proj = new Projectile_effect(egg, dest, weapon, shapenum, shapenum);
 		}
 	else				// Target a party member.
 		{
@@ -112,7 +113,7 @@ void Missile_launcher::handle_event
 			if (Fast_pathfinder_client::is_straight_path(src,
 					party[i]->get_tile()))
 				proj = new Projectile_effect(
-					src, party[i], shapenum, weapon);
+					src, party[i], weapon, shapenum, shapenum);
 		}
 	if (proj)
 		eman->add_effect(proj);
@@ -1079,7 +1080,7 @@ void Egg_object::set_weather
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
 	// Experimenting.
-	if (weather == 3 || cur != weather)
+	if (weather != 4 && (weather == 3 || cur != weather))
 		eman->remove_weather_effects();
 
 	switch (weather)
@@ -1098,7 +1099,8 @@ void Egg_object::set_weather
 		eman->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
 	case 4:		// Fog.
-		eman->add_effect(new Fog_effect(len, 0, egg));
+		// ++++ Disabling this.
+		//eman->add_effect(new Fog_effect(len, 0, egg));
 		break;
 	case 5:		// Overcast.
 	case 6:		// Clouds.
@@ -1245,24 +1247,15 @@ bool Field_object::field_effect
 			}
 		break;
 	case fire_field:
-					// Blue fire (serpent isle)?
-		if (get_shapenum() == 561)
-			{
-			actor->reduce_health(5 + rand()%4);
-			}
-		else if (rand()%2)
-			{
-			actor->reduce_health(1);
-			}
+		actor->reduce_health(2 + rand()%3, Weapon_data::fire_damage);
 					// But no sleeping here.
 		actor->clear_flag(Obj_flags::asleep);
 		break;
 	case caltrops_field:
-		if (actor->get_property(Actor::intelligence)*
-		    (actor->get_flag(Obj_flags::might) ? 2 : 1) < rand()%40)
-			{
-			actor->reduce_health(2 + rand()%3);
-			}
+		if (actor->get_effective_prop(Actor::intelligence) < rand()%40)
+			//actor->reduce_health(2 + rand()%3, Weapon_info::normal_damage);
+			// Caltrops don't seem to cause much damage.
+			actor->reduce_health(1 + rand()%1, Weapon_data::normal_damage);
 		return false;
 		}
 	if (!del)			// Tell animator to keep checking.

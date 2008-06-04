@@ -32,6 +32,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <vector>
 
+#include "baseinf.h"
+
+class Shape_info;
+class Shapes_vga_file;
+
 /*
  *	An element from 'equip.dat', describing a monster's equipment:
  */
@@ -80,7 +85,7 @@ public:
 /*
  *	Monster info. from 'monsters.dat':
  */
-class Monster_info
+class Monster_info : public Base_info
 	{
 	static std::vector<Equip_record> equip;	// ->equipment info.
 	static Monster_info default_info;	// For shapes not found.
@@ -94,7 +99,7 @@ class Monster_info
 	unsigned char reach;
 	unsigned char flags;		// Defined below.
 					// The following are bits corresponding
-					//   to Weapon_info::Damage_type.
+					//   to Weapon_data::Damage_type.
 	unsigned char vulnerable, immune;
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
 					//   if 0, there's none.)
@@ -105,15 +110,30 @@ class Monster_info
 	bool m_cant_bleed;
 	bool m_poison_safe;		// Can't be poisoned.
 
+	bool m_charm_safe;		// Can't be charmed.
+	bool m_sleep_safe;		// Can't be put to sleep.
+	bool m_paralysis_safe;		// Can't be paralyzed.
+	bool m_curse_safe;		// Can't be cursed.
+	bool m_power_safe;		// As above 4 items, plus return of flag 13.
+	bool m_death_safe;		// Return of flag 14. Immune to death spells?
+	bool m_int_b1;			// May give XP; but what does it do???
+
+	char m_attackmode;		// Sets initial attack mode.
+	char m_byte13;			// Unknown; Bits 3 through 7 of byte 13.
+
 	bool m_can_teleport;
 	bool m_can_summon;
 	bool m_can_be_invisible;
 public:
+	friend class Shape_info;
 	friend class Monster_actor;
 	Monster_info() {  }
-	int read(std::istream& mfile, bool bg);	// Read in from file.
+		// Read in from file.
+	int read(std::istream& in, int index, int version, bool bg);
 					// Write out.
-	void write(int shapenum, std::ostream& mfile, bool bg);
+	void write(std::ostream& out, int shapenum, bool bg);
+	static const int get_entry_size()
+		{ return 25; }
 	static const Monster_info *get_default();
 	static void reserve_equip(int cnt)
 		{ equip.reserve(cnt); }
@@ -126,61 +146,215 @@ public:
 	bool splits() const
 		{ return m_splits; }
 	void set_splits(bool tf)
-		{ m_splits = tf; }
+		{
+		if (m_splits != tf)
+			{
+			set_modified(true);
+			m_splits = tf;
+			}
+		}
 	bool cant_die() const
 		{ return m_cant_die; }
 	void set_cant_die(bool tf)
-		{ m_cant_die = tf; }
+		{
+		if (m_cant_die != tf)
+			{
+			set_modified(true);
+			m_cant_die = tf;
+			}
+		}
 	bool cant_yell() const
 		{ return m_cant_yell; }
 	void set_cant_yell(bool tf)
-		{ m_cant_yell = tf; }
+		{
+		if (m_cant_yell != tf)
+			{
+			set_modified(true);
+			m_cant_yell = tf;
+			}
+		}
 	bool cant_bleed() const
 		{ return m_cant_bleed; }
 	void set_cant_bleed(bool tf)
-		{ m_cant_bleed = tf; }
+		{
+		if (m_cant_bleed != tf)
+			{
+			set_modified(true);
+			m_cant_bleed = tf;
+			}
+		}
 	bool poison_safe() const
 		{ return m_poison_safe; }
 	void set_poison_safe(bool tf)
-		{ m_poison_safe = tf; }
+		{
+		if (m_poison_safe != tf)
+			{
+			set_modified(true);
+			m_poison_safe = tf;
+			}
+		}
+	bool charm_safe() const
+		{ return m_charm_safe; }
+	void set_charm_safe(bool tf)
+		{
+		if (m_charm_safe != tf)
+			{
+			set_modified(true);
+			m_charm_safe = tf;
+			}
+		}
+	bool sleep_safe() const
+		{ return m_sleep_safe; }
+	void set_sleep_safe(bool tf)
+		{
+		if (m_sleep_safe != tf)
+			{
+			set_modified(true);
+			m_sleep_safe = tf;
+			}
+		}
+	bool paralysis_safe() const
+		{ return m_paralysis_safe; }
+	void set_paralysis_safe(bool tf)
+		{
+		if (m_paralysis_safe != tf)
+			{
+			set_modified(true);
+			m_paralysis_safe = tf;
+			}
+		}
+	bool curse_safe() const
+		{ return m_curse_safe; }
+	void set_curse_safe(bool tf)
+		{
+		if (m_curse_safe != tf)
+			{
+			set_modified(true);
+			m_curse_safe = tf;
+			}
+		}
+	bool power_safe() const
+		{ return m_power_safe; }
+	void set_power_safe(bool tf)
+		{
+		if (m_power_safe != tf)
+			{
+			set_modified(true);
+			m_power_safe = tf;
+			}
+		}
+	bool death_safe() const
+		{ return m_death_safe; }
+	void set_death_safe(bool tf)
+		{
+		if (m_death_safe != tf)
+			{
+			set_modified(true);
+			m_death_safe = tf;
+			}
+		}
+	bool get_int_b1() const
+		{ return m_int_b1; }
+	void set_int_b1(bool tf)
+		{
+		if (m_int_b1 != tf)
+			{
+			set_modified(true);
+			m_int_b1 = tf;
+			}
+		}
+	char get_byte13() const
+		{ return m_byte13; }
+	void set_byte13(char c)
+		{
+		if (m_byte13 != c)
+			{
+			set_modified(true);
+			m_byte13 = c;
+			}
+		}
+	char get_attackmode() const
+		{ return m_attackmode; }
+	void set_attackmode(char c)
+		{
+		if (m_attackmode != c)
+			{
+			set_modified(true);
+			m_attackmode = c;
+			}
+		}
 	bool can_teleport() const
 		{ return m_can_teleport; }
 	void set_can_teleport(bool tf)
-		{ m_can_teleport = tf; }
+		{
+		if (m_can_teleport != tf)
+			{
+			set_modified(true);
+			m_can_teleport = tf;
+			}
+		}
 	bool can_summon() const
 		{ return m_can_summon; }
 	void set_can_summon(bool tf)
-		{ m_can_summon = tf; }
+		{
+		if (m_can_summon != tf)
+			{
+			set_modified(true);
+			m_can_summon = tf;
+			}
+		}
 	bool can_be_invisible() const
 		{ return m_can_be_invisible; }
 	void set_can_be_invisible(bool tf)
-		{ m_can_be_invisible = tf; }
+		{
+		if (m_can_be_invisible != tf)
+			{
+			set_modified(true);
+			m_can_be_invisible = tf;
+			}
+		}
 					// Get bits indicating
-					//   Weapon_info::damage_type:
+					//   Weapon_data::damage_type:
 	unsigned char get_vulnerable() const
 		{ return vulnerable; }
 	void set_vulnerable(unsigned char v)
-		{ vulnerable = v; }
+		{
+		if (vulnerable != v)
+			{
+			set_modified(true);
+			vulnerable = v;
+			}
+		}
 	unsigned char get_immune() const
 		{ return immune; }
 	void set_immune(unsigned char v)
-		{ immune = v; }
+		{
+		if (immune != v)
+			{
+			set_modified(true);
+			immune = v;
+			}
+		}
 	enum Flags {
 		fly = 0,
 		swim = 1,
 		walk = 2,
 		ethereal = 3,		// Can walk through walls.
-		no_body = 4		// Don't create body.
+		no_body = 4,		// Don't create body.
 					// 5:  gazer, hook only.
-//Don't think so magic_only = 7,	// Can only be hurt by magic weapons.
-					// 8:  bat only.
-//		slow = 9		// E.g., slime, corpser.
-					// 10:  skeleton only.
+		start_invisible = 6,
+		see_invisible = 7
 		};
 	unsigned char get_flags() const	// Get above set of flags.
 		{ return flags; }
 	void set_flags(unsigned char f)
-		{ flags = f; }
+		{
+		if (flags != f)
+			{
+			set_modified(true);
+			flags = f;
+			}
+		}
 	bool has_no_body() const	// No dead body?
 		{ return (flags>>no_body)&1; }
 	int get_strength() const	
@@ -192,7 +366,13 @@ public:
 	int get_alignment() const
 		{ return alignment; }
 	void set_alignment(int a)
-		{ alignment = a; }
+		{
+		if (alignment != a)
+			{
+			set_modified(true);
+			alignment = a;
+			}
+		}
 	int get_combat() const
 		{ return combat; }
 	int get_armor() const
@@ -206,11 +386,26 @@ public:
 	int get_equip_offset() const
 		{ return equip_offset; }
 	void set_equip_offset(int o)
-		{ equip_offset = o; }
+		{
+		if (equip_offset != o)
+			{
+			set_modified(true);
+			equip_offset = o;
+			}
+		}
 	short get_hitsfx() const
 		{ return sfx; }
 	void set_hitsfx(short s)
-		{ sfx = s; }
+		{
+		if (sfx != s)
+			{
+			set_modified(true);
+			sfx = s;
+			}
+		}
+	static int get_info_flag()
+		{ return 8; }
+	int get_base_xp_value();
 	};
 
 

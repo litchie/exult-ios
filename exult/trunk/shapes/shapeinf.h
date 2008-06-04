@@ -1,5 +1,5 @@
 /**
- **	Shapeinf.h: Info. about shapes read from various 'static' data files.
+ **	Shapeinf.h: Info. about shapes read from various data files.
  **
  **	Written: 4/29/99 - JSF
  **/
@@ -25,232 +25,57 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+class Armor_info;
+class Weapon_info;
+class Ammo_info;
 class Monster_info;
+class SFX_info;
+class Animation_info;
+class Explosion_info;
+class Body_info;
+class Paperdoll_npc;
+class Paperdoll_item;
+class Effective_hp_info;
+class Frame_name_info;
+class Warmth_info;
+class Content_rules;
+class Shapes_vga_file;
 
 #include <iosfwd>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <iostream>
+#include "baseinf.h"
+#include "utils.h"
 
-/*
- *	Specific information about weapons from 'weapons.dat':
- *	MAYBE:  Move this and ammo. to separate source file(s).
- */
-class Weapon_info
-	{
-	char damage;			// Damage points (positive).
-public:
-	enum Powers			// Special weapon powers.
-		{			// Guesses from printout:
-		sleep = 1,
-		charm = 2,
-		curse = 4,
-		poison = 8,
-		paralyze = 16,
-		magebane = 32,		// Takes away mana.
-		si_no_damage = 128	// Weapon/missile causes no damage;
-							// also puts Draygan to sleep.
-		};
-	enum Damage_type		// Type of damage.  These also are the
-					//   bit #'s in Monster_info's 
-					//   immune and vulerable fields.
-		{
-		normal_damage = 0,
-		fire_damage = 1,
-		magic_damage = 2,
-		lightning_damage = 3,
-		ethereal_damage = 4,
-		sonic_damage = 5
-		};
-	enum Actor_frames		// Actor frames to show when using:
-		{
-		reach = 0,
-		raise = 1,
-		fast_swing = 2,
-		slow_swing = 3
-		};
-private:
-	unsigned char powers;		// Poison, sleep, charm. flags.
-	unsigned char damage_type;	// See Damage_type above.
-	unsigned char actor_frames;	// Frames for NPC when using (from
-					//   Actor_frames above).  Low 2 bits
-					//   are for 'strike', next 2 are for
-					//   shooting/throwing.
-	short ammo;			// Shape # of ammo. consumed, or
-					//   -1 = ?? (swords, also sling).
-					//   -2 = ?? wands?
-					//   -3 = throw weapon itself.
-	short projectile;		// Projectile shape, or 0.
-	bool m_explodes;		// Projectile explodes on impact.
-	bool m_returns;			// Boomerang, magic axe.
-	short missile_speed;	// # of steps taken by the missile each cycle.
-	short rotation_speed;	// Added to frame # each cycle (misslies only).
-	short cycle_delay;		// Delay between successive cycles?
-	bool m_no_blocking;		// Can move through walls.
-	int usecode;			// Usecode function, or 0.
-	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
-					//   3 = missile-firing.
-	unsigned char range;		// Distance weapon can be used.
-	short sfx, hitsfx;		// Sound when using/hit, or -1.
-public:
-	friend class Shape_info;
-	Weapon_info() {  }
-	int read(std::istream& mfile, bool bg);	// Read in from file.
-					// Write out.
-	void write(int shapenum, std::ostream& mfile, bool bg);
-	int get_damage() const
-		{ return damage; }
-	int get_damage_type() const
-		{ return damage_type; }
-	void set_damage(int dmg, int dmgtype)
-		{ damage = dmg; damage_type = dmgtype; }
-	unsigned char get_powers() const
-		{ return powers; }
-	void set_powers(unsigned char p)
-		{ powers = p; }
-	unsigned char get_actor_frames(bool projectile) const
-		{ return !projectile ? (actor_frames&3) : (actor_frames>>2)&3; }
-	void set_actor_frames(unsigned char f)
-		{ actor_frames = f; }
-	int get_ammo_consumed()
-		{ return ammo > 0 ? ammo : 0; }
-	void set_ammo(int a)			// Raw value, for map-editor.
-		{ ammo = a; }
-	bool uses_charges()
-		{ return ammo == -2; }
-	bool is_thrown() const
-		// Figured this out from printing out values:
-		{ return ammo == -3 && uses != 0; }
-	bool returns() const
-		{ return m_returns; }
-	void set_returns(bool tf)
-		{ m_returns = tf; }
-	bool explodes() const
-		{ return m_explodes; }
-	void set_explodes(bool tf)
-		{ m_explodes = tf; }
-	bool no_blocking() const
-		{ return m_no_blocking; }
-	void set_no_blocking(bool tf)
-		{ m_no_blocking = tf; }
-	unsigned char get_uses() const
-		{ return uses; }
-	void set_uses(unsigned char u)
-		{ uses = u; }
-	int get_range()			// Raw # (for map-editor).
-		{ return range; }
-	void set_range(int r)
-		{ range = r; }
-	int get_striking_range()
-		{ return uses < 3 ? range : 0; }
-	int get_projectile_range()	// +++Guess for thrown weapons.
-		{ return uses == 3 ? range : is_thrown() ? 20 : 0; }
-	int get_projectile()
-		{ return projectile; }
-	void set_projectile(int p)
-		{ projectile = p; }
-	int get_missile_speed()
-		{ return missile_speed; }
-	void set_missile_speed(int s)
-		{ missile_speed = s; }
-	int get_rotation_speed()
-		{ return rotation_speed; }
-	void set_rotation_speed(int s)
-		{ rotation_speed = s; }
-	int get_cycle_delay()
-		{ return cycle_delay; }
-	void set_cycle_delay(int d)
-		{ cycle_delay = d; }
-	int get_usecode()
-		{ return usecode; }
-	void set_usecode(int u)
-		{ usecode = u; }
-	int get_sfx()			// Return sound-effects #, or -1.
-		{ return sfx; }
-	int get_hitsfx()
-		{ return hitsfx; }
-	void set_sfxs(int s, int hits)
-		{ sfx = s; hitsfx = hits; }
-	};
+template <typename T, T Shape_info::*data, int flag, typename Functor>
+class Functor_data_reader;
+class Actor_flags_reader;
+template <typename T, T *Shape_info::*data>
+class Class_data_reader;
+template <typename T, std::vector<T> Shape_info::*data>
+class Vector_data_reader;
+template <typename T, T Shape_info::*data, int flag, typename Functor>
+class Functor_data_writer;
+template <typename T, T *Shape_info::*data>
+class Class_data_writer;
+template <typename T, std::vector<T> Shape_info::*data>
+class Vector_data_writer;
 
-/*
- *	Info. from 'ammo.dat':
- */
-class Ammo_info
+enum Data_flag_names
 	{
-private:
-	int family_shape;		// I.e., burst-arrow's is 'arrow'.
-	unsigned short type2;		// What the missile should look like.
-	unsigned char damage;		// Extra damage points.
-	unsigned char powers;		// Same as for weapons.
-	unsigned char damage_type;	// Same as for weapons.
-	bool m_no_blocking;		// Can move through walls.
-	unsigned char drop_type;	// What to do to missile when it hits/misses
-	bool homing;		// For Energy Mist/Death Vortex.
-	bool m_bursts;				// Burst arrows.
-public:
-	enum Drop_types			// Determines what happens when the missile misses
-		{
-		drop_normally = 0,
-		never_drop = 1,
-		always_drop = 2
-		};
-	friend class Shapes_vga_file;
-	Ammo_info()
-		{  }
-	int read(std::istream& mfile);	// Read in from file.
-					// Write out.
-	void write(int shapenum, std::ostream& mfile);
-	int get_family_shape()
-		{ return family_shape; }
-	void set_family_shape(int f)
-		{ family_shape = f; }
-	int get_damage()
-		{ return damage; }
-	int get_damage_type() const
-		{ return damage_type; }
-	void set_damage(int dmg, int dtype)
-		{ damage = dmg; damage_type = dtype; }
-	unsigned char get_powers() const
-		{ return powers; }
-	void set_powers(unsigned char p)
-		{ powers = p; }
-	bool no_blocking() const
-		{ return m_no_blocking; }
-	void set_no_blocking(bool tf)
-		{ m_no_blocking = tf; }
-	unsigned char get_drop_type() const
-		{ return drop_type; }
-	void set_drop_type(unsigned char drop)
-		{ drop_type = drop; }
-	bool is_homing() const
-		{ return homing; }
-	void set_homing(bool sb)
-		{ homing = sb; }
-	bool bursts() const
-		{ return m_bursts; }
-	void set_bursts(bool b)
-		{ m_bursts = b; }
-	};
-
-/*
- *	Armor:
- */
-class Armor_info
-	{
-	unsigned char prot;		// Protection value.
-	unsigned char immune;		// Weapon_info::damage_type bits.
-public:
-	friend class Shape_info;
-	Armor_info() {  }
-	int read(std::istream& mfile);	// Read in from file.
-					// Write out.
-	void write(int shapenum, std::ostream& mfile);
-	unsigned char get_prot() const
-		{ return prot; }
-	void set_prot(unsigned char p)
-		{ prot = p; }
-	unsigned char get_immune() const
-		{ return immune; }
-	void set_immune(unsigned char i)
-		{ immune = i; }
+	ready_type_flag = 1,
+	container_gump_flag = 2,
+	monster_food_flag = 4,
+	actor_flags_flag = 8,
+	usecode_events_flag = 0x10,
+	is_body_flag = 0x20,
+	mountain_top_flag = 0x40,
+	lightweight_flag = 0x80,
+	quantity_frames_flag = 0x100,
+	is_locked_flag = 0x200,
+	is_volatile_flag = 0x400
 	};
 
 /*
@@ -273,7 +98,28 @@ class Shape_info
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
 	Ammo_info *ammo;		// From ammo.dat, if ammo.
 	Monster_info *monstinf;		// From monster.dat.
+	SFX_info *sfxinf;
+	Animation_info *aniinf;
+	Explosion_info *explosion;
+	Body_info *body;
+	Paperdoll_npc *npcpaperdoll;
+	// These vectors should be totally ordered by the strict-weak
+	// order operator defined for the classes.
+	std::vector<Paperdoll_item> objpaperdoll;
+	std::vector<Effective_hp_info> hpinf;
+	std::vector<Frame_name_info> nameinf;
+	std::vector<Warmth_info> warminf;
+	std::vector<Content_rules> cntrules;
 	short container_gump;		// From container.dat.
+	short monster_food;
+	unsigned char actor_flags;
+	unsigned char shape_flags;
+		// For some non-class data (see Data_flag_names enum).
+	unsigned short modified_flags;
+	unsigned short frompatch_flags;
+		// For class data (to indicate an invalid entry should
+		// be written by ES).
+	unsigned short have_static_flags;
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		dims[0] = 1 + (tfa[2]&7);
@@ -283,45 +129,352 @@ class Shape_info
 					// Set/clear tfa bit.
 	void set_tfa(int i, int bit, bool tf)
 		{ tfa[i] = tf ? (tfa[i]|(1<<bit)) : (tfa[i]&~(1<<bit)); }
-public:
-	friend class Shapes_vga_file;	// Class that reads in data.
-	Shape_info() : weight(0), volume(0),
-		ready_type(255), occludes_flag(false), weapon_offsets(0), 
-		armor(0), weapon(0), ammo(0), monstinf(0), container_gump(-1)
+
+	/*
+	 *	Generic vector data handler routines.
+	 *	They all assume that the template class has the following
+	 *	operators defined:
+	 *		(1) operator< (which must be a strict weak order)
+	 *		(2) operator==
+	 *		(3) operator!=
+	 *		(4) operator= that sets modified flag if needed.
+	 *	They also assume that the vector is totally ordered
+	 *	with the operator< -- using these functions will ensure
+	 *	that this is the case.
+	 */
+	template <typename T>
+	static void add_vector_info(const T& inf, std::vector<T>& vec)
 		{
-		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
-		dims[0] = dims[1] = dims[2] = 0;
+		typename std::vector<T>::iterator it;
+			// Find using operator<.
+		it = std::lower_bound(vec.begin(), vec.end(), inf);
+		if (it == vec.end() || *it != inf)	// Not found.
+			vec.insert(it, inf);	// Add new.
+		else	// Already exists.
+			*it = inf;	// Replace information.
 		}
+	template <typename T>
+	static void copy_vector_info(const std::vector<T>& from, std::vector<T>& to)
+		{
+		if (from.size())
+			{
+			to.resize(from.size());
+			std::copy(from.begin(), from.end(), to.begin());
+			}
+		else
+			to.clear();
+		}
+	template <typename T>
+	static std::vector<T>& set_vector_info(bool tf, std::vector<T>& vec)
+		{
+		invalidate_vector(vec);
+		if (!tf)
+			clean_vector(vec);
+		return vec;
+		}
+	template <typename T>
+	static void invalidate_vector(std::vector<T>& vec)
+		{
+		typename std::vector<T>::iterator it;
+		for (it = vec.begin(); it != vec.end(); ++it)
+			it->invalidate();
+		}
+
+	template <typename T>
+	static void clean_vector(std::vector<T>& vec)
+		{
+		unsigned int i = 0;
+		while (i < vec.size())
+			{
+			typename std::vector<T>::iterator it = vec.begin() + i;
+			if (!it->is_invalid() || it->have_static())
+				i++;
+			else
+				vec.erase(it);
+			}
+		}
+	// Generic data handler routine.
+	template <typename T>
+	static T *set_info(bool tf, T *&pt)
+		{
+		if (!tf)
+			{
+			delete pt;
+			pt = 0;
+			}
+		else if (!pt)
+			pt = new T();
+		return pt;
+		}
+public:
+	enum Actor_flags
+		{
+		cold_immune = 0,
+		doenst_eat,
+		teleports,
+		summons,
+		turns_invisible
+		};
+	enum Shape_flags
+		{
+		usecode_events = 0,
+		is_body,
+		mountain_top,
+		lightweight,
+		quantity_frames,
+		is_locked,
+		is_volatile
+		};
+	friend class Shapes_vga_file;	// Class that reads in data.
+	template <typename T, T Shape_info::*data, int flag, typename Functor>
+	friend class Functor_data_reader;
+	friend class Actor_flags_reader;
+	template <typename T, T *Shape_info::*data>
+	friend class Class_data_reader;
+	template <typename T, std::vector<T> Shape_info::*data>
+	friend class Vector_data_reader;
+	template <typename T, T Shape_info::*data, int flag, typename Functor>
+	friend class Functor_data_writer;
+	template <typename T, T *Shape_info::*data>
+	friend class Class_data_writer;
+	template <typename T, std::vector<T> Shape_info::*data>
+	friend class Vector_data_writer;
+	Shape_info();
 	// This copy constructor and assignment operator intentionally cause
 	// errors.
 	Shape_info(const Shape_info & other);
 	const Shape_info & operator = (const Shape_info & other);
 	virtual ~Shape_info();
 	void copy(const Shape_info& inf2);
-	int get_weight()		// Get weight, volume.
+
+	int get_weight() const		// Get weight, volume.
 		{ return weight; }
-	int get_volume()
+	int get_volume() const
 		{ return volume; }
 	void set_weight_volume(int w, int v)
 		{ weight = w; volume = v; }
-	int get_armor()			// Get armor protection.
-		{ return armor ? armor->prot : 0; }
-	Weapon_info *get_weapon_info()
+
+	int get_armor() const;
+	int get_armor_immunity() const;
+
+	int get_explosion_sprite() const;
+	int get_explosion_sfx() const;
+
+	int get_body_shape() const;
+	int get_body_frame() const;
+
+	bool has_weapon_info() const
+		{ return weapon != 0; }
+	Weapon_info *get_weapon_info_safe() const;
+	Weapon_info *get_weapon_info() const
 		{ return weapon; }
 	Weapon_info *set_weapon_info(bool tf);
-	Ammo_info *get_ammo_info()
+
+	bool has_ammo_info() const
+		{ return ammo != 0; }
+	Ammo_info *get_ammo_info_safe() const;
+	Ammo_info *get_ammo_info() const
 		{ return ammo; }
 	Ammo_info *set_ammo_info(bool tf);
-	Armor_info *get_armor_info()
+
+	bool has_armor_info() const
+		{ return armor != 0; }
+	Armor_info *get_armor_info() const
 		{ return armor; }
 	Armor_info *set_armor_info(bool tf);
-	Monster_info *get_monster_info()
+
+	bool has_monster_info() const
+		{ return monstinf != 0; }
+	Monster_info *get_monster_info_safe() const;
+	Monster_info *get_monster_info() const
 		{ return monstinf; }
 	Monster_info *set_monster_info(bool tf);
-	int get_container_gump()
+
+	bool has_npc_paperdoll_info() const
+		{ return npcpaperdoll != 0; }
+	Paperdoll_npc *get_npc_paperdoll() const
+		{ return npcpaperdoll; }
+	Paperdoll_npc *set_npc_paperdoll_info(bool tf);
+	Paperdoll_npc *get_npc_paperdoll_safe(bool sex) const;
+
+	bool has_sfx_info() const
+		{ return sfxinf != 0; }
+	SFX_info *get_sfx_info() const
+		{ return sfxinf; }
+	SFX_info *set_sfx_info(bool tf);
+
+	bool has_explosion_info() const
+		{ return explosion != 0; }
+	Explosion_info *get_explosion_info() const
+		{ return explosion; }
+	Explosion_info *set_explosion_info(bool tf);
+
+	bool has_animation_info() const
+		{ return aniinf != 0; }
+	Animation_info *get_animation_info() const
+		{ return aniinf; }
+	Animation_info *get_animation_info_safe(int shnum, int nframes);
+	Animation_info *set_animation_info(bool tf);
+
+	bool has_body_info() const
+		{ return body != 0; }
+	Body_info *get_body_info() const
+		{ return body; }
+	Body_info *set_body_info(bool tf);
+
+	bool has_paperdoll_info() const;
+	std::vector<Paperdoll_item>& get_paperdoll_info()
+		{ return objpaperdoll; }
+	std::vector<Paperdoll_item>& set_paperdoll_info(bool tf);
+	void clean_invalid_paperdolls();
+	void clear_paperdoll_info();
+	void add_paperdoll_info(Paperdoll_item& add);
+	Paperdoll_item *get_item_paperdoll(int frame, int spot);
+	bool is_object_allowed(int frame, int spot)
+		{ return get_item_paperdoll(frame, spot) != 0; }
+
+	bool has_content_rules() const;
+	std::vector<Content_rules>& get_content_rules()
+		{ return cntrules; }
+	std::vector<Content_rules>& set_content_rules(bool tf);
+	void clean_invalid_content_rules();
+	void clear_content_rules();
+	void add_content_rule(Content_rules& add);
+	bool is_shape_accepted(int shape);
+
+	bool has_effective_hp_info() const;
+	std::vector<Effective_hp_info>& get_effective_hp_info()
+		{ return hpinf; }
+	std::vector<Effective_hp_info>& set_effective_hp_info(bool tf);
+	void clean_invalid_hp_info();
+	void clear_effective_hp_info();
+	void add_effective_hp_info(Effective_hp_info& add);
+	int get_effective_hps(int frame, int quality);
+
+	bool has_frame_name_info() const;
+	std::vector<Frame_name_info>& get_frame_name_info()
+		{ return nameinf; }
+	std::vector<Frame_name_info>& set_frame_name_info(bool tf);
+	void clean_invalid_name_info();
+	void clear_frame_name_info();
+	void add_frame_name_info(Frame_name_info& add);
+	Frame_name_info *get_frame_name(int frame, int quality);
+
+	bool has_warmth_info() const;
+	std::vector<Warmth_info>& get_warmth_info()
+		{ return warminf; }
+	std::vector<Warmth_info>& set_warmth_info(bool tf);
+	void clean_invalid_warmth_info();
+	void clear_warmth_info();
+	void add_warmth_info(Warmth_info& add);
+	int get_object_warmth(int frame);
+
+	int get_monster_food() const
+		{ return monster_food; }
+	void set_monster_food(int sh)
+		{
+		if (monster_food != (short)sh)
+			{
+			modified_flags |= monster_food_flag;
+			monster_food = (short)sh;
+			}
+		}
+
+	int get_container_gump() const
 		{ return container_gump; }
 	void set_container_gump(int sh)
-		{ container_gump = (short) sh; }
+		{
+		if (container_gump != (short)sh)
+			{
+			modified_flags |= container_gump_flag;
+			container_gump = (short) sh;
+			}
+		}
+
+	unsigned char get_shape_flags() const
+		{ return shape_flags; }
+	void set_shape_flags(char flags)
+		{
+		if (shape_flags != flags)
+			{
+			int diff = (shape_flags ^ flags) << 4;
+			modified_flags |= diff;
+			shape_flags = flags;
+			}
+		}
+	bool get_shape_flag(int tf) const
+		{ return (shape_flags & (1 << tf)) != 0; }
+	void set_shape_flag(int tf, int mod)
+		{
+		if (!(shape_flags & (1 << tf)))
+			{
+			modified_flags |= (1 << mod);
+			shape_flags |= (1 << tf);
+			}
+		}
+	void clear_shape_flag(int tf, int mod)
+		{
+		if (shape_flags & (1 << tf))
+			{
+			modified_flags |= (1 << mod);
+			shape_flags &= ~(1 << tf);
+			}
+		}
+
+	bool has_usecode_events() const
+		{ return get_shape_flag(usecode_events); }
+	bool is_body_shape() const
+		{ return get_shape_flag(is_body); }
+	bool is_mountain_top() const
+		{ return get_shape_flag(mountain_top); }
+	bool is_lightweight() const
+		{ return get_shape_flag(lightweight); }
+	bool has_quantity_frames() const
+		{ return get_shape_flag(quantity_frames); }
+	bool is_container_locked() const
+		{ return get_shape_flag(is_locked); }
+	bool is_explosive() const
+		{ return get_shape_flag(is_volatile); }
+
+	unsigned char get_actor_flags() const
+		{ return actor_flags; }
+	void set_actor_flags(char flags)
+		{
+		if (actor_flags != flags)
+			{
+			modified_flags |= actor_flags_flag;
+			actor_flags = flags;
+			}
+		}
+	bool get_actor_flag(int tf) const
+		{ return (actor_flags & (1 << tf)) != 0; }
+	void set_actor_flag(int tf)
+		{
+		if (!(actor_flags & (1 << tf)))
+			{
+			modified_flags |= actor_flags_flag;
+			actor_flags |= (1 << tf);
+			}
+		}
+	void clear_actor_flag(int tf)
+		{
+		if (actor_flags & (1 << tf))
+			{
+			modified_flags |= actor_flags_flag;
+			actor_flags &= ~(1 << tf);
+			}
+		}
+	
+	bool is_cold_immune() const
+		{ return get_actor_flag(cold_immune); }
+	bool does_not_eat() const
+		{ return get_actor_flag(doenst_eat); }
+	bool can_teleport() const
+		{ return get_actor_flag(teleports); }
+	bool can_summon() const
+		{ return get_actor_flag(summons); }
+	bool can_be_invisible() const
+		{ return get_actor_flag(turns_invisible); }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum)
@@ -440,9 +593,28 @@ public:
 	void set_occludes(bool tf)
 		{ occludes_flag = tf; }
 	unsigned char get_ready_type()
-		{ return ready_type; }
+		{ return ready_type >> 3; }
 	void set_ready_type(unsigned char t)
-		{ ready_type = t; }
+		{
+		if (get_ready_type() != t)
+			{
+			modified_flags |= ready_type_flag;
+			ready_type = (t << 3) | (ready_type & 1);
+			}
+		}
+	bool is_spell()
+		{ return (ready_type & 1) != 0; }
+	void set_is_spell(bool tf)
+		{
+		if (is_spell() != tf)
+			{
+			modified_flags |= ready_type_flag;
+			if (tf)
+				ready_type |= 1;
+			else
+				ready_type &= (unsigned char)(~1);
+			}
+		}
 	// Sets x to 255 if there is no weapon offset
 	void get_weapon_offset(int frame, unsigned char& x, unsigned char& y)
 		{

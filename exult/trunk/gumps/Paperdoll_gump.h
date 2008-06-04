@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _PAPERDOLL_GUMP_H_
 
 #include "Gump.h"
-#include "miscinf.h"
 
 class Heart_button;
 class Disk_button;
@@ -28,6 +27,7 @@ class Combat_button;
 class Halo_button;
 class Cstats_button;
 class Combat_mode_button;
+class Paperdoll_npc;
 
 //
 // For best viewing use Tab size = 4
@@ -125,7 +125,7 @@ public:
 
 	// Generic Paint Object Method
 	void paint_object(const Rectangle &box, Paperdoll_npc *info, int spot,
-						int sx, int sy, int frame = 0, int itemtype = -1, int checkspot = -1, int checktype = -1);
+						int sx, int sy, int frame = 0, int itemtype = -1);
 
 	// Generic Paint Object Method for something that is armed dependant
 	void paint_object_arms(const Rectangle &box, Paperdoll_npc *info, int spot,
@@ -138,7 +138,7 @@ public:
 	void paint_arms (const Rectangle &box, Paperdoll_npc *info);
 
 	// What are we holding?
-	Object_type get_arm_type (void);
+	int get_arm_type (void);
 
 
 	//
@@ -147,7 +147,7 @@ public:
 
 	// Generic Check Object Method
 	Game_object *check_object (int mx, int my, Paperdoll_npc *info, int spot,
-						int sx, int sy, int frame = 0, int itemtype = -1, int checkspot = -1, int checktype = -1);
+						int sx, int sy, int frame = 0, int itemtype = -1);
 
 
 	// Generic Check Object Method for something that is armed dependant

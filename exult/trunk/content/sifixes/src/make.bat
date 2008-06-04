@@ -26,6 +26,7 @@
 	@ucc.exe -o ../data/usecode usecode.uc
 	@if errorlevel 1 (
 		@echo There were error^(s^) compiling usecode!
+		@pause
 	) else (
 		@echo Usecode has been successfuly compiled!
 	)

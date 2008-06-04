@@ -52,11 +52,11 @@
 #include "actors.h"	/* For Dead_body, which should be moved. */
 #include "ucsched.h"
 #include "gamewin.h"	/* With some work, could get rid of this. */
-#include "miscinf.h"
 #include "game.h"
 #include "effects.h"
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include "databuf.h"
+#include "weaponinf.h"
 #include <fstream>
 #include <sstream>
 
@@ -1060,7 +1060,7 @@ void Game_map::read_ireg_objects
 		unsigned long oflags = flags & ~(1<<Obj_flags::is_temporary);
 		int testlen = entlen - extended;
 		if (testlen != 6 && testlen != 10 && testlen != 12 && 
-					testlen != 14 && testlen != 18)
+					testlen != 13 && testlen != 14 && testlen != 18)
 			{
 			long pos = ireg->getPos();
 			cout << "Unknown entlen " << testlen << " at pos. " <<
@@ -1143,6 +1143,34 @@ void Game_map::read_ireg_objects
 				quality = 0;
 				}
 			}
+		else if (info.is_body_shape())
+			{	// NPC's body.
+			int extbody = testlen == 13 ? 1 : 0;
+			type = entry[4] + 256*entry[5];
+			lift = entry[9 + extbody] >> 4;
+			quality = entry[7];
+			oflags =	// Override flags (I think).
+				Get_quality_flags(entry[11]);
+			int npc_num;
+			if (quality & 1)
+				npc_num = extbody ? (entry[8] + 256*entry[9]) :
+						(entry[8] - 0x80) & 0xFF;
+			else
+				npc_num = -1;
+			if (!npc_num)	// Avatar has no body.
+				npc_num = -1;
+			Dead_body *b = new Dead_body(shnum, frnum, 
+					tilex, tiley, lift, npc_num);
+			obj = b;
+			if (npc_num > 0)
+				gwin->set_body(npc_num, b);
+			if (type)	// (0 if empty.)
+				{	// Don't pass along invisibility!
+				read_ireg_objects(ireg, scx, scy, obj, 
+					oflags & ~(1<<Obj_flags::invisible));
+				obj->elements_read();
+				}
+			}
 		else if (testlen == 12)	// Container?
 			{
 			type = entry[4] + 256*entry[5];
@@ -1178,20 +1206,6 @@ void Game_map::read_ireg_objects
 				obj = new Jawbone_object(shnum, frnum,
 					tilex, tiley, lift, entry[10]);
 				}
-			else if (quality == 1 && 
-					 (entry[8] >= 0x80 || 
-				  Game::get_game_type() == SERPENT_ISLE)) 
-				{		// NPC's body.
-				int npc_num = (entry[8] - 0x80) & 0xFF;
-				Dead_body *b = new Dead_body(shnum, frnum, 
-						tilex, tiley, lift, npc_num);
-				obj = b;
-				gwin->set_body(npc_num, b);
-				}
-			else if (Shapeinfo_lookup::Is_body_shape(shnum)) {
-				obj = new Dead_body(
-				    shnum, frnum, tilex, tiley, lift, -1);
-			}
 			else
 				obj = new Container_game_object(
 				    shnum, frnum, tilex, tiley, lift,
@@ -1277,7 +1291,8 @@ Ireg_game_object *Game_map::create_ireg_object
 					shnum, frnum, tilex, tiley, lift);
 	if (shnum == 848 || shnum == 268)	// Mirror
 		return new Mirror_object(shnum, frnum, tilex, tiley, lift);
-	else if (shnum == 761)		// Spellbook.
+//	else if (shnum == 761)		// Spellbook.
+	else if (info.get_shape_class() == Shape_info::spellbook)
 		{
 		static unsigned char circles[9] = {0};
 		return new Spellbook_object(

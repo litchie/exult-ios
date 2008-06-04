@@ -64,12 +64,16 @@ protected:
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
 	Game_object *target;		// Who/what we're attacking.
 	short casting_mode;		//For displaying casting frames.
+	// These 2 are set by the Usecode function 'set_to_attack':
+	Game_object *target_object;
+	Tile_coord target_tile;
+	int attack_weapon;
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
 		nearest = 0,
 		weakest = 1,		// Attack weakest.
 		strongest = 2,
-		beserk = 3,		// Always attack, never retreat.
+		berserk = 3,		// Always attack, never retreat.
 		protect = 4,		// Protect NPC with halo.
 		defend = 5,
 		flank = 6,		// Attempt to attack from side.
@@ -140,10 +144,10 @@ public:
 	int is_blocked(Tile_coord& t, Tile_coord *f = 0, const int move_flags = 0);
 	Game_object *find_blocking(Tile_coord tile, int dir);
 
-	Game_object *find_ammo(int ammo);// Find ammo for desired family.
 	void swap_ammo(Game_object *newammo);
 	bool ready_ammo();		// Find and ready appropriate ammo.
 	bool ready_best_weapon();	// Find best weapon and ready it.
+	bool ready_best_shield();	// Find best shield and ready it.
 	void unready_weapon();		// Try to sheath weapon.
 					// Force repaint of area taken.
 	int get_effective_weapon_shape();//For displaying casting frames.
@@ -188,8 +192,10 @@ public:
 		cloak_spot = 15,	// SI
 		hands2_spot = 16,	// SI (gloves, gauntlets)
 		ucont_spot = 17,	// SI Usecode Container
+		/*
 		lrhand = 100,		// Special:  uses lhand & rhand. - Used anymore?
 		lrfinger = 101,		// Special:  uses lfinger & rfinger - Used anymore?
+		*/
 		special_spot = 102	// Special:  SI non placeable
 		};
 	int free_hand() const		// Get index of a free hand, or -1.
@@ -393,11 +399,39 @@ public:
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
 	std::string get_npc_name() const;
+	std::string get_npc_name_string() const
+		{ return name; }
 	void set_npc_name(const char *n);
 	void set_property(int prop, int val);
+	virtual bool try_to_hit(Game_object *attacker, int attval);
+					// Under attack.
+	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = 0,
+					int ammo_shape = 0, bool explosion = false);
+	virtual int figure_hit_points(Game_object *attacker, int weapon_shape = -1, 
+							int ammo_shape = -1, bool explosion = false);
+	virtual int apply_damage(Game_object *attacker,	int str,
+					int wpoints, int type, int bias = 0, int *exp = 0);
 					// Lose HP's and check for death.
-	virtual bool reduce_health(int delta, Actor *attacker = 0,
-			int damage_type = 0, bool ignore_immunity = false);
+	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
+			int *exp = 0);
+	void fight_back(Game_object *attacker);
+	void set_attack_target(Game_object *t, int w)
+		{
+		target_tile = Tile_coord(-1, -1, 0);
+		target_object = t;
+		attack_weapon = w;
+		}
+	void set_attack_target(Tile_coord t, int w)
+		{
+		target_object = 0;
+		target_tile = t;
+		attack_weapon = w;
+		}
+	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
+	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
+			bool recursive = false);
+	Game_object *find_best_ammo(int family, int needed = 1);
+	bool usecode_attack();
 	int get_property(int prop) const;
 	int get_effective_prop(int prop) const;
 	bool is_dying() const		// Dead when health below -1/3 str.
@@ -467,7 +501,6 @@ public:
 		{ usecode_dir = d&7; }
 	int get_usecode_dir() const
 		{ return usecode_dir; }
-	virtual bool usecode_attack();
 	virtual Actor *as_actor()	// An actor?
 		{ return this; }
 	void init_readied();		// Call Usecode to init. readied objs.
@@ -505,12 +538,10 @@ public:
 		{ int sh; Game_object *o; return get_weapon(points, sh, o); }
 	static bool roll_to_win(int attacker, int defender);
 					// Hit-point algorithm:
-	bool figure_hit_points(Actor *attacker, int weapon_shape, 
-							int ammo_shape);
-					// Under attack.
-	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
-					int ammo_shape = 0);
-	virtual void die(Actor *attacker);		// We're dead.
+	bool can_act();
+	virtual void fall_down();
+	virtual void lay_down(bool die);
+	virtual void die(Game_object *attacker);		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
@@ -589,7 +620,7 @@ public:
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
-	virtual void die(Actor *attacker);		// We're dead.
+	virtual void die(Game_object *attacker);		// We're dead.
 	};
 
 /*
@@ -658,11 +689,12 @@ public:
 		{
 		}
 	virtual ~Dead_body();
-	virtual int get_live_npc_num();
+	virtual int get_live_npc_num() const;
 					// Under attack.
-	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
-					int ammo_shape = 0)
+	virtual Game_object *attacked(Game_object *attacker, int weapon_shape = 0,
+					int ammo_shape = 0, bool explosion = false)
 		{ return this; }	// Not affected.
+	virtual void write_ireg(DataSource* out);
 	};
 
 #endif

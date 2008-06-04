@@ -24,6 +24,7 @@
 
 #include "monsters.h"
 #include "monstinf.h"
+#include "weaponinf.h"
 #include "gamewin.h"
 #include "animate.h"
 #include "schedule.h"
@@ -55,6 +56,11 @@ public:
 	virtual void remove_this(int nodel = 0);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	virtual void lay_down(bool die)
+		{
+		remove_this(1);			// Remove (but don't delete this).
+		set_invalid();
+		}
 	};
 
 /*
@@ -141,40 +147,6 @@ Monster_actor::~Monster_actor
 	}
 
 /*
- *	Another set of constants that should be in a data file (or that's
- *	probably already in one of the U7 data files), this one correlating
- *	a 'monster' shape with the food frame you get when you kill it.
- */
-static int Monster_food[] = {
-	498, 10,			// Chicken.
-	500,  9,			// Cow - beef steaks.
-	502,  14,			// Deer - meat.
-	509, 12,			// Fish.
-	811, 9,				// Rabbit - same as cow?
-	970, 8,				// Sheep - mutton.
-	727, 23,			// Horse - ribs.
-	329, 11				// Boar - ham.
-	};
-
-/*
- *	Find food frame for given monster shape.
- *
- *	Output:	Frame if found, else a random frame (0-31).
- */
-
-static int Find_monster_food
-	(
-	int shnum			// Monster shape.
-	)
-	{
-	const int cnt = sizeof(Monster_food)/(2*sizeof(Monster_food[0]));
-	for (int i = 0; i < cnt; i++)
-		if (Monster_food[2*i] == shnum)
-			return Monster_food[2*i + 1];
-	return rand()%32;
-	}
-
-/*
  *	Equip.
  */
 
@@ -198,7 +170,9 @@ void Monster_actor::equip
 		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
 			continue;// You lose.
 		int frnum = (elem.shapenum == 377) ? 
-			Find_monster_food(get_shapenum()) : 0;
+			get_info().get_monster_food() : 0;
+		if (frnum < 0)	// Food.
+			frnum = rand()%32;
 		Shape_info& einfo = ShapeID::get_info(elem.shapenum);
 		Weapon_info *winfo = einfo.get_weapon_info();
 		if (einfo.has_quality() && winfo && winfo->uses_charges())
@@ -208,7 +182,7 @@ void Monster_actor::equip
 			create_quantity(elem.quantity,
 				elem.shapenum, c_any_qual, frnum, temporary);
 		int ammo = winfo ? winfo->get_ammo_consumed() : 0;
-		if (ammo)		// Weapon requires ammo.
+		if (ammo >= 0)		// Weapon requires ammo.
 			create_quantity(5 + rand()%25, ammo, c_any_qual, 0,
 						temporary);
 		}
@@ -231,6 +205,16 @@ Monster_actor *Monster_actor::create
 		return new Quaking_actor("", shnum, 5, -1, ucnum);
 	else
 		return new Monster_actor("", shnum, -1, ucnum);
+	}
+
+static inline int Randomize_initial_stat(int val)
+	{
+	if (val > 7)
+		return val + rand()%4 + rand()%4 -4;
+	else if (val > 0)
+		return rand()%val + rand()%val + 1;
+	else
+		return 1;
 	}
 
 /*
@@ -257,27 +241,50 @@ Monster_actor *Monster_actor::create
 						? inf->alignment : align);
 	// Movement flags
 	if ((inf->flags >> Monster_info::fly)&1)
-	{
 		monster->set_type_flag(Actor::tf_fly);
-	}
+
 	if ((inf->flags >> Monster_info::swim)&1)
-	{
 		monster->set_type_flag(Actor::tf_swim);
-	}
+
 	if ((inf->flags >> Monster_info::walk)&1)
-	{
 		monster->set_type_flag(Actor::tf_walk);
-	}
+
 	if ((inf->flags >> Monster_info::ethereal)&1)
-	{
 		monster->set_type_flag(Actor::tf_ethereal);
-	}
-	monster->set_property(Actor::strength, inf->strength);
+
+	if ((inf->flags >> Monster_info::start_invisible)&1)
+		monster->set_flag(Obj_flags::invisible);
+
+	int str = Randomize_initial_stat(inf->strength);
+	monster->set_property(Actor::strength, str);
 					// Max. health = strength.
-	monster->set_property(Actor::health, inf->strength);
-	monster->set_property(Actor::dexterity, inf->dexterity);
-	monster->set_property(Actor::intelligence, inf->intelligence);
-	monster->set_property(Actor::combat, inf->combat);
+	monster->set_property(Actor::health, str);
+	monster->set_property(Actor::dexterity,
+			Randomize_initial_stat(inf->dexterity));
+	monster->set_property(Actor::intelligence,
+			Randomize_initial_stat(inf->intelligence));
+	monster->set_property(Actor::combat,
+			Randomize_initial_stat(inf->combat));
+
+	static char monster_mode_odds[5][4] = {
+		{20, 45, 70, 100},		// These are slightly off, but
+		{50, 100, 0, 0},		// are good enough that no one
+		{35, 70, 100, 0},		// will notice the difference
+		{35, 55, 70, 100},		// without serious statistics.
+		{50, 100, 0, 0}};
+	static Actor::Attack_mode monster_modes[5][4] = {
+		{nearest, random, flee, nearest},		// noncombatants
+		{weakest, nearest, nearest, nearest},	// opportunists
+		{nearest, random, nearest, nearest},	// unpredictable
+		{flank, defend, weakest, strongest},	// tacticians
+		{berserk, nearest, nearest, nearest}};	// berserkers
+
+	int prob = rand()%100;
+	int i;
+	for (i = 0; i < 3; i++)
+		if (prob < monster_mode_odds[inf->m_attackmode][i])
+			break;
+	monster->set_attack_mode(monster_modes[inf->m_attackmode][i]);
 
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);
@@ -480,7 +487,7 @@ Weapon_info *Monster_actor::get_weapon
 
 void Monster_actor::die
 	(
-	Actor *attacker
+	Game_object *attacker
 	)
 	{
 	Actor::die(attacker);

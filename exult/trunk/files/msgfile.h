@@ -34,6 +34,25 @@ int Read_text_msg_file
 	int& count,
 	const char *section = 0
 	);
+bool Search_text_msg_section
+	(
+	DataSource* in,
+	const char *section = 0
+	);
+int Read_text_msg_file_sections
+	(
+	DataSource* in,
+	vector<vector<char *> >& strings,	// Strings returned here
+	const char *sections[],			// Section names
+	int numsections
+	);
+int Read_text_msg_file_sections
+	(
+	istream& in,
+	vector<vector<char *> >& strings,	// Strings returned here
+	const char *sections[],			// Section names
+	int numsections
+	);
 void Write_msg_file_section
 	(
 	ostream& out, 

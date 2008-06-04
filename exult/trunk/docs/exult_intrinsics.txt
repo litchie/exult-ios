@@ -53,17 +53,17 @@ anything that can't be converted to an NPC. Monsters are also accepted.
 
 If the parameter name is followed by a '[]', it indicates an array with elements
 of the specified type. Example: 'actor npc[]' means an array of NPCs. If there
-is a number between the brackets, it means an array of that length; for
-example, 'int num[3]' means an array with 3 'int' elements. In some cases, an
-array can be of type 'misc' to indicate that not all of the array's elements
-are of the same type.
+is a number between the brackets, it means an array of that length; for example,
+'int num[3]' means an array with 3 'int' elements. In some cases, an array can
+be of type 'misc' to indicate that not all of the array's elements are of the
+same type.
 
 'function' refers to usecode functions, which *must* be declared with either,
-the shape# /or/ the object# specifiers. In UCC, this can be the function name
-or its usecode number. For example: 'extern Bolt shape#(0x2D3) ();' can be
-passed as 'Bolt' (the function name), '0x2D3' (its function number since
-'shape#(shnum) == shnum' if shnum < 0x400) or as '&Bolt' (using the 'address
-of' operator '&' to get the function number).
+the shape# /or/ the object# specifiers. In UCC, this can be the function name or
+its usecode number. For example: 'extern Bolt shape#(0x2D3) ();' can be passed
+as 'Bolt' (the function name), '0x2D3' (its function number since 'shape#(shnum)
+== shnum' if shnum < 0x400) or as '&Bolt' (using the 'address of' operator '&'
+to get the function number).
 
 Some intrinsics are 'overloaded'; i.e., they accept more than one parameter
 type. In those cases, all of the possibilities are listed as prototypes.
@@ -114,8 +114,7 @@ bool UI_roll_to_win(int att, int def)
     Rolls a (0-based) 30-sided die. If the result is 0, return value is 'false';
     if the roll is 29, return value is 'true'. For all other values of the die
     roll, it adds 'att' and subtracts 'def' from the die roll; if this final
-    value is less than 14, return value is 'false'. Otherwise, return is
-    'true'.
+    value is less than 14, return value is 'false'. Otherwise, return is 'true'.
 
 --------------------------------------------------------------------------------
 SCRIPTING
@@ -149,21 +148,25 @@ npc->begin_casting_mode()
     Starts casting mode for 'npc'. When the next script starts for 'npc', that
     NPC will display casting frames (shape 859) until the script ends.
 
-int UI_set_to_attack(object attacker, object target, int weapon)
+int UI_set_to_attack(actor attacker, object target, int weapon)
 int attacker->set_to_attack(object target, int weapon)
+int UI_set_to_attack(actor attacker, misc[4] target, int weapon)
+int attacker->set_to_attack(misc[4] target, int weapon)
 
     Prepares 'attacker' to attack 'target' with an attack using 'weapon' as a
     weapon. 'weapon' MUST specify a shape that has an 'ammo' or 'weapon' tab in
     Exult Studio, or nothing will happen. This intrinsic does not animate
-    'attacker' in any way. The attack itself is triggered by a script; in an
-    UCC script, use the 'attack' command to actually initiate the attack.
-    Return value is always '0'.
+    'attacker' in any way. The attack itself is triggered by a script; in an UCC
+    script, use the 'attack' command to actually initiate the attack. Return
+    value is always '0'. 'target' can be an object or NPC or the return of a
+    'click_on_item', even if a tile is clicked. When attacking a tile, the only
+    meaningful weapon is one that explodes.
 
 bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
 
     If the avatar can walk to to the location specified by 'pos', this intrinsic
     causes him to walk there and returns 'true'; otherwise, return value is
-    'false'. When the avatar gets to the destination, Exult will can usecode
+    'false'. When the avatar gets to the destination, Exult will call usecode
     function 'fun', with 'obj' as 'item' and 'event' as the event ID. If 'obj'
     is not a valid object, the usecode function is ignored. 'pos' can be either
     a 2-dimensional or a 3-dimensional position. Note that the player can
@@ -204,8 +207,7 @@ UI_set_path_failure(function fun, object obj, int event)
 
     Used after a path_run_usecode or si_path_run_usecode call, this function
     causes function 'fun' to be called with 'item' equal to 'obj' and event ID
-    'event' should the character fail to get to the destination for some
-    reason.
+    'event' should the character fail to get to the destination for some reason.
 
 UI_telekenesis(function fun)
 
@@ -226,10 +228,10 @@ npc->show_npc_face(int face)
     face whose number is the absolute value of the NPC's number. Each NPC can
     only display one portrait at a time. If you are going to show the default
     frame ('face' == 0), use UCC's 'npc.say()' to display the NPC's face and
-    display any text within the parenthesis (or set with 'message') too. For
-    the avatar, using 'AVATAR.say()' will only result in the male avatar
-    (unless using the SI avatars). This intrinsic finds a free slot to display
-    the face in or uses the second slot if there are no free slots.
+    display any text within the parenthesis (or set with 'message') too. For the
+    avatar, using 'AVATAR.say()' will only result in the male avatar (unless
+    using the SI avatars). This intrinsic finds a free slot to display the face
+    in or uses the second slot if there are no free slots.
 
 UI_show_npc_face0(actor npc, int face)                               [SI, Exult]
 npc->show_npc_face0(int face)
@@ -332,8 +334,8 @@ UI_play_music(int track, object obj)
 
     Plays the music track number 'track'. If 'obj' is a reference to a valid
     object/NPC, and 'obj' is in the game map, it will also display the sprite
-    effect # 24 (musical notes). If 'track' is '255' ('0xFF'), Exult will
-    *stop* any music that is playing instead.
+    effect # 24 (musical notes). If 'track' is '255' ('0xFF'), Exult will *stop*
+    any music that is playing instead.
 
 int UI_get_music_track()
 
@@ -344,8 +346,8 @@ int UI_get_music_track()
     The return value in the original Black Gate was more complicated; the
     current song was the return value divided by 256, while the next song (the
     one that would be resumed after the current one ends) was the remainder of
-    that same division. None of this behaviour is true for Exult, which works
-    as described above.
+    that same division. None of this behaviour is true for Exult, which works as
+    described above.
      END NOTES ABOUT ORIGINAL BG 
 
 bool UI_start_speech(int track)
@@ -594,9 +596,9 @@ UI_move_object(object obj, int pos[])
 obj->move_object(int pos[])
 
     Moves 'obj' to the location specified by 'pos'. If 'pos' has 3 elements, it
-    is a (x, y, z) position vector; if 'pos' has 4 elements, the first 3 are
-    the (x, y, z) position and element 4 is the map number. A map number equal
-    to '-1' is interpreted to move the NPC to the current game map.
+    is a (x, y, z) position vector; if 'pos' has 4 elements, the first 3 are the
+    (x, y, z) position and element 4 is the map number. A map number equal to
+    '-1' is interpreted to move the NPC to the current game map.
 
 int UI_get_distance(object obj1, object obj2)
 int obj1->get_distance(obj2)
@@ -634,8 +636,8 @@ int obj->add_cont_items(int count, int shape, int qual, int frame, bool unk)
 
     Adds 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
     that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
-    Exult; I *think* it is safe to omit it from the parameter list, but I am
-    not sure. 'qual' and 'frame' can be wildcards:
+    Exult; I *think* it is safe to omit it from the parameter list, but I am not
+    sure. 'qual' and 'frame' can be wildcards:
 
         qual                     frame
         QUALITY_ANY    = -359    FRAME_ANY      = -359
@@ -648,8 +650,8 @@ int obj->remove_cont_items(int count, int shape, int qual, int frame, bool unk)
 
     Removes 'count' objects with shape 'shape', quality 'qual' and frame 'frame'
     that are contained by 'obj'. 'unk' is an unknown flag which is ignored by
-    Exult; I *think* it is safe to omit it from the parameter list, but I am
-    not sure. 'qual' and 'frame' can be wildcards:
+    Exult; I *think* it is safe to omit it from the parameter list, but I am not
+    sure. 'qual' and 'frame' can be wildcards:
 
         qual                     frame
         QUALITY_ANY    = -359    FRAME_ANY      = -359
@@ -745,29 +747,30 @@ int obj->get_item_flag(int flag)
 
     Gets the flag 'flag' of 'obj'. Some constants defined for 'flag' are:
 
-        INVISIBLE             = 0     ASLEEP              = 1
-        CHARMED               = 2     CURSED              = 3
-        DEAD                  = 4     IN_PARTY            = 6
-        PARALYZED             = 7     PARALYSED           = 7
-        POISONED              = 8     PROTECTION          = 9
-        ON_MOVING_BARGE       = 10    OKAY_TO_TAKE        = 11
-        MIGHT                 = 12    NO_SPELL_CASTING    = 13
-        CANT_DIE              = 14    DANCING             = 15
-        DONT_MOVE             = 16    BG_DONT_RENDER      = 16
-        SI_ON_MOVING_BARGE    = 17    TEMPORARY           = 18
-        SAILOR                = 20    OKAY_TO_LAND        = 21
-        BG_DONT_MOVE          = 22    DONT_RENDER         = 22
-        IN_DUNGEON            = 23    CONFUSED            = 25
-        IN_MOTION             = 26    MET                 = 28
-        SI_TOURNAMENT         = 29    SI_ZOMBIE           = 30
-        POLYMORPH             = 32    TATTOOED            = 33
-        READ                  = 34    PETRA               = 35
-        FREEZE                = 37    NAKED               = 38
+        INVISIBLE             = 0     ASLEEP            = 1
+        CHARMED               = 2     CURSED            = 3
+        DEAD                  = 4     IN_PARTY          = 6
+        PARALYZED             = 7     PARALYSED         = 7
+        POISONED              = 8     PROTECTION        = 9
+        ON_MOVING_BARGE       = 10    OKAY_TO_TAKE      = 11
+        MIGHT                 = 12    IMMUNITIES        = 13
+        CANT_DIE              = 14    DANCING           = 15
+        DONT_MOVE             = 16    BG_DONT_RENDER    = 16
+        SI_ON_MOVING_BARGE    = 17    TEMPORARY         = 18
+        SAILOR                = 20    OKAY_TO_LAND      = 21
+        BG_DONT_MOVE          = 22    DONT_RENDER       = 22
+        IN_DUNGEON            = 23    CONFUSED          = 25
+        IN_MOTION             = 26    MET               = 28
+        SI_TOURNAMENT         = 29    SI_ZOMBIE         = 30
+        NO_SPELL_CASTING      = 31    POLYMORPH         = 32
+        TATTOOED              = 33    READ              = 34
+        PETRA                 = 35    FREEZE            = 37
+        NAKED                 = 38    
 
     'flag' can be, however, any value in the 0-63 range. The values above are
-    for NPCs; most of them are not valid for inanimate objects, and some of
-    them ('READ', 'PETRA', 'TATTOOED', 'NAKED') have no effect on anyone but
-    the avatar.
+    for NPCs; most of them are not valid for inanimate objects, and some of them
+    ('READ', 'PETRA', 'TATTOOED', 'NAKED') have no effect on anyone but the
+    avatar.
 
     The 'SAILOR' flag has a peculiar behaviour in that it actually returns an
     object reference to the last object to have that flag set or '0' if no
@@ -778,8 +781,7 @@ int obj->get_item_flag(int flag)
     flags are valid for NPCs only. You can get, set or clear any of those values
     and Exult will not complain; however, it will also not save the values of
     the flags except for the three mentioned before. Moreover, the INVISIBLE
-    flag will not be saved for objects unless they are of 'quality flags'
-    class.
+    flag will not be saved for objects unless they are of 'quality flags' class.
 
 UI_set_item_flag(object obj, int flag)
 obj->set_item_flag(int flag)
@@ -794,8 +796,7 @@ obj->set_item_flag(int flag)
     flags are valid for NPCs only. You can get, set or clear any of those values
     and Exult will not complain; however, it will also not save the values of
     the flags except for the three mentioned before. Moreover, the INVISIBLE
-    flag will not be saved for objects unless they are of 'quality flags'
-    class.
+    flag will not be saved for objects unless they are of 'quality flags' class.
 
 UI_clear_item_flag(object obj, int flag)
 obj->clear_item_flag(int flag)
@@ -807,8 +808,7 @@ obj->clear_item_flag(int flag)
     flags are valid for NPCs only. You can get, set or clear any of those values
     and Exult will not complain; however, it will also not save the values of
     the flags except for the three mentioned before. Moreover, the INVISIBLE
-    flag will not be saved for objects unless they are of 'quality flags'
-    class.
+    flag will not be saved for objects unless they are of 'quality flags' class.
 
 object UI_get_barge(object obj)
 object obj->get_barge()
@@ -884,8 +884,8 @@ bool UI_remove_from_keyring(int qual)                                [Exult: SI]
 int UI_apply_damage(int base, int hits, int type, object obj)
 
     Causes damage to 'obj'. Total damage is random: a random integer from 1 to
-    1/3 of 'base' (round down) plus another random integer from 1 to 'hits'.
-    The damage is of type 'type', and can be one of the following values:
+    1/3 of 'base' (round down) plus another random integer from 1 to 'hits'. The
+    damage is of type 'type', and can be one of the following values:
 
         normal      = 0    fire         = 1
         magic       = 2    lightning    = 3
@@ -894,6 +894,13 @@ int UI_apply_damage(int base, int hits, int type, object obj)
     If the target is immune to the specified damage type, no damage will be
     applied; a creature vulnerable to the damage type will take double damage.
     Returns '1' if any damage is caused on a valid target, '0' otherwise.
+
+    If 'hits' is 127 or more, 'base' is ignored and 127 points of damage are
+    caused instead, ignoring armor. Lightning, ethereal and sonic damage types
+    also ignore armor.
+
+    Finally, lightning damage ignores 'base' and applies damage as if it were
+    zero.
 
 UI_reduce_health(object obj, int hits, int type)
 obj->reduce_health(int hits, int type)
@@ -912,15 +919,16 @@ int attacker->attack_object(object target, int weapon)
     Returns '0' if 'attacker' or 'target' are not valid objects or if 'weapon'
     does not have any weapon information, '1' otherwise.
 
-UI_fire_projectile(object obj, int dir, int proj, int dist, int weapon, int
+UI_fire_projectile(object obj, int dir, int proj, int attpts, int weapon, int
         ammo)
 obj->fire_projectile(int dir, int proj, int weapon, int ammo)
 
     Causes the object 'obj' to fire a projectile of shape 'proj' in the
-    direction 'dir'. The missile will travel up to 'dist' tiles. 'weapon' is
-    the shape whose weapon information is to be used; likewise, 'ammo' is the
-    shape whose ammunition information is to be used. The projectiles fired by
-    this intrinsic travel with increased speed.
+    direction 'dir'. When reaching a target, 'attpts' will be used as the attack
+    value to try to hit the target. 'weapon' is the shape whose weapon
+    information is to be used; likewise, 'ammo' is the shape whose ammunition
+    information is to be used. The projectiles fired by this intrinsic travel
+    with increased speed.
 
 --------------------------------------------------------------------------------
 NPCs
@@ -965,9 +973,9 @@ UI_modify_schedule(actor npc, int time, int sched, int               [SI, Exult]
 npc->modify_schedule(int time, int sched, int pos[2])
 
     Sets the time period 'time' schedule of 'npc' to 'sched' at (x, y) location
-    'pos'. Allowed values for 'time' are those for the
-    UI_part_of_daypart_of_day intrinsic; allowed values for 'sched' are the
-    same ones as the return values of 'get_schedule_type' intrinsic.
+    'pos'. Allowed values for 'time' are those for the UI_part_of_daypart_of_day
+    intrinsic; allowed values for 'sched' are the same ones as the return values
+    of 'get_schedule_type' intrinsic.
 
 UI_set_new_schedules(actor npc, int time, int sched, int             [SI, Exult]
         loc[2])
@@ -976,9 +984,9 @@ npc->set_new_schedules(int time, int sched, int loc[2])
 npc->set_new_schedules(int time[n], int sched[n], int loc[2n])
 
     Sets new schedule(s) for 'npc'. 'time' contains the time periods for the
-    schedules; allowed values are like those for the 'UI_part_of_day'
-    intrinsic. 'sched' contains the schedule types for the corresponding time
-    periods in 'time'; allowed values are the same ones as the return values of
+    schedules; allowed values are like those for the 'UI_part_of_day' intrinsic.
+    'sched' contains the schedule types for the corresponding time periods in
+    'time'; allowed values are the same ones as the return values of
     'get_schedule_type' intrinsic. 'loc' containt the (x, y) positions of the
     schedules; each pair or elements in 'loc' is the (x, y) coordinate of the
     corresponding time period in 'time' and schedule in 'sched'. The 'wildcard'
@@ -1006,10 +1014,25 @@ int npc->get_npc_prop(string prop)
     set_npc_prop first! Here is a list of the standard property constants
     defined in 'src/headers/constants.uc':
 
-        STRENGTH     = 0    DEXTERITY    = 1    INTELLIGENCE    = 2
-        HEALTH       = 3    COMBAT       = 4    MANA            = 5
-        MAX_MANA     = 6    TRAINING     = 7    EXPERIENCE      = 8
-        FOODLEVEL    = 9    
+        STRENGTH     = 0    DEXTERITY    = 1     INTELLIGENCE      = 2
+        HEALTH       = 3    COMBAT       = 4     MANA              = 5
+        MAX_MANA     = 6    TRAINING     = 7     EXPERIENCE        = 8
+        FOODLEVEL    = 9    SEX_FLAG     = 10    MISSILE_WEAPON    = 11
+
+    'SEX_FLAG' returns 'true' if the actor is female, 'false' otherwise.
+
+    'MISSILE_WEAPON' returns 'true' if the actor is using a missile weapon or a
+    good thrown weapon (such as a spear), 'false' otherwise.
+
+    This intrinsic can also be called using an object instead of an actor; in
+    that case, the only meaningful property is 'HEALTH'. It is important to note
+    that, for objects, a health of zero means it cannot be destroyed.
+
+    ****** BG SPECIFIC ******
+    Standard BG does not have sex data for anyone but the avatar, so the return
+    is almost always 'false'. This is not a limitation of the engine or of
+    Exult, just a statement about the game data.
+    **** END BG SPECIFIC ****
 
 UI_set_npc_prop(actor npc, int prop, int delta)
 UI_set_npc_prop(actor npc, string prop, int delta)
@@ -1017,11 +1040,27 @@ npc->set_npc_prop(int prop, int delta)
 npc->set_npc_prop(string prop, int delta)
 
     Increases property 'prop' of 'npc' by 'delta'. If 'delta' is negative, the
-    property is decreased. Just to be clear: 'delta' is the *change* in
-    property 'prop'. 'prop' means the same as for get_npc_prop; if 'prop' is a
-    string and the property does not exist yet, it is treated as being zero
-    when it is created. A list of property constants is included below
-    'get_npc_prop' intrinsic description.
+    property is decreased. Just to be clear: 'delta' is the *change* in property
+    'prop'. 'prop' means the same as for get_npc_prop; if 'prop' is a string and
+    the property does not exist yet, it is treated as being zero when it is
+    created. A list of property constants is included below 'get_npc_prop'
+    intrinsic description.
+
+    'delta' is *halved* for 'EXPERIENCE' (but in no other cases).
+
+    'SEX_FLAG' sets the sex to female if 'delta' is not zero, to male otherwise.
+
+    'MISSILE_WEAPON' cannot be set by this intrinsic.
+
+    This intrinsic can also be called using an object instead of an actor; in
+    that case, the only meaningful property is 'HEALTH'. It is important to note
+    that, for objects, setting health equal to zero means it cannot be
+    destroyed.
+
+    ****** BG SPECIFIC ******
+    In BG, you could not set the sex flag except by hex-editing the game data.
+    Exult does not suffer from this limitation.
+    **** END BG SPECIFIC ****
 
 string UI_get_npc_name(actor npc)
 string npc->get_npc_name()
@@ -1200,24 +1239,24 @@ npc->set_polymorph(int shape)
 
     Polymorphs 'npc' into shape 'shape'.
 
-int UI_get_temperature(actor npc)                                           [SI]
+int UI_get_temperature(actor npc)                                    [SI, Exult]
 int npc->get_temperature()
 
     Returns the value of the temperature for 'npc'.
 
-UI_set_temperature(actor npc, int temp)                                     [SI]
+UI_set_temperature(actor npc, int temp)                              [SI, Exult]
 npc->set_temperature(int temp)
 
     Sets the temperature of 'npc' to 'temp'.
 
-int UI_get_temperature_zone(object obj)                                     [SI]
+int UI_get_temperature_zone(object obj)                              [SI, Exult]
 int obj->get_temperature_zone()
 
     Returns 0 if 'obj' is not an NPC. Otherwise, it will return a number between
     1-5 indicating how cold it is. This number is the same as the frame used for
     the stats gump.
 
-int UI_get_npc_warmth(object obj)                                           [SI]
+int UI_get_npc_warmth(object obj)                                    [SI, Exult]
 int obj->get_npc_warmth()
 
     Returns the value of the total warmth for worn equipment if 'obj' is an NPC
@@ -1319,8 +1358,8 @@ WEATHER/TIME
 int UI_get_timer(int timer)
 
     If 'timer' represents a timer that has been initialized by a previous call
-    to 'UI_set_timer' intrinsic, returns the number of hours since the timer
-    has been set. Otherwise, the return value is '0'.
+    to 'UI_set_timer' intrinsic, returns the number of hours since the timer has
+    been set. Otherwise, the return value is '0'.
 
 UI_set_timer(int timer)
 
@@ -1352,8 +1391,8 @@ obj->nap_time()
 
     If 'obj' is an unoccupied bed, causes the avatar to walk to the bed and lay
     on it, calling usecode function 0x622 once that is done. If the bed is
-    occupied, causes one of the party members to pop up and say so. Does
-    nothing if 'obj' is not a bed.
+    occupied, causes one of the party members to pop up and say so. Does nothing
+    if 'obj' is not a bed.
 
 UI_advance_time(int amount)
 
@@ -1383,9 +1422,9 @@ USER INTERFACE
 misc[4] UI_click_on_item()
 
     Displays the targeting square and waits for the player to click on
-    something. The return is a 4 element array whose first element is the
-    object reference of the clicked item or zero if the player clicked in the
-    world. The last three elements are the (x, y, z) position of the click.
+    something. The return is a 4 element array whose first element is the object
+    reference of the clicked item or zero if the player clicked in the world.
+    The last three elements are the (x, y, z) position of the click.
 
     If used after a 'set_intercept_item' intrinsic call, returns the preassigned
     object as the first element of the array and the object's position as the
@@ -1400,8 +1439,8 @@ obj->set_intercept_item()
 int UI_input_numeric_value(int min, int max, int step, int default)
 
     Prompts user for numerical input with the bar slider. 'min' is the lowest
-    number allowed, 'max' is the greatest, 'step' is the step size and
-    'default' is the default (initial) value. Returns the user's choice.
+    number allowed, 'max' is the greatest, 'step' is the step size and 'default'
+    is the default (initial) value. Returns the user's choice.
 
 bool UI_mouse_exists()
 
@@ -1545,20 +1584,20 @@ UI_book_mode_ex(bool is_scroll, int font)                                [Exult]
 UI_book_mode_ex(bool is_scroll, int font, int gump)
 
     Used to display books and scrolls; displays a book gump if 'is_scroll' is
-    'false' or a scroll gump if it is 'true'. The font shape in 'FONTS.VGA'
-    used to render the text is specified in 'font'. If 'gump' is specified, and
-    is >=0, Exult will use it as being the shape from 'GUMPS.VGA' to display; if
+    'false' or a scroll gump if it is 'true'. The font shape in 'FONTS.VGA' used
+    to render the text is specified in 'font'. If 'gump' is specified, and is
+    >=0, Exult will use it as being the shape from 'GUMPS.VGA' to display; if
     'gump' <= -1, Exult will use the default shapes for scrolls and books
     instead.
 
     **** IMPORTANT NOTES ****
     Unlike the 'UI_book_mode' intrinsic, this intrinsic performs *no*
     translation of any kind if the avatar's 'READ' flag is set. This is an
-    intentional design feature -- for example, text written in Gargish and
-    being displayed in a Gargish font should be translated by more than a mere
-    font substitution. Also, the gump shapes should be 'compatible' with the
-    standard book/scroll shapes as Exult will write the text in the same region
-    of the screen as it does for standard books/scrolls.
+    intentional design feature -- for example, text written in Gargish and being
+    displayed in a Gargish font should be translated by more than a mere font
+    substitution. Also, the gump shapes should be 'compatible' with the standard
+    book/scroll shapes as Exult will write the text in the same region of the
+    screen as it does for standard books/scrolls.
     ** END IMPORTANT NOTES **
 
 UI_close_gumps()
@@ -1595,12 +1634,12 @@ UI_lightning()
 UI_sprite_effect(int sprite, int x, int y, int vel_x, int vel_y, int reps)
 
     Creates a sprite effect from 'SPRITES.VGA'. 'sprite' is the shape number,
-    ('x', 'y') is the starting (x, y) position, ('vel_x', 'vel_y') is the (x,
-    y) speed (i.e., change in coordinates at every tick). If 'reps' < 0, the
-    sprite effect goes through all frames (at the rate of one frame per tick)
-    and deletes itself; otherwise, 'reps' is the total number of ticks the
-    animation will last before deleting itself, looping the sprite's frames if
-    it is needed.
+    ('x', 'y') is the starting (x, y) position, ('vel_x', 'vel_y') is the (x, y)
+    speed (i.e., change in coordinates at every tick). If 'reps' < 0, the sprite
+    effect goes through all frames (at the rate of one frame per tick) and
+    deletes itself; otherwise, 'reps' is the total number of ticks the animation
+    will last before deleting itself, looping the sprite's frames if it is
+    needed.
 
 UI_obj_sprite_effect(object obj, int sprite, int rel_x, int rel_y, int vel_x,
         int vel_y, int frnum, int reps)
@@ -1611,12 +1650,12 @@ obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y,
     'obj'; if 'obj' moves, the sprite will move along. 'sprite' is the sprite's
     shape number, ('rel_x', 'rel_y') is the relative (x, y) offset of the sprite
     relative to the position of 'obj', ('vel_x', 'vel_y') is the (x, y) speed
-    (i.e., change in coordinates at every tick, and in addition to any motion
-    of 'obj'). 'frnum' is the initial frame of the sprite effect. If 'reps' <
-    0, the sprite effect goes through all frames (at the rate of one frame per
-    tick) and deletes itself; otherwise, 'reps' is the total number of ticks
-    the animation will last before deleting itself, looping the sprite's frames
-    if it is needed.
+    (i.e., change in coordinates at every tick, and in addition to any motion of
+    'obj'). 'frnum' is the initial frame of the sprite effect. If 'reps' < 0,
+    the sprite effect goes through all frames (at the rate of one frame per
+    tick) and deletes itself; otherwise, 'reps' is the total number of ticks the
+    animation will last before deleting itself, looping the sprite's frames if
+    it is needed.
 
 --------------------------------------------------------------------------------
 MISCELLANEOUS
@@ -1625,10 +1664,10 @@ MISCELLANEOUS
 bool UI_add_spell(int index, int unk, object obj)
 
     If 'obj' is a spellbook, adds the spell whose index is 'index' and returns
-    'true' -- unless the spell is already in the spellbook, in which case
-    return value is 'false'. If 'obj' is not a spellbook, does nothing and
-    returns 'false'. 'unk' is a parameter from the original games whose meaning
-    is unknown, hence is unimplemented in Exult.
+    'true' -- unless the spell is already in the spellbook, in which case return
+    value is 'false'. If 'obj' is not a spellbook, does nothing and returns
+    'false'. 'unk' is a parameter from the original games whose meaning is
+    unknown, hence is unimplemented in Exult.
 
 UI_remove_all_spells(object obj)                                     [SI, Exult]
 obj->remove_all_spells()
@@ -1667,8 +1706,8 @@ bool UI_is_water(int pos[3])
 string UI_a_or_an(string text)
 
     Returns a string; the string will be "a" or "an" (hence the name of the
-    intrinsic) depending on whether the first letter of 'text' is,
-    respectively, in the set "aeiouyAEIOUY" or not.
+    intrinsic) depending on whether the first letter of 'text' is, respectively,
+    in the set "aeiouyAEIOUY" or not.
 
 bool UI_is_dest_reachable(actor npc, int pos[])                          [Exult]
 bool npc->is_dest_reachable(int pos[])

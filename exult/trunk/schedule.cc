@@ -1520,8 +1520,7 @@ void Tool_schedule::get_tool
 		obj->remove_this();
 	if ((obj = npc->get_readied(Actor::lhand)) != 0)
 		obj->remove_this();
-	if (!npc->add_readied(tool, Actor::lrhand))
-		npc->add_readied(tool, Actor::lhand);
+	npc->add_readied(tool, Actor::lhand);
 	}
 
 /*

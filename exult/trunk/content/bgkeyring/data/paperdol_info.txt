@@ -1,151 +1,49 @@
-#	Paperdoll information for the Keyring mod.
-#	Has two sections: one for characters and one for items.
-#
-#	February 4, 2006 - Derived from gumps/Paperdoll_gump_info.cc
-#
-
-%%section characters
-#Shp: The NPC's SHAPE number
-#fmale: 1 if female, 0 if male
-#trans: 1 if the shape is translucent, 0 otherwise
-#bsh: Body shape (in paperdol.vga)
-#bf: Body frame
-#hds: Head shape (in paperdol.vga)
-#hf: Head frame
-#hh: Head frame when wearing helmet
-#ash: Arm shape
-#af: Arm frame without weapons or with 1-handed weapons
-#a2: Arm frame for two-handed weapons
-#as: Arm frame for staves
-#cg: For BG only, this is the character's gump when paperdolls are disabled.
-#
-#Format:
-#:Shp/	fmale/		trans/	bsh/	bf/		hds/	hf/		hh/		ash/	af/		a2/		as/		cg
-
-#	Avatar Female Blonde
-:1029/		1/		0/		13/		0/		406/	4/		5/		7/		0/		2/		4/		58
-:1035/		1/		0/		13/		0/		406/	4/		5/		7/		0/		2/		4/		58
-:989/		1/		0/		13/		0/		406/	4/		5/		7/		0/		2/		4/		58
-
-#	Avatar Female Black
-:1025/		1/		0/		13/		2/		406/	8/		9/		131/	0/		2/		4/		74
-:1031/		1/		0/		13/		2/		406/	8/		9/		131/	0/		2/		4/		74
-
-#	Avatar Female Raven Hair/Asian
-:1037/		1/		0/		13/		0/		406/	2/		3/		7/		0/		2/		4/		76
-:1043/		1/		0/		13/		0/		406/	2/		3/		7/		0/		2/		4/		76
-
-#	Avatar Female Brunette
-:1039/		1/		0/		13/		0/		406/	0/		1/		7/		0/		2/		4/		75
-:1045/		1/		0/		13/		0/		406/	0/		1/		7/		0/		2/		4/		75
-
-#	Avatar Female Redhead
-:1041/		1/		0/		13/		0/		406/	6/		7/		7/		0/		2/		4/		77
-:1047/		1/		0/		13/		0/		406/	6/		7/		7/		0/		2/		4/		77
-
-#	Avatar Female Buckethead
-:1049/		1/		0/		13/		0/		406/	4/		5/		7/		0/		2/		4/		82
-
-#	Avatar Male Blonde
-:1028/		0/		0/		14/		0/		407/	4/		5/		7/		1/		3/		5/		57
-:1034/		0/		0/		14/		0/		407/	4/		5/		7/		1/		3/		5/		57
-:721/		0/		0/		14/		0/		407/	4/		5/		7/		1/		3/		5/		57
-
-#	Avatar Male Black
-:1024/		0/		0/		14/		2/		407/	8/		9/		131/	1/		3/		5/		78
-:1030/		0/		0/		14/		2/		407/	8/		9/		131/	1/		3/		5/		78
-
-#	Avatar Male Raven Hair/Asian
-:1036/		0/		0/		14/		0/		407/	2/		3/		7/		1/		3/		5/		80
-:1042/		0/		0/		14/		0/		407/	2/		3/		7/		1/		3/		5/		80
-
-#	Avatar Male Brunette
-:1038/		0/		0/		14/		0/		407/	0/		1/		7/		1/		3/		5/		79
-:1044/		0/		0/		14/		0/		407/	0/		1/		7/		1/		3/		5/		79
-
-#	Avatar Male Redhead
-:1040/		0/		0/		14/		0/		407/	6/		7/		7/		1/		3/		5/		81
-:1046/		0/		0/		14/		0/		407/	6/		7/		7/		1/		3/		5/		81
-
-#	Avatar Male Buckethead
-:1048/		0/		0/		14/		0/		407/	4/		5/		7/		1/		3/		5/		83
-
-#	Laurianna
-:1103/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
-:1107/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
-:1108/		1/		0/		13/		0/		400/	0/		1/		7/		0/		2/		4/		72
-#	Mariah
-:1122/		1/		0/		13/		0/		402/	0/		1/		7/		0/		2/		4/		73
+#	Exult 1.4.05cvs text message file.	Written by ExultStudio.
+%%section version
+:2
 %%endsection
-
+%%section characters
+:721/0/0/14/0/407/4/5/7/1/3/5/57
+:989/1/0/13/0/406/4/5/7/0/2/4/58
+:1024/0/0/14/2/407/8/9/131/1/3/5/78
+:1025/1/0/13/2/406/8/9/131/0/2/4/74
+:1028/0/0/14/0/407/4/5/7/1/3/5/57
+:1029/1/0/13/0/406/4/5/7/0/2/4/58
+:1030/0/0/14/2/407/8/9/131/1/3/5/78
+:1031/1/0/13/2/406/8/9/131/0/2/4/74
+:1034/0/0/14/0/407/4/5/7/1/3/5/57
+:1035/1/0/13/0/406/4/5/7/0/2/4/58
+:1036/0/0/14/0/407/2/3/7/1/3/5/80
+:1037/1/0/13/0/406/2/3/7/0/2/4/76
+:1038/0/0/14/0/407/0/1/7/1/3/5/79
+:1039/1/0/13/0/406/0/1/7/0/2/4/75
+:1040/0/0/14/0/407/6/7/7/1/3/5/81
+:1041/1/0/13/0/406/6/7/7/0/2/4/77
+:1042/0/0/14/0/407/2/3/7/1/3/5/80
+:1043/1/0/13/0/406/2/3/7/0/2/4/76
+:1044/0/0/14/0/407/0/1/7/1/3/5/79
+:1045/1/0/13/0/406/0/1/7/0/2/4/75
+:1046/0/0/14/0/407/6/7/7/1/3/5/81
+:1047/1/0/13/0/406/6/7/7/0/2/4/77
+:1048/0/0/14/0/407/4/5/7/1/3/5/83
+:1049/1/0/13/0/406/4/5/7/0/2/4/82
+:1103/1/0/13/0/400/0/1/7/0/2/4/72
+:1107/1/0/13/0/400/0/1/7/0/2/4/72
+:1108/1/0/13/0/400/0/1/7/0/2/4/72
+:1122/1/0/13/0/402/0/1/7/0/2/4/73
+%%endsection
 %%section items
-#wshape: The entry's shape number
-#wf: Object's frame, or -1 for all frames
-#trans: 1 if the shape is translucent, 0 otherwise
-#spot: Where it should go. Takes one of the following values:
-#		head = 0
-#		back = 1
-#		belt = 2
-#		lhand = 3
-#		lfinger = 4
-#		legs = 5
-#		feet = 6
-#		rfinger = 7
-#		rhand = 8
-#		torso = 9
-#		neck = 10
-#		ammo = 11
-#		back2h_spot = 12	/	/ SI (2 Handed weapons, Bedroll, Bodies)
-#		shield_spot = 13	/	/ SI (Shield behind Backpack)
-#		ears_spot = 14		/	/ SI
-#		cloak_spot = 15		/	/ SI
-#		hands2_spot = 16	/	/ SI (gloves, gauntlets)
-#		ucont_spot = 17		/	/ SI Usecode Container
-#		special_spot = 102	/	/ Special:  SI non placeable
-#type: Object type. Can be one of the following:
-#		Normal = 0
-#		Single-handed = 1
-#		Two-handed = 2
-#		Staff = 3
-#		Bow = 4
-#		Crossbow = 5,
-#		Shield = 6
-#		Helm = 7
-#		Musket = 8
-#gender: 1 if has different frames for male/female, 0 otherwise. The frame numbers
-#		 given are for the female paperdolls, and they are increased by 1 for the
-#		 male versions.
-#shape: The shape number (in paperdol.vga); if -1, Exult uses wshape instead
-#frame: The base frame number for the paperdol/quiver without correct missile weapon
-#f2: Two handed version/armor arms/quiver with missile weapon
-#f3: Staff version/two-handed armor arms/shield hand with missile weapon and ammo
-#f4: Staff armor arms
-#
-#Format:
-#:wshape/	wf/		trans/	spot/	type/	gender/	shape	/	frame/		f2/		f3/		f4
-
-#	New items
-#	New bodies
-:1099/		-1/		1/		3/		1/		0/		135/	0
-:1099/		-1/		1/		8/		1/		0/		135/	1
-#	Jaana's Spellbook
-:1109/		0/		1/		3/		1/		0/		401/	0
-#	Mariah's Spellbook
-:1109/		1/		1/		3/		1/		0/		401/	1
-#	Laurianna's Spellbook
-:1109/		2/		1/		3/		1/		0/		401/	2
-#	Dupre's Amulet
-:1111/		0/		1/		10/		0/		0/		403/	1
-#	Shamino's Ankh
-:1111/		1/		1/		10/		0/		0/		403/	0
-#	Julia's Hammer
-:1112/		-1/		1/		3/		1/		0/		163/	0
-:1112/		-1/		1/		2/		1/		0/		163/	1
-#	Lord British's Sceptre
-:1126/		-1/		1/		3/		1/		0/		404/	0
-:1126/		-1/		1/		2/		1/		0/		404/	1
-#	Lord British's Crown
-:1127/		-1/		1/		0/		0/		1/		405/	0
-#	Lord British's Amulet
-:1128/		-1/		1/		10/		0/		0/		403/	2
+:1099/-1/1/3/0/0/135/0
+:1099/-1/1/8/0/0/135/1
+:1109/0/0/3/1/0/401/0
+:1109/1/0/3/1/0/401/1
+:1109/2/0/3/1/0/401/2
+:1111/0/0/10/0/0/403/1
+:1111/1/0/10/0/0/403/0
+:1112/-1/0/2/0/0/163/1
+:1112/-1/0/3/1/0/163/0
+:1126/-1/1/2/0/0/404/1
+:1126/-1/1/3/0/0/404/0
+:1127/-1/1/0/0/1/405/0
+:1128/-1/1/10/0/0/403/2
 %%endsection

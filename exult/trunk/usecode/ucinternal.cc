@@ -213,7 +213,6 @@ bool Usecode_internal::call_function(int funcid,
 		}
 
 	int depth, oldstack, chain;
-	Game_object *oldcaller = caller;
 
 	if (entrypoint)
 	{
@@ -743,7 +742,7 @@ void Usecode_internal::show_npc_face
 	)
 	{
 	show_pending_text();
-	Actor *npc, *iact = 0;
+	Actor *npc;
 	int frame = arg2.get_int_value();
 	int shape = get_face_shape(arg1, npc, frame);
 
@@ -911,7 +910,7 @@ void Usecode_internal::remove_item
 	if (!last_created.empty() && obj == last_created.back())
 		last_created.pop_back();
 	add_dirty(obj);
-	obj->remove_this();
+	obj->remove_this(obj->as_actor() != 0);
 	}
 
 /*
@@ -1467,7 +1466,7 @@ Game_object *Usecode_internal::create_object
 	}
 	else
 	{
-		if (Shapeinfo_lookup::Is_body_shape(shapenum))
+		if (info.is_body_shape())
 			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
 		else
 		{
@@ -3254,13 +3253,13 @@ void Usecode_internal::write
 		Write2(out, partyman->get_member(i));
 					// Timers.
 	Write4(out, 0xffffffffU);
-	for (std::map<int, unsigned long>::iterator it = timers.begin();
+	for (std::map<int, uint32>::iterator it = timers.begin();
 			it != timers.end(); ++it)
 		{
-		if (!(*it).second)	// Don't write unused timers.
+		if (!it->second)	// Don't write unused timers.
 			continue;
-		Write2(out, (*it).first);
-		Write4(out, (long)(*it).second);
+		Write2(out, it->first);
+		Write4(out, it->second);
 		}
 	Write2(out, 0xffff);
 	Write2(out, saved_pos.tx);	// Write saved pos.
@@ -3295,7 +3294,7 @@ void Usecode_internal::write
 				const char *nm = fsym->get_name();
 				nfile->write4(0xfffffffeU);
 				nfile->write2(strlen(nm));
-				nfile->write((char *)nm, strlen(nm));
+				nfile->write(const_cast<char *>(nm), strlen(nm));
 				}
 			else
 				nfile->write4(fun->id);

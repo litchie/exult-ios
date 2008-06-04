@@ -26,43 +26,39 @@
  */
 enum Ready_type {
 	other = 0x00,			// Anything else.
-	spell = 0x01,			// 1-handed spell.
-	one_handed_weapon = 0x08,
-	neck_armor = 0x20,
-	torso_armor = 0x28,
-	ring = 0x30,
-	usecode_container_bg = 0x38,	// Porting from SI
-	ammunition = 0x40,
-	head_armor = 0x48,		// I.e., helm.
-	leg_armor = 0x50,		// I.e., leggings.
-	foot_armor = 0x58,		// I.e., boots.
-	triple_crossbow_bolts = 0x78,
-	tongs = 0x90,
-	two_handed_weapon = 0xa0,
-	other_spell = 0xa1,		// #676,
-	gloves = 0xa8
+	one_handed_weapon = 0x01,
+	neck_armor = 0x04,
+	torso_armor = 0x05,
+	ring = 0x06,
+	usecode_container_bg = 0x07,	// Porting from SI
+	ammunition = 0x08,
+	head_armor = 0x09,		// I.e., helm.
+	leg_armor = 0x0a,		// I.e., leggings.
+	foot_armor = 0x0b,		// I.e., boots.
+	triple_crossbow_bolts = 0x0f,
+	tongs = 0x12,
+	two_handed_weapon = 0x14,
+	gloves = 0x15
 	};
 
 // Serpent Isle Ready types
 enum Ready_type_SI {
 	other_si = 0x00,			// Anything else.
-	spell_si = 0x01,			// 1-handed spell.
-	one_handed_si = 0x08,
-	cloak_si = 0x10,
-	amulet_si = 0x18,
-	helm_si = 0x20,
-	gloves_si = 0x28,
-	usecode_container_si = 0x30,
-	ring_si = 0x40,
-	earrings_si = 0x48,
-	ammo_si = 0x50,
-	belt_si = 0x58,
-	armour_si = 0x60,
-	boots_si = 0x68,
-	leggings_si = 0x70,
-	backpack_si = 0x78,			// Diaper as well?????
-	two_handed_si = 0xa0,
-	other_spell_si = 0xa1		// #676,
+	one_handed_si = 0x01,
+	cloak_si = 0x02,
+	amulet_si = 0x03,
+	helm_si = 0x04,
+	gloves_si = 0x05,
+	usecode_container_si = 0x06,
+	ring_si = 0x08,
+	earrings_si = 0x09,
+	ammo_si = 0x0a,
+	belt_si = 0x0b,
+	armour_si = 0x0c,
+	boots_si = 0x0d,
+	leggings_si = 0x0e,
+	backpack_si = 0x0f,			// Diaper as well?????
+	two_handed_si = 0x14
 	};
 	
 #endif	/* INCL_READY	*/

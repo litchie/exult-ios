@@ -403,7 +403,7 @@ void Face_stats::create_buttons()
 		if (sman->can_use_paperdolls() ||
 				// Otherwise, show faces also if the character
 				// has paperdoll information
-				Shapeinfo_lookup::GetCharacterInfo(gwin->get_npc(num)->get_shapenum()))
+				gwin->get_npc(num)->get_info().get_npc_paperdoll())
 			++num_to_paint;
 		}
 
@@ -427,7 +427,7 @@ void Face_stats::create_buttons()
 		if (sman->can_use_paperdolls() ||
 				// Otherwise, show faces also if the character
 				// has paperdoll information
-				Shapeinfo_lookup::GetCharacterInfo(act->get_shapenum())) {
+				act->get_info().get_npc_paperdoll()) {
 			pos += width;
 			party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
 		}

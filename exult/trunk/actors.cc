@@ -64,6 +64,12 @@
 #include "ucsched.h"
 #include "ucscriptop.h"
 #include "miscinf.h"
+#include "animate.h"
+#include "objiter.h"
+#include "ammoinf.h"
+#include "armorinf.h"
+#include "weaponinf.h"
+#include "npcdollinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -256,20 +262,19 @@ void Actor::init
 	}
 
 /*
- *	Find desired ammo.
+ *	Find (best) ammo of given type.
  *
  *	Output:	->object if found.
  */
 
-Game_object *Actor::find_ammo
+Game_object *Actor::find_best_ammo
 	(
-	int ammo			// Ammo family shape.
+	int family,
+	int needed
 	)
 	{
-					// See if already have ammo.
-	Game_object *aobj = get_readied(Actor::ammo);
-	if (aobj && In_ammo_family(aobj->get_shapenum(), ammo))
-		return aobj;		// Already readied.
+	Game_object *best = 0;
+	int best_strength = -20;
 	Game_object_vector vec;		// Get list of all possessions.
 	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
@@ -277,10 +282,124 @@ Game_object *Actor::find_ammo
 							it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
-		if (In_ammo_family(obj->get_shapenum(), ammo))
+		if (obj->inside_locked() || !In_ammo_family(obj->get_shapenum(), family))
+			continue;
+		Ammo_info *ainf = obj->get_info().get_ammo_info();
+		if (!ainf)	// E.g., musket ammunition doesn't have it.
+			continue;
+			// Can't use it.
+		if (obj->get_quantity() < needed)
+			continue;
+			// Calc ammo strength.
+		int strength = ainf->get_base_strength();
+			// Favor those with more shots remaining.
+		if (obj->get_quantity() < 5*needed)
+			strength /= 3;
+		else if (obj->get_quantity() < 10*needed)
+			strength /= 2;
+		if (strength > best_strength)
+			{
+			best = obj;
+			best_strength = strength;
+			}
+		}
+	return best;
+	}
+
+/*
+ *	Get effective maximum range for weapon taking in consideration
+ *	the actor's strength and combat.
+ */
+int Actor::get_effective_range
+	(
+	const Weapon_info *winf,
+	int reach
+	)
+	{
+	if (reach < 0)
+		{
+		if (!winf)
+			{
+			Monster_info *minf = get_info().get_monster_info();
+			return minf ? minf->get_reach()
+					: Monster_info::get_default()->get_reach();
+			}
+		reach = winf->get_range();
+		}
+	int uses = winf ? winf->get_uses() : Weapon_info::melee;
+	if (!uses || uses == Weapon_info::ranged)
+		return reach;
+	else
+		{
+		int eff_range;
+		int str = get_effective_prop(static_cast<int>(Actor::strength));
+		int combat = get_effective_prop(static_cast<int>(Actor::combat));
+		if (str < combat)
+			eff_range = str;
+		else
+			eff_range = combat;
+		if (uses == Weapon_info::good_thrown)
+			eff_range *= 2;
+		if (eff_range < reach)
+			eff_range = reach;
+		if (eff_range > 31)
+			eff_range = 31;
+		return eff_range;
+		}
+	}
+
+/*
+ *	Find ammo used by weapon.
+ *
+ *	Output:	->object if found. Additionally, is_readied is set to
+ *	true if the ammo is readied.
+ */
+
+Game_object *Actor::find_weapon_ammo
+	(
+	int weapon,			// Weapon shape.
+	int needed,
+	bool recursive
+	)
+	{
+	if (weapon < 0)
+		return 0;
+	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
+	if (!winf)
+		return 0;
+	int family = winf->get_ammo_consumed();
+	if (family >= 0)
+		{
+		Game_object *aobj = get_readied(Actor::ammo);
+		if (aobj && In_ammo_family(aobj->get_shapenum(), family) &&
+			aobj->get_quantity() >= needed)
+			return aobj;		// Already readied.
+		else if (recursive)
+			return find_best_ammo(family, needed);
+		return 0;
+		}
+
+	// Search readied weapons first.
+	static enum Spots wspots[] = {lhand, rhand, back2h_spot, belt};
+	const int num_weapon_spots = sizeof(wspots)/sizeof(wspots[0]);
+	for (int i = 0; i < num_weapon_spots; i++)
+		{
+		Game_object *obj = spots[static_cast<int>(wspots[i])];
+		if (!obj || obj->get_shapenum() != weapon)
+			continue;
+		Shape_info& inf = obj->get_info();
+		if (family == -2)
+			{
+			if (!inf.has_quality() || obj->get_quality() > needed)
+				return obj;
+			}
+			// Family -1 and family -3.
+		else if (obj->get_quantity() > needed)
 			return obj;
 		}
-	return 0;
+
+	// Now recursively search all contents.
+	return recursive ? Container_game_object::find_weapon_ammo(weapon) : 0;
 	}
 
 /*
@@ -304,6 +423,42 @@ void Actor::swap_ammo
 	}
 
 /*
+ *	Recursivelly searches for ammunition for a given weapon, if needed.
+ *	Output: true if the weapon can be used, ammo -> to best ammunition.
+ */
+
+static inline bool Is_weapon_usable
+	(
+	Actor *npc,
+	Game_object *bobj,
+	Game_object **ammo = 0,
+	bool recursive = true
+	)
+	{
+	if (ammo)
+		*ammo = 0;
+	Weapon_info *winf = bobj->get_info().get_weapon_info();
+	if (!winf)
+		return false;		// Not a weapon.
+	Game_object *aobj = 0;	// Check ranged first.
+	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
+			winf->get_ammo_consumed(), winf->get_projectile(),
+			true, &aobj, GAME_BG, recursive);
+	if (!need_ammo)
+		return true;
+		// Try melee if the weapon is not ranged.
+	else if (!aobj && winf->get_uses() != Weapon_info::ranged)
+		need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
+				winf->get_ammo_consumed(), winf->get_projectile(),
+				false, &aobj, GAME_BG, recursive);
+	if (need_ammo && !aobj)
+		return false;
+	if (ammo)
+		*ammo = aobj;
+	return true;
+	}
+
+/*
  *	Ready ammo for weapon being carried.
  *
  *	Output:	true if successful.
@@ -322,7 +477,7 @@ bool Actor::ready_ammo
 	if (!winf)
 		return false;
 	int ammo;
-	if ((ammo = winf->get_ammo_consumed()) == 0)
+	if ((ammo = winf->get_ammo_consumed()) < 0)
 		{			// Ammo not needed.
 		if (winf->uses_charges() && info.has_quality() &&
 					weapon->get_quality() <= 0)
@@ -330,12 +485,73 @@ bool Actor::ready_ammo
 		else
 			return true;
 		}
-	Game_object *found = find_ammo(ammo);
+	Game_object *found = 0;
+		// Try non-recursive search for ammo first.
+	bool usable = Is_weapon_usable(this, weapon, &found, false);
+	if (usable)	// Ammo is available and ready.
+		return true;
+	else if (winf->get_ammo_consumed() < 0)
+		return false;	// Weapon can't be used.
+		// Try recursive search now.
+	found = find_best_ammo(winf->get_ammo_consumed());
 	if (!found)
 		return false;
 	swap_ammo(found);
 	return true;
 	}
+
+/*
+ *	If no shield readied, look through all possessions for the best one.
+ *	Output:	true if successful.
+ */
+
+bool Actor::ready_best_shield
+	(
+	)
+	{
+	int points;
+	// What about spell book????
+	if (spots[rhand])
+		{
+		Shape_info& inf = spots[rhand]->get_info();
+		return inf.get_armor() || inf.get_armor_immunity();
+		}
+	Game_object_vector vec;		// Get list of all possessions.
+	vec.reserve(50);
+	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
+	Game_object *best = 0;
+	int best_strength = -20;
+	int wtype = other;
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
+		{
+		Game_object *obj = *it;
+		if (obj->inside_locked())
+			continue;
+		Shape_info& info = obj->get_info();
+			// Only want those that can be readied in hand.
+		int ready = info.get_ready_type();
+		if (ready != one_handed_weapon && ready != other)
+			continue;
+		Armor_info *arinf = info.get_armor_info();
+		if (!arinf)
+			continue;	// Not a shield.
+		int strength = arinf->get_base_strength();
+		if (strength > best_strength)
+			{
+			wtype = ready;
+			best = obj;
+			best_strength = strength;
+			}
+		}
+	if (!best)
+		return false;
+	// Spot is free already.
+	best->remove_this(1);
+	add(best, 1);			// Should go to the right place.
+	return true;
+	}
+
 
 /*
  *	If no weapon readied, look through all possessions for the best one.
@@ -354,50 +570,39 @@ bool Actor::ready_best_weapon
 	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0, *best_ammo = 0;
-	int best_damage = -20;
-	Ready_type wtype=other;
+	int best_strength = -20;
+	int wtype = other;
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
 		{
 		Game_object *obj = *it, *ammo_obj = 0;
-		if (obj->get_shapenum() == 595)
-			continue;	// Don't pick the torch. (Don't under-
-					//   stand weapons.dat well, yet!)
+		if (obj->inside_locked())
+			continue;
 		Shape_info& info = obj->get_info();
+		int ready = info.get_ready_type();
+		if (ready != one_handed_weapon && ready != two_handed_weapon)
+			continue;
 		Weapon_info *winf = info.get_weapon_info();
-		int ammo;
 		if (!winf)
 			continue;	// Not a weapon.
-		if ((ammo = winf->get_ammo_consumed()) != 0)
+		if (!Is_weapon_usable(this, obj, &ammo_obj))
+			continue;
+		int strength = winf->get_base_strength();
+		strength += get_effective_range(winf);
+		if (strength > best_strength)
 			{
-			ammo_obj = find_ammo(ammo);
-			if (!ammo_obj)
-				continue;
-			}
-		if (winf->uses_charges() && info.has_quality() &&
-					obj->get_quality() <= 0)
-			continue;	// No charges left.
-					// +++Might be a class to check.
-		int damage = winf->get_damage();
-		if (damage > best_damage)
-			{
-			wtype = static_cast<Ready_type>(info.get_ready_type());
+			wtype = ready;
 			best = obj;
-			best_ammo = ammo_obj;
-			best_damage = damage;
+			best_ammo = ammo_obj != obj ? ammo_obj : 0;
+			best_strength = strength;
 			}
 		}
 	if (!best)
 		return false;
-	Game_object *remove1 = 0, *remove2 = 0;
+		// If nothing is in left hand, nothing will happen.
+	Game_object *remove1 = spots[lhand], *remove2 = 0;
 	if (wtype == two_handed_weapon)
-		{
-		remove1 = spots[lhand];
 		remove2 = spots[rhand];
-		}
-	else
-		if (free_hand() == -1)
-			remove1 = spots[lhand];
 					// Free the spot(s).
 	if (remove1)
 		remove1->remove_this(1);
@@ -405,6 +610,8 @@ bool Actor::ready_best_weapon
 		remove2->remove_this(1);
 	best->remove_this(1);
 	add(best, 1);			// Should go to the right place.
+	if (wtype == one_handed_weapon)
+		ready_best_shield();	// Also add a shield for 1-handed weapons.
 	if (remove1)			// Put back other things.
 		add(remove1, 1);
 	if (remove2)
@@ -632,7 +839,8 @@ Actor::Actor
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), temperature(0), rest_time(0),
-	    casting_mode(false), atts(0), usecode_name("")
+	    casting_mode(false), atts(0), usecode_name(""),
+		target_object(0), attack_weapon(-1), target_tile(Tile_coord(-1, -1, 0))
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -662,12 +870,8 @@ void Actor::use_food
 	(
 	)
 	{
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{			// Automatons don't eat.
-		int shnum = get_shapenum();
-		if (shnum == 658 || shnum == 734 || shnum == 747)
-			return;
-		}
+	if (get_info().does_not_eat())
+		return;
 	int food = get_property(static_cast<int>(food_level));
 	food -= (rand()%4);		// Average 1.5 level/hour.
 	set_property(static_cast<int>(food_level), food);
@@ -703,16 +907,16 @@ void Actor::check_temperature
 			return;		// Nothing to do.
 					// Warming up.
 		temperature -= (temperature >= 5 ? 5 : temperature);
-		if (rand()%3 == 0)
+		if (GAME_SI && rand()%3 == 0)
 			if (temperature >= 30)
 				say(1218, 1221);
 			else
 				say(1214, 1217);
 		return;
 		}
-	int shnum = get_shapenum();
-	if ((shnum == 658 || shnum == 734 || shnum == 747) && GAME_SI)
+	if (get_info().is_cold_immune())
 		return;			// Automatons don't get cold.
+	int shnum = get_shapenum();
 	if (get_schedule_type() == Schedule::wait)
 		return;			// Not following leader?  Leave alone.
 	int warmth = figure_warmth();	// (This could be saved for speed.)
@@ -723,7 +927,7 @@ void Actor::check_temperature
 		int decr = 1 + (warmth - 100)/10;
 		decr = decr > temperature ? temperature : decr;
 		temperature -= decr;
-		if (rand()%3 == 0)
+		if (GAME_SI && rand()%3 == 0)
 			if (temperature >= 30)
 				say(1201, 1205);
 			else
@@ -734,7 +938,7 @@ void Actor::check_temperature
 	temperature += incr;
 	if (temperature > 63)
 		temperature = 63;
-	if (rand()%3 == 0)
+	if (GAME_SI && rand()%3 == 0)
 		switch (temperature/10)
 			{
 		case 0:
@@ -757,9 +961,11 @@ void Actor::check_temperature
 			break;
 		case 6:
 			say(1212, 1213);	// Frozen.
-			reduce_health(1 + rand()%3);
+			reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 			break;
 			}
+	else if (rand()%3 == 0 && temperature/10 == 6)
+		reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 	}
 
 /*
@@ -770,7 +976,7 @@ void Actor::check_temperature
 
 int Actor::get_attack_frames
 	(
-	int weapon,			// Weapon shape, or 0 for innate.
+	int weapon,			// Weapon shape, or -1 for innate.
 	bool projectile,		// Shooting/throwing.
 	int dir,			// 0-7 (as in dir.h).
 	signed char *frames			// Frames stored here.
@@ -808,7 +1014,7 @@ int Actor::get_attack_frames
 			}
 		unsigned char frame_flags;	// Get Actor_frame flags.
 		Weapon_info *winfo;
-		if (weapon && 
+		if (weapon >= 0 && 
 		    (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
 			frame_flags = winfo->get_actor_frames(projectile);
 		else				// Default to normal swing.
@@ -1274,6 +1480,7 @@ void Actor::set_target
 
 bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 {
+	Shape_info& inf = obj->get_info();
 	// If occupied, can't place
 	if (spots[spot])
 		return false;
@@ -1299,18 +1506,15 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 			return true;
 		else if (Game::get_game_type() == BLACK_GATE)
 		{
-			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), back2h_spot))
+			if (inf.is_object_allowed(obj->get_framenum(), back2h_spot))
 				return true;
-			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), shield_spot))
+			else if (inf.is_object_allowed(obj->get_framenum(), shield_spot))
 				return true;
 		}
 	}
 
 	// Lastly if we have gotten here, check the paperdoll table 
-	return Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-			obj->get_framenum(), spot);
+	return inf.is_object_allowed(obj->get_framenum(), spot);
 }
 
 /*
@@ -1343,19 +1547,22 @@ void Actor::get_prefered_slots
 		{
 			// Weapons, Sheilds, Spells, misc stuff
 			default:
-			if (type == spell || type == other_spell) fistype = FIS_Spell;
+				{
+			if (info.is_spell()) fistype = FIS_Spell;
 			else if (type == two_handed_weapon) fistype = FIS_2Hand;
 
-			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), rhand))
-				prefered = rhand;
-			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), back))
+			Shape_info& inf = obj->get_info();
+			if (inf.is_object_allowed(obj->get_framenum(), rhand))
+				if (!inf.is_object_allowed(obj->get_framenum(), lhand))
+					prefered = rhand;
+				else
+					alternate = rhand;
+			else if (inf.is_object_allowed(obj->get_framenum(), back))
 				prefered = back;
 			else
 				alternate = rhand;
 			break;
-
+				}
 
 			case gloves:
 			fistype = FIS_2Finger;
@@ -1399,26 +1606,27 @@ void Actor::get_prefered_slots
 	{
 		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
 		
+		Shape_info& inf = obj->get_info();
 		switch (type)
 		{
 			// Weapons, Sheilds, Spells, misc stuff
 			default:
-			if (type == spell_si|| type == other_spell_si) fistype = FIS_Spell;
+			if (info.is_spell()) fistype = FIS_Spell;
 			else if (type == two_handed_si) fistype = FIS_2Hand;
 
-			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), rhand))
-				prefered = rhand;
+			if (inf.is_object_allowed(obj->get_framenum(), rhand))
+				if (!inf.is_object_allowed(obj->get_framenum(), lhand))
+					prefered = rhand;
+				else
+					alternate = rhand;
 			else
 				alternate = rhand;
 			break;
 
 			case other:
-			if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), back2h_spot))
+			if (inf.is_object_allowed(obj->get_framenum(), back2h_spot))
 				prefered = back2h_spot;
-			else if (Shapeinfo_lookup::IsObjectAllowed(obj->get_shapenum(),
-					obj->get_framenum(), back))
+			else if (inf.is_object_allowed(obj->get_framenum(), back))
 				prefered = back;
 			else 
 				alternate = rhand;
@@ -1787,7 +1995,10 @@ void Actor::paint
 		{
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
-		if (flags & (1L << Obj_flags::invisible))
+		bool invis = flags & (1L << Obj_flags::invisible);
+		if (invis && party_id < 0)
+			return;	// Don't render invisible NPCs not in party.
+		else if (invis)
 			paint_invisible(xoff, yoff);
 		else 
 			paint_shape(xoff, yoff, true);
@@ -1978,7 +2189,7 @@ void Actor::activate
 					// Usecode
 					// Failed copy-protection?
 	else if (serpent &&
-		 gwin->get_main_actor()->get_flag(Obj_flags::confused))
+		gwin->get_main_actor()->get_flag(Obj_flags::confused))
 		ucmachine->call_usecode(0x63d, this,
 			(Usecode_machine::Usecode_events) event);	
 	else if (usecode == -1)
@@ -2172,15 +2383,22 @@ int Actor::inventory_shapenum()
 	if (!serpent)
 		{	// Can't display paperdolls (or they are disabled)
 			// Use BG gumps
-		Paperdoll_npc *npcinfo =
-			Shapeinfo_lookup::GetCharacterInfo(get_shapenum());
+		Paperdoll_npc *npcinfo = get_info().get_npc_paperdoll();
 
-		if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfo(get_sexed_coloured_shape());
-		if (!npcinfo) npcinfo = Shapeinfo_lookup::GetCharacterInfoSafe(get_shape_real());
+		if (!npcinfo)
+			{
+			Shape_info& inf = ShapeID::get_info(get_sexed_coloured_shape());
+			npcinfo = inf.get_npc_paperdoll();
+			}
+		if (!npcinfo)
+			{
+			Shape_info& inf = ShapeID::get_info(get_shape_real());
+			npcinfo = inf.get_npc_paperdoll_safe(get_type_flag(tf_sex));
+			}
 		if (!npcinfo)		// No paperdoll info at ALL; should never happen...
 			return (65);	// Default to male (Pickpocket Cheat)
 		
-		return npcinfo->gump_shape;
+		return npcinfo->get_gump_shape();
 		}
 	else /* if (serpent) */
 		return (123);		// Show paperdolls
@@ -2342,33 +2560,28 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 	a->add_dirty();
 	delete this;
 	}
+bool Actor::can_act()
+	{
+	return !(get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep)
+			|| is_dead() || get_property(static_cast<int>(health)) <= 0);
+	}
 
-/*
- *	This method should be called to decrement health from attacks, traps.
- *
- *	Output:	true if defeated.
- */
-
-bool Actor::reduce_health
+void Actor::fight_back
 	(
-	int delta,			// # points to lose.
-	Actor *attacker,		// Attacker, or null.
-	int damage_type,		// Type of damage
-	bool ignore_immunity	// Needed by one intrinsic/script opcode
+	Game_object *attacker
 	)
 	{
-	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
-		return false;
-	Monster_info *minf = get_info().get_monster_info();
-	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
-		delta = 0;		// Let them appear to be wounded.
-					// Watch for Skara Brae ghosts.
-	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-			get_info().has_translucency() &&
-			party_id < 0)	// Don't include Spark here!!
-		return false;
-					// Being a bully?
-	if (attacker && attacker->is_in_party() &&
+	// ++++ TODO: I think that nearby NPCs will help NPCs (or party members,
+	// as the case may be) of the same alignment when attacked by other NPCs,
+	// not just when the avatar & party attack. Although this is tricky to
+	// test (except, maybe, by exploiting the agressive U7 & SI duel schedule.
+	Actor *npc = attacker ? attacker->as_actor() : 0;
+	if (!npc)
+		return;
+	if (!target && !is_in_party())
+		set_target(npc, npc->get_schedule_type() != Schedule::duel);
+	// Being a bully?
+	if (npc->is_in_party() &&
 	    npc_num > 0 &&
 	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
 	    !(flags & (1<<Obj_flags::charmed)) && !is_in_party() &&
@@ -2384,34 +2597,172 @@ bool Actor::reduce_health
 			lastcall = curtime;
 			gwin->attack_avatar(1 + rand()%2);
 			}
-		else if (rand()%10 == 0)
+		else if (rand()%20 == 0)
 			{
-			cout << "Rand()%10" << endl;
+			cout << "Rand()%20" << endl;
 			gwin->attack_avatar(1 + rand()%2);
 			// To reduce the guard pile-up.
 			lastcall = curtime;
 			}
 		}
-	bool defeated = false;
-	if (!ignore_immunity)
+	}
+
+/*
+ *	This method should be called to cause damage from traps, attacks.
+ *
+ *	Output:	Hits taken. If exp is nonzero, experience value if defeated.
+ */
+
+int Actor::apply_damage
+	(
+	Game_object *attacker,	// Attacker, or null.
+	int str,		// Attack strength.
+	int wpoints,	// Weapon bonus.
+	int type,		// Damage type.
+	int bias,		// Different combat difficulty.
+	int *exp
+	)
+	{
+	if (exp)
+		*exp = 0;
+	int damage = bias;
+	str /= 3;
+
+		// In the original, wpoints == 127 does fixed 127 damage.
+		// Allowing for >= 127 in Exult, as the original seems to
+		// use only a byte for damage/health.
+	if (wpoints >= 127)
+		damage = 127;
+	else
 		{
-		switch (is_immune(damage_type))
+			// Lightning damage ignores strength.
+		if (type != Weapon_data::lightning_damage && str > 0)
+			damage += (1 + rand()%str);
+		if (wpoints > 0)
+			damage += (1 + rand()%wpoints);
+		}
+
+	int armor = -bias;
+	Monster_info *minf = get_info().get_monster_info();
+		// Monster armor protects only in UI_apply_damage.
+	if (minf)
+		armor += minf->get_armor();
+
+		// Armor defense and immunities only affect UI_apply_damage.
+	const int num_spots = sizeof(spots)/sizeof(spots[0]);
+	for (int i = 0; i < num_spots; i++)
+		{
+		Game_object *obj = spots[i];
+		if (obj)
 			{
-			case 1:		delta = 0; break;	// Is immune
-			case -1:	delta *= 2; break;	// Is vulnerable
-			default:	break;
+			Shape_info& info = obj->get_info();
+			armor += info.get_armor();
+			if ((info.get_armor_immunity() & (1 << type)) != 0)
+				{	// Armor gives immunity.
+					// Metal clang.
+				int sfx = Audio::game_sfx(5);
+				new Object_sfx(this, sfx);
+					// Attack back anyway.
+				fight_back(attacker);
+				return 0;	// No damage == no powers.
+				}
 			}
 		}
+
+		// Some attacks ignore armor (unless the armor gives immunity).
+	if (wpoints == 127 || type == Weapon_data::lightning_damage ||
+			type == Weapon_data::ethereal_damage ||
+			type == Weapon_data::sonic_damage ||
+			armor < 0)	// Armor should never help the attacker.
+		armor = 0;
+
+	if (armor)
+		damage -= (1 + rand()%armor);
+
+		// Paralyzed/defenseless foes may take damage even if
+		// the armor protects them. This code is guesswork,
+		// but it matches statistical tests.
+	if (damage <= 0 && !can_act())
+		{
+		if (str > 0)
+			damage = 1 + rand()%str;
+		else
+			damage = 0;
+		}
+
+	if (damage <= 0)
+		{	// No damage caused.
+		int sfx = Audio::game_sfx(5);
+		new Object_sfx(this, sfx);
+
+			// Flash red outline.
+		hit = true;
+		add_dirty();
+		Clear_hit *c = new Clear_hit();
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, 
+					reinterpret_cast<long>(this));
+			// Attack back.
+		fight_back(attacker);
+		return 0;	// No damage == no powers (usually).
+		}
+
+	return reduce_health(damage, type, attacker, exp);
+	}
+
+/*
+ *	This method should be called to decrement health directly.
+ *
+ *	Output:	Hits taken. If exp is nonzero, experience value if defeated.
+ */
+
+int Actor::reduce_health
+	(
+	int delta,			// # points to lose.
+	int type,		// Type of damage
+	Game_object *attacker,		// Attacker, or null.
+	int *exp
+	)
+	{
+	if (exp)
+		*exp = 0;
+		// Cheater, cheater.
+	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
+		return 0;
+
+	Monster_info *minf = get_info().get_monster_info_safe();
+	Actor *npc = attacker ? attacker->as_actor() : 0;
+
+		// Monster immunities DO affect UI_reduce_health, unlike
+		// armor immunities.
+	if (is_dead() || minf->cant_die() ||
+		(minf->get_immune() & (1 << type) != 0))
+		{	// Monster data gives immunity to damage.
+			// Attack back.
+		fight_back(attacker);
+		return 0;
+		}
+
+		// Monsters vulnerable to a damage type take 2x the damage.
+		// The originals seem to limit damage to 127 points; we
+		// set a lower bound on final health below.
+	if (minf->get_vulnerable() & (1 << type) != 0)
+		delta *= 2;
+
 	int oldhp = properties[static_cast<int>(health)];
 	int maxhp = properties[static_cast<int>(strength)];
 	int val = oldhp - delta;
-	properties[static_cast<int>(health)] = val;
+	if (val < -50)
+		{	// Limit how low it goes for safety.
+		val = -50;
+		delta = oldhp + 50;
+		}
+		// Don't set health yet!! (see tournament below for why)
+		// The following thresholds are exact.
 	if (this == gwin->get_main_actor() &&
 					// Flash red if Avatar badly hurt.
-			(((val < maxhp/8 || delta > maxhp/4) && rand()%2)
-					// Or if lightninig damage.
-			|| (delta &&
-					damage_type == (int)Weapon_info::lightning_damage)))
+			(delta >= maxhp/3 || oldhp < maxhp/4 ||
+					// Or if lightning damage.
+			type == Weapon_data::lightning_damage))
 		gwin->get_pal()->flash_red();
 	else
 		{
@@ -2429,43 +2780,209 @@ bool Actor::reduce_health
 			  get_shapenum() == 0x2b3 ||
 			  get_shapenum() == 0x2d5 ||
 			  get_shapenum() == 0x2e8))
-			say(0x4d2, 0x4da);
+			say(0x4d2, 0x4da);	// ++++ TODO: Not sure they use all these.
 		else if (!minf || !minf->cant_yell())
 			say(first_ouch, last_ouch);
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;		// ++++TAG for future de-hard-coding.
-	if (damage_type == 0 &&		// But only for normal damage.
-		delta >= 3 && (!minf || !minf->cant_bleed()) &&
-	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
+			// Bleed only for normal damage.
+	if (type == Weapon_data::normal_damage && !minf->cant_bleed()
+#if 0
+		delta >= 3 && rand()%2
+#else	// Trying something new. Seems to match originals better, but
+		// it is hard to judge accurately (although 10 or more hits
+		// *always* cause bleeding).
+		&& rand()%10 < delta
+#endif
+		&& find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gmap->create_ireg_object(blood, 0);
 		bobj->set_flag(Obj_flags::is_temporary);
 		bobj->move(get_tile());
 		}
-	if (Actor::is_dying())
-		{
-		if (get_flag(Obj_flags::tournament))
-			{
-			ucmachine->call_usecode(get_usecode(), this, 
-							Usecode_machine::died);
-				// Still 'tournament'?  Set hp = 1.
-			if (!is_dead() && get_flag(Obj_flags::tournament) &&
-			    get_property(static_cast<int>(health)) < 1)
-				{
-				set_property(static_cast<int>(health), 1);
-				if (get_attack_mode() == Actor::flee)
-					defeated = true;
-				}
-			}
-		else
-			die(attacker);
-		defeated = defeated || is_dead();
+	if (val <= 0 && oldhp > 0 && get_flag(Obj_flags::tournament))
+		{	// HPs are never reduced before tournament usecode
+			// (this can be checked on weapon usecode, tournament
+			// usecode or even UI_reduce_health directly followed
+			// by UI_get_npc_prop).
+			// THIS is why we haven't reduced health yet.
+			// This makes foes with tournament flag EXTREMELLY
+			// tough, particularly if they have high hit points
+			// to begin with!
+			// No more pushover banes!
+		if (npc)	// Just to be sure.
+			set_oppressor(npc->get_npc_num());
+		ucmachine->call_usecode(get_usecode(), this, 
+						Usecode_machine::died);
+		return 0;	// If needed, NPC usecode does the killing (possibly
+					// by calling this function again).
 		}
-	else if (val < 0 && !get_flag(Obj_flags::asleep) &&
-					!get_flag(Obj_flags::tournament))
+
+		// We do slimes here; they DO split through reduce_health intrinsic.
+		// They also do *not* split if hit by damage they are vulnerable to.
+	if (minf->splits() && val > 0 && 
+		(minf->get_vulnerable() & (1 << type) == 0) && rand()%2 == 0)
+		clone();
+	
+		// Doing this here simplifies the tournament code, above.
+	properties[static_cast<int>(health)] = val;
+	bool defeated = is_dying() || (val <= 0 && oldhp > 0);
+	
+	if (defeated && exp)
+		{
+			// Verified: No experience for killing sleeping people.
+		if (!get_flag(Obj_flags::asleep))
+			{
+			int expval = 0;
+				// Except for 2 details mentioned below, this formula
+				// is an exact match to what the originals give.
+				// We also have to do this *here*, before we kill the
+				// NPC, because the equipment is deleted (spells) or
+				// transferred to the dead body it leaves.
+			int combval = properties[static_cast<int>(combat)];
+			expval = properties[static_cast<int>(strength)] + combval + 
+					properties[static_cast<int>(dexterity)]/3 + 
+					properties[static_cast<int>(intelligence)]/5;
+			Monster_info *minf = get_info().get_monster_info();
+			int immune = minf ? minf->get_immune() : 0;
+			int vuln = minf ? minf->get_vulnerable() : 0;
+			if (minf)
+				expval += minf->get_base_xp_value();
+
+			if (!objects.is_empty())
+				{
+				Game_object_vector vec;		// Get list of all possessions.
+				vec.reserve(50);
+				get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
+				for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
+					{
+					Game_object *obj = *it;
+						// This matches the original, but maybe
+						// we should iterate through all items.
+						// After all, a death bolt in the backpack
+						// can still be dangerous...
+					if (obj->get_owner() != this)
+						continue;
+					Shape_info& inf = obj->get_info();
+					expval += inf.get_armor();
+						// Strictly speaking, the original does not give
+						// XP for armor immunities; but I guess this is
+						// mostly because very few armors give immunities
+						// (ethereal ring, cadellite helm) and no monsters
+						// use them anyway.
+						// I decided to have them give a (non-cumulative)
+						// increase in experience.
+					immune |= inf.get_armor_immunity();
+					Weapon_info *winf = inf.get_weapon_info();
+					if (!winf)
+						continue;
+					expval += winf->get_base_xp_value();
+						// This was tough to figure out, but figured out it was;
+						// it is a perfect match to what the original does.
+					switch (winf->get_uses())
+						{
+						case Weapon_info::melee:
+							{
+							int range = winf->get_range();
+							expval += range > 5 ? 2 : (range > 3 ? 1 : 0);
+							break;
+							}
+						case Weapon_info::poor_thrown:
+							expval += combval/5; break;
+						case Weapon_info::good_thrown:
+							expval += combval/3; break;
+						case Weapon_info::ranged:
+							expval += winf->get_range()/2; break;
+						}
+					}
+				}
+				// Originals don't do this, but hey... they *should*.
+				// Also, being vulnerable to something you are immune
+				// should not matter because immunities are checked first;
+				// the originals don't do this check, but neither do they
+				// have a monster vulnerable and immune to the same thing.
+			vuln &= ~immune;
+			expval += bitcount(immune);
+			expval -= bitcount(vuln);
+				// And the final touch (verified).
+			expval /= 2;
+			*exp = expval;
+			}
+		}
+
+	if (is_dying())
+		die(attacker);
+	else if (val <= 0 && !get_flag(Obj_flags::asleep))
 		set_flag(Obj_flags::asleep);
-	return defeated;
+	else if (npc && !target && !is_in_party())
+		set_target(npc, npc->get_schedule_type() != Schedule::duel);
+	return delta;
+	}
+
+/*
+ *	Causes the actor to fall to the ground and take damage.
+ */
+
+void Actor::fall_down()
+	{
+	if (!get_type_flag(tf_fly))
+		return;
+	int savetz = get_lift();
+	Tile_coord start = get_tile();
+	if (!Map_chunk::is_blocked(start, 1, MOVE_WALK, 100) && 
+			start.tz < savetz)
+		{
+		move(start.tx, start.ty, start.tz);
+		reduce_health(1 + rand()%5, Weapon_data::normal_damage);
+		}
+	}
+
+/*
+ *	Causes the actor to lie down to sleep (or die).
+ */
+
+void Actor::lay_down(bool die)
+	{
+	if (!die && get_flag(Obj_flags::asleep))
+		return;
+		// Fall to the ground.
+	fall_down();
+	bool frost_serp = GAME_SI && get_shapenum() == 832;
+		// Don't do it if already in sleeping frame.
+	if (frost_serp && (get_framenum() & 0xf) == Actor::sit_frame)
+		return;		// SI Frost serpents are weird.
+	else if ((get_framenum() & 0xf) == Actor::sleep_frame)
+		return;
+
+	set_action(0);
+	Usecode_script *scr = new Usecode_script(this);
+	(*scr) << Ucscript::finish << (Ucscript::npc_frame + Actor::standing);
+	if (GAME_SI && get_shapenum() == 832)	// SI Frost serpent
+		{		// Frames are in reversed order. This results in a
+				// strangeanimation in the original, which we fix here.
+		(*scr) << (Ucscript::npc_frame + Actor::sleep_frame)
+			<< (Ucscript::npc_frame + Actor::kneel_frame)
+			<< (Ucscript::npc_frame + Actor::bow_frame)
+			<< (Ucscript::npc_frame + Actor::sit_frame);
+		}
+	else if (GAME_BG && get_shapenum() == 525)	// BG Sea serpent
+		{
+		(*scr) << (Ucscript::npc_frame + Actor::bow_frame)
+			<< (Ucscript::npc_frame + Actor::kneel_frame)
+			<< (Ucscript::npc_frame + Actor::sleep_frame);
+		}
+	else
+		{	// Slimes are done elsewhere.
+		(*scr) << (Ucscript::npc_frame + Actor::kneel_frame)
+			<< Ucscript::sfx << Audio::game_sfx(86);
+		if (!die)
+			(*scr) << (Ucscript::npc_frame + Actor::sleep_frame);
+		}
+	if (die)	// If dying, remove.
+		(*scr) << Ucscript::remove;
+	scr->start();
 	}
 
 /*
@@ -2503,13 +3020,20 @@ int Actor::get_effective_prop
 	switch (prop)
 		{
 	case Actor::dexterity:
-	case Actor::intelligence:
 	case Actor::combat:
+		if (get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep) ||
+			get_property(Actor::health) < 0)
+			return prop == Actor::dexterity ? 0 : 1;
+	case Actor::intelligence:
+		if (is_dead())
+			return prop == Actor::dexterity ? 0 : 1;
+		else if (get_flag(Obj_flags::charmed) || get_flag(Obj_flags::asleep))
+			val--;
 	case Actor::strength:
 		if (get_flag(Obj_flags::might))
 			val += (val < 15 ? val : 15);	// Add up to 15.
 		if (get_flag(Obj_flags::cursed))
-			val /= 2;
+			val -= 3;	// Matches originals.
 		break;
 		}
 	return val;
@@ -2587,29 +3111,24 @@ void Actor::set_flag
 	)
 	{
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
-
-	if (flag >= 0 && flag < 32)
-		flags |= ((uint32) 1 << flag);
-	else if (flag >= 32 && flag < 64)
-		flags2 |= ((uint32) 1 << (flag-32));
+	Monster_info *minf = get_info().get_monster_info_safe();
 	switch (flag)
 		{
 	case Obj_flags::asleep:
+		if (minf->sleep_safe() || minf->power_safe())
+			return;		// Don't do anything.
 					// Check sched. to avoid waking
 					//   Penumbra.
 		if (schedule_type == Schedule::sleep)
 			break;
 					// Set timer to wake in a few secs.
 		need_timers()->start_sleep();
-		if ((get_framenum()&0xf) != Actor::sleep_frame &&
-					// Watch for slimes.
-		    !get_info().has_strange_movement() &&
-		    get_shapenum() > 0)	// (In case not initialized.)
-					// Lie down.
-			change_frame(Actor::sleep_frame + ((rand()%4)<<4));
 		set_action(0);		// Stop what you're doing.
+		lay_down(false);	// Lie down.
 		break;
 	case Obj_flags::poisoned:
+		if (minf->poison_safe())
+			return;		// Don't do anything.
 		need_timers()->start_poison();
 		break;
 	case Obj_flags::protection:
@@ -2619,17 +3138,25 @@ void Actor::set_flag
 		need_timers()->start_might();
 		break;
 	case Obj_flags::cursed:
+		if (minf->curse_safe() || minf->power_safe())
+			return;		// Don't do anything.
 		need_timers()->start_curse();
 		break;
 	case Obj_flags::charmed:
+		if (minf->charm_safe() || minf->power_safe())
+			return;		// Don't do anything.
 		need_timers()->start_charm();
 		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:
+		if (minf->paralysis_safe() || minf->power_safe())
+			return;		// Don't do anything.
+		fall_down();
 		need_timers()->start_paralyze();
 		break;
 	case Obj_flags::invisible:
 		need_timers()->start_invisibility();
+		Combat_schedule::stop_attacking_invisible(this);
 		gclock->set_palette();
 		break;
 	case Obj_flags::dont_move:
@@ -2639,6 +3166,9 @@ void Actor::set_flag
 		break;
 	case Obj_flags::naked:
 		{
+		// set_polymorph needs this, and there are no problems
+		// in setting this twice.
+		flags2 |= ((uint32) 1 << (flag-32));
 		if (get_npc_num() != 0)	// Ignore for all but avatar.
 			break;
 		int sn;
@@ -2655,6 +3185,12 @@ void Actor::set_flag
 		break;
 		}
 		}
+
+	// Doing it here to prevent problems with immunities.
+	if (flag >= 0 && flag < 32)
+		flags |= ((uint32) 1 << flag);
+	else if (flag >= 32 && flag < 64)
+		flags2 |= ((uint32) 1 << (flag-32));
 					// Update stats if open.
 	if (gumpman->showing_gumps())
 		gwin->set_all_dirty();
@@ -2777,85 +3313,15 @@ int Actor::figure_warmth
 	(
 	)
 	{
-	static short hats[5] = {10, 35, -8, 20, 35};
-	static short cloaks[5] = {30, 70, 70, 70, 70};
-	static short boots[7] = {85, 65, 50, 95, 85, 75, 80};
-
 	int warmth = -75;		// Base value.
-	int frnum;
-	Game_object *worn = spots[static_cast<int>(head)];
-	if (worn)
-		switch (worn->get_shapenum())
-			{
-		case 383:	// Magic helm
-		case 541:	// Great helm
-			warmth += 5; break;
-		case 542:	// Crested helm
-			if (worn->get_framenum() == 2)
-				warmth += 15;
-			else
-				warmth += 5;
-			break;
-		case 1004:	// Helm
-			if ((frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
-				warmth += hats[frnum];
-			break;
-		case 1013:	// Helm of light
-			warmth += 10; break;
-			}
-	worn = spots[static_cast<int>(cloak_spot)];	// Cloak.
-	if (worn && worn->get_shapenum() == 227 &&
-	    (frnum = worn->get_framenum()) < sizeof(cloaks)/sizeof(cloaks[0]))
-		warmth += cloaks[frnum];
-	worn = spots[static_cast<int>(feet)];
-	if (worn && worn->get_shapenum() == 587 &&
-	    (frnum = worn->get_framenum()) < sizeof(boots)/sizeof(boots[0]))
-		warmth += boots[frnum];
-	worn = spots[static_cast<int>(torso)];
-	if (worn)
-		switch (worn->get_shapenum())
-			{
-		case 419:	// Breastplate
-			warmth -= 9; break;
-		case 569:	// Leather armor
-			warmth += 20; break;
-		case 570:	// Scale armor
-			warmth -= 8; break;
-		case 571:	// Chain armor
-			warmth -= 5; break;
-		case 573:	// Plate armor
-			warmth -= 10; break;
-		case 666:	// Magic armor
-		case 836:	// Antique armor
-			warmth += 5; break;
-			}
-	worn = spots[static_cast<int>(hands2_spot)];// Gloves?
-	if (worn)
-		switch (worn->get_shapenum())
-			{
-		case 579:		// Gloves.
-			if (worn->get_framenum() == 0)
-				warmth += 7;
-			else
-				warmth += 20;
-			break;
-		case 574:		// Gauntlets.
-			warmth -= 5; break;
-			}
-	worn = spots[static_cast<int>(legs)];	// Legs?
-	if (worn)
-		switch (worn->get_shapenum())
-			{
-		case 574:		// Leather leggings.
-			warmth += 10; break;
-		case 575:		// Chain leggings.
-		case 576:		// Plate leggings.
-			warmth -= 5; break;
-		case 677:		// Stockings.
-			warmth += 4; break;
-		case 686:		// Magic leggings.
-			warmth += 5; break;
-			}
+
+	static Spots locs[] = {head, cloak_spot, feet, torso, hands2_spot, legs};
+	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
+		{
+		Game_object *worn = spots[static_cast<int>(locs[i])];
+		if (worn)
+			warmth += worn->get_info().get_object_warmth(worn->get_framenum());
+		}
 	return warmth;
 	}
 
@@ -2884,7 +3350,7 @@ void Actor::call_readied_usecode
 	)
 	{
 					// Limit to certain types.
-	if (!Shapeinfo_lookup::get_usecode_events(obj->get_shapenum()))
+	if (!obj->get_info().has_usecode_events())
 		return;
 
 	Shape_info& info = obj->get_info();
@@ -2915,84 +3381,15 @@ bool Actor::in_usecode_control() const
 	}
 
 /*
- *	Attack using the usecode_target and usecode_weapon fields set by
- *	the 'set_to_attack' intrinsic.
+ *	Attack preset target/tile using preset weapon shape.
+ *
+ *	Output: True if attack was realized and hit target (or is
+ *	a missile flying towards target), false otherwise
  */
-bool Actor::usecode_attack
-	(
-	)
+bool Actor::usecode_attack()
 	{
-	if (!usecode_target)
-		return false;
-	Shape_info& info = ShapeID::get_info(usecode_weapon);
-	Weapon_info *winfo = info.get_weapon_info();
-	Game_object *trg = usecode_target;
-	usecode_target = 0;
-	if (!winfo)
-		return false;
-	int projectile_shape = winfo->get_projectile();
-	int ammo_shape = winfo->get_ammo_consumed();
-	// Not sure if we need all these.
-	bool uses_charges = winfo->uses_charges() && info.has_quality();
-	int strike_range = winfo->get_striking_range();
-	int projectile_range = winfo->get_projectile_range();
-	bool returns = winfo->returns();
-	bool is_thrown = winfo->is_thrown();
-	bool skip_render = false;
-	if (ammo_shape)
-		{
-		if (!(ammo_shape = Combat_schedule::use_ammo(this, ammo_shape,
-							projectile_shape)))
-			{
-			Mouse::mouse->flash_shape(Mouse::outofammo);
-			return false;
-			}
-		}
-	else if (uses_charges)
-		{
-		Game_object *weapon = spots[static_cast<int>(lhand)];
-		if (!weapon || weapon->get_shapenum() != usecode_weapon ||
-					!weapon->get_quality())
-			{
-			weapon = spots[static_cast<int>(rhand)];
-			if (!weapon || weapon->get_shapenum() != usecode_weapon||
-					!weapon->get_quality())
-				{
-				Mouse::mouse->flash_shape(Mouse::outofammo);
-				return false;
-				}
-			}
-		weapon->set_quality(weapon->get_quality() - 1);
-		ammo_shape = projectile_shape;
-		}
-	else if (projectile_shape)
-		ammo_shape = projectile_shape;
-	else if (winfo->get_uses() == 3)
-		ammo_shape = usecode_weapon;
-	else
-		{	// ammo_shape is still zero; see if usecode_weapon looks
-			// like a projectile:
-		ShapeID id(usecode_weapon, 0, SF_SHAPES_VGA);
-		if (id.get_num_frames() >= 24)
-			{
-			ammo_shape = usecode_weapon;
-			// I am interpreting the lack of projectile info as meaning
-			// not to render the projectile:
-			skip_render = true;
-			}
-		}
-
-	if (ammo_shape)		// We have a projectile, so use it.
-		gwin->get_effects()->add_effect(
-				new Projectile_effect(this, trg,
-					ammo_shape, usecode_weapon, skip_render));
-	else if (distance(trg) <= strike_range)		// Short-range weapons.
-		if (winfo->explodes())	// Cause explosion instead.
-			eman->add_effect(new Explosion_effect(trg->get_tile(),
-					0, 0, usecode_weapon, 0, this));
-		else	// Attack target.
-			trg->attacked(this, usecode_weapon);
-	return true;
+	return Combat_schedule::attack_target(
+			this, target_object, target_tile, attack_weapon);
 	}
 
 /*
@@ -3155,7 +3552,7 @@ int Actor::add_readied
 	// Already something there? Try to drop into it.
 	// +++++Danger:  drop() can potentially delete the object.
 //	if (spots[index]) return (spots[index]->drop(obj));
-	if (spots[index]) return (spots[index]->add(obj));
+	if (spots[index]) return (spots[index]->add(obj, dont_check));
 
 	int prefered;
 	int alternate;
@@ -3168,7 +3565,7 @@ int Actor::add_readied
 	if (!fits_in_spot (obj, index, type) && !force_pos) return 0;
 
 	// No room, or too heavy.
-	if (!Container_game_object::add(obj, 1)) return 0;
+	if (!Container_game_object::add(obj, true)) return 0;
 
 	// Set the spot to this object
 	spots[index] = obj;
@@ -3360,16 +3757,19 @@ Weapon_info *Actor::get_weapon
 	)
 	{
 	points = 1;			// Bare hands = 1.
+	shape = -1;			// Bare hands.
 	Weapon_info *winf = 0;
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	obj = weapon;
 	if (weapon)
+		{
 		if ((winf = weapon->get_info().get_weapon_info()) != 0)
 			{
 			points = winf->get_damage();
 			shape = weapon->get_shapenum();
 			return winf;
 			}
+		}
 #if 0	/* (jsf: 17july2005) I don't think we should look at right hand. */
 					// Try right hand.
 	weapon = spots[static_cast<int>(rhand)];
@@ -3427,273 +3827,203 @@ inline int Get_effective_prop
 /*
  *	Figure hit points lost from an attack, and subtract from total.
  *
- *	Output:	True if defeated (dead, or lost battle on List Field).
+ *	Output:	Hits taken or < 0 for explosion.
  */
 
-bool Actor::figure_hit_points
+int Actor::figure_hit_points
 	(
-	Actor *attacker,		// 0 if hit from a missile egg.
-	int weapon_shape,		// Negative if from an explosion.
-	int ammo_shape
+	Game_object *attacker,
+	int weapon_shape,		// < 0 for readied weapon.
+	int ammo_shape,			// < 0 for no ammo shape.
+	bool explosion			// If this is an explosion attacking.
 	)
 	{
 	bool were_party = party_id != -1 || npc_num == 0;
 	// godmode effects:
 	if (were_party && cheat.in_god_mode())
-		return false;
-	bool theyre_party = attacker &&
-			(attacker->party_id != -1 || attacker->npc_num == 0);
+		return 0;
+	Actor *npc = attacker ? attacker->as_actor() : 0;
+	bool theyre_party = npc &&
+			(npc->party_id != -1 || npc->npc_num == 0);
 	bool instant_death = (cheat.in_god_mode() && theyre_party);
 					// Modify using combat difficulty.
 	int bias = were_party ? Combat::difficulty :
 			(theyre_party ? -Combat::difficulty : 0);
-	int armor = get_armor_points() - bias;
-	int wpoints;
-	Weapon_info *winf;
-	if (weapon_shape > 0)
-		{
+
+	const Weapon_info *winf;
+	Ammo_info *ainf;
+
+	int wpoints = 0;
+	if (weapon_shape >= 0)
 		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
-		wpoints = winf ? winf->get_damage() : 0;
-		}
-	else if (ammo_shape > 0)
+	else
+		winf = 0;
+	if (ammo_shape >= 0)
+		ainf = ShapeID::get_info(ammo_shape).get_ammo_info();
+	else
+		ainf = 0;
+	if (!winf && weapon_shape < 0)
+		winf = npc ? npc->get_weapon(wpoints) : 0;
+
+	int usecode = -1, powers = 0;
+	int type = Weapon_data::normal_damage;
+	bool explodes = false;
+
+	if (winf)
 		{
-		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
-		wpoints = winf ? winf->get_damage() : 0;
+		wpoints = winf->get_damage();
+		usecode = winf->get_usecode();
+		type = winf->get_damage_type();
+		powers = winf->get_powers();
+		explodes = winf->explodes();
 		}
 	else
-		{
-		Game_object *w;
-		winf = attacker->get_weapon(wpoints, weapon_shape, w);
-		if (!winf)
-			wpoints = 1;	// Give at least one, but only if there's no weapon
-		}
-	bool explosion = winf ? winf->explodes() : false;
-					// Get bonus ammo points.
-	Ammo_info *ainf = ammo_shape > 0 ? 
-			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;
-	bool ishoming = false;
+		wpoints = 1;	// Give at least one, but only if there's no weapon
 	if (ainf)
 		{
 		wpoints += ainf->get_damage();
-		ishoming = ainf->is_homing();
-		}
-	int usefun;			// See if there's usecode for it.
-	if (winf && (usefun = winf->get_usecode()) != 0)
-		ucmachine->call_usecode(usefun, this,
-					Usecode_machine::weapon);
-					// Same for ammo.
-	unsigned char powers = winf ? winf->get_powers() : 0;
-	if (ainf)
+			// Replace damage type.
+		if (ainf->get_damage_type() != Weapon_data::normal_damage)
+			type = ainf->get_damage_type();
 		powers |= ainf->get_powers();
-	if (attacker && (usefun ||
-			(wpoints || powers) && !powers&Weapon_info::si_no_damage))
-		{ 
-		if (is_combat_protected() && party_id >= 0 &&
-		    rand()%5 == 0)
-			say(first_need_help, last_need_help);
-					// Attack back, but not if in party.
-		if (!target && !is_in_party())
-			set_target(attacker,
-			    attacker->get_schedule_type() != Schedule::duel);
+		explodes = explodes || ainf->explodes();
 		}
-	if (!wpoints && !powers)
-		return false;		// No harm can be done.
-	
-	int prob;
-	if (weapon_shape == 621)
-		//Give a better base chance for delayed blast spell to hit as
-		//it does not depend on the attacker's stats:
-		prob = 80;
-	else 
-		prob = 55;
-	
-	prob += 8*bias +
-		2*Get_effective_prop(attacker, combat, 10) +
-		Get_effective_prop(attacker, dexterity, 10) -
-		2*Get_effective_prop(this, combat, 10) -
-		Get_effective_prop(this, dexterity, 10);
-	if (get_flag(Obj_flags::protection))// Defender is protected?
-		prob -= (40 + rand()%20);
-	if (prob < 4)			// Always give some chance.
-		prob = 4;
-	else if (prob > 96)
-		prob = 96;
-					// Attacked by Vesculio in SI?
-	if (GAME_SI && attacker && attacker->npc_num == 294)
-		{
-		int pts, sh;		// Do we have Magebane?
-		Game_object *w;
-	    	if (get_weapon(pts, sh, w) && sh == 0xe7)
-			{
-			prob -= (70 + rand()%20);
-			eman->remove_text_effect(attacker);
-			attacker->say(magebane_struck);
-			}
-		}
-	if (instant_death || ishoming)
-		prob = 200;	// always hits
 
-	if (combat_trace) {
-		cout << "Hit probability is " << prob << endl;
-	}
-	bool missed = false;
-	if (rand()%100 > prob)
-		missed = true;			// Missed.
-	if (!missed && (Game::get_game_type() == SERPENT_ISLE))
-		{	// putting Draygan to sleep (better kludge).
-		if (powers&Weapon_info::si_no_damage)
-			{	// if ainf exists, may be SI sleep arrows.
-				// Just in case, see if it is set to sleep:
-			if (ainf && ainf->get_powers()&Weapon_info::sleep)
-				ucmachine->call_usecode(0x7e1, this,
-							Usecode_machine::weapon);
-			return false;	//Causes no harm
-			}
+	if (explodes && !explosion)	// Explosions shouldn't explode again.
+		{	// Time to explode.
+		Tile_coord offset(0, 0, get_info().get_3d_height()/2);
+		eman->add_effect(new Explosion_effect(get_tile() + offset,
+				0, 0, weapon_shape, ammo_shape, attacker));
+			// The explosion will handle the damage.
+		return -1;
 		}
-	// See if we should drop ammo.
-	unsigned char drop = ainf ? ainf->get_drop_type() : 0;
-	if ((drop == Ammo_info::always_drop) || 
-			((drop != Ammo_info::never_drop) && (missed)))
+
+	int expval = 0, hits = 0;
+	bool nodamage = (powers & (Weapon_data::no_damage)) != 0;
+	if (instant_death)
+		wpoints = 127;
+	if (!nodamage)
+		// This may kill the NPC; this comes before powers because no
+		// damage means no powers -- except for the no_damage flag.
+		hits = apply_damage(attacker, Get_effective_prop(npc, Actor::strength, 0),
+				wpoints, type, bias, &expval);
+		// Apply weapon powers if needed.
+	if (powers && (hits || nodamage))
 		{
-		if (winf && ammo_shape && attacker &&
-		    ((winf->is_thrown() && !winf->returns()) ||
-			winf->get_ammo_consumed() > 0))
+			// Protection prevents powers.
+		if (!get_flag(Obj_flags::protection))
 			{
-			Tile_coord pos = Map_chunk::find_spot(get_tile(), 3,
-							ammo_shape, 0, 1);
-			if (pos.tx != -1)
-				{
-				Game_object *aobj = gmap->create_ireg_object(
-									ammo_shape, 0);
-				if (attacker->get_flag(	Obj_flags::is_temporary))
-					aobj->set_flag(	Obj_flags::is_temporary);
-				aobj->set_flag(Obj_flags::okay_to_take);
-				aobj->move(pos);
+			int attint = Get_effective_prop(npc, Actor::intelligence, 16),
+				defstr = Get_effective_prop(this, Actor::strength),
+				defint = Get_effective_prop(this, Actor::intelligence);
+
+				// These rolls are bourne from statistical analisys and are,
+				// as far as I can tell, how the game works.
+			if ((powers & Weapon_data::poison) && roll_to_win(attint, defstr))
+				set_flag(Obj_flags::poisoned);
+			if ((powers & Weapon_data::curse) && roll_to_win(attint, defint))
+				set_flag(Obj_flags::cursed);
+			if ((powers & Weapon_data::charm) && roll_to_win(attint, defint))
+				set_flag(Obj_flags::charmed);
+			if ((powers & Weapon_data::sleep) && roll_to_win(attint, defint))
+				set_flag(Obj_flags::asleep);
+			if ((powers & Weapon_data::paralyze) && roll_to_win(attint, defstr))
+				set_flag(Obj_flags::paralyzed);
+			if (powers & Weapon_data::magebane)
+				{	// Magebane weapons (magebane sword, death scythe).
+					// Take away all mana.
+				int mana = properties[static_cast<int>(Actor::mana)];
+				set_property(static_cast<int>(Actor::mana), 0);
+				int num_spells = 0;
+				Game_object_vector vec, spells;
+				vec.reserve(50);
+				spells.reserve(50);
+				get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
+					// Gather all spells...
+				for (Game_object_vector::iterator it = vec.begin(); 
+							it != vec.end(); ++it)
+					if ((*it)->get_info().is_spell())	// Seems to be right.
+						spells.push_back(*it);
+				vec.clear();
+					// ... and take them all away.
+				while (!spells.empty())
+					{
+					++num_spells;
+					Game_object *obj = spells.back();
+					spells.pop_back();
+					obj->remove_this();
+					}
+				if (num_spells)
+					{	// Display magebane struck string and set
+						// no_spell_casting flag. This is only done
+						// to prevent monsters from teleporting or
+						// doing other such things.
+					set_flag(Obj_flags::no_spell_casting);
+					if (GAME_SI)
+						{
+						eman->remove_text_effect(this);
+						say(first_magebane_struck, last_magebane_struck);
+						}
+					}
 				}
 			}
-		}
-	if (missed)
-	{
-		// Play 'graze' sfx
-		int sfx = Audio::game_sfx(5);
-		Audio::get_ptr()->play_sound_effect(sfx);
-		return false;
-	}
-					// Compute hit points to lose.
-	int attacker_str;
-	if (explosion)	//Explosions shouldn't depend on strength
-		attacker_str = 8;
-	else
-		attacker_str = Get_effective_prop(attacker, strength, 8);
-		
-	int hp;
-	wpoints += 2*bias;		// Apply user's preference.
-	if (wpoints > 0)		// Some ('curse') do no damage.
-		{
-		if ((wpoints == 127)	// Glass sword?
-			|| (ishoming))	//Death Vortex/Energy Mist
-			hp = wpoints;	// A killer.
-		else {
-			hp = 1 + rand()%wpoints;
-			if (attacker_str > 2)
-				hp += 1 + rand()%(attacker_str/3);
-			if (armor > 0)
-				hp -= 1 + rand()%armor;
-		}
-		if (hp < 1)
-			hp = 1;
-		}
-	else
-		hp = 0;
-	Monster_info *minf = get_info().get_monster_info();
-	int damage_type = winf ? winf->get_damage_type() : 0;
-	if (ainf)
-		{
-		if (winf && winf->get_uses() == 3)	// Bows, crossbows, muskets
-			damage_type = ainf->get_damage_type();
-		else if (!winf)
-			damage_type = ainf->get_damage_type();
-		}
-	if (powers)			// Special attacks?
-		{
-		if ((powers&Weapon_info::poison) && roll_to_win(
-			Get_effective_prop(attacker, Actor::strength),
-			Get_effective_prop(this, Actor::dexterity)) &&
-			!(minf && minf->poison_safe()))
-			set_flag(Obj_flags::poisoned);
-		if (powers&Weapon_info::magebane)
-			{
-			int mana = properties[static_cast<int>(Actor::mana)];
-			set_property(static_cast<int>(Actor::mana), 
-					mana > 1 ? rand()%(mana - 1) : 0);
-					// Vasculio the Vampire?
-			if (npc_num == 294 && GAME_SI)
-				hp *= 3;
+		if (nodamage && ammo_shape == 568)
+			{	// This is *only* done for SI sleep arrows, and all other
+				// powers have had their effect by now (as can be verified
+				// by using the called usecode function).
+			if (npc)	// Just to be sure.
+				set_oppressor(npc->get_npc_num());
+			// Allowing for BG too, as it doesn't have a function 0x7e1.
+			ucmachine->call_usecode(0x7e1, this,
+						Usecode_machine::weapon);
 			}
-		if ((powers&Weapon_info::curse) && roll_to_win(
-			Get_effective_prop(attacker, Actor::intelligence),
-			Get_effective_prop(this, Actor::intelligence)))
-			set_flag(Obj_flags::cursed);
-		if ((powers&Weapon_info::charm) && roll_to_win(
-			Get_effective_prop(attacker, Actor::intelligence),
-			Get_effective_prop(this, Actor::intelligence)))
-			set_flag(Obj_flags::charmed);
-		if ((powers&Weapon_info::sleep) && roll_to_win(
-			Get_effective_prop(attacker, Actor::intelligence),
-			Get_effective_prop(this, Actor::intelligence)))
-			set_flag(Obj_flags::asleep);
-		if ((powers&Weapon_info::paralyze) && roll_to_win(
-			Get_effective_prop(attacker, Actor::intelligence),
-			Get_effective_prop(this, Actor::intelligence)))
-			set_flag(Obj_flags::paralyzed);
 		}
-	// Play 'hit' sfx, but only if Ava. involved.
-	if (this == gwin->get_main_actor() || 
-				attacker == gwin->get_main_actor())
-	{
-		// "Default" hit sfx.
-		int sfx = Audio::game_sfx(4);
-		// Try weapon hit sfx first.
-		if (winf)
-			sfx = winf->get_hitsfx();
-		Monster_info *attminf = (attacker && attacker->is_monster()) ?
-				attacker->get_info().get_monster_info() : 0;
-		// Try monster hit sfx next.
-		if (sfx < 0 && attminf)
-			sfx = attminf->get_hitsfx();
-		if (sfx >= 0)
-			Audio::get_ptr()->play_sound_effect(sfx);
+
+	if (expval > 0 && npc)	// Give experience.
+		npc->set_property(static_cast<int>(exp),
+		    npc->get_property(static_cast<int>(exp)) + expval);
+
+		// Weapon usecode comes last of all.
+	if (usecode > 0)
+		{
+		if (npc)	// Just to be sure.
+			set_oppressor(npc->get_npc_num());
+		ucmachine->call_usecode(usecode, this,
+					Usecode_machine::weapon);
+		}
+	return hits;
 	}
 
-	int oldhealth = properties[static_cast<int>(health)];
-	int maxhealth = properties[static_cast<int>(strength)];
+/*
+ *	Trying to hit NPC with an attack.
+ *
+ *	Output:	true if attack hit, false otherwise.
+ */
 
-	if (instant_death)		//instant death
-		hp = properties[static_cast<int>(health)] + 
-				properties[static_cast<int>(strength)] + 1;
-	int newhp = oldhealth - hp;	// Subtract from health.
-
-	bool defeated = hp > 0 ? reduce_health(hp, attacker, damage_type) : false;
-	if (Combat::show_hits)
+bool Actor::try_to_hit
+	(
+	Game_object *attacker,
+	int attval
+	)
+	{
+	int defval = get_effective_prop(static_cast<int>(combat)) +
+			get_flag(Obj_flags::protection) ? 3 : 0;
+	if (combat_trace)
 		{
-		eman->remove_text_effect(this);
-		char hpmsg[50];
-		sprintf(hpmsg, "-%d(%d)", hp, newhp);
-		eman->add_text(hpmsg, this);
-		}
-	if (combat_trace) {
 		string name = "<trap>";
 		if (attacker)
 			name = attacker->get_name();
-		cout << name << " hits " << get_name()
-			 << " for " << hp << " hit points, leaving "
-			 <<	properties[static_cast<int>(health)] << " remaining" << endl;
-	}
-	if (!defeated && minf && minf->splits() && rand()%2 == 0 && 
-	    properties[static_cast<int>(health)] > 0)
-		clone();
+		int prob = 30 - (15 + defval - attval) + 1;
+		if (prob >= 30)
+			prob = 29;	// 1 always misses.
+		else if (prob <= 1)
+			prob = 1;	// 30 always hits.
+		prob *= 100;
+		cout << name << " is attacking " << get_name()
+			<< " with hit probability " << (float)prob/30 << "%" << endl;
+		}
 
-	return defeated;
+	return Actor::roll_to_win(attval, defval);
 	}
 
 /*
@@ -3704,38 +4034,54 @@ bool Actor::figure_hit_points
 
 Game_object *Actor::attacked
 	(
-	Actor *attacker,		// 0 if from a trap.
-	int weapon_shape,		// Weapon shape, or 0 to use readied.
-	int ammo_shape			// Also may be 0.
+	Game_object *attacker,
+	int weapon_shape,		// < 0 for readied weapon.
+	int ammo_shape,			// < 0 for no ammo shape.
+	bool explosion			// If this is an explosion attacking.
 	)
 	{
 	if (is_dead() ||		// Already dead?
 					// Or party member of dead Avatar?
 	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
 		return 0;
-	if (attacker)
-		set_oppressor(attacker->get_npc_num());
-	if (attacker && attacker->get_schedule_type() == Schedule::duel)
+	Actor *npc = attacker ? attacker->as_actor() : 0;
+	if (npc)
+		set_oppressor(npc->get_npc_num());
+	if (npc && npc->get_schedule_type() == Schedule::duel)
 		return this;	// Just play-fighting.
-					// Watch for Skara Brae ghosts.
-	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-		get_info().has_translucency() && 
-			party_id < 0)	// But don't include Spark!!
-		return this;
-	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
-	if (attacker && defeated)
-		{	// ++++++++This should be in reduce_health()+++++++
-					// Experience gained = strength???
-		int expval = get_property(static_cast<int>(strength)) +
-				get_property(static_cast<int>(combat))/4 +
-				get_property(static_cast<int>(dexterity))/4 +
-				get_property(static_cast<int>(intelligence))/4;
-		expval /= 2;	// Users complain we're giving too much.
-					// Attacker gains experience.
-		attacker->set_property(static_cast<int>(exp),
-		    attacker->get_property(static_cast<int>(exp)) + expval);
-		return 0;
+
+	int oldhp = properties[static_cast<int>(health)];
+	int delta = figure_hit_points(attacker, weapon_shape, ammo_shape, explosion);
+
+	if (Combat::show_hits && !is_dead() && delta >= 0)
+		{
+		eman->remove_text_effect(this);
+		char hpmsg[50];
+		sprintf(hpmsg, "-%d(%d)", delta, oldhp - delta);
+		eman->add_text(hpmsg, this);
 		}
+	if (combat_trace)
+		{
+		string name = "<trap>";
+		if (attacker)
+			name = attacker->get_name();
+		cout << name << " hits " << get_name();
+		if (delta > 0)
+			{
+			cout << " for " << delta << " hit points; ";
+			if (oldhp > 0 && oldhp < delta)
+				cout << get_name() << " is defeated." << endl;
+			else
+				cout << oldhp - delta << " hit points are left." << endl;
+			}
+		else if (!delta)
+			cout << " to no damage." << endl;
+		else
+			cout << " causing an explosion." << endl;
+		}
+
+	if (attacker && (is_dead() || properties[(int) health] < 0))
+		return 0;
 	return this;
 	}
 
@@ -3761,22 +4107,19 @@ static int Is_draco
 
 void Actor::die
 	(
-	Actor *attacker
+	Game_object *attacker
 	)
 	{
 	// If the actor is already dead, we shouldn't do anything
 	//(fixes a resurrection bug).
-	if (Actor::get_flag(Obj_flags::dead))
+	if (is_dead())
 		return;
-					// Get location.
-	Tile_coord pos = get_tile();
 	set_action(0);
 	delete schedule;
 	schedule = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	Actor::set_flag(Obj_flags::dead);// IMPORTANT:  Set this before moving
-					//   objs. so Usecode(eventid=6) isn't
-					//   called.
+					//   objs. so Usecode(eventid=6) isn't called.
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
@@ -3787,26 +4130,49 @@ void Actor::die
 		if (is_pos_invalid())	// Invalid now?
 			return;
 		}
-	properties[static_cast<int>(health)] = -50;
+					// Get location.
+	Tile_coord pos = get_tile();
+	//properties[static_cast<int>(health)] = -50;
 	Shape_info& info = get_info();
 	Monster_info *minfo = info.get_monster_info();
+#if 0	// ++++ Trying new thing.
 	remove_this(1);			// Remove (but don't delete this).
 	set_invalid();
+#else
+	bool frost_serp = GAME_SI && get_shapenum() == 832;
+	if (frost_serp && (get_framenum() & 0xf) == Actor::sit_frame
+		|| (get_framenum() & 0xf) == Actor::sleep_frame)
+		{
+		Usecode_script *scr = new Usecode_script(this);
+		(*scr) << Ucscript::delay_ticks << 4 << Ucscript::remove;
+		scr->start();
+		}
+	else	// Laying down to die.
+		lay_down(true);
+#endif
+
 	Dead_body *body;		// See if we need a body.
 	if (!minfo || !minfo->has_no_body())
 		{
-		int frnum;			// Lookup body shape/frame.
-		if (!Shapeinfo_lookup::find_body(get_shapenum(), shnum, frnum))
-			{
-			shnum = 400;
-			frnum = 3;
-			}
+				// Get body shape/frame.
+		shnum = info.get_body_shape();		// Default 400.
+		int frnum = info.get_body_frame();	// Default 3.
 					// Reflect if NPC reflected.
 		frnum |= (get_framenum()&32);
+#if 0	// ++++ Trying new thing.
 		body = new Dead_body(shnum, frnum, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
+#else
+		body = new Dead_body(shnum, 0, 0, 0, 0, 
+					npc_num > 0 ? npc_num : -1);
+		Usecode_script *scr = new Usecode_script(body);
+		(*scr) << Ucscript::delay_ticks << 4 << Ucscript::frame << frnum;
+		scr->start();
+#endif
 		if (npc_num > 0)
-			{
+			{	// Originals would use body->set_quality(2) instead
+				// for bodies of dead monsters. What we must do for
+				// backwards compatibility...
 			body->set_quality(1);	// Flag for dead body of NPC.
 			gwin->set_body(npc_num, body);
 			}
@@ -3829,7 +4195,11 @@ void Actor::die
 		{
 		remove(item);
 		item->set_invalid();
+#if 1		// Guessing it is spells that get deleted.
+		if (item->get_info().is_spell())
+#else
 		if (!item->is_dragable())
+#endif
 			{
 			tooheavy.push_back(item);
 			continue;
@@ -3855,12 +4225,15 @@ void Actor::die
 		gwin->add_dirty(body);
 	add_dirty();			// Want to repaint area.
 	delete_contents();		// remove what's left of inventory
-					// Is this a bad guy?
-					// Party defeated an evil monster?
-	if (attacker && attacker->is_in_party() && !is_in_party() && 
-	    alignment != neutral && alignment != friendly)
+		// Set oppressor and cause nearby NPCs to attack avatar.
+	fight_back(attacker);
+			// Is this a bad guy?
+			// Party defeated an evil monster?
+	Actor *npc = attacker ? attacker->as_actor() : 0;
+	if (npc && npc->is_in_party() && !is_in_party() && 
+			alignment != neutral && alignment != friendly)
 		Combat_schedule::monster_died();
-					// Move party member to 'dead' list.
+			// Move party member to 'dead' list.
 	partyman->update_party_status(this);
 	}
 
@@ -3917,6 +4290,7 @@ void Actor::mend_hourly
 					// Restore some mana also.
 	int maxmana = properties[static_cast<int>(magic)];
 	int curmana = properties[static_cast<int>(mana)];
+	clear_flag(Obj_flags::no_spell_casting);
 	if (maxmana > 0 && curmana < maxmana)
 		{
 		if (maxmana >= 3)	
@@ -4235,7 +4609,7 @@ void Main_actor::move
 
 void Main_actor::die
 	(
-	Actor * /* attacker */
+	Game_object * /* attacker */
 	)
 	{
 	if (gwin->in_combat())
@@ -4648,7 +5022,7 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
-	if (cheat.in_map_editor() && party_id < 0)
+	if (cheat.in_map_editor() && party_id < 0 || !can_act())
 		{
 		gwin->get_tqueue()->add(
 				curtime + gwin->get_std_delay(), this, udata);
@@ -4665,9 +5039,7 @@ void Npc_actor::handle_event
 			schedule->im_dormant();
 		return;
 		}
-	// Should try seeking foes?
-	if (schedule &&
-			party_id < 0 &&
+	if (schedule && party_id < 0 && can_act() && 
 			(schedule_type != Schedule::combat ||	// Not if already in combat.
 						// Patrol schedule already does this.
 				schedule_type != Schedule::patrol) &&
@@ -4676,12 +5048,28 @@ void Npc_actor::handle_event
 
 	if (!action)			// Not doing anything?
 		{
-		if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
-			// Keep trying if we are in usecode control.
+		if (in_usecode_control() || !can_act())
+				// Can't move on our own. Keep trying.
 			gwin->get_tqueue()->add(
 					curtime + gwin->get_std_delay(), this, udata);
 		else if (schedule)
-			schedule->now_what();
+			{
+				// Should try seeking foes?
+			if (party_id < 0 && can_act() &&
+						// Not if already in combat.
+					(schedule_type != Schedule::combat ||
+						// Patrol schedule already does this.
+						schedule_type != Schedule::patrol) &&
+					!rand()%4)	// Don't do it every time.
+				{
+				schedule->seek_foes();
+					// Get back into queue.
+				gwin->get_tqueue()->add(
+						curtime + gwin->get_std_delay(), this, udata);
+				}
+			else
+				schedule->now_what();
+			}
 		}
 	else
 		{			// Do what we should.
@@ -4799,6 +5187,7 @@ void Npc_actor::remove_this
 	Map_chunk *olist = get_chunk();
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
+	set_invalid();
 	if (!nodel && npc_num > 0)	// Really going?
 		unused = true;		// Mark unused if a numbered NPC.
 	}
@@ -4857,10 +5246,42 @@ Dead_body::~Dead_body
 
 int Dead_body::get_live_npc_num
 	(
-	)
+	) const
 	{
 	return npc_num;
 	}
+
+/*
+ *	Write out body and its members.
+ */
+
+void Dead_body::write_ireg
+	(
+	DataSource *out
+	)
+	{
+	unsigned char buf[21];		// 13-byte entry - Exult extension.
+	uint8 *ptr = write_common_ireg(13, buf);
+	Game_object *first = objects.get_first(); // Guessing: +++++
+	unsigned short tword = first ? first->get_prev()->get_shapenum() 
+									: 0;
+	Write2(ptr, tword);
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = get_quality();
+	int npc = get_live_npc_num();	// If body, get source.
+		// Here, store NPC # more simply.
+	Write2(ptr, npc);	// Allowing larger range of NPC bodies.
+	*ptr++ = (get_lift()&15)<<4;	// Lift 
+	*ptr++ = (unsigned char)get_obj_hp();		// Resistance.
+					// Flags:  B0=invis. B3=okay_to_take.
+	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
+		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
+	out->write((char*)buf, ptr - buf);
+	write_contents(out);		// Write what's contained within.
+					// Write scheduled usecode.
+	Game_map::write_scheduled(out, this);	
+	}
+
 
 /*
  *	Create a sequence of frames.

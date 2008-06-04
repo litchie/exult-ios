@@ -225,7 +225,7 @@ lauriannaPrePotionDialog object#() ()
 			say("@as father said thou wouldst -- the daemons that torment me can be finally dealt with!@");
 		}
 		
-		say("When speaking this last sentence, Laurianna whispered the work 'daemons', as if she was trying to avoid drawing their attention.");
+		say("When speaking this last sentence, Laurianna whispered the word 'daemons', as if she was trying to avoid drawing their attention.");
 		say("@But alas, I cannot go anywhere with thee for I am rooted to the ground!@");
 		
 		add(["name", "job", "bye", "daemons", "rooted", "Rescued as father said?", "potion", "necklace"]);

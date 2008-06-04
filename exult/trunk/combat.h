@@ -25,6 +25,7 @@
 #include <list>
 
 class Actor;
+class Game_object;
 class Spellbook_object;
 
 /*
@@ -52,15 +53,9 @@ protected:
 	Game_object *practice_target;	// Only for duel schedule.
 	Game_object *weapon;
 	int weapon_shape;		// Weapon's shape in shapes.vga.
-	int ammo_shape;			// If required, else 0.
-	int projectile_shape;		// For shooting, else 0.
 	Spellbook_object *spellbook;	// If readied.
 					// Ranges in tiles.  
 					//   0 means not applicable.
-	unsigned char strike_range, projectile_range, max_range;
-	bool uses_charges;		// Wands.
-	bool is_thrown;			// Daggers, etc.
-	bool returns;			// Boomerang, magic axe.
 	bool no_blocking;		// Weapon/ammo goes through walls.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	bool started_battle;		// 1st opponent targeted.
@@ -89,14 +84,19 @@ protected:
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched);
 	static void monster_died();	// Checks for victory.
+	static void stop_attacking_npc(Game_object *npc);
+	static void stop_attacking_invisible(Game_object *npc);
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 	virtual void ending(int newtype);// Switching to another schedule.
 	virtual void set_weapon(bool removed = false);	// Set weapon info.
 	void set_hand_to_hand();
-	static int use_ammo(Actor *npc, int ammo, int proj);
 	bool has_started_battle() const
 		{ return started_battle; }
+	void set_state(Phase s)
+		{ state = s; }
+	static bool attack_target(Game_object *attacker,
+			Game_object *target, Tile_coord tile, int weapon, bool combat = false);
 	};
 
 /*

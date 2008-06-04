@@ -660,12 +660,14 @@ int Usecode_script::exec
 			{
 			Usecode_value hps = code->get_elem(++i);
 			Usecode_value type = code->get_elem(++i);
-			obj->reduce_health(hps.get_int_value(), 0, type.get_int_value());
+			obj->reduce_health(hps.get_int_value(), type.get_int_value());
 			break;
 			}
 		case attack:		// Finish 'set_to_attack()'.
 			{
-			obj->usecode_attack();
+			Actor *act = obj->as_actor();
+			if (act)
+				act->usecode_attack();
 			break;
 			}
 		case resurrect:

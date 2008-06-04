@@ -214,6 +214,8 @@ static void get_game_paths(const string &gametitle);
  */
 static bool run_bg = false;		// skip menu and run bg
 static bool run_si = false;		// skip menu and run si
+static bool run_fov = false;		// skip menu and run fov
+static bool run_ss = false;		// skip menu and run ss
 static string arg_gamename = "default";	// cmdline arguments
 static string arg_modname = "default";	// cmdline arguments
 static string arg_configfile = "";
@@ -292,6 +294,8 @@ int main
 	parameters.declare("/h",&needhelp,true);
 	parameters.declare("--bg",&run_bg,true);
 	parameters.declare("--si",&run_si,true);
+	parameters.declare("--fov",&run_fov,true);
+	parameters.declare("--ss",&run_ss,true);
 	parameters.declare("--nomenu", &arg_nomenu, true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
@@ -313,8 +317,10 @@ int main
 			 << "--help\t\tShow this information" << endl
 			 << "--version\tShow version info" << endl
 			 << " -c configfile\tSpecify alternate config file" << endl
-			 << "--bg\t\tSkip menu and run Black Gate" << endl
-			 << "--si\t\tSkip menu and run Serpent Isle" << endl
+			 << "--bg\t\tSkip menu and run Black Gate (prefers original game)" << endl
+			 << "--fov\t\tSkip menu and run Black Gate with Forge of Virtue expansion" << endl
+			 << "--si\t\tSkip menu and run Serpent Isle (prefers original game)" << endl
+			 << "--ss\t\tSkip menu and run Serpent Isle with Silver Seed expansion" << endl
 			 << "--nomenu\tSkip BG/SI game menu" << endl
 			 << "--game <game>\tRun original game" << endl
 			 << "--mod <mod>\tMust be used together with '--bg', '--si' or '--game <game>'; runs the specified game using the mod with title equal to '<mod>'" << endl
@@ -328,14 +334,15 @@ int main
 			
 		exit(1);
 	}
-	if (run_bg && run_si) {
-		cerr << "Error: You may only specify either -bg or -si!" << 
+	if ((unsigned)run_bg +(unsigned)run_si
+		+ (unsigned)run_fov + (unsigned)run_ss > 1) {
+		cerr << "Error: You may only specify one of --bg, --fov, --si or --ss!" << 
 									endl;
 		exit(1);
 	}
 
 	if (arg_modname != "default" &&
-			!(run_bg || run_si || (arg_gamename != "default")))
+		!(run_bg || run_si || run_fov || run_ss || (arg_gamename != "default")))
 	{
 		cerr << "Error: You must also specify the game to be used!" << endl;
 		exit(1);
@@ -696,18 +703,10 @@ static void Init
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 
-	if (run_bg) {
-		arg_gamename = CFG_BG_NAME;
-		run_bg = false;
-	} else if (run_si) {
-		arg_gamename = CFG_SI_NAME;
-		run_si = false;
-	}
-
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));
 
-	if (arg_buildmap < 0) {
-
+	if (arg_buildmap < 0)
+		{
 #if defined(__zaurus__) || defined(UNDER_CE)
 		gwin = new Game_window(sw, sh, scaleval, sclr);
 #else
@@ -723,43 +722,74 @@ static void Init
 		bool disable_fades;
 		config->value("config/video/disable_fades", disable_fades, false);
 		gwin->get_pal()->set_fades_enabled(!disable_fades);
-	}
+		}
 
 	SDL_SetEventFilter(0);
 	// Show the banner
 	game = 0;
 
-	do {
+	do
+		{
 		reset_system_paths();
 		fontManager.reset();
 		U7FileManager::get_ptr()->reset();
 
-		if (game) {
+		if (game)
+			{
 			delete game;
 			game = 0;
-		}
+			}
 		
-		BaseGameInfo *newgame = 0;
-		if (arg_gamename != "default")
-		{
-			ModManager *basegame = gamemanager->find_game(arg_gamename);
-			if (basegame)
+		ModManager *basegame = 0;
+		if (run_bg)
 			{
+			basegame = gamemanager->get_bg();
+			arg_gamename = CFG_BG_NAME;
+			run_bg = false;
+			}
+		else if (run_fov)
+			{
+			basegame = gamemanager->get_fov();
+			arg_gamename = CFG_FOV_NAME;
+			run_fov = false;
+			}
+		else if (run_si)
+			{
+			basegame = gamemanager->get_si();
+			arg_gamename = CFG_SI_NAME;
+			run_si = false;
+			}
+		else if (run_ss)
+			{
+			basegame = gamemanager->get_ss();
+			arg_gamename = CFG_SS_NAME;
+			run_ss = false;
+			}
+		BaseGameInfo *newgame = 0;
+		if (basegame || arg_gamename != "default")
+			{
+			if (!basegame)
+				basegame = gamemanager->find_game(arg_gamename);
+			if (basegame)
+				{
 				if (arg_modname != "default")
 					// Prints error messages:
 					newgame = basegame->get_mod(arg_modname);
 				else
 					newgame = basegame;
 				arg_modname = "default";
-			}
+				}
 			else
+				{
 				cerr << "Game '" << arg_gamename << "' not found." << endl;
+				newgame = 0;
+				}
 			// Prevent game from being reloaded in case the player
 			// tries to return to the main menu:
 			arg_gamename = "default";
-		}
+			}
 		else
-		{
+			{
 #if !(defined(__zaurus__))
 #ifdef UNDER_CE
 			gwin->resized(sw, sh, scaleval, sclr);
@@ -773,18 +803,19 @@ static void Init
 #endif
 			ExultMenu exult_menu(gwin);
 			newgame = exult_menu.run();
-		}
+			}
 		if (!newgame)
-		{
+			{
 			// Should never happen... maybe display the exult menu instead?
 			cerr << "Could not find any games to run; leaving." << endl;
 			exit(1);
-		}
+			}
 
-		if (arg_buildmap >= 0) {
+		if (arg_buildmap >= 0)
+			{
 			BuildGameMap(newgame);
 			exit(0);
-		}
+			}
 
 		gwin->resized(sw, sh, scaleval, sclr);
 		// Ensure proper clipping:
@@ -794,12 +825,13 @@ static void Init
 		Audio *audio = Audio::get_ptr();
 		MyMidiPlayer *midi = 0;
 
-		if (audio) {
+		if (audio)
+			{
 			Audio::get_ptr()->Init_sfx();
 			midi = audio->get_midi();
-		}
+			}
 
-		Setup_text();
+		Setup_text(GAME_SI, Game::has_expansion());
 
 					// Skip splash screen?
 		bool skip_splash;
@@ -808,18 +840,22 @@ static void Init
 		// Make sure we have a proper palette before playing the intro.
 		gwin->get_pal()->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
 		gwin->get_pal()->apply();
-		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME || U7exists("<STATIC>/intro.dat"))) {
+		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME
+				|| U7exists("<STATIC>/intro.dat")))
+			{
 			if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			game->play_intro();
-		}
+			}
 
-		if (midi) {
+		if (midi)
+			{
 			if (arg_nomenu)
 				midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			else
 				midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_MAINMENU);
+			}
 		}
-	} while(!game->show_menu(arg_nomenu));
+	while(!game->show_menu(arg_nomenu));
 
 	// Should not be needed anymore:
 	delete gamemanager;

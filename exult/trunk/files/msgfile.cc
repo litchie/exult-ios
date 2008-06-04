@@ -69,7 +69,6 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings,
 		in->readline(s);
 		if (s.empty())
 			continue;	// Empty line.
-		unsigned int len = s.size();
 		buf = s.c_str();
 
 		const char *ptr = &buf[0];
@@ -126,6 +125,44 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings,
 	return first == NONEFOUND ? -1 : (int) first;
 }
 
+/*
+ *	Searches for the start of section in a text msg file.
+ *	Returns true if section is found. The data source will
+ *	be just before the section start.
+ */
+
+bool Search_text_msg_section(DataSource* in, const char* section)
+{
+	const char* buf;
+	while (!in->eof())
+		{
+		std::string s;
+		int pos = in->getPos();
+		in->readline(s);
+		if (s.empty())
+			continue;	// Empty line.
+		buf = s.c_str();
+
+		const char *ptr = &buf[0];
+
+		if (buf[0] != '%' || 
+				strncmp(ptr + 1, "%section", 8) != 0)
+			continue;
+		for (ptr = &buf[9]; isspace(*ptr); ++ptr)
+			;
+		if (strncmp(ptr, section, strlen(ptr)) == 0)
+			{	// Found the section.
+				// Seek to just before it.
+			in->seek(pos);
+			return true;
+			}
+		}
+	in->clear_error();
+	in->seek(0);
+		// Section was not found.
+	return false;
+}
+
 
 int Read_text_msg_file
 	(
@@ -162,6 +199,53 @@ int Read_text_msg_file
 		strings[i] = txtlist[i];
 	return first;
 	}
+
+int Read_text_msg_file_sections
+	(
+	DataSource* in,
+	vector<vector<char *> >& strings,	// Strings returned here
+	const char *sections[],			// Section names
+	int numsections
+	)
+	{
+	strings.resize(numsections);
+	int version = 1;
+
+	vector<char *> versioninfo;
+	// Read version.
+	const char *versionstr = "version";
+	if (Search_text_msg_section(in, versionstr) && 
+		Read_text_msg_file(in, versioninfo, versionstr) != -1)
+		{
+		version = strtol(versioninfo[0], 0, 0);
+		for (int j = 0; j < versioninfo.size(); j++)
+			delete[] versioninfo[j];
+		}
+
+	for (int i = 0; i < numsections; i++)
+	{
+		in->clear_error();
+		in->seek(0);
+		if (!Search_text_msg_section(in, sections[i]))
+			continue;
+		Read_text_msg_file(in, strings[i], sections[i]);
+	}
+
+	return version;
+	}
+
+int Read_text_msg_file_sections
+	(
+	istream& in,
+	vector<vector<char *> >& strings,	// Strings returned here
+	const char *sections[],			// Section names
+	int numsections
+	)
+{
+
+	StreamDataSource ds(&in);
+	return Read_text_msg_file_sections(&ds, strings, sections, numsections);
+}
 
 /*
  *	Write one section.
