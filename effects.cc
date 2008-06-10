@@ -776,12 +776,16 @@ void Projectile_effect::handle_event
 			}
 		else if (explodes)	// Do this here (don't want to explode
 			{				// returning weapon).
-			Tile_coord offset(0, 0, target->get_info().get_3d_height()/2);
+			Tile_coord offset;
+			if (target)
+				offset = Tile_coord(0, 0, target->get_info().get_3d_height()/2);
+			else
+				offset = Tile_coord(0, 0, 0);
 			if (ainf && ainf->is_homing())
 				eman->add_effect(new Homing_projectile(weapon,
-						attacker, target, pos, target->get_tile() + offset));
+						attacker, target, pos, pos + offset));
 			else
-				eman->add_effect(new Explosion_effect(epos + offset,
+				eman->add_effect(new Explosion_effect(pos + offset,
 						0, 0, weapon, projectile_shape, attacker));
 			target = 0;	// Takes care of attack.
 			}

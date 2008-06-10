@@ -181,7 +181,7 @@ void Monster_actor::equip
 		else
 			create_quantity(elem.quantity,
 				elem.shapenum, c_any_qual, frnum, temporary);
-		int ammo = winfo ? winfo->get_ammo_consumed() : 0;
+		int ammo = winfo ? winfo->get_ammo_consumed() : -1;
 		if (ammo >= 0)		// Weapon requires ammo.
 			create_quantity(5 + rand()%25, ammo, c_any_qual, 0,
 						temporary);
