@@ -548,8 +548,7 @@ void Projectile_effect::init
 	{
 	no_blocking = false;		// We'll check the ammo & weapon.
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = ShapeID::get_info(projectile_shape);
-	Weapon_info *winfo = info.get_weapon_info();
+	Weapon_info *winfo = ShapeID::get_info(weapon).get_weapon_info();
 	if (winfo)
 		{
 		no_blocking = no_blocking || winfo->no_blocking();
@@ -559,7 +558,7 @@ void Projectile_effect::init
 		}
 	if (speed < 0)
 		speed = 4;
-	Ammo_info *ainfo = info.get_ammo_info();
+	Ammo_info *ainfo = ShapeID::get_info(projectile_shape).get_ammo_info();
 	if (ainfo)
 		{
 		no_blocking = no_blocking || ainfo->no_blocking();
@@ -581,7 +580,8 @@ void Projectile_effect::init
 		d.tz = pos.tz;
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
-	if (winfo && ainfo && winfo->explodes() && ainfo->is_homing())
+	bool explodes = (winfo && winfo->explodes()) || (ainfo && ainfo->explodes());
+	if (explodes && ainfo && ainfo->is_homing())
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
 		path->NewPath(pos, d, 0);
