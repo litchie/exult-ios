@@ -69,22 +69,22 @@ unsigned short Spellbook_object::bg_reagents[9*8] = {
 	bm|sa, bp|mr, bp|sa, mr|sa, gr|gn|mr, gr|gn|sa, bp|bm|mr,
 							bm|ns|mr|sa|bp|ss,
 					// Circle 3:
-	gr|ns|sa, gr|gn|ss, ns|ss, ns|mr, ns|bm|bp, gr|gn|mr|sa,
-						bp|ns|ss, ns|mr|bm,
+	gr|ns|sa, gr|gn|ss, ns|mr|bm, sa|gn|gr|mr, ns|ss, ns|mr,
+						bp|ns|bm, ns|ss|bp,
 					// Circle 4:
 	ss|mr, bp|sa|mr, mr|bp|bm, gr|mr|ns|sa, mr|bp|bm, bm|sa,
 						bm|mr|ns|ss|sa, bm|sa,
 					// Circle 5:
-	bp|ns|ss, mr|gr|bm, gr|bp|sa|ss, bm|bp|mr|sa, bp|ss|sa,
-						gr|gn|mr|ss, bm|ns, gn|ns|ss,
+	bp|ns|ss, mr|gr|bm, gr|bp|sa|ss, bm|bp|mr|sa, gn|ss|mr|gr,
+						ns|bm, bp|sa|ss, gn|ns|ss,
 					// Circle 6:
 	gr|mr|ns, sa|ss|bm|gn|ns|mr, bp|mr|ss|sa, sa|bp|bm, mr|ns|sa|bm,
 						ns|ss|bp, gn|ss|bp, bm|sa|mr,
 					// Circle 7:
 	mr|ss, bp|ns|sa, bm|bp|mr|ss|sa, bp|mr|ss|sa, bm|mr|ns|sa,
-					bp|ns|ss|mr, bp|gn|mr, gr|gn|mr|sa,
+					bp|ns|ss|mr, bp|gn|mr, gr|gn|mr|ss,
 					// Circle 8:
-	bp|bm|gr|gn|mr|ns|ss|sa, bm|mr|ns|sa, bp|bm|mr|ns, bm|gr|gn|mr|ns,
+	bp|bm|gr|gn|mr|ns|ss|sa, bm|mr|ns|sa, gr|gn|mr|ns|bm, mr|ns|bm|bp,
 				gr|gn|ss|sa, bm|gr|mr, bp|mr|ns, bm|gr|mr
 	};
 					// Serpent Isle:
@@ -111,7 +111,7 @@ unsigned short Spellbook_object::si_reagents[9*8] = {
 				bm|bp|gr|ss|wh|sc, gr|mr|sa, bp|bs|mr|ns,
 					// Circle 9:
 	bm|mr|ns|sa, bm|bs|gr|gn|mr|ns, bp|bm|mr|ns, bm|bs|bp|ns|sa, 
-			bp|gr|mr|ss|sa, bm|gr|mr|ss, bm|gr|mr, ns|sa|wh|sc
+			bp|gr|mr|ss|sa, bm|gr|mr|ss, bm|gr|mr, ns|sa|wh|sc|bs
 	};
 
 /*
