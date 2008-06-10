@@ -1043,10 +1043,10 @@ bool Combat_schedule::attack_target
 		Projectile_effect *projectile;
 		if (target)
 			projectile = new Projectile_effect(attacker, target, weapon,
-					ammo ? ammo->get_shapenum() : -1, proj, attval);
+					ammo ? ammo->get_shapenum() : proj, proj, attval);
 		else
 			projectile = new Projectile_effect(attacker, tile, weapon,
-					ammo ? ammo->get_shapenum() : -1, proj, attval);
+					ammo ? ammo->get_shapenum() : proj, proj, attval);
 		gwin->get_effects()->add_effect(projectile);
 		return true;
 		}
