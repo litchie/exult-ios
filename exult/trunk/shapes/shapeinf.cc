@@ -56,7 +56,7 @@ Shape_info::Shape_info() : weight(0), volume(0),
 	ready_type(0), occludes_flag(false), weapon_offsets(0), 
 	armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
 	explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
-	actor_flags(0), shape_flags(0), modified_flags(0),
+	monster_food(-1), actor_flags(0), shape_flags(0), modified_flags(0),
 	frompatch_flags(0), have_static_flags(0)
 	{
 	tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
@@ -70,7 +70,7 @@ Shape_info::Shape_info(const Shape_info & other) : weight(0), volume(0),
 		ready_type(0), occludes_flag(false), weapon_offsets(0), 
 		armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
 		explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
-		actor_flags(0), shape_flags(0), modified_flags(0),
+		monster_food(-1), actor_flags(0), shape_flags(0), modified_flags(0),
 		frompatch_flags(0), have_static_flags(0)
 	{ copy(other); }
 const Shape_info & Shape_info::operator = (const Shape_info & other)

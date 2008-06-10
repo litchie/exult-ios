@@ -2735,7 +2735,7 @@ int Actor::reduce_health
 		// Monster immunities DO affect UI_reduce_health, unlike
 		// armor immunities.
 	if (is_dead() || minf->cant_die() ||
-		(minf->get_immune() & (1 << type) != 0))
+		(minf->get_immune() & (1 << type)) != 0)
 		{	// Monster data gives immunity to damage.
 			// Attack back.
 		fight_back(attacker);
@@ -2745,7 +2745,7 @@ int Actor::reduce_health
 		// Monsters vulnerable to a damage type take 2x the damage.
 		// The originals seem to limit damage to 127 points; we
 		// set a lower bound on final health below.
-	if (minf->get_vulnerable() & (1 << type) != 0)
+	if ((minf->get_vulnerable() & (1 << type)) != 0)
 		delta *= 2;
 
 	int oldhp = properties[static_cast<int>(health)];
@@ -2822,7 +2822,7 @@ int Actor::reduce_health
 		// We do slimes here; they DO split through reduce_health intrinsic.
 		// They also do *not* split if hit by damage they are vulnerable to.
 	if (minf->splits() && val > 0 && 
-		(minf->get_vulnerable() & (1 << type) == 0) && rand()%2 == 0)
+		(minf->get_vulnerable() & (1 << type)) == 0 && rand()%2 == 0)
 		clone();
 	
 		// Doing this here simplifies the tournament code, above.
