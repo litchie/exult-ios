@@ -440,9 +440,7 @@ Game_window::~Game_window
 	delete clock;
 	delete npc_prox;
 	delete effects;
-	delete map;
 	delete render;
-	delete removed;
 	}
 
 /*
