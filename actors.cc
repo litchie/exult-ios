@@ -390,11 +390,11 @@ Game_object *Actor::find_weapon_ammo
 		Shape_info& inf = obj->get_info();
 		if (family == -2)
 			{
-			if (!inf.has_quality() || obj->get_quality() > needed)
+			if (!inf.has_quality() || obj->get_quality() >= needed)
 				return obj;
 			}
 			// Family -1 and family -3.
-		else if (obj->get_quantity() > needed)
+		else if (obj->get_quantity() >= needed)
 			return obj;
 		}
 
