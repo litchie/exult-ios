@@ -6,6 +6,8 @@
 	* monsters.cc: Fixed carpet-filled monster inventory bug.
 	* shapes/shapeinf.cc: Correctly initializing monster food value.
 	* Fixing reagents mismatches between Exult and original games.
+	* Fixed ammo counting bug causing some ranged weapons to not be found.
+	  Improved attacking when switching dead weapon.
 
 2008-06-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	BIG Commit (TM). Quite likely, there are a lot of bugs.
