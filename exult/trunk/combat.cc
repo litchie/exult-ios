@@ -1180,8 +1180,7 @@ void Combat_schedule::set_weapon
 		no_blocking = false;
 #endif
 		}
-	if (state == strike || state == fire)
-		state = approach;	// Got to restart attack.
+	state = approach;	// Got to restart attack.
 	}
 
 
