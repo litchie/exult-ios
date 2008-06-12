@@ -1150,11 +1150,12 @@ void Game_map::read_ireg_objects
 			lift = entry[9 + extbody] >> 4;
 			quality = entry[7];
 			oflags =	// Override flags (I think).
-				Get_quality_flags(entry[11]);
+				Get_quality_flags(entry[11 + extbody]);
 			int npc_num;
-			if (quality & 1)
+			if (quality == 1 && (extbody || (entry[8] >= 0x80 || 	 
+					Game::get_game_type() == SERPENT_ISLE)))
 				npc_num = extbody ? (entry[8] + 256*entry[9]) :
-						(entry[8] - 0x80) & 0xFF;
+						((entry[8] - 0x80) & 0xFF);
 			else
 				npc_num = -1;
 			if (!npc_num)	// Avatar has no body.
