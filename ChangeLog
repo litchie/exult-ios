@@ -1,3 +1,6 @@
+2008-06-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixing handling of dead bodies, including flags.
+
 2008-06-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc: Fixing segfaults on exit.
 	* actors.cc: Fixed checks that were failing due to operator precedence.
