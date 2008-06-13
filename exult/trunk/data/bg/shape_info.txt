@@ -438,6 +438,7 @@
 #		Boar - pork.
 #
 :329/11
+%%endsection
 
 %%section actor_flags
 #	Lots of monster/actor data which was hardcoded in the originals.
