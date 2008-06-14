@@ -4225,15 +4225,21 @@ void Actor::die
 		gwin->add_dirty(body);
 	add_dirty();			// Want to repaint area.
 	delete_contents();		// remove what's left of inventory
-		// Set oppressor and cause nearby NPCs to attack avatar.
-	fight_back(attacker);
-			// Is this a bad guy?
-			// Party defeated an evil monster?
 	Actor *npc = attacker ? attacker->as_actor() : 0;
-	if (npc && npc->is_in_party() && !is_in_party() && 
-			alignment != neutral && alignment != friendly)
-		Combat_schedule::monster_died();
-			// Move party member to 'dead' list.
+	if (npc)
+		{
+			// Set oppressor and cause nearby NPCs to attack attacker.
+		fight_back(attacker);
+		set_target(0, false);
+		set_schedule_type(Schedule::wander);
+
+				// Is this a bad guy?
+				// Party defeated an evil monster?
+		if (npc->is_in_party() && !is_in_party() && 
+				alignment != neutral && alignment != friendly)
+			Combat_schedule::monster_died();
+		}
+		// Move party member to 'dead' list.
 	partyman->update_party_status(this);
 	}
 

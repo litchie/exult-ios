@@ -121,21 +121,9 @@ void Server_init
 	(
 	)
 	{
-#ifndef WIN32
 	// Get location of socket file.
-	std::string servename("");
-	char *home = getenv("HOME");
-	if (home)			// Use $HOME/.exult/exultserver
-		{			//   if possible.
-		servename = home;
-		servename += "/.exult";
-		if (U7exists(servename.c_str()))
-			servename += "/exultserver";
-		else
-			servename = "";
-		}
-	if (servename == "")
-		servename = get_system_path("<GAMEDAT>/exultserver");
+	std::string servename = get_system_path(EXULT_SERVER);
+#ifndef WIN32
 	// Make sure it isn't there.
 	unlink(servename.c_str());
 #if HAVE_GETADDRINFOX
@@ -195,9 +183,6 @@ void Server_init
 #else
 
 	listen_socket = client_socket = -1;
-
-	std::string servename = get_system_path("<GAMEDAT>");
-
 	if (Exult_server::create_pipe(servename.c_str())) listen_socket = 1;
 
 #endif

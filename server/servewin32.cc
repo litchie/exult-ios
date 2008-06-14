@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>			/* For debugging msgs. */
 #include "servemsg.h"
 #include "servewin32.h"
+#include "utils.h"
 
 using std::cout;
 using std::cerr;
@@ -58,13 +59,14 @@ static bool InitializeWinsock()
 	return gWSInitialized;
 }
 
-bool OpenPortFile(const char *gamedat_path, bool writing)
+bool OpenPortFile(const char *path, bool writing)
 {
 	// Creates a file to store the port number in that is created
 	// If this fails on the client, there isn't a server active
 	char filename[MAX_PATH];
-	strcpy(filename, gamedat_path);
-	strcat(filename, "\\studio.port");
+	strcpy(filename, path);
+		// This flag is NT only, and causes CreateFile to fail in 9x.
+	int sharedel = is_win9x()?0:FILE_SHARE_DELETE;
 
 	// The locking is setup to prevent two servers from running for the same gamedat dir
 	// it's also setup so the file is deleted when the server shuts down
@@ -72,7 +74,7 @@ bool OpenPortFile(const char *gamedat_path, bool writing)
 	hPortFile = CreateFile (
 		 filename,
 		 writing?GENERIC_WRITE:GENERIC_READ,
-		 FILE_SHARE_READ|FILE_SHARE_DELETE|(!writing?FILE_SHARE_WRITE:0),
+		 FILE_SHARE_READ|sharedel|(!writing?FILE_SHARE_WRITE:0),
 		 NULL,
 		 writing?CREATE_ALWAYS:OPEN_EXISTING,
 		 FILE_ATTRIBUTE_TEMPORARY|(writing?FILE_FLAG_DELETE_ON_CLOSE:0),
@@ -84,7 +86,7 @@ bool OpenPortFile(const char *gamedat_path, bool writing)
 	hPortFile = CreateFile (
 		 Wfilename,
 		 writing?GENERIC_WRITE:GENERIC_READ,
-		 FILE_SHARE_READ|FILE_SHARE_DELETE|(!writing?FILE_SHARE_WRITE:0),
+		 FILE_SHARE_READ|sharedel|(!writing?FILE_SHARE_WRITE:0),
 		 NULL,
 		 writing?CREATE_ALWAYS:OPEN_EXISTING,
 		 FILE_ATTRIBUTE_TEMPORARY|(writing?FILE_FLAG_DELETE_ON_CLOSE:0),
@@ -124,7 +126,7 @@ int close(int file)
 
 // Server Functions
 
-bool create_pipe (const char *gamedat_path)
+bool create_pipe (const char *path)
 {
 	if (!InitializeWinsock()) return false;
 
@@ -159,7 +161,7 @@ bool create_pipe (const char *gamedat_path)
 	int socksize = sizeof(service);
 	getsockname (gServerSocket, (SOCKADDR*) &service, &socksize);
 
-	if (!OpenPortFile(gamedat_path,true))
+	if (!OpenPortFile(path,true))
 	{
 		cerr << "Error creating temporary file in gamedat dir for port number." << endl;
 		close_pipe();
@@ -179,7 +181,7 @@ void setup_connect()
 	// Not required
 }
 
-bool try_connect_to_client(const char *gamedat_path)
+bool try_connect_to_client(const char *path)
 {
 	// returns size of data waiting, -1 if disconnected
 	fd_set rfds;
@@ -218,7 +220,7 @@ void close_pipe()
 }
 
 // Client Functions
-int try_connect_to_server (const char *gamedat_path)
+int try_connect_to_server (const char *path)
 {
 	if (!InitializeWinsock()) return false;
 
@@ -236,7 +238,7 @@ int try_connect_to_server (const char *gamedat_path)
 	service.sin_addr.s_addr = inet_addr( "127.0.0.1" );
 	service.sin_port = 0;
 
-	if (!OpenPortFile(gamedat_path,false))
+	if (!OpenPortFile(path,false))
 	{
 		cerr << "Error opening temporary file in gamedat dir with port number." << endl;
 		close_pipe();
@@ -309,7 +311,12 @@ bool notify_connection_lost()
 
 bool is_win9x() 
 {
-	return false;
+	OSVERSIONINFO ver;
+	ver.dwOSVersionInfoSize = sizeof(ver);
+	GetVersionEx(&ver);
+		// Lumping WinME with the rest of them.
+	return ver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS &&
+			ver.dwMajorVersion == 4;
 }
 
 }
