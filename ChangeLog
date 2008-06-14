@@ -1,4 +1,11 @@
 2008-06-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* fnames.h, mapedit/studio.cc, server/*: Consolidating name of socket file
+	  in Exult/ES communication to be "<GAMEDAT>/exultserver" on all OSes.
+	* server/servewin32.cc: FILE_SHARE_DELETE flag prevent CreateFile from
+	  working in Win9x, preventing ES from working there.
+	* actors.cc: Making NPCs quit combat/attacking a target after dying.
+
+2008-06-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixing handling of dead bodies, including flags.
 
 2008-06-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
