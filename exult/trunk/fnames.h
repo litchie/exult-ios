@@ -154,6 +154,8 @@
 
 #define PATCH_KEYS	"<PATCH>/patchkeys.txt"
 
+#define EXULT_SERVER	"<GAMEDAT>/exultserver"
+
 #define NUM_FONTS	(20)
 
 // U7 game names in "exult.cfg":

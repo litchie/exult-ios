@@ -35,14 +35,14 @@ namespace Exult_server
 	int close(int file);
 
 	// Server Functions
-	bool create_pipe (const char *static_path);	
+	bool create_pipe (const char *path);	
 	void setup_connect();
-	bool try_connect_to_client(const char *static_path);
+	bool try_connect_to_client(const char *path);
 	void disconnect_from_client();
 	void close_pipe();
 
 	// Client Functions
-	int try_connect_to_server (const char *static_path);
+	int try_connect_to_server (const char *path);
 	void disconnect_from_server();
 
 	// General Functions

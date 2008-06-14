@@ -2704,35 +2704,17 @@ bool ExultStudio::connect_to_server
 		close(server_socket);
 		gdk_input_remove(server_input_tag);
 		}
+				// Use <GAMEDAT>/exultserver.
+	if (!U7exists(GAMEDAT) || !U7exists(EXULT_SERVER))
+		{
+		cout << "Can't find gamedat for socket" << endl;
+		return false;
+		}
 	server_socket = server_input_tag = -1;
 	struct sockaddr_un addr;
 	addr.sun_family = AF_UNIX;
-
-	char *home = getenv("HOME");
 	addr.sun_path[0] = 0;
-	if (home)			// Use $HOME/.exult/exultserver
-		{			//   if possible.
-		strcpy(addr.sun_path, home);
-		strcat(addr.sun_path, "/.exult/exultserver");
-		if (!U7exists(addr.sun_path))
-			addr.sun_path[0] = 0;
-		}
-	if (!addr.sun_path[0])		// Default to game/gamedat.
-		{
-		strcpy(addr.sun_path, static_path);
-		char *pstatic = strrchr(addr.sun_path, '/');
-		if (pstatic && !pstatic[1])     // End of path?
-			{
-			pstatic[0] = 0;
-			pstatic = strrchr(addr.sun_path, '/');
-			}
-		if (!pstatic)
-			{
-			cout << "Can't find gamedat for socket" << endl;
-			return false;
-			}
-		strcpy(pstatic + 1, "gamedat/exultserver");
-		}
+	strcpy(addr.sun_path, get_system_path(EXULT_SERVER).c_str());
 	server_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
 	if (server_socket < 0)
 		{
@@ -2760,7 +2742,7 @@ bool ExultStudio::connect_to_server
 	if (server_input_tag != -1) gtk_timeout_remove(server_input_tag);
 	server_socket = server_input_tag = -1;
 
-	if (Exult_server::try_connect_to_server(g_strdup_printf(get_system_path("<GAMEDAT>").c_str())) > 0)
+	if (Exult_server::try_connect_to_server(get_system_path(EXULT_SERVER).c_str()) > 0)
 		server_input_tag = gtk_timeout_add(50, Read_from_server, this);
 	else
 		return false;
