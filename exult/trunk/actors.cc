@@ -86,8 +86,6 @@ using std::memcpy;
 using std::rand;
 using std::string;
 using std::swap;
-using std::set;
-using std::map;
 #endif
 
 Actor *Actor::editing = 0;
@@ -196,8 +194,8 @@ inline int Get_dir_from_frame(int i)
  */
 class Actor_attributes
 	{
-	static set<string> *strings;	// So names get shared.
-	typedef map<const char *,int> Att_map;
+	static std::set<string> *strings;	// So names get shared.
+	typedef std::map<const char *,int> Att_map;
 	Att_map map;
 public:
 	Actor_attributes()
@@ -229,7 +227,7 @@ public:
 			attlist.push_back(*it);
 		}
 	};
-set<string> *Actor_attributes::strings = 0;
+std::set<string> *Actor_attributes::strings = 0;
 
 /*
  *	Get/create timers.
