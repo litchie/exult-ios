@@ -1,3 +1,6 @@
+2008-06-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapes/monstinf.cc: fixed undefined experience value
+
 2008-06-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: removed some using std::'s to improve gcc 4.3 support
 
