@@ -150,7 +150,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
 	) : reached_end(false), path(p), from_offscreen(false), speed(0),
-	    subseq(0), blocked(0), max_blocked(maxblk)
+	    subseq(0), blocked(0), max_blocked(maxblk), deleted(false)
 	{
 	if (!path)
 		path = new Astar();
@@ -227,13 +227,14 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 #endif
 		if (actor->step(blocked_tile, blocked_frame))
 			{		// Successful?
+			if (deleted) return 0;
 			blocked = 0;
 					// He was stopped, so restore speed.
 			actor->set_frame_time(speed);
 			return speed;
 			}
 					// Wait up to 1.6 secs.
-		return (blocked++ > max_blocked ? 0 
+		return deleted ? 0 : (blocked++ > max_blocked ? 0 
 					: 100 + blocked*(std::rand()%500));
 		}
 	speed = actor->get_frame_time();// Get time between frames.
@@ -265,6 +266,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	else if (actor->step(tile, frame))	// Successful.
 		{
+		if (deleted) return 0;
 		if (get_party)		// MUST be the Avatar.
 			{
 			Game_window *gwin = Game_window::get_instance();
@@ -276,6 +278,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 			return (0);
 		return cur_speed;
 		}
+	if (deleted) return 0;
 	reached_end = false;
 	frames->decrement(step_index);	// We didn't take the step.
 					// Blocked by a door?
@@ -553,7 +556,7 @@ int Approach_actor_action::handle_event
 	)
 	{
 	int delay = Path_walking_actor_action::handle_event(actor);
-	if (!delay)			// Done or blocked.
+	if (!delay || deleted)			// Done or blocked.
 		return 0;
 					// Close enough?
 	if (goal_dist >= 0 && actor->distance(dest_obj) <= goal_dist)
@@ -658,6 +661,8 @@ int If_else_path_actor_action::handle_event
 	delay = Path_walking_actor_action::handle_event(actor);
 	if (delay)
 		return delay;
+	if (deleted)
+		return 0;
 	if (!reached_end)
 		{			// Didn't get there.
 		if (failure)

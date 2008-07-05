@@ -70,6 +70,11 @@ public:
 		{ return 0; }
 	virtual int get_speed() const
 		{ return 0; }
+	virtual Actor_action *kill()
+		{
+		delete this;
+		return 0;
+		}
 	};
 
 /*
@@ -90,6 +95,7 @@ class Path_walking_actor_action : public Actor_action
 protected:
 	bool reached_end;		// Reached end of path.
 	PathFinder *path;		// Allocated pathfinder.
+	bool deleted;			// True if the action has been killed.
 private:
 	int original_dir;		// From src. to dest. (0-7).
 	int speed;			// Time between frames.
@@ -122,6 +128,11 @@ public:
 	virtual int following_smart_path();
 	virtual int get_speed() const
 		{ return speed; }
+	virtual Actor_action *kill()
+		{
+		deleted = true;
+		return this;
+		}
 	};
 
 /*
