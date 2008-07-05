@@ -5256,6 +5256,16 @@ int Dead_body::get_live_npc_num
 	}
 
 /*
+ *	Get size of IREG. Returns -1 if can't write to buffer.
+ */
+
+int Dead_body::get_ireg_size()
+{
+	int size = Container_game_object::get_ireg_size();
+	return size < 0 ? size : size + 1;
+}
+
+/*
  *	Write out body and its members.
  */
 

@@ -695,6 +695,7 @@ public:
 					int ammo_shape = 0, bool explosion = false)
 		{ return this; }	// Not affected.
 	virtual void write_ireg(DataSource* out);
+	virtual int get_ireg_size();
 	};
 
 #endif

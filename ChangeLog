@@ -5,6 +5,7 @@
 	* gamewin.cc, gumps/Notebook_gump.h: Read in notebook when loading a saved
 	  game (prevents data loss if notebook is not manually opened before saving
 	  since last reload).
+	* actors.*: Fixed cache-out crash in areas with dead bodies (bug #1998960).
 
 2008-06-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapes/monstinf.cc: fixed undefined experience value
