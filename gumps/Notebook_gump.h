@@ -59,8 +59,6 @@ class Notebook_gump : public Gump
 	int updnx;			// X-coord. for up/down arrows.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
-
-	static void initialize();
 					// Add new note.
 	static void add_new(char *text = 0, int gflag = -1);
 	bool paint_page(Rectangle box, One_note *note, int& offset, 
@@ -96,6 +94,8 @@ public:
 		if (gflag < auto_text.size() && auto_text[gflag])
 			add_gflag_text(gflag, auto_text[gflag]);
 		}
+
+	static void initialize();
 	static void write();		// Write it out to gamedat.
 	static void read();		// Read it in.
 	static void read_auto_text();

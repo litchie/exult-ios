@@ -210,7 +210,7 @@ Monster_actor *Monster_actor::create
 static inline int Randomize_initial_stat(int val)
 	{
 	if (val > 7)
-		return val + rand()%4 + rand()%4 -4;
+		return val + rand()%5 + rand()%5 -4;
 	else if (val > 0)
 		return rand()%val + rand()%val + 1;
 	else
