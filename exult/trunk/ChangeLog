@@ -1,3 +1,7 @@
+2008-07-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	actors.*, actions.*: Put some deleted actor actions into queue to prevent
+	bug #1980431.
+
 2008-07-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* monsters.cc: Fixing incorrect initial monster stat generation.
 	* schedule.cc: No longer refer to class variables after possible schedule

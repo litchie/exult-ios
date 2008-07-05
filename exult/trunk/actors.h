@@ -123,6 +123,7 @@ protected:
 
 	int	skin_color;
 	Actor_action *action;		// Controls current animation.
+	std::vector<Actor_action *> deletedactions;		// Halted actions.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
 	int step_index;			// Index into walking frames, 1 1st.
@@ -329,6 +330,7 @@ public:
 		{ return action; }
 					// Set new action.
 	void set_action(Actor_action *newact);
+	void purge_deleted_actions();
 					// Notify scheduler obj. disappeared.
 	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();		// Get destination.

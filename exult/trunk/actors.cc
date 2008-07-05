@@ -853,6 +853,7 @@ Actor::~Actor
 	(
 	)
 	{
+	purge_deleted_actions();
 	delete schedule;
 	delete action;
 	delete timers;
@@ -1125,11 +1126,27 @@ void Actor::set_action
 	{
 	if (newact != action)
 		{
-		delete action;
+		Actor_action *todel;
+		if (action && (todel = action->kill()) != 0)
+			deletedactions.push_back(todel);
 		action = newact;
 		}
 	if (!action)			// No action?  We're stopped.
 		frame_time = 0;
+	}
+
+/*
+ *	Empty deleted action list.
+ */
+
+void Actor::purge_deleted_actions()
+	{
+	while (deletedactions.size())
+		{
+		Actor_action *act = deletedactions.back();
+		deletedactions.pop_back();
+		delete act;
+		}
 	}
 
 /*
@@ -4397,6 +4414,7 @@ void Main_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	purge_deleted_actions();
 	if (action)			// Doing anything?
 		{			// Do what we should.
 		int speed = action->get_speed();
@@ -5026,6 +5044,7 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	purge_deleted_actions();
 	if (cheat.in_map_editor() && party_id < 0 || !can_act())
 		{
 		gwin->get_tqueue()->add(
