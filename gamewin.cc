@@ -2744,6 +2744,7 @@ void Game_window::setup_game
 
 	CYCLE_RED_PLASMA();
 
+	Notebook_gump::initialize();		// Read in journal.
 	usecode->read();		// Read the usecode flags
 	CYCLE_RED_PLASMA();
 

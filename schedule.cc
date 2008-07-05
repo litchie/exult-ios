@@ -114,8 +114,10 @@ bool Schedule::seek_foes
 		}
 	if (foe)
 		{
-		npc->set_schedule_type(Schedule::combat, 0);
-		npc->set_target(foe);
+		Actor *safenpc = npc;
+			// May delete us!
+		safenpc->set_schedule_type(Schedule::combat, 0);
+		safenpc->set_target(foe);
 		return 1;
 		}
 	return 0;
@@ -256,7 +258,6 @@ Scripted_schedule::Scripted_schedule
 		cerr << "Could not find scripted schedule '" << nm <<
 				"'. Switching to 'Loiter' schedule instead." << endl;
 		npc->set_schedule_type(loiter);
-		delete this;
 		return;
 		}
 	else
