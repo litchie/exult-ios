@@ -1252,6 +1252,16 @@ void Actor::start
 	}
 
 /*
+ *	Start with standard delay.
+ */
+void Actor::start_std
+	(
+	)
+	{
+	start(gwin->get_std_delay(), gwin->get_std_delay());
+	}
+
+/*
  *	Stop animation.
  */
 void Actor::stop
@@ -3258,7 +3268,7 @@ void Actor::clear_flag
 		set_target(0);			// Need new opponent.
 	else if (flag == Obj_flags::bg_dont_move || flag == Obj_flags::dont_move)
 		// Start again after a little while
-		start(gwin->get_std_delay(), gwin->get_std_delay());
+		start_std();
 	else if (flag == Obj_flags::polymorph && get_flag(Obj_flags::naked))
 		clear_flag(Obj_flags::naked);
 	else if (flag = Obj_flags::naked && get_flag(Obj_flags::polymorph))

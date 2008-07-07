@@ -1,3 +1,10 @@
+2008-07-07    <jeff@mini.nerble.net>
+
+	* objs/objs.cc: Fixed delta_wrap_check, so dragons attack better.
+
+	* combat.cc (Combat): Fixed problem with invisible monsters not
+	attacking.
+
 2008-07-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	actors.*, actions.*: Put some deleted actor actions into queue to prevent
 	bug #1980431.
