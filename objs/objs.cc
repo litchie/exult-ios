@@ -222,17 +222,18 @@ static inline void delta_check
 
 static inline void delta_wrap_check
 	(
-	int delta1,
+	int dir,			// Neg. if coord2 < coord1.
 	int size1,
 	int size2,
 	short& coord1,
 	short& coord2
 	)
 	{
-	if (delta1 > 0)
-		coord1 = (coord1 - size1 + c_num_tiles)%c_num_tiles;
-	else if (delta1 < 0)
+	// NOTE: An obj's tile is it's lower-right corner.
+	if (dir > 0)			// Coord2 > coord1.
 		coord2 = (coord2 - size2 + c_num_tiles)%c_num_tiles;
+	else if (dir < 0)
+		coord1 = (coord1 - size1 + c_num_tiles)%c_num_tiles;
 	}
 
 /*

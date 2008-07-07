@@ -284,6 +284,7 @@ bool Combat_schedule::summon
 #endif
 	ucmachine->call_usecode(0x685,
 			    npc, Usecode_machine::double_click);
+	npc->start_std();		// Back into queue.
 	return true;
 	}
 
@@ -308,6 +309,8 @@ bool Combat_schedule::be_invisible
 	gwin->get_effects()->add_effect(
 		new Sprites_effect(12, npc, 0, 0, 0, 0, 0, -1));
 	npc->set_flag(Obj_flags::invisible);
+	npc->add_dirty();
+	npc->start_std();		// Back into queue.
 	return true;
 	}
 
@@ -604,7 +607,7 @@ void Combat_schedule::approach_foe
 	    teleport())
 		{
 		start_battle();
-		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+		npc->start_std();
 		return;
 		}
 	PathFinder *path = new Astar();
@@ -1318,14 +1321,16 @@ void Combat_schedule::now_what
 			approach_foe();
 		else if (dex_points >= dex_to_attack)
 			{
-			int effint = npc->get_effective_prop(Actor::intelligence);
-			if (!npc->get_flag(Obj_flags::invisible)
-					&& Can_be_invisible(npc) && rand()%300 < effint)
+			int effint = npc->get_effective_prop(
+							Actor::intelligence);
+			if (!npc->get_flag(Obj_flags::invisible) &&
+			    Can_be_invisible(npc) && rand()%300 < effint)
 				{
 				(void) be_invisible();
 				dex_points -= dex_to_attack;
 				}
-			else if (Can_summon(npc) && rand()%600 < effint && summon())
+			else if (Can_summon(npc) && rand()%600 < effint && 
+								summon())
 				dex_points -= dex_to_attack;
 			else
 				start_strike();
@@ -1337,15 +1342,14 @@ void Combat_schedule::now_what
 				dex_points << " dex. points" << endl;
 #endif
 			dex_points += npc->get_property(Actor::dexterity);
-			npc->start(gwin->get_std_delay(),
-						gwin->get_std_delay());
+			npc->start_std();
 			}
 		break;
 	case strike:			// He hasn't moved away?
 		{
 		state = approach;
 					// Back into queue.
-		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+		npc->start_std();
 		Actor *safenpc = npc;
 			// Change back to ready frame.
 		signed char frame =
@@ -1385,7 +1389,7 @@ void Combat_schedule::now_what
 	case wait_return:		// Boomerang should have returned.
 		state = approach;
 		dex_points += npc->get_property(Actor::dexterity);
-		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+		npc->start_std();
 		break;
 	default:
 		break;
