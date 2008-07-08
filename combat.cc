@@ -363,9 +363,10 @@ void Combat_schedule::find_opponents
 	Game_window *gwin = Game_window::get_instance();
 	Actor_vector nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
-	nearby.push_back(gwin->get_main_actor());	// Incl. Avatar!
+	Actor *avatar = gwin->get_main_actor();
+	nearby.push_back(avatar);	// Incl. Avatar!
 					// See if we're a party member.
-	bool in_party = npc->is_in_party();
+	bool in_party = npc->is_in_party() || npc == avatar;
 	int npc_align = npc->get_effective_alignment();
 	Monster_info *minf = npc->get_info().get_monster_info();
 	bool see_invisible = minf ?
@@ -379,18 +380,17 @@ void Combat_schedule::find_opponents
 			continue;	// Dead, sleeping or invisible.
 		if (is_enemy(npc_align, actor->get_effective_alignment()))
 			opponents.push_back(actor);
-		else if (!in_party)
+		else if (in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
-			if (t && t->get_flag(Obj_flags::in_party))
+			if (t && (t->get_flag(Obj_flags::in_party) || t == avatar))
 				opponents.push_back(actor);
 			}
 	}
 					// None found?  Use Avatar's.
-	if (opponents.empty() && npc->is_in_party() &&
-	    npc != gwin->get_main_actor())
+	if (opponents.empty() && in_party)
 	{
-		Game_object *opp = gwin->get_main_actor()->get_target();
+		Game_object *opp = avatar->get_target();
 		Actor *oppnpc = opp ? opp->as_actor() : 0;
 		if (oppnpc && oppnpc != npc)
 			opponents.push_back(oppnpc);
