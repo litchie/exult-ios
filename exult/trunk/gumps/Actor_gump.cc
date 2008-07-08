@@ -42,7 +42,7 @@ using std::size_t;
 
 short Actor_gump::diskx = 124, Actor_gump::disky = 115;
 short Actor_gump::heartx = 124, Actor_gump::hearty = 132;
-short Actor_gump::combatx = 52, Actor_gump::combaty = 103;
+short Actor_gump::combatx = 52, Actor_gump::combaty = 100;
 short Actor_gump::halox = 47, Actor_gump::haloy = 110;
 short Actor_gump::cmodex = 48, Actor_gump::cmodey = 132;
 short Actor_gump::coords[24] = {
@@ -100,9 +100,10 @@ Actor_gump::Actor_gump
 	Actor *npc = cont->as_actor();
 	add_elem(new Heart_button(this, heartx, hearty));
 	if (npc->get_npc_num() == 0)
+		{
 		add_elem(new Disk_button(this, diskx, disky));
-	if (npc->get_npc_num() == 0)
 		add_elem(new Combat_button(this, combatx, combaty));
+		}
 	add_elem(new Halo_button(this, halox, haloy, npc));
 	add_elem(new Combat_mode_button(this, cmodex, cmodey, npc));
 							

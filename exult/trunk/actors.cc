@@ -2021,7 +2021,7 @@ void Actor::paint
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
 		bool invis = flags & (1L << Obj_flags::invisible);
-		if (invis && party_id < 0)
+		if (invis && party_id < 0 && this != gwin->get_main_actor())
 			return;	// Don't render invisible NPCs not in party.
 		else if (invis)
 			paint_invisible(xoff, yoff);

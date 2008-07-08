@@ -1,3 +1,14 @@
+2008-07-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/objs.cc: Fixed bug that could cause large creatures to attack
+	  themselves with projectiles. This should also prevent other creatures from
+	  attacking allies.
+	* actors.cc: Avatar should render correctly when invisible again.
+	* cheat_screen.cc: Fixing palette mix-up with cheat screen (thanks to
+	  Malignant Manor).
+	* gumps/Sign_gump.cc: Fixed font for tombstones Also, moved combat toggle
+	  button up 3 pixels to prevent overlap with halo button (both thanks to
+	  Malignant Manor).
+
 2008-07-07    <jeff@mini.nerble.net>
 
 	* objs/objs.cc: Fixed delta_wrap_check, so dragons attack better.

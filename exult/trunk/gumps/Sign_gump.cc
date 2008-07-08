@@ -160,6 +160,8 @@ void Sign_gump::paint
 	}
 	else if (serpentine)
 		font = 8;
+	else if (get_shapenum() == game->get_shape("gumps/tombstone"))
+		font = 3;
 					// Get height of 1 line.
 	int lheight = sman->get_text_height(font);
 					// Get space between lines.
