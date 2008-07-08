@@ -1,3 +1,10 @@
+2008-07-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gameclk.cc, cheat_screen.cc: Reverted previous fix and submited the correct
+	  one: forcing palette to apply when it is directly set.
+	* actors.cc: Fixed recent invisibility palette bug for avatar. Fixed mixing
+	  of rings and gloves in BG due to faulty condition check, and did a
+	  preventive fix for a similar case with two-handed weapons.
+
 2008-07-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/objs.cc: Fixed bug that could cause large creatures to attack
 	  themselves with projectiles. This should also prevent other creatures from

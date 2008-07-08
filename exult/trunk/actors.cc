@@ -1591,6 +1591,8 @@ void Actor::get_prefered_slots
 
 			case gloves:
 			fistype = FIS_2Finger;
+			prefered = lfinger;
+			break;
 
 			case ring:
 			prefered = lfinger;
@@ -3180,6 +3182,7 @@ void Actor::set_flag
 		need_timers()->start_paralyze();
 		break;
 	case Obj_flags::invisible:
+		flags |= ((uint32) 1 << flag);
 		need_timers()->start_invisibility();
 		Combat_schedule::stop_attacking_invisible(this);
 		gclock->set_palette();
@@ -3537,9 +3540,9 @@ bool Actor::add
 	if (!Container_game_object::add(obj, true))
 		return false;
 
-	if (type == FIS_2Hand)		// Two-handed?
+	if (type == FIS_2Hand && index == lhand)		// Two-handed?
 		two_handed = true;
-	if (type == FIS_2Finger) {	// Gloves?
+	if (type == FIS_2Finger && index == lfinger) {	// BG Gloves?
 		index = lfinger;
 		two_fingered = true;
 	}
