@@ -172,7 +172,7 @@ Tile_coord Game_object::get_missile_tile
 	int dx = get_info().get_3d_xtiles(frame)-1,
 	    dy = get_info().get_3d_ytiles(frame)-1,
 		dz = (get_info().get_3d_height()*3)/4;
-	/*switch (dir)
+	switch (dir)
 		{
 		case south:
 			dy = -1;
@@ -189,7 +189,7 @@ Tile_coord Game_object::get_missile_tile
 		case southwest:
 			dy = -1;
 			break;
-		}*/
+		}
 	int x = chunk->cx*c_tiles_per_chunk + tx - dx,
 	    y = chunk->cy*c_tiles_per_chunk + ty - dy;
 	return Tile_coord(x, y, lift + dz);
