@@ -6,6 +6,9 @@
 	  preventive fix for a similar case with two-handed weapons.
 	* combat.cc: Fixed monsters attacking each other (bug #2013092).
 	* objs/objs.cc: Reverted previous commit. Better positioning of missiles.
+	* shapes/*: Fixed fixed-head paperdolls: patching skin shape info would
+	  overwrite paperdoll data from paperdol_info.txt.
+	* mapedit/studio.cc: Check to see if map needs to be saved on 'save all'.
 
 2008-07-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/objs.cc: Fixed bug that could cause large creatures to attack

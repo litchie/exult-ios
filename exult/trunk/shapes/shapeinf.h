@@ -245,7 +245,7 @@ public:
 	Shape_info(const Shape_info & other);
 	const Shape_info & operator = (const Shape_info & other);
 	virtual ~Shape_info();
-	void copy(const Shape_info& inf2);
+	void copy(const Shape_info& inf2, bool skip_dolls = false);
 
 	int get_weight() const		// Get weight, volume.
 		{ return weight; }

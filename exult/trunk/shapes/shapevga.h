@@ -81,6 +81,10 @@ public:
 		{
 		info[shapenum] = inf;
 		}
+	void copy_info(int shapenum, Shape_info inf)
+		{
+		info[shapenum].copy(inf, true);
+		}
 };
 
 #endif
