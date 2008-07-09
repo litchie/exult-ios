@@ -1,4 +1,11 @@
 2008-07-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* README.win32: Updated links to more recent versions of MinGW. The file
+	  'exult_dev_win32.zip' (that contains several files needed for a MinGW
+	  compile), has been updated with a new version of Bison and Flex (both
+	  from GNUWin32) in the project shell space. Using the newer versions
+	  pointed to in the readme fixes a few problems in recent Win32 snapshots.
+
+2008-07-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gameclk.cc, cheat_screen.cc: Reverted previous fix and submited the correct
 	  one: forcing palette to apply when it is directly set.
 	* actors.cc: Fixed recent invisibility palette bug for avatar. Fixed mixing
