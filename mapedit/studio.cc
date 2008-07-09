@@ -1467,7 +1467,8 @@ void ExultStudio::save_all
 		files->flush();		// Write out the .vga files.
 		}
 	write_shape_info();
-	write_map();
+	if (need_to_save())
+		write_map();
 	}
 
 /*

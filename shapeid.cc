@@ -108,8 +108,8 @@ void Shape_manager::read_shape_info
 		{
 		if ((*it).copy_info)
 			{
-			shapes.set_info((*it).shape_num, (*it).is_female ? female : male);
-			shapes.set_info((*it).naked_shape, (*it).is_female ? female : male);
+			shapes.copy_info((*it).shape_num, (*it).is_female ? female : male);
+			shapes.copy_info((*it).naked_shape, (*it).is_female ? female : male);
 			}
 		}
 	}
