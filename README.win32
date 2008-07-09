@@ -34,10 +34,11 @@ To build in Windows using MinGW
 (Thanks to Travis Howell)
 
 Download and install MinGW from:
-http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe
+http://prdownloads.sourceforge.net/mingw/MinGW-5.1.4.exe
+Be sure to select g++ compiler for installation.
 
 Download and install MSYS from:
-http://prdownloads.sourceforge.net/mingw/MSYS-1.0.9.exe
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe
 
 Download the SDL binaries & headers from:
 http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
