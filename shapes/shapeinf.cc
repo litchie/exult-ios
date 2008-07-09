@@ -104,7 +104,8 @@ Shape_info::~Shape_info()
 
 void Shape_info::copy
 	(
-	const Shape_info& inf2
+	const Shape_info& inf2,
+	bool skip_dolls
 	)
 	{
 	for (int i = 0; i < 3; ++i)
@@ -142,11 +143,14 @@ void Shape_info::copy
 	weapon = inf2.weapon ? new Weapon_info(*inf2.weapon) : 0;
 	delete monstinf;
 	monstinf = inf2.monstinf ? new Monster_info(*inf2.monstinf) : 0;
-	delete npcpaperdoll;
-	npcpaperdoll = inf2.npcpaperdoll ?
-			new Paperdoll_npc(*inf2.npcpaperdoll) : 0;
-
-	copy_vector_info(inf2.objpaperdoll, objpaperdoll);
+	if (!skip_dolls || !npcpaperdoll)
+		{
+		delete npcpaperdoll;
+		npcpaperdoll = inf2.npcpaperdoll ?
+				new Paperdoll_npc(*inf2.npcpaperdoll) : 0;
+		}
+	if (!skip_dolls || objpaperdoll.empty())
+		copy_vector_info(inf2.objpaperdoll, objpaperdoll);
 	copy_vector_info(inf2.hpinf, hpinf);
 	copy_vector_info(inf2.cntrules, cntrules);
 	copy_vector_info(inf2.nameinf, nameinf);
