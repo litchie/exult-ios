@@ -3903,7 +3903,6 @@ void ExultStudio::show_shinfo_body
 					// Yes, this is kind of redundant...
 	int shnum = get_spin("shinfo_body_shape");
 	int frnum = get_spin("shinfo_body_frame");
-	set_spin("shinfo_body_frame", frnum, 0, vgafile->get_ifile()->get_num_frames(shnum)-1);
 	body_draw->draw_shape_centered(shnum, frnum);
 	if (w != -1)
 		body_draw->show(x, y, w, h);
