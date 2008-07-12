@@ -383,7 +383,7 @@ fi
 
 # zipped savegame support
 
-AC_ARG_ENABLE(zip-support, [  --enable-zip-support    Enable zipped savegame support [default yes]],,enable_zip_support=yes)
+AC_ARG_ENABLE(zip-support, [[  --enable-zip-support    Enable zipped savegame support [default yes]]],,enable_zip_support=yes)
 
 if test x$enable_zip_support = xyes ; then
 	AC_CHECK_HEADER(zlib.h,,enable_zip_support=no)
@@ -431,7 +431,7 @@ fi
 # support for Exult Studio
 # ---------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable support for Exult Studio)
-AC_ARG_ENABLE(exult-studio-support, [  --enable-exult-studio-support   Enable ExultStudio support [default yes]],,enable_exult_studio_support=yes)
+AC_ARG_ENABLE(exult-studio-support, [[  --enable-exult-studio-support   Enable ExultStudio support [default yes]]],,enable_exult_studio_support=yes)
 if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
@@ -482,7 +482,7 @@ AC_SUBST([ICONDIR])
 # ---------------------------------------------------------------------
 
 # basic debugging mode
-AC_ARG_ENABLE(debug, [  --enable-debug          Enable debug messages [default no]],,enable_debug=no)
+AC_ARG_ENABLE(debug, [[  --enable-debug          Enable debug messages [default no]]],,enable_debug=no)
 AC_MSG_CHECKING(whether to enable debugging mode)
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -494,7 +494,7 @@ else
 fi
 
 # optimized debugging mode
-AC_ARG_ENABLE(optimized-debug,  [  --enable-optimized-debug        Enable optimized debug build [default no]],,enable_optimized_debug=no)
+AC_ARG_ENABLE(optimized-debug,  [[  --enable-optimized-debug        Enable optimized debug build [default no]]],,enable_optimized_debug=no)
 AC_MSG_CHECKING(whether to do an optimized debug build)
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -505,7 +505,7 @@ else
 fi
 
 # SDL parachute?
-AC_ARG_ENABLE(sdl-parachute,    [  --enable-sdl-parachute  Use SDL parachute [default yes]],,enable_sdl_parachute=yes)
+AC_ARG_ENABLE(sdl-parachute,    [[  --enable-sdl-parachute  Use SDL parachute [default yes]]],,enable_sdl_parachute=yes)
 AC_MSG_CHECKING(if we should disable the SDL parachute)
 if test x$enable_sdl_parachute = xno; then
   AC_MSG_RESULT(yes)
@@ -515,7 +515,7 @@ else
 fi
 
 # Usecode debugger
-#AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Support for usecode debugging [default no]],,enable_usecode_debugger=no)
+#AC_ARG_ENABLE(usecode-debugger, [[  --enable-usecode-debugger       Support for usecode debugging [default no]]],,enable_usecode_debugger=no)
 #AC_MSG_CHECKING(whether to enable the usecode debugger)
 #if test x$enable_usecode_debugger = xyes; then
 #	AC_MSG_RESULT(yes)
@@ -534,13 +534,13 @@ AC_MSG_CHECKING(warning level)
 WARNING_LEVEL="normal"
 
 # more warnings
-AC_ARG_ENABLE(warnings, [  --enable-warnings       Enable all warnings [default no]],,enable_warnings=no)
+AC_ARG_ENABLE(warnings, [[  --enable-warnings       Enable all warnings [default no]]],,enable_warnings=no)
 if test x$enable_warnings = xyes; then
  	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
 	WARNING_LEVEL="all"
 fi
 
-AC_ARG_ENABLE(paranoid-warnings, [  --enable-paranoid-warnings      Enable paranoid warnings [default no]],,enable_paranoid_warnings=no)
+AC_ARG_ENABLE(paranoid-warnings, [[  --enable-paranoid-warnings      Enable paranoid warnings [default no]]],,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
 	WARNINGS="-Wall -W -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
@@ -552,7 +552,7 @@ AC_MSG_RESULT($WARNING_LEVEL)
 
 
 # Ignore long-long warnings (for SDL header files...)
-AC_ARG_ENABLE(long-long-warnings, [  --enable-long-long-warnings     Enable long long warnings- needed for Compaq's cxx with GNU ld [default no]],
+AC_ARG_ENABLE(long-long-warnings, [[  --enable-long-long-warnings     Enable long long warnings- needed for Compaq's cxx with GNU ld [default no]]],
 	,,enable_long_long_warnings=no)
 AC_MSG_CHECKING(if we should disable long-long warnings)
 if test x$enable_long_long_warnings = xyes; then
@@ -567,7 +567,7 @@ fi
 # --------------------
 
 # Build any external programs?
-AC_ARG_ENABLE(tools,    [  --disable-tools         Only build the main program],,enable_tools=yes)
+AC_ARG_ENABLE(tools,    [[  --disable-tools         Only build the main program]],,enable_tools=yes)
 AC_MSG_CHECKING(whether to build only the main program)
 if test x$enable_tools = xno; then
 	AC_MSG_RESULT(yes)
@@ -581,7 +581,7 @@ else
 fi
 
 # Build compiler?
-AC_ARG_ENABLE(compiler, [  --enable-compiler       Build the usecode compiler [default yes]],,enable_compiler=yes)
+AC_ARG_ENABLE(compiler, [[  --enable-compiler       Build the usecode compiler [default yes]]],,enable_compiler=yes)
 AC_MSG_CHECKING(whether to build the usecode compiler)
 if test x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
@@ -592,7 +592,7 @@ else
 fi
 
 # Build data files?
-AC_ARG_ENABLE(data,          [  --enable-data           Create the data files [default yes]],,enable_data=yes)
+AC_ARG_ENABLE(data,          [[  --enable-data           Create the data files [default yes]]],,enable_data=yes)
 AC_MSG_CHECKING(whether to build the data files)
 if test x$enable_data = xno; then
 	AC_MSG_RESULT(no)
@@ -634,7 +634,7 @@ if test -n "$FT2CONFIG"; then
 fi
 
 # exult-studio
-AC_ARG_ENABLE(exult-studio, [  --enable-exult-studio   Build Exult Studio [default no]],,enable_exult_studio=no)
+AC_ARG_ENABLE(exult-studio, [[  --enable-exult-studio   Build Exult Studio [default no]]],,enable_exult_studio=no)
 AC_MSG_CHECKING(whether to build Exult Studio)
 if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
@@ -651,7 +651,7 @@ fi
 
 # GIMP plugin
 AM_CONDITIONAL(GIMP_PLUGIN, false)
-AC_ARG_ENABLE(gimp-plugin,   [  --enable-gimp-plugin    Build the GIMP plugin [default no]],,enable_gimp_plugin=no)
+AC_ARG_ENABLE(gimp-plugin,   [[  --enable-gimp-plugin    Build the GIMP plugin [default no]]],,enable_gimp_plugin=no)
 AC_MSG_CHECKING(whether to build the GIMP plugin)
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
