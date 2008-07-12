@@ -192,4 +192,5 @@ int Weapon_info::get_base_xp_value()
 	expval += m_explodes ? 1 : 0;
 	expval += m_autohit ? 10 : 0;
 	expval += m_no_blocking ? 1 : 0;
+	return expval;
 	}
