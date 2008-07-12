@@ -37,13 +37,13 @@ const Ammo_info *Ammo_info::get_default()
 		default_info.damage =
 		default_info.powers =
 		default_info.damage_type =
+		default_info.drop_type = 0;
 		default_info.m_no_blocking =
-		default_info.drop_type =
 		default_info.m_autohit =
 		default_info.m_lucky =
 		default_info.m_returns =
 		default_info.homing =
-		default_info.m_explodes = 0;
+		default_info.m_explodes = false;
 		}
 	return &default_info;
 	}

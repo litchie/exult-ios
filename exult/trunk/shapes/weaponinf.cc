@@ -40,23 +40,23 @@ const Weapon_info *Weapon_info::get_default()
 	{
 	if (!default_info.damage)
 		{
-		default_info.missile_speed =
+		default_info.missile_speed = 1;
 		default_info.damage = 1;
 		default_info.ammo = -1;
 		default_info.projectile = -3;
 		default_info.range = 4;
 		default_info.uses = 2;
 		default_info.actor_frames = 3;
-		default_info.powers =
-		default_info.damage_type =
+		default_info.powers = 0;
+		default_info.damage_type = 0;
 		default_info.m_autohit =
 		default_info.m_lucky =
 		default_info.m_explodes =
 		default_info.m_no_blocking =
 		default_info.m_delete_depleted =
 		default_info.m_returns =
-		default_info.m_need_target =
-		default_info.rotation_speed =
+		default_info.m_need_target = false;
+		default_info.rotation_speed = 0;
 		default_info.usecode = 0;
 		default_info.sfx =
 		default_info.hitsfx = -1;

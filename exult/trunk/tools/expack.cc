@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 					strip_path (hprefix);
 					make_uppercase (hprefix);
 
-					int shnum = 0;
+					unsigned int shnum = 0;
 					int linenum = 2;
 					while(respfile.good()) {
 						getline(respfile, temp, 1024);
@@ -426,7 +426,7 @@ int main(int argc, char **argv)
 
 			// The files
 				{
-				for(int i=0; i<file_names.size(); i++) {
+				for(unsigned int i=0; i<file_names.size(); i++) {
 					if (file_names[i].size()) {
 						int fsize = get_file_size(file_names[i].c_str());
 						if(fsize) {

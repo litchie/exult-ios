@@ -249,7 +249,6 @@ void Write_text_file
 	)
 	{
 	ofstream out;
-	int i, cnt;
 
 	U7open(out, PATCH_TEXTMSGS, true);	// (It's a text file.)
 	out << "Exult " << VERSION << " text message file." <<
@@ -273,7 +272,6 @@ void Set_item_name
 	if (num >= num_item_names)
 		{
 		char **newlist = new char*[num + 1];
-		int i;
 		memcpy(newlist, item_names, num_item_names*sizeof(char *));
 		if (num > num_item_names)
 			memset(newlist + num_item_names, 0, 
