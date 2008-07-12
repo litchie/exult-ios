@@ -625,7 +625,7 @@ void Shape_frame::paint_rle_outline
 						yoff - yabove, w, h))
 			return;
 	int firsty = -10000;		// Finds first line.
-	int lasty;
+	int lasty = -10000;
 	uint8 * in = data;
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)

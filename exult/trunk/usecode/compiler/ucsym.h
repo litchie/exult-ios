@@ -86,6 +86,8 @@ public:
 	friend class Uc_scope;
 	Uc_symbol(char *nm) : name(nm)
 		{  }
+	virtual ~Uc_symbol()
+		{  }
 	const char *get_name() { return name.c_str(); }
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -317,7 +319,7 @@ public:
 	Uc_class_symbol(char *nm, Uc_class *c) : Uc_symbol(nm), cls(c)
 		{  }
 	static Uc_class_symbol *create(char *nm, Uc_class *c);
-	Uc_class *get_cls()
+	Uc_class *get_cls() const
 		{ return cls; }
 	};
 
@@ -536,7 +538,7 @@ public:
 		{ has_ret = true; }
 	virtual Uc_class *get_cls() const
 		{ return ret_type; }
-	virtual bool set_ret_type(Uc_class *r)
+	virtual void set_ret_type(Uc_class *r)
 		{ ret_type = r; has_ret = true; }
 	virtual Function_kind get_function_type() const
 		{ return type; }
@@ -592,6 +594,7 @@ public:
 class Uc_design_unit
 	{
 public:
+	virtual ~Uc_design_unit() { }
 	virtual void gen(std::ostream& out) = 0;	// Generate Usecode.
 	virtual Usecode_symbol *create_sym() = 0;
 	virtual bool is_class() const

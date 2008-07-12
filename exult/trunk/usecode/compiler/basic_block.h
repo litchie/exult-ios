@@ -181,11 +181,11 @@ protected:
 	bool reachable;
 public:
 	Basic_block()
-		:	index(0), taken(0), ntaken(0), taken_index(-1), ntaken_index(-1),
+		:	index(0), taken(0), taken_index(-1), ntaken(0), ntaken_index(-1),
 			jmp_op(0), reachable(false)
 		{ instructions.reserve(100); }
 	Basic_block(int ind, Basic_block *t = 0, Basic_block *n = 0, int ins = -1)
-		:	index(ind), taken(t), ntaken(n), taken_index(-1), ntaken_index(-1),
+		:	index(ind), taken(t), taken_index(-1), ntaken(n), ntaken_index(-1),
 			jmp_op(new Opcode(ins)), reachable(false)
 		{ if (index != -1) instructions.reserve(100); }
 	~Basic_block()

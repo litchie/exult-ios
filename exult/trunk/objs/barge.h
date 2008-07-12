@@ -67,8 +67,8 @@ public:
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
 			complete(false), gathered(false), ice_raft(false),
-			first_step(true), boat(-1), frame_time(0), path(0),
-			taking_2nd_step(false)
+			first_step(true), taking_2nd_step(false),
+			boat(-1), frame_time(0), path(0)
 		{  }
 	Rectangle get_tile_footprint();
 	bool is_moving()
