@@ -14,7 +14,6 @@ MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o 
 	keyactions.o menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
 	party.o paths.o readnpcs.o schedule.o segfile.o shapeid.o tqueue.o txtscroll.o \
 	version.o windrag.o
-# unused: npctest.o
 
 PATH_OBJS=Astar.o path.o PathFinder.o Zombie.o
 
