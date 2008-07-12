@@ -154,8 +154,7 @@ int Uc_var_symbol::is_object_function(bool print_error) const
 				Uc_location::yyerror(buf);
 				break;
 			case 3:
-				sprintf(buf, "Return of intrinsics are generally not fun. IDs",
-						name.c_str());
+				sprintf(buf, "Return of intrinsics are generally not fun. IDs");
 				Uc_location::yyerror(buf);
 				break;
 			}
