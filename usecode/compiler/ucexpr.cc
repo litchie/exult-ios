@@ -819,7 +819,7 @@ void Uc_call_expression::check_params()
 		{
 		char buf[150];
 		sprintf(buf,
-			"# parms. passed (%d) doesn't match '%s' count (%d)",
+			"# parms. passed (%d) doesn't match '%s' count (%lu)",
 			parmscnt - ignore_this, sym->get_name(),
 			protoparms.size() - ignore_this);
 		Uc_location::yyerror(buf);

@@ -83,7 +83,8 @@ public:
 	void reset()
 		{
 		overcast = fog = 0;
-		was_overcast = was_foggy = old_special_light = false;
+		was_overcast = was_foggy = false;
+		old_special_light = 0;
 		dungeon = 255;
 		if (transition)
 			delete transition;

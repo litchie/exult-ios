@@ -290,7 +290,7 @@ void Scale_Hq2x
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 {
-  int  i, j, k;
+  int  i, j;
   int  prevline, nextline;
   int  w[10];
   int  c[10];
@@ -3048,7 +3048,7 @@ void Scale_Hq3x
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 {
-  int  i, j, k;
+  int  i, j;
   int  prevline, nextline;
   int  w[10];
   int  c[10];

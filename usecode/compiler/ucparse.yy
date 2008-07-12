@@ -277,7 +277,8 @@ method:
 			funsym->set_has_ret();
 		else if (class_type)
 			funsym->set_ret_type(class_type);
-		has_ret = class_type = 0;
+		has_ret = false;
+		class_type = 0;
 
 		cur_fun = new Uc_function(funsym, cur_class->get_scope());
 		}
@@ -2015,7 +2016,7 @@ declared_var:
 		if (!var)
 			{
 			char buf[150];
-			sprintf(buf, "'%s' not a 'var'", $1);
+			sprintf(buf, "'%s' not a 'var'", $1->get_name());
 			yyerror(buf);
 			sprintf(buf, "%s_needvar", $1->get_name());
 			var = cur_fun->add_symbol(buf);
