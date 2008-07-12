@@ -79,7 +79,7 @@ Xdnd::Xdnd
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
 		file(-1), shape(-1), frame(-1), chunknum(-1), npcnum(-1),
-		combo_cnt(-1), combo(0), combo_xtiles(0), combo_ytiles(0),
+		combo_cnt(-1), combo_xtiles(0), combo_ytiles(0), combo(0),
 		data_valid(false), move_shape_handler(movefun),
 		move_combo_handler(movecmbfun),
 		shape_handler(shapefun), chunk_handler(cfun),

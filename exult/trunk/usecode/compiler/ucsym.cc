@@ -428,8 +428,8 @@ Uc_function_symbol::Uc_function_symbol
 	int shp,
 	Function_kind kind
 	) :	Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
-		ret_type(0), has_ret(false), shape_num(shp), externed(false),
-		inherited(false), high_id(false), type(kind)
+		shape_num(shp), externed(false), inherited(false),
+		has_ret(false), ret_type(0), high_id(false), type(kind)
 	{
 	high_id = is_int_32bit(usecode_num);
 	}
@@ -623,7 +623,7 @@ int Uc_function_symbol::gen_call
 	if (parmcnt != parms.size())
 		{
 		sprintf(buf,
-			"# parms. passed (%d) doesn't match '%s' count (%d)",
+			"# parms. passed (%d) doesn't match '%s' count (%lu)",
 			parmcnt, get_name(), parms.size());
 		Uc_location::yyerror(buf);
 		}
