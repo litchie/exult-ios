@@ -135,13 +135,11 @@ u7shape* load_shape(char* filename)
   uint8 *pixptr, *eod;
   int frame_offset;
   int slice;
-  int image_ID = -1, layer_ID = -1;
   int slice_type, slice_length;
   int block_type, block_length;
   int max_leftX = -1, max_rightX = -1;
   int max_leftY = -1, max_rightY = -1;
   int offsetX, offsetY;
-  char *framename;
   uint8 block;
   uint8 pix;
   int i, j;
@@ -368,9 +366,7 @@ void save_8 (FILE *dst, int width, int height,
 
 void save_image(uint8* pixels, uint8* palette, int width, int height, char *filename)
 {
-  uint8 tmp;
   int pitch;
-  int i;
   PCX_Header header;
 
   FILE *fp = fopen (filename, "wb");

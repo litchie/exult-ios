@@ -280,7 +280,6 @@ int main(int argc, char *argv[])
 	char* shapefile;
 	int numframefiles;
 	char* framefiles[255];
-	u7shape* sh;
 	
 	if (argc < 2) {
 	  cout << "Usage: To split: splitshp [shape file]" << endl

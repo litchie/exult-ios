@@ -365,7 +365,6 @@ static void Modify_palette
 	int r256, int g256, int b256	// Modify by x/256.
 	)
 	{
-	int cnt = 3*palsize;
 	for (int i = 0; i < 3*palsize; )
 		{
 		int r = from[i] + roff;	// First the offsets.
@@ -776,7 +775,6 @@ static void Create
 	for (Shape_specs::const_iterator it = specs.begin();
 						it != specs.end();  ++it)
 		{
-		int shnum = it - specs.begin();
 		char *basename = (*it).filename;
 		if (basename)		// Not empty?
 			{
