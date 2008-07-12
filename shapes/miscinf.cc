@@ -79,6 +79,7 @@ int get_skinvar(std::string key)
 class Shapeinfo_entry_parser
 	{
 public:
+	virtual ~Shapeinfo_entry_parser() { }
 	virtual void parse_entry(int index, char *eptr,
 			bool for_patch, int version) = 0;
 	int ReadInt(char *&eptr, int off = 1)
@@ -551,7 +552,6 @@ int Shapeinfo_lookup::GetBlueShapeData(int spot)
 	if (!blue_shapes)
 		setup_shape_files();
 	
-	int ret;
 	for (vector<pair<int,int> >::iterator it = blue_shapes->begin();
 			it != blue_shapes->end(); ++it)
 		if (it->first == -1 || it->first == spot)

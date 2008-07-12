@@ -1,5 +1,6 @@
 2008-07-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: fix underquoted help strings
+	* various: warnings
 
 2008-07-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* README.win32: Updated links to more recent versions of MinGW. The file
