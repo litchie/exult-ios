@@ -255,6 +255,7 @@ public:
 			if (!block->is_jump_block() && !block->is_fallthrough_block())
 				return false;
 			}
+		return true;
 		}
 	int get_return_opcode() const
 		{ return ends_in_return() ? instructions.back()->get_opcode() : -1; }
