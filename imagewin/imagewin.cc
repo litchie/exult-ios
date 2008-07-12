@@ -207,8 +207,6 @@ bool Image_window::create_scale_surfaces(int scl, int w, int h, uint32 flags,
 
 bool Image_window::try_scaler(int w, int h, uint32 flags)
 {
-	int hwfmt;
-
 	// OpenGL
 	if (scaler ==OpenGL)
 		{

@@ -30,8 +30,6 @@
 #include "databuf.h"
 
 /*
-
-/*
  *	Read/write out data common to all objects.
  *
  *	Output:	1 if successful, else 0.

@@ -484,7 +484,7 @@ bool Usecode_value::save
 		const char *classname = value.cptr->get_name();
 		int len = std::strlen(classname);
 		out->write2(len);
-		out->write((char *)classname, len);
+		out->write(classname, len);
 		break;
 		}
 	case string_type:

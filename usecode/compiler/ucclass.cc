@@ -46,7 +46,7 @@ int Uc_class::last_num = -1;
 Uc_class::Uc_class
 	(
 	char *nm
-	) : scope(0), num_vars(0), name(nm), base_class(0)
+	) : name(nm), scope(0), num_vars(0), base_class(0)
 	{
 	num = ++last_num;
 	}
@@ -55,8 +55,8 @@ Uc_class::Uc_class
 	(
 	char *nm,
 	Uc_class *base
-	) : base_class(base), scope(base->scope), num_vars(base->num_vars),
-		name(nm), methods(base->methods)
+	) : name(nm), scope(base->scope), num_vars(base->num_vars),
+		methods(base->methods), base_class(base)
 	{
 	num = ++last_num;
 	for (vector<Uc_function *>::iterator it = methods.begin();

@@ -377,15 +377,13 @@ class Uc_call_expression : public Uc_expression
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
 					Uc_function *fun, bool orig = false)
-		: sym(s), ind(0), itemref(0), parms(prms), 
-		  function(fun), original(orig), return_value(true),
-		  meth_scope(0)
+		: sym(s), ind(0), original(orig), itemref(0), parms(prms), 
+		  function(fun), return_value(true), meth_scope(0)
 		{  }
 	Uc_call_expression(Uc_expression *i, Uc_array_expression *prms,
 					Uc_function *fun)
-		: sym(0), ind(i), itemref(0), parms(prms), function(fun),
-		  original(false), return_value(true),
-		  meth_scope(0)
+		: sym(0), ind(i), original(false), itemref(0), parms(prms),
+		  function(fun), return_value(true), meth_scope(0)
 		{  }
 	~Uc_call_expression()
 		{ delete parms; delete itemref; }

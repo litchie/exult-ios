@@ -1860,14 +1860,13 @@ Usecode_machine *Usecode_machine::create
 
 Usecode_internal::Usecode_internal
 	(
-	) : Usecode_machine(),
+	) : Usecode_machine(), symtbl(0), frame(0), modified_map(false),
 	    book(0), caller_item(0),
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    saved_map(-1),
-	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-	    temp_to_be_deleted(0), telekenesis_fun(-1),
-	    modified_map(false), symtbl(0), frame(0)
+	    String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
+		intercept_item(0), temp_to_be_deleted(0)
 #ifdef USECODE_DEBUGGER
 		, on_breakpoint(false)
 #endif

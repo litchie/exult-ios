@@ -400,7 +400,7 @@ public:
 			Basic_block *&curr, Basic_block *end,
 			std::map<std::string, Basic_block*>& labels,
 			Basic_block *case_block = 0)
-		{  }
+		{ return 1; }
 	};
 
 /*
@@ -411,7 +411,7 @@ class Uc_switch_expression_case_statement : public Uc_switch_case_statement
 	Uc_expression *check;		// The case we are interested in.
 public:
 	Uc_switch_expression_case_statement(Uc_expression *c, Uc_statement *stmts)
-		: check(c), Uc_switch_case_statement(stmts)
+		: Uc_switch_case_statement(stmts), check(c)
 		{  }
 	~Uc_switch_expression_case_statement();
 					// Generate code.

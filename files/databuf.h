@@ -51,7 +51,7 @@ public:
 	virtual void write2high(uint16) =0;
 	virtual void write4(uint32) =0;
 	virtual void write4high(uint32) =0;
-	virtual void write(void *, int) =0;
+	virtual void write(const void *, int) =0;
 	virtual void write(std::string) =0;
 	
 	virtual void seek(unsigned int) =0;
@@ -118,10 +118,10 @@ public:
 
 	virtual void write4high(uint32 val)  { Write4high(*out, val); };
 
-	virtual void write(void *b, int len) { out->write(reinterpret_cast<char*>(b), len); };
+	virtual void write(const void *b, int len) { out->write(reinterpret_cast<const char*>(b), len); };
 
 	virtual void write(std::string s)
-		{ out->write(const_cast<char *>(s.c_str()), s.size()); };
+		{ out->write(s.c_str(), s.size()); };
 	
 	virtual void seek(unsigned int pos)
 	{
@@ -267,7 +267,7 @@ public:
 		fputc(static_cast<char>(val&0xff),f);
 	};
 
-	virtual void write(void *b, int len)
+	virtual void write(const void *b, int len)
 	{
 		fwrite(b, 1, len, f);
 	};
@@ -415,7 +415,7 @@ public:
 		*buf_ptr++ = val & 0xff;
 	};
 
-	virtual void write(void *b, int len)
+	virtual void write(const void *b, int len)
 	{
 		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;
@@ -423,7 +423,7 @@ public:
 	
 	virtual void write(std::string s)
 	{
-		write(const_cast<char *>(s.c_str()), s.size());
+		write(s.c_str(), s.size());
 	};
 
 	virtual void seek(unsigned int pos) { buf_ptr = const_cast<unsigned char *>(buf)+pos; };
