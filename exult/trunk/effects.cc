@@ -52,7 +52,7 @@ using std::strlen;
 int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;
 
-/*
+/**
  *	Clean up.
  */
 
@@ -61,14 +61,16 @@ Effects_manager::~Effects_manager()
 	remove_all_effects(false);
 	}
 
-/*
+/**
  *	Add text over a given item.
+ *	@param msg		text to add
+ *	@param item		Item text ID's, or null.
  */
 
 void Effects_manager::add_text
 	(
 	const char *msg,
-	Game_object *item		// Item text ID's, or null.
+	Game_object *item
 	)
 	{
 	if (!msg)			// Happens with edited games.
@@ -83,14 +85,17 @@ void Effects_manager::add_text
 	add_text_effect(txt);
 	}
 
-/*
+/**
  *	Add a text object at a given spot.
+ *	@param msg		text to add
+ *	@param x		x coord. on screen.
+ *	@param y		y coord. on screen.
  */
 
 void Effects_manager::add_text
 	(
 	const char *msg,
-	int x, int y			// Pixel coord. on screen.
+	int x, int y
 	)
 	{
 	Text_effect *txt = new Text_effect(msg,
@@ -99,7 +104,7 @@ void Effects_manager::add_text
 	add_text_effect(txt);
 	}
 
-/*
+/**
  *	Add a text object in the center of the screen
  */
 
@@ -114,7 +119,7 @@ void Effects_manager::center_text
 			 gwin->get_height()/2);
 	}
 
-/*
+/**
  *	Add an effect at the start of the chain.
  */
 
@@ -130,7 +135,7 @@ void Effects_manager::add_effect
 	effects = effect;
 	}
 
-/*
+/**
  *	Add a text effect at the start of the chain.
  */
 
@@ -146,7 +151,7 @@ void Effects_manager::add_text_effect
 	texts = effect;
 	}
 
-/*
+/**
  *	Remove a given object's text effect.
  */
 
@@ -164,7 +169,7 @@ void Effects_manager::remove_text_effect
 			}
 	}
 
-/*
+/**
  *	Remove a sprite from the chain and delete it.
  */
 
@@ -184,7 +189,7 @@ void Effects_manager::remove_effect
 	delete effect;
 	}
 
-/*
+/**
  *	Remove text from the chain and delete it.
  */
 
@@ -204,7 +209,7 @@ void Effects_manager::remove_text_effect
 	delete txt;
 	}
 
-/*
+/**
  *	Remove all text items.
  */
 
@@ -223,7 +228,7 @@ void Effects_manager::remove_all_effects
 		gwin->paint();		// Just paint whole screen.
 	}
 
-/*
+/**
  *	Remove text effects.
  */
 
@@ -237,14 +242,14 @@ void Effects_manager::remove_text_effects
 	}
 
 
-/*
+/**
  *	Remove weather effects.
+ *	@param	dist	Only remove those from eggs at least this far away.
  */
 
 void Effects_manager::remove_weather_effects
 	(
-	int dist			// Only remove those from eggs at
-					//   least this far away.
+	int dist
 	)
 	{
 	Actor *main_actor = gwin->get_main_actor();
@@ -263,7 +268,7 @@ void Effects_manager::remove_weather_effects
 	gwin->set_all_dirty();
 	}
 
-/*
+/**
  *	Find last numbered weather effect added.
  */
 
@@ -286,7 +291,7 @@ int Effects_manager::get_weather
 	return 0;
 	}
 
-/*
+/**
  *	Paint them all.
  */
 
@@ -298,7 +303,7 @@ void Effects_manager::paint
 		effect->paint();
 	}
 
-/*
+/**
  *	Paint all text.
  */
 
@@ -310,7 +315,7 @@ void Effects_manager::paint_text
 		txt->paint();
 	}
 
-/*
+/**
  *	Some special effects may not need painting.
  */
 
@@ -320,7 +325,7 @@ void Special_effect::paint
 	{
 	}
 
-/*
+/**
  *	Create an animation from the 'sprites.vga' file.
  */
 
@@ -341,7 +346,7 @@ Sprites_effect::Sprites_effect
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
-/*
+/**
  *	Create an animation on an object.
  */
 
@@ -363,7 +368,7 @@ Sprites_effect::Sprites_effect
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
 
-/*
+/**
  *	Add a dirty rectangle for the current position and frame.
  */
 
@@ -383,7 +388,7 @@ inline void Sprites_effect::add_dirty
 			gwin->get_scrollty())*c_tilesize).enlarge(12)));
 	}
 
-/*
+/**
  *	Animation.
  */
 
@@ -421,7 +426,7 @@ void Sprites_effect::handle_event
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
-/*
+/**
  *	Render.
  */
 
@@ -457,7 +462,7 @@ static inline int get_explosion_sfx
 	return ShapeID::get_info(shp).get_explosion_sfx();
 	}
 
-/*
+/**
  *	Start explosion.
  */
 
@@ -522,7 +527,7 @@ void Explosion_effect::handle_event
 	Sprites_effect::handle_event(curtime, udata);
 }
 
-/*
+/**
  *	Get direction in 1/16's starting from North.
  */
 
@@ -536,7 +541,7 @@ inline int Get_dir16
 	return Get_direction16(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
 
-/*
+/**
  *	Initialize path & add to time queue.
  */
 
@@ -619,7 +624,7 @@ void Projectile_effect::set_sprite_shape
 	add_dirty();			// Paint immediately.
 	}
 
-/*
+/**
  *	Create a projectile animation.
  */
 Projectile_effect::Projectile_effect
@@ -638,7 +643,7 @@ Projectile_effect::Projectile_effect
 	init(att->get_tile(), to->get_tile());
 	}
 
-/*
+/**
  *	Constructor used by missile eggs & fire_projectile intrinsic.
  */
 
@@ -680,7 +685,7 @@ Projectile_effect::Projectile_effect
 	init(s, to->get_tile());
 	}
 
-/*
+/**
  *	Delete.
  */
 
@@ -691,7 +696,7 @@ Projectile_effect::~Projectile_effect
 	delete path;
 	}
 
-/*
+/**
  *	Add a dirty rectangle for the current position and frame.
  */
 
@@ -709,10 +714,10 @@ inline void Projectile_effect::add_dirty
 	    (pos.ty - gwin->get_scrollty())*c_tilesize - liftpix).enlarge(4)));
 	}
 
-/*
+/**
  *	See if something was hit.
  *
- *	Output:	->target hit, or 0.
+ *	@return	target hit, or 0.
  */
 
 inline Game_object *Find_target
@@ -730,7 +735,7 @@ inline Game_object *Find_target
 	return Game_object::find_blocking(pos);
 	}
 
-/*
+/**
  *	Animation.
  */
 
@@ -849,7 +854,7 @@ void Projectile_effect::handle_event
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
-/*
+/**
  *	Render.
  */
 
@@ -865,7 +870,7 @@ void Projectile_effect::paint
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix - gwin->get_scrollty_lo());
 	}
 
-/*
+/**
  *	Create a 'death vortex' or an 'energy mist'.
  */
 
@@ -897,10 +902,10 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	channel = Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir, -1);
 	}
 
-/*
+/**
  *	Add a dirty rectangle for the current position and frame.
  *
- *	Output:	Width in pixels.
+ *	@return		Width in pixels.
  */
 
 inline int Homing_projectile::add_dirty
@@ -915,7 +920,7 @@ inline int Homing_projectile::add_dirty
 	return shape->get_width();
 	}
 
-/*
+/**
  *	Animation.
  */
 
@@ -1034,7 +1039,7 @@ void Homing_projectile::handle_event
 		}
 	}
 
-/*
+/**
  *	Render.
  */
 
@@ -1048,7 +1053,7 @@ void Homing_projectile::paint
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix - gwin->get_scrollty_lo());
 	}
 
-/*
+/**
  *	Figure text position.
  */
 
@@ -1070,7 +1075,7 @@ static inline Tile_coord Figure_text_pos
 			  gwin->get_scrollty() + box.y/c_tilesize, 0);
 	}
 
-/*
+/**
  *	Add dirty rectangle for current position.
  */
 
@@ -1086,7 +1091,7 @@ void Text_effect::add_dirty
 	gwin->add_dirty(gwin->clip_to_win(rect));
 	}
 
-/*
+/**
  *	Initialize.
  */
 
@@ -1109,7 +1114,7 @@ void Text_effect::init
 		msg[len - 1] = '"';
 	}
 
-/*
+/**
  *	Create a text effect for a given object.
  */
 
@@ -1122,7 +1127,7 @@ Text_effect::Text_effect
 	init();
 	}
 
-/*
+/**
  *	Create a text object.
  */
 
@@ -1135,7 +1140,7 @@ Text_effect::Text_effect
 	init();
 	}
 
-/*
+/**
  *	Reposition if necessary.
  */
 
@@ -1166,7 +1171,7 @@ void Text_effect::handle_event
 	add_dirty();
 	}
 
-/*
+/**
  *	Render.
  */
 
@@ -1181,7 +1186,7 @@ void Text_effect::paint
 				(pos.ty - gwin->get_scrollty())*c_tilesize - gwin->get_scrollty_lo());
 	}
 
-/*
+/**
  *	Init. a weather effect.
  */
 
@@ -1203,14 +1208,16 @@ Weather_effect::Weather_effect
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
-/*
+/**
  *	Are we far enough away from this to cancel it?
+ *	@param	avpos	Avatar's position.
+ *	@param	dist	Distance in tiles to cancel at.
  */
 
 int Weather_effect::out_of_range
 	(
-	Tile_coord& avpos,		// Avatar's position.
-	int dist			// Distance in tiles to cancel at.
+	Tile_coord& avpos,
+	int dist
 	)
 	{
 	if (eggloc.tx == -1)		// Not created by an egg?
@@ -1236,7 +1243,7 @@ void Fog_effect::handle_event(unsigned long curtime, long udata)
 		eman->remove_effect(this);
 	}
 
-/*
+/**
  *	Paint raindrop.
  */
 
@@ -1258,7 +1265,7 @@ inline void Raindrop::paint
 	iwin->put_pixel8(xform[oldpix], x, y);
 	}
 
-/*
+/**
  *	Move raindrop.
  */
 
@@ -1297,7 +1304,7 @@ inline void Raindrop::next
 	paint(iwin, scrolltx, scrollty, xform);
 	}
 
-/*
+/**
  *	Move raindrop.
  */
 
@@ -1324,7 +1331,7 @@ inline void Raindrop::next_random
 	paint(iwin, scrolltx, scrollty, xform);
 	}
 
-/*
+/**
  *	Move snow flake.
  */
 
@@ -1370,7 +1377,7 @@ inline void Raindrop::next_flake
 	}
 
 
-/*
+/**
  *	Rain.
  */
 
@@ -1408,7 +1415,7 @@ void Rain_effect::handle_event
 	gwin->get_tqueue()->add(curtime + 100, this, udata);
 	}
 
-/*
+/**
  *	Paint rain.
  */
 
@@ -1428,7 +1435,7 @@ void Rain_effect::paint
 	gwin->set_painted();
 	}
 
-/*
+/**
  *	End of lightning.
  */
 
@@ -1440,7 +1447,7 @@ Lightning_effect::~Lightning_effect
 		Game_window::get_instance()->get_clock()->set_palette();
 	}
 
-/*
+/**
  *	Lightning.
  */
 
@@ -1480,7 +1487,7 @@ void Lightning_effect::handle_event
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
-/*
+/**
  *	Start a storm.
  */
 
@@ -1499,7 +1506,7 @@ Storm_effect::Storm_effect
 	eman->add_effect(new Lightning_effect(duration - 2, lightning_delay));
 	}
 
-/*
+/**
  *	Start/end of storm.
  */
 void Storm_effect::handle_event
@@ -1549,7 +1556,7 @@ void Snow_effect::handle_event(unsigned long curtime, long udata)
 	gwin->get_tqueue()->add(curtime + 100, this, udata);
 	}
 
-/*
+/**
  *	Start a snowstorm.
  */
 
@@ -1565,7 +1572,7 @@ Snowstorm_effect::Snowstorm_effect
 	eman->add_effect(new Snow_effect(duration + 2, 20 + rand()%1000, 0));
 	}
 
-/*
+/**
  *	Start/end of snowstorm.
  */
 void Snowstorm_effect::handle_event
@@ -1585,7 +1592,7 @@ void Snowstorm_effect::handle_event
 		eman->remove_effect(this);
 	}
 
-/*
+/**
  *	Sparkles (in Ambrosia).
  */
 
@@ -1619,7 +1626,7 @@ void Sparkle_effect::handle_event
 		}
 	}
 
-/*
+/**
  *	Create a cloud.
  */
 
@@ -1641,7 +1648,7 @@ Cloud::Cloud
 	start_time = 0;
 	}
 
-/*
+/**
  *	Set starting screen position according to direction.
  */
 
@@ -1681,7 +1688,7 @@ void Cloud::set_start_pos
 		x = w + shape->get_xleft();
 	}
 
-/*
+/**
  *	Move cloud
  */
 
@@ -1724,7 +1731,7 @@ cout << "Cloud: start_time = " << start_time << endl;
 			shape, wx - scrollx, wy - scrolly).enlarge(4)));
 	}
 
-/*
+/**
  *	Paint cloud.
  */
 
@@ -1738,7 +1745,7 @@ void Cloud::paint
 			wy - gwin->get_scrollty()*c_tilesize - gwin->get_scrollty_lo());
 	}
 
-/*
+/**
  *	Create a few clouds to float across the screen.
  */
 
@@ -1780,7 +1787,7 @@ Clouds_effect::Clouds_effect
 		}
 	}
 
-/*
+/**
  *	Cloud drift.
  */
 
@@ -1804,7 +1811,7 @@ void Clouds_effect::handle_event
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
-/*
+/**
  *	Render.
  */
 
@@ -1817,7 +1824,7 @@ void Clouds_effect::paint
 			clouds[i]->paint();
 	}
 
-/*
+/**
  *	Destructor.
  */
 
@@ -1828,7 +1835,7 @@ Clouds_effect::~Clouds_effect()
 		Game_window::get_instance()->get_clock()->set_overcast(false);
 	}
 
-/*
+/**
  *	Shake the screen.
  */
 
@@ -1884,7 +1891,7 @@ void Earthquake::handle_event
 
 	}
 
-/*
+/**
  *	Create a fire field that will last for about 4 seconds.
  */
 
@@ -1900,7 +1907,7 @@ Fire_field_effect::Fire_field_effect
 								0L);
 	}
 
-/*
+/**
  *	Remove the field.
  */
 

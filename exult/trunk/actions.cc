@@ -40,10 +40,10 @@ using std::endl;
 
 long Actor_action::seqcnt = 0;
 
-/*
+/**
  *	Handle an event and check to see if we were deleted.
  *
- *	Output:	Delay value from handle_event (0 if we've been deleted).
+ *	@return		Delay value from handle_event (0 if we've been deleted).
  */
 
 int Actor_action::handle_event_safely
@@ -66,10 +66,10 @@ int Actor_action::handle_event_safely
 	return delay;
 	}
 
-/*
+/**
  *	Set to walk from one point to another the dumb way.
  *
- *	Output:	->this, or 0 if unsuccessful.
+ *	@return		this, or 0 if unsuccessful.
  */
 
 Actor_action *Actor_action::walk_to_tile
@@ -92,11 +92,11 @@ Actor_action *Actor_action::walk_to_tile
 		}
 	}
 
-/*
+/**
  *	Set up an action to get an actor to a location (via pathfinding), and
  *	then execute another action when he gets there.
  *
- *	Output:	->action.  
+ *	@return		action.  
  */
 
 Actor_action *Actor_action::create_action_sequence
@@ -129,7 +129,7 @@ Actor_action *Actor_action::create_action_sequence
 	return act;
 	}
 
-/*
+/**
  *	Null action.
  */
 
@@ -141,7 +141,7 @@ int Null_action::handle_event
 	return 0;
 	}
 
-/*
+/**
  *	Create action to follow a path.
  */
 
@@ -159,7 +159,7 @@ Path_walking_actor_action::Path_walking_actor_action
 				src.ty - dest.ty, dest.tx - src.tx));
 	}
 
-/*
+/**
  *	Delete.
  */
 
@@ -173,11 +173,11 @@ Path_walking_actor_action::~Path_walking_actor_action
 	original_dir = -1;
 	}
 
-/*
+/**
  *	Create action for walking to given destination using Astar.
  *	Note:  This is a static method.
  *
- *	Output:	Action if successful, else 0.
+ *	@return		Action if successful, else 0.
  */
 
 Path_walking_actor_action *Path_walking_actor_action::create_path
@@ -198,10 +198,10 @@ Path_walking_actor_action *Path_walking_actor_action::create_path
 		}
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Path_walking_actor_action::handle_event
@@ -308,11 +308,11 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	return (100 + std::rand()%500);	// Wait .1 to .6 seconds.
 	}
 
-/*
+/**
  *	Open door that's blocking the NPC, and set action to walk past and
  *	close it.
  *
- *	Output:	1 if successful.
+ *	@return		1 if successful.
  */
 
 int Path_walking_actor_action::open_door
@@ -383,7 +383,7 @@ int Path_walking_actor_action::open_door
 	return 0;
 	}
 
-/*
+/**
  *	Stopped moving.
  */
 
@@ -400,10 +400,10 @@ void Path_walking_actor_action::stop
 		}
 	}
 
-/*
+/**
  *	Set to walk from one point to another, using the same pathfinder.
  *
- *	Output:	->this, or 0 if unsuccessful.
+ *	@return		this, or 0 if unsuccessful.
  */
 
 Actor_action *Path_walking_actor_action::walk_to_tile
@@ -469,10 +469,10 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	return (this);
 	}
 
-/*
+/**
  *	Return current destination.
  *
- *	Output:	0 if none.
+ *	@return		0 if none.
  */
 
 int Path_walking_actor_action::get_dest
@@ -484,7 +484,7 @@ int Path_walking_actor_action::get_dest
 	return (1);
 	}
 
-/*
+/**
  *	Following an Astar path?
  */
 
@@ -495,7 +495,7 @@ int Path_walking_actor_action::following_smart_path
 	return path != 0 && path->following_smart_path();
 	}
 
-/*
+/**
  *	Create action to follow a path towards another object.
  */
 
@@ -518,11 +518,11 @@ Approach_actor_action::Approach_actor_action
 		check_step = 10000;
 	}
 
-/*
+/**
  *	Create action for walking towards a given (moving) object using Astar.
  *	Note:  This is a static method.
  *
- *	Output:	Action if successful, else 0.
+ *	@return		Action if successful, else 0.
  */
 
 Approach_actor_action *Approach_actor_action::create_path
@@ -544,10 +544,10 @@ Approach_actor_action *Approach_actor_action::create_path
 		}
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Approach_actor_action::handle_event
@@ -583,7 +583,7 @@ int Approach_actor_action::handle_event
 	return delay;
 	}
 
-/*
+/**
  *	Create if-then-else path.
  */
 
@@ -603,7 +603,7 @@ If_else_path_actor_action::If_else_path_actor_action
 		}
 	}
 
-/*
+/**
  *	Delete.
  */
 
@@ -615,7 +615,7 @@ If_else_path_actor_action::~If_else_path_actor_action
 	delete failure;
 	}
 
-/*
+/**
  *	Set failure action.
  */
 
@@ -629,10 +629,10 @@ void If_else_path_actor_action::set_failure
 	done = false;			// So it gets executed.
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int If_else_path_actor_action::handle_event
@@ -691,10 +691,10 @@ int If_else_path_actor_action::handle_event
 	return delay;
 	}			
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Move_actor_action::handle_event
@@ -713,10 +713,10 @@ int Move_actor_action::handle_event
 	return (100);			// Wait 1/10 sec.
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Activate_actor_action::handle_event
@@ -728,10 +728,10 @@ int Activate_actor_action::handle_event
 	return 0;			// That's all.
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Usecode_actor_action::handle_event
@@ -746,7 +746,7 @@ int Usecode_actor_action::handle_event
 	return 0;			// That's all.
 	}
 
-/*
+/**
  *	Create sequence of frames.
  */
 
@@ -762,10 +762,10 @@ Frames_actor_action::Frames_actor_action
 	std::memcpy(frames, f, cnt);
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Frames_actor_action::handle_event
@@ -788,7 +788,7 @@ int Frames_actor_action::handle_event
 	return (speed);
 	}
 
-/*
+/**
  *	Create a sequence with up to 4 actions.
  */
 
@@ -808,7 +808,7 @@ Sequence_actor_action::Sequence_actor_action
 	actions[4] = 0;			// 0-delimit.
 	}
 
-/*
+/**
  *	Delete.
  */
 
@@ -821,10 +821,10 @@ Sequence_actor_action::~Sequence_actor_action
 	delete [] actions;
 	}
 
-/*
+/**
  *	Handle a time event.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	@return		0 if done with this action, else delay for next frame.
  */
 
 int Sequence_actor_action::handle_event
@@ -849,7 +849,7 @@ int Sequence_actor_action::handle_event
 	return (delay);
 	}
 
-/*
+/**
  *	Create object animator.
  */
 Object_animate_actor_action::Object_animate_actor_action
@@ -873,7 +873,7 @@ Object_animate_actor_action::Object_animate_actor_action
 	{ }
 	
 
-/*
+/**
  *	Handle tick of the clock.
  */
 
@@ -890,7 +890,7 @@ int Object_animate_actor_action::handle_event
 	return (cycles ? speed : 0);
 	}
 
-/*
+/**
  *	Pick up/put down an object.
  */
 Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
@@ -905,7 +905,7 @@ Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord opos,
 	{
 	}
 
-/*
+/**
  *	Pick up an item (or put it down).
  */
 
@@ -951,7 +951,7 @@ int Pickup_actor_action::handle_event
 	return speed;
 	}
 
-/*
+/**
  *	Action to turn towards a position or an object.
  */
 
@@ -965,7 +965,7 @@ Face_pos_actor_action::Face_pos_actor_action(Game_object *o, int spd)
 	{
 	}
 
-/*
+/**
  *	Just turn to face a tile.
  */
 
