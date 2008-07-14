@@ -1,3 +1,7 @@
+2008-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.ac: remove AC_PATH_XTRA. Its output is apparently unused
+	  and it breaks configure on non-linux platforms
+
 2008-07-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: fix underquoted help strings
 	* various: warnings
