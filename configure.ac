@@ -164,7 +164,7 @@ AC_SUBST(LIBTOOL_DEPS)
 # Compilation environment
 # ---------------------------------------------------------------------
 
-AC_DEFUN(AC_CHECK_ALPHA_LINUX_CXX,
+AC_DEFUN([AC_CHECK_ALPHA_LINUX_CXX],
 [
 AC_MSG_CHECKING([for Alpha/Linux with DEC CXX])
 AC_TRY_RUN([
