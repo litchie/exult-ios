@@ -62,7 +62,7 @@ int Import_png8
 	FILE *fp = fopen(pngname, "rb");
 	if (!fp)
 		return (0);
-	unsigned char sigbuf[4];		// Make sure it's a .png.
+	unsigned char sigbuf[8];		// Make sure it's a .png.
 	if (fread(sigbuf, 1, sizeof(sigbuf), fp) != sizeof(sigbuf) ||
 	    png_sig_cmp(sigbuf, 0, sizeof(sigbuf)))
 		{
@@ -289,7 +289,7 @@ int Import_png32
 	FILE *fp = fopen(pngname, "rb");
 	if (!fp)
 		return (0);
-	unsigned char sigbuf[4];		// Make sure it's a .png.
+	unsigned char sigbuf[8];		// Make sure it's a .png.
 	if (fread(sigbuf, 1, sizeof(sigbuf), fp) != sizeof(sigbuf) ||
 	    png_sig_cmp(sigbuf, 0, sizeof(sigbuf)))
 		{
