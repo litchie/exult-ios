@@ -1452,13 +1452,19 @@ void Shape_chooser::import_shape
 		Shape_chooser *ed = (Shape_chooser *) user_data;
 		if (ed->selected < 0)
 			return;			// Shouldn't happen.
+		ifstream file;
+		U7open(file, fname);
+		StreamDataSource ds(&file);
+			// Check to see if it is a valid shape file.
+			// We never get here through a flat, so we don't deal
+			// with that case. These tests aren't perfect!
+		int size = ds.getSize(), len = ds.read4(), first;
+		if (len != size || (first = ds.read4()) > size || (first % 4) != 0)
+			return;
 		int shnum = ed->info[ed->selected].shapenum;
-		int len = strlen(fname);
 		Shape *shp = ed->ifile->extract_shape(shnum);
-		ifstream *file = new ifstream();
-		U7open(*file, fname);
-		DataSource *ds = new StreamDataSource(file);
-		shp->load(ds);
+		ds.seek(0);
+		shp->load(&ds);
 		shp->set_modified();
 		ed->render();
 		ed->show();

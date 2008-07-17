@@ -1,3 +1,7 @@
+2008-07-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixing PNG detection when importing PNGs. Also, added some checks when
+	importing shp files.
+
 2008-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: remove AC_PATH_XTRA. Its output is apparently unused
 	  and it breaks configure on non-linux platforms
