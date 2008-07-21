@@ -400,8 +400,9 @@ int Frame_animator::get_next_frame()
 			{
 			currpos++;
 			currpos %= nframes;
-			if (!currpos)
-				currpos += aniinf->get_recycle();
+			int rec = aniinf->get_recycle();
+			if (!currpos && nframes >= rec)
+				currpos = (nframes - rec) % nframes;
 			}
 		framenum = first_frame + currpos;
 		break;

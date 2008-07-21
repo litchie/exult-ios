@@ -205,9 +205,9 @@
 #	this means that if freeze_first is zero, the animation will stop at the
 #	first frame. Converselly, if freeze_first is 100, it will always advance.
 #
-#	recycle is the offset at which the animation will resume after reaching
-#	the last frame of the loop; for example, recycle 0 means the initial
-#	frame of the loop, recycle 1 means the second frame of the loop, etc.
+#	recycle is the number of frames at the end to repeat after reaching
+#	the last frame of the loop; for example, recycle 6 means repeat the last
+#	6 frames of the loop. recycle 0 means repeat all frames.
 #
 #	A couple data patches for SI:
 #

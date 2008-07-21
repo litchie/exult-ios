@@ -1,3 +1,7 @@
+2008-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Modified animation recycles to fix bug #2020103; recycle (if nonzero) is now
+	the number of frames at the end of the animation to repeat.
+
 2008-07-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Fixing PNG detection when importing PNGs. Also, added some checks when
 	importing shp files.

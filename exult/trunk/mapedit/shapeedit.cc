@@ -783,10 +783,11 @@ C_EXPORT gboolean on_shinfo_animation_type_changed
 	bool freezeon = studio->get_optmenu("shinfo_animation_freezefirst") == 2;
 	studio->set_sensitive("shinfo_animation_freezefirst", on);
 	studio->set_sensitive("shinfo_animation_freezechance", on && freezeon);
-	studio->set_sensitive("shinfo_animation_recycle", on);
+	studio->set_sensitive("shinfo_animation_rectype", on);
+	bool recon = studio->get_toggle("shinfo_animation_rectype");
+	studio->set_sensitive("shinfo_animation_recycle", on && !recon);
 	return (TRUE);
 	}
-
 /*
  *	Animation frame count menu changed.
  */
@@ -799,6 +800,22 @@ C_EXPORT gboolean on_shinfo_animation_frtype_toggled
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->set_sensitive("shinfo_animation_frcount", on);
+	return (TRUE);
+	}
+
+
+/*
+ *	Animation recycle type menu changed.
+ */
+C_EXPORT gboolean on_shinfo_animation_rectype_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("shinfo_animation_recycle", on);
 	return (TRUE);
 	}
 
@@ -2697,7 +2714,9 @@ void ExultStudio::init_shape_notebook
 		bool usespin = (chance > 0) && (chance < 100);
 		set_spin("shinfo_animation_freezechance",
 				usespin ? chance : 1, on && usespin);
-		set_spin("shinfo_animation_recycle", aniinf->get_recycle(), on);
+		int rec = aniinf->get_recycle();
+		set_toggle("shinfo_animation_rectype", rec == 0, on);
+		set_spin("shinfo_animation_recycle", rec ? rec : nframes, on && rec);
 		}
 	std::vector<Effective_hp_info>& hpinf = info.get_effective_hp_info();
 	set_toggle("shinfo_effhps_check", !hpinf.empty());
@@ -3399,7 +3418,12 @@ void ExultStudio::save_shape_notebook
 				int chance = menu == 0 ? 100
 					: (menu == 1 ? 0 : get_spin("shinfo_animation_freezechance"));
 				aniinf->set_freeze_first_chance(chance);
-				aniinf->set_recycle(get_spin("shinfo_animation_recycle"));
+				int rec;
+				if (get_toggle("shinfo_animation_rectype"))
+					rec = nframes;
+				else
+					rec = get_spin("shinfo_animation_recycle");
+				aniinf->set_recycle(rec == nframes ? 0 : rec);
 				}
 			}
 		}
@@ -3552,6 +3576,7 @@ void ExultStudio::open_shape_window
 	set_spin("shinfo_body_shape", 0, c_max_shapes-1);
 	set_spin("shinfo_cntrules_shape_num", 0, c_max_shapes-1);
 	set_spin("shinfo_animation_frcount", 1, nframes);
+	set_spin("shinfo_animation_recycle", 1, nframes);
 	if (gumpfile)
 		{
 		set_spin("shinfo_gump_num", 0,
