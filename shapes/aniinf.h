@@ -50,8 +50,8 @@ private:
 	int		frame_delay;	// Delay multiplier between frames.
 	int		sfx_delay;		// Extra sfx delay, in frames.
 	int		freeze_first;	// % chance of advancing first frame of animation.
-	int		recycle;		// Where to resume animation when wrapping;
-							// this is an offset from cycle start.
+	int		recycle;		// Repeat the last recycle frames when wrapping;
+							// all frames if zero.
 public:
 	friend class Shape_info;
 	static Animation_info *create_from_tfa(int type, int nframes);
