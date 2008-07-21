@@ -20,8 +20,8 @@
   <property name="urgency_hint">False</property>
   <property name="show_fileops">True</property>
 
-  <child internal-child="ok_button">
-    <widget class="GtkButton" id="ok_button1">
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="cancel_button1">
       <property name="visible">True</property>
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
@@ -30,8 +30,8 @@
     </widget>
   </child>
 
-  <child internal-child="cancel_button">
-    <widget class="GtkButton" id="cancel_button1">
+  <child internal-child="ok_button">
+    <widget class="GtkButton" id="ok_button1">
       <property name="visible">True</property>
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
@@ -16315,23 +16315,56 @@ Coordinates</property>
 			  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
 
 			  <child>
-			    <widget class="GtkSpinButton" id="shinfo_animation_recycle">
+			    <widget class="GtkHBox" id="hbox141">
 			      <property name="visible">True</property>
-			      <property name="can_focus">True</property>
-			      <property name="climb_rate">1</property>
-			      <property name="digits">0</property>
-			      <property name="numeric">False</property>
-			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
-			      <property name="snap_to_ticks">False</property>
-			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 10 10</property>
+			      <property name="homogeneous">False</property>
+			      <property name="spacing">0</property>
+
+			      <child>
+				<widget class="GtkCheckButton" id="shinfo_animation_rectype">
+				  <property name="visible">True</property>
+				  <property name="can_focus">True</property>
+				  <property name="label" translatable="yes">All frames</property>
+				  <property name="use_underline">True</property>
+				  <property name="relief">GTK_RELIEF_NORMAL</property>
+				  <property name="focus_on_click">True</property>
+				  <property name="active">False</property>
+				  <property name="inconsistent">False</property>
+				  <property name="draw_indicator">True</property>
+				  <signal name="toggled" handler="on_shinfo_animation_rectype_toggled" last_modification_time="Mon, 21 Jul 2008 14:08:44 GMT"/>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkSpinButton" id="shinfo_animation_recycle">
+				  <property name="visible">True</property>
+				  <property name="can_focus">True</property>
+				  <property name="climb_rate">1</property>
+				  <property name="digits">0</property>
+				  <property name="numeric">False</property>
+				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
+				  <property name="snap_to_ticks">False</property>
+				  <property name="wrap">False</property>
+				  <property name="adjustment">1 1 100 1 10 10</property>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">True</property>
+				  <property name="fill">True</property>
+				</packing>
+			      </child>
 			    </widget>
 			  </child>
 
 			  <child>
 			    <widget class="GtkLabel" id="label313">
 			      <property name="visible">True</property>
-			      <property name="label" translatable="yes">Recycle at offset</property>
+			      <property name="label" translatable="yes">Recycle last N frames</property>
 			      <property name="use_underline">False</property>
 			      <property name="use_markup">False</property>
 			      <property name="justify">GTK_JUSTIFY_LEFT</property>
