@@ -334,6 +334,17 @@ public:
 	};
 
 /*
+ *	Last selected user choice.
+ */
+class Uc_choice_expression : public Uc_expression
+	{
+public:
+	Uc_choice_expression() {  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(Basic_block *out);
+	};
+
+/*
  *	A concatenation, which generates an array:
  */
 class Uc_array_expression : public Uc_expression
@@ -429,6 +440,9 @@ public:
 		{ delete parms; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
+	virtual bool is_class() const
+		{ return true; }
+	virtual Uc_class *get_cls() const;
 	};
 
 /*

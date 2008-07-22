@@ -166,6 +166,7 @@ USECODE_INTRINSIC(pop_answers)
 	if(!conv->stack_empty())
 	{
 		conv->pop_answers();
+		delete user_choice;
 		user_choice = 0;	// Added 7/24/2000.
 	}
 	return(no_ret);
@@ -179,8 +180,10 @@ USECODE_INTRINSIC(clear_answers)
 
 USECODE_INTRINSIC(select_from_menu)
 {
+	delete user_choice;
 	user_choice = 0;
 	const char *choice = get_user_choice();
+	delete user_choice;
 	user_choice = 0;
 	Usecode_value u(choice);
 	return(u);
@@ -189,8 +192,10 @@ USECODE_INTRINSIC(select_from_menu)
 USECODE_INTRINSIC(select_from_menu2)
 {
 	// Return index (1-n) of choice.
+	delete user_choice;
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
+	delete user_choice;
 	user_choice = 0;
 	return(val);
 }

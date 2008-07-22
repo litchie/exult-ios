@@ -41,7 +41,7 @@ using std::vector;
 using std::map;
 using std::string;
 
-int Uc_converse2_statement::nest = 0;
+int Uc_converse_statement::nest = 0;
 
 /*
  *	Delete.
@@ -599,53 +599,6 @@ void Uc_goto_statement::gen
 	}
 
 /*
- *	Delete.
- */
-
-Uc_converse_statement::~Uc_converse_statement
-	(
-	)
-	{
-	delete stmt;
-	}
-
-/*
- *	Generate code.
- */
-
-void Uc_converse_statement::gen
-	(
-	Uc_function *fun,
-	vector<Basic_block *>& blocks,		// What we are producing.
-	Basic_block *&curr,			// Active block; will usually be *changed*.
-	Basic_block *end,			// Fictitious exit block for function.
-	map<string, Basic_block*>& labels,	// Label map for goto statements.
-	Basic_block *start,			// Block used for 'continue' statements.
-	Basic_block *exit			// Block used for 'break' statements.
-	)
-	{
-	if (!stmt)	// Optimize whole loop away.
-		return;
-		// The start of a CONVERSE loop is a jump target and needs
-		// a new basic block.
-	Basic_block *conv_top = new Basic_block();
-	curr->set_taken(conv_top);
-	blocks.push_back(conv_top);
-		// Need new block as it is past a jump.
-	Basic_block *conv_body = new Basic_block();
-	blocks.push_back(conv_body);
-		// Block past the CONVERSE loop.
-	Basic_block *past_conv = new Basic_block();
-	WriteOp(past_conv, (char) UC_CONVERSELOC);
-	conv_top->set_targets(UC_CONVERSE, conv_body, past_conv);
-		// Generate loop body.
-	stmt->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
-		// Jump back to top.
-	conv_body->set_targets(UC_JMP, conv_top);
-	blocks.push_back(curr = past_conv);
-	}
-
-/*
  *	Generate a call to an intrinsic with 0 or 1 parameter.
  */
 static void Call_intrinsic
@@ -707,8 +660,13 @@ void Uc_converse_case_statement::gen
 	blocks.push_back(case_body);
 		// Past CASE body.
 	Basic_block *past_case = new Basic_block();
-	curr->set_targets(UC_CMPS, case_body, past_case);
-	WriteJumpParam2(curr, string_offset.size());	// # strings on stack.
+	if (is_default())
+		curr->set_targets(-1, case_body);
+	else
+		{
+		curr->set_targets(UC_CMPS, case_body, past_case);
+		WriteJumpParam2(curr, string_offset.size());	// # strings on stack.
+		}
 
 	if (remove)			// Remove answer?
 		{
@@ -724,10 +682,14 @@ void Uc_converse_case_statement::gen
 			Call_intrinsic(fun, blocks, case_body, end, labels,
 					Uc_function::get_remove_answer(), strlist);
 			}
-		else
+		else if (string_offset.size())
 			Call_intrinsic(fun, blocks, case_body, end, labels,
 					Uc_function::get_remove_answer(),
 					new Uc_string_expression(string_offset[0]));
+		else
+			Call_intrinsic(fun, blocks, case_body, end, labels,
+					Uc_function::get_remove_answer(),
+					new Uc_choice_expression());
 		}
 	if (statements)			// Generate statement's code.
 		statements->gen(fun, blocks, case_body, end, labels, start, exit);
@@ -737,22 +699,53 @@ void Uc_converse_case_statement::gen
 	}
 
 /*
+ *	Initialize.
+ */
+
+Uc_converse_statement::Uc_converse_statement
+	(
+	Uc_expression *a,
+	std::vector<Uc_statement *> *cs
+	)
+	: answers(a), cases(*cs)
+	{
+	bool has_default = false;
+	for (vector<Uc_statement *>::const_iterator it = cases.begin();
+			it != cases.end(); ++it)
+		{
+		Uc_converse_case_statement *stmt =
+				dynamic_cast<Uc_converse_case_statement *>(*it);
+		if (stmt->is_default())
+			if (has_default)
+				{
+				char buf[255];
+				snprintf(buf, 255, "converse statement already has a default case.");
+				error(buf);
+				}
+			else
+				has_default = true;
+		}
+	}
+
+/*
  *	Delete.
  */
 
-Uc_converse2_statement::~Uc_converse2_statement
+Uc_converse_statement::~Uc_converse_statement
 	(
 	)
 	{
 	delete answers;
-	delete cases;
+	for (std::vector<Uc_statement *>::const_iterator it = cases.begin();
+					it != cases.end(); ++it)
+		delete (*it);
 	}
 
 /*
  *	Generate code.
  */
 
-void Uc_converse2_statement::gen
+void Uc_converse_statement::gen
 	(
 	Uc_function *fun,
 	vector<Basic_block *>& blocks,		// What we are producing.
@@ -763,7 +756,7 @@ void Uc_converse2_statement::gen
 	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	if (!cases)	// Nothing to do; optimize whole block away.
+	if (!cases.size())	// Nothing to do; optimize whole block away.
 		return;
 	if (nest++ > 0)			// Not the outermost?
 					// Generate a 'push_answers()'.
@@ -785,7 +778,19 @@ void Uc_converse2_statement::gen
 	WriteOp(past_conv, (char) UC_CONVERSELOC);
 	conv_top->set_targets(UC_CONVERSE, conv_body, past_conv);
 		// Generate loop body.
-	cases->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
+	Uc_converse_case_statement *def = 0;
+	for (std::vector<Uc_statement *>::const_iterator it = cases.begin();
+					it != cases.end(); ++it)
+		{
+		Uc_converse_case_statement *stmt =
+				dynamic_cast<Uc_converse_case_statement *>(*it);
+		if (stmt->is_default())
+			def = stmt;
+		else
+			stmt->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
+		}
+	if (def)
+		def->gen(fun, blocks, conv_body, end, labels, conv_top, past_conv);
 		// Jump back to top.
 	conv_body->set_targets(UC_JMP, conv_top);
 	blocks.push_back(curr = past_conv);
