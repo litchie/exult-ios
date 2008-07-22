@@ -1815,7 +1815,7 @@ int Usecode_internal::get_user_choice_num
 	(
 	)
 	{
-	delete user_choice;
+	delete [] user_choice;
 	user_choice = 0;
 	conv->show_avatar_choices();
 	int x, y;			// Get click.
@@ -1840,7 +1840,7 @@ int Usecode_internal::get_user_choice_num
 
 	conv->clear_avatar_choices();
 					// Store ->answer string.
-	user_choice = strdup(conv->get_answer(choice_num));
+	user_choice = newstrdup(conv->get_answer(choice_num));
 	return (choice_num);		// Return choice #.
 	}
 
