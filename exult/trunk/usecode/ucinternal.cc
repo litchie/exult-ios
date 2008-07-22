@@ -486,7 +486,7 @@ inline int Usecode_internal::popi()
 }
 
 // Push/pop strings.
-inline void Usecode_internal::pushs(char *s)
+inline void Usecode_internal::pushs(const char *s)
 {
 	Usecode_value val(s);
 	push(val);
@@ -1815,6 +1815,7 @@ int Usecode_internal::get_user_choice_num
 	(
 	)
 	{
+	delete user_choice;
 	user_choice = 0;
 	conv->show_avatar_choices();
 	int x, y;			// Get click.
@@ -1839,7 +1840,7 @@ int Usecode_internal::get_user_choice_num
 
 	conv->clear_avatar_choices();
 					// Store ->answer string.
-	user_choice = conv->get_answer(choice_num);
+	user_choice = strdup(conv->get_answer(choice_num));
 	return (choice_num);		// Return choice #.
 	}
 
@@ -3009,6 +3010,12 @@ int Usecode_internal::run()
 				cls.class_delete();
 				break;
 			}
+			case 0x60:		// PUSHCHOICE
+				if (!user_choice)	// Maybe we *should* blow up...
+					pushs("");
+				else
+					pushs(user_choice);
+				break;
 			case 0xcd: // 32 bit debugging function init
 			{
 				int funcname = (sint32)Read4(frame->ip);

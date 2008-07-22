@@ -108,7 +108,7 @@ class Usecode_internal : public Usecode_machine
 	void pushi(long val);		// Push/pop integers.
 	int popi();
 					// Push/pop strings.
-	void pushs(char *s);
+	void pushs(const char *s);
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
 					// "Safe" cast to Actor and Npc_actor.

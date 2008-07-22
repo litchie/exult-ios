@@ -79,6 +79,7 @@ static Uc_struct_symbol *struct_type = 0;	// For declaration of struct variables
 static bool has_ret = false;
 static int repeat_nesting = 0;
 static std::vector<int> const_opcode;
+static int converse = 0;	// If we are in a converse block.
 
 struct Fun_id_info
 	{
@@ -124,7 +125,7 @@ struct Member_selector
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
-%token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ
+%token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ CHOICE
 
 /*
  *	Script keywords:
@@ -174,7 +175,7 @@ struct Member_selector
 %type <intval> const_int_type int_cast
 %type <funid> opt_funid
 %type <membersel> member_selector
-%type <intlist> string_list
+%type <intlist> string_list response_expression
 %type <sym> declared_sym
 %type <var> declared_var param
 %type <cls> opt_inheritance defined_class
@@ -189,12 +190,12 @@ struct Member_selector
 %type <stmt> break_statement converse_statement
 %type <stmt> converse_case switch_case script_statement switch_statement
 %type <stmt> label_statement goto_statement answer_statement
-%type <stmt> delete_statement continue_statement
-%type <block> statement_list converse_case_list
+%type <stmt> delete_statement continue_statement response_case
+%type <block> statement_list 
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
 %type <exprlist> opt_nonclass_expr_list nonclass_expr_list appended_element_list
-%type <stmtlist> switch_case_list
+%type <stmtlist> switch_case_list converse_case_list response_case_list
 %type <funcall> function_call
 
 %%
@@ -1206,19 +1207,21 @@ return_statement:
 	;
 
 converse_statement:
-	start_conv statement
+	start_conv '{' response_case_list '}'
 		{
 		end_loop();
-		$$ = new Uc_converse_statement($2);
+		--converse;
+		$$ = new Uc_converse_statement(0, $3);
 		}
 	
 	| start_conv '(' expression ')' '{' converse_case_list '}'
 		{
 		end_loop();
+		--converse;
 		if (Class_unexpected_error($3))
 			$$ = 0;
 		else
-			$$ = new Uc_converse2_statement($3, $6);
+			$$ = new Uc_converse_statement($3, $6);
 		}
 	;
 
@@ -1226,6 +1229,7 @@ start_conv:
 	CONVERSE
 		{
 		start_loop();
+		++converse;
 		}
 	;
 
@@ -1233,10 +1237,10 @@ converse_case_list:
 	converse_case_list converse_case
 		{
 		if ($2)
-			$$->add($2);
+			$$->push_back($2);
 		}
 	|
-		{ $$ = new Uc_block_statement(); }
+		{ $$ = new vector<Uc_statement *>; }
 	;
 
 converse_case:
@@ -1248,6 +1252,46 @@ converse_case:
 		delete $2;		// A copy was made.
 		cur_fun->pop_scope();
 		}
+	| DEFAULT converse_options ':'
+			{ cur_fun->push_scope(); } statement_list
+		{
+		$$ = new Uc_converse_case_statement(std::vector<int>(),
+				($2 ? true : false), $5);
+		cur_fun->pop_scope();
+		}
+	;
+
+response_case_list:
+	response_case_list ELSE response_case
+		{
+		if ($3)
+			$$->push_back($3);
+		}
+	| response_case %prec IF
+		{
+		$$ = new vector<Uc_statement *>;
+		$$->push_back($1);
+		}
+	;
+
+response_case:
+	response_expression
+			{ cur_fun->push_scope(); } statement_list
+		{
+		$$ = new Uc_converse_case_statement(*$1, false, $3);
+		delete $1;		// A copy was made.
+		cur_fun->pop_scope();
+		}
+	;
+
+response_expression:
+	IF '(' RESPONSE EQUALS STRING_LITERAL ')'
+		{
+		$$ = new vector<int>;
+		$$->push_back(cur_fun->add_string($5));
+		}
+	| IF '(' RESPONSE UCC_IN '[' string_list ']' ')'
+		{ $$ = $6; }
 	;
 
 string_list:
@@ -1670,8 +1714,17 @@ expression:
 		$$ = $4;
 		end_script();
 		}
-	| RESPONSE EQUALS nonclass_expr
-		{ $$ = new Uc_response_expression($3); }
+	| CHOICE
+		{
+		if (!converse)	/* Only valid in converse blocks */
+			{
+			char buf[150];
+			sprintf(buf, "'CHOICE' can only be used in a conversation block!");
+			yyerror(buf);
+			$$ = 0;
+			}
+		$$ = new Uc_choice_expression();
+		}
 	| nonclass_expr NEQUALS nonclass_expr
 		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
 	| nonclass_expr '<' nonclass_expr

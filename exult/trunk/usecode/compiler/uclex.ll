@@ -250,6 +250,7 @@ switch		return SWITCH;
 default		return DEFAULT;
 
 converse	return CONVERSE;
+user_choice	return CHOICE;
 say		return SAY;
 remove		return REMOVE;
 add		return ADD;

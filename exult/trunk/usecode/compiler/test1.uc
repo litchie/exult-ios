@@ -1,32 +1,53 @@
 #game "blackgate"
 #include "ucdefs.h"
 
-extern adder 0x480(a, b);	// Declaration.
+extern adder 0xC00(a, b);	// Declaration.
 const int const13 = 13;
 
 /*
  *	Return sum.
  */
 
-adder1 0x481 (a, b)
+var adder1 0xC01 (a, b)
 	{
 	var c;
 	var d;
 	string hello = "Hello, Avatar!";
 
-	(-3)->adder(a, b);	// :-)
+	adder(a, b);	// :-)
 	c = a + b;
 	d = [a, 1, b];		// Should pop as a, 1, b.
 // 	hello = a;		// Should cause an error.
+	say("Hello, the time is ", 11, "o'clock");
+	// Old-style, super-verbose conversations:
 	converse
 		{
-		say("Hello, the time is ", 11, "o'clock");
 		if (response == "Name")
 			{
 			say("My name is \"DrCode\".");
+			UI_remove_answer("Name");
+			// This also works:
+			// UI_remove_answer(user_choice);
 			}
 		else if (response == "Bye")
-			return;
+			break;
+		else if (response in ["bogus", "nonsense", "garbage"])
+			say("This is utter nonsense!");
+		}
+	say("Hello, the time is ", 12, "o'clock");
+	// Newer conversation style:
+	converse (["Name", "Bye", "name"])
+		{
+		case "Name" (remove):
+			{
+			say("My name is \"DrCode\".");
+			}
+		case "Bye":
+			break;
+		case "bogus", "nonsense", "garbage":
+			say("This is utter nonsense!");
+		default:
+			say("All other answers get here. Your choice was ", user_choice);
 		}
 				// This is nonsense:
 	c = a[7];
@@ -65,7 +86,7 @@ class Test2 : Test	// Inheritance: class Test2 has all data members and
 {
 	var testvar1;
 	now_what1() { testvar1 = 0; Test::Fun2(); now_what(); Fun2(); }
-	class<Test> Fun2()
+	class<Test> Fun5()
 	{
 		testvar1 = 1;
 		//return;	// Fails to compile
@@ -75,6 +96,7 @@ class Test2 : Test	// Inheritance: class Test2 has all data members and
 				// derived from class<Test> hence can be
 				// converted to it
 	}
+	Fun2() { ; }
 	Fun3()
 	{
 		//return 1;	// Fails to compile
@@ -89,7 +111,7 @@ class Test3 : Test
 class Test4 : Test2
 {  }
 
-class<Test3> Fun2 0xB00 (class<Test> a)
+class<Test> Fun2 0xB00 (class<Test> a)
 {
 	class<Test> mytest;
 	class<Test2> foo = new Test2(5, 6);	// Constructor example

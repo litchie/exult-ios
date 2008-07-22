@@ -1,4 +1,12 @@
 2008-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Fixed old-style "response" conversations. They work identically to converse
+	case blocks now, but are slightly less versatile (e.g., there is no "remove"
+	keyword). "response" dialogs can also specify multiple strings now through
+	the "in" keyword; see test1.uc for examples.
+	Also, added a possible "default" case for converse-case blocks, and a
+	"user_choice" expression which pushes the last-selected answer in the stack.
+
+2008-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Modified animation recycles to fix bug #2020103; recycle (if nonzero) is now
 	the number of frames at the end of the animation to repeat.
 
