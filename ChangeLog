@@ -8,6 +8,7 @@
 	* Fixed SI turtle (bug #2020101).
 	* Hostile creatures now attack the avatar once more -- and the avatar will
 	  also target them when in combat mode (bug #2024437).
+	* Fixed polymorph and Petra bugs #1963551 and 1978514.
 
 2008-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	Modified animation recycles to fix bug #2020103; recycle (if nonzero) is now

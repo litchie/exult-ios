@@ -477,11 +477,11 @@ USECODE_INTRINSIC(set_npc_prop)
 			{
 			int prop = parms[1].get_int_value();
 			int delta = parms[2].get_int_value();
-			int val = prop == static_cast<int>(Actor::sex_flag) ?
-					0 : npc->get_property(prop);
 			if (prop == static_cast<int>(Actor::exp))
 				delta /= 2;	// Verified.
-			npc->set_property(prop, val + delta);
+			if (prop != static_cast<int>(Actor::sex_flag))
+				delta += npc->get_property(prop);	// NOT for gender.
+			npc->set_property(prop, delta);
 			}
 		return Usecode_value(1);// SI needs return.
 		}

@@ -3276,7 +3276,7 @@ void Actor::clear_flag
 		start_std();
 	else if (flag == Obj_flags::polymorph && get_flag(Obj_flags::naked))
 		clear_flag(Obj_flags::naked);
-	else if (flag = Obj_flags::naked && get_flag(Obj_flags::polymorph))
+	else if (flag == Obj_flags::naked && get_flag(Obj_flags::polymorph))
 		clear_flag(Obj_flags::polymorph);
 	
 	set_actor_shape();
@@ -4703,9 +4703,7 @@ void Actor::set_polymorph (int shape)
 		Actor *avatar = gwin->get_main_actor();
 		if (!avatar) return;
 
-		int female = avatar->get_type_flag(tf_sex)?1:0;
-
-		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(this);
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(avatar);
 		shape = avatar->get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num;
 	}
 	set_file(SF_SHAPES_VGA);
