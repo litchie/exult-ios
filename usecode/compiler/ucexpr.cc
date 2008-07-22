@@ -623,6 +623,18 @@ void Uc_item_expression::gen_value
  *	Generate code to evaluate expression and leave result on stack.
  */
 
+void Uc_choice_expression::gen_value
+	(
+	Basic_block *out
+	)
+	{
+	WriteOp(out, (char) UC_PUSHCHOICE);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
 void Uc_string_expression::gen_value
 	(
 	Basic_block *out
@@ -915,6 +927,11 @@ void Uc_class_expression::gen_value
 	}
 
 inline Uc_class *Uc_class_expression::get_cls() const
+	{
+	return var->get_cls();
+	}
+
+inline Uc_class *Uc_new_expression::get_cls() const
 	{
 	return var->get_cls();
 	}

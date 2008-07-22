@@ -293,27 +293,6 @@ public:
 			Basic_block *start = 0, Basic_block *exit = 0);
 	};
 
-
-
-/*
- *	A CONVERSE statement is a loop that prompts for a user response at
- *	the top, or exits the loop if there are no possible answers.
- */
-class Uc_converse_statement : public Uc_statement
-	{
-	Uc_statement *stmt;		// What to execute.
-public:
-	Uc_converse_statement(Uc_statement *s)
-		: stmt(s)
-		{  }
-	~Uc_converse_statement();
-					// Generate code.
-	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
-			Basic_block *&curr, Basic_block *end,
-			std::map<std::string, Basic_block*>& labels,
-			Basic_block *start = 0, Basic_block *exit = 0);
-	};
-
 /*
  *	Conversation CASE statement:
  */
@@ -333,6 +312,8 @@ public:
 			Basic_block *&curr, Basic_block *end,
 			std::map<std::string, Basic_block*>& labels,
 			Basic_block *start = 0, Basic_block *exit = 0);
+	bool is_default()
+		{ return string_offset.empty(); }
 	};
 
 /*
@@ -340,16 +321,14 @@ public:
  *	conversation.  It provides for CASE entries for the comparisons, and
  *	also generates push/pop-answers so these can be nested.
  */
-class Uc_converse2_statement : public Uc_statement
+class Uc_converse_statement : public Uc_statement
 	{
 	static int nest;		// Keeps track of nesting.
 	Uc_expression *answers;		// Answers to add.
-	Uc_statement *cases;		// What to execute.
+	std::vector<Uc_statement *> cases;		// What to execute.
 public:
-	Uc_converse2_statement(Uc_expression *a, Uc_statement *cs)
-		: answers(a), cases(cs)
-		{  }
-	~Uc_converse2_statement();
+	Uc_converse_statement(Uc_expression *a, std::vector<Uc_statement *> *cs);
+	~Uc_converse_statement();
 					// Generate code.
 	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
 			Basic_block *&curr, Basic_block *end,
