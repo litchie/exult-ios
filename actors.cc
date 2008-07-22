@@ -1490,7 +1490,9 @@ void Actor::set_target
 	)
 	{
 	target = obj;
-	if (start_combat && (schedule_type != Schedule::combat || !schedule))
+	bool im_party = is_in_party() || this == gwin->get_main_actor();
+	if (start_combat && !im_party &&
+			(schedule_type != Schedule::combat || !schedule))
 		set_schedule_type(Schedule::combat);
 	Actor *opponent = obj ? obj->as_actor() : 0;
 	if (opponent)
