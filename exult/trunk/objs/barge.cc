@@ -558,6 +558,7 @@ void Barge_object::done
 	(
 	)
 	{
+	gathered = false;		// Clear for next time. (needed for SI turtle)
 	static int norecurse = 0;	// Don't recurse on the code below.
 	if (norecurse > 0)
 		return;
