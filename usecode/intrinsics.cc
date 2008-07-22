@@ -182,10 +182,9 @@ USECODE_INTRINSIC(select_from_menu)
 {
 	delete [] user_choice;
 	user_choice = 0;
-	const char *choice = get_user_choice();
+	Usecode_value u(get_user_choice());
 	delete [] user_choice;
 	user_choice = 0;
-	Usecode_value u(choice);
 	return(u);
 }
 
