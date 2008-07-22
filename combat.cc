@@ -368,6 +368,7 @@ void Combat_schedule::find_opponents
 					// See if we're a party member.
 	bool in_party = npc->is_in_party() || npc == avatar;
 	int npc_align = npc->get_effective_alignment();
+	bool attack_avatar = is_enemy(npc_align, Npc_actor::friendly);
 	Monster_info *minf = npc->get_info().get_monster_info();
 	bool see_invisible = minf ?
 		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
@@ -379,6 +380,8 @@ void Combat_schedule::find_opponents
 		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
 			continue;	// Dead, sleeping or invisible.
 		if (is_enemy(npc_align, actor->get_effective_alignment()))
+			opponents.push_back(actor);
+		else if (attack_avatar && actor == avatar)
 			opponents.push_back(actor);
 		else if (in_party)
 			{		// Attacking party member?
