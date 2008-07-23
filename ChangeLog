@@ -1,5 +1,6 @@
 2008-07-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Minor bugfixes to Keyring and SI Fixes mods.
+	* UCC: Fixed usecode class inheritance. Fixed test1.uc so that it compiles.
 
 2008-07-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed old-style "response" conversations. They work identically to converse
