@@ -1,6 +1,11 @@
 2008-07-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Minor bugfixes to Keyring and SI Fixes mods.
 	* UCC: Fixed usecode class inheritance. Fixed test1.uc so that it compiles.
+	* gamemgr/*: Mod manager bug which showed entries for some games that were
+	  not present.
+	* palette.cc: Prevent palettes from being applied if the game is faded out.
+	* objs/jawbone.cc: Missing return in function.
+	* usecode/ucxt/src/ucdata.cc: printf parameter was wrong.
 
 2008-07-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed old-style "response" conversations. They work identically to converse

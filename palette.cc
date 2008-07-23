@@ -158,6 +158,8 @@ void Palette::set
 
 void Palette::apply(bool repaint)
 {
+	if (faded_out)
+		return;
 	win->set_palette(pal1, max_val, brightness);
 	if (repaint)
 		win->show();
