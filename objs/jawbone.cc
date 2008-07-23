@@ -31,6 +31,7 @@ bool Jawbone_object::add(Game_object *obj, bool dont_check, bool combine)
 
 	find_teeth();
 	update_frame();
+	return true;
 }
 
 // Remove an object.

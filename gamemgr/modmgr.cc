@@ -305,6 +305,9 @@ ModManager::ModManager (string name, string menu)
 
 		// We will NOT trust config with these values.
 	string initgam_path("<" + name + "_STATIC>/initgame.dat");
+	found = U7exists(initgam_path);
+	if (!found)
+		return;	// Everything else if futile if base game not found.
 	char *static_identity = get_game_identity(initgam_path.c_str(), title);
 	if (!strcmp(static_identity,"ULTIMA7"))
 		{
@@ -542,6 +545,8 @@ GameManager::GameManager()
 		bool need_title = game_title == name;
 			// This checks static identity and sets game type.
 		ModManager game = ModManager(gameentry, game_title);
+		if (!game.is_there())
+			continue;
 		if (game.get_game_type() == BLACK_GATE)
 			{
 			if (game.have_expansion())
@@ -595,23 +600,26 @@ void GameManager::print_found
 	const char *cfgname
 	)
 	{
-	char path[50], fname[50];
+	char path[50];
 	string cfgstr(cfgname);
 	to_uppercase(cfgstr);
 	snprintf(path, sizeof(path), "<%s_STATIC>/", cfgstr.c_str());
-	snprintf(fname, sizeof(fname), "<DATA>/%s", flex);
 
 	if (game != 0)
 		cout << title << "   : found" << endl;
 	else
+		{
 		cout << title << "   : not found (" 
 				  << get_system_path(path) << ")" << endl;
+		return;
+		}
 
-	if (U7exists(fname))
+	snprintf(path, sizeof(path), "<DATA>/%s", flex);
+	if (U7exists(path))
 		cout << flex << " : found" << endl;
 	else
 		cout << flex << " : not found (" 
-				  << get_system_path(fname)
+				  << get_system_path(path)
 				  << ")" << endl;
 
 	}

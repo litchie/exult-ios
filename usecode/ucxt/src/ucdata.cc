@@ -173,7 +173,7 @@ void UCData::disassamble()
 
 	if(search_funcs.size()==0)
 	{
-		printf("Functions: %d\n", _funcs.size());
+		printf("Functions: %ld\n", _funcs.size());
 	}
 
 	if(options.output_list)
