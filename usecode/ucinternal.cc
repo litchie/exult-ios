@@ -3011,10 +3011,7 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x60:		// PUSHCHOICE
-				if (!user_choice)	// Maybe we *should* blow up...
-					pushs("");
-				else
-					pushs(user_choice);
+				pushs(user_choice);
 				break;
 			case 0xcd: // 32 bit debugging function init
 			{
