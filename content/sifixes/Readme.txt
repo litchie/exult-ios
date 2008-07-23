@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.05
+version: 0.15.07
 
 	This modification fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -170,6 +170,9 @@ version: 0.15.05
 	    
 6	Version history
 -------------------
+version: 0.15.07
+	- Fixed version number.
+	- Fixed the dumping of items in Wall of Lights cutscene.
 version: 0.15.06
 	- Compatibility update.
 	- You can now ask Shamino to set the time format of your watch to 24-hour

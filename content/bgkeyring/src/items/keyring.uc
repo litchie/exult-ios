@@ -24,7 +24,7 @@
  */
 
 //Constants
-const int KEY_ALAGNER				= 254;	//0x0FE, keys for inn doors.
+const int KEY_ALAGNER				= 254;	//0x0FE, key for Alagner's storeroom.
 const int KEY_CHRISTOPHERS_CHEST	= 253;	//Key for Christopher's chest
 
 UseKeyOnChest (var chest)
@@ -173,8 +173,9 @@ class Keyring_data
 	var add_party_keys (var keyring)
 	{
 		//Count party keys:
-		var oldsize = UI_get_array_size(keys);
+		//var oldsize = UI_get_array_size(keys);
 		var party = UI_get_party_list();
+		var added = 0;
 		for (npc in party)
 		{
 			//For each party member, get contained keys
@@ -191,6 +192,7 @@ class Keyring_data
 						keys << quality;
 					//Remove key:
 					key->remove_item();
+					added += 1;
 				}
 			}
 		}
@@ -199,7 +201,8 @@ class Keyring_data
 		set_keyring_frame(keyring);
 
 		//Have someone say how many keys were added:
-		randomPartyBark("@" + oldsize - UI_get_array_size(keys) + " keys have been added to the keyring@");
+		randomPartyBark("@Added " + added + " keys@");
+		//randomPartyBark("@" + oldsize - UI_get_array_size(keys) + " keys have been added@");
 		return UI_get_array_size(keys);
 	}
 }
