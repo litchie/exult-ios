@@ -1,3 +1,6 @@
+2008-07-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Minor bugfixes to Keyring and SI Fixes mods.
+
 2008-07-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed old-style "response" conversations. They work identically to converse
 	  case blocks now, but are slightly less versatile (e.g., there is no "remove"
