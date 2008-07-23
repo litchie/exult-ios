@@ -197,20 +197,16 @@ firesnakeExplode ()
 
 dropAllItems (var npc, var pos)
 {
-	var obj;
-	var index;
-	var max;
-
 	// Here, we drop only objects directly held by the character:
-	var objects = npc->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY);
-	if (!objects)
-		return;
+	var spots = [OFF_HAND, WEAPON_HAND, CLOAK, NECK, HEAD, GLOVES,
+	             RIGHT_FINGER, LEFT_FINGER, EARRINGS, QUIVER, BELT,
+	             TORSO, FEET, LEGS, BACKPACK, BACK_SHIELD, BACK_SPOT];
 
-	for (obj in objects with index to max)
+	for (spot in spots)
 	{
-		if (get_container(obj)->is_npc())
-			if (obj->set_last_created())
-				UI_update_last_created(pos);
+		var obj = npc->get_readied(spot);
+		if (obj->set_last_created())
+			UI_update_last_created(pos);
 	}
 }
 
