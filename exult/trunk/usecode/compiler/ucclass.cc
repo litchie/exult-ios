@@ -55,7 +55,7 @@ Uc_class::Uc_class
 	(
 	char *nm,
 	Uc_class *base
-	) : name(nm), scope(base->scope), num_vars(base->num_vars),
+	) : name(nm), scope(&base->scope), num_vars(base->num_vars),
 		methods(base->methods), base_class(base)
 	{
 	num = ++last_num;
