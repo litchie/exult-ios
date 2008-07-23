@@ -37,17 +37,20 @@ protected:
 	string mod_title;	// Internal mod name, the mod's title
 	string menustring;	// Text displayed in mods menu
 	bool expansion; 	// For FoV/SS ONLY.
+	bool found;			// If the game/mod is found.
 public:
 	BaseGameInfo () : type(NONE), title(""), mod_title(""),
-		menustring(""), expansion(false)
+		menustring(""), expansion(false), found(false)
 		{  }
-	BaseGameInfo (const Exult_Game ty, const char *t, const char *mt,
-		const char *ms, bool exp)
-		: type(ty), title(t), mod_title(mt), menustring(ms), expansion(exp)
+	BaseGameInfo (const Exult_Game ty, const char *ti, const char *mt,
+		const char *ms, bool exp, bool f)
+		: type(ty), title(ti), mod_title(mt), menustring(ms), expansion(exp),
+		  found(f)
 		{  }
 	BaseGameInfo (const BaseGameInfo& other)
 		: type(other.type), title(other.title), mod_title(other.mod_title),
-		  menustring(other.menustring), expansion(other.expansion)
+		  menustring(other.menustring), expansion(other.expansion),
+		  found(other.found)
 		{  }
 	~BaseGameInfo () {  }
 
@@ -57,12 +60,14 @@ public:
 	Exult_Game get_game_type () const { return type; }
 	// For FoV/SS ONLY.
 	bool have_expansion () const { return expansion; }
+	bool is_there () const { return found; }
 	void set_title (string name) { title = name; }
 	void set_mod_title (string mod) { mod_title = mod; }
 	void set_menu_string (string menu) { menustring = menu; }
 	void set_game_type (Exult_Game game) { type = game; }
 	// For FoV/SS ONLY.
 	void set_expansion (bool exp) { expansion = exp; }
+	void set_found (bool fn) { found = fn; }
 	
 	void setup_game_paths ();
 	};
@@ -77,7 +82,7 @@ public:
 	ModInfo (const ModInfo& other)
 		: BaseGameInfo(other.type, other.title.c_str(),
 		  other.mod_title.c_str(), other.menustring.c_str(),
-		  other.expansion), compatible(other.compatible)
+		  other.expansion, other.found), compatible(other.compatible)
 		{  }
 	~ModInfo () {}
 
@@ -94,7 +99,7 @@ public:
 	ModManager (const ModManager& other)
 		: BaseGameInfo(other.type, other.title.c_str(),
 		  other.mod_title.c_str(), other.menustring.c_str(),
-		  other.expansion)
+		  other.expansion, other.found)
 		{
 		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
 				it != other.modlist.end(); ++it)
