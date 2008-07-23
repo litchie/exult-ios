@@ -1,7 +1,7 @@
 #game "blackgate"
 #include "ucdefs.h"
 
-extern adder 0xC00(a, b);	// Declaration.
+extern var adder 0xC00(a, b);	// Declaration.
 const int const13 = 13;
 
 /*
@@ -128,8 +128,10 @@ class<Test> Fun2 0xB00 (class<Test> a)
 	mytest = new Test(9);
 	mytest = new Test2(10, 11);
 	mytest = new Test(12);
-	mytest = new Test4(a, a);
-	mytest = new Test3(a);
+	//mytest = new Test4(a, a);		// Fails to compile
+	mytest = new Test4(1, 2);
+	//mytest = new Test3(a);		// Fails to compile
+	mytest = new Test3(3);
 	bar = new Test(13);
 	
 	// Conditions:
@@ -141,7 +143,7 @@ class<Test> Fun2 0xB00 (class<Test> a)
 }
 
 /*
-adder 0x480 (a, b)
+var adder 0x480 (a, b)
 	{
 	return a + b;
 	}
