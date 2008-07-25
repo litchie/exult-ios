@@ -1,3 +1,9 @@
+2008-07-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed some apparent lock-ups due to palettes not being updated.
+	* Improved talk dialog in SI when double-clicking someone already within
+	  talking distance.
+	* Fixed uninitialized variable.
+
 2008-07-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Minor bugfixes to Keyring and SI Fixes mods.
 	* UCC: Fixed usecode class inheritance. Fixed test1.uc so that it compiles.

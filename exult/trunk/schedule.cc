@@ -1314,11 +1314,15 @@ void Talk_schedule::now_what
 	)
 	{
 
-	// Switch to phase 3 if we are reasonable close
-	if (phase != 0 && phase != 4 &&
-	    npc->distance(gwin->get_main_actor()) < 8)
-		phase = 3;
 	int speed = gwin->get_std_delay();
+	// Switch to phase 3 if we are reasonable close
+	if (phase < 3 && 
+	    npc->distance(gwin->get_main_actor()) < 6)
+		{
+		phase = 3;
+		npc->start(speed, 250);
+		return;
+		}
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
