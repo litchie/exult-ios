@@ -111,7 +111,8 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
-		gwin->get_pal()->apply(true);
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
 		return;
 		}
 
@@ -123,7 +124,8 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(PALETTE_DAY);
-		gwin->get_pal()->apply(true);
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
 		return;
 		}
 
@@ -152,7 +154,8 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(old_palette);
-		gwin->get_pal()->apply(true);
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
 		return;
 		}
 
@@ -180,7 +183,8 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(new_palette);
-		gwin->get_pal()->apply(true);
+		if (!gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
 		return;
 		}
 	if (transition)
@@ -199,7 +203,8 @@ void Game_clock::set_time_palette
 		}
 
 	gwin->get_pal()->set(new_palette);
-	gwin->get_pal()->apply(true);
+	if (!gwin->get_pal()->is_faded_out())
+		gwin->get_pal()->apply(true);
 	}
 
 /*
