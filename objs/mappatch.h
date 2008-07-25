@@ -72,7 +72,7 @@ class Map_patch_remove : public Map_patch
 	{
 	bool all;			// Delete all matching.
 public:
-	Map_patch_remove(Object_spec s, bool a = false) : Map_patch(s)
+	Map_patch_remove(Object_spec s, bool a = false) : Map_patch(s), all(a)
 		{  }
 	virtual bool apply();		// Perform action.
 	};
