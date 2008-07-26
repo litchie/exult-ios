@@ -489,6 +489,8 @@ void ExultStudio::init_new_npc
 		GtkCheckButton *cbox = GTK_CHECK_BUTTON(ent->widget);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), false);
 		}
+	// Make sure the "default" NPC can walk around.
+	set_toggle("npc_flag_tf_05", true);
 					// Set properties.
 	GtkTable *ptable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_props_table"));
