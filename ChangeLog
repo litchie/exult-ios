@@ -1,3 +1,6 @@
+2008-07-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* New NPCs created with ES now have their 'walk' flag turned on by default.
+
 2008-07-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed some apparent lock-ups due to palettes not being updated.
 	* Improved talk dialog in SI when double-clicking someone already within
