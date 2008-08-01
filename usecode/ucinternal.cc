@@ -715,7 +715,11 @@ int Usecode_internal::get_face_shape
 	// the avatar's correct face shape and frame:
 	if (shape == 0)
 		{
-		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(gwin->get_main_actor()); 
+		Actor *ava = gwin->get_main_actor();
+		bool sishapes = Shape_manager::get_instance()->have_si_shapes();
+		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(
+				ava->get_skin_color(), npc ? npc->get_type_flag(Actor::tf_sex) 
+					: ava->get_type_flag(Actor::tf_sex), sishapes);
 		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
 			{
 			shape = skin->alter_face_shape;

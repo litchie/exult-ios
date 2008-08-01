@@ -1,3 +1,8 @@
+2008-08-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Made armageddon spell behave like originals. Made Armageddon immunity into
+	  settable trait in ES.
+	* Fixed Petra's portrait when body switched.
+
 2008-07-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* New NPCs created with ES now have their 'walk' flag turned on by default.
 
