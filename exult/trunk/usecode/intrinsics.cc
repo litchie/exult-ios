@@ -1692,32 +1692,41 @@ USECODE_INTRINSIC(is_pc_female)
 	return(u);
 }
 
+static inline void Armageddon_death(Actor *npc, bool barks, Rectangle screen)
+{
+		// Leave a select few alive (like LB, Batlin).
+	if (npc && !npc->is_dead() && !npc->get_info().survives_armageddon())
+		{
+		const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
+		const int numtext = sizeof(text)/sizeof(text[0]);
+		Tile_coord loc = npc->get_tile();
+		if (barks && screen.has_point(loc.tx, loc.ty))
+			npc->say(text[rand()%numtext]);
+		// Lay down and lie animation.
+		npc->lay_down(false);
+		// Originals set health to -10; marking it this way allows
+		// Actor::is_dying to return true in case it is needed.
+		npc->set_property(static_cast<int>(Actor::health),
+				-npc->get_property(static_cast<int>(Actor::health))/3-1);
+		// This makes the NPC stay there unresponsive and immune to damage.
+		npc->set_flag(Obj_flags::dead);
+		}
+}
+
 USECODE_INTRINSIC(armageddon)
 {
 	int cnt = gwin->get_num_npcs();
 	Rectangle screen = gwin->get_win_tile_rect();
-	for (int i = 1; i < cnt; i++)	// Most everyone dies.
-		{			// Leave LB, Batlin, Hook.
-		Actor *npc = gwin->get_npc(i);
-		if (npc && !npc->is_dead() && (GAME_SI ||
-				(GAME_BG && (i != 26 && i != 23 && npc->get_shapenum() != 506))))
-			{
-			const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
-			const int numtext = sizeof(text)/sizeof(text[0]);
-			Tile_coord loc = npc->get_tile();
-			if (screen.has_point(loc.tx, loc.ty))
-				npc->say(text[rand()%numtext]);
-			npc->die(0);
-			}
-		}
+	for (int i = 1; i < cnt; i++)	// Almost everyone dies.
+		Armageddon_death(gwin->get_npc(i), true, screen);
 	Actor_vector vec;		// Get any monsters nearby.
 	gwin->get_main_actor()->find_nearby_actors(vec, c_any_shapenum, 40);
 	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end();
 									++it)
 		{
 		Actor *act = *it;
-		if (act->is_monster())	// Assume only Avatar can cast this.
-			act->die(gwin->get_main_actor());
+		if (act->is_monster())
+			Armageddon_death(act, false, screen);
 		}
 	gwin->armageddon = true;
 	return no_ret;

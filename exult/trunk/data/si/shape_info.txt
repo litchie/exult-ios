@@ -382,7 +382,7 @@
 #	Lots of monster/actor data which was hardcoded in the originals.
 #
 #	Format
-#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis
+#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis/armageddon
 #
 #	The fields are flags which are true if nonzero, false otherwise.
 #	The default for actors not on the list is false.
@@ -391,22 +391,27 @@
 #	summons: nonzero if actor can summon allies, zero otherwise.
 #	teleports: nonzero if actor can teleport, zero otherwise.
 #	turn_invis: nonzero if actor can become invisible, zero otherwise.
+#	armageddon: nonzero if actor susrives armageddon, zero otherwise.
 #
 #
 #		Gazer
 #
-:511/0/0/0/0/1
+:511/0/0/0/0/1/0
 
 #		Automatons
 #
-:658/1/1/0/0/0
-:734/1/1/0/0/0
-:747/1/1/0/0/0
-:945/1/1/0/0/0
+:658/1/1/0/0/0/0
+:734/1/1/0/0/0/0
+:747/1/1/0/0/0/0
+:945/1/1/0/0/0/0
 
 #		Aram Dol
 #
-:981/0/0/0/0/1
+:981/0/0/0/0/1/0
+
+#		Batlin
+#
+:318/0/0/0/0/0/1
 %%endsection
 
 %%section warmth_data
