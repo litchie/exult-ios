@@ -213,7 +213,8 @@ public:
 		doenst_eat,
 		teleports,
 		summons,
-		turns_invisible
+		turns_invisible,
+		armageddon_safe
 		};
 	enum Shape_flags
 		{
@@ -475,6 +476,8 @@ public:
 		{ return get_actor_flag(summons); }
 	bool can_be_invisible() const
 		{ return get_actor_flag(turns_invisible); }
+	bool survives_armageddon() const
+		{ return get_actor_flag(armageddon_safe); }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum)
