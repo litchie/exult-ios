@@ -453,39 +453,48 @@
 #	summons: nonzero if actor can summon allies, zero otherwise.
 #	teleports: nonzero if actor can teleport, zero otherwise.
 #	turn_invis: nonzero if actor can become invisible, zero otherwise.
+#	armageddon: nonzero if actor susrives armageddon, zero otherwise.
 #
 #
 #		Mages
 #
-:154/0/0/1/1/1
-:445/0/0/1/1/1
-:446/0/0/1/1/1
+:154/0/0/1/1/1/0
+:445/0/0/1/1/1/0
+:446/0/0/1/1/1/0
 
 #		Ghosts
 #
-:299/0/0/0/1/1
-:317/0/0/0/1/1
+:299/0/0/0/1/1/0
+:317/0/0/0/1/1/0
 
 #		Liches
 #
-:354/0/0/1/1/1
-:519/0/0/1/1/1
+:354/0/0/1/1/1/0
+:519/0/0/1/1/1/0
 
 #		Dragon
 #
-:504/0/0/0/0/1
+:504/0/0/0/0/1/0
 
 #		Gazer
 #
-:511/0/0/0/0/1
+:511/0/0/0/0/1/0
 
 #		Kissme
 #
-:382/0/0/0/1/0
+:382/0/0/0/1/0/0
 
 #		Wisp
 #
-:534/0/0/0/1/0
+:534/0/0/0/1/0/0
+
+#		Batlin
+#
+:403/0/0/0/0/0/1
+:482/0/0/0/0/0/1
+
+#		Lord British
+:466/0/0/0/0/0/1
 %%endsection
 
 %%section warmth_data

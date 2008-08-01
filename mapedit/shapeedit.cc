@@ -2544,7 +2544,8 @@ void ExultStudio::init_shape_notebook
 					"shinfo_actor_flag1",
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
-					"shinfo_actor_flag4" };
+					"shinfo_actor_flag4",
+					"shinfo_actor_flag5" };
 		set_bit_toggles(&flags[0], sizeof(flags)/sizeof(flags[0]), aflags);
 		}
 	Monster_info *minfo = info.get_monster_info();
@@ -3268,7 +3269,8 @@ void ExultStudio::save_shape_notebook
 					"shinfo_actor_flag1",
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
-					"shinfo_actor_flag4" };
+					"shinfo_actor_flag4",
+					"shinfo_actor_flag5" };
 		info.set_actor_flags(get_bit_toggles(&flags[0], 
 					sizeof(flags)/sizeof(flags[0])));
 		}
