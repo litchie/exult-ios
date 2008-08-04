@@ -215,6 +215,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -319,6 +322,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -421,6 +427,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -624,6 +633,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -725,6 +737,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -830,6 +845,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -1034,6 +1052,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1137,6 +1158,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -1246,6 +1270,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -1447,6 +1474,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1548,6 +1578,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1647,6 +1680,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -3207,6 +3243,34 @@
 				Name="shapes"
 				>
 				<File
+					RelativePath="..\shapes\ammoinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\aniinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\armorinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\bodyinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\continf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\effhpinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\expinf.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\font.cc"
 					>
 				</File>
@@ -3216,6 +3280,10 @@
 				</File>
 				<File
 					RelativePath="..\shapes\fontvga.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\frnameinf.cc"
 					>
 				</File>
 				<File
@@ -3235,7 +3303,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\npcdollinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\objdollinf.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\pngio.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\sfxinf.cc"
 					>
 				</File>
 				<File
@@ -3256,6 +3336,14 @@
 				</File>
 				<File
 					RelativePath="..\shapes\vgafile.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\warminf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\weaponinf.cc"
 					>
 				</File>
 				<Filter
@@ -4006,11 +4094,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
