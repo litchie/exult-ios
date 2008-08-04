@@ -219,13 +219,20 @@ protected:
 				out << ':' << index << '/' << -255 << endl;
 			else
 				{	// T::get_entry_size() should be >= 3!
-				unsigned char buf[T::get_entry_size()];
+				#ifdef _MSC_VER
+					unsigned char *buf = new unsigned char[T::get_entry_size()];
+				#else
+					unsigned char buf[T::get_entry_size()];
+				#endif
 				unsigned char *ptr = buf;
 				Write2(ptr, index);
 				if (T::get_entry_size() >= 4)
 					memset(ptr, 0, T::get_entry_size()-3);
 				buf[T::get_entry_size()-1] = 0xff;
 				out.write((const char *)buf, T::get_entry_size());
+				#ifdef _MSC_VER
+					delete buf;
+				#endif
 				}
 			}
 		else
