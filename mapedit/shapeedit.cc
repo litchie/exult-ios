@@ -2992,7 +2992,7 @@ struct Update_paperdolls
 				DOLL_FRAME_3, &frame3,
 				DOLL_FROM_PATCH, &patch,
 				DOLL_MODIFIED, &modded, -1);
-		Paperdoll_item dollinf(frnum, spot, trans, gender, type, shape,
+		Paperdoll_item dollinf(frnum, spot, type, trans, gender, shape,
 				frame0, frame1, frame2, frame3, patch, modded);
 		info.add_paperdoll_info(dollinf);
 		}
