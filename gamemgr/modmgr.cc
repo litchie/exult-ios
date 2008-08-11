@@ -586,10 +586,15 @@ GameManager::GameManager()
 		si = &(games[siind]);
 	if (ssind >= 0)
 		ss = &(games[ssind]);
-	print_found(bg, "exult_bg.flx", "Black Gate", CFG_BG_NAME);
-	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME);
-	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME);
-	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME);
+		
+		// Sane defaults.
+	add_system_path("<ULTIMA7_STATIC>", ".");
+	add_system_path("<SERPENT_STATIC>", ".");
+	print_found(bg, "exult_bg.flx", "Black Gate", CFG_BG_NAME, "ULTIMA7");
+	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7");
+	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT");
+	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT");
+	store_system_paths();
 	}
 
 void GameManager::print_found
@@ -597,7 +602,8 @@ void GameManager::print_found
 	ModManager *game,
 	const char *flex,
 	const char *title,
-	const char *cfgname
+	const char *cfgname,
+	const char *basepath
 	)
 	{
 	char path[50];
@@ -613,6 +619,13 @@ void GameManager::print_found
 				  << get_system_path(path) << ")" << endl;
 		return;
 		}
+
+	// This stores the BG/SI static paths (preferring the expansions)
+	// for easier support of things like multiracial avatars in BG.
+	char staticpath[50];
+	snprintf(path, sizeof(path), "<%s_STATIC>", cfgstr.c_str());
+	snprintf(staticpath, sizeof(staticpath), "<%s_STATIC>", basepath);
+	clone_system_path(staticpath, path);
 
 	snprintf(path, sizeof(path), "<DATA>/%s", flex);
 	if (U7exists(path))

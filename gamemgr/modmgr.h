@@ -134,7 +134,7 @@ protected:
 	ModManager *ss;
 	std::vector<ModManager> games;
 	void print_found(ModManager *game, const char *flex,
-			const char *title, const char *cfgname);
+			const char *title, const char *cfgname, const char *basepath);
 public:
 	GameManager ();
 	~GameManager ()
