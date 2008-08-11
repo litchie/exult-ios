@@ -1546,8 +1546,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 
 	Vga_file faces_vga;
 	// Need to know if SI is installed
-	bool si_installed = gamemanager->is_si_installed()
-			&& U7exists("<SERPENTISLE_STATIC>/shapes.vga");
+	bool si_installed =
+		(gamemanager->is_si_installed() || gamemanager->is_ss_installed())
+			&& U7exists("<SERPENT_STATIC>/shapes.vga");
 	
 	// List of files to load.
 	std::vector<std::pair<std::string, int> > source;

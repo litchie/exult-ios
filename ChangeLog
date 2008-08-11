@@ -1,3 +1,9 @@
+2008-08-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Making multiracial avatars work again in BG if only SI with the expansion
+	  is installed. Also, added the system paths "<ULTIMA7_STATIC>" and
+	  "<SERPENT_STATIC>" that always point to the static directory of the games
+	  (preferring the expansions).
+
 2008-08-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2036349.
 

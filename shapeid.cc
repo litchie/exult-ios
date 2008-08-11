@@ -162,7 +162,7 @@ void Shape_manager::load
 		vector<pair<int, int> > *imports;
 		if (can_have_paperdolls)	// Do this only if SI paperdol.vga was found.
 			{
-			source = pair<string, int>(string("<SERPENTISLE_STATIC>/gumps.vga"), -1);
+			source = pair<string, int>(string("<SERPENT_STATIC>/gumps.vga"), -1);
 			// Gump shapes to import from SI.
 			imports = Shapeinfo_lookup::GetImportedGumpShapes();
 
@@ -178,7 +178,7 @@ void Shape_manager::load
 						  << "Support for SI Paperdolls in BG is disabled." << std::endl;
 			}
 
-		source = pair<string, int>(string("<SERPENTISLE_STATIC>/shapes.vga"), -1);
+		source = pair<string, int>(string("<SERPENT_STATIC>/shapes.vga"), -1);
 		// Skin shapes to import from SI.
 		imports = Shapeinfo_lookup::GetImportedSkins();
 		if (imports->size())
