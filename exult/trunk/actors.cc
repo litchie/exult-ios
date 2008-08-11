@@ -2533,7 +2533,7 @@ void Actor::set_property
 	case sex_flag:
 		// Doesn't seem to be settable in original BG except by hex-editing
 		// the save game, but there is no problem in allowing it in Exult.
-		if (val > 0)
+		if (val != 0)
 			set_type_flag(tf_sex);
 		else
 			clear_type_flag(tf_sex);

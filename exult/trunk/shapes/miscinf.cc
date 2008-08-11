@@ -344,7 +344,7 @@ void Paperdoll_source_parser::parse_entry
 			(GAME_SI && line == "si"))
 		table->push_back(pair<string, int>(string(PAPERDOL), -1));
 	else if (line == "si")
-		table->push_back(pair<string, int>(string("<SERPENTISLE_STATIC>/paperdol.vga"), -1));
+		table->push_back(pair<string, int>(string("<SERPENT_STATIC>/paperdol.vga"), -1));
 	else if (GAME_SI && line == "flx")
 		// ++++ FIMXME: Implement in the future for SI paperdoll patches.
 		CERR("Paperdoll source file '" << line << "' is not implemented yet.");
