@@ -205,7 +205,6 @@ static void Drop_dragged_combo(int cnt, U7_combo_data *combo,
 static void BuildGameMap(BaseGameInfo *game);
 static void Handle_events();
 static void Handle_event(SDL_Event& event);
-static void get_game_paths(const string &gametitle);
 
 
 

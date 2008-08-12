@@ -1,3 +1,9 @@
+2008-08-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixing yesterday's multiracial fix for the cases where SS is installed
+	  under 'serpentisle' in Exult.cfg (like is most likely is for the vast
+	  majority of cases) of FoV under 'blackgate' (likewise).
+	  Several 'string'->'const string&' in functions.
+
 2008-08-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Making multiracial avatars work again in BG if only SI with the expansion
 	  is installed. Also, added the system paths "<ULTIMA7_STATIC>" and
