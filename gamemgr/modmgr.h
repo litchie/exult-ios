@@ -61,9 +61,9 @@ public:
 	// For FoV/SS ONLY.
 	bool have_expansion () const { return expansion; }
 	bool is_there () const { return found; }
-	void set_title (string name) { title = name; }
-	void set_mod_title (string mod) { mod_title = mod; }
-	void set_menu_string (string menu) { menustring = menu; }
+	void set_title (const string& name) { title = name; }
+	void set_mod_title (const string& mod) { mod_title = mod; }
+	void set_menu_string (const string& menu) { menustring = menu; }
 	void set_game_type (Exult_Game game) { type = game; }
 	// For FoV/SS ONLY.
 	void set_expansion (bool exp) { expansion = exp; }
@@ -77,7 +77,7 @@ class ModInfo : public BaseGameInfo
 protected:
 	bool compatible;
 public:
-	ModInfo (Exult_Game game, string name, string mod, bool exp,
+	ModInfo (Exult_Game game, const string& name, const string& mod, bool exp,
 			const Configuration& modconfig);
 	ModInfo (const ModInfo& other)
 		: BaseGameInfo(other.type, other.title.c_str(),
@@ -94,7 +94,7 @@ class ModManager : public BaseGameInfo
 protected:
 	std::vector<ModInfo> modlist;
 public:
-	ModManager (string name, string menu);
+	ModManager (const string& name, const string& menu);
 	ModManager () {  }
 	ModManager (const ModManager& other)
 		: BaseGameInfo(other.type, other.title.c_str(),
@@ -109,8 +109,8 @@ public:
 		{ modlist.clear(); }
 
 	std::vector<ModInfo>& get_mod_list () { return modlist; }
-	ModInfo *find_mod (string name);
-	int find_mod_index (string name);
+	ModInfo *find_mod (const string& name);
+	int find_mod_index (const string& name);
 
 	bool has_mods () const { return modlist.size() > 0; }
 	ModInfo *get_mod (int i)
@@ -119,8 +119,10 @@ public:
 			return &(modlist[i]);
 		return 0;
 		}
-	BaseGameInfo *get_mod(string name, bool checkversion=true);
-	void add_mod (string mod, Configuration& modconfig);
+	BaseGameInfo *get_mod(const string& name, bool checkversion=true);
+	void add_mod (const string& mod, Configuration& modconfig);
+
+	void gather_mods();
 	};
 
 class GameManager
@@ -152,7 +154,7 @@ public:
 	bool is_fov_installed () const { return fov != 0; };
 	bool is_si_installed () const { return si != 0; };
 	bool is_ss_installed () const { return ss != 0; };
-	ModManager *find_game (string name);
+	ModManager *find_game (const string& name);
 	ModManager *get_bg ()
 		{ return bg ? bg : fov ? fov : 0; }
 	ModManager *get_fov ()
@@ -161,8 +163,8 @@ public:
 		{ return si ? si : ss ? ss : 0; }
 	ModManager *get_ss ()
 		{ return ss ? ss : 0; }
-	int find_game_index (string name);
-	void add_game (string name, string menu);
+	int find_game_index (const string& name);
+	void add_game (const string& name, const string& menu);
 	};
 
 #endif

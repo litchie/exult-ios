@@ -67,9 +67,9 @@ void BaseGameInfo::setup_game_paths ()
 
 static inline void ReplaceMacro
 	(
-	string &path,
-	string srch,
-	string repl
+	string& path,
+	const string& srch,
+	const string& repl
 	)
 	{
 	string::size_type pos = path.find(srch);
@@ -81,8 +81,8 @@ static inline void ReplaceMacro
 ModInfo::ModInfo
 	(
 	Exult_Game game,
-	string name,
-	string mod,
+	const string& name,
+	const string& mod,
 	bool exp,
 	const Configuration& modconfig
 	)
@@ -207,7 +207,7 @@ ModInfo::ModInfo
 #endif
 
 // Need this for ES.
-static char *get_game_identity(const char *savename, std::string title)
+static char *get_game_identity(const char *savename, const string& title)
 	{
 	char *game_identity = 0;
 	ifstream in_stream;
@@ -296,7 +296,7 @@ static char *get_game_identity(const char *savename, std::string title)
 	}
 
 // ModManager: class that manages a game's modlist and paths
-ModManager::ModManager (string name, string menu)
+ModManager::ModManager (const string& name, const string& menu)
 	{
 	title = name;
 	mod_title = "";
@@ -304,7 +304,18 @@ ModManager::ModManager (string name, string menu)
 	to_uppercase(name);
 
 		// We will NOT trust config with these values.
-	string initgam_path("<" + name + "_STATIC>/initgame.dat");
+		// We MUST NOT use path tags at this point yet!
+	string static_dir;
+		{
+		string data_directory, default_dir("./" + title),
+			config_path, base_cfg_path("config/disk/game/" + title);
+		config_path = base_cfg_path + "/path";
+		config->value(config_path.c_str(), data_directory, default_dir.c_str());
+		config_path = base_cfg_path + "/static_path";
+		default_dir = data_directory + "/static";
+		config->value(config_path.c_str(), static_dir, default_dir.c_str());
+		}
+	string initgam_path(static_dir + "/initgame.dat");
 	found = U7exists(initgam_path);
 	if (!found)
 		return;	// Everything else if futile if base game not found.
@@ -337,9 +348,16 @@ ModManager::ModManager (string name, string menu)
 	delete[] static_identity;
 
 	modlist.clear();
+	}
+
+void ModManager::gather_mods()
+	{
+	modlist.clear();	// Just to be on the safe side.
 
 	FileList filenames;
-	string pathname("<" + name + "_MODS>");
+	string pathtag(title);
+	to_uppercase(pathtag);
+	string pathname("<" + pathtag + "_MODS>");
 	int ptroff = get_system_path(pathname).length()+1;
 	
 	// If the dir doesn't exist, leave at once.
@@ -362,7 +380,7 @@ ModManager::ModManager (string name, string menu)
 		}
 	}
 
-ModInfo *ModManager::find_mod (string name)
+ModInfo *ModManager::find_mod (const string& name)
 	{
 	for (vector<ModInfo>::iterator it = modlist.begin();
 			it != modlist.end(); ++it)
@@ -371,7 +389,7 @@ ModInfo *ModManager::find_mod (string name)
 	return 0;
 	}
 
-int ModManager::find_mod_index (string name)
+int ModManager::find_mod_index (const string& name)
 	{
 	for(int i = 0; i < modlist.size(); i++)
 		if (modlist[i].get_mod_title() == name)
@@ -379,7 +397,7 @@ int ModManager::find_mod_index (string name)
 	return -1;
 	}
 
-void ModManager::add_mod (string mod, Configuration& modconfig)
+void ModManager::add_mod (const string& mod, Configuration& modconfig)
 	{
 	modlist.push_back(ModInfo(type, title, mod, expansion, modconfig));
 	store_system_paths();
@@ -390,7 +408,7 @@ void ModManager::add_mod (string mod, Configuration& modconfig)
 // and checks the mod's compatibility. If the mod exists and is compatible with
 // Exult, returns a reference to the mod; otherwise, returns the mod's parent game.
 // Outputs error messages is the mod is not found or is not compatible.
-BaseGameInfo *ModManager::get_mod(string name, bool checkversion)
+BaseGameInfo *ModManager::get_mod(const string& name, bool checkversion)
 	{
 	ModInfo *newgame = 0;
 	if (has_mods())
@@ -414,11 +432,11 @@ BaseGameInfo *ModManager::get_mod(string name, bool checkversion)
  *	per-game system_path entries, which are then used later once the
  *	game is selected.
  */
-static void get_game_paths(const string &gametitle)
+static void get_game_paths(const string &gametitle, const string &pathtag)
 	{
 	string data_directory, static_dir, gamedat_dir, savegame_dir,
 		default_dir("./" + gametitle),
-		system_path_tag(to_uppercase(gametitle)), config_path,
+		system_path_tag(to_uppercase(pathtag)), config_path,
 		base_cfg_path("config/disk/game/" + gametitle);
 	config_path = base_cfg_path + "/path";
 	config->value(config_path.c_str(), data_directory, default_dir.c_str());
@@ -536,8 +554,7 @@ GameManager::GameManager()
 		{
 		string gameentry = *it;
 		// Load the paths for all games found:
-		get_game_paths(gameentry);
-		string name = gameentry, new_title;
+		string name = gameentry, new_title, pathtag;
 		to_uppercase(name);
 		name += "\nMissing Title";
 		config->value(config_path + "/" + gameentry + "/title",
@@ -553,11 +570,13 @@ GameManager::GameManager()
 				{
 				fovind = games.size();
 				new_title = CFG_FOV_TITLE;
+				pathtag = CFG_FOV_NAME;
 				}
 			else
 				{
 				bgind = games.size();
 				new_title = CFG_BG_TITLE;
+				pathtag = CFG_BG_NAME;
 				}
 			}
 		else if (game.get_game_type() == SERPENT_ISLE)
@@ -566,18 +585,27 @@ GameManager::GameManager()
 				{
 				ssind = games.size();
 				new_title = CFG_SS_TITLE;
+				pathtag = CFG_SS_NAME;
 				}
 			else
 				{
 				siind = games.size();
 				new_title = CFG_SI_TITLE;
+				pathtag = CFG_SI_NAME;
 				}
 			}
+		else
+			pathtag = gameentry;
+
 		if (need_title && new_title.size() > 0)
 			game.set_menu_string(new_title);
+
+		get_game_paths(gameentry, pathtag);
+		game.set_title(pathtag);
+		game.gather_mods();
 		games.push_back(game);
 		}
-	store_system_paths();
+
 	if (bgind >= 0)
 		bg = &(games[bgind]);
 	if (fovind >= 0)
@@ -594,6 +622,7 @@ GameManager::GameManager()
 	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7");
 	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT");
 	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT");
+
 	store_system_paths();
 	}
 
@@ -637,7 +666,7 @@ void GameManager::print_found
 
 	}
 
-ModManager *GameManager::find_game (string name)
+ModManager *GameManager::find_game (const string& name)
 	{
 	for (vector<ModManager>::iterator it = games.begin();
 			it != games.end(); ++it)
@@ -646,7 +675,7 @@ ModManager *GameManager::find_game (string name)
 	return 0;
 	}
 
-int GameManager::find_game_index (string name)
+int GameManager::find_game_index (const string& name)
 	{
 	for(int i=0; i < games.size(); i++)
 		if (games[i].get_title() == name)
@@ -654,9 +683,9 @@ int GameManager::find_game_index (string name)
 	return -1;
 	}
 
-void GameManager::add_game (string name, string menu)
+void GameManager::add_game (const string& name, const string& menu)
 	{
-	get_game_paths(name);
+	get_game_paths(name, name);
 	games.push_back(ModManager(name, menu));
 	store_system_paths();
 	}
