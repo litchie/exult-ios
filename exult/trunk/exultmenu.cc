@@ -323,7 +323,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
 		strcpy(menustringname, exultgame.get_menu_string().c_str());
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
-			Audio::get_ptr()->can_sfx(exultgame.get_title())?1:0);
+			Audio::get_ptr()->can_sfx(exultgame.get_cfgname())?1:0);
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							menustringname,
 							sfxicon, menux, ypos);
