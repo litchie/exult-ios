@@ -33,35 +33,38 @@ class BaseGameInfo
 	{
 protected:
 	Exult_Game type;	// Game type
-	string title;		// The *Game* title
+	string cfgname;		// What the game is called in Exult.cfg
+	string path_prefix;	// System path prefix for the game/mod.
 	string mod_title;	// Internal mod name, the mod's title
 	string menustring;	// Text displayed in mods menu
 	bool expansion; 	// For FoV/SS ONLY.
 	bool found;			// If the game/mod is found.
 public:
-	BaseGameInfo () : type(NONE), title(""), mod_title(""),
+	BaseGameInfo () : type(NONE), cfgname(""), mod_title(""), path_prefix(""),
 		menustring(""), expansion(false), found(false)
 		{  }
-	BaseGameInfo (const Exult_Game ty, const char *ti, const char *mt,
-		const char *ms, bool exp, bool f)
-		: type(ty), title(ti), mod_title(mt), menustring(ms), expansion(exp),
-		  found(f)
+	BaseGameInfo (const Exult_Game ty, const char *cf, const char *mt,
+		const char *pt, const char *ms, bool exp, bool f)
+		: type(ty), cfgname(cf), mod_title(mt), path_prefix(pt),
+		  menustring(ms), expansion(exp), found(f)
 		{  }
 	BaseGameInfo (const BaseGameInfo& other)
-		: type(other.type), title(other.title), mod_title(other.mod_title),
-		  menustring(other.menustring), expansion(other.expansion),
-		  found(other.found)
+		: type(other.type), cfgname(other.cfgname), mod_title(other.mod_title),
+		  path_prefix(other.path_prefix), menustring(other.menustring),
+		  expansion(other.expansion), found(other.found)
 		{  }
 	~BaseGameInfo () {  }
 
-	string get_title () const { return title; }
+	string get_cfgname () const { return cfgname; }
+	string get_path_prefix () const { return path_prefix; }
 	string get_mod_title () const { return mod_title; }
 	string get_menu_string () const { return menustring; }
 	Exult_Game get_game_type () const { return type; }
 	// For FoV/SS ONLY.
 	bool have_expansion () const { return expansion; }
 	bool is_there () const { return found; }
-	void set_title (const string& name) { title = name; }
+	void set_cfgname (const string& name) { cfgname = name; }
+	void set_path_prefix (const string& pt) { path_prefix = pt; }
 	void set_mod_title (const string& mod) { mod_title = mod; }
 	void set_menu_string (const string& menu) { menustring = menu; }
 	void set_game_type (Exult_Game game) { type = game; }
@@ -77,12 +80,13 @@ class ModInfo : public BaseGameInfo
 protected:
 	bool compatible;
 public:
-	ModInfo (Exult_Game game, const string& name, const string& mod, bool exp,
-			const Configuration& modconfig);
+	ModInfo (Exult_Game game, const string& name, const string& mod,
+			const string& path, bool exp, const Configuration& modconfig);
 	ModInfo (const ModInfo& other)
-		: BaseGameInfo(other.type, other.title.c_str(),
-		  other.mod_title.c_str(), other.menustring.c_str(),
-		  other.expansion, other.found), compatible(other.compatible)
+		: BaseGameInfo(other.type, other.cfgname.c_str(),
+		  other.mod_title.c_str(), other.path_prefix.c_str(),
+		  other.menustring.c_str(), other.expansion, other.found),
+		  compatible(other.compatible)
 		{  }
 	~ModInfo () {}
 
@@ -94,12 +98,12 @@ class ModManager : public BaseGameInfo
 protected:
 	std::vector<ModInfo> modlist;
 public:
-	ModManager (const string& name, const string& menu);
+	ModManager (const string& name, const string& menu, bool needtitle);
 	ModManager () {  }
 	ModManager (const ModManager& other)
-		: BaseGameInfo(other.type, other.title.c_str(),
-		  other.mod_title.c_str(), other.menustring.c_str(),
-		  other.expansion, other.found)
+		: BaseGameInfo(other.type, other.cfgname.c_str(),
+		  other.mod_title.c_str(), other.path_prefix.c_str(),
+		  other.menustring.c_str(), other.expansion, other.found)
 		{
 		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
 				it != other.modlist.end(); ++it)
@@ -122,6 +126,7 @@ public:
 	BaseGameInfo *get_mod(const string& name, bool checkversion=true);
 	void add_mod (const string& mod, Configuration& modconfig);
 
+	void get_game_paths();
 	void gather_mods();
 	};
 

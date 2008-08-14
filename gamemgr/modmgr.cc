@@ -43,21 +43,27 @@ using std::endl;
 using std::string;
 using std::vector;
 
+#if 0
+#define DEBUG_PATHS 1
+#endif
+
 // BaseGameInfo: Generic information and functions common to mods and games
 void BaseGameInfo::setup_game_paths ()
 	{
 	// Make aliases to the current game's paths.
-	string system_path_tag(to_uppercase(title.c_str()));
-	clone_system_path("<STATIC>", "<" + system_path_tag + "_STATIC>");
-	clone_system_path("<MODS>", "<" + system_path_tag + "_MODS>");
+	clone_system_path("<STATIC>", "<" + path_prefix + "_STATIC>");
+	clone_system_path("<MODS>", "<" + path_prefix + "_MODS>");
+
+	string mod_path_tag = path_prefix;
 
 	if (!mod_title.empty())
-		system_path_tag = system_path_tag + "_" + mod_title;
-	to_uppercase(system_path_tag);
-	clone_system_path("<GAMEDAT>", "<" + system_path_tag + "_GAMEDAT>");
-	clone_system_path("<SAVEGAME>", "<" + system_path_tag + "_SAVEGAME>");
-	if (is_system_path_defined("<" + system_path_tag + "_PATCH>"))
-		clone_system_path("<PATCH>", "<" + system_path_tag + "_PATCH>");
+		mod_path_tag += ("_" + to_uppercase((const string)mod_title));
+
+	clone_system_path("<GAMEDAT>", "<" + mod_path_tag + "_GAMEDAT>");
+	clone_system_path("<SAVEGAME>", "<" + mod_path_tag + "_SAVEGAME>");
+
+	if (is_system_path_defined("<" + mod_path_tag + "_PATCH>"))
+		clone_system_path("<PATCH>", "<" + mod_path_tag + "_PATCH>");
 	else
 		clear_system_path("<PATCH>");
 
@@ -83,13 +89,15 @@ ModInfo::ModInfo
 	Exult_Game game,
 	const string& name,
 	const string& mod,
+	const string& path,
 	bool exp,
 	const Configuration& modconfig
 	)
 	{
 	type = game;
-	title = name;
+	cfgname = name;
 	mod_title = mod;
+	path_prefix = path;
 	expansion = exp;
 
 	string config_path, default_dir, modversion, savedir, patchdir, gamedatdir;
@@ -148,13 +156,14 @@ ModInfo::ModInfo
 			}
 		}
 
-	string tagstr(mod_title), systagstr(to_uppercase(title.c_str())),
-		system_path_tag(to_uppercase(title + ("_" + tagstr))),
-		mods_dir("<" + systagstr + "_MODS>"), data_directory(mods_dir + "/" + tagstr),
+	string tagstr(to_uppercase((const string)mod_title)),
+		system_path_tag(path_prefix + "_" + tagstr),
+		mods_dir("<" + path_prefix + "_MODS>"),
+		data_directory(mods_dir + "/" + mod_title),
 		mods_macro("__MODS__"), mod_path_macro("__MOD_PATH__");
 
 	const char *home = 0;
-	string home_game("");		// Gets $HOME/.exult/title/tagstr.
+	string home_game("");		// Gets $HOME/.exult/path_prefix/mod_title.
 	string save_path = data_directory;
 
 #if (!defined(WIN32) && !defined(MACOS))
@@ -162,14 +171,14 @@ ModInfo::ModInfo
 		{
 		home_game = home;
 		home_game += "/.exult";
-					// Create $HOME/.exult/title.
+					// Create $HOME/.exult/cfgname.
 		U7mkdir(home_game.c_str(), 0755);
-		home_game = home_game + '/' + title;
+		home_game = home_game + '/' + cfgname;
 		U7mkdir(home_game.c_str(), 0755);
 					// Successfully created dir?
 		if (U7exists(home_game.c_str()))
 			{
-			home_game = home_game + '/' + tagstr;
+			home_game = home_game + '/' + mod_title;
 			U7mkdir(home_game.c_str(), 0755);
 			if (U7exists(home_game.c_str()))
 				save_path = home_game;
@@ -177,6 +186,10 @@ ModInfo::ModInfo
 		}
 #endif
 
+#ifdef DEBUG_PATHS
+	cout << "path prefix of " << cfgname << " mod " << mod_title
+		<< " is: " << system_path_tag << endl;
+#endif
 	config_path = "mod_info/gamedat_path";
 	default_dir = save_path + "/gamedat";
 	modconfig.value(config_path, gamedatdir, default_dir.c_str());
@@ -184,6 +197,10 @@ ModInfo::ModInfo
 	ReplaceMacro(gamedatdir, mods_macro, mods_dir);
 	ReplaceMacro(gamedatdir, mod_path_macro, save_path);
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", get_system_path(gamedatdir));
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
+		<< " game directories to: " << get_system_path(gamedatdir) << endl;
+#endif
 
 	config_path = "mod_info/savegame_path";
 	modconfig.value(config_path, savedir, save_path.c_str());
@@ -191,6 +208,10 @@ ModInfo::ModInfo
 	ReplaceMacro(savedir, mods_macro, mods_dir);
 	ReplaceMacro(savedir, mod_path_macro, save_path);
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", get_system_path(savedir));
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
+		<< " game directories to: " << get_system_path(savedir) << endl;
+#endif
 	
 	config_path = "mod_info/patch";
 	default_dir = data_directory + "/patch";
@@ -199,6 +220,10 @@ ModInfo::ModInfo
 	ReplaceMacro(patchdir, mods_macro, mods_dir);
 	ReplaceMacro(patchdir, mod_path_macro, data_directory);
 	add_system_path("<" + system_path_tag + "_PATCH>", get_system_path(patchdir));
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
+		<< " game directories to: " << get_system_path(patchdir) << endl;
+#endif
 	}
 
 #ifdef HAVE_ZIP_SUPPORT
@@ -296,58 +321,79 @@ static char *get_game_identity(const char *savename, const string& title)
 	}
 
 // ModManager: class that manages a game's modlist and paths
-ModManager::ModManager (const string& name, const string& menu)
+ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 	{
-	title = name;
+	cfgname = name;
 	mod_title = "";
-	menustring = menu;
 	to_uppercase(name);
 
 		// We will NOT trust config with these values.
 		// We MUST NOT use path tags at this point yet!
 	string static_dir;
 		{
-		string data_directory, default_dir("./" + title),
-			config_path, base_cfg_path("config/disk/game/" + title);
+		string data_directory, default_dir("./" + cfgname),
+			config_path, base_cfg_path("config/disk/game/" + cfgname);
 		config_path = base_cfg_path + "/path";
 		config->value(config_path.c_str(), data_directory, default_dir.c_str());
 		config_path = base_cfg_path + "/static_path";
 		default_dir = data_directory + "/static";
 		config->value(config_path.c_str(), static_dir, default_dir.c_str());
 		}
+
 	string initgam_path(static_dir + "/initgame.dat");
 	found = U7exists(initgam_path);
+
 	if (!found)
 		return;	// Everything else if futile if base game not found.
-	char *static_identity = get_game_identity(initgam_path.c_str(), title);
+
+	char *static_identity = get_game_identity(initgam_path.c_str(), cfgname);
+
+	string new_title;
 	if (!strcmp(static_identity,"ULTIMA7"))
 		{
 		type = BLACK_GATE;
+		path_prefix = to_uppercase(CFG_BG_NAME);
+		if (needtitle)
+			new_title = CFG_BG_TITLE;
 		expansion = false;
 		}
 	else if (!strcmp(static_identity, "FORGE"))
 		{
 		type = BLACK_GATE;
+		path_prefix = to_uppercase(CFG_FOV_NAME);
+		if (needtitle)
+			new_title = CFG_FOV_TITLE;
 		expansion = true;
 		}
 	else if (!strcmp(static_identity, "SERPENT ISLE"))
 		{
 		type = SERPENT_ISLE;
+		path_prefix = to_uppercase(CFG_SI_NAME);
+		if (needtitle)
+			new_title = CFG_SI_TITLE;
 		expansion = false;
 		}
 	else if (!strcmp(static_identity, "SILVER SEED"))
 		{
 		type = SERPENT_ISLE;
+		path_prefix = to_uppercase(CFG_SS_NAME);
+		if (needtitle)
+			new_title = CFG_SS_TITLE;
 		expansion = true;
 		}
 	else
 		{
 		type = EXULT_DEVEL_GAME;
+		path_prefix = "DEVEL" + to_uppercase(name);
+		new_title = menu;	// To be safe.
 		expansion = false;
 		}
 	delete[] static_identity;
 
-	modlist.clear();
+	menustring = needtitle ? new_title : menu;
+
+	get_game_paths();
+	gather_mods();
 	}
 
 void ModManager::gather_mods()
@@ -355,9 +401,7 @@ void ModManager::gather_mods()
 	modlist.clear();	// Just to be on the safe side.
 
 	FileList filenames;
-	string pathtag(title);
-	to_uppercase(pathtag);
-	string pathname("<" + pathtag + "_MODS>");
+	string pathname("<" + path_prefix + "_MODS>");
 	int ptroff = get_system_path(pathname).length()+1;
 	
 	// If the dir doesn't exist, leave at once.
@@ -374,7 +418,8 @@ void ModManager::gather_mods()
 			{
 			string modtitle = filenames[i].substr(ptroff,
 					filenames[i].size() - ptroff - 4);
-			modlist.push_back(ModInfo(type, title, modtitle, expansion,
+			modlist.push_back(ModInfo(type, cfgname,
+					modtitle, path_prefix, expansion,
 					Configuration(filenames[i], "modinfo")));
 			}
 		}
@@ -399,7 +444,8 @@ int ModManager::find_mod_index (const string& name)
 
 void ModManager::add_mod (const string& mod, Configuration& modconfig)
 	{
-	modlist.push_back(ModInfo(type, title, mod, expansion, modconfig));
+	modlist.push_back(ModInfo(type, cfgname, mod, path_prefix,
+			expansion, modconfig));
 	store_system_paths();
 	}
 
@@ -432,32 +478,35 @@ BaseGameInfo *ModManager::get_mod(const string& name, bool checkversion)
  *	per-game system_path entries, which are then used later once the
  *	game is selected.
  */
-static void get_game_paths(const string &gametitle, const string &pathtag)
+void ModManager::get_game_paths()
 	{
 	string data_directory, static_dir, gamedat_dir, savegame_dir,
-		default_dir("./" + gametitle),
-		system_path_tag(to_uppercase(pathtag)), config_path,
-		base_cfg_path("config/disk/game/" + gametitle);
+		default_dir("./" + cfgname), config_path,
+		base_cfg_path("config/disk/game/" + cfgname);
 	config_path = base_cfg_path + "/path";
 	config->value(config_path.c_str(), data_directory, default_dir.c_str());
 	if (data_directory == default_dir)
 		config->set(config_path.c_str(), data_directory, true);
-#if 0
-	cout << "setting " << gametitle
+#ifdef DEBUG_PATHS
+	cout << "path prefix of " << cfgname
+		<< " is: " << path_prefix << endl;
+#endif
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
 		<< " game directories to: " << data_directory << endl;
 #endif
 
 	config_path = base_cfg_path + "/static_path";
 	default_dir = data_directory + "/static";
 	config->value(config_path.c_str(), static_dir, default_dir.c_str());
-	add_system_path("<" + system_path_tag + "_STATIC>", static_dir);
-#if 0
-	cout << "setting " << gametitle
+	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
 		<< " static directory to: " << static_dir << endl;
 #endif
 
 	const char *home = 0;		// Will get $HOME.
-	string home_game("");		// Gets $HOME/.exult/gametitle.
+	string home_game("");		// Gets $HOME/.exult/cfgname.
 	config_path = base_cfg_path + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	config->value(config_path.c_str(), gamedat_dir, "");
@@ -468,13 +517,13 @@ static void get_game_paths(const string &gametitle, const string &pathtag)
 		{
 		home_game = home;
 		home_game += "/.exult";
-					// Create $HOME/.exult/gametitle.
+					// Create $HOME/.exult/cfgname.
 		U7mkdir(home_game.c_str(), 0755);
-		home_game = home_game + '/' + gametitle;
+		home_game = home_game + '/' + cfgname;
 		U7mkdir(home_game.c_str(), 0755);
 					// Successfully created dir?
 		if (U7exists(home_game.c_str()))
-			{		// Use $HOME/.exult/gametitle/gamedat.
+			{		// Use $HOME/.exult/cfgname/gamedat.
 			gamedat_dir = home_game + "/gamedat";
 			config->set(config_path.c_str(), gamedat_dir.c_str(),
 								true);
@@ -485,9 +534,9 @@ static void get_game_paths(const string &gametitle, const string &pathtag)
 #endif
 	if (gamedat_dir == "")		// Didn't create it in $HOME/.exult?
 		gamedat_dir = default_dir;
-	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
-#if 0
-	cout << "setting " << gametitle
+	add_system_path("<" + path_prefix + "_GAMEDAT>", gamedat_dir);
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
 		<< " gamedat directory to: " << gamedat_dir << endl;
 #endif
 
@@ -501,9 +550,9 @@ static void get_game_paths(const string &gametitle, const string &pathtag)
 						home_game.c_str());
 		config->set(config_path.c_str(), savegame_dir.c_str(), true);
 		}
-	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
-#if 0
-	cout << "setting " << gametitle
+	add_system_path("<" + path_prefix + "_SAVEGAME>", savegame_dir);
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
 		<< " savegame directory to: " << savegame_dir << endl;
 #endif
 
@@ -512,7 +561,7 @@ static void get_game_paths(const string &gametitle, const string &pathtag)
 	default_dir = data_directory + "/patch";
 	config->value(config_path.c_str(), patch_directory, 
 							default_dir.c_str());
-	add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
+	add_system_path("<" + path_prefix + "_PATCH>", patch_directory.c_str());
 
 	config_path = base_cfg_path + "/mods";
 	string mods_directory;
@@ -525,7 +574,11 @@ static void get_game_paths(const string &gametitle, const string &pathtag)
 		mods_directory.resize(mods_directory.length()-1);
 		config->set(config_path.c_str(), mods_directory, true);
 		}
-	add_system_path("<" + system_path_tag + "_MODS>", mods_directory.c_str());
+	add_system_path("<" + path_prefix + "_MODS>", mods_directory.c_str());
+#ifdef DEBUG_PATHS
+	cout << "setting " << cfgname
+		<< " savegame directory to: " << mods_directory << endl;
+#endif
 	}
 
 // GameManager: class that manages the installed games
@@ -554,55 +607,31 @@ GameManager::GameManager()
 		{
 		string gameentry = *it;
 		// Load the paths for all games found:
-		string name = gameentry, new_title, pathtag;
-		to_uppercase(name);
-		name += "\nMissing Title";
+		string base_title = gameentry, new_title;
+		to_uppercase(base_title);
+		base_title += "\nMissing Title";
 		config->value(config_path + "/" + gameentry + "/title",
-				game_title, name.c_str());
-		bool need_title = game_title == name;
+				game_title, base_title.c_str());
+		bool need_title = game_title == base_title;
 			// This checks static identity and sets game type.
-		ModManager game = ModManager(gameentry, game_title);
+		ModManager game = ModManager(gameentry, game_title, need_title);
 		if (!game.is_there())
 			continue;
 		if (game.get_game_type() == BLACK_GATE)
 			{
 			if (game.have_expansion())
-				{
 				fovind = games.size();
-				new_title = CFG_FOV_TITLE;
-				pathtag = CFG_FOV_NAME;
-				}
 			else
-				{
 				bgind = games.size();
-				new_title = CFG_BG_TITLE;
-				pathtag = CFG_BG_NAME;
-				}
 			}
 		else if (game.get_game_type() == SERPENT_ISLE)
 			{
 			if (game.have_expansion())
-				{
 				ssind = games.size();
-				new_title = CFG_SS_TITLE;
-				pathtag = CFG_SS_NAME;
-				}
 			else
-				{
 				siind = games.size();
-				new_title = CFG_SI_TITLE;
-				pathtag = CFG_SI_NAME;
-				}
 			}
-		else
-			pathtag = gameentry;
 
-		if (need_title && new_title.size() > 0)
-			game.set_menu_string(new_title);
-
-		get_game_paths(gameentry, pathtag);
-		game.set_title(pathtag);
-		game.gather_mods();
 		games.push_back(game);
 		}
 
@@ -670,7 +699,7 @@ ModManager *GameManager::find_game (const string& name)
 	{
 	for (vector<ModManager>::iterator it = games.begin();
 			it != games.end(); ++it)
-		if (it->get_title() == name)
+		if (it->get_cfgname() == name)
 			return &*it;
 	return 0;
 	}
@@ -678,14 +707,13 @@ ModManager *GameManager::find_game (const string& name)
 int GameManager::find_game_index (const string& name)
 	{
 	for(int i=0; i < games.size(); i++)
-		if (games[i].get_title() == name)
+		if (games[i].get_cfgname() == name)
 			return i;
 	return -1;
 	}
 
 void GameManager::add_game (const string& name, const string& menu)
 	{
-	get_game_paths(name, name);
-	games.push_back(ModManager(name, menu));
+	games.push_back(ModManager(name, menu, false));
 	store_system_paths();
 	}

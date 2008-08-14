@@ -952,7 +952,7 @@ C_EXPORT void on_gameselect_ok_clicked
 		if (modmenustr == "")
 			return;
 		// Ensure <MODS> dir exists
-		string pathname("<" + game->get_title() + "_MODS>");
+		string pathname("<" + game->get_path_prefix() + "_MODS>");
 		to_uppercase(pathname);
 		if (!U7exists(pathname))
 			U7mkdir(pathname.c_str(), 0755);
@@ -992,7 +992,7 @@ C_EXPORT void on_gameselect_ok_clicked
 		modtitle = mod?mod->get_mod_title():"";
 	}
 
-	studio->set_game_path(game->get_title(), modtitle);
+	studio->set_game_path(game->get_cfgname(), modtitle);
 	GtkWidget *win = glade_xml_get_widget(app_xml, "game_selection");
 	gtk_widget_hide(win);
 }

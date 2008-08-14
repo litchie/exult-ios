@@ -98,7 +98,7 @@ Game::~Game()
 Game *Game::create_game(BaseGameInfo *mygame)
 {
 	mygame->setup_game_paths();
-	gametitle = mygame->get_title();
+	gametitle = mygame->get_cfgname();
 	modtitle = mygame->get_mod_title();
 	game_type = mygame->get_game_type();
 	expansion = mygame->have_expansion();
