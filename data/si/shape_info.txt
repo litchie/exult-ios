@@ -159,10 +159,6 @@
 #
 :301/71
 
-#	Poison/Sleep Field
-#
-:900/129
-
 #	Pulsating object
 #
 :726:26

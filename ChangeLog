@@ -1,3 +1,11 @@
+2008-08-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* data/si/shape_info.txt: Eliminating duplicate data.
+	* audio/conv.cc: Added indices for the array elements.
+	* All others: games/mods now store the cfg name as well as the path prefix
+	  tag. The latter is now mostly decoupled from the former (the exception:
+	  for new games, it is "DEVEL_" plus the uppercase of the cfg name), being
+	  based on the game's identity instead.
+
 2008-08-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixing yesterday's multiracial fix for the cases where SS is installed
 	  under 'serpentisle' in Exult.cfg (like is most likely is for the vast
