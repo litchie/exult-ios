@@ -968,6 +968,7 @@ Game_object *Game_object::find_blocking
 	Tile_coord tile			// Tile to check.
 	)
 	{
+	tile.fixme();
 	Map_chunk *chunk = gmap->get_chunk(tile.tx/c_tiles_per_chunk,
 						    tile.ty/c_tiles_per_chunk);
 	Game_object *obj;
@@ -989,6 +990,7 @@ Game_object *Game_object::find_door
 	Tile_coord tile
 	)
 	{
+	tile.fixme();
 	Map_chunk *chunk = gmap->get_chunk(tile.tx/c_tiles_per_chunk,
 						    tile.ty/c_tiles_per_chunk);
 	return chunk->find_door(tile);
