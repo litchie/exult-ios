@@ -848,6 +848,7 @@ void Cheat::cursor_teleport (void) const {
 	y /= gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	Tile_coord t(gwin->get_scrolltx() + x/c_tilesize,
 				 gwin->get_scrollty() + y/c_tilesize, 0);
+	t.fixme();
 	gwin->teleport_party(t);
 	eman->center_text("Teleport!!!");
 }

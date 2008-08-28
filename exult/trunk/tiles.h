@@ -23,6 +23,8 @@
 
 #include "exult_constants.h"
 
+#define FIX_COORD(x) (((x)+c_num_tiles)%c_num_tiles)
+
 /*
  *	A 3D tile coordinate:
  */
@@ -64,6 +66,8 @@ public:
 			(tx + neighbors[2*dir] + c_num_tiles)%c_num_tiles,
 			(ty + neighbors[2*dir + 1] + c_num_tiles)%c_num_tiles,
 								 tz); }
+	void fixme()
+		{ tx = FIX_COORD(tx); ty = FIX_COORD(ty); }
 	static bool gte(int t1, int t2)	// Ret. t1 >= t2 with wrapping.
 		{
 		int diff = t1 - t2;
