@@ -1,3 +1,7 @@
+2008-08-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* audio/midi_drivers/timidity/timidity_resample.cpp:
+	  fix invalid memory access (fix copied from SDL_sound)
+
 2008-08-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* data/si/shape_info.txt: Eliminating duplicate data.
 	* audio/conv.cc: Added indices for the array elements.
