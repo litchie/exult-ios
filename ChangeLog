@@ -1,3 +1,6 @@
+2008-08-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixing a few world-wrapping-related bugs (including #2046951).
+
 2008-08-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/midi_drivers/timidity/timidity_resample.cpp:
 	  fix invalid memory access (fix copied from SDL_sound)

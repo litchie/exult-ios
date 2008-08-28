@@ -736,6 +736,7 @@ int Actor::is_blocked
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame), ytiles = info.get_3d_ytiles(frame);
 	int ztiles = info.get_3d_height();
+	t.fixme();
 	if (xtiles == 1 && ytiles == 1)	// Simple case?
 		{
 		Map_chunk *nlist = gmap->get_chunk(
@@ -4501,6 +4502,7 @@ int Main_actor::step
 	)
 	{
 	rest_time = 0;			// Reset counter.
+	t.fixme();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -4608,7 +4610,7 @@ void Main_actor::switched_chunks
 		}
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
-			nlist->get_map()->get_chunk(x, y)->setup_cache();
+			nlist->get_map()->get_chunk(FIX_COORD(x), FIX_COORD(y))->setup_cache();
 
 	// If change in Superchunk number, apply Old Style caching emulation
 	gwin->emulate_cache(olist, nlist);
@@ -5147,6 +5149,7 @@ int Npc_actor::step
 	Tile_coord oldtile = get_tile();
 					// Get old chunk.
 	Map_chunk *olist = get_chunk();
+	t.fixme();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
