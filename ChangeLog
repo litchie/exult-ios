@@ -1,3 +1,6 @@
+2008-08-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* audio/midi_drivers/timidity/: copy sanity checks from SDL_sound
+
 2008-08-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixing a few world-wrapping-related bugs (including #2046951).
 
