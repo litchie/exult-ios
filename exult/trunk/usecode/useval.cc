@@ -111,6 +111,43 @@ Usecode_value& Usecode_value::operator=
 	}
 
 /*
+ *	Steals an array from another usecode value. If the other
+ *	usecode value is not an array, it will be converted into
+ *	one and then its data will be stolen.
+ *
+ *	Warning: is left undefined after this.
+ */
+
+void Usecode_value::steal_array(Usecode_value& v2)
+	{
+	if (type == array_type)
+		delete [] value.array.elems;
+	else if (type == string_type)
+		delete [] value.str;
+	undefined = false;
+	type = array_type;
+	if (v2.type == array_type)
+		{
+		// Swipe array.
+		value.array.cnt = v2.value.array.cnt;
+		value.array.elems = v2.value.array.elems;
+		}
+	else
+		{
+		value.array.elems = new Usecode_value[1];
+		value.array.cnt = 1;
+		if (v2.type == string_type)
+			// Swipe string.
+			value.array.elems[0].value.str = v2.value.str;
+		else
+			value.array.elems[0] = v2;
+		}
+	v2.undefined = true;
+	v2.type = int_type;
+	v2.value.intval = 0;
+	}
+
+/*
  *	Set this to (a copy of) a string.
  */
 

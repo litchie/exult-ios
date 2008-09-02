@@ -1,4 +1,8 @@
-2008-08-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2008-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/*: Reverted demonstrably wrong itemref behavior. Added usecode
+	  array stealing to create_script instead of making a copy.
+
+2008-09-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*: Prevent weapons with no base damage from causing any damage.
 	  Keep spellbook in hand if NPC can still cast selected spell. Save custom
 	  shape to be used as casting frames (mainly for new games).
