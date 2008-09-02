@@ -142,11 +142,13 @@ obj->halt_scheduled()
 
     Terminates all running scripts for 'obj', except for 'nohalt' scripts.
 
-UI_begin_casting_mode(actor npc)                                         [Exult]
-npc->begin_casting_mode()
+UI_begin_casting_mode(actor npc, int val)                                [Exult]
+npc->begin_casting_mode(int val)
 
     Starts casting mode for 'npc'. When the next script starts for 'npc', that
-    NPC will display casting frames (shape 859) until the script ends.
+    NPC will display as casting frames the shape specified by parameter 'val'
+    until the script ends. If 'val' is ommited, it is assumed to be equal to
+    859.
 
 int UI_set_to_attack(actor attacker, object target, int weapon)
 int attacker->set_to_attack(object target, int weapon)
@@ -1430,6 +1432,11 @@ misc[4] UI_click_on_item()
     object as the first element of the array and the object's position as the
     last three.
 
+    This intrinsic has a special case: when 'event' is 4 (weapon hit), the
+    return will be overriden to be equal to the current 'item' (although a
+    'set_intercept_item' intrinsic call takes precedence over this special
+    case).
+
 UI_set_intercept_item(object obj)                                        [Exult]
 obj->set_intercept_item()
 
@@ -1668,6 +1675,17 @@ bool UI_add_spell(int index, int unk, object obj)
     value is 'false'. If 'obj' is not a spellbook, does nothing and returns
     'false'. 'unk' is a parameter from the original games whose meaning is
     unknown, hence is unimplemented in Exult.
+
+bool UI_has_spell(object obj, int index)                                 [Exult]
+
+    If 'obj' is a spellbook, returns 'true' if it has the spell whose index is
+    'index'; in all other cases, return value is 'false'.
+
+bool UI_remove_spell(object obj, int index)                              [Exult]
+
+    If 'obj' is a spellbook, and this spellbook has the spell whose index is
+    'index', the spell is removed and the intrinsic returns 'true' -- in all
+    other cases, return value is 'false'.
 
 UI_remove_all_spells(object obj)                                     [SI, Exult]
 obj->remove_all_spells()

@@ -190,6 +190,25 @@ void Spellbook_object::clear_spells()
 	}
 
 /*
+ *	Remove a spell.
+ *
+ *	Output:	1 if had spell, 0 if not.
+ */
+
+int Spellbook_object::remove_spell
+	(
+	int spell			// 0-71
+	)
+	{
+	int circle = spell/8;
+	int num = spell%8;		// # within circle.
+	if ((circles[circle] & (1<<num)) == 0)
+		return 0;		// Already does not have it.
+	circles[circle] ^= (1<<num);
+	return 1;
+	}
+
+/*
  *	Can we do a given spell?
  */
 
@@ -273,10 +292,23 @@ void Spellbook_object::execute_spell
 	bool in_combat			// Being used in combat.
 	)
 	{
-	act->set_casting_mode(Actor::init_casting);
+	act->begin_casting(859);	// ++++TAG: Need to de-hard-code.
+
+	// We use intercept_item for spells cast from readied spellbook
+	// while in combat.
+	// First, save current.
+	Game_object *old_intercept = ucmachine->get_intercept_click_on_item();
+	if (in_combat)	// Use caster's target if for combat.
+		ucmachine->intercept_click_on_item(act->get_target());
+	else	// Otherwise, disable intercept for gump casting.
+		ucmachine->intercept_click_on_item(0);
+
 	ucmachine->call_usecode(Get_usecode(spell), act, 
 		in_combat ? Usecode_machine::weapon :
 			    Usecode_machine::double_click);
+
+	// Restore previous intercept_item.
+	ucmachine->intercept_click_on_item(old_intercept);
 	}
 
 /*

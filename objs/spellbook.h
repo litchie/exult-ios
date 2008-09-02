@@ -46,7 +46,14 @@ public:
 	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, unsigned char *c,
 		unsigned char bmark);
+	int has_spell(int spell)	// Has a spell.
+		{
+		int circle = spell/8;
+		int num = spell%8;		// # within circle.
+		return (circles[circle] & (1<<num))!=0;
+		}
 	int add_spell(int spell);	// Add a spell.
+	int remove_spell(int spell);	// Remove a spell.
 	void clear_spells();	// Empties spellbook.
 	bool has_ring(Actor *act);	// Has ring-o-reagents?
 					// Can we do this spell?

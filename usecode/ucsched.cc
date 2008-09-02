@@ -61,7 +61,8 @@ Usecode_script::Usecode_script
 	int nhalt, 
 	int del
 	) : obj(item), code(cd), i(0), frame_index(findex), 
-	    no_halt(nhalt != 0), must_finish(false), delay(del)
+	    no_halt(nhalt != 0), must_finish(false),
+		killed_barks(false), delay(del)
 	{
 	cnt = code->get_array_size();
 	}
@@ -75,7 +76,7 @@ Usecode_script::Usecode_script
 	Game_object *o,
 	Usecode_value *cd		// May be NULL for empty script.
 	) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(false),
-	    must_finish(false), delay(0)
+	    must_finish(false), killed_barks(false), delay(0)
 	{
 	if (!code)			// Empty?
 		code = new Usecode_value(0, 0);
@@ -314,7 +315,7 @@ void Usecode_script::handle_event
 	{
 	Actor *act = obj->as_actor();
 	if (act && act->get_casting_mode() == Actor::init_casting)
-		act->set_casting_mode(Actor::show_casting_frames);
+		act->display_casting_frames();
 	Usecode_internal *usecode = (Usecode_internal *) udata;
 	int delay = exec(usecode, false);
 	if (i < cnt)			// More to do?
@@ -554,7 +555,8 @@ int Usecode_script::exec
 			{
 			Usecode_value& strval = code->get_elem(++i);
 			Usecode_value objval(obj);
-			usecode->item_say(objval, strval);
+			if (!killed_barks)
+				usecode->item_say(objval, strval);
 			break;
 			}
 		case Ucscript::step:	// Parm. is dir. (0-7).  0=north.

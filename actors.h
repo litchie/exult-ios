@@ -64,6 +64,7 @@ protected:
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
 	Game_object *target;		// Who/what we're attacking.
 	short casting_mode;		//For displaying casting frames.
+	int casting_shape;	//Shape of casting frames.
 	// These 2 are set by the Usecode function 'set_to_attack':
 	Game_object *target_object;
 	Tile_coord target_tile;
@@ -462,8 +463,12 @@ public:
 	virtual int get_type_flags() const
 		{ return type_flags; }
 	short get_casting_mode () const { return casting_mode; }
-	void set_casting_mode (short c) { casting_mode = c; }
 	void end_casting_mode (int delay);
+	int get_casting_shape () const { return casting_shape; }
+	void begin_casting (int s)
+		{ casting_mode = init_casting; casting_shape = s; }
+	void display_casting_frames () { casting_mode = show_casting_frames; }
+	void hide_casting_frames () { casting_mode = not_casting; }
 //++++++Is_dead() test messes up training.
 //	unsigned char get_ident() { return is_dead() ? 0 : ident; }
 	unsigned char get_ident() { return ident; }

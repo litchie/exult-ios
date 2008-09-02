@@ -1435,9 +1435,7 @@ void Map_chunk::setup_dungeon_levels
 					// Test for mountain-tops.
 		Shape_info& shinf = each->get_info();
 		if (shinf.get_shape_class() == Shape_info::building &&
-			(shinf.is_poisonous() && shinf.is_field()) ||
-			(shinf.is_mountain_top() &&
-			(Game::get_game_type() == BLACK_GATE)))
+			shinf.get_mountain_top_type() == Shape_info::normal_mountain_top)
 		{
 			// SI shape 941, frame 0 => do whole chunk (I think).
 			Rectangle area = 
@@ -1458,7 +1456,7 @@ void Map_chunk::setup_dungeon_levels
 						tiles, each->get_lift());
 		}			// Ice Dungeon Pieces in SI
 		else if (shinf.get_shape_class() == Shape_info::building &&
-			shinf.occludes() && shinf.is_water())
+			shinf.get_mountain_top_type() == Shape_info::snow_mountain_top)
 		{
 			// HACK ALERT! This gets 320x200 to work, but it is a hack
 			// This is not exactly accurate.

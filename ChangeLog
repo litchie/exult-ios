@@ -1,3 +1,32 @@
+2008-08-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.*: Prevent weapons with no base damage from causing any damage.
+	  Keep spellbook in hand if NPC can still cast selected spell. Save custom
+	  shape to be used as casting frames (mainly for new games).
+	* combat.cc: Prevent fellow party members from acquiring avatar's target if
+	  the latter is not in combat (allows easier hitting of Draygan (SI) with
+	  a sleep arrow before party members block the shot). Fixed the use of
+	  bookmarked spells in combat. Prevent missile weapons (and spellbok) from
+	  attacking inanimate targets more than once.
+	* data/*/*, shapes/*, mapedit/*, objs/chunks.cc: Mountain tops have been
+	  made into an enum instead of a flag, and now handle snow mountain tops
+	  too, as the flags that were being used were nothing but a coincidence.
+	* objs/spellbook.*, usecode/ucmachine.h, ucinternal.h: Added functions to
+	  remove a single spell and to check if a spellbook has a given spell.
+	  Specify default casting frame shape. Use intercept_item to preselect
+	  target for spells cast in combat with spellbook in hand (but saving and
+	  restoring previously set intercept_item).
+	* usecode/ucsched.*: Added a way to prevent scripted barks from being
+	  shown. This happens (e.g., with the avatar after the teleport storm but
+	  before the fight between Thoxa and Karnax) due to clear_item_say
+	  intrinsic.
+	* usecode/*: click_on_item intrinsic no longer need the avatar special case
+	  for event == weapon as the spellbook now uses intercept_item. Added two
+	  new intrinsics: has_spell and remove_spell. Fixed a few planet's positions
+	  in set_orrery. begin_casting_mode now accepts an optional parameter that
+	  specifies the shape to use for casting frames (default is 859). The push
+	  itemref opcode now pushes the (negative of) an NPCs' number for NPCs;
+	  this is needed, e.g., for death bolt (BG) and mind blast (SI).
+
 2008-08-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/midi_drivers/timidity/: copy sanity checks from SDL_sound
 

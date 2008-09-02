@@ -20,8 +20,8 @@
   <property name="urgency_hint">False</property>
   <property name="show_fileops">True</property>
 
-  <child internal-child="cancel_button">
-    <widget class="GtkButton" id="cancel_button1">
+  <child internal-child="ok_button">
+    <widget class="GtkButton" id="ok_button1">
       <property name="visible">True</property>
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
@@ -30,8 +30,8 @@
     </widget>
   </child>
 
-  <child internal-child="ok_button">
-    <widget class="GtkButton" id="ok_button1">
+  <child internal-child="cancel_button">
+    <widget class="GtkButton" id="cancel_button1">
       <property name="visible">True</property>
       <property name="can_default">True</property>
       <property name="can_focus">True</property>
@@ -10666,94 +10666,6 @@ Coordinates</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="shinfo_shape_flag2">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Mountain top</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">4</property>
-			  <property name="right_attach">5</property>
-			  <property name="top_attach">2</property>
-			  <property name="bottom_attach">3</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkCheckButton" id="shinfo_shape_flag3">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Light weight</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">4</property>
-			  <property name="right_attach">5</property>
-			  <property name="top_attach">3</property>
-			  <property name="bottom_attach">4</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkCheckButton" id="shinfo_shape_flag4">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Quantity frames</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">5</property>
-			  <property name="right_attach">6</property>
-			  <property name="top_attach">0</property>
-			  <property name="bottom_attach">1</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
-			<widget class="GtkCheckButton" id="shinfo_shape_flag5">
-			  <property name="visible">True</property>
-			  <property name="can_focus">True</property>
-			  <property name="label" translatable="yes">Is locked</property>
-			  <property name="use_underline">True</property>
-			  <property name="relief">GTK_RELIEF_NORMAL</property>
-			  <property name="focus_on_click">True</property>
-			  <property name="active">False</property>
-			  <property name="inconsistent">False</property>
-			  <property name="draw_indicator">True</property>
-			</widget>
-			<packing>
-			  <property name="left_attach">5</property>
-			  <property name="right_attach">6</property>
-			  <property name="top_attach">1</property>
-			  <property name="bottom_attach">2</property>
-			  <property name="x_options">fill</property>
-			  <property name="y_options"></property>
-			</packing>
-		      </child>
-
-		      <child>
 			<widget class="GtkCheckButton" id="shinfo_shape_flag0">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
@@ -10798,7 +10710,73 @@ Coordinates</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkCheckButton" id="shinfo_shape_flag6">
+			<widget class="GtkCheckButton" id="shinfo_shape_flag2">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">Light weight</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">4</property>
+			  <property name="right_attach">5</property>
+			  <property name="top_attach">2</property>
+			  <property name="bottom_attach">3</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkCheckButton" id="shinfo_shape_flag3">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">Quantity frames</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">4</property>
+			  <property name="right_attach">5</property>
+			  <property name="top_attach">3</property>
+			  <property name="bottom_attach">4</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkCheckButton" id="shinfo_shape_flag4">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="label" translatable="yes">Is locked</property>
+			  <property name="use_underline">True</property>
+			  <property name="relief">GTK_RELIEF_NORMAL</property>
+			  <property name="focus_on_click">True</property>
+			  <property name="active">False</property>
+			  <property name="inconsistent">False</property>
+			  <property name="draw_indicator">True</property>
+			</widget>
+			<packing>
+			  <property name="left_attach">5</property>
+			  <property name="right_attach">6</property>
+			  <property name="top_attach">0</property>
+			  <property name="bottom_attach">1</property>
+			  <property name="x_options">fill</property>
+			  <property name="y_options"></property>
+			</packing>
+		      </child>
+
+		      <child>
+			<widget class="GtkCheckButton" id="shinfo_shape_flag5">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="label" translatable="yes">Explosive</property>
@@ -10812,8 +10790,8 @@ Coordinates</property>
 			<packing>
 			  <property name="left_attach">5</property>
 			  <property name="right_attach">6</property>
-			  <property name="top_attach">2</property>
-			  <property name="bottom_attach">3</property>
+			  <property name="top_attach">1</property>
+			  <property name="bottom_attach">2</property>
 			  <property name="x_options">fill</property>
 			  <property name="y_options"></property>
 			</packing>
@@ -11237,6 +11215,29 @@ Coordinates</property>
 			      <property name="right_attach">1</property>
 			      <property name="top_attach">2</property>
 			      <property name="bottom_attach">3</property>
+			      <property name="x_options">fill</property>
+			      <property name="y_options"></property>
+			    </packing>
+			  </child>
+
+			  <child>
+			    <widget class="GtkCheckButton" id="shinfo_mountaintop_check">
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="label" translatable="yes">Mountain Top</property>
+			      <property name="use_underline">True</property>
+			      <property name="relief">GTK_RELIEF_NORMAL</property>
+			      <property name="focus_on_click">True</property>
+			      <property name="active">False</property>
+			      <property name="inconsistent">False</property>
+			      <property name="draw_indicator">True</property>
+			      <signal name="toggled" handler="on_shinfo_mountaintop_check_toggled" last_modification_time="Sun, 31 Aug 2008 20:57:51 GMT"/>
+			    </widget>
+			    <packing>
+			      <property name="left_attach">5</property>
+			      <property name="right_attach">6</property>
+			      <property name="top_attach">0</property>
+			      <property name="bottom_attach">1</property>
 			      <property name="x_options">fill</property>
 			      <property name="y_options"></property>
 			    </packing>
@@ -16015,6 +16016,144 @@ Coordinates</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">False</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
+	      <property name="wrap">False</property>
+	      <property name="selectable">False</property>
+	      <property name="xalign">0.5</property>
+	      <property name="yalign">0.5</property>
+	      <property name="xpad">0</property>
+	      <property name="ypad">0</property>
+	      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+	      <property name="width_chars">-1</property>
+	      <property name="single_line_mode">False</property>
+	      <property name="angle">0</property>
+	    </widget>
+	    <packing>
+	      <property name="type">tab</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkVBox" id="shinfo_mountaintop_box">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkHBox" id="hbox142">
+		  <property name="visible">True</property>
+		  <property name="homogeneous">False</property>
+		  <property name="spacing">0</property>
+
+		  <child>
+		    <widget class="GtkFrame" id="frame357">
+		      <property name="border_width">4</property>
+		      <property name="visible">True</property>
+		      <property name="label_xalign">0</property>
+		      <property name="label_yalign">0.5</property>
+		      <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+
+		      <child>
+			<widget class="GtkHBox" id="hbox142">
+			  <property name="visible">True</property>
+			  <property name="homogeneous">False</property>
+			  <property name="spacing">0</property>
+
+			  <child>
+			    <widget class="GtkOptionMenu" id="shinfo_mountaintop_type">
+			      <property name="border_width">1</property>
+			      <property name="visible">True</property>
+			      <property name="can_focus">True</property>
+			      <property name="history">0</property>
+
+			      <child internal-child="menu">
+				<widget class="GtkMenu" id="menu40">
+				  <property name="visible">True</property>
+
+				  <child>
+				    <widget class="GtkMenuItem" id="not_mountain_top1">
+				      <property name="visible">True</property>
+				      <property name="label" translatable="yes">Not mountain top</property>
+				      <property name="use_underline">True</property>
+				    </widget>
+				  </child>
+
+				  <child>
+				    <widget class="GtkMenuItem" id="normal_mountain_top1">
+				      <property name="visible">True</property>
+				      <property name="label" translatable="yes">Normal mountain top</property>
+				      <property name="use_underline">True</property>
+				    </widget>
+				  </child>
+
+				  <child>
+				    <widget class="GtkMenuItem" id="snow_mountain_top1">
+				      <property name="visible">True</property>
+				      <property name="label" translatable="yes">Snow mountain top</property>
+				      <property name="use_underline">True</property>
+				    </widget>
+				  </child>
+				</widget>
+			      </child>
+			    </widget>
+			    <packing>
+			      <property name="padding">0</property>
+			      <property name="expand">False</property>
+			      <property name="fill">False</property>
+			    </packing>
+			  </child>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkLabel" id="label397">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Mountain Type</property>
+			  <property name="use_underline">False</property>
+			  <property name="use_markup">False</property>
+			  <property name="justify">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap">False</property>
+			  <property name="selectable">False</property>
+			  <property name="xalign">0.5</property>
+			  <property name="yalign">0.5</property>
+			  <property name="xpad">0</property>
+			  <property name="ypad">0</property>
+			  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+			  <property name="width_chars">-1</property>
+			  <property name="single_line_mode">False</property>
+			  <property name="angle">0</property>
+			</widget>
+			<packing>
+			  <property name="type">label_item</property>
+			</packing>
+		      </child>
+		    </widget>
+		    <packing>
+		      <property name="padding">0</property>
+		      <property name="expand">False</property>
+		      <property name="fill">True</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">False</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="tab_expand">False</property>
+	      <property name="tab_fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkLabel" id="label395">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">Mountain Top</property>
+	      <property name="use_underline">False</property>
+	      <property name="use_markup">False</property>
+	      <property name="justify">GTK_JUSTIFY_LEFT</property>
 	      <property name="wrap">False</property>
 	      <property name="selectable">False</property>
 	      <property name="xalign">0.5</property>
