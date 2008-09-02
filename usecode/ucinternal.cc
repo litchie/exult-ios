@@ -1613,9 +1613,8 @@ void Usecode_internal::create_script
 		cerr << "Can't create script for NULL object" << endl;
 		return;
 		}
-					// ++++Better to 'steal' array; this
-					//   ends up making a copy.
-	Usecode_value *code = new Usecode_value(codeval);
+	Usecode_value *code = new Usecode_value();
+	code->steal_array(codeval);	// codeval is undefined after this.
 	Usecode_script *script = new Usecode_script(obj, code);
 	script->start(delay);
 	}
@@ -2751,24 +2750,8 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			case 0x3e:		// PUSH ITEMREF.
-				{
-				Actor *act = frame->caller_item ?
-						frame->caller_item->as_actor() : 0;
-				if (act)
-					{
-					int num;
-					if (act == gwin->get_main_actor())
-						// Avatar's usecode number.
-						pushi(-356);
-					else if ((num = act->get_npc_num()) >= 0)
-						pushi(-act->get_npc_num());
-					else	// For monsters.
-						pushref(frame->caller_item);
-					}
-				else
-					pushref(frame->caller_item);
+				pushref(frame->caller_item);
 				break;
-				}
 			case 0x3f:		// ABRT.
 				show_pending_text();
 
