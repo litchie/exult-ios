@@ -104,6 +104,7 @@ public:
 
 	// intercept the next click_on_item intrinsic
 	virtual void intercept_click_on_item(Game_object *obj) = 0;
+	virtual Game_object *get_intercept_click_on_item() const = 0;
 
 	};
 

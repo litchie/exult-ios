@@ -2751,8 +2751,24 @@ int Usecode_internal::run()
 				frame_changed = true;
 				break;
 			case 0x3e:		// PUSH ITEMREF.
-				pushref(frame->caller_item);
+				{
+				Actor *act = frame->caller_item ?
+						frame->caller_item->as_actor() : 0;
+				if (act)
+					{
+					int num;
+					if (act == gwin->get_main_actor())
+						// Avatar's usecode number.
+						pushi(-356);
+					else if ((num = act->get_npc_num()) >= 0)
+						pushi(-act->get_npc_num());
+					else	// For monsters.
+						pushref(frame->caller_item);
+					}
+				else
+					pushref(frame->caller_item);
 				break;
+				}
 			case 0x3f:		// ABRT.
 				show_pending_text();
 

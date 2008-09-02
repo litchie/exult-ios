@@ -70,6 +70,7 @@
 #include "armorinf.h"
 #include "weaponinf.h"
 #include "npcdollinf.h"
+#include "spellbook.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -508,7 +509,6 @@ bool Actor::ready_best_shield
 	)
 	{
 	int points;
-	// What about spell book????
 	if (spots[rhand])
 		{
 		Shape_info& inf = spots[rhand]->get_info();
@@ -561,9 +561,15 @@ bool Actor::ready_best_weapon
 	)
 	{
 	int points;
-	// What about spell book????
 	if (Actor::get_weapon(points) != 0 && ready_ammo())
 		return true;		// Already have one.
+	// Check for spellbook.
+	Game_object *obj = get_readied(Actor::lhand);
+	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
+		{
+		if ((static_cast<Spellbook_object*> (obj))->can_do_spell(this))
+			return true;
+		}
 	Game_object_vector vec;		// Get list of all possessions.
 	vec.reserve(50);
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
@@ -646,7 +652,8 @@ int Actor::get_effective_weapon_shape
 	)
 	{
 	if (get_casting_mode() == Actor::show_casting_frames)
-		return 859;		// Casting frames
+		// Casting frames
+		return casting_shape;
 	else
 		{
 		Game_object * weapon = spots[lhand];
@@ -838,7 +845,7 @@ Actor::Actor
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), temperature(0), rest_time(0),
-	    casting_mode(false), atts(0), usecode_name(""),
+	    casting_mode(false), casting_shape(-1), atts(0), usecode_name(""),
 		target_object(0), attack_weapon(-1), target_tile(Tile_coord(-1, -1, 0))
 	{
 	set_shape(shapenum, 0); 
@@ -2561,7 +2568,7 @@ public:
 void Clear_casting::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
-	a->set_casting_mode(Actor::not_casting);
+	a->hide_casting_frames();
 	a->add_dirty();
 	delete this;
 	}
@@ -3931,9 +3938,9 @@ int Actor::figure_hit_points
 
 	int expval = 0, hits = 0;
 	bool nodamage = (powers & (Weapon_data::no_damage)) != 0;
-	if (instant_death)
+	if (wpoints && instant_death)
 		wpoints = 127;
-	if (!nodamage)
+	if (wpoints && !nodamage)
 		// This may kill the NPC; this comes before powers because no
 		// damage means no powers -- except for the no_damage flag.
 		hits = apply_damage(attacker, Get_effective_prop(npc, Actor::strength, 0),

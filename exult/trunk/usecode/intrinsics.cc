@@ -867,24 +867,22 @@ USECODE_INTRINSIC(click_on_item)
 	Tile_coord t;
 
 	// intercept this click?
-	if (intercept_item) {
+	if (intercept_item)
+		{
 		obj = intercept_item;
 		intercept_item = 0;
 		t = obj->get_tile();
-
-					// Special case for weapon hit:
-	} else if (event == weapon && caller_item)
-	{
-        // if caller_item is the Avatar, return the Avatar's target
-        // instead. This makes combat spellcasting work
-
-        // if caller_item is not the Avatar return caller_item itself
-        // this is needed for hitting Draygan with sleep arrows (SI)
-		Actor *npc = as_actor(caller_item);
-		if (npc == gwin->get_main_actor() && npc->get_target())
-			obj = npc->get_target();
-		else
-			obj = caller_item;
+		}
+		// Special case for weapon hit:
+	else if (event == weapon && caller_item)
+		{
+        // Special hack for weapons (needed for hitting Draygan with
+		// sleep arrows (SI) and worms with worm hammer (also SI)).
+		// Spells cast from readied spellbook in combat have been
+		// changed to use the intercept_item instead, setting it
+		// to the caster's target and restoring the old value after
+		// it is used.
+		obj = caller_item;
 		t = obj->get_tile();
 		}
 	else
@@ -1102,7 +1100,14 @@ USECODE_INTRINSIC(clear_item_say)
 	// Clear str. near item (item).
 	Game_object *item = get_item(parms[0]);
 	if (item)
+		{
 		gwin->get_effects()->remove_text_effect(item);
+		// Seems to be right (e.g., the avatar's barks after
+		// the teleport storm/Karnax vs Thoxa battle).
+		Usecode_script *scr = 0;
+		while ((scr = Usecode_script::find(item, scr)) != 0)
+			scr->kill_barks();
+		}
 	return(no_ret);
 }
 
@@ -1558,7 +1563,7 @@ USECODE_INTRINSIC(remove_all_spells)
 	// Removes all spells from spellbook.
 	Game_object *obj = get_item(parms[0]);
 	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
-		return Usecode_value(0);
+		return no_ret;
 	Spellbook_object *book = (Spellbook_object *) (obj);
 	if (!book)
 		{
@@ -1567,6 +1572,38 @@ USECODE_INTRINSIC(remove_all_spells)
 		}
 	book->clear_spells();
 	return no_ret;
+}
+
+USECODE_INTRINSIC(has_spell)
+{
+	// has_spell(spellbook, spell#).
+	// Returns true if the spellbook has desired spell, false if not.
+	Game_object *obj = get_item(parms[0]);
+	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
+		return Usecode_value(0);
+	Spellbook_object *book = (Spellbook_object *) (obj);
+	if (!book)
+		{
+		cout << "has_spell - Not a spellbook!" << endl;
+		return Usecode_value(0);
+		}
+	return Usecode_value(book->has_spell(parms[1].get_int_value()));
+}
+
+USECODE_INTRINSIC(remove_spell)
+{
+	// remove_spell(spellbook, spell#).
+	// Returns true if the spellbook has desired spell, false if not.
+	Game_object *obj = get_item(parms[0]);
+	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
+		return Usecode_value(0);
+	Spellbook_object *book = (Spellbook_object *) (obj);
+	if (!book)
+		{
+		cout << "remove_spell - Not a spellbook!" << endl;
+		return Usecode_value(0);
+		}
+	return Usecode_value(book->remove_spell(parms[1].get_int_value()));
 }
 
 USECODE_INTRINSIC(sprite_effect)
@@ -1846,11 +1883,11 @@ USECODE_INTRINSIC(set_orrery)
 		 {-7,-2},{-7,-4},{-7,-6},{-10, 1}},
 	/* S6 */{{-4, 9},{-5,-1},{-3, 4},{-3, 6},
 		 {-6,-4},{-5,-6},{-7,-6},{-10,-2}},
-	/* S7 */{{-4, 8},{-4,-3},{ 4, 3},{-6, 1},
+	/* S7 */{{-4, 2},{-4,-3},{ 4, 3},{-6, 1},
 		 {-5,-5},{-3,-7},{-4,-8},{-8,-6}},
-	/* S8 */{{-3, 7},{-3,-4},{-3,-5},{ 6,-2},
+	/* S8 */{{-3,-3},{-3,-4},{ 5,-2},{-3,-5},
 		 {-1,-7},{ 0,-8},{-1,-9},{-5,-9}},
-	/* S9 */{{ 0, 6},{ 0,-5},{ 1,-6},{ 1,-6},
+	/* S9 */{{ 0,-4},{ 0,-5},{ 1,-6},{ 1,-6},
 		 { 1,-7},{ 1,-8},{ 1,-9},{-1,-10}}};
 
 	Tile_coord pos( parms[0].get_elem(0).get_int_value(),
@@ -3347,7 +3384,12 @@ USECODE_INTRINSIC(begin_casting_mode)
 {
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
-		npc->set_casting_mode(Actor::init_casting);
+		{
+		// Have custom casting frames been specified?
+		// ++++TAG: Need to de-hard-code.
+		int cframes = num_parms>1 ? parms[1].need_int_value() : 859;
+		npc->begin_casting(cframes);
+		}
 	return no_ret;
 }
 

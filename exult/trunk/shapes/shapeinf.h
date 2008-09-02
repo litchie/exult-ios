@@ -69,9 +69,9 @@ enum Data_flag_names
 	container_gump_flag = 2,
 	monster_food_flag = 4,
 	actor_flags_flag = 8,
-	usecode_events_flag = 0x10,
-	is_body_flag = 0x20,
-	mountain_top_flag = 0x40,
+	mountain_top_flag = 0x10,
+	usecode_events_flag = 0x20,
+	is_body_flag = 0x40,
 	lightweight_flag = 0x80,
 	quantity_frames_flag = 0x100,
 	is_locked_flag = 0x200,
@@ -112,6 +112,7 @@ class Shape_info
 	std::vector<Content_rules> cntrules;
 	short container_gump;		// From container.dat.
 	short monster_food;
+	short mountain_top;
 	unsigned char actor_flags;
 	unsigned char shape_flags;
 		// For some non-class data (see Data_flag_names enum).
@@ -220,11 +221,16 @@ public:
 		{
 		usecode_events = 0,
 		is_body,
-		mountain_top,
 		lightweight,
 		quantity_frames,
 		is_locked,
 		is_volatile
+		};
+	enum Mountain_tops
+		{
+		not_mountain_top = 0,
+		normal_mountain_top,
+		snow_mountain_top
 		};
 	friend class Shapes_vga_file;	// Class that reads in data.
 	template <typename T, T Shape_info::*data, int flag, typename Functor>
@@ -381,6 +387,17 @@ public:
 			}
 		}
 
+	int get_mountain_top_type() const
+		{ return mountain_top; }
+	void set_mountain_top(int sh)
+		{
+		if (mountain_top != (short)sh)
+			{
+			modified_flags |= mountain_top_flag;
+			mountain_top = (short)sh;
+			}
+		}
+
 	int get_container_gump() const
 		{ return container_gump; }
 	void set_container_gump(int sh)
@@ -426,8 +443,6 @@ public:
 		{ return get_shape_flag(usecode_events); }
 	bool is_body_shape() const
 		{ return get_shape_flag(is_body); }
-	bool is_mountain_top() const
-		{ return get_shape_flag(mountain_top); }
 	bool is_lightweight() const
 		{ return get_shape_flag(lightweight); }
 	bool has_quantity_frames() const

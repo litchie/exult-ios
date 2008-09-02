@@ -387,6 +387,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(is_dest_reachable);
 	USECODE_INTRINSIC_DECL(set_npc_name);
 	USECODE_INTRINSIC_DECL(set_usecode_fun);
+	USECODE_INTRINSIC_DECL(has_spell);
+	USECODE_INTRINSIC_DECL(remove_spell);
 	
 	/*
 	 *	Other private methods:
@@ -475,6 +477,8 @@ public:
 
 	virtual void intercept_click_on_item(Game_object *obj) 
 		{ intercept_item = obj; }
+	virtual Game_object *get_intercept_click_on_item() const
+		{ return intercept_item; }
 
 };
 
