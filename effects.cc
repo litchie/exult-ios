@@ -38,6 +38,7 @@
 #include "shapeinf.h"
 #include "ammoinf.h"
 #include "weaponinf.h"
+#include "ucmachine.h"
 
 #include "SDL_timer.h"
 
@@ -798,13 +799,25 @@ void Projectile_effect::handle_event
 			{		// Not teleported away ?
 			bool returns = (winf && winf->returns()) || (ainf && ainf->returns());
 			bool hit = false;
-			if (target && target->distance(epos) < 3 &&
-				(hit = (autohit || target->try_to_hit(attacker, attval))))
+			if (target && attacker != target && target->distance(epos) < 3)
 				{
-				target->play_hit_sfx(weapon, true);
-				target->attacked(attacker, weapon, projectile_shape, false);
+				hit = autohit || target->try_to_hit(attacker, attval);
+				if (hit)
+					{
+					target->play_hit_sfx(weapon, true);
+					target->attacked(attacker, weapon, projectile_shape, false);
+					}
 				}
-			if (returns && attacker &&	// `boomerangs'
+			else
+				{
+				// Hack warning: this exists solely to make Mind Blast (SI)
+				// work as it does in the original when you target the
+				// avatar with the spell.
+				if (winf && winf->get_usecode() > 0)
+					ucmachine->call_usecode(winf->get_usecode(), 0,
+								Usecode_machine::weapon);
+				}
+			if (returns && attacker &&	// boomerangs
 					attacker->distance(epos) < 50)
 				{ 	// not teleported away
 				Projectile_effect *proj = new Projectile_effect(
