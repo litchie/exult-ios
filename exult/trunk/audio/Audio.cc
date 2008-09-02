@@ -580,6 +580,7 @@ void	Audio::Init_sfx()
 		else
 			d = s;
 
+		COUT("Opening digital SFX's file: \"" << s << "\"");
 		sfx_file = new Flex(d);
 	}
 }
