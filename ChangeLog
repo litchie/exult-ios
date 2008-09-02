@@ -1,6 +1,11 @@
 2008-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/*: Reverted demonstrably wrong itemref behavior. Added usecode
 	  array stealing to create_script instead of making a copy.
+	* audio/*, drag.cc: A few SFX fixes for BG/SI.
+	* effects.cc: Prevent missiles from hitting the attacker if it is equal to
+	  the target (fixed death bolt/mind blast loops when avatar is target).
+	  Added hack to call the missile's usecode (with target = 0) even in that
+	  case (makes mind blast behave like the original when targetting avatar).
 
 2008-09-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*: Prevent weapons with no base damage from causing any damage.
