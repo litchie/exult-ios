@@ -1303,6 +1303,12 @@ C_EXPORT gboolean on_shinfo_shape_class_changed
 		studio->set_sensitive("shinfo_framenames_qual_type", true);
 		studio->set_sensitive("shinfo_framenames_qual_num", true);
 		}
+
+	if (studio->get_optmenu("shinfo_shape_class") == 12)
+		studio->set_sensitive("shinfo_mountaintop_type", true);
+	else
+		studio->set_optmenu("shinfo_mountaintop_type", 0, false);
+
 	return (TRUE);
 	}
 
@@ -2085,6 +2091,15 @@ C_EXPORT void on_shinfo_container_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_container_box", on);
 	}
+C_EXPORT void on_shinfo_mountaintop_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_mountaintop_box", on);
+	}
 C_EXPORT void on_shinfo_body_check_toggled
 	(
 	GtkToggleButton *btn,
@@ -2437,8 +2452,7 @@ void ExultStudio::init_shape_notebook
 				"shinfo_shape_flag2",
 				"shinfo_shape_flag3",
 				"shinfo_shape_flag4",
-				"shinfo_shape_flag5",
-				"shinfo_shape_flag6" };
+				"shinfo_shape_flag5" };
 	set_bit_toggles(&shpflags[0], 
 		sizeof(shpflags)/sizeof(shpflags[0]), info.get_shape_flags());
 					// Extras.
@@ -2611,6 +2625,14 @@ void ExultStudio::init_shape_notebook
 	set_toggle("shinfo_container_check", container_gump >= 0);
 	set_visible("shinfo_container_box", container_gump >= 0);
 	set_spin("shinfo_gump_num", container_gump >= 0 ? container_gump : 0);
+
+	int mountain_top = info.get_mountain_top_type();
+	if (mountain_top > 2 || mountain_top < 0)
+		mountain_top = 0;
+	set_toggle("shinfo_mountaintop_check", mountain_top != 0);
+	set_visible("shinfo_mountaintop_box", mountain_top != 0);
+	bool top_on = get_optmenu("shinfo_shape_class")==12;
+	set_optmenu("shinfo_mountaintop_type", top_on ? mountain_top : 0, top_on);
 
 	bool hasbody = info.has_body_info();
 	set_toggle("shinfo_body_check", hasbody);
@@ -3148,8 +3170,7 @@ void ExultStudio::save_shape_notebook
 				"shinfo_shape_flag2",
 				"shinfo_shape_flag3",
 				"shinfo_shape_flag4",
-				"shinfo_shape_flag5",
-				"shinfo_shape_flag6" };
+				"shinfo_shape_flag5" };
 	info.set_shape_flags(get_bit_toggles(&shpflags[0], 
 				sizeof(shpflags)/sizeof(shpflags[0])));
 					// Extras.
@@ -3339,6 +3360,12 @@ void ExultStudio::save_shape_notebook
 	else
 		{
 		info.set_container_gump(get_spin("shinfo_gump_num"));
+		}
+	if (!get_toggle("shinfo_mountaintop_check"))
+		info.set_mountain_top(0);
+	else
+		{
+		info.set_mountain_top(get_optmenu("shinfo_mountaintop_type"));
 		}
 	if (!get_toggle("shinfo_body_check"))
 		info.set_body_info(false);

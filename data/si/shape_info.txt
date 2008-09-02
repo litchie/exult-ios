@@ -252,6 +252,42 @@
 :1013/1
 %%endsection
 
+%%section mountain_tops
+#	Indicates if the object (which MUST be a building type) is a mountain top.
+#
+#	Format
+#		:shapenum/val
+#
+#	If 'val' is zero, it is not a mountain top. If it is 1, the shape is a normal
+#	mountain top. If 'val' is 2, the shape is a snow mountain top. It is treated
+#	as being zero in all other cases.
+#
+:180/1
+:182/1
+:183/1
+:324/1
+:394/1
+:941/1
+:969/1
+:983/1
+:436/2
+:437/2
+:444/2
+:448/2
+:466/2
+:477/2
+%%endsection
+
+%%section snowmountain
+#	Indicates if the object (which MUST be a building type) is a snow mountain top.
+#
+#	Format
+#		:shapenum/flag
+#
+#	'flag' is nonzero for mountain tops, zero otherwise.
+#
+%%endsection
+
 %%section effective_hps
 #	Effective HPs for objects which otherwise don't have them
 #	(e.g., doors, powder keg). If the object does not have

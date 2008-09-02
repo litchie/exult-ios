@@ -41,6 +41,7 @@ class Usecode_script : public Time_sensitive
 	int frame_index;		// For taking steps.
 	bool no_halt;			// 1 to ignore halt().
 	bool must_finish;		// 1 to finish before deleting.
+	bool killed_barks;		// 1 to prevent barks from showing.
 	int delay;			// Used for restoring.
 					// For restore:
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
@@ -83,6 +84,8 @@ public:
 	int save(DataSource *out);
 	static Usecode_script *restore(Game_object *item, DataSource *in);
 	void print(std::ostream& out);	// Print values.
+	void kill_barks()
+		{ killed_barks = true; }
 	};
 
 

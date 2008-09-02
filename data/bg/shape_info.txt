@@ -296,22 +296,21 @@
 %%endsection
 
 %%section mountain_tops
-#	BG Only; in SI, set the flags 'Occludes', plus 'Poisonous' and 'Field'
-#	for dungeons or 'Occludes' plus 'Water' for ice dungeons.
-#	In any case (BG or SI), object type MUST be building. Setting the above
-#	flags will also work in BG, as long as the shape is not in the list below.
+#	Indicates if the object (which MUST be a building type) is a mountain top.
 #
 #	Format
-#		:shapenum/flag
+#		:shapenum/val
 #
-#	'flag' is nonzero for mountain tops, zero otherwise.
+#	If 'val' is zero, it is not a mountain top. If it is 1, the shape is a normal
+#	mountain top. If 'val' is 2, the shape is a snow mountain top. It is treated
+#	as being zero in all other cases.
 #
-:983/1
-:969/1
-:183/1
-:182/1
 :180/1
+:182/1
+:183/1
 :324/1
+:969/1
+:983/1
 %%endsection
 
 %%section effective_hps

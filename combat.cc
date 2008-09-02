@@ -395,7 +395,8 @@ void Combat_schedule::find_opponents
 	{
 		Game_object *opp = avatar->get_target();
 		Actor *oppnpc = opp ? opp->as_actor() : 0;
-		if (oppnpc && oppnpc != npc)
+		if (oppnpc && oppnpc != npc
+				&& oppnpc->get_schedule_type()==Schedule::combat)
 			opponents.push_back(oppnpc);
 	}
 }
@@ -782,13 +783,13 @@ void Combat_schedule::start_strike
 		reach = winf->get_range();
 	bool ranged = not_in_melee_range(winf, dist, reach);
 		// Out of range?
-	if (npc->get_effective_range(winf, reach) < dist)
+	if (!spellbook && npc->get_effective_range(winf, reach) < dist)
 		{
 		state = approach;
 		approach_foe();		// Get a path.
 		return;
 		}
-	else if (ranged)
+	else if (spellbook || ranged)
 		{
 		bool weapon_dead = false;
 		if (spellbook)
@@ -801,25 +802,25 @@ void Combat_schedule::start_strike
 					ranged, &ammo, GAME_BG);
 			if (need_ammo && !ammo && !npc->ready_ammo())
 				weapon_dead = true;
-			if (weapon_dead)
-				{		// Out of ammo/reagents/charges.
-				if (npc->get_schedule_type() != Schedule::duel)
-					{	// Look in pack for ammo.
-					if (Swap_weapons(npc))
-						Combat_schedule::set_weapon();
-					else
-						set_hand_to_hand();
-					}
-				if (!npc->get_info().has_strange_movement())
-					npc->change_frame(npc->get_dir_framenum(
-								Actor::standing));
-				state = approach;
-				npc->set_target(0);
-				npc->start(200, 500);
-				return;
-				}
-			state = fire;		// Clear to go.
 			}
+		if (weapon_dead)
+			{		// Out of ammo/reagents/charges.
+			if (npc->get_schedule_type() != Schedule::duel)
+				{	// Look in pack for ammo.
+				if (Swap_weapons(npc))
+					Combat_schedule::set_weapon();
+				else
+					set_hand_to_hand();
+				}
+			if (!npc->get_info().has_strange_movement())
+				npc->change_frame(npc->get_dir_framenum(
+							Actor::standing));
+			state = approach;
+			npc->set_target(0);
+			npc->start(200, 500);
+			return;
+			}
+		state = fire;		// Clear to go.
 		}
 	else
 		{
@@ -1380,13 +1381,29 @@ void Combat_schedule::now_what
 			}
 		else
 			attack_target(npc, opponent, Tile_coord(-1, -1, 0), weapon_shape, true);
-		int delay = spellbook ? 6*gwin->get_std_delay() 
-				: gwin->get_std_delay();
+		
+		int delay = 1;
+		if (spellbook)
+			{
+			Usecode_script *scr = Usecode_script::find(npc);
+			// Warning: assuming that the most recent script for the
+			// actor is the spellcasting script.
+			delay += (scr ? scr->get_count() : 0) + 2;
+			}
+		delay *= gwin->get_std_delay();
 			// Change back to ready frame.
 		signed char frame =
 				(signed char)npc->get_dir_framenum(Actor::ready_frame);
 		npc->set_action(new Frames_actor_action(&frame, 1, delay));
 		npc->start(gwin->get_std_delay(), delay);
+
+		// Strike but once at objects.
+		Game_object *newtarg = npc->get_target();
+		if (newtarg && !newtarg->as_actor())
+			{
+			npc->set_target(0);
+			return;		// We may no longer exist!
+			}
 		break;
 		}
 	case wait_return:		// Boomerang should have returned.
