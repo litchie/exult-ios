@@ -3946,7 +3946,8 @@ int Actor::figure_hit_points
 		hits = apply_damage(attacker, Get_effective_prop(npc, Actor::strength, 0),
 				wpoints, type, bias, &expval);
 		// Apply weapon powers if needed.
-	if (powers && (hits || nodamage))
+		// wpoints == 0 ==> some spells that don't hurt (but need to apply powers).
+	if (powers && (hits || !wpoints || nodamage))
 		{
 			// Protection prevents powers.
 		if (!get_flag(Obj_flags::protection))
