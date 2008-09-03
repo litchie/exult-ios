@@ -6,6 +6,7 @@
 	  the target (fixed death bolt/mind blast loops when avatar is target).
 	  Added hack to call the missile's usecode (with target = 0) even in that
 	  case (makes mind blast behave like the original when targetting avatar).
+	* actors.cc: Fixed powers of nondamaging spells.
 
 2008-09-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*: Prevent weapons with no base damage from causing any damage.
