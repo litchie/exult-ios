@@ -1816,6 +1816,7 @@ void Sleep_schedule::now_what
 			{		// Just lie down at current spot.
 			int dirbits = npc->get_framenum()&(0x30);
 			npc->change_frame(Actor::sleep_frame|dirbits);
+			npc->force_sleep();
 			return;
 			}
 		state = 1;
@@ -1866,6 +1867,7 @@ void Sleep_schedule::now_what
 					// Put NPC on top of bed.
 		npc->move(bedloc.tx, bedloc.ty, bedloc.tz + 
 				(bedspread ? 0 : info.get_3d_height()));
+		npc->force_sleep();
 		state = 2;
 		break;
 		}
@@ -1914,6 +1916,7 @@ void Sleep_schedule::ending
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
 	npc->set_frame(Actor::standing);
+	npc->clear_sleep();
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}

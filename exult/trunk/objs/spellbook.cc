@@ -225,8 +225,10 @@ bool Spellbook_object::can_do_spell
 	if ((cflags & (1<<(spell%8))) == 0)
 		return false;		// We don't have that spell.
 	int mana = act->get_property(Actor::mana);
+	// ++++TAG: Need to de-hard-code cost.
+	int cost = circle + GAME_SI ? 1 : 0;
 	int level = act->get_level();
-	if ((mana < circle) || (level < circle))
+	if ((mana < cost) || (level < circle))
 			// Not enough mana or not yet at required level?
 		return false;
 	if (has_ring(act))		// Ring of reagents (SI)?
@@ -262,7 +264,8 @@ bool Spellbook_object::do_spell
 		if (cheat.in_wizard_mode())
 			circle = 0;
 		int mana = act->get_property(Actor::mana);
-		act->set_property(Actor::mana, mana-circle);
+		// ++++TAG: Need to de-hard-code cost.
+		act->set_property(Actor::mana, mana-circle-(GAME_SI ? 1 : 0));
 					// Figure what we used.
 		unsigned short flags = reagents[spell];
 

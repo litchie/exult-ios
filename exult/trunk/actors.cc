@@ -3139,6 +3139,18 @@ void Actor::read_attributes
 	}
 
 /*
+ *	Force actor to sleep.
+ */
+
+void Actor::force_sleep()
+	{
+	flags |= ((uint32) 1 << Obj_flags::asleep);
+	need_timers()->start_sleep();
+	set_action(0);		// Stop what you're doing.
+	lay_down(false);	// Lie down.
+	}
+
+/*
  *	Set flag.
  */
 
@@ -5088,7 +5100,9 @@ void Npc_actor::handle_event
 	if (schedule && party_id < 0 && can_act() && 
 			(schedule_type != Schedule::combat ||	// Not if already in combat.
 						// Patrol schedule already does this.
-				schedule_type != Schedule::patrol) &&
+				schedule_type != Schedule::patrol ||
+				schedule_type != Schedule::sleep ||
+				schedule_type != Schedule::wait) &&
 			!rand()%3)	// Don't do it every time.
 		schedule->seek_foes();
 
