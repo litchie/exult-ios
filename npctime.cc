@@ -431,7 +431,7 @@ void Npc_sleep_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
-		// But not someone beaten into inconsciousness.
+		// But not someone beaten into unconsciousness.
 	if (npc->get_property(static_cast<int>(Actor::health)) >= 0
 		&& (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)

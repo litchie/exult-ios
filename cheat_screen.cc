@@ -1767,11 +1767,8 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 			// Just to be sure.
 			actor->clear_flag(Obj_flags::in_party);
 			}
-		else
-			{
-			gwin->get_party_man()->add_to_party(actor);
+		else if (gwin->get_party_man()->add_to_party(actor))
 			actor->set_schedule_type(Schedule::follow_avatar);
-			}
 		break;
 		
 		case 'o':	// Protectee

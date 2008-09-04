@@ -452,6 +452,9 @@ public:
 	virtual void read_attributes(unsigned char *buf, int len);
 	Npc_timer_list *need_timers();
 					// Set/clear/get actor flag.
+	void force_sleep();
+	void clear_sleep()
+		{ flags &= ~((uint32) 1 << Obj_flags::asleep); }
 	virtual void set_flag(int flag);
 	void set_type_flag(int flag);
 	virtual void clear_flag(int flag);

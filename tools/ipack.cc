@@ -75,8 +75,17 @@ public:
 	Shape_spec() : filename(0), nframes(0), flat(false), bycol(false),
 					dim0_tiles(0)
 		{  }
+	Shape_spec(const Shape_spec& other)
+		: nframes(other.nframes),
+		  flat(other.flat), bycol(other.bycol), dim0_tiles(other.dim0_tiles)
+		{
+		if (other.filename)
+			filename = newstrdup(other.filename);
+		else
+			filename = 0;
+		}
 	~Shape_spec()
-		{ delete filename; }
+		{ delete [] filename; }
 	};
 typedef vector<Shape_spec> Shape_specs;
 
@@ -344,10 +353,10 @@ static void Read_script
 				}
 			specs[shnum].dim0_tiles = dim0_cnt;
 			specs[shnum].bycol = strncmp(dir, "down", 4) == 0;
-			specs[shnum].filename = strdup(fname);
+			specs[shnum].filename = newstrdup(fname);
 			}
 		else
-			specs[shnum].filename = strdup(ptr);
+			specs[shnum].filename = newstrdup(ptr);
 		}
 	}
 

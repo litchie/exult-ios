@@ -1,3 +1,10 @@
+2008-09-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* tools/ipack.cc: Fixed Shape_spec constructors, mix-up of strdup/delete.
+	* objs/spellbook.cc: Fixed spell costs in SI.
+	* actors.*, schedule.cc: Have sleep schedule set/clear sleep flag (fixes
+	  Gorlab with automatons in party).
+	* cheat_screen.cc: Prevent more than 8 party members.
+
 2008-09-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/*: Reverted demonstrably wrong itemref behavior. Added usecode
 	  array stealing to create_script instead of making a copy.
