@@ -475,7 +475,7 @@ static void Write_text_palette
 						setw(3) << b << endl;
 		}
 	pout.close();
-	delete txtpal;
+	delete [] txtpal;
 	}
 
 const unsigned char transp = 255;	// Transparent pixel.
@@ -510,7 +510,7 @@ static void Write_frame
 	if (!Export_png8(fullname, transp, w, h, w, xoff, yoff, img.get_bits(),
 					palette, 256, true))
 		throw file_write_exception(fullname);
-	delete fullname;
+	delete [] fullname;
 	}
 
 /*
@@ -698,10 +698,10 @@ static void Write_exult_from_tiles
 			src += w;
 			}
 		}
-	delete pixels;
+	delete [] pixels;
 	if (palname)
 		Write_palettes(palname, palette, palsize);
-	delete palette;
+	delete [] palette;
 	}
 
 /*
@@ -748,16 +748,16 @@ static void Write_exult
 			}
 		shape.set_frame(new Shape_frame(pixels,
 					w, h, xleft, yabove, !flat), frnum);
-		delete pixels;
+		delete [] pixels;
 		if (palname)		// Write palette for first frame.
 			{
 			Write_palettes(palname, palette, palsize);
 			palname = 0;
 			}
-		delete palette;
+		delete [] palette;
 		}
 	shape.write(out);		// Write them out.
-	delete fullname;
+	delete [] fullname;
 	}
 
 /*
@@ -835,7 +835,7 @@ static void Update
 		lengths[i] = len;
 		if (!len)		// Empty?
 			{
-			delete data[i];
+			delete [] data[i];
 			data[i] = 0;
 			}
 		}
@@ -860,7 +860,7 @@ static void Update
 	if (!writer.close())
 		throw file_write_exception(imagename);
 	for (i = 0; i < oldcnt; i++)	// Clean up.
-		delete data[i];
+		delete [] data[i];
 	}
 
 /*
@@ -910,7 +910,7 @@ static void Extract
 		for (int f = 0; f < nframes; f++)
 			Write_frame(basename, f, shape->get_frame(f), palbuf);
 		}
-	delete palbuf;
+	delete [] palbuf;
 	}
 
 /*
