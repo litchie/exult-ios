@@ -878,7 +878,7 @@ void Shape_chooser::edit_shape_info
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
 	Shape_info *info = 0;
-	char *name = 0;
+	const char *name = 0;
 	if (shapes_file)
 		{			// Read info. the first time.
 		shapes_file->read_info(studio->get_game_type(), true);
@@ -2313,7 +2313,7 @@ void Shape_chooser::search
 	for (i = start; i != stop; i += dir)
 		{
 		int shnum = info[i].shapenum;
-		char *nm = studio->get_shape_name(shnum);
+		const char *nm = studio->get_shape_name(shnum);
 		if (nm && search_name(nm, srch))
 			break;		// Found it.
 		Shape_info& info = shapes_file->get_info(shnum);

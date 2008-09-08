@@ -421,7 +421,7 @@ int Uc_intrinsic_symbol::gen_call
 
 Uc_function_symbol::Uc_function_symbol
 	(
-	char *nm, 
+	const char *nm, 
 	int num, 			// Function #, or -1 to assign
 					//  1 + last_num.
 	std::vector<Uc_var_symbol *>& p,

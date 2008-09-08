@@ -340,7 +340,7 @@ static void Handle_client_message
 		int onoff = (short) Read2(ptr);
 					// skip_lift==0 <==> terrain-editing.
 		gwin->skip_lift = onoff == 1 ? 0 : 256;
-		static char *msgs[3] = {"Terrain-Editing Aborted",
+		static const char *msgs[3] = {"Terrain-Editing Aborted",
 					"Terrain-Editing Done",
 					"Terrain-Editing Enabled"};
 		if (onoff == 0)		// End/commit.

@@ -351,7 +351,7 @@ void Usecode_browser::setup_list
 	for (siter = syms.begin(); siter != syms.end(); ++siter) {
 		Usecode_symbol *sym = *siter;
 		Usecode_symbol::Symbol_kind kind = sym->get_kind();
-		char *kindstr = 0;
+		const char *kindstr = 0;
 		const char *nm = sym->get_name();
 		if (!nm[0])
 			continue;

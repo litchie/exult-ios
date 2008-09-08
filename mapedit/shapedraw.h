@@ -77,7 +77,7 @@ public:
 	void enable_drop(Drop_callback callback, void *udata);
 	void set_drag_icon(GdkDragContext *context, Shape_frame *shape);
 					// Start/end dragging from here.
-	void start_drag(char *target, int id, GdkEvent *event);
+	void start_drag(const char *target, int id, GdkEvent *event);
 	void mouse_up()
 		{ dragging = false; }
 	};

@@ -228,7 +228,7 @@ void Scripted_schedule::run
  *	Lookup Usecode 'method'.
  */
 
-static int find_method(Usecode_class_symbol *cls, char *meth, bool noerr)
+static int find_method(Usecode_class_symbol *cls, const char *meth, bool noerr)
 	{
 	Usecode_symbol *ucsym = (*cls)[meth];
 	if (!ucsym)

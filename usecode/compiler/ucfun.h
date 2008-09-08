@@ -114,7 +114,7 @@ public:
 		{
 		cur_scope = cur_scope->get_parent();
 		}
-	Uc_symbol *search(char *nm)	// Search current scope.
+	Uc_symbol *search(const char *nm)	// Search current scope.
 		{ return cur_scope->search(nm); }
 	Uc_symbol *search_up(const char *nm)
 		{ 

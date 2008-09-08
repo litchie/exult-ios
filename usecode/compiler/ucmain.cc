@@ -62,10 +62,10 @@ int main
 	{
 	extern int yyparse();
 	extern FILE *yyin;
-	char *src;
+	const char *src;
 	char outbuf[256];
 	char *outname = 0;
-	static char *optstring = "o:I:s";
+	static const char *optstring = "o:I:s";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
 	Uc_function::Intrinsic_type ty = Uc_function::unset;
@@ -145,7 +145,7 @@ int main
  */
 void yyerror
 	(
-	char *s
+	const char *s
 	)
 	{
 	Uc_location::yyerror(s);
@@ -156,7 +156,7 @@ void yyerror
  */
 void yywarning
 	(
-	char *s
+	const char *s
 	)
 	{
 	Uc_location::yywarning(s);

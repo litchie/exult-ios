@@ -37,7 +37,7 @@ extern char *program_name, current_filename[];
 extern FILE *msgfp;
 
 struct PathList {
-  char *path;
+  const char *path;
   PathList *next;
 };
 

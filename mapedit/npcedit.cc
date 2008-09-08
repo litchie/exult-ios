@@ -211,7 +211,7 @@ static void Npc_face_dropped
 	}
 
 					// Schedule names.
-static char *sched_names[32] = {
+static const char *sched_names[32] = {
 		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
 		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
 		"Loiter", "Wander", "Blacksmith", "Sleep", "Wait", "Sit",
