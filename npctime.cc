@@ -437,9 +437,10 @@ void Npc_sleep_timer::handle_event
 	    npc->get_flag(Obj_flags::asleep) == 0)
 		)
 		{
-					// Avoid waking Penumbra.
-		if (npc->get_schedule_type() != Schedule::sleep &&
-		    !npc->is_dead())	// Don't wake the dead.
+			// Avoid waking sleeping people.
+		if (npc->get_schedule_type() == Schedule::sleep)
+			npc->clear_sleep();
+		else if (!npc->is_dead())	// Don't wake the dead.
 			{
 			npc->clear_flag(Obj_flags::asleep);
 			int frnum = npc->get_framenum();

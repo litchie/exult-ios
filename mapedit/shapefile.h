@@ -155,6 +155,7 @@ public:
 	std::vector<Estudio_npc>& get_npcs()
 		{ return npcs; }
 	void setup();
+	bool read_npc(int num);
 	};
 
 /*
@@ -202,6 +203,7 @@ public:
 	~Shape_file_set();
 					// Create, or return existing one.
 	Shape_file_info *create(const char *basename);
+	Shape_file_info *get_npc_browser();
 	int size()
 		{ return files.size(); }
 	Shape_file_info *operator[](int i)

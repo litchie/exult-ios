@@ -2763,7 +2763,7 @@ int Actor::reduce_health
 	if (exp)
 		*exp = 0;
 		// Cheater, cheater.
-	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
+	if (is_dead() || (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0))))
 		return 0;
 
 	Monster_info *minf = get_info().get_monster_info_safe();
@@ -3150,6 +3150,9 @@ void Actor::force_sleep()
 	lay_down(false);	// Lie down.
 	}
 
+// Want to avoid full include.
+extern bool Bg_dont_wake(Game_window *gwin, Actor *npc);
+
 /*
  *	Set flag.
  */
@@ -3166,9 +3169,8 @@ void Actor::set_flag
 	case Obj_flags::asleep:
 		if (minf->sleep_safe() || minf->power_safe())
 			return;		// Don't do anything.
-					// Check sched. to avoid waking
-					//   Penumbra.
-		if (schedule_type == Schedule::sleep)
+					// Avoid waking Penumbra.
+		if (schedule_type == Schedule::sleep && Bg_dont_wake(gwin, this))
 			break;
 					// Set timer to wake in a few secs.
 		need_timers()->start_sleep();
@@ -5119,7 +5121,9 @@ void Npc_actor::handle_event
 						// Not if already in combat.
 					(schedule_type != Schedule::combat ||
 						// Patrol schedule already does this.
-						schedule_type != Schedule::patrol) &&
+						schedule_type != Schedule::patrol ||
+						schedule_type != Schedule::sleep ||
+						schedule_type != Schedule::wait) &&
 					!rand()%4)	// Don't do it every time.
 				{
 				schedule->seek_foes();

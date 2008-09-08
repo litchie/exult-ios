@@ -405,7 +405,12 @@ void ActionTryKeys(int *params)
 				if (!keys[i]->inside_locked())
 					{
 					// intercept the click_on_item call made by the key-usecode
-					gwin->get_usecode()->intercept_click_on_item(obj);
+					Usecode_machine *ucmachine = gwin->get_usecode();
+					Game_object *oldtarg;
+					Tile_coord *oldtile;
+					ucmachine->save_intercept(oldtarg, oldtile);
+					ucmachine->intercept_click_on_item(obj);
+					ucmachine->restore_intercept(oldtarg, oldtile);
 					keys[0]->activate();
 					return;
 					}

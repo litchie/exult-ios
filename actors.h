@@ -429,6 +429,7 @@ public:
 		{
 		target_object = 0;
 		target_tile = t;
+		target_tile.fixme();
 		attack_weapon = w;
 		}
 	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);

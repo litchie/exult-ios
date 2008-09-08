@@ -1870,7 +1870,7 @@ Usecode_internal::Usecode_internal
 	    saved_pos(-1, -1, -1),
 	    saved_map(-1),
 	    String(0), telekenesis_fun(-1), stack(new Usecode_value[1024]),
-		intercept_item(0), temp_to_be_deleted(0)
+		intercept_item(0), intercept_tile(0), temp_to_be_deleted(0)
 #ifdef USECODE_DEBUGGER
 		, on_breakpoint(false)
 #endif

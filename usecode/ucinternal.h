@@ -404,6 +404,7 @@ class Usecode_internal : public Usecode_machine
 	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
+	Tile_coord *intercept_tile;
 	Game_object *temp_to_be_deleted;
 
 	// execution functions
@@ -476,10 +477,34 @@ public:
 	virtual void read();		// Read in 'gamedat/usecode.dat'.
 
 	virtual void intercept_click_on_item(Game_object *obj) 
-		{ intercept_item = obj; }
+		{
+		intercept_item = obj;
+		delete intercept_tile;
+		intercept_tile = 0;
+		}
 	virtual Game_object *get_intercept_click_on_item() const
 		{ return intercept_item; }
-
+	virtual void intercept_click_on_tile(Tile_coord *t)
+		{
+		intercept_item = 0;
+		delete intercept_tile;
+		intercept_tile = t;
+		}
+	virtual Tile_coord *get_intercept_click_on_tile() const
+		{ return intercept_tile; }
+	virtual void save_intercept(Game_object *&obj, Tile_coord *&t)
+		{
+		obj = intercept_item;
+		t = intercept_tile;
+		intercept_item = 0;
+		intercept_tile = 0;
+		}
+	virtual void restore_intercept(Game_object *obj, Tile_coord *t)
+		{
+		intercept_item = obj;
+		delete intercept_tile;
+		intercept_tile = t;
+		}
 };
 
 

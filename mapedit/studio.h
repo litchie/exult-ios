@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef STUDIO_H
 
+#define STUDIO_H
+
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <vector>
@@ -43,6 +45,7 @@ class Locator;
 class Usecode_browser;
 class Combo_editor;
 class Exec_box;
+class BaseGameInfo;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -113,11 +116,14 @@ private:
 	Exec_box		*compile_box;
 					// Usecode browser:
 	Usecode_browser		*ucbrowsewin;
+					// Game info. editor:
+	GtkWidget		*gameinfowin;
 					// Which game type:
 	Exult_Game game_type;
 	bool expansion;
 	int curr_game;	// Which game is loaded
 	int curr_mod;	// Which mod is loaded, or -1 for none
+	std::string game_encoding;	// Character set for current game/mod.
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -285,6 +291,10 @@ public:
 					// Games.
 	void open_game_dialog(bool createmod=false);
 
+					// Game info.
+	void set_game_information();
+	void show_charset();
+
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
@@ -325,6 +335,11 @@ public:
 	bool has_expansion() const { return expansion; }
 	void set_shapeinfo_modified()
 		{ shape_info_modified = true; }
+	const string& get_encoding() const
+		{ return game_encoding; }
+	void set_encoding(const string& enc)
+		{ game_encoding = enc; }
+	BaseGameInfo *get_game() const;
 };
 
 					// Utilities:
@@ -338,5 +353,42 @@ GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
 							gpointer func_data);
 bool Copy_file(const char *src, const char *dest);
 }
+
+
+class utf8Str
+	{
+	protected:
+		gchar *_convstr;
+		void convert(const char *str, const char *enc);
+	public:
+		utf8Str(const char *str)
+			{ convert(str, ExultStudio::get_instance()->get_encoding().c_str()); }
+		utf8Str(const char *str, const char *enc)
+			{ convert(str, enc); }
+		~utf8Str()
+			{ if (_convstr) g_free(_convstr); }
+		const char *get_str() const
+			{ return _convstr ? (const char *)_convstr : ""; }
+		operator const char *() const
+			{ return get_str(); }
+	};
+
+class codepageStr
+	{
+	protected:
+		gchar *_convstr;
+		void convert(const char *str, const char *enc);
+	public:
+		codepageStr(const char *str)
+			{ convert(str, ExultStudio::get_instance()->get_encoding().c_str()); }
+		codepageStr(const char *str, const char *enc)
+			{ convert(str, enc); }
+		~codepageStr()
+			{ if (_convstr) g_free(_convstr); }
+		const char *get_str() const
+			{ return _convstr ? (const char *)_convstr : ""; }
+		operator const char *() const
+			{ return get_str(); }
+	};
 
 #endif
