@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "shapedraw.h"
 #include "items.h"
+#include "shapelst.h"
 
 using	std::cout;
 using	std::endl;
@@ -2859,6 +2860,8 @@ void ExultStudio::init_shape_notebook
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
 		Frame_name_info *first = 0;
+		codepageStr locsname(get_text_entry("shinfo_name"));
+		const char *sname = locsname.get_str();
 		for (std::vector<Frame_name_info>::iterator it = nmvec.begin();
 			it != nmvec.end(); ++it)
 			{
@@ -2869,17 +2872,18 @@ void ExultStudio::init_shape_notebook
 			if (!first)
 				first = &*it;
 			int type = nmit.get_type(), msgid = nmit.get_msgid();
-			const char *sname = get_text_entry("shinfo_name");
 			const char *msgstr = type == -255 ? sname :
 				(type == -1 || msgid >= num_misc_names ? 0 : misc_names[msgid]);
 			int otmsg = nmit.get_othermsg();
 			int otype = type <= 0 ? -1 : (otmsg < 0 ? otmsg : 2);
 			const char *otmsgstr = otype == -255 ? sname :
 				(otype == -1 || otmsg >= num_misc_names ? 0 : misc_names[otmsg]);
+			utf8Str utf8msg(msgstr);
+			utf8Str utf8otmsg(otmsgstr);
 			gtk_tree_store_set(store, &iter, FNAME_FRAME, nmit.get_frame(),
 				FNAME_QUALITY, nmit.get_quality(), FNAME_MSGTYPE, type,
-				FNAME_MSGSTR, msgstr, FNAME_OTHERTYPE, otype,
-				FNAME_OTHERMSG, otmsgstr, FNAME_FROM_PATCH, nmit.from_patch(),
+				FNAME_MSGSTR, utf8msg.get_str(), FNAME_OTHERTYPE, otype,
+				FNAME_OTHERMSG, utf8otmsg.get_str(), FNAME_FROM_PATCH, nmit.from_patch(),
 				FNAME_MODIFIED, nmit.was_modified(), -1);
 			}
 		GtkTreeSelection *sel = gtk_tree_view_get_selection(nametree);
@@ -2889,15 +2893,16 @@ void ExultStudio::init_shape_notebook
 		gtk_tree_view_set_cursor(nametree, path, NULL, false);
 		gtk_tree_path_free(path);
 		int type = first->get_type(), msgid = first->get_msgid();
-		const char *sname = get_text_entry("shinfo_name");
 		const char *msgstr = type == -255 ? sname :
 			(type == -1 || msgid >= num_misc_names ? "" : misc_names[msgid]);
 		int otmsg = first->get_othermsg();
 		int otype = type <= 0 ? -1 : (otmsg < 0 ? otmsg : 2);
 		const char *otmsgstr = otype == -255 ? sname :
 			(otype == -1 || otmsg >= num_misc_names ? "" : misc_names[otmsg]);
+		utf8Str utf8msg(msgstr);
+		utf8Str utf8otmsg(otmsgstr);
 		Set_framenames_fields(first->get_frame(), first->get_quality(),
-				type, msgstr, otype, otmsgstr);
+				type, utf8msg, otype, utf8otmsg);
 		}
 	else
 		Set_framenames_fields();
@@ -3047,9 +3052,10 @@ private:
 	int Find_name_id(const char *msg)
 		{
 		ExultStudio *studio = ExultStudio::get_instance();
-		int idnum = studio->find_misc_name(msg);
+		codepageStr locmsg(msg);
+		int idnum = studio->find_misc_name(locmsg);
 		if (idnum < 0)
-			return studio->add_misc_name(msg);
+			return studio->add_misc_name(locmsg);
 		return idnum;
 		}
 public:
@@ -3497,7 +3503,9 @@ void ExultStudio::save_shape_notebook
 		info.clean_invalid_name_info();
 		}
 
-	shape_info_modified = true;
+	Shape_chooser *shpchoose = dynamic_cast<Shape_chooser *>(browser);
+	if (shpchoose)
+		shpchoose->update_statusbar();
 	}
 
 static inline void add_terminal_columns
@@ -3589,7 +3597,8 @@ void ExultStudio::open_shape_window
 	set_spin("shinfo_warmth_frame_num", 0, nframes - 1);
 	set_spin("shinfo_framenames_frame_num", 0, nframes - 1);
 					// Store name, #frames.
-	set_entry("shinfo_name", shname ? shname : "");
+	utf8Str utf8shname(shname ? shname : "");
+	set_entry("shinfo_name", utf8shname);
 //	set_spin("shinfo_num_frames", nframes);
 					// Show xright, ybelow.
 	Shape_frame *shape = ifile->get_shape(shnum, frnum);
@@ -3839,7 +3848,8 @@ void ExultStudio::save_shape_window
 	Vga_file *ifile = file_info->get_ifile();
 	if (info)			// If 'shapes.vga', get name.
 		{
-		const gchar *nm = get_text_entry("shinfo_name");
+		codepageStr locnm(get_text_entry("shinfo_name"));
+		const gchar *nm = locnm.get_str();
 		if (!nm)
 			nm = "";
 		char *oldname = get_shape_name(shnum);

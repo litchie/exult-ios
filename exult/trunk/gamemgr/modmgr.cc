@@ -91,7 +91,7 @@ ModInfo::ModInfo
 	const string& mod,
 	const string& path,
 	bool exp,
-	const Configuration& modconfig
+	const string& cfg
 	)
 	{
 	type = game;
@@ -99,6 +99,8 @@ ModInfo::ModInfo
 	mod_title = mod;
 	path_prefix = path;
 	expansion = exp;
+	configfile = cfg;
+	Configuration modconfig(configfile, "modinfo");
 
 	string config_path, default_dir, modversion, savedir, patchdir, gamedatdir;
 	
@@ -161,6 +163,11 @@ ModInfo::ModInfo
 		mods_dir("<" + path_prefix + "_MODS>"),
 		data_directory(mods_dir + "/" + mod_title),
 		mods_macro("__MODS__"), mod_path_macro("__MOD_PATH__");
+
+	// Read codepage first.
+	config_path = "mod_info/codepage";
+	default_dir = "CP437";	// DOS code page.
+	modconfig.value(config_path, codepage, default_dir.c_str());
 
 	const char *home = 0;
 	string home_game("");		// Gets $HOME/.exult/path_prefix/mod_title.
@@ -338,6 +345,11 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		config_path = base_cfg_path + "/static_path";
 		default_dir = data_directory + "/static";
 		config->value(config_path.c_str(), static_dir, default_dir.c_str());
+
+		// Read codepage too.
+		config_path = base_cfg_path + "/codepage";
+		default_dir = "CP437";	// DOS code page.
+		config->value(config_path, codepage, default_dir.c_str());
 		}
 
 	string initgam_path(static_dir + "/initgame.dat");
@@ -420,7 +432,7 @@ void ModManager::gather_mods()
 					filenames[i].size() - ptroff - 4);
 			modlist.push_back(ModInfo(type, cfgname,
 					modtitle, path_prefix, expansion,
-					Configuration(filenames[i], "modinfo")));
+					filenames[i]));
 			}
 		}
 	}
@@ -442,7 +454,7 @@ int ModManager::find_mod_index (const string& name)
 	return -1;
 	}
 
-void ModManager::add_mod (const string& mod, Configuration& modconfig)
+void ModManager::add_mod (const string& mod, const string& modconfig)
 	{
 	modlist.push_back(ModInfo(type, cfgname, mod, path_prefix,
 			expansion, modconfig));

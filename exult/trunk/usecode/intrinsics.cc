@@ -871,7 +871,19 @@ USECODE_INTRINSIC(click_on_item)
 		{
 		obj = intercept_item;
 		intercept_item = 0;
+		if (intercept_tile)
+			{
+			delete intercept_tile;
+			intercept_tile = 0;
+			}
 		t = obj->get_tile();
+		}
+	else if (intercept_tile)
+		{
+		obj = 0;
+		t = *intercept_tile;
+		delete intercept_tile;
+		intercept_tile = 0;
 		}
 		// Special case for weapon hit:
 	else if (event == weapon && caller_item)
@@ -922,6 +934,42 @@ USECODE_INTRINSIC(click_on_item)
 USECODE_INTRINSIC(set_intercept_item)
 {
 	intercept_item = get_item(parms[0]);
+	if (intercept_item)
+		{
+		if (intercept_tile)
+			delete intercept_tile;
+		intercept_tile = 0;
+		}
+	else
+		{
+		// Not an item, or null item.
+		int sz = parms[0].get_array_size();
+		switch (sz)
+			{
+			case 2:
+			case 3:
+			case 4:
+				{
+				int off = sz == 4 ? 1 : 0;
+				// 2: (x, y) loc.
+				// 3: (x, y, z) loc.
+				// 4: (obj, x, y, z) loc.
+				intercept_tile = new Tile_coord(
+						parms[0].get_elem(0+off).get_int_value(),
+						parms[0].get_elem(1+off).get_int_value(),
+						sz >= 3 ? parms[0].get_elem(2+off).get_int_value() : 0);
+				}
+				break;
+			default:
+				{
+				// Fallback to avatar's position.
+				// Maybe try avatar's target?
+				intercept_tile = new Tile_coord(
+						gwin->get_main_actor()->get_tile());
+				break;
+				}
+			}
+		}
 	return no_ret;
 }
 

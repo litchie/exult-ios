@@ -371,6 +371,21 @@
 		      <signal name="activate" handler="on_open_barge_activate" last_modification_time="Sun, 17 Oct 2004 00:31:23 GMT"/>
 		    </widget>
 		  </child>
+
+		  <child>
+		    <widget class="GtkSeparatorMenuItem" id="separator11">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="set_game_information">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">_Set Game Information</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_set_game_information_activate" last_modification_time="Sat, 06 Sep 2008 18:15:31 GMT"/>
+		    </widget>
+		  </child>
 		</widget>
 	      </child>
 	    </widget>
@@ -26296,6 +26311,509 @@ will be added automatically</property>
 	<packing>
 	  <property name="padding">0</property>
 	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+    </widget>
+  </child>
+</widget>
+
+<widget class="GtkWindow" id="game_information">
+  <property name="title" translatable="yes">Set Game Information</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">True</property>
+  <property name="resizable">True</property>
+  <property name="destroy_with_parent">False</property>
+  <property name="decorated">True</property>
+  <property name="skip_taskbar_hint">False</property>
+  <property name="skip_pager_hint">False</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+  <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
+  <property name="focus_on_map">True</property>
+  <property name="urgency_hint">False</property>
+
+  <child>
+    <widget class="GtkVBox" id="vbox115">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child>
+	<widget class="GtkHBox" id="hbox143">
+	  <property name="visible">True</property>
+	  <property name="homogeneous">False</property>
+	  <property name="spacing">0</property>
+
+	  <child>
+	    <widget class="GtkVBox" id="vbox115">
+	      <property name="visible">True</property>
+	      <property name="homogeneous">False</property>
+	      <property name="spacing">0</property>
+
+	      <child>
+		<widget class="GtkFrame" id="frame359">
+		  <property name="visible">True</property>
+		  <property name="label_xalign">0</property>
+		  <property name="label_yalign">0.5</property>
+		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+
+		  <child>
+		    <widget class="GtkScrolledWindow" id="scrolledwindow18">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+		      <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+		      <property name="shadow_type">GTK_SHADOW_IN</property>
+		      <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
+
+		      <child>
+			<widget class="GtkTextView" id="gameinfo_menustring">
+			  <property name="visible">True</property>
+			  <property name="can_focus">True</property>
+			  <property name="editable">True</property>
+			  <property name="overwrite">False</property>
+			  <property name="accepts_tab">True</property>
+			  <property name="justification">GTK_JUSTIFY_LEFT</property>
+			  <property name="wrap_mode">GTK_WRAP_NONE</property>
+			  <property name="cursor_visible">True</property>
+			  <property name="pixels_above_lines">0</property>
+			  <property name="pixels_below_lines">0</property>
+			  <property name="pixels_inside_wrap">0</property>
+			  <property name="left_margin">0</property>
+			  <property name="right_margin">0</property>
+			  <property name="indent">0</property>
+			  <property name="text" translatable="yes"></property>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="label399">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Menu string</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
+		    </widget>
+		    <packing>
+		      <property name="type">label_item</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">True</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkFrame" id="frame358">
+		  <property name="visible">True</property>
+		  <property name="label_xalign">0</property>
+		  <property name="label_yalign">0.5</property>
+		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+
+		  <child>
+		    <widget class="GtkOptionMenu" id="gameinfo_charset">
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="history">0</property>
+		      <signal name="changed" handler="on_gameinfo_charset_changed" last_modification_time="Sat, 06 Sep 2008 17:23:00 GMT"/>
+
+		      <child internal-child="menu">
+			<widget class="GtkMenu" id="menu41">
+			  <property name="visible">True</property>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="dos_western_(cp-437)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">DOS Western (CP-437)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="western_(iso-8859-1)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Western (ISO-8859-1)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="western_(windows-1252)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Western (Windows-1252)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="western_(iso-8859-15)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Western (ISO-8859-15)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="central_european_(iso-8859-2)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Central European (ISO-8859-2)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="central_european_(windows-1250)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Central European (Windows-1250)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="south_european_(iso-8859-3)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">South European (ISO-8859-3)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="baltic_(iso-8859-4)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Baltic (ISO-8859-4)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="baltic_(windows-1257)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Baltic (Windows-1257)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="baltic_(iso-8859-13)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Baltic (ISO-8859-13)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="cyrillic_(iso-8859-5)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Cyrillic (ISO-8859-5)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="cyrillic_(windows-1251)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Cyrillic (Windows-1251)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="cyrillic_(koi8-r)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Cyrillic (KOI8-R)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="cyrillic/russian_(cp-866)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Cyrillic/Russian (CP-866)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="cyrillic/ukrainian_(koi8-u)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Cyrillic/Ukrainian (KOI8-U)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="arabic_(iso-8859-6)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Arabic (ISO-8859-6)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="arabic_(windows-1256)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Arabic (Windows-1256)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="greek_(iso-8859-7)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Greek (ISO-8859-7)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="greek_(windows-1253)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Greek (Windows-1253)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="hebrew_visual_(iso-8859-8)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Hebrew Visual (ISO-8859-8)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="hebrew_(windows-1255)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Hebrew (Windows-1255)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="turkish_(iso-8859-9)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Turkish (ISO-8859-9)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="turkish_(windows-1254)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Turkish (Windows-1254)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="nordic_(iso-8859-10)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Nordic (ISO-8859-10)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="thai_(iso-8859-11)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Thai (ISO-8859-11)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="thai_(windows-874)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Thai (Windows-874)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="celtic_(iso-8859-14)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Celtic (ISO-8859-14)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+
+			  <child>
+			    <widget class="GtkMenuItem" id="romanian_(iso-8859-16)1">
+			      <property name="visible">True</property>
+			      <property name="label" translatable="yes">Romanian (ISO-8859-16)</property>
+			      <property name="use_underline">True</property>
+			    </widget>
+			  </child>
+			</widget>
+		      </child>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkLabel" id="label398">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Character Set</property>
+		      <property name="use_underline">False</property>
+		      <property name="use_markup">False</property>
+		      <property name="justify">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap">False</property>
+		      <property name="selectable">False</property>
+		      <property name="xalign">0.5</property>
+		      <property name="yalign">0.5</property>
+		      <property name="xpad">0</property>
+		      <property name="ypad">0</property>
+		      <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		      <property name="width_chars">-1</property>
+		      <property name="single_line_mode">False</property>
+		      <property name="angle">0</property>
+		    </widget>
+		    <packing>
+		      <property name="type">label_item</property>
+		    </packing>
+		  </child>
+		</widget>
+		<packing>
+		  <property name="padding">0</property>
+		  <property name="expand">False</property>
+		  <property name="fill">True</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">False</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+
+	  <child>
+	    <widget class="GtkFrame" id="frame360">
+	      <property name="visible">True</property>
+	      <property name="label_xalign">0</property>
+	      <property name="label_yalign">0.5</property>
+	      <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+
+	      <child>
+		<widget class="GtkScrolledWindow" id="scrolledwindow19">
+		  <property name="visible">True</property>
+		  <property name="can_focus">True</property>
+		  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
+		  <property name="vscrollbar_policy">GTK_POLICY_ALWAYS</property>
+		  <property name="shadow_type">GTK_SHADOW_IN</property>
+		  <property name="window_placement">GTK_CORNER_TOP_LEFT</property>
+
+		  <child>
+		    <widget class="GtkTextView" id="gameinfo_codepage_display">
+		      <property name="width_request">400</property>
+		      <property name="height_request">270</property>
+		      <property name="visible">True</property>
+		      <property name="can_focus">True</property>
+		      <property name="editable">True</property>
+		      <property name="overwrite">False</property>
+		      <property name="accepts_tab">True</property>
+		      <property name="justification">GTK_JUSTIFY_LEFT</property>
+		      <property name="wrap_mode">GTK_WRAP_NONE</property>
+		      <property name="cursor_visible">True</property>
+		      <property name="pixels_above_lines">0</property>
+		      <property name="pixels_below_lines">0</property>
+		      <property name="pixels_inside_wrap">0</property>
+		      <property name="left_margin">0</property>
+		      <property name="right_margin">0</property>
+		      <property name="indent">0</property>
+		      <property name="text" translatable="yes"></property>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="label400">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">Characters in Chosen Set</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
+		</widget>
+		<packing>
+		  <property name="type">label_item</property>
+		</packing>
+	      </child>
+	    </widget>
+	    <packing>
+	      <property name="padding">0</property>
+	      <property name="expand">True</property>
+	      <property name="fill">True</property>
+	    </packing>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkHButtonBox" id="hbuttonbox21">
+	  <property name="visible">True</property>
+	  <property name="layout_style">GTK_BUTTONBOX_SPREAD</property>
+	  <property name="spacing">30</property>
+
+	  <child>
+	    <widget class="GtkButton" id="gameinfo_apply">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="on_gameinfo_apply_clicked" last_modification_time="Sat, 06 Sep 2008 17:22:37 GMT"/>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="gameinfo_cancel">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <signal name="clicked" handler="gtk_widget_hide" object="game_information" last_modification_time="Sat, 06 Sep 2008 18:18:22 GMT"/>
+	    </widget>
+	  </child>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
 	  <property name="fill">True</property>
 	</packing>
       </child>

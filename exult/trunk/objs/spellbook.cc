@@ -300,7 +300,9 @@ void Spellbook_object::execute_spell
 	// We use intercept_item for spells cast from readied spellbook
 	// while in combat.
 	// First, save current.
-	Game_object *old_intercept = ucmachine->get_intercept_click_on_item();
+	Game_object *oldtarg;
+	Tile_coord *oldtile;
+	ucmachine->save_intercept(oldtarg, oldtile);
 	if (in_combat)	// Use caster's target if for combat.
 		ucmachine->intercept_click_on_item(act->get_target());
 	else	// Otherwise, disable intercept for gump casting.
@@ -311,7 +313,7 @@ void Spellbook_object::execute_spell
 			    Usecode_machine::double_click);
 
 	// Restore previous intercept_item.
-	ucmachine->intercept_click_on_item(old_intercept);
+	ucmachine->restore_intercept(oldtarg, oldtile);
 	}
 
 /*

@@ -254,6 +254,44 @@ Object_browser *Npcs_file_info::create_browser
 	}
 
 /*
+ *	Read in an NPC from Exult.
+ */
+bool Npcs_file_info::read_npc(int num)
+	{
+	if (num > npcs.size())
+		npcs.resize(num+1);
+	ExultStudio *studio = ExultStudio::get_instance();
+	int server_socket = studio->get_server_socket();
+	unsigned char buf[Exult_server::maxlength];
+	Exult_server::Msg_type id;
+	int datalen;
+	unsigned char *ptr, *newptr;
+	ptr = newptr = &buf[0];
+	Write2(ptr, num);
+	if (!studio->send_to_server(Exult_server::npc_info, buf, ptr - buf) ||
+			!Exult_server::wait_for_response(server_socket, 100) ||
+			(datalen = Exult_server::Receive_data(server_socket, 
+						id, buf, sizeof(buf))) == -1 ||
+			id != Exult_server::npc_info ||
+			Read2(newptr) != num)
+		return false;
+
+	npcs[num].shapenum = Read2(newptr);	// -1 if unused.
+	if (npcs[num].shapenum >= 0)
+		{
+		npcs[num].unused = (*newptr++ != 0);
+		utf8Str utf8name((char *) newptr);
+		npcs[num].name = utf8name;
+		}
+	else
+		{
+		npcs[num].unused = true;
+		npcs[num].name = "";
+		}
+	return true;
+	}
+
+/*
  *	Get Exult's list of NPC's.
  */
 
@@ -301,7 +339,8 @@ void Npcs_file_info::setup
 		if (npcs[i].shapenum >= 0)
 			{
 			npcs[i].unused = (*newptr++ != 0);
-			npcs[i].name = (char *) newptr;
+			utf8Str utf8name((char *) newptr);
+			npcs[i].name = utf8name;
 			}
 		else
 			{
@@ -683,6 +722,23 @@ Shape_file_info *Shape_file_set::create
 		}
 	cerr << "Error opening image file '" << basename << "'.\n";
 	return 0;
+	}
+
+/*
+ *	Locates the NPC browser.
+ *
+ *	Output: ->file info, or 0 if not found.
+ */
+
+Shape_file_info *Shape_file_set::get_npc_browser
+	(
+	)
+	{
+	for (vector<Shape_file_info *>::iterator it = files.begin(); 
+					it != files.end(); ++it)
+		if (strcasecmp((*it)->basename.c_str(), "npcs") == 0)
+			return *it;	// Found it.
+	return 0;	// Doesn't exist yet.
 	}
 
 /*

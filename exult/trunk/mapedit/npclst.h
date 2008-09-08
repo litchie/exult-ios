@@ -116,6 +116,7 @@ public:
 	virtual void locate(bool upwards);	// Locate NPC on game map.
 					// Turn off selection.
 	void unselect(bool need_render = true);
+	void update_npc(int num);
 	void update_statusbar();
 	int is_selected()		// Is a shape selected?
 		{ return selected >= 0; }

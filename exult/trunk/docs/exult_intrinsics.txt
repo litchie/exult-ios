@@ -1439,9 +1439,13 @@ misc[4] UI_click_on_item()
 
 UI_set_intercept_item(object obj)                                        [Exult]
 obj->set_intercept_item()
+UI_set_intercept_item(int obj[2])
+UI_set_intercept_item(int obj[3])
+UI_set_intercept_item(misc obj[4])
 
-    Sets 'obj' as the return object of the next 'UI_click_on_item' intrinsic'
-    call.
+    Sets 'obj' as the return value of the next 'UI_click_on_item' intrinsic'
+    call. 'obj' can be an object reference, a location (2 or 3 coordinates) or
+    the return of a 'UI_click_on_item' intrinsic' call.
 
 int UI_input_numeric_value(int min, int max, int step, int default)
 
@@ -1582,7 +1586,7 @@ obj->book_mode()
     ****** SI SPECIFIC ******
     In SI, there is one additional shape of 'obj' which displays a scroll gump:
     it is shape 707. Additionally, there are two shapes which will display
-    serpentine runes: shape 707 (seprentine scroll) and shape 705 (serpentine
+    serpentine runes: shape 797 (serpentine scroll) and shape 705 (serpentine
     book). In both cases, If the avatar's 'READ' flag is set, any serpentine
     runes will be translated to normal runes.
     **** END SI SPECIFIC ****

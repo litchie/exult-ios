@@ -34,6 +34,7 @@ class Game_object;
 class Actor;
 class Usecode_value;
 class Usecode_class_symbol;
+class Tile_coord;
 
 #include "exceptions.h"
 #include "singles.h"
@@ -105,6 +106,10 @@ public:
 	// intercept the next click_on_item intrinsic
 	virtual void intercept_click_on_item(Game_object *obj) = 0;
 	virtual Game_object *get_intercept_click_on_item() const = 0;
+	virtual void intercept_click_on_tile(Tile_coord *t) = 0;
+	virtual Tile_coord *get_intercept_click_on_tile() const = 0;
+	virtual void save_intercept(Game_object *&obj, Tile_coord *&t) = 0;
+	virtual void restore_intercept(Game_object *obj, Tile_coord *t) = 0;
 
 	};
 
