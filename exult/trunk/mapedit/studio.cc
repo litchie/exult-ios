@@ -3066,7 +3066,7 @@ void ExultStudio::set_game_information
  *	string using specified codepage. If the conversion fails,
  *	tries a lossy conversion to the same codepage.
  */
-void codepageStr::convert(const char *str, const char *enc)
+void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc)
 	{
 	GError *error = 0;
 	gsize bytes_read, bytes_written;
@@ -3104,7 +3104,9 @@ void codepageStr::convert(const char *str, const char *enc)
 			g_utf8_strncpy(illegal, ptr, 1);
 			char *end = g_utf8_next_char(illegal);
 			*end = 0;
-			int len = end - ptr;
+			// Must always be < 5, but just to be safe...
+			//int len = end - ptr;
+			ptrdiff_t len = end - ptr;
 			size_t pos;
 
 			while ((pos = force.find(illegal)) != string::npos)
@@ -3135,7 +3137,7 @@ void codepageStr::convert(const char *str, const char *enc)
  *	and converts into a UTF-8 string. If the conversion fails,
  *	tries a lossy conversion from the same codepage.
  */
-void utf8Str::convert(const char *str, const char *enc)
+void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc)
 	{
 	GError *error = 0;
 	gsize bytes_read, bytes_written;

@@ -354,7 +354,47 @@ GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
 bool Copy_file(const char *src, const char *dest);
 }
 
+class convertToUTF8
+	{
+	private:
+		void convert(gchar *&_convstr, const char *str, const char *enc);
+	public:
+		void operator() (gchar *&_convstr, const char *str, const char *enc)
+			{ convert(_convstr, str, enc); }
+	};
 
+class convertFromUTF8
+	{
+	private:
+		void convert(gchar *&_convstr, const char *str, const char *enc);
+	public:
+		void operator() (gchar *&_convstr, const char *str, const char *enc)
+			{ convert(_convstr, str, enc); }
+	};
+
+template <class T>
+class strCodepageConvert
+	{
+	protected:
+		gchar *_convstr;
+		T Convert;
+	public:
+		strCodepageConvert(const char *str)
+			{ Convert(_convstr, str, ExultStudio::get_instance()->get_encoding().c_str()); }
+		strCodepageConvert(const char *str, const char *enc)
+			{ Convert(_convstr, str, enc); }
+		~strCodepageConvert()
+			{ if (_convstr) g_free(_convstr); }
+		const char *get_str() const
+			{ return _convstr ? (const char *)_convstr : ""; }
+		operator const char *() const
+			{ return get_str(); }
+	};
+
+typedef strCodepageConvert<convertToUTF8> utf8Str;
+typedef strCodepageConvert<convertFromUTF8> codepageStr;
+
+/*
 class utf8Str
 	{
 	protected:
@@ -390,5 +430,6 @@ class codepageStr
 		operator const char *() const
 			{ return get_str(); }
 	};
+*/
 
 #endif
