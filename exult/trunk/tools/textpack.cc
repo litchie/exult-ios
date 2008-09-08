@@ -85,7 +85,7 @@ static void Read_flex
 static void Write_flex
 	(
 	const char *filename,		// File to write.
-	char *title,			// For the header.
+	const char *title,			// For the header.
 	vector<char *>& strings		// Okay if some are null.
 	)
 	{

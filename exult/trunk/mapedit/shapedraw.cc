@@ -261,7 +261,7 @@ void Shape_draw::enable_drop
 	drop_callback = callback;
 	drop_user_data = udata;
 	GtkTargetEntry tents[1];
-	tents[0].target = U7_TARGET_SHAPEID_NAME;
+	tents[0].target = const_cast<char *>(U7_TARGET_SHAPEID_NAME);
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_SHAPEID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
@@ -325,7 +325,7 @@ void Shape_draw::set_drag_icon
 
 void Shape_draw::start_drag
 	(
-	char *target,			// Target (ie, U7_TARGET_SHAPEID_NAME).
+	const char *target,			// Target (ie, U7_TARGET_SHAPEID_NAME).
 	int id,				// ID (ie, U7_TARGET_SHAPEID).
 	GdkEvent *event			// Event that started this.
 	)
@@ -334,7 +334,7 @@ void Shape_draw::start_drag
 		return;
 	dragging = true;
 	GtkTargetEntry tents[1];// Set up for dragging.
-	tents[0].target = target;
+	tents[0].target = const_cast<char *>(target);
 	tents[0].flags = 0;
 	tents[0].info = id;
 	GtkTargetList *tlist = gtk_target_list_new(&tents[0], 1);
@@ -343,3 +343,4 @@ void Shape_draw::start_drag
 			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE),
 			1, event);
 	}
+

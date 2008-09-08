@@ -686,7 +686,7 @@ void Npc_chooser::enable_drop
 	gtk_widget_realize(draw);//???????
 #ifndef WIN32
 	GtkTargetEntry tents[1];
-	tents[0].target = U7_TARGET_NPCID_NAME;
+	tents[0].target = const_cast<char *>(U7_TARGET_NPCID_NAME);
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_NPCID;
 	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,

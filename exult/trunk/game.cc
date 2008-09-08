@@ -426,7 +426,7 @@ int Game::get_avskin ()
 }
 
 // Assume safe
-void Game::set_avname (char *name)
+void Game::set_avname (const char *name)
 {
 	strcpy (av_name, name);
 }

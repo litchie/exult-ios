@@ -2447,7 +2447,7 @@ void ExultStudio::init_shape_notebook
 	set_toggle("shinfo_obstacley_check", info.is_yobstacle());
 	set_toggle("shinfo_occludes_check", info.occludes());
 					// More flags, originally hard-coded:
-	static char *shpflags[] = {
+	static const char *shpflags[] = {
 				"shinfo_shape_flag0",
 				"shinfo_shape_flag1",
 				"shinfo_shape_flag2",
@@ -2478,7 +2478,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx(), 0, 255);
 					// Show usecode in hex.
 		set_entry("shinfo_weapon_uc", winfo->get_usecode(), true);
-		static char *powers[] = {
+		static const char *powers[] = {
 					"shinfo_weapon_pow0",
 					"shinfo_weapon_pow1",
 					"shinfo_weapon_pow2",
@@ -2513,7 +2513,7 @@ void ExultStudio::init_shape_notebook
 		set_optmenu("shinfo_ammo_sprite", proj_type);
 		set_spin("shinfo_ammo_proj", proj >= 0 ? proj : 0, proj >= 0);
 		set_optmenu("shinfo_ammo_type", ainfo->get_damage_type());
-		static char *powers[] = {
+		static const char *powers[] = {
 					"shinfo_ammo_pow0",
 					"shinfo_ammo_pow1",
 					"shinfo_ammo_pow2",
@@ -2538,7 +2538,7 @@ void ExultStudio::init_shape_notebook
 	set_visible("shinfo_armor_box", arinfo != 0);
 	if (arinfo)			// Setup armor page.
 		{
-		static char *immun[] = {"shinfo_armor_immun0",
+		static const char *immun[] = {"shinfo_armor_immun0",
 					"shinfo_armor_immun1",
 					"shinfo_armor_immun2",
 					"shinfo_armor_immun3",
@@ -2555,7 +2555,7 @@ void ExultStudio::init_shape_notebook
 	set_visible("shinfo_npcflags_box", aflags != 0);
 	if (aflags)
 		{
-		static char *flags[] = {	"shinfo_actor_flag0",
+		static const char *flags[] = {	"shinfo_actor_flag0",
 					"shinfo_actor_flag1",
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
@@ -2580,7 +2580,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_monster_food", info.get_monster_food());
 		set_optmenu("shinfo_monster_align", minfo->get_alignment());
 		set_optmenu("shinfo_monster_attackmode", minfo->get_attackmode());
-		static char *vuln[] = {	"shinfo_monster_vuln0",
+		static const char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
 					"shinfo_monster_vuln2",
 					"shinfo_monster_vuln3",
@@ -2588,7 +2588,7 @@ void ExultStudio::init_shape_notebook
 					"shinfo_monster_vuln5",
 					"shinfo_monster_vuln6",
 					"shinfo_monster_vuln7" };
-		static char *immun[] = {"shinfo_monster_immun0",
+		static const char *immun[] = {"shinfo_monster_immun0",
 					"shinfo_monster_immun1",
 					"shinfo_monster_immun2",
 					"shinfo_monster_immun3",
@@ -2611,7 +2611,7 @@ void ExultStudio::init_shape_notebook
 		set_toggle("shinfo_monster_death_safe", minfo->death_safe());
 		set_toggle("shinfo_monster_power_safe", minfo->power_safe());
 		set_toggle("shinfo_monster_cant_die", minfo->cant_die());
-		static char *flags[] = {"shinfo_monster_flag0",
+		static const char *flags[] = {"shinfo_monster_flag0",
 					"shinfo_monster_flag1",
 					"shinfo_monster_flag2",
 					"shinfo_monster_flag3",
@@ -2693,7 +2693,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_npcpaperdoll_hframe", npcinf->get_head_frame());
 		set_spin("shinfo_npcpaperdoll_hhelm", npcinf->get_head_frame_helm());
 		set_spin("shinfo_npcpaperdoll_ashape", npcinf->get_arms_shape());
-		static char *arm_names[] = {"shinfo_npcpaperdoll_aframe",
+		static const char *arm_names[] = {"shinfo_npcpaperdoll_aframe",
 			"shinfo_npcpaperdoll_atwohanded",
 			"shinfo_npcpaperdoll_astaff"
 			};
@@ -3170,7 +3170,7 @@ void ExultStudio::save_shape_notebook
 			get_toggle("shinfo_obstacley_check"));
 	info.set_occludes(get_toggle("shinfo_occludes_check"));
 					// More flags, originally hard-coded:
-	static char *shpflags[] = {
+	static const char *shpflags[] = {
 				"shinfo_shape_flag0",
 				"shinfo_shape_flag1",
 				"shinfo_shape_flag2",
@@ -3207,7 +3207,7 @@ void ExultStudio::save_shape_notebook
 				get_spin("shinfo_weapon_hitsfx"));
 					// Get usecode in hex.
 		winfo->set_usecode(get_num_entry("shinfo_weapon_uc"));
-		static char *powers[] = {
+		static const char *powers[] = {
 					"shinfo_weapon_pow0",
 					"shinfo_weapon_pow1",
 					"shinfo_weapon_pow2",
@@ -3244,7 +3244,7 @@ void ExultStudio::save_shape_notebook
 			:  proj_type == 2 ? -3		// Weapon.
 			:  -1;				// None.
 		ainfo->set_sprite_shape(proj);
-		static char *powers[] = {
+		static const char *powers[] = {
 					"shinfo_ammo_pow0",
 					"shinfo_ammo_pow1",
 					"shinfo_ammo_pow2",
@@ -3278,7 +3278,7 @@ void ExultStudio::save_shape_notebook
 	else
 		{
 		Armor_info *arinfo = info.set_armor_info(true);
-		static char *immun[] = {"shinfo_armor_immun0",
+		static const char *immun[] = {"shinfo_armor_immun0",
 					"shinfo_armor_immun1",
 					"shinfo_armor_immun2",
 					"shinfo_armor_immun3",
@@ -3292,7 +3292,7 @@ void ExultStudio::save_shape_notebook
 		info.set_actor_flags(0);
 	else
 		{
-		static char *flags[] = {	"shinfo_actor_flag0",
+		static const char *flags[] = {	"shinfo_actor_flag0",
 					"shinfo_actor_flag1",
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
@@ -3318,7 +3318,7 @@ void ExultStudio::save_shape_notebook
 		minfo->set_hitsfx(get_spin("shinfo_monster_sfx"));
 		minfo->set_alignment(get_optmenu("shinfo_monster_align"));
 		minfo->set_attackmode(get_optmenu("shinfo_monster_attackmode"));
-		static char *vuln[] = {	"shinfo_monster_vuln0",
+		static const char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
 					"shinfo_monster_vuln2",
 					"shinfo_monster_vuln3",
@@ -3326,7 +3326,7 @@ void ExultStudio::save_shape_notebook
 					"shinfo_monster_vuln5",
 					"shinfo_monster_vuln6",
 					"shinfo_monster_vuln7" };
-		static char *immun[] = {"shinfo_monster_immun0",
+		static const char *immun[] = {"shinfo_monster_immun0",
 					"shinfo_monster_immun1",
 					"shinfo_monster_immun2",
 					"shinfo_monster_immun3",
@@ -3349,7 +3349,7 @@ void ExultStudio::save_shape_notebook
 		minfo->set_death_safe(get_toggle("shinfo_monster_death_safe"));
 		minfo->set_power_safe(get_toggle("shinfo_monster_power_safe"));
 		minfo->set_cant_die(get_toggle("shinfo_monster_cant_die"));
-		static char *flags[] = {"shinfo_monster_flag0",
+		static const char *flags[] = {"shinfo_monster_flag0",
 					"shinfo_monster_flag1",
 					"shinfo_monster_flag2",
 					"shinfo_monster_flag3",
@@ -3417,7 +3417,7 @@ void ExultStudio::save_shape_notebook
 		npcinf->set_head_frame(get_spin("shinfo_npcpaperdoll_hframe"));
 		npcinf->set_head_frame_helm(get_spin("shinfo_npcpaperdoll_hhelm"));
 		npcinf->set_arms_shape(get_spin("shinfo_npcpaperdoll_ashape"));
-		static char *arm_names[] = {"shinfo_npcpaperdoll_aframe",
+		static const char *arm_names[] = {"shinfo_npcpaperdoll_aframe",
 			"shinfo_npcpaperdoll_atwohanded",
 			"shinfo_npcpaperdoll_astaff"
 			};
@@ -3537,7 +3537,7 @@ void ExultStudio::open_shape_window
 	int shnum,			// Shape #.
 	int frnum,			// Frame #.
 	Shape_file_info *file_info,	// For image file shape is in.
-	char *shname,			// ->shape name, or null.
+	const char *shname,			// ->shape name, or null.
 	Shape_info *info		// Info. if in main object shapes.
 	)
 	{
@@ -3716,7 +3716,7 @@ void ExultStudio::open_shape_window
 		col = gtk_tree_view_column_new_with_attributes(
 				"Spot", renderer, "text", DOLL_SPOT, NULL);
 		gtk_tree_view_append_column(dolltree, col);
-		char *columns[] = {"Trans", "Gender", "Spot frame", "DShape",
+		const char *columns[] = {"Trans", "Gender", "Spot frame", "DShape",
 			"DFrame0", "DFrame1", "DFrame2", "DFrame3"};
 		for (int i = 0; i < sizeof(columns)/sizeof(columns[0]); i++)
 			{
@@ -3852,7 +3852,7 @@ void ExultStudio::save_shape_window
 		const gchar *nm = locnm.get_str();
 		if (!nm)
 			nm = "";
-		char *oldname = get_shape_name(shnum);
+		const char *oldname = get_shape_name(shnum);
 		if (!oldname)
 			oldname = "";
 		if (strcmp(nm, oldname) != 0)

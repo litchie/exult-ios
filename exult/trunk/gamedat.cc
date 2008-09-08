@@ -100,7 +100,7 @@ extern int save_compression;
 void Game_window::restore_flex_files
 	(
 	DataSource &in,
-	char *basepath
+	const char *basepath
 	)
 	{
 	in.seek(0x54);			// Get to where file count sits.
@@ -182,8 +182,8 @@ void Game_window::restore_gamedat
 	)
 	{
 					// Check IDENTITY.
-	char *id = get_game_identity(fname);
-	char *static_identity = get_game_identity(INITGAME);
+	const char *id = get_game_identity(fname);
+	const char *static_identity = get_game_identity(INITGAME);
 					// Note: "*" means an old game.
 	if(!id || (*id != '*' && strcmp(static_identity, id) != 0))
 		{
@@ -805,9 +805,9 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
  *		0 if error (or may throw exception).
  *		"*" if older savegame.
  */
-char *Game_window::get_game_identity(const char *savename)
+const char *Game_window::get_game_identity(const char *savename)
 {
-    char *game_identity = 0;
+    const char *game_identity = 0;
 #ifdef HAVE_ZIP_SUPPORT
     game_identity = get_game_identity_zip(savename);
     if (game_identity)
@@ -847,14 +847,15 @@ char *Game_window::get_game_identity(const char *savename)
 	in.read(fname, 13);
 	if (!strcmp("identity",fname))
 	    {
-      	      game_identity = new char[len];
-	      in.read(game_identity, len);
-	      // Truncate identity
-	      char *ptr = game_identity;
-	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
-	      	;
-	      *ptr = 0;
-	      break;
+		char *identity = new char[len];
+		in.read(identity, len);
+		// Truncate identity
+		char *ptr = identity;
+		for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+			;
+		*ptr = 0;
+		game_identity = identity;
+		break;
 	    }
       }
     delete [] finfo;
@@ -1388,7 +1389,7 @@ bool Game_window::save_gamedat_zip
  *		0 if error.
  *		"*" if not found.
  */
-char *Game_window::get_game_identity_zip
+const char *Game_window::get_game_identity_zip
 	(
 	const char *savename
 	)

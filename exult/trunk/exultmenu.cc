@@ -72,7 +72,7 @@ static void set_play_1st_scene(bool);
 				REBUILD_MENU(x);	\
 				break;}
 
-int maximum_size(Font *font, char *options[], int num_choices, int centerx)
+int maximum_size(Font *font, const char *options[], int num_choices, int centerx)
 {
 	int max_width = 0, width;
 	for(int i=0; i<num_choices; i++) {
@@ -86,7 +86,7 @@ int maximum_size(Font *font, char *options[], int num_choices, int centerx)
 
 void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, int pagesize, int num_choices, int xpos, int ypos)
 {
-	char *menuscroller[] = {
+	const char *menuscroller[] = {
 		"FIRST",
 		"PREVIOUS",
 		"NEXT",
@@ -345,7 +345,7 @@ MenuList *ExultMenu::create_main_menu(int first)
 	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
 			centerx, ypos = gwin->get_height()-5*font->get_text_height());
 
-	char *menuchoices[] = { 
+	const char *menuchoices[] = { 
 		"SETUP",
 		"CREDITS",
 		"QUOTES",
@@ -411,7 +411,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
 			centerx, ypos = gwin->get_height()-5*font->get_text_height());
 
-	char *menuchoices[] = { 
+	const char *menuchoices[] = { 
 		"RETURN TO MAIN MENU"
 	};
 	int num_entries = sizeof(menuchoices)/sizeof(menuchoices[0]);

@@ -419,6 +419,13 @@ public:
 	virtual int reduce_health(int delta, int damage_type, Game_object *attacker = 0,
 			int *exp = 0);
 	void fight_back(Game_object *attacker);
+	bool get_attack_target(Game_object *&obj, Tile_coord& t)
+		{
+		static Tile_coord invalidloc(-1, -1, 0);
+		obj = target_object;
+		t = target_tile;
+		return (target_object || target_tile != invalidloc);
+		}
 	void set_attack_target(Game_object *t, int w)
 		{
 		target_tile = Tile_coord(-1, -1, 0);

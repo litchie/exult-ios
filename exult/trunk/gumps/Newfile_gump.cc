@@ -484,7 +484,7 @@ void Newfile_gump::PaintSaveName (int line)
 
 	if (actual_game < -2 || actual_game >= num_games) return;
 
-	char	*text;
+	const char	*text;
 
 	if (actual_game == -1)
 		text = "Quick Save";
@@ -581,7 +581,7 @@ void Newfile_gump::paint
 
 		char	info[320];
 
-		char	*suffix = "th";
+		const char	*suffix = "th";
 
 		if ((details->real_day%10) == 1 && details->real_day != 11)
 			suffix = "st";

@@ -75,7 +75,7 @@ void Uc_location::set_cur
 
 void Uc_location::error
 	(
-	char *s
+	const char *s
 	)
 	{
 	cout << source << ':' << line + 1 << ": " << s << endl;
@@ -88,7 +88,7 @@ void Uc_location::error
 
 void Uc_location::warning
 	(
-	char *s
+	const char *s
 	)
 	{
 	cout << source << ':' << line + 1 << ": " << 
@@ -101,7 +101,7 @@ void Uc_location::warning
 
 void Uc_location::yyerror
 	(
-	char *s
+	const char *s
 	)
 	{
 	cout << cur_source << ':' << cur_line + 1 << ": " << s << endl;
@@ -110,7 +110,7 @@ void Uc_location::yyerror
 
 void Uc_location::yywarning
 	(
-	char *s
+	const char *s
 	)
 	{
 	cout << cur_source << ':' << cur_line + 1 << ": " << 

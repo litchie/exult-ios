@@ -84,7 +84,7 @@ public:
 		Member_var
 		};
 	friend class Uc_scope;
-	Uc_symbol(char *nm) : name(nm)
+	Uc_symbol(const char *nm) : name(nm)
 		{  }
 	virtual ~Uc_symbol()
 		{  }
@@ -124,7 +124,7 @@ protected:
 	int is_obj_fun;
 public:
 	friend class Uc_scope;
-	Uc_var_symbol(char *nm, int off, int obj = -1)
+	Uc_var_symbol(const char *nm, int off, int obj = -1)
 		: Uc_symbol(nm), offset(off), is_obj_fun(obj)
 		{  }
 	int get_offset()
@@ -154,7 +154,7 @@ protected:
 	Uc_struct_symbol *type;
 public:
 	friend class Uc_scope;
-	Uc_struct_var_symbol(char *nm, int off, Uc_struct_symbol *t)
+	Uc_struct_var_symbol(const char *nm, int off, Uc_struct_symbol *t)
 		: Uc_var_symbol(nm, off), type(t)
 		{  }
 	virtual int get_sym_type() const
@@ -171,7 +171,7 @@ class Uc_class_inst_symbol : public Uc_var_symbol
 protected:
 	Uc_class *cls;
 public:
-	Uc_class_inst_symbol(char *nm, Uc_class *c, int off)
+	Uc_class_inst_symbol(const char *nm, Uc_class *c, int off)
 		: Uc_var_symbol(nm, off), cls(c)
 		{  }
 	virtual Uc_expression *create_expression();
@@ -187,7 +187,7 @@ public:
 class Uc_static_var_symbol : public Uc_var_symbol
 	{
 public:
-	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
+	Uc_static_var_symbol(const char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -207,7 +207,7 @@ protected:
 	Uc_struct_symbol *type;
 public:
 	friend class Uc_scope;
-	Uc_static_struct_var_symbol(char *nm, int off, Uc_struct_symbol *t)
+	Uc_static_struct_var_symbol(const char *nm, int off, Uc_struct_symbol *t)
 		: Uc_static_var_symbol(nm, off), type(t)
 		{  }
 	virtual int get_sym_type() const
@@ -224,7 +224,7 @@ class Uc_static_class_symbol : public Uc_static_var_symbol
 protected:
 	Uc_class *cls;
 public:
-	Uc_static_class_symbol(char *nm, Uc_class *c, int off)
+	Uc_static_class_symbol(const char *nm, Uc_class *c, int off)
 		: Uc_static_var_symbol(nm, off), cls(c)
 		{  }
 	virtual Uc_expression *create_expression();
@@ -243,7 +243,7 @@ protected:
 	Uc_var_symbol *var;
 public:
 	friend class Uc_scope;
-	Uc_alias_symbol(char *nm, Uc_var_symbol* v)
+	Uc_alias_symbol(const char *nm, Uc_var_symbol* v)
 		: Uc_var_symbol(nm, v->get_offset()), var(v)
 		{  }
 					// Gen. code to put result on stack.
@@ -278,7 +278,7 @@ protected:
 	Uc_struct_symbol *type;
 public:
 	friend class Uc_scope;
-	Uc_struct_alias_symbol(char *nm, Uc_var_symbol* v, Uc_struct_symbol *t)
+	Uc_struct_alias_symbol(const char *nm, Uc_var_symbol* v, Uc_struct_symbol *t)
 		: Uc_alias_symbol(nm, v), type(t)
 		{  }
 	virtual int get_sym_type() const
@@ -296,7 +296,7 @@ protected:
 	Uc_class *cls;
 public:
 	friend class Uc_scope;
-	Uc_class_alias_symbol(char *nm, Uc_var_symbol* v, Uc_class *c)
+	Uc_class_alias_symbol(const char *nm, Uc_var_symbol* v, Uc_class *c)
 		: Uc_alias_symbol(nm, v), cls(c)
 		{  }
 	virtual int get_sym_type() const
@@ -316,7 +316,7 @@ class Uc_class_symbol : public Uc_symbol
 	{
 	Uc_class *cls;
 public:
-	Uc_class_symbol(char *nm, Uc_class *c) : Uc_symbol(nm), cls(c)
+	Uc_class_symbol(const char *nm, Uc_class *c) : Uc_symbol(nm), cls(c)
 		{  }
 	static Uc_class_symbol *create(char *nm, Uc_class *c);
 	Uc_class *get_cls() const
@@ -334,7 +334,7 @@ class Uc_struct_symbol : public Uc_symbol
 	Var_map vars;
 	int num_vars;			// # member variables.
 public:
-	Uc_struct_symbol(char *nm)
+	Uc_struct_symbol(const char *nm)
 		: Uc_symbol(nm), num_vars(0)
 		{  }
 	~Uc_struct_symbol();
@@ -369,7 +369,7 @@ public:
 class Uc_class_var_symbol : public Uc_var_symbol
 	{
 public:
-	Uc_class_var_symbol(char *nm, int off) : Uc_var_symbol(nm, off)
+	Uc_class_var_symbol(const char *nm, int off) : Uc_var_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -387,7 +387,7 @@ class Uc_const_int_symbol : public Uc_symbol
 	int value;
 	int opcode;
 public:
-	Uc_const_int_symbol(char *nm, int v, int op = UC_PUSHI)
+	Uc_const_int_symbol(const char *nm, int v, int op = UC_PUSHI)
 		: Uc_symbol(nm), opcode(op)
 		{
 		if (opcode == UC_PUSHB)
@@ -417,7 +417,7 @@ class Uc_string_symbol : public Uc_symbol
 	{
 	int offset;			// In function's text_data.
 public:
-	Uc_string_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
+	Uc_string_symbol(const char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -437,7 +437,7 @@ class Uc_intrinsic_symbol : public Uc_symbol
 	int intrinsic_num;		// Intrinsic #.
 	int num_parms;			// # parms. +++++Not used/set yet.
 public:
-	Uc_intrinsic_symbol(char *nm, int n) : Uc_symbol(nm), intrinsic_num(n),
+	Uc_intrinsic_symbol(const char *nm, int n) : Uc_symbol(nm), intrinsic_num(n),
 		num_parms(0)
 		{  }
 	int get_intrinsic_num()
@@ -484,7 +484,7 @@ private:
 	Function_kind type;
 public:
 	friend class Uc_scope;
-	Uc_function_symbol(char *nm, int num,
+	Uc_function_symbol(const char *nm, int num,
 				std::vector<Uc_var_symbol *>& p,
 				int shp = 0, Function_kind kind = utility_fun);
 	static Uc_function_symbol *create(char *nm, int num, 

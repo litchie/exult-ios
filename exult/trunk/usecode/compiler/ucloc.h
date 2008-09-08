@@ -49,10 +49,10 @@ public:
 		{ return line; }
 	const char *get_source()
 		{ return source; }
-	void error(char *s);		// Print error.
-	void warning(char *s);		// Print warning.
-	static void yyerror(char *s);	// Print error at cur. location.
-	static void yywarning(char *s);
+	void error(const char *s);		// Print error.
+	void warning(const char *s);		// Print warning.
+	static void yyerror(const char *s);	// Print error at cur. location.
+	static void yywarning(const char *s);
 	static int get_num_errors()
 		{ return num_errors; }
 	};

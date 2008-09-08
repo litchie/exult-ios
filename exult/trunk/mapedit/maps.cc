@@ -113,8 +113,8 @@ void ExultStudio::new_map_dialog
 
 static bool Copy_static_file
 	(
-	char *sname,			// Name in static, from fnames.h.
-	char *pname,			// Name in patch.
+	const char *sname,			// Name in static, from fnames.h.
+	const char *pname,			// Name in patch.
 	int frommap,			// # of map to copy from.
 	int tomap			// # of map to copy to.
 	)

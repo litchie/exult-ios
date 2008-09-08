@@ -179,7 +179,7 @@ static char *Pass_file_spec
 static long Get_number
 	(
 	int linenum,			// For printing errors.
-	char *errmsg,
+	const char *errmsg,
 	char *ptr,
 	char *& endptr			// ->past number and spaces returned.
 	)
