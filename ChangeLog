@@ -1,3 +1,13 @@
+2008-09-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.*: Prevent damage to dead NPCs (makes armageddon work better).
+	  Prevent Penumbra and Skara Brae ghosts from awakening in a more consistent
+	  manner.
+	* npctime.cc: Fixed waking up of NPCs by proximity.
+	* keyactions.cc, objs/spellbook.cc, usecode/*: set_intercept can now store
+	  a tile as well as an object.
+	* mapedit/*, gamemgr/*: Added way to set an encoding option for text of mods
+	  and games to ease translation mods.
+
 2008-09-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* tools/ipack.cc: Fixed Shape_spec constructors, mix-up of strdup/delete.
 	* objs/spellbook.cc: Fixed spell costs in SI.

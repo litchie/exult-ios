@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "shapefile.h"
 #include "shapedraw.h"
+#include "npclst.h"
 
 #ifdef WIN32
 #include "windrag.h"
@@ -544,7 +545,8 @@ int ExultStudio::init_npc_window
 					// Store address with window.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), (gpointer) addr);
 					// Store name, ident, num.
-	set_entry("npc_name_entry", name.c_str());
+	utf8Str utf8name(name.c_str());
+	set_entry("npc_name_entry", utf8name);
 					// (Not allowed to change npc#.).
 	set_entry("npc_num_entry", npc_num, true, false);
 	set_entry("npc_ident_entry", ident);
@@ -633,7 +635,8 @@ int ExultStudio::save_npc_window
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 							GTK_OBJECT(npcwin));
 	int tx = -1, ty = -1, tz = -1;	// +++++For now.
-	std::string name(get_text_entry("npc_name_entry"));
+	codepageStr locname(get_text_entry("npc_name_entry"));
+	std::string name(locname);
 	short npc_num = get_num_entry("npc_num_entry");
 	short ident = get_num_entry("npc_ident_entry");
 	int shape = get_num_entry("npc_shape");
@@ -699,6 +702,10 @@ int ExultStudio::save_npc_window
 		return 0;
 		}
 	cout << "Sent npc data to server" << endl;
+		// Update NPC browser information.
+	Npc_chooser *npcchoose = dynamic_cast<Npc_chooser *>(browser);
+	if (npcchoose)
+		npcchoose->update_npc(npc_num);
 	if (!addr)
 		{
 		npc_status_id = set_statusbar("npc_status", npc_ctx,

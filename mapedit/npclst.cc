@@ -540,6 +540,30 @@ void Npc_chooser::edit_npc
 	Write2(ptr, npcnum);
 	if (!studio->send_to_server(Exult_server::edit_npc, buf, ptr - buf))
 		cerr << "Error sending data to server." << endl;
+	const gchar* const * locales = g_get_language_names();
+	if (!locales)
+		{
+		cerr << "No locales!" << endl;
+		return;
+		}
+	while (*locales)
+		{
+		cerr << "\"" << *locales << "\"" << endl;
+		locales++;
+		}
+	}
+
+/*
+ *	Update NPC information.
+ */
+
+void Npc_chooser::update_npc
+	(
+	int num
+	)
+	{
+	((Npcs_file_info *) file_info)->read_npc(num);
+	update_statusbar();
 	}
 
 /*

@@ -2292,7 +2292,7 @@ int Shape_chooser::get_count
 
 void Shape_chooser::search
 	(
-	const char *srch,		// What to search for.
+	const char *search,		// What to search for.
 	int dir				// 1 or -1.
 	)
 	{
@@ -2309,6 +2309,7 @@ void Shape_chooser::search
 	int i;
 	start += dir;
 	int stop = dir == -1 ? -1 : (int) info.size();
+	codepageStr srch(search);
 	for (i = start; i != stop; i += dir)
 		{
 		int shnum = info[i].shapenum;

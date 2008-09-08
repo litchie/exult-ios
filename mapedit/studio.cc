@@ -518,7 +518,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
 	shape_draw(0), gump_draw(0), body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
-	ucbrowsewin(0), curr_game(0), curr_mod(-1), npcgump_draw(0)
+	ucbrowsewin(0), gameinfowin(0), curr_game(-1), curr_mod(-1), npcgump_draw(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -669,6 +669,9 @@ ExultStudio::~ExultStudio()
 	combowin = 0;
 	if (ucbrowsewin)
 		delete ucbrowsewin;
+	if (gameinfowin)
+		gtk_widget_destroy(gameinfowin);
+	gameinfowin = 0;
 	g_object_unref( G_OBJECT( app_xml ) );
 #ifndef WIN32
 	if (server_input_tag >= 0)
@@ -947,7 +950,8 @@ C_EXPORT void on_gameselect_ok_clicked
 		GtkTextIter startpos, endpos;
 		gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
 		gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
-		string modmenustr = modmenu;
+		codepageStr menu(modmenu, "CP437");
+		string modmenustr = menu.get_str();
 		g_free(modmenu);
 		if (modmenustr == "")
 			return;
@@ -970,7 +974,7 @@ C_EXPORT void on_gameselect_ok_clicked
 		modcfg.set("mod_info/required_version", VERSION, true);
 
 		// Add mod to base game's list:
-		game->add_mod(modtitle, modcfg);
+		game->add_mod(modtitle, cfgfile);
 	}
 	else
 	{
@@ -1048,9 +1052,12 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed
 		if (t!=string::npos)
 			modname.replace(t, 1, " ");
 
+		// Titles need to be displayable in Exult menu, hence should not
+		// have any extra characters.
+		utf8Str title(modname.c_str(), "CP437");
 		gtk_tree_store_append(model, &iter, NULL);
 		gtk_tree_store_set(model, &iter,
-			0, modname.c_str(),
+			0, title.get_str(),
 			1, j,
 			-1);
 	}
@@ -1072,9 +1079,12 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 		if (t!=string::npos)
 			gamename.replace(t, 1, " ");
 
+		// Titles need to be displayable in Exult menu, hence should not
+		// have any extra characters.
+		utf8Str title(gamename.c_str(), "CP437");
 		gtk_tree_store_append(model, &iter, NULL);
 		gtk_tree_store_set(model, &iter,
-			0, gamename.c_str(),
+			0, title.get_str(),
 			1, j,
 			-1);
 		if (j==curr_game)
@@ -1172,6 +1182,8 @@ void ExultStudio::set_game_path(string gamename, string modname)
 					// Finish up external edits.
 	Shape_chooser::clear_editing_files();
 
+	curr_game = curr_mod = -1;
+
 	ModManager *basegame = 0;
 	if (gamename == CFG_BG_NAME)
 		{
@@ -1215,6 +1227,8 @@ void ExultStudio::set_game_path(string gamename, string modname)
 		basegame = gamemanager->get_game(curr_game);
 		}
 
+	if (curr_game < 0 && basegame)
+		curr_game = gamemanager->find_game_index(basegame->get_cfgname());
 	assert(basegame);
 	BaseGameInfo *gameinfo = 0;
 	curr_mod = modname.empty() ? -1 : basegame->find_mod_index(modname);
@@ -1224,6 +1238,8 @@ void ExultStudio::set_game_path(string gamename, string modname)
 		gameinfo = basegame;
 		// This really should never happen.
 	assert(gameinfo);
+
+	game_encoding = gameinfo->get_codepage();
 
 	string config_path("config/disk/game/" + gamename + "/path"), gamepath,
 		def_path("./" + gamename);
@@ -2835,6 +2851,339 @@ int ExultStudio::find_palette_color(int r, int g, int b)
 	}
 	return best_index;
 }
+
+BaseGameInfo *ExultStudio::get_game() const
+	{
+	ModManager *basegame = gamemanager->get_game(curr_game);
+	assert(basegame);
+	BaseGameInfo *gameinfo = curr_mod > -1 ?
+			(BaseGameInfo *)basegame->get_mod(curr_mod) : basegame;
+	assert(gameinfo);
+	}
+
+// List partially copied from Firefox and from GLib's config.charset.
+static const gchar *encodings [] = {
+		"CP437",
+
+		"ISO-8859-1",		"CP1252",			"ISO-8859-15",
+
+
+		"ISO-8859-2",		"CP1250",
+
+		"ISO-8859-3",
+
+		"ISO-8859-4",		"CP1257",			"ISO-8859-13",
+
+		"ISO-8859-5",		"CP1251",			"KOI8-R",
+		
+		"CP866",
+		
+		"KOI8-U",
+
+		"ISO-8859-6",		"CP1256",
+
+		"ISO-8859-7",		"CP1253",
+
+		"ISO-8859-8",
+
+		"CP1255",
+
+		"ISO-8859-9",		"CP1254",
+
+		"ISO-8859-10",
+
+		"ISO-8859-11",		"CP874",
+
+		"ISO-8859-14",
+
+		"ISO-8859-16",
+	};
+
+static inline int Find_Encoding_Index(const char *enc)
+	{
+	for (int i = 0; i < sizeof(encodings)/sizeof(encodings[0]); i++)
+		if (!strcmp(encodings[i], enc))
+			return i;
+	return -1;	// Not found.
+	}
+
+static inline const char *Get_Encoding(int index)
+	{
+	if (index >= 0 && index < sizeof(encodings)/sizeof(encodings[0]))
+		return encodings[index];
+	else
+		return encodings[0];
+	}
+
+C_EXPORT void
+on_set_game_information_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->set_game_information();
+}
+
+C_EXPORT void on_gameinfo_apply_clicked
+	(
+	GtkToggleButton *button,
+	gpointer	  user_data
+	)
+{
+	ExultStudio *studio = ExultStudio::get_instance();
+	const char *enc = Get_Encoding(studio->get_optmenu("gameinfo_charset"));
+
+	GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+			glade_xml_get_widget( studio->get_xml(), "gameinfo_menustring" )));
+	GtkTextIter startpos, endpos;
+	gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
+	gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
+	codepageStr menu(modmenu, "CP437");
+	string menustr = menu.get_str();
+	g_free(modmenu);
+
+	BaseGameInfo *gameinfo = studio->get_game();
+	studio->set_encoding(enc);
+	gameinfo->set_codepage(enc);
+	// Titles need to be displayable in Exult menu, hence should not
+	// have any extra characters.
+	gameinfo->set_menu_string(menustr.c_str());
+
+	Configuration *cfg;
+	string root;
+	bool ismod = gameinfo->get_config_file(cfg, root);
+	cfg->set(root + (ismod ? "mod_title" : "title"), menustr, true);
+	cfg->set(root + "codepage", enc, true);
+	if (ismod)
+		delete cfg;
+
+	GtkWidget *win = glade_xml_get_widget(studio->get_xml(), "game_information");
+	gtk_widget_hide(win);
+}
+
+C_EXPORT void on_gameinfo_charset_changed
+	(
+	GtkToggleButton *button,
+	gpointer	  user_data
+	)
+{
+	ExultStudio::get_instance()->show_charset();
+}
+
+/*
+ *	Show character set for current selection.
+ */
+
+void ExultStudio::show_charset
+	(
+	)
+{
+	const char *enc = Get_Encoding(get_optmenu("gameinfo_charset"));
+	static const char charset[] = {
+			" \t00\t01\t02\t03\t04\t05\t06\t07\t08\t09\t0A\t0B\t0C\t0D\t0E\t0F\n"
+			"00\t \t\x01\t\x02\t\x03\t\x04\t\x05\t\x06\t\x07\t \t \t \t\x0B\t\x0C\t \t\x0E\t\x0F\n"
+			"10\t\x10\t\x11\t\x12\t\x13\t\x14\t\x15\t\x16\t\x17\t\x18\t\x19\t\x1A\t\x1B\t\x1C\t\x1D\t\x1E\t\x1F\n"
+			"20\t\x20\t\x21\t\x22\t\x23\t\x24\t\x25\t\x26\t\x27\t\x28\t\x29\t\x2A\t\x2B\t\x2C\t\x2D\t\x2E\t\x2F\n"
+			"30\t\x30\t\x31\t\x32\t\x33\t\x34\t\x35\t\x36\t\x37\t\x38\t\x39\t\x3A\t\x3B\t\x3C\t\x3D\t\x3E\t\x3F\n"
+			"40\t\x40\t\x41\t\x42\t\x43\t\x44\t\x45\t\x46\t\x47\t\x48\t\x49\t\x4A\t\x4B\t\x4C\t\x4D\t\x4E\t\x4F\n"
+			"50\t\x50\t\x51\t\x52\t\x53\t\x54\t\x55\t\x56\t\x57\t\x58\t\x59\t\x5A\t\x5B\t\x5C\t\x5D\t\x5E\t\x5F\n"
+			"60\t\x60\t\x61\t\x62\t\x63\t\x64\t\x65\t\x66\t\x67\t\x68\t\x69\t\x6A\t\x6B\t\x6C\t\x6D\t\x6E\t\x6F\n"
+			"70\t\x70\t\x71\t\x72\t\x73\t\x74\t\x75\t\x76\t\x77\t\x78\t\x79\t\x7A\t\x7B\t\x7C\t\x7D\t\x7E\t\x7F\n"
+			"80\t\x80\t\x81\t\x82\t\x83\t\x84\t\x85\t\x86\t\x87\t\x88\t\x89\t\x8A\t\x8B\t\x8C\t\x8D\t\x8E\t\x8F\n"
+			"90\t\x90\t\x91\t\x92\t\x93\t\x94\t\x95\t\x96\t\x97\t\x98\t\x99\t\x9A\t\x9B\t\x9C\t\x9D\t\x9E\t\x9F\n"
+			"A0\t\xA0\t\xA1\t\xA2\t\xA3\t\xA4\t\xA5\t\xA6\t\xA7\t\xA8\t\xA9\t\xAA\t\xAB\t\xAC\t\xAD\t\xAE\t\xAF\n"
+			"B0\t\xB0\t\xB1\t\xB2\t\xB3\t\xB4\t\xB5\t\xB6\t\xB7\t\xB8\t\xB9\t\xBA\t\xBB\t\xBC\t\xBD\t\xBE\t\xBF\n"
+			"C0\t\xC0\t\xC1\t\xC2\t\xC3\t\xC4\t\xC5\t\xC6\t\xC7\t\xC8\t\xC9\t\xCA\t\xCB\t\xCC\t\xCD\t\xCE\t\xCF\n"
+			"D0\t\xD0\t\xD1\t\xD2\t\xD3\t\xD4\t\xD5\t\xD6\t\xD7\t\xD8\t\xD9\t\xDA\t\xDB\t\xDC\t\xDD\t\xDE\t\xDF\n"
+			"E0\t\xE0\t\xE1\t\xE2\t\xE3\t\xE4\t\xE5\t\xE6\t\xE7\t\xE8\t\xE9\t\xEA\t\xEB\t\xEC\t\xED\t\xEE\t\xEF\n"
+			"F0\t\xF0\t\xF1\t\xF2\t\xF3\t\xF4\t\xF5\t\xF6\t\xF7\t\xF8\t\xF9\t\xFA\t\xFB\t\xFC\t\xFD\t\xFE\t\xFF\n\0"
+		};
+
+	utf8Str codechars(charset, enc);
+	GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+					glade_xml_get_widget( app_xml, "gameinfo_codepage_display" )));
+	gtk_text_buffer_set_text(buff, codechars, -1);
+}
+
+/*
+ *	Edit game/mod title and character set.
+ */
+
+void ExultStudio::set_game_information
+	(
+	)
+{
+	if (!gameinfowin)
+		{
+		GtkWidget *win = glade_xml_get_widget(app_xml, "game_information");
+		gtk_window_set_modal(GTK_WINDOW(win), true);
+		gameinfowin = win;
+
+		gtk_signal_connect(
+					GTK_OBJECT(glade_xml_get_widget(app_xml, "gameinfo_apply")),
+					"clicked",
+					GTK_SIGNAL_FUNC(on_gameinfo_apply_clicked),
+					0L);
+
+		gtk_signal_connect(
+					GTK_OBJECT(glade_xml_get_widget(app_xml, "gameinfo_charset")),
+					"clicked",
+					GTK_SIGNAL_FUNC(on_gameinfo_charset_changed),
+					0L);
+		}
+
+	// game_encoding should equal gameinfo->get_codepage().
+	int index = Find_Encoding_Index(game_encoding.c_str());
+
+	// Override 'unknown' encodings.
+	set_optmenu("gameinfo_charset", index >= 0 ? index : 0);
+	show_charset();
+
+	BaseGameInfo *gameinfo = get_game();
+	GtkTextBuffer *buff = gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+					glade_xml_get_widget( app_xml, "gameinfo_menustring" )));
+	// Titles need to be displayable in Exult menu, hence should not
+	// have any extra characters.
+	utf8Str title(gameinfo->get_menu_string().c_str(), "CP437");
+	gtk_text_buffer_set_text(buff, title.get_str(), -1);
+
+	gtk_widget_show(gameinfowin);
+}
+
+#define CONV_ERROR(x,y) do {\
+	CERR("Error converting from \"" << (x)	\
+	     << "\" into \"" << (y)	\
+		 << "\". Error information:" << endl	\
+		 << "\tbytes_read: " << bytes_read	\
+		 <<	"\tbytes_written: " << bytes_written	\
+		 <<	"\tlast_read: " << (unsigned)(str[bytes_read])	\
+		 << "\tcode: " << error->code << endl	\
+		 << "\tmessage: \"" << error->message << "\"" << endl);	\
+	g_error_free(error);	\
+	error = 0;	\
+	} while(0)
+
+/*
+ *	Takes a UTF-8 string and converts into an 8-bit clean
+ *	string using specified codepage. If the conversion fails,
+ *	tries a lossy conversion to the same codepage.
+ */
+void codepageStr::convert(const char *str, const char *enc)
+	{
+	GError *error = 0;
+	gsize bytes_read, bytes_written;
+
+	// Try lossless encoding to specified codepage.
+	_convstr = g_convert(str, -1, enc, "UTF-8",
+			&bytes_read, &bytes_written, &error);
+
+	if (_convstr)
+		return;
+
+	// In theory, we should also check G_CONVERT_ERROR_PARTIAL_INPUT.
+	// But for now, we only take UTF-8 strings from GTK.
+	if (error->code == G_CONVERT_ERROR_NO_CONVERSION)
+		{
+		// Can't convert between chosen code page and UTF-8.
+		// GLib from Glade/GTK+ for Windows may fail here for some ISO charsets.
+		CONV_ERROR("UTF-8", enc);
+		ExultStudio *studio = ExultStudio::get_instance();
+		studio->prompt("Failed to convert from UTF-8 to selected codepage.\n"
+			"This usually happens on Windows for some ISO character sets.", "OK");
+		return;
+		}
+	else if (error->code == G_CONVERT_ERROR_ILLEGAL_SEQUENCE)
+		{
+		// Need to clean string.
+		// Strangely, all this extra work was needed in Ubuntu/Linux, but
+		// not in Windows; the lossy conversion at the end was enough in
+		// the latter but failed in the former.
+		string force(str);
+		while (!_convstr && error->code == G_CONVERT_ERROR_ILLEGAL_SEQUENCE)
+			{
+			char *ptr = &(force[bytes_read]);
+			char illegal[5];
+			g_utf8_strncpy(illegal, ptr, 1);
+			char *end = g_utf8_next_char(illegal);
+			*end = 0;
+			int len = end - ptr;
+			size_t pos;
+
+			while ((pos = force.find(illegal)) != string::npos)
+				force.replace(pos, len, 1, '?');
+
+			CONV_ERROR("UTF-8", enc);
+			char fallback = '?';
+			_convstr = g_convert_with_fallback(force.c_str(), -1, "UTF-8", enc,
+					&fallback, &bytes_read, &bytes_written, &error);
+			}
+
+		if (!_convstr)
+			{
+			CONV_ERROR(enc, "UTF-8");
+			// Conversion still failed; try lossy conversion.
+			char fallback = '?';
+			_convstr = g_convert_with_fallback(force.c_str(), -1, "UTF-8", enc,
+					&fallback, &bytes_read, &bytes_written, &error);
+			}
+		}
+
+	// This shouldn't fail.
+	assert(_convstr!=0);
+	}
+
+/*
+ *	Takes an 8-bit clean string using specified codepage
+ *	and converts into a UTF-8 string. If the conversion fails,
+ *	tries a lossy conversion from the same codepage.
+ */
+void utf8Str::convert(const char *str, const char *enc)
+	{
+	GError *error = 0;
+	gsize bytes_read, bytes_written;
+
+	// Try lossless encoding to specified codepage.
+	_convstr = g_convert(str, -1, "UTF-8", enc,
+			&bytes_read, &bytes_written, &error);
+
+	if (_convstr)	// Conversion succeeded.
+		return;
+
+	if (error->code == G_CONVERT_ERROR_NO_CONVERSION)
+		{
+		CONV_ERROR(enc, "UTF-8");
+		// Can't convert between UTF-8 and chosen code page.
+		ExultStudio *studio = ExultStudio::get_instance();
+		studio->prompt("Failed to convert from selected codepage to UTF-8", "OK");
+		return;
+		}
+	else if (error->code == G_CONVERT_ERROR_ILLEGAL_SEQUENCE)
+		{
+		// Need to clean string.
+		string force(str);
+		while (!_convstr && error->code == G_CONVERT_ERROR_ILLEGAL_SEQUENCE)
+			{
+			char illegal = force[bytes_read];
+			size_t pos;
+
+			while ((pos = force.find(illegal)) != string::npos)
+				force[pos] = '?';
+
+			CONV_ERROR(enc, "UTF-8");
+			_convstr = g_convert(force.c_str(), -1, "UTF-8", enc,
+					&bytes_read, &bytes_written, &error);
+			}
+
+		if (!_convstr)
+			{
+			CONV_ERROR(enc, "UTF-8");
+			// Conversion still failed; try lossy conversion.
+			char fallback = '?';
+			_convstr = g_convert_with_fallback(force.c_str(), -1, "UTF-8", enc,
+					&fallback, &bytes_read, &bytes_written, &error);
+			}
+		}
+	assert(_convstr!=0);
+	}
+
 
 // HACK. NPC Paperdolls need this, but miscinf has too many
 // Exult-dependant stuff to be included in ES. Thus, Exult

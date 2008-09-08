@@ -25,9 +25,10 @@
 #include <string>
 #include "exult_constants.h"
 #include "exceptions.h"
+#include "Configuration.h"
 
 using std::string;
-class Configuration;
+extern Configuration *config;
 
 class BaseGameInfo
 	{
@@ -39,27 +40,30 @@ protected:
 	string menustring;	// Text displayed in mods menu
 	bool expansion; 	// For FoV/SS ONLY.
 	bool found;			// If the game/mod is found.
+	string codepage;	// Game/mod codepage (mainly for ES).
 public:
 	BaseGameInfo () : type(NONE), cfgname(""), mod_title(""), path_prefix(""),
-		menustring(""), expansion(false), found(false)
+		menustring(""), expansion(false), found(false), codepage("CP437")
 		{  }
 	BaseGameInfo (const Exult_Game ty, const char *cf, const char *mt,
-		const char *pt, const char *ms, bool exp, bool f)
+		const char *pt, const char *ms, bool exp, bool f, const char *cp)
 		: type(ty), cfgname(cf), mod_title(mt), path_prefix(pt),
-		  menustring(ms), expansion(exp), found(f)
+		  menustring(ms), expansion(exp), found(f), codepage(cp)
 		{  }
 	BaseGameInfo (const BaseGameInfo& other)
 		: type(other.type), cfgname(other.cfgname), mod_title(other.mod_title),
 		  path_prefix(other.path_prefix), menustring(other.menustring),
-		  expansion(other.expansion), found(other.found)
+		  expansion(other.expansion), found(other.found),
+		  codepage(other.codepage)
 		{  }
 	~BaseGameInfo () {  }
 
-	string get_cfgname () const { return cfgname; }
-	string get_path_prefix () const { return path_prefix; }
-	string get_mod_title () const { return mod_title; }
-	string get_menu_string () const { return menustring; }
+	const string get_cfgname () const { return cfgname; }
+	const string get_path_prefix () const { return path_prefix; }
+	const string get_mod_title () const { return mod_title; }
+	const string get_menu_string () const { return menustring; }
 	Exult_Game get_game_type () const { return type; }
+	const string get_codepage () const { return codepage; }
 	// For FoV/SS ONLY.
 	bool have_expansion () const { return expansion; }
 	bool is_there () const { return found; }
@@ -71,26 +75,38 @@ public:
 	// For FoV/SS ONLY.
 	void set_expansion (bool exp) { expansion = exp; }
 	void set_found (bool fn) { found = fn; }
+	void set_codepage (const string& cp) { codepage = cp; }
 	
 	void setup_game_paths ();
+
+	virtual bool get_config_file(Configuration *&cfg, string& root)=0;
 	};
 
 class ModInfo : public BaseGameInfo
 	{
 protected:
 	bool compatible;
+	string configfile;
 public:
 	ModInfo (Exult_Game game, const string& name, const string& mod,
-			const string& path, bool exp, const Configuration& modconfig);
+			const string& path, bool exp, const string& cfg);
 	ModInfo (const ModInfo& other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		  other.mod_title.c_str(), other.path_prefix.c_str(),
-		  other.menustring.c_str(), other.expansion, other.found),
-		  compatible(other.compatible)
+		  other.menustring.c_str(), other.expansion, other.found,
+		  other.codepage.c_str()), compatible(other.compatible),
+		  configfile(other.configfile)
 		{  }
 	~ModInfo () {}
 
 	bool is_mod_compatible () const { return compatible; }
+
+	virtual bool get_config_file(Configuration *&cfg, string& root)
+		{
+		cfg = new Configuration(configfile, "modinfo");
+		root = "mod_info/";
+		return true;
+		}
 	};
 
 class ModManager : public BaseGameInfo
@@ -103,7 +119,8 @@ public:
 	ModManager (const ModManager& other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		  other.mod_title.c_str(), other.path_prefix.c_str(),
-		  other.menustring.c_str(), other.expansion, other.found)
+		  other.menustring.c_str(), other.expansion, other.found,
+		  other.codepage.c_str())
 		{
 		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
 				it != other.modlist.end(); ++it)
@@ -124,10 +141,16 @@ public:
 		return 0;
 		}
 	BaseGameInfo *get_mod(const string& name, bool checkversion=true);
-	void add_mod (const string& mod, Configuration& modconfig);
+	void add_mod (const string& mod, const string& modconfig);
 
 	void get_game_paths();
 	void gather_mods();
+
+	virtual bool get_config_file(Configuration *&cfg, string& root)
+		{
+		cfg = config; root = "config/disk/game/" + cfgname + "/";
+		return false;
+		}
 	};
 
 class GameManager
