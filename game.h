@@ -90,7 +90,7 @@ public:
 	static const char *get_avname ();
 	static int get_avsex ();
 	static int get_avskin ();
-	static void set_avname (char *name);
+	static void set_avname (const char *name);
 	static void set_avsex (int sex);
 	static void set_avskin (int skin);
 	static void clear_avname ();

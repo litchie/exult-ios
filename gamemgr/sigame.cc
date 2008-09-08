@@ -811,14 +811,14 @@ void SI_Game::show_journey_failed()
 // ExCineEvent
 struct ExCineEvent {
 	uint32			time;	// Time to start, In MS
-	char			*file;
+	const char		*file;
 	int			index;
 
 	virtual bool	play_it(Image_window *win, int time) = 0;		// Return true if screen updated
 
 	bool can_play() { return file != 0; }
 
-	ExCineEvent(uint32 t, char*f, int i) :
+	ExCineEvent(uint32 t, const char*f, int i) :
 		time(t), file(f), index(i)  { }
 
 	virtual ~ExCineEvent() { }
@@ -850,7 +850,7 @@ public:
 
 	void		fade_out(int cycles);
 
-	ExCineFlic(uint32 time, char *file, int i, int s, int c, bool r, int spd) :
+	ExCineFlic(uint32 time, const char *file, int i, int s, int c, bool r, int spd) :
 		ExCineEvent(time, file, i), start(s), count(c), repeat(r), cur(-1), speed(spd),
 		flic_obj(0), size(0), buffer(0), player(0) { }
 
@@ -928,7 +928,7 @@ private:
 public:
 	virtual bool	play_it(Image_window *win, int t);
 
-	ExCineVoc(uint32 time, char *f, int index) :
+	ExCineVoc(uint32 time, const char *f, int index) :
 		ExCineEvent(time, file, index), played(false) { }
 
 	virtual ~ExCineVoc() { }

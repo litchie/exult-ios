@@ -45,8 +45,8 @@ using std::strcat;
 using std::strlen;
 using std::string;
 
-void yyerror(char *);
-void yywarning(char *);
+void yyerror(const char *);
+void yywarning(const char *);
 extern int yylex();
 extern void start_script(), end_script();
 extern void start_loop(), end_loop();
@@ -1964,6 +1964,41 @@ function_call:
 		{
 		$$ = new Uc_call_expression($3, $6, cur_fun);
 		$$->set_itemref(0);
+		}
+	| primary hierarchy_tok '(' '@' int_literal ')' '(' opt_expression_list ')'
+		{
+		int num;
+		if (!$5->eval_const(num))
+			{
+			char buf[150];
+			sprintf(buf, "Failed to obtain value from integer constant");
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			{
+			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num), 
+						$8, cur_fun);
+			$$->set_itemref($1);
+			$$->check_params();
+			}
+		}
+	| '(' '@' int_literal ')' '(' opt_expression_list ')'
+		{
+		int num;
+		if (!$3->eval_const(num))
+			{
+			char buf[150];
+			sprintf(buf, "Failed to obtain value from integer constant");
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			{
+			$$ = new Uc_call_expression(Uc_function::get_intrinsic(num), 
+						$6, cur_fun);
+			$$->check_params();
+			}
 		}
 	;
 

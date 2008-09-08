@@ -243,7 +243,9 @@ void *safe_malloc(size_t count)
 void add_to_pathlist(char *s)
 {
   PathList *plp=safe_Malloc<PathList>();
-  strcpy((plp->path=safe_Malloc<char>(strlen(s)+1)),s);
+  char *path=safe_Malloc<char>(strlen(s)+1);
+  strcpy(path,s);
+  plp->path=path;
   plp->next=pathlist;
   pathlist=plp;
 }

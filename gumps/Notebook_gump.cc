@@ -369,7 +369,7 @@ bool Notebook_gump::paint_page
 	if (offset == 0)		// Print note info. at start.
 		{
 		char buf[60];
-		char *ampm = "am";
+		const char *ampm = "am";
 		int h = note->hour;
 		if (h >= 12)
 			{

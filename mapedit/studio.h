@@ -158,7 +158,7 @@ public:
 		{ return server_socket; }
 	guint32 get_background_color() const
 		{ return background_color; }
-	char *get_shape_name(int shnum);
+	const char *get_shape_name(int shnum);
 	const char *get_image_editor()
 		{ return image_editor; }
 	Shape_file_set *get_files()
@@ -266,7 +266,7 @@ public:
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum, 
 			Shape_file_info *file_info,
-					char *shname, Shape_info *info = 0);
+					const char *shname, Shape_info *info = 0);
 	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
@@ -307,27 +307,27 @@ public:
 	void open_preferences();
 	void save_preferences();
 					// GTK/Glade utils:
-	bool get_toggle(char *name);
-	void set_toggle(char *name, bool val, bool sensitive = true);
-	void set_bit_toggles(char **names, int num, unsigned char bits);
-	unsigned char get_bit_toggles(char **names, int num);
-	int get_optmenu(char *name);
-	void set_optmenu(char *name, int val, bool sensitive = true);
-	int get_spin(char *name);
-	void set_spin(char *name, int val, bool sensitive = true);
-	void set_spin(char *name, int low, int high);
-	void set_spin(char *name, int val, int low, int high);
-	int get_num_entry(char *name);
+	bool get_toggle(const char *name);
+	void set_toggle(const char *name, bool val, bool sensitive = true);
+	void set_bit_toggles(const char **names, int num, unsigned char bits);
+	unsigned char get_bit_toggles(const char **names, int num);
+	int get_optmenu(const char *name);
+	void set_optmenu(const char *name, int val, bool sensitive = true);
+	int get_spin(const char *name);
+	void set_spin(const char *name, int val, bool sensitive = true);
+	void set_spin(const char *name, int low, int high);
+	void set_spin(const char *name, int val, int low, int high);
+	int get_num_entry(const char *name);
 	static int get_num_entry(GtkWidget *field, int if_empty);
-	const gchar *get_text_entry(char *name);
-	void set_entry(char *name, int val, bool hex = false,
+	const gchar *get_text_entry(const char *name);
+	void set_entry(const char *name, int val, bool hex = false,
 						bool sensitive = true);
-	void set_entry(char *name, const char *val, bool sensitive = true);
-	guint set_statusbar(char *name, int context, char *msg);
-	void remove_statusbar(char *name, int context, guint msgid);
-	void set_button(char *name, const char *text);
-	void set_visible(char *name, bool vis);
-	void set_sensitive(char *name, bool vis);
+	void set_entry(const char *name, const char *val, bool sensitive = true);
+	guint set_statusbar(const char *name, int context, const char *msg);
+	void remove_statusbar(const char *name, int context, guint msgid);
+	void set_button(const char *name, const char *text);
+	void set_visible(const char *name, bool vis);
+	void set_sensitive(const char *name, bool vis);
 	int prompt(const char *msg, const char *choice0, 
 			const char *choice1 = 0,const char *choice2 = 0);
 	int find_palette_color(int r, int g, int b);

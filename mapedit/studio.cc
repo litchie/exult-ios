@@ -79,7 +79,7 @@ GameManager *gamemanager = 0;
 const std::string c_empty_string;	// Used by config. library.
 
 					// Mode menu items:
-static char *mode_names[5] = {"move1", "paint1", "paint_with_chunks1",
+static const char *mode_names[5] = {"move1", "paint1", "paint_with_chunks1",
 				"pick_for_combo1", "select_chunks1"};
 
 enum ExultFileTypes {
@@ -531,7 +531,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	string game = "";			// Game to look up in .exult.cfg.
 	string modtitle = "";		// Mod title to look up in <MODS>/*.cfg.
-	static char *optstring = "g:x:d:m:";
+	static const char *optstring = "g:x:d:m:";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
@@ -776,7 +776,7 @@ Object_browser *ExultStudio::create_browser(const char *fname)
  *	Get shape name.
  */
 
-char *ExultStudio::get_shape_name
+const char *ExultStudio::get_shape_name
 	(
 	int shnum
 	)
@@ -1815,7 +1815,7 @@ void ExultStudio::create_shape_file
 
 bool ExultStudio::get_toggle
 	(
-	char *name
+	const char *name
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
@@ -1828,7 +1828,7 @@ bool ExultStudio::get_toggle
 
 void ExultStudio::set_toggle
 	(
-	char *name,
+	const char *name,
 	bool val,
 	bool sensitive
 	)
@@ -1847,7 +1847,7 @@ void ExultStudio::set_toggle
 
 unsigned char ExultStudio::get_bit_toggles
 	(
-	char **names,			// Names for bit 0, 1, 2,...
+	const char **names,			// Names for bit 0, 1, 2,...
 	int num				// # of names/bits.
 	)
 	{
@@ -1864,7 +1864,7 @@ unsigned char ExultStudio::get_bit_toggles
 
 void ExultStudio::set_bit_toggles
 	(
-	char **names,			// Names for bit 0, 1, 2,...
+	const char **names,			// Names for bit 0, 1, 2,...
 	int num,			// # of names/bits.
 	unsigned char bits
 	)
@@ -1879,7 +1879,7 @@ void ExultStudio::set_bit_toggles
 
 int ExultStudio::get_optmenu
 	(
-	char *name
+	const char *name
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
@@ -1896,7 +1896,7 @@ int ExultStudio::get_optmenu
 
 void ExultStudio::set_optmenu
 	(
-	char *name,
+	const char *name,
 	int val,
 	bool sensitive
 	)
@@ -1915,7 +1915,7 @@ void ExultStudio::set_optmenu
 
 int ExultStudio::get_spin
 	(
-	char *name
+	const char *name
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
@@ -1929,7 +1929,7 @@ int ExultStudio::get_spin
 
 void ExultStudio::set_spin
 	(
-	char *name,
+	const char *name,
 	int val,
 	bool sensitive
 	)
@@ -1948,7 +1948,7 @@ void ExultStudio::set_spin
 
 void ExultStudio::set_spin
 	(
-	char *name,
+	const char *name,
 	int low, int high		// Range.
 	)
 	{
@@ -1967,7 +1967,7 @@ void ExultStudio::set_spin
 
 void ExultStudio::set_spin
 	(
-	char *name,
+	const char *name,
 	int val,
 	int low, int high		// Range.
 	)
@@ -1990,7 +1990,7 @@ void ExultStudio::set_spin
 
 int ExultStudio::get_num_entry
 	(
-	char *name
+	const char *name
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
@@ -2025,7 +2025,7 @@ int ExultStudio::get_num_entry
 
 const gchar *ExultStudio::get_text_entry
 	(
-	char *name
+	const char *name
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
@@ -2040,7 +2040,7 @@ const gchar *ExultStudio::get_text_entry
 
 void ExultStudio::set_entry
 	(
-	char *name,
+	const char *name,
 	int val,
 	bool hex,
 	bool sensitive
@@ -2063,7 +2063,7 @@ void ExultStudio::set_entry
 
 void ExultStudio::set_entry
 	(
-	char *name,
+	const char *name,
 	const char *val,
 	bool sensitive
 	)
@@ -2083,9 +2083,9 @@ void ExultStudio::set_entry
 
 guint ExultStudio::set_statusbar
 	(
-	char *name,
+	const char *name,
 	int context,
-	char *msg
+	const char *msg
 	)
 	{
 	GtkWidget *sbar = glade_xml_get_widget(app_xml, name);
@@ -2101,7 +2101,7 @@ guint ExultStudio::set_statusbar
 
 void ExultStudio::remove_statusbar
 	(
-	char *name,
+	const char *name,
 	int context,
 	guint msgid
 	)
@@ -2119,7 +2119,7 @@ void ExultStudio::remove_statusbar
 
 void ExultStudio::set_button
 	(
-	char *name,
+	const char *name,
 	const char *text
 	)
 	{
@@ -2134,7 +2134,7 @@ void ExultStudio::set_button
 
 void ExultStudio::set_visible
 	(
-	char *name,
+	const char *name,
 	bool vis
 	)
 	{
@@ -2154,7 +2154,7 @@ void ExultStudio::set_visible
 
 void ExultStudio::set_sensitive
 	(
-	char *name,
+	const char *name,
 	bool tf
 	)
 	{
@@ -2207,7 +2207,7 @@ int ExultStudio::prompt
 	if (!logo_pixmap)		// First time?
 		{
 		logo_pixmap = gdk_pixmap_create_from_xpm_d(app->window, 
-				&logo_mask, NULL, logo_xpm);
+				&logo_mask, NULL, const_cast<gchar **>(logo_xpm));
 		GtkWidget *pix = gtk_pixmap_new(logo_pixmap, logo_mask);
 		gtk_widget_show(pix);
 		GtkWidget *hbox = glade_xml_get_widget(app_xml, 

@@ -430,7 +430,7 @@ void Game_map::set_chunk_terrain
 
 char *Game_map::get_mapped_name
 	(
-	char *from, 
+	const char *from, 
 	char *to
 	)
 	{
@@ -445,7 +445,7 @@ char *Game_map::get_mapped_name
 
 char *Game_map::get_schunk_file_name
 	(
-	char *prefix,			// "ireg" or "ifix".
+	const char *prefix,		// "ireg" or "ifix".
 	int schunk,			// Superchunk # (0-143).
 	char *fname			// Name is stored here.
 	)

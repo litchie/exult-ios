@@ -7,6 +7,9 @@
 	  a tile as well as an object.
 	* mapedit/*, gamemgr/*: Added way to set an encoding option for text of mods
 	  and games to ease translation mods.
+	* General: Eliminating almost all GCC 4.x compilation warnings.
+	* usecode/compiler/ucparse.yy: Indirect intrinsic calls can be done using
+	  '(@num)(params)' or 'obj->(@num)(params)'.
 
 2008-09-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* tools/ipack.cc: Fixed Shape_spec constructors, mix-up of strdup/delete.

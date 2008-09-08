@@ -125,7 +125,7 @@ ModInfo::ModInfo
 	else
 		{
 		const char *ptrmod = modversion.c_str(), *ptrver = VERSION;
-		char *eptrmod, *eptrver = VERSION;
+		char *eptrmod, *eptrver;
 		int modver = strtol(ptrmod, &eptrmod, 0), exver = strtol(ptrver, &eptrver, 0);
 
 		// Assume compatibility:
