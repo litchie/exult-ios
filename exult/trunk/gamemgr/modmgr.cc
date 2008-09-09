@@ -27,6 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdlib>
 #include "modmgr.h"
 #include "fnames.h"
 #include "listfiles.h"

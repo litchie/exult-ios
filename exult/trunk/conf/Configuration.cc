@@ -31,6 +31,7 @@
 #endif
 #include <stdio.h>
 #include <iostream>
+#include <cstdlib>
 #include <fstream>
 #ifdef HAVE_SSTREAM
 #include <sstream>

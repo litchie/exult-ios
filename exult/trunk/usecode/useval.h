@@ -28,6 +28,8 @@
 #include <vector>	// STL container
 #include <string>	// STL string
 #include "databuf.h"
+#include <cstring>
+#include <cstdlib>
 
 class Game_object;
 class Usecode_class_symbol;

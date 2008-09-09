@@ -21,6 +21,8 @@
 
 #include "exult_types.h"
 
+#include <cstring>
+
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else

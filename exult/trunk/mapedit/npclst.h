@@ -136,7 +136,7 @@ public:
 	gint mouse_press(GtkWidget *widget, GdkEventButton *event);
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
-		GtkSelectionData *data, guint info, guint time, gpointer data);
+		GtkSelectionData *selection_data, guint info, guint time, gpointer data);
 	void edit_npc();
 					// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
