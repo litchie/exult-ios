@@ -29,6 +29,9 @@
 #  include <iostream>
 #endif
 
+#include <cstring>
+#include <cstdlib>
+
 #include "exult_types.h"
 #include "utils.h"
 

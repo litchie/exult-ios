@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
 #endif
@@ -255,9 +256,9 @@ inline void WriteInt
 inline std::string ReadStr(char *&eptr, int off = 1)
 	{
 	eptr += off;
-	char *pos = strchr(eptr, '/');
+	char *pos = std::strchr(eptr, '/');
 	char buf[150];
-	strncpy(buf, eptr, pos - eptr);
+	std::strncpy(buf, eptr, pos - eptr);
 	buf[pos - eptr] = 0;
 	eptr = pos;
 	return std::string(buf);

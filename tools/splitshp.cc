@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
+#include <cstdlib>
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>

@@ -24,6 +24,7 @@
 #  include <iostream>
 #endif
 
+#include <cstdlib>
 #include "args.h"
 
 #ifndef UNDER_EMBEDDED_CE

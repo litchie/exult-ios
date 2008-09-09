@@ -22,6 +22,9 @@
 #  include <config.h>
 #endif
 
+#include <cstdlib>
+#include <cstring>
+
 #include "gamewin.h"
 #include "actions.h"
 #include "actors.h"
