@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "Configuration.h"
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include "exult_constants.h"
 #include <vector>

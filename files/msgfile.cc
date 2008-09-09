@@ -26,6 +26,7 @@
 #include <vector>
 #include <ctype.h>
 #include <iomanip>
+#include <cstdlib>
 #include "utils.h"
 #include "databuf.h"
 

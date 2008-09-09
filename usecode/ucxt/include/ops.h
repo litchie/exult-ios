@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
 #include <cassert>
 #include "Configuration.h"
 #include "ucc.h"

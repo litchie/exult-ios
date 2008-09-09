@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include "party.h"
 #include "actors.h"
 #include "gamewin.h"

@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "execbox.h"
 #include <iostream>	/* Debugging only */
 #include <string>
+#include <cstring>
+#include <cstdlib>
 
 using std::cout;
 using std::endl;

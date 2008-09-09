@@ -30,6 +30,7 @@
 #include "exult.h"
 #include "fnames.h"
 #include <iostream>
+#include <cstdlib>
 
 using std::cerr;
 using std::endl;

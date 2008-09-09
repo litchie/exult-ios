@@ -23,6 +23,7 @@
 #  include <config.h>
 #endif
 
+#include <cstring>
 #include "ucmachine.h"
 #include "keyring.h"
 #include "conversation.h"
