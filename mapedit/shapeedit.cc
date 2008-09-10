@@ -3862,13 +3862,15 @@ void ExultStudio::save_shape_window
 			}
 		}
 					// Update origin.
-	Shape_frame *shape = ifile->get_shape(shnum, frnum);
+	Shape_frame *frame = ifile->get_shape(shnum, frnum);
 	int xright = get_spin("shinfo_originx"),
 	    ybelow = get_spin("shinfo_originy");
-	if (xright != shape->get_xright() || ybelow != shape->get_ybelow())
+	if (xright != frame->get_xright() || ybelow != frame->get_ybelow())
 		{			// It changed.
 		file_info->set_modified();
-		shape->set_offset(xright, ybelow);
+		frame->set_offset(xright, ybelow);
+		Shape *shape = ifile->extract_shape(shnum);
+		shape->set_modified();
 		}
 	if (info)
 		save_shape_notebook(*info, shnum, frnum);

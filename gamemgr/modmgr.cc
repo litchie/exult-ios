@@ -356,10 +356,11 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 	string initgam_path(static_dir + "/initgame.dat");
 	found = U7exists(initgam_path);
 
-	if (!found)
-		return;	// Everything else if futile if base game not found.
-
-	char *static_identity = get_game_identity(initgam_path.c_str(), cfgname);
+	const char *static_identity;
+	if (found)
+		static_identity = get_game_identity(initgam_path.c_str(), cfgname);
+	else	// New game still under development.
+		static_identity = "DEVEL GAME";
 
 	string new_title;
 	if (!strcmp(static_identity,"ULTIMA7"))
@@ -401,7 +402,9 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		new_title = menu;	// To be safe.
 		expansion = false;
 		}
-	delete[] static_identity;
+
+	if (found)
+		delete[] static_identity;
 
 	menustring = needtitle ? new_title : menu;
 
