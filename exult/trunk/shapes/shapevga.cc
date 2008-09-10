@@ -364,6 +364,7 @@ static void Read_text_data_file
 			{
 			if (!editing)
 				throw e;
+			static_strings.resize(numsections);
 			}
 		}
 	patch_strings.resize(numsections);
