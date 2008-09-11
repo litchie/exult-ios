@@ -1,7 +1,10 @@
 2008-09-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamemgr/modmgr.cc, shapes/shapevga.cc: Fixed problems when creating new
 	  games from within ES.
-	* mapedit/shapeedit.cc: Changing offsets didn't flag a shape as modified.
+	* mapedit/shapeedit.cc, shapes/shapeinf.h: Changing offsets didn't flag a
+	  shape as modified. Fixed recently-introduced bug where shape info was
+	  never marked as modified; also improved detection of shape modification.
+
 
 2008-09-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*: Prevent damage to dead NPCs (makes armageddon work better).
