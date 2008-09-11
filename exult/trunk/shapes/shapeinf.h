@@ -254,6 +254,38 @@ public:
 	virtual ~Shape_info();
 	void copy(const Shape_info& inf2, bool skip_dolls = false);
 
+private:
+	template<class T>
+	bool was_changed(T *cls)
+		{
+		return cls ? cls->was_modified() :
+				(have_static_flags & T::get_info_flag()) != 0;
+		}
+	template<class T>
+	bool was_changed(std::vector<T>& vec)
+		{
+		if (!vec.size())	// Nothing to do.
+			return false;
+		for (typename std::vector<T>::iterator it = vec.begin();
+				it != vec.end(); ++it)
+			if (it->was_modified() || (it->is_invalid() && it->have_static()))
+				return true;
+		return false;
+		}
+public:
+	bool was_modified()
+		{
+		if (modified_flags)
+			return true;
+		return was_changed(armor) || was_changed(weapon) ||
+				was_changed(ammo) || was_changed(monstinf) ||
+				was_changed(sfxinf) || was_changed(aniinf) ||
+				was_changed(explosion) || was_changed(body) ||
+				was_changed(npcpaperdoll) || was_changed(objpaperdoll) ||
+				was_changed(hpinf) || was_changed(nameinf) ||
+				was_changed(warminf) || was_changed(cntrules);
+		}
+
 	int get_weight() const		// Get weight, volume.
 		{ return weight; }
 	int get_volume() const
@@ -415,7 +447,7 @@ public:
 		{
 		if (shape_flags != flags)
 			{
-			int diff = (shape_flags ^ flags) << 4;
+			int diff = (shape_flags ^ flags) * usecode_events_flag;
 			modified_flags |= diff;
 			shape_flags = flags;
 			}
