@@ -273,18 +273,7 @@ private:
 		return false;
 		}
 public:
-	bool was_modified()
-		{
-		if (modified_flags)
-			return true;
-		return was_changed(armor) || was_changed(weapon) ||
-				was_changed(ammo) || was_changed(monstinf) ||
-				was_changed(sfxinf) || was_changed(aniinf) ||
-				was_changed(explosion) || was_changed(body) ||
-				was_changed(npcpaperdoll) || was_changed(objpaperdoll) ||
-				was_changed(hpinf) || was_changed(nameinf) ||
-				was_changed(warminf) || was_changed(cntrules);
-		}
+	bool was_modified();
 
 	int get_weight() const		// Get weight, volume.
 		{ return weight; }
