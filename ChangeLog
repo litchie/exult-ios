@@ -1,5 +1,6 @@
 2008-09-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/shapeinf.*: Fixed compilation problem.
+	* mapedit/shapeedit.cc: Improved earlier shape info change detection.
 
 2008-09-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamemgr/modmgr.cc, shapes/shapevga.cc: Fixed problems when creating new
