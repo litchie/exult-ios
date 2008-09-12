@@ -494,20 +494,6 @@ int Shape_info::get_object_warmth(int frame)
 	return inf ? inf->warmth : 0;	// Default to no warmth.
 	}
 
-bool Shape_info::was_modified()
-	{
-	if (modified_flags)
-		return true;
-	return was_changed(armor) || was_changed(weapon) ||
-			was_changed(ammo) || was_changed(monstinf) ||
-			was_changed(sfxinf) || was_changed(aniinf) ||
-			was_changed(explosion) || was_changed(body) ||
-			was_changed(npcpaperdoll) || was_changed(objpaperdoll) ||
-			was_changed(hpinf) || was_changed(nameinf) ||
-			was_changed(warminf) || was_changed(cntrules);
-	}
-
-
 /*
  *	Set 3D dimensions.
  */
