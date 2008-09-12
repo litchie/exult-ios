@@ -3069,6 +3069,11 @@ void ExultStudio::set_game_information
  */
 void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc)
 	{
+	if (!str)
+		{
+		_convstr = g_strdup("");
+		return;
+		}
 	GError *error = 0;
 	gsize bytes_read, bytes_written;
 
@@ -3140,6 +3145,11 @@ void convertFromUTF8::convert(gchar *&_convstr, const char *str, const char *enc
  */
 void convertToUTF8::convert(gchar *&_convstr, const char *str, const char *enc)
 	{
+	if (!str)
+		{
+		_convstr = g_strdup("");
+		return;
+		}
 	GError *error = 0;
 	gsize bytes_read, bytes_written;
 

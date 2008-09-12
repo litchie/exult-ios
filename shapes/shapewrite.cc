@@ -157,7 +157,7 @@ class Bit_field_text_writer_functor
 public:
 	void operator()(ostream& out, int shapenum, bool bg, T data)
 		{
-		out << shapenum << '/';
+		out << ':' << shapenum << '/';
 		int size = 8*sizeof(T)-1;	// Bit count.
 		int bit = 0;
 		while (bit < size)

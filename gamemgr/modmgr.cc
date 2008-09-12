@@ -92,6 +92,7 @@ ModInfo::ModInfo
 	const string& mod,
 	const string& path,
 	bool exp,
+	bool ed,
 	const string& cfg
 	)
 	{
@@ -100,6 +101,7 @@ ModInfo::ModInfo
 	mod_title = mod;
 	path_prefix = path;
 	expansion = exp;
+	editing = ed;
 	configfile = cfg;
 	Configuration modconfig(configfile, "modinfo");
 
@@ -351,6 +353,13 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		config_path = base_cfg_path + "/codepage";
 		default_dir = "CP437";	// DOS code page.
 		config->value(config_path, codepage, default_dir.c_str());
+
+		// And edit flag.
+		string cfgediting;
+		config_path = base_cfg_path + "/editing";
+		default_dir = "no";		// Not editing.
+		config->value(config_path, cfgediting, default_dir.c_str());
+		editing = (cfgediting == "yes");
 		}
 
 	string initgam_path(static_dir + "/initgame.dat");
@@ -436,7 +445,7 @@ void ModManager::gather_mods()
 					filenames[i].size() - ptroff - 4);
 			modlist.push_back(ModInfo(type, cfgname,
 					modtitle, path_prefix, expansion,
-					filenames[i]));
+					editing, filenames[i]));
 			}
 		}
 	}
@@ -461,7 +470,7 @@ int ModManager::find_mod_index (const string& name)
 void ModManager::add_mod (const string& mod, const string& modconfig)
 	{
 	modlist.push_back(ModInfo(type, cfgname, mod, path_prefix,
-			expansion, modconfig));
+			expansion, editing, modconfig));
 	store_system_paths();
 	}
 
@@ -631,7 +640,7 @@ GameManager::GameManager()
 		bool need_title = game_title == base_title;
 			// This checks static identity and sets game type.
 		ModManager game = ModManager(gameentry, game_title, need_title);
-		if (!game.is_there())
+		if (!game.being_edited() && !game.is_there())
 			continue;
 		if (game.get_game_type() == BLACK_GATE)
 			{

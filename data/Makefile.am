@@ -116,6 +116,7 @@ ESTUDIO_NEW_FILES = \
 	estudio/new/faces.vga \
 	estudio/new/gumps.vga \
 	estudio/new/palettes.flx \
+	estudio/new/paperdol.vga \
 	estudio/new/shapes.vga \
 	estudio/new/sprites.vga \
 	estudio/new/text.flx \
