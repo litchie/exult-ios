@@ -254,27 +254,6 @@ public:
 	virtual ~Shape_info();
 	void copy(const Shape_info& inf2, bool skip_dolls = false);
 
-private:
-	template<class T>
-	bool was_changed(T *cls)
-		{
-		return cls ? cls->was_modified() :
-				(have_static_flags & T::get_info_flag()) != 0;
-		}
-	template<class T>
-	bool was_changed(std::vector<T>& vec)
-		{
-		if (!vec.size())	// Nothing to do.
-			return false;
-		for (typename std::vector<T>::iterator it = vec.begin();
-				it != vec.end(); ++it)
-			if (it->was_modified() || (it->is_invalid() && it->have_static()))
-				return true;
-		return false;
-		}
-public:
-	bool was_modified();
-
 	int get_weight() const		// Get weight, volume.
 		{ return weight; }
 	int get_volume() const
