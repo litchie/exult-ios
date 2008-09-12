@@ -52,7 +52,8 @@ Source: Studio\data\estudio\new\faces.vga; DestDir: {app}\data\estudio\new; Flag
 Source: Studio\data\estudio\new\fonts.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\gumps.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\palettes.flx; DestDir: {app}\data\estudio\new; Flags: ignoreversion
-Source: Studio\data\estudio\new\pointers.shp; DestDir: {app}\data\estudio\new; Flags: ignoreversion
+Source: Studio\data\estudio\new\faces.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
+Source: Studio\data\estudio\new\paperdol.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\shapes.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\sprites.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\text.flx; DestDir: {app}\data\estudio\new; Flags: ignoreversion

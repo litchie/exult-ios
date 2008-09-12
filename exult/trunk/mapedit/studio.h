@@ -394,42 +394,4 @@ class strCodepageConvert
 typedef strCodepageConvert<convertToUTF8> utf8Str;
 typedef strCodepageConvert<convertFromUTF8> codepageStr;
 
-/*
-class utf8Str
-	{
-	protected:
-		gchar *_convstr;
-		void convert(const char *str, const char *enc);
-	public:
-		utf8Str(const char *str)
-			{ convert(str, ExultStudio::get_instance()->get_encoding().c_str()); }
-		utf8Str(const char *str, const char *enc)
-			{ convert(str, enc); }
-		~utf8Str()
-			{ if (_convstr) g_free(_convstr); }
-		const char *get_str() const
-			{ return _convstr ? (const char *)_convstr : ""; }
-		operator const char *() const
-			{ return get_str(); }
-	};
-
-class codepageStr
-	{
-	protected:
-		gchar *_convstr;
-		void convert(const char *str, const char *enc);
-	public:
-		codepageStr(const char *str)
-			{ convert(str, ExultStudio::get_instance()->get_encoding().c_str()); }
-		codepageStr(const char *str, const char *enc)
-			{ convert(str, enc); }
-		~codepageStr()
-			{ if (_convstr) g_free(_convstr); }
-		const char *get_str() const
-			{ return _convstr ? (const char *)_convstr : ""; }
-		operator const char *() const
-			{ return get_str(); }
-	};
-*/
-
 #endif

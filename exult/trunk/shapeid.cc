@@ -97,7 +97,8 @@ void Shape_manager::read_shape_info
 	{
 	// Want space for extra shapes if BG multiracial enabled.
 	shapes.init();
-	shapes.read_info(Game::get_game_type());// Read in shape dimensions.
+	// Read in shape information.
+	shapes.read_info(Game::get_game_type(), Game::is_editing());
 	// Fixup Avatar shapes (1024-1035 in default SI).
 	Shape_info& male = shapes.get_info(Shapeinfo_lookup::GetMaleAvShape());
 	Shape_info& female = shapes.get_info(Shapeinfo_lookup::GetFemaleAvShape());

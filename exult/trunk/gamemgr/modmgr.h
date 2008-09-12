@@ -40,20 +40,23 @@ protected:
 	string menustring;	// Text displayed in mods menu
 	bool expansion; 	// For FoV/SS ONLY.
 	bool found;			// If the game/mod is found.
+	bool editing;		// Game is being edited and may have missing files.
 	string codepage;	// Game/mod codepage (mainly for ES).
 public:
 	BaseGameInfo () : type(NONE), cfgname(""), mod_title(""), path_prefix(""),
-		menustring(""), expansion(false), found(false), codepage("CP437")
+		menustring(""), expansion(false), found(false), editing(false),
+		codepage("CP437")
 		{  }
 	BaseGameInfo (const Exult_Game ty, const char *cf, const char *mt,
-		const char *pt, const char *ms, bool exp, bool f, const char *cp)
-		: type(ty), cfgname(cf), mod_title(mt), path_prefix(pt),
-		  menustring(ms), expansion(exp), found(f), codepage(cp)
+		const char *pt, const char *ms, bool exp, bool f, bool ed,
+		const char *cp)
+		: type(ty), cfgname(cf), mod_title(mt), path_prefix(pt), menustring(ms),
+		  expansion(exp), found(f), editing(ed), codepage(cp)
 		{  }
 	BaseGameInfo (const BaseGameInfo& other)
 		: type(other.type), cfgname(other.cfgname), mod_title(other.mod_title),
 		  path_prefix(other.path_prefix), menustring(other.menustring),
-		  expansion(other.expansion), found(other.found),
+		  expansion(other.expansion), found(other.found), editing(other.editing),
 		  codepage(other.codepage)
 		{  }
 	~BaseGameInfo () {  }
@@ -67,14 +70,16 @@ public:
 	// For FoV/SS ONLY.
 	bool have_expansion () const { return expansion; }
 	bool is_there () const { return found; }
+	bool being_edited () const { return editing; }
 	void set_cfgname (const string& name) { cfgname = name; }
 	void set_path_prefix (const string& pt) { path_prefix = pt; }
 	void set_mod_title (const string& mod) { mod_title = mod; }
 	void set_menu_string (const string& menu) { menustring = menu; }
 	void set_game_type (Exult_Game game) { type = game; }
 	// For FoV/SS ONLY.
-	void set_expansion (bool exp) { expansion = exp; }
-	void set_found (bool fn) { found = fn; }
+	void set_expansion (bool tf) { expansion = tf; }
+	void set_found (bool tf) { found = tf; }
+	void set_editing (bool tf) { editing = tf; }
 	void set_codepage (const string& cp) { codepage = cp; }
 	
 	void setup_game_paths ();
@@ -89,13 +94,13 @@ protected:
 	string configfile;
 public:
 	ModInfo (Exult_Game game, const string& name, const string& mod,
-			const string& path, bool exp, const string& cfg);
+			const string& path, bool exp, bool ed, const string& cfg);
 	ModInfo (const ModInfo& other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		  other.mod_title.c_str(), other.path_prefix.c_str(),
 		  other.menustring.c_str(), other.expansion, other.found,
-		  other.codepage.c_str()), compatible(other.compatible),
-		  configfile(other.configfile)
+		  other.editing, other.codepage.c_str()),
+		  compatible(other.compatible), configfile(other.configfile)
 		{  }
 	~ModInfo () {}
 
@@ -120,7 +125,7 @@ public:
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
 		  other.mod_title.c_str(), other.path_prefix.c_str(),
 		  other.menustring.c_str(), other.expansion, other.found,
-		  other.codepage.c_str())
+		  other.editing, other.codepage.c_str())
 		{
 		for (std::vector<ModInfo>::const_iterator it = other.modlist.begin();
 				it != other.modlist.end(); ++it)
