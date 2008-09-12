@@ -1,3 +1,11 @@
+2008-09-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/shapewrite.cc: Actor flags were incorrectly saved.
+	* shapeid.cc: Pass editing flag when loading shape info.
+	* mapedit/studio.*: Fixed crashes when string conversion receives a null
+	  pointer for conversion.
+	* game.*, files/U7file.h: Removed unused function , fixed incorrect comment.
+	* data/*/*, win32/*: Added paperdol.vga for new games.
+
 2008-09-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/shapeedit.cc, shapes/shapeinf.*: Reverted previous commits as they
 	  caused too many problems.

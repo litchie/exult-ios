@@ -84,7 +84,7 @@ public:
 	uint32	number_of_objects(void);
 	virtual	char *	retrieve(std::size_t &len);
 	bool			retrieve(const char *fname);
-					// FIX ME - this is only used in Game::play_audio and should be removed
+					// FIX ME - this is only used in expack and should be removed
 };
 
 #endif

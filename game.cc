@@ -102,10 +102,7 @@ Game *Game::create_game(BaseGameInfo *mygame)
 	modtitle = mygame->get_mod_title();
 	game_type = mygame->get_game_type();
 	expansion = mygame->have_expansion();
-
-	// See if map-editing.
-	string d("config/disk/game/" + gametitle + "/editing");
-	config->value(d.c_str(), editing_flag, false);
+	editing_flag = mygame->being_edited();
 
 	// Need to do this here. Maybe force on for EXULT_DEVEL_GAME too?
 	std::string str;
@@ -159,14 +156,6 @@ void Game::play_flic(const char *archive, int index)
 	playfli fli(fli_buf);
 	fli.play(win);
 	delete [] fli_buf;
-}
-
-void Game::play_audio(const char *archive, int index) 
-{
-	U7object speech(archive, index);
-	// FIXME: should use a DataBuffer
-	speech.retrieve("speech.voc");
-	Audio::get_ptr()->playfile("speech.voc", false);
 }
 
 const char *xml_root = "Game_config";
