@@ -3503,7 +3503,8 @@ void ExultStudio::save_shape_notebook
 		info.clean_invalid_name_info();
 		}
 
-	shape_info_modified = info.was_modified();
+	if (info.was_modified())
+		shape_info_modified = true;
 	Shape_chooser *shpchoose = dynamic_cast<Shape_chooser *>(browser);
 	if (shpchoose)
 		shpchoose->update_statusbar();
