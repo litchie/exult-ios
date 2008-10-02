@@ -26,7 +26,7 @@
 #include <string>
 #include <iomanip>
 #include <vector>
-#include "U7file.h"
+#include "U7obj.h"
 #include "utils.h"
 
 typedef char * charptr;
@@ -165,137 +165,6 @@ public:
 		else
 			out->clear();
 		}
-};
-
-class FileDataSource: public DataSource
-{
-private:
-	std::FILE *f;
-public:
-	FileDataSource(std::FILE *fp)
-	{
-		f = fp;
-	};
-	
-	virtual ~FileDataSource() {};
-	
-	virtual uint32 peek()
-	{ 
-		unsigned char b0;
-		b0 = fgetc(f);
-		fseek(f, -1, SEEK_CUR);
-		return (b0);
-	};
-	
-	virtual uint32 read1() 
-	{ 
-		unsigned char b0;
-		b0 = fgetc(f);
-		return (b0);
-	};
-	
-	virtual uint16 read2()
-	{
-		unsigned char b0, b1;
-		b0 = fgetc(f);
-		b1 = fgetc(f);
-		return (b0 | (b1 << 8));
-	};
-	
-	virtual uint16 read2high()
-	{
-		unsigned char b0, b1;
-		b1 = fgetc(f);
-		b0 = fgetc(f);
-		return (b0 | (b1 << 8));
-	};
-	
-	virtual uint32 read4()
-	{
-		unsigned char b0, b1, b2, b3;
-		b0 = fgetc(f);
-		b1 = fgetc(f);
-		b2 = fgetc(f);
-		b3 = fgetc(f);
-		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
-	};
-	
-	virtual uint32 read4high()
-	{
-		unsigned char b0, b1, b2, b3;
-		b3 = fgetc(f);
-		b2 = fgetc(f);
-		b1 = fgetc(f);
-		b0 = fgetc(f);
-		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
-	};
-	
-	void read(void *b, int len) {
-		fread(b, 1, len, f);
-	};
-	
-	virtual void write1(uint32 val)
-	{
-		fputc(static_cast<char>(val&0xff),f);
-	};
-	
-	virtual void write2(uint16 val)
-	{
-		fputc(static_cast<char>(val&0xff),f);
-		fputc(static_cast<char>((val>>8)&0xff),f);
-	};
-	
-	virtual void write2high(uint16 val)
-	{
-		fputc(static_cast<char>((val>>8)&0xff),f);
-		fputc(static_cast<char>(val&0xff),f);
-	};
-	
-	virtual void write4(uint32 val)
-	{
-		fputc(static_cast<char>(val&0xff),f);
-		fputc(static_cast<char>((val>>8)&0xff),f);
-		fputc(static_cast<char>((val>>16)&0xff),f);
-		fputc(static_cast<char>((val>>24)&0xff),f);
-	};
-
-	virtual void write4high(uint32 val)
-	{
-		fputc(static_cast<char>((val>>24)&0xff),f);
-		fputc(static_cast<char>((val>>16)&0xff),f);
-		fputc(static_cast<char>((val>>8)&0xff),f);
-		fputc(static_cast<char>(val&0xff),f);
-	};
-
-	virtual void write(const void *b, int len)
-	{
-		fwrite(b, 1, len, f);
-	};
-	
-	virtual void write(std::string s)
-	{
-		fwrite(const_cast<char *>(s.c_str()), 1, s.size(), f);
-	};
-	
-	virtual void seek(unsigned int pos) { fseek(f, pos, SEEK_SET); };
-	
-	virtual void skip(int pos) { fseek(f, pos, SEEK_CUR); };
-	
-	virtual unsigned int getSize()
-	{
-		long pos = ftell(f);
-		fseek(f, 0, SEEK_END);
-		long len = ftell(f);
-		fseek(f, pos, SEEK_SET);
-		return len;
-	};
-	
-	virtual unsigned int getPos()
-	{
-		return ftell(f);
-	};
-
-	virtual bool eof() { return feof(f) != 0; } 
 };
 
 class BufferDataSource: public DataSource
@@ -565,20 +434,29 @@ class StackBufferDataSource : protected BufferDataSource
 	private:
 };
 
-class ExultDataSource: public BufferDataSource {
-public:
-	ExultDataSource(const char *fname, int index):
-		BufferDataSource(0,0)
+class ExultDataSource: public BufferDataSource
 	{
+public:
+	ExultDataSource(const File_spec& fname, int index)
+		: BufferDataSource(0,0)
+		{
 		U7object obj(fname, index);
 		buf = reinterpret_cast<unsigned char*>(obj.retrieve(size));
 		buf_ptr = const_cast<unsigned char *>(buf);
-	};
-	
+		}
+
+	ExultDataSource(const File_spec& fname0, const File_spec& fname1, int index)
+		: BufferDataSource(0,0)
+		{
+		U7multiobject obj(fname0, fname1, index);
+		buf = reinterpret_cast<unsigned char*>(obj.retrieve(size));
+		buf_ptr = const_cast<unsigned char *>(buf);
+		}
+
 	~ExultDataSource()
-	{
-					delete [] const_cast<unsigned char *>(buf);
-	}
-};
+		{
+		delete [] const_cast<unsigned char *>(buf);
+		}
+	};
 
 #endif

@@ -483,6 +483,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\files\U7fileman.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\files\U7obj.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\files\utils.cc"
 				>
 			</File>
@@ -533,6 +541,14 @@
 			</File>
 			<File
 				RelativePath="..\files\U7file.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\U7fileman.h"
+				>
+			</File>
+			<File
+				RelativePath="..\files\U7obj.h"
 				>
 			</File>
 			<File

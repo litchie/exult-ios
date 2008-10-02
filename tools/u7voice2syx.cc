@@ -257,7 +257,7 @@ int main(int argc, char *argv[])
 
 			std::cout << "Opening " << filename  << "..." << std::endl;
 
-			Flex f(filename);
+			FlexFile f(filename);
 
 			std::cout << "Reading data..." << std::endl;
 			std::size_t size;

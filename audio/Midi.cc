@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <iostream>
 #endif
 #include <unistd.h>
+#include <fstream>
 
 #include "fnames.h"
 #include "exult.h"
@@ -155,28 +156,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
 	pflex += flex.c_str() + sizeof("<STATIC>/") - 1;
-	if (U7exists(pflex))
-		try {
-			mid_data = new ExultDataSource(pflex.c_str(),num);
-			}
-		catch( const std::exception & /*err*/ )
-			{
-			mid_data = 0;
-			}
+	mid_data = new ExultDataSource(flex.c_str(), pflex.c_str(),num);
 
-	// If not in patch dir, or the flex there did not have the
-	// song we want, try the static dir.
-	if (!mid_data || !mid_data->getSize())
-		{
-		try {
-			mid_data = new ExultDataSource(flex.c_str(),num);
-			}
-		catch( const std::exception & /*err*/ )
-			{
-			return;
-			}
-		}
-	
 	// Extra safety.
 	if (!mid_data->getSize())
 		return;
@@ -236,14 +217,15 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 
 	// Read the data into the XMIDI class
 
-	FILE *mid_file = U7open(fname.c_str(), "rb");
-	if (!mid_file) return;
-	DataSource *mid_data = new FileDataSource(mid_file);
+	std::ifstream mid_file;
+	U7open(mid_file, fname.c_str());
+	if (!mid_file.good()) return;
+	DataSource *mid_data = new StreamDataSource(&mid_file);
 
 	XMidiFile midfile(mid_data, setup_timbre_for_track(fname));
 	
 	delete mid_data;
-	fclose(mid_file);
+	mid_file.close();
 
 	// Now give the xmidi object to the midi device
 
@@ -390,14 +372,14 @@ void MyMidiPlayer::load_timbres()
 	timbre_lib_index = index;
 	timbre_lib_game = Game::get_game_type();
 
-	FILE* file = 0;
+	std::ifstream file;
 	DataSource *ds = 0;
 
 	if (index == -1) 
 	{
-		file = U7open(filename,"rb");
-		if (!file) return;
-		ds = new FileDataSource(file);
+		U7open(file, filename);
+		if (!file.good()) return;
+		ds = new StreamDataSource(&file);
 	}
 	else if (index >= 0)
 	{
@@ -406,7 +388,7 @@ void MyMidiPlayer::load_timbres()
 
 	midi_driver->loadTimbreLibrary(ds,type);
 
-	if (file) fclose (file);
+	file.close();
 	delete ds;
 }
 
@@ -720,15 +702,14 @@ void    MyMidiPlayer::stop_sound_effects()
 bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 {
 	string ogg_name = "";
+	string basepath = "<MUSIC>/";
 
 	if (filename == EXULT_FLX && num == EXULT_FLX_MEDITOWN_MID)
-	{
 		ogg_name = "exult.ogg";
-	}
-	if (Game::get_game_type() == BLACK_GATE) 
-	{
-		if(filename == INTROMUS || filename == INTROMUS_AD)
+	else if (Game::get_game_type() == BLACK_GATE) 
 		{
+		if(filename == INTROMUS || filename == INTROMUS_AD)
+			{
 			if (num == 0)
 				ogg_name = "00bg.ogg";
 			else if (num == 1)
@@ -741,64 +722,67 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 				ogg_name = "endcr01.ogg";
 			else if (num == 5)
 				ogg_name = "endcr02.ogg";
-		}
+			}
 		else if (filename == ENDSCORE_XMI)
-		{
+			{
 			if (num == 1 || num == 3)
 				ogg_name = "end01bg.ogg";
 			else if (num == 2 || num == 4)
 				ogg_name = "end02bg.ogg";
-		}
+			}
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
-		{
+			{
 			char outputstr[255];
 			snprintf(outputstr, 255, "%02dbg.ogg", num);
 			ogg_name = outputstr;
+			}
 		}
-	}
 	else if (Game::get_game_type() == SERPENT_ISLE) 
-	{
-		if(filename == MAINSHP_FLX)
 		{
+		if(filename == MAINSHP_FLX)
+			{
 			if (num == 28 || num == 27) 
 				ogg_name = "03bg.ogg";
 			else if(num == 30 || num == 29)
 				ogg_name = "endcr01.ogg";
 			else if(num == 32 || num == 31)
 				ogg_name = "endcr02.ogg";
-		}
+			}
 		else if(filename == R_SINTRO || filename == A_SINTRO)
-		{
 			ogg_name = "si01.ogg";
-		}
 		else if(filename == R_SEND || filename == A_SEND)
-		{
 			ogg_name = "si13.ogg";
-		}
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
-		{
+			{
 			if (num < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
 				ogg_name = bgconvmusic[num];
 			else
-			{
+				{
 				char outputstr[255];
 				snprintf(outputstr, 255, "%02dsi.ogg", num);
 				ogg_name = outputstr;
+				}
 			}
 		}
-	}
+	else
+		{
+		char outputstr[255];
+		snprintf(outputstr, 255, "%02dmus.ogg", num);
+		ogg_name = outputstr;
+		basepath = "<STATIC>/music/";
+		}
 
 	if (ogg_name == "") return false;
 
 	if (U7exists("<PATCH>/music/" + ogg_name))
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
 	else
-		ogg_name = get_system_path("<MUSIC>/" + ogg_name);
+		ogg_name = get_system_path(basepath + ogg_name);
 
 	Mix_Music *newmusic = Mix_LoadMUS(ogg_name.c_str());
 	if (!newmusic) return false;
 
-	if(oggmusic) Mix_FreeMusic(oggmusic);
+	if (oggmusic) Mix_FreeMusic(oggmusic);
 	else Mix_HookMusic(NULL,NULL);
 
 	oggmusic = newmusic;

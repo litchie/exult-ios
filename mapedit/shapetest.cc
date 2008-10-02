@@ -85,7 +85,7 @@ int main
 					// Read in shape names.
 	int num_names = ifile->get_num_shapes();
 	names = new char *[num_names];
-	Flex *items = new Flex("static/text.flx");
+	Flex *items = new FlexFile("static/text.flx");
 	size_t len;
 	for (int i = 0; i < num_names; i++)
 		names[i] = items->retrieve(i, len);

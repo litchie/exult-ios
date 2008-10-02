@@ -47,6 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "shapelst.h"
 #include "shapevga.h"
+#include "U7fileman.h"
 #include "Flex.h"
 #include "studio.h"
 #include "utils.h"
@@ -1261,21 +1262,15 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	U7FileManager::get_ptr()->reset();
 
 	delete [] palbuf;			// Delete old.
-	string palname("<PATCH>/");	// 1st look in patch for palettes.
-	palname += "palettes.flx";
+	U7multiobject palobj(PALETTES_FLX, PATCH_PALETTES, 0);
 	size_t len;
-	if (!U7exists(palname.c_str()))
-		(palname = "<STATIC>/") += "palettes.flx";
-	if (!U7exists(palname.c_str()))
+	palbuf = (unsigned char *) palobj.retrieve(len);
+	if (!palbuf || !len)
 		{			// No palette file, so create fake.
+		if (palbuf)	// Just in case.
+			delete [] palbuf;
 		palbuf = new unsigned char[3*256];	// How about all white?
 		memset(palbuf, (63<<16)|(63<<8)|63, 3*256);
-		}
-	else
-		{
-		U7object pal(palname.c_str(), 0);
-					// this may throw an exception
-		palbuf = (unsigned char *) pal.retrieve(len);
 		}
 					// Set background color.
 	palbuf[3*255] = (background_color>>18)&0x3f;

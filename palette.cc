@@ -82,7 +82,7 @@ void Palette::fade
 	)
 	{
 	  if (pal_num == -1) pal_num = palette;
-	  load(PALETTES_FLX, pal_num);
+	  load(PALETTES_FLX, PATCH_PALETTES, pal_num);
 	  if(inout)
 		fade_in(cycles);
 	  else
@@ -128,7 +128,8 @@ void Palette::set
 	if (faded_out)
 		return;			// In the black.
 	
-	load(PALETTES_FLX, palette);	// could throw!
+			// could throw!
+	load(PALETTES_FLX, PATCH_PALETTES, palette);
 	set_brightness(brightness);
 	apply(repaint);
 	}
@@ -163,106 +164,145 @@ void Palette::apply(bool repaint)
 		win->show();
 }
 
-/*
- *	Returns 0 if file not found.
+/**
+ *	Loads and a xform table and sets palette from a buffer.
+ *	@param buf	What to base palette on.
+ *	@param xfname	xform file name.
+ *	@param xindex	xform index.
  */
-void Palette::load(const char *fname, int index, const char *xfname, int xindex)
+void Palette::loadxform(const char *buf, const char *xfname, int& xindex)
 	{
-	string name(fname);		// Copy for safety.
-	size_t len = 0;
-	char *buf = 0;
-	if (std::strncmp(fname, "<STATIC>/", sizeof("<STATIC>/") - 1) == 0 &&
-					is_system_path_defined("<PATCH>"))
-		{			// Check in "patch" dir. first.
-		string pname("<PATCH>/");
-		pname += fname + sizeof("<STATIC>/") - 1;
-		U7object pal(pname.c_str(), index);
-		try {
-			buf = pal.retrieve(len);
-		}
-		catch (exult_exception& e) {
-			buf = 0;
-		}
-		}
-	if (!buf || !len)			// Not in patch.
+	U7object xform(xfname, xindex);
+	unsigned char *xbuf = 0;
+	size_t xlen;
+	try
 		{
-		U7object pal(name.c_str(), index);
-		buf = pal.retrieve(len);// this may throw an exception
-		}
-	if(len==768) {	// Simple palette
-		if (xindex >= 0) {	// Get xform table.
-			U7object xform(xfname, xindex);
-			unsigned char *xbuf = 0;
-			size_t xlen;
-			try {
 #if 0	/* +++++TESTING */
-				xbuf = new unsigned char[256];
-				Game_window *gwin = 
-					Game_window::get_instance();
-				memcpy(xbuf, gwin->get_xform(11 - xindex - 1),
-									256);
+		xbuf = new unsigned char[256];
+		Game_window *gwin = 
+			Game_window::get_instance();
+		memcpy(xbuf, gwin->get_xform(11 - xindex - 1), 256);
 #else
-				xbuf = (unsigned char *) xform.retrieve( xlen);
+		xbuf = (unsigned char *) xform.retrieve( xlen);
 #endif
-				for (int i = 0; i < 256; i++) {
-					int ix = xbuf[i];
-					pal1[3*i] = buf[3*ix];
-					pal1[3*i+1] = buf[3*ix+1];
-					pal1[3*i+2] = buf[3*ix+2];
-				}
-			}
-			catch( const std::exception & err ) {
-				xindex = -1;
-			}
-			delete [] xbuf;
-		}
-		if (xindex < 0)		// Set the first palette
-			memcpy(pal1,buf,768);
-		memset(pal2,0,768);	// The second one is black
-	} else {			// Double palette
-		for(int i=0; i<768; i++) {
-			pal1[i]=buf[i*2];
-			pal2[i]=buf[i*2+1];
-		}
-	}
-	delete [] buf;
-	}
-/*void Palette::load(const char *fname, int index, const char *xfname, int xindex)
-	{
-	U7object pal(fname, index);
-	size_t len;
-	char *buf;
-	pal.retrieve(&buf, len);	// this may throw an exception
-	if(len==768) {	// Simple palette
-		if (xindex >= 0)	// Get xform table.
+		for (int i = 0; i < 256; i++)
 			{
-			U7object xform(xfname, xindex);
-			unsigned char *xbuf; size_t xlen;
-			if (!xform.retrieve(&xbuf, xlen))
-				xindex = -1;
-			else
-				for (int i = 0; i < 256; i++)
-					{
-					int ix = xbuf[i];
-					pal1[3*i] = buf[3*ix];
-					pal1[3*i+1] = buf[3*ix+1];
-					pal1[3*i+2] = buf[3*ix+2];
-					}
-			delete [] xbuf;
+			int ix = xbuf[i];
+			pal1[3*i] = buf[3*ix];
+			pal1[3*i+1] = buf[3*ix+1];
+			pal1[3*i+2] = buf[3*ix+2];
 			}
+		}
+	catch( const std::exception & err )
+		{
+		xindex = -1;
+		}
+	delete [] xbuf;
+	}
+
+/**
+ *	Actually loads and sets the palette and xform table.
+ *	@param pal	What is being loaded.
+ *	@param xfname	xform file name.
+ *	@param xindex	xform index.
+ */
+void Palette::set_loaded
+	(
+	const U7multiobject& pal,
+	const char *xfname,
+	int xindex
+	)
+	{
+	size_t len;
+	char *buf = pal.retrieve(len);
+	if (len == 768)
+		{	// Simple palette
+		if (xindex >= 0)
+			// Get xform table.
+			loadxform(buf, xfname, xindex);
+
 		if (xindex < 0)		// Set the first palette
-			memcpy(pal1,buf,768);
-		memset(pal2,0,768);	// The second one is black
-	} else {			// Double palette
-		for(int i=0; i<768; i++) {
+			memcpy(pal1, buf, 768);
+		// The second one is black.
+		memset(pal2, 0, 768);
+		}
+	else
+		{			// Double palette
+		for (int i=0; i<768; i++)
+			{
 			pal1[i]=buf[i*2];
 			pal2[i]=buf[i*2+1];
+			}
 		}
-	}
 	delete [] buf;
 	}
-*/
-	
+
+/**
+ *	Loads a palette from the given spec. Optionally loads a
+ *	xform from the desired file.
+ *	@param fname0	Specification of pallete to load.
+ *	@param index	Index of the palette.
+ *	@param xfname	Optional xform file name.
+ *	@param xindex	Optional xform index.
+ */
+void Palette::load
+	(
+	const File_spec& fname0,
+	int index,
+	const char *xfname,
+	int xindex
+	)
+	{
+	U7multiobject pal(fname0, index);
+	set_loaded(pal, xfname, xindex);
+	}
+
+/**
+ *	Loads a palette from the given spec. Optionally loads a
+ *	xform from the desired file.
+ *	@param fname0	Specification of first pallete to load (likely <STATIC>).
+ *	@param fname1	Specification of second pallete to load (likely <PATCH>).
+ *	@param index	Index of the palette.
+ *	@param xfname	Optional xform file name.
+ *	@param xindex	Optional xform index.
+ */
+void Palette::load
+	(
+	const File_spec& fname0,
+	const File_spec& fname1,
+	int index,
+	const char *xfname,
+	int xindex
+	)
+	{
+	U7multiobject pal(fname0, fname1, index);
+	set_loaded(pal, xfname, xindex);
+	}
+
+/**
+ *	Loads a palette from the given spec. Optionally loads a
+ *	xform from the desired file.
+ *	@param fname0	Specification of first pallete to load (likely <STATIC>).
+ *	@param fname1	Specification of second pallete to load.
+ *	@param fname2	Specification of third pallete to load (likely <PATCH>).
+ *	@param index	Index of the palette.
+ *	@param xfname	Optional xform file name.
+ *	@param xindex	Optional xform index.
+ */
+void Palette::load
+	(
+	const File_spec& fname0,
+	const File_spec& fname1,
+	const File_spec& fname2,
+	int index,
+	const char *xfname,
+	int xindex
+	)
+	{
+	U7multiobject pal(fname0, fname1, fname2, index);
+	set_loaded(pal, xfname, xindex);
+	}
+
 void Palette::set_brightness(int bright)
 	{
 		brightness = bright;

@@ -2672,8 +2672,8 @@ void ExultStudio::init_shape_notebook
 		set_toggle("shinfo_single_sfx", range == 1);
 		set_spin("shinfo_sfx_first", sfxinf->get_sfx());
 		set_spin("shinfo_sfx_chance", sfxinf->get_chance());
-		set_optmenu("shinfo_sfx_type", sfxinf->play_randomly(), range != 1);
-		set_spin("shinfo_sfx_count", range, range != 1);
+		set_optmenu("shinfo_sfx_type", sfxinf->play_randomly(), range > 1);
+		set_spin("shinfo_sfx_count", range, range > 1);
 		bool hourly = sfxinf->play_horly_ticks();
 		set_toggle("shinfo_sfx_clock_check", hourly);
 		set_spin("shinfo_sfx_clock_sfx", sfxinf->get_extra_sfx(), hourly);

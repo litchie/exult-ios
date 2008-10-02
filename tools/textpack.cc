@@ -63,7 +63,7 @@ static void Read_flex
 	vector<char *>& strings		// Strings are stored here.
 	)
 	{
-	Flex in(filename);		// May throw exception.
+	FlexFile in(filename);		// May throw exception.
 	int cnt = in.number_of_objects();
 	strings.resize(cnt);
 	for (int i = 0; i < cnt; i++)
