@@ -146,6 +146,17 @@ Game *Game::create_game(BaseGameInfo *mygame)
 	return game;
 }
 
+void Game::play_flic(const char *archive, int index) 	 
+{ 	 
+	char *fli_buf; 	 
+	size_t len; 	 
+	U7object flic(archive, index); 	 
+	fli_buf = flic.retrieve(len); 	 
+	playfli fli(fli_buf); 	 
+	fli.play(win); 	 
+	delete [] fli_buf; 	 
+} 	 
+	 
 const char *xml_root = "Game_config";
 
 void Game::add_shape(const char *name, int shapenum) 
