@@ -89,6 +89,7 @@
 #include "glshape.h"
 #include "combat_opts.h"
 #include "U7file.h"
+#include "U7fileman.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -837,7 +838,7 @@ static void Init
 		config->value("config/gameplay/skip_splash", skip_splash);
 		
 		// Make sure we have a proper palette before playing the intro.
-		gwin->get_pal()->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
+		gwin->get_pal()->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
 		gwin->get_pal()->apply();
 		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME
 				|| U7exists("<STATIC>/intro.dat")))

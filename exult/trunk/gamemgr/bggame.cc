@@ -168,13 +168,32 @@ BG_Game::BG_Game()
 		add_resource("palettes/9", PALETTES_FLX, 10);
 		add_resource("palettes/10", PALETTES_FLX, 11);
 		add_resource("palettes/11", PALETTES_FLX, 12);
-		add_resource("palettes/12", "<STATIC>/intropal.dat", 0);
-		add_resource("palettes/13", "<STATIC>/intropal.dat", 1);
-		add_resource("palettes/14", "<STATIC>/intropal.dat", 2);
-		add_resource("palettes/15", "<STATIC>/intropal.dat", 3);
-		add_resource("palettes/16", "<STATIC>/intropal.dat", 4);
-		add_resource("palettes/17", "<STATIC>/intropal.dat", 5);
-	
+		add_resource("palettes/12", INTROPAL_DAT, 0);
+		add_resource("palettes/13", INTROPAL_DAT, 1);
+		add_resource("palettes/14", INTROPAL_DAT, 2);
+		add_resource("palettes/15", INTROPAL_DAT, 3);
+		add_resource("palettes/16", INTROPAL_DAT, 4);
+		add_resource("palettes/17", INTROPAL_DAT, 5);
+
+		add_resource("palettes/patch/0", PATCH_PALETTES, 0);
+		add_resource("palettes/patch/1", PATCH_PALETTES, 1);
+		add_resource("palettes/patch/2", PATCH_PALETTES, 2);
+		add_resource("palettes/patch/3", PATCH_PALETTES, 3);
+		add_resource("palettes/patch/4", PATCH_PALETTES, 4);
+		add_resource("palettes/patch/5", PATCH_PALETTES, 5);
+		add_resource("palettes/patch/6", PATCH_PALETTES, 6);
+		add_resource("palettes/patch/7", PATCH_PALETTES, 7);
+		add_resource("palettes/patch/8", PATCH_PALETTES, 8);
+		add_resource("palettes/patch/9", PATCH_PALETTES, 10);
+		add_resource("palettes/patch/10", PATCH_PALETTES, 11);
+		add_resource("palettes/patch/11", PATCH_PALETTES, 12);
+		add_resource("palettes/patch/12", PATCH_INTROPAL, 0);
+		add_resource("palettes/patch/13", PATCH_INTROPAL, 1);
+		add_resource("palettes/patch/14", PATCH_INTROPAL, 2);
+		add_resource("palettes/patch/15", PATCH_INTROPAL, 3);
+		add_resource("palettes/patch/16", PATCH_INTROPAL, 4);
+		add_resource("palettes/patch/17", PATCH_INTROPAL, 5);
+
 		add_resource("xforms/count", 0, 20);
 		add_resource("xforms/0", "<STATIC>/xform.tbl", 0);
 		add_resource("xforms/1", "<STATIC>/xform.tbl", 1);
@@ -197,10 +216,10 @@ BG_Game::BG_Game()
 		add_resource("xforms/18", "<STATIC>/xform.tbl", 18);
 		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
 		}
-	fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
-	fontManager.add_font("END2_FONT", ENDGAME, 4, -1);
-	fontManager.add_font("END3_FONT", ENDGAME, 5, -2);
-	fontManager.add_font("NORMAL_FONT", FONTS_VGA, 0, -1);
+	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
+	fontManager.add_font("END2_FONT", ENDGAME, PATCH_ENDGAME, 4, -1);
+	fontManager.add_font("END3_FONT", ENDGAME, PATCH_ENDGAME, 5, -2);
+	fontManager.add_font("NORMAL_FONT", FONTS_VGA, PATCH_FONTS, 0, -1);
 }
 
 BG_Game::~BG_Game()
@@ -324,7 +343,7 @@ void BG_Game::scene_lord_british()
 	*/
 
 	// Lord British presents...  (sh. 0x11)
-	pal->load("<STATIC>/intropal.dat",3);
+	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
 	// insert our own intro text
@@ -406,7 +425,7 @@ void BG_Game::scene_butterfly()
 	
 	try
 	{
-		pal->load("<STATIC>/intropal.dat",4);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 4);
 
 		// Load the butterfly shape
 		butterfly = shapes.get_shape(butterfly_shp,0);
@@ -601,7 +620,7 @@ void BG_Game::scene_guardian()
 		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 16+76);
 		win->get(plasma, 0, 0);
 
-		pal->load("<STATIC>/intropal.dat",2);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 2);
 		pal->set_color(1,0,0,0); //UGLY hack... set font background to black
 		pal->apply();
 
@@ -747,7 +766,7 @@ void BG_Game::scene_guardian()
 
 		// prepare Guardian speech
 		Font *font = fontManager.get_font("END3_FONT");
-		U7object textobj(MAINSHP_FLX, 0x0D);
+		U7multiobject textobj(MAINSHP_FLX, PATCH_MAINSHP, 0x0D);
 		size_t txt_len;
 		next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
 
@@ -808,7 +827,7 @@ void BG_Game::scene_guardian()
 		{
 			if (time == 40)
 				if (Audio::get_ptr()->is_speech_enabled())
-					Audio::get_ptr()->playfile(INTROSND,false);
+					Audio::get_ptr()->playfile(INTROSND,PATCH_INTROSND,false);
 				
 			if (time >= eye_times[eye_index] && eye_index < eye_num_frames){
 				eye_index++;
@@ -926,7 +945,7 @@ void BG_Game::scene_desk()
 		Audio::get_ptr()->start_music(home_song_midi,false,INTROMUS);
 		
 		gwin->clear_screen();
-		pal->load("<STATIC>/intropal.dat",1);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 1);
 		pal->apply();
 
 		// draw monitor (sh. 0x07, 0x08, 0x09, 0x0A: various parts of monitor)
@@ -1050,7 +1069,7 @@ void BG_Game::scene_moongate()
 	int i;
 		
 	//gwin->clear_screen();
-    	pal->load("<STATIC>/intropal.dat",5);
+	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 5);
 	pal->apply();
 		
 	// "Behind your house is the circle of stones"
@@ -1114,7 +1133,7 @@ void BG_Game::top_menu()
 {
 	Audio::get_ptr()->start_music(menu_midi,true,INTROMUS);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal->load("<STATIC>/intropal.dat",6);
+	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 	pal->fade_in(60);	
 }
 
@@ -1137,7 +1156,7 @@ void BG_Game::end_game(bool success)
 		TextScroller text(MAINSHP_FLX, 0x15,
 				  font,0);
 		gwin->clear_screen();
-		pal->load("<STATIC>/intropal.dat",0);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 0);
 		for(uint32 i=0; i<text.get_count(); i++) {
 			text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 		}
@@ -1179,15 +1198,15 @@ void BG_Game::end_game(bool success)
 	// Clear screen
 	gwin->clear_screen(true);
 
-	U7object flic1(ENDGAME, 0);
-	U7object flic2(ENDGAME, 1);
-	U7object flic3(ENDGAME, 2);
-	U7object speech1(ENDGAME, 7);
-	U7object speech2(ENDGAME, 8);
-	U7object speech3(ENDGAME, 9);
+	U7multiobject flic1(ENDGAME, PATCH_ENDGAME, 0);
+	U7multiobject flic2(ENDGAME, PATCH_ENDGAME, 1);
+	U7multiobject flic3(ENDGAME, PATCH_ENDGAME, 2);
+	U7multiobject speech1(ENDGAME, PATCH_ENDGAME, 7);
+	U7multiobject speech2(ENDGAME, PATCH_ENDGAME, 8);
+	U7multiobject speech3(ENDGAME, PATCH_ENDGAME, 9);
 
 	/* There seems to be something wrong with the shapes. Needs investigating
-	U7object shapes(ENDGAME, 10);
+	U7multiobject shapes(ENDGAME, PATCH_ENDGAME, 10);
 	shapes.retrieve("endgame.shp");
 	Shape_file sf("endgame.shp");
 	int x = get_width()/2-160;
@@ -1578,9 +1597,13 @@ bool BG_Game::new_game(Vga_file &shapes)
 				defskin->default_skin, defskin->default_female, si_installed);
 	
 	Palette *pal = 	gwin->get_pal();
-	pal->load("<DATA>/exult_bg.flx", EXULT_BG_FLX_U7MENUPAL_PAL);
+	// This should work because the palette in exult_bg.flx is
+	// a single-file object.
+	pal->load(INTROPAL_DAT,
+		File_spec("<DATA>/exult_bg.flx", EXULT_BG_FLX_U7MENUPAL_PAL),
+		PATCH_INTROPAL, 6);
 	Palette *oldpal = new Palette();
-	oldpal->load("<STATIC>/intropal.dat", 6);
+	oldpal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 
 	// Create palette translation table. Maybe make them static?
 	unsigned char *transto = new unsigned char[256];
@@ -1745,7 +1768,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	}
 	else
 	{
-		pal->load("<STATIC>/intropal.dat",6);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 		sman->paint_shape(topx,topy,shapes.get_shape(0x2,0));
 		pal->apply();
 	}

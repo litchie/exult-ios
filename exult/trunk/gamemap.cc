@@ -628,7 +628,7 @@ void Game_map::get_ifix_objects
 								endl;
 		return;
 		}
-	Flex flex(fname);
+	FlexFile flex(fname);
 	int vers = (int) flex.get_vers();
 	StreamDataSource ifix(&ifix_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.

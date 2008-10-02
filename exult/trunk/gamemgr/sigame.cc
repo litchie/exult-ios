@@ -147,9 +147,25 @@ SI_Game::SI_Game()
 		add_resource("palettes/12", PALETTES_FLX, 12);
 		add_resource("palettes/13", MAINSHP_FLX, 1);
 		add_resource("palettes/14", MAINSHP_FLX, 26);
+
+		add_resource("palettes/patch/0", PATCH_PALETTES, 0);
+		add_resource("palettes/patch/1", PATCH_PALETTES, 1);
+		add_resource("palettes/patch/2", PATCH_PALETTES, 2);
+		add_resource("palettes/patch/3", PATCH_PALETTES, 3);
+		add_resource("palettes/patch/4", PATCH_PALETTES, 4);
+		add_resource("palettes/patch/5", PATCH_PALETTES, 5);
+		add_resource("palettes/patch/6", PATCH_PALETTES, 6);
+		add_resource("palettes/patch/7", PATCH_PALETTES, 7);
+		add_resource("palettes/patch/8", PATCH_PALETTES, 8);
+		add_resource("palettes/patch/9", PATCH_PALETTES, 9);
+		add_resource("palettes/patch/10", PATCH_PALETTES, 10);
+		add_resource("palettes/patch/11", PATCH_PALETTES, 11);
+		add_resource("palettes/patch/12", PATCH_PALETTES, 12);
+		add_resource("palettes/patch/13", PATCH_MAINSHP, 1);
+		add_resource("palettes/patch/14", PATCH_MAINSHP, 26);
 		}		
-	fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
-	fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
+	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
+	fontManager.add_font("SIINTRO_FONT", INTRO_DAT, PATCH_INTRO, 14, 0);
 	Map_patch_collection *mp = gwin->get_map_patches();
 					// Egg by "PC pirate" in forest:
 	mp->add(new Map_patch_remove(Object_spec(
@@ -210,7 +226,7 @@ void SI_Game::play_intro()
 	// Lord British presents...
 	try
 	{
-		U7object lbflic("<STATIC>/intro.dat", 0);
+		U7multiobject lbflic(INTRO_DAT, PATCH_INTRO, 0);
 		fli_b = lbflic.retrieve(flisize);
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
@@ -260,12 +276,12 @@ void SI_Game::play_intro()
 		// Thunder, note we use the buffer again later so it's not freed here
 		if (speech)
 		{
-			U7object voc_thunder("<STATIC>/intro.dat", 15);
+			U7multiobject voc_thunder(INTRO_DAT, PATCH_INTRO, 15);
 			buffer = (uint8 *) voc_thunder.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 		}
 
-		U7object flic("<STATIC>/intro.dat", 1);
+		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
 		fli_b = flic.retrieve(flisize);
 		playfli fli1(fli_b+8, flisize-8);
 		fli1.info();
@@ -368,7 +384,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Guard walks in
-		U7object flic2("<STATIC>/intro.dat", 2);
+		U7multiobject flic2(INTRO_DAT, PATCH_INTRO, 2);
 		fli_b = flic2.retrieve(flisize);
 		playfli fli2(fli_b+8, flisize-8);
 		fli2.info();
@@ -393,7 +409,7 @@ void SI_Game::play_intro()
 		// Guard walks in
 		if (speech && !jive)
 		{
-			U7object voc_my_leige("<STATIC>/intro.dat", 16);
+			U7multiobject voc_my_leige(INTRO_DAT, PATCH_INTRO, 16);
 			buffer = (uint8 *) voc_my_leige.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -421,7 +437,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_all_we("<STATIC>/intro.dat", 17);
+			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
 			buffer = (uint8 *) voc_all_we.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -472,7 +488,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_indeed("<STATIC>/intro.dat", 18);
+			U7multiobject voc_indeed(INTRO_DAT, PATCH_INTRO, 18);
 			buffer = (uint8 *) voc_indeed.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -508,7 +524,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Scroll opens
-		U7object flic3("<STATIC>/intro.dat", 3);
+		U7multiobject flic3(INTRO_DAT, PATCH_INTRO, 3);
 		fli_b = flic3.retrieve(flisize);
 		playfli fli3(fli_b+8, flisize-8);
 		fli3.info();
@@ -528,7 +544,7 @@ void SI_Game::play_intro()
 		// 'Stand Back'
 		if (speech && !jive)
 		{
-			U7object voc_stand_back("<STATIC>/intro.dat", 19);
+			U7multiobject voc_stand_back(INTRO_DAT, PATCH_INTRO, 19);
 			buffer = (uint8 *) voc_stand_back.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -554,12 +570,12 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Big G speaks
-		U7object flic4("<STATIC>/intro.dat", 4);
+		U7multiobject flic4(INTRO_DAT, PATCH_INTRO, 4);
 		fli_b = flic4.retrieve(flisize);
 		playfli fli4(fli_b+8, flisize-8);
 		fli4.info();
 
-		U7object shapes("<STATIC>/intro.dat", 30);
+		U7multiobject shapes(INTRO_DAT, PATCH_INTRO, 30);
 		shape_buf = shapes.retrieve(shapesize);
 		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
 		Shape_frame *sf;
@@ -570,7 +586,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_big_g("<STATIC>/intro.dat", 20);
+			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
 			buffer = (uint8 *) voc_big_g.retrieve ( size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -647,7 +663,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Tis LBs's Worst fear
-		U7object flic5("<STATIC>/intro.dat", 5);
+		U7multiobject flic5(INTRO_DAT, PATCH_INTRO, 5);
 		fli_b = flic5.retrieve(flisize);
 		playfli fli5(fli_b+8, flisize-8);
 		fli5.info();
@@ -663,7 +679,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_tis_my("<STATIC>/intro.dat", 21);
+			U7multiobject voc_tis_my(INTRO_DAT, PATCH_INTRO, 21);
 			buffer = (uint8 *) voc_tis_my.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
@@ -694,7 +710,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Boat 1
-		U7object flic6("<STATIC>/intro.dat", 6);
+		U7multiobject flic6(INTRO_DAT, PATCH_INTRO, 6);
 		fli_b = flic6.retrieve(flisize);
 		playfli fli6(fli_b+8, flisize-8);
 		fli6.info();
@@ -714,7 +730,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Boat 2
-		U7object flic7("<STATIC>/intro.dat", 7);
+		U7multiobject flic7(INTRO_DAT, PATCH_INTRO, 7);
 		fli_b = flic7.retrieve(flisize);
 		playfli fli7(fli_b+8, flisize-8);
 		fli7.info();
@@ -739,7 +755,7 @@ void SI_Game::play_intro()
 		gwin->clear_screen(true);
 
 		// Ultima VII Part 2
-		U7object flic8("<STATIC>/intro.dat", 8);
+		U7multiobject flic8(INTRO_DAT, PATCH_INTRO, 8);
 		fli_b = flic8.retrieve(flisize);
 		playfli fli8(fli_b+8, flisize-8);
 		fli8.info();
@@ -793,7 +809,7 @@ void SI_Game::top_menu()
 {
 	Audio::get_ptr()->start_music(28,true,MAINSHP_FLX);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal->load(MAINSHP_FLX,26);
+	pal->load(MAINSHP_FLX, PATCH_MAINSHP, 26);
 	pal->fade_in(60);	
 }
 
@@ -812,13 +828,14 @@ void SI_Game::show_journey_failed()
 struct ExCineEvent {
 	uint32			time;	// Time to start, In MS
 	const char		*file;
+	const char		*patch;
 	int			index;
 
 	virtual bool	play_it(Image_window *win, int time) = 0;		// Return true if screen updated
 
 	bool can_play() { return file != 0; }
 
-	ExCineEvent(uint32 t, const char*f, int i) :
+	ExCineEvent(uint32 t, const char *f, const char *p, int i) :
 		time(t), file(f), index(i)  { }
 
 	virtual ~ExCineEvent() { }
@@ -850,11 +867,12 @@ public:
 
 	void		fade_out(int cycles);
 
-	ExCineFlic(uint32 time, const char *file, int i, int s, int c, bool r, int spd) :
-		ExCineEvent(time, file, i), start(s), count(c), repeat(r), cur(-1), speed(spd),
-		flic_obj(0), size(0), buffer(0), player(0) { }
+	ExCineFlic(uint32 time, const char *file, const char *patch,
+			int i, int s, int c, bool r, int spd) :
+		ExCineEvent(time, file, patch, i), start(s), count(c), repeat(r),
+		cur(-1), speed(spd), flic_obj(0), size(0), buffer(0), player(0) { }
 
-	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0), start(0), count(0),
+	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0, 0), start(0), count(0),
 				repeat(false), cur(0), speed(0),
 				flic_obj(0), size(0), buffer(0), player(0) { }
 
@@ -869,7 +887,10 @@ void ExCineFlic::load_flic()
 
 	if (file) COUT("Loading " << file << ":" << index);
 
-	flic_obj = new U7object(file, index);
+	if (patch)
+		flic_obj = new U7multiobject(file, patch, index);
+	else
+		flic_obj = new U7object(file, index);
 
 	buffer = flic_obj->retrieve(size);
 
@@ -928,8 +949,8 @@ private:
 public:
 	virtual bool	play_it(Image_window *win, int t);
 
-	ExCineVoc(uint32 time, const char *f, int index) :
-		ExCineEvent(time, file, index), played(false) { }
+	ExCineVoc(uint32 time, const char *file, const char *patch, int index) :
+		ExCineEvent(time, file, patch, index), played(false) { }
 
 	virtual ~ExCineVoc() { }
 };
@@ -937,9 +958,16 @@ public:
 bool ExCineVoc::play_it(Image_window *win, int t)
 {
 	size_t	size;
-	U7object voc("<STATIC>/intro.dat", index);
+	U7multiobject voc(INTRO_DAT, PATCH_INTRO, index);
 	uint8 *buffer = (uint8 *) voc.retrieve (size);
-	Audio::get_ptr()->play (buffer+8, size-8, false);
+	uint8 *buf = buffer;
+	if (!memcmp(buf, "win", sizeof("win")-1))
+		{
+		// IFF junk.
+		buf += 8;
+		size -= 8;
+		}
+	Audio::get_ptr()->play (buf, size, false);
 	FORGET_ARRAY(buffer);
 	played = true;
 
@@ -1066,13 +1094,13 @@ Sound Index
 
 	// Flic List
 	ExCineFlic flics[] = {
-		ExCineFlic(0, "<STATIC>/intro.dat", 9, 0, 61, true, 75),
-		ExCineFlic(6350, "<STATIC>/intro.dat", 10, 0, 156, false, 95),
-		ExCineFlic(21170, "<STATIC>/intro.dat", 9, 0, 61, true, 75),
-		ExCineFlic(39800, "<STATIC>/intro.dat", 11, 0, 4, true, 75),
-		ExCineFlic(48900, "<STATIC>/intro.dat", 13, 0, 61, true, 75),
-		ExCineFlic(62500, "<STATIC>/intro.dat", 12, 0, 61, true, 75),
-		ExCineFlic(70250, "<STATIC>/intro.dat", 13, 0, 121, false, 75),
+		ExCineFlic(0, INTRO_DAT, PATCH_INTRO, 9, 0, 61, true, 75),
+		ExCineFlic(6350, INTRO_DAT, PATCH_INTRO, 10, 0, 156, false, 95),
+		ExCineFlic(21170, INTRO_DAT, PATCH_INTRO, 9, 0, 61, true, 75),
+		ExCineFlic(39800, INTRO_DAT, PATCH_INTRO, 11, 0, 4, true, 75),
+		ExCineFlic(48900, INTRO_DAT, PATCH_INTRO, 13, 0, 61, true, 75),
+		ExCineFlic(62500, INTRO_DAT, PATCH_INTRO, 12, 0, 61, true, 75),
+		ExCineFlic(70250, INTRO_DAT, PATCH_INTRO, 13, 0, 121, false, 75),
 		ExCineFlic(82300)
 	};
 	int last_flic = 7;
@@ -1082,14 +1110,14 @@ Sound Index
 
 	// Voc List
 	ExCineVoc vocs[] = {
-		ExCineVoc(14700, "<STATIC>/intro.dat", 22),
-		ExCineVoc(21300, "<STATIC>/intro.dat", 23),
-		ExCineVoc(39800, "<STATIC>/intro.dat", 24),
-		ExCineVoc(47700, "<STATIC>/intro.dat", 25),
-		ExCineVoc(55400, "<STATIC>/intro.dat", 26),
-		ExCineVoc(62500, "<STATIC>/intro.dat", 27),
-		ExCineVoc(70250, "<STATIC>/intro.dat", 28),
-		ExCineVoc(74750, "<STATIC>/intro.dat", 29)
+		ExCineVoc(14700, INTRO_DAT, PATCH_INTRO, 22),
+		ExCineVoc(21300, INTRO_DAT, PATCH_INTRO, 23),
+		ExCineVoc(39800, INTRO_DAT, PATCH_INTRO, 24),
+		ExCineVoc(47700, INTRO_DAT, PATCH_INTRO, 25),
+		ExCineVoc(55400, INTRO_DAT, PATCH_INTRO, 26),
+		ExCineVoc(62500, INTRO_DAT, PATCH_INTRO, 27),
+		ExCineVoc(70250, INTRO_DAT, PATCH_INTRO, 28),
+		ExCineVoc(74750, INTRO_DAT, PATCH_INTRO, 29)
 	};
 	int last_voc = 7;
 	int cur_voc = -1;

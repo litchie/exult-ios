@@ -436,7 +436,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 	Shape_manager *sman = Shape_manager::get_instance();
 	
 	gwin->clear_screen(true);
-	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
+	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
 	gpal->apply();
 
 	int first_mod = 0, num_choices = selgame->get_mod_list().size()-1,
@@ -488,7 +488,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 BaseGameInfo *ExultMenu::run()
 {
 	Palette *gpal = gwin->get_pal();
-	gpal->load(EXULT_FLX,EXULT_FLX_EXULT0_PAL);
+	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
 
 	Shape_manager *sman = Shape_manager::get_instance();
 	font = fontManager.get_font("CREDITS_FONT");

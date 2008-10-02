@@ -25,6 +25,8 @@
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
+
+#include <fstream>
 //#include "SDL_mapping.h"
 
 #include "Audio.h"
@@ -70,6 +72,8 @@ using std::memset;
 using std::string;
 using std::strncmp;
 using std::vector;
+using std::ifstream;
+using std::ios;
 #endif
 
 // These MIGHT be macros!
@@ -193,13 +197,13 @@ public:
 	SFX_cached(int sn, uint8 *b, uint32 l, SFX_cached *oldhead)
 		: num(sn), next(oldhead), ref_cnt(1)
 		{
-			if (num < 0)
-				data = Mix_QuickLoad_RAW(b, l);
-			else
+			if (num >= 0 || !strncmp((const char *)b, "OggS", 4))
 				{
 				SDL_RWops *rwsrc = SDL_RWFromMem(b, l);
 				data = Mix_LoadWAV_RW(rwsrc, 1);
 				}
+			else
+				data = Mix_QuickLoad_RAW(b, l);
 		}
 	~SFX_cached()
 		{
@@ -581,7 +585,7 @@ void	Audio::Init_sfx()
 			d = s;
 
 		COUT("Opening digital SFX's file: \"" << s << "\"");
-		sfx_file = new Flex(d);
+		sfx_file = new FlexFile(d.c_str());
 	}
 }
 
@@ -914,21 +918,18 @@ static	sint16 *resample_new_mono(uint8 *src,
 }
 		
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
-{
+	{
 	Mix_Chunk *wavechunk;
 
 	if (!audio_enabled || !speech_enabled || !len) return;
 
-	bool	own_audio_data=false;
-
 	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
-	{
-		sound_data=convert_VOC(sound_data,len);
-		own_audio_data=true;
-	}
+		sound_data = convert_VOC(sound_data,len);
 	
-	//Play voice sample using RAW sample we created above. ConvertVOC() produced a stereo, 22KHz, 16bit
-	//sample. Currently SDL does not resample very well so we do it in ConvertVOC()
+	//Play voice sample using RAW sample we created above.
+	// ConvertVOC() produced a stereo, 22KHz, 16bit sample.
+	// Currently SDL does not resample very well so we do
+	// it in ConvertVOC()
 	wavechunk = sfxs->add_from_data(sound_data, len);
 	
 	int channel = Mix_PlayChannel(-1, wavechunk, 0);
@@ -939,9 +940,9 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 		return;
 		}
 	Mix_SetPosition(channel, 0, 0);
-	Mix_Volume(channel, MIX_MAX_VOLUME - 40);		//Voice is loud compared to other SFX,music
-								//so adjust to match volumes
-}
+	//Voice is loud compared to other SFX,music so adjust to match volumes.
+	Mix_Volume(channel, MIX_MAX_VOLUME - 40);
+	}
 
 void	Audio::cancel_streams(void)
 {
@@ -967,34 +968,26 @@ void 	Audio::resume_audio(void)
 }
 
 
-void	Audio::playfile(const char *fname,bool wait)
+void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 {
 	if (!audio_enabled)
 		return;
 
-	FILE	*fp;
-	size_t	len;
-	uint8	*buf;
-	
-	fp = U7open(fname,"r"); // DARKE FIXME
-	if(!fp)
-	{
-		perror(fname);
+	char *buf=0;
+	size_t len;
+
+	U7multiobject sample(fname, fpatch, 1);
+	buf = sample.retrieve(len);
+	if (!buf || len <= 0)
+		{
+		// Failed to find file in patch or static dirs.
+		CERR("Audio::playfile: Error reading file '" << fname << "'");
+		if (buf)
+			delete [] buf;
 		return;
-	}
-	fseek(fp,0L,SEEK_END);
-	len=ftell(fp);
-	fseek(fp,0L,SEEK_SET);
-	if(len<=0)
-	{
-		perror("seek");
-		fclose(fp);
-		return;
-	}
-	buf=new uint8[len];
-	fread(buf,len,1,fp);
-	fclose(fp);
-	play(buf,len,wait);
+		}
+
+	play(reinterpret_cast<uint8*>(buf), len, wait);
 	delete [] buf;
 }
 
@@ -1104,29 +1097,32 @@ void	Audio::stop_music()
 		midi->stop_music();
 }
 
-bool	Audio::start_speech(int num,bool wait)
+bool Audio::start_speech(int num, bool wait)
 {
 	if (!audio_enabled || !speech_enabled)
 		return false;
 
-	char	*buf=0;
-	size_t	len;
-	const char	*filename;
+	char *buf=0;
+	size_t len;
+	const char *filename;
+	const char *patchfile;
 
 	if (Game::get_game_type() == SERPENT_ISLE)
+		{
 		filename = SISPEECH;
+		patchfile = PATCH_SISPEECH;
+		}
 	else
+		{
 		filename = U7SPEECH;
+		patchfile = PATCH_U7SPEECH;
+		}
 	
-	U7object	sample(filename,num);
-	try
-	{
-		buf = sample.retrieve(len);
-	}
-	catch( const std::exception & /*err*/ )
-	{
+	U7multiobject sample(filename, patchfile, num);
+	buf = sample.retrieve(len);
+	if (!buf)
 		return false;
-	}
+
 	play(reinterpret_cast<uint8*>(buf),len,wait);
 	delete [] buf;
 

@@ -685,7 +685,7 @@ void SFX_info::write
 	WriteInt(out, sfxnum);
 	WriteInt(out, chance);
 	WriteInt(out, range);
-	WriteInt(out, random, extra == -1);
+	WriteInt(out, random, extra < 0);
 	if (extra >= 0)
 		WriteInt(out, extra, true);
 	}

@@ -979,10 +979,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\party.h"
-					>
-				</File>
-				<File
 					RelativePath="..\paths.cc"
 					>
 				</File>
@@ -1158,6 +1154,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\party.h"
+						>
+					</File>
+					<File
 						RelativePath="..\paths.h"
 						>
 					</File>
@@ -1235,15 +1235,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\files\msgfile.h"
-					>
-				</File>
-				<File
 					RelativePath="..\files\Table.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\files\U7file.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\U7fileman.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\U7obj.cc"
 					>
 				</File>
 				<File
@@ -1278,11 +1282,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\files\msgfile.h"
+						>
+					</File>
+					<File
+						RelativePath="..\files\multifile.h"
+						>
+					</File>
+					<File
 						RelativePath="..\files\Table.h"
 						>
 					</File>
 					<File
 						RelativePath="..\files\U7file.h"
+						>
+					</File>
+					<File
+						RelativePath="..\files\U7fileman.h"
+						>
+					</File>
+					<File
+						RelativePath="..\files\U7obj.h"
 						>
 					</File>
 					<File
@@ -2514,11 +2534,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File

@@ -823,7 +823,7 @@ static void Update
 			"' exists, so we won't overwrite it" << endl;
 		palname = 0;
 		}
-	Flex in(imagename);		// May throw exception.
+	FlexFile in(imagename);		// May throw exception.
 	int oldcnt = in.number_of_objects();
 	vector<char *> data(oldcnt);	// Read in all the entries.
 	vector<int> lengths(oldcnt);

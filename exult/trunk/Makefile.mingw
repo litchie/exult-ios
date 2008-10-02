@@ -117,7 +117,7 @@ MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
 	shapeedit.o shapelst.o studio.o ucbrowse.o \
 	ucsymtbl.o
 
-ES_FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
+ES_FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o U7fileman.o utils.o U7obj.o
 
 ES_GAMEMGR_OBJS=modmgr.o
 
