@@ -88,7 +88,7 @@ void ShapeBrowser::browse_shapes()
 		int centery = maxy/2;
 		Palette pal;
 		char buf[255];
-		str_int_pair pal_tuple, xform_tuple;
+		str_int_pair pal_tuple, patch_tuple, xform_tuple;
 		const char *fname;
 		
 		snprintf(buf,255,"files/shapes/%d",current_file);
@@ -103,8 +103,10 @@ void ShapeBrowser::browse_shapes()
 		do {
 			if (redraw) {
 				gwin->clear_screen();
-				snprintf(buf,255,"palettes/%d",current_palette);
+				snprintf(buf,255,"palettes/%d", current_palette);
 				pal_tuple = game->get_resource(buf);
+				snprintf(buf,255,"palettes/patch/%d", current_palette);
+				patch_tuple = game->get_resource(buf);
 				char xfrsc[256];
 				if (current_xform > 0)
 					{
@@ -112,12 +114,11 @@ void ShapeBrowser::browse_shapes()
 							current_xform);
 					xform_tuple = game->
 						get_resource(xfrsc);
-					pal.load(pal_tuple.str, pal_tuple.num,
-						xform_tuple.str,
-						xform_tuple.num);
+					pal.load(pal_tuple.str, patch_tuple.str,
+						pal_tuple.num, xform_tuple.str, xform_tuple.num);
 					}
 				else
-					pal.load(pal_tuple.str,pal_tuple.num);
+					pal.load(pal_tuple.str, patch_tuple.str, pal_tuple.num);
 
 				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);

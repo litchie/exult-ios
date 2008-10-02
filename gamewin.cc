@@ -278,7 +278,7 @@ static void Set_renderer
 		{
 		glman = new GL_manager();
 					// +++++Hope this is okay to do:
-		pal->load(PALETTES_FLX, 0);	// Main palette.
+		pal->load(PALETTES_FLX, PATCH_PALETTES, 0);	// Main palette.
 					// This should be elsewhere, I think:
 		unsigned char *newpal = new unsigned char[768];
 		for (int i = 0; i < 256; i++)
@@ -2354,7 +2354,7 @@ void Game_window::double_clicked
 	static int ncnt = 0;
 	cout << "Showing xform for ncnt = " << ncnt << endl;
 	std::size_t nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	pal->load(PALETTES_FLX, 0, XFORMTBL, nxforms - 1 - ncnt);
+	pal->load(PALETTES_FLX, PATCH_PALETTES, 0, XFORMTBL, nxforms - 1 - ncnt);
 	pal->apply(false);
 	ncnt = (ncnt + 1)%nxforms;
 //^^^^^^^^^^^^TESTING
@@ -3012,9 +3012,9 @@ void Game_window::setup_load_palette()
 
 	// Load the palette
 	if (Game::get_game_type()==BLACK_GATE)
-		pal->load("<STATIC>/intropal.dat",2);
+		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 2);
 	else if (Game::get_game_type()==SERPENT_ISLE)
-		pal->load(MAINSHP_FLX,1);
+		pal->load(MAINSHP_FLX, PATCH_MAINSHP, 1);
 
 	pal->apply();
 	load_palette_timer = SDL_GetTicks();

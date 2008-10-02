@@ -675,27 +675,45 @@ int Font::find_xcursor
 	return -1;
 	}
 
-Font::Font(): font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
-{
-}
+Font::Font
+	(
+	)
+	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
+	{
+	}
 
-Font::Font(const char *fname, int index, int hlead, int vlead): font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
-{
-	load(fname, index, hlead, vlead);
-}
+Font::Font
+	(
+	const File_spec& fname0,
+	int index,
+	int hlead,
+	int vlead
+	)
+	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
+	{
+	load(fname0, index, hlead, vlead);
+	}
+
+Font::Font
+	(
+	const File_spec& fname0,
+	const File_spec& fname1,
+	int index,
+	int hlead,
+	int vlead
+	)
+	: font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
+	{
+	load(fname0, fname1, index, hlead, vlead);
+	}
 
 Font::~Font()
-{
-	if(font_shapes)
-		delete font_shapes;
-	if(font_data)
-		delete font_data;
-	if(orig_font_buf)
-		delete [] orig_font_buf;
-}
+	{
+	clean_up();
+	}
 
-int Font::load(const char *fname, int index, int hlead, int vlead)
-{
+void Font::clean_up()
+	{
 	if(font_shapes)
 		delete font_shapes;
 	if (font_data)
@@ -705,35 +723,91 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	font_shapes = 0;
 	font_data = 0;
 	orig_font_buf = 0;
-	try 
-	{
-
-		size_t len;
-
-		U7object font_obj(fname, index);
-		font_buf = font_obj.retrieve(len);
-
-		if (!font_buf || !len) throw (exult_exception ("Unable to retrieve data"));
-
-			orig_font_buf = font_buf;
-		if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
-			font_buf += 8;		// Skip first 8 bytes
-		font_data = new BufferDataSource(font_buf, len);
-		font_shapes = new Shape_file(font_data);
-		hor_lead = hlead;
-		ver_lead = vlead;
-		calc_highlow();
 	}
-	catch (exult_exception &e)
+
+/**
+ *	Loads a font from a multiobject.
+ *	@param font_obj	Where we are loading from.
+ *	@param hleah	Horizontal lead of the font.
+ *	@param vleah	Vertical lead of the font.
+ */
+int Font::load_internal
+	(
+	const U7multiobject& font_obj,
+	int hlead,
+	int vlead
+	)
 	{
+	size_t len;
+	font_buf = font_obj.retrieve(len);
+
+	if (!font_buf || !len)
+		{
+		if (font_buf)
+			delete [] font_buf;
+		font_buf = 0;
 		font_data = 0;
 		font_shapes = 0;
 		hor_lead = 0;
 		ver_lead = 0;
 		orig_font_buf = 0;
-	}
+		}
+	else
+		{
+		orig_font_buf = font_buf;
+		// Is it an IFF archive?
+		if(!strncmp(font_buf,"font",4))
+			font_buf += 8;		// Yes, skip first 8 bytes.
+		font_data = new BufferDataSource(font_buf, len);
+		font_shapes = new Shape_file(font_data);
+		hor_lead = hlead;
+		ver_lead = vlead;
+		calc_highlow();
+		}
 	return 0;
-}
+	}
+
+/**
+ *	Loads a font from a File_spec.
+ *	@param fname0	First file spec.
+ *	@param index	Number of font to load.
+ *	@param hleah	Horizontal lead of the font.
+ *	@param vleah	Vertical lead of the font.
+ */
+int Font::load
+	(
+	const File_spec& fname0,
+	int index,
+	int hlead,
+	int vlead
+	)
+	{
+	clean_up();
+	U7multiobject font_obj(fname0, index);
+	return load_internal(font_obj, hlead, vlead);
+	}
+
+/**
+ *	Loads a font from a File_spec.
+ *	@param fname0	First file spec.
+ *	@param fname1	Second file spec.
+ *	@param index	Number of font to load.
+ *	@param hleah	Horizontal lead of the font.
+ *	@param vleah	Vertical lead of the font.
+ */
+int Font::load
+	(
+	const File_spec& fname0,
+	const File_spec& fname1,
+	int index,
+	int hlead,
+	int vlead
+	)
+	{
+	clean_up();
+	U7multiobject font_obj(fname0, fname1, index);
+	return load_internal(font_obj, hlead, vlead);
+	}
 
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s)
 {
@@ -772,14 +846,55 @@ FontManager::~FontManager()
 	fonts.clear();
 }
 
-void FontManager::add_font(const char *name, const char *archive, int index, int hlead, int vlead)
-{
+/**
+ *	Loads a font from a File_spec.
+ *	@param name	Name to give to this font.
+ *	@param fname0	First file spec.
+ *	@param index	Number of font to load.
+ *	@param hleah	Horizontal lead of the font.
+ *	@param vleah	Vertical lead of the font.
+ */
+void FontManager::add_font
+	(
+	const char *name,
+	const File_spec& fname0,
+	int index,
+	int hlead,
+	int vlead
+	)
+	{
 	remove_font(name);
 
-	Font *font = new Font(archive, index, hlead, vlead);
+	Font *font = new Font(fname0, index, hlead, vlead);
 	
 	fonts[name] = font;
-}
+	}
+
+/**
+ *	Loads a font from a File_spec.
+ *	@param name	Name to give to this font.
+ *	@param fname0	First file spec.
+ *	@param fname1	Second file spec.
+ *	@param index	Number of font to load.
+ *	@param hleah	Horizontal lead of the font.
+ *	@param vleah	Vertical lead of the font.
+ */
+void FontManager::add_font
+	(
+	const char *name,
+	const File_spec& fname0,
+	const File_spec& fname1,
+	int index,
+	int hlead,
+	int vlead
+	)
+	{
+	remove_font(name);
+
+	Font *font = new Font(fname0, fname1, index, hlead, vlead);
+	
+	fonts[name] = font;
+	}
 
 void FontManager::remove_font(const char *name)
 {

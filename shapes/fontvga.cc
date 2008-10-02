@@ -19,6 +19,7 @@
 #  include <cctype>
 #endif
 #include "utils.h"
+#include "Flex.h"
 
 using std::cout;
 using std::endl;
@@ -47,9 +48,8 @@ using std::endl;
  *      And the MAINSHP font (36)
  *	However, their values are set elsewhere
  */
-//static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
-// For scrolls (12/6/00):
-static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, 0, -1, -2, -1, -1, 0, 0};
+// +++++TAG: This shouldn't be hard-coded.
+static int hlead[] = {-2, -1, 0, -1, 0, 0, -1, -2, -1, -1};
 /*
  *	Initialize.
  */
@@ -58,9 +58,15 @@ void Fonts_vga_file::init
 	(
 	)
 	{
-	int cnt = sizeof(fonts)/sizeof(fonts[0]);
-	const char *fname = U7exists(PATCH_FONTS) ? PATCH_FONTS : FONTS_VGA;
-	for (int i = 0; i < cnt; i++)
-		fonts[i].load(fname, i, hlead[i], 0);
+	int cnt = sizeof(hlead)/sizeof(hlead[0]);
+
+	FlexFile sfonts(FONTS_VGA);
+	FlexFile pfonts(PATCH_FONTS);
+	int sn = sfonts.number_of_objects();
+	int pn = pfonts.number_of_objects();
+	int numfonts = pn > sn ? pn : sn;
+
+	for (int i = 0; i < numfonts; i++)
+		fonts[i].load(FONTS_VGA, PATCH_FONTS, i, i < cnt ? hlead[i] : 0, 0);
 	}
 

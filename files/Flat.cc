@@ -1,66 +1,73 @@
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2000-2008  The Exult Team
+ *
+ *	Original file by Dancer A.L Vesperman
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-
+#include <fstream>
 #include "Flat.h"
-
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#endif
-#include <iostream>
-#include "exceptions.h"
+#include "databuf.h"
 #include "utils.h"
 
-using std::string;
-// using std::vector;
-
-using std::cout;
-using std::cerr;
-using std::endl;
-using std::FILE;
+using std::ifstream;
 using std::size_t;
 
+/**
+ *	Retrieves the contents of a FLAT "file".
+ *	@param objnum	Ignored.
+ *	@param len	Length of the data buffer or zero in any failure.
+ *	@return	A buffer created with new[] containing the file data,
+ *	or null in any failure.
+ */
+char *Flat::retrieve(uint32 objnum, size_t &len)
+	{
+	if (!data || !data->good())
+		{
+		len = 0;
+		return 0;
+		}
+	data->seek(0);
+	len = data->getSize();
+	char *buffer = new char[len];
+	data->read(buffer, len);
 
-Flat::Flat(const string &n) : U7file(n)
-{
-	// Make sure the file exists and is readable
-	FILE *fp;
-	fp=U7open(filename.c_str(),"rb");
-	fclose(fp);
-}
-
-
-char *	Flat::retrieve(uint32 objnum, size_t &len)
-{ 
-	FILE	*fp;
-	char	*buffer;
-	fp=U7open(filename.c_str(),"rb");
-
-	fseek(fp,0,SEEK_END);
-	len = ftell(fp);
-	buffer = new char[len];
-	fseek(fp,0,SEEK_SET);
-	fread(buffer,len,1,fp);
-	fclose(fp);
-	
 	return buffer;
-}
+	}
+
+/**
+ *	Verifies if a datasource is a FLAT file.
+ *	@param in	DataSource containing the data we wish to investigate.
+ *	@return	If the datasource is non-null and good, true; false otherwise.
+ */
+bool Flat::is_flat(DataSource *in)
+	{
+	return in && in->good();
+	}
+
+/**
+ *	Verifies if a file is a FLAT file.
+ *	@param fname	File name we wish to investigate.
+ *	@return	If the file exists, true; false otherwise.
+ */
+bool Flat::is_flat(const char *fname)
+	{
+	return U7exists(fname);
+	}

@@ -703,7 +703,7 @@ Shape_file_info *Shape_file_set::create
 	else if (strcasecmp(basename, "combos.flx") == 0 ||
 		 strcasecmp(basename, "palettes.flx") == 0)
 		return append(new Flex_file_info(basename, fullname, 
-						new Flex(fullname), groups));
+						new FlexFile(fullname), groups));
 	else if (strcasecmp(".pal", basename + strlen(basename) - 4) == 0)
 		{			// Single palette?
 		std::ifstream in;

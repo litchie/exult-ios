@@ -31,6 +31,7 @@
 #include "segfile.h"
 #include "u7drag.h"
 #include "U7file.h"
+#include "U7fileman.h"
 #include "exceptions.h"
 #include "miscinf.h"
 #include <vector>
@@ -125,7 +126,8 @@ void Shape_manager::load
 	{
 	// Determine some colors based on the default palette
 	Palette pal;
-	pal.load(PALETTES_FLX, 0);	// could throw!
+			// could throw!
+	pal.load(PALETTES_FLX, PATCH_PALETTES, 0);
 					// Get a bright green.
 	special_pixels[POISON_PIXEL] = pal.find_color(4, 63, 4);
 					// Get a light gray.
@@ -248,7 +250,7 @@ void Shape_manager::load
 		}
 	else				// Create algorithmically.
 		{
-		gwin->get_pal()->load(PALETTES_FLX, 0);
+		gwin->get_pal()->load(PALETTES_FLX, PATCH_PALETTES, 0);
 		for (int i = 0; i < nxforms; i++)
 			{
 			gwin->get_pal()->create_trans_table(xforms[i].r/4,

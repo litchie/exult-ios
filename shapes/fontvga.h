@@ -27,13 +27,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "font.h"
 #include "vgafile.h"
+#include <vector>
 
 /*
  *	The "fonts.vga" file:
  */
 class Fonts_vga_file : public Vga_file
 	{
-	Font fonts[11];			// Fonts from fonts.vga file.
+	std::vector<Font> fonts;			// Fonts from fonts.vga file.
 public:
 	Fonts_vga_file()
 		{  }
@@ -69,7 +70,8 @@ public:
 						cx, cy, vert_lead); }
 
 	Font *get_font(int fontnum)
-		{ return fontnum>=0&&fontnum<8?fonts+fontnum:NULL; };
+		{ return (fontnum >= 0 && fontnum < fonts.size()) ?
+				&(fonts[fontnum]) : NULL; };
 	};
 
 #endif

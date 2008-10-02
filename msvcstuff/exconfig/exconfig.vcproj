@@ -280,6 +280,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\files\U7fileman.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\files\U7obj.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\files\utils.cc"
 				>
 				<FileConfiguration
@@ -317,11 +325,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\exconfig.h"
+				RelativePath="..\..\win32\exconfig.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\win32\exconfig.h"
+				RelativePath=".\exconfig.h"
 				>
 			</File>
 			<File
@@ -350,6 +358,14 @@
 			</File>
 			<File
 				RelativePath="..\..\files\U7file.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\files\U7fileman.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\files\U7obj.h"
 				>
 			</File>
 			<File

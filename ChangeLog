@@ -1,3 +1,33 @@
+2008-10-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* General: Doxygenified lots of code. Some reformatting. Implemented changes
+	  due to changed file API in 'files' dir. Lots more files can be patched
+	  now, including difference patching. Removed some unused functions and
+	  variables.
+	* files/*: Split some classes into their own files. Decoupled reading from
+	  a format from reading from a file. Improved support for patches (whether
+	  from files or from memory) in basic file format reading classes. Updated
+	  copyright notices. Removed function used only by Expack from base flex
+	  class. Removed unused instances of PENTAGRAM conditional compilation.
+	  Reduced the number of exceptions thrown to make multiple source patches
+	  more forgiving of missing files. More throrough use of C++ streams instead
+	  of C IO functions, including removal of FileDataSource class.
+	  'Flex', 'IFF', 'Flat' and 'Table' classes are now sourceless base classes
+	  responsible for reading a format from an unspeficied source, while the
+	  derived (typedef) classes 'FlexFile', 'IFFFile', 'FlatFile', 'TableFile',
+	  'FlexBuffer', 'IFFBuffer', 'FlatBuffer' and 'TableBuffer' read from a
+	  file or from a memory buffer according to the base class; in general, it
+	  is better to use FileManager::get_file_object, U7object, U7multiobject or
+	  even ExultDataSource than it is to use the *File and *Buffer classes
+	  directly as they try to detect the format of the filoe in question.
+	* browser.cc, cheat_screen.cc, gamemgr/*: Also store patch palettes for BG/SI
+	  in the game resource list. Use palettes from patch if they are present.
+	* shapes/fontvga.*: Fonts.vga now properly accepts differential patches.
+	  Removed limit of 11 fonts; fonts 11 and above have horizontal and vertical
+	  leads set to zero.
+	* audio/*: Allowing OGGs for voice. Allowing new games to use digital music,
+	  with files named 'XXmus.ogg' ('XX' a 2-digit number) placed in 'music'
+	  subdir of 'static' or 'patch' dirs.
+
 2008-09-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/shapewrite.cc: Actor flags were incorrectly saved.
 	* shapeid.cc: Pass editing flag when loading shape info.

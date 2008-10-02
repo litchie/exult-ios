@@ -98,7 +98,7 @@ public:
 	void    resume_audio(void);
 
 	void	play(uint8 *sound_data,uint32 len,bool);
-	void	playfile(const char *,bool);
+	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
 	void	start_music(int num,bool continuous=false,std::string flex=MAINMUS);
 	void	start_music(std::string fname,int num,bool continuous=false);

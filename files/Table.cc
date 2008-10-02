@@ -1,20 +1,22 @@
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2000-2008  The Exult Team
+ *
+ *	Original file by Dancer A.L Vesperman
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -22,9 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Table.h"
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#endif
 #include <iostream>
 #include <cstdlib>
 #include "exceptions.h"
@@ -39,52 +38,50 @@ using std::endl;
 using std::FILE;
 using std::size_t;
 
-
-Table::Table(const string &n) : U7file(n)
-{
-	IndexTableFile();
-}
-
-
-void	Table::IndexTableFile(void)
-{
-	Table	&ret=*this;
-	FILE	*fp;
-	try {
-		fp=U7open(ret.filename.c_str(),"rb");
-	} catch (const file_open_exception &e)
+void Table::index_file(void)
 	{
-		cerr << e.what() << ". exiting." << endl;
-		std::exit(1);
-	}
-	fseek(fp,0,SEEK_END);
-	size_t file_size=ftell(fp);
-	fseek(fp,0,SEEK_SET);
-	unsigned int i=0;
-	while(1)
+	if (!data)
+		throw file_read_exception(identifier.name);
+
+	if (!is_table(data))	// Not a table file we recognise
+		throw wrong_file_type_exception(identifier.name, "TABLE");
+
+	size_t file_size = data->getSize();
+
+	unsigned int i = 0;
+	while (true)
 		{
 		Table::Reference f;
-		f.size = Read2(fp);
-//		fread(&f.size,sizeof(uint16),1,fp);
-		if(f.size==65535)
+		f.size = data->read2();
+
+		if (f.size == 65535)
 			break;
-		f.offset = Read4(fp);
-//		fread(&f.offset,sizeof(uint32),1,fp);
-		if(f.size>file_size||f.offset>file_size)
-			throw wrong_file_type_exception(filename,"Table");
+
+		f.offset = data->read4();
+
+#if 0
+		// We already guarded against this above.
+		if (f.size > file_size || f.offset > file_size)
+			throw wrong_file_type_exception(filename,"TABLE");
+#endif
 #if 0
 		cout << "Item " << i << ": " << f.size << " @ " << f.offset << endl;
 #endif
-		ret.object_list.push_back(f);
+		object_list.push_back(f);
 		i++;
 		}
-	fclose(fp);
-	return;
-}
+	}
 
-
-char*	Table::retrieve(uint32 objnum,size_t &len)
-{ throw exult_exception("Illegal call to Table::retrieve()"); }
+/**
+ *	Time bomb, maybe in need of being implemented. Throws an exception.
+ *	@param objnum	Ignored.
+ *	@param len	Ignored.
+ *	@return	Ignored.
+ */
+char *Table::retrieve(uint32 objnum,size_t &len)
+	{
+	throw exult_exception("Illegal call to Table::retrieve()");
+	}
 
 #if 0
 char	*Table::read_object(int objnum,uint32 &length)
@@ -119,3 +116,57 @@ char	*Table::read_object(int objnum,uint32 &length)
 	return ret;
 }
 #endif
+
+
+/**
+ *	Verify if a file is a table.  Note that this is a STATIC method.
+ *	@param in	DataSource to verify.
+ *	@return	Whether or not the DataSource is a table file.
+ */
+bool Table::is_table(DataSource *in)
+	{
+	long pos = in->getPos();
+	size_t file_size = in->getSize();
+
+	in->seek(0);
+	while (true)
+		{
+		uint16 size = in->read2();
+
+		// End of table marker.
+		if (size == 65535)
+			break;
+
+		uint32 offset = in->read4();
+		if (size > file_size || offset > file_size)
+			{
+			in->seek(pos);
+			return false;
+			}
+		}
+
+	in->seek(pos);
+	return true;
+	}
+
+/**
+ *	Verify if a file is a table.  Note that this is a STATIC method.
+ *	@param fname	Name of file to verify.
+ *	@return	Whether or not the file is a table file. Returns false if
+ *	the file does not exist.
+ */
+bool Table::is_table(const char *fname)
+	{
+	if (!U7exists(fname))
+		return false;
+
+	std::ifstream in;
+	U7open (in, fname);
+	StreamDataSource ds(&in);
+
+	if (in.good())
+		return is_table(&ds);
+
+	in.close();
+	return false;
+	}

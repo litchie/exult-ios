@@ -219,9 +219,9 @@ Shape_group_file::Shape_group_file
 	std::string patchname = "<PATCH>/" + name;
 	std::string staticname = "<STATIC>/" + name;
 	if (U7exists(patchname))	// First try 'patch' directory.
-		flex = new Flex(patchname);
+		flex = new FlexFile(patchname.c_str());
 	else if (U7exists(staticname))
-		flex = new Flex(staticname);
+		flex = new FlexFile(staticname.c_str());
 	if (flex)			// Exists?
 		{
 		int cnt = flex->number_of_objects();

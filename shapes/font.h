@@ -22,6 +22,8 @@
 class Image_buffer8;
 class Shape_file;
 class DataSource;
+class File_spec;
+class U7multiobject;
 
 /*
  *	Cursor info. filled in by paint_text_box.
@@ -51,11 +53,17 @@ private:
 	int  highest, lowest;
 
 	void calc_highlow();
+	void clean_up();
+	int load_internal(const U7multiobject& font_obj, int hlead, int vlead);
 public:
 	Font();
-	Font(const char *fname, int index, int hlead=0, int vlead=1);
+	Font(const File_spec& fname0, int index, int hlead=0, int vlead=1);
+	Font(const File_spec& fname0, const File_spec& fname1, int index,
+			int hlead=0, int vlead=1);
 	~Font();
-	int load(const char *fname, int index, int hlead=0, int vlead=1);
+	int load(const File_spec& fname0, int index, int hlead=0, int vlead=1);
+	int load(const File_spec& fname0, const File_spec& fname1, int index,
+			int hlead=0, int vlead=1);
 					// Text rendering:
 	int paint_text_box(Image_buffer8 *win,  
 		const char *text, int x, int y, int w, 
@@ -106,7 +114,10 @@ private:
 public:
 	FontManager();
 	~FontManager();
-	void add_font(const char *name, const char *archive, int index, int hlead=0, int vlead=1);
+	void add_font(const char *name, const File_spec& fname0,
+			int index, int hlead=0, int vlead=1);
+	void add_font(const char *name, const File_spec& fname0,
+			const File_spec& fname1, int index, int hlead=0, int vlead=1);
 	void remove_font(const char *name);
 	Font *get_font(const char *name);
 

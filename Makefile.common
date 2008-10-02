@@ -39,9 +39,9 @@ AUDIO_OBJS=Audio.o conv.o Midi.o soundtest.o $(MIDI_DRV_OBJS)
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS=crc.o Flat.o Flex.o IFF.o \
+FILE_OBJS=crc.o Flat.o Flex.o IFF.o U7obj.o \
 	listfiles.o msgfile.o Table.o U7file.o \
-	utils.o
+	utils.o U7fileman.o
 
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
@@ -220,8 +220,8 @@ $(BG_MR_FACES): expack$(EXEEXT) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 
-IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o \
-	ibuf8.o ibuf16.o vgafile.o pngio.o
+IPACK_OBJS=ipack.o U7file.o U7obj.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o \
+	ibuf8.o ibuf16.o vgafile.o pngio.o U7fileman.o
 
 ipack$(EXEEXT) : $(IPACK_OBJS)
 	$(CXX) $(LFLAGS) -o $(@) $(IPACK_OBJS) -lpng -lz

@@ -18573,7 +18573,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 255 1 10 10</property>
+			      <property name="adjustment">0 2 255 1 10 10</property>
 			    </widget>
 			  </child>
 

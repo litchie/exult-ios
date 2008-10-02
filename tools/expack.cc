@@ -31,7 +31,9 @@
 #include <iomanip>
 #include <vector>
 #include <string>
+#include "U7fileman.h"
 #include "U7file.h"
+#include "U7obj.h"
 #include "Flex.h"
 #include "utils.h"
 #include "databuf.h"
@@ -167,6 +169,32 @@ long get_file_size(const char *fname)
 
 	fclose(fp);
 	return len;
+}
+
+bool Write_Object(U7object& obj, const char *fname)
+{
+	FILE *fp=U7open(fname,"wb");
+
+	char	*n;
+	size_t	l;
+
+	try
+	{
+		n = obj.retrieve(l);
+	}
+	catch( const std::exception & err )
+	{
+		std::fclose(fp);
+		throw (err);
+	}
+	if (!n) {
+		std::fclose(fp);
+		return false;
+	}
+	std::fwrite(n,l,1,fp);	// &&&& Should check return value
+	std::fclose(fp);
+	delete [] n;
+	return true;
 }
 
 
@@ -342,8 +370,8 @@ int main(int argc, char **argv)
 		{
 			if(argc!=3)
 				break;
-			U7FileManager fm;
-			U7file *f = fm.get_file_object(fname);
+			U7FileManager *fm = U7FileManager::get_ptr();
+			U7file *f = fm->get_file_object(fname);
 			int count = f->number_of_objects();
 			cout << "Archive: " << fname << endl;
 			cout << "Type: " << f->get_archive_type() << endl;
@@ -374,16 +402,16 @@ int main(int argc, char **argv)
 				}
 				char outfile[32];
 				snprintf(outfile,32,"%d.%s", n, ext);
-				f.retrieve(outfile);	// may throw!
+				Write_Object(f, outfile);	// may throw!
 			} else {
-				U7FileManager fm;
-				U7file *f = fm.get_file_object(fname);
+			U7FileManager *fm = U7FileManager::get_ptr();
+				U7file *f = fm->get_file_object(fname);
 				int count = f->number_of_objects();
 				for(index=0; index<count; index++) {
 					U7object o(fname,index);
 					char outfile[32];
 					snprintf(outfile,32,"%d.%s",index,ext);
-					o.retrieve(outfile);
+					Write_Object(o, outfile);
 				}
 				delete f;
 			}
