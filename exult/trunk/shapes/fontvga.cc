@@ -65,6 +65,7 @@ void Fonts_vga_file::init
 	int sn = sfonts.number_of_objects();
 	int pn = pfonts.number_of_objects();
 	int numfonts = pn > sn ? pn : sn;
+	fonts.resize(numfonts);
 
 	for (int i = 0; i < numfonts; i++)
 		fonts[i].load(FONTS_VGA, PATCH_FONTS, i, i < cnt ? hlead[i] : 0, 0);
