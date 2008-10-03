@@ -1,3 +1,6 @@
+2008-10-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed segmentation fault on loading fonts.
+
 2008-10-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* General: Doxygenified lots of code. Some reformatting. Implemented changes
 	  due to changed file API in 'files' dir. Lots more files can be patched
