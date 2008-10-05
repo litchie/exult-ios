@@ -27,6 +27,7 @@
 #include <vector>
 #include <cstring>
 #include "common_types.h"
+#include "utils.h"
 
 /**
  *	This structure condenses a file name and an object number in
@@ -40,30 +41,37 @@ struct File_spec
 	///	If >= 0, this means we want to read from the object with the
 	///	given index inside the file.
 	int index;
+	bool ownstr;
 	File_spec()
-		: name(""), index(-1)
+		: name(""), index(-1), ownstr(false)
 		{  }
 	///	Constructs a File_spec from a c-string.
 	///	Note that it performs implicit conversion from the c-string.
 	File_spec(const char *n)
-		: name(n), index(-1)
+		: name(n), index(-1), ownstr(false)
 		{  }
 	File_spec(const char *n, int i)
-		: name(n), index(i)
+		: name(n), index(i), ownstr(false)
 		{  }
 	///	Constructs a File_spec from a string.
-	///	Note that it performs implicit conversion from std::string.
-	/*
-	File_spec(std::string n)
-		: name(n), index(-1)
-		{  }
-	File_spec(std::string n, int i)
-		: name(n), index(i)
-		{  }
-	*/
+	///	Note that it does NOT perform implicit conversions from std::string,
+	///	and that it owns a copy of the string.
+	explicit File_spec(std::string n)
+		: index(-1), ownstr(true)
+		{ name = newstrdup(n.c_str()); }
+	explicit File_spec(std::string n, int i)
+		: index(i), ownstr(true)
+		{ name = newstrdup(n.c_str()); }
 	File_spec(const File_spec& other)
-		: name(other.name), index(other.index)
-		{  }
+		: index(other.index), ownstr(other.ownstr)
+		{
+		if (ownstr)
+			name = newstrdup(other.name);
+		else
+			name = other.name;
+		}
+	~File_spec()
+		{ if (ownstr) delete [] name; }
 	const File_spec& operator=(const File_spec& other)
 		{ name = other.name; index = other.index; return *this; }
 	bool operator<(const File_spec& other) const

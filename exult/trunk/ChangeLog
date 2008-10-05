@@ -1,3 +1,8 @@
+2008-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gumps/Jawbone_gump.cc: Remove incorrect and unnecessary check.
+	* all else: Fixed resources loaded from XML file. Made Game::get_resource
+	  return 'const str_int_pair&' instead of 'str_int_pair'.
+
 2008-10-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed segmentation fault on loading fonts.
 

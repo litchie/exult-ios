@@ -350,7 +350,7 @@ void Paperdoll_source_parser::parse_entry
 		CERR("Paperdoll source file '" << line << "' is not implemented yet.");
 	else if (GAME_BG && line == "flx")
 		{
-		str_int_pair resource = game->get_resource("files/paperdolvga");
+		const str_int_pair& resource = game->get_resource("files/paperdolvga");
 		table->push_back(pair<string, int>(string(resource.str), resource.num));
 		}
 	else
@@ -377,7 +377,7 @@ void Shapeinfo_lookup::Read_data_file
 	if (GAME_BG || GAME_SI)
 		{
 		snprintf(buf, 50, "config/%s", fname);
-		str_int_pair resource = game->get_resource(buf);
+		const str_int_pair& resource = game->get_resource(buf);
 		U7object txtobj(resource.str, resource.num);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
