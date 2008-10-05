@@ -127,10 +127,6 @@ bool Jawbone_gump::on_tooth(int sx, int sy, int index)
 
 void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
 {
-	// not a serpent tooth?
-	if (obj->get_shapenum() != game->get_shape("gumps/tooth"))
-		return;
-
 	int fr = obj->get_framenum();
 	
 	// Get shape.

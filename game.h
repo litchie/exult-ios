@@ -61,6 +61,7 @@ private:
 	shapes_map shapes;
 	rsc_map resources;
 	Configuration *xml;		/* Shapes/resources from XML file. */
+	std::vector<const char*> xmlstrings;
 	Mouse *menu_mouse;
 	static std::string gametitle;
 	static std::string modtitle;
@@ -114,7 +115,7 @@ public:
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
-	str_int_pair get_resource(const char *name);
+	const str_int_pair& get_resource(const char *name);
 	void write_game_xml();
 	bool read_game_xml(const char *name1 = 0);
 

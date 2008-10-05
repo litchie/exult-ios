@@ -93,6 +93,12 @@ Game::Game() : menushapes(), xml(0)
 Game::~Game()
 {
 	game_type = NONE;
+	while (xmlstrings.size())
+		{
+		char *str = const_cast<char *>(xmlstrings.back());
+		xmlstrings.pop_back();
+		delete [] str;
+		}
 }
 
 Game *Game::create_game(BaseGameInfo *mygame)
@@ -183,21 +189,34 @@ void Game::add_resource(const char *name, const char *str, int num)
 	resources[name].num = num;
 }
 
-str_int_pair Game::get_resource(const char *name)
+const str_int_pair& Game::get_resource(const char *name)
 {
-	if (xml)
+	rsc_map::iterator it = resources.find(name);
+	if (it != resources.end())
+		return it->second;
+	else if (xml)
 		{
 		string key = string(xml_root) + "/resources/" + name;
-		str_int_pair ret;
 		string str;
 		xml->value(key, str, "");
-		ret.str = str.c_str();
+		const char *res = newstrdup(str.c_str());
+		// This is used to prevent leaks.
 		key += "/num";
-		xml->value(key, ret.num, 0);
-		return ret;
+		int num;
+		xml->value(key, num, 0);
+		// Add it for next time.
+		resources[name].str = res;
+		resources[name].num = num;
+		xmlstrings.push_back(res);
+		return resources[name];
 		}
 	else
-		return resources[name];
+		{
+		char buf[250];
+		snprintf(buf, sizeof(buf)/sizeof(buf[0]),
+				"Game::get_resource: Illegal resource requested: '%s'", name);
+		throw exult_exception(buf);
+		}
 }
 
 /*	

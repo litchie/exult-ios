@@ -625,7 +625,7 @@ void KeyBinder::LoadDefaults()
 	
 	cout << "Loading default keybindings" << endl;
 	
-	str_int_pair resource = game->get_resource("config/defaultkeys");
+	const str_int_pair& resource = game->get_resource("config/defaultkeys");
 
 	U7object txtobj(resource.str, resource.num);
 	size_t len;
