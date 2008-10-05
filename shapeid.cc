@@ -202,7 +202,7 @@ void Shape_manager::load
 	source.push_back(pair<string, int>(FACES_VGA, -1));
 	if (GAME_BG)
 		{	// Multiracial faces.
-		str_int_pair resource = game->get_resource("files/mrfacesvga");
+		const str_int_pair& resource = game->get_resource("files/mrfacesvga");
 		source.push_back(pair<string, int>(string(resource.str), resource.num));
 		}
 	source.push_back(pair<string, int>(PATCH_FACES, -1));

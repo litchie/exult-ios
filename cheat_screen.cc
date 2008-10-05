@@ -178,8 +178,8 @@ void CheatScreen::show_screen()
 	// Pause the game
 	gwin->get_tqueue()->pause(SDL_GetTicks());
 
-	str_int_pair pal_tuple_static = game->get_resource("palettes/0");
-	str_int_pair pal_tuple_patch = game->get_resource("palettes/patch/0");
+	const str_int_pair& pal_tuple_static = game->get_resource("palettes/0");
+	const str_int_pair& pal_tuple_patch = game->get_resource("palettes/patch/0");
 	pal.load(pal_tuple_static.str, pal_tuple_patch.str, pal_tuple_static.num);
 
 	// Start the loop
