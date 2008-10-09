@@ -156,7 +156,6 @@ public:
 	///	file/number pair.
 	///	@param spec	Unique identifier for this data object. The 'name'
 	///	member **MUST** be a valid file name.
-	///	@param from	U7object from which the buffer will be created.
 	U7DataBuffer(const File_spec &spec)
 		: T(spec)
 		{

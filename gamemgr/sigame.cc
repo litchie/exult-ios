@@ -113,14 +113,14 @@ SI_Game::SI_Game()
 		add_shape("gumps/tooth", 57);
 
 		add_resource("files/shapes/count", 0, 8);
-		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
-		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
-		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
-		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
+		add_resource("files/shapes/0", SHAPES_VGA, 0);
+		add_resource("files/shapes/1", FACES_VGA, 0);
+		add_resource("files/shapes/2", GUMPS_VGA, 0);
+		add_resource("files/shapes/3", SPRITES_VGA, 0);
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
-		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
+		add_resource("files/shapes/5", PAPERDOL, 0);
 		add_resource("files/shapes/6", EXULT_FLX, 0);
-		add_resource("files/shapes/7", "<STATIC>/fonts.vga", 0);
+		add_resource("files/shapes/7", FONTS_VGA, 0);
 
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
 	
@@ -163,6 +163,28 @@ SI_Game::SI_Game()
 		add_resource("palettes/patch/12", PATCH_PALETTES, 12);
 		add_resource("palettes/patch/13", PATCH_MAINSHP, 1);
 		add_resource("palettes/patch/14", PATCH_MAINSHP, 26);
+
+		add_resource("xforms/count", 0, 20);
+		add_resource("xforms/0", XFORMTBL, 0);
+		add_resource("xforms/1", XFORMTBL, 1);
+		add_resource("xforms/2", XFORMTBL, 2);
+		add_resource("xforms/3", XFORMTBL, 3);
+		add_resource("xforms/4", XFORMTBL, 4);
+		add_resource("xforms/5", XFORMTBL, 5);
+		add_resource("xforms/6", XFORMTBL, 6);
+		add_resource("xforms/7", XFORMTBL, 7);
+		add_resource("xforms/8", XFORMTBL, 8);
+		add_resource("xforms/9", XFORMTBL, 9);
+		add_resource("xforms/10", XFORMTBL, 10);
+		add_resource("xforms/11", XFORMTBL, 11);
+		add_resource("xforms/12", XFORMTBL, 12);
+		add_resource("xforms/13", XFORMTBL, 13);
+		add_resource("xforms/14", XFORMTBL, 14);
+		add_resource("xforms/15", XFORMTBL, 15);
+		add_resource("xforms/16", XFORMTBL, 16);
+		add_resource("xforms/17", XFORMTBL, 17);
+		add_resource("xforms/18", XFORMTBL, 18);
+		add_resource("xforms/19", XFORMTBL, 19);
 		}		
 	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
 	fontManager.add_font("SIINTRO_FONT", INTRO_DAT, PATCH_INTRO, 14, 0);

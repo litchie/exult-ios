@@ -1,3 +1,8 @@
+2008-10-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamemgr/*: Using file names from fnames.h. Define in SI the resources used
+	  by the shapes browser.
+	* files/U7file.h: Documentation error.
+
 2008-10-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Jawbone_gump.cc: Remove incorrect and unnecessary check.
 	* all else: Fixed resources loaded from XML file. Made Game::get_resource

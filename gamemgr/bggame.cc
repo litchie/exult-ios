@@ -134,13 +134,13 @@ BG_Game::BG_Game()
 		add_shape("sprites/cheatmap", EXULT_BG_FLX_BGMAP_SHP);
 
 		add_resource("files/shapes/count", 0, 9);
-		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
-		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
-		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
-		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
+		add_resource("files/shapes/0", SHAPES_VGA, 0);
+		add_resource("files/shapes/1", FACES_VGA, 0);
+		add_resource("files/shapes/2", GUMPS_VGA, 0);
+		add_resource("files/shapes/3", SPRITES_VGA, 0);
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
-		add_resource("files/shapes/5", "<STATIC>/endshape.flx", 0);
-		add_resource("files/shapes/6", "<STATIC>/fonts.vga", 0);
+		add_resource("files/shapes/5", ENDSHAPE_FLX, 0);
+		add_resource("files/shapes/6", FONTS_VGA, 0);
 		add_resource("files/shapes/7", EXULT_FLX, 0);
 		add_resource("files/shapes/8", "<DATA>/exult_bg.flx", 0);
 
@@ -195,26 +195,26 @@ BG_Game::BG_Game()
 		add_resource("palettes/patch/17", PATCH_INTROPAL, 5);
 
 		add_resource("xforms/count", 0, 20);
-		add_resource("xforms/0", "<STATIC>/xform.tbl", 0);
-		add_resource("xforms/1", "<STATIC>/xform.tbl", 1);
-		add_resource("xforms/2", "<STATIC>/xform.tbl", 2);
-		add_resource("xforms/3", "<STATIC>/xform.tbl", 3);
-		add_resource("xforms/4", "<STATIC>/xform.tbl", 4);
-		add_resource("xforms/5", "<STATIC>/xform.tbl", 5);
-		add_resource("xforms/6", "<STATIC>/xform.tbl", 6);
-		add_resource("xforms/7", "<STATIC>/xform.tbl", 7);
-		add_resource("xforms/8", "<STATIC>/xform.tbl", 8);
-		add_resource("xforms/9", "<STATIC>/xform.tbl", 9);
-		add_resource("xforms/10", "<STATIC>/xform.tbl", 10);
-		add_resource("xforms/11", "<STATIC>/xform.tbl", 11);
-		add_resource("xforms/12", "<STATIC>/xform.tbl", 12);
-		add_resource("xforms/13", "<STATIC>/xform.tbl", 13);
-		add_resource("xforms/14", "<STATIC>/xform.tbl", 14);
-		add_resource("xforms/15", "<STATIC>/xform.tbl", 15);
-		add_resource("xforms/16", "<STATIC>/xform.tbl", 16);
-		add_resource("xforms/17", "<STATIC>/xform.tbl", 17);
-		add_resource("xforms/18", "<STATIC>/xform.tbl", 18);
-		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
+		add_resource("xforms/0", XFORMTBL, 0);
+		add_resource("xforms/1", XFORMTBL, 1);
+		add_resource("xforms/2", XFORMTBL, 2);
+		add_resource("xforms/3", XFORMTBL, 3);
+		add_resource("xforms/4", XFORMTBL, 4);
+		add_resource("xforms/5", XFORMTBL, 5);
+		add_resource("xforms/6", XFORMTBL, 6);
+		add_resource("xforms/7", XFORMTBL, 7);
+		add_resource("xforms/8", XFORMTBL, 8);
+		add_resource("xforms/9", XFORMTBL, 9);
+		add_resource("xforms/10", XFORMTBL, 10);
+		add_resource("xforms/11", XFORMTBL, 11);
+		add_resource("xforms/12", XFORMTBL, 12);
+		add_resource("xforms/13", XFORMTBL, 13);
+		add_resource("xforms/14", XFORMTBL, 14);
+		add_resource("xforms/15", XFORMTBL, 15);
+		add_resource("xforms/16", XFORMTBL, 16);
+		add_resource("xforms/17", XFORMTBL, 17);
+		add_resource("xforms/18", XFORMTBL, 18);
+		add_resource("xforms/19", XFORMTBL, 19);
 		}
 	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
 	fontManager.add_font("END2_FONT", ENDGAME, PATCH_ENDGAME, 4, -1);
