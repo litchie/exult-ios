@@ -138,6 +138,10 @@ struct Member_selector
 %token NORTH SOUTH EAST WEST NE NW SE SW
 %token STANDING STEP_RIGHT STEP_LEFT READY RAISE_1H REACH_1H STRIKE_1H RAISE_2H
 %token REACH_2H STRIKE_2H SITTING BOWING KNEELING SLEEPING CAST_UP CAST_OUT
+%token CACHED_IN PARTY_NEAR AVATAR_NEAR AVATAR_FAR AVATAR_FOOTPAD
+%token PARTY_FOOTPAD SOMETHING_ON EXTERNAL_CRITERIA NORMAL_DAMAGE FIRE_DAMAGE
+%token  MAGIC_DAMAGE LIGHTNING_DAMAGE ETHEREAL_DAMAGE SONIC_DAMAGE
+
 
 /*
  *	Other tokens:
@@ -171,9 +175,9 @@ struct Member_selector
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr opt_delay appended_element int_literal
-%type <intval> opt_int direction converse_options opt_var actor_frames
+%type <intval> opt_int direction converse_options opt_var actor_frames egg_criteria
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
-%type <intval> const_int_type int_cast
+%type <intval> const_int_type int_cast dam_type
 %type <funid> opt_funid
 %type <membersel> member_selector
 %type <intlist> string_list response_expression
@@ -1452,6 +1456,8 @@ script_command:
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg, UC_PUSHB); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
+		{ $$ = Create_array(Ucscript::set_egg, new Uc_int_expression($2), $4); }
+	| SETEGG egg_criteria ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame_max, UC_PUSHB); }
@@ -1515,6 +1521,8 @@ script_command:
 		{ $$ = Create_array(Ucscript::weather, $2); }
 	| HIT nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::hit, $2, $4); }
+	| HIT nonclass_expr ',' dam_type ';'
+		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| ATTACK ';'
 		{ $$ = new Uc_int_expression(Ucscript::attack, UC_PUSHB); }
 	| '{' script_command_list '}'
@@ -1538,6 +1546,21 @@ start_call:
 			$$ = $2;
 			}
 		}
+	;
+
+dam_type:
+	NORMAL_DAMAGE
+		{ $$ = 0; }
+	| FIRE_DAMAGE
+		{ $$ = 1; }
+	| MAGIC_DAMAGE
+		{ $$ = 2; }
+	| LIGHTNING_DAMAGE
+		{ $$ = 3; }
+	| ETHEREAL_DAMAGE
+		{ $$ = 4; }
+	| SONIC_DAMAGE
+		{ $$ = 5; }
 	;
 
 direction:
@@ -1592,6 +1615,25 @@ actor_frames:
 		{ $$ = 14; }
 	| CAST_OUT
 		{ $$ = 15; }
+	;
+
+egg_criteria:
+	CACHED_IN
+		{ $$ = 0; }
+	| PARTY_NEAR
+		{ $$ = 1; }
+	| AVATAR_NEAR
+		{ $$ = 2; }
+	| AVATAR_FAR
+		{ $$ = 3; }
+	| AVATAR_FOOTPAD
+		{ $$ = 4; }
+	| PARTY_FOOTPAD
+		{ $$ = 5; }
+	| SOMETHING_ON
+		{ $$ = 6; }
+	| EXTERNAL_CRITERIA
+		{ $$ = 7; }
 	;
 
 opt_script_delay:

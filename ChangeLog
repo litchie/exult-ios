@@ -1,3 +1,7 @@
+2008-11-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/*: A few fixes to UCXT data files. New built-in constants for UCC.
+	  Also, partially failed attempt at getting
+
 2008-10-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamemgr/*: Using file names from fnames.h. Define in SI the resources used
 	  by the shapes browser.
