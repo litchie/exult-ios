@@ -336,6 +336,20 @@ kneeling	return KNEELING;
 sleeping	return SLEEPING;
 cast_up		return CAST_UP;
 cast_out	return CAST_OUT;
+cached_in		return CACHED_IN;
+party_near		return PARTY_NEAR;
+avatar_near		return AVATAR_NEAR;
+avatar_far		return AVATAR_FAR;
+avatar_footpad	return AVATAR_FOOTPAD;
+party_footpad	return PARTY_FOOTPAD;
+something_on	return SOMETHING_ON;
+external_criteria	return EXTERNAL_CRITERIA;
+normal_damage	return NORMAL_DAMAGE;
+fire_damage		return FIRE_DAMAGE;
+magic_damage	return MAGIC_DAMAGE;
+lightning_damage	return LIGHTNING_DAMAGE;
+ethereal_damage	return ETHEREAL_DAMAGE;
+sonic_damage	return SONIC_DAMAGE;
 }
 
 
