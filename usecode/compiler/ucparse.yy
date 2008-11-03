@@ -1456,9 +1456,9 @@ script_command:
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg, UC_PUSHB); }
 	| SETEGG nonclass_expr ',' nonclass_expr ';'
-		{ $$ = Create_array(Ucscript::set_egg, new Uc_int_expression($2), $4); }
-	| SETEGG egg_criteria ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
+	| SETEGG egg_criteria ',' nonclass_expr ';'
+		{ $$ = Create_array(Ucscript::set_egg, new Uc_int_expression($2), $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame_max, UC_PUSHB); }
 	| NEXT FRAME CYCLE ';'		/* Next, or back to 0. */
@@ -1522,7 +1522,7 @@ script_command:
 	| HIT nonclass_expr ',' nonclass_expr ';'
 		{ $$ = Create_array(Ucscript::hit, $2, $4); }
 	| HIT nonclass_expr ',' dam_type ';'
-		{ $$ = Create_array(Ucscript::hit, $2, $4); }
+		{ $$ = Create_array(Ucscript::hit, $2, new Uc_int_expression($4)); }
 	| ATTACK ';'
 		{ $$ = new Uc_int_expression(Ucscript::attack, UC_PUSHB); }
 	| '{' script_command_list '}'
