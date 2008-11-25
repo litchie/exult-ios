@@ -980,7 +980,7 @@ public:
 bool ExCineVoc::play_it(Image_window *win, int t)
 {
 	size_t	size;
-	U7multiobject voc(INTRO_DAT, PATCH_INTRO, index);
+	U7multiobject voc(file, patch, index);
 	uint8 *buffer = (uint8 *) voc.retrieve (size);
 	uint8 *buf = buffer;
 	if (!memcmp(buf, "win", sizeof("win")-1))
