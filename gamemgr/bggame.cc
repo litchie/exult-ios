@@ -1143,7 +1143,45 @@ void BG_Game::show_journey_failed()
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
-	
+
+class ExVoiceBuffer
+{
+private:
+	const char *file;
+	const char *patch;
+	int index;
+	bool played;
+public:
+	bool play_it();
+
+	ExVoiceBuffer(const char *f, const char *p, int i)
+		: file(f), patch(p), index(i), played(false)
+		{ }
+	~ExVoiceBuffer()
+		{ }
+	bool can_play() const
+		{ return file || patch; }
+};
+
+bool ExVoiceBuffer::play_it()
+{
+	size_t	size;
+	U7multiobject voc(file, patch, index);
+	uint8 *buffer = (uint8 *) voc.retrieve (size);
+	uint8 *buf = buffer;
+	if (!memcmp(buf, "voc", sizeof("voc")-1))
+		{
+		// IFF junk.
+		buf += 8;
+		size -= 8;
+		}
+	Audio::get_ptr()->play (buf, size, false);
+	FORGET_ARRAY(buffer);
+	played = true;
+
+	return false;
+}
+
 void BG_Game::end_game(bool success) 
 {
 	int	i, j, next = 0;
@@ -1187,9 +1225,6 @@ void BG_Game::end_game(bool success)
 		midi = audio->get_midi();
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 	}
-	// Audio buffer
-	size_t	size;
-	uint8	*buffer;
 	
 	// Fli Buffers
 	size_t	flisize;
@@ -1201,9 +1236,10 @@ void BG_Game::end_game(bool success)
 	U7multiobject flic1(ENDGAME, PATCH_ENDGAME, 0);
 	U7multiobject flic2(ENDGAME, PATCH_ENDGAME, 1);
 	U7multiobject flic3(ENDGAME, PATCH_ENDGAME, 2);
-	U7multiobject speech1(ENDGAME, PATCH_ENDGAME, 7);
-	U7multiobject speech2(ENDGAME, PATCH_ENDGAME, 8);
-	U7multiobject speech3(ENDGAME, PATCH_ENDGAME, 9);
+
+	ExVoiceBuffer speech1(ENDGAME, PATCH_ENDGAME, 7);
+	ExVoiceBuffer speech2(ENDGAME, PATCH_ENDGAME, 8);
+	ExVoiceBuffer speech3(ENDGAME, PATCH_ENDGAME, 9);
 
 	/* There seems to be something wrong with the shapes. Needs investigating
 	U7multiobject shapes(ENDGAME, PATCH_ENDGAME, 10);
@@ -1223,8 +1259,6 @@ void BG_Game::end_game(bool success)
 	fli_b[2] = flic3.retrieve(flisize);
 	playfli fli3(fli_b[2]+8, flisize-8);
 
-	buffer = (uint8 *) speech1.retrieve(size);
-	
 	fli1.play(win, 0, 0, 0);
 	
 	// Start endgame music.
@@ -1248,8 +1282,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (do_break) break;
 
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
+		if (audio) speech1.play_it();
 		Font *endfont2 = fontManager.get_font("END2_FONT");
 		Font *endfont3 = fontManager.get_font("END3_FONT");
 		Font *normal = fontManager.get_font("NORMAL_FONT");
@@ -1273,9 +1306,7 @@ void BG_Game::end_game(bool success)
 
 		// Set speech
 		
-		buffer = (uint8 *) speech2.retrieve(size);
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
+		if (audio) speech2.play_it();
 
 		message = text_msgs[damn_avatar];
 		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
@@ -1371,9 +1402,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (do_break) break;
 		
-		buffer = (uint8 *) speech3.retrieve(size);
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
+		if (audio) speech3.play_it();
 
 		playfli::fliinfo finfo;
 		fli3.info (&finfo);
@@ -1526,7 +1555,6 @@ void BG_Game::end_game(bool success)
 	}
 
 	gwin->clear_screen(true);
-	FORGET_ARRAY(buffer);
 	FORGET_ARRAY(fli_b[0]);
 	FORGET_ARRAY(fli_b[1]);
 	FORGET_ARRAY(fli_b[2]);
