@@ -975,9 +975,9 @@ UI_modify_schedule(actor npc, int time, int sched, int               [SI, Exult]
 npc->modify_schedule(int time, int sched, int pos[2])
 
     Sets the time period 'time' schedule of 'npc' to 'sched' at (x, y) location
-    'pos'. Allowed values for 'time' are those for the UI_part_of_daypart_of_day
-    intrinsic; allowed values for 'sched' are the same ones as the return values
-    of 'get_schedule_type' intrinsic.
+    'pos'. Allowed values for 'time' are those for the UI_part_of_day intrinsic;
+    allowed values for 'sched' are the same ones as the return values of
+    'get_schedule_type' intrinsic.
 
 UI_set_new_schedules(actor npc, int time, int sched, int             [SI, Exult]
         loc[2])
