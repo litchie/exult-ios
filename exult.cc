@@ -841,7 +841,7 @@ static void Init
 		gwin->get_pal()->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
 		gwin->get_pal()->apply();
 		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME
-				|| U7exists("<STATIC>/intro.dat")))
+				|| U7exists(INTRO_DAT)))
 			{
 			if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			game->play_intro();

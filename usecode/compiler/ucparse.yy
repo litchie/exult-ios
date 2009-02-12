@@ -809,6 +809,10 @@ class_expr:
 			$$ = new Uc_class_expression(cls);
 			}
 		}
+	| function_call
+		{
+		$$ = $1;
+		}
 	;
 
 static_decl:
