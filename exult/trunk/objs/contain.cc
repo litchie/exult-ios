@@ -120,6 +120,9 @@ bool Container_game_object::add
 					//   cause obj to be deleted.
 	)
 	{
+	// Prevent dragging the avatar into a container.
+	if (obj == (Game_object *)gwin->get_main_actor())
+		return false;
 	Shape_info& info = get_info();
 	if (get_shapenum() == obj->get_shapenum()	// Shape can't be inside itself.
 			|| (!dont_check && info.is_container_locked()))	// Locked container.
