@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.20
+version: 0.11.21
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,8 @@ version: 0.11.20
 
 7	Version history
 -------------------
+version: 0.11.21
+	- Meditation failed in shrine of spirituality. Fixed
 version: 0.11.20
 	- Fixed comment when adding all party keys to keyring.
 version: 0.11.19
