@@ -3,6 +3,7 @@
 	* UCC: Function calls can now be class expressions too, and be used in the
 	  right hand side of a class assignment.
 	* All others: Use filename definitions instead of literals.
+	* Keyring: Fixed problem meditating in shrine of spirituality.
 
 2008-11-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed problem with playing Ogg in a non-IFF endgame.dat. Fixed SI intro/
