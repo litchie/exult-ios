@@ -1,4 +1,4 @@
-2008-02-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2009-02-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/contain.cc: Prevent avatar from being dragged into containers.
 	* UCC: Function calls can now be class expressions too, and be used in the
 	  right hand side of a class assignment.
