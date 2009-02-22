@@ -129,7 +129,7 @@ struct Member_selector
  */
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR VOID ALIAS STRUCT UCC_CHAR UCC_INT UCC_LONG UCC_CONST STRING ENUM
-%token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
+%token CONVERSE NESTED SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
 %token ADD_EQ SUB_EQ MUL_EQ DIV_EQ MOD_EQ CHOICE
@@ -183,7 +183,7 @@ struct Member_selector
 %type <expr> nonclass_expr opt_delay appended_element int_literal
 %type <intval> opt_int direction converse_options actor_frames egg_criteria
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
-%type <intval> const_int_type int_cast dam_type
+%type <intval> const_int_type int_cast dam_type opt_nest
 %type <funid> opt_funid
 %type <membersel> member_selector
 %type <intlist> string_list response_expression
@@ -1222,22 +1222,29 @@ return_statement:
 		}
 	;
 
+opt_nest:
+	':' NESTED
+		{ $$ = 1; }
+	|				/* Empty */
+		{ $$ = 0; }
+	;
+
 converse_statement:
 	start_conv '{' response_case_list '}'
 		{
 		end_loop();
 		--converse;
-		$$ = new Uc_converse_statement(0, $3);
+		$$ = new Uc_converse_statement(0, $3, false);
 		}
 	
-	| start_conv '(' expression ')' '{' converse_case_list '}'
+	| start_conv opt_nest '(' expression ')' '{' converse_case_list '}'
 		{
 		end_loop();
 		--converse;
-		if (Class_unexpected_error($3))
+		if (Class_unexpected_error($4))
 			$$ = 0;
 		else
-			$$ = new Uc_converse_statement($3, $6);
+			$$ = new Uc_converse_statement($4, $7, $2);
 		}
 	;
 

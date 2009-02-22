@@ -4,6 +4,9 @@
 	  structs, and allowed them as function arguments and returns; fixed bug
 	  with class member struct variables. Made #include directive include a file
 	  only once, like PHP's #include_once.
+	  Added 'nested' option to 'converse' blocks to force UCC to push/pop the
+	  answers on start/end of the converse block; used as follows:
+	  	converse : nested (options) { case-list }
 	* Keyring: Added 'void' keyword to eliminate warnings.
 
 2009-02-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
