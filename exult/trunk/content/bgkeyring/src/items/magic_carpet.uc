@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Magic_Carpet shape#(0x348) ()
+void Magic_Carpet shape#(0x348) ()
 {
 	var barge = get_barge();
 	if ((event == DOUBLECLICK) && barge)

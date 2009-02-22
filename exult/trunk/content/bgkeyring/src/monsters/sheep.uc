@@ -22,7 +22,7 @@
 
 //More highly sophisticated behaviour, for sheep this time!
 //Also an accusation of sheep-fucking, from our good friend Dupre.
-Sheep shape#(0x3CA) ()
+void Sheep shape#(0x3CA) ()
 {
 	item_say("@Baa-aa-aa@");
 	if (event == DOUBLECLICK)

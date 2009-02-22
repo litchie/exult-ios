@@ -968,7 +968,7 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 	return [CASTING_SUCCESSFUL, circle];
 }
 
-npcAskSpellToCast (var npc, var talk, var removespells)
+void npcAskSpellToCast (var npc, var talk, var removespells)
 {
 	UI_push_answers();
 	
@@ -1038,7 +1038,7 @@ npcAskSpellToCast (var npc, var talk, var removespells)
 	UI_pop_answers();
 }
 
-npcCastSpellDialog (var npc, var spell, var talk)
+void npcCastSpellDialog (var npc, var spell, var talk)
 {
 	var circle = getSpellCircle(spell);
 	
@@ -1074,7 +1074,7 @@ npcCastSpellDialog (var npc, var spell, var talk)
 	npc.hide();
 }
 
-npcCastSpellBark (var npc, var target, var circle, var spell)
+void npcCastSpellBark (var npc, var target, var circle, var spell)
 {
 	var casting_return = npcCastSpell(npc, target, circle, spell);
 	var casting_result = casting_return[1];
@@ -1095,7 +1095,7 @@ npcCastSpellBark (var npc, var target, var circle, var spell)
 		say("@Alas, I am afraid that spell doesn't exist. Warn the programmer, something is amiss!@");
 }
 
-npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var barks)
+void npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var barks)
 {
 	if (!spellitem)
 	{
@@ -1157,7 +1157,7 @@ npcCastWeaponSpell (var npc, var target, var spellitem, var spell, var barks)
 	}
 }
 
-npcCastHealing (var npc, var talk_cast, var talk, var healing_spells)
+void npcCastHealing (var npc, var talk_cast, var talk, var healing_spells)
 {
 	var choice;
 	while (true)

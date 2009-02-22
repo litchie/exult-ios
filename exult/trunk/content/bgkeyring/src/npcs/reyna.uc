@@ -26,9 +26,9 @@
  */
 
 //Externs:
-//extern reynaHeal 0x8D2 (var price_heal, var price_cure, var price_resurrect);
+//extern void reynaHeal 0x8D2 (var price_heal, var price_cure, var price_resurrect);
 
-Reyna object#(0x46C) ()
+void Reyna object#(0x46C) ()
 {
 	var avatar_title;
 	var part_of_day;

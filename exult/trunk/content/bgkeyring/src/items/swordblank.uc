@@ -24,7 +24,7 @@
 //objects to automatically place it on those objects (e.g. on a firepit)
 //or perform other forging-related behaviours (e.g. quenching it in a
 //trough of water).
-SwordBlank shape#(0x29C) ()
+void SwordBlank shape#(0x29C) ()
 {
 	var current_frame;
 

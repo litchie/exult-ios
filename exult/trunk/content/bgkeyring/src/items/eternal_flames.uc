@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Eternal_Flame shape#(0x45B) ()
+void Eternal_Flame shape#(0x45B) ()
 {
 	var flame_id = get_item_quality() + 1;
 	var flame_names = ["Truth", "Love", "Courage"];
@@ -54,7 +54,7 @@ Eternal_Flame shape#(0x45B) ()
 		randomPartyBark("@The Flame of " + flame_names[flame_id] + "@");
 }
 
-Items_of_Principle shape#(0x464) ()
+void Items_of_Principle shape#(0x464) ()
 {
 	var frnum = get_item_frame() + 1;
 	var iolo_here = isNearby(IOLO);

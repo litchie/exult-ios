@@ -21,7 +21,7 @@
  */
 
 //Reimplemented to allow sheep-shearing
-Shears shape#(0x2BA) ()
+void Shears shape#(0x2BA) ()
 {
 	var target;
 	var target_shape;

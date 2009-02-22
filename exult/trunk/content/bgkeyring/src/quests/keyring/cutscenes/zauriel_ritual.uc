@@ -37,7 +37,7 @@ enum Ritual_levels
 	RITUAL_END							= 9
 };
 
-zaurielTeleportPartyAround object#() ()
+void zaurielTeleportPartyAround object#() ()
 {
 	//Get party list and append Laurianna:
 	var party = [UI_get_party_list(), LAURIANNA->get_npc_object()];
@@ -95,7 +95,7 @@ zaurielTeleportPartyAround object#() ()
 	}
 }
 
-zaurielUnfreezeFormerParty ()
+void zaurielUnfreezeFormerParty ()
 {
 	var pos = get_object_position();
 	//Find nearby eggs:
@@ -112,7 +112,7 @@ zaurielUnfreezeFormerParty ()
 	}
 }
 
-zaurielRitualCutscene object#() ()
+void zaurielRitualCutscene object#() ()
 {
 	var pos;
 	var barrier;

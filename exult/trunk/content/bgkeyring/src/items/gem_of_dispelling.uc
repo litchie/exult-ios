@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Gem_Of_Dispelling shape#(0x451) ()
+void Gem_Of_Dispelling shape#(0x451) ()
 {
 	if (event != DOUBLECLICK) return;
 	

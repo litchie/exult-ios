@@ -468,8 +468,8 @@ var spellitemGetTalkHeal (var npcnum)
 	}
 }
 
-extern spellitemGetNPCIndex(var npcnum);
-spellitemInit()
+extern void spellitemGetNPCIndex(var npcnum);
+void spellitemInit()
 {
 	global_spells_unknown = [0, 0, 0, 0, 0, 0, 0];
 	global_fav_spells = [0, 0, 0, 0, 0, 0, 0];
@@ -534,7 +534,7 @@ var spellitemGetNPCIndex(var npcnum)
 			return index;
 }
 
-spellitem_Main object#() ()
+void spellitem_Main object#() ()
 {
 	var npcnum = -get_item_quality();
 	var npc = npcnum->get_npc_object();
@@ -655,20 +655,20 @@ spellitem_Main object#() ()
 	}
 }
 
-spellitem_Spellbook shape#(0x455) ()
+void spellitem_Spellbook shape#(0x455) ()
 {	var npcs = [JAANA, MARIAH, LAURIANNA];
 	set_item_quality(-npcs[get_item_frame()+1]);
 	item->spellitem_Main();	}
 
-spellitem_Iolos_Lute shape#(0x456) ()
+void spellitem_Iolos_Lute shape#(0x456) ()
 {	set_item_quality(-IOLO);
 	item->spellitem_Main();	}
 
-spellitem_Spell_Amulet shape#(0x457) ()
+void spellitem_Spell_Amulet shape#(0x457) ()
 {	var npcs = [DUPRE, SHAMINO];
 	set_item_quality(-npcs[get_item_frame()+1]);
 	item->spellitem_Main();	}
 
-spellitem_Julias_Hammer shape#(0x458) ()
+void spellitem_Julias_Hammer shape#(0x458) ()
 {	set_item_quality(-JULIA);
 	item->spellitem_Main();	}

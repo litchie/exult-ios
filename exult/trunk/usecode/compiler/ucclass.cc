@@ -108,7 +108,7 @@ Uc_var_symbol *Uc_class::add_symbol
 	if (scope.is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, num_vars++, s);
+	Uc_var_symbol *var = new Uc_class_struct_var_symbol(nm, s, num_vars++);
 	scope.add(var);
 	return var;
 	}
@@ -188,14 +188,15 @@ void Uc_class::add_method
 	Uc_function *m
 	)
 	{
-	// If this is a duplicate inherited function, override it.
+	// If this is a duplicate inherited function,
+	// or an externed class method, override it.
 	for (vector<Uc_function *>::iterator it = methods.begin();
 			it != methods.end(); ++it)
 		{
 		Uc_function *method = *it;
 		if (!strcmp(m->get_name(), method->get_name()))
 			{
-			if (method->is_inherited())
+			if (method->is_inherited() || method->is_externed())
 				{
 				m->set_method_num(method->get_method_num());
 				*it = m;

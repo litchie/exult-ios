@@ -162,7 +162,7 @@ var getMoongateDestination 0x823 (var moongate)
 	return dest_pos;
 }
 
-enterMoongate 0x824 (var moongate)
+void enterMoongate 0x824 (var moongate)
 {
 	var avatar_pos;
 	var moongate_pos;
@@ -212,7 +212,7 @@ enterMoongate 0x824 (var moongate)
 	}
 }
 
-Orb_of_the_Moons shape#(0x311) ()
+void Orb_of_the_Moons shape#(0x311) ()
 {
 	var target;
 	var target_coords;

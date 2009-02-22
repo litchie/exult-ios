@@ -157,7 +157,7 @@ Uc_var_symbol *Uc_function::add_symbol
 	if (cur_scope->is_dup(nm))
 		return 0;
 					// Create & assign slot.
-	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, num_parms + num_locals++, s);
+	Uc_var_symbol *var = new Uc_struct_var_symbol(nm, s, num_parms + num_locals++);
 	cur_scope->add(var);
 	return var;
 	}
@@ -800,7 +800,7 @@ void Uc_function::gen
 		// First round of optimizations.
 	Remove_dead_blocks(fun_blocks);
 		// Second round of optimizations.
-	Optimize_jumps(fun_blocks, proto->get_has_ret());
+	Optimize_jumps(fun_blocks, proto->has_ret());
 		// Third round of optimizations.
 	Remove_dead_blocks(fun_blocks);
 		// Set block indices.
@@ -840,7 +840,7 @@ void Uc_function::gen
 		{
 		// Always end with a RET or RTS if a return opcode
 		// is not the last opcode in the function.
-		if (proto->get_has_ret())
+		if (proto->has_ret())
 			// Function specifies a return value.
 			// When in doubt, return zero by default.
 			code.push_back((char) UC_RETZ);

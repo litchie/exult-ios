@@ -29,15 +29,15 @@
 /*
 	Third circle Spells
 	
-	extern spellCurse (var target);
-	extern spellHeal (var target);
-	extern spellParalyze (var target);
-	extern spellPeer ();
-	extern spellPoison (var target);
-	extern spellProtectAll ();
-	extern spellSleep (var target);
-	extern spellSwarm ();
-	extern spellRemoveCurse (var target);
+	extern void spellCurse (var target);
+	extern void spellHeal (var target);
+	extern void spellParalyze (var target);
+	extern void spellPeer ();
+	extern void spellPoison (var target);
+	extern void spellProtectAll ();
+	extern void spellSleep (var target);
+	extern void spellSwarm ();
+	extern void spellRemoveCurse (var target);
 */
 
 enum third_circle_spells
@@ -53,7 +53,7 @@ enum third_circle_spells
 	SPELL_REMOVE_CURSE				= 8
 };
 
-spellCurse (var target)
+void spellCurse (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -80,7 +80,7 @@ spellCurse (var target)
 	}
 }
 
-spellHeal (var target)
+void spellHeal (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -110,7 +110,7 @@ spellHeal (var target)
 	}
 }
 
-spellParalyze (var target)
+void spellParalyze (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -137,7 +137,7 @@ spellParalyze (var target)
 	}
 }
 
-spellPeer ()
+void spellPeer ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -160,7 +160,7 @@ spellPeer ()
 	}
 }
 
-spellPoison (var target)
+void spellPoison (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -186,7 +186,7 @@ spellPoison (var target)
 	}
 }
 
-spellProtectAll ()
+void spellProtectAll ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -209,7 +209,7 @@ spellProtectAll ()
 	}
 }
 
-spellSleep (var target)
+void spellSleep (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -236,7 +236,7 @@ spellSleep (var target)
 	}
 }
 
-spellSwarm ()
+void spellSwarm ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -259,7 +259,7 @@ spellSwarm ()
 	}
 }
 
-spellRemoveCurse (var target)
+void spellRemoveCurse (var target)
 {
 	if (event == DOUBLECLICK)
 	{

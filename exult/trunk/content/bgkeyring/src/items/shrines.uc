@@ -48,7 +48,7 @@ enum shrine_codex_quest_levels
 //Easter egg:
 const int BOOK_OF_FORGOTTEN_MANTRAS		= 29;
 
-Shrine shape#(0x463) ()
+void Shrine shape#(0x463) ()
 {
 	var dir;
 	var pathegg;

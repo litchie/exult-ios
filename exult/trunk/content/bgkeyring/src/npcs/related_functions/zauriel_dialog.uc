@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-zaurielSellPotions ()
+void zaurielSellPotions ()
 {
 	sellItems(
 				//Names
@@ -78,7 +78,7 @@ zaurielSellPotions ()
 				  "@I have no problems with that. Where were we?@"]);
 }
 
-zaurielSellReagents ()
+void zaurielSellReagents ()
 {
 	sellItems(
 				//Names
@@ -132,7 +132,7 @@ zaurielSellReagents ()
 				  "@I have no problems with that. Where were we?@"]);
 }
 
-zaurielGiveAdvance ()
+void zaurielGiveAdvance ()
 {
 	var advance_reagent = [SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT,SHAPE_REAGENT];
 	var advance_potions = [SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION,SHAPE_POTION];
@@ -168,7 +168,7 @@ zaurielGiveAdvance ()
 	}
 }
 
-zaurielCreateComponents (var quantities)
+void zaurielCreateComponents (var quantities)
 {
 	var cont = createContainerWithObjects(SHAPE_CHEST,
 										  [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST],
@@ -179,7 +179,7 @@ zaurielCreateComponents (var quantities)
 	ZAURIEL->give_last_created();
 }
 
-zaurielDestroyComponents ()
+void zaurielDestroyComponents ()
 {
 	var shapes = [SHAPE_SPIDER_EGG, SHAPE_BEE_STINGER, SHAPE_INVISIBILITY_DUST];
 	var pouch = ZAURIEL->get_cont_items(SHAPE_CHEST, QUALITY_ANY, FRAME_ANY);
@@ -192,7 +192,7 @@ zaurielDestroyComponents ()
 	pouch->remove_item();
 }
 
-zaurielMakeGem(var make)
+void zaurielMakeGem(var make)
 {
 	UI_remove_answer(["Make gem", "Fix gem"]);
 	say("@Yes, thou hast everything I asked thee. Here, give me the components.@ Zauriel takes the components from you.");
@@ -431,7 +431,7 @@ var zaurielExplainQuest(var doing_quest)
 	return doing_quest;
 }
 
-zaurielTellAboutPotion ()
+void zaurielTellAboutPotion ()
 {
 	var blackrock_count = PARTY->count_objects(SHAPE_BLACKROCK, QUALITY_ANY, FRAME_ANY);
 	var venom_count = PARTY->count_objects(SHAPE_VENOM, QUALITY_ANY, FRAME_ANY);
@@ -490,7 +490,7 @@ zaurielTellAboutPotion ()
 	
 }
 
-zaurielTalkPreQuest ()
+void zaurielTalkPreQuest ()
 {
 	//Temporary variables:
 	var rand;
@@ -839,7 +839,7 @@ zaurielTalkPreQuest ()
 		gflags[ACCEPTED_ZAURIEL_QUEST] = true;
 }
 
-zaurielTalkGemSubquest ()
+void zaurielTalkGemSubquest ()
 {
 	var msg;
 	
@@ -1285,7 +1285,7 @@ zaurielTalkGemSubquest ()
 	}
 }
 
-zaurielLastTalk ()
+void zaurielLastTalk ()
 {
 	ZAURIEL->show_npc_face0(0);
 	if (LAURIANNA->get_npc_object() in UI_get_party_list())

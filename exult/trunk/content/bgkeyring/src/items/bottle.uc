@@ -23,7 +23,7 @@
 //Called when user clicks on a bottle
 //(This has been rewired so that we can use milk bottles on butter churns:
 //see churn.uc for more details)
-Bottle shape#(0x268) ()
+void Bottle shape#(0x268) ()
 {
 	//Bottle was clicked on
 	if (event == DOUBLECLICK)

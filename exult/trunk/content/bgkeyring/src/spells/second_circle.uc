@@ -27,14 +27,14 @@
 /*
 	Second circle Spells
 	
-	extern spellDestroyTrap (var target);
-	extern spellEnchant (var target);
-	extern spellFireBlast (var target);
-	extern spellGreatLight ();
-	extern spellMassCure ();
-	extern spellProtection (var target);
-	extern spellTelekinesis (var target);
-	extern spellWizardEye ();
+	extern void spellDestroyTrap (var target);
+	extern void spellEnchant (var target);
+	extern void spellFireBlast (var target);
+	extern void spellGreatLight ();
+	extern void spellMassCure ();
+	extern void spellProtection (var target);
+	extern void spellTelekinesis (var target);
+	extern void spellWizardEye ();
 */
 
 enum second_circle_spells
@@ -49,7 +49,7 @@ enum second_circle_spells
 	SPELL_WIZARD_EYE				= 7
 };
 
-spellDestroyTrap (var target)
+void spellDestroyTrap (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -95,7 +95,7 @@ spellDestroyTrap (var target)
 	}
 }
 
-spellEnchant (var target)
+void spellEnchant (var target)
 {
 	var normal_missiles = [SHAPE_ARROWS, SHAPE_BOLTS];
 	var magic_missiles = [SHAPE_MAGIC_ARROWS, SHAPE_MAGIC_BOLTS];
@@ -125,7 +125,7 @@ spellEnchant (var target)
 	}
 }
 
-spellFireBlast (var target)
+void spellFireBlast (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -153,7 +153,7 @@ spellFireBlast (var target)
 	}
 }
 
-spellGreatLight ()
+void spellGreatLight ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -175,7 +175,7 @@ spellGreatLight ()
 	}
 }
 
-spellMassCure ()
+void spellMassCure ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -208,7 +208,7 @@ spellMassCure ()
 	}
 }
 
-spellProtection (var target)
+void spellProtection (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -239,7 +239,7 @@ spellProtection (var target)
 	}
 }
 
-spellTelekinesis (var target)
+void spellTelekinesis (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -282,7 +282,7 @@ spellTelekinesis (var target)
 	}
 }
 
-spellWizardEye ()
+void spellWizardEye ()
 {
 	if (event == DOUBLECLICK)
 	{

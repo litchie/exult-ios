@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-killTargetNPC object#() ()
+void killTargetNPC object#() ()
 {
 	var npcshape = get_item_shape();
 	if (npcshape == SHAPE_LORD_BRITISH)
@@ -178,7 +178,7 @@ killTargetNPC object#() ()
 	}
 }
 
-Blackrock_Potion shape#(0x450) ()
+void Blackrock_Potion shape#(0x450) ()
 {
 	if ((event == DOUBLECLICK) && get_item_frame() == 0)
 	{

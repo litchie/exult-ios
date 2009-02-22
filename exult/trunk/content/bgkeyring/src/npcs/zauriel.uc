@@ -26,7 +26,7 @@
 
 #include "npcs/related_functions/zauriel_dialog.uc"			//Zauriel's dialog functions
 
-Zauriel object#(0x48B) ()
+void Zauriel object#(0x48B) ()
 {
 	var met_zauriel;
 	var bark;

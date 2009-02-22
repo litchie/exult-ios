@@ -29,15 +29,15 @@
 /*
 	Fifth circle Spells
 	
-	extern spellCharm (var target);
-	extern spellDance ();
-	extern spellDispelField (var target);
-	extern spellExplosion (var target);
-	extern spellFireField (var target);
-	extern spellGreatHeal (var target);
-	extern spellInvisibility (var target);
-	extern spellMassSleep ();
-	extern spellSummonSkeletons ();
+	extern void spellCharm (var target);
+	extern void spellDance ();
+	extern void spellDispelField (var target);
+	extern void spellExplosion (var target);
+	extern void spellFireField (var target);
+	extern void spellGreatHeal (var target);
+	extern void spellInvisibility (var target);
+	extern void spellMassSleep ();
+	extern void spellSummonSkeletons ();
 */
 
 enum fifth_circle_spells
@@ -53,7 +53,7 @@ enum fifth_circle_spells
 	SPELL_SUMMON_SKELETONS			= 8
 };
 
-spellCharm (var target)
+void spellCharm (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -80,7 +80,7 @@ spellCharm (var target)
 	}
 }
 
-spellDance ()
+void spellDance ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -104,7 +104,7 @@ spellDance ()
 	}
 }
 
-spellDispelField (var target)
+void spellDispelField (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -136,7 +136,7 @@ spellDispelField (var target)
 	}
 }
 
-spellExplosion (var target)
+void spellExplosion (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -164,7 +164,7 @@ spellExplosion (var target)
 	}
 }
 
-spellFireField (var target)
+void spellFireField (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -204,7 +204,7 @@ spellFireField (var target)
 	}
 }
 
-spellGreatHeal (var target)
+void spellGreatHeal (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -235,7 +235,7 @@ spellGreatHeal (var target)
 	}
 }
 
-spellInvisibility (var target)
+void spellInvisibility (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -263,7 +263,7 @@ spellInvisibility (var target)
 	}
 }
 
-spellMassSleep ()
+void spellMassSleep ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -298,7 +298,7 @@ spellMassSleep ()
 	}
 }
 
-spellSummonSkeletons ()
+void spellSummonSkeletons ()
 {
 	if (event == DOUBLECLICK)
 	{

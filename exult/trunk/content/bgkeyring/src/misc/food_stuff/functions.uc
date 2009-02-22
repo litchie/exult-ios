@@ -23,7 +23,7 @@
 /* Butter-churning behaviours */
 
 //Create the new butter object, beside the churn
-createButter object#() ()
+void createButter object#() ()
 {
 	//create the new butter object
 	var butter = UI_create_new_object(SHAPE_FOOD);
@@ -46,7 +46,7 @@ createButter object#() ()
 		randomPartyBark("@Mmmm, rich creamery butter.@");
 }
 
-churnButter ()
+void churnButter ()
 {
 	//the source of the milk (either milk bottle or bucket of milk)
 	var source;
@@ -108,7 +108,7 @@ churnButter ()
 }
 
 //go to the churn (called by Bottle and Bucket)
-gotoChurn (var churn, var milktype)
+void gotoChurn (var churn, var milktype)
 {
 	//User tried to use a churn that was inside something
 	if (churn->get_container())
@@ -128,7 +128,7 @@ gotoChurn (var churn, var milktype)
 
 //This had to be overridden in order to separate the choosing of the target
 //(now handled by UseEdible) from the act of eating the food
-consumeEdible (var food, var npc, var nutritional_value, var sound_effect)
+void consumeEdible (var food, var npc, var nutritional_value, var sound_effect)
 {
 	if (!inParty(npc) || npc->get_item_flag(ASLEEP) || npc->get_item_flag(DEAD) ||
 			npc->get_item_flag(PARALYZED))
@@ -266,7 +266,7 @@ consumeEdible (var food, var npc, var nutritional_value, var sound_effect)
 //the food to the target. This has been rewritten so that the
 //actual eating is handled by another function - this just
 //controls the click behavior
-useEdible 0x813 (var sound_effect, var nutritional_value, var food)
+void useEdible 0x813 (var sound_effect, var nutritional_value, var food)
 {
 	var npc = UI_click_on_item();
 	consumeEdible(food, npc, nutritional_value, sound_effect);

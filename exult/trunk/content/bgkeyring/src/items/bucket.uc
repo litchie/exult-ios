@@ -31,7 +31,7 @@ const int SOUND_BUCKET_EMPTY = 40;
 
 //reimplementation of internal function - creates blood/winestains
 //Added in special stain for milk
-makeSpill object#() ()
+void makeSpill object#() ()
 {
 	var bucket_frame = get_item_frame();
 	var min_frame = 0;
@@ -87,7 +87,7 @@ makeSpill object#() ()
 //was used - so we can avoid 'accidental' dousings in blood
 //Updated 2005-03-18 to a) wake NPC up and b) make sure NPC can talk
 //before making them bark
-useBucketOnNPC ()
+void useBucketOnNPC ()
 {
 	//Note: item is the NPC clicked on
 
@@ -139,7 +139,7 @@ useBucketOnNPC ()
 
 //Bucket was used on a trough (this behaviour was moved from Bucket()
 //to aid code organisation)
-useBucketOnTrough ()
+void useBucketOnTrough ()
 {
 	var trough = false;
 	//try to find the nearest horizontal trough
@@ -213,7 +213,7 @@ useBucketOnTrough ()
 	script item	{ wait 2; frame bucket_new_frame; }
 }
 
-douseAnimation object#() ()
+void douseAnimation object#() ()
 {
 	var pos = get_object_position();
 	var dest = [pos[X] - 3, pos[Y] - 4];
@@ -222,7 +222,7 @@ douseAnimation object#() ()
 }
 
 //Bucket was used on a dousable item
-useBucketOnDousable ()
+void useBucketOnDousable ()
 {
 	//Note: item is the object clicked on
 
@@ -343,7 +343,7 @@ useBucketOnDousable ()
 //Note: this doesn't actually decrement the bucket's quality or
 //anything, which means you can use the bucket as many times as
 //you like
-useBucketOnDough ()
+void useBucketOnDough ()
 {
 	//The dough has already been watered
 	if (get_item_frame() != 0)
@@ -357,7 +357,7 @@ useBucketOnDough ()
 	set_item_frame(FRAME_DOUGH_BALL);
 }
 
-fillBucketFromWell object#() ()
+void fillBucketFromWell object#() ()
 {
 	var well = AVATAR->find_nearest(SHAPE_WELL, 10);
 	if (well)
@@ -385,7 +385,7 @@ fillBucketFromWell object#() ()
 }
 
 //Bucket of water was used on well
-useBucketOnWell ()
+void useBucketOnWell ()
 {
 	//find the nearest well
 	var well = AVATAR->find_nearest(SHAPE_WELL, 10);
@@ -423,7 +423,7 @@ useBucketOnWell ()
 	{	wait 17;					call fillBucketFromWell;}
 }
 
-useBucketOnGround ()
+void useBucketOnGround ()
 {
 	script AVATAR
 	{	face north;					actor frame bowing;
@@ -432,7 +432,7 @@ useBucketOnGround ()
 	{	wait 3;						call makeSpill;}
 }
 
-Bucket shape#(0x32A) ()
+void Bucket shape#(0x32A) ()
 {
 	//User doubleclicked on bucket: march them to the bucket and pick
 	//it up, then call this function as event = SCRIPTED

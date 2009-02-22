@@ -24,10 +24,10 @@
  *	Last Modified: 2006-02-27
  */
 
-extern mariahSellSpells 0x8BB (var var0000);
-extern mariahSellReagents 0x8BC (var var0000);
+extern void mariahSellSpells 0x8BB (var var0000);
+extern void mariahSellReagents 0x8BC (var var0000);
 
-Mariah object#(0x499) ()
+void Mariah object#(0x499) ()
 {
 	static var did_post_tetrahedron;
 	if (event == DOUBLECLICK)

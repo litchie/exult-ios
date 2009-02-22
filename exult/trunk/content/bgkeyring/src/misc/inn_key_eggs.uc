@@ -55,7 +55,7 @@ enum bed_states
 const int EVENT_FIND_EGG				= 20;
 const int EVENT_TALK					= 21;
 
-eggLockInnDoors object#() ()
+void eggLockInnDoors object#() ()
 {
 	var polite_title = getPoliteTitle();
 	var inn_keepers = [JAMES, JAMES, MANDY, PAMELA, OPHELIA, BORIS, POLLY,
@@ -300,7 +300,7 @@ eggLockInnDoors object#() ()
 
 
 //New NPC usecode for better handling:
-James object#(0x42E) ()
+void James object#(0x42E) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -308,7 +308,7 @@ James object#(0x42E) ()
 		James.original();
 }
 
-Mandy object#(0x4E7) ()
+void Mandy object#(0x4E7) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -316,7 +316,7 @@ Mandy object#(0x4E7) ()
 		Mandy.original();
 }
 
-Pamela object#(0x44E) ()
+void Pamela object#(0x44E) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -324,7 +324,7 @@ Pamela object#(0x44E) ()
 		Pamela.original();
 }
 
-Ophelia object#(0x47A) ()
+void Ophelia object#(0x47A) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -332,7 +332,7 @@ Ophelia object#(0x47A) ()
 		Ophelia.original();
 }
 
-Boris object#(0x482) ()
+void Boris object#(0x482) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -340,7 +340,7 @@ Boris object#(0x482) ()
 		Boris.original();
 }
 
-Polly object#(0x4B3) ()
+void Polly object#(0x4B3) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -348,7 +348,7 @@ Polly object#(0x4B3) ()
 		Polly.original();
 }
 
-Apollonia object#(0x413) ()
+void Apollonia object#(0x413) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	
@@ -356,7 +356,7 @@ Apollonia object#(0x413) ()
 		Apollonia.original();
 }
 
-Rutherford object#(0x45C) ()
+void Rutherford object#(0x45C) ()
 {
 	if ((event == DOUBLECLICK) && (get_npc_id() != 0))
 		script item call eggLockInnDoors, EVENT_FIND_EGG;	

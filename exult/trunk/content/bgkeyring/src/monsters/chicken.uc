@@ -21,7 +21,7 @@
  */
 
 /* Some highly sophisticated behaviour for chickens */
-Chicken shape#(0x1F2) ()
+void Chicken shape#(0x1F2) ()
 {
 	var rand = UI_get_random(20);
 	var bark;

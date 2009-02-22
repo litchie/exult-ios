@@ -36,7 +36,7 @@ const int SOUND_FISHING		= 103;	//the plop of bait entering the water
 //(more advice to the player, tweaked catch chance). Also extended
 //animation considerably, and increased catch chance to compensate
 //for the delay
-FishingRod shape#(0x296) ()
+void FishingRod shape#(0x296) ()
 {
 	//Rod was doubleclicked on: start fishing
 	if (event == DOUBLECLICK)
@@ -204,7 +204,7 @@ FishingRod shape#(0x296) ()
 //This function is responsible for making fish go bad after a certain
 //length of time.
 //Not used: sleeping will not advance the script queue.
-expireFish ()
+void expireFish ()
 {
 	var reduced_quality = get_item_quality() - 1;
 	set_item_quality(reduced_quality);

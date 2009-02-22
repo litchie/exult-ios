@@ -21,7 +21,7 @@
  */
 
 //Corrected bug that treats noon (12:00-12:59) as 'am'
-Pocketwatch shape#(0x9F) ()
+void Pocketwatch shape#(0x9F) ()
 {
 	if (event != DOUBLECLICK)
 		return;

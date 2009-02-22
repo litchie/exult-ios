@@ -41,7 +41,7 @@ enum MageAndGoons_levels
 	PREPARE_NPC							= 12
 };
 
-beginCutsceneMageAndGoons object#() ()
+void beginCutsceneMageAndGoons object#() ()
 {
 	var mage;
 	var gargoyle;
@@ -411,7 +411,9 @@ beginCutsceneMageAndGoons object#() ()
 		{	nohalt;						call beginCutsceneMageAndGoons, FADE_SCREEN;
 			wait 2;						call beginCutsceneMageAndGoons, CENTER_VIEW;
 			wait 3;						call beginCutsceneMageAndGoons, UNFADE_SCREEN;
-			wait 3;						call beginCutsceneMageAndGoons, BEGIN_COMBAT;};
+			wait 3;						call beginCutsceneMageAndGoons, BEGIN_COMBAT;
+			wait 3;						call trueUnfreeze;
+};
 	}
 	else if (event == BEGIN_COMBAT)
 	{
@@ -436,7 +438,6 @@ beginCutsceneMageAndGoons object#() ()
 		script fighter	{nohalt;	call beginCutsceneMageAndGoons, PREPARE_NPC;};
 		
 		//Release the Avatar from cutscene mode:
-		AVATAR->trueUnfreeze();
 	}
 
 	else if (event == PREPARE_NPC)
@@ -452,7 +453,7 @@ beginCutsceneMageAndGoons object#() ()
 	
 }
 
-registerDeathOfMageOrGoon object#() ()
+void registerDeathOfMageOrGoon object#() ()
 {
 	if ((event == DEATH) &&  (get_npc_id() == ID_MAGE_OR_GOON))
 	{

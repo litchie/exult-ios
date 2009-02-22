@@ -24,11 +24,11 @@
 
 const int FLOUR_SELL_PRICE = 4;	//what Willy will buy your flour for
 
-extern buyBread 0x946();
-extern sellBread 0x947();
-extern sellFlour 0x948();
+extern void buyBread 0x946();
+extern void sellBread 0x947();
+extern void sellFlour 0x948();
 
-Willy object#(0x434) ()
+void Willy object#(0x434) ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -213,7 +213,7 @@ Willy object#(0x434) ()
 }
 
 //Reimplemented to fix a bug that prevented this ever working
-sellFlour 0x948()
+void sellFlour 0x948()
 {
 	UI_push_answers();
 	item.say("@Excellent! Dost thou have some flour for me?@");
@@ -265,7 +265,7 @@ sellFlour 0x948()
 //implementation I have ever seen.
 const int BREAD_SELL_PRICE = 1;
 const int BREAD_LOTS = 5;
-sellBread 0x947()
+void sellBread 0x947()
 {
 	UI_push_answers();
 	say("@Excellent! Dost thou have some loaves for me?@");
