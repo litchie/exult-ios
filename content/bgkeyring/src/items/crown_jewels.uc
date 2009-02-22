@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-LB_Sceptre_Hit 0xB7E ()
+void LB_Sceptre_Hit 0xB7E ()
 {
 	if (event != WEAPON)
 		return;
@@ -37,12 +37,12 @@ LB_Sceptre_Hit 0xB7E ()
 	}
 }
 
-LB_Sceptre shape#(0x466) ()
+void LB_Sceptre shape#(0x466) ()
 {
 	//Add double-click support
 }
 
-LB_Crown shape#(0x467) ()
+void LB_Crown shape#(0x467) ()
 {
 	// TODO: Implement the magic protection side.
 	if (event == READIED)
@@ -51,7 +51,7 @@ LB_Crown shape#(0x467) ()
 		clear_item_flag(MAGIC_PROTECTION);
 }
 
-LB_Amulet shape#(0x468) ()
+void LB_Amulet shape#(0x468) ()
 {
 	//Nothing I can think of
 }

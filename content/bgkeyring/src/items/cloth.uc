@@ -23,7 +23,7 @@
 //Changes use message to mention sewing into garments (and to stop saying
 //that it would "fetch a fair price in Minoc", as there's noone you can
 //sell cloth to in the entire game!)
-Cloth shape#(0x353) ()
+void Cloth shape#(0x353) ()
 {
 	if (event == DOUBLECLICK)
 		randomPartySay("@That appears to be fine cloth, thou couldst sew it into clothing if thou hast any thread.~@Or perhaps when we are in a fix, thou couldst cut it into bandages with shears.@");
@@ -32,7 +32,7 @@ Cloth shape#(0x353) ()
 //sew a bolt of cloth into your choice of pretty garment
 //Todo: different kinds of garments need different materials, possibly
 //multiple materials (e.g. Avatar Costume)
-sewCloth (var cloth)
+void sewCloth (var cloth)
 {
 	var garment_shape;
 	var garment_frame;
@@ -107,8 +107,8 @@ sewCloth (var cloth)
 	}
 }
 
-extern Loom shape#(0x105) ();
-Thread shape#(0x28E) ()
+extern void Loom shape#(0x105) ();
+void Thread shape#(0x28E) ()
 {
 	//Player doubleclicked on thread: march them to the thread and pick it up
 	//Once we have it, this function gets called again as event = SCRIPTED

@@ -59,7 +59,7 @@ enum npc_wizard_flags
 	AI_TEMPORARY					= 63	//AI will stop casting when it runs out of targets
 };
 
-greatDouseIgnite (var obj, var shapes)
+void greatDouseIgnite (var obj, var shapes)
 {
 	var dist = 25;
 	for (obj in shapes)
@@ -79,7 +79,7 @@ greatDouseIgnite (var obj, var shapes)
 	}
 }
 
-DeathBoltHit object#(0xB8F) ()
+void DeathBoltHit object#(0xB8F) ()
 {
 	//Bail out unless an NPC is hit:
 	if (is_npc())
@@ -95,7 +95,7 @@ DeathBoltHit object#(0xB8F) ()
 	}
 }
 
-spellAwakenEffect object#() ()
+void spellAwakenEffect object#() ()
 {
 	if (is_npc())
 	{
@@ -106,7 +106,7 @@ spellAwakenEffect object#() ()
 		flashBlocked(60);
 }
 
-spellSleepEffect object#() ()
+void spellSleepEffect object#() ()
 {
 	if (is_npc())
 	{
@@ -117,17 +117,17 @@ spellSleepEffect object#() ()
 		flashBlocked(60);
 }
 
-spellClearFlag object#() ()
+void spellClearFlag object#() ()
 {
 	clear_item_flag(event);
 }
 
-spellSetFlag object#() ()
+void spellSetFlag object#() ()
 {
 	set_item_flag(event);
 }
 
-spellEnchantEffect object#() ()
+void spellEnchantEffect object#() ()
 {
 	var normal_missiles = [SHAPE_ARROWS, SHAPE_BOLTS];
 	var magic_missiles = [SHAPE_MAGIC_ARROWS, SHAPE_MAGIC_BOLTS];
@@ -136,7 +136,7 @@ spellEnchantEffect object#() ()
 			set_item_shape(magic_missiles[index]);
 }
 
-spellHealEffect object#() ()
+void spellHealEffect object#() ()
 {
 	var str = get_npc_prop(STRENGTH);
 	var hps = get_npc_prop(HEALTH);
@@ -147,13 +147,13 @@ spellHealEffect object#() ()
 	}
 }
 
-spellCloneEffect object#() ()
+void spellCloneEffect object#() ()
 {
 	var summoned = clone();
 	summoned->set_alignment(event);
 }
 
-spellFireRingEffect object#() ()
+void spellFireRingEffect object#() ()
 {
 	var pos = get_object_position();
 	remove_item();
@@ -169,29 +169,29 @@ spellFireRingEffect object#() ()
 	}
 }
 
-spellSetShape object#() ()
+void spellSetShape object#() ()
 {
 	set_item_shape(event);
 }
 
-spellCauseLight object#() ()
+void spellCauseLight object#() ()
 {
 	UI_cause_light(event);
 }
 
-spellCenteredSpriteEffect object#() ()
+void spellCenteredSpriteEffect object#() ()
 {
 	var pos = get_object_position();
 	UI_sprite_effect(event, pos[X], pos[Y], 0, 0, 0, -1);
 }
 
-spellOffCenterSpriteEffect object#() ()
+void spellOffCenterSpriteEffect object#() ()
 {
 	var pos = get_object_position();
 	UI_sprite_effect(event, (pos[X] - 2), (pos[Y] - 2), 0, 0, 0, -1);
 }
 
-spellCreateFoodEffect object#() ()
+void spellCreateFoodEffect object#() ()
 {
 	//If the caster is not in party, this was just for 'show', i.e.,
 	//a usecode-schedule display.
@@ -213,18 +213,18 @@ spellCreateFoodEffect object#() ()
 	}
 }
 
-spellWizardEyeEffect object#() ()
+void spellWizardEyeEffect object#() ()
 {
 	UI_wizard_eye(45, 200);
 }
 
-spellShowMap object#() ()
+void spellShowMap object#() ()
 {
 	UI_display_map();
 }
 
 
-spellProtectAllEffect object#() ()
+void spellProtectAllEffect object#() ()
 {
 	UI_play_sound_effect(109);
 	var pos = get_object_position();
@@ -234,7 +234,7 @@ spellProtectAllEffect object#() ()
 		npc->set_item_flag(PROTECTION);
 }
 
-spellSwarmEffect object#() ()
+void spellSwarmEffect object#() ()
 {
 	var rand = UI_die_roll(7, 10);
 	while (rand > 0)
@@ -244,7 +244,7 @@ spellSwarmEffect object#() ()
 	}
 }
 
-spellConjureEffect object#() ()
+void spellConjureEffect object#() ()
 {
 	var conjurables = [SHAPE_BIRD, SHAPE_RABBIT, SHAPE_RAT, SHAPE_FOX, SHAPE_SNAKE, SHAPE_DEER, SHAPE_WOLF];
 	var arraysize = UI_get_array_size(conjurables);
@@ -270,7 +270,7 @@ spellConjureEffect object#() ()
 	}
 }
 
-spellEndSeance object#() ()
+void spellEndSeance object#() ()
 {
 	//I have NO idea why they had one flag per ghost,
 	//instead of having one for them all...
@@ -286,7 +286,7 @@ spellEndSeance object#() ()
 	gflags[SEANCE_FORSYTHE] = false;
 }	
 
-spellCauseDancing object#() ()
+void spellCauseDancing object#() ()
 {
 	var dist = 25;
 	var nonparty_npcs = getNearbyNonPartyNPCs(dist);
@@ -310,7 +310,7 @@ spellCauseDancing object#() ()
 	}
 }	
 
-spellSummonSkeletonsEffect object#() ()
+void spellSummonSkeletonsEffect object#() ()
 {
 	var npclevel = getNPCLevel(item);
 	var minroll = npclevel / 2;
@@ -328,7 +328,7 @@ spellSummonSkeletonsEffect object#() ()
 	}
 }	
 
-spellCauseFearEffect object#() ()
+void spellCauseFearEffect object#() ()
 {
 	var targets = getEnemyTargetList(item, 25);
 	for (npc in targets)
@@ -342,7 +342,7 @@ spellCauseFearEffect object#() ()
 	}
 }
 
-spellMagicStormEffect object#() ()
+void spellMagicStormEffect object#() ()
 {
 	if (gflags[MAGIC_STORM_SPELL] == true)
 	{
@@ -359,7 +359,7 @@ spellMagicStormEffect object#() ()
 	}
 }	
 
-spellTremorEffect object#() ()
+void spellTremorEffect object#() ()
 {
 	var targets = getEnemyTargetList(item, 40);
 	var duration = 12;
@@ -408,7 +408,7 @@ spellTremorEffect object#() ()
 	UI_earthquake((duration * 3));
 }
 
-spellCauseDeath object#() ()
+void spellCauseDeath object#() ()
 {
 	var cantdie = get_item_flag(CANT_DIE) || get_item_flag(DEATH_PROTECTION);
 	if (!cantdie)
@@ -419,7 +419,7 @@ spellCauseDeath object#() ()
 	}
 }
 
-spellSummonEffect object#() ()
+void spellSummonEffect object#() ()
 {
 	var summonables = [SHAPE_SKELETON, SHAPE_DRAGON, SHAPE_GHOST3, SHAPE_MONSTER_TROLL,
 					   SHAPE_MONSTER_MAGE, SHAPE_MONSTER_CYCLOPS, SHAPE_DRAKE,
@@ -455,13 +455,13 @@ spellSummonEffect object#() ()
 	}
 }
 
-spellStopTime object#() ()
+void spellStopTime object#() ()
 {
 	UI_stop_time(event);
 }
 
 
-spellMassResurrectEffect object#() ()
+void spellMassResurrectEffect object#() ()
 {
 	var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
 	var bodies = [];

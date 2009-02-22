@@ -29,15 +29,15 @@
 //Item-related functions
 //----------------------
 
-extern stealItem 0x8FA(var object);		//If <object> belongs to someone (i.e., does not have the OKAY_TO_TAKE flag and the party is not in a dungeon), this executes stolen-item behaviour: guards showing up, party members leaving etc.
+extern void stealItem 0x8FA(var object);		//If <object> belongs to someone (i.e., does not have the OKAY_TO_TAKE flag and the party is not in a dungeon), this executes stolen-item behaviour: guards showing up, party members leaving etc.
 
-extern subtractQuantity 0x925(var object);	//Remove 1 from <object>'s quantity stack. If it's quantity is at 1, or it has no quantity, this will remove the object.
+extern void subtractQuantity 0x925(var object);	//Remove 1 from <object>'s quantity stack. If it's quantity is at 1, or it has no quantity, this will remove the object.
 
 //This will try to pathfind the avatar to <target>, which can be an object, NPC or X,Y,Z location(?).
 //<rangex> and <rangey> are arrays that define a grid of points around the object, and the Avatar will pathfind to the first unoccupied point in that grid (in the order the coordinates were defined). <rangez> I think declares an acceptable z range to pathfind to, and is usually -3.
 //if the player can get there, then they will walk there at regular speed. When they arrive in the region, <func> will be called with <context> as the item and <eventid> as the event.
 //if the player cannot get to any point in the grid it flashes the X cursor and no movement occurs.
-extern gotoObject 0x828(var target, var rangex, var rangey, var rangez, var func, var context, var eventid);
+extern void gotoObject 0x828(var target, var rangex, var rangey, var rangez, var func, var context, var eventid);
 
 //returns true if <obj> is carried by the avatar, false otherwise. Supports nested containers.
 extern var containedByAvatar 0x944(var obj);
@@ -57,10 +57,10 @@ extern var placeOnTarget 0x837(var obj, var target, var offset_x, var offset_y, 
 //------------------------------------
 
 //<npc> barks <line> after <delay> ticks.
-extern delayedBark 0x933(var npc, var line, var delay);
+extern void delayedBark 0x933(var npc, var line, var delay);
 
-extern randomPartyBark 0x08FE(var line);	//Get a random nearby party member to say <line> as a bark
-extern randomPartySay 0x08FF(var line);		//Get a random nearby party member to say <line> in conversation form
+extern void randomPartyBark 0x08FE(var line);	//Get a random nearby party member to say <line> as a bark
+extern void randomPartySay 0x08FF(var line);		//Get a random nearby party member to say <line> in conversation form
 
 //returns a random party member who is nearby, or the Avatar if none can be found.
 extern var randomPartyMember 0x900();
@@ -86,10 +86,10 @@ extern var isNearby 0x8F7(var npc);
 extern var nearEachOther 0x8FC(var npc1, var npc2);
 
 //Spouts the generic Fellowship spiel ("An organisation of spiritual seekers...") in the conversation.
-extern askAboutFellowship 0x919();
+extern void askAboutFellowship 0x919();
 
 //responsible for common schedule-related barks: e.g. snoring, uttering Fellowship epithets, commenting on the weather, etc. Accepts either an NPC constant or an object reference.
-extern scheduleBarks 0x92E(var npc);
+extern void scheduleBarks 0x92E(var npc);
 
 
 //Magic-related functions
@@ -105,15 +105,15 @@ extern var inMagicStorm 0x906();
 
 //Puts <item> in the player's inventory, from world or container.
 //if this is not possible, it will flash the X cursor and restore the item to its original position/container.
-extern giveToAvatar object#(0x692) ();
+extern void giveToAvatar object#(0x692) ();
 
 
 // Miscellaneous functions
 //------------------------
 
 //Gives the specified amount of experience points to every party member.
-extern giveExperience 0x911(var exp);
+extern void giveExperience 0x911(var exp);
 
 //Shows a blocked cursor and plays the "errn" sound. All this really does is supplement UI_flash_mouse() with the sound. (Some originals use this function, some just call UI_flash_mouse directly.)
 //See constant.uc for the constants for cursor graphics.
-extern flashBlocked 0x8FD(var cursor);
+extern void flashBlocked 0x8FD(var cursor);

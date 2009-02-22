@@ -30,14 +30,14 @@
 /*
 	Fourth circle Spells
 	
-	extern spellConjure ();
-	extern spellLightning (var target);
-	extern spellMassCurse ();
-	extern spellReveal ();
-	extern spellSeance ();
-	extern spellUnlockMagic (var target);
-	extern spellRechargeMagic (var target);
-	extern spellBlink (var target);
+	extern void spellConjure ();
+	extern void spellLightning (var target);
+	extern void spellMassCurse ();
+	extern void spellReveal ();
+	extern void spellSeance ();
+	extern void spellUnlockMagic (var target);
+	extern void spellRechargeMagic (var target);
+	extern void spellBlink (var target);
 */
 
 enum fourth_circle_spells
@@ -52,7 +52,7 @@ enum fourth_circle_spells
 	SPELL_BLINK						= 7			//NPC-only spell
 };
 
-spellConjure ()
+void spellConjure ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -75,7 +75,7 @@ spellConjure ()
 	}
 }
 
-spellLightning (var target)
+void spellLightning (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -104,7 +104,7 @@ spellLightning (var target)
 	}
 }
 
-spellMassCurse ()
+void spellMassCurse ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -137,7 +137,7 @@ spellMassCurse ()
 	}
 }
 
-spellReveal ()
+void spellReveal ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -190,7 +190,7 @@ spellReveal ()
 	}
 }
 
-spellSeance ()
+void spellSeance ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -252,7 +252,7 @@ spellSeance ()
 	}
 }
 
-spellUnlockMagic (var target)
+void spellUnlockMagic (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -289,7 +289,7 @@ spellUnlockMagic (var target)
 	}
 }
 
-spellRechargeMagic (var target)
+void spellRechargeMagic (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -326,7 +326,7 @@ spellRechargeMagic (var target)
 }
 
 const int CREATE_CLOUDS					= 15;
-spellBlink (var target)
+void spellBlink (var target)
 {
 
 	var nearbyobjs;

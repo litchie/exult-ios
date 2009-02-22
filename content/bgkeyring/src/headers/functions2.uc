@@ -33,13 +33,13 @@ var findNearbyMonsterWithID (var loc, var shp, var dist, var id)
 }
 
 //Sets BG_DONT_MOVE flag:
-trueFreeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
+void trueFreeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
 //Clears BG_DONT_MOVE flag:
-trueUnfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }
+void trueUnfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }
 //Puts an NPC in casting mode:
-showCastingFrames object#() () { begin_casting_mode(); }
+void showCastingFrames object#() () { begin_casting_mode(); }
 
-freezeParty ()
+void freezeParty ()
 {
 	//Get party list:
 	var party = UI_get_party_list();
@@ -56,7 +56,7 @@ freezeParty ()
 	}
 }
 
-unfreezeParty ()
+void unfreezeParty ()
 {
 	//Get party list:
 	var party = UI_get_party_list();
@@ -140,7 +140,7 @@ var createContainerWithObjects (var cont_shape, var item_shapes, var item_frames
 	return cont;
 }
 
-interjectIfPossible (var npcnum, var msg)
+void interjectIfPossible (var npcnum, var msg)
 {
 	if (npcnum->npc_nearby())
 	{
@@ -199,7 +199,7 @@ var forceGiveObjToParty (var obj)
 	return false;
 }
 
-sellItems (var options, var shapes, var frames, var price, var quantity, var articles, var quantity_text, var quantity_tokens, var dialog)
+void sellItems (var options, var shapes, var frames, var price, var quantity, var articles, var quantity_text, var quantity_tokens, var dialog)
 {
 	var choice_index;
 	var msg;

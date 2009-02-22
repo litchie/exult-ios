@@ -25,7 +25,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Invisibility_Ring shape#(0x128) ()
+void Invisibility_Ring shape#(0x128) ()
 {
 	var cont;
 	if (event == READIED)
@@ -45,7 +45,7 @@ Invisibility_Ring shape#(0x128) ()
 	}
 }
 
-Regeneration_Ring shape#(0x12A) ()
+void Regeneration_Ring shape#(0x12A) ()
 {
 	var cont;
 	if (event == READIED)

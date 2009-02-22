@@ -22,7 +22,7 @@
 
 //Called when user clicks on food
 //Reimplemented to add in apple->dough behaviour
-Food shape#(0x179) ()
+void Food shape#(0x179) ()
 {
 	//Todo: organise this better, by using explicit frames? e.g. nutrition[FRAME_BREAD] = 4 etc.
 	var nutritional_values = [

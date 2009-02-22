@@ -25,7 +25,7 @@
  *	Last Modified: 2006-02-27
  */
 
-LordHeather object#(0x44D) ()
+void LordHeather object#(0x44D) ()
 {
 	var player_female;
 	var msg;

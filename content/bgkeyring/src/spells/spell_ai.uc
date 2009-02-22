@@ -50,7 +50,7 @@
 	AI_THAUMATURGE					= 63
 */
 
-aiCastHealing (var allies, var eff_level, var in_party, var in_combat)
+void aiCastHealing (var allies, var eff_level, var in_party, var in_combat)
 {
 	if (get_item_flag(HEALER))
 	{
@@ -159,7 +159,7 @@ aiCastHealing (var allies, var eff_level, var in_party, var in_combat)
 	}
 }
 
-aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in_combat)
+void aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in_combat)
 {
 	//No need to cast buffing spells if outside combat
 	if (!in_combat)
@@ -270,7 +270,7 @@ aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in_comb
 	}
 }
 
-aiMain object#() ()
+void aiMain object#() ()
 {
 	//Queue reentry:
 	script item after 10 ticks

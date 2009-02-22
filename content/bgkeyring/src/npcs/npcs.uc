@@ -35,7 +35,7 @@
 // someone, and also some extra behaviour when the player has the cube.
 // A global flag is used for checking if the player has heard this
 // bollocks already
-askAboutPhilosophy 0x91A ()
+void askAboutPhilosophy 0x91A ()
 {
 	var dialog_strings;
 	//Dialog for gypsy Fellowship members; there is only one IIRC

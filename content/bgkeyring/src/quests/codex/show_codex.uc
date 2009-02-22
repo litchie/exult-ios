@@ -27,7 +27,7 @@
 
 const int CODEX					= -295;
 
-displayCodex object#() ()
+void displayCodex object#() ()
 {
 	if (event == SCRIPTED)
 	{

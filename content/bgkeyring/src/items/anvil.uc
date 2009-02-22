@@ -20,7 +20,7 @@
  *	Last Modified: 2006-03-19
  */
 
-Anvil shape#(0x3DF) ()
+void Anvil shape#(0x3DF) ()
 {
 	//User doubleclicked the anvil - check if they're carrying a sword,
 	//and if there's a swordblank on top of the anvil. If so, go to

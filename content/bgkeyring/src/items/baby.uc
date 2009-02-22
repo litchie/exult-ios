@@ -22,7 +22,7 @@
 
 /* Baby: reimplemented so you can finally stick Lady Tory's baby in a cradle */
 const int FRAME_RIKY			= 2;
-Baby shape#(0x2DA) ()
+void Baby shape#(0x2DA) ()
 {
 	if (event != DOUBLECLICK) return;
 

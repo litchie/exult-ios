@@ -25,7 +25,7 @@
 
 #include "items/related_functions/arcadion_dialog.uc"		//Arcadion's dialog (broken into three functions) and related functions
 
-arcadionDialog object#(0x6F6) ()
+void arcadionDialog object#(0x6F6) ()
 {
 	//Completelly reorganized and modularized this function. In the original, all of
 	//the dialog is contained in a single function... I think things could still be
@@ -79,7 +79,7 @@ var isUndead 0x849 (var target_shape)
 	return (target_shape in undead);
 }
 
-teleportIsleOfFire object#(0x6F9) ()
+void teleportIsleOfFire object#(0x6F9) ()
 {
 	if (event == SCRIPTED)
 	{

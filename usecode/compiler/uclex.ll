@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <cstring>
 #include <vector>
+#include <set>
 #include "ucparse.h"
 #include "ucloc.h"
 #include "ucfun.h"
@@ -39,6 +40,7 @@ extern std::vector<char *> include_dirs;	// -I directories.
  */
 std::vector<Uc_location *> locstack;
 std::vector<YY_BUFFER_STATE> bufstack;
+std::set<string> inclfiles;
 
 /*
  *	Parse out a name in quotes.
@@ -89,7 +91,7 @@ static void Set_location
 	}
 
 /*
- *	Include another source.
+ *	Include another source. Each file is included ONCE.
  */
 
 static void Include
@@ -110,6 +112,10 @@ static void Include
 		Uc_location::yyerror("No file in #include");
 		return;
 		}
+					// Check if file has already been included.
+	std::set<string>::iterator it = inclfiles.find(name);
+	if (it != inclfiles.end())
+		return;
 	locstack.push_back(new Uc_location());
 	bufstack.push_back(YY_CURRENT_BUFFER);
 	yyin = fopen(name, "r");
@@ -128,6 +134,8 @@ static void Include
 		Uc_location::yyerror(msg);
 		exit(1);
 		}
+					// Add file to list of included files.
+	inclfiles.insert(name);
 					// Set location to new file.
 	Uc_location::set_cur(name, 0);
 	yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
@@ -230,6 +238,7 @@ in		return UCC_IN;
 with		return WITH;
 to		return TO;
 var		return VAR;
+void	return VOID;
 alias	return ALIAS;
 struct	return STRUCT;
 int		return UCC_INT;

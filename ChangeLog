@@ -1,3 +1,11 @@
+2009-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* UCC: Added optional 'void' keyword to specify an usecode function without
+	  returns (and warnings for missing that keyword). Improved handling of UCC
+	  structs, and allowed them as function arguments and returns; fixed bug
+	  with class member struct variables. Made #include directive include a file
+	  only once, like PHP's #include_once.
+	* Keyring: Added 'void' keyword to eliminate warnings.
+
 2009-02-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/contain.cc: Prevent avatar from being dragged into containers.
 	* UCC: Function calls can now be class expressions too, and be used in the

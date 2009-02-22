@@ -27,7 +27,7 @@
 const int KEY_ALAGNER				= 254;	//0x0FE, key for Alagner's storeroom.
 const int KEY_CHRISTOPHERS_CHEST	= 253;	//Key for Christopher's chest
 
-UseKeyOnChest (var chest)
+void UseKeyOnChest (var chest)
 {
 	//key was used in a locked chest:
 	if (chest->get_item_shape() == SHAPE_LOCKED_CHEST)
@@ -73,7 +73,7 @@ UseKeyOnChest (var chest)
 	}
 }
 
-KeyInternal (var target, var keyfits, var barks)
+void KeyInternal (var target, var keyfits, var barks)
 {
 	var lockables = [
 				 SHAPE_LOCKED_CHEST,
@@ -112,7 +112,7 @@ KeyInternal (var target, var keyfits, var barks)
 class Keyring_data
 {
 	var keys;
-	set_keyring_frame (var keyring)
+	void set_keyring_frame (var keyring)
 	{
 		var count = UI_get_array_size(keys);
 		UI_play_sound_effect2(SOUND_KEY, keyring);
@@ -151,7 +151,7 @@ class Keyring_data
 				return true;
 		}
 	}
-	dump_keys ()
+	void dump_keys ()
 	{
 		// Create a bag for the keys:
 		var bag = UI_create_new_object(SHAPE_BAG);
@@ -220,7 +220,7 @@ class<Keyring_data> get_keyring ()
 	return keyring;
 }
 
-Keyring shape#(0x44C) ()
+void Keyring shape#(0x44C) ()
 {
 	//If we did not arive here due to a double-click, leave
 	if (!(event == DOUBLECLICK)) return;

@@ -26,12 +26,12 @@
  */
 
 //LB's healing conversation thread
-//extern performLBHealing 0x8B4(var price_cure, var price_heal, var price_resurrect);
+//extern void performLBHealing 0x8B4(var price_cure, var price_heal, var price_resurrect);
 
 //Conversation thread for the crystal and ship deed for the Isle of Fire
-extern giveFVDeedAndCrystal 0x8B5();
+extern void giveFVDeedAndCrystal 0x8B5();
 
-giveFoVReward object#() ()
+void giveFoVReward object#() ()
 {
 	if (!gflags[LB_REWARDED_FOR_FV])
 	{
@@ -53,7 +53,7 @@ giveFoVReward object#() ()
 			". Thy deeds continue to speak well of thee.@");
 }
 
-Lord_British object#(0x417) ()
+void Lord_British object#(0x417) ()
 {
 	if (event == DOUBLECLICK)
 	{

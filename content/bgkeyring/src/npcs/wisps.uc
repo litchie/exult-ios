@@ -26,7 +26,7 @@
 
 const int QUALITY_ALAGNER_NOTEBOOK		= 2;	//0x002
 const int WISP_FACE						= -256;
-Wisp object#(0x500) ()
+void Wisp object#(0x500) ()
 {
 	var party;
 	var wisp_sched;

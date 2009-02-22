@@ -21,7 +21,7 @@
  */
 
 /* Camille, the widow of Paws: Reimplemented to let you do the good deed of giving her Thurston's payment for the flour. */
-Camille object#(0x4B1) ()
+void Camille object#(0x4B1) ()
 {
 	if (event == DOUBLECLICK)
 	{

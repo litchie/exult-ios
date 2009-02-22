@@ -79,9 +79,10 @@ public:
 		Constant,
 		String,
 		Variable,
-		Struct,
+		//Struct,
 		Class,		// Class *instances*.
-		Member_var
+		Member_var,		// Class member variable.
+		//Member_struct
 		};
 	friend class Uc_scope;
 	Uc_symbol(const char *nm) : name(nm)
@@ -154,11 +155,13 @@ protected:
 	Uc_struct_symbol *type;
 public:
 	friend class Uc_scope;
-	Uc_struct_var_symbol(const char *nm, int off, Uc_struct_symbol *t)
+	Uc_struct_var_symbol(const char *nm, Uc_struct_symbol *t, int off)
 		: Uc_var_symbol(nm, off), type(t)
 		{  }
+/*
 	virtual int get_sym_type() const
 		{ return Uc_symbol::Struct; }
+*/
 	virtual Uc_struct_symbol *get_struct() const
 		{ return type; }
 	};
@@ -210,8 +213,10 @@ public:
 	Uc_static_struct_var_symbol(const char *nm, int off, Uc_struct_symbol *t)
 		: Uc_static_var_symbol(nm, off), type(t)
 		{  }
+/*
 	virtual int get_sym_type() const
 		{ return Uc_symbol::Struct; }
+*/
 	virtual Uc_struct_symbol *get_struct() const
 		{ return type; }
 	};
@@ -281,8 +286,10 @@ public:
 	Uc_struct_alias_symbol(const char *nm, Uc_var_symbol* v, Uc_struct_symbol *t)
 		: Uc_alias_symbol(nm, v), type(t)
 		{  }
+/*
 	virtual int get_sym_type() const
 		{ return Uc_symbol::Struct; }
+*/
 	virtual Uc_struct_symbol *get_struct() const
 		{ return type; }
 	};
@@ -380,6 +387,24 @@ public:
 	};
 
 /*
+ *	A class member struct variable.
+ */
+class Uc_class_struct_var_symbol : public Uc_class_var_symbol
+	{
+protected:
+	Uc_struct_symbol *type;
+public:
+	friend class Uc_scope;
+	Uc_class_struct_var_symbol(const char *nm, Uc_struct_symbol *t, int off)
+		: Uc_class_var_symbol(nm, off), type(t)
+		{  }
+	//virtual int get_sym_type() const
+	//	{ return Uc_symbol::Member_struct; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return type; }
+	};
+
+/*
  *	A constant integer variable.
  */
 class Uc_const_int_symbol : public Uc_symbol
@@ -467,6 +492,18 @@ public:
 		shape_fun,
 		object_fun
 		};
+	enum Function_ret
+		{
+		no_ret = 0, 
+		var_ret,
+		struct_ret,
+		class_ret
+		};
+	union Ret_symbol
+		{
+		Uc_struct_symbol *str;
+		Uc_class *cls;
+		};
 					// Keep track of #'s used.
 	typedef std::map<int, Uc_function_symbol *> Sym_nums;
 private:
@@ -478,8 +515,8 @@ private:
 	int shape_num;			// Shape # this function is for.
 	bool externed;
 	bool inherited;
-	bool has_ret;
-	Uc_class *ret_type;
+	Function_ret ret_type;
+	Ret_symbol ret_sym;
 	bool high_id;
 	Function_kind type;
 public:
@@ -532,14 +569,26 @@ public:
 			return 0;
 		return (*it).second;
 		}
-	virtual bool get_has_ret() const
-		{ return has_ret; }
-	virtual void set_has_ret()
-		{ has_ret = true; }
-	virtual Uc_class *get_cls() const
+	virtual bool has_ret() const
+		{ return ret_type != no_ret; }
+	virtual Function_ret get_ret_type() const
 		{ return ret_type; }
-	virtual void set_ret_type(Uc_class *r)
-		{ ret_type = r; has_ret = true; }
+	virtual void set_ret_type(bool var)
+		{ ret_type = var ? var_ret : no_ret; }
+	virtual void set_ret_type(Uc_class *c)
+		{
+		ret_type = class_ret;
+		ret_sym.cls = c;
+		}
+	virtual void set_ret_type(Uc_struct_symbol *s)
+		{
+		ret_type = struct_ret;
+		ret_sym.str = s;
+		}
+	virtual Uc_class *get_cls() const
+		{ return ret_type == class_ret ? ret_sym.cls : 0; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return ret_type == struct_ret ? ret_sym.str : 0; }
 	virtual Function_kind get_function_type() const
 		{ return type; }
 	};

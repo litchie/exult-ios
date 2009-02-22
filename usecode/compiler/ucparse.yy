@@ -86,12 +86,18 @@ struct Fun_id_info
 	{
 	Uc_function_symbol::Function_kind kind;
 	int id;
+	Fun_id_info(Uc_function_symbol::Function_kind k, int i)
+		: kind(k), id(i)
+		{  }
 	};
 
 struct Member_selector
 	{
 	Uc_expression *expr;
 	char *name;
+	Member_selector(Uc_expression *e, char *n)
+		: expr(e), name(n)
+		{  }
 	};
 
 %}
@@ -122,7 +128,7 @@ struct Member_selector
  *	Keywords:
  */
 %token IF ELSE RETURN DO WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR ALIAS STRUCT UCC_CHAR UCC_INT UCC_LONG UCC_CONST STRING ENUM
+%token VAR VOID ALIAS STRUCT UCC_CHAR UCC_INT UCC_LONG UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM OBJECTNUM ABORT
 %token CLASS NEW DELETE RUNSCRIPT UCC_INSERT SWITCH DEFAULT
@@ -175,7 +181,7 @@ struct Member_selector
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command start_call addressof new_expr class_expr
 %type <expr> nonclass_expr opt_delay appended_element int_literal
-%type <intval> opt_int direction converse_options opt_var actor_frames egg_criteria
+%type <intval> opt_int direction converse_options actor_frames egg_criteria
 %type <intval> opt_original assignment_operator const_int_val opt_const_int_val
 %type <intval> const_int_type int_cast dam_type
 %type <funid> opt_funid
@@ -254,17 +260,22 @@ class_item:
 		{ has_ret = false; }
 	| VAR alias_tok IDENTIFIER '=' declared_var ';'
 		{ cur_class->add_alias($3, $5); }
-	| STRUCT '<' defined_struct '>' { struct_type = $3; } struct_decl_list ';'
+	| STRUCT '<' defined_struct '>' { struct_type = $3; } class_struct_def
 		{ struct_type = 0; }
 	| STRUCT '<' defined_struct '>' alias_tok IDENTIFIER '=' declared_var ';'
 		{ cur_class->add_alias($6, $8, $3); }
 	| CLASS '<' defined_class '>' { class_type = $3; } method
 		{ class_type = 0; }
-	| method
+	| opt_void method
 	;
 
 class_var_def:
 	var_decl_list ';'
+	| method
+	;
+
+class_struct_def:
+	struct_decl_list ';'
 	| method
 	;
 
@@ -280,11 +291,14 @@ method:
 		
 		// Set return type.
 		if (has_ret)
-			funsym->set_has_ret();
+			funsym->set_ret_type(true);
 		else if (class_type)
 			funsym->set_ret_type(class_type);
+		else if (struct_type)
+			funsym->set_ret_type(struct_type);
 		has_ret = false;
 		class_type = 0;
+		struct_type = 0;
 
 		cur_fun = new Uc_function(funsym, cur_class->get_scope());
 		}
@@ -343,13 +357,13 @@ function_body:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	opt_var IDENTIFIER { start_fun_id(); } opt_funid '(' opt_param_list ')'
+	ret_type IDENTIFIER { start_fun_id(); } opt_funid '(' opt_param_list ')'
 		{
 		end_fun_id();
 		if ($4->kind != Uc_function_symbol::utility_fun)
 			{
 			char buf[180];
-			if ($1)
+			if (has_ret || struct_type)
 				{
 				sprintf(buf, "Functions declared with '%s#' cannot return a value",
 					$4->kind == Uc_function_symbol::shape_fun ? "shape" : "object");
@@ -363,10 +377,14 @@ function_proto:
 				}
 			}
 		$$ = Uc_function_symbol::create($2, $4->id, *$6, is_extern, 0, $4->kind);
-		if ($1)
-			$$->set_has_ret();
+		if (has_ret)
+			$$->set_ret_type(true);
+		else if (struct_type)
+			$$->set_ret_type(struct_type);
 		delete $6;		// A copy was made.
 		delete $4;
+		has_ret = false;
+		struct_type = 0;
 		}
 	| CLASS '<' defined_class '>' IDENTIFIER opt_int '(' opt_param_list ')'
 		{
@@ -380,29 +398,18 @@ function_proto:
 opt_funid:
 	SHAPENUM '(' const_int_val ')'
 		{
-		$$ = new Fun_id_info();
-		$$->id = $3;
+		$$ = new Fun_id_info(Uc_function_symbol::shape_fun, $3 < 0 ? -1 : $3);
 		if ($3 < 0)
 			{
 			char buf[180];
 			sprintf(buf, "Shape number cannot be negative");
 			yyerror(buf);
-			$$->id = -1;
 			}
-		$$->kind = Uc_function_symbol::shape_fun;
 		}
 	| OBJECTNUM '(' opt_const_int_val ')'
-		{
-		$$ = new Fun_id_info();
-		$$->kind = Uc_function_symbol::object_fun;
-		$$->id = $3;
-		}
+		{ $$ = new Fun_id_info(Uc_function_symbol::object_fun, $3); }
 	| opt_const_int_val
-		{
-		$$ = new Fun_id_info();
-		$$->id = $1;
-		$$->kind = Uc_function_symbol::utility_fun;
-		}
+		{ $$ = new Fun_id_info(Uc_function_symbol::utility_fun, $1); }
 	;
 
 opt_const_int_val:
@@ -1154,14 +1161,14 @@ special_method_call_statement:
 opt_delay:
 	',' nonclass_expr
 		{ $$ = $2; }
-	|
+	|				/* Empty */
 		{ $$ = 0; }
 	;
 
 return_statement:
 	RETURN expression ';'
 		{
-		if (!cur_fun->get_has_ret())
+		if (!cur_fun->has_ret())
 			{
 			char buf[180];
 			sprintf(buf, "Function '%s' can't return a value",
@@ -1201,7 +1208,7 @@ return_statement:
 		}
 	| RETURN ';'
 		{
-		if (cur_fun->get_has_ret())
+		if (cur_fun->has_ret())
 			{
 			Uc_class *cls = cur_fun->get_cls();
 			char buf[180];
@@ -1248,7 +1255,7 @@ converse_case_list:
 		if ($2)
 			$$->push_back($2);
 		}
-	|
+	|				/* Empty */
 		{ $$ = new vector<Uc_statement *>; }
 	;
 
@@ -1316,7 +1323,7 @@ string_list:
 converse_options:
 	'(' REMOVE ')'			/* For now, just one.		*/
 		{ $$ = 1; }
-	|
+	|				/* Empty */
 		{ $$ = 0; }
 	;
 
@@ -1643,7 +1650,7 @@ egg_criteria:
 opt_script_delay:
 	AFTER nonclass_expr TICKS
 		{ $$ = $2; }
-	|
+	|				/* Empty */
 		{ $$ = 0; }
 	;
 
@@ -1717,7 +1724,7 @@ answer_statement:
 
 opt_nonclass_expr_list:
 	nonclass_expr_list
-	|
+	|				/* Empty */
 		{ $$ = new Uc_array_expression(); }
 	;
 
@@ -1849,7 +1856,7 @@ addressof:
 
 opt_expression_list:
 	expression_list
-	|
+	|				/* Empty */
 		{ $$ = new Uc_array_expression(); }
 	;
 
@@ -1893,16 +1900,15 @@ primary:
 	| member_selector
 		{
 		Uc_var_expression *expr = dynamic_cast<Uc_var_expression *>($1->expr);
-		if (!expr || $1->expr->get_type() != Uc_symbol::Struct)
+		Uc_struct_symbol *base;
+		if (!expr || !(base = expr->get_struct()))
 			{
 			yyerror("Expression is not a 'struct'");
 			$$ = new Uc_int_expression(0);
 			}
 		else
 			{
-			Uc_var_symbol *var = expr->get_var();
-			Uc_struct_symbol *base = var->get_struct();
-			int offset = base ? base->search($1->name) : -1;
+			int offset = base->search($1->name);
 			if (offset < 0)
 				{
 				char buf[150];
@@ -1913,6 +1919,7 @@ primary:
 				}
 			else
 				{
+				Uc_var_symbol *var = expr->get_var();
 				Uc_int_expression *index = new Uc_int_expression(offset);
 				if (var->is_static())
 					$$ = new Uc_static_arrayelem_expression(var, index);
@@ -1978,10 +1985,7 @@ hierarchy_tok:
 
 member_selector:
 	primary hierarchy_tok IDENTIFIER
-		{
-		$$ = new Member_selector();
-		$$->expr = $1; $$->name = $3;
-		}
+		{ $$ = new Member_selector($1, $3); }
 	;
 
 function_call:
@@ -2052,13 +2056,13 @@ function_call:
 opt_original:
 	ORIGINAL
 		{ $$ = 1; }
-	|
+	|				/* Empty */
 		{ $$ = 0; }
 	;
 
 opt_param_list:
 	param_list
-	|
+	|				/* Empty */
 		{ $$ = new std::vector<Uc_var_symbol *>; }
    	;
 
@@ -2077,6 +2081,8 @@ param:
 		{ $$ = new Uc_var_symbol($1, 0); }
 	| VAR IDENTIFIER
 		{ $$ = new Uc_var_symbol($2, 0); }
+	| STRUCT '<' defined_struct '>' IDENTIFIER
+		{ $$ = new Uc_struct_var_symbol($5, $3, 0); }
 	| CLASS '<' defined_class '>' IDENTIFIER
 		{ $$ = new Uc_class_inst_symbol($5, $3, 0); }
 	;
@@ -2123,11 +2129,21 @@ int_literal:				/* A const. integer value.	*/
 		{ $$ = new Uc_bool_expression(false); }
 	;
 
-opt_var:
+opt_void:
+	VOID
+	|				/* Empty */
+		{
+		yywarning("You should prepend 'void' for functions that do not return a value.");
+		}
+	;
+
+ret_type:
 	VAR
-		{ $$ = 1; }
-	|
-		{ $$ = 0; }
+		{ has_ret = true; }
+	| STRUCT '<' defined_struct '>'
+		{ struct_type = $3; }
+	| opt_void
+		{ has_ret = false; }
 	;
 
 declared_var_value:

@@ -20,8 +20,8 @@
  *	Last Modified: 2006-03-19
  */
 
-extern useBucketOnTrough ();
-VerticalTrough shape#(0x2CF) ()
+extern void useBucketOnTrough ();
+void VerticalTrough shape#(0x2CF) ()
 {
 	var offsetx = [1, 1, -2, -2, 0, -1, 0, -1];
 	var offsety = [-1, -2, -1, -2, 1, 1, -4, -4];
@@ -33,7 +33,7 @@ VerticalTrough shape#(0x2CF) ()
 		gotoObject(item, offsetx, offsety, 0, useBucketOnTrough, bucket, 7);
 }
 
-HorizontalTrough shape#(0x2E5) ()
+void HorizontalTrough shape#(0x2E5) ()
 {
 	var offsetx = [-1, -2, -1, -2, 1, 1, -4, -4];
 	var offsety = [1, 1, -2, -2, 0, -1, 0, -1];

@@ -20,7 +20,7 @@
  *	Last Modified: 2006-03-19
  */
 
-Bellows shape#(0x1AF) ()
+void Bellows shape#(0x1AF) ()
 {
 	//Go to the bellows to operate it
 	if (event == DOUBLECLICK)

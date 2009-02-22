@@ -20,8 +20,8 @@
  *	Last Modified: 2006-03-19
  */
 
-extern useBucketOnWell ();
-WellBase shape#(0x1D6) ()
+extern void useBucketOnWell ();
+void WellBase shape#(0x1D6) ()
 {
 	var bucket = AVATAR->get_cont_items(SHAPE_BUCKET, QUALITY_ANY, 0);
 	if (bucket)
@@ -32,7 +32,7 @@ WellBase shape#(0x1D6) ()
 	}
 }
 
-Well shape#(0x2E4) ()
+void Well shape#(0x2E4) ()
 {
 	var bucket = AVATAR->get_cont_items(SHAPE_BUCKET, QUALITY_ANY, 0);
 	if (bucket)

@@ -29,14 +29,14 @@
 /*
 	Linear Spells
 	
-	extern spellAwaken (var target);
-	extern spellDouse (var target);
-	extern spellFireworks ();
-	extern spellGlimmer ();
-	extern spellIgnite (var target);
-	extern spellThunder ();
-	extern spellWeather ();
-	extern spellDetectCharges (var target);
+	extern void spellAwaken (var target);
+	extern void spellDouse (var target);
+	extern void spellFireworks ();
+	extern void spellGlimmer ();
+	extern void spellIgnite (var target);
+	extern void spellThunder ();
+	extern void spellWeather ();
+	extern void spellDetectCharges (var target);
 */
 
 enum linear_spells
@@ -51,7 +51,7 @@ enum linear_spells
 	SPELL_DETECT_CHARGES			= 7			//NPC-only spell
 };
 
-spellAwaken (var target)
+void spellAwaken (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -77,7 +77,7 @@ spellAwaken (var target)
 	}
 }
 
-spellDouse (var target)
+void spellDouse (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -116,7 +116,7 @@ spellDouse (var target)
 	}
 }
 
-spellFireworks ()
+void spellFireworks ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -138,7 +138,7 @@ spellFireworks ()
 	}
 }
 
-spellGlimmer ()
+void spellGlimmer ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -160,7 +160,7 @@ spellGlimmer ()
 	}
 }
 
-spellIgnite (var target)
+void spellIgnite (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -198,7 +198,7 @@ spellIgnite (var target)
 	}
 }
 
-spellThunder ()
+void spellThunder ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -219,7 +219,7 @@ spellThunder ()
 	}
 }
 
-spellWeather ()
+void spellWeather ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -245,7 +245,7 @@ spellWeather ()
 	}
 }
 
-spellDetectCharges (var target)
+void spellDetectCharges (var target)
 {
 	if (event == DOUBLECLICK)
 	{

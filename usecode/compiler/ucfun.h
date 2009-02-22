@@ -100,10 +100,14 @@ public:
 		{ proto->set_method_num(n); }
 	int get_method_num()
 		{ return proto->get_method_num(); }
-	virtual bool get_has_ret() const
-		{ return proto->get_has_ret(); }
+	virtual bool has_ret() const
+		{ return proto->has_ret(); }
+	virtual Uc_function_symbol::Function_ret get_ret_type() const
+		{ return proto->get_ret_type(); }
 	virtual Uc_class *get_cls() const
 		{ return proto->get_cls(); }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return proto->get_struct(); }
 	virtual Uc_function_symbol::Function_kind get_function_type() const
 		{ return proto->get_function_type(); }
 	Uc_scope *get_parent()
