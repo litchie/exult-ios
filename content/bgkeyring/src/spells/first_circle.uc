@@ -29,15 +29,15 @@
 /*
 	First circle Spells
 	
-	extern spellAwakenAll ();
-	extern spellCreateFood ();
-	extern spellCure (var target);
-	extern spellDetectTrap ();
-	extern spellGreatDouse ();
-	extern spellGreatIgnite ();
-	extern spellLight ();
-	extern spellLocate ();
-	extern spellTranslate ();
+	extern void spellAwakenAll ();
+	extern void spellCreateFood ();
+	extern void spellCure (var target);
+	extern void spellDetectTrap ();
+	extern void spellGreatDouse ();
+	extern void spellGreatIgnite ();
+	extern void spellLight ();
+	extern void spellLocate ();
+	extern void spellTranslate ();
 */
 
 enum first_circle_spells
@@ -53,7 +53,7 @@ enum first_circle_spells
 	SPELL_TRANSLATE					= 8
 };
 
-spellAwakenAll ()
+void spellAwakenAll ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -83,7 +83,7 @@ spellAwakenAll ()
 	}
 }
 
-spellCreateFood ()
+void spellCreateFood ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -106,7 +106,7 @@ spellCreateFood ()
 	}
 }
 
-spellCure (var target)
+void spellCure (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -136,7 +136,7 @@ spellCure (var target)
 	}
 }
 
-spellDetectTrap ()
+void spellDetectTrap ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -177,7 +177,7 @@ spellDetectTrap ()
 	}
 }
 
-spellGreatDouse ()
+void spellGreatDouse ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -202,7 +202,7 @@ spellGreatDouse ()
 	}
 }
 
-spellGreatIgnite ()
+void spellGreatIgnite ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -227,7 +227,7 @@ spellGreatIgnite ()
 	}
 }
 
-spellLight ()
+void spellLight ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -249,7 +249,7 @@ spellLight ()
 	}
 }
 
-spellLocate ()
+void spellLocate ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -288,7 +288,7 @@ spellLocate ()
 	}
 }
 
-spellTranslate ()
+void spellTranslate ()
 {
 	if (event == DOUBLECLICK)
 	{

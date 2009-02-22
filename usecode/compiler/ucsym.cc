@@ -430,7 +430,7 @@ Uc_function_symbol::Uc_function_symbol
 	Function_kind kind
 	) :	Uc_symbol(nm), parms(p), usecode_num(num), method_num(-1),
 		shape_num(shp), externed(false), inherited(false),
-		has_ret(false), ret_type(0), high_id(false), type(kind)
+		ret_type(no_ret), high_id(false), type(kind)
 	{
 	high_id = is_int_32bit(usecode_num);
 	}
@@ -629,7 +629,7 @@ int Uc_function_symbol::gen_call
 		Uc_location::yyerror(buf);
 		}
 	// See if expecting a return value from a function that has none.
-	if (retvalue && !has_ret)
+	if (retvalue && !has_ret())
 		{
 		sprintf(buf,
 			"Function '%s' does not have a return value",
@@ -703,7 +703,7 @@ int Uc_function_symbol::gen_call
 		WriteOp(out, (char) UC_CALL);
 		WriteOpParam2(out, link);
 		}
-	if (!retvalue && has_ret)
+	if (!retvalue && has_ret())
 		{
 		// Function returns a value, but caller does not use it.
 		// Generate the code to pop the result off the stack.

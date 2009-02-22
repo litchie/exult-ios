@@ -29,15 +29,15 @@
 /*
 	Seventh circle Spells
 	
-	extern spellCreateGold (var target);
-	extern spellDeathBolt (var target);
-	extern spellDelayedBlast (var target);
-	extern spellEnergyField (var target);
-	extern spellEnergyMist (var target);
-	extern spellMassCharm ();
-	extern spellMassMight ();
-	extern spellRestoration ();
-	extern spellMassDispelField ();
+	extern void spellCreateGold (var target);
+	extern void spellDeathBolt (var target);
+	extern void spellDelayedBlast (var target);
+	extern void spellEnergyField (var target);
+	extern void spellEnergyMist (var target);
+	extern void spellMassCharm ();
+	extern void spellMassMight ();
+	extern void spellRestoration ();
+	extern void spellMassDispelField ();
 */
 
 enum seventh_circle_spells
@@ -53,7 +53,7 @@ enum seventh_circle_spells
 	SPELL_MASS_DISPEL_FIELD			= 8
 };
 
-spellCreateGold (var target)
+void spellCreateGold (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -82,7 +82,7 @@ spellCreateGold (var target)
 	}
 }
 
-spellDeathBolt (var target)
+void spellDeathBolt (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -110,7 +110,7 @@ spellDeathBolt (var target)
 	}
 }
 
-spellDelayedBlast (var target)
+void spellDelayedBlast (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -163,7 +163,7 @@ spellDelayedBlast (var target)
 	}
 }
 
-spellEnergyField (var target)
+void spellEnergyField (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -211,7 +211,7 @@ spellEnergyField (var target)
 	}
 }
 
-spellEnergyMist (var target)
+void spellEnergyMist (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -239,7 +239,7 @@ spellEnergyMist (var target)
 	}
 }
 
-spellMassCharm ()
+void spellMassCharm ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -281,7 +281,7 @@ spellMassCharm ()
 	}
 }
 
-spellMassMight ()
+void spellMassMight ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -315,7 +315,7 @@ spellMassMight ()
 	}
 }
 
-spellRestoration ()
+void spellRestoration ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -348,7 +348,7 @@ spellRestoration ()
 	}
 }
 
-spellMassDispelField ()
+void spellMassDispelField ()
 {
 	if (event == DOUBLECLICK)
 	{

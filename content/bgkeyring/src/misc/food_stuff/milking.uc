@@ -20,7 +20,7 @@
  *	Last Modified: 2006-03-19
  */
 
-milkCow ()
+void milkCow ()
 {
 	var cow = item;
 	var vessel;			//the empty bucket/pitcher used for milking
@@ -81,7 +81,7 @@ milkCow ()
 //freezes the cow in place till they get there. Calls milkCow() when the
 //player arrives, using eventid to flag whether a bucket (2) or pitcher
 //(3) was used
-gotoCow (var cow, var milktype)
+void gotoCow (var cow, var milktype)
 {
 	UI_close_gumps();
 

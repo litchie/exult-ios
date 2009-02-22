@@ -35,6 +35,7 @@ using std::vector;
 class Uc_symbol;
 class Uc_var_symbol;
 class Uc_class_inst_symbol;
+class Uc_struct_symbol;
 class Uc_function;
 class Uc_function_symbol;
 class Uc_class;
@@ -64,11 +65,15 @@ public:
 	virtual bool eval_const(int& val);
 	virtual bool is_class() const
 		{ return false; }
+	virtual bool is_struct() const
+		{ return false; }
 	virtual int get_type() const
 		{ return 0; }
 	virtual Uc_var_symbol * get_var() const
 		{ return 0; }
 	virtual Uc_class *get_cls() const
+		{ return 0; }
+	virtual Uc_struct_symbol *get_struct() const
 		{ return 0; }
 	virtual int is_object_function(bool error = true) const
 		{ return -1; }
@@ -96,6 +101,8 @@ public:
 		{ return var; }
 	virtual Uc_var_symbol * get_var() const
 		{ return var; }
+	virtual bool is_struct() const;
+	virtual Uc_struct_symbol *get_struct() const;
 	virtual int is_object_function(bool error = true) const;
 	virtual void set_is_obj_fun(int s);
 	virtual int get_type() const;
@@ -409,6 +416,8 @@ public:
 	void check_params();
 	virtual bool is_class() const;
 	virtual Uc_class *get_cls() const;
+	virtual bool is_struct() const;
+	virtual Uc_struct_symbol *get_struct() const;
 	virtual int is_object_function(bool error = true) const;
 	};
 
@@ -425,6 +434,10 @@ public:
 	virtual bool is_class() const
 		{ return true; }
 	virtual Uc_class *get_cls() const;
+	virtual bool is_struct() const
+		{ return false; }
+	virtual Uc_struct_symbol *get_struct() const
+		{ return 0; }
 	};
 
 /*

@@ -110,9 +110,9 @@ enum times
 const long DAY		= 36000;
 /*
 Examples:
-UI_advance_time(30 * MINUTE);	//advance time by 30 game minutes
-UI_advance_time(2 * HOUR);		//advance time by two game hours
-script after MINUTE ticks	{ ... }	//schedule this script block to execute after one game minute
+	UI_advance_time(30 * MINUTE);	//advance time by 30 game minutes
+	UI_advance_time(2 * HOUR);		//advance time by two game hours
+	script after MINUTE ticks	{ ... }	//schedule this script block to execute after one game minute
 */
 
 //Item/NPC flags, stolen from the Exult LB-joins-party patch with some comments added

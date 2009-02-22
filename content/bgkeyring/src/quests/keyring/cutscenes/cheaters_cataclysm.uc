@@ -36,7 +36,7 @@ enum Cataclism_levels
 	END_GAME							= 5
 };
 
-beginCataclysm object#() ()
+void beginCataclysm object#() ()
 {
 	if ((event == LAURIANNA_DIES) || (event == LAURIANNA_INSANE))
 	{

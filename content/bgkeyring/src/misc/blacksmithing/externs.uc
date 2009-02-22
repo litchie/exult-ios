@@ -21,8 +21,8 @@
  */
 
 // Some of these functions call each other, so they have to be declared here:
-extern Anvil shape#(0x3DF) ();
-extern Bellows shape#(0x1AF) ();
-extern Firepit shape#(0x2E3) ();
-extern Hammer shape#(0x26F) ();
-extern SwordBlank shape#(0x29C) ();
+extern void Anvil shape#(0x3DF) ();
+extern void Bellows shape#(0x1AF) ();
+extern void Firepit shape#(0x2E3) ();
+extern void Hammer shape#(0x26F) ();
+extern void SwordBlank shape#(0x29C) ();

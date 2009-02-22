@@ -25,9 +25,9 @@
  */
 
 //Externs:
-//extern leighHeal 0x8AC (var price_heal, var price_cure, var price_resurrect);
+//extern void leighHeal 0x8AC (var price_heal, var price_cure, var price_resurrect);
 
-Leigh object#(0x4C9) ()
+void Leigh object#(0x4C9) ()
 {
 	if (event == DOUBLECLICK)
 	{

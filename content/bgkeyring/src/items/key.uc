@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Key shape#(0x281) ()
+void Key shape#(0x281) ()
 {
 
 	//If we didn't came here via double-click, leave:

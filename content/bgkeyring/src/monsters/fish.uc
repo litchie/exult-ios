@@ -24,7 +24,7 @@
 //out of the water (using unimplemented animations from the original)
 
 const int SOUND_FISH = 40;	//splashy sound
-Fish shape#(0x1FD) ()
+void Fish shape#(0x1FD) ()
 {
 	if (event == PROXIMITY)
 	{

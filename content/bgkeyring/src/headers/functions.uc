@@ -51,8 +51,8 @@ var hasMet(var npc)		{ return npc->get_item_flag(MET); }
 var inParty(var npc)		{ npc = npc->get_npc_object(); return (npc in UI_get_party_list()); }
 
 //quick bark/say functions, useful for testing. See also randomPartySay() and randomPartyBark() (original functions)
-avatarBark(var line)	{ if (canTalk(AVATAR)) AVATAR->item_say(line); }
-avatarSay(var line)		{ if (canTalk(AVATAR)) AVATAR.say(line); }
+void avatarBark(var line)	{ if (canTalk(AVATAR)) AVATAR->item_say(line); }
+void avatarSay(var line)		{ if (canTalk(AVATAR)) AVATAR.say(line); }
 
 
 //Moving-stuff-around functions
@@ -121,7 +121,7 @@ var moveToLocation(var object, var pos)
 
 //generic get-item-from-container/world script, used by item interactions. It is used at the end of a march-to-container script, to play an appropriate animation and transfer the item into the player's inventory.
 //once the item has been picked up, it will call the item's function with event = SCRIPTED.
-pickUpItem object#() ()
+void pickUpItem object#() ()
 {
 	var container = getOuterContainer(item);
 	var direction = directionFromAvatar(container);
@@ -160,7 +160,7 @@ pickUpItem object#() ()
 
 
 //Pathfind to the target item and pick it up once you get there (using pickUpItem). After this has happened, the item's function will be called with event = SCRIPTED. This is commonly used for item interactions that require the Avatar to be carrying the item first.
-gotoAndGet (var target)
+void gotoAndGet (var target)
 {
 	var offsetx;
 	var offsety;
@@ -267,5 +267,5 @@ var giveGold (var amount)	{ return UI_add_party_items(amount, SHAPE_GOLD, QUALIT
 
 //use during script sequences, to prevent the actor from moving according to schedule or player input
 //IMPORTANT: Use nohalt; in these script sequences, otherwise the actor may remain frozen forever if the script is interrupted!
-freeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
-unfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }
+void freeze object#() ()	{ set_item_flag(BG_DONT_MOVE); }
+void unfreeze object#() ()	{ clear_item_flag(BG_DONT_MOVE); }

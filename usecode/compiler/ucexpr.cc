@@ -334,6 +334,16 @@ void Uc_flag_expression::gen_assign
 		}
 	}
 
+inline bool Uc_var_expression::is_struct() const
+	{
+	return var->get_struct() != 0;
+	}
+
+inline Uc_struct_symbol *Uc_var_expression::get_struct() const
+	{
+	return var->get_struct();
+	}
+
 inline int Uc_var_expression::is_object_function(bool error) const
 	{
 	return var->is_object_function(error);
@@ -764,6 +774,16 @@ int Uc_array_expression::gen_values
 			}
 		}
 	return actual;
+	}
+
+inline bool Uc_call_expression::is_struct() const
+	{
+	return sym->get_struct() != 0;
+	}
+
+inline Uc_struct_symbol *Uc_call_expression::get_struct() const
+	{
+	return sym->get_struct();
 	}
 
 inline bool Uc_call_expression::is_class() const

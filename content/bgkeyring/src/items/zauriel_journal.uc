@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-ZaurielJournal shape#(0x44E) ()
+void ZaurielJournal shape#(0x44E) ()
 {
 	var quality = get_item_quality();
 	

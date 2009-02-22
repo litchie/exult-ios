@@ -25,10 +25,10 @@
  */
 
 //Externs:
-extern inmanilemHeal 0x89D (var price_heal, var price_cure, var price_resurrect);
-extern scheduleGargishBarks 0x92F (var npc);
+extern void inmanilemHeal 0x89D (var price_heal, var price_cure, var price_resurrect);
+extern void scheduleGargishBarks 0x92F (var npc);
 
-Inmanilem object#(0x4B6) ()
+void Inmanilem object#(0x4B6) ()
 {
 	if (event == DOUBLECLICK)
 	{

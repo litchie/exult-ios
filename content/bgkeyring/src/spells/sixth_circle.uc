@@ -27,14 +27,14 @@
 /*
 	Sixth circle Spells
 	
-	extern spellCauseFear ();
-	extern spellClone (var target);
-	extern spellFireRing (var target);
-	extern spellFlameStrike ();
-	extern spellMagicStorm ();
-	extern spellPoisonField (var target);
-	extern spellSleepField (var target);
-	extern spellTremor ();
+	extern void spellCauseFear ();
+	extern void spellClone (var target);
+	extern void spellFireRing (var target);
+	extern void spellFlameStrike ();
+	extern void spellMagicStorm ();
+	extern void spellPoisonField (var target);
+	extern void spellSleepField (var target);
+	extern void spellTremor ();
 */
 
 enum sixth_circle_spells
@@ -49,7 +49,7 @@ enum sixth_circle_spells
 	SPELL_TREMOR					= 7
 };
 
-spellCauseFear ()
+void spellCauseFear ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -74,7 +74,7 @@ spellCauseFear ()
 	}
 }
 
-spellClone (var target)
+void spellClone (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -100,7 +100,7 @@ spellClone (var target)
 	}
 }
 
-spellFireRing (var target)
+void spellFireRing (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -153,7 +153,7 @@ spellFireRing (var target)
 	}
 }
 
-spellFlameStrike ()
+void spellFlameStrike ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -198,7 +198,7 @@ spellFlameStrike ()
 	}
 }
 
-spellMagicStorm ()
+void spellMagicStorm ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -231,7 +231,7 @@ spellMagicStorm ()
 	}
 }
 
-spellPoisonField (var target)
+void spellPoisonField (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -266,7 +266,7 @@ spellPoisonField (var target)
 	}
 }
 
-spellSleepField (var target)
+void spellSleepField (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -302,7 +302,7 @@ spellSleepField (var target)
 	}
 }
 
-spellTremor ()
+void spellTremor ()
 {
 	if (event == DOUBLECLICK)
 	{

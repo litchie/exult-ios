@@ -21,7 +21,7 @@
  */
 
 //create the wool beside the Avatar
-finishShearing object#() ()
+void finishShearing object#() ()
 {
 	var wool = UI_create_new_object(SHAPE_WOOL);
 
@@ -43,7 +43,7 @@ finishShearing object#() ()
 }
 
 //Shear that sheep!
-shearSheep ()
+void shearSheep ()
 {
 	script AVATAR
 	{
@@ -92,7 +92,7 @@ shearSheep ()
 }
 
 //Organise everything for shearing, and go to the sheep
-startShearing (var sheep)
+void startShearing (var sheep)
 {
 	UI_close_gumps();
 

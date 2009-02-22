@@ -28,7 +28,7 @@
 const int BLACKSWORD_SWING_EVENT					= 1;
 const int BLACKSWORD_LIGHTNING_EVENT				= 2;
 
-killLordBritish (var lordbritish)
+void killLordBritish (var lordbritish)
 {
 	//Lord British is close enough to kill:
 	if (AVATAR->get_distance(lordbritish) < 5)
@@ -93,7 +93,7 @@ var isCloseEnoughtToKill (var target, var answer)
 	}
 }
 
-killAnimation (var target)
+void killAnimation (var target)
 {
 	//The direction the avatar must face:
 	var dir = directionFromAvatar(target);
@@ -127,7 +127,7 @@ killAnimation (var target)
 		script target {wait 12;		call killTarget;}
 }
 
-arcadionSwordFormDialog object#() ()
+void arcadionSwordFormDialog object#() ()
 {
 	BLACK_SWORD_FACE->show_npc_face(0);
 	
@@ -317,7 +317,7 @@ arcadionSwordFormDialog object#() ()
 	}
 }
 
-blackswordCreationAnimation object#() ()
+void blackswordCreationAnimation object#() ()
 {
 	//The original used global flags for this; they *could* have used quality instead...
 	//I use event levels since they are available on Exult for UCC scripts.
@@ -354,7 +354,7 @@ blackswordCreationAnimation object#() ()
 	}
 }
 
-arcadionGemFormDialog object#() ()
+void arcadionGemFormDialog object#() ()
 {
 	ARCADION_GEM_FACE->show_npc_face(0);
 	
@@ -518,7 +518,7 @@ var isArcadionGemNearby ()
 		return false;
 }
 
-arcadionMirrorFormDialog object#() ()
+void arcadionMirrorFormDialog object#() ()
 {
 	ARCADION_MIRROR_FACE->show_npc_face(0);
 	

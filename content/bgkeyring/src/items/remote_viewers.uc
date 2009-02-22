@@ -25,9 +25,9 @@
  */
 
 // externs
-extern startSpeech 0x940 (var var0000);
+extern void startSpeech 0x940 (var var0000);
 
-Crystal_Ball shape#(0x2D9) ()
+void Crystal_Ball shape#(0x2D9) ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -62,7 +62,7 @@ Crystal_Ball shape#(0x2D9) ()
 	}
 }
 
-Gem shape#(0x2F8) ()
+void Gem shape#(0x2F8) ()
 {
 	var framenum = get_item_frame();
 	if (event == DOUBLECLICK)
@@ -84,9 +84,9 @@ Gem shape#(0x2F8) ()
 		Gem.original();
 }
 
-extern setOrreryPosition object#(0x6E1) ();
+extern void setOrreryPosition object#(0x6E1) ();
 
-Orrery_Viewer shape#(0x302) ()
+void Orrery_Viewer shape#(0x302) ()
 {
 	if ((event == DOUBLECLICK) && inMagicStorm())
 	{

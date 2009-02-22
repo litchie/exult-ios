@@ -25,9 +25,9 @@
  */
 
 //Externs:
-//extern csilHeal 0x870 (var price_heal, var price_cure, var price_resurrect);
+//extern void csilHeal 0x870 (var price_heal, var price_cure, var price_resurrect);
 
-Csil object#(0x423) ()
+void Csil object#(0x423) ()
 {
 	if (event == DOUBLECLICK)
 	{

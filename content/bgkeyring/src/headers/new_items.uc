@@ -25,7 +25,7 @@
  *	Last Modified: 2006-02-27
  */
 
-extern Keyring shape#(0x44C) ();
+extern void Keyring shape#(0x44C) ();
 
-extern Zauriel object#(0x48B) ();
-extern Laurianna object#(0x494) ();
+extern void Zauriel object#(0x48B) ();
+extern void Laurianna object#(0x494) ();

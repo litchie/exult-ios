@@ -176,7 +176,7 @@ var promptForPayment (var price, var dialog)
 static var service_healing_targets;
 static var service_healing_spell;
 
-serviceMultipleSpellHealing object#() ()
+void serviceMultipleSpellHealing object#() ()
 {
 	if (event == SCRIPTED)
 	{
@@ -363,7 +363,7 @@ var getServiceHealingPricelist (var npcnum)
 	}		
 }
 
-serviceHeal ()
+void serviceHeal ()
 {
 	UI_push_answers();
 

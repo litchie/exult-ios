@@ -23,8 +23,8 @@
 /* This include file contains behaviours for grinding flour from wheat */
 
 //Wheat can be used on a millstone to create a sack of flour
-extern Millstone shape#(0x2C7) ();
-Wheat shape#(0x2A5) ()
+extern void Millstone shape#(0x2C7) ();
+void Wheat shape#(0x2A5) ()
 {
 	//Player double-clicked on wheat-sack - it must first be picked up
 	//in order to be used. Once the player has it, this function gets
@@ -53,7 +53,7 @@ Wheat shape#(0x2A5) ()
 }
 
 //Create a new flour sack
-createFlour object#() ()
+void createFlour object#() ()
 {
 	//create the new flour object
 	var flour = UI_create_new_object(SHAPE_KITCHEN_ITEM);
@@ -86,7 +86,7 @@ createFlour object#() ()
 
 //Performs grindage upon a sack of wheat
 const int SOUND_GRIND = 26;
-Millstone shape#(0x2C7) ()
+void Millstone shape#(0x2C7) ()
 {
 	//player double-clicked on the millstone
 	if (event == DOUBLECLICK)

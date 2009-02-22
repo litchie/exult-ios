@@ -26,7 +26,7 @@
 
 #include "npcs/related_functions/laurianna_dialog.uc"		//Laurianna's dialog functions
 
-Laurianna object#(0x494) ()
+void Laurianna object#(0x494) ()
 {
 	var queststate = getQuestState();
 	//Leave if Laundo is still alive:

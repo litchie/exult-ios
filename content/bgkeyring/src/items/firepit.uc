@@ -20,7 +20,7 @@
  *	Last Modified: 2006-03-19
  */
 
-Firepit shape#(0x2E3) ()
+void Firepit shape#(0x2E3) ()
 {
 	//Firepit is being heated up by bellows
 	//This behaviour was moved from Bellows() itself, and reorganised so

@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-Lens shape#(0x2D6) ()
+void Lens shape#(0x2D6) ()
 {
 	if (event == DOUBLECLICK)
 	{

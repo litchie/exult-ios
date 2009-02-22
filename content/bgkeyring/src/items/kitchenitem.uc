@@ -25,7 +25,7 @@
  *	script, it must be included before bucket.uc and food.uc.
  */
 
-KitchenItem shape#(0x35F) ()
+void KitchenItem shape#(0x35F) ()
 {
 	var framenum = get_item_frame();
 	var target;

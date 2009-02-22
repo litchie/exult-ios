@@ -1,13 +1,13 @@
 const int SHAPE_TORCH		= 595;
 const int SHAPE_LIT_TORCH	= 701;
 
-Torch shape#(0x253) ()
+void Torch shape#(0x253) ()
 {
 	if (event != DOUBLECLICK && event != SCRIPTED) return;
 	LightTorch(item, SHAPE_LIT_TORCH);
 }
 
-LitTorch shape#(0x2BD)()
+void LitTorch shape#(0x2BD)()
 {
 	var var0000;
 	var var0001;
@@ -30,7 +30,7 @@ LitTorch shape#(0x2BD)()
 }
 
 
-DouseTorch 0x839 (var eventid, var shape, var object)
+void DouseTorch 0x839 (var eventid, var shape, var object)
 {
 	if(eventid == DOUBLECLICK || eventid == SCRIPTED)
 	{
@@ -57,7 +57,7 @@ DouseTorch 0x839 (var eventid, var shape, var object)
 }
 
 
-LightTorch 0x942 (var shape, var object)
+void LightTorch 0x942 (var shape, var object)
 {
 	var framenum;
 	var container;
@@ -91,7 +91,7 @@ LightTorch 0x942 (var shape, var object)
 }
 
 
-Func0905 0x905 (var object)
+void Func0905 0x905 (var object)
 {
 	object->halt_scheduled();
 	//UNKNOWN_82(true);
@@ -100,7 +100,7 @@ Func0905 0x905 (var object)
 }
 
 
-Func0600 0x600 ()
+void Func0600 0x600 ()
 {
 	var reduced_quality;
 	var new_quality;

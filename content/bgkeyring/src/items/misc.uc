@@ -23,7 +23,7 @@
 /* Miscellaneous item interaction scripts */
 
 //Sword in the stone, in Carrocio's lot. Now, you too can try!
-SwordInAStone shape#(0x315) ()
+void SwordInAStone shape#(0x315) ()
 {
 	var barks;
 
@@ -74,7 +74,7 @@ SwordInAStone shape#(0x315) ()
 
 /*
 I'm not really sure why I had a crack at reimplementing this. I seem to remember wanting to have Carrocio march over and animate the thing rather than do it by telekinesis like he does now.
-PuppetShow 503 ()
+void PuppetShow 503 ()
 {
 	var took_gold;
 	var var0001;
@@ -103,7 +103,7 @@ PuppetShow 503 ()
 }
 
 //called when Carrocio reaches his destination behind the puppetstand
-runPuppets()
+void runPuppets()
 {
 	UI_execute_usecode_array(item, [0x23, 0x46, 0x0000, 0x4E, 0x0B, 0xFFFF, 0x001F, 0x46, 0x0000]);
 	UI_execute_usecode_array(item, [0x23, 0x27, 0x000B, 0x58, 0x0055, 0x58, 0x0053, 0x58, 0x0054, 0x27, 0x0001, 0x58, 0x0055, 0x58, 0x0053, 0x27, 0x0003, 0x58, 0x0053, 0x27, 0x0002, 0x58, 0x0055]);
@@ -111,7 +111,7 @@ runPuppets()
 */
 
 //I couldn't resist.
-TripleCrossbow shape#(0x287) ()
+void TripleCrossbow shape#(0x287) ()
 {
 	if (event == DOUBLECLICK)
 	{

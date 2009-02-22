@@ -25,9 +25,9 @@
  */
 
 //Externs:
-//extern chantuHeal 0x860 (var price_cure, var price_heal, var price_resurrect);
+//extern void chantuHeal 0x860 (var price_cure, var price_heal, var price_resurrect);
 
-Chantu object#(0x411) ()
+void Chantu object#(0x411) ()
 {
 	if (event == DOUBLECLICK)
 	{

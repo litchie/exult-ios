@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-monsterStats (var monster, var stats)
+void monsterStats (var monster, var stats)
 {
 	var stat_value;
 	//IDs of the properties to set:
@@ -36,7 +36,7 @@ monsterStats (var monster, var stats)
 	}
 }
 
-monsterEquipment (var monster, var arms, var arms_quality, var pouch_content, var pouch_frames, var pouch_quantities, var pouch_qualities)
+void monsterEquipment (var monster, var arms, var arms_quality, var pouch_content, var pouch_frames, var pouch_quantities, var pouch_qualities)
 {
 	var bag;
 	var new_obj;
@@ -116,7 +116,7 @@ var monsterCreate (var shapenum, var npcid, var pos, var facedir, var stats, var
 	return monster;
 }
 
-createMageAndGoons ()
+void createMageAndGoons ()
 {
 	//This function is a rather boring long list of equipment. You can just look
 	//at the mage to see how it is done, and skip all the rest...
@@ -260,7 +260,7 @@ createMageAndGoons ()
 	fighter->set_usecode_fun(registerDeathOfMageOrGoon);
 }
 
-extern deathOfJoneleth object#() ();
+extern void deathOfJoneleth object#() ();
 
 var createLichAndGems ()
 {
@@ -338,7 +338,7 @@ var createLichAndGems ()
 	return liche;
 }
 
-deleteNearbyEggs (var pos, var dist)
+void deleteNearbyEggs (var pos, var dist)
 {
 	//Find all nearby eggs within dist of pos:
 	var eggs = pos->find_nearby(SHAPE_EGG, dist, MASK_EGG);

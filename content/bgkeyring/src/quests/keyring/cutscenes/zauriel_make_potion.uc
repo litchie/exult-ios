@@ -50,7 +50,7 @@ enum MakePotion_levels
 	IS_AT_POTION_2						= 21
 };
 
-zaurielMakePotion object#() ()
+void zaurielMakePotion object#() ()
 {
 	var pos;
 	var party = UI_get_party_list();

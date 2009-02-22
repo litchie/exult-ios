@@ -24,7 +24,7 @@
  *	Last Modified: 2006-02-27
  */
 
-switchFace (var facenum, var slot)
+void switchFace (var facenum, var slot)
 {
 	if (!slot)
 		UI_change_npc_face0(facenum);
@@ -55,7 +55,7 @@ var lauriannaAskJoin ()
 	return false;
 }
 
-lauriannaAskJournal ()
+void lauriannaAskJournal ()
 {
 	var journal;
 	
@@ -81,7 +81,7 @@ lauriannaAskJournal ()
 	gflags[LAURIANNA_HAS_JOURNAL] = true;
 }
 
-lauriannaGiveKeyring ()
+void lauriannaGiveKeyring ()
 {
 	if (gflags[LAURIANNA_HAS_JOURNAL])
 	{
@@ -102,7 +102,7 @@ lauriannaGiveKeyring ()
 	}
 }
 
-lauriannaSellReagents ()
+void lauriannaSellReagents ()
 {
 	sellItems(
 				//Names
@@ -156,7 +156,7 @@ lauriannaSellReagents ()
 				  "@Let me now if thou dost change thy mind, Avatar. What were we talking about?@"]);
 }
 
-lauriannaHeal (var spellbook)
+void lauriannaHeal (var spellbook)
 {
 	var party = UI_get_party_list();
 	var in_party = (item in party);
@@ -183,7 +183,7 @@ lauriannaHeal (var spellbook)
 		say("@I'd love to, but thou hast taken my spellbook.@");
 }
 
-lauriannaPrePotionDialog object#() ()
+void lauriannaPrePotionDialog object#() ()
 {
 	// Notice: Laurianna's dialog makes extensive use of the UI_change_npc_face0
 	// intrinsic due to her madness. She has FOUR faces all told, which are
@@ -430,7 +430,7 @@ lauriannaPrePotionDialog object#() ()
 	}
 }
 
-lauriannaPostPotionDialog ()
+void lauriannaPostPotionDialog ()
 {
 	LAURIANNA->show_npc_face(1);
 	//Check for the amulet's presence:
@@ -649,7 +649,7 @@ lauriannaPostPotionDialog ()
 	}
 }
 
-lauriannaPostQuestDialog ()
+void lauriannaPostQuestDialog ()
 {
 	var msg;
 	
@@ -792,7 +792,7 @@ lauriannaPostQuestDialog ()
 	}
 }
 
-lauriannaYewDialog ()
+void lauriannaYewDialog ()
 {
 	LAURIANNA->show_npc_face(0);
 	

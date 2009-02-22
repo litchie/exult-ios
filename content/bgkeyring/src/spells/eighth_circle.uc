@@ -27,14 +27,14 @@
 /*
 	Eighth circle Spells
 	
-	extern spellDeathVortex (var target);
-	extern spellInvisibilityAll ();
-	extern spellMassDeath ();
-	extern spellResurrect (var target);
-	extern spellSummon ();
-	extern spellSwordStrike (var target);
-	extern spellTimeStop ();
-	extern spellMassResurrect ();
+	extern void spellDeathVortex (var target);
+	extern void spellInvisibilityAll ();
+	extern void spellMassDeath ();
+	extern void spellResurrect (var target);
+	extern void spellSummon ();
+	extern void spellSwordStrike (var target);
+	extern void spellTimeStop ();
+	extern void spellMassResurrect ();
 */
 
 enum eighth_circle_spells
@@ -49,7 +49,7 @@ enum eighth_circle_spells
 	SPELL_MASS_RESURRECT			= 7			//Special NPC-only spell
 };
 
-spellDeathVortex (var target)
+void spellDeathVortex (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -75,7 +75,7 @@ spellDeathVortex (var target)
 	}
 }
 
-spellInvisibilityAll ()
+void spellInvisibilityAll ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -109,7 +109,7 @@ spellInvisibilityAll ()
 	}
 }
 
-spellMassDeath ()
+void spellMassDeath ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -160,7 +160,7 @@ spellMassDeath ()
 	}
 }
 
-spellResurrect (var target)
+void spellResurrect (var target)
 {
 	if (event == DOUBLECLICK)
 	{
@@ -205,7 +205,7 @@ spellResurrect (var target)
 	}
 }
 
-spellSummon ()
+void spellSummon ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -230,7 +230,7 @@ spellSummon ()
 	}
 }
 
-spellSwordStrike (var target)
+void spellSwordStrike (var target)
 {
 	if ((event == DOUBLECLICK) || (event == WEAPON))
 	{
@@ -260,7 +260,7 @@ spellSwordStrike (var target)
 	}
 }
 
-spellTimeStop ()
+void spellTimeStop ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -282,7 +282,7 @@ spellTimeStop ()
 	}
 }
 
-spellMassResurrect ()
+void spellMassResurrect ()
 {
 	var bodyshapes = [SHAPE_BODIES_1, SHAPE_BODIES_2, SHAPE_LARGE_BODIES, SHAPE_NEW_BODIES];
 	var bodies = [];

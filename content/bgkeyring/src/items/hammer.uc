@@ -20,7 +20,7 @@
  *	Last Modified: 2006-03-19
  */
 
-Hammer shape#(0x26F) ()
+void Hammer shape#(0x26F) ()
 {
 	//Hammer was doubleclicked, use it on something
 	if (event == DOUBLECLICK)

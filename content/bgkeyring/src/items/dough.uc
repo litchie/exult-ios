@@ -24,7 +24,7 @@
  *	silly sods who programmed it to start with duplicated the behaviour in
  *	two locations.
  */
-Dough shape#(0x292) ()
+void Dough shape#(0x292) ()
 {
 	//this behaviour allows you to place bread upon a hearth without drag-dropping
 	if (event == DOUBLECLICK)
