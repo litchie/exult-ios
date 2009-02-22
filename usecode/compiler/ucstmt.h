@@ -326,8 +326,10 @@ class Uc_converse_statement : public Uc_statement
 	static int nest;		// Keeps track of nesting.
 	Uc_expression *answers;		// Answers to add.
 	std::vector<Uc_statement *> cases;		// What to execute.
+	bool nestconv;			// Whether or not to force push/pop.
 public:
-	Uc_converse_statement(Uc_expression *a, std::vector<Uc_statement *> *cs);
+	Uc_converse_statement(Uc_expression *a,
+			std::vector<Uc_statement *> *cs, bool n);
 	~Uc_converse_statement();
 					// Generate code.
 	virtual void gen(Uc_function *fun, std::vector<Basic_block *>& blocks,
