@@ -261,6 +261,7 @@ default		return DEFAULT;
 
 converse	return CONVERSE;
 user_choice	return CHOICE;
+nested		return NESTED;
 say		return SAY;
 remove		return REMOVE;
 add		return ADD;

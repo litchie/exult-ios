@@ -705,9 +705,10 @@ void Uc_converse_case_statement::gen
 Uc_converse_statement::Uc_converse_statement
 	(
 	Uc_expression *a,
-	std::vector<Uc_statement *> *cs
+	std::vector<Uc_statement *> *cs,
+	bool n
 	)
-	: answers(a), cases(*cs)
+	: answers(a), cases(*cs), nestconv(n)
 	{
 	bool has_default = false;
 	for (vector<Uc_statement *>::const_iterator it = cases.begin();
@@ -758,7 +759,7 @@ void Uc_converse_statement::gen
 	{
 	if (!cases.size())	// Nothing to do; optimize whole block away.
 		return;
-	if (nest++ > 0)			// Not the outermost?
+	if (nest++ > 0 || nestconv)			// Not the outermost?
 					// Generate a 'push_answers()'.
 		Call_intrinsic(fun, blocks, curr, end, labels,
 				Uc_function::get_push_answers());
@@ -795,7 +796,7 @@ void Uc_converse_statement::gen
 	conv_body->set_targets(UC_JMP, conv_top);
 	blocks.push_back(curr = past_conv);
 
-	if (--nest > 0)			// Not the outermost?
+	if (--nest > 0 || nestconv)			// Not the outermost?
 					// Generate a 'pop_answers()'.
 		Call_intrinsic(fun, blocks, curr, end, labels,
 				Uc_function::get_pop_answers());
