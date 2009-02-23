@@ -607,6 +607,11 @@ bool Actor::ready_best_weapon
 	Game_object *remove1 = spots[lhand], *remove2 = 0;
 	if (wtype == two_handed_weapon)
 		remove2 = spots[rhand];
+		// Prevent double removal and double add (can corrupt objects list).
+		// No need for similar check for remove1 as we wouldn't be here
+		// if remove1 were a weapon we could use.
+	if (remove2 == best)
+		remove2 = 0;
 					// Free the spot(s).
 	if (remove1)
 		remove1->remove_this(1);
@@ -695,7 +700,7 @@ int Actor::add_dirty
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
 		r.shift(xoff, yoff);
-		r.enlarge(4);
+		r.enlarge(c_tilesize/2);
 		gwin->add_dirty(gwin->clip_to_win(r));
 		}
 	return 1;
@@ -1467,6 +1472,7 @@ void Actor::get_tile_info
 			{
 			Game_object *boots = actor->Actor::get_readied(
 							Actor::feet);
+			// ++++TAG: De-hard-code these.
 			if (boots != 0 &&
 		    	    ((boots->get_shapenum() == 588 && 
 					Game::get_game_type() == BLACK_GATE) ||
@@ -2037,9 +2043,9 @@ void Actor::paint
 			return;	// Don't render invisible NPCs not in party.
 		else if (invis)
 			paint_invisible(xoff, yoff);
-		else 
+		else
 			paint_shape(xoff, yoff, true);
-
+		
 		paint_weapon();
 		if (hit)		// Want a momentary red outline.
 			ShapeID::paint_outline(xoff, yoff, HIT_PIXEL);
@@ -4017,6 +4023,9 @@ int Actor::figure_hit_points
 						eman->remove_text_effect(this);
 						say(first_magebane_struck, last_magebane_struck);
 						}
+						// Tell schedule we need a new weapon.
+					if (schedule && spots[lhand] == 0)
+						schedule->set_weapon();
 					}
 				}
 			}
@@ -5200,7 +5209,7 @@ int Npc_actor::step
 						// Offscreen, but not in party?
 			if (!gwin->add_dirty(this) && party_id < 0 &&
 						// And > a screenful away?
-				distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
+				distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size)
 				dormant = true;	// Go dormant.
 			return (0);		// Done.
 			}
@@ -5220,7 +5229,7 @@ int Npc_actor::step
 					// Offscreen, but not in party?
 	if (!add_dirty(1) && party_id < 0 &&
 					// And > a screenful away?
-	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize &&
+	    distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size &&
 			//++++++++Try getting rid of the 'talk' line:
 	    get_schedule_type() != Schedule::talk &&
 	    get_schedule_type() != Schedule::street_maintenance)

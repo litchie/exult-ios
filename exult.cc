@@ -710,7 +710,7 @@ static void Init
 #if defined(__zaurus__) || defined(UNDER_CE)
 		gwin = new Game_window(sw, sh, scaleval, sclr);
 #else
-		if (arg_gamename != "default" || run_bg || run_si)
+		if (arg_gamename != "default" || run_bg || run_si || run_fov || run_ss)
 			gwin = new Game_window(sw, sh, scaleval, sclr);
 		else
 			gwin = new Game_window(400, 300, scaleval, sclr);
@@ -2133,6 +2133,8 @@ static void Move_grid
 		prevx += lift*4 - 1;	// Take lift into account, round.
 		prevy += lift*4 - 1;
 		int ptx = prevx/c_tilesize, pty = prevy/c_tilesize;
+		ptx += tiles_right;
+		pty += tiles_below;
 		if (tx == ptx && ty == pty)
 			return;		// Will be in same tile.
 					// Repaint over old area.

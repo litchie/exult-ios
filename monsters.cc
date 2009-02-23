@@ -375,7 +375,7 @@ int Monster_actor::step
 	movef(olist, nlist, tx, ty, frame, t.tz);
 	if (!add_dirty(1) &&
 					// And > a screenful away?
-	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
+	    distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size)
 		{			// No longer on screen.
 		stop();
 		dormant = true;

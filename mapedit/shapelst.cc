@@ -838,9 +838,9 @@ time_t Shape_chooser::export_tiled_png
 	int dim1_cnt = (nframes + tiles - 1)/tiles;
 	int w, h;
 	if (bycols)
-		{ h = tiles*8; w = dim1_cnt*8; }
+		{ h = tiles*c_tilesize; w = dim1_cnt*c_tilesize; }
 	else
-		{ w = tiles*8; h = dim1_cnt*8; }
+		{ w = tiles*c_tilesize; h = dim1_cnt*c_tilesize; }
 	Image_buffer8 img(w, h);
 	img.fill8(transp);		// Fill with transparent pixel.
 	for (int f = 0; f < nframes; f++)
@@ -848,10 +848,13 @@ time_t Shape_chooser::export_tiled_png
 		Shape_frame *frame = shape->get_frame(f);
 		if (!frame)
 			continue;	// We'll just leave empty ones blank.
-		if (frame->is_rle() || frame->get_width() != 8 ||
-					frame->get_height() != 8)
+		if (frame->is_rle() || frame->get_width() != c_tilesize ||
+					frame->get_height() != c_tilesize)
 			{
-			Alert("Can only tile 8x8 flat shapes");
+			char buf[250];
+			snprintf(buf, sizeof(buf), "Can only tile %dx%d flat shapes",
+						c_tilesize, c_tilesize);
+			Alert(buf);
 			return 0;
 			}
 		int x, y;
@@ -859,8 +862,8 @@ time_t Shape_chooser::export_tiled_png
 			{ y = f%tiles; x = f/tiles; }
 		else
 			{ x = f%tiles; y = f/tiles; }
-		frame->paint(&img, x*8 + frame->get_xleft(), 
-						y*8 + frame->get_yabove());
+		frame->paint(&img, x*c_tilesize + frame->get_xleft(), 
+						y*c_tilesize + frame->get_yabove());
 		}
 					// Write out to the .png.
 	return export_png(fname, img, 0, 0);
@@ -1125,11 +1128,11 @@ static void Import_png
 	int xleft, yabove;
 	if (flat)
 		{
-		xleft = yabove = 8;
-		if (w != 8 || h != 8 || rowsize != 8)
+		xleft = yabove = c_tilesize;
+		if (w != c_tilesize || h != c_tilesize || rowsize != c_tilesize)
 			{
 			char *msg = g_strdup_printf(
-				"Shape %d must be 8x8", shapenum);
+				"Shape %d must be %dx%d", shapenum, c_tilesize, c_tilesize);
 			studio->prompt(msg, "Continue");
 			g_free(msg);
 			delete pixels;
@@ -1176,9 +1179,9 @@ static void Import_png_tiles
 	int dim1_cnt = (nframes + dim0_cnt - 1)/dim0_cnt;
 	int needw, needh;		// Figure min. image dims.
 	if (bycols)
-		{ needh = dim0_cnt*8; needw = dim1_cnt*8; }
+		{ needh = dim0_cnt*c_tilesize; needw = dim1_cnt*c_tilesize; }
 	else
-		{ needw = dim0_cnt*8; needh = dim1_cnt*8; }
+		{ needw = dim0_cnt*c_tilesize; needh = dim1_cnt*c_tilesize; }
 	int w, h, rowsize, xoff, yoff, palsize;
 	unsigned char *pixels, *oldpal;
 					// Import, with 255 = transp. index.
@@ -1204,17 +1207,17 @@ static void Import_png_tiles
 			{ y = frnum%dim0_cnt; x = frnum/dim0_cnt; }
 		else
 			{ x = frnum%dim0_cnt; y = frnum/dim0_cnt; }
-		unsigned char *src = pixels + w*8*y + 8*x;
-		unsigned char buf[8*8];	// Move tile to buffer.
+		unsigned char *src = pixels + w*c_tilesize*y + c_tilesize*x;
+		unsigned char buf[c_tilesize*c_tilesize];	// Move tile to buffer.
 		unsigned char *ptr = &buf[0];
-		for (int row = 0; row < 8; row++)
+		for (int row = 0; row < c_tilesize; row++)
 			{		// Write it out.
-			memcpy(ptr, src, 8);
-			ptr += 8;
+			memcpy(ptr, src, c_tilesize);
+			ptr += c_tilesize;
 			src += w;
 			}
-		shape->set_frame(new Shape_frame(&buf[0], 8, 8, 8, 8, false), 
-									frnum);
+		shape->set_frame(new Shape_frame(&buf[0], c_tilesize, c_tilesize,
+					c_tilesize, c_tilesize, false), frnum);
 		}
 	delete pixels;
 	finfo->set_modified();
@@ -1497,7 +1500,7 @@ void Shape_chooser::new_frame
 	int w = 0, h = 0;
 	int xleft, yabove;
 	if (flat)
-		w = h = xleft = yabove = 8;
+		w = h = xleft = yabove = c_tilesize;
 	else				// Find largest frame.
 		{
 		int cnt = shape->get_num_frames();
@@ -1511,9 +1514,9 @@ void Shape_chooser::new_frame
 				w = wd;
 			}
 		if (h == 0)
-			h = 8;
+			h = c_tilesize;
 		if (w == 0)
-			w = 8;
+			w = c_tilesize;
 		xleft = w - 1;
 		yabove = h - 1;
 		}
@@ -1757,9 +1760,9 @@ void Shape_chooser::create_new_shape
 #endif
 	if (!use_font)
 		{
-		int w = 8, h = 8;
-		int xleft = flat ? 8 : w - 1;
-		int yabove = flat ? 8 : h - 1;
+		int w = c_tilesize, h = c_tilesize;
+		int xleft = flat ? c_tilesize : w - 1;
+		int yabove = flat ? c_tilesize : h - 1;
 		Image_buffer8 img(w, h);
 		img.fill8(1);		// Just use color #1.
 		img.fill8(2, w - 2, h - 2, 1, 1);

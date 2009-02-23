@@ -384,9 +384,9 @@ inline void Sprites_effect::add_dirty
 	int lp = pos.tz/2;
 
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
-		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-	    	yoff + (pos.ty - lp - 
-			gwin->get_scrollty())*c_tilesize).enlarge(12)));
+			xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
+	  		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize
+		).enlarge((3*c_tilesize)/2)));
 	}
 
 /**
@@ -712,7 +712,8 @@ inline void Projectile_effect::add_dirty
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 			(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-	    (pos.ty - gwin->get_scrollty())*c_tilesize - liftpix).enlarge(4)));
+			(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix
+		).enlarge(c_tilesize/2)));
 	}
 
 /**
@@ -928,8 +929,9 @@ inline int Homing_projectile::add_dirty
 	Shape_frame *shape = sprite.get_shape();
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
-		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-	    (pos.ty - gwin->get_scrollty())*c_tilesize - liftpix).enlarge(4)));
+			(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+			(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix
+		).enlarge(c_tilesize/2)));
 	return shape->get_width();
 	}
 
@@ -1196,7 +1198,7 @@ void Text_effect::paint
 	int len = strlen(ptr);
 	sman->paint_text(0, ptr, len, 
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - gwin->get_scrolltx_lo(),
-				(pos.ty - gwin->get_scrollty())*c_tilesize - gwin->get_scrollty_lo());
+		(pos.ty - gwin->get_scrollty())*c_tilesize - gwin->get_scrollty_lo());
 	}
 
 /**
@@ -1719,7 +1721,7 @@ inline void Cloud::next
 	long scrolly = gwin->get_scrollty()*c_tilesize;
 	Shape_frame *shape = cloud.get_shape();
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
-			shape, wx - scrollx, wy - scrolly).enlarge(4)));
+			shape, wx - scrollx, wy - scrolly).enlarge(c_tilesize/2)));
 	if (count <= 0)			// Time to restart?
 		{
 					// Set start time randomly.
@@ -1741,7 +1743,7 @@ cout << "Cloud: start_time = " << start_time << endl;
 		count--;
 		}
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
-			shape, wx - scrollx, wy - scrolly).enlarge(4)));
+			shape, wx - scrollx, wy - scrolly).enlarge(c_tilesize/2)));
 	}
 
 /**
@@ -1754,7 +1756,8 @@ void Cloud::paint
 	{
 	Game_window *gwin = Game_window::get_instance();
 	if (count > 0)			// Might not have been started.
-		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize - gwin->get_scrolltx_lo(), 
+		cloud.paint_shape(
+			wx - gwin->get_scrolltx()*c_tilesize - gwin->get_scrolltx_lo(), 
 			wy - gwin->get_scrollty()*c_tilesize - gwin->get_scrollty_lo());
 	}
 

@@ -209,7 +209,7 @@ bool Dragging_info::start
 	else
 		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
 					// Make a little bigger.
-	rect.enlarge(obj ? 8 : 12);
+	rect.enlarge(c_tilesize + obj ? 0 : c_tilesize/2);
 	Rectangle crect = gwin->clip_to_win(rect);
 	gwin->paint(crect);		// Paint over obj's. area.
 					// Create buffer to backup background.
