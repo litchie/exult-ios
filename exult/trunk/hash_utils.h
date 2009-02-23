@@ -33,17 +33,17 @@
 #  elif (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
 #  include <ext/hash_map>
 	using __gnu_cxx::hash_map;
-	typedef unordered_map hash_map;
+	#define unordered_map __gnu_cxx::hash_map
 #  else
 	using std::hash_map;
-	typedef hash_map unordered_map;
+	#define unordered_map std::hash_map
 #  endif
 #else
 #  include <hash_map>
 #endif
 #  ifdef MACOS
 	using Metrowerks::hash_map;
-	typedef hash_map unordered_map;
+	#define unordered_map Metrowerks::hash_map
 #  endif
 #endif
 
@@ -57,17 +57,17 @@
 #  elif (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
 #  include <ext/hash_set>
 	using __gnu_cxx::hash_set;
-	typedef hash_set unordered_set;
+	#define unordered_set __gnu_cxx::hash_set
 #  else
 	using std::hash_set;
-	typedef hash_set unordered_set;
+	#define unordered_set std::hash_set
 #  endif
 #else
 #  include <hash_set>
 #endif
 #  ifdef MACOS
 	using Metrowerks::hash_set;
-	typedef hash_set unordered_set;
+	#define unordered_set Metrowerks::hash_set
 #  endif
 #endif
 
