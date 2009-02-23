@@ -9,6 +9,7 @@
 	* Added FoV and SS to the list of games that do not change the screen size
 	  when started from the commandline.
 	* Applied part of patch #2348451, and a modified patch #2371363.
+	* Eliminated more GCC 4.3.x compilation warnings.
 
 2009-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Added optional 'void' keyword to specify an usecode function without
