@@ -52,8 +52,8 @@ private:
 	static Exult_Game game_type;
 	static bool expansion;
 #ifndef DONT_HAVE_HASH_MAP
-	typedef hash_map<const char*, int, hashstr, eqstr> shapes_map;
-	typedef hash_map<const char*, str_int_pair, hashstr, eqstr> rsc_map;
+	typedef unordered_map<const char*, int, hashstr, eqstr> shapes_map;
+	typedef unordered_map<const char*, str_int_pair, hashstr, eqstr> rsc_map;
 #else /* !HAVE_HASH_MAP */
 	typedef std::map<const char*, int, ltstr> shapes_map;
 	typedef std::map<const char*, str_int_pair, ltstr> rsc_map;

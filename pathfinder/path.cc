@@ -23,6 +23,7 @@
 #endif
 
 #include <iostream>
+#include <vector>
 
 #include "hash_utils.h"
 #include "PathFinder.h"
@@ -290,7 +291,7 @@ class A_star_queue
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:
 #ifndef DONT_HAVE_HASH_SET
-	typedef	hash_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
+	typedef	unordered_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
 #else
 	typedef	std::set<Search_node *, Less_nodes> Lookup_set;
 #endif
@@ -390,7 +391,7 @@ public:
 		{
 		Search_node key(tile);
 #ifndef DONT_HAVE_HASH_SET
-		hash_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
+		unordered_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
 							lookup.find(&key);
 #else
 		std::set<Search_node *, Less_nodes>::iterator it =
