@@ -10,6 +10,11 @@
 	  when started from the commandline.
 	* Applied part of patch #2348451, and a modified patch #2371363.
 	* Eliminated more GCC 4.3.x compilation warnings.
+	* Fixed goblin spawns in Fawn Tower. Contrary to popular opinion, it has
+	  nothing at all to do with pikemen in the area or finishing off the goblins
+	  in the area: monster eggs in SI simply do not seem to hatch in SI if the
+	  egg's Z-coordinate differs by more than 4 units from the avatar's when the
+	  egg is cached in. Also, extended jukebox egg behavior to other sound eggs.
 
 2009-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Added optional 'void' keyword to specify an usecode function without
