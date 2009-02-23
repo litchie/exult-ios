@@ -492,7 +492,7 @@ void Game_window::read_save_names
 	(
 	)
 {
-	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
+	for (int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
 		snprintf(fname, 50, SAVENAME, i,
