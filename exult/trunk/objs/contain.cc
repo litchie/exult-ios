@@ -154,7 +154,7 @@ bool Container_game_object::add
 			obj->modify_quantity(newquant - quant);
 		}
 	int objvol = obj->get_volume();
-	if (!dont_check)
+	if (!cheat.in_hack_mover() && !dont_check)
 		{
 		int maxvol = get_max_volume();
 		// maxvol = 0 means infinite (ship's hold, hollow tree, etc...)

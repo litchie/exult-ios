@@ -8,6 +8,7 @@
 	  HPs are the sole exception, being settable in the [-50, 60] range.
 	* Added FoV and SS to the list of games that do not change the screen size
 	  when started from the commandline.
+	* Applied part of patch #2348451, and a modified patch #2371363.
 
 2009-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Added optional 'void' keyword to specify an usecode function without
