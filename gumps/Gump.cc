@@ -254,7 +254,8 @@ int Gump::add
 					//   cause obj to be deleted.
 	)
 {
-	if (!container || (!dont_check && !container->has_room(obj)))
+	if (!container || (!cheat.in_hack_mover() &&
+			!dont_check && !container->has_room(obj)))
 		return (0);		// Full.
 					// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
