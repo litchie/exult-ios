@@ -1786,7 +1786,7 @@ void ExultStudio::create_shape_file
 	Shape *shape = 0;
 	if (oneshape)			// Single-shape?
 		{			// Create one here.
-		const int w = 8, h = 8;
+		const int w = c_tilesize, h = c_tilesize;
 		unsigned char pixels[w*h];	// Create an 8x8 shape.
 		memset(&pixels[0], 1, w*h);	// Just use color #1.
 		shape = new Shape(new Shape_frame(&pixels[0],

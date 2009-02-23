@@ -495,7 +495,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 			gwin->get_text_bg());
 		x += width + space_width;
 		}
-	avatar_face.enlarge(6);		// Encloses entire area.
+	avatar_face.enlarge((3*c_tilesize)/4);		// Encloses entire area.
 	avatar_face = avatar_face.intersect(sbox);
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);

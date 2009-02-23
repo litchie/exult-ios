@@ -1,3 +1,14 @@
+2009-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed several bugs from the tracker: #1559936, #1851478, #2121276, #2127362,
+	  #2127508, #2122907, #2454975
+	* Modified a few constants to be less dependant on the tile size being 8px.
+	* Foes struck by magebane will seek a new weapon after being hit if they
+	  lost their spells.
+	* Prevent stats from being set outside the [0, 60] range by the cheat screen;
+	  HPs are the sole exception, being settable in the [-50, 60] range.
+	* Added FoV and SS to the list of games that do not change the screen size
+	  when started from the commandline.
+
 2009-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* UCC: Added optional 'void' keyword to specify an usecode function without
 	  returns (and warnings for missing that keyword). Improved handling of UCC

@@ -2372,6 +2372,13 @@ void CheatScreen::StatMenu (Actor *actor)
 void CheatScreen::StatActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor)
 {
 	int i = std::atoi(input);
+	// Enforce sane bounds.
+	if (i > 60)
+		i = 60;
+	else if (i < 0 && command != 'h')
+		i = 0;
+	else if (i < -50)
+		i = -50;
 
 	mode = CP_Command;
 	switch (command)
