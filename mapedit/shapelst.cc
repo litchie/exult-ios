@@ -2421,7 +2421,7 @@ GtkWidget *Shape_chooser::create_popup
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
-		if (!IS_FLAT(info[selected].shapenum) ||
+		if (selected >= 0 && !IS_FLAT(info[selected].shapenum) ||
 				file_info != studio->get_vgafile())
 			{
 						// Separator.
