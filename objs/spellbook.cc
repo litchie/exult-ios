@@ -43,6 +43,7 @@ using std::memcpy;
 using std::ostream;
 #endif
 
+// ++++TAG: De-hard-code reagent shape and costs.
 const int REAGENTS = 842;		// Shape #.
 
 /*
@@ -129,6 +130,7 @@ bool Spellbook_object::has_ring
 	Actor *act
 	)
 	{
+	// ++++TAG: De-hard-code this.
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{
 		Game_object *obj = act->get_readied(Actor::lfinger);

@@ -366,7 +366,7 @@ public:
 	bool add_dirty(Game_object *obj)
 		{
 		Rectangle rect = get_shape_rect(obj);
-		rect.enlarge(5);
+		rect.enlarge(1+c_tilesize/2);
 		rect = clip_to_win(rect);
 		if (rect.w > 0 && rect.h > 0)
 			{

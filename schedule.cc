@@ -163,7 +163,7 @@ int Schedule::try_street_maintenance
 	if (!winrect.has_point(npcpos.tx, npcpos.ty))
 		return 0;
 					// Get to within 1 tile.
-	Actor_pathfinder_client cost(npc, 1);
+	Actor_pathfinder_client cost(npc, 2);
 	Game_object *found = 0;		// Find one we can get to.
 	Actor_action *pact;		// Gets ->action to walk there.
 	for (int i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
@@ -315,7 +315,7 @@ void Street_maintenance_schedule::now_what
 		paction = 0;
 		return;
 		}
-	if (npc->distance(obj) == 1 &&	// We're there.
+	if (npc->distance(obj) <= 2 &&	// We're there.
 	    obj->get_shapenum() == shapenum && obj->get_framenum() == framenum)
 		{
 		cout << npc->get_name() << 
@@ -892,6 +892,8 @@ void Patrol_schedule::now_what
 							{
 							pathnum = -1;
 							npc->start(speed, 500);
+								// Makes some enemies more prone to attacking.
+							seek_combat = true;
 							return;
 							}
 							// After 4, fall through.
@@ -922,6 +924,8 @@ void Patrol_schedule::now_what
 										failures*300);
 					int pathcnt = paths.size();
 					pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
+						// Makes some enemies more prone to attacking.
+					seek_combat = true;
 					return;
 					}
 				}

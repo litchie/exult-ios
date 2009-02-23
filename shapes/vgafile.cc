@@ -336,10 +336,10 @@ Shape_frame::Shape_frame
 	{
 	if (!rle)
 		{
-		assert(w == 8 && h == 8);
-		datalen = 64;
-		data = new unsigned char[64];
-		memcpy(data, pixels, 64);
+		assert(w == c_tilesize && h == c_tilesize);
+		datalen = c_tilesize*c_tilesize;
+		data = new unsigned char[c_tilesize*c_tilesize];
+		memcpy(data, pixels, c_tilesize*c_tilesize);
 		}
 	else
 		data = encode_rle(pixels, w, h, xleft, yabove, datalen);
@@ -397,13 +397,13 @@ unsigned int Shape_frame::read
 		return (nframes);
 		}
 	framenum &= 31;			// !!!Guessing here.
-	xleft = yabove = 8;		// Just an 8x8 bitmap.
+	xleft = yabove = c_tilesize;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
-	shapes->seek(shapeoff + framenum*64);
-	data = new unsigned char[64];	// Read in 8x8 pixels.
-	datalen = 64;
-	shapes->read((char *) data, 64);
-	return (shapelen/64);		// That's how many frames.
+	shapes->seek(shapeoff + framenum*c_tilesize*c_tilesize);
+	data = new unsigned char[c_tilesize*c_tilesize];	// Read in 8x8 pixels.
+	datalen = c_tilesize*c_tilesize;
+	shapes->read((char *) data, c_tilesize*c_tilesize);
+	return (shapelen/c_tilesize*c_tilesize);		// That's how many frames.
 	}
 	
 /*
@@ -444,7 +444,7 @@ void Shape_frame::paint_rle
 	assert(rle);
 
 	int w = get_width(), h = get_height();
-	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+	if (w >= c_tilesize || h >= c_tilesize)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
 
@@ -466,7 +466,7 @@ void Shape_frame::paint_rle_remapped
 	assert(rle);
 
 	int w = get_width(), h = get_height();
-	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+	if (w >= c_tilesize || h >= c_tilesize)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
 
@@ -487,7 +487,8 @@ void Shape_frame::paint
 	if (rle)
 		paint_rle(win, xoff, yoff);
 	else
-		win->copy8(data, 8, 8, xoff - 8, yoff - 8);
+		win->copy8(data, c_tilesize, c_tilesize,
+				xoff - c_tilesize, yoff - c_tilesize);
 	}
 
 /*
@@ -505,7 +506,7 @@ void Shape_frame::paint_rle_translucent
 	assert(rle);
 
 	int w = get_width(), h = get_height();
-	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+	if (w >= c_tilesize || h >= c_tilesize)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
 						yoff - yabove, w, h))
 			return;
@@ -572,7 +573,7 @@ void Shape_frame::paint_rle_transformed
 	assert(rle);
 
 	int w = get_width(), h = get_height();
-	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+	if (w >= c_tilesize || h >= c_tilesize)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
 						yoff - yabove, w, h))
 			return;
@@ -620,7 +621,7 @@ void Shape_frame::paint_rle_outline
 	assert(rle);
 
 	int w = get_width(), h = get_height();
-	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+	if (w >= c_tilesize || h >= c_tilesize)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
 						yoff - yabove, w, h))
 			return;
