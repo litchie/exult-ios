@@ -1254,7 +1254,7 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	if (static_path)
 		g_free(static_path);
 					// Set up path to static.
-	static_path = g_strdup_printf(get_system_path("<STATIC>").c_str());
+	static_path = g_strdup(get_system_path("<STATIC>").c_str());
 	string patch_path = get_system_path("<PATCH>");
 	if (!U7exists(patch_path))	// Create patch if not there.
 		U7mkdir(patch_path.c_str(), 0755);

@@ -107,7 +107,7 @@ class FontManager
 {
 private:
 #ifndef DONT_HAVE_HASH_MAP
-	hash_map<const char*, Font*, hashstr, eqstr> fonts;
+	unordered_map<const char*, Font*, hashstr, eqstr> fonts;
 #else
 	std::map<const char*, Font*, ltstr> fonts;
 #endif

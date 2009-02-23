@@ -24,6 +24,8 @@
 #  include <cctype>
 #endif
 
+#include <cstdlib>
+
 #include "SDL_events.h"
 #include "files/U7file.h"
 #include "files/utils.h"

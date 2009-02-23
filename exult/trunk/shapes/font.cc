@@ -912,7 +912,7 @@ Font *FontManager::get_font(const char *name)
 void FontManager::reset()
 {
 #ifndef DONT_HAVE_HASH_MAP
-	hash_map<const char*, Font*, hashstr, eqstr>::iterator i;
+	unordered_map<const char*, Font*, hashstr, eqstr>::iterator i;
 #else
 	std::map<const char*, Font*, ltstr>::iterator i;
 #endif
