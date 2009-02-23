@@ -118,7 +118,7 @@ void Missile_launcher::handle_event
 	if (proj)
 		eman->add_effect(proj);
 					// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this,udata);
+	gwin->get_tqueue()->add(curtime + delay, this,udata);
 	}
 
 /*
@@ -730,11 +730,20 @@ int Egg_object::is_active
 	Egg_criteria cri = (Egg_criteria) get_criteria();
 
 	int deltaz = tz - get_lift();
-	int absdeltaz = deltaz < 0 ? -deltaz : deltaz;
 	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
 		{
+		// This seems to be true for SI in general. It has the side effect
+		// of "fixing" Fawn Tower goblins.
+		// It does NOT happen in BG, though.
+		if (GAME_SI && deltaz/5 != 0 && type == monster)
+			{
+			// Mark hatched if not auto-reset.
+			if (!(flags & (1 << (int) auto_reset)))
+				flags |= (1 << (int) hatched);
+			return 0;
+			}
 		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
 			return 0;	// Not in square.
 		if (!(flags & (1 << (int) hatched)))
@@ -755,17 +764,17 @@ int Egg_object::is_active
 			return 0;
 		if (type == teleport ||	// Teleports:  Any tile, exact lift.
 		    type == intermap)
-			return absdeltaz == 0 && area.has_point(tx, ty);
-		else if (type == jukebox)
+			return deltaz == 0 && area.has_point(tx, ty);
+		else if (type == jukebox || type == soundsfx || type == voice)
 			// Guessing. Fixes shrine of Spirituality and Sacrifice.
 			return area.has_point(tx, ty);
-		if (!((absdeltaz <= 1 || 
+		if (!((deltaz/2 == 0 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
 						type != missile) ||
-				(type == missile && tz/5 == get_lift()/5)) &&
+				(type == missile && deltaz/5 == 0)) &&
 					// New tile is in, old is out.
-			area.has_point(tx, ty) &&
+					area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))
 			return 0;
 		return 1;
@@ -786,8 +795,7 @@ int Egg_object::is_active
 					obj->get_flag(Obj_flags::in_party);
 	case something_on:
 		return	 		// Guessing.  At SI end, deltaz == -1.
-			deltaz >= -1 && deltaz <= 3 &&
-			area.has_point(tx, ty) && !obj->as_actor();
+			deltaz/4 == 0 && area.has_point(tx, ty) && !obj->as_actor();
 	case external_criteria:
 	default:
 		return 0;
