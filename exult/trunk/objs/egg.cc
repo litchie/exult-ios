@@ -118,7 +118,7 @@ void Missile_launcher::handle_event
 	if (proj)
 		eman->add_effect(proj);
 					// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + delay, this,udata);
+	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this,udata);
 	}
 
 /*
