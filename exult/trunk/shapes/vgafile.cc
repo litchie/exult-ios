@@ -337,9 +337,9 @@ Shape_frame::Shape_frame
 	if (!rle)
 		{
 		assert(w == c_tilesize && h == c_tilesize);
-		datalen = c_tilesize*c_tilesize;
-		data = new unsigned char[c_tilesize*c_tilesize];
-		memcpy(data, pixels, c_tilesize*c_tilesize);
+		datalen = c_num_tile_bytes;
+		data = new unsigned char[c_num_tile_bytes];
+		memcpy(data, pixels, c_num_tile_bytes);
 		}
 	else
 		data = encode_rle(pixels, w, h, xleft, yabove, datalen);
@@ -399,11 +399,11 @@ unsigned int Shape_frame::read
 	framenum &= 31;			// !!!Guessing here.
 	xleft = yabove = c_tilesize;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
-	shapes->seek(shapeoff + framenum*c_tilesize*c_tilesize);
-	data = new unsigned char[c_tilesize*c_tilesize];	// Read in 8x8 pixels.
-	datalen = c_tilesize*c_tilesize;
-	shapes->read((char *) data, c_tilesize*c_tilesize);
-	return (shapelen/c_tilesize*c_tilesize);		// That's how many frames.
+	shapes->seek(shapeoff + framenum*c_num_tile_bytes);
+	data = new unsigned char[c_num_tile_bytes];	// Read in 8x8 pixels.
+	datalen = c_num_tile_bytes;
+	shapes->read((char *) data, c_num_tile_bytes);
+	return (shapelen/c_num_tile_bytes);		// That's how many frames.
 	}
 	
 /*
