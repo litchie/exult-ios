@@ -1,3 +1,8 @@
+2009-02-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed recent ES performance hit when toggling frames display.
+	* Fixed condition check for shape right-click in ES.
+	* Fixed hash_utils.h once and for all, and added proper check in configure.ac.
+
 2009-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed several bugs from the tracker: #1559936, #1851478, #2121276, #2127362,
 	  #2127508, #2122907, #2454975
