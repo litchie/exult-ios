@@ -26,48 +26,48 @@
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
-#if HAVE_EXT_HASH_MAP
-#  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3))
-#  include <tr1/unordered_map>
-	using std::tr1::unordered_map;
-#  elif (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
-#  include <ext/hash_map>
-	using __gnu_cxx::hash_map;
-	#define unordered_map __gnu_cxx::hash_map
+#  if HAVE_TR1_UNORDERED_MAP
+#    include <tr1/unordered_map>
+     using std::tr1::unordered_map;
+#  elif HAVE_EXT_HASH_MAP
+#    include <ext/hash_map>
+#    define unordered_map hash_map
+#    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
+       using __gnu_cxx::hash_map;
+#    else
+       using std::hash_map;
+#    endif
 #  else
-	using std::hash_map;
-	#define unordered_map std::hash_map
+#    include <hash_map>
+#    define unordered_map hash_map
 #  endif
-#else
-#  include <hash_map>
-#endif
 #  ifdef MACOS
-	using Metrowerks::hash_map;
-	#define unordered_map Metrowerks::hash_map
+     using Metrowerks::hash_map;
+#    define unordered_map hash_map
 #  endif
 #endif
 
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
-#if HAVE_EXT_HASH_SET
-#  if (defined(__GNUC__) && (__GNUC__ >= 4) && ( __GNUC_MINOR__ >= 3))
-#  include <tr1/unordered_set>
-	using std::tr1::unordered_set;
-#  elif (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
-#  include <ext/hash_set>
-	using __gnu_cxx::hash_set;
-	#define unordered_set __gnu_cxx::hash_set
+#  if HAVE_TR1_UNORDERED_SET
+#    include <tr1/unordered_set>
+     using std::tr1::unordered_set;
+#  elif HAVE_EXT_HASH_SET
+#    include <ext/hash_set>
+#    define unordered_set hash_set
+#    if (defined(__GNUC__) && (__GNUC__ >= 3) && ( __GNUC_MINOR__ >= 0))
+       using __gnu_cxx::hash_set;
+#    else
+       using std::hash_set;
+#    endif
 #  else
-	using std::hash_set;
-	#define unordered_set std::hash_set
+#    include <hash_set>
+#    define unordered_map hash_map
 #  endif
-#else
-#  include <hash_set>
-#endif
 #  ifdef MACOS
-	using Metrowerks::hash_set;
-	#define unordered_set Metrowerks::hash_set
+	 using Metrowerks::hash_set;
+	 #define unordered_set hash_set
 #  endif
 #endif
 

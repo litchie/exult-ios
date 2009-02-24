@@ -1208,7 +1208,7 @@ static void Import_png_tiles
 		else
 			{ x = frnum%dim0_cnt; y = frnum/dim0_cnt; }
 		unsigned char *src = pixels + w*c_tilesize*y + c_tilesize*x;
-		unsigned char buf[c_tilesize*c_tilesize];	// Move tile to buffer.
+		unsigned char buf[c_num_tile_bytes];	// Move tile to buffer.
 		unsigned char *ptr = &buf[0];
 		for (int row = 0; row < c_tilesize; row++)
 			{		// Write it out.
@@ -2421,8 +2421,8 @@ GtkWidget *Shape_chooser::create_popup
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
-		if (selected >= 0 && !IS_FLAT(info[selected].shapenum) ||
-				file_info != studio->get_vgafile())
+		if (selected >= 0 && (!IS_FLAT(info[selected].shapenum) ||
+				file_info != studio->get_vgafile()))
 			{
 						// Separator.
 			Add_menu_item(popup);
