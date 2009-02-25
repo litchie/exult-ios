@@ -157,20 +157,22 @@ EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	exultmsg.txt bginclude.uc \
 	$(EXULT_BG_PAPERDOL_VGA_OBJECTS) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
 
-bg/bg_paperdol.vga: $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
-	../tools/expack -i $(srcdir)/bg/bg_paperdol.in
-
-bg/bg_mr_faces.vga: $(EXULT_BG_MR_FACES_VGA_OBJECTS)
-	../tools/expack -i $(srcdir)/bg/bg_mr_faces.in
+../tools/expack: make_expack
 
 make_expack:
-	(cd ../tools;make expack)
+	+(cd ../tools;$(MAKE) expack)
 
-exult.flx: $(EXULT_FLX_OBJECTS)
+bg/bg_paperdol.vga: ../tools/expack $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
+	../tools/expack -i $(srcdir)/bg/bg_paperdol.in
+
+bg/bg_mr_faces.vga: ../tools/expack $(EXULT_BG_MR_FACES_VGA_OBJECTS)
+	../tools/expack -i $(srcdir)/bg/bg_mr_faces.in
+
+exult.flx: ../tools/expack $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
 
-exult_bg.flx: $(EXULT_BG_FLX_OBJECTS)
+exult_bg.flx: ../tools/expack $(EXULT_BG_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/bg/flx.in
 
-exult_si.flx: $(EXULT_SI_FLX_OBJECTS)
+exult_si.flx: ../tools/expack $(EXULT_SI_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/si/flx.in
