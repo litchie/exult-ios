@@ -1,3 +1,7 @@
+2009-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug #2638479.
+	* Allowing NPCs in sleep schedule to do stuff again.
+
 2009-02-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fix for multithreaded build (make -j <n>).
 	* Fixed recently introduced compilation issue in GCC 4.0.
