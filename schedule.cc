@@ -1919,8 +1919,8 @@ void Sleep_schedule::ending
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
-	npc->set_frame(Actor::standing);
 	npc->clear_sleep();
+	npc->set_frame(Actor::standing);
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}

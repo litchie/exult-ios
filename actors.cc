@@ -5091,7 +5091,10 @@ void Npc_actor::handle_event
 	)
 	{
 	purge_deleted_actions();
-	if (cheat.in_map_editor() && party_id < 0 || !can_act())
+	if (cheat.in_map_editor() && party_id < 0 ||
+			(get_flag(Obj_flags::paralyzed) || is_dead() ||
+			get_property(static_cast<int>(health)) <= 0 ||
+			(get_flag(Obj_flags::asleep) && schedule_type != Schedule::sleep)))
 		{
 		gwin->get_tqueue()->add(
 				curtime + gwin->get_std_delay(), this, udata);
