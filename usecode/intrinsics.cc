@@ -1808,7 +1808,7 @@ USECODE_INTRINSIC(armageddon)
 	for (int i = 1; i < cnt; i++)	// Almost everyone dies.
 		Armageddon_death(gwin->get_npc(i), true, screen);
 	Actor_vector vec;		// Get any monsters nearby.
-	gwin->get_main_actor()->find_nearby_actors(vec, c_any_shapenum, 40);
+	gwin->get_main_actor()->find_nearby_actors(vec, c_any_shapenum, 40, 0x28);
 	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end();
 									++it)
 		{

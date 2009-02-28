@@ -2533,7 +2533,7 @@ Actor *Game_window::find_witness
 	)
 	{
 	Actor_vector npcs;			// See if someone is nearby.
-	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
+	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12, 0x28);
 	closest_npc = 0;		// Look for closest NPC.
 	int closest_dist = 5000;
 	Actor *witness = 0;		// And closest facing us.
@@ -2668,7 +2668,7 @@ void Game_window::attack_avatar
 		}
 
 	Actor_vector npcs;		// See if someone is nearby.
-	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20);
+	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20, 0x28);
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 							it != npcs.end();++it)
 		{

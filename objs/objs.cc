@@ -779,11 +779,12 @@ int Game_object::find_nearby_actors
 	(
 	Actor_vector& vec,
 	int shapenum,
-	int delta
+	int delta,
+	int mask
 	) const
 	{
 	return Game_object::find_nearby(vec, get_tile(), shapenum,
-						delta, 8, c_any_qual, c_any_framenum);
+						delta, mask|8, c_any_qual, c_any_framenum);
 	}
 
 #define FN_VECTOR Game_object_vector

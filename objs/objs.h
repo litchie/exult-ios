@@ -192,8 +192,8 @@ public:
 
 #undef HDR_DECLARE_FIND_NEARBY
 
-	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) 
-									const;
+	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta,
+		int mask = 8) const;
 	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta,
 		int qual = c_any_qual, int frnum = c_any_framenum) const;
 	int find_nearby(Game_object_vector& vec, int shapenum, int delta, 
