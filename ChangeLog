@@ -28,6 +28,7 @@
 	  the game is loaded (fixes bug #2641856).
 	* Make NPCs more aggressive about fighting back, and added more cases where
 	  invisible NPCs join the fight (fixes bug #2641154).
+	* Fixed serpent bond bug in SI Fixes.
 
 2009-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2638479.
