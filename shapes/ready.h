@@ -27,14 +27,17 @@
 enum Ready_type {
 	other = 0x00,			// Anything else.
 	one_handed_weapon = 0x01,
+	off_hand = 0x02,		// From usecode; appears to be unused in ready.dat.
+	belt_bg = 0x03,			// From usecode; appears to be unused in ready.dat.
 	neck_armor = 0x04,
 	torso_armor = 0x05,
 	ring = 0x06,
-	usecode_container_bg = 0x07,	// Porting from SI
+	ring2 = 0x07,			// From usecode; appears to be unused in ready.dat.
 	ammunition = 0x08,
 	head_armor = 0x09,		// I.e., helm.
 	leg_armor = 0x0a,		// I.e., leggings.
 	foot_armor = 0x0b,		// I.e., boots.
+	usecode_container_bg = 0x0c,	// Porting from SI
 	triple_crossbow_bolts = 0x0f,
 	tongs = 0x12,
 	two_handed_weapon = 0x14,
@@ -50,6 +53,7 @@ enum Ready_type_SI {
 	helm_si = 0x04,
 	gloves_si = 0x05,
 	usecode_container_si = 0x06,
+	ring2_si = 0x07,			// From usecode; appears to be unused in ready.dat.
 	ring_si = 0x08,
 	earrings_si = 0x09,
 	ammo_si = 0x0a,
@@ -58,6 +62,8 @@ enum Ready_type_SI {
 	boots_si = 0x0d,
 	leggings_si = 0x0e,
 	backpack_si = 0x0f,			// Diaper as well?????
+	back_shield_si = 0x10,		// From usecode; appears to be unused in ready.dat.
+	back_2h_si = 0x11,			// From usecode; appears to be unused in ready.dat.
 	two_handed_si = 0x14
 	};
 	

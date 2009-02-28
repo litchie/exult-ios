@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-returnDupresShield 0x848 ()
+void returnDupresShield 0x848 ()
 {
 	say("@I shall certainly be sad to part with it, but if thou dost claim it, then I must give it to thee.@");
 	LUTHER->remove_cont_items(1, SHAPE_DUPRE_SHIELD, QUALITY_ANY, 0, 0);

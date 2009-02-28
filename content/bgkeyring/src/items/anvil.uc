@@ -27,9 +27,9 @@ void Anvil shape#(0x3DF) ()
 	//the anvil and use the hammer on the swordblank.
 	if (event == DOUBLECLICK)
 	{
-		if (AVATAR->is_readied(WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY) ||
+		if (AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY) ||
 			//Also allow Julia's hammer:
-			AVATAR->is_readied(WEAPON_HAND, SHAPE_JULIAS_HAMMER, FRAME_ANY))
+			AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_JULIAS_HAMMER, FRAME_ANY))
 		{
 			var swordblank = find_nearest(SHAPE_SWORDBLANK, 3);
 			if (swordblank && onAnvil(swordblank, item))

@@ -21,7 +21,7 @@
  *	an issue...
  */
 
-Hourglass shape#(0x347) ()
+void Hourglass shape#(0x347) ()
 {
 	var pos;
 	var notincombat;

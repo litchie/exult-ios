@@ -42,7 +42,7 @@ void FishingRod shape#(0x296) ()
 	if (event == DOUBLECLICK)
 	{
 		//make sure the fishing rod is readied first
-		if (!AVATAR->is_readied(WEAPON_HAND, SHAPE_FISHING_ROD, FRAME_ANY))
+		if (!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_FISHING_ROD, FRAME_ANY))
 		{
 			randomPartySay("@Thou must have the rod in thy hand.@");
 			return;

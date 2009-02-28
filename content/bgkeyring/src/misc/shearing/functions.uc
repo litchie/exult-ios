@@ -104,7 +104,7 @@ void startShearing (var sheep)
 	}
 
 	//make sure the shears are readied first
-	if (!AVATAR->is_readied(WEAPON_HAND, SHAPE_SHEARS, FRAME_ANY))
+	if (!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_SHEARS, FRAME_ANY))
 	{
 		randomPartySay("@Thou must have the shears in thy hand.@");
 		return;

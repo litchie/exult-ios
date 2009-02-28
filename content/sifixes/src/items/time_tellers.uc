@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-DeskItem shape#(0x2A3) ()
+void DeskItem shape#(0x2A3) ()
 {
 	if (!gflags[TIME_FORMAT_24_HOURS])
 	{
@@ -54,7 +54,7 @@ DeskItem shape#(0x2A3) ()
 	DeskItem.original();
 }
 
-Sundial shape#(0x11C) ()
+void Sundial shape#(0x11C) ()
 {
 	if (!gflags[TIME_FORMAT_24_HOURS])
 	{

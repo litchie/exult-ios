@@ -28,7 +28,7 @@
  *	post-insanity dialog.
  */
 
-DumpBucket 0x88A ()
+void DumpBucket 0x88A ()
 {
 	var target = UI_click_on_item();
 	if (!target)

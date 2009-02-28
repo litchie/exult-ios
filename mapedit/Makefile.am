@@ -43,6 +43,7 @@ exult_studio_SOURCES = \
 	objbrowse.cc \
 	paledit.cc \
 	paledit.h \
+	ready.h		\
 	shapedraw.cc \
 	shapedraw.h \
 	shapefile.cc \

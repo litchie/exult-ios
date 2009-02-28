@@ -1511,6 +1511,11 @@ void Actor::set_target
 	Actor *opponent = obj ? obj->as_actor() : 0;
 	if (opponent)
 		opponent->set_oppressor(get_npc_num());
+		// Pure guess.
+	Actor *oppr = oppressor >= 0 ? gwin->get_npc(oppressor) : 0;
+	if (oppr && (oppr->get_target() != (Game_object *)this ||
+			oppr->get_schedule_type() != Schedule::combat))
+		oppressor = -1;
 	}
 
 /*
@@ -2958,9 +2963,15 @@ int Actor::reduce_health
 	if (is_dying())
 		die(attacker);
 	else if (val <= 0 && !get_flag(Obj_flags::asleep))
+		{
+		Combat_schedule::stop_attacking_npc(this);
 		set_flag(Obj_flags::asleep);
+		}
 	else if (npc && !target && !is_in_party())
+		{
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
+		set_oppressor(npc->get_npc_num());
+		}
 	return delta;
 	}
 

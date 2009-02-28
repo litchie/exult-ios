@@ -1285,31 +1285,12 @@ Usecode_value Usecode_internal::remove_party_items
 	int quality = qualval.get_int_value();
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	if (quantity == -359 && Game::get_game_type() == SERPENT_ISLE)
-	{				// Special case. (Check party.)
-		Game_object *obj = 0;
-		for (int i = 0; i < cnt && !obj; i++)
-			{
-			Game_object *actor = get_item(party.get_elem(i));
-			if (actor)
-				obj = actor->find_item(shapenum, quality, 
-								framenum);
-			}
-		if (!obj)
-			return Usecode_value(0);
-
-		// Problem: we need to really delete this object, but
-		// it also has to remain long enough to be processed by the
-		// calling usecode function...
-		// for now: use temp_to_be_deleted to store the object and
-		// delete it afterwards (end of Usecode_internal::run)
-		temp_to_be_deleted = obj;
-		obj->remove_this(1);
-		return Usecode_value(obj);
-	}
 	Usecode_value all(-357);	// See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
-	if (avail.get_int_value() < quantity)
+			// Verified. Originally SI-only, allowing for BG too.
+	if (quantity == c_any_quantity)
+		quantity = avail.get_int_value();
+	else if (avail.get_int_value() < quantity)
 		return Usecode_value(0);
 					// Look through whole party.
 	for (int i = 0; i < cnt && quantity > 0; i++)
@@ -1429,14 +1410,23 @@ Usecode_value Usecode_internal::remove_cont_items
 	Usecode_value& flagval		// Flag??
 	)
 	{
+	Game_object *obj = get_item(container);
+	if (!obj)
+		{
+		if (container.get_int_value() == -357)
+			return remove_party_items(quantval, shapeval, qualval, frameval, flagval);
+		return Usecode_value(0);
+		}
+
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	unsigned int quality = (unsigned int) qualval.get_int_value();
+		
+	if (quantity == c_any_quantity)
+		quantity = count_objects(container, shapeval, qualval, frameval);
 
-	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value (quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
-	return Usecode_value(0);
+	return Usecode_value (quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
 	}
 
 /*

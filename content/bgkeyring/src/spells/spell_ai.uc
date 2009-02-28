@@ -221,10 +221,10 @@ void aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in
 	}
 	
 	//See if anyone needs magic ammo:
-	var xbowmen = filterListByEquipedObject(allies, [SHAPE_CROSSBOW, SHAPE_TRIPLE_XBOW], WEAPON_HAND);
-	var bowmen = filterListByEquipedObject(allies, [SHAPE_BOW, SHAPE_MAGIC_BOW], WEAPON_HAND);
-	xbowmen = filterListByEquipedObject(xbowmen, SHAPE_BOLTS, QUIVER);
-	bowmen = filterListByEquipedObject(bowmen, SHAPE_ARROWS, QUIVER);
+	var xbowmen = filterListByEquipedObject(allies, [SHAPE_CROSSBOW, SHAPE_TRIPLE_XBOW], BG_WEAPON_HAND);
+	var bowmen = filterListByEquipedObject(allies, [SHAPE_BOW, SHAPE_MAGIC_BOW], BG_WEAPON_HAND);
+	xbowmen = filterListByEquipedObject(xbowmen, SHAPE_BOLTS, BG_QUIVER);
+	bowmen = filterListByEquipedObject(bowmen, SHAPE_ARROWS, BG_QUIVER);
 	var xbowmen_size = UI_get_array_size(xbowmen);
 	var bowmen_size = UI_get_array_size(bowmen);
 	if (eff_level >= 2)
@@ -238,7 +238,7 @@ void aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in
 				obj = xbowmen[UI_get_random(xbowmen_size)];
 			else
 				obj = bowmen[UI_get_random(bowmen_size)];
-			target = obj->get_readied(QUIVER);
+			target = obj->get_readied(BG_QUIVER);
 			npcCastSpellBark(item, target, 2, SPELL_ENCHANT);
 		}
 	}
@@ -246,7 +246,7 @@ void aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in
 	//See if anyone needs a recharge
 	var wand_users = filterListByEquipedObject(allies,
 									[SHAPE_LIGHTNING_WAND, SHAPE_FIRE_WAND, SHAPE_FIREDOOM_STAFF],
-									WEAPON_HAND);
+									BG_WEAPON_HAND);
 	var wand_users_size = UI_get_array_size(wand_users);
 	if (eff_level >= 4)
 	{
@@ -255,7 +255,7 @@ void aiCastBuffing (var allies, var enemies, var eff_level, var in_party, var in
 			var target = false;
 			while (wand_users_size > 0)
 			{
-				var obj = (wand_users[wand_users_size])->get_readied(WEAPON_HAND);
+				var obj = (wand_users[wand_users_size])->get_readied(BG_WEAPON_HAND);
 				if (obj->get_item_quality() < 10)
 				{
 					target = obj;

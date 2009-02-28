@@ -32,7 +32,7 @@ void Invisibility_Ring shape#(0x128) ()
 	{
 		//Get ring container:
 		cont = get_container();
-		if (cont->is_npc() && (item == cont->get_readied(ONE_FINGER) || item == cont->get_readied(OTHER_FINGER)))
+		if (cont->is_npc() && (item == cont->get_readied(BG_LEFT_RING) || item == cont->get_readied(BG_RIGHT_RING)))
 			//If the container is an NPC, and if the item is equipped in a finger,
 			//make user invisible:
 			cont->set_item_flag(INVISIBLE);
@@ -52,7 +52,7 @@ void Regeneration_Ring shape#(0x12A) ()
 	{
 		//Get ring container:
 		cont = get_container();
-		if (cont->is_npc() && (item == cont->get_readied(ONE_FINGER) || item == cont->get_readied(OTHER_FINGER)))
+		if (cont->is_npc() && (item == cont->get_readied(BG_LEFT_RING) || item == cont->get_readied(BG_RIGHT_RING)))
 		{
 			//If the container is an NPC, and if the item is equipped in a finger,
 			//make user regenerate:

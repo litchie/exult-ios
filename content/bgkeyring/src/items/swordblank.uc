@@ -58,9 +58,9 @@ void SwordBlank shape#(0x29C) ()
 		//is sitting on an anvil and is hot enough. If so, we will
 		//automatically hammer the sword; if not, just pick it up
 		//normally
-		if (AVATAR->is_readied(WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY) ||
+		if (AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY) ||
 			//Also allow Julia's hammer:
-			AVATAR->is_readied(WEAPON_HAND, SHAPE_JULIAS_HAMMER, FRAME_ANY))
+			AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_JULIAS_HAMMER, FRAME_ANY))
 		{
 			var anvil = find_nearest(SHAPE_ANVIL, 3);
 			if (anvil && onAnvil(item, anvil) && current_frame in hot_frames)
