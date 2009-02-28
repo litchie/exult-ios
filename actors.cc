@@ -2972,6 +2972,7 @@ int Actor::reduce_health
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 		set_oppressor(npc->get_npc_num());
 		}
+	fight_back(attacker);
 	return delta;
 	}
 

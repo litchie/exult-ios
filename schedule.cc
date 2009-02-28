@@ -94,15 +94,19 @@ bool Schedule::seek_foes
 	)
 	{
 	Actor_vector vec;		// Look within 10 tiles (guess).
-	npc->find_nearby_actors(vec, c_any_shapenum, 10);
+	npc->find_nearby_actors(vec, c_any_shapenum, 10, 0x28);
 	int npc_align = npc->get_effective_alignment();
 	Actor *foe = 0;
+	Monster_info *minf = npc->get_info().get_monster_info();
+	bool see_invisible = minf ?
+		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
 	for (Actor_vector::const_iterator it = vec.begin(); 
 						it != vec.end(); ++it)
 		{
 		Actor *actor = *it;
-		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
-			continue;	// Dead or invisible.
+		if (actor->is_dead() || actor->get_flag(Obj_flags::asleep) ||
+		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
+			continue;	// Dead, asleep or invisible and can't see invisible.
 		if ((npc_align == Npc_actor::friendly &&
 				actor->get_effective_alignment() >= Npc_actor::hostile) ||
 			(npc_align == Npc_actor::hostile &&
