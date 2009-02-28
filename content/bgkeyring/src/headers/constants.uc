@@ -240,60 +240,54 @@ enum frame_offsets
 	EAST_FRAMESET	= 48
 };
 
-//Ready slots: use with UI_is_readied. These are the same whether paperdolls are on or off.
-enum is_readied_inv_slots
+// Ready slots for Black Gate: use with <UI_is_readied> or <UI_get_readied>.
+// These are the same whether paperdolls are on or off.
+enum inv_slots_bg
 {
-	IR_RIGHT_HAND		= 1,
-	IR_WEAPON_HAND		= 1,
-	IR_BOTH_HANDS		= 1,	//For two-handed items
-
-	IR_LEFT_HAND		= 2,
-	IR_SHIELD_HAND		= 2,
-	IR_OFF_HAND			= 2,
-
-	IR_NECK				= 3,
-	IR_CLOAK			= 3,
-
-	IR_RIGHT_FINGER		= 6,
-	IR_LEFT_FINGER		= 7,
-	IR_GLOVES			= 6,
-
-	IR_HEAD				= 9,
-	IR_BELT				= 11
+	BG_BACK        =  0,
+	BG_BACKPACK    =  0,
+	BG_WEAPON_HAND =  1,
+	BG_BOTH_HANDS  =  1,
+	BG_OFF_HAND    =  2,
+	BG_SHIELD_HAND =  2,
+	BG_BELT        =  3,
+	BG_NECK        =  4,
+	BG_CLOAK       =  4,
+	BG_TORSO       =  5,
+	BG_LEFT_RING   =  6,
+	BG_RIGHT_RING  =  7,
+	BG_GLOVES      =  6,
+	BG_QUIVER      =  8,
+	BG_HEAD        =  9,
+	BG_LEGS        = 10,
+	BG_FEET        = 11,
+	BG_USECODE     = 12
 };
 
-//Ready slots: use with UI_get_readied. These are the same whether paperdolls are on or off.
-enum get_readied_inv_slots
+// Ready slots for Serpent Isle: use with <UI_is_readied> or <UI_get_readied>.
+// These are the same whether paperdolls are on or off.
+enum inv_slots_si
 {
-	LEFT_HAND			= 0,
-	SHIELD_HAND			= 0,
-	OTHER_HAND			= 0,
-	
-	RIGHT_HAND			= 1,
-	WEAPON_HAND			= 1,
-	BOTH_HANDS			= 1,
-	
-	CLOAK				= 2,		//SI only
-	NECK				= 3,
-	HEAD				= 4,
-
-	GLOVES				= 5,		//In BG, exclusive with ONE_FINGER and OTHER_FINGER
-
-	USECODE_CONTAINER	= 6,		//SI only
-	
-	ONE_FINGER			= 7,		//In BG, exclusive with GLOVES
-	OTHER_FINGER		= 8,		//In BG, exclusive with GLOVES
-	
-	EARRINGS			= 9,		//SI only
-	
-	QUIVER				= 10,
-	BELT				= 11,
-	TORSO				= 12,
-	FEET				= 13,
-	LEGS				= 14,
-	BACKPACK			= 15,
-	BACK_SHIELD			= 16,		//SI only
-	BACK_SPOT			= 17		//SI only
+	SI_SHIELD_HAND =  0,
+	SI_OFF_HAND    =  0,
+	SI_WEAPON_HAND =  1,
+	SI_BOTH_HANDS  =  1,
+	SI_CLOAK       =  2,
+	SI_AMULET      =  3,
+	SI_HEAD        =  4,
+	SI_GLOVES      =  5,
+	SI_USECODE     =  6,
+	SI_RIGHT_RING  =  7,
+	SI_LEFT_RING   =  8,
+	SI_EARS        =  9,
+	SI_QUIVER      = 10,
+	SI_BELT        = 11,
+	SI_TORSO       = 12,
+	SI_FEET        = 13,
+	SI_LEGS        = 14,
+	SI_BACKPACK    = 15,
+	SI_BACK_SHIELD = 16,
+	SI_BACK_2H     = 17
 };
 
 //NPC properties (mostly ability scores)

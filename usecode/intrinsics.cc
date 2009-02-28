@@ -60,6 +60,7 @@
 #include "ucsymtbl.h"
 #include "animate.h"
 #include "combat.h"
+#include "ready.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
@@ -774,7 +775,9 @@ USECODE_INTRINSIC(play_music)
 		// If a number but not an NPC, get out (for e.g.,
 		// SI function 0x1D1).
 		if (parms[1].is_int() &&
-			(parms[1].get_int_value() >= 0 || parms[1].get_int_value() < -356))
+			(parms[1].get_int_value() >= 0 ||
+				(parms[1].get_int_value() != -356 &&
+				parms[1].get_int_value() < -gwin->get_num_npcs())))
 			return no_ret;
 
 		// Show notes.
@@ -789,7 +792,7 @@ USECODE_INTRINSIC(play_music)
 USECODE_INTRINSIC(npc_nearby)
 {
 	// NPC nearby? (item).
-	Game_object *npc = get_item(parms[0]);
+	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
 		return Usecode_value(0);
 	Tile_coord pos = npc->get_tile();
@@ -800,8 +803,8 @@ USECODE_INTRINSIC(npc_nearby)
 #else
 		gwin->get_win_tile_rect().has_point(pos.tx, pos.ty) &&
 #endif
-					// FALSE if asleep.
-		!npc->get_flag(Obj_flags::asleep));
+					// Guessing: false if dead, asleep or paralyzed.
+		npc->can_act());
 	Usecode_value u(is_near);
 	return(u);
 }
@@ -812,9 +815,14 @@ USECODE_INTRINSIC(npc_nearby2)
 
 	Game_object *npc = get_item(parms[0]);
 	int is_near = (npc != 0 && 
+#if 1
+		// Guessing; being asleep, paralyzed or dead doesn't seem to affect this.
+		npc->distance(gwin->get_main_actor()) < 40);
+#else
 		npc->distance(gwin->get_main_actor()) < 40 &&
 					// FALSE if asleep.
 		!npc->get_flag(Obj_flags::asleep));
+#endif
 	Usecode_value u(is_near);
 	return(u);
 }
@@ -1085,11 +1093,7 @@ USECODE_INTRINSIC(move_object)
 	modified_map = true;
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
-					// If Freedom exit teleport, don't ac-
-					//   tivate eggs when you arrive.
-		gwin->teleport_party(tile, Game::get_game_type() ==
-			SERPENT_ISLE && frame->function->id == 0x7df && 
-				caller_item->get_quality() == 0xcf, map);
+		gwin->teleport_party(tile, false, map);
 		return (no_ret);
 		}
 	Game_object *obj = get_item(parms[0]);
@@ -1447,9 +1451,10 @@ USECODE_INTRINSIC(clone)
 	if (npc)
 		{
 		modified_map = true;
-		npc->set_alignment(Actor::friendly);
-		npc->set_schedule_type(Schedule::combat);
-		return Usecode_value(npc->clone());
+		Actor *clonednpc = npc->clone();
+		clonednpc->set_alignment(Actor::friendly);
+		clonednpc->set_schedule_type(Schedule::combat);
+		return Usecode_value(clonednpc);
 		}
 	return Usecode_value(0);
 }
@@ -1466,14 +1471,12 @@ USECODE_INTRINSIC(set_oppressor)
 	// set_oppressor(npc, opp)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Actor *opp = as_actor(get_item(parms[1]));
-	if (npc && opp)
+	if (npc && opp && npc != opp)	// Just in case.
 		{
 		if (opp == gwin->get_main_actor())
 			npc->set_oppressor(0);
 		else
 			npc->set_oppressor(opp->get_npc_num());
-					// Need this for SI ListField training:
-		npc->set_target(opp);
 		}
 	return no_ret;
 }
@@ -1526,7 +1529,7 @@ USECODE_INTRINSIC(display_area)
 		gwin->set_in_dungeon(0);	// Disable dungeon.
 					// Paint game area.
 		gwin->paint_map_at_tile(x, y, 320, 200, tx - tw/2, ty - th/2, 4);
-					// Paint sprite #10 (black gate!)
+					// Paint sprite #10
 					//   over it, transparently.
 		sman->paint_shape(topx + sprite->get_xleft(),
 				topy + sprite->get_yabove(), sprite, 1);
@@ -1972,10 +1975,10 @@ USECODE_INTRINSIC(get_timer)
 	int ret;
 	std::map<int, uint32>::iterator it = timers.find(tnum);
 	if (it != timers.end() && timers[tnum] > 0)
-					// Return 0 if not set.
 		ret = gclock->get_total_hours() - timers[tnum];
 	else
-		ret = 0;
+					// Return random amount (up to half a day) if not set.
+		ret = rand()%13;
 	return Usecode_value(ret);
 }
 
@@ -2101,41 +2104,96 @@ USECODE_INTRINSIC(reduce_health)
 }
 
 /*
- *	Convert Usecode spot # to ours (or -1 if not found).
+ *	Convert BG Usecode spot # to ours (or -1 if not found).
  */
 
-static int Get_spot(int ucspot)
+static int Get_spot_bg(int ucspot)
 	{
 	int spot;
-	// Appears to be the same for BG and SI;
-	// all where verified in BG and most of  them
-	// where also verified in SI.
+	// All where verified in BG.
 	switch (ucspot)
 		{
-	case 0:
+	case other:
 		spot = Actor::back; break;
-	case 1:
+	case one_handed_weapon:
 		spot = Actor::lhand; break;
-	case 2:
+	case off_hand:
 		spot = Actor::rhand; break;
-	case 3:
+	case belt_bg:
 		spot = Actor::belt; break;
-	case 4:
+	case neck_armor:
 		spot = Actor::neck; break;
-	case 5:
+	case torso_armor:
 		spot = Actor::torso; break;
-	case 6:
+	case ring:
 		spot = Actor::lfinger; break;
-	case 7:
+	case ring2:
 		spot = Actor::rfinger; break;
-	case 8:
+	case ammunition:
 		spot = Actor::ammo; break;
-	case 9:
+	case head_armor:
 		spot = Actor::head; break; 
-	case 10:
+	case leg_armor:
 		spot = Actor::legs; break;
-	case 11:
+	case foot_armor:
 		spot = Actor::feet; break;
+	case usecode_container_bg:
+		spot = Actor::ucont_spot; break;
+	default:
+		cerr << "Readied: spot #" << ucspot <<
+					" not known yet" << endl;
+		spot = -1;
+		break;
+		}
+	return spot;
+	}
+
+/*
+ *	Convert SI Usecode spot # to ours (or -1 if not found).
+ */
+
+static int Get_spot_si(int ucspot)
+	{
+	int spot;
+	// All where verified in SI.
+	switch (ucspot)
+		{
+	case other_si:
+		spot = Actor::rhand; break;
+	case one_handed_si:
+		spot = Actor::lhand; break;
+	case cloak_si:
+		spot = Actor::cloak_spot; break;
+	case amulet_si:
+		spot = Actor::neck; break;
+	case helm_si:
+		spot = Actor::head; break;
+	case gloves_si:
+		spot = Actor::hands2_spot; break;
+	case usecode_container_si:
+		spot = Actor::ucont_spot; break;
+	case ring2_si:
+		spot = Actor::rfinger; break;
+	case ring_si:
+		spot = Actor::lfinger; break;
+	case earrings_si:
+		spot = Actor::ears_spot; break; 
+	case ammo_si:
+		spot = Actor::ammo; break;
+	case belt_si:
+		spot = Actor::belt; break;
+	case armour_si:
+		spot = Actor::torso; break; 
+	case boots_si:
+		spot = Actor::feet; break;
+	case leggings_si:
+		spot = Actor::legs; break;
+	case backpack_si:
+		spot = Actor::back; break; 
+	case back_shield_si:
+		spot = Actor::shield_spot; break;
+	case back_2h_si:
+		spot = Actor::back2h_spot; break;
 	default:
 		cerr << "Readied: spot #" << ucspot <<
 					" not known yet" << endl;
@@ -2172,7 +2230,7 @@ USECODE_INTRINSIC(is_readied)
 	int shnum = parms[2].get_int_value();
 	int frnum = parms[3].get_int_value();
 					// Spot defined in Actor class.
-	int spot = Get_spot(where);
+	int spot = GAME_BG ? Get_spot_bg(where) : Get_spot_si(where);
 	if (spot >= 0)
 		{			// See if it's the right one.
 		Game_object *obj = npc->get_readied(spot);
@@ -2211,53 +2269,7 @@ USECODE_INTRINSIC(get_readied)
 		return Usecode_value(0);
 	int where = parms[1].get_int_value();
 					// Spot defined in Actor class.
-	int spot;
-	// All of these have been verified in SI. The SI spots
-	// should be harmless in BG, so I am leaving them.
-	switch (where)
-		{
-	case 0:
-		spot = Actor::rhand; break;
-	case 1:
-		spot = Actor::lhand; break;
-	case 2:
-		spot = Actor::cloak_spot; break;
-	case 3:
-		spot = Actor::neck; break;
-	case 4:
-		spot = Actor::head; break;
-	case 5:
-		spot = Actor::hands2_spot; break;
-	case 6:
-		spot = Actor::ucont_spot; break;
-	case 7:
-		spot = Actor::lfinger; break;
-	case 8:
-		spot = Actor::rfinger; break;
-	case 9:
-		spot = Actor::ears_spot; break; 
-	case 10:
-		spot = Actor::ammo; break;
-	case 11:
-		spot = Actor::belt; break;
-	case 12:
-		spot = Actor::torso; break; 
-	case 13:
-		spot = Actor::feet; break;
-	case 14:
-		spot = Actor::legs; break;
-	case 15:
-		spot = Actor::back; break; 
-	case 16:
-		spot = Actor::shield_spot; break;
-	case 17:
-		spot = Actor::back2h_spot; break;
-	default:
-		cerr << "Readied: spot #" << where <<
-					" not known yet" << endl;
-		spot = -1;
-		break;
-		}
+	int spot = GAME_BG ? Get_spot_bg(where) : Get_spot_si(where);
 	if (spot >= 0)
 		return Usecode_value(npc->get_readied(spot));
 	return Usecode_value(0);
@@ -2389,7 +2401,6 @@ USECODE_INTRINSIC(nap_time)
 	Game_object *bed = get_item(parms[0]);
 	if (!bed)
 		return no_ret;
-					// !!! Seems 622 handles sleeping.
 	Actor_vector npcs;		// See if bed is occupied by an NPC.
 	int cnt = bed->find_nearby_actors(npcs, c_any_shapenum, 0);
 	if (cnt > 0)
@@ -2426,6 +2437,7 @@ USECODE_INTRINSIC(nap_time)
 					//   most 5 seconds.)
 	Wait_for_arrival(gwin->get_main_actor(), bed->get_tile(),
 								5000);
+					// !!! Seems 622 handles sleeping.
 	call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }
@@ -2817,7 +2829,7 @@ USECODE_INTRINSIC(play_sound_effect2)
 USECODE_INTRINSIC(get_npc_id)
 {
 	Actor *actor = as_actor(get_item(parms[0]));
-	if (!actor) return(no_ret);
+	if (!actor) return(Usecode_value(0));
 	return Usecode_value (actor->get_ident());
 }
 

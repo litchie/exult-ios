@@ -331,8 +331,8 @@ void useHammerOnSwordblank ()
 
 	//Make sure they're still wielding the hammer! This should always
 	//be the case, though; allow Julia's hammer to be used too
-	if (!AVATAR->is_readied(WEAPON_HAND, SHAPE_HAMMER, QUALITY_ANY) &&
-			!AVATAR->is_readied(WEAPON_HAND, SHAPE_JULIAS_HAMMER, QUALITY_ANY))
+	if (!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_HAMMER, QUALITY_ANY) &&
+			!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_JULIAS_HAMMER, QUALITY_ANY))
 		return;
 	var current_frame = get_item_frame();
 

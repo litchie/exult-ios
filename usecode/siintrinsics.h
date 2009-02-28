@@ -112,10 +112,10 @@
 	USECODE_INTRINSIC_PTR(roll_to_win),				// 0x58
 	USECODE_INTRINSIC_PTR(set_attack_mode),			// 0x59	
 	USECODE_INTRINSIC_PTR(get_attack_mode),			// 0x5a
-	USECODE_INTRINSIC_PTR(set_opponent),			// 0x5b
+	USECODE_INTRINSIC_PTR(set_oppressor),			// 0x5b
 	USECODE_INTRINSIC_PTR(get_oppressor),			// 0x5c
 	USECODE_INTRINSIC_PTR(get_weapon),			// 0x5d
-	USECODE_INTRINSIC_PTR(set_oppressor),	// Guess	// 0x5e
+	USECODE_INTRINSIC_PTR(set_opponent),	// Guess	// 0x5e
 	USECODE_INTRINSIC_PTR(clone),				// 0x5f UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x60 UNUSED
 	USECODE_INTRINSIC_PTR(display_area),				// 0x61 UNUSED

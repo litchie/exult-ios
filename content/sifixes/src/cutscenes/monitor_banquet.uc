@@ -24,7 +24,7 @@
 // externs
 extern var knightsTestReaction 0x8ED ();
 
-MonitorBanquet object#(0x1C3) ()
+void MonitorBanquet object#(0x1C3) ()
 {
 	var index;
 	var max;

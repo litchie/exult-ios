@@ -52,6 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapedraw.h"
 #include "items.h"
 #include "shapelst.h"
+#include "ready.h"
 
 using	std::cout;
 using	std::endl;
@@ -2356,21 +2357,21 @@ inline short get_bg_spots(short spot)
 	{
 	switch (spot)
 		{
-		case 0x00: return 0;
-		case 0x01: return 1;
-		case 0x14: return 2;
-		case 0x08: return 3;
-		case 0x09: return 4;
-		case 0x04: return 6;
-		case 0x05: return 9;
-		case 0x15: return 10;
-		case 0x06: return 11;
-		case 0x0A: return 13;
-		case 0x0B: return 14;
-		case 0x12: return 15;
-		case 0x0F: return 16;
+		case other: return 0;
+		case one_handed_weapon: return 1;
+		case two_handed_weapon: return 2;
+		case ammunition: return 3;
+		case head_armor: return 4;
+		case neck_armor: return 6;
+		case torso_armor: return 9;
+		case gloves: return 10;
+		case ring: return 11;
+		case leg_armor: return 13;
+		case foot_armor: return 14;
+		case tongs: return 15;
+		case triple_crossbow_bolts: return 16;
 			// For Usecode Container in BG:
-		case 0x07: return 19;
+		case usecode_container_bg: return 17;
 		default: return 0;
 		}
 	}
@@ -2379,22 +2380,22 @@ inline short get_si_spots(short spot)
 	{
 	switch (spot)
 		{
-		case 0x00: return 0;
-		case 0x01: return 1;
-		case 0x14: return 2;
-		case 0x0A: return 3;
-		case 0x04: return 4;
-		case 0x09: return 5;
-		case 0x03: return 6;
-		case 0x02: return 7;
-		case 0x0F: return 8;
-		case 0x0C: return 9;
-		case 0x05: return 10;
-		case 0x08: return 11;
-		case 0x0B: return 12;
-		case 0x0E: return 13;
-		case 0x0D: return 14;
-		case 0x06: return 15;
+		case other_si: return 0;
+		case one_handed_si: return 1;
+		case two_handed_si: return 2;
+		case ammo_si: return 3;
+		case helm_si: return 4;
+		case earrings_si: return 5;
+		case amulet_si: return 6;
+		case cloak_si: return 7;
+		case backpack_si: return 8;
+		case armour_si: return 9;
+		case gloves_si: return 10;
+		case ring_si: return 11;
+		case belt_si: return 12;
+		case leggings_si: return 13;
+		case boots_si: return 14;
+		case usecode_container_si: return 17;
 		default: return 0;
 		}
 	}
@@ -3136,12 +3137,22 @@ void ExultStudio::save_shape_notebook
 	info.set_3d(get_spin("shinfo_xtiles"), get_spin("shinfo_ytiles"),
 						get_spin("shinfo_ztiles"));
 	int spot = get_optmenu("shinfo_ready_spot");
-	static const signed char bg_spots[] = {0x00, 0x01, 0x14, 0x08, 0x09,
-			0x00, 0x04, 0x00, 0x00, 0x05, 0x15, 0x06, 0x00, 0x0A, 0x0B, 0x12,
-			0x0F, 0x07};
-	static const signed char si_spots[] = {0x00, 0x01, 0x14, 0x0A, 0x04,
-			0x09, 0x03, 0x02, 0x0F, 0x0C, 0x05, 0x08, 0x0B, 0x0E, 0x0D, 0x00,
-			0x00, 0x06};
+	static const signed char bg_spots[] = {
+			other,                 one_handed_weapon,     two_handed_weapon,
+			ammunition,            head_armor,            other,
+			neck_armor,            other,                 other,
+			torso_armor,           gloves,                ring,
+			other,                 leg_armor,             foot_armor,
+			tongs,                 triple_crossbow_bolts, usecode_container_bg
+		};
+	static const signed char si_spots[] = {
+			other_si,              one_handed_si,         two_handed_si,
+			ammo_si,               helm_si,               earrings_si,
+			amulet_si,             cloak_si,              backpack_si,
+			armour_si,             gloves_si,             ring_si,
+			belt_si,               leggings_si,           boots_si,
+			other_si,              other_si,              usecode_container_si
+		};
 	if (game_type == BLACK_GATE)
 		spot = bg_spots[spot];
 	else

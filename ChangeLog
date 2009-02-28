@@ -1,3 +1,30 @@
+2009-02-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/*: Unswapped UI_set_oppressor and UI_set_opponent in BG and SI
+	  intrinsic tables. Confirmed with some custom usecode and the cheat screen
+	  in the original games. Fixed UI_play_music to accept > 356 NPCs.
+	  UI_npc_nearby only accepts NPCs, and doesn't report them if they are
+	  dead, asleep or paralyzed; UI_npc_nearby2 doesn't seem to be affected by
+	  those flags, though. Removed special case for Freedom in UI_move_object,
+	  as it no longer seems to be neccessary. In UI_clone, have the cloned
+	  NPC be friendly, not the original monster *and* the clone. Added safety
+	  clause in UI_set_oppressor preventing the NPC from being his own oppresor;
+	  also, the unswap above makes unneccessary for this intrinsic to set a
+	  target now. UI_get_timer now returns a random value for uninitialized
+	  timers. UI_is_readied and UI_get_readied both use the same spot conversion
+	  for BG, and the same spot conversion for SI. Fixed invalid return for
+	  UI_get_npc_id when given anything but an NPC.
+	* docs/exult_intrinsics.txt: Massive update with format changes.
+	* Actors.cc: When an NPC is defeated, others NPCs attacking him will switch
+	  to new targets. Also, when setting a new target for a NPC, the NPC's
+	  oppressor, if any, is reset if he is not actually attacking the NPC.
+	* content/*/*: Unswapped the above intrinsics. Removed UCC compilation
+	  warnings about missing 'void' in function declarations.
+	* schedule.cc: Increased maximum distance at which party members will sit
+	  still if the avatar is not moving (fixes Stefano in Freedom).
+	* ready.h, mapedit/*: Moved ready.h to shapes/ready.h, and added several
+	  new constants used in usecode. These constants are now used in Exult
+	  Studio. Fixed some errors in the shape class conversion in ES.
+
 2009-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2638479.
 	* Allowing NPCs in sleep schedule to do stuff again.

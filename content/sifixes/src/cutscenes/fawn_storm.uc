@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-FawnStorm object#(0x6BC) ()
+void FawnStorm object#(0x6BC) ()
 {
 	var pathegg = getPathEgg(2, 1);
 	var lute;

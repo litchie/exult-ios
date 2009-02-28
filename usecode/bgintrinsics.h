@@ -96,7 +96,7 @@
 	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
 	USECODE_INTRINSIC_PTR(roll_to_win),	// 0x4a
 	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x4b
-	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
+	USECODE_INTRINSIC_PTR(set_oppressor),	// 0x4c
 	USECODE_INTRINSIC_PTR(clone),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
 	USECODE_INTRINSIC_PTR(display_area), // 0x4f// ShowCrystalBall(ucdump)
@@ -199,7 +199,7 @@
 	USECODE_INTRINSIC_PTR(set_barge_dir),	// 0xaf
 	USECODE_INTRINSIC_PTR(set_intercept_item),	// 0xb0
 	USECODE_INTRINSIC_PTR(set_new_schedules),	// 0xb1
-	USECODE_INTRINSIC_PTR(set_oppressor),	// 0xb2
+	USECODE_INTRINSIC_PTR(set_opponent),	// 0xb2
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),	// 0xb3
 	USECODE_INTRINSIC_PTR(begin_casting_mode),	// 0xb4 (Exult)
 	USECODE_INTRINSIC_PTR(get_usecode_fun),	// 0xb5 (Exult)

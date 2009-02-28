@@ -21,9 +21,9 @@
  *	wanted the most: have him refuse to leave while on Spinebreaker Mountains.
  */
 
-extern askDupreBelongings 0x829 ();
+extern void askDupreBelongings 0x829 ();
 
-Dupre object#(0x401) ()
+void Dupre object#(0x401) ()
 {
 	var dupre_id;
 	var avatar_title;

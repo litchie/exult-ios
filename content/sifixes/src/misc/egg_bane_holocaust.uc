@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-eggBaneHolocaust object#(0x6B1) ()
+void eggBaneHolocaust object#(0x6B1) ()
 {
 	if (gflags[BANES_RELEASED])
 	{

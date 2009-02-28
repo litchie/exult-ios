@@ -47,6 +47,7 @@ const int c_std_delay = 200;	// Standard animation delay.  May want to
 const int c_any_shapenum = -359;
 const int c_any_qual = -359;
 const int c_any_framenum = -359;
+const int c_any_quantity = -359;
 
 // Maximum number of shapes:
 const int c_max_shapes = 2048;

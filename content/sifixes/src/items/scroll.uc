@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-Scroll shape#(0x31D) ()
+void Scroll shape#(0x31D) ()
 {
 	var quality = get_item_quality();
 	UI_play_sound_effect2(0x5E, item);

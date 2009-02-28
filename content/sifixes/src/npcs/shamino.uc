@@ -22,11 +22,11 @@
  *	(2) fixing the bug that he doesn't add his exchanged items to the list.
  */
 
-extern askShaminoBelongings 0x863 ();
+extern void askShaminoBelongings 0x863 ();
 
 const int BEATRIX_FACE = -286;
 
-Shamino object#(0x402) ()
+void Shamino object#(0x402) ()
 {
 	var shamino_id;
 	var avatartitle;
