@@ -24,6 +24,8 @@
 	* ready.h, mapedit/*: Moved ready.h to shapes/ready.h, and added several
 	  new constants used in usecode. These constants are now used in Exult
 	  Studio. Fixed some errors in the shape class conversion in ES.
+	* actorio.cc: Monsters that can't die are forced to have at least 1hp when
+	  the game is loaded (fixes bug #2641856).
 
 2009-02-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2638479.

@@ -37,6 +37,8 @@
 #include "databuf.h"
 #include "npctime.h"
 #include "ucmachine.h"
+#include "shapeinf.h"
+#include "monstinf.h"
 
 using std::ios;
 using std::cout;
@@ -212,7 +214,7 @@ void Actor::read
 	set_property(static_cast<int>(Actor::intelligence), intel_val & 0x1F);
 	if ((intel_val >> 5) & 1) set_flag (Obj_flags::read);
 					// Tournament.
-	if ((intel_val >> 6) & 1) 
+	if ((intel_val >> 6) & 1)
 		set_flag (Obj_flags::tournament);
 	if ((intel_val >> 7) & 1) set_flag (Obj_flags::polymorph);
 
@@ -466,6 +468,18 @@ void Actor::read
 		if (this == gwin->get_main_actor())
 			gwin->set_map(map_num);
 		}
+
+	// We do this here because we need the NPC's final shape.
+	if (health_val <= 0 && !unused)
+		{
+		// If a monster can't die, force it to have at least 1 hit point,
+		// but only if the monster is used.
+		// Maybe we should restore it to full health?
+		Monster_info *minf = get_info().get_monster_info();
+		if (minf && minf->cant_die())
+			set_property(static_cast<int>(Actor::health), 1);
+		}
+
 	// Only do ready best weapon if we are in BG, this is the first time
 	// and we are the Avatar or Iolo
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
