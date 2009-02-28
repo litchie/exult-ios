@@ -1424,7 +1424,10 @@ Usecode_value Usecode_internal::remove_cont_items
 	unsigned int quality = (unsigned int) qualval.get_int_value();
 		
 	if (quantity == c_any_quantity)
-		quantity = count_objects(container, shapeval, qualval, frameval);
+		{
+		quantval = count_objects(container, shapeval, qualval, frameval);
+		quantity = quantval.get_int_value();
+		}
 
 	return Usecode_value (quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
 	}
