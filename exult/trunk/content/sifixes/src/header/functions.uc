@@ -17,10 +17,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-freeze object#() (){set_item_flag(DONT_MOVE);}
-unfreeze object#() (){clear_item_flag(DONT_MOVE);}
+void freeze object#() (){set_item_flag(DONT_MOVE);}
+void unfreeze object#() (){clear_item_flag(DONT_MOVE);}
 
-addShaminoToParty ()
+void addShaminoToParty ()
 {
 	SHAMINO->add_to_party();
 	gflags[SHAMINO_HAS_BELONGINGS] = true;
@@ -36,7 +36,7 @@ addShaminoToParty ()
 }
 
 // Unlike the other two companions, Iolo didn't have one for himself:
-askIoloBelongings ()
+void askIoloBelongings ()
 {
 	if (IOLO->get_cont_items(SHAPE_ANY, QUALITY_ANY, FRAME_ANY))
 	{
@@ -89,7 +89,7 @@ askIoloBelongings ()
 	}
 }
 
-setFurcapFlag object#() ()
+void setFurcapFlag object#() ()
 {
 	// We should only be here if the Avatar knew the furcap was
 	// Frigidazzi's and talked to her. If he gave the furcap back,
@@ -111,7 +111,7 @@ const int QUALITY_LOGIC = 13;
 const int QUALITY_ETHICALITY = 14;
 const int QUALITY_DISCIPLINE = 15;
 
-CureCantra ()
+void CureCantra ()
 {
 	if (event == PATH_SUCCESS)
 	{
@@ -129,7 +129,7 @@ CureCantra ()
 		CANTRA->set_schedule_type(WANDER);
 }
 
-CureCompanion ()
+void CureCompanion ()
 {
 	var npcnum;
 	var bucket_quality = get_item_quality();
@@ -163,7 +163,7 @@ CureCompanion ()
 		npcnum->set_schedule_type(WANDER);
 }
 
-firesnakeExplode ()
+void firesnakeExplode ()
 {
 	var obj;
 	var index;
@@ -195,7 +195,7 @@ firesnakeExplode ()
 	}
 }
 
-dropAllItems (var npc, var pos)
+void dropAllItems (var npc, var pos)
 {
 	// Here, we drop only objects directly held by the character:
 	var spots = [OFF_HAND, WEAPON_HAND, CLOAK, NECK, HEAD, GLOVES,
@@ -210,7 +210,7 @@ dropAllItems (var npc, var pos)
 	}
 }
 
-wraperXenkaReturns object#() ()
+void wraperXenkaReturns object#() ()
 {
 	xenkaReturns();
 }

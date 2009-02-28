@@ -23,9 +23,9 @@
  */
 
 // externs
-extern askGwennoBelongings 0x835 ();
+extern void askGwennoBelongings 0x835 ();
 
-Gwenno object#(0x495) ()
+void Gwenno object#(0x495) ()
 {
 	var avatarname;
 	var gavenecklace;

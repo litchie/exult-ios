@@ -20,7 +20,7 @@
  *	Mountains. It also is a good learning exercise...
  */
 
-extern healByAmount 0x976 (var target, var amount);
+extern void healByAmount 0x976 (var target, var amount);
 
 enum potions
 {
@@ -36,7 +36,7 @@ enum potions
 	WARMTH_POTION = 9
 };
 
-Potion shape#(0x154) ()
+void Potion shape#(0x154) ()
 {
 	var itemframe;
 	var target;

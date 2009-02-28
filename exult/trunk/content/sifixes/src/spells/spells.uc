@@ -18,16 +18,16 @@
  */
 
 // externs:
-extern spellFails object#(0x606) ();
-extern createImbalanceFields object#(0x688) ();
-extern serpentbondRemoveNPCsFromParty object#(0x7D6) ();
-extern serpentbondAddNPCsBackToParty object#(0x7D7) ();
+extern void spellFails object#(0x606) ();
+extern void createImbalanceFields object#(0x688) ();
+extern void serpentbondRemoveNPCsFromParty object#(0x7D6) ();
+extern void serpentbondAddNPCsBackToParty object#(0x7D7) ();
 
 /*
  *	Fifth Circle Spells
  */
 
-spellSurprise object#(0x667) ()
+void spellSurprise object#(0x667) ()
 {
 	var nearbynpcs;
 	var party;
@@ -73,13 +73,13 @@ spellSurprise object#(0x667) ()
 		if (item == AVATAR->get_npc_object())
 		{
 			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -3, -3, 4, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  0, -4, 4, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  3, -3, 3, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -4,  0, 2, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  4,  0, 1, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -3,  3, 3, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  0,  4, 1, 25);
-			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0,  3,  3, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, 0, -4, 4, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, 3, -3, 3, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -4, 0, 2, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, 4, 0, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, -3, 3, 3, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, 0, 4, 1, 25);
+			obj_sprite_effect(ANIMATION_CLOUDS, 0, 0, 3, 3, 1, 25);
 		}
 		else
 		{
@@ -88,7 +88,7 @@ spellSurprise object#(0x667) ()
 			{
 				set_schedule_type(IN_COMBAT);
 				set_attack_mode(FLEE);
-				set_opponent(AVATAR);
+				set_oppressor(AVATAR);
 			}
 			else if (rand == 2)
 			{
@@ -109,7 +109,7 @@ spellSurprise object#(0x667) ()
  *	Sixth Circle Spells
  */
 
-spellCreateAmmo object#(0x66E) ()
+void spellCreateAmmo object#(0x66E) ()
 {
 	var obj;
 	var bows;
@@ -158,9 +158,9 @@ spellCreateAmmo object#(0x66E) ()
 			amount = (getNPCLevel(AVATAR) * 8);
 			rand = UI_die_roll(amount, (amount + 20));
 			
-            // Original:
-            // const int MAX_AMMO = 99;
-            // Why not allow a level 10 avatar create 100 arrows?
+     // Original:
+     // const int MAX_AMMO = 99;
+     // Why not allow a level 10 avatar create 100 arrows?
 			const int MAX_AMMO = 100;
 			if (rand > MAX_AMMO)
 				rand = MAX_AMMO;
@@ -177,7 +177,7 @@ spellCreateAmmo object#(0x66E) ()
  *	Seventh Circle Spells
  */
 
-spellVibrate object#(0x676) ()
+void spellVibrate object#(0x676) ()
 {
 	var target;
 	var target_shape;
@@ -220,7 +220,7 @@ spellVibrate object#(0x676) ()
 		var index;
 		var mincount;
 		mincount = count_objects(SHAPE_USECODE_CONTAINER, QUALITY_ANY, FRAME_ANY)
-		         + count_objects(SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
+		     + count_objects(SHAPE_PATH_EGG, QUALITY_ANY, FRAME_ANY);
 		
 		if (array_size > mincount)
 		{
@@ -229,14 +229,14 @@ spellVibrate object#(0x676) ()
 				index = index + 1;
 				target_shape = npcitems[index]->get_item_shape();
 				if ((target_shape != SHAPE_PATH_EGG) &&
-				    (target_shape != SHAPE_USECODE_CONTAINER))
+				  (target_shape != SHAPE_USECODE_CONTAINER))
 					break;
 			}
 			
 			// Just for safety:
 			target_shape = npcitems[index]->get_item_shape();
 			if ((target_shape == SHAPE_PATH_EGG) ||
-			    (target_shape == SHAPE_USECODE_CONTAINER))
+			  (target_shape == SHAPE_USECODE_CONTAINER))
 				return;
 			
 			if (index <= array_size)
@@ -278,7 +278,7 @@ spellVibrate object#(0x676) ()
  *	Eighth Circle Spells
  */
 
-spellCreateIce object#(0x678) ()
+void spellCreateIce object#(0x678) ()
 {
 	var failed;
 	var target;
@@ -333,7 +333,7 @@ spellCreateIce object#(0x678) ()
 	}
 }
 
-spellFetch object#(0x67B) ()
+void spellFetch object#(0x67B) ()
 {
 	var target;
 	var isgrabbable;
@@ -362,7 +362,7 @@ spellFetch object#(0x67B) ()
 	}
 }
 
-spellSerpentBond object#(0x67D) ()
+void spellSerpentBond object#(0x67D) ()
 {
 	var pos;
 	var snakepos;
@@ -403,11 +403,11 @@ spellSerpentBond object#(0x67D) ()
 		var insnakemaze = false;
 		// Check to see if the Avatar is inside the snake maze:
 		if ((pos[X] > 0x550) && (pos[X] < 0x573) &&
-		    (pos[Y] > 0x1EA) && (pos[Y] < 0x212))
+		  (pos[Y] > 0x1EA) && (pos[Y] < 0x212))
 			insnakemaze = true;
 
 		if ((getAvatarLocationID() != DREAM_WORLD) &&
-		    (insnakemaze == false) &&
+		  (insnakemaze == false) &&
 			UI_is_not_blocked(snakepos, SHAPE_MALE_AVATAR, 1))
 		{
 			if (get_item_flag(POLYMORPH))
@@ -423,7 +423,7 @@ spellSerpentBond object#(0x67D) ()
 	}
 }
 
-spellFireSnake object#(0x67E) ()
+void spellFireSnake object#(0x67E) ()
 {
 	var target;
 	var dir;
@@ -526,7 +526,7 @@ spellFireSnake object#(0x67E) ()
 			
 			
 			if (!UI_is_not_blocked(pos, SHAPE_FIRE_FIELD, 0) &&
-			    get_distance(oldfield) > 1)
+			  get_distance(oldfield) > 1)
 			{
 				// Try going up:
 				pos[Z] = field_z + 1;
@@ -573,7 +573,7 @@ spellFireSnake object#(0x67E) ()
  *	Ninth Circle Spells
  */
 
-spellStopStorm object#(0x684) ()
+void spellStopStorm object#(0x684) ()
 {
 	if (event == DOUBLECLICK)
 	{
@@ -597,7 +597,7 @@ spellStopStorm object#(0x684) ()
 	}
 }
 
-spellImbalance object#(0x687) ()
+void spellImbalance object#(0x687) ()
 {
 	var pos;
 	var delay;
@@ -608,10 +608,10 @@ spellImbalance object#(0x687) ()
 		if (notInMagicStorm())
 		{
 			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3, -3, 0, -1);
-			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2,  3, -3, 0, -1);
-			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2,  3,  3, 0, -1);
-			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3,  3, 0, -1);
-			obj_sprite_effect(26,				   -2, -2,  0,  0, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, 3, -3, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, 3, 3, 0, -1);
+			obj_sprite_effect(ANIMATION_TELEPORT, -2, -2, -3, 3, 0, -1);
+			obj_sprite_effect(26,				  -2, -2, 0, 0, 0, -1);
 			script item
 			{	nohalt;						actor frame raise_1h;
 				actor frame reach_2h;		actor frame kneeling;

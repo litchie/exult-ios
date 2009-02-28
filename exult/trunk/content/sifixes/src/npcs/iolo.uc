@@ -22,10 +22,10 @@
  */
 
 // externs
-extern singSong 0x9B0 (var song);
-extern ioloShape shape#(0x1D1) ();
+extern void singSong 0x9B0 (var song);
+extern void ioloShape shape#(0x1D1) ();
 
-Iolo object#(0x403) ()
+void Iolo object#(0x403) ()
 {
 	var iolo_id;
 	var avatar_title;

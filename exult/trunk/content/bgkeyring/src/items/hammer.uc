@@ -26,7 +26,7 @@ void Hammer shape#(0x26F) ()
 	if (event == DOUBLECLICK)
 	{
 		//Hammer is not readied
-		if (!AVATAR->is_readied(WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY))
+		if (!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_HAMMER, FRAME_ANY))
 		{
 			randomPartySay("@Thou must wield the hammer in thine hand to use it.@");
 			return;

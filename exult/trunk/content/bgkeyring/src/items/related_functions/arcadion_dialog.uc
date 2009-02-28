@@ -152,7 +152,7 @@ void arcadionSwordFormDialog object#() ()
 			say("@I am the Shade Blade. My destiny is to serve thee until we are...@ The sword pauses, @parted.@");
 			
 		case "powers":
-			if (!AVATAR->is_readied(WEAPON_HAND, SHAPE_BLACK_SWORD, FRAME_ANY))
+			if (!AVATAR->is_readied(BG_WEAPON_HAND, SHAPE_BLACK_SWORD, FRAME_ANY))
 				say("@I needs must be in thy hand, master, if thou wishest to use my powers.@");
 			else
 			{

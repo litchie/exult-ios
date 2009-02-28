@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-setExchangedItemFlags 0x92B ()
+void setExchangedItemFlags 0x92B ()
 {
 	var item_shapes = exchangedItemList(1);
 	var item_qualities = exchangedItemList(2);

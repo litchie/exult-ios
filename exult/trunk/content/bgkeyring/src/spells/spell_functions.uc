@@ -337,7 +337,7 @@ void spellCauseFearEffect object#() ()
 		{
 			npc->set_schedule_type(IN_COMBAT);
 			npc->set_attack_mode(FLEE);
-			npc->set_opponent(item);
+			npc->set_oppressor(item);
 		}
 	}
 }

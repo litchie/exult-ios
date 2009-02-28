@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-mightyGoblinDies 0x9B7 ()
+void mightyGoblinDies 0x9B7 ()
 {
 	mightyGoblinDies.original();
 	if (gflags[CLEARED_FAWN_TOWER])
@@ -32,7 +32,7 @@ mightyGoblinDies 0x9B7 ()
 	}
 }
 
-eggFawnTowerCleanup object#(0x72D) ()
+void eggFawnTowerCleanup object#(0x72D) ()
 {
 	if ((event == EGG) && gflags[CLEARED_FAWN_TOWER])
 	{

@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-GoblinSimon object#(0x442) ()
+void GoblinSimon object#(0x442) ()
 {
 	if ((event == DEATH) && (!G_SIMON->get_item_flag(MET)))
 	{

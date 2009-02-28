@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-Frigidazzi object#(0x414) ()
+void Frigidazzi object#(0x414) ()
 {
 	if (gflags[KNOWS_FURCAP_OWNER])
 	{
