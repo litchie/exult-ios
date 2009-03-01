@@ -1,3 +1,7 @@
+2009-03-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actorio.cc: Monsters that can't die are forced to have full hp when
+	  the game is loaded.
+
 2009-02-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/*: Unswapped UI_set_oppressor and UI_set_opponent in BG and SI
 	  intrinsic tables. Confirmed with some custom usecode and the cheat screen
