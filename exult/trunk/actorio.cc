@@ -477,7 +477,8 @@ void Actor::read
 		// Maybe we should restore it to full health?
 		Monster_info *minf = get_info().get_monster_info();
 		if (minf && minf->cant_die())
-			set_property(static_cast<int>(Actor::health), 1);
+			set_property(static_cast<int>(Actor::health),
+				get_property(static_cast<int>(Actor::strength)));
 		}
 
 	// Only do ready best weapon if we are in BG, this is the first time
