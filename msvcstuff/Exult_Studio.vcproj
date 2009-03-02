@@ -368,6 +368,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\ready.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\sfxinf.h"
 					>
 				</File>
