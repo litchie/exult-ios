@@ -1,3 +1,6 @@
+2009-03-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* palette.cc: Prevent accessing palettes that failed to load.
+
 2009-03-01	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actorio.cc: Monsters that can't die are forced to have full hp when
 	  the game is loaded.
