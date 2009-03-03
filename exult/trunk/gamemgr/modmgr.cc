@@ -242,7 +242,7 @@ ModInfo::ModInfo
 #endif
 
 // Need this for ES.
-static char *get_game_identity(const char *savename, const string& title)
+static const char *get_game_identity(const char *savename, const string& title)
 	{
 	char *game_identity = 0;
 	ifstream in_stream;
