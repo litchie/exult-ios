@@ -226,13 +226,23 @@ void Palette::set_loaded
 		// The second one is black.
 		memset(pal2, 0, 768);
 		}
-	else
+	else if (buf && len > 0)
 		{			// Double palette
 		for (int i=0; i<768; i++)
 			{
 			pal1[i]=buf[i*2];
 			pal2[i]=buf[i*2+1];
 			}
+		}
+	else
+		{
+		// Something went wrong during palette load. This probably
+		// happens because a dev is being used, which means that
+		// the palette won't be loaded.
+		// For now, let's try to avoid overwriting any palette that
+		// may be loaded and just cleanup.
+		if (!buf)
+			return;
 		}
 	delete [] buf;
 	}
