@@ -1,3 +1,6 @@
+2009-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed recently-introduced bug in npc_nearby intrinsic.
+
 2009-03-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* palette.cc: Prevent accessing palettes that failed to load.
 
