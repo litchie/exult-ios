@@ -792,19 +792,14 @@ USECODE_INTRINSIC(play_music)
 USECODE_INTRINSIC(npc_nearby)
 {
 	// NPC nearby? (item).
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (!npc)
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
 		return Usecode_value(0);
-	Tile_coord pos = npc->get_tile();
-	int is_near = (
-#if 0	/* Old way, messes up Karnax at start of SI. */
-		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
-								< 12 &&
-#else
-		gwin->get_win_tile_rect().has_point(pos.tx, pos.ty) &&
-#endif
-					// Guessing: false if dead, asleep or paralyzed.
-		npc->can_act());
+	Tile_coord pos = obj->get_tile();
+	Actor *npc;
+	int is_near = gwin->get_win_tile_rect().has_point(pos.tx, pos.ty) &&
+		// Guessing: true if non-NPC, false if NPC is dead, asleep or paralyzed.
+		((npc = as_actor(obj)) == 0 || npc->can_act());
 	Usecode_value u(is_near);
 	return(u);
 }
