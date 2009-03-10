@@ -97,9 +97,9 @@ when I gave the 'calle' form of execute_usecode_array; since I will only give
 the 'calle' form when the parameter type is 'object' or 'actor', I feel that it
 is unneeded.
 
---------------------------------------------------------------------------------
+================================================================================
 RANDOM NUMBER INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics are all related to random numbers and their generation.
 
@@ -142,9 +142,9 @@ bool UI_roll_to_win(int att, int def)
     from the same roll. If the result is 15 or more, the attacker wins and the
     return is true; otherwise, the attacker loses and the return is false.
 
---------------------------------------------------------------------------------
+================================================================================
 SCRIPTING INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics are used to animate characters from usecode. Some of these
     are deprecated by script blocks, but all others are still useful at times.
@@ -327,9 +327,9 @@ UI_telekenesis(function fun)
   Parameters:
     fun    The function to be stored.
 
---------------------------------------------------------------------------------
+================================================================================
 CONVERSATION INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics are used to display faces for conversations, storing and
     recalling answers, etc.
@@ -511,9 +511,9 @@ int UI_select_from_menu2()
   Return:
     The index (ranging from 1 to n) of the chosen dialog option.
 
---------------------------------------------------------------------------------
+================================================================================
 SOUND INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     All intrinsics in this section relate to playing sound effects, music or
     speech.
@@ -585,9 +585,9 @@ int UI_get_speech_track()
   Return:
     A number indicating what voice track is being played.
 
---------------------------------------------------------------------------------
+================================================================================
 SEARCHING AND COUNTING INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics allow you to find and count objects, whether they are in a
     container or in the game world.
@@ -694,18 +694,20 @@ object[] UI_find_nearby_avatar(int shape)
     You cannot find eggs, barges, invisible or transparent objects with this
     intrinsic.
 
-bool UI_npc_nearby(actor npc)
-bool npc->npc_nearby()
+bool UI_npc_nearby(object obj)
+bool obj->npc_nearby()
 
-    Finds out if the desired NPC is on screen and can act. The NPC is considered
-    able to act if it is not asleep, paralyzed or dead.
+    Finds out if the desired object is on screen and can act. An NPC is
+    considered able to act if it is not asleep, paralyzed or dead; other objects
+    are always considered able to act. Note that, despite the name, this
+    intrincis can also be used for objects.
 
   Parameters:
-    npc    The NPC to be checked.
+    obj    The object or NPC to be checked.
 
   Return:
-    true if the NPC is in the screen and can act, false otherwise or if the
-    supplied parameter is not an NPC.
+    true if the object is in the screen and can act, false otherwise or if the
+    supplied parameter is not an object or NPC.
 
 bool UI_npc_nearby2(object obj)                                             [SI]
 bool obj->npc_nearby2()
@@ -757,9 +759,9 @@ object[] obj->get_cont_items(int shape, int qual, int frame)
     Array containing object references to all objects that match the given
     criteria.
 
---------------------------------------------------------------------------------
+================================================================================
 PLACEMENT INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     With these intrinsics, you can create, move or delete objects or NPCs,
     whether they are in the game world or in a container.
@@ -1131,9 +1133,9 @@ UI_remove_from_area(int shape, int frame, int ul[2], int             [SI, Exult]
     lr       A (x, y) position specifying the lower-right corner of the region
              to be searched
 
---------------------------------------------------------------------------------
+================================================================================
 OBJECT INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics are used to get or set properties of an object, such as
     quantity, quality or current frame.
@@ -1722,9 +1724,9 @@ obj->fire_projectile(int dir, int proj, int weapon, int ammo)
         NORTH    = 0    NORTHEAST    = 1    EAST    = 2    SOUTHEAST    = 3
         SOUTH    = 4    SOUTHWEST    = 5    WEST    = 6    NORTHWEST    = 7
 
---------------------------------------------------------------------------------
+================================================================================
 NPC INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics allow you to get or set NPC-specific properties of a NPC,
     such as schedules, alignment or stats.
@@ -2354,9 +2356,9 @@ int obj->get_npc_warmth()
     The combined warmth given by all objects worn by the NPC, or -75 if supplied
     with anything but a valid NPC.
 
---------------------------------------------------------------------------------
+================================================================================
 PARTY INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics relate to obtaining or modifying the list of party members.
 
@@ -2401,9 +2403,9 @@ object[] obj->get_dead_party()
     members within 50 tiles of the given object, or zero if no party members
     were found.
 
---------------------------------------------------------------------------------
+================================================================================
 AVATAR INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     All intrinsics in this section are about obtaining or modifying properties
     specific to the Avatar.
@@ -2508,9 +2510,9 @@ obj->teleport_to_saved_pos()
     obj    If this is not the avatar, nothing happens. Otherwise, the party is
            teleported to the stored position.
 
---------------------------------------------------------------------------------
+================================================================================
 WEATHER/TIME INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     These intrinsics allow you to check or alter the weather, the game clock and
     usecode timers.
@@ -2613,9 +2615,9 @@ UI_set_weather(int type)
     type    Numeric value indicating what the weather should be. Can be any of
             the values returned by UI_get_weather intrinsic.
 
---------------------------------------------------------------------------------
+================================================================================
 USER INTERFACE INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     With these intrinsics, you can ask the user for input or display feedback
     for his actions.
@@ -2776,9 +2778,9 @@ string UI_printf(string out[])                                           [Exult]
   Return:
     An empty string.
 
---------------------------------------------------------------------------------
+================================================================================
 DISPLAY INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     All intrinsics in this section are related to showing things to the player,
     be they other portions of the game map or objects from 'SPRITES.VGA'.
@@ -3033,9 +3035,9 @@ obj->obj_sprite_effect(int sprite, int rel_x, int rel_y, int vel_x, int vel_y,
               the sprite frame will go through all of its frames. If negative,
               the sprite will go through all of its frames *once*.
 
---------------------------------------------------------------------------------
+================================================================================
 OTHER INTRINSICS
---------------------------------------------------------------------------------
+================================================================================
 
     All intrinsics that did not fit in the previous categories.
 
