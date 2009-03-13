@@ -503,6 +503,19 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+# heavy unoptimized GDB  debugging mode
+AC_ARG_ENABLE(heavy-gdb-debug, [[  --enable-heavy-gdb-debug          Enable debug messages with GDB symbols [default no]]],,enable_heavy_gdb_debug=no)
+AC_MSG_CHECKING(whether to enable unoptimized debugging mode with GDB symbols)
+if test x$enable_heavy_gdb_debug = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(DEBUG, 1, [Enable unoptimized debug mode plus GDB symbols])
+	DEBUG_FLAGS="-ggdb3"
+	CXXFLAGS="-O0"
+	CFLAGS="-O0"
+else
+	AC_MSG_RESULT(no)
+fi
+
 # SDL parachute?
 AC_ARG_ENABLE(sdl-parachute,    [[  --enable-sdl-parachute  Use SDL parachute [default yes]]],,enable_sdl_parachute=yes)
 AC_MSG_CHECKING(if we should disable the SDL parachute)
