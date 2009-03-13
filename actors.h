@@ -579,6 +579,7 @@ public:
 	// Should be virtual???
 	void cache_out();
 	bool in_usecode_control() const;
+	bool quake_on_walk();
 	};
 
 /*

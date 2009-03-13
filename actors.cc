@@ -191,20 +191,27 @@ inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
 	{ return ((((i&16)/8) - ((i&32)/32)) + 4)%4; }
 
-/*
- *	Provide attribute/value pairs.
+/**
+ *	Provides attribute/value pairs.
  */
 class Actor_attributes
 	{
-	static std::set<string> *strings;	// So names get shared.
+	/// The attribute names. These are shared among all actors.
+	static std::set<string> *strings;
 	typedef std::map<const char *,int> Att_map;
+	/// The attribute name > value map.
 	Att_map map;
 public:
+	///	Basic constructor. Initializes the attribute names.
 	Actor_attributes()
 		{
 		if (!strings)
 			strings = new std::set<string>;
 		}
+	///	Sets an attribute's value and, if needed, adds it to
+	///	the attribute name list.
+	///	@param nm The name of the attribute to be set.
+	///	@param val Value to set the attribute to.
 	void set(const char *nm, int val)
 		{
 		std::set<string>::iterator siter = strings->find(nm);
@@ -213,6 +220,10 @@ public:
 		nm = (*siter).c_str();
 		map[nm] = val;
 		}
+	///	Gets an attribute's value, if it is in the list.
+	///	@param nm The name of the attribute to be gotten.
+	///	@return val Current value of the attribute, or
+	///	zero if the attribute is not on the list.
 	int get(const char *nm)		// Returns 0 if not set.
 		{
 		std::set<string>::const_iterator siter = strings->find(nm);
@@ -222,6 +233,8 @@ public:
 		Att_map::const_iterator it = map.find(nm);
 		return it == map.end() ? 0 : (*it).second;
 		}
+	///	Gets all attributes for the current actor.
+	///	@param attlist (name, value) vector containig all attributes.
 	void get_all(std::vector<std::pair<const char *,int> >& attlist)
 		{
 		Att_map::const_iterator it;
@@ -231,8 +244,9 @@ public:
 	};
 std::set<string> *Actor_attributes::strings = 0;
 
-/*
+/**
  *	Get/create timers.
+ *	@return
  */
 
 Npc_timer_list *Actor::need_timers
@@ -244,8 +258,8 @@ Npc_timer_list *Actor::need_timers
 	return timers;
 	}
 
-/*
- *	Initialize.
+/**
+ *	Initialize frames, properties and spots.
  */
 
 void Actor::init
@@ -261,10 +275,11 @@ void Actor::init
 		spots[i] = 0;
 	}
 
-/*
+/**
  *	Find (best) ammo of given type.
- *
- *	Output:	->object if found.
+ *	@param family Desired ammo family shape.
+ *	@param needed Minimum quantity needed.
+ *	@return Pointer to object, if found.
  */
 
 Game_object *Actor::find_best_ammo
@@ -306,9 +321,13 @@ Game_object *Actor::find_best_ammo
 	return best;
 	}
 
-/*
+/**
  *	Get effective maximum range for weapon taking in consideration
  *	the actor's strength and combat.
+ *	@param winf Pointer to weapon information of the current weapon,
+ *	or null for no weapon.
+ *	@param reach Weapon reach, or -1 to use weapon's.
+ *	@return Weapon's effective range.
  */
 int Actor::get_effective_range
 	(
@@ -348,16 +367,17 @@ int Actor::get_effective_range
 		}
 	}
 
-/*
+/**
  *	Find ammo used by weapon.
- *
- *	Output:	->object if found. Additionally, is_readied is set to
- *	true if the ammo is readied.
+ *	@param weapon The weapon shape.
+ *	@param needed Minimum quantity needed.
+ *	@param recursive Whether or not to search inside backpacks and bags.
+ *	@return Pointer to object if found.
  */
 
 Game_object *Actor::find_weapon_ammo
 	(
-	int weapon,			// Weapon shape.
+	int weapon,
 	int needed,
 	bool recursive
 	)
@@ -402,8 +422,9 @@ Game_object *Actor::find_weapon_ammo
 	return recursive ? Container_game_object::find_weapon_ammo(weapon) : 0;
 	}
 
-/*
+/**
  *	Swap new ammo with old.
+ *	@param newammo Pointer to new ammo object.
  */
 
 void Actor::swap_ammo
@@ -422,9 +443,14 @@ void Actor::swap_ammo
 		add(aobj, 1);
 	}
 
-/*
+/**
  *	Recursivelly searches for ammunition for a given weapon, if needed.
- *	Output: true if the weapon can be used, ammo -> to best ammunition.
+ *	@param npc The NPC to be searched.
+ *	@param bobj The weapon we want to check.
+ *	@param ammo Optional pointer that receives a pointer to the best ammunition
+ *	found for the given weapon.
+ *	@param recursive Whether or not to search inside backpacks and bags.
+ *	@return true if the weapon can be used, ammo is pointer to best ammunition.
  */
 
 static inline bool Is_weapon_usable
@@ -458,10 +484,9 @@ static inline bool Is_weapon_usable
 	return true;
 	}
 
-/*
+/**
  *	Ready ammo for weapon being carried.
- *
- *	Output:	true if successful.
+ *	@return	Returns true if successful.
  */
 
 bool Actor::ready_ammo
@@ -500,9 +525,9 @@ bool Actor::ready_ammo
 	return true;
 	}
 
-/*
+/**
  *	If no shield readied, look through all possessions for the best one.
- *	Output:	true if successful.
+ *	@return Returns true if successful.
  */
 
 bool Actor::ready_best_shield
@@ -552,9 +577,9 @@ bool Actor::ready_best_shield
 	}
 
 
-/*
+/**
  *	If no weapon readied, look through all possessions for the best one.
- *	Output:	true if successful.
+ *	@return Returns true if successful.
  */
 
 bool Actor::ready_best_weapon
@@ -631,8 +656,8 @@ bool Actor::ready_best_weapon
 	return true;
 	}
 
-/*
- *	Try to store the weapon.
+/**
+ *	Try to store the readied weapon.
  */
 
 void Actor::unready_weapon
@@ -653,6 +678,11 @@ void Actor::unready_weapon
 		}
 	}
 
+/**
+ *	Get effective weapon shape, taking casting frames in consideration.
+ *	@return The shape to be displayed in-hand.
+ */
+
 int Actor::get_effective_weapon_shape
 	(
 	)
@@ -667,10 +697,9 @@ int Actor::get_effective_weapon_shape
 		}
 	}
 
-/*
+/**
  *	Add dirty rectangle(s).
- *
- *	Output:	0 if not on screen.
+ *	@return	Returns 0 if not on screen.
  */
 int Actor::add_dirty
 	(
@@ -707,8 +736,9 @@ int Actor::add_dirty
 	return 1;
 	}
 
-/*
+/**
  *	Change the frame and set to repaint areas.
+ *	@param frnum The new frame.
  */
 
 void Actor::change_frame
@@ -731,10 +761,12 @@ void Actor::change_frame
 	add_dirty(1);			// Set to repaint new.
 	}
 
-/*
+/**
  *	See if it's blocked when trying to move to a new tile.
- *
- *	Output: 1 if so, else 0.
+ *	@param t Tile to step to. Tz is possibly updated by this function.
+ *	@param f Pointer to tile we are stepping from, or null for current tile.
+ *	@param move_flags Additional movement flags to consider for step.
+ *	@return Returns 1 if so, else 0.
  */
 
 int Actor::is_blocked
@@ -766,8 +798,10 @@ int Actor::is_blocked
 			f ? *f : get_tile(), t, move_flags | get_type_flags());
 	}
 
-/*
- *	An object which blocks the destination tile.
+/**
+ *	Finds an object which blocks the destination tile.
+ *	@param tile The (blocked) tile to check.
+ *	@param dir Direction we are stepping from.
  */
 
 Game_object *Actor::find_blocking
@@ -808,8 +842,14 @@ Game_object *Actor::find_blocking
 	return 0;
 	}
 
-/*
+/**
  *	Move an object, and possibly change its shape too.
+ *	@param old_chunk The actor's old chunk.
+ *	@param new_chunk The chunk to which the actor is moving.
+ *	@param new_sx New x coordinate.
+ *	@param new_sy New y coordinate.
+ *	@param new_frame The new frame.
+ *	@param new_lift The new z coordinate.
  */
 inline void Actor::movef
 	(
@@ -829,16 +869,20 @@ inline void Actor::movef
 	new_chunk->add(this);
 	}
 
-/*
+/**
  *	Create character.
+ *	@param nm The actor's name.
+ *	@param shapenum The initial shape.
+ *	@param num The NPC's number from npc.dat.
+ *	@param uc The usecofe function to use.
  */
 
 Actor::Actor
 	(
 	const std::string &nm, 
 	int shapenum, 
-	int num,			// NPC # from npc.dat.
-	int uc				// Usecode #.
+	int num,
+	int uc
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    usecode_assigned(false), unused(false),
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
@@ -860,8 +904,8 @@ Actor::Actor
 	frames = &npc_frames[0];	// Default:  5-frame walking.
 	}
 
-/*
- *	Delete.
+/**
+ *	Deletes actor.
  */
 
 Actor::~Actor
@@ -874,6 +918,11 @@ Actor::~Actor
 	delete timers;
 	delete atts;
 	}
+
+/**
+ *	Goes through the actor's readied gear and caches powers
+ *	and immunities.
+ */
 
 void Actor::refigure_gear()
 	{
@@ -895,7 +944,7 @@ void Actor::refigure_gear()
 	gear_powers = powers;
 	}
 
-/*
+/**
  *	Decrement food level and print complaints if it gets too low.
  *	NOTE:  Should be called every hour.
  */
@@ -926,13 +975,15 @@ void Actor::use_food
 			say(first_hunger, first_hunger + 2);
 	}
 
-/*
+/**
  *	Periodic check for freezing.
+ *	@param freeze True if the actor is freezing. This is usually the
+ *	Avatar's freeze flag.
  */
 
 void Actor::check_temperature
 	(
-	bool freeze			// Avatar's flag applies to party.
+	bool freeze
 	)
 	{
 	if (!freeze)			// Not in a cold area?
@@ -4508,14 +4559,7 @@ int Main_actor::step
 					//   it may teleport.)
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 						oldtile.tx, oldtile.ty);
-	if (get_info().quake_on_walk())
-		{
-		qsteps = (qsteps + 1)%5;
-		if (!qsteps)		// Time to roll?
-			gwin->get_tqueue()->add(Game::get_ticks() + 10,
-					new Earthquake(2), 0L);
-		}
-	return (1);
+	quake_on_walk();
 	}
 
 /*
@@ -4729,6 +4773,25 @@ int Actor::get_shape_real
 		return Shapeinfo_lookup::GetMaleAvShape();
 	}
 
+/**
+ *	Causes earthquake on step if the actor flag is set.
+ *	@return: True if flag is caused quake on walk, false otherwise.
+ */
+
+inline bool Actor::quake_on_walk
+	(
+	)
+	{
+	if (get_info().quake_on_walk())
+		{
+		qsteps = (qsteps + 1)%5;
+		if (!qsteps)		// Time to roll?
+			gwin->get_tqueue()->add(Game::get_ticks() + 10,
+					new Earthquake(2), 0L);
+		return true;
+		}
+	return false;
+	}
 /*
  *	Create NPC.
  */
@@ -5174,13 +5237,7 @@ int Npc_actor::step
 		dormant = true;
 		return (0);
 		}
-	if (get_info().quake_on_walk())
-		{
-		qsteps = (qsteps + 1)%5;
-		if (!qsteps)		// Time to roll?
-			gwin->get_tqueue()->add(Game::get_ticks() + 10,
-					new Earthquake(2), 0L);
-		}
+	quake_on_walk();
 	return (1);			// Add back to queue for next time.
 	}
 

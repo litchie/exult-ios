@@ -55,7 +55,7 @@ using std::cerr;
 using std::endl;
 
 Shape_info::Shape_info() : weight(0), volume(0),
-		ready_type(0), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
+		ready_type(-1), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
 		spell_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
 		container_gump(-1), monster_food(-1), mountain_top(0),
@@ -70,7 +70,7 @@ Shape_info::Shape_info() : weight(0), volume(0),
  *	Not supported:
  */
 Shape_info::Shape_info(const Shape_info & other) : weight(0), volume(0),
-		ready_type(0), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
+		ready_type(-1), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
 		spell_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
 		container_gump(-1), monster_food(-1), mountain_top(0),

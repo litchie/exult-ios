@@ -23,6 +23,8 @@
 	* shapes/shapevga.cc, shapewrite.cc: The classes Functor_data_reader and
 	  Functor_data_writer required too much information they didn't use; this
 	  information is now required by the functors they use.
+	* Fixed bug on monsters and quake-on-walk. Fixed incorrect initial values
+	  of ready types. Some Doxygenification.
 
 2009-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed recently-introduced bug in npc_nearby intrinsic.

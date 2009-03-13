@@ -34,6 +34,7 @@
 #include "game.h"
 #include "effects.h"
 #include "ucmachine.h"
+#include "actors.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::rand;
@@ -363,6 +364,7 @@ int Monster_actor::step
 		dormant = true;
 		return (0);
 		}
+	quake_on_walk();
 	return (1);			// Add back to queue for next time.
 	}
 
