@@ -743,7 +743,6 @@ void Shapes_vga_file::read_info
 		&Shape_info::container_gump, 0> > container(info, true);
 	container.read(CONTAINER, false, bg);
 	container.read(PATCH_CONTAINER, true, bg);
-
 	Functor_data_reader<ready_type_flag, Readytype_reader_functor> ready(info);
 	ready.read(READY, false, bg);
 	ready.read(PATCH_READY, true, bg);
@@ -751,6 +750,16 @@ void Shapes_vga_file::read_info
 	Read_Shapeinf_text_data_file(editing, game);
 	Read_Bodies_text_data_file(editing, game);
 	Read_Paperdoll_text_data_file(editing, game);
+
+	// Ensure valid ready spots for all shapes.
+	zinfo.ready_type = bg ? backpack : rhand;
+	for (std::map<int, Shape_info>::iterator it = info.begin();
+			it != info.end(); ++it)
+		{
+		Shape_info& inf = it->second;
+		if (inf.ready_type < 0)
+			inf.ready_type = bg ? backpack : rhand;
+		}
 	}
 
 /*
