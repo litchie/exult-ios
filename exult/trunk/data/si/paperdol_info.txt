@@ -95,7 +95,7 @@
 #trans: 1 if the shape is translucent, 0 otherwise
 #spot: Where it should go. Takes one of the following values:
 #		head = 0
-#		back = 1
+#		backpack = 1
 #		belt = 2
 #		lhand = 3
 #		lfinger = 4
@@ -104,15 +104,15 @@
 #		rfinger = 7
 #		rhand = 8
 #		torso = 9
-#		neck = 10
-#		ammo = 11
-#		back2h_spot = 12		SI (2 Handed weapons, Bedroll, Bodies)
-#		shield_spot = 13		SI (Shield behind Backpack)
-#		ears_spot = 14			SI
-#		cloak_spot = 15			SI
-#		hands2_spot = 16		SI (gloves, gauntlets)
-#		ucont_spot = 17			Usecode Container
-#		special_spot = 102		Special:  SI non placeable
+#		amulet = 10
+#		quiver = 11
+#		back2h_spot = 12		2 handed weapons, bedroll, bodies
+#		back_shield = 13		Shield behind backpack
+#		earrings = 14
+#		cloak = 15
+#		gloves = 16				Gloves, gauntlets
+#		ucont = 17				Usecode Container
+#		cloak_clasp = 102
 #type: For two-handed weapons, the frame to use for arms when equipped in lhand spot.
 #		For headgear, the frame to use for the head when equipped in head spot.
 #		Unused for all other spots/item types.

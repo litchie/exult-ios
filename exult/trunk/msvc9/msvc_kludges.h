@@ -342,6 +342,7 @@ using std::getline;
 #include "../shapes/effhpinf.h"
 #include "../shapes/expinf.h"
 #include "../shapes/frnameinf.h"
+#include "../shapes/frpowers.h"
 #include "../shapes/monstinf.h"
 #include "../shapes/npcdollinf.h"
 #include "../shapes/objdollinf.h"

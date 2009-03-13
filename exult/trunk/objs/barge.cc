@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsched.h"
 #include "cheat.h"
 #include "exult.h"
+#include "shapeinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -293,7 +294,6 @@ void Barge_object::gather
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
 	int cx, cy;
-	bool si = Game::get_game_type() == SERPENT_ISLE;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
@@ -319,14 +319,11 @@ void Barge_object::gather
 				(t.tz < lift + 5 && t.tz >= lift /*+++ + 1 */)))
 				{
 				objects.push_back(obj);
-				if (si)
-					{
-					if (obj->get_shapenum() == 0x1f8)
-						ice_raft = true;
-					// Kludge for SI turtle.
-					else if (obj->get_shapenum() == 0xd7)
-						xtiles = 20;
-					}
+				int btype = obj->get_info().get_barge_type();
+				if (btype == Shape_info::barge_raft)
+					ice_raft = true;
+				else if (btype == Shape_info::barge_turtle)
+					xtiles = 20;
 				}
 			}
 		}
@@ -571,7 +568,7 @@ void Barge_object::done
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = objects[i];
-			if (obj->get_shapenum() == 251 &&
+			if (obj->get_info().get_barge_type() == Shape_info::barge_sails &&
 			    (obj->get_framenum()&7) < 4)
 				{
 				obj->activate();
@@ -682,12 +679,12 @@ void Barge_object::move
 		if (!taking_2nd_step)
 			{		// Animate a few shapes.
 			int frame = obj->get_framenum();
-			switch (obj->get_shapenum())
+			switch (obj->get_info().get_barge_type())
 				{
-			case 774:		// Cart wheel.
+				case Shape_info::barge_wheel:		// Cart wheel.
 				obj->set_frame(((frame + 1)&3)|(frame&32));
 				break;
-			case 796:		// Draft horse.
+			case Shape_info::barge_draftanimal:		// Draft horse.
 				obj->set_frame(((frame + 4)&15)|(frame&32));
 				break;
 				}

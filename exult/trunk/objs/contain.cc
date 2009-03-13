@@ -300,18 +300,8 @@ int Container_game_object::create_quantity
 		return delta;
 			// Usecode container?
 	Shape_info& info = ShapeID::get_info(get_shapenum());
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
-		if (type == usecode_container_si)
-			return delta;
-		}
-	else if (Game::get_game_type() == BLACK_GATE)
-		{
-		Ready_type type = (Ready_type) info.get_ready_type();
-		if (type == usecode_container_bg)
-			return delta;
-		}
+	if (info.get_ready_type() == ucont)
+		return delta;
 	Shape_info& shp_info = ShapeID::get_info(shnum);
 	if (!shp_info.has_quality())	// Not a quality object?
 		qual = c_any_qual;	// Then don't set it.
