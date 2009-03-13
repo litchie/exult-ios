@@ -51,6 +51,7 @@
 #include "egg.h"
 #include "monsters.h"
 #include "monstinf.h"
+#include "frpowers.h"
 #include "actions.h"
 #include "ucscriptop.h"
 #include "ucfunction.h"
@@ -1986,7 +1987,7 @@ USECODE_INTRINSIC(set_timer)
 
 USECODE_INTRINSIC(wearing_fellowship)
 {
-	Game_object *obj = gwin->get_main_actor()->get_readied(Actor::neck);
+	Game_object *obj = gwin->get_main_actor()->get_readied(neck);
 	if (obj && obj->get_shapenum() == 955 && obj->get_framenum() == 1)
 		return Usecode_value(1);
 	else
@@ -2098,106 +2099,6 @@ USECODE_INTRINSIC(reduce_health)
 	return no_ret;
 }
 
-/*
- *	Convert BG Usecode spot # to ours (or -1 if not found).
- */
-
-static int Get_spot_bg(int ucspot)
-	{
-	int spot;
-	// All where verified in BG.
-	switch (ucspot)
-		{
-	case other:
-		spot = Actor::back; break;
-	case one_handed_weapon:
-		spot = Actor::lhand; break;
-	case off_hand:
-		spot = Actor::rhand; break;
-	case belt_bg:
-		spot = Actor::belt; break;
-	case neck_armor:
-		spot = Actor::neck; break;
-	case torso_armor:
-		spot = Actor::torso; break;
-	case ring:
-		spot = Actor::lfinger; break;
-	case ring2:
-		spot = Actor::rfinger; break;
-	case ammunition:
-		spot = Actor::ammo; break;
-	case head_armor:
-		spot = Actor::head; break; 
-	case leg_armor:
-		spot = Actor::legs; break;
-	case foot_armor:
-		spot = Actor::feet; break;
-	case usecode_container_bg:
-		spot = Actor::ucont_spot; break;
-	default:
-		cerr << "Readied: spot #" << ucspot <<
-					" not known yet" << endl;
-		spot = -1;
-		break;
-		}
-	return spot;
-	}
-
-/*
- *	Convert SI Usecode spot # to ours (or -1 if not found).
- */
-
-static int Get_spot_si(int ucspot)
-	{
-	int spot;
-	// All where verified in SI.
-	switch (ucspot)
-		{
-	case other_si:
-		spot = Actor::rhand; break;
-	case one_handed_si:
-		spot = Actor::lhand; break;
-	case cloak_si:
-		spot = Actor::cloak_spot; break;
-	case amulet_si:
-		spot = Actor::neck; break;
-	case helm_si:
-		spot = Actor::head; break;
-	case gloves_si:
-		spot = Actor::hands2_spot; break;
-	case usecode_container_si:
-		spot = Actor::ucont_spot; break;
-	case ring2_si:
-		spot = Actor::rfinger; break;
-	case ring_si:
-		spot = Actor::lfinger; break;
-	case earrings_si:
-		spot = Actor::ears_spot; break; 
-	case ammo_si:
-		spot = Actor::ammo; break;
-	case belt_si:
-		spot = Actor::belt; break;
-	case armour_si:
-		spot = Actor::torso; break; 
-	case boots_si:
-		spot = Actor::feet; break;
-	case leggings_si:
-		spot = Actor::legs; break;
-	case backpack_si:
-		spot = Actor::back; break; 
-	case back_shield_si:
-		spot = Actor::shield_spot; break;
-	case back_2h_si:
-		spot = Actor::back2h_spot; break;
-	default:
-		cerr << "Readied: spot #" << ucspot <<
-					" not known yet" << endl;
-		spot = -1;
-		break;
-		}
-	return spot;
-	}
-
 USECODE_INTRINSIC(is_readied)
 {
 	// is_readied(npc, where, itemshape, frame (-359=any)).
@@ -2225,14 +2126,16 @@ USECODE_INTRINSIC(is_readied)
 	int shnum = parms[2].get_int_value();
 	int frnum = parms[3].get_int_value();
 					// Spot defined in Actor class.
-	int spot = GAME_BG ? Get_spot_bg(where) : Get_spot_si(where);
-	if (spot >= 0)
+	int spot = GAME_BG ? Ready_spot_from_BG(where) : Ready_spot_from_SI(where);
+	if (spot >= 0 && spot <= ucont)
 		{			// See if it's the right one.
 		Game_object *obj = npc->get_readied(spot);
 		if (obj && obj->get_shapenum() == shnum &&
 		    (frnum == c_any_framenum || obj->get_framenum() == frnum))
 			return Usecode_value(1);
 		}
+	else if (spot < 0)
+		cerr << "Readied: invalid spot #: " << spot << endl;
 	return Usecode_value(0);
 }
 
@@ -2264,9 +2167,11 @@ USECODE_INTRINSIC(get_readied)
 		return Usecode_value(0);
 	int where = parms[1].get_int_value();
 					// Spot defined in Actor class.
-	int spot = GAME_BG ? Get_spot_bg(where) : Get_spot_si(where);
-	if (spot >= 0)
+	int spot = GAME_BG ? Ready_spot_from_BG(where) : Ready_spot_from_SI(where);
+	if (spot >= 0 && spot <= ucont)
 		return Usecode_value(npc->get_readied(spot));
+	else if (spot < 0)
+		cerr << "Readied: invalid spot #: " << spot << endl;
 	return Usecode_value(0);
 }
 
@@ -2296,11 +2201,11 @@ USECODE_INTRINSIC(start_speech)
 			Actor *ava = gwin->get_main_actor();
 			face = 300;	// Translucent.
 					// Wearing serpent ring?
-			Game_object *obj = ava->get_readied(Actor::lfinger);
+			Game_object *obj = ava->get_readied(lfinger);
 			if (obj && obj->get_shapenum() == 0x377 &&
 					obj->get_framenum() == 1)
 				face = 295;	// Solid.
-			else if ((obj = ava->get_readied(Actor::rfinger))!=0 &&
+			else if ((obj = ava->get_readied(rfinger))!=0 &&
 					obj->get_shapenum() == 0x377 &&
 					obj->get_framenum() == 1)
 				face = 295;	// Solid.
@@ -2597,13 +2502,17 @@ USECODE_INTRINSIC(get_item_flag)
 		}
 	else if (fnum == (int) Obj_flags::immunities)
 		{
+		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
-		return Usecode_value(inf != 0 && inf->power_safe());
+		return Usecode_value((inf != 0 && inf->power_safe()) ||
+				npc && npc->check_gear_powers(Frame_powers::power_safe));
 		}
 	else if (fnum == (int) Obj_flags::cant_die)
 		{
+		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
-		return Usecode_value(inf != 0 && inf->death_safe());
+		return Usecode_value((inf != 0 && inf->death_safe()) ||
+				npc && npc->check_gear_powers(Frame_powers::death_safe));
 		}
 					// +++++0x18 is used in testing for
 					//   blocked gangplank. What is it?????

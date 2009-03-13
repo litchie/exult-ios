@@ -36,12 +36,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
+#include "frpowers.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
 #include "sfxinf.h"
 #include "warminf.h"
 #include "weaponinf.h"
+#include "ready.h"
 
 #include "utils.h"
 #include <vector>
@@ -53,11 +55,12 @@ using std::cerr;
 using std::endl;
 
 Shape_info::Shape_info() : weight(0), volume(0),
-	ready_type(0), occludes_flag(false), weapon_offsets(0), 
-	armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
-	explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
-	monster_food(-1), actor_flags(0), shape_flags(0), modified_flags(0),
-	frompatch_flags(0), have_static_flags(0)
+		ready_type(0), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
+		spell_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
+		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
+		container_gump(-1), monster_food(-1), mountain_top(0),
+		barge_type(0), actor_flags(0), shape_flags(0),
+		modified_flags(0), frompatch_flags(0), have_static_flags(0)
 	{
 	tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 	dims[0] = dims[1] = dims[2] = 0;
@@ -67,11 +70,12 @@ Shape_info::Shape_info() : weight(0), volume(0),
  *	Not supported:
  */
 Shape_info::Shape_info(const Shape_info & other) : weight(0), volume(0),
-		ready_type(0), occludes_flag(false), weapon_offsets(0), 
-		armor(0), weapon(0), ammo(0), monstinf(0), sfxinf(0), aniinf(0),
-		explosion(0), body(0), npcpaperdoll(0), container_gump(-1),
-		monster_food(-1), actor_flags(0), shape_flags(0), modified_flags(0),
-		frompatch_flags(0), have_static_flags(0)
+		ready_type(0), alt_ready1(-1), alt_ready2(-1), occludes_flag(false),
+		spell_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
+		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
+		container_gump(-1), monster_food(-1), mountain_top(0),
+		barge_type(0), actor_flags(0), shape_flags(0),
+		modified_flags(0), frompatch_flags(0), have_static_flags(0)
 	{ copy(other); }
 const Shape_info & Shape_info::operator = (const Shape_info & other)
 	{ copy(other); return *this; }
@@ -118,11 +122,16 @@ void Shape_info::copy
 	shpdims[0] = inf2.shpdims[0];
 	shpdims[1] = inf2.shpdims[1];
 	ready_type = inf2.ready_type;
+	alt_ready1 = inf2.alt_ready1;
+	alt_ready2 = inf2.alt_ready2;
+	spell_flag = inf2.spell_flag;
 	occludes_flag = inf2.occludes_flag;
 	container_gump = inf2.container_gump;
-	shape_flags = inf2.shape_flags;
 	monster_food = inf2.monster_food;
+	mountain_top = inf2.mountain_top;
+	barge_type = inf2.barge_type;
 	actor_flags = inf2.actor_flags;
+	shape_flags = inf2.shape_flags;
 	modified_flags = inf2.modified_flags;
 	frompatch_flags = inf2.frompatch_flags;
 	have_static_flags = inf2.have_static_flags;
@@ -152,6 +161,7 @@ void Shape_info::copy
 	if (!skip_dolls || objpaperdoll.empty())
 		copy_vector_info(inf2.objpaperdoll, objpaperdoll);
 	copy_vector_info(inf2.hpinf, hpinf);
+	copy_vector_info(inf2.frpowerinf, frpowerinf);
 	copy_vector_info(inf2.cntrules, cntrules);
 	copy_vector_info(inf2.nameinf, nameinf);
 	copy_vector_info(inf2.warminf, warminf);
@@ -332,6 +342,31 @@ void Shape_info::add_frame_name_info(Frame_name_info& add)
 	add_vector_info(add, nameinf);
 	}
 
+bool Shape_info::has_frame_powers() const
+	{
+	return frpowerinf.size() != 0;
+	}
+
+std::vector<Frame_powers_info>& Shape_info::set_frame_powers(bool tf)
+	{
+	return set_vector_info(tf, frpowerinf);
+	}
+
+void Shape_info::clean_invalid_frame_powers()
+	{
+	return clean_vector(frpowerinf);
+	}
+
+void Shape_info::clear_frame_powers()
+	{
+	frpowerinf.clear();
+	}
+
+void Shape_info::add_frame_powers(Frame_powers_info& add)
+	{
+	add_vector_info(add, frpowerinf);
+	}
+
 bool Shape_info::has_warmth_info() const
 	{
 	return warminf.size() != 0;
@@ -430,6 +465,14 @@ Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot)
 		return 0;	// No warmth.
 	Paperdoll_item inf;
 	inf.world_frame = frame;
+	if (spot == both_hands)
+		spot = lhand;
+	else if (spot == lrgloves)
+		spot = lfinger;
+	else if (spot == neck)
+		spot = amulet;
+	else if (spot == scabbard)
+		spot = belt;
 	inf.spot = spot;
 	vector<Paperdoll_item>::iterator it;
 		// Try finding exact match first.
@@ -474,6 +517,13 @@ static T *Search_vector_data_single_wildcard
 		return 0;
 	else	// At last!
 		return &*it;
+	}
+
+int Shape_info::get_object_powers(int frame)
+	{
+	Frame_powers_info *inf = Search_vector_data_single_wildcard(frpowerinf,
+			frame, &Frame_powers_info::frame);
+	return inf ? inf->powers : 0;	// Default to no powers.
 	}
 
 bool Shape_info::is_shape_accepted(int shape)

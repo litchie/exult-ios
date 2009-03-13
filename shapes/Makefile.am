@@ -44,6 +44,8 @@ libshapes_la_SOURCES = \
 	expinf.h	\
 	frnameinf.cc	\
 	frnameinf.h	\
+	frpowers.cc	\
+	frpowers.h	\
 	monstinf.cc	\
 	monstinf.h	\
 	npcdollinf.cc	\

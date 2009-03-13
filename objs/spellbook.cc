@@ -133,11 +133,11 @@ bool Spellbook_object::has_ring
 	// ++++TAG: De-hard-code this.
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{
-		Game_object *obj = act->get_readied(Actor::lfinger);
+		Game_object *obj = act->get_readied(lfinger);
 		if (obj && obj->get_shapenum() == 0x128 &&
 						obj->get_framenum() == 3)
 			return true;
-		obj = act->get_readied(Actor::rfinger);
+		obj = act->get_readied(rfinger);
 		if (obj && obj->get_shapenum() == 0x128 &&
 						obj->get_framenum() == 3)
 			return true;

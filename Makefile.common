@@ -56,12 +56,14 @@ GUMPS_OBJS= Actor_gump.o AudioOptions_gump.o Book_gump.o CombatOptions_gump.o \
 	Slider_gump.o Spellbook_gump.o Stats_gump.o Text_button.o Text_gump.o \
 	VideoOptions_gump.o Yesno_gump.o
 
-IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o hq2x.o imagewin.o imagescl.o iwin8.o \
-	savepcx.o
+IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o imagewin.o iwin8.o savepcx.o \
+	scale_gl.o scale_2x.o scale_2xSaI.o scale_bilinear.o scale_hq2x.o scale_hq3x.o \
+	scale_interlace.o scale_point.o
 
 SHAPES_OBJS=font.o fontvga.o items.o miscinf.o shapeinf.o shapevga.o u7drag.o \
 	vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o expinf.o \
-	frnameinf.o monstinf.o npcdollinf.o objdollinf.o sfxinf.o warminf.o weaponinf.o
+	frnameinf.o monstinf.o npcdollinf.o objdollinf.o sfxinf.o warminf.o weaponinf.o \
+	frpowers.o
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o  contain.o egg.o iregobjs.o \
 	jawbone.o mappatch.o objiter.o objnames.o objs.o spellbook.o virstone.o

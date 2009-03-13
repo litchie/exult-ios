@@ -37,6 +37,7 @@ class Paperdoll_npc;
 class Paperdoll_item;
 class Effective_hp_info;
 class Frame_name_info;
+class Frame_powers_info;
 class Warmth_info;
 class Content_rules;
 class Shapes_vga_file;
@@ -49,15 +50,19 @@ class Shapes_vga_file;
 #include "baseinf.h"
 #include "utils.h"
 
-template <typename T, T Shape_info::*data, int flag, typename Functor>
+template <int flag, class Functor>
 class Functor_data_reader;
+class Readytype_reader_functor;
+class Altreadytype_reader_functor;
 class Actor_flags_reader;
 template <typename T, T *Shape_info::*data>
 class Class_data_reader;
 template <typename T, std::vector<T> Shape_info::*data>
 class Vector_data_reader;
-template <typename T, T Shape_info::*data, int flag, typename Functor>
+template <int flag, class Functor>
 class Functor_data_writer;
+class Readytype_writer_functor;
+class Altreadytype_writer_functor;
 template <typename T, T *Shape_info::*data>
 class Class_data_writer;
 template <typename T, std::vector<T> Shape_info::*data>
@@ -75,7 +80,9 @@ enum Data_flag_names
 	lightweight_flag = 0x80,
 	quantity_frames_flag = 0x100,
 	is_locked_flag = 0x200,
-	is_volatile_flag = 0x400
+	is_volatile_flag = 0x400,
+	altready_type_flag = 0x800,
+	barge_type_flag = 0x1000,
 	};
 
 /*
@@ -89,8 +96,10 @@ class Shape_info
 	unsigned char dims[3];		//   (x, y, z)
 	unsigned char weight, volume;	// From "wgtvol.dat".
 	unsigned char shpdims[2];	// From "shpdims.dat".
-	unsigned char ready_type;	// From "ready.dat":  where item can
-					//   be worn.
+	char ready_type;	// From "ready.dat": where item can be worn.
+	char alt_ready1;	// Alternate spot where item can be worn.
+	char alt_ready2;	// Second alternate spot where item can be worn.
+	bool spell_flag;		// Flagged as epsll in 'ready.dat'.
 	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
@@ -108,11 +117,13 @@ class Shape_info
 	std::vector<Paperdoll_item> objpaperdoll;
 	std::vector<Effective_hp_info> hpinf;
 	std::vector<Frame_name_info> nameinf;
+	std::vector<Frame_powers_info> frpowerinf;
 	std::vector<Warmth_info> warminf;
 	std::vector<Content_rules> cntrules;
 	short container_gump;		// From container.dat.
 	short monster_food;
 	short mountain_top;
+	short barge_type;
 	unsigned char actor_flags;
 	unsigned char shape_flags;
 		// For some non-class data (see Data_flag_names enum).
@@ -211,11 +222,12 @@ public:
 	enum Actor_flags
 		{
 		cold_immune = 0,
-		doenst_eat,
+		doesnt_eat,
 		teleports,
 		summons,
 		turns_invisible,
-		armageddon_safe
+		armageddon_safe,
+		quake_walk
 		};
 	enum Shape_flags
 		{
@@ -232,16 +244,30 @@ public:
 		normal_mountain_top,
 		snow_mountain_top
 		};
+	enum Barge_types
+		{
+		barge_generic = 0,
+		barge_raft,
+		barge_seat,
+		barge_sails,
+		barge_wheel,
+		barge_draftanimal,
+		barge_turtle
+		};
 	friend class Shapes_vga_file;	// Class that reads in data.
-	template <typename T, T Shape_info::*data, int flag, typename Functor>
+	template <int flag, class Functor>
 	friend class Functor_data_reader;
+	friend class Readytype_reader_functor;
+	friend class Altreadytype_reader_functor;
 	friend class Actor_flags_reader;
 	template <typename T, T *Shape_info::*data>
 	friend class Class_data_reader;
 	template <typename T, std::vector<T> Shape_info::*data>
 	friend class Vector_data_reader;
-	template <typename T, T Shape_info::*data, int flag, typename Functor>
+	template <int flag, class Functor>
 	friend class Functor_data_writer;
+	friend class Readytype_writer_functor;
+	friend class Altreadytype_writer_functor;
 	template <typename T, T *Shape_info::*data>
 	friend class Class_data_writer;
 	template <typename T, std::vector<T> Shape_info::*data>
@@ -367,6 +393,17 @@ public:
 	void add_frame_name_info(Frame_name_info& add);
 	Frame_name_info *get_frame_name(int frame, int quality);
 
+	bool has_frame_powers() const;
+	std::vector<Frame_powers_info>& get_frame_powers()
+		{ return frpowerinf; }
+	std::vector<Frame_powers_info>& set_frame_powers(bool tf);
+	void clean_invalid_frame_powers();
+	void clear_frame_powers();
+	void add_frame_powers(Frame_powers_info& add);
+	int get_object_powers(int frame);
+	int has_object_power(int frame, int p)
+		{ return (get_object_powers(frame)&(1 << p)) != 0; }
+
 	bool has_warmth_info() const;
 	std::vector<Warmth_info>& get_warmth_info()
 		{ return warminf; }
@@ -395,6 +432,17 @@ public:
 			{
 			modified_flags |= mountain_top_flag;
 			mountain_top = (short)sh;
+			}
+		}
+
+	int get_barge_type() const
+		{ return barge_type; }
+	void set_barge_type(int sh)
+		{
+		if (barge_type != (short)sh)
+			{
+			modified_flags |= barge_type_flag;
+			barge_type = (short)sh;
 			}
 		}
 
@@ -484,7 +532,7 @@ public:
 	bool is_cold_immune() const
 		{ return get_actor_flag(cold_immune); }
 	bool does_not_eat() const
-		{ return get_actor_flag(doenst_eat); }
+		{ return get_actor_flag(doesnt_eat); }
 	bool can_teleport() const
 		{ return get_actor_flag(teleports); }
 	bool can_summon() const
@@ -493,6 +541,8 @@ public:
 		{ return get_actor_flag(turns_invisible); }
 	bool survives_armageddon() const
 		{ return get_actor_flag(armageddon_safe); }
+	bool quake_on_walk() const
+		{ return get_actor_flag(quake_walk); }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum)
@@ -610,27 +660,37 @@ public:
 		{ return occludes_flag; }
 	void set_occludes(bool tf)
 		{ occludes_flag = tf; }
-	unsigned char get_ready_type()
-		{ return ready_type >> 3; }
-	void set_ready_type(unsigned char t)
+	char get_ready_type()
+		{ return ready_type; }
+	void set_ready_type(char t)
 		{
-		if (get_ready_type() != t)
+		if (ready_type != t)
 			{
 			modified_flags |= ready_type_flag;
-			ready_type = (t << 3) | (ready_type & 1);
+			ready_type = t;
 			}
 		}
 	bool is_spell()
-		{ return (ready_type & 1) != 0; }
+		{ return spell_flag; }
 	void set_is_spell(bool tf)
 		{
-		if (is_spell() != tf)
+		if (spell_flag != tf)
 			{
 			modified_flags |= ready_type_flag;
-			if (tf)
-				ready_type |= 1;
-			else
-				ready_type &= (unsigned char)(~1);
+			spell_flag = tf;
+			}
+		}
+	char get_alt_ready1()
+		{ return alt_ready1; }
+	char get_alt_ready2()
+		{ return alt_ready2; }
+	void set_alt_ready(unsigned char t1, unsigned char t2)
+		{
+		if (alt_ready1 != t1 || alt_ready2 != t2)
+			{
+			modified_flags |= altready_type_flag;
+			alt_ready1 = t1;
+			alt_ready2 = t2;
 			}
 		}
 	// Sets x to 255 if there is no weapon offset

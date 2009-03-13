@@ -126,7 +126,7 @@ ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 ES_SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o shapeinf.o shapevga.o \
 	shapewrite.o u7drag.o vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o \
 	continf.o effhpinf.o expinf.o frnameinf.o monstinf.o npcdollinf.o objdollinf.o \
-	sfxinf.o warminf.o weaponinf.o
+	sfxinf.o warminf.o weaponinf.o frpowers.o 
 
 MISC_OBJS=exultstudioico.o windrag.o
 

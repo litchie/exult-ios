@@ -10,13 +10,26 @@ libimagewin_la_SOURCES = \
 	ibuf8.h \
 	imagebuf.cc \
 	imagebuf.h \
-	imagescl.cc \
 	imagewin.cc \
 	imagewin.h \
 	iwin8.cc \
 	iwin8.h \
-	scale.h \
-	savepcx.cc
-
-EXTRA_DIST = \
-	scale.cc
+	savepcx.cc \
+	manip.h \
+	scale_gl.cc \
+	scale_2x.cc \
+	scale_2x.h \
+	scale_bilinear.cc \
+	scale_bilinear.h \
+	scale_hq2x.cc \
+	scale_hq2x.h \
+	scale_hq3x.cc \
+	scale_hq3x.h \
+	scale_hqnx.h \
+	scale_interlace.cc \
+	scale_interlace.h \
+	scale_point.cc \
+	scale_point.h \
+	scale_2xSaI.cc \
+	scale_2xSaI.h
+EXTRA_DIST =

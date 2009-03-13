@@ -34,6 +34,7 @@
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
+#include "frpowers.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
@@ -47,6 +48,7 @@
 #include "msgfile.h"
 #include "U7file.h"
 #include "exceptions.h"
+#include "ready.h"
 
 using std::ifstream;
 using std::ios;
@@ -147,58 +149,106 @@ public:
 		}
 	};
 
-template <typename T>
+template <typename T, T Shape_info::*data>
 class Text_reader_functor
 	{
 public:
 	int operator()(std::istream& in, int index, int version, bool patch, 
-			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+			bool bg, std::map<int, Shape_info>& info)
 		{
 		int shapenum = ReadInt(in);
-		info[shapenum].*pt = ReadInt(in);
+		info[shapenum].*data = ReadInt(in);
 		return shapenum;
 		}
 	};
 
-template <typename T, int bit>
+template <typename T, T Shape_info::*data, int bit>
 class Bit_text_reader_functor
 	{
 public:
 	int operator()(std::istream& in, int index, int version, bool patch, 
-			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+			bool bg, std::map<int, Shape_info>& info)
 		{
 		int shapenum = ReadInt(in);
 			// For backwards compatibility.
 		if (!patch || ReadInt(in, 1) != 0)
-			info[shapenum].*pt |= (1 << bit);
+			info[shapenum].*data |= (1 << bit);
 		return shapenum;
 		}
 	};
 
-template <typename T, int pad>
+template <typename T, T Shape_info::*data, unsigned pad>
 class Binary_reader_functor
 	{
 public:
 	int operator()(std::istream& in, int index, int version, bool patch, 
-			bool bg, std::map<int, Shape_info>& info, T Shape_info::*pt)
+			bool bg, std::map<int, Shape_info>& info)
 		{
 		int shapenum = Read2(in);
-		in.read((char *)(&(info[shapenum].*pt)), sizeof(T)/sizeof(char));
-		if (pad > 0)	// Skip some bytes.
+		in.read((char *)(&(info[shapenum].*data)), sizeof(T)/sizeof(char));
+		if (pad)	// Skip some bytes.
 			in.seekg(pad, std::ios::cur);
 		return shapenum;
 		}
 	};
 
-template <typename T, T Shape_info::*data, int flag,
-          class Functor = Text_reader_functor<T> >
+// Deviating case #1.
+class Readytype_reader_functor
+	{
+public:
+	int operator()(std::istream& in, int index, int version, bool patch, 
+			bool bg, std::map<int, Shape_info>& info)
+		{
+		int shapenum = Read2(in);
+		unsigned char ready = Read1(in);
+			// Skip some bytes.
+		in.seekg(6, std::ios::cur);
+
+		info[shapenum].spell_flag = ready&1;
+		ready = ready >> 3;
+		char spot = bg ? Ready_spot_from_BG(ready)
+		               : Ready_spot_from_SI(ready);
+		info[shapenum].ready_type = spot;
+				// Init alternate spots.
+		switch (spot)
+			{
+		case lfinger:
+			info[shapenum].alt_ready1 = rfinger;
+			break;
+		case lhand:
+			info[shapenum].alt_ready1 = rhand;
+			info[shapenum].alt_ready2 = belt;
+			break;
+		case both_hands:
+			info[shapenum].alt_ready1 = back_2h;
+			break;
+			}
+		return shapenum;
+		}
+	};
+
+// Deviating case #2.
+class Altreadytype_reader_functor
+	{
+public:
+	int operator()(std::istream& in, int index, int version, bool patch, 
+			bool bg, std::map<int, Shape_info>& info)
+		{
+		int shapenum = ReadInt(in);
+		info[shapenum].alt_ready1 = (char)ReadInt(in, -1);
+		info[shapenum].alt_ready2 = (char)ReadInt(in, -1);
+		return shapenum;
+		}
+	};
+
+template <int flag, class Functor>
 class Functor_data_reader : public Base_reader
 	{
 protected:
 	Functor reader;
 	virtual int read_data(istream& in, int index, int version, bool patch, bool bg)
 		{
-		int shapenum = reader(in, index, version, patch, bg, info, data);
+		int shapenum = reader(in, index, version, patch, bg, info);
 		if (patch)
 			info[shapenum].frompatch_flags |= flag;
 		return shapenum;
@@ -317,7 +367,6 @@ public:
 
 static void Read_text_data_file
 	(
-	map<int, Shape_info>& info,		// The info map.
 	const char *fname,				// Name of file to read, sans extension
 	Base_reader *parsers[],	// What to use to parse data.
 	const char *sections[],			// The names of the sections
@@ -398,36 +447,42 @@ void Shapes_vga_file::Read_Shapeinf_text_data_file
 			"usecode_events", "mountain_tops", "monster_food", "actor_flags",
 			"effective_hps", "lightweight_object", "warmth_data",
 			"quantity_frames", "locked_containers", "content_rules",
-			"volatile_explosive", "framenames"
+			"volatile_explosive", "framenames", "altready", "barge_type",
+			"frame_powers"
 			};
 	Base_reader *readers[] = {
 			new Class_data_reader<Explosion_info, &Shape_info::explosion>(info),
 			new Class_data_reader<SFX_info, &Shape_info::sfxinf>(info),
 			new Class_data_reader<Animation_info, &Shape_info::aniinf>(info),
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				usecode_events_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<usecode_events_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::usecode_events> >(info),
-			new Functor_data_reader<short, &Shape_info::mountain_top,
-				mountain_top_flag>(info),
-			new Functor_data_reader<short, &Shape_info::monster_food,
-				monster_food_flag>(info),
+			new Functor_data_reader<mountain_top_flag,
+				Text_reader_functor<short, &Shape_info::mountain_top> >(info),
+			new Functor_data_reader<monster_food_flag,
+				Text_reader_functor<short, &Shape_info::monster_food> >(info),
 			new Actor_flags_reader(info),
 			new Vector_data_reader<Effective_hp_info, &Shape_info::hpinf>(info),
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				lightweight_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<lightweight_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::lightweight> >(info),
 			new Vector_data_reader<Warmth_info, &Shape_info::warminf>(info),
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				quantity_frames_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<quantity_frames_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::quantity_frames> >(info),
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				is_locked_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<is_locked_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::is_locked> >(info),
 			new Vector_data_reader<Content_rules, &Shape_info::cntrules>(info),
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				is_volatile_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<is_volatile_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::is_volatile> >(info),
-			new Vector_data_reader<Frame_name_info, &Shape_info::nameinf>(info)
+			new Vector_data_reader<Frame_name_info, &Shape_info::nameinf>(info),
+			new Functor_data_reader<altready_type_flag,
+				Altreadytype_reader_functor >(info),
+			new Functor_data_reader<barge_type_flag,
+				Text_reader_functor<short, &Shape_info::barge_type> >(info),
+			new Vector_data_reader<Frame_powers_info, &Shape_info::frpowerinf>(info)
 			};
 	int numsections = sizeof(sections)/sizeof(sections[0]);
 	int numreaders = sizeof(readers)/sizeof(readers[0]);
@@ -435,7 +490,7 @@ void Shapes_vga_file::Read_Shapeinf_text_data_file
 	int flxres = game_type == BLACK_GATE ?
 			EXULT_BG_FLX_SHAPE_INFO_TXT : EXULT_SI_FLX_SHAPE_INFO_TXT;
 
-	Read_text_data_file(info, "shape_info", readers, sections,
+	Read_text_data_file("shape_info", readers, sections,
 			numsections, editing, game_type, flxres);
 	}
 
@@ -447,8 +502,8 @@ void Shapes_vga_file::Read_Bodies_text_data_file
 	{
 	const char *sections[] = {"bodyshapes", "bodylist"};
 	Base_reader *readers[] = {
-			new Functor_data_reader<unsigned char, &Shape_info::shape_flags,
-				is_body_flag, Bit_text_reader_functor<unsigned char,
+			new Functor_data_reader<is_body_flag,
+				Bit_text_reader_functor<unsigned char, &Shape_info::shape_flags,
 						Shape_info::is_body> >(info),
 			new Class_data_reader<Body_info, &Shape_info::body>(info)
 			};
@@ -458,7 +513,7 @@ void Shapes_vga_file::Read_Bodies_text_data_file
 	int flxres = game_type == BLACK_GATE ?
 			EXULT_BG_FLX_BODIES_TXT : EXULT_SI_FLX_BODIES_TXT;
 
-	Read_text_data_file(info, "bodies", readers, sections,
+	Read_text_data_file("bodies", readers, sections,
 			numsections, editing, game_type, flxres);
 	}
 
@@ -479,7 +534,7 @@ void Shapes_vga_file::Read_Paperdoll_text_data_file
 	int flxres = game_type == BLACK_GATE ?
 			EXULT_BG_FLX_PAPERDOL_INFO_TXT : EXULT_SI_FLX_PAPERDOL_INFO_TXT;
 
-	Read_text_data_file(info, "paperdol_info", readers, sections,
+	Read_text_data_file("paperdol_info", readers, sections,
 			numsections, editing, game_type, flxres);
 	}
 
@@ -684,13 +739,12 @@ void Shapes_vga_file::read_info
 	monstinf.read(MONSTERS, false, bg);
 	monstinf.read(PATCH_MONSTERS, true, bg);
 
-	Functor_data_reader<short, &Shape_info::container_gump, container_gump_flag,
-		Binary_reader_functor<short, 0> > container(info, true);
+	Functor_data_reader<container_gump_flag, Binary_reader_functor<short,
+		&Shape_info::container_gump, 0> > container(info, true);
 	container.read(CONTAINER, false, bg);
 	container.read(PATCH_CONTAINER, true, bg);
 
-	Functor_data_reader<unsigned char, &Shape_info::ready_type, ready_type_flag,
-		Binary_reader_functor<unsigned char, 6> > ready(info);
+	Functor_data_reader<ready_type_flag, Readytype_reader_functor> ready(info);
 	ready.read(READY, false, bg);
 	ready.read(PATCH_READY, true, bg);
 

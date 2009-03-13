@@ -249,6 +249,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\shapes\frpowers.cc"
+				>
+			</File>
+			<File
 				RelativePath="..\shapes\items.cc"
 				>
 			</File>
@@ -345,6 +349,10 @@
 				</File>
 				<File
 					RelativePath="..\shapes\frnameinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\frpowers.h"
 					>
 				</File>
 				<File

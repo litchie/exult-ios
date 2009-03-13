@@ -1,3 +1,29 @@
+2009-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* General: Unified ready types and paperdolls for BG and SI. BG and SI Ready
+	  types are converted on load to Exult's (and back when saving), and the
+	  only differences between BG and SI ready types/paperdolls being the shape
+	  and paperdoll data. Expecting many bugs...
+	  Added optional secondary and tertiary ready spots for shapes, to de-hard-
+	  code alternate spots and BG cloaks.
+	  Added frame powers for shapes, de-hard-coding swamp boots. Such equipment-
+	  granted powers, as well as equipment-granted immunities are now cached.
+	  Fixed bug #2682606; moreover, shapes of NPCs that cause earthquakes have
+	  been de-hard-coded.
+	  Types of barge parts, and barge classes, have been de-hard-coded.
+	* actors.cc: Fixed bug #2682648. More slots call usecode when initializing
+	  from a savegame.
+	* drag.cc: Fixed bug #2683129.
+	* imagewin/*: Reorganized scaler code, and split them into their own files,
+	  by similarity. This should help with the OpenBSD memory issues reported
+	  in bug #1681788.
+	* objs/jawbone.cc: Removed unnecessary check.
+	* schedule.cc: Fixed bug in patrol schedule.
+	* shapes/shape_inf.cc: Fixed bug in copy function and unitialized variables
+	  in constructors.
+	* shapes/shapevga.cc, shapewrite.cc: The classes Functor_data_reader and
+	  Functor_data_writer required too much information they didn't use; this
+	  information is now required by the functors they use.
+
 2009-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed recently-introduced bug in npc_nearby intrinsic.
 

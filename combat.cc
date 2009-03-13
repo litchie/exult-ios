@@ -47,6 +47,7 @@
 #include "cheat.h"
 #include "ammoinf.h"
 #include "weaponinf.h"
+#include "ready.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -718,8 +719,8 @@ static Game_object *Get_usable_weapon
 		if (need_ammo && !aobj)
 			return 0;
 		}
-	if (info.get_ready_type() == two_handed_weapon &&
-		npc->get_readied(Actor::rhand) != 0)
+	if (info.get_ready_type() == both_hands &&
+		npc->get_readied(rhand) != 0)
 		return 0;		// Needs two free hands.
 	return bobj;
 	}
@@ -735,11 +736,11 @@ static int Swap_weapons
 	Actor *npc
 	)
 	{
-	int index = Actor::belt;
+	int index = belt;
 	Game_object *bobj = Get_usable_weapon(npc, index);
 	if (!bobj)
 		{
-		index = Actor::back2h_spot;
+		index = back_2h;
 		bobj = Get_usable_weapon(npc, index);
 		if (!bobj)
 			{		// Do thorough search for NPC's.
@@ -749,7 +750,7 @@ static int Swap_weapons
 				return 0;
 			}
 		}
-	Game_object *oldweap = npc->get_readied(Actor::lhand);
+	Game_object *oldweap = npc->get_readied(lhand);
 	if (oldweap)
 		npc->remove(oldweap);
 	npc->remove(bobj);
@@ -1123,14 +1124,14 @@ Spellbook_object *Combat_schedule::readied_spellbook
 	{
 	Spellbook_object *book = 0;
 					// Check both hands.
-	Game_object *obj = npc->get_readied(Actor::lhand);
+	Game_object *obj = npc->get_readied(lhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
 		{
 		book = static_cast<Spellbook_object*> (obj);
 		if (book->can_do_spell(npc))
 			return book;
 		}
-	obj = npc->get_readied(Actor::rhand);
+	obj = npc->get_readied(rhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
 		{
 		book = static_cast<Spellbook_object*> (obj);
@@ -1203,14 +1204,14 @@ void Combat_schedule::set_hand_to_hand
 	weapon_shape = -1;
 	no_blocking = false;
 				// Put aside weapon.
-	Game_object *weapon = npc->get_readied(Actor::lhand);
+	Game_object *weapon = npc->get_readied(lhand);
 	if (weapon)
 		{
 		int index = -1;
-		if (!npc->get_readied(Actor::belt))
-			index = Actor::belt;
-		else if (!npc->get_readied(Actor::back2h_spot))
-			index = Actor::back2h_spot;
+		if (!npc->get_readied(belt))
+			index = belt;
+		else if (!npc->get_readied(back_2h))
+			index = back_2h;
 		if (index >= 0)
 			{
 			npc->remove(weapon);
@@ -1527,7 +1528,7 @@ void Ready_duel_weapon
 	)
 	{
 	Game_map *gmap = Game_window::get_instance()->get_map();
-	Game_object *weap = npc->get_readied(Actor::lhand);
+	Game_object *weap = npc->get_readied(lhand);
 	if (!weap || weap->get_shapenum() != wshape)
 		{			// Need a bow.
 		Game_object *newweap = 
@@ -1545,7 +1546,7 @@ void Ready_duel_weapon
 	if (ashape == -1)		// No ammo needed.
 		return;
 					// Now provide 1-3 arrows.
-	Game_object *aobj = npc->get_readied(Actor::ammo);
+	Game_object *aobj = npc->get_readied(quiver);
 	if (aobj)
 		aobj->remove_this();	// Toss current ammo.
 	Game_object *arrows = gmap->create_ireg_object(ashape, 0);
