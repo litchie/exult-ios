@@ -26,6 +26,7 @@
 	* Fixed bug on monsters and quake-on-walk. Fixed incorrect initial values
 	  of ready types. Some Doxygenification.
 	* Fixed compilation bug due to missing include.
+	* Added unoptimized debug mode with heavy GDB symbols.
 
 2009-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed recently-introduced bug in npc_nearby intrinsic.
