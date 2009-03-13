@@ -108,8 +108,8 @@ class Monster_info : public Base_info
 	bool m_cant_die;
 	bool m_cant_yell;		// Can't yell during combat.
 	bool m_cant_bleed;
-	bool m_poison_safe;		// Can't be poisoned.
 
+	bool m_poison_safe;		// Can't be poisoned.
 	bool m_charm_safe;		// Can't be charmed.
 	bool m_sleep_safe;		// Can't be put to sleep.
 	bool m_paralysis_safe;		// Can't be paralyzed.

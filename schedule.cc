@@ -866,16 +866,14 @@ void Patrol_schedule::now_what
 			if (!path)			// No, so look around.
 				{
 				Game_object_vector nearby;
-				npc->find_nearby(nearby, PATH_SHAPE, 25, 0);
+				npc->find_nearby(nearby, PATH_SHAPE, 25, 0x10, c_any_qual, pathnum);
 				int best_dist = 1000;	// Find closest.
 				for (Game_object_vector::const_iterator it = nearby.begin();
 								it != nearby.end(); ++it)
 					{
 					Game_object *obj = *it;
-					int framenum = obj->get_framenum();
 					int dist;
-					if (framenum == pathnum && 
-						(dist = obj->distance(npc)) < best_dist)
+					if ((dist = obj->distance(npc)) < best_dist)
 						{	// Found it.
 						path = obj;
 						best_dist = dist;
@@ -1071,7 +1069,7 @@ void Patrol_schedule::now_what
 					npc->unready_weapon();
 					npc->add_dirty();
 						// Ready the hammer in the weapon hand.
-					npc->add_readied(hammer, Actor::lhand, 0, 1);
+					npc->add_readied(hammer, lhand, 0, 1);
 					npc->add_dirty();
 
 					(*scr) << Ucscript::delay_ticks << 2 <<
@@ -1123,7 +1121,7 @@ void Patrol_schedule::now_what
 					{
 					int dir = npc->get_dir_facing();
 					signed char frames[12];		// Get frames to show.
-					Game_object *weap = npc->get_readied(Actor::rhand);
+					Game_object *weap = npc->get_readied(rhand);
 					int cnt = npc->get_attack_frames(weap ? weap->get_shapenum() : 0,
 								0, dir, frames);
 					if (cnt)
@@ -1528,12 +1526,12 @@ void Tool_schedule::get_tool
 	{
 	tool = new Ireg_game_object(toolshape, 0, 0, 0, 0);
 					// Free up both hands.
-	Game_object *obj = npc->get_readied(Actor::rhand);
+	Game_object *obj = npc->get_readied(rhand);
 	if (obj)
 		obj->remove_this();
-	if ((obj = npc->get_readied(Actor::lhand)) != 0)
+	if ((obj = npc->get_readied(lhand)) != 0)
 		obj->remove_this();
-	npc->add_readied(tool, Actor::lhand);
+	npc->add_readied(tool, lhand);
 	}
 
 /*
@@ -1954,7 +1952,7 @@ void Sit_schedule::now_what
 	    npc->distance(chair) <= 1)
 		{			// Already sitting.
 					// Seat on barge?
-		if (!chair || chair->get_shapenum() != 292)
+		if (chair->get_info().get_barge_type() != Shape_info::barge_seat)
 			return;
 		if (did_barge_usecode)
 			return;		// But NOT more than once for party.
@@ -2823,12 +2821,12 @@ void Waiter_schedule::now_what
 			(*scr) << (Ucscript::npc_frame + Actor::standing);
 			scr->start();	// Start next tick.
 		}
-		if (!npc->get_readied(Actor::lhand)) {
+		if (!npc->get_readied(lhand)) {
 					// Acquire some food.
 			int nfoods = ShapeID(377, 0).get_num_frames();
 			int frame = rand()%nfoods;
 			food = new Ireg_game_object(377, frame, 0, 0, 0);
-			npc->add_readied(food, Actor::lhand);
+			npc->add_readied(food, lhand);
 		}
 		if (!walk_to_customer(3000)) {
 			state = get_customer;
@@ -2841,7 +2839,7 @@ void Waiter_schedule::now_what
 		}
 		break;
 	case serve_food:
-		food = npc->get_readied(Actor::lhand);
+		food = npc->get_readied(lhand);
 		Tile_coord spot;
 		if (food && food->get_shapenum() == 377 &&
 		    find_serving_spot(spot)) {
@@ -2878,10 +2876,10 @@ void Waiter_schedule::ending
 	)
 	{
 					// Remove what he/she is carrying.
-	Game_object *obj = npc->get_readied(Actor::lhand);
+	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
 		obj->remove_this();
-	obj = npc->get_readied(Actor::rhand);
+	obj = npc->get_readied(rhand);
 	if (obj)
 		obj->remove_this();
 	}
@@ -3038,7 +3036,7 @@ void Sew_schedule::now_what
 		}
 	case set_to_sew:
 		{
-		Game_object *shears = npc->get_readied(Actor::lhand);
+		Game_object *shears = npc->get_readied(lhand);
 		if (shears && shears->get_shapenum() != 698)
 			{		// Something's not right.
 			shears->remove_this();
@@ -3055,7 +3053,7 @@ void Sew_schedule::now_what
 				}
 			else
 				shears = new Ireg_game_object(698, 0, 0, 0);
-			npc->add_readied(shears, Actor::lhand);
+			npc->add_readied(shears, lhand);
 			}
 		state = sew_clothes;
 		sew_clothes_cnt = 0;
@@ -3092,7 +3090,7 @@ void Sew_schedule::now_what
 		}
 	case get_clothes:
 		{
-		Game_object *shears = npc->get_readied(Actor::lhand);
+		Game_object *shears = npc->get_readied(lhand);
 		if (shears) {
 			Tile_coord pos = cloth->get_tile();
 			npc->set_action(new Sequence_actor_action(
@@ -3168,7 +3166,7 @@ void Sew_schedule::ending
 	)
 	{
 					// Remove shears.
-	Game_object *obj = npc->get_readied(Actor::lhand);
+	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
 		obj->remove_this();
 	if (cloth)			// Don't leave cloth lying around.
@@ -3650,7 +3648,7 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
 		npc->add_dirty();
-		npc->add_readied(tongs, Actor::rhand);
+		npc->add_readied(tongs, rhand);
 		npc->add_dirty();
 
 		state = sword_on_anvil;
@@ -3709,7 +3707,7 @@ void Forge_schedule::now_what
 			tongs->remove_this();
 			tongs = 0;
 		}
-		npc->add_readied(hammer, Actor::rhand);
+		npc->add_readied(hammer, rhand);
 		npc->add_dirty();
 
 		state = use_hammer;
@@ -3807,7 +3805,7 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
 		npc->add_dirty();
-		npc->add_readied(tongs, Actor::rhand);
+		npc->add_readied(tongs, rhand);
 		npc->add_dirty();
 
 		state = use_trough;

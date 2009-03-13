@@ -401,6 +401,7 @@ void Shapeinfo_lookup::Read_data_file
 			{
 			if (!Game::is_editing())
 				throw e;
+			static_strings.resize(numsections);
 			}
 		}
 	patch_strings.resize(numsections);

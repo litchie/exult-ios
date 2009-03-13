@@ -100,8 +100,8 @@ Dragging_info::Dragging_info
 			{		// Dragging whole gump.
 			paintx = gump->get_x();
 			painty = gump->get_y();
-	cout << "(x,y) rel. to gump is (" << (x-paintx) << ", " <<
-					(y-painty) << ")"<<endl;
+			cout << "(x,y) rel. to gump is (" << (x-paintx) << ", " <<
+							(y-painty) << ")"<<endl;
 			}
 		else 			// the gump isn't draggable
 			return;
@@ -147,8 +147,9 @@ bool Dragging_info::start
 	int x, int y			// Mouse position.
 	)
 	{
-	if (x - mousex <= 2 && mousex - x <= 2 &&
-	    y - mousey <= 2 && mousey - y <= 2)
+	int deltax = abs(x - mousex),
+		deltay = abs(y - mousey);
+	if (deltax <= 2 && deltay <= 2)
 		return (false);		// Wait for greater motion.
 	if (obj)
 		{			// Don't want to move walls.
@@ -209,7 +210,9 @@ bool Dragging_info::start
 	else
 		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
 					// Make a little bigger.
-	rect.enlarge(c_tilesize + obj ? 0 : c_tilesize/2);
+	//rect.enlarge(c_tilesize + obj ? 0 : c_tilesize/2);
+	rect.enlarge(deltax > deltay ? deltax : deltay);
+	
 	Rectangle crect = gwin->clip_to_win(rect);
 	gwin->paint(crect);		// Paint over obj's. area.
 					// Create buffer to backup background.

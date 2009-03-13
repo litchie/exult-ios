@@ -25,6 +25,7 @@
 #include "contain.h"
 #include "utils.h"		// This is only included for Log2...
 #include "flags.h"
+#include "ready.h"
 
 class Image_window;
 class Game_window;
@@ -115,10 +116,14 @@ protected:
 					//   below for description.
 	bool two_handed;		// Carrying a two-handed item.
 	bool two_fingered;		// Carrying gauntlets (both fingers)
+	bool use_scabbard;		// Carrying an item in scabbard (belt, back 2h, shield).
+	bool use_neck;			// Carrying cloak (amulet, cloak)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 
 	unsigned type_flags:32;	// 32 flags used in movement among other things
+	unsigned char  gear_immunities;	// Damage immunities granted by gear.
+	unsigned short gear_powers;		// Other powers granted by gear.
 
 	unsigned char ident;
 
@@ -128,6 +133,8 @@ protected:
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
 	int step_index;			// Index into walking frames, 1 1st.
+	int qsteps;				// # steps since last quake.
+
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	long rest_time;			// # msecs. of not doing anything.
@@ -173,33 +180,6 @@ public:
 		hostile = 2,
 		unknown_align = 3 };	// Bees have this, & don't attack until
 					// Spots where items are carried.
-	enum Spots {			// Index of each spot, starting at
-					//   upper, rt., going clkwise.
-		head = 0,
-		back = 1,
-		belt = 2,
-		lhand = 3,
-		lfinger = 4,
-		legs = 5,
-		feet = 6,
-		rfinger = 7,
-		rhand = 8,
-		torso = 9,
-		neck = 10,
-		ammo = 11,
-		back2h_spot = 12,	// SI (2 Handed weapons, Bedroll, 
-					//   Bodies)
-		shield_spot = 13,	// SI (Sheild behind Backpack)
-		ears_spot = 14,		// SI
-		cloak_spot = 15,	// SI
-		hands2_spot = 16,	// SI (gloves, gauntlets)
-		ucont_spot = 17,	// SI Usecode Container
-		/*
-		lrhand = 100,		// Special:  uses lhand & rhand. - Used anymore?
-		lrfinger = 101,		// Special:  uses lfinger & rfinger - Used anymore?
-		*/
-		special_spot = 102	// Special:  SI non placeable
-		};
 	int free_hand() const		// Get index of a free hand, or -1.
 		{ 			// PREFER right hand.
 		return two_handed ? -1 :
@@ -213,6 +193,8 @@ public:
 		}
 	inline bool is_two_handed() const {	return two_handed; }
 	inline bool is_two_fingered() const { return two_fingered; }
+	inline bool is_scabbard_used() const {	return use_scabbard; }
+	inline bool is_neck_used() const { return use_neck; }
 	int has_light_source() const	// Carrying a torch?
 		{ return light_sources > 0; }
 	Attack_mode get_attack_mode()
@@ -275,12 +257,6 @@ public:
 		sleep_frame = 13,
 		up_frame = 14,		// Both hands reach up.
 		out_frame = 15		// Both hands reach out.
-		};
-	enum FIS_Type {			// The types used in the call to fit_in_spot
-		FIS_Other	= 0,
-		FIS_2Hand	= 1,
-		FIS_2Finger	= 2,
-		FIS_Spell	= 3
 		};
 
 	int get_face_shapenum() const	// Get "portrait" shape #.
@@ -364,9 +340,9 @@ public:
 	Game_object *get_target()	// Get who/what we're attacking.
 		{ return target; }
 					// Works out if an object fits in a spot
-	bool fits_in_spot (Game_object *obj, int spot, FIS_Type type = FIS_Other);
+	bool fits_in_spot (Game_object *obj, int spot);
 					// The prefered slot for an object
-	void get_prefered_slots (Game_object *obj, int &prefered, int &alternate, FIS_Type &fistype);
+	void get_prefered_slots (Game_object *obj, int &prefered, int &alt1, int &alt2);
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 	int get_prev_schedule_type();	// Get previous schedule.
@@ -549,7 +525,10 @@ public:
 	virtual int get_armor_points();	// Get total armor value.
 					// Gets whether the actor is immune or vulnerable to a given
 					// form of damage:
-	int is_immune(int type);
+	int is_immune(int type) const;
+	void refigure_gear();
+	bool check_gear_powers(int flags) const
+		{ return (gear_powers&flags) != 0; }
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape,
 						Game_object *& obj);

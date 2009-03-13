@@ -68,6 +68,7 @@
 #include "objiter.h"
 #include "ammoinf.h"
 #include "armorinf.h"
+#include "frpowers.h"
 #include "weaponinf.h"
 #include "npcdollinf.h"
 #include "spellbook.h"
@@ -369,7 +370,7 @@ Game_object *Actor::find_weapon_ammo
 	int family = winf->get_ammo_consumed();
 	if (family >= 0)
 		{
-		Game_object *aobj = get_readied(Actor::ammo);
+		Game_object *aobj = get_readied(quiver);
 		if (aobj && In_ammo_family(aobj->get_shapenum(), family) &&
 			aobj->get_quantity() >= needed)
 			return aobj;		// Already readied.
@@ -379,7 +380,7 @@ Game_object *Actor::find_weapon_ammo
 		}
 
 	// Search readied weapons first.
-	static enum Spots wspots[] = {lhand, rhand, back2h_spot, belt};
+	static enum Ready_type_Exult wspots[] = {lhand, rhand, back_2h, belt};
 	const int num_weapon_spots = sizeof(wspots)/sizeof(wspots[0]);
 	for (int i = 0; i < num_weapon_spots; i++)
 		{
@@ -410,7 +411,7 @@ void Actor::swap_ammo
 	Game_object *newammo
 	)
 	{
-	Game_object *aobj = get_readied(Actor::ammo);
+	Game_object *aobj = get_readied(quiver);
 	if (aobj == newammo)
 		return;			// Already what we need.
 	if (aobj)			// Something there already?
@@ -519,7 +520,7 @@ bool Actor::ready_best_shield
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0;
 	int best_strength = -20;
-	int wtype = other;
+	int wtype = backpack;
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
 		{
@@ -529,7 +530,7 @@ bool Actor::ready_best_shield
 		Shape_info& info = obj->get_info();
 			// Only want those that can be readied in hand.
 		int ready = info.get_ready_type();
-		if (ready != one_handed_weapon && ready != other)
+		if (ready != lhand && ready != backpack)
 			continue;
 		Armor_info *arinf = info.get_armor_info();
 		if (!arinf)
@@ -564,7 +565,7 @@ bool Actor::ready_best_weapon
 	if (Actor::get_weapon(points) != 0 && ready_ammo())
 		return true;		// Already have one.
 	// Check for spellbook.
-	Game_object *obj = get_readied(Actor::lhand);
+	Game_object *obj = get_readied(lhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
 		{
 		if ((static_cast<Spellbook_object*> (obj))->can_do_spell(this))
@@ -575,7 +576,7 @@ bool Actor::ready_best_weapon
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0, *best_ammo = 0;
 	int best_strength = -20;
-	int wtype = other;
+	int wtype = backpack;
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
 		{
@@ -584,7 +585,7 @@ bool Actor::ready_best_weapon
 			continue;
 		Shape_info& info = obj->get_info();
 		int ready = info.get_ready_type();
-		if (ready != one_handed_weapon && ready != two_handed_weapon)
+		if (ready != lhand && ready != both_hands)
 			continue;
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
@@ -605,7 +606,7 @@ bool Actor::ready_best_weapon
 		return false;
 		// If nothing is in left hand, nothing will happen.
 	Game_object *remove1 = spots[lhand], *remove2 = 0;
-	if (wtype == two_handed_weapon)
+	if (wtype == both_hands)
 		remove2 = spots[rhand];
 		// Prevent double removal and double add (can corrupt objects list).
 		// No need for similar check for remove1 as we wouldn't be here
@@ -619,7 +620,7 @@ bool Actor::ready_best_weapon
 		remove2->remove_this(1);
 	best->remove_this(1);
 	add(best, 1);			// Should go to the right place.
-	if (wtype == one_handed_weapon)
+	if (wtype == lhand)
 		ready_best_shield();	// Also add a shield for 1-handed weapons.
 	if (remove1)			// Put back other things.
 		add(remove1, 1);
@@ -844,11 +845,12 @@ Actor::Actor
 	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
 	    dormant(true), hit(false), combat_protected(false), 
-	    user_set_attack(false), alignment(0),
-	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), type_flags(0), ident(0),
+	    user_set_attack(false), alignment(0), two_handed(false),
+	    two_fingered(false), use_scabbard(false), use_neck(false),
+	    light_sources(0), usecode_dir(0), type_flags(0),
+		gear_immunities(0), gear_powers(0), ident(0),
 	    skin_color(-1), action(0), 
-	    frame_time(0), step_index(0), timers(0),
+	    frame_time(0), step_index(0), qsteps(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), temperature(0), rest_time(0),
 	    casting_mode(false), casting_shape(-1), atts(0), usecode_name(""),
 		target_object(0), attack_weapon(-1), target_tile(Tile_coord(-1, -1, 0))
@@ -873,6 +875,26 @@ Actor::~Actor
 	delete atts;
 	}
 
+void Actor::refigure_gear()
+	{
+	static Ready_type_Exult locs[] = {head, belt, lhand, lfinger, legs,
+			feet, rfinger, rhand, torso, amulet, earrings, cloak, gloves
+		};
+	int powers = 0, immune = 0;
+	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
+		{
+		Game_object *worn = spots[static_cast<int>(locs[i])];
+		if (worn)
+			{
+			Shape_info& info = worn->get_info();
+			powers |= info.get_object_powers(worn->get_framenum());
+			immune |= info.get_armor_immunity();
+			}
+		}
+	gear_immunities = immune;
+	gear_powers = powers;
+	}
+
 /*
  *	Decrement food level and print complaints if it gets too low.
  *	NOTE:  Should be called every hour.
@@ -882,7 +904,7 @@ void Actor::use_food
 	(
 	)
 	{
-	if (get_info().does_not_eat())
+	if (get_info().does_not_eat() || (gear_powers&Frame_powers::doesnt_eat))
 		return;
 	int food = get_property(static_cast<int>(food_level));
 	food -= (rand()%4);		// Average 1.5 level/hour.
@@ -921,13 +943,14 @@ void Actor::check_temperature
 		temperature -= (temperature >= 5 ? 5 : temperature);
 		if (GAME_SI && rand()%3 == 0)
 			if (temperature >= 30)
-				say(1218, 1221);
+				say(194, 197);
 			else
-				say(1214, 1217);
+				say(190, 193);
 		return;
 		}
-	if (get_info().is_cold_immune())
-		return;			// Automatons don't get cold.
+	// Immune to cold by nature or an item?
+	if (get_info().is_cold_immune() || (gear_powers&Frame_powers::cold_immune))
+		return;
 	int shnum = get_shapenum();
 	if (get_schedule_type() == Schedule::wait)
 		return;			// Not following leader?  Leave alone.
@@ -941,9 +964,9 @@ void Actor::check_temperature
 		temperature -= decr;
 		if (GAME_SI && rand()%3 == 0)
 			if (temperature >= 30)
-				say(1201, 1205);
+				say(177, 181);
 			else
-				say(1194, 1200);
+				say(170, 176);
 		return;
 		}
 	int incr = 1 + (100 - warmth)/20;
@@ -954,25 +977,25 @@ void Actor::check_temperature
 		switch (temperature/10)
 			{
 		case 0:
-			say(1182, 1184);	// A bit chilly.
+			say(158, 160);	// A bit chilly.
 			break;
 		case 1:
-			say(1185, 1187);	// It's colder.
+			say(161, 163);	// It's colder.
 			break;
 		case 2:
-			say(1188, 1190);
+			say(164, 166);
 			break;
 		case 3:
-			say(1191, 1193);	// Frostbite.
+			say(167, 169);	// Frostbite.
 			break;
 		case 4:
-			say(1206, 1208);
+			say(182, 184);
 			break;
 		case 5:
-			say(1209, 1211);
+			say(185, 187);
 			break;
 		case 6:
-			say(1212, 1213);	// Frozen.
+			say(188, 189);	// Frozen.
 			reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 			break;
 			}
@@ -1470,19 +1493,10 @@ void Actor::get_tile_info
 					// Check for swamp/swamp boots.
 		if (poison && actor)
 			{
-			Game_object *boots = actor->Actor::get_readied(
-							Actor::feet);
-			// ++++TAG: De-hard-code these.
-			if (boots != 0 &&
-		    	    ((boots->get_shapenum() == 588 && 
-					Game::get_game_type() == BLACK_GATE) ||
-		    	     (boots->get_shapenum() == 587 && 
-					// SI:  Swamp/magic boots save you.
-				(boots->get_framenum() == 6 ||
-				 boots->get_framenum() == 1) && 
-				Game::get_game_type() == SERPENT_ISLE)))
+			if ((actor->gear_powers &
+				(Frame_powers::swamp_safe|Frame_powers::poison_safe)) != 0)
 				poison = 0;
-			else
+			else		// Not protected by gear?
 				{	// Safe from poisoning?
 				Monster_info *minf = 
 					actor->get_info().get_monster_info();
@@ -1524,23 +1538,51 @@ void Actor::set_target
  *	Output:	true if it does fit, or false if it can't
  */
 
-bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
+bool Actor::fits_in_spot (Game_object *obj, int spot)
 {
 	Shape_info& inf = obj->get_info();
+	int rtype = inf.get_ready_type(),
+		alt1 = inf.get_alt_ready1(),
+		alt2 = inf.get_alt_ready2();
+	bool can_scabbard = (alt1 == scabbard || alt2 == scabbard);
+	bool can_neck = (rtype == neck || alt1 == neck || alt2 == neck);
+	if (spot == both_hands)
+		spot = lhand;
+	else if (spot == lrgloves)
+		spot = lfinger;
+	else if (spot == neck)
+		spot = amulet;
+	else if (spot == scabbard)
+		spot = belt;
+
 	// If occupied, can't place
 	if (spots[spot])
 		return false;
 	// If want to use 2h or a 2h is already equiped, can't go in right
-	else if ((type == FIS_2Hand || two_handed) && spot == rhand)
+	else if ((rtype == both_hands || two_handed) && spot == rhand)
 		return false;
 	// If want to use 2f or a 2f is already equiped, can't go in right
-	else if ((type == FIS_2Finger || two_fingered) && spot == rfinger)
+	else if ((rtype == lrgloves || two_fingered) && spot == rfinger)
+		return false;
+	// If want to use scabbard or a scabbard is already equiped, can't go in others
+	else if ((can_scabbard || use_scabbard) &&
+			(spot == back_2h || spot == back_shield))
+		return false;
+	// If want to use neck or neck is already filled, can't go in cloak
+	else if ((can_neck || use_neck) && spot == cloak)
 		return false;
 	// Can't use 2h in left if right occupied
-	else if (type == FIS_2Hand && spot == lhand && spots[rhand])
+	else if (rtype == both_hands && spot == lhand && spots[rhand])
 		return false;
 	// Can't use 2f in left if right occupied
-	else if (type == FIS_2Finger && spot == lfinger && spots[rfinger])
+	else if (rtype == lrgloves && spot == lfinger && spots[rfinger])
+		return false;
+	// Can't use scabbard in belt if back 2h or back shield occupied
+	else if (can_scabbard && spot == belt &&
+			(spots[back_2h] || spots[back_shield]))
+		return false;
+	// Can't use neck in amulet if cloak occupied
+	else if (can_neck && spot == amulet && spots[cloak])
 		return false;
 	// If in left or right hand allow it
 	else if (spot == lhand || spot == rhand)
@@ -1548,15 +1590,20 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 	// Special Checks for Belt
 	else if (spot == belt)
 	{
-		if (type == FIS_Spell)
+		if (inf.is_spell() || can_scabbard)
 			return true;
-		else if (Game::get_game_type() == BLACK_GATE)
-		{
-			if (inf.is_object_allowed(obj->get_framenum(), back2h_spot))
-				return true;
-			else if (inf.is_object_allowed(obj->get_framenum(), shield_spot))
-				return true;
-		}
+	}
+	// Special Checks for back 2h and back shield
+	else if (spot == back_2h || spot == back_shield)
+	{
+		if (can_scabbard)
+			return true;
+	}
+	// Special Checks for amulet and cloak
+	else if (spot == amulet || spot == cloak)
+	{
+		if (can_neck)
+			return true;
 	}
 
 	// Lastly if we have gotten here, check the paperdoll table 
@@ -1566,176 +1613,37 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 /*
  *	Find the spot(s) where an item would prefer to be readied
  *
- *	Output:	prefered slot, alternative slot, FIS_type
+ *	Output:	prefered slot, alternative slots
  */
 
 void Actor::get_prefered_slots
 	(
 	Game_object *obj,
 	int &prefered,
-	int &alternate,
-	FIS_Type &fistype
+	int &alt1,
+	int &alt2
 	)
-{
-
+	{
 	Shape_info& info = obj->get_info();
 
 	// Defaults
-	fistype = FIS_Other;
-	prefered = lhand;
-	alternate = lhand;
+	prefered = info.get_ready_type();
+	alt1 = info.get_alt_ready1();
+	alt2 = info.get_alt_ready2();
+	if (alt1 < 0)
+		alt1 = lhand;
 
-	if (Game::get_game_type() == BLACK_GATE)
-	{
-		Ready_type type = (Ready_type) info.get_ready_type();
-		
-		switch (type)
+	if (prefered == lhand)
 		{
-			// Weapons, Sheilds, Spells, misc stuff
-			default:
-				{
-			if (info.is_spell()) fistype = FIS_Spell;
-			else if (type == two_handed_weapon) fistype = FIS_2Hand;
-
-			Shape_info& inf = obj->get_info();
-			if (inf.is_object_allowed(obj->get_framenum(), rhand))
-				if (!inf.is_object_allowed(obj->get_framenum(), lhand))
-					prefered = rhand;
-				else
-					alternate = rhand;
-			else if (inf.is_object_allowed(obj->get_framenum(), back))
-				prefered = back;
+		if (info.is_object_allowed(obj->get_framenum(), rhand))
+			if (!info.is_object_allowed(obj->get_framenum(), lhand))
+				prefered = rhand;
 			else
-				alternate = rhand;
-			break;
-				}
-
-			case gloves:
-			fistype = FIS_2Finger;
-			prefered = lfinger;
-			break;
-
-			case ring:
-			prefered = lfinger;
-			alternate = rfinger;
-			break;
-
-			case neck_armor:
-			prefered = neck;
-			break;
-				
-			case torso_armor:
-			prefered = torso;
-			alternate = neck;	// This is a hack for cloaks. It shouldn't cause problems
-			break;
-				
-			case ammunition:
-			prefered = ammo;
-			break;
-			
-			case head_armor:
-			prefered = head;
-			break;
-				
-			case leg_armor:
-			prefered = legs;
-			break;
-				
-			case foot_armor:
-			prefered = feet;
-			break;
-			
-			case usecode_container_bg:
-			prefered = ucont_spot;
-			break;
+				alt1 = rhand;
+		else
+			alt1 = rhand;
 		}
 	}
-	else if (Game::get_game_type() == SERPENT_ISLE)	// Serpent Isle Types
-	{
-		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
-		
-		Shape_info& inf = obj->get_info();
-		switch (type)
-		{
-			// Weapons, Sheilds, Spells, misc stuff
-			default:
-			if (info.is_spell()) fistype = FIS_Spell;
-			else if (type == two_handed_si) fistype = FIS_2Hand;
-
-			if (inf.is_object_allowed(obj->get_framenum(), rhand))
-				if (!inf.is_object_allowed(obj->get_framenum(), lhand))
-					prefered = rhand;
-				else
-					alternate = rhand;
-			else
-				alternate = rhand;
-			break;
-
-			case other:
-			if (inf.is_object_allowed(obj->get_framenum(), back2h_spot))
-				prefered = back2h_spot;
-			else if (inf.is_object_allowed(obj->get_framenum(), back))
-				prefered = back;
-			else 
-				alternate = rhand;
-			break;
-
-
-			case helm_si:
-			prefered = head;
-			break;
-
-			case gloves_si:
-			prefered = hands2_spot;
-			break;
-
-			case boots_si:
-			prefered = feet;
-			break;
-
-			case leggings_si:
-			prefered = legs;
-			break;
-			
-			case amulet_si:
-			prefered = neck;
-			break;
-				
-			case armour_si:
-			prefered = torso;
-			break;
-
-			case ring_si:
-			prefered = lfinger;
-			alternate = rfinger;
-			break;
-
-			case ammo_si:
-			prefered = ammo;
-			break;
-	
-			case cloak_si:
-			prefered = cloak_spot;
-			break;
-
-			case usecode_container_si:
-			prefered = ucont_spot;
-			break;
-			
-			case earrings_si:
-			prefered = ears_spot;
-			break;
-
-			case belt_si:
-			prefered = belt;
-			break;
-			
-			case backpack_si:
-			prefered = back;
-			break;
-		}
-	}
-}
 
 
 /*
@@ -1750,29 +1658,30 @@ int Actor::find_best_spot
 	)
 {
 	int prefered;
-	int alternate;
-	FIS_Type type;
-	bool SI = Game::get_game_type() == SERPENT_ISLE;
+	int alternate1;
+	int alternate2;
 
 	// Get the preferences
-	get_prefered_slots (obj, prefered, alternate, type);
+	get_prefered_slots (obj, prefered, alternate1, alternate2);
 
 	// Check Prefered
-	if (fits_in_spot (obj, prefered, type)) return prefered;
+	if (fits_in_spot (obj, prefered)) return prefered;
 	// Alternate
-	else if (fits_in_spot (obj, alternate, type)) return alternate;
+	else if (alternate1 >= 0 && fits_in_spot (obj, alternate1)) return alternate1;
+	// Second alternate
+	else if (alternate2 >= 0 && fits_in_spot (obj, alternate2)) return alternate2;
 	// Belt
-	else if (fits_in_spot (obj, belt, type)) return belt;
+	else if (fits_in_spot (obj, belt)) return belt;
 	// Back - required???
-	else if (fits_in_spot (obj, back, type)) return back;
+	else if (fits_in_spot (obj, backpack)) return backpack;
 	// Back2h
-	else if (SI && fits_in_spot (obj, back2h_spot, type)) return back2h_spot;
+	else if (fits_in_spot (obj, back_2h)) return back_2h;
 	// Sheild Spot
-	else if (SI && fits_in_spot (obj, shield_spot, type)) return shield_spot;
+	else if (fits_in_spot (obj, back_shield)) return back_shield;
 	// Left Hand
-	else if (fits_in_spot (obj, lhand, type)) return lhand;
+	else if (fits_in_spot (obj, lhand)) return lhand;
 	// Right Hand
-	else if (fits_in_spot (obj, rhand, type)) return rhand;
+	else if (fits_in_spot (obj, rhand)) return rhand;
 
 	return -1;
 }
@@ -2214,16 +2123,13 @@ void Actor::activate
 	{
 	if (edit())
 		return;
-	// We are serpent if we can use serpent isle paperdolls
-	bool serpent = (sman->can_use_paperdolls() && sman->are_paperdolls_enabled());
 	
 	bool show_party_inv = gumpman->showing_gumps(true) || 
 							gwin->in_combat();
 	Schedule::Schedule_types sched = 
 				(Schedule::Schedule_types) get_schedule_type();
 	if (!npc_num ||		// Avatar
-			(show_party_inv && party_id >= 0 && // Party
-			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
+			(show_party_inv && party_id >= 0) || // Party
 					// Pickpocket cheat && double click
 			(cheat.in_pickpocket() && event == 1))
 		show_inventory();
@@ -2236,7 +2142,7 @@ void Actor::activate
 		return;			// Too busy fighting.
 					// Usecode
 					// Failed copy-protection?
-	else if (serpent &&
+	else if (GAME_SI &&
 		gwin->get_main_actor()->get_flag(Obj_flags::confused))
 		ucmachine->call_usecode(0x63d, this,
 			(Usecode_machine::Usecode_events) event);	
@@ -2419,7 +2325,7 @@ void Actor::show_inventory()
 	Gump_manager *gump_man = gumpman;
 
 	int shapenum = inventory_shapenum();
-	if (shapenum)
+	if (shapenum >= 0)
 		gump_man->add_gump(this, shapenum, true);
 }
 
@@ -3185,7 +3091,8 @@ void Actor::set_flag
 	switch (flag)
 		{
 	case Obj_flags::asleep:
-		if (minf->sleep_safe() || minf->power_safe())
+		if (minf->sleep_safe() || minf->power_safe() ||
+				(gear_powers&(Frame_powers::power_safe|Frame_powers::sleep_safe)))
 			return;		// Don't do anything.
 					// Avoid waking Penumbra.
 		if (schedule_type == Schedule::sleep && Bg_dont_wake(gwin, this))
@@ -3196,7 +3103,7 @@ void Actor::set_flag
 		lay_down(false);	// Lie down.
 		break;
 	case Obj_flags::poisoned:
-		if (minf->poison_safe())
+		if (minf->poison_safe() || (gear_powers&Frame_powers::poison_safe))
 			return;		// Don't do anything.
 		need_timers()->start_poison();
 		break;
@@ -3207,18 +3114,21 @@ void Actor::set_flag
 		need_timers()->start_might();
 		break;
 	case Obj_flags::cursed:
-		if (minf->curse_safe() || minf->power_safe())
+		if (minf->curse_safe() || minf->power_safe() ||
+				(gear_powers&(Frame_powers::power_safe|Frame_powers::curse_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_curse();
 		break;
 	case Obj_flags::charmed:
-		if (minf->charm_safe() || minf->power_safe())
+		if (minf->charm_safe() || minf->power_safe() ||
+				(gear_powers&(Frame_powers::power_safe|Frame_powers::charm_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_charm();
 		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:
-		if (minf->paralysis_safe() || minf->power_safe())
+		if (minf->paralysis_safe() || minf->power_safe() ||
+				(gear_powers&(Frame_powers::power_safe|Frame_powers::paralysis_safe)))
 			return;		// Don't do anything.
 		fall_down();
 		need_timers()->start_paralyze();
@@ -3385,7 +3295,7 @@ int Actor::figure_warmth
 	{
 	int warmth = -75;		// Base value.
 
-	static Spots locs[] = {head, cloak_spot, feet, torso, hands2_spot, legs};
+	static Ready_type_Exult locs[] = {head, cloak, feet, torso, gloves, legs};
 	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
 		{
 		Game_object *worn = spots[static_cast<int>(locs[i])];
@@ -3425,12 +3335,8 @@ void Actor::call_readied_usecode
 
 	Shape_info& info = obj->get_info();
 	if (info.get_shape_class() != Shape_info::container)
-		{
-		Ready_type type = (Ready_type) info.get_ready_type();
-		if (type != other)
-			ucmachine->call_usecode(obj->get_usecode(),
-			    obj, (Usecode_machine::Usecode_events) eventid);
-		}
+		ucmachine->call_usecode(obj->get_usecode(),
+		    obj, (Usecode_machine::Usecode_events) eventid);
 	}
 
 /*
@@ -3470,30 +3376,12 @@ void Actor::init_readied
 	(
 	)
 	{
-	if (spots[lfinger])
-		call_readied_usecode(lfinger, spots[lfinger],
-						Usecode_machine::readied);
-	if (spots[rfinger])
-		call_readied_usecode(rfinger, spots[rfinger],
-						Usecode_machine::readied);
-	if (spots[belt])
-		call_readied_usecode(belt, spots[belt],
-						Usecode_machine::readied);
-	if (spots[neck])
-		call_readied_usecode(neck, spots[neck],
-						Usecode_machine::readied);
-	if (spots[head])
-		call_readied_usecode(head, spots[head],
-						Usecode_machine::readied);
-	if (spots[hands2_spot])
-		call_readied_usecode(hands2_spot, 
-				spots[hands2_spot], Usecode_machine::readied);
-	if (spots[lhand])
-		call_readied_usecode(lhand, spots[lhand],
-						Usecode_machine::readied);
-	if (spots[rhand])
-		call_readied_usecode(rhand, spots[rhand],
-						Usecode_machine::readied);
+	static Ready_type_Exult locs[] = {head, belt, lhand, rhand, lfinger, rfinger,
+			legs, feet, torso, amulet, earrings, gloves, cloak};
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		if (spots[i])
+			call_readied_usecode(i, spots[i],
+							Usecode_machine::readied);
 	}
 
 /*
@@ -3523,8 +3411,14 @@ void Actor::remove
 			two_handed = false;
 		if (index == rfinger || index == lfinger)
 			two_fingered = false;
+		if (index == belt || index == back_2h || index == back_shield)
+			use_scabbard = false;
+		if (index == amulet || index == cloak)
+			use_neck = false;
 		if (index == lhand && schedule)
-			schedule->set_weapon(true);	
+			schedule->set_weapon(true);
+		// Recheck armor immunities and frame powers.
+		refigure_gear();
 		}
 	}
 
@@ -3545,14 +3439,11 @@ bool Actor::add
 	)
 	{
 
-	int index, a; 
-	FIS_Type type;
-	get_prefered_slots (obj, index, a, type);
-	index = find_best_spot(obj);// Where should it go?
+	int index = find_best_spot(obj);// Where should it go?
 		
 	if (index < 0)			// No free spot?  Look for a bag.
 	{
-		if (spots[back] && spots[back]->add(obj, false, combine))
+		if (spots[backpack] && spots[backpack]->add(obj, false, combine))
 			return true;
 		if (spots[belt] && spots[belt]->add(obj, false, combine))
 			return true;
@@ -3564,7 +3455,7 @@ bool Actor::add
 			return false;
 
 		// try again without checking volume/weight
-		if (spots[back] && spots[back]->add(obj, true, combine))
+		if (spots[backpack] && spots[backpack]->add(obj, true, combine))
 			return true;
 		if (spots[belt] && spots[belt]->add(obj, true, combine))
 			return true;
@@ -3582,12 +3473,26 @@ bool Actor::add
 	if (!Container_game_object::add(obj, true))
 		return false;
 
-	if (type == FIS_2Hand && index == lhand)		// Two-handed?
+	if (index == both_hands)		// Two-handed?
+		{
 		two_handed = true;
-	if (type == FIS_2Finger && index == lfinger) {	// BG Gloves?
-		index = lfinger;
+		index = lhand;
+		}
+	else if (index == lrgloves)	// BG Gloves?
+		{
 		two_fingered = true;
-	}
+		index = lfinger;
+		}
+	else if (index == scabbard)		// Use scabbard?
+		{
+		use_scabbard = true;
+		index = belt;
+		}
+	else if (index == neck)		// Use neck?
+		{
+		use_neck = true;
+		index = amulet;
+		}
 
 	spots[index] = obj;		// Store in correct spot.
 	if (index == lhand && schedule)
@@ -3596,8 +3501,14 @@ bool Actor::add
 	if (!dont_check)
 		call_readied_usecode(index, obj, Usecode_machine::readied);
 					// (Readied usecode now in drop().)
-	if (obj->get_info().is_light_source())
+
+	Shape_info& info = obj->get_info();
+	if (info.is_light_source())
 		light_sources++;
+
+	// Refigure granted immunities.
+	gear_immunities |= info.get_armor_immunity();
+	gear_powers |= info.get_object_powers(obj->get_framenum());
 	return true;
 	}
 
@@ -3624,15 +3535,13 @@ int Actor::add_readied
 //	if (spots[index]) return (spots[index]->drop(obj));
 	if (spots[index]) return (spots[index]->add(obj, dont_check));
 
-	int prefered;
-	int alternate;
-	FIS_Type type;
+	int prefered, alt1, alt2;
 
 	// Get the preferences
-	get_prefered_slots (obj, prefered, alternate, type);
+	get_prefered_slots (obj, prefered, alt1, alt2);
 	
 	// Check Prefered
-	if (!fits_in_spot (obj, index, type) && !force_pos) return 0;
+	if (!fits_in_spot (obj, index) && !force_pos) return 0;
 
 	// No room, or too heavy.
 	if (!Container_game_object::add(obj, true)) return 0;
@@ -3644,15 +3553,28 @@ int Actor::add_readied
 	obj->set_shape_pos(0, 0);
 
 	// Must be a two-handed weapon.
-	if (type == FIS_2Hand && index == lhand) two_handed = true;
-
+	if (prefered == both_hands && index == lhand)
+		two_handed = true;
 	// Must be gloves
-	if (type == FIS_2Finger && index == lfinger) two_fingered = true;
+	else if (prefered == lrgloves && index == lfinger)
+		two_fingered = true;
+	// Must be in scabbard
+	else if ((alt1 == scabbard || alt2 == scabbard) && index == belt)
+		use_scabbard = true;
+	// Must use neck entirely
+	else if (prefered == neck && index == amulet)
+		use_neck = true;
 
 	if (!dont_check)
 		call_readied_usecode(index, obj, Usecode_machine::readied);
+
+	Shape_info& info = obj->get_info();
 	// Lightsource?
-	if (obj->get_info().is_light_source()) light_sources++;
+	if (info.is_light_source()) light_sources++;
+
+	// Refigure granted immunities.
+	gear_immunities |= info.get_armor_immunity();
+	gear_powers |= info.get_object_powers(obj->get_framenum());
 
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
@@ -3691,6 +3613,7 @@ void Actor::change_member_shape
 	Container_game_object::change_member_shape(obj, newshape);
 	if (obj->get_info().is_light_source())
 		light_sources++;
+	refigure_gear();
 	}
 
 /*
@@ -3768,9 +3691,9 @@ int Actor::get_armor_points
 	)
 	{
 	int points = 0;
-	static enum Spots aspots[] = {head, neck, torso, cloak_spot, belt,
-					lhand, rhand, lfinger, rfinger, legs, feet, ears_spot,
-					hands2_spot};
+	static enum Ready_type_Exult aspots[] = {head, amulet, torso, cloak, belt,
+					lhand, rhand, lfinger, rfinger, legs, feet, earrings,
+					gloves};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
 	for (int i = 0; i < num_armor_spots; i++)
 		{
@@ -3792,23 +3715,14 @@ int Actor::get_armor_points
 int Actor::is_immune
 	(
 	int type
-	)
+	) const
 	{
+	if (gear_immunities&(1<<type))
+		return 1;
 	Monster_info *minf = get_info().get_monster_info();
 	int is_immune = 0;
 	if (minf && minf->get_immune()&(1<<type))
 		return 1;
-	static enum Spots aspots[] = {head, neck, torso, cloak_spot, belt,
-					lhand, rhand, lfinger, rfinger, legs, feet, ears_spot,
-					hands2_spot};
-	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
-	for (int i = 0; i < num_armor_spots; i++)
-		{
-		Game_object *armor = spots[static_cast<int>(aspots[i])];
-		Armor_info *arinfo = armor ? armor->get_info().get_armor_info() : 0;
-		if (arinfo && arinfo->get_immune()&(1<<type))
-			return 1;
-		}
 	if (minf && minf->get_vulnerable()&(1<<type))
 		return -1;
 	else
@@ -4594,6 +4508,13 @@ int Main_actor::step
 					//   it may teleport.)
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 						oldtile.tx, oldtile.ty);
+	if (get_info().quake_on_walk())
+		{
+		qsteps = (qsteps + 1)%5;
+		if (!qsteps)		// Time to roll?
+			gwin->get_tqueue()->add(Game::get_ticks() + 10,
+					new Earthquake(2), 0L);
+		}
 	return (1);
 	}
 
@@ -5252,6 +5173,13 @@ int Npc_actor::step
 		stop();
 		dormant = true;
 		return (0);
+		}
+	if (get_info().quake_on_walk())
+		{
+		qsteps = (qsteps + 1)%5;
+		if (!qsteps)		// Time to roll?
+			gwin->get_tqueue()->add(Game::get_ticks() + 10,
+					new Earthquake(2), 0L);
 		}
 	return (1);			// Add back to queue for next time.
 	}

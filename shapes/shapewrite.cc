@@ -37,6 +37,7 @@
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
+#include "frpowers.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
@@ -45,6 +46,7 @@
 #include "weaponinf.h"
 #include "utils.h"
 #include "exceptions.h"
+#include "ready.h"
 
 using std::ifstream;
 using std::ios;
@@ -132,58 +134,85 @@ public:
 		}
 	};
 
-template <typename T>
+template <typename T, T Shape_info::*data>
 class Text_writer_functor
 	{
 public:
-	void operator()(ostream& out, int shapenum, bool bg, T data)
-		{ out << ':' << shapenum << '/' << (int)data << endl; }
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
+		{ out << ':' << shapenum << '/' << (int)(info.*data) << endl; }
 	};
 
-template <typename T, int bit>
+template <typename T, T Shape_info::*data, int bit>
 class Bit_text_writer_functor
 	{
 public:
-	void operator()(ostream& out, int shapenum, bool bg, T data)
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
 		{
-		bool val = (data & ((T)1 << bit));
+		bool val = ((info.*data) & ((T)1 << bit));
 		out << ':' << shapenum << '/' << val << endl;
 		}
 	};
 
-template <typename T>
+template <typename T, T Shape_info::*data>
 class Bit_field_text_writer_functor
 	{
 public:
-	void operator()(ostream& out, int shapenum, bool bg, T data)
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
 		{
 		out << ':' << shapenum << '/';
 		int size = 8*sizeof(T)-1;	// Bit count.
 		int bit = 0;
 		while (bit < size)
 			{
-			out << (bool)((data & ((T)1 << bit)) != 0) << '/';
+			out << (bool)(((info.*data) & ((T)1 << bit)) != 0) << '/';
 			bit++;
 			}
-		out << (bool)((data & ((T)1 << size)) != 0) << endl;
+		out << (bool)(((info.*data) & ((T)1 << size)) != 0) << endl;
 		}
 	};
 
-template <typename T, int pad>
+template <typename T, T Shape_info::*data, unsigned pad>
 class Binary_writer_functor
 	{
 public:
-	void operator()(ostream& out, int shapenum, bool bg, T data)
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
 		{
 		Write2(out, shapenum);
-		out.write((char *)(&data), sizeof(T)/sizeof(char));
-		for (int i = 0; i < pad; i++)
+		out.write((char *)(&(info.*data)), sizeof(T)/sizeof(char));
+		for (unsigned i = 0; i < pad; i++)
 			out.put(0);
 		}
 	};
 
-template <typename T, T Shape_info::*data, int flag,
-          typename Functor = Text_writer_functor<T> >
+class Readytype_writer_functor
+	{
+public:
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
+		{
+		Write2(out, shapenum);
+		unsigned char data = info.ready_type;
+		data = bg ? Ready_spot_to_BG((int)data)
+		          : Ready_spot_to_SI((int)data);
+		data = ((unsigned char)data << 3) | info.spell_flag;
+		Write1(out, data);
+		for (unsigned i = 0; i < 6; i++)
+			out.put(0);
+		}
+	};
+
+class Altreadytype_writer_functor
+	{
+public:
+	void operator()(ostream& out, int shapenum, bool bg, Shape_info& info)
+		{
+		out << ":";
+		WriteInt(out, shapenum);
+		WriteInt(out, info.alt_ready1);
+		WriteInt(out, info.alt_ready2, true);
+		}
+	};
+
+template <int flag, class Functor>
 class Functor_data_writer : public Abstract_base_writer
 	{
 protected:
@@ -191,7 +220,7 @@ protected:
 	virtual bool need_write(Shape_info& inf)
 		{ return (inf.modified_flags | inf.frompatch_flags) & flag; }
 	virtual void write_data(ostream& out, int index, bool bg)
-		{ writer(out, index, bg, info[index].*data); }
+		{ writer(out, index, bg, info[index]); }
 public:
 	Functor_data_writer(const char *s, map<int, Shape_info>& nfo, int n, int v=-1)
 		:	Abstract_base_writer(s, nfo, n, v)
@@ -281,10 +310,8 @@ public:
  */
 static void Write_text_data_file
 	(
-	map<int, Shape_info>& info,		// The info map.
 	const char *fname,				// Name of file to read, sans extension
 	Abstract_base_writer *writers[],	// What to use to write data.
-			// Ugh.
 	int numsections,				// Number of sections
 	int version,
 	Exult_Game game
@@ -322,58 +349,61 @@ void Shapes_vga_file::Write_Shapeinf_text_data_file(Exult_Game game)
 				"shape_sfx", info, num_shapes),
 			new Class_data_writer<Animation_info, &Shape_info::aniinf>(
 				"animation", info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				usecode_events_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::usecode_events> >("usecode_events",
-					info, num_shapes),
-			new Functor_data_writer<short, &Shape_info::mountain_top,
-				mountain_top_flag>("mountain_tops", info, num_shapes),
-			new Functor_data_writer<short, &Shape_info::monster_food,
-				monster_food_flag>("monster_food", info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::actor_flags,
-				actor_flags_flag, Bit_field_text_writer_functor<unsigned char> >(
-				"actor_flags", info, num_shapes),
+			new Functor_data_writer<usecode_events_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::usecode_events> >("usecode_events", info, num_shapes),
+			new Functor_data_writer<mountain_top_flag,
+				Text_writer_functor<short, &Shape_info::mountain_top> >(
+				"mountain_tops", info, num_shapes),
+			new Functor_data_writer<monster_food_flag,
+				Text_writer_functor<short, &Shape_info::monster_food> >(
+				"monster_food", info, num_shapes),
+			new Functor_data_writer<actor_flags_flag,
+				Bit_field_text_writer_functor<unsigned char,
+				&Shape_info::actor_flags> >("actor_flags", info, num_shapes),
 			new Vector_data_writer<Effective_hp_info, &Shape_info::hpinf>(
 				"effective_hps", info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				lightweight_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::lightweight> >("lightweight_object",
-					info, num_shapes),
+			new Functor_data_writer<lightweight_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::lightweight> >("lightweight_object", info, num_shapes),
 			new Vector_data_writer<Warmth_info, &Shape_info::warminf>(
 				"warmth_data", info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				quantity_frames_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::quantity_frames> >("quantity_frames",
-					info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				is_locked_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::is_locked> >("locked_containers",
-					info, num_shapes),
+			new Functor_data_writer<quantity_frames_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::quantity_frames> >("quantity_frames", info, num_shapes),
+			new Functor_data_writer<is_locked_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::is_locked> >("locked_containers", info, num_shapes),
 			new Vector_data_writer<Content_rules, &Shape_info::cntrules>(
 				"content_rules", info, num_shapes),
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				is_volatile_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::is_volatile> >("volatile_explosive",
-					info, num_shapes),
+			new Functor_data_writer<is_volatile_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::is_volatile> >("volatile_explosive", info, num_shapes),
 			new Vector_data_writer<Frame_name_info, &Shape_info::nameinf>(
-				"framenames", info, num_shapes)
+				"framenames", info, num_shapes),
+			new Functor_data_writer<altready_type_flag,
+				Altreadytype_writer_functor>("altready", info, num_shapes),
+			new Functor_data_writer<barge_type_flag,
+				Text_writer_functor<short, &Shape_info::barge_type> >(
+				"barge_type", info, num_shapes),
+			new Vector_data_writer<Frame_powers_info, &Shape_info::frpowerinf>(
+				"frame_powers", info, num_shapes)
 			};
 	int numsections = sizeof(writers)/sizeof(writers[0]);
-	Write_text_data_file(info, "shape_info", writers, numsections, 5, game);
+	Write_text_data_file("shape_info", writers, numsections, 5, game);
 	}
 
 void Shapes_vga_file::Write_Bodies_text_data_file(Exult_Game game)
 	{
 	Abstract_base_writer *writers[] = {
-			new Functor_data_writer<unsigned char, &Shape_info::shape_flags,
-				is_body_flag, Bit_text_writer_functor<unsigned char,
-						Shape_info::is_body> >("bodyshapes",
-					info, num_shapes),
+			new Functor_data_writer<is_body_flag,
+				Bit_text_writer_functor<unsigned char, &Shape_info::shape_flags,
+				Shape_info::is_body> >("bodyshapes", info, num_shapes),
 			new Class_data_writer<Body_info, &Shape_info::body>(
 				"bodylist", info, num_shapes),
 			};
 	int numsections = sizeof(writers)/sizeof(writers[0]);
-	Write_text_data_file(info, "bodies", writers, numsections, 2, game);
+	Write_text_data_file("bodies", writers, numsections, 2, game);
 	}
 
 void Shapes_vga_file::Write_Paperdoll_text_data_file(Exult_Game game)
@@ -385,7 +415,7 @@ void Shapes_vga_file::Write_Paperdoll_text_data_file(Exult_Game game)
 				"items", info, num_shapes)
 			};
 	int numsections = sizeof(writers)/sizeof(writers[0]);
-	Write_text_data_file(info, "paperdol_info", writers, numsections, 2, game);
+	Write_text_data_file("paperdol_info", writers, numsections, 2, game);
 	}
 
 
@@ -496,14 +526,13 @@ void Shapes_vga_file::write_info
 		PATCH_MONSTERS, info, num_shapes);
 	monstinf.write_binary(bg);
 
-	Functor_data_writer<short, &Shape_info::container_gump, container_gump_flag,
-			Binary_writer_functor<short, 0> > container_gump(
+	Functor_data_writer<container_gump_flag, Binary_writer_functor<short,
+		&Shape_info::container_gump, 0> > container_gump(
 		PATCH_CONTAINER, info, num_shapes, 1);
 	container_gump.write_binary(bg);
 
-	Functor_data_writer<unsigned char, &Shape_info::ready_type, ready_type_flag, 
-			Binary_writer_functor<unsigned char, 6> > ready_type(
-		PATCH_READY, info, num_shapes);
+	Functor_data_writer<ready_type_flag,
+		Readytype_writer_functor> ready_type(PATCH_READY, info, num_shapes);
 	ready_type.write_binary(bg);
 
 	Write_Shapeinf_text_data_file(game);
@@ -565,6 +594,26 @@ void Frame_name_info::write
 	if (type == 0)
 		return;
 	WriteInt(out, othermsg, true);
+	}
+
+void Frame_powers_info::write
+	(
+	ostream& out,		// Output stream.
+	int shapenum,		// Shape number.
+	bool bg				// Writing BG file.
+	)
+	{
+	out << ":";
+	WriteInt(out, shapenum);
+	WriteInt(out, frame < 0 ? -1 : (frame & 0xff));
+	int size = 8*sizeof(unsigned short)-1;	// Bit count.
+	int bit = 0;
+	while (bit < size)
+		{
+		out << (bool)((powers & (1 << bit)) != 0) << '/';
+		bit++;
+		}
+	out << (bool)((powers & (1 << size)) != 0) << endl;
 	}
 
 void Effective_hp_info::write

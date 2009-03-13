@@ -414,7 +414,7 @@
 #	Lots of monster/actor data which was hardcoded in the originals.
 #
 #	Format
-#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis/armageddon
+#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis/quakewalk
 #
 #	The fields are flags which are true if nonzero, false otherwise.
 #	The default for actors not on the list is false.
@@ -424,26 +424,31 @@
 #	teleports: nonzero if actor can teleport, zero otherwise.
 #	turn_invis: nonzero if actor can become invisible, zero otherwise.
 #	armageddon: nonzero if actor susrives armageddon, zero otherwise.
+#	quakewalk: nonzero if actor causes earthquake when walking, zero otherwise.
 #
 #
 #		Gazer
 #
-:511/0/0/0/0/1/0
+:511/0/0/0/0/1/0/0
 
 #		Automatons
 #
-:658/1/1/0/0/0/0
-:734/1/1/0/0/0/0
-:747/1/1/0/0/0/0
-:945/1/1/0/0/0/0
+:658/1/1/0/0/0/0/0
+:734/1/1/0/0/0/0/0
+:747/1/1/0/0/0/0/0
+:945/1/1/0/0/0/0/0
 
 #		Aram Dol
 #
-:981/0/0/0/0/1/0
+:981/0/0/0/0/1/0/0
 
 #		Batlin
 #
-:318/0/0/0/0/0/1
+:318/0/0/0/0/0/1/0
+
+#		Cyclops
+#
+:501/0/0/0/0/0/0/1
 %%endsection
 
 %%section warmth_data
@@ -1413,4 +1418,131 @@
 :1004/2/-1/0/168
 :1004/3/-1/0/169
 :1004/4/-1/0/170
+%%endsection
+
+%%section altready
+#
+#	Alternate spot where an object can be readied.
+#
+#	Format:
+#		:shapenum/spot1/spot2
+#
+#	spot1, spot2: Alternate spots where the item can go.
+#	-1 means no alternate spot; spot1 should not be -1 unless spot2 also is.
+#	They can take one of the following values:
+#		head = 0
+#		backpack = 1
+#		belt = 2
+#		lhand = 3
+#		lfinger = 4
+#		legs = 5
+#		feet = 6
+#		rfinger = 7
+#		rhand = 8
+#		torso = 9
+#		amulet = 10
+#		quiver = 11
+#		back2h_spot = 12		2 handed weapons, bedroll, bodies
+#		back_shield = 13		Shield behind backpack
+#		earrings = 14
+#		cloak = 15
+#		gloves = 16				Gloves, gauntlets
+#		ucont = 17				Usecode Container
+#		both_hands = 18			2 handed weapons, uses up both hands
+#		lrgloves = 19			Heavy gloves, uses both fingers and gloves spot
+#		neck = 20				Fills cloak, amulet slots
+#		scabbard = 21			Fills belt, back2h_spot and back_shield spots
+#
+#	Bodies.
+#
+:400/3/-1
+:402/3/-1
+:414/3/-1
+
+#	Torch.
+#
+:595/8/2
+:701/8/2
+
+#	SHIELDS
+#
+:490/8/13
+:543/8/13
+:545/8/13
+:572/8/13
+:578/8/13
+:585/8/13
+:586/8/13
+:609/8/13
+:663/8/13
+:729/8/13
+
+#	Serpent Sceptre
+#
+:926/2/-1
+
+#	WEAPONS 1 H
+#
+:592/8/12
+
+
+#	WEAPONS 2H
+#
+:598/2/-1
+
+#	Bed roll.
+#
+:583/1/12
+%%endsection
+
+%%section barge_type
+#
+#	The type of a barge piece.
+#
+#	Format:
+#		:shapenum/type
+#
+#	type: The type of the barge piece. Can take one of the following values:
+#		barge_generic = 0
+#		barge_raft = 1
+#		barge_seat = 2
+#		barge_sails = 3
+#		barge_wheel = 4
+#		barge_draftanimal = 5
+#		barge_turtle = 6
+#
+#	Ice raft.
+#
+:504/1
+
+#	Turtle.
+#
+:215/6
+
+#	Seat.
+#
+:292/2
+
+#	Sails.
+#
+:251/3
+%%endsection
+
+%%section frame_powers
+#
+#	Additional frame-dependent immunities granted by gear.
+#
+#	Format:
+#		:shapenum/frame/poison/charm/sleep/paralysis/curse/wpnpowers/deathmagic/death/cold/starvation/swamp
+#
+#	frame: The frame that grants the power or -1 for all frames.
+#	Other fields: nonzero to grant the immunity, zero otherwise.
+#
+#	Swamp boots.
+#
+:587/6/0/0/0/0/0/0/0/0/0/0/1
+
+#	Magic boots.
+#
+:587/1/0/0/0/0/0/0/0/0/0/0/1
 %%endsection

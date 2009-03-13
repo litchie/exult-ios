@@ -458,11 +458,11 @@ int Game_object::get_weapon_ammo
 		need_ammo = !uses && winf->uses_charges();
 	else
 		need_ammo = 1;
-	if (bg && need_ammo && family >= 0 && proj >= 0)
+	if (need_ammo && family >= 0 && proj >= 0)
 		{
 		// BG triple crossbows uses 3x ammo.
 		Shape_info& info = ShapeID::get_info(winf->get_projectile());
-		if (info.get_ready_type() == triple_crossbow_bolts)
+		if (info.get_ready_type() == triple_bolts)
 			need_ammo = 3;
 		}
 
@@ -1526,8 +1526,8 @@ int Game_object::get_rotated_frame
 	)
 	{
 	int curframe = get_framenum();
-	int shapenum = get_shapenum();
-	if (shapenum == 292)		// Seat is a special case.
+				// Seat is a special case.
+	if (get_info().get_barge_type() == Shape_info::barge_seat)
 		{
 		int dir = curframe%4;	// Current dir (0-3).
 		return (curframe - dir) + (dir + quads)%4;
@@ -1599,7 +1599,6 @@ int Game_object::reduce_health
 			type == Weapon_data::lightning_damage ||
 			type == Weapon_data::ethereal_damage)
 		return 0;
-	//if (get_shapenum() == 704 &&
 	if (get_info().is_explosive() &&
 			(type == Weapon_data::fire_damage || delta >= hp))
 		{	// Cause chain reaction.

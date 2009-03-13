@@ -470,11 +470,11 @@ inline int Wearing_ring
 	)
 	{
 					// See if wearing ring.
-	Game_object *ring = actor->get_readied(Actor::lfinger);
+	Game_object *ring = actor->get_readied(lfinger);
 	if (ring && ring->get_shapenum() == shnum &&
 	    ring->get_framenum() == frnum)
 		return 1;
-	ring = actor->get_readied(Actor::rfinger);
+	ring = actor->get_readied(rfinger);
 	if (ring && ring->get_shapenum() == shnum &&
 	    ring->get_framenum() == frnum)
 		return 1;

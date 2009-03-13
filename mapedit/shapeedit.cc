@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
+#include "frpowers.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
@@ -106,6 +107,16 @@ enum
 	CNT_FROM_PATCH,
 	CNT_MODIFIED,
 	CNT_COLUMN_COUNT
+	};
+
+// Frame powers columns
+enum
+	{
+	FRPOW_FRAME_COLUMN = 0,
+	FRPOW_POWERS_COLUMN,
+	FRPOW_FROM_PATCH,
+	FRPOW_MODIFIED,
+	FRPOW_COLUMN_COUNT
 	};
 
 // Frame name columns
@@ -1011,6 +1022,21 @@ C_EXPORT gboolean on_shinfo_framenames_comp_type_changed
 	}
 
 /*
+ *	Frame powers frame type changed.
+ */
+C_EXPORT gboolean on_shinfo_framepowers_frame_type_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("shinfo_framepowers_frame_num", on);
+	return (TRUE);
+	}
+
+/*
  *	Warmth frame type changed.
  */
 C_EXPORT gboolean on_shinfo_warmth_frame_type_toggled
@@ -1530,7 +1556,7 @@ C_EXPORT void on_shinfo_cntrules_remove_clicked
 	}
 
 /*
- *	Changed warmth selection.
+ *	Changed content rules selection.
  */
 C_EXPORT void on_shinfo_cntrules_list_cursor_changed
 	(
@@ -1553,6 +1579,155 @@ C_EXPORT void on_shinfo_cntrules_list_cursor_changed
 	gtk_tree_model_get(model, &iter, CNT_SHAPE_COLUMN, &shnum,
 			CNT_ACCEPT_COLUMN, &accept, -1);
 	Set_cntrules_fields(shnum, accept);
+}
+
+/*
+ *	Helper functions for frame powers.
+ */
+static inline void Get_framepowers_fields
+	(
+	ExultStudio *studio,
+	unsigned int& frnum,
+	unsigned int *powers = 0
+	)
+	{
+	bool anyfr = studio->get_toggle("shinfo_framepowers_frame_type");
+	frnum = anyfr ? (unsigned int)(-1) :
+			studio->get_spin("shinfo_framepowers_frame_num");
+	if (powers)
+		{
+		static const char *powflags[] = {
+					"shinfo_framepowers_power0",
+					"shinfo_framepowers_power1",
+					"shinfo_framepowers_power2",
+					"shinfo_framepowers_power3",
+					"shinfo_framepowers_power4",
+					"shinfo_framepowers_power5",
+					"shinfo_framepowers_power6",
+					"shinfo_framepowers_power7",
+					"shinfo_framepowers_power8",
+					"shinfo_framepowers_power9",
+					"shinfo_framepowers_power10" };
+		*powers = studio->get_bit_toggles(&powflags[0], 
+					sizeof(powflags)/sizeof(powflags[0]));
+		}
+	}
+
+static void Set_framepowers_fields
+	(
+	int frnum = 0,
+	unsigned int powers = 0
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_toggle("shinfo_framepowers_frame_type", frnum == -1);
+	studio->set_spin("shinfo_framepowers_frame_num", frnum == -1 ? 0 : frnum, frnum != -1);
+	static const char *powflags[] = {
+			"shinfo_framepowers_power0",
+			"shinfo_framepowers_power1",
+			"shinfo_framepowers_power2",
+			"shinfo_framepowers_power3",
+			"shinfo_framepowers_power4",
+			"shinfo_framepowers_power5",
+			"shinfo_framepowers_power6",
+			"shinfo_framepowers_power7",
+			"shinfo_framepowers_power8",
+			"shinfo_framepowers_power9",
+			"shinfo_framepowers_power10" };
+	studio->set_bit_toggles(&powflags[0], 
+		sizeof(powflags)/sizeof(powflags[0]), powers);
+	}
+
+/*
+ *	Adding frame powers.
+ */
+C_EXPORT void on_shinfo_framepowers_update_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	unsigned int newfrnum;
+	unsigned int newpowers;
+	Get_framepowers_fields(studio, newfrnum, &newpowers);
+
+	GtkTreeView *cnttree = GTK_TREE_VIEW(
+			glade_xml_get_widget(studio->get_xml(), "shinfo_framepowers_list"));
+	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	GtkTreeIter *iter;
+	int cmp = Find_unary_iter(model, iter, newfrnum);
+	if (cmp)
+		{
+		GtkTreeIter newiter;
+		if (cmp > 0)
+			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
+		else
+			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
+		gtk_tree_store_set(store, &newiter, FRPOW_FRAME_COLUMN, (int)newfrnum,
+				FRPOW_POWERS_COLUMN, (int)newpowers, FRPOW_FROM_PATCH, 1,
+				FRPOW_MODIFIED, 1, -1);
+		}
+	else
+		{
+		unsigned int powers;
+		gtk_tree_model_get(model, iter, FRPOW_POWERS_COLUMN, &powers, -1);
+		if (powers != newpowers)
+			gtk_tree_store_set(store, iter, FRPOW_POWERS_COLUMN, newpowers,
+					FRPOW_MODIFIED, 1, -1);
+		}
+	if (iter)
+		gtk_tree_iter_free(iter);
+	}
+
+/*
+ *	Deleting frame powers.
+ */
+C_EXPORT void on_shinfo_framepowers_remove_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	GtkTreeView *cnttree = GTK_TREE_VIEW(
+			glade_xml_get_widget(studio->get_xml(), "shinfo_framepowers_list"));
+	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	GtkTreeIter *iter;
+	unsigned int newfrnum;
+	Get_framepowers_fields(studio, newfrnum);
+	if (!Find_unary_iter(model, iter, newfrnum))
+		gtk_tree_store_remove(store, iter);
+	if (iter)
+		gtk_tree_iter_free(iter);
+	}
+
+/*
+ *	Changed content rules selection.
+ */
+C_EXPORT void on_shinfo_framepowers_list_cursor_changed
+	(
+	GtkTreeView *treeview,
+	gpointer     user_data
+	)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GtkTreeViewColumn *col;
+	gtk_tree_view_get_cursor(treeview, &path, &col);
+	if (!col)
+		return;
+
+	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	int frnum, powers;
+	gtk_tree_model_get_iter(model, &iter, path);
+	gtk_tree_path_free(path);
+	gtk_tree_model_get(model, &iter, FRPOW_FRAME_COLUMN, &frnum,
+			FRPOW_POWERS_COLUMN, &powers, -1);
+	Set_framepowers_fields(frnum, powers);
 }
 
 /*
@@ -2102,6 +2277,24 @@ C_EXPORT void on_shinfo_mountaintop_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_mountaintop_box", on);
 	}
+C_EXPORT void on_shinfo_bargetype_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_barge_box", on);
+	}
+C_EXPORT void on_shinfo_barge_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_sensitive("shinfo_barge_type", on);
+	}
 C_EXPORT void on_shinfo_body_check_toggled
 	(
 	GtkToggleButton *btn,
@@ -2353,50 +2546,47 @@ void ExultStudio::set_shape_notebook_frame
 	set_spin("shinfo_wihy", wy, 0, 255);
 	}
 
-inline short get_bg_spots(short spot)
+inline short get_spots(short spot)
 	{
 	switch (spot)
 		{
-		case other: return 0;
-		case one_handed_weapon: return 1;
-		case two_handed_weapon: return 2;
-		case ammunition: return 3;
-		case head_armor: return 4;
-		case neck_armor: return 6;
-		case torso_armor: return 9;
-		case gloves: return 10;
-		case ring: return 11;
-		case leg_armor: return 13;
-		case foot_armor: return 14;
-		case tongs: return 15;
-		case triple_crossbow_bolts: return 16;
-			// For Usecode Container in BG:
-		case usecode_container_bg: return 17;
-		default: return 0;
+		case rhand:			return 0;
+		case lhand:			return 1;
+		case both_hands:	return 2;
+		case amulet:		return 4;
+		case cloak:			return 5;
+		case neck:			return 6;
+		case lfinger:		return 8;
+		case rfinger:		return 8;
+		case gloves:		return 9;
+		case lrgloves:		return 10;
+		case quiver:		return 12;
+		case earrings:		return 13;
+		case head:			return 14;
+		case torso:			return 15;
+		case backpack:		return 16;
+		case belt:			return 17;
+		case legs:			return 18;
+		case feet:			return 19;
+		case ucont:			return 20;
+		case triple_bolts:	return 21;
+		default:			return 0;
 		}
 	}
 
-inline short get_si_spots(short spot)
+inline short get_alt_spots(short spot)
 	{
 	switch (spot)
 		{
-		case other_si: return 0;
-		case one_handed_si: return 1;
-		case two_handed_si: return 2;
-		case ammo_si: return 3;
-		case helm_si: return 4;
-		case earrings_si: return 5;
-		case amulet_si: return 6;
-		case cloak_si: return 7;
-		case backpack_si: return 8;
-		case armour_si: return 9;
-		case gloves_si: return 10;
-		case ring_si: return 11;
-		case belt_si: return 12;
-		case leggings_si: return 13;
-		case boots_si: return 14;
-		case usecode_container_si: return 17;
-		default: return 0;
+		case rhand:			return 2;
+		case lhand:			return 3;
+		case neck:			return 5;
+		case belt:			return 7;
+		case back_2h:		return 8;
+		case back_shield:	return 9;
+		case scabbard:		return 10;
+		case backpack:		return 12;
+		default:			return 0;
 		}
 	}
 
@@ -2420,13 +2610,14 @@ void ExultStudio::init_shape_notebook
 					classes[shclass] : 0);
 	set_shape_notebook_frame(frnum);
 	set_spin("shinfo_ztiles", info.get_3d_height());
-	int spot = info.get_ready_type();
-	if (game_type == BLACK_GATE)
-		spot = get_bg_spots(spot);
-	else
-		spot = get_si_spots(spot);
+	int spot = get_spots(info.get_ready_type());
 	set_optmenu("shinfo_ready_spot", spot);
 	set_toggle("shinfo_is_spell_check", info.is_spell());
+					// New Exult stuff:
+	spot = get_alt_spots(info.get_alt_ready1());
+	set_optmenu("shinfo_altready1_spot", spot);
+	spot = get_alt_spots(info.get_alt_ready2());
+	set_optmenu("shinfo_altready2_spot", spot);
 	
 	set_spin("shinfo_weight", info.get_weight(), 0, 255);
 	set_spin("shinfo_volume", info.get_volume(), 0, 255);
@@ -2561,7 +2752,8 @@ void ExultStudio::init_shape_notebook
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
 					"shinfo_actor_flag4",
-					"shinfo_actor_flag5" };
+					"shinfo_actor_flag5",
+					"shinfo_actor_flag6" };
 		set_bit_toggles(&flags[0], sizeof(flags)/sizeof(flags[0]), aflags);
 		}
 	Monster_info *minfo = info.get_monster_info();
@@ -2636,6 +2828,14 @@ void ExultStudio::init_shape_notebook
 	bool top_on = get_optmenu("shinfo_shape_class")==12;
 	set_optmenu("shinfo_mountaintop_type", top_on ? mountain_top : 0, top_on);
 
+	int barge_type = info.get_barge_type();
+	if (barge_type > 6 || barge_type < 0)
+		barge_type = 0;
+	set_toggle("shinfo_bargetype_check", barge_type != 0);
+	set_visible("shinfo_barge_box", barge_type != 0);
+	bool barge_on = get_toggle("shinfo_barge_check");
+	set_optmenu("shinfo_barge_type", barge_on ? barge_type : 0, barge_on);
+
 	bool hasbody = info.has_body_info();
 	set_toggle("shinfo_body_check", hasbody);
 	set_visible("shinfo_coffin", hasbody);
@@ -2646,6 +2846,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_body_frame", info.get_body_frame(),
 				0, vgafile->get_ifile()->get_num_frames(shnum)-1);
 		}
+
 	bool hasexp = info.has_explosion_info();
 	set_toggle("shinfo_explosion_check", hasexp);
 	set_visible("shinfo_explosion_box", hasexp);
@@ -2664,6 +2865,7 @@ void ExultStudio::init_shape_notebook
 			set_spin("shinfo_explosion_sfx_number", sfxnum, true);
 			}
 		}
+
 	SFX_info *sfxinf = info.get_sfx_info();
 	set_toggle("shinfo_sound_check", sfxinf != 0);
 	set_visible("shinfo_sfx_box", sfxinf != 0);
@@ -2679,6 +2881,7 @@ void ExultStudio::init_shape_notebook
 		set_toggle("shinfo_sfx_clock_check", hourly);
 		set_spin("shinfo_sfx_clock_sfx", sfxinf->get_extra_sfx(), hourly);
 		}
+
 	set_sensitive("shinfo_npcpaperdoll_gump", game_type == BLACK_GATE);
 	set_sensitive("shinfo_npcgump_draw", game_type == BLACK_GATE);
 	Paperdoll_npc *npcinf = info.get_npc_paperdoll();
@@ -2704,6 +2907,7 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_npcpaperdoll_gump",
 				bg ? npcinf->get_gump_shape() : -1, bg);
 		}
+
 	Animation_info *aniinf = info.get_animation_info();
 	set_toggle("shinfo_animation_check", aniinf != 0);
 	set_visible("shinfo_animation_box", aniinf != 0);
@@ -2743,6 +2947,7 @@ void ExultStudio::init_shape_notebook
 		set_toggle("shinfo_animation_rectype", rec == 0, on);
 		set_spin("shinfo_animation_recycle", rec ? rec : nframes, on && rec);
 		}
+
 	std::vector<Effective_hp_info>& hpinf = info.get_effective_hp_info();
 	set_toggle("shinfo_effhps_check", !hpinf.empty());
 	set_visible("shinfo_effhps_box", !hpinf.empty());
@@ -2780,6 +2985,7 @@ void ExultStudio::init_shape_notebook
 		}
 	else
 		Set_hp_fields();
+
 	std::vector<Warmth_info>& warminf = info.get_warmth_info();
 	set_toggle("shinfo_warmth_check", !warminf.empty());
 	set_visible("shinfo_warmth_box", !warminf.empty());
@@ -2815,6 +3021,7 @@ void ExultStudio::init_shape_notebook
 		}
 	else
 		Set_warmth_fields();
+
 	std::vector<Content_rules>& cntinf = info.get_content_rules();
 	set_toggle("shinfo_cntrules_check", !cntinf.empty());
 	set_visible("shinfo_cntrules_box", !cntinf.empty());
@@ -2850,6 +3057,43 @@ void ExultStudio::init_shape_notebook
 		}
 	else
 		Set_cntrules_fields();
+
+	std::vector<Frame_powers_info>& frpowinf = info.get_frame_powers();
+	set_toggle("shinfo_framepowers_check", !frpowinf.empty());
+	set_visible("shinfo_framepowers_box", !frpowinf.empty());
+	if (!frpowinf.empty())
+		{
+		GtkTreeView *powtree = GTK_TREE_VIEW(
+				glade_xml_get_widget(app_xml, "shinfo_framepowers_list"));
+		GtkTreeModel *model = gtk_tree_view_get_model(powtree);
+		GtkTreeStore *store = GTK_TREE_STORE(model);
+		GtkTreeIter iter;
+		Frame_powers_info *first = 0;
+		for (std::vector<Frame_powers_info>::iterator it = frpowinf.begin();
+			it != frpowinf.end(); ++it)
+			{
+			gtk_tree_store_append(store, &iter, NULL);
+			Frame_powers_info& frpow = *it;
+			if (frpow.is_invalid())
+				continue;
+			if (!first)
+				first = &*it;
+			gtk_tree_store_set(store, &iter, FRPOW_FRAME_COLUMN, frpow.get_frame(),
+					FRPOW_POWERS_COLUMN, frpow.get_powers(),
+					FRPOW_FROM_PATCH, frpow.from_patch(),
+					FRPOW_MODIFIED, frpow.was_modified(), -1);
+			}
+		GtkTreeSelection *sel = gtk_tree_view_get_selection(powtree);
+		gtk_tree_model_get_iter_first(model, &iter);
+		gtk_tree_selection_select_iter(sel, &iter);
+		GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+		gtk_tree_view_set_cursor(powtree, path, NULL, false);
+		gtk_tree_path_free(path);
+		Set_framepowers_fields(first->get_frame(), first->get_powers());
+		}
+	else
+		Set_framepowers_fields();
+
 	std::vector<Frame_name_info>& nmvec = info.get_frame_name_info();
 	set_toggle("shinfo_framenames_check", !nmvec.empty());
 	set_visible("shinfo_framenames_box", !nmvec.empty());
@@ -2907,6 +3151,7 @@ void ExultStudio::init_shape_notebook
 		}
 	else
 		Set_framenames_fields();
+
 	std::vector<Paperdoll_item>& dollinf = info.get_paperdoll_info();
 	set_toggle("shinfo_objpaperdoll_check", !dollinf.empty());
 	set_visible("shinfo_objpaperdoll_box", !dollinf.empty());
@@ -2998,6 +3243,19 @@ struct Update_cntrules
 				CNT_FROM_PATCH, &patch, CNT_MODIFIED, &modded, -1);
 		Content_rules cntinf(shnum, accept, patch, modded);
 		info.add_content_rule(cntinf);
+		}
+	};
+
+struct Update_frpowers
+	{
+	void operator() (Shape_info& info, GtkTreeModel *model, GtkTreeIter *iter)
+		{
+		unsigned int frnum, powers, patch, modded;
+		gtk_tree_model_get(model, iter, FRPOW_FRAME_COLUMN, &frnum,
+				FRPOW_POWERS_COLUMN, &powers,
+				FRPOW_FROM_PATCH, &patch, FRPOW_MODIFIED, &modded, -1);
+		Frame_powers_info powinf(frnum, powers, patch, modded);
+		info.add_frame_powers(powinf);
 		}
 	};
 
@@ -3137,28 +3395,22 @@ void ExultStudio::save_shape_notebook
 	info.set_3d(get_spin("shinfo_xtiles"), get_spin("shinfo_ytiles"),
 						get_spin("shinfo_ztiles"));
 	int spot = get_optmenu("shinfo_ready_spot");
-	static const signed char bg_spots[] = {
-			other,                 one_handed_weapon,     two_handed_weapon,
-			ammunition,            head_armor,            other,
-			neck_armor,            other,                 other,
-			torso_armor,           gloves,                ring,
-			other,                 leg_armor,             foot_armor,
-			tongs,                 triple_crossbow_bolts, usecode_container_bg
+	static const signed char conv_spots[] = {
+		rhand, lhand, both_hands, rhand, amulet, cloak,
+		neck, rhand, lfinger, gloves, lrgloves, rhand,
+		quiver, earrings, head, torso, backpack, belt,
+		legs, feet, ucont, triple_bolts
 		};
-	static const signed char si_spots[] = {
-			other_si,              one_handed_si,         two_handed_si,
-			ammo_si,               helm_si,               earrings_si,
-			amulet_si,             cloak_si,              backpack_si,
-			armour_si,             gloves_si,             ring_si,
-			belt_si,               leggings_si,           boots_si,
-			other_si,              other_si,              usecode_container_si
-		};
-	if (game_type == BLACK_GATE)
-		spot = bg_spots[spot];
-	else
-		spot = si_spots[spot];
-	info.set_ready_type(spot);
+	info.set_ready_type(conv_spots[spot]);
 	info.set_is_spell(get_toggle("shinfo_is_spell_check"));
+			// Some Exult stuff.
+	static const signed char alt_spots[] = {
+		-1, -1, rhand, lhand, -1, neck, -1, belt,
+		back_2h, back_shield, scabbard, -1, backpack
+		};
+	info.set_alt_ready(alt_spots[get_optmenu("shinfo_altready1_spot")],
+	                   alt_spots[get_optmenu("shinfo_altready2_spot")]);
+
 	info.set_weight_volume(get_spin("shinfo_weight"),
 						get_spin("shinfo_volume"));
 	info.set_weapon_offset(frnum, get_spin("shinfo_wihx"),
@@ -3308,7 +3560,8 @@ void ExultStudio::save_shape_notebook
 					"shinfo_actor_flag2",
 					"shinfo_actor_flag3",
 					"shinfo_actor_flag4",
-					"shinfo_actor_flag5" };
+					"shinfo_actor_flag5",
+					"shinfo_actor_flag6" };
 		info.set_actor_flags(get_bit_toggles(&flags[0], 
 					sizeof(flags)/sizeof(flags[0])));
 		}
@@ -3383,6 +3636,12 @@ void ExultStudio::save_shape_notebook
 	else
 		{
 		info.set_mountain_top(get_optmenu("shinfo_mountaintop_type"));
+		}
+	if (!get_toggle("shinfo_bargetype_check"))
+		info.set_barge_type(0);
+	else
+		{
+		info.set_barge_type(get_optmenu("shinfo_barge_type"));
 		}
 	if (!get_toggle("shinfo_body_check"))
 		info.set_body_info(false);
@@ -3504,6 +3763,14 @@ void ExultStudio::save_shape_notebook
 		info.set_content_rules(true);
 		update_shape_vector<Update_cntrules>("shinfo_cntrules_list", info);
 		info.clean_invalid_content_rules();
+		}
+	if (!get_toggle("shinfo_framepowers_check"))
+		info.set_frame_powers(false);
+	else
+		{
+		info.set_frame_powers(true);
+		update_shape_vector<Update_frpowers>("shinfo_framepowers_list", info);
+		info.clean_invalid_frame_powers();
 		}
 	if (!get_toggle("shinfo_framenames_check"))
 		info.set_frame_name_info(false);
@@ -3778,6 +4045,38 @@ void ExultStudio::open_shape_window
 		// Clear it.
 		GtkTreeModel *model = gtk_tree_view_get_model(
 							GTK_TREE_VIEW(cnttree));
+		GtkTreeStore *store = GTK_TREE_STORE(model);
+		gtk_tree_store_clear(store);
+		}
+
+	GtkTreeView *powtree = GTK_TREE_VIEW(
+			glade_xml_get_widget(app_xml, "shinfo_framepowers_list"));
+	gtk_signal_connect(GTK_OBJECT(powtree), "cursor_changed",
+				GTK_SIGNAL_FUNC(on_shinfo_framepowers_list_cursor_changed),
+				0L);
+	model = gtk_tree_view_get_model(powtree);
+	if (!model)
+		{
+		GtkTreeStore *store = gtk_tree_store_new(
+				FRPOW_COLUMN_COUNT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+		gtk_tree_view_set_model(powtree, GTK_TREE_MODEL(store));
+		g_object_unref(store);
+		// Create each column.
+		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+		GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
+				"Shape", renderer, "text", FRPOW_FRAME_COLUMN, NULL);
+		gtk_tree_view_append_column(powtree, col);
+		renderer = gtk_cell_renderer_text_new();
+		col = gtk_tree_view_column_new_with_attributes(
+				"Powers", renderer, "text", FRPOW_POWERS_COLUMN, NULL);
+		gtk_tree_view_append_column(powtree, col);
+		add_terminal_columns(powtree, FRPOW_FROM_PATCH, FRPOW_MODIFIED);
+		}
+	else
+		{
+		// Clear it.
+		GtkTreeModel *model = gtk_tree_view_get_model(
+							GTK_TREE_VIEW(powtree));
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		gtk_tree_store_clear(store);
 		}
