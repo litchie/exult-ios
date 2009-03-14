@@ -309,8 +309,8 @@ public:
 					// GTK/Glade utils:
 	bool get_toggle(const char *name);
 	void set_toggle(const char *name, bool val, bool sensitive = true);
-	void set_bit_toggles(const char **names, int num, unsigned char bits);
-	unsigned char get_bit_toggles(const char **names, int num);
+	void set_bit_toggles(const char **names, int num, unsigned int bits);
+	unsigned int get_bit_toggles(const char **names, int num);
 	int get_optmenu(const char *name);
 	void set_optmenu(const char *name, int val, bool sensitive = true);
 	int get_spin(const char *name);

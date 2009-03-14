@@ -1841,13 +1841,13 @@ void ExultStudio::set_toggle
  *	Get an 8-bit set of flags from a group of toggles.
  */
 
-unsigned char ExultStudio::get_bit_toggles
+unsigned int ExultStudio::get_bit_toggles
 	(
 	const char **names,			// Names for bit 0, 1, 2,...
 	int num				// # of names/bits.
 	)
 	{
-	unsigned char bits = 0;
+	unsigned int bits = 0;
 	for (int i = 0; i < num; i++)
 		bits |= (get_toggle(names[i]) ? 1 : 0) << i;
 	return bits;
@@ -1862,7 +1862,7 @@ void ExultStudio::set_bit_toggles
 	(
 	const char **names,			// Names for bit 0, 1, 2,...
 	int num,			// # of names/bits.
-	unsigned char bits
+	unsigned int bits
 	)
 	{
 	for (int i = 0; i < num; i++)
