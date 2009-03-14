@@ -4775,10 +4775,10 @@ int Actor::get_shape_real
 
 /**
  *	Causes earthquake on step if the actor flag is set.
- *	@return: True if flag is caused quake on walk, false otherwise.
+ *	@return: True if caused quake on walk, false otherwise.
  */
 
-inline bool Actor::quake_on_walk
+bool Actor::quake_on_walk
 	(
 	)
 	{
