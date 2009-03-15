@@ -494,7 +494,8 @@ static gint Mouse_release
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
-	return chooser->mouse_up();
+	chooser->mouse_up();
+	return true;
 	}
 
 /*

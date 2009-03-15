@@ -1578,7 +1578,8 @@ static gint Mouse_release
 	)
 	{
 	Combo_chooser *chooser = (Combo_chooser *) data;
-	return chooser->mouse_up();
+	chooser->mouse_up();
+	return true;
 	}
 
 /*
