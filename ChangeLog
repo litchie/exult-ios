@@ -1,3 +1,8 @@
+2009-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* files/U7objs.h: Reverted previous commit and fixed the true underlying
+	  problem of incorrect assignment operator. Also removed misinformation
+	  from changelog.
+
 2009-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed bug #2687078.
 	* objs/eggs.cc: Check mapeditor flag first.
@@ -5,7 +10,7 @@
 	  overall rotation function.
 	* shapeid.h: Implemented simple cache for shape information, wasting memory
 	  for performance.
-	* files/U7obj.h: Fixing memory leak ("delete [] NULL" is NOT harmless).
+	* files/U7obj.h: Fixing memory leak.
 	* shapes/*.h: Fixed memory leaks.
 	* Fixed several warnings, including a mistaken assignment in an if and many
 	  missing return values in non-void functions.
