@@ -709,7 +709,8 @@ static gint Mouse_release
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-	return chooser->mouse_up();
+	chooser->mouse_up();
+	return true;
 	}
 
 /*
