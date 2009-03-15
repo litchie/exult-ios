@@ -2,6 +2,8 @@
 	* files/U7objs.h: Reverted previous commit and fixed the true underlying
 	  problem of incorrect assignment operator. Also removed misinformation
 	  from changelog.
+	* schedule.cc: Fixed excessive processor usage in the boat travel to
+	  Moonshade in SI.
 
 2009-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed bug #2687078.
