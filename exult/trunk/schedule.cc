@@ -2639,17 +2639,25 @@ bool Waiter_schedule::walk_to_customer
 	(
 	int min_delay			// Min. delay in msecs.
 	)
-{
-	if (customer) {
-		Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
-								3, npc);
-		if (dest.tx != -1 && npc->walk_path_to_tile(dest,
-			gwin->get_std_delay(), min_delay + rand()%1000))
-			return true;		// Walking there.
-	}
+	{
+	if (customer)
+		{
+		if (customer->get_schedule_type() != Schedule::eat_at_inn)
+			// Customer schedule changed. Tell schedule to refresh the list
+			// (this happens with Hawk & others in SI).
+			customers.clear();
+		else
+			{
+			Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
+									3, npc);
+			if (dest.tx != -1 && npc->walk_path_to_tile(dest,
+				gwin->get_std_delay(), min_delay + rand()%1000))
+				return true;		// Walking there.
+			}
+		}
 	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
 	return false;
-}
+	}
 
 /*
  *	Find tables and categorize them.
