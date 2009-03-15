@@ -471,10 +471,12 @@ static void Handle_client_message
 		unsigned char basic = *ptr;
 		const Game_object_vector& sel = cheat.get_selected();
 		if (!sel.empty())
+			{
 			if (basic)		// Basic obj. props?
 				sel.back()->Game_object::edit();
 			else
 				sel.back()->edit();
+			}
 		break;
 		}
 	case Exult_server::set_edit_chunknum:

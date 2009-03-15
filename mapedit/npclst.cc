@@ -498,7 +498,7 @@ static gint Mouse_release
 	)
 	{
 	Npc_chooser *chooser = (Npc_chooser *) data;
-	chooser->mouse_up();
+	return chooser->mouse_up();
 	}
 
 /*

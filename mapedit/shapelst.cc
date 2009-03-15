@@ -709,7 +709,7 @@ static gint Mouse_release
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-	chooser->mouse_up();
+	return chooser->mouse_up();
 	}
 
 /*
@@ -1837,7 +1837,7 @@ void Shape_chooser::drag_data_get
 	guchar buf[30];
 	int file = chooser->ifile->get_u7drag_type();
 	if (file == U7_SHAPE_UNK)
-		U7_SHAPE_SHAPES;	// Just assume it's shapes.vga.
+		file = U7_SHAPE_SHAPES;	// Just assume it's shapes.vga.
 	Shape_entry& shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
 							shinfo.framenum);

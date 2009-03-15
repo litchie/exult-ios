@@ -2022,7 +2022,7 @@ int Usecode_internal::run()
 	bool aborted = false;
 	bool initializing_loop = false;
 
-	while (frame = call_stack.front())
+	while ((frame = call_stack.front()))
 	{
 		int num_locals = frame->num_vars + frame->num_args;
 		int offset;

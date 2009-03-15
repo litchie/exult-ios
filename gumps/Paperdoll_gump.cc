@@ -814,11 +814,15 @@ Game_object * Paperdoll_gump::find_object
 	if ((obj = check_object_arms (mx, my, info, rfinger,     lhandx,  lhandy,  0)))
 		return obj;
 	if (actor->is_neck_used())
+		{
 		if ((obj = check_object      (mx, my, info, amulet,      bodyx,   bodyy,   0, cloak_clasp)))
 			return obj;
+		}
 	else
+		{
 		if ((obj = check_object      (mx, my, info, cloak,       bodyx,   bodyy,   0, cloak_clasp)))
 			return obj;
+		}
 	if ((obj = check_object      (mx, my, info, head,        headx,   heady)))
 		return obj;
 	if ((obj = check_object      (mx, my, info, earrings,    headx,   heady)))
@@ -862,11 +866,15 @@ Game_object * Paperdoll_gump::find_object
 	if (check_body        (mx, my, info))
 		return NULL;
 	if (actor->is_neck_used())
+		{
 		if ((obj = check_object      (mx, my, info, amulet,      bodyx,   bodyy,   0, cloak)))
 			return obj;
+		}
 	else
+		{
 		if ((obj = check_object      (mx, my, info, cloak,       bodyx,   bodyy)))
 			return obj;
+		}
 	if ((obj = check_object      (mx, my, info, backpack,    backx,   backy)))
 		return obj;
 	if (actor->is_scabbard_used())

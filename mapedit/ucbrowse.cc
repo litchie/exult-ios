@@ -179,25 +179,28 @@ static gint ucbrowser_compare_func
 	GtkTreeIter  *b,
 	gpointer      userdata
 	)
-{
+	{
 	gint colnum = GPOINTER_TO_INT(userdata);
 	gint ret = 0;
 	gchar *name1 = 0, *name2 = 0;
-        gtk_tree_model_get(model, a, colnum, &name1, -1);
-        gtk_tree_model_get(model, b, colnum, &name2, -1);
+	gtk_tree_model_get(model, a, colnum, &name1, -1);
+	gtk_tree_model_get(model, b, colnum, &name2, -1);
 
-        if (name1 == NULL || name2 == NULL) {
+	if (name1 == NULL || name2 == NULL)
+		{
 		if (name1 == NULL && name2 == NULL)
-            		ret = 0;
+			ret = 0;
 		else
 			ret = (name1 == NULL) ? -1 : 1;
-        } else
+		}
+	else
 		ret = g_utf8_collate(name1, name2);
 #if 0	/* This was in the example, but it causes crashes. */
-        g_free(name1);
-        g_free(name2);
+	g_free(name1);
+	g_free(name2);
 #endif
-}
+	return ret;
+	}
 
 /*
  *	Create usecode browser window.

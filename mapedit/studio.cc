@@ -880,7 +880,7 @@ void ExultStudio::create_new_game
 	else
 		{
 		struct dirent *entry;
-		while(entry=readdir(dirrd)) 
+		while ((entry=readdir(dirrd)))
 			{
 			char *fname = entry->d_name;
 			int flen = strlen(fname);
@@ -1334,7 +1334,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 			ext++;
 		DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
 		if (dir) {
-			while(entry=readdir(dir)) {
+			while ((entry=readdir(dir))) {
 				char *fname = entry->d_name;
 				int flen = strlen(fname);
 				// Ignore case of extension.
@@ -1351,7 +1351,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 		}
 		dir = opendir(spath.c_str());   // Now go through 'static'.
 		if (dir) {
-			while(entry=readdir(dir)) {
+			while ((entry=readdir(dir))) {
 				char *fname = entry->d_name;
 				int flen = strlen(fname);
 				// Ignore case of extension.
@@ -2855,6 +2855,7 @@ BaseGameInfo *ExultStudio::get_game() const
 	BaseGameInfo *gameinfo = curr_mod > -1 ?
 			(BaseGameInfo *)basegame->get_mod(curr_mod) : basegame;
 	assert(gameinfo);
+	return gameinfo;
 	}
 
 // List partially copied from Firefox and from GLib's config.charset.
