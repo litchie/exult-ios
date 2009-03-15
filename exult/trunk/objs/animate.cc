@@ -109,7 +109,7 @@ void Object_sfx::handle_event
 
 	bool active = channel != -1 ? Mix_Playing(channel) : false;
 
-	if (obj->is_pos_invalid() || distance >= 0 && !active)
+	if (obj->is_pos_invalid() || (distance >= 0 && !active))
 		{	// Quitting time.
 		stop();
 		return;

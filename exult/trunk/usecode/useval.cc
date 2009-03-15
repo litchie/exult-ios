@@ -93,7 +93,7 @@ Usecode_value& Usecode_value::operator=
 		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;
 		break;
 	case array_type:
-                value.array.cnt = v2.value.array.cnt;
+		value.array.cnt = v2.value.array.cnt;
 		value.array.elems = new Usecode_value[value.array.cnt];
 		for (int i = 0; i < value.array.cnt; ++i)
 			value.array.elems[i] = v2.value.array.elems[i];

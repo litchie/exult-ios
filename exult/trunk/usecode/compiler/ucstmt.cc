@@ -717,6 +717,7 @@ Uc_converse_statement::Uc_converse_statement
 		Uc_converse_case_statement *stmt =
 				dynamic_cast<Uc_converse_case_statement *>(*it);
 		if (stmt->is_default())
+			{
 			if (has_default)
 				{
 				char buf[255];
@@ -725,6 +726,7 @@ Uc_converse_statement::Uc_converse_statement
 				}
 			else
 				has_default = true;
+			}
 		}
 	}
 
@@ -885,6 +887,7 @@ Uc_switch_statement::Uc_switch_statement
 		Uc_switch_case_statement *stmt =
 				dynamic_cast<Uc_switch_case_statement *>(*it);
 		if (stmt->is_default())
+			{
 			if (has_default)
 				{
 				char buf[255];
@@ -893,6 +896,7 @@ Uc_switch_statement::Uc_switch_statement
 				}
 			else
 				has_default = true;
+			}
 		}
 	}
 

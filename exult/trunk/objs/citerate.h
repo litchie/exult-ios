@@ -57,6 +57,7 @@ public:
 	int get_next(Rectangle& intersect, int& cx, int& cy)
 		{
 		if (curcx == stopcx)	// End of row?
+			{
 			if (curcy == stopcy)
 				return (0);
 			else
@@ -68,6 +69,7 @@ public:
 					return 0;
 				curcx = startcx;
 				}
+			}
 		Rectangle cr(0, 0, c_tiles_per_chunk, c_tiles_per_chunk);
 					// Intersect given rect. with chunk.
 		intersect = cr.intersect(tiles);

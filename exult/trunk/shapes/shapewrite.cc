@@ -866,7 +866,7 @@ void Monster_info::write
 		 (m_can_be_invisible ? (1<<2) : 0);
 	*ptr++ = 0;			// Unknown.
 	int sfx_delta = bg ? -1 : 0;
-	*ptr++ = (signed char)(sfx&0xff - sfx_delta);
+	*ptr++ = (signed char)((sfx&0xff) - sfx_delta);
 	out.write((char *) buf, sizeof(buf));
 	}
 

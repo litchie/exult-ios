@@ -7,6 +7,8 @@
 	  for performance.
 	* files/U7obj.h: Fixing memory leak ("delete [] NULL" is NOT harmless).
 	* shapes/*.h: Fixed memory leaks.
+	* Fixed several warnings, including a mistaken assignment in an if and many
+	  missing return values in non-void functions.
 
 2009-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* General: Unified ready types and paperdolls for BG and SI. BG and SI Ready

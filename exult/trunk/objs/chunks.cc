@@ -230,10 +230,12 @@ void Chunk_cache::update_object
 	{
 	Shape_info& info = obj->get_info();
 	if (info.is_door())		// Special door list.
+		{
 		if (add)
 			doors.insert(obj);
 		else
 			doors.erase(obj);
+		}
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
@@ -874,11 +876,13 @@ void Map_chunk::add
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	if (ord.info.is_light_source())	// Count light sources.
+		{
 		if (dungeon_levels && is_dungeon(newobj->get_tx(),
 							newobj->get_ty()))
 			dungeon_lights++;
 		else
 			non_dungeon_lights++;
+		}
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		{
 		if (ord.info.get_shape_class() == Shape_info::building)
@@ -945,10 +949,12 @@ void Map_chunk::remove
 	if (ext_above)
 		gmap->get_chunk(cx, cy - 1)->from_below--;
 	if (info.is_light_source())	// Count light sources.
+		{
 		if (dungeon_levels && is_dungeon(tx, ty))
 			dungeon_lights--;
 		else
 			non_dungeon_lights--;
+		}
 	if (remove == first_nonflat)	// First nonflat?
 		{			// Update.
 		first_nonflat = remove->get_next();
@@ -1117,10 +1123,12 @@ int Map_chunk::is_blocked
 				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
+				{
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
 					return (1);
+				}
 			}
 		}
 					// Do vert. block.
@@ -1479,10 +1487,12 @@ void Map_chunk::setup_dungeon_levels
 		next.reset();
 		while ((each = next.get_next()) != 0)
 			if (each->get_info().is_light_source())
+				{
 				if (is_dungeon(each->get_tx(), each->get_ty()))
 					dungeon_lights++;
 				else
 					non_dungeon_lights++;
+				}
 		}
 }
 

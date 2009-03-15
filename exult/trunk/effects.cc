@@ -1485,7 +1485,7 @@ void Lightning_effect::handle_event
 			eman->remove_effect(this);
 			return;
 			}
-		if (r%5 == 0)		// Occassionally flash again.
+		if (r%50 == 0)		// Occassionally flash again.
 			delay = (1 + r%7)*40;
 		else			// Otherwise, wait several secs.
 			delay = (4000 + r%3000);

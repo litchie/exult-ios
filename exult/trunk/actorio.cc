@@ -93,7 +93,7 @@ void Actor::read
 					// iflag1:4 == Extended skin number
 	bool read_sched_usecode = !fix_first && (iflag1&2);
 	bool usecode_name_used = !fix_first && (iflag1&8);
-	if (usecode_name_used || !fix_first && (iflag1&4))
+	if (usecode_name_used || (!fix_first && (iflag1&4)))
 		usecode_assigned = true;
 	bool extended_skin = !fix_first && (iflag1&16);
 
@@ -386,10 +386,12 @@ void Actor::read
 
 		int skin = nfile->read1();
 		if (extended_skin)
+			{
 			if (Game::get_avskin() >= 0)
 				set_skin_color (Game::get_avskin());
 			else
 				set_skin_color(skin);
+			}
 	}
 	else
 	{
@@ -562,12 +564,11 @@ void Actor::write
 	nfile->write2(iflag1);
 			// Superchunk #.
 	nfile->write1((get_cy()/16)*12 + get_cx()/16);
-	Map_chunk *chunk = get_chunk();
+
 	int map_num = get_map_num();
-	if (map_num < 0) {
+	if (map_num < 0)
 		// we store all off-map actors in map 0
 		map_num = 0;
-	}
 	assert(map_num >= 0 && map_num < 256);
 	nfile->write1(map_num);		// Borrowing for map #.
 					// Usecode.

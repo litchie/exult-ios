@@ -350,6 +350,7 @@ static inline bool is_enemy
 			return other == Npc_actor::hostile
 				|| other == Npc_actor::friendly; 
 		}
+	return true;	// This should never happen.
 	}
 
 /*
@@ -1207,16 +1208,13 @@ void Combat_schedule::set_hand_to_hand
 	Game_object *weapon = npc->get_readied(lhand);
 	if (weapon)
 		{
-		int index = -1;
-		if (!npc->get_readied(belt))
-			index = belt;
-		else if (!npc->get_readied(back_2h))
-			index = back_2h;
-		if (index >= 0)
-			{
-			npc->remove(weapon);
-			npc->add_readied(weapon, index, 1, 1);	
-			}
+		npc->remove(weapon);
+		if (!npc->add_readied(weapon, belt, 1) &&
+				!npc->add_readied(weapon, back_2h, 1) &&
+				!npc->add_readied(weapon, back_shield, 1) &&
+				!npc->add_readied(weapon, rhand, 1) &&
+				!npc->add_readied(weapon, backpack, 1))
+			npc->add(weapon);
 		}
 	}
 

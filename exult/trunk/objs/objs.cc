@@ -1436,10 +1436,12 @@ int Game_object::compare
 			inf1.area.h > inf2.area.h) ? 1 : 0;
 //		return 0;		// Equal.
 	if (xover & yover & zover)	// Complete overlap?
+		{
 		if (!inf1.zs)		// Flat one is always drawn first.
 			return !inf2.zs ? 0 : -1;
 		else if (!inf2.zs)
 			return 1;
+		}
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
 	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
@@ -1484,6 +1486,7 @@ int Game_object::compare
 			return (zover || zcmp <= 0) ? -1 : 0;
 		}
 	else if (ycmp == 1)		// o1 Y after o2 Y?
+		{
 		if (zover || zcmp >= 0)
 			return 1;
 #if 1	/* So far, this seems to work without causing problems: */
@@ -1494,6 +1497,7 @@ int Game_object::compare
 		else
 #endif
 			return 0;
+		}
 	return 0;
 	}
 
@@ -1547,7 +1551,7 @@ int Game_object::apply_damage
 	if (exp)
 		exp = 0;
 	int damage = 0;
-	if (wpoints = 127)
+	if (wpoints == 127)
 		damage = 127;
 	else
 		{

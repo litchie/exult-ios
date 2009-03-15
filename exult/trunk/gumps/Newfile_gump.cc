@@ -742,9 +742,9 @@ void Newfile_gump::mouse_down
 #endif
 	selected = hit+list_position;
 
-	int	want_load = true;
-	int	want_delete = true;
-	int	want_save = true;
+	bool want_load = true;
+	bool want_delete = true;
+	bool want_save = true;
 
 	if (selected == -2)
 	{
