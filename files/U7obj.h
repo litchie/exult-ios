@@ -71,7 +71,7 @@ struct File_spec
 			name = other.name;
 		}
 	~File_spec()
-		{ if (ownstr) delete [] name; }
+		{ if (ownstr && name) delete [] name; }
 	const File_spec& operator=(const File_spec& other)
 		{ name = other.name; index = other.index; return *this; }
 	bool operator<(const File_spec& other) const

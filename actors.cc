@@ -4560,6 +4560,7 @@ int Main_actor::step
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 						oldtile.tx, oldtile.ty);
 	quake_on_walk();
+	return (1);
 	}
 
 /*

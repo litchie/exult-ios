@@ -152,7 +152,23 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Paperdoll_item& other) const
 		{ return !(*this == other); }
+	// May not be needed:
 	Paperdoll_item& operator=(const Paperdoll_item& other)
+		{
+		if (this != &other)
+			{
+			world_frame = other.world_frame;
+			spot = other.spot;
+			type = other.type;
+			translucent = other.translucent;
+			gender = other.gender;
+			shape = other.shape;
+			memcpy(frame, other.frame, sizeof(frame));
+			info_flags = other.info_flags;
+			}
+		return *this;
+		}
+	void set(const Paperdoll_item& other)
 		{	// Assumes *this == other.
 		if (this != &other)
 			{
@@ -169,7 +185,6 @@ public:
 				memcpy(frame, other.frame, sizeof(frame));
 				}
 			}
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }

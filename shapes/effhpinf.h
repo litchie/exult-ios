@@ -88,14 +88,13 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Effective_hp_info& other) const
 		{ return !(*this == other); }
-	Effective_hp_info& operator=(const Effective_hp_info& other)
+	void set(const Effective_hp_info& other)
 		{	// Assumes *this == other.
 			// No need to guard against self-assignment.
 			// Do NOT copy modified or static flags.
 		set_patch(other.from_patch());
 		set_invalid(other.is_invalid());
 		set_hps(other.hps);
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }
