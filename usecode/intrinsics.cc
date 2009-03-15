@@ -2505,14 +2505,14 @@ USECODE_INTRINSIC(get_item_flag)
 		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value((inf != 0 && inf->power_safe()) ||
-				npc && npc->check_gear_powers(Frame_powers::power_safe));
+				(npc && npc->check_gear_powers(Frame_powers::power_safe)));
 		}
 	else if (fnum == (int) Obj_flags::cant_die)
 		{
 		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value((inf != 0 && inf->death_safe()) ||
-				npc && npc->check_gear_powers(Frame_powers::death_safe));
+				(npc && npc->check_gear_powers(Frame_powers::death_safe)));
 		}
 					// +++++0x18 is used in testing for
 					//   blocked gangplank. What is it?????

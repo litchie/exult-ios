@@ -81,8 +81,8 @@ void Game_singletons::init
  */
 Shape_manager::Shape_manager
 	(
-	) : can_have_paperdolls(false), got_si_shapes(false),
-	    paperdolls_enabled(false), fonts(0)
+	) : fonts(0), can_have_paperdolls(false),
+	    paperdolls_enabled(false), got_si_shapes(false)
 	{
 	assert(instance == 0);
 	instance = this;

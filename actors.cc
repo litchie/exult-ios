@@ -710,6 +710,7 @@ int Actor::add_dirty
 		return 0;
 	int weapon_x, weapon_y, weapon_frame;
 	if (figure_rect || get_casting_mode() == Actor::show_casting_frames)
+		{
 		if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
 			{
 			int shnum = get_effective_weapon_shape();
@@ -724,6 +725,7 @@ int Actor::add_dirty
 			}
 		else
 			weapon_rect.w = 0;
+		}
 	if (weapon_rect.w > 0)		// Repaint weapon area too.
 		{
 		Rectangle r = weapon_rect;
@@ -993,10 +995,12 @@ void Actor::check_temperature
 					// Warming up.
 		temperature -= (temperature >= 5 ? 5 : temperature);
 		if (GAME_SI && rand()%3 == 0)
+			{
 			if (temperature >= 30)
 				say(194, 197);
 			else
 				say(190, 193);
+			}
 		return;
 		}
 	// Immune to cold by nature or an item?
@@ -1014,10 +1018,12 @@ void Actor::check_temperature
 		decr = decr > temperature ? temperature : decr;
 		temperature -= decr;
 		if (GAME_SI && rand()%3 == 0)
+			{
 			if (temperature >= 30)
 				say(177, 181);
 			else
 				say(170, 176);
+			}
 		return;
 		}
 	int incr = 1 + (100 - warmth)/20;
@@ -3771,7 +3777,6 @@ int Actor::is_immune
 	if (gear_immunities&(1<<type))
 		return 1;
 	Monster_info *minf = get_info().get_monster_info();
-	int is_immune = 0;
 	if (minf && minf->get_immune()&(1<<type))
 		return 1;
 	if (minf && minf->get_vulnerable()&(1<<type))
@@ -4179,7 +4184,7 @@ void Actor::die
 	set_invalid();
 #else
 	bool frost_serp = GAME_SI && get_shapenum() == 832;
-	if (frost_serp && (get_framenum() & 0xf) == Actor::sit_frame
+	if ((frost_serp && (get_framenum() & 0xf) == Actor::sit_frame)
 		|| (get_framenum() & 0xf) == Actor::sleep_frame)
 		{
 		Usecode_script *scr = new Usecode_script(this);
@@ -5088,7 +5093,7 @@ void Npc_actor::handle_event
 	)
 	{
 	purge_deleted_actions();
-	if (cheat.in_map_editor() && party_id < 0 ||
+	if ((cheat.in_map_editor() && party_id < 0) ||
 			(get_flag(Obj_flags::paralyzed) || is_dead() ||
 			get_property(static_cast<int>(health)) <= 0 ||
 			(get_flag(Obj_flags::asleep) && schedule_type != Schedule::sleep)))

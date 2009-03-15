@@ -551,7 +551,6 @@ void Pace_schedule::now_what
 					{
 					if (obj->as_actor())
 						{
-						Shape_info& shinfo = npc->get_info();
 						Monster_info *minfo = npc->get_info().get_monster_info();
 						if (!minfo || !minfo->cant_yell())
 							{
@@ -802,10 +801,6 @@ void Preach_schedule::now_what
 			npc->get_tile(), pos, cost);
 		if (pact)
 			{
-			static char f[] = {Actor::standing, Actor::bow_frame, 
-				Actor::kneel_frame, Actor::kneel_frame,
-				Actor::kneel_frame, Actor::kneel_frame,
-				Actor::bow_frame, Actor::standing};
 			npc->set_action(pact);
 			state = pray;
 			}
@@ -1024,7 +1019,7 @@ void Patrol_schedule::now_what
 					const int dirs_left[] = {west, north, north, east, east, south, south, west};
 					const int dirs_right[] = {east, east, south, south, west, west, north, north};
 					const int *face_dirs;
-					if (path->get_quality()&31 == 7)
+					if ((path->get_quality()&31) == 7)
 						face_dirs = dirs_right;
 					else
 						face_dirs = dirs_left;

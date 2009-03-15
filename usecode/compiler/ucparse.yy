@@ -650,10 +650,7 @@ const_int:
 			enum_val = val;	// In case we're in an enum.
 			}
 		else
-			{
-			char buf[180];
 			yyerror("Integer constant expected.");
-			}
 		}
 	;
 
