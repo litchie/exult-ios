@@ -111,7 +111,7 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Frame_name_info& other) const
 		{ return !(*this == other); }
-	Frame_name_info& operator=(const Frame_name_info& other)
+	void set(const Frame_name_info& other)
 		{	// Assumes *this == other.
 			// No need to guard against self-assignment.
 			// Do NOT copy modified or static flags.
@@ -120,7 +120,6 @@ public:
 		set_type(other.type);
 		set_msgid(other.msgid);
 		set_othermsg(other.othermsg);
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }

@@ -118,14 +118,13 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Frame_powers_info& other) const
 		{ return !(*this == other); }
-	Frame_powers_info& operator=(const Frame_powers_info& other)
+	void set(const Frame_powers_info& other)
 		{	// Assumes *this == other.
 			// No need to guard against self-assignment.
 			// Do NOT copy modified or static flags.
 		set_patch(other.from_patch());
 		set_invalid(other.is_invalid());
 		set_powers(other.powers);
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }

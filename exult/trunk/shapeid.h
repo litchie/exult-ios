@@ -159,13 +159,14 @@ class ShapeID : public Game_singletons
 	char has_trans;
 	ShapeFile shapefile;
 	Shape_frame *shape;
+	Shape_info *info;
 
 	Shape_frame* cache_shape();
 
 public:
 					// Read from buffer & incr. ptr.
 	ShapeID(unsigned char *& data)
-		: has_trans(0), shapefile(SF_SHAPES_VGA), shape(0)
+		: has_trans(0), shapefile(SF_SHAPES_VGA), shape(0), info(0)
 		{
 		unsigned char l = *data++;
 		unsigned char h = *data++;
@@ -173,7 +174,8 @@ public:
 		framenum = h >> 2;
 		}
 					// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1), framenum(-1), has_trans(0), shapefile(SF_SHAPES_VGA), shape(0)
+	ShapeID() : shapenum(-1), framenum(-1), has_trans(0),
+			shapefile(SF_SHAPES_VGA), shape(0), info(0)
 		{  }
 
     virtual ~ShapeID()
@@ -202,14 +204,15 @@ public:
 		shapenum = shnum;
 		framenum = frnum;
 		shape = 0;
+		info = 0;
 		}
 	ShapeID(int shnum, int frnum, ShapeFile shfile = SF_SHAPES_VGA) :
 		shapenum(shnum), framenum(frnum), has_trans(0),
-		shapefile(shfile), shape(0)
+		shapefile(shfile), shape(0), info(0)
 		{  }
 
 	void set_shape(int shnum)	// Set shape, but keep old frame #.
-		{ shapenum = shnum; shape = 0; }
+		{ shapenum = shnum; shape = 0; info = 0; }
 	void set_frame(int frnum)	// Set to new frame.
 		{ framenum = frnum; shape = 0; }
 	void set_file(ShapeFile shfile)	// Set to new flex
@@ -226,8 +229,19 @@ public:
 	inline void paint_outline(int xoff, int yoff, Pixel_colors pix)
 		{ sman->paint_outline(xoff, yoff, get_shape(), pix); }
 	int get_num_frames() const;
+#if 0
+	//This would be very bad form, but who knows?
 	Shape_info& get_info() const	// Get info. about shape.
-		{ return Shape_manager::instance->shapes.get_info(shapenum); }
+		{ return *(info ? info :
+			const_cast<ShapeID *>(this)->info = 
+				&Shape_manager::instance->shapes.get_info(shapenum)); }
+#endif
+	Shape_info& get_info() const	// Get info. about shape.
+		{ return info ? *info :
+			Shape_manager::instance->shapes.get_info(shapenum); }
+	Shape_info& get_info()	// Get info. about shape.
+		{ return *(info ? info : info =
+			&Shape_manager::instance->shapes.get_info(shapenum)); }
 	static Shape_info& get_info(int shnum)	// Get info. about shape.
 		{ return Shape_manager::instance->shapes.get_info(shnum); }
 	};

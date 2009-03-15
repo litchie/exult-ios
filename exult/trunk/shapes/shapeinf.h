@@ -163,7 +163,7 @@ class Shape_info
 		if (it == vec.end() || *it != inf)	// Not found.
 			vec.insert(it, inf);	// Add new.
 		else	// Already exists.
-			*it = inf;	// Replace information.
+			it->set(inf);	// Replace information.
 		}
 	template <typename T>
 	static void copy_vector_info(const std::vector<T>& from, std::vector<T>& to)

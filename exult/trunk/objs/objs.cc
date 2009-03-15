@@ -1526,14 +1526,7 @@ int Game_object::get_rotated_frame
 	)
 	{
 	int curframe = get_framenum();
-				// Seat is a special case.
-	if (get_info().get_barge_type() == Shape_info::barge_seat)
-		{
-		int dir = curframe%4;	// Current dir (0-3).
-		return (curframe - dir) + (dir + quads)%4;
-		}
-	else
-		return get_info().get_rotated_frame(curframe, quads);
+	return get_info().get_rotated_frame(curframe, quads);
 	}
 
 /*
