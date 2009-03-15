@@ -71,9 +71,20 @@ struct File_spec
 			name = other.name;
 		}
 	~File_spec()
-		{ if (ownstr && name) delete [] name; }
+		{ if (ownstr) delete [] name; }
 	const File_spec& operator=(const File_spec& other)
-		{ name = other.name; index = other.index; return *this; }
+		{
+		if (this != &other)
+			{
+			index = other.index;
+			ownstr = other.ownstr;
+			if (ownstr)
+				name = newstrdup(other.name);
+			else
+				name = other.name;
+			}
+		return *this;
+		}
 	bool operator<(const File_spec& other) const
 		{
 		//int cmp = name.compare(other.name);
