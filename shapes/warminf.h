@@ -74,14 +74,13 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Warmth_info& other) const
 		{ return !(*this == other); }
-	Warmth_info& operator=(const Warmth_info& other)
+	void set(const Warmth_info& other)
 		{	// Assumes *this == other.
 			// No need to guard against self-assignment.
 			// Do NOT copy modified or static flags.
 		set_patch(other.from_patch());
 		set_invalid(other.is_invalid());
 		set_warmth(other.warmth);
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }

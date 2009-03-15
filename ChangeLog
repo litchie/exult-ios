@@ -1,3 +1,13 @@
+2009-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed bug #2687078.
+	* objs/eggs.cc: Check mapeditor flag first.
+	* objs/objs.cc, shapes/shapeinf.cc: Moved barge seat rotation code to the
+	  overall rotation function.
+	* shapeid.h: Implemented simple cache for shape information, wasting memory
+	  for performance.
+	* files/U7obj.h: Fixing memory leak ("delete [] NULL" is NOT harmless).
+	* shapes/*.h: Fixed memory leaks.
+
 2009-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* General: Unified ready types and paperdolls for BG and SI. BG and SI Ready
 	  types are converted on load to Exult's (and back when saving), and the

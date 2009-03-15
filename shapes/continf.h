@@ -83,14 +83,13 @@ public:
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Content_rules& other) const
 		{ return !(*this == other); }
-	Content_rules& operator=(const Content_rules& other)
+	void set(const Content_rules& other)
 		{	// Assumes *this == other.
 			// No need to guard against self-assignment.
 			// Do NOT copy modified or static flags.
 		set_patch(other.from_patch());
 		set_invalid(other.is_invalid());
 		set_accept(other.accept);
-		return *this;
 		}
 	static const int get_entry_size()
 		{ return -1; }
