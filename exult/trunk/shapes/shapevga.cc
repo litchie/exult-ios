@@ -171,8 +171,11 @@ public:
 		{
 		int shapenum = ReadInt(in);
 			// For backwards compatibility.
-		if (!patch || ReadInt(in, 1) != 0)
-			info[shapenum].*data |= (1 << bit);
+		bool biton = ReadInt(in, 1) != 0;
+		if (biton)
+			info[shapenum].*data |= ((T)1 << bit);
+		else
+			info[shapenum].*data &= ~((T)1 << bit);
 		return shapenum;
 		}
 	};
