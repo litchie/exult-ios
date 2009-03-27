@@ -2947,7 +2947,7 @@ C_EXPORT void on_gameinfo_apply_clicked
 	Configuration *cfg;
 	string root;
 	bool ismod = gameinfo->get_config_file(cfg, root);
-	cfg->set(root + (ismod ? "mod_title" : "title"), menustr, true);
+	cfg->set(root + (ismod ? "display_string" : "title"), menustr, true);
 	cfg->set(root + "codepage", enc, true);
 	if (ismod)
 		delete cfg;
