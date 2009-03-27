@@ -1,9 +1,6 @@
 2009-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* files/U7objs.h: Reverted previous commit and fixed the true underlying
-	  problem of incorrect assignment operator. Also removed misinformation
-	  from changelog.
-	* schedule.cc: Fixed excessive processor usage in the boat travel to
-	  Moonshade in SI.
+	* Fixed bug #2694945.
+	* Fixed incorrect tag written by ES when setting title/codepage.
 
 2009-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed bug #2687078.

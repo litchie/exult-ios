@@ -1214,7 +1214,7 @@ void Combat_schedule::set_hand_to_hand
 				!npc->add_readied(weapon, back_shield, 1) &&
 				!npc->add_readied(weapon, rhand, 1) &&
 				!npc->add_readied(weapon, backpack, 1))
-			npc->add(weapon);
+			npc->add(weapon, false, false, true);
 		}
 	}
 

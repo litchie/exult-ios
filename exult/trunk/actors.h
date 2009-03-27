@@ -503,9 +503,10 @@ public:
 	virtual void remove(Game_object *obj);
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false);
+							bool combine = false, bool noset = false);
 					// Add to NPC 'readied' spot.
-	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0);
+	virtual int add_readied(Game_object *obj, int index,
+				int dont_check = 0, int force_pos = 0, bool noset = false);
 	virtual int find_readied(Game_object *obj);
 	virtual Game_object *get_readied(int index) const
 		{
