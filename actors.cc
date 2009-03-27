@@ -3491,8 +3491,9 @@ bool Actor::add
 	Game_object *obj,
 	bool dont_check,		// 1 to skip volume check (AND also
 					//   to skip usecode call).
-	bool combine			// True to try to combine obj.  MAY
+	bool combine,			// True to try to combine obj.  MAY
 					//   cause obj to be deleted.
+	bool noset		// True to prevent actors from setting sched. weapon.
 	)
 	{
 
@@ -3552,7 +3553,7 @@ bool Actor::add
 		}
 
 	spots[index] = obj;		// Store in correct spot.
-	if (index == lhand && schedule)
+	if (index == lhand && schedule && !noset)
 		schedule->set_weapon();	// Tell combat-schedule about it.
 	obj->set_shape_pos(0, 0);	// Clear coords. (set by gump).
 	if (!dont_check)
@@ -3580,7 +3581,8 @@ int Actor::add_readied
 	Game_object *obj,
 	int index,			// Spot #.
 	int dont_check,
-	int force_pos
+	int force_pos,
+	bool noset
 	)
 {
 	// Is Out of range?
@@ -3633,7 +3635,7 @@ int Actor::add_readied
 	gear_immunities |= info.get_armor_immunity();
 	gear_powers |= info.get_object_powers(obj->get_framenum());
 
-	if (index == lhand && schedule)
+	if (index == lhand && schedule && !noset)
 		schedule->set_weapon();	// Tell combat-schedule about it.
 	return 1;
 }

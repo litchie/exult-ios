@@ -1307,8 +1307,9 @@ bool Game_object::add
 	(
 	Game_object *obj,
 	bool dont_check,		// 1 to skip volume/recursion check.
-	bool combine			// True to try to combine obj.  MAY
+	bool combine,			// True to try to combine obj.  MAY
 					//   cause obj to be deleted.
+	bool noset		// True to prevent actors from setting sched. weapon.
 	)
 	{
 	return combine ? drop(obj)!=0 : false;
