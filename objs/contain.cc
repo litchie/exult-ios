@@ -842,21 +842,20 @@ void Container_game_object::write_contents
 	}
 
 
-bool Container_game_object::extract_contents()
+bool Container_game_object::extract_contents(Container_game_object *targ)
 {
 	if (objects.is_empty())
 		return true;
 
 	bool status = true;
 
-	Container_game_object *owner = get_owner();
 	Game_object *obj;
 
 	while ((obj = objects.get_first())) {
 		remove(obj);
 
-		if (owner) {
-			owner->add(obj,1); // add without checking volume
+		if (targ) {
+			targ->add(obj,1); // add without checking volume
 		} else {
 			obj->set_invalid(); // set to invalid chunk so move() doesn't fail
 			if ((get_cx() == 255) && (get_cy() == 255)) {
@@ -887,15 +886,18 @@ void Container_game_object::delete_contents()
 
 void Container_game_object::remove_this(int nodel)
 {
+					// Needs to be saved, as it is invalidated below but needed
+					// shortly after.
+	Container_game_object *safe_owner = Container_game_object::get_owner();
 					// Special case to avoid recursion.
-	if (Container_game_object::get_owner())
+	if (safe_owner)
 		{			// First remove from owner.
 		Ireg_game_object::remove_this(1);
 		if (nodel)		// Not deleting?  Then done.
 			return;
 		}
 	if (!nodel)
-		extract_contents();
+		extract_contents(safe_owner);
 
 	Ireg_game_object::remove_this(nodel);
 }
