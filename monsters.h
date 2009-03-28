@@ -65,7 +65,7 @@ public:
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false);
+							bool combine = false, bool noset = false);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape,

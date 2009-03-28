@@ -716,8 +716,9 @@ bool Barge_object::add
 	(
 	Game_object *obj,
 	bool dont_check,
-	bool combine			// True to try to combine obj.  MAY
+	bool combine,			// True to try to combine obj.  MAY
 					//   cause obj to be deleted.
+	bool noset		// True to prevent actors from setting sched. weapon.
 	)
 	{
 	objects.push_back(obj);		// Add to list.

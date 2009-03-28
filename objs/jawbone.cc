@@ -24,7 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 
 // Add an object.
-bool Jawbone_object::add(Game_object *obj, bool dont_check, bool combine)
+bool Jawbone_object::add
+	(
+	Game_object *obj,
+	bool dont_check,		// 1 to skip volume/recursion check.
+	bool combine,			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
+	bool noset		// True to prevent actors from setting sched. weapon.
+	)
 {
 	if (!Container_game_object::add(obj, dont_check, combine))
 		return false; // Can't be added to.

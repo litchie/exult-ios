@@ -36,7 +36,7 @@ class Jawbone_object : public Container_game_object {
 
 				// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false);
+							bool combine = false, bool noset = false);
 				// Remove an object.
 	virtual void remove(Game_object *obj);
 
