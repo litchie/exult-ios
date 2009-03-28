@@ -102,7 +102,7 @@ public:
 	virtual void remove(Game_object *obj);
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false);
+							bool combine = false, bool noset = false);
 	bool contains(Game_object *obj);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);

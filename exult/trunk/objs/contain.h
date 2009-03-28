@@ -107,7 +107,7 @@ public:
 	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
 			bool recursive = false);
 
-	bool extract_contents();
+	bool extract_contents(Container_game_object *targ);
 
 	virtual void delete_contents();
 	

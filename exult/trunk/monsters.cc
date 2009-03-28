@@ -409,12 +409,13 @@ bool Monster_actor::add
 	(
 	Game_object *obj,
 	bool dont_check,		// 1 to skip volume check.
-	bool combine			// True to try to combine obj.  MAY
+	bool combine,			// True to try to combine obj.  MAY
 					//   cause obj to be deleted.
+	bool noset		// True to prevent actors from setting sched. weapon.
 	)
 	{
 					// Try to add to 'readied' spot.
-	if (Npc_actor::add(obj, true, combine))
+	if (Npc_actor::add(obj, true, combine, noset))
 		return (true);		// Successful.
 					// Just add anything.
 	return Container_game_object::add(obj, true, combine);

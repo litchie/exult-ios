@@ -525,12 +525,15 @@ Game_object *Usecode_internal::get_item
 		if (val < 0x400 && !itemref.is_array() &&
 			caller_item && val == caller_item->get_shapenum())
 			obj = caller_item;
+#if 0
+		// NO! BAD! Causes weird bug with Celia & slain wolf (and maybe others).
 		else if (val < gwin->get_num_npcs() &&	// Try as NPC.
 				(val < 356 || val > 359))	// Avoid these special cases.
 			{
 			obj = gwin->get_npc(val);
 			CERR("Warning: interpreting positive integer as NPCnum");
 			}
+#endif			
 		else
 			return NULL;
 		}

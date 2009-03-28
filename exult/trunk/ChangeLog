@@ -1,4 +1,7 @@
-2009-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2009-03-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs #2717401, #2717420 and possibly many others not reported yet.
+
+2009-03-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2694945.
 	* Fixed bug #2716264.
 	* Fixed incorrect tag written by ES when setting title/codepage.
