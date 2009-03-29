@@ -251,7 +251,7 @@ using std::getline;
 #include "../npctime.h"
 #include "../palette.h"
 #include "../paths.h"
-#include "../ready.h"
+#include "ready.h"
 #include "../rect.h"
 #include "../schedule.h"
 #include "../segfile.h"
