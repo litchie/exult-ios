@@ -2547,6 +2547,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\U7fileman.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\U7obj.cc"
+					>
+				</File>
+				<File
 					RelativePath="..\files\utils.cc"
 					>
 				</File>
@@ -2891,10 +2899,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\imagewin\imagescl.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\imagewin\imagewin.cc"
 					>
 				</File>
@@ -3037,6 +3041,38 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_2x.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_2xSaI.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_bilinear.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_gl.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_hq2x.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_hq3x.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_interlace.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\scale_point.cc"
+					>
 				</File>
 				<Filter
 					Name="imagewin h"
@@ -3284,6 +3320,10 @@
 				</File>
 				<File
 					RelativePath="..\shapes\frnameinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\frpowers.cc"
 					>
 				</File>
 				<File
@@ -3997,6 +4037,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\shapes\ready.h"
+				>
+			</File>
+			<File
 				RelativePath="..\tools\uctools.h"
 				>
 			</File>
@@ -4094,11 +4138,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
