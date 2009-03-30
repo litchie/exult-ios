@@ -1,3 +1,7 @@
+2009-03-29	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
+	* Made it so MSVC9 could compile Exult (just tested for Pocket PC 2003
+	  (ARMV4) and Windows Mobile 5.0 Pocket PC SDK (ARMV4I) Releases
+
 2009-03-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs #2717401, #2717420 and possibly many others not reported yet.
 
