@@ -19,6 +19,9 @@
 		<Platform
 			Name="Pocket PC 2003 (ARMV4)"
 		/>
+		<Platform
+			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -196,6 +199,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -289,6 +295,107 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\tools/rip.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\msvc9;..\Audio;..\Audio\MIDI_drivers;..\data;..\server;..\Headers;..\tools"
+				PreprocessorDefinitions="_DEBUG,strcasecmp=strcmp,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=".\rip_debug/rip.pch"
+				AssemblerListingLocation=".\rip_debug/"
+				ObjectFile=".\rip_debug/"
+				ProgramDataBaseFileName=".\rip_debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\..\tools/rip.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -478,6 +585,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -571,6 +681,107 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\tools/rip.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="3"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE,strcasecmp=strcmp,WIN32,USING_PRECOMPILED_HEADER"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				PrecompiledHeaderFile=".\rip_release/rip.pch"
+				AssemblerListingLocation=".\rip_release/"
+				ObjectFile=".\rip_release/"
+				ProgramDataBaseFileName=".\rip_release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				ProgramDatabaseFile=".\..\tools/rip.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -768,6 +979,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -865,6 +1079,111 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\tools/rip.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="3"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE,strcasecmp=strcmp,WIN32,USING_PRECOMPILED_HEADER"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				PrecompiledHeaderFile=".\rip_release/rip.pch"
+				AssemblerListingLocation=".\rip_release/"
+				ObjectFile=".\rip_release/"
+				ProgramDataBaseFileName=".\rip_release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				ProgramDatabaseFile=".\..\tools/rip.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -1048,6 +1367,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1140,6 +1462,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1155,7 +1480,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug Install|Pocket PC 2003 (ARMV4)"
+			Name="Debug|Pocket PC 2003 (ARMV4)"
 			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -1169,9 +1494,6 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Installing $(TargetFileName)"
-				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;"
-				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -1198,7 +1520,6 @@
 				ProgramDataBaseFileName=".\rip_debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
 			<Tool
@@ -1236,6 +1557,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1251,9 +1575,107 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\..\tools/rip.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="_DEBUG,strcasecmp=strcmp,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="false"
+				PrecompiledHeaderFile=".\rip_debug/rip.pch"
+				AssemblerListingLocation=".\rip_debug/"
+				ObjectFile=".\rip_debug/"
+				ProgramDataBaseFileName=".\rip_debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3081"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\..\tools/rip.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -1331,6 +1753,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1346,9 +1771,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release Install|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -1430,6 +1855,9 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -1445,9 +1873,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -1475,7 +1903,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\msvc9;..\Audio;..\Audio\MIDI_drivers;..\data;..\server;..\Headers;..\tools"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
 				PreprocessorDefinitions="_DEBUG,strcasecmp=strcmp,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="false"
@@ -1485,7 +1913,6 @@
 				ProgramDataBaseFileName=".\rip_debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
 			<Tool
@@ -1521,6 +1948,9 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"

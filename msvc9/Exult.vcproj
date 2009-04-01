@@ -20,6 +20,9 @@
 		<Platform
 			Name="Pocket PC 2003 (ARMV4)"
 		/>
+		<Platform
+			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -1699,6 +1702,432 @@
 			<DebuggerTool
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="3"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\usecode\ucxt\include;..\usecode\compiler;..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
+				StringPooling="true"
+				ExceptionHandling="1"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="SDL.lib SDLMain.lib winmm.lib zdll.lib SDL_mixer.lib opengl32.lib ws2_32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				Version="1.1"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\files\zip;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\usecode\compiler;..\usecode\ucxt\include;..\msvc9;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\npc;..\gamemgr"
+				PreprocessorDefinitions="_DEBUG;DEBUG;ARM;_ARM_;ARMV5T;_CONSOLE;EXULT;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER);UNICODE;USING_PRECOMPILED_HEADER;WIN32"
+				RuntimeLibrary="1"
+				DisableLanguageExtensions="false"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="1"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"
+				CompileForArchitecture="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER)"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:THUMB"
+				AdditionalDependencies="zlibce.lib SDL.lib SDLmain.lib SDL_mixer.lib gx.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				Version="1.1"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories=""
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\../Exult.pdb"
+				SubSystem="8"
+				EntryPointSymbol=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+				AuthenticodeSignature="false"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="3"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="false"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\files\zip;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\usecode\compiler;..\usecode\ucxt\include;..\msvc9;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\npc;..\gamemgr"
+				PreprocessorDefinitions="_NDEBUG;NDEBUG;ARM;_ARM_;ARMV5T;_CONSOLE;EXULT;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER);UNICODE;USING_PRECOMPILED_HEADER;WIN32"
+				StringPooling="true"
+				ExceptionHandling="1"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="1"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\$(OutDir)NI/"
+				ObjectFile=".\$(OutDir)NI/"
+				ProgramDataBaseFileName=".\$(OutDir)NI/"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"
+				CompileForArchitecture="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_NDEBUG;NDEBUG;WIN32;_WIN32_WCE=$(CEVER);$(CePlatform);UNDER_CE=$(CEVER)"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:THUMB"
+				AdditionalDependencies="zlibce.lib SDL.lib SDLmain.lib SDL_mixer.lib gx.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				Version="1.1"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile=".\../Exult.pdb"
+				SubSystem="8"
+				LinkTimeCodeGeneration="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(TargetFileName)"
+				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
+				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="1"
+				TypeLibraryName=".\../Exult.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\usecode\ucxt\include;..\usecode\compiler;..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
+				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="false"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="1"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zdll.lib SDL_mixer.lib opengl32.lib SDLmain.lib ws2_32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
+				Version="1.1"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\../Exult.pdb"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -3041,6 +3470,38 @@
 							Name="VCCLCompilerTool"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\imagewin\scale_2x.cc"
@@ -3705,6 +4166,38 @@
 							ObjectFile="$(IntDir)\$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\gamemgr\devgame.cc"
@@ -3845,6 +4338,38 @@
 							ObjectFile="$(IntDir)\$(InputName)1.obj"
 						/>
 					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\gamemgr\sigame.cc"
@@ -3975,6 +4500,38 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Debug Install|Pocket PC 2003 (ARMV4)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4138,11 +4695,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
