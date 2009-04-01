@@ -20,6 +20,9 @@
 		<Platform
 			Name="Pocket PC 2003 (ARMV4)"
 		/>
+		<Platform
+			Name="Windows Mobile 6 Professional SDK (ARMV4I)"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -89,6 +92,44 @@
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="\Exult\junkdata"
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -223,6 +264,44 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory="\Exult\junkdata"
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release Install|Win32"
 			OutputDirectory=".\Exult_bg_flx___Win32_Release_Install"
 			IntermediateDirectory=".\."
@@ -287,6 +366,44 @@
 			Name="Release Install|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Pocket PC 2003 (ARMV4)"
+			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -421,83 +538,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory="\Exult\junkdata"
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="7"
-			/>
-			<Tool
-				Name="VCCodeSignTool"
-			/>
-			<DeploymentTool
-				ForceDirty="-1"
-				RemoteDirectory="\Exult\junkdata"
-				RegisterOutput="0"
-				AdditionalFiles=""
-			/>
-			<DebuggerTool
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release Install|Pocket PC 2003 (ARMV4)"
+			Name="Debug Install|Pocket PC 2003 (ARMV4)"
 			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
 			ConfigurationType="0"
@@ -535,9 +576,123 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug Install|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
-			IntermediateDirectory="Pocket PC 2003 (ARMV4)\$(ConfigurationName)"
+			Name="Release|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			ConfigurationType="0"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
+				PreprocessorDefinitions=""
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
+			/>
+			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Windows Mobile 6 Professional SDK (ARMV4I)"
+			OutputDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 6 Professional SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
