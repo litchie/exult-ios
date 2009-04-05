@@ -66,15 +66,11 @@ ifdef DEBUG
 	DEF_DEBUG=-DDEBUG
 endif
 
-ifdef MT32EMU
-	USE_MT32EMU_MIDI=-DUSE_MT32EMU_MIDI
-endif
-
 ifdef USECODE_CONTAINER
 	SHOW_USECODE_CONTAINER=-DSHOW_USECODE_CONTAINER
 endif
 
-EXTRA_OPTIONS=$(DEBUG_LEVEL) $(DEF_DEBUG) $(USE_MT32EMU_MIDI) $(SHOW_USECODE_CONTAINER)
+EXTRA_OPTIONS=$(DEBUG_LEVEL) $(DEF_DEBUG) $(SHOW_USECODE_CONTAINER)
 
 CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf -I$(SRC)/data \
@@ -92,14 +88,14 @@ ifdef DEBUG_SYMBOLS
 	OPT_LEVEL=
 endif
 
-CXXFLAGS=$(strip $(OPT_LEVEL) -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI)
+CXXFLAGS=$(strip $(OPT_LEVEL) -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI -DUSE_MT32EMU_MIDI -DUSE_FLUIDSYNTH_MIDI)
 CXX=g++
 
 CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -lws2_32 -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
 
 EXEC=Exult.exe
 EXEEXT=.exe
@@ -110,12 +106,10 @@ ICON_OBJS=exultico.o
 
 ES_SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
-MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o eggedit.o compile.o execbox.o \
-	exult_studio.o locator.o maps.o \
-	npcedit.o npclst.o objbrowse.o objedit.o contedit.o paledit.o \
-	shapedraw.o shapefile.o shapegroup.o \
-	shapeedit.o shapelst.o studio.o ucbrowse.o \
-	ucsymtbl.o
+MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o contedit.o eggedit.o compile.o \
+	execbox.o  exult_studio.o locator.o maps.o npcedit.o npclst.o \
+	objbrowse.o objedit.o paledit.o shapedraw.o shapeedit.o shapefile.o \
+	shapegroup.o shapelst.o studio.o ucbrowse.o ucsymtbl.o
 
 ES_FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o U7fileman.o utils.o U7obj.o
 
@@ -123,10 +117,10 @@ ES_GAMEMGR_OBJS=modmgr.o
 
 ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-ES_SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o shapeinf.o shapevga.o \
-	shapewrite.o u7drag.o vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o \
-	continf.o effhpinf.o expinf.o frnameinf.o monstinf.o npcdollinf.o objdollinf.o \
-	sfxinf.o warminf.o weaponinf.o frpowers.o 
+ES_SHAPES_OBJS=ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o \
+	expinf.o font.o fontgen.o fontvga.o frnameinf.o frpowers.o items.o \
+	monstinf.o npcdollinf.o objdollinf.o pngio.o sfxinf.o shapeinf.o \
+	shapewrite.o shapevga.o u7drag.o vgafile.o warminf.o weaponinf.o  
 
 MISC_OBJS=exultstudioico.o windrag.o
 
