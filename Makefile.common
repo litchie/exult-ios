@@ -29,8 +29,8 @@ MT32EMU_OBJS=freeverb.o i386.o mt32_file.o part.o partial.o partialManager.o syn
 
 # Note we now always compile all midi drivers
 MIDI_DRV_OBJS=ALSAMidiDriver.o amiga_midi.o be_midi.o CoreAudioMidiDriver.o \
-	FileMidiDriver.o fmopl.o FMOplMidiDriver.o forked_player.o KMIDI.o \
-	LowLevelMidiDriver.o MidiDriver.o mixer_midiout.o MT32EmuMidiDriver.o \
+	FileMidiDriver.o FluidSynthMidiDriver.o fmopl.o FMOplMidiDriver.o forked_player.o \
+	KMIDI.o LowLevelMidiDriver.o MidiDriver.o mixer_midiout.o MT32EmuMidiDriver.o \
 	TimidityMidiDriver.o UnixSeqMidiDriver.o WindowsMidiDriver.o \
 	XMidiEventList.o XMidiFile.o XMidiSequence.o $(TIMIDITY_OBJS) $(MT32EMU_OBJS) 
 
