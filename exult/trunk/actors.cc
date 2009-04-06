@@ -1618,8 +1618,9 @@ bool Actor::fits_in_spot (Game_object *obj, int spot)
 	// If want to use 2h or a 2h is already equiped, can't go in right
 	else if ((rtype == both_hands || two_handed) && spot == rhand)
 		return false;
-	// If want to use 2f or a 2f is already equiped, can't go in right
-	else if ((rtype == lrgloves || two_fingered) && spot == rfinger)
+	// If want to use 2f or a 2f is already equiped, can't go in right or gloves
+	else if ((rtype == lrgloves || two_fingered) &&
+			(spot == rfinger || spot == gloves))
 		return false;
 	// If want to use scabbard or a scabbard is already equiped, can't go in others
 	else if ((can_scabbard || use_scabbard) &&

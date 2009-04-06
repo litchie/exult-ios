@@ -1,3 +1,7 @@
+2009-04-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Prevent exclusive gloves from going to the gloves spot due to paperdoll
+	  data.
+
 2009-03-31	Lanica Dragon (Phillip T. George <me@PhillipGeorge.com>)
 	* Added the Windows Mobile 6.0 Professional SDK (ARMV4I) platform to
 	  MSV9 and tested.
