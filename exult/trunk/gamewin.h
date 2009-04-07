@@ -109,6 +109,7 @@ class Game_window
 	int std_delay;			// Standard delay between frames.
 	long time_stopped;		// For 'stop time' spell.
 	unsigned long special_light;	// Game minute when light spell ends.
+	bool ambient_light;		// Permanent version of special_light.
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
 		// Gameplay objects:
@@ -279,9 +280,11 @@ public:
 	inline unsigned int is_in_dungeon()
 		{ return in_dungeon; }
 	inline bool is_special_light()	// Light spell in effect?
-		{ return special_light != 0; }
+		{ return ambient_light || special_light != 0; }
 					// Light spell.
 	void add_special_light(int minutes);
+	void toggle_ambient_light(bool state)
+		{ ambient_light = state; }
 					// Handle 'stop time' spell.
 	void set_time_stopped(long ticks);
 	long is_time_stopped()

@@ -40,6 +40,8 @@ class Game_clock : public Time_sensitive
 	int light_source_level;		// Last set light source level.
 	int old_light_level;		// Last set light source level.
 	int old_special_light;		// Last set light source level.
+	bool old_infravision;		// If infravision was on last time.
+	bool old_invisible;		// If invisibility was on last time.
 	unsigned int dungeon;		// Last set 'in_dungeon' value.
 	int overcast;			// >0 if day is overcast (e.g., from a storm).
 	bool was_overcast;
@@ -53,8 +55,9 @@ class Game_clock : public Time_sensitive
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
 			light_source_level(0), old_light_level(0), old_special_light(false),
-			dungeon(255), overcast(0), was_overcast(false), fog(0),
-			was_foggy(false), transition(0), time_rate(1)
+			old_infravision(false), old_invisible(false), dungeon(255),
+			overcast(0), was_overcast(false), fog(0), was_foggy(false),
+			transition(0), time_rate(1)
 		{ }
 	int get_hour()
 		{ return hour; }
@@ -85,9 +88,10 @@ public:
 		overcast = fog = 0;
 		was_overcast = was_foggy = false;
 		old_special_light = 0;
+		old_infravision = false;
+		old_invisible = false;
 		dungeon = 255;
-		if (transition)
-			delete transition;
+		delete transition;
 		transition = 0;
 		}
 	void set_overcast(bool onoff);	// Start/end cloud cover.

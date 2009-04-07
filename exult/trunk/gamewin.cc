@@ -318,7 +318,7 @@ Game_window::Game_window
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), dirty(0,0,0,0), mouse3rd(false), fastmouse(false),
 	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
-	    special_light(0),
+	    special_light(0), ambient_light(false),
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
@@ -875,6 +875,7 @@ void Game_window::clear_world
 	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
+	ambient_light = false;	// And ambient lighting.
 	effects->remove_all_effects(false);
 	Schedule_change::clear();
 	}
@@ -1381,6 +1382,7 @@ void Game_window::write_gwin
 		gout.write4(0);
 	}
 	gout.write1(armageddon ? 1 : 0);
+	gout.write1(ambient_light ? 1 : 0);
 	gout_stream.flush();
 	if (!gout_stream.good())
 		throw file_write_exception(GWINDAT);
@@ -1444,6 +1446,9 @@ void Game_window::read_gwin
 	if (!gin_stream.good())
 		armageddon = false;
 
+	ambient_light = gin.read1() == 1 ? true : false;
+	if (!gin_stream.good())
+		ambient_light = false;
 	}
 
 /*

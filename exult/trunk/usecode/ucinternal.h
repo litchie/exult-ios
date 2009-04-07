@@ -321,6 +321,9 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(close_gump);
 	USECODE_INTRINSIC_DECL(close_gumps);
 	USECODE_INTRINSIC_DECL(in_gump_mode);
+	USECODE_INTRINSIC_DECL(set_light);
+	USECODE_INTRINSIC_DECL(set_time_palette);
+	USECODE_INTRINSIC_DECL(ambient_light);
 	USECODE_INTRINSIC_DECL(is_not_blocked);
 	USECODE_INTRINSIC_DECL(direction_from);
 	USECODE_INTRINSIC_DECL(get_item_flag);
