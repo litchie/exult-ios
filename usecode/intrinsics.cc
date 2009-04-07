@@ -3210,22 +3210,51 @@ USECODE_INTRINSIC(remove_from_area)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(set_light)
+{
+	// set_light(npc, onoff)
+	Game_object *light = get_item(parms[0]);
+	if (!light)
+		return no_ret;
+		
+	Actor *npc = as_actor(light->get_outermost());
+	if (npc)
+		{
+		// This counts the light sources now too. This matches the originals;
+		// torches and other light sources need it to be done this way, and
+		// the other "obvious" manners fail.
+		npc->refigure_gear();
+		if (!parms[1].get_int_value())
+			npc->remove_light_source();
+		}
+	return no_ret;
+}
+
+USECODE_INTRINSIC(set_time_palette)
+{
+	// set_time_palette()
+	gclock->reset();
+	gclock->set_palette();
+	return no_ret;
+}
+
+USECODE_INTRINSIC(ambient_light)
+{
+	// ambient_light(onoff)
+	// E.g., the cutscene with Batlin and Cantra.
+	gwin->toggle_ambient_light(parms[0].get_int_value());
+	gclock->set_palette();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(infravision)
 {
 	// infravision(npc, onoff)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc && npc->is_in_party())
 		{
-		if (parms[1].get_int_value())
-			{		// On?
-			cheat.set_infravision(true);
-			gwin->get_pal()->set(0);
-			}
-		else
-			{
-			cheat.set_infravision(false);
-			gclock->set_palette();
-			}
+		cheat.set_infravision(parms[1].get_int_value() != 0);
+		gclock->set_palette();
 		}
 	return no_ret;
 }

@@ -189,6 +189,7 @@ void CheatScreen::show_screen()
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	// Reset the palette
+	clock->reset();
 	clock->set_palette();
 }
 

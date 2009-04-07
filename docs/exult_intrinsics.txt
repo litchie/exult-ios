@@ -41,8 +41,8 @@ are as follows:
     Keyword     Description
     int         This means any integer, positive or negative.
     object      Any object or NPC. It can be an object reference, 'item' or a
-                number (positive or negative, Exult will try to interpret it as
-                an NPC in either case if in the correct range).
+                number (that *must* be negative, which Exult will convert to an
+                NPC if it is in the correct range).
     actor       Any NPC. It is evaluated the same way as 'object' is, but Exult
                 will reject anything that can't be converted to an NPC. Monsters
                 are also accepted.
@@ -2689,6 +2689,14 @@ UI_flash_mouse(int cursor)
         CURSOR_OUT_OF_AMMO    = 3    CURSOR_TOO_HEAVY       = 4
         CURSOR_WONT_FIT       = 5    
 
+UI_ambient_light(bool onoff)                                         [SI, Exult]
+
+    Toggles on or off a permanent version of the light spell.
+
+  Parameters:
+    onoff    Flag specifying whether we want to turn the light on or off: true
+             to turn it on, false to turn it off.
+
 UI_cause_light(int length)
 
     Creates a light which illuminates the screen.
@@ -2707,6 +2715,17 @@ npc->infravision(bool onoff)
              effect only for party members.
     onoff    Flag specifying whether we want infravision or not: true to turn it
              on, false to turn it off.
+
+UI_set_light(object obj, bool onoff)
+obj->set_light(bool onoff)
+
+    Marks the given light source as being added to or removed from its
+    containing NPC.
+
+  Parameters:
+    obj      The light source that is being added or removed.
+    onoff    Flag specifying whether we want to add or remove the light source:
+             true to add it to its containing NPC, false to remove it.
 
 UI_earthquake(int length)
 
@@ -2841,6 +2860,11 @@ UI_fade_palette(int length, int unk, bool type)
               out, however.
     type      The type of fade. If true, fades from black; if false, fades to
               black.
+
+UI_set_time_palette()
+
+    Resets palette to default palette, based on time of day and number of
+    lights.
 
 UI_item_say(object obj, string bark)
 obj->item_say(string bark)
@@ -3184,4 +3208,5 @@ bool UI_can_avatar_reach_pos(int pos[])                                     [SI]
   Return:
     false if the supplied position is invalid or if the avatar cannot reach the
     supplied destination, true otherwise.
+
 

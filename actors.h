@@ -197,6 +197,13 @@ public:
 	inline bool is_neck_used() const { return use_neck; }
 	int has_light_source() const	// Carrying a torch?
 		{ return light_sources > 0; }
+	void add_light_source()	// Add a torch
+		{ light_sources++; }
+	void remove_light_source()	// Remove a torch
+		{
+		if (light_sources)
+			light_sources--;
+		}
 	Attack_mode get_attack_mode()
 		{ return attack_mode; }
 	void set_attack_mode(Attack_mode amode, bool byuser = false)

@@ -932,12 +932,14 @@ void Actor::refigure_gear()
 			feet, rfinger, rhand, torso, amulet, earrings, cloak, gloves
 		};
 	int powers = 0, immune = 0;
+	light_sources = 0;
 	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
 		{
 		Game_object *worn = spots[static_cast<int>(locs[i])];
 		if (worn)
 			{
 			Shape_info& info = worn->get_info();
+			if (info.is_light_source()) light_sources++;
 			powers |= info.get_object_powers(worn->get_framenum());
 			immune |= info.get_armor_immunity();
 			}
@@ -3461,9 +3463,7 @@ void Actor::remove
 		call_readied_usecode(index, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
-		{			// Update light-source count.
-		if (obj->get_info().is_light_source())
-			light_sources--;
+		{
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
 			two_handed = false;
@@ -3562,8 +3562,6 @@ bool Actor::add
 					// (Readied usecode now in drop().)
 
 	Shape_info& info = obj->get_info();
-	if (info.is_light_source())
-		light_sources++;
 
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
@@ -3629,8 +3627,6 @@ int Actor::add_readied
 		call_readied_usecode(index, obj, Usecode_machine::readied);
 
 	Shape_info& info = obj->get_info();
-	// Lightsource?
-	if (info.is_light_source()) light_sources++;
 
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
@@ -3668,11 +3664,7 @@ void Actor::change_member_shape
 	int newshape
 	)
 	{
-	if (obj->get_info().is_light_source())
-		light_sources--;
 	Container_game_object::change_member_shape(obj, newshape);
-	if (obj->get_info().is_light_source())
-		light_sources++;
 	refigure_gear();
 	}
 

@@ -23,7 +23,7 @@
  *	Last Modified: 2006-02-27
  */
 
-void LB_Sceptre_Hit 0xB7E ()
+void LB_Sceptre_Hit object#(0xB7E) ()
 {
 	if (event != WEAPON)
 		return;
@@ -53,5 +53,8 @@ void LB_Crown shape#(0x467) ()
 
 void LB_Amulet shape#(0x468) ()
 {
-	//Nothing I can think of
+	if (event == READIED)
+		UI_infravision(get_container(), true);
+	if (event == UNREADIED)
+		UI_infravision(get_container(), false);
 }
