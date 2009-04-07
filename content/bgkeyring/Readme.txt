@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.21
+version: 0.11.22
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -60,7 +60,7 @@ version: 0.11.21
 	OPTIONAL: You can create a shortcut to start Exult directly in the
 	Keyring mod. To do so, make sure that the command-line is similar to
 	the following example:
-		<path to Exult>\Exult --bg --mod keyring
+		<path to Exult>\Exult --fov --mod Keyring
 	You can use the supplied 'Keyring.ico' file for the shortcut (if you
 	use Windows) or use the supplied 'Keyring.png' file to make your own
 	icon for other OSes.
@@ -192,6 +192,8 @@ version: 0.11.21
 
 7	Version history
 -------------------
+version: 0.11.22
+	- LB's crown will grant infravision to the wearer.
 version: 0.11.21
 	- Meditation failed in shrine of spirituality. Fixed
 version: 0.11.20

@@ -1,6 +1,9 @@
 #	Exult 1.4.05cvs text message file.	Written by ExultStudio.
 %%section version
-:5
+:6
+%%endsection
+%%section usecode_events
+:1128/1
 %%endsection
 %%section framenames
 :1102/1/-1/0/270

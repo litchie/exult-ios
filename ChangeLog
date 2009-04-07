@@ -1,3 +1,23 @@
+2009-04-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* content/bgkeyring/*/*: LB's crown grants infravision now.
+	* content/*/README: Corrected link to site.
+	* All else: Fixe bug #2710720. Also prevent similar flicker that happens
+	  with invisibility.
+	  While fixing bug #2710720, found out the meaning of 3 intrinsics
+	  from the original games:
+	    - 0x82 (BG)/0x9C (SI): set_light: marks a light source as being equipped
+	      or unequipped. Among other things, this prevents a minor flicker with
+	      the helm of light when it was being unequipped. It also means that
+	      light sources need to call this intrinsic to display correctly as
+	      Exult no longer does the work.
+	    - 0x84 (BG)/0x9E (SI): set_time_palette: Resets palette to the correct
+	      one based on time of day/weather/lighting.
+	    - 0x9F (SI): ambient_light: Toggles (based on flag) an infinite version
+	      of the cause_light intrinsic. Has been made available for BG too.
+	    Based on the intrinsic distribution, intrinsic 0x83 (BG) or 0x9D (SI)
+	    must relate to palettes/lighting, but what does it do?
+	  Also updated the intrinsic documentation.
+
 2009-04-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Prevent exclusive gloves from going to the gloves spot due to paperdoll
 	  data.

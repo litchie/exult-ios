@@ -177,10 +177,10 @@
 	USECODE_INTRINSIC_PTR(item_say),			// 0x99
 	USECODE_INTRINSIC_PTR(close_gump),			// 0x9a
 	USECODE_INTRINSIC_PTR(in_gump_mode),	// Guess	// 0x9b
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9c
+	USECODE_INTRINSIC_PTR(set_light),			// 0x9c
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9d UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9e
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9f
+	USECODE_INTRINSIC_PTR(set_time_palette),	// 0x9e
+	USECODE_INTRINSIC_PTR(ambient_light),		// 0x9f
 	USECODE_INTRINSIC_PTR(is_not_blocked),			// 0xa0
 	USECODE_INTRINSIC_PTR(play_sound_effect2),		// 0xA1 - Known
 	USECODE_INTRINSIC_PTR(direction_from),			// 0xa2

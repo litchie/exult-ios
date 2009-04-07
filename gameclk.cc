@@ -103,8 +103,9 @@ void Game_clock::set_time_palette
 	{
 	Game_window *gwin = Game_window::get_instance();
 	Actor *main_actor = gwin->get_main_actor();
-	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
-	{
+	bool invis = main_actor && main_actor->get_flag(Obj_flags::invisible);
+	if (invis && !old_invisible)
+		{
 		if (transition)
 			{
 			delete transition;
@@ -112,11 +113,12 @@ void Game_clock::set_time_palette
 			}
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
 		if (!gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(true);
+			gwin->get_pal()->apply(!old_invisible);
 		return;
 		}
+	old_invisible = invis;
 
-	if (cheat.in_infravision())
+	if (cheat.in_infravision() && !old_infravision)
 		{
 		if (transition)
 			{
@@ -125,9 +127,10 @@ void Game_clock::set_time_palette
 			}
 		gwin->get_pal()->set(PALETTE_DAY);
 		if (!gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(true);
+			gwin->get_pal()->apply(!old_infravision);
 		return;
 		}
+	old_infravision = cheat.in_infravision();
 
 	unsigned int new_dungeon = gwin->is_in_dungeon();
 	int new_palette = get_time_palette(hour+1, new_dungeon),
