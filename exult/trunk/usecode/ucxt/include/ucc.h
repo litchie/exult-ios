@@ -65,6 +65,8 @@ class UCOptions
 		
 		bool game_bg()      const { return _game==GAME_BG; };
 		bool game_si()      const { return _game==GAME_SI; };
+		bool game_fov()     const { return _game==GAME_FOV; };
+		bool game_ss()      const { return _game==GAME_SS; };
 		bool game_u8()      const { return _game==GAME_U8; };
 		
 		bool output_extern_header;
@@ -91,7 +93,7 @@ class UCOptions
 		
 	//private:
 		unsigned int _game;
-		enum { GAME_BG=1, GAME_SI=2, GAME_U8=3 };
+		enum { GAME_BG=1, GAME_FOV=2, GAME_SI=3, GAME_SS=4, GAME_U8=5 };
 };
 
 #endif

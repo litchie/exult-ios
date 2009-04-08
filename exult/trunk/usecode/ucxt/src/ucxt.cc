@@ -185,8 +185,12 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 {
 	string bgpath;
 	if(uc.options.noconf == false) config.value("config/disk/game/blackgate/path", bgpath);
+	string fovpath;
+	if(uc.options.noconf == false) config.value("config/disk/game/forgeofvirtue/path", fovpath);
 	string sipath;
 	if(uc.options.noconf == false) config.value("config/disk/game/serpentisle/path", sipath);
+	string sspath;
+	if(uc.options.noconf == false) config.value("config/disk/game/silverseed/path", sspath);
 	string u8path;
 	if(uc.options.noconf == false) config.value("config/disk/game/pagan/path", u8path);
 	
@@ -238,10 +242,26 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 		mucc_l  = mucc_bgl;
 		mucc_c  = mucc_bgc;
 	}
+	else if(uc.options.game_fov())
+	{
+		if(uc.options.verbose) cout << "Configuring for bg." << endl;
+		path      = fovpath;
+		ucspecial = "usecode.si";
+		mucc_l  = mucc_sil;
+		mucc_c  = mucc_sic;
+	}
 	else if(uc.options.game_si())
 	{
 		if(uc.options.verbose) cout << "Configuring for si." << endl;
 		path      = sipath;
+		ucspecial = "usecode.si";
+		mucc_l  = mucc_sil;
+		mucc_c  = mucc_sic;
+	}
+	else if(uc.options.game_ss())
+	{
+		if(uc.options.verbose) cout << "Configuring for si." << endl;
+		path      = sspath;
 		ucspecial = "usecode.si";
 		mucc_l  = mucc_sil;
 		mucc_c  = mucc_sic;
@@ -359,7 +379,9 @@ void usage()
 	     << "\t\t-ext32\t- 'convert' function to ext32 format if not already." << endl
 	     << "\tGame Specifier Flags (only one of these):" << endl
 	     << "\t\t-bg\t- select the black gate usecode file" << endl
+	     << "\t\t-fov\t- select the forge of virtue usecode file" << endl
 	     << "\t\t-si\t- select the serpent isle usecode file" << endl
+	     << "\t\t-ss\t- select the silver seed usecode file" << endl
 	     << "\t\t-u8\t- select the ultima 8/pagan usecode file (experimental)" << endl
 	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl

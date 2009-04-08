@@ -1052,7 +1052,8 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 			/* if we're a function debugging opcode, set the debuging flag, and
 				assign the variable name string offset
 				TODO: Add this to opcodes.txt */
-			if((ucop._id==0x4D) && (options.game_bg() || options.game_si()))
+			if((ucop._id==0x4D) && (options.game_bg() || options.game_si() ||
+			                       options.game_fov() || options.game_ss()))
 			{
 				ucf.debugging_info=true;
 				assert(ucop._params_parsed.size()>=2);

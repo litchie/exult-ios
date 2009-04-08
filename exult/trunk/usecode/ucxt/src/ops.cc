@@ -88,9 +88,9 @@ void ucxtInit::init(const Configuration &config, const UCOptions &options)
 	opcodes();
 	
 	if(options.verbose) cout << "Initing intrinsics..." << endl;
-	if(options.game_bg())
+	if(options.game_bg() || options.game_fov())
 		intrinsics(bg_intrinsics_data, bg_intrinsics_root);
-	else if(options.game_si())
+	else if(options.game_si() || options.game_ss())
 		intrinsics(si_intrinsics_data, si_intrinsics_root);
 }
 
