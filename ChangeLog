@@ -17,6 +17,7 @@
 	    Based on the intrinsic distribution, intrinsic 0x83 (BG) or 0x9D (SI)
 	    must relate to palettes/lighting, but what does it do?
 	  Also updated the intrinsic documentation.
+	* Updated ucxt slightly.
 
 2009-04-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Prevent exclusive gloves from going to the gloves spot due to paperdoll

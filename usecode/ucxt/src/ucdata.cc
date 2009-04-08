@@ -26,6 +26,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
+#include <stdexcept>
 #include "ucdata.h"
 #include "ops.h"
 #include "files/utils.h"
@@ -57,6 +58,8 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 	{
 		if     (strcmp(argv[i], "-si"   )==0) options._game = UCOptions::GAME_SI;
 		else if(strcmp(argv[i], "-bg"   )==0) options._game = UCOptions::GAME_BG;
+		else if(strcmp(argv[i], "-ss"   )==0) options._game = UCOptions::GAME_SS;
+		else if(strcmp(argv[i], "-fov"  )==0) options._game = UCOptions::GAME_FOV;
 		else if(strcmp(argv[i], "-u8"   )==0) options._game = UCOptions::GAME_U8;
 
 		else if(strcmp(argv[i], "-a"    )==0) options.mode_all=true;
@@ -189,7 +192,8 @@ void UCData::disassamble()
 	with 'variables' in the opcodes.txt file, that signify if it's a pop/push and a flag */
 void UCData::dump_flags(ostream &o)
 {
-	if(!(options.game_bg() || options.game_si()))
+	if(!(options.game_bg() || options.game_si() ||
+	     options.game_ss() || options.game_fov()))
 	{
 		o << "This option only works for U7:BG and U7:SI" << endl;
 		return;
@@ -265,7 +269,15 @@ void UCData::dump_flags(ostream &o)
 void UCData::file_open(const string &filename)
 {
 	/* Open a usecode file */
-	U7open(_file, filename.c_str(), false);
+	try
+	{
+		_file.clear();
+		U7open(_file, filename.c_str(), false);
+	}
+	catch (const std::exception& err)
+	{
+		_file.setstate(_file.failbit);
+	}
 }
 
 #undef LOAD_SPEED_TEST
@@ -289,7 +301,8 @@ void UCData::load_funcs()
 	{
 		UCFunc *ucfunc = new UCFunc();
 
-		if(options.game_bg() || options.game_si())
+		if(options.game_bg() || options.game_si() ||
+		   options.game_ss() || options.game_fov())
 			readbin_U7UCFunc(_file, *ucfunc, options);
 		else if(options.game_u8())
 			readbin_U8UCFunc(_file, *ucfunc);
@@ -329,7 +342,8 @@ void UCData::load_funcs()
 
 void UCData::output_extern_header(ostream &o)
 {
-	if(!(options.game_bg() || options.game_si()))
+	if(!(options.game_bg() || options.game_si() ||
+	     options.game_ss() || options.game_fov()))
 	{
 		o << "This option only works for U7:BG and U7:SI" << endl;
 		return;
