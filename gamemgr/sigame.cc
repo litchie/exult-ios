@@ -858,7 +858,7 @@ struct ExCineEvent {
 	bool can_play() { return file != 0; }
 
 	ExCineEvent(uint32 t, const char *f, const char *p, int i) :
-		time(t), file(f), index(i)  { }
+		time(t), file(f), patch(p), index(i)  { }
 
 	virtual ~ExCineEvent() { }
 };
