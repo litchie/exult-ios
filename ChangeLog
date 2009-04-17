@@ -1,3 +1,7 @@
+2009-04-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug #2770944.
+	* Removed a few warnings.
+
 2009-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed crash in SI endgame (and possibly intro).
 
