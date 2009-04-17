@@ -86,7 +86,7 @@ void Scale_2xBilinear
 	// the following are static because we don't want to be freeing and
 	// reallocating space on each call, as malloc()s are usually very
 	// expensive; we do allow it to grow though
-	static unsigned buff_size = 0;
+	static int buff_size = 0;
 	static COMPONENT *rgb_row_cur  = 0;
 	static COMPONENT *rgb_row_next = 0;
 	if (buff_size < sline_pixels+1)
@@ -104,7 +104,7 @@ void Scale_2xBilinear
 
 	fill_rgb_row(from, from_width, rgb_row_cur, srcw+1, manip);
 
-	for (unsigned y=0; y < srch; y++)
+	for (int y=0; y < srch; y++)
 		{
 		Source_pixel *from_orig = from;
 		Dest_pixel *to_orig = to;
@@ -128,7 +128,7 @@ void Scale_2xBilinear
 		COMPONENT *cr = next_row++;
 		COMPONENT *cg = next_row++;
 		COMPONENT *cb = next_row++;
-		for (unsigned x=0; x < srcw; x++)
+		for (int x=0; x < srcw; x++)
 			{
 			COMPONENT *br = cur_row++;
 			COMPONENT *bg = cur_row++;
@@ -195,7 +195,7 @@ void Scale_2xBilinearPlus
 	// the following are static because we don't want to be freeing and
 	// reallocating space on each call, as malloc()s are usually very
 	// expensive; we do allow it to grow though
-	static unsigned buff_size = 0;
+	static int buff_size = 0;
 	static COMPONENT *rgb_row_cur  = 0;
 	static COMPONENT *rgb_row_next = 0;
 	if (buff_size < sline_pixels+1)
@@ -213,7 +213,7 @@ void Scale_2xBilinearPlus
 
 	fill_rgb_row(from, from_width, rgb_row_cur, srcw+1, manip);
 
-	for (unsigned y=0; y < srch; y++)
+	for (int y=0; y < srch; y++)
 		{
 		Source_pixel *from_orig = from;
 		Dest_pixel *to_orig = to;
@@ -237,7 +237,7 @@ void Scale_2xBilinearPlus
 		COMPONENT *cr = next_row++;
 		COMPONENT *cg = next_row++;
 		COMPONENT *cb = next_row++;
-		for (unsigned x=0; x < srcw; x++)
+		for (int x=0; x < srcw; x++)
 			{
 			COMPONENT *br = cur_row++;
 			COMPONENT *bg = cur_row++;
