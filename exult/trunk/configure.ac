@@ -64,7 +64,6 @@ case "$host_os" in
 			enable_debug="no"
 			enable_data="yes"
 		else
-			AC_PATH_XTRA
 			AC_MSG_RESULT(X11 (GNU/Linux))
 		fi
 		;;
