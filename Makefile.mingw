@@ -29,6 +29,16 @@ else
 	ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 endif
 
+### Warning: OpenGL mode is still buggy!
+ifdef OPEN_GL
+	OPENGL_LIBS=-lopengl32
+	OPENGL_OBJS=glshape.o
+	OPENGL_CFLAGS=-DHAVE_OPENGL
+else
+	OPENGL_LIBS=
+	OPENGL_OBJS=
+	OPENGL_CFLAGS=
+endif
 
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
@@ -56,7 +66,7 @@ GIMP_LIBS=`pkg-config --libs gimpui-2.0`
 
 ### Combined Exult Studio includes and libs.
 ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
-ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
+ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
 ifdef DEBUG_SYMBOLS
 	DEBUG_LEVEL=-ggdb3
@@ -78,7 +88,7 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit $(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 \
-	$(ZIP_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS))
+	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
 	OPT_LEVEL=-O2
@@ -95,7 +105,7 @@ CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
 
 EXEC=Exult.exe
 EXEEXT=.exe
@@ -120,7 +130,8 @@ ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 ES_SHAPES_OBJS=ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o \
 	expinf.o font.o fontgen.o fontvga.o frnameinf.o frpowers.o items.o \
 	monstinf.o npcdollinf.o objdollinf.o pngio.o sfxinf.o shapeinf.o \
-	shapewrite.o shapevga.o u7drag.o vgafile.o warminf.o weaponinf.o  
+	shapewrite.o shapevga.o u7drag.o vgafile.o warminf.o weaponinf.o \
+	$(OPENGL_OBJS)  
 
 MISC_OBJS=exultstudioico.o windrag.o
 

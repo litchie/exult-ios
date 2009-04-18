@@ -54,7 +54,8 @@ class VideoOptions_gump : public Modal_gump
 	virtual void mouse_up(int mx, int my);
 
 	void toggle(Gump_button* btn, int state);
-	void build_buttons();
+	void rebuild_buttons();
+	void rebuild_scale_button();
 
 	void load_settings();
 	void save_settings();

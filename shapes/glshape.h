@@ -51,6 +51,8 @@ public:
 	GL_texshape(Image_buffer8 *src, unsigned char *pal);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
+	void disassociate()	// Disassociate from frame.
+		{ frame = 0; }
 	};
 
 /*

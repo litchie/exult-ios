@@ -410,9 +410,17 @@ fi
 
 AC_ARG_ENABLE(opengl, [  --enable-opengl         Enable OpenGL rendering support [EXPERIMENTAL]],,enable_opengl=no)
 
+if test x$enable_opengl = xyes; then
+	# Check for header presence (guessing about MacOSX, would be good if
+	# anyone can confirm...)
+	if test x$ARCH != xmacosx; then
+		AC_CHECK_HEADER(GL/gl.h,,enable_opengl=no)
+	fi
+fi
+
 AC_MSG_CHECKING(for OpenGL rendering support)
 
-if test x$enable_opengl = xyes; then
+if test x$enable_opengl = xyes ; then
 	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
 	
 	# Mac OS X gets OpenGL through a framework (which appears to be pulled in by SDL)
@@ -545,18 +553,17 @@ fi
 AC_MSG_CHECKING(warning level)
 WARNING_LEVEL="normal"
 
-# more warnings
 AC_ARG_ENABLE(warnings, [[  --enable-warnings       Enable all warnings [default no]]],,enable_warnings=no)
-if test x$enable_warnings = xyes; then
- 	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
-	WARNING_LEVEL="all"
-fi
-
+# more warnings
 AC_ARG_ENABLE(paranoid-warnings, [[  --enable-paranoid-warnings      Enable paranoid warnings [default no]]],,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
-	WARNINGS="-Wall -W -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
+	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpadded"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
+	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wpadded"
 	WARNING_LEVEL="paranoid"
+elif test x$enable_warnings = xyes; then
+ 	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
+	WARNING_LEVEL="all"
 fi
 
 # Output result

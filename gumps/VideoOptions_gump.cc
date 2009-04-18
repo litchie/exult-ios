@@ -117,24 +117,29 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 	else if(btn==buttons[1])
 		scaling = state;
 	else if(btn==buttons[2])
+		{
 		scaler = state;
+		rebuild_scale_button();
+		paint();
+		}
 	else if(btn==buttons[3])
 		fullscreen = state;
 }
 
-void VideoOptions_gump::build_buttons()
+void VideoOptions_gump::rebuild_buttons()
 {
+	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+		{
+		delete buttons[i];
+		buttons[i] = 0;
+		}
+
 	// the text arrays are freed by the destructors of the buttons
 
 	buttons[0] = new VideoTextToggle (this, restext, colx[4], rowy[0], 59,
 									  resolution, num_resolutions);
 
-	std::string *scalingtext = new std::string[3];
-	scalingtext[0] = "x1";
-	scalingtext[1] = "x2";
-	scalingtext[2] = "x3";
-	buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 
-			59, scaling, 3);
+	rebuild_scale_button();
 
 	std::string *enabledtext = new std::string[2];
 	enabledtext[0] = "Disabled";
@@ -148,6 +153,33 @@ void VideoOptions_gump::build_buttons()
 
 	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74,
 									  scaler, Image_window::NumScalers);
+}
+
+void VideoOptions_gump::rebuild_scale_button()
+{
+	delete buttons[1];
+	buttons[1] = 0;
+	const int max_scales = scaling > 8 && scaling <= 16 ? scaling : 8;
+	const int num_scales = (scaler == Image_window::point ||
+	                  scaler == Image_window::interlaced ||
+	                  scaler == Image_window::OpenGL) ? max_scales : 1;
+	if (num_scales > 1)
+	{
+		// the text arrays is freed by the destructor of the button
+		std::string *scalingtext = new std::string[num_scales];
+		for (int i = 0; i < num_scales; i++)
+			{
+			char buf[10];
+			snprintf(buf, sizeof(buf), "x%d", i+1);
+			scalingtext[i] = buf;
+			}
+		buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 
+				59, scaling, num_scales);
+	}
+	else if (scaler = Image_window::Hq3x)
+		scaling = 2;
+	else
+		scaling = 1;
 }
 
 void VideoOptions_gump::load_settings()
@@ -195,7 +227,7 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 
 	load_settings();
 	
-	build_buttons();
+	rebuild_buttons();
 
 	// Ok
 	buttons[8] = new VideoOptions_button(this, oktext, colx[0], rowy[4]);
@@ -240,7 +272,9 @@ void VideoOptions_gump::paint()
 			buttons[i]->paint();
 
 	sman->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
-	sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
+	if (scaler == Image_window::point || scaler == Image_window::interlaced ||
+			scaler == Image_window::OpenGL)
+		sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
 	sman->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
 	sman->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
 	gwin->set_painted();

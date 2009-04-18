@@ -264,7 +264,7 @@ void Background_noise::handle_event
  *	Set renderer (OpenGL or normal SDL).
  */
 
-static void Set_renderer
+void Set_renderer
 	(
 	Image_window8 *win,
 	Palette *pal
@@ -278,7 +278,7 @@ static void Set_renderer
 		{
 		glman = new GL_manager();
 					// +++++Hope this is okay to do:
-		pal->load(PALETTES_FLX, PATCH_PALETTES, 0);	// Main palette.
+		//pal->load(PALETTES_FLX, PATCH_PALETTES, 0);	// Main palette.
 					// This should be elsewhere, I think:
 		unsigned char *newpal = new unsigned char[768];
 		for (int i = 0; i < 256; i++)
