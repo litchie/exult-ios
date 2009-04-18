@@ -150,7 +150,13 @@ public:
 	int is_empty()
 		{ return data[0] == 0 && data[1] == 0; }
 	virtual ~Shape_frame()
-		{ delete [] data; }
+		{
+#ifdef HAVE_OPENGL
+		if (glshape)
+			glshape->disassociate();
+#endif
+		delete [] data;
+		}
 	};
 
 /*

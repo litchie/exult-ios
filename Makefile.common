@@ -60,10 +60,15 @@ IMAGEWIN_OBJS=ibuf8.o ibuf16.o imagebuf.o imagewin.o iwin8.o savepcx.o \
 	scale_gl.o scale_2x.o scale_2xSaI.o scale_bilinear.o scale_hq2x.o scale_hq3x.o \
 	scale_interlace.o scale_point.o
 
+### Just in case...
+ifndef OPENGL_OBJS
+	OPENGL_OBJS=
+endif
+
 SHAPES_OBJS=font.o fontvga.o items.o miscinf.o shapeinf.o shapevga.o u7drag.o \
 	vgafile.o ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o expinf.o \
 	frnameinf.o monstinf.o npcdollinf.o objdollinf.o sfxinf.o warminf.o weaponinf.o \
-	frpowers.o
+	frpowers.o $(OPENGL_OBJS)
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o  contain.o egg.o iregobjs.o \
 	jawbone.o mappatch.o objiter.o objnames.o objs.o spellbook.o virstone.o

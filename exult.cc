@@ -698,7 +698,19 @@ static void Init
 
 	config->value("config/video/scale", scaleval, sc);
 	sclr = Image_window::get_scaler_for_name(scaler);
-	if (sclr == Image_window::NoScaler) config->set("config/video/scale_method","2xSaI",true);
+		// Ensure proper values for scaleval based on sclr.
+	if (sclr == Image_window::NoScaler)
+		{
+		config->set("config/video/scale_method","2xSaI",true);
+		sclr = Image_window::SaI;
+		scaleval = 2;
+		}
+	else if (sclr == Image_window::Hq3x)
+		scaleval = 3;
+	else if (sclr != Image_window::point || sclr != Image_window::interlaced ||
+			sclr != Image_window::OpenGL)
+		scaleval = 2;
+	config->set("config/video/scale", scaleval, true);
 
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
@@ -1150,42 +1162,46 @@ static void Handle_events
 		}
 
 		// Lerping stuff...
-		// Always repaint,
-		Actor *act = gwin->get_camera_actor();
-		int mswait = (act->get_frame_time()*gwin->is_lerping_enabled())/100;
-		if (mswait <= 0) mswait = (gwin->get_std_delay()*gwin->is_lerping_enabled())/100;
-
-		// Force a reset if position changed
-		if (last_x != gwin->get_scrolltx() || last_y != gwin->get_scrollty())
+		int lerp = gwin->is_lerping_enabled();
+		if (lerp)
 		{
-			//printf ("%i: %i -> %i, %i -> %i\n", ticks, last_x, gwin->get_scrolltx(), last_y, gwin->get_scrollty());
-			gwin->lerp_reset();
-			last_repaint = ticks;
-		}
-		last_x = gwin->get_scrolltx();
-		last_y = gwin->get_scrollty();
+			// Always repaint,
+			Actor *act = gwin->get_camera_actor();
+			int mswait = (act->get_frame_time()*lerp)/100;
+			if (mswait <= 0) mswait = (gwin->get_std_delay()*lerp)/100;
 
-		// Is lerping (smooth scrolling) enabled
-		if (mswait && ticks < (last_repaint+mswait*2))
-		{
-			gwin->paint_lerped(((ticks-last_repaint)*0x10000)/mswait);
+			// Force a reset if position changed
+			if (last_x != gwin->get_scrolltx() || last_y != gwin->get_scrollty())
+			{
+				//printf ("%i: %i -> %i, %i -> %i\n", ticks, last_x, gwin->get_scrolltx(), last_y, gwin->get_scrollty());
+				gwin->lerp_reset();
+				last_repaint = ticks;
+			}
+			last_x = gwin->get_scrolltx();
+			last_y = gwin->get_scrollty();
+
+			// Is lerping (smooth scrolling) enabled
+			if (mswait && ticks < (last_repaint+mswait*2))
+			{
+				gwin->paint_lerped(((ticks-last_repaint)*0x10000)/mswait);
+			}
 		}
 		else // No lerping
 		{
-		// Show animation every 1/20 sec.
-#if 0
-			if (ticks > last_repaint + 50 || gwin->was_painted())
-#else	/* (jsf) Experimenting with this: */
-			if (gwin->is_dirty())
-#endif
-						// This avoids jumpy walking:
-				{		// OpenGL?  Repaint all each time.
-				if (GL_manager::get_instance())
+#if HAVE_OPENGL
+					// OpenGL?  Repaint all each time.
+			if (GL_manager::get_instance())
+				{
+					// Show animation every 1/20 sec.
+				if (ticks > last_repaint + 50 || gwin->was_painted())
 					gwin->paint();
-				else
-					gwin->paint_dirty();
-				//while (ticks > last_repaint+50)last_repaint += 50;
 				}
+			else
+#endif
+			if (gwin->is_dirty())	// Note the ending else in the above #if!
+				gwin->paint_dirty();
+				// Reset it for lerping.
+			last_x = last_y = -1;
 		}
 		Mouse::mouse->show();	// Re-display mouse.
 					// Rotate less often if scaling and 
@@ -1208,7 +1224,7 @@ static void Handle_events
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		Mouse::mouse_update)	// If not, did mouse change?
+				Mouse::mouse_update)	// If not, did mouse change?
 			Mouse::mouse->blit_dirty();
 		}
 	}
