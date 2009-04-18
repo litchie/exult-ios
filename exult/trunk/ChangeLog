@@ -1,3 +1,19 @@
+2009-04-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Applied variation of patch #2272014.
+	* Fixed bug #1598910 and #2764270. The latter was done by tying scalers and 
+	  scales more tighly; except for point, interlaced and OpenGL scalers, each
+	  scaler uses only its "native" scale, ignoring (and overwriting) the value
+	  in exult.cfg.
+	* Some lerping code is now executed only if lerping is enabled.
+	* Fixed a few bugs in OpenGL code, eliminating several crashes. OpenGL now
+	  will correctly set lighting, though this may come at a performance hit.
+	  The Exult menu and game menus/intros sort of work now, but the cheat
+	  screen and shape browser are still broken. The MinGW makefile now has an
+	  option to enable OpenGL, and configure.ac now includes checks for header
+	  presence.
+	* Slightly changed warning options in configure.ac, and make paranoid
+	  warnings work again.
+
 2009-04-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2770944.
 	* Removed a few warnings.

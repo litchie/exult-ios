@@ -68,7 +68,7 @@ void GL_texshape::create
 //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
 	glTexImage2D(GL_TEXTURE_2D, 0, iformat, texsize, texsize, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
-	delete pixels;
+	delete [] pixels;
 					// Linear filtering.
 #if 0
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -231,7 +231,7 @@ GL_manager::~GL_manager
 		delete shapes;
 		shapes = next;
 		}
-	delete palette;
+	delete [] palette;
 	instance = 0;
 	}
 
@@ -325,7 +325,7 @@ void GL_manager::paint
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}
-	else				// Remove from chain.
+	else if (tex != shapes)	// Remove from chain, but NOT if already the head!
 		{
 		if (tex->lru_next)
 			tex->lru_next->lru_prev = tex->lru_prev;
@@ -333,10 +333,13 @@ void GL_manager::paint
 			tex->lru_prev->lru_next = tex->lru_next;
 		tex->lru_prev = 0;	// It will go to the head.
 		}
-	tex->lru_next = shapes;		// Add to head of chain.
-	if (shapes)
-		shapes->lru_prev = tex;
-	shapes = tex;
+	if (tex != shapes)
+		{		// NOT if already the head!
+		tex->lru_next = shapes;		// Add to head of chain.
+		if (shapes)
+			shapes->lru_prev = tex;
+		shapes = tex;
+		}
 	tex->paint(px, py);
 	}
 

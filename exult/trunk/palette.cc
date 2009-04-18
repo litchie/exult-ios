@@ -157,11 +157,20 @@ void Palette::set
 	apply(repaint);
 	}
 
+extern void Set_renderer(Image_window8 *win, Palette *pal);
+
 void Palette::apply(bool repaint)
 {
-	win->set_palette(pal1, max_val, brightness);
-	if (repaint)
-		win->show();
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		Set_renderer(win, this);
+	else
+#endif
+	{
+		win->set_palette(pal1, max_val, brightness);
+		if (repaint)
+			win->show();
+	}
 }
 
 /**
