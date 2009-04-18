@@ -64,6 +64,7 @@ case "$host_os" in
 			enable_debug="no"
 			enable_data="yes"
 		else
+			AC_PATH_XTRA
 			AC_MSG_RESULT(X11 (GNU/Linux))
 		fi
 		;;
@@ -557,9 +558,9 @@ AC_ARG_ENABLE(warnings, [[  --enable-warnings       Enable all warnings [default
 # more warnings
 AC_ARG_ENABLE(paranoid-warnings, [[  --enable-paranoid-warnings      Enable paranoid warnings [default no]]],,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
-	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpadded"
+	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
-	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wpadded"
+	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -Wpointer-arith"
 	WARNING_LEVEL="paranoid"
 elif test x$enable_warnings = xyes; then
  	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
