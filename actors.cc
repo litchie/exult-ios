@@ -3563,6 +3563,10 @@ bool Actor::add
 
 	Shape_info& info = obj->get_info();
 
+	if (info.is_light_source() &&
+			(index == lhand || index == rhand))
+		light_sources++;
+
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
 	gear_powers |= info.get_object_powers(obj->get_framenum());
@@ -3627,6 +3631,10 @@ int Actor::add_readied
 		call_readied_usecode(index, obj, Usecode_machine::readied);
 
 	Shape_info& info = obj->get_info();
+
+	if (info.is_light_source() &&
+			(index == lhand || index == rhand))
+		light_sources++;
 
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
