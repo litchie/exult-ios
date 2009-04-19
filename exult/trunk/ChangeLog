@@ -13,6 +13,7 @@
 	  presence.
 	* Slightly changed warning options in configure.ac, and make paranoid
 	  warnings work again.
+	* Fixed bug #2773133.
 
 2009-04-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2770944.
