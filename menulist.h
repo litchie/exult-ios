@@ -126,15 +126,20 @@ public:
 
 class MenuList {
 private:
+	Shape_frame *bg;	// For OpenGL.
 	std::vector<MenuObject*> *entries;
 	bool selected;
 	int selection;
 public:
-	MenuList(): selected(false), selection(0) { entries = new std::vector<MenuObject*>(); }
+	MenuList(): bg(0), selected(false), selection(0)
+		{ entries = new std::vector<MenuObject*>(); }
 	~MenuList();
-	int add_entry(MenuObject *entry) { entries->push_back(entry); return (entries->size()-1);}
+	int add_entry(MenuObject *entry)
+		{ entries->push_back(entry); return (entries->size()-1);}
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);
+	void set_background(Shape_frame *b)
+		{ bg = b; }
 	int get_selection() { return selection; }
 	void set_selection(int sel);
 	void set_selection(int x, int y);

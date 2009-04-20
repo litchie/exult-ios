@@ -48,6 +48,7 @@ public:
 	friend class GL_manager;
 	GL_texshape(Shape_frame *f, unsigned char *pal, 
 				Xform_palette *xforms = 0, int xfcnt = 0);
+	GL_texshape(Shape_frame *f, unsigned char *pal, unsigned char *trans);
 	GL_texshape(Image_buffer8 *src, unsigned char *pal);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
@@ -84,6 +85,7 @@ public:
 					//   for it if necessary.
 	void paint(Shape_frame *frame, int px, int py,
 				Xform_palette *xforms = 0, int xfcnt = 0);
+	void paint(Shape_frame *frame, int px, int py, unsigned char *trans);
 	};
 
 

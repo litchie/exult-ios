@@ -91,6 +91,8 @@ public:
 		if (render_queue != this)// Not already first in queue?
 					// Move to front of queue.
 			insert_in_queue();
+		if (!glflats)
+			free_rendered_flats();
 		return rendered_flats
 			? rendered_flats : render_flats();
 		}
@@ -99,6 +101,12 @@ public:
 	void render_all(int cx, int cy);// Render (in terrain-editing mode).
 					// Write out to chunk.
 	int write_flats(unsigned char *chunk_data, bool v2_chunks);
+	static void clear_glflats()
+		{
+		Chunk_terrain *next = render_queue;
+		for (int i = 0; i < queue_size; i++, next = next->render_queue_next)
+			next->free_rendered_flats();
+		}
 	};
 
 

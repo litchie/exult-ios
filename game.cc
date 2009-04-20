@@ -329,6 +329,7 @@ bool Game::show_menu(bool skip)
 				}
 			}
 			menu->set_selection(2);
+			menu->set_background(get_menu_shape());
 		}
 	
 		bool created = false;
@@ -526,8 +527,12 @@ int wait_delay(int ms, int startcol, int ncol)
 		if (ncol > 0) {
 			Game_window::get_instance()->get_win()
 				->rotate_colors(startcol, ncol, 1);
+#ifdef HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Set_renderer(Game_window::get_instance()->get_win());
+#endif
 			if (ms > 250)
-			  Game_window::get_instance()->get_win()->show();
+				Game_window::get_instance()->get_win()->show();
 		}
 		unsigned long ticks2 = SDL_GetTicks();
 		if (ticks2 - ticks1 > delay)

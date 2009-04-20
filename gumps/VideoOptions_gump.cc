@@ -176,7 +176,7 @@ void VideoOptions_gump::rebuild_scale_button()
 		buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 
 				59, scaling, num_scales);
 	}
-	else if (scaler = Image_window::Hq3x)
+	else if (scaler == Image_window::Hq3x)
 		scaling = 2;
 	else
 		scaling = 1;

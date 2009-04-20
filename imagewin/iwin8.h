@@ -53,6 +53,9 @@ public:
 					// Set palette.
 	virtual void set_palette(unsigned char *rgbs, int maxval, 
 						int brightness = 100);
+					// Get palette.
+	virtual const unsigned char *get_palette() const
+		{ return colors; }
 					// Rotate palette colors.
 	virtual void rotate_colors(int first, int num, int upd);
 	/*
@@ -60,7 +63,8 @@ public:
 	 */
 					// Fill with given (8-bit) value.
 	void fill8(unsigned char val)
-		{ ib8->Image_buffer8::fill8(val); }
+		{ IF_OPENGL(opengl_fill8(val),
+		  ib8->Image_buffer8::fill8(val)); }
 					// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)

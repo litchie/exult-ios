@@ -118,6 +118,7 @@ void ShapeBrowser::browse_shapes()
 					}
 				else
 					pal.load(pal_tuple.str, patch_tuple.str, pal_tuple.num);
+				pal.apply();
 
 				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);
@@ -173,7 +174,7 @@ void ShapeBrowser::browse_shapes()
 				} else
 					font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
 
-				pal.apply();
+				gwin->get_win()->show();
 				redraw = false;
 			}
 			SDL_WaitEvent(&event);

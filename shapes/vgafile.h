@@ -48,10 +48,12 @@ class Palette;
 #define GLRENDER	if (glman) glman->paint(this, px, py); else
 #define GLRENDERTRANS	if (glman) glman->paint(this, px, py, xforms, xfcnt); \
 								else
+#define GLRENDERREMAP	if (glman) glman->paint(this, px, py, trans); else
 #define GLOUTLINE	if (glman) ; else
 #else
 #define GLRENDER
 #define GLRENDERTRANS
+#define GLRENDERREMAP
 #define GLOUTLINE
 #endif
 
@@ -118,7 +120,7 @@ public:
 	void paint_rle(int px, int py)
 		{ GLRENDER  paint_rle(scrwin, px, py); }
 	void paint_rle_remapped(int px, int py, unsigned char *trans)
-		{ GLRENDER  paint_rle_remapped(scrwin, px, py, trans); }
+		{ GLRENDERREMAP  paint_rle_remapped(scrwin, px, py, trans); }
 	void paint(int px, int py)
 		{ GLRENDER  paint(scrwin, px, py); }
 					// ++++++GL versions of these needed:
