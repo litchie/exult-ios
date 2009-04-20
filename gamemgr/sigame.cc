@@ -41,6 +41,7 @@
 #include "items.h"
 #include "data/exult_si_flx.h"
 #include "miscinf.h"
+#include "gump_utils.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -827,18 +828,23 @@ void SI_Game::play_intro()
 	Audio::get_ptr()->cancel_streams();
 }
 
+Shape_frame *SI_Game::get_menu_shape()
+{
+	return menushapes.get_shape(0x2,0);
+}
+
 void SI_Game::top_menu()
 {
 	Audio::get_ptr()->start_music(28,true,MAINSHP_FLX);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,get_menu_shape());
 	pal->load(MAINSHP_FLX, PATCH_MAINSHP, 26);
-	pal->fade_in(60);	
+	pal->fade_in(60);
 }
 
 void SI_Game::show_journey_failed()
 {
     pal->fade_out(50);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,get_menu_shape());
 	journey_failed_text();
 }
 
@@ -1297,7 +1303,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 #endif
 	do
 	{
-		if (redraw)
+		Delay();
+		if (redraw || GL_manager::get_instance())
 		{
 			gwin->clear_screen();
 			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
@@ -1317,109 +1324,100 @@ bool SI_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
-			pal->apply();
+			gwin->get_win()->show();
 			redraw = false;
 		}
-		SDL_WaitEvent(&event);
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			redraw = true;
-#endif
-		if(event.type==SDL_KEYDOWN)
+		while (SDL_PollEvent(&event))
 		{
-			redraw = true;
-			switch(event.key.keysym.sym)
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				redraw = true;
+#endif
+			if(event.type==SDL_KEYDOWN)
 			{
-			case SDLK_SPACE:
-				if(selected==0)
+				redraw = true;
+				switch(event.key.keysym.sym)
 				{
-					int len = strlen(npc_name);
-					if(len<max_len)
-					{
-						npc_name[len] = ' ';
-						npc_name[len+1] = 0;
-					}
-				}
-				else if(selected==1)
-					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
-				else if(selected==2)
-				{
-					editing=false;
-					ok = true;
-				}
-				else if(selected==3)
-				{
-					editing = false;
-					ok = false;
-				}
-				break;
-			case SDLK_LEFT:
-				if(selected==1)
-					skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, true, true);
-				break;
-			case SDLK_RIGHT:
-				if(selected==1)
-					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
-				break;
-			case SDLK_ESCAPE:
-				editing = false;
-				ok = false;
-				break;
-			case SDLK_TAB:
-			case SDLK_DOWN:
-				++selected;
-				if(selected==num_choices)
-					selected = 0;
-				break;
-			case SDLK_UP:
-				--selected;
-				if(selected<0)
-					selected = num_choices-1;
-				break;
-			case SDLK_RETURN:
-			case SDLK_KP_ENTER:
-				if(selected<2) 
-					++selected;
-				else if(selected==2)
-				{
-					editing=false;
-					ok = true;
-				}
-				else
-				{
-					editing = false;
-					ok = false;
-				}
-				break;
-			case SDLK_BACKSPACE:
-				if(selected==0)
-				{
-					if(strlen(npc_name)>0)
-						npc_name[strlen(npc_name)-1] = 0;
-				}
-				break;
-			default:
-				{
-					if (selected == 0) // on the text input field?
+				case SDLK_SPACE:
+					if(selected==0)
 					{
 						int len = strlen(npc_name);
-						char chr = 0;
-
-						if ((event.key.keysym.unicode & 0xFF80) == 0)
-							chr = event.key.keysym.unicode & 0x7F;
-
-						if (chr >= ' ' && len < max_len)
+						if(len<max_len)
 						{
-							npc_name[len] = chr;
+							npc_name[len] = ' ';
 							npc_name[len+1] = 0;
 						}
 					}
-					else
+					else if(selected==1)
+						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
+					else if(selected==2)
 					{
-						redraw = false;
+						editing = false;
+						ok = true;
 					}
+					else if(selected==3)
+						editing = ok = false;
+					break;
+				case SDLK_LEFT:
+					if(selected==1)
+						skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, true, true);
+					break;
+				case SDLK_RIGHT:
+					if(selected==1)
+						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, true, true);
+					break;
+				case SDLK_ESCAPE:
+					editing = false;
+					ok = false;
+					break;
+				case SDLK_TAB:
+				case SDLK_DOWN:
+					++selected;
+					if(selected==num_choices)
+						selected = 0;
+					break;
+				case SDLK_UP:
+					--selected;
+					if(selected<0)
+						selected = num_choices-1;
+					break;
+				case SDLK_RETURN:
+				case SDLK_KP_ENTER:
+					if(selected<2) 
+						++selected;
+					else if(selected==2)
+					{
+						editing = false;
+						ok = true;
+					}
+					else
+						editing = ok = false;
+					break;
+				case SDLK_BACKSPACE:
+					if(selected == 0 && strlen(npc_name) > 0)
+						npc_name[strlen(npc_name)-1] = 0;
+					break;
+				default:
+					{
+						if (selected == 0) // on the text input field?
+						{
+							int len = strlen(npc_name);
+							char chr = 0;
+
+							if ((event.key.keysym.unicode & 0xFF80) == 0)
+								chr = event.key.keysym.unicode & 0x7F;
+
+							if (chr >= ' ' && len < max_len)
+							{
+								npc_name[len] = chr;
+								npc_name[len+1] = 0;
+							}
+						}
+						else
+							redraw = false;
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}

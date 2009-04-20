@@ -34,6 +34,7 @@ class Image_buffer8;
 class Mouse;
 class Configuration;
 class BaseGameInfo;
+class Shape_frame;
 
 struct str_int_pair
 {
@@ -110,6 +111,7 @@ public:
 	virtual int  get_start_tile_x() =0;
 	virtual int  get_start_tile_y() =0;
 	virtual void show_journey_failed() = 0;
+	virtual Shape_frame *get_menu_shape() = 0;
 
 	void play_flic(const char *archive, int index);
 	void add_shape(const char *name, int shapenum);

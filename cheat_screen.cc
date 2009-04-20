@@ -165,7 +165,6 @@ CheatScreen::~CheatScreen()
 	
 void CheatScreen::show_screen()
 {
-		
 	gwin = Game_window::get_instance();
 	ibuf = gwin->get_win()->get_ib8();
 	font = fontManager.get_font("MENU_FONT");
@@ -181,6 +180,7 @@ void CheatScreen::show_screen()
 	const str_int_pair& pal_tuple_static = game->get_resource("palettes/0");
 	const str_int_pair& pal_tuple_patch = game->get_resource("palettes/patch/0");
 	pal.load(pal_tuple_static.str, pal_tuple_patch.str, pal_tuple_static.num);
+	pal.apply();
 
 	// Start the loop
 	NormalLoop();
@@ -352,7 +352,8 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 	SDL_Event event;
 
   	do {
-		SDL_WaitEvent(&event);
+		while (SDL_PollEvent(&event))
+			gwin->get_win()->show();
 	} while (event.type!=SDL_KEYDOWN);
 
 	SDL_keysym& key = event.key.keysym;
@@ -483,7 +484,7 @@ void CheatScreen::NormalLoop ()
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -623,6 +624,7 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		// Infravision
 		case 'i':
 		cheat.toggle_infravision();
+		pal.apply();
 		break;
 
 		// Eggs
@@ -821,7 +823,7 @@ CheatScreen::Cheat_Prompt CheatScreen::TimeSetLoop ()
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -933,7 +935,7 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -1064,7 +1066,7 @@ CheatScreen::Cheat_Prompt CheatScreen::NPCLoop (int num)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -1424,7 +1426,7 @@ void CheatScreen::FlagLoop (Actor *actor)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -1654,6 +1656,7 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 			actor->clear_flag(Obj_flags::invisible);
 		else
 			actor->set_flag(Obj_flags::invisible);
+		pal.apply();
 		break;
 		
 		case 'k':	// Fly
@@ -2012,7 +2015,7 @@ void CheatScreen::BusinessLoop (Actor *actor)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -2307,7 +2310,7 @@ void CheatScreen::StatLoop (Actor *actor)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)
@@ -2522,7 +2525,7 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop (int num, Actor *actor)
 		SharedPrompt(input, mode);
 
 		// Draw it!
-		pal.apply();
+		gwin->get_win()->show();
 
 		// Check to see if we need to change menus
 		if (activate)

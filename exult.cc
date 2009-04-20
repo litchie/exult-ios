@@ -1163,6 +1163,7 @@ static void Handle_events
 
 		// Lerping stuff...
 		int lerp = gwin->is_lerping_enabled();
+		bool didlerp = false;
 		if (lerp)
 		{
 			// Always repaint,
@@ -1184,9 +1185,10 @@ static void Handle_events
 			if (mswait && ticks < (last_repaint+mswait*2))
 			{
 				gwin->paint_lerped(((ticks-last_repaint)*0x10000)/mswait);
+				didlerp = true;
 			}
 		}
-		else // No lerping
+		if (!lerp || !didlerp) // No lerping
 		{
 #if HAVE_OPENGL
 					// OpenGL?  Repaint all each time.
@@ -1208,8 +1210,7 @@ static void Handle_events
 					//   not paletized.
 		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
 								scale==1?0:1);
-		if (ticks > last_rotate + rot_speed &&
-		    !GL_manager::get_instance())	//++++Disable in OGL.
+		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xfc, 3, 0);
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
@@ -1219,6 +1220,11 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			while (ticks > last_rotate + rot_speed) 
 				last_rotate += rot_speed;
+#ifdef HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Set_renderer(gwin->get_win());
+			else
+#endif
 					// Non palettized needs explicit blit.
 			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();
@@ -1608,6 +1614,11 @@ static int Get_click
 				while (ticks > last_rotate + rot_speed) 
 					last_rotate += rot_speed;
 						// Non palettized needs explicit blit.
+#ifdef HAVE_OPENGL
+				if (GL_manager::get_instance())
+					Set_renderer(gwin->get_win());
+				else
+#endif
 				if (!gwin->get_win()->is_palettized())
 					gwin->set_painted();
 				}

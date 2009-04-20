@@ -157,20 +157,17 @@ void Palette::set
 	apply(repaint);
 	}
 
-extern void Set_renderer(Image_window8 *win, Palette *pal);
-
 void Palette::apply(bool repaint)
 {
+	win->set_palette(pal1, max_val, brightness);
+	if (!repaint)
+		return;
 #ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
-		Set_renderer(win, this);
+		Set_renderer(win);
 	else
 #endif
-	{
-		win->set_palette(pal1, max_val, brightness);
-		if (repaint)
-			win->show();
-	}
+		win->show();
 }
 
 /**
@@ -253,6 +250,10 @@ void Palette::set_loaded
 		if (!buf)
 			return;
 		}
+#if HAVE_OPENGL
+	if (GL_manager::get_instance())
+		Set_renderer(win, this);
+#endif
 	delete [] buf;
 	}
 
@@ -329,7 +330,7 @@ void Palette::set_brightness(int bright)
 	
 void Palette::fade_in(int cycles)
 {
-	if (fades_enabled)
+	if (fades_enabled && !GL_manager::get_instance())
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -340,7 +341,7 @@ void Palette::fade_in(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == cycles || ticks >= SDL_GetTicks() ||
-			    !Game_window::get_instance()->get_frame_skipping())
+				    !Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;
@@ -357,7 +358,7 @@ void Palette::fade_in(int cycles)
 void Palette::fade_out(int cycles)
 {
 	faded_out = true;		// Be sure to set flag.
-	if (fades_enabled)
+	if (fades_enabled && !GL_manager::get_instance())
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -368,7 +369,7 @@ void Palette::fade_out(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == 0 || ticks >= SDL_GetTicks() ||
-			   !Game_window::get_instance()->get_frame_skipping())
+				   !Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;

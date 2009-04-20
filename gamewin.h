@@ -552,4 +552,7 @@ public:
 	int is_lerping_enabled() const { return lerping_enabled; }
 	void set_lerping_enabled(int e) { lerping_enabled = e; }
 	};
+	
+void Set_renderer(Image_window8 *win, Palette *pal = 0, bool resize = false);
+
 #endif

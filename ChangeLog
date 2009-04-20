@@ -1,3 +1,11 @@
+2009-04-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed several bugs in OpenGL: Cheat menu, shape browser, game menus now
+	  work correctly; main (Exult) menu still wonky. BG intro, except for the
+	  guardian cutscene, works correctly; SI intro, and BG and SI endgames do
+	  not yet work.
+	* Fixed mistaken if assignment that prevented changing scalers to anything
+	  other than pixel, interlaced, OpenGL and Hq3x scalers.
+
 2009-04-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Applied variation of patch #2272014.
 	* Fixed bug #1598910 and #2764270. The latter was done by tying scalers and 

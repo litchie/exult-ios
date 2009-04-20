@@ -111,6 +111,31 @@ GL_texshape::GL_texshape
 	}
 
 /*
+ *	Create for a given frame.
+ */
+
+GL_texshape::GL_texshape
+	(
+	Shape_frame *f,
+	unsigned char *pal,			// 'Pixel' position from top-left.
+	unsigned char *trans	// Translation table.
+	) : frame(f), lru_next(0), lru_prev(0)
+	{
+	int w = frame->get_width(), h = frame->get_height();
+					// Figure texture size as 2^n, rounding
+					//   up.
+	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
+	texsize = 1<<(logw > logh ? logw : logh);
+					// Render frame.
+	Image_buffer8 buf8(texsize, texsize);
+	buf8.fill8(transp);		// Fill with transparent value.
+					// ++++Guessing a bit on the offset:
+	frame->paint_rle_remapped(&buf8, texsize - frame->get_xright() - 1,
+					texsize - frame->get_ybelow() - 1, trans);
+	create(&buf8, pal, 0, 0);
+	}
+
+/*
  *	Create from a given (square, size 2^n) image.
  */
 
@@ -322,6 +347,92 @@ void GL_manager::paint
 			}
 		frame->glshape = tex = new GL_texshape(frame, palette, 
 							xforms, xfcnt);
+		num_shapes++;
+		//++++++When 'too many', we'll free LRU here.
+		}
+	else if (tex != shapes)	// Remove from chain, but NOT if already the head!
+		{
+		if (tex->lru_next)
+			tex->lru_next->lru_prev = tex->lru_prev;
+		if (tex->lru_prev)
+			tex->lru_prev->lru_next = tex->lru_next;
+		tex->lru_prev = 0;	// It will go to the head.
+		}
+	if (tex != shapes)
+		{		// NOT if already the head!
+		tex->lru_next = shapes;		// Add to head of chain.
+		if (shapes)
+			shapes->lru_prev = tex;
+		shapes = tex;
+		}
+	tex->paint(px, py);
+	}
+
+/*
+ *	Paint an image directly using the given translation table.
+ */
+
+static void Paint_image
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	int scale,			// Scale factor.
+	unsigned char *trans	// Translation table.
+	)
+	{
+	px -= frame->get_xleft();	// Figure actual from hot-spot.
+	py += frame->get_ybelow();
+					// Game y-coord goes down from top.
+	py = -py;
+	int w = frame->get_width(), h = frame->get_height();
+					// Render frame.
+	Image_buffer8 buf8(w, h);
+	w = buf8.get_width(); h = buf8.get_height();
+	buf8.fill8(transp);		// Fill with transparent value.
+	frame->paint_rle_remapped(&buf8, frame->get_xleft(),
+				frame->get_yabove(), trans);
+					// Convert to rgba.
+	unsigned char *pixels = buf8.rgba(pal, transp);
+	if (px < 0)			// Doesn't paint if off screen.
+		{
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
+		w += px;
+		px = 0;
+		}
+					//++++CHeck py too?
+//	float x = static_cast<float>(px);
+//	float y = static_cast<float>(py);
+	glPixelZoom(scale, -scale);	// Get right side up.
+	glRasterPos2f(px, py + h);
+	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	delete pixels;
+	}
+
+/*
+ *	Paint a shape using a translation table.
+ */
+
+void GL_manager::paint
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	unsigned char *trans	// Translation table.
+	)
+	{
+	GL_texshape *tex = frame->glshape;
+	if (!tex)			// Need to create texture?
+		{
+		if (frame->get_width() > max_texsize || 
+		    frame->get_height() > max_texsize)
+			{		// Too big?  Just paint it now.
+			Paint_image(frame, px, py, palette, scale, trans);
+			return;
+			}
+		frame->glshape = tex = new GL_texshape(frame, palette, trans);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}

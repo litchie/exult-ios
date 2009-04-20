@@ -267,7 +267,8 @@ void Background_noise::handle_event
 void Set_renderer
 	(
 	Image_window8 *win,
-	Palette *pal
+	Palette *pal,
+	bool resize
 	)
 	{
 	GL_manager *glman = GL_manager::get_instance();
@@ -276,20 +277,27 @@ void Set_renderer
 	glman = 0;
 	if (win->get_scaler() == Image_window::OpenGL)
 		{
+		Chunk_terrain::clear_glflats();
 		glman = new GL_manager();
 					// +++++Hope this is okay to do:
 		//pal->load(PALETTES_FLX, PATCH_PALETTES, 0);	// Main palette.
 					// This should be elsewhere, I think:
 		unsigned char *newpal = new unsigned char[768];
-		for (int i = 0; i < 256; i++)
-			{		// Palette colors are 0-63.
-			newpal[3*i] = 4*pal->get_red(i);
-			newpal[3*i+1] = 4*pal->get_green(i);
-			newpal[3*i+2] = 4*pal->get_blue(i);
+		if (pal)
+			{
+			for (int i = 0; i < 256; i++)
+				{		// Palette colors are 0-63.
+				newpal[3*i] = 4*pal->get_red(i);
+				newpal[3*i+1] = 4*pal->get_green(i);
+				newpal[3*i+2] = 4*pal->get_blue(i);
+				}
 			}
+		else
+			std::memcpy(newpal, win->get_palette(), 768);
 		glman->set_palette(newpal);
-		glman->resized(win->get_width(), win->get_height(), 
-							win->get_scale());
+		if (resize)
+			glman->resized(win->get_width(), win->get_height(), 
+								win->get_scale());
 		}
 #endif
 					// Tell shapes how to render.
@@ -834,7 +842,7 @@ void Game_window::resized
 	{			
 	win->resized(neww, newh, newsc, newsclr);
 	pal->apply(false);
-	Set_renderer(win, pal);
+	Set_renderer(win, pal, true);
 	if (!main_actor)		// In case we're before start.
 		return;
 	center_view(main_actor->get_tile());
