@@ -180,7 +180,7 @@ static int Skip_transparent
 
 static int Find_runs
 	(
-	short *runs,			// Each run's length is returned.
+	unsigned short *runs,			// Each run's length is returned.
 					// For each byte, bit0==repeat.
 					// List ends with a 0.
 	unsigned char *pixels,		// Scan line (8-bit color).
@@ -257,7 +257,7 @@ unsigned char *Shape_frame::encode_rle
 		for (int x = 0; (x = Skip_transparent(pixels, x, w)) < w; 
 								x = newx)
 			{
-			short runs[100];// Get runs.
+			unsigned short runs[200];// Get runs.
 			newx = Find_runs(runs, pixels, x, w);
 					// Just 1 non-repeated run?
 			if (!runs[1] && !(runs[0]&1))

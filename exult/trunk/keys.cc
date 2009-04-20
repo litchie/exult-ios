@@ -358,7 +358,7 @@ void KeyBinder::ShowHelp()
 	do
 	{
 		int x, y;
-		Get_click(x,y, Mouse::hand);
+		Get_click(x,y, Mouse::hand, 0, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
 	delete scroll;
@@ -378,7 +378,7 @@ void KeyBinder::ShowCheatHelp()
 	do
 	{
 		int x, y;
-		Get_click(x,y, Mouse::hand);
+		Get_click(x,y, Mouse::hand, 0, false, scroll);
 	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
 	delete scroll;

@@ -219,7 +219,8 @@ public:
 	 */
 					// Fill with given (8-bit) value.
 	void fill8(unsigned char val)
-		{ ibuf->fill8(val); }
+		{ IF_OPENGL(opengl_fill8(val),
+			ibuf->fill8(val)); }
 					// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)
@@ -264,6 +265,8 @@ public:
 	 *	OpenGL:
 	 */
 #ifdef HAVE_OPENGL
+	void opengl_fill8(unsigned char val)
+		{ opengl_fill8(val, ibuf->width, ibuf->height, 0, 0); }
 					// Fill rect. wth pixel.
 	void opengl_fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty);

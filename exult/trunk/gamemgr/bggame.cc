@@ -44,6 +44,7 @@
 #include "shapeid.h"
 #include "modmgr.h"
 #include "miscinf.h"
+#include "gump_utils.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -362,7 +363,20 @@ void BG_Game::scene_lord_british()
 
 #define	BUTTERFLY_SUB_FRAMES	3
 
+#ifdef HAVE_OPENGL
+#define BUTTERFLY_BACKGROUND()  do {	\
+		if (GL_manager::get_instance()) {	\
+			sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));	\
+			sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));	\
+		}	\
+	} while(0)
+#else
+#define BUTTERFLY_BACKGROUND()  do {	} while(0)
+#endif
+
+
 #define	BUTTERFLY(x,y,frame,delay)	do {	\
+		BUTTERFLY_BACKGROUND();	\
 		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
 				topy + (y) - butterfly->get_yabove());	\
 		sman->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
@@ -961,19 +975,33 @@ void BG_Game::scene_desk()
 		
 		// draw arm hitting pc (sh. 0x0C)
 		s = shapes.get_shape(0x0C, 0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			backup = win->create_buffer(s->get_width(), s->get_height());
 		
 		// TODO: add stuff on screen while hitting (static, butterfly scene, black)
 		
 		for (hits=0; hits<3; hits++){
 			WAITDELAY(100);
 			for (i=0; i<5; i++) { //was i<9
-				win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
-					 centery+100 - s->get_yabove());
+#if HAVE_OPENGL
+				if (!GL_manager::get_instance())
+#endif
+					win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
+						 centery+100 - s->get_yabove());
 				sman->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
 				win->show();
-				win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
-					 centery+100 - s->get_yabove());
+#if HAVE_OPENGL
+				if (GL_manager::get_instance())
+				{
+					sman->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
+					sman->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
+				}
+				else
+#endif
+					win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
+						 centery+100 - s->get_yabove());
 				WAITDELAY(80);
 			}
 			 
@@ -1129,10 +1157,16 @@ void BG_Game::scene_moongate()
 		WAITDELAYCYCLE3(50);
 }
 
+Shape_frame *BG_Game::get_menu_shape()
+{
+	return menushapes.get_shape(0x2,0);
+}
+
+
 void BG_Game::top_menu()
 {
 	Audio::get_ptr()->start_music(menu_midi,true,INTROMUS);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,get_menu_shape());
 	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 	pal->fade_in(60);	
 }
@@ -1140,7 +1174,7 @@ void BG_Game::top_menu()
 void BG_Game::show_journey_failed()
 {
 	pal->fade_out(50);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,get_menu_shape());
 	journey_failed_text();
 }
 
@@ -1636,13 +1670,15 @@ bool BG_Game::new_game(Vga_file &shapes)
 	// Create palette translation table. Maybe make them static?
 	unsigned char *transto = new unsigned char[256];
 	oldpal->create_palette_map(pal, transto);
+	pal->apply(true);
 #ifdef UNDER_CE
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 #endif
 	do
 	{
-		if (redraw)
+		Delay();
+		if (redraw || GL_manager::get_instance())
 		{
 			gwin->clear_screen();
 			sman->paint_shape(topx,topy,shapes.get_shape(0x2,0), 0, transto);
@@ -1668,109 +1704,100 @@ bool BG_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
-			pal->apply();
+			gwin->get_win()->show();
 			redraw = false;
 		}
-		SDL_WaitEvent(&event);
-#ifdef UNDER_CE
-		if (gkeyboard->handle_event(&event))
-			redraw = true;
-#endif
-		if(event.type==SDL_KEYDOWN)
+		while (SDL_PollEvent(&event))
 		{
-			redraw = true;
-			switch(event.key.keysym.sym)
+#ifdef UNDER_CE
+			if (gkeyboard->handle_event(&event))
+				redraw = true;
+#endif
+			if(event.type==SDL_KEYDOWN)
 			{
-			case SDLK_SPACE:
-				if(selected==0)
+				redraw = true;
+				switch(event.key.keysym.sym)
 				{
-					int len = strlen(npc_name);
-					if(len<max_name_len)
-					{
-						npc_name[len] = ' ';
-						npc_name[len+1] = 0;
-					}
-				}
-				else if(selected==1)
-					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
-				else if(selected==2)
-				{
-					editing=false;
-					ok = true;
-				}
-				else if(selected==3)
-				{
-					editing = false;
-					ok = false;
-				}
-				break;
-			case SDLK_LEFT:
-				if(selected==1)
-					skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, si_installed, true);
-				break;
-			case SDLK_RIGHT:
-				if(selected==1)
-					skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
-				break;
-			case SDLK_ESCAPE:
-				editing = false;
-				ok = false;
-				break;
-			case SDLK_TAB:
-			case SDLK_DOWN:
-				++selected;
-				if(selected==num_choices)
-					selected = 0;
-				break;
-			case SDLK_UP:
-				--selected;
-				if(selected<0)
-					selected = num_choices-1;
-				break;
-			case SDLK_RETURN:
-			case SDLK_KP_ENTER:
-				if(selected<2) 
-					++selected;
-				else if(selected==2)
-				{
-					editing=false;
-					ok = true;
-				}
-				else
-				{
-					editing = false;
-					ok = false;
-				}
-				break;
-			case SDLK_BACKSPACE:
-				if(selected==0)
-				{
-					if(strlen(npc_name)>0)
-						npc_name[strlen(npc_name)-1] = 0;
-				}
-				break;
-			default:
-				{
-					if (selected == 0) // on the text input field?
+				case SDLK_SPACE:
+					if(selected==0)
 					{
 						int len = strlen(npc_name);
-						char chr = 0;
-
-						if ((event.key.keysym.unicode & 0xFF80) == 0)
-							chr = event.key.keysym.unicode & 0x7F;
-
-						if (chr >= ' ' && len < max_name_len)
+						if(len<max_name_len)
 						{
-							npc_name[len] = chr;
+							npc_name[len] = ' ';
 							npc_name[len+1] = 0;
 						}
 					}
-					else
+					else if(selected==1)
+						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
+					else if(selected==2)
 					{
-						redraw = false;
+						editing=false;
+						ok = true;
 					}
+					else if(selected==3)
+						editing = ok = false;
+					break;
+				case SDLK_LEFT:
+					if(selected==1)
+						skindata = Shapeinfo_lookup::GetPrevSelSkin(skindata, si_installed, true);
+					break;
+				case SDLK_RIGHT:
+					if(selected==1)
+						skindata = Shapeinfo_lookup::GetNextSelSkin(skindata, si_installed, true);
+					break;
+				case SDLK_ESCAPE:
+					editing = false;
+					ok = false;
+					break;
+				case SDLK_TAB:
+				case SDLK_DOWN:
+					++selected;
+					if(selected==num_choices)
+						selected = 0;
+					break;
+				case SDLK_UP:
+					--selected;
+					if(selected<0)
+						selected = num_choices-1;
+					break;
+				case SDLK_RETURN:
+				case SDLK_KP_ENTER:
+					if(selected<2) 
+						++selected;
+					else if(selected==2)
+					{
+						editing = false;
+						ok = true;
+					}
+					else
+						editing = ok = false;
+					break;
+				case SDLK_BACKSPACE:
+					if(selected == 0 && strlen(npc_name) > 0)
+						npc_name[strlen(npc_name)-1] = 0;
+					break;
+				default:
+					{
+						if (selected == 0) // on the text input field?
+						{
+							int len = strlen(npc_name);
+							char chr = 0;
+
+							if ((event.key.keysym.unicode & 0xFF80) == 0)
+								chr = event.key.keysym.unicode & 0x7F;
+
+							if (chr >= ' ' && len < max_name_len)
+							{
+								npc_name[len] = chr;
+								npc_name[len+1] = 0;
+							}
+						}
+						else
+							redraw = false;
+					}
+					break;
 				}
-				break;
 			}
 		}
 	}
