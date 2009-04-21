@@ -1304,7 +1304,11 @@ bool SI_Game::new_game(Vga_file &shapes)
 	do
 	{
 		Delay();
+#if HAVE_OPENGL
 		if (redraw || GL_manager::get_instance())
+#else
+		if (redraw)
+#endif
 		{
 			gwin->clear_screen();
 			sman->paint_shape(topx, topy, shapes.get_shape(0x2, 0));
