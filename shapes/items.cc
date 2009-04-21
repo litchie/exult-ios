@@ -119,7 +119,7 @@ static void Setup_item_names
 					" conflicts with 'text.flx'" << endl;
 				first_msg = num_text_msgs;
 				}
-			total_msgs = msglist.size() - 0x400;
+			total_msgs = static_cast<int>(msglist.size() - 0x400);
 			}
 		else
 			first_msg = num_text_msgs;

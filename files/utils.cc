@@ -221,7 +221,7 @@ void to_uppercase(string &str)
 #if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
-		*X = std::toupper(*X);
+		*X = static_cast<char>(std::toupper(*X));
 #endif         
 	}
 }
@@ -256,7 +256,7 @@ static bool base_to_uppercase(string& str, int count)
 #if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
-		*X = std::toupper(*X);
+		*X = static_cast<char>(std::toupper(*X));
 #endif         
 	}
 	if (X == str.rend())
@@ -632,14 +632,14 @@ void U7copy
 		out.close();
 		throw (e);
 	}
-	const int bufsize = 0x8000;
+	size_t bufsize = 0x8000;
 	unsigned char *buf = new unsigned char[0x8000];
 	in.seekg(0, ios::end);		// Get filesize.
-	int filesize = in.tellg();
+	size_t filesize = in.tellg();
 	in.seekg(0, ios::beg);
 	while (filesize > 0)		// Copy.
 		{
-		int toread = bufsize < filesize ? bufsize : filesize;
+		size_t toread = bufsize < filesize ? bufsize : filesize;
 		in.read(reinterpret_cast<char *>(buf), toread);
 		out.write(reinterpret_cast<char *>(buf), toread);
 		filesize -= toread;
@@ -650,9 +650,9 @@ void U7copy
 	in.close();
 	out.close();
 	if (!inok)
-		throw (file_read_exception((const char *)src));
+		throw (file_read_exception(src));
 	if (!outok)
-		throw (file_write_exception((const char *)dest));
+		throw (file_write_exception(dest));
 
 	return;
 	}
@@ -707,13 +707,13 @@ char *Get_mapped_name
 		{
 		const char *sep = strrchr(from, '/');
 		assert(sep != 0);
-		int len = sep - from;
+		size_t len = sep - from;
 		memcpy(to, from, len);	// Copy dir.
 		strcpy(to + len, MULTIMAP_DIR);
 		len = strlen(to);
-		to[len] = '0' + num/16;
+		to[len] = static_cast<char>('0' + num/16);
 		int lb = num%16;
-		to[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+		to[len + 1] = static_cast<char>(lb < 10 ? ('0' + lb) : ('a' + (lb - 10)));
 		strcpy(to + len + 2, sep);
 		}
 	return to;

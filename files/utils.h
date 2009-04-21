@@ -30,6 +30,7 @@
 #endif
 
 #include "common_types.h"
+#include "rect.h"
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);
@@ -50,10 +51,9 @@ inline uint8 Read1 (std::istream &in)
 
 inline uint16 Read2 (std::istream &in)
 {
-	uint16 val = 0;
-	val |= static_cast<uint16>(in.get());
-	val |= static_cast<uint16>(in.get()<<8);
-	return val;
+	uint32 val = in.get();
+	val |= (in.get()<<8);
+	return static_cast<uint16>(val);
 }
 
 /*
@@ -67,7 +67,7 @@ inline uint16 Read2
 	{
 	uint8 b0 = *in++;
 	uint8 b1 = *in++;
-	return (b0 | (b1 << 8));
+	return static_cast<uint16>(b0 | (b1 << 8));
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -83,7 +83,7 @@ inline uint16 Read2
 	uint8 b0, b1;
 	if (std::fread(&b0,sizeof(uint8),1,in) != 1) b0 = 0;
 	if (std::fread(&b1,sizeof(uint8),1,in) != 1) b1 = 0;
-	return (b0 | (b1 << 8));
+	return static_cast<uint16>(b0 | (b1 << 8));
 	}
 #endif
 
@@ -93,10 +93,9 @@ inline uint16 Read2
 
 inline uint16 Read2high (std::istream &in)
 {
-	uint16 val = 0;
-	val |= static_cast<uint16>(in.get()<<8);
-	val |= static_cast<uint16>(in.get());
-	return val;
+	uint32 val = in.get()<<8;
+	val |= in.get();
+	return static_cast<uint16>(val);
 }
 
 /*
@@ -110,7 +109,7 @@ inline uint16 Read2high
 	{
 	uint8 b0 = *in++;
 	uint8 b1 = *in++;
-	return ((b0 << 8) | b1);
+	return static_cast<uint16>((b0 << 8) | b1);
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -126,7 +125,7 @@ inline uint16 Read2high
 	uint8 b0, b1;
 	if (std::fread(&b0,sizeof(uint8),1,in) != 1) b0 = 0;
 	if (std::fread(&b1,sizeof(uint8),1,in) != 1) b1 = 0;
-	return ((b0 << 8) | b1);
+	return static_cast<uint16>((b0 << 8) | b1);
 	}
 #endif
 
@@ -239,6 +238,18 @@ inline int ReadInt(std::istream& in, int def = 0)
 	return num;
 	}
 
+inline unsigned int ReadUInt(std::istream& in, unsigned int def = 0)
+	{
+	unsigned int num;
+	if (in.eof())
+		return def;
+	in >> num;
+	if (in.fail())
+		return def;
+	in.ignore(0xffffff, '/');
+	return num;
+	}
+
 inline void WriteInt
 	(
 	std::ostream& out,
@@ -251,6 +262,45 @@ inline void WriteInt
 		out << std::endl;
 	else
 		out << '/';
+	}
+
+inline void WriteInt
+	(
+	std::ostream& out,
+	unsigned int num,
+	bool final = false
+	)
+	{
+	out << num;
+	if (final)
+		out << std::endl;
+	else
+		out << '/';
+	}
+
+inline void ReadRect
+	(
+	std::istream& in,
+	Rectangle& rect
+	)
+	{
+	rect.x = ReadInt(in);
+	rect.y = ReadInt(in);
+	rect.w = ReadInt(in);
+	rect.h = ReadInt(in);
+	}
+
+inline void WriteRect
+	(
+	std::ostream& out,
+	const Rectangle& rect,
+	bool final = false
+	)
+	{
+	WriteInt(out, rect.x);
+	WriteInt(out, rect.y);
+	WriteInt(out, rect.w);
+	WriteInt(out, rect.h, final);
 	}
 
 inline std::string ReadStr(char *&eptr, int off = 1)
@@ -268,9 +318,23 @@ inline std::string ReadStr(std::istream& in)
 	{
 	char buf[250];
 	in.getline(buf, sizeof(buf)/sizeof(buf[0]), '/');
-	int size = in.gcount();
+	std::streamsize size = in.gcount();
 	buf[size] = 0;
 	return std::string(buf);
+	}
+
+inline void WriteStr
+	(
+	std::ostream& out,
+	std::string str,
+	bool final = false
+	)
+	{
+	out << str;
+	if (final)
+		out << std::endl;
+	else
+		out << '/';
 	}
 
 /*
@@ -320,8 +384,8 @@ inline void Write2
 	uint16 val
 	)
 	{
-	*out++ = val & 0xff;
-	*out++ = (val>>8) & 0xff;
+	*out++ = static_cast<char> (val & 0xff);
+	*out++ = static_cast<char> ((val>>8) & 0xff);
 	}
 
 /*
@@ -366,10 +430,10 @@ inline void Write4
 	uint32 val
 	)
 	{
-	*out++ = val & 0xff;
-	*out++ = (val>>8) & 0xff;
-	*out++ = (val>>16)&0xff;
-	*out++ = (val>>24)&0xff;
+	*out++ = static_cast<char> (val & 0xff);
+	*out++ = static_cast<char> ((val>>8) & 0xff);
+	*out++ = static_cast<char> ((val>>16)&0xff);
+	*out++ = static_cast<char> ((val>>24)&0xff);
 	}
 
 inline void Write4s(std::ostream& out, sint32 val)
@@ -461,12 +525,12 @@ int Find_next_map(int start, int maxtry);
 inline int bitcount (unsigned char n)
 	{
 #define TWO(c)     (0x1u << (c))
-#define MASK(c)    (((unsigned int)(-1)) / (TWO(TWO(c)) + 1u))
+#define MASK(c)    ((static_cast<uint32>(-1)) / (TWO(TWO(c)) + 1u))
 #define COUNT(x,c) ((x) & MASK(c)) + (((x) >> (TWO(c))) & MASK(c))
 	// Only works for 8-bit numbers.
-	n = COUNT(n, 0);
-	n = COUNT(n, 1);
-	n = COUNT(n, 2);
+	n = static_cast<unsigned char> (COUNT(n, 0));
+	n = static_cast<unsigned char> (COUNT(n, 1));
+	n = static_cast<unsigned char> (COUNT(n, 2));
 	return n;
 	}
 

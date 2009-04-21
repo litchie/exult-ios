@@ -41,8 +41,7 @@ void printdataseg(istream& in, unsigned int ds)
 			   printf("\tdb\t\'%s\'\n\tdb\t0d\n\tdb\t0a\n", tempstr);
 			   strcpy(tempstr,tempstr2);
 			  }
-			if (tempstr)
-				printf("\tdb\t\'%s\'\n", tempstr);
+			printf("\tdb\t\'%s\'\n", tempstr);
 			localoff += len; 
 			pp += len;
 		}
@@ -116,7 +115,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	case DATA_STRING32:
 		{
 			char* pstr;
-			int len;
+			unsigned int len;
 			// Print data string operand
 			if (pdesc->type == DATA_STRING)
 				pstr = (char *)pdataseg + 
@@ -318,7 +317,6 @@ void printfunc(istream& in, long func, int i, const char **func_table, int funsi
 {
 	unsigned short funcnum;
 	unsigned int s, ds;	
-	unsigned short temp;
 	long off, bodyoff;
 	int extended = 0;
 	// Save start offset

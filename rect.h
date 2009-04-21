@@ -91,6 +91,15 @@ public:					// Let's make it all public.
 		int dist = xdist > ydist ? xdist : ydist;
 		return dist < 0 ? 0 : dist;
 		}
+	bool operator==(const Rectangle& rect2)
+		{
+		return x == rect2.x && y == rect2.y &&
+		       w == rect2.w && h == rect2.h;
+		}
+	bool operator!=(const Rectangle& rect2)
+		{
+		return !(*this == rect2);
+		}
 	};
 
 /*

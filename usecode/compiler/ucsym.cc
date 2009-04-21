@@ -533,7 +533,7 @@ Uc_function_symbol *Uc_function_symbol::create
 				}
 			}
 		else if (sym->is_externed() || is_extern)
-			if (sym->get_num_parms() == p.size())
+			if ((size_t)sym->get_num_parms() == p.size())
 			{
 				// If the new symbol is not externed, then the function
 				// has been defined afterwards and we need to update
@@ -579,7 +579,7 @@ Uc_function_symbol *Uc_function_symbol::create
 		return sym;
 		}
 	sym = (*it).second;
-	if (sym->name != nm || sym->get_num_parms() != p.size())
+	if (sym->name != nm || (size_t)sym->get_num_parms() != p.size())
 		{
 		char buf[256];
 		sprintf(buf, 
@@ -619,12 +619,12 @@ int Uc_function_symbol::gen_call
 	)
 	{
 	char buf[200];
-	int parmcnt = aparms->gen_values(out);	// Want to push parm. values.
+	size_t parmcnt = aparms->gen_values(out);	// Want to push parm. values.
 	parmcnt += (method_num >= 0);		// Count 'this'.
 	if (parmcnt != parms.size())
 		{
 		sprintf(buf,
-			"# parms. passed (%d) doesn't match '%s' count (%lu)",
+			"# parms. passed (%lu) doesn't match '%s' count (%lu)",
 			parmcnt, get_name(), parms.size());
 		Uc_location::yyerror(buf);
 		}

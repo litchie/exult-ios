@@ -42,13 +42,13 @@ struct Avatar_default_skin
 struct Skin_data
 {
 	int skin_id;
-	bool is_female;
 	int shape_num;
 	int naked_shape;
 	int face_shape;			// Shape and frame for face during the
 	int face_frame;			// normal game.
 	int alter_face_shape;	// Shape and frame for face to be used
 	int alter_face_frame;	// when flag 33 is set.
+	bool is_female;
 	bool copy_info;			// Whether or not Exult should overwrite shape info
 				// with info from the default avatar shape
 };

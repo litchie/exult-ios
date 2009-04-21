@@ -58,7 +58,7 @@ void IFF::index_file(void)
 #endif
 
 	data->skip(4);	// Skip past identifier.
-	long full_length = data->read4high();
+	size_t full_length = data->read4high();
 
 #ifdef DEBUG
 	cout << "length looks like: " << full_length << endl;

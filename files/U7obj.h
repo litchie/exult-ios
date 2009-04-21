@@ -122,7 +122,7 @@ public:
 	virtual	~U7object()
 		{  }
 
-	uint32 number_of_objects();
+	size_t number_of_objects();
 	virtual	char *retrieve(std::size_t &len) const;
 	};
 
@@ -141,7 +141,7 @@ class U7multiobject : public U7object
 	{
 protected:
 	char *buffer;
-	int length;
+	size_t length;
 	void set_object(const std::vector<U7object>& objects);
 public:
 	U7multiobject(const File_spec& file0, int objnum);

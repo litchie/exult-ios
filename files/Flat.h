@@ -46,7 +46,7 @@ public:
 		: U7file(spec)
 		{  }
 
-	virtual uint32 number_of_objects(void)
+	virtual size_t number_of_objects(void)
 		{ return 1; };
 	virtual char *retrieve(uint32 objnum, std::size_t &len);
 	virtual const char *get_archive_type()

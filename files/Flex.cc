@@ -142,7 +142,7 @@ void Flex::write_header
 	(
 	DataSource* out,			// File to write to.
 	const char *title,
-	int count,			// # entries.
+	size_t count,			// # entries.
 	Flex_vers vers
 	)
 	{
@@ -151,15 +151,15 @@ void Flex::write_header
 	strncpy(titlebuf, title, sizeof(titlebuf) - 1);
 	out->write(titlebuf, sizeof(titlebuf));
 	out->write4(0xFFFF1A00);	// Magic number.
-	out->write4(count);
+	out->write4(static_cast<uint32>(count));
 	if (vers == orig)		// 2nd magic #:  use for version.
 		out->write4(0x000000CC);
 	else
-		out->write4(EXULT_FLEX_MAGIC2 + (int) vers);
+		out->write4(EXULT_FLEX_MAGIC2 + static_cast<int>(vers));
 	long pos = out->getPos();		// Fill to data (past table at 0x80).
 	long fill = 0x80 + 8*count - pos;
 	while (fill--)
-		out->write1((char) 0);
+		out->write1(0);
 	}
 
 /**
@@ -216,7 +216,7 @@ Flex_writer::Flex_writer
 	(
 	std::ofstream& o,			///< Where to write.
 	const char *title,			///< Flex title.
-	int cnt,				///< Number of entries we'll write.
+	size_t cnt,				///< Number of entries we'll write.
 	Flex::Flex_vers vers	///< Version of flex file.
 	) : out(&o), dout(0), count(cnt), index(0)
 	{
@@ -235,7 +235,7 @@ Flex_writer::Flex_writer
 	(
 	DataSource *o,				///< Where to write.
 	const char *title,			///< Flex title.
-	int cnt,				///< Number of entries we'll write.
+	size_t cnt,				///< Number of entries we'll write.
 	Flex::Flex_vers vers	///< Version of flex file.
 	) : out(0), dout(o), count(cnt), index(0)
 	{
@@ -266,9 +266,9 @@ void Flex_writer::mark_section_done
 	)
 	{
 					// Location past end of section.
-	long pos = out ? (long) out->tellp() : (long) dout->getPos();
-	Write4(tptr, cur_start);	// Store start of section.
-	Write4(tptr, pos - cur_start);	// Store length.
+	size_t pos = out ? static_cast<size_t>(out->tellp()) : dout->getPos();
+	Write4(tptr, static_cast<uint32>(cur_start));	// Store start of section.
+	Write4(tptr, static_cast<uint32>(pos - cur_start));	// Store length.
 	cur_start = pos;
 	}
 

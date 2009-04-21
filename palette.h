@@ -110,9 +110,9 @@ public:
 
 class Palette_transition
 	{
+	Palette *start, *end, *current;
 	int step, max_steps;
 	int start_hour, start_minute, rate;
-	Palette *start, *end, *current;
 public:
 	Palette_transition(int from, int to, int ch = 0, int cm = 0, int r = 4,
 				int nsteps = 15, int sh = 0, int smin = 0);

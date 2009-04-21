@@ -846,18 +846,18 @@ void Uc_call_expression::check_params()
 	const vector<Uc_var_symbol *>& protoparms = fun->get_parms();
 	const vector<Uc_expression *>& callparms = parms->get_exprs();
 	bool ignore_this = fun->get_method_num() >= 0;
-	int parmscnt = callparms.size() + ignore_this;
+	size_t parmscnt = callparms.size() + ignore_this;
 	if (parmscnt != protoparms.size())
 		{
 		char buf[150];
 		sprintf(buf,
-			"# parms. passed (%d) doesn't match '%s' count (%lu)",
+			"# parms. passed (%lu) doesn't match '%s' count (%lu)",
 			parmscnt - ignore_this, sym->get_name(),
 			protoparms.size() - ignore_this);
 		Uc_location::yyerror(buf);
 		return;
 		}
-	for (int i = ignore_this; i < parmscnt; i++)
+	for (size_t i = ignore_this; i < parmscnt; i++)
 		{
 		Uc_expression *expr = callparms[i - ignore_this];
 		expr->is_class();
@@ -872,14 +872,14 @@ void Uc_call_expression::check_params()
 			if (!cls)
 				{
 				sprintf(buf,
-					"Error in parm. #%d: cannot convert class to non-class", i+1);
+					"Error in parm. #%lu: cannot convert class to non-class", i+1);
 				Uc_location::yyerror(buf);
 				}
 			else if (!cexp->get_cls()->is_class_compatible(
 						cls->get_cls()->get_name()))
 				{
 				sprintf(buf,
-					"Error in parm. #%d: class '%s' cannot be converted into class '%s'",
+					"Error in parm. #%lu: class '%s' cannot be converted into class '%s'",
 					i+1, cexp->get_cls()->get_name(),
 					cls->get_cls()->get_name());
 				Uc_location::yyerror(buf);
@@ -890,7 +890,7 @@ void Uc_call_expression::check_params()
 			if (cls)
 				{
 				sprintf(buf,
-					"Error in parm. #%d: cannot convert non-class into class", i+1);
+					"Error in parm. #%lu: cannot convert non-class into class", i+1);
 				Uc_location::yyerror(buf);
 				}
 			}
@@ -908,7 +908,6 @@ void Uc_call_expression::gen_value
 	{
 	if (ind)			// Indirect?
 		{
-		int parmcnt = parms->gen_values(out);	// Push params.
 		if (!itemref)
 			{
 			Uc_item_expression item;
@@ -1010,7 +1009,7 @@ void Uc_new_expression::gen_value
 	Basic_block *out
 	)
 	{
-	int actual = parms->gen_values(out);
+	(void)parms->gen_values(out);
 	Uc_class *cls = var->get_cls();
 	WriteOp(out, (char) UC_CLSCREATE);
 	WriteOpParam2(out, cls->get_num());

@@ -44,20 +44,20 @@ public:
 	virtual uint16 read2high() =0;
 	virtual uint32 read4() =0;
 	virtual uint32 read4high() =0;
-	virtual void read(void *, int) =0;
+	virtual void read(void *, size_t) =0;
 	
 	virtual void write1(uint32) =0;
 	virtual void write2(uint16) =0;
 	virtual void write2high(uint16) =0;
 	virtual void write4(uint32) =0;
 	virtual void write4high(uint32) =0;
-	virtual void write(const void *, int) =0;
+	virtual void write(const void *, size_t) =0;
 	virtual void write(std::string) =0;
 	
-	virtual void seek(unsigned int) =0;
-	virtual void skip(int) =0;
-	virtual unsigned int getSize() =0;
-	virtual unsigned int getPos() =0;
+	virtual void seek(size_t) =0;
+	virtual void skip(std::streamoff) =0;
+	virtual size_t getSize() =0;
+	virtual size_t getPos() =0;
 	virtual bool eof() =0;
 	virtual void flush() { }
 	virtual bool good() { return true; }
@@ -106,9 +106,9 @@ public:
 	
 	virtual uint32 read4high()  { return Read4high(*in); };
 	
-	void read(void *b, int len) { in->read(reinterpret_cast<char*>(b), len); };
+	void read(void *b, size_t len) { in->read(reinterpret_cast<char*>(b), len); };
 	
-	virtual void write1(uint32 val)      { Write1(*out, val); };
+	virtual void write1(uint32 val)      { Write1(*out, static_cast<uint16>(val)); };
 	
 	virtual void write2(uint16 val)      { Write2(*out, val); };
 
@@ -118,42 +118,42 @@ public:
 
 	virtual void write4high(uint32 val)  { Write4high(*out, val); };
 
-	virtual void write(const void *b, int len) { out->write(reinterpret_cast<const char*>(b), len); };
+	virtual void write(const void *b, size_t len) { out->write(reinterpret_cast<const char*>(b), len); };
 
 	virtual void write(std::string s)
 		{ out->write(s.c_str(), s.size()); };
 	
-	virtual void seek(unsigned int pos)
+	virtual void seek(size_t pos)
 	{
 		if (in) in->seekg(pos);
 		else out->seekp(pos);
 	};
 
-	virtual void skip(int pos) 
+	virtual void skip(std::streamoff pos) 
 	{ 
 		if (in) in->seekg(pos, std::ios::cur); 
 		else out->seekp(pos, std::ios::cur); 
 	};
 	
-	virtual unsigned int getSize()
+	virtual size_t getSize()
 	{
 		if (in) {
-			long pos = in->tellg();
+			size_t pos = in->tellg();
 			in->seekg(0, std::ios::end);
-			long len = in->tellg();
+			size_t len = in->tellg();
 			in->seekg(pos);
 			return len;
 		}
 		else {
-			long pos = out->tellp();
+			size_t pos = out->tellp();
 			out->seekp(0, std::ios::end);
-			long len = out->tellp();
+			size_t len = out->tellp();
 			out->seekp(pos);
 			return len;
 		}
 	};
 	
-	virtual unsigned int getPos() { return in?in->tellg():out->tellp(); };
+	virtual size_t getPos() { return in?in->tellg():out->tellp(); };
 	
 	virtual bool eof() { return in->peek() == std::char_traits<char>::eof(); }
 	virtual void flush() { if (out) out->flush(); }
@@ -176,7 +176,7 @@ protected:
 	unsigned char *buf_ptr;
 	std::size_t size;
 public:
-	BufferDataSource(const void *data, unsigned int len)
+	BufferDataSource(const void *data, size_t len)
 	{
 		// data can be NULL if len is also 0
 		assert(data!=0 || len==0);
@@ -185,7 +185,7 @@ public:
 		size = len;
 	};
 	
-	void load(char *data, unsigned int len)
+	void load(char *data, size_t len)
 	{
 		// data can be NULL if len is also 0
 		assert(data!=0 || len==0);
@@ -214,7 +214,7 @@ public:
 		unsigned char b0, b1;
 		b0 = static_cast<unsigned char>(*buf_ptr++);
 		b1 = static_cast<unsigned char>(*buf_ptr++);
-		return (b0 | (b1 << 8));
+		return static_cast<uint16>(b0 | (b1 << 8));
 	};
 	
 	virtual uint16 read2high()
@@ -222,7 +222,7 @@ public:
 		unsigned char b0, b1;
 		b1 = static_cast<unsigned char>(*buf_ptr++);
 		b0 = static_cast<unsigned char>(*buf_ptr++);
-		return (b0 | (b1 << 8));
+		return static_cast<uint16>(b0 | (b1 << 8));
 	};
 	
 	virtual uint32 read4()
@@ -245,46 +245,46 @@ public:
 		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	void read(void *b, int len) {
+	void read(void *b, size_t len) {
 		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	};
 	
 	virtual void write1(uint32 val)
 	{
-		*buf_ptr++ = val & 0xff;
+		*buf_ptr++ = static_cast<uint8>(val & 0xff);
 	};
 	
 	virtual void write2(uint16 val)
 	{
-		*buf_ptr++ = val & 0xff;
-		*buf_ptr++ = (val>>8) & 0xff;
+		*buf_ptr++ = static_cast<uint8>(val & 0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>8) & 0xff);
 	};
 
 	virtual void write2high(uint16 val)
 	{
-		*buf_ptr++ = (val>>8) & 0xff;
-		*buf_ptr++ = val & 0xff;
+		*buf_ptr++ = static_cast<uint8>((val>>8) & 0xff);
+		*buf_ptr++ = static_cast<uint8>(val & 0xff);
 	};
 
 	
 	virtual void write4(uint32 val)
 	{
-		*buf_ptr++ = val & 0xff;
-		*buf_ptr++ = (val>>8) & 0xff;
-		*buf_ptr++ = (val>>16)&0xff;
-		*buf_ptr++ = (val>>24)&0xff;
+		*buf_ptr++ = static_cast<uint8>(val & 0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>8) & 0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>16)&0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>24)&0xff);
 	};
 	
 	virtual void write4high(uint32 val)
 	{
-		*buf_ptr++ = (val>>24)&0xff;
-		*buf_ptr++ = (val>>16)&0xff;
-		*buf_ptr++ = (val>>8) & 0xff;
-		*buf_ptr++ = val & 0xff;
+		*buf_ptr++ = static_cast<uint8>((val>>24)&0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>16)&0xff);
+		*buf_ptr++ = static_cast<uint8>((val>>8) & 0xff);
+		*buf_ptr++ = static_cast<uint8>(val & 0xff);
 	};
 
-	virtual void write(const void *b, int len)
+	virtual void write(const void *b, size_t len)
 	{
 		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;
@@ -295,24 +295,24 @@ public:
 		write(s.c_str(), s.size());
 	};
 
-	virtual void seek(unsigned int pos) { buf_ptr = const_cast<unsigned char *>(buf)+pos; };
+	virtual void seek(size_t pos) { buf_ptr = const_cast<unsigned char *>(buf)+pos; };
 	
-	virtual void skip(int pos) { buf_ptr += pos; };
+	virtual void skip(std::streamoff pos) { buf_ptr += pos; };
 	
-	virtual unsigned int getSize() { return size; };
+	virtual size_t getSize() { return size; };
 	
-	virtual unsigned int getPos() { return (buf_ptr-buf); };
+	virtual size_t getPos() { return (buf_ptr-buf); };
 	
 	unsigned char *getPtr() { return buf_ptr; };
 
-	virtual bool eof() { return (buf_ptr-buf) >= (int)size; } 
+	virtual bool eof() { return (buf_ptr-buf) >= static_cast<ptrdiff_t>(size); } 
 
 };
 
 class StackBufferDataSource : protected BufferDataSource
 {
 	public:
-		StackBufferDataSource(unsigned int len=0x1000) : BufferDataSource(new char[len], len)
+		StackBufferDataSource(size_t len=0x1000) : BufferDataSource(new char[len], len)
 		{
 			buf_ptr = const_cast<unsigned char *>(buf)+len;
 		};
@@ -327,16 +327,16 @@ class StackBufferDataSource : protected BufferDataSource
 		inline void push2(uint16 val)
 		{
 			buf_ptr-=2;
-			buf_ptr[0] =  val     & 0xFF;
-			buf_ptr[1] = (val>>8) & 0xFF;
+			buf_ptr[0] = static_cast<uint8>( val     & 0xFF);
+			buf_ptr[1] = static_cast<uint8>((val>>8) & 0xFF);
 		}
 		inline void push4(uint32 val)
 		{
 			buf_ptr-=4;
-			buf_ptr[0] =  val      & 0xFF;
-			buf_ptr[1] = (val>>8)  & 0xFF;
-			buf_ptr[2] = (val>>16) & 0xFF;
-			buf_ptr[3] = (val>>24) & 0xFF;
+			buf_ptr[0] = static_cast<uint8>( val      & 0xFF);
+			buf_ptr[1] = static_cast<uint8>((val>>8)  & 0xFF);
+			buf_ptr[2] = static_cast<uint8>((val>>16) & 0xFF);
+			buf_ptr[3] = static_cast<uint8>((val>>24) & 0xFF);
 		}
 		// Push an arbitrary number of bytes of 0
 		inline void push0(const uint32 size) { 
@@ -367,7 +367,7 @@ class StackBufferDataSource : protected BufferDataSource
 		}
 		inline uint16 access2(const uint32 offset) const
 		{
-			return (buf[offset] | (buf[offset+1] << 8));
+			return static_cast<uint16>((buf[offset] | (buf[offset+1] << 8)));
 		}
 		inline uint32 access4(const uint32 offset) const
 		{
@@ -388,22 +388,22 @@ class StackBufferDataSource : protected BufferDataSource
 		}
 		inline void assign2(const uint32 offset, const uint16 val)
 		{
-			const_cast<unsigned char *>(buf)[offset]   =  val     & 0xFF;
-			const_cast<unsigned char *>(buf)[offset+1] = (val>>8) & 0xFF;
+			const_cast<unsigned char *>(buf)[offset]   = static_cast<uint8>( val     & 0xFF);
+			const_cast<unsigned char *>(buf)[offset+1] = static_cast<uint8>((val>>8) & 0xFF);
 		}
 		inline void assign4(const uint32 offset, const uint32 val)
 		{
-			const_cast<unsigned char *>(buf)[offset]   =  val      & 0xFF;
-			const_cast<unsigned char *>(buf)[offset+1] = (val>>8)  & 0xFF;
-			const_cast<unsigned char *>(buf)[offset+2] = (val>>16) & 0xFF;
-			const_cast<unsigned char *>(buf)[offset+3] = (val>>24) & 0xFF;
+			const_cast<unsigned char *>(buf)[offset]   = static_cast<uint8>( val      & 0xFF);
+			const_cast<unsigned char *>(buf)[offset+1] = static_cast<uint8>((val>>8)  & 0xFF);
+			const_cast<unsigned char *>(buf)[offset+2] = static_cast<uint8>((val>>16) & 0xFF);
+			const_cast<unsigned char *>(buf)[offset+3] = static_cast<uint8>((val>>24) & 0xFF);
 		}
 		inline void assign(const uint32 offset, const uint8 *in, const uint32 len)
 		{
 			std::memcpy (const_cast<unsigned char *>(buf+offset), in, len);
 		}
 
-		inline uint32 stacksize() const { return buf+size-buf_ptr; };
+		inline size_t stacksize() const { return buf+size-buf_ptr; };
 
 		inline void resize(const uint32 newsize) { 
 			buf_ptr = const_cast<unsigned char *>(buf)+size-newsize;
@@ -413,7 +413,7 @@ class StackBufferDataSource : protected BufferDataSource
 			skip(offset);
 		}
 
-		virtual unsigned int getSP() { return getPos(); };
+		virtual size_t getSP() { return getPos(); };
 
 		inline void moveSP(unsigned int pos) {
 			seek(pos);

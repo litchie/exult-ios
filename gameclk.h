@@ -42,7 +42,7 @@ class Game_clock : public Time_sensitive
 	int old_special_light;		// Last set light source level.
 	bool old_infravision;		// If infravision was on last time.
 	bool old_invisible;		// If invisibility was on last time.
-	unsigned int dungeon;		// Last set 'in_dungeon' value.
+	int dungeon;		// Last set 'in_dungeon' value.
 	int overcast;			// >0 if day is overcast (e.g., from a storm).
 	bool was_overcast;
 	int fog;			// >0 if there is fog.

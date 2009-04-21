@@ -360,7 +360,7 @@ public:
 		{ return num_vars; }
 	int search(const char *nm)
 		{
-		char *nm1 = (char *) nm;
+		char *nm1 = const_cast<char *>(nm);
 		Var_map::const_iterator it = vars.find(nm1);
 		if (it == vars.end())
 			return -1;
@@ -611,7 +611,7 @@ public:
 		{ return parent; }
 	Uc_symbol *search(const char *nm)	// Look in this scope.
 		{
-		char *nm1 = (char *) nm;
+		char *nm1 = const_cast<char *>(nm);
 		Sym_map::const_iterator it = symbols.find(nm1);
 		if (it == symbols.end())
 			return 0;
@@ -623,7 +623,7 @@ public:
 	void add(Uc_symbol *sym)	// Add (does NOT check for dups.)
 		{
 		const char *nm = sym->name.c_str();
-		char *nm1 = (char *)nm;	// ???Can't figure this out!
+		char *nm1 = const_cast<char *>(nm);	// ???Can't figure this out!
 		symbols[nm1] = sym; 
 		}
 	Uc_scope *add_scope()		// Create new scope.

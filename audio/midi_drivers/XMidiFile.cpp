@@ -1797,7 +1797,6 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 {
 	uint32			i, j;
 	int				num = 0;
-	uint32			len = 0;
 	int				time = 0;
 	int				time_inc = 32;
 
@@ -1918,7 +1917,6 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 int XMidiFile::ExtractTracksFromXMIDIMT (IDataSource *source)
 {
 	int				num = 0;
-	uint32			len = 0;
 	int				time = 0;
 	int				time_inc = 32;
 

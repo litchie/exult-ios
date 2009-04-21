@@ -307,7 +307,7 @@ static void Read_script
 			return;
 			}
 					// Get shape# in decimal, hex, or oct.
-		long shnum = Get_number(linenum, "Shape # missing",
+		size_t shnum = Get_number(linenum, "Shape # missing",
 								ptr, endptr);
 		if (*endptr != '/')
 			{
@@ -671,7 +671,6 @@ static void Write_exult_from_tiles
 	else
 		{ needw = dim0_cnt*8; needh = dim1_cnt*8; }
 					// Save starting position.
-	unsigned long startpos = out.tellp();
 	int w, h, rowsize, xoff, yoff, palsize;
 	unsigned char *pixels, *palette;
 					// Import, with 255 = transp. index.
@@ -824,10 +823,10 @@ static void Update
 		palname = 0;
 		}
 	FlexFile in(imagename);		// May throw exception.
-	int oldcnt = in.number_of_objects();
+	size_t oldcnt = in.number_of_objects();
 	vector<char *> data(oldcnt);	// Read in all the entries.
 	vector<int> lengths(oldcnt);
-	int i;
+	size_t i;
 	for (i = 0; i < oldcnt; i++)
 		{
 		size_t len;
@@ -841,7 +840,7 @@ static void Update
 		}
 	ofstream out;
 	U7open(out, imagename);		// May throw exception.
-	int newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
+	size_t newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
 	Flex_writer writer(out, title, newcnt);
 	for (i = 0; i < newcnt; i++)	// Write out new entries.
 		{
@@ -883,7 +882,7 @@ static void Extract
 	size_t len;
 	unsigned char *palbuf = (unsigned char *)
 		pal.retrieve(len);	// This may throw an exception
-	for (int i = 0; i < len; i++)	// Turn into full bytes.
+	for (size_t i = 0; i < len; i++)	// Turn into full bytes.
 		palbuf[i] *= 4;		// Exult palette vals are 0-63.
 	Vga_file ifile(imagename);	// May throw an exception.
 	for (Shape_specs::const_iterator it = specs.begin();
