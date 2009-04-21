@@ -1499,7 +1499,7 @@ USECODE_INTRINSIC(display_area)
 		{
 		int tx = parms[0].get_elem(0).get_int_value();
 		int ty = parms[0].get_elem(1).get_int_value();
-		int unknown = parms[0].get_elem(2).get_int_value();
+		//int unknown = parms[0].get_elem(2).get_int_value();
 					// Figure in tiles.
 		int newmap = size == 3 ? -1 : parms[0].get_elem(3).get_int_value();
 		int oldmap = gwin->get_map()->get_num();

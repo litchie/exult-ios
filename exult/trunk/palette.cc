@@ -42,8 +42,8 @@ using std::string;
 
 Palette::Palette()
 	: win(Game_window::get_instance()->get_win()), 
-	    palette(-1), brightness(100), 
-	    faded_out(false), fades_enabled(true), max_val(63)
+	    palette(-1), brightness(100), max_val(63),
+	    faded_out(false), fades_enabled(true)
 	{
 	memset(pal1, 0, 768);
 	memset(pal2, 0, 768);
@@ -510,8 +510,8 @@ Palette_transition::Palette_transition
 	int nsteps,
 	int sh, int smin
 	)
-	: current(0), step(0), rate(r),
-	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	: current(0), step(0), max_steps(nsteps),
+	  start_hour(sh), start_minute(smin), rate(r)
 	{
 	start = new Palette();
 	start->load(PALETTES_FLX, from);
@@ -528,8 +528,8 @@ Palette_transition::Palette_transition
 	int nsteps,
 	int sh, int smin
 	)
-	: current(0), step(0), rate(r),
-	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	: current(0), step(0), max_steps(nsteps),
+	  start_hour(sh), start_minute(smin), rate(r)
 	{
 	start = new Palette(from);
 	end = new Palette();
@@ -545,8 +545,8 @@ Palette_transition::Palette_transition
 	int nsteps,
 	int sh, int smin
 	)
-	: current(0), step(0), rate(r),
-	  max_steps(nsteps), start_hour(sh), start_minute(smin)
+	: current(0), step(0), max_steps(nsteps),
+	  start_hour(sh), start_minute(smin), rate(r)
 	{
 	start = new Palette(from);
 	end = new Palette(to);

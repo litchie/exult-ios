@@ -48,9 +48,9 @@ class Palette
 	Image_window8 *win;
 	unsigned char pal1[768];
 	unsigned char pal2[768];
+	int palette;		// Palette #.
 	int brightness;
 	int max_val;
-	int palette;		// Palette #.
 	bool faded_out;		// true if faded palette to black.
 	bool fades_enabled;
 	void set_loaded(const U7multiobject& pal, const char *xfname, int xindex);
