@@ -330,7 +330,11 @@ void Palette::set_brightness(int bright)
 	
 void Palette::fade_in(int cycles)
 {
+#if HAVE_OPENGL
 	if (fades_enabled && !GL_manager::get_instance())
+#else
+	if (fades_enabled)
+#endif
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -358,7 +362,11 @@ void Palette::fade_in(int cycles)
 void Palette::fade_out(int cycles)
 {
 	faded_out = true;		// Be sure to set flag.
+#if HAVE_OPENGL
 	if (fades_enabled && !GL_manager::get_instance())
+#else
+	if (fades_enabled)
+#endif
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
