@@ -2953,8 +2953,8 @@ int Usecode_internal::run()
 						ptr += name.length() + 1;
 						cout << "#" << hex << setw(4) << setfill('0')
 							 << (i + nargs) << " = ";
-						if (names[i].length())
-							cout << "'" << names[i] << "'";
+						if (name.length())
+							cout << "'" << name << "'";
 						else
 							cout << "(missing)";
 						if (i < frame->num_vars)
