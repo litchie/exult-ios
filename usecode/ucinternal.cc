@@ -2944,11 +2944,10 @@ int Usecode_internal::run()
 						else
 							cout << "(missing)";
 						if (i < nargs)
-							cout << ", ");
+							cout << ", ";
 					}
 					cout << endl << "Variable names follow: ";
-					int i = 0;
-					for (; i < frame->num_vars && *ptr; i++)
+					for (i = 0; i < frame->num_vars && *ptr; i++)
 					{
 						std::string name(ptr);
 						ptr += name.length() + 1;
@@ -2959,14 +2958,14 @@ int Usecode_internal::run()
 						else
 							cout << "(missing)";
 						if (i < frame->num_vars)
-							cout << ", ");
+							cout << ", ";
 					}
 					for (; i < frame->num_vars; i++)
 					{
 						cout << "#" << hex << setw(4) << setfill('0')
 							 << (i + nargs) << " = (missing)";
 						if (i < frame->num_vars)
-							cout << ", ");
+							cout << ", ";
 					}
 				}
 				else
