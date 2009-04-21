@@ -209,7 +209,7 @@ void GL_texshape::paint
 
 GL_manager::GL_manager
 	(
-	) : shapes(0), num_shapes(0), palette(0), scale(1)
+	) : shapes(0), palette(0), scale(1), num_shapes(0)
 	{
 	assert (instance == 0);		// Should only be one.
 	instance = this;

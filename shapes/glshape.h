@@ -37,10 +37,10 @@ class GL_texshape
 	{
 	Shape_frame *frame;		// Source for this (or null if it came
 					//   from someplace else).
+	GL_texshape *lru_next, *lru_prev;
 	unsigned int texture;		// Texture ID.
 	unsigned int texsize;		// Width/ht of texture (power of 2).
 					// Least-recently used chain:
-	GL_texshape *lru_next, *lru_prev;
 					// Create from this source.
 	void create(Image_buffer8 *src, unsigned char *pal, 
 				Xform_palette *xforms = 0, int xfcnt = 0);
@@ -62,11 +62,11 @@ public:
 class GL_manager
 	{
 	static GL_manager *instance;	// One one of these.
+	GL_texshape *shapes;		// Shapes in LRU chain.
+	unsigned char *palette;		// 3*256 bytes (rgb).
 	int scale;			// Scale for drawing.
 	int max_texsize;		// Largest size allowed.
-	GL_texshape *shapes;		// Shapes in LRU chain.
 	int num_shapes;
-	unsigned char *palette;		// 3*256 bytes (rgb).
 public:
 	friend class GL_texshape;
 	GL_manager();
