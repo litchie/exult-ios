@@ -43,21 +43,21 @@ protected:
 	bool editing;		// Game is being edited and may have missing files.
 	string codepage;	// Game/mod codepage (mainly for ES).
 public:
-	BaseGameInfo () : type(NONE), cfgname(""), mod_title(""), path_prefix(""),
+	BaseGameInfo () : type(NONE), cfgname(""), path_prefix(""), mod_title(""),
 		menustring(""), expansion(false), found(false), editing(false),
 		codepage("CP437")
 		{  }
 	BaseGameInfo (const Exult_Game ty, const char *cf, const char *mt,
 		const char *pt, const char *ms, bool exp, bool f, bool ed,
 		const char *cp)
-		: type(ty), cfgname(cf), mod_title(mt), path_prefix(pt), menustring(ms),
+		: type(ty), cfgname(cf), path_prefix(pt), mod_title(mt), menustring(ms),
 		  expansion(exp), found(f), editing(ed), codepage(cp)
 		{  }
 	BaseGameInfo (const BaseGameInfo& other)
-		: type(other.type), cfgname(other.cfgname), mod_title(other.mod_title),
-		  path_prefix(other.path_prefix), menustring(other.menustring),
-		  expansion(other.expansion), found(other.found), editing(other.editing),
-		  codepage(other.codepage)
+		: type(other.type), cfgname(other.cfgname),
+		  path_prefix(other.path_prefix), mod_title(other.mod_title),
+		  menustring(other.menustring), expansion(other.expansion),
+		  found(other.found), editing(other.editing), codepage(other.codepage)
 		{  }
 	~BaseGameInfo () {  }
 
@@ -141,7 +141,7 @@ public:
 	bool has_mods () const { return modlist.size() > 0; }
 	ModInfo *get_mod (int i)
 		{
-		if (i >= 0 && i < modlist.size())
+		if (i >= 0 && (unsigned)i < modlist.size())
 			return &(modlist[i]);
 		return 0;
 		}
@@ -179,7 +179,7 @@ public:
 	int get_game_count () const { return games.size(); }
 	ModManager *get_game (int i)
 		{
-		if (i >= 0 && i < games.size())
+		if (i >= 0 && (unsigned)i < games.size())
 			return &(games[i]);
 		return 0;
 		}

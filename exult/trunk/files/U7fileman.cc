@@ -97,7 +97,7 @@ U7file *U7FileManager::get_file_object(const File_spec &s, bool allow_errors)
 	if (!uf)
 		{
 		if (!allow_errors)
-			throw (file_open_exception((const string &) s));
+			throw (file_open_exception(s.name));
 		return 0;
 		}
 

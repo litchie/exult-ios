@@ -328,8 +328,8 @@ Shape_frame::Shape_frame
 	int w, int h,			// Dimensions.
 	int xoff, int yoff,		// Xleft, yabove.
 	bool setrle			// Run-length-encode.
-	) : rle(setrle), xleft(xoff), xright(w - xoff - 1), yabove(yoff),
-	    ybelow(h - yoff - 1)
+	) : xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
+		rle(setrle)
 #ifdef HAVE_OPENGL
 		, glshape(0)
 #endif
@@ -795,7 +795,7 @@ Shape_frame *Shape::reflect
 	if (!reflected)
 		return (0);
 	framenum |= 32;			// Put back 'reflect' flag.
-	if (framenum >= frames_size - 1)// Expand list if necessary.
+	if ((unsigned)framenum >= frames_size - 1)// Expand list if necessary.
 		enlarge(framenum + 1);
 	frames[framenum] = reflected;	// Store new frame.
 	return reflected;
@@ -811,7 +811,7 @@ void Shape::enlarge
 	)
 	{
 	Shape_frame **newframes = new Shape_frame *[newsize];
-	int i;
+	size_t i;
 	for (i = 0; i < frames_size; i++)
 		newframes[i] = frames[i];
 	frames_size = newsize;
@@ -830,20 +830,20 @@ void Shape::resize
 	int newsize
 	)
 	{
-	if (newsize == frames_size)
+	if (newsize < 0 || (unsigned)newsize == frames_size)
 		return;
-	if (newsize > frames_size)
+	if ((unsigned)newsize > frames_size)
 		enlarge(newsize);	// Growing.
 	else
 		{			// Shrinking.
 		Shape_frame **newframes = new Shape_frame *[newsize];
-		int i;
-		for (i = 0; i < newsize; i++)
+		size_t i;
+		for (i = 0; i < (unsigned)newsize; i++)
 			newframes[i] = frames[i];
 					// Delete past new end.
 		for ( ; i < frames_size; i++)
 			delete frames[i];
-		frames_size = newsize;
+		frames_size = (unsigned)newsize;
 		delete [] frames;
 		frames = newframes;
 		}
@@ -963,7 +963,6 @@ void Shape::write
 	ostream& out			// What to write to.
 	)
 	{
-	int frnum;
 	if (!num_frames)
 		return;			// Empty.
 	assert(frames != 0 && *frames != 0);
@@ -971,6 +970,7 @@ void Shape::write
 					// Save starting position.
 	unsigned long startpos = out.tellp();
 	
+	size_t frnum;
 	if (!flat)
 		{
 		Write4(out, 0);		// Place-holder for total length.
@@ -1018,7 +1018,15 @@ Shape_frame *Shape::store_frame
 	int framenum			// It's frame #.
 	)
 	{
-	if (framenum >= frames_size)	// Something fishy?
+	if (framenum < 0)	// Something fishy?
+		{
+		delete frame;
+		cerr << "Shape::store_frame:  framenum < 0 ("
+			 << framenum << " >= " << (unsigned int)(frames_size)
+			 << ")" << endl;
+		return (0);
+		}
+	else if ((unsigned)framenum >= frames_size)	// Something fishy?
 		{
 		delete frame;
 		cerr << "Shape::store_frame:  framenum >= frames_size ("
@@ -1066,7 +1074,7 @@ void Shape::reset()
 	{
 	if (frames)
 		{
-		for(int i = 0; i < frames_size; i++)
+		for(size_t i = 0; i < frames_size; i++)
 			delete frames[i];
 		delete [] frames;
 		frames = 0;
@@ -1111,7 +1119,7 @@ void Shape::load
 	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
 					// Get the rest.
-	for (int i = 1; i < num_frames; i++)
+	for (size_t i = 1; i < num_frames; i++)
 		{
 		frame = new Shape_frame();
 		frame->read(shape_source, 0L, shapelen, i);
@@ -1134,7 +1142,7 @@ void Shape::set_frame
 	int framenum
 	)
 	{
-	assert (framenum < num_frames);
+	assert (framenum >= 0 && (unsigned)framenum < num_frames);
 	delete frames[framenum];	// Delete existing.
 	frames[framenum] = frame;
 	modified = true;
@@ -1150,7 +1158,7 @@ void Shape::add_frame
 	int framenum			// Insert here.
 	)
 	{
-	assert (framenum <= num_frames);// Can append.
+	assert (framenum >= 0 && (unsigned)framenum <= num_frames);// Can append.
 	enlarge(frames_size + 1);	// Make room.
 	for (int i = frames_size - 1; i > framenum; i--)
 		frames[i] = frames[i - 1];
@@ -1168,10 +1176,10 @@ void Shape::del_frame
 	int framenum
 	)
 	{
-	assert (framenum < num_frames);
+	assert (framenum >= 0 && (unsigned)framenum < num_frames);
 	delete frames[framenum];
 					// Shift down.
-	for (int i = framenum + 1; i < frames_size; i++)
+	for (size_t i = framenum + 1; i < frames_size; i++)
 		frames[i - 1] = frames[i];
 	frames[frames_size - 1] = 0;	// Last spot is now free.
 	num_frames--;
@@ -1232,7 +1240,7 @@ Shape_file::Shape_file
 int Shape_file::get_size()
 {
 	int size = 4;
-	for (int i=0; i<num_frames; i++)
+	for (size_t i=0; i<num_frames; i++)
 		size += frames[i]->get_size() + 4 + 8;
 	return size;
 }
@@ -1243,7 +1251,7 @@ void Shape_file::save(DataSource* shape_source)
 	int* offsets = new int[num_frames];
 	int size;
 	offsets[0] = 4 + num_frames * 4;
-	int i;	// Blame MSVC
+	size_t i;	// Blame MSVC
 	for (i=1; i<num_frames; i++)
 		offsets[i] = offsets[i-1] + frames[i-1]->get_size() + 8;
 	size = offsets[num_frames-1] + frames[num_frames-1]->get_size() + 8;
@@ -1269,14 +1277,14 @@ Vga_file::Vga_file
 	const char *nm,			// Path to file.
 	int u7drag,			// # from u7drag.h, or -1.
 	const char *nm2			// Patch file, or null.
-	) : u7drag_type(u7drag), flex(true), num_shapes(0), shapes(0)
+	) : u7drag_type(u7drag), num_shapes(0), shapes(0), flex(true)
 	{
 	load(nm, nm2);
 	}
 
 Vga_file::Vga_file
 	(
-	) : u7drag_type(-1), flex(true), num_shapes(0), shapes(0)
+	) : u7drag_type(-1), num_shapes(0), shapes(0), flex(true)
 	{
 		// Nothing to see here !!!
 	}
@@ -1285,7 +1293,7 @@ Vga_file::Vga_file
 	(
 	vector<pair<string, int> > sources,
 	int u7drag		// # from u7drag.h, or -1
-	) : u7drag_type(u7drag), flex(true), num_shapes(0)
+	) : u7drag_type(u7drag), num_shapes(0), flex(true)
 	{
 	load(sources);
 	}

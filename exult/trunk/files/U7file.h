@@ -64,7 +64,7 @@ public:
 	virtual	~U7file()
 		{ if (data) delete data; }
 
-	virtual	uint32 number_of_objects(void)=0;
+	virtual	size_t number_of_objects(void)=0;
 	virtual	char *retrieve(uint32 objnum, std::size_t &len)=0;
 	virtual const char *get_archive_type()=0;
 	};
@@ -121,7 +121,7 @@ protected:
 	///	The buffer to read from.
 	const char *_buffer;
 	///	Buffer length.
-	unsigned int _len;
+	size_t _len;
 private:
 	///	No default constructor.
 	U7DataBuffer();
@@ -133,7 +133,7 @@ public:
 	///	@param spec	Unique identifier for this data object.
 	///	@param dt	BufferDataSource that we shoud use.
 	U7DataBuffer(const File_spec &spec, BufferDataSource *dt)
-		: T(spec), _buffer((char *)dt->getPtr()), _len(dt->getSize())
+		: T(spec), _buffer((const char *)dt->getPtr()), _len(dt->getSize())
 		{
 		this->data = dt;
 		this->index_file();
@@ -192,7 +192,7 @@ public:
 		{  }
 	bool from_patch() const
 		{ return patch; }
-	uint32 number_of_objects() const
+	size_t number_of_objects() const
 		{ return cnt; }
 	char *retrieve(uint32 objnum, std::size_t &len, bool& pt)
 		{
@@ -224,7 +224,7 @@ public:
 	U7multifile(const std::vector<File_spec>& specs);
 	~U7multifile();
 
-	uint32 number_of_objects(void) const;
+	size_t number_of_objects(void) const;
 	char *retrieve(uint32 objnum, std::size_t &len, bool& patch) const;
 	};
 #endif

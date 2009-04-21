@@ -46,8 +46,6 @@ void Table::index_file(void)
 	if (!is_table(data))	// Not a table file we recognise
 		throw wrong_file_type_exception(identifier.name, "TABLE");
 
-	size_t file_size = data->getSize();
-
 	unsigned int i = 0;
 	while (true)
 		{
@@ -73,50 +71,32 @@ void Table::index_file(void)
 	}
 
 /**
- *	Time bomb, maybe in need of being implemented. Throws an exception.
- *	@param objnum	Ignored.
- *	@param len	Ignored.
- *	@return	Ignored.
+ *	Reads the desired object from the table file.
+ *	@param objnum	Number of object to read.
+ *	@param len	Receives the length of the object, or zero in any failure.
+ *	@return	Buffer created with new[] containing the object data or
+ *	null on any failure.
  */
 char *Table::retrieve(uint32 objnum,size_t &len)
 	{
-	throw exult_exception("Illegal call to Table::retrieve()");
-	}
-
+	if (!data || objnum >= object_list.size())
+		{
+		len = 0;
+		return 0;
+		}
 #if 0
-char	*Table::read_object(int objnum,uint32 &length)
-{
-	if((unsigned)objnum>=object_list.size())
-		{
-		cerr << "objnum too large in read_object()" << endl;
-		return 0;
-		}
-	FILE *fp;
-	try {
-		fp=U7open(filename.c_str(),"rb");
-	} catch (const file_open_exception &e)
-	{
-		cerr << e.what() << ". exiting." << endl;
-		exit(1);
-	}
-	if(!fp)
-		{
-		cerr << "File open failed in read_object: " << filename << endl;
-		return 0;
-		}
-	fseek(fp,object_list[objnum].offset,SEEK_SET);
-	// length=object_list[objnum].size;
-	uint16	sz;
-	sz = Read2(fp);
-//	fread(&sz,sizeof(sz),1,fp);
-	length=sz-2;
-	char	*ret=new char[length];
-	fread(ret,length,1,fp);
-	fclose(fp);
-	return ret;
-}
+	// Trying to avoid exceptions.
+	if (objnum >= object_list.size())
+		throw exult_exception("objnum too large in Flex::retrieve()");
 #endif
 
+	data->seek(object_list[objnum].offset);
+	len = object_list[objnum].size;
+	char *buffer = new char[len];
+	data->read(buffer, len);
+	
+	return buffer;
+	}
 
 /**
  *	Verify if a file is a table.  Note that this is a STATIC method.
@@ -125,7 +105,7 @@ char	*Table::read_object(int objnum,uint32 &length)
  */
 bool Table::is_table(DataSource *in)
 	{
-	long pos = in->getPos();
+	size_t pos = in->getPos();
 	size_t file_size = in->getSize();
 
 	in->seek(0);

@@ -138,7 +138,7 @@ class GotoSet
 		std::vector<std::pair<UCc *, bool> > &operator()() { return _uccs; };
 		
 		UCc &operator[](const unsigned int i) { return *(_uccs[i].first); };
-		unsigned int size() const { return _uccs.size(); };
+		unsigned int size() const { return static_cast<unsigned int>(_uccs.size()); };
 
 		void add(UCc *ucc, bool gc=false)
 		{

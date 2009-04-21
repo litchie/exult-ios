@@ -346,7 +346,6 @@ int Import_png32
 	png_bytep image = new png_byte[height*rowbytes];
 	pixels = image;			// Return ->.
 	png_bytep rowptr = image;	// Read in rows.
-	int r;
 	int stride;			// Distance to next row.
 	if (bottom_first)
 		{

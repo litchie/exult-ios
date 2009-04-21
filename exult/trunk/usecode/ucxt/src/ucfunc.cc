@@ -508,7 +508,7 @@ inline int calc16reloffset(const UCc &op, unsigned int param)
 	         formula: 0xFFFF - (unsigned short)param + 1
 	                  ^^^^^^ max of unsighed short
 	*/
-	return op._offset + ((param>>15) ? (-1 * (0xFFFF - static_cast<unsigned short>(param) + 1)) : static_cast<int>(param)) + 1 + op._params.size();
+	return op._offset + ((param>>15) ? (-1 * (0xFFFF - static_cast<unsigned short>(param) + 1)) : static_cast<int>(param)) + 1 + static_cast<int>(op._params.size());
 }
 
 /* calculates the relative offset jump location, used in opcodes jmp && jne */
@@ -523,7 +523,7 @@ inline int calc32reloffset(const UCc &op, unsigned int param) //FIXME: Test this
 	         formula: 0xFFFFFFFF - (unsigned int)param + 1
 	                  ^^^^^^ max of unsighed int
 	*/
-	return op._offset + ((param>>31) ? (-1 * (0xFFFFFFFF - static_cast<unsigned int>(param) + 1)) : static_cast<int>(param)) + 1 + op._params.size();
+	return op._offset + ((param>>31) ? (-1 * (0xFFFFFFFF - static_cast<unsigned int>(param) + 1)) : static_cast<int>(param)) + 1 + static_cast<int>(op._params.size());
 }
 
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
@@ -652,7 +652,7 @@ void UCFunc::output_raw_opcodes(ostream &o, const UCc &op)
 	}
 
 	// seperator
-	unsigned int numsep = op._params.size();
+	size_t numsep = op._params.size();
 	//cout << endl << numsep << endl;
 	if(numsep>6)
 		o << endl << "\t\t\t";
@@ -966,7 +966,7 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 	{
 		streampos pos = f.tellg(); // paranoia
 	
-		unsigned int off = 0;
+		size_t off = 0;
 		// Load all strings & their offsets
 		while( off < ucf._datasize )
 		{

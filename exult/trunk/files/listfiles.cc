@@ -398,7 +398,7 @@ int U7ListFiles(const std::string mask, FileList& files)
 
         switch (err) {
         case 0:   //OK
-				for (int i=0; i<globres.gl_pathc; i++)
+				for (size_t i=0; i<globres.gl_pathc; i++)
 				{
 					files.push_back(globres.gl_pathv[i]);
 				}

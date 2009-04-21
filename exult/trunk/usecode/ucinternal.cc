@@ -151,7 +151,7 @@ Usecode_function *Usecode_internal::find_function(int funcid)
 {
 	Usecode_function *fun;
 	// locate function
-	int slotnum = funcid/0x100;
+	unsigned int slotnum = funcid/0x100;
 	if (slotnum >= funs.size())
 		fun = 0;
 	else
@@ -1325,7 +1325,7 @@ Usecode_value Usecode_internal::add_party_items
 					// ++++++First see if there's room.
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
-	unsigned int quality = (unsigned int) qualval.get_int_value();
+	int quality = qualval.get_int_value();
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
@@ -1390,7 +1390,10 @@ Usecode_value Usecode_internal::add_cont_items
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
-	unsigned int quality = (unsigned int) qualval.get_int_value();
+	int quality = qualval.get_int_value();
+		// e.g., Knight's Test wolf meat.
+	if (quality == -359)
+		quality = 0;
 
 	Game_object *obj = get_item(container);
 	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum));
@@ -1928,11 +1931,11 @@ void Usecode_internal::read_usecode
 	while (file.tellg() < size)
 		{
 		Usecode_function *fun = new Usecode_function(file);
-		int slotnum = fun->id/0x100;
+		unsigned int slotnum = fun->id/0x100;
 		if (slotnum >= funs.size())
 			funs.resize(slotnum < 10 ? 10 : slotnum + 1);
 		Funs256& vec = funs[slotnum];
-		int i = fun->id%0x100;
+		unsigned int i = fun->id%0x100;
 		if (i >= vec.size())
 			vec.resize(i + 1);
 		else if (vec[i])
@@ -2430,7 +2433,7 @@ int Usecode_internal::run()
 				} else {
 					offset = (sint16)Read2(frame->ip);
 					if (offset < 0) {// Global static.
-						if (-offset < statics.size())
+						if ((unsigned)(-offset) < statics.size())
 							val = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";\
@@ -2438,7 +2441,7 @@ int Usecode_internal::run()
 							break;
 						}
 					} else {
-						if (offset < frame->function->statics.size())
+						if ((unsigned)offset < frame->function->statics.size())
 							val = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";\
@@ -2535,13 +2538,13 @@ int Usecode_internal::run()
 				}
 				if (opcode == 0x5c) {
 					if (local4 < 0) {// Global static.
-						if (-local4 >= statics.size()) {
+						if ((unsigned)(-local4) >= statics.size()) {
 							cerr << "Global static variable #" << (-local4) << " out of range!";\
 							CERR_CURRENT_IP();
 							break;
 						}
 					} else {
-						if (local4 >= frame->function->statics.size()) {
+						if ((unsigned)local4 >= frame->function->statics.size()) {
 							cerr << "Local static variable #" << (local4) << " out of range!";\
 							CERR_CURRENT_IP();
 							break;
@@ -2764,7 +2767,7 @@ int Usecode_internal::run()
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
-				if (offset < 0 || offset >= sizeof(gflags)) {
+				if (offset < 0 || (unsigned)offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 					pushi(0);
 				} else {
@@ -2777,7 +2780,7 @@ int Usecode_internal::run()
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
-				if (offset < 0 || offset >= sizeof(gflags)) {
+				if (offset < 0 || (unsigned)offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 				} else {
 					gflags[offset] = (unsigned char) popi();
@@ -2822,7 +2825,7 @@ int Usecode_internal::run()
 				} else {
 					offset = (sint16)Read2(frame->ip);
 					if (offset < 0) {// Global static.
-						if (-offset < statics.size())
+						if ((unsigned)(-offset) < statics.size())
 							arr = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";\
@@ -2830,7 +2833,7 @@ int Usecode_internal::run()
 							break;
 						}
 					} else {
-						if (offset < frame->function->statics.size())
+						if ((unsigned)offset < frame->function->statics.size())
 							arr = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";\
@@ -2889,12 +2892,12 @@ int Usecode_internal::run()
 			case 0x50:		// PUSH static.
 				offset = (sint16)Read2(frame->ip);
 				if (offset < 0) {// Global static.
-					if (-offset < statics.size())
+					if ((unsigned)(-offset) < statics.size())
 						push(statics[-offset]);
 					else
 						pushi(0);
 				} else {
-					if (offset < frame->function->statics.size())
+					if ((unsigned)offset < frame->function->statics.size())
 						push(frame->function->statics[offset]);
 					else
 						pushi(0);
@@ -2906,12 +2909,11 @@ int Usecode_internal::run()
 				// Get value.
 				Usecode_value val = pop();
 				if (offset < 0) {
-					if (-offset >= statics.size())
+					if ((unsigned)(-offset) >= statics.size())
 						statics.resize(-offset + 1);
 					statics[-offset] = val;
 				} else {
-					if (offset >= 
-					    frame->function->statics.size())
+					if ((unsigned)offset >= frame->function->statics.size())
 						frame->function->statics.resize(offset + 1);
 					frame->function->statics[offset]=val;
 				}
@@ -3336,7 +3338,7 @@ void Usecode_internal::read
 	{
 		U7open(in, FLAGINIT);	// Read global flags.
 		in.seekg(0, ios::end);	// Get filesize.
-		int filesize = in.tellg();
+		size_t filesize = in.tellg();
 		in.seekg(0, ios::beg);
 		if (filesize > sizeof(gflags))
 			filesize = sizeof(gflags);
@@ -3375,7 +3377,7 @@ void Usecode_internal::read
 	partyman->link_party();
 					// Timers.
 	int cnt = Read4(in);
-	if (cnt == 0xffffffffU)
+	if (cnt == -1)
 		{
 		int tmr = 0;
 		while ((tmr = Read2(in)) != 0xffff)

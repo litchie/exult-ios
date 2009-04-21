@@ -461,7 +461,7 @@ ModInfo *ModManager::find_mod (const string& name)
 
 int ModManager::find_mod_index (const string& name)
 	{
-	for(int i = 0; i < modlist.size(); i++)
+	for(size_t i = 0; i < modlist.size(); i++)
 		if (modlist[i].get_mod_title() == name)
 			return i;
 	return -1;
@@ -731,7 +731,7 @@ ModManager *GameManager::find_game (const string& name)
 
 int GameManager::find_game_index (const string& name)
 	{
-	for(int i=0; i < games.size(); i++)
+	for(size_t i=0; i < games.size(); i++)
 		if (games[i].get_cfgname() == name)
 			return i;
 	return -1;

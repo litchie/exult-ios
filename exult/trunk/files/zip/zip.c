@@ -191,7 +191,7 @@ static int add_data_in_datablock(linkedlist_data* ll, const void* buf, uLong len
     }
 
     ldi = ll->last_block;
-    from_copy = (unsigned char*)buf;
+    from_copy = (const unsigned char*)buf;
 
     while (len>0)
     {

@@ -81,7 +81,7 @@ static inline bool Get_sfx_volume
  */
 
 Object_sfx::Object_sfx(Game_object *o, int s, int delay)
-	: obj(o), distance(-1), channel(-1), sfx(s)
+	: obj(o), sfx(s), channel(-1), distance(-1)
 	{	// Start immediatelly.
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
 	}
@@ -149,7 +149,7 @@ void Object_sfx::handle_event
  */
 void Shape_sfx::stop()
 	{
-	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
+	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if(channel[i] >= 0)
 			{
@@ -178,7 +178,7 @@ void Shape_sfx::update
 		return;
 
 	int active[2] = {0, 0};
-	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
+	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
 	 		active[i] = Mix_Playing(channel[i]);
@@ -219,7 +219,7 @@ void Shape_sfx::update
 	if (play && halt)
 		play = false;
 
-	for (int i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
+	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		if (play && channel[i] == -1 && sfxnum[i] > -1)		// First time?
 						// Start playing.
 			channel[i] = Audio::get_ptr()->play_sound_effect(
@@ -249,7 +249,6 @@ Animator *Animator::create
 	Game_object *ob			// Animated object.
 	)
 	{
-	int shnum = ob->get_shapenum();
 	int frames = ob->get_num_frames();
 	Shape_info& info = ob->get_info();
 	if (!info.is_animated())	// Assume it's just SFX.

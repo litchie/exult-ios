@@ -77,7 +77,7 @@ int Stack_frame_out
 	BufferDataSource ds(buf, Exult_server::maxlength);
 	ds.seek(ptr - buf);
 	for (int i = 0; i < num_args + num_vars; i++) {
-		int vallen = locals[i].save(&ds);
+		(void)locals[i].save(&ds);
 	}
 
 	return Exult_server::Send_data(fd, Exult_server::usecode_debugging,
@@ -114,6 +114,6 @@ bool Stack_frame_in
 	}
 
 
-	return ds.getPos() == datalen;
+	return ds.getPos() == (unsigned)datalen;
 	// locals!
 }

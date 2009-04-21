@@ -87,7 +87,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		{
 			char* stopstr;
 			/* Disassembly mode */
-			unsigned int search_func = strtoul(argv[i], &stopstr, 16);
+			unsigned int search_func = static_cast<unsigned int>(strtoul(argv[i], &stopstr, 16));
 			if( stopstr - argv[i] < static_cast<int>(strlen(argv[i])) )
 				/* Invalid number */
 			{ /* Do Nothing */ }
@@ -226,7 +226,7 @@ void UCData::dump_flags(ostream &o)
 			if(currfunc!=flags[i].func())
 			{
 				o << "Function: " << setw(4) << flags[i].func() << endl;
-				currfunc=flags[i].func();
+				currfunc=static_cast<int>(flags[i].func());
 				o << "              flag  offset" << endl;
 			}
 			

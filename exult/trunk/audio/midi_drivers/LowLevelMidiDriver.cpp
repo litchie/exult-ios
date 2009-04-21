@@ -813,10 +813,10 @@ bool LowLevelMidiDriver::playSequences ()
 
 						playing[message.sequence] = true;
 
+						/*
 						uint16 mask = sequences[message.sequence]->getChanMask();
 
 						// Allocate some channels
-						/*
 						for (i = 0; i < 16; i++)
 							if (mask & (1<<i)) allocateChannel(message.sequence, i);
 						*/
@@ -956,7 +956,7 @@ void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, con
 			uint32 timbre_unk_add_start = ConvBaseToActual(timbre_unk_base);
 			uint32 timbre_unk_add_end = timbre_unk_add_start + timbre_mem_offset(128);
 
-			uint32 sysex_size = length-(4+3+1+1);
+			//uint32 sysex_size = length-(4+3+1+1);
 
 			if (actual_address >= timbre_add_start && actual_address < timbre_add_end)
 			{

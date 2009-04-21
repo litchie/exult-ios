@@ -62,7 +62,6 @@ class Palette;
  */
 class Shape_frame
 	{
-	bool rle;			// Run-length encoded.
 	unsigned char *data;		// The actual data.
 	int datalen;
 	short xleft;			// Extent to left of origin.
@@ -72,6 +71,7 @@ class Shape_frame
 #ifdef HAVE_OPENGL
 	GL_texshape *glshape;		// OpenGL texture for painting this.
 #endif
+	bool rle;			// Run-length encoded.
 	static GL_manager *glman;	// One to rule them all.
 	static Image_buffer8 *scrwin;	// Screen window to render to.
 
@@ -206,14 +206,15 @@ public:
 	Shape_frame *get(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
 		int frnum, std::vector<int> counts, int src=-1)
 		{ 
-		return (frames && frnum < frames_size && frames[frnum]) ? 
-			frames[frnum] : 
+		return (frames && frnum < static_cast<int>(frames_size) &&
+			frames[frnum]) ? frames[frnum] : 
 			read(shapes, shnum, frnum, counts, src); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
-		{ return 0 <= framenum && framenum < frames_size 
+		{ return 0 <= framenum &&
+			static_cast<unsigned int>(framenum) < frames_size
 						? frames[framenum] : 0L; }
 	void resize(int newsize);	// Modify #frames.
 					// Set frame.
@@ -247,6 +248,7 @@ public:
  */
 class Vga_file
 	{
+protected:
 	struct imported_map
 		{
 		int realshape;
@@ -259,17 +261,16 @@ class Vga_file
 	std::vector<std::pair<DataSource *,bool> > imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;		// # from u7drag.h, or -1.
-	bool flex;			// This is the normal case (all .vga
-					//   files).  If false, file is a
-					//   single shape, like 'pointers.shp'.
-					// In this case, all frames are pre-
-					//   loaded.
-protected:
 	int num_shapes;			// Total # of shapes.
 	std::vector<int> shape_cnts;	// Total # of shapes in each file.
 	std::vector<int> imported_cnts;	// Total # of shapes in each file.
 	Shape *shapes;				// List of ->'s to shapes' lists
 	std::vector<Shape *> imported_shapes;	// List of ->'s to shapes' lists
+	bool flex;			// This is the normal case (all .vga
+					//   files).  If false, file is a
+					//   single shape, like 'pointers.shp'.
+					// In this case, all frames are pre-
+					//   loaded.
 public:
 	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
 	Vga_file(std::vector<std::pair<std::string, int> > sources, int u7drag = -1);

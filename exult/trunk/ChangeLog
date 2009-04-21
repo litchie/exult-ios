@@ -5,6 +5,9 @@
 	  not yet work.
 	* Fixed mistaken if assignment that prevented changing scalers to anything
 	  other than pixel, interlaced, OpenGL and Hq3x scalers.
+	* Removed several GCC 4.3.x compilation warnings, including some paranoid
+	  ones. Removed several unused variables, and optimized the memory layout
+	  of a few classes.
 
 2009-04-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Applied variation of patch #2272014.

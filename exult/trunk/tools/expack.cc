@@ -65,7 +65,7 @@ enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
 bool is_text_file(const char *fname)
 {
-	int len = strlen(fname);
+	size_t len = strlen(fname);
 
 	// only if the filename is greater than 4 chars
 	if (len > 4 && fname[len-4] == '.' &&
@@ -81,7 +81,7 @@ bool is_text_file(const char *fname)
 
 bool is_null_entry(const char *fname)
 {
-	int len = strlen(fname);
+	size_t len = strlen(fname);
 
 	if (len >= 4 && fname[len-4] == 'N' && fname[len-3] == 'U' &&
 					fname[len-2] == 'L' && fname[len-1] == 'L')
@@ -103,7 +103,7 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 // Converts all .'s to _'s
 void make_header_name(char *filename)
 {
-	int i = strlen (filename);
+	size_t i = strlen (filename);
 
 	while (i--) if (filename[i] == '.') filename[i] = '_';
 		else if (filename[i] == '/' || filename[i] == '\\' || filename[i] == ':') break;
@@ -112,15 +112,15 @@ void make_header_name(char *filename)
 // Makes a name uppercase
 void make_uppercase (char *name)
 {
-	int i = strlen (name);
+	size_t i = strlen (name);
 
-	while (i--) if (name[i] >= 'a' && name[i] <= 'z') name[i] -= 'a' - 'A';
+	while (i--) if (name[i] >= 'a' && name[i] <= 'z') name[i] -= ('a' - 'A');
 }
 
 // strips a path from a filename
 void strip_path (char *filename)
 {
-	int i = strlen (filename);
+	int i = static_cast<int>(strlen (filename));
 
 	while (i--)
 	{
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 					ifstream respfile;
 					char *slash = strrchr(fname, '/');
 					if(slash) {
-						int len = slash-fname+1;
+						size_t len = slash-fname+1;
 						strncpy(path_prefix, fname, len);
 						path_prefix[len] = 0;
 					} else
@@ -324,7 +324,7 @@ int main(int argc, char **argv)
 									cerr << "Line " << linenum << ": shapenumber not found. The correct format of a line with specified shape is ':shapenum:filename'." << endl;
 									exit(1);
 									}
-								shnum = num;
+								shnum = static_cast<unsigned int>(num);
 								assert(*ptr == ':');
 								ptr++;
 								}
@@ -372,16 +372,16 @@ int main(int argc, char **argv)
 				break;
 			U7FileManager *fm = U7FileManager::get_ptr();
 			U7file *f = fm->get_file_object(fname);
-			int count = f->number_of_objects();
+			size_t count = f->number_of_objects();
 			cout << "Archive: " << fname << endl;
 			cout << "Type: " << f->get_archive_type() << endl;
 			cout << "Size: " << count << endl;
 			cout << "-------------------------" << endl;
-			for(int i=0; i<count; i++) {
+			for(size_t i=0; i<count; i++) {
 				char *buf;
 				size_t len;
 		
-				buf = f->retrieve(i, len);
+				buf = f->retrieve(static_cast<uint32>(i), len);
 				cout << i << "\t" << len << endl;
 				delete [] buf;
 			}
@@ -391,8 +391,8 @@ int main(int argc, char **argv)
 		{
 			if(argc==4) {
 				U7object f(fname,atoi(argv[3]));
-				int nobjs = f.number_of_objects();
-				int n = atoi(argv[3]);
+				size_t nobjs = f.number_of_objects();
+				size_t n = strtoul(argv[3], 0, 0);
 				if (n >= nobjs) {
 					cerr << "Obj. #(" << n <<
 						") is too large.  ";
@@ -401,12 +401,12 @@ int main(int argc, char **argv)
 					exit(1);
 				}
 				char outfile[32];
-				snprintf(outfile,32,"%d.%s", n, ext);
+				snprintf(outfile,32,"%lu.%s", n, ext);
 				Write_Object(f, outfile);	// may throw!
 			} else {
 			U7FileManager *fm = U7FileManager::get_ptr();
 				U7file *f = fm->get_file_object(fname);
-				int count = f->number_of_objects();
+				int count = static_cast<int>(f->number_of_objects());
 				for(index=0; index<count; index++) {
 					U7object o(fname,index);
 					char outfile[32];
@@ -456,7 +456,7 @@ int main(int argc, char **argv)
 				{
 				for(unsigned int i=0; i<file_names.size(); i++) {
 					if (file_names[i].size()) {
-						int fsize = get_file_size(file_names[i].c_str());
+						size_t fsize = get_file_size(file_names[i].c_str());
 						if(fsize) {
 							ifstream infile;
 							try {
