@@ -2884,9 +2884,93 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x4d: // debugging opcode from spanish SI (function init)
+			case 0xcd: // 32 bit debugging function init
 			{
-				int funcname = Read2(frame->ip);
-				int paramnames = Read2(frame->ip);
+				int funcname;
+				int paramnames;
+				if (opcode < 0x80)
+				{
+					funcname = Read2(frame->ip);
+					paramnames = Read2(frame->ip);
+				}
+				else
+				{
+					funcname = (sint32)Read4(frame->ip);
+					paramnames = (sint32)Read4(frame->ip);
+				}
+				if (funcname < 0 || frame->data + funcname >= frame->externs-6)
+				{
+					DATA_SEGMENT_ERROR();
+					break;
+				}
+				if (paramnames < 0 || frame->data + paramnames >= frame->externs-6)
+				{
+					DATA_SEGMENT_ERROR();
+					break;
+				}
+				cout << "Debug opcode found at function = " << hex << setw(4)
+					 << setfill('0') << frame->function->id << ", ip = "
+					 << current_IP << dec << setfill(' ') << "." << endl;
+				cout << "Information is: funcname = '"
+					// This is a complete guess:
+				     << (char*)(frame->data + funcname) << "'." << endl;
+				char *ptr = (char*)(frame->data + paramnames);
+					// This is an even bigger complete guess:
+				if (*ptr)
+				{
+					int nargs = frame->num_args;
+					if (is_object_fun(frame->function->id))
+						nargs--;	// Function has an 'item'.
+					if (nargs < 0)	// Just in case.
+						nargs = 0;
+					std::vector<std::string> names;
+					names.resize(nargs);
+					int i;
+						// Reversed to match the order in which they are
+						// passed in UCC.
+					for (i = nargs-1; i >= 0 && *ptr; i--)
+					{
+						std::string name(ptr);
+						names[i] = name;
+						ptr += name.length() + 1;
+					}
+					cout << "Parameter names follow: ";
+					for (i = 0; i < nargs; i++)
+					{
+						cout << "#" << hex << setw(4) << setfill('0')
+							 << i << " = ";
+						if (names[i].length())
+							cout << "'" << names[i] << "'";
+						else
+							cout << "(missing)";
+						if (i < nargs)
+							cout << ", ");
+					}
+					cout << endl << "Variable names follow: ";
+					int i = 0;
+					for (; i < frame->num_vars && *ptr; i++)
+					{
+						std::string name(ptr);
+						ptr += name.length() + 1;
+						cout << "#" << hex << setw(4) << setfill('0')
+							 << (i + nargs) << " = ";
+						if (names[i].length())
+							cout << "'" << names[i] << "'";
+						else
+							cout << "(missing)";
+						if (i < frame->num_vars)
+							cout << ", ");
+					}
+					for (; i < frame->num_vars; i++)
+					{
+						cout << "#" << hex << setw(4) << setfill('0')
+							 << (i + nargs) << " = (missing)";
+						if (i < frame->num_vars)
+							cout << ", ");
+					}
+				}
+				else
+					cout << endl;
 				break;
 			}
 			case 0x50:		// PUSH static.
@@ -3014,12 +3098,6 @@ int Usecode_internal::run()
 			case 0x60:		// PUSHCHOICE
 				pushs(user_choice);
 				break;
-			case 0xcd: // 32 bit debugging function init
-			{
-				int funcname = (sint32)Read4(frame->ip);
-				int paramnames = (sint32)Read4(frame->ip);
-				break;
-			}
 			default:
 				cerr << "Opcode " << opcode << " not known. ";
 				CERR_CURRENT_IP();

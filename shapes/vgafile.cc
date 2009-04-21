@@ -328,11 +328,12 @@ Shape_frame::Shape_frame
 	int w, int h,			// Dimensions.
 	int xoff, int yoff,		// Xleft, yabove.
 	bool setrle			// Run-length-encode.
-	) : xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
-		rle(setrle)
+	) :
 #ifdef HAVE_OPENGL
-		, glshape(0)
+		glshape(0),
 #endif
+		xleft(xoff), xright(w - xoff - 1), yabove(yoff), ybelow(h - yoff - 1),
+		rle(setrle)
 	{
 	if (!rle)
 		{

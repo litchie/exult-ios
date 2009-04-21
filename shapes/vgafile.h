@@ -63,14 +63,14 @@ class Palette;
 class Shape_frame
 	{
 	unsigned char *data;		// The actual data.
+#ifdef HAVE_OPENGL
+	GL_texshape *glshape;		// OpenGL texture for painting this.
+#endif
 	int datalen;
 	short xleft;			// Extent to left of origin.
 	short xright;			// Extent to right.
 	short yabove;			// Extent above origin.
 	short ybelow;			// Extent below origin.
-#ifdef HAVE_OPENGL
-	GL_texshape *glshape;		// OpenGL texture for painting this.
-#endif
 	bool rle;			// Run-length encoded.
 	static GL_manager *glman;	// One to rule them all.
 	static Image_buffer8 *scrwin;	// Screen window to render to.
@@ -88,10 +88,12 @@ public:
 	friend class Shape_file;
 	friend class GL_texshape;
 	friend class GL_manager;
-	Shape_frame() : data(0), datalen(0)
+	Shape_frame() 
+		: data(0),
 #ifdef HAVE_OPENGL
-		, glshape(0)
+			glshape(0),
 #endif
+			datalen(0)
 		{  }
 					// Create frame from data.
 	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,

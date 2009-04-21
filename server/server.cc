@@ -240,9 +240,6 @@ static void Handle_client_message
 		Actor::update_from_studio(&data[0], datalen);
 		break;
 	case Exult_server::info:
-		{
-		unsigned char data[Exult_server::maxlength];
-		unsigned char *ptr = &data[0];
 		Game_info_out(client_socket, Exult_server::version, 
 			cheat.get_edit_lift(),
 			gwin->skip_lift,
@@ -251,7 +248,6 @@ static void Handle_client_message
 			gwin->was_map_modified(),
 			(int) cheat.get_edit_mode());
 		break;
-		}
 	case Exult_server::write_map:
 		gwin->write_map();	// Send feedback?+++++
 		break;
@@ -403,7 +399,7 @@ static void Handle_client_message
 	case Exult_server::unused_shapes:
 		{			// Send back shapes not used in game.
 		unsigned char data[Exult_server::maxlength];
-		int sz = 1024/8;	// Gets bits for unused shapes.
+		size_t sz = 1024u/8;	// Gets bits for unused shapes.
 		sz = sz > sizeof(data) ? sizeof(data) : sz;
 		gwin->get_map()->find_unused_shapes(data, sz);
 		Exult_server::Send_data(client_socket, 
@@ -527,6 +523,9 @@ static void Handle_client_message
 		Handle_debug_message(&data[0], datalen);
 		break;
 #endif
+	default:
+		cout << "Unhandled message received from Exult Studio (id = "
+			<< id << ")" << endl;
 		}
 	}
 

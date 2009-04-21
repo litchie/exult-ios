@@ -70,7 +70,8 @@ public:
 						cx, cy, vert_lead); }
 
 	Font *get_font(int fontnum)
-		{ return (fontnum >= 0 && fontnum < fonts.size()) ?
+		{ return (fontnum >= 0 &&
+				static_cast<unsigned int>(fontnum) < fonts.size()) ?
 				&(fonts[fontnum]) : NULL; };
 	};
 
