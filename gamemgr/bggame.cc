@@ -338,11 +338,6 @@ void BG_Game::scene_lord_british()
 	
 	Font *font = fontManager.get_font("END2_FONT");
 
-	/*
-	const char *txt_msg[] = { "with help from",
-			"The Exult Team"};
-	*/
-
 	// Lord British presents...  (sh. 0x11)
 	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
@@ -434,7 +429,6 @@ void BG_Game::scene_butterfly()
 	Font *font = fontManager.get_font("END2_FONT");
 	Image_buffer *backup = 0;
 	Shape_frame *butterfly = 0;
-	const char *txt_msg = "Driven by Exult";
 	int	i, j, frame, dir;
 	
 	try
@@ -797,7 +791,6 @@ void BG_Game::scene_guardian()
 				       
 		int time = 0;
 		unsigned long start = SDL_GetTicks();
-		bool redraw = false;
 		
 		#define ERASE_TEXT() do { \
 				win->put(backup3, 0, txt_ypos); \
@@ -1218,10 +1211,10 @@ bool ExVoiceBuffer::play_it()
 
 void BG_Game::end_game(bool success) 
 {
-	int	i, j, next = 0;
+	unsigned int i, j, next = 0;
 	int	starty;
 	int	centerx = gwin->get_width() /2;
-	int 	topy = (gwin->get_height()-200)/2;
+	int topy = (gwin->get_height()-200)/2;
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	if(!success) {
@@ -1229,7 +1222,7 @@ void BG_Game::end_game(bool success)
 				  font,0);
 		gwin->clear_screen();
 		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 0);
-		for(uint32 i=0; i<text.get_count(); i++) {
+		for(sint32 i=0; i<text.get_count(); i++) {
 			text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 		}
 		
@@ -1447,7 +1440,7 @@ void BG_Game::end_game(bool success)
 		next = SDL_GetTicks();
 		for (i = next+28000; i > next; )
 		{
-			for (j = 0; j < finfo.frames; j++)
+			for (j = 0; j < (unsigned)finfo.frames; j++)
 			{
 				next = fli3.play(win, j, j, next);
 				for(m=0; m<6; m++)
@@ -1583,10 +1576,8 @@ void BG_Game::end_game(bool success)
 		midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
 	}
 
-	if (audio) {
+	if (audio)
 		audio->stop_music();
-		MyMidiPlayer *midi = audio->get_midi();
-	}
 
 	gwin->clear_screen(true);
 	FORGET_ARRAY(fli_b[0]);

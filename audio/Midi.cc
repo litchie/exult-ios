@@ -754,7 +754,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 			ogg_name = "si13.ogg";
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
 			{
-			if (num < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
+			if ((unsigned)num < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
 				ogg_name = bgconvmusic[num];
 			else
 				{

@@ -70,7 +70,7 @@ class Chunk_cache : public Game_singletons
 		{ return egg_objects.size(); }
 	blocked8z new_blocked_level(int zlevel);
 	blocked8z need_blocked_level(int zlevel)
-		{ return (zlevel >= blocked.size() || !blocked[zlevel])
+		{ return ((unsigned)zlevel >= blocked.size() || !blocked[zlevel])
 			? new_blocked_level(zlevel) : blocked[zlevel];
 		}
 					// Set/unset blocked region.
@@ -118,7 +118,7 @@ public:
 					// Is there something on this tile?
 	inline bool is_tile_occupied(int tx, int ty, int tz)
 		{
-		blocked8z b8 = tz/8 < blocked.size() ? blocked[tz/8] : 0;
+		blocked8z b8 = (unsigned)tz/8 < blocked.size() ? blocked[tz/8] : 0;
 		return (b8 && b8[ty*c_tiles_per_chunk + tx] & 
 				(3 << (2*(tz%8)))) != 0;
 		}

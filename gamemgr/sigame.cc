@@ -859,7 +859,7 @@ struct ExCineEvent {
 	const char		*patch;
 	int			index;
 
-	virtual bool	play_it(Image_window *win, int time) = 0;		// Return true if screen updated
+	virtual bool	play_it(Image_window *win, uint32 time) = 0;		// Return true if screen updated
 
 	bool can_play() { return file != 0; }
 
@@ -888,7 +888,7 @@ private:
 	playfli		*player;
 
 public:
-	virtual bool	play_it(Image_window *win, int t);
+	virtual bool	play_it(Image_window *win, uint32 t);
 
 	void		load_flic(void);
 	void		free_flic(void);
@@ -936,14 +936,14 @@ void ExCineFlic::free_flic()
 	FORGET_OBJECT(flic_obj);
 }
 
-bool	ExCineFlic::play_it(Image_window *win, int t)
+bool	ExCineFlic::play_it(Image_window *win, uint32 t)
 {
 	if (t < time) return false;
 
 	if (cur+1 < count || repeat) {
 
 		// Only advance frame if we can
-		int time_next = time + (cur+1) * speed;
+		uint32 time_next = time + (cur+1) * speed;
 		if (time_next <= t) {
 			cur++;
 
@@ -975,7 +975,7 @@ private:
 	bool		played;
 
 public:
-	virtual bool	play_it(Image_window *win, int t);
+	virtual bool	play_it(Image_window *win, uint32 t);
 
 	ExCineVoc(uint32 time, const char *file, const char *patch, int index) :
 		ExCineEvent(time, file, patch, index), played(false) { }
@@ -983,7 +983,7 @@ public:
 	virtual ~ExCineVoc() { }
 };
 
-bool ExCineVoc::play_it(Image_window *win, int t)
+bool ExCineVoc::play_it(Image_window *win, uint32 t)
 {
 	size_t	size;
 	U7multiobject voc(file, patch, index);
@@ -1013,13 +1013,6 @@ void SI_Game::end_game(bool success)
 		MyMidiPlayer *midi = audio->get_midi();
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
 	}
-
-	int	next = 0;
-
-	Font	*font = fontManager.get_font("MENU_FONT");
-	Font	*sifont = fontManager.get_font("SIINTRO_FONT");
-
-	bool speech = Audio::get_ptr()->is_speech_enabled();
 
 	gwin->clear_screen(true);
 	
@@ -1159,7 +1152,7 @@ Sound Index
 
 	while (1) {
 
-		int time = SDL_GetTicks() - start_time;
+		uint32 time = SDL_GetTicks() - start_time;
 
 		// Need to go to the next flic?
 		if (cur_flic < last_flic && flics[cur_flic+1].time <= time) {

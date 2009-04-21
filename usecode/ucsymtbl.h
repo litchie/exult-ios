@@ -96,7 +96,7 @@ public:
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
 	Usecode_class_symbol *get_class(int n)
-		{ return n < classes.size() ? classes[n] : 0; }
+		{ return (unsigned)n < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int n);
 	bool is_object_fun(int n);
@@ -117,7 +117,7 @@ public:
 	void add_method_num(int val)
 		{ methods.push_back(val); }
 	int get_method_id(int i)
-		{ return (i >= 0 && i < methods.size()) ? methods[i] : -1; }
+		{ return (i >= 0 && (unsigned)i < methods.size()) ? methods[i] : -1; }
 	int get_num_vars()
 		{ return num_vars; }
 	void read(std::istream& in);

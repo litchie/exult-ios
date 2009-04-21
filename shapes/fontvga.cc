@@ -62,8 +62,8 @@ void Fonts_vga_file::init
 
 	FlexFile sfonts(FONTS_VGA);
 	FlexFile pfonts(PATCH_FONTS);
-	int sn = sfonts.number_of_objects();
-	int pn = pfonts.number_of_objects();
+	int sn = static_cast<int>(sfonts.number_of_objects());
+	int pn = static_cast<int>(pfonts.number_of_objects());
 	int numfonts = pn > sn ? pn : sn;
 	fonts.resize(numfonts);
 

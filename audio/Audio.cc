@@ -431,7 +431,7 @@ Audio	*Audio::get_ptr(void)
 Audio::Audio() :
 	truthful_(false),speech_enabled(true), music_enabled(true),
 	effects_enabled(true), SDL_open(false),/*mixer(0),*/midi(0),
-	sfx_file(0), initialized(false)
+	initialized(false), sfx_file(0)
 {
 	assert(self == NULL);
 
@@ -1170,7 +1170,7 @@ int Audio::play_wave_sfx
 		num = bgconv[num];
 	CERR("; after bgconv:  " << num);
 #endif
-	if (num < 0 || num >= sfx_file->number_of_objects())
+	if (num < 0 || (unsigned)num >= sfx_file->number_of_objects())
 	{
 		cerr << "SFX " << num << " is out of range" << endl;
 		return -1;
@@ -1353,14 +1353,12 @@ static void decode_ADPCM_4(uint8* inBuf,
 						  int& reference,			// ADPCM reference value
 						  int& scale)
 {
-	int i, skip = 0;
-	
 	if (reference < 0) {
 		reference = inBuf[0] & 0xff;   // use the first byte in the buffer as the reference byte
 		bufSize--;                          // remember to skip the reference byte
 	}
 	
-	for (i = 0; i < bufSize; i++) {
+	for (int i = 0; i < bufSize; i++) {
 		outBuf[i * 2 + 0] = decode_ADPCM_4_sample(inBuf[i] >> 4, reference, scale);
 		outBuf[i * 2 + 1] = decode_ADPCM_4_sample(inBuf[i] >> 0, reference, scale);
 	}

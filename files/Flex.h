@@ -73,17 +73,17 @@ public:
 	Flex_vers get_vers() const
 		{
 		return (magic2&~0xff) == EXULT_FLEX_MAGIC2 ? 
-			(Flex_vers) (magic2&0xff) : orig;
+			static_cast<Flex_vers>(magic2&0xff) : orig;
 		}
 	///	Gets the number of objects in the flex.
 	///	@return	Number of objects.
-	virtual uint32	number_of_objects()
+	virtual size_t	number_of_objects()
 		{ return object_list.size(); };
    	virtual	char *	retrieve(uint32 objnum, std::size_t &len); 
 	uint32 	get_entry_info(uint32 objnum, size_t &len);
 	virtual const char *get_archive_type()
 		{ return "FLEX"; };
-	static void write_header(DataSource* out, const char *title, int count,
+	static void write_header(DataSource* out, const char *title, size_t count,
 						Flex_vers vers = orig);
 
 	static bool is_flex(DataSource *in);
@@ -105,15 +105,15 @@ class Flex_writer
 	{
 	std::ofstream *out;		// What we're writing to.
 	DataSource *dout;		// Or this, if non-0.
-	int count;			// # entries.
-	int index;			// Current index.
+	size_t count;			// # entries.
 	long cur_start;			// Start of cur. entry being written.
 	uint8 *table;			// Table of offsets & lengths.
 	uint8 *tptr;			// ->into table.
+	int index;			// Current index.
 public:
-	Flex_writer(std::ofstream &o, const char *title, int cnt,
+	Flex_writer(std::ofstream &o, const char *title, size_t cnt,
 					Flex::Flex_vers vers = Flex::orig);
-	Flex_writer(DataSource* o, const char *title, int cnt,
+	Flex_writer(DataSource* o, const char *title, size_t cnt,
 					Flex::Flex_vers vers = Flex::orig);
 	~Flex_writer();
 	void mark_section_done();	// Finished writing out a section.

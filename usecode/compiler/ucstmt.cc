@@ -918,7 +918,7 @@ void Uc_switch_statement::gen
 	Uc_var_expression *var = new Uc_var_expression(cond->need_var(curr, fun));
 	vector<Basic_block *> case_blocks;
 	Basic_block *def_case = 0;
-	for (int i = 0; i < cases.size(); i++)
+	for (size_t i = 0; i < cases.size(); i++)
 		{
 		Uc_switch_case_statement *stmt =
 					dynamic_cast<Uc_switch_case_statement *>(cases[i]);
@@ -944,7 +944,7 @@ void Uc_switch_statement::gen
 		curr->set_targets(UC_JMP, def_case);
 	else
 		curr->set_targets(UC_JMP, past_switch);
-	for (int i = 0; i < cases.size(); i++)
+	for (size_t i = 0; i < cases.size(); i++)
 		{
 		Uc_switch_case_statement *stmt =
 					dynamic_cast<Uc_switch_case_statement *>(cases[i]);

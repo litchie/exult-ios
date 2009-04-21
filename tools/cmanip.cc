@@ -86,7 +86,7 @@ void read_params(const int argc, char *argv[])
 	config_file_name = argv[1];
 	
 	// "I'd appreciate your input"...
-	for(unsigned int i=2; i<argc; i++)
+	for(int i=2; i<argc; i++)
 	{
 		string s(argv[i]);
 		

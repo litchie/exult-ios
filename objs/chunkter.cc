@@ -112,9 +112,8 @@ Chunk_terrain::Chunk_terrain
 	unsigned char *data,		// Chunk data.
 	bool v2_chunks			// 3 bytes/shape.
 	) : undo_shapes(0),
-	    rendered_flats(0), glflats(0), 
-	    num_clients(0), render_queue_next(0),
-	    render_queue_prev(0), modified(false)
+	    num_clients(0), modified(false), rendered_flats(0), glflats(0), 
+	    render_queue_next(0), render_queue_prev(0)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
@@ -145,9 +144,8 @@ Chunk_terrain::Chunk_terrain
 	(
 	const Chunk_terrain& c2
 	) : undo_shapes(0),
-	    rendered_flats(0), glflats(0),
-	    num_clients(0), render_queue_next(0),
-	    render_queue_prev(0), modified(true)
+	    num_clients(0), modified(true), rendered_flats(0), glflats(0),
+	    render_queue_next(0), render_queue_prev(0)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
@@ -235,11 +233,11 @@ static int Figure_queue_size
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	int w = gwin->get_width(), h = gwin->get_height();
+	//Game_window *gwin = Game_window::get_instance();
+	//int w = gwin->get_width(), h = gwin->get_height();
 					// Figure # chunks, rounding up.
-	int cw = (w + c_chunksize - 1)/c_chunksize,
-	    ch = (h + c_chunksize - 1)/c_chunksize;
+	//int cw = (w + c_chunksize - 1)/c_chunksize,
+	//    ch = (h + c_chunksize - 1)/c_chunksize;
 					// Add extra in each dir.
 	return 6;//(cw + 3)*(ch + 3);
 	}

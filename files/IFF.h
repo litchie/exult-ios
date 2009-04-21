@@ -58,14 +58,14 @@ public:
 		};
 	struct Reference
 		{
-		uint32	offset;
+		size_t	offset;
 		uint32	size;
 		Reference() : offset(0),size(0) {};
 		};
 
 protected:
-	///	The IFF's header.
-	IFFhdr	header;
+	//	The IFF's header. ++++ Unused????
+	//IFFhdr	header;
 	/// List of objects in the IFF file.
 	std::vector<Reference> object_list;
 
@@ -77,7 +77,7 @@ public:
 		: U7file(spec)
 		{  }
 
-	virtual uint32 number_of_objects(void)
+	virtual size_t number_of_objects(void)
 		{ return object_list.size(); };
 	virtual char *retrieve(uint32 objnum,std::size_t &len);
 	virtual const char *get_archive_type()

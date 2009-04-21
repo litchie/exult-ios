@@ -243,8 +243,8 @@ void clear_visited(void)
  */
 int comp_func(const void *one, const void *two)
 {
-	u16b first = *((u16b *)one);
-	u16b second = *((u16b *)two);
+	const u16b first = *((const u16b *)one);
+	const u16b second = *((const u16b *)two);
 
 	/* Equal */
 	if (first == second) return 0;

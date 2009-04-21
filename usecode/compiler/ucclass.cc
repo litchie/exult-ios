@@ -241,7 +241,6 @@ Usecode_symbol *Uc_class::create_sym
 	(
 	)
 	{
-	Usecode_symbol::Symbol_kind kind = Usecode_symbol::class_scope;
 	Usecode_class_symbol *cs = new Usecode_class_symbol(name.c_str(), 
 				Usecode_symbol::class_scope, num, num_vars);
 	vector<Uc_function *>::iterator it;

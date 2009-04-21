@@ -69,9 +69,9 @@ Uc_function::Uc_function
 	    num_locals(0), num_statics(0), text_data(0), text_data_size(0),
 	    statement(0)
 	{
-	char *nm = (char *) proto->get_name();
 	add_global_function_symbol(proto, parent);// Add prototype to globals.
 #if 0
+	char *nm = const_cast<char *>(proto->get_name());
 	if (!globals.search(nm))		
 		globals.add(proto);
 	else
@@ -510,7 +510,7 @@ static int Remove_dead_blocks
 	while (1)
 		{
 		niter++;
-		int i = 0;
+		size_t i = 0;
 		int nremoved = 0;
 		while (i + 1 < blocks.size())
 			{
@@ -555,7 +555,7 @@ static int Optimize_jumps
 	while (1)
 		{
 		niter++;
-		int i = 0;
+		size_t i = 0;
 		int nremoved = 0;
 		while (i + 1 < blocks.size())
 			{
@@ -804,7 +804,7 @@ void Uc_function::gen
 		// Third round of optimizations.
 	Remove_dead_blocks(fun_blocks);
 		// Set block indices.
-	for (int i = 0; i < fun_blocks.size(); i++)
+	for (size_t i = 0; i < fun_blocks.size(); i++)
 		{
 		Basic_block *block = fun_blocks[i];
 		block->set_index(i);
@@ -968,7 +968,7 @@ void Uc_function::set_intrinsics
 	intrinsics.resize(cnt);
 	for (int i = 0; i < cnt; i++)
 		{
-		char *nm = (char *)table[i];
+		char *nm = const_cast<char *>(table[i]);
 		if (!memcmp(nm, "UI_get_usecode_fun", sizeof("UI_get_usecode_fun")))
 			get_usecode_fun = i;
 		else if (!memcmp(nm, "UI_get_item_shape", sizeof("UI_get_item_shape")))

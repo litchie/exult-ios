@@ -412,8 +412,8 @@ int Usecode_script::exec
 			Usecode_value& cntval = code->get_elem(i + 2);
 			Usecode_value& origval = code->get_elem(i + 3);
 			int cnt = cntval.get_int_value();
-			int orig = origval.get_int_value();
 #if 0
+			int orig = origval.get_int_value();
 			// Doesn't seem to happen in the originals.
 			if (cnt > orig) { // ++++ First pass? Set 1to orig or not?
 				cntval = origval;

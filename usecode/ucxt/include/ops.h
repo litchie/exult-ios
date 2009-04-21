@@ -98,7 +98,7 @@ class UCOpcodeData
 						else if(k->first=="asm_comment")    asm_comment = strip_backticks(k->second);
 						break;
 					case 'c':
-						if(k->first=="call_effect")         call_effect = strtol(k->second.c_str(), 0, 0);
+						if(k->first=="call_effect")         call_effect = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
 						break;
 					case 'i':
 						if(k->first=="indent_inc/")         flag_indent_inc=true;
@@ -108,9 +108,9 @@ class UCOpcodeData
 						break;
 					case 'n':
 						if(k->first=="name")                name = strip_backticks(k->second);
-						else if(k->first=="num_bytes")      num_bytes = strtol(k->second.c_str(), 0, 0);
-						else if(k->first=="num_pop")        num_pop = strtol(k->second.c_str(), 0, 0);
-						else if(k->first=="num_push")       num_push = strtol(k->second.c_str(), 0, 0);
+						else if(k->first=="num_bytes")      num_bytes = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
+						else if(k->first=="num_pop")        num_pop = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
+						else if(k->first=="num_push")       num_push = static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0));
 						break;
 					case 'p':
 						if(k->first=="param_types")         param_types = qnd_ocsplit(k->second);
@@ -142,16 +142,16 @@ class UCOpcodeData
 			}
 			
 			assert(v.size()==12);
-			opcode = strtol(v[1].c_str(), 0, 0);
+			opcode = static_cast<unsigned int>(strtol(v[1].c_str(), 0, 0));
 			name = v[2];
 			asm_nmo = v[3];
 			asm_comment = v[4];
 			ucs_nmo = v[5];
-			num_bytes = strtol(v[6].c_str(), 0, 0);
+			num_bytes = static_cast<unsigned int>(strtol(v[6].c_str(), 0, 0));
 			param_types = qnd_ocsplit(v[7]);
-			num_pop = strtol(v[8].c_str(), 0, 0);
-			num_push = strtol(v[9].c_str(), 0, 0);
-			call_effect = strtol(v[10].c_str(), 0, 0);
+			num_pop = static_cast<unsigned int>(strtol(v[8].c_str(), 0, 0));
+			num_push = static_cast<unsigned int>(strtol(v[9].c_str(), 0, 0));
+			call_effect = static_cast<unsigned int>(strtol(v[10].c_str(), 0, 0));
 			assert(v[11].size()>=6);
 			flag_return        = (v[11][0]=='0') ? false : true;
 			flag_paren         = (v[11][1]=='0') ? false : true;

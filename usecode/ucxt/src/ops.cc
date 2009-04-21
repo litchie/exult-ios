@@ -137,7 +137,7 @@ void ucxtInit::misc()
 					munge_offset=true;
 		
 		// once we've got it, add it to the map
-		pair<unsigned int, bool> tsm_tmp(strtol(k->second.c_str(), 0, 0), munge_offset);
+		pair<unsigned int, bool> tsm_tmp(static_cast<unsigned int>(strtol(k->second.c_str(), 0, 0)), munge_offset);
 		type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
 	}
 }
@@ -160,7 +160,7 @@ void ucxtInit::opcodes()
 		
 			if(ktl.size())
 			{
-				unsigned int i = strtol(key->substr(key->find_first_of("0")).c_str(), 0, 0);
+				unsigned int i = static_cast<unsigned int>(strtol(key->substr(key->find_first_of("0")).c_str(), 0, 0));
 				opcode_table_data[i] = UCOpcodeData(i, ktl);
 			}
 		}
@@ -224,7 +224,7 @@ void ucxtInit::intrinsics(const string &intrinsic_data, const string &intrinsic_
 	intdata.getsubkeys(ktl, intrinsic_root);
 	
 	for(Configuration::KeyTypeList::iterator k=ktl.begin(); k!=ktl.end(); k++)
-		uc_intrinsics.insert(pair<unsigned int, string>(strtol(k->first.c_str(), 0, 0), k->second));
+		uc_intrinsics.insert(pair<unsigned int, string>(static_cast<unsigned int>(strtol(k->first.c_str(), 0, 0)), k->second));
 }
 
 /* To be depricated when I get the complex std::vector<std::string> splitter online */

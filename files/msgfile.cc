@@ -92,7 +92,7 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings,
 		if (buf[0] == '%' && strncmp(ptr + 1, "%endsection", 11) == 0)
 			break;
 		char *endptr;
-		long index;
+		unsigned long index;
 
 		if (buf[0] == ':')
 		{			// Auto-index lines missing an index.
@@ -123,7 +123,7 @@ int Read_text_msg_file(DataSource* in, vector<char *>& strings,
 		if (index < first)
 			first = index;
 	}
-	return first == NONEFOUND ? -1 : (int) first;
+	return first == NONEFOUND ? -1 : static_cast<int>(first);
 }
 
 /*
@@ -138,7 +138,7 @@ bool Search_text_msg_section(DataSource* in, const char* section)
 	while (!in->eof())
 		{
 		std::string s;
-		int pos = in->getPos();
+		size_t pos = in->getPos();
 		in->readline(s);
 		if (s.empty())
 			continue;	// Empty line.
@@ -194,7 +194,7 @@ int Read_text_msg_file
 	StreamDataSource ds(&in);
 	vector<char *> txtlist;
 	int first = Read_text_msg_file(&ds, txtlist, section);
-	count = txtlist.size();
+	count = static_cast<int>(txtlist.size());
 	strings = new char *[count];
 	for (int i = 0; i < count; ++i)
 		strings[i] = txtlist[i];
@@ -218,8 +218,8 @@ int Read_text_msg_file_sections
 	if (Search_text_msg_section(in, versionstr) && 
 		Read_text_msg_file(in, versioninfo, versionstr) != -1)
 		{
-		version = strtol(versioninfo[0], 0, 0);
-		for (int j = 0; j < versioninfo.size(); j++)
+		version = static_cast<int>(strtol(versioninfo[0], 0, 0));
+		for (size_t j = 0; j < versioninfo.size(); j++)
 			delete[] versioninfo[j];
 		}
 

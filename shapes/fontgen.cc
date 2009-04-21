@@ -111,9 +111,9 @@ bool Gen_font_shape
 		int sw = w, sh = h;	// Shape width/height.
 		int offset = 0;		// Starting row, col.
 		if (!sw)		// 0 width (like for a space)?
-			sw = glyph->metrics.horiAdvance/64;	// Guessin...
+			sw = static_cast<int>(glyph->metrics.horiAdvance)/64;	// Guessin...
 		if (!sh)
-			sh = glyph->metrics.vertAdvance/64;
+			sh = static_cast<int>(glyph->metrics.vertAdvance)/64;
 		if (shadow != -1)	// Make room for shadow.
 			{
 			sw += 2;
@@ -136,7 +136,7 @@ bool Gen_font_shape
 			src += glyph->bitmap.pitch;
 			}
 		if (shadow >= 0)
-			Gen_shadow(pixels, sw, sh, fg, (unsigned char) shadow);
+			Gen_shadow(pixels, sw, sh, fg, static_cast<unsigned char>(shadow));
 					// Not sure about dims here+++++
 		Shape_frame *frame = new Shape_frame(pixels,
 			sw, sh, glyph->bitmap_left + offset, 

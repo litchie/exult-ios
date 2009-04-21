@@ -298,7 +298,7 @@ public:
 				npcs[npc_num] : 0; }
 	void locate_npc(int npc_num);
 	void set_body(int npc_num, Dead_body *body)
-		{ if (npc_num >= bodies.size())
+		{ if (npc_num >= (int)bodies.size())
 			bodies.resize(npc_num + 1);
 		  bodies[npc_num] = body;
 		}

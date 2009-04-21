@@ -154,7 +154,7 @@ Chunk_cache::blocked8z Chunk_cache::new_blocked_level
 	int zlevel
 	)
 	{
-	if (zlevel >= blocked.size())
+	if ((unsigned)zlevel >= blocked.size())
 		blocked.resize(zlevel + 1);
 	blocked8z block = blocked[zlevel] = new uint16[256];
 //	std::cout << "***Creating block for level " << zlevel << ", cache = " 
@@ -199,7 +199,8 @@ void Chunk_cache::clear_blocked
 	int z = lift;
 	while (ztiles)
 		{
-		int zlevel = z/8, thisz = z%8, zcnt = 8 - thisz;
+		unsigned int zlevel = z/8;
+		int thisz = z%8, zcnt = 8 - thisz;
 		if (zlevel >= blocked.size())
 			break;		// All done.
 		if (ztiles < zcnt)
@@ -411,7 +412,7 @@ inline void Chunk_cache::set_tflags
 	int maxz
 	)
 	{
-	int i, zlevel = maxz/8, bsize = blocked.size();
+	int zlevel = maxz/8, bsize = blocked.size();
 	if (zlevel >= bsize)
 		{
 		memset(tflags + bsize, 0, (zlevel - bsize + 1)*sizeof(uint16));
@@ -644,8 +645,8 @@ void Chunk_cache::activate_eggs
 	bool now			// Do them immediately.
 	)
 {
-	int i;				// Go through eggs.
-	for (i = 0; i < 8*(int)sizeof(eggbits) - 1 && eggbits; 
+	size_t i;				// Go through eggs.
+	for (i = 0; i < 8*sizeof(eggbits) - 1 && eggbits; 
 						i++, eggbits = eggbits >> 1)
 	{
 		Egg_object *egg;
@@ -662,7 +663,7 @@ void Chunk_cache::activate_eggs
 	{				// DON'T use an iterator here, since
 					//   the list can change as eggs are
 					//   activated, causing a CRASH!
-		int sz = egg_objects.size();
+		size_t sz = egg_objects.size();
 		for (  ; i < sz; i++)
 		{
 			Egg_object *egg = egg_objects[i];
@@ -701,11 +702,11 @@ Map_chunk::Map_chunk
 	Game_map *m,			// Map we'll belong to.
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : map(m), 
-	    objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
-	    dungeon_levels(0), cache(0), roof(0),
+	    terrain(0), objects(0), first_nonflat(0), from_below(0),
+	    from_right(0), from_below_right(0), ice_dungeon(0x00),
+		dungeon_levels(0), cache(0), roof(0),
 	    dungeon_lights(0), non_dungeon_lights(0),
-	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
-	    from_below_right(0), selected(false)
+	    cx(chunkx), cy(chunky),  selected(false)
 	{
 	}
 
@@ -843,7 +844,6 @@ void Map_chunk::add
 					// Not flat?
 	if (newobj->get_lift() || ord.info.get_3d_height())
 		{			// Deal with dependencies.
-		int ty = newobj->get_ty();
 					// First this chunk.
 		add_dependencies(newobj, ord);
 		if (from_below)		// Overlaps from below?
@@ -1145,10 +1145,12 @@ int Map_chunk::is_blocked
 				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
+				{
 				if (new_lift0 == -1)
 					new_lift0 = new_lift;
 				else if (new_lift != new_lift0)
 					return (1);
+				}
 			}
 		}
 	to.tz = new_lift;
@@ -1439,7 +1441,6 @@ void Map_chunk::setup_dungeon_levels
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
 	{
-		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
 		Shape_info& shinf = each->get_info();
 		if (shinf.get_shape_class() == Shape_info::building &&

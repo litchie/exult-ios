@@ -33,10 +33,10 @@
  *	@return	The number of objects contained in the file or zero
  *	if any failure happened.
  */
-uint32 U7object::number_of_objects()
+size_t U7object::number_of_objects()
 	{
 	U7file *uf = U7FileManager::get_ptr()->get_file_object(identifier, true);
-	return uf ? uf->number_of_objects() : 0;
+	return uf ? uf->number_of_objects() : 0UL;
 	}
 
 /**
