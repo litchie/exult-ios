@@ -92,7 +92,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	}
 	switch( pdesc->type )
 	{
-	case BYTE:
+	case PUSHBYTE:
 		printf("\t%x\n",*(unsigned char*)(ptrc+1));
 		break;
 	case PUSH:
