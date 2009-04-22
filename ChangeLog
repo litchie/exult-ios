@@ -1,3 +1,11 @@
+2009-04-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed more OpenGL bugs; BG and SI intro and endgames play in full now. The
+	  Exult menu now works correctly, as do mods and setup menus. Added faster
+	  routines to get bounding power of 2 size for OpenGL textures.
+	* Fixed a few miscolored pixels in Exult menu logo.
+	* Fixed subtitle bug in SI intro -- they would not display if audio was
+	  disabled but voice was enabled.
+
 2009-04-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed several bugs in OpenGL: Cheat menu, shape browser, game menus now
 	  work correctly; main (Exult) menu still wonky. BG intro, except for the

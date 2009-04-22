@@ -676,6 +676,35 @@ int Log2
 }
 
 /*
+ *	Get the highest power of 2 <= given number.
+ *	From http://aggregate.org/MAGIC/#Log2%20of%20an%20Integer
+ *
+ *	Output:	Integer containing the highest bit of input.
+ */
+
+uint32 msb32(uint32 x)
+{
+	x |= (x >>  1);
+	x |= (x >>  2);
+	x |= (x >>  4);
+	x |= (x >>  8);
+	x |= (x >> 16);
+	return (x & ~(x >> 1));
+}
+
+/*
+ *	Get the lowest power of 2 >= given number.
+ *
+ *	Output:	First power of 2 >= input (0 if n==0).
+ */
+
+int fgepow2(uint32 n)
+{
+	uint32 l = msb32(n);
+	return l < n ? (l << 1) : l;
+}
+
+/*
  *	Replacement for non-standard strdup function.
  */
 

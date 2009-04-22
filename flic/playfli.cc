@@ -173,6 +173,10 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 				}
 				// Set palette
 				palette->set_palette (colors);
+#ifdef HAVE_OPENGL
+				if (GL_manager::get_instance())
+					Set_renderer(dynamic_cast<Image_window8*>(win));
+#endif
 				if (thispal != nextpal)
 				{
 					thispal = nextpal;
@@ -270,12 +274,22 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 		if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
 
-		while (SDL_GetTicks() < ticks) SDL_Delay(0);
+		if (ticks > SDL_GetTicks()) SDL_Delay(ticks - SDL_GetTicks());
   
 		ticks += fli_speed*10;
 
 		if(win && !dont_show && !skip_frame)
+		{
+#ifdef HAVE_OPENGL
+			if (GL_manager::get_instance())
+			{
+				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_width(),
+						win->get_height(), 0, 0, true);
+				GL_manager::get_instance()->paint(&frame, 0, 0);
+			}
+#endif
 			win->show();
+		}
 	}
 
 	delete[] pixbuf;

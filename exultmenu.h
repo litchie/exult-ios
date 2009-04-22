@@ -28,6 +28,7 @@ class Game_window;
 class BaseGameInfo;
 class ModManager;
 class MenuList;
+class Shape_frame;
 
 class ExultMenu {
 private:
@@ -42,9 +43,9 @@ private:
 	int centerx, centery;
 	void calc_win();
 	Mouse *menu_mouse;
-	MenuList *create_main_menu(int first = 0);
-	MenuList *create_mods_menu(ModManager *selgame, int first = 0);
-	BaseGameInfo *show_mods_menu(ModManager *selgame);
+	MenuList *create_main_menu(Shape_frame *bg, int first = 0);
+	MenuList *create_mods_menu(ModManager *selgame, Shape_frame *bg, int first = 0);
+	BaseGameInfo *show_mods_menu(ModManager *selgame, Shape_frame *bg);
 public:
 	ExultMenu(Game_window *gw);
 	~ExultMenu();
