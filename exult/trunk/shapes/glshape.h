@@ -29,6 +29,7 @@ class Xform_palette;
 class Shape_frame;
 class GL_texshape;
 class Image_buffer8;
+class Palette;
 
 /*
  *	A 2D shape is rendered by painting a quad with the shape as a texture.
@@ -37,23 +38,28 @@ class GL_texshape
 	{
 	Shape_frame *frame;		// Source for this (or null if it came
 					//   from someplace else).
+					// Least-recently used chain:
 	GL_texshape *lru_next, *lru_prev;
 	unsigned int texture;		// Texture ID.
 	unsigned int texsize;		// Width/ht of texture (power of 2).
-					// Least-recently used chain:
+	bool rotates;
 					// Create from this source.
-	void create(Image_buffer8 *src, unsigned char *pal, 
-				Xform_palette *xforms = 0, int xfcnt = 0);
+	void create(Image_buffer8 *src, unsigned char *pal, int firstrot,
+				int lastrot, Xform_palette *xforms = 0, int xfcnt = 0);
 public:
 	friend class GL_manager;
-	GL_texshape(Shape_frame *f, unsigned char *pal, 
+	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
 				Xform_palette *xforms = 0, int xfcnt = 0);
-	GL_texshape(Shape_frame *f, unsigned char *pal, unsigned char *trans);
-	GL_texshape(Image_buffer8 *src, unsigned char *pal);
+	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
+				unsigned char *trans);
+	GL_texshape(Image_buffer8 *src, unsigned char *pal, int first_rot,
+				int last_rot);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
 	void disassociate()	// Disassociate from frame.
 		{ frame = 0; }
+	bool has_palette_rotation() const
+		{ return rotates; }
 	};
 
 /*
@@ -67,6 +73,8 @@ class GL_manager
 	int scale;			// Scale for drawing.
 	int max_texsize;		// Largest size allowed.
 	int num_shapes;
+	int first_rot;		// First index of palette that rotates.
+	int last_rot;		// Last index of palette that rotates.
 public:
 	friend class GL_texshape;
 	GL_manager();
@@ -75,10 +83,11 @@ public:
 		{ return instance; }
 	void set_palette(unsigned char *pal)
 		{ delete palette; palette = pal; }
+	void set_palette(Palette *pal = 0, bool rotation = false);
 					// Create from src (but don't add to
 					//   chain).
 	GL_texshape *create(Image_buffer8 *src)
-		{ return new GL_texshape(src, palette); }
+		{ return new GL_texshape(src, palette, first_rot, last_rot); }
 					// Window was resized.
 	void resized(int new_width, int new_height, int new_scale);
 					// Paint a shape & create GL_shape
@@ -86,6 +95,8 @@ public:
 	void paint(Shape_frame *frame, int px, int py,
 				Xform_palette *xforms = 0, int xfcnt = 0);
 	void paint(Shape_frame *frame, int px, int py, unsigned char *trans);
+	void set_palette_rotation(int first, int last)
+		{ first_rot = first; last_rot = last; }
 	};
 
 

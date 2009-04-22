@@ -258,6 +258,7 @@ void VideoOptions_gump::save_settings()
 	   ((fullscreen==1)&&(!gwin->get_win()->is_fullscreen())))
 		{
 		gwin->get_win()->toggle_fullscreen();
+		Set_renderer(gwin->get_win(), gwin->get_pal(), true);
 		gwin->get_pal()->apply(false);
 		gwin->paint();
 		}

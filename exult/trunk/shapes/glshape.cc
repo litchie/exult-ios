@@ -47,6 +47,7 @@ void GL_texshape::create
 	(
 	Image_buffer8 *src,		// Source image.
 	unsigned char *pal,		// 3*256 bytes (rgb).
+	int firstrot, int lastrot,	// Palette rotations.
 	Xform_palette *xforms,		// Transforms translucent colors if !0.
 	int xfcnt			// Number of xforms.
 	)
@@ -55,8 +56,9 @@ void GL_texshape::create
 	const int xfstart = 0xff - xfcnt;
 					// Convert to rgba.
 	unsigned char *pixels = xforms ? 
-			src->rgba(pal, transp, xfstart, 0xfe, xforms)
-			: src->rgba(pal, transp);
+			src->rgba(pal, transp, rotates, firstrot, lastrot,
+						xfstart, 0xfe, xforms)
+			: src->rgba(pal, transp, rotates, firstrot, lastrot);
 	GLuint tex;
 	glGenTextures(1, &tex);		// Generate (empty) texture.
 	texture = tex;
@@ -92,6 +94,7 @@ GL_texshape::GL_texshape
 	(
 	Shape_frame *f,
 	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot,	// Palette rotations.
 	Xform_palette *xforms,		// Transforms translucent colors if !0.
 	int xfcnt			// Number of xforms.
 	) : frame(f), lru_next(0), lru_prev(0)
@@ -105,7 +108,7 @@ GL_texshape::GL_texshape
 					// ++++Guessing a bit on the offset:
 	frame->paint(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1);
-	create(&buf8, pal, xforms, xfcnt);
+	create(&buf8, pal, first_rot, last_rot, xforms, xfcnt);
 	}
 
 /*
@@ -116,6 +119,7 @@ GL_texshape::GL_texshape
 	(
 	Shape_frame *f,
 	unsigned char *pal,			// 'Pixel' position from top-left.
+	int first_rot, int last_rot,	// Palette rotations.
 	unsigned char *trans	// Translation table.
 	) : frame(f), lru_next(0), lru_prev(0)
 	{
@@ -128,7 +132,7 @@ GL_texshape::GL_texshape
 					// ++++Guessing a bit on the offset:
 	frame->paint_rle_remapped(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1, trans);
-	create(&buf8, pal, 0, 0);
+	create(&buf8, pal, first_rot, last_rot, 0, 0);
 	}
 
 /*
@@ -138,14 +142,15 @@ GL_texshape::GL_texshape
 GL_texshape::GL_texshape
 	(
 	Image_buffer8 *src,		// Must be square.
-	unsigned char *pal		// 3*256 bytes (rgb).
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot	// Palette rotations.
 	) : frame(0), lru_next(0), lru_prev(0)
 	{
 	int w = src->get_width(), h = src->get_height();
 	assert (w == h);
 	assert (fgepow2(w) == w);
 	texsize = w;
-	create(src, pal);
+	create(src, pal, first_rot, last_rot);
 	}
 
 /*
@@ -205,7 +210,8 @@ void GL_texshape::paint
 
 GL_manager::GL_manager
 	(
-	) : shapes(0), palette(0), scale(1), num_shapes(0)
+	) : shapes(0), palette(0), scale(1), num_shapes(0),
+	    first_rot(224), last_rot(254)
 	{
 	assert (instance == 0);		// Should only be one.
 	instance = this;
@@ -287,6 +293,7 @@ static void Paint_image
 	Shape_frame *frame,
 	int px, int py,			// 'Pixel' position from top-left.
 	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot,	// Palette rotations.
 	int scale			// Scale factor.
 	)
 	{
@@ -301,7 +308,8 @@ static void Paint_image
 	buf8.fill8(transp);		// Fill with transparent value.
 	frame->paint(&buf8, frame->get_xleft(), frame->get_yabove());
 					// Convert to rgba.
-	unsigned char *pixels = buf8.rgba(pal, transp);
+	bool rot;
+	unsigned char *pixels = buf8.rgba(pal, transp, rot, first_rot, last_rot);
 	if (px < 0)			// Doesn't paint if off screen.
 		{
 		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
@@ -338,11 +346,11 @@ void GL_manager::paint
 		if (frame->get_width() > max_texsize || 
 		    frame->get_height() > max_texsize)
 			{		// Too big?  Just paint it now.
-			Paint_image(frame, px, py, palette, scale);
+			Paint_image(frame, px, py, palette, first_rot, last_rot, scale);
 			return;
 			}
-		frame->glshape = tex = new GL_texshape(frame, palette, 
-							xforms, xfcnt);
+		frame->glshape = tex = new GL_texshape(frame, palette,
+							first_rot, last_rot, xforms, xfcnt);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}
@@ -373,6 +381,7 @@ static void Paint_image
 	Shape_frame *frame,
 	int px, int py,			// 'Pixel' position from top-left.
 	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot,	// Palette rotations.
 	int scale,			// Scale factor.
 	unsigned char *trans	// Translation table.
 	)
@@ -389,7 +398,8 @@ static void Paint_image
 	frame->paint_rle_remapped(&buf8, frame->get_xleft(),
 				frame->get_yabove(), trans);
 					// Convert to rgba.
-	unsigned char *pixels = buf8.rgba(pal, transp);
+	bool rot;
+	unsigned char *pixels = buf8.rgba(pal, transp, rot, first_rot, last_rot);
 	if (px < 0)			// Doesn't paint if off screen.
 		{
 		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
@@ -425,10 +435,11 @@ void GL_manager::paint
 		if (frame->get_width() > max_texsize || 
 		    frame->get_height() > max_texsize)
 			{		// Too big?  Just paint it now.
-			Paint_image(frame, px, py, palette, scale, trans);
+			Paint_image(frame, px, py, palette, first_rot, last_rot, scale, trans);
 			return;
 			}
-		frame->glshape = tex = new GL_texshape(frame, palette, trans);
+		frame->glshape = tex = new GL_texshape(frame, palette,
+							first_rot, last_rot, trans);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}

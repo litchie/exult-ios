@@ -173,10 +173,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 				}
 				// Set palette
 				palette->set_palette (colors);
-#ifdef HAVE_OPENGL
-				if (GL_manager::get_instance())
-					Set_renderer(dynamic_cast<Image_window8*>(win));
-#endif
+				Set_glpalette();
 				if (thispal != nextpal)
 				{
 					thispal = nextpal;
