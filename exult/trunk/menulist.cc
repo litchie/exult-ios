@@ -27,6 +27,7 @@
 #include "mouse.h"
 #include "rect.h"
 #include "shapeid.h"
+#include "gump_utils.h"
 
 #ifdef UNDER_CE
 #include <string.h>
@@ -165,7 +166,8 @@ void MenuGameEntry::paint(Game_window *gwin)
 	if (sfxicon)
 	{
 		Shape_manager::get_instance()->paint_shape(x1-sfxicon->get_width()-3,y, sfxicon);
-		gwin->get_win()->show(x1-sfxicon->get_width()-3,y,sfxicon->get_width(),sfxicon->get_height());
+		if (!GL_manager::get_instance())
+			gwin->get_win()->show(x1-sfxicon->get_width()-3,y,sfxicon->get_width(),sfxicon->get_height());
 	}
 
 	Font *fnt;
@@ -225,7 +227,8 @@ void MenuTextChoice::paint(Game_window *gwin)
 	else
 		fnt = font;
 	fnt->draw_text(gwin->get_win()->get_ib8(), x1, y1, text);
-	gwin->get_win()->show(x1,y1, x1+fnt->get_text_width(text), y2);
+	if (!GL_manager::get_instance())
+		gwin->get_win()->show(x1,y1, x1+fnt->get_text_width(text), y2);
 
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, max_choice_width, font->get_text_height(), x+32, y);
@@ -332,6 +335,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	gwin->show(1);
 	mouse->show();
 	do {
+		Delay();
 		mouse_visible = mouse->is_onscreen();
 		if (mouse_visible) mouse->hide();
 		if (GL_manager::get_instance()) {

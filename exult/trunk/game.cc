@@ -471,27 +471,52 @@ void Game::clear_avskin ()
 int wait_delay(int ms, int startcol, int ncol)
 {
 	SDL_Event event;
-	int delay;
+	unsigned long delay;
 	int loops;
 	bool mouse_down = false;
 
 	int loopinterval = (ncol == 0) ? 50 : 10;
 	if (!ms) ms = 1;
-	if(ms <= 2*loopinterval) {
+	if (ms <= 2*loopinterval)
+		{
 		delay = ms;
 		loops = 1;
-	} else {
+		}
+	else
+		{
 		delay = loopinterval;
 		loops = ms/delay;
-	}
+		}
+	Game_window *gwin = Game_window::get_instance();
+	int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
+			(gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale()));
+	static unsigned long last_rotate = 0;
+					
+#ifdef HAVE_OPENGL
+	Shape_frame *screen = 0;
+	if (ncol > 0 && GL_manager::get_instance())
+		{
+		int w = gwin->get_width(), h = gwin->get_height();
+		Image_buffer8 *buf = gwin->get_win()->get_ib8();
+		screen = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
+		//Shape_manager::get_instance()->paint_shape(0, 0, screen);
+		Set_renderer(gwin->get_win());
+		GL_manager::get_instance()->paint(screen, 0, 0);
+		gwin->get_win()->show();
+		}
+#endif
 
-	for(int i=0; i<loops; i++) {
+	for (int i = 0; i < loops; i++)
+		{
 		unsigned long ticks1 = SDL_GetTicks();
 	        // this may be a bit risky... How fast can events be generated?
-		while(SDL_PollEvent(&event)) {
-			switch (event.type) {
+		while(SDL_PollEvent(&event))
+			{
+			switch (event.type)
+				{
 			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
+				switch (event.key.keysym.sym)
+					{
 				case SDLK_RSHIFT: case SDLK_LSHIFT:
 				case SDLK_RCTRL: case SDLK_LCTRL:
 				case SDLK_RALT: case SDLK_LALT:
@@ -507,39 +532,53 @@ int wait_delay(int ms, int startcol, int ncol)
 					break;
 				case SDLK_RETURN:
 				case SDLK_KP_ENTER:
+#ifdef HAVE_OPENGL
+					delete screen;
+#endif
 					return 2;
-					break;
 				default:
+#ifdef HAVE_OPENGL
+					delete screen;
+#endif
 					return 1;
-				}
+					}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				mouse_down = true;
 				break;
 			case SDL_MOUSEBUTTONUP:
-				//if (mouse_down)
-					return 1;
-				break;
+#ifdef HAVE_OPENGL
+				delete screen;
+#endif
+				return 1;
 			default:
 				break;
+				}
 			}
-		}
-		if (ncol > 0) {
-			Game_window::get_instance()->get_win()
-				->rotate_colors(startcol, ncol, 1);
-#ifdef HAVE_OPENGL
-			if (GL_manager::get_instance())
-				Set_renderer(Game_window::get_instance()->get_win());
-#endif
-			if (ms > 250)
-				Game_window::get_instance()->get_win()->show();
-		}
 		unsigned long ticks2 = SDL_GetTicks();
 		if (ticks2 - ticks1 > delay)
 			i+= (ticks2 - ticks1) / delay - 1;
 		else
 			SDL_Delay(delay - (ticks2 - ticks1));
-	}
+		if (ncol > 1 && ticks2 > last_rotate + rot_speed)
+			{
+			gwin->get_win()->rotate_colors(startcol, ncol, 1);
+			while (ticks2 > last_rotate + rot_speed)
+				last_rotate += rot_speed;
+#ifdef HAVE_OPENGL
+			if (GL_manager::get_instance())
+				{
+				Set_renderer(gwin->get_win());
+				//Shape_manager::get_instance()->paint_shape(0, 0, screen);
+				GL_manager::get_instance()->paint(screen, 0, 0);
+				}
+#endif
+			gwin->get_win()->show();
+			}
+		}
 	
+#ifdef HAVE_OPENGL
+	delete screen;
+#endif
 	return 0;
 }
