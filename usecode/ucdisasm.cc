@@ -95,25 +95,25 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	if (pdesc && pdesc->nbytes > 0) {
 		switch( pdesc->type )
 			{
-			case PUSHBYTE:
+			case op_byte:
 				std::printf("\t%02x", *ip++);
 				break;
-			case IMMED:
+			case op_immed:
 				// Print immediate operand
 				immed = Read2(ip);
 				std::printf("\t%04hXH\t\t; %d", immed, immed);
 				break;
-			case IMMED32:
+			case op_immed32:
 				immed32 = (sint32)Read4(ip);
 				std::printf("\t%04hXH\t\t; %d", immed32, immed32);
 				break;
-			case DATA_STRING:
-			case DATA_STRING32:
+			case op_data_string:
+			case op_data_string32:
 				{
 					char* pstr;
 					size_t len;
 					// Print data string operand
-					if (pdesc->type == DATA_STRING)
+					if (pdesc->type == op_data_string)
 						offset = Read2(ip);
 					else
 						offset = (sint32)Read4(ip);
@@ -130,17 +130,17 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 						std::printf("...");
 				}
 				break;
-			case RELATIVE_JUMP:
+			case op_relative_jump:
 				// Print jump desination
 				offset = Read2(ip);
 				std::printf("\t%04X",
 							(offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
-			case RELATIVE_JUMP32:
+			case op_relative_jump32:
 				offset = (sint32)Read4(ip);
 				std::printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
 				break;				
-			case SLOOP:
+			case op_sloop:
 				if (pdesc->nbytes == 11)
 					ip++;
 				Read2(ip);
@@ -152,7 +152,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					   (offset +func_ip+1+pdesc->nbytes)&0xFFFF);
 				locals[varref].print(cout, true); // print value (short format)
 				break;
-			case SLOOP32:
+			case op_sloop32:
 				if (pdesc->nbytes == 13)
 					ip++;
 				Read2(ip);
@@ -164,19 +164,19 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					   offset +func_ip+1+pdesc->nbytes);
 				locals[varref].print(cout, true); // print value (short format)
 				break;
-			case IMMED_AND_RELATIVE_JUMP:
+			case op_immed_and_relative_jump:
 				immed = Read2(ip);
 				offset = Read2(ip);
 				std::printf("\t%04hXH, %04X", immed, 
 					   (offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
-			case IMMED_RELJUMP32:
+			case op_immedreljump32:
 				immed = Read2(ip);
 				offset = (sint32)Read4(ip);
 				std::printf("\t%04hXH, %04X", immed, 
 					   offset + func_ip+1+pdesc->nbytes);
 				break;				
-			case CALL:
+			case op_call:
 				{
 					func = Read2(ip);
 					immed = *ip++;
@@ -186,7 +186,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					std::printf("\t_%s@%d\t; %04X", func_table[func], immed, func);
 				}
 				break;
-			case EXTCALL:
+			case op_extcall:
 				{
 					// Print extern call
 					offset = Read2(ip);
@@ -194,13 +194,13 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 						   externals[2*offset] + 256*externals[2*offset + 1]);
 				}
 				break;
-			case VARREF:
+			case op_varref:
 				// Print variable reference
 				varref = Read2(ip);
 				std::printf("\t[%04X]\t\t= ", varref);
 				locals[varref].print(cout, true); // print value (short)
 				break;
-			case FLGREF:
+			case op_flgref:
 				// Print global flag reference
 				offset = Read2(ip);
 				std::printf("\tflag:[%04X]\t= ", offset);
@@ -209,7 +209,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				else
 					std::printf("unset");
 				break;
-			case STATICREF:
+			case op_staticref:
 				staticref = Read2(ip);
 				std::printf("[%04X]\t= ", (uint16)staticref);
 				if (staticref < 0) {

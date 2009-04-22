@@ -92,32 +92,32 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	}
 	switch( pdesc->type )
 	{
-	case PUSHBYTE:
+	case op_byte:
 		printf("\t%x\n",*(unsigned char*)(ptrc+1));
 		break;
-	case PUSH:
+	case op_push:
 		for ( i = 1; i < nbytes; i++)
 			printf("\n%04X:\t\t\tdb %x",coffset+i,ptrc[i]);
 		printf("\n");
 		break;
-	case IMMED:
-	case ARGNUM:
-	case FUNID:
-	case CLSFUN:
-	case CLSID:
+	case op_immed:
+	case op_argnum:
+	case op_funid:
+	case op_clsfun:
+	case op_clsid:
 		// Print immediate operand
 		printf("\t%04XH\t\t\t; %d\n", *(unsigned short*)( ptrc + 1 ), *(short*)( ptrc + 1 ));
 		break;
-	case IMMED32:
+	case op_immed32:
 		printf("\t%04XH\t\t\t; %d\n", *(unsigned int*)( ptrc + 1 ), *(int*)( ptrc + 1 ));
 		break;
-	case DATA_STRING:
-	case DATA_STRING32:
+	case op_data_string:
+	case op_data_string32:
 		{
 			char* pstr;
 			unsigned int len;
 			// Print data string operand
-			if (pdesc->type == DATA_STRING)
+			if (pdesc->type == op_data_string)
 				pstr = (char *)pdataseg + 
 						*(unsigned short*)( ptrc + 1 );
 			else
@@ -128,7 +128,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			if( len > 20 )
 				len = 20 - 3;
 
-			if (pdesc->type == DATA_STRING)
+			if (pdesc->type == op_data_string)
 				printf("\tL%04X\t\t\t; ", *(unsigned short*)( ptrc + 1 ));
 			else
 				printf("\tL%04X\t\t\t; ", *(unsigned int*)( ptrc + 1 ));
@@ -140,21 +140,21 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			printf("\n");
 		}
 		break;
-	case RELATIVE_JUMP:
-	case UNCONDITIONAL_JUMP:
+	case op_relative_jump:
+	case op_unconditional_jump:
 		// Print jump desination
 //		printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
 		printf("\t%04X\n", *(short*)( ptrc + nbytes - 2) + 
 				coffset + nbytes);
 // debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
-	case RELATIVE_JUMP32:
-	case UNCOND_JUMP32:
+	case op_relative_jump32:
+	case op_uncond_jump32:
 		printf("\t%04X\n", *(int*)( ptrc + nbytes - 4) + 
 			    coffset + nbytes);
 		break;
-	case SLOOP:  /* WJP */
-	case STATICSLOOP:
+	case op_sloop:  /* WJP */
+	case op_static_sloop:
 		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
 			   *(unsigned short*)( ptrc + nbytes - 10 ),
 			   *(unsigned short*)( ptrc + nbytes - 8 ),
@@ -162,7 +162,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			   *(unsigned short*)( ptrc + nbytes - 4 ),
 			   *(short*)( ptrc + nbytes - 2) + coffset + nbytes);
 		break;
-	case SLOOP32:  /* WJP */
+	case op_sloop32:  /* WJP */
 		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
 			   *(unsigned short*)( ptrc + nbytes - 12 ),
 			   *(unsigned short*)( ptrc + nbytes - 10 ),
@@ -170,17 +170,17 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			   *(unsigned short*)( ptrc + nbytes - 6 ),
 			   *(int*)( ptrc + nbytes - 4) + coffset + nbytes);
 		break;
-	case IMMED_AND_RELATIVE_JUMP:	/* JSF */
-	case ARGNUM_RELJUMP:
+	case op_immed_and_relative_jump:	/* JSF */
+	case op_argnum_reljump:
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(short*)( ptrc + 3 ) + coffset + 5);
 		break;
-	case IMMED_RELJUMP32:
-	case ARGNUM_RELJUMP32:
+	case op_immedreljump32:
+	case op_argnum_reljump32:
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(int*)( ptrc + 3 ) + coffset + 5);
 		break;
-	case CALL:
+	case op_call:
 		{
 			// Print call operand
 		unsigned short func = *(unsigned short*)( ptrc + 1 );
@@ -199,7 +199,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			printf("\t%04X, %d\n", func, ptrc[3]);
 		}
 		break;
-	case EXTCALL:
+	case op_extcall:
 		{
 		// Print extern call
 		unsigned short externpos = *(unsigned short*)( ptrc + 1 );
@@ -216,18 +216,18 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 			printf("\t[%04X]\t\t\t; ????\n", externpos);
 		}
 		break;
-	case VARREF:
-	case STATICREF:
-	case CLASSVARREF:
+	case op_varref:
+	case op_staticref:
+	case op_classvarref:
 		// Print variable reference
 		printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;
-	case IMMED_PAIR:
-	case CLSFUN_VTBL:
+	case op_immed_pair:
+	case op_clsfun_vtbl:
 		printf("\t%04XH, %04XH\n", *(unsigned short*)( ptrc + 1 ),
 						*(unsigned short*)( ptrc + 3 ));
 		break;
-	case FLGREF:
+	case op_flgref:
 		// Print global flag reference
 		printf("\tflag:[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;
