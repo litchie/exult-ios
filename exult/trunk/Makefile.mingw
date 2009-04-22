@@ -29,16 +29,10 @@ else
 	ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 endif
 
-### Warning: OpenGL mode is still buggy!
-ifdef OPEN_GL
-	OPENGL_LIBS=-lopengl32
-	OPENGL_OBJS=glshape.o
-	OPENGL_CFLAGS=-DHAVE_OPENGL
-else
-	OPENGL_LIBS=
-	OPENGL_OBJS=
-	OPENGL_CFLAGS=
-endif
+### OpenGL mode support
+OPENGL_LIBS=-lopengl32
+OPENGL_OBJS=glshape.o
+OPENGL_CFLAGS=-DHAVE_OPENGL
 
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
