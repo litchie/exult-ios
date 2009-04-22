@@ -255,7 +255,7 @@ Image_buffer8 *Chunk_terrain::render_flats
 		if (queue_size > Figure_queue_size())
 			{		// Grown too big.  Remove last.
 			Chunk_terrain *last = render_queue->render_queue_prev;
-			last->free_rendered_flats();
+			last->free_rendered_flats(false);
 			render_queue->render_queue_prev = 
 						last->render_queue_prev;
 			last->render_queue_prev->render_queue_next = 
@@ -285,8 +285,13 @@ Image_buffer8 *Chunk_terrain::render_flats
 
 void Chunk_terrain::free_rendered_flats
 	(
+	bool rotation
 	)
 	{
+#ifdef HAVE_OPENGL
+	if (rotation && glflats && !glflats->has_palette_rotation())
+		return;
+#endif
 	delete rendered_flats; 
 	rendered_flats = 0; 
 #ifdef HAVE_OPENGL

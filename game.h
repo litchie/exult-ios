@@ -128,10 +128,14 @@ public:
 
 	inline static unsigned int get_ticks() { return ticks; }
 	inline static void set_ticks(unsigned int t) { ticks = t; }
+	void disable_direct_gl_render();
+	void enable_direct_gl_render();
+	void non_gl_blit();
+	void gl_clear_win();
 };
 
 extern Game *game;
 extern int wait_delay(int ms, int startcol = 0, int ncol = 0);
 extern Exult_Game exult_menu(Game_window *gwin);
-	
+
 #endif

@@ -99,8 +99,9 @@ public:
 		unsigned char *&trans);
 						// Convert to 32-bit rgba.
 	unsigned char *rgba(unsigned char *pal, unsigned char transp, 
-		int first_translucent = 256,
-		int last_translucent = 256, Xform_palette *xforms = 0);
+		bool& rotate, int first_rotate, int last_rotate,
+		int first_translucent = 256, int last_translucent = 256,
+		Xform_palette *xforms = 0);
 	};
 
 #endif

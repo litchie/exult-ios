@@ -1190,7 +1190,7 @@ static void Handle_events
 		}
 		if (!lerp || !didlerp) // No lerping
 		{
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 					// OpenGL?  Repaint all each time.
 			if (GL_manager::get_instance())
 				{
@@ -1220,13 +1220,8 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			while (ticks > last_rotate + rot_speed) 
 				last_rotate += rot_speed;
-#ifdef HAVE_OPENGL
-			if (GL_manager::get_instance())
-				Set_renderer(gwin->get_win());
-			else
-#endif
 					// Non palettized needs explicit blit.
-			if (!gwin->get_win()->is_palettized())
+			if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
@@ -1614,12 +1609,7 @@ static int Get_click
 				while (ticks > last_rotate + rot_speed) 
 					last_rotate += rot_speed;
 						// Non palettized needs explicit blit.
-#ifdef HAVE_OPENGL
-				if (GL_manager::get_instance())
-					Set_renderer(gwin->get_win());
-				else
-#endif
-				if (!gwin->get_win()->is_palettized())
+				if (!Set_glpalette(0, true) && !gwin->get_win()->is_palettized())
 					gwin->set_painted();
 				}
 			}

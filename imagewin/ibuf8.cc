@@ -725,6 +725,9 @@ unsigned char *Image_buffer8::rgba
 	(
 	unsigned char *pal,		// 3*256 bytes (rgbrgbrgb...).
 	unsigned char transp,		// Transparent value.
+	bool& rotate,				// Flag set to true if any of the colors rotate.
+	int first_rotate,			// First color that rotates.
+	int last_rotate,			// Last color that rotates.
 	int first_translucent,		// Palette index of 1st trans. color.
 	int last_translucent,		// Index of last trans. color.
 	Xform_palette *xforms		// Transformers.  Need same # as
@@ -736,6 +739,7 @@ unsigned char *Image_buffer8::rgba
 	uint32 *buf32 = new uint32[cnt];
 	uint32 *ptr32 = buf32;
 	unsigned char *pixels = bits;
+	rotate = false;
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned char pix = *pixels++;
@@ -752,6 +756,8 @@ unsigned char *Image_buffer8::rgba
 			}
 		else
 			{
+			if (pix >= first_rotate && pix <= last_rotate)
+				rotate = true;
 			r = pal[3*pix]; g = pal[3*pix+1]; b = pal[3*pix + 2];
 			a = 255;
 			}

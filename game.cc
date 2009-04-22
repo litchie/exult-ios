@@ -464,6 +464,49 @@ void Game::clear_avskin ()
 	av_skin = -1;
 }
 
+void Game::disable_direct_gl_render()
+	{
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		Shape_frame::set_to_render(win->get_ib8(), 0);
+#endif
+	}
+
+void Game::enable_direct_gl_render()
+	{
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		Shape_frame::set_to_render(win->get_ib8(), GL_manager::get_instance());
+#endif
+	}
+
+void Game::non_gl_blit()
+	{
+#ifdef HAVE_OPENGL
+	if (!GL_manager::get_instance())
+#endif
+		win->show();
+	}
+
+void Game::gl_clear_win()
+	{
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		win->get_ib8()->fill8(0);
+#endif
+	}
+
+static inline void Reset_gl_rotates()
+	{
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		{
+		GL_manager::get_instance()->set_palette_rotation(224, 254);
+			// Want to reset them all.
+		Set_glpalette();
+		}
+#endif
+	}
 
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
 // return 0 if time passed completly, 1 if user pressed any key or mouse button,
@@ -499,8 +542,10 @@ int wait_delay(int ms, int startcol, int ncol)
 		int w = gwin->get_width(), h = gwin->get_height();
 		Image_buffer8 *buf = gwin->get_win()->get_ib8();
 		screen = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
-		//Shape_manager::get_instance()->paint_shape(0, 0, screen);
-		Set_renderer(gwin->get_win());
+		GL_manager::get_instance()->set_palette_rotation(startcol,
+					startcol + ncol-1);
+			// Want to reset them all.
+		Set_glpalette();
 		GL_manager::get_instance()->paint(screen, 0, 0);
 		gwin->get_win()->show();
 		}
@@ -534,11 +579,13 @@ int wait_delay(int ms, int startcol, int ncol)
 				case SDLK_KP_ENTER:
 #ifdef HAVE_OPENGL
 					delete screen;
+					Reset_gl_rotates();
 #endif
 					return 2;
 				default:
 #ifdef HAVE_OPENGL
 					delete screen;
+					Reset_gl_rotates();
 #endif
 					return 1;
 					}
@@ -549,6 +596,7 @@ int wait_delay(int ms, int startcol, int ncol)
 			case SDL_MOUSEBUTTONUP:
 #ifdef HAVE_OPENGL
 				delete screen;
+				Reset_gl_rotates();
 #endif
 				return 1;
 			default:
@@ -568,7 +616,7 @@ int wait_delay(int ms, int startcol, int ncol)
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 				{
-				Set_renderer(gwin->get_win());
+				Set_glpalette(0, true);
 				//Shape_manager::get_instance()->paint_shape(0, 0, screen);
 				GL_manager::get_instance()->paint(screen, 0, 0);
 				}
@@ -579,6 +627,7 @@ int wait_delay(int ms, int startcol, int ncol)
 	
 #ifdef HAVE_OPENGL
 	delete screen;
+	Reset_gl_rotates();
 #endif
 	return 0;
 }
