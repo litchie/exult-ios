@@ -554,5 +554,6 @@ public:
 	};
 	
 void Set_renderer(Image_window8 *win, Palette *pal = 0, bool resize = false);
+bool Set_glpalette(Palette *pal = 0, bool rotation = false);
 
 #endif

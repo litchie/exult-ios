@@ -277,24 +277,8 @@ void Set_renderer
 	glman = 0;
 	if (win->get_scaler() == Image_window::OpenGL)
 		{
-		Chunk_terrain::clear_glflats();
 		glman = new GL_manager();
-					// +++++Hope this is okay to do:
-		//pal->load(PALETTES_FLX, PATCH_PALETTES, 0);	// Main palette.
-					// This should be elsewhere, I think:
-		unsigned char *newpal = new unsigned char[768];
-		if (pal)
-			{
-			for (int i = 0; i < 256; i++)
-				{		// Palette colors are 0-63.
-				newpal[3*i] = 4*pal->get_red(i);
-				newpal[3*i+1] = 4*pal->get_green(i);
-				newpal[3*i+2] = 4*pal->get_blue(i);
-				}
-			}
-		else
-			std::memcpy(newpal, win->get_palette(), 768);
-		glman->set_palette(newpal);
+		glman->set_palette(pal);
 		if (resize)
 			glman->resized(win->get_width(), win->get_height(), 
 								win->get_scale());
@@ -303,6 +287,79 @@ void Set_renderer
 					// Tell shapes how to render.
 	Shape_frame::set_to_render(win->get_ib8(), glman);
 	}
+
+#ifdef HAVE_OPENGL
+/*
+ *	Set palette and reset all textures. If given null palette, uses current
+ *	game window palette.
+ */
+
+void GL_manager::set_palette(Palette *pal, bool rotation)
+{
+	Chunk_terrain::clear_glflats(rotation);
+	if (rotation)
+		{	// Free only those that rotate.
+		GL_texshape *next = shapes;
+		while (next)
+			{
+			GL_texshape *tex = next;
+				// Point to next element to be safe.
+			next = next->lru_next;
+			if (tex->has_palette_rotation())
+				{	// Unlink.
+				if (shapes == tex)
+					shapes = next;
+				if (tex->lru_next)
+					tex->lru_next->lru_prev = tex->lru_prev;
+				if (tex->lru_prev)
+					tex->lru_prev->lru_next = tex->lru_next;
+				delete tex;
+				}
+			}
+		}
+	else	// Kill them all.
+		while (shapes)
+			{
+			GL_texshape *next = shapes->lru_next;
+			delete shapes;
+			shapes = next;
+			}
+	if (!palette)
+		palette = new unsigned char[768];
+	if (pal)
+		{
+		for (int i = 0; i < 256; i++)
+			{		// Palette colors are 0-63.
+			palette[3*i] = 4*pal->get_red(i);
+			palette[3*i+1] = 4*pal->get_green(i);
+			palette[3*i+2] = 4*pal->get_blue(i);
+			}
+		}
+	else
+		{
+		const unsigned char *cpal =
+				Game_window::get_instance()->get_win()->get_palette();
+		std::memcpy(palette, cpal, 768);
+		}
+}
+#endif
+
+/*
+ *	Set palette and reset all textures. If given null palette, uses current
+ *	game window palette.
+ */
+
+bool Set_glpalette(Palette *pal, bool rotation)
+{
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		{
+		GL_manager::get_instance()->set_palette(pal);
+		return true;
+		}
+#endif
+	return false;
+}
 
 /*
  *	Create game window.
@@ -3044,6 +3101,18 @@ void Game_window::cycle_load_palette()
 	{
 		for(int i = 0; i < 4; ++i)
 			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1);
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance())
+			{
+			int w = get_width(), h = get_height();
+			Image_buffer8 *buf = get_win()->get_ib8();
+			Shape_frame *screen =
+					new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
+			//Shape_manager::get_instance()->paint_shape(0, 0, screen);
+			Set_glpalette(0, true);
+			GL_manager::get_instance()->paint(screen, 0, 0);
+			}
+#endif
 		show(true);
 
 		// We query the timer here again, as the blit can take easily 50 ms and more

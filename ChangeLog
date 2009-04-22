@@ -5,6 +5,9 @@
 	* Fixed a few miscolored pixels in Exult menu logo.
 	* Fixed subtitle bug in SI intro -- they would not display if audio was
 	  disabled but voice was enabled.
+	* Cleaned up BG & SI intro and endgame OpenGL code. Made consistent use of
+	  #ifdef HAVE_OPENGL, instead of checking #if HAVE_OPENGL. OpenGL now only
+	  clears shapes that have palette rotation when rotating the palette.
 
 2009-04-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed several bugs in OpenGL: Cheat menu, shape browser, game menus now

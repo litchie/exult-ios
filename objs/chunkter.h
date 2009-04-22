@@ -55,7 +55,7 @@ class Chunk_terrain : public Game_singletons
 					// Create rendered_flats.
 	void paint_tile(int tilex, int tiley);
 	Image_buffer8 *render_flats();
-	void free_rendered_flats();
+	void free_rendered_flats(bool rotation);
 public:
 					// Create from 16x16x2 data:
 	Chunk_terrain(unsigned char *data, bool v2_chunks);
@@ -92,7 +92,7 @@ public:
 					// Move to front of queue.
 			insert_in_queue();
 		if (!glflats)
-			free_rendered_flats();
+			free_rendered_flats(false);
 		return rendered_flats
 			? rendered_flats : render_flats();
 		}
@@ -101,11 +101,11 @@ public:
 	void render_all(int cx, int cy);// Render (in terrain-editing mode).
 					// Write out to chunk.
 	int write_flats(unsigned char *chunk_data, bool v2_chunks);
-	static void clear_glflats()
+	static void clear_glflats(bool rotation)
 		{
 		Chunk_terrain *next = render_queue;
 		for (int i = 0; i < queue_size; i++, next = next->render_queue_next)
-			next->free_rendered_flats();
+			next->free_rendered_flats(rotation);
 		}
 	};
 

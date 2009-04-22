@@ -147,7 +147,7 @@ void ExultMenu::setup()
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	Font *fonton = fontManager.get_font("HOT_FONT");
 	MenuList menu;
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 	Shape_frame *setupbg = 0;
 	if (GL_manager::get_instance())
 	{
@@ -317,7 +317,7 @@ void ExultMenu::setup()
 			break;
 			}
 		}
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 	delete setupbg;
 #endif
 }
@@ -479,12 +479,12 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 	do {
 #if !(defined(__zaurus__))
 		// Interferes with the menu.
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
 			sman->paint_shape(logox,logoy,exultlogo);
 #endif
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
 			font->draw_text(gwin->get_win()->get_ib8(), 
@@ -519,7 +519,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 
 static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file& exult_flx, Font *font)
 	{
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
 		{
 		Game_window *gwin = Game_window::get_instance();
@@ -580,7 +580,7 @@ BaseGameInfo *ExultMenu::run()
 	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
 		gwin->get_win()->fill8(0);
 #endif
@@ -608,7 +608,7 @@ BaseGameInfo *ExultMenu::run()
 	do {
 #if !(defined(__zaurus__))
 		// Interferes with the menu.
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 		if (GL_manager::get_instance() && !logobg)
 			{
 			logobg = create_exultlogo(logox, logoy, exult_flx, font);
@@ -618,7 +618,7 @@ BaseGameInfo *ExultMenu::run()
 #endif
 			sman->paint_shape(logox,logoy,exultlogo);
 #endif
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
 			font->draw_text(gwin->get_win()->get_ib8(), 
@@ -679,7 +679,7 @@ BaseGameInfo *ExultMenu::run()
 	} while(sel_game==0);
 	delete menu;
 	
-#if HAVE_OPENGL
+#ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
 		delete logobg;
 #endif
