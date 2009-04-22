@@ -282,7 +282,7 @@ int main(int argc,char *argv[])
 											if (i == 0x12) opcodetype = POP;
 											switch (opcodetype)
 												{
-												case BYTE:
+												case PUSHBYTE:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
