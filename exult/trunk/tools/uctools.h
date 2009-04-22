@@ -21,7 +21,7 @@
 // Just x bytes
 #define PUSH					8
 // Just a byte
-#define BYTE					9
+#define PUSHBYTE					9
 // variable + relative jump (for the 'sloop')
 #define SLOOP					10
 #define POP						11
@@ -131,7 +131,7 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0, 0, 0 },						// 41
 	{ "pushf", 2, FLGREF, 0, 1 },					// 42
 	{ "popf", 2, FLGREF, 1, 0 },					// 43
-	{ "pushw", 1, BYTE, 0, 1 },					// 44
+	{ "pushw", 1, PUSHBYTE, 0, 1 },					// 44
 	{ NULL, 0, 0, 0, 0 },						// 45
 	{ "setarrayelem", 2, IMMED, 2, 0 },			// 46
 	{ "calle", 2, FUNID, 1, 1 },					// 47

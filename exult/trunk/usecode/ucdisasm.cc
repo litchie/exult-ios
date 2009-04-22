@@ -95,7 +95,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	if (pdesc && pdesc->nbytes > 0) {
 		switch( pdesc->type )
 			{
-			case BYTE:
+			case PUSHBYTE:
 				std::printf("\t%02x", *ip++);
 				break;
 			case IMMED:
