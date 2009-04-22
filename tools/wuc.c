@@ -278,17 +278,17 @@ int main(int argc,char *argv[])
 											emit_byte(i);
 										else {
 											opcodetype = opcode_table[i].type;
-											if (i == 0x21) opcodetype = PUSH;
-											if (i == 0x12) opcodetype = POP;
+											if (i == 0x21) opcodetype = op_push;
+											if (i == 0x12) opcodetype = op_pop;
 											switch (opcodetype)
 												{
-												case PUSHBYTE:
+												case op_byte:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
 													emit_byte(word);
 													break;
-												case CALL:
+												case op_call:
 													emit_byte(i);
 													read_token(fi);
 													if ((token2=strchr(token,'@'))!=NULL)
@@ -308,32 +308,32 @@ int main(int argc,char *argv[])
 														}
 													emit_byte(word);
 													break;
-												case DATA_STRING:
+												case op_data_string:
 													emit_byte(i);
 													read_token(fi);
 													label = get_label();
 													check_data_label_16(label);
 													emit_word(label);
 													break;
-												case DATA_STRING32:
+												case op_data_string32:
 													emit_byte(i);
 													read_token(fi);
 													emit_dword(get_label());
 													break;
-												case EXTCALL:
-												case VARREF:
+												case op_extcall:
+												case op_varref:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"[%x]",&word);
 													emit_word(word);
 													break;
-												case FLGREF:
+												case op_flgref:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"flag:[%x]",&word);
 													emit_word(word);
 													break;
-												case PUSH:
+												case op_push:
 													read_token(fi);
 													for (i=0;i<pushsize;i++)
 														{
@@ -350,7 +350,7 @@ int main(int argc,char *argv[])
 															emit_word(word);
 														}
 													break;
-												case POP:
+												case op_pop:
 													read_token(fi);
 													for (i=0;i<popsize;i++)
 														{
@@ -367,24 +367,24 @@ int main(int argc,char *argv[])
 															emit_word(word);
 														}
 													break;
-												case IMMED:
-												case ARGNUM:
-												case FUNID:
-												case CLSFUN:
-												case CLSID:
+												case op_immed:
+												case op_argnum:
+												case op_funid:
+												case op_clsfun:
+												case op_clsid:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
 													emit_word(word);
 													break;
-												case IMMED32:
+												case op_immed32:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
 													emit_dword(word);
 													break;
-												case RELATIVE_JUMP:
-												case UNCONDITIONAL_JUMP:
+												case op_relative_jump:
+												case op_unconditional_jump:
 													emit_byte(i);
 													read_token(fi);
 													if (pass==1) {
@@ -395,8 +395,8 @@ int main(int argc,char *argv[])
 													} else
 														emit_word(-1);
 													break;
-												case RELATIVE_JUMP32:
-												case UNCOND_JUMP32:
+												case op_relative_jump32:
+												case op_uncond_jump32:
 													emit_byte(i);
 													read_token(fi);
 													if (pass==1) {
@@ -405,8 +405,8 @@ int main(int argc,char *argv[])
 													} else
 														emit_dword(-1);
 													break;
-												case IMMED_AND_RELATIVE_JUMP:
-												case ARGNUM_RELJUMP:
+												case op_immed_and_relative_jump:
+												case op_argnum_reljump:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
@@ -419,8 +419,8 @@ int main(int argc,char *argv[])
 													} else
 														emit_word(-1);
 													break;
-												case IMMED_RELJUMP32:
-												case ARGNUM_RELJUMP32:
+												case op_immedreljump32:
+												case op_argnum_reljump32:
 													emit_byte(i);
 													read_token(fi);
 													sscanf(token,"%x",&word);
@@ -431,8 +431,8 @@ int main(int argc,char *argv[])
 													else
 														emit_dword(-1);
 													break;
-												case SLOOP:
-												case STATICSLOOP:
+												case op_sloop:
+												case op_static_sloop:
 #if 0
 													emit_byte(0x2E);
 													if (pass == 0) {
@@ -464,7 +464,7 @@ int main(int argc,char *argv[])
 													} else
 														emit_word(-1);
 													break;
-												case SLOOP32:
+												case op_sloop32:
 #if 0
 													emit_byte(0xAE);
 													if (pass == 0) {

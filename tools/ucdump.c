@@ -88,21 +88,24 @@
  Opcode flags
  Just a 16bit word
 */
-#define IMMED					1
-/* Immediate 1 byte operand */
-#define IMMED_BYTE				2
-/* Will print a part of data string as comment */
-#define	DATA_STRING				4
-/* Will add command offset before printing */
-#define	RELATIVE_JUMP				8
-/* Will print third byte as decimal after comma */
-#define CALL					16
-/* Will print in square brackets */
-#define VARREF					32
-/* Will print in square brackets with "flag:" prefix */
-#define FLGREF					64
-/* Call of usecode function using extern table */
-#define EXTCALL					128
+enum opcode_flags
+	{
+	op_immed = 1,
+	/* Immediate 1 byte operand */
+	op_byte = 2,
+	/* Will print a part of data string as comment */
+	op_data_string = 4,
+	/* Will add command offset before printing */
+	op_relative_jump = 8,
+	/* Will print third byte as decimal after comma */
+	op_call = 16,
+	/* Will print in square brackets */
+	op_varref = 32,
+	/* Will print in square brackets with "flag:" prefix */
+	op_flgref = 64,
+	/* Call of usecode function using extern table */
+	op_extcall = 128
+	};
 
 /* Opcode descriptor */
 typedef struct _opcode_desc
@@ -126,20 +129,20 @@ static opcode_desc opcode_table[] =
 		Jumps to <jump> if array ended
 		??? what are 1,2? Are they used?
 	*/
-	{ "next", 10, VARREF | RELATIVE_JUMP },			/* 02 */
+	{ "next", 10, op_varref | op_relative_jump },			/* 02 */
 	{ NULL, 0, 0 },						/* 03 */
 	/* Asks user to select one the talk answers
 		Jumps where specified if no answer available
 	*/
-	{ "ask", 2, RELATIVE_JUMP },				/* 04 */
+	{ "ask", 2, op_relative_jump },				/* 04 */
 	/* Pops a value from the top of stack, jump if false, zero or empty array */
-	{ "jne", 2, RELATIVE_JUMP },				/* 05 */
+	{ "jne", 2, op_relative_jump },				/* 05 */
 	/* jump */
-	{ "jmp", 2, RELATIVE_JUMP },				/* 06 */
+	{ "jmp", 2, op_relative_jump },				/* 06 */
 	/* Pops the top-of-stack string & jumps if the string is NOT the last talk answer 
 		??? first operand seems to be always 1
 	*/
-	{ "jmpa", 4, IMMED | RELATIVE_JUMP},			/* 07 */
+	{ "jmpa", 4, op_immed | op_relative_jump},			/* 07 */
 	{ NULL, 0, 0 },						/* 08 */
 	/* Adds two values on the stack, popping them & pushing result 
 		Can be used to add integer to string - in this case integer is converted to string 
@@ -162,7 +165,7 @@ static opcode_desc opcode_table[] =
 	{ "not", 0, 0 },					/* 10 */
 	{ NULL, 0, 0 },						/* 11 */
 	/* Pops a stack value to given local variable */
-	{ "pop", 2, VARREF },					/* 12 */
+	{ "pop", 2, op_varref },					/* 12 */
 	/* Pushes a TRUE boolean value on the stack */
 	{ "push\ttrue", 0, 0 },					/* 13 */
 	/* Pushes a FALSE boolean value on the stack */
@@ -179,29 +182,29 @@ static opcode_desc opcode_table[] =
 	{ "cmpne", 0, 0 },					/* 1a */
 	{ NULL, 0, 0 },						/* 1b */
 	/* Adds a string from data segment to string register current contents */
-	{ "addsi", 2, DATA_STRING },				/* 1c */
+	{ "addsi", 2, op_data_string },				/* 1c */
 	/* Pushes a string value given by 16bit string offset in data segment to stack */
-	{ "pushs", 2, DATA_STRING },				/* 1d */
+	{ "pushs", 2, op_data_string },				/* 1d */
 	/* Pops specified number of values from stack, builds an array from them
 		& pushes it on the stack 
 		Pushes the empty array to top of the stack if operand is 0
 	*/
-	{ "arrc", 2, IMMED },					/* 1e */
+	{ "arrc", 2, op_immed },					/* 1e */
 	/* Pushes immediate 16bit integer to stack */
-	{ "pushi", 2, IMMED },					/* 1f */
+	{ "pushi", 2, op_immed },					/* 1f */
 	{ NULL, 0, 0 },						/* 20 */
 	/* Pushes a local variable on stack */
-	{ "push", 2, VARREF },					/* 21 */
+	{ "push", 2, op_varref },					/* 21 */
 	/* Compares 2 values on the stack, pops them & pushes TRUE if they are equal */
 	{ "cmpeq", 0, 0 },					/* 22 */
 	{ NULL, 0, 0 },						/* 23 */
 	/* Calls a usecode function - function number is 0-based index to externs array */
-	{ "call", 2, VARREF | EXTCALL },			/* 24 */
+	{ "call", 2, op_varref | op_extcall },			/* 24 */
 	/* Return from function without result returned on the stack */
 	{ "ret", 0, 0 },					/* 25 */
 	/* Uses the top-of-stack value to index (1-based) the array variable, 
 		pops index & pushes result - the value from the array */
-	{ "aget", 2, VARREF },					/* 26 */
+	{ "aget", 2, op_varref },					/* 26 */
 	{ NULL, 0, 0 },						/* 27 */
 	{ NULL, 0, 0 },						/* 28 */
 	{ NULL, 0, 0 },						/* 29 */
@@ -216,7 +219,7 @@ static opcode_desc opcode_table[] =
 		Always followed by "next" opcode??? */
 	{ "enum", 0, 0 },					/* 2e */
 	/* Adds local variable's string value to string register current contents */
-	{ "addsv", 2, VARREF },					/* 2f */
+	{ "addsv", 2, op_varref },					/* 2f */
 	/* If (top-of-stack - 1) value is in top-of-stack array, pushes true, 
 		otherwise pushes false - after popping array & value */
 	{ "in", 0, 0 },						/* 30 */
@@ -236,10 +239,10 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						/* 37 */
 	/* Calls engine's intrinsic function with specified number of parameters 
 	 	(popping them). The return value remains on stack */
-	{ "callis", 3, CALL },					/* 38 */
+	{ "callis", 3, op_call },					/* 38 */
 	/* Calls engine's intrinsic function with specified number of parameters 
 	 	(popping them). No return value  */
-	{ "calli", 3, CALL },					/* 39 */
+	{ "calli", 3, op_call },					/* 39 */
 	{ NULL, 0, 0 },						/* 3a */
 	{ NULL, 0, 0 },						/* 3b */
 	{ NULL, 0, 0 },						/* 3c */
@@ -253,22 +256,22 @@ static opcode_desc opcode_table[] =
 	{ "cla", 0, 0 },					/* 40 */
 	{ NULL, 0, 0 },						/* 41 */
 	/* Pushes game flag's value (boolean) on the stack */
-	{ "pushf", 2, FLGREF },					/* 42 */
+	{ "pushf", 2, op_flgref },					/* 42 */
 	/* Pops the stack value to the game flag (boolean) */
-	{ "popf", 2, FLGREF },					/* 43 */
+	{ "popf", 2, op_flgref },					/* 43 */
 	/* Pushes an immediate byte to the stack */
-	{ "pushbi", 1, IMMED_BYTE },				/* 44 */
+	{ "pushbi", 1, op_byte },				/* 44 */
 	{ NULL, 0, 0 },						/* 45 */
 	/* Uses the top-of-stack value to index (1-based) the array variable, (top-of-stack - 1)  as
 		the new value, and updates a value in the array slot (local variable specified
 		in the operand) */
-	{ "aput", 2, VARREF },					/* 46 */
+	{ "aput", 2, op_varref },					/* 46 */
 	/* Call of usecode function - function # is the operand
 		???Suggestion: functions are divided into event handlers (called by external code
 		and the usecode) and functions (called by usecode only). "calle" is used to
 		call the event handler from the usecode, while "call" is used to call a function
 	*/
-	{ "calle", 2, EXTCALL },				/* 47 */
+	{ "calle", 2, op_extcall },				/* 47 */
 	/* Pushes the cause of usecode event handler call on the stack */
 	/*	(double-click on item is be 1, NPC death seems to be 7 in SI and 2 in BG ) */
 	{ "push\teventid", 0, 0 },				/* 48 */
@@ -943,19 +946,19 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 	}
 	switch( pdesc->type )
 	{
-	case IMMED:
+	case op_immed:
 		/* Print immediate operand */
 		if( !mute )
 			printf("\t%04XH\t\t\t; %d\n", *(unsigned short*)( ptrc + 1 ),
 								*(short*)( ptrc + 1 ));
 		break;
-	case IMMED_BYTE:
+	case op_byte:
 		/* Print immediate operand */
 		if( !mute )
 			printf("\t%02XH\t\t\t; %d\n", (unsigned short)(ptrc[1]),
 								(unsigned short)(ptrc[1]));
 		break;
-	case ( VARREF | RELATIVE_JUMP ):
+	case ( op_varref | op_relative_jump ):
 		/* NEXT command */
 		if( !mute )
 		{
@@ -971,7 +974,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			printf("%04X\n", *(short*)( ptrc + 9 ) + (short)coffset + nbytes);
 		}
 		break;
-	case ( IMMED | RELATIVE_JUMP ):
+	case ( op_immed | op_relative_jump ):
 		/* JMPA command */
 		if( !mute )
 		{
@@ -983,7 +986,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			printf("; %d\n", *(short*)( ptrc + 1 ));
 		}
 		break;
-	case DATA_STRING:
+	case op_data_string:
 		if( !mute )
 		{
 			unsigned char* pstr;
@@ -1002,12 +1005,12 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			printf("\n");
 		}
 		break;
-	case RELATIVE_JUMP:
+	case op_relative_jump:
 		/* Print jump desination */
 		if( !mute )
 			printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
 		break;
-	case CALL:
+	case op_call:
 		{
 			/* Print call operand */
 			unsigned short func = *(unsigned short*)( ptrc + 1 );
@@ -1034,12 +1037,12 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			}
 		}
 		break;
-	case EXTCALL:
-	case ( VARREF | EXTCALL ):
+	case op_extcall:
+	case ( op_varref | op_extcall ):
 		{
 			unsigned short externpos = *(unsigned short*)( ptrc + 1 );
 			/* Print extern call */
-			if( pdesc->type & VARREF )
+			if( pdesc->type & op_varref )
 			{
 				unsigned short externpos = *(unsigned short*)( ptrc + 1 );
 				if( externpos < externsize )
@@ -1055,12 +1058,12 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 				printf("\textern:%04X\t\t\n", externpos);
 		}
 		break;
-	case VARREF:
+	case op_varref:
 		/* Print variable reference */
 		if( !mute )
 			printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
 		break;
-	case FLGREF:
+	case op_flgref:
 		/* Print game flag reference */
 		if( !mute )
 			printf("\tflag:[%04X]\n", *(unsigned short*)( ptrc + 1 ));

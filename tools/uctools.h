@@ -2,48 +2,51 @@
 #define UCTOOLS_H
 
 // Opcode flags
-// Just a 16bit word
-#define IMMED					0
-// Will print a part of data string as comment
-#define	DATA_STRING				1
-// Will add command offset before printing
-#define	RELATIVE_JUMP			2
-// Will print third byte as decimal after comma
-#define CALL					3
-// Will print in square brackets
-#define VARREF					4
-// Will print in square brackets with "flag:" prefix
-#define FLGREF					5
-// Call of usecode function using extern table
-#define EXTCALL					6
-// An immediate op. and then a rel. jmp address:  JSF
-#define IMMED_AND_RELATIVE_JUMP			7
-// Just x bytes
-#define PUSH					8
-// Just a byte
-#define PUSHBYTE					9
-// variable + relative jump (for the 'sloop')
-#define SLOOP					10
-#define POP						11
-#define IMMED32					12
-#define DATA_STRING32			13
-#define RELATIVE_JUMP32			14
-#define IMMED_RELJUMP32			15
-#define SLOOP32					16
-#define STATICREF				17
-#define CLASSVARREF				18
-#define IMMED_PAIR				19
-#define ARGNUM_RELJUMP			20
-#define ARGNUM_RELJUMP32		21
-#define ARGNUM					22
-#define FUNID					23
-#define FUNCALL					24
-#define CLSFUN					25
-#define CLSFUN_VTBL				26
-#define STATICSLOOP				27
-#define CLSID					28
-#define UNCONDITIONAL_JUMP		29
-#define UNCOND_JUMP32			30
+enum Opcode_flags
+	{
+	// Just a 16bit word
+	op_immed = 0,
+	// Will print a part of data string as comment
+	op_data_string = 1,
+	// Will add command offset before printing
+	op_relative_jump = 2,
+	// Will print third byte as decimal after comma
+	op_call = 3,
+	// Will print in square brackets
+	op_varref = 4,
+	// Will print in square brackets with "flag:" prefix
+	op_flgref = 5,
+	// Call of usecode function using extern table
+	op_extcall = 6,
+	// An immediate op. and then a rel. jmp address:  JSF
+	op_immed_and_relative_jump = 7,
+	// Just x bytes
+	op_push = 8,
+	// Just a byte
+	op_byte = 9,
+	// variable + relative jump (for the 'sloop')
+	op_sloop = 10,
+	op_pop = 11,
+	op_immed32 = 12,
+	op_data_string32 = 13,
+	op_relative_jump32 = 14,
+	op_immedreljump32 = 15,
+	op_sloop32 = 16,
+	op_staticref = 17,
+	op_classvarref = 18,
+	op_immed_pair = 19,
+	op_argnum_reljump = 20,
+	op_argnum_reljump32 = 21,
+	op_argnum = 22,
+	op_funid = 23,
+	op_funcall = 24,
+	op_clsfun = 25,
+	op_clsfun_vtbl = 26,
+	op_static_sloop = 27,
+	op_clsid = 28,
+	op_unconditional_jump = 29,
+	op_uncond_jump32 = 30
+	};
 
 // Opcode descriptor
 typedef struct _opcode_desc
@@ -65,12 +68,12 @@ static opcode_desc opcode_table[] =
 {
 	{ NULL, 0, 0, 0, 0 },						// 00
 	{ NULL, 0, 0, 0, 0 },						// 01
-	{ "loop", 10, SLOOP, 0, 0 },		// 02
+	{ "loop", 10, op_sloop, 0, 0 },		// 02
 	{ NULL, 0, 0, 0, 0 },						// 03
-	{ "startconv", 2, RELATIVE_JUMP, 0, 0 },	// 04
-	{ "jne", 2, RELATIVE_JUMP, 1, 0 },				// 05
-	{ "jmp", 2, UNCONDITIONAL_JUMP, 0, 0 },				// 06
-	{ "cmps", 4, ARGNUM_RELJUMP, 0, 0 },			// 07 JSF
+	{ "startconv", 2, op_relative_jump, 0, 0 },	// 04
+	{ "jne", 2, op_relative_jump, 1, 0 },				// 05
+	{ "jmp", 2, op_unconditional_jump, 0, 0 },				// 06
+	{ "cmps", 4, op_argnum_reljump, 0, 0 },			// 07 JSF
 	{ NULL, 0, 0, 0, 0 },						// 08
 	{ "add", 0, 0, 2, 1 },					// 09
 	{ "sub", 0, 0, 2, 1 },					// 0a
@@ -81,7 +84,7 @@ static opcode_desc opcode_table[] =
 	{ "or", 0, 0, 2, 1 },						// 0f
 	{ "not", 0, 0, 1, 1 },					// 10
 	{ NULL, 0, 0, 0, 0 },						// 11
-	{ "pop", 2, VARREF, 1, 0 },					// 12
+	{ "pop", 2, op_varref, 1, 0 },					// 12
 	{ "push\ttrue", 0, 0, 0, 1 },					// 13
 	{ "push\tfalse", 0, 0, 0, 1 },				// 14
 	{ NULL, 0, 0, 0, 0 },						// 15
@@ -91,17 +94,17 @@ static opcode_desc opcode_table[] =
 	{ "cmple", 0, 0, 2, 1 },					// 19
 	{ "cmpne", 0, 0, 2, 1 },					// 1a
 	{ NULL, 0, 0, 0, 0 },						// 1b
-	{ "addsi", 2, DATA_STRING, 0, 0 },				// 1c
-	{ "pushs", 2, DATA_STRING, 0, 1 },				// 1d
-	{ "arrc", 2, ARGNUM, 0, 1 },					// 1e
-	{ "pushi", 2, IMMED, 0, 1 },					// 1f
+	{ "addsi", 2, op_data_string, 0, 0 },				// 1c
+	{ "pushs", 2, op_data_string, 0, 1 },				// 1d
+	{ "arrc", 2, op_argnum, 0, 1 },					// 1e
+	{ "pushi", 2, op_immed, 0, 1 },					// 1f
 	{ NULL, 0, 0, 0, 0 },						// 20
-	{ "push", 2, VARREF, 0, 1 },					// 21
+	{ "push", 2, op_varref, 0, 1 },					// 21
 	{ "cmpeq", 0, 0, 2, 1 },					// 22
 	{ NULL, 0, 0, 0, 0 },						// 23
-	{ "call", 2, EXTCALL, 0, 0 },					// 24
+	{ "call", 2, op_extcall, 0, 0 },					// 24
 	{ "ret", 0, 0, 0, 0 },					// 25
-	{ "aidx", 2, VARREF, 1, 1 },					// 26
+	{ "aidx", 2, op_varref, 1, 1 },					// 26
 	{ NULL, 0, 0, 0, 0 },						// 27
 	{ NULL, 0, 0, 0, 0 },						// 28
 	{ NULL, 0, 0, 0, 0 },						// 29
@@ -110,17 +113,17 @@ static opcode_desc opcode_table[] =
 	{ "ret2", 0, 0, 0, 0 },					// 2c
 	{ "setr", 0, 0, 1, 0 },					// 2d
 	{ "initloop", 0, 0, 0, 0 },				// 2e
-	{ "addsv", 2, VARREF, 0, 0 },				// 2f
+	{ "addsv", 2, op_varref, 0, 0 },				// 2f
 	{ "in", 0, 0, 2, 1 },						// 30
-	{ "conv_something", 4, IMMED_AND_RELATIVE_JUMP, 0, 0 },			// 31
+	{ "conv_something", 4, op_immed_and_relative_jump, 0, 0 },			// 31
 	{ "rts", 0, 0, 0, 0 },					// 32
 	{ "say", 0, 0, 0, 0 },					// 33
 	{ NULL, 0, 0, 0, 0 },						// 34
 	{ NULL, 0, 0, 0, 0 },						// 35
 	{ NULL, 0, 0, 0, 0 },						// 36
 	{ NULL, 0, 0, 0, 0 },						// 37
-	{ "callis", 3, CALL, 0, 1 },					// 38
-	{ "calli", 3, CALL, 0, 0 },					// 39
+	{ "callis", 3, op_call, 0, 1 },					// 38
+	{ "calli", 3, op_call, 0, 0 },					// 39
 	{ NULL, 0, 0, 0, 0 },						// 3a
 	{ NULL, 0, 0, 0, 0 },						// 3b
 	{ NULL, 0, 0, 0, 0 },						// 3c
@@ -129,32 +132,32 @@ static opcode_desc opcode_table[] =
 	{ "abrt", 0, 0, 0, 0 },					// 3f
 	{ "endconv", 0, 0, 0, 0 },					// 40
 	{ NULL, 0, 0, 0, 0 },						// 41
-	{ "pushf", 2, FLGREF, 0, 1 },					// 42
-	{ "popf", 2, FLGREF, 1, 0 },					// 43
-	{ "pushw", 1, PUSHBYTE, 0, 1 },					// 44
+	{ "pushf", 2, op_flgref, 0, 1 },					// 42
+	{ "popf", 2, op_flgref, 1, 0 },					// 43
+	{ "pushw", 1, op_byte, 0, 1 },					// 44
 	{ NULL, 0, 0, 0, 0 },						// 45
-	{ "setarrayelem", 2, IMMED, 2, 0 },			// 46
-	{ "calle", 2, FUNID, 1, 1 },					// 47
+	{ "setarrayelem", 2, op_immed, 2, 0 },			// 46
+	{ "calle", 2, op_funid, 1, 1 },					// 47
 	{ "push\teventid", 0, 0, 0, 1 },				// 48
 	{ NULL, 0, 0, 0, 0 },						// 49
 	{ "arra", 0, 0, 2, 1 },					// 4a
 	{ "pop\teventid", 0, 0, 1, 0 },					// 4b
-	{ "line", 2, IMMED, 0, 0 },					// 4c
-	{ "func", 4, DATA_STRING, 0, 0 },			// 4d
+	{ "line", 2, op_immed, 0, 0 },					// 4c
+	{ "func", 4, op_data_string, 0, 0 },			// 4d
 	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },			// 4e - 4f
-	{ "push\tstatic", 2, STATICREF, 0, 1 },			// 50
-	{ "pop\tstatic", 2, STATICREF, 1, 0 },			// 51
-	{ "callo", 2, FUNID, 1, 1 },				// 52
-	{ "callind", 0, FUNCALL, 2, 0 },			// 53
-	{ "push\tclsvar", 2, CLASSVARREF, 0, 1 },			// 54
-	{ "pop\tclsvar", 2, CLASSVARREF, 1, 0 },			// 55
-	{ "callm", 2, CLSFUN, 0, 0 },					// 56
-	{ "callms", 4, CLSFUN_VTBL, 0, 0 },	// 57
-	{ "clscreate", 2, CLSID, 0, 0 },	// 58
+	{ "push\tstatic", 2, op_staticref, 0, 1 },			// 50
+	{ "pop\tstatic", 2, op_staticref, 1, 0 },			// 51
+	{ "callo", 2, op_funid, 1, 1 },				// 52
+	{ "callind", 0, op_funcall, 2, 0 },			// 53
+	{ "push\tclsvar", 2, op_classvarref, 0, 1 },			// 54
+	{ "pop\tclsvar", 2, op_classvarref, 1, 0 },			// 55
+	{ "callm", 2, op_clsfun, 0, 0 },					// 56
+	{ "callms", 4, op_clsfun_vtbl, 0, 0 },	// 57
+	{ "clscreate", 2, op_clsid, 0, 0 },	// 58
 	{ "classdel", 0, 0, 1, 0 },	// 59
-	{ "aidxs", 2, STATICREF, 1, 1 },	// 5A
-	{ "setstaticarrayelem", 2, IMMED, 2, 0 },	// 5B
-	{ "staticloop", 10, STATICSLOOP, 0, 0 },	// 5C
+	{ "aidxs", 2, op_staticref, 1, 1 },	// 5A
+	{ "setstaticarrayelem", 2, op_immed, 2, 0 },	// 5B
+	{ "staticloop", 10, op_static_sloop, 0, 0 },	// 5C
 	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	// 5D-5F
 	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	// 60-63
 	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	// 64-67
@@ -166,12 +169,12 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	{ NULL, 0, 0, 0, 0 },	// 7C-7F
 	{ NULL, 0, 0, 0, 0 },						// 80
 	{ NULL, 0, 0, 0, 0 },						// 81
-	{ "sloop_iter32", 12, SLOOP32, 0, 0 },		// 82
+	{ "sloop_iter32", 12, op_sloop32, 0, 0 },		// 82
 	{ NULL, 0, 0, 0, 0 },						// 83
-	{ "startconv32", 4, RELATIVE_JUMP32, 0, 0 },	// 84
-	{ "jne32", 4, RELATIVE_JUMP32, 1, 0 },		// 85
-	{ "jmp32", 4, UNCOND_JUMP32, 0, 0 },		// 86
-	{ "cmps32", 6, ARGNUM_RELJUMP32, 0, 0 },	// 87
+	{ "startconv32", 4, op_relative_jump32, 0, 0 },	// 84
+	{ "jne32", 4, op_relative_jump32, 1, 0 },		// 85
+	{ "jmp32", 4, op_uncond_jump32, 0, 0 },		// 86
+	{ "cmps32", 6, op_argnum_reljump32, 0, 0 },	// 87
 	{ NULL, 0, 0, 0, 0 },						// 88
 	{ NULL, 0, 0, 0, 0 },					// 89
 	{ NULL, 0, 0, 0, 0 },					// 8a
@@ -192,10 +195,10 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0, 0, 0 },					// 99
 	{ NULL, 0, 0, 0, 0 },					// 9a
 	{ NULL, 0, 0, 0, 0 },						// 9b
-	{ "addsi32", 4, DATA_STRING32, 0, 0 },		// 9c
-	{ "pushs32", 4, DATA_STRING32, 0, 1 },		// 9d
+	{ "addsi32", 4, op_data_string32, 0, 0 },		// 9c
+	{ "pushs32", 4, op_data_string32, 0, 1 },		// 9d
 	{ NULL, 0, 0, 0, 0 },				// 9e
-	{ "pushi32", 4, IMMED32, 0, 1 },				// 9f
+	{ "pushi32", 4, op_immed32, 0, 1 },				// 9f
 	{ NULL, 0, 0, 0, 0 },						// a0
 	{ NULL, 0, 0, 0, 0 },				// a1
 	{ NULL, 0, 0, 0, 0 },					// a2
@@ -213,7 +216,7 @@ static opcode_desc opcode_table[] =
 	{ "sloop32", 0, 0, 0, 0 },				// ae
 	{ NULL, 0, 0, 0, 0 },				// af
 	{ NULL, 0, 0, 0, 0 },						// b0
-	{ "conv_something32", 6, IMMED_RELJUMP32, 0, 0 },			// b1
+	{ "conv_something32", 6, op_immedreljump32, 0, 0 },			// b1
 	{ NULL, 0, 0, 0, 0 },					// b2
 	{ NULL, 0, 0, 0, 0 },					// b3
 	{ NULL, 0, 0, 0, 0 },						// b4
@@ -241,7 +244,7 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0, 0, 0 },					// ca
 	{ NULL, 0, 0, 0, 0 },					// cb
 	{ NULL, 0, 0, 0, 0 },					// cc
-	{ "func32", 8, DATA_STRING32, 0, 0 }			// cd
+	{ "func32", 8, op_data_string32, 0, 0 }			// cd
 
 };
 
