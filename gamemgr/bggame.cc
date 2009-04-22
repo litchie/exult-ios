@@ -252,6 +252,28 @@ class UserSkipException : public UserBreakException
 			case 2: throw UserSkipException(); break; \
 			}
 
+#ifdef HAVE_OPENGL
+#define CLEAR_WIN() do {	\
+		if (GL_manager::get_instance())	\
+			gwin->get_win()->get_ib8()->fill8(0);	\
+	} while (0)
+#define DISABLE_GL() do {	\
+		if (GL_manager::get_instance())	\
+			Shape_frame::set_to_render(gwin->get_win()->get_ib8(), 0);	\
+	} while (0)
+#define ENABLE_GL() do {	\
+		if (GL_manager::get_instance())	\
+			Shape_frame::set_to_render(gwin->get_win()->get_ib8(),	\
+					GL_manager::get_instance());	\
+		else	\
+			win->show();	\
+	} while (0)
+#else
+#define CLEAR_WIN()
+#define DISABLE_GL()
+#define ENABLE_GL() win->show()
+#endif
+
 void BG_Game::play_intro()
 {
 	Audio *audio = Audio::get_ptr();
@@ -315,6 +337,8 @@ void BG_Game::play_intro()
 		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
 	}
 	
+	CLEAR_WIN();
+	ENABLE_GL();
 	// Fade out the palette...
 	pal->fade_out(c_fade_out_time);
 	
@@ -529,10 +553,11 @@ void BG_Game::scene_butterfly()
 	}
 }
 
-#define	FLASH_SHAPE(x,y,shape,frame, delay)	do {	\
-		sman->paint_shape(x,y,shapes.get_shape(shape,frame));	\
-		win->show();	\
-		WAITDELAYCYCLE(delay);	\
+#define	FLASH_SHAPE(x,y,shape,frame,delay)	do {	\
+		DISABLE_GL();	\
+		sman->paint_shape((x),(y),shapes.get_shape((shape),(frame)));	\
+		ENABLE_GL();	\
+		WAITDELAYCYCLE((delay));	\
 		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());	\
 		} while(0)
 
@@ -647,39 +672,78 @@ void BG_Game::scene_guardian()
 		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+			else
+#endif
+				win->show();
+			WAITDELAYCYCLE(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+#endif
 			if (SDL_GetTicks() > ticks + 1800)//400)
 				break;
 		}
 
-		win->put(plasma,0,0); win->show();
+		win->put(plasma,0,0);
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			win->show();
 		WAITDELAYCYCLE(200);
 
 		ticks = SDL_GetTicks();
 		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+			else
+#endif
+				win->show();
+			WAITDELAYCYCLE(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+#endif
 			if (SDL_GetTicks() > ticks +800)
 				break;
 		}
 
-		win->put(plasma,0,0); win->show();
+		win->put(plasma,0,0);
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			win->show();
 		WAITDELAYCYCLE(200);
 
 		ticks = SDL_GetTicks();
 		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+			else
+#endif
+				win->show();
+			WAITDELAYCYCLE(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+#endif
 			if (SDL_GetTicks() > ticks + 500)
 				break;
 		}
 		
-		win->put(plasma,0,0); win->show();
+		win->put(plasma,0,0);
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			win->show();
 		FORGET_OBJECT(plasma);
 		
 		//
@@ -688,7 +752,7 @@ void BG_Game::scene_guardian()
 		Audio::get_ptr()->start_music(guardian_midi,false,INTROMUS);
 		
 		WAITDELAYCYCLE(3800);
-		
+
 		//
 		// First 'popup' (sh. 0x21)
 		//
@@ -698,9 +762,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(backup, centerx-53-s->get_xleft(), centery-68-s->get_yabove());
 		for(i=8; i>=-8; i--)
-		{
 			FLASH_SHAPE(centerx-53, centery-68, 0x21, 1+abs(i),80);
-		}
 		FORGET_OBJECT(backup);
 		WAITDELAYCYCLE(2000);
 
@@ -712,9 +774,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(backup, centerx - s->get_xleft(), centery-45 - s->get_yabove());
 		for(i=9; i>=-9; i--)
-		{
 			FLASH_SHAPE(centerx, centery-45, 0x22, 9-abs(i),80);
-		}
 		FORGET_OBJECT(backup);
 		WAITDELAYCYCLE(2000);
 
@@ -727,18 +787,19 @@ void BG_Game::scene_guardian()
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
+		DISABLE_GL();
 		sman->paint_shape(centerx,centery,s); // frame 0 is static background
+		ENABLE_GL();
 		win->get(backup, centerx- s->get_xleft(), centery- s->get_yabove());
 		for(i=1; i<16; i++)
-		{
 			FLASH_SHAPE(centerx, centery, 0x23, i,70);
-		}
 		
+		DISABLE_GL();
 		sman->paint_shape(centerx, centery,shapes.get_shape(0x23,15));
-		win->show();
+		ENABLE_GL();
 		
-		WAITDELAYCYCLE(500);	// - show his face for half a second before he
-					//opens his eyes.
+		WAITDELAYCYCLE(500);	// - show his face for half a second
+					// before he opens his eyes.
 		
 		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
 		
@@ -749,6 +810,7 @@ void BG_Game::scene_guardian()
 		//
 
 
+		DISABLE_GL();
 		// mouth
 		s = shapes.get_shape(guardian_mouth_shp,0);
 		backup = win->create_buffer(s->get_width(), s->get_height());
@@ -770,7 +832,8 @@ void BG_Game::scene_guardian()
 		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
 		win->get(cbackup3, centerx - s3->get_xleft(),
 			 centery-FORHEAD_DIST - s3->get_yabove());
-	       	sman->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
+		sman->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
+		ENABLE_GL();
 
 		// prepare Guardian speech
 		Font *font = fontManager.get_font("END3_FONT");
@@ -836,6 +899,7 @@ void BG_Game::scene_guardian()
 				if (Audio::get_ptr()->is_speech_enabled())
 					Audio::get_ptr()->playfile(INTROSND,PATCH_INTROSND,false);
 				
+			DISABLE_GL();
 			if (time >= eye_times[eye_index] && eye_index < eye_num_frames){
 				eye_index++;
 				DRAW_SPEECH();	
@@ -852,8 +916,12 @@ void BG_Game::scene_guardian()
 				DRAW_SPEECH();
 			}
 
+			ENABLE_GL();
 			WAITDELAYCYCLE(10);
-			win->show();
+#if HAVE_OPENGL
+			if (!GL_manager::get_instance())
+#endif
+				win->show();
 			time = (SDL_GetTicks() - start)/50;
 		}
 		
@@ -877,21 +945,21 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
+		DISABLE_GL();
 		sman->paint_shape(centerx,centery,s); // frame 0 is background
+		ENABLE_GL();
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for(i=15; i>0; i--)
-		{
 			FLASH_SHAPE(centerx, centery, 0x23, i, 70);
-		}
 		win->put(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
 		FORGET_OBJECT(backup);
 		FORGET_OBJECT(cbackup);
 
-		win->show();
+		ENABLE_GL();
 		WAITDELAYCYCLE(1200);
 		
 		Audio::get_ptr()->stop_music();
-		
+
 		//
 		// More static
 		//
@@ -900,13 +968,23 @@ void BG_Game::scene_guardian()
 		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+			else
+#endif
+				win->show();
+			WAITDELAYCYCLE(2);
+#if HAVE_OPENGL
+			if (GL_manager::get_instance())
+				Delay();
+#endif
 			if (SDL_GetTicks() > ticks + 1500)
 				break;
 		}
 		
 		gwin->clear_screen(true);
+		CLEAR_WIN();
 		
 		//
 		// White dot
@@ -921,11 +999,12 @@ void BG_Game::scene_guardian()
 			int x = centerx + rand()%3 - 1;
 			int y = centery + rand()%3 - 1;
 			FLASH_SHAPE(x, y, 0x14, 0, 0);
-			WAITDELAY(2);
+			WAITDELAYCYCLE(2);
 			if (SDL_GetTicks() - ticks > 800)
 				break;
 		}
 		FORGET_OBJECT(backup);
+		CLEAR_WIN();
 	}
 	catch(const UserBreakException &x)
 	{
@@ -934,6 +1013,7 @@ void BG_Game::scene_guardian()
 		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
 		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
 		FORGET_OBJECT(plasma);
+		CLEAR_WIN();
 		
 		if(typeid(x) != typeid(UserSkipException))
 			throw x;
@@ -1034,9 +1114,9 @@ void BG_Game::scene_desk()
 		}
 		
 		WAITDELAY(1500); 
-		
 		// scroll down (sh. 0x0B: mouse + orb of moons, below map)
 		for(i=0;i<=50;i+=2) { 
+			DISABLE_GL();
 			sman->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x07,0));
 			sman->paint_shape(centerx-194, centery-i,
@@ -1053,11 +1133,11 @@ void BG_Game::scene_desk()
 					  shapes.get_shape(0x0B,0));
 			// "The mystical Orb beckons you"
 			sman->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
-
-			win->show();
+			ENABLE_GL();
 			WAITDELAYCYCLE2(110);
 		}
-
+		
+		DISABLE_GL();
 		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
 		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
 		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
@@ -1067,17 +1147,17 @@ void BG_Game::scene_desk()
 		sman->paint_shape(topx+319, topy+149, shapes.get_shape(0x0B,0));
 		// "It has opened gateways to Britannia in the past"
 		sman->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
-		win->show();
+		ENABLE_GL();
 
 		WAITDELAYCYCLE2(3200);
 		pal->fade_out(100);
 		gwin->clear_screen(true);
+		CLEAR_WIN();
 	}
 	catch(const UserBreakException &x)
 	{
 		// Waste disposal
 		FORGET_OBJECT(backup);
-		
 		throw x;
 	}
 }
@@ -1105,6 +1185,7 @@ void BG_Game::scene_moongate()
 
 	// Bushes move out of the way
 	for(i=50;i>=-170;i-=2) { // was for(i=120;i>=-170;i-=6)
+		DISABLE_GL();
 		sman->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x02,0));
 		sman->paint_shape(centerx+1,centery+1,
@@ -1124,9 +1205,10 @@ void BG_Game::scene_moongate()
 			sman->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
 		} else if (i <= -100) {
 			// "You have but one path to the answer"
-			sman->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));			}
+			sman->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
+		}
 		
-		win->show();
+		ENABLE_GL();
 		WAITDELAYCYCLE3(80);
 		
 	}
@@ -1139,7 +1221,10 @@ void BG_Game::scene_moongate()
 	// was to clear screen again, but we don't need to now that I moved "you have but one path"
 	// up in to the bushes-moving loop
 
-	win->show();
+#if HAVE_OPENGL
+	if (!GL_manager::get_instance())
+#endif
+		win->show();
 
 	// TODO: zoom (run) into moongate
 
@@ -1321,10 +1406,10 @@ void BG_Game::end_game(bool success)
 		for (i = 150; i < 204; i++)
 		{
 			next = fli1.play(win, i, i, next);
+			DISABLE_GL();
 			endfont2->draw_text(ibuf, width, height, message);
-			
-			win->show();
-			if (wait_delay (0)) { do_break = true; break; }
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1)) { do_break = true; break; }
 		}
 		if (do_break) break;
 
@@ -1341,10 +1426,10 @@ void BG_Game::end_game(bool success)
 		for (i = 0; i < 100; i++)
 		{
 			next = fli2.play(win, i, i, next);
+			DISABLE_GL();
 			endfont2->draw_text(ibuf, width, height, message);
-			
-			win->show();
-			if (wait_delay (0)) { do_break = true; break; }
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1)) { do_break = true; break; }
 		}
 		if (do_break) break;
 
@@ -1361,11 +1446,16 @@ void BG_Game::end_game(bool success)
 				pal->set_brightness ((i - next) / 10);
 				pal->apply();
 			}
-			if (wait_delay (0)) { do_break = true; break; }
+			if (wait_delay (0, 0, 1)) { do_break = true; break; }
 		}
 		if (do_break) break;
 
-		pal->set_brightness(80);	// Set readable brightness
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance())
+			pal->set(0, 80, true);
+		else
+#endif
+			pal->set_brightness(80);	// Set readable brightness
 		// Text message 1
 
 		// Paint backgound black
@@ -1425,7 +1515,7 @@ void BG_Game::end_game(bool success)
 				pal->set_brightness (100 - (i-next) / 10);
 				pal->apply();
 			}
-			if (wait_delay (0)) { do_break = true; break; }
+			if (wait_delay (0, 0, 1)) { do_break = true; break; }
 		}
 		if (do_break) break;
 		
@@ -1443,11 +1533,11 @@ void BG_Game::end_game(bool success)
 			for (j = 0; j < (unsigned)finfo.frames; j++)
 			{
 				next = fli3.play(win, j, j, next);
+				DISABLE_GL();
 				for(m=0; m<6; m++)
 					endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, text_msgs[txt_screen0 + m]);
-
-				win->show ();
-				if (wait_delay (10)) { do_break = true; break; }
+				ENABLE_GL();
+				if (wait_delay (10, 0, 1)) { do_break = true; break; }
 			}
 		}
 		if (do_break) break;
@@ -1465,13 +1555,19 @@ void BG_Game::end_game(bool success)
 				pal->set_brightness ((i - next) / 10);
 				pal->apply();
 			}
-			if (wait_delay (0)) { do_break = true; break; }
+			if (wait_delay (0, 0, 1)) { do_break = true; break; }
 		}
 		if (do_break) break;
 
 		// Text Screen 1
 
-		pal->set_brightness(80);	// Set readable brightness
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance())
+			pal->set(0, 80, true);
+		else
+#endif
+			pal->set_brightness(80);	// Set readable brightness
+
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
@@ -1486,7 +1582,7 @@ void BG_Game::end_game(bool success)
 		// Fade in for 1 sec (50 cycles)
 		pal->fade (50, 1, 0);
 
-		// Display text for 20 seonds (only 10 at the moment)
+		// Display text for 20 seconds (only 10 at the moment)
 		for (i = 0; i < 100; i++) if (wait_delay (100)) { do_break = true; break; }
 		if (do_break) break;
 
@@ -1530,7 +1626,7 @@ void BG_Game::end_game(bool success)
 		
 		for(i=0; i<6; i++)
 		{
-			message = text_msgs[txt_screen3 + i];		
+			message = text_msgs[txt_screen3 + i];
 			normal->draw_text (ibuf, centerx-normal->get_text_width(message)/2, starty+normal->get_text_height()*i, message);
 		}
 

@@ -516,6 +516,8 @@ void to_uppercase(std::string &str);
 std::string to_uppercase(const std::string &str);
 
 int Log2(uint32 n);
+uint32 msb32(uint32 n);
+int fgepow2(uint32 n);
 
 char *newstrdup(const char *s);
 char *Get_mapped_name(const char *from, int num, char *to);

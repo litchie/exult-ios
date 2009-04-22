@@ -96,11 +96,9 @@ GL_texshape::GL_texshape
 	int xfcnt			// Number of xforms.
 	) : frame(f), lru_next(0), lru_prev(0)
 	{
-	int w = frame->get_width(), h = frame->get_height();
-					// Figure texture size as 2^n, rounding
-					//   up.
-	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
-	texsize = 1<<(logw > logh ? logw : logh);
+					// Figure texture size as 2^n, rounding up.
+	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
+	texsize = w > h ? w : h;
 					// Render frame.
 	Image_buffer8 buf8(texsize, texsize);
 	buf8.fill8(transp);		// Fill with transparent value.
@@ -121,11 +119,9 @@ GL_texshape::GL_texshape
 	unsigned char *trans	// Translation table.
 	) : frame(f), lru_next(0), lru_prev(0)
 	{
-	int w = frame->get_width(), h = frame->get_height();
-					// Figure texture size as 2^n, rounding
-					//   up.
-	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
-	texsize = 1<<(logw > logh ? logw : logh);
+					// Figure texture size as 2^n, rounding up.
+	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
+	texsize = w > h ? w : h;
 					// Render frame.
 	Image_buffer8 buf8(texsize, texsize);
 	buf8.fill8(transp);		// Fill with transparent value.
@@ -147,7 +143,7 @@ GL_texshape::GL_texshape
 	{
 	int w = src->get_width(), h = src->get_height();
 	assert (w == h);
-	assert ((1<<Log2(w)) == w);
+	assert (fgepow2(w) == w);
 	texsize = w;
 	create(src, pal);
 	}

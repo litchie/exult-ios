@@ -147,6 +147,20 @@ void ExultMenu::setup()
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	Font *fonton = fontManager.get_font("HOT_FONT");
 	MenuList menu;
+#if HAVE_OPENGL
+	Shape_frame *setupbg = 0;
+	if (GL_manager::get_instance())
+	{
+		int w = gwin->get_width(), h = gwin->get_height();
+		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
+				(gwin->get_win()->get_ib8()->create_another(w, h));
+		assert(buf);
+		buf->fill8(0);
+		setupbg = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
+		delete buf;
+	}
+	menu.set_background(setupbg);
+#endif
 
 	int menuypos = centery-44;
 	
@@ -242,66 +256,73 @@ void ExultMenu::setup()
 	
 	menu.set_selection(0);
 	gwin->clear_screen(true);
-	for(;;) {
+	while(1)
+		{
 		gpal->apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
-		if(entry==ok_button) {
+		if(entry==ok_button)
+			{
 			gpal->fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			// Scaling Method
 			int scaler = scalemethod->get_choice();
-			if(scaler!=gwin->get_win()->get_scaler()) {
-				gwin->resized(
-					gwin->get_win()->get_width(),
-					gwin->get_win()->get_height(),
-					gwin->get_win()->get_scale(),
-					scalemethod->get_choice()
-				);
-				if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
-					config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
-			}
+			if(scaler!=gwin->get_win()->get_scaler())
+				{
+				gwin->resized(gwin->get_win()->get_width(),
+				              gwin->get_win()->get_height(),
+				              gwin->get_win()->get_scale(),
+				              scalemethod->get_choice());
+				if (scaler > Image_window::NoScaler &&
+						scaler < Image_window::NumScalers)
+					config->set("config/video/scale_method",
+							Image_window::get_name_for_scaler(scaler), true);
+				}
 			// Palette fades
-			gpal->set_fades_enabled(
-						palfades->get_choice()==1);
+			gpal->set_fades_enabled(palfades->get_choice()==1);
 			config->set("config/video/disable_fades",
-				gpal->get_fades_enabled()?"no":"yes",true);
+					gpal->get_fades_enabled()?"no":"yes", true);
 
 #ifdef SHOW_MIDICONV_IN_EXULTMENU
-			if (Audio::get_ptr()->get_midi()) {
-				if (midiconv) {
+			if (Audio::get_ptr()->get_midi())
+				{
+				if (midiconv)
 					// Midi Conversion
 					Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
-				}
 #ifdef ENABLE_MIDISFX
-				if (sfxconv) {
+				if (sfxconv)
 					// SFX Conversion
 					Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDIFILE_CONVERT_GS127_TO_GS:XMIDIFILE_CONVERT_NOCONVERSION);
-				}
 #endif
-			}
+				}
 #endif
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
 			// Play 1st scene
 			set_play_1st_scene(playscene->get_choice()==1);
 			// Full screen
-			if(((fullscreen->get_choice()==0)&&(gwin->get_win()->is_fullscreen()))||
-				((fullscreen->get_choice()==1)&&(!gwin->get_win()->is_fullscreen())))
+			if ((fullscreen->get_choice() == 0 &&  gwin->get_win()->is_fullscreen()) ||
+			    (fullscreen->get_choice() == 1 && !gwin->get_win()->is_fullscreen()))
 				gwin->get_win()->toggle_fullscreen();
-			config->set("config/video/fullscreen",gwin->get_win()->is_fullscreen()?"yes":"no",true);
+			config->set("config/video/fullscreen",
+					gwin->get_win()->is_fullscreen() ? "yes" : "no", true);
 			// Cheating
 			cheat.set_enabled(cheating->get_choice()==1);
 			calc_win();
-			return;
-		} else if (entry==cancel_button) {
+			break;
+			}
+		else if (entry==cancel_button)
+			{
 			gpal->fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
-			return;
+			break;
+			}
 		}
-	}
+#if HAVE_OPENGL
+	delete setupbg;
+#endif
 }
 
-MenuList *ExultMenu::create_main_menu(int first)
+MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 {
 	MenuList *menu = new MenuList();
 
@@ -364,10 +385,11 @@ MenuList *ExultMenu::create_main_menu(int first)
 		xpos += max_width;
 	}
 
+	menu->set_background(bg);
 	return menu;
 }
 
-MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
+MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int first)
 {
 	MenuList *menu = new MenuList();
 
@@ -427,10 +449,11 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, int first)
 		xpos += max_width;
 	}
 
+	menu->set_background(bg);
 	return menu;
 }
 
-BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
+BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg)
 {
 	Palette *gpal = gwin->get_pal();
 	Shape_manager *sman = Shape_manager::get_instance();
@@ -441,28 +464,37 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 
 	int first_mod = 0, num_choices = selgame->get_mod_list().size()-1,
 		last_page = num_choices-num_choices%PAGE_SIZE;
-	MenuList *menu = create_mods_menu(selgame, first_mod);
+	MenuList *menu = create_mods_menu(selgame, logobg, first_mod);
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = 0;
 	
+	Shape_frame *exultlogo = 0;
 #if !(defined(__zaurus__))
-	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
-	int logox = centerx-exultlogo->get_width()/2,
-		logoy = centery-exultlogo->get_height()/2;
+	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	int logox, logoy;
+	logox = centerx - exultlogo->get_width()/2;
+	logoy = centery - exultlogo->get_height()/2;
 #endif
+	
 	do {
 #if !(defined(__zaurus__))
 		// Interferes with the menu.
-		sman->paint_shape(logox,logoy,exultlogo);
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
 #endif
-		font->draw_text(gwin->get_win()->get_ib8(), 
-					gwin->get_width()-font->get_text_width(VERSION),
-					gwin->get_height()-font->get_text_height()-5, VERSION);
+			sman->paint_shape(logox,logoy,exultlogo);
+#endif
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			font->draw_text(gwin->get_win()->get_ib8(), 
+						gwin->get_width()-font->get_text_width(VERSION),
+						gwin->get_height()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice) {
 			case -10: // The incompatibility notice; do nothing
 				break;
-			NAV_CLICK(create_mods_menu(selgame, first_mod), first_mod);
+			NAV_CLICK(create_mods_menu(selgame, logobg, first_mod), first_mod);
 			case -4: // Return to main menu
 				gpal->fade_out(c_fade_out_time/2);
 				wait_delay(c_fade_out_time/2);
@@ -485,12 +517,40 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame)
 	return sel_mod;
 }
 
+static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file& exult_flx, Font *font)
+	{
+#if HAVE_OPENGL
+	if (GL_manager::get_instance())
+		{
+		Game_window *gwin = Game_window::get_instance();
+		int w = gwin->get_width(), h = gwin->get_height();
+		Shape_frame *logo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
+				(gwin->get_win()->get_ib8()->create_another(w, h));
+		assert(buf);
+		buf->fill8(0);
+		logo->paint(buf, logox, logoy);
+			// Disable OpenGL rendering for a bit.
+		Shape_frame::set_to_render(buf, 0);
+		font->draw_text(buf, w-font->get_text_width(VERSION),
+					h-font->get_text_height()-5, VERSION);
+		Shape_frame::set_to_render(gwin->get_win()->get_ib8(),
+					GL_manager::get_instance());
+		Shape_frame *exultlogo = new Shape_frame(buf->get_bits(), w, h, 0, 0, true);
+		delete buf;
+		return exultlogo;
+		}
+	return 0;
+#endif
+	}
+
 BaseGameInfo *ExultMenu::run()
 {
 	Palette *gpal = gwin->get_pal();
-	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
-
 	Shape_manager *sman = Shape_manager::get_instance();
+
+	gwin->clear_screen(true);
+	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
 	font = fontManager.get_font("CREDITS_FONT");
 	fonton = fontManager.get_font("HOT_FONT");
 	navfont = fontManager.get_font("NAV_FONT");
@@ -516,40 +576,57 @@ BaseGameInfo *ExultMenu::run()
 	}
 	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
 											//may not be initialised
-	{
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID,true,EXULT_FLX);
-	}
 	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 
+#if HAVE_OPENGL
+	if (GL_manager::get_instance())
+		gwin->get_win()->fill8(0);
+#endif
 	Shape_frame *exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0);
 	int logox = centerx-exultlogo->get_width()/2,
 		logoy = centery-exultlogo->get_height()/2;
 	sman->paint_shape(logox,logoy,exultlogo);
 	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
+	Shape_frame *logobg;
 
-	int first_game = 0, num_choices = gamemanager->get_game_count()-1,
-		last_page = num_choices-num_choices%PAGE_SIZE;
-	MenuList *menu = create_main_menu(first_game);
-	menu->set_selection(0);
-	BaseGameInfo *sel_game = 0;
-#if defined(__zaurus__)
-	// Erase the old logo.
-	gwin->clear_screen(true);
+#ifdef __zaurus__
+	exultlogo = logobg = 0;
+#else
+	logobg = create_exultlogo(logox, logoy, exult_flx, font);
 #endif
 	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+	int first_game = 0, num_choices = gamemanager->get_game_count()-1,
+		last_page = num_choices-num_choices%PAGE_SIZE;
+	MenuList *menu = create_main_menu(logobg, first_game);
+	menu->set_selection(0);
+	BaseGameInfo *sel_game = 0;
+	// Erase the old logo.
+	gwin->clear_screen(true);
 	do {
 #if !(defined(__zaurus__))
 		// Interferes with the menu.
-		sman->paint_shape(logox,logoy,exultlogo);
+#if HAVE_OPENGL
+		if (GL_manager::get_instance() && !logobg)
+			{
+			logobg = create_exultlogo(logox, logoy, exult_flx, font);
+			menu->set_background(logobg);
+			}
+		else if (!GL_manager::get_instance())
 #endif
-		font->draw_text(gwin->get_win()->get_ib8(), 
-					gwin->get_width()-font->get_text_width(VERSION),
-					gwin->get_height()-font->get_text_height()-5, VERSION);
+			sman->paint_shape(logox,logoy,exultlogo);
+#endif
+#if HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			font->draw_text(gwin->get_win()->get_ib8(), 
+						gwin->get_width()-font->get_text_width(VERSION),
+						gwin->get_height()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice) {
-			NAV_CLICK(create_main_menu(first_game), first_game);
+			NAV_CLICK(create_main_menu(logobg, first_game), first_game);
 			case -4: // Setup
 				gpal->fade_out(c_fade_out_time);
 				setup();
@@ -592,7 +669,8 @@ BaseGameInfo *ExultMenu::run()
 				{
 					// Show the mods for the game:
 					gpal->fade_out(c_fade_out_time/2);
-					sel_game = show_mods_menu(gamemanager->get_game(choice-MAX_GAMES));
+					sel_game = show_mods_menu(
+							gamemanager->get_game(choice-MAX_GAMES), logobg);
 					gwin->clear_screen(true);
 					gpal->apply();
 				}
@@ -601,6 +679,10 @@ BaseGameInfo *ExultMenu::run()
 	} while(sel_game==0);
 	delete menu;
 	
+#if HAVE_OPENGL
+	if (GL_manager::get_instance())
+		delete logobg;
+#endif
 	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;

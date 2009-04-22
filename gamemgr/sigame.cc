@@ -222,6 +222,28 @@ static int get_frame (void)
 	return 0;
 }
 
+#ifdef HAVE_OPENGL
+#define CLEAR_WIN() do {	\
+		if (GL_manager::get_instance())	\
+			gwin->get_win()->get_ib8()->fill8(0);	\
+	} while (0)
+#define DISABLE_GL() do {	\
+		if (GL_manager::get_instance())	\
+			Shape_frame::set_to_render(gwin->get_win()->get_ib8(), 0);	\
+	} while (0)
+#define ENABLE_GL() do {	\
+		if (GL_manager::get_instance())	\
+			Shape_frame::set_to_render(gwin->get_win()->get_ib8(),	\
+					GL_manager::get_instance());	\
+		else	\
+			win->show();	\
+	} while (0)
+#else
+#define CLEAR_WIN()
+#define DISABLE_GL()
+#define ENABLE_GL() win->show()
+#endif
+
 void SI_Game::play_intro()
 {
 	Audio *audio = Audio::get_ptr();
@@ -242,7 +264,8 @@ void SI_Game::play_intro()
 	Font *font = fontManager.get_font("MENU_FONT");
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
-	bool speech = Audio::get_ptr()->is_speech_enabled();
+	bool speech = Audio::get_ptr()->is_audio_enabled() &&
+					Audio::get_ptr()->is_speech_enabled();
 
 	gwin->clear_screen(true);
 	
@@ -257,32 +280,37 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
+			DISABLE_GL();
 			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
 			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
-			win->show();
+			ENABLE_GL();
+			wait_delay(0, 0, 1);
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
+		DISABLE_GL();
 		font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
 		font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
-		win->show();
+		ENABLE_GL();
 
-		if (wait_delay (3000))
+		if (wait_delay (3000, 0, 1))
 			throw UserBreakException();
 
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
+			DISABLE_GL();
 			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
 			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
-			win->show();
+			ENABLE_GL();
+			wait_delay(0, 0, 1);
 		}
 
 
 		FORGET_ARRAY(fli_b);
 
-		if (wait_delay (0))
+		if (wait_delay (0, 0, 1))
 			throw UserBreakException();
 
 		gwin->clear_screen(true);
@@ -324,8 +352,8 @@ void SI_Game::play_intro()
 
 			prev = num;
 			next += 75;
-			win->show();
-			if (wait_delay (1))
+			ENABLE_GL();
+			if (wait_delay (1, 0, 1))
 				throw UserBreakException();
 
 		}
@@ -337,6 +365,7 @@ void SI_Game::play_intro()
 				for (i = 0; i < num+1; i++)
 					fli1.play(win, i, i, next);
 
+			DISABLE_GL();
 			if (jive)
 				sifont->center_text(ibuf, centerx, centery+50, text_msgs[dick_castle]);
 			else 
@@ -344,8 +373,8 @@ void SI_Game::play_intro()
 
 			prev = num;
 			next += 75;
-			win->show();
-			if (wait_delay (1))
+			ENABLE_GL();
+			if (wait_delay (1, 0, 1))
 				throw UserBreakException();
 
 		}
@@ -365,8 +394,8 @@ void SI_Game::play_intro()
 
 			prev = num;
 			next += 75;
-			win->show();
-			if (wait_delay (1))
+			ENABLE_GL();
+			if (wait_delay (1, 0, 1))
 				throw UserBreakException();
 
 		}
@@ -378,14 +407,15 @@ void SI_Game::play_intro()
 				for (i = 0; i < num+1; i++)
 					fli1.play(win, i, i, next);
 
+			DISABLE_GL();
 			for(i=0; i<3; i++) {
 				sifont->center_text(ibuf, centerx, centery+50+15*i, text_msgs[bg_fellow + i]);
 			}
 
 			prev = num;
 			next += 75;
-			win->show();
-			if (wait_delay (1))
+			ENABLE_GL();
+			if (wait_delay (1, 0, 1))
 				throw UserBreakException();
 
 		}
@@ -393,8 +423,8 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli1.play(win, 0, 0, next, j*5);
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 
 		}
@@ -415,8 +445,8 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli2.play(win, 0, 0, next, j*5);
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -424,8 +454,8 @@ void SI_Game::play_intro()
 		for (j = 0; j < 37; j++)
 		{
 			next = fli2.play(win, j, j, next);
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -443,18 +473,20 @@ void SI_Game::play_intro()
 		{
 			next = fli2.play(win, j, j, next);
 
+			DISABLE_GL();
 			if (jive)
 				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[yo_homes]);
 			else if (!speech)
 				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[my_leige]);
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
 		next = fli2.play(win, j, j, next);
-		win->show();
+		ENABLE_GL();
+		wait_delay (0, 0, 1);
 
 		const char *all_we[2] = { text_msgs[all_we0], text_msgs[all_we0+1] };
 
@@ -470,14 +502,15 @@ void SI_Game::play_intro()
 		{
 			next = fli2.play(win, j, j, next);
 
+			DISABLE_GL();
 			if (!speech || jive)
 			{
 				sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(all_we[0]), centery+74, all_we[0]);
 				sifont->draw_text(ibuf, centerx+160-sifont->get_text_width(all_we[1]), centery+87, all_we[1]);
 			}
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 		for (i = 0; i < 220; i++)
@@ -488,17 +521,18 @@ void SI_Game::play_intro()
 
 		next = fli2.play(win, j, j, next);
 
+		DISABLE_GL();
 		if (!speech || jive)
 		{
 			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[0]), centery+74, and_a[0]);
 			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[1]), centery+87, and_a[1]);
 		}
 
-		win->show();
+		ENABLE_GL();
 		j++;
 		
 		for (i = 0; i < 290; i++)
-			if (wait_delay (10))
+			if (wait_delay (10, 0, 1))
 				throw UserBreakException();
 
 
@@ -506,7 +540,7 @@ void SI_Game::play_intro()
 		j++;
 
 		for (i = 0; i < 50; i++)
-			if (wait_delay (10))
+			if (wait_delay (10, 0, 1))
 				throw UserBreakException();
 
 		if (speech && !jive)
@@ -524,6 +558,7 @@ void SI_Game::play_intro()
 		{
 			next = fli2.play(win, j, j, next);
 
+			DISABLE_GL();
 			if (jive)
 				sifont->draw_text(ibuf, topx+40, centery+74, text_msgs[iree]);
 			else if (!speech)
@@ -532,8 +567,8 @@ void SI_Game::play_intro()
 				sifont->draw_text(ibuf, topx+40, centery+87, text_msgs[indeed+1]);
 			}
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -558,8 +593,8 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli3.play(win, j, j, next)+20;
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -577,13 +612,14 @@ void SI_Game::play_intro()
 		{
 			next = fli3.play(win, j, j, next)+20;
 
+			DISABLE_GL();
 			if (jive)
 				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[jump_back]);
 			else if (!speech)	
 				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[stand_back]);
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -628,6 +664,7 @@ void SI_Game::play_intro()
 			else
 				sf = gshape.get_frame(0);
 
+			DISABLE_GL();
 			if (sf)
 				sman->paint_shape (centerx-36, centery, sf);
 
@@ -662,8 +699,8 @@ void SI_Game::play_intro()
 				sifont->center_text(ibuf, centerx, centery+87, text_msgs[there_i+1]);
 			}
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 		sf = gshape.get_frame(0);
@@ -671,11 +708,12 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli4.play(win, 0, 0, next, j*5);
+			DISABLE_GL();
 			if (sf)
 				sman->paint_shape (centerx-36, centery, sf);
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -694,9 +732,8 @@ void SI_Game::play_intro()
 		for (j=0; j < 20; j++)
 		{
 			next = fli5.play(win, 0, 0, next, j*5);
-
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -712,6 +749,7 @@ void SI_Game::play_intro()
 		{
 			next = fli5.play(win, j, j, next)+30;
 
+			DISABLE_GL();
 			if (j < 20 && (!speech || jive))
 			{
 				sifont->center_text(ibuf, centerx, centery+74, text_msgs[tis_my]);
@@ -722,8 +760,8 @@ void SI_Game::play_intro()
 				sifont->center_text(ibuf, centerx, centery+87, text_msgs[tis_my+2]);
 			}
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -741,9 +779,8 @@ void SI_Game::play_intro()
 		for (j=0; j < 61; j++)
 		{
 			next = fli6.play(win, j, j, next)+30;
-
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -764,11 +801,12 @@ void SI_Game::play_intro()
 		{
 			next = fli7.play(win, j, j, next)+30;
 
+			DISABLE_GL();
 			if (j > 55 && jive)
 				sifont->center_text(ibuf, centerx, centery+74, zot);
 
-			win->show();
-			if (wait_delay (0))
+			ENABLE_GL();
+			if (wait_delay (0, 0, 1))
 				throw UserBreakException();
 		}
 
@@ -786,14 +824,18 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
+			DISABLE_GL();
 			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
-			win->show();
+			ENABLE_GL();
+			wait_delay (0, 0, 1);
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
+		DISABLE_GL();
 		font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
-		win->show();
+		ENABLE_GL();
+		wait_delay (0, 0, 1);
 
 		for (i = 0; i < 300; i++)
 			if (wait_delay (10))
@@ -803,8 +845,10 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
+			DISABLE_GL();
 			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
-			win->show();
+			ENABLE_GL();
+			wait_delay (0, 0, 1);
 		}
 		
 		FORGET_ARRAY(fli_b);
@@ -1220,9 +1264,14 @@ Sound Index
 
 		if (flic->can_play()) updated = flic->play_it(win, time);
 
-		if (updated) win->show();
+		if (updated
+#ifdef HAVE_OPENGL
+				&& !GL_manager::get_instance()
+#endif
+			)
+			win->show();
 
-		if (wait_delay (0)) {
+		if (wait_delay (0, 0, 1)) {
 
 			// Do a quick fade out
 			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(20);
