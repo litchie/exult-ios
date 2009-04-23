@@ -91,8 +91,6 @@ public:
 		if (render_queue != this)// Not already first in queue?
 					// Move to front of queue.
 			insert_in_queue();
-		if (!glflats)
-			free_rendered_flats(false);
 		return rendered_flats
 			? rendered_flats : render_flats();
 		}
