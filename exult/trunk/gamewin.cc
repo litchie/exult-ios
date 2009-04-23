@@ -354,7 +354,7 @@ bool Set_glpalette(Palette *pal, bool rotation)
 #ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
 		{
-		GL_manager::get_instance()->set_palette(pal);
+		GL_manager::get_instance()->set_palette(pal, rotation);
 		return true;
 		}
 #endif

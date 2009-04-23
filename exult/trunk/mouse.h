@@ -109,7 +109,10 @@ public:
 		if (onscreen)
 			{
 			onscreen = false;
-			iwin->put(backup, box.x, box.y);	
+#ifdef HAVE_OPENGL
+			if (!GL_manager::get_instance())
+#endif
+				iwin->put(backup, box.x, box.y);
 			dirty = box;	// Init. dirty to box.
 			}
 	}
