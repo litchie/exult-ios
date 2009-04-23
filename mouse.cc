@@ -138,7 +138,10 @@ void Mouse::show
 	{
 		onscreen = true;
 					// Save background.
-		iwin->get(backup, box.x, box.y);
+#ifdef HAVE_OPENGL
+		if (!GL_manager::get_instance())
+#endif
+			iwin->get(backup, box.x, box.y);
 					// Paint new location.
 //		cur->paint_rle(iwin->get_ib8(), mousex, mousey);
 		cur->paint_rle(mousex, mousey);
