@@ -369,33 +369,28 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), map(new Game_map(0)), pal(0),
-	    usecode(0), combat(false), armageddon(false),
-	    walk_in_formation(false),
-	    tqueue(new Time_queue()), time_stopped(0),
-	    std_delay(c_std_delay),
-	    npc_prox(new Npc_proximity_handler(this)),
-	    effects(new Effects_manager(this)),
-	    gump_man(new Gump_manager), render(new Game_render),
-	    party_man(new Party_manager),
-	    painted(false), focus(true),
-	    in_dungeon(0), ice_dungeon(false),
-	    moving_barge(0), main_actor(0), skip_above_actor(31),
-	    npcs(0), bodies(0), dirty(0,0,0,0), mouse3rd(false), fastmouse(false),
-	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
-	    special_light(0), ambient_light(false),
-	    dragging(0),
+	    dragging(0), effects(new Effects_manager(this)), map(new Game_map(0)),
+	    render(new Game_render), gump_man(new Gump_manager),
+	    party_man(new Party_manager), win(0),
+	    npc_prox(new Npc_proximity_handler(this)), pal(0),
+	    tqueue(new Time_queue()), background_noise(new Background_noise(this)),
+	    usecode(0), combat(false), focus(true), ice_dungeon(false),
+	    painted(false), ambient_light(false),
+	    skip_above_actor(31), in_dungeon(0),
+	    std_delay(c_std_delay), time_stopped(0), special_light(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
-	    background_noise(new Background_noise(this)),
-	    double_click_closes_gumps(false),
-	    removed(new Deleted_objects()),
-	    skip_lift(255), paint_eggs(false), debug(0), blits(0),
-	    camera_actor(0)
+	    moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
+	    removed(new Deleted_objects()), dirty(0,0,0,0),
+	    mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
+	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
 #ifdef RED_PLASMA
-	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
+	    load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0),
 #endif
-		,scrolltx_l(0), scrollty_l(0), scrolltx_lp(0), scrollty_lp(0),  scrolltx_lo(0), scrollty_lo(0),
-		avposx_ld(0), avposy_ld(0), lerping_enabled(0)
+	    skip_lift(255), paint_eggs(false), armageddon(false),
+	    walk_in_formation(false), debug(0), blits(0),
+	    scrolltx_l(0), scrollty_l(0), scrolltx_lp(0), scrollty_lp(0), 
+	    scrolltx_lo(0), scrollty_lo(0), avposx_ld(0), avposy_ld(0),
+	    lerping_enabled(0)
 	{
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
@@ -486,8 +481,7 @@ Game_window::~Game_window
 	{
 	gump_man->close_all_gumps(true);
 	clear_world();			// Delete all objects, chunks.
-	int i;	// Blame MSVC
-	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
+	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 		delete [] save_names[i];
 	delete shape_man;
 	delete gump_man;
@@ -615,7 +609,7 @@ Game_map *Game_window::get_map
 	int num				// Should be > 0.
 	)
 	{
-	if (num >= maps.size())
+	if (num >= (int)maps.size())
 		maps.resize(num + 1);
 	if (maps[num] == 0)
 		{
@@ -808,8 +802,8 @@ void Game_window::add_npc
 	)
 	{
 	assert(num == npc->get_npc_num());
-	assert(num <= npcs.size());
-	if (num == npcs.size())		// Add at end.
+	assert(num <= (int)npcs.size());
+	if (num == (int)npcs.size())		// Add at end.
 		npcs.push_back(npc);
 	else
 		{			// Better be unused.
@@ -1238,7 +1232,6 @@ inline void Get_shape_location
 void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 {
 	Get_shape_location(obj->get_tile(), scrolltx, scrollty, x, y);
-	Actor *a = obj->as_actor();
 	// Smooth scroll the avatar as well, if possible
 	if (obj == get_camera_actor())
 	{
@@ -1748,7 +1741,6 @@ void Game_window::start_actor_alt
 	)
 	{
 	int ax, ay;
-	int nlift;
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
 	

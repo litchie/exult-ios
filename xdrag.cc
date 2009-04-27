@@ -173,7 +173,7 @@ void Xdnd::client_msg
 		}
 	else if (cev.message_type == xdnd_position)
 		{
-		int i;			// For now, just do shapeid.
+		unsigned long i;			// For now, just do shapeid.
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
 			    drag_types[i] == chunkid_atom ||
@@ -217,7 +217,7 @@ void Xdnd::client_msg
 		}
 	else if (cev.message_type == xdnd_drop)
 		{
-		int i;			
+		unsigned long i;			
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
 			    drag_types[i] == chunkid_atom ||

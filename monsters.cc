@@ -110,8 +110,8 @@ Monster_actor::Monster_actor
 	int shapenum, 
 	int num,			// Generally -1.
 	int uc
-	) : Npc_actor(nm, shapenum, num, uc), prev_monster(0),
-	    next_monster(0), animator(0)
+	) : Npc_actor(nm, shapenum, num, uc), next_monster(0), prev_monster(0),
+	    animator(0)
 	{
 					// Check for animated shape.
 	Shape_info& info = get_info();
