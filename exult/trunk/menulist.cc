@@ -244,20 +244,20 @@ bool MenuTextChoice::handle_event(SDL_Event& event)
 	if(event.type==SDL_MOUSEBUTTONUP) {
 		dirty = true;
 		choice++;
-		if(choice>=choices->size())
+		if(choice >= (int)choices->size())
 			choice = 0;
 	} else if(event.type==SDL_KEYDOWN) {
 		switch(event.key.keysym.sym) {
 		case SDLK_LEFT:
 			dirty = true;
 			choice--;
-			if(choice<0)
+			if(choice < 0)
 				choice = choices->size()-1;
 			break;
 		case SDLK_RIGHT:
 			dirty = true;
 			choice++;
-			if(choice>=choices->size())
+			if(choice >= (int)choices->size())
 				choice = 0;
 			break;
 		default:
@@ -270,7 +270,7 @@ bool MenuTextChoice::handle_event(SDL_Event& event)
 MenuList::~MenuList()
 {
 	MenuObject *entry;
-	for(int i=0; i<entries->size(); i++) {
+	for(size_t i=0; i<entries->size(); i++) {
 		entry = (*entries)[i];
 		delete entry;
 	}
@@ -308,7 +308,7 @@ void MenuList::set_selection(int x, int y)
 	}
 	
 	// select the new one, and return when found
-	for(int i=0; i<entries->size(); i++) {
+	for(size_t i=0; i<entries->size(); i++) {
 		entry = (*entries)[i];
 		if(entry->is_mouse_over(x, y)) {
 			entry->set_selected(true);

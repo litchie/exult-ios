@@ -23,7 +23,7 @@
 
 #include "u7drag.h"
 
-const int max_types = 15;
+const unsigned long max_types = 15;
 
 /*
  *	This supports the 'drop' side of Xdnd:
@@ -48,7 +48,7 @@ class Xdnd
 	Atom xdnd_typelist;
 	Atom xdnd_selection;
 	unsigned long xdnd_version;
-	int num_types;
+	unsigned long num_types;
 	Atom drag_types[max_types];	// Data type atoms source can supply.
 					// Current drag info:
 	int lastx, lasty;		// Last mouse pos. during drag, within

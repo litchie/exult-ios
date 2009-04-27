@@ -47,7 +47,7 @@ Usecode_scope_symbol::~Usecode_scope_symbol()
 void Usecode_scope_symbol::read(istream& in)
 {
 	int cnt = Read4(in);
-	int vers = Read4(in);
+	(void)Read4(in);	// Version.
 	int oldsize = symbols.size();
 	symbols.reserve(oldsize + cnt);
 	for (int i = 0; i < cnt; ++i) {

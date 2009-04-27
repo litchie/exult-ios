@@ -492,7 +492,7 @@ void Game_window::read_save_names
 	(
 	)
 {
-	for (int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
+	for (unsigned int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
 		snprintf(fname, 50, SAVENAME, i,
@@ -521,7 +521,7 @@ void Game_window::read_save_names
 void Game_window::write_saveinfo()
 {
 	ofstream out_stream;
-	int	i, j;
+	int	i;
 
 	int save_count = 1;
 
@@ -570,7 +570,8 @@ void Game_window::write_saveinfo()
 	out.write1(timeinfo->tm_sec);	// 15
 
 	// Packing for the rest of the structure
-	for (j = reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0)); j < sizeof(SaveGame_Details); j++)
+	for (size_t j = reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0));
+			j < sizeof(SaveGame_Details); j++)
 		out.write1(0);
 
 	for (i=0; i<party_size ; i++)
@@ -604,7 +605,8 @@ void Game_window::write_saveinfo()
 		out.write2(npc->get_shapefile());
 
 		// Packing for the rest of the structure
-		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)); j < sizeof(SaveGame_Party); j++)
+		for (size_t j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1));
+				j < sizeof(SaveGame_Party); j++)
 			out.write1(0);
 	}
 
@@ -1127,7 +1129,7 @@ bool Game_window::restore_gamedat_zip
 		if (oname[namelen - 1] == '.')
 			oname[namelen - 1] = 0;
 					// Watch out for multimap games.
-		for (int i = 0; i<strlen(oname2); i++)
+		for (size_t i = 0; i<strlen(oname2); i++)
 		{	//Doing it the right way this time.
 			if (oname2[i] == '/')
 			{

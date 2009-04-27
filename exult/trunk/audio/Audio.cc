@@ -103,9 +103,11 @@ static	sint16 *resample_new(uint8 *sourcedata,
 static	sint16 *resample_new_mono(uint8 *sourcedata,
 						size_t sourcelen, size_t &destlen,
 						int current_rate, int wanted_rate);
+#ifdef USE_OLD_RESAMPLE
 static	void resample(uint8 *sourcedata, uint8 **destdata,
 						size_t sourcelen, size_t *destlen,
 						int current_rate, int wanted_rate);
+#endif
 static void decode_ADPCM_4(uint8* inBuf,	
 						  int bufSize,				// Size of inbuf
 						  uint8* outBuf,	// Size is 2x bufsize
@@ -719,7 +721,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		
 		// Our input is 8 bit mono unsigned; but want to output 16 bit stereo signed.
 		// In addition, the rates don't match, we have to upsample.
-#if 1
+#ifndef USE_OLD_RESAMPLE
 		// New code: Do it all in one step with cubic interpolation
 
 		sint16 *stereo_data;
@@ -1281,7 +1283,7 @@ static	uint8 *chunks_to_block(vector<Chunk> &chunks)
 	return unified_block;
 }
 
-
+#ifdef USE_OLD_RESAMPLE
 static	void resample(uint8 *sourcedata, uint8 **destdata,
 						size_t sourcelen, size_t *destlen,
 						int current_rate, int wanted_rate)
@@ -1320,6 +1322,7 @@ static	void resample(uint8 *sourcedata, uint8 **destdata,
 		}
 	CERR("End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes");
 }
+#endif
 
 //
 // Decode 4bit ADPCM vocs (thunder in SI intro)

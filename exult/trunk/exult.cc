@@ -228,20 +228,9 @@ static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
 static bool right_on_gump = false;	// Right clicked on gump?
 static int show_items_x = 0, show_items_y = 0;
-static int show_items_time = 0;
+static unsigned int show_items_time = 0;
 static bool show_items_clicked = false;
 static int left_down_x = 0, left_down_y = 0;
-
-/*
- *	A handy breakpoint.
- */
-
-static void Breakpoint
-	(
-	)
-	{
-	return;
-	}
 
 #if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
 
@@ -1049,8 +1038,8 @@ static void Select_for_combo
 	static Game_object *last_obj = 0;
 	int scale = gwin->get_win()->get_scale();
 	int x = event.button.x/scale, y = event.button.y/scale;
-	int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
-	int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
+	//int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
+	//int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 	Game_object *obj = gwin->find_object(x, y);
 	if (obj) {
 		if (dragging && obj == last_obj)

@@ -289,7 +289,7 @@ int Game_render::paint_map
 			light_sources += paint_chunk_objects(dx, dy);
 		}
 	/// Dungeon Blackness (but disable in map editor mode)
-	if (gwin->in_dungeon >= gwin->skip_above_actor && 
+	if ((int)gwin->in_dungeon >= gwin->skip_above_actor && 
 							!cheat.in_map_editor())
 		paint_blackness (start_chunkx, start_chunky, stop_chunkx, 
 					stop_chunky, gwin->ice_dungeon?73:0);

@@ -479,8 +479,9 @@ Explosion_effect::Explosion_effect
 						//	or 0 for default
 							//Different sprites for different explosion types
 	) : Sprites_effect(get_explosion_shape(weap, proj), p, 0, 0, delay),
-		explode(exp), projectile(proj), exp_sfx(get_explosion_sfx(weap, proj)),
-		weapon(weap >= 0 ? weap : (proj >= 0 ? proj : 704)), attacker(att)
+		explode(exp), weapon(weap >= 0 ? weap : (proj >= 0 ? proj : 704)),
+	    projectile(proj), exp_sfx(get_explosion_sfx(weap, proj)),
+		attacker(att)
 	{
 	//if (exp && exp->get_shapenum() == 704)  // powderkeg
 	if (exp && exp->get_info().is_explosive())  // powderkeg
@@ -638,8 +639,8 @@ Projectile_effect::Projectile_effect
 	int attpts,			// Attack points of projectile.
 	int spd				// Projectile speed, or -1 to use default.
 	) : attacker(att), target(to), weapon(weap), projectile_shape(proj),
-	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
-	    return_path(false), autohit(false)
+	    sprite(spr, 0), return_path(false),  skip_render(spr < 0),
+	    speed(spd), attval(attpts), autohit(false)
 	{
 	init(att->get_tile(), to->get_tile());
 	}
@@ -659,8 +660,8 @@ Projectile_effect::Projectile_effect
 	int spd,			// Projectile speed, or -1 to use default.
 	bool retpath			// Return of a boomerang.
 	) : attacker(att), target(0), weapon(weap), projectile_shape(proj),
-	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
-	    return_path(false), autohit(false)
+	    sprite(spr, 0), return_path(false), skip_render(spr < 0),
+	    speed(spd), attval(attpts), autohit(false)
 	{
 	init(att->get_tile(), d);
 	}
@@ -680,8 +681,8 @@ Projectile_effect::Projectile_effect
 	int spd,			// Projectile speed, or -1 to use default.
 	bool retpath			// Return of a boomerang.
 	) : attacker(0), target(to), weapon(weap), projectile_shape(proj),
-	    sprite(spr, 0), attval(attpts), speed(spd), skip_render(spr < 0),
-	    return_path(retpath), autohit(false)
+	    sprite(spr, 0), return_path(retpath), skip_render(spr < 0),
+	    speed(spd), attval(attpts), autohit(false)
 	{
 	init(s, to->get_tile());
 	}

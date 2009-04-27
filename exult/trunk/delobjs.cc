@@ -56,7 +56,7 @@ void Deleted_objects::flush
 					begin(); X != end(); ++X)
 		{
 		Game_object *obj = (*X).first;
-		int ticks = (*X).second;
+		unsigned int ticks = (*X).second;
 		if (ticks < curtime)
 			delete obj;
 		else

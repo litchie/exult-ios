@@ -105,7 +105,7 @@ void Game_window::read_npcs
 		U7open(nfile_stream, MONSNPCS);	// Monsters.
 		// (Won't exist the first time; in this case U7open throws
 		int cnt = nfile.read2();
-		char tmp = nfile.read1();// Read 1 ahead to test.
+		(void)nfile.read1();// Read 1 ahead to test.
 		int okay = nfile_stream.good();
 		nfile.skip(-1);
 		while (okay && cnt--)
@@ -375,7 +375,6 @@ void Game_window::revert_schedules(Actor *npc)
 	// Can't do this if <= 0
 	if (npc->get_npc_num() <= 0) return;
 
-	int i;
 	ifstream sfile_stream;
 	int num_npcs, entsize, num_script_names;
 	short *offsets;
