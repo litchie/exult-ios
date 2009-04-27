@@ -152,8 +152,8 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
-	) : reached_end(false), path(p), from_offscreen(false), speed(0),
-	    subseq(0), blocked(0), max_blocked(maxblk), deleted(false)
+	) : reached_end(false), path(p), deleted(false), speed(0),
+	    from_offscreen(false), subseq(0), blocked(0), max_blocked(maxblk)
 	{
 	if (!path)
 		path = new Astar();
@@ -324,7 +324,6 @@ int Path_walking_actor_action::open_door
 	Game_object *door
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord cur = actor->get_tile();
 					// Get door's footprint in tiles.
 	Rectangle foot = door->get_footprint();
@@ -417,7 +416,6 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	int dist			// Distance to get to within dest.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	blocked = 0;			// Clear 'blocked' count.
 	reached_end = false;		// Starting new path.
 	get_party = false;
@@ -509,8 +507,8 @@ Approach_actor_action::Approach_actor_action
 	int gdist,			// Stop when this close to dest.
 	bool for_proj			// Check for projectile path.
 	) : Path_walking_actor_action(p, 0),	// (Stop if blocked.)
-	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0),
-	    goal_dist(gdist), for_projectile(for_proj)
+	    dest_obj(d), goal_dist(gdist), orig_dest_pos(d->get_tile()), cur_step(0),
+	    for_projectile(for_proj)
 	{
 					// Get length of path.
 	int nsteps = path->get_num_steps();
@@ -782,7 +780,6 @@ int Frames_actor_action::handle_event
 	int frnum = frames[index++];	// Get frame.
 	if (frnum >= 0)
 		{
-		Game_window *gwin = Game_window::get_instance();
 		if (o)
 			o->change_frame(frnum);
 		else
@@ -862,7 +859,6 @@ Object_animate_actor_action::Object_animate_actor_action
 	int spd				// Time between frames.
 	) : obj(o), cycles(cy), speed(spd)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	nframes = obj->get_num_frames();
 	}
 
@@ -977,7 +973,6 @@ int Face_pos_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	int dir = actor->get_direction(pos);
 	int frnum = actor->get_dir_framenum(dir, Actor::standing);
 	if (actor->get_framenum() == frnum)

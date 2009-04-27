@@ -68,7 +68,7 @@ int main
 	char outbuf[256];
 	char *outname = 0;
 	static const char *optstring = "o:I:s";
-	extern int optind, opterr, optopt;
+	extern int optind, opterr/*, optopt*/;
 	extern char *optarg;
 	Uc_function::Intrinsic_type ty = Uc_function::unset;
 	opterr = 0;			// Don't let getopt() print errs.

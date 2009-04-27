@@ -292,7 +292,6 @@ uint32 Npc_timer::get_minute
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	return 60*gclock->get_total_hours() + gclock->get_minute();
 	}
 

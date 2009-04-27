@@ -162,7 +162,6 @@ bool Party_manager::remove_from_dead_party
 	int id = in_dead_party(npc);	// Get index.
 	if (id == -1)			// Not in list?
 		return false;
-	int npc_num = npc->get_npc_num();
 					// Shift the rest down.
 	for (int i = id + 1; i < dead_party_count; i++)
 		dead_party[i - 1] = dead_party[i];
@@ -229,7 +228,7 @@ void Party_manager::link_party
 		if (npc->is_dead())	// Put dead in special list.
 			{
 			npc->set_party_id(-1);
-			if (dead_party_count >= 
+			if ((unsigned int)dead_party_count >= 
 				    sizeof(dead_party)/sizeof(dead_party[0]))
 				continue;
 			dead_party[dead_party_count++] = npc_num;

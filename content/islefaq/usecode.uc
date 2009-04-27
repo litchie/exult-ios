@@ -26,7 +26,7 @@ const int IF_MET = 28;
  *	Existing functions in BG.
  */
 extern var Ask_yesno 0x90a();		// Returns true if 'Yes', false if 'No.
-extern Add_experience 0x911(var incr);	// Add exper. to each party member.
+extern void Add_experience 0x911(var incr);	// Add exper. to each party member.
 
 /*
  *	NPC #'s:
@@ -38,7 +38,7 @@ const int AVATAR = -356;
  *	Egg on island created just E. of Trinsic.
  */
 
-new_island_egg0 object#(0x740) ()
+void new_island_egg0 object#(0x740) ()
 	{
 					// Get random NPC (or Avatar).
 	var party = UI_get_party_list();
@@ -59,7 +59,7 @@ new_island_egg0 object#(0x740) ()
  *	Egg behind church by the carrots.
  */
 
-new_island_egg1 object#(0x741) ()
+void new_island_egg1 object#(0x741) ()
 	{
 	if (!gflags[CHURCH_CARROTS])
 		{
@@ -84,7 +84,7 @@ new_island_egg1 object#(0x741) ()
 	AMY.hide();
 	}
 
-Random_barks 0xC00 (var barks)
+void Random_barks 0xC00 (var barks)
 	{
 	if (get_schedule_type() == 14)
 				// Sleeping.
@@ -100,7 +100,7 @@ Random_barks 0xC00 (var barks)
 /*
  *	'DrCode' on island.
  */
-DrCode object#(0x564) ()
+void DrCode object#(0x564) ()
 	{
 	if (event == 0)
 		{
@@ -177,7 +177,7 @@ DrCode object#(0x564) ()
 /*
  *	'Dominik' on island.
  */
-Dominik object#(0x565) ()
+void Dominik object#(0x565) ()
 	{
 	if (event == 0)
 		{
@@ -274,7 +274,7 @@ Dominik object#(0x565) ()
 /*
  *	'Willem' on island.
  */
-Willem object#(0x566) ()
+void Willem object#(0x566) ()
 	{
 	if (event == 0)
 		{
@@ -306,7 +306,7 @@ Willem object#(0x566) ()
 /*
  *	'Fingolfin' on island.
  */
-Fingolfin object#(0x567) ()
+void Fingolfin object#(0x567) ()
 	{
 	if (event == 0)
 		{
@@ -336,7 +336,7 @@ Fingolfin object#(0x567) ()
 /*
  *	'Amy' on island.
  */
-Amy object#(0x568) ()
+void Amy object#(0x568) ()
 	{
 	if (event == 0)
 		{
@@ -379,7 +379,7 @@ Amy object#(0x568) ()
 		case "Name" (remove):
 			say("I'm Amy.");
 		case "Job" (remove):
-			say("I don't have a job. I'm just hanging out here and " +
+			say("I don't have a job. I'm just hanging out here and ",
 			    "give information about the people on this island");
 			add(["Island?", "Who lives here?", "Are you happy here?"]);
 		case "Island?" (remove):
@@ -446,7 +446,7 @@ Amy object#(0x568) ()
 /*
  *	'Colourless' on island.
  */
-Colourless object#(0x569) ()
+void Colourless object#(0x569) ()
 	{
 	if (event == 0)
 		{
@@ -489,7 +489,7 @@ Colourless object#(0x569) ()
 /*
  *	'Darke' on island.
  */
-Darke object#(0x56A) ()
+void Darke object#(0x56A) ()
 	{
 	if (event == 0)
 		{
@@ -588,7 +588,7 @@ Darke object#(0x56A) ()
 /*
  *	'EsBee_Ex' on island.
  */
-EsBee_Ex object#(0x56B) ()
+void EsBee_Ex object#(0x56B) ()
 	{
 	if (event == 0)
 		{
@@ -627,7 +627,7 @@ EsBee_Ex object#(0x56B) ()
 			gflags[ASKED_ABOUT_PYRO] = true;
 		case "You are Pyro-X!" (remove):
 			say("I'm NOT him! Go away! Go away! Run! He's coming!");
-			explode(find_nearest(704, 20), 704);
+			attack_object(find_nearest(704, 20), 704);
 			gflags[ASKED_ABOUT_PYRO] = false;
 			gflags[ASKED_WHERE_PYRO] = false;
 			gflags[ASKED_KNOW_PYRO] = false;
@@ -639,7 +639,7 @@ EsBee_Ex object#(0x56B) ()
 /*
  *	Nadir.
  */
-Nadir object#(0x56C) ()
+void Nadir object#(0x56C) ()
 	{
 	if (event == 0)
 		{
@@ -706,7 +706,7 @@ Nadir object#(0x56C) ()
 /*
  *	'Kirben' on island.
  */
-Kirben object#(0x56D) ()
+void Kirben object#(0x56D) ()
 	{
 	if (event == 0)
 		{
@@ -756,7 +756,7 @@ Kirben object#(0x56D) ()
 /*
  *	'BillyG' on island.
  */
-BillyG object#(0x56E) ()
+void BillyG object#(0x56E) ()
 	{
 	if (event == 0)
 		{

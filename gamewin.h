@@ -102,6 +102,7 @@ class Game_window
 	bool focus;			// Do we have focus?
 	bool ice_dungeon;		// true if inside ice dungeon
 	bool painted;			// true if we updated image buffer.
+	bool ambient_light;		// Permanent version of special_light.
 		// Game state values:
 	int skip_above_actor;		// Level above actor to skip rendering.
 	unsigned int in_dungeon;	// true if inside a dungeon.
@@ -109,7 +110,6 @@ class Game_window
 	int std_delay;			// Standard delay between frames.
 	long time_stopped;		// For 'stop time' spell.
 	unsigned long special_light;	// Game minute when light spell ends.
-	bool ambient_light;		// Permanent version of special_light.
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
 		// Gameplay objects:

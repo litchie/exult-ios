@@ -170,7 +170,7 @@ int Schedule::try_street_maintenance
 	Actor_pathfinder_client cost(npc, 2);
 	Game_object *found = 0;		// Find one we can get to.
 	Actor_action *pact;		// Gets ->action to walk there.
-	for (int i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
+	for (size_t i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
 		{
 		Game_object_vector objs;// Find nearby.
 		int cnt = npc->find_nearby(objs, shapes[i], 20, 0);
@@ -854,7 +854,7 @@ void Patrol_schedule::now_what
 			pathnum += dir;			// Find next path.
 			if (pathnum == 0 && dir == -1)
 				dir = 1;	// Start over from zero.
-			if (pathnum >= paths.size())
+			if (pathnum >= (int)paths.size())
 				paths.resize(pathnum + 1);
 							// Already know its location?
 			path =  pathnum >= 0 ? paths[pathnum] : 0;
@@ -944,8 +944,8 @@ void Patrol_schedule::now_what
 			}
 		case 1:	// Walk to next path.
 			if (pathnum >= 0 &&		// Arrived at path?
-				pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
-				npc->distance(path) < 2)
+				(unsigned int)pathnum < paths.size() &&
+				(path = paths[pathnum]) != 0 &&	npc->distance(path) < 2)
 				{
 				whichdir = 1;	// Default to East-West pace.
 				int delay = 2;
@@ -2027,8 +2027,8 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 		return false;
 		}
 public:
-	Sit_actor_action(Game_object *o, Actor *actor) : chair(o),
-			Frames_actor_action(init(o, actor), 2)
+	Sit_actor_action(Game_object *o, Actor *actor)
+		: Frames_actor_action(init(o, actor), 2), chair(o)
 		{
 		sitloc = chairloc = o->get_tile();
 					// Frame 0 faces N, 1 E, etc.
@@ -2894,9 +2894,9 @@ void Waiter_schedule::ending
 Sew_schedule::Sew_schedule
 	(
 	Actor *n
-	) : Schedule(n), state(get_wool), bale(0), spinwheel(0),
-        chair(0), spindle(0), loom(0), cloth(0), work_table(0),
-        wares_table(0), sew_clothes_cnt(0)
+	) : Schedule(n), bale(0), spinwheel(0), chair(0), spindle(0), loom(0),
+	    cloth(0), work_table(0), wares_table(0), sew_clothes_cnt(0),
+	    state(get_wool)
 	{
 	}
 
@@ -3189,8 +3189,8 @@ void Sew_schedule::ending
  */
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
-	state(to_flour), oven(0), worktable(0), displaytable(0),
-	flourbag(0), dough(0), dough_in_oven(0), baked_count(0)
+	oven(0), worktable(0), displaytable(0), flourbag(0),
+	dough(0), dough_in_oven(0), baked_count(0), state(to_flour)
 	{ }
 
 void Bake_schedule::now_what()
@@ -3531,9 +3531,9 @@ void Bake_schedule::notify_object_gone(Game_object *obj)
  * Note: the original kept the tongs & hammer, and put them on a nearby table
  */
 
-Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), 
-	state(put_sword_on_firepit), tongs(0), hammer(0), blank(0),
-	firepit(0), anvil(0), trough(0), bellows(0)
+Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), tongs(0), hammer(0),
+	blank(0), firepit(0), anvil(0), trough(0), bellows(0), 
+	state(put_sword_on_firepit)
 	{ }
 
 void Forge_schedule::now_what

@@ -400,8 +400,7 @@ void ActionTryKeys(int *params)
 		Game_object_vector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, c_any_framenum))
 			{
-			int i;
-			for (i = 0; i < keys.size(); i++)
+			for (size_t i = 0; i < keys.size(); i++)
 				if (!keys[i]->inside_locked())
 					{
 					// intercept the click_on_item call made by the key-usecode
