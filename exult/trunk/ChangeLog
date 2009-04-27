@@ -1,3 +1,6 @@
+2009-04-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug #2781239.
+
 2009-04-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed more OpenGL bugs; BG and SI intro and endgames play in full now. The
 	  Exult menu now works correctly, as do mods and setup menus. Added faster
