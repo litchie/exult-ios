@@ -707,7 +707,7 @@ static void Init
 		}
 	else if (sclr == Image_window::Hq3x)
 		scaleval = 3;
-	else if (sclr != Image_window::point || sclr != Image_window::interlaced ||
+	else if (sclr != Image_window::point && sclr != Image_window::interlaced &&
 			sclr != Image_window::OpenGL)
 		scaleval = 2;
 	config->set("config/video/scale", scaleval, true);
