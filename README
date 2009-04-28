@@ -1,17 +1,18 @@
 Exult Documentation
-last changed: 21 October 2007(GMT)
+last changed: 28 April 2009(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 21 October 2007
-0.2. - 08 April 2006
-0.3. - 14 March 2005
-0.4. - 14 August 2004
-0.5. - 23 May 2004
-0.6. - 11 February 2004
-0.7. - 12 December 2003
+0.1. - 28 April 2009
+0.2. - 21 October 2007
+0.3. - 08 April 2006
+0.4. - 14 March 2005
+0.5. - 14 August 2004
+0.6. - 23 May 2004
+0.7. - 11 February 2004
+0.8. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -74,8 +75,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9. Installing the original Ultima VII games for use with Exult
 9.1. Installing the floppy disks of BG/SI on Windows
 9.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
-9.3. Installing the floppy disks of BG/SI using DosBox
-9.4. Installing the floppy disks of the Add-Ons FoV/SS using DosBox
+9.3. Installing the floppy disks of BG/SI using DOSBox
+9.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
 9.5. Manual installation of the BG floppy disks
 9.6. Manual installation of the SI floppy disks
 9.7. Installing the CD-ROM versions of Ultima VII
@@ -89,36 +90,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 21 October 2007
+0.1. - 28 April 2009
+* 2.2. Settings in exult.cfg tried to explain data_path a bit more.
+* 3.7. Speech can also be toggled via the in-game menu.
+* 9.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
+
+
+
+0.2. - 21 October 2007
 * 7.3. Making Digital Sound work on Mac OSX added.
 * 9.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.2. - 08 April 2006
+0.3. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.3. Path-Settings synched the path settings with the new Installation section.
 * 9. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.3. - 14 March 2005
+0.4. - 14 March 2005
 * 8. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.4. - 14 August 2004
+0.5. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.5. - 23 May 2004
+0.6. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 7.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.6. - 11 February 2004
+0.7. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.3. Path-Settings fixed some outdated instructions.
 * 3.5. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -129,7 +137,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 12 December 2003
+0.8. - 12 December 2003
 * 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.3. Path-Settings moved stuff over to next point.
 * 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
@@ -199,7 +207,7 @@ Note: yes means enabled, no means disabled
     </save_compression_level>
     <data_path>
     data
-				**see 2.3. for pathsettings
+				**this is where Exult stores its data files that are needed to run (e.g. exult???.flx files)
     </data_path>
     <music_path>
     data/music
@@ -624,7 +632,7 @@ Extract the zip files into your Exult data directory and write down the name of 
 
 
 3.7. Speech
-Exult can play the Ultima VII's speech through SDL, and its own internal mixer. Configuration is managed through Exult's configuration file.
+Exult can play the Ultima VII's speech through SDL, and its own internal mixer. You can turn on/off speech via the in-game menu or change the settings in exult.cfg - see 2.2..
 
 
 3.8. Turn off Audio
@@ -946,17 +954,17 @@ Insert the add-on floppy disk in your floppy drive, open explorer and click on t
 When installing the add-ons you might run into the same problems as when installing the full games (see above 9.1.).
 
 
-9.3. Installing the floppy disks of BG/SI using DosBox
-DosBox is a program that emulates the old Dos and should run on any operating system that Exult runs on (and more). So this is perfect for users that don't run Windows.
-To install Ultima VII with DosBox, download and install DosBox from http://DosBox.sf.net.Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DosBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
-The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target directory choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. Close DosBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+9.3. Installing the floppy disks of BG/SI using DOSBox
+DOSBox is a program that emulates the old Dos and should run on any operating system that Exult runs on (and more). So this is perfect for users that don't run Windows.
+To install Ultima VII with DOSBox, download and install DOSBox from http://http://dosbox.com.Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
+The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target directory choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. Close DOSBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 
 
-9.4. Installing the floppy disks of the Add-Ons FoV/SS using DosBox
-We assume you followed the above guide on how to 0.1. , so you should have BG/SI installed to C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
-Insert the add-on floppy disk in your floppy drive, start DosBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
-Now you have to choose the drive where you installed the game to. Choose C and the installer will find the correct directory of BG/SI and will ask for your confirmation to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer. Close DosBox. FoV is then installed in C:\Exult\ULTIMA7. SS is then installed in C:\Exult\SERPENT.
-Unfortunately you might run into a DosBox bug when installing the add-ons in DosBox. You might have to rename the file C:\Exult\ULTIMA7\static\usecode.new to just C:\Exult\ULTIMA7\static\usecode (or C:\Exult\SERPENT\static\usecode.new to just C:\Exult\SERPENT\static\usecode)
+9.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
+We assume you followed the above guide on how to 9.3. Installing the floppy disks of BG/SI using DOSBox, so you should have BG/SI installed to C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+Insert the add-on floppy disk in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
+Now you have to choose the drive where you installed the game to. Choose C and the installer will find the correct directory of BG/SI and will ask for your confirmation to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer. Close DOSBox. FoV is then installed in C:\Exult\ULTIMA7. SS is then installed in C:\Exult\SERPENT.
+Unfortunately you might run into a DOSBox bug when installing the add-ons in DOSBox. You might have to rename the file C:\Exult\ULTIMA7\static\usecode.new to just C:\Exult\ULTIMA7\static\usecode (or C:\Exult\SERPENT\static\usecode.new to just C:\Exult\SERPENT\static\usecode)
 
 
 9.5. Manual installation of the BG floppy disks
@@ -972,9 +980,10 @@ In that directory you can now find 5 zip files. You can use winzip/winrar/any un
 
 
 9.7. Installing the CD-ROM versions of Ultima VII
-There are a couple of CD-ROM versions of Ultima VII. These all come with the add-ons pre-installed so with these you don't have to bother with installing the floppy disk version of the add-ons. To our knowledge the following CD-ROM versions exist:
-* Ultima Collection From the CD just copy the folders Serpent and Ultima7 to C:\Exult. Don't bother with the Ultima Collection installer.
-* The Complete Ultima VII (EA presents CD-Rom Classics) On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to C:\Exult\SERPENT and unzip Ultima7.zip to C:\Exult\ULTIMA7.
+There are a couple of CD-ROM versions of Ultima VII. Most of these come with the add-ons pre-installed so with these you don't have to bother with installing the floppy disk version of the add-ons. To our knowledge the following CD-ROM versions exist:
+* EA Compilation This includes BG and a couple of other games (Savage Empire, Ultima Underworld and other non-Ultima games). Unfortunately BG does not have the add-on FoV included. From the CD just copy the folder Ultima7 to C:\Exult.
+* Ultima Collection From the CD just copy the folders Serpent and Ultima7 to C:\Exult. Don't bother with the Ultima Collection installer. Both games come with the add-ons included.
+* The Complete Ultima VII (EA presents CD-Rom Classics) On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to C:\Exult\SERPENT and unzip Ultima7.zip to C:\Exult\ULTIMA7. Both games come with the add-ons included.
 
 
 
