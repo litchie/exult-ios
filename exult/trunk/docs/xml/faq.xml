@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="21 October 2007(GMT)">
+<faqs title="Exult" changed="30 April 2009(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="30042009">
+			<header>- 30 April 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="mods_patches"/> eguides disappeared, but Marzo's Seven Towers takes its place
+				(as well as TFL url fix).</li>
+				<li><ref1 target="known_issues"/> added that we were wrong with spell requirements and costs.</li>
+				<li><ref1 target="reagents_differ"/> added.</li>
+				<li>removed the keyboard movement question.</li>
+				</ul>
+			</body>
+		</sub>		
 		<sub name="21102007">
 			<header>- 21 October 2007</header>
 			<body>
@@ -457,15 +469,6 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="arrow_walking">
-			<header>Why can't I move my party with the arrow keys?</header>
-			<body>
-				<para>
-					Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source.
-					For details see <extref doc="docs" target="movement"/>.
-				</para>
-			</body>
-		</sub>
 		<sub name="transports_work">
 			<header>Do the carriages, ships and the magic carpet work?</header>
 			<body>
@@ -588,7 +591,7 @@
 			<body>
 				<para>
 					Music is played via midi but the sfx (sound effects) and speech are
-					played via wave. Midi and Wave volume are set up separately in the settings
+					played via wave. Midi and wave volume are set up separately in the settings
 					of your Operating System and not by <Exult/>.
 				</para>
 			</body>
@@ -736,17 +739,13 @@
 					With <Studio/> advancing more and more, there are actually now a couple of patches
 					and Mods (modifications) for <Exult/>.<br/>
 					A nice collection can be found at 
-					<extref target="http://esguides.com/">Exult Studio Guides</extref>, including the
-					<Exult/> team's <strong>Sourceforge Island</strong> patch. Other patches/mods can be 
+					<extref target="http://www.seventowers.org/">Seven Towers</extref>, Marzo Junior's Mods 
+					and his documentation of U7/<Exult/> Usecode. Other patches/mods can be 
 					found at:
 				</para>
 				<ol>
-				<li><extref target="http://www.u7feudallands.com">Ultima VII: The Feudal Lands</extref><br/>
+				<li><extref target="http://www.thefeudallands.ca/">Ultima VII: The Feudal Lands</extref><br/>
 					a very ambitious and massive mod under development.</li>
-				<li><extref target="http://tinyurl.com/nnrjg">BG Keyring Mod</extref><br/>
-					the newest <Exult/> team member developed a very big and nice mod that started out as 
-					a way to add the SI keyring to BG and ended up modyfying numerous aspects of BG+FoV. Read
-					the discussion to learn what it all changes.</li>
 				<li><extref target="http://tinyurl.com/m9du2">Ultima 6 conversion</extref><br/>
 					an unfinished mod to convert Ultima 7 to Ultima 6.</li>
 				</ol>
@@ -867,6 +866,8 @@
 					<li>In <Exult/> version 1.2 there actually seems to be a bug that prevents you 
 						from summoning the Chaos Hierophant later in the game, when you "touched"
 						the body of him by clicking once on it. This has been fixed in snapshots.</li>
+					<li><Exult/> version 1.2 was also wrong in spell requirements and reagent costs. 
+						This has been corrected in snapshots.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
@@ -955,6 +956,28 @@
 					There are only a few NPCs in the games that have audible speech. In BG only the 
 					Guardian can be heard during the game. Apart from the Intro you can only hear the
 					Guardian and the Great Earth Serpent in SI.
+				</para>
+			</body>
+		</sub>
+		<sub name="reagents_differ">
+			<header>Why do spells require different reagents than the manual lists (BG+SI)?</header>
+			<body>
+				<para>
+					The manuals of both BG and SI listed different requirements for two spells than what 
+					was actually required in the original game and <Exult/>.					
+				</para>
+				<ul>
+					<li>BG Restoration<br/>
+						Original game and <Exult/> use garlic, ginseng, mandrake root, spider silk.<br/>
+						Manual lists garlic, ginseng, mandrake root, sulfurous ash.</li>
+					<li>SI Imbalance<br/>
+						Original game and <Exult/> use bloodspawn, nightshade, serpent scale, sulfurous ash, 
+						worm heart,<br/>
+						Manual nightshade, serpent scale, sulfurous ash, worm heart.</li>
+				</ul>
+				<para>
+					Unfortunately <Exult/> version 1.2 was also wrong in more spell requirements and 
+					reagent costs. This has been corrected in snapshots.
 				</para>
 			</body>
 		</sub>
