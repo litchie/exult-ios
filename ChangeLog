@@ -1,3 +1,7 @@
+2009-04-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Implemented feature request #2784001: ES will now prompt to create a new
+	  game if no games are installed or if the specified game is not found.
+
 2009-04-28 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation a bit
 	

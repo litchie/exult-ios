@@ -554,17 +554,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 	add_system_path("<DATA>", datastr);
 
-	// Load games and mods; also stores system paths:
-	gamemanager = new GameManager();
-
 	if (!xmldir)
 		xmldir = datastr.c_str();
-	string defgame;			// Default game name.
-	config->value("config/estudio/default_game", defgame, "blackgate");
-	default_game = g_strdup(defgame.c_str());
-	if (game == "")
-		game = default_game;
-	config->set("config/estudio/default_game", defgame, true);
 	char path[256];			// Set up paths.
 	if(xmldir)
 		strcpy(path, xmldir);
@@ -592,8 +583,32 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	int bcolor;
 	config->value("config/estudio/background_color", bcolor, 0);
 	background_color = bcolor;
-	if (game != "")			// Game given?
-		set_game_path(game, modtitle);
+
+	// Load games and mods; also stores system paths:
+	gamemanager = new GameManager();
+	
+	if (gamemanager->get_game_count() == 0)
+		{
+		int choice = prompt("Exult Studio could not find any games to edit.\n\n"
+		                    "Do you wish to create a new game to edit?",
+		                    "Yes", "No");
+		if (choice == 0)
+			new_game();
+		else
+			exit(1);
+		}
+	else
+		{
+		string defgame;			// Default game name.
+		config->value("config/estudio/default_game", defgame, "blackgate");
+		default_game = g_strdup(defgame.c_str());
+		if (game == "")
+			game = default_game;
+		config->set("config/estudio/default_game", defgame, true);
+		if (game != "")			// Game given?
+			set_game_path(game, modtitle);
+		}
+
 	string iedit;			// Get image-editor command.
 	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
 	image_editor = g_strdup(iedit.c_str());
@@ -1072,7 +1087,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
 	std::vector<ModManager>& games = gamemanager->get_game_list();
 	GtkTreeIter iter;
-	GtkTreePath *path;
+	GtkTreePath *path = 0;
 	for (int j=0; j < games.size(); j++)
 	{
 		ModManager& currgame = games[j];
@@ -1098,6 +1113,8 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 			path = gtk_tree_model_get_path(oldmod, &iter);
 		}
 	}
+	if (!path)	// Probably no game selected.
+		return;
 	// Force the modlist to be updated:
 	gtk_tree_view_set_cursor(treeview,
 					path, NULL, false);
@@ -1189,44 +1206,54 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	ModManager *basegame = 0;
 	if (gamename == CFG_BG_NAME)
 		{
-		if ((basegame = gamemanager->get_bg()) == 0)
-			{
+		if (!(basegame = gamemanager->get_bg()))
 			cerr << "Black Gate not found." << endl;
-			exit(1);
-			}
 		}
 	else if (gamename == CFG_FOV_NAME)
 		{
-		if ((basegame = gamemanager->get_fov()) == 0)
-			{
+		if (!(basegame = gamemanager->get_fov()))
 			cerr << "Forge of Virtue not found." << endl;
-			exit(1);
-			}
 		}
 	else if (gamename == CFG_SI_NAME)
 		{
-		if ((basegame = gamemanager->get_si()) == 0)
-			{
+		if (!(basegame = gamemanager->get_si()))
 			cerr << "Serpent Isle not found." << endl;
-			exit(1);
-			}
 		}
 	else if (gamename == CFG_SS_NAME)
 		{
-		if ((basegame = gamemanager->get_ss()) == 0)
-			{
+		if (!(basegame = gamemanager->get_ss()))
 			cerr << "Silver Seed not found." << endl;
-			exit(1);
-			}
 		}
 	else
 		{
 		if ((curr_game = gamemanager->find_game_index(gamename)) < 0)
-			{
 			cerr << "Game '" << gamename << "' not found." << endl;
-			exit(1);
+		else
+			basegame = gamemanager->get_game(curr_game);
+		}
+
+	if (!basegame)
+		{
+		string dlg = "Exult Studio could not find the specified game: '";
+		dlg += gamename + "'.\n\nDo you wish to ";
+		if (gamemanager->get_game_count() > 0)
+			dlg += "browse for a different game, ";
+		dlg += "create a new game or exit?";
+		int choice = (gamemanager->get_game_count() > 0) ?
+		              prompt(dlg.c_str(), "Browse", "Create New", "Quit") :
+		              (prompt(dlg.c_str(), "Create New", "Quit") + 1);
+		if (choice == 0)
+			{
+			open_game_dialog(false);
+			return;
 			}
-		basegame = gamemanager->get_game(curr_game);
+		else if (choice == 1)
+			{
+			new_game();
+			return;
+			}
+		else
+			exit(1);
 		}
 
 	if (curr_game < 0 && basegame)
