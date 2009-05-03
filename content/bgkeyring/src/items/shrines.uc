@@ -141,7 +141,7 @@ void Shrine shape#(0x463) ()
 							//Cleanse the shrine:
 							obj_sprite_effect(ANIMATION_TELEPORT, 0, 0, 0, 0, 0, -1);
 							set_item_frame(SHRINE_SACRIFICE - 1);
-							play_sound_effect2(64, item);
+							UI_play_sound_effect2(64, item);
 							
 							var bloodstains = pos->find_nearby(SHAPE_BLOOD, 20, MASK_TRANSLUCENT);
 							for (blood in bloodstains)
