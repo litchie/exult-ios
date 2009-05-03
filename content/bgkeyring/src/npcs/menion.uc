@@ -101,7 +101,7 @@ void Menion object#(0x4C0) ()
 							say("@Now, when such a blank comes from the mould, it is blunt and dull. Thou must temper it: firstly by heating it upon the firepit until it is white-hot, and then beating an edge into it with thy hammer upon an anvil.");
 							say("@Thou mayest need to heat it again several times, as thou canst only put a good edge upon the blade when it is malleable.");
 							say("@Finally, once thy blade has the desired edge, you must quickly plunge it into cold water. This shall harden thy blade and prevent it from warping.");
-							say("\Once this is done, it is ready to be given a proper pommel - bring the blade to me and I shall do this for thee.");
+							say("@Once this is done, it is ready to be given a proper pommel - bring the blade to me and I shall do this for thee.");
 							say("@Good luck, and may thy blade be sturdy and sharp!@*");
 						}
 						//Carrying too much
