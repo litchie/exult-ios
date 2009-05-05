@@ -1,3 +1,7 @@
+2009-05-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Improved MinGW compilation instructions to cover GTK_BASEPATH environment
+	  variable.
+
 2009-05-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2785315.
 
