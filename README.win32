@@ -4,29 +4,40 @@ Exult instructions for Windows
 
 To play
 ---------
-First you need to get Ultima 7 or Serpent Isle. Either you own
-it already, or you buy it somewhere.  Then you must install it.
-Note that the Ultima Collection already contains an installed
-copy of Ultima 7 (In the Ultima7 directory) and of Serpent Isle
-(In the Serpent directory).
+First you need to get Ultima 7 or Serpent Isle. Either you own it already, or
+you buy it somewhere.  Then you must install it. Note that the Ultima Collection
+already contains an installed copy of Ultima 7 (In the Ultima7 directory) and of
+Serpent Isle (In the Serpent directory).
 
-From the Ultima7 or Serpent folder on your PC, copy the STATIC
-sub folder to the 'blackgate' or 'serpentisle' sub folder (as
-appropriate) of the folder you installed Exult in (you will
-likely have to create the sub folders yourself).
-Run exult.exe
+From the Ultima7 or Serpent folder on your PC, copy the STATIC sub folder to the
+'blackgate' or 'serpentisle' sub folder (as appropriate) of the folder you
+installed Exult in (you will likely have to create the sub folders yourself).
+
+Run "exult.exe".
 Have fun!
 
 
 Notes
 ------
-* Exult generates the files 'stdout.txt' and 'stderr.txt'.
-These may give you some idea of what is going on
-under the hood. When Exult suddenly quits, sometimes
-these files can help.
+*	Exult generates the files 'stdout.txt' and 'stderr.txt' when you run it.
+	These may give you some idea of what is going on under the hood. When Exult
+	suddenly quits, sometimes these files can help.
 
-* If you're interested in building Exult for windows yourself, 
-there are two sections below describing how.
+*	Exult Studio generates the files 'studioout.txt' and 'studioerr.txt' when
+	you run it. These may give you some idea of what is going on under the hood.
+	When Exult Studio suddenly quits, sometimes these files can help.
+
+*	If you're interested in building Exult for windows yourself, there are two
+	sections below describing how. In the instructions below, reference is made
+	to changing environment variables; how this is done exactly depends on the
+	version of Windows you use. Here are some instructions:
+	-	For Windows NT/2000:
+		http://support.microsoft.com/kb/100843
+	-	For Windows XP/Server/Vista:
+		http://support.microsoft.com/kb/310519
+	(incidentally, the XP instructions are good for all of those systems)
+	-	For Windows 9x/Me:
+		You have to set them in autoexec.bat using the "set" command.
 
 
 To build in Windows using MinGW
@@ -34,41 +45,81 @@ To build in Windows using MinGW
 (Thanks to Travis Howell)
 
 Download and install MinGW from:
-http://prdownloads.sourceforge.net/mingw/MinGW-5.1.4.exe
+	http://prdownloads.sourceforge.net/mingw/MinGW-5.1.4.exe
 Be sure to select g++ compiler for installation.
 
 Download and install MSYS from:
-http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe
+	http://prdownloads.sourceforge.net/mingw/MSYS-1.0.10.exe
 
 Download the SDL binaries & headers from:
-http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
-Unzip this file into the main directory of Exult source code. (it should add a SDL subdirectory)
+	http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
+Unzip this file into the main directory of Exult source code. (it should add a
+SDL subdirectory)
 
 Download the other required developer tools from:
-http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
+	http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
 Unzip this file into the MinGW directory.
 
-If you want to compile Exult Studio get the additional required developer tools from:
-http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
-Unzip this file into the MinGW directory.
+If you want to compile Exult Studio get the additional required developer tools
+from the following address:
+	http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
+Unzip this file into the MinGW directory. This file contains various files that
+are required for compiling and running Exult Studio, such as GTK+ libraries. If
+this file is your only source for GTK+, you will want to execute the next step.
+
+For Exult Studio, you may have to set a couple of environment variables that
+will tell were are the files it needs to run. This step is crucial if your only
+source for GTK+ runtime files is the Exult Studio developer tools package.
+However, if the GTK_BASEPATH already exists and is set to a valid directory, you
+likely have GTK+ installed already and can skip this step entirely.
+	-	GTK_BASEPATH: Set this variable to the full path of your GTK+ directory.
+		Example:
+			If you used the Exult Studio developer tools above, this is the
+			directory to which you unzipped the files: your MinGW directory.
+	-	PATH: You will want to *append* to this variable. The text you want to
+		append is '%GTK_BASEPATH%\bin' (without the single-quotes); but first,
+		make sure that this text is not already in there. To append it, add a
+		semi-colon (;) at the end of the text (if one is not already there) then
+		append '%GTK_BASEPATH%\bin' (again, without the single-quotes).
+		Example:
+			This value:
+				%SystemRoot%\system32;%SystemRoot%;
+			gets changed to this:
+				%SystemRoot%\system32;%SystemRoot%;%GTK_BASEPATH%\bin
+Your environment will then be set so that you can run Exult Studio.
 
 Start MSYS
 
 Change to the directory where you unpacked the Exult source code.
 (ie cd C:/exult )
 
-Open makefile.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult to be installed to.
+Open makefile.mingw from the Exult directory in a text editor and change
+C:/Ultima7 to the directory you want Exult to be installed to.
 (ie C:/Games/Ultima7 )
 
-If you are compiling Exult Studio, it will be installed to the same directory that Exult when you compile it. You can change that directory in the same way.
+If you are compiling Exult Studio, it will be installed to the same directory
+that Exult when you compile it. You can change that directory in the same way.
 
-Type 'make -f makefile.mingw install' without quotes to compile and install Exult for Windows
+To compile and install Exult, type the command
+	make -f makefile.mingw install
 
-Type 'make -f makefile.mingw toolsinstall' without quotes to compile and install the Exult Tools for Windows
+To compile and install the Exult Tools, type the command
+	make -f makefile.mingw toolsinstall
 
-Type 'make -f makefile.mingw studioinstall' without quotes to compile and install Exult Studio for Windows
-Copy over the required library files (*.dll) from the bin directory of MinGW to the installation directory of Exult Studio
-Alternativelly, you can set your PATH environment variable to include the MinGW bin directory instead of copying the files.
+To compile and install Exult Studio, type the command
+	make -f makefile.mingw studioinstall
+
+If you want to make more than one, you can combine the commands; for example,
+to build Exult and the Exult Tools, you can type the command
+	make -f makefile.mingw install toolsinstall
+
+Exult Studio requires several files to run properly. The best way to deal with
+these requirements is to set environment variables, as described above (the last
+step before 'Start MSYS'). Another way is to copy several files and directories
+to the same directory as the Exult Studio executable; the easiet way would be to
+simply extract the Exult Studio developer tools to this directory; not all of
+those files are required, but this way is easier than figuring out which are
+required and which are not.
 
 Once compile has finished and been installed exit MSYS
 
