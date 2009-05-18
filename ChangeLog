@@ -1,3 +1,9 @@
+2009-05-18	Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation with a lot of changes since Exult 1.2. Work in progress, 
+	  not yet finished or proof read, Audio section needs to be looked at by people 
+	  who know what they are talking about. Mods not yet explained. Only for SVN, 
+	  not for our website.
+
 2009-05-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixes to experience value computation.
 	* Fixed Skara Brae/New Magincia moongate destinations in Keyring mod.
