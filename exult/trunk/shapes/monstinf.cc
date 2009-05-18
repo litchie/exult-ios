@@ -188,9 +188,11 @@ int Monster_info::get_base_xp_value()
 	expval += (flags & (1 << fly)) ? 1 : 0;
 	expval += (flags & (1 << swim)) ? 1 : 0;
 	expval += (flags & (1 << ethereal)) ? 2 : 0;
+	expval += (flags & (1 << 5)) ? 2 : 0;	// No idea what this does.
 	expval += (flags & (1 << see_invisible)) ? 2 : 0;
 	expval += (flags & (1 << start_invisible)) ? 8 : 0;
 	expval += m_splits ? 2 : 0;
 	expval += reach > 5 ? 2 : (reach > 3 ? 1 : 0);
 	return expval;
 	}
+
