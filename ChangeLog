@@ -1,3 +1,6 @@
+2009-05-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixes to experience value computation.
+
 2009-05-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Improved MinGW compilation instructions to cover GTK_BASEPATH environment
 	  variable.

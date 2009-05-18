@@ -2856,7 +2856,7 @@ int Actor::reduce_health
 				// transferred to the dead body it leaves.
 			int combval = properties[static_cast<int>(combat)];
 			expval = properties[static_cast<int>(strength)] + combval + 
-					properties[static_cast<int>(dexterity)]/3 + 
+					(properties[static_cast<int>(dexterity)]+1)/3 + 
 					properties[static_cast<int>(intelligence)]/5;
 			Monster_info *minf = get_info().get_monster_info();
 			int immune = minf ? minf->get_immune() : 0;
