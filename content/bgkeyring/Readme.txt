@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.22
+version: 0.11.23
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,8 @@ version: 0.11.22
 
 7	Version history
 -------------------
+version: 0.11.23
+	- Fixed Skara Brae/New Magincia moongate destinations.
 version: 0.11.22
 	- LB's crown will grant infravision to the wearer.
 version: 0.11.21
