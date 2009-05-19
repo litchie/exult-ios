@@ -302,7 +302,8 @@ int main
 	if(needhelp)
 	{
 		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]"<<endl
-			 << "             [--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl
+			 << "             [--bg|--fov|--si|--ss|--game <game>] [--mod <mod>]" << endl
+			 << "             [--nomenu] [--buildmap 0|1|2] [--nocrc] [--edit] [--write-xml]" << endl
 			 << "--help\t\tShow this information" << endl
 			 << "--version\tShow version info" << endl
 			 << " -c configfile\tSpecify alternate config file" << endl
