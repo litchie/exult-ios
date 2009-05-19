@@ -469,10 +469,10 @@ void Timidity_DeInit()
 {
 	free_instruments();
 
-	if (resample_buffer) free(resample_buffer);
+	free(resample_buffer);
 	resample_buffer = 0;
 
-	if (common_buffer) free(common_buffer);
+	free(common_buffer);
 	common_buffer = 0;
 }
 

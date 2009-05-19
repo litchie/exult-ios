@@ -89,12 +89,9 @@ Cheat::Cheat() {
 }
 
 Cheat::~Cheat() {
-	if (browser)
-		delete browser;
-	if (tester)
-		delete tester;
-	if (cscreen)
-		delete cscreen;
+	delete browser;
+	delete tester;
+	delete cscreen;
 }
 
 void Cheat::init (void) {

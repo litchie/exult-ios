@@ -493,7 +493,6 @@ bool Actor::ready_ammo
 	(
 	)
 	{
-	int points;
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	if (!weapon)
 		return false;
@@ -534,7 +533,6 @@ bool Actor::ready_best_shield
 	(
 	)
 	{
-	int points;
 	if (spots[rhand])
 		{
 		Shape_info& inf = spots[rhand]->get_info();
@@ -545,7 +543,6 @@ bool Actor::ready_best_shield
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0;
 	int best_strength = -20;
-	int wtype = backpack;
 	for (Game_object_vector::const_iterator it = vec.begin(); 
 							it != vec.end(); ++it)
 		{
@@ -563,7 +560,6 @@ bool Actor::ready_best_shield
 		int strength = arinf->get_base_strength();
 		if (strength > best_strength)
 			{
-			wtype = ready;
 			best = obj;
 			best_strength = strength;
 			}
@@ -1008,7 +1004,6 @@ void Actor::check_temperature
 	// Immune to cold by nature or an item?
 	if (get_info().is_cold_immune() || (gear_powers&Frame_powers::cold_immune))
 		return;
-	int shnum = get_shapenum();
 	if (get_schedule_type() == Schedule::wait)
 		return;			// Not following leader?  Leave alone.
 	int warmth = figure_warmth();	// (This could be saved for speed.)
@@ -3689,7 +3684,6 @@ int Actor::move_aside
 	)
 	{
 	Tile_coord cur = get_tile();
-	int opp = (dir + 4)%8;		// Don't go in opposite dir. either.
 	Tile_coord to(-1, -1, -1);
 	int i;
 	int d = 8;
@@ -4524,7 +4518,6 @@ int Main_actor::step
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
-	int old_lift = get_lift();
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	Game_object *block;

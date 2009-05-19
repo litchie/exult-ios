@@ -1044,7 +1044,6 @@ bool Combat_schedule::attack_target
 			attval -= dist;
 		else if (uses == Weapon_info::good_thrown)
 			attval -= dist/2;
-		int speed = winf->get_missile_speed();
 		// We need to pass the attack value here to guard against
 		// the possibility of the attacker's combat be lowered
 		// (e.g., due to being paralyzed) while the projectile is
@@ -1316,7 +1315,6 @@ void Combat_schedule::now_what
 		}
 	Game_object *opponent = npc->get_target();
 					// Flag for slimes:
-	bool strange = npc->get_info().has_strange_movement() != false;
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:

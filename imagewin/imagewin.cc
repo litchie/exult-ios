@@ -331,8 +331,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 		else
 		{
 			cout << "Couldn't create 8bit scaled surface" << endl;
-			if (surface) delete surface;
-			if (scaled_surface) delete scaled_surface;
+			delete surface;
+			delete scaled_surface;
 			surface = scaled_surface = 0;
 		}
 	}
@@ -353,8 +353,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 		else
 		{
 			cout << "Couldn't create 8bit scaled surface" << endl;
-			if (surface) delete surface;
-			if (scaled_surface) delete scaled_surface;
+			delete surface;
+			delete scaled_surface;
 			surface = scaled_surface = 0;
 		}
 	}
@@ -374,8 +374,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 		else
 		{
 			cout << "Couldn't create 8bit scaled surface" << endl;
-			if (surface) delete surface;
-			if (scaled_surface) delete scaled_surface;
+			delete surface;
+			delete scaled_surface;
 			surface = scaled_surface = 0;
 		}
 	}

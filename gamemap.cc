@@ -168,8 +168,7 @@ void Game_map::init_chunks
 	(
 	)
 	{
-	if (chunks)
-		delete chunks;
+	delete chunks;
 	chunks = new ifstream;
 	int num_chunk_terrains;
 	bool patch_exists = is_system_path_defined("<PATCH>");
@@ -1893,6 +1892,7 @@ bool Game_map::write_minimap()
 	writer.mark_section_done();
 	bool ok = writer.close();
 	delete [] chunk_pixels;
+	delete shape;
 	gwin->set_all_dirty();
 	return ok;
 }

@@ -3128,7 +3128,7 @@ void Sew_schedule::now_what
 			wares_table->get_lift() + info.get_3d_height());
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
-				new Pickup_actor_action(cloth, cpos, 250)));
+				new Pickup_actor_action(cloth, cpos, 250, true)));
 		cloth = 0;			// Leave it be.
 		break;
 		}
@@ -3404,7 +3404,7 @@ void Bake_schedule::now_what()
 			if (baked_count <= 5) {
 				npc->set_action(new Sequence_actor_action(pact,
 					new Pickup_actor_action(dough_in_oven,
-							 cpos, 250)));
+							 cpos, 250, true)));
 			} else {
 				npc->set_action(pact);
 				dough_in_oven->remove_this();

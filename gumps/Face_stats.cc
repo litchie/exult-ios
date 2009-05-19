@@ -169,8 +169,8 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 
 Portrait_button::~Portrait_button()
 {
-	if (hp) delete hp;
-	if (mana) delete mana;
+	delete hp;
+	delete mana;
 }
 
 void Portrait_button::double_clicked(int x, int y)

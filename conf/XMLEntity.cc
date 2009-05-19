@@ -382,7 +382,7 @@ void	XMLnode::xmlparse(const string &s,std::size_t &pos)
 /* Returns a list of key->value pairs that are found under the provided 'basekey'.
 	Ignores comments (<!-- ... --> and doesn't return them.
 	Returns true if search is 'finished' */
-bool XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string currkey, const unsigned int pos)
+bool XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string &currkey, const unsigned int pos)
 {
 	/* If our 'current key' is longer then the key we're serching for
 		we've obviously gone too deep in this branch, and we won't find
@@ -408,7 +408,7 @@ bool XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string 
 }
 
 /* Just adds every key->value pair under the this node to the ktl */
-void XMLnode::selectpairs(KeyTypeList &ktl, const std::string currkey)
+void XMLnode::selectpairs(KeyTypeList &ktl, const std::string &currkey)
 {
 	ktl.push_back(KeyType(currkey + id, content));
 	

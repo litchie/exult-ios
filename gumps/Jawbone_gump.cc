@@ -127,8 +127,6 @@ bool Jawbone_gump::on_tooth(int sx, int sy, int index)
 
 void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
 {
-	int fr = obj->get_framenum();
-	
 	// Get shape.
 	Shape_frame *shape = obj->get_shape();
 	

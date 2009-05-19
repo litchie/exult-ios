@@ -379,7 +379,7 @@ void Shape_group_file::write
 		assert(ptr - buf == len);
 					// Write out to file.
 		out.write(reinterpret_cast<char *>(buf), len);
-		delete buf;
+		delete [] buf;
 		gfile.mark_section_done();
 		}
 	if (!gfile.close())

@@ -304,7 +304,7 @@ void playfli::put_buffer(Image_window *win)
 
 playfli::~playfli()
 {
-	if (fli_buf) delete fli_buf;
+	delete fli_buf;
 	delete fli_data;
 	delete palette;
 }

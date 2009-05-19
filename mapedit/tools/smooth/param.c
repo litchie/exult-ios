@@ -88,7 +88,6 @@ int read_param(int argc, char **argv){
       default: {
 	show_help(argv[0]);
 	return(-1);
-	break;
       }
       }
       i++;

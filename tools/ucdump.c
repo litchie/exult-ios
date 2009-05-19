@@ -1292,10 +1292,8 @@ int main(int ac, char** av)
 		if( ( opcode_buf == NULL ) || ( intrinsic_buf == NULL ) )
 		{
 			/* No memory */
-			if( opcode_buf )
-				free(opcode_buf);
-			if( intrinsic_buf )
-				free(intrinsic_buf);
+			free(opcode_buf);
+			free(intrinsic_buf);
 			printf("Out of memory\n");
 			return -2;
 		}
@@ -1313,10 +1311,8 @@ int main(int ac, char** av)
 	if( f == NULL )
 	{
 		/* Free the buffers */
-		if( opcode_buf )
-			free(opcode_buf);
-		if( intrinsic_buf )
-			free(intrinsic_buf);
+		free(opcode_buf);
+		free(intrinsic_buf);
 		printf("Failed to open usecode file\n\n");
 		return -2;
 	}
@@ -1376,9 +1372,7 @@ int main(int ac, char** av)
 		}
 	}
 	/* Free the buffers */
-	if( opcode_buf )
-		free(opcode_buf);
-	if( intrinsic_buf )
-		free(intrinsic_buf);
+	free(opcode_buf);
+	free(intrinsic_buf);
 	return 0;
 }

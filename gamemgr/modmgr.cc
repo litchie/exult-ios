@@ -270,6 +270,7 @@ static const char *get_game_identity(const char *savename, const string& title)
 				if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
 					{
 					unzClose(unzipfile);
+					delete [] game_identity;
 					throw file_read_exception(savename);
 					}
 				unzReadCurrentFile(unzipfile, game_identity,

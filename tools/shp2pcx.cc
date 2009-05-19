@@ -145,9 +145,6 @@ u7shape* load_shape(char* filename)
   int i, j;
 
   int temp_int;
-
-  u7shape *shape = new u7shape;
-  u7frame *frame;
   
   fp = fopen (filename, "rb");
   if (!fp) {
@@ -157,6 +154,9 @@ u7shape* load_shape(char* filename)
   fseek(fp, 0, SEEK_END);
   file_size = ftell(fp);
   fseek(fp, 0, SEEK_SET);
+
+  u7shape *shape = new u7shape;
+  u7frame *frame;
 	
   shape_size = read4(fp);
 	

@@ -448,7 +448,7 @@ gint Chunk_chooser::mouse_press
         return(TRUE);
     }
 
-	int old_selected = chooser->selected;
+	//int old_selected = chooser->selected;
 	int i;				// Search through entries.
 	for (i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
@@ -1153,7 +1153,6 @@ void Chunk_chooser::insert_response
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
 	bool dup = *ptr++ ? true : false;
-	bool okay = *ptr ? true : false;
 	if (!*ptr)
 		EStudio::Alert("Terrain insert failed.");
 	else
@@ -1185,7 +1184,6 @@ void Chunk_chooser::delete_response
 	{
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
-	bool okay = *ptr ? true : false;
 	if (!*ptr)
 		EStudio::Alert("Terrain delete failed.");
 	else
@@ -1234,7 +1232,6 @@ void Chunk_chooser::swap_response
 	{
 	unsigned char *ptr = data;
 	int tnum = (short) Read2(ptr);
-	bool okay = *ptr ? true : false;
 	if (!*ptr)
 		cout << "Terrain insert failed." << endl;
 	else if (tnum >= 0 && tnum < num_chunks - 1)

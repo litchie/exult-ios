@@ -187,8 +187,7 @@ void Npc_timer_list::start_poison
 	(
 	)
 	{
-	if (poison)			// Remove old one.
-		delete poison;
+	delete poison;
 	poison = new Npc_poison_timer(this);
 	}
 
@@ -200,8 +199,7 @@ void Npc_timer_list::start_sleep
 	(
 	)
 	{
-	if (sleep)			// Remove old one.
-		delete sleep;
+	delete sleep;
 	sleep = new Npc_sleep_timer(this);
 	}
 
@@ -213,8 +211,7 @@ void Npc_timer_list::start_invisibility
 	(
 	)
 	{
-	if (invisibility)			// Remove old one.
-		delete invisibility;
+	delete invisibility;
 	invisibility = new Npc_invisibility_timer(this);
 	}
 
@@ -226,8 +223,7 @@ void Npc_timer_list::start_protection
 	(
 	)
 	{
-	if (protection)			// Remove old one.
-		delete protection;
+	delete protection;
 	protection = new Npc_protection_timer(this);
 	}
 
@@ -240,8 +236,7 @@ void Npc_timer_list::start_might
 	(
 	)
 	{
-	if (might)			// Remove old one.
-		delete might;
+	delete might;
 	might = new Npc_flag_timer(this, Obj_flags::might, &might);
 	}
 
@@ -253,8 +248,7 @@ void Npc_timer_list::start_curse
 	(
 	)
 	{
-	if (curse)			// Remove old one.
-		delete curse;
+	delete curse;
 	curse = new Npc_flag_timer(this, Obj_flags::cursed, &curse);
 	}
 
@@ -266,8 +260,7 @@ void Npc_timer_list::start_charm
 	(
 	)
 	{
-	if (charm)			// Remove old one.
-		delete charm;
+	delete charm;
 	charm = new Npc_flag_timer(this, Obj_flags::charmed, &charm);
 	}
 
@@ -279,8 +272,7 @@ void Npc_timer_list::start_paralyze
 	(
 	)
 	{
-	if (paralyze)			// Remove old one.
-		delete paralyze;
+	delete paralyze;
 	paralyze = new Npc_flag_timer(this, Obj_flags::paralyzed, &paralyze);
 	}
 

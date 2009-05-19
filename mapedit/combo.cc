@@ -1079,7 +1079,7 @@ cout << "Buflen = " << buflen << endl;
 			gdk_atom_intern(U7_TARGET_COMBOID_NAME, 0),
                                 				8, buf, len);
 #endif
-	delete buf;
+	delete [] buf;
 	delete [] ents;
 	}
 

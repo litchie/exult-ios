@@ -1248,7 +1248,11 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	if (!xmidi) return;
 
 	XMidiEventList *eventlist = xmidi->GetEventList(0);
-	if (!eventlist) return;
+	if (!eventlist)
+	{
+		delete xmidi;
+		return;
+	}
 
 	extractTimbreLibrary(eventlist);
 
@@ -1291,6 +1295,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES);
 		sendComMessage(precache);
 	}
+	delete xmidi;
 }
 
 void LowLevelMidiDriver::extractTimbreLibrary(XMidiEventList *eventlist)
