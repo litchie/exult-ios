@@ -312,10 +312,12 @@ int main
 			 << "--ss\t\tSkip menu and run Serpent Isle with Silver Seed expansion" << endl
 			 << "--nomenu\tSkip BG/SI game menu" << endl
 			 << "--game <game>\tRun original game" << endl
-			 << "--mod <mod>\tMust be used together with '--bg', '--si' or '--game <game>'; runs the specified game using the mod with title equal to '<mod>'" << endl
+			 << "--mod <mod>\tMust be used together with '--bg', '--fov', '--si', '--ss' or '--game <game>';" << endl
+			 << "\t\truns the specified game using the mod with title equal to '<mod>'" << endl
 			 << "--buildmap <N>\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(N=0: all roofs, 1: no level 2 roofs, 2: no roofs)" << endl
-			 << "\t\tonly valid when used together with --bg or --si" << endl
+			 << "\t\tonly valid when used together with '--bg', '--fov', '--si', '--ss' or '--game <game>';" << endl
+			 << "\t\tyou may optionally specify a mod with '--mod <mod>'" << endl
 			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
 			 << "--edit\t\tStart in map-edit mode" << endl
