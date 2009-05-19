@@ -169,10 +169,10 @@ void Shape_chooser::select
 	int shapenum = info[selected].shapenum;
 					// Update spin-button value, range.
 	gtk_widget_set_sensitive(fspin, true);
-	gtk_adjustment_set_value(frame_adj, info[selected].framenum);
 	int nframes = ifile->get_num_frames(shapenum);
 	frame_adj->upper = nframes - 1;
 	gtk_adjustment_changed(frame_adj);
+	gtk_adjustment_set_value(frame_adj, info[selected].framenum);
 	gtk_widget_set_sensitive(fspin, true);
 	update_statusbar();
 	}
@@ -2547,7 +2547,7 @@ Shape_chooser::Shape_chooser
 					// A spin button for frame#.
 	frame_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
 				16, 1, 
-				4, 1.0));
+				0, 0.0));
 	fspin = gtk_spin_button_new(GTK_ADJUSTMENT(frame_adj), 
 									1, 0);
 	gtk_signal_connect(GTK_OBJECT(frame_adj), "value_changed",

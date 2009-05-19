@@ -46,6 +46,7 @@ void ActionFullscreen(int* params);
 
 void ActionUseItem(int* params);
 void ActionUseFood(int*params);
+void ActionCallUsecode(int* params);
 void ActionCombat(int* params);
 void ActionCombatPause(int* params);
 void ActionTarget(int* params);
@@ -80,6 +81,7 @@ void ActionToggleEggs(int* params);
 void ActionGodMode(int* params);
 void ActionGender(int* params);
 void ActionCheatHelp(int* params);
+void ActionMapeditHelp(int* params);
 void ActionInfravision(int* params);
 void ActionSkipLift(int* params);
 void ActionLevelup(int* params);

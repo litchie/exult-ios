@@ -67,13 +67,15 @@ C		toggle_combat
 SPACE		pause_combat
 Ctrl-D		delete_object
 E		toggle_eggs
-F		usefood				# Feed
+F		call_usecode		1557 0		# Feed
+Ctrl-F		useitem			377	# Feed
 G		useitem			675	11	# Use abacus
 Alt-G		toggle_god_mode
 Ctrl-G		change_gender
 H		help
 Alt-H		toggle_hack_mover
 Ctrl-H		cheat_help
+Shift-H		mapedit_help
 Ctrl-Alt-H	party_heal
 Alt-I		toggle_infravision
 I		inventory
