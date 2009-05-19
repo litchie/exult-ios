@@ -67,13 +67,13 @@ static Actor *Get_party_member
 }
 
 
-//  { ActionQuit, 0, "Quit", true, false, NONE },
+//  { ActionQuit, 0, "Quit", normal_keys, NONE },
 void ActionQuit(int *params)
 {
 	Game_window::get_instance()->get_gump_man()->okay_to_quit();
 }
 
-// { ActionOldFileGump, 0, "Save/restore", true, false, NONE },
+// { ActionOldFileGump, 0, "Save/restore", normal_keys, NONE },
 void ActionOldFileGump(int *params)
 {
 	File_gump *fileio = new File_gump();
@@ -83,7 +83,7 @@ void ActionOldFileGump(int *params)
 }
 
 #ifdef UNDER_CE
-// { ActionMinimizeGame, 0, "Minimize game", true, false, NONE },
+// { ActionMinimizeGame, 0, "Minimize game", normal_keys, NONE },
 void ActionMinimizeGame(int *params)
 {
 	//gwin->clear_screen(true);
@@ -93,7 +93,7 @@ void ActionMinimizeGame(int *params)
 	SDL_WM_IconifyWindow();
 }
 
-// { ActionTouchscreenMode, 0, "Touchscreen mode", true, false, NONE },
+// { ActionTouchscreenMode, 0, "Touchscreen mode", normal_keys, NONE },
 void ActionTouchscreenMode(int *params)
 {
 	int Right,Double;
@@ -105,7 +105,7 @@ void ActionTouchscreenMode(int *params)
 	Touchscreen->setModes(params[0], params[1]);
 }
 
-// { "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", true, false, NONE, true },
+// { "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", normal_keys, NONE, true },
 void ActionKeyboardPosition(int *params)
 {
 	// 0 = upper left, 1 = upper right, 2 = lower left, 3 = lower right
@@ -118,7 +118,7 @@ void ActionKeyboardPosition(int *params)
 	gkeyboard->show(corner, -1);
 }
 
-// { "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", true, false, NONE, true },
+// { "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", normal_keys, NONE, true },
 void ActionKeyboardMode(int *params)
 {
 	int newstate = params[0];
@@ -149,7 +149,7 @@ void ActionKeyboardMode(int *params)
 
 #endif
 
-// { ActionMenuGump, 0, "GameMenu", true, false, NONE },
+// { ActionMenuGump, 0, "GameMenu", normal_keys, NONE },
 void ActionMenuGump(int *params)
 {
 	Gamemenu_gump *gmenu = new Gamemenu_gump();
@@ -158,7 +158,7 @@ void ActionMenuGump(int *params)
 	delete gmenu;
 }
 
-// { ActionFileGump, 0, "Save/restore", true, false, NONE },
+// { ActionFileGump, 0, "Save/restore", normal_keys, NONE },
 void ActionFileGump(int *params)
 {
 	Newfile_gump *fileio = new Newfile_gump();
@@ -166,7 +166,7 @@ void ActionFileGump(int *params)
 															   Mouse::hand);
 	delete fileio;
 }
-//  { ActionQuicksave, 0, "Quick-save", true, false, NONE },
+//  { ActionQuicksave, 0, "Quick-save", normal_keys, NONE },
 void ActionQuicksave(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -180,7 +180,7 @@ void ActionQuicksave(int *params)
 	gwin->get_effects()->center_text("Game saved");
 }
 
-//  { ActionQuickrestore, 0, "Quick-restore", true, false, NONE },
+//  { ActionQuickrestore, 0, "Quick-restore", normal_keys, NONE },
 void ActionQuickrestore(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -195,7 +195,7 @@ void ActionQuickrestore(int *params)
 	gwin->paint();
 }
 
-//  { ActionAbout, 0, "About Exult", true, false, NONE },
+//  { ActionAbout, 0, "About Exult", normal_keys, NONE },
 void ActionAbout(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -217,19 +217,19 @@ void ActionAbout(int *params)
 	delete scroll;
 }
 
-//  { ActionHelp, 0, "List keys", true, false, NONE },
+//  { ActionHelp, 0, "List keys", normal_keys, NONE },
 void ActionHelp(int *params)
 {
 	keybinder->ShowHelp();
 }
 
-//  { ActionCloseGumps, 0, "Close gumps", false, false, NONE },
+//  { ActionCloseGumps, 0, "Close gumps", dont_show, NONE },
 void ActionCloseGumps(int *params)
 {
 	Game_window::get_instance()->get_gump_man()->close_all_gumps();
 }
 
-//  { ActionCloseOrMenu, "Game menu", true, false, NONE },
+//  { ActionCloseOrMenu, "Game menu", normal_keys, NONE },
 void ActionCloseOrMenu(int* params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -239,43 +239,43 @@ void ActionCloseOrMenu(int* params)
 		ActionMenuGump(0);
 }
 
-//  { ActionScreenshot, 0, "Take screenshot", true, false, NONE },
+//  { ActionScreenshot, 0, "Take screenshot", normal_keys, NONE },
 void ActionScreenshot(int *params)
 {
 	make_screenshot();
 }
 
-//  { ActionRepaint, 0, "Repaint screen", false, false, NONE },
+//  { ActionRepaint, 0, "Repaint screen", dont_show, NONE },
 void ActionRepaint(int *params)
 {
 	Game_window::get_instance()->paint();
 }
 
-//  { ActionResIncrease, 0, "Increase resolution", true, true, NONE },
+//  { ActionResIncrease, 0, "Increase resolution", cheat_keys, NONE },
 void ActionResIncrease(int *params)
 {
 	increase_resolution();
 }
 
-//  { ActionResDecrease, 0, "Decrease resolution", true, true, NONE },
+//  { ActionResDecrease, 0, "Decrease resolution", cheat_keys, NONE },
 void ActionResDecrease(int *params)
 {
 	decrease_resolution();
 }
 
-//  { ActionBrighter, 0, "Increase brightness", true, false, NONE },
+//  { ActionBrighter, 0, "Increase brightness", normal_keys, NONE },
 void ActionBrighter(int *params)
 {
 	change_gamma(true);
 }
 
-//  { ActionDarker, 0, "Decrease brightness", true, false, NONE },
+//  { ActionDarker, 0, "Decrease brightness", normal_keys, NONE },
 void ActionDarker(int *params)
 {
 	change_gamma(false);
 }
 
-//  { ActionFullscreen, 0, "Toggle fullscreen", true, false, NONE },
+//  { ActionFullscreen, 0, "Toggle fullscreen", normal_keys, NONE },
 void ActionFullscreen(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -283,7 +283,7 @@ void ActionFullscreen(int *params)
 	gwin->paint();
 }
 
-//  { ActionUseItem, 3, "Use item", false, false, NONE },
+//  { ActionUseItem, 3, "Use item", dont_show, NONE },
 // params[0] = shape nr.
 // params[1] = frame nr.
 // params[2] = quality
@@ -296,7 +296,7 @@ void ActionUseItem(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionUseItem, 3, "Use food", false, false, NONE },
+//  { ActionUseItem, 3, "Use food", dont_show, NONE },
 void ActionUseFood(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -306,7 +306,19 @@ void ActionUseFood(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionCombat, 0, "Toggle combat", true, false, NONE },
+//  { ActionCallUsecode, 2, "Call usecode", dont_show, NONE },
+// params[0] = usecode function.
+// params[1] = event id.
+void ActionCallUsecode(int *params)
+{
+	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
+	usecode->call_usecode(params[0], (Game_object *)0,
+		static_cast<Usecode_machine::Usecode_events>(params[1]));
+
+	Mouse::mouse->set_speed_cursor();
+}
+
+//  { ActionCombat, 0, "Toggle combat", normal_keys, NONE },
 void ActionCombat(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -315,14 +327,14 @@ void ActionCombat(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionCombatPause, 0, "Pause combat", true, false, NONE },
+//  { ActionCombatPause, 0, "Pause combat", normal_keys, NONE },
 void ActionCombatPause(int *params)
 {
 	Combat::toggle_pause();
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionTarget, 0, "Target mode", true, false, NONE },
+//  { ActionTarget, 0, "Target mode", normal_keys, NONE },
 void ActionTarget(int *params)
 {
 	int x, y;
@@ -332,7 +344,7 @@ void ActionTarget(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionInventory, 1, "Show inventory", true, false, NONE },
+//  { ActionInventory, 1, "Show inventory", normal_keys, NONE },
 // params[0] = party member (0-7), or -1 for 'next'
 void ActionInventory(int *params)
 {
@@ -376,7 +388,7 @@ void ActionInventory(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionTryKeys, 0, "Try keys", true, false, NONE },
+//  { ActionTryKeys, 0, "Try keys", normal_keys, NONE },
 void ActionTryKeys(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -418,7 +430,7 @@ void ActionTryKeys(int *params)
 	Mouse::mouse->flash_shape(Mouse::redx);	// Nothing matched.
 }
 
-//  { ActionStats, 1, "Show stats", true, false, NONE },
+//  { ActionStats, 1, "Show stats", normal_keys, NONE },
 // params[0] = party member (0-7), or -1 for 'next'
 void ActionStats(int *params)
 {
@@ -459,7 +471,7 @@ void ActionStats(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
-//  { ActionCombatStats, 0, "Show Combat stats", true, false, SERPENT_ISLE }
+//  { ActionCombatStats, 0, "Show Combat stats", normal_keys, SERPENT_ISLE }
 void ActionCombatStats(int* params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -467,7 +479,7 @@ void ActionCombatStats(int* params)
 	gwin->get_gump_man()->add_gump(gwin->get_main_actor(), game->get_shape("gumps/cstats/1") + cnt);
 }
 
-//  { ActionFaceStats, 0, "Change Face Stats State", true, false, NONE }
+//  { ActionFaceStats, 0, "Change Face Stats State", normal_keys, NONE }
 void ActionFaceStats(int* params)
 {
 	Face_stats::AdvanceState();
@@ -475,7 +487,7 @@ void ActionFaceStats(int* params)
 }
 
 
-//  { ActionSIIntro, 0,  "Show SI intro", true, true, SERPENT_ISLE },
+//  { ActionSIIntro, 0,  "Show SI intro", cheat_keys, SERPENT_ISLE },
 void ActionSIIntro(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -488,7 +500,7 @@ void ActionSIIntro(int *params)
 	gwin->get_pal()->fade(50, 1, 0);
 }
 
-//  { ActionEndgame, 1, "Show endgame", true, true, BLACK_GATE },
+//  { ActionEndgame, 1, "Show endgame", cheat_keys, BLACK_GATE },
 // params[0] = -1,0 = won, 1 = lost
 void ActionEndgame(int *params)
 {
@@ -500,7 +512,7 @@ void ActionEndgame(int *params)
 	gwin->get_pal()->fade(50, 1, 0);
 }
 
-//  { ActionScrollLeft, 0, "Scroll left", true, true, NONE },
+//  { ActionScrollLeft, 0, "Scroll left", cheat_keys, NONE },
 void ActionScrollLeft(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -508,7 +520,7 @@ void ActionScrollLeft(int *params)
 		gwin->view_left();
 }
 
-//  { ActionScrollRight, 0, "Scroll right", true, true, NONE },
+//  { ActionScrollRight, 0, "Scroll right", cheat_keys, NONE },
 void ActionScrollRight(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -516,7 +528,7 @@ void ActionScrollRight(int *params)
 		gwin->view_right();
 }
 
-//  { ActionScrollUp, 0, "Scroll up", true, true, NONE },
+//  { ActionScrollUp, 0, "Scroll up", cheat_keys, NONE },
 void ActionScrollUp(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -524,7 +536,7 @@ void ActionScrollUp(int *params)
 		gwin->view_up();
 }
 
-//  { ActionScrollDown, 0, "Scroll down", true, true, NONE },
+//  { ActionScrollDown, 0, "Scroll down", cheat_keys, NONE },
 void ActionScrollDown(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -532,7 +544,7 @@ void ActionScrollDown(int *params)
 		gwin->view_down();
 }
 
-//  { ActionWalkWest, 0, "Walk west", true, false, NONE },
+//  { ActionWalkWest, 0, "Walk west", normal_keys, NONE },
 void ActionWalkWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -540,7 +552,7 @@ void ActionWalkWest(int *params)
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2,speed);
 }
 
-//  { ActionWalkEast, 0, "Walk east", true, false, NONE },
+//  { ActionWalkEast, 0, "Walk east", normal_keys, NONE },
 void ActionWalkEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -548,7 +560,7 @@ void ActionWalkEast(int *params)
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2, speed);
 }
 
-//  { ActionWalkNorth, 0, "Walk north", true, false, NONE },
+//  { ActionWalkNorth, 0, "Walk north", normal_keys, NONE },
 void ActionWalkNorth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -556,7 +568,7 @@ void ActionWalkNorth(int *params)
 	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50, speed);
 }
 
-//  { ActionWalkSouth, 0, "Walk south", true, false, NONE },
+//  { ActionWalkSouth, 0, "Walk south", normal_keys, NONE },
 void ActionWalkSouth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -564,7 +576,7 @@ void ActionWalkSouth(int *params)
 	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50, speed);
 }
 
-//  { ActionWalkNorthEast, 0, "Walk north-east", true, false, NONE },
+//  { ActionWalkNorthEast, 0, "Walk north-east", normal_keys, NONE },
 void ActionWalkNorthEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -572,7 +584,7 @@ void ActionWalkNorthEast(int *params)
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2-50, speed);
 }
 
-//  { ActionWalkSouthEast, 0, "Walk south-east", true, false, NONE },
+//  { ActionWalkSouthEast, 0, "Walk south-east", normal_keys, NONE },
 void ActionWalkSouthEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -580,7 +592,7 @@ void ActionWalkSouthEast(int *params)
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2+50, speed);
 }
 
-//  { ActionWalkNorthWest, 0, "Walk north-west", true, false, NONE },
+//  { ActionWalkNorthWest, 0, "Walk north-west", normal_keys, NONE },
 void ActionWalkNorthWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -588,7 +600,7 @@ void ActionWalkNorthWest(int *params)
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2-50, speed);
 }
 
-//  { ActionWalkSouthWest, 0, "Walk south-west", true, false, NONE },
+//  { ActionWalkSouthWest, 0, "Walk south-west", normal_keys, NONE },
 void ActionWalkSouthWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -596,14 +608,14 @@ void ActionWalkSouthWest(int *params)
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2+50, speed);
 }
 
-//  { ActionStopWalking, 0, "Stop Walking", true, true, NONE },
+//  { ActionStopWalking, 0, "Stop Walking", cheat_keys, NONE },
 void ActionStopWalking(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->stop_actor();
 }
 
-//  { ActionCenter, 0, "Center screen", true, true, NONE },
+//  { ActionCenter, 0, "Center screen", cheat_keys, NONE },
 void ActionCenter(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -611,13 +623,13 @@ void ActionCenter(int *params)
 	gwin->paint();
 }
 
-//  { ActionShapeBrowser, 0, "Shape browser", true, true, NONE },
+//  { ActionShapeBrowser, 0, "Shape browser", cheat_keys, NONE },
 void ActionShapeBrowser(int *params)
 {
 	cheat.shape_browser();
 }
 
-//  { ActionCreateShape, 3, "Create last shape", true, true, NONE },
+//  { ActionCreateShape, 3, "Create last shape", cheat_keys, NONE },
 // params[0] = shape nr., or -1 for 'last selected shape in browser'
 // params[1] = frame nr.
 // params[2] = quantity
@@ -636,7 +648,7 @@ void ActionCreateShape(int *params)
 	}
 }
 
-//  { ActionDeleteObject, 0, "Delete object", true, true, NONE },
+//  { ActionDeleteObject, 0, "Delete object", cheat_keys, NONE },
 void ActionDeleteObject(int *params)
 {
 	cheat.delete_object();
@@ -648,7 +660,7 @@ void ActionDeleteSelected(int *params)
 	cheat.delete_selected();
 }
 
-//  { ActionMoveSelected, 3, "Move selected", true, true, NONE },
+//  { ActionMoveSelected, 3, "Move selected", cheat_keys, NONE },
 // params[0] = deltax (tiles)
 // params[1] = deltay
 // params[2] = deltaz
@@ -657,13 +669,13 @@ void ActionMoveSelected(int *params)
 	cheat.move_selected(params[0], params[1], params[2]);
 }
 
-//  { ActionToggleEggs, 0, "Toggle egg display", true, true, NONE },
+//  { ActionToggleEggs, 0, "Toggle egg display", cheat_keys, NONE },
 void ActionToggleEggs(int *params)
 {
 	cheat.toggle_eggs();
 }
 
-//  { ActionGodMode, 1, "Toggle god mode", true, true, NONE },
+//  { ActionGodMode, 1, "Toggle god mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionGodMode(int *params)
 {
@@ -673,19 +685,25 @@ void ActionGodMode(int *params)
 		cheat.set_god(params[0] != 0);
 }
 
-//  { ActionGender, 0, "Change gender", true, true, NONE },
+//  { ActionGender, 0, "Change gender", cheat_keys, NONE },
 void ActionGender(int *params)
 {
 	cheat.change_gender();
 }
 
-//  { ActionCheatHelp, 0, "List cheat keys", true, true, NONE },
+//  { ActionCheatHelp, 0, "List cheat keys", cheat_keys, NONE },
 void ActionCheatHelp(int *params)
 {
 	keybinder->ShowCheatHelp();
 }
 
-//  { ActionInfravision, 1, "Toggle infravision", true, true, NONE },
+//  { ActionMapeditHelp, 0, "List mapedit keys", mapedit_keys, NONE },
+void ActionMapeditHelp(int *params)
+{
+	keybinder->ShowMapeditHelp();
+}
+
+//  { ActionInfravision, 1, "Toggle infravision", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionInfravision(int *params)
 {
@@ -695,7 +713,7 @@ void ActionInfravision(int *params)
 		cheat.set_infravision(params[0] != 0);
 }
 
-//  { ActionSkipLift, 1, "Change skiplift", true, true, NONE },
+//  { ActionSkipLift, 1, "Change skiplift", cheat_keys, NONE },
 // params[0] = level, or -1 to decrease one
 void ActionSkipLift(int *params)
 {
@@ -705,7 +723,7 @@ void ActionSkipLift(int *params)
 		cheat.set_skip_lift(params[0]);
 }
 
-//  { ActionLevelup, 1, "Level-up party", true, true, NONE },
+//  { ActionLevelup, 1, "Level-up party", cheat_keys, NONE },
 // params[0] = nr. of levels (or -1 for one)
 void ActionLevelup(int *params)
 {
@@ -714,7 +732,7 @@ void ActionLevelup(int *params)
 		cheat.levelup_party();
 }
 
-//  { ActionMapEditor, 1, "Toggle map-editor mode", true, true, NONE },
+//  { ActionMapEditor, 1, "Toggle map-editor mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionMapEditor(int *params)
 {
@@ -724,7 +742,7 @@ void ActionMapEditor(int *params)
 		cheat.set_map_editor(params[0] != 0);
 }
 
-// { ActionHackMover, "Toggle hack-mover mode", true, true, NONE },
+// { ActionHackMover, "Toggle hack-mover mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionHackMover(int *params)
 {
@@ -734,37 +752,37 @@ void ActionHackMover(int *params)
 		cheat.set_hack_mover(params[0] != 0);
 }
 
-//  { ActionMapTeleport, 0, "Map teleport", true, true, NONE },
+//  { ActionMapTeleport, 0, "Map teleport", cheat_keys, NONE },
 void ActionMapTeleport(int *params)
 {
 	cheat.map_teleport();
 }
 
-//  { ActionWriteMiniMap, 0, "Write minimap", true, true, NONE },
+//  { ActionWriteMiniMap, 0, "Write minimap", cheat_keys, NONE },
 void ActionWriteMiniMap(int *params)
 {
 	Game_map::write_minimap();
 }
 
-//  { ActionTeleport, 0, "Teleport to cursor", true, true, NONE },
+//  { ActionTeleport, 0, "Teleport to cursor", cheat_keys, NONE },
 void ActionTeleport(int *params)
 {
 	cheat.cursor_teleport();
 }
 
-//  { ActionNextMapTeleport, 0, "Teleport to next map", true, true, NONE },
+//  { ActionNextMapTeleport, 0, "Teleport to next map", cheat_keys, NONE },
 void ActionNextMapTeleport(int *params)
 {
 	cheat.next_map_teleport();
 }
 
-//  { ActionTime, 0, "Next time period", true, true, NONE },
+//  { ActionTime, 0, "Next time period", cheat_keys, NONE },
 void ActionTime(int *params)
 {
 	cheat.fake_time_period();
 }
 
-//  { ActionWizard, 1, "Toggle archwizard mode", true, true, NONE },
+//  { ActionWizard, 1, "Toggle archwizard mode", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionWizard(int *params)
 {
@@ -774,19 +792,19 @@ void ActionWizard(int *params)
 		cheat.set_wizard(params[0] != 0);
 }
 
-//  { ActionHeal, 0, "Heal party", true, true, NONE },
+//  { ActionHeal, 0, "Heal party", cheat_keys, NONE },
 void ActionHeal(int *params)
 {
 	cheat.heal_party();
 }
 
-//  { ActionCheatScreen, 0, "Cheat Screen", true, true, NONE },
+//  { ActionCheatScreen, 0, "Cheat Screen", cheat_keys, NONE },
 void ActionCheatScreen(int *params)
 {
 	cheat.cheat_screen();
 }
 
-//  { ActionPickPocket, 1, "Toggle Pickpocket", true, true, NONE },
+//  { ActionPickPocket, 1, "Toggle Pickpocket", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionPickPocket(int *params)
 {
@@ -796,7 +814,7 @@ void ActionPickPocket(int *params)
 		cheat.set_pickpocket(params[0] != 0);
 }
 
-//  { ActionPickPocket, 1, "Toggle Pickpocket", true, true, NONE },
+//  { ActionPickPocket, 1, "Toggle Pickpocket", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionNPCNumbers(int *params)
 {
@@ -806,7 +824,7 @@ void ActionNPCNumbers(int *params)
 		cheat.set_number_npcs(params[0] != 0);
 }
 
-//  { ActionGrabActor, 1, "Grab Actor for Cheatscreen", true, true, NONE },
+//  { ActionGrabActor, 1, "Grab Actor for Cheatscreen", cheat_keys, NONE },
 // params[0] = -1 for toggle, 0 for off, 1 for on
 void ActionGrabActor(int *params)
 {
@@ -816,25 +834,25 @@ void ActionGrabActor(int *params)
 		cheat.set_grab_actor(params[0] != 0);
 }
 
-//  { ActionCut, "Cut Selected Objects", true, false, NONE, true},
+//  { ActionCut, "Cut Selected Objects", normal_keys, NONE, true},
 void ActionCut(int *params)
 {
 	cheat.cut(false);
 }
 
-//  { ActionCopy, "Copy Selected Objects", true, false, NONE, true},
+//  { ActionCopy, "Copy Selected Objects", normal_keys, NONE, true},
 void ActionCopy(int *params)
 {
 	cheat.cut(true);
 }
 
-//  { ActionPaste, "Paste Selected Objects", true, false, NONE, true},
+//  { ActionPaste, "Paste Selected Objects", normal_keys, NONE, true},
 void ActionPaste(int *params)
 {
 	cheat.paste();
 }
 
-//  { ActionPlayMusic, 1, "Play song", false, true, NONE },
+//  { ActionPlayMusic, 1, "Play song", cheat_keys, NONE },
 // params[0] = song nr., or -1 for next, -2 for previous
 void ActionPlayMusic(int *params)
 {
@@ -851,25 +869,25 @@ void ActionPlayMusic(int *params)
 	}
 }
 
-//  { ActionNaked, 0, "Toggle naked mode", true, true, SERPENT_ISLE },
+//  { ActionNaked, 0, "Toggle naked mode", cheat_keys, SERPENT_ISLE },
 void ActionNaked(int  *params)
 {
 	cheat.toggle_naked();
 }
 
-//  { ActionPetra, 0, "Toggle Petra mode", true, true, SERPENT_ISLE },
+//  { ActionPetra, 0, "Toggle Petra mode", cheat_keys, SERPENT_ISLE },
 void ActionPetra(int *params)
 {
 	cheat.toggle_Petra();
 }
 
-//  { ActionSkinColour, 0 "Change skin colour", true, true, NONE },
+//  { ActionSkinColour, 0 "Change skin colour", cheat_keys, NONE },
 void ActionSkinColour(int *params)
 {
 	cheat.change_skin();
 }
 
-//   { ActionNotebook, 0, "Show notebook", true, false, NONE, false },
+//   { ActionNotebook, 0, "Show notebook", normal_keys, NONE, false },
 void ActionNotebook(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
@@ -883,7 +901,7 @@ void ActionNotebook(int *params)
 	gwin->paint();
 }
 
-//  { ActionSoundTester, 0, "Sound tester", false, true, NONE }
+//  { ActionSoundTester, 0, "Sound tester", cheat_keys, NONE }
 void ActionSoundTester(int *params)
 {
 	cheat.sound_tester();

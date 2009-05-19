@@ -1,3 +1,14 @@
+2009-05-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* mapedit/shapelst.cc: Set frame spin upper-bound *before* setting value;
+	  this fixes a selection bug in frame display mode. Also, leave page_size of
+	  that same spin as zero to prevent another selection bug in frame display.
+	* keys.*, keyactions.*, data/si/defaultkeys.txt: Added new call_usecode
+	  action, which accepts usecode function name (if available) or number and
+	  an event id. This new action is now used for the 'feeding' action ('F') in
+	  SI using function 0x615. This function seems to exists only with Silver
+	  Seed installed, so the old feeding action has been remapped to 'Ctrl-F'.
+	  Also, Implemented feature request #279328.
+
 2009-05-18	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation with a lot of changes since Exult 1.2. Work in progress, 
 	  not yet finished or proof read, Audio section needs to be looked at by people 

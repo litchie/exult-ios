@@ -53,6 +53,7 @@ class KeyBinder {
 	
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
+	std::vector<std::string> mapedithelp;
  	void LoadFromFileInternal(const char* filename);
 public:
 	KeyBinder();
@@ -65,7 +66,9 @@ public:
 	void DelKeyBinding(SDLKey sym, int mod);
 	
 	/* Other methods */
-	void Flush() { bindings.clear(); keyhelp.clear(); cheathelp.clear(); }
+	void Flush() {
+		bindings.clear(); keyhelp.clear(); cheathelp.clear(); mapedithelp.clear();
+	}
 	bool DoAction(ActionType action, bool press);
 	bool HandleEvent(SDL_Event &ev);
 	
@@ -77,6 +80,7 @@ public:
 #endif
 	void ShowHelp();
 	void ShowCheatHelp();
+	void ShowMapeditHelp();
 	
  private:
 	void ParseText(char *text, int len);

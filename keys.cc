@@ -28,6 +28,7 @@
 #include "game.h"
 #include "cheat.h"
 #include "U7file.h"
+#include "ucmachine.h"
 #include "Scroll_gump.h"
 #include "mouse.h"
 #include "gamewin.h"
@@ -68,137 +69,148 @@ const struct Action {
 	ActionFunc func;
 	ActionFunc func_release;
 	const char* desc;
-	bool show;
-	bool cheat;
+	enum {
+		dont_show = 0,
+		normal_keys,
+		cheat_keys,
+		mapedit_keys
+	} key_type;
 	Exult_Game game;
 	bool allow_during_dont_move;
 } ExultActions[] = {
-	{ "QUIT", ActionQuit, 0, "Quit", true, false, NONE, true },
-	{ "SAVE_RESTORE", ActionFileGump, 0, "Save/restore", true, false, NONE, true },
-	{ "QUICKSAVE", ActionQuicksave, 0, "Quick-save", true, false, NONE, false },
+	{ "QUIT", ActionQuit, 0, "Quit", Action::normal_keys, NONE, true },
+	{ "SAVE_RESTORE", ActionFileGump, 0, "Save/restore", Action::normal_keys, NONE, true },
+	{ "QUICKSAVE", ActionQuicksave, 0, "Quick-save", Action::normal_keys, NONE, false },
 	{ "QUICKRESTORE", 
-	  ActionQuickrestore, 0, "Quick-restore", true, false, NONE, true },
-	{ "ABOUT", ActionAbout, 0, "About Exult", true, false, NONE, false },
-	{ "HELP", ActionHelp, 0, "List keys", true, false, NONE, false },
-	{ "CLOSE_GUMPS", ActionCloseGumps, 0, "Close gumps", false, false, NONE, false},
-	{ "CLOSE_OR_MENU", ActionCloseOrMenu, 0, "Game menu", true, false, NONE, true },
+	  ActionQuickrestore, 0, "Quick-restore", Action::normal_keys, NONE, true },
+	{ "ABOUT", ActionAbout, 0, "About Exult", Action::normal_keys, NONE, false },
+	{ "HELP", ActionHelp, 0, "List keys", Action::normal_keys, NONE, false },
+	{ "CLOSE_GUMPS", ActionCloseGumps, 0, "Close gumps", Action::dont_show, NONE, false},
+	{ "CLOSE_OR_MENU", ActionCloseOrMenu, 0, "Game menu", Action::normal_keys, NONE, true },
 	{ "SCREENSHOT",
-	  ActionScreenshot, 0, "Take screenshot", true, false, NONE, true },
-	{ "GAME_MENU", ActionMenuGump, 0, "Game Menu", true, false, NONE, true },
+	  ActionScreenshot, 0, "Take screenshot", Action::normal_keys, NONE, true },
+	{ "GAME_MENU", ActionMenuGump, 0, "Game Menu", Action::normal_keys, NONE, true },
 	{ "OLD_FILE_GUMP",
-	  ActionOldFileGump, 0, "Save/restore", true, false, NONE, true },
+	  ActionOldFileGump, 0, "Save/restore", Action::normal_keys, NONE, true },
 #ifdef UNDER_CE
-	{ "MINIMIZE_GAME", ActionMinimizeGame, 0, "Minimize game", true, false, NONE, true },
-	{ "TOUCHSCREEN_MODE", ActionTouchscreenMode, 0, "Touchscreen mode", true, false, NONE, true },
-	{ "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", true, false, NONE, true },
-	{ "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", true, false, NONE, true },
+	{ "MINIMIZE_GAME", ActionMinimizeGame, 0, "Minimize game", Action::normal_keys, NONE, true },
+	{ "TOUCHSCREEN_MODE", ActionTouchscreenMode, 0, "Touchscreen mode", Action::normal_keys, NONE, true },
+	{ "KEYBOARD_POSITION", ActionKeyboardPosition, 0, "Keyboard position", Action::normal_keys, NONE, true },
+	{ "KEYBOARD_MODE", ActionKeyboardMode, 0, "Keyboard mode", Action::normal_keys, NONE, true },
 #endif
 
-	{ "REPAINT", ActionRepaint, 0, "Repaint screen", false, false, NONE, true },
 	{ "RESOLUTION_INCREASE", 
-	  ActionResIncrease, 0, "Increase resolution", true, true, NONE, true },
+	  ActionResIncrease, 0, "Increase resolution", Action::cheat_keys, NONE, true },
 	{ "RESOLUTION_DECREASE", 
-	  ActionResDecrease, 0, "Decrease resolution", true, true, NONE, true },
+	  ActionResDecrease, 0, "Decrease resolution", Action::cheat_keys, NONE, true },
 	{ "BRIGHTER", 
-	  ActionBrighter, 0, "Increase brightness", true, false, NONE, true },
-	{ "DARKER", ActionDarker, 0, "Decrease brightness", true, false, NONE, true },
+	  ActionBrighter, 0, "Increase brightness", Action::normal_keys, NONE, true },
+	{ "DARKER", ActionDarker, 0, "Decrease brightness", Action::normal_keys, NONE, true },
 	{ "TOGGLE_FULLSCREEN", 
-	  ActionFullscreen, 0, "Toggle fullscreen", true, false, NONE, true },
+	  ActionFullscreen, 0, "Toggle fullscreen", Action::normal_keys, NONE, true },
 	
-	{ "USEITEM", ActionUseItem, 0, "Use item", false, false, NONE, false },
-	{ "USEFOOD", ActionUseFood, 0, "Use food", false, false, NONE, false },
-	{ "TOGGLE_COMBAT", ActionCombat, 0, "Toggle combat", true, false, NONE, false },
-	{ "PAUSE_COMBAT", ActionCombatPause, 0, "Pause combat", true, false, NONE, false },
-	{ "TARGET_MODE", ActionTarget, 0, "Target mode", true, false, NONE, false },
-	{ "INVENTORY", ActionInventory, 0, "Show inventory", true, false, NONE, false },
-	{ "TRY_KEYS", ActionTryKeys, 0, "Try keys", true, false, NONE, false },
-	{ "STATS", ActionStats, 0, "Show stats", true, false, NONE, false },
+	{ "USEITEM", ActionUseItem, 0, "Use item", Action::dont_show, NONE, false },
+	{ "USEFOOD", ActionUseFood, 0, "Use food", Action::dont_show, NONE, false },
+	{ "CALL_USECODE", ActionCallUsecode, 0, "Call Usecode", Action::dont_show, NONE, false },
+	{ "TOGGLE_COMBAT", ActionCombat, 0, "Toggle combat", Action::normal_keys, NONE, false },
+	{ "PAUSE_COMBAT", ActionCombatPause, 0, "Pause combat", Action::normal_keys, NONE, false },
+	{ "TARGET_MODE", ActionTarget, 0, "Target mode", Action::normal_keys, NONE, false },
+	{ "INVENTORY", ActionInventory, 0, "Show inventory", Action::normal_keys, NONE, false },
+	{ "TRY_KEYS", ActionTryKeys, 0, "Try keys", Action::normal_keys, NONE, false },
+	{ "STATS", ActionStats, 0, "Show stats", Action::normal_keys, NONE, false },
 	{ "COMBAT_STATS",
-	  ActionCombatStats, 0, "Show combat stats", true, false, SERPENT_ISLE, false },
+	  ActionCombatStats, 0, "Show combat stats", Action::normal_keys, SERPENT_ISLE, false },
 	{ "FACE_STATS",
-	  ActionFaceStats, 0, "Change Face Stats State", true, false, NONE, false },
+	  ActionFaceStats, 0, "Change Face Stats State", Action::normal_keys, NONE, false },
 	
 	{ "SHOW_SI_INTRO",
-	  ActionSIIntro, 0, "Show Alternate SI intro", true, true, SERPENT_ISLE, false },
-	{ "SHOW_ENDGAME", ActionEndgame, 0, "Show endgame", true, true, NONE, false },
-	{ "SCROLL_LEFT", ActionScrollLeft, 0, "Scroll left", true, true, NONE, false },
-	{ "SCROLL_RIGHT", ActionScrollRight, 0, "Scroll right", true, true, NONE, false },
-	{ "SCROLL_UP", ActionScrollUp, 0, "Scroll up", true, true, NONE, false },
-	{ "SCROLL_DOWN", ActionScrollDown, 0, "Scroll down", true, true, NONE, false },
-	{ "WALK_WEST", ActionWalkWest, ActionStopWalking, "Walk west", true, false, NONE, false },
-	{ "WALK_EAST", ActionWalkEast, ActionStopWalking, "Walk east", true, false, NONE, false },
-	{ "WALK_NORTH", ActionWalkNorth, ActionStopWalking, "Walk north", true, false, NONE, false },
-	{ "WALK_SOUTH", ActionWalkSouth, ActionStopWalking, "Walk south", true, false, NONE, false },
-	{ "WALK_NORTH_EAST", ActionWalkNorthEast, ActionStopWalking, "Walk north-east", true, false, NONE, false },
-	{ "WALK_SOUTH_EAST", ActionWalkSouthEast, ActionStopWalking, "Walk south-east", true, false, NONE, false },
-	{ "WALK_NORTH_WEST", ActionWalkNorthWest, ActionStopWalking, "Walk north-west", true, false, NONE, false },
-	{ "WALK_SOUTH_WEST", ActionWalkSouthWest, ActionStopWalking, "Walk south-west", true, false, NONE, false },
-	{ "CENTER_SCREEN", ActionCenter, 0, "Center screen", true, true, NONE, false },
+	  ActionSIIntro, 0, "Show Alternate SI intro", Action::cheat_keys, SERPENT_ISLE, false },
+	{ "SHOW_ENDGAME", ActionEndgame, 0, "Show endgame", Action::cheat_keys, NONE, false },
+	{ "SCROLL_LEFT", ActionScrollLeft, 0, "Scroll left", Action::cheat_keys, NONE, false },
+	{ "SCROLL_RIGHT", ActionScrollRight, 0, "Scroll right", Action::cheat_keys, NONE, false },
+	{ "SCROLL_UP", ActionScrollUp, 0, "Scroll up", Action::cheat_keys, NONE, false },
+	{ "SCROLL_DOWN", ActionScrollDown, 0, "Scroll down", Action::cheat_keys, NONE, false },
+	{ "WALK_WEST", ActionWalkWest, ActionStopWalking, "Walk west", Action::normal_keys, NONE, false },
+	{ "WALK_EAST", ActionWalkEast, ActionStopWalking, "Walk east", Action::normal_keys, NONE, false },
+	{ "WALK_NORTH", ActionWalkNorth, ActionStopWalking, "Walk north", Action::normal_keys, NONE, false },
+	{ "WALK_SOUTH", ActionWalkSouth, ActionStopWalking, "Walk south", Action::normal_keys, NONE, false },
+	{ "WALK_NORTH_EAST", ActionWalkNorthEast, ActionStopWalking, "Walk north-east", Action::normal_keys, NONE, false },
+	{ "WALK_SOUTH_EAST", ActionWalkSouthEast, ActionStopWalking, "Walk south-east", Action::normal_keys, NONE, false },
+	{ "WALK_NORTH_WEST", ActionWalkNorthWest, ActionStopWalking, "Walk north-west", Action::normal_keys, NONE, false },
+	{ "WALK_SOUTH_WEST", ActionWalkSouthWest, ActionStopWalking, "Walk south-west", Action::normal_keys, NONE, false },
+	{ "CENTER_SCREEN", ActionCenter, 0, "Center screen", Action::cheat_keys, NONE, false },
 	{ "SHAPE_BROWSER",
-	  ActionShapeBrowser, 0, "Shape browser", true, true, NONE, false },
+	  ActionShapeBrowser, 0, "Shape browser", Action::cheat_keys, NONE, false },
 	{ "CREATE_ITEM",
-	  ActionCreateShape, 0, "Create last shape", true, true, NONE, false },
+	  ActionCreateShape, 0, "Create last shape", Action::cheat_keys, NONE, false },
 	{ "DELETE_OBJECT", 
-	  ActionDeleteObject, 0, "Delete object", true, true, NONE, false },
-	{ "DELETE_SELECTED",
-	  ActionDeleteSelected, 0, "Delete selected", true, true, NONE, true },
-	{ "MOVE_SELECTED",
-	  ActionMoveSelected, 0, "Move selected", true, true, NONE, true },
+	  ActionDeleteObject, 0, "Delete object", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_EGGS",
-	  ActionToggleEggs, 0, "Toggle egg display", true, true, NONE, false },
+	  ActionToggleEggs, 0, "Toggle egg display", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_GOD_MODE",
-	  ActionGodMode, 0, "Toggle god mode", true, true, NONE, false },
+	  ActionGodMode, 0, "Toggle god mode", Action::cheat_keys, NONE, false },
 	{ "CHANGE_GENDER", 
-	  ActionGender, 0, "Change gender", true, true, NONE, false },
-	{ "CHEAT_HELP", ActionCheatHelp, 0, "List cheat keys", true, true, NONE, false },
+	  ActionGender, 0, "Change gender", Action::cheat_keys, NONE, false },
+	{ "CHEAT_HELP",
+	  ActionCheatHelp, 0, "List cheat keys", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_INFRAVISION",
-	  ActionInfravision, 0, "Toggle infravision", true, true, NONE, false },
-	{ "SKIPLIFT_DECREMENT",
-	  ActionSkipLift, 0, "Decrement skiplift", true, true, NONE, false },
-	{ "TOGGLE_MAP_EDITOR",
-	  ActionMapEditor, 0, "Toggle map-editor mode", true, true, NONE, true },
+	  ActionInfravision, 0, "Toggle infravision", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_HACK_MOVER",
-	  ActionHackMover, 0, "Toggle hack-mover mode", true, true, NONE, false },
-	{ "MAP_TELEPORT", ActionMapTeleport, 0, "Map teleport", true, true, NONE, false },
-	{ "WRITE_MINIMAP", ActionWriteMiniMap, 0, "Write minimap", true, true, NONE, false },
+	  ActionHackMover, 0, "Toggle hack-mover mode", Action::cheat_keys, NONE, false },
+	{ "MAP_TELEPORT",
+	  ActionMapTeleport, 0, "Map teleport", Action::cheat_keys, NONE, false },
 	{ "CURSOR_TELEPORT",
-	  ActionTeleport, 0, "Teleport to cursor", true, true, NONE, false },
+	  ActionTeleport, 0, "Teleport to cursor", Action::cheat_keys, NONE, false },
 	{ "NEXT_MAP_TELEPORT",
-	  ActionNextMapTeleport, 0, "Teleport to next map", true, true, NONE, false },
+	  ActionNextMapTeleport, 0, "Teleport to next map", Action::cheat_keys, NONE, false },
 	{ "NEXT_TIME_PERIOD",
-	  ActionTime, 0, "Next time period", true, true, NONE, false },
+	  ActionTime, 0, "Next time period", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_WIZARD_MODE",
-	  ActionWizard, 0, "Toggle archwizard mode", true, true, NONE, false },
-	{ "PARTY_HEAL", ActionHeal, 0, "Heal party", true, true, NONE, false },
+	  ActionWizard, 0, "Toggle archwizard mode", Action::cheat_keys, NONE, false },
+	{ "PARTY_HEAL", ActionHeal, 0, "Heal party", Action::cheat_keys, NONE, false },
 	{ "PARTY_INCREASE_LEVEL",
-	  ActionLevelup, 0, "Level-up party", true, true, NONE, false },
-	{ "CHEAT_SCREEN", ActionCheatScreen, 0, "Cheat Screen", true, true, NONE, true },
+	  ActionLevelup, 0, "Level-up party", Action::cheat_keys, NONE, false },
+	{ "CHEAT_SCREEN",
+	  ActionCheatScreen, 0, "Cheat Screen", Action::cheat_keys, NONE, true },
 	{ "PICK_POCKET",
-	  ActionPickPocket, 0, "Toggle Pick Pocket", true, true, NONE, false },
+	  ActionPickPocket, 0, "Toggle Pick Pocket", Action::cheat_keys, NONE, false },
 	{ "NPC_NUMBERS",
-	  ActionNPCNumbers, 0, "Toggle NPC Numbers", true, true, NONE, false },
+	  ActionNPCNumbers, 0, "Toggle NPC Numbers", Action::cheat_keys, NONE, false },
 	{ "GRAB_ACTOR",
-	  ActionGrabActor, 0, "Grab NPC for Cheat Screen", true, true, NONE, false },
-	{ "CUT",
-	  ActionCut, 0, "Cut Selected Objects", true, false, NONE, true},
-	{ "COPY",
-	  ActionCopy, 0, "Copy Selected Objects", true, false, NONE, true},
-	{ "PASTE",
-	  ActionPaste, 0, "Paste Selected Objects", true, false, NONE, true},
-	
-	{ "PLAY_MUSIC", ActionPlayMusic, 0, "Play song", false, true, NONE, false },
+	  ActionGrabActor, 0, "Grab NPC for Cheat Screen", Action::cheat_keys, NONE, false },
+	{ "PLAY_MUSIC", ActionPlayMusic, 0, "Play song", Action::cheat_keys, NONE, false },
 	{ "TOGGLE_NAKED",
-	  ActionNaked, 0, "Toggle naked mode", true, true, SERPENT_ISLE, false },
+	  ActionNaked, 0, "Toggle naked mode", Action::cheat_keys, SERPENT_ISLE, false },
 	{ "TOGGLE_PETRA",
-	  ActionPetra, 0, "Toggle Petra mode", true, true, SERPENT_ISLE, false },
+	  ActionPetra, 0, "Toggle Petra mode", Action::cheat_keys, SERPENT_ISLE, false },
 	{ "CHANGE_SKIN",
-	  ActionSkinColour, 0, "Change skin colour", true, true, NONE, false },
-	{ "NOTEBOOK", ActionNotebook, 0, "Show notebook", true, false, 
+	  ActionSkinColour, 0, "Change skin colour", Action::cheat_keys, NONE, false },
+	{ "NOTEBOOK", ActionNotebook, 0, "Show notebook", Action::normal_keys, 
 								NONE, false },
 	{ "SOUND_TESTER",
-	  ActionSoundTester, 0, "Sound tester", false, true, NONE, false },
-	{ "TEST", ActionTest, 0, "Test", false, false, NONE, false },
-	{ "", 0, 0, "", false, false, NONE, false } //terminator
+	  ActionSoundTester, 0, "Sound tester", Action::cheat_keys, NONE, false },
+	{ "TEST", ActionTest, 0, "Test", Action::dont_show, NONE, false },
+
+	{ "MAPEDIT_HELP",
+	  ActionMapeditHelp, 0, "List mapedit keys", Action::mapedit_keys, NONE, false },
+	{ "TOGGLE_MAP_EDITOR",
+	  ActionMapEditor, 0, "Toggle map-editor mode", Action::mapedit_keys, NONE, true },
+	{ "SKIPLIFT_DECREMENT",
+	  ActionSkipLift, 0, "Decrement skiplift", Action::mapedit_keys, NONE, false },
+	{ "CUT",
+	  ActionCut, 0, "Cut Selected Objects", Action::mapedit_keys, NONE, true},
+	{ "COPY",
+	  ActionCopy, 0, "Copy Selected Objects", Action::mapedit_keys, NONE, true},
+	{ "PASTE",
+	  ActionPaste, 0, "Paste Selected Objects", Action::mapedit_keys, NONE, true},
+	{ "DELETE_SELECTED",
+	  ActionDeleteSelected, 0, "Delete selected", Action::mapedit_keys, NONE, true },
+	{ "MOVE_SELECTED",
+	  ActionMoveSelected, 0, "Move selected", Action::mapedit_keys, NONE, true },
+	{ "WRITE_MINIMAP",
+	  ActionWriteMiniMap, 0, "Write minimap", Action::mapedit_keys, NONE, false },
+	{ "REPAINT", ActionRepaint, 0, "Repaint screen", Action::dont_show, NONE, true },
+	{ "", 0, 0, "", Action::dont_show, NONE, false } //terminator
 };
 
 const struct {
@@ -294,7 +306,8 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 
 bool KeyBinder::DoAction(ActionType a, bool press)
 {
-	if (a.action->cheat && !cheat())
+	if (!cheat() && (a.action->key_type == Action::cheat_keys
+		|| a.action->key_type == Action::mapedit_keys))
 		return true;
 	if (a.action->game != NONE && a.action->game != Game::get_game_type())
 		return true;
@@ -372,6 +385,26 @@ void KeyBinder::ShowCheatHelp()
 	std::vector<string>::iterator iter;
 	
 	for (iter = cheathelp.begin(); iter != cheathelp.end(); ++iter)
+		scroll->add_text(iter->c_str());
+	
+	scroll->paint();
+	do
+	{
+		int x, y;
+		Get_click(x,y, Mouse::hand, 0, false, scroll);
+	} while (scroll->show_next_page());
+	Game_window::get_instance()->paint();
+	delete scroll;
+}
+
+void KeyBinder::ShowMapeditHelp()
+{
+	Scroll_gump *scroll;
+	scroll = new Scroll_gump();
+	
+	std::vector<string>::iterator iter;
+	
+	for (iter = mapedithelp.begin(); iter != mapedithelp.end(); ++iter)
 		scroll->add_text(iter->c_str());
 	
 	scroll->paint();
@@ -501,6 +534,27 @@ void KeyBinder::ParseLine(char *line)
 	skipspace(s);
 	
 	int np = 0;
+	// Special case.
+	if (!strcmp(a.action->s, "CALL_USECODE")) {
+		// Want to allow function name.
+		if (s.length() && s[0] != '#') {
+			i=s.find_first_of(chardata.whitespace);
+			string t = s.substr(0, i);
+			s.erase(0, i);
+			skipspace(s);
+		
+			int p = atoi(t.c_str());
+			if (!p) {
+				// No conversion? Try as function name.
+				Usecode_machine *usecode =
+						Game_window::get_instance()->get_usecode();
+				t = usecode->find_function(t.c_str());
+			} else if (p < 0) {
+				p = -1;
+			}
+			a.params[np++] = p;
+		}
+	}
 	while (s.length() && s[0] != '#' && np < c_maxparams) {
 		i=s.find_first_of(chardata.whitespace);
 		string t = s.substr(0, i);
@@ -523,7 +577,7 @@ void KeyBinder::ParseLine(char *line)
 		}
 	} else {
 		d = a.action->desc;
-		show = a.action->show;
+		show = a.action->key_type != Action::dont_show;
 	}
 	
 	if (show) {
@@ -544,10 +598,12 @@ void KeyBinder::ParseLine(char *line)
 		desc += " - " + d;
 		
 		// add to help list
-		if (a.action->cheat)
-			cheathelp.push_back(desc);
-		else
+		if (a.action->key_type == Action::normal_keys)
 			keyhelp.push_back(desc);
+		else if (a.action->key_type == Action::cheat_keys)
+			cheathelp.push_back(desc);
+		else if (a.action->key_type == Action::mapedit_keys)
+			mapedithelp.push_back(desc);
 	}
 	
 	// bind key
