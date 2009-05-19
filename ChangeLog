@@ -1,3 +1,7 @@
+2009-05-19	Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation with mods and patch instructions.
+	* docs/xml/html.xsl and php.xsl now support coloured tags for manual exult.cfg settings
+	  
 2009-05-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Implemented feature request #2793602 in a way that (hopefully) won't be
 	  the source of any trouble.

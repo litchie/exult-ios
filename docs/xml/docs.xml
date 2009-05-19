@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="18 May 2009(GMT)">
+<readme title="Exult" changed="19 May 2009(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="19052009">
+			<header>- 19 May 2009</header>
+			<body>
+				<ul>
+				<li><section_ref target="Configurations"/> coloured tags to differentiate between manual and in game settings.</li>
+				<li><ref1 target="path_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
+				<li><ref1 target="advanced_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
+				<li><ref1 target="command_line"/> some more information on '--buildmap' and '--mod'.</li>
+				<li><ref1 target="linux_alsa"/> mentioned different, configurable ports.</li>
+				<li><ref1 target="studio_keys"/>  got their own help screen now.</li>
+				<li><section_ref target="Mods and Patches"/> added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="18052009">
 			<header>- 18 May 2009</header>
 			<body>
@@ -231,17 +245,18 @@
 			<header>Settings in exult.cfg</header>
 			<body>
 				<para>
-					<Exult/> keeps a configuration file. You can specify where your Ultima 7
-					installation is, whether you want full screen graphics, or windowed, and
-					midi devices and midi settings. Some of these options can be set from the
-					<strong>Setup</strong> menu when you run <Exult/> or via the Game Options menu.
+					Most of the options in <Exult/> can be changed from the <strong>Setup</strong> 
+					menu when you run <Exult/> or via the Game Options menu. <Exult/> stores these 
+					changes in a configuration file. Except for changing pathes to the games you
+					shouldn't need to edit the file. Very few options need manual editing.
 				</para>
 				<para>
 					If you do not already have a configuration file, <Exult/> will make one for you
-					filling in sensible defaults by itself. The location of this file varies
-					slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg.
+					on its first start, filling in sensible defaults by itself. The location of this 
+					file varies slightly.<br/>
+					On UNIX systems you can expect to find it in $HOME/.exult.cfg.<br/>
 					In Windows it is 'exult.cfg' in the same directory as the <Exult/> binary 
-					(where you installed <Exult/> to).
+					(where you installed <Exult/> to).<br/>
 					In Mac OS X it is ~/Library/Preferences/exult.cfg.
 				</para>
 				<para>
@@ -254,8 +269,8 @@
 					is not well tested.
 				</para>
 				<para>
-					The default file looks like this (do not copy the **and following
-					- these are my remarks).
+					The file looks like this (do not copy the **and following - these are my remarks), 
+					options you can only change manually are colored in purple.
 				</para>
 				<para>
 					Note: yes means enabled, no means disabled
@@ -263,104 +278,125 @@
 				<configdesc>
 					<configtag name="config">
 						<configtag name="disk">
-							<configtag name="save_compression_level">
+							<configtag name="save_compression_level"  manual="true">
 							1
 							<comment>**save games are now compressed as zip files. 0 disables compression,</comment>
 							<comment>1 enables it, 2 compresses even a bit better. Default is 1.</comment>
 							</configtag>
-							<configtag name="data_path">
+							<configtag name="data_path"  manual="true">
 							data
 							<comment>**this is where <Exult/> stores its data files that are needed to run (e.g. exult???.flx files)</comment>
 							</configtag>
-							<configtag name="music_path">
+							<configtag name="music_path"  manual="true">
 							data/music
 							<comment>**optional. Location of digital music. See also <ref target="digital_music"/></comment>
 							</configtag>
 							<configtag name="game">
 								<configtag name="blackgate">
-									<configtag name="path">
+									<configtag name="path"  manual="true">
 									./blackgate
 									</configtag>
-									<configtag name="savegame_path">
+									<configtag name="savegame_path"  manual="true">
 									./blackgate
 									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
 									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="static_path">
+									<configtag name="static_path"  manual="true">
 									./blackgate/static
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="gamedat_path">
+									<configtag name="gamedat_path"  manual="true">
 									./blackgate/gamedat
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="keys">
+									<configtag name="keys"  manual="true">
 									(default)
 									<comment>**configure custom key bindings or leave the (default)</comment>
 									<comment>- see <ref target="exult_keys"/></comment>
 									</configtag>
-									<configtag name="waves">
+									<configtag name="waves"  manual="true">
 									jmsfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
 									</configtag>
 								</configtag>
 								<configtag name="serpentisle">
-									<configtag name="path">
+									<configtag name="path"  manual="true">
 									./serpentisle
 									</configtag>
-									<configtag name="savegame_path">
+									<configtag name="savegame_path"  manual="true">
 									./serpentisle
 									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
 									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="static_path">
+									<configtag name="static_path"  manual="true">
 									./serpentisle/static
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="gamedat_path">
+									<configtag name="gamedat_path"  manual="true">
 									./serpentisle/gamedat
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
-									<configtag name="keys">
+									<configtag name="keys"  manual="true">
 									(default)
 									<comment>**configure custom key bindings or leave the (default)</comment>
 									<comment>- see <ref target="exult_keys"/></comment>
 									</configtag>
-									<configtag name="waves">
+									<configtag name="waves"  manual="true">
 									jmsisfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
 									</configtag>
 								</configtag>
 							</configtag>
 						</configtag>
-						<configtag name="debug">
-							<configtag name="trace">
-								<configtag name="usecode">
-								no
-								<comment>**options are yes/no/verbose. This is used to trace the</comment>
-								<comment>executed Usecode. (You shouldn't need this unless you are a programmer.)</comment>
-								</configtag>
-								<configtag name="intrinsics">
-								no
-								<comment>**options are yes/no. Used to trace intrinsics.</comment>
-								<comment>(You shouldn't need this unless you are a programmer.)</comment>
-								</configtag>
-								<configtag name="combat">
-								no
-								<comment>**options are yes/no. If enabled, show combat messages.</comment>
-								</configtag>
-							</configtag>
-						</configtag>
 						<configtag name="gameplay">
+							<configtag name="facestats">
+							0
+							<comment>**activates the status faces and the position on the screen.</comment>
+							<comment>-1 disable,0 right, 1 middle, 2 right.</comment>
+							</configtag>
+							<configtag name="textbackground">							
+							-1
+							<comment>**with this enabled all the text in the games have a coloured background </comment>
+							<comment>to improve readability. 0 gives a purple background, 1 orange, 2 light gray, </comment>
+							<comment>3 green, 4 yellow, 5 pale blue, 6 dark green, 7 red, 8 bright white, 9 dark </comment>
+							<comment>gray, 10 white. -1 disables this.</comment>
+							</configtag>
+							<configtag name="fastmouse">
+							no
+							<comment>**enables faster cursor movement in full screen mode.</comment>
+							</configtag>
+							<configtag name="mouse3rd">
+							yes
+							<comment>**enables using of the middle mouse button.</comment>
+							</configtag>
 							<configtag name="double_click_closes_gumps">
 							no
 							</configtag>
 							<configtag name="right_click_closes_gumps">
 							no
 							</configtag>
+							<configtag name="allow_double_right_move">
+							yes
+							<comment>**double right-click lets the Avatar walk automatically</comment>
+							<comment>to where you clicked.</comment>
+							</configtag>
+							<configtag name="gumps_dont_pause_game">
+							yes
+							<comment>**yes doesn't pause the game when gumps are shown.</comment>
+							</configtag>
 							<configtag name="cheat">
 							yes
 							<comment>**enable/disable cheats</comment>
+							</configtag>
+							<configtag name="bg_paperdolls">
+							no
+							<comment>**yes enables SI style paperdolls in BG.</comment>
+							</configtag>
+							<configtag name="smooth_scrolling">							
+							50
+							<comment>**0/25/50/75/100 percentage of how smooth the game scrolls when the avatar </comment>
+							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
+							<comment>original game.</comment>
 							</configtag>
 							<configtag name="skip_intro">
 							no
@@ -372,22 +408,15 @@
 							<comment>**this skips the splash screen, the intro before you get to the</comment>
 							<comment> game menu. Disabling it brings you straight to the game menu.</comment>
 							</configtag>
-							<configtag name="facestats">
-							0
-							<comment>**activates the status faces and the position on the screen.</comment>
-							<comment>-1 disable,0 right, 1 middle, 2 right.</comment>
+							<configtag name="formation" manual="true">							
+							yes
+							<comment>**yes forces the party to walk in a formation similar to the original game.</comment>
 							</configtag>
-							<configtag name="mouse3rd">
-							no
-							<comment>**yes enables using of the middle mouse button.</comment>
-							</configtag>
-							<configtag name="fastmouse">
-							no
-							<comment>**yes enables faster cursor movement in full screen mode.</comment>
-							</configtag>
-							<configtag name="bg_paperdolls">
-							no
-							<comment>**yes enables SI style paperdolls in BG.</comment>
+							<configtag name="step_tile_delta" manual="true">
+							8
+							<comment>**Controls how far the Avatar will move before Exult recalculates the</comment>
+							<comment>Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other</comment>
+							<comment>problems.</comment>
 							</configtag>
 							<configtag name="combat">
 								<configtag name="difficulty">
@@ -407,38 +436,6 @@
 								<comment>in brackets after their name.</comment>
 								</configtag>
 							</configtag>
-							<configtag name="gumps_dont_pause_game">
-							no
-							<comment>**yes doesn't pause the game when gumps are shown.</comment>
-							</configtag>
-							<configtag name="step_tile_delta">
-							8
-							<comment>**Controls how far the Avatar will move before Exult recalculates the</comment>
-							<comment>Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other</comment>
-							<comment>problems.</comment>
-							</configtag>
-							<configtag name="allow_double_right_move">
-							yes
-							<comment>**double right-click lets the Avatar walk automatically</comment>
-							<comment>to where you clicked.</comment>
-							</configtag>
-							<configtag name="formation">							
-							yes
-							<comment>**yes forces the party to walk in a formation similar to the original game.</comment>
-							</configtag>
-							<configtag name="smooth_scrolling">							
-							50
-							<comment>**0/25/50/75/100 percentage of how smooth the game scrolls when the avatar </comment>
-							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
-							<comment>original game.</comment>
-							</configtag>
-							<configtag name="textbackground">							
-							-1
-							<comment>**with this enabled all the text in the games have a coloured background </comment>
-							<comment>to improve readability. 0 gives a purple background, 1 orange, 2 light gray, </comment>
-							<comment>3 green, 4 yellow, 5 pale blue, 6 dark green, 7 red, 8 bright white, 9 dark </comment>
-							<comment>gray, 10 white. -1 disables this.</comment>
-							</configtag>
 						</configtag>
 						<configtag name="audio">
 							<configtag name="enabled">
@@ -447,7 +444,7 @@
 							<comment>other audio settings. (You can change this in game via</comment>
 							<comment><key>Esc</key> - the setting is saved.)</comment>
 							</configtag>
-							<configtag name="disablepause">
+							<configtag name="disablepause" manual="true">
 							no
 							<comment>**enable/disable the pausing of SFX and digital music when the</comment>
 							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
@@ -459,11 +456,22 @@
 								<comment><key>Esc</key> - the setting is saved.)</comment>
 								</configtag>
 							</configtag>
+							<configtag name="speech">
+								<configtag name="enabled">
+								yes
+								<comment>**enable/disable speech. (You can change this in game via</comment>
+								<comment><key>Esc</key> - the setting is saved.)</comment>
+								</configtag>
+							</configtag>
 							<configtag name="midi">
 								<configtag name="enabled">
 								yes
 								<comment>**enable/disable ALL Music (You can change this in game via</comment>
 								<comment><key>Esc</key> - the setting is saved.)</comment>
+								</configtag>
+								<configtag name="use_oggs">
+								no
+								<comment>**use pre-recorded ogg files for music - see <ref target="music"/></comment>
 								</configtag>
 								<configtag name="driver">
 								default
@@ -472,17 +480,9 @@
 								<comment>UnixSeqDevice</comment>
 								<comment>See <ref target="music"/> for details.</comment>
 								</configtag>
-								<configtag name="use_oggs">
-								no
-								<comment>**use pre-recorded ogg files for music - see <ref target="music"/></comment>
-								</configtag>
 								<configtag name="convert">
 								gm
 								<comment>**see <ref target="midi_music"/></comment>
-								</configtag>
-								<configtag name="volume_curve">
-								1.000000
-								<comment>**set volume (kind of at least, best don't change)</comment>
 								</configtag>
 								<configtag name="looping">
 								yes
@@ -493,7 +493,7 @@
 									no
 									<comment>**alters the way midi is played.</comment>
 									</configtag>
-									<configtag name="level">
+									<configtag name="level" manual="true">
 									0
 									<comment>**how much the midi is altered.</comment>
 									</configtag>
@@ -503,35 +503,32 @@
 									no
 									<comment>**alters the way midi is played.</comment>
 									</configtag>
-									<configtag name="level">
+									<configtag name="level" manual="true">
 									0
 									<comment>**how much the midi is altered.</comment>
 									</configtag>
 								</configtag>
-								<configtag name="win32_device">
+								<configtag name="win32_device" manual="true">
 								-1
 								<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/></comment>
 								</configtag>
-								<configtag name="alsa_port">
+								<configtag name="alsa_port" manual="true">
 								65:0
 								<comment>**use this to change the ALSA port when you have chosen alsa as your driver </comment>
 								<comment>(format: XX:YY).</comment>
 								</configtag>
-								<configtag name="unixseqdevice">
+								<configtag name="unixseqdevice" manual="true">
 								/dev/sequencer
 								<comment>**the device to be used when you have chosen the driver UnixSeqDevice</comment>
 								</configtag>
-								<configtag name="fluidsynth_soundfont">
+								<configtag name="fluidsynth_soundfont" manual="true">
 								path
 								<comment>**path to the sound font that will be used to render the midi music </comment>
 								<comment>when Fluidsynth is chosen as driver.</comment>
 								</configtag>
-							</configtag>
-							<configtag name="speech">
-								<configtag name="enabled">
-								yes
-								<comment>**enable/disable speech. (You can change this in game via</comment>
-								<comment><key>Esc</key> - the setting is saved.)</comment>
+								<configtag name="volume_curve" manual="true">
+								1.000000
+								<comment>**set volume (kind of at least, best don't change)</comment>
 								</configtag>
 							</configtag>
 						</configtag>
@@ -543,6 +540,10 @@
 							</configtag>
 							<configtag name="height">
 							200
+							</configtag>
+							<configtag name="scale_method">
+							2xSaI
+							<comment>**choose different scalers here - see <ref target="scaler"/></comment>
 							</configtag>
 							<configtag name="scale">
 							2
@@ -557,9 +558,10 @@
 							no
 							<comment>**"no" enables fading between different menu points</comment>
 							</configtag>
-							<configtag name="scale_method">
-							2xSaI
-							<comment>**choose different scalers here - see <ref target="scaler"/></comment>
+							<configtag name="fps">
+							10
+							<comment>**Speed setting. Might help when the game seems too slow or too fast.</comment>
+							<comment> The in game menu shows this setting in the Gameplay menu.</comment>
 							</configtag>
 							<configtag name="gamma">
 								<configtag name="red">
@@ -573,10 +575,23 @@
 								1
 								</configtag>
 							</configtag>
-							<configtag name="fps">
-							10
-							<comment>**Speed setting. Might help when the game seems too slow or too fast.</comment>
-							<comment> The in game menu shows this setting in the Gameplay menu.</comment>
+						</configtag>
+						<configtag name="debug"  manual="true">
+							<configtag name="trace"  manual="true">
+								<configtag name="usecode"  manual="true">
+								no
+								<comment>**options are yes/no/verbose. This is used to trace the</comment>
+								<comment>executed Usecode. (You shouldn't need this unless you are a programmer.)</comment>
+								</configtag>
+								<configtag name="intrinsics"  manual="true">
+								no
+								<comment>**options are yes/no. Used to trace intrinsics.</comment>
+								<comment>(You shouldn't need this unless you are a programmer.)</comment>
+								</configtag>
+								<configtag name="combat"  manual="true">
+								no
+								<comment>**options are yes/no. If enabled, show combat messages.</comment>
+								</configtag>
 							</configtag>
 						</configtag>
 					</configtag>
@@ -611,12 +626,12 @@
 						<configtag name="disk">
 							<configtag name="game">
 								<configtag name="blackgate">
-									<configtag name="path">
+									<configtag name="path" manual="true">
 									./ultima7
 									</configtag>
 								</configtag>
 								<configtag name="serpentisle">
-									<configtag name="path">
+									<configtag name="path" manual="true">
 									./serpent
 									</configtag>
 								</configtag>
@@ -637,6 +652,11 @@
 					<strong>all</strong> operating systems. Of course you need to make adjustments on UNIX
 					based systems when you enter the absolute path.
 				</para>
+				<para>
+					By the way, <Exult/> and <Studio/> don't trust the exult.cfg and will recognize which games
+					you entered the path for. This means, that if you entered the path to SI in the 
+					&lt;blackgate&gt;&lt;path&gt; <Exult/> and <Studio/> will not be fooled.
+				</para>
 			</body>
 		</sub>
 		<sub name="dir_config">
@@ -651,11 +671,14 @@
 				</para>
 				<ul>
 					<li>Savegames<br/>
-						this is where <Exult/> stores your savegames. Normally you find these in the dir set in &lt;path&gt;.</li>
+						this is where <Exult/> stores your savegames. Normally you find these in the dir set in 
+						&lt;path&gt;.</li>
 					<li>Static<br/>
-						the most important dir. Here you have the data files from the original game. You should never touch these files.</li>
+						the most important dir. Here you have the data files from the original game. You should 
+						never touch these files.</li>
 					<li>Gamedat<br/>
-						contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.</li>
+						contains the (dynamic) data for the game you're currently playing. It's where the 
+						"journey onward" and "quicksave" 'savegame' is stored.</li>
 				</ul>
 				<para>
 					If you don't change the location of either the Static or Gamedat directories, <Exult/> expects to find both directories in the
@@ -672,19 +695,16 @@
 							</configtag>
 							<configtag name="game" closing-tag="no">
 								<configtag name="blackgate">
-									<configtag name="title">
-									blackgate
-									</configtag>
-									<configtag name="path">
+									<configtag name="path" manual="true">
 									./ultima7
 									</configtag>
-									<configtag name="savegame_path">
+									<configtag name="savegame_path" manual="true">
 									./ultima7
 									</configtag>
-									<configtag name="static_path">
+									<configtag name="static_path" manual="true">
 									./ultima7/static
 									</configtag>
-									<configtag name="gamedat_path">
+									<configtag name="gamedat_path" manual="true">
 									./ultima7/gamedat
 									</configtag>
 								</configtag>
@@ -714,8 +734,8 @@
 									./Ultima7
 									</configtag>
 								</configtag>
-								<configtag name="forgeofvirtue">
-									<configtag name="path">
+								<configtag name="forgeofvirtue" manual="true">
+									<configtag name="path" manual="true">
 									./forge
 									</configtag>
 								</configtag>	
@@ -724,8 +744,8 @@
 									./serpent
 									</configtag>
 								</configtag>
-								<configtag name="silverseed">
-									<configtag name="path">
+								<configtag name="silverseed" manual="true">
+									<configtag name="path" manual="true">
 									./silver
 									</configtag>	
 								</configtag>
@@ -741,6 +761,10 @@
 				</para>
 				<para>
 					<em>Note:</em> You cannot interchange savegames of games started with or without the add-ons.
+				</para>
+				<para>
+					And again, <Exult/> and <Studio/> will not be fooled by false games under 
+					&lt;gamename&gt;&lt;path&gt;.
 				</para>
 			</body>
 		</sub>
@@ -778,7 +802,9 @@
 						format, you will need a lot of ram to even look at this map once it is build
 						(and even that requires a lot of patience)<br/>
 						<Exult/> is required to be run in windowed mode and you get the best map if you
-						started a new game before you build the map.</li>
+						started a new game before you build the map.<br/>
+						You need to specify a game, either by '--bg' (or '--si', '--fov', '--ss') or 
+						with the '--game'/'--mod' option.</li>
 					<li>--nocrc<br/>
 						Recently we added a crc check that <Exult/> doesn't start when the
 						exult*.flx files in the data dir aren't the same it got compiled with.
@@ -793,7 +819,8 @@
 						Write 'patch/exultgame.xml'. Only useful for game editing.</li>
 					<li>--mod modname<br/>
 						Must be used together with '--bg', '--si' or '--game gamename'; runs the specified 
-						game using the mod with title equal to 'modname'.</li>
+						game using the mod with title equal to 'modname'. 'modname' is the name of the mod 
+						cfg file (e.g. keyring.cfg means 'modname' 'keyring'.</li>
 				</ul>
 			</body>
 		</sub>
@@ -840,7 +867,8 @@
 					<li><strong>Fluidsynth</strong><br/>
         				is another software synthesizer, which uses SoundFont technology without need for a 
 						SoundFont-compatible soundcard. It is availlable for many Operating Systems and opposed 
-						to TiMidity still actively developed. At "config/audio/midi/fluidsynth_soundfont" in the 
+						to TiMidity still actively developed. At 
+						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfont&gt; in the 
 						exult.cfg you will have to enter the path to the SoundFont you want to use.</li>
 					<li><strong>MT32Emu</strong><br/>
         				Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or 
@@ -856,14 +884,14 @@
         				uses XMIDI on Mac OSX.</li>
 					<li><strong>alsa</strong><br/>
         				uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change
-						"config/audio/midi/alsa_port" in the exult.cfg.</li>
+						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;alsa_port&gt; in the exult.cfg.</li>
 					<li><strong>Forked</strong><br/>
         				On *nix systems uses POSIX fork to create a new thread which will then handle the midi playback</li>
 					<li><strong>KMIDI</strong><br/>
         				On Linux systems uses uses libkmidi, a KDE midi library.</li>
 					<li><strong>UnixSeqDevice</strong><br/>
         				On Linux systems writes to special symbolic file, default "/dev/sequencer". This can be 
-						changed at "config/audio/midi/unixseqdevice" in the exult.cfg.</li>					
+						changed at &lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;unixseqdevice&gt; in the exult.cfg.</li>
 				</ul>
 				<para>
 					For drivers that use a real MIDI device, the device type for MIDI can be changed to:
@@ -1081,6 +1109,10 @@
 					OSS in the upcoming stable (2.6) Kernel anyway.<br/>
 					We are sorry for this.
 				</para>
+				<para>
+					You can now configure the ALSA port for your distribution in .exult.cfg (see 
+					<ref target="exult_config"/>). By default we use 65:0, Gentoo needs 128:0.
+				</para>
 			</body>
 		</sub>
 	</section>
@@ -1223,9 +1255,6 @@
 					<keydesc name="Shift-KP7">run northwest</keydesc>
 					<keydesc name="Shift-KP8">run north</keydesc>
 					<keydesc name="Shift-KP9">run northeast</keydesc>
-					<keydesc name="Ctrl-x">Cut selected object (when in Map Edit mode)</keydesc>
-					<keydesc name="Ctrl-c">Copy selected object (when in Map Edit mode)</keydesc>
-					<keydesc name="Ctrl-v">Paste selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="F4">Toggle full screen</keydesc>
 					<keydesc name="Alt-Enter">Toggle full screen</keydesc>
 					<keydesc name="b">Use spellbook</keydesc>
@@ -1283,9 +1312,6 @@
 					<keydesc name="Alt-Arrow keys">Scroll map</keydesc>
 					<keydesc name="home">Recenter map on the Avatar</keydesc>
 					<keydesc name="KP5">Recenter map on the Avatar</keydesc>
-					<keydesc name="Ctrl-Arrow keys">move selection (x,y coordinates)</keydesc>
-					<keydesc name="Ctrl-Page keys">move selection (z coordinates)</keydesc>
-					<keydesc name="Del">Delete selection</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
 					<keydesc name="Shift-F3">write Minimap</keydesc>
@@ -1302,8 +1328,6 @@
 					<keydesc name="Ctrl-Alt-h">Resurrect, heal party, cure poison and still hunger</keydesc>
 					<keydesc name="Alt-i">Toggle infravision</keydesc>
 					<keydesc name="Ctrl-l">Level up party</keydesc>
-					<keydesc name="Alt-l">Decrement skiplift</keydesc>
-					<keydesc name="Ctrl-Alt-m">Toggle Map editor (useful for Exult Studio)</keydesc>
 					<keydesc name="Ctrl-m">Get 100 gold coins</keydesc>
 					<keydesc name="Alt-Shift-m">Play previous song</keydesc>
 					<keydesc name="Alt-m">Play next song</keydesc>
@@ -1326,22 +1350,19 @@
 			<body>
 				<para>
 					With the ongoing development of <Exult/> a lot of keys were added that are mainly useful
-					for map editing with <Studio/>. Unfortunately these keys were sometimes added to the normal
-					keyboard shortcuts and other times to the cheat shortcuts. This list tries to sort this out 
-					a bit.
+					for map editing with <Studio/>. Hit <key>shift-h</key> to see the map edit keys help screen.
 				</para>
 				<keytable title="Map edit commands">
-					<keydesc name="Ctrl-Alt-m">Toggle Map editor</keydesc>
-					<keydesc name="Alt-l">Decrement skiplift</keydesc>
-					<keydesc name="Ctrl-x">Cut selected object</keydesc>
-					<keydesc name="Ctrl-c">Copy selected object</keydesc>
-					<keydesc name="Ctrl-v">Paste selected object</keydesc>
 					<keydesc name="Del">Delete selection</keydesc>
 					<keydesc name="Ctrl-Arrow keys">move selection (x,y coordinates)</keydesc>
 					<keydesc name="Ctrl-Page keys">move selection (z coordinates)</keydesc>
+					<keydesc name="Ctrl-c">Copy selected object</keydesc>
+					<keydesc name="Ctrl-x">Cut selected object</keydesc>
+					<keydesc name="Ctrl-v">Paste selected object</keydesc>
 					<keydesc name="Shift-F3">write Minimap</keydesc>
-					<keydesc name="Ctrl-p">repaint</keydesc>
-					<keydesc name="e">Toggle egg display</keydesc>
+					<keydesc name="Shift-h">List map edit keys</keydesc>
+					<keydesc name="Alt-l">Decrement skiplift</keydesc>
+					<keydesc name="Ctrl-Alt-m">Toggle Map editor</keydesc>
 				</keytable>
 			</body>
 		</sub>
@@ -1505,6 +1526,117 @@
 			<body>
 				<para>
 					Exits <Exult/>.
+				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Mods and Patches">
+		<sub name="mods_intro">
+			<header>Introduction to Mods and Patches</header>
+			<body>
+				<para>
+					With <Studio/> advancing more and more, there are now a small number mods and patches
+					developed, both by <Exult/> team members and other users. 
+					See <extref doc="faq" target="mods_patches"/> for a list.
+				</para>
+				<para>
+					Patches are meant for what the name implies, little patches to the original game.
+					Changing shapes, fixing or changing some usecode and such. Patches also have the 
+					limitation that you can only have one patch per original game installed.
+				</para>
+				<para>
+					Mods on the other hand are more or less meant for heavy modifications of the original 
+					games. Changing the map layout, adding NPCs and objects, changing usecode and so on.
+					You can have several mods installed which can be chosen from a convenient menu in <Exult/>.
+					Because of these advantages that mods have over patches, people now develop rather mods 
+					than patches.
+				</para>	
+			</body>
+		</sub>
+		<sub name="mods_install">
+			<header>Installing Mods</header>
+			<body>
+				<para>
+					To install a mod unzip or move the mod files (if they come unzip) into your games
+					'mods' folder. By default that is the mods subdirectory in the path you set for your 
+					game in the exult.cfg file (see <ref1 target="path_config"/>. If the folder is not 
+					there, simply create an empty folder called 'mods' in your games directory and 
+					proceed as above.<br/>
+					Now start a new game and enjoy the mods.
+				</para>
+				<para>
+					Please read the readme(.txt) that should have come with the mods. In there you will 
+					normally find further instructions and what the mod is about and how to experience 
+					the changes in the game.
+				</para>
+				<para>
+					Also be aware that mods do not work with <Exult/> version 1.2 but need a new snapshot.
+					Unfortunately, since there were so many advancements in the map editing since <Exult/> 1.2
+					mods that are no longer maintained might no longer work.
+				</para>
+			</body>
+		</sub>
+		<sub name="patch_install">
+			<header>Installing Patches</header>
+			<body>
+				<para>
+					Installation of patches is very similar to the installation of mods: unzip or move the patch 
+					files (if they come unzip) into your games 'patch' folder. By default that is the patch 
+					subdirectory in the path you set for your game in the exult.cfg file 
+					(see <ref1 target="path_config"/>). If the folder is not there, simply create an empty folder 
+					called 'patch' in your games directory and proceed as above.<br/>
+					Now start a new game and enjoy the patch.
+				</para>
+				<para>
+					Please read the readme(.txt) that should have come with the patch. In there you will 
+					normally find instructions and what the patch is about and how to experience the changes 
+					in the game.
+				</para>
+				<para>
+					Also be aware that patches do not work with <Exult/> version 1.2 but need a newer snapshot.
+					Unfortunately, since there were so many advancements in the map editing since <Exult/> 1.2
+					patches that are no longer maintained might no longer work.
+				</para>
+			</body>
+		</sub>
+		<sub name="mods_path">
+			<header>Adapting the location of Mods and Patches</header>
+			<body>
+				<para>
+					In exult.cfg you can adapt where <Exult/> looks for both mods and patches.
+					These are the paths <Exult/> uses by default, so if you don't want to change
+					the location of mods and patches, you don't need to edit the config file.
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="game" closing-tag="no">
+								<configtag name="blackgate">
+									<configtag name="path" manual="true">
+									./ultima7
+									</configtag>
+									<configtag name="mods" manual="true">
+									./ultima7/mods
+									</configtag>
+									<configtag name="patch" manual="true">
+									./ultima7/patch
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
+			</body>
+		</sub>
+		<sub name="mods_savegames">
+			<header>Exchanging Savegames between original games and Mods</header>
+			<body>
+				<para>
+					You cannot exchange savegames between original games and mods. For example,
+					when you start a new game with a mod for BG and later run that same savegame
+					from BG only, it might actually work, but the results are unpredictable. The
+					game might run ok for a while until you hit a problem caused by the missing mod.<br/>
+					So don't do it.
 				</para>
 			</body>
 		</sub>
