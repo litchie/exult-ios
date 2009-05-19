@@ -197,10 +197,14 @@ void ExultStudio::open_obj_window
 	int datalen
 	)
 	{
+#ifdef WIN32
 	bool first_time = false;
+#endif
 	if (!objwin)			// First time?
 		{
+#ifdef WIN32
 		first_time = true;
+#endif
 		objwin = glade_xml_get_widget( app_xml, "obj_window" );
 		if (vgafile && palbuf)
 			{

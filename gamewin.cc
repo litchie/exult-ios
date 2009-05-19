@@ -140,12 +140,11 @@ void Background_noise::handle_event
 	long udata
 	)
 	{
-	Main_actor *ava = gwin->get_main_actor();
-	unsigned long delay = 8000;
-	int currentstate = 0;
-
 #ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
+	Main_actor *ava = gwin->get_main_actor();
+	unsigned long delay = 8000;
+	int currentstate;
 	int bghour = gwin->get_clock()->get_hour();
 	if(gwin->is_in_dungeon())
 		currentstate = 2;
@@ -568,8 +567,7 @@ void Game_window::init_files(bool cycle)
 	avposx_ld = avposy_ld = 0;
 		
 	// initialize keybinder
-	if (keybinder)
-		delete keybinder;
+	delete keybinder;
 	keybinder = new KeyBinder();
 
 	std::string d, keyfilename;

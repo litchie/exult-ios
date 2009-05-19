@@ -160,7 +160,10 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 
 	// Extra safety.
 	if (!mid_data->getSize())
+		{
+		delete mid_data;
 		return;
+		}
 
 	XMidiFile midfile(mid_data, setup_timbre_for_track(flex));
 	

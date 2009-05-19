@@ -464,7 +464,7 @@ int Uc_function::find_string_prefix
 		sprintf(buf, "Prefix '%s' matches no string in this function",
 									text);
 		loc.error(buf);
-		delete buf;
+		delete [] buf;
 		return 0;
 		}
 	std::map<std::string, int>::const_iterator next = exist;
@@ -475,7 +475,7 @@ int Uc_function::find_string_prefix
 		char *buf = new char[len + 100];
 		sprintf(buf, "Prefix '%s' matches more than one string", text);
 		loc.error(buf);
-		delete buf;
+		delete [] buf;
 		}
 	return (*exist).second;		// Return offset.
 	}

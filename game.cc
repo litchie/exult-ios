@@ -313,9 +313,7 @@ bool Game::show_menu(bool skip)
 	bool exitmenu = false;
 	
 	do {
-		int entries = 0;
 		if(!menu) {
-			entries = 0;
 			menu = new MenuList();	
 			int offset = 0;
 			for(int i=0; i<num_choices; i++) {
@@ -338,6 +336,8 @@ bool Game::show_menu(bool skip)
 		case -1: // Exit
 			pal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
+			delete menu_mouse;
+			delete menu;
 			throw quit_exception();
 		case 0: // Intro
 			pal->fade_out(c_fade_out_time);
@@ -528,7 +528,7 @@ int wait_delay(int ms, int startcol, int ncol)
 	else
 		{
 		delay = loopinterval;
-		loops = ms/delay;
+		loops = ms/(long)delay;
 		}
 	Game_window *gwin = Game_window::get_instance();
 	int rot_speed = 100 << (gwin->get_win()->is_palettized() ||

@@ -172,8 +172,7 @@ void Game_clock::set_time_palette
 		{	// TODO: Maybe implement smoother transition from
 			// weather to/from dawn/sunrise/sundown/dusk.
 			// Right now, it works like the original.
-		if (transition)
-			delete transition;
+		delete transition;
 		transition = new Palette_transition(old_palette, new_palette,
 							hour, minute, 1, 4, hour, minute);
 		return;

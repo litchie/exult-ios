@@ -1731,6 +1731,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	// Create palette translation table. Maybe make them static?
 	unsigned char *transto = new unsigned char[256];
 	oldpal->create_palette_map(pal, transto);
+	delete oldpal;
 	pal->apply(true);
 #ifdef UNDER_CE
 	gkeyboard->autopaint = false;

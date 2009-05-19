@@ -120,6 +120,7 @@ int main
 		printf("%d\n", tok);
 #endif
 	yyparse();
+	if (yyin != stdin) fclose(yyin);
 	int errs = Uc_location::get_num_errors();
 	if (errs > 0)			// Check for errors.
 		return errs;

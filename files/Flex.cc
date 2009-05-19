@@ -300,7 +300,8 @@ bool Flex_writer::close
 		dout->flush();
 		ok = dout->good();
 		}
-	delete table;
+	delete [] table;
 	table = 0;
 	return ok;
 	}
+

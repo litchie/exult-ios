@@ -141,7 +141,7 @@ bool Gen_font_shape
 		Shape_frame *frame = new Shape_frame(pixels,
 			sw, sh, glyph->bitmap_left + offset, 
 				glyph->bitmap_top + offset, true);
-		delete pixels;
+		delete [] pixels;
 		shape->set_frame(frame, chr);
 		}
 	FT_Done_FreeType(library);

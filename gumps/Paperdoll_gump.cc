@@ -249,12 +249,12 @@ Paperdoll_gump::~Paperdoll_gump
 	(
 	)
 {
-	if (heart_button) delete heart_button;
-	if (disk_button) delete disk_button;
-	if (combat_button) delete combat_button;
-	if (cstats_button) delete cstats_button;
-	if (halo_button) delete halo_button;
-	if (cmode_button) delete cmode_button;
+	delete heart_button;
+	delete disk_button;
+	delete combat_button;
+	delete cstats_button;
+	delete halo_button;
+	delete cmode_button;
 }
 
 /*

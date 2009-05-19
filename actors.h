@@ -148,7 +148,7 @@ public:
 	friend class Clear_hit;
 	static void init_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
-	~Actor();
+	virtual ~Actor();
 					// Blocked moving onto tile 't'?
 	int is_blocked(Tile_coord& t, Tile_coord *f = 0, const int move_flags = 0);
 	Game_object *find_blocking(Tile_coord tile, int dir);
@@ -644,7 +644,7 @@ protected:
 public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1, 
 								int uc = -1);
-	~Npc_actor();
+	virtual ~Npc_actor();
 	void set_nearby()		// Set/clear/test 'nearby' flag.
 		{ nearby = true; }
 	void clear_nearby()

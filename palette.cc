@@ -560,8 +560,7 @@ bool Palette_transition::set_step(int hour, int min)
 	if (!current || new_step != step)
 		{
 		step = new_step;
-		if (current)
-			delete current;
+		delete current;
 		current = start->create_intermediate(end, max_steps, step);
 		}
 

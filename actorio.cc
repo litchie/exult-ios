@@ -381,7 +381,7 @@ void Actor::read
 			nm[funsize] = 0;
 			usecode_name = nm;
 			usecode = ucmachine->find_function(nm);
-			delete nm;
+			delete [] nm;
 			}
 
 		int skin = nfile->read1();
@@ -700,7 +700,7 @@ void Actor::write
 		char *nm = new char[size];
 		std::strncpy(nm, usecode_name.c_str(), size);
 		nfile->write(nm, size);
-		delete nm;
+		delete [] nm;
 	}
 
 	nfile->write1((char)get_skin_color());

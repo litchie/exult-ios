@@ -714,12 +714,9 @@ Font::~Font()
 
 void Font::clean_up()
 	{
-	if(font_shapes)
-		delete font_shapes;
-	if (font_data)
-		delete font_data;
-	if(orig_font_buf)
-		delete [] orig_font_buf;
+	delete font_shapes;
+	delete font_data;
+	delete [] orig_font_buf;
 	font_shapes = 0;
 	font_data = 0;
 	orig_font_buf = 0;

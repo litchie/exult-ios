@@ -308,7 +308,7 @@ void Shape_draw::set_drag_icon
 			}
 	GdkBitmap *mask = gdk_bitmap_create_from_data(draw->window,
 							mdata, w, h);
-	delete mdata;
+	delete [] mdata;
 					// This will be the shape dragged.
 	gtk_drag_set_icon_pixmap(context,
 			gdk_window_get_colormap(draw->window), pixmap, mask,

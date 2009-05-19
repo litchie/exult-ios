@@ -43,6 +43,7 @@
 #include "SDL.h"
 #include "party.h"
 #include "miscinf.h"
+#include "gump_utils.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -351,104 +352,111 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 {
 	SDL_Event event;
 
-  	do {
-		while (SDL_PollEvent(&event))
-			gwin->get_win()->show();
-	} while (event.type!=SDL_KEYDOWN);
+  	while (1) {
+		Delay();
+		while (SDL_PollEvent(&event)) {
+			if (event.type != SDL_KEYDOWN)
+				continue;
+			SDL_keysym& key = event.key.keysym;
 
-	SDL_keysym& key = event.key.keysym;
+			bool shift = false;
+			if (key.mod & KMOD_SHIFT)
+				shift = true;
+			if ((key.sym == SDLK_s) && (key.mod & KMOD_ALT) && (key.mod & KMOD_CTRL))
+			{
+				make_screenshot(true);
+				return false;
+			}
 
-	bool shift = false;
-	if (key.mod & KMOD_SHIFT)
-		shift = true;
-	if ((key.sym == SDLK_s) && (key.mod & KMOD_ALT) && (key.mod & KMOD_CTRL))
-	{
-		make_screenshot(true);
-		return false;
-	}
-
-	if (mode >= CP_Name)		// Want Text input (len chars)
-	{
-		if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
-		{
-			activate = true;
-		}
-		else if((key.sym >= '0' && key.sym <= 'z') || key.sym == ' ')
-		{
-			int curlen = std::strlen(input);
-			char chr = key.sym;
-			if (key.mod & KMOD_SHIFT) {
+			if (mode >= CP_Name)		// Want Text input (len chars)
+			{
+				if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
+				{
+					activate = true;
+				}
+				else if((key.sym >= '0' && key.sym <= 'z') || key.sym == ' ')
+				{
+					int curlen = std::strlen(input);
+					char chr = key.sym;
+					if (key.mod & KMOD_SHIFT) {
 #if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
-				if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
+						if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
 #else
-				chr = std::toupper(chr);
+						chr = std::toupper(chr);
 #endif
+					}
+					if(curlen<(len-1))
+					{
+						input[curlen] = chr;
+						input[curlen+1] = 0;
+					}
+				}
+				else if (key.sym == SDLK_BACKSPACE)
+				{
+					int curlen = std::strlen(input);
+					if (curlen) input[curlen-1] = 0;
+				}
 			}
-			if(curlen<(len-1))
+			else if (mode >= CP_ChooseNPC)	// Need to grab numerical input
 			{
-				input[curlen] = chr;
-				input[curlen+1] = 0;
-			}
-		}
-		else if (key.sym == SDLK_BACKSPACE)
-		{
-			int curlen = std::strlen(input);
-			if (curlen) input[curlen-1] = 0;
-		}
-	}
-	else if (mode >= CP_ChooseNPC)	// Need to grab numerical input
-	{
-		// Browse shape
-		if (mode == CP_Shape && !input[0] && key.sym == 'b')
-		{
-			cheat.shape_browser();
-			input[0] = 'b';
-			activate = true;
-		}
+				// Browse shape
+				if (mode == CP_Shape && !input[0] && key.sym == 'b')
+				{
+					cheat.shape_browser();
+					input[0] = 'b';
+					activate = true;
+				}
 
-		// Activate (if possible)
-		if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
-		{
-			activate = true;
-		}
-		else if ((key.sym == '-' || key.sym == SDLK_KP_MINUS) && !input[0])
-		{
-			input[0] = '-';
-		}
-		else if ((key.sym >= '0' && key.sym <= '9'))
-		{
-			int curlen = std::strlen(input);
-			if(curlen<(len-1))
-			{
-				input[curlen] = key.sym;
-				input[curlen+1] = 0;
+				// Activate (if possible)
+				if (key.sym == SDLK_RETURN || key.sym == SDLK_KP_ENTER)
+				{
+					activate = true;
+				}
+				else if ((key.sym == '-' || key.sym == SDLK_KP_MINUS) && !input[0])
+				{
+					input[0] = '-';
+				}
+				else if ((key.sym >= '0' && key.sym <= '9'))
+				{
+					int curlen = std::strlen(input);
+					if(curlen<(len-1))
+					{
+						input[curlen] = key.sym;
+						input[curlen+1] = 0;
+					}
+				}
+				else if (key.sym >= SDLK_KP0 && key.sym <= SDLK_KP9)
+				{
+					int curlen = std::strlen(input);
+					if(curlen<(len-1))
+					{
+						input[curlen] = key.sym - SDLK_KP0 + '0';
+						input[curlen+1] = 0;
+					}
+				}
+				else if (key.sym == SDLK_BACKSPACE)
+				{
+					int curlen = std::strlen(input);
+					if (curlen) input[curlen-1] = 0;
+				}
 			}
-		}
-		else if (key.sym >= SDLK_KP0 && key.sym <= SDLK_KP9)
-		{
-			int curlen = std::strlen(input);
-			if(curlen<(len-1))
+			else if (mode)			// Just want a key pressed
 			{
-				input[curlen] = key.sym - SDLK_KP0 + '0';
-				input[curlen+1] = 0;
+				mode = CP_Command;
+				for (int i = 0; i < len; i++) input[i] = 0;
+				command = 0;
 			}
+			else				// Need the key pressed
+			{
+				command = key.sym;
+				return true;
+			}
+			return false;
 		}
-		else if (key.sym == SDLK_BACKSPACE)
-		{
-			int curlen = std::strlen(input);
-			if (curlen) input[curlen-1] = 0;
-		}
-	}
-	else if (mode)			// Just want a key pressed
-	{
-		mode = CP_Command;
-		for (int i = 0; i < len; i++) input[i] = 0;
-		command = 0;
-	}
-	else				// Need the key pressed
-	{
-		command = key.sym;
-		return true;
+		if (GL_manager::get_instance())
+			gwin->get_win()->show();
+		else
+			gwin->paint_dirty();
 	}
 	return false;
 }

@@ -219,10 +219,14 @@ void ExultStudio::open_cont_window
 	int datalen
 	)
 	{
+#ifdef WIN32
 	bool first_time = false;
+#endif
 	if (!contwin)			// First time?
 		{
+#ifdef WIN32
 		first_time = true;
+#endif
 		contwin = glade_xml_get_widget( app_xml, "cont_window" );
 		if (vgafile && palbuf)
 			{

@@ -387,6 +387,7 @@ void Uc_binary_expression::gen_value
 		{
 		Uc_int_expression *iexpr = new Uc_int_expression(ival, intop);
 		iexpr->gen_value(out);
+		delete iexpr;
 		}
 	else
 		{
@@ -462,6 +463,7 @@ void Uc_unary_expression::gen_value
 		{
 		Uc_int_expression *iexpr = new Uc_int_expression(ival);
 		iexpr->gen_value(out);
+		delete iexpr;
 		}
 	else
 		{

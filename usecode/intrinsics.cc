@@ -940,8 +940,7 @@ USECODE_INTRINSIC(set_intercept_item)
 	intercept_item = get_item(parms[0]);
 	if (intercept_item)
 		{
-		if (intercept_tile)
-			delete intercept_tile;
+		delete intercept_tile;
 		intercept_tile = 0;
 		}
 	else

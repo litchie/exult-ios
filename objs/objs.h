@@ -357,6 +357,7 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 		  prev_flat(ShapeID(12, 0))
 		{  }
+	virtual ~Terrain_game_object() {  }
 	virtual Terrain_game_object *as_terrain() { return this; }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
@@ -375,6 +376,7 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
+	virtual ~Ifix_game_object() {  }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Remove/delete this object.

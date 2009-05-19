@@ -39,6 +39,7 @@ protected:
 	friend class Game_window;
 public:
 	static void init(Game_window *g);
+	virtual ~Game_singletons() {  }
 	};
 
 #endif
