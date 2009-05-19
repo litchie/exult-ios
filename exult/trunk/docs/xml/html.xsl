@@ -105,7 +105,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	</head>
 	<body bgcolor="#cccccc" text="#333366" link="#666699" vlink="#669966" alink="#ffcc33"  background="images/back.gif">
-		<div align="center">
 			<table border="0" cellpadding="0" cellspacing="0" width="90%">
 				<xsl:call-template name="NAVBAR"/>
 				<tr>
@@ -130,7 +129,6 @@
 				</tr>
 				<xsl:call-template name="DISCLAIMER"/>
 			</table>
-		</div>
 	</body>
 	</html>
 </xsl:template>
@@ -408,6 +406,7 @@
 
 
 <!-- Config Table Templates -->
+
 <xsl:template match="configdesc">
 	<table border="0" cellpadding="0" cellspacing="0">
 		<xsl:apply-templates select="configtag"/>
@@ -416,29 +415,28 @@
 
 <xsl:template match="configtag">
 	<xsl:param name="indent">0</xsl:param>
+	<xsl:variable name="row-style"><xsl:if test="@manual">color: #62186f</xsl:if></xsl:variable>
 
 	<xsl:choose>
 		<xsl:when test="count(child::configtag)>0">
-			<tr><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td></tr>
+			<tr style="{$row-style}"><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td></tr>
 			<xsl:apply-templates select="configtag">
 				<xsl:with-param name="indent"><xsl:value-of select="$indent+20"/></xsl:with-param>
 			</xsl:apply-templates>
 		</xsl:when>
 		<xsl:otherwise>
-			<tr><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td>
+			<tr style="{$row-style}"><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td>
 			<td rowspan="3"><xsl:apply-templates select="comment"/></td></tr>
-			<tr><td style="text-indent:{$indent}pt"><xsl:value-of select="text()"/></td></tr>
+			<tr style="{$row-style}"><td style="text-indent:{$indent}pt"><xsl:value-of select="text()"/></td></tr>
 		</xsl:otherwise>
 	</xsl:choose>
 	<xsl:if test="@closing-tag='yes'">
-		<tr><td style="text-indent:{$indent}pt">&lt;/<xsl:value-of select="@name"/>&gt;</td></tr>
+		<tr style="{$row-style}"><td style="text-indent:{$indent}pt">&lt;/<xsl:value-of select="@name"/>&gt;</td></tr>
 	</xsl:if>
 </xsl:template>
 
 <xsl:template match="comment">
 	<xsl:apply-templates/>
 </xsl:template>
-
-
 
 </xsl:stylesheet>
