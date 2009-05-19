@@ -528,8 +528,8 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 					return 1;
 			}
 
-			int chr = event.key.keysym.sym;
 #if 0
+			int chr = event.key.keysym.sym;
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 						? toupper(chr) : chr, event);
 #else

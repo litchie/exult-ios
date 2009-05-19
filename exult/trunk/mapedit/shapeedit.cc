@@ -951,7 +951,6 @@ C_EXPORT gboolean on_shinfo_framenames_name_type_changed
 	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(widget));
 	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
 	int type = g_list_index(GTK_MENU_SHELL(menu)->children, active);
-	bool fon = type == 3;
 	ExultStudio *studio = ExultStudio::get_instance();
 	if (type == 0)
 		studio->set_entry("shinfo_framenames_name_text",
@@ -1273,7 +1272,7 @@ C_EXPORT void on_shinfo_effhps_remove_clicked
 	GtkTreeModel *model = gtk_tree_view_get_model(hptree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
-	unsigned int newfrnum, newqual, newhps;
+	unsigned int newfrnum, newqual;
 	Get_hp_fields(studio, newfrnum, newqual);
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
@@ -2066,7 +2065,7 @@ C_EXPORT void on_shinfo_objpaperdoll_list_cursor_changed
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int frnum, spot, trans, gender, type, shape,
-		frame0, frame1, frame2, frame3, patch;
+		frame0, frame1, frame2, frame3;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	gtk_tree_model_get(model, &iter, DOLL_WORLD_FRAME, &frnum,
@@ -3822,20 +3821,16 @@ void ExultStudio::open_shape_window
 	{
 	if (!shapewin)			// First time?
 		shapewin = glade_xml_get_widget( app_xml, "shape_window" );
-	if (shape_draw)			// Ifile might have changed.
-		delete shape_draw;
+		// Ifile might have changed.
+	delete shape_draw;
 	shape_draw = 0;
-	if (gump_draw)
-		delete gump_draw;
+	delete gump_draw;
 	gump_draw = 0;
-	if (npcgump_draw)
-		delete npcgump_draw;
+	delete npcgump_draw;
 	npcgump_draw = 0;
-	if (body_draw)
-		delete body_draw;
+	delete body_draw;
 	body_draw = 0;
-	if (explosion_draw)
-		delete explosion_draw;
+	delete explosion_draw;
 	explosion_draw = 0;
 	Vga_file *ifile = file_info->get_ifile();
 	if (ifile && palbuf)

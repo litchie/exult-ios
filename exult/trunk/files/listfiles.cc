@@ -105,7 +105,7 @@ static bool MatchString( const char *str, const std::string& inPat )
 #include <malloc.h>
 #include <tchar.h>
 
-int U7ListFiles(const std::string mask, FileList& files)
+int U7ListFiles(const std::string& mask, FileList& files)
 {
 	string			path(get_system_path(mask));
 	const TCHAR		*lpszT;
@@ -226,7 +226,7 @@ OSErr GetCatInfoNoName(short vRefNum, long dirID, std::string name, CInfoPBPtr p
 }
 
 
-int U7ListFiles(const std::string pathMask, FileList& files)
+int U7ListFiles(const std::string& pathMask, FileList& files)
 {
 	CInfoPBRec		cPB;			// the parameter block used for PBGetCatInfo calls
 	Str63			itemName;		// the name of the current item
@@ -302,7 +302,7 @@ int U7ListFiles(const std::string pathMask, FileList& files)
 #include <be/storage/Directory.h>
 #include <be/storage/Entry.h>
 
-int U7ListFiles(const std::string pathMask, FileList& files)
+int U7ListFiles(const std::string& pathMask, FileList& files)
 {
 	char filename[255];
 	string path(get_system_path(pathMask));
@@ -353,7 +353,7 @@ int U7ListFiles(const std::string pathMask, FileList& files)
 
 static struct AnchorPath ap __attribute__((aligned(4)));
 
-int U7ListFiles(const std::string mask, FileList& files)
+int U7ListFiles(const std::string& mask, FileList& files)
 {
   string path(get_system_path(mask));
   char   buffer[ 256 ];
@@ -388,7 +388,7 @@ int U7ListFiles(const std::string mask, FileList& files)
 
 #include <glob.h>
 
-int U7ListFiles(const std::string mask, FileList& files)
+int U7ListFiles(const std::string& mask, FileList& files)
 
 {
         glob_t globres;

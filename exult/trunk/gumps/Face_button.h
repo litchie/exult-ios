@@ -34,6 +34,7 @@ protected:
 	bool translucent;
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
+	virtual ~Face_button() {  }
 	virtual Actor *get_actor() { return actor; }
 	virtual void double_clicked(int x, int y);
 	virtual void activate() {}

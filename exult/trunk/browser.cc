@@ -55,8 +55,7 @@ ShapeBrowser::ShapeBrowser()
 
 ShapeBrowser::~ShapeBrowser()
 	{
-		if(shapes)
-			delete shapes;
+	delete shapes;
 	}
 
 static void handle_key(int shift, int& value, int max, int amt = 1)
@@ -118,7 +117,9 @@ void ShapeBrowser::browse_shapes()
 					}
 				else
 					pal.load(pal_tuple.str, patch_tuple.str, pal_tuple.num);
-				pal.apply();
+
+				if (GL_manager::get_instance())
+					pal.apply();
 
 				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);
@@ -174,7 +175,11 @@ void ShapeBrowser::browse_shapes()
 				} else
 					font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
 
-				gwin->get_win()->show();
+
+				if (GL_manager::get_instance())
+					gwin->get_win()->show();
+				else
+					pal.apply();
 				redraw = false;
 			}
 			SDL_WaitEvent(&event);

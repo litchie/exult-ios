@@ -1209,7 +1209,7 @@ static bool Save_level1 (zipFile zipfile, const char *fname)
 // Level 2 Compression
 static bool Begin_level2 (zipFile zipfile, int mapnum)
 {
-	char oname[7];		// Set up name.
+	char oname[8];		// Set up name.
 	if (mapnum == 0)
 		{
 		strcpy(oname, "GAMEDAT");

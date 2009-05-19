@@ -59,7 +59,7 @@ public:
 		  menustring(other.menustring), expansion(other.expansion),
 		  found(other.found), editing(other.editing), codepage(other.codepage)
 		{  }
-	~BaseGameInfo () {  }
+	virtual ~BaseGameInfo () {  }
 
 	const string get_cfgname () const { return cfgname; }
 	const string get_path_prefix () const { return path_prefix; }
@@ -102,7 +102,7 @@ public:
 		  other.editing, other.codepage.c_str()),
 		  compatible(other.compatible), configfile(other.configfile)
 		{  }
-	~ModInfo () {}
+	virtual ~ModInfo () {}
 
 	bool is_mod_compatible () const { return compatible; }
 
@@ -131,7 +131,7 @@ public:
 				it != other.modlist.end(); ++it)
 			modlist.push_back(*it);
 		}
-	~ModManager ()
+	virtual ~ModManager ()
 		{ modlist.clear(); }
 
 	std::vector<ModInfo>& get_mod_list () { return modlist; }
@@ -172,7 +172,7 @@ protected:
 			const char *title, const char *cfgname, const char *basepath);
 public:
 	GameManager ();
-	~GameManager ()
+	virtual ~GameManager ()
 		{ games.clear(); }
 
 	std::vector<ModManager>& get_game_list () { return games; }

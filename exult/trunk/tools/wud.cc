@@ -270,8 +270,8 @@ void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 	if( size < 3 * sizeof(unsigned short) )
 	{
 		printf("Code segment bad!\n");
-		free(p);
-		free(pdata);
+		delete [] p;
+		delete [] pdata;
 		return;
 	}
 	// Print argument counter
@@ -284,8 +284,8 @@ void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 	if( size < ( ( 3 + externsize ) * sizeof(unsigned short) ) )
 	{
 		printf("Code segment bad!\n");
-		free(p);
-		free(pdata);
+		delete [] p;
+		delete [] pdata;
 		return;
 	}
 	size -= ( ( 3 + externsize ) * sizeof(unsigned short) );
@@ -305,8 +305,8 @@ void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 		pp += nbytes;
 		offset += nbytes;
 	}
-	delete p;
-	delete pdata;
+	delete [] p;
+	delete [] pdata;
 }
 
 /*

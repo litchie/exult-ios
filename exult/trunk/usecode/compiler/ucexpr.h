@@ -136,7 +136,7 @@ public:
 	Uc_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
 		: array(a), index(i)
 		{  }
-	~Uc_arrayelem_expression()
+	virtual ~Uc_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
@@ -427,6 +427,7 @@ public:
 	Uc_class_expression(Uc_var_symbol *v)
 		: Uc_var_expression(v)
 		{  }
+	virtual ~Uc_class_expression() {  }
 	virtual void gen_value(Basic_block *out);
 	virtual void gen_assign(Basic_block *out);
 	virtual Uc_var_symbol *need_var(Basic_block *, Uc_function *)

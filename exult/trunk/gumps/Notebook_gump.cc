@@ -105,7 +105,7 @@ void One_note::set_text
 	char *txt
 	)
 	{
-	delete text;
+	delete [] text;
 	text = txt;
 	if (text)
 		{
@@ -246,10 +246,10 @@ void Notebook_gump::initialize
 #if 0
 	// ++++TESTING:
 	notes.push_back(new One_note(1, 1,10, 10, 10, 
-				strdup("Note  #1\nHello")));
-	notes.push_back(new One_note(2, 2,20, 20, 20, strdup(
+				newstrdup("Note  #1\nHello")));
+	notes.push_back(new One_note(2, 2,20, 20, 20, newstrdup(
 				"Note  #2\nworld.\n\nHow are you?")));
-	notes.push_back(new One_note(3, 3,30, 30, 30, strdup(
+	notes.push_back(new One_note(3, 3,30, 30, 30, newstrdup(
 				"Note #3")));
 #endif
 	}
@@ -384,7 +384,6 @@ bool Notebook_gump::paint_page
 			note->gflag >= 0 ? POISON_PIXEL : CHARMED_PIXEL),
 			box.w, 1, x + box.x, y + box.y - 3);
 		}
-	int textheight = sman->get_text_height(font) + vlead;
 	char *str = note->text + offset;
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
@@ -804,7 +803,7 @@ void Notebook_gump::add_gflag_text
 					it != notes.end(); ++it)
 		if ((*it)->gflag == gflag)
 			return;
-	add_new(strdup(text), gflag);
+	add_new(newstrdup(text), gflag);
 	}
 
 /*
@@ -880,7 +879,7 @@ void Notebook_gump::read
 			{
 			if (note)
 				note->set_text(
-					strdup(notend.second.c_str()));
+					newstrdup(notend.second.c_str()));
 			}
 		else if (notend.first == "note/gflag")
 			{

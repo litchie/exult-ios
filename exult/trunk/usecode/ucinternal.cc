@@ -1920,8 +1920,7 @@ void Usecode_internal::read_usecode
 	if (magic == UCSYMTBL_MAGIC0 && (magic = Read4(file)) 
 							== UCSYMTBL_MAGIC1)
 		{
-		if (symtbl)
-			delete symtbl;
+		delete symtbl;
 		symtbl = new Usecode_symbol_table();
 		symtbl->read(file);
 		}
@@ -3508,7 +3507,7 @@ void Usecode_internal::read_usevars
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : 0;
 			if (fsym)
 				funid = fsym->get_val();
-			delete nm;
+			delete [] nm;
 			}
 		int cnt = nfile->read4();
 		Usecode_function *fun = find_function(funid);

@@ -302,11 +302,12 @@ class Pickup_actor_action : public Actor_action
 	int cnt;			// 0, 1, 2.
 	Tile_coord objpos;		// Where to put it.
 	int dir;			// Direction to face.
+	bool temp;			// True to make object temporary on drop.
 public:
 					// To pick up an object:
 	Pickup_actor_action(Game_object *o, int spd);
 					// To put down an object:
-	Pickup_actor_action(Game_object *o, Tile_coord opos, int spd);
+	Pickup_actor_action(Game_object *o, Tile_coord opos, int spd, bool t = false);
 	virtual int handle_event(Actor *actor);
 	virtual int get_speed() const
 		{ return speed; }

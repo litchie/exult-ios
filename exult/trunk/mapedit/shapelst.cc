@@ -191,7 +191,6 @@ void Shape_chooser::render
 					// Clear window first.
 	iwin->fill8(255);		// Set to background_color.
 	int curr_y = -row0_voffset;
-	int row_h = 0;
 	int total_cnt = get_count();
 	int index;			// This is shapenum if there's no
 					//   filter (group).
@@ -209,8 +208,6 @@ void Shape_chooser::render
 								framenum);
 			if(shape)
 				{
-				int sh = shape->get_height(),
-				    sw = shape->get_width();
 				int sx = info[index].box.x - hoffset;
 				int sy = info[index].box.y - voffset;
 				shape->paint(iwin, sx + shape->get_xleft(),
@@ -1123,7 +1120,7 @@ static void Import_png
 		return;			// Just return if error, for now.
 					// Convert to game palette.
 	Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
-	delete oldpal;
+	delete [] oldpal;
 					// Low shape in 'shapes.vga'?
 	bool flat = IS_FLAT(shapenum) && finfo == studio->get_vgafile();
 	int xleft, yabove;
@@ -1136,7 +1133,7 @@ static void Import_png
 				"Shape %d must be %dx%d", shapenum, c_tilesize, c_tilesize);
 			studio->prompt(msg, "Continue");
 			g_free(msg);
-			delete pixels;
+			delete [] pixels;
 			return;
 			}
 		}
@@ -1147,7 +1144,7 @@ static void Import_png
 		}
 	shape->set_frame(new Shape_frame(pixels,
 			w, h, xleft, yabove, !flat), framenum);
-	delete pixels;
+	delete [] pixels;
 	finfo->set_modified();
 	}
 
@@ -1194,11 +1191,12 @@ static void Import_png_tiles
 		}
 					// Convert to game palette.
 	Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
-	delete oldpal;
+	delete [] oldpal;
 	if (w < needw || h < needh)
 		{
 		Alert("File '%s' image is too small.  %dx%d required.",
 						fname, needw, needh);
+		delete [] pixels;
 		return;
 		}
 	for (int frnum = 0; frnum < nframes; frnum++)
@@ -1220,7 +1218,7 @@ static void Import_png_tiles
 		shape->set_frame(new Shape_frame(&buf[0], c_tilesize, c_tilesize,
 					c_tilesize, c_tilesize, false), frnum);
 		}
-	delete pixels;
+	delete [] pixels;
 	finfo->set_modified();
 	}
 
@@ -1407,7 +1405,7 @@ void Shape_chooser::import_all_pngs
 			return;			// Just return if error, for now.
 						// Convert to game palette.
 		Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
-		delete oldpal;
+		delete [] oldpal;
 		int xleft = w + xoff - 1, yabove = h + yoff - 1;
 		Shape_frame *frame = new Shape_frame(pixels,
 					w, h, xleft, yabove, true);
@@ -1415,10 +1413,10 @@ void Shape_chooser::import_all_pngs
 			shape->set_frame(frame, i);
 		else
 			shape->add_frame(frame, i);
-		delete pixels;
+		delete [] pixels;
 
 		i++;
-		delete fullname;
+		delete [] fullname;
 		fullname = new char[strlen(fname) + 30];
 		sprintf(fullname, "%s%02d.png", fname, i);
 	}

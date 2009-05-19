@@ -109,7 +109,6 @@ void Npc_chooser::render
 					// Clear window first.
 	iwin->fill8(255);		// Set to background_color.
 	int curr_y = -row0_voffset;
-	int row_h = 0;
 	int total_cnt = get_count();
 	int index;			// This is shapenum if there's no
 					//   filter (group).
@@ -126,8 +125,6 @@ void Npc_chooser::render
 			Shape_frame *shape = ifile->get_shape(shapenum, 0);
 			if(shape)
 				{
-				int sh = shape->get_height(),
-				    sw = shape->get_width();
 				int sx = info[index].box.x;
 				int sy = info[index].box.y - voffset;
 				shape->paint(iwin, sx + shape->get_xleft(),

@@ -883,7 +883,6 @@ Shape_frame *Shape::read
 	)
 	{
 	DataSource *shp = 0;
-	Shape_frame *frame = new Shape_frame();
 					// Figure offset in "shapes.vga".
 	uint32 shapeoff = 0x80 + shapenum*8;
 	uint32 shapelen = 0;
@@ -938,6 +937,7 @@ Shape_frame *Shape::read
 	if (!shapelen)
 		return 0;		// Empty shape.
 					// Read it in and get frame count.
+	Shape_frame *frame = new Shape_frame();
 	int nframes = frame->read(shp, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
 		create_frames_list(nframes);

@@ -899,8 +899,8 @@ Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
 	}
 					// To put down an object:
 Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord opos, 
-								int spd)
-	: obj(o), pickup(0), speed(spd), cnt(0), objpos(opos), dir(0)
+								int spd, bool t)
+	: obj(o), pickup(0), speed(spd), cnt(0), objpos(opos), dir(0), temp(t)
 	{
 	}
 
@@ -940,6 +940,8 @@ int Pickup_actor_action::handle_event
 			{
 			obj->remove_this(1);
 			obj->move(objpos);
+			if (temp)
+				obj->set_flag(Obj_flags::is_temporary);
 			gwin->add_dirty(obj);
 			}
 		break;

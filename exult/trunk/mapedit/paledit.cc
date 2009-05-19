@@ -158,7 +158,7 @@ void Palette_edit::render
 					// Changed size?
 	if (neww != width || newh != height)
 		{
-		delete image;
+		delete [] image;
 		width = neww;
 		height = newh;
 		image = new guchar[width*height];
@@ -172,7 +172,6 @@ void Palette_edit::render
 	unsigned char *out = image;
 	for (int y = 0; y < 16; y++, color += 16)
 		{
-		int curx = 0;
 		int stopy = cury + eachh + (y < extrah);
 		for ( ; cury < stopy; cury++)
 			for (int x = 0, c = color; x < 16; x++, c++)
@@ -799,7 +798,7 @@ Palette_edit::~Palette_edit
 					it != palettes.end(); ++it)
 		gdk_rgb_cmap_free(*it);
 	gtk_widget_destroy(get_widget());
-	delete image;
+	delete [] image;
 	}
 
 /*

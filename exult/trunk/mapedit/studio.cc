@@ -678,14 +678,11 @@ ExultStudio::~ExultStudio()
 	compilewin = 0;
 	delete compile_box;
 	compile_box = 0;
-	if (locwin)
-		delete locwin;
+	delete locwin;
 	locwin = 0;
-	if (combowin)
-		delete combowin;
+	delete combowin;
 	combowin = 0;
-	if (ucbrowsewin)
-		delete ucbrowsewin;
+	delete ucbrowsewin;
 	if (gameinfowin)
 		gtk_widget_destroy(gameinfowin);
 	gameinfowin = 0;
@@ -898,7 +895,6 @@ void ExultStudio::create_new_game
 		while ((entry=readdir(dirrd)))
 			{
 			char *fname = entry->d_name;
-			int flen = strlen(fname);
 					// Ignore case of extension.
 			if(!strcmp(fname, ".") || !strcmp(fname,".."))
 				continue;
@@ -1344,7 +1340,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 		char *pattern;
 		char *commapos = strstr(startpos, ",");
 		if(commapos==0) {
-			pattern = strdup(startpos);
+			pattern = g_strdup(startpos);
 			adding_children = 0;
 		} else {
 			pattern = g_strndup(startpos, commapos-startpos);
@@ -1404,7 +1400,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 			closedir(dir);
 		}
 
-		free(pattern);
+		g_free(pattern);
 	} while (adding_children);
 
 	std::va_list ap;
@@ -1828,6 +1824,7 @@ void ExultStudio::create_shape_file
 	catch (const exult_exception& e) {
 		EStudio::Alert(e.what());
 	}
+	delete shape;
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->setup_file_list();	// Rescan list of shape files.
 	}

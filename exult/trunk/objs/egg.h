@@ -39,6 +39,7 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
+	virtual ~Egglike_game_object() {  }
 					// Render.
 	virtual void paint();
 					// Can this be clicked on?

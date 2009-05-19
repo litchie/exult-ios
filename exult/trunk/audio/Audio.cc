@@ -561,8 +561,7 @@ bool	Audio::can_sfx(const std::string &game) const
 
 void	Audio::Init_sfx()
 {
-	if (sfx_file)
-		delete sfx_file;
+	delete sfx_file;
 
 	if (Game::get_game_type() == SERPENT_ISLE)
 		bg2si_sfxs = bgconv;
@@ -612,9 +611,7 @@ Audio::~Audio()
 	if (effects_enabled) 
 		Mix_HaltChannel(-1);
 
-	if (sfxs)
-		delete sfxs;
-
+	delete sfxs;
 	delete sfx_file;
 	CERR("~Audio:  deleted midi");
 

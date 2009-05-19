@@ -62,7 +62,7 @@ public:
 	///	should delete anything else that is needed by the datasource
 	///	(e.g. buffers) but NOT the datadource.
 	virtual	~U7file()
-		{ if (data) delete data; }
+		{ delete data; }
 
 	virtual	size_t number_of_objects(void)=0;
 	virtual	char *retrieve(uint32 objnum, std::size_t &len)=0;

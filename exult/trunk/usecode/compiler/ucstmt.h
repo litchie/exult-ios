@@ -348,7 +348,7 @@ public:
 	Uc_switch_case_statement(Uc_statement *stmts)
 		: statements(stmts)
 		{  }
-	~Uc_switch_case_statement()
+	virtual ~Uc_switch_case_statement()
 		{ delete statements; }
 	virtual bool is_default() const
 		{ return false; }

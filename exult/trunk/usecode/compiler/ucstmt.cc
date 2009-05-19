@@ -937,6 +937,8 @@ void Uc_switch_statement::gen
 			case_blocks.push_back(case_code);
 			}
 		}
+		// All done with it.
+	delete var;
 		// Past SWITCH block.
 	Basic_block *past_switch = new Basic_block();
 		// For all other cases, the default jump.

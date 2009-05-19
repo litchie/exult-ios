@@ -54,9 +54,8 @@ class Time_queue;
 /*
  *	A queue entry:
  */
-class Queue_entry
+struct Queue_entry
 	{
-	public:
 	// Queue_entry *next, *prev;	// Next, prev. in queue.
 	Time_sensitive *handler;	// Object to activate.
 	long udata;			// Data to pass to handler.

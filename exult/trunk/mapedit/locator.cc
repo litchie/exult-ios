@@ -516,8 +516,6 @@ gint Locator::mouse_press
 		return FALSE;		// Handling left-click.
 					// Get mouse position, draw dims.
 	int mx = (int) event->x, my = (int) event->y;
-	int draww = draw->allocation.width,
-	    drawh = draw->allocation.height;
 					// Double-click?
 	if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
 		{

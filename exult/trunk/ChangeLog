@@ -1,3 +1,13 @@
+2009-05-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Implemented feature request #2793602 in a way that (hopefully) won't be
+	  the source of any trouble.
+	* Fixed bugs #2793317 and #2793229.
+	* Several destructors that should be virtual but weren't are now. Fixed many
+	  memory leaks, delete/delete[] and delete/free mixups. Removed unneeded
+	  checks before deleting objects. Removed several unused variables. Turned
+	  a few 'const std:string' parameters into 'const std::string&'. Fixed a
+	  buffer overflow.
+
 2009-05-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/shapelst.cc: Set frame spin upper-bound *before* setting value;
 	  this fixes a selection bug in frame display mode. Also, leave page_size of
