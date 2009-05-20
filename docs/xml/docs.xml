@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="19 May 2009(GMT)">
+<readme title="Exult" changed="20 May 2009(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="20052009">
+			<header>- 20 May 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="digital_music"/> mentioned two issues with it.</li>
+				<li><ref1 target="digital_music_install"/> cleaned up.</li>
+				<li><ref1 target="wave_sfx"/> some more infos.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19052009">
 			<header>- 19 May 2009</header>
 			<body>
@@ -411,6 +421,7 @@
 							<configtag name="formation" manual="true">							
 							yes
 							<comment>**yes forces the party to walk in a formation similar to the original game.</comment>
+							<comment>See <extref doc="faq" target="party_formation"/> in the FAQ.</comment>
 							</configtag>
 							<configtag name="step_tile_delta" manual="true">
 							8
@@ -998,6 +1009,12 @@
 					available when using MIDI as they play Roland MT-32 specific voices that cannot
 					be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
 				</para>
+				<para>
+					The digital music pack seems to have two issue, though, some tracks seem to have 
+					been recorded at lower volume than the others. Also, since both the digital music 
+					and the sound effects are played by the Wave / PCM of your soundcard, you can no 
+					longer have a different volume for music and sound effects.
+				</para>
 			</body>
 		</sub>
 		<sub name="digital_music_install">
@@ -1006,9 +1023,9 @@
 				<para>
 					The Digital Music pack can be downloaded from
 					<extref target="http://exult.sourceforge.net/download.php"/>, the files are called
-					<strong>Ogg encoded Music files for Exult Part 1(use with 1.1.x snapshot only)</strong>
+					<strong>Ogg encoded Music files for Exult Part 1</strong>
 					(U7MusicOGG_1of2.zip) and 
-					<strong>Ogg encoded Music files for Exult Part 2(use with 1.1.x snapshot only)</strong> 
+					<strong>Ogg encoded Music files for Exult Part 2</strong> 
 					(U7MusicOGG_2of2.zip). The readme.txt found in the ZIP files contains installation 
 					instructions that are no longer 100% valid and should not be followed.<br/>
 					Create a music directory in exult/data (i.e. exult/data/music/) and extract the two ZIP 
@@ -1018,7 +1035,7 @@
 					directory.<br/>
 					Now start up <Exult/> and start either a game of BG or SI. Hit <key>ESC</key> to enter 
 					the game menu. Here select <strong>Audio Options</strong> and in the "Music options" 
-					set the <strong>driver</strong> option to <strong>digital</strong>.
+					<strong>enable</strong> the <strong>digital music</strong> option.
 				</para>
 				<para>
 					It isn't necessary but you can also customize the location of the music files by adding 
@@ -1030,7 +1047,7 @@
 							<configtag name="data_path">
 							data
 							</configtag>
-							<configtag name="music_path">
+							<configtag name="music_path" manual="true">
 							data/music
 							</configtag>
 						</configtag>
@@ -1050,13 +1067,17 @@
 					Also <Exult/> doesn't yet playback all the sfx that the original did.
 				</para>
 				<para>
-					Note that configuring your soundfonts is not needed for digital wave sfx.
-				</para>
-				<para>
 					 We currently have two soundpacks for each game. Joseph Morris recorded the original
 					 SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on
 					 our download page at
-					<extref target="http://exult.sourceforge.net/download.php"/>.
+					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
+					"Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster 
+					sound effects.<br/>
+					"Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" 
+					are the Roland MT32 sound effects.<br/>
+					Don't be confused by the "Zaurus SI/BG sfx package", these are just the repackaged 
+					SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these 
+					don't concern you.
 				</para>
 				<para>
 					Extract the zip files into your <Exult/> data directory and write down the name of the

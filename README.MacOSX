@@ -20,6 +20,12 @@ likely have to create the sub folders yourself).
 
 Now run ExultMac, and have fun!
 
+Possible issue
+--------------
+Something in our audio code might crash Exult unexpectedly on OSX.
+For example the famous scene in SI with Frigidazi has been reported 
+as a trigger. To circumvent this disable all audio before a scene 
+that crashes and enable it later on in the game.
 
 More Information
 ----------------
