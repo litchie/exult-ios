@@ -1,3 +1,6 @@
+2009-05-20	Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation, FAQ and ReadME.OSX.
+	
 2009-05-19	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation with mods and patch instructions.
 	* docs/xml/html.xsl and php.xsl now support coloured tags for manual exult.cfg settings

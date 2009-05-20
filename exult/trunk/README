@@ -1,20 +1,21 @@
 Exult Documentation
-last changed: 19 May 2009(GMT)
+last changed: 20 May 2009(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 19 May 2009
-0.2. - 18 May 2009
-0.3. - 28 April 2009
-0.4. - 21 October 2007
-0.5. - 08 April 2006
-0.6. - 14 March 2005
-0.7. - 14 August 2004
-0.8. - 23 May 2004
-0.9. - 11 February 2004
-0.10. - 12 December 2003
+0.1. - 20 May 2009
+0.2. - 19 May 2009
+0.3. - 18 May 2009
+0.4. - 28 April 2009
+0.5. - 21 October 2007
+0.6. - 08 April 2006
+0.7. - 14 March 2005
+0.8. - 14 August 2004
+0.9. - 23 May 2004
+0.10. - 11 February 2004
+0.11. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -102,7 +103,14 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 19 May 2009
+0.1. - 20 May 2009
+* 3.5. Digital Music mentioned two issues with it.
+* 3.6. Installation of the digital music packs cleaned up.
+* 3.7. Digital Wave Sound Effects some more infos.
+
+
+
+0.2. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.3. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.5. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -113,7 +121,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 18 May 2009
+0.3. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN versio.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.2. Settings in exult.cfg now up to date with SVN.
@@ -132,43 +140,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 28 April 2009
+0.4. - 28 April 2009
 * 2.2. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.4. - 21 October 2007
+0.5. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OSX added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.5. - 08 April 2006
+0.6. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.3. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.6. - 14 March 2005
+0.7. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.7. - 14 August 2004
+0.8. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.8. - 23 May 2004
+0.9. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.9. - 11 February 2004
+0.10. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.3. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -179,7 +187,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.10. - 12 December 2003
+0.11. - 12 December 2003
 * 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.3. Path-Settings moved stuff over to next point.
 * 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
@@ -375,6 +383,7 @@ Note: yes means enabled, no means disabled
     <formation>
     yes
 				**yes forces the party to walk in a formation similar to the original game.
+				See FAQ.txt in the FAQ.
     </formation>
     <step_tile_delta>
     8
@@ -720,10 +729,11 @@ with the device you want to use.
 
 3.5. Digital Music
 Exult needs the Digital Music pack to play Digital Music in the game. The music pack contains music for both Black Gate and Serpent Isle, encoded in high quality OGG format. Simon Quinn recorded the current Digital Music pack on an original Roland MT-32 and with this you will experience the music as it would be heard with the original game. Digital Music should work on any platform that supports digital sound and does not use any MIDI, so it is also a good option for platforms with no MIDI support. Additionally, Digital Music supports a number of background atmospheric SFX tracks that are played when no music is playing. These consist of wind, bird etc effects outside and other sound effects when inside a dungeon. These SFX tracks are not available when using MIDI as they play Roland MT-32 specific voices that cannot be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+The digital music pack seems to have two issue, though, some tracks seem to have been recorded at lower volume than the others. Also, since both the digital music and the sound effects are played by the Wave / PCM of your soundcard, you can no longer have a different volume for music and sound effects.
 
 
 3.6. Installation of the digital music packs
-The Digital Music pack can be downloaded from http://exult.sourceforge.net/download.php, the files are called Ogg encoded Music files for Exult Part 1(use with 1.1.x snapshot only) (U7MusicOGG_1of2.zip) and Ogg encoded Music files for Exult Part 2(use with 1.1.x snapshot only) (U7MusicOGG_2of2.zip). The readme.txt found in the ZIP files contains installation instructions that are no longer 100% valid and should not be followed. Create a music directory in exult/data (i.e. exult/data/music/) and extract the two ZIP files U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip into this directory. If you are not sure where the data directory is, search for the file exult_bg.flx on your hard drive as this file is always in the data directory. Now start up Exult and start either a game of BG or SI. Hit 'ESC' to enter the game menu. Here select Audio Options and in the "Music options" set the driver option to digital.
+The Digital Music pack can be downloaded from http://exult.sourceforge.net/download.php, the files are called Ogg encoded Music files for Exult Part 1 (U7MusicOGG_1of2.zip) and Ogg encoded Music files for Exult Part 2 (U7MusicOGG_2of2.zip). The readme.txt found in the ZIP files contains installation instructions that are no longer 100% valid and should not be followed. Create a music directory in exult/data (i.e. exult/data/music/) and extract the two ZIP files U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip into this directory. If you are not sure where the data directory is, search for the file exult_bg.flx on your hard drive as this file is always in the data directory. Now start up Exult and start either a game of BG or SI. Hit 'ESC' to enter the game menu. Here select Audio Options and in the "Music options" enable the digital music option.
 It isn't necessary but you can also customize the location of the music files by adding <music_path> to exult.cfg. Example:
 <config>
   <disk>
@@ -737,8 +747,7 @@ It isn't necessary but you can also customize the location of the music files by
 
 3.7. Digital Wave Sound Effects
 Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the original did.
-Note that configuring your soundfonts is not needed for digital wave sfx.
-We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
+We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php. "Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster sound effects. "Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" are the Roland MT32 sound effects. Don't be confused by the "Zaurus SI/BG sfx package", these are just the repackaged SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these don't concern you.
 Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory. An example of how the relevant part of exult.cfg looks with these packs:
 <blackgate>
   <waves>
