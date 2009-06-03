@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="20 May 2009(GMT)">
+<readme title="Exult" changed="03 June 2009(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="03062009">
+			<header>- 03 June 2009</header>
+			<body>
+				<ul>
+				<li>Spell checked the whole documentation.</li>
+				<li><ref1 target="midi_music"/> slightly rewrote the FluidSynth section and 
+					explained fakemt32 option a bit better.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="20052009">
 			<header>- 20 May 2009</header>
 			<body>
 				<ul>
 				<li><ref1 target="digital_music"/> mentioned two issues with it.</li>
 				<li><ref1 target="digital_music_install"/> cleaned up.</li>
-				<li><ref1 target="wave_sfx"/> some more infos.</li>
+				<li><ref1 target="wave_sfx"/> some more information.</li>
 				</ul>
 			</body>
 		</sub>
@@ -30,14 +40,14 @@
 			<header>- 18 May 2009</header>
 			<body>
 				<ul>
-				<li><ref1 target="exult_version"/> this docs are for the SVN versio.</li>
+				<li><ref1 target="exult_version"/> this docs are for the SVN version.</li>
 				<li><ref1 target="installation"/> the Windows installer asks for BG/SI location.</li>
 				<li><ref1 target="exult_config"/> now up to date with SVN.</li>
 				<li><ref1 target="path_config"/> again recommend the Windows installer.</li>
 				<li><ref1 target="advanced_config"/> added.</li>
 				<li><ref1 target="command_line"/> now up to date with SVN.</li>
 				<li><ref1 target="midi_music"/> split from the general music part.</li>
-				<li>removed Tmidity chapter, since the cfg issue is explained in <ref1 target="midi_music"/>.</li>
+				<li>removed TiMidity chapter, since the cfg issue is explained in <ref1 target="midi_music"/>.</li>
 				<li><ref1 target="scaler"/> updated.</li>
 				<li><ref1 target="exult_keys"/> updated.</li>
 				<li><ref1 target="exult_cheats"/> updated.</li>
@@ -201,7 +211,7 @@
 						(see <extref doc="faq" target="improvements"/>).</li>
 					<li><strong>shapes</strong>:<br/>
 						shape files are the format used for storage of all graphics elements (from UI buttons
-						to terrain features) of the games Exult supports. Shapes may contain one or more
+						to terrain features) of the games <Exult/> supports. Shapes may contain one or more
 						frames (a frame is a single image).</li>
 					<li><strong>snapshot</strong>:<br/>
 						see <extref doc="faq" target="whatis_snapshot"/>.<br/>
@@ -209,7 +219,7 @@
 					<li><strong>usecode</strong>:<br/>
 						that's the scripting language that drives all of U7 (conversations, objects...).</li>
 					<li><strong>Exult data directory</strong>:<br/>
-						that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and
+						that's the directory where <Exult/> stores its data files (exult.flx, exult_bg.flx and
 						exult_si.flx).</li>
 				</ul>
 			</body>
@@ -257,7 +267,7 @@
 				<para>
 					Most of the options in <Exult/> can be changed from the <strong>Setup</strong> 
 					menu when you run <Exult/> or via the Game Options menu. <Exult/> stores these 
-					changes in a configuration file. Except for changing pathes to the games you
+					changes in a configuration file. Except for changing paths to the games you
 					shouldn't need to edit the file. Very few options need manual editing.
 				</para>
 				<para>
@@ -290,7 +300,7 @@
 						<configtag name="disk">
 							<configtag name="save_compression_level"  manual="true">
 							1
-							<comment>**save games are now compressed as zip files. 0 disables compression,</comment>
+							<comment>**save games are now compressed as zip files. 0 disables compression, </comment>
 							<comment>1 enables it, 2 compresses even a bit better. Default is 1.</comment>
 							</configtag>
 							<configtag name="data_path"  manual="true">
@@ -335,7 +345,7 @@
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
 									./serpentisle
-									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
+									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like. </comment>
 									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="static_path"  manual="true">
@@ -387,7 +397,7 @@
 							</configtag>
 							<configtag name="allow_double_right_move">
 							yes
-							<comment>**double right-click lets the Avatar walk automatically</comment>
+							<comment>**double right-click lets the Avatar walk automatically </comment>
 							<comment>to where you clicked.</comment>
 							</configtag>
 							<configtag name="gumps_dont_pause_game">
@@ -410,7 +420,7 @@
 							</configtag>
 							<configtag name="skip_intro">
 							no
-							<comment>**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears,</comment>
+							<comment>**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears, </comment>
 							<comment>Iolo talks to you, the mayor talks to you and so on.</comment>
 							</configtag>
 							<configtag name="skip_splash">
@@ -425,25 +435,25 @@
 							</configtag>
 							<configtag name="step_tile_delta" manual="true">
 							8
-							<comment>**Controls how far the Avatar will move before Exult recalculates the</comment>
-							<comment>Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other</comment>
+							<comment>**Controls how far the Avatar will move before <Exult/> recalculates the </comment>
+							<comment>Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other </comment>
 							<comment>problems.</comment>
 							</configtag>
 							<configtag name="combat">
 								<configtag name="difficulty">
 								0
-								<comment>**0 is default, negative values make combat easier, positive makes it</comment>
-								<comment>harder. It affects the chance of a hit, and the HP's lost if a hit occurs.</comment>
+								<comment>**0 is default, negative values make combat easier, positive makes it </comment>
+								<comment>harder. It affects the chance of a hit, and the HP's lost if a hit occurs. </comment>
 								<comment>Ranges from -3 to 3 (easiest to hardest).</comment>
 								</configtag>
 								<configtag name="mode">
 								original
-								<comment>**original or keypause. On keypause the game pauses when you hit space</comment>
+								<comment>**original or keypause. On keypause the game pauses when you hit space </comment>
 								<comment>so you can make changes in combat.</comment>
 								</configtag>
 								<configtag name="show_hits">
 								no
-								<comment>**no is default. With yes you see the hitpoints of NPCs</comment>
+								<comment>**no is default. With yes you see the hitpoints of NPCs </comment>
 								<comment>in brackets after their name.</comment>
 								</configtag>
 							</configtag>
@@ -451,33 +461,33 @@
 						<configtag name="audio">
 							<configtag name="enabled">
 							yes
-							<comment>**enable/disable all audio - this takes precedence over the</comment>
-							<comment>other audio settings. (You can change this in game via</comment>
+							<comment>**enable/disable all audio - this takes precedence over the </comment>
+							<comment>other audio settings. (You can change this in game via </comment>
 							<comment><key>Esc</key> - the setting is saved.)</comment>
 							</configtag>
 							<configtag name="disablepause" manual="true">
 							no
-							<comment>**enable/disable the pausing of SFX and digital music when the</comment>
+							<comment>**enable/disable the pausing of SFX and digital music when the </comment>
 							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
 							</configtag>
 							<configtag name="effects">
 								<configtag name="enabled">
 								yes
-								<comment>**enable/disable sound effects. (You can change this in game via</comment>
+								<comment>**enable/disable sound effects. (You can change this in game via </comment>
 								<comment><key>Esc</key> - the setting is saved.)</comment>
 								</configtag>
 							</configtag>
 							<configtag name="speech">
 								<configtag name="enabled">
 								yes
-								<comment>**enable/disable speech. (You can change this in game via</comment>
+								<comment>**enable/disable speech. (You can change this in game via </comment>
 								<comment><key>Esc</key> - the setting is saved.)</comment>
 								</configtag>
 							</configtag>
 							<configtag name="midi">
 								<configtag name="enabled">
 								yes
-								<comment>**enable/disable ALL Music (You can change this in game via</comment>
+								<comment>**enable/disable ALL Music (You can change this in game via </comment>
 								<comment><key>Esc</key> - the setting is saved.)</comment>
 								</configtag>
 								<configtag name="use_oggs">
@@ -487,8 +497,8 @@
 								<configtag name="driver">
 								default
 								<comment>**choose your music driver between default, MT32Emu, Fluidsynth, FMOPL, </comment>
-								<comment>Timidity, Windows, Amiga, Be_midi, Forked, KMIDI, alsa, CoreAudio, </comment>
-								<comment>UnixSeqDevice</comment>
+								<comment>TiMidity, Windows, Amiga, Be_midi, Forked, KMIDI, alsa, CoreAudio, </comment>
+								<comment>UnixSeqDevice. </comment>
 								<comment>See <ref target="music"/> for details.</comment>
 								</configtag>
 								<configtag name="convert">
@@ -502,21 +512,21 @@
 								<configtag name="chorus">
 									<configtag name="enabled">
 									no
-									<comment>**alters the way midi is played.</comment>
+									<comment>**alters the way MIDI is played.</comment>
 									</configtag>
 									<configtag name="level" manual="true">
 									0
-									<comment>**how much the midi is altered.</comment>
+									<comment>**how much the MIDI is altered.</comment>
 									</configtag>
 								</configtag>
 								<configtag name="reverb">
 									<configtag name="enabled">
 									no
-									<comment>**alters the way midi is played.</comment>
+									<comment>**alters the way MIDI is played.</comment>
 									</configtag>
 									<configtag name="level" manual="true">
 									0
-									<comment>**how much the midi is altered.</comment>
+									<comment>**how much the MIDI is altered.</comment>
 									</configtag>
 								</configtag>
 								<configtag name="win32_device" manual="true">
@@ -534,7 +544,7 @@
 								</configtag>
 								<configtag name="fluidsynth_soundfont" manual="true">
 								path
-								<comment>**path to the sound font that will be used to render the midi music </comment>
+								<comment>**path to the sound font that will be used to render the MIDI music </comment>
 								<comment>when Fluidsynth is chosen as driver.</comment>
 								</configtag>
 								<configtag name="volume_curve" manual="true">
@@ -546,7 +556,7 @@
 						<configtag name="video">
 							<configtag name="width">
 							320
-							<comment>**here you choose your resolution, it can be as big as your</comment>
+							<comment>**here you choose your resolution, it can be as big as your </comment>
 							<comment>monitor allows. 320x200 is the resolution of the original.</comment>
 							</configtag>
 							<configtag name="height">
@@ -558,7 +568,7 @@
 							</configtag>
 							<configtag name="scale">
 							2
-							<comment>**2 enables / 1 disables scaling, some scalers support higher values.</comment>
+							<comment>**2 enables / 1 disables scaling, some scalers support higher values. </comment>
 							<comment>See <ref target="scaler"/>.</comment>
 							</configtag>
 							<configtag name="fullscreen">
@@ -591,12 +601,12 @@
 							<configtag name="trace"  manual="true">
 								<configtag name="usecode"  manual="true">
 								no
-								<comment>**options are yes/no/verbose. This is used to trace the</comment>
+								<comment>**options are yes/no/verbose. This is used to trace the </comment>
 								<comment>executed Usecode. (You shouldn't need this unless you are a programmer.)</comment>
 								</configtag>
 								<configtag name="intrinsics"  manual="true">
 								no
-								<comment>**options are yes/no. Used to trace intrinsics.</comment>
+								<comment>**options are yes/no. Used to trace intrinsics. </comment>
 								<comment>(You shouldn't need this unless you are a programmer.)</comment>
 								</configtag>
 								<configtag name="combat"  manual="true">
@@ -730,7 +740,7 @@
 			<body>
 				<para>
 					If you own both BG or SI without the add-ons FoV and SS and also the versions 
-					that has the add-ons you can now have them both shwon in the <Exult/> menu. Before
+					that has the add-ons you can now have them both shown in the <Exult/> menu. Before
 					you had to edit the exult.cfg when you wanted to switch the games.<br/>					
 					the tags for both FoV and SS. If you follow the "control freak" example at 
 					<ref target="path_config"/>, add to this that BG with FoV is installed to 
@@ -842,45 +852,45 @@
 			<body>
 				<para>
 					There are three general ways that music is played in <Exult/>. One is using MIDI, which 
-					plays the music through any GM MIDI device, or software synthesizers like TiMidity and 
-					Fluidsynth. Another way is Digital Music encoded into OGG (similar to MP3) which was 
+					plays the music through any MIDI device, or software synthesizers like TiMidity and 
+					FluidSynth. Another way is Digital Music encoded into OGG (similar to MP3) which was 
 					recorded directly from a Roland MT-32. The third option is FMOpl which emulates 
 					Opl2/Adlib.<br/>
 					The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to 
-					General Midi format so that they will be playable on modern General Midi and 
-					General Midi/GS supporting sound cards.
+					General MIDI format so that they will be playable on modern General MIDI and 
+					General MIDI/GS supporting sound cards.
 				</para>
 				<para>
 					The Music driver options can be changed in the in-game menu that you open by hitting 
 					<key>ESC</key>.<br/>
-					There you can enable Digital Music and change the Midi driver, through which you can 
-					also select the FMOpl emulation. When you enable Digital Music, it takes precdence over 
-					the Midi driver. 
+					There you can enable Digital Music and change the MIDI driver, through which you can 
+					also select the FMOpl emulation. When you enable Digital Music, it takes precedence over 
+					the MIDI driver. 
 				</para>
 			</body>
 		</sub>
 		<sub name="midi_music">
-			<header>Music</header>
+			<header>MIDI Music</header>
 			<body>
 				<para>
-					The Midi driver can be changed to:
+					The MIDI driver can be changed to:
 				</para>
 				<ul>
       				<li><strong>Default</strong><br/>
         				This setting utilizes the default MIDI driver of your system.</li>
       				<li><strong>FMOPL</strong><br/>
       					This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib).</li>
-					<li><strong>Timidity</strong><br/>
+					<li><strong>TiMidity</strong><br/>
         				is a software synthesizer that can play MIDI files without a hardware synthesizer.
 						You can install TiMidity on all major Operating systems. You need to place tmidity.cfg
-						into the same directory where the Exult executable is installed to, otherwise Timidity 
+						into the same directory where the <Exult/> executable is installed to, otherwise TiMidity 
 						will not work.</li>
-					<li><strong>Fluidsynth</strong><br/>
-        				is another software synthesizer, which uses SoundFont technology without need for a 
-						SoundFont-compatible soundcard. It is availlable for many Operating Systems and opposed 
-						to TiMidity still actively developed. At 
-						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfont&gt; in the 
-						exult.cfg you will have to enter the path to the SoundFont you want to use.</li>
+					<li><strong>FluidSynth</strong><br/>
+        				is another software synthesizer, which uses SoundFont 2 technology without need for a 
+						SoundFont-compatible soundcard. It is available for many Operating Systems and opposed 
+						to TiMidity still actively developed. With current snapshots you just need to edit 
+						exult.cfg and point &lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfont&gt; 
+						to the SoundFont you want to use.</li>
 					<li><strong>MT32Emu</strong><br/>
         				Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or 
 						the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the <Exult/> data directory.
@@ -897,9 +907,9 @@
         				uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;alsa_port&gt; in the exult.cfg.</li>
 					<li><strong>Forked</strong><br/>
-        				On *nix systems uses POSIX fork to create a new thread which will then handle the midi playback</li>
+        				On *nix systems uses POSIX fork to create a new thread which will then handle the MIDI playback</li>
 					<li><strong>KMIDI</strong><br/>
-        				On Linux systems uses uses libkmidi, a KDE midi library.</li>
+        				On Linux systems uses uses libkmidi, a KDE MIDI library.</li>
 					<li><strong>UnixSeqDevice</strong><br/>
         				On Linux systems writes to special symbolic file, default "/dev/sequencer". This can be 
 						changed at &lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;unixseqdevice&gt; in the exult.cfg.</li>
@@ -912,27 +922,30 @@
         				This option will output the music with nothing changed. Because
                			the mapping will be for MT32s you should only use this option if
                			you have a MT32 compatible device. With this option <Exult/> will 
-						also send sysex messages to the Roland MT32 display, which are nice 
+						also send SysEx messages to the Roland MT32 display, which are nice 
 						to watch when you have such a device.</li>
 					<li><strong>GM</strong><br/>
-						This will convert the MT32 patches to standard General Midi patches.
+						This will convert the MT32 patches to standard General MIDI patches.
      					Conversion is fairly accurate but some instruments may be different.</li>
 					<li><strong>GS</strong><br/>
      					This will convert the MT32 patches to their equivalent GS patches. This
      					will be a more accurate conversion that straight gm since more of the
-     					MT32 patches are in the GS set. However, not all midi devices will
+     					MT32 patches are in the GS set. However, not all MIDI devices will
      					support this mode.</li>
 					<li><strong>GS127</strong><br/>
-     					This option is for midi devices that have a MT32 patch bank installed
+     					This option is for MIDI devices that have a MT32 patch bank installed
         				in Bank 127. Some GS implementation have this, some don't. Only use
         				this if you know that you have a MT32 implementation on Bank 127.</li>
 					<li><strong>Fake MT32</strong><br/>
         				This is for MIDI devices that behave like a MT32 but don't support 
-						sysex messages.</li>
+						SysEx messages. Use that option if you have a SoundFont or similar loaded 
+						for your soundcard (or software synth such as FluidSynth) that contains 
+						the MT32 capital tones but the device can't be reprogrammed using MT32 
+						SysEx commands by <Exult/>.</li>
      			</ul>
 				<para>
 					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and
-					the notes are only mapped to General Midi.
+					the notes are only mapped to General MIDI.
 				</para>
 			</body>
 		</sub>
@@ -950,7 +963,7 @@
 					During the development of the XMIDI class it was found that certain .xmi files
 					in Serpent Isle had the first patch changes after the first note. The
 					converter will attempt to correct these errors. However it may cause problems
-					with some midi files. Currently this can not be disabled and may change in the
+					with some MIDI files. Currently this can not be disabled and may change in the
 					future.
 				</para>
 			</body>
@@ -965,7 +978,7 @@
 				</para>
 				<para>
 					To do this start <Exult/>, on the menu choose "Exit". Now open the file stdout.txt
-					in the folder where exult.exe is located. You will see a listing of the midi
+					in the folder where exult.exe is located. You will see a listing of the MIDI
 					devices.<br/>
 					For example with an SB Live! in Win2k it will look like this:
 				</para>
@@ -1059,23 +1072,23 @@
 			<header>Digital Wave Sound Effects</header>
 			<body>
 				<para>
-					<Exult/> needs the so called sfx packs to enable sound effects for Ultima 7.
-					You have to download separate packs for each game as order of the sfx in BG
+					<Exult/> needs the so called SFX packs to enable sound effects for Ultima 7.
+					You have to download separate packs for each game as order of the SFX in BG
 					and SI varies a bit and otherwise will sound odd. However there is a little
-					issue with sfx playback in SI: In combat the sfx may be a little wrong as we
+					issue with SFX playback in SI: In combat the SFX may be a little wrong as we
 					still haven't figured out all the data in the 'weapons.dat'.<br/>
-					Also <Exult/> doesn't yet playback all the sfx that the original did.
+					Also <Exult/> doesn't yet playback all the SFX that the original did.
 				</para>
 				<para>
 					 We currently have two soundpacks for each game. Joseph Morris recorded the original
-					 SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on
+					 SoundBlaster SFX and Simon Quinn recorded the Roland MT32 SFX. You can find them on
 					 our download page at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 					"Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster 
 					sound effects.<br/>
 					"Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" 
 					are the Roland MT32 sound effects.<br/>
-					Don't be confused by the "Zaurus SI/BG sfx package", these are just the repackaged 
+					Don't be confused by the "Zaurus SI/BG SFX package", these are just the repackaged 
 					SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these 
 					don't concern you.
 				</para>
@@ -1335,7 +1348,6 @@
 					<keydesc name="KP5">Recenter map on the Avatar</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
-					<keydesc name="Shift-F3">write Minimap</keydesc>
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
@@ -1359,7 +1371,7 @@
 					<keydesc name="Ctrl-t">Advance to next time period</keydesc>
 					<keydesc name="Alt-t">Teleport (to current cursor position)</keydesc>
 					<keydesc name="Alt-w">Toggle archwizard mode (all spells etc.)</keydesc>
-					<keydesc name="Alt-1">Test music, sfx, speech</keydesc>
+					<keydesc name="Alt-1">Test music, SFX, speech</keydesc>
 					<keydesc name="Ctrl-Alt-g">Grab NPC for cheat screen</keydesc>
 					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory</keydesc>
 					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will display their number instead of their name. Useful for the cheat screen.</keydesc>
@@ -1454,12 +1466,12 @@
 						Disable restores the (broken) way the original handled the music looping flag.</li>
 					<li><strong>digital music</strong><br/>
 						Enables/disables Digital Music.</li>
-					<li><strong>midi driver</strong><br/>
+					<li><strong>MIDI driver</strong><br/>
 						choose between different drivers for MIDI, see <ref target="midi_music"/>.</li>
 					<li><strong>device type</strong><br/>
-						choose between diffferent device types for MIDI music, see <ref target="midi_music"/>.</li>
+						choose between different device types for MIDI music, see <ref target="midi_music"/>.</li>
 					<li><strong>effects</strong><br/>
-					 	alters the way the midi is played. Choose between Reverb, Chorus,
+					 	alters the way the MIDI is played. Choose between Reverb, Chorus,
 					 	Both (Reverb and Chorus) or disable it.</li>
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
@@ -1802,7 +1814,7 @@
 			<body>
 				<para>
 					Two additional packages exist and are not required. They hold the new
-					musics for <Exult/> and thus can be found on the <Exult/>'s download
+					music for <Exult/> and thus can be found on the <Exult/>'s download
 					page. If you choose to install them as well, simply copy them to the
 					Zaurus (see 5.1) and install them normally.
 				</para>
@@ -1929,9 +1941,9 @@
 				<para>
 					When installing Ultima VII from floppy disks in Windows you can run into some problems.<br/>
 					The installer assumes that all drives in the computer are hard drives and can't cope with
-					drives like CD-Roms and card readers. It tries to read how much free space the drives have 
+					drives like CD-ROMs and card readers. It tries to read how much free space the drives have 
 					and if there is no media in the drive it gives an error and you can't proceed.<br/>
-					To solve this you have to insert a CD-Rom in your CD/DVD-Rom drive. If you have a multi card 
+					To solve this you have to insert a CD-ROM in your CD/DVD-ROM drive. If you have a multi card 
 					reader disconnect that if possible (or insert cards in all the slots if you have them). If 
 					disconnecting the reader is not possible you have to use one of the other ways to install the
 					floppy versions or use a different computer.
@@ -2109,8 +2121,8 @@
 					<li><strong>Ultima Collection</strong><br/>					
 					From the CD just copy the folders Serpent and Ultima7 to <strong>C:\Exult</strong>. Don't bother 
 					with the Ultima Collection installer. Both games come with the add-ons included.</li>
-					<li><strong>The Complete Ultima VII (EA presents CD-Rom Classics)</strong><br/>
-					On this CD-Rom the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to 
+					<li><strong>The Complete Ultima VII (EA presents CD-ROM Classics)</strong><br/>
+					On this CD-ROM the games are zipped in Serpent.zip and Ultima7.zip. Unzip serpent.zip to 
 					<strong>C:\Exult\SERPENT</strong> and unzip Ultima7.zip to <strong>C:\Exult\ULTIMA7</strong>. 
 					Both games come with the add-ons included.</li>
 				</ul>

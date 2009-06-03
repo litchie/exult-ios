@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="20 May 2009(GMT)">
+<faqs title="Exult" changed="03 June 2009(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="03062009">
+			<header>- 03 June 2009</header>
+			<body>
+				<ul>
+				<li>Spell checked the whole FAQ</li>
+				<li><ref1 target="any_port"/> added.</li>
+				</ul>
+			</body>
+		</sub>	
 		<sub name="20052009">
 			<header>- 20 May 2009</header>
 			<body>
@@ -13,7 +22,7 @@
 				<li><ref1 target="walkthroughs"/> Excalibur's World of Ultima has disappeared.</li>
 				<li><ref1 target="party_formation"/> the original's formation has become the default.</li>
 				<li><ref1 target="red_x"/> added.</li>
-				<li><ref1 target="exult_engine"/> chnaged a bit.</li>
+				<li><ref1 target="exult_engine"/> changed a bit.</li>
 				<li><ref1 target="mods_patches"/> link to the ReadMe installation instructions.</li>
 				<li><ref1 target="known_bugs"/> link to the bug tracker changed.</li>
 				<li><ref1 target="bug_report"/> many changes to the SF bug tracker.</li>
@@ -344,6 +353,26 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="any_port">
+			<header>Will there be a port of <Exult/> for &lt;insert platform here&gt;?</header>
+			<body>
+				<para>
+					That depends on a great many things. For one, it requires a developer that (1) has the 
+					necessary free time, (2) the necessary knowledge about programming for the platform in 
+					question, (3) the necessary motivation to do the port and (4) access to the platform in 
+					question. Any of the <Exult/> developers may lack one or more of the items above, but it 
+					will probably the fourth (and, by consequence, the third) item. This is likely fatal 
+					for the port: programming using an emulator (if one is even available) may result in a 
+					port that works on the emulator but not on the original (unless the emulator is that 
+					good), and programming without any access at all to the platform in question is a 
+					pointless and frustrating exercise in futility.
+				</para>
+				<para>
+					Moreover, some platforms might require U7 and/or SI to come bundled with <Exult/>; that alone 
+					would disqualify any official builds for legal reasons.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Exult and Ultima 7">
 		<sub name="u7_needed">
@@ -404,7 +433,7 @@
 					the work so far on it. I'd much prefer to add enhancements to BG
 					(which would apply to SI as well), and perhaps write a new RPG.
 					Now, if EA would provide us with information about SI's internals,
-					that would change things. And also, since Exult is open-source,
+					that would change things. And also, since <Exult/> is open-source,
 					it would be fine if anyone wants to volunteer to work on SI.
 				</cite>
 			</body>
@@ -480,7 +509,7 @@
 				</para>
 				<ul>
 					<li> On Windows systems the file can be found in the same folder you 
-					installed Exult to.</li>
+					installed <Exult/> to.</li>
 					<li>On UNIX systems you can expect to find it in $HOME/.exult.cfg 
 					(keep in mind that the dot before exult.cfg means that it is hidden from 
 					normal view).</li>
@@ -549,7 +578,7 @@
 					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to
 					different things, and I always though the formation-walking in the original
 					U7 looked really stupid. Eventually, someone may add the original type of walking
-					to Exult, probably as an option.
+					to <Exult/>, probably as an option.
 				</cite>
 			</body>
 		</sub>
@@ -901,7 +930,7 @@
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version
 						of flex should fix it.</li>
 					<li>In some versions of Ubuntu (and probably some other distributions), you have to 
-						add some X11 libraries or Exult won't link (for example, by adding "AC_PATH_XTRA" 
+						add some X11 libraries or <Exult/> won't link (for example, by adding "AC_PATH_XTRA" 
 						to configure.ac). The latest Ubuntu version (Jaunty Jackalope) doesn't need that 
 						fix anymore, though.</li>
 					<li>After compiling yourself remember to copy the exult*.flx files from the data dir in
@@ -914,7 +943,7 @@
 			<header>Problems with Windows 9x</header>
 			<body>
 				<para>
-					All Windows 9x versions (95, 98, 98SE, Millenium Edition) have problems with the 1.4x 
+					All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x 
 					snapshot versions of <Exult/>, all of which are caused by the SDL library.
 				</para>
 				<ul>
@@ -934,7 +963,7 @@
 					<kbd>SET SDL_AUDIODRIVER=waveout</kbd><br/>
 					<kbd>exult.exe</kbd><br/>
 					Save this textfile to your <Exult/> directory with the name <kbd>runexult.bat</kbd>. 
-					When you want to play <Exult/> doubleclick this file and it shoudl play fine.<br/>
+					When you want to play <Exult/> doubleclick this file and it should play fine.<br/>
 					Be aware that when you have no problem with the audio of <Exult/> you don't need the
 					SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio 
 					and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.

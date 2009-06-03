@@ -1,19 +1,20 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 20 May 2009(GMT)
+last changed: 03 June 2009(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 20 May 2009
-0.2. - 30 April 2009
-0.3. - 21 October 2007
-0.4. - 08 April 2006
-0.5. - 04 October 2004
-0.6. - 14 August 2004
-0.7. - 23 May 2004
-0.8. - 27 January 2004
-0.9. - 12 December 2003
+0.1. - 03 June 2009
+0.2. - 20 May 2009
+0.3. - 30 April 2009
+0.4. - 21 October 2007
+0.5. - 08 April 2006
+0.6. - 04 October 2004
+0.7. - 14 August 2004
+0.8. - 23 May 2004
+0.9. - 27 January 2004
+0.10. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -30,6 +31,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.12. What is the latest version of Exult?
 1.13. On what platform does Exult run?
 1.14. Will a port for Pocket PC be available anytime?
+1.15. Will there be a port of Exult for <insert platform here>?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -103,7 +105,13 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 20 May 2009
+0.1. - 03 June 2009
+* Spell checked the whole FAQ
+* 1.15. Will there be a port of Exult for <insert platform here>? added.
+
+
+
+0.2. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -111,7 +119,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 3.1. Where do I find a walkthrough? Excalibur's World of Ultima has disappeared.
 * 3.6. Why is the party formation different? the original's formation has become the default.
 * 3.10. What does the red crossed out speaker next to the gamename mean? added.
-* 3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? chnaged a bit.
+* 3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? changed a bit.
 * 3.18. Are there patches or Mods for Exult link to the ReadMe installation instructions.
 * 4.1. Bugs link to the bug tracker changed.
 * 4.2. How do I submit a proper bug report? many changes to the SF bug tracker.
@@ -125,7 +133,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 30 April 2009
+0.3. - 30 April 2009
 * 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -133,7 +141,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 21 October 2007
+0.4. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -144,21 +152,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 08 April 2006
+0.5. - 08 April 2006
 * 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.5. - 04 October 2004
+0.6. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.13. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.6. - 14 August 2004
+0.7. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -168,7 +176,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 23 May 2004
+0.8. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -176,7 +184,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.8. - 27 January 2004
+0.9. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.15. Why won't Xenka speak about sacrifice (SI)? added.
@@ -184,7 +192,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.9. - 12 December 2003
+0.10. - 12 December 2003
 * 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -265,6 +273,11 @@ Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA.
 
 1.14. Will a port for Pocket PC be available anytime?
 Lanica Dragon successfully ported Exult to the PocketPC and made snapshots available on our download page.
+
+
+1.15. Will there be a port of Exult for <insert platform here>?
+That depends on a great many things. For one, it requires a developer that (1) has the necessary free time, (2) the necessary knowledge about programming for the platform in question, (3) the necessary motivation to do the port and (4) access to the platform in question. Any of the Exult developers may lack one or more of the items above, but it will probably the fourth (and, by consequence, the third) item. This is likely fatal for the port: programming using an emulator (if one is even available) may result in a port that works on the emulator but not on the original (unless the emulator is that good), and programming without any access at all to the platform in question is a pointless and frustrating exercise in futility.
+Moreover, some platforms might require U7 and/or SI to come bundled with Exult; that alone would disqualify any official builds for legal reasons.
 
 
 
@@ -487,12 +500,12 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 4.6. Problems with Windows 9x
-All Windows 9x versions (95, 98, 98SE, Millenium Edition) have problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library.
+All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library.
 * Some users have reported problems when using Exult in fullscreen mode. Either it crashed or was unplayable.
 * There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300). Exult is triggering a bug in the drivers.
 * There is also a problem involving C-Media soundcard chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
 
-To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this textfile to your Exult directory with the name runexult.bat. When you want to play Exult doubleclick this file and it shoudl play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
+To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this textfile to your Exult directory with the name runexult.bat. When you want to play Exult doubleclick this file and it should play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
 
 
 4.7. Problems with Mac OSX
