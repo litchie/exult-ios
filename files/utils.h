@@ -26,9 +26,7 @@
 #include <string>
 #include <cstring>
 #include <stdio.h>
-#ifndef ALPHA_LINUX_CXX
-#  include <iosfwd>
-#endif
+#include <iosfwd>
 
 #include "common_types.h"
 #include "rect.h"
