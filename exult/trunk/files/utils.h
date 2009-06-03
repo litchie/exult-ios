@@ -25,6 +25,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <stdio.h>
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
 #endif
@@ -70,7 +71,6 @@ inline uint16 Read2
 	return static_cast<uint16>(b0 | (b1 << 8));
 	}
 
-#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 2-byte value from a file.
  */
@@ -85,7 +85,6 @@ inline uint16 Read2
 	if (std::fread(&b1,sizeof(uint8),1,in) != 1) b1 = 0;
 	return static_cast<uint16>(b0 | (b1 << 8));
 	}
-#endif
 
 /*
  *	Read a 2-byte value, hsb first.
@@ -112,7 +111,6 @@ inline uint16 Read2high
 	return static_cast<uint16>((b0 << 8) | b1);
 	}
 
-#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 2-byte value from a file.
  */
@@ -127,7 +125,6 @@ inline uint16 Read2high
 	if (std::fread(&b1,sizeof(uint8),1,in) != 1) b1 = 0;
 	return static_cast<uint16>((b0 << 8) | b1);
 	}
-#endif
 
 /*
  *	Read a 4-byte long value, lsb first.
@@ -159,7 +156,6 @@ inline uint32 Read4
 	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
 
-#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 4-byte value from a file.
  */
@@ -176,11 +172,10 @@ inline uint32 Read4
 	if (std::fread(&b3,sizeof(uint8),1,in) != 1) b3 = 0;
 	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
-#endif
+
 /*
  *	Read a 4-byte long value, hsb first.
  */
-
 inline uint32 Read4high (std::istream &in)
 {
 	uint32 val = 0;
@@ -194,7 +189,6 @@ inline uint32 Read4high (std::istream &in)
 /*
  *	Read a 4-byte value from a buffer.
  */
-
 inline uint32 Read4high
 	(
 	uint8 *& in
@@ -207,11 +201,9 @@ inline uint32 Read4high
 	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 
-#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 4-byte value from a file.
  */
-
 inline uint32 Read4high
 	(
 	std::FILE* in
@@ -224,7 +216,6 @@ inline uint32 Read4high
 	if (std::fread(&b3,sizeof(uint8),1,in) != 1) b3 = 0;
 	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
-#endif
 
 inline int ReadInt(std::istream& in, int def = 0)
 	{
@@ -454,13 +445,12 @@ bool U7open
 	bool is_text = false			// Should the file be opened in text mode
 	);
 
-#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 std::FILE* U7open
 	(
 	const char *fname,			// May be converted to upper-case.
 	const char *mode			// File access mode.
 	);
-#endif
+
 bool U7open_static
 	(
 	std::ifstream& in,		// Input stream to open.
