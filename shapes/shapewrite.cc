@@ -260,7 +260,7 @@ protected:
 				buf[T::get_entry_size()-1] = 0xff;
 				out.write((const char *)buf, T::get_entry_size());
 				#ifdef _MSC_VER
-					delete buf;
+					delete[] buf;
 				#endif
 				}
 			}
