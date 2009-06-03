@@ -22,9 +22,7 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#endif
+#include <cstdio>
 #include <iostream>
 #include <cstdlib>
 

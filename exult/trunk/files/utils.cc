@@ -23,13 +23,11 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cctype>
-#  include <cstdio>
-#  include <cstdlib>
-#  include <cstring>
-#  include <fstream>
-#endif
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
 #include <map>
 #include <list>
 #ifdef MACOS
@@ -361,20 +359,6 @@ bool U7open
 	return false;
 }
 
-#ifdef ALPHA_LINUX_CXX
-/*
- * Wraps around a bug in Compaq's cxx, which doesn't generate an external
- * symbol for this one implicitly because of is_text = false
- *
- * See function above for a functional description
- */
-bool U7open(std::ifstream& in,
-	    const char *fname)
-{
-	return U7open(in, fname, false);
-}
-#endif
-
 /*
  *	Open a file for output,
  *	trying the original name (lower case), and the upper case version 
@@ -417,20 +401,6 @@ bool U7open
 	throw (file_open_exception(get_system_path(fname)));
 	return false;
 }
-
-#ifdef ALPHA_LINUX_CXX
-/*
- * Wraps around a bug in Compaq's cxx, which doesn't generate an external
- * symbol for this one implicitly because of is_text = false
- *
- * See function above for a functional description
- */
-bool U7open(std::ofstream& out,
-	    const char *fname)
-{
-	return U7open(out, fname, false);
-}
-#endif
 
 /*
  *	Open a file with the access rights specified in mode,
