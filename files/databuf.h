@@ -17,10 +17,8 @@
 #ifndef DATA_H
 #define DATA_H
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cstdio>
-#  include <cstring>
-#endif
+#include <cstdio>
+#include <cstring>
 #include <cassert>
 #include <fstream>
 #include <string>
