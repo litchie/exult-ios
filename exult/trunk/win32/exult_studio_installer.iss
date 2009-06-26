@@ -57,6 +57,7 @@ Source: Studio\data\estudio\new\paperdol.vga; DestDir: {app}\data\estudio\new; F
 Source: Studio\data\estudio\new\shapes.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\sprites.vga; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\estudio\new\text.flx; DestDir: {app}\data\estudio\new; Flags: ignoreversion
+Source: Studio\data\estudio\new\blends.dat; DestDir: {app}\data\estudio\new; Flags: ignoreversion
 Source: Studio\data\exult_studio.glade; DestDir: {app}\data\; Flags: ignoreversion
 Source: Studio\etc\gtk-2.0\gdk-pixbuf.loaders; DestDir: {app}\etc\gtk-2.0; Flags: ignoreversion
 Source: Studio\etc\pango\pango.modules; DestDir: {app}\etc\pango; Flags: ignoreversion

@@ -254,7 +254,6 @@ using std::getline;
 #include "ready.h"
 #include "../rect.h"
 #include "../schedule.h"
-#include "../segfile.h"
 #include "../shapeid.h"
 #include "../gamemgr/sigame.h"
 #include "../tiles.h"

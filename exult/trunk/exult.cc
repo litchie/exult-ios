@@ -203,7 +203,7 @@ static void Drop_dragged_npc(int npcnum, int x, int y, void *d);
 static void Drop_dragged_combo(int cnt, U7_combo_data *combo, 
 							int x, int y, void *d);
 #endif
-static void BuildGameMap(BaseGameInfo *game);
+static void BuildGameMap(BaseGameInfo *game, int mapnum);
 static void Handle_events();
 static void Handle_event(SDL_Event& event);
 
@@ -220,6 +220,7 @@ static string arg_gamename = "default";	// cmdline arguments
 static string arg_modname = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
+static int arg_mapnum = -1;
 static bool arg_nomenu = false;
 static bool arg_edit_mode = false;	// Start up ExultStudio.
 static bool arg_write_xml = false;	// Write out game's config. as XML.
@@ -291,6 +292,7 @@ int main
 	parameters.declare("--game",&arg_gamename,"default");
 	parameters.declare("--mod",&arg_modname,"default");
 	parameters.declare("--buildmap",&arg_buildmap,-1);
+	parameters.declare("--mapnum",&arg_mapnum,-1);
 	parameters.declare("--nocrc",&ignore_crc,true);
 	parameters.declare("-c",&arg_configfile,"");
 	parameters.declare("--edit",&arg_edit_mode,true);
@@ -303,7 +305,8 @@ int main
 	{
 		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]"<<endl
 			 << "             [--bg|--fov|--si|--ss|--game <game>] [--mod <mod>]" << endl
-			 << "             [--nomenu] [--buildmap 0|1|2] [--nocrc] [--edit] [--write-xml]" << endl
+			 << "             [--nomenu] [--buildmap 0|1|2] [--mapnum <num>]" << endl
+			 << "             [--nocrc] [--edit] [--write-xml]" << endl
 			 << "--help\t\tShow this information" << endl
 			 << "--version\tShow version info" << endl
 			 << " -c configfile\tSpecify alternate config file" << endl
@@ -313,13 +316,17 @@ int main
 			 << "--ss\t\tSkip menu and run Serpent Isle with Silver Seed expansion" << endl
 			 << "--nomenu\tSkip BG/SI game menu" << endl
 			 << "--game <game>\tRun original game" << endl
-			 << "--mod <mod>\tMust be used together with '--bg', '--fov', '--si', '--ss' or '--game <game>';" << endl
-			 << "\t\truns the specified game using the mod with title equal to '<mod>'" << endl
+			 << "--mod <mod>\tMust be used together with '--bg', '--fov', '--si', '--ss' or" << endl
+			 << "\t\t'--game <game>'; runs the specified game using the mod with" << endl
+			 << "\t\ttitle equal to '<mod>'" << endl
 			 << "--buildmap <N>\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(N=0: all roofs, 1: no level 2 roofs, 2: no roofs)" << endl
-			 << "\t\tonly valid when used together with '--bg', '--fov', '--si', '--ss' or '--game <game>';" << endl
-			 << "\t\tyou may optionally specify a mod with '--mod <mod>'" << endl
-			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
+			 << "\t\tOnly valid if used together with '--bg', '--fov', '--si', '--ss'" << endl
+			 << "\t\tor '--game <game>'; you may optionally specify a mod with" << endl
+			 << "\t\t'--mod <mod>' (WARNING: requires big amounts of RAM, HD" << endl
+			 << "\t\tspace and time!)" << endl
+			 << "--mapnum <N>\tThis must be used with '--buildmap'. Selects which map" << endl
+			 << "\t\t(for multimap games or mods) whose map is desired" << endl
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
 			 << "--edit\t\tStart in map-edit mode" << endl
 			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl;
@@ -327,11 +334,20 @@ int main
 		exit(1);
 	}
 	if ((unsigned)run_bg +(unsigned)run_si
-		+ (unsigned)run_fov + (unsigned)run_ss > 1) {
-		cerr << "Error: You may only specify one of --bg, --fov, --si or --ss!" << 
+		+ (unsigned)run_fov + (unsigned)run_ss
+		+ (unsigned)(arg_gamename != "default") > 1) {
+		cerr << "Error: You may only specify one of --bg, --fov, --si, --ss or --game!" << 
 									endl;
 		exit(1);
 	}
+	
+	if (arg_mapnum >= 0 && arg_buildmap < 0)
+	{
+		cerr << "Error: '--mapnum' requires '--buildmap'!" << endl;
+		exit(1);
+	}
+	else if (arg_mapnum < 0)
+		arg_mapnum = 0;		// Sane default.
 
 	if (arg_modname != "default" &&
 		!(run_bg || run_si || run_fov || run_ss || (arg_gamename != "default")))
@@ -817,7 +833,7 @@ static void Init
 
 		if (arg_buildmap >= 0)
 			{
-			BuildGameMap(newgame);
+			BuildGameMap(newgame, arg_mapnum);
 			exit(0);
 			}
 
@@ -2063,7 +2079,7 @@ void change_gamma (bool down)
 	config->set("config/video/gamma/blue", text, true);
 }
 
-void BuildGameMap(BaseGameInfo *game)
+void BuildGameMap(BaseGameInfo *game, int mapnum)
 {
 	int w, h, sc, sclr;
 
@@ -2092,6 +2108,7 @@ void BuildGameMap(BaseGameInfo *game)
 		Game::create_game(game);
 		gwin->init_files(false); //init, but don't show plasma	
 		gwin->get_map()->init();// +++++Got to clean this up.
+		gwin->set_map(mapnum);
 		gwin->get_pal()->set(0);
 		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {

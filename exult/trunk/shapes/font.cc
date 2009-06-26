@@ -740,8 +740,7 @@ int Font::load_internal
 
 	if (!font_buf || !len)
 		{
-		if (font_buf)
-			delete [] font_buf;
+		delete [] font_buf;
 		font_buf = 0;
 		font_data = 0;
 		font_shapes = 0;

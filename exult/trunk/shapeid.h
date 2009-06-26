@@ -22,6 +22,7 @@
 #include "exult_constants.h"
 #include "shapevga.h"
 #include "singles.h"
+#include <vector>
 
 class Shape_frame;
 class Shape_info;
@@ -60,7 +61,7 @@ class Shape_manager : public Game_singletons
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
 	Vga_file files[(int) SF_COUNT];	// The files we manage.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
-	Xform_palette xforms[11];	// Transforms translucent colors
+	std::vector<Xform_palette> xforms;	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette *invis_xform;	// For showing invisible NPC's.
 	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
@@ -111,8 +112,7 @@ public:
 		else if (!translucent)
 			shape->paint_rle(xoff, yoff);
 		else
-			shape->paint_rle_translucent(xoff, yoff, xforms, 
-					sizeof(xforms)/sizeof(xforms[0]));
+			shape->paint_rle_translucent(xoff, yoff, &xforms[0], xforms.size());
 		}
 
 	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)

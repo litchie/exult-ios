@@ -258,8 +258,10 @@ protected:
 		int source_offset;
 		};
 	std::vector<std::ifstream *> files;
+	std::vector<char *> buffers;
 	std::vector<std::pair<DataSource *,bool> > shape_sources;
 	std::vector<std::ifstream *> imported_files;
+	std::vector<char *> imported_buffers;
 	std::vector<std::pair<DataSource *,bool> > imported_sources;
 	std::map<int, imported_map> imported_shape_table;
 	int u7drag_type;		// # from u7drag.h, or -1.
@@ -279,8 +281,11 @@ public:
 	Vga_file();
 	int get_u7drag_type() const
 		{ return u7drag_type; }
-	DataSource *U7load(std::pair<std::string, int> resource,
-		std::vector<std::ifstream *> &fs, std::vector<std::pair<DataSource *,bool> > &shps);
+	DataSource *U7load(
+			std::pair<std::string, int> resource,
+			std::vector<std::ifstream *> &fs,
+			std::vector<char *> &bs,
+			std::vector<std::pair<DataSource *,bool> > &shps);
 	bool load(const char *nm, const char *nm2 = 0);
 	bool load(std::vector<std::pair<std::string, int> > sources);
 	bool import_shapes(std::pair<std::string, int> source,

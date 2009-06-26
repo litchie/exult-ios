@@ -289,6 +289,7 @@ studioinstall: exult_studio$(EXEEXT)
 	cp mapedit/exult_studio.glade $(U7PATH)/data
 	mkdir -p $(U7PATH)/data/estudio
 	mkdir -p $(U7PATH)/data/estudio/new
+	cp data/estudio/new/*.dat $(U7PATH)/data/estudio/new
 	cp data/estudio/new/*.flx $(U7PATH)/data/estudio/new
 	cp data/estudio/new/*.vga $(U7PATH)/data/estudio/new
 	cp data/estudio/new/*.shp $(U7PATH)/data/estudio/new
@@ -317,6 +318,7 @@ studiodist: exult_studio$(EXEEXT)
 	cp mapedit/exult_studio.glade $(U7PATH)/Studio/data
 	mkdir -p $(U7PATH)/Studio/data/estudio
 	mkdir -p $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.dat $(U7PATH)/Studio/data/estudio/new
 	cp data/estudio/new/*.flx $(U7PATH)/Studio/data/estudio/new
 	cp data/estudio/new/*.vga $(U7PATH)/Studio/data/estudio/new
 	cp data/estudio/new/*.shp $(U7PATH)/Studio/data/estudio/new

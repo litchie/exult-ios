@@ -168,7 +168,7 @@ public:
 		}
 	///	This destructor simply deletes the buffer if non-null.
 	virtual	~U7DataBuffer()
-		{ if (this->_buffer) delete this->_buffer; }
+		{ delete [] this->_buffer; }
 	};
 
 // Not yet.
