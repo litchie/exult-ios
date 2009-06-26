@@ -2712,10 +2712,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\segfile.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\shapeid.cc"
 					>
 				</File>
@@ -2896,10 +2892,6 @@
 					</File>
 					<File
 						RelativePath="..\schedule.h"
-						>
-					</File>
-					<File
-						RelativePath="..\segfile.h"
 						>
 					</File>
 					<File

@@ -269,12 +269,13 @@ protected:
 		size_t wavlen;			// Read .wav file.
 		unsigned char *wavbuf =
 				(unsigned char *) sfx_file->retrieve(id, wavlen);
-		cache = new SFX_cached(id, wavbuf, wavlen, cache);
+		if (wavlen)
+			cache = new SFX_cached(id, wavbuf, wavlen, cache);
 		delete[] wavbuf;
 
 		// Perform garbage collection here.
 		garbage_collect();
-		return cache;
+		return wavlen ? cache : (SFX_cached *)0;
 		}
 	
 	// Unloads a given SFX, based on data pointer.
@@ -334,11 +335,12 @@ public:
 			sfx = find_sfx(id);
 			if (!sfx)
 				sfx = load_sfx(sfx_file, id);
-			if (sfx)
-				sfx->add_ref();
+			if (!sfx)
+				return (Mix_Chunk *)0;
+			sfx->add_ref();
 			return sfx->data;
 			}
-		return 0;
+		return (Mix_Chunk *)0;
 		}
 	
 	// Reduces the ref-count of the data, to a minimum of 1.
@@ -981,8 +983,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 		{
 		// Failed to find file in patch or static dirs.
 		CERR("Audio::playfile: Error reading file '" << fname << "'");
-		if (buf)
-			delete [] buf;
+		delete [] buf;
 		return;
 		}
 
@@ -1119,8 +1120,11 @@ bool Audio::start_speech(int num, bool wait)
 	
 	U7multiobject sample(filename, patchfile, num);
 	buf = sample.retrieve(len);
-	if (!buf)
+	if (!buf || len <= 0)
+		{
+		delete [] buf;
 		return false;
+		}
 
 	play(reinterpret_cast<uint8*>(buf),len,wait);
 	delete [] buf;

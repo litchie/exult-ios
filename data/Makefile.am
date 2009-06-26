@@ -40,7 +40,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/paperdol_info.txt \
 	bg/shape_files.txt \
 	bg/avatar_data.txt \
-	bg/shape_info.txt
+	bg/shape_info.txt \
+	bg/blends.dat
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in \
@@ -50,7 +51,8 @@ EXULT_SI_FLX_OBJECTS = \
 	si/paperdol_info.txt \
 	si/shape_files.txt \
 	si/avatar_data.txt \
-	si/shape_info.txt
+	si/shape_info.txt \
+	si/blends.dat
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
@@ -121,7 +123,8 @@ ESTUDIO_NEW_FILES = \
 	estudio/new/sprites.vga \
 	estudio/new/text.flx \
 	estudio/new/fonts.vga \
-	estudio/new/pointers.shp
+	estudio/new/pointers.shp \
+	estudio/new/blends.dat
 
 flexdir = $(datadir)/exult
 estudionewdir = $(datadir)/exult/estudio/new

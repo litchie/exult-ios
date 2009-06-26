@@ -76,7 +76,7 @@ void U7multiobject::set_object(const std::vector<U7object>& objects)
 			identifier = it->identifier;
 			break;
 			}
-		else if (buf)
+		else
 			delete [] buf;
 		}
 	}
@@ -100,7 +100,7 @@ U7multiobject::U7multiobject
 		buffer = buf;	// Gets deleted with class.
 		length = len;
 		}
-	else if (buf)
+	else
 		delete [] buf;
 	}
 
@@ -219,3 +219,4 @@ char *U7multiobject::retrieve(size_t &len) const
 		return buf;
 		}
 	}
+

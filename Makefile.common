@@ -12,7 +12,7 @@ MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o 
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultico.o exultmenu.o \
 	game.o gameclk.o gamedat.o gamemap.o  gamerend.o gamewin.o istring.o keys.o \
 	keyactions.o menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
-	party.o paths.o readnpcs.o schedule.o segfile.o shapeid.o tqueue.o txtscroll.o \
+	party.o paths.o readnpcs.o schedule.o shapeid.o tqueue.o txtscroll.o \
 	version.o windrag.o
 
 PATH_OBJS=Astar.o path.o PathFinder.o Zombie.o
@@ -122,7 +122,8 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/shape_files.txt \
 	data/bg/avatar_data.txt \
 	data/bg/paperdol_info.txt \
-	data/bg/shape_info.txt
+	data/bg/shape_info.txt \
+	data/bg/blends.dat
 
 EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
@@ -133,7 +134,8 @@ EXULT_SI_FLX_OBJECTS = \
 	data/si/shape_files.txt \
 	data/si/avatar_data.txt \
 	data/si/paperdol_info.txt \
-	data/si/shape_info.txt
+	data/si/shape_info.txt \
+	data/si/blends.dat
 
 EXULT_BG_PAPERDOL_VGA = data/bg/bg_paperdol.vga data/bg/bg_paperdol_vga.h
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \

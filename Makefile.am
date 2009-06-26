@@ -88,8 +88,6 @@ exult_SOURCES =	\
 	rect.h		\
 	schedule.cc	\
 	schedule.h	\
-	segfile.cc	\
-	segfile.h	\
 	shapeid.cc	\
 	shapeid.h	\
 	singles.h	\

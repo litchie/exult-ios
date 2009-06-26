@@ -1320,6 +1320,7 @@ DataSource *Vga_file::U7load
 	(
 	pair<string, int> resource,
 	vector<ifstream *> &fs,
+	vector<char *> &bs,
 	vector<pair<DataSource *,bool> > &shps
 	)
 	{
@@ -1342,19 +1343,16 @@ DataSource *Vga_file::U7load
 		// It is a resource.
 		U7object vgaobj(File_spec(resource.first), resource.second);
 		std::size_t len;
-		try
-			{
-			char *buf = vgaobj.retrieve(len);
-			source = new BufferDataSource(buf, len);
-			}
-		catch (std::exception &e)
+		char *buf = vgaobj.retrieve(len);
+		if (!buf || !len)
 			{
 			CERR("Resource '" << resource.first << "' not found.");
-			delete source;
-			source = 0;
+			delete [] buf;
+			return (DataSource *)0;
 			}
-		if (source)
-			shps.push_back(pair<DataSource *,bool>(source, false));
+		source = new BufferDataSource(buf, len);
+		bs.push_back(buf);
+		shps.push_back(pair<DataSource *,bool>(source, false));
 		}
 	return source;
 	}
@@ -1368,6 +1366,7 @@ bool Vga_file::load
 	int count = sources.size();
 	shape_sources.reserve(count);
 	files.reserve(count);
+	buffers.reserve(count);
 	shape_cnts.reserve(count);
 	bool is_good = true;
 	if (!U7exists(sources[0].first.c_str()))
@@ -1375,7 +1374,7 @@ bool Vga_file::load
 	for (vector<pair<string, int> >::iterator it = sources.begin();
 		it != sources.end(); ++it)
 		{
-		DataSource *source = U7load(*it, files, shape_sources);
+		DataSource *source = U7load(*it, files, buffers, shape_sources);
 		if (source)
 			{
 			flex = Flex::is_flex(source);
@@ -1429,7 +1428,8 @@ bool Vga_file::import_shapes
 	vector<pair<int, int> > imports
 	)
 	{
-	DataSource *ds = U7load(source, imported_files, imported_sources);
+	DataSource *ds =
+			U7load(source, imported_files, imported_buffers, imported_sources);
 	if (ds)
 		{
 		ds->seek(0x54);	// Get # of shapes.
@@ -1465,18 +1465,28 @@ bool Vga_file::import_shapes
 
 void Vga_file::reset()
 	{
-	if( shapes )
+	if (shapes)
 		delete [] shapes;
 
-	for (vector<ifstream *>::iterator it = files.begin();
-			it != files.end(); ++it)
-		if ((*it)->is_open())
-			(*it)->close();
-	files.clear();
 	for (vector<pair<DataSource *,bool> >::iterator it = shape_sources.begin();
 			it != shape_sources.end(); ++it)
 		delete it->first;
 	shape_sources.clear();
+
+	for (vector<ifstream *>::iterator it = files.begin();
+			it != files.end(); ++it)
+		{
+		if ((*it)->is_open())
+			(*it)->close();
+		delete *it;
+		}
+	files.clear();
+
+	for (vector<char *>::iterator it = buffers.begin();
+			it != buffers.end(); ++it)
+		delete [] *it;
+	buffers.clear();
+
 	shape_cnts.clear();
 
 	num_shapes = 0;
@@ -1485,14 +1495,31 @@ void Vga_file::reset()
 
 void Vga_file::reset_imports()
 	{
+	for (vector<Shape *>::iterator it = imported_shapes.begin();
+			it != imported_shapes.end(); ++it)
+		delete *it;
+	imported_shapes.clear();
+
+	for (vector<pair<DataSource *,bool> >::iterator it = imported_sources.begin();
+			it != imported_sources.end(); ++it)
+		delete it->first;
+	imported_sources.clear();
+
 	for (vector<ifstream *>::iterator it = imported_files.begin();
 			it != imported_files.end(); ++it)
+		{
 		if ((*it)->is_open())
 			(*it)->close();
+		delete *it;
+		}
 	imported_files.clear();
-	imported_sources.clear();
+
+	for (vector<char *>::iterator it = imported_buffers.begin();
+			it != imported_buffers.end(); ++it)
+		delete [] *it;
+	imported_buffers.clear();
+
 	imported_cnts.clear();
-	imported_shapes.clear();
 	imported_shape_table.clear();
 	}
 

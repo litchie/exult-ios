@@ -175,18 +175,11 @@ void Palette::apply(bool repaint)
 void Palette::loadxform(const char *buf, const char *xfname, int& xindex)
 	{
 	U7object xform(xfname, xindex);
-	unsigned char *xbuf = 0;
 	size_t xlen;
-	try
-		{
-#if 0	/* +++++TESTING */
-		xbuf = new unsigned char[256];
-		Game_window *gwin = 
-			Game_window::get_instance();
-		memcpy(xbuf, gwin->get_xform(11 - xindex - 1), 256);
-#else
-		xbuf = (unsigned char *) xform.retrieve( xlen);
-#endif
+	unsigned char *xbuf = (unsigned char *) xform.retrieve(xlen);
+	if (!xbuf || xlen <= 0)
+		xindex = -1;
+	else
 		for (int i = 0; i < 256; i++)
 			{
 			int ix = xbuf[i];
@@ -194,11 +187,6 @@ void Palette::loadxform(const char *buf, const char *xfname, int& xindex)
 			pal1[3*i+1] = buf[3*ix+1];
 			pal1[3*i+2] = buf[3*ix+2];
 			}
-		}
-	catch( const std::exception & err )
-		{
-		xindex = -1;
-		}
 	delete [] xbuf;
 	}
 
@@ -243,8 +231,8 @@ void Palette::set_loaded
 		// the palette won't be loaded.
 		// For now, let's try to avoid overwriting any palette that
 		// may be loaded and just cleanup.
-		if (!buf)
-			return;
+		delete [] buf;
+		return;
 		}
 	Set_glpalette(this);
 	delete [] buf;
