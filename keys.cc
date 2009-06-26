@@ -686,7 +686,8 @@ void KeyBinder::LoadDefaults()
 	U7object txtobj(resource.str, resource.num);
 	size_t len;
 	char *txt = txtobj.retrieve(len);
-	ParseText(txt, len);
+	if (txt && len > 0)
+		ParseText(txt, len);
 	
 	delete [] txt;
 }

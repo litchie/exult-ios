@@ -668,15 +668,13 @@ void    MyMidiPlayer::start_sound_effect(int num)
 
 	U7object	track("<DATA>/midisfx.flx",real_num);
 
-	try
-	{
-		buffer = track.retrieve(size);
-	}
-	catch( const std::exception & /*err*/ )
-	{
+	buffer = track.retrieve(size);
+	if (!buffer || size <= 0)
+		{
+		delete [] buffer;
 		return;
-	}
-
+		}
+	
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
 

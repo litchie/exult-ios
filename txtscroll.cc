@@ -62,6 +62,12 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	char *txt, *ptr, *end;
 	txt = txtobj->retrieve(len);
 	delete txtobj;
+	if (!txt || len <= 0)
+		{
+		delete [] txt;
+		text = new vector<string>();
+		return;
+		}
 	ptr = txt;
 	end = ptr+len;
 
@@ -183,6 +189,12 @@ bool TextScroller::run(Game_window *gwin)
 	uint32 starty = endy;
 	uint32 startline = 0;
 	unsigned int maxlines = text->size();
+	if (!maxlines)
+		{
+		gwin->clear_screen();
+		gwin->show(1);
+		return false;
+		}
 	bool looping = true;
 	bool complete = false;
 	SDL_Event event;

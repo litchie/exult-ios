@@ -1,3 +1,20 @@
+2009-06-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exult.cc: --buildmap can now be used for maps other than map 0 through the
+	  "--mapnum <N>" parameter Disallowed --game if the game had been specified
+	  otherwise (--bg, --si, --fov, --ss).
+	* shapeid.*, docs/u7tech.txt, fnames.h, palettes.cc, win32/*, data/*: There
+	  were actually 17, not 11, xform tables used in the original games; Exult
+	  now implements the other 6. OpenGL/fallback blends are now specified in
+	  a file called "blends.dat" (which is bundled in exult_XX.flx for BG/SI).
+	  XForms are now patcheable (as is this new blends file). There is still a
+	  fallback hard-coded blend set just in case. A blends.dat file is included
+	  for new games.
+	* shapes/vgafile.*: Fixed memory leaks.
+	* segfile.*, msvc9/*, msvcstuff/*, Makefile.{common,am}: A segfile was a
+	  stripped-down version of a flex reader used only once; it has have been
+	  removed.
+	* All others: Cleanup/proper verification if read file object is valid.
+
 2009-05-20	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation, FAQ and ReadME.OSX.
 	

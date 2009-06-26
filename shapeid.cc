@@ -27,13 +27,16 @@
 #include "fnames.h"
 #include "game.h"
 #include "Configuration.h"
+#include "data/exult_bg_flx.h"
+#include "data/exult_si_flx.h"
 #include "utils.h"
-#include "segfile.h"
+#include "Flex.h"
 #include "u7drag.h"
 #include "U7file.h"
 #include "U7fileman.h"
 #include "exceptions.h"
 #include "miscinf.h"
+#include <fstream>
 #include <vector>
 #include <utility>
 
@@ -227,22 +230,92 @@ void Shape_manager::load
 #endif
 
 					// Get translucency tables.
-	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	unsigned char *blends = 0;
+	unsigned char *ptr;	// We will delete THIS at the end, not blends!
+	int nblends;
+		// ++++TODO: Make this file editable in ES.
+	if (U7exists(PATCH_BLENDS))
+		{
+		std::ifstream fin;
+		U7open(fin, PATCH_BLENDS);
+		nblends = Read1(fin);
+		ptr = blends = new unsigned char[nblends * 4];
+		fin.read((char *)blends, nblends * 4);
+		fin.close();
+		}
+	else if (GAME_BG || GAME_SI)
+		{
+		char buf[50];
+		snprintf(buf, 50, "<DATA>/exult_%s.flx", GAME_BG ? "bg" : "si");
+		U7object txtobj(buf,
+				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
+		std::size_t len;
+		ptr = blends = (unsigned char *)txtobj.retrieve(len);
+		nblends = *blends++;
+		}
+	else if (U7exists(BLENDS))
+		{
+		std::ifstream fin;
+		U7open(fin, PATCH_BLENDS);
+		nblends = Read1(fin);
+		ptr = blends = new unsigned char[nblends * 4];
+		fin.read((char *)blends, nblends * 4);
+		fin.close();
+		}
+	if (!blends)
+		{	// All else failed.
+			// Note: the files bundled in exult_XX.flx contain these values.
+			// They are "good" enough, but there is probably room for
+			// improvement.
+		static unsigned char hard_blends[4*17] = {
+		        208,216,224,192,    136, 44,148,198,    248,252, 80,211,
+		        144,148,252,247,     64,216, 64,201,    204, 60, 84,140,		        
+		        144, 40,192,128,     96, 40, 16,128,    100,108,116,192, 
+		         68,132, 28,128,    255,208, 48, 64,     28, 52,255,128,
+		          8, 68,  0,128,    255,  8,  8,118,    255,244,248,128, 
+		         56, 40, 32,128,    228,224,214, 82
+			};
+		nblends = 17;
+		blends = hard_blends;
+		ptr = (unsigned char *)0;
+		}
+	xforms.resize(nblends);
+	std::size_t nxforms = xforms.size();
 					// RGBA blend colors:
-	static unsigned char blends[4*11] = {
-			144,40,192,128, 96,40,16,128, 100,108,116,192, 
-			68,132,28,128, 255,208,48,64, 28,52,255,128,
-			8,68,0,128, 255,8,8,118, 255,244,248,128, 
-			56,40,32,128, 228,224,214,82};
-	for (int i = 0; i < nxforms; i++)
+	for (size_t i = 0; i < nxforms; i++)
 		xforms[i].set_color(blends[4*i], blends[4*i+1],
 					blends[4*i+2], blends[4*i+3]);
-	if (U7exists(XFORMTBL))
+		// ++++TODO: Make this file editable in ES.
+	if (U7exists(XFORMTBL) || U7exists(PATCH_XFORMS))
 		{			// Read in translucency tables.
-		Segment_file xf(XFORMTBL);
-		for (int i = 0; i < nxforms; i++)
+		FlexFile *sxf = U7exists(XFORMTBL) ? new FlexFile(XFORMTBL) : 0;
+		FlexFile *pxf = U7exists(PATCH_XFORMS) ? new FlexFile(XFORMTBL) : 0;
+		int sn = sxf ? sxf->number_of_objects() : 0;
+		int pn = pxf ? pxf->number_of_objects() : 0;
+		int nobjs = min(max(sn, pn), nblends);	// Limit by blends.
+		for (int i = 0; i < nobjs; i++)
 			{
-			uint8 *data = (uint8*)xf.retrieve(i, len);
+			uint8 *data = 0;
+			std::size_t len = 0;
+			if (pxf)
+				data = (uint8 *)pxf->retrieve(i, len);
+			if (!data || len <= 0)
+				{
+					// Not in patch;
+				delete [] data;
+				data = 0;
+				if (sxf)
+					data = (uint8 *)sxf->retrieve(i, len);
+				}
+			if (!data || len <= 0)
+				{
+				delete [] data;
+					// No XForm data at all. Make this XForm into an
+					// identity transformation.
+				for (size_t j = 0; j < sizeof(xforms[0].colors); j++)
+					xforms[nxforms - 1 - i].colors[j] = j;
+				continue;
+				}
 			std::memcpy(xforms[nxforms - 1 - i].colors, data,
 						sizeof(xforms[0].colors));
 			delete[] data;
@@ -251,7 +324,7 @@ void Shape_manager::load
 	else				// Create algorithmically.
 		{
 		gwin->get_pal()->load(PALETTES_FLX, PATCH_PALETTES, 0);
-		for (int i = 0; i < nxforms; i++)
+		for (size_t i = 0; i < nxforms; i++)
 			{
 			gwin->get_pal()->create_trans_table(xforms[i].r/4,
 				xforms[i].g/4, xforms[i].b/4,
@@ -259,6 +332,7 @@ void Shape_manager::load
 			}
 		}
 
+	delete [] ptr;
 	invis_xform = &xforms[nxforms - 1 - 0];   // ->entry 0.
 	}
 
