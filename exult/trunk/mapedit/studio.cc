@@ -566,7 +566,9 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
 	app_xml = glade_xml_new(path, NULL, NULL);
+	assert(app_xml);
 	app = glade_xml_get_widget( app_xml, "main_window" );
+	assert(app);
 	glade_path = g_strdup(path);
 
 	// More setting up...
