@@ -143,7 +143,7 @@ EXULT_BG_PAPERDOL_VGA =
 EXULT_BG_MR_FACES_VGA =
 endif
 
-flex_DATA = make_expack \
+flex_DATA =  \
 		$(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX) midisfx.flx \
 		exultmsg.txt $(EXULT_BG_PAPERDOL_VGA) $(EXULT_BG_MR_FACES_VGA)
 
@@ -160,9 +160,7 @@ EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	exultmsg.txt bginclude.uc \
 	$(EXULT_BG_PAPERDOL_VGA_OBJECTS) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
 
-../tools/expack: make_expack
-
-make_expack:
+../tools/expack:
 	+(cd ../tools;$(MAKE) expack)
 
 bg/bg_paperdol.vga: ../tools/expack $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
