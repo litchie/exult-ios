@@ -161,7 +161,7 @@ void Server_init
 		addr.sun_family = AF_UNIX;
 		strcpy(addr.sun_path, servename.c_str());
 		if (bind(listen_socket, (struct sockaddr *) &addr, 
-		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1 ||
+		      sizeof(addr.sun_family) + strlen(addr.sun_path) + 1) == -1 ||
 		    listen(listen_socket, 1) == -1)
 #endif
 			{

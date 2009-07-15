@@ -2766,7 +2766,7 @@ bool ExultStudio::connect_to_server
 	cout << "Trying to connect to server at '" << addr.sun_path << "'"
 							<< endl;
 	if (connect(server_socket, (struct sockaddr *) &addr, 
-		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1)
+		      sizeof(addr.sun_family) + strlen(addr.sun_path) + 1) == -1)
 		{
 		perror("Socket connect");
 		close(server_socket);
