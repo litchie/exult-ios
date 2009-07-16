@@ -26,7 +26,11 @@
 
 #ifdef HAVE_OPENGL
 
+#ifdef MACOSX
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 #include "glshape.h"
 #include "vgafile.h"
