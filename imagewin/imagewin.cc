@@ -42,7 +42,11 @@ Boston, MA  02111-1307, USA.
 #include "SDL_error.h"
 
 #ifdef HAVE_OPENGL
+#ifdef MACOSX
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #endif
 
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);

@@ -411,10 +411,11 @@ fi
 AC_ARG_ENABLE(opengl, [  --enable-opengl         Enable OpenGL rendering support [EXPERIMENTAL]],,enable_opengl=no)
 
 if test x$enable_opengl = xyes; then
-	# Check for header presence (guessing about MacOSX, would be good if
-	# anyone can confirm...)
+	# Check for header presence. Damn you, Apple!
 	if test x$ARCH != xmacosx; then
 		AC_CHECK_HEADER(GL/gl.h,,enable_opengl=no)
+	else
+		AC_CHECK_HEADER(OpenGL/gl.h,,enable_opengl=no)
 	fi
 fi
 
@@ -423,9 +424,11 @@ AC_MSG_CHECKING(for OpenGL rendering support)
 if test x$enable_opengl = xyes ; then
 	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
 	
-	# Mac OS X gets OpenGL through a framework (which appears to be pulled in by SDL)
+	# Mac OS X gets OpenGL through a framework.
 	if test x$ARCH != xmacosx; then
 		OPENGL_LIBS="-lGL"
+	else
+		OPENGL_LIBS="-framework OpenGL"
 	fi
 	
 	AC_MSG_RESULT(yes)
@@ -446,6 +449,19 @@ fi
 if test x$enable_exult_studio_support = xyes ; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use ExultStudio])
+else
+	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING(whether to force support for Exult Studio in Mac OS X)
+AC_ARG_ENABLE(force-macosx-studio-support, [[  --force-macosx-studio-support   Force ExultStudio support in Mac OS X (experimental) [default no]]],,force_macosx_studio_support=no)
+if test "$WINDOWING_SYSTEM" != -DMACOSX; then
+	AC_MSG_RESULT(no)
+elif test x$force_macosx_studio_support = xyes ; then
+	enable_exult_studio_support=yes
+	SYSLIBS="$SYSLIBS -L/usr/X11R6/lib -lX11"
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(XWIN, 1, [X11 (needed by Exult Studio support in Mac OS X)])
 else
 	AC_MSG_RESULT(no)
 fi
