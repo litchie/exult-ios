@@ -446,22 +446,20 @@ if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
+AC_ARG_ENABLE(macosx-studio-support, [[  --enable-macosx-studio-support   Force ExultStudio support in Mac OS X [EXPERIMENTAL] [default no]]],,enable_macosx_studio_support=no)
+if test "$WINDOWING_SYSTEM" != -DMACOSX; then
+	enable_macosx_studio_support=no
+fi
+
+if test x$enable_macosx_studio_support = xyes ; then
+	enable_exult_studio_support=yes
+	SYSLIBS="$SYSLIBS -L/usr/X11R6/lib -lX11"
+	AC_DEFINE(XWIN, 1, [X11 (needed by Exult Studio support in Mac OS X)])
+fi
+
 if test x$enable_exult_studio_support = xyes ; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use ExultStudio])
-else
-	AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING(whether to force support for Exult Studio in Mac OS X)
-AC_ARG_ENABLE(force-macosx-studio-support, [[  --force-macosx-studio-support   Force ExultStudio support in Mac OS X (experimental) [default no]]],,force_macosx_studio_support=no)
-if test "$WINDOWING_SYSTEM" != -DMACOSX; then
-	AC_MSG_RESULT(no)
-elif test x$force_macosx_studio_support = xyes ; then
-	enable_exult_studio_support=yes
-	SYSLIBS="$SYSLIBS -L/usr/X11R6/lib -lX11"
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(XWIN, 1, [X11 (needed by Exult Studio support in Mac OS X)])
 else
 	AC_MSG_RESULT(no)
 fi
