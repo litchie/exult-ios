@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="03 June 2009(GMT)">
+<readme title="Exult" changed="16 July 2009(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="16072009">
+			<header>- 16 July 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="midi_music"/> MT32 device type is not supported on Mac OS X.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="03062009">
 			<header>- 03 June 2009</header>
 			<body>
@@ -946,6 +954,10 @@
 				<para>
 					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and
 					the notes are only mapped to General MIDI.
+				</para>
+				<para>
+					Also note that MT32 is not supported on Mac OS X, since <Exult/> does not yet have 
+					support for it (CoreMIDI) coded in. In fact this option will crash <Exult/> on OS X.
 				</para>
 			</body>
 		</sub>

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="03 June 2009(GMT)">
+<faqs title="Exult" changed="16 July 2009(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="16072009">
+			<header>- 16 July 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="known_issues"/> re-added some things that are fixed in snapshots.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="03062009">
 			<header>- 03 June 2009</header>
 			<body>
@@ -909,6 +917,11 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
+					<li>In Exult version 1.2 there actually seems to be a bug that prevents you from summoning 
+						the Chaos Hierophant later in the game, when you "touched" the body of him by clicking 
+						once on it. This has been fixed in snapshots.</li>
+					<li>Exult version 1.2 was also wrong in spell requirements and reagent costs. This has 
+						been corrected in snapshots.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original.</li>
