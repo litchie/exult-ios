@@ -78,7 +78,14 @@ If you want to compile Exult Studio, you have to install this package:
   libglade2
 
 This might actually cause many other packages required by libglade2 to
-be installed.
+be installed. 
 After that, you have to re-run configure and make:
-  ./configure --enable-exult-studio
+  ./configure --enable-exult-studio --enable-macosx-studio-support
   make
+  
+Exult compiled with the OS X Exult Studio supports needs to be started with X11
+as SDL Video driver, so a "export SDL_VIDEODRIVER=x11" needs to be set before you 
+start it. Also you need to add the path of Exult Studio to your PATH settings.
+Normnally Exult Studio gets compiled in /path to the Exult source code/mapedit, 
+so if you do "export PATH=$PATH:/path to the Exult source code/mapedit" as well
+before starting Exult, you can start using Exult and Exult Studio.
