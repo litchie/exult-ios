@@ -1,20 +1,21 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 03 June 2009(GMT)
+last changed: 16 July 2009(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 03 June 2009
-0.2. - 20 May 2009
-0.3. - 30 April 2009
-0.4. - 21 October 2007
-0.5. - 08 April 2006
-0.6. - 04 October 2004
-0.7. - 14 August 2004
-0.8. - 23 May 2004
-0.9. - 27 January 2004
-0.10. - 12 December 2003
+0.1. - 16 July 2009
+0.2. - 03 June 2009
+0.3. - 20 May 2009
+0.4. - 30 April 2009
+0.5. - 21 October 2007
+0.6. - 08 April 2006
+0.7. - 04 October 2004
+0.8. - 14 August 2004
+0.9. - 23 May 2004
+0.10. - 27 January 2004
+0.11. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -105,14 +106,24 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 03 June 2009
-* Spell checked the whole FAQ
+0.0. - 16 July 2009
+
+				* 4.4. Known Issues re-added some things that are fixed in snapshots.
+
+
+			
+
+0.0. - 03 June 2009
+
+				* Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
+			
 
-0.2. - 20 May 2009
-* 1.1. Exult Version leveled up.
+0.0. - 20 May 2009
+
+				* 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
 * 2.7. Do Exult savegames work on all Operating Systems? do not use 1.4x saves with 1.2.
@@ -132,17 +143,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 6.1. How can I get answers concerning Ultima 7/Exult? the #exult logs have moved ages ago.
 
 
+			
 
-0.3. - 30 April 2009
-* 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
+0.0. - 30 April 2009
+
+				* 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
 * removed the keyboard movement question.
 
 
+			
 
-0.4. - 21 October 2007
-* 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
+0.0. - 21 October 2007
+
+				* 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
 * 1.14. Will a port for Pocket PC be available anytime? Lanica ported to PocketPC.
@@ -151,23 +166,29 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 6.2. How do I contact the author of this FAQ? removed a defunct eMail address.
 
 
+			
 
-0.5. - 08 April 2006
-* 3.18. Are there patches or Mods for Exult a list of where to find those.
+0.0. - 08 April 2006
+
+				* 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
+			
 
-0.6. - 04 October 2004
-* 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
+0.0. - 04 October 2004
+
+				* 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.13. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
+			
 
-0.7. - 14 August 2004
-* 1.3. Is Exult free ? contact us via the forum.
+0.0. - 14 August 2004
+
+				* 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
 * 5.10. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
@@ -175,232 +196,341 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 5.17. Why can't I find Karnax and the other monks (SI)? example for above.
 
 
+			
 
-0.8. - 23 May 2004
-* 1.12. What is the latest version of Exult? 1.2 now.
+0.0. - 23 May 2004
+
+				* 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 3.2. Where do I find the configuration file? if you really can't find it.
 
 
+			
 
-0.9. - 27 January 2004
-* 1.12. What is the latest version of Exult? 1.1.9rc1 now.
+0.0. - 27 January 2004
+
+				* 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.15. Why won't Xenka speak about sacrifice (SI)? added.
 * 5.18. An important note about the Serpent Staff (SI) Willem fixed this.
 
 
+			
 
-0.10. - 12 December 2003
-* 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
+0.0. - 12 December 2003
+
+				* 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
 
+			
 
 
 --------------------------------------------------------------------------------
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.4.x CVS/SVN version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
+				This documentation is for the 1.4.x CVS/SVN version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
-1.2. Why is it called Exult - what is the meaning of this name?
+			
+
+1.1. Why is it called Exult - what is the meaning of this name?
+
+				
 Jeff wrote on the Boards:
 I originally wrote it [Exult] solely for X-windows, so that's where the 'X' comes from. The "ult", of course, comes from Ultima. It was only about 6 months ago [02/29/2000] that I replaced the X code with SDL, which is multiplatform. Then Arthuris ported it to Win32 (and to BeOS). He had also ported the earlier version, but it was much harder to maintain that way.
 
+				
 Ibrahim Holtzmann:
 I'd like to point out that "exult" is also an English verb that means "to rejoice, to exhibit great happiness".
 
+			
 
-1.3. Is Exult free ?
-Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult please contact us via our forum. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
+1.1. Is Exult free ?
 
+				Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult please contact us via our forum. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
 
-1.4. Do you accept donations?
-No, the Exult team will not accept donations. For us there are greater legal matters involved, which none of us particularly want to explore. We do not want to risk the wrath of EA for directly profiting off Exult. If you want to donate to anyone, donate to Sourceforge. We wouldn't be here if it weren't for them.
+			
 
+1.1. Do you accept donations?
 
-1.5. Does Origin support Exult?
-First of all, Origin has been owned by EA for a long time now and from recent developments it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
-Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
-On the other hand former Origin employees contacted the team and congratulated the team on their effort. Most noticeable are Lord British himself and Ken Demarest (Programming Manager of Ultima 7)(hint:spell his name backwards).
+				No, the Exult team will not accept donations. For us there are greater legal matters involved, which none of us particularly want to explore. We do not want to risk the wrath of EA for directly profiting off Exult. If you want to donate to anyone, donate to Sourceforge. We wouldn't be here if it weren't for them.
 
+			
 
-1.6. Will Exult support other Ultimas?
-Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team used to be quite sick of reverse engineering a game already.
+1.1. Does Origin support Exult?
 
+				First of all, Origin has been owned by EA for a long time now and from recent developments it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
 
-1.7. But isn't Pentagram some kind of Exult for U8?
-Pentagram is a pet project by some members of the Exult team (currently mostly Willem, Colourless, Fingolfin and Darke). It is a map and shapes viewer and nothing more (although the team does indeed invest some time to disassemble the Usecode of U8). It isn't meant to be something similar to Exult. It is rather a clever plan to stir up interest in other coders to carry this basic work further. Any developer is welcome to take a look and contact us.
-Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Pentagram snapshots page.
-On the official Pentagram homepage at http://pentagram.sourceforge.net/ you will find more information on this project.
+				Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
 
+				On the other hand former Origin employees contacted the team and congratulated the team on their effort. Most noticeable are Lord British himself and Ken Demarest (Programming Manager of Ultima 7)(hint:spell his name backwards).
 
-1.8. Will there be a multiplayer Exult?
-No.
+			
 
+1.1. Will Exult support other Ultimas?
+
+				Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team used to be quite sick of reverse engineering a game already.
+
+			
+
+1.1. But isn't Pentagram some kind of Exult for U8?
+
+				Pentagram is a pet project by some members of the Exult team (currently mostly Willem, Colourless, Fingolfin and Darke). It is a map and shapes viewer and nothing more (although the team does indeed invest some time to disassemble the Usecode of U8). It isn't meant to be something similar to Exult. It is rather a clever plan to stir up interest in other coders to carry this basic work further. Any developer is welcome to take a look and contact us.
+
+				Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Pentagram snapshots page.
+
+				On the official Pentagram homepage at http://pentagram.sourceforge.net/ you will find more information on this project.
+
+			
+
+1.1. Will there be a multiplayer Exult?
+
+				No.
+
+				
 Jeff on the Forum:
 The question is 'why?'. I continue working on Exult, in large part, because nobody makes games like Ultima7 anymore. While I think a multiplayer game would be technically interesting, I don't see the need. There are lots of them already, and many experienced people working on new ones.
-Note however that Exult is open source. If you want a multiplayer U7 no one holds you back to code it in.
 
+				Note however that Exult is open source. If you want a multiplayer U7 no one holds you back to code it in.
 
-1.9. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. Lanica Dragon also provides snapshots for the PocketPC port at http://exult.sourceforge.net/download.php.
+			
 
+1.1. Where do I find Exult?
 
-1.10. What is a snapshot? Are these screenshots or what?
-Bugs and not yet implemented features in Exult get fixed almost daily in the code. A release is very time consuming that's why there are so few.
-The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary in the source but there is also the newest pre-compiled Windows executable. If there is no new one this means that either there were no changes to the code or the source failed to compile.
-Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
+				The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. Lanica Dragon also provides snapshots for the PocketPC port at http://exult.sourceforge.net/download.php.
 
+			
 
-1.11. How do I compile a source code snapshot for my OS?
-The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything. The instructions for Linux systems are traditionally in the file called INSTALL.
+1.1. What is a snapshot? Are these screenshots or what?
 
+			    Bugs and not yet implemented features in Exult get fixed almost daily in the code. A release is very time consuming that's why there are so few.
 
-1.12. What is the latest version of Exult?
-The current official release is V1.2 See also 1.9. to learn where to get the latest version.
-To find out which version you are running, press 'v' while in game.
+			    The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary in the source but there is also the newest pre-compiled Windows executable. If there is no new one this means that either there were no changes to the code or the source failed to compile.
 
+				Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
 
-1.13. On what platform does Exult run?
-Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
-Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can find the homepage for this version at http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available and thus the port is probably abandoned.
-Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+			
 
+1.1. How do I compile a source code snapshot for my OS?
 
-1.14. Will a port for Pocket PC be available anytime?
-Lanica Dragon successfully ported Exult to the PocketPC and made snapshots available on our download page.
+				The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything. The instructions for Linux systems are traditionally in the file called INSTALL.
 
+			
 
-1.15. Will there be a port of Exult for <insert platform here>?
-That depends on a great many things. For one, it requires a developer that (1) has the necessary free time, (2) the necessary knowledge about programming for the platform in question, (3) the necessary motivation to do the port and (4) access to the platform in question. Any of the Exult developers may lack one or more of the items above, but it will probably the fourth (and, by consequence, the third) item. This is likely fatal for the port: programming using an emulator (if one is even available) may result in a port that works on the emulator but not on the original (unless the emulator is that good), and programming without any access at all to the platform in question is a pointless and frustrating exercise in futility.
-Moreover, some platforms might require U7 and/or SI to come bundled with Exult; that alone would disqualify any official builds for legal reasons.
+1.1. What is the latest version of Exult?
 
+				The current official release is V1.2 See also 1.9. to learn where to get the latest version.
+
+				To find out which version you are running, press 'v' while in game.
+
+			
+
+1.1. On what platform does Exult run?
+
+				Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
+
+				Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can find the homepage for this version at http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available and thus the port is probably abandoned.
+
+				 Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+
+			
+
+1.1. Will a port for Pocket PC be available anytime?
+
+				Lanica Dragon successfully ported Exult to the PocketPC and made snapshots available on our download page.
+
+			
+
+1.1. Will there be a port of Exult for <insert platform here>?
+
+				That depends on a great many things. For one, it requires a developer that (1) has the necessary free time, (2) the necessary knowledge about programming for the platform in question, (3) the necessary motivation to do the port and (4) access to the platform in question. Any of the Exult developers may lack one or more of the items above, but it will probably the fourth (and, by consequence, the third) item. This is likely fatal for the port: programming using an emulator (if one is even available) may result in a port that works on the emulator but not on the original (unless the emulator is that good), and programming without any access at all to the platform in question is a pointless and frustrating exercise in futility.
+
+				Moreover, some platforms might require U7 and/or SI to come bundled with Exult; that alone would disqualify any official builds for legal reasons.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 2. Exult and Ultima 7
-2.1. Do I need Ultima 7?
-Yes. Exult won't work without the original files.
+2.2. Do I need Ultima 7?
 
+				Yes. Exult won't work without the original files.
+
+			
 
 2.2. Does Exult work on all versions of the game?
-It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) runs for sure.
-However there were reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was published in English and Spanish (as we recently discovered to our surprise) but we seem to have fixed the main problem with the Spanish version.
-V0.91 Alpha2 adds fixes for the French version, which should work now. If you are running a Spanish or German version Black Gate and you notice problems please contact us.
 
+				It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) runs for sure.
 
-2.3. Can you play through U7 yet?
-You can play through the BG, FoV, SI and SS without cheating and plot holes.
+				However there were reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was published in English and Spanish (as we recently discovered to our surprise) but we seem to have fixed the main problem with the Spanish version.
 
+				V0.91 Alpha2 adds fixes for the French version, which should work now. If you are running a Spanish or German version Black Gate and you notice problems please contact us.
 
-2.4. How about Serpent Isle?
-Serpent Isle has been playable without cheating and plot holes for a long time now.
-Old quotes on this topic from the time when SI wasn't playable at all in Exult.
+			
 
+2.2. Can you play through U7 yet?
+
+				You can play through the BG, FoV, SI and SS without cheating and plot holes.
+
+			
+
+2.2. How about Serpent Isle?
+
+				Serpent Isle has been playable without cheating and plot holes for a long time now.
+
+				Old quotes on this topic from the time when SI wasn't playable at all in Exult.
+
+				
 Colourless:
 I can't say much about the what will happen except that a completely working Serpent Isle will be an annoying task to complete. It is close to BG in some ways, but very different in others.
 
+				
 Jeff:
 My feelings about SI are the same as Colourless, who has done all the work so far on it. I'd much prefer to add enhancements to BG (which would apply to SI as well), and perhaps write a new RPG. Now, if EA would provide us with information about SI's internals, that would change things. And also, since Exult is open-source, it would be fine if anyone wants to volunteer to work on SI.
 
+			
 
-2.5. Do the Add-ons work?
-"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" (Add-on to Serpent Isle) are bug-free.
+2.2. Do the Add-ons work?
 
+				"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" (Add-on to Serpent Isle) are bug-free.
 
-2.6. Do save games from the original work in Exult?
-Save games that were made with the original Ultima 7 or U7Run don't work with Exult. You have to start a new game when you begin playing with Exult. Sorry!
+			
 
+2.2. Do save games from the original work in Exult?
 
-2.7. Do Exult savegames work on all Operating Systems?
-Exult savegames are compatible on all supported Operating Systems. For example a saved game of the Mac port of Exult works on Windows 98 as well.
-However it is not advisable to use savegames of games started with the 1.4.x snapshot of Exult with the 1.2 release.
+				Save games that were made with the original Ultima 7 or U7Run don't work with Exult. You have to start a new game when you begin playing with Exult. Sorry!
 
+			
 
-2.8. Where do I find Ultima 7 on the net to download?
-Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on eBay.
-Don't ask the team for copies. Don't ask on the forum for copies, your post and the entire thread will be deleted. And please don't ask for the answers to the copyright questions.
+2.2. Do Exult savegames work on all Operating Systems?
 
+				Exult savegames are compatible on all supported Operating Systems. For example a saved game of the Mac port of Exult works on Windows 98 as well.
+
+				However it is not advisable to use savegames of games started with the 1.4.x snapshot of Exult with the 1.2 release.
+
+			
+
+2.2. Where do I find Ultima 7 on the net to download?
+
+				Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on eBay.
+
+				Don't ask the team for copies. Don't ask on the forum for copies, your post and the entire thread will be deleted. And please don't ask for the answers to the copyright questions.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 3. Miscellaneous
-3.1. Where do I find a walkthrough?
-If you need help with the game itself, like walkthroughs, hints, location of NPCs items take a look at the following sites:
-* Paulon Dragons selection of notes and information on Ultima 7
+3.3. Where do I find a walkthrough?
+
+				If you need help with the game itself, like walkthroughs, hints, location of NPCs items take a look at the following sites:
+
+				* Paulon Dragons selection of notes and information on Ultima 7
 * The Ultima 7 section of Paulon Dragons Ultima games FAQ
 * The U7 section of the more detailed Ultima Gameplay FAQ
 
 
+			
 
-3.2. Where do I find the configuration file?
-You can find exult.cfg in specific directories:
-* On Windows systems the file can be found in the same folder you installed Exult to.
+3.3. Where do I find the configuration file?
+
+				You can find exult.cfg in specific directories:
+
+				* On Windows systems the file can be found in the same folder you installed Exult to.
 * On UNIX systems you can expect to find it in $HOME/.exult.cfg (keep in mind that the dot before exult.cfg means that it is hidden from normal view).
 * In Mac OS X it is ~/Library/Preferences/exult.cfg.
 
 
+			
 
 3.3. Do the carriages, ships and the magic carpet work?
-Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
+				Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
-3.4. So why can't I sail a ship in BG?
-To sail a ship in BG you naturally need to have the deed to this ship in your party. Then double-click on the sail of the ship and your party moves aboard it and sits down. Once they are all seated, double-click the gangplank to close it. Now double-click on the sail once more to have it unfold. You should be able to move the ship then.
+			
 
+3.3. So why can't I sail a ship in BG?
 
-3.5. Will you implement the extended intro for SI?
-The extended intro for Serpent Isle can be found at http://www.io.com/~dloubet/. At this moment we don't even think about implementing this extended intro. Why not? It sure would be nice to use it. But you may have noticed some effects missing from the intro. You may have noticed that there is no sound. You may have noticed that there is neither speech nor subtitles. All that would have to be addressed and add to that the longer running time and that you have to synchronize the music with it. Then what about the size of it? You would need to compress it and make sure all our supported platforms make use of it.
-Everyone volunteering to do it is welcome to.
+				To sail a ship in BG you naturally need to have the deed to this ship in your party. Then double-click on the sail of the ship and your party moves aboard it and sits down. Once they are all seated, double-click the gangplank to close it. Now double-click on the sail once more to have it unfold. You should be able to move the ship then.
 
+			
 
-3.6. Why is the party formation different?
-In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
-Recently Jeff added an optional formation that behaves way more like in the original game and it has become the default formation now. This can be changed in the exult.cfg.
+3.3. Will you implement the extended intro for SI?
 
+				The extended intro for Serpent Isle can be found at http://www.io.com/~dloubet/. At this moment we don't even think about implementing this extended intro. Why not? It sure would be nice to use it. But you may have noticed some effects missing from the intro. You may have noticed that there is no sound. You may have noticed that there is neither speech nor subtitles. All that would have to be addressed and add to that the longer running time and that you have to synchronize the music with it. Then what about the size of it? You would need to compress it and make sure all our supported platforms make use of it.
+
+				Everyone volunteering to do it is welcome to.
+
+			
+
+3.3. Why is the party formation different?
+
+				In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
+
+				Recently Jeff added an optional formation that behaves way more like in the original game and it has become the default formation now. This can be changed in the exult.cfg.
+
+				
 Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
+			
 
-3.7. What should I do when Exult keeps crashing when I try to save?
-This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
-Please do not play further at this point. You should restore to an earlier save game, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
-Please also avoid saving when a scripted sequence is running. Whenever you can't control the Avatar on your own a scripted scene is running and saving at this time will break the game on reloading.
+3.3. What should I do when Exult keeps crashing when I try to save?
 
+				This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
 
-3.8. Why does the game run so choppy?
-Well, every Ultima required a fast computer. Even though Exult is just an engine that runs the ancient Ultima 7 it still requires a fast computer.
-Seriously, if the game runs choppy for you, try the speed setting in the Game Options menu and if that doesn't help also play with the original resolution (320x200), try a different scaler or disable scaling altogether.
+				Please do not play further at this point. You should restore to an earlier save game, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
 
+				Please also avoid saving when a scripted sequence is running. Whenever you can't control the Avatar on your own a scripted scene is running and saving at this time will break the game on reloading.
 
-3.9. Why can't I hear the Sound Effects?
-Please read the Audio section of our ReadMe.txt.
+			
 
+3.3. Why does the game run so choppy?
 
-3.10. What does the red crossed out speaker next to the gamename mean?
-It means that you have not configured the sound effects yet or correctly. Please read the Audio section of our ReadMe.txt.
+				Well, every Ultima required a fast computer. Even though Exult is just an engine that runs the ancient Ultima 7 it still requires a fast computer.
 
+				Seriously, if the game runs choppy for you, try the speed setting in the Game Options menu and if that doesn't help also play with the original resolution (320x200), try a different scaler or disable scaling altogether.
 
-3.11. Why do I hear strange, noisy effects in Linux?
-This is due to a bug with OSS. We advice installing ALSA. Please read this chapter in the ReadMe.txt for a little more extensive explanation.
+			
 
+3.3. Why can't I hear the Sound Effects?
 
-3.12. Why is the music so much louder/softer than the sfx/speech?
-Music is played via midi but the sfx (sound effects) and speech are played via wave. Midi and wave volume are set up separately in the settings of your Operating System and not by Exult.
+				Please read the Audio section of our ReadMe.txt.
 
+			
 
-3.13. Why does my monitor stay black when I try to run Exult?
-The most common reason for this is that you try to run Exult full screen in a resolution that isn't supported by either your monitor or your graphics card. Edit your exult.cfg (see ReadMe.txt) to disable full screen. If Exult now runs fine in a window you have to select a different resolution (also editable in exult.cfg) to run it full screen. If it still doesn't run contact us.
+3.3. What does the red crossed out speaker next to the gamename mean?
 
+				It means that you have not configured the sound effects yet or correctly. Please read the Audio section of our ReadMe.txt.
 
-3.14. What are the improvements in Exult over the original Ultima 7?
-* Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
+			
+
+3.3. Why do I hear strange, noisy effects in Linux?
+
+				This is due to a bug with OSS. We advice installing ALSA. Please read this chapter in the ReadMe.txt for a little more extensive explanation.
+
+			
+
+3.3. Why is the music so much louder/softer than the sfx/speech?
+
+				Music is played via midi but the sfx (sound effects) and speech are played via wave. Midi and wave volume are set up separately in the settings of your Operating System and not by Exult.
+
+			
+
+3.3. Why does my monitor stay black when I try to run Exult?
+
+				The most common reason for this is that you try to run Exult full screen in a resolution that isn't supported by either your monitor or your graphics card. Edit your exult.cfg (see ReadMe.txt) to disable full screen. If Exult now runs fine in a window you have to select a different resolution (also editable in exult.cfg) to run it full screen. If it still doesn't run contact us.
+
+			
+
+3.3. What are the improvements in Exult over the original Ultima 7?
+
+				* Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game Options menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Options Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options . This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
 * A beautiful new save game box. This allows you much more save games than the original (you should run out of disc space before you run out of save game slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The save game box is opened either via the game menu or the 's' key.
@@ -413,19 +543,26 @@ The most common reason for this is that you try to run Exult full screen in a re
 * Compressed save games. Since Beta1 Exult compresses save games by default as zip files. They are still labeled *.sav and have the save game name in the zip comment.
 
 
+			
 
-3.15. Are there issues with the SI style paperdoll in BG?
-There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
-* You can either equip a pair of gauntlets or one/two rings.
+3.3. Are there issues with the SI style paperdoll in BG?
+
+				There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
+
+				* You can either equip a pair of gauntlets or one/two rings.
 * The 'shield behind back', 'weapon behind back' and 'belt' slots are one and the same in BG. (So if you have a weapon on your back, you can't use your belt slot)
 * If an item seems to have disappeared disable the paperdolls in the Game Options, retrieve the item and enable the paperdolls again.
 
-Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
+				Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
-3.16. How do I disable all improvements?
-To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
-* make custom key bindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. To enable the old save game menu you have to assign 's' to old_file_gump (the line in your custom key bindings file should look like: S old_file_gump)
+			
+
+3.3. How do I disable all improvements?
+
+				To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
+
+				* make custom key bindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. To enable the old save game menu you have to assign 's' to old_file_gump (the line in your custom key bindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
 * Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).
 * Alternatively click on the disk icon and disable the paperdolls in the Gameplay Options.
@@ -433,56 +570,79 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 * The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered. Sorry!
 
 
+			
 
-3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
-We've been working on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7 and it is coming along nicely.
-For much more information "Exult Studio" see exult_studio.txt.
+3.3. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 
+				We've been working on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7 and it is coming along nicely.
+
+				For much more information "Exult Studio" see exult_studio.txt.
+
+				
 Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
 
+			
 
-3.18. Are there patches or Mods for Exult
-With Exult Studio advancing more and more, there are actually now a couple of patches and Mods (modifications) for Exult. A nice collection can be found at Seven Towers, Marzo Junior's Mods and his documentation of U7/Exult Usecode. Other patches/mods can be found at:
-1. Ultima VII: The Feudal Lands a very ambitious and massive mod under development.
-2. Ultima 6 conversion an unfinished mod to convert Ultima 7 to Ultima 6.
+3.3. Are there patches or Mods for Exult
 
-All the patches and mods require that you install the latest snapshot. They will not work with the last official release.
-The ReadMe.txt gives detailed instructions on how to install mods and patches in Exult.
+				With Exult Studio advancing more and more, there are actually now a couple of patches and Mods (modifications) for Exult. A nice collection can be found at Seven Towers, Marzo Junior's Mods and his documentation of U7/Exult Usecode. Other patches/mods can be found at:
 
+				3. Ultima VII: The Feudal Lands a very ambitious and massive mod under development.
+3. Ultima 6 conversion an unfinished mod to convert Ultima 7 to Ultima 6.
+
+
+				All the patches and mods require that you install the latest snapshot. They will not work with the last official release.
+
+				The ReadMe.txt gives detailed instructions on how to install mods and patches in Exult.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 4. Bugs, known issues and not yet implemented features
-4.1. Bugs
-To see a list of open bugs and bug reports go to http://sourceforge.net/tracker/?group_id=2335.
+4.4. Bugs
 
+				To see a list of open bugs and bug reports go to http://sourceforge.net/tracker/?group_id=2335.
 
-4.2. How do I submit a proper bug report?
-1. Read the Documentation and this FAQ to see if that is not already covered and you have all set up correctly.
-2. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else already reported the bug (in the bug tracker).
-3. If you are not a SourceForge member please include your e-mail address in the bug report. This is important so we can get back to you. If you are a SourceForge member please log in before submitting a bug. If you are a member of SourceForge you will also get notified of follow ups on your bug automatically by eMail.
+			
+
+4.4. How do I submit a proper bug report?
+
+				4. Read the Documentation and this FAQ to see if that is not already covered and you have all set up correctly.
+4. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else already reported the bug (in the bug tracker).
+4. If you are not a SourceForge member please include your e-mail address in the bug report. This is important so we can get back to you. If you are a SourceForge member please log in before submitting a bug. If you are a member of SourceForge you will also get notified of follow ups on your bug automatically by eMail.
 4. Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more sense. Sadly the space for the topics is limited. Explain the topic in "Detailed Description".
-5. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
-6. State which Operating System you use (Windows 9X, Linux, ...).
-7. Please include a save game (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. You can look up the filename in the save game dialog as well (to the right, above the party members). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
-8. One bug per subject please.
-
-Any bug report that requires a save game will most likely be tagged invalid if we don't receive a save game after we requested it.
-You can also use our forum to report bugs. But if you do please follow the guidelines mentioned above (you can't include a save game of course). Though be aware that bugs submitted to the bug tracker are more likely to get attention than bugs submitted to the forum. And if you report to the forum, also follow the "one bug per report" rule, a post with many bug reports in it is likely to have some bugs overlooked in the end.
-So if you want to have a bug fixed follow these steps!
+4. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
+4. State which Operating System you use (Windows 9X, Linux, ...).
+4. Please include a save game (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. You can look up the filename in the save game dialog as well (to the right, above the party members). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
+4. One bug per subject please.
 
 
-4.3. Broken by Design
-Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
-* Birds and animals open doors and such, like the human and sentient creatures of Britannia do. You should rarely encounter this anymore since there are better intelligence checks, but it can still happen.
+				Any bug report that requires a save game will most likely be tagged invalid if we don't receive a save game after we requested it.
+
+				You can also use our forum to report bugs. But if you do please follow the guidelines mentioned above (you can't include a save game of course). Though be aware that bugs submitted to the bug tracker are more likely to get attention than bugs submitted to the forum. And if you report to the forum, also follow the "one bug per report" rule, a post with many bug reports in it is likely to have some bugs overlooked in the end.
+
+				So if you want to have a bug fixed follow these steps!
+
+			
+
+4.4. Broken by Design
+
+				Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
+
+				* Birds and animals open doors and such, like the human and sentient creatures of Britannia do. You should rarely encounter this anymore since there are better intelligence checks, but it can still happen.
 * The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this was disputed almost every four weeks. Finally it works like the original and the Avatar uses two frames and the companions use three frames.
 * Some music loops endlessly in Exult. This is actually a correction of a bug in the original. We respects the midi looping flag as set by U7's original data files but the original didn't. Users who prefer the original (broken) are able to choose so in the Game menu.
 
 
+			
 
 4.4. Known Issues
+
+				* In Exult version 1.2 there actually seems to be a bug that prevents you from summoning the Chaos Hierophant later in the game, when you "touched" the body of him by clicking once on it. This has been fixed in snapshots.
+* Exult version 1.2 was also wrong in spell requirements and reagent costs. This has been corrected in snapshots.
 * There might be a bug when you have any of the games installed in a path with spaces in it (see ReadMe.txt).
 * Stealing and killing innocent NPCs doesn't work yet like it does in the original.
 * Movement is sometimes jerky or slow.
@@ -491,156 +651,229 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 * Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a later or earlier version of the Nvidia reference drivers.
 
 
+			
 
-4.5. Known Compile Issues
-* There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
+4.4. Known Compile Issues
+
+				* There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
 * In some versions of Ubuntu (and probably some other distributions), you have to add some X11 libraries or Exult won't link (for example, by adding "AC_PATH_XTRA" to configure.ac). The latest Ubuntu version (Jaunty Jackalope) doesn't need that fix anymore, though.
 * After compiling yourself remember to copy the exult*.flx files from the data dir in the source to the Exult data dir you chose in exult.cfg. This applies only if you don't use "make install"
 
 
+			
 
-4.6. Problems with Windows 9x
-All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library.
-* Some users have reported problems when using Exult in fullscreen mode. Either it crashed or was unplayable.
+4.4. Problems with Windows 9x
+
+				All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library.
+
+				* Some users have reported problems when using Exult in fullscreen mode. Either it crashed or was unplayable.
 * There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300). Exult is triggering a bug in the drivers.
 * There is also a problem involving C-Media soundcard chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
 
-To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this textfile to your Exult directory with the name runexult.bat. When you want to play Exult doubleclick this file and it should play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
 
+				To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this textfile to your Exult directory with the name runexult.bat. When you want to play Exult doubleclick this file and it should play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
 
-4.7. Problems with Mac OSX
-On OSX something in our audio code might crash Exult unexpectedly. For example the famous scene in SI with Frigidazi has been reported as a trigger. To circumvent this disable all audio before a scene that crashes and enable it later on in the game.
+			
 
+4.4. Problems with Mac OSX
+
+				On OSX something in our audio code might crash Exult unexpectedly. For example the famous scene in SI with Frigidazi has been reported as a trigger. To circumvent this disable all audio before a scene that crashes and enable it later on in the game.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 5. Gameplay FAQ
-5.1. Why is there a gameplay FAQ?
-Although you can find many useful gameplay FAQs on the internet we do get asked some questions quite frequently as people think these are bugs with Exult.
-Most of the times the problem is that people don't play the game regularly but depend overly on walkthroughs and don't read what NPCs in the game tell you to do.
-Note that this section contains text that may spoil your game. Caution is advised.
-We added a mark to the question (BG/FoV/SI/SS) to show which Ultima 7 game is affected by this. See ReadMe.txt to learn which game these marks point to.
+5.5. Why is there a gameplay FAQ?
 
+				Although you can find many useful gameplay FAQs on the internet we do get asked some questions quite frequently as people think these are bugs with Exult.
 
-5.2. Why don't all NPCs have audible speech (BG+SI)?
-The documentation and installation files of the original may be a bit misleading. There are only a few NPCs in the games that have audible speech. In BG only the Guardian can be heard during the game. Apart from the Intro you can only hear the Guardian and the Great Earth Serpent in SI.
+				Most of the times the problem is that people don't play the game regularly but depend overly on walkthroughs and don't read what NPCs in the game tell you to do.
 
+				Note that this section contains text that may spoil your game. Caution is advised.
 
-5.3. Why do spells require different reagents than the manual lists (BG+SI)?
-The manuals of both BG and SI listed different requirements for two spells than what was actually required in the original game and Exult.
-* BG Restoration Original game and Exult use garlic, ginseng, mandrake root, spider silk. Manual lists garlic, ginseng, mandrake root, sulfurous ash.
+				We added a mark to the question (BG/FoV/SI/SS) to show which Ultima 7 game is affected by this. See ReadMe.txt to learn which game these marks point to.
+
+			
+
+5.5. Why don't all NPCs have audible speech (BG+SI)?
+
+				The documentation and installation files of the original may be a bit misleading. There are only a few NPCs in the games that have audible speech. In BG only the Guardian can be heard during the game. Apart from the Intro you can only hear the Guardian and the Great Earth Serpent in SI.
+
+			
+
+5.5. Why do spells require different reagents than the manual lists (BG+SI)?
+
+				The manuals of both BG and SI listed different requirements for two spells than what was actually required in the original game and Exult.
+
+				* BG Restoration Original game and Exult use garlic, ginseng, mandrake root, spider silk. Manual lists garlic, ginseng, mandrake root, sulfurous ash.
 * SI Imbalance Original game and Exult use bloodspawn, nightshade, serpent scale, sulfurous ash, worm heart, Manual nightshade, serpent scale, sulfurous ash, worm heart.
 
-Unfortunately Exult version 1.2 was also wrong in more spell requirements and reagent costs. This has been corrected in snapshots.
 
+				Unfortunately Exult version 1.2 was also wrong in more spell requirements and reagent costs. This has been corrected in snapshots.
 
-5.4. Why can't I cast mark/recall on the Virtue Runes (BG)?
-You never could do this in the original as well. You have to use the Virtue Stones that you find in the same building as the runes.
+			
 
+5.5. Why can't I cast mark/recall on the Virtue Runes (BG)?
+
+				You never could do this in the original as well. You have to use the Virtue Stones that you find in the same building as the runes.
+
+			
 
 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)?
-"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
-Stuart Hillman told me of another way around this bug: Stand next to Trent when talking to Rowenna and next to her when talking to Trent.
 
+				"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
 
-5.6. Why can't I talk to the mayor of Skara Brae (BG)?
-You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae town hall that looks like Forsythe, but isn't. This was fixed in more recent versions of Exult but with games started with earlier versions this bug is still present. You need to start a new game of Exult to fix this. But this bug poses no problem, so if you don't want to start a new game, just ignore that clone and search for the real Forsythe.
+				Stuart Hillman told me of another way around this bug: Stand next to Trent when talking to Rowenna and next to her when talking to Trent.
 
+			
 
-5.7. Multiple problems with the tetrahedron generator and prism (BG)?
-Some of our users have problems entering the generator and finding the prism afterwards.
-To enter the tetrahedron generator you have to wear the ethereal ring (enchanted by Penumbra). It is important to wear the ring on a finger and not just hold it like a weapon.
-After you defeated the enemy you have to doubleclick the prism to destroy the generator. You will then find the black prism (without the yellow outline) to your feet. Look closely and take it with you.
+5.5. Why can't I talk to the mayor of Skara Brae (BG)?
 
+				You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae town hall that looks like Forsythe, but isn't. This was fixed in more recent versions of Exult but with games started with earlier versions this bug is still present. You need to start a new game of Exult to fix this. But this bug poses no problem, so if you don't want to start a new game, just ignore that clone and search for the real Forsythe.
 
-5.8. Why is Alagnar not dead (BG)?
-At a certain point in the game Alagnar is supposed to be murdered. Unfortunately there is a bug in the original game data, that lets him walk around alive in his own murder scene. To avoid this bug you have come in through the south door of his house.
+			
 
+5.5. Multiple problems with the tetrahedron generator and prism (BG)?
 
-5.9. Where did my gem of the Demon vanish to (FoV)?
-For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
+				Some of our users have problems entering the generator and finding the prism afterwards.
 
+				To enter the tetrahedron generator you have to wear the ethereal ring (enchanted by Penumbra). It is important to wear the ring on a finger and not just hold it like a weapon.
 
-5.10. Attacking the Stone of Castambre doesn't work (FoV)
-You need to use (double-click) the pick while it's in your hands instead of attacking with it. After that, select the tree with the resulting crosshairs.
+				After you defeated the enemy you have to doubleclick the prism to destroy the generator. You will then find the black prism (without the yellow outline) to your feet. Look closely and take it with you.
 
+			
 
-5.11. Where is the pikeman that lets you train in Monitor (SI)?
-The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
+5.5. Why is Alagnar not dead (BG)?
 
+				At a certain point in the game Alagnar is supposed to be murdered. Unfortunately there is a bug in the original game data, that lets him walk around alive in his own murder scene. To avoid this bug you have come in through the south door of his house.
 
-5.12. How do I get the Mandrake Roots for Fedabiblio (SI)?
-Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
+			
 
+5.5. Where did my gem of the Demon vanish to (FoV)?
 
-5.13. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
-Pothos won't take the moss if he hasn't sent you to fetch it for him. If you want him to tell you about the mad mage and how to get to him you first have to talk with Bucia (also in Moonshade) about Pothos. Then you can talk to Pothos about it and he will sent you off to fetch him fresh blood moss. Read what he says because it is important to get fresh blood moss.
+				For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
 
+			
 
-5.14. Why can't I summon the Great Hierophant (SI)?
-If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
-If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
+5.5. Attacking the Stone of Castambre doesn't work (FoV)
 
+				You need to use (double-click) the pick while it's in your hands instead of attacking with it. After that, select the tree with the resulting crosshairs.
 
-5.15. Why won't Xenka speak about sacrifice (SI)?
-For Xenka to speak about sacrifice some parts of the game need to have been played correctly. The sacrifice conversation option will only turn up if:
-* you have returned the amulet to the Gwani AND
+			
+
+5.5. Where is the pikeman that lets you train in Monitor (SI)?
+
+				The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
+
+			
+
+5.5. How do I get the Mandrake Roots for Fedabiblio (SI)?
+
+				Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
+
+			
+
+5.5. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
+
+				Pothos won't take the moss if he hasn't sent you to fetch it for him. If you want him to tell you about the mad mage and how to get to him you first have to talk with Bucia (also in Moonshade) about Pothos. Then you can talk to Pothos about it and he will sent you off to fetch him fresh blood moss. Read what he says because it is important to get fresh blood moss.
+
+			
+
+5.5. Why can't I summon the Great Hierophant (SI)?
+
+				If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
+
+				If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
+		
+			
+
+5.5. Why won't Xenka speak about sacrifice (SI)?
+
+				For Xenka to speak about sacrifice some parts of the game need to have been played correctly. The sacrifice conversation option will only turn up if:
+
+				* you have returned the amulet to the Gwani AND
 * you have spoken with the Chaos Hierophant AND
 * you have picked up the Serpent Staff from its proper location (see 5.18.) AND
 * you have not yet healed the Chaos Serpent
 
 
+			
 
-5.16. Where did XY disappear to (SI)?
-SI is very plot driven, so to stop people from breaking the plot, certain NPCs stay in a unaccessible spot on the map until you meet them by following the plot, or disappear from the map until they are needed again. If you cheat by teleporting to them before the scripted meeting you are bound to break the plot and most likely forced to reload an earlier savegame or start the whole game again. So please take care when teleporting around the map.
+5.5. Where did XY disappear to (SI)?
 
+				SI is very plot driven, so to stop people from breaking the plot, certain NPCs stay in a unaccessible spot on the map until you meet them by following the plot, or disappear from the map until they are needed again. If you cheat by teleporting to them before the scripted meeting you are bound to break the plot and most likely forced to reload an earlier savegame or start the whole game again. So please take care when teleporting around the map.
 
-5.17. Why can't I find Karnax and the other monks (SI)?
-See the above question. You have to use the Dark Path to make the monks appear on Monk Island. If you just use the teleport cheat they won't show up.
+			
 
+5.5. Why can't I find Karnax and the other monks (SI)?
 
-5.18. An important note about the Serpent Staff (SI)
-The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
-Just picking it up and not transferring it to the inventory at once, but instead putting it on the ground again could break later plot. Willem coded a workaround in Exult so the problem might disappear.
+				See the above question. You have to use the Dark Path to make the monks appear on Monk Island. If you just use the teleport cheat they won't show up.
 
+			
 
-5.19. How to break the plot by doubleclicking some pillars (SI-SS)
-In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
-Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
+5.5. An important note about the Serpent Staff (SI)
 
+				The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
+
+				Just picking it up and not transferring it to the inventory at once, but instead putting it on the ground again could break later plot. Willem coded a workaround in Exult so the problem might disappear.
+
+			
+
+5.5. How to break the plot by doubleclicking some pillars (SI-SS)
+
+				In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
+
+				Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 6. Questions and Answers
-6.1. How can I get answers concerning Ultima 7/Exult?
-The best way to get answers to questions is to go to the Online discussion forum at: http://exult.sourceforge.net/forum/
-To get answers concerning Ultima 7 in general go to the Ultima newsgroup: news://rec.games.computer.ultima.series
-Or go to the Ultima Dragons homepage http://www.udic.org and find your way from there (this is an online Ultima fan club)
-Some Exult developers like to hang out on IRC on irc.freenode.net, channel #exult. The logs of #exult can be found at http://log.usecode.org/exultlog.php.
+6.6. How can I get answers concerning Ultima 7/Exult?
 
+				The best way to get answers to questions is to go to the Online discussion forum at: http://exult.sourceforge.net/forum/
 
-6.2. How do I contact the author of this FAQ?
-This FAQ is maintained by Dominus Dragon of the UDIC AKA Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I am part of the Exult Team though I only write the FAQ and Documentation and don't code at all. Best way to contact me is through our forum at http://exult.sourceforge.net/forum/.
+				To get answers concerning Ultima 7 in general go to the Ultima newsgroup: news://rec.games.computer.ultima.series
 
+				Or go to the Ultima Dragons homepage http://www.udic.org and find your way from there (this is an online Ultima fan club)
+
+				Some Exult developers like to hang out on IRC on irc.freenode.net, channel #exult. The logs of #exult can be found at http://log.usecode.org/exultlog.php.
+
+			
+
+6.6. How do I contact the author of this FAQ?
+
+				This FAQ is maintained by Dominus Dragon of the UDIC AKA Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I am part of the Exult Team though I only write the FAQ and Documentation and don't code at all. Best way to contact me is through our forum at http://exult.sourceforge.net/forum/.
+
+			
 
 
 --------------------------------------------------------------------------------
 
 7. Links and Thanks
-7.1. Important Links
-* Exult homepage at http://exult.sourceforge.net/
+7.7. Important Links
+
+				* Exult homepage at http://exult.sourceforge.net/
 * Daily code snapshot at http://exult.sourceforge.net/download.php
 * Message board at http://exult.sourceforge.net/forum/
 * Bug reports to http://sourceforge.net/tracker/?group_id=2335
 
 
+			
 
-7.2. Thanks
-Of course big thanks go to the Exult Team for breathing life back into this jewel of a game.
-Max Horn deserves my gratitude for making the FAQ easier to maintain via XML/XSL.
-Thanks to all those I stole comments from without quoting them, those that sent me improvements and don't get quoted and so on. If you helped me in some way feel my gratitude without being mentioned.
-Thanks go to Matt0 who really got me thinking about doing this FAQ (though he just did it to tease me).
+7.7. Thanks
 
+				Of course big thanks go to the Exult Team for breathing life back into this jewel of a game.
+
+				Max Horn deserves my gratitude for making the FAQ easier to maintain via XML/XSL.
+
+				Thanks to all those I stole comments from without quoting them, those that sent me improvements and don't get quoted and so on. If you helped me in some way feel my gratitude without being mentioned.
+
+				Thanks go to Matt0 who really got me thinking about doing this FAQ (though he just did it to tease me).
+
+			
 
