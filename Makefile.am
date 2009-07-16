@@ -241,6 +241,7 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) data/exult_bg.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exult_si.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/midisfx.flx $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) data/exultmsg.txt $(bundle_name)/Contents/Resources/data
 
 install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
