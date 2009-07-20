@@ -1986,7 +1986,7 @@ USECODE_INTRINSIC(set_timer)
 
 USECODE_INTRINSIC(wearing_fellowship)
 {
-	Game_object *obj = gwin->get_main_actor()->get_readied(neck);
+	Game_object *obj = gwin->get_main_actor()->get_readied(cloak);
 	if (obj && obj->get_shapenum() == 955 && obj->get_framenum() == 1)
 		return Usecode_value(1);
 	else
