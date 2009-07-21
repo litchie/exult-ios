@@ -6,7 +6,7 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 $(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu:	\
 $(SRC)/gamemgr
 
-VERSION=1.4.05cvs
+VERSION=1.4.05svn
 
 MAIN_OBJS=actions.o actorio.o actors.o  args.o browser.o cheat.o cheat_screen.o \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultico.o exultmenu.o \

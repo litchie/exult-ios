@@ -10,7 +10,7 @@ AC_INIT(exult.cc)
 PACKAGE=exult
 VER_MAJOR=1
 VER_MINOR=4
-VER_EXTRA=.05cvs
+VER_EXTRA=.05svn
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 # check host/target systems
