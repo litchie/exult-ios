@@ -256,7 +256,7 @@ void Shape_manager::load
 	else if (U7exists(BLENDS))
 		{
 		std::ifstream fin;
-		U7open(fin, PATCH_BLENDS);
+		U7open(fin, BLENDS);
 		nblends = Read1(fin);
 		ptr = blends = new unsigned char[nblends * 4];
 		fin.read((char *)blends, nblends * 4);
