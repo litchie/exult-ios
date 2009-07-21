@@ -656,6 +656,14 @@ static void Init
 	// Maybe it would be best to use SDL_putenv instead?
 	SDL_putenv("SDL_VIDEO_CENTERED=center");
 	// Yes, SDL_putenv is GOOD.  putenv does NOT work with wince. -PTG 2007/06/11
+#elif defined(MACOSX) && defined(USE_EXULTSTUDIO)
+	// Just in case:
+	#ifndef XWIN
+	#error "Incompatible preprocessor definitions: simultaneous use of \"MACOSX\" and \"USE_EXULTSTUDIO\" require \"XWIN\" to be defined."
+	#endif
+	// Exult Studio support in Mac OS X is experimental and requires
+	// SDL to use X11. Hence, we force the issue.
+	SDL_putenv("SDL_VIDEODRIVER=x11");
 #endif
 	if (SDL_Init(init_flags) < 0)
 	{

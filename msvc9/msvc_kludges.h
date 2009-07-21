@@ -14,7 +14,7 @@
 #define HAVE_SSTREAM 1
 
 // Firstly some things that need to be defined
-#define VERSION "1.4.05cvs"
+#define VERSION "1.4.05svn"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
