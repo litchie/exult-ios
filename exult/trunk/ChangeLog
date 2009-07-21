@@ -2,6 +2,7 @@
 	* Changing version string to "svn" instead of "cvs" (bug #2822452).
 	* SDL video driver on Mac OS X is set to x11 if Exult Studio support is on.
 	* Fixed bug #2816756.
+	* Added default avatar_data.txt for new games created with ES.
 
 2009-07-16	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation,FAQ and README.MacOSX
