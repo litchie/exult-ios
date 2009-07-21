@@ -10,7 +10,7 @@ SRC=../..
 VPATH=$(SRC):$(SRC)/conf:$(SRC)/files:$(SRC)/imagewin:$(SRC)/shapes:$(SRC)/tools: \
 $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
-CPPFLAGS=-DVERSION=\"1.4.05cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"1.4.05svn\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I. -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/tools -I$(SRC) -I$(SRC)/conf -I$(SRC)/usecode \
 	-I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -DHAVE_PNG_H

@@ -1,3 +1,7 @@
+2009-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Changing version string to "svn" instead of "cvs" (bug #2822452).
+	* SDL video driver on Mac OS X is set to x11 if Exult Studio support is on.
+
 2009-07-16	Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation,FAQ and README.MacOSX
 	
