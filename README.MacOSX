@@ -83,9 +83,11 @@ After that, you have to re-run configure and make:
   ./configure --enable-exult-studio --enable-macosx-studio-support
   make
   
-Exult compiled with the OS X Exult Studio supports needs to be started with X11
-as SDL Video driver, so a "export SDL_VIDEODRIVER=x11" needs to be set before you 
-start it. Also you need to add the path of Exult Studio to your PATH settings.
-Normnally Exult Studio gets compiled in /path to the Exult source code/mapedit, 
-so if you do "export PATH=$PATH:/path to the Exult source code/mapedit" as well
-before starting Exult, you can start using Exult and Exult Studio.
+You need to add the path of Exult Studio to your PATH settings so that Exult can
+start Exult Studio on entering Map-Edit-Mode (ctrl+cmd+m).
+Normally Exult Studio gets compiled in /path_to_the_Exult_source_code/mapedit, 
+so if you do "export PATH=$PATH:/path_to_the_Exult_source_code/mapedit" before 
+starting Exult, you can start using Exult and Exult Studio.
+If you don't want to set the path to Exult Studio, you can also start Exult,
+go into Map-Edit-Mode, start Exult Studio manually and click in it's menu
+on File->Connect.
