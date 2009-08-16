@@ -1,3 +1,7 @@
+2009-08-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs #2834246, #2833614 and #2830990.
+	* Fixed Gameplay options gump to refer to the new translucent colors.
+
 2009-07-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changing version string to "svn" instead of "cvs" (bug #2822452).
 	* SDL video driver on Mac OS X is set to x11 if Exult Studio support is on.

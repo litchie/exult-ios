@@ -185,7 +185,9 @@ void One_note::write
 	if (gflag >= 0)
 		out << "<gflag> " << gflag << " </gflag>" << endl;
 	out << "<text>" << endl;
-	out.write(text, textlen);
+	// Encode entities (prevents crashes on load with ampersands).
+	string txtenc = encode_entity(text);
+	out.write(txtenc.c_str(), txtenc.size());
 	out << endl << "</text>" << endl;
 	out << "</note>" << endl;
 	}
