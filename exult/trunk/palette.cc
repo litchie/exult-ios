@@ -495,9 +495,9 @@ Palette_transition::Palette_transition
 	  start_hour(sh), start_minute(smin), rate(r)
 	{
 	start = new Palette();
-	start->load(PALETTES_FLX, from);
+	start->load(PALETTES_FLX, PATCH_PALETTES, from);
 	end = new Palette();
-	end->load(PALETTES_FLX, to);
+	end->load(PALETTES_FLX, PATCH_PALETTES, to);
 	set_step(ch, cm);
 	}
 
@@ -514,7 +514,7 @@ Palette_transition::Palette_transition
 	{
 	start = new Palette(from);
 	end = new Palette();
-	end->load(PALETTES_FLX, to);
+	end->load(PALETTES_FLX, PATCH_PALETTES, to);
 	set_step(ch, cm);
 	}
 
