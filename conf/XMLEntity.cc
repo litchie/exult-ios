@@ -32,7 +32,6 @@ using std::vector;
 using std::ostream;
 using std::endl;
 
-static	string	encode_entity(const string &s);
 static	string	close_tag(const string &s);
 
 XMLnode::~XMLnode()
@@ -235,7 +234,7 @@ void	XMLnode::listkeys(const string &key,vector<string> &vs, bool longformat) co
 	}
 }
 
-static	string	encode_entity(const string &s)
+string	encode_entity(const string &s)
 {
 	string	ret;
 
