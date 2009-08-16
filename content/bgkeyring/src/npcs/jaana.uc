@@ -240,15 +240,14 @@ void Jaana object#(0x405) ()
 					LORD_HEATHER.hide();
 					
 					if (isNearby(DUPRE))
-						DUPRE.say("Dupre whispers to you, @Here and she doth say I am the scoundrel!@");
-					
-					if (isNearby(SHAMINO))
-						SHAMINO.say("@Thou -art- the scoundrel!@");
-					
-					if (isNearby(DUPRE))
 					{
+						DUPRE.say("Dupre whispers to you, @And she doth say -I- am the scoundrel!@");
+					
+						if (isNearby(SHAMINO))
+							SHAMINO.say("@Thou -art- the scoundrel!@");
+					
 						DUPRE.say("@At least the only thing I've cozied up to is a mug of ale!@");
-						DUPRE.say("@HA!@, Dupre calls out.  When he notices everyone is looking at him, he blushes slightly.");
+						DUPRE.say("@Ha!@, Dupre calls out. When he notices everyone is looking at him, he blushes slightly.");
 						DUPRE.say("@Nothing to see here, carry on.@");
 						DUPRE.hide();
 						item.say("Jaana just laughs.");

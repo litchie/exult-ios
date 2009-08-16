@@ -180,19 +180,25 @@ void GameplayOptions_gump::build_buttons()
 	stats[2] = "Middle";
 	stats[3] = "Right";
 
-	std::string *textbgcolor = new std::string[12];
+	std::string *textbgcolor = new std::string[18];
 	textbgcolor[0] = "Disabled";
-	textbgcolor[1] = "Purple";
-	textbgcolor[2] = "Orange";
-	textbgcolor[3] = "Light Gray";
-	textbgcolor[4] = "Green";
-	textbgcolor[5] = "Yellow";
-	textbgcolor[6] = "Pale Blue";
-	textbgcolor[7] = "Dark Green";
-	textbgcolor[8] = "Red";
-	textbgcolor[9] = "Bright White";
-	textbgcolor[10] = "Dark gray";
-	textbgcolor[11] = "White";
+	textbgcolor[1] = "Solid Light Gray";
+	textbgcolor[2] = "Dark Purple";
+	textbgcolor[3] = "Bright Yellow";
+	textbgcolor[4] = "Light Blue";
+	textbgcolor[5] = "Dark Green";
+	textbgcolor[6] = "Dark Red";
+	textbgcolor[7] = "Purple";
+	textbgcolor[8] = "Orange";
+	textbgcolor[9] = "Light Gray";
+	textbgcolor[10] = "Green";
+	textbgcolor[11] = "Yellow";
+	textbgcolor[12] = "Pale Blue";
+	textbgcolor[13] = "Dark Green";
+	textbgcolor[14] = "Red";
+	textbgcolor[15] = "Bright White";
+	textbgcolor[16] = "Dark gray";
+	textbgcolor[17] = "White";
 
 #ifdef UNDER_CE
 	std::string *dpadtext = new std::string[4];
@@ -212,7 +218,7 @@ void GameplayOptions_gump::build_buttons()
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
 	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, 
-										 rowy[1], 80, text_bg, 12);
+										 rowy[1], 80, text_bg, 18);
 	if (GAME_BG)
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);

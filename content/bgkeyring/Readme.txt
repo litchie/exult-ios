@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.23
+version: 0.11.24
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -192,6 +192,9 @@ version: 0.11.23
 
 7	Version history
 -------------------
+version: 0.11.24
+	- Fixed dialog bug where Shamino would interject to insult Dupre even if
+	  the later is not in the party
 version: 0.11.23
 	- Fixed Skara Brae/New Magincia moongate destinations.
 version: 0.11.22
@@ -319,3 +322,4 @@ version: 0.10.01
 	- Fixed initgame.dat and install.bat.
 version: 0.10.00
 	- Document created.
+

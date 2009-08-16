@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+std::string	encode_entity(const std::string &s);
 
 class	XMLnode
 {
