@@ -924,7 +924,7 @@ Actor::~Actor
 
 void Actor::refigure_gear()
 	{
-	static Ready_type_Exult locs[] = {head, belt, lhand, lfinger, legs,
+	static enum Ready_type_Exult locs[] = {head, belt, lhand, lfinger, legs,
 			feet, rfinger, rhand, torso, amulet, earrings, cloak, gloves
 		};
 	int powers = 0, immune = 0;
@@ -935,7 +935,10 @@ void Actor::refigure_gear()
 		if (worn)
 			{
 			Shape_info& info = worn->get_info();
-			if (info.is_light_source()) light_sources++;
+			char rdy = info.get_ready_type();
+			if (info.is_light_source() && (locs[i] != belt ||
+					(rdy != lhand && rdy != rhand && rdy != both_hands)))
+				light_sources++;
 			powers |= info.get_object_powers(worn->get_framenum());
 			immune |= info.get_armor_immunity();
 			}
@@ -3350,7 +3353,7 @@ int Actor::figure_warmth
 	{
 	int warmth = -75;		// Base value.
 
-	static Ready_type_Exult locs[] = {head, cloak, feet, torso, gloves, legs};
+	static enum Ready_type_Exult locs[] = {head, cloak, feet, torso, gloves, legs};
 	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
 		{
 		Game_object *worn = spots[static_cast<int>(locs[i])];
@@ -3431,7 +3434,7 @@ void Actor::init_readied
 	(
 	)
 	{
-	static Ready_type_Exult locs[] = {head, belt, lhand, rhand, lfinger, rfinger,
+	static enum Ready_type_Exult locs[] = {head, belt, lhand, rhand, lfinger, rfinger,
 			legs, feet, torso, amulet, earrings, gloves, cloak};
 	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		if (spots[i])
