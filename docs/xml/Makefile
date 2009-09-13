@@ -7,7 +7,7 @@ HTML_OBJS := $(patsubst %.xml,%.html,$(wildcard *.xml))
 TEXT_OBJS := $(patsubst %.xml,%.txt,$(wildcard *.xml))
 PHP_OBJS := $(patsubst %.xml,%.dat,$(wildcard *.xml))
 
-all: html text php ReadMe.html
+all: html text php ReadMe.html duplicate
 
 # Rules for transforming the XML source
 .xml.html: html.xsl
@@ -22,9 +22,14 @@ all: html text php ReadMe.html
 ReadMe.html: docs.html
 	mv docs.html ReadMe.html
 
+#rule for copying faq.txt, docs.txt to Faq and ReadMe
+duplicate: faq.txt docs.txt
+	cp faq.txt Faq
+	cp docs.txt ReadMe
+
 # remove all generated files
 clean:
-	-rm -f *.html *.txt *.dat
+	-rm -f *.html *.txt *.dat FAQ README
 
 html: $(HTML_OBJS)
 text: $(TEXT_OBJS)
