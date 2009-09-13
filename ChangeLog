@@ -1,3 +1,7 @@
+2009-09-13 Dominik Reichardt <dominus@users.sourceforge.net>
+	* Fixed numbering in Documentation and FAQ
+	* docs/xml/makefile: added simple duplicating rule for README and FAQ
+	
 2009-08-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs #2834246, #2833614 and #2830990.
 	* Fixed Gameplay options gump to refer to the new translucent colors.
