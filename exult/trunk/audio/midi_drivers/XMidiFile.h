@@ -72,6 +72,12 @@ public:
 
 	// External Event list functions
 	XMidiEventList *GetEventList (uint32 track);
+	XMidiEventList *StealEventList ()
+		{
+		XMidiEventList *tmp = GetEventList(0);
+		events = NULL;
+		return tmp;
+		}
 
 	// Not yet implimented
 	// int apply_patch (int track, DataSource *source);
