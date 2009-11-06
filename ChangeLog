@@ -1,3 +1,6 @@
+2009-11-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed double-delete bug in midi driver backend for MT32 midi conversion.
+
 2009-09-13 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Fixed numbering in Documentation and FAQ
 	* docs/xml/makefile: added simple duplicating rule for README and FAQ

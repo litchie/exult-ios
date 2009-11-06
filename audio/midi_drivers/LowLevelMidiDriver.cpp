@@ -1247,7 +1247,10 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 
 	if (!xmidi) return;
 
-	XMidiEventList *eventlist = xmidi->GetEventList(0);
+	// Subtle bug warning: the LLMD_MSG_PLAY adds the eventlist to the
+	// play queue, resulting in ite eventual deletion!
+	//XMidiEventList *eventlist = xmidi->GetEventList(0);
+	XMidiEventList *eventlist = xmidi->StealEventList();
 	if (!eventlist)
 	{
 		delete xmidi;
