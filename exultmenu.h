@@ -41,6 +41,7 @@ private:
 	Vga_file exult_flx;
 	//	Palette pal;
 	int centerx, centery;
+	int pagesize;
 	void calc_win();
 	Mouse *menu_mouse;
 	MenuList *create_main_menu(Shape_frame *bg, int first = 0);
