@@ -735,14 +735,7 @@ static void Init
 
 	if (arg_buildmap < 0)
 		{
-#if defined(__zaurus__) || defined(UNDER_CE)
 		gwin = new Game_window(sw, sh, scaleval, sclr);
-#else
-		if (arg_gamename != "default" || run_bg || run_si || run_fov || run_ss)
-			gwin = new Game_window(sw, sh, scaleval, sclr);
-		else
-			gwin = new Game_window(320, 200, scaleval, sclr);
-#endif
 
 		current_res = find_resolution(sw, sh, scaleval);
 		Audio::Init();
@@ -818,17 +811,10 @@ static void Init
 			}
 		else
 			{
-#if !(defined(__zaurus__))
-#ifdef UNDER_CE
 			gwin->resized(sw, sh, scaleval, sclr);
 			// Ensure proper clipping:
 			gwin->get_win()->set_clip(0, 0, sw, sh);
-#else
-			gwin->resized(320, 200, scaleval, sclr);
-			// Ensure proper clipping:
-			gwin->get_win()->set_clip(0, 0, 320, 200);
-#endif
-#endif
+
 			ExultMenu exult_menu(gwin);
 			newgame = exult_menu.run();
 			}

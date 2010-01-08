@@ -1,3 +1,9 @@
+2010-01-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed Exult Menu to be consistent with Tristan's commit. It is also more
+	  dynamic now, adjusting to the screen size.
+	* Eliminated various #ifdef for Zaurus given that they were specifically
+	  added for the different-sized Exult-menu.
+
 2010-01-08	Tristan Tarrant <nadir@users.sourceforge.net>
 	* First commit of 2010 and it isn't by Marzo !!!
 	* Main screen is now at 320x200 to be consistent with the default
