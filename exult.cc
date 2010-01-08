@@ -741,7 +741,7 @@ static void Init
 		if (arg_gamename != "default" || run_bg || run_si || run_fov || run_ss)
 			gwin = new Game_window(sw, sh, scaleval, sclr);
 		else
-			gwin = new Game_window(400, 300, scaleval, sclr);
+			gwin = new Game_window(320, 200, scaleval, sclr);
 #endif
 
 		current_res = find_resolution(sw, sh, scaleval);
@@ -824,9 +824,9 @@ static void Init
 			// Ensure proper clipping:
 			gwin->get_win()->set_clip(0, 0, sw, sh);
 #else
-			gwin->resized(400, 300, scaleval, sclr);
+			gwin->resized(320, 200, scaleval, sclr);
 			// Ensure proper clipping:
-			gwin->get_win()->set_clip(0, 0, 400, 300);
+			gwin->get_win()->set_clip(0, 0, 320, 200);
 #endif
 #endif
 			ExultMenu exult_menu(gwin);
