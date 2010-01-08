@@ -1,3 +1,6 @@
+2010-01-08	Tristan Tarrant <nadir@users.sourceforge.net>
+	* Disable smooth scrolling in default install
+
 2010-01-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed Exult Menu to be consistent with Tristan's commit. It is also more
 	  dynamic now, adjusting to the screen size.
