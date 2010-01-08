@@ -1,3 +1,8 @@
+2010-01-08	Tristan Tarrant <nadir@users.sourceforge.net>
+	* First commit of 2010 and it isn't by Marzo !!!
+	* Main screen is now at 320x200 to be consistent with the default
+	  game resolution
+
 2009-11-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed double-delete bug in midi driver backend for MT32 midi conversion.
 
