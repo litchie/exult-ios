@@ -48,29 +48,33 @@ static bool get_play_1st_scene(void);
 static void set_play_1st_scene(bool);
 
 #define MAX_GAMES 100
-#if defined(__zaurus__)
-	#define PAGE_SIZE 3
-#else
-	#define PAGE_SIZE 10
-#endif
-#define REBUILD_MENU(x) {delete menu; menu = x; gwin->clear_screen(true);}
-#define NAV_CLICK(x, y) {	\
-			case -8:	\
-				y = 0;	\
-				REBUILD_MENU(x);	\
-				break;	\
-			case -7:	\
-				y -= PAGE_SIZE;	\
-				REBUILD_MENU(x);	\
-				break;	\
-			case -6:	\
-				y += PAGE_SIZE;	\
-				REBUILD_MENU(x);	\
-				break;	\
-			case -5:	\
-				y = last_page;	\
-				REBUILD_MENU(x);	\
-				break;}
+
+static inline bool handle_menu_click
+	(
+	int id,
+	int& first,
+	int last_page,
+	int pagesize
+	)
+{
+	switch (id)
+	{
+		case -8:
+			first = 0;
+			return true;
+		case -7:
+			first -= pagesize;
+			return true;
+		case -6:
+			first += pagesize;
+			return true;
+		case -5:
+			first = last_page;
+			return true;
+		default:
+			return false;
+	}
+}
 
 int maximum_size(Font *font, const char *options[], int num_choices, int centerx)
 {
@@ -119,14 +123,15 @@ void create_scroller_menu(MenuList *menu, Font *fonton, Font *font, int first, i
 }
 
 ExultMenu::ExultMenu(Game_window *gw)
+	: font(0), fonton(0), navfont(0), navfonton(0)
 {
 	gwin = gw;
 	ibuf = gwin->get_win()->get_ib8();
-	calc_win();
 	fontManager.add_font("CREDITS_FONT", EXULT_FLX, EXULT_FLX_FONT_SHP, 1);
 	fontManager.add_font("HOT_FONT", EXULT_FLX, EXULT_FLX_FONTON_SHP, 1);
 	fontManager.add_font("NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONT_SHP, 1);
 	fontManager.add_font("HOT_NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONTON_SHP, 1);
+	calc_win();
 	exult_flx.load(EXULT_FLX);
 }
 
@@ -138,6 +143,8 @@ void ExultMenu::calc_win()
 {
 	centerx = gwin->get_width()/2;
 	centery = gwin->get_height()/2;
+	Font *fnt = font ? font : fontManager.get_font("CREDITS_FONT");
+	pagesize = 2 * ((gwin->get_height() - 5 * fnt->get_text_height() - 15) / 45);
 }
 
 
@@ -327,19 +334,12 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 	MenuList *menu = new MenuList();
 
 	int ypos = 15;
-	int xpos;
-#if !(defined(__zaurus__))
-	xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
-#endif
+	int xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
 	std::vector<ModManager>& game_list = gamemanager->get_game_list();
 	int num_choices = game_list.size();
-	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
+	int last = num_choices > first + pagesize ? first + pagesize : num_choices;
 	for(int i=first; i<last; i++) {
-#if defined(__zaurus__)
-		int menux = centerx;
-#else
 		int menux = xpos+(i%2)*centerx;
-#endif
 		ModManager& exultgame = game_list[i];
 		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
 		strcpy(menustringname, exultgame.get_menu_string().c_str());
@@ -357,13 +357,11 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 			mod_entry->set_id(i+MAX_GAMES);
 			menu->add_entry(mod_entry);
 		}
-#if !(defined(__zaurus__))
 		if (i%2)
-#endif
 			ypos += 45;
 	}
 
-	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
+	create_scroller_menu(menu, navfonton, navfont, first, pagesize, num_choices,
 			centerx, ypos = gwin->get_height()-5*font->get_text_height());
 
 	const char *menuchoices[] = { 
@@ -394,20 +392,13 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 	MenuList *menu = new MenuList();
 
 	int ypos = 15;
-	int xpos;
-#if !(defined(__zaurus__))
-	xpos = centerx/2;
-#endif
+	int xpos = centerx/2;
 	
 	std::vector<ModInfo>& mod_list = selgame->get_mod_list();
 	int num_choices = mod_list.size();
-	int last = num_choices>first+PAGE_SIZE?first+PAGE_SIZE:num_choices;
+	int last = num_choices > first + pagesize ? first + pagesize : num_choices;
 	for(int i=first; i<last; i++) {
-#if defined(__zaurus__)
-		int menux = centerx;
-#else
 		int menux = xpos+(i%2)*centerx;
-#endif
 		ModInfo& exultmod = mod_list[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							exultmod.get_menu_string().c_str(),
@@ -424,13 +415,11 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 			incentry->set_enabled(false);
 			menu->add_entry(incentry);
 		}
-#if !(defined(__zaurus__))
 		if (i%2)
-#endif
 			ypos += 45;
 	}
 	
-	create_scroller_menu(menu, navfonton, navfont, first, PAGE_SIZE, num_choices,
+	create_scroller_menu(menu, navfonton, navfont, first, pagesize, num_choices,
 			centerx, ypos = gwin->get_height()-5*font->get_text_height());
 
 	const char *menuchoices[] = { 
@@ -463,27 +452,23 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 	gpal->apply();
 
 	int first_mod = 0, num_choices = selgame->get_mod_list().size()-1,
-		last_page = num_choices-num_choices%PAGE_SIZE;
+		last_page = num_choices - num_choices % pagesize;
 	MenuList *menu = create_mods_menu(selgame, logobg, first_mod);
 	menu->set_selection(0);
 	BaseGameInfo *sel_mod = 0;
 	
 	Shape_frame *exultlogo = 0;
-#if !(defined(__zaurus__))
 	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	int logox, logoy;
 	logox = centerx - exultlogo->get_width()/2;
 	logoy = centery - exultlogo->get_height()/2;
-#endif
 	
 	do {
-#if !(defined(__zaurus__))
 		// Interferes with the menu.
 #ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
 			sman->paint_shape(logox,logoy,exultlogo);
-#endif
 #ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
@@ -494,7 +479,6 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 		switch(choice) {
 			case -10: // The incompatibility notice; do nothing
 				break;
-			NAV_CLICK(create_mods_menu(selgame, logobg, first_mod), first_mod);
 			case -4: // Return to main menu
 				gpal->fade_out(c_fade_out_time/2);
 				wait_delay(c_fade_out_time/2);
@@ -508,6 +492,12 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 					gpal->fade_out(c_fade_out_time);
 					sel_mod = selgame->get_mod(choice);
 					break;
+				}
+				else if (handle_menu_click(choice, first_mod, last_page, pagesize))
+				{
+					delete menu;
+					menu = create_mods_menu(selgame, logobg, first_mod);
+					gwin->clear_screen(true);
 				}
 		}
 	} while(sel_mod==0);
@@ -592,21 +582,16 @@ BaseGameInfo *ExultMenu::run()
 	wait_delay(2000);
 	Shape_frame *logobg;
 
-#ifdef __zaurus__
-	exultlogo = logobg = 0;
-#else
 	logobg = create_exultlogo(logox, logoy, exult_flx, font);
-#endif
 	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 	int first_game = 0, num_choices = gamemanager->get_game_count()-1,
-		last_page = num_choices-num_choices%PAGE_SIZE;
+		last_page = num_choices - num_choices % pagesize;
 	MenuList *menu = create_main_menu(logobg, first_game);
 	menu->set_selection(0);
 	BaseGameInfo *sel_game = 0;
 	// Erase the old logo.
 	gwin->clear_screen(true);
 	do {
-#if !(defined(__zaurus__))
 		// Interferes with the menu.
 #ifdef HAVE_OPENGL
 		if (GL_manager::get_instance() && !logobg)
@@ -617,7 +602,6 @@ BaseGameInfo *ExultMenu::run()
 		else if (!GL_manager::get_instance())
 #endif
 			sman->paint_shape(logox,logoy,exultlogo);
-#endif
 #ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
 #endif
@@ -626,7 +610,6 @@ BaseGameInfo *ExultMenu::run()
 						gwin->get_height()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice) {
-			NAV_CLICK(create_main_menu(logobg, first_game), first_game);
 			case -4: // Setup
 				gpal->fade_out(c_fade_out_time);
 				setup();
@@ -673,6 +656,12 @@ BaseGameInfo *ExultMenu::run()
 							gamemanager->get_game(choice-MAX_GAMES), logobg);
 					gwin->clear_screen(true);
 					gpal->apply();
+				}
+				else if (handle_menu_click(choice, first_game, last_page, pagesize))
+				{
+					delete menu;
+					menu = create_main_menu(logobg, first_game);
+					gwin->clear_screen(true);
 				}
 				break;
 		}
