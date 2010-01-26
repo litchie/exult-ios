@@ -93,6 +93,7 @@ Game::Game() : xml(0), menushapes()
 Game::~Game()
 {
 	game_type = NONE;
+	delete xml;
 	while (xmlstrings.size())
 		{
 		char *str = const_cast<char *>(xmlstrings.back());
