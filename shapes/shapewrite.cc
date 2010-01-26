@@ -86,10 +86,10 @@ protected:
 		{  }
 public:
 	Abstract_base_writer(const char *s, map<int, Shape_info>& nfo, int n, int v=-1)
-		:	name(strdup(s)), info(nfo), num_shapes(n), version(v), cnt(-1)
+		:	name(newstrdup(s)), info(nfo), num_shapes(n), version(v), cnt(-1)
 		{  }
 	virtual ~Abstract_base_writer()
-		{ delete name; }
+		{ delete [] name; }
 	int check()
 		{
 		if (cnt > -1)	// Return cached value.
