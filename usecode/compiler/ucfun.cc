@@ -790,9 +790,9 @@ void Uc_function::gen
 		if (!label->is_reachable())
 			{	// Label can't be reached from the initial block.
 				// Remove it from map and unlink references to it.
-			label_blocks.erase(it);
 			label->unlink_descendants();
 			label->unlink_predecessors();
+			it->second = 0;
 			delete label;
 			}
 		}
