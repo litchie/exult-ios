@@ -206,8 +206,24 @@ char *Handle_string
 			{
 		case 'n':
 			*to++ = '\n'; break;
-		default:
+		case 't':
+			*to++ = '\t'; break;
+		case 'r':
+			*to++ = '\r'; break;
+		case '\"':
+		case '\'':
+		case '\\':
 			*to++ = *from; break;
+		default:
+			{
+			char buf[150];
+			sprintf(buf, "Unknown escape sequence '\\%c'. If you are trying "
+			             "to insert a literal backslash ('\\') into text, "
+			             "write it as '\\\\'.", *from);
+			Uc_location::yywarning(buf);
+			*to++ = '\\';
+			*to++ = *from; break;
+			}
 			}
 		++from;
 		}
@@ -437,6 +453,8 @@ sonic_damage	return SONIC_DAMAGE;
 				const char *nm = loc->get_source();
 				loc->set_cur(nm, loc->get_line());
 				delete loc;
+				// Close currently opened file.
+				if (yyin && yyin != stdin && bufstack.size()) fclose(yyin);
 				yy_delete_buffer(YY_CURRENT_BUFFER);
 				yy_switch_to_buffer(bufstack.back());
 				bufstack.pop_back();
