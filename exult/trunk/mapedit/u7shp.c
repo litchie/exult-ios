@@ -223,7 +223,8 @@ run (GIMP20_CONST gchar   *name,
 
 	if (strcmp (name, "file_shp_load") == 0) {
 		gimp_ui_init ("u7shp", FALSE);
-		choose_palette();
+		if (run_mode != GIMP_RUN_NONINTERACTIVE)
+			choose_palette();
 		image_ID = load_image (param[1].data.d_string);
 
 		if (image_ID != -1) {

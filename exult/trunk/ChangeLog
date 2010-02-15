@@ -1,3 +1,10 @@
+2010-02-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/pngio.*: Added function to save 32-bit RGBA png file.
+	* mapedit/u7shp.c: Do not prompt for palette if running non-interactively.
+	* All else: Added a Gnome thumbnailer for SHP files. It can probably be
+	  modified to work on Thunar/Xfce too, but I have no idea about KDE.
+	  No comments on Windows, though. It is off by default.
+
 2010-02-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* ucc: Some additional escape character sequences have been added, as well
 	  as some code to warn about unknown sequences. Also, ucc was not closing
