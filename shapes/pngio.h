@@ -37,6 +37,8 @@ int Export_png8(const char *pngname, int transp_index, int width, int height,
 int Import_png32(const char *pngname, int& width, int& height,
 		int& rowbytes, int& xoff, int& yoff, unsigned char *& pixels,
 						bool bottom_first = false);
+int Export_png32(const char *pngname, int width, int height,
+		int rowbytes, int xoff, int yoff, unsigned char * pixels);
 
 #endif
 #endif

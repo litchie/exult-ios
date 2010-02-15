@@ -1,0 +1,30 @@
+<gconfschemafile>
+  <schemalist>
+
+    <schema>
+      <applyto>/desktop/gnome/thumbnailers/image@x-shapefile/command</applyto>
+      <key>/schemas/desktop/gnome/thumbnailers/image@x-shapefile/command</key>
+      <owner>gnome_shp_thumbnailer</owner>
+      <type>string</type>
+      <default>@bindir@/gnome_shp_thumbnailer -s %s %i %o</default>
+      <locale name="C">
+        <short></short>
+        <long></long>
+      </locale>
+    </schema>
+
+    <schema>
+      <applyto>/desktop/gnome/thumbnailers/image@x-shapefile/enable</applyto>
+      <key>/schemas/desktop/gnome/thumbnailers/image@x-shapefile/enable</key>
+      <owner>gnome_shp_thumbnailer</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short></short>
+        <long></long>
+      </locale>
+    </schema>
+
+  </schemalist>
+</gconfschemafile>
+

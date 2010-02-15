@@ -654,6 +654,20 @@ else
 		have_glade=no
 		AC_MSG_RESULT(no gtk+/libglade)
 	fi
+	AC_MSG_CHECKING(for Gnome UI development files)
+	# This version requirement is an utter guess.
+	if pkg-config --atleast-version 2.16 libgnomeui-2.0; then
+		have_gnomeui=yes
+		AC_MSG_RESULT(yes...)
+		AC_DEFINE(HAVE_GNOMEUI, 1, [Have Gnome UI support libraries])
+		GNOMEUI_INCLUDES=`pkg-config --cflags libgnomeui-2.0`
+		GNOMEUI_LIBS=`pkg-config --libs libgnomeui-2.0`
+		AC_SUBST(GNOMEUI_INCLUDES)
+		AC_SUBST(GNOMEUI_LIBS)
+	else
+		have_gnomeui=no
+		AC_MSG_RESULT(no libgnomeui)
+	fi
 fi
 
 # Freetype2 (optional, used in ExultStudio, shapes/fontgen.cc)
@@ -664,6 +678,17 @@ if test -n "$FT2CONFIG"; then
 	AC_SUBST(FREETYPE2_LIBS)
 	FREETYPE2_INCLUDES=`$FT2CONFIG --cflags`
 	AC_SUBST(FREETYPE2_INCLUDES)
+fi
+
+# gconftool2 (optional, used in Gnome SHP thumbnailer)
+AC_PATH_PROG(GCONFTOOL, gconftool-2)
+if test -n "$GCONFTOOL"; then
+	AC_DEFINE(HAVE_GCONFTOOL2, 1, [Have gconftool-2])
+	have_gconftool=yes
+	# We will leave this for later:
+	#AM_GCONF_SOURCE_2
+else
+	have_gconftool=no
 fi
 
 # exult-studio
@@ -679,6 +704,28 @@ if test x$enable_exult_studio = xyes; then
 	AM_CONDITIONAL(BUILD_STUDIO, true)
 else
 	AM_CONDITIONAL(BUILD_STUDIO, false)
+	AC_MSG_RESULT(no)
+fi
+
+# gnome-shp-thumbnailer
+AC_ARG_ENABLE(gnome-shp-thumbnailer, [[  --enable-gnome-shp-thumbnailer   Build Gnome SHP Thumbnailer [default no]]],,enable_gnome_shp_thumbnailer=no)
+AC_MSG_CHECKING(whether to build the Gnome SHP Thumbnailer)
+if test x$enable_gnome_shp_thumbnailer = xyes; then
+	AC_MSG_RESULT(yes)
+	if test x$have_gconftool = xno; then
+		echo "Umm, but we don't have gconftool-2."
+		echo "Try again, either with gconftool-2, or with --disable-gnome-shp-thumbnailer"
+		exit 1
+	elif test x$have_gnomeui = xno; then
+		echo "Umm, but we don't have any libgnomeui stuff."
+		echo "Try again, either with libgnomeui, or with --disable-gnome-shp-thumbnailer"
+		exit 1
+	fi
+	# And here it is:
+	AM_GCONF_SOURCE_2
+	AM_CONDITIONAL(BUILD_GTHUMB, true)
+else
+	AM_CONDITIONAL(BUILD_GTHUMB, false)
 	AC_MSG_RESULT(no)
 fi
 
@@ -793,6 +840,10 @@ if test x$have_glade = xyes; then
 echo GLIB ...................... : `pkg-config --modversion glib-2.0`
 echo GTK+ ...................... : `pkg-config --modversion gtk+-2.0`
 echo libGlade .................. : `pkg-config --modversion libglade-2.0`
+echo 
+fi
+if test x$have_gnomeui = xyes; then
+echo libGnomeui................. : `pkg-config --modversion libgnomeui-2.0`
 echo 
 fi
 echo Build tools................ : $enable_tools
