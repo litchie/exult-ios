@@ -363,5 +363,62 @@ int Import_png32
 	return (1);
 	}
 
+
+/*
+ *	Write out a 32-bit .png file.  
+ *
+ *	Output:	0 if failed.
+ */
+
+int Export_png32
+	(
+	const char *pngname,
+	int width, int height,		// Image dimensions.
+	int rowbytes,			// # bytes/row.  (Should be
+					//   4*width.)
+	int xoff, int yoff,		// (X,Y) offsets from top-left of
+					//   image.
+	unsigned char *pixels		// ->pixels to write.
+	)
+	{
+					// Open file.
+	FILE *fp = fopen(pngname, "wb");
+	if (!fp)
+		return (0);
+					// Initialize.
+	png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
+						0, 0, 0);
+	if (!png)
+		{
+		fclose(fp);
+		return (0);
+		}
+					// Allocate info. structure.
+	png_infop info = png_create_info_struct(png);
+	if (setjmp(png->jmpbuf))	// Handle errors.
+		{
+		png_destroy_write_struct(&png, &info);
+		fclose(fp);
+		return (0);
+		}
+	png_init_io(png, fp);		// Init. for reading.
+	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
+			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+						PNG_FILTER_TYPE_DEFAULT);
+	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
+					// Write out info.
+	png_write_info(png, info);
+	png_bytep rowptr;		// Write out rows.
+	int r;
+	for (r = 0, rowptr = pixels; r < height; r++, rowptr += rowbytes)
+		png_write_row(png, rowptr);
+	png_write_end(png, 0);		// Done.
+					// Clean up.
+	png_destroy_write_struct(&png, &info);
+	fclose(fp);
+	return (1);
+	}
+
+
 #endif	/* HAVE_PNG_H */
 
