@@ -725,6 +725,7 @@ if test x$enable_gnome_shp_thumbnailer = xyes; then
 	AM_GCONF_SOURCE_2
 	AM_CONDITIONAL(BUILD_GTHUMB, true)
 else
+	AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
 	AM_CONDITIONAL(BUILD_GTHUMB, false)
 	AC_MSG_RESULT(no)
 fi
