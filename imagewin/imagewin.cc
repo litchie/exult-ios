@@ -38,6 +38,8 @@ Boston, MA  02111-1307, USA.
 #include "exult_types.h"
 #include "utils.h"
 
+#include <algorithm>
+
 #include "SDL_video.h"
 #include "SDL_error.h"
 
@@ -47,6 +49,7 @@ Boston, MA  02111-1307, USA.
 #else
 #include <GL/gl.h>
 #endif
+#include "shapes/glshape.h"
 #endif
 
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
@@ -514,6 +517,20 @@ void Image_window::toggle_fullscreen() {
 bool Image_window::screenshot(SDL_RWops *dst)
 {
 	if (!surface) return false;
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		{
+		int width = ibuf->width, height = ibuf->height;
+		GL_manager *glman = GL_manager::get_instance();
+		unsigned char *bits = glman->get_unscaled_bits(width, height, false);
+		SDL_Surface *screenshot_surface = SDL_CreateRGBSurfaceFrom(bits,
+					width, height, 24, 3 * width, 0, 0, 0, 0);
+		bool ret = SavePCX_RW(screenshot_surface, dst, true);
+		SDL_FreeSurface(screenshot_surface);
+		delete [] bits;
+		return ret;
+		}
+#endif
 	return SavePCX_RW(unscaled_surface, dst, true);
 }
 

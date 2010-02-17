@@ -3024,6 +3024,10 @@ Shape_file* Game_window::create_mini_screenshot()
 
 	set_all_dirty();
 	render->paint_map(0, 0, get_width(), get_height());
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		show();
+#endif
 
 	img = win->mini_screenshot();
 	

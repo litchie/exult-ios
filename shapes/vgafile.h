@@ -46,14 +46,17 @@ class Palette;
 #include "glshape.h"
 
 #define GLRENDER	if (glman) glman->paint(this, px, py); else
-#define GLRENDERTRANS	if (glman) glman->paint(this, px, py, xforms, xfcnt); \
+#define GLTRANSLUCENT	if (glman) glman->paint(this, px, py, xforms, xfcnt); \
 								else
-#define GLRENDERREMAP	if (glman) glman->paint(this, px, py, trans); else
-#define GLOUTLINE	if (glman) ; else
+#define GLTRANSFORM	if (glman) glman->paint_transformed(this, px, py, xform); \
+								else
+#define GLREMAPPED	if (glman) glman->paint_remapped(this, px, py, trans); else
+#define GLOUTLINE	if (glman) glman->paint_outline(this, px, py, color); else
 #else
 #define GLRENDER
-#define GLRENDERTRANS
-#define GLRENDERREMAP
+#define GLTRANSLUCENT
+#define GLTRANSFORM
+#define GLREMAPPED
 #define GLOUTLINE
 #endif
 
@@ -65,6 +68,7 @@ class Shape_frame
 	unsigned char *data;		// The actual data.
 #ifdef HAVE_OPENGL
 	GL_texshape *glshape;		// OpenGL texture for painting this.
+	GL_texshape *gloutline;		// OpenGL texture for painting outline of this.
 #endif
 	int datalen;
 	short xleft;			// Extent to left of origin.
@@ -91,7 +95,7 @@ public:
 	Shape_frame() 
 		: data(0),
 #ifdef HAVE_OPENGL
-			glshape(0),
+			glshape(0), gloutline(0),
 #endif
 			datalen(0)
 		{  }
@@ -122,16 +126,16 @@ public:
 	void paint_rle(int px, int py)
 		{ GLRENDER  paint_rle(scrwin, px, py); }
 	void paint_rle_remapped(int px, int py, unsigned char *trans)
-		{ GLRENDERREMAP  paint_rle_remapped(scrwin, px, py, trans); }
+		{ GLREMAPPED  paint_rle_remapped(scrwin, px, py, trans); }
 	void paint(int px, int py)
 		{ GLRENDER  paint(scrwin, px, py); }
 					// ++++++GL versions of these needed:
 	void paint_rle_translucent(int px, int py,
 					Xform_palette *xforms, int xfcnt)
-		{ GLRENDERTRANS  paint_rle_translucent(
+		{ GLTRANSLUCENT  paint_rle_translucent(
 					scrwin, px, py, xforms, xfcnt); }
 	void paint_rle_transformed(int px, int py, Xform_palette& xform)
-		{ GLRENDER  paint_rle_transformed(scrwin, px, py, xform); }
+		{ GLTRANSFORM  paint_rle_transformed(scrwin, px, py, xform); }
 	void paint_rle_outline(int px, int py, unsigned char color)
 		{ GLOUTLINE  paint_rle_outline(scrwin, px, py, color); }
 
@@ -158,6 +162,8 @@ public:
 #ifdef HAVE_OPENGL
 		if (glshape)
 			glshape->disassociate();
+		if (gloutline)
+			gloutline->disassociate();
 #endif
 		delete [] data;
 		}
