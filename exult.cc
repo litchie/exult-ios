@@ -1661,7 +1661,7 @@ static int Get_click
 				else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
 					gwin->get_main_actor()->stop();
-					if (gwin->get_mouse3rd() && rightclick)						{
+					if (gwin->get_mouse3rd() && rightclick) {
 						rightclick = false;
 						return 0;
 					}
