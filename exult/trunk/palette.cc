@@ -308,15 +308,68 @@ void Palette::set_brightness(int bright)
 	{
 		brightness = bright;
 	}
-	
+
+#ifdef HAVE_OPENGL
+static inline void glfade
+	(
+	Image_window *win,
+	int cycles,
+	bool fadein,
+	unsigned char *pal1,
+	unsigned char *pal2,
+	int max_val,
+	int brightness
+	)
+	{
+#if 1
+	win->set_palette(fadein ? pal1 : pal2, max_val, brightness);
+	win->show();
+#else
+	// FIXME: For some reason, this doesn't work always. I have no idea why.
+	int scale = win->get_scale();
+	int w = win->get_width() * scale, h = win->get_height() * scale;
+	unsigned char *rgba_pixels = GL_manager::get_instance()->get_screen_rgba();
+	win->set_palette(fadein ? pal1 : pal2, max_val, brightness);
+	unsigned char *fade_blend  = new unsigned char[4*w*h];
+	//std::memset(fade_blend, 0, 4*w*h);
+	unsigned int ticks = SDL_GetTicks() + 20;
+	cycles >>= 2;
+	for (int i = 0; i <= cycles; i++)
+		{
+		//int alpha = fadein ? 255 - ((255*i)/cycles) : (255*i)/cycles;
+		int from = fadein ? i : cycles - i;
+		for (int j = 0; j < w*h; j++)
+			{
+			for (int k = 0; k < 3; k++)
+				fade_blend[4*j+k] = (from*rgba_pixels[4*j+k])/cycles;
+			fade_blend[4*j+3] = rgba_pixels[4*j+3];
+			//fade_blend[4*j+3] = alpha;
+			}
+		//gl_paint_rgba_bitmap(rgba_pixels, 0, 0, w, h, 1);
+		gl_paint_rgba_bitmap(fade_blend , 0, 0, w, h, 1);
+		while (ticks >= SDL_GetTicks())
+			;
+		win->show();
+		ticks += 20;
+		}
+	delete [] rgba_pixels;
+	delete [] fade_blend;
+#endif
+	}
+#endif
+
+
 void Palette::fade_in(int cycles)
 {
-#ifdef HAVE_OPENGL
-	if (fades_enabled && !GL_manager::get_instance())
-#else
 	if (fades_enabled)
-#endif
 	{
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance())
+		{
+			glfade(win, cycles, true, pal1, pal2, max_val, brightness);
+			return;
+		}
+#endif
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = 0; i <= cycles; i++)
@@ -343,12 +396,15 @@ void Palette::fade_in(int cycles)
 void Palette::fade_out(int cycles)
 {
 	faded_out = true;		// Be sure to set flag.
-#ifdef HAVE_OPENGL
-	if (fades_enabled && !GL_manager::get_instance())
-#else
 	if (fades_enabled)
-#endif
 	{
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance())
+		{
+			glfade(win, cycles, false, pal1, pal2, max_val, brightness);
+			return;
+		}
+#endif
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = cycles; i >= 0; i--)

@@ -22,14 +22,6 @@
 
 #include <map>
 
-#ifdef HAVE_OPENGL
-#ifdef MACOSX
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
-#endif
-
 #include "gamemap.h"
 #include "chunks.h"
 #include "Audio.h"
@@ -1508,18 +1500,14 @@ protected:
 	int x, y;			// Where to paint.
 	int w, h;			// Dimensions
 public:
-	Paint_rgba_centered(unsigned char *rgbpix, int alpha,
+	Paint_rgba_centered(unsigned char *rgbapix, int alpha,
 					int w0, int h0, int scale)
-		: pixels(0), x(0), y(0), w(w0), h(h0)
+		: pixels(rgbapix), x(0), y(0), w(w0), h(h0)
 		{
 #ifdef HAVE_OPENGL
-		pixels = new unsigned char[4*w*h];
-		for (int i = 0; i < w*h; i++)
-			{
-			for (int j = 0; j < 3; j++)
-				pixels[4 * i + j] = rgbpix[3 * i + j];
-			pixels[4 * i + 3] = alpha;
-			}
+		if (alpha >= 0 && alpha < 256)
+			for (int i = 0; i < w*h; i++)
+				pixels[4 * i + 3] = alpha;
 					// Get coords. for centered view.
 		x = (scale*gwin->get_width() - w)/2;
 		y = (scale*gwin->get_height() - h)/2;
@@ -1529,11 +1517,7 @@ public:
 	virtual void paint()
 		{
 #ifdef HAVE_OPENGL
-		glPixelZoom(1, -1);	// Get right side up.
-		glRasterPos2f(x, y);
-		glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-		glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		gl_paint_rgba_bitmap(pixels, x, y, w, h, 1);
 #endif
 		}
 	};
@@ -1585,10 +1569,9 @@ USECODE_INTRINSIC(display_area)
 			{
 			int scale = gwin->get_win()->get_scale();
 			int w = gwin->get_width(), h = gwin->get_height();
-			unsigned char *rgb_pixels = glman->get_screen_bits(w, h, true);
-			paint = new Paint_rgba_centered(rgb_pixels, 255,
+			unsigned char *rgba_pixels = glman->get_screen_rgba();
+			paint = new Paint_rgba_centered(rgba_pixels, -1,
 							scale*w, scale*h, scale);
-			delete [] rgb_pixels;
 			}
 #endif
 					// Wait for click.

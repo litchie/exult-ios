@@ -35,6 +35,7 @@
 #endif
 #endif
 
+#include "gamewin.h"
 #include "glshape.h"
 #include "vgafile.h"
 #include "utils.h"
@@ -373,6 +374,35 @@ public:
 					first_rot, last_rot, data, alpha); }
 	};
 
+
+/*
+ *	Paint an rgba image directly.
+ */
+void gl_paint_rgba_bitmap
+	(
+	unsigned char *pixels,
+	int px, int py,
+	int w, int h,
+	int scale
+	)
+	{
+	if (px < 0)			// Doesn't paint if off screen.
+		{
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
+		w += px;
+		px = 0;
+		}
+					//++++CHeck py too?
+//	float x = static_cast<float>(px);
+//	float y = static_cast<float>(py);
+	glPixelZoom(scale, -scale);	// Get right side up.
+	glRasterPos2f(px, py);
+	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	}
+
 /*
  *	Paint an image directly using the given data for transform.
  */
@@ -402,21 +432,7 @@ static void Paint_image
 	bool rot;
 	unsigned char *pixels = buf8.rgba(pal, transp, rot,
 					first_rot, last_rot, alpha);
-	if (px < 0)			// Doesn't paint if off screen.
-		{
-		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
-		w += px;
-		px = 0;
-		}
-					//++++CHeck py too?
-//	float x = static_cast<float>(px);
-//	float y = static_cast<float>(py);
-	glPixelZoom(scale, -scale);	// Get right side up.
-	glRasterPos2f(px, py + h);
-	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	gl_paint_rgba_bitmap(pixels, px, py, w, h, scale);
 	delete pixels;
 	}
 
@@ -541,21 +557,9 @@ void GL_manager::paint_outline
 	tex->paint(px, py);
 	}
 
-/*
- *	Grabs the (scaled) contents of the screen.
- *
- *	Output: -> to buffer allocated with new [] in RGB format.
- */
-
-unsigned char *GL_manager::get_screen_bits(int width, int height, bool rgb)
+template<int bpp>
+static inline void unflip_bitmap(unsigned char *pixels, int w, int h)
 	{
-	int w = width*scale, h = height*scale;
-	const int bpp = 3;	// Want RGB.
-	unsigned char *bits = new unsigned char[bpp*w*h];
-	glPixelStorei(GL_PACK_ALIGNMENT, 1);
-	glReadPixels(0, 0, w, h, rgb ? GL_RGB : GL_BGR, GL_UNSIGNED_BYTE, bits);
-		// glReadPixels reads from bottom-left to top-right.
-		// Flip it back.
 	for (int j = 0; j < h/2; j++)
 		{
 		const int swapj = h - j - 1;
@@ -563,12 +567,55 @@ unsigned char *GL_manager::get_screen_bits(int width, int height, bool rgb)
 			{
 			const int off = bpp * (i + j * w);
 			const int swapoff = bpp * (i + swapj * w);
-			std::swap(bits[off + 0], bits[swapoff + 0]);
-			std::swap(bits[off + 1], bits[swapoff + 1]);
-			std::swap(bits[off + 2], bits[swapoff + 2]);
+			for (int b = 0; b < bpp; b++)
+				std::swap(pixels[off + b], pixels[swapoff + b]);
 			}
 		}
+	}
+
+template<int bpp>
+static inline unsigned char *get_pixels(GLenum format, bool unflip, int scale)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	int w = gwin->get_width() * scale, h = gwin->get_height() * scale;
+	unsigned char *bits = new unsigned char[bpp*w*h];
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glReadPixels(0, 0, w, h, format, GL_UNSIGNED_BYTE, bits);
+		// glReadPixels reads from bottom-left to top-right.
+		// Flip it back.
+	if (unflip)
+		unflip_bitmap<bpp>(bits, w, h);
 	return bits;
+	}
+
+/*
+ *	Grabs the (scaled) contents of the screen.
+ *
+ *	Output: -> to buffer allocated with new [] in RGBA format.
+ */
+
+unsigned char *GL_manager::get_screen_rgba
+	(
+	bool rgb,
+	bool unflip
+	)
+	{
+	return get_pixels<4>(rgb ? GL_RGBA : GL_BGRA, unflip, scale);
+	}
+
+/*
+ *	Grabs the (scaled) contents of the screen.
+ *
+ *	Output: -> to buffer allocated with new [] in RGB format.
+ */
+
+unsigned char *GL_manager::get_screen_rgb
+	(
+	bool rgb,
+	bool unflip
+	)
+	{
+	return get_pixels<3>(rgb ? GL_RGB : GL_BGR, unflip, scale);
 	}
 
 /*
@@ -577,15 +624,20 @@ unsigned char *GL_manager::get_screen_bits(int width, int height, bool rgb)
  *	Output: -> to buffer allocated with new [] in RGB format.
  */
 
-unsigned char *GL_manager::get_unscaled_bits(int width, int height, bool rgb)
+unsigned char *GL_manager::get_unscaled_rgb
+	(
+	bool rgb,
+	bool unflip
+	)
 	{
-	int w = width*scale, h = height*scale;
+	Game_window *gwin = Game_window::get_instance();
+	int width = gwin->get_width(), height = gwin->get_height();
 	const int bpp = 3;	// Want RGB.
-	unsigned char *bits = get_screen_bits(width, height, rgb);
+	unsigned char *bits = get_screen_rgb(rgb, unflip);
 		// Scale down.
 	unsigned char *destbits = new unsigned char[bpp*width*height];
 	const unsigned int scalefactor = scale * scale,
-			largeline = bpp * w, smallline = bpp * width;
+			largeline = bpp * width * scale, smallline = bpp * width;
 		// Scale down.
 	for (int i = 0; i < width; i++)
 		for (int j = 0; j < height; j++)
