@@ -36,6 +36,9 @@ Boston, MA  02111-1307, USA.
 #include "exult_types.h"
 #include "gamma.h"
 #include <limits.h>
+#ifdef HAVE_OPENGL
+#include "shapes/glshape.h"
+#endif
 
 #ifndef UNDER_EMBEDDED_CE
 using std::memmove;
@@ -150,56 +153,94 @@ void Image_window8::rotate_colors
 	}
 }
 
+static inline int pow2(int x)
+	{
+	return x * x;
+	}
+
 //a nearest-average-colour 1/3 scaler
 unsigned char* Image_window8::mini_screenshot()
 {
 	int i;
 	if (!surface) return 0;
 
-	unsigned char* pixels = ibuf->get_bits();
-	int pitch = ibuf->get_line_width();
 	unsigned char* buf = new Uint8[96*60];
 	const int w = 3*96, h = 3*60;
-
-	for (int y = 0; y < h; y+=3)
-		for (int x = 0; x < w; x+=3)
-#if 0
-			buf[y*w/9 + x/3] = pixels[
-				pitch * (y + (get_height()-h)/2) +
-				x + (get_width()-w)/2 ];
-#else
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
 		{
-			//calculate average colour
-			int r=0, g=0, b=0;
-			for (i=0; i<3; i++)
-				for (int j=0; j<3; j++) {
-					r+=colors[0 + 3*pixels[
-				pitch * (j + y + (get_height()-h)/2) +
-				i + x + (get_width()-w)/2 ]];
-					g+=colors[1 + 3*pixels[
-				pitch * (j + y + (get_height()-h)/2) +
-				i + x + (get_width()-w)/2 ]];
-					b+=colors[2 + 3*pixels[
-				pitch * (j + y + (get_height()-h)/2) +
-				i + x + (get_width()-w)/2 ]];
+		int width = ibuf->get_width(), height = ibuf->get_height();
+		GL_manager *glman = GL_manager::get_instance();
+		unsigned char* pixels = glman->get_unscaled_bits(width, height, true);
+		for (int y = 0; y < h; y += 3)
+			for (int x = 0; x < w; x += 3)
+				{
+				//calculate average colour
+				int r = 0, g = 0, b = 0;
+				for (i = 0; i < 3; i++)
+					for (int j = 0; j < 3; j++)
+						{
+						int pix = width * (j + y + (height - h) / 2) +
+						                  (i + x + (width  - w) / 2);
+						r += pixels[3 * pix + 0];
+						g += pixels[3 * pix + 1];
+						b += pixels[3 * pix + 2];
+						}
+				r = r/9; g = g/9; b = b/9;
+
+				//find nearest-colour in non-rotating palette
+				int bestdist = INT_MAX, bestindex = -1;
+				for (i = 0; i < 224; i++)
+					{
+					int dist = pow2(colors[3 * i + 0] - r)
+						     + pow2(colors[3 * i + 1] - g)
+						     + pow2(colors[3 * i + 2] - b);
+					if (dist < bestdist)
+						{
+						bestdist = dist;
+						bestindex = i;
+						}
+					}
+				buf[y*w/9 + x/3] = bestindex;
 				}
+		delete [] pixels;
+		return buf;
+		}
+#endif
+	unsigned char* pixels = ibuf->get_bits();
+	int pitch = ibuf->get_line_width();
+
+	for (int y = 0; y < h; y += 3)
+		for (int x = 0; x < w; x += 3)
+			{
+			//calculate average colour
+			int r = 0, g = 0, b = 0;
+			for (i = 0; i < 3; i++)
+				for (int j = 0; j < 3; j++)
+					{
+					int pix = pixels[pitch * (j + y + (get_height() - h) / 2) +
+					                          i + x + (get_width()  - w) / 2 ];
+					r += colors[3 * pix + 0];
+					g += colors[3 * pix + 1];
+					b += colors[3 * pix + 2];
+					}
 			r = r/9; g = g/9; b = b/9;
 
 			//find nearest-colour in non-rotating palette
 			int bestdist = INT_MAX, bestindex = -1;
-			for (i=0; i<224; i++) {
-				int dist = (colors[0+3*i]-r)*(colors[0+3*i]-r)+
-					(colors[1+3*i]-g)*(colors[1+3*i]-g)+
-					(colors[2+3*i]-b)*(colors[2+3*i]-b);
-				if (dist < bestdist) {
+			for (i = 0; i < 224; i++)
+				{
+				int dist = pow2(colors[3 * i + 0] - r)
+				         + pow2(colors[3 * i + 1] - g)
+				         + pow2(colors[3 * i + 2] - b);
+				if (dist < bestdist)
+					{
 					bestdist = dist;
 					bestindex = i;
+					}
 				}
-			}
 			buf[y*w/9 + x/3] = bestindex;
-		}
+			}
 				
-#endif
-
 	return buf;
 }

@@ -81,13 +81,13 @@ void Palette::fade
 	int pal_num			// 0-11, or -1 for current.
 	)
 	{
-	  if (pal_num == -1) pal_num = palette;
-	  load(PALETTES_FLX, PATCH_PALETTES, pal_num);
-	  if(inout)
+	if (pal_num == -1) pal_num = palette;
+	load(PALETTES_FLX, PATCH_PALETTES, pal_num);
+	if (inout)
 		fade_in(cycles);
-	  else
+	else
 		fade_out(cycles);
-	  faded_out = !inout;		// Be sure to set flag.
+	faded_out = !inout;		// Be sure to set flag.
 	}
 
 /*

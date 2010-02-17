@@ -42,18 +42,24 @@ class GL_texshape
 	GL_texshape *lru_next, *lru_prev;
 	unsigned int texture;		// Texture ID.
 	unsigned int texsize;		// Width/ht of texture (power of 2).
+	int outline;		// Outline color or -1 if not outline.
 	bool rotates;
 					// Create from this source.
 	void create(Image_buffer8 *src, unsigned char *pal, int firstrot,
-				int lastrot, Xform_palette *xforms = 0, int xfcnt = 0);
+				int lastrot, Xform_palette *xforms = 0, int xfcnt = 0,
+				int alpha = 255);
 public:
 	friend class GL_manager;
 	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
-				Xform_palette *xforms = 0, int xfcnt = 0);
+				Xform_palette *xforms = 0, int xfcnt = 0, int alpha = 255);
 	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
-				unsigned char *trans);
+				unsigned char *trans, int alpha = 255);
+	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
+				Xform_palette& xform, int alpha = 255);
+	GL_texshape(Shape_frame *f, unsigned char *pal, int first_rot, int last_rot,
+				unsigned char color, int alpha = 255);
 	GL_texshape(Image_buffer8 *src, unsigned char *pal, int first_rot,
-				int last_rot);
+				int last_rot, int alpha = 255);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
 	void disassociate()	// Disassociate from frame.
@@ -75,6 +81,8 @@ class GL_manager
 	int num_shapes;
 	int first_rot;		// First index of palette that rotates.
 	int last_rot;		// Last index of palette that rotates.
+	template<typename Functor>
+	void paint_internal(Shape_frame *frame, int px, int py, int alpha, Functor& f);
 public:
 	friend class GL_texshape;
 	GL_manager();
@@ -94,9 +102,13 @@ public:
 					//   for it if necessary.
 	void paint(Shape_frame *frame, int px, int py,
 				Xform_palette *xforms = 0, int xfcnt = 0);
-	void paint(Shape_frame *frame, int px, int py, unsigned char *trans);
+	void paint_remapped(Shape_frame *frame, int px, int py, unsigned char *trans);
+	void paint_transformed(Shape_frame *frame, int px, int py, Xform_palette& xform);
+	void paint_outline(Shape_frame *frame, int px, int py, unsigned char color);
 	void set_palette_rotation(int first, int last)
 		{ first_rot = first; last_rot = last; }
+	unsigned char *get_screen_bits(int width, int height, bool rgb);
+	unsigned char *get_unscaled_bits(int width, int height, bool rgb);
 	};
 
 
