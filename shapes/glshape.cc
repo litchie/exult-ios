@@ -53,7 +53,8 @@ void GL_texshape::create
 	unsigned char *pal,		// 3*256 bytes (rgb).
 	int firstrot, int lastrot,	// Palette rotations.
 	Xform_palette *xforms,		// Transforms translucent colors if !0.
-	int xfcnt			// Number of xforms.
+	int xfcnt,			// Number of xforms.
+	int alpha			// Alpha value to use.
 	)
 	{
 	assert(pal != 0);
@@ -61,8 +62,9 @@ void GL_texshape::create
 					// Convert to rgba.
 	unsigned char *pixels = xforms ? 
 			src->rgba(pal, transp, rotates, firstrot, lastrot,
-						xfstart, 0xfe, xforms)
-			: src->rgba(pal, transp, rotates, firstrot, lastrot);
+						xfstart, 0xfe, xforms, alpha)
+			: src->rgba(pal, transp, rotates, firstrot, lastrot,
+						256, 256, 0, alpha);
 	GLuint tex;
 	glGenTextures(1, &tex);		// Generate (empty) texture.
 	texture = tex;
@@ -70,7 +72,7 @@ void GL_texshape::create
 					// +++++Might want GL_RGBA, depending
 					//   on video card.
 					// Need translucency?
-	GLint iformat = xforms ? GL_RGBA4 : GL_RGB5_A1;
+	GLint iformat = xforms || alpha != 255 ? GL_RGBA4 : GL_RGB5_A1;
 //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
 	glTexImage2D(GL_TEXTURE_2D, 0, iformat, texsize, texsize, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
@@ -100,8 +102,9 @@ GL_texshape::GL_texshape
 	unsigned char *pal,		// 3*256 bytes (rgb).
 	int first_rot, int last_rot,	// Palette rotations.
 	Xform_palette *xforms,		// Transforms translucent colors if !0.
-	int xfcnt			// Number of xforms.
-	) : frame(f), lru_next(0), lru_prev(0)
+	int xfcnt,			// Number of xforms.
+	int alpha			// Alpha value to use.
+	) : frame(f), lru_next(0), lru_prev(0), outline(-1)
 	{
 					// Figure texture size as 2^n, rounding up.
 	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
@@ -112,20 +115,17 @@ GL_texshape::GL_texshape
 					// ++++Guessing a bit on the offset:
 	frame->paint(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1);
-	create(&buf8, pal, first_rot, last_rot, xforms, xfcnt);
+	create(&buf8, pal, first_rot, last_rot, xforms, xfcnt, alpha);
 	}
-
-/*
- *	Create for a given frame.
- */
 
 GL_texshape::GL_texshape
 	(
 	Shape_frame *f,
 	unsigned char *pal,			// 'Pixel' position from top-left.
 	int first_rot, int last_rot,	// Palette rotations.
-	unsigned char *trans	// Translation table.
-	) : frame(f), lru_next(0), lru_prev(0)
+	unsigned char *trans,	// Translation table.
+	int alpha			// Alpha value to use.
+	) : frame(f), lru_next(0), lru_prev(0), outline(-1)
 	{
 					// Figure texture size as 2^n, rounding up.
 	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
@@ -136,7 +136,49 @@ GL_texshape::GL_texshape
 					// ++++Guessing a bit on the offset:
 	frame->paint_rle_remapped(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1, trans);
-	create(&buf8, pal, first_rot, last_rot, 0, 0);
+	create(&buf8, pal, first_rot, last_rot, 0, 0, alpha);
+	}
+
+GL_texshape::GL_texshape
+	(
+	Shape_frame *f,
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot,	// Palette rotations.
+	Xform_palette& xform,		// Transforms colors.
+	int alpha			// Alpha value to use.
+	) : frame(f), lru_next(0), lru_prev(0), outline(-1)
+	{
+					// Figure texture size as 2^n, rounding up.
+	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
+	texsize = w > h ? w : h;
+					// Render frame.
+	Image_buffer8 buf8(texsize, texsize);
+	buf8.fill8(transp);		// Fill with transparent value.
+					// ++++Guessing a bit on the offset:
+	frame->paint_rle_transformed(&buf8, texsize - frame->get_xright() - 1,
+					texsize - frame->get_ybelow() - 1, xform);
+	create(&buf8, pal, first_rot, last_rot, 0, 0, alpha);
+	}
+
+GL_texshape::GL_texshape
+	(
+	Shape_frame *f,
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	int first_rot, int last_rot,	// Palette rotations.
+	unsigned char color,		// Transforms colors.
+	int alpha			// Alpha value to use.
+	) : frame(f), lru_next(0), lru_prev(0), outline(color)
+	{
+					// Figure texture size as 2^n, rounding up.
+	int w = fgepow2(frame->get_width()), h = fgepow2(frame->get_height());
+	texsize = w > h ? w : h;
+					// Render frame.
+	Image_buffer8 buf8(texsize, texsize);
+	buf8.fill8(transp);		// Fill with transparent value.
+					// ++++Guessing a bit on the offset:
+	frame->paint_rle_outline(&buf8, texsize - frame->get_xright() - 1,
+					texsize - frame->get_ybelow() - 1, outline);
+	create(&buf8, pal, first_rot, last_rot, 0, 0, alpha);
 	}
 
 /*
@@ -147,14 +189,15 @@ GL_texshape::GL_texshape
 	(
 	Image_buffer8 *src,		// Must be square.
 	unsigned char *pal,		// 3*256 bytes (rgb).
-	int first_rot, int last_rot	// Palette rotations.
-	) : frame(0), lru_next(0), lru_prev(0)
+	int first_rot, int last_rot,	// Palette rotations.
+	int alpha			// Alpha value to use.
+	) : frame(0), lru_next(0), lru_prev(0), outline(-1)
 	{
 	int w = src->get_width(), h = src->get_height();
 	assert (w == h);
 	assert (fgepow2(w) == w);
 	texsize = w;
-	create(src, pal, first_rot, last_rot);
+	create(src, pal, first_rot, last_rot, 0, 0, alpha);
 	}
 
 /*
@@ -167,7 +210,12 @@ GL_texshape::~GL_texshape
 	{
 	glDeleteTextures(1, &texture);	// Free the texture.
 	if (frame)
-		frame->glshape = 0;	// Tell owner.
+		{	// Tell owner.
+		if (outline < 0)
+			frame->glshape = 0;
+		else
+			frame->gloutline = 0;
+		}
 	}
 
 /*
@@ -288,106 +336,53 @@ void GL_manager::resized
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-/*
- *	Paint an image directly.
- */
+class Paint
+	{
+	Xform_palette *xforms;
+	int xfcnt;
+public:
+	Paint(Xform_palette *xf, int xc)
+		: xforms(xf), xfcnt(xc)
+		{  }
+	void paint(Shape_frame *frame, Image_buffer8 *win,	int px, int py)
+		{ frame->paint(win, px, py); }
+	GL_texshape *newtex(Shape_frame *frame, unsigned char *pal,
+			int first_rot, int last_rot, int alpha)
+		{ return new GL_texshape(frame, pal,
+					first_rot, last_rot, xforms, xfcnt, alpha); }
+	};
 
+template<typename Data, void (Shape_frame::*Fun)(Image_buffer8 *, int, int,
+					Data)>
+class Paint_trans
+	{
+private:
+	Data data;
+public:
+	Paint_trans(Data d)
+		: data(d)
+		{  }
+	void paint(Shape_frame *frame, Image_buffer8 *win, int px, int py)
+		{ (frame->*Fun)(win, px, py, data); }
+	GL_texshape *newtex(Shape_frame *frame, unsigned char *pal,
+			int first_rot, int last_rot, int alpha)
+		{ return new GL_texshape(frame, pal,
+					first_rot, last_rot, data, alpha); }
+	};
+
+/*
+ *	Paint an image directly using the given data for transform.
+ */
+template<typename Functor>
 static void Paint_image
 	(
 	Shape_frame *frame,
 	int px, int py,			// 'Pixel' position from top-left.
 	unsigned char *pal,		// 3*256 bytes (rgb).
 	int first_rot, int last_rot,	// Palette rotations.
-	int scale			// Scale factor.
-	)
-	{
-	px -= frame->get_xleft();	// Figure actual from hot-spot.
-	py += frame->get_ybelow();
-					// Game y-coord goes down from top.
-	py = -py;
-	int w = frame->get_width(), h = frame->get_height();
-					// Render frame.
-	Image_buffer8 buf8(w, h);
-	w = buf8.get_width(); h = buf8.get_height();
-	buf8.fill8(transp);		// Fill with transparent value.
-	frame->paint(&buf8, frame->get_xleft(), frame->get_yabove());
-					// Convert to rgba.
-	bool rot;
-	unsigned char *pixels = buf8.rgba(pal, transp, rot, first_rot, last_rot);
-	if (px < 0)			// Doesn't paint if off screen.
-		{
-		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
-		glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
-		w += px;
-		px = 0;
-		}
-					//++++CHeck py too?
-//	float x = static_cast<float>(px);
-//	float y = static_cast<float>(py);
-	glPixelZoom(scale, -scale);	// Get right side up.
-	glRasterPos2f(px, py + h);
-	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-	delete pixels;
-	}
-
-/*
- *	Paint a shape.
- */
-
-void GL_manager::paint
-	(
-	Shape_frame *frame,
-	int px, int py,			// 'Pixel' position from top-left.
-	Xform_palette *xforms,		// Transforms translucent colors if !0.
-	int xfcnt			// Number of xforms.
-	)
-	{
-	GL_texshape *tex = frame->glshape;
-	if (!tex)			// Need to create texture?
-		{
-		if (frame->get_width() > max_texsize || 
-		    frame->get_height() > max_texsize)
-			{		// Too big?  Just paint it now.
-			Paint_image(frame, px, py, palette, first_rot, last_rot, scale);
-			return;
-			}
-		frame->glshape = tex = new GL_texshape(frame, palette,
-							first_rot, last_rot, xforms, xfcnt);
-		num_shapes++;
-		//++++++When 'too many', we'll free LRU here.
-		}
-	else if (tex != shapes)	// Remove from chain, but NOT if already the head!
-		{
-		if (tex->lru_next)
-			tex->lru_next->lru_prev = tex->lru_prev;
-		if (tex->lru_prev)
-			tex->lru_prev->lru_next = tex->lru_next;
-		tex->lru_prev = 0;	// It will go to the head.
-		}
-	if (tex != shapes)
-		{		// NOT if already the head!
-		tex->lru_next = shapes;		// Add to head of chain.
-		if (shapes)
-			shapes->lru_prev = tex;
-		shapes = tex;
-		}
-	tex->paint(px, py);
-	}
-
-/*
- *	Paint an image directly using the given translation table.
- */
-
-static void Paint_image
-	(
-	Shape_frame *frame,
-	int px, int py,			// 'Pixel' position from top-left.
-	unsigned char *pal,		// 3*256 bytes (rgb).
-	int first_rot, int last_rot,	// Palette rotations.
+	int alpha,
 	int scale,			// Scale factor.
-	unsigned char *trans	// Translation table.
+	Functor& f
 	)
 	{
 	px -= frame->get_xleft();	// Figure actual from hot-spot.
@@ -399,11 +394,11 @@ static void Paint_image
 	Image_buffer8 buf8(w, h);
 	w = buf8.get_width(); h = buf8.get_height();
 	buf8.fill8(transp);		// Fill with transparent value.
-	frame->paint_rle_remapped(&buf8, frame->get_xleft(),
-				frame->get_yabove(), trans);
+	f.paint(frame, &buf8, frame->get_xleft(), frame->get_yabove());
 					// Convert to rgba.
 	bool rot;
-	unsigned char *pixels = buf8.rgba(pal, transp, rot, first_rot, last_rot);
+	unsigned char *pixels = buf8.rgba(pal, transp, rot,
+					first_rot, last_rot, alpha);
 	if (px < 0)			// Doesn't paint if off screen.
 		{
 		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
@@ -426,11 +421,13 @@ static void Paint_image
  *	Paint a shape using a translation table.
  */
 
-void GL_manager::paint
+template<typename Functor>
+void GL_manager::paint_internal
 	(
 	Shape_frame *frame,
 	int px, int py,			// 'Pixel' position from top-left.
-	unsigned char *trans	// Translation table.
+	int alpha,
+	Functor& f
 	)
 	{
 	GL_texshape *tex = frame->glshape;
@@ -439,11 +436,12 @@ void GL_manager::paint
 		if (frame->get_width() > max_texsize || 
 		    frame->get_height() > max_texsize)
 			{		// Too big?  Just paint it now.
-			Paint_image(frame, px, py, palette, first_rot, last_rot, scale, trans);
+			Paint_image(frame, px, py, palette, first_rot, last_rot,
+							alpha, scale, f);
 			return;
 			}
-		frame->glshape = tex = new GL_texshape(frame, palette,
-							first_rot, last_rot, trans);
+		frame->glshape = tex = f.newtex(frame, palette,
+						first_rot, last_rot, alpha);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}
@@ -464,5 +462,148 @@ void GL_manager::paint
 		}
 	tex->paint(px, py);
 	}
+
+/*
+ *	Paint a shape.
+ */
+
+void GL_manager::paint
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	Xform_palette *xforms,		// Transforms translucent colors if !0.
+	int xfcnt			// Number of xforms.
+	)
+	{
+	Paint f(xforms, xfcnt);
+	paint_internal(frame, px, py, 255, f);
+	}
+
+/*
+ *	Paint a shape using a translation table.
+ */
+
+void GL_manager::paint_remapped
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	unsigned char *trans	// Translation table.
+	)
+	{
+	Paint_trans<unsigned char *, &Shape_frame::paint_rle_remapped> f(trans);
+	paint_internal(frame, px, py, 255, f);
+	}
+
+/*
+ *	Paint a shape using a xform table.
+ */
+
+void GL_manager::paint_transformed
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	Xform_palette& xform	// Translation table.
+	)
+	{
+	// For all the purists out there:
+#ifdef U7_INVISIBILITY
+	const unsigned char transform_alpha = 64;
+	Paint_trans<Xform_palette&, &Shape_frame::paint_rle_transformed> f(xform);
+#else
+	const unsigned char transform_alpha = 96;
+	Paint f(0, 0);
+#endif
+	paint_internal(frame, px, py, transform_alpha, f);
+	}
+
+/*
+ *	Paint a shape using a different outline color.
+ */
+
+void GL_manager::paint_outline
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	unsigned char color	// Outline color
+	)
+	{
+	GL_texshape *tex = frame->gloutline;
+	if (!tex || tex->outline < 0 || tex->outline != color)
+		{
+		delete tex;
+		Paint_trans<unsigned char, &Shape_frame::paint_rle_outline> f(color);
+		frame->gloutline = tex = new GL_texshape(frame, palette,
+					first_rot, last_rot, color);
+		}
+	tex->paint(px, py);
+	}
+
+/*
+ *	Grabs the (scaled) contents of the screen.
+ *
+ *	Output: -> to buffer allocated with new [] in RGB format.
+ */
+
+unsigned char *GL_manager::get_screen_bits(int width, int height, bool rgb)
+	{
+	int w = width*scale, h = height*scale;
+	const int bpp = 3;	// Want RGB.
+	unsigned char *bits = new unsigned char[bpp*w*h];
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glReadPixels(0, 0, w, h, rgb ? GL_RGB : GL_BGR, GL_UNSIGNED_BYTE, bits);
+		// glReadPixels reads from bottom-left to top-right.
+		// Flip it back.
+	for (int j = 0; j < h/2; j++)
+		{
+		const int swapj = h - j - 1;
+		for (int i = 0; i < w; i++)
+			{
+			const int off = bpp * (i + j * w);
+			const int swapoff = bpp * (i + swapj * w);
+			std::swap(bits[off + 0], bits[swapoff + 0]);
+			std::swap(bits[off + 1], bits[swapoff + 1]);
+			std::swap(bits[off + 2], bits[swapoff + 2]);
+			}
+		}
+	return bits;
+	}
+
+/*
+ *	Grabs the unscaled contents of the screen, as best as possible.
+ *
+ *	Output: -> to buffer allocated with new [] in RGB format.
+ */
+
+unsigned char *GL_manager::get_unscaled_bits(int width, int height, bool rgb)
+	{
+	int w = width*scale, h = height*scale;
+	const int bpp = 3;	// Want RGB.
+	unsigned char *bits = get_screen_bits(width, height, rgb);
+		// Scale down.
+	unsigned char *destbits = new unsigned char[bpp*width*height];
+	const unsigned int scalefactor = scale * scale,
+			largeline = bpp * w, smallline = bpp * width;
+		// Scale down.
+	for (int i = 0; i < width; i++)
+		for (int j = 0; j < height; j++)
+			{
+			unsigned int r = 0, g = 0, b = 0;
+			for (int x = scale * i; x < scale * (i + 1); x++)
+				for (int y = scale * j; y < scale * (j + 1); y++)
+					{
+					const int src = bpp * x + largeline * y;
+					r += bits[src + 0];
+					g += bits[src + 1];
+					b += bits[src + 2];
+					}
+			const int dst = bpp * i + smallline * j;
+			destbits[dst + 0] = r / scalefactor;
+			destbits[dst + 1] = g / scalefactor;
+			destbits[dst + 2] = b / scalefactor;
+			}
+	delete [] bits;
+	return destbits;
+	}
+
 
 #endif	/* HAVE_OPENGL */

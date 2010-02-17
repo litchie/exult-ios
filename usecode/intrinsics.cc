@@ -22,6 +22,14 @@
 
 #include <map>
 
+#ifdef HAVE_OPENGL
+#ifdef MACOSX
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#endif
+
 #include "gamemap.h"
 #include "chunks.h"
 #include "Audio.h"
@@ -1490,6 +1498,46 @@ USECODE_INTRINSIC(get_weapon)
 	return Usecode_value(0);
 }
 
+/*
+ *	Class to paint a specific shape frame centered.
+ */
+class Paint_rgba_centered : public Paintable, public Game_singletons
+	{
+protected:
+	unsigned char *pixels;
+	int x, y;			// Where to paint.
+	int w, h;			// Dimensions
+public:
+	Paint_rgba_centered(unsigned char *rgbpix, int alpha,
+					int w0, int h0, int scale)
+		: pixels(0), x(0), y(0), w(w0), h(h0)
+		{
+#ifdef HAVE_OPENGL
+		pixels = new unsigned char[4*w*h];
+		for (int i = 0; i < w*h; i++)
+			{
+			for (int j = 0; j < 3; j++)
+				pixels[4 * i + j] = rgbpix[3 * i + j];
+			pixels[4 * i + 3] = alpha;
+			}
+					// Get coords. for centered view.
+		x = (scale*gwin->get_width() - w)/2;
+		y = (scale*gwin->get_height() - h)/2;
+#endif
+		}
+	virtual ~Paint_rgba_centered() { delete [] pixels; }
+	virtual void paint()
+		{
+#ifdef HAVE_OPENGL
+		glPixelZoom(1, -1);	// Get right side up.
+		glRasterPos2f(x, y);
+		glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+		}
+	};
+
 USECODE_INTRINSIC(display_area)
 {
 	// display_area(tilepos) - used for crystal balls.
@@ -1521,8 +1569,8 @@ USECODE_INTRINSIC(display_area)
 		if (h > 200)
 			y = sizey;
 		int save_dungeon = gwin->is_in_dungeon();
-		gwin->set_in_dungeon(0);	// Disable dungeon.
 					// Paint game area.
+		gwin->set_in_dungeon(0);	// Disable dungeon.
 		gwin->paint_map_at_tile(x, y, 320, 200, tx - tw/2, ty - th/2, 4);
 					// Paint sprite #10
 					//   over it, transparently.
@@ -1530,8 +1578,22 @@ USECODE_INTRINSIC(display_area)
 				topy + sprite->get_yabove(), sprite, 1);
 		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
+		Paint_rgba_centered *paint = 0;
+#ifdef HAVE_OPENGL
+		GL_manager *glman = GL_manager::get_instance();
+		if (glman)
+			{
+			int scale = gwin->get_win()->get_scale();
+			int w = gwin->get_width(), h = gwin->get_height();
+			unsigned char *rgb_pixels = glman->get_screen_bits(w, h, true);
+			paint = new Paint_rgba_centered(rgb_pixels, 255,
+							scale*w, scale*h, scale);
+			delete [] rgb_pixels;
+			}
+#endif
 					// Wait for click.
-		Get_click(x, y, Mouse::hand);
+		Get_click(x, y, Mouse::hand, 0, false, paint);
+		delete paint;
 		if ((newmap != -1) && (newmap != oldmap))
 			gwin->set_map(oldmap);
 		gwin->paint();		// Repaint normal area.

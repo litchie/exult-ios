@@ -1,3 +1,8 @@
+2010-02-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* OpenGL fixes: Invisibility draws sprites translucently, outlines are now
+	  drawn correctly (poison, damage, etc), screenshots and save screenshots
+	  work, crystal balls work.
+
 2010-02-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/pngio.*: Added function to save 32-bit RGBA png file.
 	* mapedit/u7shp.c: Do not prompt for palette if running non-interactively.

@@ -730,9 +730,10 @@ unsigned char *Image_buffer8::rgba
 	int last_rotate,			// Last color that rotates.
 	int first_translucent,		// Palette index of 1st trans. color.
 	int last_translucent,		// Index of last trans. color.
-	Xform_palette *xforms		// Transformers.  Need same # as
+	Xform_palette *xforms,		// Transformers.  Need same # as
 					//   (last_translucent - 
 					//    first_translucent + 1).
+	int alpha		// What to use as alpha
 	)
 	{
 	int cnt = line_width*height;	// Allocate destination buffer.
@@ -759,7 +760,7 @@ unsigned char *Image_buffer8::rgba
 			if (pix >= first_rotate && pix <= last_rotate)
 				rotate = true;
 			r = pal[3*pix]; g = pal[3*pix+1]; b = pal[3*pix + 2];
-			a = 255;
+			a = alpha;
 			}
 		*ptr32++ = 	(static_cast<uint32>(r)<<0) +
 				(static_cast<uint32>(g) << 8) +
