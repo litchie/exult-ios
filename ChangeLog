@@ -2,6 +2,7 @@
 	* OpenGL fixes: Invisibility draws sprites translucently, outlines are now
 	  drawn correctly (poison, damage, etc), screenshots and save screenshots
 	  work, crystal balls work.
+	* Slight cleanup of earlier commit; failed attempt at OpenGL fade in/out.
 
 2010-02-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/pngio.*: Added function to save 32-bit RGBA png file.
