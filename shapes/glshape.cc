@@ -35,7 +35,6 @@
 #endif
 #endif
 
-#include "gamewin.h"
 #include "glshape.h"
 #include "vgafile.h"
 #include "utils.h"
@@ -574,10 +573,15 @@ static inline void unflip_bitmap(unsigned char *pixels, int w, int h)
 	}
 
 template<int bpp>
-static inline unsigned char *get_pixels(GLenum format, bool unflip, int scale)
+static inline unsigned char *get_pixels
+	(
+	int width,
+	int height,
+	GLenum format,
+	bool unflip, int scale
+	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	int w = gwin->get_width() * scale, h = gwin->get_height() * scale;
+	int w = width * scale, h = height * scale;
 	unsigned char *bits = new unsigned char[bpp*w*h];
 	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 	glReadPixels(0, 0, w, h, format, GL_UNSIGNED_BYTE, bits);
@@ -596,11 +600,13 @@ static inline unsigned char *get_pixels(GLenum format, bool unflip, int scale)
 
 unsigned char *GL_manager::get_screen_rgba
 	(
+	int width,
+	int height,
 	bool rgb,
 	bool unflip
 	)
 	{
-	return get_pixels<4>(rgb ? GL_RGBA : GL_BGRA, unflip, scale);
+	return get_pixels<4>(width, height, rgb ? GL_RGBA : GL_BGRA, unflip, scale);
 	}
 
 /*
@@ -611,11 +617,13 @@ unsigned char *GL_manager::get_screen_rgba
 
 unsigned char *GL_manager::get_screen_rgb
 	(
+	int width,
+	int height,
 	bool rgb,
 	bool unflip
 	)
 	{
-	return get_pixels<3>(rgb ? GL_RGB : GL_BGR, unflip, scale);
+	return get_pixels<3>(width, height, rgb ? GL_RGB : GL_BGR, unflip, scale);
 	}
 
 /*
@@ -626,12 +634,12 @@ unsigned char *GL_manager::get_screen_rgb
 
 unsigned char *GL_manager::get_unscaled_rgb
 	(
+	int width,
+	int height,
 	bool rgb,
 	bool unflip
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	int width = gwin->get_width(), height = gwin->get_height();
 	const int bpp = 3;	// Want RGB.
 	unsigned char *bits = get_screen_rgb(rgb, unflip);
 		// Scale down.

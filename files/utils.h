@@ -494,6 +494,13 @@ int U7mkdir(
 	int mode
 	);
 
+const std::string Get_home();
+const std::string Get_exult_home();
+#ifdef WIN32
+void redirect_output(const char *prefix = "std");
+void cleanup_output(const char *prefix = "std");
+#endif
+
 // These are not supported in WinCE (PocketPC) for now
 #ifndef UNDER_CE
 

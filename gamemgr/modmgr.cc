@@ -84,6 +84,26 @@ static inline void ReplaceMacro
 		path.replace(pos, srch.length(), repl);
 	}
 
+
+static const string get_cfg_home(const string& cfgname)
+	{
+	string home_dir = Get_exult_home();
+
+	if (home_dir != "")
+		{
+		// Append configuration (game) name
+		home_dir += "/" + cfgname;
+		U7mkdir(home_dir.c_str(), 0755);
+
+		// If the path creation was not successfull, return ""
+		if (!U7exists(home_dir.c_str()))
+			home_dir = "";
+		}
+
+	return home_dir;
+	}
+
+
 // ModInfo: class that manages one mod's information
 ModInfo::ModInfo
 	(
@@ -172,34 +192,19 @@ ModInfo::ModInfo
 	default_dir = "CP437";	// DOS code page.
 	modconfig.value(config_path, codepage, default_dir.c_str());
 
-	const char *home = 0;
-	string home_game("");		// Gets $HOME/.exult/path_prefix/mod_title.
 	string save_path = data_directory;
-
-#if (!defined(WIN32) && !defined(MACOS))
-	if ((home = getenv("HOME")) != 0)
+		// Gets $HOME/.exult/path_prefix/mod_title.
+	string home_game = get_cfg_home(cfgname);
+	if (home_game.size())
 		{
-		home_game = home;
-		home_game += "/.exult";
-					// Create $HOME/.exult/cfgname.
+		home_game += "/mods";
 		U7mkdir(home_game.c_str(), 0755);
-		home_game = home_game + '/' + cfgname;
+		home_game += "/" + mod_title;
 		U7mkdir(home_game.c_str(), 0755);
-					// Successfully created dir?
 		if (U7exists(home_game.c_str()))
-			{
-			home_game = home_game + '/' + mod_title;
-			U7mkdir(home_game.c_str(), 0755);
-			if (U7exists(home_game.c_str()))
-				save_path = home_game;
-			}
+			save_path = home_game;
 		}
-#endif
 
-#ifdef DEBUG_PATHS
-	cout << "path prefix of " << cfgname << " mod " << mod_title
-		<< " is: " << system_path_tag << endl;
-#endif
 	config_path = "mod_info/gamedat_path";
 	default_dir = save_path + "/gamedat";
 	modconfig.value(config_path, gamedatdir, default_dir.c_str());
@@ -207,10 +212,6 @@ ModInfo::ModInfo
 	ReplaceMacro(gamedatdir, mods_macro, mods_dir);
 	ReplaceMacro(gamedatdir, mod_path_macro, save_path);
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", get_system_path(gamedatdir));
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " game directories to: " << get_system_path(gamedatdir) << endl;
-#endif
 
 	config_path = "mod_info/savegame_path";
 	modconfig.value(config_path, savedir, save_path.c_str());
@@ -218,19 +219,22 @@ ModInfo::ModInfo
 	ReplaceMacro(savedir, mods_macro, mods_dir);
 	ReplaceMacro(savedir, mod_path_macro, save_path);
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", get_system_path(savedir));
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " game directories to: " << get_system_path(savedir) << endl;
-#endif
 	
 	config_path = "mod_info/patch";
 	default_dir = data_directory + "/patch";
 	modconfig.value(config_path, patchdir, default_dir.c_str());
 	// Path 'macros' for relative paths:
 	ReplaceMacro(patchdir, mods_macro, mods_dir);
-	ReplaceMacro(patchdir, mod_path_macro, data_directory);
+	ReplaceMacro(patchdir, mod_path_macro, save_path);
 	add_system_path("<" + system_path_tag + "_PATCH>", get_system_path(patchdir));
+
 #ifdef DEBUG_PATHS
+	cout << "path prefix of " << cfgname << " mod " << mod_title
+		<< " is: " << system_path_tag << endl;
+	cout << "setting " << cfgname
+		<< " game directories to: " << get_system_path(gamedatdir) << endl;
+	cout << "setting " << cfgname
+		<< " game directories to: " << get_system_path(savedir) << endl;
 	cout << "setting " << cfgname
 		<< " game directories to: " << get_system_path(patchdir) << endl;
 #endif
@@ -506,104 +510,100 @@ BaseGameInfo *ModManager::get_mod(const string& name, bool checkversion)
  */
 void ModManager::get_game_paths()
 	{
-	string data_directory, static_dir, gamedat_dir, savegame_dir,
-		default_dir("./" + cfgname), config_path,
+	string gameprefix("./" + cfgname), dataprefix(get_cfg_home(cfgname)),
+		default_dir, current_path, data_directory, config_path,
+		gamedat_dir, static_dir, savegame_dir, patch_dir, mods_dir,
 		base_cfg_path("config/disk/game/" + cfgname);
+
+		// ++++ These first path settings are for paths that require only
+		// ++++ read access. They default to a subdirectory of the program
+		// ++++ directory.
+
+		// <path> setting: default is "$gameprefix".
 	config_path = base_cfg_path + "/path";
+	default_dir = gameprefix;
 	config->value(config_path.c_str(), data_directory, default_dir.c_str());
 	if (data_directory == default_dir)
 		config->set(config_path.c_str(), data_directory, true);
-#ifdef DEBUG_PATHS
-	cout << "path prefix of " << cfgname
-		<< " is: " << path_prefix << endl;
-#endif
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " game directories to: " << data_directory << endl;
-#endif
-
+	
+		// <static_path> setting: default is "$data_directory/static".
 	config_path = base_cfg_path + "/static_path";
 	default_dir = data_directory + "/static";
 	config->value(config_path.c_str(), static_dir, default_dir.c_str());
 	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " static directory to: " << static_dir << endl;
-#endif
+	
+		// ++++ Here start the directories with read/write requirements.
+		// ++++ They default to a directory in the current user's profile,
+		// ++++ with Win9x and old MacOS (possibly others) being exceptions.
 
-	const char *home = 0;		// Will get $HOME.
-	string home_game("");		// Gets $HOME/.exult/cfgname.
-	config_path = base_cfg_path + "/gamedat_path";
-	default_dir = data_directory + "/gamedat";
-	config->value(config_path.c_str(), gamedat_dir, "");
-#if (!defined(WIN32) && !defined(MACOS))
-	if (gamedat_dir == "" &&	// Not set?
-					// And default doesn't exist?
-	    !U7exists(default_dir.c_str()) && (home = getenv("HOME")) != 0)
-		{
-		home_game = home;
-		home_game += "/.exult";
-					// Create $HOME/.exult/cfgname.
-		U7mkdir(home_game.c_str(), 0755);
-		home_game = home_game + '/' + cfgname;
-		U7mkdir(home_game.c_str(), 0755);
-					// Successfully created dir?
-		if (U7exists(home_game.c_str()))
-			{		// Use $HOME/.exult/cfgname/gamedat.
-			gamedat_dir = home_game + "/gamedat";
-			config->set(config_path.c_str(), gamedat_dir.c_str(),
-								true);
-			}
-		else
-			home_game = "";	// Failed.
-		}
-#endif
-	if (gamedat_dir == "")		// Didn't create it in $HOME/.exult?
-		gamedat_dir = default_dir;
-	add_system_path("<" + path_prefix + "_GAMEDAT>", gamedat_dir);
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " gamedat directory to: " << gamedat_dir << endl;
-#endif
+		// Usually for Win9x:
+	if (dataprefix == "")
+		dataprefix = data_directory;
 
+		// <gamedat_path> setting: default is "$dataprefix".
 	config_path = base_cfg_path + "/savegame_path";
-	if (home_game == "")
-		config->value(config_path.c_str(), savegame_dir, 
-						data_directory.c_str());
-	else
-		{			// Store saves under $HOME/....
-		config->value(config_path.c_str(), savegame_dir,
-						home_game.c_str());
+	default_dir = dataprefix;
+	config->value(config_path.c_str(), savegame_dir, "");
+	if (savegame_dir == "")
+		{
+		savegame_dir = default_dir;
 		config->set(config_path.c_str(), savegame_dir.c_str(), true);
 		}
 	add_system_path("<" + path_prefix + "_SAVEGAME>", savegame_dir);
-#ifdef DEBUG_PATHS
-	cout << "setting " << cfgname
-		<< " savegame directory to: " << savegame_dir << endl;
-#endif
 
-	config_path = base_cfg_path + "/patch";
-	string patch_directory;
-	default_dir = data_directory + "/patch";
-	config->value(config_path.c_str(), patch_directory, 
-							default_dir.c_str());
-	add_system_path("<" + path_prefix + "_PATCH>", patch_directory.c_str());
+		// <gamedat_path> setting: default is "$dataprefix/gamedat".
+	config_path = base_cfg_path + "/gamedat_path";
+	default_dir = dataprefix + "/gamedat";
+	config->value(config_path.c_str(), gamedat_dir, "");
+	if (gamedat_dir == "")	// Not set.
+		{	// Try to create default gamedat dir.
+		U7mkdir(default_dir.c_str(), 0755);
+					// Successfully created dir?
+		if (U7exists(default_dir.c_str()))
+			{		// Then use it.
+			gamedat_dir = default_dir;
+			config->set(config_path.c_str(), gamedat_dir.c_str(), true);
+			}
+		}
+	add_system_path("<" + path_prefix + "_GAMEDAT>", gamedat_dir);
 
+		// ++++ The next two paths default to a user-writeable directory
+		// ++++ because of ES; having to run `sudo exult_studio` or similar
+		// ++++ to edit a mod is not fun.
+
+		// <mods> setting: default is "$dataprefix/mods".
 	config_path = base_cfg_path + "/mods";
-	string mods_directory;
-	default_dir = data_directory + "/mods";
-	config->value(config_path.c_str(), mods_directory, 
-							default_dir.c_str());
-	if (*(mods_directory.end()-1) == '/' || *(mods_directory.end()-1) == '\\')
+	default_dir = dataprefix + "/mods";
+	config->value(config_path.c_str(), mods_dir, default_dir.c_str());
+	if (*(mods_dir.end()-1) == '/' || *(mods_dir.end()-1) == '\\')
 		{
 		// Remove any trailing slashes, just in case:
-		mods_directory.resize(mods_directory.length()-1);
-		config->set(config_path.c_str(), mods_directory, true);
+		mods_dir.resize(mods_dir.length()-1);
+		config->set(config_path.c_str(), mods_dir, true);
 		}
-	add_system_path("<" + path_prefix + "_MODS>", mods_directory.c_str());
+	add_system_path("<" + path_prefix + "_MODS>", mods_dir.c_str());
+
+		// <patch> setting: default is "$dataprefix/patch".
+	config_path = base_cfg_path + "/patch";
+	default_dir = data_directory + "/patch";
+	config->value(config_path.c_str(), patch_dir, default_dir.c_str());
+	add_system_path("<" + path_prefix + "_PATCH>", patch_dir.c_str());
+
 #ifdef DEBUG_PATHS
+	cout << "path prefix of " << cfgname
+		<< " is: " << path_prefix << endl;
 	cout << "setting " << cfgname
-		<< " savegame directory to: " << mods_directory << endl;
+		<< " game directories to: " << data_directory << endl;
+	cout << "setting " << cfgname
+		<< " static directory to: " << static_dir << endl;
+	cout << "setting " << cfgname
+		<< " gamedat directory to: " << gamedat_dir << endl;
+	cout << "setting " << cfgname
+		<< " savegame directory to: " << savegame_dir << endl;
+	cout << "setting " << cfgname
+		<< " patch directory to: " << patch_dir << endl;
+	cout << "setting " << cfgname
+		<< " modifications directory to: " << mods_dir << endl;
 #endif
 	}
 
