@@ -619,14 +619,14 @@ public:
 			HRESULT code = SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA,
 							NULL, 0, szPath);
 			if (code == E_INVALIDARG)
-				continue;
+				return string("");
 			else if (code == S_FALSE)	// E_FAIL for Unicode version.
 					// Lets try creating it through the API flag:
 				code = SHGetFolderPath(NULL,
 								CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
 								NULL, 0, szPath);
 			if (code == E_INVALIDARG)
-				continue;
+				return string("");
 			else if (code == S_OK)
 				return string((const char *)szPath);
 			// We don't have a folder yet at this point. This means we have
