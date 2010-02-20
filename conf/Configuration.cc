@@ -162,18 +162,24 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Don't frob the filename if it starts with a dot and
 	// a slash or with two dots and a slash.
 	// Or if it's not a relative path.
-	if((fname.find("./")!=0) && (fname.find("../")!=0) && (fname[0]!='/'))
+	if ((fname.find("./")!=0) && (fname.find("../")!=0) && (fname[0]!='/')
+#if defined(WIN32)
+		&& (fname.find(".\\")!=0) && (fname.find("..\\")!=0)
+#endif
+		)
 	{
-#if ((defined XWIN) || (defined BEOS) || (defined MACOSX))
-		const char *f1=getenv("HOME");
-		if(f1)
+#if ((defined XWIN) || (defined BEOS) || (defined MACOSX) || defined(WIN32))
+		std::string home_dir = Get_home();
+		if (home_dir.c_str())
 		{
 			// User has a home directory
-			fname=f1;
+			fname=home_dir;
 #if defined(BEOS)
 			fname+="/config/settings/";
 #elif defined(MACOSX)
 			fname+="/Library/Preferences/";
+#elif defined(WIN32)
+			fname+="\\";
 #else
 			fname+="/.";
 #endif
@@ -187,6 +193,36 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 
 		// For now, just read file from current directory
 		fname=input_filename;
+#endif
+
+#if defined(WIN32)
+		if (U7exists(input_filename.c_str()))
+			{
+			if (!U7exists(fname.c_str()))
+				{
+				cerr << "Warning: configuration file '" << input_filename
+				     << "' is being copied to file '" << fname
+				     << "' and will no longer be used." << endl;
+				try
+					{
+					size_t pos = fname.find_last_of("/\\");
+					if (pos != string::npos)
+						{	// First, try to make the directory.
+						std::string path = fname.substr(0, pos);
+						U7mkdir(path.c_str(), 0755);
+						}
+					U7copy(input_filename.c_str(), fname.c_str());
+					}
+				catch (exult_exception& e)
+					{
+					cerr << "File copy FAILED. Old settings will be lost" << endl;
+					}
+				}
+			else
+				cerr << "Warning: configuration file '" << input_filename
+				     << "' is being ignored in favor of file '"
+				     << fname << "'." << endl;
+			}
 #endif
 	}
 #ifdef UNDER_CE

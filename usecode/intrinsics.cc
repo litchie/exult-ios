@@ -1569,7 +1569,7 @@ USECODE_INTRINSIC(display_area)
 			{
 			int scale = gwin->get_win()->get_scale();
 			int w = gwin->get_width(), h = gwin->get_height();
-			unsigned char *rgba_pixels = glman->get_screen_rgba();
+			unsigned char *rgba_pixels = glman->get_screen_rgba(w, h);
 			paint = new Paint_rgba_centered(rgba_pixels, -1,
 							scale*w, scale*h, scale);
 			}

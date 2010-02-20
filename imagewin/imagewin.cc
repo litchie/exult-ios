@@ -522,7 +522,7 @@ bool Image_window::screenshot(SDL_RWops *dst)
 		{
 		int width = ibuf->width, height = ibuf->height;
 		GL_manager *glman = GL_manager::get_instance();
-		unsigned char *bits = glman->get_unscaled_rgb(false, true);
+		unsigned char *bits = glman->get_unscaled_rgb(width, height, false, true);
 		SDL_Surface *screenshot_surface = SDL_CreateRGBSurfaceFrom(bits,
 					width, height, 24, 3 * width, 0, 0, 0, 0);
 		bool ret = SavePCX_RW(screenshot_surface, dst, true);

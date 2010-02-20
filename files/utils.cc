@@ -27,6 +27,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <fstream>
 #include <map>
 #include <list>
@@ -39,6 +40,7 @@
 
 #ifdef WIN32
 #include <windows.h>
+#include <shlobj.h>
 #ifndef UNDER_CE
 #include <direct.h> // For mkdir and chdir
 #endif
@@ -224,7 +226,7 @@ void to_uppercase(string &str)
 	}
 }
 
-string to_uppercase(const std::string &str)
+string to_uppercase(const string &str)
 {
 	string s(str);
 	to_uppercase(s);
@@ -292,7 +294,7 @@ static void switch_slashes(
 	while( begIdx != string::npos )
 	{
 		endIdx = name.find_first_of('/', begIdx);
-		if( endIdx == std::string::npos )
+		if( endIdx == string::npos )
 			component = name.substr(begIdx);
 		else
 			component = name.substr(begIdx, endIdx-begIdx);
@@ -301,7 +303,7 @@ static void switch_slashes(
 		else if( !component.empty() && component != "." )
 		{
 			new_name += component;
-			if( endIdx != std::string::npos )
+			if( endIdx != string::npos )
 				new_name += ":";
 		}
 		begIdx = name.find_first_not_of('/', endIdx);
@@ -557,6 +559,193 @@ int U7mkdir
 	return mkdir(name.c_str(), mode); // Create dir. if not already there.
 #endif
 }
+
+#ifdef WIN32
+class shell32_wrapper
+	{
+protected:
+	HMODULE hLib;
+	typedef HRESULT (*SHGetFolderPathFunc)
+		(
+		HWND hwndOwner,
+		int nFolder,
+		HANDLE hToken,
+		DWORD dwFlags,
+		LPTSTR pszPath
+		);
+	SHGetFolderPathFunc      SHGetFolderPath;
+	/*
+	// Will leave this for someone with Vista/W7 to implement.
+	typedef HRESULT (*SHGetKnownFolderPathFunc)
+		(      
+		REFKNOWNFOLDERID rfid,
+		DWORD dwFlags,
+		HANDLE hToken,
+		PWSTR *ppszPath
+		);
+	SHGetKnownFolderPathFunc SHGetKnownFolderPath;
+	*/
+public:
+	shell32_wrapper()
+		{
+		hLib = LoadLibrary("shell32.dll");
+		if (hLib != NULL)
+			{
+			SHGetFolderPath      = (SHGetFolderPathFunc     )GetProcAddress(
+							hLib, "SHGetFolderPathA");
+			/*
+			SHGetKnownFolderPath = (SHGetKnownFolderPathFunc)GetProcAddress(
+							hLib, "SHGetKnownFolderPath");
+			*/
+			}
+		else
+			{
+			SHGetFolderPath      = NULL;
+			//SHGetKnownFolderPath = NULL;
+			}
+		}
+	~shell32_wrapper()
+		{ FreeLibrary(hLib); }
+	const string Get_local_appdata()
+		{
+		/*	Not yet.
+		if (SHGetKnownFolderPath != NULL)
+			{
+			}
+		else */
+		if (SHGetFolderPath != NULL)
+			{
+			CHAR szPath[MAX_PATH];
+			HRESULT code = SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA,
+							NULL, 0, szPath);
+			if (code == E_INVALIDARG)
+				continue;
+			else if (code == S_FALSE)	// E_FAIL for Unicode version.
+					// Lets try creating it through the API flag:
+				code = SHGetFolderPath(NULL,
+								CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+								NULL, 0, szPath);
+			if (code == E_INVALIDARG)
+				continue;
+			else if (code == S_OK)
+				return string((const char *)szPath);
+			// We don't have a folder yet at this point. This means we have
+			// a truly ancient version of Windows.
+			// Just to be sure, we fall back to the old behaviour.
+			// Is anyone still needing this?
+			}
+		return string("");
+		}
+	};
+
+#ifdef USE_CONSOLE
+// ++++ TODO: Need to check if this actually works.
+void redirect_output(const char *prefix)
+	{
+	}
+void cleanup_output(const char *prefix)
+	{
+	}
+#else
+#include <cstdio>
+// Pulled from exult_studio.cc.
+void redirect_output(const char *prefix)
+	{
+	// Flush the output in case anything is queued
+	fclose(stdout);
+	fclose(stderr);
+
+	string folderPath = Get_exult_home() + "/";
+
+	string stdoutPath = folderPath + prefix + "out.txt";
+	const char *stdoutfile = stdoutPath.c_str();
+
+	// Redirect standard input and standard output
+	FILE *newfp = freopen(stdoutfile, "w", stdout);
+	if ( newfp == NULL )
+		{	// This happens on NT
+#if !defined(stdout)
+		stdout = fopen(stdoutfile, "w");
+#else
+		newfp = fopen(stdoutfile, "w");
+		if ( newfp )
+			*stdout = *newfp;
+#endif
+		}
+
+	string stderrPath = folderPath + prefix + "err.txt";
+	const char *stderrfile = stderrPath.c_str();
+
+	newfp = freopen(stderrfile, "w", stderr);
+	if ( newfp == NULL )
+		{	// This happens on NT
+#if !defined(stderr)
+		stderr = fopen(stderrfile, "w");
+#else
+		newfp = fopen(stderrfile, "w");
+		if ( newfp )
+			*stderr = *newfp;
+#endif
+		}
+	setvbuf(stdout, NULL, _IOLBF, BUFSIZ);	// Line buffered
+	setbuf(stderr, NULL);			// No buffering
+	}
+
+void cleanup_output(const char *prefix)
+	{
+	string folderPath = Get_exult_home() + "/";
+	if (!ftell(stdout))
+		{
+		fclose(stdout);
+		string stdoutPath = folderPath + prefix + "out.txt";
+		remove(stdoutPath.c_str());
+		}
+	if (!ftell(stderr))
+		{
+		fclose(stderr);
+		string stderrPath = folderPath + prefix + "err.txt";
+		remove(stderrPath.c_str());
+		}
+	}
+#endif // USE_CONSOLE
+#endif	// WIN32
+
+const string Get_home()
+	{
+	// Do this only once, as the path is not liable to change during runtime.
+	static string home_dir = "";
+	static bool have_home = false;
+	if (have_home)
+		return home_dir;
+#ifdef WIN32
+#ifdef PORTABLE_EXULT_WIN32
+	home_dir = ".";
+#else
+	shell32_wrapper shell32;
+	home_dir = shell32.Get_local_appdata();
+	home_dir += "\\Exult";
+#endif // PORTABLE_WIN32_EXULT
+#elif !defined(MACOS)
+	const char *home = 0;
+	if ((home = getenv("HOME")) != 0)
+		home_dir = home;
+#endif
+	have_home = true;
+	return home_dir;
+	}
+
+const string Get_exult_home()
+	{
+	string home_dir = Get_home();
+#if defined(WIN32)
+	U7mkdir(home_dir.c_str(), 0755);
+#elif !defined(MACOS)
+	home_dir += "/.exult";
+	U7mkdir(home_dir.c_str(), 0755);
+#endif
+	return home_dir;
+	}
+
 
 // These are not supported in WinCE (PocketPC) for now
 #ifndef UNDER_CE

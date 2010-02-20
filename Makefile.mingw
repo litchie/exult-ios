@@ -11,8 +11,11 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
-SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
+### We want to do our own stdout/stderr redirection, thank you.
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
+#SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -125,7 +128,7 @@ ES_SHAPES_OBJS=ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o \
 	expinf.o font.o fontgen.o fontvga.o frnameinf.o frpowers.o items.o \
 	monstinf.o npcdollinf.o objdollinf.o pngio.o sfxinf.o shapeinf.o \
 	shapewrite.o shapevga.o u7drag.o vgafile.o warminf.o weaponinf.o \
-	$(OPENGL_OBJS)  
+	$(OPENGL_OBJS)
 
 MISC_OBJS=exultstudioico.o windrag.o
 

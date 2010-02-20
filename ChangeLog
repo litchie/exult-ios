@@ -1,3 +1,19 @@
+2010-02-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exult.cc, Makefile.*, conf/*, files/*, gamemgr/*, mapedit/*: In Windows,
+	  Exult and ES will now use/save configuration files, savegames, gamedat,
+	  patches, screenshots and stdout.txt/stderr.txt in LOCAL_APPDATA\Exult.
+	  This has the added benefit of no longer requiring ES to be installed to
+	  the same path as Exult. Existing configuration files (including Exult.cfg)
+	  will be copied from the current path to the new location and ignored from
+	  then on; savegames, mod data and everything else will not. This should
+	  make Exult play nice with Vista and W7, but I need testers.
+	  NOTE: If you want to keep Exult as "portable" in Win32 as it was, you can
+	  compile it with -DPORTABLE_EXULT_WIN32 and set all relevant paths directly
+	  in Exult.cfg to prevent Exult from looking elsewhere. This is turned off
+	  by default in current SVN.
+	* palette.cc, imagewin/*, shapes/*, usecode/*: Added back width and height
+	  parameters to the OpenGL screen grabbers because of ES in MinGW.
+
 2010-02-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* OpenGL fixes: Invisibility draws sprites translucently, outlines are now
 	  drawn correctly (poison, damage, etc), screenshots and save screenshots
