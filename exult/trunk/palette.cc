@@ -327,8 +327,10 @@ static inline void glfade
 #else
 	// FIXME: For some reason, this doesn't work always. I have no idea why.
 	int scale = win->get_scale();
-	int w = win->get_width() * scale, h = win->get_height() * scale;
-	unsigned char *rgba_pixels = GL_manager::get_instance()->get_screen_rgba();
+	int width = win->get_width(), height = win->get_height();
+	int w = width * scale, h = height * scale;
+	unsigned char *rgba_pixels = GL_manager::get_instance()->get_screen_rgba(
+					width, height);
 	win->set_palette(fadein ? pal1 : pal2, max_val, brightness);
 	unsigned char *fade_blend  = new unsigned char[4*w*h];
 	//std::memset(fade_blend, 0, 4*w*h);

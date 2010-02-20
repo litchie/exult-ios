@@ -171,7 +171,7 @@ unsigned char* Image_window8::mini_screenshot()
 		{
 		int width = ibuf->get_width(), height = ibuf->get_height();
 		GL_manager *glman = GL_manager::get_instance();
-		unsigned char* pixels = glman->get_unscaled_rgb(true, true);
+		unsigned char* pixels = glman->get_unscaled_rgb(width, height, true, true);
 		for (int y = 0; y < h; y += 3)
 			for (int x = 0; x < w; x += 3)
 				{

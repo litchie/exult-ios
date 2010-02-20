@@ -107,9 +107,12 @@ public:
 	void paint_outline(Shape_frame *frame, int px, int py, unsigned char color);
 	void set_palette_rotation(int first, int last)
 		{ first_rot = first; last_rot = last; }
-	unsigned char *get_screen_rgba (bool rgb = true, bool unflip = true);
-	unsigned char *get_screen_rgb  (bool rgb = true, bool unflip = true);
-	unsigned char *get_unscaled_rgb(bool rgb = true, bool unflip = true);
+	unsigned char *get_screen_rgba (int width, int height, bool rgb = true,
+					bool unflip = true);
+	unsigned char *get_screen_rgb  (int width, int height, bool rgb = true,
+					bool unflip = true);
+	unsigned char *get_unscaled_rgb(int width, int height, bool rgb = true,
+					bool unflip = true);
 	};
 
 void gl_paint_rgba_bitmap(unsigned char *pixels, int x, int y,

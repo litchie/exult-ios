@@ -366,10 +366,10 @@ int main
 		result = exult_main(argv[0]);
 	}
 	catch( const quit_exception & e )
-    {
+	{
 		Audio::Destroy();	// Deinit the sound system.
-        result = 0;
-    }
+		result = 0;
+	}
 	catch( const exult_exception & e )
 	{
 		cerr << "============================" << endl <<
@@ -383,6 +383,129 @@ int main
 	
 	return result;
 }
+
+#ifdef _WIN32
+#include <windows.h>
+#include <cstdio>
+// From Pentagram:
+PCHAR* CommandLineToArgvA
+	(
+	PCHAR CmdLine,
+	int* _argc
+	)
+	{
+	PCHAR* argv;
+	PCHAR  _argv;
+	ULONG   len;
+	ULONG   argc;
+	CHAR   a;
+	ULONG   i, j;
+
+	BOOLEAN  in_QM;
+	BOOLEAN  in_TEXT;
+	BOOLEAN  in_SPACE;
+
+	len = strlen(CmdLine);
+	i = ((len+2)/2)*sizeof(PVOID) + sizeof(PVOID);
+
+	argv = (PCHAR*)GlobalAlloc(GMEM_FIXED, i + (len+2)*sizeof(CHAR));
+
+	_argv = (PCHAR)(((PUCHAR)argv)+i);
+
+	argc = 0;
+	argv[argc] = _argv;
+	in_QM = FALSE;
+	in_TEXT = FALSE;
+	in_SPACE = TRUE;
+	i = 0;
+	j = 0;
+
+	while (a = CmdLine[i])
+		{
+		if (in_QM)
+			{
+			if (a == '\"')
+				in_QM = FALSE;
+			else
+				{
+				_argv[j] = a;
+				j++;
+				}
+			}
+		else
+			{
+			switch (a)
+				{
+				case '\"':
+					in_QM = TRUE;
+					in_TEXT = TRUE;
+					if (in_SPACE)
+						{
+						argv[argc] = _argv+j;
+						argc++;
+						}
+					in_SPACE = FALSE;
+					break;
+				case ' ':
+				case '\t':
+				case '\n':
+				case '\r':
+					if(in_TEXT)
+						{
+						_argv[j] = '\0';
+						j++;
+						}
+					in_TEXT = FALSE;
+					in_SPACE = TRUE;
+					break;
+				default:
+					in_TEXT = TRUE;
+					if(in_SPACE)
+						{
+						argv[argc] = _argv+j;
+						argc++;
+						}
+					_argv[j] = a;
+					j++;
+					in_SPACE = FALSE;
+				break;
+				}
+			}
+			i++;
+		}
+	_argv[j] = '\0';
+	argv[argc] = NULL;
+
+	(*_argc) = argc;
+	return argv;
+	}
+
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+	{
+	/* Pulled from SDL_win32_main.c; this comment is also theirs:
+	   Start up DDHELP.EXE before opening any files, so DDHELP doesn't
+	   keep them open.  This is a hack.. hopefully it will be fixed 
+	   someday.  DDHELP.EXE starts up the first time DDRAW.DLL is loaded.
+	 */
+	HMODULE hLib = LoadLibrary(TEXT("DDRAW.DLL"));
+	if (hLib != NULL)
+		FreeLibrary(hLib);
+
+	redirect_output("std");
+
+	int argc;
+	char **argv = CommandLineToArgvA(GetCommandLineA(), &argc);
+
+	int res = main(argc, argv);
+	
+	cleanup_output("std");
+
+	GlobalFree((HGLOBAL)argv);
+
+	return  res;
+	}
+#endif
 
 
 /*
@@ -1257,8 +1380,8 @@ static void Handle_event
 		{
 	case SDL_MOUSEBUTTONDOWN:
 		{
-        	if (dont_move_mode)
-        		break;
+	   	if (dont_move_mode)
+	   		break;
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
@@ -1272,7 +1395,7 @@ static void Handle_event
 				{	// Paint if shift-click.
 				if (cheat.get_edit_shape() >= 0 &&
 					// But always if painting.
-			    	    (cheat.get_edit_mode() == Cheat::paint ||
+				    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
 					{
 					Paint_with_shape(event, false);
@@ -1351,8 +1474,8 @@ static void Handle_event
 		}
 	case SDL_MOUSEBUTTONUP:
 		{
-	        if (dont_move_mode)
-        	    break;
+		if (dont_move_mode)
+			break;
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
@@ -1843,8 +1966,8 @@ static void Shift_wizards_eye
 	{
 					// Figure dir. from center.
 	int cx = gwin->get_width()/2, cy = gwin->get_height()/2;
-        int dy = cy - my, dx = mx - cx;
-        Direction dir = Get_direction(dy, dx);
+	int dy = cy - my, dx = mx - cx;
+	Direction dir = Get_direction(dy, dx);
 	static int deltas[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1, 
 						-1,1, -1,0, -1,-1};
 	int dirx = deltas[2*dir], diry = deltas[2*dir + 1];
@@ -2011,7 +2134,10 @@ void decrease_resolution()
 
 void make_screenshot (bool silent)
 {
-	char fn[15];
+	// TODO: Maybe use <SAVEGAME>/exult%03i.pcx instead.
+	// Or meybe some form or "My Pictures" on Windows.
+	string homepath = Get_exult_home() + "/exult%03i.pcx";
+	char *fn = new char[homepath.size() + 10];
 	int i;
 	FILE *f;
 	bool namefound = false;
@@ -2019,7 +2145,7 @@ void make_screenshot (bool silent)
 
 	// look for the next available exult???.pcx file
 	for (i = 0; i < 1000 && !namefound; i++) {
-		snprintf(fn, 15, "exult%03i.pcx", i);
+		snprintf(fn, homepath.size() + 10, homepath.c_str(), i);
 		f = fopen(fn, "rb");
 		if (f) {
 			fclose(f);
@@ -2039,7 +2165,8 @@ void make_screenshot (bool silent)
 		} else {
 			if (!silent) eman->center_text("Screenshot failed");
 		}
-	}	
+	}
+	delete [] fn;
 }
 
 void change_gamma (bool down)
@@ -2213,7 +2340,7 @@ static void Move_dragged_shape
 	int sclass = info.get_shape_class();
 					// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&
-		     sclass != Shape_info::building);
+			sclass != Shape_info::building);
 	Move_grid(x, y, prevx, prevy, ireg, xtiles, ytiles, 0, 0);
 	if (show)
 		gwin->show();
