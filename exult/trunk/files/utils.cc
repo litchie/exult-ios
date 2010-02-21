@@ -565,7 +565,7 @@ class shell32_wrapper
 	{
 protected:
 	HMODULE hLib;
-	typedef HRESULT (*SHGetFolderPathFunc)
+	typedef HRESULT (WINAPI *SHGetFolderPathFunc)
 		(
 		HWND hwndOwner,
 		int nFolder,
