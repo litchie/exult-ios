@@ -13,9 +13,9 @@ SRC=.
 SDL_CFLAGS=-I$(SRC)/sdl/include
 ### We want to do our own stdout/stderr redirection, thank you.
 #SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
-#SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL
-SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
+
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -34,7 +34,7 @@ endif
 
 ### OpenGL mode support
 OPENGL_LIBS=-lopengl32
-OPENGL_OBJS=glshape.o
+OPENGL_OBJS=shapes/glshape.o
 OPENGL_CFLAGS=-DHAVE_OPENGL
 
 ### GTK+ libs and includes, for Exult Studio.
@@ -108,26 +108,88 @@ EXEC=Exult.exe
 EXEEXT=.exe
 
 EXP_FILE=exult_studio.exp
-SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
+SERVER_OBJS=\
+	server/objserial.o \
+	server/servemsg.o \
+	server/server.o \
+	server/servewin32.o
+
 ICON_OBJS=exultico.o
 
-ES_SERVER_OBJS=objserial.o servemsg.o servewin32.o
+ES_SERVER_OBJS=\
+	server/objserial.o \
+	server/servemsg.o \
+	server/servewin32.o
 
-MAPEDIT_OBJS=bargeedit.o chunklst.o combo.o contedit.o eggedit.o compile.o \
-	execbox.o  exult_studio.o locator.o maps.o npcedit.o npclst.o \
-	objbrowse.o objedit.o paledit.o shapedraw.o shapeedit.o shapefile.o \
-	shapegroup.o shapelst.o studio.o ucbrowse.o ucsymtbl.o
+MAPEDIT_OBJS=\
+	mapedit/bargeedit.o \
+	mapedit/chunklst.o \
+	mapedit/combo.o \
+	mapedit/compile.o \
+	mapedit/contedit.o \
+	mapedit/eggedit.o \
+	mapedit/execbox.o \
+	mapedit/exult_studio.o \
+	mapedit/locator.o \
+	mapedit/maps.o \
+	mapedit/npcedit.o \
+	mapedit/npclst.o \
+	mapedit/objbrowse.o \
+	mapedit/objedit.o \
+	mapedit/paledit.o \
+	mapedit/shapedraw.o \
+	mapedit/shapeedit.o \
+	mapedit/shapefile.o \
+	mapedit/shapegroup.o \
+	mapedit/shapelst.o \
+	mapedit/studio.o \
+	mapedit/ucbrowse.o \
+	usecode/ucsymtbl.o
 
-ES_FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o U7fileman.o utils.o U7obj.o
+ES_FILES_OBJS=\
+	files/Flat.o \
+	files/Flex.o \
+	files/IFF.o \
+	files/listfiles.o \
+	files/msgfile.o \
+	files/Table.o \
+	files/U7file.o \
+	files/U7fileman.o \
+	files/U7obj.o \
+	files/utils.o
 
-ES_GAMEMGR_OBJS=modmgr.o
+ES_GAMEMGR_OBJS=gamemgr/modmgr.o
 
-ES_IMAGEWIN_OBJS=ibuf8.o imagebuf.o
+ES_IMAGEWIN_OBJS=\
+	imagewin/ibuf8.o \
+	imagewin/imagebuf.o
 
-ES_SHAPES_OBJS=ammoinf.o aniinf.o armorinf.o bodyinf.o continf.o effhpinf.o \
-	expinf.o font.o fontgen.o fontvga.o frnameinf.o frpowers.o items.o \
-	monstinf.o npcdollinf.o objdollinf.o pngio.o sfxinf.o shapeinf.o \
-	shapewrite.o shapevga.o u7drag.o vgafile.o warminf.o weaponinf.o \
+ES_SHAPES_OBJS=\
+	shapes/ammoinf.o \
+	shapes/aniinf.o \
+	shapes/armorinf.o \
+	shapes/bodyinf.o \
+	shapes/continf.o \
+	shapes/effhpinf.o \
+	shapes/expinf.o \
+	shapes/font.o \
+	shapes/fontgen.o \
+	shapes/fontvga.o \
+	shapes/frnameinf.o \
+	shapes/frpowers.o \
+	shapes/items.o \
+	shapes/monstinf.o \
+	shapes/npcdollinf.o \
+	shapes/objdollinf.o \
+	shapes/pngio.o \
+	shapes/sfxinf.o \
+	shapes/shapeinf.o \
+	shapes/shapewrite.o \
+	shapes/shapevga.o \
+	shapes/u7drag.o \
+	shapes/vgafile.o \
+	shapes/warminf.o \
+	shapes/weaponinf.o \
 	$(OPENGL_OBJS)
 
 MISC_OBJS=exultstudioico.o windrag.o
@@ -143,8 +205,8 @@ exultico.o: win32/exultico.rc win32/exult.ico
 exconfig_rc.o: win32/exconfig.rc
 	windres --include-dir win32 win32/exconfig.rc exconfig_rc.o
 
-exconfig.dll: win32/exconfig.def $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfig.o
-	dllwrap --def win32/exconfig.def -o $@ $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o exconfig.o -lstdc++
+exconfig.dll: win32/exconfig.def $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o win32/exconfig.o
+	dllwrap --def win32/exconfig.def -o $@ $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o win32/exconfig.o -lstdc++
 
 exult_studio$(EXEEXT): $(BG_PAPERDOLL) $(FLEXES) $(ES_OBJS) $(EXP_FILE)
 	$(CXX) $(EXP_FILE) -o $@ $(ES_OBJS) $(ES_LIBS)
@@ -329,7 +391,7 @@ studiodist: exult_studio$(EXEEXT)
 	cp win32/exult_studio_installer.iss $(U7PATH)
 
 allclean: clean toolsclean studioclean
-	rm -f exconfig.dll exconfig_rc.o exconfig.o
+	rm -f exconfig.dll exconfig_rc.o win32/exconfig.o
 
 allinstall: install toolsinstall studioinstall
 
