@@ -89,7 +89,7 @@ static const string get_cfg_home(const string& cfgname)
 	{
 	string home_dir = Get_exult_home();
 
-	if (home_dir != "")
+	if (home_dir != ".")
 		{
 		// Append configuration (game) name
 		home_dir += "/" + cfgname;
@@ -195,7 +195,8 @@ ModInfo::ModInfo
 	string save_path = data_directory;
 		// Gets $HOME/.exult/path_prefix/mod_title.
 	string home_game = get_cfg_home(cfgname);
-	if (home_game.size())
+		// All but Win9x:
+	if (home_game != ".")
 		{
 		home_game += "/mods";
 		U7mkdir(home_game.c_str(), 0755);
@@ -537,7 +538,7 @@ void ModManager::get_game_paths()
 		// ++++ with Win9x and old MacOS (possibly others) being exceptions.
 
 		// Usually for Win9x:
-	if (dataprefix == "")
+	if (dataprefix == ".")
 		dataprefix = data_directory;
 
 		// <gamedat_path> setting: default is "$dataprefix".
