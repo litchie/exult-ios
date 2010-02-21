@@ -725,6 +725,8 @@ const string Get_home()
 	home_dir = shell32.Get_local_appdata();
 	if (home_dir != "")
 		home_dir += "\\Exult";
+	else
+		home_dir += ".";
 #endif // PORTABLE_WIN32_EXULT
 #elif !defined(MACOS)
 	const char *home = 0;
