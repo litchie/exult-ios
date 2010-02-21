@@ -1,4 +1,7 @@
 2010-02-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug #2844723.
+
+2010-02-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, Makefile.*, conf/*, files/*, gamemgr/*, mapedit/*: In Windows,
 	  Exult and ES will now use/save configuration files, savegames, gamedat,
 	  patches, screenshots and stdout.txt/stderr.txt in LOCAL_APPDATA\Exult.

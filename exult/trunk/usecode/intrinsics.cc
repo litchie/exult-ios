@@ -1577,6 +1577,9 @@ USECODE_INTRINSIC(display_area)
 					// Wait for click.
 		Get_click(x, y, Mouse::hand, 0, false, paint);
 		delete paint;
+
+			// BG orrery viewer needs this because it also calls UI_view_tile:
+		gwin->center_view(gwin->get_main_actor()->get_tile());
 		if ((newmap != -1) && (newmap != oldmap))
 			gwin->set_map(oldmap);
 		gwin->paint();		// Repaint normal area.
