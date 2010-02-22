@@ -42,7 +42,7 @@
 
 const std::string c_empty_string;
 
-char *config_defaults[] =
+const char *config_defaults[] =
 {
 	"config/disk/game/blackgate/keys",	"(default)",
 	"config/disk/game/blackgate/waves",	"jmsfx.flx",
@@ -290,7 +290,10 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		config.read_config_file(p);
+		if (Get_home() == ".")
+			config.read_config_file(p);
+		else
+			config.read_config_file("exult.cfg");
 
 		std::string dir;
 
@@ -353,7 +356,10 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		config.read_config_file(p);
+		if (Get_home() == ".")
+			config.read_config_file(p);
+		else
+			config.read_config_file("exult.cfg");
 
 		// Set BG Path
 		MessageBoxDebug (NULL, p, "WriteConfig: BG", MB_OK);
