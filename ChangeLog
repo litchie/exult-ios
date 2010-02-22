@@ -1,3 +1,6 @@
+2010-02-22 Dominik Reichardt <dominus@users.sourceforge.net>
+	* win32/exult_installer.iss: set to SVN and setting working folder for Exult Studio start menu item
+
 2010-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed absolute path issue in Windows.
 	* Setting a relative <mods> path did not work as expected; fixed.

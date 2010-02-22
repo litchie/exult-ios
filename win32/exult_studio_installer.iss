@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Exult Studio
-AppVerName=Exult Studio CVS
+AppVerName=Exult Studio SVN
 DefaultDirName={pf}\Exult
 DefaultGroupName=Exult Studio
 OutputBaseFilename=ExultStudio
@@ -63,7 +63,7 @@ Source: Studio\etc\gtk-2.0\gdk-pixbuf.loaders; DestDir: {app}\etc\gtk-2.0; Flags
 Source: Studio\etc\pango\pango.modules; DestDir: {app}\etc\pango; Flags: ignoreversion
 
 [Icons]
-Name: {group}\Exult Studio; Filename: {app}\exult_studio.exe
+Name: {group}\Exult Studio; Filename: {app}\exult_studio.exe; WorkingDir: {app}
 Name: {group}\{cm:UninstallProgram,Exult Studio}; Filename: {uninstallexe}
 Name: {group}\exult_studio.html; Filename: {app}\exult_studio.html; WorkingDir: {app}; Comment: exult_studio.txt; Flags: createonlyiffileexists
 Name: {group}\exult_studio.txt; Filename: {app}\exult_studio.txt; WorkingDir: {app}; Comment: exult_studio.html; Flags: createonlyiffileexists
