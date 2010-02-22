@@ -192,19 +192,8 @@ ModInfo::ModInfo
 	default_dir = "CP437";	// DOS code page.
 	modconfig.value(config_path, codepage, default_dir.c_str());
 
+	// Note: this path defaults to a user-writable directory.
 	string save_path = data_directory;
-		// Gets $HOME/.exult/path_prefix/mod_title.
-	string home_game = get_cfg_home(cfgname);
-		// All but Win9x:
-	if (home_game != ".")
-		{
-		home_game += "/mods";
-		U7mkdir(home_game.c_str(), 0755);
-		home_game += "/" + mod_title;
-		U7mkdir(home_game.c_str(), 0755);
-		if (U7exists(home_game.c_str()))
-			save_path = home_game;
-		}
 
 	config_path = "mod_info/gamedat_path";
 	default_dir = save_path + "/gamedat";

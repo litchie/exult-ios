@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstdlib>
+#include <cctype>
 #include <fstream>
 #ifdef HAVE_SSTREAM
 #include <sstream>
@@ -152,6 +153,17 @@ bool	Configuration::read_config_string(const string &s)
 	return true;
 }
 
+static inline bool is_path_absolute(const string& path)
+{
+	return ((path.find("./")==0) || (path.find("../")==0) || (path[0]=='/')
+#if defined(WIN32)
+		|| (path.find(".\\")==0) || (path.find("..\\")==0) || (path[0]=='\\')
+		|| (std::isalpha(path[0]) && path[1]==':' &&
+			(path[2]=='/' || path[2]=='\\'))
+#endif
+		);
+}
+
 bool	Configuration::read_config_file(const string &input_filename, const string &root)
 {
 	string fname;
@@ -162,11 +174,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Don't frob the filename if it starts with a dot and
 	// a slash or with two dots and a slash.
 	// Or if it's not a relative path.
-	if ((fname.find("./")!=0) && (fname.find("../")!=0) && (fname[0]!='/')
-#if defined(WIN32)
-		&& (fname.find(".\\")!=0) && (fname.find("..\\")!=0)
-#endif
-		)
+	if (!is_path_absolute(input_filename))
 	{
 #if ((defined XWIN) || (defined BEOS) || (defined MACOSX) || defined(WIN32))
 		std::string home_dir = Get_home();
@@ -196,7 +204,9 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 #endif
 
 #if defined(WIN32)
-		if (U7exists(input_filename.c_str()))
+		// Note: this first check misses some cases of path equality, but it
+		// does eliminates some spurious warnings.
+		if (fname != input_filename && U7exists(input_filename.c_str()))
 			{
 			if (!U7exists(fname.c_str()))
 				{
