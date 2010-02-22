@@ -1,3 +1,7 @@
+2010-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed absolute path issue in Windows.
+	* Setting a relative <mods> path did not work as expected; fixed.
+
 2010-02-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bug #2844723.
 
