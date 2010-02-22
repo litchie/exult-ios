@@ -170,7 +170,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	{
 #if ((defined XWIN) || (defined BEOS) || (defined MACOSX) || defined(WIN32))
 		std::string home_dir = Get_home();
-		if (home_dir.c_str())
+		if (home_dir.c_str() && home_dir != ".")
 		{
 			// User has a home directory
 			fname=home_dir;
