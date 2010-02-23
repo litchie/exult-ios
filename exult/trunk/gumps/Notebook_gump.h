@@ -94,7 +94,7 @@ public:
 		if (gflag < auto_text.size() && auto_text[gflag])
 			add_gflag_text(gflag, auto_text[gflag]);
 		}
-
+	virtual bool is_draggable() const { return false; }
 	static void initialize();
 	static void write();		// Write it out to gamedat.
 	static void read();		// Read it in.

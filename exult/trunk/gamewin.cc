@@ -2577,7 +2577,10 @@ int Get_guard_shape
 	if (pos.tx >= 895 && pos.ty >= 1604 &&
 	    pos.tx < 1173 && pos.ty < 1960)
 		return 0x17d;		// Fawn guard.
-	return 0xe4;			// Pikeman.
+	if (pos.tx >= 670 && pos.ty >= 2430 &&
+	    pos.tx < 1135 && pos.ty < 2800)
+		return 0xe4;		// Pikeman.
+	return -1;			// No local guard.
 	}
 
 /*
@@ -2680,8 +2683,13 @@ void Game_window::call_guards
 		return;
 	if (witness || (witness = find_witness(closest)) != 0)
 		witness->say(first_call_guards, last_call_guards);
-					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());
+	if (gshape < 0)	// No local guards; lets forward to attack_avatar.
+		{
+		attack_avatar(0);
+		return;
+		}
+					// Show guard running up.
 					// Create it off-screen.
 	Monster_actor *guard = Monster_actor::create(gshape,
 		main_actor->get_tile() + Tile_coord(128, 128, 0));
@@ -2717,14 +2725,17 @@ void Game_window::attack_avatar
 	if (armageddon)
 		return;
 	int gshape = Get_guard_shape(main_actor->get_tile());
-	while (create_guards--)
+	if (gshape >= 0)
 		{
-					// Create it off-screen.
-		Monster_actor *guard = Monster_actor::create(gshape,
-			main_actor->get_tile() + Tile_coord(128, 128, 0));
-		add_nearby_npc(guard);
-		guard->set_target(main_actor, true);
-		guard->approach_another(main_actor);
+		while (create_guards--)
+			{
+						// Create it off-screen.
+			Monster_actor *guard = Monster_actor::create(gshape,
+				main_actor->get_tile() + Tile_coord(128, 128, 0));
+			add_nearby_npc(guard);
+			guard->set_target(main_actor, true);
+			guard->approach_another(main_actor);
+			}
 		}
 
 	Actor_vector npcs;		// See if someone is nearby.
@@ -2733,9 +2744,9 @@ void Game_window::attack_avatar
 							it != npcs.end();++it)
 		{
 		Actor *npc = (Actor *) *it;
-					// No monsters, except guards.
-		if ((npc->get_shapenum() == gshape || !npc->is_monster()) && 
-		    !npc->is_in_party())
+					// No monsters, except guards; unless no local guards.
+		if ((gshape < 0 || npc->get_shapenum() == gshape || !npc->is_monster())
+				&& !npc->is_in_party())
 			npc->set_target(main_actor, true);
 		}
 	}

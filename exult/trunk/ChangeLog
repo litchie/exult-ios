@@ -1,10 +1,13 @@
 2010-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* Fixed bug:
+	* Fixed bugs:
 	  #2912644 Black rain
 	  Rain drops/snow flakes/magic sparkle now use shape 0 from sprites.vga.
 	  Rain drops are frames 3 to 7 (7 being a "splash" frame of sorts which
 	  looks very nice), snow flakes are frames 13 to 20 and magic sparkle are
 	  frames 21 to 27.
+	  #2798881 guards in goblin valley
+	  #2838851 Notebook gump crashes Exult when text is dragged offscreen
+	  #2838850 Notebook text is duplicated to the sides of the gump
 	* Applied patch:
 	  #2957036 Fix a sfx and fix blacksmith to show tongs and hammer
 
