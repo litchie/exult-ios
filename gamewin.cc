@@ -446,8 +446,8 @@ Game_window::Game_window
 				allow_double_right_move?"yes":"no", true);
 					// New 'formation' walking?
 	config->value("config/gameplay/formation", str, "yes");
-//+++++ Everybody gets to test:-)	walk_in_formation = (str == "yes");
-	walk_in_formation = true;	// Testing time++++++++++.
+		// Assume "yes" on anything but "no".
+	walk_in_formation = str != "no";
 	config->set("config/gameplay/formation", walk_in_formation?"yes":"no",
 								true);
 
