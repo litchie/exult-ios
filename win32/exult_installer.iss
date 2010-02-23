@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Exult
-AppVerName=Exult CVS Snapshot
+AppVerName=Exult SVN Snapshot
 AppPublisher=The Exult Team
 AppPublisherURL=http://exult.sourceforge.net/
 AppSupportURL=http://exult.sourceforge.net/

@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Exult Tools
-AppVerName=Exult Tools CVS
+AppVerName=Exult Tools SVN
 DefaultDirName={pf}\Exult\Tools
 DefaultGroupName=Exult Tools
 OutputBaseFilename=ExultTools
