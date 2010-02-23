@@ -8,6 +8,7 @@
 	  #2798881 guards in goblin valley
 	  #2838851 Notebook gump crashes Exult when text is dragged offscreen
 	  #2838850 Notebook text is duplicated to the sides of the gump
+	  #2805775 Formation is still forced to yes for testing
 	* Applied patch:
 	  #2957036 Fix a sfx and fix blacksmith to show tongs and hammer
 
