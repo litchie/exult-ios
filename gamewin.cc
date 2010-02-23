@@ -1371,7 +1371,7 @@ void Game_window::write
 	int text_width = shape_man->get_text_width(0, "Saving Game");
 
 	win->fill_translucent8(0, width, height, 0, 0, 
-					shape_man->get_xform(2));
+					shape_man->get_xform(8));
 	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
 							centre_y-text_height);
 	show(true);
