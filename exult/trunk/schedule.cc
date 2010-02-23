@@ -1067,12 +1067,13 @@ void Patrol_schedule::now_what
 					npc->add_readied(hammer, lhand, 0, 1);
 					npc->add_dirty();
 
+					int hammersfx= Game::get_game_type() == BLACK_GATE ? 45:49;
 					(*scr) << Ucscript::delay_ticks << 2 <<
 						Ucscript::npc_frame + Actor::ready_frame <<
 						Ucscript::delay_ticks << 2 <<
 						Ucscript::npc_frame + Actor::raise1_frame <<
 						Ucscript::delay_ticks << 2 <<
-						Ucscript::sfx << 37 <<
+						Ucscript::sfx << hammersfx <<
 						Ucscript::npc_frame + Actor::out_frame <<
 						Ucscript::repeat << -11 << 1 <<
 						Ucscript::delay_ticks << 2 <<
@@ -3651,7 +3652,8 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
 		npc->add_dirty();
-		npc->add_readied(tongs, rhand);
+		npc->unready_weapon(); // make sure the tongs can be equipped
+		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
 
 		state = sword_on_anvil;
@@ -3710,7 +3712,8 @@ void Forge_schedule::now_what
 			tongs->remove_this();
 			tongs = 0;
 		}
-		npc->add_readied(hammer, rhand);
+		npc->unready_weapon(); // make sure the hammer can be equipped
+		npc->add_readied(hammer, lhand);
 		npc->add_dirty();
 
 		state = use_hammer;
@@ -3808,7 +3811,8 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
 		npc->add_dirty();
-		npc->add_readied(tongs, rhand);
+		npc->unready_weapon(); // make sure the tongs can be equipped
+		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
 
 		state = use_trough;
