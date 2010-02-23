@@ -5,6 +5,8 @@
 	  Rain drops are frames 3 to 7 (7 being a "splash" frame of sorts which
 	  looks very nice), snow flakes are frames 13 to 20 and magic sparkle are
 	  frames 21 to 27.
+	* Applied patch:
+	  #2957036 Fix a sfx and fix blacksmith to show tongs and hammer
 
 2010-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
