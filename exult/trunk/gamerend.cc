@@ -196,7 +196,7 @@ void Game_render::paint_terrain_only
 		}
 					// Paint tile grid if desired.
 	if (cheat.show_tile_grid())
-		Paint_grid(gwin, sman->get_xform(10));
+		Paint_grid(gwin, sman->get_xform(16));
 	}
 
 /*
@@ -309,9 +309,9 @@ int Game_render::paint_map
 	if (cheat.in_map_editor())
 		{
 		if (cheat.show_tile_grid())
-			Paint_grid(gwin, sman->get_xform(10));
+			Paint_grid(gwin, sman->get_xform(16));
 		if (cheat.get_edit_mode() == Cheat::select_chunks)
-			Paint_selected_chunks(gwin, sman->get_xform(7),
+			Paint_selected_chunks(gwin, sman->get_xform(13),
 				start_chunkx, start_chunky, stop_chunkx,
 							stop_chunky);
 		}
