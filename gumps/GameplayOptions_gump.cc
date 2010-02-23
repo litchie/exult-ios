@@ -217,8 +217,8 @@ void GameplayOptions_gump::build_buttons()
 
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
-	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, 
-										 rowy[1], 80, text_bg, 18);
+	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-41, 
+										 rowy[1], 100, text_bg, 18);
 	if (GAME_BG)
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);
