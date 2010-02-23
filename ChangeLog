@@ -1,3 +1,11 @@
+2010-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bug:
+	  #2912644 Black rain
+	  Rain drops/snow flakes/magic sparkle now use shape 0 from sprites.vga.
+	  Rain drops are frames 3 to 7 (7 being a "splash" frame of sorts which
+	  looks very nice), snow flakes are frames 13 to 20 and magic sparkle are
+	  frames 21 to 27.
+
 2010-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2819210 newfilegump.cc (4 buttons one pixel too far to the right)

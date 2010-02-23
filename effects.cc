@@ -1259,197 +1259,218 @@ void Fog_effect::handle_event(unsigned long curtime, long udata)
 		eman->remove_effect(this);
 	}
 
-/**
- *	Paint raindrop.
+/*
+ *	A generic raindrop/snowflake/magic sparkle particle:
  */
-
-inline void Raindrop::paint
-	(
-	Image_window8 *iwin,		// Where to draw.
-	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform		// Transform array.
-	)
+class Particle : public ShapeID
 	{
-	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-		      ascrolly = scrollty*(uint32)c_tilesize;
-	int x = ax - ascrollx, y = ay - ascrolly;
-	if (x < 0 || y < 0 || 
-			x >= iwin->get_width() || y >= iwin->get_height())
-		return;
-	if (oldpix == 255)
-		oldpix = iwin->get_pixel8(x, y);	// Get pixel.
-	iwin->put_pixel8(xform[oldpix], x, y);
-	}
+	long ax, ay;			// Coords. where drawn in abs. pixels.
+	bool forward;
+public:
+	Particle()
+	  : ShapeID(0, -1, SF_SPRITES_VGA), ax(-1), ay(-1), forward(true)
+		{  }
+					// Move to next position.
+	void move(long dx, long dy)
+		{ ax = dx; ay = dy; }
+	long get_ax() const
+		{ return ax; }
+	long get_ay() const
+		{ return ay; }
+	bool get_forward() const
+		{ return forward; }
+	void toggle_forward()
+		{ forward = !forward; }
+	};	
 
-/**
- *	Move raindrop.
- */
-
-inline void Raindrop::next
-	(
-	Image_window8 *iwin,		// Where to draw.	
-	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform,		// Transform array.
-	int w, int h			// Dims. of window.
-	)
+class Particledrop
 	{
-	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-		      ascrolly = scrollty*(uint32)c_tilesize;
-	int x = ax - ascrollx, y = ay - ascrolly;
-					// Still on screen?  Restore pix.
-	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
-		iwin->put_pixel8(oldpix, x, y);
-	oldpix = 255;
-
-					// Time to restart?
-	if (x < 0 || x >= w || y < 0 || y >= h)
-		{			
-		int r = rand();
-					// Have a few fall faster.
-		yperx = (r%4) ? 1 : 2;
-		ax = ascrollx + r%(w - w/8);
-		ay = ascrolly + r%(h - h/4);
-		}
-	else				// Next spot.
+protected:
+	virtual void do_move(Particle& drop, int x, int y, int w, int h,
+			int ascrollx, int ascrolly)
+		{  }
+public:
+	void move
+		(
+		Particle& drop,
+		int scrolltx, int scrollty,
+		int w, int h
+		)
 		{
-		int delta = 1 + rand()%4;
-		ax += delta;
-		ay += delta + yperx;
+		int frame = drop.get_framenum();
+		uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+				  ascrolly = scrollty*(uint32)c_tilesize;
+		int ax = drop.get_ax(), ay = drop.get_ay();
+		int x = ax - ascrollx, y = ay - ascrolly;
+						// Still on screen?  Restore pix.
+		if (frame >= 0 && x >= 0 && y >= 0 && x < w && y < h)
+			{
+			Game_window *gwin = Game_window::get_instance();
+			gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
+					drop.get_shape(), x, y).enlarge(c_tilesize/2)));
+			}
+		do_move(drop, x, y, w, h, ascrollx, ascrolly);
 		}
-					// Save old pixel & paint new.
-	paint(iwin, scrolltx, scrollty, xform);
-	}
-
-/**
- *	Move raindrop.
- */
-
-inline void Raindrop::next_random
-	(
-	Image_window8 *iwin,		// Where to draw.	
-	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform,		// Transform array.
-	int w, int h			// Dims. of window.
-	)
-	{
-	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-		      ascrolly = scrollty*(uint32)c_tilesize;
-	int x = ax - ascrollx, y = ay - ascrolly;
-					// Still on screen?  Restore pix.
-	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
-		iwin->put_pixel8(oldpix, x, y);
-	oldpix = 255;
-					// Pick new spot randomly.
-	int newx = rand()%w, newy = rand()%h;
-	ax = ascrollx + newx;
-	ay = ascrolly + newy;
-					// Save old pixel & paint new.
-	paint(iwin, scrolltx, scrollty, xform);
-	}
-
-/**
- *	Move snow flake.
- */
-
-inline void Raindrop::next_flake
-	(
-	Image_window8 *iwin,		// Where to draw.	
-	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform,		// Transform array.
-	int w, int h			// Dims. of window.
-	)
-	{
-	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-		      ascrolly = scrollty*(uint32)c_tilesize;
-	int x = ax - ascrollx, y = ay - ascrolly;
-					// Still on screen?  Restore pix.
-	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
-		iwin->put_pixel8(oldpix, x, y);
-	oldpix = 255;
-
-					// Time to restart?
-	if (x < 0 || x >= w || y < 0 || y >= h)
-		{			
-		int r = rand();
-		flake_wobble = rand()%15;
-					// Have a few fall faster.
-		yperx = 1;
-		ax = ascrollx + r%(w - w/8);
-		ay = ascrolly + r%(h - h/4);
-		}
-	else				// Next spot.
+	void paint
+		(
+		Particle& drop,
+		int scrolltx, int scrollty,
+		int w, int h
+		)
 		{
-		flake_wobble = (flake_wobble+1)%15;
-		int delta = 1 + rand()%2;
-		ax += delta;
-		ay += delta + yperx;
+		uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+				  ascrolly = scrollty*(uint32)c_tilesize;
+		int ax = drop.get_ax(), ay = drop.get_ay();
+		int x = ax - ascrollx, y = ay - ascrolly;
+						// Still on screen?  Restore pix.
+		if (x >= 0 && y >= 0 && x < w && y < h)
+			{
+			Game_window *gwin = Game_window::get_instance();
+			drop.paint_shape(x, y);
+			gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
+					drop.get_shape(), x, y).enlarge(c_tilesize/2)));
+			}
 		}
+	};
 
-	static char const flake_deltas[5][2] = {{-2, 2}, {-1, 2}, {0, 1}, {1, 0}, {1, -1}};
-	ax += flake_deltas[flake_wobble/3][0];
-	ay += flake_deltas[flake_wobble/3][1];
-					// Save old pixel & paint new.
-	paint(iwin, scrolltx, scrollty, xform);
+template<int fra0, int fraN, bool randomize>
+static inline void set_frame(Particle& drop)
+	{
+	int frame = drop.get_framenum();
+	if (frame < 0)
+		{
+		if (randomize)
+			{
+			int dir = rand()%2;
+			if (dir)
+				drop.toggle_forward();
+			frame = fra0 + rand()%(fraN-fra0) + dir;
+			}
+		else
+			frame = fra0;
+		}
+	else if (drop.get_forward())
+		{
+		if (++frame == fraN)
+			drop.toggle_forward();
+		}
+	else if (--frame == fra0)
+		drop.toggle_forward();
+	drop.set_frame(frame);
 	}
 
 
-/**
- *	Rain.
- */
-
-void Rain_effect::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata
-	)
+template<int fra0, int fraN, int delta, bool randomize>
+class Basicdrop : public Particledrop
 	{
-	Game_window *gwin = Game_window::get_instance();
+protected:
+	virtual void do_move(Particle& drop, int x, int y, int w, int h,
+			int ascrollx, int ascrolly)
+		{
+		set_frame<fra0, fraN, randomize>(drop);
+						// Time to restart?
+		if (x < 0 || x >= w || y < 0 || y >= h)
+			{			
+			int r = rand();
+			drop.move(ascrollx + r%(w - w/8), ascrolly + r%(h - h/4));
+			}
+		else				// Next spot.
+			drop.move(drop.get_ax() + delta, drop.get_ay() + delta);
+		}
+	};
 
-	// Gradual start/end.
-	change_ndrops(curtime);
+// This looks slightly cooler:
+//typedef Basicdrop< 3, 6, 6, false> Raindrop;
+typedef Basicdrop< 3, 7, 6, false> Raindrop;
+typedef Basicdrop<13,20, 1, false> Snowflake;
+typedef Basicdrop<21,27,12, true > Sparkle;
 
-	if (!gwin->is_main_actor_inside() &&
-	    !gumpman->showing_gumps(true))
-		{			// Don't show rain inside buildings!
+/*
+ *	Raining.
+ */
+#define MAXDROPS 200
+template<typename Functor>
+class Rain_effect : public Weather_effect
+	{
+protected:
+	Particle drops[MAXDROPS];	// Drops moving down the screen.
+	int num_drops;			// # to actually use.
+	bool gradual;
+	Functor do_drop;			// Controls how drops move.
+	void change_ndrops(unsigned long curtime)
+		{
+		if (!gradual)
+			return;
+		if ((curtime > stop_time - 2500) && num_drops)
+			{	// End gradually.
+			num_drops -= (rand() % 15);
+			if (num_drops < 0)
+				num_drops = 0;
+			}
+		else if (gradual && curtime < stop_time)	// Keep going?
+			{	// Start gradually.
+			if (num_drops < MAXDROPS)
+				num_drops += (rand() % 5);
+			if (num_drops > MAXDROPS)
+				num_drops = MAXDROPS;
+			}
+		}
+public:
+	Rain_effect(int duration, int delay = 0, 
+		int ndrops = MAXDROPS, int n = -1, Game_object *egg = 0)
+		: Weather_effect(duration, delay, n, egg),
+		  num_drops(ndrops), gradual(ndrops == 0)
+		{  }
+					// Execute when due.
+	virtual void handle_event
+		(
+		unsigned long curtime,		// Current time of day.
+		long udata
+		)
+		{
+		Game_window *gwin = Game_window::get_instance();
+
+		// Gradual start/end.
+		change_ndrops(curtime);
+
+		if (!gwin->is_main_actor_inside() &&
+			!gumpman->showing_gumps(true))
+			{			// Don't show rain inside buildings!
+			Image_window8 *win = gwin->get_win();
+			int w = win->get_width(), h = win->get_height();
+						// Get transform table.
+			int scrolltx = gwin->get_scrolltx(),
+				scrollty = gwin->get_scrollty();
+						// Move drops.
+			for (int i = 0; i < num_drops; i++)
+				do_drop.move(drops[i], scrolltx, scrollty, w, h);
+			gwin->set_painted();
+			}
+		if (curtime >= stop_time)
+			{
+			gwin->set_all_dirty();
+			eman->remove_effect(this);
+			return;
+			}
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
+		}
+					// Render.
+	virtual void paint
+		(
+		)
+		{
+		if (gwin->is_main_actor_inside())
+			return;			// Inside.
+						// Get transform table.
+		int scrolltx = gwin->get_scrolltx(),
+			scrollty = gwin->get_scrollty();
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
-					// Get transform table.
-		Xform_palette& xform = sman->get_xform(8);//++++Experiment.
-		int scrolltx = gwin->get_scrolltx(),
-		    scrollty = gwin->get_scrollty();
-					// Move drops.
 		for (int i = 0; i < num_drops; i++)
-			drops[i].next(win, scrolltx, scrollty, xform, w, h);
+			do_drop.paint(drops[i], scrolltx, scrollty, w, h);
 		gwin->set_painted();
 		}
-	if (curtime >= stop_time)
-		{
-		gwin->set_all_dirty();
-		eman->remove_effect(this);
-		return;
-		}
-	gwin->get_tqueue()->add(curtime + 100, this, udata);
-	}
-
-/**
- *	Paint rain.
- */
-
-void Rain_effect::paint
-	(
-	)
-	{
-	if (gwin->is_main_actor_inside())
-		return;			// Inside.
-					// Get transform table.
-	Xform_palette& xform = sman->get_xform(8);//++++Experiment.
-	int scrolltx = gwin->get_scrolltx(),
-	    scrollty = gwin->get_scrollty();
-	Image_window8 *win = gwin->get_win();
-	for (int i = 0; i < num_drops; i++)
-		drops[i].paint(win, scrolltx, scrollty, xform);
-	gwin->set_painted();
-	}
+	};
 
 /**
  *	End of lightning.
@@ -1517,7 +1538,7 @@ Storm_effect::Storm_effect
 					// Start raining soon.
 	eman->add_effect(new Clouds_effect(duration + 1, delay));
 	int rain_delay = 20 + rand()%1000;
-	eman->add_effect(new Rain_effect(duration + 2, rain_delay, 0));
+	eman->add_effect(new Rain_effect<Raindrop>(duration + 2, rain_delay, 0));
 	int lightning_delay = rain_delay + rand()%500;
 	eman->add_effect(new Lightning_effect(duration - 2, lightning_delay));
 	}
@@ -1542,36 +1563,6 @@ void Storm_effect::handle_event
 		eman->remove_effect(this);
 	}
 
-void Snow_effect::handle_event(unsigned long curtime, long udata)
-	{
-	Game_window *gwin = Game_window::get_instance();
-
-	// Gradual start/end.
-	change_ndrops(curtime);
-
-	if (!gwin->is_main_actor_inside() &&
-	    !gumpman->showing_gumps(true))
-		{			// Don't show rain inside buildings!
-		Image_window8 *win = gwin->get_win();
-		int w = win->get_width(), h = win->get_height();
-					// Get transform table.
-		Xform_palette& xform = sman->get_xform(8);//++++Experiment.
-		int scrolltx = gwin->get_scrolltx(),
-		    scrollty = gwin->get_scrollty();
-					// Move drops.
-		for (int i = 0; i < num_drops; i++)
-			drops[i].next_flake(win, scrolltx, scrollty, xform, w, h);
-		gwin->set_painted();
-		}
-	if (curtime >= stop_time)
-		{
-		gwin->set_all_dirty();
-		eman->remove_effect(this);
-		return;
-		}
-	gwin->get_tqueue()->add(curtime + 100, this, udata);
-	}
-
 /**
  *	Start a snowstorm.
  */
@@ -1585,7 +1576,7 @@ Snowstorm_effect::Snowstorm_effect
 	{
 					// Start snowing soon.
 	eman->add_effect(new Clouds_effect(duration + 1, delay));
-	eman->add_effect(new Snow_effect(duration + 2, 20 + rand()%1000, 0));
+	eman->add_effect(new Rain_effect<Snowflake>(duration + 2, 20 + rand()%1000, 0));
 	}
 
 /**
@@ -1600,12 +1591,27 @@ void Snowstorm_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	if (start)
 		{
-		start = 0;
+		start = false;
 					// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
 	else				// Must be time to stop.
 		eman->remove_effect(this);
+	}
+
+/**
+ *	Start a snowstorm.
+ */
+
+Sparkle_effect::Sparkle_effect
+	(
+	int duration,			// In game minutes.
+	int delay,			// In msecs.
+	Game_object *egg		// Egg that caused it, or null.
+	) : Weather_effect(duration, delay, 1, egg)
+	{
+					// Start snowing soon.
+	eman->add_effect(new Rain_effect<Sparkle>(duration, delay, MAXDROPS/2, 3));
 	}
 
 /**
@@ -1619,27 +1625,14 @@ void Sparkle_effect::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	if (!gwin->is_main_actor_inside())
-		{			// Don't show rain inside buildings!
-		Image_window8 *win = gwin->get_win();
-		int w = win->get_width(), h = win->get_height();
-					// Get transform table.
-		Xform_palette& xform = sman->get_xform(8);
-		int scrolltx = gwin->get_scrolltx(),
-		    scrollty = gwin->get_scrollty();
-					// Move drops to random spots.
-		for (int i = 0; i < num_drops; i++)
-			drops[i].next_random(win, scrolltx, scrollty, 
-								xform, w, h);
-		gwin->set_painted();
-		}
-	if (curtime < stop_time)	// Keep going?
-		gwin->get_tqueue()->add(curtime + 100, this, udata);
-	else
+	if (start)
 		{
-		gwin->set_all_dirty();
-		eman->remove_effect(this);
+		start = false;
+					// Nothing more to do but end.
+		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
+	else				// Must be time to stop.
+		eman->remove_effect(this);
 	}
 
 /**
