@@ -192,22 +192,19 @@ ModInfo::ModInfo
 	default_dir = "CP437";	// DOS code page.
 	modconfig.value(config_path, codepage, default_dir.c_str());
 
-	// Note: this path defaults to a user-writable directory.
-	string save_path = data_directory;
-
 	config_path = "mod_info/gamedat_path";
-	default_dir = save_path + "/gamedat";
+	default_dir = data_directory + "/gamedat";
 	modconfig.value(config_path, gamedatdir, default_dir.c_str());
 	// Path 'macros' for relative paths:
 	ReplaceMacro(gamedatdir, mods_macro, mods_dir);
-	ReplaceMacro(gamedatdir, mod_path_macro, save_path);
+	ReplaceMacro(gamedatdir, mod_path_macro, data_directory);
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", get_system_path(gamedatdir));
 
 	config_path = "mod_info/savegame_path";
-	modconfig.value(config_path, savedir, save_path.c_str());
+	modconfig.value(config_path, savedir, data_directory.c_str());
 	// Path 'macros' for relative paths:
 	ReplaceMacro(savedir, mods_macro, mods_dir);
-	ReplaceMacro(savedir, mod_path_macro, save_path);
+	ReplaceMacro(savedir, mod_path_macro, data_directory);
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", get_system_path(savedir));
 	
 	config_path = "mod_info/patch";
@@ -215,7 +212,7 @@ ModInfo::ModInfo
 	modconfig.value(config_path, patchdir, default_dir.c_str());
 	// Path 'macros' for relative paths:
 	ReplaceMacro(patchdir, mods_macro, mods_dir);
-	ReplaceMacro(patchdir, mod_path_macro, save_path);
+	ReplaceMacro(patchdir, mod_path_macro, data_directory);
 	add_system_path("<" + system_path_tag + "_PATCH>", get_system_path(patchdir));
 
 #ifdef DEBUG_PATHS
@@ -575,7 +572,7 @@ void ModManager::get_game_paths()
 
 		// <patch> setting: default is "$dataprefix/patch".
 	config_path = base_cfg_path + "/patch";
-	default_dir = data_directory + "/patch";
+	default_dir = dataprefix + "/patch";
 	config->value(config_path.c_str(), patch_dir, default_dir.c_str());
 	add_system_path("<" + path_prefix + "_PATCH>", patch_dir.c_str());
 

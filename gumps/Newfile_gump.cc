@@ -77,7 +77,7 @@ using std::time;
  */
 // Button Coords
 const short Newfile_gump::btn_rows[5] = {186, 2, 15, 158, 171};
-const short Newfile_gump::btn_cols[5] = {2, 46, 88, 150, 210};
+const short Newfile_gump::btn_cols[5] = {2, 46, 88, 150, 209};
 
 // Text field info
 const short Newfile_gump::fieldx = 2;		// Start Y of each field
