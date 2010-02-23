@@ -290,7 +290,7 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_home() == ".")
+		if (Get_exult_home() == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
@@ -356,7 +356,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_home() == ".")
+		if (Get_exult_home() == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
