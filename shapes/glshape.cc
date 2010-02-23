@@ -641,7 +641,7 @@ unsigned char *GL_manager::get_unscaled_rgb
 	)
 	{
 	const int bpp = 3;	// Want RGB.
-	unsigned char *bits = get_screen_rgb(rgb, unflip);
+	unsigned char *bits = get_screen_rgb(width, height, rgb, unflip);
 		// Scale down.
 	unsigned char *destbits = new unsigned char[bpp*width*height];
 	const unsigned int scalefactor = scale * scale,

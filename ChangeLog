@@ -1,16 +1,23 @@
 2010-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2912644 Black rain
-	  Rain drops/snow flakes/magic sparkle now use shape 0 from sprites.vga.
-	  Rain drops are frames 3 to 7 (7 being a "splash" frame of sorts which
-	  looks very nice), snow flakes are frames 13 to 20 and magic sparkle are
-	  frames 21 to 27.
+		Rain drops/snow flakes/magic sparkle now use shape 0 from sprites.vga.
+		Rain drops are frames 3 to 7 (7 being a "splash" frame of sorts which
+		looks very nice), snow flakes are frames 13 to 20 and magic sparkle are
+		frames 21 to 27.
 	  #2798881 guards in goblin valley
 	  #2838851 Notebook gump crashes Exult when text is dragged offscreen
 	  #2838850 Notebook text is duplicated to the sides of the gump
 	  #2805775 Formation is still forced to yes for testing
+	  #2957048 Exult.cfg contains absolute paths on Win32
+		Exult won't write path settings now: writing the default value is simply
+		wasteful as Exult calculates each such default path *once* each run.
 	* Applied patch:
 	  #2957036 Fix a sfx and fix blacksmith to show tongs and hammer
+	* shapes/glshape.cc: Screenshots were causing crashes with OpenGL; fixed.
+	* gamerend.cc, gamewin.cc: Wrong xforms were being used in some cases since 
+	  evision 6119; fixed.
+	* utils.cc: Remove trailing slashes on all OSes when path is added.
 
 2010-02-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:

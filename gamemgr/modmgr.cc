@@ -510,8 +510,6 @@ void ModManager::get_game_paths()
 	config_path = base_cfg_path + "/path";
 	default_dir = gameprefix;
 	config->value(config_path.c_str(), data_directory, default_dir.c_str());
-	if (data_directory == default_dir)
-		config->set(config_path.c_str(), data_directory, true);
 	
 		// <static_path> setting: default is "$data_directory/static".
 	config_path = base_cfg_path + "/static_path";
@@ -530,28 +528,13 @@ void ModManager::get_game_paths()
 		// <gamedat_path> setting: default is "$dataprefix".
 	config_path = base_cfg_path + "/savegame_path";
 	default_dir = dataprefix;
-	config->value(config_path.c_str(), savegame_dir, "");
-	if (savegame_dir == "")
-		{
-		savegame_dir = default_dir;
-		config->set(config_path.c_str(), savegame_dir.c_str(), true);
-		}
+	config->value(config_path.c_str(), savegame_dir, default_dir.c_str());
 	add_system_path("<" + path_prefix + "_SAVEGAME>", savegame_dir);
 
 		// <gamedat_path> setting: default is "$dataprefix/gamedat".
 	config_path = base_cfg_path + "/gamedat_path";
 	default_dir = dataprefix + "/gamedat";
-	config->value(config_path.c_str(), gamedat_dir, "");
-	if (gamedat_dir == "")	// Not set.
-		{	// Try to create default gamedat dir.
-		U7mkdir(default_dir.c_str(), 0755);
-					// Successfully created dir?
-		if (U7exists(default_dir.c_str()))
-			{		// Then use it.
-			gamedat_dir = default_dir;
-			config->set(config_path.c_str(), gamedat_dir.c_str(), true);
-			}
-		}
+	config->value(config_path.c_str(), gamedat_dir, default_dir.c_str());
 	add_system_path("<" + path_prefix + "_GAMEDAT>", gamedat_dir);
 
 		// ++++ The next two paths default to a user-writeable directory
@@ -562,19 +545,13 @@ void ModManager::get_game_paths()
 	config_path = base_cfg_path + "/mods";
 	default_dir = dataprefix + "/mods";
 	config->value(config_path.c_str(), mods_dir, default_dir.c_str());
-	if (*(mods_dir.end()-1) == '/' || *(mods_dir.end()-1) == '\\')
-		{
-		// Remove any trailing slashes, just in case:
-		mods_dir.resize(mods_dir.length()-1);
-		config->set(config_path.c_str(), mods_dir, true);
-		}
-	add_system_path("<" + path_prefix + "_MODS>", mods_dir.c_str());
+	add_system_path("<" + path_prefix + "_MODS>", mods_dir);
 
 		// <patch> setting: default is "$dataprefix/patch".
 	config_path = base_cfg_path + "/patch";
 	default_dir = dataprefix + "/patch";
 	config->value(config_path.c_str(), patch_dir, default_dir.c_str());
-	add_system_path("<" + path_prefix + "_PATCH>", patch_dir.c_str());
+	add_system_path("<" + path_prefix + "_PATCH>", patch_dir);
 
 #ifdef DEBUG_PATHS
 	cout << "path prefix of " << cfgname

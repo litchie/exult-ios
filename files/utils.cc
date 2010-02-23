@@ -83,10 +83,26 @@ void reset_system_paths()
 	path_map = stored_path_map;
 }
 
+static const string remove_trainling_slash(const string& value)
+{
+	string new_path = value;
+	if (*(new_path.end()-1) == '/'
+#ifdef WIN32
+		|| *(new_path.end()-1) == '\\'
+#endif
+		)
+		{
+		std::cerr << "Warning, trailing slash in path: \"" << new_path << "\"" << std::endl;
+		new_path.resize(new_path.size()-1);
+		}
+	
+	return new_path;
+}
+
 void add_system_path(const string& key, const string& value)
 {
 	if (!value.empty()) {
-		path_map[key] = value;
+		path_map[key] = remove_trainling_slash(value);
 	} else {
 		clear_system_path(key);
 	}
