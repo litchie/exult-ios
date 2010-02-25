@@ -1297,7 +1297,6 @@ C_EXPORT void on_shinfo_effhps_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int frnum, qual, hps;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
@@ -1450,7 +1449,6 @@ C_EXPORT void on_shinfo_warmth_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int frnum, warmth;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
@@ -1571,7 +1569,6 @@ C_EXPORT void on_shinfo_cntrules_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int shnum, accept;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
@@ -1720,7 +1717,6 @@ C_EXPORT void on_shinfo_framepowers_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int frnum, powers;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
@@ -1909,7 +1905,7 @@ C_EXPORT void on_shinfo_framenames_remove_clicked
 /*
  *	Changed frame name selection.
  */
-void on_shinfo_framenames_list_cursor_changed
+C_EXPORT void on_shinfo_framenames_list_cursor_changed
 	(
 	GtkTreeView *treeview,
 	gpointer     user_data
@@ -1923,7 +1919,6 @@ void on_shinfo_framenames_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
 	int frnum, qual, type, othertype;
@@ -2063,7 +2058,6 @@ C_EXPORT void on_shinfo_objpaperdoll_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	int frnum, spot, trans, gender, type, shape,
 		frame0, frame1, frame2, frame3;
 	gtk_tree_model_get_iter(model, &iter, path);
@@ -2374,6 +2368,15 @@ C_EXPORT void on_shinfo_framenames_check_toggled
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_framenames_box", on);
+	}
+C_EXPORT void on_shinfo_framepowers_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_framepowers_box", on);
 	}
 C_EXPORT void on_shinfo_npcpaperdoll_check_toggled
 	(
@@ -2900,7 +2903,7 @@ void ExultStudio::init_shape_notebook
 			"shinfo_npcpaperdoll_atwohanded",
 			"shinfo_npcpaperdoll_astaff"
 			};
-		for (int i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
+		for (size_t i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
 			set_spin(arm_names[i], npcinf->get_arms_frame(i));
 		bool bg = game_type == BLACK_GATE;
 		set_spin("shinfo_npcpaperdoll_gump",
@@ -3208,7 +3211,8 @@ struct Update_hps
 	{
 	void operator() (Shape_info& info, GtkTreeModel *model, GtkTreeIter *iter)
 		{
-		unsigned int frnum, qual, hps, patch, modded;
+		unsigned int frnum, hps, patch, modded;
+		int qual;
 		gtk_tree_model_get(model, iter, HP_FRAME_COLUMN, &frnum,
 				HP_QUALITY_COLUMN, &qual, HP_HIT_POINTS, &hps,
 				HP_FROM_PATCH, &patch, HP_MODIFIED, &modded, -1);
@@ -3348,7 +3352,6 @@ static inline void update_shape_vector
 	GtkTreeView *tree = GTK_TREE_VIEW(
 		glade_xml_get_widget(ExultStudio::get_instance()->get_xml(), treename));
 	GtkTreeModel *model = gtk_tree_view_get_model(tree);
-	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter iter;
 	if (gtk_tree_model_get_iter_first(model, &iter))
 			// Tree has contents.
@@ -3690,7 +3693,7 @@ void ExultStudio::save_shape_notebook
 			"shinfo_npcpaperdoll_atwohanded",
 			"shinfo_npcpaperdoll_astaff"
 			};
-		for (int i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
+		for (size_t i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
 			npcinf->set_arms_frame(i, get_spin(arm_names[i]));
 		if (game_type == BLACK_GATE)
 			npcinf->set_gump_shape(get_spin("shinfo_npcpaperdoll_gump"));
@@ -3992,7 +3995,7 @@ void ExultStudio::open_shape_window
 		gtk_tree_view_append_column(dolltree, col);
 		const char *columns[] = {"Trans", "Gender", "Spot frame", "DShape",
 			"DFrame0", "DFrame1", "DFrame2", "DFrame3"};
-		for (int i = 0; i < sizeof(columns)/sizeof(columns[0]); i++)
+		for (size_t i = 0; i < sizeof(columns)/sizeof(columns[0]); i++)
 			{
 			renderer = gtk_cell_renderer_text_new();
 			col = gtk_tree_view_column_new_with_attributes(

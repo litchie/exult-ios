@@ -687,7 +687,7 @@
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 255 1 4 4</property>
+			      <property name="adjustment">0 0 255 1 4 0</property>
 			      <signal name="changed" handler="on_edit_lift_spin_changed"/>
 			    </widget>
 			    <packing>
@@ -756,7 +756,7 @@
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">255 0 255 1 10 10</property>
+			      <property name="adjustment">255 0 255 1 10 0</property>
 			      <signal name="changed" handler="on_hide_lift_spin_changed"/>
 			    </widget>
 			    <packing>
@@ -1601,7 +1601,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 100 1 10 10</property>
+		      <property name="adjustment">0 0 100 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -1799,7 +1799,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">1 0 31 1 5 5</property>
+		      <property name="adjustment">1 0 31 1 5 0</property>
 		    </widget>
 		  </child>
 
@@ -2281,7 +2281,7 @@
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">True</property>
-			  <property name="adjustment">1 1 31 1 5 10</property>
+			  <property name="adjustment">1 1 31 1 5 0</property>
 			</widget>
 		      </child>
 
@@ -2594,7 +2594,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -2731,7 +2731,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -2863,7 +2863,7 @@
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">True</property>
-		  <property name="adjustment">0 0 255 1 10 10</property>
+		  <property name="adjustment">0 0 255 1 10 0</property>
 		</widget>
 	      </child>
 
@@ -3026,7 +3026,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -3289,7 +3289,7 @@
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 255 1 10 10</property>
+		      <property name="adjustment">1 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -3632,7 +3632,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -3825,7 +3825,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">1 0 255 1 10 10</property>
+		      <property name="adjustment">1 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -3905,7 +3905,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 255 1 10 10</property>
+		  <property name="adjustment">0 0 255 1 10 0</property>
 		</widget>
 	      </child>
 
@@ -3979,7 +3979,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">True</property>
-		  <property name="adjustment">0 0 255 1 10 10</property>
+		  <property name="adjustment">0 0 255 1 10 0</property>
 		</widget>
 	      </child>
 
@@ -4293,7 +4293,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5209,7 +5209,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 60 1 10 10</property>
+		      <property name="adjustment">1 0 60 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5261,7 +5261,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5314,7 +5314,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5367,7 +5367,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 60 1 10 10</property>
+		      <property name="adjustment">1 0 60 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5420,7 +5420,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5473,7 +5473,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5526,7 +5526,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5580,7 +5580,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 30 1 10 10</property>
+		      <property name="adjustment">1 0 30 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -5634,7 +5634,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 100000 1 100 10000</property>
+		      <property name="adjustment">1 0 100000 1 100 0</property>
 		    </widget>
 		  </child>
 
@@ -5688,7 +5688,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 31 1 10 10</property>
+		      <property name="adjustment">1 0 31 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -7264,7 +7264,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7283,7 +7283,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7302,7 +7302,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7354,7 +7354,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7373,7 +7373,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7392,7 +7392,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7444,7 +7444,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7463,7 +7463,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7482,7 +7482,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7534,7 +7534,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7553,7 +7553,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7572,7 +7572,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7624,7 +7624,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7643,7 +7643,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7662,7 +7662,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7714,7 +7714,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7733,7 +7733,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7752,7 +7752,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7804,7 +7804,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7823,7 +7823,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7842,7 +7842,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7894,7 +7894,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7913,7 +7913,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 3072 1 10 10</property>
+		      <property name="adjustment">1 0 3072 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -7932,7 +7932,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 15 1 10 10</property>
+		      <property name="adjustment">1 0 15 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="padding">0</property>
@@ -8860,7 +8860,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -8924,7 +8924,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 2047 1 10 10</property>
+		      <property name="adjustment">0 0 2047 1 10 0</property>
 		      <signal name="changed" handler="on_obj_shape_changed"/>
 		    </widget>
 		  </child>
@@ -8976,7 +8976,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 100 1 10 10</property>
+		      <property name="adjustment">0 0 100 1 10 0</property>
 		      <signal name="changed" handler="on_obj_shape_changed"/>
 		    </widget>
 		  </child>
@@ -9149,7 +9149,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 3071 1 10 10</property>
+		  <property name="adjustment">0 0 3071 1 10 0</property>
 		  <signal name="changed" handler="on_obj_pos_changed"/>
 		</widget>
 		<packing>
@@ -9169,7 +9169,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 3071 1 10 10</property>
+		  <property name="adjustment">0 0 3071 1 10 0</property>
 		  <signal name="changed" handler="on_obj_pos_changed"/>
 		</widget>
 		<packing>
@@ -9189,7 +9189,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 255 1 10 10</property>
+		  <property name="adjustment">0 0 255 1 10 0</property>
 		  <signal name="changed" handler="on_obj_pos_changed"/>
 		</widget>
 		<packing>
@@ -9478,7 +9478,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 0 100 1 4 4</property>
+			  <property name="adjustment">0 0 100 1 4 0</property>
 			  <signal name="changed" handler="on_shinfo_frame_changed"/>
 			</widget>
 		      </child>
@@ -9539,7 +9539,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -9558,7 +9558,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -9822,7 +9822,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 8 1 4 4</property>
+			      <property name="adjustment">0 0 8 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -9841,7 +9841,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 8 1 4 4</property>
+			      <property name="adjustment">0 0 8 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -9860,7 +9860,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 7 1 4 4</property>
+			      <property name="adjustment">0 0 7 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -9925,7 +9925,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			  </child>
 
@@ -9977,7 +9977,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			  </child>
 
@@ -10042,7 +10042,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -10061,7 +10061,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -11618,7 +11618,7 @@ Coordinates</property>
 			    <widget class="GtkCheckButton" id="shinfo_framepowers_check">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
-			      <property name="label" translatable="yes">Frame names</property>
+			      <property name="label" translatable="yes">Frame powers</property>
 			      <property name="use_underline">True</property>
 			      <property name="relief">GTK_RELIEF_NORMAL</property>
 			      <property name="focus_on_click">True</property>
@@ -11750,7 +11750,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 255 1 4 4</property>
+				  <property name="adjustment">0 0 255 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -12069,7 +12069,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 20 20</property>
+				      <property name="adjustment">0 0 2047 1 20 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -12181,7 +12181,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 4 4</property>
+				      <property name="adjustment">0 0 2047 1 4 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -12243,7 +12243,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 31 1 4 4</property>
+				  <property name="adjustment">0 0 31 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -12298,7 +12298,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 255 1 4 4</property>
+				  <property name="adjustment">0 0 255 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -12352,7 +12352,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 255 1 4 4</property>
+				  <property name="adjustment">0 0 255 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -12578,7 +12578,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 15 1 10 10</property>
+				  <property name="adjustment">0 0 15 1 10 0</property>
 				</widget>
 			      </child>
 
@@ -13272,7 +13272,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 255 1 4 4</property>
+				  <property name="adjustment">0 0 255 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -13327,7 +13327,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 2047 1 4 4</property>
+				  <property name="adjustment">0 0 2047 1 4 0</property>
 				</widget>
 			      </child>
 
@@ -13432,7 +13432,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 4 4</property>
+				      <property name="adjustment">0 0 2047 1 4 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -14170,7 +14170,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 0 255 1 4 4</property>
+			  <property name="adjustment">0 0 255 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14498,7 +14498,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 15 1 4 4</property>
+			  <property name="adjustment">0 1 15 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14553,7 +14553,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 15 1 4 4</property>
+			  <property name="adjustment">0 0 15 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14614,7 +14614,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 4 4</property>
+			      <property name="adjustment">0 0 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -14694,7 +14694,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 63 1 4 4</property>
+			  <property name="adjustment">0 1 63 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14749,7 +14749,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 63 1 4 4</property>
+			  <property name="adjustment">0 1 63 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14804,7 +14804,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 63 1 4 4</property>
+			  <property name="adjustment">0 1 63 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14859,7 +14859,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 63 1 4 4</property>
+			  <property name="adjustment">0 1 63 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14914,7 +14914,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">0 1 15 1 4 4</property>
+			  <property name="adjustment">0 0 15 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -14969,7 +14969,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">-1 -1 255 1 4 4</property>
+			  <property name="adjustment">-1 -1 255 1 4 0</property>
 			</widget>
 		      </child>
 
@@ -15126,7 +15126,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">-1 -1 100 1 4 4</property>
+			      <property name="adjustment">-1 -1 100 1 4 0</property>
 			    </widget>
 			    <packing>
 			      <property name="padding">0</property>
@@ -16312,7 +16312,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 10 10</property>
+				      <property name="adjustment">0 0 2047 1 10 0</property>
 				      <signal name="changed" handler="on_shinfo_gump_num_changed" last_modification_time="Fri, 18 Nov 2005 07:06:21 GMT"/>
 				    </widget>
 				  </child>
@@ -16629,7 +16629,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">1 1 100 1 10 10</property>
+				  <property name="adjustment">1 1 100 1 10 0</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -16691,7 +16691,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">1 1 100 1 10 10</property>
+			      <property name="adjustment">1 1 100 1 10 0</property>
 			    </widget>
 			  </child>
 
@@ -16795,7 +16795,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">1 1 99 1 10 10</property>
+				  <property name="adjustment">1 1 99 1 10 0</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -16883,7 +16883,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">1 1 100 1 10 10</property>
+				  <property name="adjustment">1 1 100 1 10 0</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -17066,7 +17066,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">1 1 100 1 10 10</property>
+				  <property name="adjustment">1 1 100 1 10 0</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -17390,7 +17390,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 10 10</property>
+				      <property name="adjustment">0 0 2047 1 10 0</property>
 				      <signal name="changed" handler="on_shinfo_body_shape_changed" last_modification_time="Fri, 09 Nov 2007 11:24:59 GMT"/>
 				    </widget>
 				  </child>
@@ -17457,7 +17457,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 31 1 10 10</property>
+				      <property name="adjustment">0 0 31 1 10 0</property>
 				      <signal name="changed" handler="on_shinfo_body_frame_changed" last_modification_time="Fri, 09 Nov 2007 11:24:55 GMT"/>
 				    </widget>
 				  </child>
@@ -17650,7 +17650,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 10 10</property>
+				      <property name="adjustment">0 0 2047 1 10 0</property>
 				      <signal name="changed" handler="on_shinfo_explosion_sprite_changed" last_modification_time="Fri, 09 Nov 2007 11:27:50 GMT"/>
 				    </widget>
 				  </child>
@@ -17730,7 +17730,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 255 1 10 10</property>
+					  <property name="adjustment">0 0 255 1 10 0</property>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -18237,7 +18237,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 2047 1 10 10</property>
+					  <property name="adjustment">0 0 2047 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -18289,7 +18289,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 31 1 10 10</property>
+					  <property name="adjustment">0 0 31 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -18387,7 +18387,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 2047 1 10 10</property>
+					  <property name="adjustment">0 0 2047 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -18439,7 +18439,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 31 1 10 10</property>
+					  <property name="adjustment">0 0 31 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -18491,7 +18491,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 31 1 10 10</property>
+					  <property name="adjustment">0 0 31 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -18608,7 +18608,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 2047 1 10 10</property>
+					      <property name="adjustment">0 0 2047 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -18660,7 +18660,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -18712,7 +18712,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -18764,7 +18764,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -18890,7 +18890,7 @@ Coordinates</property>
 						  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 						  <property name="snap_to_ticks">False</property>
 						  <property name="wrap">False</property>
-						  <property name="adjustment">-1 -1 2047 1 10 10</property>
+						  <property name="adjustment">-1 -1 2047 1 10 0</property>
 						  <signal name="changed" handler="on_shinfo_npcpaperdoll_gump_changed" last_modification_time="Sat, 26 Jan 2008 13:16:47 GMT"/>
 						</widget>
 					      </child>
@@ -19130,7 +19130,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 2 255 1 10 10</property>
+			      <property name="adjustment">0 2 255 1 10 0</property>
 			    </widget>
 			  </child>
 
@@ -19211,7 +19211,7 @@ Coordinates</property>
 				  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				  <property name="snap_to_ticks">False</property>
 				  <property name="wrap">False</property>
-				  <property name="adjustment">0 0 255 1 10 10</property>
+				  <property name="adjustment">0 0 255 1 10 0</property>
 				</widget>
 				<packing>
 				  <property name="padding">0</property>
@@ -19273,7 +19273,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 100 1 10 10</property>
+			      <property name="adjustment">0 0 100 1 10 0</property>
 			    </widget>
 			  </child>
 
@@ -19328,7 +19328,7 @@ Coordinates</property>
 			      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			      <property name="snap_to_ticks">False</property>
 			      <property name="wrap">False</property>
-			      <property name="adjustment">0 0 255 1 10 10</property>
+			      <property name="adjustment">0 0 255 1 10 0</property>
 			    </widget>
 			  </child>
 
@@ -19564,7 +19564,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 2047 1 10 10</property>
+				      <property name="adjustment">0 0 2047 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -19832,7 +19832,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -19917,7 +19917,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 255 1 10 10</property>
+				      <property name="adjustment">0 0 255 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -20002,7 +20002,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -20251,7 +20251,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -20336,7 +20336,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 255 1 10 10</property>
+				      <property name="adjustment">0 0 255 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -20816,7 +20816,7 @@ Coordinates</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkVBox" id="vbox117">
+	    <widget class="GtkVBox" id="shinfo_framepowers_box">
 	      <property name="visible">True</property>
 	      <property name="homogeneous">False</property>
 	      <property name="spacing">0</property>
@@ -20916,7 +20916,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -21468,7 +21468,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 100 1 10 10</property>
+					  <property name="adjustment">0 0 100 1 10 0</property>
 					</widget>
 					<packing>
 					  <property name="padding">0</property>
@@ -21737,7 +21737,7 @@ Coordinates</property>
 					  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					  <property name="snap_to_ticks">False</property>
 					  <property name="wrap">False</property>
-					  <property name="adjustment">0 0 2 1 10 10</property>
+					  <property name="adjustment">0 0 2 1 10 0</property>
 					</widget>
 				      </child>
 
@@ -21813,7 +21813,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -21868,7 +21868,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -21945,7 +21945,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 2047 1 10 10</property>
+					      <property name="adjustment">0 0 2047 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -22022,7 +22022,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -22077,7 +22077,7 @@ Coordinates</property>
 					      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 					      <property name="snap_to_ticks">False</property>
 					      <property name="wrap">False</property>
-					      <property name="adjustment">0 0 31 1 10 10</property>
+					      <property name="adjustment">0 0 31 1 10 0</property>
 					    </widget>
 					  </child>
 
@@ -22356,7 +22356,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -22421,7 +22421,7 @@ Coordinates</property>
 				      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 				      <property name="snap_to_ticks">False</property>
 				      <property name="wrap">False</property>
-				      <property name="adjustment">0 0 100 1 10 10</property>
+				      <property name="adjustment">0 0 100 1 10 0</property>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -22679,7 +22679,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 100 1 10 10</property>
+		  <property name="adjustment">0 0 100 1 10 0</property>
 		  <signal name="changed" handler="on_equip_recnum_changed"/>
 		</widget>
 		<packing>
@@ -23892,7 +23892,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">1 0 100 1 10 10</property>
+		  <property name="adjustment">1 0 100 1 10 0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
@@ -23913,7 +23913,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">1 0 100 1 10 10</property>
+		  <property name="adjustment">1 0 100 1 10 0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
@@ -24062,7 +24062,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">16 0 100 1 10 10</property>
+		  <property name="adjustment">16 0 100 1 10 0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">1</property>
@@ -24089,7 +24089,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 0 100 1 10 10</property>
+		      <property name="adjustment">1 0 100 1 10 0</property>
 		      <signal name="changed" handler="on_new_shape_font_color_changed"/>
 		    </widget>
 		    <packing>
@@ -24368,7 +24368,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">4 0 100 1 10 10</property>
+		  <property name="adjustment">4 0 100 1 10 0</property>
 		</widget>
 		<packing>
 		  <property name="left_attach">0</property>
@@ -24632,7 +24632,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			  <signal name="changed" handler="on_combo_locx_changed"/>
 			</widget>
 			<packing>
@@ -24652,7 +24652,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			  <signal name="changed" handler="on_combo_locy_changed"/>
 			</widget>
 			<packing>
@@ -24672,7 +24672,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			  <signal name="changed" handler="on_combo_locz_changed"/>
 			</widget>
 			<packing>
@@ -24737,7 +24737,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			  <signal name="changed" handler="on_combo_order_changed"/>
 			</widget>
 			<packing>
@@ -25293,7 +25293,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			</widget>
 		      </child>
 
@@ -25418,7 +25418,7 @@ Coordinates</property>
 			  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 			  <property name="snap_to_ticks">False</property>
 			  <property name="wrap">False</property>
-			  <property name="adjustment">1 0 100 1 10 10</property>
+			  <property name="adjustment">1 0 100 1 10 0</property>
 			</widget>
 		      </child>
 
@@ -25663,7 +25663,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 1 100 1 10 10</property>
+		      <property name="adjustment">1 1 100 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -25685,7 +25685,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">1 1 100 1 10 10</property>
+		      <property name="adjustment">1 1 100 1 10 0</property>
 		    </widget>
 		    <packing>
 		      <property name="left_attach">1</property>
@@ -25976,7 +25976,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -26027,7 +26027,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 255 1 10 10</property>
+		      <property name="adjustment">0 0 255 1 10 0</property>
 		    </widget>
 		  </child>
 
@@ -26092,7 +26092,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 2047 1 10 10</property>
+		      <property name="adjustment">0 0 2047 1 10 0</property>
 		      <signal name="changed" handler="on_cont_shape_changed" last_modification_time="Mon, 18 Jul 2005 03:15:12 GMT"/>
 		    </widget>
 		  </child>
@@ -26145,7 +26145,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">True</property>
-		      <property name="adjustment">0 0 100 1 10 10</property>
+		      <property name="adjustment">0 0 100 1 10 0</property>
 		      <signal name="changed" handler="on_cont_shape_changed" last_modification_time="Mon, 18 Jul 2005 03:15:33 GMT"/>
 		    </widget>
 		  </child>
@@ -26446,7 +26446,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 3071 1 10 10</property>
+		  <property name="adjustment">0 0 3071 1 10 0</property>
 		  <signal name="changed" handler="on_cont_pos_changed" last_modification_time="Mon, 18 Jul 2005 03:15:47 GMT"/>
 		</widget>
 		<packing>
@@ -26466,7 +26466,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 3071 1 10 10</property>
+		  <property name="adjustment">0 0 3071 1 10 0</property>
 		  <signal name="changed" handler="on_cont_pos_changed" last_modification_time="Mon, 18 Jul 2005 03:15:55 GMT"/>
 		</widget>
 		<packing>
@@ -26486,7 +26486,7 @@ Coordinates</property>
 		  <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		  <property name="snap_to_ticks">False</property>
 		  <property name="wrap">False</property>
-		  <property name="adjustment">0 0 15 1 3 3</property>
+		  <property name="adjustment">0 0 15 1 3 0</property>
 		  <signal name="changed" handler="on_cont_pos_changed" last_modification_time="Mon, 18 Jul 2005 03:16:01 GMT"/>
 		</widget>
 		<packing>
