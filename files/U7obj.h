@@ -152,7 +152,7 @@ public:
 			const File_spec& file2, const File_spec& file3, int objnum);
 	U7multiobject(const std::vector<File_spec>& files, int objnum);
 	virtual	~U7multiobject()
-		{ if (buffer) delete [] buffer; }
+		{ delete [] buffer; }
 
 	virtual	char *retrieve(std::size_t &len) const;
 	};

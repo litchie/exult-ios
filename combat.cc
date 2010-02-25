@@ -66,7 +66,7 @@ bool Combat::show_hits = false;
 
 extern bool combat_trace;
 
-const int dex_to_attack = 30;
+const unsigned int dex_to_attack = 30;
 
 static inline bool not_in_melee_range
 	(
@@ -143,7 +143,7 @@ void Combat_schedule::monster_died
 	battle_end_time = Game::get_ticks();
 					// Figure #seconds battle lasted.
 	unsigned long len = (battle_end_time - battle_time)/1000;
-	bool hard = len > 15 && (rand()%60 < len);
+	bool hard = len > 15u && (rand()%60u < len);
 	Audio::get_ptr()->start_music_combat (hard ? CSBattle_Over
 							: CSVictory, 0);
 	}
@@ -388,7 +388,15 @@ void Combat_schedule::find_opponents
 		else if (in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
-			if (t && (t->get_flag(Obj_flags::in_party) || t == avatar))
+			if (!t)
+				continue;
+			if (t->get_flag(Obj_flags::in_party) || t == avatar)
+				opponents.push_back(actor);
+			int oppressor = actor->get_oppressor();
+			if (oppressor < 0)
+				continue;
+			Actor *oppr = gwin->get_npc(oppressor);
+			if (oppr->get_flag(Obj_flags::in_party) || oppr == avatar)
 				opponents.push_back(actor);
 			}
 	}
@@ -1253,15 +1261,13 @@ Combat_schedule::Combat_schedule
 	Schedule_types 
 	prev_sched
 	) : Schedule(n), state(initial), prev_schedule(prev_sched),
-		weapon(0), weapon_shape(-1), spellbook(0),
-		practice_target(0), yelled(0), no_blocking(false),
-		started_battle(false), fleed(0), failures(0), teleport_time(0),
-		summon_time(0),
+		practice_target(0), weapon(0), weapon_shape(-1), spellbook(0),
+		no_blocking(false), yelled(0), started_battle(false), fleed(0),
+		failures(0), teleport_time(0), summon_time(0),
 		dex_points(0), alignment(n->get_effective_alignment())
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
-	Game_window *gwin = Game_window::get_instance();
 	Monster_info *minf = npc->get_info().get_monster_info();
 	can_yell = !minf || !minf->cant_yell();
 	unsigned int curtime = SDL_GetTicks();
@@ -1590,11 +1596,8 @@ void Duel_schedule::find_opponents
 		Actor *opp = *it;
 		Game_object *oppopp = opp->get_target();
 		if (opp != npc && opp->get_schedule_type() == duel &&
-		    (!oppopp || oppopp == npc))
-			if (rand()%2)
-				opponents.push_back(opp);
-			else
-				opponents.push_back(opp);
+			    (!oppopp || oppopp == npc))
+			opponents.push_back(opp);
 		}
 	}
 
