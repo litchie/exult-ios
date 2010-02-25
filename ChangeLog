@@ -1,6 +1,10 @@
 2010-02-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2958487 HQx3 is only scaled to 2x when set in Exult menu
+	  #2813106 ES won'tt save frame powers when they don't previously exist
+	* ES: Eliminated a few warnings, including Gtk+ stderr runtime warnings.
+	  Added missing handlers and missing export. Fixed a few minimum values of
+	  spin buttons.
 
 2010-02-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
