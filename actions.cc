@@ -395,7 +395,7 @@ void Path_walking_actor_action::stop
 	)
 	{
 					// Don't set slimes.
-	if (!actor->get_info().has_strange_movement())
+	if (!actor->get_info().has_strange_movement() && actor->can_act())
 		{			// ++++For now, just use original dir.
 		Frames_sequence *frames = actor->get_frames(original_dir);
 		actor->change_frame(frames->get_resting());

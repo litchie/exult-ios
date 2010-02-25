@@ -38,7 +38,7 @@ template<class D>
 D_Recursive_object_iterator<D>::D_Recursive_object_iterator
 	(
 	Game_object *start		// Start here.
-	) : elems(start->get_outermost()->get_chunk()->get_objects()), child(0)
+	) : child(0), elems(start->get_outermost()->get_chunk()->get_objects())
 	{
 					// Get what obj. is in (or itself).
 	Game_object *owner = start->get_outermost();

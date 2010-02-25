@@ -168,7 +168,7 @@ template<class D> class D_Recursive_object_iterator
 	D elems;			// Goes through our elements.
 public:
 	D_Recursive_object_iterator(Object_list& objs)
-		: elems(objs), child(0)
+		: child(0), elems(objs)
 		{  }
 					// Start at given object.
 	D_Recursive_object_iterator(Game_object *obj);
