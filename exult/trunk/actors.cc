@@ -881,21 +881,22 @@ Actor::Actor
 	int shapenum, 
 	int num,
 	int uc
-	) : Container_game_object(), name(nm),usecode(uc), 
-	    usecode_assigned(false), unused(false),
-	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
-	    oppressor(-1), target(0), attack_mode(nearest),
-	    schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
-	    dormant(true), hit(false), combat_protected(false), 
-	    user_set_attack(false), alignment(0), two_handed(false),
-	    two_fingered(false), use_scabbard(false), use_neck(false),
-	    light_sources(0), usecode_dir(0), type_flags(0),
+	) : Container_game_object(), name(nm), usecode(uc), 
+		usecode_assigned(false), usecode_name(""), unused(false),
+		npc_num(num), face_num(num), party_id(-1), atts(0), temperature(0),
+		shape_save(-1), oppressor(-1), target(0),
+		casting_mode(false), casting_shape(-1),
+		target_object(0), target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
+		attack_mode(nearest),
+		schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
+		dormant(true), hit(false), combat_protected(false), 
+		user_set_attack(false), alignment(0), two_handed(false),
+		two_fingered(false), use_scabbard(false), use_neck(false),
+		light_sources(0), usecode_dir(0), type_flags(0),
 		gear_immunities(0), gear_powers(0), ident(0),
-	    skin_color(-1), action(0), 
-	    frame_time(0), step_index(0), qsteps(0), timers(0),
-	    weapon_rect(0, 0, 0, 0), temperature(0), rest_time(0),
-	    casting_mode(false), casting_shape(-1), atts(0), usecode_name(""),
-		target_object(0), attack_weapon(-1), target_tile(Tile_coord(-1, -1, 0))
+		skin_color(-1), action(0), 
+		frame_time(0), step_index(0), qsteps(0), timers(0),
+		weapon_rect(0, 0, 0, 0), rest_time(0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -929,7 +930,7 @@ void Actor::refigure_gear()
 		};
 	int powers = 0, immune = 0;
 	light_sources = 0;
-	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
+	for (size_t i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
 		{
 		Game_object *worn = spots[static_cast<int>(locs[i])];
 		if (worn)
@@ -3276,6 +3277,7 @@ void Actor::clear_flag
 				move(pos);
 			change_frame(Actor::standing);
 			}
+		Usecode_script::terminate(this);
 		}
 	else if (flag == Obj_flags::charmed)
 		set_target(0);			// Need new opponent.
@@ -3354,7 +3356,7 @@ int Actor::figure_warmth
 	int warmth = -75;		// Base value.
 
 	static enum Ready_type_Exult locs[] = {head, cloak, feet, torso, gloves, legs};
-	for (int i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
+	for (size_t i = 0; i < sizeof(locs)/sizeof(locs[0]); i++)
 		{
 		Game_object *worn = spots[static_cast<int>(locs[i])];
 		if (worn)
@@ -3434,9 +3436,7 @@ void Actor::init_readied
 	(
 	)
 	{
-	static enum Ready_type_Exult locs[] = {head, belt, lhand, rhand, lfinger, rfinger,
-			legs, feet, torso, amulet, earrings, gloves, cloak};
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+	for (size_t i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		if (spots[i])
 			call_readied_usecode(i, spots[i],
 							Usecode_machine::readied);
@@ -3973,7 +3973,6 @@ int Actor::figure_hit_points
 			if (powers & Weapon_data::magebane)
 				{	// Magebane weapons (magebane sword, death scythe).
 					// Take away all mana.
-				int mana = properties[static_cast<int>(Actor::mana)];
 				set_property(static_cast<int>(Actor::mana), 0);
 				int num_spells = 0;
 				Game_object_vector vec, spells;
@@ -4523,7 +4522,6 @@ int Main_actor::step
 	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	Game_object *block;
 	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
 		if (is_really_blocked(t, force))
@@ -5202,7 +5200,6 @@ int Npc_actor::step
 		}
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	Game_object *block;
 	if (is_blocked(t, 0, force ? MOVE_ALL : 0))
 		{
 		if (is_really_blocked(t, force))

@@ -768,7 +768,7 @@ void Actor::write_contents
 	if (!objects.is_empty())	// Now write out what's inside.
 	{
 		const int num_spots = static_cast<int>(sizeof(spots)/sizeof(spots[0]));
-		sint8 i;
+		int i;
 
 		for (i = 0; i < num_spots; ++i)
 		{

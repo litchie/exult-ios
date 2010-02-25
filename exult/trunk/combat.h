@@ -33,9 +33,7 @@ class Spellbook_object;
  */
 class Combat_schedule : public Schedule
 	{
-protected:
-	static unsigned long battle_time;// Time when battle started.
-	static unsigned long battle_end_time;	// And when it ended.
+public:
 	enum Phase			// We'll be a finite-state-machine.
 		{
 		initial = 0,		// Just constructed.
@@ -47,7 +45,11 @@ protected:
 		parry = 6,		// In the process of parrying a blow.
 		stunned = 7,		// Just been hit.
 		wait_return = 8		// Wait for boomerang.
-		} state;
+		};
+protected:
+	static unsigned long battle_time;// Time when battle started.
+	static unsigned long battle_end_time;	// And when it ended.
+	Phase state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	std::list<Actor*> opponents;	// Possible opponents.
 	Game_object *practice_target;	// Only for duel schedule.

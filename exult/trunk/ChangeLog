@@ -1,3 +1,10 @@
+2010-02-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2179006 Sleeping on the Floor (BG/SI)
+	  #2798862 Unconcious enemies stand up for a second before dieing
+	  #2796857 SI(?): Sleeping in beds not working correctly
+	* General: Eliminated a few warnings.
+
 2010-02-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2912644 Black rain
