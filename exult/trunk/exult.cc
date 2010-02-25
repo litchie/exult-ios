@@ -866,6 +866,9 @@ static void Init
 	if (arg_buildmap < 0)
 		{
 		gwin = new Game_window(sw, sh, scaleval, sclr);
+		gwin->resized(sw, sh, scaleval, sclr);
+		// Ensure proper clipping:
+		gwin->get_win()->set_clip(0, 0, sw, sh);
 
 		current_res = find_resolution(sw, sh, scaleval);
 		Audio::Init();
