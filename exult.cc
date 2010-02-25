@@ -333,10 +333,18 @@ int main
 			
 		exit(1);
 	}
-	if ((unsigned)run_bg +(unsigned)run_si
-		+ (unsigned)run_fov + (unsigned)run_ss
-		+ (unsigned)(arg_gamename != "default") > 1) {
+	unsigned gameparam = (unsigned)run_bg +(unsigned)run_si
+	                   + (unsigned)run_fov + (unsigned)run_ss
+	                   + (unsigned)(arg_gamename != "default");
+	if (gameparam > 1)
+	{
 		cerr << "Error: You may only specify one of --bg, --fov, --si, --ss or --game!" << 
+									endl;
+		exit(1);
+	}
+	else if (arg_buildmap >= 0 && gameparam == 0)
+	{
+		cerr << "Error: --buildmap requires one of --bg, --fov, --si, --ss or --game!" << 
 									endl;
 		exit(1);
 	}
@@ -349,8 +357,7 @@ int main
 	else if (arg_mapnum < 0)
 		arg_mapnum = 0;		// Sane default.
 
-	if (arg_modname != "default" &&
-		!(run_bg || run_si || run_fov || run_ss || (arg_gamename != "default")))
+	if (arg_modname != "default" && !gameparam)
 	{
 		cerr << "Error: You must also specify the game to be used!" << endl;
 		exit(1);
@@ -934,10 +941,6 @@ static void Init
 			}
 		else
 			{
-			gwin->resized(sw, sh, scaleval, sclr);
-			// Ensure proper clipping:
-			gwin->get_win()->set_clip(0, 0, sw, sh);
-
 			ExultMenu exult_menu(gwin);
 			newgame = exult_menu.run();
 			}
@@ -954,11 +957,7 @@ static void Init
 			exit(0);
 			}
 
-		gwin->resized(sw, sh, scaleval, sclr);
-		// Ensure proper clipping:
-		gwin->get_win()->set_clip(0, 0, sw, sh);
 		Game::create_game(newgame);
-
 		Audio *audio = Audio::get_ptr();
 		MyMidiPlayer *midi = 0;
 
