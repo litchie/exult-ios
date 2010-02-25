@@ -277,12 +277,16 @@ void ExultMenu::setup()
 				{
 				gwin->resized(gwin->get_win()->get_width(),
 				              gwin->get_win()->get_height(),
-				              gwin->get_win()->get_scale(),
+				              Image_window::Hq3x ? 3 : 2,
 				              scalemethod->get_choice());
 				if (scaler > Image_window::NoScaler &&
 						scaler < Image_window::NumScalers)
+					{
 					config->set("config/video/scale_method",
 							Image_window::get_name_for_scaler(scaler), true);
+					config->set("config/video/scale",
+							scaler == Image_window::Hq3x ? "3" : "2", true);
+					}
 				}
 			// Palette fades
 			gpal->set_fades_enabled(palfades->get_choice()==1);
