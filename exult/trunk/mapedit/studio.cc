@@ -505,22 +505,22 @@ C_EXPORT gboolean on_main_window_focus_in_event
  *	Set up everything.
  */
 
-ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
-	glade_path(0), shape_info_modified(false),
-	shape_names_modified(false),
-	vgafile(0), facefile(0), gumpfile(0), spritefile(0),
-	eggwin(0), egg_ctx(0), egg_monster_draw(0),
-	egg_status_id(0),
-	bargewin(0), barge_ctx(0), barge_status_id(0),
-	server_socket(-1), server_input_tag(-1), 
-	static_path(0), image_editor(0), default_game(0), background_color(0),
+ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
+	image_editor(0), default_game(0), background_color(0),
+	shape_info_modified(false), shape_names_modified(false),
+	files(0), curfile(0), vgafile(0), facefile(0), gumpfile(0), spritefile(0),
 	browser(0), palbuf(0),
-	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), npc_status_id(0), game_type(BLACK_GATE), expansion(false),
+	bargewin(0), barge_ctx(0), barge_status_id(0),
+	eggwin(0), egg_monster_draw(0), egg_ctx(0), egg_status_id(0),
+	npcwin(0), npc_draw(0), npc_face_draw(0),
+	npc_ctx(0), npc_status_id(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
-	shape_draw(0), gump_draw(0), body_draw(0), explosion_draw(0),
+	shape_draw(0), gump_draw(0), npcgump_draw(0),
+	body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
-	ucbrowsewin(0), gameinfowin(0), curr_game(-1), curr_mod(-1), npcgump_draw(0)
+	ucbrowsewin(0), gameinfowin(0),
+	game_type(BLACK_GATE), expansion(false), curr_game(-1), curr_mod(-1),
+	server_socket(-1), server_input_tag(-1), waiting_for_server(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -534,7 +534,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	string game = "";			// Game to look up in .exult.cfg.
 	string modtitle = "";		// Mod title to look up in <MODS>/*.cfg.
 	static const char *optstring = "g:x:d:m:";
-	extern int optind, opterr, optopt;
+	extern int opterr/*, optind, optopt*/;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
 	int optchr;
@@ -621,7 +621,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 					// Init. 'Mode' menu, since Glade
 					//   doesn't seem to do it right.
 	GSList *group = NULL;
-	for (int i = 0; i < sizeof(mode_names)/sizeof(mode_names[0]); i++)
+	for (size_t i = 0; i < sizeof(mode_names)/sizeof(mode_names[0]); i++)
 		{
 		GtkWidget *item = glade_xml_get_widget(app_xml, mode_names[i]);
 		gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(item),
@@ -1047,7 +1047,6 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(
 						GTK_TREE_VIEW(mod_tree));
 	GtkTreeStore *model = GTK_TREE_STORE(oldmod);
-	GtkTreeViewColumn *column;
 	gtk_tree_store_clear(model);
 
 	std::vector<ModInfo>& mods = gamemanager->get_game(gamenum)->get_mod_list();
@@ -1059,7 +1058,7 @@ C_EXPORT void on_gameselect_gamelist_cursor_changed
 		1, -1,
 		-1);
 
-	for (int j=0; j < mods.size(); j++)
+	for (size_t j=0; j < mods.size(); j++)
 	{
 		ModInfo& currmod = mods[j];
 		string modname = currmod.get_menu_string();
@@ -1086,7 +1085,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 	std::vector<ModManager>& games = gamemanager->get_game_list();
 	GtkTreeIter iter;
 	GtkTreePath *path = 0;
-	for (int j=0; j < games.size(); j++)
+	for (size_t j=0; j < games.size(); j++)
 	{
 		ModManager& currgame = games[j];
 		string gamename = currgame.get_menu_string();
@@ -1102,7 +1101,7 @@ void fill_game_tree(GtkTreeView *treeview, int curr_game)
 			0, title.get_str(),
 			1, j,
 			-1);
-		if (j==curr_game)
+		if (j==size_t(curr_game))
 		{
 			gtk_tree_selection_select_iter(
 						gtk_tree_view_get_selection(
@@ -1336,11 +1335,11 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 	
 	// Scan the files which are separated by commas
 	GtkTreeIter child_iter;
-	char *startpos = (char *)files;
+	const char *startpos = files;
 	int adding_children = 1;
 	do {
 		char *pattern;
-		char *commapos = strstr(startpos, ",");
+		const char *commapos = strstr(startpos, ",");
 		if(commapos==0) {
 			pattern = g_strdup(startpos);
 			adding_children = 0;
@@ -1352,7 +1351,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName,
 		string spath("<STATIC>"), ppath("<PATCH>");
 		spath = get_system_path(spath);
 		ppath = get_system_path(ppath);
-		char *ext = strstr(pattern,"*");
+		const char *ext = strstr(pattern,"*");
 		if(!ext)
 			ext = pattern;
 		else
@@ -1530,7 +1529,6 @@ bool ExultStudio::need_to_save
 		Exult_server::wait_for_response(server_socket, 100);
 		int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
-		unsigned char *ptr = &data[0];
 		int vers, edlift, hdlift, edmode;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
@@ -1979,7 +1977,7 @@ void ExultStudio::set_spin
 		{
 		gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(btn),
 			GTK_ADJUSTMENT(
-			gtk_adjustment_new (0, low, high, 1, 10, 10)));
+			gtk_adjustment_new (0, low, high, 1, 10, 0)));
 		}
 	}
 
@@ -1999,7 +1997,7 @@ void ExultStudio::set_spin
 		{
 		gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(btn),
 			GTK_ADJUSTMENT(
-			gtk_adjustment_new (0, low, high, 1, 10, 10)));
+			gtk_adjustment_new (0, low, high, 1, 10, 0)));
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(btn), val);
 		}
 	}
@@ -2723,6 +2721,10 @@ void ExultStudio::read_from_server
 		std::cerr << "Warning: got a usecode debugging message! (ignored)"
 				  << std::endl;
 		break;
+	default:
+		std::cerr << "Warning: received unhandled message "
+		          << id << "; this message is being ignored." << std::endl;
+		break;
 	}
 	}
 
@@ -2824,7 +2826,8 @@ void ExultStudio::info_received
 	set_spin("hide_lift_spin", hdlift);
 	set_toggle("play_button", !editing);
 	set_toggle("tile_grid_button", grid);
-	if (edmode >= 0 && edmode < sizeof(mode_names)/sizeof(mode_names[0]))
+	if (edmode >= 0 &&
+			unsigned(edmode) < sizeof(mode_names)/sizeof(mode_names[0]))
 		{
 		GtkWidget *mitem = glade_xml_get_widget(app_xml,
 							mode_names[edmode]);
@@ -2924,7 +2927,7 @@ static const gchar *encodings [] = {
 
 static inline int Find_Encoding_Index(const char *enc)
 	{
-	for (int i = 0; i < sizeof(encodings)/sizeof(encodings[0]); i++)
+	for (size_t i = 0; i < sizeof(encodings)/sizeof(encodings[0]); i++)
 		if (!strcmp(encodings[i], enc))
 			return i;
 	return -1;	// Not found.
@@ -2932,7 +2935,7 @@ static inline int Find_Encoding_Index(const char *enc)
 
 static inline const char *Get_Encoding(int index)
 	{
-	if (index >= 0 && index < sizeof(encodings)/sizeof(encodings[0]))
+	if (index >= 0 && unsigned(index) < sizeof(encodings)/sizeof(encodings[0]))
 		return encodings[index];
 	else
 		return encodings[0];
