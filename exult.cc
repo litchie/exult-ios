@@ -5,7 +5,7 @@
  **/
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2008  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -581,12 +581,21 @@ int exult_main(const char *runpath)
 				add_system_path("<DATA>",dpath);
 				if(!U7exists(EXULT_FLX))
 				{
+#ifdef MACOSX
+					// Try looking in .app bundle:
+					add_system_path("<DATA>", "Exult.app/Contents/Resources/data");
+					if(!U7exists(EXULT_FLX))
+					{
+#endif
 					// We've tried them all...
 					cerr << "Could not find 'exult.flx' anywhere." << endl;	
 					cerr << "Please make sure Exult is correctly installed," << endl;
 					cerr << "and the Exult data path is specified in the configuration file." << endl;
 					cerr << "(See the README file for more information)" << endl;
 					exit(-1);
+#ifdef MACOSX
+					}
+#endif
 				}
 			}
 		}
