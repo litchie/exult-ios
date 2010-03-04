@@ -907,10 +907,10 @@ var npcCastSpell (var npc, var target, var circle, var spell)
 	{
 		var needed = getSpellReagents(circle, spell);
 		
-		var names =		["black pearl",	"blood moss",	"nightshade",	"mandrake root",
-						 "garlic",		"ginseng",		"spider silk",	"sulphurous ash"];
-		var prefixes =	["",			"portion of ",	"button of ",	"",
-						 "clove of ",	"portion of ",	"portion of ",	"portion of "];
+		var names =		["black pearl", "blood moss",  "nightshade",  "mandrake root",
+						 "garlic",      "ginseng",     "spider silk", "sulphurous ash"];
+		var prefixes =	["",            "portion of ", "button of ",  "",
+						 "clove of ",   "portion of ", "portion of ", "portion of "];
 		var lacking_reagents = [];
 		var ret_str;
 
