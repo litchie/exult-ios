@@ -226,6 +226,8 @@ void getVersionInfo(std::ostream& out)
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 0) out << 2000;
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 1) out << "XP";
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 2) out << 2003;
+			else if (info.dwMajorVersion == 6 && info.dwMinorVersion == 0) out << "Vista";
+			else if (info.dwMajorVersion == 6 && info.dwMinorVersion == 1) out << "7";
 			else out << "Unknown NT";
 
 			if (info.szCSDVersion[0]) out << " " << info.szCSDVersion;

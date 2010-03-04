@@ -42,6 +42,7 @@
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
+#define NOMINMAX
 
 #ifndef DEBUG
 //#define DEBUG 1
@@ -248,7 +249,6 @@ using std::getline;
 #include "../npctime.h"
 #include "../palette.h"
 #include "../paths.h"
-#include "../ready.h"
 #include "../rect.h"
 #include "../schedule.h"
 #include "../shapeid.h"
