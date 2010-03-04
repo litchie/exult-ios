@@ -363,11 +363,11 @@ var spellitemGetTalkPrepare (var npcnum)
 	switch (npcnum)
 	{
 		case JAANA:
-			return ["@I can prepare up to six spells for quick use.@",
+			return ["@I can prepare up to " + MAX_PREPARED_SPELLS + " spells for quick use.@",
 			        "@Dost thou wish me to prepare a spell of which circle?@",
 			        "@What spell wouldst thou like me to prepare?@",
 			        "@Thou hast changed thy mind? Maybe thou dost wish for a different circle?@",
-			        "@I have already prepared six spells; should I prepare more and ignore those I prepared earlier?@",
+			        "@I have already prepared " + MAX_PREPARED_SPELLS + " spells; should I prepare more and ignore those I prepared earlier?@",
 			        "@It is done. Should I prepare any other spells?@",
 			        "@Fine. Is there anything else?@"];
 		case MARIAH:
@@ -448,7 +448,7 @@ var spellitemGetTalkHeal (var npcnum)
 			        "@Who should be "];
 		case SHAMINO:
 			return ["@Which spell should I cast?@",
-			        "@Glad to help, " + getPoliteTitle() + "@",
+			        "@Glad to help, " + getPoliteTitle() + "!@",
 			        "@Who should be "];
 		case DUPRE:
 			return ["@What should I do, " + getPoliteTitle() + "?@",
