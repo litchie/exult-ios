@@ -149,7 +149,7 @@ void Camille object#(0x4B1) ()
 					say("@I do not care what Feridwyn says! My son is no thief!@");
 
 			case "Feridwyn" (remove):
-				say("@That man Feridwyn knows that I do not trust The Fellowship, and for	that he considers me his personal enemy. I do not know why he would seek to attack me through my son but he must not be allowed to succeed.@");
+				say("@That man Feridwyn knows that I do not trust The Fellowship, and for that he considers me his personal enemy. I do not know why he would seek to attack me through my son but he must not be allowed to succeed.@");
 
 			case "Tobias cleared" (remove):
 				say("You tell Camille how you discovered that Garritt was really the thief and that her son Tobias has been cleared. @I want to thank thee for finding the thief in our town and clearing my son's name. It does mine heart good to see that the Avatar has returned to us once again and that thou dost care enough about the people of Britannia to help solve our local troubles here in Paws. Again Avatar, I thank thee.@");
