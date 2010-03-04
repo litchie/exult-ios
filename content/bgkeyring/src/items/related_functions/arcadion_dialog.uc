@@ -224,7 +224,7 @@ void arcadionSwordFormDialog object#() ()
 							
 							else if (target_shape == SHAPE_MONSTER_MAGE)
 							{
-								if (isCloseEnoughtToKill(target, "@Move closer to him, and I'll see that his life plagues thee no more.@ The	dark sword sounds almost gleeful at this prospect."))
+								if (isCloseEnoughtToKill(target, "@Move closer to him, and I'll see that his life plagues thee no more.@ The dark sword sounds almost gleeful at this prospect."))
 								{
 									if (target->get_cont_items(SHAPE_SCROLL, 240, 4))
 										say("@I owe thee quite a favor for this, master. I thank thee for allowing me this, my revenge!@*");
@@ -291,7 +291,7 @@ void arcadionSwordFormDialog object#() ()
 						}
 						
 						else
-							say("@Forgive me, master, but are we not already on or near the Isle of Fire? Though, why one would wish to remain here on this forsaken piece of rock, I have no	idea.@");
+							say("@Forgive me, master, but are we not already on or near the Isle of Fire? Though, why one would wish to remain here on this forsaken piece of rock, I have no idea.@");
 						
 					case "Fire":
 						say("@And what, pray tell, is the intended target of thy immense and most puissant wrath, O' Master of Infinite Destruction?@");
@@ -427,7 +427,7 @@ void arcadionGemFormDialog object#() ()
 			say("@My name is still Arcadion, although my prison has changed.@");
 			
 		case "job" (remove):
-			say("@I am now thy servant.	What is thy bidding, master?@");
+			say("@I am now thy servant. What is thy bidding, master?@");
 			if(!dont_add_master)
 				add("master");
 			
@@ -464,7 +464,7 @@ void arcadionGemFormDialog object#() ()
 					add("master");
 			}
 			
-			else	
+			else
 			{
 				say("@Thou hast need of my energies again?@ Arcadion asks a little petulantly.");
 				if(askYesNo())
@@ -560,7 +560,7 @@ void arcadionMirrorFormDialog object#() ()
 			
 			else if (PARTY->count_objects(SHAPE_GEM, QUALITY_ANY, 12))
 			{
-				say("@Thou hast within thy possessions a small blue gem. It can be used to free me! Crack this accursed mirror with it! I'll enter it as I am freed!@	Arcadion looks prepared to burst from the mirror.*");
+				say("@Thou hast within thy possessions a small blue gem. It can be used to free me! Crack this accursed mirror with it! I'll enter it as I am freed!@ Arcadion looks prepared to burst from the mirror.*");
 				gflags[TALKED_ARCADION_WITH_GEM] = true;
 				arcadionMirrorHide();
 				return;
@@ -576,7 +576,7 @@ void arcadionMirrorFormDialog object#() ()
 		say("@Run along now little mortal. Do not pester thy betters with the idle rantings of thy tongue.@ He appears at first nonchallant, then his expression becomes intense, @That is unless thou hast reconsidered my offer... Hast thou?@");
 		if (askYesNo())
 		{
-			say("A wicked look of triumph flickers across Arcadion's face to be quickly replaced by a ludicrous semblance of gratitude, @Thou art truly courageous to vow to release	me. My eternal thanks are thine.@ An oily grin coats the daemon's face, @Thou hast made quite a powerful ally this day, mortal.@ His eyes blink in what is possibly meant to be a charming manner.");
+			say("A wicked look of triumph flickers across Arcadion's face to be quickly replaced by a ludicrous semblance of gratitude, @Thou art truly courageous to vow to release me. My eternal thanks are thine.@ An oily grin coats the daemon's face, @Thou hast made quite a powerful ally this day, mortal.@ His eyes blink in what is possibly meant to be a charming manner.");
 			gflags[HELPING_ARCADION] = true;
 			add(["name", "job", "daemon", "release", "bye"]);
 		}
@@ -605,7 +605,7 @@ void arcadionMirrorFormDialog object#() ()
 	converse(0)
 	{
 		case "name" (remove):
-			say("The big daemon smiles ingratiatingly, showing inch long pointed	teeth. @As I have said, I am the daemon Arcadion.@");
+			say("The big daemon smiles ingratiatingly, showing inch long pointed teeth. @As I have said, I am the daemon Arcadion.@");
 			if (gflags[HELPING_ARCADION])
 				say("His somewhat polished veneer seems to be unravelling at the edges in his anticipation of freedom.");
 			else if (!dont_add_daemon)
@@ -614,12 +614,12 @@ void arcadionMirrorFormDialog object#() ()
 		case "job" (remove):
 			if (!gflags[HELPING_ARCADION])
 			{
-				say("Arcadion attempts to smile, but failing miserably, he gives you a grimace that could turn a dragon to stone. @I am currently in the service of one mage, Erethian by name.@ He states, rather formally. You get the distinct impression that	Arcadion would just as soon	rip Erethian limb from limb as serve him.");
+				say("Arcadion attempts to smile, but failing miserably, he gives you a grimace that could turn a dragon to stone. @I am currently in the service of one mage, Erethian by name.@ He states, rather formally. You get the distinct impression that Arcadion would just as soon rip Erethian limb from limb as serve him.");
 				add(["Erethian", "serve"]);
 			}
 			else
 			{
-				say("@Well, if thou keepest thy promise to release me, I'll be free of that	lice-ridden, flea-bitten, old mage.@");
+				say("@Well, if thou keepest thy promise to release me, I'll be free of that lice-ridden, flea-bitten, old mage.@");
 				add("release");
 			}
 			
@@ -634,7 +634,7 @@ void arcadionMirrorFormDialog object#() ()
 			
 		case "serve" (remove):
 			say("The large daemon's eyes close as he appears to be restraining the force of horrific emotions,");
-			say("@I have served that blind,	old fool for over two hundred years!@ Arcadion pauses, regaining his composure. A thought visibly crosses his	darkened face, @Perhaps thou mightest assist me to free myself of this unwanted bondage. I could prove an invaluable	ally.@ The daemon pauses to let his offer sink in, then, @Well, mortal. Wilt thou help me?@");
+			say("@I have served that blind, old fool for over two hundred years!@ Arcadion pauses, regaining his composure. A thought visibly crosses his darkened face, @Perhaps thou mightest assist me to free myself of this unwanted bondage. I could prove an invaluable ally.@ The daemon pauses to let his offer sink in, then, @Well, mortal. Wilt thou help me?@");
 			if(askYesNo())
 			{
 				say("A wicked look of triumph flickers across Arcadion's face to be quickly replaced by a ludicrous semblance of gratitude, @Thou art truly courageous to vow to release me. My gratitude hath no bounds.@ An oily grin coats the daemon's face, @Thou hast made quite a powerful ally this day, mortal.@ His eyes blink in what is possibly meant to be a charming manner.");
@@ -652,7 +652,7 @@ void arcadionMirrorFormDialog object#() ()
 				say("Arcadion looks as if he's about to force his way through the mirror, then once again masters his incredible rage.");
 				ARCADION_MIRROR_FACE.hide();
 				ARCADION_MIRROR_FACE->show_npc_face(0);
-				say("He folds massive arms across a broad chest and slowly restores his gruesome smile, @I can respect thy cowardice in this situation. After all, Erethian is	a powerful mage, not the sort that a sheep like thyself should be trifling with.@ His contemtuous sneer begins to fade as the daemon takes his leave.*");
+				say("He folds massive arms across a broad chest and slowly restores his gruesome smile, @I can respect thy cowardice in this situation. After all, Erethian is a powerful mage, not the sort that a sheep like thyself should be trifling with.@ His contemtuous sneer begins to fade as the daemon takes his leave.*");
 				break;
 			}
 			
