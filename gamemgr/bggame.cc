@@ -1667,6 +1667,7 @@ void BG_Game::show_quotes()
 
 void BG_Game::show_credits()
 {
+	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);
 	Audio::get_ptr()->start_music(credits_midi,false,INTROMUS);
 	TextScroller credits(MAINSHP_FLX, 0x0E, 
 			fontManager.get_font("MENU_FONT"),
