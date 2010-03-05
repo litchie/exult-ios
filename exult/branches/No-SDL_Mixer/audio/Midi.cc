@@ -633,14 +633,14 @@ MyMidiPlayer::~MyMidiPlayer()
 	delete midi_driver;
 }
 
-void MyMidiPlayer::sdl_music_hook(void *udata, uint8 *stream, int len)
+void MyMidiPlayer::produceSamples(sint16 *stream, uint32 bytes)
 {
 	MyMidiPlayer *midi = reinterpret_cast<MyMidiPlayer *>(udata);
 
 	MidiDriver *midi_driver = midi->midi_driver;
 
 	if (midi_driver && midi_driver->isInitialized() && midi_driver->isSampleProducer())
-		midi_driver->produceSamples(reinterpret_cast<sint16*>(stream), len);
+		midi_driver->produceSamples(stream, bytes);
 }
 
 #ifdef ENABLE_MIDISFX

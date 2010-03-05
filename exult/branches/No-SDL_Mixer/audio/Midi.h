@@ -22,13 +22,14 @@
 #include <vector>
 #include <string>
 
-#include "SDL_mixer.h"
+#include <vorbis/codec.h>
 
 #include "common_types.h"
 
 #include "fnames.h"
 
 class MidiDriver;
+class IDataSource;
 
 //---- MyMidiPlayer -----------------------------------------------------------
 
@@ -74,6 +75,8 @@ public:
 	int				get_effects_conversion() { return effects_conversion; }
 #endif
 
+	void			produceSamples(sint16 *stream, uint32 bytes);
+
 private:
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
@@ -86,7 +89,6 @@ private:
 	MidiDriver *	midi_driver;
 	bool			initialized;
 	bool			init_device(void);
-	static void		sdl_music_hook(void *udata, uint8 *stream, int len);
 
 
 	TimberLibrary	timbre_lib;
@@ -100,11 +102,15 @@ private:
 	
 	// Ogg Stuff
 	bool			ogg_enabled;
-	Mix_Music		*oggmusic;
 
-	bool			ogg_play_track(std::string filename, int num, bool repeat);
-	bool			ogg_is_playing();
-	void			ogg_stop_track();
+	IDataSource			*ogg;
+
+	bool				ogg_play_track(std::string filename, int num, bool repeat);
+	bool				ogg_is_playing();
+	void				ogg_stop_track();
+
+	void				ogg_mix(sint16 *stream, uint32 bytes);
+
 };
 
 #endif

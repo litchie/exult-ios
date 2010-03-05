@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Exult"
 	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
 	RootNamespace="Exult"
@@ -427,11 +427,51 @@
 					>
 				</File>
 				<File
+					RelativePath="..\audio\AudioChannel.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioChannel.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioMixer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioMixer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioSample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioSample.h"
+					>
+				</File>
+				<File
 					RelativePath="..\audio\conv.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\audio\Midi.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\OggAudioSample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\OggAudioSample.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\RawAudioSample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\RawAudioSample.h"
 					>
 				</File>
 				<File
