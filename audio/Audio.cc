@@ -16,12 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#ifndef PENTAGRAM // Exult only at this stage. 
-
+#include "pent_include.h"
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
@@ -37,6 +32,10 @@
 #include "fnames.h"
 #include "game.h"
 #include "utils.h"
+
+#include "AudioMixer.h"
+#include "VocAudioSample.h"
+#include "databuf.h"
 
 #if !defined(ALPHA_LINUX_CXX)
 #ifndef UNDER_CE
@@ -95,23 +94,6 @@ struct	Chunk
 	Chunk(size_t l, uint8 *d) : length(l),data(d) {}
 };
 
-static	uint8 *chunks_to_block(vector<Chunk> &chunks);
-static	sint16 *resample_new(uint8 *sourcedata,
-						size_t sourcelen, size_t &destlen,
-						int current_rate, int wanted_rate);
-static	sint16 *resample_new_mono(uint8 *sourcedata,
-						size_t sourcelen, size_t &destlen,
-						int current_rate, int wanted_rate);
-#ifdef USE_OLD_RESAMPLE
-static	void resample(uint8 *sourcedata, uint8 **destdata,
-						size_t sourcelen, size_t *destlen,
-						int current_rate, int wanted_rate);
-#endif
-static void decode_ADPCM_4(uint8* inBuf,	
-						  int bufSize,				// Size of inbuf
-						  uint8* outBuf,	// Size is 2x bufsize
-						  int& reference,			// ADPCM reference value
-						  int& scale);
 
 Audio *Audio::self = 0;
 int const *Audio::bg2si_sfxs = 0;
@@ -126,7 +108,7 @@ int const *Audio::bg2si_sfxs = 0;
 class SFX_cached
 	{
 	int num;			// Sound-effects #.
-	Mix_Chunk *data;	// The data.
+	Pentagram::AudioSample *data;	// The data.
 	SFX_cached *next;	// Next in chain.
 	int ref_cnt;		// Reference count of the sfx/voice.
 public:
@@ -135,6 +117,7 @@ public:
 	SFX_cached(int sn, uint8 *b, uint32 l, SFX_cached *oldhead)
 		: num(sn), next(oldhead), ref_cnt(1)
 		{
+			/*
 			if (num >= 0 || !strncmp((const char *)b, "OggS", 4))
 				{
 				SDL_RWops *rwsrc = SDL_RWFromMem(b, l);
@@ -142,13 +125,14 @@ public:
 				}
 			else
 				data = Mix_QuickLoad_RAW(b, l);
+				*/
 		}
 	~SFX_cached()
 		{
 		Uint8 *chunkbuf=NULL;
-		if(data->allocated == 0)
-			chunkbuf = data->abuf;
-		Mix_FreeChunk(data);
+		//if(data->allocated == 0)
+		//	chunkbuf = data->abuf;
+		//Mix_FreeChunk(data);
 
 		//Must be freed after the Mix_FreeChunk
 		if(chunkbuf)
@@ -215,8 +199,9 @@ protected:
 		}
 	
 	// Unloads a given SFX, based on data pointer.
-	void unload(Mix_Chunk *data)
+	void unload(Pentagram::AudioSample *data)
 		{
+			/*
 		SFX_cached *prev = 0, *each;
 		for (each = cache; each; each = each->next)
 			{
@@ -242,6 +227,7 @@ protected:
 				}
 			prev = each;
 			}
+			*/
 		}
 public:
 	SFX_cache_manager()
@@ -251,20 +237,24 @@ public:
 	
 	// For sounds played through 'play', which include voice and some SFX (?)
 	// in the intro sequences.
-	Mix_Chunk *add_from_data(unsigned char *wavbuf, size_t wavlen)
+	Pentagram::AudioSample *add_from_data(unsigned char *wavbuf, size_t wavlen)
 		{
+			/*
 		cache = new SFX_cached(-1, wavbuf, wavlen, cache);
 		cache->add_ref();
 
 		// Perform garbage collection here.
 		garbage_collect();
 		return cache->data;
+		*/
+			return 0;
 		}
 
 	// For SFX played through 'play_wave_sfx'. Searched cache for
 	// the sfx first, then loads from the sfx file if needed.
-	Mix_Chunk *request(Flex *sfx_file, int id)
+	Pentagram::AudioSample *request(Flex *sfx_file, int id)
 		{
+			/*
 		SFX_cached *sfx = 0;
 		if (id > -1 && sfx_file)
 			{
@@ -277,12 +267,15 @@ public:
 			return sfx->data;
 			}
 		return (Mix_Chunk *)0;
+		*/
+			return 0;
 		}
 	
 	// Reduces the ref-count of the data, to a minimum of 1.
 	// Does *not* remove from cache, ever.
-	void release(Mix_Chunk *data)
+	void release(Pentagram::AudioSample *data)
 		{
+			/*
 		if (!data)
 			return;
 		SFX_cached *prev = 0, *each;
@@ -299,6 +292,7 @@ public:
 				}
 			prev = each;
 			}
+			*/
 		}
 	
 	// Empties the cache.
@@ -370,7 +364,7 @@ Audio	*Audio::get_ptr(void)
 
 Audio::Audio() :
 	truthful_(false),speech_enabled(true), music_enabled(true),
-	effects_enabled(true), SDL_open(false),/*mixer(0),*/midi(0),
+	effects_enabled(true), mixer(0),midi(0),
 	initialized(false), sfx_file(0)
 {
 	assert(self == NULL);
@@ -391,6 +385,7 @@ Audio::Audio() :
 	allow_music_looping = (s!="no");
 
 	midi = 0;
+	mixer = 0;
 	sfxs = new SFX_cache_manager();
 }
 
@@ -398,63 +393,24 @@ void Audio::Init(int _samplerate,int _channels)
 {
 	if (!audio_enabled) return;
 
-	delete midi;
-	midi=0;
+	FORGET_OBJECT(midi);
+	FORGET_OBJECT(mixer);
 
-	// Avoid closing SDL audio. This seems to trigger a segfault
-	if(SDL_open)
-		SDL_QuitSubSystem(SDL_INIT_AUDIO);
-
-	// Init the SDL audio system
-	SDL_InitSubSystem(SDL_INIT_AUDIO);
-
-	/* Open the audio device, forcing the desired format */
-
-	if ( Mix_OpenAudio(_samplerate, AUDIO_S16SYS, _channels, _buffering_unit) < 0 )
-		{
-		cerr << "Couldn't open audio: " << Mix_GetError() << endl;
-		audio_enabled = false;	// Prevent crashes.
-		return;
-		}
-	int art_freq;
-	Uint16 art_format;
-	int art_channels;
-	
-	Mix_QuerySpec(&art_freq,&art_format,&art_channels);
-
-	actual.freq = art_freq;
-	actual.format = art_format;
-	actual.channels = art_channels;
-	
-#ifdef DEBUG
-	cout << "Audio requested frequency " << _samplerate << ", channels " << _channels << endl;
-	cout << "Audio actual frequency " << actual.freq << ", channels " << (int) actual.channels << endl;
-#endif
-
-	// Allocate a moderate number of mixer channels.
-	Mix_AllocateChannels(MIXER_CHANNELS);
-	//SDL_mixer will always go here when it has played a sound, we want to free up
-	//the memory used as we don't re-play the sound.
-	Mix_ChannelFinished(channel_complete_callback);
-
-	// Disable playing initially.
-	Mix_Pause(-1);
-
-	SDL_open=true;
-
-	midi=new MyMidiPlayer();
+	mixer = new Pentagram::AudioMixer(_samplerate,_channels==2,MIXER_CHANNELS);
+	midi = new MyMidiPlayer();
 
 	COUT("Audio initialisation OK");
 
 	initialized = true;
-
 }
 
 void Audio::channel_complete_callback(int chan)
 {
+	/*
 	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
 	SFX_cache_manager *sfxs = Audio::get_ptr()->get_sfx_cache();
 	sfxs->release(done_chunk);
+	*/
 	/*
 	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
 	Uint8 *chunkbuf=NULL;
@@ -529,308 +485,28 @@ Audio::~Audio()
 	if (!initialized)
 	{
 		self = 0;
-		SDL_open = false;
+		//SDL_open = false;
 		return;
 	}
 
 	CERR("~Audio:  about to stop_music()");
 	stop_music();
 
-	if(midi)
-	{
-		delete midi;
-		midi = 0;
-	}
-
-	if (effects_enabled) 
-		Mix_HaltChannel(-1);
+	FORGET_OBJECT(midi);
+	FORGET_OBJECT(mixer);
 
 	delete sfxs;
 	delete sfx_file;
 	CERR("~Audio:  deleted midi");
 
 	CERR("~Audio:  about to quit subsystem");
-	SDL_QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
-						// subsystems
-	CERR("~Audio:  closed audio");
-
-	// Avoid closing SDL audio. This seems to trigger a segfault
-	// SDL::CloseAudio();
-	SDL_open = false;
 	self = 0;
 }
 
 
-uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
-{
-	vector<Chunk> chunks;
-	size_t	data_offset=0x1a;
-	bool	last_chunk=false;
-	uint16	sample_rate;
-	size_t  l = 0;
-	size_t	chunk_length;
-	int		compression = 0;
-	int		adpcm_reference = -1;
-	int		adpcm_scale = 0;
-
-	while(!last_chunk)
-	{
-		switch(old_data[data_offset]&0xff)
-		{
-			case 0:
-				COUT("Terminator");
-				last_chunk = true;
-				continue;
-			case 1:
-				COUT("Sound data");
-				l = (old_data[3+data_offset]&0xff)<<16;
-				l |= (old_data[2+data_offset]&0xff)<<8;
-				l |= (old_data[1+data_offset]&0xff);
-				COUT("Chunk length appears to be " << l);
-				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
-#ifdef FUDGE_SAMPLE_RATES
-				if (sample_rate == 11111) sample_rate = 11025;
-				else if (sample_rate == 22222) sample_rate = 22050;
-#endif
-				COUT("Original sample_rate is " << sample_rate << ", hw rate is " << actual.freq);
-				COUT("Sample rate ("<< sample_rate<<") = _real_rate");
-				compression = old_data[5+data_offset]&0xff;
-				COUT("compression type " << compression);
-				if (compression) {
-					adpcm_reference = -1;
-					adpcm_scale = 0;
-				}
-				COUT("Channels " << (old_data[6+data_offset]&0xff));
-				chunk_length=l+4;
-				//workaround here to exit this loop, it fixes start speech which was
-				//causing this function to go exit too early.
-				last_chunk=true;
-
-				break;
-			case 2:
-				COUT("Sound continues");
-				l=(old_data[3+data_offset]&0xff)<<16;
-				l|=(old_data[2+data_offset]&0xff)<<8;
-				l|=(old_data[1+data_offset]&0xff);
-				COUT("Chunk length appears to be " << l);
-				chunk_length = l+4;
-				break;
-			case 3:
-				COUT("Silence");
-				chunk_length=0;
-				break;
-			case 5:		// A null terminated string
-				COUT("Text string chunk");
-				chunk_length=0;
-				break;
-			default:
-				cerr << "Unknown VOC chunk " << (*(old_data+data_offset)&0xff) << endl;
-				throw exult_exception("Unknown VOC chunk");
-		}
-
-		if(chunk_length==0)
-			break;
-
-
-		l -= (TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-
-		// 
-		uint8 *dec_data = old_data+LEADING_VOC_SLOP;
-		size_t dec_len = l;
-
-		// Decompress data
-		if (compression == 1) {
-			// Allocate temp buffer
-			if (adpcm_reference == -1) dec_len = (dec_len-1)*2;
-			else dec_len *= 2;
-			dec_data = new uint8[dec_len];
-			decode_ADPCM_4(old_data+LEADING_VOC_SLOP, l, dec_data, adpcm_reference, adpcm_scale);
-		}
-		else if (compression != 0) {
-			CERR("Can't handle VOC compression type"); 
-		}
-		
-		// Our input is 8 bit mono unsigned; but want to output 16 bit stereo signed.
-		// In addition, the rates don't match, we have to upsample.
-
-		// New code: Do it all in one step with cubic interpolation
-
-		sint16 *stereo_data;
-		if (is_stereo())
-			stereo_data = resample_new(dec_data, dec_len, l, sample_rate, actual.freq);
-		else
-			stereo_data = resample_new_mono(dec_data, dec_len, l, sample_rate, actual.freq);
-
-		// Delete temp buffer
-		if (compression == 1) {
-			delete [] dec_data;
-		}
-
-		chunks.push_back(Chunk(l,(uint8 *)stereo_data));
-
-		data_offset += chunk_length;
-	}
-	COUT("Turn chunks to block");
-	visible_len = l;
-
-	return chunks_to_block(chunks);
-}
-
-static	sint16 *resample_new(uint8 *src,
-						size_t sourcelen, size_t &size,
-						int rate, int wanted_rate)
-{
-	int fp_pos = 0;
-	int fp_speed = (1 << 16) * rate / wanted_rate;
-	size = sourcelen;
-
-	// adjust the magnitudes of size and rate to prevent division error
-	while (size & 0xFFFF0000)
-		size >>= 1, rate = (rate >> 1) + 1;
-	
-	// Compute the output size (times 4 since it is 16 stereo)
-	size = (size * wanted_rate / rate) << 2;
-
-	sint16 *stereo_data = new sint16 [size];
-	sint16 *data = stereo_data;
-	uint8 *src_end = src + sourcelen;
-
-	int result;
-	
-	// Compute the initial data feed for the interpolator. We don't simply
-	// shift by 8, but rather duplicate the byte, this way we cover the full
-	// range. Probably doesn't make a big difference, listening wise :-)
-	int a = *(src+0); a = (a|(a << 8))-32768;
-	int b = *(src+1); b = (a|(b << 8))-32768;
-	int c = *(src+2); c = (a|(c << 8))-32768;
-	
-	// We divide the data by 2, to prevent overshots. Imagine this sample pattern:
-	// 0, 65535, 65535, 0. Now you want to compute a value between the two 65535.
-	// Obviously, it will be *bigger* than 65535 (it can get to about 80,000).
-	// It is possibly to clamp it, but that leads to a distored wave form. Compare
-	// this to turning up the volume of your stereo to much, it will start to sound
-	// bad at a certain level (depending on the power of your stereo, your speakers 
-	// etc, this can be quite loud, though ;-). Hence we reduce the original range.
-	// A factor of roughly 1/1.2 = 0.8333 is sufficient. Since we want to avoid 
-	// floating point, we approximate that by 27/32
-	#define RANGE_REDUX(x)	(((x) * 27) >> 5)
-//	#define RANGE_REDUX(x)	((x) >> 1)
-//	#define RANGE_REDUX(x)	((x) / 1.2)
-
-	CubicInterpolator	interp(RANGE_REDUX(a), RANGE_REDUX(b), RANGE_REDUX(c));
-	
-	do {
-		do {
-			// Convert to signed data
-			result = interp.interpolate(fp_pos);
-
-			// Enforce range in case of an "overshot". Shouldn't happen since we
-			// scale down already, but safe is safe.
-			if (result < -32768)
-				result = -32768;
-			else if (result > 32767)
-				result = 32767;
-	
-			*data++ = result;
-			*data++ = result;
-	
-			fp_pos += fp_speed;
-		} while (!(fp_pos & 0xFFFF0000));
-		src++;
-		fp_pos &= 0x0000FFFF;
-		
-
-		if (src+2 < src_end) {
-			c = *(src+2);
-			c = (c|(c << 8))-32768;
-			interp.feedData(RANGE_REDUX(c));
-		} else
-			interp.feedData();
-
-	} while (src < src_end);
-	
-	return stereo_data;
-}
-
-static	sint16 *resample_new_mono(uint8 *src,
-						size_t sourcelen, size_t &size,
-						int rate, int wanted_rate)
-{
-	int fp_pos = 0;
-	int fp_speed = (1 << 16) * rate / wanted_rate;
-	size = sourcelen;
-
-	// adjust the magnitudes of size and rate to prevent division error
-	while (size & 0xFFFF0000)
-		size >>= 1, rate = (rate >> 1) + 1;
-	
-	// Compute the output size (times 2 since it is 16 stereo)
-	size = (size * wanted_rate / rate) << 1;
-
-	sint16 *stereo_data = new sint16 [size];
-	sint16 *data = stereo_data;
-	uint8 *src_end = src + sourcelen;
-
-	int result;
-	
-	// Compute the initial data feed for the interpolator. We don't simply
-	// shift by 8, but rather duplicate the byte, this way we cover the full
-	// range. Probably doesn't make a big difference, listening wise :-)
-	int a = *(src+0); a = (a|(a << 8))-32768;
-	int b = *(src+1); b = (a|(b << 8))-32768;
-	int c = *(src+2); c = (a|(c << 8))-32768;
-	
-	// We divide the data by 2, to prevent overshots. Imagine this sample pattern:
-	// 0, 65535, 65535, 0. Now you want to compute a value between the two 65535.
-	// Obviously, it will be *bigger* than 65535 (it can get to about 80,000).
-	// It is possibly to clamp it, but that leads to a distored wave form. Compare
-	// this to turning up the volume of your stereo to much, it will start to sound
-	// bad at a certain level (depending on the power of your stereo, your speakers 
-	// etc, this can be quite loud, though ;-). Hence we reduce the original range.
-	// A factor of roughly 1/1.2 = 0.8333 is sufficient. Since we want to avoid 
-	// floating point, we approximate that by 27/32
-	#define RANGE_REDUX(x)	(((x) * 27) >> 5)
-//	#define RANGE_REDUX(x)	((x) >> 1)
-//	#define RANGE_REDUX(x)	((x) / 1.2)
-
-	CubicInterpolator	interp(RANGE_REDUX(a), RANGE_REDUX(b), RANGE_REDUX(c));
-	
-	do {
-		do {
-			// Convert to signed data
-			result = interp.interpolate(fp_pos);
-
-			// Enforce range in case of an "overshot". Shouldn't happen since we
-			// scale down already, but safe is safe.
-			if (result < -32768)
-				result = -32768;
-			else if (result > 32767)
-				result = 32767;
-	
-			*data++ = result;
-	
-			fp_pos += fp_speed;
-		} while (!(fp_pos & 0xFFFF0000));
-		src++;
-		fp_pos &= 0x0000FFFF;
-		
-
-		if (src+2 < src_end) {
-			c = *(src+2);
-			c = (c|(c << 8))-32768;
-			interp.feedData(RANGE_REDUX(c));
-		} else
-			interp.feedData();
-
-	} while (src < src_end);
-	
-	return stereo_data;
-}
-		
+		/*
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 	{
-	Mix_Chunk *wavechunk;
-
 	if (!audio_enabled || !speech_enabled || !len) return;
 
 	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
@@ -853,28 +529,29 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 	//Voice is loud compared to other SFX,music so adjust to match volumes.
 	Mix_Volume(channel, MIX_MAX_VOLUME - 40);
 	}
+	*/
 
 void	Audio::cancel_streams(void)
 {
 	if (!audio_enabled) return;
 
-	Mix_HaltChannel(-1);
+	//Mix_HaltChannel(-1);
+	mixer->reset();
+
 }
 
 void	Audio::pause_audio(void)
 {
 	if (!audio_enabled) return;
 
-	Mix_Pause(-1);
-	Mix_PauseMusic();
+	mixer->setPausedAll(true);
 }
 
 void 	Audio::resume_audio(void)
 {
 	if (!audio_enabled) return;
 
-	Mix_Resume(-1);
-	Mix_ResumeMusic();
+	mixer->setPausedAll(false);
 }
 
 
@@ -896,8 +573,10 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 		return;
 		}
 
+	/*
 	play(reinterpret_cast<uint8*>(buf), len, wait);
 	delete [] buf;
+	*/
 }
 
 
@@ -1011,32 +690,42 @@ bool Audio::start_speech(int num, bool wait)
 	if (!audio_enabled || !speech_enabled)
 		return false;
 
-	char *buf=0;
-	size_t len;
 	const char *filename;
 	const char *patchfile;
 
 	if (Game::get_game_type() == SERPENT_ISLE)
-		{
+	{
 		filename = SISPEECH;
 		patchfile = PATCH_SISPEECH;
-		}
+	}
 	else
-		{
+	{
 		filename = U7SPEECH;
 		patchfile = PATCH_U7SPEECH;
-		}
+	}
 	
 	U7multiobject sample(filename, patchfile, num);
-	buf = sample.retrieve(len);
+
+	size_t len;
+	uint8 *buf = (uint8 *)sample.retrieve(len);
 	if (!buf || len <= 0)
-		{
+	{
 		delete [] buf;
 		return false;
-		}
+	}
 
-	play(reinterpret_cast<uint8*>(buf),len,wait);
-	delete [] buf;
+	IBufferDataSource bds(buf,len);
+	if (!Pentagram::VocAudioSample::isVoc(&bds))
+	{
+		delete [] buf;
+		return false;
+	}
+
+	Pentagram::VocAudioSample *audio_sample = new Pentagram::VocAudioSample(buf,len);
+
+	mixer->playSample(audio_sample,0,128);
+	audio_sample->Release();
+
 
 	return true;
 }
@@ -1072,7 +761,7 @@ int Audio::play_wave_sfx
 {
 	if (!effects_enabled || !sfx_file /*|| !mixer*/) 
 		return -1;  // no .wav sfx available
-
+/*
 #if 0
 	if (Game::get_game_type() == BLACK_GATE)
 		num = bgconv[num];
@@ -1103,6 +792,8 @@ int Audio::play_wave_sfx
 	Mix_Volume(sfxchannel, volume);
 	Mix_SetPosition(sfxchannel, (dir * 22), 0);
 	return sfxchannel;
+	*/
+	return -1;
 }
 
 /*
@@ -1112,7 +803,8 @@ int Audio::play_wave_sfx
 void Audio::stop_sound_effects()
 {
 	if (sfx_file != 0)		// .Wav's?
-		Mix_HaltChannel(-1);	
+	{
+	}
 		
 #ifdef ENABLE_MIDISFX
 	else if (midi)
@@ -1153,74 +845,3 @@ void Audio::set_audio_enabled(bool ena)
 	}
 }
 
-
-
-static	uint8 *chunks_to_block(vector<Chunk> &chunks)
-{
-	uint8 *unified_block;
-	size_t	aggregate_length=0;
-	size_t	working_offset=0;
-	
-	for(std::vector<Chunk>::iterator it=chunks.begin();
-		it!=chunks.end(); ++it)
-		{
-		aggregate_length+=it->length;
-		}
-	unified_block=new uint8[aggregate_length];
-	{
-		for(std::vector<Chunk>::iterator it=chunks.begin();
-			it!=chunks.end(); ++it)
-			{
-			memcpy(unified_block+working_offset,it->data,it->length);
-			working_offset+=it->length;
-			delete [] it->data; it->data=0; it->length=0;
-			}
-	}
-	
-	return unified_block;
-}
-
-//
-// Decode 4bit ADPCM vocs (thunder in SI intro)
-//
-// Code grabbed from VDMS
-//
-
-inline int decode_ADPCM_4_sample(uint8 sample,
-								 int& reference,
-								 int& scale)
-{
-	static int scaleMap[8] = { -2, -1, 0, 0, 1, 1, 1, 1 };
-	
-	if (sample & 0x08) {
-		reference = max(0x00, reference - ((sample & 0x07) << scale));
-	} else {
-		reference = min(0xff, reference + ((sample & 0x07) << scale));
-	}
-	
-	scale = max(2, min(6, scaleMap[sample & 0x07]));
-	
-	return reference;
-}
-
-//
-// Performs 4-bit ADPCM decoding in-place.
-//
-static void decode_ADPCM_4(uint8* inBuf,	
-						  int bufSize,				// Size of inbuf
-						  uint8* outBuf,			// Size is 2x bufsize
-						  int& reference,			// ADPCM reference value
-						  int& scale)
-{
-	if (reference < 0) {
-		reference = inBuf[0] & 0xff;   // use the first byte in the buffer as the reference byte
-		bufSize--;                          // remember to skip the reference byte
-	}
-	
-	for (int i = 0; i < bufSize; i++) {
-		outBuf[i * 2 + 0] = decode_ADPCM_4_sample(inBuf[i] >> 4, reference, scale);
-		outBuf[i * 2 + 1] = decode_ADPCM_4_sample(inBuf[i] >> 0, reference, scale);
-	}
-}
-
-#endif // PENTAGRAM

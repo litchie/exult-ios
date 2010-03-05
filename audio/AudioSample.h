@@ -35,6 +35,8 @@ protected:
 	uint32	buffer_size;
 	uint8	*buffer;
 
+	uint32	refcount;
+
 public:
 	AudioSample(uint8 *buffer, uint32 size);
 	virtual ~AudioSample(void);
@@ -51,6 +53,9 @@ public:
 	virtual void initDecompressor(void *DecompData) const = 0;
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const = 0;
 	virtual void rewind(void *DecompData) const = 0;
+
+	void			IncRef() { refcount++; }
+	void			Release() { if (!--refcount) delete this; }
 };
 
 };
