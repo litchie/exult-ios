@@ -53,6 +53,11 @@
 #include "chunkter.h"
 #endif
 
+#ifdef MACOSX
+#include <CoreFoundation/CoreFoundation.h>
+#include <sys/param.h> // for MAXPATHLEN
+#endif
+
 #if (defined(USECODE_DEBUGGER) && defined(XWIN))
 #include <csignal>
 #endif
@@ -514,6 +519,65 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 #endif
 
+static inline void setup_data_dir(Configuration *config, const char *runpath)
+	{
+	// First, try the cfg value:
+	string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	add_system_path("<DATA>", data_path);
+	if (U7exists(EXULT_FLX))
+		return;
+
+	// Now, try default -- if warranted.
+	if (data_path != EXULT_DATADIR)
+		{
+		add_system_path("<DATA>", EXULT_DATADIR);
+		if (U7exists(EXULT_FLX))
+			return;
+		}
+
+	// Try "data" subdirectory for current working directory:
+	add_system_path("<DATA>", "data");
+	if (U7exists(EXULT_FLX))
+		return;
+
+	// Try "data" subdirectory for exe directory:
+	const char *sep = std::strrchr(runpath,'/');
+	if (!sep) sep = std::strrchr(runpath,'\\');
+	int plen = sep-runpath;
+	char *dpath = new char[plen+10];
+	std::strncpy(dpath, runpath, plen+1);
+	dpath[plen+1] = 0;
+	std::strcat(dpath,"data");
+	cerr << "dpath = " << dpath << endl;
+	add_system_path("<DATA>",dpath);
+	if (U7exists(EXULT_FLX))
+		return;
+
+#ifdef MACOSX
+	// Try looking in .app bundle:
+	CFURLRef fileUrl = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+	if (fileUrl)
+		{
+		unsigned char buf[MAXPATHLEN];
+		if (CFURLGetFileSystemRepresentation(fileUrl, true, buf, sizeof(buf)))
+			{
+			string path((const char *)buf);
+			path += "/data";
+			add_system_path("<DATA>", path.c_str());
+			if (U7exists(EXULT_FLX))
+				return;
+			}
+		}
+#endif
+
+	// We've tried them all...
+	cerr << "Could not find 'exult.flx' anywhere." << endl;	
+	cerr << "Please make sure Exult is correctly installed," << endl;
+	cerr << "and the Exult data path is specified in the configuration file." << endl;
+	cerr << "(See the README file for more information)" << endl;
+	exit(-1);
+	}
 
 /*
  *	Main program.
@@ -534,7 +598,6 @@ int exult_main(const char *runpath)
 	minimized = false;
 #endif
 
-	string data_path;
 	string music_path;
 	// output version info
 	getVersionInfo(cout);
@@ -560,46 +623,8 @@ int exult_main(const char *runpath)
 	}
 
 	// Setup virtual directories
-	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
-	add_system_path("<DATA>", data_path);
-	if (!U7exists(EXULT_FLX))
-	{
-		add_system_path("<DATA>", EXULT_DATADIR);
-		if (!U7exists(EXULT_FLX))
-		{
-			add_system_path("<DATA>", "data");
-			if(!U7exists(EXULT_FLX))
-			{
-				const char *sep = std::strrchr(runpath,'/');
-				if (!sep) sep = std::strrchr(runpath,'\\');
-				int plen = sep-runpath;
-				char *dpath = new char[plen+10];
-				std::strncpy(dpath, runpath, plen+1);
-				dpath[plen+1] = 0;
-				std::strcat(dpath,"data");
-				cerr << "dpath = " << dpath << endl;
-				add_system_path("<DATA>",dpath);
-				if(!U7exists(EXULT_FLX))
-				{
-#ifdef MACOSX
-					// Try looking in .app bundle:
-					add_system_path("<DATA>", "Exult.app/Contents/Resources/data");
-					if(!U7exists(EXULT_FLX))
-					{
-#endif
-					// We've tried them all...
-					cerr << "Could not find 'exult.flx' anywhere." << endl;	
-					cerr << "Please make sure Exult is correctly installed," << endl;
-					cerr << "and the Exult data path is specified in the configuration file." << endl;
-					cerr << "(See the README file for more information)" << endl;
-					exit(-1);
-#ifdef MACOSX
-					}
-#endif
-				}
-			}
-		}
-	}
+	setup_data_dir(config, runpath);
+	
 	std::string default_music = get_system_path("<DATA>/music");
 	config->value("config/disk/music_path",music_path,default_music.c_str());
 
