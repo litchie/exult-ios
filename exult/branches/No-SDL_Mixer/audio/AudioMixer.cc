@@ -157,11 +157,32 @@ int AudioMixer::playSample(AudioSample *sample, int loop, int priority, bool pau
 
 bool AudioMixer::isPlaying(int chan)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return 0;
+	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return false;
 
 	Lock();
 
 		bool playing = channels[chan]->isPlaying();
+
+	Unlock();
+
+	return playing;
+}
+
+bool AudioMixer::isPlaying(AudioSample *sample)
+{
+	if (!sample || !channels || !audio_ok) return false;
+
+	Lock();
+
+		bool playing = false;
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getSample() == sample)
+			{
+				playing = true;
+				break;
+			}
+		}
 
 	Unlock();
 
@@ -175,6 +196,21 @@ void AudioMixer::stopSample(int chan)
 	Lock();
 
 		channels[chan]->stop();
+
+	Unlock();
+}
+
+void AudioMixer::stopSample(AudioSample *sample)
+{
+	if (!sample || !channels || !audio_ok) return;
+
+	Lock();
+
+	for (int chan = 0; chan < num_channels; chan++)
+	{
+		if (channels[chan]->getSample() == sample)
+			channels[chan]->stop();
+	}
 
 	Unlock();
 }

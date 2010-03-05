@@ -26,6 +26,7 @@ AudioSample::AudioSample(uint8 *buffer_, uint32 size_) :
 		frame_size(0), decompressor_size(0), length(0), 
 		buffer_size(size_), buffer(buffer_)
 {
+	refcount++;
 }
 
 AudioSample::~AudioSample(void)

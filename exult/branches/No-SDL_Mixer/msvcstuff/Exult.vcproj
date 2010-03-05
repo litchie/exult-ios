@@ -478,6 +478,14 @@
 					RelativePath="..\audio\soundtest.cc"
 					>
 				</File>
+				<File
+					RelativePath="..\audio\VocAudioSample.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\VocAudioSample.h"
+					>
+				</File>
 				<Filter
 					Name="Audio h"
 					>

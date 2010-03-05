@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef AUDIOCHANNEL_H_INCLUDED
 #define AUDIOCHANNEL_H_INCLUDED
 
-namespace Pentagram {
+#include "AudioSample.h"
 
-class AudioSample;
+namespace Pentagram {
 
 class AudioChannel
 {
@@ -53,7 +53,7 @@ public:
 	AudioChannel(uint32 sample_rate, bool stereo);
 	~AudioChannel(void);
 
-	void stop() { sample = 0; }
+	void stop() { sample->Release(); sample = 0; }
 
 	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol);
 	void resampleAndMix(sint16 *stream, uint32 bytes);
@@ -74,6 +74,8 @@ public:
 
 	void setPaused(bool paused_) { paused = paused_; }
 	bool isPaused() const { return paused; }
+
+	AudioSample *getSample() { return sample; }
 private:
 
 	//

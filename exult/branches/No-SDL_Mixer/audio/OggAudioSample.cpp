@@ -22,6 +22,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 namespace Pentagram {
 
+ov_callbacks OggAudioSample::callbacks = {
+  &read_func,
+  &seek_func,
+  0,
+  &tell_func
+};
+
 OggAudioSample::OggAudioSample(IDataSource *oggdata_)
 	: AudioSample(0, 0), oggdata(oggdata_)
 {
@@ -29,10 +36,6 @@ OggAudioSample::OggAudioSample(IDataSource *oggdata_)
 	decompressor_size = sizeof(OggDecompData);
 	bits = 16;
 
-	callbacks.read_func = &read_func;
-	callbacks.seek_func = 0;//&seek_func;
-	callbacks.close_func = 0;//&close_func;
-	callbacks.tell_func = 0;//&tell_func;
 
 }
 
@@ -44,11 +47,44 @@ OggAudioSample::~OggAudioSample()
 
 size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
 {
-	OggAudioSample *oas = (OggAudioSample*) datasource;
-	if (oas->oggdata->eof()) return 0;
-	oas->oggdata->read(ptr,size*nmemb);
+	IDataSource *ids = (IDataSource*) datasource;
+	if (ids->eof()) return 0;
+	ids->read(ptr,size*nmemb);
 	return nmemb;
 }
+int    OggAudioSample::seek_func  (void *datasource, ogg_int64_t offset, int whence)
+{
+	IDataSource *ids = (IDataSource*) datasource;
+	switch(whence)
+	{
+	case SEEK_SET:
+		ids->seek((size_t)offset);
+		return 0;
+	case SEEK_END:
+		ids->seek(ids->getSize()-(size_t)offset);
+		return 0;
+	case SEEK_CUR:
+		ids->skip((size_t)offset);
+		return 0;
+	}
+	return -1;
+}
+long   OggAudioSample::tell_func  (void *datasource)
+{
+	IDataSource *ids = (IDataSource*) datasource;
+	return ids->getPos();
+}
+
+bool OggAudioSample::is_ogg(IDataSource *oggdata)
+{
+	OggVorbis_File vf;
+	int res = ov_test_callbacks((void*)oggdata,&vf,0,0,callbacks);
+	ov_clear(&vf);
+
+	return res != 0;
+}
+
+
 void OggAudioSample::initDecompressor(void *DecompData) const
 {
 	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
@@ -59,7 +95,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	*const_cast<bool*>(&locked) = true;		
 
 	oggdata->seek(0);
-	ov_open_callbacks((void*)this,&decomp->ov,NULL,0,callbacks);
+	ov_open_callbacks((void*)this->oggdata,&decomp->ov,NULL,0,callbacks);
 	decomp->bitstream = 0;
 	
 	vorbis_info *info = ov_info(&decomp->ov,-1);
