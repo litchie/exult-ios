@@ -45,11 +45,15 @@ AudioChannel::AudioChannel(uint32 sample_rate_, bool stereo_) :
 
 AudioChannel::~AudioChannel(void)
 {
+	if (sample) sample->Release();
+	sample = 0;
 }
 
 void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bool paused_, uint32 pitch_shift_, int lvol_, int rvol_)
 {
+	if (sample) sample->Release();
 	sample = sample_; 
+
 	loop = loop_;
 	priority = priority_;
 	lvol = lvol_;
@@ -58,6 +62,7 @@ void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bo
 	pitch_shift = pitch_shift_;
 
 	if (!sample) return;
+	sample->IncRef();
 
 	// Setup buffers
 	decompressor_size = sample->getDecompressorDataSize();
@@ -135,6 +140,7 @@ void AudioChannel::resampleAndMix(sint16 *stream, uint32 bytes)
 
 			// No more data
 			if (!frame1_size) {
+				if (sample) sample->Release();
 				sample = 0;
 				return;
 			}

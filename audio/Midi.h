@@ -29,7 +29,10 @@
 #include "fnames.h"
 
 class MidiDriver;
-class IDataSource;
+
+namespace Pentagram {
+	class AudioSample;
+}
 
 //---- MyMidiPlayer -----------------------------------------------------------
 
@@ -77,6 +80,8 @@ public:
 
 	void			produceSamples(sint16 *stream, uint32 bytes);
 
+	Pentagram::AudioSample* GetOGG() { return ogg_sample; }
+
 private:
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
@@ -102,14 +107,15 @@ private:
 	
 	// Ogg Stuff
 	bool			ogg_enabled;
-
-	IDataSource			*ogg;
+	Pentagram::AudioSample	*ogg_sample;
 
 	bool				ogg_play_track(std::string filename, int num, bool repeat);
 	bool				ogg_is_playing();
 	void				ogg_stop_track();
 
 	void				ogg_mix(sint16 *stream, uint32 bytes);
+
+
 
 };
 

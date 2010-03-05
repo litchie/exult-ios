@@ -49,6 +49,9 @@ enum Combat_song
 
 //---- Audio -----------------------------------------------------------
 
+namespace Pentagram {
+	class AudioMixer;
+};
 class Audio 
 {
 private:
@@ -58,11 +61,11 @@ private:
 	bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool allow_music_looping;
-	bool SDL_open;
 	SFX_cache_manager *sfxs;		// SFX and voice cache manager
 	bool initialized;
 	SDL_AudioSpec wanted;
-	Mix_Chunk *wave;
+	MyMidiPlayer *midi;
+	Pentagram::AudioMixer *mixer;
 
 public:
 	bool audio_enabled;
@@ -74,9 +77,6 @@ private:
 	Audio();
 	~Audio();
 	void	Init(int _samplerate,int _channels);
-
-	uint8 *	convert_VOC(uint8 *,uint32 &);
-	void	build_speech_vector(void);
 
 public:
 	friend class Tired_of_compiler_warnings;
@@ -96,7 +96,7 @@ public:
 	void	pause_audio(void);
 	void    resume_audio(void);
 
-	void	play(uint8 *sound_data,uint32 len,bool);
+	//void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
 	void	start_music(int num,bool continuous=false,std::string flex=MAINMUS);

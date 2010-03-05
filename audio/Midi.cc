@@ -47,6 +47,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../conf/Configuration.h"
 extern	Configuration	*config;
 
+#include "AudioMixer.h"
+#include "OggAudioSample.h"
+
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
@@ -479,7 +482,6 @@ void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
 	if (midi_driver_name != desired_driver || ogg_enabled != use_oggs) {
 		stop_music();
 		if (midi_driver) midi_driver->destroyMidiDriver();
-		Mix_HookMusic(NULL,NULL);
 		delete midi_driver;
 		midi_driver = 0;
 		initialized = false;
@@ -605,8 +607,6 @@ bool MyMidiPlayer::init_device(void)
 
 	if(!midi_driver) return ogg_enabled;
 
-	if (midi_driver->isSampleProducer()) Mix_HookMusic(sdl_music_hook,this);
-
 	timbre_lib_filename = "";
 	load_timbres();
 
@@ -620,7 +620,8 @@ MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  timbre_lib_index(0), timbre_lib_game(NONE),
 				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDIFILE_CONVERT_GS127_TO_GS),
-				  ogg_enabled(false), oggmusic(NULL)
+				  ogg_enabled(false), ogg_sample(NULL)
+
 {
 	init_device();
 }
@@ -629,16 +630,11 @@ MyMidiPlayer::~MyMidiPlayer()
 {
 	ogg_stop_track();
 	if (midi_driver) midi_driver->destroyMidiDriver();
-	Mix_HookMusic(NULL,NULL);
 	delete midi_driver;
 }
 
 void MyMidiPlayer::produceSamples(sint16 *stream, uint32 bytes)
 {
-	MyMidiPlayer *midi = reinterpret_cast<MyMidiPlayer *>(udata);
-
-	MidiDriver *midi_driver = midi->midi_driver;
-
 	if (midi_driver && midi_driver->isInitialized() && midi_driver->isSampleProducer())
 		midi_driver->produceSamples(stream, bytes);
 }
@@ -780,42 +776,62 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 	else
 		ogg_name = get_system_path(basepath + ogg_name);
 
-	Mix_Music *newmusic = Mix_LoadMUS(ogg_name.c_str());
-	if (!newmusic) return false;
-
-	if (oggmusic) Mix_FreeMusic(oggmusic);
-	else Mix_HookMusic(NULL,NULL);
-
-	oggmusic = newmusic;
-
 #ifdef DEBUG
 	cout << "OGG audio: Music track " << ogg_name << endl;
 #endif
 
-	int ret = Mix_PlayMusic(oggmusic, repeat?2:0);
+	std::ifstream *stream;
+	try {
+		stream = new std::ifstream(ogg_name.c_str(), std::ios::in | std::ios::binary);
+	}
+	catch (std::exception &) {
+		return false;
+	}
 
-	if (ret != 0) std::cerr << "Failed to play OGG Music Track " << ogg_name << ". Reason: " << Mix_GetError() << std::endl;
+	if (!stream->good()) return false;
 
-	return  ret == 0;
+	IDataSource *ds = new IFileDataSource(stream);
+
+	if (!Pentagram::OggAudioSample::is_ogg(ds))
+	{
+		std::cerr << "Failed to play OGG Music Track " << ogg_name << ". Reason: " << "Unknown" << std::endl;
+
+		delete ds;
+		return false;
+	}
+
+	Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
+
+	if (ogg_sample) {
+		mixer->stopSample(ogg_sample);
+		ogg_sample->Release();
+		ogg_sample = 0;
+	}
+
+	ds->seek(0);
+	ogg_sample = new Pentagram::OggAudioSample(ds);
+
+	mixer->playSample(ogg_sample, repeat?2:0, INT_MAX);
+
+	return  true;
 }
 
 void MyMidiPlayer::ogg_stop_track(void)
 {
-	if(oggmusic)
-	{
-		Mix_FreeMusic(oggmusic);
-		oggmusic = NULL;
-
-		if (midi_driver && midi_driver->isSampleProducer())
-			Mix_HookMusic(sdl_music_hook,this);
+	if (ogg_sample) {
+		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
+		mixer->stopSample(ogg_sample);
+		ogg_sample->Release();
+		ogg_sample = 0;
 	}
 }
 
 bool MyMidiPlayer::ogg_is_playing(void)
 {
-	int playing = Mix_PlayingMusic();
-	if (!playing && oggmusic) ogg_stop_track();
-
-	return playing!=0;
+	if (ogg_sample) {
+		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
+		mixer->isPlaying(ogg_sample);
+	}
+	return false;
 }
 
