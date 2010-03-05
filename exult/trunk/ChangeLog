@@ -1,3 +1,7 @@
+2010-03-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* MacOS X: App bundles now use CoreFoundation API to detect resource path
+	  instead of it being hard-coded into the application.
+
 2010-03-04 Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff/msvc_kludges.h: Updating to reflect current code
 	* version.cc: Added Windows Vista and Windows 7 to the list of detected windows versions
