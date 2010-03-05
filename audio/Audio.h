@@ -60,7 +60,6 @@ private:
 	bool allow_music_looping;
 	bool SDL_open;
 	SFX_cache_manager *sfxs;		// SFX and voice cache manager
-	MyMidiPlayer *midi;
 	bool initialized;
 	SDL_AudioSpec wanted;
 	Mix_Chunk *wave;
