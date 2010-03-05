@@ -1264,6 +1264,7 @@ void SI_Game::show_quotes()
 
 void SI_Game::show_credits()
 {
+	pal->load(MAINSHP_FLX, PATCH_MAINSHP, 26);
 	Audio::get_ptr()->start_music(30,false,MAINSHP_FLX);
 	TextScroller credits(MAINSHP_FLX, 0x0E, 
 		     fontManager.get_font("MENU_FONT"),
