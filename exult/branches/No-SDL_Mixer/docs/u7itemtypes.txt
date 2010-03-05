@@ -1,0 +1,103 @@
+X-Status: N
+
+Unfortunately the tabs seem to have been removed from my last message? I'll 
+probably uses spaces next time...
+
+>Yes, I think some of those are right, especially quantity, egg, and door.  
+>I'm
+>uncertain about 5, though, since a lot of different objects have that 
+>value.
+
+I looked a bit more closely at the 'class' field (which seems to be bits 0 
+to 4 of the second TFA byte) and found a few more possibilities:
+
+0  : unusable items? (e.g. trees)
+1  : never occurs
+2  : items that have a quality
+3  : items that have a quantity
+4  : ? (many items)
+5  : ? (many items)
+6  : container (e.g. bag, dead body)
+7  : special (e.g. Egg, trap, moongate)
+8  : spellbook only (761)
+9  : barge only (961)
+10 : never occurs
+11 : Virtue Stone only
+12 : NPC type
+13 : NPC type (unknown difference)
+14 : roof (e.g. slate roof, mountain)
+15 : never occurs
+16 : poisonous? (22:swamp and 67:muck only)
+17..19 : never occur
+20 : never occurs for Part I, only campfire in Part II (796)
+21 : item has an effect when walked on (e.g. caltrops, fire field)
+22..31 : never occur
+(Bit 4 could also be a bit field)
+
+Bit 5 of the second byte seems to indicate a door. Perhaps this means that 
+adjacent items will be activated together, the way double doors are?
+
+Bit 6 of the second byte is set for items that are part of vehicles (cart, 
+ship and flying carpet). I would think that this flag is used with a "barge" 
+so that a group items can be moved together.
+
+Also I think that bit 4 of the first byte indicates that the tile is water 
+(so that swimming NPCs can move over it). Bit 1 of the first byte is set 
+only for the following:
+  447: wounded man
+  525: sea serpent
+  529: slime
+  530: snake
+  844: sea serpent
+...which does not make much sense :)
+
+>I was hoping to find a way to distinguish the different forms of armor 
+>here, but
+>it looks like that information is elsewhere.
+
+If you want to find out what part of the body each armour/weapon item is 
+placed, you need to look at the READY.DAT file. The first byte is a count of 
+the number of subsequent records. Each records is 9 bytes long:
+
+unsigned 16-bit : item type number
+unsigned 8-bit  : inventory placement number:
+  0x01 : one-handed spell item (e.g. fire bolt)
+  0x08 : one-handed weapon
+  0x20 : armour for neck (e.g. amulet, gorget)
+  0x28 : armour for torso
+  0x30 : ring on finger
+  0x40 : ammunition (e.g. arrows)
+  0x48 : helm
+  0x50 : leggings
+  0x58 : boots
+  0x78 : triple crossbow bolts? (ignore this?)
+  0x90 : tongs (same as a one-handed weapon?)
+  0xA0 : two-handed weapon
+  0xA1 : other spell items (e.g. #676)
+  0xA8 : gloves
+unsigned 16-bit : unused (always zero)
+unsigned 16-bit : unused (always zero)
+unsigned 16-bit : unused (always zero)
+
+>Yes, you're right, and I'll likely incorporate your suggestions/code in the
+>next release.  But note that there's another thing the current version is
+>lacking:  Some items, like food and reagents, have a different name for 
+>each
+>frame.  These strings are stored in the same 'text.flx' file starting at 
+>entry
+>0x500, but I haven't figured out a clean algorithm to tell me which shapes
+>should be looked up there.  I may end up just doing it by looking at the 
+>shape
+>#'s.
+
+I haven't figured that part out yet :)
+
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+
+
+_______________________________________________
+Exult-general mailing list
+Exult-general@lists.sourceforge.net
+http://lists.sourceforge.net/mailman/listinfo/exult-general
+

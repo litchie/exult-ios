@@ -1,0 +1,148 @@
+.\" -*- nroff -*-
+.TH expack 1 2002-03-23 Exult
+
+.SH NAME
+expack \- manipulate Flex files
+
+.SH SYNOPSIS
+.B expack -a
+.IR "FLEXFILE FILE" ...
+
+.B expack -c
+.IR "FLEXFILE FILE" ...
+
+.B expack -x
+.IR FLEXFILE " [" INDEX ]
+
+.B expack -i
+.I MANIFEST
+
+.B expack -l
+.I FLEXFILE
+
+.SH DESCRIPTION
+.B expack
+is a command-line utility that lets you extract and create Flex files.
+Flex files are archives (which means that they act as containers for
+other files, somewhat like directories) used by
+.I Ultima 7
+to store most of its data. Note that the names of the original files
+are not stored in the Flex \(em files are only retrievable by their
+index.
+
+.SS Modes of operation
+
+.TP
+.BR -a " Add"
+--NOT IMPLEMENTED YET.  FUTURE ENHANCEMENT--
+This command adds one or more
+.IR FILE s
+to the end of
+.IR FLEXFILE .
+
+.TP
+.BR -c " Create"
+This command takes one or more 
+.IR FILE s
+and bundles them into
+.IR FLEXFILE ,
+overwriting it in the process.
+
+.TP
+.BR -x " Extract"
+Lets you extract the files contained within
+.IR FLEXFILE .
+If
+.I INDEX
+is given only the file at this position will be unpacked, otherwise all
+files are extracted. The created files will be named \fIindex\fB.u7o\fR.
+
+.TP
+.BR -i " Input"
+Similar to "Create", this command creates
+.I FLEXFILE
+from a number of input files. However, "Input" takes the names of the
+input files from
+.I MANIFEST
+instead of the command line.
+
+.I MANIFEST
+must be a list of file names, one per line. The first name
+is that of the Flex file that is to be created, the rest are the input
+files used in building it.
+
+.TP
+.BR -l " List"
+This command lists the contents of a
+.IR FLEXFILE .
+It gives you the
+number of files contained within the Flex file, as well as the length
+of each file.
+
+.SH EXAMPLES
+.TP
+.B expack -a animals.flx bee.wav
+Adds
+.B bee.wav
+to the Flex file
+.BR animals.flx .
+
+.TP
+.B expack -a animals.flx hamster.wav snake.wav donkey.wav
+Adds
+.BR hamster.wav ", " snake.wav ", and " donkey.wav
+to the Flex file
+.BR animals.flx .
+
+.TP
+.B expack -c animals.flx duck.wav cat.wav cow.wav dog.wav
+Creates a new Flex file
+.B animals.flx
+containing
+.BR duck.wav ", " cat.wav ", " cow.wav ", and " dog.wav .
+
+.TP
+.B expack -x text.flx 17
+Extracts the file at position
+.BR 17 from text.flx into 17.u7o .
+
+.TP
+.B expack -x text.flx
+Extracts all files from
+.B text.flx
+into files named
+.BR 0.u7o ", " 1.u7o ", " 2.u7o ", etc."
+
+.TP
+.B expack -i wavlist
+With
+.B wavlist
+reading:
+
+jmsfx.flx
+.br
+ant.wav
+.br
+bee.wav
+.br
+cat.wav
+
+will create a new Flex file
+.B jmsfx.flx
+consisting of
+.BR ant.wav ", " bee.wav ", and" cat.wav .
+
+.TP
+.B expack -l text.flx
+Lists the number and lenghts of files contained in
+.BR text.flx .
+
+.SH BUGS
+The "Add" command
+.RB ( -a )
+does not work yet.
+
+.SH AUTHOR
+This manpage was written by Robert Bihlmeyer based on a text by Marc
+Winterrowd. It may be freely redistributed and modified under the
+terms of the GNU General Public License version 2 or higher.

@@ -1,0 +1,113 @@
+				Proposals for Exult 2.0
+				Jan. 18, 2004
+				Contributors:  jsf
+
+With the release of Version 1.2, we will have been successful at
+meeting our goal of allowing users to play U7 Black Gate and Serpent
+Isle on a wide variety of platforms.  The question is:  Other than bug
+fixes, should we continue development?
+
+My proposal is that if we do, the next major release should have the
+goal of making the engine more flexible for the development of new
+games, and more in appearance.
+
+1.  Move hard-coded data to files
+    -----------------------------
+
+The main problem Exult has for supporting original games is that far
+too much data is hard-coded into the engine.  Here is a list of
+content that needs to be moved to data files:
+
+	A.  Dungeon roofs:  These are the shapes representing
+	mountain-tops.  For each such shape, we also need the color to
+	paint over tiles that are outside the dungeon.  In addition,
+	there should also be a flag which means "treat whole chunk
+	that contains this shape as dungeon-space".
+
+	B.  Gumps:  We'd probably want an XML file describing what
+	shapes to use, what shapes should represent subpieces, and
+	where they should go.  We'd also need a gump-editor as well.
+	(Could this be a plugin for the Gimp?)
+
+	C.  Object naming:  While each shape's name is already in
+	"text.flx", there are some shapes that have different names
+	for each frame.  These names also exist in "text.flx", but the
+	retrieval of these is hard-coded.
+
+	D.  Dead bodies:  Shape #'s currently are hard-coded in
+	bodies.cc.
+
+	E.  Spells and reagents:  A fair amount of work is here.
+
+	F.  Quantity frames:  Need to specify what frame to show for
+	"quantity" objects.
+
+	G.  Projectile effects:  Currently hard-coded in
+	"Projectile_effect::handle_event()" in "effects.cc".
+
+	H.  Swamp protection:  Need shapes of "swamp boots" that, when
+	worn, protect you when walking on tiles that are marked as
+	"poisoned".
+
+	I.  Schedules:  These are themselves code.  While I might like
+	to leave the current schedules hard-coded, the shapes they use
+	should be settable in a data file.  We might want to make it
+	possible to create new, custom schedules written in Usecode.
+
+	**** There are probably lots more. ****
+	
+Actually entire "Exult Games" should be described by some kind of XML 
+descriptor. Each descriptor can then be used to add entries in the main menu.
+We need to distribute the BG and SI descriptors with Exult, and new games
+created with Exult Studio should come with their descriptor.
+
+2.  Expand world
+    ------------
+
+It's been requested that we support more than one map.  Also, U7's
+current data files only support 1024 shapes.  To remove these limits,
+we will have to modify the savegame format (while still retaining
+compatibility with old savegames).  I believe we should still have
+each map retain the current dimensions, since they make computations
+very efficient.
+
+3.  Smoother animation
+    ------------------
+
+It would be nice if the NPC movements and viewport scrolling were
+smoother, meaning that they would have to be pixel-based instead of
+tile-based (where one tile is 8x8 pixels).  This would require a
+complete rewrite of the game loop and scrolling functions.  This would
+also make it possible to support more NPC frames during animation.
+
+4.  Better localization support
+    ---------------------------
+
+While Exult will still have to interpret the text as it's encoded in
+U7's data files, we should add support for Unicode (UTF8) so games,
+including U7, can be translated into non-Latin languages.  We could
+probably use the Pango and Freetype2 packages for this or SDL_ttf,
+which already handles UTF-8 display of TTF's.
+
+5.  Journal
+    -------
+
+Could just be in the form of a book that you can write in.
+Also an automatic Journal containing all conversations the player has had with 
+NPCs. Could be the same, with user notes in one colour and automatic notes in
+another colour. Automatic logging should be an option.
+
+6.  Scripted intro/endings
+    ----------------------
+   
+Provide a description mechanism for the intros/endings, instead of the 
+hardcoded bggame.cc and sigame.cc code.
+Colourless has some ideas on this ?
+
+7.  Complete configuration via Exult
+    --------------------------------
+    
+Currently it is not possible to set the paths in exult.cfg. It would be neat
+if it allowed browsing for the BG/SI data files, additional wave packs, etc.
+On 1st run the user should get a configuration wizard.
+

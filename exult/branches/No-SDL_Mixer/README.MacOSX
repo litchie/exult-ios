@@ -1,0 +1,93 @@
+Exult instructions for Mac OS X
+-------------------------------
+
+
+To play
+-------
+First you need to get Ultima 7 or Serpent Isle. Either you own
+it already, or you buy it somewhere. Then you must install it
+on a DOS/Windows machine in order to get the data file.
+A good way is to use a PC emulator for this, e.g. Virtual PC,
+Real PC or SoftWindows.
+Note that the Ultima Collection already contains an installed
+copy of Ultima 7 (In the Ultima7/ directory) and of Serpent Isle
+(In the Serpent/ directory).
+
+From the Ultima7 or Serpent folder on your PC, copy the STATIC
+sub folder to the 'blackgate' or 'serpentisle' sub folder (as
+appropriate) of the ExultMac application folder (you will
+likely have to create the sub folders yourself).
+
+Now run ExultMac, and have fun!
+
+Possible issue
+--------------
+Something in our audio code might crash Exult unexpectedly on OSX.
+For example the famous scene in SI with Frigidazi has been reported 
+as a trigger. To circumvent this disable all audio before a scene 
+that crashes and enable it later on in the game.
+
+More Information
+----------------
+More information can be found in the accompanying files README and FAQ.
+In addition, you might want to check out our homepage at
+http://exult.sourceforge.net
+
+
+How to compile on Mac OS X
+--------------------------
+
+Make sure you have the Apple developer tools installed. They ship with
+Mac OS X, but have to be installed separately. You can also download the
+latest version for free from http://connect.apple.com
+
+In order to compiler Exult, you need to install several Unix packages.
+If you are an expert, you may want to install them manually; for all others,
+we recommend installing them via Fink (http://fink.sourceforge.net). In
+particular, you need these packages:
+Install these packages with Fink:
+  sdl
+  sdl-mixer
+
+If you are compiling the source code CVS, as opposed to the source of
+a released version, you also need to install these packages:
+  automake1.9
+  libtool14
+(for the experts: old versions of the automake package should also work,
+e.g. you could also use automake1.8 or automake1.7).
+
+Now you are ready to compiler Exult. If you are compiling from CVS, the
+first thing you have to run is this:
+  ./autogen.sh
+
+The next step is the same whether you compile a release version or CVS:
+  ./configure
+  make
+
+This will give you a "exult" binary in the current directory. If you want
+a nice Exult.app (double clickable from the Finder and all), enter this
+command:
+  make bundle
+
+Be warned, the binary created this way is not static linked, that means if
+you copy it to another machine it will most likely not work. So you can only
+use it on your own computer.
+
+
+If you want to compile Exult Studio, you have to install this package:
+  libglade2
+
+This might actually cause many other packages required by libglade2 to
+be installed. 
+After that, you have to re-run configure and make:
+  ./configure --enable-exult-studio --enable-macosx-studio-support
+  make
+  
+You need to add the path of Exult Studio to your PATH settings so that Exult can
+start Exult Studio on entering Map-Edit-Mode (ctrl+cmd+m).
+Normally Exult Studio gets compiled in /path_to_the_Exult_source_code/mapedit, 
+so if you do "export PATH=$PATH:/path_to_the_Exult_source_code/mapedit" before 
+starting Exult, you can start using Exult and Exult Studio.
+If you don't want to set the path to Exult Studio, you can also start Exult,
+go into Map-Edit-Mode, start Exult Studio manually and click in it's menu
+on File->Connect.

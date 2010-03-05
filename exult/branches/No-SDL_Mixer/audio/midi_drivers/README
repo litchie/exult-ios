@@ -1,0 +1,8 @@
+All the individual MIDI drivers live here.
+
+Notes:
+	repeats - where used in the code - means:
+	-2	continuous
+	0	single
+	1+	Play this many more times after the current
+		play-through has completed

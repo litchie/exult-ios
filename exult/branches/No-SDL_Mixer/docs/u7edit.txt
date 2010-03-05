@@ -1,0 +1,252 @@
+
+
+Ultima7 game structure
+----------------------
+By Gary Thompson
+
+Foreward
+--------
+        In this file, I will attempt to explain the structure of the data
+files that accompany Ultima 7 - The Black Gate.  I am currently in the
+process of writing a game editor.  At this current moment, I am still trying
+to figure out the data files.  As I go along and learn more and more, I will
+be adding to this text file.
+
+        I originally wrote this text file structuring the data using the
+concept of "layers".  After making significant progress decoding the data
+files, I have abandoned it.  There is no concept of "layers" whatsoever in
+Origin's files.
+
+	I have received some serious help from several people around the
+world.  I feel I MUST credit them since they helped me so much.
+
+		Matthias Ho <matthias@po.pacific.net.sg>
+		Michael A. Cornelius (Newt) <Newton@fate.rof.org>
+		Troy Forrest <tforrest@starbase.neosoft.com>
+
+GRAPHICS
+--------
+
+        The graphics that you see in Ultima 7 are stored in the data files in
+a very strange way.  It makes me wonder what kind of programmers they have
+working there.  I could have devised a much better data structure.
+
+        The graphics are split apart and strewn all through many data files.
+All of the graphics themselves are stored in the SHAPES.VGA file.  All other
+files structure the data pointing to shapes and frames stored in the
+shapes.vga file.  There are several major sets of data files that structure
+the graphics... U7MAP, U7CHUNKS, U7IFIX, and U7IREG files.
+
+        No one set of files stores a certain type of graphic data as I
+originally thought.  Moveable objects seem to be majorly stored in the IREG
+files, But semi-immovable objects like walls and trees are stored both in
+the U7MAP file and the U7IFIX files.  First story graphics are stored in both
+IFIX and IREG files.
+
+U7MAP
+-----
+
+        The basic U7 map is fairly easy to understand. The map is broken down 
+on a large scale into a 12*12 grid of what's called "superchunks".  This
+large scale grid makes up the entire map in the game.  Each superchunk is
+broken down into a 16*16 grid of chunks.  Each chunk is a single piece of
+land data.... such as road, water, grass...etc.  The U7MAP file contains all
+the data for the entire map down to the chunk level.  The U7MAP file contains
+a list of chunk numbers, each chunk number taking up 2 bytes in the file.
+These chunk numbers are arranged in order on the grid moving left to right,
+top to bottom by chunk grid then by superchunk grid.  So, the first two bytes
+in the file refer to the upper left chunk on the map.... like this... Cn is
+chunk 'n'. Sn is superchunk 'n'.
+
+|-------------------S1-------------------------------| |--------S2---...
+C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11 C12 C13 C14 C15 C16 C256 C257 C258...
+C17 C18 C19...                                         C272 C273 C274...
+
+        It's fairly easy to understand. This gives you a total grid of 192*192
+chunks or 36864 total chunks.  Of course there are not that many different
+chunks, a great number of them are replicated.  You can use the 192*192 grid
+and a simple formula to calculate the chunk and superchunk numbers as well
+as the offset in the U7MAP file.  
+
+U7CHUNKS
+--------
+
+        Each chunk is broken down into a grid of 16*16 8*8 pixel
+chunk bits.  These are also arranged from L to R, T to B. The U7CHUNKS file
+contains the palette data for each chunk.  AKA: Which chunk bits go where in
+each chunk.  If you take the chunk number out of the U7MAP file, and multiply
+it by 512 (512 bytes per chunk palette)... you will get the offset in the
+U7CHUNKS file where the palette data for that chunk is stored.  Each chunk
+palette in the U7CHUNKS file is also arranged L-R, T-B. Each chunk bit takes
+up 2 bytes also. The first byte combined with the lower 2 bits of the second
+byte make up the shape number in the shapes.vga file.  The upper 6 bits of
+the second byte make up the frame number.
+
+SHAPES.VGA
+----------
+
+        The SHAPES.VGA file contains all of the graphics you see on the
+screen.  The top half of the file contains an index of where the graphics
+are located and how long each entry is.  Offset 0x54 tells how many total
+entries there are in the file.  Offset 0x80 starts the index.  Each entry
+in the index is offset (4 bytes) and length (4 bytes). Each entry corresponds 
+to the shape number found in the U7CHUNKS file.  At each offset starts either
+a header or the picture data.  If it's a header, the first four bytes will
+contain the length of the data again as in the index.  If these numbers are
+not identical, then it's one of the 8x8 chunk bits.  The 8*8 chunk bit data
+is not encoded or compressed in any way.
+
+        If it's a header, the second 4 bytes tell the length of the actual
+header.  The header length will always be at least 8 bytes long.  This 
+includes one frame. Adding 4 bytes to the header length for each additional 
+frame. Each 4 byte frame offset (offset from start of header), is stored
+next.  Following that are 4-2 byte entries... W2 W1 H1 H2.  Take W1+W2 and 
+H1+H2 and you will get the uncompressed width*height of the bitmap. 
+Following that is the actual compressed picture data.
+
+        The compressed picture data uses a modified simple RLE encoding. The
+first 2 bytes are the length of this scan line, the next four tell the X/Y
+offset on the screen where the pixel is. The next byte is odd or even tells 
+whether to copy that many next bytes out, or copy the next byte out that many 
+times.
+
+        Drawing the map using the above data, I got very good results. It 
+seems very strange to me that they stored all the walls, trees and such in
+the MAP file since they actually don't make up the map itself.  Only
+first story walls are stored in the U7MAP and U7CHUNKS files.  Second story
+walls, roofs, and outdoor 1st story semi-immovable objects (like the Shrine
+of Compassion in Cove) are stored in the IFIX files.  
+
+        You may be wondering why they went through all that crap just to
+draw a map.  Well... look at it this way.  As I mentioned earlier, there is
+a map grid of 192*192 chunks...and each chunk is a grid of 16*16 chunk bits.
+And each chunk bit is a 8*8 grid of pixels.... well, multiply all that
+together and you get an entire map of 24576*24576 pixels.  And that relates
+to a raw picture data file size of over 600 megs.  Even GIF compressions will
+only reduce that to maybe 100 or 200 megs.... which is still too large to be
+practical.  And they couldn't use gif compressions because it would slow
+down the display of the game greatly.
+
+U7IFIX
+------
+
+        Since there are 144 superchunks, there are also 144 IFIX files.  Each
+IFIX file contains all necessary data for 256 chunks. The file is broken down
+similar to the shapes.vga file.  In that it has an index half and a data
+half.  The index half is exactly the same.  The data half is different
+though.  If there are no items to be drawn on that chunk location, the offset
+and length in the index half for that chunk will be 0.
+
+        The length found in the index will always be a multiple of 4, since
+there are always 4 bytes per item entry.  There can be MANY item entries.
+Starting at the offset found in the index, you will find a series of 4 byte
+entries.  These entries are drawn on the screen in REVERSE ORDER, (I have
+no idea why) so you have to read the entire data portion first, then display
+the last 4 bytes first, then the previous 4...etc.  You have to draw it this
+way so all items are displayed in the correct order.  Try it in forward
+order and you'll see what I mean.
+
+        The bytes are broken down thusly...  Byte 1 is a combined byte.  It
+is split in half.  The upper half is the X offset, lower is the Y.  Since
+there are only 16*16 chunk bits in the chunk, this will work. Each item in
+the list is displayed on the screen "anchored" to it's lower right corner.
+The lower right corner corresponds to the lower right corner of one of the
+chunk bits. The X and Y offsets are the chunk bit grid offsets where this
+item will be anchored.  The second byte is split into 2 halfs also.  The
+lower half I haven't figured out yet (I will..)  The upper half contains
+what I call the "lift factor".  This lift factor shows how much the item is
+to be raised off the ground.  You multiply the lift factor by 4 and subtract
+the X and Y screen pixel locations where to draw it, by this much.  The third
+and fourth bytes are combined bytes.  The third byte, combined with the lower
+two bits of the fourth byte make up the shape number in the SHAPES.VGA file.
+The upper 6 bits of the fourth byte make up the frame number.
+
+        One thing I can't seem to figure out is some frame numbers in some
+items are shorter than others.  There seems to be no corresponding bit to
+tell which are which.  For example: the shrine in cove, the lowest platform
+in the upper right corner is shorter than the other three left of it.  So,
+this platform must be drawn one pixel left and up from the other three in
+order to align with them.  I can't figure out how to detect which items
+fall under this category.  So, I checked the shapes.vga file...  it seems
+frame numbers 0-3,12-15,& 18 in shape number 1014 fell under this category.
+So, I took all items with those frame numbers and shifted them 1 pixel left
+and up... they aligned correctly in the shrine, but I don't know if other
+shapes will align properly using this method in other locations.
+
+U7IREG
+------
+
+        Like the IFIX files, there are 144 IREG files, one for each super
+chunk.  These files are not as well structured as the IFIX files.  There is
+no index, no headers.  Just a list of entries.  And even these entries seem
+to follow no order.  But they DID structure each entry so it's easily enough
+to tell of that entry should belong in the chunk you're working with.
+
+        Each entry corresponds to a single item to be drawn on the screen,
+such as a desk, gold bar, bed...etc.  Each item will start with a one byte 
+length byte and either 6 or 12 bytes following that.  A 6 byte entry refers
+to simple objects like a gold bar or chair.  A 12 byte entry refers to either 
+EGGS or containers like a chest or bag. 12 byte eggs will always have a 01 as
+the last byte.  12 byte containers will have a 00 at the end and then be
+followed by a series of 6 byte simple entries corresponding to each item
+INSIDE that container.  After all the 6 byte objects in the container there
+will be a 01 to denote the end of the container list.
+
+        All items in the list that belong in the working chunk also need to
+be displayed in reverse order as in the IFIX files.  Displaying this type
+of data in reverse order is no easy task.  What I did was I set up a 
+dynamicly memory allocated doubly-linked list.  This works great for this.
+I read in the first item, decode it into shape, frame, lift..etc. Then I
+create a new node for the list and store the data in it.  I set the
+appropriate node pointers then read the next item.  When I've read all the
+data, I just use the node pointers to read it back out in reverse order.
+
+        Each 6 byte entry has the following format: The upper halfs of bytes
+one and two refer to the X and Y of the chunk inside the superchunk where
+that particular object is to be stored.  The lower halfs of those same bytes
+refer to the X and Y of the chunk bit inside that chunk. Bytes 3 and 4 hold
+the shape and frame numbers in the same format as above.  Byte 5 holds the
+Lift Factor as above.  Byte 6 holds the "Quality" of the item.  The quality
+refers to extra things like the number of charges in a magic wand, how many
+coins in a pile of gold...etc.
+
+        12 Byte entries have a slightly different format.  The first four        
+bytes hold the same format as the 6 byte entries. Bytes 5 thru 9 I haven't
+figured out yet.  Byte 10 is the Lift Factor byte as in byte 5 of the 6 byte
+entries. Bytes 11 and 12 I haven't figured out yet either.
+
+        Now, 6 byte items that appear in the container list also have a
+slightly different format... but for the most part is the same as the standard
+6 byte entries. The only exception bieng bytes 1 and 2... which I don't know
+what they do.
+
+DISPLAYING
+----------
+
+        Displaying all the data in the above files is no easy task either.
+You cannot simply draw all the data in the U7MAP, then the IFIX then IREG.
+The data must be drawn all at the same time.  I haven't designed a sequencing
+routine yet but I have theories.
+
+        I'm thinking I might be able to sequence from L to R, T to B, drawing
+all data in each chunk bit one by one.  For example, chunk bit 0*0, I would
+draw the data for that bit from the U7MAP file first, then the IFIX file,
+then the IREG file. Then I would move to chunk bit 1*0 then draw the U7MAP, 
+IFIX then IREG...etc.  I'm hoping this will work... We'll see.
+
+	I tried it, and it didn't work.  I've realized Origin must be using
+some kind of layering technique.  If you run the game with the cheat command
+and add "spam s", during the init, one of the lines says "z-buffer".  A
+z-buffer is a method of drawing layered images, determining which objects have
+priority over others by their Z value.  The formula should be simple, but I
+ran into a wall.
+
+	Look at it this way, the graphics screen U7 is using is 320x200
+pixels, which is 64,000 pixels.  Drawing the graphics on the screen using a
+z-buffer, I'll need to calculate a separate z-value for every pixel on the
+screen.  For each pixel, I'll need to store a z-value (int) and the color
+of the pixel (int).  Since INTs are 2 bytes, that's 256,000 bytes.
+
+	I've never used a buffer that size before and I'm having problems
+allocating it.  I've pretty much resigned myself to using extended memory.
+And extended memory is not the easiest thing to work with.

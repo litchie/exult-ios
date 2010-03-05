@@ -1,0 +1,89 @@
+.\" -*- nroff -*-
+.TH exult 1
+
+.SH NAME
+exult_studio \- a world editor for Exult
+
+.SH SYNOPSIS
+.B exult_studio
+.RI [ options ]
+
+.SH DESCRIPTION
+.B exult_studio
+can be used to view graphics and map snippets of Exult games. Used in
+conjunction with \fBexult\fP the map can be changed as well.
+
+Currently it is not feasable to create a game from scratch. You must
+point \fBexult_studio\fP at an existing game instead, either via the
+\fB-d\fP commandline option (see below), or by selecting \fIOpen
+static...\fP in the \fIFile\fP menu. The latter will pop up a file
+requester, where you can choose an appropriate directory.
+
+Once an appropriate directory has been located, a tree of game files
+is displayed to the left of the main window, while the currently
+selected file is viewed in detail to the right. At the moment, the
+following types of files are supported:
+
+.SS Shape files
+\fIShapes\fP are the basic graphical elements of the game. Each shape has
+one or more frames that typically represent different states or angles
+of the same thing. E.g. a button shape could have frames for pressed,
+and released; a character could have frames depicting her sitting,
+standing up facing one way, or another, swinging a punch, etc.
+
+When a shape file is selected, the right part of the main window will
+show frame zero of the shapes contained therein. Shapes can be
+selected by clicking, which will show there number, number of frames,
+and name if known. Other frames can be viewed by changing the frame
+number.
+
+.SS Map files
+These files contain so called \fIchunks\fP that serve as templates in
+the final map. The chunks of the selected map file are shown to the
+right of the main window.
+
+.SH OPTIONS
+.TP
+\fB-d\fP \fIDIRECTORY\fP
+specifies \fIDIRECTORY\fP as the game base directory.
+.TP
+\fB-x\fP \fIDIRECTORY\fP
+tells \fBexult_studio\fR to look in DIRECTORY for its user-interface
+specification. This option is only useful to developers.
+
+.SH FILES
+.TP
+.B /usr/share/exult/exult_studio.glade
+Default location of the user-interface specification.
+
+.SH NOTES
+For more help and information with \fBexult_studio\fP go to:
+.IP http://exult.sourceforge.net/
+.IP http://sourceforge.net/projects/exult/
+.PP
+Editing a copyrighted game may or may not be allowed. Please exercise caution.
+
+.SH BUGS
+Closing the directory selector (via Ok or Cancel) induces a crash.
+Double clicking the directory works, just move the selector out of the
+way after that.
+
+Invalid arguments to commandline options will not be taken lightly.
+Avoid that for now.
+
+More bugs? Surely! Please report them at:
+.ce
+http://sourceforge.net/bugs/?group_id=2335
+(Be sure to mention information about your operating system, and which
+version of \fBexult_studio\fP you are running!)
+
+.SH AUTHORS
+The Exult Team
+
+.SH HISTORY
+\fBexult_studio\fP started it's life as a map-browser for Ultima VII
+and has evolved from there, thanks to the open source-model, and
+contributions of time and code from many people.
+
+.SH SEE ALSO
+.BR exult (6)

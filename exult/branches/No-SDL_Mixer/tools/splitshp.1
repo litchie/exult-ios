@@ -1,0 +1,84 @@
+.\" -*- nroff -*-
+.TH splitshp 1 2002-03-24 Exult
+
+.SH NAME
+splitshp \- Split Shape into frames or combine frames into Shapes
+
+.SH SYNOPSIS
+.B splitshp
+.I SHAPE
+.IR FRAME ...
+
+.B splitshp
+.I SHAPE
+
+.SH DESCRIPTION
+Shape files are used for storage of all visible elements (from
+UI buttons to terrain features) of the games
+.I Exult
+supports. Shapes contain one or more frames.
+.B splitshp
+can be used to combine frames into one file, or split a Shape file
+into its component frames.
+
+The mode of operation is determined by looking at the number of
+commandline arguments. Exactly one argument means splitting, more than
+one argument signals a combining operation.
+
+.SS Combining
+Each
+.I FRAME
+names a Shape file typically consisting of only one frame (i.e.
+subsequent frames are ignored). All these frames are concatenated and
+written to the Shape file
+.IR SHAPE .
+
+.SS Splitting
+.I SHAPE
+will be read and split into its component frames. Each of those will
+be written to its own Shape file. The names of these files are
+determined by splitting the name of
+.I SHAPE
+before the last dot \(em anything before this dot is the
+.IR STEM ,
+anything else (including the dot) is the
+.IR PREFIX ,
+which may be empty in case there is no dot in the name. The output
+files are then named
+.I STEM_nnSUFFIX
+with
+.I nn
+replaced by the frame number.
+
+.SH EXAMPLES
+.TP
+.B splitshp button.shp button-up.shp button-down.shp
+Packs the (first) two frames from
+.B button-up.shp
+and
+.B button-down.shp
+into the Shape file
+.B button.shp
+
+.TP
+.B splitshp grizzly
+Unpacks the frames contained in the Shape file
+.B grizzly
+into the (single-frame) Shape files
+.BR grizzly_00 ", " grizzly_01 ", " grizzly_02 ", etc."
+
+.TP
+.B splitshp boar.new.shp
+Unpacks the frames contained in the Shape file
+.B boar.new.shp
+into the (single-frame) Shape files
+.BR boar.new_00.shp ", " boar.new_01.shp ", " boar.new_02.shp ", etc."
+
+.SH AUTHOR
+This manpage was written by Robert Bihlmeyer. It may be freely
+redistributed and modified under the terms of the GNU General Public
+License version 2 or higher.
+
+.SH SEE ALSO
+.BR exult "(6), " shp2pcx (1)
+
