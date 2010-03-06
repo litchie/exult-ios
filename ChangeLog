@@ -1,3 +1,8 @@
+2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/font.cc: '^' character in conversations/plaques/books/etc. will
+	  convert the next character to uppercase. This is needed in the training
+	  dialog of Sentri, for example.
+
 2010-03-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* MacOS X: App bundles now use CoreFoundation API to detect resource path
 	  instead of it being hard-coded into the application.
