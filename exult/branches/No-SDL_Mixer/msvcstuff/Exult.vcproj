@@ -177,12 +177,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib ws2_32.lib ole32.lib user32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib opengl32.lib ws2_32.lib ole32.lib user32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
+				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib;libcmt.lib"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="1"
@@ -347,7 +347,7 @@
 				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
@@ -503,10 +503,6 @@
 					</File>
 					<File
 						RelativePath="..\audio\Midi.h"
-						>
-					</File>
-					<File
-						RelativePath="..\audio\Mixer.h"
 						>
 					</File>
 					<File
@@ -2598,11 +2594,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File

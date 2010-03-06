@@ -45,6 +45,7 @@
 #include "modmgr.h"
 #include "miscinf.h"
 #include "gump_utils.h"
+#include "AudioMixer.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -635,7 +636,7 @@ void BG_Game::scene_guardian()
 		pal->apply();
 
 		//play static SFX
-		Audio::get_ptr()->play_sound_effect(115, MIX_MAX_VOLUME, 0, 0);
+		Audio::get_ptr()->play_sound_effect(115, AUDIO_MAX_VOLUME, 0, 0);
 		
 		//
 		// Show some "static" alternating with the blue plasma

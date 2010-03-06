@@ -239,6 +239,18 @@ bool AudioMixer::isPaused(int chan)
 	return ret;
 }
 
+void AudioMixer::setPausedAll(bool paused)
+{
+	if (!channels || !audio_ok) return;
+
+	Lock();
+
+	for (int chan = 0; chan < num_channels; chan++)
+		channels[chan]->setPaused(paused);
+
+	Unlock();
+}
+
 void AudioMixer::setVolume(int chan, int lvol, int rvol)
 {
 	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return;
