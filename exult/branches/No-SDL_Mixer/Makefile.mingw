@@ -12,15 +12,15 @@ SRC=.
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
 ### We want to do our own stdout/stderr redirection, thank you.
-#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDL
 
 SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
 ### of a hack.
-#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL -mconsole
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -mconsole
 #SDL_CFLAGS=-I$(SRC)/sdl/include -DSDL_main=main
 
 ### Zip File support. Comment out if ZLib isn't installed
@@ -229,7 +229,6 @@ install: $(EXEC)
 	cp data/exult_si.flx $(U7PATH)/data
 	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/SDL.dll $(U7PATH)
-	cp SDL/lib/SDL_mixer.dll $(U7PATH)
 
 debug: $(EXEC)
 	mkdir -p $(U7PATH)
@@ -240,7 +239,6 @@ debug: $(EXEC)
 	cp data/exult_si.flx $(U7PATH)/data
 	cp data/exultmsg.txt $(U7PATH)/data
 	cp SDL/lib/SDL.dll $(U7PATH)
-	cp SDL/lib/SDL_mixer.dll $(U7PATH)
 
 dist:   $(EXEC) exconfig.dll
 	mkdir -p $(U7PATH)
@@ -267,9 +265,7 @@ dist:   $(EXEC) exconfig.dll
 	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
-	cp SDL/README-SDL_mixer.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
-	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 	strip exconfig.dll -o $(U7PATH)/exconfig.dll
 	cp win32/exult_installer.iss $(U7PATH)

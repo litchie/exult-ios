@@ -37,9 +37,7 @@ Source: Exult\Exult.exe; DestDir: {app}; Flags: ignoreversion; Components: Exult
 Source: Exult\COPYING.txt; DestDir: {app}; Flags: ignoreversion; Components: GPL
 
 Source: Exult\SDL.dll; DestDir: {app}; Components: Exult
-Source: Exult\SDL_mixer.dll; DestDir: {app}; Components: Exult
 Source: Exult\README-SDL.txt; DestDir: {app}; Flags: ignoreversion; Components: Exult
-Source: Exult\README-SDL_mixer.txt; DestDir: {app}; Flags: ignoreversion; Components: Exult
 
 Source: Exult\AUTHORS.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
 Source: Exult\bgdefaultkeys.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
