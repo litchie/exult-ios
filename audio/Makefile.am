@@ -16,7 +16,19 @@ libaudio_la_SOURCES =	\
 	conv.h		\
 	soundtest.cc	\
 	soundtest.h	\
-	convmusic.h
+	convmusic.h    \
+	AudioChannel.cc    \
+	AudioChannel.h    \
+	AudioMixer.cc    \
+	AudioMixer.h    \
+	AudioSample.cpp    \
+	AudioSample.h    \
+	OggAudioSample.cpp    \
+	OggAudioSample.h    \
+	RawAudioSample.cpp    \
+	RawAudioSample.h    \
+	VocAudioSample.cpp    \
+	VocAudioSample.h
 
 EXTRA_DIST = 		\
 	README

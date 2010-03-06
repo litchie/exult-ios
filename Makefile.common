@@ -105,6 +105,12 @@ AUDIO_OBJS=\
 	audio/conv.o \
 	audio/Midi.o \
 	audio/soundtest.o \
+	audio/AudioChannel.o    \
+	audio/AudioMixer.o    \
+	audio/AudioSample.o    \
+	audio/OggAudioSample.o    \
+	audio/RawAudioSample.o    \
+	audio/VocAudioSample.o    \
 	$(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 
