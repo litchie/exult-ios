@@ -240,8 +240,13 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) data/exult.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exult_bg.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exult_si.flx $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) data/midisfx.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exultmsg.txt $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) AUTHORS $(bundle_name)
+	$(INSTALL_DATA) COPYING $(bundle_name)
+	$(INSTALL_DATA) FAQ $(bundle_name)
+	$(INSTALL_DATA) NEWS $(bundle_name)
+	$(INSTALL_DATA) README $(bundle_name)
+	$(INSTALL_DATA) README.MacOSX $(bundle_name)
 
 install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
