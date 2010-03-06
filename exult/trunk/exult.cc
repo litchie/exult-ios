@@ -1521,18 +1521,23 @@ static void Handle_event
 		if (event.button.button == 3)
 			{
 			uint32 curtime = SDL_GetTicks();
+				// If showing gumps, ignore all other double-right-click results
+			if (gump_man->gump_mode())
+				{
+				if (right_on_gump && 
+					(gump = gump_man->find_gump(x, y, false)))
+					{
+					Rectangle dirty = gump->get_dirty();
+					gwin->add_dirty(dirty);
+					gump_man->close_gump(gump);
+					gump = 0;
+					right_on_gump = false;
+					}
+				}
 					// Last click within .5 secs?
-			if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
+			else if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
 				gwin->start_actor_along_path(x, y,
 						Mouse::mouse->avatar_speed);
-			else if (right_on_gump && 
-				(gump = gump_man->find_gump(x, y, false))) {
-				Rectangle dirty = gump->get_dirty();
-				gwin->add_dirty(dirty);
-				gump_man->close_gump(gump);
-				gump = 0;
-				right_on_gump = false;
-			}
 			else
 				{
 				gwin->stop_actor();
