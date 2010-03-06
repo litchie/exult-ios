@@ -42,6 +42,9 @@
 
 #include "SDL_timer.h"
 
+#include "AudioMixer.h"
+using namespace Pentagram;
+
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
@@ -1022,32 +1025,32 @@ void Homing_projectile::handle_event
 			return;
 		int distance = gwin->get_main_actor()->distance(pos);
 		int dir = 0;
-		int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+		int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
 
 		if (distance)
 			{			// 160/8 = 20 tiles. 20*20=400.
-			volume = (MIX_MAX_VOLUME*64)/(distance*distance);
+			volume = (AUDIO_MAX_VOLUME*64)/(distance*distance);
 			if (!volume)		// Dead?
 				{
-				Mix_HaltChannel(channel);
+				AudioMixer::get_instance()->stopSample(channel);
 				channel = -1;
 				return;
 				}
 			if (volume < 8)
 				volume = 8;
-			else if (volume > MIX_MAX_VOLUME)
-				volume = MIX_MAX_VOLUME;
+			else if (volume > AUDIO_MAX_VOLUME)
+				volume = AUDIO_MAX_VOLUME;
 			Tile_coord apos = gwin->get_main_actor()->get_center_tile();
 			dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
 			}
-		Mix_Volume(channel, volume);
-		Mix_SetPosition(channel, (dir * 22), 0);
+		//Mix_Volume(channel, volume);
+		//Mix_SetPosition(channel, (dir * 22), 0);
 		}
 	else
 		{
 		if (channel >= 0)
 			{
-			Mix_HaltChannel(channel);
+			AudioMixer::get_instance()->stopSample(channel);
 			channel = -1;
 			}
 		gwin->set_all_dirty();

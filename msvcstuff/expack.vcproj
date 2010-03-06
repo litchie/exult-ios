@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="expack"
 	ProjectGUID="{C9D55119-2372-43A8-A3B2-1BFB6997AE4D}"
+	RootNamespace="expack"
 	>
 	<Platforms>
 		<Platform
@@ -51,7 +52,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
 				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
-				PreprocessorDefinitions="NDEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				PreprocessorDefinitions="NDEBUG;_CONSOLE;WIN32"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="0"
@@ -152,7 +153,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="false"
 				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
-				PreprocessorDefinitions="NDEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				PreprocessorDefinitions="NDEBUG;_CONSOLE;WIN32"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="0"
@@ -247,7 +248,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
-				PreprocessorDefinitions="_DEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				PreprocessorDefinitions="_DEBUG;_CONSOLE;WIN32"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="false"
@@ -343,7 +344,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
-				PreprocessorDefinitions="_DEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				PreprocessorDefinitions="_DEBUG;_CONSOLE;WIN32"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="false"

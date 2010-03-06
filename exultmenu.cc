@@ -534,8 +534,8 @@ static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file& exult_flx, 
 		delete buf;
 		return exultlogo;
 		}
-	return 0;
 #endif
+	return 0;
 	}
 
 BaseGameInfo *ExultMenu::run()

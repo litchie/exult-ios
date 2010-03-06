@@ -20,6 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class MyMidiPlayer;
 
+#define AUDIO_MAX_VOLUME 256
+#define AUDIO_DEF_PITCH 0x10000
+
 namespace Pentagram {
 class AudioChannel;
 class AudioSample;
@@ -34,7 +37,7 @@ public:
 
 	void			reset();
 
-	int				playSample(AudioSample *sample, int loop, int priority, bool paused=false, uint32 pitch_shift=0x10000, int lvol=256, int rvol=256);
+	int				playSample(AudioSample *sample, int loop, int priority, bool paused=false, uint32 pitch_shift=AUDIO_DEF_PITCH, int lvol=AUDIO_MAX_VOLUME, int rvol=AUDIO_MAX_VOLUME);
 	bool			isPlaying(int chan);
 	bool			isPlaying(AudioSample *sample);
 	void			stopSample(int chan);
@@ -50,6 +53,8 @@ public:
 
 	void			openMidiOutput();
 	void			closeMidiOutput();
+
+	MyMidiPlayer	*getMidiPlayer() { return midi; }
 
 private:
 	bool			audio_ok;

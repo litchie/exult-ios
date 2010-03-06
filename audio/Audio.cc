@@ -364,7 +364,7 @@ Audio	*Audio::get_ptr(void)
 
 Audio::Audio() :
 	truthful_(false),speech_enabled(true), music_enabled(true),
-	effects_enabled(true), mixer(0),midi(0),
+	effects_enabled(true), mixer(0),
 	initialized(false), sfx_file(0)
 {
 	assert(self == NULL);
@@ -384,7 +384,6 @@ Audio::Audio() :
 	config->value("config/audio/midi/looping",s,"yes");
 	allow_music_looping = (s!="no");
 
-	midi = 0;
 	mixer = 0;
 	sfxs = new SFX_cache_manager();
 }
@@ -393,14 +392,13 @@ void Audio::Init(int _samplerate,int _channels)
 {
 	if (!audio_enabled) return;
 
-	FORGET_OBJECT(midi);
 	FORGET_OBJECT(mixer);
 
 	mixer = new Pentagram::AudioMixer(_samplerate,_channels==2,MIXER_CHANNELS);
-	midi = new MyMidiPlayer();
 
 	COUT("Audio initialisation OK");
 
+	mixer->openMidiOutput();
 	initialized = true;
 }
 
@@ -492,44 +490,33 @@ Audio::~Audio()
 	CERR("~Audio:  about to stop_music()");
 	stop_music();
 
-	FORGET_OBJECT(midi);
 	FORGET_OBJECT(mixer);
 
 	delete sfxs;
 	delete sfx_file;
-	CERR("~Audio:  deleted midi");
 
 	CERR("~Audio:  about to quit subsystem");
 	self = 0;
 }
 
 
-		/*
-void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
+void	Audio::play(uint8 *sound_data,uint32 len, bool wait)
 	{
 	if (!audio_enabled || !speech_enabled || !len) return;
 
-	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
-		sound_data = convert_VOC(sound_data,len);
-	
-	//Play voice sample using RAW sample we created above.
-	// ConvertVOC() produced a stereo, 22KHz, 16bit sample.
-	// Currently SDL does not resample very well so we do
-	// it in ConvertVOC()
-	wavechunk = sfxs->add_from_data(sound_data, len);
-	
-	int channel = Mix_PlayChannel(-1, wavechunk, 0);
-	if (channel < 0)
-		{
-		sfxs->release(wavechunk);
-		CERR("No channel was available to play SFX/voice in Audio::play");
-		return;
-		}
-	Mix_SetPosition(channel, 0, 0);
-	//Voice is loud compared to other SFX,music so adjust to match volumes.
-	Mix_Volume(channel, MIX_MAX_VOLUME - 40);
+	IBufferDataSource bds(sound_data,len);
+	if (!Pentagram::VocAudioSample::isVoc(&bds))
+	{
+		//delete [] sound_data;
+		return ;
 	}
-	*/
+
+	Pentagram::VocAudioSample *audio_sample = new Pentagram::VocAudioSample(sound_data,len);
+
+	mixer->playSample(audio_sample,0,128);
+	audio_sample->Release();
+
+	}
 
 void	Audio::cancel_streams(void)
 {
@@ -588,19 +575,19 @@ bool	Audio::playing(void)
 
 void	Audio::start_music(int num, bool continuous,std::string flex)
 {
-	if(audio_enabled && music_enabled && midi != 0)
-		midi->start_music(num,continuous && allow_music_looping,flex);
+	if(audio_enabled && music_enabled && mixer && mixer->getMidiPlayer())
+		mixer->getMidiPlayer()->start_music(num,continuous && allow_music_looping,flex);
 }
 
 void	Audio::start_music(std::string fname, int num, bool continuous)
 {
-	if(audio_enabled && music_enabled && midi != 0)
-		midi->start_music(fname,num,continuous && allow_music_looping);
+	if(audio_enabled && music_enabled && mixer && mixer->getMidiPlayer())
+		mixer->getMidiPlayer()->start_music(fname,num,continuous && allow_music_looping);
 }
 
 void	Audio::start_music_combat (Combat_song song, bool continuous)
 {
-	if(!audio_enabled || !music_enabled || midi == 0)
+	if(!audio_enabled || !music_enabled || !mixer || !mixer->getMidiPlayer())
 		return;
 
 	int num = -1;
@@ -674,15 +661,15 @@ void	Audio::start_music_combat (Combat_song song, bool continuous)
 		break;
 	}
 	
-	midi->start_music(num,continuous && allow_music_looping);
+	mixer->getMidiPlayer()->start_music(num,continuous && allow_music_looping);
 }
 
 void	Audio::stop_music()
 {
 	if (!audio_enabled) return;
 
-	if(midi)
-		midi->stop_music();
+	if(mixer && mixer->getMidiPlayer())
+		mixer->getMidiPlayer()->stop_music();
 }
 
 bool Audio::start_speech(int num, bool wait)
@@ -741,8 +728,8 @@ int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
 	if (sfx_file != 0)		// Digital .wav's?
 		return play_wave_sfx(num, volume, dir, repeat);
 #ifdef ENABLE_MIDISFX
-	else if (midi != 0) 
-		midi->start_sound_effect(num);
+	else if (mixer && mixer->getMidiPlayer()) 
+		mixer->getMidiPlayer()->start_sound_effect(num);
 #endif
 	return -1;
 }
@@ -807,8 +794,8 @@ void Audio::stop_sound_effects()
 	}
 		
 #ifdef ENABLE_MIDISFX
-	else if (midi)
-		midi->stop_sound_effects();
+	else if (mixer && mixer->getMidiPlayer())
+		mixer->getMidiPlayer()->stop_sound_effects();
 #endif
 	}
 
@@ -845,3 +832,13 @@ void Audio::set_audio_enabled(bool ena)
 	}
 }
 
+bool Audio::is_track_playing(int num)
+{
+	MyMidiPlayer *midi = mixer?mixer->getMidiPlayer():0;
+	return midi && midi->is_track_playing(num);
+}
+
+MyMidiPlayer *Audio::get_midi()
+{
+	return mixer?mixer->getMidiPlayer():0;
+}
