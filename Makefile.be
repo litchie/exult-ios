@@ -6,7 +6,7 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL
-SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
