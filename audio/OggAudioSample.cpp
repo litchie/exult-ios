@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pent_include.h"
 #include "OggAudioSample.h"
+#include "headers/exceptions.h"
 //#include "databuf.h"
 
 namespace Pentagram {

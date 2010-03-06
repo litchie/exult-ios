@@ -82,6 +82,7 @@
 #include "glshape.h"
 #include "party.h"
 #include "Notebook_gump.h"
+#include "AudioMixer.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -166,7 +167,7 @@ void Background_noise::handle_event
 		{
 			//Play the cricket sounds at night 
 			delay = 3000 + rand()%5000;
-			Audio::get_ptr()->play_sound_effect(61, MIX_MAX_VOLUME - 30);
+			Audio::get_ptr()->play_sound_effect(61, AUDIO_MAX_VOLUME - 30);
 		}
 
 		if((curr_track == -1 || laststate != currentstate ) && Audio::get_ptr()->is_music_enabled())
