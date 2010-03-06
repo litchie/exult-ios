@@ -308,6 +308,34 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
+# ---------------------------------------------------------------------
+# libvorbis
+# ---------------------------------------------------------------------
+
+XIPH_PATH_VORBIS(
+	have_vorbis=yes,
+	AC_MSG_ERROR([*** must have Vorbis installed!])
+)
+if test x$have_vorbis = xyes; then
+	LIBS="$LIBS $VORBIS_LIBS $VORBISFILE_LIBS"
+	CFLAGS="$CFLAGS $VORBIS_CFLAGS"
+	CXXFLAGS="$CXXFLAGS $VORBIS_CFLAGS"
+fi
+
+# ---------------------------------------------------------------------
+# libogg
+# ---------------------------------------------------------------------
+
+XIPH_PATH_OGG(
+	have_ogg=yes,
+	AC_MSG_ERROR([*** must have Ogg installed!])
+)
+if test x$have_ogg = xyes; then
+	LIBS="$LIBS $OGG_LIBS"
+	CFLAGS="$CFLAGS $OGG_CFLAGS"
+	CXXFLAGS="$CXXFLAGS $OGG_CFLAGS"
+fi
+
 
 # ---------------------------------------------------------------------
 # Optional components
