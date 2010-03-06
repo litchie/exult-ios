@@ -32,6 +32,7 @@
 class SFX_cached;
 class SFX_cache_manager;
 class Flex;
+class MyMidiPlayer;
 
 /*
  *	Music:
@@ -64,7 +65,6 @@ private:
 	SFX_cache_manager *sfxs;		// SFX and voice cache manager
 	bool initialized;
 	SDL_AudioSpec wanted;
-	MyMidiPlayer *midi;
 	Pentagram::AudioMixer *mixer;
 
 public:
@@ -96,7 +96,7 @@ public:
 	void	pause_audio(void);
 	void    resume_audio(void);
 
-	//void	play(uint8 *sound_data,uint32 len,bool);
+	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
 	void	start_music(int num,bool continuous=false,std::string flex=MAINMUS);
@@ -122,19 +122,17 @@ public:
 	bool	can_sfx(const std::string &game) const;
 	static void	channel_complete_callback(int chan);
 
-	bool	is_track_playing(int num) { 
-			return midi && midi->is_track_playing(num);
-	}
+	bool	is_track_playing(int num);
 
 	int		get_sample_rate() { return actual.freq; }
 	bool	is_stereo() { return actual.channels == 2; }
-
-	MyMidiPlayer *get_midi() {return midi;}
 
 	Flex *get_sfx_file()                   
 		{ return sfx_file; }
 	SFX_cache_manager *get_sfx_cache() const
 		{ return sfxs; }
+
+	MyMidiPlayer *get_midi();
 };
 
 #endif

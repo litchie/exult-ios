@@ -36,6 +36,9 @@
 #include "Enabled_button.h"
 
 #include "MidiDriver.h"
+#include "AudioMixer.h"
+
+using namespace Pentagram;
 
 using std::cerr;
 using std::endl;
@@ -270,18 +273,19 @@ void AudioOptions_gump::load_settings()
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
 
-	if (Audio::get_ptr()->get_midi()) {
-		midi_conversion = Audio::get_ptr()->get_midi()->get_music_conversion();
-		midi_ogg_enabled = Audio::get_ptr()->get_midi()->get_ogg_enabled();
+	MyMidiPlayer *midi = AudioMixer::get_instance()->getMidiPlayer();
+	if (midi ) {
+		midi_conversion = midi->get_music_conversion();
+		midi_ogg_enabled = midi->get_ogg_enabled();
 
-		s = Audio::get_ptr()->get_midi()->get_midi_driver();
+		s = midi->get_midi_driver();
 		for (midi_driver = 0; midi_driver < MidiDriver::getDriverCount(); midi_driver++) {
 			std::string name = MidiDriver::getDriverName(midi_driver);
 			if (!Pentagram::strcasecmp(name.c_str(),s.c_str())) break;
 		}
 
 #ifdef ENABLE_MIDISFX
-		sfx_conversion =Audio::get_ptr()->get_midi()->get_effects_conversion();
+		sfx_conversion = midi->get_effects_conversion();
 #endif
 	} else {
 		// String for default value for driver type
@@ -390,13 +394,15 @@ void AudioOptions_gump::save_settings()
 	config->set("config/audio/midi/reverb/enabled", (midi_reverb_chorus&1)? "yes" : "no", true);
 	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", true);
 
-	if (Audio::get_ptr()->get_midi()) {
+	MyMidiPlayer *midi = AudioMixer::get_instance()->getMidiPlayer();
+
+	if (midi) {
 		std::string s = "default";
 		if (midi_driver != MidiDriver::getDriverCount()) s = MidiDriver::getDriverName(midi_driver);
-		Audio::get_ptr()->get_midi()->set_midi_driver(s,midi_ogg_enabled!=0);
-		Audio::get_ptr()->get_midi()->set_music_conversion(midi_conversion);
+		midi->set_midi_driver(s,midi_ogg_enabled!=0);
+		midi->set_music_conversion(midi_conversion);
 #ifdef ENABLE_MIDISFX
-		Audio::get_ptr()->get_midi()->set_effects_conversion(sfx_conversion);
+		midi->set_effects_conversion(sfx_conversion);
 #endif
 	} else {
 		switch(midi_conversion) {

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Exult_bg_flx.h"
 	ProjectGUID="{0E58490B-9F02-4FB6-8D39-18C9DAD87CCB}"
+	RootNamespace="Exult_bg_flx.h"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -25,9 +26,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="cd $(solutionDir)\..&#x0D;&#x0A; &#x0A;nmake /K /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -48,9 +49,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="cd $(solutionDir)\..&#x0D;&#x0A; &#x0A;nmake /K /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""

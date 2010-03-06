@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include "aniinf.h"
 #include "sfxinf.h"
+#include "AudioMixer.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::map;
@@ -47,6 +48,7 @@ using std::endl;
 using std::cout;
 #endif
 
+using namespace Pentagram;
 
 static inline bool Get_sfx_volume
 	(
@@ -62,13 +64,13 @@ static inline bool Get_sfx_volume
 
 	if (distance)
 		{			// 160/8 = 20 tiles. 20*20=400.
-		volume = (MIX_MAX_VOLUME*64)/(3*distance);
+		volume = (AUDIO_MAX_VOLUME*64)/(3*distance);
 		if (!volume)		// Dead?
 			return true;	// Time to kill it.
 		if (volume < 8)
 			volume = 8;
-		else if (volume > MIX_MAX_VOLUME)
-			volume = MIX_MAX_VOLUME;
+		else if (volume > AUDIO_MAX_VOLUME)
+			volume = AUDIO_MAX_VOLUME;
 		Tile_coord apos = gwin->get_main_actor()->get_center_tile();
 		Tile_coord opos = obj->get_center_tile();
 		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
@@ -92,8 +94,9 @@ void Object_sfx::stop()
 		;
 	if(channel >= 0)
 		{
-		if (Mix_Playing(channel))
-			Mix_HaltChannel(channel);
+		AudioMixer *mixer = AudioMixer::get_instance();
+		if (mixer->isPlaying(channel))
+			mixer->stopSample(channel);
 		channel = -1;
 		}
 	delete this;
@@ -107,7 +110,8 @@ void Object_sfx::handle_event
 	{
 	const int delay = 100;		// Guessing this will be enough.
 
-	bool active = channel != -1 ? Mix_Playing(channel) : false;
+	AudioMixer *mixer = AudioMixer::get_instance();
+	bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
 	if (obj->is_pos_invalid() || (distance >= 0 && !active))
 		{	// Quitting time.
@@ -116,7 +120,7 @@ void Object_sfx::handle_event
 		}
 
 	dir = 0;
-	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
 	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
 
 	if (!halt && channel == -1 && sfx > -1)		// First time?
@@ -127,14 +131,14 @@ void Object_sfx::handle_event
 		{
 		if (halt)
 			{
-			Mix_HaltChannel(channel);
+			mixer->stopSample(channel);
 			channel = -1;
 			}
 		else
 			{
 			//Just change the "location" of the sound
-			Mix_Volume(channel, volume);
-			Mix_SetPosition(channel, (dir * 22), 0);
+			//Mix_Volume(channel, volume);
+			//Mix_SetPosition(channel, (dir * 22), 0);
 			}
 		}
 
@@ -153,7 +157,7 @@ void Shape_sfx::stop()
 		{
 		if(channel[i] >= 0)
 			{
-			Mix_HaltChannel(channel[i]);
+			AudioMixer::get_instance()->stopSample(channel[i]);
 			channel[i] = -1;
 			}
 		}
@@ -177,14 +181,16 @@ void Shape_sfx::update
 	if (!sfxinf)
 		return;
 
+	AudioMixer *mixer = AudioMixer::get_instance();
+
 	int active[2] = {0, 0};
 	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
-	 		active[i] = Mix_Playing(channel[i]);
+	 		active[i] = mixer ->isPlaying(channel[i]);
 		if (!active[i] && channel[i] != -1)
 			{
-			Mix_HaltChannel(channel[i]);
+			mixer->stopSample(channel[i]);
 			channel[i] = -1;
 			}
 		}
@@ -213,7 +219,7 @@ void Shape_sfx::update
 		}
 
 	dir = 0;
-	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
 	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
 
 	if (play && halt)
@@ -228,14 +234,14 @@ void Shape_sfx::update
 			{
 			if(halt)
 				{
-				Mix_HaltChannel(channel[i]);
+				mixer->stopSample(channel[i]);
 				channel[i] = -1;
 				}
 			else
 				{
 				//Just change the "location" of the sound
-				Mix_Volume(channel[i], volume);
-				Mix_SetPosition(channel[i], (dir * 22), 0);
+				//Mix_Volume(channel[i], volume);
+				//Mix_SetPosition(channel[i], (dir * 22), 0);
 				}
 			}
 	}
