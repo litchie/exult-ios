@@ -1,3 +1,7 @@
+2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2841677 Cannot close two gumps in succession
+
 2010-03-06 Dominik Reichardt <dominus@users.sourceforge.net>
 	* makefile.am: tuned the app bundle a bit, including some of the standard files
 	* Info.plist.in: updated copyrights date
