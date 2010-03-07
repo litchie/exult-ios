@@ -65,6 +65,10 @@ GIMP_LIBS=`pkg-config --libs gimpui-2.0`
 ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
 ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
+### Ogg vorbis inclides
+OGG_INCLUDES=`pkg-config --cflags ogg vorbis vorbisfile`
+OGG_LIBS=`pkg-config --libs ogg vorbis vorbisfile`
+
 ifdef DEBUG_SYMBOLS
 	DEBUG_LEVEL=-ggdb3
 endif
@@ -85,7 +89,7 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit $(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 \
-	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS))
+	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) $(OGG_INCLUDE) $(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
 	OPT_LEVEL=-O2
@@ -102,7 +106,7 @@ CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
 
 EXEC=Exult.exe
 EXEEXT=.exe
