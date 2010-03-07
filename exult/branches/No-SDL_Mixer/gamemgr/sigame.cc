@@ -305,7 +305,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_thunder(INTRO_DAT, PATCH_INTRO, 15);
 			buffer = (uint8 *) voc_thunder.retrieve(size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 		}
 
 		U7multiobject flic(INTRO_DAT, PATCH_INTRO, 1);
@@ -363,7 +363,7 @@ void SI_Game::play_intro()
 
 			// Thunder again, we free the buffer here 
 			if (speech && j == 5) { 
-				Audio::get_ptr()->play (buffer+8, size-8, false);
+				Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 				FORGET_ARRAY(buffer);
 			}
 
@@ -438,7 +438,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_my_leige(INTRO_DAT, PATCH_INTRO, 16);
 			buffer = (uint8 *) voc_my_leige.retrieve (size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -467,7 +467,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_all_we(INTRO_DAT, PATCH_INTRO, 17);
 			buffer = (uint8 *) voc_all_we.retrieve (size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -518,7 +518,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_indeed(INTRO_DAT, PATCH_INTRO, 18);
 			buffer = (uint8 *) voc_indeed.retrieve(size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -574,7 +574,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_stand_back(INTRO_DAT, PATCH_INTRO, 19);
 			buffer = (uint8 *) voc_stand_back.retrieve(size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -616,7 +616,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_big_g(INTRO_DAT, PATCH_INTRO, 20);
 			buffer = (uint8 *) voc_big_g.retrieve ( size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -708,7 +708,7 @@ void SI_Game::play_intro()
 		{
 			U7multiobject voc_tis_my(INTRO_DAT, PATCH_INTRO, 21);
 			buffer = (uint8 *) voc_tis_my.retrieve(size);
-			Audio::get_ptr()->play (buffer+8, size-8, false);
+			Audio::get_ptr()->copy_and_play (buffer+8, size-8, false);
 			FORGET_ARRAY(buffer);
 		}
 
@@ -1003,7 +1003,7 @@ bool ExCineVoc::play_it(Image_window *win, uint32 t)
 		buf += 8;
 		size -= 8;
 		}
-	Audio::get_ptr()->play (buf, size, false);
+	Audio::get_ptr()->copy_and_play (buf, size, false);
 	FORGET_ARRAY(buffer);
 	played = true;
 

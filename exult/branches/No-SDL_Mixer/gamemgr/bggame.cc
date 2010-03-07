@@ -1261,7 +1261,7 @@ bool ExVoiceBuffer::play_it()
 		buf += 8;
 		size -= 8;
 		}
-	Audio::get_ptr()->play (buf, size, false);
+	Audio::get_ptr()->copy_and_play(buf, size, false);
 	FORGET_ARRAY(buffer);
 	played = true;
 

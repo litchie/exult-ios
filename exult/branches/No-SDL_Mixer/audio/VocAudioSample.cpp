@@ -139,6 +139,9 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 		data_offset += chunk_length;
 	}
 
+	// Limit frame size to only 512
+	if (frame_size > 512) frame_size = 512;
+
 	bits = 8;
 	stereo = false;
 	decompressor_size = sizeof(VocDecompData);
@@ -157,6 +160,8 @@ void VocAudioSample::initDecompressor(void *DecompData) const
 	decomp->compression = 0;
 	decomp->adpcm_reference = -1;
 	decomp->adpcm_scale = 0;
+	decomp->chunk_remain = 0;
+	decomp->cur_type = 0;
 }
 
 void VocAudioSample::rewind(void *DecompData) const
@@ -198,7 +203,8 @@ void VocAudioSample::decode_ADPCM_4(uint8* inBuf,
 {
 	if (reference < 0) {
 		reference = inBuf[0] & 0xff;   // use the first byte in the buffer as the reference byte
-		bufSize--;                          // remember to skip the reference byte
+		bufSize--;                     // remember to skip the reference byte
+		inBuf++;
 	}
 
 	for (int i = 0; i < bufSize; i++) {
@@ -207,11 +213,11 @@ void VocAudioSample::decode_ADPCM_4(uint8* inBuf,
 	}
 }
 
-uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
+bool VocAudioSample::advanceChunk(void *DecompData) const
 {
 	VocDecompData *decomp = reinterpret_cast<VocDecompData *>(DecompData);
 
-	if (decomp->pos == buffer_size) return 0;
+	if (decomp->pos == buffer_size) return false;
 
 	size_t  l = 0;
 	size_t chunk_length = 0;
@@ -220,7 +226,7 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 	switch (buffer[decomp->pos++])
 	{
 	case 0:
-		return 0;
+		return false;
 
 	case 1: // Sound data
 		l = (buffer[2+decomp->pos])<<16;
@@ -234,8 +240,8 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 		l -= 2;
 		chunk_length = l;
 		decomp->pos += 2;
-
 		break;
+
 	case 2: // Sound continue
 		l=(buffer[2+decomp->pos])<<16;
 		l|=(buffer[1+decomp->pos])<<8;
@@ -258,33 +264,70 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 		l|=(buffer[1+decomp->pos])<<8;
 		l|=(buffer[0+decomp->pos]);
 		decomp->pos += 3 + l;
-		return decompressFrame(DecompData,samples); 
+		return advanceChunk(decomp); 
 	};
 
-	// This is just silence
 	if (!chunk_length)
 	{
-		std::memset(samples,0,l);
-	}
-	else if (decomp->compression == 0)
-	{
-		std::memcpy(samples, buffer+decomp->pos, l);
-	}
-	else if (decomp->compression == 1)
-	{
-		size_t dec_len = l;
-		if (decomp->adpcm_reference == -1) dec_len = (dec_len-1)*2;
-		else dec_len *= 2;		
-		decode_ADPCM_4(buffer+decomp->pos, l, (uint8*)samples, decomp->adpcm_reference, decomp->adpcm_scale);
-		l = dec_len;
+		decomp->cur_type = 1;
+		decomp->chunk_remain = l;
 	}
 	else
 	{
-		// Unhandled chunk types set to silence
-		std::memset(samples,0,l);
+		decomp->cur_type = 0;
+		decomp->chunk_remain = chunk_length;
 	}
-	decomp->pos += chunk_length;
-	return l;
+
+	return true;
+}
+
+uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
+{
+	VocDecompData *decomp = reinterpret_cast<VocDecompData *>(DecompData);
+
+	// At end of stream??
+	if (!decomp->chunk_remain && !advanceChunk(decomp)) return 0; 
+
+	int num_samples = decomp->chunk_remain;
+
+	if (decomp->cur_type == 0 && decomp->compression == 1)
+	{
+		if (decomp->adpcm_reference == -1) num_samples = (num_samples-1)*2;
+		else num_samples *= 2;		
+	}
+
+	// Limit number of samples produced
+	if (num_samples > frame_size) num_samples = frame_size;
+
+	int bytes_used = 0;
+
+	// This is just silence
+	if (decomp->cur_type == 1)
+	{
+		bytes_used = 0;		
+		std::memset(samples,0,num_samples);
+	}
+	else if (decomp->compression == 0)
+	{
+		bytes_used = num_samples;
+		std::memcpy(samples, buffer+decomp->pos, num_samples);
+	}
+	else if (decomp->compression == 1)
+	{
+		bytes_used = num_samples/2;
+		if (decomp->adpcm_reference == -1) bytes_used++;
+		decode_ADPCM_4(buffer+decomp->pos, bytes_used, (uint8*)samples, decomp->adpcm_reference, decomp->adpcm_scale);
+	}
+	else
+	{
+		bytes_used = num_samples;
+		// Unhandled chunk types set to silence
+		std::memset(samples,0,num_samples);
+	}
+
+	decomp->pos += bytes_used;
+	decomp->chunk_remain -= bytes_used;
+	return num_samples;
 }
 
 

@@ -40,6 +40,8 @@ protected:
 		int		compression;
 		int		adpcm_reference;
 		int		adpcm_scale;
+		int		chunk_remain;	// Bytes remaining in chunk
+		int		cur_type;
 	};
 
 	static inline int decode_ADPCM_4_sample(uint8 sample,
@@ -51,6 +53,8 @@ protected:
 							  uint8* outBuf,			// Size is 2x bufsize
 							  int& reference,			// ADPCM reference value
 							  int& scale);
+
+	bool advanceChunk(void *DecompData) const;
 };
 
 }
