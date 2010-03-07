@@ -10,10 +10,10 @@ TOOLSPATH=C:/GimpPlugin
 SRC=.
 
 ### Modify these paths
-SDL_CFLAGS=-I$(SRC)/sdl/include
+SDL_CFLAGS:=-I$(SRC)/sdl/include
 ### We want to do our own stdout/stderr redirection, thank you.
-#SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDL
+#SDL_LIBS:=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+SDL_LIBS:=-L$(SRC)/sdl/lib -lSDL
 
 SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
@@ -25,49 +25,49 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -lti
 
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
-ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
+ZIP_CFLAGS:=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT
 ifndef STATIC_ZLIB
-	ZIP_LIBS=-L$(SRC)/zlib -lz
+	ZIP_LIBS:=-L$(SRC)/zlib -lz
 else
-	ZIP_LIBS=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
+	ZIP_LIBS:=-L$(SRC)/zlib -Wl,-Bstatic -lz -Wl,-Bdynamic
 endif
 
 ### OpenGL mode support
-OPENGL_LIBS=-lopengl32
-OPENGL_OBJS=shapes/glshape.o
-OPENGL_CFLAGS=-DHAVE_OPENGL
+OPENGL_LIBS:=-lopengl32
+OPENGL_OBJS:=shapes/glshape.o
+OPENGL_CFLAGS:=-DHAVE_OPENGL
 
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
-GTK_INCLUDES=`pkg-config --cflags gtk+-win32-2.0`
+GTK_INCLUDES:=$(shell pkg-config --cflags gtk+-win32-2.0)
 # If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
-GTK_LIBS=`pkg-config --libs gtk+-win32-2.0`
+GTK_LIBS:=$(shell pkg-config --libs gtk+-win32-2.0)
 
 ### Glade libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags libglade-2.0' manually
-LIBGLADE_INCLUDES=`pkg-config --cflags libglade-2.0`
+LIBGLADE_INCLUDES:=$(shell pkg-config --cflags libglade-2.0)
 # If this doesn't work, insert output of 'pkg-config --libs libglade-2.0' manually
-LIBGLADE_LIBS=`pkg-config --libs libglade-2.0`
+LIBGLADE_LIBS:=$(shell pkg-config --libs libglade-2.0)
 
 ### FREETYPE2 libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
-FREETYPE2_INCLUDES=`pkg-config --cflags freetype2`
+FREETYPE2_INCLUDES:=$(shell pkg-config --cflags freetype2)
 # If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
-FREETYPE2_LIBS=`pkg-config --libs freetype2`
+FREETYPE2_LIBS:=$(shell pkg-config --libs freetype2)
 
 ### GIMP libs and includes, for Exult Studio.
 # If this doesn't work, insert output of 'pkg-config --cflags gimpui-2.0' manually
-GIMP_INCLUDES=`pkg-config --cflags gimpui-2.0`
+GIMP_INCLUDES:=$(shell pkg-config --cflags gimpui-2.0)
 # If this doesn't work, insert output of 'pkg-config --libs gimpui-2.0' manually
-GIMP_LIBS=`pkg-config --libs gimpui-2.0`
+GIMP_LIBS:=$(shell pkg-config --libs gimpui-2.0)
 
 ### Combined Exult Studio includes and libs.
-ES_INCLUDES=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
-ES_LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
+ES_INCLUDES:=$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
+ES_LIBS:=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -liberty -lole32 -lpng -luuid -lws2_32 -mwindows
 
 ### Ogg vorbis inclides
-OGG_INCLUDES=`pkg-config --cflags ogg vorbis vorbisfile`
-OGG_LIBS=`pkg-config --libs ogg vorbis vorbisfile`
+OGG_INCLUDES:=$(shell pkg-config --cflags ogg vorbis vorbisfile)
+OGG_LIBS:=$(shell pkg-config --libs ogg vorbis vorbisfile)
 
 ifdef DEBUG_SYMBOLS
 	DEBUG_LEVEL=-ggdb3
