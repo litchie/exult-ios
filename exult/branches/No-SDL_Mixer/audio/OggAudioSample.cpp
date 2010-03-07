@@ -50,7 +50,10 @@ OggAudioSample::~OggAudioSample()
 size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
 {
 	IDataSource *ids = (IDataSource*) datasource;
-	if (ids->eof()) return 0;
+	//if (ids->eof()) return 0;
+	size_t limit = ids->getSize() - ids->getPos();
+	if (limit <= 0) return 0;
+	else if (limit < size*nmemb) nmemb = limit/size;
 	ids->read(ptr,size*nmemb);
 	return nmemb;
 }
@@ -80,6 +83,7 @@ long   OggAudioSample::tell_func  (void *datasource)
 bool OggAudioSample::is_ogg(IDataSource *oggdata)
 {
 	OggVorbis_File vf;
+	oggdata->seek(0);
 	int res = ov_test_callbacks((void*)oggdata,&vf,0,0,callbacks);
 	ov_clear(&vf);
 
