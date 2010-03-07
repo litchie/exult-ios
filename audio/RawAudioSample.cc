@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2005 The Pentagram team
+Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,6 +33,8 @@ RawAudioSample::RawAudioSample(uint8* buffer_, uint32 size_, uint32 rate_,
 	frame_size = 512;
 	decompressor_size = sizeof(RawDecompData);
 	length = size_;
+	start_pos = 0;
+	byte_swap = false;
 }
 
 RawAudioSample::~RawAudioSample()
@@ -42,7 +45,7 @@ RawAudioSample::~RawAudioSample()
 void RawAudioSample::initDecompressor(void *DecompData) const
 {
 	RawDecompData *decomp = reinterpret_cast<RawDecompData *>(DecompData);
-	decomp->pos = 0;
+	decomp->pos = start_pos;
 }
 
 void RawAudioSample::rewind(void *DecompData) const
@@ -60,15 +63,24 @@ uint32 RawAudioSample::decompressFrame(void *DecompData, void *samples) const
 	if (decomp->pos + count > buffer_size)
 		count = buffer_size - decomp->pos;
 
-	if (!signeddata) {
-		std::memcpy(samples, buffer+decomp->pos, count);
-	} else {
+	// 8 bit unsigned, or 16 Bit signed
+	if ((!signeddata && bits==8) || (signeddata && bits==16 && !byte_swap)) {	
+		std::memcpy(samples, buffer+decomp->pos, count*(bits/16));
+		decomp->pos += count;
+	// 8 bit signed data
+	} else if (bits == 8) {
 		uint8* dest = static_cast<uint8*>(samples);
 		for (unsigned int i = 0; i < count; ++i)
-			dest[i] = buffer[decomp->pos+i] + 128;
+			*dest++ = buffer[decomp->pos++] + 128;
 	}
-
-	decomp->pos += count;
+	// 16 bit signed with byte swap required
+	else if (signeddata && bits==16 && byte_swap) {
+		uint8 *dest = static_cast<uint8*>(samples);
+		for (unsigned int i = 0; i < count; ++i) {
+			*dest++ = buffer[++decomp->pos];
+			*dest++ = buffer[(decomp->pos++)-1];
+		}
+	}
 
 	return count;
 }

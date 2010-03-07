@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2005 The Pentagram team
+Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -331,7 +332,7 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 }
 
 
-bool VocAudioSample::isVoc(IDataSource *ds)
+bool VocAudioSample::isThis(IDataSource *ds)
 {
 	char buffer[19];
 	ds->read(buffer,19);

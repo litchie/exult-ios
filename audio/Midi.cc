@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2005  The Exult Team
+Copyright (C) 2000-2010  The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -802,7 +802,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 
 	IDataSource *ds = new IFileDataSource(stream);
 
-	if (!Pentagram::OggAudioSample::is_ogg(ds))
+	if (!Pentagram::OggAudioSample::isThis(ds))
 	{
 		std::cerr << "Failed to play OGG Music Track " << ogg_name << ". Reason: " << "Unknown" << std::endl;
 

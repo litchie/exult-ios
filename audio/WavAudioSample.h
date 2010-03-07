@@ -1,5 +1,4 @@
 /*
-Copyright (C) 2005 The Pentagram team
 Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
@@ -16,36 +15,25 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-#ifndef RAWAUDIOSAMPLE_H
-#define RAWAUDIOSAMPLE_H
+#ifndef WavAudioSample_H
+#define WavAudioSample_H
 
-#include "AudioSample.h"
+#ifndef RAWAUDIOSAMPLE_H
+#include "RawAudioSample.h"
+#endif
 
 namespace Pentagram {
+	class WavAudioSample : public RawAudioSample
+	{
+	public:
+		WavAudioSample(uint8* buffer, uint32 size);
 
-class RawAudioSample : public AudioSample
-{
-public:
-	RawAudioSample(uint8* buffer, uint32 size,
-				   uint32 rate, bool signeddata, bool stereo);
-	virtual ~RawAudioSample();
-
-	virtual void initDecompressor(void *DecompData) const;
-	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
-	virtual void rewind(void *DecompData) const;
-
-protected:
-
-	struct RawDecompData {
-		uint32 pos;
+		static bool isThis(IDataSource *ds);
 	};
-
-	bool signeddata;
-	int start_pos;
-	bool byte_swap;
-
-};
 
 }
 
-#endif
+
+
+#endif //WavAudioSample_H
+

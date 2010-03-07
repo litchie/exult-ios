@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2005 The Pentagram team
+Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -53,9 +54,12 @@ public:
 	virtual void initDecompressor(void *DecompData) const = 0;
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const = 0;
 	virtual void rewind(void *DecompData) const = 0;
+	virtual void freeDecompressor(void *DecompData) const { };
 
 	void			IncRef() { refcount++; }
 	void			Release() { if (!--refcount) delete this; }
+
+	static AudioSample *createAudioSample(uint8 *data, uint32 size);
 };
 
 };
