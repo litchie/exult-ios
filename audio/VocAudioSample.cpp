@@ -56,7 +56,7 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 			l |= (buffer[0+data_offset]);
 			data_offset+=3;
 			COUT("Chunk length appears to be " << l);
-			if (sample_rate != 0)
+			if (!sample_rate)
 			{
 				sample_rate=1000000/(256-(buffer[data_offset]));
 #ifdef FUDGE_SAMPLE_RATES
@@ -90,7 +90,7 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 			l=(buffer[1+data_offset])<<8;
 			l|=(buffer[0+data_offset]);
 			l++;
-			if (sample_rate != 0)
+			if (!sample_rate)
 			{
 				sample_rate=1000000/(256-(buffer[2+data_offset]));
 #ifdef FUDGE_SAMPLE_RATES
