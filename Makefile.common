@@ -389,7 +389,47 @@ FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
 BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
 
+all: $(EXEC)
+
 ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h
+
+# Generated flex dependencies...
+
+exult.o : exult.cc $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+exultmenu.o : exultmenu.cc $(EXULT_FLX)
+
+game.o : game.cc $(EXULT_FLX)
+
+shapeid.o : shapeid.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+audio/Midi.o : audio/Midi.cc $(EXULT_FLX)
+
+gumps/AudioOptions_gump.o : gumps/AudioOptions_gump.cc $(EXULT_FLX)
+
+gumps/CombatOptions_gump.o : gumps/CombatOptions_gump.cc $(EXULT_FLX)
+
+gumps/Face_stats.o : gumps/Face_stats.cc $(EXULT_FLX)
+
+gumps/Gamemenu_gump.o : gumps/Gamemenu_gump.cc $(EXULT_FLX)
+
+gumps/GameplayOptions_gump.o : gumps/GameplayOptions_gump.cc $(EXULT_FLX)
+
+gumps/Newfile_gump.o : gumps/Newfile_gump.cc $(EXULT_FLX)
+
+gumps/Notebook_gump.o : gumps/Notebook_gump.cc $(EXULT_FLX)
+
+gumps/Stats_gump.o : gumps/Stats_gump.cc $(EXULT_FLX)
+
+gumps/VideoOptions_gump.o : gumps/VideoOptions_gump.cc $(EXULT_FLX)
+  
+gamemgr/bggame.o : gamemgr/bggame.cc $(EXULT_BG_FLX)
+
+gamemgr/sigame.o : gamemgr/sigame.cc $(EXULT_SI_FLX)
+
+shapes/shapevga.o : shapes/shapevga.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+usecode/conversation.o : shapes/shapevga.cc $(EXULT_BG_FLX)
 
 $(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -518,8 +558,6 @@ head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.
 
 head2data.test: 
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
-
-all: $(EXEC)
 
 clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
