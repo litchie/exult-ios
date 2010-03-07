@@ -255,9 +255,9 @@ void Background_noise::handle_event
 			}
 		}
 	}
-#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
+#endif
 }
 
 /*

@@ -285,7 +285,7 @@ void AudioMixer::MixAudio(sint16 *stream, uint32 bytes)
 {
 	if (!audio_ok) return;
 
-	midi->produceSamples(stream, bytes);
+	if (midi) midi->produceSamples(stream, bytes);
 
 	if (channels) for (int i=0;i<num_channels;i++)
 		if (channels[i]->isPlaying()) channels[i]->resampleAndMix(stream,bytes);
@@ -311,6 +311,7 @@ void AudioMixer::closeMidiOutput()
 	std::cout << "Destroying MidiDriver..." << std::endl;
 
 	midi->stop_music();
+	midi->destroyMidiDriver();
 
 	Lock();
 	delete midi;

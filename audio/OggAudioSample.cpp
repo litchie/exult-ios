@@ -36,6 +36,7 @@ OggAudioSample::OggAudioSample(IDataSource *oggdata_)
 	frame_size = 4096;
 	decompressor_size = sizeof(OggDecompData);
 	bits = 16;
+	locked = false;
 
 
 }
@@ -82,7 +83,7 @@ bool OggAudioSample::is_ogg(IDataSource *oggdata)
 	int res = ov_test_callbacks((void*)oggdata,&vf,0,0,callbacks);
 	ov_clear(&vf);
 
-	return res != 0;
+	return res == 0;
 }
 
 
@@ -100,8 +101,8 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	decomp->bitstream = 0;
 	
 	vorbis_info *info = ov_info(&decomp->ov,-1);
-	decomp->last_rate = info->rate;
-	decomp->last_stereo = info->channels == 2;
+	*const_cast<uint32*>(&sample_rate) = decomp->last_rate = info->rate;
+	*const_cast<bool*>(&stereo) = decomp->last_stereo = info->channels == 2;
 }
 
 void OggAudioSample::rewind(void *DecompData) const

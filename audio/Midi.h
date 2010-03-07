@@ -52,6 +52,8 @@ public:
 	MyMidiPlayer();
 	~MyMidiPlayer();
 
+	void			destroyMidiDriver();
+
 	void			start_music(int num,bool continuous=false,std::string flex=MAINMUS);
 	void			start_music(std::string fname,int num,bool continuous=false);
 	void			stop_music();
