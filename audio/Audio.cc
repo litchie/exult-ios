@@ -499,6 +499,12 @@ Audio::~Audio()
 	self = 0;
 }
 
+void	Audio::copy_and_play(const uint8 *sound_data,uint32 len, bool wait)
+{
+	uint8 *new_sound_data = new uint8[len];
+	std::memcpy(new_sound_data,sound_data,len);
+	play(new_sound_data ,len,wait);
+}
 
 void	Audio::play(uint8 *sound_data,uint32 len, bool wait)
 	{

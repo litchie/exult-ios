@@ -27,7 +27,7 @@
 
 //SDL_mixer doesn't like mixing different rates when using OGG
 //This should match the same as the SFX and OGG Music which is 22khz
-#define SAMPLERATE	22050
+#define SAMPLERATE	48000
 
 class SFX_cached;
 class SFX_cache_manager;
@@ -96,6 +96,7 @@ public:
 	void	pause_audio(void);
 	void    resume_audio(void);
 
+	void	copy_and_play(const uint8 *sound_data,uint32 len,bool);
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
