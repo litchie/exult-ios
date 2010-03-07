@@ -1,3 +1,7 @@
+2010-03-07 Dominik Reichardt <dominus@users.sourceforge.net>
+	* makefile.am: added an option to make dmg-image of the app-bundle and some other files
+	* /macosx/DS_Store: added Desktop Services Store file to layout the dmg-image
+
 2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2841677 Cannot close two gumps in succession
