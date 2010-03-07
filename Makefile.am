@@ -252,7 +252,26 @@ install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
 	cp -r $(bundle_name) $(DESTDIR)/Applications/
 
+osxdmg: bundle
+	mkdir Exult-snapshot
+	cp $(srcdir)/AUTHORS ./Exult-snapshot/Authors
+	cp $(srcdir)/COPYING ./Exult-snapshot/License
+	cp $(srcdir)/NEWS ./Exult-snapshot/News
+	cp $(srcdir)/README.MacOSX ./Exult-snapshot/ReadMe.MacOSX
+	cp $(srcdir)/docs/ReadMe.html ./Exult-snapshot/ReadMe.html
+	cp $(srcdir)/docs/faq.html ./Exult-snapshot/FAQ.html
+	cp -r $(srcdir)/docs/images ./Exult-snapshot/images
+	cp $(srcdir)/macosx/DS_Store ./Exult-snapshot/.DS_Store
+	/Developer/Tools/SetFile -a V ./Exult-snapshot/.DS_Store
+	/Developer/Tools/SetFile -a V ./Exult-snapshot/images
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/*
+	/Developer/Tools/CpMac -r $(bundle_name) ./Exult-snapshot/
+	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
+					-srcfolder Exult-snapshot \
+					-volname "Exult" \
+					Exult-snapshot.dmg
+
 else
 install-exec-local:
-
+	
 endif
