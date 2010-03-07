@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2005 The Pentagram team
+Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,7 +33,7 @@ public:
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
 	virtual void rewind(void *DecompData) const;
 
-	static bool isVoc(IDataSource *ds);
+	static bool isThis(IDataSource *ds);
 protected:
 
 	struct VocDecompData {

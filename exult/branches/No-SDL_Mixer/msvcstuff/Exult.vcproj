@@ -443,7 +443,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\AudioSample.cpp"
+					RelativePath="..\audio\AudioSample.cc"
 					>
 				</File>
 				<File
@@ -459,7 +459,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\OggAudioSample.cpp"
+					RelativePath="..\audio\OggAudioSample.cc"
 					>
 				</File>
 				<File
@@ -467,7 +467,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\RawAudioSample.cpp"
+					RelativePath="..\audio\RawAudioSample.cc"
 					>
 				</File>
 				<File
@@ -479,11 +479,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\VocAudioSample.cpp"
+					RelativePath="..\audio\VocAudioSample.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\audio\VocAudioSample.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\WavAudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\WavAudioSample.h"
 					>
 				</File>
 				<Filter
@@ -2594,11 +2602,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File

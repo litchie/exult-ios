@@ -15,20 +15,22 @@ libaudio_la_SOURCES =	\
 	conv.cc		\
 	conv.h		\
 	soundtest.cc	\
-	soundtest.h	\
-	convmusic.h    \
-	AudioChannel.cc    \
-	AudioChannel.h    \
-	AudioMixer.cc    \
+	soundtest.h	    \
+	convmusic.h     \
+	AudioChannel.cc \
+	AudioChannel.h  \
+	AudioMixer.cc   \
 	AudioMixer.h    \
-	AudioSample.cpp    \
-	AudioSample.h    \
-	OggAudioSample.cpp    \
-	OggAudioSample.h    \
-	RawAudioSample.cpp    \
-	RawAudioSample.h    \
-	VocAudioSample.cpp    \
-	VocAudioSample.h
+	AudioSample.cc  \
+	AudioSample.h   \
+	OggAudioSample.cc \
+	OggAudioSample.h  \
+	RawAudioSample.cc \
+	RawAudioSample.h  \
+	VocAudioSample.cc \
+	VocAudioSample.h  \
+	WavAudioSample.cc \
+	WavAudioSample.h
 
 EXTRA_DIST = 		\
 	README
