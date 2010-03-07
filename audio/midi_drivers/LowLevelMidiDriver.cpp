@@ -450,6 +450,8 @@ int LowLevelMidiDriver::initThreadedSynth()
 
 void LowLevelMidiDriver::destroyThreadedSynth()
 {
+	initialized = false;
+
 	ComMessage message(LLMD_MSG_THREAD_EXIT);
 	sendComMessage(message);
 
@@ -639,6 +641,8 @@ void LowLevelMidiDriver::destroySoftwareSynth()
 
 	// Wait till all pending commands have been executed
 	waitTillNoComMessages();
+
+	initialized = false;
 
 	close();
 }

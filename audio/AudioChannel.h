@@ -53,7 +53,7 @@ public:
 	AudioChannel(uint32 sample_rate, bool stereo);
 	~AudioChannel(void);
 
-	void stop() { sample->Release(); sample = 0; }
+	void stop() { if (sample) sample->Release(); sample = 0; }
 
 	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol);
 	void resampleAndMix(sint16 *stream, uint32 bytes);

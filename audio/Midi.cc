@@ -630,8 +630,17 @@ MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 MyMidiPlayer::~MyMidiPlayer()
 {
 	ogg_stop_track();
+	if (midi_driver)
+	{
+		midi_driver->destroyMidiDriver();
+		delete midi_driver;
+		midi_driver = 0;
+	}
+}
+
+void MyMidiPlayer::destroyMidiDriver()
+{
 	if (midi_driver) midi_driver->destroyMidiDriver();
-	delete midi_driver;
 }
 
 void MyMidiPlayer::produceSamples(sint16 *stream, uint32 bytes)
