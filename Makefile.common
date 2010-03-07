@@ -190,9 +190,22 @@ IMAGEWIN_OBJS=\
 	imagewin/scale_point.o
 
 ### Just in case...
-#ifndef OPENGL_OBJS
+
+#NMake Line\
+!if 0
+
+ifndef OPENGL_OBJS
+	OPENGL_OBJS= 
+endif
+
+#NMake Line\
+!else
+
+#NMake Line\
 OPENGL_OBJS= $(OPENGL_OBJS)
-#endif
+
+#NMake Line\
+!endif
 
 SHAPES_OBJS= \
 	shapes/ammoinf.o \
