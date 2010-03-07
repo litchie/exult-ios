@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Zip"
 	ProjectGUID="{3BA72F61-852F-47A5-8E50-2B433FE77638}"
+	RootNamespace="Zip"
 	>
 	<Platforms>
 		<Platform

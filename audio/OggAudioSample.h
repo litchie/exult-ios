@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2005 The Pentagram team
+Copyright (C) 2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,11 +31,13 @@ class OggAudioSample : public AudioSample
 {
 public:
 	OggAudioSample(IDataSource *oggdata);
+	OggAudioSample(uint8 *buffer, uint32 size);
 	virtual ~OggAudioSample();
 
 	virtual void initDecompressor(void *DecompData) const;
 	virtual uint32 decompressFrame(void *DecompData, void *samples) const;
 	virtual void rewind(void *DecompData) const;
+	virtual void freeDecompressor(void *DecompData) const;
 
 	static ov_callbacks callbacks;
 	
@@ -43,7 +45,7 @@ public:
 	static int    seek_func  (void *datasource, ogg_int64_t offset, int whence);
     static long   tell_func  (void *datasource);
 
-	static bool   is_ogg(IDataSource *oggdata);
+	static bool   isThis(IDataSource *oggdata);
 
 protected:
 
@@ -52,6 +54,7 @@ protected:
 		int bitstream;
 		int last_rate;
 		bool last_stereo;
+		IDataSource *datasource;
 	};
 
 	IDataSource *oggdata;
