@@ -505,16 +505,18 @@ void	Audio::play(uint8 *sound_data,uint32 len, bool wait)
 	if (!audio_enabled || !speech_enabled || !len) return;
 
 	IBufferDataSource bds(sound_data,len);
-	if (!Pentagram::VocAudioSample::isVoc(&bds))
+	if (Pentagram::VocAudioSample::isVoc(&bds))
 	{
-		//delete [] sound_data;
-		return ;
+		Pentagram::VocAudioSample *audio_sample = new Pentagram::VocAudioSample(sound_data,len);
+
+		mixer->playSample(audio_sample,0,128);
+		audio_sample->Release();
+	}
+	else
+	{
+		delete [] sound_data;
 	}
 
-	Pentagram::VocAudioSample *audio_sample = new Pentagram::VocAudioSample(sound_data,len);
-
-	mixer->playSample(audio_sample,0,128);
-	audio_sample->Release();
 
 	}
 
@@ -547,11 +549,10 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 	if (!audio_enabled)
 		return;
 
-	char *buf=0;
-	size_t len;
-
 	U7multiobject sample(fname, fpatch, 1);
-	buf = sample.retrieve(len);
+
+	size_t len;
+	uint8 *buf = (uint8 *)sample.retrieve(len);
 	if (!buf || len <= 0)
 		{
 		// Failed to find file in patch or static dirs.
@@ -560,10 +561,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 		return;
 		}
 
-	/*
-	play(reinterpret_cast<uint8*>(buf), len, wait);
-	delete [] buf;
-	*/
+	play(buf, len, wait);
 }
 
 
@@ -701,19 +699,7 @@ bool Audio::start_speech(int num, bool wait)
 		return false;
 	}
 
-	IBufferDataSource bds(buf,len);
-	if (!Pentagram::VocAudioSample::isVoc(&bds))
-	{
-		delete [] buf;
-		return false;
-	}
-
-	Pentagram::VocAudioSample *audio_sample = new Pentagram::VocAudioSample(buf,len);
-
-	mixer->playSample(audio_sample,0,128);
-	audio_sample->Release();
-
-
+	play(buf,len,wait);
 	return true;
 }
 
