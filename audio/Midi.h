@@ -82,8 +82,6 @@ public:
 
 	void			produceSamples(sint16 *stream, uint32 bytes);
 
-	Pentagram::AudioSample* GetOGG() { return ogg_sample; }
-
 private:
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
@@ -109,7 +107,7 @@ private:
 	
 	// Ogg Stuff
 	bool			ogg_enabled;
-	Pentagram::AudioSample	*ogg_sample;
+	sint32			ogg_instance_id;
 
 	bool				ogg_play_track(std::string filename, int num, bool repeat);
 	bool				ogg_is_playing();
