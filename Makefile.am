@@ -260,7 +260,7 @@ osxdmg: bundle
 	cp $(srcdir)/README.MacOSX ./Exult-snapshot/ReadMe.MacOSX
 	cp $(srcdir)/docs/ReadMe.html ./Exult-snapshot/ReadMe.html
 	cp $(srcdir)/docs/faq.html ./Exult-snapshot/FAQ.html
-	cp -r $(srcdir)/docs/images ./Exult-snapshot/images
+	cp $(srcdir)/docs/images/* ./Exult-snapshot/images
 	cp $(srcdir)/macosx/DS_Store ./Exult-snapshot/.DS_Store
 	/Developer/Tools/SetFile -a V ./Exult-snapshot/.DS_Store
 	/Developer/Tools/SetFile -a V ./Exult-snapshot/images
