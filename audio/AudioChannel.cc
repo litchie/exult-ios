@@ -40,7 +40,7 @@ AudioChannel::AudioChannel(uint32 sample_rate_, bool stereo_) :
 	sample_rate(sample_rate_), stereo(stereo_),
 	loop(0), sample(0), 
 	frame_evenodd(0), frame0_size(0), frame1_size(0), position(0), paused(false),
-	fp_pos(0), fp_speed(0)
+	instance_id(-1), fp_pos(0), fp_speed(0)
 {
 }
 
@@ -50,7 +50,7 @@ AudioChannel::~AudioChannel(void)
 	sample = 0;
 }
 
-void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bool paused_, uint32 pitch_shift_, int lvol_, int rvol_)
+void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bool paused_, uint32 pitch_shift_, int lvol_, int rvol_, sint32 instance_id_)
 {
 	if (sample) sample->Release();
 	sample = sample_; 
@@ -61,6 +61,7 @@ void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bo
 	rvol = rvol_;
 	paused = paused_;
 	pitch_shift = pitch_shift_;
+	instance_id = instance_id_;
 
 	if (!sample) return;
 	sample->IncRef();

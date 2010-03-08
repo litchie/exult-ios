@@ -30,15 +30,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Midi.h"
 
-namespace Pentagram {
+using namespace Pentagram;
 
 AudioMixer *AudioMixer::the_audio_mixer = 0;
 
 AudioMixer::AudioMixer(int sample_rate_, bool stereo_, int num_channels_) : 
-		audio_ok(false), 
-		sample_rate(sample_rate_), stereo(stereo_),
-		midi(0), midi_volume(255),
-		num_channels(num_channels_), channels(0)
+audio_ok(false), 
+sample_rate(sample_rate_), stereo(stereo_),
+midi(0), midi_volume(255),
+num_channels(num_channels_), channels(0), id_counter(0)
 {
 	the_audio_mixer = this;
 
@@ -65,17 +65,18 @@ AudioMixer::AudioMixer(int sample_rate_, bool stereo_, int num_channels_) :
 
 	if (audio_ok) {
 		pout << "Audio opened using format: " << obtained.freq << " Hz " << (int) obtained.channels << " Channels" <<  std::endl;
-		// Lock the audio
+
+
 		Lock();
+		{
+			sample_rate = obtained.freq;
+			stereo = obtained.channels == 2;
 
-		sample_rate = obtained.freq;
-		stereo = obtained.channels == 2;
+			channels = new AudioChannel*[num_channels];
+			for (int i=0;i<num_channels;i++)
+				channels[i] = new AudioChannel(sample_rate,stereo);
 
-		channels = new AudioChannel*[num_channels];
-		for (int i=0;i<num_channels;i++)
-			channels[i] = new AudioChannel(sample_rate,stereo);
-
-		// Unlock it
+		}
 		Unlock();
 
 		// GO GO GO!
@@ -116,54 +117,65 @@ void AudioMixer::reset()
 	midi->stop_music();
 
 	Lock();
-
-	if (channels) for (int i=0;i<num_channels;i++) channels[i]->stop();
-
+	{
+		if (channels) for (int i=0;i<num_channels;i++) channels[i]->stop();
+	}
 	Unlock();
 }
 
-int AudioMixer::playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift_, int lvol, int rvol)
+sint32 AudioMixer::playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift_, int lvol, int rvol)
 {
 	if (!audio_ok || !channels) return -1;
 
 	int lowest = -1;
 	int lowprior = 65536;
 
-	// Lock the audio
 	Lock();
-
-	int i;
-	for (i=0;i<num_channels;i++)
 	{
-		if (!channels[i]->isPlaying()) {
-			lowest = i;
-			break;
+
+		int i;
+		for (i=0;i<num_channels;i++)
+		{
+			if (!channels[i]->isPlaying()) {
+				lowest = i;
+				break;
+			}
+			else if (channels[i]->getPriority() < priority) {
+				lowprior = channels[i]->getPriority();
+				lowest = i;
+			}
 		}
-		else if (channels[i]->getPriority() < priority) {
-			lowprior = channels[i]->getPriority();
-			lowest = i;
+
+		if (i != num_channels || lowprior < priority)
+		{
+			if (++id_counter < 0) id_counter = 0;
+			channels[lowest]->playSample(sample,loop,priority,paused,pitch_shift_,lvol,rvol,id_counter);
 		}
+		else 
+			lowest = -1;
+
 	}
-
-	if (i != num_channels || lowprior < priority)
-		channels[lowest]->playSample(sample,loop,priority,paused,pitch_shift_,lvol,rvol);
-	else 
-		lowest = -1;
-
-	// Unlock
 	Unlock();
 
-	return lowest;
+	return lowest!=-1?id_counter:-1;
 }
 
-bool AudioMixer::isPlaying(int chan)
+bool AudioMixer::isPlaying(sint32 instance_id)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return false;
+	if (instance_id < 0 || !channels || !audio_ok) return false;
 
+	bool playing = false;
 	Lock();
-
-		bool playing = channels[chan]->isPlaying();
-
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				playing = channels[chan]->isPlaying();
+				break;
+			}			
+		}
+	}
 	Unlock();
 
 	return playing;
@@ -173,9 +185,9 @@ bool AudioMixer::isPlaying(AudioSample *sample)
 {
 	if (!sample || !channels || !audio_ok) return false;
 
+	bool playing = false;
 	Lock();
-
-		bool playing = false;
+	{
 		for (int chan = 0; chan < num_channels; chan++)
 		{
 			if (channels[chan]->getSample() == sample)
@@ -184,20 +196,27 @@ bool AudioMixer::isPlaying(AudioSample *sample)
 				break;
 			}
 		}
-
+	}
 	Unlock();
 
 	return playing;
 }
 
-void AudioMixer::stopSample(int chan)
+void AudioMixer::stopSample(sint32 instance_id)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return;
+	if (instance_id < 0 || !channels || !audio_ok) return;
 
 	Lock();
-
-		channels[chan]->stop();
-
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->stop();
+				break;
+			}
+		}
+	}
 	Unlock();
 }
 
@@ -206,35 +225,52 @@ void AudioMixer::stopSample(AudioSample *sample)
 	if (!sample || !channels || !audio_ok) return;
 
 	Lock();
-
-	for (int chan = 0; chan < num_channels; chan++)
 	{
-		if (channels[chan]->getSample() == sample)
-			channels[chan]->stop();
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getSample() == sample)
+				channels[chan]->stop();
+		}
 	}
-
 	Unlock();
 }
 
-void AudioMixer::setPaused(int chan, bool paused)
+void AudioMixer::setPaused(sint32 instance_id, bool paused)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return;
+	if (instance_id < 0 || !channels || !audio_ok) return;
 
 	Lock();
-
-		channels[chan]->setPaused(paused);
-
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->setPaused(paused);
+				break;
+			}
+		}
+	}
 	Unlock();
 }
 
-bool AudioMixer::isPaused(int chan)
+bool AudioMixer::isPaused(sint32 instance_id)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return false;
+	if (instance_id < 0 || !channels || !audio_ok) return false;
+
+	bool ret = false;
 
 	Lock();
+	{	
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				ret = channels[chan]->isPaused();
+				break;
+			}
+		}
 
-		bool ret = channels[chan]->isPaused();
-
+	}
 	Unlock();
 
 	return ret;
@@ -245,35 +281,51 @@ void AudioMixer::setPausedAll(bool paused)
 	if (!channels || !audio_ok) return;
 
 	Lock();
+	{
 
-	for (int chan = 0; chan < num_channels; chan++)
-		channels[chan]->setPaused(paused);
+		for (int chan = 0; chan < num_channels; chan++)
+			channels[chan]->setPaused(paused);
 
+	}
 	Unlock();
 }
 
-void AudioMixer::setVolume(int chan, int lvol, int rvol)
+void AudioMixer::setVolume(sint32 instance_id, int lvol, int rvol)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return;
+	if (instance_id < 0 || !channels || !audio_ok) return;
 
 	Lock();
-
-		channels[chan]->setVolume(lvol,rvol);
-
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->setVolume(lvol,rvol);
+				break;
+			}
+		}
+	}
 	Unlock();
 }
 
-void AudioMixer::getVolume(int chan, int &lvol, int &rvol)
+void AudioMixer::getVolume(sint32 instance_id, int &lvol, int &rvol)
 {
-	if (chan > num_channels || chan < 0 || !channels || !audio_ok) return;
+	if (instance_id < 0 || !channels || !audio_ok) return;
 
 	Lock();
-
-		channels[chan]->getVolume(lvol,rvol);
-
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->getVolume(lvol,rvol);
+				break;
+			}
+		}
+	}
 	Unlock();
 }
-	
+
 
 void AudioMixer::sdlAudioCallback(void *userdata, Uint8 *stream, int len)
 {
@@ -296,12 +348,14 @@ void AudioMixer::openMidiOutput()
 {
 	if (midi) return;
 	if (!audio_ok) return;
-	
+
 
 	MyMidiPlayer *new_midi = new MyMidiPlayer();
 
 	Lock();
-	midi = new_midi;
+	{
+		midi = new_midi;
+	}
 	Unlock();
 	//midi_driver->setGlobalVolume(midi_volume);
 }
@@ -315,9 +369,10 @@ void AudioMixer::closeMidiOutput()
 	midi->destroyMidiDriver();
 
 	Lock();
-	delete midi;
-	midi = 0;
+	{
+		delete midi;
+		midi = 0;
+	}
 	Unlock();
 }
 
-};
