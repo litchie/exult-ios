@@ -24,8 +24,8 @@ ReadMe.html: docs.html
 
 #rule for copying faq.txt, docs.txt to Faq and ReadMe
 duplicate: faq.txt docs.txt
-	cp faq.txt Faq
-	cp docs.txt ReadMe
+	cp faq.txt FAQ
+	cp docs.txt README
 
 # remove all generated files
 clean:

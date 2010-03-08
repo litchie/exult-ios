@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="16 July 2009(GMT)">
+<readme title="Exult" changed="08 March 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="08032010">
+			<header>- 08 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="whatis_exult"/> fixed typo in Jakob Schonberg's name.</li>
+				<li><ref1 target="exult_config_location"/> needs its own chapter now.</li>
+				<li><ref1 target="path_config"/> needed a lot of changes because of the LOCAL_APPDATA changes.</li>
+				<li><ref1 target="midi_music"/> the MT32 option will no longer crash <Exult/> on OS X.</li>
+				<li><ref1 target="scaler"/> OpenGl scaler is not considered stable.</li>
+				<li><ref1 target="mods_path"/> be aware of the LOCAL_APPDATA changes.</li>
+				<li><ref1 target="osx_digital"/> is probably not needed for newer versions of OS X.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="16072009">
 			<header>- 16 July 2009</header>
 			<body>
@@ -155,7 +169,7 @@
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.4.x CVS/SVN version of <Exult/>.
+					This documentation is for the 1.4.x SVN version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -177,7 +191,7 @@
 					and &quot;Ultima 7 part 2: The Serpent Isle&quot;, allowing you to
 					finish both games. This is only possible due to the work done
 					by other fans who have decoded the various Ultima 7 data files,
-					especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
+					especially Gary Thompson, Maxim Shatskih, Jakob Schonberg, and Wouter Dijkslag.
 				</para>
 				<para>
 					<Exult/> aims to let those people who own Ultima 7 (copyright 1993)
@@ -250,7 +264,7 @@
 						and install it. The Windows version comes with an installer that asks for the 
 						location of both BG and SI. If you entered the correct location the next two 
 						steps are not necessary.</li>
-					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> in Windows)
+					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> on Windows)
 						and quit it immediately.</li>
 					<li>Edit the configuration file with a text editor (e.g. on Windows use Notepad) 
 						and enter the correct paths for the game folders - see <ref target="exult_config"/>
@@ -269,6 +283,29 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="exult_config_location">
+			<header>Location of exult.cfg</header>
+			<body>
+				<para>
+					<Exult/> stores its setting in the file exult.cfg. The location of the file varies depending on 
+					the Operating System and in the case of Windows OS it also depends on the version of Windows.
+				</para>
+					<ul>
+						<li>On UNIX systems you can expect to find it in $HOME/.exult.cfg</li>
+						<li>Mac OS X saves it to ~/Library/Preferences/exult.cfg</li>
+						<li>Windows 95, 98, 98 SE and NT4.0 save the exult.cfg to the same directory as the <Exult/> binary 
+						(where you installed <Exult/> to)</li>
+						<li>Windows ME saves exult.cfg to C:\Windows\Application Data\Exult</li>
+						<li>Windows 2000 and XP save exult.cfg to LOCAL_APPDATA\Exult, which translates to 
+							C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult for an English version 
+							of Windows</li>
+						<li>Windows Vista and Windows 7 also save exult.cfg to LOCAL_APPDATA\Exult, but on these this translates 
+							to "C:\Users\YourUsername\AppData\Local\Exult"</li>
+						<li>On Windows 2000, XP, Vista and 7 you can quickly access this folder by executing "shell:Local AppData\Exult" 
+							in the "Run" entry of the Startmenu (or the "Run or Search" entry of the Windows Vista and 7 Startmenu)</li>
+					</ul>
+			</body>
+		</sub>
 		<sub name="exult_config">
 			<header>Settings in exult.cfg</header>
 			<body>
@@ -277,15 +314,6 @@
 					menu when you run <Exult/> or via the Game Options menu. <Exult/> stores these 
 					changes in a configuration file. Except for changing paths to the games you
 					shouldn't need to edit the file. Very few options need manual editing.
-				</para>
-				<para>
-					If you do not already have a configuration file, <Exult/> will make one for you
-					on its first start, filling in sensible defaults by itself. The location of this 
-					file varies slightly.<br/>
-					On UNIX systems you can expect to find it in $HOME/.exult.cfg.<br/>
-					In Windows it is 'exult.cfg' in the same directory as the <Exult/> binary 
-					(where you installed <Exult/> to).<br/>
-					In Mac OS X it is ~/Library/Preferences/exult.cfg.
 				</para>
 				<para>
 					<em>Note:</em> the settings in exult.cfg are the <strong>same</strong> on
@@ -322,19 +350,19 @@
 							<configtag name="game">
 								<configtag name="blackgate">
 									<configtag name="path"  manual="true">
-									./blackgate
+									path_to/blackgate
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
-									./blackgate
+									optional_path
 									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
 									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="static_path"  manual="true">
-									./blackgate/static
+									path_to/blackgate/static
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="gamedat_path"  manual="true">
-									./blackgate/gamedat
+									optional_path/gamedat
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="keys"  manual="true">
@@ -346,22 +374,30 @@
 									jmsfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
 									</configtag>
+									<configtag name="mods"  manual="true">
+									optional_path/mods
+									<comment>**optional. See <ref target="mods_path"/></comment>
+									</configtag>
+									<configtag name="patch"  manual="true">
+									optional_path/patch
+									<comment>**optional. See <ref target="mods_path"/></comment>
+									</configtag>
 								</configtag>
 								<configtag name="serpentisle">
 									<configtag name="path"  manual="true">
-									./serpentisle
+									path_to/serpentisle
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
-									./serpentisle
+									optional_path
 									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like. </comment>
 									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="static_path"  manual="true">
-									./serpentisle/static
+									path_to/serpentisle/static
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="gamedat_path"  manual="true">
-									./serpentisle/gamedat
+									optional_path/gamedat
 									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="keys"  manual="true">
@@ -372,6 +408,14 @@
 									<configtag name="waves"  manual="true">
 									jmsisfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
+									<configtag name="mods"  manual="true">
+									optional_path/mods
+									<comment>**optional. See <ref target="mods_path"/></comment>
+									</configtag>
+									<configtag name="patch"  manual="true">
+									optional_path/patch
+									<comment>**optional. See <ref target="mods_path"/></comment>
+									</configtag>
 									</configtag>
 								</configtag>
 							</configtag>
@@ -421,7 +465,7 @@
 							<comment>**yes enables SI style paperdolls in BG.</comment>
 							</configtag>
 							<configtag name="smooth_scrolling">							
-							50
+							0
 							<comment>**0/25/50/75/100 percentage of how smooth the game scrolls when the avatar </comment>
 							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
 							<comment>original game.</comment>
@@ -631,116 +675,180 @@
 			<header>Path-Settings</header>
 			<body>
 				<para>
-					You have two choices on how to setup <Exult/>, though if you are on Windows, I recommend 
-					running the setup and point to the correct directories for both BG and SI.
-				</para>
-				<para>
-					The first one is very easy, just install <Exult/> to the directory where you have The Black
-					Gate or Serpent Isle installed. Concerning the paths you don't have to
-					configure anything, at least for the game you have installed it to. For the other game you will
-					need to edit exult.cfg.
-				</para>
-				<para>
-					The other is a little more complicated but appeals to control freaks like me:<br/>
-					Make a directory c:\exult<br/>
-					make two subfolders named "ultima7" and "serpent" (without the quotes of course)<br/>
-					Extract or install the two Ultima 7 games into the appropriate folder
-					("The Black Gate" to c:\exult\ultima7 and "Serpent Isle" to c:\exult\serpent)<br/>
-					Install <Exult/> to c:\Exult.<br/>
-					Now you have to edit the file c:\exult\exult.cfg file like this (Non-Windows users please look 
-					at <ref target="exult_config"/> for the location of exult.cfg):
-				</para>
-				<configdesc>
-					<configtag name="config" closing-tag="no">
-						<configtag name="disk">
-							<configtag name="game">
-								<configtag name="blackgate">
-									<configtag name="path" manual="true">
-									./ultima7
-									</configtag>
-								</configtag>
-								<configtag name="serpentisle">
-									<configtag name="path" manual="true">
-									./serpent
-									</configtag>
-								</configtag>
-							</configtag>
-						</configtag>
-					</configtag>
-				</configdesc>
-				<para>
-				    You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path
-				    to point to the correct directory.
-				</para>
-				<para>
-					<em>Note:</em> Better don't use spaces in the path (e.g. c:\exult\the black gate\).
-					Some people seem to have problems with that.
-				</para>
-				<para>
-					<em>Note:</em> path settings in exult.cfg are the <strong>same</strong> on
-					<strong>all</strong> operating systems. Of course you need to make adjustments on UNIX
-					based systems when you enter the absolute path.
-				</para>
-				<para>
-					By the way, <Exult/> and <Studio/> don't trust the exult.cfg and will recognize which games
-					you entered the path for. This means, that if you entered the path to SI in the 
-					&lt;blackgate&gt;&lt;path&gt; <Exult/> and <Studio/> will not be fooled.
-				</para>
-			</body>
-		</sub>
-		<sub name="dir_config">
-			<header>Further directory customizations</header>
-			<body>
-				<para>
-					You can also specify where <Exult/> reads and stores the game specific data, like the files
-					in the Static and Gamedat directory and the save games.<br/>
-					This is <strong>optional and not required</strong> but may be useful if you want to exercise 
-					absolute control.<br/>
-					Some explanation what these dirs are for:
-				</para>
-				<ul>
-					<li>Savegames<br/>
-						this is where <Exult/> stores your savegames. Normally you find these in the dir set in 
-						&lt;path&gt;.</li>
-					<li>Static<br/>
-						the most important dir. Here you have the data files from the original game. You should 
-						never touch these files.</li>
-					<li>Gamedat<br/>
-						contains the (dynamic) data for the game you're currently playing. It's where the 
-						"journey onward" and "quicksave" 'savegame' is stored.</li>
-				</ul>
-				<para>
-					If you don't change the location of either the Static or Gamedat directories, <Exult/> expects to find both directories in the
-					path you specified in &lt;path&gt;. <strong>Don't ever</strong> point these two at the same directory.
-				</para>
-				<para>
-					My recommendations and example for BG (for SI use the same syntax) are:
+					In SVN the way <Exult/> generates default paths (for gamedat, savegames, mods, patches) has changed. It will not write these
+					paths to exult.cfg but use them automatically.<br/>
+					The location where <Exult/> expects those and if needed will create those directories is similarily depending on the Operating 
+					system as the location of exult.cfg (see <ref1 target="exult_config_location"/>).
+					If you were to override these paths you would need to change the follwoing tags (as example we use BG, same would apply for SI):
 				</para>
 				<configdesc>
 					<configtag name="config" closing-tag="no">
 						<configtag name="disk" closing-tag="no">
-							<configtag name="data_path">
-							data
-							</configtag>
 							<configtag name="game" closing-tag="no">
 								<configtag name="blackgate">
 									<configtag name="path" manual="true">
-									./ultima7
-									</configtag>
-									<configtag name="savegame_path" manual="true">
-									./ultima7
+									path_to/blackgate
 									</configtag>
 									<configtag name="static_path" manual="true">
-									./ultima7/static
+									path_to/blackgate/static
+									</configtag>
+									<configtag name="savegame_path" manual="true">
+									optional_path
 									</configtag>
 									<configtag name="gamedat_path" manual="true">
-									./ultima7/gamedat
+									optional_path/gamedat
+									</configtag>
+									<configtag name="mods" manual="true">
+									optional_path/mods
+									</configtag>
+									<configtag name="patch" manual="true">
+									optional_path/patch
 									</configtag>
 								</configtag>
 							</configtag>
 						</configtag>
 					</configtag>
 				</configdesc>
+				<para>
+					But normally you don't need to. On starting up, <Exult/> will first read which games are available as configured in exult.cfg. 
+					Then it will use the &lt;path&gt; setting and assume that &lt;static_path&gt; is &lt;path&gt;/static.<br/>
+					For &lt;savegame_path&gt;, &lt;gamedat_path&gt;, &lt;mods&gt; and &lt;patch&gt; <Exult/> will assume Operating System specific paths.
+				</para>
+				<para>
+					On Windows 95, 98, 98 SE and NT4.0 this will be:
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="game" closing-tag="no">
+								<configtag name="blackgate">
+									<configtag name="path" manual="true">
+									path_to/blackgate
+									</configtag>
+									<configtag name="static_path" manual="true">
+									path_to\blackgate\static
+									</configtag>
+									<configtag name="savegame_path" manual="true">
+									path_to\blackgate
+									</configtag>
+									<configtag name="gamedat_path" manual="true">
+									path_to\blackgate\gamedat
+									</configtag>
+									<configtag name="mods" manual="true">
+									path_to\blackgate\mods
+									</configtag>
+									<configtag name="patch" manual="true">
+									path_to\blackgate\patch
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
+				<para>
+					On Windows ME, 2000, XP, Vista and Windows 7 this will be:
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="game" closing-tag="no">
+								<configtag name="blackgate">
+									<configtag name="path" manual="true">
+									path_to/blackgate
+									</configtag>
+									<configtag name="static_path" manual="true">
+									path_to/blackgate/static
+									</configtag>
+									<configtag name="savegame_path" manual="true">
+									LOCAL_APPDATA\Exult\blackgate
+									</configtag>
+									<configtag name="gamedat_path" manual="true">
+									LOCAL_APPDATA\Exult\blackgate\gamedat
+									</configtag>
+									<configtag name="mods" manual="true">
+									LOCAL_APPDATA\Exult\blackgate\mods
+									</configtag>
+									<configtag name="patch" manual="true">
+									LOCAL_APPDATA\Exult\blackgate\patch
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
+				<para>
+					Note that on Windows ME LOCAL_APPDATA\Exult translates to C:\Windows\Application Data\Exult,
+					on Windows 2000 and XP to "C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult" 
+					and on Windows Vista and W7 to "C:\Users\YourUsername\AppData\Local\Exult".<br/>
+					Also not that on Windows 2000, XP, Vista and 7 you can quickly access this folder by executing 
+					"shell:Local AppData\Exult" in the "Run" entry of the Startmenu (or the "Run or Search" entry of 
+					the Windows Vista and 7 Startmenu).
+				</para>
+				<para>
+					On Unix based systems and Mac OS X <Exult/>uses the same default location:
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="game" closing-tag="no">
+								<configtag name="blackgate">
+									<configtag name="path" manual="true">
+									path_to/blackgate
+									</configtag>
+									<configtag name="static_path" manual="true">
+									path_to/blackgate/static
+									</configtag>
+									<configtag name="savegame_path" manual="true">
+									$HOME/.exult/blackgate
+									</configtag>
+									<configtag name="gamedat_path" manual="true">
+									$HOME/.exult/blackgate/gamedat
+									</configtag>
+									<configtag name="mods" manual="true">
+									$HOME/.exult/blackgate/mods
+									</configtag>
+									<configtag name="patch" manual="true">
+									$HOME/.exult/blackgate/patch
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
+				<para>
+					Some notes for <strong>all</strong> Operating Systems:
+				</para>
+				<ul>
+					<li>Except for the &lt;path&gt; setting all of these settings are <strong>optional and not required</strong>,
+						Exult will sort this out on its own.</li>
+					<li>You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path to point to the 
+						correct directory. The realtive path uses the exult.exe, exult binary or Exult.app as base.</li>
+					<li>Better don't use spaces in the path (e.g. c:\exult\the black gate\). Some people seem to have reported 
+						problems with that.</li>
+					<li>Path settings in exult.cfg are the <strong>same</strong> on <strong>all</strong> operating systems. Of course 
+						you need to make adjustments on UNIX based systems when you enter the absolute path.</li>
+					<li><Exult/> and <Studio/> don't trust the exult.cfg 100% and will recognize which games
+						you entered the path for. This means, that if you entered the path to SI in the 
+						&lt;blackgate&gt;&lt;path&gt; <Exult/> and <Studio/> will not be fooled.</li>
+					<li>Don't ever point &lt;static_path&gt; and &lt;gamedat_path&gt; to the same directory.</li>
+				</ul>
+				<para>
+					Some explanation what these directories are used for:
+				</para>
+				<ul>
+					<li>Static<br/>
+						the most important dir. Here you have the data files from the original game. You should 
+						never touch these files.</li>
+					<li>Savegames<br/>
+						this is where <Exult/> stores your savegames.</li>
+					<li>Gamedat<br/>
+						contains the (dynamic) data for the game you're currently playing. It's where the 
+						"journey onward" and "quicksave" 'savegame' is stored.</li>
+					<li>mods<br/>
+						here mods for games are saved to. More information on this at <ref1 target="mods_intro"/></li>
+					<li>patch<br/>
+						Patches for games are saved here. More information on this at <ref1 target="mods_intro"/></li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="advanced_config">
@@ -750,9 +858,7 @@
 					If you own both BG or SI without the add-ons FoV and SS and also the versions 
 					that has the add-ons you can now have them both shown in the <Exult/> menu. Before
 					you had to edit the exult.cfg when you wanted to switch the games.<br/>					
-					the tags for both FoV and SS. If you follow the "control freak" example at 
-					<ref target="path_config"/>, add to this that BG with FoV is installed to 
-					c:\exult\forge and BG with SS is installed to c:\exult\silver.					
+					You now just have to add the tags for the two games.
 				</para>
 				<configdesc>
 					<configtag name="config" closing-tag="no">
@@ -760,22 +866,22 @@
 							<configtag name="game">
 								<configtag name="blackgate">
 									<configtag name="path">
-									./Ultima7
+									path_to/blackgate
 									</configtag>
 								</configtag>
 								<configtag name="forgeofvirtue" manual="true">
 									<configtag name="path" manual="true">
-									./forge
+									path_to/forgeofvirtue
 									</configtag>
 								</configtag>	
 								<configtag name="serpentisle">
 									<configtag name="path">
-									./serpent
+									path_to/serpentisle
 									</configtag>
 								</configtag>
 								<configtag name="silverseed" manual="true">
 									<configtag name="path" manual="true">
-									./silver
+									path_to/silverseed
 									</configtag>	
 								</configtag>
 							</configtag>
@@ -957,7 +1063,7 @@
 				</para>
 				<para>
 					Also note that MT32 is not supported on Mac OS X, since <Exult/> does not yet have 
-					support for it (CoreMIDI) coded in. In fact this option will crash <Exult/> on OS X.
+					support for it (CoreMIDI) coded in.
 				</para>
 			</body>
 		</sub>
@@ -1219,7 +1325,8 @@
 					<li><strong>HQ3X</strong><br/>
 						High quality scaler, that uses a lot of CPU cycles. Only 3x.</li>
 					<li><strong>OpenGL</strong><br/>
-						Can be used for arbitrary integer scales (2x, 3x, 4x...)</li>
+						Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered 
+						stable. You can expect errors when using this scaler.</li>
 				</ul>
 				<para>
 					The scalers by Derek Liauw are slower than the ones above it but look much better from 
@@ -1428,7 +1535,7 @@
 			<header>Load/Save Game</header>
 			<body>
 				<para>
-					This on is pretty straightforward. You can load and save a game, delete a game and
+					This one is pretty straightforward. You can load and save a game, delete a game and
 					view some information of a save game on the right side (a screenshot and some stats).<br/>
 					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing
 					<key>Alt</key> while using the wheel scrolls by pages.<br/>
@@ -1649,8 +1756,9 @@
 			<body>
 				<para>
 					In exult.cfg you can adapt where <Exult/> looks for both mods and patches.
-					These are the paths <Exult/> uses by default, so if you don't want to change
-					the location of mods and patches, you don't need to edit the config file.
+					The paths <Exult/> uses by default, are explained in <ref target="path_config"/>, 
+					so stick to that for the location of mods and patches, and only edit the config 
+					file if you need to.
 				</para>
 				<configdesc>
 					<configtag name="config" closing-tag="no">
@@ -1658,13 +1766,13 @@
 							<configtag name="game" closing-tag="no">
 								<configtag name="blackgate">
 									<configtag name="path" manual="true">
-									./ultima7
+									path_to/blackgate
 									</configtag>
 									<configtag name="mods" manual="true">
-									./ultima7/mods
+									optional_path/mods
 									</configtag>
 									<configtag name="patch" manual="true">
-									./ultima7/patch
+									.optional_path/patch
 									</configtag>
 								</configtag>
 							</configtag>
@@ -1725,9 +1833,9 @@
 			<header>Making Digital Sound work on Mac OSX</header>
 			<body>
 				<para>
-					OSX does not have built-in support for ogg files. You need to go to
+					Older versions of OSX do not have built-in support for ogg files. You need to go to
 					<extref target="http://xiph.org/quicktime/download.html"/> to download 
-					and install xiphqt.
+					and install xiphqt. Please try it out whether it works for you before installing xiphqt.
 				</para>
 			</body>
 		</sub>
@@ -2165,7 +2273,7 @@
 						project would not be where it is today.</li>
 					<li>The paper by Gary Thompson on the structure of the U7 data
 						files was crucial to the early development of <Exult/>.</li>
-					<li>Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag
+					<li>Work by Maxim Shatskih, Jakob Schonberg, and Wouter Dijkslag
 						made the "usecode" interpreter possible.</li>
 					<li>Olivier Marcoux's technical document was also crucial in
 						understanding some data files.</li>
