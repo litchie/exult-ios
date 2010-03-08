@@ -49,6 +49,7 @@ class AudioChannel
 	uint32			pitch_shift;	// 0x10000 = no shift
 	int				priority;		// anything. 
 	bool			paused;			// true/false
+	sint32			instance_id;	// Unique id for this channel
 
 public:
 	AudioChannel(uint32 sample_rate, bool stereo);
@@ -56,7 +57,7 @@ public:
 
 	void stop() { if (sample) sample->Release(); sample = 0; }
 
-	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol);
+	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol, sint32 instance_id);
 	void resampleAndMix(sint16 *stream, uint32 bytes);
 
 	bool isPlaying() { return sample != 0; }
@@ -77,6 +78,8 @@ public:
 	bool isPaused() const { return paused; }
 
 	AudioSample *getSample() { return sample; }
+
+	sint32 getInstanceId() { return instance_id; }
 private:
 
 	//

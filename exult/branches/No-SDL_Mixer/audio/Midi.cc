@@ -621,7 +621,7 @@ MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  timbre_lib_index(0), timbre_lib_game(NONE),
 				  music_conversion(XMIDIFILE_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDIFILE_CONVERT_GS127_TO_GS),
-				  ogg_enabled(false), ogg_sample(NULL)
+				  ogg_enabled(false), ogg_instance_id(-1)
 
 {
 	init_device();
@@ -812,35 +812,35 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 
 	Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
 
-	if (ogg_sample) {
-		mixer->stopSample(ogg_sample);
-		ogg_sample->Release();
-		ogg_sample = 0;
+	if (ogg_instance_id != -1) {
+		mixer->stopSample(ogg_instance_id);
+		ogg_instance_id = -1;
 	}
 
 	ds->seek(0);
-	ogg_sample = new Pentagram::OggAudioSample(ds);
+	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(ds);
 
-	mixer->playSample(ogg_sample, repeat?2:0, INT_MAX);
+	ogg_instance_id = mixer->playSample(ogg_sample, repeat?2:0, INT_MAX);
+
+	ogg_sample->Release();
 
 	return  true;
 }
 
 void MyMidiPlayer::ogg_stop_track(void)
 {
-	if (ogg_sample) {
+	if (ogg_instance_id != -1) {
 		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
-		mixer->stopSample(ogg_sample);
-		ogg_sample->Release();
-		ogg_sample = 0;
+		mixer->stopSample(ogg_instance_id);
+		ogg_instance_id = -1;
 	}
 }
 
 bool MyMidiPlayer::ogg_is_playing(void)
 {
-	if (ogg_sample) {
+	if (ogg_instance_id != -1) {
 		Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
-		mixer->isPlaying(ogg_sample);
+		return mixer->isPlaying(ogg_instance_id);
 	}
 	return false;
 }
