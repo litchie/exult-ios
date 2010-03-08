@@ -1,3 +1,8 @@
+2010-03-08 Dominik Reichardt <dominus@users.sourceforge.net>
+	* README, /docs/*: updated Documentation, fixed the xml makefile to do proper cases
+	* /data/credits.txt: fixed typo in Jakob Schonberg's name
+	* README.MacOSX: additional information for compiling and running Exult Studio on OS X
+	
 2010-03-07 Dominik Reichardt <dominus@users.sourceforge.net>
 	* makefile.am: added an option to make dmg-image of the app-bundle and some other files
 	* /macosx/DS_Store: added Desktop Services Store file to layout the dmg-image
