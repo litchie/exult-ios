@@ -34,7 +34,7 @@ for l in glibtoolize libtoolize15 libtoolize14 libtoolize ; do
   }
 done
 
-if [ "x$libtoolize" == "x" ]; then
+if test "x$libtoolize" = "x" ; then
   echo "**Error**: You must have 'libtool' installed to compile Exult."
   echo "Download the appropriate package for your distribution,"
   echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"

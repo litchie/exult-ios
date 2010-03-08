@@ -1,3 +1,7 @@
+2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* autogen.sh: Changed == (which is a bashism) into = for test.
+	* shapes/glshape.*: Fixed MacOS X PPC compilation error.
+
 2010-03-08 Dominik Reichardt <dominus@users.sourceforge.net>
 	* README, /docs/*: updated Documentation, fixed the xml makefile to do proper cases
 	* /data/credits.txt: fixed typo in Jakob Schonberg's name
