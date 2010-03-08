@@ -270,6 +270,7 @@ osxdmg: bundle
 					-srcfolder Exult-snapshot \
 					-volname "Exult" \
 					Exult-snapshot.dmg
+	rm -rf Exult-snapshot
 
 else
 install-exec-local:
