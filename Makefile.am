@@ -254,6 +254,7 @@ install-exec-local: bundle
 
 osxdmg: bundle
 	mkdir Exult-snapshot
+	mkdir ./Exult-snapshot/images
 	cp $(srcdir)/AUTHORS ./Exult-snapshot/Authors
 	cp $(srcdir)/COPYING ./Exult-snapshot/License
 	cp $(srcdir)/NEWS ./Exult-snapshot/News
