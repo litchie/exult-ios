@@ -13,6 +13,8 @@ libmididrv_la_SOURCES =	\
 	be_midi.h		\
 	CoreAudioMidiDriver.cpp	\
 	CoreAudioMidiDriver.h	\
+	CoreMidiDriver.cpp \
+	CoreMidiDriver.h \
 	FileMidiDriver.cpp	\
 	FileMidiDriver.h	\
 	fmopl.cpp		\

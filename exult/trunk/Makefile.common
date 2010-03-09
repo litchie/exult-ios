@@ -94,6 +94,7 @@ MIDI_DRV_OBJS=\
 	audio/midi_drivers/TimidityMidiDriver.o \
 	audio/midi_drivers/UnixSeqMidiDriver.o \
 	audio/midi_drivers/WindowsMidiDriver.o \
+	audio/midi_drivers/CoreMidiDriver.o \
 	audio/midi_drivers/XMidiEventList.o \
 	audio/midi_drivers/XMidiFile.o \
 	audio/midi_drivers/XMidiSequence.o \
