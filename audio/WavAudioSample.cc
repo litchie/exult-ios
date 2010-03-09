@@ -27,8 +27,8 @@ using namespace Pentagram;
 
 WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buffer,0,0,false,false)
 {
-	uint32 pos_fmt_ = 0;
-	uint32 size_fmt_ = 0;
+	uint32 pos_fmt = 0;
+	uint32 size_fmt = 0;
 
 	uint32 pos_data = 0;
 	uint32 size_data = 0;
@@ -45,6 +45,7 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	uint32 riff_size = ds.read4();
 	if (riff_size != size-8) return;
 
+	ds.read(buf,4);
 	if (std::memcmp(buf,"WAVE",4)) return;
 
 	while (ds.getPos() < riff_size+8)
@@ -52,10 +53,10 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 		ds.read(buf,4);
 		uint32 chunk_size = ds.read4();
 
-		if (!std::memcmp(buf,"fmt_",4)) 
+		if (!std::memcmp(buf,"fmt ",4)) 
 		{
-			pos_fmt_ = ds.getPos();
-			size_fmt_ = chunk_size;
+			pos_fmt = ds.getPos();
+			size_fmt = chunk_size;
 
 			if (pos_data) break;
 		}
@@ -64,15 +65,15 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 			pos_data = ds.getPos();
 			size_data = chunk_size;
 
-			if (pos_fmt_) break;
+			if (pos_fmt) break;
 		}
 
 		ds.skip(chunk_size);
 	}
 
-	if (!pos_fmt_ || !pos_data || size_fmt_ < 0x10) return;
+	if (!pos_fmt || !pos_data || size_fmt < 0x10) return;
 
-
+	ds.seek(pos_fmt);
 	uint16 format_tag = ds.read2(); 
 	uint16 channels = ds.read2();
 	sample_rate = ds.read4();
@@ -88,7 +89,7 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	stereo = channels == 2;
 	bits = bits_per_sample ;
 
-	length = pos_data+size_data;
+	buffer_size = pos_data+size_data;
 	start_pos = pos_data;
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
@@ -111,18 +112,19 @@ bool WavAudioSample::isThis(IDataSource *ds)
 {
 	char buf[4];
 	ds->seek(0);
-	ds->read(buf,4);
 
+	ds->read(buf,4);
 	if (std::memcmp(buf,"RIFF",4)) return false;
 
 	uint32 riff_size = ds->read4();
 
 	if (riff_size != ds->getSize()-8) return false;
 
+	ds->read(buf,4);
 	if (std::memcmp(buf,"WAVE",4)) return false;
 
-	uint32 pos_fmt_ = 0;
-	uint32 size_fmt_ = 0;
+	uint32 pos_fmt = 0;
+	uint32 size_fmt = 0;
 
 	uint32 pos_data = 0;
 	uint32 size_data = 0;
@@ -132,10 +134,10 @@ bool WavAudioSample::isThis(IDataSource *ds)
 		ds->read(buf,4);
 		uint32 chunk_size = ds->read4();
 
-		if (!std::memcmp(buf,"fmt_",4)) 
+		if (!std::memcmp(buf,"fmt ",4)) 
 		{
-			pos_fmt_ = ds->getPos();
-			size_fmt_ = chunk_size;
+			pos_fmt = ds->getPos();
+			size_fmt = chunk_size;
 
 			if (pos_data) break;
 		}
@@ -146,15 +148,15 @@ bool WavAudioSample::isThis(IDataSource *ds)
 			pos_data = ds->getPos();
 			size_data = chunk_size;
 
-			if (pos_fmt_) break;
+			if (pos_fmt) break;
 		}
 
 		ds->skip(chunk_size);
 	}
 
-	if (!pos_fmt_ || !pos_data || size_fmt_ < 0x10) return false;
+	if (!pos_fmt || !pos_data || size_fmt < 0x10) return false;
 
-	ds->seek(pos_fmt_);
+	ds->seek(pos_fmt);
 
 	uint16 format_tag = ds->read2(); 
 	uint16 channels = ds->read2();
