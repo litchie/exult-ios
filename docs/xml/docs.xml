@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="08 March 2010(GMT)">
+<readme title="Exult" changed="09 March 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="09032010">
+			<header>- 09 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="midi_music"/> CoreMIDI driver added.</li>
+				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="08032010">
 			<header>- 08 March 2010</header>
 			<body>
@@ -257,8 +266,7 @@
 					<li>You need an installed version of Ultima 7 to run <Exult/> with.
 						At <section_ref target="Installing the original Ultima VII games for use with Exult"/>
 						we have a guide on how to install the original games.</li>
-					<li>Copy the installed Ultima7 folder to an appropriate folder
-					 	- see <ref target="path_config"/> for suggestions.</li>
+					<li>Copy the installed Ultima7 folder to an appropriate folder</li>
 					<li>Download <Exult/> from our 
 						<extref target="http://exult.sourceforge.net/download.php">download section</extref>
 						and install it. The Windows version comes with an installer that asks for the 
@@ -1017,6 +1025,8 @@
         				For use on BeOS.</li>
 					<li><strong>CoreAudio</strong><br/>
         				uses XMIDI on Mac OSX.</li>
+					<li><strong>CoreMIDI</strong><br/>
+	        			with this MIDI driver a Real MT32 can be used on Mac OSX.</li>
 					<li><strong>alsa</strong><br/>
         				uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;alsa_port&gt; in the exult.cfg.</li>
@@ -1816,7 +1826,7 @@
 			<header>Error Log</header>
 			<body>
 				<ul>
-					<li><strong>MacOS/Win32:</strong><br/>
+					<li><strong>Windows:</strong><br/>
 						<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
 						These may give you some idea of what is going on
 						under the hood. When <Exult/> suddenly quits, sometimes
@@ -1826,6 +1836,9 @@
 						is started.<br/>
 						<kbd>./exult &gt;&amp;log</kbd><br/>
 						will send both stderr and stdout to the file named "log".</li>
+					<li><strong>Mac OS X:</strong><br/>
+						When you are running the app bundle Exult.app then the error log will be shown 
+						in the OS X Application Console (/Applications/Utilities/Console.app).</li>
 				</ul>
 			</body>
 		</sub>
