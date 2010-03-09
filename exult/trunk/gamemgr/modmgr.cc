@@ -331,12 +331,28 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 
 		// We will NOT trust config with these values.
 		// We MUST NOT use path tags at this point yet!
-	string static_dir;
+	string game_path, static_dir;
 		{
-		string data_directory, default_dir("./" + cfgname),
-			config_path, base_cfg_path("config/disk/game/" + cfgname);
+		string gameprefix, default_dir, data_directory, config_path,
+			base_cfg_path("config/disk/game/" + cfgname);
+
+#if (defined(XWIN) || defined (MACOSX))	// Probably others.
+		gameprefix = EXULT_DATADIR "/" + cfgname;
+#else
+		gameprefix = "./" + cfgname;
+#endif
+
+			// ++++ These path settings are for that game data which requires only
+			// ++++ read access. They default to a subdirectory of:
+			// ++++ 	*nix, MacOS X: /usr/local/share/exult or /usr/share/exult
+			// ++++ 	Windows, MacOS, BeOS, Amiga: program path.
+
+			// <path> setting: default is "$gameprefix".
 		config_path = base_cfg_path + "/path";
+		default_dir = gameprefix;
 		config->value(config_path.c_str(), data_directory, default_dir.c_str());
+	
+			// <static_path> setting: default is "$data_directory/static".
 		config_path = base_cfg_path + "/static_path";
 		default_dir = data_directory + "/static";
 		config->value(config_path.c_str(), static_dir, default_dir.c_str());
@@ -408,8 +424,16 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		delete[] static_identity;
 
 	menustring = needtitle ? new_title : menu;
+		// NOW we can store the path.
+	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
+#ifdef DEBUG_PATHS
+	cout << "path prefix of " << cfgname
+		<< " is: " << path_prefix << endl;
+	cout << "setting " << cfgname
+		<< " static directory to: " << static_dir << endl;
+#endif
 
-	get_game_paths();
+	get_game_paths(game_path);
 	gather_mods();
 	}
 
@@ -495,35 +519,19 @@ BaseGameInfo *ModManager::get_mod(const string& name, bool checkversion)
  *	per-game system_path entries, which are then used later once the
  *	game is selected.
  */
-void ModManager::get_game_paths()
+void ModManager::get_game_paths(const string& game_path)
 	{
-	string gameprefix("./" + cfgname), dataprefix(get_cfg_home(cfgname)),
-		default_dir, current_path, data_directory, config_path,
-		gamedat_dir, static_dir, savegame_dir, patch_dir, mods_dir,
+	string dataprefix(get_cfg_home(cfgname)), default_dir,
+		config_path, gamedat_dir, static_dir, savegame_dir, patch_dir, mods_dir,
 		base_cfg_path("config/disk/game/" + cfgname);
-
-		// ++++ These first path settings are for paths that require only
-		// ++++ read access. They default to a subdirectory of the program
-		// ++++ directory.
-
-		// <path> setting: default is "$gameprefix".
-	config_path = base_cfg_path + "/path";
-	default_dir = gameprefix;
-	config->value(config_path.c_str(), data_directory, default_dir.c_str());
 	
-		// <static_path> setting: default is "$data_directory/static".
-	config_path = base_cfg_path + "/static_path";
-	default_dir = data_directory + "/static";
-	config->value(config_path.c_str(), static_dir, default_dir.c_str());
-	add_system_path("<" + path_prefix + "_STATIC>", static_dir);
-	
-		// ++++ Here start the directories with read/write requirements.
+		// ++++ All of these are directories with read/write requirements.
 		// ++++ They default to a directory in the current user's profile,
 		// ++++ with Win9x and old MacOS (possibly others) being exceptions.
 
 		// Usually for Win9x:
 	if (dataprefix == ".")
-		dataprefix = data_directory;
+		dataprefix = game_path;
 
 		// <gamedat_path> setting: default is "$dataprefix".
 	config_path = base_cfg_path + "/savegame_path";
@@ -554,13 +562,6 @@ void ModManager::get_game_paths()
 	add_system_path("<" + path_prefix + "_PATCH>", patch_dir);
 
 #ifdef DEBUG_PATHS
-	cout << "path prefix of " << cfgname
-		<< " is: " << path_prefix << endl;
-	cout << "setting " << cfgname
-		<< " game directories to: " << data_directory << endl;
-	cout << "setting " << cfgname
-		<< " static directory to: " << static_dir << endl;
-	cout << "setting " << cfgname
 		<< " gamedat directory to: " << gamedat_dir << endl;
 	cout << "setting " << cfgname
 		<< " savegame directory to: " << savegame_dir << endl;
