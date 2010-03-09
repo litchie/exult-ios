@@ -24,6 +24,7 @@
 #include <SDL_audio.h>
 #include "Midi.h"
 #include "exceptions.h"
+#include "AudioMixer.h"
 
 //SDL_mixer doesn't like mixing different rates when using OGG
 //This should match the same as the SFX and OGG Music which is 22khz
@@ -50,9 +51,6 @@ enum Combat_song
 
 //---- Audio -----------------------------------------------------------
 
-namespace Pentagram {
-	class AudioMixer;
-};
 class Audio 
 {
 private:
@@ -104,9 +102,9 @@ public:
 	void	start_music(std::string fname,int num,bool continuous=false);
 	void	start_music_combat(Combat_song song,bool continuous);
 	void	stop_music();
-	int		play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
+	int		play_sound_effect (int num, int volume = AUDIO_MAX_VOLUME,
 					int dir = 0, int repeat = 0);
-	int		play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME,
+	int		play_wave_sfx(int num, int volume = AUDIO_MAX_VOLUME,
 					int dir = 0, int repeat = 0);
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);

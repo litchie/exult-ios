@@ -45,6 +45,7 @@
 #  include <cstdlib>
 #  include <cstring>
 #  include <iostream>
+#  include <climits>
 #endif
 #ifndef UNDER_CE
 #include <fcntl.h>
@@ -102,53 +103,6 @@ int const *Audio::bg2si_sfxs = 0;
 
 //----- SFX ----------------------------------------------------------
 
-/*
-*	For caching sound effects:
-*/
-class SFX_cached
-{
-	int num;			// Sound-effects #.
-	AudioSample *data;	// The data.
-	SFX_cached *next;	// Next in chain.
-	int ref_cnt;		// Reference count of the sfx/voice.
-public:
-	friend class Audio;
-	friend class SFX_cache_manager;
-	SFX_cached(int sn, uint8 *b, uint32 l, SFX_cached *oldhead)
-		: num(sn), next(oldhead), ref_cnt(1)
-	{
-		/*
-		if (num >= 0 || !strncmp((const char *)b, "OggS", 4))
-		{
-		SDL_RWops *rwsrc = SDL_RWFromMem(b, l);
-		data = Mix_LoadWAV_RW(rwsrc, 1);
-		}
-		else
-		data = Mix_QuickLoad_RAW(b, l);
-		*/
-	}
-	~SFX_cached()
-	{
-		Uint8 *chunkbuf=NULL;
-		//if(data->allocated == 0)
-		//	chunkbuf = data->abuf;
-		//Mix_FreeChunk(data);
-
-		//Must be freed after the Mix_FreeChunk
-		if(chunkbuf)
-			delete[] chunkbuf;
-	}
-	void add_ref(void)
-	{ ++ref_cnt; }
-	void release(void)
-	{
-		// Free when refcount is 0
-		if (!--ref_cnt)
-			delete this;
-	}
-	int get_num_refs(void)
-	{ return(ref_cnt); }
-};
 
 /*
 *	This is a resource-management class for SFX. Maybe make it a
@@ -159,148 +113,63 @@ public:
 class SFX_cache_manager
 {
 protected:
-	SFX_cached *cache;
+	typedef std::pair<int,AudioSample*> SFX_cached;
+	typedef std::map<int, SFX_cached>::iterator cache_iterator;
+
+	std::map<int, SFX_cached> cache;
 
 	// Tries to locate a sfx in the cache based on sfx num.
 	SFX_cached *find_sfx(int id)
 	{
-		SFX_cached *prev = 0;
-		for (SFX_cached *each = cache; each; each = each->next)
-		{
-			if (each->num == id)
-			{
-				// Move to head of chain.
-				if (prev)
-				{
-					prev->next = each->next;
-					each->next = cache;
-					cache = each;
-				}
-				return each;
-			}
-			prev = each;
-		}
-		return 0;
+		cache_iterator found = cache.find(id);
+		if (found  == cache.end()) return 0;
+		return &(found->second);
 	}
 
-	// Loads a wave SFX from its digital file and num.
-	SFX_cached *load_sfx(Flex *sfx_file, int id)
-	{
-		size_t wavlen;			// Read .wav file.
-		unsigned char *wavbuf =
-			(unsigned char *) sfx_file->retrieve(id, wavlen);
-		if (wavlen)
-			cache = new SFX_cached(id, wavbuf, wavlen, cache);
-		delete[] wavbuf;
-
-		// Perform garbage collection here.
-		garbage_collect();
-		return wavlen ? cache : (SFX_cached *)0;
-	}
-
-	// Unloads a given SFX, based on data pointer.
-	void unload(AudioSample *data)
-	{
-		/*
-		SFX_cached *prev = 0, *each;
-		for (each = cache; each; each = each->next)
-		{
-		if (data == each->data)
-		{
-		// Free the object if not in use
-		if (each->ref_cnt != 1)
-		{
-		CERR("Unloading cached SFX " << each->num
-		<< " while it was still in use! This better be happening because Exult is closing!");
-		while (each->ref_cnt > 1)
-		each->release();
-		}
-
-		// Unlink
-		if (prev)
-		prev->next = each->next;
-		else
-		cache = each->next;
-
-		each->release();
-		break;
-		}
-		prev = each;
-		}
-		*/
-	}
 public:
 	SFX_cache_manager()
-	{ cache = 0; }
+	{ }
 	~SFX_cache_manager()
 	{ flush(); }
-
-	// For sounds played through 'play', which include voice and some SFX (?)
-	// in the intro sequences.
-	AudioSample *add_from_data(unsigned char *wavbuf, size_t wavlen)
-	{
-		/*
-		cache = new SFX_cached(-1, wavbuf, wavlen, cache);
-		cache->add_ref();
-
-		// Perform garbage collection here.
-		garbage_collect();
-		return cache->data;
-		*/
-		return 0;
-	}
 
 	// For SFX played through 'play_wave_sfx'. Searched cache for
 	// the sfx first, then loads from the sfx file if needed.
 	AudioSample *request(Flex *sfx_file, int id)
 	{
-		/*
-		SFX_cached *sfx = 0;
-		if (id > -1 && sfx_file)
-		{
-		sfx = find_sfx(id);
-		if (!sfx)
-		sfx = load_sfx(sfx_file, id);
-		if (!sfx)
-		return (Mix_Chunk *)0;
-		sfx->add_ref();
-		return sfx->data;
+		SFX_cached *loaded = find_sfx(id);
+		if (!loaded) {
+			SFX_cached new_sfx;
+			new_sfx.first = 0;
+			new_sfx.second = 0;
+			loaded = &(cache[id] = new_sfx);
 		}
-		return (Mix_Chunk *)0;
-		*/
-		return 0;
-	}
 
-	// Reduces the ref-count of the data, to a minimum of 1.
-	// Does *not* remove from cache, ever.
-	void release(AudioSample *data)
-	{
-		/*
-		if (!data)
-		return;
-		SFX_cached *prev = 0, *each;
-		for (each = cache; each; each = each->next)
+		if (!loaded->second)
 		{
-		if (data == each->data)
-		{
-		// Free the object if not in use
-		if (each->ref_cnt == 1)
-		CERR("Tried to release cached but unused SFX");
-		else
-		each->release();
-		break;
+			garbage_collect();
+
+			size_t wavlen;			// Read .wav file.
+			uint8 *wavbuf = (uint8*) sfx_file->retrieve(id, wavlen);
+			loaded->second = AudioSample::createAudioSample(wavbuf,wavlen);
 		}
-		prev = each;
-		}
-		*/
+
+		if (!loaded->second) return 0;
+
+		// Increment counter
+		++loaded->first;
+
+		return loaded->second;
 	}
 
 	// Empties the cache.
 	void flush(void)
 	{
-		while (cache)
-			unload(cache->data);
-		cache = 0;
+		for (cache_iterator it = cache.begin() ; it != cache.end(); it = cache.begin())
+		{
+			if (it->second.second) it->second.second->Release();
+			it->second.second = 0;
+			cache.erase(it);
+		}
 	}
 
 	// Remove unused sounds from the cache.
@@ -310,24 +179,54 @@ public:
 		// count may be higher if all of the cached sounds are
 		// being played).
 		const int max_fixed = 6;
-		SFX_cached *each = cache;
-		SFX_cached *prev = 0;
-		int cnt = 0;
-		while (each)
+
+		std::multiset <int> sorted;
+
+		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
 		{
-			if (each->ref_cnt == 1 &&
-				(each->num < 0 || cnt >= max_fixed))
-			{	// Remove from cache and unlink.
-				prev->next = each->next;
-				each->release();
+			if (it->second.second) sorted.insert(it->second.first); 
+		}
+
+		if (sorted.empty()) return;
+
+		int threshold = INT_MAX;
+		int count = 0;
+
+		for ( std::multiset <int>::reverse_iterator it = sorted.rbegin( ) ; it != sorted.rend( ); ++it )
+		{
+			if (count < max_fixed)
+			{
+				threshold = *it;
+				count++;
+			}
+			else if (*it == threshold)
+			{
+				count++;
 			}
 			else
-				prev = each;
-			cnt++;
-			// Causes occasional segfault:
-			//each = each->next;
-			each = prev->next;
+			{
+				break;
+			}
 		}
+
+		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
+		{
+			if (it->second.second)
+			{
+				if (it->second.first < threshold) 
+				{
+					it->second.second->Release();
+					it->second.second = 0;
+				}
+				else if (it->second.first == threshold && count < max_fixed) 
+				{
+					it->second.second->Release();
+					it->second.second = 0;
+					count--;
+				}
+			}
+		}
+
 	}
 };
 
@@ -400,30 +299,6 @@ void Audio::Init(int _samplerate,int _channels)
 
 	mixer->openMidiOutput();
 	initialized = true;
-}
-
-void Audio::channel_complete_callback(int chan)
-{
-	/*
-	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
-	SFX_cache_manager *sfxs = Audio::get_ptr()->get_sfx_cache();
-	sfxs->release(done_chunk);
-	*/
-	/*
-	Mix_Chunk *done_chunk = Mix_GetChunk(chan);
-	Uint8 *chunkbuf=NULL;
-
-	//We need to free these chunks as they were allocated by us and not SDL_Mixer
-	//This happens when Mix_QuickLoadRAW is used.
-	if(done_chunk->allocated == 0)
-	chunkbuf = done_chunk->abuf;
-
-	Mix_FreeChunk(done_chunk);
-
-	//Must be freed after the Mix_FreeChunk
-	if(chunkbuf)
-	delete[] chunkbuf;
-	*/
 }
 
 bool	Audio::can_sfx(const std::string &game) const
@@ -727,46 +602,42 @@ int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
 int Audio::play_wave_sfx
 (
  int num,
- int volume,			// 0-128.
+ int volume,			// 0-256.
  int dir,			// 0-15, from North, clockwise.
  int repeat			// Keep playing.
  )
 {
-	if (!effects_enabled || !sfx_file /*|| !mixer*/) 
+	if (!effects_enabled || !sfx_file || !mixer) 
 		return -1;  // no .wav sfx available
-	/*
-	#if 0
+
+#if 0
 	if (Game::get_game_type() == BLACK_GATE)
-	num = bgconv[num];
+		num = bgconv[num];
 	CERR("; after bgconv:  " << num);
-	#endif
+#endif
 	if (num < 0 || (unsigned)num >= sfx_file->number_of_objects())
 	{
-	cerr << "SFX " << num << " is out of range" << endl;
-	return -1;
+		cerr << "SFX " << num << " is out of range" << endl;
+		return -1;
 	}
-	wave = sfxs->request(sfx_file, num);
+	AudioSample *wave = sfxs->request(sfx_file, num);
 	if (!wave)
 	{
-	cerr << "Couldn't play sfx '" << num << "'" << endl;
-	return -1;
+		cerr << "Couldn't play sfx '" << num << "'" << endl;
+		return -1;
 	}
 
-	int sfxchannel;
-	sfxchannel = Mix_PlayChannel(-1, wave, repeat);
-	if (sfxchannel < 0)
+	int instance_id = mixer->playSample(wave,repeat,0,false,AUDIO_DEF_PITCH,volume,volume);
+	if (instance_id < 0)
 	{
-	sfxs->release(wave);
-	CERR("No channel was available to play sfx '" << num << "'");
-	return -1;
+		CERR("No channel was available to play sfx '" << num << "'");
+		return -1;
 	}
 
 	CERR("Playing SFX: " << num);
-	Mix_Volume(sfxchannel, volume);
-	Mix_SetPosition(sfxchannel, (dir * 22), 0);
-	return sfxchannel;
-	*/
-	return -1;
+	//Mix_Volume(sfxchannel, volume);
+	//Mix_SetPosition(sfxchannel, (dir * 22), 0);
+	return instance_id;
 }
 
 /*

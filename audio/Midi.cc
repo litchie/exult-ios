@@ -820,7 +820,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 	ds->seek(0);
 	Pentagram::AudioSample *ogg_sample = new Pentagram::OggAudioSample(ds);
 
-	ogg_instance_id = mixer->playSample(ogg_sample, repeat?2:0, INT_MAX);
+	ogg_instance_id = mixer->playSample(ogg_sample, repeat?-1:0, INT_MAX);
 
 	ogg_sample->Release();
 
