@@ -1,24 +1,25 @@
 Exult Documentation
-last changed: 08 March 2010(GMT)
+last changed: 09 March 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 08 March 2010
-0.2. - 16 July 2009
-0.3. - 03 June 2009
-0.4. - 20 May 2009
-0.5. - 19 May 2009
-0.6. - 18 May 2009
-0.7. - 28 April 2009
-0.8. - 21 October 2007
-0.9. - 08 April 2006
-0.10. - 14 March 2005
-0.11. - 14 August 2004
-0.12. - 23 May 2004
-0.13. - 11 February 2004
-0.14. - 12 December 2003
+0.1. - 09 March 2010
+0.2. - 08 March 2010
+0.3. - 16 July 2009
+0.4. - 03 June 2009
+0.5. - 20 May 2009
+0.6. - 19 May 2009
+0.7. - 18 May 2009
+0.8. - 28 April 2009
+0.9. - 21 October 2007
+0.10. - 08 April 2006
+0.11. - 14 March 2005
+0.12. - 14 August 2004
+0.13. - 23 May 2004
+0.14. - 11 February 2004
+0.15. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -106,7 +107,13 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 08 March 2010
+0.1. - 09 March 2010
+* 3.2. MIDI Music CoreMIDI driver added.
+* 8.2. Error Log added where to find the error log on OS X.
+
+
+
+0.2. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -117,25 +124,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 16 July 2009
+0.3. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.3. - 03 June 2009
+0.4. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.4. - 20 May 2009
+0.5. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.5. - 19 May 2009
+0.6. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.5. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -146,7 +153,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.6. - 18 May 2009
+0.7. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -165,43 +172,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 28 April 2009
+0.8. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.8. - 21 October 2007
+0.9. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OSX added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.9. - 08 April 2006
+0.10. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.10. - 14 March 2005
+0.11. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.11. - 14 August 2004
+0.12. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.12. - 23 May 2004
+0.13. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.13. - 11 February 2004
+0.14. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -212,7 +219,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.14. - 12 December 2003
+0.15. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
@@ -256,7 +263,7 @@ We are using many terms in this documentation, the FAQ and other documentation f
 2.1. Installation
 * First you need to get Ultima 7. Either you own it already, or you buy it somewhere.
 * You need an installed version of Ultima 7 to run Exult with. At 10. Installing the original Ultima VII games for use with Exult we have a guide on how to install the original games.
-* Copy the installed Ultima7 folder to an appropriate folder - see 2.4. for suggestions.
+* Copy the installed Ultima7 folder to an appropriate folder
 * Download Exult from our download section and install it. The Windows version comes with an installer that asks for the location of both BG and SI. If you entered the correct location the next two steps are not necessary.
 * Now run exult (exult.exe on Windows) and quit it immediately.
 * Edit the configuration file with a text editor (e.g. on Windows use Notepad) and enter the correct paths for the game folders - see 2.3. for details
@@ -807,6 +814,7 @@ The MIDI driver can be changed to:
 * Amiga Uses the Amiga MIDI driver on the Amiga system.
 * Be_midi For use on BeOS.
 * CoreAudio uses XMIDI on Mac OSX.
+* CoreMIDI with this MIDI driver a Real MT32 can be used on Mac OSX.
 * alsa uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change <config><audio><midi><alsa_port> in the exult.cfg.
 * Forked On *nix systems uses POSIX fork to create a new thread which will then handle the MIDI playback
 * KMIDI On Linux systems uses uses libkmidi, a KDE MIDI library.
@@ -1180,8 +1188,9 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 8.2. Error Log
-* MacOS/Win32: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
+* Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
 * UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
+* Mac OS X: When you are running the app bundle Exult.app then the error log will be shown in the OS X Application Console (/Applications/Utilities/Console.app).
 
 
 
