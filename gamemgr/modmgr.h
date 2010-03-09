@@ -148,7 +148,7 @@ public:
 	BaseGameInfo *get_mod(const string& name, bool checkversion=true);
 	void add_mod (const string& mod, const string& modconfig);
 
-	void get_game_paths();
+	void get_game_paths(const string& game_path);
 	void gather_mods();
 
 	virtual bool get_config_file(Configuration *&cfg, string& root)
