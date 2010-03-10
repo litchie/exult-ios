@@ -1273,7 +1273,7 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	game_encoding = gameinfo->get_codepage();
 
 	string config_path("config/disk/game/" + gamename + "/path"), gamepath,
-		def_path("./" + gamename);
+		def_path(get_system_path("<SAVEHOME>") + "/" + gamename);
 	config->value(config_path.c_str(), gamepath, def_path.c_str());
 					// Set top-level path.
 	add_system_path("<GAME>", gamepath);
