@@ -85,6 +85,7 @@ int main(int argc, char** argv)
 	if(uc.options.noconf == false)
 	{
 		if(uc.options.verbose) cout << "Loading exult configuration file..." << endl;
+		setup_program_paths();
 		if(config.read_config_file("exult.cfg") == false)
 		{
 			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;

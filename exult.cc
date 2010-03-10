@@ -53,11 +53,6 @@
 #include "chunkter.h"
 #endif
 
-#ifdef MACOSX
-#include <CoreFoundation/CoreFoundation.h>
-#include <sys/param.h> // for MAXPATHLEN
-#endif
-
 #if (defined(USECODE_DEBUGGER) && defined(XWIN))
 #include <csignal>
 #endif
@@ -519,66 +514,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 #endif
 
-static inline void setup_data_dir(Configuration *config, const char *runpath)
-	{
-	// First, try the cfg value:
-	string data_path;
-	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
-	add_system_path("<DATA>", data_path);
-	if (U7exists(EXULT_FLX))
-		return;
-
-	// Now, try default -- if warranted.
-	if (data_path != EXULT_DATADIR)
-		{
-		add_system_path("<DATA>", EXULT_DATADIR);
-		if (U7exists(EXULT_FLX))
-			return;
-		}
-
-	// Try "data" subdirectory for current working directory:
-	add_system_path("<DATA>", "data");
-	if (U7exists(EXULT_FLX))
-		return;
-
-	// Try "data" subdirectory for exe directory:
-	const char *sep = std::strrchr(runpath,'/');
-	if (!sep) sep = std::strrchr(runpath,'\\');
-	int plen = sep-runpath;
-	char *dpath = new char[plen+10];
-	std::strncpy(dpath, runpath, plen+1);
-	dpath[plen+1] = 0;
-	std::strcat(dpath,"data");
-	cerr << "dpath = " << dpath << endl;
-	add_system_path("<DATA>",dpath);
-	if (U7exists(EXULT_FLX))
-		return;
-
-#ifdef MACOSX
-	// Try looking in .app bundle:
-	CFURLRef fileUrl = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
-	if (fileUrl)
-		{
-		unsigned char buf[MAXPATHLEN];
-		if (CFURLGetFileSystemRepresentation(fileUrl, true, buf, sizeof(buf)))
-			{
-			string path((const char *)buf);
-			path += "/data";
-			add_system_path("<DATA>", path.c_str());
-			if (U7exists(EXULT_FLX))
-				return;
-			}
-		}
-#endif
-
-	// We've tried them all...
-	cerr << "Could not find 'exult.flx' anywhere." << endl;	
-	cerr << "Please make sure Exult is correctly installed," << endl;
-	cerr << "and the Exult data path is specified in the configuration file." << endl;
-	cerr << "(See the README file for more information)" << endl;
-	exit(-1);
-	}
-
 /*
  *	Main program.
  */
@@ -606,6 +541,8 @@ int exult_main(const char *runpath)
 	WINCE_exepath = string(runpath).substr(0, string(runpath).find_last_of("\\")+1);
 #endif
 
+	setup_program_paths();
+
 	// Read in configuration file
 	config = new Configuration;
 
@@ -623,7 +560,9 @@ int exult_main(const char *runpath)
 	}
 
 	// Setup virtual directories
-	setup_data_dir(config, runpath);
+	string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	setup_data_dir(data_path, runpath);
 	
 	std::string default_music = get_system_path("<DATA>/music");
 	config->value("config/disk/music_path",music_path,default_music.c_str());
@@ -643,19 +582,22 @@ int exult_main(const char *runpath)
 
 	// Check CRCs of our .flx files
 	bool crc_ok = true;
-	uint32 crc = crc32_syspath(EXULT_FLX);
+	const char *flexname = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
+	uint32 crc = crc32_syspath(flexname);
 	if (crc != EXULT_FLX_CRC32) {
 		crc_ok = false;
 		cerr << "exult.flx has a wrong checksum!" << endl;
 	}
-	if (U7exists("<DATA>/exult_bg.flx")) {
-		if (crc32_syspath("<DATA>/exult_bg.flx") != EXULT_BG_FLX_CRC32) {
+	flexname = BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX);
+	if (U7exists(flexname)) {
+		if (crc32_syspath(flexname) != EXULT_BG_FLX_CRC32) {
 			crc_ok = false;
 			cerr << "exult_bg.flx has a wrong checksum!" << endl;
 		}
 	}
-	if (U7exists("<DATA>/exult_si.flx")) {
-		if (crc32_syspath("<DATA>/exult_si.flx") != EXULT_SI_FLX_CRC32) {
+	flexname = BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+	if (U7exists(flexname)) {
+		if (crc32_syspath(flexname) != EXULT_SI_FLX_CRC32) {
 			crc_ok = false;
 			cerr << "exult_si.flx has a wrong checksum!" << endl;
 		}
@@ -1011,7 +953,8 @@ static void Init
 		config->value("config/gameplay/skip_splash", skip_splash);
 		
 		// Make sure we have a proper palette before playing the intro.
-		gwin->get_pal()->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
+		gwin->get_pal()->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+		    		EXULT_FLX_EXULT0_PAL);
 		gwin->get_pal()->apply();
 		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME
 				|| U7exists(INTRO_DAT)))
@@ -2176,8 +2119,8 @@ void decrease_resolution()
 void make_screenshot (bool silent)
 {
 	// TODO: Maybe use <SAVEGAME>/exult%03i.pcx instead.
-	// Or meybe some form or "My Pictures" on Windows.
-	string homepath = Get_exult_home() + "/exult%03i.pcx";
+	// Or maybe some form or "My Pictures" on Windows.
+	string homepath = get_system_path("<HOME>") + "/exult%03i.pcx";
 	char *fn = new char[homepath.size() + 10];
 	int i;
 	FILE *f;

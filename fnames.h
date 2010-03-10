@@ -67,6 +67,7 @@
 #define TEXT_FLX	"<STATIC>/text.flx"
 #define PATCH_TEXT	"<PATCH>/text.flx"
 #define EXULTMSG	"<DATA>/exultmsg.txt"
+#define BUNDLE_EXULTMSG "<BUNDLE>/exultmsg.txt"
 #define PATCH_EXULTMSG "<PATCH>/exultmsg.txt"
 #define U7IFIX		"<STATIC>/u7ifix"
 #define PATCH_U7IFIX	"<PATCH>/u7ifix"
@@ -160,7 +161,14 @@
 #define MAINMENU_TIM "<STATIC>/mainmenu.tim"
 
 #define EXULT_FLX "<DATA>/exult.flx"
-#ifdef UNDER_CE
+#define EXULT_BG_FLX "<DATA>/exult_bg.flx"
+#define EXULT_SI_FLX "<DATA>/exult_si.flx"
+
+#define BUNDLE_EXULT_FLX "<BUNDLE>/exult.flx"
+#define BUNDLE_EXULT_BG_FLX "<BUNDLE>/exult_bg.flx"
+#define BUNDLE_EXULT_SI_FLX "<BUNDLE>/exult_si.flx"
+
+#if defined(UNDER_CE)
   #define POCKETPC_FLX "<DATA>/exult_pocketpc.flx"
 #endif
 #define AUTONOTES	"autonotes.txt"

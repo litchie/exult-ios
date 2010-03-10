@@ -134,6 +134,9 @@ BG_Game::BG_Game()
 		add_shape("sprites/map", 22);
 		add_shape("sprites/cheatmap", EXULT_BG_FLX_BGMAP_SHP);
 
+		const char *exultflx = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
+		const char *gameflx = BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX);
+
 		add_resource("files/shapes/count", 0, 9);
 		add_resource("files/shapes/0", SHAPES_VGA, 0);
 		add_resource("files/shapes/1", FACES_VGA, 0);
@@ -142,19 +145,19 @@ BG_Game::BG_Game()
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", ENDSHAPE_FLX, 0);
 		add_resource("files/shapes/6", FONTS_VGA, 0);
-		add_resource("files/shapes/7", EXULT_FLX, 0);
-		add_resource("files/shapes/8", "<DATA>/exult_bg.flx", 0);
+		add_resource("files/shapes/7", exultflx, 0);
+		add_resource("files/shapes/8", gameflx, 0);
 
-		add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
+		add_resource("files/gameflx", gameflx, 0);
 
-		add_resource("files/paperdolvga", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BG_PAPERDOL_VGA);
-		add_resource("files/mrfacesvga", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BG_MR_FACES_VGA);
-		add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", EXULT_BG_FLX_DEFAULTKEYS_TXT);
-		add_resource("config/bodies", "<DATA>/exult_bg.flx", EXULT_BG_FLX_BODIES_TXT);
-		add_resource("config/paperdol_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_PAPERDOL_INFO_TXT);
-		add_resource("config/shape_info", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_INFO_TXT);
-		add_resource("config/shape_files", "<DATA>/exult_bg.flx", EXULT_BG_FLX_SHAPE_FILES_TXT);
-		add_resource("config/avatar_data", "<DATA>/exult_bg.flx", EXULT_BG_FLX_AVATAR_DATA_TXT);
+		add_resource("files/paperdolvga", gameflx, EXULT_BG_FLX_BG_PAPERDOL_VGA);
+		add_resource("files/mrfacesvga", gameflx, EXULT_BG_FLX_BG_MR_FACES_VGA);
+		add_resource("config/defaultkeys", gameflx, EXULT_BG_FLX_DEFAULTKEYS_TXT);
+		add_resource("config/bodies", gameflx, EXULT_BG_FLX_BODIES_TXT);
+		add_resource("config/paperdol_info", gameflx, EXULT_BG_FLX_PAPERDOL_INFO_TXT);
+		add_resource("config/shape_info", gameflx, EXULT_BG_FLX_SHAPE_INFO_TXT);
+		add_resource("config/shape_files", gameflx, EXULT_BG_FLX_SHAPE_FILES_TXT);
+		add_resource("config/avatar_data", gameflx, EXULT_BG_FLX_AVATAR_DATA_TXT);
 
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);
@@ -1724,7 +1727,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	// This should work because the palette in exult_bg.flx is
 	// a single-file object.
 	pal->load(INTROPAL_DAT,
-		File_spec("<DATA>/exult_bg.flx", EXULT_BG_FLX_U7MENUPAL_PAL),
+		File_spec(get_resource("files/gameflx").str, EXULT_BG_FLX_U7MENUPAL_PAL),
 		PATCH_INTROPAL, 6);
 	Palette *oldpal = new Palette();
 	oldpal->load(INTROPAL_DAT, PATCH_INTROPAL, 6);

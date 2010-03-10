@@ -113,6 +113,9 @@ SI_Game::SI_Game()
 		add_shape("gumps/jawbone", 56);
 		add_shape("gumps/tooth", 57);
 
+		const char *exultflx = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
+		const char *gameflx = BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+
 		add_resource("files/shapes/count", 0, 8);
 		add_resource("files/shapes/0", SHAPES_VGA, 0);
 		add_resource("files/shapes/1", FACES_VGA, 0);
@@ -120,17 +123,17 @@ SI_Game::SI_Game()
 		add_resource("files/shapes/3", SPRITES_VGA, 0);
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", PAPERDOL, 0);
-		add_resource("files/shapes/6", EXULT_FLX, 0);
+		add_resource("files/shapes/6", exultflx, 0);
 		add_resource("files/shapes/7", FONTS_VGA, 0);
 
-		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
-	
-		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", EXULT_SI_FLX_DEFAULTKEYS_TXT);
-		add_resource("config/bodies", "<DATA>/exult_si.flx", EXULT_SI_FLX_BODIES_TXT);
-		add_resource("config/paperdol_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_PAPERDOL_INFO_TXT);
-		add_resource("config/shape_info", "<DATA>/exult_si.flx", EXULT_SI_FLX_SHAPE_INFO_TXT);
-		add_resource("config/shape_files", "<DATA>/exult_si.flx", EXULT_SI_FLX_SHAPE_FILES_TXT);
-		add_resource("config/avatar_data", "<DATA>/exult_si.flx", EXULT_SI_FLX_AVATAR_DATA_TXT);
+		add_resource("files/gameflx", gameflx, 0);
+
+		add_resource("config/defaultkeys", gameflx, EXULT_SI_FLX_DEFAULTKEYS_TXT);
+		add_resource("config/bodies", gameflx, EXULT_SI_FLX_BODIES_TXT);
+		add_resource("config/paperdol_info", gameflx, EXULT_SI_FLX_PAPERDOL_INFO_TXT);
+		add_resource("config/shape_info", gameflx, EXULT_SI_FLX_SHAPE_INFO_TXT);
+		add_resource("config/shape_files", gameflx, EXULT_SI_FLX_SHAPE_FILES_TXT);
+		add_resource("config/avatar_data", gameflx, EXULT_SI_FLX_AVATAR_DATA_TXT);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);
