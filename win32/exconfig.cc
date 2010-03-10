@@ -358,7 +358,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (get_system_path("<CONFIG>")) == ".")
+		if (get_system_path("<CONFIG>") == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
