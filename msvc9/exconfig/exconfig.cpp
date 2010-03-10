@@ -400,8 +400,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	{
 		case DLL_PROCESS_ATTACH:
 		case DLL_THREAD_ATTACH:
-			setup_program_paths();
-			break;
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
 			break;
