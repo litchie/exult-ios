@@ -22,6 +22,7 @@
 #include <SDL_timer.h>
 
 #include <fstream>
+#include <set>
 //#include "SDL_mapping.h"
 
 #include "Audio.h"
