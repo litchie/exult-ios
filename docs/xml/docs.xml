@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="09 March 2010(GMT)">
+<readme title="Exult" changed="10 March 2010(GMT)">
 	<section title="Changes to the Documentation">
-		<sub name="09032010">
-			<header>- 09 March 2010</header>
+		<sub name="10032010">
+			<header>- 10 March 2010</header>
 			<body>
 				<ul>
 				<li><ref1 target="path_config"/> I've split this up for all the different OS'.</li>
+				<li> added Path-Settings chapters for the most common OS with examples.</li>
 				<li><ref1 target="midi_music"/> CoreMIDI driver added.</li>
+				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
 				<li><ref1 target="mods_savegames_location"/> added this so savegames of modded games can be found.</li>
 				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
 				</ul>
@@ -756,8 +758,9 @@
 					Some notes for <strong>all</strong> Operating Systems:
 				</para>
 				<ul>
-					<li>Except for the &lt;path&gt; setting all of these settings are <strong>optional and not required</strong>,
+					<li>On Windows all of these settings, except for the &lt;path&gt; setting, are <strong>optional and not required</strong>,
 						Exult will sort this out on its own.</li>
+					<li>On *nix and OS X you might even not need to touch the &lt;path&gt; setting, if you stick to our standard gamenames.</li>
 					<li>You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path to point to the 
 						correct folder. The realtive path uses the exult.exe, exult binary or Exult.app as base.</li>
 					<li>Better don't use spaces in the path (e.g. c:\exult\the black gate\). Some people seem to have reported 
@@ -856,7 +859,10 @@
 					"shell:Local AppData\Exult" in the "Run" entry of the Startmenu (or the "Run or Search" entry of 
 					the Windows Vista and 7 Startmenu).<br/>
 					For now <Exult/>'s data folder is always installed into the same folder where you installed 
-					<Exult/> to (default is C:\Program Files\Exult).
+					<Exult/> to (default is C:\Program Files\Exult).<br/>
+					Also not that in contrast to Mac OS X and *nix systems there is no default path, where <Exult/> looks
+					for the games. You have to choose that folder yourself, but the installer will ask you for the BG and SI 
+					folder to set your paths up.
 				</para>
 				<para>
 					Example: User named <strong>Dominus</strong> on <strong>Windows XP</strong>. BG is installed to C:\Ultima7\blackgate 
@@ -925,9 +931,24 @@
 					Note that on OS X <Exult/> also has a default folder (/Library/Application Support/Exult/) 
 					for <Exult/>'s data and the files of the games. On purpose this folder is not in the User-only 
 					space, so other users on the same mac can play the games and use the Exult.app.<br/>
+					<strong>But</strong> you will need to follow our gamename standard when you name the game 
+					folders, see <ref1 target="terms"/>, otherwise <Exult/> will not find them there.<br/>
 					Another specialty on OS X is that the Exult.app comes bundled with the <Exult/> data, so 
 					<Exult/> will first use the data in the Exult.app and then use the data in the default location 
-					(/Library/Application Support/Exult/) or the location written down in exult.cfg's &lt;data_path&gt;.
+					(/Library/Application Support/Exult/data) or the location written down in exult.cfg's &lt;data_path&gt;.
+					This means that you can copy the sfx files and the digital music folder into the app bundle 
+					(Exult.app/Contents/Resources/data) and Exult will automatically use these.
+				</para>
+				<para>
+					Example: User named <strong>Dominus</strong> on <strong>Mac OS X 10.6</strong>. BG is installed to 
+					/Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. 
+					The app Exult.app is saved to /Applications. When you run <Exult/> it will automatically recognize that BG and SI 
+					are installed. You do not need to edit exultcfg, which is svaed to ~/Library/Preferences/exult.cfg.
+					When you save a game in BG the savegame will be saved to ~/Library/Preferences/exult/blackgate/exult00bg.sav, 
+					for SI to ~/Library/Preferences/exult/serpentisle/exult00si.sav.<br/>
+					If you install for example the keyring mod, you copy the contents of the Keyring.zip to 
+					/Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be 
+					found in ~/Library/Preferences/exult/blackgate/mods/keyring/exult00bg.sav.
 				</para>
 			</body>
 		</sub>
@@ -970,7 +991,20 @@
 				</configdesc>
 				<para>
 					Like on OS X, <Exult/> uses on *nix systems a default path for its data folder and the game files. 
-					Unless you use a different path in exult.cfg, <Exult/> will look for these in /usr/local/share/exult.
+					Unless you use a different path in exult.cfg, <Exult/> will look for these in /usr/local/share/exult.<br/>
+					<strong>But</strong> you will need to follow our gamename standard when you name the game 
+					folders, see <ref1 target="terms"/>, otherwise <Exult/> will not find them there.
+				</para>
+				<para>
+					Example: User named <strong>Dominus</strong> on <strong>Ubuntu</strong>. BG is installed to 
+					/usr/local/share/exult/blackgate and SI is installed to /usr/local/share/exult/serpentisle. 
+					When you run <Exult/> it will automatically recognize that BG and SI are installed. You do not 
+					need to edit exultcfg, which is svaed to $HOME/.exult.cfg.<br/>
+					When you save a game in BG the savegame will be saved to $HOME/.exult/blackgate/exult00bg.sav, 
+					for SI to $HOME/.exult/serpentisle/exult00si.sav.<br/>
+					If you install for example the keyring mod, you copy the contents of the Keyring.zip to 
+					/usr/local/share/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be 
+					found in $HOME/.exult/blackgate/mods/keyring/exult00bg.sav.
 				</para>
 			</body>
 		</sub>
@@ -1336,10 +1370,11 @@
 					don't concern you.
 				</para>
 				<para>
-					Extract the zip files into your <Exult/> data folder and write down the name of the
-					pack in your exult.cfg file (see <ref target="exult_config"/>). You don't need to
-					set correct paths anymore if the pack is in the data folder.<br/>
-					An example of how the relevant part of exult.cfg looks with these packs:
+					Extract the zip files into your <Exult/> data folder. <Exult/> will automatically find and 
+					use the SFX packs. If both packs (SoundBlaster and Roland MT-32) are prsent, Exult will 
+					default to the Roland MT32 pack unless you override this setting in the exult.cfg 
+					(see <ref target="exult_config"/>).<br/>
+					An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
 				</para>
 				<configdesc>
 					<configtag name="blackgate">
