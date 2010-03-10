@@ -59,6 +59,7 @@ wuc_SOURCES = \
 wud_SOURCES = wud.cc
 
 wud_LDADD = \
+	$(SYSLIBS) \
 	../files/libu7file.la \
 	../usecode/libusecode.la
 

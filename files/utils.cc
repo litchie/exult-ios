@@ -52,6 +52,11 @@
 #include "utils.h"
 #include "fnames.h"
 
+#ifdef MACOSX
+#include <CoreFoundation/CoreFoundation.h>
+#include <sys/param.h> // for MAXPATHLEN
+#endif
+
 using std::cerr;
 using std::string;
 using std::ios;
@@ -664,6 +669,8 @@ void cleanup_output(const char *prefix)
 	}
 #else
 #include <cstdio>
+const std::string Get_home();
+
 // Pulled from exult_studio.cc.
 void redirect_output(const char *prefix)
 	{
@@ -671,7 +678,7 @@ void redirect_output(const char *prefix)
 	fclose(stdout);
 	fclose(stderr);
 
-	string folderPath = Get_exult_home() + "/";
+	string folderPath = Get_home() + "/";
 
 	string stdoutPath = folderPath + prefix + "out.txt";
 	const char *stdoutfile = stdoutPath.c_str();
@@ -709,7 +716,7 @@ void redirect_output(const char *prefix)
 
 void cleanup_output(const char *prefix)
 	{
-	string folderPath = Get_exult_home() + "/";
+	string folderPath = Get_home() + "/";
 	if (!ftell(stdout))
 		{
 		fclose(stdout);
@@ -728,11 +735,7 @@ void cleanup_output(const char *prefix)
 
 const string Get_home()
 	{
-	// Do this only once, as the path is not liable to change during runtime.
-	static string home_dir = "";
-	static bool have_home = false;
-	if (have_home)
-		return home_dir;
+	std::string home_dir;
 #ifdef WIN32
 #ifdef PORTABLE_EXULT_WIN32
 	home_dir = ".";
@@ -749,22 +752,103 @@ const string Get_home()
 	if ((home = getenv("HOME")) != 0)
 		home_dir = home;
 #endif
-	have_home = true;
 	return home_dir;
 	}
 
-const string Get_exult_home()
+void setup_data_dir
+	(
+	const std::string& data_path,
+	const char *runpath
+	)
 	{
-	string home_dir = Get_home();
-#if defined(WIN32)
-	U7mkdir(home_dir.c_str(), 0755);
-#elif !defined(MACOS)
-	home_dir += "/.exult";
-	U7mkdir(home_dir.c_str(), 0755);
+#ifdef MACOSX
+	// Can we try from the bundle?
+	CFURLRef fileUrl = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+	if (fileUrl)
+		{
+		unsigned char buf[MAXPATHLEN];
+		if (CFURLGetFileSystemRepresentation(fileUrl, true, buf, sizeof(buf)))
+			{
+			string path((const char *)buf);
+			path += "/data";
+			add_system_path("<BUNDLE>", path.c_str());
+			if (!U7exists(BUNDLE_EXULT_FLX))
+				clear_system_path("<BUNDLE>");
+			}
+		}
 #endif
-	return home_dir;
+
+	// First, try the cfg value:
+	string path;
+	//config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	add_system_path("<DATA>", path);
+	if (U7exists(EXULT_FLX))
+		return;
+
+	// Now, try default -- if warranted.
+	if (path != EXULT_DATADIR)
+		{
+		add_system_path("<DATA>", EXULT_DATADIR);
+		if (U7exists(EXULT_FLX))
+			return;
+		}
+
+	// Try "data" subdirectory for current working directory:
+	add_system_path("<DATA>", "data");
+	if (U7exists(EXULT_FLX))
+		return;
+
+	// Try "data" subdirectory for exe directory:
+	const char *sep = std::strrchr(runpath,'/');
+	if (!sep) sep = std::strrchr(runpath,'\\');
+	if (sep)
+		{
+		int plen = sep-runpath;
+		char *dpath = new char[plen+10];
+		std::strncpy(dpath, runpath, plen+1);
+		dpath[plen+1] = 0;
+		std::strcat(dpath,"data");
+		std::cerr << "dpath = " << dpath << std::endl;
+		add_system_path("<DATA>",dpath);
+		delete [] dpath;
+		}
+	else
+		{
+		std::cerr << "dpath = data" << std::endl;
+		add_system_path("<DATA>", "data");
+		}
+	if (U7exists(EXULT_FLX))
+		return;
+
+	// We've tried them all...
+	std::cerr << "Could not find 'exult.flx' anywhere." << std::endl;	
+	std::cerr << "Please make sure Exult is correctly installed," << std::endl;
+	std::cerr << "and the Exult data path is specified in the configuration file." << std::endl;
+	std::cerr << "(See the README file for more information)" << std::endl;
+	exit(-1);
 	}
 
+void setup_program_paths()
+	{
+	string home_dir(Get_home()), config_dir(home_dir),
+		savehome_dir(home_dir), gamehome_dir(".");
+
+#ifdef MACOSX
+	config_dir += "/Library/Preferences";
+	savehome_dir += "/Library/Preferences/Exult";
+	gamehome_dir = "/Library/Application Support/Exult";
+#elif defined(XWIN)
+	savehome_dir += "/.exult";
+	gamehome_dir = EXULT_DATADIR;
+#endif
+	add_system_path("<HOME>", home_dir);
+	add_system_path("<CONFIG>", config_dir);
+	add_system_path("<SAVEHOME>", savehome_dir);
+	add_system_path("<GAMEHOME>", gamehome_dir);
+	U7mkdir("<HOME>", 0755);
+	U7mkdir("<CONFIG>", 0755);
+	U7mkdir("<SAVEHOME>", 0755);
+	}
 
 // These are not supported in WinCE (PocketPC) for now
 #ifndef UNDER_CE

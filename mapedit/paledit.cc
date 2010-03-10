@@ -951,7 +951,8 @@ void Palette_edit::export_palette
 					// Write out current palette.
 	GdkRgbCmap *pal = ed->palettes[ed->cur_pal];
 	ofstream out(fname);		// OKAY that it's a 'text' file.
-	out << "Palette from ExultStudio" << endl;
+	out << "GIMP Palette" << endl;
+	out << "# Exported from ExultStudio" << endl;
 	int i;				// Skip 0's at end.
 	for (i = 255; i > 0; i--)
 		if (pal->colors[i] != 0)

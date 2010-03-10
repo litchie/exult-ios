@@ -494,12 +494,12 @@ int U7mkdir(
 	int mode
 	);
 
-const std::string Get_home();
-const std::string Get_exult_home();
 #ifdef WIN32
 void redirect_output(const char *prefix = "std");
 void cleanup_output(const char *prefix = "std");
 #endif
+void setup_data_dir(const std::string& data_path, const char *runpath);
+void setup_program_paths();
 
 // These are not supported in WinCE (PocketPC) for now
 #ifndef UNDER_CE
@@ -523,6 +523,12 @@ void clear_system_path(const std::string& key);
 void add_system_path(const std::string& key, const std::string& value);
 void clone_system_path(const std::string& new_key, const std::string& old_key);
 std::string get_system_path(const std::string &path);
+
+#ifdef MACOSX
+#define BUNDLE_CHECK(x,y) (is_system_path_defined("<BUNDLE>") ? (x) : (y))
+#else
+#define BUNDLE_CHECK(x,y) (y)
+#endif
 
 void to_uppercase(std::string &str);
 std::string to_uppercase(const std::string &str);

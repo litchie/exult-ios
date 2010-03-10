@@ -540,56 +540,105 @@ void Audio::channel_complete_callback(int chan)
 	*/
 }
 
-bool	Audio::can_sfx(const std::string &game) const
+bool	Audio::can_sfx(const std::string &file, std::string *out)
 {
-	string s;
-	string d = "config/disk/game/" + game + "/waves";
-	config->value(d.c_str(), s, "---");
-	if (s != "---" && U7exists(s.c_str()))
+	string d = file;
+	// Full path?
+	if (U7exists(d.c_str()))
+		{
+		if (out)
+			*out = d;
 		return true;
+		}
+
+#ifdef MACOSX
+	// Check in the app bundle:
+	d = "<BUNDLE>/" + file;
+	if (is_system_path_defined("<BUNDLE>") && U7exists(d.c_str()))
+		{
+		if (out)
+			*out = d;
+		return true;
+		}
+#endif
 
 	// Also just check in the actual data dir
-	d = "<DATA>/" + s;
+	d = "<DATA>/" + file;
 	if (U7exists(d.c_str()))
+		{
+		if (out)
+			*out = d;
 		return true;
+		}
 
-#ifdef ENABLE_MIDISFX
-	if (U7exists("<DATA>/midisfx.flx"))
-		return true;
-#endif
-	
 	return false;
 }
 
+bool Audio::have_roland_sfx(Exult_Game game, std::string *out)
+	{
+	if (game == BLACK_GATE)
+		return can_sfx("sqsfxbg.flx", out);
+	else if (game == SERPENT_ISLE)
+		return can_sfx("sqsfxsi.flx", out);
+	return false;
+	}
+	
+bool Audio::have_sblaster_sfx(Exult_Game game, std::string *out)
+	{
+	if (game == BLACK_GATE)
+		return can_sfx("jmsfx.flx", out);
+	else if (game == SERPENT_ISLE)
+		return can_sfx("jmsisfx.flx", out);
+	return false;
+	}
+	
+bool Audio::have_midi_sfx(std::string *out)
+	{
+#ifdef ENABLE_MIDISFX
+	return can_sfx("midisfx.flx", out);
+#else
+	return false;
+#endif
+	}
+	
+bool Audio::have_config_sfx(const std::string &game, std::string *out)
+	{
+	string s;
+	string d = "config/disk/game/" + game + "/waves";
+	config->value(d.c_str(), s, "---");
+	return (s != "---") && can_sfx(s, out);
+	}
+	
 void	Audio::Init_sfx()
 {
-	delete sfx_file;
+	FORGET_OBJECT(sfx_file);
 
-	if (Game::get_game_type() == SERPENT_ISLE)
+	Exult_Game game = Game::get_game_type();
+	if (game == SERPENT_ISLE)
 		bg2si_sfxs = bgconv;
 	else
 		bg2si_sfxs = 0;
 					// Collection of .wav's?
-	string s;
-	string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
-	config->value(d.c_str(), s, "---");
-	if (s != "---")
-	{
-		if (!U7exists(s.c_str()))
+	string flex;
+	if (!have_config_sfx(Game::get_gametitle(), &flex))
 		{
-			d = "<DATA>/" + s;
-			if (!U7exists(d.c_str()))
+		if (have_roland_sfx(game, &flex) || have_sblaster_sfx(game, &flex))
 			{
-				cerr << "Digital SFX's file specified: " << s << "... but file not found" << endl;
-				return;
+			string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
+			size_t sep = flex.rfind('/');
+			if (sep != string::npos)
+				sep++;
+			config->set(d.c_str(), flex.substr(sep), true);
+			}
+		else if (!have_midi_sfx(&flex))
+			{
+			cerr << "Digital SFX's file specified: " << flex
+				<< "... but file not found, and fallbacks are missing" << endl;
+			return;
 			}
 		}
-		else
-			d = s;
-
-		COUT("Opening digital SFX's file: \"" << s << "\"");
-		sfx_file = new FlexFile(d.c_str());
-	}
+	COUT("Opening digital SFX's file: \"" << flex << "\"");
+	sfx_file = new FlexFile(flex.c_str());
 }
 
 Audio::~Audio()

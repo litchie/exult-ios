@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "conv.h"
 #include "databuf.h"
 #include "convmusic.h"
+#include "utils.h"
 
 #include "data/exult_flx.h"
 
@@ -156,7 +157,16 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
 	pflex += flex.c_str() + sizeof("<STATIC>/") - 1;
-	mid_data = new ExultDataSource(flex.c_str(), pflex.c_str(),num);
+#ifdef MACOSX
+	string bflex("<BUNDLE>/");
+	bflex += flex.c_str() + sizeof("<STATIC>/") - 1;
+#endif
+	mid_data = 
+#ifdef MACOSX
+		is_system_path_defined("<BUNDLE>") ?
+			new ExultDataSource(flex.c_str(),bflex.c_str(),pflex.c_str(),num):
+#endif
+			new ExultDataSource(flex.c_str(),pflex.c_str(),num);
 
 	// Extra safety.
 	if (!mid_data->getSize())
@@ -666,9 +676,16 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	size_t		size;
 	DataSource 	*mid_data;
 
-	U7object	track("<DATA>/midisfx.flx",real_num);
+	U7object	*track =
+#ifdef MACOSX
+		is_system_path_defined("<BUNDLE>") ?
+			new U7multiobject("<DATA>/midisfx.flx",
+			    	"<BUNDLE>/midisfx.flx", real_num) :
+#endif
+			new U7object("<DATA>/midisfx.flx",real_num);
 
-	buffer = track.retrieve(size);
+	buffer = track->retrieve(size);
+	delete track;
 	if (!buffer || size <= 0)
 		{
 		delete [] buffer;
@@ -777,6 +794,11 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 
 	if (U7exists("<PATCH>/music/" + ogg_name))
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
+#ifdef MACOSX
+	else if (is_system_path_defined("<BUNDLE>") &&
+	    	U7exists("<BUNDLE>/music/" + ogg_name))
+		ogg_name = get_system_path("<BUNDLE>/music/" + ogg_name);
+#endif
 	else
 		ogg_name = get_system_path(basepath + ogg_name);
 

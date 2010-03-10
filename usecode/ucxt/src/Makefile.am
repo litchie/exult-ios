@@ -9,6 +9,7 @@ ucxt_SOURCES = \
 	ucfunc.cc
 
 ucxt_LDADD = \
+	$(SYSLIBS) \
 	../../../conf/libconf.la \
 	../../../files/libu7file.la
 

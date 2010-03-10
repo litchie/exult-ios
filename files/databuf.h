@@ -451,6 +451,15 @@ public:
 		buf_ptr = const_cast<unsigned char *>(buf);
 		}
 
+	ExultDataSource(const File_spec& fname0, const File_spec& fname1,
+	    	const File_spec& fname2, int index)
+		: BufferDataSource(0,0)
+		{
+		U7multiobject obj(fname0, fname1, fname2, index);
+		buf = reinterpret_cast<unsigned char*>(obj.retrieve(size));
+		buf_ptr = const_cast<unsigned char *>(buf);
+		}
+
 	~ExultDataSource()
 		{
 		delete [] const_cast<unsigned char *>(buf);
