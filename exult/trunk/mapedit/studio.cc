@@ -527,8 +527,13 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
+	setup_program_paths();
 	config = new Configuration;
 	config->read_config_file(USER_CONFIGURATION_FILE);
+	// Setup virtual directories
+	string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	setup_data_dir(data_path, argv[0]);
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	string game = "";			// Game to look up in .exult.cfg.
@@ -612,7 +617,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 		}
 
 	string iedit;			// Get image-editor command.
-	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
+	config->value("config/estudio/image_editor", iedit, "gimp");
 	image_editor = g_strdup(iedit.c_str());
 	config->set("config/estudio/image_editor", iedit, true);
 #ifdef WIN32

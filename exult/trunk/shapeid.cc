@@ -211,7 +211,7 @@ void Shape_manager::load
 	source.push_back(pair<string, int>(PATCH_FACES, -1));
 	files[SF_FACES_VGA].load(source);
 
-	files[SF_EXULT_FLX].load(EXULT_FLX);
+	files[SF_EXULT_FLX].load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;

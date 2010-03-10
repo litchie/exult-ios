@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <cassert>
 #include "common_types.h"
+#include "utils.h"
 
 using std::string;
 
@@ -131,6 +132,7 @@ void	test1(void)
 
 void test2(void)
 {
+	setup_program_paths();
 	config->read_config_file("exult.cfg");
 	config->dump(cout, "\t") << endl;
 }
