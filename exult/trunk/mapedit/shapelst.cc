@@ -905,10 +905,10 @@ void Shape_chooser::edit_shape
 	ExultStudio *studio = ExultStudio::get_instance();
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
-	string filestr("<GAME>");	// Set up filename.
+	string filestr("<SAVEGAME>");	// Set up filename.
 	filestr += "/itmp";		// "Image tmp" directory.
 	U7mkdir(filestr.c_str(), 0755);	// Create if not already there.
-					// Lookup <GAME>.
+					// Lookup <SAVEGAME>.
 	filestr = get_system_path(filestr);
 	char *ext;
 	if (!tiles)			// Create name from file,shape,frame.
