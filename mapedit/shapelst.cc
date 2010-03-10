@@ -944,16 +944,23 @@ void Shape_chooser::edit_shape
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 #ifdef WIN32
+	string imgpath;
 	if (fname[0] == '.' && (fname[1] == '\\' || fname[1] == '/'))
 	{
-		char currdir[260];
-		GetCurrentDirectory (260, currdir);
-		cmd += currdir;
-		if (cmd[cmd.length()-1] != '\\')
-			cmd += '\\';
+		char currdir[MAX_PATH];
+		GetCurrentDirectory (MAX_PATH, currdir);
+		imgpath += currdir;
+		if (imgpath[imgpath.length()-1] != '\\')
+			imgpath += '\\';
 	}
-#endif
+	imgpath += fname;
+	// handle spaces in path.
+	if (imgpath.find(' ') != string::npos))
+		imgpath = "\"" + imgpath + "\"";
+	cmd += imgpath;
+#else
 	cmd += fname;
+#endif
 #ifndef WIN32
 	cmd += " &";			// Background.
 	int ret = system(cmd.c_str());
