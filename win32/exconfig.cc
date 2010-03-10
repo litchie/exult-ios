@@ -290,7 +290,7 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_exult_home() == ".")
+		if (get_system_path("<CONFIG>") == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
@@ -356,7 +356,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_exult_home() == ".")
+		if (get_system_path("<CONFIG>") == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
@@ -482,6 +482,8 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	{
 		case DLL_PROCESS_ATTACH:
 		case DLL_THREAD_ATTACH:
+			setup_program_paths();
+			break;
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
 			break;
