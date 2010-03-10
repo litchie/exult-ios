@@ -1,3 +1,11 @@
+2010-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2967402 OSX: ES is defaulting to wrong path for EXULT_DATADIR
+	  #2967138 ES defaults to the app folder for saving png and shp in Win
+		ES expects the patch dir to be writable -- even if Exult does not -- and
+		defaults to this for all file browsing operations (except for creation
+		of new games).
+
 2010-03-10 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation and FAQ with the changed default path values and other things.
 
@@ -10,6 +18,8 @@
 	  the game, they are added to exult.cfg and used. Exult will now always
 	  search for blackgate, forgeofvirtue, serpentisle and silverseed, even if
 	  there are other games defined in exult.cfg.
+	* Fixed bugs:
+	  #2967402 OSX: ES is defaulting to wrong path for EXULT_DATADIR
 
 2010-03-09 Dominik Reichardt <dominus@users.sourceforge.net>
 	* makfile.common, audio/midid_drivers/*: added CoreMIDI driver for using a real MT32 on OS X

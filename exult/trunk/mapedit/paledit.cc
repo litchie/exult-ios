@@ -490,6 +490,11 @@ on_exportbtn_clicked                   (GtkButton       *button,
 		"Export palette to text format", 
 			(File_sel_okay_fun) Palette_edit::export_palette, 
 							user_data);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
 

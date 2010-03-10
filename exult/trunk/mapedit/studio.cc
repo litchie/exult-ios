@@ -928,6 +928,11 @@ void ExultStudio::new_game()
 	GtkFileSelection *fsel = Create_file_selection(
 			"Choose new game directory",
 			on_choose_new_game_dir, this);
+	if (is_system_path_defined("<SAVEHOME>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<SAVEHOME>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
 
