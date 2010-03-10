@@ -5,6 +5,9 @@
 		ES expects the patch dir to be writable -- even if Exult does not -- and
 		defaults to this for all file browsing operations (except for creation
 		of new games).
+	* Implemented feature requests:
+	  #2967398 Show which sfx pack is used in stdout
+	  #2967397 Gump for selecting SFX pack
 
 2010-03-10 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation and FAQ with the changed default path values and other things.

@@ -34,6 +34,8 @@
 #include "mouse.h"
 #include "XMidiFile.h"
 #include "Enabled_button.h"
+#include "game.h"
+#include "exult_constants.h"
 
 #include "MidiDriver.h"
 
@@ -132,17 +134,31 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		sfx_enabled = state;
 		rebuild_sfx_buttons();
 		paint();
-#ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
-		if (state == 1) {
-			sfx_conversion = XMIDIFILE_CONVERT_GS127_TO_GS;
-		} else {
-			sfx_conversion = XMIDIFILE_CONVERT_NOCONVERSION;
-		}
+		if (sfx_enabled == 1) {
+			sfx_package = state;
+#ifdef ENABLE_MIDISFX
+		} else if (sfx_enabled == 2) {
+			if (state == 1) {
+				sfx_conversion = XMIDIFILE_CONVERT_GS127_TO_GS;
+			} else {
+				sfx_conversion = XMIDIFILE_CONVERT_NOCONVERSION;
+			}
 #endif
+		}
 	} else if (btn == buttons[8]) { // speech on/off
 		speech_enabled = state;
 	}
+}
+
+static void strip_path(std::string& file)
+{
+	if (!file.size())
+		return;
+	size_t sep = file.rfind('/');
+	if (sep != std::string::npos)
+		sep++;
+	file = file.substr(sep);
 }
 
 void AudioOptions_gump::rebuild_buttons()
@@ -160,7 +176,19 @@ void AudioOptions_gump::rebuild_buttons()
 		rebuild_midi_buttons();
 	
 	// sfx on/off
-	buttons[6] = new AudioEnabledToggle(this, colx[2], rowy[8], sfx_enabled);
+	std::string* sfx_options = new std::string[nsfxopts];
+	sfx_options[0] = "Disabled";
+	int i = 1;
+	if (have_digital_sfx())
+#ifndef ENABLE_MIDISFX
+		sfx_options[i++] = "Enabled";
+#else
+		sfx_options[i++] = "Digital";
+	if (have_midi_pack)
+		sfx_options[i++] = "Midi";
+#endif
+	buttons[6] = new AudioTextToggle(this, sfx_options, colx[2], rowy[8],
+									 59, sfx_enabled, nsfxopts);
 	if (sfx_enabled)
 		rebuild_sfx_buttons();
 	
@@ -208,15 +236,30 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 
 	if (!sfx_enabled)
 		return;
-
+	else if (sfx_enabled == 1)
+		{
+		std::string* sfx_digitalpacks = new std::string[nsfxpacks];
+		int i = 0;
+		if (have_roland_pack)
+			sfx_digitalpacks[i++] = "Roland MT-32";
+		if (have_blaster_pack)
+			sfx_digitalpacks[i++] = "Sound Blaster";
+		if (have_custom_pack)
+			sfx_digitalpacks[i++] = "Custom";
+		buttons[7] = new AudioTextToggle(this, sfx_digitalpacks, colx[2]-33,
+										 rowy[9], 92, sfx_package, nsfxpacks);
+		}
 #ifdef ENABLE_MIDISFX
-	std::string* sfx_conversiontext = new std::string[2];
-	sfx_conversiontext[0] = "None";
-	sfx_conversiontext[1] = "GS";
+	else
+		{
+		std::string* sfx_conversiontext = new std::string[2];
+		sfx_conversiontext[0] = "None";
+		sfx_conversiontext[1] = "GS";
 
-	// sfx conversion
-	buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2], rowy[9],
-									 59, sfx_conversion/4,2);
+		// sfx conversion
+		buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2],
+										 rowy[9], 59, sfx_conversion/4,2);
+		}
 #endif
 }
 
@@ -266,7 +309,7 @@ void AudioOptions_gump::load_settings()
 	std::string s;
 	audio_enabled = (Audio::get_ptr()->is_audio_enabled() ? 1 : 0);
 	midi_enabled = (Audio::get_ptr()->is_music_enabled() ? 1 : 0);
-	sfx_enabled = (Audio::get_ptr()->are_effects_enabled() ? 1 : 0);
+	bool sfx_on = (Audio::get_ptr()->are_effects_enabled() ? true : false);
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
 
@@ -341,7 +384,35 @@ void AudioOptions_gump::load_settings()
 	config->value("config/audio/midi/chorus/enabled",s,"no");
 	midi_reverb_chorus |= (s == "yes" ? 2 : 0);
 	
-	
+	std::string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
+	config->value(d.c_str(),s,"---");
+	if (have_roland_pack && s == rolandpack)
+		sfx_package = 0;
+	else if (have_blaster_pack && s == blasterpack)
+		sfx_package = have_roland_pack?1:0;
+	else if (have_custom_pack)
+		sfx_package = nsfxpacks - 1;
+	else	// This should *never* happen.
+		sfx_package = 0;
+	if (!sfx_on)
+		sfx_enabled = 0;
+	else
+		{
+#ifdef ENABLE_MIDISFX
+		config->value("config/audio/effects/midi",s,"no");
+#else
+		s = "no";
+#endif
+		if (s == "yes")
+			sfx_enabled = nsfxopts-1;
+		else if (have_digital_sfx())
+			sfx_enabled = 1;
+		else
+			// Actually disable sfx if no sfx packs and no midi sfx.
+			// This is just in case -- it should not be needed.
+			sfx_enabled = 0;
+		}
+
 }
 
 AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SHP, SF_EXULT_FLX)
@@ -349,6 +420,33 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 	set_object_area(Rectangle(0,0,0,0), 8, 172);//++++++ ???
 
 	for (int i=0; i<12; i++) buttons[i] = 0;
+
+	Exult_Game game = Game::get_game_type();
+	std::string title = Game::get_gametitle();
+	have_config_pack  = Audio::have_config_sfx(title, &configpack);
+	have_roland_pack  = Audio::have_roland_sfx(game, &rolandpack);
+	have_blaster_pack = Audio::have_sblaster_sfx(game, &blasterpack);
+	have_midi_pack    = Audio::have_midi_sfx(&midipack);
+	strip_path(configpack);
+	strip_path(rolandpack);
+	strip_path(blasterpack);
+	strip_path(midipack);
+	have_custom_pack  = have_config_pack && 
+	                   configpack != rolandpack &&
+	                   configpack != blasterpack;
+
+	nsfxopts = 1;	// For "Disabled".
+	nsfxpacks = 0;
+	if (have_digital_sfx())
+		{	// Have digital sfx.
+		nsfxopts++;
+		nsfxpacks += (int)have_roland_pack + (int)have_blaster_pack
+		           + (int)have_custom_pack;
+		if (have_custom_pack)
+			sfx_custompack = configpack;
+		}
+	if (have_midi_pack)	// Midi SFX.
+		nsfxopts++;
 
 	load_settings();
 
@@ -375,7 +473,7 @@ void AudioOptions_gump::save_settings()
 	Audio::get_ptr()->set_music_enabled(midi_enabled == 1);
 	if (!midi_enabled)		// Stop what's playing.
 		Audio::get_ptr()->stop_music();
-	Audio::get_ptr()->set_effects_enabled(sfx_enabled == 1);
+	Audio::get_ptr()->set_effects_enabled(sfx_enabled != 0);
 	if (!sfx_enabled)		// Stop what's playing.
 		Audio::get_ptr()->stop_sound_effects();
 	Audio::get_ptr()->set_speech_enabled(speech_enabled == 1);
@@ -389,6 +487,20 @@ void AudioOptions_gump::save_settings()
 	config->set("config/audio/midi/chorus/enabled", (midi_reverb_chorus&2) ? "yes" : "no", true);
 	config->set("config/audio/midi/reverb/enabled", (midi_reverb_chorus&1)? "yes" : "no", true);
 	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", true);
+
+	std::string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
+	std::string waves;
+	int i = 0;
+	if (have_roland_pack && sfx_package == i++)
+		waves = rolandpack;
+	else if (have_blaster_pack && sfx_package == i++)
+		waves = blasterpack;
+	else if (have_custom_pack && sfx_package == i++)
+		waves = sfx_custompack;
+	config->set(d.c_str(), waves, true);
+#ifdef ENABLE_MIDISFX
+	config->set("config/audio/effects/midi",sfx_enabled==2?"yes":"no",true);
+#endif
 
 	if (Audio::get_ptr()->get_midi()) {
 		std::string s = "default";
@@ -433,6 +545,8 @@ void AudioOptions_gump::save_settings()
 		}
 #endif
 	}
+
+	Audio::get_ptr()->Init_sfx();
 }
 
 void AudioOptions_gump::paint()
@@ -454,8 +568,11 @@ void AudioOptions_gump::paint()
 		}
 		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
 		sman->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
+		if (sfx_enabled == 1) {
+			sman->paint_text(2, "pack", x + colx[1], y + rowy[9] + 1);
+		}
 #ifdef ENABLE_MIDISFX
-		if (sfx_enabled) {
+		else if (sfx_enabled == 2) {
 			sman->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif

@@ -577,25 +577,25 @@ bool	Audio::can_sfx(const std::string &file, std::string *out)
 bool Audio::have_roland_sfx(Exult_Game game, std::string *out)
 	{
 	if (game == BLACK_GATE)
-		return can_sfx("sqsfxbg.flx", out);
+		return can_sfx(SFX_ROLAND_BG, out);
 	else if (game == SERPENT_ISLE)
-		return can_sfx("sqsfxsi.flx", out);
+		return can_sfx(SFX_ROLAND_SI, out);
 	return false;
 	}
 	
 bool Audio::have_sblaster_sfx(Exult_Game game, std::string *out)
 	{
 	if (game == BLACK_GATE)
-		return can_sfx("jmsfx.flx", out);
+		return can_sfx(SFX_BLASTER_BG, out);
 	else if (game == SERPENT_ISLE)
-		return can_sfx("jmsisfx.flx", out);
+		return can_sfx(SFX_BLASTER_SI, out);
 	return false;
 	}
 	
 bool Audio::have_midi_sfx(std::string *out)
 	{
 #ifdef ENABLE_MIDISFX
-	return can_sfx("midisfx.flx", out);
+	return can_sfx(SFX_MIDIFILE, out);
 #else
 	return false;
 #endif
@@ -620,6 +620,16 @@ void	Audio::Init_sfx()
 		bg2si_sfxs = 0;
 					// Collection of .wav's?
 	string flex;
+#ifdef ENABLE_MIDISFX
+	string v;
+	config->value("config/audio/effects/midi", v, "no");
+	if (have_midi_sfx(&flex) && v != "no")
+		{
+		cout << "Opening midi SFX's file: \"" << flex << "\"" << endl;
+		sfx_file = new FlexFile(flex.c_str());
+		return;
+		}
+#endif
 	if (!have_config_sfx(Game::get_gametitle(), &flex))
 		{
 		if (have_roland_sfx(game, &flex) || have_sblaster_sfx(game, &flex))
@@ -630,14 +640,14 @@ void	Audio::Init_sfx()
 				sep++;
 			config->set(d.c_str(), flex.substr(sep), true);
 			}
-		else if (!have_midi_sfx(&flex))
+		else
 			{
 			cerr << "Digital SFX's file specified: " << flex
 				<< "... but file not found, and fallbacks are missing" << endl;
 			return;
 			}
 		}
-	COUT("Opening digital SFX's file: \"" << flex << "\"");
+	cout << "Opening digital SFX's file: \"" << flex << "\"" << endl;
 	sfx_file = new FlexFile(flex.c_str());
 }
 

@@ -191,5 +191,12 @@
 #define CFG_SI_TITLE	"ULTIMA VII PART 2\nSERPENT ISLE"
 #define CFG_SS_TITLE	"ULTIMA VII PART 2\nTHE SILVER SEED"
 
+// Exult SFX Packages:
+#define SFX_ROLAND_BG	"sqsfxbg.flx"
+#define SFX_ROLAND_SI	"sqsfxsi.flx"
+#define SFX_BLASTER_BG	"jmsfx.flx"
+#define SFX_BLASTER_SI	"jmsisfx.flx"
+#define SFX_MIDIFILE	"midisfx.flx"
+
 #endif
 
