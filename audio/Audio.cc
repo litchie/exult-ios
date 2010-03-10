@@ -542,6 +542,8 @@ void Audio::channel_complete_callback(int chan)
 
 bool	Audio::can_sfx(const std::string &file, std::string *out)
 {
+	if (file == "")
+		return false;
 	string d = file;
 	// Full path?
 	if (U7exists(d.c_str()))
@@ -637,8 +639,11 @@ void	Audio::Init_sfx()
 			string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
 			size_t sep = flex.rfind('/');
 			if (sep != string::npos)
+				{
 				sep++;
-			config->set(d.c_str(), flex.substr(sep), true);
+				flex = flex.substr(sep);
+				}
+			config->set(d.c_str(), flex, true);
 			}
 		else
 			{
