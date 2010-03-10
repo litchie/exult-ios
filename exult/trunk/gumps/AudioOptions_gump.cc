@@ -157,8 +157,10 @@ static void strip_path(std::string& file)
 		return;
 	size_t sep = file.rfind('/');
 	if (sep != std::string::npos)
+	{
 		sep++;
-	file = file.substr(sep);
+		file = file.substr(sep);
+	}
 }
 
 void AudioOptions_gump::rebuild_buttons()
