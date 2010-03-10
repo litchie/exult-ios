@@ -943,8 +943,8 @@ void Shape_chooser::edit_shape
 		}
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
-#ifdef WIN32
 	string imgpath;
+#ifdef WIN32
 	if (fname[0] == '.' && (fname[1] == '\\' || fname[1] == '/'))
 	{
 		char currdir[MAX_PATH];
@@ -953,14 +953,12 @@ void Shape_chooser::edit_shape
 		if (imgpath[imgpath.length()-1] != '\\')
 			imgpath += '\\';
 	}
+#endif
 	imgpath += fname;
 	// handle spaces in path.
 	if (imgpath.find(' ') != string::npos)
 		imgpath = "\"" + imgpath + "\"";
 	cmd += imgpath;
-#else
-	cmd += fname;
-#endif
 #ifndef WIN32
 	cmd += " &";			// Background.
 	int ret = system(cmd.c_str());
@@ -1642,6 +1640,11 @@ void Shape_chooser::from_font_toggled
 	studio->set_sensitive("new_shape_font_height", true);
 	GtkFileSelection *fsel = Create_file_selection(
 				"Choose font file", font_file_chosen, 0L);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 
@@ -2163,6 +2166,11 @@ static void on_shapes_popup_import
 		"Import frame from a .png file", 
 			(File_sel_okay_fun) Shape_chooser::import_frame, 
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_export
@@ -2175,6 +2183,11 @@ static void on_shapes_popup_export
 		"Export frame to a .png file",
 			(File_sel_okay_fun) Shape_chooser::export_frame, 
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_export_all
@@ -2187,6 +2200,11 @@ static void on_shapes_popup_export_all
 		"Choose the base .png file name for all frames",
 			(File_sel_okay_fun) Shape_chooser::export_all_frames,
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_import_all
@@ -2199,6 +2217,11 @@ static void on_shapes_popup_import_all
 		"Choose the one of the .png sprites to import",
 			(File_sel_okay_fun) Shape_chooser::import_all_frames,
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_export_shape
@@ -2211,6 +2234,11 @@ static void on_shapes_popup_export_shape
 		"Choose the shp file name",
 			(File_sel_okay_fun) Shape_chooser::export_shape,
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_import_shape
@@ -2223,6 +2251,11 @@ static void on_shapes_popup_import_shape
 		"Choose the shp file to import",
 			(File_sel_okay_fun) Shape_chooser::import_shape,
 							udata);
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 static void on_shapes_popup_new_frame
