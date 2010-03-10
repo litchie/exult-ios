@@ -280,6 +280,7 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	Path config_path(ExultDir);
 	config_path.AddString("exult.cfg");
 	config_path.GetString(p, p_size);
+	setup_program_paths();
 
 	const static char *si_pathdef = CFG_SI_NAME;
 	const static char *bg_pathdef = CFG_BG_NAME;
@@ -349,6 +350,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	Path config_path(ExultDir);
 	config_path.AddString("exult.cfg");
 	config_path.GetString(p, p_size);
+	setup_program_paths();
 
 	MessageBoxDebug (NULL, p, "WriteConfig: p", MB_OK);
 
@@ -356,7 +358,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (get_system_path("<CONFIG>") == ".")
+		if (get_system_path("<CONFIG>")) == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
@@ -482,8 +484,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	{
 		case DLL_PROCESS_ATTACH:
 		case DLL_THREAD_ATTACH:
-			setup_program_paths();
-			break;
 		case DLL_THREAD_DETACH:
 		case DLL_PROCESS_DETACH:
 			break;
