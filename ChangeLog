@@ -1,3 +1,6 @@
+2010-03-10 Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation and FAQ with the changed default path values and other things.
+
 2010-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Applied patches:
 	  #2965885 Export a palette and import it to GIMP without an editing
