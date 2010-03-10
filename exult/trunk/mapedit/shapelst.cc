@@ -955,7 +955,7 @@ void Shape_chooser::edit_shape
 	}
 	imgpath += fname;
 	// handle spaces in path.
-	if (imgpath.find(' ') != string::npos))
+	if (imgpath.find(' ') != string::npos)
 		imgpath = "\"" + imgpath + "\"";
 	cmd += imgpath;
 #else
