@@ -1,3 +1,35 @@
+2010-03-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* files/utils.h: Default save location in Mac OS X changed (again) to be
+	  ~/Library/Application Support/Exult (issue #1377892).
+	* De-hard-coding, round 3: All information about which gump a given shape
+	  should display is now given by the 'container.dat' file; a default file
+	  with the original game data is embedded in Exult_xx.flx. This includes
+	  moving BG NPC gumps from paperdoll data; Exult/ES will do this for older
+	  versions of paperdol_info.txt on load. The embedded 'container.dat', as
+	  well as those written by ES, will be version 2 and include (non-editable,
+	  for now ignored) font information for gumps.
+	  Expanded frame powers to depend also on quality, and renamed into frame
+	  flags. The reagent ring (SI) and trapped chests are examples of the new
+	  frame flags in action.
+	  Fields (fire/poison/sleep) are no longer hard-coded.
+	  Any object can now be marked as being a 'jawbone' or a 'mirror'. Jawbones
+	  will work *exactly* the same way as the SI jawbone does.
+	  ES can edit this new shape information, and has many new additional built
+	  in groups for shapes.vga.
+	  Body data now follows the :shape/[data] structure, having had a version
+	  bump, with a backward-compatible reader.
+	* shapes/*: Reorganized tree structure: new directory 'shapeinf' contains
+	  all of the data classes now, except for the baseinf.h base class.
+	  Reorganized code, with heavy template use, for reading/writing of shape
+	  info; the code is now in data_utils.h.
+	* gamemap.cc: Using shape classes instead of hard-coded shape values. Also,
+	  Game_map::create_ireg_object will correctly handle dead bodies and virtue
+	  stone-like objects.
+	* combat.cc: NPCs that can't die also won't flee.
+	* General: eliminated some warnings. ES will reject any character not in the
+	  128 ASCII character range for menu titles, as the menu font does not have
+	  any such characters.
+
 2010-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2967402 OSX: ES is defaulting to wrong path for EXULT_DATADIR

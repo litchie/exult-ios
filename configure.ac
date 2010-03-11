@@ -818,6 +818,7 @@ desktop/Makefile
 objs/Makefile
 imagewin/Makefile
 shapes/Makefile
+shapes/shapeinf/Makefile
 usecode/Makefile
 usecode/compiler/Makefile
 usecode/ucxt/Makefile

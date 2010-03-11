@@ -36,7 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
-#include "frpowers.h"
+#include "frflags.h"
+#include "frusefun.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
@@ -44,6 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "warminf.h"
 #include "weaponinf.h"
 #include "ready.h"
+#include "data_utils.h"
 
 #include "utils.h"
 #include <vector>
@@ -54,13 +56,14 @@ using std::vector;
 using std::cerr;
 using std::endl;
 
-Shape_info::Shape_info() : weight(0), volume(0),
-		ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
-		occludes_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
+Shape_info::Shape_info()
+		: modified_flags(0), frompatch_flags(0), have_static_flags(0),
+		weight(0), volume(0), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
-		container_gump(-1), monster_food(-1), mountain_top(0),
-		barge_type(0), actor_flags(0), shape_flags(0),
-		modified_flags(0), frompatch_flags(0), have_static_flags(0)
+		gump_shape(-1), gump_font(-1), monster_food(-1), shape_flags(0),
+		mountain_top(0), barge_type(0), actor_flags(0), field_type(-1),
+		ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
+		occludes_flag(false)
 	{
 	tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 	dims[0] = dims[1] = dims[2] = 0;
@@ -69,13 +72,14 @@ Shape_info::Shape_info() : weight(0), volume(0),
 /*
  *	Not supported:
  */
-Shape_info::Shape_info(const Shape_info & other) : weight(0), volume(0),
-		ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
-		occludes_flag(false), weapon_offsets(0), armor(0), weapon(0), ammo(0),
+Shape_info::Shape_info(const Shape_info & other)
+		: modified_flags(0), frompatch_flags(0), have_static_flags(0),
+		weight(0), volume(0), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 		monstinf(0), sfxinf(0), aniinf(0), explosion(0), body(0), npcpaperdoll(0),
-		container_gump(-1), monster_food(-1), mountain_top(0),
-		barge_type(0), actor_flags(0), shape_flags(0),
-		modified_flags(0), frompatch_flags(0), have_static_flags(0)
+		gump_shape(-1), gump_font(-1), monster_food(-1), shape_flags(0),
+		mountain_top(0), barge_type(0), actor_flags(0), field_type(-1),
+		ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
+		occludes_flag(false)
 	{ copy(other); }
 const Shape_info & Shape_info::operator = (const Shape_info & other)
 	{ copy(other); return *this; }
@@ -126,12 +130,17 @@ void Shape_info::copy
 	alt_ready2 = inf2.alt_ready2;
 	spell_flag = inf2.spell_flag;
 	occludes_flag = inf2.occludes_flag;
-	container_gump = inf2.container_gump;
+	if (!skip_dolls || gump_shape < 0)
+		{
+		gump_shape = inf2.gump_shape;
+		gump_font = inf2.gump_font;
+		}
 	monster_food = inf2.monster_food;
 	mountain_top = inf2.mountain_top;
 	barge_type = inf2.barge_type;
 	actor_flags = inf2.actor_flags;
 	shape_flags = inf2.shape_flags;
+	field_type = inf2.field_type;
 	modified_flags = inf2.modified_flags;
 	frompatch_flags = inf2.frompatch_flags;
 	have_static_flags = inf2.have_static_flags;
@@ -161,9 +170,10 @@ void Shape_info::copy
 	if (!skip_dolls || objpaperdoll.empty())
 		copy_vector_info(inf2.objpaperdoll, objpaperdoll);
 	copy_vector_info(inf2.hpinf, hpinf);
-	copy_vector_info(inf2.frpowerinf, frpowerinf);
+	copy_vector_info(inf2.frflagsinf, frflagsinf);
 	copy_vector_info(inf2.cntrules, cntrules);
 	copy_vector_info(inf2.nameinf, nameinf);
+	copy_vector_info(inf2.frucinf, frucinf);
 	copy_vector_info(inf2.warminf, warminf);
 
 	delete sfxinf;
@@ -254,7 +264,7 @@ std::vector<Paperdoll_item>& Shape_info::set_paperdoll_info(bool tf)
 
 void Shape_info::clean_invalid_paperdolls()
 	{
-	return clean_vector(objpaperdoll);
+	clean_vector(objpaperdoll);
 	}
 
 void Shape_info::clear_paperdoll_info()
@@ -279,7 +289,7 @@ std::vector<Content_rules>& Shape_info::set_content_rules(bool tf)
 
 void Shape_info::clean_invalid_content_rules()
 	{
-	return clean_vector(cntrules);
+	clean_vector(cntrules);
 	}
 
 void Shape_info::clear_content_rules()
@@ -304,7 +314,7 @@ std::vector<Effective_hp_info>& Shape_info::set_effective_hp_info(bool tf)
 
 void Shape_info::clean_invalid_hp_info()
 	{
-	return clean_vector(hpinf);
+	clean_vector(hpinf);
 	}
 
 void Shape_info::clear_effective_hp_info()
@@ -329,7 +339,7 @@ std::vector<Frame_name_info>& Shape_info::set_frame_name_info(bool tf)
 
 void Shape_info::clean_invalid_name_info()
 	{
-	return clean_vector(nameinf);
+	clean_vector(nameinf);
 	}
 
 void Shape_info::clear_frame_name_info()
@@ -342,29 +352,54 @@ void Shape_info::add_frame_name_info(Frame_name_info& add)
 	add_vector_info(add, nameinf);
 	}
 
-bool Shape_info::has_frame_powers() const
+bool Shape_info::has_frame_usecode_info() const
 	{
-	return frpowerinf.size() != 0;
+	return frucinf.size() != 0;
 	}
 
-std::vector<Frame_powers_info>& Shape_info::set_frame_powers(bool tf)
+std::vector<Frame_usecode_info>& Shape_info::set_frame_usecode_info(bool tf)
 	{
-	return set_vector_info(tf, frpowerinf);
+	return set_vector_info(tf, frucinf);
 	}
 
-void Shape_info::clean_invalid_frame_powers()
+void Shape_info::clean_invalid_usecode_info()
 	{
-	return clean_vector(frpowerinf);
+	clean_vector(frucinf);
 	}
 
-void Shape_info::clear_frame_powers()
+void Shape_info::clear_frame_usecode_info()
 	{
-	frpowerinf.clear();
+	frucinf.clear();
 	}
 
-void Shape_info::add_frame_powers(Frame_powers_info& add)
+void Shape_info::add_frame_usecode_info(Frame_usecode_info& add)
 	{
-	add_vector_info(add, frpowerinf);
+	add_vector_info(add, frucinf);
+	}
+
+bool Shape_info::has_frame_flags() const
+	{
+	return frflagsinf.size() != 0;
+	}
+
+std::vector<Frame_flags_info>& Shape_info::set_frame_flags(bool tf)
+	{
+	return set_vector_info(tf, frflagsinf);
+	}
+
+void Shape_info::clean_invalid_frame_flags()
+	{
+	clean_vector(frflagsinf);
+	}
+
+void Shape_info::clear_frame_flags()
+	{
+	frflagsinf.clear();
+	}
+
+void Shape_info::add_frame_flags(Frame_flags_info& add)
+	{
+	add_vector_info(add, frflagsinf);
 	}
 
 bool Shape_info::has_warmth_info() const
@@ -379,7 +414,7 @@ std::vector<Warmth_info>& Shape_info::set_warmth_info(bool tf)
 
 void Shape_info::clean_invalid_warmth_info()
 	{
-	return clean_vector(warminf);
+	clean_vector(warminf);
 	}
 
 void Shape_info::clear_warmth_info()
@@ -392,63 +427,18 @@ void Shape_info::add_warmth_info(Warmth_info& add)
 	add_vector_info(add, warminf);
 	}
 
-template <class T>
-static T *Search_vector_data_double_wildcards
-	(
-	vector<T>& vec,
-	int frame, int quality,
-	short T::*fr, short T::*qual
-	)
-	{
-	if (!vec.size())
-		return 0;	// No name.
-	T inf;
-	inf.*fr = frame;
-	inf.*qual = quality;
-	typename vector<T>::iterator it;
-		// Try finding exact match first.
-	it = std::lower_bound(vec.begin(), vec.end(), inf);
-	if (it == vec.end())	// Nowhere to be found.
-		return 0;
-	else if (*it == inf)	// Have it already.
-		return &*it;
-		// We only have to search forward for a match.
-	if (quality != -1)
-		{
-		if ((*it).*fr == frame)
-			{	// Maybe quality is to blame. Try wildcard quality.
-			inf.*qual = -1;
-			it = std::lower_bound(it, vec.end(), inf);
-			if (it == vec.end())	// Nowhere to be found.
-				return 0;
-			else if (*it == inf)	// We got it!
-				return &*it;
-			}
-		// Maybe frame is to blame? Try search for specific
-		// quality with wildcard frame.
-		inf.*qual = quality;
-		inf.*fr = -1;
-		it = std::lower_bound(it, vec.end(), inf);
-		if (it == vec.end())	// Nowhere to be found.
-			return 0;
-		else if (*it == inf)	// We got it!
-			return &*it;
-		inf.*qual = -1;
-		}
-		// *Still* haven't found it. Last try: wildcard frame *and* quality.
-	inf.*fr = -1;
-	it = std::lower_bound(it, vec.end(), inf);
-	if (it == vec.end() || *it != inf)	// It just isn't there.
-		return 0;
-	else	// At last!
-		return &*it;
-	}
-
 Frame_name_info *Shape_info::get_frame_name(int frame, int quality)
 	{
 	return Search_vector_data_double_wildcards(nameinf,
 			frame, quality,
 			&Frame_name_info::frame, &Frame_name_info::quality);
+	}
+
+Frame_usecode_info *Shape_info::get_frame_usecode(int frame, int quality)
+	{
+	return Search_vector_data_double_wildcards(frucinf,
+			frame, quality,
+			&Frame_usecode_info::frame, &Frame_usecode_info::quality);
 	}
 
 int Shape_info::get_effective_hps(int frame, int quality)
@@ -459,10 +449,18 @@ int Shape_info::get_effective_hps(int frame, int quality)
 	return inf ? inf->hps : 0;	// Default to indestructible.
 	}
 
+int Shape_info::get_object_flags(int frame, int qual)
+	{
+	Frame_flags_info *inf = Search_vector_data_double_wildcards(frflagsinf,
+			frame, quality,
+			&Frame_flags_info::frame, &Frame_flags_info::quality);
+	return inf ? inf->m_flags : 0;	// Default to no flagss.
+	}
+
 Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot)
 	{
 	if (!objpaperdoll.size())
-		return 0;	// No warmth.
+		return 0;	// No paperdoll.
 	Paperdoll_item inf;
 	inf.world_frame = frame;
 	if (spot == both_hands)
@@ -489,41 +487,6 @@ Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot)
 		return 0;
 	else	// At last!
 		return &*it;
-	}
-
-template <class T, typename U>
-static T *Search_vector_data_single_wildcard
-	(
-	vector<T>& vec,
-	int src,
-	U T::*dat
-	)
-	{
-	if (!vec.size())	// Not found.
-		return 0;
-	T inf;
-	inf.*dat = src;
-	typename vector<T>::iterator it;
-		// Try finding exact match first.
-	it = std::lower_bound(vec.begin(), vec.end(), inf);
-	if (it == vec.end())	// Nowhere to be found.
-		return 0;
-	else if (*it == inf)	// Have it already.
-		return &*it;
-		// Try wildcard shape.
-	inf.*dat = -1;
-	it = std::lower_bound(it, vec.end(), inf);
-	if (it == vec.end() || *it != inf)	// It just isn't there.
-		return 0;
-	else	// At last!
-		return &*it;
-	}
-
-int Shape_info::get_object_powers(int frame)
-	{
-	Frame_powers_info *inf = Search_vector_data_single_wildcard(frpowerinf,
-			frame, &Frame_powers_info::frame);
-	return inf ? inf->powers : 0;	// Default to no powers.
 	}
 
 bool Shape_info::is_shape_accepted(int shape)

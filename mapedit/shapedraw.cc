@@ -143,8 +143,8 @@ Shape_draw::Shape_draw
 	Vga_file *i,			// Where they're kept.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	GtkWidget *drw			// Drawing area to use.
-	) : ifile(i),
-	    iwin(0), palette(0), draw(drw), drawgc(0),
+	) : ifile(i), draw(drw), drawgc(0),
+	    iwin(0), palette(0),
 	    drop_callback(0), drop_user_data(0), dragging(false)
 	{
 	guint32 colors[256];
@@ -208,8 +208,8 @@ void Shape_draw::configure
 		iwin = new Image_buffer8(
 			draw->allocation.width, draw->allocation.height);
 		}
-	else if (iwin->get_width() != draw->allocation.width ||
-		 iwin->get_height() != draw->allocation.height)
+	else if ((int)iwin->get_width() != draw->allocation.width ||
+		 (int)iwin->get_height() != draw->allocation.height)
 		{
 		delete iwin;
 		iwin = new Image_buffer8(

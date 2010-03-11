@@ -78,6 +78,7 @@ private:
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
+	Shape_file_info		*fontfile;	// 'font.vga'.
 	Shape_file_info		*gumpfile;	// 'gumps.vga'.
 	Shape_file_info		*spritefile;	// 'sprites.vga'.
 	Object_browser		*browser;
@@ -104,7 +105,7 @@ private:
 	Shape_draw		*cont_draw;
 					// Shape info. editor:
 	GtkWidget		*shapewin;
-	Shape_draw		*shape_draw, *gump_draw, *npcgump_draw,
+	Shape_draw		*shape_draw, *gump_draw,
 					*body_draw, *explosion_draw;
 	GtkWidget		*equipwin;
 					// Map locator:

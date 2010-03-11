@@ -515,7 +515,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), npc_status_id(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
-	shape_draw(0), gump_draw(0), npcgump_draw(0),
+	shape_draw(0), gump_draw(0),
 	body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
 	ucbrowsewin(0), gameinfowin(0),
@@ -673,7 +673,6 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(shapewin);
 	delete shape_draw;
 	delete gump_draw;
-	delete npcgump_draw;
 	delete body_draw;
 	delete explosion_draw;
 	shapewin = 0;
@@ -1311,6 +1310,7 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
+	fontfile = open_shape_file("fonts.vga");
 	gumpfile = open_shape_file("gumps.vga");
 	spritefile = open_shape_file("sprites.vga");
 	Setup_text(game_type == SERPENT_ISLE, expansion);	// Read in shape names.
@@ -2967,15 +2967,18 @@ C_EXPORT void on_gameinfo_apply_clicked
 	GtkTextIter startpos, endpos;
 	gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
 	gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
-	codepageStr menu(modmenu, "CP437");
-	string menustr = menu.get_str();
+	// Titles need to be displayable in Exult menu, hence should not
+	// have any extra characters.
+ 	codepageStr menu(modmenu, "CP437");
+ 	string menustr = menu.get_str();
+	for (size_t i = 0; i < strlen(menustr.c_str()); i++)
+		if (menustr[i] < 0)
+			menustr[i] = '?';
 	g_free(modmenu);
 
 	BaseGameInfo *gameinfo = studio->get_game();
 	studio->set_encoding(enc);
 	gameinfo->set_codepage(enc);
-	// Titles need to be displayable in Exult menu, hence should not
-	// have any extra characters.
 	gameinfo->set_menu_string(menustr.c_str());
 
 	Configuration *cfg;

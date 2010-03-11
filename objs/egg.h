@@ -109,7 +109,8 @@ public:
 					//   these set off all nearby.
 		};
 	static Egg_object *create_egg(unsigned char *entry, int entlen,
-							bool animated);
+		bool animated, int shnum, int frnum, unsigned int tx,
+	    unsigned int ty, unsigned int tz);
 					// Create normal eggs.
 	Egg_object(int shapenum, int framenum, unsigned int tilex,
 		unsigned int tiley, unsigned int lft, 
