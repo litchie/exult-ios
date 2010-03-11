@@ -835,7 +835,7 @@ void setup_program_paths()
 
 #ifdef MACOSX
 	config_dir += "/Library/Preferences";
-	savehome_dir += "/Library/Preferences/Exult";
+	savehome_dir += "/Library/Application Support/Exult";
 	gamehome_dir = "/Library/Application Support/Exult";
 #elif defined(XWIN)
 	savehome_dir += "/.exult";

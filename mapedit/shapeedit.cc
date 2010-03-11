@@ -28,6 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <map>
 #include <string>
+#include <cstring>
+#include <cstdlib>
+#include <sstream>
 #include "studio.h"
 #include "servemsg.h"
 #include "exult_constants.h"
@@ -41,7 +44,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effhpinf.h"
 #include "expinf.h"
 #include "frnameinf.h"
-#include "frpowers.h"
+#include "frflags.h"
+#include "frusefun.h"
 #include "monstinf.h"
 #include "npcdollinf.h"
 #include "objdollinf.h"
@@ -54,6 +58,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "shapelst.h"
 #include "ready.h"
+#include "data_utils.h"
 
 using	std::cout;
 using	std::endl;
@@ -109,14 +114,26 @@ enum
 	CNT_COLUMN_COUNT
 	};
 
-// Frame powers columns
+// Frame flags columns
 enum
 	{
-	FRPOW_FRAME_COLUMN = 0,
-	FRPOW_POWERS_COLUMN,
-	FRPOW_FROM_PATCH,
-	FRPOW_MODIFIED,
-	FRPOW_COLUMN_COUNT
+	FRFLAG_FRAME_COLUMN = 0,
+	FRFLAG_QUAL_COLUMN,
+	FRFLAG_FLAGS_COLUMN,
+	FRFLAG_FROM_PATCH,
+	FRFLAG_MODIFIED,
+	FRFLAG_COLUMN_COUNT
+	};
+
+// Frame usecode columns
+enum
+	{
+	FRUC_FRAME_COLUMN = 0,
+	FRUC_QUAL_COLUMN,
+	FRUC_USEFUN_COLUMN,
+	FRUC_FROM_PATCH,
+	FRUC_MODIFIED,
+	FRUC_COLUMN_COUNT
 	};
 
 // Frame name columns
@@ -142,7 +159,7 @@ struct Equip_row_widgets
 	GtkWidget *shape, *name, *chance, *count;
 	};
 					// Holds widgets from equip. dialog.
-static Equip_row_widgets equip_rows[10] = {0};
+static Equip_row_widgets equip_rows[10] = {{0}};
 
 /*
  *	Equip window's Okay, Apply buttons.
@@ -613,37 +630,6 @@ C_EXPORT gboolean on_shinfo_gump_num_changed
 	}
 
 /*
- *	Draw gump shape in NPC paperdoll page.
- */
-C_EXPORT gboolean on_shinfo_npcgump_draw_expose_event
-	(
-	GtkWidget *widget,		// The view window.
-	GdkEventExpose *event,
-	gpointer data			// ->Shape_chooser.
-	)
-	{
-	ExultStudio::get_instance()->show_shinfo_npcgump(
-		event->area.x, event->area.y, event->area.width,
-							event->area.height);
-	return (TRUE);
-	}
-
-/*
- *	Gump shape # changed, so update shape displayed.
- */
-C_EXPORT gboolean on_shinfo_npcpaperdoll_gump_changed
-	(
-	GtkWidget *widget,
-	GdkEventFocus *event,
-	gpointer user_data
-	)
-	{
-	ExultStudio *studio = ExultStudio::get_instance();
-	studio->show_shinfo_npcgump();
-	return TRUE;
-	}
-
-/*
  *	Draw body shape in body page.
  */
 C_EXPORT gboolean on_shinfo_body_draw_expose_event
@@ -910,6 +896,36 @@ C_EXPORT gboolean on_shinfo_effhps_hp_type_toggled
 	}
 
 /*
+ *	Frame usecode frame type changed.
+ */
+C_EXPORT gboolean on_shinfo_frameusecode_frame_type_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("shinfo_frameusecode_frame_num", on);
+	return (TRUE);
+	}
+
+/*
+ *	Frame usecode quality type changed.
+ */
+C_EXPORT gboolean on_shinfo_frameusecode_qual_type_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("shinfo_frameusecode_qual_num", on);
+	return (TRUE);
+	}
+
+/*
  *	Frame names frame type changed.
  */
 C_EXPORT gboolean on_shinfo_framenames_frame_type_toggled
@@ -982,7 +998,7 @@ C_EXPORT gboolean on_shinfo_framenames_name_type_changed
 	}
 
 /*
- *	Framen name other kind changed.
+ *	Frame name other kind changed.
  */
 C_EXPORT gboolean on_shinfo_framenames_comp_msg_type_changed
 	(
@@ -999,7 +1015,7 @@ C_EXPORT gboolean on_shinfo_framenames_comp_msg_type_changed
 	}
 
 /*
- *	Framen name other type changed.
+ *	Frame name other type changed.
  */
 C_EXPORT gboolean on_shinfo_framenames_comp_type_changed
 	(
@@ -1021,9 +1037,9 @@ C_EXPORT gboolean on_shinfo_framenames_comp_type_changed
 	}
 
 /*
- *	Frame powers frame type changed.
+ *	Frame flags frame type changed.
  */
-C_EXPORT gboolean on_shinfo_framepowers_frame_type_toggled
+C_EXPORT gboolean on_shinfo_frameflags_frame_type_toggled
 	(
 	GtkToggleButton *btn,
 	gpointer user_data
@@ -1031,7 +1047,22 @@ C_EXPORT gboolean on_shinfo_framepowers_frame_type_toggled
 	{
 	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio *studio = ExultStudio::get_instance();
-	studio->set_sensitive("shinfo_framepowers_frame_num", on);
+	studio->set_sensitive("shinfo_frameflags_frame_num", on);
+	return (TRUE);
+	}
+
+/*
+ *	Frame flags quality type changed.
+ */
+C_EXPORT gboolean on_shinfo_frameflags_qual_type_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("shinfo_frameflags_qual_num", on);
 	return (TRUE);
 	}
 
@@ -1239,7 +1270,7 @@ C_EXPORT void on_shinfo_effhps_update_clicked
 		if (cmp > 0)
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
-			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
+			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter, HP_FRAME_COLUMN, (int)newfrnum,
 				HP_QUALITY_COLUMN, (int)newqual,
 				HP_HIT_POINTS, (int)newhps,
@@ -1321,6 +1352,10 @@ C_EXPORT gboolean on_shinfo_shape_class_changed
 		studio->set_spin("shinfo_effhps_qual_num", 0, false);
 		studio->set_toggle("shinfo_framenames_qual_type", true, false);
 		studio->set_spin("shinfo_framenames_qual_num", 0, false);
+		studio->set_toggle("shinfo_frameflags_qual_type", true, false);
+		studio->set_spin("shinfo_frameflags_qual_num", 0, false);
+		studio->set_toggle("shinfo_frameusecode_qual_type", true, false);
+		studio->set_spin("shinfo_frameusecode_qual_num", 0, false);
 		}
 	else
 		{
@@ -1328,6 +1363,10 @@ C_EXPORT gboolean on_shinfo_shape_class_changed
 		studio->set_sensitive("shinfo_effhps_qual_num", true);
 		studio->set_sensitive("shinfo_framenames_qual_type", true);
 		studio->set_sensitive("shinfo_framenames_qual_num", true);
+		studio->set_sensitive("shinfo_frameflags_qual_type", true);
+		studio->set_sensitive("shinfo_frameflags_qual_num", true);
+		studio->set_sensitive("shinfo_frameusecode_qual_type", true);
+		studio->set_sensitive("shinfo_frameusecode_qual_num", true);
 		}
 
 	if (studio->get_optmenu("shinfo_shape_class") == 12)
@@ -1578,66 +1617,77 @@ C_EXPORT void on_shinfo_cntrules_list_cursor_changed
 }
 
 /*
- *	Helper functions for frame powers.
+ *	Helper functions for frame flags.
  */
-static inline void Get_framepowers_fields
+static inline void Get_frameflags_fields
 	(
 	ExultStudio *studio,
 	unsigned int& frnum,
-	unsigned int *powers = 0
+	unsigned int& qual,
+	unsigned int *flags = 0
 	)
 	{
-	bool anyfr = studio->get_toggle("shinfo_framepowers_frame_type");
+	bool anyfr = studio->get_toggle("shinfo_frameflags_frame_type");
 	frnum = anyfr ? (unsigned int)(-1) :
-			studio->get_spin("shinfo_framepowers_frame_num");
-	if (powers)
+			studio->get_spin("shinfo_frameflags_frame_num");
+	bool anyq = studio->get_toggle("shinfo_frameflags_qual_type");
+	qual = anyq ? (unsigned int)(-1) :
+			studio->get_spin("shinfo_frameflags_qual_num");
+	if (flags)
 		{
-		static const char *powflags[] = {
-					"shinfo_framepowers_power0",
-					"shinfo_framepowers_power1",
-					"shinfo_framepowers_power2",
-					"shinfo_framepowers_power3",
-					"shinfo_framepowers_power4",
-					"shinfo_framepowers_power5",
-					"shinfo_framepowers_power6",
-					"shinfo_framepowers_power7",
-					"shinfo_framepowers_power8",
-					"shinfo_framepowers_power9",
-					"shinfo_framepowers_power10" };
-		*powers = studio->get_bit_toggles(&powflags[0], 
-					sizeof(powflags)/sizeof(powflags[0]));
+		static const char *frflags[] = {
+					"shinfo_frameflags_flag0",
+					"shinfo_frameflags_flag1",
+					"shinfo_frameflags_flag2",
+					"shinfo_frameflags_flag3",
+					"shinfo_frameflags_flag4",
+					"shinfo_frameflags_flag5",
+					"shinfo_frameflags_flag6",
+					"shinfo_frameflags_flag7",
+					"shinfo_frameflags_flag8",
+					"shinfo_frameflags_flag9",
+					"shinfo_frameflags_flag10",
+					"shinfo_frameflags_flag11",
+					"shinfo_frameflags_flag12" };
+		*flags = studio->get_bit_toggles(&frflags[0], 
+					sizeof(frflags)/sizeof(frflags[0]));
 		}
 	}
 
-static void Set_framepowers_fields
+static void Set_frameflags_fields
 	(
 	int frnum = 0,
-	unsigned int powers = 0
+	int qual = 0,
+	unsigned int flags = 0
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	studio->set_toggle("shinfo_framepowers_frame_type", frnum == -1);
-	studio->set_spin("shinfo_framepowers_frame_num", frnum == -1 ? 0 : frnum, frnum != -1);
-	static const char *powflags[] = {
-			"shinfo_framepowers_power0",
-			"shinfo_framepowers_power1",
-			"shinfo_framepowers_power2",
-			"shinfo_framepowers_power3",
-			"shinfo_framepowers_power4",
-			"shinfo_framepowers_power5",
-			"shinfo_framepowers_power6",
-			"shinfo_framepowers_power7",
-			"shinfo_framepowers_power8",
-			"shinfo_framepowers_power9",
-			"shinfo_framepowers_power10" };
-	studio->set_bit_toggles(&powflags[0], 
-		sizeof(powflags)/sizeof(powflags[0]), powers);
+	studio->set_toggle("shinfo_frameflags_frame_type", frnum == -1);
+	studio->set_spin("shinfo_frameflags_frame_num", frnum == -1 ? 0 : frnum, frnum != -1);
+	studio->set_toggle("shinfo_frameflags_qual_type", qual == -1);
+	studio->set_spin("shinfo_frameflags_qual_num", qual == -1 ? 0 : qual, qual != -1);
+	static const char *frflags[] = {
+			"shinfo_frameflags_flag0",
+			"shinfo_frameflags_flag1",
+			"shinfo_frameflags_flag2",
+			"shinfo_frameflags_flag3",
+			"shinfo_frameflags_flag4",
+			"shinfo_frameflags_flag5",
+			"shinfo_frameflags_flag6",
+			"shinfo_frameflags_flag7",
+			"shinfo_frameflags_flag8",
+			"shinfo_frameflags_flag9",
+			"shinfo_frameflags_flag10",
+			"shinfo_frameflags_flag11",
+			"shinfo_frameflags_flag12" };
+	studio->set_bit_toggles(&frflags[0], 
+		sizeof(frflags)/sizeof(frflags[0]), flags);
 	}
 
 /*
- *	Adding frame powers.
+ *	Adding frame flags.
  */
-C_EXPORT void on_shinfo_framepowers_update_clicked
+C_EXPORT void on_shinfo_frameflags_update_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -1645,15 +1695,16 @@ C_EXPORT void on_shinfo_framepowers_update_clicked
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 	unsigned int newfrnum;
-	unsigned int newpowers;
-	Get_framepowers_fields(studio, newfrnum, &newpowers);
+	unsigned int newqual;
+	unsigned int newflags;
+	Get_frameflags_fields(studio, newfrnum, newqual, &newflags);
 
 	GtkTreeView *cnttree = GTK_TREE_VIEW(
-			glade_xml_get_widget(studio->get_xml(), "shinfo_framepowers_list"));
+			glade_xml_get_widget(studio->get_xml(), "shinfo_frameflags_list"));
 	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
-	int cmp = Find_unary_iter(model, iter, newfrnum);
+	int cmp = Find_binary_iter(model, iter, newfrnum, newqual);
 	if (cmp)
 		{
 		GtkTreeIter newiter;
@@ -1661,26 +1712,28 @@ C_EXPORT void on_shinfo_framepowers_update_clicked
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
 			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
-		gtk_tree_store_set(store, &newiter, FRPOW_FRAME_COLUMN, (int)newfrnum,
-				FRPOW_POWERS_COLUMN, (int)newpowers, FRPOW_FROM_PATCH, 1,
-				FRPOW_MODIFIED, 1, -1);
+		gtk_tree_store_set(store, &newiter,
+				FRFLAG_FRAME_COLUMN, (int)newfrnum,
+				FRFLAG_QUAL_COLUMN, (int)newqual,
+				FRFLAG_FLAGS_COLUMN, (int)newflags, FRFLAG_FROM_PATCH, 1,
+				FRFLAG_MODIFIED, 1, -1);
 		}
 	else
 		{
-		unsigned int powers;
-		gtk_tree_model_get(model, iter, FRPOW_POWERS_COLUMN, &powers, -1);
-		if (powers != newpowers)
-			gtk_tree_store_set(store, iter, FRPOW_POWERS_COLUMN, newpowers,
-					FRPOW_MODIFIED, 1, -1);
+		unsigned int flags;
+		gtk_tree_model_get(model, iter, FRFLAG_FLAGS_COLUMN, &flags, -1);
+		if (flags != newflags)
+			gtk_tree_store_set(store, iter, FRFLAG_FLAGS_COLUMN, newflags,
+					FRFLAG_MODIFIED, 1, -1);
 		}
 	if (iter)
 		gtk_tree_iter_free(iter);
 	}
 
 /*
- *	Deleting frame powers.
+ *	Deleting frame flags.
  */
-C_EXPORT void on_shinfo_framepowers_remove_clicked
+C_EXPORT void on_shinfo_frameflags_remove_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -1688,22 +1741,23 @@ C_EXPORT void on_shinfo_framepowers_remove_clicked
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 	GtkTreeView *cnttree = GTK_TREE_VIEW(
-			glade_xml_get_widget(studio->get_xml(), "shinfo_framepowers_list"));
+			glade_xml_get_widget(studio->get_xml(), "shinfo_frameflags_list"));
 	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
 	GtkTreeStore *store = GTK_TREE_STORE(model);
 	GtkTreeIter *iter;
 	unsigned int newfrnum;
-	Get_framepowers_fields(studio, newfrnum);
-	if (!Find_unary_iter(model, iter, newfrnum))
+	unsigned int newqual;
+	Get_frameflags_fields(studio, newfrnum, newqual);
+	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
 		gtk_tree_iter_free(iter);
 	}
 
 /*
- *	Changed content rules selection.
+ *	Changed frame flags selection.
  */
-C_EXPORT void on_shinfo_framepowers_list_cursor_changed
+C_EXPORT void on_shinfo_frameflags_list_cursor_changed
 	(
 	GtkTreeView *treeview,
 	gpointer     user_data
@@ -1717,13 +1771,162 @@ C_EXPORT void on_shinfo_framepowers_list_cursor_changed
 		return;
 
 	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
-	int frnum, powers;
+
+	int frnum, qual, flags;
 	gtk_tree_model_get_iter(model, &iter, path);
 	gtk_tree_path_free(path);
-	gtk_tree_model_get(model, &iter, FRPOW_FRAME_COLUMN, &frnum,
-			FRPOW_POWERS_COLUMN, &powers, -1);
-	Set_framepowers_fields(frnum, powers);
+	gtk_tree_model_get(model, &iter, FRFLAG_FRAME_COLUMN, &frnum,
+			FRFLAG_QUAL_COLUMN, &qual, FRFLAG_FLAGS_COLUMN, &flags, -1);
+	Set_frameflags_fields(frnum, qual, flags);
 }
+
+/*
+ *	Helper functions for frame usecode.
+ */
+static inline void Get_frameusecode_fields
+	(
+	ExultStudio *studio,
+	unsigned int& frnum,
+	unsigned int& qual,
+	const char **ucfun = 0
+	)
+	{
+	bool anyfr = studio->get_toggle("shinfo_frameusecode_frame_type");
+	frnum = anyfr ? (unsigned int)(-1) :
+			studio->get_spin("shinfo_frameusecode_frame_num");
+	bool anyq = studio->get_toggle("shinfo_frameusecode_qual_type");
+	qual = anyq ? (unsigned int)(-1) :
+			studio->get_spin("shinfo_frameusecode_qual_num");
+	if (ucfun)
+		*ucfun = studio->get_text_entry("shinfo_frameusecode_ucfun");
+	}
+
+static void Set_frameusecode_fields
+	(
+	int frnum = 0,
+	int qual = 0,
+	const char *ucfun = 0
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_toggle("shinfo_frameusecode_frame_type", frnum == -1);
+	studio->set_spin("shinfo_frameusecode_frame_num", frnum == -1 ? 0 : frnum, frnum != -1);
+	studio->set_toggle("shinfo_frameusecode_qual_type", qual == -1);
+	studio->set_spin("shinfo_frameusecode_qual_num", qual == -1 ? 0 : qual, qual != -1);
+	studio->set_entry("shinfo_frameusecode_ucfun", ucfun ? ucfun : "");
+	}
+
+/*
+ *	Adding frame usecode.
+ */
+C_EXPORT void on_shinfo_frameusecode_update_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	unsigned int newfrnum;
+	unsigned int newqual;
+	const char *newucfun;
+	Get_frameusecode_fields(studio, newfrnum, newqual, &newucfun);
+
+	GtkTreeView *cnttree = GTK_TREE_VIEW(
+			glade_xml_get_widget(studio->get_xml(), "shinfo_frameusecode_list"));
+	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	GtkTreeIter *iter;
+	int cmp = Find_binary_iter(model, iter, newfrnum, newqual);
+	if (cmp)
+		{
+		GtkTreeIter newiter;
+		if (cmp > 0)
+			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
+		else
+			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
+		gtk_tree_store_set(store, &newiter,
+				FRUC_FRAME_COLUMN, (int)newfrnum,
+				FRUC_QUAL_COLUMN, (int)newqual,
+				FRUC_USEFUN_COLUMN, newucfun, FRUC_FROM_PATCH, 1,
+				FRUC_MODIFIED, 1, -1);
+		}
+	else
+		{
+		const char *ucfun;
+		gtk_tree_model_get(model, iter, FRUC_USEFUN_COLUMN, &ucfun, -1);
+		if (!std::strcmp(ucfun, newucfun))
+			gtk_tree_store_set(store, iter, FRUC_USEFUN_COLUMN, newucfun,
+					FRUC_MODIFIED, 1, -1);
+		}
+	if (iter)
+		gtk_tree_iter_free(iter);
+	}
+
+/*
+ *	Deleting frame usecode.
+ */
+C_EXPORT void on_shinfo_frameusecode_remove_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	GtkTreeView *cnttree = GTK_TREE_VIEW(
+			glade_xml_get_widget(studio->get_xml(), "shinfo_frameusecode_list"));
+	GtkTreeModel *model = gtk_tree_view_get_model(cnttree);
+	GtkTreeStore *store = GTK_TREE_STORE(model);
+	GtkTreeIter *iter;
+	unsigned int newfrnum;
+	unsigned int newqual;
+	Get_frameusecode_fields(studio, newfrnum, newqual);
+	if (!Find_binary_iter(model, iter, newfrnum, newqual))
+		gtk_tree_store_remove(store, iter);
+	if (iter)
+		gtk_tree_iter_free(iter);
+	}
+
+/*
+ *	Browsing for frame usecode.
+ */
+C_EXPORT void on_shinfo_frameusecode_browse_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	const char *uc = studio->browse_usecode(true);
+	if (*uc)
+		studio->set_entry("shinfo_frameusecode_ucfun", uc, true);
+	}
+
+/*
+ *	Changed frame usecode selection.
+ */
+C_EXPORT void on_shinfo_frameusecode_list_cursor_changed
+	(
+	GtkTreeView *treeview,
+	gpointer     user_data
+	)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	GtkTreeViewColumn *col;
+	gtk_tree_view_get_cursor(treeview, &path, &col);
+	if (!col)
+		return;
+
+	GtkTreeModel *model = gtk_tree_view_get_model(treeview);
+	int frnum, qual;
+	char *ucfun;
+	gtk_tree_model_get_iter(model, &iter, path);
+	gtk_tree_path_free(path);
+	gtk_tree_model_get(model, &iter, FRUC_FRAME_COLUMN, &frnum,
+			FRUC_QUAL_COLUMN, &qual, FRUC_FROM_PATCH, &ucfun, -1);
+	Set_frameusecode_fields(frnum, qual, ucfun);
+}
+
 
 /*
  *	Helper functions for frame names.
@@ -1853,7 +2056,7 @@ C_EXPORT void on_shinfo_framenames_update_clicked
 		if (cmp > 0)
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
-			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
+			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter, FNAME_FRAME, (int)newfrnum,
 				FNAME_QUALITY, (int)newqual, FNAME_MSGTYPE, newtype,
 				FNAME_MSGSTR, newstr, FNAME_OTHERTYPE, newothertype,
@@ -2119,7 +2322,7 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked
 		if (cmp > 0)
 			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
 		else
-			gtk_tree_store_insert_after(store, &newiter, NULL, iter);
+			gtk_tree_store_insert_before(store, &newiter, NULL, iter);
 		gtk_tree_store_set(store, &newiter,
 				DOLL_WORLD_FRAME, (int)newfrnum, DOLL_SPOT, newspot,
 				DOLL_TRANSLUCENT, newtrans, DOLL_GENDER_BASED, newgender,
@@ -2279,6 +2482,15 @@ C_EXPORT void on_shinfo_bargetype_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_barge_box", on);
 	}
+C_EXPORT void on_shinfo_fieldinfo_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_fieldinfo_box", on);
+	}
 C_EXPORT void on_shinfo_barge_check_toggled
 	(
 	GtkToggleButton *btn,
@@ -2287,6 +2499,15 @@ C_EXPORT void on_shinfo_barge_check_toggled
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_sensitive("shinfo_barge_type", on);
+	}
+C_EXPORT void on_shinfo_field_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_sensitive("shinfo_fieldinfo_type", on);
 	}
 C_EXPORT void on_shinfo_body_check_toggled
 	(
@@ -2369,14 +2590,23 @@ C_EXPORT void on_shinfo_framenames_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_framenames_box", on);
 	}
-C_EXPORT void on_shinfo_framepowers_check_toggled
+C_EXPORT void on_shinfo_frameflags_check_toggled
 	(
 	GtkToggleButton *btn,
 	gpointer user_data
 	)
 	{
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
-	ExultStudio::get_instance()->set_visible("shinfo_framepowers_box", on);
+	ExultStudio::get_instance()->set_visible("shinfo_frameflags_box", on);
+	}
+C_EXPORT void on_shinfo_frameusecode_check_toggled
+	(
+	GtkToggleButton *btn,
+	gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_frameusecode_box", on);
 	}
 C_EXPORT void on_shinfo_npcpaperdoll_check_toggled
 	(
@@ -2456,25 +2686,6 @@ static void Gump_shape_dropped
 		{			// Set shape #.
 		ExultStudio::get_instance()->set_spin(
 						"shinfo_gump_num", shape);
-		}
-	}
-
-/*
- *	Callback for when a gump is dropped in the NPC paperdoll page's draw area.
- */
-
-static void NPC_Gump_shape_dropped
-	(
-	int file,
-	int shape,
-	int frame,
-	void *udata
-	)
-	{
-	if (file == U7_SHAPE_GUMPS && shape >= 0)
-		{			// Set shape #.
-		ExultStudio::get_instance()->set_spin(
-						"shinfo_npcpaperdoll_gump", shape);
 		}
 	}
 
@@ -2647,7 +2858,9 @@ void ExultStudio::init_shape_notebook
 				"shinfo_shape_flag2",
 				"shinfo_shape_flag3",
 				"shinfo_shape_flag4",
-				"shinfo_shape_flag5" };
+				"shinfo_shape_flag5",
+				"shinfo_shape_flag6",
+				"shinfo_shape_flag7" };
 	set_bit_toggles(&shpflags[0], 
 		sizeof(shpflags)/sizeof(shpflags[0]), info.get_shape_flags());
 					// Extras.
@@ -2817,10 +3030,12 @@ void ExultStudio::init_shape_notebook
 		set_bit_toggles(&flags[0],
 			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
 		}
-	int container_gump = info.get_container_gump();
-	set_toggle("shinfo_container_check", container_gump >= 0);
-	set_visible("shinfo_container_box", container_gump >= 0);
-	set_spin("shinfo_gump_num", container_gump >= 0 ? container_gump : 0);
+	int gump_shape = info.get_gump_shape();
+	int gump_font = info.get_gump_font();
+	set_toggle("shinfo_container_check", gump_shape >= 0);
+	set_visible("shinfo_container_box", gump_shape >= 0);
+	set_spin("shinfo_gump_num", gump_shape >= 0 ? gump_shape : 0);
+	set_spin("shinfo_gump_font", gump_font);
 
 	int mountain_top = info.get_mountain_top_type();
 	if (mountain_top > 2 || mountain_top < 0)
@@ -2837,6 +3052,14 @@ void ExultStudio::init_shape_notebook
 	set_visible("shinfo_barge_box", barge_type != 0);
 	bool barge_on = get_toggle("shinfo_barge_check");
 	set_optmenu("shinfo_barge_type", barge_on ? barge_type : 0, barge_on);
+
+	int field_type = info.get_field_type();
+	if (field_type > 3)
+		field_type = 0;
+	bool field_on = get_toggle("shinfo_field_check");
+	set_toggle("shinfo_fieldinfo_check", field_type >= 0);
+	set_visible("shinfo_fieldinfo_box", field_on);
+	set_optmenu("shinfo_fieldinfo_type", field_on ? field_type+1 : 0, field_on);
 
 	bool hasbody = info.has_body_info();
 	set_toggle("shinfo_body_check", hasbody);
@@ -2884,8 +3107,6 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_sfx_clock_sfx", sfxinf->get_extra_sfx(), hourly);
 		}
 
-	set_sensitive("shinfo_npcpaperdoll_gump", game_type == BLACK_GATE);
-	set_sensitive("shinfo_npcgump_draw", game_type == BLACK_GATE);
 	Paperdoll_npc *npcinf = info.get_npc_paperdoll();
 	set_toggle("shinfo_npcpaperdoll_check", npcinf != 0);
 	set_visible("shinfo_npcpaperdoll_box", npcinf != 0);
@@ -2905,9 +3126,6 @@ void ExultStudio::init_shape_notebook
 			};
 		for (size_t i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
 			set_spin(arm_names[i], npcinf->get_arms_frame(i));
-		bool bg = game_type == BLACK_GATE;
-		set_spin("shinfo_npcpaperdoll_gump",
-				bg ? npcinf->get_gump_shape() : -1, bg);
 		}
 
 	Animation_info *aniinf = info.get_animation_info();
@@ -3060,41 +3278,94 @@ void ExultStudio::init_shape_notebook
 	else
 		Set_cntrules_fields();
 
-	std::vector<Frame_powers_info>& frpowinf = info.get_frame_powers();
-	set_toggle("shinfo_framepowers_check", !frpowinf.empty());
-	set_visible("shinfo_framepowers_box", !frpowinf.empty());
-	if (!frpowinf.empty())
+	std::vector<Frame_flags_info>& frflaginf = info.get_frame_flags();
+	set_toggle("shinfo_frameflags_check", !frflaginf.empty());
+	set_visible("shinfo_frameflags_box", !frflaginf.empty());
+	if (!frflaginf.empty())
 		{
-		GtkTreeView *powtree = GTK_TREE_VIEW(
-				glade_xml_get_widget(app_xml, "shinfo_framepowers_list"));
-		GtkTreeModel *model = gtk_tree_view_get_model(powtree);
+		GtkTreeView *flagtree = GTK_TREE_VIEW(
+				glade_xml_get_widget(app_xml, "shinfo_frameflags_list"));
+		GtkTreeModel *model = gtk_tree_view_get_model(flagtree);
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		GtkTreeIter iter;
-		Frame_powers_info *first = 0;
-		for (std::vector<Frame_powers_info>::iterator it = frpowinf.begin();
-			it != frpowinf.end(); ++it)
+		Frame_flags_info *first = 0;
+		for (std::vector<Frame_flags_info>::iterator it = frflaginf.begin();
+			it != frflaginf.end(); ++it)
 			{
 			gtk_tree_store_append(store, &iter, NULL);
-			Frame_powers_info& frpow = *it;
-			if (frpow.is_invalid())
+			Frame_flags_info& frflag = *it;
+			if (frflag.is_invalid())
 				continue;
 			if (!first)
 				first = &*it;
-			gtk_tree_store_set(store, &iter, FRPOW_FRAME_COLUMN, frpow.get_frame(),
-					FRPOW_POWERS_COLUMN, frpow.get_powers(),
-					FRPOW_FROM_PATCH, frpow.from_patch(),
-					FRPOW_MODIFIED, frpow.was_modified(), -1);
+			gtk_tree_store_set(store, &iter,
+					FRFLAG_FRAME_COLUMN, frflag.get_frame(),
+					FRFLAG_QUAL_COLUMN, frflag.get_quality(),
+					FRFLAG_FLAGS_COLUMN, frflag.get_flags(),
+					FRFLAG_FROM_PATCH, frflag.from_patch(),
+					FRFLAG_MODIFIED, frflag.was_modified(), -1);
 			}
-		GtkTreeSelection *sel = gtk_tree_view_get_selection(powtree);
+		GtkTreeSelection *sel = gtk_tree_view_get_selection(flagtree);
 		gtk_tree_model_get_iter_first(model, &iter);
 		gtk_tree_selection_select_iter(sel, &iter);
 		GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
-		gtk_tree_view_set_cursor(powtree, path, NULL, false);
+		gtk_tree_view_set_cursor(flagtree, path, NULL, false);
 		gtk_tree_path_free(path);
-		Set_framepowers_fields(first->get_frame(), first->get_powers());
+		Set_frameflags_fields(first->get_frame(), first->get_quality(),
+				first->get_flags());
 		}
 	else
-		Set_framepowers_fields();
+		Set_frameflags_fields();
+
+	std::vector<Frame_usecode_info>& frucinf = info.get_frame_usecode_info();
+	set_toggle("shinfo_frameusecode_check", !frucinf.empty());
+	set_visible("shinfo_frameusecode_box", !frucinf.empty());
+	if (!frucinf.empty())
+		{
+		GtkTreeView *uctree = GTK_TREE_VIEW(
+				glade_xml_get_widget(app_xml, "shinfo_frameusecode_list"));
+		GtkTreeModel *model = gtk_tree_view_get_model(uctree);
+		GtkTreeStore *store = GTK_TREE_STORE(model);
+		GtkTreeIter iter;
+		Frame_usecode_info *first = 0;
+		for (std::vector<Frame_usecode_info>::iterator it = frucinf.begin();
+			it != frucinf.end(); ++it)
+			{
+			gtk_tree_store_append(store, &iter, NULL);
+			Frame_usecode_info& frucfun = *it;
+			if (frucfun.is_invalid())
+				continue;
+			if (!first)
+				first = &*it;
+
+			std::stringstream ucfun;
+			if (frucfun.get_usecode_name().length())
+				ucfun << frucfun.get_usecode_name();
+			else
+				ucfun << frucfun.get_usecode();
+			gtk_tree_store_set(store, &iter,
+					FRUC_FRAME_COLUMN, frucfun.get_frame(),
+					FRUC_QUAL_COLUMN, frucfun.get_quality(),
+					FRUC_USEFUN_COLUMN, ucfun.str().c_str(),
+					FRUC_FROM_PATCH, frucfun.from_patch(),
+					FRUC_MODIFIED, frucfun.was_modified(), -1);
+			}
+		GtkTreeSelection *sel = gtk_tree_view_get_selection(uctree);
+		gtk_tree_model_get_iter_first(model, &iter);
+		gtk_tree_selection_select_iter(sel, &iter);
+		GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+		gtk_tree_view_set_cursor(uctree, path, NULL, false);
+		gtk_tree_path_free(path);
+		std::stringstream ucfun;
+		if (first->get_usecode_name().length())
+			ucfun << first->get_usecode_name();
+		else
+			ucfun << first->get_usecode();
+		Set_frameusecode_fields(first->get_frame(), first->get_quality(),
+				ucfun.str().c_str());
+		}
+	else
+		Set_frameusecode_fields();
 
 	std::vector<Frame_name_info>& nmvec = info.get_frame_name_info();
 	set_toggle("shinfo_framenames_check", !nmvec.empty());
@@ -3249,16 +3520,34 @@ struct Update_cntrules
 		}
 	};
 
-struct Update_frpowers
+struct Update_frflags
 	{
 	void operator() (Shape_info& info, GtkTreeModel *model, GtkTreeIter *iter)
 		{
-		unsigned int frnum, powers, patch, modded;
-		gtk_tree_model_get(model, iter, FRPOW_FRAME_COLUMN, &frnum,
-				FRPOW_POWERS_COLUMN, &powers,
-				FRPOW_FROM_PATCH, &patch, FRPOW_MODIFIED, &modded, -1);
-		Frame_powers_info powinf(frnum, powers, patch, modded);
-		info.add_frame_powers(powinf);
+		unsigned int frnum, qual, flags, patch, modded;
+		gtk_tree_model_get(model, iter, FRFLAG_FRAME_COLUMN, &frnum,
+				FRFLAG_QUAL_COLUMN, &qual, FRFLAG_FLAGS_COLUMN, &flags,
+				FRFLAG_FROM_PATCH, &patch, FRFLAG_MODIFIED, &modded, -1);
+		Frame_flags_info flaginf(frnum, qual, flags, patch, modded);
+		info.add_frame_flags(flaginf);
+		}
+	};
+
+struct Update_frusecode
+	{
+	void operator() (Shape_info& info, GtkTreeModel *model, GtkTreeIter *iter)
+		{
+		unsigned int frnum, qual, patch, modded;
+		char *ucfun;
+		gtk_tree_model_get(model, iter, FRUC_FRAME_COLUMN, &frnum,
+				FRUC_QUAL_COLUMN, &qual, FRUC_USEFUN_COLUMN, &ucfun,
+				FRUC_FROM_PATCH, &patch, FRUC_MODIFIED, &modded, -1);
+		char *eptr;
+		long int ucid = strtol(ucfun, &eptr, 0);
+		if (ucfun == eptr || strlen(ucfun) == 0)
+			ucid = -1;
+		Frame_usecode_info ucinf(frnum, qual, ucid, ucfun, patch, modded);
+		info.add_frame_usecode_info(ucinf);
 		}
 	};
 
@@ -3441,7 +3730,9 @@ void ExultStudio::save_shape_notebook
 				"shinfo_shape_flag2",
 				"shinfo_shape_flag3",
 				"shinfo_shape_flag4",
-				"shinfo_shape_flag5" };
+				"shinfo_shape_flag5",
+				"shinfo_shape_flag6",
+				"shinfo_shape_flag7" };
 	info.set_shape_flags(get_bit_toggles(&shpflags[0], 
 				sizeof(shpflags)/sizeof(shpflags[0])));
 					// Extras.
@@ -3628,10 +3919,11 @@ void ExultStudio::save_shape_notebook
 		info.set_monster_food(get_spin("shinfo_monster_food"));
 		}
 	if (!get_toggle("shinfo_container_check"))
-		info.set_container_gump(-1);
+		info.set_gump_data(-1, -1);
 	else
 		{
-		info.set_container_gump(get_spin("shinfo_gump_num"));
+		info.set_gump_data(get_spin("shinfo_gump_num"),
+					get_spin("shinfo_gump_font"));
 		}
 	if (!get_toggle("shinfo_mountaintop_check"))
 		info.set_mountain_top(0);
@@ -3644,6 +3936,12 @@ void ExultStudio::save_shape_notebook
 	else
 		{
 		info.set_barge_type(get_optmenu("shinfo_barge_type"));
+		}
+	if (!get_toggle("shinfo_fieldinfo_check"))
+		info.set_field_type(-1);
+	else
+		{
+		info.set_field_type(get_optmenu("shinfo_fieldinfo_type")-1);
 		}
 	if (!get_toggle("shinfo_body_check"))
 		info.set_body_info(false);
@@ -3695,8 +3993,6 @@ void ExultStudio::save_shape_notebook
 			};
 		for (size_t i = 0; i < sizeof(arm_names)/sizeof(arm_names[0]); i++)
 			npcinf->set_arms_frame(i, get_spin(arm_names[i]));
-		if (game_type == BLACK_GATE)
-			npcinf->set_gump_shape(get_spin("shinfo_npcpaperdoll_gump"));
 		}
 	if (!get_toggle("shinfo_animation_check"))
 		info.set_animation_info(false);
@@ -3766,13 +4062,21 @@ void ExultStudio::save_shape_notebook
 		update_shape_vector<Update_cntrules>("shinfo_cntrules_list", info);
 		info.clean_invalid_content_rules();
 		}
-	if (!get_toggle("shinfo_framepowers_check"))
-		info.set_frame_powers(false);
+	if (!get_toggle("shinfo_frameflags_check"))
+		info.set_frame_flags(false);
 	else
 		{
-		info.set_frame_powers(true);
-		update_shape_vector<Update_frpowers>("shinfo_framepowers_list", info);
-		info.clean_invalid_frame_powers();
+		info.set_frame_flags(true);
+		update_shape_vector<Update_frflags>("shinfo_frameflags_list", info);
+		info.clean_invalid_frame_flags();
+		}
+	if (!get_toggle("shinfo_frameusecode_check"))
+		info.set_frame_usecode_info(false);
+	else
+		{
+		info.set_frame_usecode_info(true);
+		update_shape_vector<Update_frusecode>("shinfo_frameusecode_list", info);
+		info.clean_invalid_usecode_info();
 		}
 	if (!get_toggle("shinfo_framenames_check"))
 		info.set_frame_name_info(false);
@@ -3829,8 +4133,6 @@ void ExultStudio::open_shape_window
 	shape_draw = 0;
 	delete gump_draw;
 	gump_draw = 0;
-	delete npcgump_draw;
-	npcgump_draw = 0;
 	delete body_draw;
 	body_draw = 0;
 	delete explosion_draw;
@@ -3847,9 +4149,6 @@ void ExultStudio::open_shape_window
 		gump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
 		            glade_xml_get_widget(app_xml, "shinfo_gump_draw"));
 		gump_draw->enable_drop(Gump_shape_dropped, this);
-		npcgump_draw = new Shape_draw(gumpfile->get_ifile(), palbuf,
-		            glade_xml_get_widget(app_xml, "shinfo_npcgump_draw"));
-		npcgump_draw->enable_drop(NPC_Gump_shape_dropped, this);
 		}
 	if (vgafile && palbuf)
 		{
@@ -3873,6 +4172,8 @@ void ExultStudio::open_shape_window
 	set_spin("shinfo_effhps_frame_num", 0, nframes - 1);
 	set_spin("shinfo_warmth_frame_num", 0, nframes - 1);
 	set_spin("shinfo_framenames_frame_num", 0, nframes - 1);
+	set_spin("shinfo_frameflags_frame_num", 0, nframes - 1);
+	set_spin("shinfo_frameusecode_frame_num", 0, nframes - 1);
 					// Store name, #frames.
 	utf8Str utf8shname(shname ? shname : "");
 	set_entry("shinfo_name", utf8shname);
@@ -3896,9 +4197,10 @@ void ExultStudio::open_shape_window
 		{
 		set_spin("shinfo_gump_num", 0,
 				gumpfile->get_ifile()->get_num_shapes()-1);
-		set_spin("shinfo_npcpaperdoll_gump", -1,
-				gumpfile->get_ifile()->get_num_shapes()-1);
 		}
+	if (fontfile)
+		set_spin("shinfo_gump_font", -1,
+				fontfile->get_ifile()->get_num_shapes()-1);
 	if (spritefile)
 		set_spin("shinfo_explosion_sprite", 0,
 				spritefile->get_ifile()->get_num_shapes()-1);
@@ -4047,34 +4349,76 @@ void ExultStudio::open_shape_window
 		gtk_tree_store_clear(store);
 		}
 
-	GtkTreeView *powtree = GTK_TREE_VIEW(
-			glade_xml_get_widget(app_xml, "shinfo_framepowers_list"));
-	gtk_signal_connect(GTK_OBJECT(powtree), "cursor_changed",
-				GTK_SIGNAL_FUNC(on_shinfo_framepowers_list_cursor_changed),
+	GtkTreeView *flagtree = GTK_TREE_VIEW(
+			glade_xml_get_widget(app_xml, "shinfo_frameflags_list"));
+	gtk_signal_connect(GTK_OBJECT(flagtree), "cursor_changed",
+				GTK_SIGNAL_FUNC(on_shinfo_frameflags_list_cursor_changed),
 				0L);
-	model = gtk_tree_view_get_model(powtree);
+	model = gtk_tree_view_get_model(flagtree);
 	if (!model)
 		{
 		GtkTreeStore *store = gtk_tree_store_new(
-				FRPOW_COLUMN_COUNT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
-		gtk_tree_view_set_model(powtree, GTK_TREE_MODEL(store));
+				FRFLAG_COLUMN_COUNT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT,
+				G_TYPE_INT, G_TYPE_INT);
+		gtk_tree_view_set_model(flagtree, GTK_TREE_MODEL(store));
 		g_object_unref(store);
 		// Create each column.
 		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
-				"Shape", renderer, "text", FRPOW_FRAME_COLUMN, NULL);
-		gtk_tree_view_append_column(powtree, col);
+				"Frame", renderer, "text", FRFLAG_FRAME_COLUMN, NULL);
+		gtk_tree_view_append_column(flagtree, col);
 		renderer = gtk_cell_renderer_text_new();
 		col = gtk_tree_view_column_new_with_attributes(
-				"Powers", renderer, "text", FRPOW_POWERS_COLUMN, NULL);
-		gtk_tree_view_append_column(powtree, col);
-		add_terminal_columns(powtree, FRPOW_FROM_PATCH, FRPOW_MODIFIED);
+				"Quality", renderer, "text", FRFLAG_QUAL_COLUMN, NULL);
+		gtk_tree_view_append_column(flagtree, col);
+		renderer = gtk_cell_renderer_text_new();
+		col = gtk_tree_view_column_new_with_attributes(
+				"Flags", renderer, "text", FRFLAG_FLAGS_COLUMN, NULL);
+		gtk_tree_view_append_column(flagtree, col);
+		add_terminal_columns(flagtree, FRFLAG_FROM_PATCH, FRFLAG_MODIFIED);
 		}
 	else
 		{
 		// Clear it.
 		GtkTreeModel *model = gtk_tree_view_get_model(
-							GTK_TREE_VIEW(powtree));
+							GTK_TREE_VIEW(flagtree));
+		GtkTreeStore *store = GTK_TREE_STORE(model);
+		gtk_tree_store_clear(store);
+		}
+
+	GtkTreeView *ucfuntree = GTK_TREE_VIEW(
+			glade_xml_get_widget(app_xml, "shinfo_frameusecode_list"));
+	gtk_signal_connect(GTK_OBJECT(ucfuntree), "cursor_changed",
+				GTK_SIGNAL_FUNC(on_shinfo_frameusecode_list_cursor_changed),
+				0L);
+	model = gtk_tree_view_get_model(ucfuntree);
+	if (!model)
+		{
+		GtkTreeStore *store = gtk_tree_store_new(
+				FRUC_COLUMN_COUNT, G_TYPE_INT, G_TYPE_INT, G_TYPE_STRING,
+				G_TYPE_INT, G_TYPE_INT);
+		gtk_tree_view_set_model(ucfuntree, GTK_TREE_MODEL(store));
+		g_object_unref(store);
+		// Create each column.
+		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+		GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes(
+				"Frame", renderer, "text", FRUC_FRAME_COLUMN, NULL);
+		gtk_tree_view_append_column(ucfuntree, col);
+		renderer = gtk_cell_renderer_text_new();
+		col = gtk_tree_view_column_new_with_attributes(
+				"Quality", renderer, "text", FRUC_QUAL_COLUMN, NULL);
+		gtk_tree_view_append_column(ucfuntree, col);
+		renderer = gtk_cell_renderer_text_new();
+		col = gtk_tree_view_column_new_with_attributes(
+				"Usecode", renderer, "text", FRUC_USEFUN_COLUMN, NULL);
+		gtk_tree_view_append_column(ucfuntree, col);
+		add_terminal_columns(ucfuntree, FRUC_FROM_PATCH, FRUC_MODIFIED);
+		}
+	else
+		{
+		// Clear it.
+		GtkTreeModel *model = gtk_tree_view_get_model(
+							GTK_TREE_VIEW(ucfuntree));
 		GtkTreeStore *store = GTK_TREE_STORE(model);
 		gtk_tree_store_clear(store);
 		}
@@ -4238,29 +4582,6 @@ void ExultStudio::show_shinfo_gump
 		gump_draw->show(x, y, w, h);
 	else
 		gump_draw->show();
-	}
-
-/*
- *	Paint the gump shape on the NPC paperdoll page.
- */
-
-void ExultStudio::show_shinfo_npcgump
-	(
-	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
-	)
-	{
-	if (!npcgump_draw || game_type != BLACK_GATE)
-		return;
-	npcgump_draw->configure();
-					// Yes, this is kind of redundant...
-	int shnum = get_spin("shinfo_npcpaperdoll_gump");
-	if (shnum < 0)
-		return;
-	npcgump_draw->draw_shape_centered(shnum, 0);
-	if (w != -1)
-		npcgump_draw->show(x, y, w, h);
-	else
-		npcgump_draw->show();
 	}
 
 /*
