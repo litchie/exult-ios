@@ -1,25 +1,26 @@
 Exult Documentation
-last changed: 10 March 2010(GMT)
+last changed: 11 March 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 10 March 2010
-0.2. - 08 March 2010
-0.3. - 16 July 2009
-0.4. - 03 June 2009
-0.5. - 20 May 2009
-0.6. - 19 May 2009
-0.7. - 18 May 2009
-0.8. - 28 April 2009
-0.9. - 21 October 2007
-0.10. - 08 April 2006
-0.11. - 14 March 2005
-0.12. - 14 August 2004
-0.13. - 23 May 2004
-0.14. - 11 February 2004
-0.15. - 12 December 2003
+0.1. - 11 March 2010
+0.2. - 10 March 2010
+0.3. - 08 March 2010
+0.4. - 16 July 2009
+0.5. - 03 June 2009
+0.6. - 20 May 2009
+0.7. - 19 May 2009
+0.8. - 18 May 2009
+0.9. - 28 April 2009
+0.10. - 21 October 2007
+0.11. - 08 April 2006
+0.12. - 14 March 2005
+0.13. - 14 August 2004
+0.14. - 23 May 2004
+0.15. - 11 February 2004
+0.16. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -112,7 +113,14 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 10 March 2010
+0.1. - 11 March 2010
+* 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
+* 6.4. Audio Options added new SFX pack option and updated screenshot.
+* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
+
+
+
+0.2. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -122,7 +130,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 08 March 2010
+0.3. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -133,25 +141,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 16 July 2009
+0.4. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.4. - 03 June 2009
+0.5. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.5. - 20 May 2009
+0.6. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.6. - 19 May 2009
+0.7. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -162,7 +170,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 18 May 2009
+0.8. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -181,43 +189,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.8. - 28 April 2009
+0.9. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.9. - 21 October 2007
+0.10. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OSX added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.10. - 08 April 2006
+0.11. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.11. - 14 March 2005
+0.12. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.12. - 14 August 2004
+0.13. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.13. - 23 May 2004
+0.14. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.14. - 11 February 2004
+0.15. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -228,7 +236,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.15. - 12 December 2003
+0.16. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
@@ -937,7 +945,7 @@ It isn't necessary but you can also customize the location of the music files by
 3.7. Digital Wave Sound Effects
 Exult needs the so called SFX packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the SFX in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with SFX playback in SI: In combat the SFX may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the SFX that the original did.
 We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster SFX and Simon Quinn recorded the Roland MT32 SFX. You can find them on our download page at http://exult.sourceforge.net/download.php. "Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster sound effects. "Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" are the Roland MT32 sound effects. Don't be confused by the "Zaurus SI/BG SFX package", these are just the repackaged SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these don't concern you.
-Extract the zip files into your Exult data folder. Exult will automatically find and use the SFX packs. If both packs (SoundBlaster and Roland MT-32) are prsent, Exult will default to the Roland MT32 pack unless you override this setting in the exult.cfg (see 2.3.). An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
+Extract the zip files into your Exult data folder. Exult will automatically find and use the SFX packs and will default to use the Roland MT32 pack when both both packs (SoundBlaster and Roland MT-32) are present. You can then choose between the packs in the Game Menu (6.4.), of course you can override this setting in the exult.cfg (see 2.3.). An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
 <blackgate>
   <waves>
   jmsfx.flx
@@ -1164,7 +1172,8 @@ Look at 3. Audio to see explanation on the settings.
 * device type choose between different device types for MIDI music, see 3.2..
 * effects alters the way the MIDI is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
 * SFX Enable or disable digital sound effects.
-* Speech Options Enable or disable the speech in the games.
+* SFX Enable or disable digital sound effects.
+* Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.7..
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
 

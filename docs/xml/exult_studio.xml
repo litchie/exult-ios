@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="01 March 2005(GMT)">
+<studiodoc title="Exult" changed="11 March 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="11032010">
+			<header>- 11 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="installation"/> added Vista/W7 to the Windows list, Windows 95 is not supported.</li>
+				<li><ref1 target="can_do_atm"/> the patch folder NEEDS to be writeable.</li>
+				<li><ref1 target="win32_bugs"/> Windows 95 is not supported.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="01032005">
 			<header>- 01 March 2005</header>
 			<body>
@@ -129,8 +139,8 @@
 						Please note that our documentation usually refers to the latest snapshot.</li>
 					<li><strong>usecode</strong>:<br/>
 						that's the scripting language that drives all of U7 (conversations, objects...).</li>
-					<li><strong>Exult data directory</strong>:<br/>
-						that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and
+					<li><strong>Exult data folder</strong>:<br/>
+						that's the folder where Exult stores its data files (exult.flx, exult_bg.flx and
 						exult_si.flx).</li>
 				</ul>
 			</body>
@@ -149,9 +159,10 @@
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
 				<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>.<br/></li>
-					<li>For Win32 platforms (Win9x,ME,2k,XP) you need to download
+					<li>For Windows platforms (98,98SE,ME,2k,XP,Vista,7) you need to download
 						<extref target="http://exult.sourceforge.net/snapshots/ExultStudio.exe"/>
-						and install it in the same directory where you installed <Exult/>.</li>
+						and install it in the same folder where you installed <Exult/>. 
+						<Studio/> does not run Windows 95</li>
 				</ul>
 			</body>
 		</sub>
@@ -163,9 +174,9 @@
 					as it uses <Exult/> as a server. What you really want to do is:
 				</para>
 				<ul>
-   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
+   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' folder.</li>
    				<li>Be sure 'exult_studio' is in your path. (on Windows
-   					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
+   					'exult_studio.exe' needs to be in the same folder as exult.exe)</li>
 				<li>On U*ix platforms you need to be running <Exult/> on X.</li>
    				<li>Run <Exult/> in <strong>windowed mode</strong> (not fullscreen).</li>
    				<li>Enable the <Exult/> cheat mode (see <extref doc="docs" target="gameplay_gump"/>).</li>
@@ -178,10 +189,10 @@
 				</para>
 				<ul>
     			<li>If <Exult/> isn't running, start it up. Then, in <Studio/>,
-					use the 'File' menu to choose the static directory (for the game you're
+					use the 'File' menu to choose the static folder (for the game you're
 					playing).</li>
    				<li>If <Studio/> isn't running start it up with:
-        			exult_studio -x (path to dir containing exult_studio.glade) -gGAME
+        			exult_studio -x (path to the folder containing exult_studio.glade) -gGAME
         			(GAME is the same string (ie, 'blackgate') that we use in .exult.cfg or that
         			you've given to your own game).</li>
 				</ul>
@@ -205,14 +216,15 @@
 				<li>Next, you need to have the latest <Exult/> snapshot and the SDL mixer installed properly
 					onto your computer and working correctly. If you are currently playing either BG or SI
 					on your machine this is probably done right. To make sure you have the correct version,
-					ensure that it says X.XX CVS (X.XX stands for some version number) during <Exult/>'s 
+					ensure that it says X.XX SVN (X.XX stands for some version number) during <Exult/>'s 
 					start-up screen (for example see 
 					<extref target="http://exult.sourceforge.net/images/screenshots/mainmenu.png"/>).</li>
 				<li>You need to make sure the newest version of <Studio/> is installed properly onto your
-					computer as well. <Studio/> should be installed in the same directory as the <Exult/> 
+					computer as well. <Studio/> should be installed in the same folder as the <Exult/> 
 					snapshot.</li>
-				<li>You <strong>need</strong> to set up the path for the patch to save any changes to existing
-					games. See <ref1 target="can_do_atm"/> on how to change exult.cfg accordingly.</li>
+				<li>The patch folder <strong>needs</strong> to be in folder which you are allowed to write, 
+					so <Studio/> can save any changes to existing games. See <ref1 target="can_do_atm"/> on 
+					how to change exult.cfg accordingly.</li>
 				<li>In order for <Studio/> to work properly, you need to have <Exult/> running in windowed mode.
 					If you can see your desktop while playing, then you're doing it right.</li>
 				<li>Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game
@@ -261,8 +273,8 @@
 							in the map and changing it in one place changes it in all the others as well.</li>
 						<li>save the map using <Studio/>'s "File-Save map" pulldown menu.
 							In order to avoid writing over files inadvertently, the files that
-							would normally go into the 'static' directory, will, instead, go into
-							a 'patch' directory that you specify in your 'exult.cfg' file. Here's
+							would normally go into the 'static' folder, will, instead, go into
+							a 'patch' folder that you specify in your 'exult.cfg' file. Here's
 							an example for editing BG:</li>
 					</ul>
 				<configdesc>
@@ -281,11 +293,15 @@
 					</configtag>
 				</configdesc>
 				<para>
-					<Exult/> will also read files from 'patch' if it exists on starting a new game. The patch 
-					dir is expected to be within the main game directory, parallel to the static and gamedat directories.
+					<em>IMPORTANT:</em> <Studio/> requires the "patch" folder to be writeable. If you don't have writeaccess 
+					you need to place it somewhere you are allowed to write to and change the path accordingly in exult.cfg.
 				</para>
 				<para>
-					In any mode, you can add the currently selected shape by shift-clicking..
+					<Exult/> will also read files from 'patch' if it exists on starting a new game. The patch 
+					folder is expected to be within the main game folder, parallel to the static and gamedat folders.
+				</para>
+				<para>
+					In any mode, you can add the currently selected shape by shift-clicking.
 				</para>
 			</body>
 		</sub>
@@ -337,10 +353,10 @@
 				</para>
 				<ul>
 					<li>-gGAMENAME<br/>
-						specifies GAMENAME and <Studio/> will read the game base directory from exult.cfg.
+						specifies GAMENAME and <Studio/> will read the game base folder from exult.cfg.
 						GAMENAME can be chosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
-					<li>-xDIRECTORY<br/>
-						tells exult_studio to look in DIRECTORY for its user-interface specification
+					<li>-xFOLDER<br/>
+						tells exult_studio to look in FOLDER for its user-interface specification
 						(exult_studio.glade).<br/>
 						You can enter the full path (e.g. "exult_studio -xc:\exult\data") to the glade file
 						or you can use the relative path (e.g. exult_studio -x./data).<br/>
@@ -553,17 +569,17 @@
 						See
 						<extref target="http://exult.sourceforge.net/newgame.txt">New Game manual</extref>.</li>
 					<li><strong>Open Game...</strong><br/>
-						Choose the Game directory of the game you that you have been working on.</li>
+						Choose the Game folder of the game you that you have been working on.</li>
 					<li><strong>Save all</strong><key>Ctrl+S</key><br/>
 						Saves map, shape info and groups you edited. Saves all the changes you've made to
 						the world you have been working on. If you're happy with your changes do this
 						before you quit or all work will be lost.</li>
 					<li><strong>New...</strong><br/>
 						<strong>Shapes file...</strong><br/>
-						Lets you choose the directory where you want to create a new vga file and requires
+						Lets you choose the folder where you want to create a new vga file and requires
 						you to enter a name for it (e.g. mygame.vga).<br/>
 						<strong>Single shape file...</strong><br/>
-						Lets you choose the directory where you want to create a new shape file and requires
+						Lets you choose the folder where you want to create a new shape file and requires
 						you to enter a name for it (e.g. mygame.shp).</li>
 					<li><strong>Save...</strong><br/>
 						<strong>Map</strong><br/>
@@ -599,8 +615,8 @@
 						Exits <Studio/>.</li>
 				</ul>
 				<para>
-					Note that the default location for saving and creation of new files is the STATIC directory
-					of a game if there is no PATCH directory specified. See <ref1 target="can_do_atm"/>.
+					Note that the default location for saving and creation of new files is the STATIC folder
+					of a game if there is no PATCH folder specified. See <ref1 target="can_do_atm"/>.
 				</para>
 			</body>
 		</sub>
@@ -684,7 +700,7 @@
 					searches the entire world being created to see if any of the shapes in shapes.vga
 					are not in use. Have patience when doing this and treat the results with caution.</li>
 					<li><strong>Compile Usecode...</strong><br/>
-					Compiles the usecode script usecode.uc in the patch directory
+					Compiles the usecode script usecode.uc in the patch folder
 					(see <ref target="usecode_edit"/>)</li>
 				</ul>
 			</body>
@@ -776,7 +792,7 @@
 				<para>
 					Create 'combination shapes', like a fence or an entire roof by selecting
 					"Tools-New Combo" (see <ref target="tools_menu"/>). When you run <Studio/> the first
-					time a file called combos.flx gets automatically created in the "Patch" directory.
+					time a file called combos.flx gets automatically created in the "Patch" folder.
 					Choose the 'Pick for Combo' choice in the 'Modes' menu, and an empty window should
 					pop up. In the game window, double-click a group of objects, and they should appear
 					in the window. You can then select an object there and tweak its position. When you
@@ -1536,7 +1552,7 @@
 					create (shape, chunk, gump, etc.) and right-click on the display window and select <strong>New Shape</strong>
 					or <strong>New Frame</strong> depending on which is pertinent. Once the new shape is created, right 
 					click on the new shape and select <strong>Import frame</strong>. Now select the desired shape from 
-					the directory. You must now save all in <Studio/> and both <Studio/> and <Exult/> need to be restarted 
+					the folder. You must now save all in <Studio/> and both <Studio/> and <Exult/> need to be restarted 
 					before the newly imported shape can be used in a game.
 				</para>
 				<para>
@@ -1619,7 +1635,7 @@
 				<para>
 					Currently <Studio/> runs on U*ix and Windows platforms. First it only
 					ran on U*ix but with some effort by Colourless, Kirben and Mark Siewart
-					it was successfully ported to Win32.
+					it was successfully ported to Windows.
 				</para>
 				<para>
 					A port to other platforms depends on when someone volunteers to do the work :-)
@@ -1629,7 +1645,7 @@
    				<li>GTK has to be ported to the platform.</li>
    				<li><Studio/> uses sockets to communicate with <Exult/>.</li>
    				<li>X drag-n-drop is used to put new objects on the landscape. The
-					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
+					'drop' part of this had to be rewritten for Windows <Exult/>, OR,
 					drag-n-drop could be an enhancement to SDL someday.<br/>
 					As an alternative to dragging objects, you can now select a shape,
 					then insert it into the game window by left-clicking while holding the
@@ -1696,7 +1712,7 @@
 				</para>
 				<para>
 					For a more detailed explanation, see Gary Thompson's paper,
-					'u7edit.txt' in our 'docs' directory.
+					'u7edit.txt' in our 'docs' folder.
 				</para>
 			</body>
 		</sub>
@@ -1716,11 +1732,12 @@
 			</body>
 		</sub>		
 		<sub name="win32_bugs">
-			<header>Known Bugs with the Win32 port</header>
+			<header>Known Bugs with the Windows port</header>
 			<body>
 				<para>
-					<Studio/> runs fine on all versions of Win32. However there may still be
-					unexpected crashes. If you can reproduce a crash, please contact us.
+					<Studio/> runs fine on all versions of Windows, except Windows 95 (and of course 
+					Windows 3.x). However there may still be unexpected crashes. If you can reproduce 
+					a crash, please contact us.
 				</para>
 			</body>
 		</sub>
@@ -1731,7 +1748,7 @@
 			<body>
 				<ul>
 					<li>Colourless, Kirben and Mark Siewart invested a lot of effort to port
-					<Studio/> to Win32.</li>
+					<Studio/> to Windows.</li>
 				</ul>
 			</body>
 		</sub>
