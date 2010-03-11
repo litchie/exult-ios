@@ -246,7 +246,9 @@ void Shape_manager::load
 	else if (GAME_BG || GAME_SI)
 		{
 		char buf[50];
-		snprintf(buf, 50, "<DATA>/exult_%s.flx", GAME_BG ? "bg" : "si");
+		const char *flexfmt =
+				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
+		snprintf(buf, 50, flexfmt, GAME_BG ? "bg" : "si");
 		U7object txtobj(buf,
 				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;

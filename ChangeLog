@@ -8,6 +8,8 @@
 	* Implemented feature requests:
 	  #2967398 Show which sfx pack is used in stdout
 	  #2967397 Gump for selecting SFX pack
+	* shapeid.cc, fnames.h, shapes/shapevga.cc: Fixed a few omissions affecting
+	  MacOS X app bundles.
 
 2010-03-10 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation and FAQ with the changed default path values and other things.
