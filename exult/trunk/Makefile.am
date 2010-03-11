@@ -2,7 +2,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shap
 	-I$(srcdir)/server -I$(srcdir)/data -I$(srcdir)/gamemgr \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
 	-I$(srcdir)/audio -I$(srcdir)/audio/midi_drivers -I$(srcdir)/pathfinder \
-	-I$(srcdir)/usecode \
+	-I$(srcdir)/usecode -I$(srcdir)/shapes/shapeinf \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
@@ -113,6 +113,7 @@ EXULTLIBS = \
 	server/libserver.la \
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
+	shapes/shapeinf/libshapeinf.la \
 	objs/libobjs.la \
 	gumps/libgumps.la \
 	files/libu7file.la \

@@ -68,7 +68,7 @@
 #include "objiter.h"
 #include "ammoinf.h"
 #include "armorinf.h"
-#include "frpowers.h"
+#include "frflags.h"
 #include "weaponinf.h"
 #include "npcdollinf.h"
 #include "spellbook.h"
@@ -469,14 +469,14 @@ static inline bool Is_weapon_usable
 	Game_object *aobj = 0;	// Check ranged first.
 	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 			winf->get_ammo_consumed(), winf->get_projectile(),
-			true, &aobj, GAME_BG, recursive);
+			true, &aobj, recursive);
 	if (!need_ammo)
 		return true;
 		// Try melee if the weapon is not ranged.
 	else if (!aobj && winf->get_uses() != Weapon_info::ranged)
 		need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 				winf->get_ammo_consumed(), winf->get_projectile(),
-				false, &aobj, GAME_BG, recursive);
+				false, &aobj, recursive);
 	if (need_ammo && !aobj)
 		return false;
 	if (ammo)
@@ -704,9 +704,9 @@ int Actor::add_dirty
 	{
 	if (!gwin->add_dirty(this))
 		return 0;
-	int weapon_x, weapon_y, weapon_frame;
 	if (figure_rect || get_casting_mode() == Actor::show_casting_frames)
 		{
+		int weapon_x, weapon_y, weapon_frame;
 		if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
 			{
 			int shnum = get_effective_weapon_shape();
@@ -940,7 +940,8 @@ void Actor::refigure_gear()
 			if (info.is_light_source() && (locs[i] != belt ||
 					(rdy != lhand && rdy != rhand && rdy != both_hands)))
 				light_sources++;
-			powers |= info.get_object_powers(worn->get_framenum());
+			powers |= info.get_object_flags(worn->get_framenum(),
+				info.has_quality() ? worn->get_quality() : -1);
 			immune |= info.get_armor_immunity();
 			}
 		}
@@ -957,7 +958,7 @@ void Actor::use_food
 	(
 	)
 	{
-	if (get_info().does_not_eat() || (gear_powers&Frame_powers::doesnt_eat))
+	if (get_info().does_not_eat() || (gear_powers&Frame_flags::doesnt_eat))
 		return;
 	int food = get_property(static_cast<int>(food_level));
 	food -= (rand()%4);		// Average 1.5 level/hour.
@@ -1006,7 +1007,7 @@ void Actor::check_temperature
 		return;
 		}
 	// Immune to cold by nature or an item?
-	if (get_info().is_cold_immune() || (gear_powers&Frame_powers::cold_immune))
+	if (get_info().is_cold_immune() || (gear_powers&Frame_flags::cold_immune))
 		return;
 	if (get_schedule_type() == Schedule::wait)
 		return;			// Not following leader?  Leave alone.
@@ -1552,7 +1553,7 @@ void Actor::get_tile_info
 		if (poison && actor)
 			{
 			if ((actor->gear_powers &
-				(Frame_powers::swamp_safe|Frame_powers::poison_safe)) != 0)
+				(Frame_flags::swamp_safe|Frame_flags::poison_safe)) != 0)
 				poison = 0;
 			else		// Not protected by gear?
 				{	// Safe from poisoning?
@@ -2209,7 +2210,7 @@ void Actor::activate
 		ucmachine->call_usecode(get_usecode(), this,
 			(Usecode_machine::Usecode_events) event);
 	else if (party_id >= 0 || !gwin->is_time_stopped())
-		ucmachine->call_usecode(usecode, this, 
+		ucmachine->call_usecode(get_usecode(), this, 
 			(Usecode_machine::Usecode_events) event);
 	
 	}
@@ -2396,22 +2397,23 @@ int Actor::inventory_shapenum()
 	if (!serpent)
 		{	// Can't display paperdolls (or they are disabled)
 			// Use BG gumps
-		Paperdoll_npc *npcinfo = get_info().get_npc_paperdoll();
-
-		if (!npcinfo)
+		int gump = get_info().get_gump_shape();
+		if (gump < 0)
+			gump = ShapeID::get_info(get_sexed_coloured_shape()).get_gump_shape();
+		if (gump < 0)
+			gump = ShapeID::get_info(get_shape_real()).get_gump_shape();
+		if (gump < 0)
 			{
-			Shape_info& inf = ShapeID::get_info(get_sexed_coloured_shape());
-			npcinfo = inf.get_npc_paperdoll();
+			int shape = get_type_flag(Actor::tf_sex) ?
+				Shapeinfo_lookup::GetFemaleAvShape() :
+				Shapeinfo_lookup::GetMaleAvShape();
+			gump = ShapeID::get_info(shape).get_gump_shape();
 			}
-		if (!npcinfo)
-			{
-			Shape_info& inf = ShapeID::get_info(get_shape_real());
-			npcinfo = inf.get_npc_paperdoll_safe(get_type_flag(tf_sex));
-			}
-		if (!npcinfo)		// No paperdoll info at ALL; should never happen...
+		if (gump < 0)
+			// No gump at ALL; should never happen...
 			return (65);	// Default to male (Pickpocket Cheat)
 		
-		return npcinfo->get_gump_shape();
+		return gump;
 		}
 	else /* if (serpent) */
 		return (123);		// Show paperdolls
@@ -3151,7 +3153,7 @@ void Actor::set_flag
 		{
 	case Obj_flags::asleep:
 		if (minf->sleep_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_powers::power_safe|Frame_powers::sleep_safe)))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::sleep_safe)))
 			return;		// Don't do anything.
 					// Avoid waking Penumbra.
 		if (schedule_type == Schedule::sleep && Bg_dont_wake(gwin, this))
@@ -3162,7 +3164,7 @@ void Actor::set_flag
 		lay_down(false);	// Lie down.
 		break;
 	case Obj_flags::poisoned:
-		if (minf->poison_safe() || (gear_powers&Frame_powers::poison_safe))
+		if (minf->poison_safe() || (gear_powers&Frame_flags::poison_safe))
 			return;		// Don't do anything.
 		need_timers()->start_poison();
 		break;
@@ -3174,20 +3176,20 @@ void Actor::set_flag
 		break;
 	case Obj_flags::cursed:
 		if (minf->curse_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_powers::power_safe|Frame_powers::curse_safe)))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::curse_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_curse();
 		break;
 	case Obj_flags::charmed:
 		if (minf->charm_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_powers::power_safe|Frame_powers::charm_safe)))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_charm();
 		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:
 		if (minf->paralysis_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_powers::power_safe|Frame_powers::paralysis_safe)))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::paralysis_safe)))
 			return;		// Don't do anything.
 		fall_down();
 		need_timers()->start_paralyze();
@@ -3567,7 +3569,8 @@ bool Actor::add
 
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
-	gear_powers |= info.get_object_powers(obj->get_framenum());
+	gear_powers |= info.get_object_flags(obj->get_framenum(),
+				info.has_quality() ? obj->get_quality() : -1);
 	return true;
 	}
 
@@ -3636,7 +3639,8 @@ int Actor::add_readied
 
 	// Refigure granted immunities.
 	gear_immunities |= info.get_armor_immunity();
-	gear_powers |= info.get_object_powers(obj->get_framenum());
+	gear_powers |= info.get_object_flags(obj->get_framenum(),
+				info.has_quality() ? obj->get_quality() : -1);
 
 	if (index == lhand && schedule && !noset)
 		schedule->set_weapon();	// Tell combat-schedule about it.
@@ -3905,14 +3909,14 @@ int Actor::figure_hit_points
 	if (!winf && weapon_shape < 0)
 		winf = npc ? npc->get_weapon(wpoints) : 0;
 
-	int usecode = -1, powers = 0;
+	int usefun = -1, powers = 0;
 	int type = Weapon_data::normal_damage;
 	bool explodes = false;
 
 	if (winf)
 		{
 		wpoints = winf->get_damage();
-		usecode = winf->get_usecode();
+		usefun = winf->get_usecode();
 		type = winf->get_damage_type();
 		powers = winf->get_powers();
 		explodes = winf->explodes();
@@ -4027,11 +4031,11 @@ int Actor::figure_hit_points
 		    npc->get_property(static_cast<int>(exp)) + expval);
 
 		// Weapon usecode comes last of all.
-	if (usecode > 0)
+	if (usefun > 0)
 		{
 		if (npc)	// Just to be sure.
 			set_oppressor(npc->get_npc_num());
-		ucmachine->call_usecode(usecode, this,
+		ucmachine->call_usecode(usefun, this,
 					Usecode_machine::weapon);
 		}
 	return hits;

@@ -41,7 +41,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/shape_files.txt \
 	bg/avatar_data.txt \
 	bg/shape_info.txt \
-	bg/blends.dat
+	bg/blends.dat \
+	bg/container.dat
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in \
@@ -52,7 +53,8 @@ EXULT_SI_FLX_OBJECTS = \
 	si/shape_files.txt \
 	si/avatar_data.txt \
 	si/shape_info.txt \
-	si/blends.dat
+	si/blends.dat \
+	si/container.dat
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \

@@ -84,8 +84,9 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gamemgr -I$(SRC)/gumps -I$(SRC)/headers \
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
-	-I$(SRC)/mapedit $(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 \
-	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) $(EXTRA_OPTIONS))
+	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) -DUSE_EXULTSTUDIO \
+	-DHAVE_PNG_H -DHAVE_FREETYPE2 $(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
+	$(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
 	OPT_LEVEL=-O2
@@ -165,31 +166,32 @@ ES_IMAGEWIN_OBJS=\
 	imagewin/imagebuf.o
 
 ES_SHAPES_OBJS=\
-	shapes/ammoinf.o \
-	shapes/aniinf.o \
-	shapes/armorinf.o \
-	shapes/bodyinf.o \
-	shapes/continf.o \
-	shapes/effhpinf.o \
-	shapes/expinf.o \
 	shapes/font.o \
 	shapes/fontgen.o \
 	shapes/fontvga.o \
-	shapes/frnameinf.o \
-	shapes/frpowers.o \
 	shapes/items.o \
-	shapes/monstinf.o \
-	shapes/npcdollinf.o \
-	shapes/objdollinf.o \
 	shapes/pngio.o \
-	shapes/sfxinf.o \
 	shapes/shapeinf.o \
 	shapes/shapewrite.o \
 	shapes/shapevga.o \
 	shapes/u7drag.o \
 	shapes/vgafile.o \
-	shapes/warminf.o \
-	shapes/weaponinf.o \
+	shapes/shapeinf/ammoinf.o \
+	shapes/shapeinf/aniinf.o \
+	shapes/shapeinf/armorinf.o \
+	shapes/shapeinf/bodyinf.o \
+	shapes/shapeinf/continf.o \
+	shapes/shapeinf/effhpinf.o \
+	shapes/shapeinf/expinf.o \
+	shapes/shapeinf/frnameinf.o \
+	shapes/shapeinf/frflags.o \
+	shapes/shapeinf/frusefun.o \
+	shapes/shapeinf/monstinf.o \
+	shapes/shapeinf/npcdollinf.o \
+	shapes/shapeinf/objdollinf.o \
+	shapes/shapeinf/sfxinf.o \
+	shapes/shapeinf/warminf.o \
+	shapes/shapeinf/weaponinf.o \
 	$(OPENGL_OBJS)
 
 MISC_OBJS=exultstudioico.o windrag.o

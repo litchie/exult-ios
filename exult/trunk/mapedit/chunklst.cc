@@ -818,10 +818,9 @@ Chunk_chooser::Chunk_chooser
 	int w, int h,			// Dimensions.
 	Shape_group *g			// Filter, or null.
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		chunkfile(cfile), headersz(0),
-		chunksz(c_tiles_per_chunk*c_tiles_per_chunk*2),
-		info(0), info_cnt(0), sel_changed(0),
-		locate_cx(-1), locate_cy(-1), drop_enabled(false), to_del(-1)
+		chunkfile(cfile), chunksz(c_tiles_per_chunk*c_tiles_per_chunk*2),
+		headersz(0), info(0), info_cnt(0), locate_cx(-1), locate_cy(-1),
+		drop_enabled(false), to_del(-1), sel_changed(0)
 	{
 	static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
 								0, 0};
