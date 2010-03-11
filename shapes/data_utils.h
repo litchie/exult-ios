@@ -870,13 +870,14 @@ public:
 				out << ':' << index << "/-255" << std::endl;
 			else if (T::entry_size >= 3)
 				{	// T::entry_size should be >= 3!
-				unsigned char buf[T::entry_size];
+				unsigned char *buf = new unsigned char[T::entry_size];
 				unsigned char *ptr = buf;
 				Write2(ptr, index);
 				if (T::entry_size >= 4)
 					memset(ptr, 0, T::entry_size-3);
 				buf[T::entry_size-1] = 0xff;
 				out.write((const char *)buf, T::entry_size);
+				delete [] buf;
 				}
 			}
 		else
