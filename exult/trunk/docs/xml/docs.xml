@@ -6,6 +6,7 @@
 			<header>- 11 March 2010</header>
 			<body>
 				<ul>
+				<li><ref1 target="path_config_osx"/> we changed the default paths for OS X once more.</li>
 				<li><ref1 target="wave_sfx"/> the SFX pack can now be chosen in the Game Menu.</li>
 				<li><ref1 target="audio_gump"/> added new SFX pack option and updated screenshot.</li>
 				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
@@ -921,10 +922,10 @@
 									/Library/Application Support/Exult/gamename/static
 									</configtag>
 									<configtag name="savegame_path" manual="true">
-									~/Library/Preferences/exult/gamename
+									~/Library/Application Support/exult/gamename
 									</configtag>
 									<configtag name="gamedat_path" manual="true">
-									~/Library/Preferences/exult/gamename/gamedat
+									~/Library/Application Support/exult/gamename/gamedat
 									</configtag>
 									<configtag name="mods" manual="true">
 									/Library/Application Support/exult/gamename/mods
@@ -953,12 +954,13 @@
 					Example: User named <strong>Dominus</strong> on <strong>Mac OS X 10.6</strong>. BG is installed to 
 					/Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. 
 					The app Exult.app is saved to /Applications. When you run <Exult/> it will automatically recognize that BG and SI 
-					are installed. You do not need to edit exultcfg, which is svaed to ~/Library/Preferences/exult.cfg.
-					When you save a game in BG the savegame will be saved to ~/Library/Preferences/exult/blackgate/exult00bg.sav, 
-					for SI to ~/Library/Preferences/exult/serpentisle/exult00si.sav.<br/>
+					are installed. You do not need to edit exultcfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg.
+					When you save a game in BG the savegame will be saved to 
+					/Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, 
+					for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav.<br/>
 					If you install for example the keyring mod, you copy the contents of the Keyring.zip to 
 					/Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be 
-					found in ~/Library/Preferences/exult/blackgate/mods/keyring/exult00bg.sav.
+					found in /Users/Dominus/Library/Application Support/exult/blackgate/mods/keyring/exult00bg.sav.
 				</para>
 			</body>
 		</sub>
@@ -1399,6 +1401,10 @@
 						</configtag>
 					</configtag>
 				</configdesc>
+				<para>
+					<em>Note</em>: Currently when you switch the sfx pack during game play, you need to restart the 
+					game for all sound effects to use the new pack. This is a known issue and will not be there forever.
+				</para>
 			</body>
 		</sub>
 		<sub name="speech">
