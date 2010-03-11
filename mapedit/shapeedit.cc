@@ -3149,7 +3149,7 @@ void ExultStudio::init_shape_notebook
 			set_toggle("shinfo_animation_frtype", false);
 			set_spin("shinfo_animation_frcount", nframes, true);
 			}
-		set_optmenu("shinfo_animation_ticks", aniinf->get_frame_delay(), on);
+		set_spin("shinfo_animation_ticks", aniinf->get_frame_delay(), on);
 		int sfxdelay = aniinf->get_sfx_delay();
 		set_toggle("shinfo_animation_sfxsynch", sfxdelay < 0, on);
 		if (sfxdelay == 0)
