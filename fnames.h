@@ -163,10 +163,12 @@
 #define EXULT_FLX "<DATA>/exult.flx"
 #define EXULT_BG_FLX "<DATA>/exult_bg.flx"
 #define EXULT_SI_FLX "<DATA>/exult_si.flx"
+#define EXULT_GAM_FLX "<DATA>/exult_%s.flx"
 
 #define BUNDLE_EXULT_FLX "<BUNDLE>/exult.flx"
 #define BUNDLE_EXULT_BG_FLX "<BUNDLE>/exult_bg.flx"
 #define BUNDLE_EXULT_SI_FLX "<BUNDLE>/exult_si.flx"
+#define BUNDLE_EXULT_GAM_FLX "<BUNDLE>/exult_%s.flx"
 
 #if defined(UNDER_CE)
   #define POCKETPC_FLX "<DATA>/exult_pocketpc.flx"
