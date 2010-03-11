@@ -429,19 +429,6 @@
                         <signal name="activate" handler="on_fix_old_shape_info_activate"/>
                       </widget>
                     </child>
-                    <child>
-                      <widget class="GtkSeparatorMenuItem" id="separator22">
-                        <property name="visible">True</property>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkMenuItem" id="spell_editor1">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Spell editor</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="on_spell_editor1_activate"/>
-                      </widget>
-                    </child>
                   </widget>
                 </child>
               </widget>
