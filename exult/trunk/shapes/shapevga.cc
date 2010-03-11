@@ -391,8 +391,9 @@ static void Read_text_data_file
 		str_int_pair resource = game->get_resource(buf);
 		U7object txtobj(resource.str, resource.num);
 		*/
-		snprintf(buf, 50, "<DATA>/exult_%s.flx", 
-				game_type == BLACK_GATE ? "bg" : "si");
+		const char *flexfmt =
+				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
+		snprintf(buf, 50, flexfmt, game_type == BLACK_GATE ? "bg" : "si");
 		U7object txtobj(buf, resource);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
