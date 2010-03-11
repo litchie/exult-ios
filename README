@@ -114,6 +114,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 0. Changes to the Documentation
 0.1. - 11 March 2010
+* 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 6.4. Audio Options added new SFX pack option and updated screenshot.
 * 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
@@ -772,10 +773,10 @@ On Mac OS X Exult uses a couple of different folders to follow Apple's guideline
         /Library/Application Support/Exult/gamename/static
         </static_path>
         <savegame_path>
-        ~/Library/Preferences/exult/gamename
+        ~/Library/Application Support/exult/gamename
         </savegame_path>
         <gamedat_path>
-        ~/Library/Preferences/exult/gamename/gamedat
+        ~/Library/Application Support/exult/gamename/gamedat
         </gamedat_path>
         <mods>
         /Library/Application Support/exult/gamename/mods
@@ -785,7 +786,7 @@ On Mac OS X Exult uses a couple of different folders to follow Apple's guideline
         </patch>
       </gamename>
 Note that on OS X Exult also has a default folder (/Library/Application Support/Exult/) for Exult's data and the files of the games. On purpose this folder is not in the User-only space, so other users on the same mac can play the games and use the Exult.app. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there. Another specialty on OS X is that the Exult.app comes bundled with the Exult data, so Exult will first use the data in the Exult.app and then use the data in the default location (/Library/Application Support/Exult/data) or the location written down in exult.cfg's <data_path>. This means that you can copy the sfx files and the digital music folder into the app bundle (Exult.app/Contents/Resources/data) and Exult will automatically use these.
-Example: User named Dominus on Mac OS X 10.6. BG is installed to /Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. The app Exult.app is saved to /Applications. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exultcfg, which is svaed to ~/Library/Preferences/exult.cfg. When you save a game in BG the savegame will be saved to ~/Library/Preferences/exult/blackgate/exult00bg.sav, for SI to ~/Library/Preferences/exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in ~/Library/Preferences/exult/blackgate/mods/keyring/exult00bg.sav.
+Example: User named Dominus on Mac OS X 10.6. BG is installed to /Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. The app Exult.app is saved to /Applications. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exultcfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg. When you save a game in BG the savegame will be saved to /Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in /Users/Dominus/Library/Application Support/exult/blackgate/mods/keyring/exult00bg.sav.
 
 
 2.8. Path-Settings for *nix based systems
@@ -956,6 +957,7 @@ Extract the zip files into your Exult data folder. Exult will automatically find
   jmsisfx.flx
   </waves>
 </serpentisle>
+Note: Currently when you switch the sfx pack during game play, you need to restart the game for all sound effects to use the new pack. This is a known issue and will not be there forever.
 
 
 3.8. Speech
