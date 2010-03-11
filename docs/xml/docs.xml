@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="10 March 2010(GMT)">
+<readme title="Exult" changed="11 March 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="11032010">
+			<header>- 11 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="wave_sfx"/> the SFX pack can now be chosen in the Game Menu.</li>
+				<li><ref1 target="audio_gump"/> added new SFX pack option and updated screenshot.</li>
+				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="10032010">
 			<header>- 10 March 2010</header>
 			<body>
@@ -13,7 +23,7 @@
 				<li><ref1 target="mods_savegames_location"/> added this so savegames of modded games can be found.</li>
 				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
 				</ul>
-			</body>
+			</body>wave_sfx
 		</sub>
 		<sub name="08032010">
 			<header>- 08 March 2010</header>
@@ -1371,9 +1381,10 @@
 				</para>
 				<para>
 					Extract the zip files into your <Exult/> data folder. <Exult/> will automatically find and 
-					use the SFX packs. If both packs (SoundBlaster and Roland MT-32) are prsent, Exult will 
-					default to the Roland MT32 pack unless you override this setting in the exult.cfg 
-					(see <ref target="exult_config"/>).<br/>
+					use the SFX packs and will default to use the Roland MT32 pack when both both packs 
+					(SoundBlaster and Roland MT-32) are present. You can then choose between the packs in the 
+					Game Menu (<ref target="audio_gump"/>), of course you can override this setting in the 
+					exult.cfg (see <ref target="exult_config"/>).<br/>
 					An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
 				</para>
 				<configdesc>
@@ -1754,8 +1765,10 @@
 					 	Both (Reverb and Chorus) or disable it.</li>
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
-					<li><strong>Speech Options</strong><br/>
-						Enable or disable the speech in the games.</li>
+					<li><strong>SFX</strong><br/>
+						Enable or disable digital sound effects.</li>
+					<li><strong>Pack</strong><br/>
+						choose between our standard SFX packs, Roland MT32 and Soundblaster, see <ref target="wave_sfx"/>.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
