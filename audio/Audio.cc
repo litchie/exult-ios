@@ -638,12 +638,15 @@ void	Audio::Init_sfx()
 			{
 			string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
 			size_t sep = flex.rfind('/');
+			std::string pflex;
 			if (sep != string::npos)
 				{
 				sep++;
-				flex = flex.substr(sep);
+				pflex = flex.substr(sep);
 				}
-			config->set(d.c_str(), flex, true);
+			else
+				pflex = flex;
+			config->set(d.c_str(), pflex, true);
 			}
 		else
 			{
