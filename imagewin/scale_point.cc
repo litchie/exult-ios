@@ -32,94 +32,85 @@
 //
 // Point Sampling
 //
-void Image_window::show_scaled_point
+void Image_window::show_scaled8bit_point
 	(
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	Scale_point ((unsigned char *)ibuf->get_bits(), x, y, w, h,
-				ibuf->line_width, ibuf->height,
-				(unsigned char *) surface->pixels, surface->pitch,
-				scale);
+	Manip8to8 manip(surface->format->palette->colors,
+						surface->format);
+	Scale_point<unsigned char, uint8, Manip8to8>
+		((unsigned char *)ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+				(uint8 *) surface->pixels, 
+				surface->pitch,
+			manip, scale);
 
 	SDL_UpdateRect(surface, scale*x, scale*y, scale*w, scale*h);
 	}
 
-
-//
-// Point Sampling Scaler
-//
-void Scale_point
+void Image_window::show_scaled8to16_point
 	(
-	const unsigned char *source,	// ->source pixels.
-	const int srcx, const int srcy,	// Start of rectangle within src.
-	const int srcw, const int srch,	// Dims. of rectangle.
-	const int sline_pixels,		// Pixels (words)/line for source.
-	const int sheight,		// Source height.
-	unsigned char *dest,		// ->dest pixels.
-	const int dline_pixels,		// Pixels (words)/line for dest.
-	const int factor		// Scale factor
+	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	source += srcy*sline_pixels + srcx;
-	dest += srcy*factor*dline_pixels + srcx*factor;
+	Manip8to16 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_point<unsigned char, uint16, Manip8to16>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip, scale);
+	SDL_UpdateRect(scaled_surface, scale*x, scale*y, scale*w, scale*h);
+	}
 
-	char data;
-	unsigned char *dest2;
-	const unsigned char *source2;
-	const unsigned char * limit_y = source + srch*sline_pixels;
-	const unsigned char * limit_x = source + srcw;
+void Image_window::show_scaled8to555_point
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to555 manip(surface->format->palette->colors);
+	Scale_point<unsigned char, uint16, Manip8to555>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip, scale);
+	SDL_UpdateRect(scaled_surface, scale*x, scale*y, scale*w, scale*h);
+	}
 
-	if (factor == 2)
-		{
-		uint16 *dest16;
-		uint16 *dest16_2;
-		uint16 data16;
-		
-		while (source < limit_y)
-			{
-			source2 = source;
+void Image_window::show_scaled8to565_point
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to565 manip(surface->format->palette->colors);
+	Scale_point<unsigned char, uint16, Manip8to565>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip, scale);
+	SDL_UpdateRect(scaled_surface, scale*x, scale*y, scale*w, scale*h);
+	}
 
-			dest16 = (uint16*) dest;
-			dest += dline_pixels;
-			dest16_2 = (uint16*) dest;
-
-			while (source2 < limit_x)
-				{
-				data16 = *source2++;
-				data16 |= data16 << 8;
-				*dest16++ = data16;
-				*dest16_2++ = data16;
-				}
-			dest += dline_pixels;
-			limit_x += sline_pixels;
-			source += sline_pixels;
-			}
-		}
-	else
-		{
-		const unsigned int y2_pixels = dline_pixels*factor;
-		const unsigned char * limit_y2 = dest;
-		const unsigned char * limit_x2;
-
-		while (source < limit_y)
-			{
-			limit_y2 += y2_pixels;
-			while (dest < limit_y2)
-				{
-				limit_x2 = dest2 = dest;
-				source2 = source;
-				while (source2 < limit_x)
-					{
-					data = *source2++;
-					limit_x2 += factor;
-					while (dest2 < limit_x2)
-						*dest2++ = data;
-					}
-				dest += dline_pixels;
-				}
-			limit_x += sline_pixels;
-			source += sline_pixels;
-			}
-		}
+void Image_window::show_scaled8to32_point
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to32 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_point<unsigned char, uint32, Manip8to32>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint32 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip, scale);
+	SDL_UpdateRect(scaled_surface, scale*x, scale*y, scale*w, scale*h);
 	}

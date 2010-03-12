@@ -1,3 +1,9 @@
+2010-03-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/data_utils.h: Fixed compilation warnings in MacOS X.
+	* imagewin/*: Added 16-bit and 32-bit versions of Point, Interlaced and
+	  Scale2x scalers. The old 8-bit scalers are still available, but Exult
+	  will use them only if it can't use the 16-bit and 32-bit versions.
+
 2010-03-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* files/utils.h: Default save location in Mac OS X changed (again) to be
 	  ~/Library/Application Support/Exult (issue #1377892).

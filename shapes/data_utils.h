@@ -870,7 +870,9 @@ public:
 				out << ':' << index << "/-255" << std::endl;
 			else if (T::entry_size >= 3)
 				{	// T::entry_size should be >= 3!
-				unsigned char *buf = new unsigned char[T::entry_size];
+				// For stupid compilers...
+				const size_t nelems = T::entry_size >= 3 ? T::entry_size : 1;
+				unsigned char *buf = new unsigned char[nelems];
 				unsigned char *ptr = buf;
 				Write2(ptr, index);
 				if (T::entry_size >= 4)
