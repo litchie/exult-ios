@@ -23,6 +23,20 @@
 #include "SDL_video.h"
 
 /*
+ *	Identity manipulation. This is for the 8-bit scalers ONLY.
+ */
+class Manip8to8
+	{
+public:
+	Manip8to8(SDL_Color *, SDL_PixelFormat *)
+		{  }
+	void copy(uint8& dest, unsigned char src) const
+		{ dest = src; }
+	uint8 copy(unsigned char src) const
+		{ return src; }
+	};
+
+/*
  *	Manipulate from 8-bit to 16-bit pixels.
  */
 class Manip8to16
@@ -42,11 +56,13 @@ public:
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
 		}
-	void copy(uint16& dest, unsigned char src) const
+	uint16 copy(unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
-		dest = rgb(color.r, color.g, color.b);
+		return rgb(color.r, color.g, color.b);
 		}
+	void copy(uint16& dest, unsigned char src) const
+		{ dest = copy(src); }
 	void split_source(unsigned char pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
@@ -75,11 +91,13 @@ public:
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
-	void copy(uint16& dest, unsigned char src) const
+	uint16 copy(unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
-		dest = rgb(color.r, color.g, color.b);
+		return rgb(color.r, color.g, color.b);
 		}
+	void copy(uint16& dest, unsigned char src) const
+		{ dest = copy(src); }
 	void split_dest(uint16 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
@@ -100,11 +118,13 @@ public:
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
-	void copy(uint16& dest, unsigned char src) const
+	uint16 copy(unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
-		dest = rgb(color.r, color.g, color.b);
+		return rgb(color.r, color.g, color.b);
 		}
+	void copy(uint16& dest, unsigned char src) const
+		{ dest = copy(src); }
 	void split_dest(uint16 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
@@ -133,11 +153,13 @@ public:
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
 		}
-	void copy(uint32& dest, unsigned char src) const
+	uint32 copy(unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
-		dest = rgb(color.r, color.g, color.b);
+		return rgb(color.r, color.g, color.b);
 		}
+	void copy(uint32& dest, unsigned char src) const
+		{ dest = copy(src); }
 	void split_source(unsigned char pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
@@ -161,6 +183,8 @@ public:
 class Manip16to16
 	{
 public:
+	uint16 copy(uint16 src) const
+		{ return src; }
 	static void copy(uint16& dest, uint16 src)
 		{ dest = src; }
 	static void split_source(uint16 pix, unsigned int& r,
