@@ -165,9 +165,8 @@ static void strip_path(std::string& file)
 
 void AudioOptions_gump::rebuild_buttons()
 {
-	for (unsigned int i = 1; i < 9; ++i) {
-		delete buttons[i];
-		buttons[i] = 0;
+	for (size_t i = 1; i < sizeof(buttons)/sizeof(buttons[0]); ++i) {
+		FORGET_OBJECT(buttons[i]);
 	}
 
 	if (!audio_enabled) return;
@@ -202,11 +201,9 @@ void AudioOptions_gump::rebuild_midi_buttons()
 {
 	unsigned int i;
 	for (i = 2; i < 6; ++i) {
-		delete buttons[i];
-		buttons[i] = 0;
+		FORGET_OBJECT(buttons[i]);
 	}
-	delete buttons[11];
-	buttons[11] = 0;
+	FORGET_OBJECT(buttons[11]);
 
 	if (!midi_enabled) return;
 
@@ -233,8 +230,7 @@ void AudioOptions_gump::rebuild_midi_buttons()
 
 void AudioOptions_gump::rebuild_sfx_buttons()
 {
-	delete buttons[7];
-	buttons[7] = 0;
+	FORGET_OBJECT(buttons[7]);
 
 	if (!sfx_enabled)
 		return;
@@ -267,10 +263,8 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 
 void AudioOptions_gump::rebuild_mididriveroption_buttons()
 {
-	delete buttons[3];
-	buttons[3] = 0;
-	delete buttons[4];
-	buttons[4] = 0;
+	FORGET_OBJECT(buttons[3]);
+	FORGET_OBJECT(buttons[4]);
 
 
 	std::string s = "Default";
@@ -465,7 +459,7 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 
 AudioOptions_gump::~AudioOptions_gump()
 {
-	for (int i=0; i<12; i++)
+	for (int i=0; i<sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i]) delete buttons[i];
 }
 
