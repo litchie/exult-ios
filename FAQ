@@ -1,22 +1,23 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 10 March 2010(GMT)
+last changed: 12 March 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 10 March 2010
-0.2. - 16 July 2009
-0.3. - 03 June 2009
-0.4. - 20 May 2009
-0.5. - 30 April 2009
-0.6. - 21 October 2007
-0.7. - 08 April 2006
-0.8. - 04 October 2004
-0.9. - 14 August 2004
-0.10. - 23 May 2004
-0.11. - 27 January 2004
-0.12. - 12 December 2003
+0.1. - 12 March 2010
+0.2. - 10 March 2010
+0.3. - 16 July 2009
+0.4. - 03 June 2009
+0.5. - 20 May 2009
+0.6. - 30 April 2009
+0.7. - 21 October 2007
+0.8. - 08 April 2006
+0.9. - 04 October 2004
+0.10. - 14 August 2004
+0.11. - 23 May 2004
+0.12. - 27 January 2004
+0.13. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -70,7 +71,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 4.2. How do I submit a proper bug report?
 4.3. Broken by Design
 4.4. Known Issues
-4.5. Fullscreen switching and 8bit scaler issues
+4.5. Fullscreen switching
 4.6. Known Compile Issues
 4.7. Problems with Windows 9x
 4.8. Problems with Mac OSX
@@ -109,25 +110,30 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 10 March 2010
+0.1. - 12 March 2010
+* 4.5. Fullscreen switching No more 8bit scaler issues.
+
+
+
+0.2. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
-* 4.5. Fullscreen switching and 8bit scaler issues added.
+* 4.5. Fullscreen switching added.
 * 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-0.2. - 16 July 2009
+0.3. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-0.3. - 03 June 2009
+0.4. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-0.4. - 20 May 2009
+0.5. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -149,7 +155,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.5. - 30 April 2009
+0.6. - 30 April 2009
 * 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -157,7 +163,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.6. - 21 October 2007
+0.7. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -168,21 +174,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 08 April 2006
+0.8. - 08 April 2006
 * 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.8. - 04 October 2004
+0.9. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.9. - 14 August 2004
+0.10. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -192,7 +198,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.10. - 23 May 2004
+0.11. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -200,7 +206,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.11. - 27 January 2004
+0.12. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.16. Why won't Xenka speak about sacrifice (SI)? added.
@@ -208,7 +214,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.12. - 12 December 2003
+0.13. - 12 December 2003
 * 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -508,8 +514,8 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 
-4.5. Fullscreen switching and 8bit scaler issues
-Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers do not support the default Exult resolution of 320x200 and refuse to switch to fullscreen during gameplay. When you set Exult to run in fullscreen in exult.cfg it actually starts fine in fullscreen. Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode. Also our 8bit scalers (point, interlaced scale2x) produce problems when used in fullscreen mode. This may work or may not work for you, depending on graphic chip, driver and operating system.
+4.5. Fullscreen switching
+Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers do not support the default Exult resolution of 320x200 and refuse to switch to fullscreen during gameplay. When you set Exult to run in fullscreen in exult.cfg it actually starts fine in fullscreen. Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode.
 
 
 4.6. Known Compile Issues
