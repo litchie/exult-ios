@@ -637,7 +637,7 @@ protected:
 		{  }
 public:
 	Base_writer(const char *s, int v=-1)
-		:	name(), version(v), cnt(-1)
+		:	name(s), version(v), cnt(-1)
 		{  }
 	virtual ~Base_writer() {  }
 	int check()
