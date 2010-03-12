@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="10 March 2010(GMT)">
+<faqs title="Exult" changed="12 March 2010(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="12032010">
+			<header>- 12 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="fullscreen_bugs"/> No more 8bit scaler issues.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="10032010">
 			<header>- 10 March 2010</header>
 			<body>
@@ -962,16 +970,14 @@
 			</body>
 		</sub>
 		<sub name="fullscreen_bugs">
-			<header>Fullscreen switching and 8bit scaler issues</header>
+			<header>Fullscreen switching</header>
 			<body>
 				<para>
 					Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers
 					do not support the default <Exult/> resolution of 320x200 and refuse to switch to fullscreen 
 					during gameplay. When you set <Exult/> to run in fullscreen in exult.cfg it actually starts fine
 					in fullscreen.<br/>
-					Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode.<br/>
-					Also our 8bit scalers (point, interlaced scale2x) produce problems when used in fullscreen mode. 
-					This may work or may not work for you, depending on graphic chip, driver and operating system. 
+					Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode.
 				</para>
 			</body>
 		</sub>
