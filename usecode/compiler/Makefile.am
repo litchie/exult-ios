@@ -28,6 +28,7 @@ ucc_LDADD = 			\
 	../libusecode.la	\
 	$(SYSLIBS)
 
+uclex.o: uclex.cc ucparse.h
 
 
 CLEANFILES = *~
