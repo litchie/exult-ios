@@ -46,9 +46,12 @@ class AudioChannel
 	uint32			frame1_size;	// Size of the frame1 buffer in samples
 	uint32			position;		// Position in frame0 buffer
 	int				lvol, rvol;		// 0-256
+	int				distance;		// 0 - 256
+	int				angle;			// -180 - 180
 	uint32			pitch_shift;	// 0x10000 = no shift
 	int				priority;		// anything. 
 	bool			paused;			// true/false
+
 	sint32			instance_id;	// Unique id for this channel
 
 public:
@@ -76,6 +79,9 @@ public:
 
 	void setPaused(bool paused_) { paused = paused_; }
 	bool isPaused() const { return paused; }
+
+	void set2DPosition(int distance_, int angle_) { distance = distance_;  angle = angle_; }
+	void get2DPosition(int &distance_, int &angle_) const { distance_ = distance; angle_ = angle; }
 
 	AudioSample *getSample() { return sample; }
 

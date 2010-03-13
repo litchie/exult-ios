@@ -27,10 +27,6 @@
 #include "AudioMixer.h"
 #include "exult_constants.h"
 
-//SDL_mixer doesn't like mixing different rates when using OGG
-//This should match the same as the SFX and OGG Music which is 22khz
-#define SAMPLERATE	48000
-
 class SFX_cached;
 class SFX_cache_manager;
 class Flex;
