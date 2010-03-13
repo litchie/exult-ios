@@ -37,6 +37,8 @@
 #include "AudioMixer.h"
 #include "AudioSample.h"
 #include "databuf.h"
+#include "gamewin.h"
+#include "actors.h"
 
 #if !defined(ALPHA_LINUX_CXX)
 #ifndef UNDER_CE
@@ -656,13 +658,13 @@ bool Audio::start_speech(int num, bool wait)
 /*
 *	This returns a 'unique' ID, but only for .wav SFX's (for now).
 */
-int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
+int	Audio::play_sound_effect (int num, int volume, int balance, int repeat, int distance)
 {
 	if (!audio_enabled || !effects_enabled) return -1;
 
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
-		return play_wave_sfx(num, volume, dir, repeat);
+		return play_wave_sfx(num, volume, balance, repeat, distance);
 #ifdef ENABLE_MIDISFX
 	else if (mixer && mixer->getMidiPlayer()) 
 		mixer->getMidiPlayer()->start_sound_effect(num);
@@ -677,9 +679,10 @@ int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
 int Audio::play_wave_sfx
 (
  int num,
- int volume,			// 0-256.
- int dir,			// 0-15, from North, clockwise.
- int repeat			// Keep playing.
+ int volume,		// 0-256.
+ int balance,		// balance, -256 (left) - +256 (right)
+ int repeat,		// Keep playing.
+ int distance
  )
 {
 	if (!effects_enabled || !sfx_file || !mixer) 
@@ -711,10 +714,85 @@ int Audio::play_wave_sfx
 
 	CERR("Playing SFX: " << num);
 	
-	mixer->set2DPosition(instance_id,0,(dir * 22));
+	mixer->set2DPosition(instance_id,distance,balance);
 	mixer->setPaused(instance_id,false);
 
 	return instance_id;
+}
+
+static int slow_sqrt(int i)
+{
+	for (int r = i/2; r != 0; r--)
+	{
+		if (r*r <= i) return r;
+	}
+
+	return 0;
+}
+
+void Audio::get_2d_position_for_tile(const Tile_coord &tile, int &distance, int &balance)
+{
+	distance = 0;
+	balance = 0;
+
+	Tile_coord apos = Game_window::get_instance()->get_main_actor()->get_tile();
+
+	int sqr_dist = apos.square_distance_screen_space(tile);
+	if (sqr_dist > MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF) {
+		distance = 257;
+		return;
+	}
+
+	//distance = sqrt((double) sqr_dist) * 256 / MAX_SOUND_FALLOFF;
+	//distance = slow_sqrt(sqr_dist) * 256 / MAX_SOUND_FALLOFF;
+	distance = sqr_dist * 256 / (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
+
+	balance = (Tile_coord::delta(apos.tx,tile.tx)*2-tile.tz-apos.tz)*32 / 5;
+
+}
+
+int Audio::play_sound_effect (int num, const Game_object *obj, int volume, int repeat)
+{
+	Tile_coord tile = obj->get_center_tile();
+	return play_sound_effect(num,tile, volume,repeat);
+}
+
+int Audio::play_sound_effect (int num, const Tile_coord &tile, int volume, int repeat)
+{
+	int distance;
+	int balance;
+	get_2d_position_for_tile(tile,distance,balance);
+	if (distance > 256) distance = 256;
+	return play_sound_effect(num,volume,balance,repeat,distance);
+}
+
+int Audio::update_sound_effect(int chan, const Game_object *obj)
+{
+	Tile_coord tile = obj->get_center_tile();
+	return update_sound_effect(chan,tile);
+}
+
+int Audio::update_sound_effect(int chan, const Tile_coord &tile)
+{
+	if (!mixer) return -1;
+
+	int distance;
+	int balance;
+	get_2d_position_for_tile(tile,distance,balance);
+	if (distance > 256) {
+		mixer->stopSample(chan);
+		return -1;
+	}
+	else {
+		mixer->set2DPosition(chan,distance,balance);
+		return chan;
+	}
+}
+
+void Audio::stop_sound_effect(int chan)
+{
+	if (!mixer) return;
+	mixer->stopSample(chan);
 }
 
 /*

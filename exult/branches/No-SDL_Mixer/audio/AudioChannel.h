@@ -47,7 +47,7 @@ class AudioChannel
 	uint32			position;		// Position in frame0 buffer
 	int				lvol, rvol;		// 0-256
 	int				distance;		// 0 - 256
-	int				angle;			// -180 - 180
+	int				balance;		// -256 - 256
 	uint32			pitch_shift;	// 0x10000 = no shift
 	int				priority;		// anything. 
 	bool			paused;			// true/false
@@ -80,8 +80,10 @@ public:
 	void setPaused(bool paused_) { paused = paused_; }
 	bool isPaused() const { return paused; }
 
-	void set2DPosition(int distance_, int angle_) { distance = distance_;  angle = angle_; }
-	void get2DPosition(int &distance_, int &angle_) const { distance_ = distance; angle_ = angle; }
+	void set2DPosition(int distance_, int balance_) { distance = distance_;  balance = balance_; }
+	void get2DPosition(int &distance_, int &balance_) const { distance_ = distance; balance_ = balance; }
+
+	void calculate2DVolume(int &lvol, int &rvol);
 
 	AudioSample *getSample() { return sample; }
 

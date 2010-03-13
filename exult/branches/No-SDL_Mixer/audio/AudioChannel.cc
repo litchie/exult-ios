@@ -63,7 +63,7 @@ void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bo
 	pitch_shift = pitch_shift_;
 	instance_id = instance_id_;
 	distance = 0;
-	angle = 0;
+	balance = 0;
 
 	if (!sample) return;
 	sample->IncRef();
@@ -199,23 +199,7 @@ void AudioChannel::resampleFrameM8toS(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 	
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -278,23 +262,7 @@ void AudioChannel::resampleFrameM8toM(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	int volume = (rvol + lvol)/2;
 	
@@ -354,23 +322,7 @@ void AudioChannel::resampleFrameS8toM(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -431,23 +383,7 @@ void AudioChannel::resampleFrameS8toS(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -516,23 +452,7 @@ void AudioChannel::resampleFrameM16toS(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -593,23 +513,7 @@ void AudioChannel::resampleFrameM16toM(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	int volume = (rvol + lvol)/2;
 	
@@ -667,23 +571,7 @@ void AudioChannel::resampleFrameS16toM(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -744,23 +632,7 @@ void AudioChannel::resampleFrameS16toS(sint16 *&stream, uint32 &bytes)
 	int	lvol = this->lvol;
 	int rvol = this->rvol;
 
-	while (angle > 180) angle -= 360;
-	while (angle < -180) angle += 360;
-
-	int mod_angle = angle;
-	if (mod_angle > 0) mod_angle = 180-mod_angle;
-
-	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
-	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
-	
-	if (distance > 255) {
-		lvol = 0;
-		rvol = 0;
-	}
-	else if (distance > 0) {
-		lvol = lvol * (256-distance) / 256;
-		rvol = rvol * (256-distance) / 256;
-	}
+	calculate2DVolume(lvol,rvol);
 
 	do {
 		// Add a new src sample (if required)
@@ -808,6 +680,30 @@ void AudioChannel::resampleFrameS16toS(sint16 *&stream, uint32 &bytes)
 	} while (bytes!=0 && src != src_end);
 	
 	position = frame0_size - (src_end - src);
+}
+
+void AudioChannel::calculate2DVolume(int &lvol, int &rvol)
+{
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+		return;
+	}
+
+	int lbal = 256;
+	int rbal = 256;
+
+	if (balance < 0) {
+		if (balance < -256) rbal = 0;
+		else rbal = balance + 256;
+	}
+	else if (balance > 0) {
+		if (balance > 256) lbal = 0;
+		else lbal = 256 -balance;
+	}
+
+	lvol = lvol*(256-distance)*lbal/65536;
+	rvol = rvol*(256-distance)*rbal/65536;
 }
 
 };
