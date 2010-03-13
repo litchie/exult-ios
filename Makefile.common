@@ -94,6 +94,7 @@ MIDI_DRV_OBJS=\
 	audio/midi_drivers/TimidityMidiDriver.o \
 	audio/midi_drivers/UnixSeqMidiDriver.o \
 	audio/midi_drivers/WindowsMidiDriver.o \
+	audio/midi_drivers/CoreMidiDriver.o \
 	audio/midi_drivers/XMidiEventList.o \
 	audio/midi_drivers/XMidiFile.o \
 	audio/midi_drivers/XMidiSequence.o \
@@ -209,29 +210,30 @@ OPENGL_OBJS= $(OPENGL_OBJS)
 !endif
 
 SHAPES_OBJS= \
-	shapes/ammoinf.o \
-	shapes/aniinf.o \
-	shapes/armorinf.o \
-	shapes/bodyinf.o \
-	shapes/continf.o \
-	shapes/effhpinf.o \
-	shapes/expinf.o \
 	shapes/font.o \
 	shapes/fontvga.o\
-	shapes/frnameinf.o \
-	shapes/frpowers.o \
 	shapes/items.o \
 	shapes/miscinf.o\
-	shapes/monstinf.o \
-	shapes/npcdollinf.o \
-	shapes/objdollinf.o \
-	shapes/sfxinf.o \
 	shapes/shapeinf.o\
 	shapes/shapevga.o \
 	shapes/u7drag.o \
 	shapes/vgafile.o \
-	shapes/warminf.o \
-	shapes/weaponinf.o \
+	shapes/shapeinf/ammoinf.o \
+	shapes/shapeinf/aniinf.o \
+	shapes/shapeinf/armorinf.o \
+	shapes/shapeinf/bodyinf.o \
+	shapes/shapeinf/continf.o \
+	shapes/shapeinf/effhpinf.o \
+	shapes/shapeinf/expinf.o \
+	shapes/shapeinf/frnameinf.o \
+	shapes/shapeinf/frflags.o \
+	shapes/shapeinf/frusefun.o \
+	shapes/shapeinf/monstinf.o \
+	shapes/shapeinf/npcdollinf.o \
+	shapes/shapeinf/objdollinf.o \
+	shapes/shapeinf/sfxinf.o \
+	shapes/shapeinf/warminf.o \
+	shapes/shapeinf/weaponinf.o \
 	$(OPENGL_OBJS)
 
 OBJS_OBJS= \

@@ -39,8 +39,19 @@ class AudioOptions_gump : public Modal_gump
 	int midi_reverb_chorus;
 	int midi_looping;
 	int sfx_enabled;
+	int sfx_package;
 	int sfx_conversion;
 	int speech_enabled;
+
+	// Auxiliary variables for digital SFX packages:
+	int nsfxopts, nsfxpacks;
+	bool have_config_pack, have_roland_pack, have_blaster_pack,
+	     have_midi_pack, have_custom_pack;
+	std::string sfx_custompack;
+	std::string configpack, rolandpack, blasterpack, midipack;
+
+	bool have_digital_sfx() const
+		{ return have_roland_pack || have_blaster_pack || have_custom_pack; }
 
  public:
 	AudioOptions_gump();

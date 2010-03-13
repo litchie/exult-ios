@@ -169,8 +169,9 @@ void Cheat::toggle_map_editor (void) {
 				{
 					char cmnd[256];		// Set up command.
 					strcpy(cmnd, "exult_studio -x ");
-					std::string data_path;
-					config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+					std::string data_path = get_system_path("<DATA>");
+					if (data_path.find(' ') != std::string::npos)
+						data_path = "\"" + data_path + "\"";
 					strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
 					strcat(cmnd, " -g ");	// Now want game name.
 					std::string gamenamestr = Game::get_gametitle();

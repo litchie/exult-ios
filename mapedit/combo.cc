@@ -245,8 +245,8 @@ Rectangle Combo::get_member_footprint
 Combo::Combo
 	(
 	Shapes_vga_file *svga
-	) : shapes_file(svga),
-	    starttx(c_num_tiles), startty(c_num_tiles), hot_index(-1),
+	) : shapes_file(svga), hot_index(-1),
+	    starttx(c_num_tiles), startty(c_num_tiles),
 	    tilefoot(0, 0, 0, 0)
 	{
 					// Read info. the first time.
@@ -260,9 +260,8 @@ Combo::Combo
 Combo::Combo
 	(
 	const Combo& c2
-	) : shapes_file(c2.shapes_file), starttx(c2.starttx),
-	    startty(c2.startty), 
-	    hot_index(c2.hot_index), name(c2.name), tilefoot(c2.tilefoot)
+	) : shapes_file(c2.shapes_file), hot_index(c2.hot_index), starttx(c2.starttx),
+	    startty(c2.startty), name(c2.name), tilefoot(c2.tilefoot)
 	{
 	for (std::vector<Combo_member *>::const_iterator it = c2.members.begin();
 					it != c2.members.end(); ++it)
@@ -357,7 +356,7 @@ void Combo::remove
 	int i
 	)
 	{
-	if (i < 0 || i >= members.size())
+	if (i < 0 || unsigned(i) >= members.size())
 		return;
 					// Get and remove i'th entry.
 	std::vector<Combo_member *>::iterator it = members.begin() + i;
@@ -1047,9 +1046,8 @@ void Combo_chooser::drag_data_get
 					// Get enough memory.
 	int cnt = combo->members.size();
 	int buflen = 5*4 + cnt*5*4;
-cout << "Buflen = " << buflen << endl;
+	cout << "Buflen = " << buflen << endl;
 	guchar *buf = new unsigned char[buflen];
-	guchar *ptr = buf;
 	U7_combo_data *ents = new U7_combo_data[cnt];
 					// Get 'hot-spot' member.
 	Combo_member *hot = combo->members[combo->hot_index];
@@ -1182,7 +1180,7 @@ void Combo_chooser::enable_controls
 	if (!group)
 		{
 		gtk_widget_set_sensitive(move_down, 
-				info[selected].num < combos.size() - 1);
+				info[selected].num < int(combos.size()) - 1);
 		gtk_widget_set_sensitive(move_up, 
 					info[selected].num > 0);
 		}
@@ -1324,7 +1322,7 @@ int Combo_chooser::add
 		}
 	else
 		{
-		assert(index >= 0 && index < combos.size());
+		assert(index >= 0 && unsigned(index) < combos.size());
 		delete combos[index];
 		combos[index] = newcombo;
 		}
@@ -1594,7 +1592,7 @@ void Combo_chooser::move
 	if (selected < 0)
 		return;			// Shouldn't happen.
 	int tnum = info[selected].num;
-	if ((tnum == 0 && upwards) || (tnum == combos.size() - 1 && !upwards))
+	if ((tnum == 0 && upwards) || (tnum == int(combos.size()) - 1 && !upwards))
 		return;
 	if (upwards)			// Going to swap tnum & tnum+1.
 		tnum--;
@@ -1630,7 +1628,6 @@ void Combo_chooser::search
 	int total = get_count();
 	if (!total)
 		return;			// Empty.
-	ExultStudio *studio = ExultStudio::get_instance();
 					// Start with selection, or top.
 	int start = selected >= 0 ? info[selected].num : 0;
 	int i;

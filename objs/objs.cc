@@ -43,6 +43,8 @@
 #include "ready.h"
 #include "ammoinf.h"
 #include "weaponinf.h"
+#include "frusefun.h"
+#include "frflags.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -71,14 +73,28 @@ using std::set;
 #endif
 
 /*
- *	Figure attack points against an object, and also run weapon's usecode.
+ *	Determines the object's usecode function.
  */
 
-inline int Game_object::get_usecode() const
+int Game_object::get_usecode() const
 	{
+	Shape_info& inf = get_info();
+	Frame_usecode_info *useinf = inf.get_frame_usecode(
+			get_framenum(), inf.has_quality() ? get_quality() : -1);
+	if (useinf)
+		{
+		// Shape has frame- or quality-dependent usecode.
+		std::string ucname = useinf->get_usecode_name();
+		int ucid = -1;
+		if (ucname.length())	// Try by name first.
+			ucid = ucmachine->find_function(ucname.c_str(), true);
+		if (ucid == -1)			// Now try usecode number.
+			ucid = useinf->get_usecode();
+		if (ucid >= 0)			// Have frame usecode.
+			return ucid;
+		}
 	return ucmachine->get_shape_fun(get_shapenum());
 	}
-
 
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
@@ -438,7 +454,6 @@ int Game_object::get_weapon_ammo
 	int proj,
 	bool ranged,
 	Game_object **ammo,
-	bool bg,
 	bool recursive
 	)
 	{
@@ -1125,23 +1140,14 @@ void Game_object::activate
 	{
 	if (edit())
 		return;			// Map-editing.
-	int usefun = get_usecode();
+	int gump = get_info().get_gump_shape();
 					// Serpent Isle spell scrolls:
-	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
+	if (gump == 65 && Game::get_game_type() == SERPENT_ISLE)
 		{
-		gumpman->add_gump(this, 65);
+		gumpman->add_gump(this, gump);
 		return;
 		}
-					// !!!Special case:  books
-	if (usefun == 0x282 && get_quality() >= 100 && get_quality() < 180)
-		usefun = 0x638;
-	else if (usefun == 0x282 && get_quality() >= 180 && 
-			 Game::get_game_type() == SERPENT_ISLE )
-		usefun = 0x63b;
-	else if (usefun == 0x2c1 && get_quality() >= 213 &&
-			 Game::get_game_type() == SERPENT_ISLE )
-		usefun = 0x62a;
-	ucmachine->call_usecode(usefun, this,
+	ucmachine->call_usecode(get_usecode(), this,
 			(Usecode_machine::Usecode_events) event);
 	}
 
@@ -1649,14 +1655,14 @@ int Game_object::figure_hit_points
 		winf = npc ? npc->get_weapon(wpoints) : 0;
 		}
 
-	int usecode = -1;
+	int usefun = -1;
 	int type = Weapon_data::normal_damage;
 	bool explodes = false;
 
 	if (winf)
 		{
 		wpoints = winf->get_damage();
-		usecode = winf->get_usecode();
+		usefun = winf->get_usecode();
 		type = winf->get_damage_type();
 		explodes = winf->explodes();
 		}
@@ -1688,8 +1694,8 @@ int Game_object::figure_hit_points
 		// Objects are not affected by weapon powers.
 
 		// Object may be in the remove list by this point.
-	if (usecode >= 0)
-		ucmachine->call_usecode(usecode, this,
+	if (usefun >= 0)
+		ucmachine->call_usecode(usefun, this,
 					Usecode_machine::weapon);
 	return delta;
 	}

@@ -25,6 +25,7 @@
 #include "Midi.h"
 #include "exceptions.h"
 #include "AudioMixer.h"
+#include "exult_constants.h"
 
 //SDL_mixer doesn't like mixing different rates when using OGG
 //This should match the same as the SFX and OGG Music which is 22khz
@@ -118,7 +119,11 @@ public:
 	void	set_audio_enabled(bool ena);
 	bool	is_music_looping_allowed() const { return allow_music_looping; }
 	void	set_allow_music_looping(bool ena) { allow_music_looping = ena; }
-	bool	can_sfx(const std::string &game) const;
+	static bool	can_sfx(const std::string &file, std::string *out = 0);
+	static bool have_roland_sfx(Exult_Game game, std::string *out = 0);
+	static bool have_sblaster_sfx(Exult_Game game, std::string *out = 0);
+	static bool have_midi_sfx(std::string *out = 0);
+	static bool have_config_sfx(const std::string &game, std::string *out = 0);
 	static void	channel_complete_callback(int chan);
 
 	bool	is_track_playing(int num);

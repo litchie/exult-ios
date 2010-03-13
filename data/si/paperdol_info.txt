@@ -5,7 +5,7 @@
 #
 
 %%section version
-:2
+:3
 %%endsection
 
 %%section characters

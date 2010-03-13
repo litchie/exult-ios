@@ -45,9 +45,7 @@ const std::string c_empty_string;
 const char *config_defaults[] =
 {
 	"config/disk/game/blackgate/keys",	"(default)",
-	"config/disk/game/blackgate/waves",	"jmsfx.flx",
 	"config/disk/game/serpentisle/keys",	"(default)",
-	"config/disk/game/serpentisle/waves",	"jmsisfx.flx",
 	"config/audio/enabled",			"yes",
 	"config/audio/effects/enabled",		"yes",
 	"config/audio/effects/convert",		"gs",
@@ -280,6 +278,7 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	Path config_path(ExultDir);
 	config_path.AddString("exult.cfg");
 	config_path.GetString(p, p_size);
+	setup_program_paths();
 
 	const static char *si_pathdef = CFG_SI_NAME;
 	const static char *bg_pathdef = CFG_BG_NAME;
@@ -290,7 +289,7 @@ __declspec(dllexport) void __stdcall GetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_exult_home() == ".")
+		if (get_system_path("<CONFIG>") == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");
@@ -349,6 +348,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	Path config_path(ExultDir);
 	config_path.AddString("exult.cfg");
 	config_path.GetString(p, p_size);
+	setup_program_paths();
 
 	MessageBoxDebug (NULL, p, "WriteConfig: p", MB_OK);
 
@@ -356,7 +356,7 @@ __declspec(dllexport) void __stdcall SetExultGamePaths(char *ExultDir, char *BGP
 	{
 		// Open config file
 		Configuration config;
-		if (Get_exult_home() == ".")
+		if (get_system_path("<CONFIG>") == ".")
 			config.read_config_file(p);
 		else
 			config.read_config_file("exult.cfg");

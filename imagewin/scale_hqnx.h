@@ -191,13 +191,14 @@ inline int hqx_init(int *w, int *c, int *yuv, unsigned char *from,
 		w[9] = w[8];
 		}
 
-	for (k=1; k<=9; k++) 	{
-	unsigned int r, g, b;
-	manip.split_source(w[k], r, g, b);
-	// The following is so the Interp routines work correctly.
-	r &= ~3; g &= ~3;
+	for (k=1; k<=9; k++)
+		{
+		unsigned int r, g, b;
+		manip.split_source(w[k], r, g, b);
+		// The following is so the Interp routines work correctly.
+		r &= ~3; g &= ~3;
 		c[k] = (r<<16) + (g<<8) + b;;
-	yuv[k] = RGBtoYUV(r, g, b);
+		yuv[k] = RGBtoYUV(r, g, b);
 		}
 
 	int pattern = 0;

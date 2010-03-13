@@ -429,15 +429,17 @@ Egg_object *Egg_object::create_egg
 	(
 	unsigned char *entry,		// 12+ byte ireg entry.
 	int entlen,
-	bool animated
+	bool animated,
+	int shnum,
+	int frnum,
+	unsigned int tx,
+	unsigned int ty,
+	unsigned int tz
 	)
 {
-	int shnum = entry[2]+256*(entry[3]&3);
-	int frnum = entry[3] >> 2;
 	unsigned short type = entry[4] + 256*entry[5];
 	int prob = entry[6];		// Probability (1-100).
 	int data1 = entry[7] + 256*entry[8];
-	int tx = entry[0]&0xf, ty = entry[1]&0xf, tz = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
 	int data3 = entlen >= 14 ? (entry[12] + 256*entry[13]) : 0;
 	return create_egg(animated, shnum, frnum, tx, ty, tz, type, prob, 

@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "cheat.h"
 #include "ucmachine.h"
+#include "frflags.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
@@ -122,7 +123,7 @@ int Get_usecode(int spell)
 	{ return 0x640 + spell; }
 
 /*
- *	Test for Ring of Reagants.
+ *	Test for "Ring" of Reagants.
  */
 
 bool Spellbook_object::has_ring
@@ -130,19 +131,7 @@ bool Spellbook_object::has_ring
 	Actor *act
 	)
 	{
-	// ++++TAG: De-hard-code this.
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		Game_object *obj = act->get_readied(lfinger);
-		if (obj && obj->get_shapenum() == 0x128 &&
-						obj->get_framenum() == 3)
-			return true;
-		obj = act->get_readied(rfinger);
-		if (obj && obj->get_shapenum() == 0x128 &&
-						obj->get_framenum() == 3)
-			return true;
-		}
-	return false;
+	return act->check_gear_powers(Frame_flags::infinite_reagents);
 	}
 
 /*
@@ -327,7 +316,7 @@ void Spellbook_object::activate
 	int event
 	)
 	{
-	gumpman->add_gump(this, Game::get_game_type() == BLACK_GATE ? 43 : 38);
+	gumpman->add_gump(this, get_info().get_gump_shape());
 	}
 
 /*

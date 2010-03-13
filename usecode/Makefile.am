@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
 		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio\
-		-I$(srcdir)/../gumps -I$(srcdir)/../tools \
+		-I$(srcdir)/../gumps -I$(srcdir)/../tools -I$(srcdir)/../shapes/shapeinf \
 		-I$(srcdir)/../server $(SDL_CFLAGS) $(INCDIRS) \
 		$(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 

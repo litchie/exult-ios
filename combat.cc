@@ -608,11 +608,13 @@ void Combat_schedule::approach_foe
 	Actor::Attack_mode mode = npc->get_attack_mode();
 	Game_window *gwin = Game_window::get_instance();
 					// Time to run?
-	if (mode == Actor::flee || 
-	    (mode != Actor::berserk && 
-	        (npc->get_type_flags()&MOVE_ALL) != 0 &&
-		npc != gwin->get_main_actor() &&
-					npc->get_property(Actor::health) < 3))
+	Monster_info *minf = npc->get_info().get_monster_info();
+	if ((!minf || !minf->cant_die()) &&
+		(mode == Actor::flee || 
+			(mode != Actor::berserk && 
+				(npc->get_type_flags()&MOVE_ALL) != 0 &&
+			npc != gwin->get_main_actor() &&
+						npc->get_property(Actor::health) < 3)))
 		{
 		run_away();
 		return;
@@ -635,14 +637,22 @@ void Combat_schedule::approach_foe
 		if (npc->get_attack_mode() != Actor::manual)
 			{
 			Game_object *closest = find_foe(Actor::nearest);
-			if (closest && closest != opponent)
+			if (!closest)
+				{	// No one nearby.
+				if (combat_trace)
+					cout << npc->get_name() << " has no opponents nearby."
+						 << endl;
+				npc->set_target(0);
+				retry_ok = false;
+				}
+			else if (closest != opponent)
 				{
 				opponent = closest;
 				npc->set_target(opponent);
 				Monster_pathfinder_client cost(npc, dist, 
 								opponent);
 				retry_ok = (opponent != 0 && path->NewPath(
-				  pos, opponent->get_tile(), &cost));
+					pos, opponent->get_tile(), &cost));
 				}
 			}
 		if (!retry_ok)
@@ -718,13 +728,13 @@ static Game_object *Get_usable_weapon
 	Game_object *aobj;	// Check ranged first.
 	int need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 			winf->get_ammo_consumed(), winf->get_projectile(),
-			true, &aobj, GAME_BG);
+			true, &aobj);
 	if (need_ammo)
 		{
 		if (!aobj)	// Try melee.
 			need_ammo = npc->get_weapon_ammo(bobj->get_shapenum(),
 					winf->get_ammo_consumed(), winf->get_projectile(),
-					false, &aobj, GAME_BG);
+					false, &aobj);
 		if (need_ammo && !aobj)
 			return 0;
 		}
@@ -809,7 +819,7 @@ void Combat_schedule::start_strike
 			Game_object *ammo = 0;
 			int need_ammo = npc->get_weapon_ammo(weapon_shape,
 					winf->get_ammo_consumed(), winf->get_projectile(),
-					ranged, &ammo, GAME_BG);
+					ranged, &ammo);
 			if (need_ammo && !ammo && !npc->ready_ammo())
 				weapon_dead = true;
 			}
@@ -938,7 +948,7 @@ bool Combat_schedule::attack_target
 		// See if we need ammo.
 	Game_object *ammo = 0;
 	int need_ammo = attacker->get_weapon_ammo(weapon, family,
-			proj, ranged, &ammo, GAME_BG);
+			proj, ranged, &ammo);
 	if (need_ammo && !ammo)
 		{
 		if (flash_mouse)
@@ -1305,7 +1315,10 @@ void Combat_schedule::now_what
 					// Running away?
 	if (npc->get_attack_mode() == Actor::flee)
 		{			// If not in combat, stop running.
-		if (fleed > 2 && !gwin->in_combat() && 
+		Monster_info *minf = npc->get_info().get_monster_info();
+		if (minf && minf->cant_die())
+			npc->set_attack_mode(Actor::nearest);
+		else if (fleed > 2 && !gwin->in_combat() && 
 						npc->get_party_id() >= 0)
 					// WARNING:  Destroys ourself.
 			npc->set_schedule_type(Schedule::follow_avatar);
@@ -1320,7 +1333,6 @@ void Combat_schedule::now_what
 		state = approach;
 		}
 	Game_object *opponent = npc->get_target();
-					// Flag for slimes:
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
