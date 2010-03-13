@@ -49,14 +49,12 @@ num_channels(num_channels_), channels(0), id_counter(0)
 	desired.format = AUDIO_S16SYS;
 	desired.freq = sample_rate_;
 	desired.channels = stereo_?2:1;
-	desired.samples = 1024;
 	desired.callback = sdlAudioCallback;
 	desired.userdata = reinterpret_cast<void*>(this);
 
-#ifdef UNDER_CE
-	desired.freq = 11025;
-	desired.channels = 1;
-#endif
+	// Set update rate to 20 Hz, or there abouts. This should be more then adequate for everyone
+	desired.samples=1;
+	while(desired.samples<=desired.freq/30) desired.samples<<=1;
 
 	// Open SDL Audio (even though we may not need it)
 	SDL_InitSubSystem(SDL_INIT_AUDIO);
@@ -319,6 +317,43 @@ void AudioMixer::getVolume(sint32 instance_id, int &lvol, int &rvol)
 			if (channels[chan]->getInstanceId() == instance_id)
 			{
 				channels[chan]->getVolume(lvol,rvol);
+				break;
+			}
+		}
+	}
+	Unlock();
+}
+
+
+void AudioMixer::set2DPosition(sint32 instance_id, int distance, int angle)
+{
+	if (instance_id < 0 || !channels || !audio_ok) return;
+
+	Lock();
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->set2DPosition(distance,angle);
+				break;
+			}
+		}
+	}
+	Unlock();
+}
+
+void AudioMixer::get2DPosition(sint32 instance_id, int &distance, int &angle)
+{
+	if (instance_id < 0 || !channels || !audio_ok) return;
+
+	Lock();
+	{
+		for (int chan = 0; chan < num_channels; chan++)
+		{
+			if (channels[chan]->getInstanceId() == instance_id)
+			{
+				channels[chan]->get2DPosition(distance,angle);
 				break;
 			}
 		}

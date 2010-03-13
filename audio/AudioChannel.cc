@@ -62,6 +62,8 @@ void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bo
 	paused = paused_;
 	pitch_shift = pitch_shift_;
 	instance_id = instance_id_;
+	distance = 0;
+	angle = 0;
 
 	if (!sample) return;
 	sample->IncRef();
@@ -194,8 +196,27 @@ void AudioChannel::resampleFrameM8toS(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
 	
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
@@ -218,7 +239,7 @@ void AudioChannel::resampleFrameM8toS(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = interp_l.interpolate(fp_pos);
+			int result = interp_l.interpolate(fp_pos);
 
 			int lresult = *(stream+0) + (result*lvol)/256;
 			int rresult = *(stream+1) + (result*rvol)/256;
@@ -254,7 +275,27 @@ void AudioChannel::resampleFrameM8toM(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	int volume = (rvol + lvol)/2;
 	
 	do {
@@ -279,7 +320,7 @@ void AudioChannel::resampleFrameM8toM(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = (interp_l.interpolate(fp_pos)*volume)/256;
+			int result = (interp_l.interpolate(fp_pos)*volume)/256;
 
 			result += *stream;
 
@@ -310,9 +351,27 @@ void AudioChannel::resampleFrameS8toM(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
-	int volume = (rvol + lvol)/2;
-	
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
@@ -338,7 +397,7 @@ void AudioChannel::resampleFrameS8toM(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = ((interp_l.interpolate(fp_pos)*lvol+interp_r.interpolate(fp_pos)*rvol))/512;
+			int result = ((interp_l.interpolate(fp_pos)*lvol+interp_r.interpolate(fp_pos)*rvol))/512;
 
 			result += *stream;
 
@@ -369,6 +428,27 @@ void AudioChannel::resampleFrameS8toS(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 	
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
@@ -433,8 +513,27 @@ void AudioChannel::resampleFrameM16toS(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
-	
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
@@ -455,7 +554,7 @@ void AudioChannel::resampleFrameM16toS(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = interp_l.interpolate(fp_pos);
+			int result = interp_l.interpolate(fp_pos);
 
 			int lresult = *(stream+0) + (result*lvol)/256;
 			int rresult = *(stream+1) + (result*rvol)/256;
@@ -491,7 +590,27 @@ void AudioChannel::resampleFrameM16toM(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	int volume = (rvol + lvol)/2;
 	
 	do {
@@ -514,7 +633,7 @@ void AudioChannel::resampleFrameM16toM(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = (interp_l.interpolate(fp_pos)*volume)/256;
+			int result = (interp_l.interpolate(fp_pos)*volume)/256;
 
 			result += *stream;
 
@@ -545,9 +664,27 @@ void AudioChannel::resampleFrameS16toM(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 
-	int result;
-	int volume = (rvol + lvol)/2;
-	
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
@@ -573,7 +710,7 @@ void AudioChannel::resampleFrameS16toM(sint16 *&stream, uint32 &bytes)
 
 		if (fp_pos < 0x10000) do {
 			// Do the interpolation
-			result = ((interp_l.interpolate(fp_pos)*lvol+interp_r.interpolate(fp_pos)*rvol))/512;
+			int result = ((interp_l.interpolate(fp_pos)*lvol+interp_r.interpolate(fp_pos)*rvol))/512;
 
 			result += *stream;
 
@@ -604,6 +741,27 @@ void AudioChannel::resampleFrameS16toS(sint16 *&stream, uint32 &bytes)
 
 	src += position;
 	
+	int	lvol = this->lvol;
+	int rvol = this->rvol;
+
+	while (angle > 180) angle -= 360;
+	while (angle < -180) angle += 360;
+
+	int mod_angle = angle;
+	if (mod_angle > 0) mod_angle = 180-mod_angle;
+
+	if (mod_angle < 0)  rvol = rvol * (90+mod_angle) / 90;
+	else if (mod_angle > 0)  lvol = lvol * (90-mod_angle) / 90;
+	
+	if (distance > 255) {
+		lvol = 0;
+		rvol = 0;
+	}
+	else if (distance > 0) {
+		lvol = lvol * (256-distance) / 256;
+		rvol = rvol * (256-distance) / 256;
+	}
+
 	do {
 		// Add a new src sample (if required)
 		if (fp_pos >= 0x10000)
