@@ -62,6 +62,44 @@ public:
 					// Take larger abs. value.
 		return (dy > dx ? dy : dx);
 		}
+	int square_distance_2d(Tile_coord t2)
+		{
+		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
+		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
+		if (dy >= c_num_tiles/2)// World-wrapping.
+			dy = c_num_tiles - dy;
+		if (dx >= c_num_tiles/2)
+			dx = c_num_tiles - dx;
+
+		return dx*dx + dy*dy;
+		}
+	int square_distance_3d(Tile_coord t2)
+		{
+		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
+		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
+		int dz = t2.tz - tz;
+		if (dy >= c_num_tiles/2)// World-wrapping.
+			dy = c_num_tiles - dy;
+		if (dx >= c_num_tiles/2)
+			dx = c_num_tiles - dx;
+
+		return dx*dx + dy*dy + dz*dz;
+		}
+	int square_distance_screen_space(Tile_coord t2)
+		{
+		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
+		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
+		int dz = t2.tz - tz;
+		if (dy >= c_num_tiles/2)// World-wrapping.
+			dy = c_num_tiles - dy;
+		if (dx >= c_num_tiles/2)
+			dx = c_num_tiles - dx;
+
+		dx = dx*2-dz;
+		dy = dy*2-dz;
+
+		return (dx*dx + dy*dy)/4;
+		}
 					// Get neighbor in given dir (0-7).
 	inline Tile_coord get_neighbor(int dir)
 		{ return Tile_coord(

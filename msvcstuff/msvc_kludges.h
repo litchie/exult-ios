@@ -42,13 +42,14 @@
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
-#define NOMINMAX
 
 #ifndef DEBUG
 //#define DEBUG 1
 #endif
 
 #endif
+
+#define NOMINMAX
 
 // Yeah, lets do unicode compiles
 //#define UNICODE

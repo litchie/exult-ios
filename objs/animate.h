@@ -37,15 +37,11 @@ class Object_sfx : public Time_sensitive, public Game_singletons
 	Game_object *obj;	// Object that caused the sound.
 	int sfx;			// ID of sound effect being played.
 	int channel;		// Channel of sfx being played.
-	int distance;		// Distance in tiles from Avatar.
-	int dir;			// Direction (0-15) from Avatar.
 public:
 	Object_sfx(Game_object *o, int sfx, int delay = 20);
 	void stop();
 	int get_sfxnum()
 		{ return sfx; }
-	int get_distance()
-		{ return distance; }
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
