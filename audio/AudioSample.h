@@ -57,7 +57,10 @@ public:
 	virtual void freeDecompressor(void *DecompData) const { };
 
 	void			IncRef() { refcount++; }
-	void			Release() { if (!--refcount) delete this; }
+	void			Release() {
+		if (!--refcount)
+			delete this;
+	}
 	uint32			getRefCount() { return refcount; }
 
 	static AudioSample *createAudioSample(uint8 *data, uint32 size);

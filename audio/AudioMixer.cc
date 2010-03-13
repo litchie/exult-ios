@@ -374,6 +374,7 @@ void AudioMixer::MixAudio(sint16 *stream, uint32 bytes)
 	if (!audio_ok) return;
 
 	if (midi) midi->produceSamples(stream, bytes);
+	else std::memset(stream,0,bytes);
 
 	if (channels) for (int i=0;i<num_channels;i++)
 		if (channels[i]->isPlaying()) channels[i]->resampleAndMix(stream,bytes);

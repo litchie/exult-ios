@@ -192,7 +192,8 @@ public:
 
 		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
 		{
-			if (it->second.second) sorted.insert(it->second.first); 
+			if (it->second.second && it->second.second->getRefCount() == 1) 
+				sorted.insert(it->second.first); 
 		}
 
 		if (sorted.empty()) return;
@@ -217,6 +218,9 @@ public:
 			}
 		}
 
+		if (count <= max_fixed) 
+			return;
+
 		for (cache_iterator it = cache.begin(); it != cache.end(); ++it)
 		{
 			if (it->second.second)
@@ -226,7 +230,7 @@ public:
 					it->second.second->Release();
 					it->second.second = 0;
 				}
-				else if (it->second.first == threshold && count < max_fixed) 
+				else if (it->second.first == threshold && count > max_fixed) 
 				{
 					it->second.second->Release();
 					it->second.second = 0;
