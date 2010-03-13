@@ -297,6 +297,19 @@ else
 	AC_SUBST(x_libraries)
 fi
 
+# ---------------------------------------------------------------------
+# Statically compile libraries (mainly for MacOS X bundles)
+# ---------------------------------------------------------------------
+
+AC_ARG_ENABLE(static-libraries,      [[  --enable-static-libraries Enable static linking of libraries]],,enable_static_libs=no)
+AC_MSG_CHECKING(if we want to statically compile libraries)
+if test x$enable_static_libs != xno; then
+	AC_MSG_RESULT(yes)
+	STATIC_LD="-static"
+	LDFLAGS="$LDFLAGS -static"
+else
+	AC_MSG_RESULT(no)
+fi
 
 # ---------------------------------------------------------------------
 # SDL
@@ -308,14 +321,12 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
-# ---------------------------------------------------------------------
-# libvorbis
-# ---------------------------------------------------------------------
-
-XIPH_PATH_VORBIS(
-	have_vorbis=yes,
-	AC_MSG_ERROR([*** must have Vorbis installed!])
-)
+if test x$enable_static_libs != xno; then
+	# SDL MacOS X readme lists this as needed.
+	# We should have sdl-config by this point, or we would have
+	# died in AM_PATH_SDL.
+	SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
+fi
 
 # ---------------------------------------------------------------------
 # libogg
@@ -324,6 +335,15 @@ XIPH_PATH_VORBIS(
 XIPH_PATH_OGG(
 	have_ogg=yes,
 	AC_MSG_ERROR([*** must have Ogg installed!])
+)
+
+# ---------------------------------------------------------------------
+# libvorbis
+# ---------------------------------------------------------------------
+
+XIPH_PATH_VORBIS(
+	have_vorbis=yes,
+	AC_MSG_ERROR([*** must have Vorbis installed!])
 )
 
 # ---------------------------------------------------------------------
