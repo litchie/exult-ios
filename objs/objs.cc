@@ -253,31 +253,6 @@ static inline void delta_wrap_check
 	}
 
 /*
- *	Calculate effective distance for sound purposes.
- *	Gives a more realistic fall-off.
- */
-
-int Game_object::sound_distance
-	(
-	Game_object *o2
-	) const
-	{
-	Tile_coord t1 = get_tile(), t2 = o2->get_tile();
-	Shape_info& info1 = get_info(), info2 = o2->get_info();
-	int f1 = get_framenum(), f2 = o2->get_framenum();
-	int dx = Tile_coord::delta(t1.tx, t2.tx),
-		dy = Tile_coord::delta(t1.ty, t2.ty),
-		dz = t1.tz - t2.tz;
-	delta_wrap_check(dx, info1.get_3d_xtiles(f1)-1,
-			info2.get_3d_xtiles(f2)-1, t1.tx, t2.tx);
-	delta_wrap_check(dy, info1.get_3d_ytiles(f1)-1,
-			info2.get_3d_ytiles(f2)-1, t1.ty, t2.ty);
-	delta_check(dz, info1.get_3d_height(),
-			info2.get_3d_height(), t1.tz, t2.tz);
-	return abs(t1.tx - t2.tx) + abs(t1.ty - t2.ty) + abs(t1.tz - t2.tz);
-	}
-
-/*
  *	Calculate distance to object taking 3D size in consideration.
  *	U7 & SI verified.
  */

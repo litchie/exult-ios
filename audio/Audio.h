@@ -31,7 +31,10 @@ class SFX_cached;
 class SFX_cache_manager;
 class Flex;
 class MyMidiPlayer;
+class Tile_coord;
+class Game_object;
 
+#define MAX_SOUND_FALLOFF	24
 /*
  *	Music:
  */
@@ -100,9 +103,20 @@ public:
 	void	start_music_combat(Combat_song song,bool continuous);
 	void	stop_music();
 	int		play_sound_effect (int num, int volume = AUDIO_MAX_VOLUME,
-					int dir = 0, int repeat = 0);
+					int balance = 0, int repeat = 0, int distance=0);
 	int		play_wave_sfx(int num, int volume = AUDIO_MAX_VOLUME,
-					int dir = 0, int repeat = 0);
+					int balance = 0, int repeat = 0, int distance=0);
+
+	static void get_2d_position_for_tile(const Tile_coord &tile, int &distance, int &balance);
+
+	int		play_sound_effect (int num, const Game_object *obj, int volume = AUDIO_MAX_VOLUME, int repeat = 0);
+	int		play_sound_effect (int num, const Tile_coord &tile, int volume = AUDIO_MAX_VOLUME, int repeat = 0);
+
+	int		update_sound_effect(int chan, const Game_object *obj);
+	int		update_sound_effect(int chan, const Tile_coord &tile);
+
+	void	stop_sound_effect(int chan);
+
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);
 	bool	is_speech_enabled() const { return speech_enabled; }
