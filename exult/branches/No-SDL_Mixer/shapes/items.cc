@@ -206,10 +206,11 @@ void Setup_text(bool si, bool expansion)
 			U7open(textflx, PATCH_TEXT);
 		else
   			U7open(textflx, TEXT_FLX);
+		const char *msgs = BUNDLE_CHECK(BUNDLE_EXULTMSG, EXULTMSG);
 		if (is_patch && U7exists(PATCH_EXULTMSG))
 			U7open(exultmsg, PATCH_EXULTMSG, true);
 		else
-			U7open(exultmsg, EXULTMSG, true);
+			U7open(exultmsg, msgs, true);
 		Setup_item_names(textflx, exultmsg, si, expansion);
 		}
 	}

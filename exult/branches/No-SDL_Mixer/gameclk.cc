@@ -112,8 +112,13 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(PALETTE_INVISIBLE);
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance() && !gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
+		else
+#endif
 		if (!gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(!old_invisible);
+			gwin->get_pal()->apply(false);
 		return;
 		}
 	old_invisible = invis;
@@ -126,8 +131,14 @@ void Game_clock::set_time_palette
 			transition = 0;
 			}
 		gwin->get_pal()->set(PALETTE_DAY);
+// As far as I can tell from testing in Direct X and Windib with OpenGL and other scalers, this palette apply isn't even needed.
+#ifdef HAVE_OPENGL
+		if (GL_manager::get_instance() && !gwin->get_pal()->is_faded_out())
+			gwin->get_pal()->apply(true);
+		else
+#endif
 		if (!gwin->get_pal()->is_faded_out())
-			gwin->get_pal()->apply(!old_infravision);
+			gwin->get_pal()->apply(false);
 		return;
 		}
 	old_infravision = cheat.in_infravision();

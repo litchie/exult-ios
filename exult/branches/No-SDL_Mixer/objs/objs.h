@@ -310,7 +310,7 @@ public:
 		{ return 0; }
 	virtual int get_effective_range(const Weapon_info *winf = 0, int reach = -1);
 	int get_weapon_ammo(int weapon, int family, int proj, bool ranged,
-			Game_object **ammo = 0, bool bg = false, bool recursive = false);
+			Game_object **ammo = 0, bool recursive = false);
 	void play_hit_sfx(int weapon, bool ranged);
 	virtual bool try_to_hit(Game_object *attacker, int attval)
 		{ return true; }

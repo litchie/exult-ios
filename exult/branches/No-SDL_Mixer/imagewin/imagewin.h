@@ -111,6 +111,7 @@ protected:
 	void show_scaled8to555_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to565_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to32_2xSaI(int x, int y, int w, int h);	
+
 	void show_scaled8to16_Super2xSaI(int x, int y, int w, int h);
 	void show_scaled8to555_Super2xSaI(int x, int y, int w, int h);
 	void show_scaled8to565_Super2xSaI(int x, int y, int w, int h);
@@ -120,21 +121,40 @@ protected:
 	void show_scaled8to555_bilinear(int x, int y, int w, int h);
 	void show_scaled8to565_bilinear(int x, int y, int w, int h);
 	void show_scaled8to32_bilinear(int x, int y, int w, int h);	
+
 	void show_scaled8to16_SuperEagle(int x, int y, int w, int h);
 	void show_scaled8to555_SuperEagle(int x, int y, int w, int h);
 	void show_scaled8to565_SuperEagle(int x, int y, int w, int h);
 	void show_scaled8to32_SuperEagle(int x, int y, int w, int h);	
-	void show_scaled_point(int x, int y, int w, int h);
-	void show_scaled_interlace(int x, int y, int w, int h);
-	void show_scale2x_noblur(int x, int y, int w, int h);
+
+	void show_scaled8to16_point(int x, int y, int w, int h);
+	void show_scaled8to555_point(int x, int y, int w, int h);
+	void show_scaled8to565_point(int x, int y, int w, int h);
+	void show_scaled8to32_point(int x, int y, int w, int h);	
+	void show_scaled8bit_point(int x, int y, int w, int h);
+
+	void show_scaled8to16_interlace(int x, int y, int w, int h);
+	void show_scaled8to555_interlace(int x, int y, int w, int h);
+	void show_scaled8to565_interlace(int x, int y, int w, int h);
+	void show_scaled8to32_interlace(int x, int y, int w, int h);	
+	void show_scaled8bit_interlace(int x, int y, int w, int h);
+
+	void show_scaled8to16_2x_noblur(int x, int y, int w, int h);
+	void show_scaled8to555_2x_noblur(int x, int y, int w, int h);
+	void show_scaled8to565_2x_noblur(int x, int y, int w, int h);
+	void show_scaled8to32_2x_noblur(int x, int y, int w, int h);	
+	void show_scaled8bit_2x_noblur(int x, int y, int w, int h);
+
 	void show_scaled8to16_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to565_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to32_BilinearPlus(int x, int y, int w, int h);	
+
 	void show_scaled8to16_Hq2x(int x, int y, int w, int h);
 	void show_scaled8to555_Hq2x(int x, int y, int w, int h);
 	void show_scaled8to565_Hq2x(int x, int y, int w, int h);
 	void show_scaled8to32_Hq2x(int x, int y, int w, int h);	
+
 	void show_scaled8to16_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to555_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to565_Hq3x(int x, int y, int w, int h);

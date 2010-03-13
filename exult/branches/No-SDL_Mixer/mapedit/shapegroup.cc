@@ -99,12 +99,22 @@ Shape_group::Shape_group
 		break;
 	case containers_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_container_gump() >= 0)
+			if (vgafile->get_info(i).get_gump_shape() >= 0)
+				add(i);
+		break;
+	case mountain_top:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_mountain_top_type())
 				add(i);
 		break;
 	case animation_group:
 		for (i = 0; i < cnt; i++)
 			if (vgafile->get_info(i).has_animation_info())
+				add(i);
+		break;
+	case barge_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_barge_type())
 				add(i);
 		break;
 	case body_group:
@@ -135,6 +145,11 @@ Shape_group::Shape_group
 	case content_rules_group:
 		for (i = 0; i < cnt; i++)
 			if (vgafile->get_info(i).has_content_rules())
+				add(i);
+		break;
+	case frameflags_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).has_frame_flags())
 				add(i);
 		break;
 	case framehps_group:
@@ -232,11 +247,11 @@ Shape_group_file::Shape_group_file
 			char *gname = buf;	// Starts with name.
 			unsigned char *ptr = (unsigned char *)
 						gname + strlen(gname) + 1;
-			int sz = Read2(ptr);	// Get # entries.
+			size_t sz = Read2(ptr);	// Get # entries.
 			assert ((len - ((char *) ptr - buf))/2 == sz);
 			Shape_group *grp = new Shape_group(gname, this);
 			grp->reserve(sz);
-			for (int j = 0; j < sz; j++)
+			for (size_t j = 0; j < sz; j++)
 				grp->push_back(Read2(ptr));
 			groups.push_back(grp);
 			delete buf;
@@ -287,7 +302,7 @@ void Shape_group_file::remove
 	)
 	{
 	modified = true;
-	assert(index >= 0 && index < groups.size());
+	assert(index >= 0 && unsigned(index) < groups.size());
 	Shape_group *grp = groups[index];
 	groups.erase(groups.begin() + index);
 	if (del)
@@ -305,9 +320,11 @@ Shape_group *Shape_group_file::get_builtin
 	)
 	{
 	int type;
-	if (menindex < 16)
+	const int grpdelta =
+			Shape_group::last_builtin_group - Shape_group::first_group;
+	if (menindex < grpdelta)
 		type = menindex + Shape_group::ammo_group;
-	else switch (menindex - 17)
+	else switch (menindex - (grpdelta + 1))
 			{
 		case 0:
 			type = Shape_info::unusable; break;
@@ -341,7 +358,7 @@ Shape_group *Shape_group_file::get_builtin
 			}
 	if (type < 0 || type >= Shape_group::last_builtin_group)
 		return 0;
-	if (builtins.size() <= type)
+	if (builtins.size() <= unsigned(type))
 		builtins.resize(type + 1);
 	if (!builtins[type])		// Create if needed.
 		builtins[type] = new Shape_group(nm, this, type);

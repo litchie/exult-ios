@@ -312,7 +312,7 @@ bool Game::show_menu(bool skip)
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 	
-	Vga_file exult_flx(EXULT_FLX);
+	Vga_file exult_flx(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 	char npc_name[16];
 	snprintf(npc_name, 16, "Exult");
 	bool play = false;

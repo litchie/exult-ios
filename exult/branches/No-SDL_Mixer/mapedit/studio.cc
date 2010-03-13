@@ -515,7 +515,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), npc_status_id(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
-	shape_draw(0), gump_draw(0), npcgump_draw(0),
+	shape_draw(0), gump_draw(0),
 	body_draw(0), explosion_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0),
 	ucbrowsewin(0), gameinfowin(0),
@@ -527,8 +527,13 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
+	setup_program_paths();
 	config = new Configuration;
 	config->read_config_file(USER_CONFIGURATION_FILE);
+	// Setup virtual directories
+	string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	setup_data_dir(data_path, argv[0]);
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	string game = "";			// Game to look up in .exult.cfg.
@@ -612,7 +617,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 		}
 
 	string iedit;			// Get image-editor command.
-	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
+	config->value("config/estudio/image_editor", iedit, "gimp");
 	image_editor = g_strdup(iedit.c_str());
 	config->set("config/estudio/image_editor", iedit, true);
 #ifdef WIN32
@@ -668,7 +673,6 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(shapewin);
 	delete shape_draw;
 	delete gump_draw;
-	delete npcgump_draw;
 	delete body_draw;
 	delete explosion_draw;
 	shapewin = 0;
@@ -923,6 +927,11 @@ void ExultStudio::new_game()
 	GtkFileSelection *fsel = Create_file_selection(
 			"Choose new game directory",
 			on_choose_new_game_dir, this);
+	if (is_system_path_defined("<SAVEHOME>"))
+		{			// Default to a writable location.
+		string patch = get_system_path("<SAVEHOME>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
 
@@ -1267,11 +1276,6 @@ void ExultStudio::set_game_path(string gamename, string modname)
 
 	game_encoding = gameinfo->get_codepage();
 
-	string config_path("config/disk/game/" + gamename + "/path"), gamepath,
-		def_path("./" + gamename);
-	config->value(config_path.c_str(), gamepath, def_path.c_str());
-					// Set top-level path.
-	add_system_path("<GAME>", gamepath);
 	gameinfo->setup_game_paths();
 	game_type = gameinfo->get_game_type();
 	expansion = gameinfo->have_expansion();
@@ -1306,6 +1310,7 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
+	fontfile = open_shape_file("fonts.vga");
 	gumpfile = open_shape_file("gumps.vga");
 	spritefile = open_shape_file("sprites.vga");
 	Setup_text(game_type == SERPENT_ISLE, expansion);	// Read in shape names.
@@ -2962,15 +2967,18 @@ C_EXPORT void on_gameinfo_apply_clicked
 	GtkTextIter startpos, endpos;
 	gtk_text_buffer_get_bounds(buff, &startpos, &endpos);
 	gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
-	codepageStr menu(modmenu, "CP437");
-	string menustr = menu.get_str();
+	// Titles need to be displayable in Exult menu, hence should not
+	// have any extra characters.
+ 	codepageStr menu(modmenu, "CP437");
+ 	string menustr = menu.get_str();
+	for (size_t i = 0; i < strlen(menustr.c_str()); i++)
+		if (menustr[i] < 0)
+			menustr[i] = '?';
 	g_free(modmenu);
 
 	BaseGameInfo *gameinfo = studio->get_game();
 	studio->set_encoding(enc);
 	gameinfo->set_codepage(enc);
-	// Titles need to be displayable in Exult menu, hence should not
-	// have any extra characters.
 	gameinfo->set_menu_string(menustr.c_str());
 
 	Configuration *cfg;

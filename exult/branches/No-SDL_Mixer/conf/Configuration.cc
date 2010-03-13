@@ -176,29 +176,13 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Or if it's not a relative path.
 	if (!is_path_absolute(input_filename))
 	{
-#if ((defined XWIN) || (defined BEOS) || (defined MACOSX) || defined(WIN32))
-		std::string home_dir = Get_home();
-		if (home_dir.c_str() && home_dir != ".")
-		{
-			// User has a home directory
-			fname=home_dir;
-#if defined(BEOS)
-			fname+="/config/settings/";
-#elif defined(MACOSX)
-			fname+="/Library/Preferences/";
-#elif defined(WIN32)
-			fname+="\\";
+#if (defined(XWIN) || defined(BEOS) || defined(MACOSX) || defined(WIN32))
+		fname = "<CONFIG>/";
+#	if (defined(XWIN) && !defined(MACOSX))
+		fname += ".";
+#	endif
+		fname += input_filename;
 #else
-			fname+="/.";
-#endif
-			fname+=input_filename;
-		}
-		else
-			fname=input_filename;
-#else
-		// Probably something to do with determining the username
-		// and generating a filename in their personal setup area.
-
 		// For now, just read file from current directory
 		fname=input_filename;
 #endif

@@ -57,7 +57,7 @@ int MT32EmuMidiDriver::open()
 	// Must be stereo
 	if (!stereo) return 1;
 
-	std::string basedir = get_system_path("<DATA>") + '/';
+	std::string basedir = get_system_path(BUNDLE_CHECK("<BUNDLE>","<DATA>")) + '/';
 
 	SynthProperties	props;
 	std::memset(&props,0,sizeof(props));

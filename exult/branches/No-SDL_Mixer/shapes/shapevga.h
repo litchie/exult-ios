@@ -77,11 +77,11 @@ public:
 			return true;
 		return false;
 		}
-	void set_info(int shapenum, Shape_info inf)
+	void set_info(int shapenum, const Shape_info& inf)
 		{
 		info[shapenum] = inf;
 		}
-	void copy_info(int shapenum, Shape_info inf)
+	void copy_info(int shapenum, const Shape_info& inf)
 		{
 		info[shapenum].copy(inf, true);
 		}

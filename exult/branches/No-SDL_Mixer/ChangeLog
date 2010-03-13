@@ -1,3 +1,109 @@
+2010-03-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/data_utils.h: Fixed compilation warnings in MacOS X.
+	* imagewin/*: Added 16-bit and 32-bit versions of Point, Interlaced and
+	  Scale2x scalers. The old 8-bit scalers are still available, but Exult
+	  will use them only if it can't use the 16-bit and 32-bit versions.
+
+2010-03-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* files/utils.h: Default save location in Mac OS X changed (again) to be
+	  ~/Library/Application Support/Exult (issue #1377892).
+	* De-hard-coding, round 3: All information about which gump a given shape
+	  should display is now given by the 'container.dat' file; a default file
+	  with the original game data is embedded in Exult_xx.flx. This includes
+	  moving BG NPC gumps from paperdoll data; Exult/ES will do this for older
+	  versions of paperdol_info.txt on load. The embedded 'container.dat', as
+	  well as those written by ES, will be version 2 and include (non-editable,
+	  for now ignored) font information for gumps.
+	  Expanded frame powers to depend also on quality, and renamed into frame
+	  flags. The reagent ring (SI) and trapped chests are examples of the new
+	  frame flags in action.
+	  Fields (fire/poison/sleep) are no longer hard-coded.
+	  Any object can now be marked as being a 'jawbone' or a 'mirror'. Jawbones
+	  will work *exactly* the same way as the SI jawbone does.
+	  ES can edit this new shape information, and has many new additional built
+	  in groups for shapes.vga.
+	  Body data now follows the :shape/[data] structure, having had a version
+	  bump, with a backward-compatible reader.
+	* shapes/*: Reorganized tree structure: new directory 'shapeinf' contains
+	  all of the data classes now, except for the baseinf.h base class.
+	  Reorganized code, with heavy template use, for reading/writing of shape
+	  info; the code is now in data_utils.h.
+	* gamemap.cc: Using shape classes instead of hard-coded shape values. Also,
+	  Game_map::create_ireg_object will correctly handle dead bodies and virtue
+	  stone-like objects.
+	* combat.cc: NPCs that can't die also won't flee.
+	* General: eliminated some warnings. ES will reject any character not in the
+	  128 ASCII character range for menu titles, as the menu font does not have
+	  any such characters.
+
+2010-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2967402 OSX: ES is defaulting to wrong path for EXULT_DATADIR
+	  #2967138 ES defaults to the app folder for saving png and shp in Win
+		ES expects the patch dir to be writable -- even if Exult does not -- and
+		defaults to this for all file browsing operations (except for creation
+		of new games).
+	* Implemented feature requests:
+	  #2967398 Show which sfx pack is used in stdout
+	  #2967397 Gump for selecting SFX pack
+	* shapeid.cc, fnames.h, shapes/shapevga.cc: Fixed a few omissions affecting
+	  MacOS X app bundles.
+
+2010-03-10 Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation and FAQ with the changed default path values and other things.
+
+2010-03-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Applied patches:
+	  #2965885 Export a palette and import it to GIMP without an editing
+	* all: Changed default path values again; Dominus has been documenting them.
+	  Made MacOS X look both in bundle and in external <DATA> tags for data.
+	  Improved detection code for waves: if wave packs are found, appropriate to
+	  the game, they are added to exult.cfg and used. Exult will now always
+	  search for blackgate, forgeofvirtue, serpentisle and silverseed, even if
+	  there are other games defined in exult.cfg.
+	* Fixed bugs:
+	  #2967402 OSX: ES is defaulting to wrong path for EXULT_DATADIR
+
+2010-03-09 Dominik Reichardt <dominus@users.sourceforge.net>
+	* makfile.common, audio/midid_drivers/*: added CoreMIDI driver for using a real MT32 on OS X
+	* README, /docs/*:updated Documentation with CoreMIDI information
+
+2010-03-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* autogen.sh: Changed == (which is a bashism) into = for test.
+	* shapes/glshape.*: Fixed MacOS X PPC compilation error.
+	* gamemgr/*: Games in exult.cfg without a <path> or a <static_path> tags now
+	  default to $prefix/share/exult/gamename in *nix and MacOS X (where $prefix
+	  is /usr/share or /usr/local/share, depending on ./configure options).
+
+2010-03-08 Dominik Reichardt <dominus@users.sourceforge.net>
+	* README, /docs/*: updated Documentation, fixed the xml makefile to do proper cases
+	* /data/credits.txt: fixed typo in Jakob Schonberg's name
+	* README.MacOSX: additional information for compiling and running Exult Studio on OS X
+	
+2010-03-07 Dominik Reichardt <dominus@users.sourceforge.net>
+	* makefile.am: added an option to make dmg-image of the app-bundle and some other files
+	* /macosx/DS_Store: added Desktop Services Store file to layout the dmg-image
+
+2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2841677 Cannot close two gumps in succession
+
+2010-03-06 Dominik Reichardt <dominus@users.sourceforge.net>
+	* makefile.am: tuned the app bundle a bit, including some of the standard files
+	* Info.plist.in: updated copyrights date
+
+2010-03-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapes/font.cc: '^' character in conversations/plaques/books/etc. will
+	  convert the next character to uppercase. This is needed in the training
+	  dialog of Sentri, for example.
+
+2010-03-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* MacOS X: App bundles now use CoreFoundation API to detect resource path
+	  instead of it being hard-coded into the application.
+	* Fixed bugs:
+	  #2962438 The BG and SI credits use the wrong palette
+	  #2961649 Party flickers when walking and infravision or invisible
+
 2010-03-04 Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff/msvc_kludges.h: Updating to reflect current code
 	* version.cc: Added Windows Vista and Windows 7 to the list of detected windows versions

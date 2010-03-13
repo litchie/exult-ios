@@ -1099,7 +1099,6 @@ void Game_map::read_ireg_objects
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 		int is_egg = 0;		// Fields are eggs.
-					// An "egg"?
 
 		// Has flag byte(s)
 		if (testlen == 10)
@@ -1108,12 +1107,13 @@ void Game_map::read_ireg_objects
 			if (entry[6] & 1) oflags |= 1<<Obj_flags::is_temporary;
 		}
 		
+					// An "egg"?
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			bool anim = info.is_animated() || info.has_sfx();
-			assert(!extended);	// Not handled yet.
-			Egg_object *egg = Egg_object::create_egg(
-							entry, entlen, anim);
+			lift = entry[9] >> 4;
+			Egg_object *egg = Egg_object::create_egg(entry, entlen,
+							anim, shnum, frnum, tilex, tiley, lift);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;
 			continue;
@@ -1178,8 +1178,8 @@ void Game_map::read_ireg_objects
 			quality = entry[7];
 			oflags =	// Override flags (I think).
 				Get_quality_flags(entry[11]);
-			if (shnum == 330)// Virtue stone?
-				{
+			if (info.get_shape_class() == Shape_info::virtue_stone)
+				{	// Virtue stone?
 				Virtue_stone_object *v = 
 				   new Virtue_stone_object(shnum, frnum, tilex,
 						tiley, lift);
@@ -1189,7 +1189,7 @@ void Game_map::read_ireg_objects
 				obj = v;
 				type = 0;
 				}
-			else if (shnum == 961)
+			else if (info.get_shape_class() == Shape_info::barge)
 				{
 				Barge_object *b = new Barge_object(
 				    shnum, frnum, tilex, tiley, lift,
@@ -1200,8 +1200,7 @@ void Game_map::read_ireg_objects
 							(quality&(1<<3)))
 					gwin->set_moving_barge(b);
 				}
-			else if (Game::get_game_type() == SERPENT_ISLE &&
-				shnum == 555) // serpent jawbone
+			else if (info.is_jawbone()) // serpent jawbone
 				{
 				obj = new Jawbone_object(shnum, frnum,
 					tilex, tiley, lift, entry[10]);
@@ -1218,8 +1217,9 @@ void Game_map::read_ireg_objects
 				obj->elements_read();
 				}
 			}
-		else			// Length 18 means it's a spellbook.
-			{		// Get all 9 spell bytes.
+		else if (info.get_shape_class() == Shape_info::spellbook)
+			{		// Length 18 means it's a spellbook.
+					// Get all 9 spell bytes.
 			quality = 0;
 			unsigned char circles[9];
 			memcpy(&circles[0], &entry[4], 5);
@@ -1267,31 +1267,23 @@ Ireg_game_object *Game_map::create_ireg_object
 	int lift			// Desired lift.
 	)
 	{
-	if (info.is_field())		// (These are all animated.)
-		{			// Check shapes.
-		if (shnum == 895 ||	// Fire.
-		    shnum == 561)	// SI - blue flame.
-			return new Field_object(shnum, frnum, tilex, tiley,
-					lift, Egg_object::fire_field);
-		else if (shnum == 900)	// Poison.
-			return new Field_object(shnum, frnum, tilex, tiley,
-					lift, Egg_object::poison_field);
-		else if (shnum == 902)	// Sleep.
-			return new Field_object(shnum, frnum, tilex, tiley,
-					lift, Egg_object::sleep_field);
-		else if (shnum == 756)	// Caltrops.
-			return new Field_object(shnum, frnum, tilex, tiley,
-					lift, Egg_object::caltrops_field);
-		}
-	if (info.is_animated() || info.has_sfx())
+			// (These are all animated.)
+	if (info.is_field() && info.get_field_type() >= 0)
+		return new Field_object(shnum, frnum, tilex, tiley,
+					lift, Egg_object::fire_field + info.get_field_type());
+	else if (info.is_animated() || info.has_sfx())
 		return new Animated_ireg_object(
 				   shnum, frnum, tilex, tiley, lift);
-	if (shnum == 607)		// Path.
+	else if (shnum == 607)		// Path.
 		return new Egglike_game_object(
 					shnum, frnum, tilex, tiley, lift);
-	if (shnum == 848 || shnum == 268)	// Mirror
+	else if (info.is_mirror())	// Mirror
 		return new Mirror_object(shnum, frnum, tilex, tiley, lift);
-//	else if (shnum == 761)		// Spellbook.
+	else if (info.is_body_shape())
+		return new Dead_body(shnum, frnum, tilex, tiley, lift, -1);
+	else if (info.get_shape_class() == Shape_info::virtue_stone)
+		return new Virtue_stone_object(
+					shnum, frnum, tilex, tiley, lift);
 	else if (info.get_shape_class() == Shape_info::spellbook)
 		{
 		static unsigned char circles[9] = {0};
@@ -1301,7 +1293,7 @@ Ireg_game_object *Game_map::create_ireg_object
 		}
 	else if (info.get_shape_class() == Shape_info::container)
 		{
-		if (shnum == 555 && GAME_SI)
+		if (info.is_jawbone())
 			return new Jawbone_object(shnum, frnum, tilex, tiley,
 									lift);
 		else
