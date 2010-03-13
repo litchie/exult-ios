@@ -109,7 +109,8 @@ void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bo
 
 void AudioChannel::resampleAndMix(sint16 *stream, uint32 bytes)
 {
-	if (!sample || paused) return;
+	if (!sample || paused) 
+		return;
 
 	// Update fp_speed
 	fp_speed = (pitch_shift*sample->getRate())/sample_rate;

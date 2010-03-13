@@ -612,7 +612,8 @@ bool MyMidiPlayer::init_device(void)
 
 	Audio *audio = Audio::get_ptr();
 
-	midi_driver = MidiDriver::createInstance(s,audio->get_sample_rate(),audio->is_stereo());
+	Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
+	midi_driver = MidiDriver::createInstance(s,mixer->getSampleRate(),mixer->getStereo());
 
 	initialized = true;
 

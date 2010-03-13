@@ -60,6 +60,9 @@ public:
 
 	MyMidiPlayer	*getMidiPlayer() { return midi; }
 
+	uint32			getSampleRate() { return sample_rate; }
+	bool			getStereo() { return stereo; }
+
 private:
 	bool			audio_ok;
 	uint32			sample_rate;
