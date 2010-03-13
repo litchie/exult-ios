@@ -121,9 +121,9 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DMACOSX"
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT(Mac OS X)
-		SYSLIBS="-framework AudioUnit -framework CoreMIDI"
+		SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
 		CXXFLAGS="$CXXFLAGS"
-		EXULT_DATADIR="data"
+		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
 		ARCH=macosx
 		;;
 	*)
@@ -840,6 +840,7 @@ desktop/Makefile
 objs/Makefile
 imagewin/Makefile
 shapes/Makefile
+shapes/shapeinf/Makefile
 usecode/Makefile
 usecode/compiler/Makefile
 usecode/ucxt/Makefile

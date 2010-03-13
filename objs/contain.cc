@@ -37,6 +37,7 @@
 #include "cheat.h"
 #include "ready.h"
 #include "weaponinf.h"
+#include "frflags.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -64,15 +65,6 @@ static inline bool Can_be_added
 	return !(cont->get_shapenum() == shapenum	// Shape can't be inside itself.
 			|| info.is_container_locked()	// Locked container.
 			|| !info.is_shape_accepted(shapenum));	// Shape can't be inside.
-	}
-
-/*
- *	Figure attack points against an object, and also run weapon's usecode.
- */
-
-inline int Game_object::get_usecode() const
-	{
-	return ucmachine->get_shape_fun(get_shapenum());
 	}
 
 /*
@@ -420,133 +412,17 @@ bool Container_game_object::show_gump
 	int event
 	)
 	{
-	int shnum = get_shapenum();
-	Gump_manager *gump_man = gumpman;
-
-	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
-	{
-		case 405:			// Ship's hold
-		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
-		return true;
-
-		case 406:			// Nightstand.
-		case 407:			// Desk.
-		case 283:
-		case 203:
-		case 416:			// Chest of drawers.
-		case 679:
-		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
-		return true;
-
-		case 400:			// Bodies.
-		case 414:
-		case 762:
-		case 778:
-		case 892:
-		case 507: 			// Bones
-		gump_man->add_gump(this, game->get_shape("gumps/body"));
-		return true;
-
-		case 800:			// Chest.
-		gump_man->add_gump(this, game->get_shape("gumps/chest"));
-		return true;
-
-		case 801:			// Backpack.
-		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
-		return true;
-
-		case 799:			// Unsealed box
-		gump_man->add_gump(this, game->get_shape("gumps/box"));
-		return true;
-
-		case 802:			// Bag.
-		gump_man->add_gump(this, game->get_shape("gumps/bag"));
-		return true;
-
-		case 803:			// Basket.
-		gump_man->add_gump(this, game->get_shape("gumps/basket"));
-		return true;
-	
-		case 804:			// Crate.
-		gump_man->add_gump(this, game->get_shape("gumps/crate"));
-		return true;
-
-		case 819:			// Barrel.
-		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
-		return true;
-	}
-	else if (Game::get_game_type() == SERPENT_ISLE) switch(shnum)	// Watch for gumps.
-	{
-		case 405:			// Ship's hold
-		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
-		return true;
-
-		case 406:			// Nightstand.
-		case 407:			// Desk.
-		case 283:
-		case 416:			// Chest of drawers.
-		case 679:
-		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
-		return true;
-
-		case 400:			// Bodies.
-		case 402:
-		case 414:
-		case 762:
-		case 778:
-		case 892:
-		case 507: 			// Bones
-		gump_man->add_gump(this, game->get_shape("gumps/body"));
-		return true;
-
-		case 800:			// Chest.
-		if (!cheat.in_map_editor() && get_quality() >= 251)	// Trapped?
-			{		// Run normal usecode fun.
-			ucmachine->call_usecode(shnum, this,
-				(Usecode_machine::Usecode_events) event);
-			return true;
-			}
-						// FALL THROUGH to 486.
-		case 486:			// Usecode container.
-		gump_man->add_gump(this, game->get_shape("gumps/chest"));
-		return true;
-
-		case 801:			// Backpack.
-		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
-		return true;
-
-		case 799:			// Unsealed box
-		gump_man->add_gump(this, game->get_shape("gumps/box"));
-		return true;
-
-		case 802:			// Bag.
-		gump_man->add_gump(this, game->get_shape("gumps/bag"));
-		return true;
-
-		case 803:			// Basket.
-		gump_man->add_gump(this, game->get_shape("gumps/basket"));
-		return true;
-	
-		case 804:			// Crate.
-		gump_man->add_gump(this, game->get_shape("gumps/crate"));
-		return true;
-
-		case 819:			// Barrel.
-		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
-		return true;
-
-		case 297:			// Hollow Tree
-		gump_man->add_gump(this, game->get_shape("gumps/tree"));
-		return true;
-
-		case 555:			// Serpent Jawbone
-		gump_man->add_gump(this, game->get_shape("gumps/jawbone"));
-		return true;
-	}
-						// Try containers.dat.
-	int gump = get_info().get_container_gump();
-	if (gump >= 0)
+	Shape_info& inf = get_info();
+	int gump;
+	if (cheat.in_map_editor())
+		return true;	// Do nothing.
+	else if (inf.has_object_flag(get_framenum(),
+			inf.has_quality() ? get_quality() : -1, Frame_flags::force_usecode))
+			// Run normal usecode fun.
+		return false;
+	else if ((gump = inf.get_gump_shape()) >= 0)
 		{
+		Gump_manager *gump_man = gumpman;
 		gump_man->add_gump(this, gump);
 		return true;
 		}

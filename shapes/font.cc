@@ -31,6 +31,7 @@ using std::endl;
 using std::size_t;
 using std::string;
 using std::strncmp;
+using std::toupper;
 #endif
 
 FontManager fontManager;
@@ -84,6 +85,7 @@ static const char *Pass_word
  *		space	Word break.
  *		tab	Treated like a space for now.
  *		*	Page break.
+ *		^	Uppercase next letter. 
  *
  *	Output:	If out of room, -offset of end of text painted.
  *		Else height of text painted.
@@ -169,11 +171,24 @@ int Font::paint_text_box
 			if (cur_line)
 				break;
 			}
+		bool ucase_next = *text == '^';
+		if (ucase_next)	// Skip it.
+			text++;
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
-		int width = get_text_width(text, static_cast<uint32>(ewrd - text));
+		int width;
+		if (ucase_next)
+			{
+			const char c = static_cast<const char>(toupper(*text));
+			width = get_text_width(&c, 1u)
+			      + get_text_width(text+1, static_cast<uint32>(ewrd - text-1));
+			}
+		else
+			width = get_text_width(text, static_cast<uint32>(ewrd - text));
 		if (curx + width - hor_lead > endx)
 			{		// Word-wrap.
+			if (ucase_next)
+				text--;	// Put the '^' back.
 			curx = x;
 			cur_line++;
 			cury += height;
@@ -185,6 +200,11 @@ int Font::paint_text_box
 						static_cast<uint32>(coff-(text-start))),
 					cury, cur_line);
 					// Store word.
+		if (ucase_next)
+			{
+			lines[cur_line].push_back(static_cast<const char>(toupper(*text)));
+			++text;
+			}
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
 		text = ewrd;		// Continue past the word.
@@ -307,6 +327,7 @@ int Font::paint_text
  *		space	Word break.
  *		tab	Treated like a space for now.
  *		*	Page break. 
+ *		^	Uppercase next letter. 
  *
  *	Output:	If out of room, -offset of end of text painted.
  *		Else height of text painted.
@@ -373,11 +394,16 @@ int Font::paint_text_box_fixedwidth
 			if (cur_line)
 				break;
 			}
+		bool ucase_next = *text == '^';
+		if (ucase_next)	// Skip it.
+			text++;
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = static_cast<int>(ewrd - text) * char_width;
 		if (curx + width - hor_lead > endx)
 			{		// Word-wrap.
+			if (ucase_next)
+				text--;	// Put the '^' back.
 			curx = x;
 			cur_line++;
 			if (cur_line >= max_lines)
@@ -385,6 +411,11 @@ int Font::paint_text_box_fixedwidth
 			}
 
 					// Store word.
+		if (ucase_next)
+			{
+			lines[cur_line].push_back(static_cast<const char>(toupper(*text)));
+			++text;
+			}
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
 		text = ewrd;		// Continue past the word.

@@ -25,6 +25,15 @@
 
 #ifdef HAVE_OPENGL
 
+#ifdef MACOSX
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#ifdef WIN32
+#include <GL/glext.h>
+#endif
+#endif
+
 class Xform_palette;
 class Shape_frame;
 class GL_texshape;
@@ -40,7 +49,7 @@ class GL_texshape
 					//   from someplace else).
 					// Least-recently used chain:
 	GL_texshape *lru_next, *lru_prev;
-	unsigned int texture;		// Texture ID.
+	GLuint texture;		// Texture ID.
 	unsigned int texsize;		// Width/ht of texture (power of 2).
 	int outline;		// Outline color or -1 if not outline.
 	bool rotates;

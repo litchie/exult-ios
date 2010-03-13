@@ -42,9 +42,7 @@ const std::string c_empty_string;
 char *config_defaults[] =
 {
 	"config/disk/game/blackgate/keys",	"(default)",
-	"config/disk/game/blackgate/waves",	"jmsfx.flx",
 	"config/disk/game/serpentisle/keys",	"(default)",
-	"config/disk/game/serpentisle/waves",	"jmsisfx.flx",
 	"config/audio/enabled",			"yes",
 	"config/audio/effects/enabled",		"yes",
 	"config/audio/effects/convert",		"gs",

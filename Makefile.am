@@ -2,7 +2,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shap
 	-I$(srcdir)/server -I$(srcdir)/data -I$(srcdir)/gamemgr \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
 	-I$(srcdir)/audio -I$(srcdir)/audio/midi_drivers -I$(srcdir)/pathfinder \
-	-I$(srcdir)/usecode \
+	-I$(srcdir)/usecode -I$(srcdir)/shapes/shapeinf \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
@@ -113,6 +113,7 @@ EXULTLIBS = \
 	server/libserver.la \
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
+	shapes/shapeinf/libshapeinf.la \
 	objs/libobjs.la \
 	gumps/libgumps.la \
 	files/libu7file.la \
@@ -240,14 +241,40 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) data/exult.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exult_bg.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exult_si.flx $(bundle_name)/Contents/Resources/data
-	$(INSTALL_DATA) data/midisfx.flx $(bundle_name)/Contents/Resources/data
 	$(INSTALL_DATA) data/exultmsg.txt $(bundle_name)/Contents/Resources/data
+	$(INSTALL_DATA) AUTHORS $(bundle_name)
+	$(INSTALL_DATA) COPYING $(bundle_name)
+	$(INSTALL_DATA) FAQ $(bundle_name)
+	$(INSTALL_DATA) NEWS $(bundle_name)
+	$(INSTALL_DATA) README $(bundle_name)
+	$(INSTALL_DATA) README.MacOSX $(bundle_name)
 
 install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
 	cp -r $(bundle_name) $(DESTDIR)/Applications/
 
+osxdmg: bundle
+	mkdir Exult-snapshot
+	mkdir ./Exult-snapshot/images
+	cp $(srcdir)/AUTHORS ./Exult-snapshot/Authors
+	cp $(srcdir)/COPYING ./Exult-snapshot/License
+	cp $(srcdir)/NEWS ./Exult-snapshot/News
+	cp $(srcdir)/README.MacOSX ./Exult-snapshot/ReadMe.MacOSX
+	cp $(srcdir)/docs/ReadMe.html ./Exult-snapshot/ReadMe.html
+	cp $(srcdir)/docs/faq.html ./Exult-snapshot/FAQ.html
+	cp $(srcdir)/docs/images/* ./Exult-snapshot/images
+	cp $(srcdir)/macosx/DS_Store ./Exult-snapshot/.DS_Store
+	/Developer/Tools/SetFile -a V ./Exult-snapshot/.DS_Store
+	/Developer/Tools/SetFile -a V ./Exult-snapshot/images
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/*
+	/Developer/Tools/CpMac -r $(bundle_name) ./Exult-snapshot/
+	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
+					-srcfolder Exult-snapshot \
+					-volname "Exult" \
+					Exult-snapshot.dmg
+	rm -rf Exult-snapshot
+
 else
 install-exec-local:
-
+	
 endif

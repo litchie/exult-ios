@@ -25,6 +25,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <iosfwd>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <iostream>
+#include "baseinf.h"
+#include "utils.h"
+
 class Armor_info;
 class Weapon_info;
 class Ammo_info;
@@ -37,52 +45,99 @@ class Paperdoll_npc;
 class Paperdoll_item;
 class Effective_hp_info;
 class Frame_name_info;
-class Frame_powers_info;
+class Frame_flags_info;
+class Frame_usecode_info;
 class Warmth_info;
 class Content_rules;
 class Shapes_vga_file;
 
-#include <iosfwd>
-#include <vector>
-#include <map>
-#include <algorithm>
-#include <iostream>
-#include "baseinf.h"
-#include "utils.h"
+template <typename T, class Info, T Info::*data>
+class Text_reader_functor;
+template <typename T, class Info, T Info::*data1, T Info::*data2>
+class Text_pair_reader_functor;
+template <typename T, class Info, T Info::*data, int bit>
+class Bit_text_reader_functor;
+template <typename T, class Info, T Info::*data>
+class Bit_field_text_reader_functor;
+template <typename T, class Info, T Info::*data, unsigned pad>
+class Binary_reader_functor;
+template <typename T1, typename T2, class Info,
+		T1 Info::*data1, T2 Info::*data2, unsigned pad>
+class Binary_pair_reader_functor;
+template <typename T, class Info, T *Info::*data>
+class Class_reader_functor;
+template <typename T, class Info, std::vector<T> Info::*data>
+class Vector_reader_functor;
+template <class Info>
+class Null_functor;
+template <int flag, class Info>
+class Patch_flags_functor;
 
-template <int flag, class Functor>
-class Functor_data_reader;
-class Readytype_reader_functor;
-class Altreadytype_reader_functor;
-class Actor_flags_reader;
-template <typename T, T *Shape_info::*data>
-class Class_data_reader;
-template <typename T, std::vector<T> Shape_info::*data>
-class Vector_data_reader;
-template <int flag, class Functor>
-class Functor_data_writer;
+class Gump_reader_functor;
+class Ready_type_functor;
+class Actor_flags_functor;
+class Paperdoll_npc_functor;
+
+template <int flag, class Info>
+class Flag_check_functor;
+template <int flag, typename T, class Info, T Info::*data>
+class Text_writer_functor;
+template <int flag, typename T, class Info, T Info::*data1, T Info::*data2>
+class Text_pair_writer_functor;
+template <int flag, typename T, class Info, T Info::*data, int bit>
+class Bit_text_writer_functor;
+template <int flag, typename T, class Info, T Info::*data>
+class Bit_field_text_writer_functor;
+template <int flag, typename T, class Info, T Info::*data, unsigned pad>
+class Binary_writer_functor;
+template <int flag, typename T1, typename T2, class Info,
+		T1 Info::*data1, T2 Info::*data2, unsigned pad>
+class Binary_pair_writer_functor;
+template <typename T, class Info, T *Info::*data>
+class Class_writer_functor;
+template <typename T, class Info, std::vector<T> Info::*data>
+class Vector_writer_functor;
+
 class Readytype_writer_functor;
-class Altreadytype_writer_functor;
-template <typename T, T *Shape_info::*data>
-class Class_data_writer;
-template <typename T, std::vector<T> Shape_info::*data>
-class Vector_data_writer;
 
+enum Data_flag_bits
+	{
+	tf_ready_type_flag = 0,
+	tf_gump_shape_flag,
+	tf_monster_food_flag,
+	tf_actor_flags_flag,
+	tf_mountain_top_flag,
+	tf_altready_type_flag,
+	tf_barge_type_flag,
+	tf_field_type_flag,
+	// ++++ Keep shape flags last!
+	tf_usecode_events_flag,
+	tf_is_body_flag,
+	tf_lightweight_flag,
+	tf_quantity_frames_flag,
+	tf_locked_flag,
+	tf_is_volatile_flag,
+	tf_jawbone_flag,
+	tf_mirror_flag
+	};
 enum Data_flag_names
 	{
-	ready_type_flag = 1,
-	container_gump_flag = 2,
-	monster_food_flag = 4,
-	actor_flags_flag = 8,
-	mountain_top_flag = 0x10,
-	usecode_events_flag = 0x20,
-	is_body_flag = 0x40,
-	lightweight_flag = 0x80,
-	quantity_frames_flag = 0x100,
-	is_locked_flag = 0x200,
-	is_volatile_flag = 0x400,
-	altready_type_flag = 0x800,
-	barge_type_flag = 0x1000,
+	ready_type_flag      = (1U << tf_ready_type_flag),
+	gump_shape_flag      = (1U << tf_gump_shape_flag),
+	monster_food_flag    = (1U << tf_monster_food_flag),
+	actor_flags_flag     = (1U << tf_actor_flags_flag),
+	mountain_top_flag    = (1U << tf_mountain_top_flag),
+	altready_type_flag   = (1U << tf_altready_type_flag),
+	barge_type_flag      = (1U << tf_barge_type_flag),
+	field_type_flag      = (1U << tf_field_type_flag),
+	usecode_events_flag  = (1U << tf_usecode_events_flag),
+	is_body_flag         = (1U << tf_is_body_flag),
+	lightweight_flag     = (1U << tf_lightweight_flag),
+	quantity_frames_flag = (1U << tf_quantity_frames_flag),
+	locked_flag          = (1U << tf_locked_flag),
+	is_volatile_flag     = (1U << tf_is_volatile_flag),
+	jawbone_flag         = (1U << tf_jawbone_flag),
+	mirror_flag          = (1U << tf_mirror_flag)
 	};
 
 /*
@@ -90,17 +145,19 @@ enum Data_flag_names
  */
 class Shape_info
 	{
+protected:
+		// For some non-class data (see Data_flag_names enum).
+	unsigned short modified_flags;
+	unsigned short frompatch_flags;
+		// For class data (to indicate an invalid entry should
+		// be written by ES).
+	unsigned short have_static_flags;
 	unsigned char tfa[3];		// From "tfa.dat".+++++Keep for
 					//   debugging, for now.
 					// 3D dimensions in tiles:
 	unsigned char dims[3];		//   (x, y, z)
 	unsigned char weight, volume;	// From "wgtvol.dat".
 	unsigned char shpdims[2];	// From "shpdims.dat".
-	char ready_type;	// From "ready.dat": where item can be worn.
-	char alt_ready1;	// Alternate spot where item can be worn.
-	char alt_ready2;	// Second alternate spot where item can be worn.
-	bool spell_flag;		// Flagged as epsll in 'ready.dat'.
-	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
 	Armor_info *armor;		// From armor.dat.
@@ -117,107 +174,33 @@ class Shape_info
 	std::vector<Paperdoll_item> objpaperdoll;
 	std::vector<Effective_hp_info> hpinf;
 	std::vector<Frame_name_info> nameinf;
-	std::vector<Frame_powers_info> frpowerinf;
+	std::vector<Frame_flags_info> frflagsinf;
+	std::vector<Frame_usecode_info> frucinf;
 	std::vector<Warmth_info> warminf;
 	std::vector<Content_rules> cntrules;
-	short container_gump;		// From container.dat.
+	short gump_shape;		// From container.dat.
+	short gump_font;		// From container.dat v2+.
 	short monster_food;
-	short mountain_top;
-	short barge_type;
+	unsigned short shape_flags;
+	unsigned char mountain_top;
+	unsigned char barge_type;
 	unsigned char actor_flags;
-	unsigned char shape_flags;
-		// For some non-class data (see Data_flag_names enum).
-	unsigned short modified_flags;
-	unsigned short frompatch_flags;
-		// For class data (to indicate an invalid entry should
-		// be written by ES).
-	unsigned short have_static_flags;
+	char field_type;
+	char ready_type;	// From "ready.dat": where item can be worn.
+	char alt_ready1;	// Alternate spot where item can be worn.
+	char alt_ready2;	// Second alternate spot where item can be worn.
+	bool spell_flag;		// Flagged as epsll in 'ready.dat'.
+	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	void set_tfa_data()		// Set fields from tfa.
 		{
-		dims[0] = 1 + (tfa[2]&7);
-		dims[1] = 1 + ((tfa[2]>>3)&7);
-		dims[2] = (tfa[0] >> 5);
+		dims[0] = static_cast<unsigned char>(1 + (tfa[2]&7));
+		dims[1] = static_cast<unsigned char>(1 + ((tfa[2]>>3)&7));
+		dims[2] = static_cast<unsigned char>(tfa[0] >> 5);
 		}
 					// Set/clear tfa bit.
 	void set_tfa(int i, int bit, bool tf)
-		{ tfa[i] = tf ? (tfa[i]|(1<<bit)) : (tfa[i]&~(1<<bit)); }
-
-	/*
-	 *	Generic vector data handler routines.
-	 *	They all assume that the template class has the following
-	 *	operators defined:
-	 *		(1) operator< (which must be a strict weak order)
-	 *		(2) operator==
-	 *		(3) operator!=
-	 *		(4) operator= that sets modified flag if needed.
-	 *	They also assume that the vector is totally ordered
-	 *	with the operator< -- using these functions will ensure
-	 *	that this is the case.
-	 */
-	template <typename T>
-	static void add_vector_info(const T& inf, std::vector<T>& vec)
-		{
-		typename std::vector<T>::iterator it;
-			// Find using operator<.
-		it = std::lower_bound(vec.begin(), vec.end(), inf);
-		if (it == vec.end() || *it != inf)	// Not found.
-			vec.insert(it, inf);	// Add new.
-		else	// Already exists.
-			it->set(inf);	// Replace information.
-		}
-	template <typename T>
-	static void copy_vector_info(const std::vector<T>& from, std::vector<T>& to)
-		{
-		if (from.size())
-			{
-			to.resize(from.size());
-			std::copy(from.begin(), from.end(), to.begin());
-			}
-		else
-			to.clear();
-		}
-	template <typename T>
-	static std::vector<T>& set_vector_info(bool tf, std::vector<T>& vec)
-		{
-		invalidate_vector(vec);
-		if (!tf)
-			clean_vector(vec);
-		return vec;
-		}
-	template <typename T>
-	static void invalidate_vector(std::vector<T>& vec)
-		{
-		typename std::vector<T>::iterator it;
-		for (it = vec.begin(); it != vec.end(); ++it)
-			it->invalidate();
-		}
-
-	template <typename T>
-	static void clean_vector(std::vector<T>& vec)
-		{
-		unsigned int i = 0;
-		while (i < vec.size())
-			{
-			typename std::vector<T>::iterator it = vec.begin() + i;
-			if (!it->is_invalid() || it->have_static())
-				i++;
-			else
-				vec.erase(it);
-			}
-		}
-	// Generic data handler routine.
-	template <typename T>
-	static T *set_info(bool tf, T *&pt)
-		{
-		if (!tf)
-			{
-			delete pt;
-			pt = 0;
-			}
-		else if (!pt)
-			pt = new T();
-		return pt;
-		}
+		{ tfa[i] = static_cast<unsigned char>(tf ?
+				(tfa[i]|(1<<bit)) : (tfa[i]&~(1<<bit))); }
 public:
 	enum Actor_flags
 		{
@@ -235,8 +218,10 @@ public:
 		is_body,
 		lightweight,
 		quantity_frames,
-		is_locked,
-		is_volatile
+		locked,
+		is_volatile,
+		jawbone,
+		mirror
 		};
 	enum Mountain_tops
 		{
@@ -254,30 +239,71 @@ public:
 		barge_draftanimal,
 		barge_turtle
 		};
+	enum Field_types
+		{
+		no_field = -1,
+		fire_field = 0,
+		sleep_field,
+		poison_field,
+		caltrops
+		};
 	friend class Shapes_vga_file;	// Class that reads in data.
-	template <int flag, class Functor>
-	friend class Functor_data_reader;
-	friend class Readytype_reader_functor;
-	friend class Altreadytype_reader_functor;
-	friend class Actor_flags_reader;
-	template <typename T, T *Shape_info::*data>
-	friend class Class_data_reader;
-	template <typename T, std::vector<T> Shape_info::*data>
-	friend class Vector_data_reader;
-	template <int flag, class Functor>
-	friend class Functor_data_writer;
+
+	template <typename T, class Info, T Info::*data>
+	friend class Text_reader_functor;
+	template <typename T, class Info, T Info::*data1, T Info::*data2>
+	friend class Text_pair_reader_functor;
+	template <typename T, class Info, T Info::*data, int bit>
+	friend class Bit_text_reader_functor;
+	template <typename T, class Info, T Info::*data>
+	friend class Bit_field_text_reader_functor;
+	template <typename T, class Info, T Info::*data, unsigned pad>
+	friend class Binary_reader_functor;
+	template <typename T1, typename T2, class Info,
+			T1 Info::*data1, T2 Info::*data2, unsigned pad>
+	friend class Binary_pair_reader_functor;
+	template <typename T, class Info, T *Info::*data>
+	friend class Class_reader_functor;
+	template <typename T, class Info, std::vector<T> Info::*data>
+	friend class Vector_reader_functor;
+	template <class Info>
+	friend class Null_functor;
+	template <int flag, class Info>
+	friend class Patch_flags_functor;
+
+	friend class Gump_reader_functor;
+	friend class Ready_type_functor;
+	friend class Actor_flags_functor;
+	friend class Paperdoll_npc_functor;
+
+	template <int flag, class Info>
+	friend class Flag_check_functor;
+	template <int flag, typename T, class Info, T Info::*data>
+	friend class Text_writer_functor;
+	template <int flag, typename T, class Info, T Info::*data1, T Info::*data2>
+	friend class Text_pair_writer_functor;
+	template <int flag, typename T, class Info, T Info::*data, int bit>
+	friend class Bit_text_writer_functor;
+	template <int flag, typename T, class Info, T Info::*data>
+	friend class Bit_field_text_writer_functor;
+	template <int flag, typename T, class Info, T Info::*data, unsigned pad>
+	friend class Binary_writer_functor;
+	template <int flag, typename T1, typename T2, class Info,
+			T1 Info::*data1, T2 Info::*data2, unsigned pad>
+	friend class Binary_pair_writer_functor;
+	template <typename T, class Info, T *Info::*data>
+	friend class Class_writer_functor;
+	template <typename T, class Info, std::vector<T> Info::*data>
+	friend class Vector_writer_functor;
+
 	friend class Readytype_writer_functor;
-	friend class Altreadytype_writer_functor;
-	template <typename T, T *Shape_info::*data>
-	friend class Class_data_writer;
-	template <typename T, std::vector<T> Shape_info::*data>
-	friend class Vector_data_writer;
+
 	Shape_info();
 	// This copy constructor and assignment operator intentionally cause
 	// errors.
 	Shape_info(const Shape_info & other);
 	const Shape_info & operator = (const Shape_info & other);
-	virtual ~Shape_info();
+	~Shape_info();
 	void copy(const Shape_info& inf2, bool skip_dolls = false);
 
 	int get_weight() const		// Get weight, volume.
@@ -285,7 +311,10 @@ public:
 	int get_volume() const
 		{ return volume; }
 	void set_weight_volume(int w, int v)
-		{ weight = w; volume = v; }
+		{
+		weight = static_cast<unsigned char>(w);
+		volume = static_cast<unsigned char>(v);
+		}
 
 	int get_armor() const;
 	int get_armor_immunity() const;
@@ -393,16 +422,25 @@ public:
 	void add_frame_name_info(Frame_name_info& add);
 	Frame_name_info *get_frame_name(int frame, int quality);
 
-	bool has_frame_powers() const;
-	std::vector<Frame_powers_info>& get_frame_powers()
-		{ return frpowerinf; }
-	std::vector<Frame_powers_info>& set_frame_powers(bool tf);
-	void clean_invalid_frame_powers();
-	void clear_frame_powers();
-	void add_frame_powers(Frame_powers_info& add);
-	int get_object_powers(int frame);
-	int has_object_power(int frame, int p)
-		{ return (get_object_powers(frame)&(1 << p)) != 0; }
+	bool has_frame_usecode_info() const;
+	std::vector<Frame_usecode_info>& get_frame_usecode_info()
+		{ return frucinf; }
+	std::vector<Frame_usecode_info>& set_frame_usecode_info(bool tf);
+	void clean_invalid_usecode_info();
+	void clear_frame_usecode_info();
+	void add_frame_usecode_info(Frame_usecode_info& add);
+	Frame_usecode_info *get_frame_usecode(int frame, int quality);
+
+	bool has_frame_flags() const;
+	std::vector<Frame_flags_info>& get_frame_flags()
+		{ return frflagsinf; }
+	std::vector<Frame_flags_info>& set_frame_flags(bool tf);
+	void clean_invalid_frame_flags();
+	void clear_frame_flags();
+	void add_frame_flags(Frame_flags_info& add);
+	int get_object_flags(int frame, int qual);
+	int has_object_flag(int frame, int qual, int p)
+		{ return (get_object_flags(frame, qual)&(1 << p)) != 0; }
 
 	bool has_warmth_info() const;
 	std::vector<Warmth_info>& get_warmth_info()
@@ -428,10 +466,10 @@ public:
 		{ return mountain_top; }
 	void set_mountain_top(int sh)
 		{
-		if (mountain_top != (short)sh)
+		if (mountain_top != (unsigned char)sh)
 			{
 			modified_flags |= mountain_top_flag;
-			mountain_top = (short)sh;
+			mountain_top = (unsigned char)sh;
 			}
 		}
 
@@ -439,27 +477,41 @@ public:
 		{ return barge_type; }
 	void set_barge_type(int sh)
 		{
-		if (barge_type != (short)sh)
+		if (barge_type != (unsigned char)sh)
 			{
 			modified_flags |= barge_type_flag;
-			barge_type = (short)sh;
+			barge_type = (unsigned char)sh;
 			}
 		}
 
-	int get_container_gump() const
-		{ return container_gump; }
-	void set_container_gump(int sh)
+	int get_field_type() const
+		{ return field_type; }
+	void set_field_type(int sh)
 		{
-		if (container_gump != (short)sh)
+		if (field_type != (char)sh)
 			{
-			modified_flags |= container_gump_flag;
-			container_gump = (short) sh;
+			modified_flags |= field_type_flag;
+			field_type = (char)sh;
 			}
 		}
 
-	unsigned char get_shape_flags() const
+	int get_gump_shape() const
+		{ return gump_shape; }
+	int get_gump_font() const
+		{ return gump_font; }
+	void set_gump_data(int sh, int fnt)
+		{
+		if (gump_shape != (short)sh || gump_font != (short)sh)
+			{
+			modified_flags |= gump_shape_flag;
+			gump_shape = (short) sh;
+			gump_font = (short) fnt;
+			}
+		}
+
+	unsigned short get_shape_flags() const
 		{ return shape_flags; }
-	void set_shape_flags(char flags)
+	void set_shape_flags(unsigned short flags)
 		{
 		if (shape_flags != flags)
 			{
@@ -469,21 +521,21 @@ public:
 			}
 		}
 	bool get_shape_flag(int tf) const
-		{ return (shape_flags & (1 << tf)) != 0; }
+		{ return (shape_flags & (1U << tf)) != 0; }
 	void set_shape_flag(int tf, int mod)
 		{
-		if (!(shape_flags & (1 << tf)))
+		if (!(shape_flags & (1U << tf)))
 			{
-			modified_flags |= (1 << mod);
-			shape_flags |= (1 << tf);
+			modified_flags |= (1U << mod);
+			shape_flags |= (1U << tf);
 			}
 		}
 	void clear_shape_flag(int tf, int mod)
 		{
-		if (shape_flags & (1 << tf))
+		if (shape_flags & (1U << tf))
 			{
-			modified_flags |= (1 << mod);
-			shape_flags &= ~(1 << tf);
+			modified_flags |= (1U << mod);
+			shape_flags &= ~(1U << tf);
 			}
 		}
 
@@ -496,9 +548,13 @@ public:
 	bool has_quantity_frames() const
 		{ return get_shape_flag(quantity_frames); }
 	bool is_container_locked() const
-		{ return get_shape_flag(is_locked); }
+		{ return get_shape_flag(locked); }
 	bool is_explosive() const
 		{ return get_shape_flag(is_volatile); }
+	bool is_jawbone() const
+		{ return get_shape_flag(jawbone); }
+	bool is_mirror() const
+		{ return get_shape_flag(mirror); }
 
 	unsigned char get_actor_flags() const
 		{ return actor_flags; }
@@ -517,7 +573,7 @@ public:
 		if (!(actor_flags & (1 << tf)))
 			{
 			modified_flags |= actor_flags_flag;
-			actor_flags |= (1 << tf);
+			actor_flags |= (1U << tf);
 			}
 		}
 	void clear_actor_flag(int tf)
@@ -525,7 +581,7 @@ public:
 		if (actor_flags & (1 << tf))
 			{
 			modified_flags |= actor_flags_flag;
-			actor_flags &= ~(1 << tf);
+			actor_flags &= ~(1U << tf);
 			}
 		}
 	
@@ -684,7 +740,7 @@ public:
 		{ return alt_ready1; }
 	char get_alt_ready2()
 		{ return alt_ready2; }
-	void set_alt_ready(unsigned char t1, unsigned char t2)
+	void set_alt_ready(char t1, char t2)
 		{
 		if (alt_ready1 != t1 || alt_ready2 != t2)
 			{

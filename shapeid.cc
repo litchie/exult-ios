@@ -211,7 +211,7 @@ void Shape_manager::load
 	source.push_back(pair<string, int>(PATCH_FACES, -1));
 	files[SF_FACES_VGA].load(source);
 
-	files[SF_EXULT_FLX].load(EXULT_FLX);
+	files[SF_EXULT_FLX].load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
 
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;
@@ -246,7 +246,9 @@ void Shape_manager::load
 	else if (GAME_BG || GAME_SI)
 		{
 		char buf[50];
-		snprintf(buf, 50, "<DATA>/exult_%s.flx", GAME_BG ? "bg" : "si");
+		const char *flexfmt =
+				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
+		snprintf(buf, 50, flexfmt, GAME_BG ? "bg" : "si");
 		U7object txtobj(buf,
 				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;

@@ -26,6 +26,22 @@ test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
   DIE=1
 }
 
+libtoolize=""
+for l in glibtoolize libtoolize15 libtoolize14 libtoolize ; do
+  ( $l --version < /dev/null > /dev/null 2>&1 ) && {
+    libtoolize=$l
+    break
+  }
+done
+
+if test "x$libtoolize" = "x" ; then
+  echo "**Error**: You must have 'libtool' installed to compile Exult."
+  echo "Download the appropriate package for your distribution,"
+  echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
+  DIE=1
+fi
+
+
 if test "$DIE" -eq 1; then
   exit 1
 fi
@@ -64,7 +80,7 @@ touch configure.ac
 
 # Regenerate everything
 aclocal $aclocalincludes
-libtoolize --force --copy
+$libtoolize --force --copy
 autoheader
 automake --add-missing --copy --gnu
 autoconf 

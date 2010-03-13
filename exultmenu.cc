@@ -127,12 +127,13 @@ ExultMenu::ExultMenu(Game_window *gw)
 {
 	gwin = gw;
 	ibuf = gwin->get_win()->get_ib8();
-	fontManager.add_font("CREDITS_FONT", EXULT_FLX, EXULT_FLX_FONT_SHP, 1);
-	fontManager.add_font("HOT_FONT", EXULT_FLX, EXULT_FLX_FONTON_SHP, 1);
-	fontManager.add_font("NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONT_SHP, 1);
-	fontManager.add_font("HOT_NAV_FONT", EXULT_FLX, EXULT_FLX_NAVFONTON_SHP, 1);
+	const char *fname = BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX);
+	fontManager.add_font("CREDITS_FONT", fname, EXULT_FLX_FONT_SHP, 1);
+	fontManager.add_font("HOT_FONT", fname, EXULT_FLX_FONTON_SHP, 1);
+	fontManager.add_font("NAV_FONT", fname, EXULT_FLX_NAVFONT_SHP, 1);
+	fontManager.add_font("HOT_NAV_FONT", fname, EXULT_FLX_NAVFONTON_SHP, 1);
 	calc_win();
-	exult_flx.load(EXULT_FLX);
+	exult_flx.load(fname);
 }
 
 ExultMenu::~ExultMenu()
@@ -347,8 +348,13 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 		ModManager& exultgame = game_list[i];
 		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
 		strcpy(menustringname, exultgame.get_menu_string().c_str());
+		bool have_sfx = Audio::have_config_sfx(exultgame.get_cfgname()) ||
+				Audio::have_roland_sfx(exultgame.get_game_type()) ||
+				Audio::have_sblaster_sfx(exultgame.get_game_type()) ||
+				Audio::have_midi_sfx();
+
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
-			Audio::get_ptr()->can_sfx(exultgame.get_cfgname())?1:0);
+				have_sfx ? 1 : 0);
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							menustringname,
 							sfxicon, menux, ypos);
@@ -452,7 +458,7 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 	Shape_manager *sman = Shape_manager::get_instance();
 	
 	gwin->clear_screen(true);
-	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
+	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
 	gpal->apply();
 
 	int first_mod = 0, num_choices = selgame->get_mod_list().size()-1,
@@ -544,7 +550,7 @@ BaseGameInfo *ExultMenu::run()
 	Shape_manager *sman = Shape_manager::get_instance();
 
 	gwin->clear_screen(true);
-	gpal->load(EXULT_FLX, EXULT_FLX_EXULT0_PAL);
+	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
 	font = fontManager.get_font("CREDITS_FONT");
 	fonton = fontManager.get_font("HOT_FONT");
 	navfont = fontManager.get_font("NAV_FONT");
@@ -570,8 +576,9 @@ BaseGameInfo *ExultMenu::run()
 	}
 	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
 											//may not be initialised
-		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID,true,EXULT_FLX);
-	ExultDataSource mouse_data(EXULT_FLX, EXULT_FLX_POINTERS_SHP);
+		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
+	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+	    	EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 
 #ifdef HAVE_OPENGL
@@ -622,7 +629,9 @@ BaseGameInfo *ExultMenu::run()
 			case -3: // Exult Credits
 				{
 					gpal->fade_out(c_fade_out_time);
-					TextScroller credits(EXULT_FLX, EXULT_FLX_CREDITS_TXT, 
+					TextScroller credits(
+					    		BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+					    		EXULT_FLX_CREDITS_TXT, 
 								fontManager.get_font("CREDITS_FONT"),
 								exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 					credits.run(gwin);
@@ -633,7 +642,9 @@ BaseGameInfo *ExultMenu::run()
 			case -2: // Exult Quotes
 				{
 					gpal->fade_out(c_fade_out_time);
-					TextScroller quotes(EXULT_FLX, EXULT_FLX_QUOTES_TXT, 
+					TextScroller quotes(BUNDLE_CHECK(
+					    		BUNDLE_EXULT_FLX, EXULT_FLX),
+					    		EXULT_FLX_QUOTES_TXT, 
 								fontManager.get_font("CREDITS_FONT"),
 			 					exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 					quotes.run(gwin);
