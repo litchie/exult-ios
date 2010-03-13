@@ -164,6 +164,16 @@ void Shape_sfx::stop()
 		}
 	}
 
+inline void Shape_sfx::set_looping
+	(
+	)
+	{
+	looping = sfxinf ? (sfxinf->get_sfx_range() == 1
+	                    && sfxinf->get_chance() == 100
+	                    && !sfxinf->play_horly_ticks())
+	                 : false;
+	}
+
 /*
  *	Update distance/direction information. Also starts playing
  *	the sound effect if needed.
@@ -181,6 +191,9 @@ void Shape_sfx::update
 
 	if (!sfxinf)
 		return;
+	
+	if (looping)
+		play = true;
 
 	AudioMixer *mixer = AudioMixer::get_instance();
 
@@ -207,7 +220,7 @@ void Shape_sfx::update
 			return;
 		sfxnum[0] = sfxinf->get_next_sfx(last_sfx);
 		}
-	int rep[2] = {0, 0};
+	int rep[2] = {looping ? -1 : 0, 0};
 	if (play && channel[1] == -1 && sfxinf->play_horly_ticks())
 		{
 		Game_clock *gclock = Game_window::get_instance()->get_clock();
