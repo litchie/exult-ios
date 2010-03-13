@@ -67,7 +67,6 @@ private:
 
 public:
 	bool audio_enabled;
-	SDL_AudioSpec actual;
 	Flex *sfx_file;			// Holds .wav sound effects.
 
 private:
@@ -137,9 +136,6 @@ public:
 	static void	channel_complete_callback(int chan);
 
 	bool	is_track_playing(int num);
-
-	int		get_sample_rate() { return actual.freq; }
-	bool	is_stereo() { return actual.channels == 2; }
 
 	Flex *get_sfx_file()                   
 		{ return sfx_file; }
