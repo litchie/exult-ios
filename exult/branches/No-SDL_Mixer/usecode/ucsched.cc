@@ -631,7 +631,7 @@ int Usecode_script::exec
 			{
 			Usecode_value& val = code->get_elem(++i);
 			Audio::get_ptr()->play_sound_effect(
-							val.get_int_value());
+							val.get_int_value(), obj);
 			break;
 			}
 		case face_dir:		// Parm. is dir. (0-7).  0=north.
