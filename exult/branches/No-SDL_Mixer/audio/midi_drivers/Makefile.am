@@ -1,4 +1,8 @@
-INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin -I$(srcdir)/../../shapes $(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../../conf -I../../files -I../../objs
+INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. \
+		-I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin \
+		-I../../conf -I../../files -I../../objs -I$(srcdir)/../../shapes \
+		$(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
+		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = timidity mt32emu
 
