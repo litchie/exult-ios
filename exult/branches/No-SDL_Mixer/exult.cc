@@ -948,8 +948,8 @@ static void Init
 
 		if (audio)
 			{
-			Audio::get_ptr()->Init_sfx();
-			midi = AudioMixer::get_instance()->getMidiPlayer();
+			audio->Init_sfx();
+			midi = audio->get_midi();
 			}
 
 		Setup_text(GAME_SI, Game::has_expansion());
@@ -984,7 +984,7 @@ static void Init
 
 	Audio *audio = Audio::get_ptr();
 	if (audio) {
-		MyMidiPlayer *midi = AudioMixer::get_instance()->getMidiPlayer();
+		MyMidiPlayer *midi = audio->get_midi();
 		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
 	}
 	gwin->init_files();
