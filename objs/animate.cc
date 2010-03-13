@@ -138,8 +138,8 @@ void Object_sfx::handle_event
 		else
 			{
 			//Just change the "location" of the sound
-			//Mix_Volume(channel, volume);
-			//Mix_SetPosition(channel, (dir * 22), 0);
+			mixer->setVolume(channel, volume, volume);
+			mixer->set2DPosition(channel, 0, dir * 22);
 			}
 		}
 
@@ -241,8 +241,8 @@ void Shape_sfx::update
 			else
 				{
 				//Just change the "location" of the sound
-				//Mix_Volume(channel[i], volume);
-				//Mix_SetPosition(channel[i], (dir * 22), 0);
+				mixer->setVolume(channel[i], volume, volume);
+				mixer->set2DPosition(channel[i], 0, dir * 22);
 				}
 			}
 	}

@@ -507,7 +507,7 @@ void Explosion_effect::handle_event
 		{
 		Tile_coord apos = gwin->get_main_actor()->get_tile();
 		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-		Audio::get_ptr()->play_sound_effect(exp_sfx, SDL_MIX_MAXVOLUME, dir);
+		Audio::get_ptr()->play_sound_effect(exp_sfx, AUDIO_MAX_VOLUME, dir);
 		}
 	if (frnum == frames/4)
 		{
@@ -917,7 +917,7 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	Tile_coord apos = gwin->get_main_actor()->get_tile();
 	int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-	channel = Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir, -1);
+	channel = Audio::get_ptr()->play_sound_effect(sfx, AUDIO_MAX_VOLUME, dir, -1);
 	}
 
 /**
@@ -1026,13 +1026,14 @@ void Homing_projectile::handle_event
 		int distance = gwin->get_main_actor()->distance(pos);
 		int dir = 0;
 		int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
+		AudioMixer *mixer = AudioMixer::get_instance();
 
 		if (distance)
 			{			// 160/8 = 20 tiles. 20*20=400.
 			volume = (AUDIO_MAX_VOLUME*64)/(distance*distance);
 			if (!volume)		// Dead?
 				{
-				AudioMixer::get_instance()->stopSample(channel);
+				mixer->stopSample(channel);
 				channel = -1;
 				return;
 				}
@@ -1043,8 +1044,8 @@ void Homing_projectile::handle_event
 			Tile_coord apos = gwin->get_main_actor()->get_center_tile();
 			dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
 			}
-		//Mix_Volume(channel, volume);
-		//Mix_SetPosition(channel, (dir * 22), 0);
+		mixer->setVolume(channel, volume, volume);
+		mixer->set2DPosition(channel, 0, dir * 22);
 		}
 	else
 		{

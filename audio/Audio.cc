@@ -237,12 +237,19 @@ void Audio::Init(void)
 	// Crate the Audio singleton object
 	if (!self)
 	{
-		self = new Audio();
+		int sample_rate = 22050;
+		bool stereo = true;
+
 #ifdef UNDER_CE
-		self->Init(SAMPLERATE/2,1);
-#else
-		self->Init(SAMPLERATE,2);
+		sample_rate = 11025;
+		stereo = false;
 #endif
+
+		config->value("config/audio/sample_rate", sample_rate, sample_rate);
+		config->value("config/audio/stereo", stereo, stereo);
+
+		self = new Audio();
+		self->Init(sample_rate,stereo?2:1);
 	}
 }
 
@@ -695,7 +702,7 @@ int Audio::play_wave_sfx
 		return -1;
 	}
 
-	int instance_id = mixer->playSample(wave,repeat,0,false,AUDIO_DEF_PITCH,volume,volume);
+	int instance_id = mixer->playSample(wave,repeat,0,true,AUDIO_DEF_PITCH,volume,volume);
 	if (instance_id < 0)
 	{
 		CERR("No channel was available to play sfx '" << num << "'");
@@ -703,8 +710,10 @@ int Audio::play_wave_sfx
 	}
 
 	CERR("Playing SFX: " << num);
-	//Mix_Volume(sfxchannel, volume);
-	//Mix_SetPosition(sfxchannel, (dir * 22), 0);
+	
+	mixer->set2DPosition(instance_id,0,(dir * 22));
+	mixer->setPaused(instance_id,false);
+
 	return instance_id;
 }
 
@@ -749,7 +758,18 @@ void Audio::set_audio_enabled(bool ena)
 	{
 		audio_enabled = true;
 
-		Init(SAMPLERATE,2);
+		int sample_rate = 22050;
+		bool stereo = true;
+
+#ifdef UNDER_CE
+		sample_rate = 11025;
+		stereo = false;
+#endif
+
+		config->value("config/audio/sample_rate", sample_rate, sample_rate);
+		config->value("config/audio/stereo", stereo, stereo);
+
+		Init(sample_rate,stereo?2:1);
 	}
 	else if (!ena && !audio_enabled && !initialized)
 	{
