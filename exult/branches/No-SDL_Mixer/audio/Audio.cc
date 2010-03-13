@@ -165,11 +165,16 @@ public:
 	}
 
 	// Empties the cache.
-	void flush(void)
+	void flush(AudioMixer *mixer = 0)
 	{
 		for (cache_iterator it = cache.begin() ; it != cache.end(); it = cache.begin())
 		{
-			if (it->second.second) it->second.second->Release();
+			if (it->second.second) 
+			{
+				if (it->second.second->getRefCount() != 1 && mixer)
+					mixer->stopSample(it->second.second);
+				it->second.second->Release();
+			}
 			it->second.second = 0;
 			cache.erase(it);
 		}
@@ -385,6 +390,9 @@ bool Audio::have_config_sfx(const std::string &game, std::string *out)
 void	Audio::Init_sfx()
 {
 	FORGET_OBJECT(sfx_file);
+
+	if (sfxs)
+		sfxs->flush(mixer);
 
 	Exult_Game game = Game::get_game_type();
 	if (game == SERPENT_ISLE)
@@ -801,12 +809,10 @@ void Audio::stop_sound_effect(int chan)
 
 void Audio::stop_sound_effects()
 {
-	if (sfx_file != 0)		// .Wav's?
-	{
-	}
+	if (sfxs) sfxs->flush(mixer);
 
 #ifdef ENABLE_MIDISFX
-	else if (mixer && mixer->getMidiPlayer())
+	if (mixer && mixer->getMidiPlayer())
 		mixer->getMidiPlayer()->stop_sound_effects();
 #endif
 }
