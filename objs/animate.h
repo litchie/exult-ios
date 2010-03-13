@@ -60,6 +60,7 @@ class Shape_sfx : public Game_singletons
 	int distance;			// Distance in tiles from Avatar.
 	int dir;			// Direction (0-15) from Avatar.
 	int last_sfx;		// For playing sequential sfx ranges.
+	bool looping;		// If the SFX should loop until stopped.
 public:
 					// Create & start playing sound.
 	Shape_sfx(Game_object *o)
@@ -69,12 +70,14 @@ public:
 		sfxinf = obj->get_info().get_sfx_info();
 		if (sfxinf)
 			last_sfx = 0;
+		set_looping();	// To avoid including sfxinf.h.
 		}
 	int get_sfxnum()
 		{ return last_sfx; }
 	int get_distance()
 		{ return distance; }
 	void update(bool play);	// Set to new object.
+	void set_looping();
 	void stop();
 	};
 
