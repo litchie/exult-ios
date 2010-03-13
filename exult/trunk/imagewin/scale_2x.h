@@ -142,8 +142,6 @@ void Scale2x_noblur
 	Dest_pixel *limit_x = src1 + srcw - to_right_edge;
 	while (ptr1 < limit_y)
 		{
-		if (ptr2 > end_src)
-			src2 = src1;	// On last row.
 		if (!edge_off)		// First pixel.
 			{
 			dest0[0] = dest1[0] = src1[0];
@@ -204,10 +202,15 @@ void Scale2x_noblur
 		// Here, we rotate the 3 buffers and only fill the one corresponding
 		// to the now unused previous row.
 		cycle_buffers(rgb_row_prev, rgb_row_cur, rgb_row_next);
-		fill_with_rgb(ptr2 - edge_off, rgb_row_next, copy_width, manip);
 		src0 = rgb_row_prev + edge_off;
 		src1 = rgb_row_cur + edge_off;
-		src2 = rgb_row_next + edge_off;
+		if (ptr2 > end_src)
+			src2 = src1;	// On last row.
+		else
+			{
+			fill_with_rgb(ptr2 - edge_off, rgb_row_next, copy_width, manip);
+			src2 = rgb_row_next + edge_off;
+			}
 		limit_x = src1 + srcw - to_right_edge;
 		dest1 += dline_pixels - 2*srcw;
 		dest0 = dest1;
