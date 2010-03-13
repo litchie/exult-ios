@@ -312,7 +312,7 @@ void AudioOptions_gump::load_settings()
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
 	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
 
-	MyMidiPlayer *midi = AudioMixer::get_instance()->getMidiPlayer();
+	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
 	if (midi ) {
 		midi_conversion = midi->get_music_conversion();
 		midi_ogg_enabled = midi->get_ogg_enabled();
@@ -502,7 +502,7 @@ void AudioOptions_gump::save_settings()
 	config->set("config/audio/effects/midi",sfx_enabled==2?"yes":"no",true);
 #endif
 
-	MyMidiPlayer *midi = AudioMixer::get_instance()->getMidiPlayer();
+	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
 
 	if (midi) {
 		std::string s = "default";
