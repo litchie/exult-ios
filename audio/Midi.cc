@@ -682,7 +682,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 			new U7multiobject("<DATA>/midisfx.flx",
 			    	"<BUNDLE>/midisfx.flx", real_num) :
 #endif
-			new U7object("<DATA>/midisfx.flx",real_num);
+			new U7object("<DATA>/midisfx.flx", real_num);
 
 	buffer = track->retrieve(size);
 	delete track;
