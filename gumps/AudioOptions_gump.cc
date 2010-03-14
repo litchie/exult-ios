@@ -109,32 +109,32 @@ void AudioOptions_gump::cancel()
 
 void AudioOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if (btn == buttons[0]) {		// audio on/off
+	if (btn == buttons[id_audio_enabled]) {		// audio on/off
 		audio_enabled = state;
 		rebuild_buttons();
 		paint();
-	} else if (btn == buttons[1]) {	// midi on/off 
+	} else if (btn == buttons[id_music_enabled]) {	// music on/off 
 		midi_enabled = state;
 		rebuild_midi_buttons();
 		paint();
-	} else if (btn == buttons[11]) {	// digital music on/off 
+	} else if (btn == buttons[id_music_digital]) {	// digital music on/off 
 		midi_ogg_enabled = state;
 		paint();
-	} else if (btn == buttons[2]) { // midi driver
+	} else if (btn == buttons[id_midi_driver]) { // midi driver
 		midi_driver = state;
 		rebuild_mididriveroption_buttons();
 		paint();
-	} else if (btn == buttons[5]) { // midi looping
+	} else if (btn == buttons[id_music_looping]) { // midi looping
 		midi_looping = state;
-	} else if (btn == buttons[3]) { // midi conversion
+	} else if (btn == buttons[id_midi_conv]) { // midi conversion
 		midi_conversion = state;
-	} else if (btn == buttons[4]) { // midi reverb/chorus
+	} else if (btn == buttons[id_midi_effects]) { // midi reverb/chorus
 		midi_reverb_chorus = state;
-	} else if (btn == buttons[6]) { // sfx on/off
+	} else if (btn == buttons[id_sfx_enabled]) { // sfx on/off
 		sfx_enabled = state;
 		rebuild_sfx_buttons();
 		paint();
-	} else if (btn == buttons[7]) { // sfx conversion
+	} else if (btn == buttons[id_sfx_pack]) { // sfx conversion
 		if (sfx_enabled == 1) {
 			sfx_package = state;
 #ifdef ENABLE_MIDISFX
@@ -146,7 +146,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 			}
 #endif
 		}
-	} else if (btn == buttons[8]) { // speech on/off
+	} else if (btn == buttons[id_speech_enabled]) { // speech on/off
 		speech_enabled = state;
 	}
 }
@@ -165,14 +165,14 @@ static void strip_path(std::string& file)
 
 void AudioOptions_gump::rebuild_buttons()
 {
-	for (size_t i = 1; i < sizeof(buttons)/sizeof(buttons[0]); ++i) {
+	for (size_t i = id_music_enabled; i < id_count; ++i) {
 		FORGET_OBJECT(buttons[i]);
 	}
 
 	if (!audio_enabled) return;
 
 	// music on/off
-	buttons[1] = new AudioEnabledToggle(this, colx[2], rowy[1], midi_enabled);
+	buttons[id_music_enabled] = new AudioEnabledToggle(this, colx[2], rowy[1], midi_enabled);
 	if (midi_enabled)
 		rebuild_midi_buttons();
 	
@@ -188,27 +188,26 @@ void AudioOptions_gump::rebuild_buttons()
 	if (have_midi_pack)
 		sfx_options[i++] = "Midi";
 #endif
-	buttons[6] = new AudioTextToggle(this, sfx_options, colx[2], rowy[8],
+	buttons[id_sfx_enabled] = new AudioTextToggle(this, sfx_options, colx[2], rowy[8],
 									 59, sfx_enabled, nsfxopts);
 	if (sfx_enabled)
 		rebuild_sfx_buttons();
 	
 	// speech on/off
-	buttons[8] = new AudioEnabledToggle(this,colx[2],rowy[11], speech_enabled);
+	buttons[id_speech_enabled] = new AudioEnabledToggle(this,colx[2],rowy[11], speech_enabled);
 }
 
 void AudioOptions_gump::rebuild_midi_buttons()
 {
 	unsigned int i;
-	for (i = 2; i < 6; ++i) {
+	for (i = id_music_looping; i < id_sfx_enabled; ++i) {
 		FORGET_OBJECT(buttons[i]);
 	}
-	FORGET_OBJECT(buttons[11]);
 
 	if (!midi_enabled) return;
 
 	// ogg enabled/disabled
-	buttons[11] = new AudioEnabledToggle(this, colx[2], rowy[3], midi_ogg_enabled);
+	buttons[id_music_digital] = new AudioEnabledToggle(this, colx[2], rowy[3], midi_ogg_enabled);
 
 	unsigned int num_midi_drivers = MidiDriver::getDriverCount();
 	std::string* midi_drivertext = new std::string[num_midi_drivers+1];
@@ -217,11 +216,11 @@ void AudioOptions_gump::rebuild_midi_buttons()
 	midi_drivertext[i] = "Default";
 
 	// midi driver
-	buttons[2] = new AudioTextToggle(this, midi_drivertext, 
+	buttons[id_midi_driver] = new AudioTextToggle(this, midi_drivertext, 
 									 colx[2], rowy[4], 59, midi_driver, num_midi_drivers+1);
 
 	// looping on/off
-	buttons[5] = new AudioEnabledToggle(this, colx[2], rowy[2], midi_looping);
+	buttons[id_music_looping] = new AudioEnabledToggle(this, colx[2], rowy[2], midi_looping);
 
 	rebuild_mididriveroption_buttons();
 
@@ -230,7 +229,7 @@ void AudioOptions_gump::rebuild_midi_buttons()
 
 void AudioOptions_gump::rebuild_sfx_buttons()
 {
-	FORGET_OBJECT(buttons[7]);
+	FORGET_OBJECT(buttons[id_sfx_pack]);
 
 	if (!sfx_enabled)
 		return;
@@ -244,7 +243,7 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 			sfx_digitalpacks[i++] = "Sound Blaster";
 		if (have_custom_pack)
 			sfx_digitalpacks[i++] = "Custom";
-		buttons[7] = new AudioTextToggle(this, sfx_digitalpacks, colx[2]-33,
+		buttons[id_sfx_pack] = new AudioTextToggle(this, sfx_digitalpacks, colx[2]-33,
 										 rowy[9], 92, sfx_package, nsfxpacks);
 		}
 #ifdef ENABLE_MIDISFX
@@ -255,7 +254,7 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 		sfx_conversiontext[1] = "GS";
 
 		// sfx conversion
-		buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2],
+		buttons[id_sfx_pack] = new AudioTextToggle(this, sfx_conversiontext, colx[2],
 										 rowy[9], 59, sfx_conversion/4,2);
 		}
 #endif
@@ -263,8 +262,8 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 
 void AudioOptions_gump::rebuild_mididriveroption_buttons()
 {
-	FORGET_OBJECT(buttons[3]);
-	FORGET_OBJECT(buttons[4]);
+	FORGET_OBJECT(buttons[id_midi_conv]);
+	FORGET_OBJECT(buttons[id_midi_effects]);
 
 
 	std::string s = "Default";
@@ -280,7 +279,7 @@ void AudioOptions_gump::rebuild_mididriveroption_buttons()
 		midi_conversiontext[4] = std::string("Fake MT32");
 
 		// midi conversion
-		buttons[3] = new AudioTextToggle(this, midi_conversiontext, 
+		buttons[id_midi_conv] = new AudioTextToggle(this, midi_conversiontext, 
 										 colx[2], rowy[5], 66,
 										 midi_conversion, 5);
 	}
@@ -294,7 +293,7 @@ void AudioOptions_gump::rebuild_mididriveroption_buttons()
 		midi_reverbchorustext[3] = std::string("Both");
 
 		// reverb/chorus combo
-		buttons[4] = new AudioTextToggle(this, midi_reverbchorustext, 
+		buttons[id_midi_effects] = new AudioTextToggle(this, midi_reverbchorustext, 
 										 colx[2], rowy[6], 59,
 										 midi_reverb_chorus, 4);
 	}
@@ -450,16 +449,16 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 
 
 	// audio on/off
-    buttons[0] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
+    buttons[id_audio_enabled] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
 	// Ok
-	buttons[9] = new AudioOptions_button(this, oktext, colx[0], rowy[12]);
+	buttons[id_ok] = new AudioOptions_button(this, oktext, colx[0], rowy[12]);
 	// Cancel
-	buttons[10] = new AudioOptions_button(this, canceltext, colx[2], rowy[12]);
+	buttons[id_cancel] = new AudioOptions_button(this, canceltext, colx[2], rowy[12]);
 }
 
 AudioOptions_gump::~AudioOptions_gump()
 {
-	for (int i=0; i<sizeof(buttons)/sizeof(buttons[0]); i++)
+	for (int i = id_first; i < id_count; i++)
 		if (buttons[i]) delete buttons[i];
 }
 
@@ -548,7 +547,7 @@ void AudioOptions_gump::save_settings()
 void AudioOptions_gump::paint()
 {
 	Gump::paint();
-	for (int i=0; i<12; i++)
+	for (int i = id_first; i < id_count; i++)
 		if (buttons[i])
 			buttons[i]->paint();
 
@@ -559,8 +558,8 @@ void AudioOptions_gump::paint()
 			sman->paint_text(2, "looping", x + colx[1], y + rowy[2] + 1);
 			sman->paint_text(2, "digital music", x + colx[1], y + rowy[3] + 1);
 			sman->paint_text(2, "midi driver", x + colx[1], y + rowy[4] + 1);
-			if (buttons[3]) sman->paint_text(2, "device type", x+colx[1], y+rowy[5] + 1);
-			if (buttons[4]) sman->paint_text(2, "effects", x + colx[1], y + rowy[6] + 1);
+			if (buttons[id_midi_conv]) sman->paint_text(2, "device type", x+colx[1], y+rowy[5] + 1);
+			if (buttons[id_midi_effects]) sman->paint_text(2, "effects", x + colx[1], y + rowy[6] + 1);
 		}
 		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
 		sman->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
@@ -584,7 +583,7 @@ void AudioOptions_gump::mouse_down(int mx, int my)
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
-		for (int i=0; i<12; i++)
+		for (int i = id_first; i < id_count; i++)
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;
