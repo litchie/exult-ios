@@ -6,6 +6,8 @@
 	  and MT32 data file function for MT32Emu.
 	* files/utils.cc: Fixed bug that prevented a data dir specified at Exult.cfg
 	  from being used.
+	  Fixed bug in which Exult would bail out in MacOS X app bundles when
+	  searching for the external data dir even when it shouldn't.
 
 2010-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* All: Improvements to the bundle checks: Exult will now try to see if the
