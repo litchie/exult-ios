@@ -71,9 +71,12 @@ static File *openFileProc
 		{
 #ifdef MACOSX
 		// May be in bundle.
-		basedir = std::string("<BUNDLE>/") + filename;
-		if (file->open(get_system_path(basedir).c_str(), mode))
-			return file;
+		if (is_system_path_defined("<BUNDLE>"))
+			{
+			basedir = std::string("<BUNDLE>/") + filename;
+			if (file->open(get_system_path(basedir).c_str(), mode))
+				return file;
+			}
 #endif
 		// Now try data dir.
 		basedir = std::string("<DATA>/") + filename;

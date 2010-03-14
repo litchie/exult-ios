@@ -4,6 +4,7 @@
 	  will start with <STATIC>/.
 	* audio/midi_drivers/MT32EmuMidiDriver.cpp: Implemented a more robust ROM
 	  and MT32 data file function for MT32Emu.
+	  Fixed invalid bundle search in MacOSX.
 	* files/utils.cc: Fixed bug that prevented a data dir specified at Exult.cfg
 	  from being used.
 	  Fixed bug in which Exult would bail out in MacOS X app bundles when
