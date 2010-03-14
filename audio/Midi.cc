@@ -168,9 +168,10 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	mid_data = 
 #ifdef MACOSX
 		is_system_path_defined("<BUNDLE>") ?
-			new ExultDataSource(flex.c_str(),bflex.c_str(),pflex.c_str(),num):
+			new ExultDataSource(File_spec(flex), File_spec(bflex), 
+						File_spec(pflex), num):
 #endif
-			new ExultDataSource(flex.c_str(),pflex.c_str(),num);
+			new ExultDataSource(File_spec(flex), File_spec(pflex), num);
 
 	// Extra safety.
 	if (!mid_data->getSize())
