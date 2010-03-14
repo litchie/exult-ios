@@ -26,9 +26,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0D;&#x0A; &#x0A;nmake /K /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="&#x0A;nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_bg /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_bg /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -49,9 +49,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0D;&#x0A; &#x0A;nmake /K /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;&#x0D;&#x0A;nmake /K /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="&#x0A;nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_bg /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_bg /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -176,6 +176,14 @@
 		</Filter>
 		<File
 			RelativePath="..\data\bg\flx.in"
+			>
+		</File>
+		<File
+			RelativePath="..\Makefile.common"
+			>
+		</File>
+		<File
+			RelativePath=".\Makefile.data"
 			>
 		</File>
 	</Files>
