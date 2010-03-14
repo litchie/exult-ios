@@ -779,14 +779,12 @@ void setup_data_dir
 #endif
 
 	// First, try the cfg value:
-	string path;
-	//config->value("config/disk/data_path",data_path,EXULT_DATADIR);
-	add_system_path("<DATA>", path);
+	add_system_path("<DATA>", data_path);
 	if (U7exists(EXULT_FLX))
 		return;
 
 	// Now, try default -- if warranted.
-	if (path != EXULT_DATADIR)
+	if (data_path != EXULT_DATADIR)
 		{
 		add_system_path("<DATA>", EXULT_DATADIR);
 		if (U7exists(EXULT_FLX))
