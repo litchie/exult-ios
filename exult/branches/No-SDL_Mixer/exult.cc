@@ -248,7 +248,7 @@ void sigchld_handler(int sig)
 
 #endif
 
-#if defined(_WIN32) && defined(main)
+#if defined(_WIN32) && defined(main) && defined(_MSC_VER)
 #undef main
 #endif
 
@@ -967,6 +967,7 @@ static void Init
 			{
 			if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			game->play_intro();
+			std::cout << "played intro" << std::endl;
 			}
 
 		if (midi)

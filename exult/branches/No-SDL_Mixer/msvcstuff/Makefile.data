@@ -4,10 +4,10 @@ EXEEXT=
 !include ../Makefile.common
 
 MSVC_EXULT_FLX = ../data/exult.flx ../data/exult_flx.h
-
 MSVC_EXULT_BG_FLX = ../data/exult_bg.flx ../data/exult_bg_flx.h
-
 MSVC_EXULT_SI_FLX = ../data/exult_si.flx ../data/exult_si_flx.h 
+MSVC_EXULT_BG_PAPERDOL_VGA = ../data/bg/bg_paperdol.vga ../data/bg/bg_paperdol_vga.h
+MSVC_EXULT_BG_MR_FACES_VGA = ../data/bg/bg_mr_faces.vga ../data/bg/bg_mr_faces_vga.h
 
 $(MSVC_EXULT_FLX): $(OutDir)\expack.exe $(EXULT_FLX_OBJECTS:data/=../data/)
 	$(OutDir)\expack -i ../data/flx.in
@@ -18,6 +18,11 @@ $(MSVC_EXULT_BG_FLX): $(OutDir)\expack.exe $(EXULT_BG_FLX_OBJECTS:data/=../data/
 $(MSVC_EXULT_SI_FLX): $(OutDir)\expack.exe $(EXULT_SI_FLX_OBJECTS:data/=../data/)
 	$(OutDir)\expack -i ../data/si/flx.in
 
+$(MSVC_EXULT_BG_PAPERDOL_VGA): $(OutDir)\expack.exe $(EXULT_BG_PAPERDOL_VGA_OBJECTS:data/=../data/)
+	$(OutDir)\expack.exe -i ../data/bg/bg_paperdol.in
+
+$(MSVC_EXULT_BG_MR_FACES_VGA): $(OutDir)\expack.exe $(EXULT_BG_MR_FACES_VGA_OBJECTS:data/=../data/)
+	$(OutDir)\expack.exe -i ../data/bg/bg_mr_faces.in
 
 # Exult.flx
 build_ex : $(MSVC_EXULT_FLX)
