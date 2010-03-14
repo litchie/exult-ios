@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef USE_MT32EMU_MIDI
 
 #include "mt32emu/synth.h"
+#include "mt32emu/mt32_file.h"
 
 #include <cstring>
 
@@ -52,26 +53,50 @@ MT32EmuMidiDriver::MT32EmuMidiDriver() :
 {
 }
 
+/*
+ *	This file open proc redirects writes to a writable directory
+ *	and looks in this and other directories for the MT32 data.
+ */
+
+static File *openFileProc
+	(
+	void *userData,
+	const char *filename,
+	File::OpenMode mode
+	)
+	{
+	ANSIFile *file = new ANSIFile();
+	std::string basedir;
+	if (mode == File::OpenMode_read)
+		{
+#ifdef MACOSX
+		// May be in bundle.
+		basedir = std::string("<BUNDLE>/") + filename;
+		if (file->open(get_system_path(basedir).c_str(), mode))
+			return file;
+#endif
+		// Now try data dir.
+		basedir = std::string("<DATA>/") + filename;
+		if (file->open(get_system_path(basedir).c_str(), mode))
+			return file;
+		// We now fall back to a writable data dir, as the emulator
+		// may have written something there.
+		}
+	basedir = std::string("<SAVEHOME>/data/") + filename;
+	if (file->open(get_system_path(basedir).c_str(), mode))
+		return file;
+	// Nowhere we know about.
+	delete file;
+	return NULL;
+	}
+
 int MT32EmuMidiDriver::open()
 {
 	// Must be stereo
 	if (!stereo) return 1;
 
-	std::string basedir;
-#ifdef MACOSX
-	// For the app bundle to work is the ROMs aren't inside it.
-	if (is_system_path_defined("<BUNDLE>"))
-		{
-		std::string romname = "<BUNDLE>/";
-		if (U7exists(romname + "CM32L_CONTROL.ROM") ||
-		    	U7exists(romname + "MT32_CONTROL.ROM"))
-			basedir = get_system_path("<BUNDLE>/");
-		else
-			basedir = get_system_path("<DATA>/");
-		}
-#else
-	basedir = get_system_path("<DATA>/");
-#endif
+	// Make sure dir exists; this is the dir where data will be saved.
+	U7mkdir("<SAVEHOME>/data", 0755);
 
 	SynthProperties	props;
 	std::memset(&props,0,sizeof(props));
@@ -83,7 +108,7 @@ int MT32EmuMidiDriver::open()
 	props.useReverb = true;
 #endif
 	props.useDefaultReverb = true;
-	props.baseDir = basedir.c_str();
+	props.openFile = openFileProc;
 	props.printDebug = nullprintDebug;
 
 	mt32 = new Synth;

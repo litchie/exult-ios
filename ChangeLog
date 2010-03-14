@@ -1,4 +1,9 @@
-2010-03-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
+	* audio/midi_drivers/MT32EmuMidiDriver.cpp: Implemented a more robust ROM
+	  and MT32 data file function for MT32Emu.
+
+2010-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* All: Improvements to the bundle checks: Exult will now try to see if the
 	  bundled file exists and try to use it only in this case.
 
