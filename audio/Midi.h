@@ -81,6 +81,7 @@ public:
 #endif
 
 	void			produceSamples(sint16 *stream, uint32 bytes);
+	void			load_timbres();
 
 private:
 
@@ -102,7 +103,6 @@ private:
 	int				timbre_lib_game;
 	int				music_conversion;
 	int				effects_conversion;
-	void			load_timbres();
 	int				setup_timbre_for_track(std::string &str);
 	
 	// Ogg Stuff

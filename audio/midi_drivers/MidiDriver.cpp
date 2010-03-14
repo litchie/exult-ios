@@ -158,6 +158,7 @@ MidiDriver *MidiDriver::createInstance(std::string desired_driver,uint32 sample_
 					else
 					{
 						pout << "Success!" << std::endl;
+						break;
 					}
 				}
 			}

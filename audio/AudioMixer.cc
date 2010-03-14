@@ -386,13 +386,12 @@ void AudioMixer::openMidiOutput()
 	if (!audio_ok) return;
 
 
-	MyMidiPlayer *new_midi = new MyMidiPlayer();
-
 	Lock();
 	{
-		midi = new_midi;
+		midi = new MyMidiPlayer();
 	}
 	Unlock();
+	midi->load_timbres();
 	//midi_driver->setGlobalVolume(midi_volume);
 }
 

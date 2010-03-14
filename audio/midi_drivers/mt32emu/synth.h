@@ -241,6 +241,7 @@ private:
 	void readMemoryRegion(const MemoryRegion *region, Bit32u addr, Bit32u len, Bit8u *data);
 
 	bool loadControlROM(const char *filename);
+	bool loadControlROM(const char *filename1, const char *filename2, const char *write_filename);
 	bool loadPCMROM(const char *filename);
 	bool dumpTimbre(File *file, const TimbreParam *timbre, Bit32u addr);
 	int dumpTimbres(const char *filename, int start, int len);
