@@ -57,7 +57,21 @@ int MT32EmuMidiDriver::open()
 	// Must be stereo
 	if (!stereo) return 1;
 
-	std::string basedir = get_system_path(BUNDLE_CHECK("<BUNDLE>","<DATA>")) + '/';
+	std::string basedir;
+#ifdef MACOSX
+	// For the app bundle to work is the ROMs aren't inside it.
+	if (is_system_path_defined("<BUNDLE>"))
+		{
+		std::string romname = "<BUNDLE>/";
+		if (U7exists(romname + "CM32L_CONTROL.ROM") ||
+		    	U7exists(romname + "MT32_CONTROL.ROM"))
+			basedir = get_system_path("<BUNDLE>/");
+		else
+			basedir = get_system_path("<DATA>/");
+		}
+#else
+	basedir = get_system_path("<DATA>/");
+#endif
 
 	SynthProperties	props;
 	std::memset(&props,0,sizeof(props));
