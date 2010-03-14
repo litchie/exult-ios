@@ -29,7 +29,25 @@ class AudioOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(AudioOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[12];
+	enum button_ids
+		{
+		id_first = 0,
+		id_ok = id_first,
+		id_cancel,
+		id_audio_enabled,
+		id_music_enabled,
+		id_music_looping,
+		id_music_digital,
+		id_midi_driver,
+		id_midi_conv,
+		id_midi_effects,
+		id_sfx_enabled,
+		id_sfx_pack,
+		id_sfx_conv = id_sfx_pack,
+		id_speech_enabled,
+		id_count,
+		};
+	Gump_button* buttons[id_count];
 
 	int audio_enabled;
 	int midi_enabled;
