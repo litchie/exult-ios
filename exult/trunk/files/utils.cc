@@ -806,17 +806,23 @@ void setup_data_dir
 		std::strncpy(dpath, runpath, plen+1);
 		dpath[plen+1] = 0;
 		std::strcat(dpath,"data");
-		std::cerr << "dpath = " << dpath << std::endl;
 		add_system_path("<DATA>",dpath);
 		delete [] dpath;
 		}
 	else
-		{
-		std::cerr << "dpath = data" << std::endl;
 		add_system_path("<DATA>", "data");
-		}
 	if (U7exists(EXULT_FLX))
 		return;
+
+#ifdef MACOSX
+	if (is_system_path_defined("<BUNDLE>"))
+		{
+		// We have the bundle, so lets use it. But lets also leave <DATA>
+		// with a sensible default.
+		add_system_path("<DATA>", data_path);
+		return;
+		}
+#endif
 
 	// We've tried them all...
 	std::cerr << "Could not find 'exult.flx' anywhere." << std::endl;	
