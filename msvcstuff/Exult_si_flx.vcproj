@@ -26,9 +26,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				BuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_si /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_si /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_si /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_si_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -49,9 +49,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_si /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_si /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_si /NOLOGO"
+				BuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_si /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_si /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_si /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_si_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
