@@ -1,9 +1,13 @@
 2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
+	  Imported Colourless' bugfix to trunk: fixing assumption that all paths
+	  will start with <STATIC>/.
 	* audio/midi_drivers/MT32EmuMidiDriver.cpp: Implemented a more robust ROM
 	  and MT32 data file function for MT32Emu.
 	* files/utils.cc: Fixed bug that prevented a data dir specified at Exult.cfg
 	  from being used.
+	  Fixed bug in which Exult would bail out in MacOS X app bundles when
+	  searching for the external data dir even when it shouldn't.
 
 2010-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* All: Improvements to the bundle checks: Exult will now try to see if the
