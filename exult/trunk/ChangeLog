@@ -1,4 +1,8 @@
 2010-03-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* All: Improvements to the bundle checks: Exult will now try to see if the
+	  bundled file exists and try to use it only in this case.
+
+2010-03-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* shapes/data_utils.h: Fixed compilation warnings in MacOS X.
 	* imagewin/*: Added 16-bit and 32-bit versions of Point, Interlaced and
 	  Scale2x scalers. The old 8-bit scalers are still available, but Exult
