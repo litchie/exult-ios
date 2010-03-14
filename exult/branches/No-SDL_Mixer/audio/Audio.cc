@@ -747,7 +747,9 @@ void Audio::get_2d_position_for_tile(const Tile_coord &tile, int &distance, int 
 	distance = 0;
 	balance = 0;
 
-	Tile_coord apos = Game_window::get_instance()->get_main_actor()->get_tile();
+	Game_window *gwin = Game_window::get_instance();
+	Rectangle size = gwin->get_win_tile_rect();
+	Tile_coord apos(size.x+size.w/2,size.y+size.h/2,gwin->get_camera_actor()->get_lift());
 
 	int sqr_dist = apos.square_distance_screen_space(tile);
 	if (sqr_dist > MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF) {

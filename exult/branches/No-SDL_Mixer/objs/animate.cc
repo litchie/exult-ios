@@ -58,9 +58,10 @@ static inline bool Get_sfx_out_of_range
 	)
 	{
 	//distance = gwin->get_main_actor()->distance(obj);
-	int distance = gwin->get_main_actor()->get_center_tile().square_distance_screen_space(obj->get_center_tile());
+	Rectangle size = gwin->get_win_tile_rect();
+	Tile_coord apos(size.x+size.w/2,size.y+size.h/2,gwin->get_camera_actor()->get_lift());
 
-	return distance > (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
+	return apos.square_distance_screen_space(obj->get_center_tile()) > (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
 	}
 
 /*

@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="wuc"
 	ProjectGUID="{85D7D98F-E12B-4AF9-9DFA-31D5F5D51ADE}"
+	RootNamespace="wuc"
 	>
 	<Platforms>
 		<Platform
@@ -16,7 +17,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".."
-			IntermediateDirectory=".\wuc_release"
+			IntermediateDirectory="$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -41,23 +42,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				EnableFiberSafeOptimizations="false"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,strcasecmp=strcmp,WIN32,USING_PRECOMPILED_HEADER"
 				StringPooling="true"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				PrecompiledHeaderFile=".\wuc_release/wuc.pch"
-				AssemblerListingLocation=".\wuc_release/"
-				ObjectFile=".\wuc_release/"
-				ProgramDataBaseFileName=".\wuc_release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="0"
 			/>
 			<Tool
@@ -78,8 +70,12 @@
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ProgramDatabaseFile=".\..\tools/wuc.pdb"
+				GenerateDebugInformation="true"
 				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="2"
+				SetChecksum="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -109,7 +105,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".."
-			IntermediateDirectory=".\wuc_debug"
+			IntermediateDirectory="$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -139,11 +135,6 @@
 				PreprocessorDefinitions="_DEBUG,strcasecmp=strcmp,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				RuntimeTypeInfo="false"
-				PrecompiledHeaderFile=".\wuc_debug/wuc.pch"
-				AssemblerListingLocation=".\wuc_debug/"
-				ObjectFile=".\wuc_debug/"
-				ProgramDataBaseFileName=".\wuc_debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -168,7 +159,6 @@
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\..\tools/wuc.pdb"
 				SubSystem="1"
 			/>
 			<Tool
