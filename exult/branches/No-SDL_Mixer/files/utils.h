@@ -525,7 +525,7 @@ void clone_system_path(const std::string& new_key, const std::string& old_key);
 std::string get_system_path(const std::string &path);
 
 #ifdef MACOSX
-#define BUNDLE_CHECK(x,y) (is_system_path_defined("<BUNDLE>") ? (x) : (y))
+#define BUNDLE_CHECK(x,y) ((is_system_path_defined("<BUNDLE>") && U7exists((x)))  ? (x) : (y))
 #else
 #define BUNDLE_CHECK(x,y) (y)
 #endif
