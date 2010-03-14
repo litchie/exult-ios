@@ -620,7 +620,7 @@ bool MyMidiPlayer::init_device(void)
 	if(!midi_driver) return ogg_enabled;
 
 	timbre_lib_filename = "";
-	load_timbres();
+	//load_timbres();
 
 	return true;
 }
