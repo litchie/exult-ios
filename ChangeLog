@@ -8,6 +8,10 @@
 	  from being used.
 	  Fixed bug in which Exult would bail out in MacOS X app bundles when
 	  searching for the external data dir even when it shouldn't.
+	* gumps/AudioOptions_gump.*: Mapped button ids into an enum and renumbered
+	  their order. It is easier to add new buttons now and still have the gump
+	  work correctly; this also fixes a recent bug toggling audio on/off.
+	
 
 2010-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* All: Improvements to the bundle checks: Exult will now try to see if the
