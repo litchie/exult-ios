@@ -160,10 +160,20 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
-	pflex += flex.c_str() + sizeof("<STATIC>/") - 1;
+	int prefix_len = 0;
+	if (flex[0] == '<')
+	{
+		prefix_len = flex.find(">/");
+		if (prefix_len != string::npos)
+			prefix_len+=2;
+		else
+			prefix_len = 0;
+		
+	}
+	pflex += flex.c_str() + prefix_len;
 #ifdef MACOSX
 	string bflex("<BUNDLE>/");
-	bflex += flex.c_str() + sizeof("<STATIC>/") - 1;
+	bflex += flex.c_str() + prefix_len;
 #endif
 	mid_data = 
 #ifdef MACOSX
