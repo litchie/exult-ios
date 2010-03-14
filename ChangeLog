@@ -2,6 +2,8 @@
 	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
 	* audio/midi_drivers/MT32EmuMidiDriver.cpp: Implemented a more robust ROM
 	  and MT32 data file function for MT32Emu.
+	* files/utils.cc: Fixed bug that prevented a data dir specified at Exult.cfg
+	  from being used.
 
 2010-03-13	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* All: Improvements to the bundle checks: Exult will now try to see if the
