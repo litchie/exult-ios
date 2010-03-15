@@ -78,7 +78,7 @@ ifdef USECODE_CONTAINER
 endif
 
 USING_SJLJ_EXCEPTIONS=$(findstring --enable-sjlj-exceptions, $(shell gcc -v 2>&1))
-ifeq (USING_SJLJ_EXCEPTIONS,)
+ifeq ($(USING_SJLJ_EXCEPTIONS),$())
 	MTHREADS=
 else
 	WARN:=$(warning This compiler uses SJLJ exceptions; for thread safety, the -mthreads option is being used.)
