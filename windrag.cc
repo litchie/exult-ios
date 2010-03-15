@@ -41,20 +41,25 @@ void Windnd::DestroyStudioDropDest(Windnd *& windnd, HWND &hWnd)
 
 // IDropTarget implementation
 
-Windnd::Windnd(HWND hgwnd, Move_shape_handler_fun movefun,
-			Move_combo_handler_fun movecmbfun,
-			Drop_shape_handler_fun shapefun,
-			Drop_chunk_handler_fun cfun, Drop_combo_handler_fun combfun
-			) : gamewin(hgwnd), udata(0), move_shape_handler(movefun),
-				move_combo_handler(movecmbfun), shape_handler(shapefun),
-				chunk_handler(cfun), face_handler(0), combo_handler(combfun),
-				drag_id(-1)
+Windnd::Windnd
+	(
+	HWND hgwnd,
+	Move_shape_handler_fun movefun,
+	Move_combo_handler_fun movecmbfun,
+	Drop_shape_handler_fun shapefun,
+	Drop_chunk_handler_fun cfun,
+	Drop_npc_handler_fun npcfun,
+	Drop_combo_handler_fun combfun
+	) : gamewin(hgwnd), udata(0), move_shape_handler(movefun),
+	    move_combo_handler(movecmbfun), shape_handler(shapefun),
+	    chunk_handler(cfun), npc_handler(npcfun), face_handler(0),
+	    combo_handler(combfun), drag_id(-1)
 {
 	std::memset (&data, 0, sizeof(data));
 	m_cRef = 1;
 };
 
-Windnd::Windnd(HWND hgwnd,	Drop_shape_handler_fun shapefun,
+Windnd::Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d
 	       )
 	       :gamewin(hgwnd), udata(d), move_shape_handler(0), move_combo_handler(0),
@@ -138,6 +143,10 @@ Windnd::DragEnter(IDataObject * pDataObject,
 		Get_u7_comboid(wdd.get_data(), data.combo.xtiles, data.combo.ytiles, data.combo.right, data.combo.below, data.combo.cnt, data.combo.combo);
 		break;
 
+	case U7_TARGET_NPCID_NAME:
+		Get_u7_npcid(wdd.get_data(), data.npc.npcnum);
+		break;
+
 	default:
 		break;
 	}
@@ -188,7 +197,8 @@ Windnd::DragOver(DWORD grfKeyState,
 STDMETHODIMP
 Windnd::DragLeave(void)
 {
-	move_shape_handler(-1, -1, 0, 0, prevx, prevy, true);
+	if (move_shape_handler)
+		move_shape_handler(-1, -1, 0, 0, prevx, prevy, true);
 
 	switch (drag_id) {
 	case U7_TARGET_SHAPEID:
@@ -243,6 +253,10 @@ Windnd::Drop(IDataObject * pDataObject,
 		else if (file == U7_SHAPE_FACES) {
 			if (face_handler) (*face_handler)(shape, frame, pnt.x, pnt.y, udata);
 		}
+	} else if (id == U7_TARGET_NPCID_NAME) {
+		int npcnum;
+		Get_u7_npcid(data, npcnum);
+		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, 0);
 	} else if (id == U7_TARGET_CHUNKID) {
 		int chunknum;
 		Get_u7_chunkid(wdd.get_data(), chunknum);

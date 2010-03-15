@@ -1,4 +1,11 @@
 2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Fixed bugs:
+	  #2966927 pointers.shp can be dragged into Exult Npc, ES menu
+	* Makefile.mingw: Fixed segfault during midi playback when throwing
+	  exceptions if GCC used SJLJ exception model. Binaries from these compilers
+	  will have an additional dependency on MINGWM10.DLL.
+
+2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
 	  Imported Colourless' bugfix to trunk: fixing assumption that all paths
 	  will start with <STATIC>/.
