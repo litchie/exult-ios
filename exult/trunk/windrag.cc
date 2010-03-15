@@ -255,7 +255,7 @@ Windnd::Drop(IDataObject * pDataObject,
 		}
 	} else if (id == U7_TARGET_NPCID) {
 		int npcnum;
-		Get_u7_npcid(data, npcnum);
+		Get_u7_npcid(wdd.get_data(), npcnum);
 		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, 0);
 	} else if (id == U7_TARGET_CHUNKID) {
 		int chunknum;
