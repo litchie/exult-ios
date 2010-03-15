@@ -94,6 +94,7 @@ private:
 	Move_combo_handler_fun move_combo_handler;
 	Drop_shape_handler_fun shape_handler;
 	Drop_chunk_handler_fun chunk_handler;
+	Drop_npc_handler_fun npc_handler;
 	Drop_shape_handler_fun face_handler;
 	Drop_combo_handler_fun combo_handler;
 
@@ -112,13 +113,16 @@ private:
 			int right, below, cnt;
 			U7_combo_data *combo;
 		} combo;
+		struct  {
+			int npcnum;
+		} npc;
 	} data;
 
 public:
 	Windnd(HWND hgwnd, Move_shape_handler_fun, Move_combo_handler_fun,
 			Drop_shape_handler_fun, Drop_chunk_handler_fun,
-			Drop_combo_handler_fun);
-	Windnd(HWND hgwnd, 	Drop_shape_handler_fun shapefun,
+			Drop_npc_handler_fun npcfun, Drop_combo_handler_fun);
+	Windnd(HWND hgwnd, Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
 	~Windnd();
 
