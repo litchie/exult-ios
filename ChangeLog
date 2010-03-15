@@ -1,4 +1,4 @@
-2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2010-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2966927 pointers.shp can be dragged into Exult Npc, ES menu
 	* Makefile.mingw: Fixed segfault during midi playback when throwing
@@ -6,6 +6,10 @@
 	  will have an additional dependency on MINGWM10.DLL.
 	* windrag.cc: shapes/u7drag.h: Make U7_TARGET_NPCID into an unique ID. Fixed
 	  erroneous use of U7_TARGET_NPCID_NAME versus U7_TARGET_NPCID.
+	* files/utils.h, server/objserial.*: Longs (and pointers) are *not* always
+	  32-bit; make ES actually work on 64-bit Linux.
+	* server/server.cc, server/Makefile.am, mapedit/contedit.cc: Make show gump
+	  button in ES work for non-actor containers again.
 
 2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
