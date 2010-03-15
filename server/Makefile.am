@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files \
 	-I$(srcdir)/../objs -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
-	-I$(srcdir)/../usecode \
-	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+	-I$(srcdir)/../usecode -I$(srcdir)/../gumps \
+	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libserver.la
 

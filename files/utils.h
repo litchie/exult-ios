@@ -232,6 +232,104 @@ inline uint32 Read4high
 	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 
+/*
+ *	Read a N-byte long value, lsb first.
+ */
+
+template<typename T>
+inline T ReadN (std::istream &in)
+{
+	T val = 0;
+	for(size_t i = 0; i < sizeof(T); i++)
+		val |= static_cast<T>(T(in.get())<<(8*i));
+	return val;
+}
+
+/*
+ *	Read a N-byte value from a buffer.
+ */
+
+template<typename T>
+inline T ReadN
+	(
+	uint8 *& in
+	)
+	{
+	T val = 0;
+	for(size_t i = 0; i < sizeof(T); i++)
+		val |= static_cast<T>(T((*in++))<<(8*i));
+	return val;
+	}
+
+/*
+ *	Read a N-byte value from a file.
+ */
+
+template<typename T>
+inline T ReadN
+	(
+	std::FILE* in
+	)
+	{
+	T val = 0;
+	for(size_t i = 0; i < sizeof(T); i++)
+		{
+		uint8 b0;
+		if (std::fread(&b0,sizeof(uint8),1,in) != 1)
+			val |= static_cast<T>(T(b0)<<(8*i));
+		}
+	return val;
+	}
+
+/*
+ *	Read a N-byte long value, hsb first.
+ */
+
+template<typename T>
+inline T ReadNhigh (std::istream &in)
+{
+	T val = 0;
+	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+		val |= static_cast<T>(T(in.get())<<(8*i));
+	return val;
+}
+
+/*
+ *	Read a N-byte value from a buffer.
+ */
+
+template<typename T>
+inline T ReadNhigh
+	(
+	uint8 *& in
+	)
+	{
+	T val = 0;
+	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+		val |= static_cast<T>(T((*in++))<<(8*i));
+	return val;
+	}
+
+/*
+ *	Read a N-byte value from a file.
+ */
+
+template<typename T>
+inline T ReadNhigh
+	(
+	std::FILE* in
+	)
+	{
+	T val = 0;
+	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+		{
+		uint8 b0;
+		if (std::fread(&b0,sizeof(uint8),1,in) != 1)
+			val |= static_cast<T>(T(b0)<<(8*i));
+		}
+	return val;
+	}
+
 inline int ReadInt(std::istream& in, int def = 0)
 	{
 	int num;
@@ -442,10 +540,59 @@ inline void Write4
 	*out++ = static_cast<char> ((val>>24)&0xff);
 	}
 
+/*
+ *	Write a signed 4-byte value to a stream, lsb first.
+ */
+
 inline void Write4s(std::ostream& out, sint32 val)
 {
 	Write4(out, static_cast<uint32>(val));
 }
+
+/*
+ *	Write a N-byte value, lsb first.
+ */
+
+template<typename T>
+inline void WriteN
+	(
+	std::ostream& out,
+	T val
+	)
+	{
+	for(size_t i = 0; i < sizeof(T); i++)
+		out.put(static_cast<char>((val>>(8*i))&0xff));
+	}
+
+/*
+ *	Write a N-byte value, msb first.
+ */
+
+template<typename T>
+inline void WriteNhigh
+	(
+	std::ostream& out,
+	T val
+	)
+	{
+	for(size_t i = sizeof(T) - 1; i >= 0 ; i--)
+		out.put(static_cast<char>((val>>(8*i))&0xff));
+	}
+
+/*
+ *	Write a N-byte value to a buffer, lsb first.
+ */
+
+template<typename T>
+inline void WriteN
+	(
+	uint8 *& out,		// Write here and update.
+	T val
+	)
+	{
+	for(size_t i = 0; i < sizeof(T); i++)
+		*out++ = static_cast<char>((val>>(8*i))&0xff);
+	}
 
 bool U7open
 	(

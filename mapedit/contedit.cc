@@ -92,7 +92,8 @@ C_EXPORT void on_cont_show_gump_clicked
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 					GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(btn))));
 	unsigned char *ptr = &data[0];
-	Write4(ptr, addr);
+	Serial_out io(ptr);
+	io << addr;
 	
 	ExultStudio::get_instance()->send_to_server(Exult_server::cont_show_gump, data, ptr - data);
 	cout << "Sent container data to server" << endl;

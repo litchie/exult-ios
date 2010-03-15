@@ -73,6 +73,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "objserial.h"
 #include "effects.h"
+#include "Gump_manager.h"
 
 #ifdef USECODE_DEBUGGER
 #include "debugserver.h"
@@ -500,8 +501,11 @@ static void Handle_client_message
 		}
 	case Exult_server::cont_show_gump:
 		{
-		unsigned long addr = Read4(ptr);
-		Container_game_object *obj = (Container_game_object *) addr;
+		Serial_in io(ptr);
+		unsigned long addr;
+		io << addr;
+		Game_object *p = (Game_object *)addr;
+		Container_game_object *obj = dynamic_cast<Container_game_object *>(p);
 		if (!obj)
 			{
 			cout << "Error decoding container data" << endl;
@@ -512,7 +516,18 @@ static void Handle_client_message
 		if (act)
 			act->show_inventory();
 		else
-			obj->show_gump();
+			{
+			// Avoid all frame-usecode and force-usecode subtleties.
+			int gump = ShapeID::get_info(obj->get_shapenum()).get_gump_shape();
+			if (gump >= 0)
+				{
+				Gump_manager *gump_man = 
+							Game_window::get_instance()->get_gump_man();
+				gump_man->add_gump(obj, gump);
+				}
+			else
+				cerr << "The selected container has no gump!" << endl;
+			}
 		break;
 		}
 	case Exult_server::reload_shapes_info:

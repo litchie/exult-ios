@@ -701,7 +701,7 @@
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="border_width">2</property>
-                                            <property name="menu">menu1</property>
+                                            <property name="menu">builtin_group_menu</property>
                                           </widget>
                                           <packing>
                                             <property name="position">0</property>
@@ -918,7 +918,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="menu">convertwidget5</property>
+                        <property name="menu">criteria_menu</property>
                       </widget>
                     </child>
                     <child>
@@ -1132,7 +1132,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">convertwidget14</property>
+                            <property name="menu">monst_schedule_menu</property>
                           </widget>
                         </child>
                         <child>
@@ -1161,7 +1161,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">convertwidget46</property>
+                            <property name="menu">monst_align_menu</property>
                           </widget>
                         </child>
                         <child>
@@ -1680,7 +1680,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="menu">convertwidget51</property>
+                        <property name="menu">missile_dir_menu</property>
                       </widget>
                     </child>
                     <child>
@@ -1951,7 +1951,7 @@ Coordinates</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="menu">convertwidget61</property>
+                        <property name="menu">weather_type_menu</property>
                       </widget>
                     </child>
                     <child>
@@ -2636,7 +2636,7 @@ Coordinates</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="menu">convertwidget66</property>
+                    <property name="menu">npc_alignment_menu</property>
                   </widget>
                 </child>
                 <child>
@@ -2662,7 +2662,7 @@ Coordinates</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="menu">convertwidget71</property>
+                    <property name="menu">npc_attack_mode_menu</property>
                   </widget>
                 </child>
                 <child>
@@ -5698,7 +5698,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">convertwidget82</property>
+                            <property name="menu">shinfo_shape_class_menu</property>
                             <signal name="changed" handler="on_shinfo_shape_class_changed"/>
                           </widget>
                         </child>
@@ -5900,7 +5900,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">convertwidget96</property>
+                            <property name="menu">shinfo_ready_spot_menu</property>
                             <signal name="changed" handler="on_shinfo_ready_spot_changed"/>
                           </widget>
                         </child>
@@ -5928,7 +5928,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">menu43</property>
+                            <property name="menu">shinfo_altready1_spot_menu</property>
                             <signal name="changed" handler="on_shinfo_ready_spot_changed"/>
                           </widget>
                         </child>
@@ -5956,7 +5956,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">menu44</property>
+                            <property name="menu">shinfo_altready2_spot_menu</property>
                             <signal name="changed" handler="on_shinfo_ready_spot_changed"/>
                           </widget>
                         </child>
@@ -6948,7 +6948,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">convertwidget126</property>
+                                    <property name="menu">shinfo_weapon_type_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -6978,7 +6978,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">convertwidget121</property>
+                                    <property name="menu">shinfo_weapon_uses_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -7012,7 +7012,7 @@ Coordinates</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="menu">convertwidget116</property>
+                                        <property name="menu">shinfo_weapon_ammo_menu</property>
                                         <signal name="changed" handler="on_shinfo_weapon_ammo_changed"/>
                                       </widget>
                                       <packing>
@@ -7067,7 +7067,7 @@ Coordinates</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="menu">menu12</property>
+                                        <property name="menu">shinfo_weapon_sprite_menu</property>
                                         <signal name="changed" handler="on_shinfo_weapon_sprite_changed"/>
                                       </widget>
                                       <packing>
@@ -7209,7 +7209,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">menu9</property>
+                                    <property name="menu">shinfo_weapon_frames_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -7238,7 +7238,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">menu10</property>
+                                    <property name="menu">shinfo_proj_frames_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -7302,7 +7302,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">menu14</property>
+                                    <property name="menu">shinfo_proj_speed_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -7787,7 +7787,7 @@ Coordinates</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="menu">menu13</property>
+                                        <property name="menu">shinfo_ammo_sprite_menu</property>
                                         <signal name="changed" handler="on_shinfo_ammo_sprite_changed"/>
                                       </widget>
                                       <packing>
@@ -7836,7 +7836,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">convertwidget131</property>
+                                    <property name="menu">shinfo_ammo_type_menu</property>
                                   </widget>
                                 </child>
                                 <child>
@@ -8151,7 +8151,7 @@ Coordinates</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
-                                                <property name="menu">menu11</property>
+                                                <property name="menu">shinfo_ammo_drop_menu</property>
                                               </widget>
                                             </child>
                                           </widget>
@@ -8764,7 +8764,7 @@ Coordinates</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="border_width">1</property>
-                            <property name="menu">menu17</property>
+                            <property name="menu">shinfo_monster_attackmode_menu</property>
                           </widget>
                         </child>
                         <child>
@@ -8835,7 +8835,7 @@ Coordinates</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="border_width">1</property>
-                            <property name="menu">convertwidget136</property>
+                            <property name="menu">shinfo_monster_align_menu</property>
                           </widget>
                         </child>
                         <child>
@@ -9839,7 +9839,7 @@ Coordinates</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="menu">menu29</property>
+                                    <property name="menu">shinfo_animation_freezefirst_menu</property>
                                     <signal name="changed" handler="on_shinfo_animation_freezefirst_changed"/>
                                   </widget>
                                   <packing>
@@ -9946,7 +9946,7 @@ Coordinates</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="menu">menu24</property>
+                                <property name="menu">shinfo_animation_type_menu</property>
                                 <signal name="changed" handler="on_shinfo_animation_type_changed"/>
                               </widget>
                             </child>
@@ -10065,7 +10065,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">menu45</property>
+                            <property name="menu">shinfo_barge_type_menu</property>
                             <signal name="changed" handler="on_shinfo_animation_type_changed"/>
                           </widget>
                         </child>
@@ -10452,7 +10452,7 @@ Coordinates</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="menu">menu96</property>
+                            <property name="menu">shinfo_fieldinfo_type_menu</property>
                             <signal name="changed" handler="on_shinfo_animation_type_changed"/>
                           </widget>
                         </child>
@@ -10514,7 +10514,7 @@ Coordinates</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="border_width">1</property>
-                                <property name="menu">menu40</property>
+                                <property name="menu">shinfo_mountaintop_type_menu</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -11202,7 +11202,7 @@ Coordinates</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="menu">menu16</property>
+                                <property name="menu">shinfo_sfx_type_menu</property>
                               </widget>
                             </child>
                             <child>
@@ -12508,7 +12508,7 @@ Coordinates</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
-                                            <property name="menu">menu36</property>
+                                            <property name="menu">shinfo_framenames_name_type_menu</property>
                                             <signal name="changed" handler="on_shinfo_framenames_name_type_changed"/>
                                           </widget>
                                           <packing>
@@ -12552,7 +12552,7 @@ Coordinates</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
-                                                    <property name="menu">menu37</property>
+                                                    <property name="menu">shinfo_framenames_comp_type_menu</property>
                                                     <signal name="changed" handler="on_shinfo_framenames_comp_type_changed"/>
                                                   </widget>
                                                   <packing>
@@ -12567,7 +12567,7 @@ Coordinates</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
-                                                    <property name="menu">menu38</property>
+                                                    <property name="menu">shinfo_framenames_comp_pos_menu</property>
                                                   </widget>
                                                   <packing>
                                                     <property name="x_options">GTK_FILL</property>
@@ -12579,7 +12579,7 @@ Coordinates</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
-                                                    <property name="menu">menu39</property>
+                                                    <property name="menu">shinfo_framenames_comp_msg_type_menu</property>
                                                     <signal name="changed" handler="on_shinfo_framenames_comp_msg_type_changed"/>
                                                   </widget>
                                                   <packing>
@@ -13098,7 +13098,7 @@ Coordinates</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
-                                            <property name="menu">menu35</property>
+                                            <property name="menu">shinfo_objpaperdoll_spot_menu</property>
                                             <signal name="changed" handler="on_shinfo_objpaperdoll_spot_changed"/>
                                           </widget>
                                         </child>
@@ -14452,7 +14452,7 @@ Coordinates</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="menu">convertwidget143</property>
+                    <property name="menu">prefs_image_type_menu</property>
                   </widget>
                 </child>
               </widget>
@@ -15773,7 +15773,7 @@ Coordinates</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="border_width">8</property>
-                    <property name="menu">menu2</property>
+                    <property name="menu">barge_dir_menu</property>
                   </widget>
                 </child>
                 <child>
@@ -16859,7 +16859,7 @@ will be added automatically</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="menu">menu41</property>
+                        <property name="menu">gameinfo_charset_menu</property>
                         <signal name="changed" handler="on_gameinfo_charset_changed"/>
                       </widget>
                     </child>
@@ -16968,7 +16968,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu1">
+  <widget class="GtkMenu" id="builtin_group_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="ammo1">
@@ -17207,7 +17207,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget5">
+  <widget class="GtkMenu" id="criteria_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget6">
@@ -17266,7 +17266,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget14">
+  <widget class="GtkMenu" id="monst_schedule_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget15">
@@ -17486,7 +17486,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget46">
+  <widget class="GtkMenu" id="monst_align_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget47">
@@ -17517,7 +17517,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget51">
+  <widget class="GtkMenu" id="missile_dir_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget52">
@@ -17583,7 +17583,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget61">
+  <widget class="GtkMenu" id="weather_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget62">
@@ -17635,7 +17635,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget66">
+  <widget class="GtkMenu" id="npc_alignment_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget68">
@@ -17666,7 +17666,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget71">
+  <widget class="GtkMenu" id="npc_attack_mode_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget72">
@@ -17739,7 +17739,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget82">
+  <widget class="GtkMenu" id="shinfo_shape_class_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget83">
@@ -17833,7 +17833,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget96">
+  <widget class="GtkMenu" id="shinfo_ready_spot_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="other1">
@@ -17984,7 +17984,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu43">
+  <widget class="GtkMenu" id="shinfo_altready1_spot_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="none4">
@@ -18070,7 +18070,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu44">
+  <widget class="GtkMenu" id="shinfo_altready2_spot_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem179">
@@ -18156,7 +18156,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget126">
+  <widget class="GtkMenu" id="shinfo_weapon_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget127">
@@ -18215,7 +18215,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget121">
+  <widget class="GtkMenu" id="shinfo_weapon_uses_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget122">
@@ -18246,7 +18246,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget116">
+  <widget class="GtkMenu" id="shinfo_weapon_ammo_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget117">
@@ -18277,7 +18277,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu12">
+  <widget class="GtkMenu" id="shinfo_weapon_sprite_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem39">
@@ -18301,7 +18301,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu9">
+  <widget class="GtkMenu" id="shinfo_weapon_frames_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem31">
@@ -18332,7 +18332,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu10">
+  <widget class="GtkMenu" id="shinfo_proj_frames_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem35">
@@ -18363,7 +18363,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu14">
+  <widget class="GtkMenu" id="shinfo_proj_speed_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem46">
@@ -18394,7 +18394,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu13">
+  <widget class="GtkMenu" id="shinfo_ammo_sprite_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem43">
@@ -18418,7 +18418,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget131">
+  <widget class="GtkMenu" id="shinfo_ammo_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget132">
@@ -18477,7 +18477,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu11">
+  <widget class="GtkMenu" id="shinfo_ammo_drop_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="drop_on_misses1">
@@ -18501,7 +18501,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu17">
+  <widget class="GtkMenu" id="shinfo_monster_attackmode_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem55">
@@ -18539,7 +18539,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget136">
+  <widget class="GtkMenu" id="shinfo_monster_align_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget137">
@@ -18570,7 +18570,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu29">
+  <widget class="GtkMenu" id="shinfo_animation_freezefirst_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem85">
@@ -18594,7 +18594,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu24">
+  <widget class="GtkMenu" id="shinfo_animation_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="time_synched1">
@@ -18632,7 +18632,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu45">
+  <widget class="GtkMenu" id="shinfo_barge_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="generic1">
@@ -18684,7 +18684,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu96">
+  <widget class="GtkMenu" id="shinfo_fieldinfo_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="not_field1">
@@ -18722,7 +18722,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu40">
+  <widget class="GtkMenu" id="shinfo_mountaintop_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="not_mountain_top1">
@@ -18746,7 +18746,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu16">
+  <widget class="GtkMenu" id="shinfo_sfx_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem52">
@@ -18763,7 +18763,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu36">
+  <widget class="GtkMenu" id="shinfo_framenames_name_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="shape_default1">
@@ -18794,7 +18794,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu37">
+  <widget class="GtkMenu" id="shinfo_framenames_comp_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="message1">
@@ -18811,7 +18811,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu38">
+  <widget class="GtkMenu" id="shinfo_framenames_comp_pos_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem90">
@@ -18828,7 +18828,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu39">
+  <widget class="GtkMenu" id="shinfo_framenames_comp_msg_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="menuitem91">
@@ -18852,7 +18852,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu35">
+  <widget class="GtkMenu" id="shinfo_objpaperdoll_spot_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="head1">
@@ -18988,7 +18988,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="convertwidget143">
+  <widget class="GtkMenu" id="prefs_image_type_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget144">
@@ -19005,7 +19005,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu2">
+  <widget class="GtkMenu" id="barge_dir_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="north1">
@@ -19036,7 +19036,7 @@ will be added automatically</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="menu41">
+  <widget class="GtkMenu" id="gameinfo_charset_menu">
     <property name="visible">True</property>
     <child>
       <widget class="GtkMenuItem" id="dos_western_(cp-437)1">
