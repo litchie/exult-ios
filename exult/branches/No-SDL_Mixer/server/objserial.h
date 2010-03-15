@@ -38,7 +38,9 @@ public:
 	Serial_out& operator<<(int v)
 		{ Write4(buf, v); return *this; }
 	Serial_out& operator<<(unsigned long v)
-		{ Write4(buf, v); return *this; }
+		{ WriteN(buf, v); return *this; }
+	Serial_out& operator<<(intptr_t v)
+		{ WriteN(buf, v); return *this; }
 	Serial_out& operator<<(short v)
 		{ Write2(buf, v); return *this; }
 	Serial_out& operator<<(bool v)
@@ -60,7 +62,9 @@ public:
 	Serial_in& operator<<(int& v)
 		{ v = Read4(buf); return *this; }
 	Serial_in& operator<<(unsigned long& v)
-		{ v = Read4(buf); return *this; }
+		{ v = ReadN<unsigned long>(buf); return *this; }
+	Serial_in& operator<<(intptr_t& v)
+		{ v = ReadN<intptr_t>(buf); return *this; }
 	Serial_in& operator<<(short& v)
 		{ v = Read2(buf); return *this; }
 	Serial_in& operator<<(bool &v)
