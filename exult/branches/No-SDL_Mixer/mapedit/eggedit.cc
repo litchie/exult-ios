@@ -164,7 +164,7 @@ static void Egg_monster_dropped
 	void *udata
 	)
 	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 0xffff)
+	if (file == U7_SHAPE_SHAPES && shape >= 150 && shape < 0xffff)
 		((ExultStudio *) udata)->set_egg_monster(shape, frame);
 	}
 
@@ -172,6 +172,8 @@ static void Egg_monster_dropped
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
 {
+	if (shape < 150)
+		return;
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
 
 	Egg_monster_dropped(U7_SHAPE_SHAPES, shape, frame, data);
