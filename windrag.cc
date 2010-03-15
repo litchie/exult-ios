@@ -143,7 +143,7 @@ Windnd::DragEnter(IDataObject * pDataObject,
 		Get_u7_comboid(wdd.get_data(), data.combo.xtiles, data.combo.ytiles, data.combo.right, data.combo.below, data.combo.cnt, data.combo.combo);
 		break;
 
-	case U7_TARGET_NPCID_NAME:
+	case U7_TARGET_NPCID:
 		Get_u7_npcid(wdd.get_data(), data.npc.npcnum);
 		break;
 
@@ -253,7 +253,7 @@ Windnd::Drop(IDataObject * pDataObject,
 		else if (file == U7_SHAPE_FACES) {
 			if (face_handler) (*face_handler)(shape, frame, pnt.x, pnt.y, udata);
 		}
-	} else if (id == U7_TARGET_NPCID_NAME) {
+	} else if (id == U7_TARGET_NPCID) {
 		int npcnum;
 		Get_u7_npcid(data, npcnum);
 		if (npc_handler) (*npc_handler)(npcnum, pnt.x, pnt.y, 0);
