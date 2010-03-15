@@ -52,7 +52,7 @@ void Get_u7_chunkid(unsigned char *data, int& cnum);
 
 //	Target information for dragging an npc:
 #define U7_TARGET_NPCID_NAME "U7NPCID"
-#define U7_TARGET_NPCID 138
+#define U7_TARGET_NPCID 140
 
 //	Store/get npc #.
 int Store_u7_npcid(unsigned char *data, int npcnum);
