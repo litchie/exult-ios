@@ -4,6 +4,8 @@
 	* Makefile.mingw: Fixed segfault during midi playback when throwing
 	  exceptions if GCC used SJLJ exception model. Binaries from these compilers
 	  will have an additional dependency on MINGWM10.DLL.
+	* windrag.cc: shapes/u7drag.h: Make U7_TARGET_NPCID into an unique ID. Fixed
+	  erroneous use of U7_TARGET_NPCID_NAME versus U7_TARGET_NPCID.
 
 2010-03-14	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixed dangerous dangling cstr pointers.
