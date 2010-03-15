@@ -77,6 +77,15 @@ ifdef USECODE_CONTAINER
 	SHOW_USECODE_CONTAINER=-DSHOW_USECODE_CONTAINER
 endif
 
+USING_SJLJ_EXCEPTIONS=$(findstring --enable-sjlj-exceptions, $(shell gcc -v 2>&1))
+ifeq (USING_SJLJ_EXCEPTIONS,)
+	MTHREADS=
+else
+	WARN:=$(warning This compiler uses SJLJ exceptions; for thread safety, the -mthreads option is being used.)
+	WARN:=$(warning The compiled binary will depend on MINGWM10.DLL; make sure it is somewhere Exult can find it.)
+	MTHREADS=-mthreads
+endif
+
 EXTRA_OPTIONS=$(DEBUG_LEVEL) $(DEF_DEBUG) $(SHOW_USECODE_CONTAINER)
 
 CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 \
@@ -103,7 +112,7 @@ CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
 LFLAGS=
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
 
 EXEC=Exult.exe
 EXEEXT=.exe
