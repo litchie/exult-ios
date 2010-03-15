@@ -176,7 +176,7 @@ static void Npc_shape_dropped
 	void *udata
 	)
 	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < c_max_shapes)
+	if (file == U7_SHAPE_SHAPES && shape >= 150 && shape < c_max_shapes)
 		((ExultStudio *) udata)->set_npc_shape(shape, frame);
 	}
 
@@ -301,6 +301,8 @@ static bool Get_schedule_line
 
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
 {
+	if (shape < 150)
+		return;
 	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
 
 	Npc_shape_dropped(U7_SHAPE_SHAPES, shape, frame, data);
