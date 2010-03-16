@@ -486,12 +486,13 @@
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkToggleButton" id="play_button">
-                        <property name="label" translatable="yes"> Play </property>
+                        <property name="label">gtk-media-play</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="receives_default">False</property>
                         <property name="border_width">4</property>
                         <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
                         <signal name="clicked" handler="on_play_button_clicked"/>
                       </widget>
                       <packing>
@@ -709,12 +710,13 @@
                                         </child>
                                         <child>
                                           <widget class="GtkButton" id="open_builtin_group">
-                                            <property name="label" translatable="yes">Open</property>
+                                            <property name="label">gtk-open</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="border_width">2</property>
                                             <property name="use_underline">True</property>
+                                            <property name="use_stock">True</property>
                                             <signal name="clicked" handler="on_open_builtin_group_clicked"/>
                                           </widget>
                                           <packing>
@@ -782,11 +784,12 @@
                                             <property name="homogeneous">True</property>
                                             <child>
                                               <widget class="GtkButton" id="groups_add">
-                                                <property name="label" translatable="yes">Add</property>
+                                                <property name="label">gtk-new</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
                                                 <property name="use_underline">True</property>
+                                                <property name="use_stock">True</property>
                                                 <signal name="clicked" handler="on_groups_add_clicked"/>
                                               </widget>
                                               <packing>
@@ -797,11 +800,12 @@
                                             </child>
                                             <child>
                                               <widget class="GtkButton" id="groups_del">
-                                                <property name="label" translatable="yes">Del</property>
+                                                <property name="label">gtk-delete</property>
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">False</property>
                                                 <property name="use_underline">True</property>
+                                                <property name="use_stock">True</property>
                                                 <signal name="clicked" handler="on_groups_del_clicked"/>
                                               </widget>
                                               <packing>
@@ -8536,12 +8540,13 @@ Coordinates</property>
                             </child>
                             <child>
                               <widget class="GtkButton" id="open_equip_button">
-                                <property name="label" translatable="yes">Edit</property>
+                                <property name="label">gtk-edit</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="border_width">1</property>
                                 <property name="use_underline">True</property>
+                                <property name="use_stock">True</property>
                                 <signal name="clicked" handler="on_open_equip_button_clicked"/>
                               </widget>
                               <packing>
@@ -13751,11 +13756,12 @@ Coordinates</property>
                 </child>
                 <child>
                   <widget class="GtkButton" id="equip_new">
-                    <property name="label" translatable="yes">New</property>
+                    <property name="label">gtk-new</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
+                    <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_equip_new_clicked"/>
                   </widget>
                   <packing>
@@ -14085,13 +14091,13 @@ Coordinates</property>
             <property name="layout_style">spread</property>
             <child>
               <widget class="GtkButton" id="prompt3_yes">
-                <property name="label">gtk-yes</property>
+                <property name="label" translatable="yes">_Yes</property>
                 <property name="response_id">-8</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use_underline">True</property>
                 <signal name="clicked" handler="on_prompt3_yes_clicked"/>
               </widget>
               <packing>
@@ -14102,13 +14108,13 @@ Coordinates</property>
             </child>
             <child>
               <widget class="GtkButton" id="prompt3_no">
-                <property name="label">gtk-no</property>
+                <property name="label">_No</property>
                 <property name="response_id">-9</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use_underline">True</property>
                 <signal name="clicked" handler="on_prompt3_no_clicked"/>
               </widget>
               <packing>
@@ -14119,13 +14125,13 @@ Coordinates</property>
             </child>
             <child>
               <widget class="GtkButton" id="prompt3_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">_Cancel</property>
                 <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use_underline">True</property>
                 <signal name="clicked" handler="on_prompt3_cancel_clicked"/>
               </widget>
               <packing>
