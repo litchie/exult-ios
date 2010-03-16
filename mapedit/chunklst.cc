@@ -525,8 +525,8 @@ void Chunk_chooser::drag_data_get
 	wdata->assign(info, len, buf);
 #else
 					// Make us owner of xdndselection.
-	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
-								time);
+	//gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
+	//							time);
 					// Set data.
 	gtk_selection_data_set(seldata,
 			gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0),
