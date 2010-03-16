@@ -1,3 +1,9 @@
+2010-03-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Exult Studio: Eliminated a few warnings in Prompt window. Some buttons are
+	  now the appropriate stock buttons. Commented out gtk_selection_owner_set
+	  calls, which were preventing drag-drop from working more than once in ES
+	  in X.
+
 2010-03-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Fixed bugs:
 	  #2966927 pointers.shp can be dragged into Exult Npc, ES menu
