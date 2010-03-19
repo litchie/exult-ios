@@ -421,8 +421,8 @@ void ActionTryKeys(int *params)
 					Tile_coord *oldtile;
 					ucmachine->save_intercept(oldtarg, oldtile);
 					ucmachine->intercept_click_on_item(obj);
-					ucmachine->restore_intercept(oldtarg, oldtile);
 					keys[0]->activate();
+					ucmachine->restore_intercept(oldtarg, oldtile);
 					return;
 					}
 			}
