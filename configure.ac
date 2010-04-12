@@ -375,8 +375,10 @@ AC_MSG_CHECKING(if we should build mt32emu)
 if test x$enable_mt32emu = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_MT32EMU_MIDI, 1, [Enable mt32emu])
+	AM_CONDITIONAL(BUILD_MT32EMU, true)
 else
 	AC_MSG_RESULT(no)
+	AM_CONDITIONAL(BUILD_MT32EMU, false)
 fi
 
 
@@ -635,6 +637,17 @@ else
 	AC_MSG_RESULT(yes)
 fi
 
+# Build mods?
+AC_ARG_ENABLE(mods,          [[  --enable-mods           Build the Exult mods (requires usecode compiler) [default no]]],,enable_mods=no)
+AC_MSG_CHECKING(whether to build the Exult mods)
+if test x$enable_mods = xno -o x$enable_compiler = xno; then
+	AC_MSG_RESULT(no)
+	AM_CONDITIONAL(BUILD_MODS, false)
+else
+	AM_CONDITIONAL(BUILD_MODS, true)
+	AC_MSG_RESULT(yes)
+fi
+
 # pkg-config
 AC_MSG_CHECKING(for pkg-config)
 if test "x`pkg-config --version`" = "x"; then
@@ -805,6 +818,12 @@ audio/midi_drivers/Makefile
 audio/midi_drivers/timidity/Makefile
 audio/midi_drivers/mt32emu/Makefile
 conf/Makefile
+content/Makefile
+content/sifixes/Makefile
+content/si/Makefile
+content/bgkeyring/Makefile
+content/bg/Makefile
+content/islefaq/Makefile
 files/Makefile
 files/zip/Makefile
 gamemgr/Makefile
@@ -842,13 +861,14 @@ if test x$have_glade = xyes; then
 echo GLIB ...................... : `pkg-config --modversion glib-2.0`
 echo GTK+ ...................... : `pkg-config --modversion gtk+-2.0`
 echo libGlade .................. : `pkg-config --modversion libglade-2.0`
-echo 
 fi
 if test x$have_gnomeui = xyes; then
 echo libGnomeui................. : `pkg-config --modversion libgnomeui-2.0`
-echo 
 fi
+echo 
 echo Build tools................ : $enable_tools
+echo Build usecode compiler..... : $enable_compiler
+echo Build Exult mods........... : $enable_mods
 echo Build ExultStudio.......... : $enable_exult_studio
 
 echo
