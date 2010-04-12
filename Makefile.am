@@ -105,12 +105,16 @@ exult_SOURCES =	\
 	xdrag.cc	\
 	xdrag.h
 
+if BUILD_MT32EMU
+EXTRA_EXULTLIBS=audio/midi_drivers/mt32emu/libmt32emu.la
+endif
+
 EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
 	audio/libaudio.la	\
 	audio/midi_drivers/libmididrv.la	\
 	audio/midi_drivers/timidity/libtimidity.la	\
-	audio/midi_drivers/mt32emu/libmt32emu.la	\
+	$(EXTRA_EXULTLIBS)	\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	imagewin/libimagewin.la	\

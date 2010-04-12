@@ -146,7 +146,7 @@ AM_PROG_LEX
 AC_PROG_YACC
 AM_CONDITIONAL(LEXYACC, test -n "$YACC")
 
-AC_ARG_WITH(cxx, [  --with-cxx=COMMAND	  Explicitly specify the C++ compiler to use], CXX="")
+AC_ARG_WITH(cxx, AS_HELP_STRING([--with-cxx=COMMAND], [Explicitly specify the C++ compiler to use]), CXX="")
 
 if test -z "$CXX"; then
 	AC_PROG_CXX
@@ -298,15 +298,13 @@ else
 fi
 
 # ---------------------------------------------------------------------
-# Statically compile libraries (mainly for MacOS X bundles)
+# Statically link libraries?
 # ---------------------------------------------------------------------
 
-AC_ARG_ENABLE(static-libraries,      [[  --enable-static-libraries Enable static linking of libraries]],,enable_static_libs=no)
+AC_ARG_ENABLE(static-libraries, AS_HELP_STRING([--enable-static-libraries], [Enable static linking of libraries]),,enable_static_libs=no)
 AC_MSG_CHECKING(if we want to statically compile libraries)
 if test x$enable_static_libs != xno; then
 	AC_MSG_RESULT(yes)
-	STATIC_LD="-static"
-	LDFLAGS="$LDFLAGS -static"
 else
 	AC_MSG_RESULT(no)
 fi
@@ -325,13 +323,6 @@ AM_PATH_SDL($SDL_VERSION,
 	:,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
-
-if test x$enable_static_libs != xno; then
-	# SDL MacOS X readme lists this as needed.
-	# We should have sdl-config by this point, or we would have
-	# died in AM_PATH_SDL.
-	SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
-fi
 
 # ---------------------------------------------------------------------
 # libogg, libvorbis, libvorbisfile
@@ -372,12 +363,58 @@ else
 fi
 
 # ---------------------------------------------------------------------
+# Black magic for static linking.
+# ---------------------------------------------------------------------
+if test x$ARCH == xmacosx; then
+	AC_ARG_WITH(macosx-static-lib-path,
+		AS_HELP_STRING([--with-macosx-static-lib-path=path], [path to location of static library files (Mac OS X bundles only)]),
+		[with_macosx_static_lib_path="$withval"],
+		[with_macosx_static_lib_path=""])
+	if test x$with_macosx_static_lib_path != x; then
+		if test ! -d $with_macosx_static_lib_path; then
+			AC_MSG_ERROR([*** a directory is expected for --macosx-static-lib-path!])
+		fi
+		with_macosx_static_lib_path=`echo "$with_macosx_static_lib_path" | sed 's/\/*$//'`
+	else
+		enable_static_libs=no
+	fi
+fi
+
+if test x$enable_static_libs != xno; then
+	if test x$ARCH != xmacosx; then
+		# Assuming GCC. This is probably not portable.
+		STATIC_LD="-static"
+		LDFLAGS="$LDFLAGS -static"
+	else
+		# Apple has done its best to prevent the above from working, so we
+		# need this stuff here.
+		# Using -static doesn't work because of system libraries that cannot be
+		# linked statically; using the usual -Wl,-static -lvorbis -Wl,-dynamic
+		# also fails if there is a non-static version of libvorbis in the lib
+		# search path before or at the same location as the static lib because
+		# the linker tries to use these even with the flags. The only way to get
+		# reliable static compiles in Mac OS X is to hard-code the path to the
+		# static library and link to *that*.
+		# Damn you, Apple!
+
+		# SDL MacOS X readme lists this as needed.
+		# We should have sdl-config by this point, or we would have
+		# died in AM_PATH_SDL.
+		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs -Wl,-dynamic`
+		OGG_LIBS="$with_macosx_static_lib_path/libogg.a"
+		VORBISFILE_LIBS="$with_macosx_static_lib_path/libvorbisfile.a"
+		VORBIS_LIBS="$with_macosx_static_lib_path/libvorbis.a -lm"
+		ZLIB_LIBS="$with_macosx_static_lib_path/libz.a"
+	fi
+fi
+
+# ---------------------------------------------------------------------
 # Optional components
 # ---------------------------------------------------------------------
 
 # Timidity midi driver
-AC_ARG_ENABLE(timidity_midi,      [[  --disable-timidity-midi Disable built-in timidity midi]],,enable_timidity_midi=yes)
-AC_ARG_WITH(timidity,             [[  --with-timidity=path    path to timidity.cfg (optional)]],,)
+AC_ARG_ENABLE(timidity_midi, AS_HELP_STRING([--disable-timidity-midi], [Disable built-in timidity midi]),,enable_timidity_midi=yes)
+AC_ARG_WITH(timidity, AS_HELP_STRING([--with-timidity=path], [path to timidity.cfg (optional)]),,)
 AC_MSG_CHECKING(if we want to use timidity midi)
 if test x$enable_timidity_midi = xyes; then
 	AC_MSG_RESULT(yes)
@@ -395,7 +432,7 @@ fi
 
 # ALSA midi driver
 AC_CHECK_HEADER(alsa/asoundlib.h, HAVEALSA=yes, HAVEALSA=no)
-AC_ARG_ENABLE(alsa,    [[  --disable-alsa          Disable ALSA midi support]],,enable_alsa=yes)
+AC_ARG_ENABLE(alsa, AS_HELP_STRING([--disable-alsa], [Disable ALSA midi support]),,enable_alsa=yes)
 AC_MSG_CHECKING(if we want to use ALSA midi)
 if test x$HAVEALSA = xyes; then
 	if test x$enable_alsa = xyes; then
@@ -411,7 +448,7 @@ fi
 
 # fluidsynth midi driver
 AC_CHECK_HEADER(fluidsynth.h, HAVEFLUIDSYNTH=yes, HAVEFLUIDSYNTH=no)
-AC_ARG_ENABLE(fluidsynth,[[  --disable-fluidsynth    Disable fluidsynth midi support]],,enable_fluidsynth=yes)
+AC_ARG_ENABLE(fluidsynth, AS_HELP_STRING([--disable-fluidsynth], [Disable fluidsynth midi support]),,enable_fluidsynth=yes)
 AC_MSG_CHECKING(if we want to use fluidsynth midi)
 if test x$HAVEFLUIDSYNTH = xyes; then
         if test x$enable_fluidsynth = xyes; then
@@ -426,7 +463,7 @@ else
 fi
 
 # mt32emu midi driver
-AC_ARG_ENABLE(mt32emu, [[  --enable-mt32emu        Enable built-in mt32emu support]],,enable_mt32emu=no)
+AC_ARG_ENABLE(mt32emu, AS_HELP_STRING([--enable-mt32emu], [Enable built-in mt32emu support]),,enable_mt32emu=no)
 AC_MSG_CHECKING(if we should build mt32emu)
 if test x$enable_mt32emu = xyes; then
 	AC_MSG_RESULT(yes)
@@ -440,7 +477,7 @@ fi
 
 # zipped savegame support
 
-AC_ARG_ENABLE(zip-support, [[  --enable-zip-support    Enable zipped savegame support [default yes]]],,enable_zip_support=yes)
+AC_ARG_ENABLE(zip-support, AS_HELP_STRING([--enable-zip-support], [Enable zipped savegame support @<:@default yes@:>@]),,enable_zip_support=yes)
 
 if test x$enable_zip_support = xyes ; then
 	AC_CHECK_HEADER(zlib.h,,enable_zip_support=no)
@@ -455,7 +492,9 @@ if test x$enable_zip_support = xyes ; then
 	# if test x$GCC = xyes ; then
 	#	ZLIB_LIBS="-Wl,-Bstatic -lz -Wl,-Bdynamic"
 	# else
+	if test x$enable_static_libs == xno -o x$ARCH != xmacosx; then
 		ZLIB_LIBS="-lz"
+	fi
 	# fi
 	AC_DEFINE(HAVE_ZIP_SUPPORT, 1, [Have zip support])
 	AC_MSG_RESULT(yes)
@@ -466,7 +505,7 @@ fi
 
 # OpenGL rendering
 
-AC_ARG_ENABLE(opengl, [  --enable-opengl         Enable OpenGL rendering support [EXPERIMENTAL]],,enable_opengl=no)
+AC_ARG_ENABLE(opengl, AS_HELP_STRING([--enable-opengl], [Enable OpenGL rendering support [EXPERIMENTAL]]),,enable_opengl=no)
 
 if test x$enable_opengl = xyes; then
 	# Check for header presence. Damn you, Apple!
@@ -499,12 +538,12 @@ fi
 # support for Exult Studio
 # ---------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable support for Exult Studio)
-AC_ARG_ENABLE(exult-studio-support, [[  --enable-exult-studio-support   Enable ExultStudio support [default yes]]],,enable_exult_studio_support=yes)
+AC_ARG_ENABLE(exult-studio-support, AS_HELP_STRING([--enable-exult-studio-support], [Enable ExultStudio support @<:@default yes@:>@]),,enable_exult_studio_support=yes)
 if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
-AC_ARG_ENABLE(macosx-studio-support, [[  --enable-macosx-studio-support   Force ExultStudio support in Mac OS X [EXPERIMENTAL] [default no]]],,enable_macosx_studio_support=no)
+AC_ARG_ENABLE(macosx-studio-support, AS_HELP_STRING([--enable-macosx-studio-support], [Force ExultStudio support in Mac OS X [EXPERIMENTAL] @<:@default no@:>@]),,enable_macosx_studio_support=no)
 if test "$WINDOWING_SYSTEM" != -DMACOSX; then
 	enable_macosx_studio_support=no
 fi
@@ -561,7 +600,7 @@ AC_SUBST([ICONDIR])
 # ---------------------------------------------------------------------
 
 # basic debugging mode
-AC_ARG_ENABLE(debug, [[  --enable-debug          Enable debug messages [default no]]],,enable_debug=no)
+AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug], [Enable debug messages @<:@default no@:>@]),,enable_debug=no)
 AC_MSG_CHECKING(whether to enable debugging mode)
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -573,7 +612,7 @@ else
 fi
 
 # optimized debugging mode
-AC_ARG_ENABLE(optimized-debug,  [[  --enable-optimized-debug        Enable optimized debug build [default no]]],,enable_optimized_debug=no)
+AC_ARG_ENABLE(optimized-debug, AS_HELP_STRING([--enable-optimized-debug], [Enable optimized debug build @<:@default no@:>@]),,enable_optimized_debug=no)
 AC_MSG_CHECKING(whether to do an optimized debug build)
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -584,7 +623,7 @@ else
 fi
 
 # heavy unoptimized GDB  debugging mode
-AC_ARG_ENABLE(heavy-gdb-debug, [[  --enable-heavy-gdb-debug          Enable debug messages with GDB symbols [default no]]],,enable_heavy_gdb_debug=no)
+AC_ARG_ENABLE(heavy-gdb-debug, AS_HELP_STRING([--enable-heavy-gdb-debug], [Enable debug messages with GDB symbols @<:@default no@:>@]),,enable_heavy_gdb_debug=no)
 AC_MSG_CHECKING(whether to enable unoptimized debugging mode with GDB symbols)
 if test x$enable_heavy_gdb_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -597,7 +636,7 @@ else
 fi
 
 # SDL parachute?
-AC_ARG_ENABLE(sdl-parachute,    [[  --enable-sdl-parachute  Use SDL parachute [default yes]]],,enable_sdl_parachute=yes)
+AC_ARG_ENABLE(sdl-parachute, AS_HELP_STRING([--enable-sdl-parachute], [Use SDL parachute @<:@default yes@:>@]),,enable_sdl_parachute=yes)
 AC_MSG_CHECKING(if we should disable the SDL parachute)
 if test x$enable_sdl_parachute = xno; then
   AC_MSG_RESULT(yes)
@@ -607,7 +646,7 @@ else
 fi
 
 # Usecode debugger
-#AC_ARG_ENABLE(usecode-debugger, [[  --enable-usecode-debugger       Support for usecode debugging [default no]]],,enable_usecode_debugger=no)
+#AC_ARG_ENABLE(usecode-debugger, AS_HELP_STRING([--enable-usecode-debugger], [Support for usecode debugging @<:@default no@:>@]),,enable_usecode_debugger=no)
 #AC_MSG_CHECKING(whether to enable the usecode debugger)
 #if test x$enable_usecode_debugger = xyes; then
 #	AC_MSG_RESULT(yes)
@@ -625,9 +664,9 @@ fi
 AC_MSG_CHECKING(warning level)
 WARNING_LEVEL="normal"
 
-AC_ARG_ENABLE(warnings, [[  --enable-warnings       Enable all warnings [default no]]],,enable_warnings=no)
+AC_ARG_ENABLE(warnings, AS_HELP_STRING([--enable-warnings], [Enable all warnings @<:@default no@:>@]),,enable_warnings=no)
 # more warnings
-AC_ARG_ENABLE(paranoid-warnings, [[  --enable-paranoid-warnings      Enable paranoid warnings [default no]]],,enable_paranoid_warnings=no)
+AC_ARG_ENABLE(paranoid-warnings, AS_HELP_STRING([--enable-paranoid-warnings], [Enable paranoid warnings @<:@default no@:>@]),,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
 	WARNINGS="-O -Wall -Wextra -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
@@ -643,8 +682,8 @@ AC_MSG_RESULT($WARNING_LEVEL)
 
 
 # Ignore long-long warnings (for SDL header files...)
-AC_ARG_ENABLE(long-long-warnings, [[  --enable-long-long-warnings     Enable long long warnings- needed for Compaq's cxx with GNU ld [default no]]],
-	,,enable_long_long_warnings=no)
+AC_ARG_ENABLE(long-long-warnings, AS_HELP_STRING([--enable-long-long-warnings], [Enable long long warnings- needed for Compaq's cxx with GNU ld @<:@default no@:>@]),
+	,enable_long_long_warnings=no)
 AC_MSG_CHECKING(if we should disable long-long warnings)
 if test x$enable_long_long_warnings = xyes; then
 	AC_MSG_RESULT(no)
@@ -658,7 +697,7 @@ fi
 # --------------------
 
 # Build any external programs?
-AC_ARG_ENABLE(tools,    [[  --disable-tools         Only build the main program]],,enable_tools=yes)
+AC_ARG_ENABLE(tools, AS_HELP_STRING([--disable-tools], [Only build the main program]),,enable_tools=yes)
 AC_MSG_CHECKING(whether to build only the main program)
 if test x$enable_tools = xno; then
 	AC_MSG_RESULT(yes)
@@ -672,7 +711,7 @@ else
 fi
 
 # Build compiler?
-AC_ARG_ENABLE(compiler, [[  --enable-compiler       Build the usecode compiler [default yes]]],,enable_compiler=yes)
+AC_ARG_ENABLE(compiler, AS_HELP_STRING([--enable-compiler], [Build the usecode compiler @<:@default yes@:>@]),,enable_compiler=yes)
 AC_MSG_CHECKING(whether to build the usecode compiler)
 if test x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
@@ -683,7 +722,7 @@ else
 fi
 
 # Build data files?
-AC_ARG_ENABLE(data,          [[  --enable-data           Create the data files [default yes]]],,enable_data=yes)
+AC_ARG_ENABLE(data, AS_HELP_STRING([--enable-data], [Create the data files @<:@default yes@:>@]),,enable_data=yes)
 AC_MSG_CHECKING(whether to build the data files)
 if test x$enable_data = xno; then
 	AC_MSG_RESULT(no)
@@ -694,7 +733,7 @@ else
 fi
 
 # Build mods?
-AC_ARG_ENABLE(mods,          [[  --enable-mods           Build the Exult mods (requires usecode compiler) [default no]]],,enable_mods=no)
+AC_ARG_ENABLE(mods, AS_HELP_STRING([--enable-mods], [Build the Exult mods (requires usecode compiler) @<:@default no@:>@]),,enable_mods=no)
 AC_MSG_CHECKING(whether to build the Exult mods)
 if test x$enable_mods = xno -o x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
@@ -726,7 +765,7 @@ else
 fi
 
 # exult-studio
-AC_ARG_ENABLE(exult-studio, [[  --enable-exult-studio   Build Exult Studio [default no]]],,enable_exult_studio=no)
+AC_ARG_ENABLE(exult-studio, AS_HELP_STRING([--enable-exult-studio], [Build Exult Studio @<:@default no@:>@]),,enable_exult_studio=no)
 AC_MSG_CHECKING(whether to build Exult Studio)
 if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
@@ -742,7 +781,7 @@ else
 fi
 
 # gnome-shp-thumbnailer
-AC_ARG_ENABLE(gnome-shp-thumbnailer, [[  --enable-gnome-shp-thumbnailer   Build Gnome SHP Thumbnailer [default no]]],,enable_gnome_shp_thumbnailer=no)
+AC_ARG_ENABLE(gnome-shp-thumbnailer, AS_HELP_STRING([--enable-gnome-shp-thumbnailer], [Build Gnome SHP Thumbnailer @<:@default no@:>@]),,enable_gnome_shp_thumbnailer=no)
 AC_MSG_CHECKING(whether to build the Gnome SHP Thumbnailer)
 if test x$enable_gnome_shp_thumbnailer = xyes; then
 	AC_MSG_RESULT(yes)
@@ -766,7 +805,7 @@ fi
 
 # GIMP plugin
 AM_CONDITIONAL(GIMP_PLUGIN, false)
-AC_ARG_ENABLE(gimp-plugin,   [[  --enable-gimp-plugin    Build the GIMP plugin [default no]]],,enable_gimp_plugin=no)
+AC_ARG_ENABLE(gimp-plugin, AS_HELP_STRING([--enable-gimp-plugin], [Build the GIMP plugin @<:@default no@:>@]),,enable_gimp_plugin=no)
 AC_MSG_CHECKING(whether to build the GIMP plugin)
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
@@ -820,6 +859,9 @@ fi
 
 AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
+AC_SUBST(OGG_LIBS)
+AC_SUBST(VORBISFILE_LIBS)
+AC_SUBST(VORBIS_LIBS)
 AC_SUBST(WINDOWING_SYSTEM)
 AC_SUBST(EXE_TARGET)
 AC_SUBST(EXULT_DATADIR)
