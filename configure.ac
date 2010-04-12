@@ -312,6 +312,11 @@ else
 fi
 
 # ---------------------------------------------------------------------
+# Check for pkg-config
+# ---------------------------------------------------------------------
+PKG_PROG_PKG_CONFIG
+
+# ---------------------------------------------------------------------
 # SDL
 # ---------------------------------------------------------------------
 
@@ -329,22 +334,42 @@ if test x$enable_static_libs != xno; then
 fi
 
 # ---------------------------------------------------------------------
-# libogg
+# libogg, libvorbis, libvorbisfile
 # ---------------------------------------------------------------------
 
-XIPH_PATH_OGG(
-	have_ogg=yes,
-	AC_MSG_ERROR([*** must have Ogg installed!])
-)
+if test "x$PKG_CONFIG" != "x"; then
+	PKG_CHECK_MODULES(OGG, ogg >= 1.0 vorbis >= 1.0.1 vorbisfile, , AC_MSG_ERROR([*** must have Ogg/Vorbis installed!]))
+else
+	dnl old school test
+	XIPH_PATH_OGG(
+		,
+		AC_MSG_ERROR([*** must have Ogg installed!])
+	)
+	XIPH_PATH_VORBIS(
+		,
+		AC_MSG_ERROR([*** must have Vorbis installed!])
+	)
+fi
 
 # ---------------------------------------------------------------------
-# libvorbis
+# libglade (for ES)
 # ---------------------------------------------------------------------
 
-XIPH_PATH_VORBIS(
-	have_vorbis=yes,
-	AC_MSG_ERROR([*** must have Vorbis installed!])
-)
+if test "x$PKG_CONFIG" != "x"; then
+	PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.0, have_glade=yes, have_glade=no)
+else
+	have_glade=no
+fi
+
+# ---------------------------------------------------------------------
+# libgnomeui (for Gnome shp thumbnailer)
+# ---------------------------------------------------------------------
+
+if test "x$PKG_CONFIG" != "x"; then
+	PKG_CHECK_MODULES(LIBGNOMEUI, libgnomeui-2.0 >= 2.16, have_gnomeui=yes, have_gnomeui=no)
+else
+	have_gnomeui=no
+fi
 
 # ---------------------------------------------------------------------
 # Optional components
@@ -679,41 +704,6 @@ else
 	AC_MSG_RESULT(yes)
 fi
 
-# pkg-config
-AC_MSG_CHECKING(for pkg-config)
-if test "x`pkg-config --version`" = "x"; then
-	AC_MSG_RESULT(no pkg-config)
-else
-	AC_MSG_RESULT(ok)
-	AC_MSG_CHECKING(for GTK+/GLADE development files)
-	if pkg-config --atleast-version 2.0 libglade-2.0; then
-		have_glade=yes
-		AC_MSG_RESULT(yes...)
-		AC_DEFINE(HAVE_GLADE, 1, [Have Glade support libraries])
-		GLADE_INCLUDES=`pkg-config --cflags libglade-2.0`
-		GLADE_LIBS=`pkg-config --libs libglade-2.0`
-		AC_SUBST(GLADE_INCLUDES)
-		AC_SUBST(GLADE_LIBS)
-	else
-		have_glade=no
-		AC_MSG_RESULT(no gtk+/libglade)
-	fi
-	AC_MSG_CHECKING(for Gnome UI development files)
-	# This version requirement is an utter guess.
-	if pkg-config --atleast-version 2.16 libgnomeui-2.0; then
-		have_gnomeui=yes
-		AC_MSG_RESULT(yes...)
-		AC_DEFINE(HAVE_GNOMEUI, 1, [Have Gnome UI support libraries])
-		GNOMEUI_INCLUDES=`pkg-config --cflags libgnomeui-2.0`
-		GNOMEUI_LIBS=`pkg-config --libs libgnomeui-2.0`
-		AC_SUBST(GNOMEUI_INCLUDES)
-		AC_SUBST(GNOMEUI_LIBS)
-	else
-		have_gnomeui=no
-		AC_MSG_RESULT(no libgnomeui)
-	fi
-fi
-
 # Freetype2 (optional, used in ExultStudio, shapes/fontgen.cc)
 AC_PATH_PROG(FT2CONFIG, freetype-config)
 if test -n "$FT2CONFIG"; then
@@ -889,12 +879,12 @@ echo Exult v$VERSION
 echo
 echo SDL ....................... : `$SDL_CONFIG --version`
 if test x$have_glade = xyes; then
-echo GLIB ...................... : `pkg-config --modversion glib-2.0`
-echo GTK+ ...................... : `pkg-config --modversion gtk+-2.0`
-echo libGlade .................. : `pkg-config --modversion libglade-2.0`
+echo GLIB ...................... : `$PKG_CONFIG --modversion glib-2.0`
+echo GTK+ ...................... : `$PKG_CONFIG --modversion gtk+-2.0`
+echo libGlade .................. : `$PKG_CONFIG --modversion libglade-2.0`
 fi
 if test x$have_gnomeui = xyes; then
-echo libGnomeui................. : `pkg-config --modversion libgnomeui-2.0`
+echo libGnomeui................. : `$PKG_CONFIG --modversion libgnomeui-2.0`
 fi
 echo 
 echo Build tools................ : $enable_tools
