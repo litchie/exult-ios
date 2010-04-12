@@ -1,0 +1,78 @@
+# This is an automatically generated file; please do not edit it manually.
+# Instead, run makefile_builder.sh from the parent directory.
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 7 installed
+U7PATH=C:/Ultima7
+
+# Base of the exult source
+SRC=../..
+
+UCCDIR=$(SRC)
+UCC=$(UCCDIR)/ucc.exe
+
+EXPACKDIR=$(SRC)
+EXPACK=$(EXPACKDIR)/expack.exe
+
+islefaqdir=$(U7PATH)/forgeofvirtue/mods
+
+USECODE_OBJECTS = \
+	src/usecode.uc	
+
+FACES_VGA_OBJECTS = \
+	src/graphics/faces.in	\
+	src/graphics/faces/dominus.shp	
+
+SHAPES_VGA_OBJECTS = \
+	src/graphics/shapes.in	\
+	src/graphics/shapes/penguin.shp	
+
+CLEANFILES = \
+	patch/usecode	\
+	patch/faces.vga	\
+	patch/faces_vga.h	\
+	patch/shapes.vga	\
+	patch/shapes_vga.h	
+
+$(EXPACK):
+	+(cd $(EXPACKDIR);$(MAKE) -f Makefile.mingw expack.exe)
+
+$(UCC):
+	+(cd $(UCCDIR);$(MAKE) -f Makefile.mingw ucc.exe)
+
+
+patch/usecode: $(UCC) $(USECODE_OBJECTS)
+	$(UCC) -I src -o patch/usecode src/usecode.uc
+
+patch/faces.vga: $(EXPACK) $(FACES_VGA_OBJECTS)
+	$(EXPACK) -i $(srcdir)/src/graphics/faces.in
+
+patch/shapes.vga: $(EXPACK) $(SHAPES_VGA_OBJECTS)
+	$(EXPACK) -i $(srcdir)/src/graphics/shapes.in
+
+clean:
+	rm -f $(CLEANFILES)
+
+all: patch/usecode patch/faces.vga patch/shapes.vga
+
+install: all
+	mkdir $(islefaqdir)
+	cp islefaq.cfg $(islefaqdir)/islefaq.cfg
+	mkdir -p $(islefaqdir)/islefaq/patch
+	cp patch/usecode $(islefaqdir)/islefaq/patch/usecode
+	cp patch/faces.vga $(islefaqdir)/islefaq/patch/faces.vga
+	cp patch/shapes.vga $(islefaqdir)/islefaq/patch/shapes.vga
+	cp patch/initgame.dat $(islefaqdir)/islefaq/patch/initgame.dat
+	cp patch/ready.dat $(islefaqdir)/islefaq/patch/ready.dat
+	cp patch/shpdims.dat $(islefaqdir)/islefaq/patch/shpdims.dat
+	cp patch/tfa.dat $(islefaqdir)/islefaq/patch/tfa.dat
+	cp patch/u7ifix0d $(islefaqdir)/islefaq/patch/u7ifix0d
+	cp patch/u7ifix64 $(islefaqdir)/islefaq/patch/u7ifix64
+	cp patch/u7ifix65 $(islefaqdir)/islefaq/patch/u7ifix65
+	cp patch/u7map $(islefaqdir)/islefaq/patch/u7map
+	cp patch/wihh.dat $(islefaqdir)/islefaq/patch/wihh.dat
+
+uninstall:
+	rm -f $(islefaqdir)/islefaq.cfg
+	rm -rf $(islefaqdir)/islefaq
+

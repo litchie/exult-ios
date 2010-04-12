@@ -1,0 +1,47 @@
+# This is an automatically generated file; please do not edit it manually.
+# Instead, run makefile_builder.sh from the parent directory.
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 7 installed
+U7PATH=C:/Ultima7
+
+# Base of the exult source
+SRC=../..
+
+UCCDIR=$(SRC)
+UCC=$(UCCDIR)/ucc.exe
+
+EXPACKDIR=$(SRC)
+EXPACK=$(EXPACKDIR)/expack.exe
+
+bgdir=$(U7PATH)/forgeofvirtue/mods
+
+USECODE_OBJECTS = \
+	usecode.uc	
+
+CLEANFILES = \
+	usecode	
+
+$(UCC):
+	+(cd $(UCCDIR);$(MAKE) -f Makefile.mingw ucc.exe)
+
+
+usecode: $(UCC) $(USECODE_OBJECTS)
+	$(UCC) -I . -o usecode ./usecode.uc
+
+clean:
+	rm -f $(CLEANFILES)
+
+all: usecode
+
+install: all
+	mkdir $(bgdir)
+	cp lbjoin.cfg $(bgdir)/lbjoin.cfg
+	mkdir -p $(bgdir)/lbjoin/
+	cp usecode $(bgdir)/lbjoin/usecode
+
+
+uninstall:
+	rm -f $(bgdir)/lbjoin.cfg
+	rm -rf $(bgdir)/lbjoin
+

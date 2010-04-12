@@ -1,6 +1,13 @@
 INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. -I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin -I$(srcdir)/../../shapes $(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../../conf -I../../files -I../../objs
 
-SUBDIRS = timidity mt32emu
+if BUILD_MT32EMU
+MT32EMUDIR=mt32emu
+MT32EMUDRV=	\
+	MT32EmuMidiDriver.cpp	\
+	MT32EmuMidiDriver.h
+endif
+
+SUBDIRS = timidity $(MT32EMUDIR)
 
 noinst_LTLIBRARIES = libmididrv.la
 
@@ -31,8 +38,7 @@ libmididrv_la_SOURCES =	\
 	MidiDriver.h		\
 	mixer_midiout.cc	\
 	mixer_midiout.h		\
-	MT32EmuMidiDriver.cpp	\
-	MT32EmuMidiDriver.h	\
+	$(MT32EMUDRV)	\
 	TimidityMidiDriver.cpp	\
 	TimidityMidiDriver.h	\
 	UnixSeqMidiDriver.cpp	\
