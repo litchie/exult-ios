@@ -2,7 +2,7 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../imagewin -I$(srcdir)/../conf -I$(srcdir)/../gamemgr \
 	-I$(srcdir)/../files -I$(srcdir)/../server  -I$(srcdir)/../usecode \
 	-I$(srcdir)/../shapes/shapeinf \
-	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
+	$(GLADE_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
 if GIMP_PLUGIN
 GIMP_PLUGINS=u7shp
@@ -71,7 +71,7 @@ exult_studio_LDADD = \
 	../shapes/shapeinf/libshapeinf.la	\
 	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS) $(ZLIB_LIBS)
 
-exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
+exult_studio_CFLAGS = $(GLADE_CFLAGS)
 exult_studio_LDFLAGS = -export-dynamic		# For libglade 2.x
 
 mapeditdir = $(datadir)/exult
