@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Exult"
 	ProjectGUID="{0451A879-8AB7-4AD0-A559-CC3EC4DA9A50}"
 	RootNamespace="Exult"
@@ -15,111 +15,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Release Install|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory=".\Release"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Installing $(TargetFileName)"
-				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
-				Outputs="$(EXULT_INSTALL_PATH)\$(TargetFileName)"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
-				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
-				StringPooling="true"
-				ExceptionHandling="1"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
-				RuntimeTypeInfo="false"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="msvc_kludges.h"
-				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib  ws2_32.lib"
-				OutputFile="$(OutDir)/$(ProjectName).exe"
-				Version="1.1"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				SubSystem="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory=".\DebugNI"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -145,17 +43,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\shapes\shapeinf;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="_DEBUG;DEBUG;_CONSOLE;EXULT;WIN32;USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
-				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
-				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -177,14 +70,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib ws2_32.lib ole32.lib user32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib opengl32.lib ws2_32.lib ole32.lib user32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
+				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib;libcmt.lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="1"
 			/>
 			<Tool
@@ -214,8 +106,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory=".\ReleaseNI"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -240,26 +132,17 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="1"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				EnableFiberSafeOptimizations="false"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
+				Optimization="2"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\shapes\shapeinf;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32"
 				StringPooling="true"
 				ExceptionHandling="1"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="msvc_kludges.h"
-				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\ReleaseNI/"
-				ObjectFile=".\ReleaseNI/"
-				ProgramDataBaseFileName=".\ReleaseNI/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CompileAs="2"
 				ForcedIncludeFiles="msvc_kludges.h"
 			/>
@@ -277,114 +160,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib ws2_32.lib"
-				OutputFile="$(OutDir)/$(ProjectName).exe"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib opengl32.lib ws2_32.lib libogg_static.lib libvorbis_static.lib libvorbisfile_static.lib"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="2"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug Install|Win32"
-			OutputDirectory=".."
-			IntermediateDirectory=".\Debug"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Installing $(TargetFileName)"
-				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)&#x0D;&#x0A;"
-				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\../Exult.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools;..\gamemgr"
-				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				RuntimeTypeInfo="false"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="msvc_kludges.h"
-				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="4"
-				CompileAs="2"
-				ForcedIncludeFiles="msvc_kludges.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib SDLmain.lib  ws2_32.lib"
-				OutputFile="$(OutDir)/$(ProjectName).exe"
-				Version="1.1"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\../Exult.pdb"
-				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="2"
+				SetChecksum="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -427,6 +213,30 @@
 					>
 				</File>
 				<File
+					RelativePath="..\audio\AudioChannel.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioChannel.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioMixer.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioMixer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\AudioSample.h"
+					>
+				</File>
+				<File
 					RelativePath="..\audio\conv.cc"
 					>
 				</File>
@@ -435,7 +245,39 @@
 					>
 				</File>
 				<File
+					RelativePath="..\audio\OggAudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\OggAudioSample.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\RawAudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\RawAudioSample.h"
+					>
+				</File>
+				<File
 					RelativePath="..\audio\soundtest.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\VocAudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\VocAudioSample.h"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\WavAudioSample.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\WavAudioSample.h"
 					>
 				</File>
 				<Filter
@@ -455,10 +297,6 @@
 					</File>
 					<File
 						RelativePath="..\audio\Midi.h"
-						>
-					</File>
-					<File
-						RelativePath="..\audio\Mixer.h"
 						>
 					</File>
 					<File
@@ -1863,47 +1701,11 @@
 				Name="shapes"
 				>
 				<File
-					RelativePath="..\shapes\ammoinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\aniinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\armorinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\bodyinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\continf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\effhpinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\expinf.cc"
-					>
-				</File>
-				<File
 					RelativePath="..\shapes\font.cc"
 					>
 				</File>
 				<File
 					RelativePath="..\shapes\fontvga.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\frnameinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\frpowers.cc"
 					>
 				</File>
 				<File
@@ -1916,22 +1718,6 @@
 				</File>
 				<File
 					RelativePath="..\shapes\miscinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\monstinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\npcdollinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\objdollinf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\sfxinf.cc"
 					>
 				</File>
 				<File
@@ -1950,47 +1736,11 @@
 					RelativePath="..\shapes\vgafile.cc"
 					>
 				</File>
-				<File
-					RelativePath="..\shapes\warminf.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\weaponinf.cc"
-					>
-				</File>
 				<Filter
 					Name="shapes h"
 					>
 					<File
-						RelativePath="..\shapes\ammoinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\aniinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\armorinf.h"
-						>
-					</File>
-					<File
 						RelativePath="..\shapes\baseinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\bodyinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\continf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\effhpinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\expinf.h"
 						>
 					</File>
 					<File
@@ -1999,14 +1749,6 @@
 					</File>
 					<File
 						RelativePath="..\shapes\fontvga.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\frnameinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\frpowers.h"
 						>
 					</File>
 					<File
@@ -2019,18 +1761,6 @@
 					</File>
 					<File
 						RelativePath="..\shapes\miscinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\monstinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\npcdollinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\objdollinf.h"
 						>
 					</File>
 					<File
@@ -2061,12 +1791,388 @@
 						RelativePath="..\shapes\vgafile.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="shapeinf"
+					>
 					<File
-						RelativePath="..\shapes\warminf.h"
+						RelativePath="..\shapes\shapeinf\ammoinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\ammoinf.h"
 						>
 					</File>
 					<File
-						RelativePath="..\shapes\weaponinf.h"
+						RelativePath="..\shapes\shapeinf\aniinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\aniinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\armorinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\armorinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\bodyinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\bodyinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\continf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\continf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\effhpinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\effhpinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\expinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\expinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frflags.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frflags.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frnameinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frnameinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frusefun.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\frusefun.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\monstinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\monstinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\npcdollinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\npcdollinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\objdollinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\objdollinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\sfxinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\sfxinf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\warminf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\warminf.h"
+						>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\weaponinf.cc"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)\$(InputName)1.obj"
+								XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\shapes\shapeinf\weaponinf.h"
 						>
 					</File>
 				</Filter>
@@ -2210,15 +2316,6 @@
 					RelativePath="..\gamemgr\bggame.cc"
 					>
 					<FileConfiguration
-						Name="Release Install|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
 						>
 						<Tool
@@ -2229,15 +2326,6 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Install|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2254,15 +2342,6 @@
 					RelativePath="..\gamemgr\modmgr.cc"
 					>
 					<FileConfiguration
-						Name="Release Install|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
 						>
 						<Tool
@@ -2273,15 +2352,6 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Install|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2294,15 +2364,6 @@
 					RelativePath="..\gamemgr\sigame.cc"
 					>
 					<FileConfiguration
-						Name="Release Install|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
 						Name="Debug|Win32"
 						>
 						<Tool
@@ -2313,15 +2374,6 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug Install|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -2409,15 +2461,6 @@
 				RelativePath="..\win32\exultico.rc"
 				>
 				<FileConfiguration
-					Name="Release Install|Win32"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -2428,15 +2471,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCResourceCompilerTool"
-						Culture="3081"
-						AdditionalIncludeDirectories="\UC\exult\win32;..\win32;$(NoInherit)"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug Install|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -2457,14 +2491,6 @@
 				RelativePath=".\msvc_kludges.cc"
 				>
 				<FileConfiguration
-					Name="Release Install|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -2474,14 +2500,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug Install|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

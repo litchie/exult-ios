@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,16 +24,17 @@
 #include <SDL_audio.h>
 #include "Midi.h"
 #include "exceptions.h"
+#include "AudioMixer.h"
 #include "exult_constants.h"
-
-//SDL_mixer doesn't like mixing different rates when using OGG
-//This should match the same as the SFX and OGG Music which is 22khz
-#define SAMPLERATE	22050
 
 class SFX_cached;
 class SFX_cache_manager;
 class Flex;
+class MyMidiPlayer;
+class Tile_coord;
+class Game_object;
 
+#define MAX_SOUND_FALLOFF	24
 /*
  *	Music:
  */
@@ -59,16 +60,13 @@ private:
 	bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool allow_music_looping;
-	bool SDL_open;
 	SFX_cache_manager *sfxs;		// SFX and voice cache manager
-	MyMidiPlayer *midi;
 	bool initialized;
 	SDL_AudioSpec wanted;
-	Mix_Chunk *wave;
+	Pentagram::AudioMixer *mixer;
 
 public:
 	bool audio_enabled;
-	SDL_AudioSpec actual;
 	Flex *sfx_file;			// Holds .wav sound effects.
 
 private:
@@ -76,9 +74,6 @@ private:
 	Audio();
 	~Audio();
 	void	Init(int _samplerate,int _channels);
-
-	uint8 *	convert_VOC(uint8 *,uint32 &);
-	void	build_speech_vector(void);
 
 public:
 	friend class Tired_of_compiler_warnings;
@@ -98,6 +93,7 @@ public:
 	void	pause_audio(void);
 	void    resume_audio(void);
 
+	void	copy_and_play(const uint8 *sound_data,uint32 len,bool);
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,const char *,bool);
 	bool	playing(void);
@@ -105,10 +101,21 @@ public:
 	void	start_music(std::string fname,int num,bool continuous=false);
 	void	start_music_combat(Combat_song song,bool continuous);
 	void	stop_music();
-	int		play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
-					int dir = 0, int repeat = 0);
-	int		play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME,
-					int dir = 0, int repeat = 0);
+	int		play_sound_effect (int num, int volume = AUDIO_MAX_VOLUME,
+					int balance = 0, int repeat = 0, int distance=0);
+	int		play_wave_sfx(int num, int volume = AUDIO_MAX_VOLUME,
+					int balance = 0, int repeat = 0, int distance=0);
+
+	static void get_2d_position_for_tile(const Tile_coord &tile, int &distance, int &balance);
+
+	int		play_sound_effect (int num, const Game_object *obj, int volume = AUDIO_MAX_VOLUME, int repeat = 0);
+	int		play_sound_effect (int num, const Tile_coord &tile, int volume = AUDIO_MAX_VOLUME, int repeat = 0);
+
+	int		update_sound_effect(int chan, const Game_object *obj);
+	int		update_sound_effect(int chan, const Tile_coord &tile);
+
+	void	stop_sound_effect(int chan);
+
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);
 	bool	is_speech_enabled() const { return speech_enabled; }
@@ -128,19 +135,14 @@ public:
 	static bool have_config_sfx(const std::string &game, std::string *out = 0);
 	static void	channel_complete_callback(int chan);
 
-	bool	is_track_playing(int num) { 
-			return midi && midi->is_track_playing(num);
-	}
-
-	int		get_sample_rate() { return actual.freq; }
-	bool	is_stereo() { return actual.channels == 2; }
-
-	MyMidiPlayer *get_midi() {return midi;}
+	bool	is_track_playing(int num);
 
 	Flex *get_sfx_file()                   
 		{ return sfx_file; }
 	SFX_cache_manager *get_sfx_cache() const
 		{ return sfxs; }
+
+	MyMidiPlayer *get_midi();
 };
 
 #endif

@@ -261,7 +261,7 @@ bool Combat_schedule::teleport
 		src.tz = 0;
 	eman->add_effect(new Fire_field_effect(src));
 	int sfx = Audio::game_sfx(43);
-	Audio::get_ptr()->play_sound_effect(sfx);	// The weird noise.
+	Audio::get_ptr()->play_sound_effect(sfx, npc);	// The weird noise.
 	npc->move(dest.tx, dest.ty, dest.tz);
 					// Show the stars.
 	eman->add_effect(new Sprites_effect(7, npc, 0, 0, 0, 0));

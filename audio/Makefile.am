@@ -1,7 +1,8 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
 		-I$(srcdir)/../objs -I$(srcdir)/../files -I$(srcdir)/../gumps \
-		-I$(srcdir)/../conf -I$(srcdir)/midi_drivers \
- $(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
+		-I$(srcdir)/../conf -I$(srcdir)/midi_drivers -I../files -I../conf \
+		$(SDL_CFLAGS) $(VORBIS_CFLAGS) $(OGG_CFLAGS) $(KMID_INCLUDES) \
+		$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = midi_drivers
 
@@ -15,8 +16,22 @@ libaudio_la_SOURCES =	\
 	conv.cc		\
 	conv.h		\
 	soundtest.cc	\
-	soundtest.h	\
-	convmusic.h
+	soundtest.h	    \
+	convmusic.h     \
+	AudioChannel.cc \
+	AudioChannel.h  \
+	AudioMixer.cc   \
+	AudioMixer.h    \
+	AudioSample.cc  \
+	AudioSample.h   \
+	OggAudioSample.cc \
+	OggAudioSample.h  \
+	RawAudioSample.cc \
+	RawAudioSample.h  \
+	VocAudioSample.cc \
+	VocAudioSample.h  \
+	WavAudioSample.cc \
+	WavAudioSample.h
 
 EXTRA_DIST = 		\
 	README

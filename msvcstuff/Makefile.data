@@ -1,17 +1,37 @@
 EXEC=Exult.exe
-EXEEXT=.exe
+EXEEXT=
 
-!include Makefile.common
+!include ../Makefile.common
 
+MSVC_EXULT_FLX = ../data/exult.flx ../data/exult_flx.h
+MSVC_EXULT_BG_FLX = ../data/exult_bg.flx ../data/exult_bg_flx.h
+MSVC_EXULT_SI_FLX = ../data/exult_si.flx ../data/exult_si_flx.h 
+MSVC_EXULT_BG_PAPERDOL_VGA = ../data/bg/bg_paperdol.vga ../data/bg/bg_paperdol_vga.h
+MSVC_EXULT_BG_MR_FACES_VGA = ../data/bg/bg_mr_faces.vga ../data/bg/bg_mr_faces_vga.h
+
+$(MSVC_EXULT_FLX): $(OutDir)\expack.exe $(EXULT_FLX_OBJECTS:data/=../data/)
+	$(OutDir)\expack -i ../data/flx.in
+
+$(MSVC_EXULT_BG_FLX): $(OutDir)\expack.exe $(EXULT_BG_FLX_OBJECTS:data/=../data/)
+	$(OutDir)\expack -i ../data/bg/flx.in
+
+$(MSVC_EXULT_SI_FLX): $(OutDir)\expack.exe $(EXULT_SI_FLX_OBJECTS:data/=../data/)
+	$(OutDir)\expack -i ../data/si/flx.in
+
+$(MSVC_EXULT_BG_PAPERDOL_VGA): $(OutDir)\expack.exe $(EXULT_BG_PAPERDOL_VGA_OBJECTS:data/=../data/)
+	$(OutDir)\expack.exe -i ../data/bg/bg_paperdol.in
+
+$(MSVC_EXULT_BG_MR_FACES_VGA): $(OutDir)\expack.exe $(EXULT_BG_MR_FACES_VGA_OBJECTS:data/=../data/)
+	$(OutDir)\expack.exe -i ../data/bg/bg_mr_faces.in
 
 # Exult.flx
-build_ex : $(EXULT_FLX)
+build_ex : $(MSVC_EXULT_FLX)
 
-install_ex : $(EXULT_FLX)
+install_ex : $(MSVC_EXULT_FLX)
 	copy data\exult.flx "$(EXULT_INSTALL_PATH)\data"
 	
 clean_ex :
-	del $(EXULT_FLX:/=\)
+	del $(MSVC_EXULT_FLX:/=\)
 
 rebuild_ex : clean_ex build_ex
 
@@ -19,13 +39,13 @@ reinstall_ex : clean_exe install_ex
 
 
 # exult_bg.flx
-build_bg : $(EXULT_BG_FLX)
+build_bg : $(MSVC_EXULT_BG_FLX)
 
-install_bg : $(EXULT_BG_FLX)
+install_bg : $(MSVC_EXULT_BG_FLX)
 	copy data\exult_bg.flx "$(EXULT_INSTALL_PATH)\data"
 	
 clean_bg :
-	del $(EXULT_BG_FLX:/=\)
+	del $(MSVC_EXULT_BG_FLX:/=\)
 
 rebuild_bg : clean_bg build_bg
 
@@ -33,13 +53,13 @@ reinstall_bg : clean_bg install_bg
 
 
 # exult_si.flx
-build_si : $(EXULT_SI_FLX)
+build_si : $(MSVC_EXULT_SI_FLX)
 
-install_si : $(EXULT_SI_FLX)
+install_si : $(MSVC_EXULT_SI_FLX)
 	copy data\exult_si.flx "$(EXULT_INSTALL_PATH)\data"
 
 clean_si :
-	del $(EXULT_SI_FLX:/=\)
+	del $(MSVC_EXULT_SI_FLX:/=\)
 
 rebuild_si : clean_si build_si
 

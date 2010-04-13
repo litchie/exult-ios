@@ -7,7 +7,7 @@
 /*
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@
 #include "glshape.h"
 #include "party.h"
 #include "Notebook_gump.h"
+#include "AudioMixer.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -166,7 +167,7 @@ void Background_noise::handle_event
 		{
 			//Play the cricket sounds at night 
 			delay = 3000 + rand()%5000;
-			Audio::get_ptr()->play_sound_effect(61, MIX_MAX_VOLUME - 30);
+			Audio::get_ptr()->play_sound_effect(61, AUDIO_MAX_VOLUME - 30);
 		}
 
 		if((curr_track == -1 || laststate != currentstate ) && Audio::get_ptr()->is_music_enabled())
@@ -254,9 +255,9 @@ void Background_noise::handle_event
 			}
 		}
 	}
-#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
+#endif
 }
 
 /*

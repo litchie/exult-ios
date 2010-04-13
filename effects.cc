@@ -1,7 +1,7 @@
 /*
  *	effects.cc - Special effects.
  *
- *  Copyright (C) 2000-2005  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,9 @@
 #include "ucmachine.h"
 
 #include "SDL_timer.h"
+
+#include "AudioMixer.h"
+using namespace Pentagram;
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -502,9 +505,7 @@ void Explosion_effect::handle_event
 	int frnum = sprite.get_framenum();
 	if (!frnum)			// Max. volume, with stereo position.
 		{
-		Tile_coord apos = gwin->get_main_actor()->get_tile();
-		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-		Audio::get_ptr()->play_sound_effect(exp_sfx, SDL_MIX_MAXVOLUME, dir);
+		Audio::get_ptr()->play_sound_effect(exp_sfx, pos, AUDIO_MAX_VOLUME);
 		}
 	if (frnum == frames/4)
 		{
@@ -912,9 +913,7 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	stop_time = Game::get_ticks() + 20*1000;
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
-	Tile_coord apos = gwin->get_main_actor()->get_tile();
-	int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-	channel = Audio::get_ptr()->play_sound_effect(sfx, SDL_MIX_MAXVOLUME, dir, -1);
+	channel = Audio::get_ptr()->play_sound_effect(sfx, pos, -1);
 	}
 
 /**
@@ -1020,34 +1019,13 @@ void Homing_projectile::handle_event
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 		if (channel < 0)
 			return;
-		int distance = gwin->get_main_actor()->distance(pos);
-		int dir = 0;
-		int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
-
-		if (distance)
-			{			// 160/8 = 20 tiles. 20*20=400.
-			volume = (MIX_MAX_VOLUME*64)/(distance*distance);
-			if (!volume)		// Dead?
-				{
-				Mix_HaltChannel(channel);
-				channel = -1;
-				return;
-				}
-			if (volume < 8)
-				volume = 8;
-			else if (volume > MIX_MAX_VOLUME)
-				volume = MIX_MAX_VOLUME;
-			Tile_coord apos = gwin->get_main_actor()->get_center_tile();
-			dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-			}
-		Mix_Volume(channel, volume);
-		Mix_SetPosition(channel, (dir * 22), 0);
+		channel = Audio::get_ptr()->update_sound_effect(channel, pos);
 		}
 	else
 		{
 		if (channel >= 0)
 			{
-			Mix_HaltChannel(channel);
+			AudioMixer::get_instance()->stopSample(channel);
 			channel = -1;
 			}
 		gwin->set_all_dirty();

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -540,8 +540,8 @@ static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file& exult_flx, 
 		delete buf;
 		return exultlogo;
 		}
-	return 0;
 #endif
+	return 0;
 	}
 
 BaseGameInfo *ExultMenu::run()

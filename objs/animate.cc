@@ -6,6 +6,7 @@
 
 /*
 Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000-2010 The Exult team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -38,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include "aniinf.h"
 #include "sfxinf.h"
+#include "AudioMixer.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::map;
@@ -47,33 +49,19 @@ using std::endl;
 using std::cout;
 #endif
 
+using namespace Pentagram;
 
-static inline bool Get_sfx_volume
+static inline bool Get_sfx_out_of_range
 	(
 	Game_window *gwin,
-	Game_object *obj,
-	int& distance,
-	int& volume,
-	int& dir
+	Game_object *obj
 	)
 	{
 	//distance = gwin->get_main_actor()->distance(obj);
-	distance = gwin->get_main_actor()->sound_distance(obj);
+	Rectangle size = gwin->get_win_tile_rect();
+	Tile_coord apos(size.x+size.w/2,size.y+size.h/2,gwin->get_camera_actor()->get_lift());
 
-	if (distance)
-		{			// 160/8 = 20 tiles. 20*20=400.
-		volume = (MIX_MAX_VOLUME*64)/(3*distance);
-		if (!volume)		// Dead?
-			return true;	// Time to kill it.
-		if (volume < 8)
-			volume = 8;
-		else if (volume > MIX_MAX_VOLUME)
-			volume = MIX_MAX_VOLUME;
-		Tile_coord apos = gwin->get_main_actor()->get_center_tile();
-		Tile_coord opos = obj->get_center_tile();
-		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
-		}
-	return false;
+	return apos.square_distance_screen_space(obj->get_center_tile()) > (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
 	}
 
 /*
@@ -81,7 +69,7 @@ static inline bool Get_sfx_volume
  */
 
 Object_sfx::Object_sfx(Game_object *o, int s, int delay)
-	: obj(o), sfx(s), channel(-1), distance(-1)
+	: obj(o), sfx(s), channel(-1)
 	{	// Start immediatelly.
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
 	}
@@ -92,8 +80,7 @@ void Object_sfx::stop()
 		;
 	if(channel >= 0)
 		{
-		if (Mix_Playing(channel))
-			Mix_HaltChannel(channel);
+		Audio::get_ptr()->stop_sound_effect(channel);
 		channel = -1;
 		}
 	delete this;
@@ -107,34 +94,31 @@ void Object_sfx::handle_event
 	{
 	const int delay = 100;		// Guessing this will be enough.
 
-	bool active = channel != -1 ? Mix_Playing(channel) : false;
+	AudioMixer *mixer = AudioMixer::get_instance();
+	bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
-	if (obj->is_pos_invalid() || (distance >= 0 && !active))
+	if (obj->is_pos_invalid())// || (distance >= 0 && !active))
 		{	// Quitting time.
 		stop();
 		return;
 		}
 
-	dir = 0;
-	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
-	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
+	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
+	bool halt = Get_sfx_out_of_range(gwin, obj);
 
 	if (!halt && channel == -1 && sfx > -1)		// First time?
 					// Start playing.
-		channel = Audio::get_ptr()->play_sound_effect(
-					sfx, volume, dir, 0);
+		channel = Audio::get_ptr()->play_sound_effect(sfx, obj, volume, 0);
 	else if (channel != -1)
 		{
 		if (halt)
 			{
-			Mix_HaltChannel(channel);
+			Audio::get_ptr()->stop_sound_effect(channel);
 			channel = -1;
 			}
 		else
 			{
-			//Just change the "location" of the sound
-			Mix_Volume(channel, volume);
-			Mix_SetPosition(channel, (dir * 22), 0);
+			channel = Audio::get_ptr()->update_sound_effect(channel,obj);
 			}
 		}
 
@@ -153,10 +137,20 @@ void Shape_sfx::stop()
 		{
 		if(channel[i] >= 0)
 			{
-			Mix_HaltChannel(channel[i]);
+			Audio::get_ptr()->stop_sound_effect(channel[i]);
 			channel[i] = -1;
 			}
 		}
+	}
+
+inline void Shape_sfx::set_looping
+	(
+	)
+	{
+	looping = sfxinf ? (sfxinf->get_sfx_range() == 1
+	                    && sfxinf->get_chance() == 100
+	                    && !sfxinf->play_horly_ticks())
+	                 : false;
 	}
 
 /*
@@ -176,15 +170,20 @@ void Shape_sfx::update
 
 	if (!sfxinf)
 		return;
+	
+	if (looping)
+		play = true;
+
+	AudioMixer *mixer = AudioMixer::get_instance();
 
 	int active[2] = {0, 0};
 	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
-	 		active[i] = Mix_Playing(channel[i]);
+	 		active[i] = mixer->isPlaying(channel[i]);
 		if (!active[i] && channel[i] != -1)
 			{
-			Mix_HaltChannel(channel[i]);
+			Audio::get_ptr()->stop_sound_effect(channel[i]);
 			channel[i] = -1;
 			}
 		}
@@ -200,7 +199,7 @@ void Shape_sfx::update
 			return;
 		sfxnum[0] = sfxinf->get_next_sfx(last_sfx);
 		}
-	int rep[2] = {0, 0};
+	int rep[2] = {looping ? -1 : 0, 0};
 	if (play && channel[1] == -1 && sfxinf->play_horly_ticks())
 		{
 		Game_clock *gclock = Game_window::get_instance()->get_clock();
@@ -213,8 +212,8 @@ void Shape_sfx::update
 		}
 
 	dir = 0;
-	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
-	bool halt = Get_sfx_volume(gwin, obj, distance, volume, dir);
+	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
+	bool halt = Get_sfx_out_of_range(gwin, obj);
 
 	if (play && halt)
 		play = false;
@@ -222,20 +221,17 @@ void Shape_sfx::update
 	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		if (play && channel[i] == -1 && sfxnum[i] > -1)		// First time?
 						// Start playing.
-			channel[i] = Audio::get_ptr()->play_sound_effect(
-						sfxnum[i], volume, dir, rep[i]);
+			channel[i] = Audio::get_ptr()->play_sound_effect(sfxnum[i], obj, volume, rep[i]);
 		else if (channel[i] != -1)
 			{
 			if(halt)
 				{
-				Mix_HaltChannel(channel[i]);
+				Audio::get_ptr()->stop_sound_effect(channel[i]);
 				channel[i] = -1;
 				}
 			else
 				{
-				//Just change the "location" of the sound
-				Mix_Volume(channel[i], volume);
-				Mix_SetPosition(channel[i], (dir * 22), 0);
+				channel[i] = Audio::get_ptr()->update_sound_effect(channel[i], obj);
 				}
 			}
 	}
