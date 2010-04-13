@@ -297,11 +297,11 @@ public:
 		str_int_pair resource = game->get_resource(buf);
 		U7object txtobj(resource.str, resource.num);
 		*/
-		char buf[50];
-		const char *flexfmt =
-				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
-		snprintf(buf, 50, flexfmt, game == BLACK_GATE ? "bg" : "si");
-		U7object txtobj(buf, resource);
+		bool bg = game == BLACK_GATE;
+		const char *flexfile =
+				bg ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
+				   : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+		U7object txtobj(flexfile, resource);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
 		std::string databuf(txt, len);
@@ -573,10 +573,11 @@ static void Read_text_data_file
 		str_int_pair resource = game->get_resource(buf);
 		U7object txtobj(resource.str, resource.num);
 		*/
-		const char *flexfmt =
-				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
-		snprintf(buf, 50, flexfmt, game == BLACK_GATE ? "bg" : "si");
-		U7object txtobj(buf, resource);
+		bool bg = game == BLACK_GATE;
+		const char *flexfile =
+				bg ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
+				   : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+		U7object txtobj(flexfile, resource);
 		std::size_t len;
 		char *txt = txtobj.retrieve(len);
 		BufferDataSource ds(txt, len);

@@ -245,11 +245,10 @@ void Shape_manager::load
 		}
 	else if (GAME_BG || GAME_SI)
 		{
-		char buf[50];
-		const char *flexfmt =
-				BUNDLE_CHECK(BUNDLE_EXULT_GAM_FLX, EXULT_GAM_FLX);
-		snprintf(buf, 50, flexfmt, GAME_BG ? "bg" : "si");
-		U7object txtobj(buf,
+		const char *flexfile =
+				GAME_BG ? BUNDLE_CHECK(BUNDLE_EXULT_BG_FLX, EXULT_BG_FLX)
+				        : BUNDLE_CHECK(BUNDLE_EXULT_SI_FLX, EXULT_SI_FLX);
+		U7object txtobj(flexfile,
 				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;
 		ptr = blends = (unsigned char *)txtobj.retrieve(len);
