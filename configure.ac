@@ -928,7 +928,6 @@ fi
 if test x$have_gnomeui = xyes; then
 echo libGnomeui................. : `$PKG_CONFIG --modversion libgnomeui-2.0`
 fi
-fi
 echo 
 echo Build tools................ : $enable_tools
 echo Build usecode compiler..... : $enable_compiler
