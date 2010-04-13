@@ -344,17 +344,6 @@ bool	Audio::can_sfx(const std::string &file, std::string *out)
 		}
 #endif
 
-#ifdef MACOSX
-	// Check in the app bundle:
-	d = "<BUNDLE>/" + file;
-	if (is_system_path_defined("<BUNDLE>") && U7exists(d.c_str()))
-		{
-		if (out)
-			*out = d;
-		return true;
-		}
-#endif
-
 	// Also just check in the actual data dir
 	d = "<DATA>/" + file;
 	if (U7exists(d.c_str()))
@@ -364,14 +353,9 @@ bool	Audio::can_sfx(const std::string &file, std::string *out)
 		return true;
 		}
 
-bool Audio::have_config_sfx(const std::string &game, std::string *out)
-	{
-	string s;
-	string d = "config/disk/game/" + game + "/waves";
-	config->value(d.c_str(), s, "---");
-	return (s != "---") && can_sfx(s, out);
-	}
-	
+	return false;
+}
+
 bool Audio::have_roland_sfx(Exult_Game game, std::string *out)
 	{
 	if (game == BLACK_GATE)
