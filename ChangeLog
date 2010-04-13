@@ -10,6 +10,8 @@
 	  since this script is probably non-portable, the generated output makefiles
 	  have been included in the SVN dir for the time being.
 	* Makefile.am: Do not link with libmt32emu.la if it is not built.
+	* shapeid.cc, shapes/data_utils.h: Fixed crash on Mac OS X bundles if there
+	  was no exult_bg.flx or exult_si.flx in external data directory.
 
 2010-03-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* mapedit/npcedit.cc: Fixed another instance of assuming longs are 32-bit.
