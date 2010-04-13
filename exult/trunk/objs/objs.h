@@ -116,8 +116,6 @@ public:
 		// Get missile start location in abs. tiles given dir.
 	Tile_coord get_missile_tile(int dir) const;
 					// Get distance to another object.
-	int sound_distance(Game_object *o2) const;
-					// Get distance to another object.
 	int distance(Game_object *o2) const;
 					// Get direction to another object.
 	int distance(Tile_coord t2) const;

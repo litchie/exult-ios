@@ -227,6 +227,47 @@ bool Synth::loadControlROM(const char *filename) {
 	return false;
 }
 
+bool Synth::loadControlROM(const char *filename1, const char *filename2, const char *write_filename) {
+	File *file1 = openFile(filename1, File::OpenMode_read); // ROM File
+	if (file1 == NULL) return false;
+	File *file2 = openFile(filename2, File::OpenMode_read); // ROM File
+	if (file2 == NULL) {
+		closeFile(file1);
+		return false;
+	}
+
+	bool ok = true;
+
+	for (int i = 0; i < CONTROL_ROM_SIZE/2; i++)
+	{
+		ok = file1->readBit8u(&controlROMData[i*2]);
+		if (!ok) break;
+		ok = file2->readBit8u(&controlROMData[i*2+1]);
+		if (!ok) break;
+	}
+
+	closeFile(file1);
+	closeFile(file2);
+
+	if (!ok) return false;
+
+	// Control ROM successfully loaded, now check whether it's a known type
+	controlROMMap = NULL;
+	for (unsigned int i = 0; i < sizeof (ControlROMMaps) / sizeof (ControlROMMaps[0]); i++) {
+		if (memcmp(&controlROMData[ControlROMMaps[i].idPos], ControlROMMaps[i].idBytes, ControlROMMaps[i].idLen) == 0) {
+			controlROMMap = &ControlROMMaps[i];
+
+			file1 = openFile(write_filename,File::OpenMode_write);
+			if (file1) {
+				file1->write(controlROMData,CONTROL_ROM_SIZE);
+				closeFile(file1);
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Synth::loadPCMROM(const char *filename) {
 	File *file = openFile(filename, File::OpenMode_read); // ROM File
 	if (file == NULL) {
@@ -396,9 +437,11 @@ bool Synth::open(SynthProperties &useProp) {
 	printDebug("Loading Control ROM");
 	if (!loadControlROM("CM32L_CONTROL.ROM")) {
 		if (!loadControlROM("MT32_CONTROL.ROM")) {
-			printDebug("Init Error - Missing or invalid MT32_CONTROL.ROM");
-			report(ReportType_errorControlROM, NULL);
-			return false;
+			if (!loadControlROM("MT32A.BIN","MT32B.BIN","MT32_CONTROL.ROM")) {
+				printDebug("Init Error - Missing or invalid MT32_CONTROL.ROM");
+				report(ReportType_errorControlROM, NULL);
+				return false;
+			}
 		}
 	}
 

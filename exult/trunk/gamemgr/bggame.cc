@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2005  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
 #include "modmgr.h"
 #include "miscinf.h"
 #include "gump_utils.h"
+#include "AudioMixer.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -638,7 +639,7 @@ void BG_Game::scene_guardian()
 		pal->apply();
 
 		//play static SFX
-		Audio::get_ptr()->play_sound_effect(115, MIX_MAX_VOLUME, 0, 0);
+		Audio::get_ptr()->play_sound_effect(115, AUDIO_MAX_VOLUME, 0, 0);
 		
 		//
 		// Show some "static" alternating with the blue plasma
@@ -1263,7 +1264,7 @@ bool ExVoiceBuffer::play_it()
 		buf += 8;
 		size -= 8;
 		}
-	Audio::get_ptr()->play (buf, size, false);
+	Audio::get_ptr()->copy_and_play(buf, size, false);
 	FORGET_ARRAY(buffer);
 	played = true;
 

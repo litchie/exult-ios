@@ -159,7 +159,7 @@ public:
 			dir = Get_direction16(opos.ty - epos.ty, 
 							epos.tx - opos.tx);
 			}
-		Audio::get_ptr()->play_sound_effect(score, SDL_MIX_MAXVOLUME, dir,
+		Audio::get_ptr()->play_sound_effect(score, this, AUDIO_MAX_VOLUME, 
 							continuous);
 	}
 };

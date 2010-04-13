@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,13 +22,17 @@
 #include <vector>
 #include <string>
 
-#include "SDL_mixer.h"
+#include <vorbis/codec.h>
 
 #include "common_types.h"
 
 #include "fnames.h"
 
 class MidiDriver;
+
+namespace Pentagram {
+	class AudioSample;
+}
 
 //---- MyMidiPlayer -----------------------------------------------------------
 
@@ -47,6 +51,8 @@ public:
 
 	MyMidiPlayer();
 	~MyMidiPlayer();
+
+	void			destroyMidiDriver();
 
 	void			start_music(int num,bool continuous=false,std::string flex=MAINMUS);
 	void			start_music(std::string fname,int num,bool continuous=false);
@@ -74,6 +80,9 @@ public:
 	int				get_effects_conversion() { return effects_conversion; }
 #endif
 
+	void			produceSamples(sint16 *stream, uint32 bytes);
+	void			load_timbres();
+
 private:
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
@@ -86,7 +95,6 @@ private:
 	MidiDriver *	midi_driver;
 	bool			initialized;
 	bool			init_device(void);
-	static void		sdl_music_hook(void *udata, uint8 *stream, int len);
 
 
 	TimberLibrary	timbre_lib;
@@ -95,16 +103,20 @@ private:
 	int				timbre_lib_game;
 	int				music_conversion;
 	int				effects_conversion;
-	void			load_timbres();
 	int				setup_timbre_for_track(std::string &str);
 	
 	// Ogg Stuff
 	bool			ogg_enabled;
-	Mix_Music		*oggmusic;
+	sint32			ogg_instance_id;
 
-	bool			ogg_play_track(std::string filename, int num, bool repeat);
-	bool			ogg_is_playing();
-	void			ogg_stop_track();
+	bool				ogg_play_track(std::string filename, int num, bool repeat);
+	bool				ogg_is_playing();
+	void				ogg_stop_track();
+
+	void				ogg_mix(sint16 *stream, uint32 bytes);
+
+
+
 };
 
 #endif
