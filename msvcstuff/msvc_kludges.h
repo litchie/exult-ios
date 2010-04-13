@@ -42,13 +42,14 @@
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
-#define NOMINMAX
 
 #ifndef DEBUG
 //#define DEBUG 1
 #endif
 
 #endif
+
+#define NOMINMAX
 
 // Yeah, lets do unicode compiles
 //#define UNICODE
@@ -322,25 +323,9 @@ using std::getline;
 #include "../shapes/font.h"
 #include "../shapes/fontvga.h"
 #include "../shapes/items.h"
-#include "../shapes/monstinf.h"
-#include "../shapes/shapeinf.h"
 #include "../shapes/shapevga.h"
 #include "../shapes/u7drag.h"
 #include "../shapes/vgafile.h"
-#include "../shapes/ammoinf.h"
-#include "../shapes/aniinf.h"
-#include "../shapes/armorinf.h"
-#include "../shapes/bodyinf.h"
-#include "../shapes/continf.h"
-#include "../shapes/effhpinf.h"
-#include "../shapes/expinf.h"
-#include "../shapes/frnameinf.h"
-#include "../shapes/monstinf.h"
-#include "../shapes/npcdollinf.h"
-#include "../shapes/objdollinf.h"
-#include "../shapes/sfxinf.h"
-#include "../shapes/warminf.h"
-#include "../shapes/weaponinf.h"
 
 #endif //USING_PRECOMPILED_HEADER
 

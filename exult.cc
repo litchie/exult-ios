@@ -97,6 +97,8 @@
 #include "crc.h"
 #include "items.h"
 #include "gamemgr/modmgr.h"
+#include "AudioMixer.h"
+using namespace Pentagram;
 
 #ifdef UNDER_CE
   #include "Keyboard_gump.h"
@@ -244,6 +246,10 @@ void sigchld_handler(int sig)
 	waitpid(-1, 0, WNOHANG);
 }
 
+#endif
+
+#if defined(_WIN32) && defined(main) && defined(_MSC_VER)
+#undef main
 #endif
 
 
@@ -942,7 +948,7 @@ static void Init
 
 		if (audio)
 			{
-			Audio::get_ptr()->Init_sfx();
+			audio->Init_sfx();
 			midi = audio->get_midi();
 			}
 
@@ -961,6 +967,7 @@ static void Init
 			{
 			if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			game->play_intro();
+			std::cout << "played intro" << std::endl;
 			}
 
 		if (midi)

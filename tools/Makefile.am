@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode \
 	-I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
 	-I$(srcdir)/../conf $(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS) \
-	$(GNOMEUI_INCLUDES)
+	$(LIBGNOMEUI_CFLAGS)
 
 if HAVE_PNG
 IPACK = ipack
@@ -50,7 +50,7 @@ gnome_shp_thumbnailer_LDADD = \
 	../shapes/libshapes.la \
 	../imagewin/libimagewin.la \
 	../files/libu7file.la \
-	-lpng -lz $(SYSLIBS) $(GNOMEUI_LIBS)
+	-lpng -lz $(SYSLIBS) $(LIBGNOMEUI_LIBS)
 
 wuc_SOURCES = \
 	wuc.c \

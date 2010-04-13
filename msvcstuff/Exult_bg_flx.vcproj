@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Exult_bg_flx.h"
 	ProjectGUID="{0E58490B-9F02-4FB6-8D39-18C9DAD87CCB}"
+	RootNamespace="Exult_bg_flx.h"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -16,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Exult_bg_flx___Win32_Release0"
-			IntermediateDirectory=".\."
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -25,9 +26,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="&#x0A;nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_bg /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_bg /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -39,8 +40,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Exult_bg_flx___Win32_Debug"
-			IntermediateDirectory=".\."
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="0"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -48,55 +49,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release Install|Win32"
-			OutputDirectory=".\Exult_bg_flx___Win32_Release_Install"
-			IntermediateDirectory=".\."
-			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
-				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
-				PreprocessorDefinitions=""
-				IncludeSearchPath=""
-				ForcedIncludes=""
-				AssemblySearchPath=""
-				ForcedUsingAssemblies=""
-				CompileAsManaged=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug Install|Win32"
-			OutputDirectory=".\Exult_bg_flx___Win32_Debug_Install"
-			IntermediateDirectory=".\."
-			ConfigurationType="0"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCNMakeTool"
-				BuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				ReBuildCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
-				CleanCommandLine="cd $(solutionDir)\..&#x0A;nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				BuildCommandLine="&#x0A;nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; build_bg /NOLOGO"
+				ReBuildCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; rebuild_bg /NOLOGO"
+				CleanCommandLine="nmake /f Makefile.data OutDir=&quot;$(OutDir)&quot; clean_bg /NOLOGO"
 				Output="$(SolutionDir)\..\data\exult_bg_flx.h"
 				PreprocessorDefinitions=""
 				IncludeSearchPath=""
@@ -221,6 +176,14 @@
 		</Filter>
 		<File
 			RelativePath="..\data\bg\flx.in"
+			>
+		</File>
+		<File
+			RelativePath="..\Makefile.common"
+			>
+		</File>
+		<File
+			RelativePath=".\Makefile.data"
 			>
 		</File>
 	</Files>
