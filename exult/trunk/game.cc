@@ -356,6 +356,7 @@ bool Game::show_menu(bool skip)
 			created = gwin->init_gamedat(false);
 			if(!created) {
 				show_journey_failed();
+				gwin->clear_screen(true);
 				top_menu();
 				menu->set_selection(1);
 				break;
