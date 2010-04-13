@@ -10,6 +10,8 @@
 	  since this script is probably non-portable, the generated output makefiles
 	  have been included in the SVN dir for the time being.
 	* Makefile.am: Do not link with libmt32emu.la if it is not built.
+	* shapeid.cc, shapes/data_utils.h: Fixed crash on Mac OS X bundles if there
+	  was no exult_bg.flx or exult_si.flx in external data directory.
 	* configure.ac: Cleaning up tests for libogg, libvorbis, libvorbisfile,
 	  libglade and libgnomeui. Changed AC_ARG_* to use AS_HELP_STRING. Fixed the
 	  default case for --enable-long-long-warnings. Static builds in Mac OS X
