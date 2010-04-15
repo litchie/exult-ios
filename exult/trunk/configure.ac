@@ -763,6 +763,8 @@ if test -n "$GCONFTOOL"; then
 else
 	have_gconftool=no
 fi
+# Not all systems will have this macro.
+m4_ifndef([AM_GCONF_SOURCE_2], [AC_DEFUN([AM_GCONF_SOURCE_2], [AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)])])
 
 # exult-studio
 AC_ARG_ENABLE(exult-studio, AS_HELP_STRING([--enable-exult-studio], [Build Exult Studio @<:@default no@:>@]),,enable_exult_studio=no)
