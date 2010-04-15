@@ -52,7 +52,7 @@ enum item_flags {			// Bit #'s of flags:
 /*
  *	Example to enable LB to join your party.
  */
-LB_fun object#(0x417) ()
+void LB_fun object#(0x417) ()
 	{
 	var inparty = get_item_flag(in_party);
 	static var count;
