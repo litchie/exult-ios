@@ -47,6 +47,14 @@ using std::string;
 using std::vector;
 using std::pair;
 
+// These MIGHT be macros!
+#ifndef min
+using std::min;
+#endif
+#ifndef max
+using std::max;
+#endif
+
 Shape_manager *Shape_manager::instance = 0;
 
 /*

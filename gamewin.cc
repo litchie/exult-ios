@@ -83,6 +83,7 @@
 #include "party.h"
 #include "Notebook_gump.h"
 #include "AudioMixer.h"
+#include "combat.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -3127,3 +3128,38 @@ void Game_window::cycle_load_palette()
 	}
 }
 #endif
+
+bool Game_window::is_hostile_nearby()
+{
+	/* If there is a hostile NPC nearby, the avatar isn't allowed to
+	 * move very fast
+	 * Note that the range at which this occurs in the original is
+	 * less than the "potential target" range- that is, if I go into
+	 * combat mode, even when I'm allowed to run at full speed,
+	 * I'll sometime charge off to kill someone "too far away"
+	 * to affect a speed limit.
+	 * I don't know whether this is taken into account by 
+	 * get_nearby_npcs, but on the other hand, its a negligible point.
+	 */
+	Actor_vector nearby;
+	if (!cheat.in_god_mode())
+		get_nearby_npcs( nearby );
+
+	bool nearby_hostile = false;
+	for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
+		Actor *actor = *it;
+
+		if( !actor->is_dead() && actor->get_schedule() &&
+			actor->get_alignment() >= Npc_actor::hostile && 
+			actor->get_schedule_type() == Schedule::combat && 
+			static_cast<Combat_schedule*>(actor->get_schedule())->
+						has_started_battle())
+		{
+			/* TODO- I think invisibles still trigger the
+			 * slowdown, verify this. */
+			nearby_hostile = true;
+			break; /* No need to bother checking the rest :P */
+		}
+	}
+	return nearby_hostile;
+}

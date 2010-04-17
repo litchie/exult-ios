@@ -37,22 +37,6 @@ extern int snprintf(char *, size_t, const char *, /*args*/ ...);
 #endif
 
 /*
- *	Smallest of two values.
- */
-inline int min(int i1, int i2)
-	{
-	return i1 < i2 ? i1 : i2;
-	}
-
-/*
- *	Largest of two values.
- */
-inline int max(int i1, int i2)
-	{
-	return i1 > i2 ? i1 : i2;
-	}
-
-/*
  *	Read a 1-byte value.
  */
 

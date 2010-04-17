@@ -1,7 +1,7 @@
 /*
  *	mouse.cc - Mouse pointers.
  *
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,10 +37,7 @@
 #include "schedule.h" /* To get Schedule::combat */
 #include "ucsched.h"
 
-#ifndef _MSC_VER
-using std::max;
-#endif
-#ifdef UNDER_CE
+#ifndef max
 using std::max;
 #endif
 
@@ -301,38 +298,7 @@ void Mouse::set_speed_cursor()
 		Direction dir = Get_direction(dy, dx);
 		Rectangle gamewin_dims = gwin->get_win_rect();
 		float speed_section = max( max( -static_cast<float>(dx)/ax, static_cast<float>(dx)/(gamewin_dims.w-ax)), max(static_cast<float>(dy)/ay, -static_cast<float>(dy)/(gamewin_dims.h-ay)) );
-
-		/* If there is a hostile NPC nearby, the avatar isn't allowed to
-		 * move very fast
-		 * Note that the range at which this occurs in the original is
-		 * less than the "potential target" range- that is, if I go into
-		 * combat mode, even when I'm allowed to run at full speed,
-		 * I'll sometime charge off to kill someone "too far away"
-		 * to affect a speed limit.
-		 * I don't know whether this is taken into account by 
-		 * get_nearby_npcs, but on the other hand, its a negligible point.
-		 */
-		Actor_vector nearby;
-		if (!cheat.in_god_mode())
-			gwin->get_nearby_npcs( nearby );
-
-		bool nearby_hostile = false;
-		for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
-			Actor *actor = *it;
-
-			if( !actor->is_dead() && actor->get_schedule() &&
-				actor->get_alignment() >= Npc_actor::hostile && 
-				actor->get_schedule_type() == Schedule::combat && 
-				static_cast<Combat_schedule*>(actor->get_schedule())->
-							has_started_battle())
-			{
-				/* TODO- I think invisibles still trigger the
-				 * slowdown, verify this. */
-				nearby_hostile = true;
-				break; /* No need to bother checking the rest :P */
-			}
-		}
-
+		bool nearby_hostile = gwin->is_hostile_nearby();
 		bool has_active_nohalt_scr = false;
 		Usecode_script *scr = 0;
 		Actor *act = gwin->get_main_actor();
