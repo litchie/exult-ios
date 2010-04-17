@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001 The Exult Team
+ *  Copyright (C) 2001-2010 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ void ActionScrollLeft(int* params);
 void ActionScrollRight(int* params);
 void ActionScrollUp(int* params);
 void ActionScrollDown(int* params);
+int get_walking_speed(int* params);
 void ActionWalkWest(int* params);
 void ActionWalkEast(int* params);
 void ActionWalkNorth(int* params);
