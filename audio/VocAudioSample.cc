@@ -23,6 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
 
+#ifndef min
+using std::min;
+#endif
+#ifndef max
+using std::max;
+#endif
+
 namespace Pentagram {
 
 VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)

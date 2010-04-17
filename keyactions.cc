@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001-2004 The Exult Team
+ *  Copyright (C) 2001-2010 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -544,11 +544,25 @@ void ActionScrollDown(int *params)
 		gwin->view_down();
 }
 
+int get_walking_speed(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	int parm = params ? params[0] : 0;
+	int speed;
+	if (parm == 2)
+		speed = Mouse::slow_speed_factor;
+	else if (gwin->in_combat() || gwin->is_hostile_nearby())
+		speed = Mouse::medium_combat_speed_factor;
+	else
+		speed = parm==1 ? Mouse::medium_speed_factor : Mouse::fast_speed_factor;
+	return (200*gwin->get_std_delay()/speed);
+}
+
 //  { ActionWalkWest, 0, "Walk west", normal_keys, NONE },
 void ActionWalkWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2,speed);
 }
 
@@ -556,7 +570,7 @@ void ActionWalkWest(int *params)
 void ActionWalkEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2, speed);
 }
 
@@ -564,7 +578,7 @@ void ActionWalkEast(int *params)
 void ActionWalkNorth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50, speed);
 }
 
@@ -572,7 +586,7 @@ void ActionWalkNorth(int *params)
 void ActionWalkSouth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50, speed);
 }
 
@@ -580,7 +594,7 @@ void ActionWalkSouth(int *params)
 void ActionWalkNorthEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2-50, speed);
 }
 
@@ -588,7 +602,7 @@ void ActionWalkNorthEast(int *params)
 void ActionWalkSouthEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2+50, speed);
 }
 
@@ -596,7 +610,7 @@ void ActionWalkSouthEast(int *params)
 void ActionWalkNorthWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2-50, speed);
 }
 
@@ -604,7 +618,7 @@ void ActionWalkNorthWest(int *params)
 void ActionWalkSouthWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int speed = params[0]<0?166:50;
+	int speed = get_walking_speed(params);
 	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2+50, speed);
 }
 

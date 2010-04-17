@@ -1,3 +1,8 @@
+2010-04-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* Patches applied:
+	  #2843338 Use official min/max functions instead of proprietary ones
+	  #2975693 fix for bug, Walking speed doesn't change to reflect fps
+
 2010-04-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Bugs fixed:
 	  #1500917 --disable-mt32emu doesn't disable building mt32emu
