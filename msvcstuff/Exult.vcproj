@@ -2568,11 +2568,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
@@ -2588,7 +2588,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README.MacOS"
+				RelativePath="..\README.MacOSX"
 				>
 			</File>
 			<File

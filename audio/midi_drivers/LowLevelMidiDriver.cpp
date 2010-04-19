@@ -1267,7 +1267,8 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	uploading_timbres = true;
 
 	// Play the SysEx data
-	
+	pout << "Loading Timbres" << std::endl;
+
 	ComMessage message(LLMD_MSG_PLAY);
 	message.sequence = 3;
 	message.data.play.list = eventlist;

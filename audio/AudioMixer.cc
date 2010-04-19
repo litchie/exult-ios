@@ -385,10 +385,11 @@ void AudioMixer::openMidiOutput()
 	if (midi) return;
 	if (!audio_ok) return;
 
+	MyMidiPlayer * new_driver = new MyMidiPlayer();
 
 	Lock();
 	{
-		midi = new MyMidiPlayer();
+		midi = new_driver;
 	}
 	Unlock();
 	midi->load_timbres();
