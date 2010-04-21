@@ -100,6 +100,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	// No output device
 	if(!ogg_enabled && !midi_driver && !init_device())
 		return;
+	load_timbres();
 
 	// -1 and 255 are stop tracks
 	if (num == -1 || num == 255) {
@@ -205,6 +206,7 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 	// No output device
 	if(!ogg_enabled && !midi_driver && !init_device())
 		return;
+	load_timbres();
 
 	stop_music();
 
@@ -516,6 +518,7 @@ void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
 	config->set("config/audio/midi/use_oggs",ogg_enabled?"yes":"no",true);
 
 	init_device();
+	load_timbres();
 }
 
 
@@ -685,7 +688,8 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	cout << "Real num " << real_num << endl;
 
 	// No driver
-	if (!midi_driver && !init_device())return;
+	if (!midi_driver && !init_device()) return;
+	load_timbres();
 
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;
