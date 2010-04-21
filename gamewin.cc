@@ -589,10 +589,7 @@ void Game_window::init_files(bool cycle)
 	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
 #endif
 	CYCLE_RED_PLASMA();
-	// initialize .wav SFX pack
 
-//This is now run from exult.cc
-//	Audio::get_ptr()->Init_sfx();
 	int fps;			// Init. animation speed.
 	config->value("config/video/fps", fps, 5);
 	if (fps <= 0)

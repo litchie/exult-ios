@@ -1,3 +1,11 @@
+2010-04-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Midi.cc: Fixed regression that caused timbres to not be uploaded
+	  when changing audio options. Also, ensure correct timbres are loaded when
+	  a song is started.
+	* audio/Audio.cc: SFX cache is completelly flushed now when changing the
+	  SFX packages, so that all SFX from the new package will be used effective
+	  immediately (instead of requiring Exult to be restarted).
+
 2010-04-17	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Patches applied:
 	  #2843338 Use official min/max functions instead of proprietary ones

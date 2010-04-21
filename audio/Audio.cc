@@ -396,7 +396,10 @@ void	Audio::Init_sfx()
 	FORGET_OBJECT(sfx_file);
 
 	if (sfxs)
+		{
 		sfxs->flush(mixer);
+		sfxs->garbage_collect();
+		}
 
 	Exult_Game game = Game::get_game_type();
 	if (game == SERPENT_ISLE)
