@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="11 March 2010(GMT)">
+<readme title="Exult" changed="28 April 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="28042010">
+			<header>- 28 April 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> audio options for sample rate and stereo added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="11032010">
 			<header>- 11 March 2010</header>
 			<body>
@@ -549,11 +557,19 @@
 							<comment>**enable/disable the pausing of SFX and digital music when the </comment>
 							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
 							</configtag>
+							<configtag name="sample_rate" manual="true">
+							22050
+							<comment>**set the sample rate of <Exult/>. Default is 22050, Windows CE defaults to 11025.</comment>
+							</configtag>
+							<configtag name="stereo" manual="true">
+							true
+							<comment>**enable/disable stereo sound. Windows CE is set to disabled.</comment>
+							</configtag>
 							<configtag name="effects">
 								<configtag name="enabled">
-								yes
-								<comment>**enable/disable sound effects. (You can change this in game via </comment>
-								<comment><key>Esc</key> - the setting is saved.)</comment>
+									yes
+									<comment>**enable/disable sound effects. (You can change this in game via </comment>
+									<comment><key>Esc</key> - the setting is saved.)</comment>
 								</configtag>
 							</configtag>
 							<configtag name="speech">
