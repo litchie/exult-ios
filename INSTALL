@@ -10,8 +10,12 @@ Make sure you have the following things installed:
 		http://www.libsdl.org
 
 - OGG Vorbis 
-
+	Fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed audio format for audio and music.
+		http://www.vorbis.com/
+		
 - zlib
+	Free, general-purpose, legally unencumbered, lossless data-compression library.
+		http://www.zlib.net/
 
 - Timidity patches
 	If you want MIDI music, SDL_mixer needs Timidity patches.
