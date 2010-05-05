@@ -12,12 +12,10 @@ Real PC or SoftWindows.
 Note that the Ultima Collection already contains an installed
 copy of Ultima 7 (In the Ultima7/ directory) and of Serpent Isle
 (In the Serpent/ directory).
-In the documentation of Exult we describe several ways of how
-to install the original games.
 
-From the Ultima7 or Serpent folder on your PC, copy the STATIC
-sub folder to the 'blackgate' or 'serpentisle' sub folder (as
-appropriate) of $HOME/.exult/.
+In the documentation of Exult (ReadMe, ReadMe.html) we describe 
+several ways of how to install the original games and where to
+put the files on your Mac so Exult finds them automatically.
 
 Now run Exult, and have fun!
 
