@@ -9,21 +9,22 @@ Make sure you have the following things installed:
 	The Simple DirectMedia Library by Sam Lantinga of Loki Games.
 		http://www.libsdl.org
 
-- SDL_mixer
-	http://www.libsdl.org
+- OGG Vorbis 
+
+- zlib
 
 - Timidity patches
 	If you want MIDI music, SDL_mixer needs Timidity patches.
 	Your distribution might already provide these.
 
-		http://www.goice.co.jp/member/mo/timidity/
+		http://sca.uwaterloo.ca/www.cgs.fi/tt/timidity/
 	
 	Make sure you get the sound patches required by this (also 
 	known as GUS patches)
 	http://www.libsdl.org/projects/SDL_mixer/timidity/timidity.tar.gz
 
 
-If you're building from CVS you'll also need recent versions of:
+If you're building from SVN you'll also need recent versions of:
 
 	automake
 	autoconf
