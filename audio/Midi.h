@@ -94,7 +94,7 @@ private:
 	std::string		midi_driver_name;
 	MidiDriver *	midi_driver;
 	bool			initialized;
-	bool			init_device(void);
+	bool			init_device(bool timbre_load = false);
 
 
 	TimberLibrary	timbre_lib;
