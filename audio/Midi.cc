@@ -98,9 +98,8 @@ using std::strcpy;
 void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 {
 	// No output device
-	if(!ogg_enabled && !midi_driver && !init_device())
+	if(!ogg_enabled && !midi_driver && !init_device(true))
 		return;
-	load_timbres();
 
 	// -1 and 255 are stop tracks
 	if (num == -1 || num == 255) {
@@ -204,9 +203,8 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 {
 	// No output device
-	if(!ogg_enabled && !midi_driver && !init_device())
+	if(!ogg_enabled && !midi_driver && !init_device(true))
 		return;
-	load_timbres();
 
 	stop_music();
 
@@ -424,7 +422,7 @@ void MyMidiPlayer::load_timbres()
 
 void	MyMidiPlayer::stop_music()
 {
-	if(!ogg_enabled && !midi_driver && !init_device())
+	if(!ogg_enabled && !midi_driver && !init_device(false))
 		return;
 
 	current_track = -1;
@@ -517,12 +515,11 @@ void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
 	config->set("config/audio/midi/driver",midi_driver_name,true);
 	config->set("config/audio/midi/use_oggs",ogg_enabled?"yes":"no",true);
 
-	init_device();
-	load_timbres();
+	init_device(true);
 }
 
 
-bool MyMidiPlayer::init_device(void)
+bool MyMidiPlayer::init_device(bool timbre_load)
 {
 	// already initialized? Do this first
 	if (initialized) return (midi_driver != 0) || ogg_enabled;
@@ -634,7 +631,7 @@ bool MyMidiPlayer::init_device(void)
 	if(!midi_driver) return ogg_enabled;
 
 	timbre_lib_filename = "";
-	//load_timbres();
+	if (timbre_load) load_timbres();
 
 	return true;
 }
@@ -649,7 +646,7 @@ MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 				  ogg_enabled(false), ogg_instance_id(-1)
 
 {
-	init_device();
+	init_device(false);
 }
 
 MyMidiPlayer::~MyMidiPlayer()
@@ -688,8 +685,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	cout << "Real num " << real_num << endl;
 
 	// No driver
-	if (!midi_driver && !init_device()) return;
-	load_timbres();
+	if (!midi_driver && !init_device(true)) return;
 
 	// Only support SFX on devices with 2 or more sequences
 	if (midi_driver->maxSequences() < 2) return;

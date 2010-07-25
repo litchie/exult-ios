@@ -50,12 +50,12 @@ EXULT_DATADIR="$datadir/exult"
 ARCH=""
 
 # determine windowing system from 'host'
-AC_MSG_CHECKING("windowing system")
+AC_MSG_CHECKING([windowing system])
 case "$host_os" in
 	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
 		if test "$host_vendor" = "embeddix"; then
-			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
+			AC_MSG_RESULT([Qtopia (Sharp Zaurus)])
 			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
 			enable_timidity="no"
 			enable_exult_studio_support="no"
@@ -64,18 +64,21 @@ case "$host_os" in
 			enable_debug="no"
 			enable_data="yes"
 		else
-			AC_MSG_RESULT(X11 (GNU/Linux))
+			AC_MSG_RESULT([X11 (GNU/Linux)])
+			m4_ifdef([AC_PATH_XTRA], [AC_PATH_XTRA])
+			SYSLIBS="$X_LIBS"
+			CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 		fi
 		;;
 	beos*)
 		WINDOWING_SYSTEM="-DBEOS"
-		AC_MSG_RESULT(BeOS)
+		AC_MSG_RESULT([BeOS])
 		SYSLIBS="-lbe -lmidi"
 		enable_timidity="no"
 		;;
 	mingw32* )
 		WINDOWING_SYSTEM="-DWIN32"
-		AC_MSG_RESULT(Win32 (mingw32))
+		AC_MSG_RESULT([Win32 (mingw32)])
 		SYSLIBS="-lwinmm -lstdc++"
 		ICON_FILE="win32/exultico.o"
 		enable_timidity="no"
@@ -83,7 +86,7 @@ case "$host_os" in
 	cygwin* )
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_DEFINE(CYGWIN, 1, [Using Cygwin])
-		AC_MSG_RESULT(Win32 (cygwin))
+		AC_MSG_RESULT([Win32 (cygwin)])
 		CXXFLAGS="$CXXFLAGS -mno-cygwin"
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
@@ -92,23 +95,23 @@ case "$host_os" in
 	openbsd* )
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_DEFINE(OPENBSD, 1, [Using OpenBSD])
-		AC_MSG_RESULT(X11 (OpenBSD))
+		AC_MSG_RESULT([X11 (OpenBSD)])
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
 		;;
 	freebsd* )
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_DEFINE(NETBSD, 1, [Using NetBSD])
-		AC_MSG_RESULT(X11 (FreeBSD))
+		AC_MSG_RESULT([X11 (FreeBSD)])
 		CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include"
 		;;
 	netbsd* )
 		WINDOWING_SYSTEM="-DXWIN"
-		AC_MSG_RESULT(X11 (NetBSD))
+		AC_MSG_RESULT([X11 (NetBSD)])
 		CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include"
 		;;
 	solaris* )
 		WINDOWING_SYSTEM="-DXWIN"
-		AC_MSG_RESULT(X11 (Solaris))
+		AC_MSG_RESULT([X11 (Solaris)])
 		SYSLIBS="-lsocket -lX11"
 		;;
 	darwin*)
@@ -120,7 +123,7 @@ case "$host_os" in
 		
 		WINDOWING_SYSTEM="-DMACOSX"
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
-		AC_MSG_RESULT(Mac OS X)
+		AC_MSG_RESULT([Mac OS X])
 		SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
@@ -128,7 +131,7 @@ case "$host_os" in
 		;;
 	*)
 		WINDOWING_SYSTEM="-DXWIN"
-		AC_MSG_RESULT(not sure... guessing X11)
+		AC_MSG_RESULT([not sure... guessing X11])
 		;;
 esac
 
@@ -229,7 +232,7 @@ AC_FUNC_MEMCMP
 
 AC_CHECK_FUNCS([atexit dup2 getcwd isascii memchr memmove memset mkdir pow select socket strcasecmp strchr strstr strtol strtoul])
 
-AC_MSG_CHECKING(for getaddrinfo())
+AC_MSG_CHECKING([for getaddrinfo()])
 AC_TRY_COMPILE([
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -252,7 +255,7 @@ if test x$ac_cv_func_getaddrinfo = xyes ; then
 	AC_DEFINE(HAVE_GETADDRINFO, 1, [Have addrinfo/getaddrinfo])
 fi
 
-AC_MSG_CHECKING(for mkstemp())
+AC_MSG_CHECKING([for mkstemp()])
 AC_TRY_LINK([
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -269,7 +272,7 @@ if test x$ac_cv_func_mkstemp = xyes ; then
 	AC_DEFINE(HAVE_MKSTEMP, 1, [Have mkstemp])
 fi
 
-AC_MSG_CHECKING(for snprintf())
+AC_MSG_CHECKING([for snprintf()])
 AC_TRY_LINK([
 #include <stdio.h>
 ],
@@ -287,7 +290,7 @@ else
 fi
 
 # do we need special X11 libraries?
-AC_MSG_CHECKING(for special X11 libraries)
+AC_MSG_CHECKING([for special X11 libraries])
 if test x$x_libraries = xNONE; then
 	AC_MSG_RESULT(no)
 	unset x_libraries
@@ -302,7 +305,7 @@ fi
 # ---------------------------------------------------------------------
 
 AC_ARG_ENABLE(static-libraries, AS_HELP_STRING([--enable-static-libraries], [Enable static linking of libraries]),,enable_static_libs=no)
-AC_MSG_CHECKING(if we want to statically compile libraries)
+AC_MSG_CHECKING([if we want to statically compile libraries])
 if test x$enable_static_libs != xno; then
 	AC_MSG_RESULT(yes)
 else
@@ -415,7 +418,7 @@ fi
 # Timidity midi driver
 AC_ARG_ENABLE(timidity_midi, AS_HELP_STRING([--disable-timidity-midi], [Disable built-in timidity midi]),,enable_timidity_midi=yes)
 AC_ARG_WITH(timidity, AS_HELP_STRING([--with-timidity=path], [path to timidity.cfg (optional)]),,)
-AC_MSG_CHECKING(if we want to use timidity midi)
+AC_MSG_CHECKING([if we want to use timidity midi])
 if test x$enable_timidity_midi = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_TIMIDITY_MIDI, 1, [Enable timidity midi])
@@ -433,7 +436,7 @@ fi
 # ALSA midi driver
 AC_CHECK_HEADER(alsa/asoundlib.h, HAVEALSA=yes, HAVEALSA=no)
 AC_ARG_ENABLE(alsa, AS_HELP_STRING([--disable-alsa], [Disable ALSA midi support]),,enable_alsa=yes)
-AC_MSG_CHECKING(if we want to use ALSA midi)
+AC_MSG_CHECKING([if we want to use ALSA midi])
 if test x$HAVEALSA = xyes; then
 	if test x$enable_alsa = xyes; then
 		AC_MSG_RESULT(yes)
@@ -449,7 +452,7 @@ fi
 # fluidsynth midi driver
 AC_CHECK_HEADER(fluidsynth.h, HAVEFLUIDSYNTH=yes, HAVEFLUIDSYNTH=no)
 AC_ARG_ENABLE(fluidsynth, AS_HELP_STRING([--disable-fluidsynth], [Disable fluidsynth midi support]),,enable_fluidsynth=yes)
-AC_MSG_CHECKING(if we want to use fluidsynth midi)
+AC_MSG_CHECKING([if we want to use fluidsynth midi])
 if test x$HAVEFLUIDSYNTH = xyes; then
         if test x$enable_fluidsynth = xyes; then
                 AC_MSG_RESULT(yes)
@@ -464,7 +467,7 @@ fi
 
 # mt32emu midi driver
 AC_ARG_ENABLE(mt32emu, AS_HELP_STRING([--enable-mt32emu], [Enable built-in mt32emu support]),,enable_mt32emu=no)
-AC_MSG_CHECKING(if we should build mt32emu)
+AC_MSG_CHECKING([if we should build mt32emu])
 if test x$enable_mt32emu = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_MT32EMU_MIDI, 1, [Enable mt32emu])
@@ -483,7 +486,7 @@ if test x$enable_zip_support = xyes ; then
 	AC_CHECK_HEADER(zlib.h,,enable_zip_support=no)
 fi
 
-AC_MSG_CHECKING(for zipped savegame support)
+AC_MSG_CHECKING([for zipped savegame support])
 
 if test x$enable_zip_support = xyes ; then
 	# disabled for now (non-portable):
@@ -505,7 +508,7 @@ fi
 
 # OpenGL rendering
 
-AC_ARG_ENABLE(opengl, AS_HELP_STRING([--enable-opengl], [Enable OpenGL rendering support [EXPERIMENTAL]]),,enable_opengl=no)
+AC_ARG_ENABLE(opengl, AS_HELP_STRING([--enable-opengl], [Enable OpenGL rendering support @<:@EXPERIMENTAL@:>@]),,enable_opengl=no)
 
 if test x$enable_opengl = xyes; then
 	# Check for header presence. Damn you, Apple!
@@ -516,7 +519,7 @@ if test x$enable_opengl = xyes; then
 	fi
 fi
 
-AC_MSG_CHECKING(for OpenGL rendering support)
+AC_MSG_CHECKING([for OpenGL rendering support])
 
 if test x$enable_opengl = xyes ; then
 	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
@@ -537,13 +540,13 @@ fi
 # ---------------------------------------------------------------------
 # support for Exult Studio
 # ---------------------------------------------------------------------
-AC_MSG_CHECKING(whether to enable support for Exult Studio)
+AC_MSG_CHECKING([whether to enable support for Exult Studio])
 AC_ARG_ENABLE(exult-studio-support, AS_HELP_STRING([--enable-exult-studio-support], [Enable ExultStudio support @<:@default yes@:>@]),,enable_exult_studio_support=yes)
 if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
-AC_ARG_ENABLE(macosx-studio-support, AS_HELP_STRING([--enable-macosx-studio-support], [Force ExultStudio support in Mac OS X [EXPERIMENTAL] @<:@default no@:>@]),,enable_macosx_studio_support=no)
+AC_ARG_ENABLE(macosx-studio-support, AS_HELP_STRING([--enable-macosx-studio-support], [Force ExultStudio support in Mac OS X @<:@EXPERIMENTAL@:>@ @<:@default no@:>@]),,enable_macosx_studio_support=no)
 if test "$WINDOWING_SYSTEM" != -DMACOSX; then
 	enable_macosx_studio_support=no
 fi
@@ -556,7 +559,7 @@ fi
 
 if test x$enable_exult_studio_support = xyes ; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use ExultStudio])
+	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use Exult Studio])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -601,7 +604,7 @@ AC_SUBST([ICONDIR])
 
 # basic debugging mode
 AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug], [Enable debug messages @<:@default no@:>@]),,enable_debug=no)
-AC_MSG_CHECKING(whether to enable debugging mode)
+AC_MSG_CHECKING([whether to enable debugging mode])
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable debug mode])
@@ -613,7 +616,7 @@ fi
 
 # optimized debugging mode
 AC_ARG_ENABLE(optimized-debug, AS_HELP_STRING([--enable-optimized-debug], [Enable optimized debug build @<:@default no@:>@]),,enable_optimized_debug=no)
-AC_MSG_CHECKING(whether to do an optimized debug build)
+AC_MSG_CHECKING([whether to do an optimized debug build])
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable debug mode])
@@ -624,7 +627,7 @@ fi
 
 # heavy unoptimized GDB  debugging mode
 AC_ARG_ENABLE(heavy-gdb-debug, AS_HELP_STRING([--enable-heavy-gdb-debug], [Enable debug messages with GDB symbols @<:@default no@:>@]),,enable_heavy_gdb_debug=no)
-AC_MSG_CHECKING(whether to enable unoptimized debugging mode with GDB symbols)
+AC_MSG_CHECKING([whether to enable unoptimized debugging mode with GDB symbols])
 if test x$enable_heavy_gdb_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable unoptimized debug mode plus GDB symbols])
@@ -637,7 +640,7 @@ fi
 
 # SDL parachute?
 AC_ARG_ENABLE(sdl-parachute, AS_HELP_STRING([--enable-sdl-parachute], [Use SDL parachute @<:@default yes@:>@]),,enable_sdl_parachute=yes)
-AC_MSG_CHECKING(if we should disable the SDL parachute)
+AC_MSG_CHECKING([if we should disable the SDL parachute])
 if test x$enable_sdl_parachute = xno; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(NO_SDL_PARACHUTE, 1, [Disable SDL parachute])
@@ -647,7 +650,7 @@ fi
 
 # Usecode debugger
 #AC_ARG_ENABLE(usecode-debugger, AS_HELP_STRING([--enable-usecode-debugger], [Support for usecode debugging @<:@default no@:>@]),,enable_usecode_debugger=no)
-#AC_MSG_CHECKING(whether to enable the usecode debugger)
+#AC_MSG_CHECKING([whether to enable the usecode debugger])
 #if test x$enable_usecode_debugger = xyes; then
 #	AC_MSG_RESULT(yes)
 #	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
@@ -661,7 +664,7 @@ fi
 # ---------------------------------------------------------------------
 
 # determine warning level
-AC_MSG_CHECKING(warning level)
+AC_MSG_CHECKING([warning level])
 WARNING_LEVEL="normal"
 
 AC_ARG_ENABLE(warnings, AS_HELP_STRING([--enable-warnings], [Enable all warnings @<:@default no@:>@]),,enable_warnings=no)
@@ -684,7 +687,7 @@ AC_MSG_RESULT($WARNING_LEVEL)
 # Ignore long-long warnings (for SDL header files...)
 AC_ARG_ENABLE(long-long-warnings, AS_HELP_STRING([--enable-long-long-warnings], [Enable long long warnings- needed for Compaq's cxx with GNU ld @<:@default no@:>@]),
 	,enable_long_long_warnings=no)
-AC_MSG_CHECKING(if we should disable long-long warnings)
+AC_MSG_CHECKING([if we should disable long-long warnings])
 if test x$enable_long_long_warnings = xyes; then
 	AC_MSG_RESULT(no)
 else
@@ -698,7 +701,7 @@ fi
 
 # Build any external programs?
 AC_ARG_ENABLE(tools, AS_HELP_STRING([--disable-tools], [Only build the main program]),,enable_tools=yes)
-AC_MSG_CHECKING(whether to build only the main program)
+AC_MSG_CHECKING([whether to build only the main program])
 if test x$enable_tools = xno; then
 	AC_MSG_RESULT(yes)
 	AM_CONDITIONAL(BUILD_TOOLS, false)
@@ -712,7 +715,7 @@ fi
 
 # Build compiler?
 AC_ARG_ENABLE(compiler, AS_HELP_STRING([--enable-compiler], [Build the usecode compiler @<:@default yes@:>@]),,enable_compiler=yes)
-AC_MSG_CHECKING(whether to build the usecode compiler)
+AC_MSG_CHECKING([whether to build the usecode compiler])
 if test x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
 	AM_CONDITIONAL(BUILD_COMPILER, false)
@@ -723,7 +726,7 @@ fi
 
 # Build data files?
 AC_ARG_ENABLE(data, AS_HELP_STRING([--enable-data], [Create the data files @<:@default yes@:>@]),,enable_data=yes)
-AC_MSG_CHECKING(whether to build the data files)
+AC_MSG_CHECKING([whether to build the data files])
 if test x$enable_data = xno; then
 	AC_MSG_RESULT(no)
 	AM_CONDITIONAL(DATA_FILES, false)
@@ -734,7 +737,7 @@ fi
 
 # Build mods?
 AC_ARG_ENABLE(mods, AS_HELP_STRING([--enable-mods], [Build the Exult mods (requires usecode compiler) @<:@default no@:>@]),,enable_mods=no)
-AC_MSG_CHECKING(whether to build the Exult mods)
+AC_MSG_CHECKING([whether to build the Exult mods])
 if test x$enable_mods = xno -o x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
 	AM_CONDITIONAL(BUILD_MODS, false)
@@ -763,12 +766,10 @@ if test -n "$GCONFTOOL"; then
 else
 	have_gconftool=no
 fi
-# Not all systems will have this macro.
-m4_ifndef([AM_GCONF_SOURCE_2], [AC_DEFUN([AM_GCONF_SOURCE_2], [AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)])])
 
 # exult-studio
 AC_ARG_ENABLE(exult-studio, AS_HELP_STRING([--enable-exult-studio], [Build Exult Studio @<:@default no@:>@]),,enable_exult_studio=no)
-AC_MSG_CHECKING(whether to build Exult Studio)
+AC_MSG_CHECKING([whether to build Exult Studio])
 if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
 	if test x$have_glade = xno; then
@@ -784,7 +785,7 @@ fi
 
 # gnome-shp-thumbnailer
 AC_ARG_ENABLE(gnome-shp-thumbnailer, AS_HELP_STRING([--enable-gnome-shp-thumbnailer], [Build Gnome SHP Thumbnailer @<:@default no@:>@]),,enable_gnome_shp_thumbnailer=no)
-AC_MSG_CHECKING(whether to build the Gnome SHP Thumbnailer)
+AC_MSG_CHECKING([whether to build the Gnome SHP Thumbnailer])
 if test x$enable_gnome_shp_thumbnailer = xyes; then
 	AC_MSG_RESULT(yes)
 	if test x$have_gconftool = xno; then
@@ -797,7 +798,9 @@ if test x$enable_gnome_shp_thumbnailer = xyes; then
 		exit 1
 	fi
 	# And here it is:
-	AM_GCONF_SOURCE_2
+	# Not all systems will have this macro.
+	m4_ifdef([AM_GCONF_SOURCE_2], [AM_GCONF_SOURCE_2], [AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)])
+	# AM_GCONF_SOURCE_2
 	AM_CONDITIONAL(BUILD_GTHUMB, true)
 else
 	AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
@@ -808,18 +811,18 @@ fi
 # GIMP plugin
 AM_CONDITIONAL(GIMP_PLUGIN, false)
 AC_ARG_ENABLE(gimp-plugin, AS_HELP_STRING([--enable-gimp-plugin], [Build the GIMP plugin @<:@default no@:>@]),,enable_gimp_plugin=no)
-AC_MSG_CHECKING(whether to build the GIMP plugin)
+AC_MSG_CHECKING([whether to build the GIMP plugin])
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_MSG_CHECKING(for gimptool)
+	AC_MSG_CHECKING([for gimptool])
 	AC_CHECK_PROGS(GIMPTOOL, gimptool-2.0 gimptool-1.3 gimptool-1.2 gimptool)
 	if test -z "$GIMPTOOL"; then
-		AC_MSG_RESULT(no, not building GIMP plugin)
+		AC_MSG_RESULT([no, not building GIMP plugin])
 	else
-		AC_MSG_CHECKING(for GIMP version)
+		AC_MSG_CHECKING([for GIMP version])
 		gimp_version=`$GIMPTOOL --version |  awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
 		if test "$gimp_version" -ge 1312; then
-			AC_MSG_RESULT(found >= 1.3.12)
+			AC_MSG_RESULT([found >= 1.3.12])
 			AC_SUBST(GIMPTOOL)
 			AM_CONDITIONAL(GIMP_PLUGIN, true)
 			CPPFLAGS="$save_cppflags"
@@ -833,7 +836,7 @@ if test x$enable_gimp_plugin = xyes; then
 			AC_SUBST(GIMP_LIBS)
 		elif test "$gimp_version" -ge 1200 -a \
 			  "$gimp_version" -lt 1300; then
-			AC_MSG_RESULT(found 1.2.x)
+			AC_MSG_RESULT([found 1.2.x])
 			AC_SUBST(GIMPTOOL)
 			AM_CONDITIONAL(GIMP_PLUGIN, true)
 			CPPFLAGS="$save_cppflags"
@@ -847,7 +850,7 @@ if test x$enable_gimp_plugin = xyes; then
 			AC_SUBST(GIMP_INCLUDES)
 			AC_SUBST(GIMP_LIBS)
 		else
-			AC_MSG_RESULT(found < 1.3.12 - disabling plugin)
+			AC_MSG_RESULT([found < 1.3.12 - disabling plugin])
 		fi
 	fi
 else
