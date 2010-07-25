@@ -1,3 +1,9 @@
+2010-07-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac: Added AC_PATH_XTRA macro to fix compilation problems in some
+	  Debian and Debian-based distros. Properly quoting text.
+	* audio/*: Fixing bug #3016448 -- load_timbres() was being called when it
+	  should not, and caused music to stop.
+
 2010-04-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixed regression that caused timbres to not be uploaded
 	  when changing audio options. Also, ensure correct timbres are loaded when
