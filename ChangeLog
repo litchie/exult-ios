@@ -1,3 +1,7 @@
+2010-07-26	Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.ac: Don't expand AC_PATH_XTRA in a conditional. This broke
+      configure on all platforms other than linux.
+
 2010-07-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* configure.ac: Added AC_PATH_XTRA macro to fix compilation problems in some
 	  Debian and Debian-based distros. Properly quoting text.

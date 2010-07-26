@@ -49,6 +49,9 @@ EXE_TARGET="exult$EXEEXT"
 EXULT_DATADIR="$datadir/exult"
 ARCH=""
 
+# (Part of) the output of this is currently only used in the linux case below
+AC_PATH_XTRA
+
 # determine windowing system from 'host'
 AC_MSG_CHECKING([windowing system])
 case "$host_os" in
@@ -65,7 +68,6 @@ case "$host_os" in
 			enable_data="yes"
 		else
 			AC_MSG_RESULT([X11 (GNU/Linux)])
-			m4_ifdef([AC_PATH_XTRA], [AC_PATH_XTRA])
 			SYSLIBS="$X_LIBS"
 			CXXFLAGS="$CXXFLAGS $X_CFLAGS"
 		fi
