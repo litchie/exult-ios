@@ -269,6 +269,7 @@ public:
 		{ return skip_above_actor < skip_lift ?
 					skip_above_actor : skip_lift; }
 	bool main_actor_dont_move();
+	bool main_actor_can_act();
 	inline bool set_in_dungeon(unsigned int lift)
 		{ 
 		if (in_dungeon == lift)

@@ -1291,20 +1291,6 @@ int Newfile_gump::SaveInfo::CompareThis(const SaveInfo *other) const
 	return num - other->num;
 }
 
-static int _U7SaveSeqNr(const char *a)
-{
-	int i;
-
-
-	for (i = strlen((char*)a) - 1; !isdigit(((char*)a)[i]); i--)
-		;
-	for (; isdigit(((char*)a)[i]); i--)
-		;
-
-
-	return atoi(&a[i+1]);
-}
-
 // Compare Games Static
 int Newfile_gump::SaveInfo::CompareGames(const void *a, const void *b)
 {

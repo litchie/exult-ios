@@ -1,3 +1,15 @@
+2010-07-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamewin.cc, exult.cc, keys.cc: fixed bug #3011719  avatar can do stuff
+	  while passed out. The player will be unable to do almost anything (similar
+	  to the originals) if the avatar is asleep, unconscious, paralyzed or dead.
+	  As a rule, cheat and mapedit actions are still allowed in these cases, and
+	  hackmove allows dragging even in these conditions. Also, purely interface
+	  actions will also work -- like esc, scrolling the map with the mouse wheel
+	  and so on.
+	* configure.ac: AC_PATH_XTRA is actually causing linking problems in Ubuntu
+	  Karmic, so it has been removed (again).
+	* Others: Eliminated a few warnings.
+
 2010-07-26	Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: Don't expand AC_PATH_XTRA in a conditional. This broke
       configure on all platforms other than linux.

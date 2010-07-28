@@ -160,7 +160,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
-	int prefix_len = 0;
+	size_t prefix_len = 0;
 	if (flex[0] == '<')
 	{
 		prefix_len = flex.find(">/");
