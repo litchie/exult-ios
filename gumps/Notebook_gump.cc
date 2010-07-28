@@ -302,8 +302,8 @@ void Notebook_gump::add_new
 
 Notebook_gump::Notebook_gump
 	(
-	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0),
-	    curnote(0), updnx(0)
+	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curnote(0),
+	    curpage(0), updnx(0)
 	{
 	handles_kbd = true;
 	cursor.offset = 0;
@@ -563,7 +563,6 @@ void Notebook_gump::prev_page
 	{
 	if (!curpage)
 		return;
-	One_note *note = notes[curnote];
 	Notebook_top &pinfo = page_info[curpage];
 	--curpage;
 	curnote = page_info[curpage].notenum;
@@ -583,7 +582,6 @@ void Notebook_gump::next_page
 	{
 	if (curpage >= page_info.size())
 		return;
-	One_note *note = notes[curnote];
 	++curpage;
 	Notebook_top &pinfo = page_info[curpage];
 	curnote = pinfo.notenum;

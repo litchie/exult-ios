@@ -282,8 +282,7 @@ Audio	*Audio::get_ptr(void)
 
 Audio::Audio() :
 truthful_(false),speech_enabled(true), music_enabled(true),
-effects_enabled(true), mixer(0),
-initialized(false), sfx_file(0)
+effects_enabled(true), initialized(false), mixer(0), sfx_file(0)
 {
 	assert(self == NULL);
 
@@ -735,6 +734,7 @@ int Audio::play_wave_sfx
 	return instance_id;
 }
 
+/*
 static int slow_sqrt(int i)
 {
 	for (int r = i/2; r != 0; r--)
@@ -744,6 +744,7 @@ static int slow_sqrt(int i)
 
 	return 0;
 }
+*/
 
 void Audio::get_2d_position_for_tile(const Tile_coord &tile, int &distance, int &balance)
 {
