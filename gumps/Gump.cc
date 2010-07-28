@@ -73,8 +73,8 @@ Gump::Gump
 	Gump *from
 	) : ShapeID(from->get_shapenum(), from->get_framenum(),
 						from->get_shapefile()),
-		container(cont), handles_kbd(false), x(initx), y(inity),
-		object_area(from->object_area)
+		container(cont), x(initx), y(inity),
+		object_area(from->object_area), handles_kbd(false)
 	{
 					// Clone widgets.
 	for (Gump_elems::iterator it = from->elems.begin(); 

@@ -84,6 +84,7 @@
 #include "Notebook_gump.h"
 #include "AudioMixer.h"
 #include "combat.h"
+#include "keyactions.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -681,6 +682,15 @@ bool Game_window::main_actor_dont_move()
 	return !cheat.in_map_editor() &&	// Not if map-editing.
 			((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
 			(main_actor->get_flag(Obj_flags::dont_render) != 0));
+	}
+
+/*
+ *  Are we in dont_move mode?
+ */
+
+bool Game_window::main_actor_can_act()
+	{
+	return main_actor->can_act();
 	}
 
 /*
@@ -2427,13 +2437,20 @@ void Game_window::double_clicked
 					// Look for obj. in open gump.
 	Game_object *obj = 0;
 	bool gump = gump_man->double_clicked(x, y, obj);
+	bool avatar_can_act = main_actor_can_act();
 
 	// If gump manager didn't handle it, we search the world for an object
 	if (!gump)
 		{
 		obj = find_object(x, y);
+		if (!avatar_can_act && obj && obj->as_actor()
+		    	&& obj->as_actor() == main_actor->as_actor())
+			{
+			ActionFileGump(0);
+			return;
+			}
 		// Check path, except if an NPC, sign, or if editing.
-			if (obj && !obj->as_actor() &&
+		if (obj && !obj->as_actor() &&
 			!cheat.in_hack_mover() &&
 			//!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(main_actor, obj))
@@ -2442,8 +2459,8 @@ void Game_window::double_clicked
 			return;
 			}
 		}
-	if (!obj)
-		return;			// Nothing found.
+	if (!obj || !avatar_can_act)
+		return;			// Nothing found or avatar disabled.
 	if (combat && !gump &&		// In combat?
 	    !Combat::is_paused() &&
 	    (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game()))

@@ -660,7 +660,6 @@ void Game_map::get_ifix_chunk_objects
 	)
 	{
 	Ifix_game_object *obj;
-	Game_window *gwin = Game_window::get_instance();
 	ifix->seek(filepos);		// Get to actual shape.
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[len];

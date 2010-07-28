@@ -1356,6 +1356,7 @@ static void Handle_event
 	// Mouse scale factor
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	bool dont_move_mode = gwin->main_actor_dont_move();
+	bool avatar_can_act = gwin->main_actor_can_act();
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();
@@ -1371,78 +1372,86 @@ static void Handle_event
 	   	if (dont_move_mode)
 	   		break;
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
-			Touchscreen->handle_event(&event);
+		if (gkeyboard->handle_event(&event))
+			break;
+		Touchscreen->handle_event(&event);
 #endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 1)
 			{
+			// Allow dragging only either if the avatar can act or if map edit
+			// or hackmove is on.
+			if (avatar_can_act || cheat.in_hack_mover())
+				{
 #ifdef USE_EXULTSTUDIO
-			if (cheat.in_map_editor())
-				{	// Paint if shift-click.
-				if (cheat.get_edit_shape() >= 0 &&
-					// But always if painting.
-				    (cheat.get_edit_mode() == Cheat::paint ||
-					(SDL_GetModState() & KMOD_SHIFT)))
-					{
-					Paint_with_shape(event, false);
-					break;
+				if (cheat.in_map_editor())
+					{	// Paint if shift-click.
+					if (cheat.get_edit_shape() >= 0 &&
+						// But always if painting.
+						(cheat.get_edit_mode() == Cheat::paint ||
+						(SDL_GetModState() & KMOD_SHIFT)))
+						{
+						Paint_with_shape(event, false);
+						break;
+						}
+					else if (cheat.get_edit_chunknum() >= 0 &&
+					  cheat.get_edit_mode() == Cheat::paint_chunks)
+						{
+						Paint_with_chunk(event, false);
+						break;
+						}
+					else if (cheat.get_edit_mode() ==
+								Cheat::select_chunks)
+						{
+						Select_chunks(event, false,
+							SDL_GetModState()&KMOD_CTRL);
+						break;
+						}
+					else if (cheat.get_edit_mode() ==
+								Cheat::combo_pick)
+						{
+						Select_for_combo(event, false,
+							SDL_GetModState()&KMOD_CTRL);
+						break;
+						}
+						// Don't drag if not in 'move' mode.
+					else if (cheat.get_edit_mode() != Cheat::move)
+						break;
 					}
-				else if (cheat.get_edit_chunknum() >= 0 &&
-				  cheat.get_edit_mode() == Cheat::paint_chunks)
-					{
-					Paint_with_chunk(event, false);
-					break;
-					}
-				else if (cheat.get_edit_mode() ==
-							Cheat::select_chunks)
-					{
-					Select_chunks(event, false,
-						SDL_GetModState()&KMOD_CTRL);
-					break;
-					}
-				else if (cheat.get_edit_mode() ==
-							Cheat::combo_pick)
-					{
-					Select_for_combo(event, false,
-						SDL_GetModState()&KMOD_CTRL);
-					break;
-					}
-					// Don't drag if not in 'move' mode.
-				else if (cheat.get_edit_mode() != Cheat::move)
-					break;
-				}
 #endif
-			dragging = gwin->start_dragging(x, y);
-			//Mouse::mouse->set_shape(Mouse::hand);
-			dragged = false;
+				dragging = gwin->start_dragging(x, y);
+				//Mouse::mouse->set_shape(Mouse::hand);
+				dragged = false;
+				}
 			left_down_x = x; left_down_y = y;
 			}
-					// Move sprite toward mouse
-					//  when right button pressed.
+
+		// Middle click, use targetting crosshairs.
 		if (gwin->get_mouse3rd())
 			if (event.button.button == 2)
-				{
-					ActionTarget(0);
-				}
-		if (event.button.button == 3) {
-			
-			// Try removing old queue entry.
-			gwin->get_tqueue()->remove(gwin->get_main_actor());
+				ActionTarget(0);
 
+		// Right click. Only walk if avatar can act.
+		if (event.button.button == 3)
+			{
 			if (!dragging &&	// Causes crash if dragging.
 				gump_man->can_right_click_close() &&
 					gump_man->gump_mode() && 
-					gump_man->find_gump(x, y, false)) {
+					gump_man->find_gump(x, y, false))
+				{
 				gump = 0;
 				right_on_gump = true;
-			}
-			else 
+				}
+			else if (avatar_can_act)
+				{
+				// Try removing old queue entry.
+				gwin->get_tqueue()->remove(gwin->get_main_actor());
 				gwin->start_actor(x, y, 
 						Mouse::mouse->avatar_speed);
+				}
+			}
 
-		}
+		// Mousewheel scrolling of view port.
 		if (event.button.button == 4 || event.button.button == 5) 
 			{
 			if (!cheat()) break;
@@ -1465,15 +1474,15 @@ static void Handle_event
 		if (dont_move_mode)
 			break;
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
-			Touchscreen->handle_event(&event);
+		if (gkeyboard->handle_event(&event))
+			break;
+		Touchscreen->handle_event(&event);
 #endif
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 3)
 			{
 			uint32 curtime = SDL_GetTicks();
-				// If showing gumps, ignore all other double-right-click results
+				// If showing gumps, ignore all double-right-click results
 			if (gump_man->gump_mode())
 				{
 				if (right_on_gump && 
@@ -1486,15 +1495,18 @@ static void Handle_event
 					right_on_gump = false;
 					}
 				}
-					// Last click within .5 secs?
-			else if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
-				gwin->start_actor_along_path(x, y,
-						Mouse::mouse->avatar_speed);
-			else
+			else if (avatar_can_act)
 				{
-				gwin->stop_actor();
-				if (Combat::is_paused() && gwin->in_combat())
-					gwin->paused_combat_select(x, y);
+					// Last click within .5 secs?
+				if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
+					gwin->start_actor_along_path(x, y,
+							Mouse::mouse->avatar_speed);
+				else
+					{
+					gwin->stop_actor();
+					if (Combat::is_paused() && gwin->in_combat())
+						gwin->paused_combat_select(x, y);
+					}
 				}
 			last_b3_click = curtime;
 			}
@@ -1502,17 +1514,19 @@ static void Handle_event
 			{
 			uint32 curtime = SDL_GetTicks();
 			bool click_handled = false;
-			if (dragging) {
-				click_handled = gwin->drop_dragged(x, y,
-								dragged);
+			if (dragging)
+				{
+				click_handled = gwin->drop_dragged(x, y, dragged);
 				Mouse::mouse->set_speed_cursor();
-			}
-					// Last click within .5 secs?
+				}
+			// Last click within .5 secs?
 			if (curtime - last_b1_click < 500 &&
 				left_down_x - 1 <= x && x <= left_down_x + 1 &&
 				left_down_y - 1 <= y && y <= left_down_y + 1)
-			{
+				{
 				dragging = dragged = false;
+				// This function handles the trouble of deciding what to
+				// do when the avatar cannot act.
 				gwin->double_clicked(x, y);
 				Mouse::mouse->set_speed_cursor();
 				show_items_clicked = false;
@@ -1521,19 +1535,20 @@ static void Handle_event
 			if (!dragging || !dragged)
 				last_b1_click = curtime;
 
-			if (!click_handled && 
+			if (!click_handled && avatar_can_act &&
 				left_down_x - 1 <= x && x <= left_down_x + 1 &&
 				left_down_y - 1 <= y && y <= left_down_y + 1)
-			{
+				{
 				show_items_x = x; show_items_y = y;
 				// Identify item(s) clicked on.
-				if (cheat.in_map_editor()) {
+				if (cheat.in_map_editor())
 					gwin->show_items(x,y,(SDL_GetModState() & KMOD_CTRL) != 0);
-				} else {
+				else
+					{
 					show_items_time = curtime + 500;
 					show_items_clicked = true;
+					}
 				}
-			}
 			dragging = dragged = false;
 			}
 		break;
@@ -1593,8 +1608,11 @@ static void Handle_event
 			}
 					// Dragging with right?
 		else if ((event.motion.state & SDL_BUTTON(3)) && !right_on_gump)
-			gwin->start_actor(event.motion.x / scale, 
-			event.motion.y / scale, Mouse::mouse->avatar_speed);
+			{
+			if (avatar_can_act)
+				gwin->start_actor(event.motion.x / scale, 
+						event.motion.y / scale, Mouse::mouse->avatar_speed);
+			}
 #ifdef USE_EXULTSTUDIO			// Painting?
 		else if (cheat.in_map_editor() && 
 			 cheat.get_edit_shape() >= 0 &&
@@ -1612,7 +1630,7 @@ static void Handle_event
 		break;
 		}
 	case SDL_ACTIVEEVENT:
-			if (event.active.state & SDL_APPMOUSEFOCUS)
+		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
 			if (event.active.gain)
 				{

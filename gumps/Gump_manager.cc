@@ -49,8 +49,8 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), modal_gump_count(0), 
-	  right_click_close(true), dont_pause_game(false), kbd_focus(0)
+	: open_gumps(0), non_persistent_count(0), kbd_focus(0	),
+	  modal_gump_count(0), right_click_close(true), dont_pause_game(false)
 {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
@@ -388,23 +388,32 @@ bool Gump_manager::double_clicked
 	Gump *gump = find_gump(x, y);
 
 	if (gump)
-	{			// Find object in gump.
+		{
+		// If avatar cannot act, a double-click will only close gumps, and
+		// nothing else.
+		if (!gwin->main_actor_can_act() && gwin->get_double_click_closes_gumps())
+			{
+			gump->close();
+			gwin->paint();
+			return true;
+			}
+		// Find object in gump.
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
-		{
+			{
 		 	Gump_button *btn = gump->on_button(x, y);
 			if (btn) btn->double_clicked(x, y);
 			else if (gwin->get_double_click_closes_gumps())
-			{
+				{
 				gump->close();
 				gwin->paint();
+				}
 			}
-		}
 		return true;
-	}
+		}
 
 	return false;
-}
+	}
 
 /*
  *	Send kbd. event to gump that has focus.

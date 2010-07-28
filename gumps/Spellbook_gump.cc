@@ -249,7 +249,7 @@ void Spellbook_gump::set_avail
 Spellbook_gump::Spellbook_gump
 	(
 	Spellbook_object *b
-	) : Spelltype_gump(SPELLBOOK), page(0), book(b), turning_page(0)
+	) : Spelltype_gump(SPELLBOOK), page(0), turning_page(0), book(b)
 {
 	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
 

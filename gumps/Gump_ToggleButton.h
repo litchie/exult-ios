@@ -55,8 +55,8 @@ class Gump_ToggleTextButton : public Text_button
  public:
 	Gump_ToggleTextButton(Gump *par, std::string *s,  int selectionnum, int numsel,
 		int px, int py, int width, int height = 0)
-		: Text_button(par, "", px, py, width, height), selections(s),
-		numselections(numsel)
+		: Text_button(par, "", px, py, width, height),
+		numselections(numsel), selections(s)
 	{
 		set_frame(selectionnum);
 		text = selections[selectionnum];
