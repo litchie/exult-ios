@@ -1,3 +1,6 @@
+2010-08-13  Ryan Nunn <colourles@users.sourceforge.net>
+	* audio/RawAudioSample.cc : Fixing crashes on PPC Macs
+
 2010-07-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc, exult.cc, keys.cc: fixed bug #3011719  avatar can do stuff
 	  while passed out. The player will be unable to do almost anything (similar
