@@ -63,25 +63,57 @@ uint32 RawAudioSample::decompressFrame(void *DecompData, void *samples) const
 	if (decomp->pos + count > buffer_size)
 		count = buffer_size - decomp->pos;
 
+	count &= bits==16?0xFFFFFFFE:0xFFFFFFFF;
+
+	if (count == 0) return 0;
+
 	// 8 bit unsigned, or 16 Bit signed
 	if ((!signeddata && bits==8) || (signeddata && bits==16 && !byte_swap)) {	
-		std::memcpy(samples, buffer+decomp->pos, count*(bits/16));
-		decomp->pos += count;
-	// 8 bit signed data
+		std::memcpy(samples, buffer+decomp->pos, count);
+	// 8 bit signed
 	} else if (bits == 8) {
-		uint8* dest = static_cast<uint8*>(samples);
-		for (unsigned int i = 0; i < count; ++i)
-			*dest++ = buffer[decomp->pos++] + 128;
-	}
-	// 16 bit signed with byte swap required
-	else if (signeddata && bits==16 && byte_swap) {
 		uint8 *dest = static_cast<uint8*>(samples);
-		for (unsigned int i = 0; i < count; ++i) {
-			*dest++ = buffer[++decomp->pos];
-			*dest++ = buffer[(decomp->pos++)-1];
+		uint8 *end =  static_cast<uint8*>(samples)+count;
+		const uint8 *src = buffer + decomp->pos;
+		while (dest != end) {
+			*dest++ = *src++ + 128;
+		}
+	}
+	// 16 bit signed with byte swap
+	else if (signeddata && bits==16 && byte_swap) {
+		sint16 *dest = static_cast<sint16*>(samples);
+		sint16 *end =  static_cast<sint16*>(samples)+count/2;
+		const uint8 *src = buffer + decomp->pos;
+		while (dest != end) {
+			sint16 s;
+			reinterpret_cast<uint8*>(&s)[1] = *src++;
+			reinterpret_cast<uint8*>(&s)[0] = *src++;
+			*dest++ = s;
+		}
+	}
+	// 16 bit unsigned
+	else if (!signeddata && bits==16 && !byte_swap) {
+		sint16 *dest = static_cast<sint16*>(samples);
+		sint16 *end =  static_cast<sint16*>(samples)+count/2;
+		const uint16 *src = reinterpret_cast<const uint16 *>(buffer + decomp->pos);
+		while (dest != end) {
+			*dest++ = *src++ - 32768;
+		}
+	}
+	// 16 bit unsigned with byte swap
+	else if (!signeddata && bits==16 && byte_swap) {
+		sint16 *dest = static_cast<sint16*>(samples);
+		sint16 *end =  static_cast<sint16*>(samples)+count/2;
+		const uint8 *src = buffer + decomp->pos;
+		while (dest != end) {
+			uint16 s;
+			reinterpret_cast<uint8*>(&s)[1] = *src++;
+			reinterpret_cast<uint8*>(&s)[0] = *src++;
+			*dest++ = s - 32768;
 		}
 	}
 
+	decomp->pos += count;
 	return count;
 }
 
