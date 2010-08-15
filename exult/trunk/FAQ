@@ -1,23 +1,24 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 12 March 2010(GMT)
+last changed: 15 August 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 12 March 2010
-0.2. - 10 March 2010
-0.3. - 16 July 2009
-0.4. - 03 June 2009
-0.5. - 20 May 2009
-0.6. - 30 April 2009
-0.7. - 21 October 2007
-0.8. - 08 April 2006
-0.9. - 04 October 2004
-0.10. - 14 August 2004
-0.11. - 23 May 2004
-0.12. - 27 January 2004
-0.13. - 12 December 2003
+0.1. - 15 August 2010
+0.2. - 12 March 2010
+0.3. - 10 March 2010
+0.4. - 16 July 2009
+0.5. - 03 June 2009
+0.6. - 20 May 2009
+0.7. - 30 April 2009
+0.8. - 21 October 2007
+0.9. - 08 April 2006
+0.10. - 04 October 2004
+0.11. - 14 August 2004
+0.12. - 23 May 2004
+0.13. - 27 January 2004
+0.14. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -110,30 +111,39 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 12 March 2010
+0.1. - 15 August 2010
+* 1.9. Where do I find Exult? also OS X snapshots availlable.
+* 1.13. On what platform does Exult run? The Amiga port homepage is only availlable in the Wayback Machine these days.
+* 4.2. How do I submit a proper bug report? name and location of log files.
+* 4.5. Fullscreen switching workaround added.
+* 4.8. Problems with Mac OSX should be fixed but if not we need to know.
+
+
+
+0.2. - 12 March 2010
 * 4.5. Fullscreen switching No more 8bit scaler issues.
 
 
 
-0.2. - 10 March 2010
+0.3. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
 * 4.5. Fullscreen switching added.
 * 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-0.3. - 16 July 2009
+0.4. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-0.4. - 03 June 2009
+0.5. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-0.5. - 20 May 2009
+0.6. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -155,7 +165,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.6. - 30 April 2009
+0.7. - 30 April 2009
 * 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -163,7 +173,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 21 October 2007
+0.8. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -174,21 +184,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.8. - 08 April 2006
+0.9. - 08 April 2006
 * 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.9. - 04 October 2004
+0.10. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.10. - 14 August 2004
+0.11. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -198,7 +208,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.11. - 23 May 2004
+0.12. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -206,7 +216,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.12. - 27 January 2004
+0.13. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.16. Why won't Xenka speak about sacrifice (SI)? added.
@@ -214,7 +224,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.13. - 12 December 2003
+0.14. - 12 December 2003
 * 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -269,7 +279,7 @@ Note however that Exult is open source. If you want a multiplayer U7 no one hold
 
 
 1.9. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. Lanica Dragon also provides snapshots for the PocketPC port at http://exult.sourceforge.net/download.php.
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the SVN source tree can be found at http://exult.sourceforge.net/download.php. Lanica Dragon also provides very infrequent snapshots for the PocketPC port at http://exult.sourceforge.net/download.php. Dominus provides snapshots for OS X 10.4 and upwards whenever he manages to at http://exult.sourceforge.net/download.php.
 
 
 1.10. What is a snapshot? Are these screenshots or what?
@@ -289,8 +299,8 @@ To find out which version you are running, press 'v' while in game.
 
 1.13. On what platform does Exult run?
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
-Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can find the homepage for this version at http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available and thus the port is probably abandoned.
-Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+Artaxerxes developed the port to Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+Ruediger Hanke's ported Exult to MorphOS and AmigaOS. Unfortunately the port has been abandoned for quite some time now You can only find the archived homepage for this port at http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available and thus the port is probably abandoned.
 
 
 1.14. Will a port for Pocket PC be available anytime?
@@ -487,11 +497,13 @@ To see a list of open bugs and bug reports go to http://sourceforge.net/tracker/
 5. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
 6. State which Operating System you use (Windows 9X, Linux, ...).
 7. Please include a save game (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. You can look up the filename in the save game dialog as well (to the right, above the party members). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
-8. One bug per subject please.
+8. You may be asked to provide the log files of Exult. These are named stdout.txt and stederr.txt and can be found where exult.cfg is saved to, see Location of exult.cfg.
+9. You may be asked to provide the log files of Exult Studio. These are named studio_out.txt and studio_err.txt and can be found where exult.cfg is saved to, see Location of exult.cfg.
+10. One bug per subject please.
 
 Any bug report that requires a save game will most likely be tagged invalid if we don't receive a save game after we requested it.
 You can also use our forum to report bugs. But if you do please follow the guidelines mentioned above (you can't include a save game of course). Though be aware that bugs submitted to the bug tracker are more likely to get attention than bugs submitted to the forum. And if you report to the forum, also follow the "one bug per report" rule, a post with many bug reports in it is likely to have some bugs overlooked in the end.
-So if you want to have a bug fixed follow these steps!
+So if you want to have a bug fixed, please follow these steps!
 
 
 4.3. Broken by Design
@@ -515,7 +527,7 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 4.5. Fullscreen switching
-Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers do not support the default Exult resolution of 320x200 and refuse to switch to fullscreen during gameplay. When you set Exult to run in fullscreen in exult.cfg it actually starts fine in fullscreen. Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode.
+Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers do not support the default Exult resolution of 320x200 and refuse to switch to fullscreen during gameplay. When you set Exult to run in fullscreen in exult.cfg it actually starts fine in fullscreen. Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode. Thus you can work around this bug by selecting the resolution of 640x480, switch to fullscreen and then lower the resolution again.
 
 
 4.6. Known Compile Issues
@@ -536,6 +548,7 @@ To fix these problems open notepad and write the following in there: SET SDL_VID
 
 4.8. Problems with Mac OSX
 On OSX something in our audio code might crash Exult unexpectedly. For example the famous scene in SI with Frigidazi has been reported as a trigger. To circumvent this disable all audio before a scene that crashes and enable it later on in the game.
+This should be fixed since the 1.2 version but we are not sure, so if you still experience this with later versions, please notifiy us!
 
 
 
@@ -567,7 +580,7 @@ You never could do this in the original as well. You have to use the Virtue Ston
 
 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)?
 "I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
-Stuart Hillman told me of another way around this bug: Stand next to Trent when talking to Rowenna and next to her when talking to Trent.
+Stuart Hillman told us of another way around this bug: Stand next to Trent when talking to Rowenna and next to her when talking to Trent.
 
 
 5.6. Why can't I talk to the mayor of Skara Brae (BG)?
@@ -581,7 +594,7 @@ After you defeated the enemy you have to doubleclick the prism to destroy the ge
 
 
 5.8. Why is Alagnar not dead (BG)?
-At a certain point in the game Alagnar is supposed to be murdered. Unfortunately there is a bug in the original game data, that lets him walk around alive in his own murder scene. To avoid this bug you have come in through the south door of his house.
+At a certain point in the game Alagnar is supposed to be murdered. Unfortunately there is a bug in the original game data, that lets him walk around alive in his own murder scene. To avoid this bug you have to enter his house through the south door.
 
 
 5.9. Where did my gem of the Demon vanish to (FoV)?
@@ -597,7 +610,7 @@ The pikeman that lets you enter the list field in Monitor sometimes disappears d
 
 
 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)?
-When you are the Sleeping Bull, do NOT close the gangplank to Captain Hawk's ship. After you've got him out of Jail and you are ready for him to take you to Moonshade, he will not be able to do so when the gangplank is closed. If you have accidently done that you will have to resort to cheating (enable hackmover) for fixing that.
+When you are at the Sleeping Bull, do NOT close the gangplank to Captain Hawk's ship. After you've got him out of Jail and you are ready for him to take you to Moonshade, he will not be able to do so when the gangplank is closed. If you have accidently done that you will have to resort to cheating (enable hackmover) for fixing that.
 
 
 5.13. How do I get the Mandrake Roots for Fedabiblio (SI)?
@@ -610,7 +623,7 @@ Pothos won't take the moss if he hasn't sent you to fetch it for him. If you wan
 
 5.15. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
-If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
+If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor.
 
 
 5.16. Why won't Xenka speak about sacrifice (SI)?
