@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="28 April 2010(GMT)">
+<readme title="Exult" changed="15 August 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="15082010">
+			<header>- 15 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="midi_music"/> Fluidsynth support is not compiled into the snapshots, also MT32 is suported on OS X.</li>
+				<li><ref1 target="win32_device"/> the log files are now where exult.cfg is saved to not necessarily where exult.exe is.</li>
+				<li><ref1 target="error_log"/> also about location of log files.</li>
+				<li><ref1 target="bg_manual"/> some *nix command.</li>
+				<li><ref1 target="si_manual"/> some *nix command.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="28042010">
 			<header>- 28 April 2010</header>
 			<body>
@@ -1187,13 +1199,15 @@
 					<li><strong>FluidSynth</strong><br/>
         				is another software synthesizer, which uses SoundFont 2 technology without need for a 
 						SoundFont-compatible soundcard. It is available for many Operating Systems and opposed 
-						to TiMidity still actively developed. With current snapshots you just need to edit 
+						to TiMidity still actively developed.<br/>
+						Since Fluidsynth pulls in many dependencies it is not compiled into <Exult/> at the moment.
+						If you compiled <Exult/> ourself and you enabled Fluidsynth you just need to edit 
 						exult.cfg and point &lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;fluidsynth_soundfont&gt; 
 						to the SoundFont you want to use.</li>
 					<li><strong>MT32Emu</strong><br/>
         				Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or 
 						the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the <Exult/> data folder.
-						If both sets are prsent the CM32L one will be used.</li>
+						If both sets are present the CM32L ROM set will be used.</li>
 					<li><strong>Windows</strong><br/>
         				When you are using Windows and for some reason the <strong>Default</strong> driver doesn't work.</li>
 					<li><strong>Amiga</strong><br/>
@@ -1248,10 +1262,6 @@
 					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and
 					the notes are only mapped to General MIDI.
 				</para>
-				<para>
-					Also note that MT32 is not supported on Mac OS X, since <Exult/> does not yet have 
-					support for it (CoreMIDI) coded in.
-				</para>
 			</body>
 		</sub>
 		<sub name="limits_music">
@@ -1277,14 +1287,14 @@
 			<header>Windows MIDI Mapper</header>
 			<body>
 				<para>
-					You can now tell <Exult/> which MIDI device it should use. Useful if you
+					You can now tell <Exult/> which MIDI device it should use. This is useful if you
 					want <Exult/> to use a different MIDI device than the default Windows device
 					(like an MT-32).
 				</para>
 				<para>
 					To do this start <Exult/>, on the menu choose "Exit". Now open the file stdout.txt
-					in the folder where exult.exe is located. You will see a listing of the MIDI
-					devices.<br/>
+					in the folder where exult.cfg is located (see <ref target="exult_config_location"/>). 
+					You will see a listing of the MIDI devices.<br/>
 					For example with an SB Live! in Win2k it will look like this:
 				</para>
 				<para>
@@ -2031,7 +2041,9 @@
 						<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
 						These may give you some idea of what is going on
 						under the hood. When <Exult/> suddenly quits, sometimes
-						these files can help.</li>
+						these files can help.<br/>
+						You can find these files in the folder where exult.cfg is 
+						located (see <ref target="exult_config_location"/>)</li>
 					<li><strong>UNIX/UNIX clones:</strong><br/>
 						the above mentioned logs are shown in the console from which <Exult/>
 						is started.<br/>
@@ -2386,12 +2398,14 @@
 					If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder 
 					(enter <kbd>cd C:\Exult\BGfloppy</kbd>). There enter the following lines and press return after 
 					each line:<br/>
-					<kbd>copy /b u7disk00 +U7disk01 + u7disk02 u7disk00.zip</kbd><br/>
+					<kbd>copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip</kbd><br/>
 					<kbd>copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip</kbd><br/>
 					<kbd>copy /b u7disk20 + u7disk21 u7disk20.zip</kbd><br/>
+					If you are on a *nix system you use the cat command instead of copy /b, for eaxample<br/>
+					<kbd>cat u7disk00 U7disk01 u7disk02 >u7disk00.zip</kbd>
 				</para>
 				<para>
-					In that folder you can now find 3 zip files. You can use winzip/winrar/any unarchiver now 
+					In that folder you can now find 3 zip files. You can now use winzip/winrar/any unarchiver 
 					to extract the files (keep folder structure in the settings) to <strong>C:\Exult\ULTIMA7</strong>. 
 					Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to <strong>C:\Exult\ULTIMA7</strong>.
 					Or enter the following lines on the command prompt:<br/>
@@ -2421,9 +2435,11 @@
 					<kbd>copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip</kbd><br/>
 					<kbd>copy /b sidisk30 + sidisk31 sidisk30.zip</kbd><br/>
 					<kbd>copy sidisk40 sidisk40.zip</kbd><br/>
+					If you are on a *nix system you use the cat command instead of copy /b, for eaxample<br/>
+					<kbd>cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip</kbd>
 				</para>
 				<para>
-					In that folder you can now find 5 zip files. You can use winzip/winrar/any unarchiver now 
+					In that folder you can now find 5 zip files. You can now use winzip/winrar/any unarchiver 
 					to extract the files (keep folder structure in the settings) to <strong>C:\Exult\SERPENT</strong>. 
 					Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to 
 					<strong>C:\Exult\SERPENT</strong>.<br/>
@@ -2434,7 +2450,7 @@
 					<kbd>pkunzip -d -e sidisk30.zip C:\Exult\SERPENT</kbd><br/>
 					<kbd>pkunzip -d -e sidisk40.zip C:\Exult\SERPENT</kbd><br/>
 					<kbd>copy *.exe C:\Exult\SERPENT</kbd><br/>
-					<kbd>ccopy install.prm C:\Exult\SERPENT</kbd><br/>
+					<kbd>copy install.prm C:\Exult\SERPENT</kbd><br/>
 					Installation is now finished and you can delete the folder <strong>C:\Exult\SIfloppy</strong>.
 				</para>
 			</body>

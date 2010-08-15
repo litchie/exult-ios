@@ -1,27 +1,28 @@
 Exult Documentation
-last changed: 28 April 2010(GMT)
+last changed: 15 August 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 28 April 2010
-0.2. - 11 March 2010
-0.3. - 10 March 2010
-0.4. - 08 March 2010
-0.5. - 16 July 2009
-0.6. - 03 June 2009
-0.7. - 20 May 2009
-0.8. - 19 May 2009
-0.9. - 18 May 2009
-0.10. - 28 April 2009
-0.11. - 21 October 2007
-0.12. - 08 April 2006
-0.13. - 14 March 2005
-0.14. - 14 August 2004
-0.15. - 23 May 2004
-0.16. - 11 February 2004
-0.17. - 12 December 2003
+0.1. - 15 August 2010
+0.2. - 28 April 2010
+0.3. - 11 March 2010
+0.4. - 10 March 2010
+0.5. - 08 March 2010
+0.6. - 16 July 2009
+0.7. - 03 June 2009
+0.8. - 20 May 2009
+0.9. - 19 May 2009
+0.10. - 18 May 2009
+0.11. - 28 April 2009
+0.12. - 21 October 2007
+0.13. - 08 April 2006
+0.14. - 14 March 2005
+0.15. - 14 August 2004
+0.16. - 23 May 2004
+0.17. - 11 February 2004
+0.18. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -114,12 +115,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 28 April 2010
+0.1. - 15 August 2010
+* 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is suported on OS X.
+* 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
+* 8.2. Error Log also about location of log files.
+* 10.5. Manual installation of the BG floppy disks some *nix command.
+* 10.6. Manual installation of the SI floppy disks some *nix command.
+
+
+
+0.2. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-0.2. - 11 March 2010
+0.3. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 6.4. Audio Options added new SFX pack option and updated screenshot.
@@ -127,7 +137,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 10 March 2010
+0.4. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -137,7 +147,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 08 March 2010
+0.5. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -148,25 +158,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.5. - 16 July 2009
+0.6. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.6. - 03 June 2009
+0.7. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.7. - 20 May 2009
+0.8. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.8. - 19 May 2009
+0.9. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -177,7 +187,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.9. - 18 May 2009
+0.10. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -196,43 +206,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.10. - 28 April 2009
+0.11. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.11. - 21 October 2007
+0.12. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OSX added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.12. - 08 April 2006
+0.13. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.13. - 14 March 2005
+0.14. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.14. - 14 August 2004
+0.15. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.15. - 23 May 2004
+0.16. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.16. - 11 February 2004
+0.17. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -243,7 +253,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.17. - 12 December 2003
+0.18. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
@@ -900,8 +910,8 @@ The MIDI driver can be changed to:
 * Default This setting utilizes the default MIDI driver of your system.
 * FMOPL This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib).
 * TiMidity is a software synthesizer that can play MIDI files without a hardware synthesizer. You can install TiMidity on all major Operating systems. You need to place tmidity.cfg into the same folder where the Exult executable is installed to, otherwise TiMidity will not work.
-* FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible soundcard. It is available for many Operating Systems and opposed to TiMidity still actively developed. With current snapshots you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use.
-* MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are prsent the CM32L one will be used.
+* FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible soundcard. It is available for many Operating Systems and opposed to TiMidity still actively developed. Since Fluidsynth pulls in many dependencies it is not compiled into Exult at the moment. If you compiled Exult ourself and you enabled Fluidsynth you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use.
+* MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are present the CM32L ROM set will be used.
 * Windows When you are using Windows and for some reason the Default driver doesn't work.
 * Amiga Uses the Amiga MIDI driver on the Amiga system.
 * Be_midi For use on BeOS.
@@ -920,7 +930,6 @@ For drivers that use a real MIDI device, the device type for MIDI can be changed
 * Fake MT32 This is for MIDI devices that behave like a MT32 but don't support SysEx messages. Use that option if you have a SoundFont or similar loaded for your soundcard (or software synth such as FluidSynth) that contains the MT32 capital tones but the device can't be reprogrammed using MT32 SysEx commands by Exult.
 
 NOTE: Currently the conversion to GS and GS127 is not finished and the notes are only mapped to General MIDI.
-Also note that MT32 is not supported on Mac OS X, since Exult does not yet have support for it (CoreMIDI) coded in.
 
 
 3.3. Abilities and limitations of the MIDI music engine
@@ -929,8 +938,8 @@ During the development of the XMIDI class it was found that certain .xmi files i
 
 
 3.4. Windows MIDI Mapper
-You can now tell Exult which MIDI device it should use. Useful if you want Exult to use a different MIDI device than the default Windows device (like an MT-32).
-To do this start Exult, on the menu choose "Exit". Now open the file stdout.txt in the folder where exult.exe is located. You will see a listing of the MIDI devices. For example with an SB Live! in Win2k it will look like this:
+You can now tell Exult which MIDI device it should use. This is useful if you want Exult to use a different MIDI device than the default Windows device (like an MT-32).
+To do this start Exult, on the menu choose "Exit". Now open the file stdout.txt in the folder where exult.cfg is located (see 2.2.). You will see a listing of the MIDI devices. For example with an SB Live! in Win2k it will look like this:
 4 Midi Devices Detected Listing midi devices: -1: Microsoft MIDI-Mapper 0: A: SB Live! MIDI Synth 1: B: SB Live! MIDI Synth 2: SB Live! MIDI UART
 By default Exult uses the Microsoft MIDI-Mapper (which uses the device you choose in the Windows Multimedia Properties). To change the MIDI Device open exult.cfg and change
 <win32_device>
@@ -1287,7 +1296,7 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 8.2. Error Log
-* Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
+* Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help. You can find these files in the folder where exult.cfg is located (see 2.2.)
 * UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
 * Mac OS X: When you are running the app bundle Exult.app then the error log will be shown in the OS X Application Console (/Applications/Utilities/Console.app).
 
@@ -1380,14 +1389,14 @@ Unfortunately you might run into a DOSBox bug when installing the add-ons in DOS
 
 10.5. Manual installation of the BG floppy disks
 If for some reason you can't use the above guides to install BG, there is also a way to install BG without using the installer.
-Copy all the files of your floppy files in one folder (e.g. C:\Exult\BGfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\BGfloppy). There enter the following lines and press return after each line: copy /b u7disk00 +U7disk01 + u7disk02 u7disk00.zip copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip copy /b u7disk20 + u7disk21 u7disk20.zip
-In that folder you can now find 3 zip files. You can use winzip/winrar/any unarchiver now to extract the files (keep folder structure in the settings) to C:\Exult\ULTIMA7. Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\ULTIMA7. Or enter the following lines on the command prompt: pkunzip -d -e u7disk00.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk10.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk20.zip C:\Exult\ULTIMA7 copy *.exe C:\Exult\ULTIMA7 copy install.prm C:\Exult\ULTIMA7 Installation is now finished and you can delete the folder C:\Exult\BGfloppy.
+Copy all the files of your floppy files in one folder (e.g. C:\Exult\BGfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\BGfloppy). There enter the following lines and press return after each line: copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip copy /b u7disk20 + u7disk21 u7disk20.zip If you are on a *nix system you use the cat command instead of copy /b, for eaxample cat u7disk00 U7disk01 u7disk02 >u7disk00.zip
+In that folder you can now find 3 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\ULTIMA7. Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\ULTIMA7. Or enter the following lines on the command prompt: pkunzip -d -e u7disk00.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk10.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk20.zip C:\Exult\ULTIMA7 copy *.exe C:\Exult\ULTIMA7 copy install.prm C:\Exult\ULTIMA7 Installation is now finished and you can delete the folder C:\Exult\BGfloppy.
 
 
 10.6. Manual installation of the SI floppy disks
 If for some reason you can't use the above guides to install SI, there is also a way to install SI without using the installer.
-Copy all the files of your floppy files in one folder (e.g. C:\Exult\SIfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\SIfloppy). There enter the following lines and press return after each line: copy sidisk00 sidisk00.zip copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip copy /b sidisk30 + sidisk31 sidisk30.zip copy sidisk40 sidisk40.zip
-In that folder you can now find 5 zip files. You can use winzip/winrar/any unarchiver now to extract the files (keep folder structure in the settings) to C:\Exult\SERPENT. Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\SERPENT. Or enter the following lines on the command prompt: pkunzip -d -e sidisk00.zip C:\Exult\SERPENT pkunzip -d -e sidisk10.zip C:\Exult\SERPENT pkunzip -d -e sidisk20.zip C:\Exult\SERPENT pkunzip -d -e sidisk30.zip C:\Exult\SERPENT pkunzip -d -e sidisk40.zip C:\Exult\SERPENT copy *.exe C:\Exult\SERPENT ccopy install.prm C:\Exult\SERPENT Installation is now finished and you can delete the folder C:\Exult\SIfloppy.
+Copy all the files of your floppy files in one folder (e.g. C:\Exult\SIfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\SIfloppy). There enter the following lines and press return after each line: copy sidisk00 sidisk00.zip copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip copy /b sidisk30 + sidisk31 sidisk30.zip copy sidisk40 sidisk40.zip If you are on a *nix system you use the cat command instead of copy /b, for eaxample cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip
+In that folder you can now find 5 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\SERPENT. Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\SERPENT. Or enter the following lines on the command prompt: pkunzip -d -e sidisk00.zip C:\Exult\SERPENT pkunzip -d -e sidisk10.zip C:\Exult\SERPENT pkunzip -d -e sidisk20.zip C:\Exult\SERPENT pkunzip -d -e sidisk30.zip C:\Exult\SERPENT pkunzip -d -e sidisk40.zip C:\Exult\SERPENT copy *.exe C:\Exult\SERPENT copy install.prm C:\Exult\SERPENT Installation is now finished and you can delete the folder C:\Exult\SIfloppy.
 
 
 10.7. Installing the CD-ROM versions of Ultima VII
