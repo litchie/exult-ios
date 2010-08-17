@@ -526,8 +526,10 @@ void Image_window::toggle_fullscreen() {
 		cout << "Switching to fullscreen mode."<<endl;
                 flags = surf->flags | SDL_FULLSCREEN;
         }
-					// First see if it's allowed.
-        if ( SDL_VideoModeOK(w, h, bpp, flags) )
+		/* First see if it's allowed.
+		* for now this is preventing the switch to fullscreen
+        *if ( SDL_VideoModeOK(w, h, bpp, flags) )
+		*/
 		{
 		free_surface();		// Delete old.
 		fullscreen = !fullscreen;
