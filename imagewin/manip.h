@@ -85,9 +85,26 @@ public:
  */
 class Manip8to555 : public Manip8to16
 	{
+		SDL_Color fixed_colours[256];
+
 public:
-	Manip8to555(SDL_Color *c) : Manip8to16(c, 0)
-		{  }
+	Manip8to555(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
+	{  
+		if (fmt->Rmask == 0x7c00 && fmt->Gmask == 0x03e0 && fmt->Bmask == 0x001f)
+			colors = c;
+		else
+		{
+			SDL_Color *dst = fixed_colours;
+			SDL_Color *end = fixed_colours;
+			while (dst != end) {
+				dst->b = c->r;
+				dst->g = c->g;
+				dst->r = c->b;
+				++dst;
+				++c;
+			}
+		}
+	}
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
@@ -112,9 +129,16 @@ public:
  */
 class Manip8to565 : public Manip8to16
 	{
+		SDL_Color fixed_colours[256];
 public:
-	Manip8to565(SDL_Color *c) : Manip8to16(c, 0)
-	{  }
+	Manip8to565(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
+	{  
+		if (fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
+			colors = c;
+		else
+		{
+		}
+	}
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }

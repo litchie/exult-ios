@@ -27,6 +27,9 @@
 #define USE_FMOPL_MIDI
 #define USE_MT32EMU_MIDI
 #define USE_TIMIDITY_MIDI
+#define HAVE_OPENGL
+
+#define _CRT_SECURE_NO_WARNINGS
 
 #ifndef WIN32
 #error WTF!

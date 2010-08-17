@@ -80,7 +80,7 @@ protected:
 			info_flags &= (~flag);
 		}
 	bool get_flag(int flag) const
-		{ return (info_flags & flag); }
+		{ return (info_flags & flag) != 0; }
 public:
 	friend class Shape_info;
 	Base_info()
