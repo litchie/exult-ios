@@ -1,3 +1,8 @@
+2010-08-17 Dominik Reichardt <dominus@users.sourceforge.net>
+	* imagewin/imagewin.cc : commented out the SDL_VideoModeOK check before 
+	  switching to fullscreen. This hopefully allows everyone to toggle 
+	  fullscreen again. Please let us know.
+	
 2010-08-15 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation and FAQ
 	
