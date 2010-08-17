@@ -825,7 +825,7 @@ static void Init
 	config->value("config/video/gamma/blue", gb, "1.0");
 
 	config->value("config/video/scale", scaleval, sc);
-	sclr = Image_window::get_scaler_for_name(scaler);
+	sclr = Image_window::get_scaler_for_name(scaler.c_str());
 		// Ensure proper values for scaleval based on sclr.
 	if (sclr == Image_window::NoScaler)
 		{

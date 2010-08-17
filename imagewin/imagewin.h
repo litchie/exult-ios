@@ -1,8 +1,8 @@
 /**
- **	Imagewin.h - A window to blit images into.
- **
- **	Written: 8/13/98 - JSF
- **/
+**	Imagewin.h - A window to blit images into.
+**
+**	Written: 8/13/98 - JSF
+**/
 
 /*
 Copyright (C) 1998 Jeffrey S. Freedman
@@ -30,6 +30,7 @@ Boston, MA  02111-1307, USA.
 #include "imagebuf.h"
 #include "exult_types.h"
 #include <string>
+#include <vector>
 
 struct SDL_Surface;
 struct SDL_RWops;
@@ -41,56 +42,66 @@ struct SDL_RWops;
 #endif
 
 /*
- *	Here's the top-level class to use for image buffers.  Image_window
- *	should be derived from it.
- */
+*	Here's the top-level class to use for image buffers.  Image_window
+*	should be derived from it.
+*/
+
+struct ScalerInfo;
 
 class Image_window
-	{
+{
 public:
 	// Firstly just some public scaler stuff
 
-	// The scaler types. ScalerNames needs to match this
-#ifdef HAVE_OPENGL
-	enum ScalerType {
-		point = 0,
-		interlaced = 1,
-		bilinear = 2,
-		BilinearPlus = 3,
-		SaI = 4,
-		SuperEagle = 5,
-		Super2xSaI = 6,
-		Scale2x = 7,
-		Hq2x = 8,
-		Hq3x = 9,
-		OpenGL = 10,
+	typedef void (Image_window::*scalefun)(int x, int y, int w, int h);
+	typedef int ScalerType;
 
-		NoScaler = -1,
-		NumScalers = 11
+	struct ScalerInfo
+	{
+		const char *			name;
+		uint32					size_mask;
+		Image_window::scalefun	fun565;
+		Image_window::scalefun	fun555;
+		Image_window::scalefun	fun16;
+		Image_window::scalefun	fun32;
+		Image_window::scalefun	fun8;
 	};
-#else
-	enum ScalerType {
-		point = 0,
-		interlaced = 1,
-		bilinear = 2,
-		BilinearPlus = 3,
-		SaI = 4,
-		SuperEagle = 5,
-		Super2xSaI = 6,
-		Scale2x = 7,
-		Hq2x = 8,
-		Hq3x = 9,
-		OpenGL = 10,
 
-		NoScaler = -1,
-		NumScalers = 10 // no OpenGL. (But leave it in the enum.)
-};
-#endif
+	struct ScalerVector : public std::vector<Image_window::ScalerInfo> {
+		ScalerVector();
+	};
+private:
+	static ScalerVector p_scalers;
+public:
+	static const ScalerVector &Scalers;
 
+	static ScalerType get_scaler_for_name(const char *name);
+	inline static const char *get_name_for_scaler(int num) { return Scalers[num].name; }
 
-	static const char *ScalerNames[];
-	static ScalerType get_scaler_for_name(const std::string &name);
-	inline static const char *get_name_for_scaler(int num) { return ScalerNames[num]; }
+	struct ScalerConst {
+		char const * const Name;
+		ScalerConst(const char *name) : Name(name) {
+		}
+		operator ScalerType() const
+		{
+			if (Name == 0) return Scalers.size();
+			return get_scaler_for_name(Name);
+		}
+	};
+
+	static const ScalerType		NoScaler;
+	static const ScalerConst	point;
+	static const ScalerConst	interlaced;
+	static const ScalerConst	bilinear;
+	static const ScalerConst	BilinearPlus;
+	static const ScalerConst	SaI;
+	static const ScalerConst	SuperEagle;
+	static const ScalerConst	Super2xSaI;
+	static const ScalerConst	Scale2x;
+	static const ScalerConst	Hq2x;
+	static const ScalerConst	Hq3x;
+	static const ScalerConst	OpenGL;
+	static const ScalerConst	NumScalers;
 
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
@@ -98,15 +109,14 @@ protected:
 	int scaler;			// What scaler do we want to use
 	bool uses_palette;		// Does this window have a palette
 	bool fullscreen;		// Rendering fullscreen.
-	SDL_Surface *surface;		// Represents window in memory. (has palette)
-	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0. (only used when scaling)
-	SDL_Surface *unscaled_surface;	// Unscaled surface (used for screenshots only)
-					// Method to blit scaled:
-	typedef void (Image_window::*scalefun)(int x, int y, int w, int h);
+	SDL_Surface *paletted_surface;	// Represents window in memory. (has palette)
+	SDL_Surface *display_surface;	// 2X surface if scaling, else 0. (only used when scaling)
+	SDL_Surface *draw_surface;		// Unscaled surface (used for screenshots only)
+	// Method to blit scaled:
 	scalefun show_scaled;
 	/*
-	 *	Scaled blits:
-	 */
+	*	Scaled blits:
+	*/
 	void show_scaled8to16_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to555_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to565_2xSaI(int x, int y, int w, int h);
@@ -161,159 +171,164 @@ protected:
 	void show_scaled8to32_Hq3x(int x, int y, int w, int h);	
 	void show_scaledOpenGL(int x, int y, int w, int h);
 	/*
-	 *	Image info.
-	 */
-					// Create new SDL surface.
+	*	Image info.
+	*/
+	// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
-	bool create_scale_surfaces(int scale, int w, int h, uint32 flags,
-	    scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
-	bool try_scaler(int w, int h, uint32 flags);
+	bool create_scale_surfaces(int scale, int w, int h,
+		scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
+	bool try_scaler(int w, int h);
 public:
-					// Create with given buffer.
+
+	bool Get_scaled_video_mode(int w, int h, int *bpp, uint32 *flags);
+
+	// Create with given buffer.
 	Image_window(Image_buffer *ib, int scl = 1, bool fs = false, int sclr = point)
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true), 
-		  fullscreen(fs), surface(0), 
-		  scaled_surface(0), show_scaled(0)
-		{ create_surface(ibuf->width, ibuf->height); }
+		fullscreen(fs), paletted_surface(0), 
+		display_surface(0), show_scaled(0)
+	{ 
+		Get_scaled_video_mode(0,0,0,0);
+		create_surface(ibuf->width, ibuf->height); 
+	}
 	virtual ~Image_window();
 	int get_scale()			// Returns 1 or 2.
-		{ return scale; }
+	{ return scale; }
 	int get_scaler()		// Returns 1 or 2.
-		{ return scaler; }
+	{ return scaler; }
 	bool is_palettized()		// Does the window have a palette?
-		{ return uses_palette; }
+	{ return uses_palette; }
 
-					// Is rect. visible within clip?
+	// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
-		{ return ibuf->is_visible(x, y, w, h); }
-					// Set title.
+	{ return ibuf->is_visible(x, y, w, h); }
+	// Set title.
 	void set_title(const char *title);
 
 	Image_buffer *get_ibuf()
-		{ return ibuf; }
+	{ return ibuf; }
 	int get_width()
-		{ return ibuf->width; }
+	{ return ibuf->width; }
 	int get_height()
-		{ return ibuf->height; }
+	{ return ibuf->height; }
 	int ready()			// Ready to draw?
-		{ return (ibuf->bits != 0); }
+	{ return (ibuf->bits != 0); }
 	bool is_fullscreen() { return fullscreen; }
-					// Create a compatible image buffer.
+	// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
-					// Resize event occurred.
+	// Resize event occurred.
 	void resized(unsigned int neww, unsigned int nehh, int newsc, int newscaler = point);
 	void show();			// Repaint entire window.
-					// Repaint rectangle.
+	// Repaint rectangle.
 	void show(int x, int y, int w, int h);
 
 	void toggle_fullscreen();
-					// Set palette.
+	// Set palette.
 	virtual void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100)
-		{  }
-					// Rotate palette colors.
+		int brightness = 100)
+	{  }
+	// Rotate palette colors.
 	virtual void rotate_colors(int first, int num, int upd)
-		{  }
+	{  }
 	/*
-	 *	16-bit color methods.
-	 */
-					// Fill with given pixel.
+	*	16-bit color methods.
+	*/
+	// Fill with given pixel.
 	void fill16(unsigned short pix)
-		{ ibuf->fill16(pix); }
-					// Fill rect. wth pixel.
+	{ ibuf->fill16(pix); }
+	// Fill rect. wth pixel.
 	void fill16(unsigned short pix, int srcw, int srch,
-						int destx, int desty)
-		{ ibuf->fill16(pix, srcw, srch, destx, desty); }
-					// Copy rectangle into here.
+		int destx, int desty)
+	{ ibuf->fill16(pix, srcw, srch, destx, desty); }
+	// Copy rectangle into here.
 	void copy16(unsigned short *src_pixels,
-				int srcw, int srch, int destx, int desty)
-		{ ibuf->copy16(src_pixels, srcw, srch, destx, desty); }
-					// Copy rect. with transp. color.
+		int srcw, int srch, int destx, int desty)
+	{ ibuf->copy16(src_pixels, srcw, srch, destx, desty); }
+	// Copy rect. with transp. color.
 	void copy_transparent16(unsigned char *src_pixels, int srcw,
-					int srch, int destx, int desty)
-		{ ibuf->copy_transparent16(src_pixels, srcw, srch,
-							destx, desty); }
+		int srch, int destx, int desty)
+	{ ibuf->copy_transparent16(src_pixels, srcw, srch,
+	destx, desty); }
 	/*
-	 *	8-bit color methods:
-	 */
-					// Fill with given (8-bit) value.
+	*	8-bit color methods:
+	*/
+	// Fill with given (8-bit) value.
 	void fill8(unsigned char val)
-		{ IF_OPENGL(opengl_fill8(val),
-			ibuf->fill8(val)); }
-					// Fill rect. wth pixel.
+	{ IF_OPENGL(opengl_fill8(val),
+	ibuf->fill8(val)); }
+	// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
-						int destx, int desty)
-		{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
-			ibuf->fill8(val, srcw, srch, destx, desty)); }
-					// Fill line with pixel.
+		int destx, int desty)
+	{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
+	ibuf->fill8(val, srcw, srch, destx, desty)); }
+	// Fill line with pixel.
 	void fill_line8(unsigned char val, int srcw,
-						int destx, int desty)
-		{ ibuf->fill_line8(val, srcw, destx, desty); }
-					// Copy rectangle into here.
+		int destx, int desty)
+	{ ibuf->fill_line8(val, srcw, destx, desty); }
+	// Copy rectangle into here.
 	void copy8(unsigned char *src_pixels,
-				int srcw, int srch, int destx, int desty)
-		{ ibuf->copy8(src_pixels, srcw, srch, destx, desty); }
-					// Copy line to here.
+		int srcw, int srch, int destx, int desty)
+	{ ibuf->copy8(src_pixels, srcw, srch, destx, desty); }
+	// Copy line to here.
 	void copy_line8(unsigned char *src_pixels, int srcw,
-						int destx, int desty)
-		{ ibuf->copy_line8(src_pixels, srcw, destx, desty); }
-					// Copy with translucency table.
+		int destx, int desty)
+	{ ibuf->copy_line8(src_pixels, srcw, destx, desty); }
+	// Copy with translucency table.
 	void copy_line_translucent8(
 		unsigned char *src_pixels, int srcw,
 		int destx, int desty, int first_translucent,
 		int last_translucent, Xform_palette *xforms)
-		{ ibuf->copy_line_translucent8(src_pixels, srcw, destx, desty,
-				first_translucent, last_translucent, xforms); }
-					// Apply translucency to a line.
+	{ ibuf->copy_line_translucent8(src_pixels, srcw, destx, desty,
+	first_translucent, last_translucent, xforms); }
+	// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette& xform)
-		{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
-								xform); }
-					// Apply translucency to a rectangle
+		int srcw, int destx, int desty, Xform_palette& xform)
+	{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
+	xform); }
+	// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-				int destx, int desty, Xform_palette& xform)
-		{ IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
-			destx, desty, xform), ibuf->fill_translucent8(val, 
-					srcw, srch, destx, desty, xform)); }
-					// Copy rect. with transp. color.
+		int destx, int desty, Xform_palette& xform)
+	{ IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
+	destx, desty, xform), ibuf->fill_translucent8(val, 
+	srcw, srch, destx, desty, xform)); }
+	// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
-					int srch, int destx, int desty)
-		{ ibuf->copy_transparent8(src_pixels, srcw, srch,
-							destx, desty); }
+		int srch, int destx, int desty)
+	{ ibuf->copy_transparent8(src_pixels, srcw, srch,
+	destx, desty); }
 	/*
-	 *	OpenGL:
-	 */
+	*	OpenGL:
+	*/
 #ifdef HAVE_OPENGL
 	void opengl_fill8(unsigned char val)
-		{ opengl_fill8(val, ibuf->width, ibuf->height, 0, 0); }
-					// Fill rect. wth pixel.
+	{ opengl_fill8(val, ibuf->width, ibuf->height, 0, 0); }
+	// Fill rect. wth pixel.
 	void opengl_fill8(unsigned char val, int srcw, int srch,
-						int destx, int desty);
+		int destx, int desty);
 	virtual void opengl_fill_translucent8(unsigned char val, 
-	    int srcw, int srch, int destx, int desty, Xform_palette& xform);
+		int srcw, int srch, int destx, int desty, Xform_palette& xform);
 #endif
 	/*
-	 *	Depth-independent methods:
-	 */
+	*	Depth-independent methods:
+	*/
 	void clear_clip()		// Reset clip to whole window.
-		{ ibuf->clear_clip(); }
-					// Set clip.
+	{ ibuf->clear_clip(); }
+	// Set clip.
 	void set_clip(int x, int y, int w, int h)
-		{ ibuf->set_clip(x, y, w, h); }
-					// Copy within itself.
+	{ ibuf->set_clip(x, y, w, h); }
+	// Copy within itself.
 	void copy(int srcx, int srcy, int srcw, int srch, 
-						int destx, int desty)
-		{ ibuf->copy(srcx, srcy, srcw, srch, destx, desty); }
-					// Get rect. into another buf.
+		int destx, int desty)
+	{ ibuf->copy(srcx, srcy, srcw, srch, destx, desty); }
+	// Get rect. into another buf.
 	void get(Image_buffer *dest, int srcx, int srcy)
-		{ ibuf->get(dest, srcx, srcy); }
-					// Put rect. back.
+	{ ibuf->get(dest, srcx, srcy); }
+	// Put rect. back.
 	void put(Image_buffer *src, int destx, int desty)
-		{ ibuf->put(src, destx, desty); }
+	{ ibuf->put(src, destx, desty); }
 
 	bool screenshot(SDL_RWops *dst);
-	};
-
+};
 
 #endif	/* INCL_IMAGEWIN	*/

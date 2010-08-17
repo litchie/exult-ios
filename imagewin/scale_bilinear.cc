@@ -41,16 +41,16 @@ void Image_window::show_scaled8to16_bilinear
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to16 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to16 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_bilinear
@@ -60,15 +60,16 @@ void Image_window::show_scaled8to555_bilinear
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to555 manip(surface->format->palette->colors);
+	Manip8to555 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_bilinear
@@ -78,15 +79,16 @@ void Image_window::show_scaled8to565_bilinear
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to565 manip(surface->format->palette->colors);
+	Manip8to565 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_bilinear
@@ -96,16 +98,16 @@ void Image_window::show_scaled8to32_bilinear
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to32 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to32 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(uint32 *) scaled_surface->pixels,
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+			(uint32 *) display_surface->pixels,
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 //
@@ -118,16 +120,16 @@ void Image_window::show_scaled8to16_BilinearPlus
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to16 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to16 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_BilinearPlus
@@ -137,15 +139,16 @@ void Image_window::show_scaled8to555_BilinearPlus
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to555 manip(surface->format->palette->colors);
+	Manip8to555 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_BilinearPlus
@@ -155,15 +158,16 @@ void Image_window::show_scaled8to565_BilinearPlus
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to565 manip(surface->format->palette->colors);
+	Manip8to565 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_BilinearPlus
@@ -173,14 +177,14 @@ void Image_window::show_scaled8to32_BilinearPlus
 	{
 	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
 
-	Manip8to32 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to32 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(uint32 *) scaled_surface->pixels,
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+			(uint32 *) display_surface->pixels,
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
