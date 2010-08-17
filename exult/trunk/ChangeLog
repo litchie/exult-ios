@@ -1,3 +1,8 @@
+2010-08-17  Ryan Nunn <colourles@users.sourceforge.net>
+	* exult.cc, imagewin/* : Cleaning up scaler handling code, fixing bugs,
+	  generally making things more flexible for future changes.
+	* shapes/baseinf.h : Fixing a compiler warning
+
 2010-08-17 Dominik Reichardt <dominus@users.sourceforge.net>
 	* imagewin/imagewin.cc : commented out the SDL_VideoModeOK check before 
 	  switching to fullscreen. This hopefully allows everyone to toggle 

@@ -41,16 +41,16 @@ void Image_window::show_scaled8to16_2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to16 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to16 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_2xSaI
@@ -60,15 +60,16 @@ void Image_window::show_scaled8to555_2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to555 manip(surface->format->palette->colors);
+	Manip8to555 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_2xSaI
@@ -78,15 +79,16 @@ void Image_window::show_scaled8to565_2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to565 manip(surface->format->palette->colors);
+	Manip8to565 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_2xSaI
@@ -96,16 +98,16 @@ void Image_window::show_scaled8to32_2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to32 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to32 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_2xSaI<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(uint32 *) scaled_surface->pixels,
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+			(uint32 *) display_surface->pixels,
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 
@@ -119,16 +121,16 @@ void Image_window::show_scaled8to16_Super2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to16 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to16 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_Super2xSaI
@@ -138,15 +140,16 @@ void Image_window::show_scaled8to555_Super2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to555 manip(surface->format->palette->colors);
+	Manip8to555 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_Super2xSaI
@@ -156,15 +159,16 @@ void Image_window::show_scaled8to565_Super2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to565 manip(surface->format->palette->colors);
+	Manip8to565 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_Super2xSaI
@@ -174,16 +178,16 @@ void Image_window::show_scaled8to32_Super2xSaI
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to32 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to32 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(uint32 *) scaled_surface->pixels,
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+			(uint32 *) display_surface->pixels,
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 
@@ -197,16 +201,16 @@ void Image_window::show_scaled8to16_SuperEagle
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to16 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to16 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_SuperEagle
@@ -216,15 +220,16 @@ void Image_window::show_scaled8to555_SuperEagle
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to555 manip(surface->format->palette->colors);
+	Manip8to555 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_SuperEagle
@@ -234,15 +239,16 @@ void Image_window::show_scaled8to565_SuperEagle
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to565 manip(surface->format->palette->colors);
+	Manip8to565 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) scaled_surface->pixels, 
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+		    (uint16 *) display_surface->pixels, 
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_SuperEagle
@@ -252,14 +258,14 @@ void Image_window::show_scaled8to32_SuperEagle
 	{
 	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
 
-	Manip8to32 manip(surface->format->palette->colors,
-						scaled_surface->format);
+	Manip8to32 manip(paletted_surface->format->palette->colors,
+						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(uint32 *) scaled_surface->pixels,
-			scaled_surface->pitch/
-				scaled_surface->format->BytesPerPixel,
+			(uint32 *) display_surface->pixels,
+			display_surface->pitch/
+				display_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	SDL_UpdateRect(display_surface, 2*x, 2*y, 2*w, 2*h);
 	}

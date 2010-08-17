@@ -2484,10 +2484,6 @@
 			Name="MSVC Kludges"
 			>
 			<File
-				RelativePath=".\find_nearby.h"
-				>
-			</File>
-			<File
 				RelativePath=".\msvc_kludges.cc"
 				>
 				<FileConfiguration
@@ -2528,10 +2524,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\docs\excinematics.txt"
-				>
-			</File>
-			<File
 				RelativePath="..\FAQ"
 				>
 			</File>
@@ -2553,10 +2545,6 @@
 			</File>
 			<File
 				RelativePath="..\Makefile.MorphOS"
-				>
-			</File>
-			<File
-				RelativePath="..\message.txt"
 				>
 			</File>
 			<File

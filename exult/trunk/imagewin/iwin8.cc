@@ -110,10 +110,10 @@ void Image_window8::set_palette
 		colors2[i].g = colors[i*3+1]  = GammaGreen[Get_color8(rgbs[3*i + 1], maxval, brightness)];
 		colors2[i].b = colors[i*3+2]  = GammaBlue[Get_color8(rgbs[3*i + 2], maxval, brightness)];
 	}
-	SDL_SetColors(surface, colors2, 0, 256);
+	SDL_SetColors(paletted_surface, colors2, 0, 256);
 
-	if (surface != unscaled_surface)
-		SDL_SetColors(unscaled_surface, colors2, 0, 256);
+	if (paletted_surface != draw_surface)
+		SDL_SetColors(draw_surface, colors2, 0, 256);
 }
 
 /*
@@ -146,10 +146,10 @@ void Image_window8::rotate_colors
 			colors2[i].g = colors[i*3+1];
 			colors2[i].b = colors[i*3+2];
 		}
-		SDL_SetColors(surface, colors2, 0, 256);
+		SDL_SetColors(paletted_surface, colors2, 0, 256);
 
-		if (surface != unscaled_surface)
-			SDL_SetColors(unscaled_surface, colors2, 0, 256);
+		if (paletted_surface != draw_surface)
+			SDL_SetColors(draw_surface, colors2, 0, 256);
 	}
 }
 
@@ -162,7 +162,7 @@ static inline int pow2(int x)
 unsigned char* Image_window8::mini_screenshot()
 {
 	int i;
-	if (!surface) return 0;
+	if (!paletted_surface) return 0;
 
 	unsigned char* buf = new Uint8[96*60];
 	const int w = 3*96, h = 3*60;
