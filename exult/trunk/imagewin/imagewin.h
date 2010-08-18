@@ -181,7 +181,7 @@ protected:
 	bool try_scaler(int w, int h);
 public:
 
-	bool Get_scaled_video_mode(int w, int h, int *bpp, uint32 *flags);
+	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
 	Image_window(Image_buffer *ib, int scl = 1, bool fs = false, int sclr = point)
@@ -189,7 +189,7 @@ public:
 		fullscreen(fs), paletted_surface(0), 
 		display_surface(0), show_scaled(0)
 	{ 
-		Get_scaled_video_mode(0,0,0,0);
+		Get_best_bpp(0,0,0,0);
 		create_surface(ibuf->width, ibuf->height); 
 	}
 	virtual ~Image_window();
