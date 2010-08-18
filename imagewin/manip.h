@@ -95,7 +95,7 @@ public:
 		else
 		{
 			SDL_Color *dst = fixed_colours;
-			SDL_Color *end = fixed_colours;
+			SDL_Color * const end = dst+256;
 			while (dst != end) {
 				dst->b = c->r;
 				dst->g = c->g;
@@ -103,6 +103,7 @@ public:
 				++dst;
 				++c;
 			}
+			colors = fixed_colours;
 		}
 	}
 	uint16 rgb(unsigned int r, unsigned int g,
@@ -133,10 +134,20 @@ class Manip8to565 : public Manip8to16
 public:
 	Manip8to565(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
 	{  
-		if (fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
+		if (0 && fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
 			colors = c;
 		else
 		{
+			SDL_Color *dst = fixed_colours;
+			SDL_Color * const end = dst+256;
+			while (dst != end) {
+				dst->b = c->r;
+				dst->g = c->g;
+				dst->r = c->b;
+				++dst;
+				++c;
+			}
+			colors = fixed_colours;
 		}
 	}
 	uint16 rgb(unsigned int r, unsigned int g,
