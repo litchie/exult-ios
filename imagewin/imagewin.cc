@@ -207,51 +207,72 @@ Image_window::ScalerType Image_window::get_scaler_for_name(const char *scaler)
 }
 
 /*
-* Image_window::Get_scaled_video_mode
+* Image_window::Get_best_bpp
 * 
-* Get the bpp and flags for a scaled surface of the desired scaled video mode
+* Get the bpp for a scaled surface of the desired scaled video mode
 */
 
-bool Image_window::Get_scaled_video_mode(int w, int h, int *bpp, uint32 *flags)
+int Image_window::Get_best_bpp(int w, int h, int bpp, uint32 flags)
 {
 	static int desktop_depth = 0;
-	if (desktop_depth == 0) desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+	static int windowed_16;
+	static int windowed_32;
+	if (desktop_depth == 0) {
+		desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
 
-	if (w == 0 || h == 0 || bpp == 0 || flags == 0) return false;
+		windowed_16 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE);
+		windowed_32 = SDL_VideoModeOK(640, 400, 32, SDL_SWSURFACE);
 
-	if (*flags == 0)
-		*flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0);
+		if (windowed_16 == 0 && windowed_32 == 0) {
+			cerr << "SDL Reports 640x400 16 bpp and 32 bpp windowed surfaces are not OK. Windowed scalers may not work properly." << endl;
+		}
+	}
+
+	if (w == 0 || h == 0) return 0;
 
 	// Explicit BPP required
-	if (*bpp != 0)
+	if (bpp != 0)
 	{
-		if (SDL_VideoModeOK(w, h, *bpp, *flags) == 0)
-		{
-			cerr << "SDL Reports " << *bpp << " bpp surface is not OK." << endl;
-			return false;
+		if (!(flags&SDL_FULLSCREEN)) {
+			if (bpp==16 &&  windowed_16 != 0) return 16;
+			else if (bpp==32 && windowed_32 != 0) return 32; 
 		}
-	}
-	else if ((desktop_depth != 16 && desktop_depth != 32) || !SDL_VideoModeOK(w, h, *bpp = desktop_depth, *flags))
-	{
-		int desired16 = SDL_VideoModeOK(w, h, 16, *flags);
-		int desired32 = SDL_VideoModeOK(w, h, 32, *flags);
+		
+		if (SDL_VideoModeOK(w, h, bpp, flags) == 0) 
+			return bpp;
 
-		if (desired16 == 16)
-			*bpp = 16;
-		else if (desired32 == 32)
-			*bpp = 32;
-		else if (desired16 != 0)
-			*bpp = 16;
-		else if (desired32 != 0)
-			*bpp = 32;
-		else 
-		{
-			cerr << "SDL Reports 16 bpp and 32 bpp surfaces are not OK." << endl;
-			return false;
-		}
+		cerr << "SDL Reports " << w << "x" << h << " " << bpp << " bpp " << ((flags&SDL_FULLSCREEN)?"fullscreen":"windowed") << " surface is not OK. Attmempting to use " << bpp << " bpp anyway." << endl;
+		return bpp;
 	}
 
-	return true;
+	if (!(flags&SDL_FULLSCREEN)) {
+		if (desktop_depth == 16 && windowed_16 != 0) return 16;
+		else if (desktop_depth == 32 && windowed_32 != 0) return 32;
+		else if (windowed_16 == 16) return 16;
+		else if (windowed_32 == 32) return 32;
+		else if (windowed_16 != 0) return 16;
+		else if (windowed_32 != 0) return 32;
+	}
+	
+	if ((desktop_depth == 16 || desktop_depth == 32) && SDL_VideoModeOK(w, h, desktop_depth, flags))
+	{
+		return desktop_depth;
+	}
+
+	int desired16 = SDL_VideoModeOK(w, h, 16, flags);
+	int desired32 = SDL_VideoModeOK(w, h, 32, flags);
+
+	if (desired16 == 16)
+		return 16;
+	else if (desired32 == 32)
+		return 32;
+	else if (desired16 != 0)
+		return 16;
+	else if (desired32 != 0)
+		return 32;
+
+	cerr << "SDL Reports " << w << "x" << h << " 16 bpp and 32 bpp " << ((flags&SDL_FULLSCREEN)?"fullscreen":"windowed") << " surfaces are not OK. Attempting to use 16 bpp. anyway" << endl;
+	return 16;
 }
 
 /*
@@ -325,11 +346,12 @@ bool Image_window::create_scale_surfaces(int scl, int w, int h,
 	if (fun16 == 0 && fun32 != 0) hwdepth = 32;
 	else if (fun16 != 0 && fun32 == 0) hwdepth = 16;
 
-	// Get 
-	if (!Get_scaled_video_mode(scl*w, scl*h, &hwdepth, &flags))
-		return false;
+	// Get best bpp
+	flags = SDL_SWSURFACE|(fullscreen?SDL_FULLSCREEN:0);
+	hwdepth = Get_best_bpp(scl*w, scl*h, hwdepth, flags);
+	if (!hwdepth) return false;
 
-	// Get_scaled_video_mode will only ever return 16 or 32 bpp, but doing this just incase someone
+	// Get_best_bpp will only ever return 16 or 32 bpp, but doing this just incase someone
 	// changes it
 	if (hwdepth != 16 && hwdepth != 32) 
 	{
@@ -347,9 +369,9 @@ bool Image_window::create_scale_surfaces(int scl, int w, int h,
 		if (hwdepth == 16)
 		{
 			show_scaled = 
-				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
+				(r == 0xf800 && g == 0x7e0 && b == 0x1f) /*|| (b == 0xf800 && g == 0x7e0 && r == 0x1f) */? 
 					(fun565!=0?fun565:fun16) : 
-				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
+				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) /*|| (b == 0x7c00 && g == 0x3e0 && r == 0x1f) */? 
 					(fun555!=0?fun555:fun16) : 
 				fun16 ;
 		}
