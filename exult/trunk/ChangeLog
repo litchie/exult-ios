@@ -1,4 +1,8 @@
 2010-08-18  Ryan Nunn <colourles@users.sourceforge.net>
+	* imagewin/imagewin.cc, imagewin/manip.h : Reenabling colour swapped 
+	  optimized 555 and 565 scalers. Found the issues and fixed them.
+
+2010-08-18  Ryan Nunn <colourles@users.sourceforge.net>
 	* imagewin/imagewin.* : Attempting to work around problems experienced by 
 	  Dominik. Checks for Windowed surface format support is now done at 
 	  startup. Changed things so if SDL_VideoModeOK() checks fail, Exult still
