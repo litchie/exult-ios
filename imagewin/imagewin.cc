@@ -369,9 +369,9 @@ bool Image_window::create_scale_surfaces(int scl, int w, int h,
 		if (hwdepth == 16)
 		{
 			show_scaled = 
-				(r == 0xf800 && g == 0x7e0 && b == 0x1f) /*|| (b == 0xf800 && g == 0x7e0 && r == 0x1f) */? 
+				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
 					(fun565!=0?fun565:fun16) : 
-				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) /*|| (b == 0x7c00 && g == 0x3e0 && r == 0x1f) */? 
+				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
 					(fun555!=0?fun555:fun16) : 
 				fun16 ;
 		}
