@@ -134,7 +134,7 @@ class Manip8to565 : public Manip8to16
 public:
 	Manip8to565(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
 	{  
-		if (0 && fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
+		if (fmt->Rmask == 0xf800 && fmt->Gmask == 0x7e0 && fmt->Bmask == 0x1f)
 			colors = c;
 		else
 		{
