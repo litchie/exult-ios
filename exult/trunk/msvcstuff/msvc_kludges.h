@@ -30,6 +30,7 @@
 #define HAVE_OPENGL
 
 #define _CRT_SECURE_NO_WARNINGS
+#define _CRT_NONSTDC_NO_WARNINGS
 
 #ifndef WIN32
 #error WTF!

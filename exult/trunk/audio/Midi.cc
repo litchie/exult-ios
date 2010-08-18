@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Midi.h"
 #include "XMidiFile.h"
 #include "MidiDriver.h"
+#include "LowLevelMidiDriver.h"
 #include "conv.h"
 #include "databuf.h"
 #include "convmusic.h"
@@ -563,6 +564,26 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 		driver_default = s;
 	}
 
+	// Timber Precaching
+	config->value("config/audio/midi/precacheTimbers/onStartup",s,"no");
+	LowLevelMidiDriver::precacheTimbresOnStartup = (s == "yes");
+	config->value("config/audio/midi/precacheTimbers/onPlay",s,"yes");
+	LowLevelMidiDriver::precacheTimbresOnPlay = (s != "no");
+
+	config->set("config/audio/midi/precacheTimbers/onStartup",LowLevelMidiDriver::precacheTimbresOnStartup?"yes":"no",true);
+	config->set("config/audio/midi/precacheTimbers/onPlay",LowLevelMidiDriver::precacheTimbresOnPlay?"yes":"no",true);
+
+	std::cout << "Timbers Precached: ";
+
+	if (LowLevelMidiDriver::precacheTimbresOnStartup && LowLevelMidiDriver::precacheTimbresOnPlay)
+		std::cout << "On startup and play" << std::endl;
+	else if (LowLevelMidiDriver::precacheTimbresOnStartup)
+		std::cout << "On startup only" << std::endl;
+	else if (LowLevelMidiDriver::precacheTimbresOnPlay)
+		std::cout << "On play only" << std::endl;
+	else
+		std::cout << "Never" << std::endl;
+	
 	bool sfx = false;
 #ifdef ENABLE_MIDISFX
 	sfx = Audio::get_ptr()->are_effects_enabled();

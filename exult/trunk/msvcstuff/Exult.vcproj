@@ -904,10 +904,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\exceptions.h"
-						>
-					</File>
-					<File
 						RelativePath="..\exult.h"
 						>
 					</File>

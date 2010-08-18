@@ -376,7 +376,7 @@ void Paperdoll_gump::paint
 	if (!info)
 		{
 		Shape_info& inf = ShapeID::get_info(actor->get_shape_real());
-		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex));
+		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex)!= 0);
 		}
 
 	// Spots that are female/male specific
@@ -738,7 +738,7 @@ Game_object * Paperdoll_gump::find_object
 	if (!info)
 		{
 		Shape_info& inf = ShapeID::get_info(actor->get_shape_real());
-		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex));
+		info = inf.get_npc_paperdoll_safe(actor->get_type_flag(Actor::tf_sex)!= 0);
 		}
 
 	int	shieldx, shieldy,

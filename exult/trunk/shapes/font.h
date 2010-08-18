@@ -22,7 +22,7 @@
 class Image_buffer8;
 class Shape_file;
 class DataSource;
-class File_spec;
+struct File_spec;
 class U7multiobject;
 
 /*

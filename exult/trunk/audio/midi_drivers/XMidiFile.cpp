@@ -1154,6 +1154,16 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 	if ((status >> 4) == 0xC) {
 		if (!fs.patch[status&0xF] || fs.patch[status&0xF]->time > time)
 			fs.patch[status&0xF] = current;
+
+		// Add it to the patch and bank change list
+		if (x_patch_bank_first == 0) {
+			x_patch_bank_first = current;
+		}
+		else {
+			x_patch_bank_cur ->next_patch_bank = current;
+		}
+		x_patch_bank_cur = current;
+		current->next_patch_bank = 0;
 	}
 	// Controllers
 	else if ((status >> 4) == 0xB) {
@@ -1171,6 +1181,18 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 		else if (current->data[0] == XMIDI_CONTROLLER_SEQ_BRANCH_INDEX)	{
 			current->ex.branch_index.next_branch = branches;
 			branches = current;
+		}
+		// XMidi Bank Change
+		else if (current->data[0] == XMIDI_CONTROLLER_BANK_CHANGE)	{
+			// Add it to the patch and bank change list
+			if (x_patch_bank_first == 0) {
+				x_patch_bank_first = current;
+			}
+			else {
+				x_patch_bank_cur ->next_patch_bank = current;
+			}
+			x_patch_bank_cur = current;
+			current->next_patch_bank = 0;
 		}
 	}
 
@@ -1202,6 +1224,20 @@ int XMidiFile::ConvertNote (const int time, const unsigned char status, IDataSou
 	// Volume modify the note on's, only if converting
 //	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
 //		current->data[1] = VolumeCurve[current->data[1]];
+
+	// Perc track note on
+	if (status == 0x99 && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION)
+	{
+		// Add it to the patch and bank change list
+		if (x_patch_bank_first == 0) {
+			x_patch_bank_first = current;
+		}
+		else {
+			x_patch_bank_cur->next_patch_bank = current;
+		}
+		x_patch_bank_cur = current;
+		current->next_patch_bank = 0;
+	}
 
 	if (size == 2)
 		return 2;
@@ -1432,6 +1468,8 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 
 		list = NULL;
 		branches = NULL;
+		x_patch_bank_first = NULL;
+		x_patch_bank_cur = NULL;
 		memset(&fs, 0, sizeof(fs));
 
 		int begin = source->getPos ();
@@ -1452,6 +1490,7 @@ int XMidiFile::ExtractTracksFromXmi (IDataSource *source)
 		events[num]->events = list;
 		events[num]->branches = branches;
 		events[num]->chan_mask = chan_mask;
+		events[num]->x_patch_bank = x_patch_bank_first;
 
 		// Increment Counter
 		num++;
@@ -1476,6 +1515,8 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 
 	list = NULL;
 	branches = NULL;
+	x_patch_bank_first = NULL;
+	x_patch_bank_cur = NULL;
 
 	while (source->getPos() < source->getSize() && num != num_tracks)
 	{
@@ -1499,8 +1540,12 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 			AdjustTimings(ppqn);
 			events[num]->events = list;
 			events[num]->branches = branches;
+			events[num]->chan_mask = chan_mask;
+			events[num]->x_patch_bank = x_patch_bank_first;
 			branches = NULL;
 			list = NULL;
+			x_patch_bank_first = NULL;
+			x_patch_bank_cur = NULL;
 			memset(&fs, 0, sizeof(fs));
 			chan_mask = 0;
 		}
@@ -1515,6 +1560,8 @@ int XMidiFile::ExtractTracksFromMid (IDataSource *source, const uint32 ppqn, con
 		AdjustTimings(ppqn);
 		events[0]->events = list;
 		events[0]->branches = branches;
+		events[0]->chan_mask = chan_mask;
+		events[0]->x_patch_bank = x_patch_bank_first;
 		return num == num_tracks ? 1 : 0;
 	}
 
@@ -1998,7 +2045,7 @@ void XMidiFile::InsertDisplayEvents()
 	}
 #endif
 
-	CreateMT32SystemMessage(current->time, display_base, 0, display_mem_size, display );
+	//CreateMT32SystemMessage(current->time, display_base, 0, display_mem_size, display );
 	CreateMT32SystemMessage(-1, display_base, 0, display_mem_size, display_beginning );
 
 	events[0]->events = list;

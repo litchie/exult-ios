@@ -39,7 +39,7 @@ class Game_clock : public Time_sensitive
 	int day;			// Keep track of days played.
 	int light_source_level;		// Last set light source level.
 	int old_light_level;		// Last set light source level.
-	int old_special_light;		// Last set light source level.
+	bool old_special_light;		// Last set light source level.
 	bool old_infravision;		// If infravision was on last time.
 	bool old_invisible;		// If invisibility was on last time.
 	int dungeon;		// Last set 'in_dungeon' value.
@@ -87,7 +87,7 @@ public:
 		{
 		overcast = fog = 0;
 		was_overcast = was_foggy = false;
-		old_special_light = 0;
+		old_special_light = false;
 		old_infravision = false;
 		old_invisible = false;
 		dungeon = 255;

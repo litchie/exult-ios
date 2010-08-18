@@ -616,7 +616,7 @@ void Notebook_gump::down_arrow
 	)
 	{
 	int offset = page_info[curpage].offset;
-	Rectangle box = Get_text_area(curpage%2, offset == 0);
+	Rectangle box = Get_text_area((curpage%2) != 0, offset == 0);
 	int ht = sman->get_text_height(font);
 	if (on_last_page_line())
 		{
@@ -625,7 +625,7 @@ void Notebook_gump::down_arrow
 		next_page();
 		paint();
 		offset = page_info[curpage].offset;
-		box = Get_text_area(curpage%2, offset == 0);
+		box = Get_text_area((curpage%2)!= 0, offset == 0);
 		cursor.y = y + box.y - ht;
 		}
 	box.shift(x, y);		// Window coords.
@@ -664,7 +664,7 @@ void Notebook_gump::up_arrow
 		offset = pinfo2.offset;
 		cursor.y += ht/2;		// Past bottom line.
 		}
-	Rectangle box = Get_text_area(curpage%2, offset == 0);
+	Rectangle box = Get_text_area((curpage%2)!= 0, offset == 0);
 	box.shift(x, y);		// Window coords.
 	int mx = box.x + updnx + 1, my = cursor.y - ht/2;
 	One_note *note = notes[notenum];

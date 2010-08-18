@@ -89,7 +89,7 @@ bool Game_map::read_all_terrain = false;
 bool Game_map::chunk_terrains_modified = false;
 
 const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
-static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
+static char v2hdr[] = {(char)0xff, (char)0xff, (char)0xff, (char)0xff, 'e', 'x', 'l', 't',
 								0, 0};
 
 /*
@@ -234,7 +234,7 @@ void Game_map::init
 		{
 		U7open(u7map, get_mapped_name(U7MAP, fname));
 		}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
 			cerr << "Map file '" << fname << "' not found." <<
@@ -620,7 +620,7 @@ void Game_map::get_ifix_objects
 		{
 		U7open(ifix_stream, get_schunk_file_name(U7IFIX, schunk, fname));
 		}
-		catch(const file_exception & f)
+		catch(const file_exception & /*f*/)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
 			cerr << "Ifix file '" << fname << "' not found." <<
@@ -901,7 +901,7 @@ void Game_map::get_ireg_objects
 		{
 			U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
 		}
-		catch(const file_exception & f)
+		catch(const file_exception & /*f*/)
 		{
 			return;			// Just don't show them.
 		}

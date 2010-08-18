@@ -2879,7 +2879,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 					// Guessing:
 	int always = parms[5].get_int_value();
 	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1,
-							always);
+							always != 0);
 	return no_ret;
 }
 
@@ -3287,7 +3287,7 @@ USECODE_INTRINSIC(ambient_light)
 {
 	// ambient_light(onoff)
 	// E.g., the cutscene with Batlin and Cantra.
-	gwin->toggle_ambient_light(parms[0].get_int_value());
+	gwin->toggle_ambient_light(parms[0].get_int_value() != 0);
 	gclock->set_palette();
 	return no_ret;
 }

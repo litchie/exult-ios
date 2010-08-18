@@ -124,7 +124,7 @@ void Game_window::read_npcs
 			CYCLE_RED_PLASMA();
 		}
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &/*e*/) {
 #ifdef DEBUG
 		cerr << "Error reading saved monsters.  Clearing list." << endl;
 #endif

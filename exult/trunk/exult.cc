@@ -378,7 +378,7 @@ int main
 	{
 		result = exult_main(argv[0]);
 	}
-	catch( const quit_exception & e )
+	catch( const quit_exception & /*e*/ )
 	{
 		Audio::Destroy();	// Deinit the sound system.
 		result = 0;
@@ -843,7 +843,7 @@ static void Init
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 
-	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));
+	Image_window8::set_gamma((float)atof(gr.c_str()), (float)atof(gg.c_str()), (float)atof(gb.c_str()));
 
 	if (arg_buildmap < 0)
 		{
@@ -1321,8 +1321,8 @@ static void Handle_events
 		Mouse::mouse->show();	// Re-display mouse.
 					// Rotate less often if scaling and 
 					//   not paletized.
-		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
-								scale==1?0:1);
+		int rot_speed = 100 << ((gwin->get_win()->is_palettized()||gwin->get_win()->get_scale()==1)?0:1);
+
 		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xfc, 3, 0);
@@ -2184,7 +2184,7 @@ void change_gamma (bool down)
 {
 	float r,g,b;
 	char text[256];
-	float delta = down?0.05:-0.05;
+	float delta = down?0.05f:-0.05f;
 	Image_window8::get_gamma(r, g, b);	
 	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
 	gwin->get_pal()->apply(true);	// So new brightness applies.
