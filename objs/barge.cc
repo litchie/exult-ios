@@ -313,7 +313,7 @@ void Barge_object::gather
 				continue;
 			Shape_info& info = obj->get_info();
 					// Above barge, within 5-tiles up?
-			bool isbarge = info.is_barge_part() /*+++ || !info.get_weight() */;
+			bool isbarge = info.is_barge_part() != 0 /*+++ || !info.get_weight() */;
 			if (t.tz + info.get_3d_height() > lift && 
 			    ((isbarge && t.tz >= lift - 1) ||
 				(t.tz < lift + 5 && t.tz >= lift /*+++ + 1 */)))

@@ -82,7 +82,7 @@ static bool U7open2
 		{
 		U7open(in, fname);
 		}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 		{
 #if 0
 		if (editing)

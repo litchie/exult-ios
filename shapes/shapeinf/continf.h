@@ -68,10 +68,10 @@ public:
 		{ return accept; }
 	void set_accept(int tf)
 		{
-		if (accept != tf)
+		if (accept != (tf!=0))
 			{
 			set_modified(true);
-			accept = tf;
+			accept = (tf!=0);
 			}
 		}
 	bool operator<(const Content_rules& other) const

@@ -65,6 +65,9 @@ public:
 
 	virtual void		loadTimbreLibrary(IDataSource*, TimbreLibraryType type);
 
+	static bool			precacheTimbresOnStartup;
+	static bool			precacheTimbresOnPlay;
+
 protected:
 
 	// Will be wanted by software drivers
@@ -147,6 +150,10 @@ private:
 			struct {
 				int				code;
 			} init_failed;
+
+			struct {
+				XMidiEventList	*list;
+			} precache;
 
 		} data;
 	};

@@ -1089,7 +1089,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	else cur_details->save_count = 0;
 
 	cur_details->party_size = partyman->get_count()+1;
-	cur_details->game_day = gclock->get_total_hours() / 24;;
+	cur_details->game_day = (short) (gclock->get_total_hours() / 24);
 	cur_details->game_hour = gclock->get_hour();
 	cur_details->game_minute = gclock->get_minute();
 	

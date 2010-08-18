@@ -312,7 +312,7 @@ void BG_Game::play_intro()
 		
 		scene_moongate();
 	}
-	catch(const UserBreakException &x)
+	catch(const UserBreakException &/*x*/)
 	{
 		// Waste disposal
 		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
@@ -530,7 +530,7 @@ void BG_Game::scene_butterfly()
 		while(Audio::get_ptr()->is_track_playing(bird_song_midi))
 			WAITDELAY(20);
 	}
-	catch(const UserSkipException &x)
+	catch(const UserSkipException &/*x*/)
 	{
 	}
 }
@@ -969,7 +969,7 @@ void BG_Game::scene_guardian()
 		FORGET_OBJECT(backup);
 		gl_clear_win();
 	}
-	catch(const UserSkipException &x)
+	catch(const UserSkipException &/*x*/)
 	{
 		// Waste disposal
 		FORGET_ARRAY(txt);
@@ -1127,7 +1127,7 @@ void BG_Game::scene_desk()
 		gl_clear_win();
 		enable_direct_gl_render();
 	}
-	catch(const UserSkipException &x)
+	catch(const UserSkipException &/*x*/)
 	{
 		FORGET_OBJECT(backup);
 		enable_direct_gl_render();

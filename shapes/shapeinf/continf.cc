@@ -37,6 +37,6 @@ bool Content_rules::read
 	shape = ReadInt(in);
 	if (shape < 0)
 		shape = -1;
-	accept = ReadInt(in);
+	accept = ReadInt(in)!= 0;
 	return true;
 	}

@@ -721,8 +721,8 @@ int Usecode_internal::get_face_shape
 		Actor *ava = gwin->get_main_actor();
 		bool sishapes = Shape_manager::get_instance()->have_si_shapes();
 		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(
-				ava->get_skin_color(), npc ? npc->get_type_flag(Actor::tf_sex) 
-					: ava->get_type_flag(Actor::tf_sex), sishapes);
+				ava->get_skin_color(), npc ? (npc->get_type_flag(Actor::tf_sex)!=0)
+					: (ava->get_type_flag(Actor::tf_sex)!=0), sishapes);
 		if (gwin->get_main_actor()->get_flag(Obj_flags::tattooed))
 			{
 			shape = skin->alter_face_shape;
@@ -1576,7 +1576,7 @@ bool Usecode_internal::is_dest_reachable
 	Path_walking_actor_action *action = 
 		new Path_walking_actor_action(0, 6);
 	
-	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1);
+	bool ret = action->walk_to_tile(npc, npc->get_tile(), dest, 1) != 0;
 	delete action;
 	return ret;
 	}
@@ -3434,14 +3434,14 @@ void Usecode_internal::read
 		read_usevars(in);
 		in.close();
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &/*e*/) {
 		;			// Okay if this doesn't exist.
 	}
 	try
 	{
 		U7open(in, USEDAT);
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &/*e*/) {
 		partyman->set_count(0);
 		partyman->link_party();	// Still need to do this.
 		return;			// Not an error if no saved game yet.

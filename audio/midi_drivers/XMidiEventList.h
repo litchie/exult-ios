@@ -33,14 +33,15 @@ class XMidiEventList
 	int				putVLQ(ODataSource *dest, uint32 value);
 	uint32			convertListToMTrk (ODataSource *dest);
 
-	static void		deleteEventList (XMidiEvent *list);
-
 public:
 	uint16			chan_mask;
 	XMidiEvent		*events;
 
 	//! XMidiFile Seq Branch Index controllers. For Ult126 = loop start
 	XMidiEvent		*branches;		
+
+	//! Patch and Bank change events
+	XMidiEvent		*x_patch_bank;
 
 	//! Write the list to a DataSource
 	int				write (ODataSource *dest);	

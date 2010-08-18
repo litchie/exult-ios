@@ -97,6 +97,8 @@ struct XMidiEvent
 
 	XMidiEvent		*next;
 
+	XMidiEvent		*next_patch_bank;		// next patch or bank change event
+
 
 	// Here's a bit of joy: WIN32 isn't SMP safe if we use operator new and 
 	// delete. On the other hand, nothing else is thread-safe if we use 
@@ -137,6 +139,23 @@ struct XMidiEvent
 		::operator delete(ptr);
 	#endif
 	}
+
+	void FreeThis() 
+	{
+		// Free all our children first. Using a loop instead of recursive 
+		// because it could have nasty effects on the stack otherwise
+		for (XMidiEvent *e = next; e; e = next)
+		{
+			next = e->next;
+			e->next = 0;
+			e->FreeThis();
+		}
+
+		// We only do this with sysex
+		if ((status>>4) == 0xF && ex.sysex_data.buffer) Free (ex.sysex_data.buffer);
+		Free (this);
+	}
+
 };
 
 #endif //XMIDIEVENT_H_INCLUDED

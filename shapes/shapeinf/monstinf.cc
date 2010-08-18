@@ -87,9 +87,9 @@ bool Monster_info::read
 		m_attackmode = 2;		// versions of ES.
 	m_byte13 = (*ptr++)&~7;	// Byte 13: partly unknown.
 	equip_offset = *ptr++;		// Byte 14.
-	m_can_teleport = (*ptr & 1);	// Exult's extra flags: byte 15.
-	m_can_summon = (*ptr & 2);
-	m_can_be_invisible = (*ptr & 4);
+	m_can_teleport = (*ptr & 1) != 0;	// Exult's extra flags: byte 15.
+	m_can_summon = (*ptr & 2) != 0;
+	m_can_be_invisible = (*ptr & 4) != 0;
 	ptr++;
 	ptr++;		// Byte 16: Unknown (0).
 	int sfx_delta = game == BLACK_GATE ? -1 : 0;

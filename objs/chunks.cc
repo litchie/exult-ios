@@ -107,7 +107,7 @@ inline void Set_blocked_tile
 	{
 	uint16& val = blocked[ty*c_tiles_per_chunk + tx];
 					// Get mask for the bit0's:
-	uint16 mask0 = tmasks[ztiles]<<2*lift;
+	uint16 mask0 = (uint16)(tmasks[ztiles]<<2*lift);
 	uint16 mask1 = mask0<<1;	// Mask for the bit1's.
 	uint16 val0s = val&mask0;
 	uint16 Nval0s = (~val)&mask0;
@@ -134,7 +134,7 @@ inline void Clear_blocked_tile
 	{
 	uint16& val = blocked[ty*c_tiles_per_chunk + tx];
 					// Get mask for the bit0's:
-	uint16 mask0 = tmasks[ztiles]<<2*lift;
+	uint16 mask0 = (uint16)(tmasks[ztiles]<<2*lift);
 	uint16 mask1 = mask0<<1;	// Mask for the bit1's.
 	uint16 val0s = val&mask0;
 	uint16 Nval0s = (~val)&mask0;

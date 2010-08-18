@@ -1798,7 +1798,7 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		case '1':	// Skin color
 		actor->set_skin_color(
 			Shapeinfo_lookup::GetNextSkin(
-				actor->get_skin_color(), actor->get_type_flag(Actor::tf_sex),
+				actor->get_skin_color(), actor->get_type_flag(Actor::tf_sex)!=0,
 				Shape_manager::get_instance()->have_si_shapes()));
 		break;
 

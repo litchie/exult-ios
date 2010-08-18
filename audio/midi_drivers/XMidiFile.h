@@ -49,6 +49,8 @@ private:
 	XMidiEvent			*branches;
 	XMidiEvent			*current;
 	XMidiEvent			*notes_on;
+	XMidiEvent			*x_patch_bank_cur;
+	XMidiEvent			*x_patch_bank_first;
 	
 	const static char	mt32asgm[128];
 	const static char	mt32asgs[256];

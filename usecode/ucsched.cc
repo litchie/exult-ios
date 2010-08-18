@@ -584,7 +584,7 @@ int Usecode_script::exec
 			Usecode_value& val = code->get_elem(++i);
 			int song = val.get_int_value();
 			// Verified.
-			Audio::get_ptr()->start_music(song&0xff, (song >> 8));
+			Audio::get_ptr()->start_music(song&0xff, (song >> 8) != 0);
 			break;
 			}
 		case Ucscript::usecode:	// Call?

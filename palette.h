@@ -20,7 +20,7 @@
 #define PALETTE_H
 
 class Image_window8;
-class File_spec;
+struct File_spec;
 class U7multiobject;
 
 /*

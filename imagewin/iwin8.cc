@@ -79,7 +79,7 @@ void Image_window8::set_gamma (float r, float g, float b)
  *	Convert rgb value.
  */
 
-inline unsigned short Get_color8
+inline unsigned char Get_color8
 	(
 	unsigned char val,
 	int maxval,
@@ -88,7 +88,7 @@ inline unsigned short Get_color8
 	{
 	uint32 c = (((uint32) val)*brightness*255L)/
 							(100*maxval);
-	return (c <= 255L ? (unsigned short) c : 255);
+	return (c <= 255L ? (unsigned char) c : 255);
 	}
 
 /*
