@@ -66,7 +66,8 @@ XMidiSequence::XMidiSequence(XMidiSequenceHandler *Handler, uint16 seq_id, XMidi
 		for (int i = 0; i < 16; i++) gainChannel(i);
 	}
 
-	initClock();
+	//initClock();
+	start = 0xFFFFFFFF;
 }
 
 XMidiSequence::~XMidiSequence()
@@ -134,6 +135,8 @@ void XMidiSequence::ChannelShadow::reset()
 
 int XMidiSequence::playEvent()
 {
+	if (start == 0xFFFFFFFF) initClock();
+
 	XMidiEvent *note;
 
 	// Handle note off's here

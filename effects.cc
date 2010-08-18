@@ -762,7 +762,7 @@ void Projectile_effect::handle_event
 	bool path_finished;
 	for (int i = 0; i < speed; i++)
 		{	// This speeds up the missile.
-		path_finished = !(path->GetNextStep(pos) == true) ||	// Get next spot.
+		path_finished = (path->GetNextStep(pos) == 0) ||	// Get next spot.
 				// If missile egg, detect target.
 			(!target && !no_blocking && (target = Find_target(gwin, pos)) != 0);
 		if (path_finished)

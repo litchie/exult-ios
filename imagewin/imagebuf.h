@@ -52,11 +52,11 @@ public:
 class Image_buffer
 	{
 protected:
-	unsigned int width, height;	// Dimensions (in pixels).
+	int width, height;	// Dimensions (in pixels).
 	int depth;			// # bits/pixel.
 	int pixel_size;			// # bytes/pixel.
 	unsigned char *bits;		// Allocated image buffer.
-	unsigned int line_width;	// # words/scan-line.
+	int line_width;	// # words/scan-line.
 private:
 	int clipx, clipy, clipw, cliph; // Clip rectangle.
 					// Clip.  Rets. 0 if nothing to draw.

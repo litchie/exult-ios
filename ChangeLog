@@ -1,4 +1,15 @@
 2010-08-18  Ryan Nunn <colourles@users.sourceforge.net>
+	* audio/Midi.cc, audio/midi_drivers/* : Changed the way how MT32 Sysex data
+	  and timbre loading is handled to improve startup time. Things are now 
+	  setup to preload the required timbers and patches used by songs as they 
+	  are loaded, rather than loading then entire timbre bank as done 
+	  previously. Added two config settings to control timbre precaching, 
+	  "config/audio/midi/precacheTimbers/onStartup" (default no) and 
+	  "config/audio/midi/precacheTimbers/onPlay" (default yes). It should be 
+	  unnecessary to change those two settings.	
+	* other files : Fixing up various compiler warnings
+
+2010-08-18  Ryan Nunn <colourles@users.sourceforge.net>
 	* imagewin/imagewin.cc, imagewin/manip.h : Reenabling colour swapped 
 	  optimized 555 and 565 scalers. Found the issues and fixed them.
 

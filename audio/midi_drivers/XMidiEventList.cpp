@@ -225,24 +225,8 @@ uint32 XMidiEventList::convertListToMTrk (ODataSource *dest)
 void XMidiEventList::decerementCounter()
 {
 	if (--counter < 0) {
-		deleteEventList(events);
+		events->FreeThis();
+		events = 0;
 		XMidiEvent::Free(this);
-	}
-}
-
-void XMidiEventList::deleteEventList (XMidiEvent *mlist)
-{
-	XMidiEvent *event;
-	XMidiEvent *next;
-	
-	next = mlist;
-	event = mlist;
-
-	while ((event = next))
-	{
-		next = event->next;
-		// We only do this with sysex
-		if ((event->status>>4) == 0xF && event->ex.sysex_data.buffer) XMidiEvent::Free (event->ex.sysex_data.buffer);
-		XMidiEvent::Free (event);
 	}
 }

@@ -173,7 +173,7 @@ void ActionQuicksave(int *params)
 	try {
 		gwin->write();
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &/*e*/) {
 		gwin->get_effects()->center_text("Saving game failed!");
 		return;
 	}
@@ -187,7 +187,7 @@ void ActionQuickrestore(int *params)
 	try {
 		gwin->read();
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &/*e*/) {
 		gwin->get_effects()->center_text("Restoring game failed!");
 		return;
 	}

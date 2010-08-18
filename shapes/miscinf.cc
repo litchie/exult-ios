@@ -237,7 +237,7 @@ public:
 			bool for_patch, int version)
 		{
 		table->default_skin = ReadInt(eptr, 0);
-		table->default_female = ReadInt(eptr);
+		table->default_female = ReadInt(eptr)!=0;
 		}
 	};
 
@@ -280,7 +280,7 @@ public:
 		entry.face_frame = ReadInt(eptr);
 		entry.alter_face_shape = ReadInt(eptr);
 		entry.alter_face_frame = ReadInt(eptr);
-		entry.copy_info = !(version == 2 && *eptr && !(bool)ReadInt(eptr));
+		entry.copy_info = !(version == 2 && *eptr!=0 && ReadInt(eptr)==0);
 		if (for_patch && !table->empty())
 			{
 			unsigned int i;
@@ -639,7 +639,7 @@ Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(int skin, bool sex, bool sishapes)
 Skin_data *Shapeinfo_lookup::GetSkinInfoSafe(Actor *npc)
 {
 	int skin = npc->get_skin_color();
-	bool sex = npc->get_type_flag(Actor::tf_sex);
+	bool sex = npc->get_type_flag(Actor::tf_sex) != 0;
 	return GetSkinInfoSafe(skin, sex, Shape_manager::get_instance()->have_si_shapes());
 }
 
@@ -711,9 +711,9 @@ bool Shapeinfo_lookup::HasFaceReplacement(int npcid)
 		setup_avatar_data();
 	map<int, int>::iterator it = petra_table->find(npcid);
 	if (it != petra_table->end())
-		return (*it).second;
+		return (*it).second != 0;
 	else
-		return npcid;
+		return npcid != 0;
 }
 
 int Shapeinfo_lookup::GetFaceReplacement(int facenum)

@@ -71,7 +71,7 @@ void Virtue_stone_object::write_ireg
 	int sx = pos.tx/c_tiles_per_schunk,
 	    sy = pos.ty/c_tiles_per_schunk;
 	*ptr++ = sy*12 + sx;		// Write superchunk #.
-	*ptr++ = pos.tz;		// Finally, lift in entry[7].??Guess+++
+	*ptr++ = (unsigned char) pos.tz;		// Finally, lift in entry[7].??Guess+++
 	*ptr++ = 0;			// Entry[8] unknown.
 	*ptr++ = (get_lift()&15)<<4;	// Stone's lift in entry[9].
 	*ptr++ = map;		// Entry[10].  Unknown; using to store map.

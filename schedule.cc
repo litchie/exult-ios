@@ -956,7 +956,7 @@ void Patrol_schedule::now_what
 							// Quality = type.  (I think high bits
 							// are flags).
 				int qual = path->get_quality();
-				seek_combat = (bool)(qual&32);
+				seek_combat = (qual&32)!=0;
 				// TODO: Find out what flags 64 and 128 mean. It would seem
 				// that they are 'Repeat Forever' and 'Exc. Reserved.', but
 				// what does those mean?
@@ -4115,7 +4115,7 @@ void Schedule_change::write8
 	{
 	Write2(entry, pos.tx);
 	Write2(entry, pos.ty);		// 4
-	*entry++ = pos.tz;		// 5
+	*entry++ = (uint8) pos.tz;		// 5
 	*entry++ = time;		// 6
 	*entry++ = type;		// 7
 	*entry++ = days;		// 8

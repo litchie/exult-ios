@@ -3219,7 +3219,7 @@ void Actor::set_flag
 		if (!skin ||	// Should never happen, but hey...
 			(!sman->have_si_shapes() &&
 				Shapeinfo_lookup::IsSkinImported(skin->naked_shape)))
-			sn = Shapeinfo_lookup::GetBaseAvInfo(female)->shape_num;
+			sn = Shapeinfo_lookup::GetBaseAvInfo(female != 0)->shape_num;
 		else
 			sn = skin->naked_shape;
 		set_polymorph(sn);
@@ -3596,7 +3596,7 @@ int Actor::add_readied
 	// Already something there? Try to drop into it.
 	// +++++Danger:  drop() can potentially delete the object.
 //	if (spots[index]) return (spots[index]->drop(obj));
-	if (spots[index]) return (spots[index]->add(obj, dont_check));
+	if (spots[index]) return (spots[index]->add(obj, dont_check != 0));
 
 	int prefered, alt1, alt2;
 
@@ -4693,7 +4693,7 @@ void Actor::set_actor_shape()
 		(!sman->have_si_shapes() &&
 			Shapeinfo_lookup::IsSkinImported(
 			get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num)))
-		sn = Shapeinfo_lookup::GetBaseAvInfo(female)->shape_num;
+		sn = Shapeinfo_lookup::GetBaseAvInfo(female != 0)->shape_num;
 	else
 		sn = get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num;
 
@@ -5120,7 +5120,7 @@ void Npc_actor::handle_event
 				schedule_type != Schedule::patrol ||
 				schedule_type != Schedule::sleep ||
 				schedule_type != Schedule::wait) &&
-			!rand()%3)	// Don't do it every time.
+			!(rand()%3))	// Don't do it every time.
 		schedule->seek_foes();
 
 	if (!action)			// Not doing anything?
@@ -5139,7 +5139,7 @@ void Npc_actor::handle_event
 						schedule_type != Schedule::patrol ||
 						schedule_type != Schedule::sleep ||
 						schedule_type != Schedule::wait) &&
-					!rand()%4)	// Don't do it every time.
+					!(rand()%4))	// Don't do it every time.
 				{
 				schedule->seek_foes();
 					// Get back into queue.

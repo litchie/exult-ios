@@ -510,7 +510,7 @@ void Game_window::read_save_names
 				save_names[i] = newstrdup("");
 			in.close();
 		}
-		catch(const file_exception & f)
+		catch(const file_exception & /*f*/)
 		{
 			save_names[i] = newstrdup("");
 		}
@@ -536,7 +536,7 @@ void Game_window::write_saveinfo()
 
 		in.close();
 	}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 	{
 	}
 
@@ -778,7 +778,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		read_saveinfo (&ds, details, party);
 		in.close();
 	}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 	{
 		details = NULL;
 		party = NULL;
@@ -792,7 +792,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		map = new Shape_file(&ds);
 		in.close();
 	}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 	{
 		// yes, this is weird, but seems to work-around a compiler
 		// problem... (gcc-2.95.2-12mdk)    -wjp
@@ -1039,7 +1039,7 @@ bool Game_window::restore_gamedat_zip
 		{
 		if (Flex::is_flex(fname)) return false;
 		}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 		{
 		return false;		// Ignore if not found.
 		}
@@ -1402,7 +1402,7 @@ const char *Game_window::get_game_identity_zip
 		if (Flex::is_flex(savename)) 
 			return 0;
 		}
-	catch(const file_exception & f)
+	catch(const file_exception & /*f*/)
 		{
 		return 0;		// Ignore if not found.
 		}

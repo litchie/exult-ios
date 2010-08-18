@@ -386,8 +386,8 @@ void gl_paint_rgba_bitmap
 					//++++CHeck py too?
 //	float x = static_cast<float>(px);
 //	float y = static_cast<float>(py);
-	glPixelZoom(scale, -scale);	// Get right side up.
-	glRasterPos2f(px, py);
+	glPixelZoom((float) scale, (float) -scale);	// Get right side up.
+	glRasterPos2i(px, py);
 	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);

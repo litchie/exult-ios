@@ -207,7 +207,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 						}
 					U7copy(input_filename.c_str(), fname.c_str());
 					}
-				catch (exult_exception& e)
+				catch (exult_exception& /*e*/)
 					{
 					cerr << "File copy FAILED. Old settings will be lost" << endl;
 					}

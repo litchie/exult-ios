@@ -819,7 +819,7 @@ void SI_Game::play_intro()
 		FORGET_ARRAY(fli_b);
 		enable_direct_gl_render();
 	}
-	catch(const UserBreakException &x)
+	catch(const UserBreakException &/*x*/)
 	{
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
