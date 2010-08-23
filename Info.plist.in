@@ -24,5 +24,10 @@
 	<string>NSApplication</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2000-2010 The Exult Team</string>
+	<key>LSMinimumSystemVersionByArchitecture</key>
+	<dict>
+	<key>x86_64</key>
+	<string>10.6.0</string>
+	</dict>
 </dict>
 </plist>
