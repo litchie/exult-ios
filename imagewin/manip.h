@@ -211,16 +211,16 @@ public:
 template<typename color_s, typename color_d> class ManipBaseSrc : public ManipBaseDest<color_d>
 {
 protected:
-	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest(c,f) {  }
+	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c,f) {  }
 public:
 	typedef typename color_s::T uintS;
 
 	static void split_source(uintS pix, unsigned int& r,
 		unsigned int& g, unsigned int& b)
 	{
-		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
+		r = ((pix&ManipBase::fmt->Rmask)>>ManipBase::fmt->Rshift)<<ManipBase::fmt->Rloss;
+		g = ((pix&ManipBase::fmt->Gmask)>>ManipBase::fmt->Gshift)<<ManipBase::fmt->Gloss;
+		b = ((pix&ManipBase::fmt->Bmask)>>ManipBase::fmt->Bshift)<<ManipBase::fmt->Bloss;
 	}
 };
 
@@ -228,7 +228,7 @@ public:
 template<typename color_d> class ManipBaseSrc<color_555,color_d> : public ManipBaseDest<color_d>
 {
 protected:
-	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest(c,f) {  }
+	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c,f) {  }
 public:
 	typedef typename color_555::T uintS;
 
@@ -245,7 +245,7 @@ public:
 template<typename color_d> class ManipBaseSrc<color_565,color_d> : public ManipBaseDest<color_d>
 {
 protected:
-	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest(c,f) {  }
+	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c,f) {  }
 public:
 	typedef typename color_565::T uintS;
 
@@ -262,14 +262,14 @@ public:
 template<typename color_d> class ManipBaseSrc<color_8,color_d> : public ManipBaseDest<color_d>
 {
 protected:
-	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest(c,f) {  }
+	ManipBaseSrc(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseDest<color_d>(c,f) {  }
 public:
 	typedef typename color_8::T uintS;
 
 	static void split_source(uintS pix, unsigned int& r,
 		unsigned int& g, unsigned int& b)
 	{
-		SDL_Color& color = colors[pix];
+		SDL_Color& color = ManipBase::colors[pix];
 		r = color.r;
 		g = color.g;
 		b = color.b;
@@ -280,15 +280,18 @@ public:
 template<typename color_s, typename color_d> class ManipStoD : public ManipBaseSrc<color_s,color_d>
 {
 public:
-	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc(c,f) {  }
+	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc<color_s,color_d>(c,f) {  }
 
-	static typename uintD copy(typename uintS src)
+	typedef typename color_s::T uintS;
+	typedef typename color_d::T uintD;
+
+	static uintD copy(uintS src)
 	{
 		unsigned int r, g, b;
 		split_source(src,r,g,b);
-		return rgb(r,g,b);
+		return ManipBaseDest<color_d>::rgb(r,g,b);
 	}
-	static void copy(typename uintD& dest, typename uintS src)
+	static void copy(uintD& dest, uintS src)
 	{ dest = copy(src); }
 };
 
@@ -296,11 +299,14 @@ public:
 template<typename colorSD> class ManipStoD<colorSD,colorSD> : public ManipBaseSrc<colorSD,colorSD>
 {
 public:
-	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc(c,f) {  }
+	ManipStoD(SDL_Color *c, SDL_PixelFormat *f) : ManipBaseSrc<colorSD,colorSD>(c,f) {  }
 
-	static typename uintD copy(typename uintS src)
+	typedef typename colorSD::T uintS;
+	typedef typename colorSD::T uintD;
+
+	static uintD copy(uintS src)
 	{ return src; }
-	static void copy(typename uintD& dest, typename uintS src)
+	static void copy(uintD& dest, uintS src)
 	{ dest = src; }
 };
 
@@ -314,253 +320,6 @@ typedef ManipStoD<color_16,color_16> Manip16to16;
 typedef ManipStoD<color_555,color_555> Manip555to555;
 typedef ManipStoD<color_565,color_565> Manip565to565;
 typedef ManipStoD<color_32,color_32> Manip32to32;
-
-#if 0
-/*
-*	Identity manipulation. This is for the 8-bit scalers ONLY.
-*/
-class Manip8to8
-{
-public:
-	Manip8to8(SDL_Color *, SDL_PixelFormat *)
-	{  }
-	static void copy(uint8& dest, unsigned char src) const
-	{ dest = src; }
-	static uint8 copy(unsigned char src) const
-	{ return src; }
-};
-
-/*
-*	Manipulate from 8-bit to 16-bit pixels.
-*/
-class Manip8to16
-{
-public:
-	Manip8to16(SDL_Color *c, SDL_PixelFormat *f)
-	{  
-		if (c) std::memcpy(colours,c,sizeof(color_s)); 
-		fmt = f; 
-	}
-	static SDL_Color *get_color_s() const { return color_s; }
-	static uint16 rgb(unsigned int r, unsigned int g,
-		unsigned int b) const
-	{
-		return ((r>>fmt->Rloss)<<fmt->Rshift) |
-			((g>>fmt->Gloss)<<fmt->Gshift) |
-			((b>>fmt->Bloss)<<fmt->Bshift);
-	}
-	static uint16 copy(unsigned char src) const
-	{
-		SDL_Color& color = color_s[src];
-		return rgb(color.r, color.g, color.b);
-	}
-	static void copy(uint16& dest, unsigned char src) const
-	{ dest = copy(src); }
-	static void split_source(unsigned char pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		SDL_Color& color = color_s[pix];
-		r = color.r;
-		g = color.g;
-		b = color.b;
-	}
-	static void split_dest(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-	}
-};
-
-/*
-*	Manipulate from 8-bit to 16-bit 555 format.
-*/
-class Manip8to555 : public Manip8to16
-{
-public:
-	Manip8to555(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
-	{  
-	}
-	static uint16 rgb(unsigned int r, unsigned int g,
-		unsigned int b) const
-	{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
-	static uint16 copy(unsigned char src) const
-	{
-		SDL_Color& color = color_s[src];
-		return rgb(color.r, color.g, color.b);
-	}
-	static void copy(uint16& dest, unsigned char src) const
-	{ dest = copy(src); }
-	static void split_dest(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		r = (((pix&0x7c00)>>10)<<3);
-		g = (((pix&0x03e0)>>5)<<3);
-		b = ((pix&0x001f)<<3);
-	}
-};
-
-/*
-*	Manipulate from 8-bit to 16-bit 565 format.
-*/
-class Manip8to565 : public Manip8to16
-{
-public:
-	Manip8to565(SDL_Color *c, SDL_PixelFormat *fmt) : Manip8to16(0, 0)
-	{  
-	}
-	static uint16 rgb(unsigned int r, unsigned int g,
-		unsigned int b) const
-	{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
-	static uint16 copy(unsigned char src) const
-	{
-		SDL_Color& color = color_s[src];
-		return rgb(color.r, color.g, color.b);
-	}
-	static void copy(uint16& dest, unsigned char src) const
-	{ dest = copy(src); }
-	static void split_dest(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		r = (((pix&0xf800)>>11)<<3);
-		g = (((pix&0x07e0)>>5)<<2);
-		b = ((pix&0x001f)<<3);
-	}
-};
-
-/*
-*	Manipulate from 8-bit to 32-bit pixels.
-*/
-template<uintX> class Manip8toRGB
-{
-	static SDL_Color color_s[256];		// Source palette.
-	static SDL_PixelFormat *fmt;		// Format of dest. pixels.
-public:
-	Manip8to32(SDL_Color *c, SDL_PixelFormat *f)
-	{  
-		if (c) std::memcpy(colours,c,sizeof(color_s)); 
-		fmt = f; 
-	}
-	static SDL_Color *get_color_s() const { return color_s; }
-	static uintX copy(unsigned char src) const
-	{
-		SDL_Color& color = color_s[src];
-		return rgb(color.r, color.g, color.b);
-	}
-	static void copy(uintX& dest, unsigned char src) const
-	{ dest = copy(src); }
-	static void split_source(unsigned char pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		SDL_Color& color = color_s[pix];
-		r = color.r;
-		g = color.g;
-		b = color.b;
-	}
-};
-
-/*
-*	Manipulate from 16-bit to 16-bit pixels (555 bits in each case).
-*/
-class Manip555to555
-{
-public:
-	Manip555to555(SDL_Color *, SDL_PixelFormat *)
-	{
-	}
-	static uint16 copy(uint16 src) const
-	{ return src; }
-	static void copy(uint16& dest, uint16 src)
-	{ dest = src; }
-	static void split_source(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b)
-	{
-		r = (pix>>10)&0x1f;
-		g = (pix>>5)&0x1f;
-		b = pix&0x1f;
-	}
-	static void split_dest(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b)
-	{ split_source(pix, r, g, b); }
-	static uint16 rgb(unsigned int r, unsigned int g,
-		unsigned int b)
-	{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
-};
-
-/*
-*	Manipulate from 16-bit to 16-bit pixels (555 bits in each case).
-*/
-class Manip565to565
-{
-public:
-	Manip565to565(SDL_Color *, SDL_PixelFormat *)
-	{
-	}
-	static uint16 copy(uint16 src) const
-	{ return src; }
-	static static void copy(uint16& dest, uint16 src)
-	{ dest = src; }
-	static static void split_source(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b)
-	{
-		r = (((pix&0xf800)>>11)<<3);
-		g = (((pix&0x07e0)>>5)<<2);
-		b = ((pix&0x001f)<<3);
-	}
-	static void split_dest(uint16 pix, unsigned int& r,
-		unsigned int& g, unsigned int& b)
-	{
-		r = (((pix&0xf800)>>11)<<3);
-		g = (((pix&0x07e0)>>5)<<2);
-		b = ((pix&0x001f)<<3);
-	}
-	static uint16 rgb(unsigned int r, unsigned int g,
-		unsigned int b)
-	{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
-};
-
-/*
-*	Manipulate from 8-bit to 16-bit pixels.
-*/
-template<uintX> class ManipRGBtoRGB
-{
-protected:
-	static SDL_PixelFormat *fmt;		// Format of dest. pixels.
-public:
-	ManipRGBtoRGB(SDL_Color *, SDL_PixelFormat *f)
-	{  
-		fmt = f; 
-	}
-	static uintX rgb(unsigned int r, unsigned int g,
-		unsigned int b) const
-	{
-		return ((r>>fmt->Rloss)<<fmt->Rshift) |
-			((g>>fmt->Gloss)<<fmt->Gshift) |
-			((b>>fmt->Bloss)<<fmt->Bshift);
-	}
-	static uintX copy(uintX src) const
-	{
-		return src;
-	}
-	static void copy(uintX& dest, uintX src) const
-	{ dest = src; }
-	static void split_source(unsigned char pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-	}
-	static void split_dest(uintX pix, unsigned int& r,
-		unsigned int& g, unsigned int& b) const
-	{
-		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-	}
-};
-#endif
 
 inline void increase_area(int& x, int& y, int& w, int& h,
 						  int left, int right, int top, int bottom,
