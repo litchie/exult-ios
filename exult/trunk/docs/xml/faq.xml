@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="15 August 2010(GMT)">
+<faqs title="Exult" changed="23 August 2010(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="23082010">
+			<header>- 23 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> better use the snapshots than the ooooold version.</li>
+				<li><ref1 target="u7_versions"/> cleaned up a bit.</li>
+				<li><ref1 target="party_formation"/> Recently was a couple of years ago.</li>
+				<li><ref1 target="known_issues"/> I pitty whoever still uses the Nvidia 40.x reference drivers.</li>
+				<li>Fullscreen switching bug should be fixed and thus I'm removing this item.</li>
+				<li><ref1 target="howto_get_answers"/> pointing the Google groups instead of the old newsgroup link.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="15082010">
 			<header>- 15 August 2010</header>
 			<body>
@@ -358,6 +371,10 @@
 				<para>
 					To find out which version you are running, press <key>v</key> while in game.
 				</para>
+				<para>
+					Since version 1.2 is now very old, we do recommend that people use the snapshots
+					rather then the old version.
+				</para>
 			</body>
 		</sub>
 		<sub name="what_platforms">
@@ -434,15 +451,15 @@
 					run for sure.
 				</para>
 				<para>
-					However there were reported problems with the localized versions of the
-					game (French, German and Spanish). Conversation threads don't seem to skip to the
-					next line in the proper places and therefore are unreadable in some cases. SI
-					was published in English and Spanish (as we recently discovered to our surprise)
+					In the past there were reported problems with the localized versions of the
+					game (French, German and Spanish) but these should not be a problem anymore. 
+					The reportes problems were that conversation threads didn't seem to skip to the
+					next line in the proper places and therefore were unreadable in some cases.<br/>
+					SIvwas published in English and Spanish (as we recently discovered to our surprise)
 					but we seem to have fixed the main problem with the Spanish version.
 				</para>
 				<para>
-					V0.91 Alpha2 added fixes for the French version, which should work now.
-					If you are running a Spanish or German version Black Gate and you notice
+					If you are running a localized version of BG or SI and you notice any
 					problems please contact us.
 				</para>
 			</body>
@@ -628,7 +645,7 @@
 					new bugs.
 				</para>
 				<para>
-					Recently Jeff added an optional formation that behaves way more like in the
+					Some time ago Jeff added an optional formation that behaves way more like in the
 					original game and it has become the default formation now.<br/>
 					This can be changed in the <extref doc="docs" target="exult_config">exult.cfg</extref>.
 				</para>
@@ -771,7 +788,7 @@
 				<li>Higher resolutions than the original. You can set the resolution as high as
 					your computer supports. But there are some issues with it and it is considered
 					cheating.</li>
-				<li>Compressed save games. Since Beta1 <Exult/> compresses save games by default as
+				<li>Compressed save games. <Exult/> compresses save games by default as
 					zip files. They are still labeled *.sav and have the save game name in the zip
 					comment.</li>
 				</ul>
@@ -973,10 +990,10 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>In Exult version 1.2 there actually seems to be a bug that prevents you from summoning 
+					<li>In <Exult/> version 1.2 there actually seems to be a bug that prevents you from summoning 
 						the Chaos Hierophant later in the game, when you "touched" the body of him by clicking 
 						once on it. This has been fixed in snapshots.</li>
-					<li>Exult version 1.2 was also wrong in spell requirements and reagent costs. This has 
+					<li><Exult/> version 1.2 was also wrong in spell requirements and reagent costs. This has 
 						been corrected in snapshots.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
@@ -987,7 +1004,8 @@
 						you get away or closer to them.</li>
 					<li>With scalers enabled you might encounter slow downs of the game.</li>
 					<li>Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a
-						later or earlier version of the Nvidia reference drivers.</li>
+						later or earlier version of the Nvidia reference drivers. If you are still using 
+						these drivers you should really update.</li>
 				</ul>
 			</body>
 		</sub>
@@ -1356,12 +1374,12 @@
 			</header>
 			<body>
 				<para>
-					The best way to get answers to questions is to go to the Online discussion forum at:<br/>
+					The best way to get answers to questions about <Exult/> is to go to our discussion forum at:<br/>
 					<extref target="http://exult.sourceforge.net/forum/"/>
 				</para>
 				<para>
 					To get answers concerning Ultima 7 in general go to the Ultima newsgroup:<br/>
-					<extref target="news://rec.games.computer.ultima.series"/>
+					<extref target="http://groups.google.com/group/rec.games.computer.ultima.series"/>
 				</para>
 				<para>
 					Or go to the Ultima Dragons homepage <extref target="http://www.udic.org"/> and find your
