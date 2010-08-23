@@ -108,8 +108,8 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	int chunk_size;
 	int chunk_type;
 	uint8 *pixbuf;
-	int xoffset=(win->get_width()-fli_width)/2;
-	int yoffset=(win->get_height()-fli_height)/2;
+	int xoffset=(win->get_game_width()-fli_width)/2;
+	int yoffset=(win->get_game_height()-fli_height)/2;
 	bool dont_show = false;
 
 	if (!fli_buf && win) fli_buf = win->create_buffer (fli_width, fli_height);
@@ -280,8 +280,8 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 #ifdef HAVE_OPENGL
 			if (GL_manager::get_instance())
 			{
-				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_width(),
-						win->get_height(), 0, 0, true);
+				Shape_frame frame(win->get_ibuf()->get_bits(), win->get_game_width(),
+						win->get_game_height(), 0, 0, true);
 				GL_manager::get_instance()->paint(&frame, 0, 0);
 			}
 #endif
@@ -296,8 +296,8 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 void playfli::put_buffer(Image_window *win)
 {
-	int xoffset=(win->get_width()-fli_width)/2;
-	int yoffset=(win->get_height()-fli_height)/2;
+	int xoffset=(win->get_game_width()-fli_width)/2;
+	int yoffset=(win->get_game_height()-fli_height)/2;
 
 	if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
 }

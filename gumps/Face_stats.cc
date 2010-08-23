@@ -388,10 +388,10 @@ void Face_stats::create_buttons()
 	int pos = 0;
 	int width = PORTRAIT_WIDTH;
 
-	resx = gwin->get_width();
-	resy = gwin->get_height();
+	resx = gwin->get_win()->get_full_width();
+	resy = gwin->get_win()->get_full_height();
 	x = 0;
-	y = resy;
+	y = gwin->get_win()->get_end_y();
 
 	party_size = partyman->get_count();
 
@@ -414,6 +414,8 @@ void Face_stats::create_buttons()
 		pos = resx - PORTRAIT_WIDTH;
 		width = - PORTRAIT_WIDTH;
 	}
+
+	pos += gwin->get_win()->get_start_x();
 
 	std::memset (party, 0, sizeof(party));
 

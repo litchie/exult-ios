@@ -539,7 +539,7 @@ int wait_delay(int ms, int startcol, int ncol)
 		loops = ms/(long)delay;
 		}
 	Game_window *gwin = Game_window::get_instance();
-	int rot_speed = 100 << ((gwin->get_win()->is_palettized()||gwin->get_win()->get_scale()==1)?0:1);
+	int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate()?0:1);
 
 	static unsigned long last_rotate = 0;
 					

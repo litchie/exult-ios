@@ -44,7 +44,7 @@ class Image_window8 : public Image_window
 	static GammaTable<unsigned char>	GammaGreen;
 	static GammaTable<unsigned char>	GammaBlue;
 public:
-	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
+	Image_window8(unsigned int w, unsigned int h, unsigned int gw, unsigned int gh, int scl = 1, 
 							bool fs = false, int sclr = point);
 	~Image_window8();
 

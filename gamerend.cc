@@ -329,25 +329,30 @@ void Game_window::paint
 	{
 
 	if (!win->ready()) return;
-	win->set_clip(x, y, w, h);	// Clip to this area.
-	int light_sources = render->paint_map(x, y, w, h);
+	int gx = x, gy = y, gw = w, gh = h;
+	if (gx < 0) { gw+=x; gx = 0; }
+	if ((gx+gw) > get_width()) gw = get_width()-gx;
+	if (gy < 0) { gh += gy; gy = 0; }
+	if ((gy+gh) > get_height()) gh = get_height()-gy;
+	win->set_clip(gx, gy, gw, gh);	// Clip to this area.
+	int light_sources = render->paint_map(gx, gy, gw, gh);
+
 	effects->paint();		// Draw sprites.
-	if (gump_man->modal_gump_mode())// Modal gumps?
-		{			// Draw text, then gumps.
-		effects->paint_text();
-		gump_man->paint();
-	}
-	else
-		{			// Draw gumps unless in dont_move mode.
-		if (!main_actor_dont_move())
-			gump_man->paint();
-		effects->paint_text();	// Draw text over gumps.
-		}
-	if (dragging)
-		dragging->paint();	// Paint what user is dragging.
-	win->clear_clip();
+
+	win->set_clip(x, y, w, h);	// Clip to this area.
+	// Fill black into unpainted regions
+	if (y < 0) win->fill8(0,w,-y,x,y);	// Region above window
+	if (x < 0) win->fill8(0,-x,get_height(),x,0); // Region left of window
+	if ((x+w) > get_width()) win->fill8(0,(x+w)-get_width(),get_height(),get_width(),0); // Region right of window
+	if ((y+h) > get_height()) win->fill8(0,w,(y+h)-get_height(),x,get_height()); // below window
+
+	gump_man->paint(false);
+	if (dragging) dragging->paint();	// Paint what user is dragging.
+	effects->paint_text();
+	gump_man->paint(true);
+
 					// Complete repaint?
-	if (!x && !y && w == get_width() && h == get_height() && main_actor)
+	if (!gx && !gy && gw == get_width() && gh == get_height() && main_actor)
 		{			// Look for lights.
 		Actor *party[9];	// Get party, including Avatar.
 		int cnt = get_party(party, 1);
@@ -364,7 +369,8 @@ void Game_window::paint
 		clock->set_light_source(carried_light + (light_sources > 0),
 								in_dungeon);
 		}
-}
+	win->clear_clip();
+	}
 
 /*
  *	Paint whole window.
@@ -558,6 +564,8 @@ void Game_window::paint_dirty()
 	// Update the gumps before painting, unless in dont_move mode (may change dirty area)
     if (!main_actor_dont_move())
         gump_man->update_gumps();
+
+	effects->update_dirty_text();
 
 	Rectangle box = clip_to_win(dirty);
 	if (box.w > 0 && box.h > 0)

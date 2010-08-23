@@ -320,6 +320,16 @@ void Effects_manager::paint_text
 	}
 
 /**
+ *	Paint all text.
+ */
+void Effects_manager::update_dirty_text
+	(
+	)
+	{
+	for (Text_effect *txt = texts; txt; txt = txt->next)
+		txt->update_dirty();
+	}
+/**
  *	Some special effects may not need painting.
  */
 
@@ -1051,22 +1061,32 @@ void Homing_projectile::paint
  *	Figure text position.
  */
 
-static inline Tile_coord Figure_text_pos
-	(
-	Game_object *item
-	)
+Rectangle Text_effect::Figure_text_pos()
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Gump_manager *gumpman = gwin->get_gump_man();
-	Rectangle box;
-					// See if it's in a gump.
-	Gump *gump = gumpman->find_gump(item);
-	if (gump)
-		box = gump->get_shape_rect(item);
+	if (item)
+		{
+		Gump_manager *gumpman = gwin->get_gump_man();
+						// See if it's in a gump.
+		Gump *gump = gumpman->find_gump(item);
+		if (gump)
+			return gump->get_shape_rect(item);
+		else 
+			{
+			Game_object *outer = item->get_outermost();
+			if (!outer->get_chunk()) return pos;
+			Rectangle r = gwin->get_shape_rect(outer);
+			r.x -= gwin->get_scrolltx_lo();
+			r.y -= gwin->get_scrollty_lo();
+			return r;
+			}
+		}
 	else
-		box = gwin->get_shape_rect(item->get_outermost());
-	return Tile_coord(gwin->get_scrolltx() + box.x/c_tilesize, 
-			  gwin->get_scrollty() + box.y/c_tilesize, 0);
+		{
+		int x, y;
+		gwin->get_shape_location(tpos,x,y);
+		return Rectangle(x,y,c_tilesize,c_tilesize);
+		}
 	}
 
 /**
@@ -1079,8 +1099,8 @@ void Text_effect::add_dirty
 	{
 	Game_window *gwin = Game_window::get_instance();
 					// Repaint slightly bigger rectangle.
-	Rectangle rect((pos.tx - gwin->get_scrolltx() - 1)*c_tilesize,
-		       (pos.ty - gwin->get_scrollty() - 1)*c_tilesize,
+	Rectangle rect(pos.x - c_tilesize,
+		       pos.y - c_tilesize,
 			width + 2*c_tilesize, height + 2*c_tilesize);
 	gwin->add_dirty(gwin->clip_to_win(rect));
 	}
@@ -1116,7 +1136,7 @@ Text_effect::Text_effect
 	(
 	const string &m, 		// A copy is made.
 	Game_object *it			// Item text is on, or null.
-	) : msg(m), item(it), pos(Figure_text_pos(it)), num_ticks(0)
+	) : msg(m), item(it), pos(Figure_text_pos()), num_ticks(0)
 	{
 	init();
 	}
@@ -1129,13 +1149,13 @@ Text_effect::Text_effect
 	(
 	const string &m, 		// A copy is made.
 	int t_x, int t_y		// Abs. tile coords.
-	) : msg(m), item(0), pos(t_x, t_y, 0), num_ticks(0)
+	) : msg(m), item(0), tpos(t_x, t_y, 0), pos(Figure_text_pos()), num_ticks(0)
 	{
 	init();
 	}
 
 /**
- *	Reposition if necessary.
+ *	
  */
 
 void Text_effect::handle_event
@@ -1154,10 +1174,20 @@ void Text_effect::handle_event
 					// Back into queue.
 	gwin->get_tqueue()->add(Game::get_ticks() + gwin->get_std_delay(), 
 								this, 0L);
-	if (!item)			// Nothing to move?
-		return;
+
+	update_dirty();
+	}
+
+/**
+ *	Reposition if necessary.
+ */
+
+void Text_effect::update_dirty
+	(
+	)
+	{
 					// See if moved.
-	Tile_coord npos = Figure_text_pos(item);
+	Rectangle npos = Figure_text_pos();
 	if (npos == pos)		// No change?
 		return;
 	add_dirty();			// Force repaint of old area.
@@ -1176,8 +1206,8 @@ void Text_effect::paint
 	const char *ptr = msg.c_str();
 	int len = strlen(ptr);
 	sman->paint_text(0, ptr, len, 
-		(pos.tx - gwin->get_scrolltx())*c_tilesize - gwin->get_scrolltx_lo(),
-		(pos.ty - gwin->get_scrollty())*c_tilesize - gwin->get_scrollty_lo());
+		pos.x,
+		pos.y);
 	}
 
 /**
@@ -1415,7 +1445,7 @@ public:
 			!gumpman->showing_gumps(true))
 			{			// Don't show rain inside buildings!
 			Image_window8 *win = gwin->get_win();
-			int w = win->get_width(), h = win->get_height();
+			int w = win->get_game_width(), h = win->get_game_height();
 						// Get transform table.
 			int scrolltx = gwin->get_scrolltx(),
 				scrollty = gwin->get_scrollty();
@@ -1443,7 +1473,7 @@ public:
 		int scrolltx = gwin->get_scrolltx(),
 			scrollty = gwin->get_scrollty();
 		Image_window8 *win = gwin->get_win();
-		int w = win->get_width(), h = win->get_height();
+		int w = win->get_game_width(), h = win->get_game_height();
 		for (int i = 0; i < num_drops; i++)
 			do_drop.paint(drops[i], scrolltx, scrollty, w, h);
 		gwin->set_painted();
@@ -1844,7 +1874,7 @@ void Earthquake::handle_event
 
 	Game_window *gwin = Game_window::get_instance();
 	Image_window *win = gwin->get_win();
-	int w = win->get_width(), h = win->get_height();
+	int w = win->get_game_width(), h = win->get_game_height();
 	int sx = 0, sy = 0;
 	int dx = rand()%9 - 4;
 	int dy = rand()%9 - 4;

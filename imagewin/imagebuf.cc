@@ -38,9 +38,11 @@ Image_buffer::Image_buffer
 	unsigned int w,			// Desired width, height.
 	unsigned int h,
 	int dpth			// Depth (bits/pixel).
-	) : width(w), height(h), depth(dpth), bits(0), line_width(w),
+	) : width(w), height(h), 
+		offset_y(0), offset_x(0),
+		depth(dpth), bits(0), line_width(w),
 	    clipx(0), clipy(0),
-	    clipw(w), cliph(h)
+	    clipw(w), cliph(h)		
 	{
 	switch (depth)			// What depth?
 		{

@@ -61,8 +61,7 @@ Mouse::Mouse
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0), cur_framenum(0),cur(0),avatar_speed(100*gwin->get_std_delay()/slow_speed_factor)
 {
 	SDL_GetMouseState(&mousex, &mousey);
-	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
-	mousey /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
+	iwin->screen_to_game(mousex,mousey,gwin->get_fastmouse(),mousex,mousey);
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_POINTERS))
 		pointers.load(PATCH_POINTERS);
 	else
@@ -78,8 +77,7 @@ Mouse::Mouse
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0),cur_framenum(0),cur(0),avatar_speed(100*gwin->get_std_delay()/slow_speed_factor)
 {
 	SDL_GetMouseState(&mousex, &mousey);
-	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
-	mousey /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
+	iwin->screen_to_game(mousex,mousey,gwin->get_fastmouse(),mousex,mousey);
 	pointers.load(&shapes);
 	Init();
 	set_shape0(0);
@@ -151,16 +149,19 @@ void Mouse::show
 
 void Mouse::move(int x, int y) {
 	bool warp = false;
-	if (x >= gwin->get_width()) {
-		x = gwin->get_width() - 1;
+	if (x >= gwin->get_win()->get_end_x()) {
+		x = gwin->get_win()->get_end_x() - 1;
 		warp = true;
 	}
-	if (y >= gwin->get_height()) {
-		y = gwin->get_height() - 1;
+	if (y >= gwin->get_win()->get_end_y()) {
+		y = gwin->get_win()->get_end_y() - 1;
 		warp = true;
 	}
-	if (warp)
-		SDL_WarpMouse(x, y);
+	if (warp) {
+		int wx, wy;
+		gwin->get_win()->game_to_screen(x,y,gwin->get_fastmouse(),wx,wy);
+		SDL_WarpMouse(wx, wy);
+	}
 #ifdef DEBUG
 	if (onscreen)
 		std::cerr << "Trying to move mouse while onscreen!" << std::endl;
@@ -296,7 +297,7 @@ void Mouse::set_speed_cursor()
 	
 		int dy = ay - mousey, dx = mousex - ax;
 		Direction dir = Get_direction(dy, dx);
-		Rectangle gamewin_dims = gwin->get_win_rect();
+		Rectangle gamewin_dims = gwin->get_game_rect();
 		float speed_section = max( max( -static_cast<float>(dx)/ax, static_cast<float>(dx)/(gamewin_dims.w-ax)), max(static_cast<float>(dy)/ay, -static_cast<float>(dy)/(gamewin_dims.h-ay)) );
 		bool nearby_hostile = gwin->is_hostile_nearby();
 		bool has_active_nohalt_scr = false;

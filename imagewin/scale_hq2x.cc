@@ -48,7 +48,7 @@ void Image_window::show_scaled8to16_Hq2x
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Hq2x<uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -67,7 +67,7 @@ void Image_window::show_scaled8to555_Hq2x
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Hq2x<uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -86,7 +86,7 @@ void Image_window::show_scaled8to565_Hq2x
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Hq2x<uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -105,7 +105,7 @@ void Image_window::show_scaled8to32_Hq2x
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Hq2x<uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/
