@@ -417,7 +417,9 @@ void Image_window::static_init()
 			ok = true;
 		}
 
-		if (!ok) it = p_resolutions.erase(it);
+		if (!ok) {
+			p_resolutions.erase(it++);
+		}
 		else {
 			cout << ' ' << res.width << "x" << res.height << '\t';
 			if (res.palette)  cout << ' ' << 8<< ' ' << "bpp ok";
