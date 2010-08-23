@@ -282,8 +282,8 @@ void Set_renderer
 		glman = new GL_manager();
 		glman->set_palette(pal);
 		if (resize)
-			glman->resized(win->get_width(), win->get_height(), 
-								win->get_scale());
+			glman->resized(win->get_full_width(), win->get_full_height(), 
+								win->get_scale_factor());
 		}
 #endif
 					// Tell shapes how to render.
@@ -369,7 +369,7 @@ bool Set_glpalette(Palette *pal, bool rotation)
 
 Game_window::Game_window
 	(
-	int width, int height, int scale, int scaler		// Window dimensions.
+	int width, int height, bool fullscreen, int gwidth, int gheight, int scale, int scaler		// Window dimensions.
 	) : 
 	    dragging(0), effects(new Effects_manager(this)), map(new Game_map(0)),
 	    render(new Game_render), gump_man(new Gump_manager),
@@ -399,11 +399,7 @@ Game_window::Game_window
 	shape_man = new Shape_manager();// Create the single instance.
 	maps.push_back(map);		// Map #0.
 					// Create window.
-	string	fullscreenstr;		// Check config. for fullscreen mode.
-	config->value("config/video/fullscreen",fullscreenstr,"no");
-	bool	fullscreen = (fullscreenstr=="yes");
-	config->set("config/video/fullscreen",fullscreenstr,true);
-	win = new Image_window8(width, height, scale, fullscreen, scaler);
+	win = new Image_window8(width, height, gwidth, gheight, scale, fullscreen, scaler);
 	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
 	Game_singletons::init(this);	// Everything but 'usecode' exists.
@@ -464,7 +460,7 @@ Game_window::Game_window
  */
 void Game_window::clear_screen(bool update)
 {
-	win->fill8(0,get_width(),get_height(),0,0);
+	win->fill8(0,win->get_full_width(), win->get_full_height(),win->get_start_x(), win->get_start_y());
 
 	// update screen
 	if (update)
@@ -894,11 +890,14 @@ void Game_window::resized
 	(
 	unsigned int neww, 
 	unsigned int newh,
+	bool newfs,
+	unsigned int newgw, 
+	unsigned int newgh,
 	unsigned int newsc,
 	unsigned int newsclr
 	)
 	{			
-	win->resized(neww, newh, newsc, newsclr);
+	win->resized(neww, newh, newfs, newgw, newgh, newsc, newsclr);
 	pal->apply(false);
 	Set_renderer(win, pal, true);
 	if (!main_actor)		// In case we're before start.
@@ -1005,7 +1004,7 @@ inline void Send_location
 		Write4(ptr, gwin->get_scrollty());
 		Write4(ptr, gwin->get_width()/c_tilesize);
 		Write4(ptr, gwin->get_height()/c_tilesize);
-		Write4(ptr, gwin->get_win()->get_scale());
+		Write4(ptr, gwin->get_win()->get_scale_factor());
 		Exult_server::Send_data(client_socket, Exult_server::view_pos,
 					&data[0], ptr - data);
 		}
@@ -3101,7 +3100,7 @@ void Game_window::setup_load_palette()
 	}
 
 	// Put up the plasma to the screen
-	plasma(get_width(), get_height(), 0, 0, plasma_start_color, plasma_start_color+plasma_cycle_range-1);
+	plasma(win->get_full_width(), win->get_full_height(), win->get_start_x(), win->get_start_y(), plasma_start_color, plasma_start_color+plasma_cycle_range-1);
 
 	// Load the palette
 	if (Game::get_game_type()==BLACK_GATE)

@@ -1,3 +1,13 @@
+2010-08-23  Ryan Nunn <colourles@users.sourceforge.net>
+    * too many files to list : Hacking things up to allow the game to render at
+      a different resolution to what its displayed at. This will allow fixing 
+      the games resolution to 320x200 while displaying at any resolution. 
+      Currently the game screen is centered only if it doesn't match the 
+      display resolultion. Will eventually allow streching. To change the game
+      rendering resolution change the new config settings 
+      "config/video/game/width" and "config/video/game/height". I consider this
+      code to be somewhat experimental.
+
 2010-08-23 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Info.plist.in: Only allow OS X 10.6 to run the x86_64 arch of the exult binary
 	

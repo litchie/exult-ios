@@ -72,7 +72,7 @@ public:
 	Gump *find_gump(Game_object *obj, int shapenum);
 
 	void update_gumps();
-	void paint();
+	void paint(bool modal);
 
 	bool double_clicked(int x, int y, Game_object *&obj);
 	bool handle_kbd_event(void *ev);

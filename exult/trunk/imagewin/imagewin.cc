@@ -42,8 +42,10 @@ Boston, MA  02111-1307, USA.
 
 #include "istring.h"
 
-#include "SDL_video.h"
-#include "SDL_error.h"
+#include <SDL_video.h>
+#include <SDL_error.h>
+
+#include "manip.h"
 
 #ifdef HAVE_OPENGL
 #ifdef MACOSX
@@ -82,6 +84,20 @@ const Image_window::ScalerConst	Image_window::NumScalers(0);
 Image_window::ScalerVector Image_window::p_scalers;
 const Image_window::ScalerVector &Image_window::Scalers = Image_window::p_scalers;
 
+std::map<uint32,Image_window::Resolution> Image_window::p_resolutions;
+const std::map<uint32,Image_window::Resolution> &Image_window::Resolutions = Image_window::p_resolutions;
+bool Image_window::any_res_allowed; 
+const bool &Image_window::AnyResAllowed = Image_window::any_res_allowed; 
+
+int Image_window::desktop_depth = 0;
+int Image_window::windowed_8 = 0;
+int Image_window::windowed_16 = 0;
+int Image_window::windowed_32 = 0;
+
+SDL_PixelFormat *ManipBase::fmt;		// Format of dest. pixels (and src for rgb src).
+SDL_Color ManipBase::colors[256];		// Palette for source window.
+
+
 // Constructor for the ScalerVector, setup the list
 Image_window::ScalerVector::ScalerVector()
 {
@@ -89,27 +105,27 @@ Image_window::ScalerVector::ScalerVector()
 
 // This is all the names of the scalers. It needs to match the ScalerType enum
 	const ScalerInfo point = { 
-		"Point", 0xFFFFFFFF, 
+		"Point", 0xFFFFFFFF, true,
 		&Image_window::show_scaled8to565_point,
 		&Image_window::show_scaled8to555_point,
 		&Image_window::show_scaled8to16_point,
 		&Image_window::show_scaled8to32_point,
-		&Image_window::show_scaled8bit_point
+		&Image_window::show_scaled8to8_point
 	};
 	push_back(point);
 
 	const ScalerInfo Interlaced = { 
-		"Interlaced", 0xFFFFFFFE,
+		"Interlaced", 0xFFFFFFFE, false,
 		&Image_window::show_scaled8to565_interlace,
 		&Image_window::show_scaled8to555_interlace,
 		&Image_window::show_scaled8to16_interlace,
 		&Image_window::show_scaled8to32_interlace,
-		&Image_window::show_scaled8bit_interlace
+		&Image_window::show_scaled8to8_interlace
 	};
 	push_back(Interlaced);
 
 	const ScalerInfo Bilinear = { 
-		"Bilinear", SCALE_BIT(2), 
+		"Bilinear", SCALE_BIT(2), true,
 		&Image_window::show_scaled8to565_bilinear,
 		&Image_window::show_scaled8to555_bilinear,
 		&Image_window::show_scaled8to16_bilinear,
@@ -119,7 +135,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Bilinear);
 
 	const ScalerInfo BilinearPlus = { 
-		"BilinearPlus", SCALE_BIT(2), 
+		"BilinearPlus", SCALE_BIT(2), false, 
 		&Image_window::show_scaled8to565_BilinearPlus,
 		&Image_window::show_scaled8to555_BilinearPlus,
 		&Image_window::show_scaled8to16_BilinearPlus,
@@ -129,7 +145,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(BilinearPlus);
 
 	const ScalerInfo _2xSaI = { 
-		"2xSaI", SCALE_BIT(2), 
+		"2xSaI", SCALE_BIT(2), false,
 		&Image_window::show_scaled8to565_2xSaI,
 		&Image_window::show_scaled8to555_2xSaI,
 		&Image_window::show_scaled8to16_2xSaI,
@@ -139,7 +155,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(_2xSaI);
 
 	const ScalerInfo SuperEagle = { 
-		"SuperEagle", SCALE_BIT(2), 
+		"SuperEagle", SCALE_BIT(2), false,
 		&Image_window::show_scaled8to565_SuperEagle,
 		&Image_window::show_scaled8to555_SuperEagle,
 		&Image_window::show_scaled8to16_SuperEagle,
@@ -149,7 +165,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(SuperEagle);
 
 	const ScalerInfo Super2xSaI = { 
-		"Super2xSaI", SCALE_BIT(2), 
+		"Super2xSaI", SCALE_BIT(2), false,
 		&Image_window::show_scaled8to565_Super2xSaI,
 		&Image_window::show_scaled8to555_Super2xSaI,
 		&Image_window::show_scaled8to16_Super2xSaI,
@@ -159,17 +175,17 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Super2xSaI);
 
 	const ScalerInfo Scale2X = { 
-		"Scale2X", SCALE_BIT(2), 
+		"Scale2X", SCALE_BIT(2), false,
 		&Image_window::show_scaled8to565_2x_noblur,
 		&Image_window::show_scaled8to555_2x_noblur,
 		&Image_window::show_scaled8to16_2x_noblur,
 		&Image_window::show_scaled8to32_2x_noblur,
-		&Image_window::show_scaled8bit_2x_noblur
+		&Image_window::show_scaled8to8_2x_noblur
 	};
 	push_back(Scale2X);
 
 	const ScalerInfo Hq2x = { 
-		"Hq2x", SCALE_BIT(2), 
+		"Hq2x", SCALE_BIT(2), false,
 		&Image_window::show_scaled8to565_Hq2x,
 		&Image_window::show_scaled8to555_Hq2x,
 		&Image_window::show_scaled8to16_Hq2x,
@@ -179,7 +195,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Hq2x);
 
 	const ScalerInfo Hq3x = { 
-		"Hq3x", SCALE_BIT(2)|SCALE_BIT(3), 
+		"Hq3x", SCALE_BIT(2)|SCALE_BIT(3), false,
 		&Image_window::show_scaled8to565_Hq3x,
 		&Image_window::show_scaled8to555_Hq3x,
 		&Image_window::show_scaled8to16_Hq3x,
@@ -190,7 +206,7 @@ Image_window::ScalerVector::ScalerVector()
 
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 
-		"OpenGL", 0xFFFFFFFF 
+		"OpenGL", 0xFFFFFFFF, true
 	};
 	push_back(opengl);
 #endif
@@ -214,20 +230,6 @@ Image_window::ScalerType Image_window::get_scaler_for_name(const char *scaler)
 
 int Image_window::Get_best_bpp(int w, int h, int bpp, uint32 flags)
 {
-	static int desktop_depth = 0;
-	static int windowed_16;
-	static int windowed_32;
-	if (desktop_depth == 0) {
-		desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
-
-		windowed_16 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE);
-		windowed_32 = SDL_VideoModeOK(640, 400, 32, SDL_SWSURFACE);
-
-		if (windowed_16 == 0 && windowed_32 == 0) {
-			cerr << "SDL Reports 640x400 16 bpp and 32 bpp windowed surfaces are not OK. Windowed scalers may not work properly." << endl;
-		}
-	}
-
 	if (w == 0 || h == 0) return 0;
 
 	// Explicit BPP required
@@ -278,6 +280,168 @@ int Image_window::Get_best_bpp(int w, int h, int bpp, uint32 flags)
 /*
 *	Destroy window.
 */
+void Image_window::static_init()
+{
+	static bool done = false;
+	if (done) return;
+	done = true;
+
+	cout << "Checking rendering support" << std::endl;
+
+	desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
+
+	windowed_8 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE|SDL_HWPALETTE);
+	windowed_16 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE);
+	windowed_32 = SDL_VideoModeOK(640, 400, 32, SDL_SWSURFACE);
+
+	cout << ' ' << "Windowed" << '\t';
+	if (windowed_8)  cout << ' ' << 8<< ' ' << "bpp ok";
+	if (windowed_16) cout << ' ' << 16 << ' ' << "bpp ok";
+	if (windowed_32) cout << ' ' << 32 << ' ' << "bpp ok";
+	cout << std::endl;
+
+
+	SDL_PixelFormat format;
+	std::memset(&format,0,sizeof(format));
+
+	int bpps[] = { 0, 8, 15, 16, 24, 32 };
+
+	/* Get available fullscreen/hardware modes */
+	for (int i = 0; i < sizeof(bpps)/sizeof(bpps[0]); i++)
+	{
+		SDL_PixelFormat *pformat = 0;
+		if (bpps[i]) {
+			format.BitsPerPixel = bpps[i];
+			pformat = &format;
+		}
+
+		SDL_Rect **modes=SDL_ListModes(pformat, SDL_FULLSCREEN|SDL_SWSURFACE|((bpps[i]==8)?SDL_HWPALETTE:0) );
+
+		// No mode for this bpp
+		if (modes == 0) {
+			continue;
+		}
+		// In theory this should never happen in fullscreen mode
+		else if (modes == (SDL_Rect **)-1) {
+			//if (bpps[i] == 8) any_mode8 = true;
+			//else any_mode == true;
+			continue;
+		}
+
+		for (;*modes;++modes) {
+
+			Resolution res = { (*modes)->w,(*modes)->h,false,false,false};
+			p_resolutions[(res.width<<16)|res.height] = res;
+		}
+	}
+
+	// It's empty, so add in some basic resolutions that would be nice to support
+	if (p_resolutions.empty()) {
+
+		Resolution res = { 0,0,false,false,false};
+
+		res.width = 640;
+		res.height = 480;
+		p_resolutions[(res.width<<16)|res.height] = res;
+
+		res.width = 800;
+		res.height = 600;
+		p_resolutions[(res.width<<16)|res.height] = res;
+
+		res.width = 800;
+		res.height = 600;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1024;
+		res.height = 768;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1280;
+		res.height = 720;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1280;
+		res.height = 768;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1280;
+		res.height = 800;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1280;
+		res.height = 960;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1280;
+		res.height = 1024;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1360;
+		res.height = 768;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1366;
+		res.height = 768;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1920;
+		res.height = 1080;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+
+		res.width = 1920;
+		res.height = 1200;
+		p_resolutions[(res.width<<16)|res.height] = res;		
+	}
+
+	bool ok_pal = false;
+	bool ok_rgb = false;
+
+	for (std::map<uint32, Image_window::Resolution>::iterator it = p_resolutions.begin(); it!= p_resolutions.end(); )
+	{
+		Image_window::Resolution &res = it->second;
+		bool ok = false;
+
+		if (SDL_VideoModeOK(res.width, res.height, 32, SDL_FULLSCREEN|SDL_SWSURFACE|SDL_HWPALETTE)) {
+			res.palette = true;
+			ok_pal = true;
+			ok = true;
+		}
+		if (SDL_VideoModeOK(res.width, res.height, 16, SDL_FULLSCREEN|SDL_SWSURFACE)) {
+			res.rgb16 = true;
+			ok_rgb = true;
+			ok = true;
+		}
+		if (SDL_VideoModeOK(res.width, res.height, 32, SDL_FULLSCREEN|SDL_SWSURFACE)) {
+			res.rgb32 = true;
+			ok_rgb = true;
+			ok = true;
+		}
+
+		if (!ok) it = p_resolutions.erase(it);
+		else {
+			cout << ' ' << res.width << "x" << res.height << '\t';
+			if (res.palette)  cout << ' ' << 8<< ' ' << "bpp ok";
+			if (res.rgb16) cout << ' ' << 16 << ' ' << "bpp ok";
+			if (res.rgb32) cout << ' ' << 32 << ' ' << "bpp ok";
+			cout << std::endl;
+			++it;
+		}
+	}
+
+	if (windowed_16 == 0 && windowed_32 == 0)
+		cerr << "SDL Reports 640x400 16 bpp and 32 bpp windowed surfaces are not OK. Windowed scalers may not work properly." << endl;
+
+	if (!ok_pal && !ok_rgb) 
+		cerr << "SDL Reports no usable fullscreen resolutions." << endl;
+	else if (!ok_pal) 
+		cerr << "SDL Reports no usable paletted fullscreen resolutions." << endl;
+	else if (!ok_rgb) 
+		cerr << "SDL Reports no usable rgb fullscreen resolutions." << endl;
+}
+
+/*
+*	Destroy window.
+*/
 
 Image_window::~Image_window
 (
@@ -299,31 +463,39 @@ void Image_window::create_surface
 {
 	ibuf->width = w;
 	ibuf->height = h;
+	if (game_width == 0 || game_height == 0) {
+		game_width = w;
+		game_height = h;
+	}
 	uses_palette = true;
 	show_scaled = 0;
 	draw_surface = paletted_surface = display_surface = 0;
 #if defined(__zaurus__)
 	fullscreen = false; // Zaurus would crash in fullscreen mode
 #else
-	if (try_scaler(w, h)) return; // everyone else can test the try_scaler function
+	if (try_scaler(w, h) == false) // everyone else can test the try_scaler function
 #endif
-
-	if (!paletted_surface)			// No scaling, or failed?
 	{
-		uint32 flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0) | (ibuf->depth==8?SDL_HWPALETTE:0);
-		display_surface = draw_surface = paletted_surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
-		scale = 1;
+		if (!paletted_surface)			// No scaling, or failed?
+		{
+			uint32 flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0) | (ibuf->depth==8?SDL_HWPALETTE:0);
+			display_surface = draw_surface = paletted_surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
+			scale = 1;
+		}
+		if (!paletted_surface)
+		{
+			cerr << "Couldn't set video mode (" << w << ", " << h <<
+				") at " << ibuf->depth << " bpp depth: " <<
+				SDL_GetError() << endl;
+			exit(-1);
+		}
 	}
-	if (!paletted_surface)
-	{
-		cerr << "Couldn't set video mode (" << w << ", " << h <<
-			") at " << ibuf->depth << " bpp depth: " <<
-			SDL_GetError() << endl;
-		exit(-1);
-	}
-	ibuf->bits = (unsigned char *) draw_surface->pixels;
 	// Update line size in words.
 	ibuf->line_width = draw_surface->pitch/ibuf->pixel_size;
+	// Offset it set to the top left pixel if the game window
+	ibuf->offset_x = (get_full_width()-get_game_width())/2; 
+	ibuf->offset_y = (get_full_height()-get_game_height())/2; 
+	ibuf->bits = ((unsigned char *) draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
 }
 
 /*
@@ -493,9 +665,6 @@ bool Image_window::try_scaler(int w, int h)
 			if (create_scale_surfaces(selected_factor, w, h, info->fun565, info->fun555, info->fun16, info->fun32))
 			{
 				scale = selected_factor;
-				ibuf->bits = (unsigned char *) draw_surface->pixels;
-				// Update line size in words.
-				ibuf->line_width = draw_surface->pitch/ibuf->pixel_size;
 				return true;
 			}
 		}
@@ -511,11 +680,7 @@ bool Image_window::try_scaler(int w, int h)
 			if (paletted_surface && draw_surface)
 			{
 				show_scaled = info->fun8;
-
 				scale = selected_factor;
-				ibuf->bits = (unsigned char *) draw_surface->pixels;
-				// Update line size in words.
-				ibuf->line_width = draw_surface->pitch/ibuf->pixel_size;
 				return true;
 			}
 			else
@@ -568,6 +733,9 @@ void Image_window::resized
 (
  unsigned int neww, 
  unsigned int newh,
+ bool newfs, 
+ unsigned int newgw, 
+ unsigned int newgh,
  int newsc,
  int newscaler
  )
@@ -580,6 +748,9 @@ void Image_window::resized
 	}
 	scale = newsc;
 	scaler = newscaler;
+	fullscreen = newfs;
+	game_width = newgw;
+	game_height = newgh;
 	create_surface(neww, newh);	// Create new one.
 }
 
@@ -615,6 +786,9 @@ void Image_window::show
 	int srcx = 0, srcy = 0;
 	if (!ibuf->clip(srcx, srcy, w, h, x, y))
 		return;
+	x -= get_start_x();
+	y -= get_start_y();
+
 	if (show_scaled)		// 2X scaling?
 		(this->*show_scaled)(x, y, w, h);
 	else

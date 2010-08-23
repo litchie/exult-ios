@@ -327,7 +327,8 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	unsigned char mouse_visible;
 	int count = entries->size();
 	bool exit_loop = false;
-	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+	//int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+	int gx, gy;
 	SDL_Event event;
 	for(int i=0; i<count; i++)
 	  (*entries)[i]->dirty = true;
@@ -361,26 +362,25 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		while (SDL_PollEvent(&event))
 		{
 			if(event.type==SDL_MOUSEMOTION) {
+				gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),gx,gy);
 				mouse->hide();
-				mouse->move(event.motion.x / scale, 
-						event.motion.y / scale);
-				set_selection(event.motion.x / scale, 
-						event.motion.y / scale); 
+				mouse->move(gx,gy);
+				set_selection(gx,gy); 
 				mouse->show();
 				mouse->blit_dirty();
 			} else if(event.type==SDL_MOUSEBUTTONDOWN) {
 				if (!mouse_visible) {
+					gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
+
 					// if invisible, redraw mouse
-					set_selection(event.button.x / scale, 
-								event.button.y / scale); 
+					set_selection(gx,gy); 
 					mouse->show();
 					mouse->blit_dirty();
 				}
 			} else if(event.type==SDL_MOUSEBUTTONUP) {
+				gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
 				MenuObject *entry = (*entries)[selection];
-				if (entry->is_mouse_over(
-							event.button.x / scale, 
-							event.button.y / scale)) {
+				if (entry->is_mouse_over(gx,gy)) {
 					exit_loop = entry->handle_event(event);
 				}
 			} else if(event.type==SDL_KEYDOWN) {

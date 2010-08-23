@@ -408,7 +408,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	Main_actor *main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 					// Get screen rectangle.
-	Rectangle sbox = gwin->get_win_rect();
+	Rectangle sbox = gwin->get_game_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
 	int height = sman->get_text_height(0);
 	int space_width = sman->get_text_width(0, " ");

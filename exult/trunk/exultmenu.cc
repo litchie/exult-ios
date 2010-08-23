@@ -145,7 +145,7 @@ void ExultMenu::calc_win()
 	centerx = gwin->get_width()/2;
 	centery = gwin->get_height()/2;
 	Font *fnt = font ? font : fontManager.get_font("CREDITS_FONT");
-	pagesize = 2 * ((gwin->get_height() - 5 * fnt->get_text_height() - 15) / 45);
+	pagesize = 2 * ((gwin->get_win()->get_full_height() - 5 * fnt->get_text_height() - 15) / 45);
 }
 
 
@@ -159,7 +159,7 @@ void ExultMenu::setup()
 	Shape_frame *setupbg = 0;
 	if (GL_manager::get_instance())
 	{
-		int w = gwin->get_width(), h = gwin->get_height();
+		int w = gwin->get_win()->get_full_width(), h = gwin->get_win()->get_full_height();
 		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
 				(gwin->get_win()->get_ib8()->create_another(w, h));
 		assert(buf);
@@ -276,8 +276,11 @@ void ExultMenu::setup()
 			int scaler = scalemethod->get_choice();
 			if(scaler!=gwin->get_win()->get_scaler())
 				{
-				gwin->resized(gwin->get_win()->get_width(),
-				              gwin->get_win()->get_height(),
+				gwin->resized(gwin->get_win()->get_full_width(),
+				              gwin->get_win()->get_full_height(),
+							  gwin->get_win()->is_fullscreen(),
+							  gwin->get_win()->get_game_width(),
+							  gwin->get_win()->get_game_height(),
 				              Image_window::Hq3x ? 3 : 2,
 				              scalemethod->get_choice());
 				if (scaler > Image_window::NoScaler &&
@@ -338,13 +341,13 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 {
 	MenuList *menu = new MenuList();
 
-	int ypos = 15;
-	int xpos = (centerx+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
+	int ypos = 15 + gwin->get_win()->get_start_y();
+	int xpos = (gwin->get_win()->get_full_width()/2+exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,0)->get_width())/2;
 	std::vector<ModManager>& game_list = gamemanager->get_game_list();
 	int num_choices = game_list.size();
 	int last = num_choices > first + pagesize ? first + pagesize : num_choices;
 	for(int i=first; i<last; i++) {
-		int menux = xpos+(i%2)*centerx;
+		int menux = xpos+(i%2)*gwin->get_win()->get_full_width()/2 + gwin->get_win()->get_start_x();
 		ModManager& exultgame = game_list[i];
 		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
 		strcpy(menustringname, exultgame.get_menu_string().c_str());
@@ -372,7 +375,7 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 	}
 
 	create_scroller_menu(menu, navfonton, navfont, first, pagesize, num_choices,
-			centerx, ypos = gwin->get_height()-5*font->get_text_height());
+			centerx, ypos = gwin->get_win()->get_end_y()-5*font->get_text_height());
 
 	const char *menuchoices[] = { 
 		"SETUP",
@@ -383,7 +386,7 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 	int num_entries = sizeof(menuchoices)/sizeof(menuchoices[0]);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width*(num_entries-1)/2;
-	ypos = gwin->get_height()-3*font->get_text_height();
+	ypos = gwin->get_win()->get_end_y()-3*font->get_text_height();
 	for(int i=0; i<4; i++) {
 		MenuTextEntry *entry = new MenuTextEntry(fonton, font, menuchoices[i],
 							xpos, ypos);
@@ -401,14 +404,14 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 {
 	MenuList *menu = new MenuList();
 
-	int ypos = 15;
-	int xpos = centerx/2;
+	int ypos = 15 + gwin->get_win()->get_start_y();
+	int xpos = gwin->get_win()->get_full_width()/4;
 	
 	std::vector<ModInfo>& mod_list = selgame->get_mod_list();
 	int num_choices = mod_list.size();
 	int last = num_choices > first + pagesize ? first + pagesize : num_choices;
 	for(int i=first; i<last; i++) {
-		int menux = xpos+(i%2)*centerx;
+		int menux = xpos+(i%2)*gwin->get_win()->get_full_width()/2 + gwin->get_win()->get_start_x();
 		ModInfo& exultmod = mod_list[i];
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
 							exultmod.get_menu_string().c_str(),
@@ -430,7 +433,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 	}
 	
 	create_scroller_menu(menu, navfonton, navfont, first, pagesize, num_choices,
-			centerx, ypos = gwin->get_height()-5*font->get_text_height());
+			centerx, ypos = gwin->get_win()->get_end_y()-5*font->get_text_height());
 
 	const char *menuchoices[] = { 
 		"RETURN TO MAIN MENU"
@@ -438,7 +441,7 @@ MenuList *ExultMenu::create_mods_menu(ModManager *selgame, Shape_frame *bg, int 
 	int num_entries = sizeof(menuchoices)/sizeof(menuchoices[0]);
 	int max_width = maximum_size(font, menuchoices, num_entries, centerx);
 	xpos = centerx - max_width*(num_entries-1)/2;
-	ypos = gwin->get_height()-3*font->get_text_height();
+	ypos = gwin->get_win()->get_end_y()-3*font->get_text_height();
 	for(int i=0; i<num_entries; i++) {
 		MenuTextEntry *entry = new MenuTextEntry(fonton, font, menuchoices[i],
 							xpos, ypos);
@@ -483,8 +486,8 @@ BaseGameInfo *ExultMenu::show_mods_menu(ModManager *selgame, Shape_frame *logobg
 		if (!GL_manager::get_instance())
 #endif
 			font->draw_text(gwin->get_win()->get_ib8(), 
-						gwin->get_width()-font->get_text_width(VERSION),
-						gwin->get_height()-font->get_text_height()-5, VERSION);
+						gwin->get_win()->get_end_x()-font->get_text_width(VERSION),
+						gwin->get_win()->get_end_y()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice) {
 			case -10: // The incompatibility notice; do nothing
@@ -523,7 +526,7 @@ static Shape_frame *create_exultlogo(int logox, int logoy, Vga_file& exult_flx, 
 	if (GL_manager::get_instance())
 		{
 		Game_window *gwin = Game_window::get_instance();
-		int w = gwin->get_width(), h = gwin->get_height();
+		int w = gwin->get_win()->get_full_width(), h = gwin->get_win()->get_full_height();
 		Shape_frame *logo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
 		Image_buffer8 *buf = dynamic_cast<Image_buffer8 *>
 				(gwin->get_win()->get_ib8()->create_another(w, h));
@@ -574,9 +577,14 @@ BaseGameInfo *ExultMenu::run()
 		throw quit_exception(1);
 
 	}
-	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
-											//may not be initialised
+	//Must check this or it will crash as midi 
+	//may not be initialised
+	if(Audio::get_ptr()->audio_enabled)
+	{
+		// Make sure timbre library is correct!
+		//Audio::get_ptr()->get_midi()->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GM);
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
+	}
 	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
 	    	EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
@@ -617,8 +625,8 @@ BaseGameInfo *ExultMenu::run()
 		if (!GL_manager::get_instance())
 #endif
 			font->draw_text(gwin->get_win()->get_ib8(), 
-						gwin->get_width()-font->get_text_width(VERSION),
-						gwin->get_height()-font->get_text_height()-5, VERSION);
+						gwin->get_win()->get_end_x()-font->get_text_width(VERSION),
+						gwin->get_win()->get_end_y()-font->get_text_height()-5, VERSION);
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice) {
 			case -4: // Setup

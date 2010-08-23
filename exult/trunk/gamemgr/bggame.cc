@@ -629,10 +629,10 @@ void BG_Game::scene_guardian()
 		int i;
 		
 		// create buffer containing a blue 'plasma' screen
-		plasma = win->create_buffer(gwin->get_width(),
-							gwin->get_height());
-		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 16+76);
-		win->get(plasma, 0, 0);
+		plasma = win->create_buffer(win->get_full_width(),
+							win->get_full_height());
+		gwin->plasma(win->get_full_width(), win->get_full_height(), win->get_start_x(),win->get_start_y(), 16, 16+76);
+		win->get(plasma, win->get_start_x(),win->get_start_y());
 
 		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 2);
 		pal->set_color(1,0,0,0); //UGLY hack... set font background to black
@@ -668,7 +668,7 @@ void BG_Game::scene_guardian()
 				break;
 		}
 
-		win->put(plasma,0,0);
+		win->put(plasma,win->get_start_x(),win->get_start_y());
 		non_gl_blit();
 		WAITDELAYCYCLE(200);
 
@@ -691,7 +691,7 @@ void BG_Game::scene_guardian()
 				break;
 		}
 
-		win->put(plasma,0,0);
+		win->put(plasma,win->get_start_x(),win->get_start_y());
 		non_gl_blit();
 		WAITDELAYCYCLE(200);
 
@@ -714,7 +714,7 @@ void BG_Game::scene_guardian()
 				break;
 		}
 		
-		win->put(plasma,0,0);
+		win->put(plasma,win->get_start_x(),win->get_start_y());
 		non_gl_blit();
 		FORGET_OBJECT(plasma);
 		
@@ -813,8 +813,8 @@ void BG_Game::scene_guardian()
 		int txt_ypos = gwin->get_height()-txt_height-16;
 
 		// backup text area
-		backup3 = win->create_buffer(gwin->get_width(),txt_height);
-		win->get(backup3, 0, txt_ypos);
+		backup3 = win->create_buffer(win->get_full_width(),txt_height);
+		win->get(backup3, win->get_start_x(), txt_ypos);
 
 		int eye_index = 0;
 		int mouth_index = 0;
@@ -824,7 +824,7 @@ void BG_Game::scene_guardian()
 		unsigned long start = SDL_GetTicks();
 		
 		#define ERASE_TEXT() do { \
-				win->put(backup3, 0, txt_ypos); \
+				win->put(backup3, win->get_start_x(), txt_ypos); \
 			} while(0)
 
 		#define DRAW_TEXT() do { \
@@ -1005,6 +1005,9 @@ void BG_Game::scene_desk()
 		Audio::get_ptr()->start_music(home_song_midi,false,INTROMUS);
 		
 		gwin->clear_screen();
+		// Clip it to 320x200 region
+		win->set_clip(centerx-160, centery-100, 320,200);
+		
 		pal->load(INTROPAL_DAT, PATCH_INTROPAL, 1);
 		pal->apply();
 
@@ -1129,11 +1132,13 @@ void BG_Game::scene_desk()
 	}
 	catch(const UserSkipException &/*x*/)
 	{
+		win->clear_clip();
 		FORGET_OBJECT(backup);
 		enable_direct_gl_render();
 	}
 	catch(const UserBreakException &x)
 	{
+		win->clear_clip();
 		// Waste disposal
 		FORGET_OBJECT(backup);
 		enable_direct_gl_render();
@@ -1437,7 +1442,7 @@ void BG_Game::end_game(bool success)
 		// Text message 1
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		// Paint text
 		message = text_msgs[blackgate_destroyed];
@@ -1461,7 +1466,7 @@ void BG_Game::end_game(bool success)
 
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		// Paint text
 		message = text_msgs[guardian_has_stopped];
@@ -1547,7 +1552,7 @@ void BG_Game::end_game(bool success)
 			pal->set_brightness(80);	// Set readable brightness
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		starty = (gwin->get_height() - normal->get_text_height()*10)/2;
 		
@@ -1573,7 +1578,7 @@ void BG_Game::end_game(bool success)
 		// Text Screen 2
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 		
@@ -1598,7 +1603,7 @@ void BG_Game::end_game(bool success)
 		// Text Screen 3 
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 		
@@ -1623,7 +1628,7 @@ void BG_Game::end_game(bool success)
 		// Text Screen 4
 
 		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+		win->fill8(0);
 
 		starty = (gwin->get_height() - normal->get_text_height()*4)/2;
 		

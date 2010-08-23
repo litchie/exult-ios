@@ -160,7 +160,7 @@ public:
 	/*
 	 *	Class maintenance:
 	 */
-	Game_window(int width = 0, int height = 0, int scale = 1, 
+	Game_window(int width, int height, bool fullscreen, int gwidth, int gheight, int scale = 1, 
 							int scaler = 0);
 	~Game_window();
 					// Get the one game window.
@@ -171,29 +171,50 @@ public:
 	 *	Display:
 	 */
 	void clear_screen(bool update = false);
+
+	//int get_width() const
+	//	{ return win->get_width(); }
+	//int get_height() const
+	//	{ return win->get_height(); }
 	int get_width() const
-		{ return win->get_width(); }
+		{ return win->get_game_width(); }
 	int get_height() const
-		{ return win->get_height(); }
+		{ return win->get_game_height(); }
+	int get_game_width() const
+		{ return win->get_game_width(); }
+	int get_game_height() const
+		{ return win->get_game_height(); }
+
 	inline int get_scrolltx() const		// Get window offsets in tiles.
 		{ return scrolltx; }
 	inline int get_scrollty() const
 		{ return scrollty; }
-	inline Rectangle get_win_rect() const	// Get window's rectangle.
-		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
+	inline Rectangle get_game_rect() const	// Get window's rectangle.
+//		{ return Rectangle(win->get_start_x(), win->get_start_y(), win->get_full_width(), win->get_full_height());}
+		{ return Rectangle(0, 0, win->get_game_width(), win->get_game_height());}
+	inline Rectangle get_full_rect() const	// Get window's rectangle.
+		{ return Rectangle(win->get_start_x(), win->get_start_y(), win->get_full_width(), win->get_full_height());}
 	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
 		{ return Rectangle(get_scrolltx(), get_scrollty(),
-			(get_width() + c_tilesize - 1)/c_tilesize,
-			(get_height() + c_tilesize - 1)/c_tilesize); }
+			(win->get_game_width() + c_tilesize - 1)/c_tilesize,
+			(win->get_game_height() + c_tilesize - 1)/c_tilesize); }
 					// Clip rectangle to window's.
+	Rectangle clip_to_game(Rectangle r)
+		{
+		Rectangle wr = get_game_rect();
+		return (r.intersect(wr));
+		}
 	Rectangle clip_to_win(Rectangle r)
 		{
-		Rectangle wr = get_win_rect();
+		Rectangle wr = get_full_rect();
 		return (r.intersect(wr));
 		}
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh,
-				unsigned int newsc, unsigned int newsclr);
+	void resized(unsigned int neww, unsigned int newh, bool newfs,
+				unsigned int newgw, unsigned int newgh,
+				unsigned int newsc, unsigned int newsclr
+				);
+
 	void get_focus();		// Get/lose focus.
 	void lose_focus();
 	inline bool have_focus() const
@@ -205,8 +226,8 @@ public:
 		{ return mouse3rd; }
 	void set_mouse3rd(bool m)
 		{ mouse3rd = m; }
-	bool get_fastmouse() const
-		{ return get_win()->is_fullscreen() ? fastmouse : false; }
+	bool get_fastmouse(bool ignorefs=false) const
+		{ return (ignorefs||get_win()->is_fullscreen()) ? fastmouse : false; }
 	void set_fastmouse(bool f)
 		{ fastmouse = f; }
 	bool get_double_click_closes_gumps() const
@@ -363,7 +384,7 @@ public:
 					// Paint 'dirty' rectangle.
 	void paint_dirty();
 	void set_all_dirty()		// Whole window.
-		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
+		{ dirty = Rectangle(win->get_start_x(), win->get_start_y(), win->get_full_width(), win->get_full_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
 					// Add dirty rect. for obj. Rets. false

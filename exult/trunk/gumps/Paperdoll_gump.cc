@@ -302,20 +302,32 @@ int Paperdoll_gump::add
 					//   cause obj to be deleted.
 	)
 {
-	Game_object *cont = find_object(mx, my);
+	do {
+		Game_object *cont = find_object(mx, my);
 	
-	if (cont && cont->add(obj, false, combine))
-		return (1);
-	
-	int index = find_closest(mx, my, 1);
-	
-	if (index != -1 && container->add_readied(obj, index))
-		return (1);
+		if (cont && cont->add(obj, false, combine))
+			break;
+		
+		int index = find_closest(mx, my, 1);
+		
+		if (index != -1 && container->add_readied(obj, index))
+			break;
 
-	if (container->add(obj, dont_check, combine))
-		return (1);
+		if (container->add(obj, dont_check, combine))
+			break;
 
-	return (0);
+		return 0;
+	}
+	while (0);
+
+	// Put all the objects in the right place
+	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+	{
+		obj = container->get_readied(i);
+		if (obj) set_to_spot(obj, i);
+	}
+
+	return 1;
 }
 
 /*

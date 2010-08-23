@@ -34,7 +34,7 @@
 //
 // Scale2x (no blurring) by Andrea Mazzoleni.
 //
-void Image_window::show_scaled8bit_2x_noblur
+void Image_window::show_scaled8to8_2x_noblur
 	(
 	int x, int y, int w, int h	// Area to show.
 	)
@@ -42,7 +42,7 @@ void Image_window::show_scaled8bit_2x_noblur
 	Manip8to8 manip(paletted_surface->format->palette->colors,
 						paletted_surface->format);
 	Scale2x_noblur<uint8, Manip8to8>
-		((unsigned char *)ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 				(uint8 *) display_surface->pixels, 
 				display_surface->pitch,
@@ -59,7 +59,7 @@ void Image_window::show_scaled8to16_2x_noblur
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -76,7 +76,7 @@ void Image_window::show_scaled8to555_2x_noblur
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -93,7 +93,7 @@ void Image_window::show_scaled8to565_2x_noblur
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale2x_noblur<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -110,7 +110,7 @@ void Image_window::show_scaled8to32_2x_noblur
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale2x_noblur<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint32 *) display_surface->pixels, 
 			display_surface->pitch/

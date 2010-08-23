@@ -1442,7 +1442,7 @@ void Combat_schedule::now_what
 					// WARNING:  Destroys ourself.
 			npc->set_schedule_type(Schedule::follow_avatar);
 			}
-		else if (!gwin->get_win_rect().intersects(
+		else if (!gwin->get_game_rect().intersects(
 						gwin->get_shape_rect(npc)))
 			{		// Off screen?  Stop trying.
 			gwin->get_tqueue()->remove(npc);

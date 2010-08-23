@@ -44,7 +44,7 @@ void Image_window::show_scaled8to16_2xSaI
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -63,7 +63,7 @@ void Image_window::show_scaled8to555_2xSaI
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -82,7 +82,7 @@ void Image_window::show_scaled8to565_2xSaI
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -101,7 +101,7 @@ void Image_window::show_scaled8to32_2xSaI
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xSaI<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/
@@ -124,7 +124,7 @@ void Image_window::show_scaled8to16_Super2xSaI
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -143,7 +143,7 @@ void Image_window::show_scaled8to555_Super2xSaI
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -162,7 +162,7 @@ void Image_window::show_scaled8to565_Super2xSaI
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -181,7 +181,7 @@ void Image_window::show_scaled8to32_Super2xSaI
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_Super2xSaI<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/
@@ -204,7 +204,7 @@ void Image_window::show_scaled8to16_SuperEagle
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -223,7 +223,7 @@ void Image_window::show_scaled8to555_SuperEagle
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -242,7 +242,7 @@ void Image_window::show_scaled8to565_SuperEagle
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -261,7 +261,7 @@ void Image_window::show_scaled8to32_SuperEagle
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_SuperEagle<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/

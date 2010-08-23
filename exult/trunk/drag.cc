@@ -58,7 +58,7 @@ Dragging_info::Dragging_info
 	rect = gwin->get_shape_rect(obj);
 	rect.enlarge(8);		// Make a little bigger.
 					// Create buffer to backup background.
-	save = gwin->get_win()->create_buffer(rect.w, rect.h);
+	//save = gwin->get_win()->create_buffer(rect.w, rect.h);
 	}
 
 /*
@@ -105,7 +105,7 @@ Dragging_info::Dragging_info
 		else 			// the gump isn't draggable
 			return;
 		}
-	else				// Not found in gump?
+	else if (x >0 && y > 0 && x < gwin->get_width() && y < gwin->get_height())	// Not found in gump?
 		{
 		obj = gwin->find_object(x, y);
 		if (!obj)
@@ -215,7 +215,7 @@ bool Dragging_info::start
 	Rectangle crect = gwin->clip_to_win(rect);
 	gwin->paint(crect);		// Paint over obj's. area.
 					// Create buffer to backup background.
-	save = gwin->get_win()->create_buffer(rect.w, rect.h);
+	//save = gwin->get_win()->create_buffer(rect.w, rect.h);
 	return true;
 	}
 
@@ -237,8 +237,10 @@ bool Dragging_info::moved
 		if (!start(x, y))
 			return false;
 		}
-	else				// Not first time?  Restore beneath.
+	else if (save)				// Not first time?  Restore beneath.
 		gwin->get_win()->put(save, rect.x, rect.y);
+	else
+		gwin->add_dirty(gwin->clip_to_win(rect));
 	gwin->set_painted();
 	int deltax = x - mousex, deltay = y - mousey;
 	mousex = x;
@@ -447,6 +449,14 @@ bool Dragging_info::drop_on_map
 	Game_object *to_drop		// == obj if whole thing.
 	)
 	{
+		// Attempting to drop off screen?
+	if (x < 0 || y < 0 || x >= gwin->get_width() || y >= gwin->get_height())
+	{
+		Mouse::mouse->flash_shape(Mouse::redx);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
+		return false;
+	}
+
 	int max_lift = cheat.in_hack_mover() ? 255 :
 					gwin->get_main_actor()->get_lift() + 5;
 	int skip = gwin->get_render_skip_lift();

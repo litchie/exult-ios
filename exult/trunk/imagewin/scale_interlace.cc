@@ -32,7 +32,7 @@
 //
 // Interlaced Point Sampling
 //
-void Image_window::show_scaled8bit_interlace
+void Image_window::show_scaled8to8_interlace
 	(
 	int x, int y, int w, int h	// Area to show.
 	)
@@ -40,7 +40,7 @@ void Image_window::show_scaled8bit_interlace
 	Manip8to8 manip(paletted_surface->format->palette->colors,
 						paletted_surface->format);
 	Scale_interlace<unsigned char, uint8, Manip8to8>
-		((unsigned char *)ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 				(uint8 *) display_surface->pixels, 
 				display_surface->pitch,
@@ -57,7 +57,7 @@ void Image_window::show_scaled8to16_interlace
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -74,7 +74,7 @@ void Image_window::show_scaled8to555_interlace
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -91,7 +91,7 @@ void Image_window::show_scaled8to565_interlace
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -108,7 +108,7 @@ void Image_window::show_scaled8to32_interlace
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_interlace<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint32 *) display_surface->pixels, 
 			display_surface->pitch/

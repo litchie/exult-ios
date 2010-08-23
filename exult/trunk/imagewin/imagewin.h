@@ -31,6 +31,7 @@ Boston, MA  02111-1307, USA.
 #include "exult_types.h"
 #include <string>
 #include <vector>
+#include <map>
 
 struct SDL_Surface;
 struct SDL_RWops;
@@ -52,14 +53,22 @@ class Image_window
 {
 public:
 	// Firstly just some public scaler stuff
-
 	typedef void (Image_window::*scalefun)(int x, int y, int w, int h);
 	typedef int ScalerType;
+
+	enum FillMode {
+		Fill,					///< Game screen fills all of the display surface
+		Strech,					///< Game screen is stretched to the closest edge, maintaining 1:1 pixel aspect
+		AspectCorrectStretch,	///< Game screen is stretched to the closest edge, with 1:1.2 pixel aspect
+		Centre,					///< Game screen is centred
+		AspectCorrectCentre		///< Game screen is centred and scaled to have 1:1.2 pixel aspect
+	};
 
 	struct ScalerInfo
 	{
 		const char *			name;
 		uint32					size_mask;
+		bool					can_strech;
 		Image_window::scalefun	fun565;
 		Image_window::scalefun	fun555;
 		Image_window::scalefun	fun16;
@@ -67,13 +76,26 @@ public:
 		Image_window::scalefun	fun8;
 	};
 
+	struct Resolution
+	{
+		uint32 width;
+		uint32 height;
+		bool palette;
+		bool rgb16;
+		bool rgb32;
+	};
+
 	struct ScalerVector : public std::vector<Image_window::ScalerInfo> {
 		ScalerVector();
 	};
 private:
 	static ScalerVector p_scalers;
+	static std::map<uint32, Image_window::Resolution> p_resolutions;
+	static bool any_res_allowed; 
 public:
 	static const ScalerVector &Scalers;
+	static const std::map<uint32, Image_window::Resolution> &Resolutions;
+	static const bool &AnyResAllowed; 
 
 	static ScalerType get_scaler_for_name(const char *name);
 	inline static const char *get_name_for_scaler(int num) { return Scalers[num].name; }
@@ -109,6 +131,8 @@ protected:
 	int scaler;			// What scaler do we want to use
 	bool uses_palette;		// Does this window have a palette
 	bool fullscreen;		// Rendering fullscreen.
+	int game_width;
+	int game_height;
 	SDL_Surface *paletted_surface;	// Represents window in memory. (has palette)
 	SDL_Surface *display_surface;	// 2X surface if scaling, else 0. (only used when scaling)
 	SDL_Surface *draw_surface;		// Unscaled surface (used for screenshots only)
@@ -141,19 +165,19 @@ protected:
 	void show_scaled8to555_point(int x, int y, int w, int h);
 	void show_scaled8to565_point(int x, int y, int w, int h);
 	void show_scaled8to32_point(int x, int y, int w, int h);	
-	void show_scaled8bit_point(int x, int y, int w, int h);
+	void show_scaled8to8_point(int x, int y, int w, int h);
 
 	void show_scaled8to16_interlace(int x, int y, int w, int h);
 	void show_scaled8to555_interlace(int x, int y, int w, int h);
 	void show_scaled8to565_interlace(int x, int y, int w, int h);
 	void show_scaled8to32_interlace(int x, int y, int w, int h);	
-	void show_scaled8bit_interlace(int x, int y, int w, int h);
+	void show_scaled8to8_interlace(int x, int y, int w, int h);
 
 	void show_scaled8to16_2x_noblur(int x, int y, int w, int h);
 	void show_scaled8to555_2x_noblur(int x, int y, int w, int h);
 	void show_scaled8to565_2x_noblur(int x, int y, int w, int h);
 	void show_scaled8to32_2x_noblur(int x, int y, int w, int h);	
-	void show_scaled8bit_2x_noblur(int x, int y, int w, int h);
+	void show_scaled8to8_2x_noblur(int x, int y, int w, int h);
 
 	void show_scaled8to16_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
@@ -169,6 +193,7 @@ protected:
 	void show_scaled8to555_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to565_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to32_Hq3x(int x, int y, int w, int h);	
+
 	void show_scaledOpenGL(int x, int y, int w, int h);
 	/*
 	*	Image info.
@@ -179,26 +204,62 @@ protected:
 	bool create_scale_surfaces(int scale, int w, int h,
 		scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
 	bool try_scaler(int w, int h);
+
+
+	static void static_init();
+
+	static int desktop_depth;
+	static int windowed_8;
+	static int windowed_16;
+	static int windowed_32;
+
 public:
 
 	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
-	Image_window(Image_buffer *ib, int scl = 1, bool fs = false, int sclr = point)
+	Image_window(Image_buffer *ib, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point)
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true), 
-		fullscreen(fs), paletted_surface(0), 
+		fullscreen(fs), game_width(gamew), game_height(gameh), paletted_surface(0), 
 		display_surface(0), show_scaled(0)
 	{ 
-		Get_best_bpp(0,0,0,0);
+		static_init();
 		create_surface(ibuf->width, ibuf->height); 
 	}
 	virtual ~Image_window();
-	int get_scale()			// Returns 1 or 2.
-	{ return scale; }
+	//int get_scale()			// Returns 1 or 2.
+	//{ return scale; }
+	int get_scale_factor() { return scale; }
+
+	void screen_to_game(int sx, int sy, bool fast, int &gx, int &gy) {
+		if (fast) {
+			gx = sx + get_start_x();
+			gy = sy + get_start_y();
+		}
+		else {
+			gx = sx/scale + get_start_x();
+			gy = sy/scale + get_start_y();
+		}
+	}
+	void game_to_screen(int gx, int gy, bool fast, int &sx, int &sy) {
+		if (fast) {
+			sx = gx - get_start_x();
+			sy = gy - get_start_y();
+		}
+		else {
+			sx = (gx-get_start_x())*scale;
+			sy = (gy-get_start_y())*scale;
+		}
+	}
+
 	int get_scaler()		// Returns 1 or 2.
 	{ return scaler; }
 	bool is_palettized()		// Does the window have a palette?
 	{ return uses_palette; }
+
+	bool fast_palette_rotate() {
+		return uses_palette || scale == 1;
+	}
 
 	// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
@@ -208,17 +269,34 @@ public:
 
 	Image_buffer *get_ibuf()
 	{ return ibuf; }
-	int get_width()
+
+	int get_start_x()
+	{ return -ibuf->offset_x; }
+	int get_start_y()
+	{ return -ibuf->offset_y; }
+
+	int get_full_width()
 	{ return ibuf->width; }
-	int get_height()
+	int get_full_height()
 	{ return ibuf->height; }
+
+	int get_game_width()
+	{ return game_width; }
+	int get_game_height()
+	{ return game_height; }
+
+	int get_end_x()
+	{ return get_full_width() + get_start_x(); }
+	int get_end_y()
+	{ return get_full_height() + get_start_y(); }
+
 	int ready()			// Ready to draw?
 	{ return (ibuf->bits != 0); }
 	bool is_fullscreen() { return fullscreen; }
 	// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
 	// Resize event occurred.
-	void resized(unsigned int neww, unsigned int nehh, int newsc, int newscaler = point);
+	void resized(unsigned int neww, unsigned int nehh, bool newfs, unsigned int newgw, unsigned int newgh, int newsc, int newscaler = point);
 	void show();			// Repaint entire window.
 	// Repaint rectangle.
 	void show(int x, int y, int w, int h);

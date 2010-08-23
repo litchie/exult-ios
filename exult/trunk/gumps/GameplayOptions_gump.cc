@@ -249,7 +249,7 @@ void GameplayOptions_gump::build_buttons()
 
 void GameplayOptions_gump::load_settings()
 {
-	fastmouse = gwin->get_fastmouse();
+	fastmouse = gwin->get_fastmouse(true);
 #ifdef UNDER_CE
 	config->value("config/gameplay/dpadopt", dpadopt, 0);
 #else
@@ -367,7 +367,7 @@ void GameplayOptions_gump::paint()
 	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
 		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
-	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+	sman->paint_text(2, "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 #ifdef UNDER_CE
 	sman->paint_text(2, "D-Pad:", x + colx[0], y + rowy[4] + 1);
 #else

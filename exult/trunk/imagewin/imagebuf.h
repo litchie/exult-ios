@@ -53,12 +53,14 @@ class Image_buffer
 	{
 protected:
 	int width, height;	// Dimensions (in pixels).
+	int offset_x, offset_y;
 	int depth;			// # bits/pixel.
 	int pixel_size;			// # bytes/pixel.
 	unsigned char *bits;		// Allocated image buffer.
 	int line_width;	// # words/scan-line.
 private:
 	int clipx, clipy, clipw, cliph; // Clip rectangle.
+
 					// Clip.  Rets. 0 if nothing to draw.
 	int clip_internal(int& srcx, int& srcw, int& destx, 
 							int clips, int clipl)
@@ -104,14 +106,24 @@ public:
 	unsigned int get_line_width()
 		{ return line_width; }
 	void clear_clip()		// Reset clip to whole window.
-		{ clipx = clipy = 0; clipw = width; cliph = height; }
+		{ clipx = -offset_x; clipy = -offset_y; clipw = width; cliph = height; }
 					// Set clip.
 	void set_clip(int x, int y, int w, int h)
 		{
-		clipx = x;
-		clipy = y;
-		clipw = w;
-		cliph = h;
+		//clipx = x;
+		//clipy = y;
+		//clipw = w;
+		//cliph = h;
+			x += offset_x;
+			y += offset_y;
+			if (x < 0) { w += x; x = 0; }
+			if (x+w > width) { w = width-x; }
+			if (y < 0) { h += y; y = 0; }
+			if (y+h > height) { h = height-y; }
+			clipx = x-offset_x;
+			clipy = y-offset_y;
+			clipw = w;
+			cliph = h;
 		}
 					// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
