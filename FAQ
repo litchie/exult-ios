@@ -1,24 +1,25 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 15 August 2010(GMT)
+last changed: 23 August 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 15 August 2010
-0.2. - 12 March 2010
-0.3. - 10 March 2010
-0.4. - 16 July 2009
-0.5. - 03 June 2009
-0.6. - 20 May 2009
-0.7. - 30 April 2009
-0.8. - 21 October 2007
-0.9. - 08 April 2006
-0.10. - 04 October 2004
-0.11. - 14 August 2004
-0.12. - 23 May 2004
-0.13. - 27 January 2004
-0.14. - 12 December 2003
+0.1. - 23 August 2010
+0.2. - 15 August 2010
+0.3. - 12 March 2010
+0.4. - 10 March 2010
+0.5. - 16 July 2009
+0.6. - 03 June 2009
+0.7. - 20 May 2009
+0.8. - 30 April 2009
+0.9. - 21 October 2007
+0.10. - 08 April 2006
+0.11. - 04 October 2004
+0.12. - 14 August 2004
+0.13. - 23 May 2004
+0.14. - 27 January 2004
+0.15. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -111,7 +112,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 15 August 2010
+0.1. - 23 August 2010
+* 1.12. What is the latest version of Exult? better use the snapshots than the ooooold version.
+* 2.2. Does Exult work on all versions of the game? cleaned up a bit.
+* 3.6. Why is the party formation different? Recently was a couple of years ago.
+* 4.4. Known Issues I pitty whoever still uses the Nvidia 40.x reference drivers.
+* Fullscreen switching bug should be fixed and thus I'm removing this item.
+* 6.1. How can I get answers concerning Ultima 7/Exult? pointing the Google groups instead of the old newsgroup link.
+
+
+
+0.2. - 15 August 2010
 * 1.9. Where do I find Exult? also OS X snapshots availlable.
 * 1.13. On what platform does Exult run? The Amiga port homepage is only availlable in the Wayback Machine these days.
 * 4.2. How do I submit a proper bug report? name and location of log files.
@@ -120,30 +131,30 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 12 March 2010
+0.3. - 12 March 2010
 * 4.5. Fullscreen switching No more 8bit scaler issues.
 
 
 
-0.3. - 10 March 2010
+0.4. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
 * 4.5. Fullscreen switching added.
 * 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-0.4. - 16 July 2009
+0.5. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-0.5. - 03 June 2009
+0.6. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-0.6. - 20 May 2009
+0.7. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -165,7 +176,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.7. - 30 April 2009
+0.8. - 30 April 2009
 * 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -173,7 +184,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.8. - 21 October 2007
+0.9. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -184,21 +195,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.9. - 08 April 2006
+0.10. - 08 April 2006
 * 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.10. - 04 October 2004
+0.11. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.11. - 14 August 2004
+0.12. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -208,7 +219,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.12. - 23 May 2004
+0.13. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -216,7 +227,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.13. - 27 January 2004
+0.14. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.16. Why won't Xenka speak about sacrifice (SI)? added.
@@ -224,7 +235,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.14. - 12 December 2003
+0.15. - 12 December 2003
 * 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -295,6 +306,7 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 1.12. What is the latest version of Exult?
 The current official release is V1.2 See also 1.9. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
+Since version 1.2 is now very old, we do recommend that people use the snapshots rather then the old version.
 
 
 1.13. On what platform does Exult run?
@@ -322,8 +334,8 @@ Yes. Exult won't work without the original files.
 
 2.2. Does Exult work on all versions of the game?
 It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) run for sure.
-However there were reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was published in English and Spanish (as we recently discovered to our surprise) but we seem to have fixed the main problem with the Spanish version.
-V0.91 Alpha2 added fixes for the French version, which should work now. If you are running a Spanish or German version Black Gate and you notice problems please contact us.
+In the past there were reported problems with the localized versions of the game (French, German and Spanish) but these should not be a problem anymore. The reportes problems were that conversation threads didn't seem to skip to the next line in the proper places and therefore were unreadable in some cases. SIvwas published in English and Spanish (as we recently discovered to our surprise) but we seem to have fixed the main problem with the Spanish version.
+If you are running a localized version of BG or SI and you notice any problems please contact us.
 
 
 2.3. Can you play through U7 yet?
@@ -392,7 +404,7 @@ Everyone volunteering to do it is welcome to.
 
 3.6. Why is the party formation different?
 In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
-Recently Jeff added an optional formation that behaves way more like in the original game and it has become the default formation now. This can be changed in the exult.cfg.
+Some time ago Jeff added an optional formation that behaves way more like in the original game and it has become the default formation now. This can be changed in the exult.cfg.
 
 Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
@@ -440,7 +452,7 @@ The most common reason for this is that you try to run Exult full screen in a re
 * Fast Mouse which makes the mouse cursor move faster in full screen mode.
 * Multiracial Avatar in BG. As with the paperdoll support you need to have SI installed and the path set in exult.cfg.
 * Higher resolutions than the original. You can set the resolution as high as your computer supports. But there are some issues with it and it is considered cheating.
-* Compressed save games. Since Beta1 Exult compresses save games by default as zip files. They are still labeled *.sav and have the save game name in the zip comment.
+* Compressed save games. Exult compresses save games by default as zip files. They are still labeled *.sav and have the save game name in the zip comment.
 
 
 
@@ -522,7 +534,7 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 * Movement is sometimes jerky or slow.
 * If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
 * With scalers enabled you might encounter slow downs of the game.
-* Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a later or earlier version of the Nvidia reference drivers.
+* Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a later or earlier version of the Nvidia reference drivers. If you are still using these drivers you should really update.
 
 
 
@@ -658,8 +670,8 @@ Obviously a slight oversight of the add-on designers. Could be fixed by changing
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
-The best way to get answers to questions is to go to the Online discussion forum at: http://exult.sourceforge.net/forum/
-To get answers concerning Ultima 7 in general go to the Ultima newsgroup: news://rec.games.computer.ultima.series
+The best way to get answers to questions about Exult is to go to our discussion forum at: http://exult.sourceforge.net/forum/
+To get answers concerning Ultima 7 in general go to the Ultima newsgroup: http://groups.google.com/group/rec.games.computer.ultima.series
 Or go to the Ultima Dragons homepage http://www.udic.org and find your way from there (this is an online Ultima fan club)
 Some Exult developers like to hang out on IRC on irc.freenode.net, channel #exult. The logs of #exult can be found at http://log.usecode.org/exultlog.php.
 
