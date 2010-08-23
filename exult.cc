@@ -815,7 +815,7 @@ static void Init
 	sc = 2;
 	sclr = Image_window::SaI;
 #endif
-	int sw, sh, scaleval;
+	int sw, sh, scaleval, gw ,gh;
 	string gr, gg, gb, scaler;
 	config->value("config/video/width", sw, w);
 	config->value("config/video/height", sh, h);
@@ -823,6 +823,14 @@ static void Init
 	config->value("config/video/gamma/red", gr, "1.0");
 	config->value("config/video/gamma/green", gg, "1.0");
 	config->value("config/video/gamma/blue", gb, "1.0");
+
+	config->value("config/video/game/width", gw, sw);
+	config->value("config/video/game/height", gh, sh);
+
+	string	fullscreenstr;		// Check config. for fullscreen mode.
+	config->value("config/video/fullscreen",fullscreenstr,"no");
+	bool	fullscreen = (fullscreenstr=="yes");
+	config->set("config/video/fullscreen",fullscreen?"yes":"no",true);
 
 	config->value("config/video/scale", scaleval, sc);
 	sclr = Image_window::get_scaler_for_name(scaler.c_str());
@@ -847,10 +855,10 @@ static void Init
 
 	if (arg_buildmap < 0)
 		{
-		gwin = new Game_window(sw, sh, scaleval, sclr);
-		gwin->resized(sw, sh, scaleval, sclr);
+		gwin = new Game_window(sw, sh, fullscreen, gw ,gh, scaleval, sclr);
+		//gwin->resized(sw, sh, gwin->get_win()->is_fullscreen(), gw ,gh, scaleval, sclr);
 		// Ensure proper clipping:
-		gwin->get_win()->set_clip(0, 0, sw, sh);
+		gwin->get_win()->clear_clip();
 
 		current_res = find_resolution(sw, sh, scaleval);
 		Audio::Init();
@@ -1059,8 +1067,11 @@ static void Paint_with_shape
 	)
 	{
 	static int lasttx = -1, lastty = -1;
-	int scale = gwin->get_win()->get_scale();
-	int x = event.button.x/scale, y = event.button.y/scale;
+	//int scale = gwin->get_win()->get_scale();
+	//int x = event.button.x/scale, y = event.button.y/scale;
+	int x, y;
+	gwin->get_win()->screen_to_game(event.button.x,event.button.y,false,x,y);
+
 	int tx = (gwin->get_scrolltx() + x/c_tilesize);
 	int ty = (gwin->get_scrollty() + y/c_tilesize);
 	if (dragging)			// See if moving to a new tile.
@@ -1100,8 +1111,8 @@ static void Paint_with_chunk
 	)
 	{
 	static int lastcx = -1, lastcy = -1;
-	int scale = gwin->get_win()->get_scale();
-	int x = event.button.x/scale, y = event.button.y/scale;
+	int x, y;
+	gwin->get_win()->screen_to_game(event.button.x,event.button.y,false,x,y);
 	int cx = (gwin->get_scrolltx() + x/c_tilesize)/c_tiles_per_chunk;
 	int cy = (gwin->get_scrollty() + y/c_tilesize)/c_tiles_per_chunk;
 	if (dragging)			// See if moving to a new chunk.
@@ -1126,8 +1137,8 @@ static void Select_chunks
 	)
 	{
 	static int lastcx = -1, lastcy = -1;
-	int scale = gwin->get_win()->get_scale();
-	int x = event.button.x/scale, y = event.button.y/scale;
+	int x, y;
+	gwin->get_win()->screen_to_game(event.button.x,event.button.y,false,x,y);
 	int cx = (gwin->get_scrolltx() + x/c_tilesize)/c_tiles_per_chunk;
 	int cy = (gwin->get_scrollty() + y/c_tilesize)/c_tiles_per_chunk;
 	if (dragging)			// See if moving to a new chunk.
@@ -1160,8 +1171,8 @@ static void Select_for_combo
 	)
 	{
 	static Game_object *last_obj = 0;
-	int scale = gwin->get_win()->get_scale();
-	int x = event.button.x/scale, y = event.button.y/scale;
+	int x, y;
+	gwin->get_win()->screen_to_game(event.button.x,event.button.y,false,x,y);
 	//int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
 	//int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 	Game_object *obj = gwin->find_object(x, y);
@@ -1213,8 +1224,8 @@ static void Handle_events
 		Delay();		// Wait a fraction of a second.
 #endif
 		// Mouse scale factor
-		int scale = gwin->get_fastmouse() ? 1 : 
-						gwin->get_win()->get_scale();
+		//int scale = gwin->get_fastmouse() ? 1 : 
+		//				gwin->get_win()->get_scale();
 
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
@@ -1232,7 +1243,7 @@ static void Handle_events
 		Game::set_ticks(ticks);
 #ifdef DEBUG
 		if (last_fps == 0 || ticks >= last_fps + 10000) {
-			float fps = (float)gwin->blits*1000.0/
+			float fps = (float)gwin->blits*1000.0f/
 							(ticks - last_fps);
 			cerr << "***#ticks = " << ticks - last_fps <<
 				", blits = " << gwin->blits << ", ";
@@ -1257,8 +1268,9 @@ static void Handle_events
 			{
 			int x, y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
+			gwin->get_win()->screen_to_game(x,y,gwin->get_fastmouse(),x,y);
 			if ((SDL_BUTTON(3) & ms) && !right_on_gump)
-				gwin->start_actor(x/scale, y/scale, 
+				gwin->start_actor(x, y, 
 					Mouse::mouse->avatar_speed);
 			else if (ticks > last_rest)
 				{
@@ -1321,7 +1333,7 @@ static void Handle_events
 		Mouse::mouse->show();	// Re-display mouse.
 					// Rotate less often if scaling and 
 					//   not paletized.
-		int rot_speed = 100 << ((gwin->get_win()->is_palettized()||gwin->get_win()->get_scale()==1)?0:1);
+		int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate()?0:1);
 
 		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
@@ -1354,7 +1366,6 @@ static void Handle_event
 	)
 	{
 	// Mouse scale factor
-	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	bool dont_move_mode = gwin->main_actor_dont_move();
 	bool avatar_can_act = gwin->main_actor_can_act();
 
@@ -1376,7 +1387,8 @@ static void Handle_event
 			break;
 		Touchscreen->handle_event(&event);
 #endif
-		int x = event.button.x/scale, y = event.button.y/scale;
+		int x, y;
+		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),x,y);
 		if (event.button.button == 1)
 			{
 			// Allow dragging only either if the avatar can act or if map edit
@@ -1404,14 +1416,14 @@ static void Handle_event
 								Cheat::select_chunks)
 						{
 						Select_chunks(event, false,
-							SDL_GetModState()&KMOD_CTRL);
+							(SDL_GetModState()&KMOD_CTRL)!=0);
 						break;
 						}
 					else if (cheat.get_edit_mode() ==
 								Cheat::combo_pick)
 						{
 						Select_for_combo(event, false,
-							SDL_GetModState()&KMOD_CTRL);
+							(SDL_GetModState()&KMOD_CTRL)!=0);
 						break;
 						}
 						// Don't drag if not in 'move' mode.
@@ -1478,7 +1490,9 @@ static void Handle_event
 			break;
 		Touchscreen->handle_event(&event);
 #endif
-		int x = event.button.x/scale, y = event.button.y/scale;
+		int x ,y;
+		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),x, y);
+
 		if (event.button.button == 3)
 			{
 			uint32 curtime = SDL_GetTicks();
@@ -1555,16 +1569,17 @@ static void Handle_event
 		}
 	case SDL_MOUSEMOTION:
 		{
-		Mouse::mouse->move(event.motion.x / scale, 
-						event.motion.y / scale);
+		int mx ,my;
+		gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),mx, my);
+
+		Mouse::mouse->move(mx, my);
 		if (!dragging)
 			Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
 		if (right_on_gump &&
 			!(gump_man->can_right_click_close() &&
 			  gump_man->gump_mode() && 
-			  gump_man->find_gump(event.motion.x / scale,
-								  event.motion.y / scale, false))) {
+			  gump_man->find_gump(mx, my, false))) {
 			right_on_gump = false;
 		}
 
@@ -1591,27 +1606,25 @@ static void Handle_event
 							Cheat::select_chunks)
 					{
 					Select_chunks(event, true,
-						SDL_GetModState()&KMOD_CTRL);
+						(SDL_GetModState()&KMOD_CTRL)!=0);
 					break;
 					}
 				else if (cheat.get_edit_mode() ==
 							Cheat::combo_pick)
 					{
 					Select_for_combo(event, true,
-						SDL_GetModState()&KMOD_CTRL);
+						(SDL_GetModState()&KMOD_CTRL)!=0);
 					break;
 					}
 				}
 #endif
-			dragged = gwin->drag(event.motion.x / scale, 
-						event.motion.y / scale);
+			dragged = gwin->drag(mx, my);
 			}
 					// Dragging with right?
 		else if ((event.motion.state & SDL_BUTTON(3)) && !right_on_gump)
 			{
 			if (avatar_can_act)
-				gwin->start_actor(event.motion.x / scale, 
-						event.motion.y / scale, Mouse::mouse->avatar_speed);
+				gwin->start_actor(mx, my, Mouse::mouse->avatar_speed);
 			}
 #ifdef USE_EXULTSTUDIO			// Painting?
 		else if (cheat.in_map_editor() && 
@@ -1636,7 +1649,8 @@ static void Handle_event
 				{
 				int x, y;
 				SDL_GetMouseState(&x, &y);
-				Mouse::mouse->set_location(x/scale, y/scale);
+				gwin->get_win()->screen_to_game(x,y,gwin->get_fastmouse(),x,y);
+				Mouse::mouse->set_location(x, y);
 				}
 			gwin->set_painted();
 			}
@@ -1729,10 +1743,7 @@ static int Get_click
 		
 		if (rotate_colors)
 			{
-			int scale = gwin->get_fastmouse() ? 1 : 
-							gwin->get_win()->get_scale();
-			int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
-									scale==1?0:1);
+			int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate()?0:1);
 			if (ticks > last_rotate + rot_speed &&
 				!GL_manager::get_instance())	//++++Disable in OGL.
 				{		// (Blits in simulated 8-bit mode.)
@@ -1751,8 +1762,6 @@ static int Get_click
 			}
 
 		// Mouse scale factor
-		int scale = gwin->get_fastmouse() ? 1 
-				: gwin->get_win()->get_scale();
 		static bool rightclick;
 		while (SDL_PollEvent(&event))
 			switch (event.type)
@@ -1767,8 +1776,7 @@ static int Get_click
 					rightclick = true;
 				else if (drag_ok && event.button.button == 1)
 					{
-					x = event.button.x / scale;
-					y = event.button.y / scale;
+					gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),x,y);
 					dragging = gwin->start_dragging(x, y);
 					dragged = false;
 					}
@@ -1781,8 +1789,7 @@ static int Get_click
 #endif
 				if (event.button.button == 1)
 					{
-					x = event.button.x / scale;
-					y = event.button.y / scale;
+					gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),x,y);
 					bool drg = dragging, drged = dragged;
 					dragging = dragged = false;
 					if (!drg ||
@@ -1803,8 +1810,9 @@ static int Get_click
 				break;
 			case SDL_MOUSEMOTION:
 				{
-				int mx = event.motion.x / scale,
-				    my = event.motion.y / scale;
+				int mx,my;
+				gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),mx,my);
+
 				Mouse::mouse->move(mx, my);
 				Mouse::mouse_update = true;
 				if (drag_ok &&
@@ -1916,7 +1924,7 @@ void Wait_for_arrival
 	)
 	{
 	// Mouse scale factor
-	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+	int mx, my;
 
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;	// For insuring animation repaints.
@@ -1936,8 +1944,9 @@ void Wait_for_arrival
 			switch (event.type)
 				{
 			case SDL_MOUSEMOTION:
-				Mouse::mouse->move(event.motion.x / scale,
-						 event.motion.y / scale);
+				gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),mx, my);
+
+				Mouse::mouse->move(mx, my);
 				Mouse::mouse_update = true;
 				break;
 				}
@@ -2001,8 +2010,6 @@ void Wizard_eye
 	long msecs			// Length of time in milliseconds.
 	)
 	{
-	// Mouse scale factor
-	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 					// Center of screen.
 	int cx = gwin->get_width()/2, cy = gwin->get_height()/2;
 
@@ -2023,8 +2030,9 @@ void Wizard_eye
 				{
 			case SDL_MOUSEMOTION:
 				{
-				int mx = event.motion.x/scale,
-				    my = event.motion.y/scale;
+				int mx, my;
+				gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),mx,my);
+
 				Mouse::mouse->move(mx, my);
 				Mouse::mouse->set_shape(
 					Mouse::mouse->get_short_arrow(
@@ -2048,8 +2056,10 @@ void Wizard_eye
 			{		// Right mouse button down?
 			int x, y;
 			int ms = SDL_GetMouseState(&x, &y);
+			int mx, my;
+			gwin->get_win()->screen_to_game(x,y,gwin->get_fastmouse(),mx,my);
 			if (SDL_BUTTON(3) & ms)
-				Shift_wizards_eye(x/scale, y/scale);
+				Shift_wizards_eye(mx, my);
 			gwin->set_all_dirty();
 			gwin->paint_dirty();
 					// Paint sprite over view.
@@ -2104,8 +2114,16 @@ void set_resolution (int new_res, bool save)
 	if(new_res>=0 && new_res<num_res) {
 		int scaler = gwin->get_win()->get_scaler();
 		current_res = new_res;
+
+		int gw, gh;
+
+		config->value("config/video/game/width", gw, res_list[current_res].x);
+		config->value("config/video/game/height", gh, res_list[current_res].y);
+
 		gwin->resized(res_list[current_res].x,
 			res_list[current_res].y,
+			gwin->get_win()->is_fullscreen(),
+			gw, gh,
 			res_list[current_res].scale, scaler);
 		if(save) {
 			char val[20];
@@ -2228,13 +2246,13 @@ void BuildGameMap(BaseGameInfo *game, int mapnum)
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
 
-		string	fullscreenstr;		// Check config. for fullscreen mode.
-		config->value("config/video/fullscreen",fullscreenstr,"no");
+		//string	fullscreenstr;		// Check config. for fullscreen mode.
+		//config->value("config/video/fullscreen",fullscreenstr,"no");
 		// set windowed mode
-		config->set("config/video/fullscreen","no",false);
-		gwin = new Game_window(w, h, sc, sclr);
+		//config->set("config/video/fullscreen","no",false);
+		gwin = new Game_window(w, h, false, w, h, sc, sclr);
 		// restore original fullscreen setting
-		config->set("config/video/fullscreen",fullscreenstr,true);
+		//config->set("config/video/fullscreen",fullscreenstr,true);
 		Audio::Init();
 		current_res = find_resolution(w, h, sc);
 		Game::create_game(game);
@@ -2274,9 +2292,11 @@ static void Move_grid
 					//   below (x, y).
 	)
 	{
-	int scale = gwin->get_win()->get_scale();
-	x /= scale;			// Watch for scaled window.
-	y /= scale;
+	//int scale = gwin->get_win()->get_scale();
+	//x /= scale;			// Watch for scaled window.
+	//y /= scale;
+	gwin->get_win()->screen_to_game(x,y,false,x,y);
+
 	int lift = cheat.get_edit_lift();
 	x += lift*4 - 1;		// Take lift into account, round.
 	y += lift*4 - 1;
@@ -2286,8 +2306,7 @@ static void Move_grid
 	ty += tiles_below;
 	if (prevx != -1)		// See if moved to a new tile.
 		{
-		prevx /= scale;
-		prevy /= scale;
+		gwin->get_win()->screen_to_game(prevx,prevy,false,prevx,prevy);
 		prevx += lift*4 - 1;	// Take lift into account, round.
 		prevy += lift*4 - 1;
 		int ptx = prevx/c_tilesize, pty = prevy/c_tilesize;
@@ -2314,7 +2333,7 @@ static void Move_grid
 	int pix = Shape_manager::get_instance()->get_special_pixel(
 								POISON_PIXEL);
 	Image_window8 *win = gwin->get_win();
-	win->set_clip(0, 0, win->get_width(), win->get_height());
+	win->set_clip(0, 0, win->get_game_width(), win->get_game_height());
 	for (int Y = 0; Y <= ytiles; Y++)
 		win->fill8(pix, xtiles*c_tilesize, 1, 
 					tx*c_tilesize, (ty + Y)*c_tilesize);
@@ -2412,13 +2431,11 @@ static void Drop_dragged_shape
 	void *data			// Passed data, unused by exult
 	)
 	{
-	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
 	cheat.clear_selected();		// Remove old selected.
 	gwin->get_map()->set_map_modified();
-	x /= scale;			// Watch for scaled window.
-	y /= scale;
+	gwin->get_win()->screen_to_game(x,y,false,x,y);
 	ShapeID sid(shape, frame);
 	if (gwin->skip_lift == 0)	// Editing terrain?
 		{
@@ -2461,11 +2478,9 @@ static void Drop_dragged_chunk
 	void *data			// Passed data, unused by exult
 	)
 	{
-	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
-	x /= scale;			// Watch for scaled window.
-	y /= scale;
+	gwin->get_win()->screen_to_game(x,y,false,x,y);
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Set chunk (" << chunknum << ')' << endl;
 					// Need chunk-coordinates.
@@ -2487,11 +2502,9 @@ static void Drop_dragged_npc
 	void *data			// Passed data, unused by exult
 	)
 	{
-	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
-	x /= scale;			// Watch for scaled window.
-	y /= scale;
+	gwin->get_win()->screen_to_game(x,y,false,x,y);
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Set npc (" << npcnum << ')' << endl;
 	Actor *npc = gwin->get_npc(npcnum);
@@ -2519,12 +2532,10 @@ void Drop_dragged_combo
 	void *data			// Passed data, unused by exult
 	)
 	{
-	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
 	cheat.clear_selected();		// Remove old selected.
-	x /= scale;			// Watch for scaled window.
-	y /= scale;
+	gwin->get_win()->screen_to_game(x,y,false,x,y);
 	int at_lift = cheat.get_edit_lift();
 	x += at_lift*4 - 1;		// Take lift into account, round.
 	y += at_lift*4 - 1;

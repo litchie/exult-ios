@@ -48,9 +48,9 @@ GammaTable<uint8> Image_window8::GammaRed(256);
 GammaTable<uint8> Image_window8::GammaBlue(256);
 GammaTable<uint8> Image_window8::GammaGreen(256);
 
-Image_window8::Image_window8(unsigned int w, unsigned int h, 
+Image_window8::Image_window8(unsigned int w, unsigned int h, unsigned int gwidth, unsigned int gheight, 
 				int scl, bool fs, int sclr)
-	: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), 
+	: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), gwidth, gheight,
 	  scl, fs, sclr)
 {
 	ib8 = (Image_buffer8 *) ibuf;
@@ -218,8 +218,8 @@ unsigned char* Image_window8::mini_screenshot()
 			for (i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
 					{
-					int pix = pixels[pitch * (j + y + (get_height() - h) / 2) +
-					                          i + x + (get_width()  - w) / 2 ];
+					int pix = pixels[pitch * (j + y + (get_game_height() - h) / 2) +
+					                          i + x + (get_game_width()  - w) / 2 ];
 					r += colors[3 * pix + 0];
 					g += colors[3 * pix + 1];
 					b += colors[3 * pix + 2];

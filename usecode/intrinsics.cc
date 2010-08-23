@@ -1110,7 +1110,7 @@ USECODE_INTRINSIC(move_object)
 				tile.ty, tile.tz, oldpos.tx, oldpos.ty);
 			}
 					// Close?  Add to 'nearby' list.
-		else if (ava->distance(act) < gwin->get_width()/c_tilesize)
+		else if (ava->distance(act) < gwin->get_game_width()/c_tilesize)
 			{
 			Npc_actor *npc = act->as_npc();
 			if (npc) gwin->add_nearby_npc(npc);
@@ -1287,8 +1287,8 @@ public:
 		{
 		Shape_frame *s = sid->get_shape();
 					// Get coords. for centered view.
-		x = (gwin->get_width() - s->get_width())/2 + s->get_xleft();
-		y = (gwin->get_height() - s->get_height())/2 + s->get_yabove();
+		x = (gwin->get_game_width() - s->get_width())/2 + s->get_xleft();
+		y = (gwin->get_game_height() - s->get_height())/2 + s->get_yabove();
 		}
 	virtual ~Paint_centered() {  }
 	virtual void paint()
@@ -1509,8 +1509,8 @@ public:
 			for (int i = 0; i < w*h; i++)
 				pixels[4 * i + 3] = alpha;
 					// Get coords. for centered view.
-		x = (scale*gwin->get_width() - w)/2;
-		y = (scale*gwin->get_height() - h)/2;
+		x = (scale*gwin->get_win()->get_full_width() - w)/2;
+		y = (scale*gwin->get_win()->get_full_height() - h)/2;
 #endif
 		}
 	virtual ~Paint_rgba_centered() { delete [] pixels; }
@@ -1534,18 +1534,18 @@ USECODE_INTRINSIC(display_area)
 					// Figure in tiles.
 		int newmap = size == 3 ? -1 : parms[0].get_elem(3).get_int_value();
 		int oldmap = gwin->get_map()->get_num();
-		int tw = gwin->get_width()/c_tilesize, 
-		    th = gwin->get_height()/c_tilesize;
+		int tw = gwin->get_game_width()/c_tilesize, 
+		    th = gwin->get_game_height()/c_tilesize;
 		gwin->clear_screen();	// Fill with black.
 		if ((newmap != -1) && (newmap != oldmap))
 			gwin->set_map(newmap);
 		Shape_frame *sprite = ShapeID(10, 0, SF_SPRITES_VGA).get_shape();
 					// Center it.
-		int topx = (gwin->get_width() - sprite->get_width())/2,
-		    topy = (gwin->get_height() - sprite->get_height())/2;
+		int topx = (gwin->get_game_width() - sprite->get_width())/2,
+		    topy = (gwin->get_game_height() - sprite->get_height())/2;
 					// Get area to show.
 		int x = 0, y = 0;
-		int w = gwin->get_width(), h = gwin->get_height();
+		int w = gwin->get_game_width(), h = gwin->get_game_height();
 		int sizex = (w - 320)/2, sizey = (h - 200)/2;
 					// Show only inside the original resolution.
 		if (w > 320)
@@ -1567,8 +1567,8 @@ USECODE_INTRINSIC(display_area)
 		GL_manager *glman = GL_manager::get_instance();
 		if (glman)
 			{
-			int scale = gwin->get_win()->get_scale();
-			int w = gwin->get_width(), h = gwin->get_height();
+			int scale = gwin->get_win()->get_scale_factor();
+			int w = gwin->get_game_width(), h = gwin->get_game_height();
 			unsigned char *rgba_pixels = glman->get_screen_rgba(w, h);
 			paint = new Paint_rgba_centered(rgba_pixels, -1,
 							scale*w, scale*h, scale);

@@ -44,7 +44,7 @@ void Image_window::show_scaled8to16_bilinear
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -63,7 +63,7 @@ void Image_window::show_scaled8to555_bilinear
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -82,7 +82,7 @@ void Image_window::show_scaled8to565_bilinear
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -101,7 +101,7 @@ void Image_window::show_scaled8to32_bilinear
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinear<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/
@@ -123,7 +123,7 @@ void Image_window::show_scaled8to16_BilinearPlus
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to16>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -142,7 +142,7 @@ void Image_window::show_scaled8to555_BilinearPlus
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to555>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -161,7 +161,7 @@ void Image_window::show_scaled8to565_BilinearPlus
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint16, Manip8to565>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
@@ -180,7 +180,7 @@ void Image_window::show_scaled8to32_BilinearPlus
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						display_surface->format);
 	Scale_2xBilinearPlus<unsigned char, uint32, Manip8to32>
-		(ibuf->get_bits(), x, y, w, h,
+		((uint8*)draw_surface->pixels, x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) display_surface->pixels,
 			display_surface->pitch/

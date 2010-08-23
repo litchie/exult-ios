@@ -121,6 +121,11 @@ Gump *Gump_manager::find_gump
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_container() == owner)
 			return (gmp->gump);
+
+	Gump *dragged = gwin->get_dragging_gump();
+	if (dragged && dragged->get_container() == owner)
+		return dragged;
+
 	return (0);
 }
 
@@ -140,6 +145,13 @@ Gump *Gump_manager::find_gump
 		    (shapenum == c_any_shapenum ||
 		     gmp->gump->get_shapenum() == shapenum))
 			return gmp->gump;
+
+	Gump *dragged = gwin->get_dragging_gump();
+	if (dragged && dragged->get_owner() == owner &&
+		    (shapenum == c_any_shapenum || 
+			 dragged->get_shapenum() == shapenum))
+		return dragged;
+
 	return (0);
 }
 
@@ -434,10 +446,10 @@ void Gump_manager::update_gumps()
 /*
  *	Paint the gumps
  */
-void Gump_manager::paint()
+void Gump_manager::paint(bool modal)
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
-		gmp->gump->paint();
+		if (gmp->gump->is_modal() == modal) gmp->gump->paint();
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
@@ -464,9 +476,11 @@ int Gump_manager::handle_modal_gump_event
 	)
 {
 	//	Game_window *gwin = Game_window::get_instance();
-	int scale_factor = gwin->get_fastmouse() ? 1 
-				: gwin->get_win()->get_scale();
+	//int scale_factor = gwin->get_fastmouse() ? 1 
+	//			: gwin->get_win()->get_scale();
 	static bool rightclick;
+
+	int gx, gy;
 
 	switch (event.type)
 	{
@@ -481,17 +495,18 @@ int Gump_manager::handle_modal_gump_event
 	}
 #endif
 	case SDL_MOUSEBUTTONDOWN:
+		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
+
 #ifdef DEBUG
-cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())
-	 << ", " <<	((event.button.y / scale_factor) - gump->get_y()) << ")"<<endl;
+cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
+	 << ", " <<	(gy - gump->get_y()) << ")"<<endl;
 #endif
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
 #endif
 		if (event.button.button == 1)
-			gump->mouse_down(event.button.x / scale_factor, 
-						event.button.y / scale_factor);
+			gump->mouse_down(gx, gy);
 		else if (event.button.button == 2 && gwin->get_mouse3rd()) {
 			gump->key_down(SDLK_RETURN);
 			gump->text_input(SDLK_RETURN, SDLK_RETURN);
@@ -503,25 +518,26 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 			gump->mousewheel_down();
 		break;
 	case SDL_MOUSEBUTTONUP:
+		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				break;
 #endif
 		if (event.button.button == 1)
-			gump->mouse_up(event.button.x / scale_factor,
-						event.button.y / scale_factor);
+			gump->mouse_up(gx,gy);
 		else if (event.button.button == 3 && gwin->get_mouse3rd() && rightclick) {
 			rightclick = false;
 			if (gumpman->can_right_click_close()) return 0;
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		Mouse::mouse->move(event.motion.x / scale_factor, event.motion.y / scale_factor);
+		gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),gx,gy);
+
+		Mouse::mouse->move(gx,gy);
 		Mouse::mouse_update = true;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(event.motion.x / scale_factor,
-						event.motion.y / scale_factor);
+			gump->mouse_drag(gx,gy);
 		break;
 	case SDL_QUIT:
 		if (okay_to_quit())

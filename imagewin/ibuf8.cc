@@ -123,7 +123,7 @@ void Image_buffer8::put
  */
 void Image_buffer8::fill_static(int black, int gray, int white)
 {
-	unsigned char *p = bits;
+	unsigned char *p = bits - offset_y*line_width - offset_x;
 	for (int i = width*height; i > 0; --i) {
 		switch (std::rand()%5) {
 			case 0: case 1: *p++ = black; break;
@@ -142,7 +142,7 @@ void Image_buffer8::fill8
 	unsigned char pix
 	)
 	{
-	unsigned char *pixels = bits;
+	unsigned char *pixels = bits- offset_y*line_width - offset_x;
 	int cnt = line_width*height;
 	for (int i = 0; i < cnt; i++)
 		*pixels++ = pix;
@@ -739,7 +739,7 @@ unsigned char *Image_buffer8::rgba
 	int cnt = line_width*height;	// Allocate destination buffer.
 	uint32 *buf32 = new uint32[cnt];
 	uint32 *ptr32 = buf32;
-	unsigned char *pixels = bits;
+	unsigned char *pixels = bits- offset_y*line_width - offset_x;
 	rotate = false;
 	for (int i = 0; i < cnt; i++)
 		{

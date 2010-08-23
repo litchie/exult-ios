@@ -852,10 +852,6 @@
 					Name="Exult h"
 					>
 					<File
-						RelativePath="..\acconfig.h"
-						>
-					</File>
-					<File
 						RelativePath="..\actions.h"
 						>
 					</File>
@@ -1013,10 +1009,6 @@
 					</File>
 					<File
 						RelativePath="..\txtscroll.h"
-						>
-					</File>
-					<File
-						RelativePath="..\vec.h"
 						>
 					</File>
 					<File
@@ -1522,6 +1514,130 @@
 					<File
 						RelativePath="..\imagewin\scale_point.h"
 						>
+					</File>
+				</Filter>
+				<Filter
+					Name="arb_scalers"
+					>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScaler.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScaler.h"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal.h"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_2x.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_Arb.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_X1Y12.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_X2Y24.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\PointScaler.cpp"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\PointScaler.h"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\imagewin\arb_scalers\Scaler.h"
+						>
+						<FileConfiguration
+							Name="Debug|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 				</Filter>
 			</Filter>

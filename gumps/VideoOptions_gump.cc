@@ -184,8 +184,8 @@ void VideoOptions_gump::rebuild_scale_button()
 
 void VideoOptions_gump::load_settings()
 {
-	int w = gwin->get_width();
-	int h = gwin->get_height();
+	int w = gwin->get_win()->get_full_width();
+	int h = gwin->get_win()->get_full_height();
 
 	resolutions[2*num_default_res] = w;
 	resolutions[2*num_default_res+1] = h;
@@ -212,7 +212,7 @@ void VideoOptions_gump::load_settings()
 	}
 
 	old_resolution = resolution;
-	scaling = gwin->get_win()->get_scale()-1;
+	scaling = gwin->get_win()->get_scale_factor()-1;
 	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
 	gclock->set_palette();
@@ -253,7 +253,13 @@ void VideoOptions_gump::save_settings()
 		config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", true);
 	
-	gwin->resized(resx,resy,scaling+1,scaler);
+	int gw, gh; // Place holder for now
+
+	config->value("config/video/game/width", gw, resx);
+	config->value("config/video/game/height", gh, resy);
+
+	gwin->resized(resx, resy, fullscreen!=0, gw, gh, scaling+1, scaler);
+	/*
 	if(((fullscreen==0)&&(gwin->get_win()->is_fullscreen()))||
 	   ((fullscreen==1)&&(!gwin->get_win()->is_fullscreen())))
 		{
@@ -262,6 +268,7 @@ void VideoOptions_gump::save_settings()
 		gwin->get_pal()->apply(false);
 		gwin->paint();
 		}
+		*/
 	gwin->set_painted();
 }
 

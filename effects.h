@@ -61,6 +61,7 @@ public:
 	void remove_text_effect(Text_effect *txt);
 	void remove_all_effects(bool repaint=false);
 	void remove_text_effects();
+	void update_dirty_text();
 					// Remove just the weather.
 	void remove_weather_effects(int dist = 0);
 	int get_weather();		// Get # of last weather added.
@@ -212,11 +213,13 @@ class Text_effect : public Time_sensitive, public Game_singletons
 	Text_effect *next, *prev;	// All of them are chained together.
 	std::string msg;		// What to print.
 	Game_object *item;		// Item text is on.  May be null.
-	Tile_coord pos;			// Position to display it at.
+	Tile_coord tpos;		// Position to display it at.
+	Rectangle pos;
 	short width, height;		// Dimensions of rectangle.
 	int num_ticks;			// # ticks passed.
 	void add_dirty();
 	void init();
+	Rectangle Figure_text_pos();
 public:
 	friend class Effects_manager;
 	Text_effect(const std::string &m, Game_object *it);
@@ -228,6 +231,7 @@ public:
 					// Check for matching item.
 	int is_text(Game_object *it)
 		{ return it == item; }
+	virtual void update_dirty();
 	};
 
 /*

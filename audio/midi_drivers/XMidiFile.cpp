@@ -1932,10 +1932,10 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 	// Set system volume
 	//
 
-	char seventy = 70;
+	//char seventy = 70;
 
-	CreateMT32SystemMessage(time, system_base, system_mem_offset(masterVol), 1,&seventy);
-	time += time_inc; 
+	//CreateMT32SystemMessage(time, system_base, system_mem_offset(masterVol), 1,&seventy);
+	//time += time_inc; 
 
 	// Apply the first state
 	//ApplyFirstState(fs, chan_mask);
@@ -2044,6 +2044,9 @@ void XMidiFile::InsertDisplayEvents()
 		display_beginning = display_beginning_bg;
 	}
 #endif
+
+	char seventy = 70;
+	CreateMT32SystemMessage(current->time+1, system_base, system_mem_offset(masterVol), 1,&seventy);
 
 	//CreateMT32SystemMessage(current->time, display_base, 0, display_mem_size, display );
 	CreateMT32SystemMessage(-1, display_base, 0, display_mem_size, display_beginning );
