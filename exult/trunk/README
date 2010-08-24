@@ -83,7 +83,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 8. OS specific notes
 8.1. How to get the Zaurus port working
 8.2. Error Log
-8.3. Making Digital Sound work on Mac OSX
+8.3. Making Digital Sound work on Mac OS X
 
 9. Zaurus Guide
 9.1. Author of this Guide
@@ -116,7 +116,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 0. Changes to the Documentation
 0.1. - 15 August 2010
-* 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is suported on OS X.
+* 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 8.2. Error Log also about location of log files.
 * 10.5. Manual installation of the BG floppy disks some *nix command.
@@ -154,7 +154,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
 * 4.2. Scaler OpenGl scaler is not considered stable.
 * 7.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
-* 8.3. Making Digital Sound work on Mac OSX is probably not needed for newer versions of OS X.
+* 8.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
 
 
 
@@ -214,7 +214,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 0.12. - 21 October 2007
-* 8.3. Making Digital Sound work on Mac OSX added.
+* 8.3. Making Digital Sound work on Mac OS X added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
@@ -400,15 +400,17 @@ Note: yes means enabled, no means disabled
 				- see 5.2.
         </keys>
         <waves>
-          <mods>
-          optional_path/mods
-				**optional. See 7.4.
-          </mods>
-          <patch>
-          optional_path/patch
-				**optional. See 7.4.
-          </patch>
+        jmsisfx.flx
+				**optional setting see 3.7. for configuration
         </waves>
+        <mods>
+        optional_path/mods
+				**optional. See 7.4.
+        </mods>
+        <patch>
+        optional_path/patch
+				**optional. See 7.4.
+        </patch>
       </serpentisle>
     </game>
   </disk>
@@ -671,7 +673,7 @@ Note: yes means enabled, no means disabled
 
 
 2.4. Path-Settings
-The way Exult generates default paths (for gamedat, savegames, mods, patches) has changed since Version 1.2. It will not write these paths to exult.cfg but use them automatically. The location where Exult expects those, and if needed, will create those folders is similarily depending on the Operating System as the location of exult.cfg (see 2.2. Location of exult.cfg). If you were to override these paths you would need to change the following tags (you can substitute gamename with the "known games" - see 1.3.):
+The way Exult generates default paths (for gamedat, savegames, mods, patches) has changed since Version 1.2. It will not write these paths to exult.cfg but use them automatically. The location where Exult expects those, and if needed, will create those folders is similarly depending on the Operating System as the location of exult.cfg (see 2.2. Location of exult.cfg). If you were to override these paths you would need to change the following tags (you can substitute gamename with the "known games" - see 1.3.):
 <config>
   <disk>
     <data_path>
@@ -710,7 +712,7 @@ These folders are used for:
 Some notes for all Operating Systems:
 * On Windows all of these settings, except for the <path> setting, are optional and not required, Exult will sort this out on its own.
 * On *nix and OS X you might even not need to touch the <path> setting, if you stick to our standard gamenames.
-* You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path to point to the correct folder. The realtive path uses the exult.exe, exult binary or Exult.app as base.
+* You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path to point to the correct folder. The relative path uses the exult.exe, exult binary or Exult.app as base.
 * Better don't use spaces in the path (e.g. c:\exult\the black gate\). Some people seem to have reported problems with that.
 * Path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on *nix based systems when you enter the absolute path.
 * Exult and Exult Studio don't trust the exult.cfg 100% and will recognize which games you entered the path for. This means, that if you entered the path to SI in the <blackgate><path> Exult and Exult Studio will not be fooled.
@@ -810,7 +812,7 @@ On Mac OS X Exult uses a couple of different folders to follow Apple's guideline
         </patch>
       </gamename>
 Note that on OS X Exult also has a default folder (/Library/Application Support/Exult/) for Exult's data and the files of the games. On purpose this folder is not in the User-only space, so other users on the same mac can play the games and use the Exult.app. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there. Another specialty on OS X is that the Exult.app comes bundled with the Exult data, so Exult will first use the data in the Exult.app and then use the data in the default location (/Library/Application Support/Exult/data) or the location written down in exult.cfg's <data_path>. This means that you can copy the sfx files and the digital music folder into the app bundle (Exult.app/Contents/Resources/data) and Exult will automatically use these.
-Example: User named Dominus on Mac OS X 10.6. BG is installed to /Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. The app Exult.app is saved to /Applications. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exultcfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg. When you save a game in BG the savegame will be saved to /Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in /Users/Dominus/Library/Application Support/exult/blackgate/mods/keyring/exult00bg.sav.
+Example: User named Dominus on Mac OS X 10.6. BG is installed to /Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. The app Exult.app is saved to /Applications. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exult.cfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg. When you save a game in BG the savegame will be saved to /Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in /Users/Dominus/Library/Application Support/exult/blackgate/mods/keyring/exult00bg.sav.
 
 
 2.8. Path-Settings for *nix based systems
@@ -842,7 +844,7 @@ On *nix based systems Exult uses:
         </patch>
       </gamename>
 Like on OS X, Exult uses on *nix systems a default path for its data folder and the game files. Unless you use a different path in exult.cfg, Exult will look for these in /usr/local/share/exult. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there.
-Example: User named Dominus on Ubuntu. BG is installed to /usr/local/share/exult/blackgate and SI is installed to /usr/local/share/exult/serpentisle. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exultcfg, which is svaed to $HOME/.exult.cfg. When you save a game in BG the savegame will be saved to $HOME/.exult/blackgate/exult00bg.sav, for SI to $HOME/.exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /usr/local/share/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in $HOME/.exult/blackgate/mods/keyring/exult00bg.sav.
+Example: User named Dominus on Ubuntu. BG is installed to /usr/local/share/exult/blackgate and SI is installed to /usr/local/share/exult/serpentisle. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exult.cfg, which is saved to $HOME/.exult.cfg. When you save a game in BG the savegame will be saved to $HOME/.exult/blackgate/exult00bg.sav, for SI to $HOME/.exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /usr/local/share/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in $HOME/.exult/blackgate/mods/keyring/exult00bg.sav.
 
 
 2.9. Advanced Configuration: Using both the original and the Add-Ons
@@ -883,12 +885,12 @@ Exult offers some "hidden" command line options:
 * -v or --version Shows version information in stderr.
 * -c configfile Specify alternate config file (relative or absolute paths work).
 * --bg Starts the game with the Black Gate menu (prefers original game).
-* --fov Starts the game with the menu of the Black Gate with Forge of Virtue expansion. Only usefull if you have FoV added as described at 2.9., otherwise it will just work like the command '--bg'.
+* --fov Starts the game with the menu of the Black Gate with Forge of Virtue expansion. Only useful if you have FoV added as described at 2.9., otherwise it will just work like the command '--bg'.
 * --si Starts the game with the Serpent Isle menu (prefers original game).
-* --ss Starts the game with the menu of the Serpent Isle with Silver Seed expansion. Only usefull if you have SS added as described at 2.9., otherwise it will just work like the command '--si'.
+* --ss Starts the game with the menu of the Serpent Isle with Silver Seed expansion. Only useful if you have SS added as described at 2.9., otherwise it will just work like the command '--si'.
 * --nomenu Skips game menu.
 * --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map. You need to specify a game, either by '--bg' (or '--si', '--fov', '--ss') or with the '--game'/'--mod' option.
-* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nevertheless. Don't try this if you don't know what you are doing.
+* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data folder aren't the same it got compiled with. This parameter lets the game start nevertheless. Don't try this if you don't know what you are doing.
 * --game gamename Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 * --edit Start in map-edit mode. This will also load Exult Studio when the game is started.
 * --write-xml Write 'patch/exultgame.xml'. Only useful for game editing.
@@ -910,13 +912,13 @@ The MIDI driver can be changed to:
 * Default This setting utilizes the default MIDI driver of your system.
 * FMOPL This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib).
 * TiMidity is a software synthesizer that can play MIDI files without a hardware synthesizer. You can install TiMidity on all major Operating systems. You need to place tmidity.cfg into the same folder where the Exult executable is installed to, otherwise TiMidity will not work.
-* FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible soundcard. It is available for many Operating Systems and opposed to TiMidity still actively developed. Since Fluidsynth pulls in many dependencies it is not compiled into Exult at the moment. If you compiled Exult ourself and you enabled Fluidsynth you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use.
+* FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible sound card. It is available for many Operating Systems and opposed to TiMidity still actively developed. Since Fluidsynth pulls in many dependencies it is not compiled into Exult at the moment. If you compiled Exult ourself and you enabled Fluidsynth you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use.
 * MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are present the CM32L ROM set will be used.
 * Windows When you are using Windows and for some reason the Default driver doesn't work.
 * Amiga Uses the Amiga MIDI driver on the Amiga system.
 * Be_midi For use on BeOS.
-* CoreAudio uses XMIDI on Mac OSX.
-* CoreMIDI with this MIDI driver a Real MT32 can be used on Mac OSX.
+* CoreAudio uses XMIDI on Mac OS X.
+* CoreMIDI with this MIDI driver a Real MT32 can be used on Mac OS X.
 * alsa uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change <config><audio><midi><alsa_port> in the exult.cfg.
 * Forked On *nix systems uses POSIX fork to create a new thread which will then handle the MIDI playback
 * KMIDI On Linux systems uses uses libkmidi, a KDE MIDI library.
@@ -927,7 +929,7 @@ For drivers that use a real MIDI device, the device type for MIDI can be changed
 * GM This will convert the MT32 patches to standard General MIDI patches. Conversion is fairly accurate but some instruments may be different.
 * GS This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all MIDI devices will support this mode.
 * GS127 This option is for MIDI devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
-* Fake MT32 This is for MIDI devices that behave like a MT32 but don't support SysEx messages. Use that option if you have a SoundFont or similar loaded for your soundcard (or software synth such as FluidSynth) that contains the MT32 capital tones but the device can't be reprogrammed using MT32 SysEx commands by Exult.
+* Fake MT32 This is for MIDI devices that behave like a MT32 but don't support SysEx messages. Use that option if you have a SoundFont or similar loaded for your sound card (or software synth such as FluidSynth) that contains the MT32 capital tones but the device can't be reprogrammed using MT32 SysEx commands by Exult.
 
 NOTE: Currently the conversion to GS and GS127 is not finished and the notes are only mapped to General MIDI.
 
@@ -950,7 +952,7 @@ with the device you want to use.
 
 3.5. Digital Music
 Exult needs the Digital Music pack to play Digital Music in the game. The music pack contains music for both Black Gate and Serpent Isle, encoded in high quality OGG format. Simon Quinn recorded the current Digital Music pack on an original Roland MT-32 and with this you will experience the music as it would be heard with the original game. Digital Music should work on any platform that supports digital sound and does not use any MIDI, so it is also a good option for platforms with no MIDI support. Additionally, Digital Music supports a number of background atmospheric SFX tracks that are played when no music is playing. These consist of wind, bird etc effects outside and other sound effects when inside a dungeon. These SFX tracks are not available when using MIDI as they play Roland MT-32 specific voices that cannot be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
-The digital music pack seems to have two issue, though, some tracks seem to have been recorded at lower volume than the others. Also, since both the digital music and the sound effects are played by the Wave / PCM of your soundcard, you can no longer have a different volume for music and sound effects.
+The digital music pack seems to have two issue, though, some tracks seem to have been recorded at lower volume than the others. Also, since both the digital music and the sound effects are played by the Wave / PCM of your sound card, you can no longer have a different volume for music and sound effects.
 
 
 3.6. Installation of the digital music packs
@@ -1012,7 +1014,7 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * Bilinear bilinear interpolation to smooth the result. Slower than point, but looks better. Only 2x.
 * BilinearPlus same as Bilinear and it may even be a bit faster.
 * Interlaced identical to point except that it skips every other line to be even faster. Can be used for arbitrary integer scales (2x, 3x, 4x...).
-* Scale2x by Andrea Mazzoleni This is a non-blurring scaler that looks good without soaking up a lot of CPU sycles. Get more information on this scaler at http://scale2x.sf.net.
+* Scale2x by Andrea Mazzoleni This is a non-blurring scaler that looks good without soaking up a lot of CPU cycles. Get more information on this scaler at http://scale2x.sf.net.
 * SuperEagle by Derek Liauw Only 2x.
 * Super2xSai by Derek Liauw Only 2x.
 * 2xSaI by Derek Liauw Only 2x. The current Exult default scaler.
@@ -1073,7 +1075,7 @@ Shift-KP8 : run north
 Shift-KP9 : run northeast
 F4 : Toggle full screen
 Alt-Enter : Toggle full screen
-b : Use spellbook
+b : Use spell book
 c : Combat mode
 Space : pause combat
 f : Use food
@@ -1302,8 +1304,8 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 
-8.3. Making Digital Sound work on Mac OSX
-Older versions of OSX do not have built-in support for ogg files. You need to go to http://xiph.org/quicktime/download.html to download and install xiphqt. Please try it out whether it works for you before installing xiphqt.
+8.3. Making Digital Sound work on Mac OS X
+Older versions of OS X do not have built-in support for ogg files. You need to go to http://xiph.org/quicktime/download.html to download and install xiphqt. Please try it out whether it works for you before installing xiphqt.
 
 
 
@@ -1331,7 +1333,7 @@ The first step to install a new package is to have the package downloaded and ac
 
 
 9.6. Using the standard ROM
-Using the standard ROM has lead people to some issues. I recommend you install a newer version, in particular v3.10 (at this time of writing). All the current package for Exult and SDL will work fine. Simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static folder. Simply copy the content of your U7's static/ dir to this dir and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static dir is relevant. You can copy everything if you want to but it will take space for nothing.
+Using the standard ROM has lead people to some issues. I recommend you install a newer version, in particular v3.10 (at this time of writing). All the current package for Exult and SDL will work fine. Simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static folder. Simply copy the content of your U7's static/ folder to this folder and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static folder is relevant. You can copy everything if you want to but it will take space for nothing.
 
 
 9.7. Installing the non-required packages
@@ -1339,7 +1341,7 @@ Two additional packages exist and are not required. They hold the new music for 
 
 
 9.8. Using the latest ROM
-As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801) without some changes. There are a few reason why. I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current runing game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and folders.
+As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801) without some changes. There are a few reason why. I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current running game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and folders.
 
 
 9.9. Solving the problems with the latest ROM
@@ -1364,19 +1366,19 @@ Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me 
 
 10. Installing the original Ultima VII games for use with Exult
 10.1. Installing the floppy disks of BG/SI on Windows
-Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive (a:\). Doubleclick on install.exe, choose the drive you want to install to, and then in which folder you want BG/SI to be installed to (Let's assume C:\Exult\ULTIMA7 for BG and C:\Exult\SERPENT for SI). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. The installer will finish and the game can be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, choose the drive you want to install to, and then in which folder you want BG/SI to be installed to (Let's assume C:\Exult\ULTIMA7 for BG and C:\Exult\SERPENT for SI). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. The installer will finish and the game can be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 When installing Ultima VII from floppy disks in Windows you can run into some problems. The installer assumes that all drives in the computer are hard drives and can't cope with drives like CD-ROMs and card readers. It tries to read how much free space the drives have and if there is no media in the drive it gives an error and you can't proceed. To solve this you have to insert a CD-ROM in your CD/DVD-ROM drive. If you have a multi card reader disconnect that if possible (or insert cards in all the slots if you have them). If disconnecting the reader is not possible you have to use one of the other ways to install the floppy versions or use a different computer.
 Unfortunately it is possible that one of the floppies is no longer working. In that case the installation will fail and the installer might suggest that there is a device error and asks you to reboot your computer. Don't follow that advice a reboot is not likely to fix it.
 
 
 10.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
-Insert the add-on floppy disk in your floppy drive, open explorer and click on the floppy drive (a:\). Doubleclick on install.exe, and then you first have to choose the drive where you installed the game (BG/SI) to. Default is C:\, the installer will then search in which folder BG/SI has been installed to. This is unfortunately not working on every computer, for some unknown reason the installer might crash at this point. If it doesn't crash the installer will write where it found BG/SI installed to and will ask whether you want to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer.
+Insert the add-on floppy disk in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, and then you first have to choose the drive where you installed the game (BG/SI) to. Default is C:\, the installer will then search in which folder BG/SI has been installed to. This is unfortunately not working on every computer, for some unknown reason the installer might crash at this point. If it doesn't crash the installer will write where it found BG/SI installed to and will ask whether you want to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer.
 When installing the add-ons you might run into the same problems as when installing the full games (see above 10.1.).
 
 
 10.3. Installing the floppy disks of BG/SI using DOSBox
 DOSBox is a program that emulates the old Dos and should run on any operating system that Exult runs on (and more). So this is perfect for users that don't run Windows.
-To install Ultima VII with DOSBox, download and install DOSBox from http://http://dosbox.com.Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
+To install Ultima VII with DOSBox, download and install DOSBox from http://http://dosbox.com. Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
 The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target folder choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. Close DOSBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 
 
@@ -1389,13 +1391,13 @@ Unfortunately you might run into a DOSBox bug when installing the add-ons in DOS
 
 10.5. Manual installation of the BG floppy disks
 If for some reason you can't use the above guides to install BG, there is also a way to install BG without using the installer.
-Copy all the files of your floppy files in one folder (e.g. C:\Exult\BGfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\BGfloppy). There enter the following lines and press return after each line: copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip copy /b u7disk20 + u7disk21 u7disk20.zip If you are on a *nix system you use the cat command instead of copy /b, for eaxample cat u7disk00 U7disk01 u7disk02 >u7disk00.zip
+Copy all the files of your floppy files in one folder (e.g. C:\Exult\BGfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\BGfloppy). There enter the following lines and press return after each line: copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip copy /b u7disk20 + u7disk21 u7disk20.zip If you are on a *nix system you use the cat command instead of copy /b, for example cat u7disk00 U7disk01 u7disk02 >u7disk00.zip
 In that folder you can now find 3 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\ULTIMA7. Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\ULTIMA7. Or enter the following lines on the command prompt: pkunzip -d -e u7disk00.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk10.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk20.zip C:\Exult\ULTIMA7 copy *.exe C:\Exult\ULTIMA7 copy install.prm C:\Exult\ULTIMA7 Installation is now finished and you can delete the folder C:\Exult\BGfloppy.
 
 
 10.6. Manual installation of the SI floppy disks
 If for some reason you can't use the above guides to install SI, there is also a way to install SI without using the installer.
-Copy all the files of your floppy files in one folder (e.g. C:\Exult\SIfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\SIfloppy). There enter the following lines and press return after each line: copy sidisk00 sidisk00.zip copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip copy /b sidisk30 + sidisk31 sidisk30.zip copy sidisk40 sidisk40.zip If you are on a *nix system you use the cat command instead of copy /b, for eaxample cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip
+Copy all the files of your floppy files in one folder (e.g. C:\Exult\SIfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\SIfloppy). There enter the following lines and press return after each line: copy sidisk00 sidisk00.zip copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip copy /b sidisk30 + sidisk31 sidisk30.zip copy sidisk40 sidisk40.zip If you are on a *nix system you use the cat command instead of copy /b, for example cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip
 In that folder you can now find 5 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\SERPENT. Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\SERPENT. Or enter the following lines on the command prompt: pkunzip -d -e sidisk00.zip C:\Exult\SERPENT pkunzip -d -e sidisk10.zip C:\Exult\SERPENT pkunzip -d -e sidisk20.zip C:\Exult\SERPENT pkunzip -d -e sidisk30.zip C:\Exult\SERPENT pkunzip -d -e sidisk40.zip C:\Exult\SERPENT copy *.exe C:\Exult\SERPENT copy install.prm C:\Exult\SERPENT Installation is now finished and you can delete the folder C:\Exult\SIfloppy.
 
 
@@ -1408,8 +1410,8 @@ There are a couple of CD-ROM versions of Ultima VII. Most of these come with the
 
 
 10.8. Fixing permissions of Ultima Collection on *nix systems
-If you are following the above guide and copied the games from the Ultima Collection CD you might run into a permissions problem on *nix systems, including Mac OSX. You need to set group permissions to read and write.
-On OSX select both game folders, bring up info, go to Ownership and Permissions, expand details, change Access under Group from read only to read and write, then click Apply.
+If you are following the above guide and copied the games from the Ultima Collection CD you might run into a permissions problem on *nix systems, including Mac OS X. You need to set group permissions to read and write.
+On OS X select both game folders, bring up info, go to Ownership and Permissions, expand details, change Access under Group from read only to read and write, then click Apply.
 
 
 

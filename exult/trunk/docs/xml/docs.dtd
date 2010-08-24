@@ -43,8 +43,8 @@
 <!ELEMENT Pentagram (#PCDATA)>
 
 <!ELEMENT configdesc (configtag*)>
-<!ELEMENT comment (#PCDATA|ref|key|q)*>
-<!ELEMENT configtag (#PCDATA|configtag|comment)*>
+<!ELEMENT comment (#PCDATA|ref|key|q|Exult|extref)*>
+<!ELEMENT configtag (#PCDATA|configtag|manual|comment)*>
 
 <!ELEMENT keytable (keydesc*)>
 <!ELEMENT keydesc (#PCDATA)>
@@ -72,4 +72,5 @@
 <!ATTLIST	img		alt 	CDATA	#REQUIRED>
 
 <!ATTLIST	configtag	name	CDATA	#REQUIRED>
+<!ATTLIST	configtag	manual	(true|false)	"true">
 <!ATTLIST	configtag	closing-tag (yes|no) "yes">
