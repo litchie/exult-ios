@@ -282,6 +282,10 @@ osxdmg: bundle
 					Exult-snapshot.dmg
 	rm -rf Exult-snapshot
 
+clean-local:
+	-rm -f Exult-snapshot.dmg
+	-rm -rf $(bundle_name)
+
 else
 install-exec-local:
 	
