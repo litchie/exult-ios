@@ -288,5 +288,7 @@ clean-local:
 
 else
 install-exec-local:
+
+clean-local:
 	
 endif
