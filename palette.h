@@ -51,11 +51,13 @@ class Palette
 	int palette;		// Palette #.
 	int brightness;
 	int max_val;
+	bool border255;
 	bool faded_out;		// true if faded palette to black.
 	bool fades_enabled;
 	void set_loaded(const U7multiobject& pal, const char *xfname, int xindex);
 	void loadxform(const char *buf, const char *xfname, int& xindex);
 
+	static unsigned char border[3];
 public:
 	Palette();
 	Palette(Palette *pal);		// Copy constructor.
@@ -70,7 +72,7 @@ public:
 	void set(int pal_num, int new_brightness = -1, 
 						bool repaint=true);
 	void set(unsigned char palnew[768], int new_brightness = -1,
-						bool repaint=true);
+						bool repaint=true, bool border255=false);
 	int get_brightness()	// Percentage:  100 = normal.
 		{ return brightness; }
 				//   the user.
@@ -102,6 +104,15 @@ public:
 	unsigned char get_green(int nr) { return pal1[3*nr + 1]; }
 	unsigned char get_blue(int nr) { return pal1[3*nr + 2]; }
 	void set_palette (unsigned char palnew[768]);
+	static void set_border(int r, int g, int b) {
+		border[0] = r;border[1] = g;border[2] = b;
+	}
+
+	unsigned char get_border_index() 
+		{
+
+		return border255?255:0;
+		}
 	};
 
 /*

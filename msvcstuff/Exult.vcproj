@@ -1884,10 +1884,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\shapes\sfxinf.h"
-						>
-					</File>
-					<File
 						RelativePath="..\shapes\shapeinf.h"
 						>
 					</File>

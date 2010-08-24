@@ -42,11 +42,11 @@ void Image_window::show_scaled8to8_interlace
 	Scale_interlace<unsigned char, uint8, Manip8to8>
 		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-				(uint8 *) display_surface->pixels, 
-				display_surface->pitch,
+				(uint8 *) inter_surface->pixels, 
+				inter_surface->pitch,
 			manip, scale);
 
-	SDL_UpdateRect(display_surface, scale*x, scale*y, scale*w, scale*h);
+	SDL_UpdateRect(inter_surface, scale*x, scale*y, scale*w, scale*h);
 	}
 
 void Image_window::show_scaled8to16_interlace
@@ -55,15 +55,15 @@ void Image_window::show_scaled8to16_interlace
 	)
 	{
 	Manip8to16 manip(paletted_surface->format->palette->colors,
-						display_surface->format);
+						inter_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to16>
 		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) display_surface->pixels, 
-			display_surface->pitch/
-				display_surface->format->BytesPerPixel,
+		    (uint16 *) inter_surface->pixels, 
+			inter_surface->pitch/
+				inter_surface->format->BytesPerPixel,
 			manip, scale);
-	SDL_UpdateRect(display_surface, scale*x, scale*y, scale*w, scale*h);
+	SDL_UpdateRect(inter_surface, scale*x, scale*y, scale*w, scale*h);
 	}
 
 void Image_window::show_scaled8to555_interlace
@@ -72,15 +72,15 @@ void Image_window::show_scaled8to555_interlace
 	)
 	{
 	Manip8to555 manip(paletted_surface->format->palette->colors,
-						display_surface->format);
+						inter_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to555>
 		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) display_surface->pixels, 
-			display_surface->pitch/
-				display_surface->format->BytesPerPixel,
+		    (uint16 *) inter_surface->pixels, 
+			inter_surface->pitch/
+				inter_surface->format->BytesPerPixel,
 			manip, scale);
-	SDL_UpdateRect(display_surface, scale*x, scale*y, scale*w, scale*h);
+	SDL_UpdateRect(inter_surface, scale*x, scale*y, scale*w, scale*h);
 	}
 
 void Image_window::show_scaled8to565_interlace
@@ -89,15 +89,15 @@ void Image_window::show_scaled8to565_interlace
 	)
 	{
 	Manip8to565 manip(paletted_surface->format->palette->colors,
-						display_surface->format);
+						inter_surface->format);
 	Scale_interlace<unsigned char, uint16, Manip8to565>
 		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint16 *) display_surface->pixels, 
-			display_surface->pitch/
-				display_surface->format->BytesPerPixel,
+		    (uint16 *) inter_surface->pixels, 
+			inter_surface->pitch/
+				inter_surface->format->BytesPerPixel,
 			manip, scale);
-	SDL_UpdateRect(display_surface, scale*x, scale*y, scale*w, scale*h);
+	SDL_UpdateRect(inter_surface, scale*x, scale*y, scale*w, scale*h);
 	}
 
 void Image_window::show_scaled8to32_interlace
@@ -106,13 +106,13 @@ void Image_window::show_scaled8to32_interlace
 	)
 	{
 	Manip8to32 manip(paletted_surface->format->palette->colors,
-						display_surface->format);
+						inter_surface->format);
 	Scale_interlace<unsigned char, uint32, Manip8to32>
 		((uint8*)draw_surface->pixels, x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (uint32 *) display_surface->pixels, 
-			display_surface->pitch/
-				display_surface->format->BytesPerPixel,
+		    (uint32 *) inter_surface->pixels, 
+			inter_surface->pitch/
+				inter_surface->format->BytesPerPixel,
 			manip, scale);
-	SDL_UpdateRect(display_surface, scale*x, scale*y, scale*w, scale*h);
+	SDL_UpdateRect(inter_surface, scale*x, scale*y, scale*w, scale*h);
 	}

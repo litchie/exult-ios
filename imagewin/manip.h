@@ -159,13 +159,13 @@ public:
 	static uintD rgb(unsigned int r, unsigned int g,
 		unsigned int b)
 	{
-		return ((r>>3)<<11) | ((g>>2)<<6) | ((b>>3));
+		return ((r>>3)<<11) | ((g>>2)<<5) | ((b>>3));
 	}
 	static void split_dest(uintD pix, unsigned int& r,
 		unsigned int& g, unsigned int& b)
 	{
 		r = (pix>>11)<<3;
-		g = (pix>>6)<<2;
+		g = (pix>>5)<<2;
 		b = (pix)<<3;
 	}
 };
@@ -253,7 +253,7 @@ public:
 		unsigned int& g, unsigned int& b)
 	{
 		r = (pix>>11)<<3;
-		g = (pix>>6)<<2;
+		g = (pix>>5)<<2;
 		b = (pix)<<3;
 	}
 };
