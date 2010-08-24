@@ -6,7 +6,7 @@
 			<header>- 15 August 2010</header>
 			<body>
 				<ul>
-				<li><ref1 target="midi_music"/> Fluidsynth support is not compiled into the snapshots, also MT32 is suported on OS X.</li>
+				<li><ref1 target="midi_music"/> Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.</li>
 				<li><ref1 target="win32_device"/> the log files are now where exult.cfg is saved to not necessarily where exult.exe is.</li>
 				<li><ref1 target="error_log"/> also about location of log files.</li>
 				<li><ref1 target="bg_manual"/> some *nix command.</li>
@@ -44,7 +44,7 @@
 				<li><ref1 target="mods_savegames_location"/> added this so savegames of modded games can be found.</li>
 				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
 				</ul>
-			</body>wave_sfx
+			</body>
 		</sub>
 		<sub name="08032010">
 			<header>- 08 March 2010</header>
@@ -455,6 +455,7 @@
 									<configtag name="waves"  manual="true">
 									jmsisfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
+									</configtag>
 									<configtag name="mods"  manual="true">
 									optional_path/mods
 									<comment>**optional. See <ref target="mods_path"/></comment>
@@ -462,7 +463,6 @@
 									<configtag name="patch"  manual="true">
 									optional_path/patch
 									<comment>**optional. See <ref target="mods_path"/></comment>
-									</configtag>
 									</configtag>
 								</configtag>
 							</configtag>
@@ -732,7 +732,7 @@
 				<para>
 					The way <Exult/> generates default paths (for gamedat, savegames, mods, patches) has changed since Version 1.2. It will
 					not write these paths to exult.cfg but use them automatically.<br/>
-					The location where <Exult/> expects those, and if needed, will create those folders is similarily depending on the Operating 
+					The location where <Exult/> expects those, and if needed, will create those folders is similarly depending on the Operating 
 					System as the location of exult.cfg (see <ref1 target="exult_config_location"/>).
 					If you were to override these paths you would need to change the following tags (you can substitute gamename with the 
 					"known games" - see <ref target="terms"/>):
@@ -801,7 +801,7 @@
 						Exult will sort this out on its own.</li>
 					<li>On *nix and OS X you might even not need to touch the &lt;path&gt; setting, if you stick to our standard gamenames.</li>
 					<li>You can either use the relative (e.g. ./ultima7) or absolute (e.g. c:\exult\ultima7) path to point to the 
-						correct folder. The realtive path uses the exult.exe, exult binary or Exult.app as base.</li>
+						correct folder. The relative path uses the exult.exe, exult binary or Exult.app as base.</li>
 					<li>Better don't use spaces in the path (e.g. c:\exult\the black gate\). Some people seem to have reported 
 						problems with that.</li>
 					<li>Path settings in exult.cfg are the <strong>same</strong> on <strong>all</strong> operating systems. Of course 
@@ -982,7 +982,7 @@
 					Example: User named <strong>Dominus</strong> on <strong>Mac OS X 10.6</strong>. BG is installed to 
 					/Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. 
 					The app Exult.app is saved to /Applications. When you run <Exult/> it will automatically recognize that BG and SI 
-					are installed. You do not need to edit exultcfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg.
+					are installed. You do not need to edit exult.cfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg.
 					When you save a game in BG the savegame will be saved to 
 					/Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, 
 					for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav.<br/>
@@ -1039,7 +1039,7 @@
 					Example: User named <strong>Dominus</strong> on <strong>Ubuntu</strong>. BG is installed to 
 					/usr/local/share/exult/blackgate and SI is installed to /usr/local/share/exult/serpentisle. 
 					When you run <Exult/> it will automatically recognize that BG and SI are installed. You do not 
-					need to edit exultcfg, which is svaed to $HOME/.exult.cfg.<br/>
+					need to edit exult.cfg, which is saved to $HOME/.exult.cfg.<br/>
 					When you save a game in BG the savegame will be saved to $HOME/.exult/blackgate/exult00bg.sav, 
 					for SI to $HOME/.exult/serpentisle/exult00si.sav.<br/>
 					If you install for example the keyring mod, you copy the contents of the Keyring.zip to 
@@ -1117,13 +1117,13 @@
 						Starts the game with the Black Gate menu (prefers original game).</li>
 					<li>--fov<br/>
 						Starts the game with the menu of the Black Gate with Forge of Virtue expansion.
-						Only usefull if you have FoV added as described at <ref target="advanced_config"/>,
+						Only useful if you have FoV added as described at <ref target="advanced_config"/>,
 						otherwise it will just work like the command '--bg'.</li>
 					<li>--si<br/>
 						Starts the game with the Serpent Isle menu (prefers original game).</li>
 					<li>--ss<br/>
 						Starts the game with the menu of the Serpent Isle with Silver Seed expansion.
-						Only usefull if you have SS added as described at <ref target="advanced_config"/>,
+						Only useful if you have SS added as described at <ref target="advanced_config"/>,
 						otherwise it will just work like the command '--si'.</li>
 					<li>--nomenu<br/>
 						Skips game menu.</li>
@@ -1139,7 +1139,7 @@
 						with the '--game'/'--mod' option.</li>
 					<li>--nocrc<br/>
 						Recently we added a crc check that <Exult/> doesn't start when the
-						exult*.flx files in the data dir aren't the same it got compiled with.
+						exult*.flx files in the data folder aren't the same it got compiled with.
 						This parameter lets the game start nevertheless. Don't try this if you
 						don't know what you are doing.</li>
 					<li>--game gamename<br/>
@@ -1198,7 +1198,7 @@
 						will not work.</li>
 					<li><strong>FluidSynth</strong><br/>
         				is another software synthesizer, which uses SoundFont 2 technology without need for a 
-						SoundFont-compatible soundcard. It is available for many Operating Systems and opposed 
+						SoundFont-compatible sound card. It is available for many Operating Systems and opposed 
 						to TiMidity still actively developed.<br/>
 						Since Fluidsynth pulls in many dependencies it is not compiled into <Exult/> at the moment.
 						If you compiled <Exult/> ourself and you enabled Fluidsynth you just need to edit 
@@ -1215,9 +1215,9 @@
 					<li><strong>Be_midi</strong><br/>
         				For use on BeOS.</li>
 					<li><strong>CoreAudio</strong><br/>
-        				uses XMIDI on Mac OSX.</li>
+        				uses XMIDI on Mac OS X.</li>
 					<li><strong>CoreMIDI</strong><br/>
-	        			with this MIDI driver a Real MT32 can be used on Mac OSX.</li>
+	        			with this MIDI driver a Real MT32 can be used on Mac OS X.</li>
 					<li><strong>alsa</strong><br/>
         				uses ALSA on Linux systems. If your ALSA port is not on 65:0 you need to change
 						&lt;config&gt;&lt;audio&gt;&lt;midi&gt;&lt;alsa_port&gt; in the exult.cfg.</li>
@@ -1254,7 +1254,7 @@
 					<li><strong>Fake MT32</strong><br/>
         				This is for MIDI devices that behave like a MT32 but don't support 
 						SysEx messages. Use that option if you have a SoundFont or similar loaded 
-						for your soundcard (or software synth such as FluidSynth) that contains 
+						for your sound card (or software synth such as FluidSynth) that contains 
 						the MT32 capital tones but the device can't be reprogrammed using MT32 
 						SysEx commands by <Exult/>.</li>
      			</ul>
@@ -1340,7 +1340,7 @@
 				<para>
 					The digital music pack seems to have two issue, though, some tracks seem to have 
 					been recorded at lower volume than the others. Also, since both the digital music 
-					and the sound effects are played by the Wave / PCM of your soundcard, you can no 
+					and the sound effects are played by the Wave / PCM of your sound card, you can no 
 					longer have a different volume for music and sound effects.
 				</para>
 			</body>
@@ -1515,7 +1515,7 @@
 						identical to point except that it skips every other line to be even faster.
 						Can be used for arbitrary integer scales (2x, 3x, 4x...).</li>	
 					<li><strong>Scale2x</strong> by Andrea Mazzoleni<br/>
-						This is a non-blurring scaler that looks good without soaking up a lot of CPU sycles.
+						This is a non-blurring scaler that looks good without soaking up a lot of CPU cycles.
 						Get more information on this scaler at <extref target="http://scale2x.sf.net"/>.</li>
 					<li><strong>SuperEagle</strong> by Derek Liauw<br/> 
 						Only 2x.</li>
@@ -1613,7 +1613,7 @@
 					<keydesc name="Shift-KP9">run northeast</keydesc>
 					<keydesc name="F4">Toggle full screen</keydesc>
 					<keydesc name="Alt-Enter">Toggle full screen</keydesc>
-					<keydesc name="b">Use spellbook</keydesc>
+					<keydesc name="b">Use spell book</keydesc>
 					<keydesc name="c">Combat mode</keydesc>
 					<keydesc name="Space">pause combat</keydesc>
 					<keydesc name="f">Use food</keydesc>
@@ -2056,10 +2056,10 @@
 			</body>
 		</sub>
 		<sub name="osx_digital">
-			<header>Making Digital Sound work on Mac OSX</header>
+			<header>Making Digital Sound work on Mac OS X</header>
 			<body>
 				<para>
-					Older versions of OSX do not have built-in support for ogg files. You need to go to
+					Older versions of OS X do not have built-in support for ogg files. You need to go to
 					<extref target="http://xiph.org/quicktime/download.html"/> to download 
 					and install xiphqt. Please try it out whether it works for you before installing xiphqt.
 				</para>
@@ -2148,9 +2148,9 @@
 					and <Exult/> packages. You will also have to transfer the U7 data files to the 
 					Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on 
 					the /mnt/cf/exult-data/si/static folder. Simply copy the content of your U7's 
-					static/ dir to this dir and you'll be done. The previous example is for Serpent Isle 
+					static/ folder to this folder and you'll be done. The previous example is for Serpent Isle 
 					("si" as you can see in the file path). For Black Gate, you would put "bg" instead of 
-					"si". Only the static dir is relevant. You can copy everything if you want to but it 
+					"si". Only the static folder is relevant. You can copy everything if you want to but it 
 					will take space for nothing.
 				</para>
 			</body>
@@ -2178,7 +2178,7 @@
 					on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since 
 					the package installs all user-related files to /home/root, <Exult/> won't find 
 					them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ 
-					which contains the gamedat (current runing game) and the savegames. Finally, the 
+					which contains the gamedat (current running game) and the savegames. Finally, the 
 					files' owner is set to "root" so the user "zaurus" won't be able to alter files 
 					and folders.
 				</para>
@@ -2270,7 +2270,7 @@
 				<para>
 					Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive 
 					(<strong>a:\</strong>). 
-					Doubleclick on install.exe, choose the drive you want to install to, and then in which 
+					Double click on install.exe, choose the drive you want to install to, and then in which 
 					folder you want BG/SI to be installed to (Let's assume <strong>C:\Exult\ULTIMA7</strong> 
 					for BG and <strong>C:\Exult\SERPENT</strong> for SI).<br/> 
 					Next you choose the sound card, but as this is not relevant for <Exult/>, choose "No sound 
@@ -2306,7 +2306,7 @@
 			<body>
 				<para>
 					Insert the add-on floppy disk in your floppy drive, open explorer and click on the floppy 
-					drive (<strong>a:\</strong>). Doubleclick on install.exe, and then you first have to choose 
+					drive (<strong>a:\</strong>). Double click on install.exe, and then you first have to choose 
 					the drive where you installed the game (BG/SI) to. Default is <strong>C:\</strong>, the 
 					installer will then search in which folder BG/SI has been installed to. This is unfortunately 
 					not working on every computer, for some unknown reason the installer might crash at this point.<br/>
@@ -2330,7 +2330,7 @@
 				</para>
 				<para>
 					To install Ultima VII with DOSBox, download and install DOSBox from 
-					<extref target="http://http://dosbox.com"/>.Make a new folder in your <strong>C:\</strong> drive 
+					<extref target="http://http://dosbox.com"/>. Make a new folder in your <strong>C:\</strong> drive 
 					called <strong>Exult</strong>.<br/>
 					Insert Disk 1 in your floppy drive, start DOSBox and type the following:<br/>
 					<kbd>mount c C:\Exult</kbd><br/>
@@ -2401,7 +2401,7 @@
 					<kbd>copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip</kbd><br/>
 					<kbd>copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip</kbd><br/>
 					<kbd>copy /b u7disk20 + u7disk21 u7disk20.zip</kbd><br/>
-					If you are on a *nix system you use the cat command instead of copy /b, for eaxample<br/>
+					If you are on a *nix system you use the cat command instead of copy /b, for example<br/>
 					<kbd>cat u7disk00 U7disk01 u7disk02 >u7disk00.zip</kbd>
 				</para>
 				<para>
@@ -2435,7 +2435,7 @@
 					<kbd>copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip</kbd><br/>
 					<kbd>copy /b sidisk30 + sidisk31 sidisk30.zip</kbd><br/>
 					<kbd>copy sidisk40 sidisk40.zip</kbd><br/>
-					If you are on a *nix system you use the cat command instead of copy /b, for eaxample<br/>
+					If you are on a *nix system you use the cat command instead of copy /b, for example<br/>
 					<kbd>cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip</kbd>
 				</para>
 				<para>
@@ -2484,10 +2484,10 @@
 				<para>
 					If you are following the above guide and copied the games from the 
 					Ultima Collection CD you might run into a permissions problem on *nix systems, 
-					including Mac OSX. You need to set group permissions to read and write.
+					including Mac OS X. You need to set group permissions to read and write.
 				</para>
 				<para>
-					On OSX select both game folders, bring up info, go to Ownership and Permissions,
+					On OS X select both game folders, bring up info, go to Ownership and Permissions,
 					expand details, change Access under Group from read only to read and write, then 
 					click Apply.
 				</para>
