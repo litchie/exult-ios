@@ -138,6 +138,12 @@ void	Configuration::set(const char *key, int value,bool write_out)
 	set(k,v,write_out);
 }
 
+void	Configuration::remove(const string &key, bool write_out)
+{
+	xmltree->remove(key, true);
+	if(write_out)
+		write_back();
+}
 
 bool	Configuration::read_config_string(const string &s)
 {

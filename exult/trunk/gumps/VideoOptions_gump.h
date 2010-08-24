@@ -35,11 +35,16 @@ class VideoOptions_gump : public Modal_gump
 	int scaling;
 	int scaler;
 	int fullscreen;
-
-	int old_resolution;
+	int game_resolution;
 
 	std::string *restext;
-	int num_resolutions;
+	std::string *game_restext;
+	
+	static uint32 *resolutions;
+	static int num_resolutions;
+
+	static uint32 game_resolutions[3];
+	static int num_game_resolutions;
 
  public:
 	VideoOptions_gump();

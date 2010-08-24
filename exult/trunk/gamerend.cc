@@ -341,10 +341,10 @@ void Game_window::paint
 
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	// Fill black into unpainted regions
-	if (y < 0) win->fill8(0,w,-y,x,y);	// Region above window
-	if (x < 0) win->fill8(0,-x,get_height(),x,0); // Region left of window
-	if ((x+w) > get_width()) win->fill8(0,(x+w)-get_width(),get_height(),get_width(),0); // Region right of window
-	if ((y+h) > get_height()) win->fill8(0,w,(y+h)-get_height(),x,get_height()); // below window
+	if (y < 0) win->fill8(pal->get_border_index(),w,-y,x,y);	// Region above window
+	if (x < 0) win->fill8(pal->get_border_index(),-x,get_height(),x,0); // Region left of window
+	if ((x+w) > get_width()) win->fill8(pal->get_border_index(),(x+w)-get_width(),get_height(),get_width(),0); // Region right of window
+	if ((y+h) > get_height()) win->fill8(pal->get_border_index(),w,(y+h)-get_height(),x,get_height()); // below window
 
 	gump_man->paint(false);
 	if (dragging) dragging->paint();	// Paint what user is dragging.

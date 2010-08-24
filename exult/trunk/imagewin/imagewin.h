@@ -57,11 +57,25 @@ public:
 	typedef int ScalerType;
 
 	enum FillMode {
-		Fill,					///< Game screen fills all of the display surface
-		Strech,					///< Game screen is stretched to the closest edge, maintaining 1:1 pixel aspect
-		AspectCorrectStretch,	///< Game screen is stretched to the closest edge, with 1:1.2 pixel aspect
-		Centre,					///< Game screen is centred
-		AspectCorrectCentre		///< Game screen is centred and scaled to have 1:1.2 pixel aspect
+		Fill = 0,					///< Game screen fills all of the display surface
+		Strech = 1,					///< Game screen is stretched to the closest edge, maintaining 1:1 pixel aspect
+		AspectCorrectStretch = 2,	///< Game screen is stretched to the closest edge, with 1:1.2 pixel aspect
+		Centre = 3,					///< Game screen is centred
+		AspectCorrectCentre = 4,	///< Game screen is centred and scaled to have 1:1.2 pixel aspect
+
+		// Numbers higher than this incrementally scale by .5 more
+		Centre_x1_5 = 5,
+		AspectCorrectCentre_x1_5 = 6,
+		Centre_x2 = 7,
+		AspectCorrectCentre_x2 = 8,
+		Centre_x2_5 = 9,
+		AspectCorrectCentre_x2_5 = 10,
+		Centre_x3 = 11,
+		AspectCorrectCentre_x3 = 12,
+		// And so on....
+		
+		// Arbitrarty scaling support => (x<<16)|y
+		Centre_640x480 = (640<<16)|480,	///< Scale to specific dimentions and centre
 	};
 
 	struct ScalerInfo
@@ -69,11 +83,16 @@ public:
 		const char *			name;
 		uint32					size_mask;
 		bool					can_strech;
-		Image_window::scalefun	fun565;
-		Image_window::scalefun	fun555;
-		Image_window::scalefun	fun16;
-		Image_window::scalefun	fun32;
-		Image_window::scalefun	fun8;
+		Image_window::scalefun	fun8to565;
+		Image_window::scalefun	fun8to555;
+		Image_window::scalefun	fun8to16;
+		Image_window::scalefun	fun8to32;
+		Image_window::scalefun	fun8to8;
+
+		Image_window::scalefun	fun565to565;
+		Image_window::scalefun	fun555to555;
+		Image_window::scalefun	fun16to16;
+		Image_window::scalefun	fun32to32;
 	};
 
 	struct Resolution
@@ -127,17 +146,21 @@ public:
 
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
-	int scale;			// Only 1 or 2 for now.
-	int scaler;			// What scaler do we want to use
+	int scale;				// Only 1 or 2 for now.
+	int scaler;				// What scaler do we want to use
 	bool uses_palette;		// Does this window have a palette
 	bool fullscreen;		// Rendering fullscreen.
 	int game_width;
 	int game_height;
-	SDL_Surface *paletted_surface;	// Represents window in memory. (has palette)
-	SDL_Surface *display_surface;	// 2X surface if scaling, else 0. (only used when scaling)
-	SDL_Surface *draw_surface;		// Unscaled surface (used for screenshots only)
-	// Method to blit scaled:
-	scalefun show_scaled;
+
+	FillMode strech_mode;
+	int strech_scaler;
+
+	SDL_Surface *paletted_surface;	// Surface that palette is set on   (Example res)
+	SDL_Surface *display_surface;	// Final surface that is displayed  (1024x1024)
+	SDL_Surface *inter_surface;		// Post scaled/pre stretch surface  (960x600)
+	SDL_Surface *draw_surface;		// Pre scaled surface               (320x200)
+
 	/*
 	*	Scaled blits:
 	*/
@@ -155,6 +178,10 @@ protected:
 	void show_scaled8to555_bilinear(int x, int y, int w, int h);
 	void show_scaled8to565_bilinear(int x, int y, int w, int h);
 	void show_scaled8to32_bilinear(int x, int y, int w, int h);	
+	void show_scaled16to16_bilinear(int x, int y, int w, int h);
+	void show_scaled32to32_bilinear(int x, int y, int w, int h);
+	void show_scaled555to555_bilinear(int x, int y, int w, int h);
+	void show_scaled565to565_bilinear(int x, int y, int w, int h);
 
 	void show_scaled8to16_SuperEagle(int x, int y, int w, int h);
 	void show_scaled8to555_SuperEagle(int x, int y, int w, int h);
@@ -166,6 +193,10 @@ protected:
 	void show_scaled8to565_point(int x, int y, int w, int h);
 	void show_scaled8to32_point(int x, int y, int w, int h);	
 	void show_scaled8to8_point(int x, int y, int w, int h);
+	void show_scaled16to16_point(int x, int y, int w, int h);
+	void show_scaled555to555_point(int x, int y, int w, int h);
+	void show_scaled565to565_point(int x, int y, int w, int h);
+	void show_scaled32to32_point(int x, int y, int w, int h);	
 
 	void show_scaled8to16_interlace(int x, int y, int w, int h);
 	void show_scaled8to555_interlace(int x, int y, int w, int h);
@@ -201,13 +232,13 @@ protected:
 	// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
-	bool create_scale_surfaces(int scale, int w, int h,
-		scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
+	bool create_scale_surfaces(int w, int h, int bpp);
 	bool try_scaler(int w, int h);
 
 
 	static void static_init();
 
+	static int force_bpp;
 	static int desktop_depth;
 	static int windowed_8;
 	static int windowed_16;
@@ -218,13 +249,13 @@ public:
 	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
-	Image_window(Image_buffer *ib, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point)
+	Image_window(Image_buffer *ib, int w, int h, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point)
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true), 
 		fullscreen(fs), game_width(gamew), game_height(gameh), paletted_surface(0), 
-		display_surface(0), show_scaled(0)
+		inter_surface(0)
 	{ 
 		static_init();
-		create_surface(ibuf->width, ibuf->height); 
+		create_surface(w, h); 
 	}
 	virtual ~Image_window();
 	//int get_scale()			// Returns 1 or 2.
@@ -274,6 +305,9 @@ public:
 	{ return -ibuf->offset_x; }
 	int get_start_y()
 	{ return -ibuf->offset_y; }
+
+	int get_display_width();
+	int get_display_height();
 
 	int get_full_width()
 	{ return ibuf->width; }

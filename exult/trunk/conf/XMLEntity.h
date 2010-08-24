@@ -61,6 +61,9 @@ public:
 	void	xmlparse(const std::string &s,std::size_t &pos);
 
 	void	listkeys(const std::string &,std::vector<std::string> &, bool longformat=true) const;
+
+	void	remove(const std::string &key, bool valueonly);
+
 };
 
 #endif

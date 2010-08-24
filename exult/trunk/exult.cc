@@ -809,35 +809,27 @@ static void Init
 	sc = 1;
 	sclr = Image_window::SaI;
 #else
-	// Default resolution is 320x200 with 2x scaling
+	// Default resolution is now 320x240 with 2x scaling
 	w = 320;
-	h = 200;
+	h = 240;
 	sc = 2;
 	sclr = Image_window::SaI;
 #endif
 	int sw, sh, scaleval, gw ,gh;
 	string gr, gg, gb, scaler;
-	config->value("config/video/width", sw, w);
-	config->value("config/video/height", sh, h);
+
 	config->value("config/video/scale_method", scaler, "---");
-	config->value("config/video/gamma/red", gr, "1.0");
-	config->value("config/video/gamma/green", gg, "1.0");
-	config->value("config/video/gamma/blue", gb, "1.0");
-
-	config->value("config/video/game/width", gw, sw);
-	config->value("config/video/game/height", gh, sh);
-
 	string	fullscreenstr;		// Check config. for fullscreen mode.
 	config->value("config/video/fullscreen",fullscreenstr,"no");
 	bool	fullscreen = (fullscreenstr=="yes");
-	config->set("config/video/fullscreen",fullscreen?"yes":"no",true);
+	config->set("config/video/fullscreen",fullscreen?"yes":"no",false);
 
 	config->value("config/video/scale", scaleval, sc);
 	sclr = Image_window::get_scaler_for_name(scaler.c_str());
 		// Ensure proper values for scaleval based on sclr.
 	if (sclr == Image_window::NoScaler)
 		{
-		config->set("config/video/scale_method","2xSaI",true);
+		config->set("config/video/scale_method","2xSaI",false);
 		sclr = Image_window::SaI;
 		scaleval = 2;
 		}
@@ -846,7 +838,61 @@ static void Init
 	else if (sclr != Image_window::point && sclr != Image_window::interlaced &&
 			sclr != Image_window::OpenGL)
 		scaleval = 2;
-	config->set("config/video/scale", scaleval, true);
+	config->set("config/video/scale", scaleval, false);
+
+	config->value("config/video/gamma/red", gr, "1.0");
+	config->value("config/video/gamma/green", gg, "1.0");
+	config->value("config/video/gamma/blue", gb, "1.0");
+
+	// Convert from old video dims to new
+	
+	if (config->key_exists("config/video/width"))
+	{
+		config->value("config/video/width", sw, w);
+		config->remove("config/video/width",false);
+	}
+	else
+		sw = w;
+
+	if (config->key_exists("config/video/height"))
+	{
+		config->value("config/video/height", sh, h);
+		config->remove("config/video/height",false);
+	}
+	else
+		sh = h;
+
+	config->value("config/video/display/width", sw, sw*scaleval);
+	config->value("config/video/display/height", sh, sh*scaleval);
+
+	config->value("config/video/game/width", gw, 320);
+	config->value("config/video/game/height", gh, 200);
+	
+	config->set("config/video/display/width", sw, false);
+	config->set("config/video/display/height", sh, false);
+	config->set("config/video/game/width", gw, false);
+	config->set("config/video/game/height", gh, false);
+
+	int border_red, border_green, border_blue;
+
+	config->value("config/video/game/border/red", border_red, 0);
+	if (border_red<0) border_red = 0;
+	else if (border_red>255) border_red = 255;
+	config->set("config/video/game/border/red", border_red, false);
+
+	config->value("config/video/game/border/green", border_green, 0);
+	if (border_green<0) border_green= 0;
+	else if (border_green>255) border_green = 255;
+	config->set("config/video/game/border/green", border_green, false);
+
+	config->value("config/video/game/border/blue", border_blue, 0);
+	if (border_blue<0) border_blue = 0;
+	else if (border_blue>255) border_blue = 255;
+	config->set("config/video/game/border/blue", border_blue, false);
+
+	Palette::set_border(border_red,border_green,border_blue);
+
+	config->write_back();
 
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
@@ -2128,11 +2174,12 @@ void set_resolution (int new_res, bool save)
 		if(save) {
 			char val[20];
 			snprintf(val, 20, "%d", res_list[current_res].x);
-			config->set("config/video/width",val,true);
+			config->set("config/video/display/width",val,false);
 			snprintf(val, 20, "%d", res_list[current_res].y);
-			config->set("config/video/height",val,true);
+			config->set("config/video/display/height",val,false);
 			snprintf(val, 20, "%d", res_list[current_res].scale);
-			config->set("config/video/scale",val,true);
+			config->set("config/video/scale",val,false);
+			config->write_back();
 
 			// Scaler
 			if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)

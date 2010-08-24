@@ -1,3 +1,24 @@
+2010-08-24  Ryan Nunn <colourles@users.sourceforge.net>
+	* Added methods to remove nodes from the configuration tree to allow me to 
+	  remove deprecated config settings from code
+	* Inverted display resolution setting inregards to scaling. You now set the
+	  actual post-scaled resolution, instead of the pre-scaled resolution as 
+	  before. The display resolution config setting has been changed from 
+	  "config/video/[width|height]" to "config/video/display/[width|height]". 
+	  Exult will automatically set the new values (old values *scale factor) 
+	  and remove the old one from the config.   
+	* The game resolution can now be set in the Video Options Gump. As the game
+	  resolution can now be changed in game, it now defaults to 320x200 for 
+	  compatibility reasons with the original games. 
+	* The list of display resolutions in the Video Options Gump is now 
+	  determied by asking SDL what resolutions are available.
+	* The colour of the border of the centred the game screen can now be set
+	  using the config settings "config/video/border/[red|green|blue]"
+	* Fixed bug with 565 colour.
+	* Added config option to force output bpp "config/video/force_bpp". Valid
+	  values are 0 (for any), 8, 16 or 32. Note if set to 8 most scalers will
+	  not work and will display as the fallback point scaler.
+
 2010-08-23  Ryan Nunn <colourles@users.sourceforge.net>
     * too many files to list : Hacking things up to allow the game to render at
       a different resolution to what its displayed at. This will allow fixing 
