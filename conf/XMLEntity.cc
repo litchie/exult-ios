@@ -219,6 +219,48 @@ void	XMLnode::xmlassign(const string &key, const string &value)
 }
 
 
+void XMLnode::remove(const std::string &key, bool valueonly)
+{
+	if(key.find('/')==string::npos)
+	{
+		// Must refer to me.
+		if(id==key)
+		{
+			content = std::string();
+			if (!valueonly)
+			{
+				for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); ++i)
+					delete *i;
+				nodelist.clear();
+			}
+			return;
+		}
+	}
+	else
+	{
+		string k;
+		k=key.substr(key.find('/')+1);
+		string k2=k.substr(0,k.find('/'));
+		for(std::vector<XMLnode*>::iterator it=nodelist.begin();it!=nodelist.end();++it)
+		{
+			XMLnode *node = (*it);
+			if(node->id==k2)
+			{
+				node->remove(k,valueonly);
+				if (node->content.empty() && node->nodelist.empty())
+				{
+					nodelist.erase(it);
+					delete node;
+				}
+				return;
+			}
+		}
+	}
+
+	CERR("Walking the XML tree failed to find the node.");
+}
+
+
 void	XMLnode::listkeys(const string &key,vector<string> &vs, bool longformat) const
 {
 	string s(key);

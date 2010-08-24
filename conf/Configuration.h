@@ -57,6 +57,8 @@ public:
 	void    set(const char *key,const std::string &value,bool write_to_file);
 	void    set(const char *key,int,bool write_to_file);
 
+	void    remove(const std::string &key, bool write_to_file);
+
 	// Return a list of keys that are subsidiary to the supplied key
 	std::vector<std::string>	listkeys(const std::string &key,bool longformat=true);
 	std::vector<std::string>	listkeys(const char *key,bool longformat=true);

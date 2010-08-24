@@ -42,22 +42,17 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5, 20, 35, 50, 80 };
+static const int rowy[] = { 5, 20, 35, 50, 80, 65 };
 static const int colx[] = { 35, 50, 115, 127, 130 };
 
 static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
 
-static int resolutions[] = { 320, 200,
-							 320, 240,
-							 400, 300,
-							 512, 384,
-							 640, 480,
-							 800, 600,
-							 -1, -1 }; 
-// These -1's are placeholders for a custom resolution
+uint32 *VideoOptions_gump::resolutions = 0;
+int VideoOptions_gump::num_resolutions = 0;
 
-static int num_default_res = sizeof(resolutions)/(2*sizeof(resolutions[0])) -1;
+uint32 VideoOptions_gump::game_resolutions[3] = {0,0,0};
+int VideoOptions_gump::num_game_resolutions = 0;
 
 static string resolutionstring(int w, int h)
 {
@@ -124,6 +119,8 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 		}
 	else if(btn==buttons[3])
 		fullscreen = state;
+	else if(btn==buttons[4])
+		game_resolution = state;
 }
 
 void VideoOptions_gump::rebuild_buttons()
@@ -136,7 +133,7 @@ void VideoOptions_gump::rebuild_buttons()
 
 	// the text arrays are freed by the destructors of the buttons
 
-	buttons[0] = new VideoTextToggle (this, restext, colx[4], rowy[0], 59,
+	buttons[0] = new VideoTextToggle (this, restext, colx[2], rowy[0], 74,
 									  resolution, num_resolutions);
 
 	rebuild_scale_button();
@@ -144,7 +141,7 @@ void VideoOptions_gump::rebuild_buttons()
 	std::string *enabledtext = new std::string[2];
 	enabledtext[0] = "Disabled";
 	enabledtext[1] = "Enabled";
-	buttons[3] = new VideoTextToggle (this, enabledtext, colx[4], rowy[3], 59,
+	buttons[3] = new VideoTextToggle (this, enabledtext, colx[2], rowy[3], 74,
 									  fullscreen, 2);
 
 	std::string *scalers = new std::string[Image_window::NumScalers];
@@ -153,6 +150,10 @@ void VideoOptions_gump::rebuild_buttons()
 
 	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74,
 									  scaler, Image_window::NumScalers);
+
+	buttons[4] = new VideoTextToggle (this, game_restext, colx[2], rowy[5], 74,
+									  game_resolution, num_game_resolutions);
+
 }
 
 void VideoOptions_gump::rebuild_scale_button()
@@ -173,8 +174,8 @@ void VideoOptions_gump::rebuild_scale_button()
 			snprintf(buf, sizeof(buf), "x%d", i+1);
 			scalingtext[i] = buf;
 			}
-		buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 
-				59, scaling, num_scales);
+		buttons[1] = new VideoTextToggle (this, scalingtext, colx[2], rowy[1], 
+				74, scaling, num_scales);
 	}
 	else if (scaler == Image_window::Hq3x)
 		scaling = 2;
@@ -184,39 +185,69 @@ void VideoOptions_gump::rebuild_scale_button()
 
 void VideoOptions_gump::load_settings()
 {
-	int w = gwin->get_win()->get_full_width();
-	int h = gwin->get_win()->get_full_height();
+	int w = gwin->get_win()->get_display_width();
+	int h = gwin->get_win()->get_display_height();
 
-	resolutions[2*num_default_res] = w;
-	resolutions[2*num_default_res+1] = h;
+	if (resolutions == 0)
+	{
+		const std::map<uint32, Image_window::Resolution> &Resolutions = gwin->get_win()->Resolutions;
 
-	num_resolutions = num_default_res;
-	
-	resolution = -1;
-	int i;
-	for (i = 0; i < num_default_res; i++) {
-		if (resolutions[2*i] == w && resolutions[2*i+1] == h) {
-			resolution = i;
-			break;
+		num_resolutions = Resolutions.size();
+
+		if (Resolutions.find((w<<16)|h) == Resolutions.end()) {
+			resolution = num_resolutions++;
 		}
-	}
-	
-	if (resolution == -1) {
-		num_resolutions++;
-		resolution = num_default_res;
+
+		int i = 0;
+		resolutions = new uint32[num_resolutions];
+
+		for (std::map<uint32, Image_window::Resolution>::const_iterator it = Resolutions.begin(); it != Resolutions.end(); ++it)
+			resolutions[i++] = it->first;
+
+		if (num_resolutions != i)
+			resolutions[i] = (w<<16)|h;
 	}
 
+	resolution = 0;
 	restext = new std::string[num_resolutions];
-	for (i = 0; i < num_resolutions; i++) {
-		restext[i] = resolutionstring(resolutions[2*i], resolutions[2*i+1]);
+	for (int i = 0; i < num_resolutions; i++)
+	{
+		int rw = resolutions[i]>>16;
+		int rh = resolutions[i]&0xFFFF;
+		restext[i] = resolutionstring(rw, rh);
+		if (rw==w && rh==h) resolution = i;
 	}
 
-	old_resolution = resolution;
+	int gw, gh; 
+	config->value("config/video/game/width", gw, w);
+	config->value("config/video/game/height", gh, h);
+
+	if (gw == 0 && gh == 0)
+		game_resolution = 0;
+	else if (gw == 320 && gh == 200)
+		game_resolution = 1;
+	else {
+		game_resolution = 2;
+	}
+
+	if (num_game_resolutions == 0)
+	{
+		game_resolutions[0] = 0;
+		game_resolutions[1] = (320<<16)|200;
+		game_resolutions[2] = (gw<<16)|gh;
+		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] && game_resolutions[1] != game_resolutions[2])?3:2;
+	}
+
+	game_restext = new std::string[3];
+
+	game_restext[0] = "Auto";
+	game_restext[1] = "320x200";
+	game_restext[2] = resolutionstring(game_resolutions[2]>>16, game_resolutions[2]&0xFFFF);
+
 	scaling = gwin->get_win()->get_scale_factor()-1;
 	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
 	gclock->set_palette();
-	
 }
 
 VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
@@ -243,32 +274,24 @@ VideoOptions_gump::~VideoOptions_gump()
 
 void VideoOptions_gump::save_settings()
 {
-	
-	int resx = resolutions[2*resolution];
-	int resy = resolutions[2*resolution+1];
-	config->set("config/video/width", resx, true);
-	config->set("config/video/height", resy, true);
-	config->set("config/video/scale", scaling+1, true);
-	if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
-		config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
-	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", true);
-	
-	int gw, gh; // Place holder for now
+	int resx = resolutions[resolution]>>16;
+	int resy = resolutions[resolution]&0xFFFF;
+	int gw = game_resolutions[game_resolution]>>16;
+	int gh = game_resolutions[game_resolution]&0xFFFF; 
 
-	config->value("config/video/game/width", gw, resx);
-	config->value("config/video/game/height", gh, resy);
+	config->set("config/video/display/width", resx, false);
+	config->set("config/video/display/height", resy, false);
+	config->set("config/video/game/width", gw, false);
+	config->set("config/video/game/height", gh, false);
+	config->set("config/video/scale", scaling+1, false);
+	if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
+		config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),false);
+	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
+	
+	config->write_back();
 
 	gwin->resized(resx, resy, fullscreen!=0, gw, gh, scaling+1, scaler);
-	/*
-	if(((fullscreen==0)&&(gwin->get_win()->is_fullscreen()))||
-	   ((fullscreen==1)&&(!gwin->get_win()->is_fullscreen())))
-		{
-		gwin->get_win()->toggle_fullscreen();
-		Set_renderer(gwin->get_win(), gwin->get_pal(), true);
-		gwin->get_pal()->apply(false);
-		gwin->paint();
-		}
-		*/
+
 	gwin->set_painted();
 }
 
@@ -285,6 +308,7 @@ void VideoOptions_gump::paint()
 		sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
 	sman->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
 	sman->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
+	sman->paint_text(2, "Game Res:", x + colx[0], y + rowy[5] + 1);
 	gwin->set_painted();
 }
 

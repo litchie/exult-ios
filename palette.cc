@@ -40,6 +40,10 @@ using std::size_t;
 using std::string;
 #endif
 
+unsigned char Palette::border[3] = {
+	0,0,0
+};
+
 Palette::Palette()
 	: win(Game_window::get_instance()->get_win()), 
 	    palette(-1), brightness(100), max_val(63),
@@ -82,6 +86,9 @@ void Palette::fade
 	)
 	{
 	if (pal_num == -1) pal_num = palette;
+	
+	if (palette != -1) border255 = (palette >= 0 && palette <= 12) && palette != 9;
+
 	load(PALETTES_FLX, PATCH_PALETTES, pal_num);
 	if (inout)
 		fade_in(cycles);
@@ -117,6 +124,8 @@ void Palette::set
 	bool repaint
 	)
 	{
+	border255 = (palette >= 0 && palette <= 12) && palette != 9;
+
 	if ((palette == pal_num || pal_num == -1) &&
 		(brightness == new_brightness || new_brightness == -1))
 					// Already set.
@@ -142,9 +151,11 @@ void Palette::set
 	(
 	unsigned char palnew[768],
 	int new_brightness,		// New percentage, or -1.
-	bool repaint
+	bool repaint,
+	bool border255
 	)
 	{
+	this->border255 = border255;
 	memcpy(pal1,palnew,768);
 	memset(pal2,0,768);
 	palette = -1;
@@ -159,7 +170,23 @@ void Palette::set
 
 void Palette::apply(bool repaint)
 {
+	uint8 r = pal1[255*3+0];
+	uint8 g = pal1[255*3+1];
+	uint8 b = pal1[255*3+2];
+
+	if (border255)
+	{
+		pal1[255*3+0] = border[0]*63/255;
+		pal1[255*3+1] = border[1]*63/255;
+		pal1[255*3+2] = border[2]*63/255;
+	}
+
 	win->set_palette(pal1, max_val, brightness);
+
+	pal1[255*3+0] = r;
+	pal1[255*3+1] = g;
+	pal1[255*3+2] = b;
+
 	if (!repaint)
 		return;
 	if (!Set_glpalette())
@@ -376,9 +403,26 @@ void Palette::fade_in(int cycles)
 		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = 0; i <= cycles; i++)
 		{
+			uint8 r = pal1[255*3+0];
+			uint8 g = pal1[255*3+1];
+			uint8 b = pal1[255*3+2];
+
+			if (border255)
+			{
+				pal1[255*3+0] = border[0]*63/255;
+				pal1[255*3+1] = border[1]*63/255;
+				pal1[255*3+2] = border[2]*63/255;
+			}
+
 			for(int c=0; c < 768; c++)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
+
+			pal1[255*3+0] = r;
+			pal1[255*3+1] = g;
+			pal1[255*3+2] = b;
+
 			win->set_palette(fade_pal, max_val, brightness);
+
 			// Frame skipping on slow systems
 			if (i == cycles || ticks >= SDL_GetTicks() ||
 				    !Game_window::get_instance()->get_frame_skipping())
@@ -390,7 +434,23 @@ void Palette::fade_in(int cycles)
 	}
 	else
 	{
+		uint8 r = pal1[255*3+0];
+		uint8 g = pal1[255*3+1];
+		uint8 b = pal1[255*3+2];
+
+		if ((palette >= 0 && palette <= 12) && palette != 9)
+		{
+			pal1[255*3+0] = border[0]*63/255;
+			pal1[255*3+1] = border[1]*63/255;
+			pal1[255*3+2] = border[2]*63/255;
+		}
+
 		win->set_palette(pal1, max_val, brightness);
+
+		pal1[255*3+0] = r;
+		pal1[255*3+1] = g;
+		pal1[255*3+2] = b;
+
 		win->show();
 	}
 }
@@ -411,8 +471,24 @@ void Palette::fade_out(int cycles)
 		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = cycles; i >= 0; i--)
 		{
+			uint8 r = pal1[255*3+0];
+			uint8 g = pal1[255*3+1];
+			uint8 b = pal1[255*3+2];
+
+			if (border255)
+			{
+				pal1[255*3+0] = border[0]*63/255;
+				pal1[255*3+1] = border[1]*63/255;
+				pal1[255*3+2] = border[2]*63/255;
+			}
+
 			for(int c=0; c < 768; c++)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
+
+			pal1[255*3+0] = r;
+			pal1[255*3+1] = g;
+			pal1[255*3+2] = b;
+
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == 0 || ticks >= SDL_GetTicks() ||
@@ -483,7 +559,7 @@ Palette *Palette::create_intermediate(Palette *to, int nsteps, int pos)
 		memcpy(palnew, palold, 768);
 		}
 	Palette *ret = new Palette();
-	ret->set(palnew);
+	ret->set(palnew,-1,true,true);
 	return ret;
 	}
 

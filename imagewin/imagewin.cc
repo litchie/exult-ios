@@ -56,6 +56,8 @@ Boston, MA  02111-1307, USA.
 #include "shapes/glshape.h"
 #endif
 
+#include "Configuration.h"
+
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
 
 #ifndef UNDER_EMBEDDED_CE
@@ -89,6 +91,7 @@ const std::map<uint32,Image_window::Resolution> &Image_window::Resolutions = Ima
 bool Image_window::any_res_allowed; 
 const bool &Image_window::AnyResAllowed = Image_window::any_res_allowed; 
 
+int Image_window::force_bpp = 0;
 int Image_window::desktop_depth = 0;
 int Image_window::windowed_8 = 0;
 int Image_window::windowed_16 = 0;
@@ -206,7 +209,17 @@ Image_window::ScalerVector::ScalerVector()
 
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 
-		"OpenGL", 0xFFFFFFFF, true
+		"OpenGL", 0xFFFFFFFF, true,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL,
+		&Image_window::show_scaledOpenGL
 	};
 	push_back(opengl);
 #endif
@@ -304,7 +317,7 @@ void Image_window::static_init()
 	SDL_PixelFormat format;
 	std::memset(&format,0,sizeof(format));
 
-	int bpps[] = { 0, 8, 15, 16, 24, 32 };
+	int bpps[] = { 0, 8, 16, 32 };
 
 	/* Get available fullscreen/hardware modes */
 	for (int i = 0; i < sizeof(bpps)/sizeof(bpps[0]); i++)
@@ -439,6 +452,11 @@ void Image_window::static_init()
 		cerr << "SDL Reports no usable paletted fullscreen resolutions." << endl;
 	else if (!ok_rgb) 
 		cerr << "SDL Reports no usable rgb fullscreen resolutions." << endl;
+
+	config->value("config/video/force_bpp", force_bpp, 0);
+	
+	if (force_bpp != 0 && force_bpp != 16 && force_bpp != 8 && force_bpp != 32) force_bpp = 0;
+	else if (force_bpp != 0) cout << "Forcing bit depth to " << force_bpp << " bpp" << endl;
 }
 
 /*
@@ -463,35 +481,47 @@ void Image_window::create_surface
  unsigned int h
  )
 {
-	ibuf->width = w;
-	ibuf->height = h;
-	if (game_width == 0 || game_height == 0) {
-		game_width = w;
-		game_height = h;
-	}
 	uses_palette = true;
-	show_scaled = 0;
-	draw_surface = paletted_surface = display_surface = 0;
+	draw_surface = paletted_surface = inter_surface = display_surface = 0;
 #if defined(__zaurus__)
 	fullscreen = false; // Zaurus would crash in fullscreen mode
 #else
-	if (try_scaler(w, h) == false) // everyone else can test the try_scaler function
-#endif
+	if ((scale > 1 || force_bpp) && try_scaler(w, h) == false)
 	{
-		if (!paletted_surface)			// No scaling, or failed?
-		{
-			uint32 flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0) | (ibuf->depth==8?SDL_HWPALETTE:0);
-			display_surface = draw_surface = paletted_surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
-			scale = 1;
-		}
-		if (!paletted_surface)
-		{
-			cerr << "Couldn't set video mode (" << w << ", " << h <<
-				") at " << ibuf->depth << " bpp depth: " <<
-				SDL_GetError() << endl;
+		// Try fallback to point scaler if it failed, if it doesn't work, we probably can't run
+		scaler = point;
+		try_scaler(w, h);
+	}
+#endif
+
+	if (!paletted_surface && !force_bpp)		// No scaling, or failed?
+	{
+		uint32 flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0) | (ibuf->depth==8?SDL_HWPALETTE:0);
+		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w/scale, h/scale, ibuf->depth, flags);
+		scale = 1;
+	}
+	if (!paletted_surface)
+	{
+		cerr << "Couldn't set video mode (" << w << ", " << h << ") at " << ibuf->depth << " bpp depth: " << (force_bpp?"":SDL_GetError()) << endl;
+		if (w == 640 && h == 480) {
 			exit(-1);
 		}
+		else {
+			cerr << "Attempting fallback to 640x480. Good luck..." << endl;
+			scale = 2;
+			create_surface(640,480);
+			return;
+		}
 	}
+
+	ibuf->width = draw_surface->w;
+	ibuf->height = draw_surface->h;
+
+	if (game_width == 0 || game_width > ibuf->width)
+		game_width = ibuf->width;
+	if (game_height == 0 || game_height > ibuf->height) 
+		game_height = ibuf->height;
+
 	// Update line size in words.
 	ibuf->line_width = draw_surface->pitch/ibuf->pixel_size;
 	// Offset it set to the top left pixel if the game window
@@ -505,64 +535,30 @@ void Image_window::create_surface
 *	Output:	False if error (reported).
 */
 
-bool Image_window::create_scale_surfaces(int scl, int w, int h,
-										 scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32)
+bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 {
-	if (ibuf->depth != 8) {
-		cerr << "Scaling from " << ibuf->depth << " not supported." << endl;
-		return false;
-	}
-
-	int hwdepth = 0;
+	int hwdepth = bpp;
 	uint32 flags = 0;
-
-	// Are 16bit or 32 bit required?
-	if (fun16 == 0 && fun32 != 0) hwdepth = 32;
-	else if (fun16 != 0 && fun32 == 0) hwdepth = 16;
 
 	// Get best bpp
 	flags = SDL_SWSURFACE|(fullscreen?SDL_FULLSCREEN:0);
-	hwdepth = Get_best_bpp(scl*w, scl*h, hwdepth, flags);
+	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
-	// Get_best_bpp will only ever return 16 or 32 bpp, but doing this just incase someone
-	// changes it
-	if (hwdepth != 16 && hwdepth != 32) 
-	{
-		cerr << "Scaling to " << hwdepth << " not supported." << endl;
-		return false;
-	}
-	else if ((display_surface = SDL_SetVideoMode(scl*w, scl*h, 
+	if ((display_surface = inter_surface = SDL_SetVideoMode(w, h, 
 		hwdepth, flags)) != 0 &&
-		(draw_surface = paletted_surface = 
-		SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-		8, 0, 0, 0, 0)) != 0)
+		(draw_surface = 
+		SDL_CreateRGBSurface(SDL_SWSURFACE, w/scale, h/scale,
+		ibuf->depth, 0, 0, 0, 0)) != 0)
 	{			// Get color mask info.
-		SDL_PixelFormat *fmt = display_surface->format;
-		uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-		if (hwdepth == 16)
-		{
-			show_scaled = 
-				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
-					(fun565!=0?fun565:fun16) : 
-				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
-					(fun555!=0?fun555:fun16) : 
-				fun16 ;
-		}
-		else
-		{
-			show_scaled = fun32;
-		}
-		uses_palette = false;
+		if ((uses_palette = (bpp == 8))) paletted_surface = display_surface;
+		else paletted_surface = draw_surface;
 		return true;
 	}
 	else
 	{
 		cerr << "Couldn't create scaled surface" << endl;
-		if (draw_surface != 0 && draw_surface != display_surface) SDL_FreeSurface(draw_surface);
-		paletted_surface = 0;
-		display_surface = 0;
-		draw_surface = 0;
+		free_surface();
 		return false;
 	}
 }
@@ -603,28 +599,24 @@ bool Image_window::try_scaler(int w, int h)
 		// +++++For now create 8-bit surface
 		//   to avoid crashing places we
 		//   haven't converted yet.
-		if ((display_surface = SDL_SetVideoMode(scale*w, scale*h, 
+		if ((display_surface = inter_surface = SDL_SetVideoMode(w, h, 
 			hwdepth, video_flags)) != 0 &&
 			(draw_surface = paletted_surface = SDL_CreateRGBSurface(
-			SDL_SWSURFACE, w, h,
+			SDL_SWSURFACE, w/scale, h/scale,
 			8, 0, 0, 0, 0)) != 0)
 		{
-			show_scaled = &Image_window::show_scaledOpenGL;
+			//show_scaled = &Image_window::show_scaledOpenGL;
 		}
 		else
 		{
-			cerr << "Couldn't allocate surface: " << 
-				SDL_GetError() << endl;
-			if (draw_surface != 0 && draw_surface != display_surface) SDL_FreeSurface(draw_surface);
-			paletted_surface = 0;
-			display_surface = 0;
-			draw_surface = 0;
+			cerr << "Couldn't allocate surface: " <<  SDL_GetError() << endl;
+			free_surface();
 		}
 #else
 		cerr << "OpenGL not supported" << endl;
 #endif
 	}
-	else if (scale >= 2)
+	else if (scale >= 2 || force_bpp != 0)
 	{
 		const ScalerInfo *info;
 
@@ -633,67 +625,27 @@ bool Image_window::try_scaler(int w, int h)
 		else
 			info = &Scalers[scaler];
 
-		int selected_factor = scale;
+		// Is the size supported, if not, default to point scaler
+		if (!(info->size_mask & SCALE_BIT(scale)))
+			return false;
 
-		// Is the size supported?
-		while (selected_factor != 0 && !(info->size_mask & SCALE_BIT(selected_factor)))
-		{
-			// If not, try the next one down
-			selected_factor--;
-		}
+		bool has8 = ibuf->depth==8 && info->fun8to8 && (force_bpp == 0 || force_bpp == 8);
+		bool has16 = ((ibuf->depth==8 && info->fun8to16) || (ibuf->depth==16 && info->fun16to16)) && (force_bpp == 0 || force_bpp == 16);
+		bool has32 = ((ibuf->depth==8 && info->fun8to32) || (ibuf->depth==32 && info->fun32to32)) && (force_bpp == 0 || force_bpp == 32);
 
-		// Uh oh, couldn't find any factors the same size or smaller
-		if (selected_factor == 1) 
-		{
-			// Try try to find one above
-			selected_factor = scale+1;
-			while (selected_factor < 32 && !(info->size_mask & SCALE_BIT(selected_factor)))
-			{
-				// If not, try the next one down
-				selected_factor++;
-			}
+		// First try best of 16 bit/32 bit scaler
+		if (has16 && has32 && create_scale_surfaces(w,h,0))
+			return true;
+		
+		if (has16 && create_scale_surfaces(w,h,16))
+			return true;
 
-			// Someone messed up it seems....
-			if (selected_factor == 32) 
-			{
-				cerr << "Scaler doesn't support any scaling factors." << endl;
-				return false;
-			}
-		}
+		if (has32 && create_scale_surfaces(w,h,32))
+			return true;
 
-		// First try 16 bit/32 bit scaler
-		if (info->fun16 !=0 || info->fun32 != 0)
-		{
-			if (create_scale_surfaces(selected_factor, w, h, info->fun565, info->fun555, info->fun16, info->fun32))
-			{
-				scale = selected_factor;
-				return true;
-			}
-		}
-
-		// Try 8but scaler
-		if (info->fun8)
-		{
-			if (ibuf->depth != 8) return false;
-
-			display_surface = paletted_surface = SDL_SetVideoMode(w*selected_factor, h*selected_factor, 8, SDL_SWSURFACE|SDL_HWPALETTE|(fullscreen?SDL_FULLSCREEN:0));
-
-			draw_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
-			if (paletted_surface && draw_surface)
-			{
-				show_scaled = info->fun8;
-				scale = selected_factor;
-				return true;
-			}
-			else
-			{
-				cerr << "Couldn't create 8bit scaled surface" << endl;
-				if (draw_surface != 0 && draw_surface != display_surface) SDL_FreeSurface(draw_surface);
-				paletted_surface = 0;
-				display_surface = 0;
-				draw_surface = 0;
-			}
-		}
+		// 8bit display output is mostly deprecated!
+		if (has8 && create_scale_surfaces(w,h,8))
+			return true;
 	}
 
 	return false;
@@ -707,10 +659,12 @@ void Image_window::free_surface
 (
  )
 {
-	if (draw_surface != 0 && draw_surface != display_surface) SDL_FreeSurface(draw_surface);
+	if (draw_surface != 0 && draw_surface != display_surface && draw_surface != inter_surface) SDL_FreeSurface(draw_surface);
+	if (draw_surface != 0 && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
 	paletted_surface = 0;
-	display_surface = 0;
+	inter_surface = 0;
 	draw_surface = 0;
+	display_surface = 0;
 	ibuf->bits = 0;
 }
 
@@ -744,7 +698,8 @@ void Image_window::resized
 {
 	if (paletted_surface)
 	{
-		if (neww == ibuf->width && newh == ibuf->height && newsc == scale && scaler == newscaler)
+		if (neww == display_surface->w && newh == display_surface->h && newsc == scale && scaler == newscaler
+			&& newgw == game_width && newgh == game_height)
 			return;		// Nothing changed.
 		free_surface();		// Delete old image.
 	}
@@ -767,10 +722,37 @@ void Image_window::show
 	if (!ready())
 		return;
 
-	if (show_scaled)		// 2X scaling?
+	if (scale > 1)		// 2X scaling?
+	{
+		scalefun show_scaled;
+		const ScalerInfo &sel_scaler = Scalers[scaler];
+
+		if (inter_surface->format->BitsPerPixel == 16 || inter_surface->format->BitsPerPixel == 15)
+		{
+			int r = inter_surface->format->Rmask;
+			int g = inter_surface->format->Gmask;
+			int b = inter_surface->format->Bmask;
+
+			show_scaled = 
+				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
+					(sel_scaler.fun8to565!=0?sel_scaler.fun8to565:sel_scaler.fun8to16) : 
+				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
+					(sel_scaler.fun8to555!=0?sel_scaler.fun8to555:sel_scaler.fun8to16) : 
+				sel_scaler.fun8to16 ;
+		}
+		else if (inter_surface->format->BitsPerPixel == 32)
+		{
+			show_scaled = sel_scaler.fun8to32;
+		}
+		else
+		{
+			show_scaled = sel_scaler.fun8to8;
+		}
+
 		(this->*show_scaled)(0, 0, ibuf->width, ibuf->height);
+	}
 	else
-		SDL_UpdateRect(display_surface, 0, 0, ibuf->width, ibuf->height);
+		SDL_UpdateRect(inter_surface, 0, 0, ibuf->width, ibuf->height);
 }
 
 /*
@@ -791,10 +773,38 @@ void Image_window::show
 	x -= get_start_x();
 	y -= get_start_y();
 
-	if (show_scaled)		// 2X scaling?
+	if (scale > 1)		// 2X scaling?
+	{
+		scalefun show_scaled;
+		const ScalerInfo &sel_scaler = Scalers[scaler];
+
+		if (inter_surface->format->BitsPerPixel == 16 || inter_surface->format->BitsPerPixel == 15)
+		{
+			int r = inter_surface->format->Rmask;
+			int g = inter_surface->format->Gmask;
+			int b = inter_surface->format->Bmask;
+
+			show_scaled = 
+				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
+					(sel_scaler.fun8to565!=0?sel_scaler.fun8to565:sel_scaler.fun8to16) : 
+				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
+					(sel_scaler.fun8to555!=0?sel_scaler.fun8to555:sel_scaler.fun8to16) : 
+				sel_scaler.fun8to16 ;
+		}
+		else if (inter_surface->format->BitsPerPixel == 32)
+		{
+			show_scaled = sel_scaler.fun8to32;
+		}
+		else
+		{
+			show_scaled = sel_scaler.fun8to8;
+		}
+
 		(this->*show_scaled)(x, y, w, h);
+
+	}
 	else
-		SDL_UpdateRect(display_surface, x, y, w, h);
+		SDL_UpdateRect(inter_surface, x, y, w, h);
 }
 
 
@@ -804,8 +814,8 @@ void Image_window::show
 void Image_window::toggle_fullscreen() {
 	int w, h;
 
-	w = draw_surface->w;
-	h = draw_surface->h;
+	w = display_surface->w;
+	h = display_surface->h;
 
 	if ( fullscreen ) {
 		cout << "Switching to windowed mode."<<endl;
@@ -906,4 +916,13 @@ void Image_window::opengl_fill_translucent8
 }
 
 #endif
+
+int Image_window::get_display_width()
+{ 
+	return display_surface->w; 
+}
+int Image_window::get_display_height()
+{ 
+	return display_surface->h; 
+}
 
