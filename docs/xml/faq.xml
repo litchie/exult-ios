@@ -9,7 +9,7 @@
 				<li><ref1 target="latest_version"/> better use the snapshots than the ooooold version.</li>
 				<li><ref1 target="u7_versions"/> cleaned up a bit.</li>
 				<li><ref1 target="party_formation"/> Recently was a couple of years ago.</li>
-				<li><ref1 target="known_issues"/> I pitty whoever still uses the Nvidia 40.x reference drivers.</li>
+				<li><ref1 target="known_issues"/> I pity whoever still uses the Nvidia 40.x reference drivers.</li>
 				<li>Fullscreen switching bug should be fixed and thus I'm removing this item.</li>
 				<li><ref1 target="howto_get_answers"/> pointing the Google groups instead of the old newsgroup link.</li>
 				</ul>
@@ -19,8 +19,8 @@
 			<header>- 15 August 2010</header>
 			<body>
 				<ul>
-				<li><ref1 target="whereis_exult"/> also OS X snapshots availlable.</li>
-				<li><ref1 target="what_platforms"/> The Amiga port homepage is only availlable in the Wayback Machine these days.</li>
+				<li><ref1 target="whereis_exult"/> also OS X snapshots available.</li>
+				<li><ref1 target="what_platforms"/> The Amiga port homepage is only available in the Wayback Machine these days.</li>
 				<li><ref1 target="bug_report"/> name and location of log files.</li>
 				<li><ref1 target="fullscreen_bugs"/> workaround added.</li>
 				<li><ref1 target="osx_issues"/> should be fixed but if not we need to know.</li>
@@ -263,7 +263,7 @@
 			</body>
 		</sub>
 		<sub name="other_ultimas">
-			<header>Will <Exult/> support other Ultimas?</header>
+			<header>Will <Exult/> support other Ultima games?</header>
 			<body>
 				<para>
 					<Exult/> supports only Ultima 7 (BG/SI and the add-ons). It will never support
@@ -384,7 +384,7 @@
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
 					in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher),
-					OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
+					OS X, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
 				</para>
 				 <para>
 					Artaxerxes developed the port to
@@ -453,9 +453,9 @@
 				<para>
 					In the past there were reported problems with the localized versions of the
 					game (French, German and Spanish) but these should not be a problem anymore. 
-					The reportes problems were that conversation threads didn't seem to skip to the
+					The reported problems were that conversation threads didn't seem to skip to the
 					next line in the proper places and therefore were unreadable in some cases.<br/>
-					SIvwas published in English and Spanish (as we recently discovered to our surprise)
+					SI was published in English and Spanish (as we recently discovered to our surprise)
 					but we seem to have fixed the main problem with the Spanish version.
 				</para>
 				<para>
@@ -562,7 +562,7 @@
 						Ultima Gameplay FAQ</extref></li>
 				</ul>
 				<para>
-					Please be aware that if you play by using a walkthrough you may accidently skip important parts of the game, 
+					Please be aware that if you play by using a walkthrough you may accidentaly skip important parts of the game, 
 					especially when playing SI you have to be careful since SI is much more linear than BG.<br/>
 					Please see <ref target="why_gameplayfaq"/> for more information.
 				</para>
@@ -575,20 +575,18 @@
 					You can find exult.cfg in specific directories:
 				</para>
 				<ul>
-					<ul>
-						<li>On UNIX systems you can expect to find it in $HOME/.exult.cfg</li>
-						<li>Mac OS X saves it to ~/Library/Preferences/exult.cfg</li>
-						<li>Windows 95, 98, 98 SE and NT4.0 save the exult.cfg to the folder where you installed <Exult/> to 
+					<li>On UNIX systems you can expect to find it in $HOME/.exult.cfg</li>
+					<li>Mac OS X saves it to ~/Library/Preferences/exult.cfg</li>
+					<li>Windows 95, 98, 98 SE and NT4.0 save the exult.cfg to the folder where you installed <Exult/> to 
 						(by default C:\Program Files\Exult)</li>
-						<li>Windows ME saves exult.cfg to C:\Windows\Application Data\Exult</li>
-						<li>Windows 2000 and XP save exult.cfg to LOCAL_APPDATA\Exult, which translates to 
-							C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult for an English version 
-							of Windows</li>
-						<li>Windows Vista and Windows 7 also save exult.cfg to LOCAL_APPDATA\Exult, but on these this translates 
-							to "C:\Users\YourUsername\AppData\Local\Exult"</li>
-						<li>On Windows 2000, XP, Vista and 7 you can quickly access this folder by executing "shell:Local AppData\Exult" 
-							in the "Run" entry of the Startmenu (or the "Run or Search" entry of the Windows Vista and 7 Startmenu)</li>
-					</ul>
+					<li>Windows ME saves exult.cfg to C:\Windows\Application Data\Exult</li>
+					<li>Windows 2000 and XP save exult.cfg to LOCAL_APPDATA\Exult, which translates to 
+						C:\Documents and Settings\YourUsername\Local Settings\Application Data\Exult for an English version 
+						of Windows</li>
+					<li>Windows Vista and Windows 7 also save exult.cfg to LOCAL_APPDATA\Exult, but on these this translates 
+						to "C:\Users\YourUsername\AppData\Local\Exult"</li>
+					<li>On Windows 2000, XP, Vista and 7 you can quickly access this folder by executing "shell:Local AppData\Exult" 
+						in the "Run" entry of the Startmenu (or the "Run or Search" entry of the Windows Vista and 7 Startmenu)</li>
 				</ul>
 			</body>
 		</sub>
@@ -931,7 +929,7 @@
 					report it's much easier for the team to look at the problem (speeds the process up a bit
 					as they are much more likely you take a look at the problem this way).</li>
 				<li>You may be asked to provide the log files of <Exult/>. These are named stdout.txt and 
-					stederr.txt and can be found where exult.cfg is saved to, see 
+					stderr.txt and can be found where exult.cfg is saved to, see 
 					<extref doc="docs" target="exult_config_location">Location of exult.cfg</extref>.</li>
 				<li>You may be asked to provide the log files of <Studio/>. These are named studio_out.txt and 
 				studio_err.txt and can be found where exult.cfg is saved to, see 
@@ -1034,8 +1032,8 @@
 						add some X11 libraries or <Exult/> won't link (for example, by adding "AC_PATH_XTRA" 
 						to configure.ac). Since the Ubuntu version "Jaunty Jackalope" that fix isn't needed 
 						anymore, though.</li>
-					<li>After compiling yourself remember to copy the exult*.flx files from the data dir in
-						the source to the <Exult/> data dir you chose in exult.cfg. This applies only if
+					<li>After compiling yourself remember to copy the exult*.flx files from the data folder in
+						the source to the <Exult/> data folder you chose in exult.cfg. This applies only if
 						you don't use "make install"</li>
 				</ul>
 			</body>
@@ -1053,7 +1051,7 @@
 					<li>There are reported problems with digital sound effects or speech when using Vortex 
 						series sound cards (like the Diamond MX 300). <Exult/> is triggering a bug in the 
 						drivers.</li>
-					<li>There is also a problem involving C-Media soundcard chipsets and MIDI music.
+					<li>There is also a problem involving C-Media sound card chipsets and MIDI music.
 						We suggest you first upgrade your drivers to the newest ones. Get them at
 						<extref target="http://www.cmedia.com.tw/"/>. If that doesn't help, please contact
 						us.</li>
@@ -1063,8 +1061,8 @@
 					<kbd>SET SDL_VIDEODRIVER=directx</kbd><br/>
 					<kbd>SET SDL_AUDIODRIVER=waveout</kbd><br/>
 					<kbd>exult.exe</kbd><br/>
-					Save this textfile to your <Exult/> folder with the name <kbd>runexult.bat</kbd>. 
-					When you want to play <Exult/> doubleclick this file and it should play fine.<br/>
+					Save this text file to your <Exult/> folder with the name <kbd>runexult.bat</kbd>. 
+					When you want to play <Exult/> double click this file and it should play fine.<br/>
 					Be aware that when you have no problem with the audio of <Exult/> you don't need the
 					SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio 
 					and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
@@ -1072,17 +1070,17 @@
 			</body>
 		</sub>
 		<sub name="osx_issues">
-			<header>Problems with Mac OSX</header>
+			<header>Problems with Mac OS X</header>
 			<body>
 				<para>
-					On OSX something in our audio code might crash <Exult/> unexpectedly.
+					On OS X something in our audio code might crash <Exult/> unexpectedly.
 					For example the famous scene in SI with Frigidazi has been reported 
 					as a trigger. To circumvent this disable all audio before a scene 
 					that crashes and enable it later on in the game.
 				</para>
 				<para>
 					This should be fixed since the 1.2 version but we are not sure, so 
-					if you still experience this with later versions, please notifiy us!
+					if you still experience this with later versions, please notify us!
 				</para>
 			</body>
 		</sub>
@@ -1194,7 +1192,7 @@
 					It is important to <strong>wear</strong> the ring on a finger and not just hold it like a weapon.
 				</para>
 				<para>
-					After you defeated the enemy you have to doubleclick the prism to destroy the generator.
+					After you defeated the enemy you have to double click the prism to destroy the generator.
 					You will then find the black prism (without the yellow outline) to your feet. Look 
 					closely and take it with you.
 				</para>
@@ -1250,7 +1248,7 @@
 				<para>
 					When you are at the Sleeping Bull, do <em>NOT</em> close the gangplank to Captain Hawk's ship.
 					After you've got him out of Jail and you are ready for him to take you to Moonshade, he will
-					not be able to do so when the gangplank is closed. If you have accidently done that you will 
+					not be able to do so when the gangplank is closed. If you have accidentaly done that you will 
 					have to resort to cheating (enable hackmover) for fixing that.
 				</para>
 			</body>
@@ -1352,10 +1350,10 @@
 			</body>
 		</sub>
 		<sub name="pillars_fort">
-			<header>How to break the plot by doubleclicking some pillars (SI-SS)</header>
+			<header>How to break the plot by double clicking some pillars (SI-SS)</header>
 			<body>
 				<para>
-					In the dining hall of the fort in the add-on Silver Seed you can doubleclick the
+					In the dining hall of the fort in the add-on Silver Seed you can double click the
 					pillars. This teleports you to the test in the gargoyle city. If you haven't done
 					this test yet this breaks that plot later on and if you already have it is still a
 					nuisance. So better don't do it.
