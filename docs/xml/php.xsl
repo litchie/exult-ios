@@ -322,7 +322,7 @@
 		<xsl:when test="count(child::configtag)>0">
 			<tr style="{$row-style}"><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td></tr>
 			<xsl:apply-templates select="configtag">
-				<xsl:with-param name="indent"><xsl:value-of select="$indent+28"/></xsl:with-param>
+				<xsl:with-param name="indent"><xsl:value-of select="$indent+16"/></xsl:with-param>
 			</xsl:apply-templates>
 		</xsl:when>
 		<xsl:otherwise>

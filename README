@@ -1,28 +1,29 @@
 Exult Documentation
-last changed: 15 August 2010(GMT)
+last changed: 25 August 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 15 August 2010
-0.2. - 28 April 2010
-0.3. - 11 March 2010
-0.4. - 10 March 2010
-0.5. - 08 March 2010
-0.6. - 16 July 2009
-0.7. - 03 June 2009
-0.8. - 20 May 2009
-0.9. - 19 May 2009
-0.10. - 18 May 2009
-0.11. - 28 April 2009
-0.12. - 21 October 2007
-0.13. - 08 April 2006
-0.14. - 14 March 2005
-0.15. - 14 August 2004
-0.16. - 23 May 2004
-0.17. - 11 February 2004
-0.18. - 12 December 2003
+0.1. - 25 August 2010
+0.2. - 15 August 2010
+0.3. - 28 April 2010
+0.4. - 11 March 2010
+0.5. - 10 March 2010
+0.6. - 08 March 2010
+0.7. - 16 July 2009
+0.8. - 03 June 2009
+0.9. - 20 May 2009
+0.10. - 19 May 2009
+0.11. - 18 May 2009
+0.12. - 28 April 2009
+0.13. - 21 October 2007
+0.14. - 08 April 2006
+0.15. - 14 March 2005
+0.16. - 14 August 2004
+0.17. - 23 May 2004
+0.18. - 11 February 2004
+0.19. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -55,7 +56,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 4. Video
 4.1. Resolution
-4.2. Scaler
+4.2. Higher resolution is cheating
+4.3. Scaler
 
 5. Movement and Keys
 5.1. Movement
@@ -115,7 +117,16 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 15 August 2010
+0.1. - 25 August 2010
+* 2.3. Settings in exult.cfg added the new config options for video and audio.
+* 4.1. Resolution rewrote a bit to explain the new rendering.
+* 4.2. Higher resolution is cheating added.
+* 6.3. Video Options added new game res setting.
+* 6.4. Audio Options forgot the speech option.
+
+
+
+0.2. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 8.2. Error Log also about location of log files.
@@ -124,12 +135,12 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 28 April 2010
+0.3. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-0.3. - 11 March 2010
+0.4. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 6.4. Audio Options added new SFX pack option and updated screenshot.
@@ -137,7 +148,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 10 March 2010
+0.5. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -147,36 +158,36 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.5. - 08 March 2010
+0.6. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
 * 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
-* 4.2. Scaler OpenGl scaler is not considered stable.
+* 4.3. Scaler OpenGl scaler is not considered stable.
 * 7.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
 * 8.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
 
 
 
-0.6. - 16 July 2009
+0.7. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.7. - 03 June 2009
+0.8. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.8. - 20 May 2009
+0.9. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.9. - 19 May 2009
+0.10. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -187,7 +198,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.10. - 18 May 2009
+0.11. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -196,7 +207,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 2.10. Command line options now up to date with SVN.
 * 3.2. MIDI Music split from the general music part.
 * removed TiMidity chapter, since the cfg issue is explained in 3.2. MIDI Music.
-* 4.2. Scaler updated.
+* 4.3. Scaler updated.
 * 5.2. Keyboard commands updated.
 * 5.3. Cheat keys updated.
 * 5.4. Map Editing keys needed their own chapter.
@@ -206,43 +217,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.11. - 28 April 2009
+0.12. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.12. - 21 October 2007
+0.13. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OS X added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.13. - 08 April 2006
+0.14. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.14. - 14 March 2005
+0.15. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.15. - 14 August 2004
+0.16. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.16. - 23 May 2004
+0.17. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.17. - 11 February 2004
+0.18. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -253,7 +264,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.18. - 12 December 2003
+0.19. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
@@ -583,6 +594,18 @@ Note: yes means enabled, no means disabled
 				**how much the MIDI is altered.
         </level>
       </reverb>
+      <precacheTimbers>
+        <onStartup>
+        no
+				**when enabled it preloads the entire timbre bank on starting
+				up Exult with a penalty on start up time.
+        </onStartup>
+        <onPlay>
+        yes
+				**only preloads needed timbres and patches when a song gets
+				loaded.
+        </onPlay>
+      </precacheTimbers>
       <win32_device>
       -1
 				**choose the Windows MIDI Device. See 3.4.
@@ -608,22 +631,56 @@ Note: yes means enabled, no means disabled
     </midi>
   </audio>
   <video>
-    <width>
-    320
-				**here you choose your resolution, it can be as big as your 
-				monitor allows. 320x200 is the resolution of the original.
-    </width>
-    <height>
-    200
-    </height>
+    <display>
+      <width>
+      640
+				**here you choose the resolution of the Exult window.
+				The default will be the lowest resolution that your system supports.
+      </width>
+      <height>
+      240
+      </height>
+    </display>
+    <game>
+      <width>
+      320
+				**here you choose at what resolution you run the games in the
+				Exult window. 320x200 is the resolution of the original.
+				0x0 means that Exult will determine the best way to match
+				game resolution to Exult resolution.
+      </width>
+      <height>
+      200
+      </height>
+      <border>
+        <red>
+        0
+				**if game resolution doesn't match Exult resolution
+				you have borders around the game res. With these you can
+				change the black defult border color.
+        </red>
+        <green>
+        0
+        </green>
+        <blue>
+        0
+        </blue>
+      </border>
+    </game>
+    <force_bpp>
+    0
+				**force output bpp. Valid values are 	0 (for any), 8, 16 or 32.
+				If set to 8 most scalers will not work and will display as the
+				fallback point scaler.
+    </force_bpp>
     <scale_method>
     2xSaI
-				**choose different scalers here - see 4.2.
+				**choose different scalers here - see 4.3.
     </scale_method>
     <scale>
     2
 				**2 enables / 1 disables scaling, some scalers support higher values. 
-				See 4.2..
+				See 4.3..
     </scale>
     <fullscreen>
     no
@@ -1003,12 +1060,17 @@ You can now configure the ALSA port for your distribution in .exult.cfg (see 2.3
 
 4. Video
 4.1. Resolution
-By default Exult runs at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 and increase the quality of the graphics.
-Using higher resolutions is considered cheating as you can see too much of the surrounding area. Since the game was designed to be played at a specific size, this can actually lead to plot-stopping problems; hence we will not fix any problem caused by your cheating! Don't say we didn't warn you :-) Actually being able to play in higher resolutions is one of the big advantages of Exult but as mentioned above it comes with a price.
-Within the game you can use the 'Alt +' and 'Alt -' to switch resolution..
+We distinguish between the Exult display resolution (which determines the size of the Exult window and its fullscreen rendering) and the game resolution, which determines how big the in-game viewing area is.
+By default Exult runs the games at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 or even triple the the size to 960x600 while increasing the quality of the graphics and maintaining the same viewing area. This allows Exult to show the game as an enhanced version of how it originally appeared, and not show locations that were originally off-screen. When you first start Exult we apply the scaler 2xSaI which doubles the size of each pixel, resulting in a 640x400 window.
+The game resolution with scaler applied should not be bigger than the display, otherwise you will get strange effects and the game might crash. For example when you set the game resolution to 320x200 with the scaler Point at sale factor 3, your game resolution is actually 960x600. If your display resolution is set to 640x480 the resolutions don't match and your Exult window will be smaller than intended.
+On the other hand when your display resolution is set higher than the game resolution you will have black borders surrounding the game viewing area. The borders can be used for positioning gumps and the face stats. You can also change the color of the borders.
 
 
-4.2. Scaler
+4.2. Higher resolution is cheating
+Using higher resolutions is considered cheating as you can see too much of the surrounding area. Since the game was designed to be played at a specific size (320x200), this can actually lead to plot-stopping problems; hence we will not fix any problem caused by your cheating! Don't say we didn't warn you :-) But being able to play in higher resolutions is actually one of the big advantages of Exult but as mentioned above it comes with a price.
+
+
+4.3. Scaler
 The scalers also work with higher resolutions than 320x200. To change the scaling method either use the Exult menu or change your exult.cfg - see 2.3..
 * Point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
 * Bilinear bilinear interpolation to smooth the result. Slower than point, but looks better. Only 2x.
@@ -1181,10 +1243,11 @@ This one is pretty straightforward. You can load and save a game, delete a game 
 
 6.3. Video Options
 In this option screen you are able to determine how Exult displays the game.
-* Resolution lets you choose between various resolutions. You can choose between 320x200, 320x240, 400x300, 512x384, 640x480 and 800x600. If you want other resolutions edit exult.cfg outlined in 2.3. Settings in exult.cfg.
-* Scaling choose between 1x up to 8x. Further explanation in 4.2. Scaler. For scalers that have a default only scaling (e.g. 2xSaI) this option will be hidden.
-* Scaler lets you choose your favorite scaling engine. Also look at 4.2. Scaler for an explanation.
+* Resolution lets you choose between various resolutions determined by the fullscreen resolutions your system reports as supported. If you want other resolutions edit exult.cfg outlined in 2.3. Settings in exult.cfg.
+* Scaling choose between 1x up to 8x. Further explanation in 4.3. Scaler. For scalers that have a default only scaling (e.g. 2xSaI) this option will be hidden.
+* Scaler lets you choose your favorite scaling engine. Also look at 4.3. Scaler for an explanation.
 * Full Screen enable or disable running Exult in full screen.
+* Game Res the size of your game viewing area in the Exult window. You can choose between the original default resolution of '320x200' or 'Auto' which tries to set the best viewing area for the chosen resolution.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
 
@@ -1199,8 +1262,8 @@ Look at 3. Audio to see explanation on the settings.
 * device type choose between different device types for MIDI music, see 3.2..
 * effects alters the way the MIDI is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
 * SFX Enable or disable digital sound effects.
-* SFX Enable or disable digital sound effects.
 * Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.7..
+* Speech enable or disable speech. When disabled you will see subtitles when the Guardian or the Great Earth Serpent speaks
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
 

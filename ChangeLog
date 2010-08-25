@@ -1,3 +1,6 @@
+2010-08-15 Dominik Reichardt <dominus@users.sourceforge.net>
+	* Updated Documentation and fixed the templates again
+	
 2010-08-24  Ryan Nunn <colourles@users.sourceforge.net>
 	* Added methods to remove nodes from the configuration tree to allow me to 
 	  remove deprecated config settings from code
