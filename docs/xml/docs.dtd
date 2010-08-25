@@ -72,5 +72,5 @@
 <!ATTLIST	img		alt 	CDATA	#REQUIRED>
 
 <!ATTLIST	configtag	name	CDATA	#REQUIRED>
-<!ATTLIST	configtag	manual	(true|false)	"true">
+<!ATTLIST	configtag	manual	(true|false)	#IMPLIED>
 <!ATTLIST	configtag	closing-tag (yes|no) "yes">

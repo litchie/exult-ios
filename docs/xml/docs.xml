@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="15 August 2010(GMT)">
+<readme title="Exult" changed="25 August 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="25082010">
+			<header>- 25 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added the new config options for video and audio.</li>
+				<li><ref1 target="resolution"/> rewrote a bit to explain the new rendering.</li>
+				<li><ref1 target="res_cheating"/> added.</li>
+				<li><ref1 target="video_gump"/> added new game res setting.</li>
+				<li><ref1 target="audio_gump"/> forgot the speech option.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="15082010">
 			<header>- 15 August 2010</header>
 			<body>
@@ -473,7 +485,7 @@
 							<comment>**activates the status faces and the position on the screen.</comment>
 							<comment>-1 disable,0 right, 1 middle, 2 right.</comment>
 							</configtag>
-							<configtag name="textbackground">							
+							<configtag name="textbackground">
 							-1
 							<comment>**with this enabled all the text in the games have a coloured background </comment>
 							<comment>to improve readability. 0 gives a purple background, 1 orange, 2 light gray, </comment>
@@ -511,7 +523,7 @@
 							no
 							<comment>**yes enables SI style paperdolls in BG.</comment>
 							</configtag>
-							<configtag name="smooth_scrolling">							
+							<configtag name="smooth_scrolling">
 							0
 							<comment>**0/25/50/75/100 percentage of how smooth the game scrolls when the avatar </comment>
 							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
@@ -527,7 +539,7 @@
 							<comment>**this skips the splash screen, the intro before you get to the</comment>
 							<comment> game menu. Disabling it brings you straight to the game menu.</comment>
 							</configtag>
-							<configtag name="formation" manual="true">							
+							<configtag name="formation" manual="true">
 							yes
 							<comment>**yes forces the party to walk in a formation similar to the original game.</comment>
 							<comment>See <extref doc="faq" target="party_formation"/> in the FAQ.</comment>
@@ -636,6 +648,18 @@
 									<comment>**how much the MIDI is altered.</comment>
 									</configtag>
 								</configtag>
+								<configtag name="precacheTimbers" manual="true">
+									<configtag name="onStartup" manual="true">
+									no
+									<comment>**when enabled it preloads the entire timbre bank on starting</comment>
+									<comment>up <Exult/> with a penalty on start up time.</comment>
+									</configtag>
+									<configtag name="onPlay" manual="true">
+									yes
+									<comment>**only preloads needed timbres and patches when a song gets</comment>
+									<comment>loaded.</comment>
+									</configtag>
+								</configtag>
 								<configtag name="win32_device" manual="true">
 								-1
 								<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/></comment>
@@ -661,20 +685,54 @@
 							</configtag>
 						</configtag>
 						<configtag name="video">
-							<configtag name="width">
-							320
-							<comment>**here you choose your resolution, it can be as big as your </comment>
-							<comment>monitor allows. 320x200 is the resolution of the original.</comment>
+							<configtag name="display">
+								<configtag name="width">
+									640
+									<comment>**here you choose the resolution of the Exult window.</comment>
+									<comment>The default will be the lowest resolution that your system supports.</comment>
+								</configtag>
+								<configtag name="height">
+									240
+								</configtag>
 							</configtag>
-							<configtag name="height">
-							200
+							<configtag name="game">
+								<configtag name="width">
+									320
+									<comment>**here you choose at what resolution you run the games in the</comment>
+									<comment><Exult/> window. 320x200 is the resolution of the original.</comment>
+									<comment>0x0 means that <Exult/> will determine the best way to match</comment>
+									<comment>game resolution to <Exult/> resolution.</comment>
+								</configtag>
+								<configtag name="height">
+									200
+								</configtag>
+								<configtag name="border" manual="true">
+									<configtag name="red" manual="true">
+										0
+										<comment>**if game resolution doesn't match <Exult/> resolution</comment>
+										<comment>you have borders around the game res. With these you can</comment>
+										<comment>change the black defult border color.</comment>
+									</configtag>
+									<configtag name="green" manual="true">
+										0
+									</configtag>
+									<configtag name="blue" manual="true">
+										0
+									</configtag>
+								</configtag>
+							</configtag>
+							<configtag name="force_bpp" manual="true">
+								0
+							<comment>**force output bpp. Valid values are 	0 (for any), 8, 16 or 32.</comment>
+							<comment>If set to 8 most scalers will not work and will display as the</comment>
+							<comment>fallback point scaler.</comment>
 							</configtag>
 							<configtag name="scale_method">
-							2xSaI
+								2xSaI
 							<comment>**choose different scalers here - see <ref target="scaler"/></comment>
 							</configtag>
 							<configtag name="scale">
-							2
+								2
 							<comment>**2 enables / 1 disables scaling, some scalers support higher values. </comment>
 							<comment>See <ref target="scaler"/>.</comment>
 							</configtag>
@@ -691,15 +749,15 @@
 							<comment>**Speed setting. Might help when the game seems too slow or too fast.</comment>
 							<comment> The in game menu shows this setting in the Gameplay menu.</comment>
 							</configtag>
-							<configtag name="gamma">
-								<configtag name="red">
+							<configtag name="gamma" manual="true">
+								<configtag name="red"  manual="true">
 								1
 								<comment>**set gamma levels to adjust brightness, same as +/- in game</comment>
 								</configtag>
-								<configtag name="green">
+								<configtag name="green"  manual="true">
 								1
 								</configtag>
-								<configtag name="blue">
+								<configtag name="blue"  manual="true">
 								1
 								</configtag>
 							</configtag>
@@ -1476,21 +1534,47 @@
 			<header>Resolution</header>
 			<body>
 				<para>
-					By default <Exult/> runs at 320x200 (which is the resolution the original
-					Ultima VII used). <Exult/> can use different scaling engines to
-					double the size to 640x400 and increase the quality of the graphics.
+					We distinguish between the <Exult/> display resolution (which determines 
+					the size of the <Exult/> window and its fullscreen rendering) and the game 
+					resolution, which determines how big the in-game viewing area is.<br/>
 				</para>
+				<para>
+					By default <Exult/> runs the games at 320x200 (which is the resolution the 
+					original Ultima VII used). <Exult/> can use different scaling engines to
+					double the size to 640x400 or even triple the the size to 960x600 while 
+					increasing  the quality of the graphics and maintaining the same viewing 
+					area. This allows Exult to show the game as an enhanced version of how it 
+					originally appeared, and not show locations that were originally off-screen.<br/> 
+					When you first start <Exult/> we apply the scaler 2xSaI which doubles the size 
+					of each pixel, resulting in a 640x400 window.
+				</para>
+				<para>
+					The game resolution with scaler applied should not be bigger than the display, 
+					otherwise you will get strange effects and the game might crash.<br/>
+					For example when you set the game resolution to 320x200 with the scaler Point 
+					at sale factor 3, your game resolution is actually 960x600. If your display 
+					resolution is set to 640x480 the resolutions don't match and your <Exult/> 
+					window will be smaller than intended.
+				</para>
+				<para>
+					On the other hand when your display resolution is set higher than the game resolution 
+					you will have black borders surrounding the game viewing area. The borders can be used
+					for positioning gumps and the face stats.<br/>
+					You can also change the color of the borders.
+				</para>
+			</body>
+		</sub>
+		<sub name="res_cheating">
+			<header>Higher resolution is cheating</header>
+			<body>
 				<para>
 					Using higher resolutions is considered cheating as you can see too much of
 					the surrounding area. Since the game was designed to be played at a specific
-					size, this can actually lead to plot-stopping problems; hence we will not fix
-					any problem caused by your cheating! Don't say we didn't warn you :-)<br/>
-					Actually being able to play in higher resolutions is one of the big advantages
-					of <Exult/> but as mentioned above it comes with a price.
-				</para>
-				<para>
-					Within the game you can use the <key>Alt +</key> and <key>Alt -</key>
-					to switch resolution..
+					size (320x200), this can actually lead to plot-stopping problems; hence we 
+					will not fix any problem caused by your cheating! 
+					Don't say we didn't warn you :-)<br/>
+					But being able to play in higher resolutions is actually one of the big 
+					advantages of <Exult/> but as mentioned above it comes with a price.
 				</para>
 			</body>
 		</sub>
@@ -1756,8 +1840,8 @@
 				</para>
 				<ul>
 					<li><strong>Resolution</strong><br/>
-						lets you choose between various resolutions. You can choose between 320x200,
-						320x240, 400x300, 512x384, 640x480 and 800x600. If you want other resolutions edit
+						lets you choose between various resolutions determined by the fullscreen resolutions 
+						your system reports as supported. If you want other resolutions edit
 						exult.cfg outlined in <ref1 target="exult_config"/>.</li>
 					<li><strong>Scaling</strong><br/>
 						choose between 1x up to 8x. Further explanation in <ref1 target="scaler"/>.<br/>
@@ -1767,6 +1851,10 @@
 						for an explanation.</li>
 					<li><strong>Full Screen</strong><br/>
 						enable or disable running <Exult/> in full screen.</li>
+					<li><strong>Game Res</strong><br/>
+						the size of your game viewing area in the <Exult/> window. You can choose between the 
+						original default resolution of '320x200' or 'Auto' which tries to set the best viewing 
+						area for the chosen resolution.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
@@ -1797,10 +1885,11 @@
 					 	Both (Reverb and Chorus) or disable it.</li>
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
-					<li><strong>SFX</strong><br/>
-						Enable or disable digital sound effects.</li>
 					<li><strong>Pack</strong><br/>
 						choose between our standard SFX packs, Roland MT32 and Soundblaster, see <ref target="wave_sfx"/>.</li>
+					<li><strong>Speech</strong><br/>
+						enable or disable speech. When disabled you will see subtitles when the Guardian 
+						or the Great Earth Serpent speaks</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
