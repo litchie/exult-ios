@@ -1,3 +1,11 @@
+2010-08-15 Dominik Reichardt <dominus@users.sourceforge.net>
+	* data/bg/ and data/si: added autonotes.txt for each game. For now these mostly
+	  list global flags found and known for the games with some description of the 
+	  set flag.
+	  The idea is to replace these descriptions with witty text and have them appear
+	  in the notebook (press'n'). I've written some stuff for BG already but not 
+	  near enough.
+
 2010-08-29  Ryan Nunn <colourles@users.sourceforge.net>
 	* Added ability to right click on option buttons in gumps. Right clicking 
 	  will select to previous option in the list.
