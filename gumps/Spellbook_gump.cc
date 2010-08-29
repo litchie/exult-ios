@@ -93,20 +93,23 @@ public:
 		  leftright(lr)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual bool activate(int button=1);
+	virtual bool push(int button) {return button == 1;}
+	virtual void unpush(int button) {}
 	};
 
 /*
  *	Handle click.
  */
 
-void Page_button::activate
+bool Page_button::activate
 	(
+	int button
 	)
 	{
+	if (button != 1) return false;
 	((Spellbook_gump *) parent)->change_page(leftright ? 1 : -1);
+	return true;
 	}
 
 /*
@@ -120,9 +123,9 @@ public:
 		{  }
 	void set();			// Call this to set properly.
 					// What to do when 'clicked':
-	virtual void activate();
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual bool activate(int button=1);
+	virtual bool push(int button) { return button == 1;}
+	virtual void unpush(int button) { }
 	};
 
 /*
@@ -155,16 +158,18 @@ void Bookmark_button::set
  *	Handle click.
  */
 
-void Bookmark_button::activate
+bool Bookmark_button::activate
 	(
+	int button
 	)
 	{
-
+	if (button != 1) return false;
 	Spellbook_gump *sgump = (Spellbook_gump *) parent;
 	int bmpage = sgump->book->bookmark/8;	// Bookmark's page.
 					// On a different, valid page?
 	if (bmpage >= 0 && bmpage != sgump->page)
 		sgump->change_page(bmpage - sgump->page);
+	return true;
 	}
 
 /*
@@ -180,21 +185,24 @@ public:
 		set_frame(frnum);	// Frame # is circle.
 		}
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 	virtual void double_clicked(int x, int y);
-	virtual void push() { }
-	virtual void unpush() { }
+	virtual bool push(int button) { return button == 1; }
+	virtual void unpush(int button) { }
 	};
 
 /*
  *	Handle click.
  */
 
-void Spell_button::activate
+bool Spell_button::activate
 	(
+	int button
 	)
 	{
+	if (button != 1) return false;
 	((Spelltype_gump *) parent)->select_spell(spell);
+	return true;
 	}
 
 /*

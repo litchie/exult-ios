@@ -502,20 +502,26 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 	 << ", " <<	(gy - gump->get_y()) << ")"<<endl;
 #endif
 #ifdef UNDER_CE
-			if (gkeyboard->handle_event(&event))
-				break;
+		if (gkeyboard->handle_event(&event))
+			break;
 #endif
-		if (event.button.button == 1)
-			gump->mouse_down(gx, gy);
-		else if (event.button.button == 2 && gwin->get_mouse3rd()) {
-			gump->key_down(SDLK_RETURN);
-			gump->text_input(SDLK_RETURN, SDLK_RETURN);
-		} else if (event.button.button == 3)
+		if (event.button.button == 1) {
+			gump->mouse_down(gx, gy, event.button.button);
+		} else if (event.button.button == 2) {
+			if (!gump->mouse_down(gx, gy, event.button.button) && gwin->get_mouse3rd()) {
+				gump->key_down(SDLK_RETURN);
+				gump->text_input(SDLK_RETURN, SDLK_RETURN);
+			}
+		} else if (event.button.button == 3) {
 			rightclick = true;
-		else if (event.button.button == 4) // mousewheel up
-			gump->mousewheel_up();
-		else if (event.button.button == 5) // mousewheel down
-			gump->mousewheel_down();
+			gump->mouse_down(gx, gy, event.button.button);
+		} else if (event.button.button == 4) { // mousewheel up
+			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_up();
+		} else if (event.button.button == 5) { // mousewheel down
+			if (!gump->mouse_down(gx, gy, event.button.button)) gump->mousewheel_down();
+		} else {
+			gump->mouse_down(gx, gy, event.button.button);
+		}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
@@ -523,11 +529,12 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 			if (gkeyboard->handle_event(&event))
 				break;
 #endif
-		if (event.button.button == 1)
-			gump->mouse_up(gx,gy);
-		else if (event.button.button == 3 && gwin->get_mouse3rd() && rightclick) {
+		if (event.button.button != 3)
+			gump->mouse_up(gx,gy, event.button.button);
+		else if (rightclick) {
 			rightclick = false;
-			if (gumpman->can_right_click_close()) return 0;
+			if (!gump->mouse_up(gx,gy, event.button.button) &&
+				gumpman->can_right_click_close()) return 0;
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -600,6 +607,7 @@ int Gump_manager::do_modal_gump
 		Mouse::mouse->set_shape(shape);
 	int escaped = 0;
 	add_gump(gump);
+	gump->run();
 	gwin->paint();			// Show everything now.
 	if (paint)
 		paint->paint();
@@ -616,7 +624,8 @@ int Gump_manager::do_modal_gump
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !handle_modal_gump_event(gump, event);
-		if (GL_manager::get_instance())
+		
+		if (gump->run() || gwin->is_dirty() || GL_manager::get_instance())
 			{
 			gwin->paint();	// OpenGL?  Paint each cycle.
 			if (paint)

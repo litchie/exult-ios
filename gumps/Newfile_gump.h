@@ -198,8 +198,8 @@ public:
 	virtual void close()
 		{ done = 1; }
 					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
+	virtual bool mouse_down(int mx, int my, int button);
+	virtual bool mouse_up(int mx, int my, int button);
 	virtual void mouse_drag(int mx, int my);
 	virtual void text_input(int chr, int unicode); // Character typed.
 

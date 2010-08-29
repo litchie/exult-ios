@@ -47,7 +47,9 @@ struct SDL_RWops;
 *	should be derived from it.
 */
 
-struct ScalerInfo;
+namespace Pentagram {
+	class ArbScaler;
+}
 
 class Image_window
 {
@@ -57,21 +59,23 @@ public:
 	typedef int ScalerType;
 
 	enum FillMode {
-		Fill = 0,					///< Game screen fills all of the display surface
-		Strech = 1,					///< Game screen is stretched to the closest edge, maintaining 1:1 pixel aspect
-		AspectCorrectStretch = 2,	///< Game screen is stretched to the closest edge, with 1:1.2 pixel aspect
-		Centre = 3,					///< Game screen is centred
-		AspectCorrectCentre = 4,	///< Game screen is centred and scaled to have 1:1.2 pixel aspect
+		Fill = 1,					///< Game area fills all of the display surface
+		Fit = 2,					///< Game area is stretched to the closest edge, maintaining 1:1 pixel aspect
+		AspectCorrectFit = 3,		///< Game area is stretched to the closest edge, with 1:1.2 pixel aspect
+		FitAspectCorrect = 3,
+		Centre = 4,					///< Game area is centred
+		AspectCorrectCentre = 5,	///< Game area is centred and scaled to have 1:1.2 pixel aspect
+		CentreAspectCorrect = 5,
 
 		// Numbers higher than this incrementally scale by .5 more
-		Centre_x1_5 = 5,
-		AspectCorrectCentre_x1_5 = 6,
-		Centre_x2 = 7,
-		AspectCorrectCentre_x2 = 8,
-		Centre_x2_5 = 9,
-		AspectCorrectCentre_x2_5 = 10,
-		Centre_x3 = 11,
-		AspectCorrectCentre_x3 = 12,
+		Centre_x1_5 = 6,
+		AspectCorrectCentre_x1_5 = 7,
+		Centre_x2 = 8,
+		AspectCorrectCentre_x2 = 9,
+		Centre_x2_5 = 10,
+		AspectCorrectCentre_x2_5 = 11,
+		Centre_x3 = 12,
+		AspectCorrectCentre_x3 = 13,
 		// And so on....
 		
 		// Arbitrarty scaling support => (x<<16)|y
@@ -82,17 +86,12 @@ public:
 	{
 		const char *			name;
 		uint32					size_mask;
-		bool					can_strech;
+		Pentagram::ArbScaler *  arb;
 		Image_window::scalefun	fun8to565;
 		Image_window::scalefun	fun8to555;
 		Image_window::scalefun	fun8to16;
 		Image_window::scalefun	fun8to32;
 		Image_window::scalefun	fun8to8;
-
-		Image_window::scalefun	fun565to565;
-		Image_window::scalefun	fun555to555;
-		Image_window::scalefun	fun16to16;
-		Image_window::scalefun	fun32to32;
 	};
 
 	struct Resolution
@@ -144,6 +143,16 @@ public:
 	static const ScalerConst	OpenGL;
 	static const ScalerConst	NumScalers;
 
+	// Gets the draw surface and intersurface dims.
+	// if (inter_surface.wh != (dw*scale,dh*scale)) 
+	//   draw_surface is centred after scaling
+	// If (inter_surface.wh == display_surface.wh || strech_scaler == scaler || scale == 1)
+	//   inter_surface wont be used
+	static bool get_draw_dims(int sw, int sh, int scale, FillMode fillmode, int &gw, int &gh, int &iw, int &ih);
+
+	static FillMode string_to_fillmode(const char *str);
+	static bool fillmode_to_string(FillMode fmode, std::string &str);
+
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
 	int scale;				// Only 1 or 2 for now.
@@ -152,9 +161,13 @@ protected:
 	bool fullscreen;		// Rendering fullscreen.
 	int game_width;
 	int game_height;
+	int inter_width;
+	int inter_height;
 
-	FillMode strech_mode;
-	int strech_scaler;
+	static const int guard_band;			// Guardband around the edge of the draw surface to allow scalers to run without clipping
+
+	FillMode fill_mode;
+	int fill_scaler;
 
 	SDL_Surface *paletted_surface;	// Surface that palette is set on   (Example res)
 	SDL_Surface *display_surface;	// Final surface that is displayed  (1024x1024)
@@ -226,6 +239,7 @@ protected:
 	void show_scaled8to32_Hq3x(int x, int y, int w, int h);	
 
 	void show_scaledOpenGL(int x, int y, int w, int h);
+
 	/*
 	*	Image info.
 	*/
@@ -249,10 +263,11 @@ public:
 	int Get_best_bpp(int w, int h, int bpp, uint32 flags);
 
 	// Create with given buffer.
-	Image_window(Image_buffer *ib, int w, int h, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point)
+	Image_window(Image_buffer *ib, int w, int h, int gamew, int gameh, int scl = 1, bool fs = false, int sclr = point, FillMode fmode=AspectCorrectCentre, int fillsclr = point)
 		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true), 
-		fullscreen(fs), game_width(gamew), game_height(gameh), paletted_surface(0), 
-		inter_surface(0)
+		fullscreen(fs), game_width(gamew), game_height(gameh), 
+		fill_mode(fmode), fill_scaler(fillsclr),
+		paletted_surface(0), display_surface(0), inter_surface(0), draw_surface(0)
 	{ 
 		static_init();
 		create_surface(w, h); 
@@ -262,14 +277,18 @@ public:
 	//{ return scale; }
 	int get_scale_factor() { return scale; }
 
+
+	int get_display_width();
+	int get_display_height();
+
 	void screen_to_game(int sx, int sy, bool fast, int &gx, int &gy) {
 		if (fast) {
 			gx = sx + get_start_x();
 			gy = sy + get_start_y();
 		}
 		else {
-			gx = sx/scale + get_start_x();
-			gy = sy/scale + get_start_y();
+			gx = (sx*inter_width)/(scale*get_display_width()) + get_start_x();
+			gy = (sy*inter_height)/(scale*get_display_height()) + get_start_y();
 		}
 	}
 	void game_to_screen(int gx, int gy, bool fast, int &sx, int &sy) {
@@ -278,8 +297,8 @@ public:
 			sy = gy - get_start_y();
 		}
 		else {
-			sx = (gx-get_start_x())*scale;
-			sy = (gy-get_start_y())*scale;
+			sx = ((gx-get_start_x())*scale*get_display_width())/inter_width;
+			sy = ((gy-get_start_y())*scale*get_display_height())/inter_height;
 		}
 	}
 
@@ -306,9 +325,6 @@ public:
 	int get_start_y()
 	{ return -ibuf->offset_y; }
 
-	int get_display_width();
-	int get_display_height();
-
 	int get_full_width()
 	{ return ibuf->width; }
 	int get_full_height()
@@ -324,14 +340,21 @@ public:
 	int get_end_y()
 	{ return get_full_height() + get_start_y(); }
 
+	FillMode get_fill_mode() 
+	{ return fill_mode; }
+
+	int get_fill_scaler() 
+	{ return fill_scaler; }
+
 	int ready()			// Ready to draw?
 	{ return (ibuf->bits != 0); }
 	bool is_fullscreen() { return fullscreen; }
 	// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
 	// Resize event occurred.
-	void resized(unsigned int neww, unsigned int nehh, bool newfs, unsigned int newgw, unsigned int newgh, int newsc, int newscaler = point);
-	void show();			// Repaint entire window.
+	void resized(unsigned int neww, unsigned int nehh, bool newfs, unsigned int newgw, unsigned int newgh, int newsc, int newscaler = point, FillMode fmode=AspectCorrectCentre, int fillsclr = point);
+	void show()			// Repaint entire window.
+	{ show(get_start_x(),get_start_y(),get_full_width(),get_full_height()); }
 	// Repaint rectangle.
 	void show(int x, int y, int w, int h);
 

@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2005 The Pentagram Team
+Copyright (C) 2010 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,38 +17,26 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GAMEMENU_GUMP_H
-#define _GAMEMENU_GUMP_H
+#ifndef POINTSCALER_H_INCLUDED
+#define POINTSCALER_H_INCLUDED
 
-#include "Modal_gump.h"
+#include "ArbScaler.h"
 
-class Gump_button;
+namespace Pentagram {
 
-class Gamemenu_gump : public Modal_gump
+class PointScaler : public ArbScaler
 {
-	UNREPLICATABLE_CLASS_I(Gamemenu_gump,Modal_gump(0,0,0,0));
+public:
+	PointScaler();
 
- private:
-	Gump_button* buttons[6];
+	virtual const uint32	ScaleBits() const;			//< bits for supported integer scaling
+	virtual const bool		ScaleArbitrary() const;		//< supports arbitrary scaling of any degree 
 
- public:
-	Gamemenu_gump();
-	virtual ~Gamemenu_gump();
+	virtual const char *	ScalerName() const;			//< Name Of the Scaler (1 word)
+	virtual const char *	ScalerDesc() const;			//< Desciption of the Scaler
+	virtual const char *	ScalerCopyright() const;	//< Scaler Copyright info
+};
 
-					// Paint it and its contents.
-	virtual void paint();
-	virtual void close()
-		{ done = 1; }
-					// Handle events:
-	virtual bool mouse_down(int mx, int my, int button);
-	virtual bool mouse_up(int mx, int my, int button);
-
-	void quit(bool return_to_menu = false);
-	void loadsave();
-	void video_options();
-	void audio_options();
-	void gameplay_options();
-	void combat_options();
 };
 
 #endif

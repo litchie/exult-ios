@@ -59,11 +59,13 @@ public:
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
-void Gamemenu_button::activate()
+bool Gamemenu_button::activate(int button)
 {
+	if (button != 1) return false;
+
 	if (text == loadsavetext) {
 		((Gamemenu_gump*)parent)->loadsave();
 	} else if (text == videoopttext) {
@@ -79,6 +81,7 @@ void Gamemenu_button::activate()
 	} else if (text == quittext) {
 		((Gamemenu_gump*)parent)->quit(false);
 	}
+	return true;
 }
 
 Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_FLX)
@@ -171,8 +174,10 @@ void Gamemenu_gump::paint()
 	gwin->set_painted();
 }
 
-void Gamemenu_gump::mouse_down(int mx, int my)
+bool Gamemenu_gump::mouse_down(int mx, int my, int button)
 {
+	if (button != 1) return false;
+
 	pushed = Gump::on_button(mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -184,20 +189,23 @@ void Gamemenu_gump::mouse_down(int mx, int my)
 			}
 
 	if (pushed)			// On a button?
-	{
-		pushed->push();
-		return;
-	}
+		pushed->push(button);
+
+	return true;
 }
 
-void Gamemenu_gump::mouse_up(int mx, int my)
+bool Gamemenu_gump::mouse_up(int mx, int my, int button)
 {
+	if (button != 1) return false;
+
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
+		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
 			((Gamemenu_button*)pushed)->activate();
 		pushed = 0;
 	}
+
+	return true;
 }
 

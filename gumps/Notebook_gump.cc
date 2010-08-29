@@ -219,7 +219,7 @@ public:
 		  leftright(lr)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 	virtual void push() {}
 	virtual void unpush() {}
 	};
@@ -228,11 +228,14 @@ public:
  *	Handle click.
  */
 
-void Notebook_page_button::activate
+bool Notebook_page_button::activate
 	(
+	int button
 	)
 	{
+	if (button != 1) return false;
 	((Notebook_gump *) parent)->change_page(leftright ? 1 : -1);
+	return true;
 	}
 
 /*

@@ -53,9 +53,9 @@ public:
 	virtual void double_clicked(int x, int y);
 	virtual void paint();
 
-	virtual void activate() {}
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual bool activate(int button) { return button == 1; }
+	virtual bool push(int button) { return button == 1; }
+	virtual void unpush(int button) {}
 					// update dirty region, if required
 	virtual void update_widget();
 
@@ -351,7 +351,10 @@ void Face_stats::update_gump()
 // Has this changed?
 bool Face_stats::has_changed()
 {
-	if (resx != gwin->get_width() || resy != gwin->get_height())
+	if (resx != gwin->get_win()->get_full_width() ||
+	    resy != gwin->get_win()->get_full_height() ||
+	    gamex != gwin->get_game_width() ||
+	    gamey != gwin->get_game_height())
 		return true;
 
 	if (party_size != partyman->get_count()) return true;
@@ -380,6 +383,8 @@ void Face_stats::delete_buttons()
 
 	resx = 0;
 	resy = 0;
+	gamex = 0;
+	gamey = 0;
 }
 
 void Face_stats::create_buttons()
@@ -390,6 +395,8 @@ void Face_stats::create_buttons()
 
 	resx = gwin->get_win()->get_full_width();
 	resy = gwin->get_win()->get_full_height();
+	gamex = gwin->get_game_width();
+	gamey = gwin->get_game_height();
 	x = 0;
 	y = gwin->get_win()->get_end_y();
 

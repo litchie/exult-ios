@@ -25,9 +25,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 const char* Enabled_button::selections[] = { "Disabled", "Enabled" };
 
+/*
+ *	Redisplay as 'pushed'.
+ */
 
-void Enabled_button::activate()
+bool Enabled_button::push
+	(
+	int button
+	)
 {
+	if (button == 1 || button == 3)
+	{
+		set_pushed(button);
+		paint();
+		gwin->set_painted();
+		return true;
+	}
+	return false;
+}
+
+/*
+ *	Redisplay as 'unpushed'.
+ */
+
+void Enabled_button::unpush
+	(
+	int button
+	)
+{
+	if (button == 1 || button == 3)
+	{
+		set_pushed(false);
+		paint();
+		gwin->set_painted();
+	}
+}
+
+bool Enabled_button::activate(int button)
+{
+	if (button != 1 && button != 3) return false;
+
 	set_frame(get_framenum() + 1);
 	if (get_framenum() >= 2) set_frame(0);
 	text = selections[get_framenum()];
@@ -35,4 +72,6 @@ void Enabled_button::activate()
 	toggle(get_framenum());
 	paint();
 	gwin->set_painted();
+
+	return true;
 }
