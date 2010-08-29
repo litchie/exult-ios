@@ -33,7 +33,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Checkmark_button(par, x, y); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -46,7 +46,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Heart_button(par, x, y); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -59,7 +59,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Disk_button(par, x, y); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -72,7 +72,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Combat_button(par, x, y); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 	virtual void paint();
 };
 
@@ -87,7 +87,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Halo_button(par, x, y, actor); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -101,7 +101,7 @@ public:
 	virtual Gump_widget *clone(Gump *par)
 		{ return new Combat_mode_button(par, x, y, actor); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -115,7 +115,7 @@ public:
 		{ return new Cstats_button(par, x, y); }
 
  	// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 #endif

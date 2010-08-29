@@ -36,7 +36,9 @@ class Enabled_button : public Text_button
 
 	virtual ~Enabled_button()
 	{ }
-	virtual void activate();
+	virtual bool push (int button);
+	virtual void unpush (int button);
+	virtual bool activate(int button=1);
 
 	int getselection() const { return get_framenum(); }
 	virtual void toggle(int state) = 0;

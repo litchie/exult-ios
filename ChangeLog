@@ -1,3 +1,46 @@
+2010-08-29  Ryan Nunn <colourles@users.sourceforge.net>
+	* Added ability to right click on option buttons in gumps. Right clicking 
+	  will select to previous option in the list.
+	* Layout of video Options Gump been reworked slightly so it make more 
+	  sense. Changed things to Windowed mode lets you choose from a larger list
+	  of display sizes that include resolutions that are likely to be wanted.
+	* Video Options gump now has an 'APPLY' button instead of 'CANCEL' and 'OK'.
+	  Pressing apply will obviously apply the changes. You must apply changes 
+	  before pressing the check mark to close the gump.
+	* Video Options gump now brings up a new 'Countdown_gump' after applying 
+	  settings to confirm that the settings work. If the users fails to press
+	  YES before the countdown has expired, the settings are reverted.
+	* Video Options gump will alert the user if the selected settings will cause 
+	  the rendering size to be smaller than 320x200 (and consequently cause 
+	  trouble with exults user interface).
+	* Can now do some limited arbitrary scaling. Its designed to fit the 'game
+	  area' to whatever display resolution you've selected and also apply 
+	  pixel aspect ratio correction. Two extra config settings have been added
+	  to control the arbitrary scaling options:
+	  * "config/video/fill_scaler" : The scaler to use, either Point or Bilinear
+	  * "config/video/fill_mode" : The method to use to position the game area 
+	    on the display surface. The can be one of the 5 values:
+	    * Fill : Game screen is stretched to fill the entire display surface. 
+	      No borders will be added in this mode. The game screen will be 
+	      downsampled if it is bigger than the display surface in this mode.
+	    * Fit : Game is scaled to fill the display surface maintaining square 
+	      pixels. Black borders will be added to maintain aspect if needed. The
+	      game screen will be downsampled if it is bigger than the display 
+	      surface in this mode.
+	    * "Aspect Correct Fit" : Same as fit, but pixels are additionally 
+	      scaled using a 1:1.2 ratio. This corrects the aspect mismatch 
+	      between the nonsquare pixels used by the original game and the 
+	      square pixels of modern screen resolutions.
+	    * Centre : Game is centred on the display surface without additional 
+	      scaling. Black borders will be added if game screen is smaller than
+	      display surface. Clipping will occur if the game screen is larger 
+	      than the display surface.
+	    * "Aspect Correct Centre" : Same as Centre except height is scaled by
+	      1.2x to correct pixel aspect mismatch.
+	  These settings can be changed in the Video Options Gump. If the Game Area
+	  setting is set to Auto then the game area is calculated based on the 
+	  selected fill mode with no additional scaling applied. 
+
 2010-08-15 Dominik Reichardt <dominus@users.sourceforge.net>
 	* Updated Documentation and fixed the templates again
 	
@@ -16,7 +59,7 @@
 	* The list of display resolutions in the Video Options Gump is now 
 	  determied by asking SDL what resolutions are available.
 	* The colour of the border of the centred the game screen can now be set
-	  using the config settings "config/video/border/[red|green|blue]"
+	  using the config settings "config/video/game/border/[red|green|blue]"
 	* Fixed bug with 565 colour.
 	* Added config option to force output bpp "config/video/force_bpp". Valid
 	  values are 0 (for any), 8, 16 or 32. Note if set to 8 most scalers will

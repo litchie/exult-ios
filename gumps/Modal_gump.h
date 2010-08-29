@@ -49,8 +49,8 @@ public:
 	bool is_done()
 		{ return done; }
 					// Handle events:
-	virtual void mouse_down(int mx, int my) = 0;
-	virtual void mouse_up(int mx, int my) = 0;
+	virtual bool mouse_down(int mx, int my, int button) = 0;
+	virtual bool mouse_up(int mx, int my, int button) = 0;
 	virtual void mousewheel_down() { }
 	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
@@ -60,6 +60,9 @@ public:
 	virtual void text_input(int chr, int unicode) // Character typed (unicode)
 		{ }
 	virtual bool is_modal() const { return true; }
+
+	virtual bool run() { return false; }
+
 };
 
 #endif

@@ -43,18 +43,15 @@ void Image_window::show_scaled8to16_Hq2x
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
-
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
 	Scale_Hq2x<uint16, Manip8to16>
-		((uint8*)draw_surface->pixels, x, y, w, h,
+		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(inter_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to555_Hq2x
@@ -62,18 +59,15 @@ void Image_window::show_scaled8to555_Hq2x
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
-
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
 	Scale_Hq2x<uint16, Manip8to555>
-		((uint8*)draw_surface->pixels, x, y, w, h,
+		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(inter_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to565_Hq2x
@@ -81,18 +75,15 @@ void Image_window::show_scaled8to565_Hq2x
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
-
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
 	Scale_Hq2x<uint16, Manip8to565>
-		((uint8*)draw_surface->pixels, x, y, w, h,
+		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(inter_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32_Hq2x
@@ -100,16 +91,13 @@ void Image_window::show_scaled8to32_Hq2x
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
-	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
-
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
 	Scale_Hq2x<uint32, Manip8to32>
-		((uint8*)draw_surface->pixels, x, y, w, h,
+		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) inter_surface->pixels,
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(inter_surface, 2*x, 2*y, 2*w, 2*h);
 	}

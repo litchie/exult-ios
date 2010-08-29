@@ -570,8 +570,8 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 	config->value("config/audio/midi/precacheTimbers/onPlay",s,"yes");
 	LowLevelMidiDriver::precacheTimbresOnPlay = (s != "no");
 
-	config->set("config/audio/midi/precacheTimbers/onStartup",LowLevelMidiDriver::precacheTimbresOnStartup?"yes":"no",true);
-	config->set("config/audio/midi/precacheTimbers/onPlay",LowLevelMidiDriver::precacheTimbresOnPlay?"yes":"no",true);
+	//config->set("config/audio/midi/precacheTimbers/onStartup",LowLevelMidiDriver::precacheTimbresOnStartup?"yes":"no",true);
+	//config->set("config/audio/midi/precacheTimbers/onPlay",LowLevelMidiDriver::precacheTimbresOnPlay?"yes":"no",true);
 
 	std::cout << "Timbers Precached: ";
 

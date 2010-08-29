@@ -161,7 +161,7 @@ public:
 	 *	Class maintenance:
 	 */
 	Game_window(int width, int height, bool fullscreen, int gwidth, int gheight, int scale = 1, 
-							int scaler = 0);
+		int scaler = 0, Image_window::FillMode fillmode=Image_window::AspectCorrectCentre, unsigned int fillsclr=0);
 	~Game_window();
 					// Get the one game window.
 	static Game_window *get_instance()
@@ -212,7 +212,8 @@ public:
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh, bool newfs,
 				unsigned int newgw, unsigned int newgh,
-				unsigned int newsc, unsigned int newsclr
+				unsigned int newsc, unsigned int newsclr,
+				Image_window::FillMode newfill, unsigned int newfillsclr
 				);
 
 	void get_focus();		// Get/lose focus.

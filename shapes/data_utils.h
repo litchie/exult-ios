@@ -230,11 +230,11 @@ inline void Write_count
 	{
 	if (cnt >= 255)
 		{	// Exult extension.
-		out.put(255);
+		out.put((char)255);
 		Write2(out, cnt);
 		}
 	else
-		out.put(cnt);
+		out.put((char)cnt);
 	}
 
 /*

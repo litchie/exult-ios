@@ -282,7 +282,9 @@ void ExultMenu::setup()
 							  gwin->get_win()->get_game_width(),
 							  gwin->get_win()->get_game_height(),
 				              Image_window::Hq3x ? 3 : 2,
-				              scalemethod->get_choice());
+				              scalemethod->get_choice(),
+							  gwin->get_win()->get_fill_mode(),
+							  gwin->get_win()->get_fill_scaler());
 				if (scaler > Image_window::NoScaler &&
 						scaler < Image_window::NumScalers)
 					{

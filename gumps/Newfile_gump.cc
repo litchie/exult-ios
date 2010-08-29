@@ -228,7 +228,7 @@ public:
 		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 	{ }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 class Newfile_Textbutton : public Text_button
@@ -238,17 +238,19 @@ public:
 		: Text_button(par, text, px, py, width)
 	{ }
 
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
  *	Clicked a 'load' or 'save' button.
  */
 
-void Newfile_button::activate
+bool Newfile_button::activate
 	(
+	int button
 	)
 {
+	if (button != 1) return false;
 	int shapenum = get_shapenum();
 	if (shapenum == EXULT_FLX_SAV_DOWNDOWN_SHP)
 		((Newfile_gump *) parent)->scroll_page(1);
@@ -258,10 +260,12 @@ void Newfile_button::activate
 		((Newfile_gump *) parent)->scroll_line(-1);
 	else if (shapenum == EXULT_FLX_SAV_UPUP_SHP)
 		((Newfile_gump *) parent)->scroll_page(-1);
+	return true;
 }
 
-void Newfile_Textbutton::activate()
+bool Newfile_Textbutton::activate(int button)
 {
+	if (button != 1) return false;
 	if (text == loadtext)
 		((Newfile_gump *) parent)->load();
 	else if (text == savetext)
@@ -270,6 +274,7 @@ void Newfile_Textbutton::activate()
 		((Newfile_gump *) parent)->delete_file();
 	else if (text == canceltext)
 		parent->close();
+	return true;
 }
 
 /*
@@ -660,11 +665,13 @@ void Newfile_gump::paint
  *	Handle mouse-down events.
  */
 
-void Newfile_gump::mouse_down
+bool Newfile_gump::mouse_down
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button			// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	slide_start = -1;
 
 	pushed = Gump::on_button(mx, my);
@@ -678,8 +685,8 @@ void Newfile_gump::mouse_down
 
 	if (pushed)			// On a button?
 	{
-		pushed->push();
-		return;
+		if (!pushed->push(button)) pushed = 0;
+		return true;
 	}
 
 	int gx = mx - x;
@@ -699,27 +706,27 @@ void Newfile_gump::mouse_down
 		{
 			scroll_page(-1);
 			paint();
-			return;
+			return true;
 		}
 		// Pressed below it
 		else if (gy >= pos+scrolly+sliderh)
 		{
 			scroll_page(1);
 			paint();
-			return;
+			return true;
 		}
 		// Pressed on it
 		else
 		{
 			slide_start = gy;
-			return;
+			return true;
 		}
 	}
 
 
 	// Now check for text fields
 	if (gx < fieldx || gx >= fieldx+fieldw)
-		return;
+		return true;
 
 	int	hit = -1;
 	int	i;
@@ -733,9 +740,9 @@ void Newfile_gump::mouse_down
 		}
 	}
 
-	if (hit == -1) return;
+	if (hit == -1) return true;
 
-	if (hit+list_position >= num_games || hit+list_position < -2 || selected == hit+list_position) return;
+	if (hit+list_position >= num_games || hit+list_position < -2 || selected == hit+list_position) return true;
 
 #ifdef DEBUG
 	cout << "Hit a save game field" << endl;
@@ -810,6 +817,7 @@ void Newfile_gump::mouse_down
 
 	paint();			// Repaint.
 	gwin->set_painted();
+	return true;
 					// See if on text field.
 }
 
@@ -817,20 +825,24 @@ void Newfile_gump::mouse_down
  *	Handle mouse-up events.
  */
 
-void Newfile_gump::mouse_up
+bool Newfile_gump::mouse_up
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button		// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	slide_start = -1;
 
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
+		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
-			pushed->activate();
+			pushed->activate(button);
 		pushed = 0;
 	}
+
+	return true;
 }
 
 void Newfile_gump::mousewheel_up()
@@ -912,11 +924,13 @@ void Newfile_gump::text_input(int chr, int unicode)
 	case SDLK_KP_ENTER:
 		if (!buttons[0] && buttons[1])
 		{
-			buttons[1]->push();
-			gwin->show(1);
-			buttons[1]->unpush();
-			gwin->show(1);
-			buttons[1]->activate();
+			if (buttons[1]->push(1))
+			{
+				gwin->show(1);
+				buttons[1]->unpush(1);
+				gwin->show(1);
+				buttons[1]->activate(1);
+			}
 		}
 		update_details = true;
 		break;

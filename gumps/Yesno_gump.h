@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Modal_gump.h"
 
+#include <SDL.h>
+
 class Yesno_button;
 
 /*
@@ -34,8 +36,9 @@ class Yesno_gump : public Modal_gump
 
 protected:
 	static short yesx, yesnoy, nox;	// Coords. of the buttons.
-	const std::string text;			// Text of question.  It is drawn in
+	std::string text;			// Text of question.  It is drawn in
 					//   object_area.
+	int fontnum;
 	int answer;			// 1 for yes, 0 for no.
 	void set_answer(int y)		// Done from 'yes'/'no' button.
 		{
@@ -45,17 +48,29 @@ protected:
 
 public:
 	friend class Yesno_button;
-	Yesno_gump(const std::string &txt);
+	Yesno_gump(const std::string &txt,int fontnum=2);
 	virtual ~Yesno_gump();
 	int get_answer()
 		{ return answer; }
 					// Paint it and its contents.
 	virtual void paint();
 					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
+	virtual bool mouse_down(int mx, int my, int button);
+	virtual bool mouse_up(int mx, int my, int button);
 	virtual void key_down(int chr); // Character typed.
-	static int ask(const char *txt);	// Ask question, get answer.
+	static int ask(const char *txt, int fontnum=2);	// Ask question, get answer.
 };
 
+class Countdown_gump : public Yesno_gump
+{
+	std::string text_fmt;			// Text of question.  It is drawn in
+	int timer;
+	int start_time;
+public:
+	Countdown_gump(const std::string &txt, int timeout, int fontnum);
+
+	virtual bool run();
+
+	static int ask(const char *txt, int timeout, int fontnum=2);	// Ask question, get answer, timeout to no after timeout seconds
+};
 #endif
