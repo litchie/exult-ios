@@ -32,5 +32,16 @@ libimagewin_la_SOURCES = \
 	scale_point.cc \
 	scale_point.h \
 	scale_2xSaI.cc \
-	scale_2xSaI.h
+	scale_2xSaI.h \
+	ArbScaler.h \
+	BilinearScaler.cpp \
+	BilinearScaler.h \
+	BilinearScalerInternal.h \
+	BilinearScalerInternal_2x.cpp \
+	BilinearScalerInternal_Arb.cpp \
+	BilinearScalerInternal_X1Y12.cpp \
+	BilinearScalerInternal_X2Y24.cpp \
+	PointScaler.cpp \
+	PointScaler.h
+
 EXTRA_DIST =

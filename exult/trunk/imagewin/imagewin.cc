@@ -46,6 +46,8 @@ Boston, MA  02111-1307, USA.
 #include <SDL_error.h>
 
 #include "manip.h"
+#include "BilinearScaler.h"
+#include "PointScaler.h"
 
 #ifdef HAVE_OPENGL
 #ifdef MACOSX
@@ -97,6 +99,8 @@ int Image_window::windowed_8 = 0;
 int Image_window::windowed_16 = 0;
 int Image_window::windowed_32 = 0;
 
+const int Image_window::guard_band = 4;
+
 SDL_PixelFormat *ManipBase::fmt;		// Format of dest. pixels (and src for rgb src).
 SDL_Color ManipBase::colors[256];		// Palette for source window.
 
@@ -108,17 +112,13 @@ Image_window::ScalerVector::ScalerVector()
 
 // This is all the names of the scalers. It needs to match the ScalerType enum
 	const ScalerInfo point = { 
-		"Point", 0xFFFFFFFF, true,
-		&Image_window::show_scaled8to565_point,
-		&Image_window::show_scaled8to555_point,
-		&Image_window::show_scaled8to16_point,
-		&Image_window::show_scaled8to32_point,
-		&Image_window::show_scaled8to8_point
+		"Point", 0xFFFFFFFF, new Pentagram::PointScaler(),
+		0
 	};
 	push_back(point);
 
 	const ScalerInfo Interlaced = { 
-		"Interlaced", 0xFFFFFFFE, false,
+		"Interlaced", 0xFFFFFFFE, 0,
 		&Image_window::show_scaled8to565_interlace,
 		&Image_window::show_scaled8to555_interlace,
 		&Image_window::show_scaled8to16_interlace,
@@ -128,17 +128,13 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Interlaced);
 
 	const ScalerInfo Bilinear = { 
-		"Bilinear", SCALE_BIT(2), true,
-		&Image_window::show_scaled8to565_bilinear,
-		&Image_window::show_scaled8to555_bilinear,
-		&Image_window::show_scaled8to16_bilinear,
-		&Image_window::show_scaled8to32_bilinear,
+		"Bilinear", 0xFFFFFFFF, new Pentagram::BilinearScaler(),
 		0
 	};
 	push_back(Bilinear);
 
 	const ScalerInfo BilinearPlus = { 
-		"BilinearPlus", SCALE_BIT(2), false, 
+		"BilinearPlus", SCALE_BIT(2), 0, 
 		&Image_window::show_scaled8to565_BilinearPlus,
 		&Image_window::show_scaled8to555_BilinearPlus,
 		&Image_window::show_scaled8to16_BilinearPlus,
@@ -148,7 +144,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(BilinearPlus);
 
 	const ScalerInfo _2xSaI = { 
-		"2xSaI", SCALE_BIT(2), false,
+		"2xSaI", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_2xSaI,
 		&Image_window::show_scaled8to555_2xSaI,
 		&Image_window::show_scaled8to16_2xSaI,
@@ -158,7 +154,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(_2xSaI);
 
 	const ScalerInfo SuperEagle = { 
-		"SuperEagle", SCALE_BIT(2), false,
+		"SuperEagle", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_SuperEagle,
 		&Image_window::show_scaled8to555_SuperEagle,
 		&Image_window::show_scaled8to16_SuperEagle,
@@ -168,7 +164,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(SuperEagle);
 
 	const ScalerInfo Super2xSaI = { 
-		"Super2xSaI", SCALE_BIT(2), false,
+		"Super2xSaI", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_Super2xSaI,
 		&Image_window::show_scaled8to555_Super2xSaI,
 		&Image_window::show_scaled8to16_Super2xSaI,
@@ -178,7 +174,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Super2xSaI);
 
 	const ScalerInfo Scale2X = { 
-		"Scale2X", SCALE_BIT(2), false,
+		"Scale2X", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_2x_noblur,
 		&Image_window::show_scaled8to555_2x_noblur,
 		&Image_window::show_scaled8to16_2x_noblur,
@@ -188,7 +184,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Scale2X);
 
 	const ScalerInfo Hq2x = { 
-		"Hq2x", SCALE_BIT(2), false,
+		"Hq2x", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_Hq2x,
 		&Image_window::show_scaled8to555_Hq2x,
 		&Image_window::show_scaled8to16_Hq2x,
@@ -198,7 +194,7 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Hq2x);
 
 	const ScalerInfo Hq3x = { 
-		"Hq3x", SCALE_BIT(2)|SCALE_BIT(3), false,
+		"Hq3x", SCALE_BIT(3), 0,
 		&Image_window::show_scaled8to565_Hq3x,
 		&Image_window::show_scaled8to555_Hq3x,
 		&Image_window::show_scaled8to16_Hq3x,
@@ -209,13 +205,8 @@ Image_window::ScalerVector::ScalerVector()
 
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 
-		"OpenGL", 0xFFFFFFFF, true,
+		"OpenGL", 0xFFFFFFFF, 0,
 		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-		&Image_window::show_scaledOpenGL,
-
 		&Image_window::show_scaledOpenGL,
 		&Image_window::show_scaledOpenGL,
 		&Image_window::show_scaledOpenGL,
@@ -483,21 +474,35 @@ void Image_window::create_surface
 {
 	uses_palette = true;
 	draw_surface = paletted_surface = inter_surface = display_surface = 0;
+
+	if (!Scalers[fill_scaler].arb)
+	{
+		if (Scalers[scaler].arb)
+			fill_scaler = scaler;
+		else
+			fill_scaler = point;
+	}
+
 #if defined(__zaurus__)
 	fullscreen = false; // Zaurus would crash in fullscreen mode
-#else
-	if ((scale > 1 || force_bpp) && try_scaler(w, h) == false)
+	scale = 1;
+#endif
+
+	get_draw_dims(w, h, scale, fill_mode, game_width, game_height, inter_width, inter_height);
+
+	if ((game_width != inter_width || game_height != inter_height || force_bpp) && try_scaler(w, h) == false)
 	{
 		// Try fallback to point scaler if it failed, if it doesn't work, we probably can't run
 		scaler = point;
 		try_scaler(w, h);
 	}
-#endif
 
 	if (!paletted_surface && !force_bpp)		// No scaling, or failed?
 	{
 		uint32 flags = SDL_SWSURFACE | (fullscreen?SDL_FULLSCREEN:0) | (ibuf->depth==8?SDL_HWPALETTE:0);
 		inter_surface = draw_surface = paletted_surface = display_surface = SDL_SetVideoMode(w/scale, h/scale, ibuf->depth, flags);
+		inter_width = w/scale;
+		inter_height = h/scale;
 		scale = 1;
 	}
 	if (!paletted_surface)
@@ -517,10 +522,12 @@ void Image_window::create_surface
 	ibuf->width = draw_surface->w;
 	ibuf->height = draw_surface->h;
 
-	if (game_width == 0 || game_width > ibuf->width)
-		game_width = ibuf->width;
-	if (game_height == 0 || game_height > ibuf->height) 
-		game_height = ibuf->height;
+	if (draw_surface != display_surface && scaler != OpenGL)
+	{
+		ibuf->width -= guard_band*2;
+		ibuf->height -= guard_band*2;
+	}
+
 
 	// Update line size in words.
 	ibuf->line_width = draw_surface->pitch/ibuf->pixel_size;
@@ -528,6 +535,8 @@ void Image_window::create_surface
 	ibuf->offset_x = (get_full_width()-get_game_width())/2; 
 	ibuf->offset_y = (get_full_height()-get_game_height())/2; 
 	ibuf->bits = ((unsigned char *) draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
+	// Scaler guardband is in effect
+	if (draw_surface != display_surface && scaler != OpenGL) ibuf->bits += guard_band + ibuf->line_width*guard_band;
 }
 
 /*
@@ -545,22 +554,43 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
-	if ((display_surface = inter_surface = SDL_SetVideoMode(w, h, 
-		hwdepth, flags)) != 0 &&
-		(draw_surface = 
-		SDL_CreateRGBSurface(SDL_SWSURFACE, w/scale, h/scale,
-		ibuf->depth, 0, 0, 0, 0)) != 0)
-	{			// Get color mask info.
-		if ((uses_palette = (bpp == 8))) paletted_surface = display_surface;
-		else paletted_surface = draw_surface;
-		return true;
-	}
-	else
-	{
-		cerr << "Couldn't create scaled surface" << endl;
+	if (!(display_surface = SDL_SetVideoMode(w, h, hwdepth, flags))) {
+		cerr << "Unable to set video mode to" << w << "x" << h << " " << hwdepth << " bpp" << endl;
 		free_surface();
 		return false;
 	}
+
+	if (!(draw_surface =  SDL_CreateRGBSurface(SDL_SWSURFACE, inter_width/scale + 2*guard_band, inter_height/scale + 2*guard_band, ibuf->depth, 0, 0, 0, 0)))
+	{
+		cerr << "Couldn't create draw surface" << endl;
+		free_surface();
+		return false;
+	}
+
+	// Scale using 'fill_scaler' only
+	if (scaler == fill_scaler || scale == 1)
+	{
+		inter_surface = draw_surface;
+	}
+	else if (inter_width != w || inter_height != h) 
+	{
+		if (!(inter_surface =  SDL_CreateRGBSurface(SDL_SWSURFACE, inter_width + 2*scale*guard_band, inter_height + 2*scale*guard_band, hwdepth, 0, 0, 0, 0)))
+		{
+			cerr << "Couldn't create inter surface" << endl;
+			free_surface();
+			return false;
+		}
+	}
+	// Scale using 'scaler' only
+	else 
+	{
+		inter_surface = display_surface;
+	}
+	
+
+	if ((uses_palette = (bpp == 8))) paletted_surface = display_surface;
+	else paletted_surface = draw_surface;
+	return true;
 }
 
 /*
@@ -570,7 +600,7 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 bool Image_window::try_scaler(int w, int h)
 {
 	// OpenGL
-	if (scaler ==OpenGL)
+	if (scaler == OpenGL)
 	{
 #ifdef HAVE_OPENGL
 		// Get info. about video.
@@ -605,7 +635,12 @@ bool Image_window::try_scaler(int w, int h)
 			SDL_SWSURFACE, w/scale, h/scale,
 			8, 0, 0, 0, 0)) != 0)
 		{
+			inter_width = w;
+			inter_height = h;
+			game_width = draw_surface->w;
+			game_height = draw_surface->h;
 			//show_scaled = &Image_window::show_scaledOpenGL;
+			return true;
 		}
 		else
 		{
@@ -614,13 +649,16 @@ bool Image_window::try_scaler(int w, int h)
 		}
 #else
 		cerr << "OpenGL not supported" << endl;
+
 #endif
+		scaler = point;
 	}
-	else if (scale >= 2 || force_bpp != 0)
+	
+	if (game_width != inter_width || game_height != inter_height || force_bpp)
 	{
 		const ScalerInfo *info;
 
-		if (scaler < 0 || scaler >= NumScalers)
+		if (scaler < 0 || scaler >= NumScalers || scale == 1)
 			info = &Scalers[point];
 		else
 			info = &Scalers[scaler];
@@ -630,8 +668,15 @@ bool Image_window::try_scaler(int w, int h)
 			return false;
 
 		bool has8 = ibuf->depth==8 && info->fun8to8 && (force_bpp == 0 || force_bpp == 8);
-		bool has16 = ((ibuf->depth==8 && info->fun8to16) || (ibuf->depth==16 && info->fun16to16)) && (force_bpp == 0 || force_bpp == 16);
-		bool has32 = ((ibuf->depth==8 && info->fun8to32) || (ibuf->depth==32 && info->fun32to32)) && (force_bpp == 0 || force_bpp == 32);
+		bool has16 = ibuf->depth==8 && info->fun8to16 && (force_bpp == 0 || force_bpp == 16);
+		bool has32 = ibuf->depth==8 && info->fun8to32 && (force_bpp == 0 || force_bpp == 32);
+
+		if (info->arb)
+		{
+			has8 |= (force_bpp == 0 || force_bpp == 8) && info->arb->Support8bpp(ibuf->depth);
+			has16 |= (force_bpp == 0 || force_bpp == 16) && info->arb->Support16bpp(ibuf->depth);
+			has32 |= (force_bpp == 0 || force_bpp == 32) && info->arb->Support32bpp(ibuf->depth);
+		}
 
 		// First try best of 16 bit/32 bit scaler
 		if (has16 && has32 && create_scale_surfaces(w,h,0))
@@ -660,7 +705,7 @@ void Image_window::free_surface
  )
 {
 	if (draw_surface != 0 && draw_surface != display_surface && draw_surface != inter_surface) SDL_FreeSurface(draw_surface);
-	if (draw_surface != 0 && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
+	if (inter_surface != 0 && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
 	paletted_surface = 0;
 	inter_surface = 0;
 	draw_surface = 0;
@@ -693,14 +738,16 @@ void Image_window::resized
  unsigned int newgw, 
  unsigned int newgh,
  int newsc,
- int newscaler
+ int newscaler,
+ FillMode fmode, 
+ int fillsclr
  )
 {
 	if (paletted_surface)
 	{
-		if (neww == display_surface->w && newh == display_surface->h && newsc == scale && scaler == newscaler
+		/*if (neww == display_surface->w && newh == display_surface->h && newsc == scale && scaler == newscaler
 			&& newgw == game_width && newgh == game_height)
-			return;		// Nothing changed.
+			return;*/		// Nothing changed.
 		free_surface();		// Delete old image.
 	}
 	scale = newsc;
@@ -708,51 +755,9 @@ void Image_window::resized
 	fullscreen = newfs;
 	game_width = newgw;
 	game_height = newgh;
+	fill_mode = fmode;
+	fill_scaler = fillsclr;
 	create_surface(neww, newh);	// Create new one.
-}
-
-/*
-*	Repaint window.
-*/
-
-void Image_window::show
-(
- )
-{
-	if (!ready())
-		return;
-
-	if (scale > 1)		// 2X scaling?
-	{
-		scalefun show_scaled;
-		const ScalerInfo &sel_scaler = Scalers[scaler];
-
-		if (inter_surface->format->BitsPerPixel == 16 || inter_surface->format->BitsPerPixel == 15)
-		{
-			int r = inter_surface->format->Rmask;
-			int g = inter_surface->format->Gmask;
-			int b = inter_surface->format->Bmask;
-
-			show_scaled = 
-				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
-					(sel_scaler.fun8to565!=0?sel_scaler.fun8to565:sel_scaler.fun8to16) : 
-				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
-					(sel_scaler.fun8to555!=0?sel_scaler.fun8to555:sel_scaler.fun8to16) : 
-				sel_scaler.fun8to16 ;
-		}
-		else if (inter_surface->format->BitsPerPixel == 32)
-		{
-			show_scaled = sel_scaler.fun8to32;
-		}
-		else
-		{
-			show_scaled = sel_scaler.fun8to8;
-		}
-
-		(this->*show_scaled)(0, 0, ibuf->width, ibuf->height);
-	}
-	else
-		SDL_UpdateRect(inter_surface, 0, 0, ibuf->width, ibuf->height);
 }
 
 /*
@@ -773,38 +778,116 @@ void Image_window::show
 	x -= get_start_x();
 	y -= get_start_y();
 
-	if (scale > 1)		// 2X scaling?
+	if (scaler == OpenGL)
+	{
+		Image_window::show_scaledOpenGL(x,y,w,h);
+		return;
+	}
+
+	// Increase the area by 4 pixels
+	increase_area(x,y,w,h, 4,4,4,4, get_full_width(),get_full_height());
+
+	// Make it 4 pixel aligned too
+	int dx = x&3;
+	int dy = y&3;
+	x -= dx;
+	w += dx;
+	y -= dy;
+	h += dy;
+
+	if (w&3) w += 4-(w&3);
+	if (h&3) h += 4-(h&3);
+
+	if (w + x > get_full_width()) w = get_full_width()-x;
+	if (h + y > get_full_height()) h = get_full_height()-y;
+
+	w &= ~3;
+	h &= ~3;
+
+	// Phase 1 blit from draw_surface to inter_surface
+	if (draw_surface != inter_surface)
 	{
 		scalefun show_scaled;
 		const ScalerInfo &sel_scaler = Scalers[scaler];
 
-		if (inter_surface->format->BitsPerPixel == 16 || inter_surface->format->BitsPerPixel == 15)
-		{
-			int r = inter_surface->format->Rmask;
-			int g = inter_surface->format->Gmask;
-			int b = inter_surface->format->Bmask;
+		// Need to apply an offset to compensate for the guard_band
+		if (inter_surface == display_surface)
+			inter_surface->pixels = (uint8*)inter_surface->pixels - inter_surface->pitch*guard_band*scale - inter_surface->format->BytesPerPixel*guard_band*scale;
 
-			show_scaled = 
-				(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
-					(sel_scaler.fun8to565!=0?sel_scaler.fun8to565:sel_scaler.fun8to16) : 
-				(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
-					(sel_scaler.fun8to555!=0?sel_scaler.fun8to555:sel_scaler.fun8to16) : 
-				sel_scaler.fun8to16 ;
-		}
-		else if (inter_surface->format->BitsPerPixel == 32)
+		if (sel_scaler.arb)
 		{
-			show_scaled = sel_scaler.fun8to32;
+			if (!sel_scaler.arb->Scale(draw_surface,x+guard_band,y+guard_band,w,h,inter_surface,scale*(x+guard_band), scale*(y+guard_band), scale*w, scale*h, false))
+				Scalers[point].arb->Scale(draw_surface,x+guard_band,y+guard_band,w,h,inter_surface,scale*(x+guard_band), scale*(y+guard_band), scale*w, scale*h, false);
 		}
 		else
 		{
-			show_scaled = sel_scaler.fun8to8;
+			if (inter_surface->format->BitsPerPixel == 16 || inter_surface->format->BitsPerPixel == 15)
+			{
+				int r = inter_surface->format->Rmask;
+				int g = inter_surface->format->Gmask;
+				int b = inter_surface->format->Bmask;
+
+				show_scaled = 
+					(r == 0xf800 && g == 0x7e0 && b == 0x1f) || (b == 0xf800 && g == 0x7e0 && r == 0x1f) ? 
+						(sel_scaler.fun8to565!=0?sel_scaler.fun8to565:sel_scaler.fun8to16) : 
+					(r == 0x7c00 && g == 0x3e0 && b == 0x1f) || (b == 0x7c00 && g == 0x3e0 && r == 0x1f) ? 
+						(sel_scaler.fun8to555!=0?sel_scaler.fun8to555:sel_scaler.fun8to16) : 
+					sel_scaler.fun8to16 ;
+			}
+			else if (inter_surface->format->BitsPerPixel == 32)
+			{
+				show_scaled = sel_scaler.fun8to32;
+			}
+			else
+			{
+				show_scaled = sel_scaler.fun8to8;
+			}
+
+			(this->*show_scaled)(x, y, w, h);
 		}
 
-		(this->*show_scaled)(x, y, w, h);
+		// Undo guard_band offset 
+		if (inter_surface == display_surface)
+			inter_surface->pixels = (uint8*)inter_surface->pixels + inter_surface->pitch*guard_band*scale + inter_surface->format->BytesPerPixel*guard_band*scale;
 
+		x *= scale;
+		y *= scale;
+		w *= scale;
+		h *= scale;
 	}
-	else
-		SDL_UpdateRect(inter_surface, x, y, w, h);
+
+	// Phase 2 blit from inter_surface to display_surface
+	if (inter_surface != display_surface)
+	{
+		const ScalerInfo &sel_scaler = Scalers[fill_scaler];
+		
+		// Just scale entire surfaces
+		if (inter_surface == draw_surface)
+		{
+			x = guard_band;
+			y = guard_band;
+			w = get_full_width();
+			h = get_full_height();
+		}
+		else
+		{
+			x = guard_band*scale;
+			y = guard_band*scale;
+			w = inter_width;
+			h = inter_height;
+		}
+
+		if (!sel_scaler.arb || !sel_scaler.arb->Scale(inter_surface,x,y,w,h,display_surface,0, 0, display_surface->w, display_surface->h, false))
+			Scalers[point].arb->Scale(inter_surface,x,y,w,h,display_surface,0, 0, display_surface->w, display_surface->h, false);
+
+		x = 0;
+		y = 0;
+		w = display_surface->w;
+		h = display_surface->h;
+	}
+
+	// Phase 3 notify SDL
+	SDL_UpdateRect(display_surface, x, y, w, h);
 }
 
 
@@ -926,3 +1009,231 @@ int Image_window::get_display_height()
 	return display_surface->h; 
 }
 
+bool Image_window::get_draw_dims(int sw, int sh, int scale, FillMode fillmode, int &gw, int &gh, int &iw, int &ih)
+{
+	// Handle each type separately
+
+	if (fillmode == Fill)
+	{
+		if (gw == 0 || gh == 0) {
+			gw = sw/scale;
+			gh = sh/scale;
+		}
+
+		iw = gw*scale;
+
+		ih = gh*scale;
+	}
+	else if (fillmode == Fit)
+	{
+		if (gw == 0 || gh == 0) {
+			gw = sw/scale;
+			gh = sh/scale;
+		}
+
+		// Height determines the scaling factor
+		if (sw*gh >= sh*gw)
+		{
+			ih = gh*scale;
+
+			iw = (sw*ih)/(sh);
+		}
+		// Width determines the scaling factor
+		else
+		{
+			iw = gw*scale;
+
+			ih = (sh*iw)/(sw);
+		}
+	}
+	else if (fillmode == AspectCorrectFit)
+	{
+		if (gw == 0 || gh == 0) {
+			gw = sw/scale;
+			gh = (sh*5)/(scale*6);
+		}
+
+		// Height determines the scaling factor
+		if (sw*gh*6 >= sh*gw*5)
+		{
+			if (gh == (sh*5)/(scale*6)) ih = (sh*5)/6;
+			else ih = gh*scale;
+
+			iw = (sw*ih*6)/(sh*5);
+		}
+		// Width determines the scaling factor
+		else
+		{
+			if (gw == sw/scale) iw = sw;
+			else iw = gw*scale;
+
+			ih = (sh*iw*5)/(sw*6);
+		}
+	}
+	else if (fillmode >= Centre && fillmode < (1<<16))
+	{
+		int factor = 2 + ((fillmode-Centre)/2);
+		int aspect_factor = (fillmode & 1)?5:6;
+
+		if (gw == 0 || gh == 0) {
+			gw = (sw*2)/(factor*scale);
+			gh = (sh*aspect_factor)/(3*factor*scale);
+		}
+
+		iw = (sw*2)/factor;
+		ih = (sh*aspect_factor)/(3*factor);
+
+		if (gw*scale > iw) gw = iw/scale;
+
+		if (gh*scale > ih) gh = ih/scale;
+	}
+	else
+	{
+		int fw = fillmode & 0xFFFF;
+		int fh = (fillmode >> 16) & 0xFFFF;
+
+		if (!fw || !fh) return false;
+
+		if (gw == 0 || gh == 0) {
+			gw = fw/scale;
+			gh = fh/scale;
+		}
+
+		if (fw > sw) { 
+			gw = (gw*sw)/fw;
+			iw = gw*scale;
+		}
+		else {
+			iw = (sw*gw*scale)/fw;
+		}
+
+		if (fh > sh) {
+			gh = (gh*sh)/fh;
+			ih = gh*scale;
+		}
+		else {
+			ih = (sh*gh*scale)/fh;
+		}
+	}
+
+	// If there is a rounding error don't scale twice, just centre		
+	if (iw == (sw/scale)*scale) iw = sw;
+	if (ih == (sh/scale)*scale) ih = sh;
+	
+	return true;
+}
+
+Image_window::FillMode Image_window::string_to_fillmode(const char *str)
+{
+	// If only C++ had reflection capabilities...
+
+	if (!Pentagram::strcasecmp(str, "Fill")) 
+		return Fill;
+	else if (!Pentagram::strcasecmp(str, "Fit")) 
+		return Fit;
+	else if (!Pentagram::strcasecmp(str, "Aspect Correct Fit")) 
+		return AspectCorrectFit;
+	else if (!Pentagram::strcasecmp(str, "Centre") || !Pentagram::strcasecmp(str, "Center")) 
+		return Centre;
+	else if (!Pentagram::strcasecmp(str, "Aspect Correct Centre") || !Pentagram::strcasecmp(str, "Aspect Correct Center") || !Pentagram::strcasecmp(str, "Centre Aspect Correct") || !Pentagram::strcasecmp(str, "Center Aspect Correct")) 
+		return AspectCorrectCentre;
+	else if (!Pentagram::strncasecmp(str, "Centre ", 7) || !Pentagram::strncasecmp(str, "Center ", 7)) 
+	{
+		str += 7;
+		if (*str != 'X' && *str != 'x') return (FillMode) 0;
+
+		++str;
+		if (*str < '0' || *str > '9') return (FillMode) 0;
+
+		unsigned long f = std::strtoul(str,const_cast<char**>(&str),10);
+
+		if (f >= (65536-Centre)/2 || *str) return (FillMode) 0;
+
+		return (FillMode) (Centre + f*2);
+	}
+	else if (!Pentagram::strncasecmp(str, "Aspect Correct Centre ", 22) || !Pentagram::strncasecmp(str, "Aspect Correct Center ", 22) || !Pentagram::strncasecmp(str, "Centre Aspect Correct ", 22) || !Pentagram::strncasecmp(str, "Center Aspect Correct ", 22)) 
+	{
+		str += 22;
+		if (*str != 'X' && *str != 'x') return (FillMode) 0;
+
+		++str;
+		if (*str < '0' || *str > '9') return (FillMode) 0;
+
+		unsigned long f = std::strtoul(str,const_cast<char**>(&str),10);
+
+		if (f >= (65536-AspectCorrectCentre)/2 || *str) return (FillMode) 0;
+
+		return (FillMode) (AspectCorrectCentre + f*2);
+	}
+	else
+	{
+		if (*str < '0' || *str > '9') return (FillMode) 0;
+
+		unsigned long fx = std::strtoul(str,const_cast<char**>(&str),10);
+
+		if (fx > 65535 || *str != 'X' && *str != 'x') return (FillMode) 0;
+
+		++str;
+		if (*str < '0' || *str > '9') return (FillMode) 0;
+
+		unsigned long fy = std::strtoul(str,const_cast<char**>(&str),10);
+
+		if (fy > 65535 || *str) return (FillMode) 0;
+
+		return (FillMode) (fx | (fy<<16));
+	}
+}
+
+bool Image_window::fillmode_to_string(FillMode fmode, std::string &str)
+{
+	// If only C++ had reflection capabilities...
+
+	if (fmode == Fill) {
+		str = "Fill";
+		return true;
+	}
+	else if (fmode == Fit) {
+		str = "Fit";
+		return true;
+	}
+	else if (fmode == AspectCorrectFit) {
+		str = "Aspect Correct Fit";
+		return true;
+	}
+	else if (fmode >= Centre && fmode < (1<<16))
+	{
+		int factor = 2 + ((fmode-Centre)/2);
+		char factor_str[16];
+
+		if (factor == 2)
+			factor_str[0] = 0;
+		else {
+			snprintf(factor_str,15,(factor&1)?" x%d.5":" x%d",factor/2);
+			factor_str[15] = 0;
+		}
+
+		if (fmode & 1)
+			str = std::string("Aspect Correct Centre") + std::string(factor_str);
+		else
+			str = std::string("Centre") + std::string(factor_str);
+		return true;
+	}
+	else
+	{
+		int fw = fmode & 0xFFFF;
+		int fh = (fmode >> 16) & 0xFFFF;
+
+		if (!fw || !fh) return false;
+
+		char factor_str[16];
+		snprintf(factor_str,15,"%dx%d",fw,fh);
+		factor_str[15] = 0;
+		str = std::string(factor_str);
+
+		return true;
+	}
+
+	return false;
+
+
+}

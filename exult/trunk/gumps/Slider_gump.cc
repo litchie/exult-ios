@@ -55,21 +55,24 @@ public:
 		: Gump_button(par, shapenum, px, py), is_left(left)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
  *	Handle click on a slider's arrow.
  */
 
-void Slider_button::activate
+bool Slider_button::activate
 	(
+	int button
 	)
 {
+	if (button != 1) return false;
 	if (is_left)
 		((Slider_gump *) parent)->clicked_left_arrow();
 	else
 		((Slider_gump *) parent)->clicked_right_arrow();
+	return true;
 }
 
 /*
@@ -190,11 +193,13 @@ void Slider_gump::paint
  *	Handle mouse-down events.
  */
 
-void Slider_gump::mouse_down
+bool Slider_gump::mouse_down
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button			// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	dragging = 0;
 	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
@@ -203,8 +208,8 @@ void Slider_gump::mouse_down
 		pushed = 0;
 	if (pushed)
 	{
-		pushed->push();
-		return;
+		if (!pushed->push(button)) pushed = 0;
+		return true;
 	}
 					// See if on diamond.
 	Shape_frame *d_shape = diamond.get_shape();
@@ -214,7 +219,7 @@ void Slider_gump::mouse_down
 		prev_dragx = mx;
 	} else {
 		if(my-get_y()<diamondy || my-get_y()>diamondy+d_shape->get_height())
-			return;
+			return true;
 		diamondx = mx-get_x();
 		if(diamondx<xmin)
 			diamondx = xmin;
@@ -229,17 +234,21 @@ void Slider_gump::mouse_down
 			val = newval;
 		paint();
 	}
+
+	return true;
 }
 
 /*
  *	Handle mouse-up events.
  */
 
-void Slider_gump::mouse_up
+bool Slider_gump::mouse_up
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button		// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	if (dragging)			// Done dragging?
 	{
 		set_val(val);		// Set diamond in correct pos.
@@ -248,11 +257,13 @@ void Slider_gump::mouse_up
 		dragging = 0;
 	}
 	if (!pushed)
-		return;
-	pushed->unpush();
+		return true;
+	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
-		pushed->activate();
+		pushed->activate(button);
 	pushed = 0;
+
+	return true;
 }
 
 /*

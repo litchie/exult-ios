@@ -28,25 +28,30 @@ class Gump_button : public Gump_widget
 {
 	UNREPLICATABLE_CLASS(Gump_button);
 
-protected:
-	unsigned char pushed;		// 1 if in pushed state.
+private:
+	int pushed_button;		// 1 if in pushed state.
 
 public:
 	friend class Gump;
 	Gump_button(Gump *par, int shnum, int px, int py, 
 				ShapeFile shfile = SF_GUMPS_VGA)
-		: Gump_widget(par, shnum, px, py, shfile), pushed(0)
+		: Gump_widget(par, shnum, px, py, shfile), pushed_button(0)
 		{  }
 					// Is a given point on the checkmark?
 	virtual int on_button(int mx, int my)
 		{ return on_widget(mx, my); }
 					// What to do when 'clicked':
-	virtual void activate() = 0;
+	virtual bool activate(int button) = 0;
 					// Or double-clicked.
 	virtual void double_clicked(int x, int y);
-	virtual void push();	// Redisplay as pushed.
-	virtual void unpush();
+	virtual bool push(int button);	// Redisplay as pushed.
+	virtual void unpush(int button);
 	virtual void paint();
+	int get_pushed() { return pushed_button; }
+	bool is_pushed() { return pushed_button != 0; }
+	void set_pushed(int button) { pushed_button = button; }
+	void set_pushed(bool set) { pushed_button = set?1:0; }
+
 };
 
 #endif

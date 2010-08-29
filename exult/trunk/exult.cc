@@ -633,6 +633,7 @@ int exult_main(const char *runpath)
 		// Convert from the older format
 		string data_directory;
 		config->value("config/disk/u7path",data_directory,"./blackgate");
+		config->remove("config/disk/u7path",false);
 		config->set("config/disk/game/blackgate/path",data_directory,true);
 		}
 
@@ -655,7 +656,7 @@ int exult_main(const char *runpath)
 	// Save game compression level
 	config->value("config/disk/save_compression_level", save_compression, 1);
 	if (save_compression < 0 || save_compression > 2) save_compression = 1;
-	config->set("config/disk/save_compression_level", save_compression, true);
+	config->set("config/disk/save_compression_level", save_compression, false);
 #if 0 && USECODE_DEBUGGER
 	// Enable usecode debugger
 	config->value("config/debug/debugger/enable",usecode_debugging);
@@ -836,7 +837,8 @@ static void Init
 	else if (sclr == Image_window::Hq3x)
 		scaleval = 3;
 	else if (sclr != Image_window::point && sclr != Image_window::interlaced &&
-			sclr != Image_window::OpenGL)
+			sclr != Image_window::OpenGL&&
+			sclr != Image_window::bilinear)
 		scaleval = 2;
 	config->set("config/video/scale", scaleval, false);
 
@@ -873,6 +875,19 @@ static void Init
 	config->set("config/video/game/width", gw, false);
 	config->set("config/video/game/height", gh, false);
 
+	std::string fmode_string;
+	config->value("config/video/fill_mode",fmode_string,"");
+	Image_window::FillMode fillmode = Image_window::string_to_fillmode(fmode_string.c_str());
+	if (fillmode == 0) fillmode = Image_window::AspectCorrectCentre;
+	Image_window::fillmode_to_string(fillmode,fmode_string);
+	config->set("config/video/fill_mode",fmode_string,false);
+	
+	std::string fill_scaler_str;
+	config->value("config/video/fill_scaler",fill_scaler_str,"bilinear");
+	int fill_scaler = Image_window::get_scaler_for_name(fill_scaler_str.c_str());
+	if (fill_scaler == Image_window::NoScaler) fill_scaler = Image_window::bilinear;
+	config->set("config/video/fill_scaler",Image_window::get_name_for_scaler(fill_scaler),false);
+
 	int border_red, border_green, border_blue;
 
 	config->value("config/video/game/border/red", border_red, 0);
@@ -901,7 +916,7 @@ static void Init
 
 	if (arg_buildmap < 0)
 		{
-		gwin = new Game_window(sw, sh, fullscreen, gw ,gh, scaleval, sclr);
+		gwin = new Game_window(sw, sh, fullscreen, gw ,gh, scaleval, sclr, fillmode, fill_scaler);
 		//gwin->resized(sw, sh, gwin->get_win()->is_fullscreen(), gw ,gh, scaleval, sclr);
 		// Ensure proper clipping:
 		gwin->get_win()->clear_clip();
@@ -2170,7 +2185,9 @@ void set_resolution (int new_res, bool save)
 			res_list[current_res].y,
 			gwin->get_win()->is_fullscreen(),
 			gw, gh,
-			res_list[current_res].scale, scaler);
+			res_list[current_res].scale, scaler,
+			gwin->get_win()->get_fill_mode(),
+			gwin->get_win()->get_fill_scaler());
 		if(save) {
 			char val[20];
 			snprintf(val, 20, "%d", res_list[current_res].x);

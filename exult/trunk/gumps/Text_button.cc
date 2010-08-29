@@ -83,7 +83,7 @@ void Text_button::paint()
 	}
 
 	// The the push dependant edges
-	if (pushed)
+	if (is_pushed())
 	{
 		// Top left corner
 		iwin->fill8(TB_OUTER_BORDER_CORNER, 1, 1, px, py);

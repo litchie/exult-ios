@@ -222,6 +222,13 @@ public:
 		g = ((pix&ManipBase::fmt->Gmask)>>ManipBase::fmt->Gshift)<<ManipBase::fmt->Gloss;
 		b = ((pix&ManipBase::fmt->Bmask)>>ManipBase::fmt->Bshift)<<ManipBase::fmt->Bloss;
 	}
+	static void split_source(uintS pix, uint8& r,
+		uint8& g, uint8& b)
+	{
+		r = ((pix&ManipBase::fmt->Rmask)>>ManipBase::fmt->Rshift)<<ManipBase::fmt->Rloss;
+		g = ((pix&ManipBase::fmt->Gmask)>>ManipBase::fmt->Gshift)<<ManipBase::fmt->Gloss;
+		b = ((pix&ManipBase::fmt->Bmask)>>ManipBase::fmt->Bshift)<<ManipBase::fmt->Bloss;
+	}
 };
 
 // 555 RGB Src
@@ -234,6 +241,14 @@ public:
 
 	static void split_source(uintS pix, unsigned int& r,
 		unsigned int& g, unsigned int& b)
+	{
+		r = (pix>>10)<<3;
+		g = (pix>>5)<<3;
+		b = (pix)<<3;
+	}
+
+	static void split_source(uintS pix, uint8& r,
+		uint8& g, uint8& b)
 	{
 		r = (pix>>10)<<3;
 		g = (pix>>5)<<3;
@@ -256,6 +271,13 @@ public:
 		g = (pix>>5)<<2;
 		b = (pix)<<3;
 	}
+	static void split_source(uintS pix, uint8& r,
+		uint8& g, uint8& b)
+	{
+		r = (pix>>11)<<3;
+		g = (pix>>5)<<2;
+		b = (pix)<<3;
+	}
 };
 
 // Paletted Src
@@ -268,6 +290,15 @@ public:
 
 	static void split_source(uintS pix, unsigned int& r,
 		unsigned int& g, unsigned int& b)
+	{
+		SDL_Color& color = ManipBase::colors[pix];
+		r = color.r;
+		g = color.g;
+		b = color.b;
+	}
+
+	static void split_source(uintS pix, uint8& r,
+		uint8& g, uint8& b)
 	{
 		SDL_Color& color = ManipBase::colors[pix];
 		r = color.r;

@@ -37,11 +37,11 @@ public:
 	virtual ~Face_button() {  }
 	virtual Actor *get_actor() { return actor; }
 	virtual void double_clicked(int x, int y);
-	virtual void activate() {}
+	virtual bool activate(int button) { return button == 1; }
 
 	virtual void paint();
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual bool push(int button) { return button == 1; }
+	virtual void unpush(int) {}
 	virtual void update_widget();
 };
 

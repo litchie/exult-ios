@@ -61,17 +61,18 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
-};
-
-void AudioOptions_button::activate()
-{
-	if (text == canceltext) {
-		((AudioOptions_gump*)parent)->cancel();
-	} else if (text == oktext) {
-		((AudioOptions_gump*)parent)->close();
+	virtual bool activate(int button)
+	{
+		if (button != 1) return false;
+		
+		if (text == canceltext) {
+			((AudioOptions_gump*)parent)->cancel();
+		} else if (text == oktext) {
+			((AudioOptions_gump*)parent)->close();
+		}
+		return true;
 	}
-}
+};
 
 class AudioTextToggle : public Gump_ToggleTextButton {
 public:
@@ -583,32 +584,44 @@ void AudioOptions_gump::paint()
 	gwin->set_painted();
 }
 
-void AudioOptions_gump::mouse_down(int mx, int my)
+bool AudioOptions_gump::mouse_down(int mx, int my, int button)
 {
+	// Only left and right buttons
+	if (button != 1 && button != 3) return false;
+
+	// We'll eat the mouse down if we've already got a button down
+	if (pushed) return true;
+
+	// First try checkmark
 	pushed = Gump::on_button(mx, my);
-					// First try checkmark.
+					
 	// Try buttons at bottom.
-	if (!pushed)
-		for (int i = id_first; i < id_count; i++)
+	if (!pushed) {
+		for (int i = id_first; i < id_count; i++) {
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
-
-	if (pushed)			// On a button?
-	{
-		pushed->push();
-		return;
+		}
 	}
+
+	if (pushed && !pushed->push(button))			// On a button?
+		pushed = 0;
+		
+	return button == 1 || pushed != 0;
 }
 
-void AudioOptions_gump::mouse_up(int mx, int my)
+bool AudioOptions_gump::mouse_up(int mx, int my, int button)
 {
-	if (pushed)			// Pushing a button?
-	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			((Gump_button*)pushed)->activate();
-		pushed = 0;
-	}
+	// Not Pushing a button?
+	if (!pushed) return false;
+
+	if (pushed->get_pushed() != button) return button == 1;
+
+	bool res = false;
+	pushed->unpush(button);
+	if (pushed->on_button(mx, my))
+		res = ((Gump_button*)pushed)->activate(button);
+	pushed = 0;
+	return res;
 }

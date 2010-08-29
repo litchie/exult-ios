@@ -58,8 +58,8 @@ class GameplayOptions_gump : public Modal_gump
 	virtual void close();
 
  					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
+	virtual bool mouse_down(int mx, int my, int button);
+	virtual bool mouse_up(int mx, int my, int button);
 
 	void toggle(Gump_button* btn, int state);
 	void build_buttons();

@@ -29,13 +29,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	Redisplay as 'pushed'.
  */
 
-void Gump_button::push
+bool Gump_button::push
 	(
+	int button
 	)
 {
-	pushed = 1;
-	paint();
-	gwin->set_painted();
+	if (button == 1)
+	{
+		set_pushed(button);
+		paint();
+		gwin->set_painted();
+		return true;
+	}
+	return false;
 }
 
 /*
@@ -44,11 +50,15 @@ void Gump_button::push
 
 void Gump_button::unpush
 	(
+	int button
 	)
 {
-	pushed = 0;
-	paint();
-	gwin->set_painted();
+	if (button == 1)
+	{
+		set_pushed(false);
+		paint();
+		gwin->set_painted();
+	}
 }
 
 /*
@@ -80,7 +90,7 @@ void Gump_button::paint
 	}
 
 	int prev_frame = get_framenum();
-	set_frame(prev_frame + pushed);
+	set_frame(prev_frame + (is_pushed()?1:0));
 	paint_shape(x+px, y+py);
 	set_frame(prev_frame);
 

@@ -64,7 +64,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -78,7 +78,7 @@ public:
 			game->get_shape("gumps/quitbtn"), px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
@@ -90,46 +90,57 @@ public:
 	Sound_button(Gump *par, int px, int py, int shapenum,
 								bool enabled)
 	  : Gump_button(par, shapenum, px, py)
-		{ pushed = enabled; }
+		{ set_pushed(enabled); }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 /*
  *	Clicked a 'load' or 'save' button.
  */
 
-void Load_save_button::activate
+bool Load_save_button::activate
 	(
+	int button
 	)
 {
+	if (button != 1) return false;
+
 	if (get_shapenum() == game->get_shape("gumps/loadbtn"))
 		((File_gump *) parent)->load();
 	else
 		((File_gump *) parent)->save();
+
+	return true;
 }
 
 /*
  *	Clicked on 'quit'.
  */
 
-void Quit_button::activate
+bool Quit_button::activate
 	(
+	int button
 	)
 {
+	if (button != 1) return false;
 	((File_gump *) parent)->quit();
+	return true;
 }
 
 /*
  *	Clicked on one of the sound options.
  */
 
-void Sound_button::activate
+bool Sound_button::activate
 	(
+	int button
 	)
 {
-	pushed = ((File_gump *) parent)->toggle_option(this);
+	if (button != 1) return false;
+	set_pushed(((File_gump *) parent)->toggle_option(this) != 0);
 	parent->paint();
+	return true;
 }
 
 
@@ -529,11 +540,13 @@ void File_gump::paint
  *	Handle mouse-down events.
  */
 
-void File_gump::mouse_down
+bool File_gump::mouse_down
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button		// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	pushed = 0;
 	pushed_text = 0;
 					// First try checkmark.
@@ -549,8 +562,8 @@ void File_gump::mouse_down
 			}
 	if (pushed)			// On a button?
 	{
-		pushed->push();
-		return;
+		pushed->push(button);
+		return true;
 	}
 					// See if on text field.
 	for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++)
@@ -559,33 +572,37 @@ void File_gump::mouse_down
 			pushed_text = names[i];
 			break;
 		}
+
+	return true;
 }
 
 /*
  *	Handle mouse-up events.
  */
 
-void File_gump::mouse_up
+bool File_gump::mouse_up
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button			// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
+		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
-			pushed->activate();
+			pushed->activate(button);
 		pushed = 0;
 	}
 	if (!pushed_text)
-		return;
+		return true;
 					// Let text field handle it.
 	if (!pushed_text->mouse_clicked(mx, my) ||
 	    pushed_text == focus)	// Same field already selected?
 	{
 		pushed_text->paint();
 		pushed_text = 0;
-		return;
+		return true;
 	}
 	if (focus)			// Another had focus.
 	{
@@ -611,6 +628,8 @@ void File_gump::mouse_up
 	}
 	paint();			// Repaint.
 	gwin->set_painted();
+
+	return true;
 }
 
 /*
@@ -627,11 +646,13 @@ void File_gump::text_input(int chr, int unicode)
 	case SDLK_KP_ENTER:
 		if (!buttons[0] && buttons[1])
 			{
-			buttons[1]->push();
-			gwin->show(1);
-			buttons[1]->unpush();
-			gwin->show(1);
-			buttons[1]->activate();
+			if (buttons[1]->push(1))
+				{
+				gwin->show(1);
+				buttons[1]->unpush(1);
+				gwin->show(1);
+				buttons[1]->activate(1);
+				}
 			}
 		break;
 	case SDLK_BACKSPACE:

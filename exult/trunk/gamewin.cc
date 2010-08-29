@@ -369,7 +369,7 @@ bool Set_glpalette(Palette *pal, bool rotation)
 
 Game_window::Game_window
 	(
-	int width, int height, bool fullscreen, int gwidth, int gheight, int scale, int scaler		// Window dimensions.
+	int width, int height, bool fullscreen, int gwidth, int gheight, int scale, int scaler, Image_window::FillMode fillmode, unsigned int fillsclr		// Window dimensions.
 	) : 
 	    dragging(0), effects(new Effects_manager(this)), map(new Game_map(0)),
 	    render(new Game_render), gump_man(new Gump_manager),
@@ -399,11 +399,11 @@ Game_window::Game_window
 	shape_man = new Shape_manager();// Create the single instance.
 	maps.push_back(map);		// Map #0.
 					// Create window.
-	win = new Image_window8(width, height, gwidth, gheight, scale, fullscreen, scaler);
+	win = new Image_window8(width, height, gwidth, gheight, scale, fullscreen, scaler, fillmode, fillsclr);
 	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
 	Game_singletons::init(this);	// Everything but 'usecode' exists.
-	Set_renderer(win, pal);
+	Set_renderer(win, pal, true);
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -894,10 +894,12 @@ void Game_window::resized
 	unsigned int newgw, 
 	unsigned int newgh,
 	unsigned int newsc,
-	unsigned int newsclr
+	unsigned int newsclr,
+	Image_window::FillMode newfill, 
+	unsigned int newfillsclr
 	)
 	{			
-	win->resized(neww, newh, newfs, newgw, newgh, newsc, newsclr);
+	win->resized(neww, newh, newfs, newgw, newgh, newsc, newsclr, newfill, newfillsclr);
 	pal->apply(false);
 	Set_renderer(win, pal, true);
 	if (!main_actor)		// In case we're before start.

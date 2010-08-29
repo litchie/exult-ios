@@ -38,6 +38,8 @@ class Face_stats : public Gump
 
 	int		resx;
 	int		resy;
+	int		gamex;
+	int		gamey;
 
 	bool		has_changed();
 	void		create_buttons();

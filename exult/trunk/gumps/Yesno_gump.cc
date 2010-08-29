@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include "SDL_events.h"
+#include <SDL_events.h>
 
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Gump_button.h"
 #include "Gump_manager.h"
+
+#include <cstring>
 
 /*
  *	Statics:
@@ -53,7 +55,7 @@ public:
 		  isyes(yes)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual bool activate(int button=1);
 };
 
 
@@ -61,11 +63,14 @@ public:
  *	Handle 'yes' or 'no' button.
  */
 
-void Yesno_button::activate
+bool Yesno_button::activate
 	(
+	int button
 	)
 {
+	if (button != 1) return false;
 	((Yesno_gump *) parent)->set_answer(isyes);
+	return true;
 }
 
 
@@ -75,10 +80,10 @@ void Yesno_button::activate
 
 Yesno_gump::Yesno_gump
 	(
-	const std::string &txt
-	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), answer(-1)
+	const std::string &txt, int fontnum_
+	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), fontnum(fontnum_), answer(-1)
 {
-	set_object_area(Rectangle(6, 6, 116, 30));
+	set_object_area(Rectangle(6, 5, 116, 32));
 	add_elem(new Yesno_button(this, yesx, yesnoy, 1));
 	add_elem(new Yesno_button(this, nox, yesnoy, 0));
 }
@@ -105,7 +110,7 @@ void Yesno_gump::paint
 	paint_shape(x, y);
 	paint_elems();			// Paint buttons.
 					// Paint text.
-	sman->paint_text_box(2, text.c_str(), x + object_area.x, 
+	sman->paint_text_box(fontnum, text.c_str(), x + object_area.x, 
 			y + object_area.y, object_area.w, object_area.h, 2);
 	gwin->set_painted();
 }
@@ -114,32 +119,37 @@ void Yesno_gump::paint
  *	Handle mouse-down events.
  */
 
-void Yesno_gump::mouse_down
+bool Yesno_gump::mouse_down
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button		// Position in window.
 	)
 {
+	if (button != 1) return false;
 	pushed = on_button(mx, my);
 	if (pushed)
-		pushed->push();		// Show it.
+		pushed->push(button);		// Show it.
+	return true;
 }
 
 /*
  *	Handle mouse-up events.
  */
 
-void Yesno_gump::mouse_up
+bool Yesno_gump::mouse_up
 	(
-	int mx, int my			// Position in window.
+	int mx, int my, int button			// Position in window.
 	)
 {
+	if (button != 1) return false;
+
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
+		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
-			pushed->activate();
+			pushed->activate(button);
 		pushed = 0;
 	}
+	return true;
 }
 
 /*
@@ -162,10 +172,48 @@ void Yesno_gump::key_down(int chr)
 
 int Yesno_gump::ask
 	(
-	const char *txt			// What to ask.
+	const char *txt,			// What to ask.
+	int fontnum
 	)
 {
-	Yesno_gump *dlg = new Yesno_gump(txt);
+	Yesno_gump *dlg = new Yesno_gump(txt,fontnum);
+	int answer;
+	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
+		answer = 0;
+	else
+		answer = dlg->get_answer();
+	delete dlg;
+	return (answer);
+}
+
+
+
+Countdown_gump::Countdown_gump (const std::string &txt, int timeout, int fontnum) : 
+	Yesno_gump(std::string(),fontnum), text_fmt(txt), timer(timeout)
+{
+	answer = 0;
+	start_time = SDL_GetTicks();
+}
+
+bool Countdown_gump::run() 
+{ 
+	int elapsed = SDL_GetTicks()-start_time;
+	int remaining = timer*1000-elapsed;
+
+	if (remaining <= 0)  set_answer(0);
+
+	char * new_text=new char[text_fmt.size() + 32];
+	snprintf(new_text, text_fmt.size() + 31, text_fmt.c_str(), remaining/1000);
+	new_text[text_fmt.size() + 31] = 0;
+	text = new_text;
+	delete [] new_text;
+
+	return true;
+}
+
+int Countdown_gump::ask(const char *txt, int timeout, int fontnum)
+{
+	Countdown_gump *dlg = new Countdown_gump(txt,timeout,fontnum);
 	int answer;
 	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
 		answer = 0;

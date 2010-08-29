@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Modal_gump.h"
 #include <string>
+#include "imagewin/imagewin.h"
 
 class Gump_button;
 
@@ -31,20 +32,33 @@ class VideoOptions_gump : public Modal_gump
  private:
 	Gump_button* buttons[10];
 
-	int resolution;
+	uint32 resolution;
 	int scaling;
 	int scaler;
 	int fullscreen;
-	int game_resolution;
+	uint32 game_resolution;
+	int fill_scaler;
+	Image_window::FillMode fill_mode;
+	bool has_ac;
 
-	std::string *restext;
-	std::string *game_restext;
-	
+	uint32 o_resolution;
+	int o_scaling;
+	int o_scaler;
+	int o_fullscreen;
+	uint32 o_game_resolution;
+	int o_fill_scaler;
+	Image_window::FillMode o_fill_mode;
+
 	static uint32 *resolutions;
 	static int num_resolutions;
 
+	static uint32 *win_resolutions;
+	static int num_win_resolutions;
+
 	static uint32 game_resolutions[3];
 	static int num_game_resolutions;
+
+	static Image_window::FillMode startup_fill_mode;
 
  public:
 	VideoOptions_gump();
@@ -55,12 +69,12 @@ class VideoOptions_gump : public Modal_gump
 	virtual void close();
 
  					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
+	virtual bool mouse_down(int mx, int my, int button);
+	virtual bool mouse_up(int mx, int my, int button);
 
 	void toggle(Gump_button* btn, int state);
 	void rebuild_buttons();
-	void rebuild_scale_button();
+	void rebuild_dynamic_buttons();
 
 	void load_settings();
 	void save_settings();

@@ -203,13 +203,352 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath="..\actions.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\actions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\actorio.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\actors.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\actors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\alpha_kludges.h"
+				>
+			</File>
+			<File
+				RelativePath="..\args.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\args.h"
+				>
+			</File>
+			<File
+				RelativePath="..\browser.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\browser.h"
+				>
+			</File>
+			<File
+				RelativePath="..\cheat.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\cheat.h"
+				>
+			</File>
+			<File
+				RelativePath="..\cheat_screen.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\cheat_screen.h"
+				>
+			</File>
+			<File
+				RelativePath="..\combat.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\combat.h"
+				>
+			</File>
+			<File
+				RelativePath="..\combat_opts.h"
+				>
+			</File>
+			<File
+				RelativePath="..\delobjs.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\delobjs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\dir.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\dir.h"
+				>
+			</File>
+			<File
+				RelativePath="..\drag.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\drag.h"
+				>
+			</File>
+			<File
+				RelativePath="..\effects.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\effects.h"
+				>
+			</File>
+			<File
+				RelativePath="..\exult.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\exult.h"
+				>
+			</File>
+			<File
+				RelativePath="..\exult_constants.h"
+				>
+			</File>
+			<File
+				RelativePath="..\exult_types.h"
+				>
+			</File>
+			<File
+				RelativePath="..\exultmenu.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\exultmenu.h"
+				>
+			</File>
+			<File
+				RelativePath="..\fnames.h"
+				>
+			</File>
+			<File
+				RelativePath="..\frameseq.h"
+				>
+			</File>
+			<File
+				RelativePath="..\game.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\game.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gameclk.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gameclk.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gamedat.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gamemap.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gamemap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gamerend.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gamerend.h"
+				>
+			</File>
+			<File
+				RelativePath="..\gamewin.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\gamewin.h"
+				>
+			</File>
+			<File
+				RelativePath="..\hash_utils.h"
+				>
+			</File>
+			<File
+				RelativePath="..\istring.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\istring.h"
+				>
+			</File>
+			<File
+				RelativePath="..\keyactions.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\keyactions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\keys.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\keys.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Makefile.am"
+				>
+			</File>
+			<File
+				RelativePath="..\menulist.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\menulist.h"
+				>
+			</File>
+			<File
+				RelativePath="..\monsters.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\monsters.h"
+				>
+			</File>
+			<File
+				RelativePath="..\mouse.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\mouse.h"
+				>
+			</File>
+			<File
+				RelativePath="..\npcnear.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\npcnear.h"
+				>
+			</File>
+			<File
+				RelativePath="..\npctime.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\npctime.h"
+				>
+			</File>
+			<File
+				RelativePath="..\palette.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\palette.h"
+				>
+			</File>
+			<File
+				RelativePath="..\party.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\party.h"
+				>
+			</File>
+			<File
+				RelativePath="..\paths.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\paths.h"
+				>
+			</File>
+			<File
+				RelativePath="..\readnpcs.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\rect.h"
+				>
+			</File>
+			<File
+				RelativePath="..\schedule.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\schedule.h"
+				>
+			</File>
+			<File
+				RelativePath="..\shapeid.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\shapeid.h"
+				>
+			</File>
+			<File
+				RelativePath="..\singles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\tiles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\tqueue.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\tqueue.h"
+				>
+			</File>
+			<File
+				RelativePath="..\txtscroll.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\txtscroll.h"
+				>
+			</File>
+			<File
+				RelativePath="..\version.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\version.h"
+				>
+			</File>
+			<File
+				RelativePath="..\windrag.cc"
+				>
+			</File>
+			<File
+				RelativePath="..\windrag.h"
+				>
+			</File>
 			<Filter
 				Name="Audio"
 				>
 				<File
 					RelativePath="..\audio\Audio.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\audio\Audio.h"
 					>
 				</File>
 				<File
@@ -241,23 +580,15 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\Midi.cc"
+					RelativePath="..\audio\conv.h"
 					>
 				</File>
 				<File
-					RelativePath="..\audio\OggAudioSample.cc"
+					RelativePath="..\audio\convmusic.h"
 					>
 				</File>
 				<File
-					RelativePath="..\audio\OggAudioSample.h"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\RawAudioSample.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\RawAudioSample.h"
+					RelativePath="..\audio\Makefile.am"
 					>
 				</File>
 				<File
@@ -265,34 +596,18 @@
 					>
 				</File>
 				<File
-					RelativePath="..\audio\VocAudioSample.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\VocAudioSample.h"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\WavAudioSample.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\WavAudioSample.h"
+					RelativePath="..\audio\soundtest.h"
 					>
 				</File>
 				<Filter
-					Name="Audio h"
+					Name="Midi"
 					>
 					<File
-						RelativePath="..\audio\Audio.h"
+						RelativePath="..\audio\midi_drivers\Makefile.am"
 						>
 					</File>
 					<File
-						RelativePath="..\audio\conv.h"
-						>
-					</File>
-					<File
-						RelativePath="..\audio\convmusic.h"
+						RelativePath="..\audio\Midi.cc"
 						>
 					</File>
 					<File
@@ -300,21 +615,13 @@
 						>
 					</File>
 					<File
-						RelativePath="..\audio\pcb.h"
+						RelativePath="..\audio\midi_drivers\MidiDriver.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\audio\SDL_mapping.h"
+						RelativePath="..\audio\midi_drivers\MidiDriver.h"
 						>
 					</File>
-					<File
-						RelativePath="..\audio\soundtest.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Midi"
-					>
 					<File
 						RelativePath="..\audio\midi_drivers\XMidiEvent.h"
 						>
@@ -387,14 +694,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\fmopl.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\audio\midi_drivers\fmopl.h"
-							>
-						</File>
-						<File
 							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.cpp"
 							>
 						</File>
@@ -408,14 +707,6 @@
 						</File>
 						<File
 							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.h"
-							>
-						</File>
-						<File
-							RelativePath="..\audio\midi_drivers\MidiDriver.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\audio\midi_drivers\MidiDriver.h"
 							>
 						</File>
 						<File
@@ -670,7 +961,55 @@
 								>
 							</File>
 						</Filter>
+						<Filter
+							Name="fmopl"
+							>
+							<File
+								RelativePath="..\audio\midi_drivers\fmopl.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\fmopl.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Audio Sample Types"
+					>
+					<File
+						RelativePath="..\audio\OggAudioSample.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\OggAudioSample.h"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\RawAudioSample.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\RawAudioSample.h"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\VocAudioSample.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\VocAudioSample.h"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\WavAudioSample.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\audio\WavAudioSample.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -681,345 +1020,21 @@
 					>
 				</File>
 				<File
+					RelativePath="..\conf\Configuration.h"
+					>
+				</File>
+				<File
+					RelativePath="..\conf\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\conf\XMLEntity.cc"
 					>
 				</File>
-				<Filter
-					Name="conf h"
-					>
-					<File
-						RelativePath="..\conf\Configuration.h"
-						>
-					</File>
-					<File
-						RelativePath="..\conf\XMLEntity.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="Exult"
-				>
 				<File
-					RelativePath="..\actions.cc"
+					RelativePath="..\conf\XMLEntity.h"
 					>
 				</File>
-				<File
-					RelativePath="..\actorio.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\actors.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\args.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\browser.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\cheat.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\cheat_screen.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\combat.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\delobjs.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\dir.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\drag.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\effects.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\exult.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\exultmenu.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\game.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gameclk.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gamedat.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gamemap.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gamerend.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\gamewin.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\keyactions.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\keys.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\menulist.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\monsters.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\mouse.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\npcnear.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\npctime.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\palette.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\party.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\paths.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\readnpcs.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\schedule.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\shapeid.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\tqueue.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\txtscroll.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\version.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\windrag.cc"
-					>
-				</File>
-				<Filter
-					Name="Exult h"
-					>
-					<File
-						RelativePath="..\actions.h"
-						>
-					</File>
-					<File
-						RelativePath="..\actors.h"
-						>
-					</File>
-					<File
-						RelativePath="..\alpha_kludges.h"
-						>
-					</File>
-					<File
-						RelativePath="..\args.h"
-						>
-					</File>
-					<File
-						RelativePath="..\browser.h"
-						>
-					</File>
-					<File
-						RelativePath="..\cheat.h"
-						>
-					</File>
-					<File
-						RelativePath="..\cheat_screen.h"
-						>
-					</File>
-					<File
-						RelativePath="..\combat.h"
-						>
-					</File>
-					<File
-						RelativePath="..\delobjs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\dir.h"
-						>
-					</File>
-					<File
-						RelativePath="..\drag.h"
-						>
-					</File>
-					<File
-						RelativePath="..\effects.h"
-						>
-					</File>
-					<File
-						RelativePath="..\exult.h"
-						>
-					</File>
-					<File
-						RelativePath="..\exult_constants.h"
-						>
-					</File>
-					<File
-						RelativePath="..\exult_types.h"
-						>
-					</File>
-					<File
-						RelativePath="..\exultmenu.h"
-						>
-					</File>
-					<File
-						RelativePath="..\fnames.h"
-						>
-					</File>
-					<File
-						RelativePath="..\frameseq.h"
-						>
-					</File>
-					<File
-						RelativePath="..\game.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gameclk.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gamemap.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gamewin.h"
-						>
-					</File>
-					<File
-						RelativePath="..\headers\gamma.h"
-						>
-					</File>
-					<File
-						RelativePath="..\hash_utils.h"
-						>
-					</File>
-					<File
-						RelativePath="..\keyactions.h"
-						>
-					</File>
-					<File
-						RelativePath="..\keys.h"
-						>
-					</File>
-					<File
-						RelativePath="..\menulist.h"
-						>
-					</File>
-					<File
-						RelativePath="..\monsters.h"
-						>
-					</File>
-					<File
-						RelativePath="..\mouse.h"
-						>
-					</File>
-					<File
-						RelativePath="..\npcnear.h"
-						>
-					</File>
-					<File
-						RelativePath="..\npctime.h"
-						>
-					</File>
-					<File
-						RelativePath="..\palette.h"
-						>
-					</File>
-					<File
-						RelativePath="..\party.h"
-						>
-					</File>
-					<File
-						RelativePath="..\paths.h"
-						>
-					</File>
-					<File
-						RelativePath="..\rect.h"
-						>
-					</File>
-					<File
-						RelativePath="..\schedule.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapeid.h"
-						>
-					</File>
-					<File
-						RelativePath="..\tiles.h"
-						>
-					</File>
-					<File
-						RelativePath="..\tqueue.h"
-						>
-					</File>
-					<File
-						RelativePath="..\txtscroll.h"
-						>
-					</File>
-					<File
-						RelativePath="..\version.h"
-						>
-					</File>
-					<File
-						RelativePath="..\windrag.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Files"
@@ -1029,7 +1044,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\crc.h"
+					>
+				</File>
+				<File
+					RelativePath="..\files\databuf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\find_nearby.h"
+					>
+				</File>
+				<File
 					RelativePath="..\files\Flat.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\Flat.h"
 					>
 				</File>
 				<File
@@ -1037,7 +1068,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\Flex.h"
+					>
+				</File>
+				<File
 					RelativePath="..\files\IFF.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\IFF.h"
 					>
 				</File>
 				<File
@@ -1045,7 +1084,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\listfiles.h"
+					>
+				</File>
+				<File
+					RelativePath="..\files\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\files\msgfile.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\msgfile.h"
 					>
 				</File>
 				<File
@@ -1053,7 +1104,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\Table.h"
+					>
+				</File>
+				<File
 					RelativePath="..\files\U7file.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\U7file.h"
 					>
 				</File>
 				<File
@@ -1061,81 +1120,143 @@
 					>
 				</File>
 				<File
+					RelativePath="..\files\U7fileman.h"
+					>
+				</File>
+				<File
 					RelativePath="..\files\U7obj.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\files\U7obj.h"
+					>
+				</File>
+				<File
+					RelativePath="..\files\zip\unzip.h"
 					>
 				</File>
 				<File
 					RelativePath="..\files\utils.cc"
 					>
 				</File>
-				<Filter
-					Name="files h"
+				<File
+					RelativePath="..\files\utils.h"
 					>
-					<File
-						RelativePath="..\files\crc.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\databuf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\Flat.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\Flex.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\IFF.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\listfiles.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\msgfile.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\Table.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\U7file.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\U7fileman.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\U7obj.h"
-						>
-					</File>
-					<File
-						RelativePath="..\files\utils.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\files\zip\zip.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="flic"
 				>
 				<File
+					RelativePath="..\flic\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\flic\playfli.cc"
 					>
 				</File>
-				<Filter
-					Name="flic h"
+				<File
+					RelativePath="..\flic\playfli.h"
 					>
-					<File
-						RelativePath="..\flic\playfli.h"
+				</File>
+			</Filter>
+			<Filter
+				Name="gamemgr"
+				>
+				<File
+					RelativePath="..\gamemgr\bggame.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
 						>
-					</File>
-				</Filter>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\gamemgr\bggame.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\devgame.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\devgame.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\Makefile.am"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\modmgr.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\gamemgr\modmgr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gamemgr\sigame.cc"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							ObjectFile="$(IntDir)\$(InputName)1.obj"
+							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\gamemgr\sigame.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="gumps"
@@ -1145,7 +1266,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Actor_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\AudioOptions_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\AudioOptions_gump.h"
 					>
 				</File>
 				<File
@@ -1153,7 +1282,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Book_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\CombatOptions_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\CombatOptions_gump.h"
 					>
 				</File>
 				<File
@@ -1161,7 +1298,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\CombatStats_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Enabled_button.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Enabled_button.h"
 					>
 				</File>
 				<File
@@ -1169,7 +1314,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Face_button.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Face_stats.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Face_stats.h"
 					>
 				</File>
 				<File
@@ -1177,7 +1330,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\File_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Gamemenu_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Gamemenu_gump.h"
 					>
 				</File>
 				<File
@@ -1185,7 +1346,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\GameplayOptions_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Gump.h"
 					>
 				</File>
 				<File
@@ -1193,7 +1362,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Gump_button.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Gump_manager.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Gump_manager.h"
 					>
 				</File>
 				<File
@@ -1201,7 +1378,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Gump_ToggleButton.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\gump_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\gump_utils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Gump_widget.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Gump_widget.h"
 					>
 				</File>
 				<File
@@ -1209,7 +1402,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Jawbone_gump.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\misc_buttons.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\misc_buttons.h"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Modal_gump.h"
 					>
 				</File>
 				<File
@@ -1217,7 +1426,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Newfile_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Notebook_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Notebook_gump.h"
 					>
 				</File>
 				<File
@@ -1225,7 +1442,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Paperdoll_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Scroll_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Scroll_gump.h"
 					>
 				</File>
 				<File
@@ -1233,7 +1458,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Sign_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Slider_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Slider_gump.h"
 					>
 				</File>
 				<File
@@ -1241,7 +1474,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Spellbook_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Stats_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Stats_gump.h"
 					>
 				</File>
 				<File
@@ -1249,7 +1490,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\Text_button.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Text_gump.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\gumps\Text_gump.h"
 					>
 				</File>
 				<File
@@ -1257,145 +1506,38 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gumps\VideoOptions_gump.h"
+					>
+				</File>
+				<File
 					RelativePath="..\gumps\Yesno_gump.cc"
 					>
 				</File>
-				<Filter
-					Name="gumps h"
+				<File
+					RelativePath="..\gumps\Yesno_gump.h"
 					>
-					<File
-						RelativePath="..\gumps\Actor_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\AudioOptions_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Book_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\CombatOptions_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\CombatStats_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Enabled_button.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Face_button.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Face_stats.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\File_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gamemenu_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\GameplayOptions_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gump_button.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gump_manager.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gump_ToggleButton.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\gump_types.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\gump_utils.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Gump_widget.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Jawbone_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\misc_buttons.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Modal_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Newfile_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Notebook_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Paperdoll_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Scroll_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Sign_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Slider_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Spellbook_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Stats_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Text_button.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Text_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\VideoOptions_gump.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gumps\Yesno_gump.h"
-						>
-					</File>
-				</Filter>
+				</File>
+			</Filter>
+			<Filter
+				Name="Headers"
+				Filter="h;hpp;hxx;hm;inl"
+				>
+				<File
+					RelativePath="..\headers\common_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\headers\exceptions.h"
+					>
+				</File>
+				<File
+					RelativePath="..\headers\gamma.h"
+					>
+				</File>
+				<File
+					RelativePath="..\headers\pent_include.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="imagewin"
@@ -1405,7 +1547,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\imagewin\ibuf16.h"
+					>
+				</File>
+				<File
 					RelativePath="..\imagewin\ibuf8.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\ibuf8.h"
 					>
 				</File>
 				<File
@@ -1413,7 +1563,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\imagewin\imagebuf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\imagewin\imagewin.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\imagewin.h"
 					>
 				</File>
 				<File
@@ -1421,66 +1579,26 @@
 					>
 				</File>
 				<File
+					RelativePath="..\imagewin\iwin8.h"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\Makefile.am"
+					>
+				</File>
+				<File
+					RelativePath="..\imagewin\manip.h"
+					>
+				</File>
+				<File
 					RelativePath="..\imagewin\savepcx.cc"
 					>
 				</File>
-				<File
-					RelativePath="..\imagewin\scale_2x.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_2xSaI.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_bilinear.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_gl.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_hq2x.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_hq3x.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_interlace.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\scale_point.cc"
-					>
-				</File>
 				<Filter
-					Name="imagewin h"
+					Name="Old Scalers"
 					>
 					<File
-						RelativePath="..\imagewin\ibuf16.h"
-						>
-					</File>
-					<File
-						RelativePath="..\imagewin\ibuf8.h"
-						>
-					</File>
-					<File
-						RelativePath="..\imagewin\imagebuf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\imagewin\imagewin.h"
-						>
-					</File>
-					<File
-						RelativePath="..\imagewin\iwin8.h"
-						>
-					</File>
-					<File
-						RelativePath="..\imagewin\manip.h"
+						RelativePath="..\imagewin\scale_2x.cc"
 						>
 					</File>
 					<File
@@ -1488,7 +1606,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\imagewin\scale_2xSaI.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\imagewin\scale_2xSaI.h"
+						>
+					</File>
+					<File
+						RelativePath="..\imagewin\scale_bilinear.cc"
 						>
 					</File>
 					<File
@@ -1496,7 +1622,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\imagewin\scale_gl.cc"
+						>
+					</File>
+					<File
+						RelativePath="..\imagewin\scale_hq2x.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\imagewin\scale_hq2x.h"
+						>
+					</File>
+					<File
+						RelativePath="..\imagewin\scale_hq3x.cc"
 						>
 					</File>
 					<File
@@ -1508,7 +1646,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\imagewin\scale_interlace.cc"
+						>
+					</File>
+					<File
 						RelativePath="..\imagewin\scale_interlace.h"
+						>
+					</File>
+					<File
+						RelativePath="..\imagewin\scale_point.cc"
 						>
 					</File>
 					<File
@@ -1517,258 +1663,46 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="arb_scalers"
+					Name="New Scalers"
 					>
 					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScaler.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScaler.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_2x.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_Arb.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_X1Y12.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\BilinearScalerInternal_X2Y24.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\PointScaler.cpp"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\PointScaler.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\imagewin\arb_scalers\Scaler.h"
-						>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="true"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="objs"
-				>
-				<File
-					RelativePath="..\objs\animate.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\barge.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\chunks.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\chunkter.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\contain.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\egg.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\iregobjs.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\jawbone.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\mappatch.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\objiter.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\objnames.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\objs.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\spellbook.cc"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\virstone.cc"
-					>
-				</File>
-				<Filter
-					Name="objs h"
-					>
-					<File
-						RelativePath="..\objs\animate.h"
+						RelativePath="..\imagewin\ArbScaler.h"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\barge.h"
+						RelativePath="..\imagewin\BilinearScaler.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\chunks.h"
+						RelativePath="..\imagewin\BilinearScaler.h"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\chunkter.h"
+						RelativePath="..\imagewin\BilinearScalerInternal.h"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\citerate.h"
+						RelativePath="..\imagewin\BilinearScalerInternal_2x.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\contain.h"
+						RelativePath="..\imagewin\BilinearScalerInternal_Arb.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\egg.h"
+						RelativePath="..\imagewin\BilinearScalerInternal_X1Y12.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\flags.h"
+						RelativePath="..\imagewin\BilinearScalerInternal_X2Y24.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\iregobjs.h"
+						RelativePath="..\imagewin\PointScaler.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\objs\jawbone.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\mappatch.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\objiter.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\objlist.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\objs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\ordinfo.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\spellbook.h"
-						>
-					</File>
-					<File
-						RelativePath="..\objs\virstone.h"
+						RelativePath="..\imagewin\PointScaler.h"
 						>
 					</File>
 				</Filter>
@@ -1781,6 +1715,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\pathfinder\Astar.h"
+					>
+				</File>
+				<File
+					RelativePath="..\pathfinder\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\pathfinder\path.cc"
 					>
 				</File>
@@ -1789,31 +1731,203 @@
 					>
 				</File>
 				<File
+					RelativePath="..\pathfinder\PathFinder.h"
+					>
+				</File>
+				<File
 					RelativePath="..\pathfinder\Zombie.cc"
 					>
 				</File>
-				<Filter
-					Name="pathfinder h"
+				<File
+					RelativePath="..\pathfinder\Zombie.h"
 					>
-					<File
-						RelativePath="..\pathfinder\Astar.h"
-						>
-					</File>
-					<File
-						RelativePath="..\pathfinder\PathFinder.h"
-						>
-					</File>
-					<File
-						RelativePath="..\pathfinder\Zombie.h"
-						>
-					</File>
-				</Filter>
+				</File>
+			</Filter>
+			<Filter
+				Name="objs"
+				>
+				<File
+					RelativePath="..\objs\animate.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\animate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\barge.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\barge.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\chunks.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\chunks.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\chunkter.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\chunkter.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\citerate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\contain.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\contain.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\egg.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\egg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\flags.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\iregobjs.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\iregobjs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\jawbone.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\jawbone.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\Makefile.am"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\mappatch.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\mappatch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objiter.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objiter.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objlist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objnames.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objs.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\objs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\ordinfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\spellbook.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\spellbook.h"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\virstone.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\objs\virstone.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Server"
+				>
+				<File
+					RelativePath="..\server\Makefile.am"
+					>
+				</File>
+				<File
+					RelativePath="..\server\objserial.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\server\objserial.h"
+					>
+				</File>
+				<File
+					RelativePath="..\server\servemsg.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\server\servemsg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\server\server.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\server\server.h"
+					>
+				</File>
+				<File
+					RelativePath="..\server\servewin32.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\server\servewin32.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="shapes"
 				>
 				<File
+					RelativePath="..\shapes\baseinf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\font.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\font.h"
 					>
 				</File>
 				<File
@@ -1821,7 +1935,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\fontvga.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\glshape.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\glshape.h"
 					>
 				</File>
 				<File
@@ -1829,7 +1951,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\items.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\Makefile.am"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\miscinf.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\miscinf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\pngio.h"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\ready.h"
 					>
 				</File>
 				<File
@@ -1837,7 +1979,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\shapeinf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\shapevga.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\shapes\shapevga.h"
 					>
 				</File>
 				<File
@@ -1845,61 +1995,17 @@
 					>
 				</File>
 				<File
+					RelativePath="..\shapes\u7drag.h"
+					>
+				</File>
+				<File
 					RelativePath="..\shapes\vgafile.cc"
 					>
 				</File>
-				<Filter
-					Name="shapes h"
+				<File
+					RelativePath="..\shapes\vgafile.h"
 					>
-					<File
-						RelativePath="..\shapes\baseinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\font.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\fontvga.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\glshape.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\items.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\miscinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\pngio.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\ready.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\shapeinf.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\shapevga.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\u7drag.h"
-						>
-					</File>
-					<File
-						RelativePath="..\shapes\vgafile.h"
-						>
-					</File>
-				</Filter>
+				</File>
 				<Filter
 					Name="shapeinf"
 					>
@@ -2289,7 +2395,15 @@
 				Name="usecode"
 				>
 				<File
+					RelativePath="..\usecode\bgintrinsics.h"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\conversation.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\conversation.h"
 					>
 				</File>
 				<File
@@ -2301,7 +2415,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\usecode\keyring.h"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\Makefile.am"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\siintrinsics.h"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\stackframe.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\stackframe.h"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\ucdebugging.h"
 					>
 				</File>
 				<File
@@ -2313,7 +2447,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\usecode\ucfunction.h"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\ucinternal.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\ucinternal.h"
 					>
 				</File>
 				<File
@@ -2321,7 +2463,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\usecode\ucmachine.h"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\ucsched.cc"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\ucsched.h"
+					>
+				</File>
+				<File
+					RelativePath="..\usecode\ucscriptop.h"
 					>
 				</File>
 				<File
@@ -2329,233 +2483,50 @@
 					>
 				</File>
 				<File
+					RelativePath="..\usecode\ucsymtbl.h"
+					>
+				</File>
+				<File
 					RelativePath="..\usecode\useval.cc"
 					>
 				</File>
-				<Filter
-					Name="usecode h"
+				<File
+					RelativePath="..\usecode\useval.h"
 					>
-					<File
-						RelativePath="..\usecode\bgintrinsics.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\conversation.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\keyring.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\siintrinsics.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\ucinternal.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\ucmachine.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\ucsched.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\ucscriptop.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\ucsymtbl.h"
-						>
-					</File>
-					<File
-						RelativePath="..\usecode\useval.h"
-						>
-					</File>
-				</Filter>
+				</File>
 			</Filter>
 			<Filter
-				Name="Server"
+				Name="data"
 				>
 				<File
-					RelativePath="..\server\objserial.cc"
+					RelativePath="..\data\exult_bg_flx.h"
 					>
 				</File>
 				<File
-					RelativePath="..\server\servemsg.cc"
+					RelativePath="..\data\exult_flx.h"
 					>
 				</File>
 				<File
-					RelativePath="..\server\server.cc"
+					RelativePath="..\data\exult_si_flx.h"
 					>
 				</File>
 				<File
-					RelativePath="..\server\servewin32.cc"
+					RelativePath="..\data\Makefile.am"
 					>
 				</File>
-				<Filter
-					Name="server h"
-					>
-					<File
-						RelativePath="..\server\objserial.h"
-						>
-					</File>
-					<File
-						RelativePath="..\server\servemsg.h"
-						>
-					</File>
-					<File
-						RelativePath="..\server\server.h"
-						>
-					</File>
-					<File
-						RelativePath="..\server\servewin32.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
-				Name="gamemgr"
+				Name="tools"
 				>
 				<File
-					RelativePath="..\gamemgr\bggame.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\gamemgr\devgame.cc"
+					RelativePath="..\tools\Makefile.am"
 					>
 				</File>
 				<File
-					RelativePath="..\gamemgr\modmgr.cc"
+					RelativePath="..\tools\uctools.h"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
 				</File>
-				<File
-					RelativePath="..\gamemgr\sigame.cc"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-				</File>
-				<Filter
-					Name="gamemgr h"
-					>
-					<File
-						RelativePath="..\gamemgr\bggame.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gamemgr\devgame.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gamemgr\modmgr.h"
-						>
-					</File>
-					<File
-						RelativePath="..\gamemgr\sigame.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl"
-			>
-			<File
-				RelativePath="..\headers\common_types.h"
-				>
-			</File>
-			<File
-				RelativePath="..\data\exult_bg_flx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\data\exult_flx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\data\exult_si_flx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\istring.cc"
-				>
-			</File>
-			<File
-				RelativePath="..\istring.h"
-				>
-			</File>
-			<File
-				RelativePath="..\headers\pent_include.h"
-				>
-			</File>
-			<File
-				RelativePath="..\tools\uctools.h"
-				>
-			</File>
-			<File
-				RelativePath="..\files\zip\unzip.h"
-				>
-			</File>
-			<File
-				RelativePath="..\files\zip\zip.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -2589,46 +2560,10 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="MSVC Kludges"
-			>
-			<File
-				RelativePath=".\msvc_kludges.cc"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\msvc_kludges.h"
-				>
-			</File>
-			<File
-				RelativePath=".\unistd.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Text Files"
 			>
 			<File
 				RelativePath="..\AUTHORS"
-				>
-			</File>
-			<File
-				RelativePath="..\ChangeLog"
 				>
 			</File>
 			<File
@@ -2640,22 +2575,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Makefile.be"
-				>
-			</File>
-			<File
-				RelativePath="..\Makefile.common"
-				>
-			</File>
-			<File
-				RelativePath="..\Makefile.mingw"
-				>
-			</File>
-			<File
-				RelativePath="..\Makefile.MorphOS"
-				>
-			</File>
-			<File
 				RelativePath="..\MidiInfo.txt"
 				>
 			</File>
@@ -2664,11 +2583,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\README"
+				RelativePath="..\conf\README"
 				>
 			</File>
 			<File
-				RelativePath="..\conf\README"
+				RelativePath="..\README"
 				>
 			</File>
 			<File
@@ -2751,94 +2670,53 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Makefiles"
-				Filter="*.am"
-				>
-				<File
-					RelativePath="..\audio\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\conf\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\data\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\files\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\flic\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\gumps\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\objs\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\pathfinder\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\shapes\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\usecode\Makefile.am"
-					>
-				</File>
-				<File
-					RelativePath="..\imagewin\Makefile.am"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<File
-			RelativePath="..\combat_opts.h"
+			RelativePath="..\ChangeLog"
 			>
 		</File>
 		<File
-			RelativePath="..\headers\exceptions.h"
+			RelativePath="..\Makefile.be"
 			>
 		</File>
 		<File
-			RelativePath="..\objs\find_nearby.h"
+			RelativePath="..\Makefile.common"
 			>
 		</File>
 		<File
-			RelativePath="..\gamerend.h"
+			RelativePath="..\Makefile.mingw"
 			>
 		</File>
 		<File
-			RelativePath="..\singles.h"
+			RelativePath="..\Makefile.MorphOS"
 			>
 		</File>
 		<File
-			RelativePath="..\usecode\stackframe.h"
+			RelativePath=".\msvc_kludges.cc"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\msvc_kludges.h"
 			>
 		</File>
 		<File
-			RelativePath="..\usecode\ucdebugging.h"
-			>
-		</File>
-		<File
-			RelativePath="..\usecode\ucfunction.h"
+			RelativePath=".\unistd.h"
 			>
 		</File>
 	</Files>
