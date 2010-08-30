@@ -1,29 +1,30 @@
 Exult Documentation
-last changed: 25 August 2010(GMT)
+last changed: 30 August 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 25 August 2010
-0.2. - 15 August 2010
-0.3. - 28 April 2010
-0.4. - 11 March 2010
-0.5. - 10 March 2010
-0.6. - 08 March 2010
-0.7. - 16 July 2009
-0.8. - 03 June 2009
-0.9. - 20 May 2009
-0.10. - 19 May 2009
-0.11. - 18 May 2009
-0.12. - 28 April 2009
-0.13. - 21 October 2007
-0.14. - 08 April 2006
-0.15. - 14 March 2005
-0.16. - 14 August 2004
-0.17. - 23 May 2004
-0.18. - 11 February 2004
-0.19. - 12 December 2003
+0.1. - 30 August 2010
+0.2. - 25 August 2010
+0.3. - 15 August 2010
+0.4. - 28 April 2010
+0.5. - 11 March 2010
+0.6. - 10 March 2010
+0.7. - 08 March 2010
+0.8. - 16 July 2009
+0.9. - 03 June 2009
+0.10. - 20 May 2009
+0.11. - 19 May 2009
+0.12. - 18 May 2009
+0.13. - 28 April 2009
+0.14. - 21 October 2007
+0.15. - 08 April 2006
+0.16. - 14 March 2005
+0.17. - 14 August 2004
+0.18. - 23 May 2004
+0.19. - 11 February 2004
+0.20. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -56,8 +57,9 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 4. Video
 4.1. Resolution
-4.2. Higher resolution is cheating
-4.3. Scaler
+4.2. Fill modes
+4.3. Higher resolution is cheating
+4.4. Scaler
 
 5. Movement and Keys
 5.1. Movement
@@ -117,16 +119,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 25 August 2010
+0.1. - 30 August 2010
+* 2.3. Settings in exult.cfg added the new config options for video.
+* 4.1. Resolution rewrote some more with Colourless' latest changes.
+* 4.2. Fill modes added.
+* 6.3. Video Options more changes to the video gump.
+* 6.4. Audio Options forgot the speech option.
+
+
+
+0.2. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
-* 4.2. Higher resolution is cheating added.
+* 4.3. Higher resolution is cheating added.
 * 6.3. Video Options added new game res setting.
 * 6.4. Audio Options forgot the speech option.
 
 
 
-0.2. - 15 August 2010
+0.3. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 8.2. Error Log also about location of log files.
@@ -135,12 +146,12 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 28 April 2010
+0.4. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-0.4. - 11 March 2010
+0.5. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 6.4. Audio Options added new SFX pack option and updated screenshot.
@@ -148,7 +159,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.5. - 10 March 2010
+0.6. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -158,36 +169,36 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.6. - 08 March 2010
+0.7. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
 * 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
-* 4.3. Scaler OpenGl scaler is not considered stable.
+* 4.4. Scaler OpenGl scaler is not considered stable.
 * 7.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
 * 8.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
 
 
 
-0.7. - 16 July 2009
+0.8. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.8. - 03 June 2009
+0.9. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.9. - 20 May 2009
+0.10. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.10. - 19 May 2009
+0.11. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -198,7 +209,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.11. - 18 May 2009
+0.12. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -207,7 +218,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 2.10. Command line options now up to date with SVN.
 * 3.2. MIDI Music split from the general music part.
 * removed TiMidity chapter, since the cfg issue is explained in 3.2. MIDI Music.
-* 4.3. Scaler updated.
+* 4.4. Scaler updated.
 * 5.2. Keyboard commands updated.
 * 5.3. Cheat keys updated.
 * 5.4. Map Editing keys needed their own chapter.
@@ -217,43 +228,43 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.12. - 28 April 2009
+0.13. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
 * 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.13. - 21 October 2007
+0.14. - 21 October 2007
 * 8.3. Making Digital Sound work on Mac OS X added.
 * 10.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.14. - 08 April 2006
+0.15. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 10. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.15. - 14 March 2005
+0.16. - 14 March 2005
 * 9. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.16. - 14 August 2004
+0.17. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.17. - 23 May 2004
+0.18. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.18. - 11 February 2004
+0.19. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -264,7 +275,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.19. - 12 December 2003
+0.20. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
@@ -631,6 +642,19 @@ Note: yes means enabled, no means disabled
     </midi>
   </audio>
   <video>
+    <fullscreen>
+    no
+				**do you want to play full screen?
+    </fullscreen>
+    <scale_method>
+    2xSaI
+				**choose different scalers here - see 4.4.
+    </scale_method>
+    <scale>
+    2
+				**2 enables / 1 disables scaling, some scalers support higher values. 
+				See 4.4..
+    </scale>
     <display>
       <width>
       640
@@ -667,25 +691,22 @@ Note: yes means enabled, no means disabled
         </blue>
       </border>
     </game>
+    <fill_mode>
+    Centre
+				**Possible options are Fill, Fit, Aspect Correct Fit, Centre and Aspect Correct Centre.
+				Please see 4.2. for more information about these options.
+    </fill_mode>
+    <fill_scaler>
+    Bilinear
+				**Chose between Point and Bilinear..
+				Please see 4.2. for more information about this.
+    </fill_scaler>
     <force_bpp>
     0
 				**force output bpp. Valid values are 	0 (for any), 8, 16 or 32.
 				If set to 8 most scalers will not work and will display as the
 				fallback point scaler.
     </force_bpp>
-    <scale_method>
-    2xSaI
-				**choose different scalers here - see 4.3.
-    </scale_method>
-    <scale>
-    2
-				**2 enables / 1 disables scaling, some scalers support higher values. 
-				See 4.3..
-    </scale>
-    <fullscreen>
-    no
-				**do you want to play full screen?
-    </fullscreen>
     <disable_fades>
     no
 				**"no" enables fading between different menu points
@@ -1060,17 +1081,28 @@ You can now configure the ALSA port for your distribution in .exult.cfg (see 2.3
 
 4. Video
 4.1. Resolution
-We distinguish between the Exult display resolution (which determines the size of the Exult window and its fullscreen rendering) and the game resolution, which determines how big the in-game viewing area is.
+We distinguish between the Exult display resolution (which determines the size of the Exult window and its fullscreen rendering) and the game area, which determines how big the in-game viewing area is.
 By default Exult runs the games at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 or even triple the the size to 960x600 while increasing the quality of the graphics and maintaining the same viewing area. This allows Exult to show the game as an enhanced version of how it originally appeared, and not show locations that were originally off-screen. When you first start Exult we apply the scaler 2xSaI which doubles the size of each pixel, resulting in a 640x400 window.
-The game resolution with scaler applied should not be bigger than the display, otherwise you will get strange effects and the game might crash. For example when you set the game resolution to 320x200 with the scaler Point at sale factor 3, your game resolution is actually 960x600. If your display resolution is set to 640x480 the resolutions don't match and your Exult window will be smaller than intended.
-On the other hand when your display resolution is set higher than the game resolution you will have black borders surrounding the game viewing area. The borders can be used for positioning gumps and the face stats. You can also change the color of the borders.
+You will also have to hit "Apply" in the Video gump to apply your changes. Exult will then use the new settings and will show you a countdown which asks you to confirm that the new video settings are working. When yo don't confirm by hitting "YES", the changes will be reverted. This way we try to prevent that some bad video options combinations prevent you from playing the games.
 
 
-4.2. Higher resolution is cheating
+4.2. Fill modes
+The game area with scaler applied should not be bigger than the display, otherwise you will get strange effects and the game might crash. For example when you set the game area to 320x200 with the scaler Point at sale factor 3, your game viewing area is actually 960x600. If your display resolution is set to 640x480 the resolutions don't match and your Exult window will be smaller than intended. Exult will check whether this will happen and will warn you against it, since making the window smaller than 320x200 will cause you trouble with Exults interface and you might not be able to revert your changes.
+On the other hand when your display resolution is set higher than the game resolution you can have black borders surrounding the game viewing area. The borders can be used for positioning gumps and the face stats. You can also change the color of the borders. If you don't like black borders you can also stretched to fill the entire display resolution, or sacled to fit the display resolution without stretching the pixels. You have the following options
+* Fill ame screen is stretched to fill the entire display surface. No borders will be added in this mode. The game screen will be downsampled if it is bigger than the display surface in this mode.
+* Fit Game is scaled to fill the display surface maintaining square pixels. Black borders will be added to maintain aspect if needed. The game screen will be downsampled if it is bigger than the display surface in this mode.
+* "Aspect Correct Fit" Same as fit, but pixels are additionally scaled using a 1:1.2 ratio. This corrects the aspect mismatch between the nonsquare pixels used by the original game and the square pixels of modern screen resolutions.
+* Centre The game is centred on the display surface without additional scaling. Black borders will be added if game screen is smaller than the display surface. Clipping will occur if the game screen is larger than the display surface.
+* "Aspect Correct Centre" Same as Centre except height is scaled by 1.2x to correct pixel aspect mismatch..
+
+If the Game Area setting is set to Auto then the game area is calculated based on the selected fill mode with no additional scaling applied. The additional scaling method can be set to Point or Bilinear.
+
+
+4.3. Higher resolution is cheating
 Using higher resolutions is considered cheating as you can see too much of the surrounding area. Since the game was designed to be played at a specific size (320x200), this can actually lead to plot-stopping problems; hence we will not fix any problem caused by your cheating! Don't say we didn't warn you :-) But being able to play in higher resolutions is actually one of the big advantages of Exult but as mentioned above it comes with a price.
 
 
-4.3. Scaler
+4.4. Scaler
 The scalers also work with higher resolutions than 320x200. To change the scaling method either use the Exult menu or change your exult.cfg - see 2.3..
 * Point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
 * Bilinear bilinear interpolation to smooth the result. Slower than point, but looks better. Only 2x.
@@ -1243,12 +1275,15 @@ This one is pretty straightforward. You can load and save a game, delete a game 
 
 6.3. Video Options
 In this option screen you are able to determine how Exult displays the game.
-* Resolution lets you choose between various resolutions determined by the fullscreen resolutions your system reports as supported. If you want other resolutions edit exult.cfg outlined in 2.3. Settings in exult.cfg.
-* Scaling choose between 1x up to 8x. Further explanation in 4.3. Scaler. For scalers that have a default only scaling (e.g. 2xSaI) this option will be hidden.
-* Scaler lets you choose your favorite scaling engine. Also look at 4.3. Scaler for an explanation.
 * Full Screen enable or disable running Exult in full screen.
-* Game Res the size of your game viewing area in the Exult window. You can choose between the original default resolution of '320x200' or 'Auto' which tries to set the best viewing area for the chosen resolution.
-* OK/Cancel Ok accepts your changes, Cancel discards your changes.
+* Window Size lets you choose between various resolutions determined by the fullscreen resolutions your system reports as supported. If you want other resolutions edit exult.cfg outlined in 2.3. Settings in exult.cfg.
+* Scaler lets you choose your favorite scaling engine. Also look at 4.4. Scaler for an explanation.
+* Scaling choose between 1x up to 8x. Further explanation in 4.4. Scaler. For scalers that have a default only scaling (e.g. 2xSaI) this option will be hidden.
+* Game Area the size of your game viewing area in the Exult window. You can choose between the original default resolution of '320x200' or 'Auto' which tries to set the best viewing area for the chosen resolution.
+* Fill Quality the scaler used by the different fill modes. You can chose between Point and Bilinear.
+* Fill Mode Different modes on how to display the Game Area in the Exult window size. Please see 4.2. Fill modes.
+* AR Correction Aspect Ratio Correction for the fill modes "Fit" and "Centre".
+* APPLY Checks whether your changes can cause problems, applies your changes and gives you a countdown to confirm that the new settings are working correctly. If you don't want to apply your changes, click on the red checkmark to the left.
 
 
 
