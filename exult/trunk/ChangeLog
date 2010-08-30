@@ -1,3 +1,8 @@
+2010-08-30  Ryan Nunn <colourles@users.sourceforge.net>
+	* imagewin/imagewin.cc : Explicitly set pixel format of the 'inter_surface'.
+	  Might fix Dominik's colour issues if the SDL default does not match the 
+	  display surfaces
+
 2010-08-15 Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/bg/ and data/si: added autonotes.txt for each game. For now these mostly
 	  list global flags found and known for the games with some description of the 
