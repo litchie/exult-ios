@@ -346,6 +346,9 @@ public:
 	int get_fill_scaler() 
 	{ return fill_scaler; }
 
+	SDL_Surface *get_draw_surface() 
+	{ return draw_surface; }
+
 	int ready()			// Ready to draw?
 	{ return (ibuf->bits != 0); }
 	bool is_fullscreen() { return fullscreen; }

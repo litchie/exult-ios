@@ -359,15 +359,17 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		}
 		if (bg && GL_manager::get_instance())
 			gwin->get_win()->show();
+		bool mouse_updated = false;
 		while (SDL_PollEvent(&event))
 		{
 			if(event.type==SDL_MOUSEMOTION) {
 				gwin->get_win()->screen_to_game(event.motion.x,event.motion.y,gwin->get_fastmouse(),gx,gy);
-				mouse->hide();
+				if (!mouse_updated) mouse->hide();
+				mouse_updated = true;
 				mouse->move(gx,gy);
 				set_selection(gx,gy); 
-				mouse->show();
-				mouse->blit_dirty();
+				//mouse->show();
+				//mouse->blit_dirty();
 			} else if(event.type==SDL_MOUSEBUTTONDOWN) {
 				if (!mouse_visible) {
 					gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
@@ -376,6 +378,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 					set_selection(gx,gy); 
 					mouse->show();
 					mouse->blit_dirty();
+					mouse_updated = false;
 				}
 			} else if(event.type==SDL_MOUSEBUTTONUP) {
 				gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),gx,gy);
@@ -384,6 +387,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 					exit_loop = entry->handle_event(event);
 				}
 			} else if(event.type==SDL_KEYDOWN) {
+				mouse_updated = false;
 				mouse->hide();
 				mouse->blit_dirty();
 				switch(event.key.keysym.sym) {
@@ -440,6 +444,12 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 			} else if(event.type==SDL_QUIT) {
 				return -1;
 			}
+		}
+		if (mouse_updated)
+		{
+			mouse->show();
+			mouse->blit_dirty();
+			mouse_updated = false;
 		}
 	} while(!exit_loop);
 	mouse->hide();
