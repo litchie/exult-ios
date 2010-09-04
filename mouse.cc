@@ -157,7 +157,7 @@ void Mouse::move(int x, int y) {
 		y = gwin->get_win()->get_end_y() - 1;
 		warp = true;
 	}
-	if (warp) {
+	if (warp && gwin->get_fastmouse()) {
 		int wx, wy;
 		gwin->get_win()->game_to_screen(x,y,gwin->get_fastmouse(),wx,wy);
 		SDL_WarpMouse(wx, wy);

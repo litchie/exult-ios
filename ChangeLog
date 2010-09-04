@@ -1,3 +1,13 @@
+2010-09-04  Ryan Nunn <colourles@users.sourceforge.net>
+	* menulist.cc : Trying to stop mouse lag
+	* mouse.cc : Stopping warping from occuring unless fastmouse is enable 
+	  (otherwise mouse can get trapped when windowed)
+	* shapes/fontgen.cc : Added a Win32 GDI font renderer. My experience is its
+	  better at producing small pixel fonts compared to FreeType (because it 
+	  can legally use Font hinting all the time)
+	* gamemgr/bggame.cc : Added missing zooms into BG Intro
+	* imagewin/imagewin.h : Added a method to get access to draw_surface
+
 2010-08-30  Ryan Nunn <colourles@users.sourceforge.net>
 	* imagewin/imagewin.cc : Explicitly set pixel format of the 'inter_surface'.
 	  Might fix Dominik's colour issues if the SDL default does not match the 

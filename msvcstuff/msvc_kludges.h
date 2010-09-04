@@ -28,6 +28,7 @@
 #define USE_MT32EMU_MIDI
 #define USE_TIMIDITY_MIDI
 #define HAVE_OPENGL
+//#define HAVE_FREETYPE2
 
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRT_NONSTDC_NO_WARNINGS
@@ -37,7 +38,9 @@
 #endif
 
 // No GDI
+#ifndef ALLOW_GDI
 #define NOGDI
+#endif
 
 // Settings for debug builds
 #ifndef NDEBUG

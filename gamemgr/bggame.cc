@@ -20,7 +20,8 @@
 #  include <config.h>
 #endif
 
-#include "SDL_events.h"
+#include <SDL.h>
+#include <SDL_events.h>
 
 #include <typeinfo>
 #include <vector>
@@ -46,6 +47,9 @@
 #include "miscinf.h"
 #include "gump_utils.h"
 #include "AudioMixer.h"
+
+#include "imagewin/imagewin.h"
+#include "imagewin/ArbScaler.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -297,8 +301,6 @@ void BG_Game::play_intro()
 		********************************************************************/
 		
 		scene_guardian();
-
-		// TODO: transition (zoom out to PC) scene missing
 
 		/********************************************************************
 		 PC screen
@@ -1020,8 +1022,63 @@ void BG_Game::scene_desk()
 		// draw white dot in center of monitor (sh. 0x14)
 		sman->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
 
+		// Zoom out from zoomed in screen
+		Image_buffer *unzoomed = win->create_buffer(320, 200);
+		win->get(unzoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
+		Image_buffer *zoomed = win->create_buffer(320, 200);
+
+		const Image_window::ScalerInfo &scaler = Image_window::Scalers[Image_window::point];
+
+		SDL_Surface *draw_surface = win->get_draw_surface();
+		SDL_Surface *unzoomed_surf = SDL_CreateRGBSurfaceFrom(unzoomed->get_bits(),unzoomed->get_height(),unzoomed->get_width(), draw_surface->format->BitsPerPixel, unzoomed->get_line_width(), draw_surface->format->Rmask, draw_surface->format->Gmask, draw_surface->format->Bmask, draw_surface->format->Amask);
+		SDL_Surface *zoomed_surf = SDL_CreateRGBSurfaceFrom(zoomed->get_bits(),zoomed->get_height(),zoomed->get_width(), draw_surface->format->BitsPerPixel, zoomed->get_line_width(),draw_surface->format->Rmask, draw_surface->format->Gmask, draw_surface->format->Bmask, draw_surface->format->Amask);
+
+		try 
+		{
+			const int zx = 88;
+			const int zy = 22;
+			const int zw = 166;
+			const int zh = 112;
+
+			uint32 next_ticks = SDL_GetTicks() + 10;
+			for (i = 0; i < 40; i++)
+			{			
+				int sw = zw + (320-zw)*i/40;
+				int sh = zh + (200-zh)*i/40;
+				int sx = zx + (0-zx)*i/40;
+				int sy = zy + (0-zy)*i/40;
+
+				// frame drop?
+				if (next_ticks > SDL_GetTicks())
+				{
+					scaler.arb->Scale(unzoomed_surf, sx, sy, sw, sh, zoomed_surf, 0, 0, 320, 200, true);
+					win->put(zoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
+					non_gl_blit();
+					int delta = next_ticks-SDL_GetTicks();
+					if(delta<0) delta = 0;
+					WAITDELAY(delta);
+				}
+				next_ticks += 10;
+			}
+		}
+		catch(const UserBreakException &x)
+		{
+			SDL_FreeSurface(unzoomed_surf);
+			SDL_FreeSurface(zoomed_surf);
+			FORGET_OBJECT(unzoomed); 
+			FORGET_OBJECT(zoomed); 
+			throw x;
+		}
+
+		win->put(unzoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
 		win->show();
-		
+
+		SDL_FreeSurface(unzoomed_surf);
+		SDL_FreeSurface(zoomed_surf);
+		FORGET_OBJECT(unzoomed); 
+		FORGET_OBJECT(zoomed); 
+
+
 		// draw arm hitting pc (sh. 0x0C)
 		s = shapes.get_shape(0x0C, 0);
 #ifdef HAVE_OPENGL
@@ -1153,7 +1210,7 @@ void BG_Game::scene_moongate()
 
 	int i;
 		
-	//gwin->clear_screen();
+	gwin->clear_screen(false);
 	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 5);
 	pal->apply();
 		
@@ -1197,23 +1254,68 @@ void BG_Game::scene_moongate()
 		
 	}
 
-	/*sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
-	*/ 
-	// was to clear screen again, but we don't need to now that I moved "you have but one path"
-	// up in to the bushes-moving loop
-
-	non_gl_blit();
-
-	// TODO: zoom (run) into moongate
-
-	WAITDELAYCYCLE3(3000);
-
 	// Wait till the music finished playing
 	while(Audio::get_ptr()->is_track_playing(home_song_midi))
 		WAITDELAYCYCLE3(50);
+
+	// zoom (run) into moongate
+
+	sman->paint_shape(centerx+1,centery+1, shapes.get_shape(0x02,0));
+	sman->paint_shape(centerx+1,centery+1, shapes.get_shape(0x03,0));
+	sman->paint_shape(centerx+1,centery+1, shapes.get_shape(0x04,0));
+	sman->paint_shape(centerx+1,centery+1, shapes.get_shape(0x05,0));
+
+	Image_buffer *unzoomed = win->create_buffer(320, 200);
+	win->get(unzoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
+	Image_buffer *zoomed = win->create_buffer(320, 200);
+
+	const Image_window::ScalerInfo &scaler = Image_window::Scalers[Image_window::point];
+
+	SDL_Surface *draw_surface = win->get_draw_surface();
+	SDL_Surface *unzoomed_surf = SDL_CreateRGBSurfaceFrom(unzoomed->get_bits(),unzoomed->get_height(),unzoomed->get_width(), draw_surface->format->BitsPerPixel, unzoomed->get_line_width(), draw_surface->format->Rmask, draw_surface->format->Gmask, draw_surface->format->Bmask, draw_surface->format->Amask);
+	SDL_Surface *zoomed_surf = SDL_CreateRGBSurfaceFrom(zoomed->get_bits(),zoomed->get_height(),zoomed->get_width(), draw_surface->format->BitsPerPixel, zoomed->get_line_width(),draw_surface->format->Rmask, draw_surface->format->Gmask, draw_surface->format->Bmask, draw_surface->format->Amask);
+
+	try 
+	{
+		const int zx = 151;
+		const int zy = 81;
+		const int zw = 5;
+		const int zh = 4;
+
+		uint32 next_ticks = SDL_GetTicks() + 10;
+		for (i = 159; i >= 0; i--)
+		{			
+			int sw = zw + (320-zw)*i/160;
+			int sh = zh + (200-zh)*i/160;
+			int sx = zx + (0-zx)*i/160;
+			int sy = zy + (0-zy)*i/160;
+
+			// frame drop?
+			if (next_ticks > SDL_GetTicks())
+			{
+				scaler.arb->Scale(unzoomed_surf, sx, sy, sw, sh, zoomed_surf, 0, 0, 320, 200, true);
+				win->put(zoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
+				non_gl_blit();
+				int delta = next_ticks-SDL_GetTicks();
+				if(delta<0) delta = 0;
+				WAITDELAYCYCLE3(delta);
+			}
+			next_ticks += 5;
+		}
+	}
+	catch(const UserBreakException &x)
+	{
+		SDL_FreeSurface(unzoomed_surf);
+		SDL_FreeSurface(zoomed_surf);
+		FORGET_OBJECT(unzoomed); 
+		FORGET_OBJECT(zoomed); 
+		throw x;
+	}
+	SDL_FreeSurface(unzoomed_surf);
+	SDL_FreeSurface(zoomed_surf);
+	FORGET_OBJECT(unzoomed); 
+	FORGET_OBJECT(zoomed); 
+
 	enable_direct_gl_render();
 }
 
