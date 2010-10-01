@@ -47,6 +47,7 @@ private:
 	MenuList *create_main_menu(Shape_frame *bg, int first = 0);
 	MenuList *create_mods_menu(ModManager *selgame, Shape_frame *bg, int first = 0);
 	BaseGameInfo *show_mods_menu(ModManager *selgame, Shape_frame *bg);
+
 public:
 	ExultMenu(Game_window *gw);
 	~ExultMenu();

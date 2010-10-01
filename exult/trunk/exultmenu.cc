@@ -41,6 +41,8 @@
 #include "databuf.h"
 #include "fnames.h"
 #include "gamemgr/modmgr.h"
+#include "gumps/Gamemenu_gump.h"
+#include "shapeid.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -151,6 +153,42 @@ void ExultMenu::calc_win()
 
 void ExultMenu::setup()
 {
+	ModManager*mm = gamemanager->get_bg();
+	if (!mm) gamemanager->get_si();
+	if (!mm) gamemanager->get_game(0);
+	if (!mm) {
+		std::cerr << "No games found. Unable to show gumps in Exult menu." << std::endl;
+		return;
+	}
+	//ModManager mm_exult_menu_game (*mm);
+	//mm_exult_menu_game.set_game_type(EXULT_MENU_GAME);
+
+	Game *exult_menu_game = Game::create_game(mm);
+	
+	if (!Shape_manager::get_instance()->load_gumps_minimal())
+	{
+		std::cerr << "Unable to show gumps in Exult menu." << std::endl;
+		return;
+	}
+
+	Mouse::mouse = menu_mouse;
+
+	gwin->clear_screen(true);
+
+	Palette *gpal = gwin->get_pal();
+	gpal->fade(0,1,0);
+
+	Gamemenu_gump::do_exult_menu();
+
+	Mouse::mouse = 0;
+	delete exult_menu_game; 
+	exult_menu_game = 0;
+
+	gwin->clear_screen(true);
+	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
+	gpal->apply();
+
+#if 0
 	Palette *gpal = gwin->get_pal();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	Font *fonton = fontManager.get_font("HOT_FONT");
@@ -172,14 +210,6 @@ void ExultMenu::setup()
 
 	int menuypos = centery-44;
 	
-	MenuTextChoice *scalemethod = new MenuTextChoice(fonton, font, "SCALING METHOD",
-					centerx, menuypos);
-	for (int i = 0; i < Image_window::NumScalers; i++)
-		scalemethod->add_choice(Image_window::get_name_for_scaler(i));
-	scalemethod->set_choice(gwin->get_win()->get_scaler());
-	menu.add_entry(scalemethod);
-	menuypos+=11;
-	
 	MenuTextChoice *palfades = new MenuTextChoice(fonton, font, "PALETTE FADES",
 					centerx, menuypos);
 	palfades->add_choice("Off");
@@ -188,38 +218,6 @@ void ExultMenu::setup()
 	menu.add_entry(palfades);
 	menuypos+=11;
 
-#ifdef SHOW_MIDICONV_IN_EXULTMENU
-	MenuTextChoice *midiconv = 0;
-#ifdef ENABLE_MIDISFX
-	MenuTextChoice *sfxconv = 0;
-#endif
-
-	if (Audio::get_ptr()->get_midi()) {
-		midiconv = new MenuTextChoice(fonton, font, "MIDI CONVERSION",
-					centerx, menuypos, font);
-
-		midiconv->add_choice("None");
-		midiconv->add_choice("GM");
-		midiconv->add_choice("GS");
-		midiconv->add_choice("GS127");
-
-		midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
-		menu.add_entry(midiconv);
-		menuypos+=11;
-
-#ifdef ENABLE_MIDISFX	
-		MenuTextChoice *sfxconv = new MenuTextChoice(fonton, font, "SFX CONVERSION",
-					centerx, menuypos, font);
-		sfxconv->add_choice("None");
-		sfxconv->add_choice("GS");
-		sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDIFILE_CONVERT_GS127_TO_GS?1:0);
-
-		menu.add_entry(sfxconv);
-		menuypos+=11;
-#endif
-	}
-#endif
-	
 	MenuTextChoice *playintro = new MenuTextChoice(fonton, font, "PLAY INTRODUCTION",
 					centerx, menuypos);
 	playintro->add_choice("Off");
@@ -235,15 +233,6 @@ void ExultMenu::setup()
 	playscene->add_choice("On");
 	playscene->set_choice(get_play_1st_scene()?1:0);
 	menu.add_entry(playscene);
-	menuypos+=11;
-
-
-	MenuTextChoice *fullscreen = new MenuTextChoice(fonton, font, "FULL SCREEN",
-					centerx, menuypos);
-	fullscreen->add_choice("Off");
-	fullscreen->add_choice("On");
-	fullscreen->set_choice(gwin->get_win()->is_fullscreen()?1:0);
-	menu.add_entry(fullscreen);
 	menuypos+=11;
 
 	MenuTextChoice *cheating = new MenuTextChoice(fonton, font, "CHEATING",
@@ -272,56 +261,16 @@ void ExultMenu::setup()
 			{
 			gpal->fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
-			// Scaling Method
-			int scaler = scalemethod->get_choice();
-			if(scaler!=gwin->get_win()->get_scaler())
-				{
-				gwin->resized(gwin->get_win()->get_full_width(),
-				              gwin->get_win()->get_full_height(),
-							  gwin->get_win()->is_fullscreen(),
-							  gwin->get_win()->get_game_width(),
-							  gwin->get_win()->get_game_height(),
-				              Image_window::Hq3x ? 3 : 2,
-				              scalemethod->get_choice(),
-							  gwin->get_win()->get_fill_mode(),
-							  gwin->get_win()->get_fill_scaler());
-				if (scaler > Image_window::NoScaler &&
-						scaler < Image_window::NumScalers)
-					{
-					config->set("config/video/scale_method",
-							Image_window::get_name_for_scaler(scaler), true);
-					config->set("config/video/scale",
-							scaler == Image_window::Hq3x ? "3" : "2", true);
-					}
-				}
+			// Scaling Method			
 			// Palette fades
 			gpal->set_fades_enabled(palfades->get_choice()==1);
 			config->set("config/video/disable_fades",
 					gpal->get_fades_enabled()?"no":"yes", true);
 
-#ifdef SHOW_MIDICONV_IN_EXULTMENU
-			if (Audio::get_ptr()->get_midi())
-				{
-				if (midiconv)
-					// Midi Conversion
-					Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
-#ifdef ENABLE_MIDISFX
-				if (sfxconv)
-					// SFX Conversion
-					Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDIFILE_CONVERT_GS127_TO_GS:XMIDIFILE_CONVERT_NOCONVERSION);
-#endif
-				}
-#endif
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
 			// Play 1st scene
 			set_play_1st_scene(playscene->get_choice()==1);
-			// Full screen
-			if ((fullscreen->get_choice() == 0 &&  gwin->get_win()->is_fullscreen()) ||
-			    (fullscreen->get_choice() == 1 && !gwin->get_win()->is_fullscreen()))
-				gwin->get_win()->toggle_fullscreen();
-			config->set("config/video/fullscreen",
-					gwin->get_win()->is_fullscreen() ? "yes" : "no", true);
 			// Cheating
 			cheat.set_enabled(cheating->get_choice()==1);
 			calc_win();
@@ -336,6 +285,7 @@ void ExultMenu::setup()
 		}
 #ifdef HAVE_OPENGL
 	delete setupbg;
+#endif
 #endif
 }
 
@@ -579,6 +529,10 @@ BaseGameInfo *ExultMenu::run()
 		throw quit_exception(1);
 
 	}
+	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+	    	EXULT_FLX_POINTERS_SHP);
+	menu_mouse = new Mouse(gwin, mouse_data);
+
 	//Must check this or it will crash as midi 
 	//may not be initialised
 	if(Audio::get_ptr()->audio_enabled)
@@ -587,9 +541,6 @@ BaseGameInfo *ExultMenu::run()
 		//Audio::get_ptr()->get_midi()->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GM);
 		Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
 	}
-	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
-	    	EXULT_FLX_POINTERS_SHP);
-	menu_mouse = new Mouse(gwin, mouse_data);
 
 #ifdef HAVE_OPENGL
 	if (GL_manager::get_instance())
@@ -601,17 +552,19 @@ BaseGameInfo *ExultMenu::run()
 	sman->paint_shape(logox,logoy,exultlogo);
 	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
-	Shape_frame *logobg;
 
-	logobg = create_exultlogo(logox, logoy, exult_flx, font);
 	exultlogo = exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1);
+
 	int first_game = 0, num_choices = gamemanager->get_game_count()-1,
 		last_page = num_choices - num_choices % pagesize;
-	MenuList *menu = create_main_menu(logobg, first_game);
-	menu->set_selection(0);
-	BaseGameInfo *sel_game = 0;
 	// Erase the old logo.
 	gwin->clear_screen(true);
+
+	Shape_frame *logobg = create_exultlogo(logox, logoy, exult_flx, font);
+	MenuList *menu = create_main_menu(logobg, first_game);;
+	BaseGameInfo *sel_game = 0;
+	menu->set_selection(0);
+
 	do {
 		// Interferes with the menu.
 #ifdef HAVE_OPENGL
@@ -634,7 +587,22 @@ BaseGameInfo *ExultMenu::run()
 			case -4: // Setup
 				gpal->fade_out(c_fade_out_time);
 				setup();
-				gpal->apply();
+				delete menu;
+				delete logobg;
+				if(Audio::get_ptr()->audio_enabled)
+				{
+					// Make sure timbre library is correct!
+					//Audio::get_ptr()->get_midi()->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GM);
+					Audio::get_ptr()->start_music(EXULT_FLX_MEDITOWN_MID, true, EXULT_FLX);
+				}
+
+				calc_win();
+				logox = centerx-exultlogo->get_width()/2;
+				logoy = centery-exultlogo->get_height()/2;
+				logobg = create_exultlogo(logox, logoy, exult_flx, font);
+				first_game = 0;
+				menu = create_main_menu(logobg, first_game);
+				menu->set_selection(0);
 				break;
 			case -3: // Exult Credits
 				{
@@ -692,11 +660,7 @@ BaseGameInfo *ExultMenu::run()
 		}
 	} while(sel_game==0);
 	delete menu;
-	
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		delete logobg;
-#endif
+	delete logobg;
 	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;

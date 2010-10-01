@@ -36,6 +36,7 @@
 #include "combat_opts.h"
 #include "Text_button.h"
 #include "Enabled_button.h"
+#include "font.h"
 
 using std::cerr;
 using std::endl;
@@ -192,9 +193,11 @@ void CombatOptions_gump::save_settings()
 void CombatOptions_gump::paint()
 {
 	Gump::paint();
-	sman->paint_text(2, "Difficulty:", x + colx[0], y + rowy[0] + 1);
-	sman->paint_text(2, "Show Hits:", x + colx[0], y + rowy[1] + 1);
-	sman->paint_text(2, "Mode:", x + colx[0], y + rowy[2] + 1);
+	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
+	Image_window8 *iwin = gwin->get_win();
+	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[0], y + rowy[0] + 1);
+	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[0], y + rowy[1] + 1);
+	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[0], y + rowy[2] + 1);
 	gwin->set_painted();
 }
 

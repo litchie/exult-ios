@@ -68,8 +68,11 @@ void BaseGameInfo::setup_game_paths ()
 	else
 		clear_system_path("<PATCH>");
 
-	U7mkdir("<SAVEGAME>", 0755);	// make sure savegame directory exists
-	U7mkdir("<GAMEDAT>", 0755);		// make sure gamedat directory exists
+	if (type != EXULT_MENU_GAME)
+		{
+		U7mkdir("<SAVEGAME>", 0755);	// make sure savegame directory exists
+		U7mkdir("<GAMEDAT>", 0755);		// make sure gamedat directory exists
+		}
 	}
 
 static inline void ReplaceMacro

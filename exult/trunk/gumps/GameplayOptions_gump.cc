@@ -39,6 +39,7 @@
 #include "Face_stats.h"
 #include "Text_button.h"
 #include "Enabled_button.h"
+#include "font.h"
 
 using std::cerr;
 using std::endl;
@@ -365,23 +366,26 @@ void GameplayOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	sman->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
-	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
+	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
+	Image_window8 *iwin = gwin->get_win();
+
+	font->paint_text(iwin->get_ib8(), "Status Bars:", x + colx[0], y + rowy[0] + 1);
+	font->paint_text(iwin->get_ib8(), "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
-		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
-	sman->paint_text(2, "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 #ifdef UNDER_CE
-	sman->paint_text(2, "D-Pad:", x + colx[0], y + rowy[4] + 1);
+	font->paint_text(iwin->get_ib8(), "D-Pad:", x + colx[0], y + rowy[4] + 1);
 #else
-	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
+	font->paint_text(iwin->get_ib8(), "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 #endif
-	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
-	sman->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
-	sman->paint_text(2, "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);
-	sman->paint_text(2, "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
-	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[9] + 1);
-	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[10] + 1);
-	sman->paint_text(2, "Smooth scrolling:", x + colx[0], y + rowy[12] + 1);
+	font->paint_text(iwin->get_ib8(), "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
+	font->paint_text(iwin->get_ib8(), "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
+	font->paint_text(iwin->get_ib8(), "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);
+	font->paint_text(iwin->get_ib8(), "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
+	font->paint_text(iwin->get_ib8(), "Cheats:", x + colx[0], y + rowy[9] + 1);
+	font->paint_text(iwin->get_ib8(), "Speed:", x + colx[0], y + rowy[10] + 1);
+	font->paint_text(iwin->get_ib8(), "Smooth scrolling:", x + colx[0], y + rowy[12] + 1);
 	gwin->set_painted();
 }
 

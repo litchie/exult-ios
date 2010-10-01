@@ -216,6 +216,7 @@ int Game_render::paint_map
 	Shape_manager *sman = gwin->shape_man;
 	render_seq++;			// Increment sequence #.
 	gwin->painted = 1;
+
 	int scrolltx = gwin->scrolltx, scrollty = gwin->scrollty;
 	int light_sources = 0;		// Count light sources found.
 					// Get chunks to start with, starting
@@ -335,8 +336,12 @@ void Game_window::paint
 	if (gy < 0) { gh += gy; gy = 0; }
 	if ((gy+gh) > get_height()) gh = get_height()-gy;
 	win->set_clip(gx, gy, gw, gh);	// Clip to this area.
-	int light_sources = render->paint_map(gx, gy, gw, gh);
+	
+	int light_sources = 0;
 
+	if (main_actor) render->paint_map(gx, gy, gw, gh);
+	else win->fill8(0);
+	
 	effects->paint();		// Draw sprites.
 
 	win->set_clip(x, y, w, h);	// Clip to this area.
@@ -377,7 +382,7 @@ void Game_window::paint
  */
 void Game_window::paint()
 	{
-	map->read_map_data();		// Gather in all objs., etc.
+	if (main_actor != 0) map->read_map_data();		// Gather in all objs., etc.
 	set_all_dirty();
 	paint_dirty();
 	}

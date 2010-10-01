@@ -227,11 +227,9 @@ void Shape_manager::load
 
 	read_shape_info();
 
-	if (!fonts)
-		{
-		fonts = new Fonts_vga_file();
-		fonts->init();
-		}
+	if (fonts) delete fonts;
+	fonts = new Fonts_vga_file();
+	fonts->init();
 
 #ifdef UNDER_CE
 	files[SF_POCKETPC_FLX].load(POCKETPC_FLX);
@@ -344,6 +342,42 @@ void Shape_manager::load
 	delete [] ptr;
 	invis_xform = &xforms[nxforms - 1 - 0];   // ->entry 0.
 	}
+
+
+// Read in files needed to display gumps.
+bool Shape_manager::load_gumps_minimal()			
+{
+	bool ok = false;
+	try {
+		ok = files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
+	}
+	catch(exult_exception &) {
+	}
+
+	if (!ok) {
+		std::cerr << "Couldn't open 'gumps.vga'." << std::endl;
+		return false;
+	}
+
+	ok = false;
+	try {
+		ok = files[SF_EXULT_FLX].load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX));
+	}
+	catch(exult_exception &) {
+	}
+
+	if (!ok)
+	{
+		std::cerr << "Couldn't open 'exult.flx'." << std::endl;
+		return false;
+	}
+
+	//if (fonts) delete fonts;
+	//fonts = new Fonts_vga_file();
+	//fonts->init();
+
+	return true;
+}
 
 /*
  *	Reload one of the shape files (msg. from ExultStudio).

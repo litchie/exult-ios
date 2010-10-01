@@ -38,7 +38,7 @@ protected:
 	static short yesx, yesnoy, nox;	// Coords. of the buttons.
 	std::string text;			// Text of question.  It is drawn in
 					//   object_area.
-	int fontnum;
+	const char *fontname;
 	int answer;			// 1 for yes, 0 for no.
 	void set_answer(int y)		// Done from 'yes'/'no' button.
 		{
@@ -48,7 +48,7 @@ protected:
 
 public:
 	friend class Yesno_button;
-	Yesno_gump(const std::string &txt,int fontnum=2);
+	Yesno_gump(const std::string &txt,const char * font="SMALL_BLACK_FONT");
 	virtual ~Yesno_gump();
 	int get_answer()
 		{ return answer; }
@@ -58,7 +58,7 @@ public:
 	virtual bool mouse_down(int mx, int my, int button);
 	virtual bool mouse_up(int mx, int my, int button);
 	virtual void key_down(int chr); // Character typed.
-	static int ask(const char *txt, int fontnum=2);	// Ask question, get answer.
+	static int ask(const char *txt, const char *font="SMALL_BLACK_FONT");	// Ask question, get answer.
 };
 
 class Countdown_gump : public Yesno_gump
@@ -67,10 +67,10 @@ class Countdown_gump : public Yesno_gump
 	int timer;
 	int start_time;
 public:
-	Countdown_gump(const std::string &txt, int timeout, int fontnum);
+	Countdown_gump(const std::string &txt, int timeout, const char *font);
 
 	virtual bool run();
 
-	static int ask(const char *txt, int timeout, int fontnum=2);	// Ask question, get answer, timeout to no after timeout seconds
+	static int ask(const char *txt, int timeout, const char *font="SMALL_BLACK_FONT");	// Ask question, get answer, timeout to no after timeout seconds
 };
 #endif

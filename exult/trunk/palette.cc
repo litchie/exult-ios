@@ -86,8 +86,9 @@ void Palette::fade
 	)
 	{
 	if (pal_num == -1) pal_num = palette;
+	palette = pal_num;
 	
-	if (palette != -1) border255 = (palette >= 0 && palette <= 12) && palette != 9;
+	border255 = (palette >= 0 && palette <= 12) && palette != 9;
 
 	load(PALETTES_FLX, PATCH_PALETTES, pal_num);
 	if (inout)
@@ -124,7 +125,7 @@ void Palette::set
 	bool repaint
 	)
 	{
-	border255 = (palette >= 0 && palette <= 12) && palette != 9;
+	border255 = (pal_num >= 0 && pal_num <= 12) && pal_num != 9;
 
 	if ((palette == pal_num || pal_num == -1) &&
 		(brightness == new_brightness || new_brightness == -1))
@@ -390,7 +391,7 @@ static inline void glfade
 
 void Palette::fade_in(int cycles)
 {
-	if (fades_enabled)
+	if (cycles && fades_enabled)
 	{
 #ifdef HAVE_OPENGL
 		if (GL_manager::get_instance())
@@ -458,7 +459,7 @@ void Palette::fade_in(int cycles)
 void Palette::fade_out(int cycles)
 {
 	faded_out = true;		// Be sure to set flag.
-	if (fades_enabled)
+	if (cycles && fades_enabled)
 	{
 #ifdef HAVE_OPENGL
 		if (GL_manager::get_instance())

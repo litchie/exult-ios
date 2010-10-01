@@ -229,6 +229,8 @@ BG_Game::BG_Game()
 	fontManager.add_font("END2_FONT", ENDGAME, PATCH_ENDGAME, 4, -1);
 	fontManager.add_font("END3_FONT", ENDGAME, PATCH_ENDGAME, 5, -2);
 	fontManager.add_font("NORMAL_FONT", FONTS_VGA, PATCH_FONTS, 0, -1);
+	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
+	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
 }
 
 BG_Game::~BG_Game()
