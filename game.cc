@@ -135,6 +135,10 @@ Game *Game::create_game(BaseGameInfo *mygame)
 		cout << "Starting '" << gametitle << "' game" << endl;
 		game = new DEV_Game();
 		break;
+	case EXULT_MENU_GAME:
+		cout << "Starting '" << gametitle << "' game" << endl;
+		game = new DEV_Game();
+		break;
 	default:
 		cout << "Unrecognized game type!" << endl;
 		game = 0;

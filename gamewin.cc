@@ -675,7 +675,7 @@ bool Game_window::is_moving
 
 bool Game_window::main_actor_dont_move()
 	{
-	return !cheat.in_map_editor() &&	// Not if map-editing.
+	return !cheat.in_map_editor() && main_actor != 0 &&	// Not if map-editing.
 			((main_actor->get_flag(Obj_flags::dont_move) != 0) ||
 			(main_actor->get_flag(Obj_flags::dont_render) != 0));
 	}

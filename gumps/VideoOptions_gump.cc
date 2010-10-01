@@ -38,6 +38,7 @@
 #include "Text_button.h"
 #include "palette.h"
 #include "Yesno_gump.h"
+#include "font.h"
 
 using std::cerr;
 using std::endl;
@@ -432,7 +433,7 @@ void VideoOptions_gump::save_settings()
 	Image_window::get_draw_dims(resx,resy,scaling+1,fill_mode, tgw,tgh,tw,th);
 	if (tw/(scaling+1) < 320 || th/(scaling+1) < 200)
 	{
-		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", 4)) 
+		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT")) 
 			return;
 	}
 
@@ -501,15 +502,18 @@ void VideoOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	if (fullscreen) sman->paint_text(2, "Display Mode:", x + colx[0], y + rowy[0] + 1);
-	else sman->paint_text(2, "Window Size:", x + colx[0], y + rowy[0] + 1);
-	if (buttons[1]) sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[2] + 1);
-	sman->paint_text(2, "Scaler:", x + colx[0], y + rowy[1] + 1);
-	sman->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
-	sman->paint_text(2, "Game Area:", x + colx[0], y + rowy[5] + 1);
-	sman->paint_text(2, "Fill Quality:", x + colx[0], y + rowy[6] + 1);
-	sman->paint_text(2, "Fill Mode:", x + colx[0], y + rowy[7] + 1);
-	if (buttons[7]) sman->paint_text(2, "AR Correction:", x + colx[0], y + rowy[8] + 1);
+	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
+	Image_window8 *iwin = gwin->get_win();
+
+	if (fullscreen) font->paint_text(iwin->get_ib8(), "Display Mode:", x + colx[0], y + rowy[0] + 1);
+	else font->paint_text(iwin->get_ib8(), "Window Size:", x + colx[0], y + rowy[0] + 1);
+	if (buttons[1]) font->paint_text(iwin->get_ib8(), "Scaling:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Scaler:", x + colx[0], y + rowy[1] + 1);
+	font->paint_text(iwin->get_ib8(), "Full Screen:", x + colx[0], y + rowy[3] + 1);
+	font->paint_text(iwin->get_ib8(), "Game Area:", x + colx[0], y + rowy[5] + 1);
+	font->paint_text(iwin->get_ib8(), "Fill Quality:", x + colx[0], y + rowy[6] + 1);
+	font->paint_text(iwin->get_ib8(), "Fill Mode:", x + colx[0], y + rowy[7] + 1);
+	if (buttons[7]) font->paint_text(iwin->get_ib8(), "AR Correction:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 

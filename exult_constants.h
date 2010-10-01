@@ -105,7 +105,8 @@ enum Exult_Game {
 	NONE,
 	BLACK_GATE,
 	SERPENT_ISLE,
-	EXULT_DEVEL_GAME		// One that we develop.
+	EXULT_DEVEL_GAME,		// One that we develop.
+	EXULT_MENU_GAME,		// Game type for the exult menu
 };
 
 #endif

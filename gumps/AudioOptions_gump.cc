@@ -36,6 +36,7 @@
 #include "Enabled_button.h"
 #include "game.h"
 #include "exult_constants.h"
+#include "font.h"
 
 #include "MidiDriver.h"
 #include "AudioMixer.h"
@@ -558,28 +559,31 @@ void AudioOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	sman->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
+	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
+	Image_window8 *iwin = gwin->get_win();
+	
+	font->paint_text(iwin->get_ib8(), "Audio:", x + colx[0], y + rowy[0] + 1);
 	if (audio_enabled) {
-		sman->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
+		font->paint_text(iwin->get_ib8(), "Music options:", x + colx[0], y + rowy[1] + 1);
 		if (midi_enabled) {
-			sman->paint_text(2, "looping", x + colx[1], y + rowy[2] + 1);
-			sman->paint_text(2, "digital music", x + colx[1], y + rowy[3] + 1);
-			sman->paint_text(2, "midi driver", x + colx[1], y + rowy[4] + 1);
-			if (buttons[id_midi_conv]) sman->paint_text(2, "device type", x+colx[1], y+rowy[5] + 1);
-			if (buttons[id_midi_effects]) sman->paint_text(2, "effects", x + colx[1], y + rowy[6] + 1);
+			font->paint_text(iwin->get_ib8(), "looping", x + colx[1], y + rowy[2] + 1);
+			font->paint_text(iwin->get_ib8(), "digital music", x + colx[1], y + rowy[3] + 1);
+			font->paint_text(iwin->get_ib8(), "midi driver", x + colx[1], y + rowy[4] + 1);
+			if (buttons[id_midi_conv]) font->paint_text(iwin->get_ib8(), "device type", x+colx[1], y+rowy[5] + 1);
+			if (buttons[id_midi_effects]) font->paint_text(iwin->get_ib8(), "effects", x + colx[1], y + rowy[6] + 1);
 		}
-		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
-		sman->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
+		font->paint_text(iwin->get_ib8(), "SFX options:", x + colx[0], y + rowy[7] + 1);
+		font->paint_text(iwin->get_ib8(), "SFX", x + colx[1], y + rowy[8] + 1);
 		if (sfx_enabled == 1) {
-			sman->paint_text(2, "pack", x + colx[1], y + rowy[9] + 1);
+			font->paint_text(iwin->get_ib8(), "pack", x + colx[1], y + rowy[9] + 1);
 		}
 #ifdef ENABLE_MIDISFX
 		else if (sfx_enabled == 2) {
-			sman->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
+			font->paint_text(iwin->get_ib8(), "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif
-		sman->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
-		sman->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
+		font->paint_text(iwin->get_ib8(), "Speech options:", x + colx[0], y + rowy[10] + 1);
+		font->paint_text(iwin->get_ib8(), "speech", x + colx[1], y + rowy[11] + 1);
 	}
 	gwin->set_painted();
 }

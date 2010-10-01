@@ -192,6 +192,8 @@ SI_Game::SI_Game()
 		}		
 	fontManager.add_font("MENU_FONT", MAINSHP_FLX, PATCH_MAINSHP, 9, 1);
 	fontManager.add_font("SIINTRO_FONT", INTRO_DAT, PATCH_INTRO, 14, 0);
+	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
+	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
 	Map_patch_collection *mp = gwin->get_map_patches();
 					// Egg by "PC pirate" in forest:
 	mp->add(new Map_patch_remove(Object_spec(

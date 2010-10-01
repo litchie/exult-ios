@@ -78,6 +78,7 @@ public:
 	static Shape_manager *get_instance()
 		{ return instance; }
 	void load();			// Read in files.
+	bool load_gumps_minimal();			// Read in files needed to display gumps.
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	void reload_shape_info();
 	Vga_file& get_file(enum ShapeFile f)

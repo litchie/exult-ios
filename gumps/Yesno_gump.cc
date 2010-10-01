@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Gump_button.h"
 #include "Gump_manager.h"
+#include "font.h"
 
 #include <cstring>
 
@@ -80,8 +81,8 @@ bool Yesno_button::activate
 
 Yesno_gump::Yesno_gump
 	(
-	const std::string &txt, int fontnum_
-	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), fontnum(fontnum_), answer(-1)
+	const std::string &txt, const char *font
+	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), fontname(font), answer(-1)
 {
 	set_object_area(Rectangle(6, 5, 116, 32));
 	add_elem(new Yesno_button(this, yesx, yesnoy, 1));
@@ -110,8 +111,8 @@ void Yesno_gump::paint
 	paint_shape(x, y);
 	paint_elems();			// Paint buttons.
 					// Paint text.
-	sman->paint_text_box(fontnum, text.c_str(), x + object_area.x, 
-			y + object_area.y, object_area.w, object_area.h, 2);
+	fontManager.get_font(fontname)->paint_text_box(gwin->get_win()->get_ib8(), text.c_str(), 
+			x + object_area.x, y + object_area.y, object_area.w, object_area.h, 2);
 	gwin->set_painted();
 }
 
@@ -173,10 +174,10 @@ void Yesno_gump::key_down(int chr)
 int Yesno_gump::ask
 	(
 	const char *txt,			// What to ask.
-	int fontnum
+	const char *font
 	)
 {
-	Yesno_gump *dlg = new Yesno_gump(txt,fontnum);
+	Yesno_gump *dlg = new Yesno_gump(txt,font);
 	int answer;
 	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
 		answer = 0;
@@ -188,8 +189,8 @@ int Yesno_gump::ask
 
 
 
-Countdown_gump::Countdown_gump (const std::string &txt, int timeout, int fontnum) : 
-	Yesno_gump(std::string(),fontnum), text_fmt(txt), timer(timeout)
+Countdown_gump::Countdown_gump (const std::string &txt, int timeout, const char *font) : 
+	Yesno_gump(std::string(),font), text_fmt(txt), timer(timeout)
 {
 	answer = 0;
 	start_time = SDL_GetTicks();
@@ -211,9 +212,9 @@ bool Countdown_gump::run()
 	return true;
 }
 
-int Countdown_gump::ask(const char *txt, int timeout, int fontnum)
+int Countdown_gump::ask(const char *txt, int timeout, const char *font)
 {
-	Countdown_gump *dlg = new Countdown_gump(txt,timeout,fontnum);
+	Countdown_gump *dlg = new Countdown_gump(txt,timeout,font);
 	int answer;
 	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
 		answer = 0;

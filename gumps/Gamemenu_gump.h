@@ -31,7 +31,7 @@ class Gamemenu_gump : public Modal_gump
 	Gump_button* buttons[6];
 
  public:
-	Gamemenu_gump();
+	Gamemenu_gump(bool in_exult_menu=false);
 	virtual ~Gamemenu_gump();
 
 					// Paint it and its contents.
@@ -48,6 +48,8 @@ class Gamemenu_gump : public Modal_gump
 	void audio_options();
 	void gameplay_options();
 	void combat_options();
+
+	static void do_exult_menu();
 };
 
 #endif
