@@ -1,6 +1,7 @@
 2010-10-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ibuf8.cc, ibuf16.cc: take pitch into account in fill_static
 	* bggame.cc, sigame.cc: remove mentions of Exult from intro
+	* palette.cc: fix uninitialized variable
 
 2010-10-05 Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/bg/ and data/si: disabled Alt+KP+ and Alt+KP- key combination to switch 
