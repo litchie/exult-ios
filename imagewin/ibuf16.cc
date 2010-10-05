@@ -222,15 +222,17 @@ void Image_buffer16::put
  */
 void Image_buffer16::fill_static(int black, int gray, int white)
 {
-	unsigned short *p = get_pixels();
 	unsigned short black16 = palette[black];
 	unsigned short gray16 = palette[gray];
 	unsigned short white16 = palette[white];
-	for (int i = width*height; i > 0; --i) {
-		switch (std::rand()%5) {
-			case 0: case 1: *p++ = black16; break;
-			case 2: case 3: *p++ = gray16; break;
-			case 4: *p++ = white16; break;
+	for (int y = 0; y < height; ++y) {
+		unsigned short *p = get_pixels() + y*line_width;
+		for (int x = 0; x < width; ++x) {
+			switch (std::rand()%5) {
+				case 0: case 1: *p++ = black16; break;
+				case 2: case 3: *p++ = gray16; break;
+				case 4: *p++ = white16; break;
+			}
 		}
 	}
 }
