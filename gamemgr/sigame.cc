@@ -264,16 +264,12 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
-			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
-		font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
-		font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 		non_gl_blit();
 
 		if (wait_delay (3000, 0, 1))
@@ -282,8 +278,6 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
-			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 			non_gl_blit();
 			wait_delay(0, 0, 1);
 		}
@@ -794,14 +788,12 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 			non_gl_blit();
 			wait_delay (0, 0, 1);
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
-		font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 		non_gl_blit();
 		wait_delay (0, 0, 1);
 
@@ -813,7 +805,6 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 			non_gl_blit();
 			wait_delay (0, 0, 1);
 		}
