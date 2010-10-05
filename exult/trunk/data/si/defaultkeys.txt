@@ -1,7 +1,7 @@
 # default key bindings
 
-Alt-KP+		resolution_increase
-Alt-KP- 	resolution_decrease
+# Alt-KP+		resolution_increase
+# Alt-KP- 	resolution_decrease
 KP+		brighter
 KP- 		darker
 Esc		close_or_menu
