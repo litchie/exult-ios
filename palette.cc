@@ -46,7 +46,7 @@ unsigned char Palette::border[3] = {
 
 Palette::Palette()
 	: win(Game_window::get_instance()->get_win()), 
-	    palette(-1), brightness(100), max_val(63),
+	    palette(-1), brightness(100), max_val(63), border255(false),
 	    faded_out(false), fades_enabled(true)
 	{
 	memset(pal1, 0, 768);
