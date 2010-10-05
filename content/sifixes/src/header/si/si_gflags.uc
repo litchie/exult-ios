@@ -242,7 +242,7 @@ enum Gorlab_swamp_townplot
 	EDRIN_KNOWS_SIRANUSH_IS_REAL = 0x213
 };
 
-// The quotes are from http:// www.it-he.org
+// The quotes are from http://www.it-he.org
 enum Bane_flags
 {
 	BANES_RELEASED = 0x4,
