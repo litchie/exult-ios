@@ -1,4 +1,8 @@
-2010-07-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2010-10-05 Dominik Reichardt <dominus@users.sourceforge.net>
+	* data/bg/ and data/si: disabled Alt+KP+ and Alt+KP- key combination to switch 
+	 resolution, it doesn't play nice with the new render code.
+
+2010-10-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* keyactions.cc: Show message when mapedit keys are used and Exult is built
 	  without ES support.
 
