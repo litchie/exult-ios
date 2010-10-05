@@ -123,12 +123,14 @@ void Image_buffer8::put
  */
 void Image_buffer8::fill_static(int black, int gray, int white)
 {
-	unsigned char *p = bits - offset_y*line_width - offset_x;
-	for (int i = width*height; i > 0; --i) {
-		switch (std::rand()%5) {
-			case 0: case 1: *p++ = black; break;
-			case 2: case 3: *p++ = gray; break;
-			case 4: *p++ = white; break;
+	for (int y = 0; y < height; ++y) {
+		unsigned char *p = bits + y*line_width;
+		for (int x = 0; x < width; ++x) {
+			switch (std::rand()%5) {
+				case 0: case 1: *p++ = black; break;
+				case 2: case 3: *p++ = gray; break;
+				case 4: *p++ = white; break;
+			}
 		}
 	}
 }
