@@ -352,10 +352,6 @@ void BG_Game::scene_lord_british()
 	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
-	// insert our own intro text
-	font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
-	font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
-
 	pal->fade_in(c_fade_in_time);
 	if(1 == wait_delay(2000))
 		throw UserBreakException();
@@ -456,8 +452,6 @@ void BG_Game::scene_butterfly()
 		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
 		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		
-		// again display our own text 
-		font->center_text(ibuf, centerx, centery+50, text_msgs[driven_by_exult]);
 
 		// Keep it dark for some more time, playing the music 
 		WAITDELAY(4500); //  - was WAITDELAY(3500);
