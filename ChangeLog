@@ -1,3 +1,7 @@
+2010-07-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* keyactions.cc: Show message when mapedit keys are used and Exult is built
+	  without ES support.
+
 2010-10-01  Ryan Nunn <colourles@users.sourceforge.net>
 	* Changed things so it is possible to open some of the options gumps from the
 	  Exult menu (requires data from the games to work, but thats ok). Removed 

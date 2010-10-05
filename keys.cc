@@ -324,10 +324,39 @@ bool KeyBinder::DoAction(ActionType a, bool press)
 		return true;
 
 	if (press)
+	{
+#ifndef USE_EXULTSTUDIO
+		// Display unsupported message if no ES support.
+		if (a.action->key_type == Action::mapedit_keys)
+		{
+			Scroll_gump *scroll;
+			scroll = new Scroll_gump();
+	
+			scroll->add_text("Map editor functionality is disabled in this version of Exult.\n");
+			scroll->add_text("If you want or need this functionality, you should install a snapshot, as they have support for Exult Studio.\n");
+			scroll->add_text("If no snapshots are available for your platform, you will have to compile it on your own.\n");
+	
+			scroll->paint();
+			do
+			{
+				int x, y;
+				Get_click(x,y, Mouse::hand, 0, false, scroll);
+			} while (scroll->show_next_page());
+			Game_window::get_instance()->paint();
+			delete scroll;
+			return true;
+		}
+#endif
 		a.action->func(a.params);
+	}
 	else 
 	{
-		if(a.action->func_release != NULL)
+#ifndef USE_EXULTSTUDIO
+		// Do nothing when releasing mapedit keys if no ES support.
+		if (a.action->key_type == Action::mapedit_keys)
+			return true;
+#endif
+		if (a.action->func_release != NULL)
 			a.action->func_release(a.params);
 	}
 	
