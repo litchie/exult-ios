@@ -339,7 +339,7 @@ void Game_window::paint
 	
 	int light_sources = 0;
 
-	if (main_actor) render->paint_map(gx, gy, gw, gh);
+	if (main_actor) light_sources = render->paint_map(gx, gy, gw, gh);
 	else win->fill8(0);
 	
 	effects->paint();		// Draw sprites.
