@@ -149,11 +149,12 @@ void Game_clock::set_time_palette
 	bool cloudy = overcast > 0;
 	bool foggy = fog > 0;
 	bool weather_change = (cloudy != was_overcast) || (foggy != was_foggy);
-	bool light_sensitive = is_dark_palette(new_palette) &&
+	bool light_sensitive = is_dark_palette(new_palette) ||
 				is_dark_palette(old_palette);
 	bool light_change = light_sensitive &&
 				((light_source_level != old_light_level) ||
-				 (gwin->is_special_light() != old_special_light));
+				 (gwin->is_special_light() != old_special_light) ||
+				 (new_dungeon != dungeon));
 
 	new_palette = get_final_palette(new_palette, cloudy, foggy,
 				light_source_level, gwin->is_special_light());
