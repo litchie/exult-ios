@@ -1,5 +1,6 @@
 2010-10-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamerend.cc: fix regression from r6352 that ignored light sources
+	* gameclk.cc: fix regression from r5763 that delayed dungeon light changes
 
 2010-10-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ibuf8.cc, ibuf16.cc: take pitch into account in fill_static
