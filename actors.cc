@@ -5120,7 +5120,7 @@ void Npc_actor::handle_event
 				schedule_type != Schedule::patrol ||
 				schedule_type != Schedule::sleep ||
 				schedule_type != Schedule::wait) &&
-			!(rand()%3))	// Don't do it every time.
+			!rand()%3)	// Don't do it every time. FIXME: "!rand()" ??
 		schedule->seek_foes();
 
 	if (!action)			// Not doing anything?
@@ -5139,7 +5139,7 @@ void Npc_actor::handle_event
 						schedule_type != Schedule::patrol ||
 						schedule_type != Schedule::sleep ||
 						schedule_type != Schedule::wait) &&
-					!(rand()%4))	// Don't do it every time.
+					!rand()%4)	// Don't do it every time. FIXME: "!rand()" ??
 				{
 				schedule->seek_foes();
 					// Get back into queue.
