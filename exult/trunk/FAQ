@@ -1,25 +1,26 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 23 August 2010(GMT)
+last changed: 13 October 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 23 August 2010
-0.2. - 15 August 2010
-0.3. - 12 March 2010
-0.4. - 10 March 2010
-0.5. - 16 July 2009
-0.6. - 03 June 2009
-0.7. - 20 May 2009
-0.8. - 30 April 2009
-0.9. - 21 October 2007
-0.10. - 08 April 2006
-0.11. - 04 October 2004
-0.12. - 14 August 2004
-0.13. - 23 May 2004
-0.14. - 27 January 2004
-0.15. - 12 December 2003
+0.1. - 13 October 2010
+0.2. - 23 August 2010
+0.3. - 15 August 2010
+0.4. - 12 March 2010
+0.5. - 10 March 2010
+0.6. - 16 July 2009
+0.7. - 03 June 2009
+0.8. - 20 May 2009
+0.9. - 30 April 2009
+0.10. - 21 October 2007
+0.11. - 08 April 2006
+0.12. - 04 October 2004
+0.13. - 14 August 2004
+0.14. - 23 May 2004
+0.15. - 27 January 2004
+0.16. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -73,10 +74,9 @@ The latest version of this document can be found at http://exult.sourceforge.net
 4.2. How do I submit a proper bug report?
 4.3. Broken by Design
 4.4. Known Issues
-4.5. Fullscreen switching
-4.6. Known Compile Issues
-4.7. Problems with Windows 9x
-4.8. Problems with Mac OS X
+4.5. Known Compile Issues
+4.6. Problems with Windows 9x
+4.7. Problems with Mac OS X
 
 5. Gameplay FAQ
 5.1. Why is there a gameplay FAQ?
@@ -112,7 +112,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 23 August 2010
+0.1. - 13 October 2010
+* 1.1. Exult Version new official version.
+* 1.10. What is a snapshot? Are these screenshots or what? this FAQis not mainly about the snapshot atm.
+* 1.12. What is the latest version of Exult? 1.4.9 RC1 is the latest version and we recommend this one.
+* 2.7. Do Exult savegames work on all Operating Systems? don't use 1.4.9 RC1 savegames with 1.2.
+* 3.14. What are the improvements in Exult over the original Ultima 7? added notebook.
+* 4.4. Known Issues got rid of 1.2 issues.
+
+
+
+0.2. - 23 August 2010
 * 1.12. What is the latest version of Exult? better use the snapshots than the ooooold version.
 * 2.2. Does Exult work on all versions of the game? cleaned up a bit.
 * 3.6. Why is the party formation different? Recently was a couple of years ago.
@@ -122,39 +132,39 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 15 August 2010
+0.3. - 15 August 2010
 * 1.9. Where do I find Exult? also OS X snapshots available.
 * 1.13. On what platform does Exult run? The Amiga port homepage is only available in the Wayback Machine these days.
 * 4.2. How do I submit a proper bug report? name and location of log files.
-* 4.5. Fullscreen switching workaround added.
-* 4.8. Problems with Mac OS X should be fixed but if not we need to know.
+* 0.1. workaround added.
+* 4.7. Problems with Mac OS X should be fixed but if not we need to know.
 
 
 
-0.3. - 12 March 2010
-* 4.5. Fullscreen switching No more 8bit scaler issues.
+0.4. - 12 March 2010
+* 0.1. No more 8bit scaler issues.
 
 
 
-0.4. - 10 March 2010
+0.5. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
-* 4.5. Fullscreen switching added.
+* 0.1. added.
 * 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-0.5. - 16 July 2009
+0.6. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-0.6. - 03 June 2009
+0.7. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-0.7. - 20 May 2009
+0.8. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -168,15 +178,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 4.2. How do I submit a proper bug report? many changes to the SF bug tracker.
 * 4.3. Broken by Design cleaned up.
 * 4.4. Known Issues also cleaned up.
-* 4.6. Known Compile Issues added Ubuntu issue.
+* 4.5. Known Compile Issues added Ubuntu issue.
 * removed "Not yet implemented" as the only issue is stealing and killing and that is mentioned in 4.4. Known Issues.
-* 4.7. Problems with Windows 9x added and moved the sound issue to that.
-* 4.8. Problems with Mac OS X added because of the audio crashes.
+* 4.6. Problems with Windows 9x added and moved the sound issue to that.
+* 4.7. Problems with Mac OS X added because of the audio crashes.
 * 6.1. How can I get answers concerning Ultima 7/Exult? the #exult logs have moved ages ago.
 
 
 
-0.8. - 30 April 2009
+0.9. - 30 April 2009
 * 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -184,7 +194,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.9. - 21 October 2007
+0.10. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -195,21 +205,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.10. - 08 April 2006
+0.11. - 08 April 2006
 * 3.18. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.11. - 04 October 2004
+0.12. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.12. - 14 August 2004
+0.13. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -219,7 +229,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.13. - 23 May 2004
+0.14. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -227,7 +237,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.14. - 27 January 2004
+0.15. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.16. Why won't Xenka speak about sacrifice (SI)? added.
@@ -235,7 +245,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.15. - 12 December 2003
+0.16. - 12 December 2003
 * 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -246,7 +256,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.4.x CVS/SVN version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+This documentation is for the 1.4.9 RC1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. Why is it called Exult - what is the meaning of this name?
@@ -296,7 +306,6 @@ The latest official version is found on http://exult.sourceforge.net/ Daily snap
 1.10. What is a snapshot? Are these screenshots or what?
 Bugs and not yet implemented features in Exult get fixed almost daily in the code. A release is very time consuming that's why there are so few.
 The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary in the source but there is also the newest pre-compiled Windows executable. If there is no new one this means that either there were no changes to the code or the source failed to compile.
-Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
 
 
 1.11. How do I compile a source code snapshot for my OS?
@@ -304,9 +313,9 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 
 
 1.12. What is the latest version of Exult?
-The current official release is V1.2 See also 1.9. to learn where to get the latest version.
+The current official release is 1.4.9 RC1. See also 1.9. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
-Since version 1.2 is now very old, we do recommend that people use the snapshots rather then the old version.
+Even though it is labeled RC1 (release candidate 1) we recommend that people use this version rather than our very old last official version.
 
 
 1.13. On what platform does Exult run?
@@ -363,7 +372,7 @@ Save games that were made with the original Ultima 7 or U7Run don't work with Ex
 
 2.7. Do Exult savegames work on all Operating Systems?
 Exult savegames are compatible on all supported Operating Systems. For example a saved game of the Mac port of Exult works on Windows 98 as well.
-However it is not advisable to use savegames of games started with the 1.4.x snapshot of Exult with the 1.2 release.
+However it is not advisable to use savegames of games started with the 1.4.9 RC1 version of Exult with an older release. And since we fixed many bugs since version 1.2 we do not recommend that you continue games started with 1.2 (or earlier).
 
 
 2.8. Where do I find Ultima 7 on the net to download?
@@ -460,6 +469,7 @@ The most common reason for this is that you try to run Exult full screen in a re
 * Multiracial Avatar in BG. As with the paperdoll support you need to have SI installed and the path set in exult.cfg.
 * Higher resolutions than the original. You can set the resolution as high as your computer supports. But there are some issues with it and it is considered cheating.
 * Compressed save games. Exult compresses save games by default as zip files. They are still labeled *.sav and have the save game name in the zip comment.
+* A notebook for making notes and the possibility to automatically add notes
 
 
 
@@ -516,8 +526,8 @@ To see a list of open bugs and bug reports go to http://sourceforge.net/tracker/
 5. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
 6. State which Operating System you use (Windows 9X, Linux, ...).
 7. Please include a save game (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. You can look up the filename in the save game dialog as well (to the right, above the party members). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
-8. You may be asked to provide the log files of Exult. These are named stdout.txt and stderr.txt and can be found where exult.cfg is saved to, see Location of exult.cfg.
-9. You may be asked to provide the log files of Exult Studio. These are named studio_out.txt and studio_err.txt and can be found where exult.cfg is saved to, see Location of exult.cfg.
+8. You may be asked to provide the log files of Exult. These are named stdout.txt and stderr.txt and can be found where exult.cfg is saved to, see 3.2. Where do I find the configuration file?.
+9. You may be asked to provide the log files of Exult Studio. These are named studio_out.txt and studio_err.txt and can be found where exult.cfg is saved to, see 3.2. Where do I find the configuration file?.
 10. One bug per subject please.
 
 Any bug report that requires a save game will most likely be tagged invalid if we don't receive a save game after we requested it.
@@ -534,8 +544,6 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 4.4. Known Issues
-* In Exult version 1.2 there actually seems to be a bug that prevents you from summoning the Chaos Hierophant later in the game, when you "touched" the body of him by clicking once on it. This has been fixed in snapshots.
-* Exult version 1.2 was also wrong in spell requirements and reagent costs. This has been corrected in snapshots.
 * There might be a bug when you have any of the games installed in a path with spaces in it (see ReadMe.txt).
 * Stealing and killing innocent NPCs doesn't work yet like it does in the original.
 * Movement is sometimes jerky or slow.
@@ -545,19 +553,15 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 
-4.5. Fullscreen switching
-Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers do not support the default Exult resolution of 320x200 and refuse to switch to fullscreen during gameplay. When you set Exult to run in fullscreen in exult.cfg it actually starts fine in fullscreen. Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode. Thus you can work around this bug by selecting the resolution of 640x480, switch to fullscreen and then lower the resolution again.
-
-
-4.6. Known Compile Issues
+4.5. Known Compile Issues
 * There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
 * In some versions of Ubuntu (and probably some other distributions), you have to add some X11 libraries or Exult won't link (for example, by adding "AC_PATH_XTRA" to configure.ac). Since the Ubuntu version "Jaunty Jackalope" that fix isn't needed anymore, though.
 * After compiling yourself remember to copy the exult*.flx files from the data folder in the source to the Exult data folder you chose in exult.cfg. This applies only if you don't use "make install"
 
 
 
-4.7. Problems with Windows 9x
-All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library.
+4.6. Problems with Windows 9x
+All Windows 9x versions (95, 98, 98SE, Millennium Edition) have had problems with the 1.4x snapshot versions of Exult, all of which are caused by the SDL library. At the moment we do not know for sure whether these bugs still occur with the version 1.4.9 RC1.
 * Some users have reported problems when using Exult in fullscreen mode. Either it crashed or was unplayable.
 * There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300). Exult is triggering a bug in the drivers.
 * There is also a problem involving C-Media sound card chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
@@ -565,7 +569,7 @@ All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with th
 To fix these problems open notepad and write the following in there: SET SDL_VIDEODRIVER=directx SET SDL_AUDIODRIVER=waveout exult.exe Save this text file to your Exult folder with the name runexult.bat. When you want to play Exult double click this file and it should play fine. Be aware that when you have no problem with the audio of Exult you don't need the SET SDL_AUDIODRIVER=waveout line and vice versa, if you only have problems with the Audio and not with fullscreen, you don't need the SET SDL_VIDEODRIVER=directx line.
 
 
-4.8. Problems with Mac OS X
+4.7. Problems with Mac OS X
 On OS X something in our audio code might crash Exult unexpectedly. For example the famous scene in SI with Frigidazi has been reported as a trigger. To circumvent this disable all audio before a scene that crashes and enable it later on in the game.
 This should be fixed since the 1.2 version but we are not sure, so if you still experience this with later versions, please notify us!
 
