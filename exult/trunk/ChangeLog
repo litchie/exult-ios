@@ -1,3 +1,8 @@
+2010-10-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: revert change from r6329 that made monsters attack only
+	  rarely. Also added a FIXME, since the expressions involved don't do what
+	  they seem to do.
+
 2010-10-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamerend.cc: fix regression from r6352 that ignored light sources
 	* gameclk.cc: fix regression from r5763 that delayed dungeon light changes
