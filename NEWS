@@ -1,12 +1,26 @@
-xx/xx/06	v1.4
-
+10/13/10	v1.4.9RC1
+		
+		Compatible with the stricter permissions of Windows Vista and Windows 7
+		Rewrite of the Graphics system to allow switching to full screen on modern systems
+		Better integration into Mac OS X with default location for the supported games
+		Smooth scrolling (disabled by default, though)
+		More data from the original has been decoded and thus improved gameplay and combat
+		Two mods developed by our team member Marzo
+			- Keyring for BG which adds a keyring and a lot of other enhancements
+			- SIfixes for SI which corrects many mistakes in the game, for example 
+			   you can now cure Cantra when you play with this mod
 		In-game Notebook with support for automatic notes (notes created by usecode)
-		Integrated Pentagram(tm) Audio system
+		Integrated Pentagram(tm) Audio system which means
+			- Real Roland MT32 device support
+			- Roland MT32 Emulation support
+			- Fluidsynth support
+		Removed dependency of the Audio system on SDL_Mixer
 		New shapes for paperdoll
 		Multi-map support for new games
 		Increased limits on resource sizes (shapes, frames, etc)
-		Moved hard-coded information to configuration files
+		Moved hard-coded information to datafiles
 		Greatly improved compiler tools to ease new game development
+		Tons of work on our map editor Exult Studio and the ability to develop new games and mods
 		Tons of bugfixes
 
 

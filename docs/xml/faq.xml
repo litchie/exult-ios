@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="23 August 2010(GMT)">
+<faqs title="Exult" changed="13 October 2010(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="13102010">
+			<header>- 13 October 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> new official version.</li>
+				<li><ref1 target="whatis_snapshot"/> this FAQis not mainly about the snapshot atm.</li>
+				<li><ref1 target="latest_version"/> 1.4.9 RC1 is the latest version and we recommend this one.</li>
+				<li><ref1 target="saves_compatibility"/> don't use 1.4.9 RC1 savegames with 1.2.</li>
+				<li><ref1 target="improvements"/> added notebook.</li>
+				<li><ref1 target="known_issues"/> got rid of 1.2 issues.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="23082010">
 			<header>- 23 August 2010</header>
 			<body>
@@ -186,7 +199,7 @@
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.4.x CVS/SVN version of <Exult/>.
+					This documentation is for the 1.4.9 RC1 version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -344,10 +357,6 @@
 					If there is no new one this means that either there were no changes to the code
 					or the source failed to compile.
 				</para>
-				<para>
-					Also this FAQ mainly addresses the snapshots as people use them and ask question.
-					And all the new features and improvements are found in those!
-				</para>
 			</body>
 		</sub>
 		<sub name="compile_snapshot">
@@ -364,7 +373,7 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V1.2
+					The current official release is 1.4.9 RC1.<br/>
 					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
@@ -372,8 +381,8 @@
 					To find out which version you are running, press <key>v</key> while in game.
 				</para>
 				<para>
-					Since version 1.2 is now very old, we do recommend that people use the snapshots
-					rather then the old version.
+					Even though it is labeled RC1 (release candidate 1) we recommend that people use 
+					this version rather than our very old last official version.
 				</para>
 			</body>
 		</sub>
@@ -524,8 +533,9 @@
 					a saved game of the Mac port of <Exult/> works on Windows 98 as well.
 				</para>
 				<para>
-					However it is not advisable to use savegames of games started with the 1.4.x
-					snapshot of <Exult/> with the 1.2 release.
+					However it is not advisable to use savegames of games started with the 1.4.9 RC1
+					version of <Exult/> with an older release. And since we fixed many bugs since version
+					1.2 we do not recommend that you continue games started with 1.2 (or earlier).
 				</para>
 			</body>
 		</sub>
@@ -789,6 +799,7 @@
 				<li>Compressed save games. <Exult/> compresses save games by default as
 					zip files. They are still labeled *.sav and have the save game name in the zip
 					comment.</li>
+				<li>A notebook for making notes and the possibility to automatically add notes</li>
 				</ul>
 			</body>
 		</sub>
@@ -930,10 +941,10 @@
 					as they are much more likely you take a look at the problem this way).</li>
 				<li>You may be asked to provide the log files of <Exult/>. These are named stdout.txt and 
 					stderr.txt and can be found where exult.cfg is saved to, see 
-					<extref doc="docs" target="exult_config_location">Location of exult.cfg</extref>.</li>
+					<ref1 target="where_cfg"/>.</li>
 				<li>You may be asked to provide the log files of <Studio/>. These are named studio_out.txt and 
 				studio_err.txt and can be found where exult.cfg is saved to, see 
-				<extref doc="docs" target="exult_config_location">Location of exult.cfg</extref>.</li>
+				<ref1 target="where_cfg"/>.</li>
 				<li><em>One</em> bug per subject please.</li>
 				</ol>
 				<para>
@@ -988,11 +999,6 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>In <Exult/> version 1.2 there actually seems to be a bug that prevents you from summoning 
-						the Chaos Hierophant later in the game, when you "touched" the body of him by clicking 
-						once on it. This has been fixed in snapshots.</li>
-					<li><Exult/> version 1.2 was also wrong in spell requirements and reagent costs. This has 
-						been corrected in snapshots.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original.</li>
@@ -1005,20 +1011,6 @@
 						later or earlier version of the Nvidia reference drivers. If you are still using 
 						these drivers you should really update.</li>
 				</ul>
-			</body>
-		</sub>
-		<sub name="fullscreen_bugs">
-			<header>Fullscreen switching</header>
-			<body>
-				<para>
-					Lately we have experienced issues with switching to fullscreen. Newer graphic chips and drivers
-					do not support the default <Exult/> resolution of 320x200 and refuse to switch to fullscreen 
-					during gameplay. When you set <Exult/> to run in fullscreen in exult.cfg it actually starts fine
-					in fullscreen.<br/>
-					Only selecting 640x480 and higher does allow you to switch to and from fullscreen mode. Thus you can
-					work around this bug by selecting the resolution of 640x480, switch to fullscreen and then lower the
-					resolution again.
-				</para>
 			</body>
 		</sub>
 		<sub name="compile_issues">
@@ -1042,8 +1034,9 @@
 			<header>Problems with Windows 9x</header>
 			<body>
 				<para>
-					All Windows 9x versions (95, 98, 98SE, Millennium Edition) have problems with the 1.4x 
-					snapshot versions of <Exult/>, all of which are caused by the SDL library.
+					All Windows 9x versions (95, 98, 98SE, Millennium Edition) have had problems with the 1.4x 
+					snapshot versions of <Exult/>, all of which are caused by the SDL library. At the moment
+					we do not know for sure whether these bugs still occur with the version 1.4.9 RC1.
 				</para>
 				<ul>
 					<li>Some users have reported problems when using <Exult/> in fullscreen mode. Either it

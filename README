@@ -1,30 +1,31 @@
 Exult Documentation
-last changed: 30 August 2010(GMT)
+last changed: 13 October 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 30 August 2010
-0.2. - 25 August 2010
-0.3. - 15 August 2010
-0.4. - 28 April 2010
-0.5. - 11 March 2010
-0.6. - 10 March 2010
-0.7. - 08 March 2010
-0.8. - 16 July 2009
-0.9. - 03 June 2009
-0.10. - 20 May 2009
-0.11. - 19 May 2009
-0.12. - 18 May 2009
-0.13. - 28 April 2009
-0.14. - 21 October 2007
-0.15. - 08 April 2006
-0.16. - 14 March 2005
-0.17. - 14 August 2004
-0.18. - 23 May 2004
-0.19. - 11 February 2004
-0.20. - 12 December 2003
+0.1. - 13 October 2010
+0.2. - 30 August 2010
+0.3. - 25 August 2010
+0.4. - 15 August 2010
+0.5. - 28 April 2010
+0.6. - 11 March 2010
+0.7. - 10 March 2010
+0.8. - 08 March 2010
+0.9. - 16 July 2009
+0.10. - 03 June 2009
+0.11. - 20 May 2009
+0.12. - 19 May 2009
+0.13. - 18 May 2009
+0.14. - 28 April 2009
+0.15. - 21 October 2007
+0.16. - 08 April 2006
+0.17. - 14 March 2005
+0.18. - 14 August 2004
+0.19. - 23 May 2004
+0.20. - 11 February 2004
+0.21. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -67,148 +68,164 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.3. Cheat keys
 5.4. Map Editing keys
 
-6. Game Menu
-6.1. Access to the Game menu
-6.2. Load/Save Game
-6.3. Video Options
-6.4. Audio Options
-6.5. Gameplay Options
-6.6. Combat Options
-6.7. Quit
+6. Notebook and Screenshots
+6.1. Using the Notebook
+6.2. The automatic Notebook
+6.3. Screenshots
 
-7. Mods and Patches
-7.1. Introduction to Mods and Patches
-7.2. Installing Mods
-7.3. Installing Patches
-7.4. Adapting the location of Mods and Patches
-7.5. Where to find the savegames of modded games
-7.6. Exchanging Savegames between original games and Mods
+7. Game Menu
+7.1. Access to the Game menu
+7.2. Load/Save Game
+7.3. Video Options
+7.4. Audio Options
+7.5. Gameplay Options
+7.6. Combat Options
+7.7. Quit
 
-8. OS specific notes
-8.1. How to get the Zaurus port working
-8.2. Error Log
-8.3. Making Digital Sound work on Mac OS X
+8. Mods and Patches
+8.1. Introduction to Mods and Patches
+8.2. Installing Mods
+8.3. Installing Patches
+8.4. Adapting the location of Mods and Patches
+8.5. Where to find the savegames of modded games
+8.6. Exchanging Savegames between original games and Mods
 
-9. Zaurus Guide
-9.1. Author of this Guide
-9.2. Sharp Zaurus
-9.3. Zaurus SL5x00 and ROMs
-9.4. Exult and Zaurus
-9.5. Installing new packages
-9.6. Using the standard ROM
-9.7. Installing the non-required packages
-9.8. Using the latest ROM
-9.9. Solving the problems with the latest ROM
-9.10. Useful tidbits
+9. OS specific notes
+9.1. How to get the Zaurus port working
+9.2. Error Log
+9.3. Making Digital Sound work on Mac OS X
 
-10. Installing the original Ultima VII games for use with Exult
-10.1. Installing the floppy disks of BG/SI on Windows
-10.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
-10.3. Installing the floppy disks of BG/SI using DOSBox
-10.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
-10.5. Manual installation of the BG floppy disks
-10.6. Manual installation of the SI floppy disks
-10.7. Installing the CD-ROM versions of Ultima VII
-10.8. Fixing permissions of Ultima Collection on *nix systems
+10. Zaurus Guide
+10.1. Author of this Guide
+10.2. Sharp Zaurus
+10.3. Zaurus SL5x00 and ROMs
+10.4. Exult and Zaurus
+10.5. Installing new packages
+10.6. Using the standard ROM
+10.7. Installing the non-required packages
+10.8. Using the latest ROM
+10.9. Solving the problems with the latest ROM
+10.10. Useful tidbits
 
-11. Credits and Contact
-11.1. Thanks
-11.2. Contacting us
+11. Installing the original Ultima VII games for use with Exult
+11.1. Installing the floppy disks of BG/SI on Windows
+11.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
+11.3. Installing the floppy disks of BG/SI using DOSBox
+11.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
+11.5. Manual installation of the BG floppy disks
+11.6. Manual installation of the SI floppy disks
+11.7. Installing the CD-ROM versions of Ultima VII
+11.8. Fixing permissions of Ultima Collection on *nix systems
+
+12. Credits and Contact
+12.1. Thanks
+12.2. Contacting us
 
 
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 30 August 2010
+0.1. - 13 October 2010
+* 1.1. Exult Version new official version.
+* 4.4. Scaler OpenGL is only availlable in snapshots.
+* 5.3. Cheat keys Alt+KP+/- no longer works.
+* 5.4. Map Editing keys only with a snapshot.
+* 6.1. Using the Notebook added.
+* 6.2. The automatic Notebook added.
+* 6.3. Screenshots added.
+
+
+
+0.2. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
-* 6.3. Video Options more changes to the video gump.
+* 7.3. Video Options more changes to the video gump.
 
 
 
-0.2. - 25 August 2010
+0.3. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
-* 6.3. Video Options added new game res setting.
-* 6.4. Audio Options forgot the speech option.
+* 7.3. Video Options added new game res setting.
+* 7.4. Audio Options forgot the speech option.
 
 
 
-0.3. - 15 August 2010
+0.4. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
-* 8.2. Error Log also about location of log files.
-* 10.5. Manual installation of the BG floppy disks some *nix command.
-* 10.6. Manual installation of the SI floppy disks some *nix command.
+* 9.2. Error Log also about location of log files.
+* 11.5. Manual installation of the BG floppy disks some *nix command.
+* 11.6. Manual installation of the SI floppy disks some *nix command.
 
 
 
-0.4. - 28 April 2010
+0.5. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-0.5. - 11 March 2010
+0.6. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
-* 6.4. Audio Options added new SFX pack option and updated screenshot.
+* 7.4. Audio Options added new SFX pack option and updated screenshot.
 * 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
 
 
 
-0.6. - 10 March 2010
+0.7. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
 * 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
-* 7.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
-* 8.2. Error Log added where to find the error log on OS X.
+* 8.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
+* 9.2. Error Log added where to find the error log on OS X.
 
 
 
-0.7. - 08 March 2010
+0.8. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
 * 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
 * 4.4. Scaler OpenGl scaler is not considered stable.
-* 7.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
-* 8.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
+* 8.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
+* 9.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
 
 
 
-0.8. - 16 July 2009
+0.9. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-0.9. - 03 June 2009
+0.10. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-0.10. - 20 May 2009
+0.11. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.6. Installation of the digital music packs cleaned up.
 * 3.7. Digital Wave Sound Effects some more information.
 
 
 
-0.11. - 19 May 2009
+0.12. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
 * 2.10. Command line options some more information on '--buildmap' and '--mod'.
 * 3.10. Linux and Audio mentioned different, configurable ports.
 * 5.4. Map Editing keys got their own help screen now.
-* 7. Mods and Patches added.
+* 8. Mods and Patches added.
 
 
 
-0.12. - 18 May 2009
+0.13. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -221,65 +238,65 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 5.2. Keyboard commands updated.
 * 5.3. Cheat keys updated.
 * 5.4. Map Editing keys needed their own chapter.
-* 6.3. Video Options updated.
-* 6.4. Audio Options updated, also updated the screenshot.
-* 6.5. Gameplay Options updated, also updated the screenshot.
+* 7.3. Video Options updated.
+* 7.4. Audio Options updated, also updated the screenshot.
+* 7.5. Gameplay Options updated, also updated the screenshot.
 
 
 
-0.13. - 28 April 2009
+0.14. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.8. Speech can also be toggled via the in-game menu.
-* 10.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
+* 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-0.14. - 21 October 2007
-* 8.3. Making Digital Sound work on Mac OS X added.
-* 10.8. Fixing permissions of Ultima Collection on *nix systems added.
+0.15. - 21 October 2007
+* 9.3. Making Digital Sound work on Mac OS X added.
+* 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-0.15. - 08 April 2006
+0.16. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
-* 10. Installing the original Ultima VII games for use with Exult might help some people.
+* 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-0.16. - 14 March 2005
-* 9. Zaurus Guide Newest ROM instructions updated.
+0.17. - 14 March 2005
+* 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-0.17. - 14 August 2004
+0.18. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.18. - 23 May 2004
+0.19. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
-* 8.1. How to get the Zaurus port working we shouldn't call our data files shared files..
+* 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.19. - 11 February 2004
+0.20. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
 * 5.1. Movement fixed up a bit.
 * 5.2. Keyboard commands fixed up a bit as well.
-* 6. Game Menu added screenshots showing the Game menu gumps and removed "Quit to Menu".
-* 11.1. Thanks time to thank Sourceforge as well.
+* 7. Game Menu added screenshots showing the Game menu gumps and removed "Quit to Menu".
+* 12.1. Thanks time to thank Sourceforge as well.
 
 
 
-0.20. - 12 December 2003
+0.21. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 0.1. added to give some explanation for Static/Gamedat.
 * 3.1. Music updated with 'recent' audio changes.
-* 6.4. Audio Options updated with 'recent' audio changes.
+* 7.4. Audio Options updated with 'recent' audio changes.
 
 
 
@@ -288,7 +305,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.4.x SVN version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+This documentation is for the 1.4.9 RC1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. What is Exult?
@@ -318,7 +335,7 @@ We are using many terms in this documentation, the FAQ and other documentation f
 2. Configurations
 2.1. Installation
 * First you need to get Ultima 7. Either you own it already, or you buy it somewhere.
-* You need an installed version of Ultima 7 to run Exult with. At 10. Installing the original Ultima VII games for use with Exult we have a guide on how to install the original games.
+* You need an installed version of Ultima 7 to run Exult with. At 11. Installing the original Ultima VII games for use with Exult we have a guide on how to install the original games.
 * Copy the installed Ultima7 folder to an appropriate folder
 * Download Exult from our download section and install it. The Windows version comes with an installer that asks for the location of both BG and SI. If you entered the correct location the next two steps are not necessary.
 * Now run exult (exult.exe on Windows) and quit it immediately.
@@ -391,11 +408,11 @@ Note: yes means enabled, no means disabled
         </waves>
         <mods>
         optional_path/mods
-				**optional. See 7.4.
+				**optional. See 8.4.
         </mods>
         <patch>
         optional_path/patch
-				**optional. See 7.4.
+				**optional. See 8.4.
         </patch>
       </blackgate>
       <serpentisle>
@@ -426,11 +443,11 @@ Note: yes means enabled, no means disabled
         </waves>
         <mods>
         optional_path/mods
-				**optional. See 7.4.
+				**optional. See 8.4.
         </mods>
         <patch>
         optional_path/patch
-				**optional. See 7.4.
+				**optional. See 8.4.
         </patch>
       </serpentisle>
     </game>
@@ -582,7 +599,7 @@ Note: yes means enabled, no means disabled
       </convert>
       <looping>
       yes
-				**No disables music looping. See 6.4.
+				**No disables music looping. See 7.4.
       </looping>
       <chorus>
         <enabled>
@@ -783,8 +800,8 @@ These folders are used for:
 * <static_path> the second most important folder. In there you have the data files from the original game. You should never touch these files.
 * <savegame_path> this is where Exult stores your savegames.
 * <gamedat_path> contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" and "quicksave" 'savegame' is stored.
-* <mods> here mods for games are saved to. More information on this at 7.1. Introduction to Mods and Patches
-* <patch> Patches for games are saved here. More information on this at 7.1. Introduction to Mods and Patches
+* <mods> here mods for games are saved to. More information on this at 8.1. Introduction to Mods and Patches
+* <patch> Patches for games are saved here. More information on this at 8.1. Introduction to Mods and Patches
 
 Some notes for all Operating Systems:
 * On Windows all of these settings, except for the <path> setting, are optional and not required, Exult will sort this out on its own.
@@ -1048,7 +1065,7 @@ It isn't necessary but you can also customize the location of the music files by
 3.7. Digital Wave Sound Effects
 Exult needs the so called SFX packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the SFX in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with SFX playback in SI: In combat the SFX may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the SFX that the original did.
 We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster SFX and Simon Quinn recorded the Roland MT32 SFX. You can find them on our download page at http://exult.sourceforge.net/download.php. "Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster sound effects. "Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" are the Roland MT32 sound effects. Don't be confused by the "Zaurus SI/BG SFX package", these are just the repackaged SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these don't concern you.
-Extract the zip files into your Exult data folder. Exult will automatically find and use the SFX packs and will default to use the Roland MT32 pack when both both packs (SoundBlaster and Roland MT-32) are present. You can then choose between the packs in the Game Menu (6.4.), of course you can override this setting in the exult.cfg (see 2.3.). An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
+Extract the zip files into your Exult data folder. Exult will automatically find and use the SFX packs and will default to use the Roland MT32 pack when both both packs (SoundBlaster and Roland MT-32) are present. You can then choose between the packs in the Game Menu (7.4.), of course you can override this setting in the exult.cfg (see 2.3.). An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
 <blackgate>
   <waves>
   jmsfx.flx
@@ -1113,7 +1130,7 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * 2xSaI by Derek Liauw Only 2x. The current Exult default scaler.
 * HQ2X High quality scaler, that uses a lot of CPU cycles. Only 2x.
 * HQ3X High quality scaler, that uses a lot of CPU cycles. Only 3x.
-* OpenGL Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered stable. You can expect errors when using this scaler.
+* OpenGL Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered stable. You can expect errors when using this scaler. Because of this OpenGL is only availlable in snapshots of Exult, not in official releases.
 
 The scalers by Derek Liauw are slower than the ones above it but look much better from my personal point of view. Try out for yourself which one you like most since this is a highly subjective topic.
 
@@ -1209,7 +1226,6 @@ In conversations you have the ability not just click on the answer with the mous
 Press 'ctrl-h' during the game to see a help screen with all the cheat keys. 'KP' means keypad.
 
 Cheat commands
-Alt-KP+/- : Change resolution
 Alt-Arrow keys : Scroll map
 home : Recenter map on the Avatar
 KP5 : Recenter map on the Avatar
@@ -1245,7 +1261,7 @@ Ctrl-n : NPC number, When enabled, clicking an a NPC will display their number i
 
 
 5.4. Map Editing keys
-With the ongoing development of Exult a lot of keys were added that are mainly useful for map editing with Exult Studio. Hit 'shift-h' to see the map edit keys help screen.
+With the ongoing development of Exult a lot of keys were added that are mainly useful for map editing with Exult Studio. Hit 'shift-h' to see the map edit keys help screen. You will only be able to see this help screen and use these keys with a snapshot of Exult.
 
 Map edit commands
 Del : Delete selection
@@ -1263,16 +1279,36 @@ Ctrl-Alt-m : Toggle Map editor
 
 --------------------------------------------------------------------------------
 
-6. Game Menu
-6.1. Access to the Game menu
+6. Notebook and Screenshots
+6.1. Using the Notebook
+We implemented a notebook you can access by pressing 'n'. With this you can make notes of things you saw, or "heard" from any of the NPCs. Entries will be saved automatically when you close the notebook.
+
+
+6.2. The automatic Notebook
+If you want you can also have Exult make some notes on its own when certain things happen in game. This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what was noted. Currently it's also not yet comfortable to set up.
+You need to download the autonotes.txt file for each game (BG or SI) and put it into the games static folder. For BG download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt For SI download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt
+
+
+6.3. Screenshots
+When you press 'Ctrl-Alt-s'Exult will make a screenshot of your game window in PCX image file format. The save location of the screenshot depends on your Operating system.
+* On Windows Exult saves the screenshot to the same location where exult.cfg is found, see 2.2. Location of exult.cfg.
+* On *nix systems, inluding OS X, Exult saves to the HOME folder.
+
+
+
+
+--------------------------------------------------------------------------------
+
+7. Game Menu
+7.1. Access to the Game menu
 You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. You then have the following options.
 
 
-6.2. Load/Save Game
+7.2. Load/Save Game
 This one is pretty straightforward. You can load and save a game, delete a game and view some information of a save game on the right side (a screenshot and some stats). If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options.
 
 
-6.3. Video Options
+7.3. Video Options
 In this option screen you are able to determine how Exult displays the game.
 * Full Screen enable or disable running Exult in full screen.
 * Window Size lets you choose between various resolutions determined by the fullscreen resolutions your system reports as supported. If you want other resolutions edit exult.cfg outlined in 2.3. Settings in exult.cfg.
@@ -1286,7 +1322,7 @@ In this option screen you are able to determine how Exult displays the game.
 
 
 
-6.4. Audio Options
+7.4. Audio Options
 Look at 3. Audio to see explanation on the settings.
 * Audio Enable or disable all Audio in Exult.
 * Music options Enable or disable music.
@@ -1302,7 +1338,7 @@ Look at 3. Audio to see explanation on the settings.
 
 
 
-6.5. Gameplay Options
+7.5. Gameplay Options
 
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
 * Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
@@ -1320,7 +1356,7 @@ Look at 3. Audio to see explanation on the settings.
 
 
 
-6.6. Combat Options
+7.6. Combat Options
 As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
 * Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP's lost if a hit occurs.
 * ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
@@ -1328,33 +1364,33 @@ As many people think that the U7 combat engine is far too easy, too hard or just
 
 
 
-6.7. Quit
+7.7. Quit
 Exits Exult.
 
 
 
 --------------------------------------------------------------------------------
 
-7. Mods and Patches
-7.1. Introduction to Mods and Patches
+8. Mods and Patches
+8.1. Introduction to Mods and Patches
 With Exult Studio advancing more and more, there are now a small number mods and patches developed, both by Exult team members and other users. See FAQ.txt for a list.
 Patches are meant for what the name implies, little patches to the original game. Changing shapes, fixing or changing some usecode and such. Patches also have the limitation that you can only have one patch per original game installed.
 Mods on the other hand are more or less meant for heavy modifications of the original games. Changing the map layout, adding NPCs and objects, changing usecode and so on. You can have several mods installed which can be chosen from a convenient menu in Exult. Because of these advantages that mods have over patches, people now develop mods rather than patches.
 
 
-7.2. Installing Mods
+8.2. Installing Mods
 To install a mod unzip or move the mod files (if they come unzipped) into your games 'mods' folder. By default that is the mods subfolder in the path you set for your game in the exult.cfg file (see 2.4. Path-Settings. If the folder is not there, simply create an empty folder called 'mods' in your games folder and proceed as above. Now start a new game, choose the mod in the menu and enjoy the mod.
 Please read the readme(.txt) that should have come with the mods. In there you will normally find further instructions and what the mod is about and how to experience the changes in the game.
 Also be aware that mods do not work with Exult version 1.2 but need a new snapshot. Unfortunately, since there were so many advancements in the map editing since Exult 1.2 mods that are no longer maintained might no longer work.
 
 
-7.3. Installing Patches
+8.3. Installing Patches
 Installation of patches is very similar to the installation of mods: unzip or move the patch files (if they come unzip) into your games 'patch' folder. By default that is the patch subfolder in the path you set for your game in the exult.cfg file (see 2.4. Path-Settings). If the folder is not there, simply create an empty folder called 'patch' in your games folder and proceed as above. Now start a new game and enjoy the patch.
 Please read the readme(.txt) that should have come with the patch. In there you will normally find instructions and what the patch is about and how to experience the changes in the game.
 Also be aware that patches do not work with Exult version 1.2 but need a newer snapshot. Unfortunately, since there were so many advancements in the map editing since Exult 1.2 patches that are no longer maintained might no longer work.
 
 
-7.4. Adapting the location of Mods and Patches
+8.4. Adapting the location of Mods and Patches
 In exult.cfg you can adapt where Exult looks for both mods and patches. The paths Exult uses by default, are explained in 2.4., so stick to that for the location of mods and patches, and only edit the config file if you need to.
 <config>
   <disk>
@@ -1372,20 +1408,20 @@ In exult.cfg you can adapt where Exult looks for both mods and patches. The path
       </gamename>
 
 
-7.5. Where to find the savegames of modded games
+8.5. Where to find the savegames of modded games
 When you save a modded game the savegames are saved to <savegame_path>/mods/name_of_mod. The Gamedat folder will be found in that folder as well. For the location of <savegame_path>, please see 2.4. Path-Settings and the following chapters for your Operating System.
 Note, you can override the location of savegames in the cfg of the mod under the <savegame_path>. For example if you install the BG Keyring mod, you would find the settings for that mod in keyring.cfg.
 
 
-7.6. Exchanging Savegames between original games and Mods
+8.6. Exchanging Savegames between original games and Mods
 You cannot exchange savegames between original games and mods. For example, when you start a new game with a mod for BG and later run that same savegame from BG only, it might actually work, but the results are unpredictable. The game might run ok for a while until you hit a problem caused by the missing mod. So don't do it.
 
 
 
 --------------------------------------------------------------------------------
 
-8. OS specific notes
-8.1. How to get the Zaurus port working
+9. OS specific notes
+9.1. How to get the Zaurus port working
 Some people were confused where to put the Exult and U7 files and this is just a quick guide. The long guide is in the next section.
 * BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
 * Exult binary is in /opt/QtPalmtop/bin/
@@ -1394,54 +1430,54 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 
-8.2. Error Log
+9.2. Error Log
 * Windows: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help. You can find these files in the folder where exult.cfg is located (see 2.2.)
 * UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
 * Mac OS X: When you are running the app bundle Exult.app then the error log will be shown in the OS X Application Console (/Applications/Utilities/Console.app).
 
 
 
-8.3. Making Digital Sound work on Mac OS X
+9.3. Making Digital Sound work on Mac OS X
 Older versions of OS X do not have built-in support for ogg files. You need to go to http://xiph.org/quicktime/download.html to download and install xiphqt. Please try it out whether it works for you before installing xiphqt.
 
 
 
 --------------------------------------------------------------------------------
 
-9. Zaurus Guide
-9.1. Author of this Guide
+10. Zaurus Guide
+10.1. Author of this Guide
 This file was written by Artaxerxes (Aurelien Marchand). He can be contacted at artaxerxes2 at iname dot com. Please ask if you want to send attachments no matter what their size.
 
 
-9.2. Sharp Zaurus
+10.2. Sharp Zaurus
 Introduced in April 2002, this PDA is really a pico-computer (one degree of magnitude less than micro). It runs a version of Linux on the ARM processor. It is possible to use cross-compilers to create programs that will run on the Zaurus, even if compiling from a x86 machine. This is notably the case for the Zaurus port of Exult. More information about the Zaurus can be gleaned on http://www.myZaurus.com.
 
 
-9.3. Zaurus SL5x00 and ROMs
+10.3. Zaurus SL5x00 and ROMs
 Sharp occasionally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12, but will work with some modifications on more recent ROMs. It has been reported to work on the SL5000-D (the earlier and less capable version). The package will not run of-the-shelf using the latest ROM (no matter what version of the Zaurus you use) unless you make a couple of changes. More detailed information on how to fix this problem will be found further down this document.
 
 
-9.4. Exult and Zaurus
+10.4. Exult and Zaurus
 Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use the specially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
 
 
-9.5. Installing new packages
+10.5. Installing new packages
 The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 10.1). Inserting the Zaurus on the cradle will automatically use the usbnet module to access the Zaurus via USB-over-ethernet. I then assign an IP to the net device usb0. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
 
 
-9.6. Using the standard ROM
+10.6. Using the standard ROM
 Using the standard ROM has lead people to some issues. I recommend you install a newer version, in particular v3.10 (at this time of writing). All the current package for Exult and SDL will work fine. Simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static folder. Simply copy the content of your U7's static/ folder to this folder and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static folder is relevant. You can copy everything if you want to but it will take space for nothing.
 
 
-9.7. Installing the non-required packages
+10.7. Installing the non-required packages
 Two additional packages exist and are not required. They hold the new music for Exult and thus can be found on the Exult's download page. If you choose to install them as well, simply copy them to the Zaurus (see 5.1) and install them normally.
 
 
-9.8. Using the latest ROM
+10.8. Using the latest ROM
 As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801) without some changes. There are a few reason why. I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current running game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and folders.
 
 
-9.9. Solving the problems with the latest ROM
+10.9. Solving the problems with the latest ROM
 In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurrence of /home/root/ is replaced with /home/zaurus. First, open a terminal (install one if you don't have one).
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
 The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
@@ -1451,54 +1487,54 @@ Normally, you should be able to start and play the game normally. Let me know if
 Updated packages will come up soon so that no additional work will be required.
 
 
-9.10. Useful tidbits
+10.10. Useful tidbits
 The key mappings are found in the files /opt/QtPalmtop/share/exult/keys_bg.txt and /opt/QtPalmtop/share/exult/keys_si.txt
 The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I') 'Address Book' = 'F10' = target mode (like pressing 'T') 'Home' = 'F12' = combat mode (like pressing 'C') 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K') 'Email' = 'F13' = spellbook (like pressing 'B')
 Save often. I have not had a crash since I'm using the latest SDL packages but you never know.
-Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me (see 9.1.).
+Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me (see 10.1.).
 
 
 
 --------------------------------------------------------------------------------
 
-10. Installing the original Ultima VII games for use with Exult
-10.1. Installing the floppy disks of BG/SI on Windows
+11. Installing the original Ultima VII games for use with Exult
+11.1. Installing the floppy disks of BG/SI on Windows
 Insert Disk 1 in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, choose the drive you want to install to, and then in which folder you want BG/SI to be installed to (Let's assume C:\Exult\ULTIMA7 for BG and C:\Exult\SERPENT for SI). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. The installer will finish and the game can be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 When installing Ultima VII from floppy disks in Windows you can run into some problems. The installer assumes that all drives in the computer are hard drives and can't cope with drives like CD-ROMs and card readers. It tries to read how much free space the drives have and if there is no media in the drive it gives an error and you can't proceed. To solve this you have to insert a CD-ROM in your CD/DVD-ROM drive. If you have a multi card reader disconnect that if possible (or insert cards in all the slots if you have them). If disconnecting the reader is not possible you have to use one of the other ways to install the floppy versions or use a different computer.
 Unfortunately it is possible that one of the floppies is no longer working. In that case the installation will fail and the installer might suggest that there is a device error and asks you to reboot your computer. Don't follow that advice a reboot is not likely to fix it.
 
 
-10.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
+11.2. Installing the floppy disks of the Add-Ons FoV/SS on Windows
 Insert the add-on floppy disk in your floppy drive, open explorer and click on the floppy drive (a:\). Double click on install.exe, and then you first have to choose the drive where you installed the game (BG/SI) to. Default is C:\, the installer will then search in which folder BG/SI has been installed to. This is unfortunately not working on every computer, for some unknown reason the installer might crash at this point. If it doesn't crash the installer will write where it found BG/SI installed to and will ask whether you want to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer.
-When installing the add-ons you might run into the same problems as when installing the full games (see above 10.1.).
+When installing the add-ons you might run into the same problems as when installing the full games (see above 11.1.).
 
 
-10.3. Installing the floppy disks of BG/SI using DOSBox
+11.3. Installing the floppy disks of BG/SI using DOSBox
 DOSBox is a program that emulates the old Dos and should run on any operating system that Exult runs on (and more). So this is perfect for users that don't run Windows.
 To install Ultima VII with DOSBox, download and install DOSBox from http://http://dosbox.com. Make a new folder in your C:\ drive called Exult. Insert Disk 1 in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
 The installer will start and ask you on which drive to install Ultima VII to. Choose c and when it asks for the target folder choose C:\ULTIMA7 for BG or C:\SERPENT for SI (in both cases you can just hit enter). Next you choose the sound card, but as this is not relevant for Exult, choose "No sound card". Confirm the settings with "Y" and the installer begins to make noise in your floppy drive... When asked to insert the next floppy disk and hit any key (or ESC to cancel). When the installation is done, the installer will complain, that "something has put your system in protected mode...", ignore that and press any key to continue. Again it will complain that "your current system configuration is not compatible with Ultima VII!...", ignore that as well and press "N" (you don't need a bootdisk for playing U7 with Exult). Finally hit any key to finish your installation. Close DOSBox. The game can now be found at C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 
 
-10.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
-We assume you followed the above guide on how to 10.3. Installing the floppy disks of BG/SI using DOSBox, so you should have BG/SI installed to C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
+11.4. Installing the floppy disks of the Add-Ons FoV/SS using DOSBox
+We assume you followed the above guide on how to 11.3. Installing the floppy disks of BG/SI using DOSBox, so you should have BG/SI installed to C:\Exult\ULTIMA7 or C:\Exult\SERPENT.
 Insert the add-on floppy disk in your floppy drive, start DOSBox and type the following: mount c C:\Exult mount a a:\ -t floppy a: install
 Now you have to choose the drive where you installed the game to. Choose C and the installer will find the correct folder of BG/SI and will ask for your confirmation to proceed with the installation. Hit "Y" and the installation will begin, at the end press any key to finish the installation and to close the installer. Close DOSBox. FoV is then installed in C:\Exult\ULTIMA7. SS is then installed in C:\Exult\SERPENT.
 Unfortunately you might run into a DOSBox bug when installing the add-ons in DOSBox. You might have to rename the file C:\Exult\ULTIMA7\static\usecode.new to just C:\Exult\ULTIMA7\static\usecode (or C:\Exult\SERPENT\static\usecode.new to just C:\Exult\SERPENT\static\usecode)
 
 
-10.5. Manual installation of the BG floppy disks
+11.5. Manual installation of the BG floppy disks
 If for some reason you can't use the above guides to install BG, there is also a way to install BG without using the installer.
 Copy all the files of your floppy files in one folder (e.g. C:\Exult\BGfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\BGfloppy). There enter the following lines and press return after each line: copy /b u7disk00 + U7disk01 + u7disk02 u7disk00.zip copy /b u7disk10 + u7disk11 + u7disk12 u7disk10.zip copy /b u7disk20 + u7disk21 u7disk20.zip If you are on a *nix system you use the cat command instead of copy /b, for example cat u7disk00 U7disk01 u7disk02 >u7disk00.zip
 In that folder you can now find 3 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\ULTIMA7. Also copy the files INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\ULTIMA7. Or enter the following lines on the command prompt: pkunzip -d -e u7disk00.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk10.zip C:\Exult\ULTIMA7 pkunzip -d -e u7disk20.zip C:\Exult\ULTIMA7 copy *.exe C:\Exult\ULTIMA7 copy install.prm C:\Exult\ULTIMA7 Installation is now finished and you can delete the folder C:\Exult\BGfloppy.
 
 
-10.6. Manual installation of the SI floppy disks
+11.6. Manual installation of the SI floppy disks
 If for some reason you can't use the above guides to install SI, there is also a way to install SI without using the installer.
 Copy all the files of your floppy files in one folder (e.g. C:\Exult\SIfloppy). If you are using Windows open a command prompt (run -> cmd.exe) and change into this folder (enter cd C:\Exult\SIfloppy). There enter the following lines and press return after each line: copy sidisk00 sidisk00.zip copy /b sidisk10 + sidisk11 + sidisk12 + sidisk13 sidisk10.zip copy /b sidisk20 + sidisk21 + sidisk22 sidisk20.zip copy /b sidisk30 + sidisk31 sidisk30.zip copy sidisk40 sidisk40.zip If you are on a *nix system you use the cat command instead of copy /b, for example cat sidisk10 sidisk11 sidisk12 sidisk13 >sidisk10.zip
 In that folder you can now find 5 zip files. You can now use winzip/winrar/any unarchiver to extract the files (keep folder structure in the settings) to C:\Exult\SERPENT. Also copy the files Also copy the files 386STEP.EXE, INSTALL.EXE, PKUNZIP.EXE, INSTALL.PRM to C:\Exult\SERPENT. Or enter the following lines on the command prompt: pkunzip -d -e sidisk00.zip C:\Exult\SERPENT pkunzip -d -e sidisk10.zip C:\Exult\SERPENT pkunzip -d -e sidisk20.zip C:\Exult\SERPENT pkunzip -d -e sidisk30.zip C:\Exult\SERPENT pkunzip -d -e sidisk40.zip C:\Exult\SERPENT copy *.exe C:\Exult\SERPENT copy install.prm C:\Exult\SERPENT Installation is now finished and you can delete the folder C:\Exult\SIfloppy.
 
 
-10.7. Installing the CD-ROM versions of Ultima VII
+11.7. Installing the CD-ROM versions of Ultima VII
 There are a couple of CD-ROM versions of Ultima VII. Most of these come with the add-ons pre-installed so with these you don't have to bother with installing the floppy disk version of the add-ons. To our knowledge the following CD-ROM versions exist:
 * EA Compilation This includes BG and a couple of other games (Savage Empire, Ultima Underworld and other non-Ultima games). Unfortunately BG does not have the add-on FoV included. From the CD just copy the folder Ultima7 to C:\Exult.
 * Ultima Collection From the CD just copy the folders Serpent and Ultima7 to C:\Exult. Don't bother with the Ultima Collection installer. Both games come with the add-ons included.
@@ -1506,7 +1542,7 @@ There are a couple of CD-ROM versions of Ultima VII. Most of these come with the
 
 
 
-10.8. Fixing permissions of Ultima Collection on *nix systems
+11.8. Fixing permissions of Ultima Collection on *nix systems
 If you are following the above guide and copied the games from the Ultima Collection CD you might run into a permissions problem on *nix systems, including Mac OS X. You need to set group permissions to read and write.
 On OS X select both game folders, bring up info, go to Ownership and Permissions, expand details, change Access under Group from read only to read and write, then click Apply.
 
@@ -1514,8 +1550,8 @@ On OS X select both game folders, bring up info, go to Ownership and Permissions
 
 --------------------------------------------------------------------------------
 
-11. Credits and Contact
-11.1. Thanks
+12. Credits and Contact
+12.1. Thanks
 * The people of SourceForge without whom this project would not be where it is today.
 * The paper by Gary Thompson on the structure of the U7 data files was crucial to the early development of Exult.
 * Work by Maxim Shatskih, Jakob Schonberg, and Wouter Dijkslag made the "usecode" interpreter possible.
@@ -1525,7 +1561,7 @@ On OS X select both game folders, bring up info, go to Ownership and Permissions
 
 
 
-11.2. Contacting us
+12.2. Contacting us
 You can contact the Exult team and/or get more information from: http://exult.sourceforge.net/ or http://sourceforge.net/projects/exult/
 
 

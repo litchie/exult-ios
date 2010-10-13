@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="30 August 2010(GMT)">
+<readme title="Exult" changed="13 October 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="13102010">
+			<header>- 13 October 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> new official version.</li>
+				<li><ref1 target="scaler"/> OpenGL is only availlable in snapshots.</li>
+				<li><ref1 target="exult_cheats"/> Alt+KP+/- no longer works.</li>
+				<li><ref1 target="studio_keys"/> only with a snapshot.</li>
+				<li><ref1 target="notebook"/> added.</li>
+				<li><ref1 target="autonotebook"/> added.</li>
+				<li><ref1 target="screenshots"/> added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="30082010">
 			<header>- 30 August 2010</header>
 			<body>
@@ -236,7 +250,7 @@
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.4.x SVN version of <Exult/>.
+					This documentation is for the 1.4.9 RC1 version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -540,12 +554,12 @@
 							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
 							<comment>original game.</comment>
 							</configtag>
-							<configtag name="skip_intro">
+							<configtag name="skip_intro" manual="true">
 							no
 							<comment>**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears, </comment>
 							<comment>Iolo talks to you, the mayor talks to you and so on.</comment>
 							</configtag>
-							<configtag name="skip_splash">
+							<configtag name="skip_splash" manual="true">
 							no
 							<comment>**this skips the splash screen, the intro before you get to the</comment>
 							<comment> game menu. Disabling it brings you straight to the game menu.</comment>
@@ -745,12 +759,12 @@
 									</configtag>
 								</configtag>
 							</configtag>
-							<configtag name="fill_mode" manual="true">
+							<configtag name="fill_mode">
 								Centre
 							<comment>**Possible options are Fill, Fit, Aspect Correct Fit, Centre and Aspect Correct Centre.</comment>
 							<comment>Please see <ref target="video_fill_modes"/> for more information about these options.</comment>
 							</configtag>
-							<configtag name="fill_scaler" manual="true">
+							<configtag name="fill_scaler">
 								Bilinear
 							<comment>**Chose between Point and Bilinear..</comment>
 							<comment>Please see <ref target="video_fill_modes"/> for more information about this.</comment>
@@ -761,7 +775,7 @@
 							<comment>If set to 8 most scalers will not work and will display as the</comment>
 							<comment>fallback point scaler.</comment>
 							</configtag>
-							<configtag name="disable_fades">
+							<configtag name="disable_fades" manual="true">
 							no
 							<comment>**"no" enables fading between different menu points</comment>
 							</configtag>
@@ -1677,7 +1691,8 @@
 						High quality scaler, that uses a lot of CPU cycles. Only 3x.</li>
 					<li><strong>OpenGL</strong><br/>
 						Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered 
-						stable. You can expect errors when using this scaler.</li>
+						stable. You can expect errors when using this scaler. Because of this OpenGL is only 
+						availlable in snapshots of <Exult/>, not in official releases.</li>
 				</ul>
 				<para>
 					The scalers by Derek Liauw are slower than the ones above it but look much better from 
@@ -1812,7 +1827,6 @@
 					the cheat keys. <key>KP</key> means keypad.
 				</para>
 				<keytable title="Cheat commands">
-					<keydesc name="Alt-KP+/-">Change resolution</keydesc>
 					<keydesc name="Alt-Arrow keys">Scroll map</keydesc>
 					<keydesc name="home">Recenter map on the Avatar</keydesc>
 					<keydesc name="KP5">Recenter map on the Avatar</keydesc>
@@ -1854,6 +1868,7 @@
 				<para>
 					With the ongoing development of <Exult/> a lot of keys were added that are mainly useful
 					for map editing with <Studio/>. Hit <key>shift-h</key> to see the map edit keys help screen.
+					You will only be able to see this help screen and use these keys with a snapshot of <Exult/>.
 				</para>
 				<keytable title="Map edit commands">
 					<keydesc name="Del">Delete selection</keydesc>
@@ -1870,6 +1885,48 @@
 			</body>
 		</sub>
   	</section>
+	<section title="Notebook and Screenshots">
+		<sub name="notebook">
+			<header>Using the Notebook</header>
+			<body>
+				<para>
+					We implemented a notebook you can access by pressing <key>n</key>. With this you can make 
+					notes of things you saw, or "heard" from any of the NPCs. Entries will be saved automatically 
+					when you close the notebook.
+				</para>
+			</body>
+		</sub>
+		<sub name="autonotebook">
+			<header>The automatic Notebook</header>
+			<body>
+				<para>
+					If you want you can also have <Exult/> make some notes on its own when certain things happen in game. 
+					This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what 
+					was noted. Currently it's also not yet comfortable to set up.
+				</para>
+				<para>
+					You need to download the autonotes.txt file for each game (BG or SI) and put it into the games 
+					static folder.<br/>
+					For BG download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt"/><br/>
+					For SI download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt"/><br/>
+				</para>	
+			</body>
+		</sub>
+		<sub name="screenshots">
+			<header>Screenshots</header>
+			<body>
+				<para>
+					When you press <key>Ctrl-Alt-s</key> <Exult/> will make a screenshot of your game window in PCX image file format. 
+					The save location of the screenshot depends on your Operating system.
+				</para>
+				<ul>
+					<li>On Windows <Exult/> saves the screenshot to the same location where exult.cfg is found, see 
+						<ref1 target="exult_config_location"/>.</li>
+					<li>On *nix systems, inluding OS X, <Exult/> saves to the HOME folder.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
   	<section title="Game Menu">
 		<sub name="open_menu">
 			<header>Access to the Game menu</header>

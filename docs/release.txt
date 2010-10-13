@@ -4,11 +4,10 @@ Exult Release Checklist
 * make sure all version numbers are up to date
   - configure.ac
   - Makefile.common
-  - win32/exultico.rc, win32/exultstudioico.rc
+  - win32/exconfig.rc, win32/exultico.rc, win32/exultstudioico.rc
         (FILEVERSION, PRODUCTVERSION, "FileVersion" and "ProductVersion")
-  - msvcstuff\msvc_kludges.h
-  - msvcstuff\exconfig\exconfig.rc
-        (PRODUCTVERSION and "ProductVersion")
+  - msvcstuff\msvc_kludges.h, msvc9\msvc_kludges.h
+        (VERSION)
 
 * update NEWS; make sure version and date are correct
 
@@ -16,7 +15,6 @@ Exult Release Checklist
   - version dialog in ActionAbout (keyactions.cc)
   - Info.plist.in
   - win32/exultico.rc, win32/exultstudioico.rc
-  - msvcstuff\exconfig\exconfig.rc
 
 * documentation: make sure the readme/faq packaged are up to date
   - version numbers
@@ -32,4 +30,4 @@ Exult Release Checklist
 * make sure "make dist" produces a tarball from which you can
   succesfully build, install and run Exult
 
-* tag CVS
+* tag SVN
