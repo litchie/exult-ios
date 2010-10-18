@@ -1,3 +1,7 @@
+2010-10-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* scale_bilinear.cc, scale_2x.cc: add missing guard bands. This should fix
+	  the bilinearplus crashes.
+
 2010-10-13 Dominik Reichardt <dominus@users.sourceforge.net>
 	* updated Documentation and FAQ and many other files to reflect an upcoming release of version 1.4.9RC1
 	* NEWS: updated with what we've done the last six years

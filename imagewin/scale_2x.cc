@@ -42,7 +42,7 @@ void Image_window::show_scaled8to8_2x_noblur
 	Manip8to8 manip(paletted_surface->format->palette->colors,
 						paletted_surface->format);
 	Scale2x_noblur<uint8, Manip8to8>
-		((uint8*)draw_surface->pixels, x+guard_band, y, w, h,
+		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		    ibuf->line_width, ibuf->height, 
 				(uint8 *) inter_surface->pixels, 
 				inter_surface->pitch,
