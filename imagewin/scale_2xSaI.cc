@@ -111,7 +111,7 @@ void Image_window::show_scaled8to16_Super2xSaI
 						inter_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to16>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -127,7 +127,7 @@ void Image_window::show_scaled8to555_Super2xSaI
 						inter_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to555>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -143,7 +143,7 @@ void Image_window::show_scaled8to565_Super2xSaI
 						inter_surface->format);
 	Scale_Super2xSaI<unsigned char, uint16, Manip8to565>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -159,7 +159,7 @@ void Image_window::show_scaled8to32_Super2xSaI
 						inter_surface->format);
 	Scale_Super2xSaI<unsigned char, uint32, Manip8to32>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-			ibuf->line_width, ibuf->height, 
+			ibuf->line_width, ibuf->height+guard_band, 
 			(uint32 *) inter_surface->pixels,
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -179,7 +179,7 @@ void Image_window::show_scaled8to16_SuperEagle
 						inter_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to16>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -195,7 +195,7 @@ void Image_window::show_scaled8to555_SuperEagle
 						inter_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to555>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -211,7 +211,7 @@ void Image_window::show_scaled8to565_SuperEagle
 						inter_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to565>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) inter_surface->pixels, 
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
@@ -227,7 +227,7 @@ void Image_window::show_scaled8to32_SuperEagle
 						inter_surface->format);
 	Scale_SuperEagle<unsigned char, uint32, Manip8to32>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
-			ibuf->line_width, ibuf->height, 
+			ibuf->line_width, ibuf->height+guard_band, 
 			(uint32 *) inter_surface->pixels,
 			inter_surface->pitch/
 				inter_surface->format->BytesPerPixel,
