@@ -41,7 +41,7 @@ void Image_window::show_scaled8to8_point
 						paletted_surface->format);
 	Scale_point<unsigned char, uint8, Manip8to8>
 		((uint8*)draw_surface->pixels, x, y, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 				(uint8 *) display_surface->pixels, 
 				display_surface->pitch,
 			manip, scale);
@@ -58,7 +58,7 @@ void Image_window::show_scaled8to16_point
 						display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to16>
 		((uint8*)draw_surface->pixels, x, y, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
 				display_surface->format->BytesPerPixel,
@@ -75,7 +75,7 @@ void Image_window::show_scaled8to555_point
 						display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to555>
 		((uint8*)draw_surface->pixels, x, y, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
 				display_surface->format->BytesPerPixel,
@@ -92,7 +92,7 @@ void Image_window::show_scaled8to565_point
 						display_surface->format);
 	Scale_point<unsigned char, uint16, Manip8to565>
 		((uint8*)draw_surface->pixels, x, y, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint16 *) display_surface->pixels, 
 			display_surface->pitch/
 				display_surface->format->BytesPerPixel,
@@ -109,7 +109,7 @@ void Image_window::show_scaled8to32_point
 						display_surface->format);
 	Scale_point<unsigned char, uint32, Manip8to32>
 		((uint8*)draw_surface->pixels, x, y, w, h,
-		    ibuf->line_width, ibuf->height, 
+		    ibuf->line_width, ibuf->height+guard_band, 
 		    (uint32 *) display_surface->pixels, 
 			display_surface->pitch/
 				display_surface->format->BytesPerPixel,
