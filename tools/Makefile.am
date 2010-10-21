@@ -94,7 +94,11 @@ cmanip_LDADD = \
 # From gnome-xcf-thumbnailer makefile.
 schemasdir = $(GCONF_SCHEMA_FILE_DIR)
 schemas_in_files = gnome_shp_thumbnailer.schemas.in
+if GCONF_SCHEMAS_INSTALL
 schemas_DATA = gnome_shp_thumbnailer.schemas
+else
+schemas_DATA =
+endif
 
 # Rule to make the service file with bindir expanded
 $(schemas_DATA): $(schemas_in_files) Makefile
