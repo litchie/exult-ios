@@ -1,12 +1,13 @@
-10/21/10	v1.4.9RC1
+10/21/10	v1.4.9rc1
 		
 		Compatible with the stricter permissions of Windows Vista and Windows 7
 		Rewrite of the Graphics system to allow switching to full screen on modern systems
 		Better integration into Mac OS X with default location for the supported games
 		Smooth scrolling (disabled by default, though)
+		Aspect correction is now supported
 		More data from the original has been decoded and thus improved gameplay and combat
 		Two mods developed by our team member Marzo
-			- Keyring for BG which adds a keyring and a lot of other enhancements
+			- Keyring for BG which adds a large quest to obtain a SI-style keyring, as well as a lot of other enhancements such as meditating in the shrines and viewing the Codex
 			- SIfixes for SI which corrects many mistakes in the game, for example 
 			   you can now cure Cantra when you play with this mod
 		In-game Notebook with support for automatic notes (notes created by usecode)
