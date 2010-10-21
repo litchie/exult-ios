@@ -1,0 +1,71 @@
+#
+#	Tells Exult extra data to load for BG.
+#
+#	December 18, 2006
+#
+
+%%section version
+:1
+%%endsection
+
+%%section paperdoll_source
+#Format
+#game = bg or si to import paperdolls from BG or SI
+#		static to read paperdolls from static dir
+#		flx to read paperdolls from the game's flx
+#The file in the patch folder is always loaded last, and does not (and
+#*should* not) appear in the list. The other files are loaded only if they
+#show on the list, and are loaded in the order specified.
+#This section is REPLACED by its corresponding section in the patch dir.
+:si
+:flx
+%%endsection
+
+%%section gump_imports
+#Format
+#	:shapenum/mapto
+#Imported shape will come from BG (if playing SI) or from SI (if playing BG).
+#shapenum = the shape # to import
+#mapto = the shape # to which the imported shape is mapped or %num (for any
+#number num) to assign a very high number automatically. You can use the value
+#in mapto to refer to the imported shape in the blue_shapes section.
+#THIS SECTION **MUST** COME BEFORE blue_shapes SECTION!!!!!
+:54/%0
+:55/%1
+%%endsection
+
+%%section blue_shapes
+#Format
+#	:spot/shapenum
+#See the items section for values of spot. Can be -1 for all nonlisted spots.
+#shapenum can be either a shape # or a reference to an imported shape (either
+#in the form of a shape number or on the form %num, as explained in the
+#gump_imports section.
+:3/%1
+:4/%1
+:9/%1
+:12/%1
+:-1/%0
+%%endsection
+
+%%section multiracial_imports
+#Format
+#	:shapenum/mapto
+#Imported shape will come from BG (if playing SI) or from SI (if playing BG).
+#shapenum = the shape # to import
+#mapto = the shape # to which the imported shape is mapped or %num (for any
+#number num) to assign a very high number automatically. You can use the value
+#in mapto to refer to the imported shape in the multiracial_table section.
+:1024/%0
+:1025/%1
+:1026/%2
+:1027/%3
+:1028/%4
+:1029/%5
+:1030/%6
+:1031/%7
+:1032/%8
+:1033/%9
+:1034/%10
+:1035/%11
+%%endsection

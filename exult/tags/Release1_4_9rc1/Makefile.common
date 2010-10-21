@@ -1,0 +1,595 @@
+VERSION=1.4.9RC1
+
+MAIN_OBJS=actions.o \
+	actorio.o \
+	actors.o  \
+	args.o \
+	browser.o \
+	cheat.o \
+	cheat_screen.o \
+	combat.o \
+	delobjs.o \
+	dir.o \
+	drag.o \
+	effects.o \
+	exult.o \
+	exultmenu.o \
+	game.o \
+	gameclk.o \
+	gamedat.o \
+	gamemap.o \
+	gamerend.o \
+	gamewin.o \
+	istring.o \
+	keys.o \
+	keyactions.o \
+	menulist.o \
+	monsters.o \
+	mouse.o \
+	npcnear.o \
+	npctime.o \
+	palette.o \
+	party.o \
+	paths.o \
+	readnpcs.o \
+	schedule.o \
+	shapeid.o \
+	tqueue.o \
+	txtscroll.o \
+	version.o \
+	windrag.o
+
+PATH_OBJS= \
+	pathfinder/Astar.o \
+	pathfinder/path.o \
+	pathfinder/PathFinder.o \
+	pathfinder/Zombie.o
+
+CONF_OBJS= \
+	conf/Configuration.o \
+	conf/XMLEntity.o
+# unused: xmain.o
+
+TIMIDITY_OBJS=\
+	audio/midi_drivers/timidity/timidity.o \
+	audio/midi_drivers/timidity/timidity_common.o \
+	audio/midi_drivers/timidity/timidity_controls.o \
+	audio/midi_drivers/timidity/timidity_filter.o \
+	audio/midi_drivers/timidity/timidity_instrum.o \
+	audio/midi_drivers/timidity/timidity_mix.o \
+	audio/midi_drivers/timidity/timidity_output.o \
+	audio/midi_drivers/timidity/timidity_playmidi.o \
+	audio/midi_drivers/timidity/timidity_readmidi.o \
+	audio/midi_drivers/timidity/timidity_resample.o \
+	audio/midi_drivers/timidity/timidity_sdl_a.o \
+	audio/midi_drivers/timidity/timidity_sdl_c.o \
+	audio/midi_drivers/timidity/timidity_tables.o
+
+MT32EMU_OBJS=\
+	audio/midi_drivers/mt32emu/freeverb.o \
+	audio/midi_drivers/mt32emu/i386.o \
+	audio/midi_drivers/mt32emu/mt32_file.o \
+	audio/midi_drivers/mt32emu/part.o \
+	audio/midi_drivers/mt32emu/partial.o \
+	audio/midi_drivers/mt32emu/partialManager.o \
+	audio/midi_drivers/mt32emu/synth.o \
+	audio/midi_drivers/mt32emu/tables.o
+
+# Note we now always compile all midi drivers
+MIDI_DRV_OBJS=\
+	audio/midi_drivers/ALSAMidiDriver.o \
+	audio/midi_drivers/amiga_midi.o \
+	audio/midi_drivers/be_midi.o \
+	audio/midi_drivers/CoreAudioMidiDriver.o \
+	audio/midi_drivers/FileMidiDriver.o \
+	audio/midi_drivers/FluidSynthMidiDriver.o \
+	audio/midi_drivers/fmopl.o \
+	audio/midi_drivers/FMOplMidiDriver.o \
+	audio/midi_drivers/forked_player.o \
+	audio/midi_drivers/KMIDI.o \
+	audio/midi_drivers/LowLevelMidiDriver.o \
+	audio/midi_drivers/MidiDriver.o \
+	audio/midi_drivers/mixer_midiout.o \
+	audio/midi_drivers/MT32EmuMidiDriver.o \
+	audio/midi_drivers/TimidityMidiDriver.o \
+	audio/midi_drivers/UnixSeqMidiDriver.o \
+	audio/midi_drivers/WindowsMidiDriver.o \
+	audio/midi_drivers/CoreMidiDriver.o \
+	audio/midi_drivers/XMidiEventList.o \
+	audio/midi_drivers/XMidiFile.o \
+	audio/midi_drivers/XMidiSequence.o \
+	$(TIMIDITY_OBJS) \
+	$(MT32EMU_OBJS) 
+
+AUDIO_OBJS=\
+	audio/Audio.o \
+	audio/conv.o \
+	audio/Midi.o \
+	audio/soundtest.o \
+	audio/AudioChannel.o    \
+	audio/AudioMixer.o    \
+	audio/AudioSample.o    \
+	audio/OggAudioSample.o    \
+	audio/RawAudioSample.o    \
+	audio/VocAudioSample.o    \
+	audio/WavAudioSample.o    \
+	$(MIDI_DRV_OBJS)
+# unused: test.o u7audiotool.o
+
+FLIC_OBJS=\
+	flic/playfli.o
+
+FILE_OBJS= \
+	files/crc.o \
+	files/Flat.o \
+	files/Flex.o \
+	files/IFF.o \
+	files/listfiles.o \
+	files/msgfile.o \
+	files/Table.o \
+	files/U7file.o \
+	files/U7fileman.o \
+	files/U7obj.o \
+	files/utils.o
+
+# Zipfile support objs
+ZIP_OBJS=\
+	files/zip/zip.o \
+	files/zip/unzip.o
+
+GAMEMGR_OBJS= \
+	gamemgr/bggame.o \
+	gamemgr/devgame.o \
+	gamemgr/modmgr.o \
+	gamemgr/sigame.o
+
+GUMPS_OBJS= \
+	gumps/Actor_gump.o \
+	gumps/AudioOptions_gump.o \
+	gumps/Book_gump.o \
+	gumps/CombatOptions_gump.o \
+	gumps/CombatStats_gump.o \
+	gumps/Enabled_button.o \
+	gumps/Face_button.o \
+	gumps/Face_stats.o \
+	gumps/File_gump.o \
+	gumps/Gamemenu_gump.o \
+	gumps/GameplayOptions_gump.o \
+	gumps/Gump.o \
+	gumps/Gump_button.o \
+	gumps/Gump_manager.o \
+	gumps/Gump_widget.o \
+	gumps/Gump_ToggleButton.o \
+	gumps/Jawbone_gump.o \
+	gumps/misc_buttons.o \
+	gumps/Newfile_gump.o \
+	gumps/Notebook_gump.o \
+	gumps/Paperdoll_gump.o \
+	gumps/Scroll_gump.o \
+	gumps/Sign_gump.o \
+	gumps/Slider_gump.o \
+	gumps/Spellbook_gump.o \
+	gumps/Stats_gump.o \
+	gumps/Text_button.o \
+	gumps/Text_gump.o \
+	gumps/VideoOptions_gump.o \
+	gumps/Yesno_gump.o
+
+IMAGEWIN_OBJS=\
+	imagewin/ibuf8.o \
+	imagewin/ibuf16.o \
+	imagewin/imagebuf.o \
+	imagewin/imagewin.o \
+	imagewin/iwin8.o \
+	imagewin/savepcx.o \
+	imagewin/scale_gl.o \
+	imagewin/scale_2x.o \
+	imagewin/scale_2xSaI.o \
+	imagewin/scale_bilinear.o \
+	imagewin/scale_hq2x.o \
+	imagewin/scale_hq3x.o \
+	imagewin/scale_interlace.o \
+	imagewin/scale_point.o \
+	imagewin/BilinearScaler.o \
+	imagewin/BilinearScalerInternal_2x.o \
+	imagewin/BilinearScalerInternal_Arb.o \
+	imagewin/BilinearScalerInternal_X1Y12.o \
+	imagewin/BilinearScalerInternal_X2Y24.o \
+	imagewin/PointScaler.o
+
+### Just in case...
+
+#NMake Line\
+!if 0
+
+ifndef OPENGL_OBJS
+	OPENGL_OBJS= 
+endif
+
+#NMake Line\
+!else
+
+#NMake Line\
+OPENGL_OBJS= $(OPENGL_OBJS)
+
+#NMake Line\
+!endif
+
+SHAPES_OBJS= \
+	shapes/font.o \
+	shapes/fontvga.o\
+	shapes/items.o \
+	shapes/miscinf.o\
+	shapes/shapeinf.o\
+	shapes/shapevga.o \
+	shapes/u7drag.o \
+	shapes/vgafile.o \
+	shapes/shapeinf/ammoinf.o \
+	shapes/shapeinf/aniinf.o \
+	shapes/shapeinf/armorinf.o \
+	shapes/shapeinf/bodyinf.o \
+	shapes/shapeinf/continf.o \
+	shapes/shapeinf/effhpinf.o \
+	shapes/shapeinf/expinf.o \
+	shapes/shapeinf/frnameinf.o \
+	shapes/shapeinf/frflags.o \
+	shapes/shapeinf/frusefun.o \
+	shapes/shapeinf/monstinf.o \
+	shapes/shapeinf/npcdollinf.o \
+	shapes/shapeinf/objdollinf.o \
+	shapes/shapeinf/sfxinf.o \
+	shapes/shapeinf/warminf.o \
+	shapes/shapeinf/weaponinf.o \
+	$(OPENGL_OBJS)
+
+OBJS_OBJS= \
+	objs/animate.o \
+	objs/barge.o \
+	objs/chunks.o \
+	objs/chunkter.o \
+	objs/contain.o \
+	objs/egg.o \
+	objs/iregobjs.o \
+	objs/jawbone.o \
+	objs/mappatch.o \
+	objs/objiter.o \
+	objs/objnames.o \
+	objs/objs.o \
+	objs/spellbook.o \
+	objs/virstone.o
+
+USECODE_OBJS= \
+	usecode/conversation.o \
+	usecode/intrinsics.o \
+	usecode/keyring.o \
+	usecode/stackframe.o \
+	usecode/ucdisasm.o \
+	usecode/ucfunction.o \
+	usecode/ucinternal.o \
+	usecode/ucmachine.o \
+	usecode/ucsched.o \
+	usecode/ucsymtbl.o \
+	usecode/useval.o
+
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GAMEMGR_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
+
+EXULT_FLX = data/exult.flx data/exult_flx.h
+EXULT_FLX_OBJECTS = \
+	data/flx.in \
+	data/quotes.txt \
+	data/credits.txt \
+	data/exult_logo.shp \
+	data/exult0.pal \
+	data/meditown.mid \
+	data/font.shp \
+	data/fonton.shp \
+	data/navfont.shp \
+	data/navfonton.shp \
+	data/pointers.shp \
+	data/extras.shp \
+	data/notebook.shp \
+	data/stats_extra.shp \
+	data/savegump.shp \
+	data/sav_downdown.shp \
+	data/sav_down.shp \
+	data/sav_up.shp \
+	data/sav_upup.shp \
+	data/sav_slider.shp \
+	data/sav_selected.shp \
+	data/gameplayoptions.shp \
+	data/gamemenu.shp \
+	data/audiooptions.shp \
+	data/videooptions.shp \
+	data/hp_bar.shp \
+	data/sfx_icon.shp \
+	data/mtgm.mid
+
+EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
+EXULT_BG_FLX_OBJECTS = \
+	data/bg/flx.in \
+	data/bg/BGmap.shp \
+	data/bg/defaultkeys.txt	\
+	data/bg/mr_faces.shp \
+	data/bg/u7menupal.pal \
+	data/bg/bg_paperdol.vga \
+	data/bg/bg_mr_faces.vga \
+	data/bg/bodies.txt \
+	data/bg/shape_files.txt \
+	data/bg/avatar_data.txt \
+	data/bg/paperdol_info.txt \
+	data/bg/shape_info.txt \
+	data/bg/blends.dat
+
+EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
+EXULT_SI_FLX_OBJECTS = \
+	data/si/flx.in \
+	data/si/SImap.shp \
+	data/si/defaultkeys.txt \
+	data/si/bodies.txt \
+	data/si/shape_files.txt \
+	data/si/avatar_data.txt \
+	data/si/paperdol_info.txt \
+	data/si/shape_info.txt \
+	data/si/blends.dat
+
+EXULT_BG_PAPERDOL_VGA = data/bg/bg_paperdol.vga data/bg/bg_paperdol_vga.h
+EXULT_BG_PAPERDOL_VGA_OBJECTS = \
+	data/bg/amulets.shp \
+	data/bg/bgfiredoom.shp \
+	data/bg/bluedress.shp \
+	data/bg/caddellite_helmet.shp \
+	data/bg/cleaver.shp \
+	data/bg/custom_sword.shp \
+	data/bg/death_scythe.shp \
+	data/bg/dupre_face.shp \
+	data/bg/fellowshipstaff.shp \
+	data/bg/fem_av_face.shp \
+	data/bg/firesword.shp \
+	data/bg/firewand.shp \
+	data/bg/gorget.shp \
+	data/bg/great_dagger.shp \
+	data/bg/greaves.shp \
+	data/bg/greencloak.shp \
+	data/bg/greentop.shp \
+	data/bg/greycloak.shp \
+	data/bg/hawk.shp \
+	data/bg/hoe_of_destruction.shp \
+	data/bg/hoods.shp \
+	data/bg/iolo_face.shp \
+	data/bg/jaana_face.shp \
+	data/bg/julia_face.shp \
+	data/bg/katrina_face.shp \
+	data/bg/knife.shp \
+	data/bg/lightning_whip.shp \
+	data/bg/magic_boomerang.shp \
+	data/bg/magic_helmet.shp \
+	data/bg/main_gauche.shp \
+	data/bg/male_av_face.shp \
+	data/bg/musket.shp \
+	data/bg/musket_ammo.shp \
+	data/bg/orangedress.shp \
+	data/bg/pants.shp \
+	data/bg/ring_of_protection.shp \
+	data/bg/sentri_face.shp \
+	data/bg/shamino_face.shp \
+	data/bg/shoes.shp \
+	data/bg/spark_face.shp \
+	data/bg/spiked_shield.shp \
+	data/bg/starburst.shp \
+	data/bg/throwing_axe.shp \
+	data/bg/triple_xbow.shp \
+	data/bg/tseramed_face.shp \
+	data/bg/swamp_boots.shp \
+	data/bg/spellbook.shp \
+	data/bg/av_costume.shp \
+	data/bg/oil_flask.shp \
+	data/bg/love_arrows.shp \
+	data/bg/magebane.shp \
+	data/bg/shieldbacks.shp \
+	data/bg/bg_paperdol.in
+
+EXULT_BG_MR_FACES_VGA = data/bg/bg_mr_faces.vga data/bg/bg_mr_faces_vga.h
+EXULT_BG_MR_FACES_VGA_OBJECTS = \
+	data/bg/mr_faces.shp \
+	data/bg/u7menupal.pal \
+	data/bg/bg_mr_faces.in
+
+FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+BG_PAPERDOLL = $(EXULT_BG_PAPERDOL_VGA)
+BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
+
+all: $(EXEC)
+
+ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h
+
+# Generated flex dependencies...
+
+exult.o : exult.cc $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+exultmenu.o : exultmenu.cc $(EXULT_FLX)
+
+game.o : game.cc $(EXULT_FLX)
+
+shapeid.o : shapeid.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+audio/Midi.o : audio/Midi.cc $(EXULT_FLX)
+
+gumps/AudioOptions_gump.o : gumps/AudioOptions_gump.cc $(EXULT_FLX)
+
+gumps/CombatOptions_gump.o : gumps/CombatOptions_gump.cc $(EXULT_FLX)
+
+gumps/Face_stats.o : gumps/Face_stats.cc $(EXULT_FLX)
+
+gumps/Gamemenu_gump.o : gumps/Gamemenu_gump.cc $(EXULT_FLX)
+
+gumps/GameplayOptions_gump.o : gumps/GameplayOptions_gump.cc $(EXULT_FLX)
+
+gumps/Newfile_gump.o : gumps/Newfile_gump.cc $(EXULT_FLX)
+
+gumps/Notebook_gump.o : gumps/Notebook_gump.cc $(EXULT_FLX)
+
+gumps/Stats_gump.o : gumps/Stats_gump.cc $(EXULT_FLX)
+
+gumps/VideoOptions_gump.o : gumps/VideoOptions_gump.cc $(EXULT_FLX)
+  
+gamemgr/bggame.o : gamemgr/bggame.cc $(EXULT_BG_FLX)
+
+gamemgr/sigame.o : gamemgr/sigame.cc $(EXULT_SI_FLX)
+
+shapes/shapevga.o : shapes/shapevga.cc $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+usecode/conversation.o : shapes/shapevga.cc $(EXULT_BG_FLX)
+
+$(EXEC) : $(BG_PAPERDOLL) $(FLEXES) $(OBJS)
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+expack$(EXEEXT) : tools/expack.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) tools/expack.o $(FILE_OBJS)
+
+$(EXULT_FLX): expack$(EXEEXT) $(EXULT_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/flx.in
+
+$(EXULT_BG_FLX): expack$(EXEEXT) $(EXULT_BG_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/bg/flx.in
+
+$(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/si/flx.in
+
+$(BG_PAPERDOLL): expack$(EXEEXT) $(EXULT_BG_PAPERDOL_VGA_OBJECTS)
+	expack$(EXEEXT) -i data/bg/bg_paperdol.in
+
+$(BG_MR_FACES): expack$(EXEEXT) $(EXULT_BG_MR_FACES_VGA_OBJECTS)
+	expack$(EXEEXT) -i data/bg/bg_mr_faces.in
+
+cmanip$(EXEEXT) : tools/cmanip.o $(CONF_OBJS) $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) tools/cmanip.o $(CONF_OBJS) $(FILE_OBJS)
+
+IPACK_OBJS=\
+	files/Flat.o \
+	files/Flex.o \
+	files/IFF.o \
+	files/Table.o \
+	files/U7file.o \
+	files/U7fileman.o \
+	files/U7obj.o \
+	files/utils.o \
+	imagewin/ibuf8.o \
+	imagewin/ibuf16.o \
+	imagewin/imagebuf.o \
+	shapes/pngio.o \
+	shapes/vgafile.o \
+	tools/ipack.o
+
+ipack$(EXEEXT) : $(IPACK_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $(IPACK_OBJS) -lpng -lz
+
+mklink$(EXEEXT) : tools/mklink.o
+	$(CXX) $(LFLAGS) -o $(@) tools/mklink.o
+
+mockup$(EXEEXT): mapedit/tools/mockup/main.o
+	$(CC) $(LFLAGS) -o $(@) mapedit/tools/mockup/main.o $(SDL_IMAGE_LIBS)
+
+rip$(EXEEXT) : tools/rip.o
+	$(CXX) $(LFLAGS) -o $(@) tools/rip.o
+
+SMOOTH_OBJS=\
+	mapedit/tools/smooth/config.o \
+	mapedit/tools/smooth/image.o \
+	mapedit/tools/smooth/linked.o \
+	mapedit/tools/smooth/param.o \
+	mapedit/tools/smooth/plugin.o \
+	mapedit/tools/smooth/smooth.o
+
+smooth$(EXEEXT) : $(SMOOTH_OBJS)
+	$(CC) $(LFLAGS) -o $(@) $(SMOOTH_OBJS) $(SDL_IMAGE_LIBS)
+
+shp2pcx$(EXEEXT) : tools/shp2pcx.o
+	$(CXX) $(LFLAGS) -o $(@) tools/shp2pcx.o
+
+splitshp$(EXEEXT) : tools/splitshp.o
+	$(CXX) $(LFLAGS) -o $(@) tools/splitshp.o
+
+textpack$(EXEEXT) : tools/textpack.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) tools/textpack.o $(FILE_OBJS)
+
+u7voice2syx$(EXEEXT) : tools/u7voice2syx.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) tools/u7voice2syx.o $(FILE_OBJS)
+
+wud$(EXEEXT) : files/utils.o tools/wud.o usecode/ucsymtbl.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h
+	$(CXX) $(LFLAGS) -o $(@) files/utils.o tools/wud.o usecode/ucsymtbl.o
+
+wuc$(EXEEXT) : tools/wuc.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h
+	$(CXX) $(LFLAGS) -o $(@) tools/wuc.o
+
+UCC_OBJS=\
+	ucparse.o \
+	uclex.o \
+	usecode/ucsymtbl.o \
+	usecode/compiler/ucmain.o \
+	usecode/compiler/ucexpr.o \
+	usecode/compiler/ucfun.o \
+	usecode/compiler/ucloc.o \
+	usecode/compiler/ucstmt.o \
+	usecode/compiler/ucsym.o \
+	usecode/compiler/ucclass.o
+
+ucc$(EXEEXT) : $(UCC_OBJS) files/utils.h usecode/bgintrinsics.h usecode/siintrinsics.h usecode/ucsymtbl.h
+	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty
+
+ucparse.cc: usecode/compiler/ucparse.yy
+	bison -d usecode/compiler/ucparse.yy -o ucparse.c
+	mv ucparse.c ucparse.cc
+ 
+uclex.cc: usecode/compiler/uclex.ll
+	flex usecode/compiler/uclex.ll
+	mv lex.yy.c uclex.cc
+
+UCXT_OBJS=\
+	$(CONF_OBJS) \
+	files/utils.o \
+	usecode/ucxt/src/ucdata.o \
+	usecode/ucxt/src/ucxt.o \
+	usecode/ucxt/src/ucfunc.o \
+	usecode/ucxt/src/ops.o
+
+ucxt$(EXEEXT) : $(UCXT_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $(UCXT_OBJS)
+
+CONFREGRESS_OBJS=$(CONF_OBJS) conf/xmain.o files/utils.o
+
+confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $(CONFREGRESS_OBJS)
+
+head2data.* : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h
+
+head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.h usecode/siintrinsics.h
+	$(CXX) $(LFLAGS) -o $(@) usecode/ucxt/head2data.o $(FILE_OBJS)
+
+head2data.test: 
+	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+
+clean:
+	rm -f $(OBJS) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
+
+tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
+
+toolsclean:
+	rm -f tools/expack.o expack$(EXEEXT) $(FILE_OBJS)
+	rm -f tools/cmanip.o cmanip$(EXEEXT)
+	rm -f tools/ipack.o ipack$(EXEEXT) $(IPACK_OBJS)
+	rm -f mapedit/tools/mockup/main.o mockup$(EXEEXT)
+	rm -f tools/mklink.o mklink$(EXEEXT)
+	rm -f tools/rip.o rip$(EXEEXT)
+	rm -f tools/shp2pcx.o shp2pcx$(EXEEXT)
+	rm -f tools/splitshp.o splitshp$(EXEEXT)
+	rm -f $(SMOOTH_OBJS) smooth$(EXEEXT)
+	rm -f tools/textpack.o textpack$(EXEEXT)
+	rm -f tools/u7voice2syx.o u7voice2syx$(EXEEXT)
+	rm -f tools/wuc.o wuc$(EXEEXT)
+	rm -f tools/wud.o wud$(EXEEXT)
+	rm -f $(UCXT_OBJS) ucxt$(EXEEXT)
+	rm -f $(UCC_OBJS) ucc$(EXEEXT) ucparse.cc ucparse.h uclex.cc
+	rm -f $(CONFREGRESS_OBJS) confregress$(EXEEXT)
+	rm -f usecode/ucxt/head2data.o head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data
+
+

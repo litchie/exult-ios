@@ -1,0 +1,143 @@
+Exult instructions for Mac OS X
+-------------------------------
+
+
+To play
+-------
+First you need to get Ultima 7 or Serpent Isle. Either you own
+it already, or you buy it somewhere. Then you must install it
+on a DOS/Windows machine in order to get the data file.
+A good way is to use a PC emulator for this, e.g. Virtual PC,
+Real PC or SoftWindows.
+Note that the Ultima Collection already contains an installed
+copy of Ultima 7 (In the Ultima7/ directory) and of Serpent Isle
+(In the Serpent/ directory).
+
+In the documentation of Exult (ReadMe, ReadMe.html) we describe 
+several ways of how to install the original games and where to
+put the files on your Mac so Exult finds them automatically.
+
+Now run Exult, and have fun!
+
+
+Possible issue
+--------------
+Something in our audio code might crash Exult unexpectedly on OSX.
+For example the famous scene in SI with Frigidazi has been reported 
+as a trigger. To circumvent this disable all audio before a scene 
+that crashes and enable it later on in the game.
+
+
+More Information
+----------------
+More information can be found in the accompanying files README and FAQ.
+In addition, you might want to check out our homepage at
+http://exult.sourceforge.net
+
+
+How to compile on Mac OS X
+--------------------------
+
+Make sure you have the Apple developer tools installed. They ship with
+Mac OS X, but have to be installed separately. You can also download the
+latest version for free from http://developer.apple.com, you must register,
+though.
+
+In order to compile Exult, you need to install several Unix packages.
+If you are an expert, you may want to install them manually; for all others,
+we recommend installing them via Fink (http://fink.sourceforge.net) or 
+MacPorts (http://www.macports.org/). 
+
+Install these packages with Fink:
+  sdl
+  libvorbis0
+
+Or if you use MacPorts install
+  libsdl
+  libvorbis
+  zlib
+
+Installing these packages with either Fink or MacPorts will actually
+install many other packages required by these packages.
+  
+If you are compiling the source code SVN, as opposed to the source of
+a released version, you also need to install these packages with Fink:
+  automake1.11
+  libtool2
+  
+Or these with MacPorts:
+  automake
+  libtool
+  
+(for the experts: old versions of the automake package should also work,
+e.g. you could also use automake1.10 or automake1.9).
+
+Now you are ready to compile Exult. If you are compiling from SVN, the
+first thing you have to run is this:
+  ./autogen.sh
+
+The next step is the same whether you compile a release version or SVN:
+  ./configure
+  make
+
+This will give you a "exult" binary in the current directory. If you want
+a nice Exult.app (double clickable from the Finder and all), enter this
+command:
+  make bundle
+
+Be warned, the binary created this way is not static linked, that means 
+if you copy it to another machine it will most likely NOT work. So you 
+can only use it on your own computer.
+
+
+How to compile Exult Studio on Mac OS X
+---------------------------------------
+
+If you want to compile Exult Studio, you have to install this package
+(same for Fink and MacPorts):
+  libglade2
+
+This might actually cause many other packages required by libglade2 to
+be installed. 
+
+After that, you have to re-run configure and make:
+  ./configure --enable-exult-studio --enable-macosx-studio-support
+  make
+
+In order to use Exult Studio with Exult you will need to do:
+
+- The nice Exult.app will not work with Exult Studio, you will need to run 
+the exult binary, found where you compiled the source. 
+
+- You need to add the path of Exult Studio to your PATH settings so that Exult 
+can start Exult Studio on entering Map-Edit-Mode (ctrl+cmd+m).
+Normally Exult Studio gets compiled in /path_to_the_Exult_source_code/mapedit, 
+so if you do "export PATH=$PATH:/path_to_the_Exult_source_code/mapedit" before 
+starting Exult, you can start using Exult and Exult Studio.
+If you don't want to set the path to Exult Studio, you can also start Exult,
+go into Map-Edit-Mode, start Exult Studio manually and click in it's menu
+on File->Connect.
+
+- You need to copy the file exult_studio.glade (found in 
+/path_to_the_Exult_source_code/mapedit/) to your Exult data folder which is by 
+default in /Library/Application Support/Exult/data.
+
+
+How to compile a static version of Exult on Mac OS X
+----------------------------------------------------
+
+If you want a version of Exult for using it on another OS X machine you need to 
+compile a static version.
+You need to follow the above instructions on how to compile Exult. Then you have to
+re-run configure and make
+  ./configure --enable-static-libraries --with-macosx-static-lib-path=path/to/static/libs
+  make
+
+Depending on whether you use Fink or MacPorts you need to enter the path to your
+static libs in the configure option "--with-macosx-static-lib-path=path/to/static/libs".
+For Fink it should be "--with-macosx-static-lib-path=/sw/lib".
+For MacPorts "--with-macosx-static-lib-path=/opt/local/lib".
+
+On our dowloads page we currently provide a static built snapshot of SVN for 
+OS X 10.4 and newer for both PowerPC and Intel machines.
+Take note however that compiling a static version of Exult Studio does not work.

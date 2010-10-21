@@ -1,0 +1,5 @@
+EXPORTS
+	GetExultGamePaths
+	SetExultGamePaths
+	VerifyBGDirectory
+	VerifySIDirectory

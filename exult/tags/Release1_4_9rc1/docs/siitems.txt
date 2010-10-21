@@ -1,0 +1,2199 @@
+0 0x0	water
+1 0x1	sidewalk
+2 0x2	
+3 0x3	icy water
+4 0x4	floor
+5 0x5	cavefloor
+6 0x6	icy water
+7 0x7	spring
+8 0x8	water
+9 0x9	ice ice baby
+10 0xa	sand
+11 0xb	ice
+12 0xc	void
+13 0xd	spring
+14 0xe	floor
+15 0xf	tile floor
+16 0x10	ice
+17 0x11	planking
+18 0x12	tile
+19 0x13	
+20 0x14	
+21 0x15	stone floor
+22 0x16	swamp
+23 0x17	dirt
+24 0x18	cobblestone
+25 0x19	ice
+26 0x1a	
+27 0x1b	carpet
+28 0x1c	sandy grass
+29 0x1d	muddy bank
+30 0x1e	
+31 0x1f	snow
+32 0x20	snow
+33 0x21	ice
+34 0x22	floor
+35 0x23	damage causing cell
+36 0x24	wood floor
+37 0x25	Serpent Highway
+38 0x26	tile floor
+39 0x27	floor
+40 0x28	floor
+41 0x29	grass
+42 0x2a	icy floor
+43 0x2b	icy floor
+44 0x2c	icy floor
+45 0x2d	icy floor
+46 0x2e	icy floor
+47 0x2f	carpet
+48 0x30	ethereal void
+49 0x31	cavefloor
+50 0x32	cavefloor
+51 0x33	cavefloor
+52 0x34	da floor
+53 0x35	cavefloor
+54 0x36	cavefloor
+55 0x37	cavefloor
+56 0x38	cavefloor
+57 0x39	cavefloor
+58 0x3a	cavefloor
+59 0x3b	cavefloor
+60 0x3c	cavefloor
+61 0x3d	cavefloor
+62 0x3e	cavefloor
+63 0x3f	floor
+64 0x40	
+65 0x41	
+66 0x42	grass
+67 0x43	muck
+68 0x44	icy floor
+69 0x45	icy floor
+70 0x46	chasm wall
+71 0x47	chasm wall
+72 0x48	dirt
+73 0x49	dirt
+74 0x4a	wood floor
+75 0x4b	
+76 0x4c	
+77 0x4d	
+78 0x4e	grass
+79 0x4f	rocky grass
+80 0x50	a long fall
+81 0x51	a long fall
+82 0x52	
+83 0x53	
+84 0x54	
+85 0x55	muddy bank
+86 0x56	muddy bank
+87 0x57	muddy bank
+88 0x58	muddy bank
+89 0x59	muddy bank
+90 0x5a	muddy bank
+91 0x5b	muddy bank
+92 0x5c	muddy bank
+93 0x5d	muddy bank
+94 0x5e	muddy bank
+95 0x5f	muddy bank
+96 0x60	muddy bank
+97 0x61	muddy bank
+98 0x62	muddy bank
+99 0x63	muddy bank
+100 0x64	muddy bank
+101 0x65	muddy bank
+102 0x66	muddy bank
+103 0x67	muddy bank
+104 0x68	muddy bank
+105 0x69	muddy bank
+106 0x6a	muddy bank
+107 0x6b	muddy bank
+108 0x6c	muddy bank
+109 0x6d	muddy bank
+110 0x6e	
+111 0x6f	sandy ground
+112 0x70	
+113 0x71	swamp
+114 0x72	swamp
+115 0x73	swamp
+116 0x74	swamp
+117 0x75	swamp
+118 0x76	sandy grass
+119 0x77	sandy grass
+120 0x78	sandy grass
+121 0x79	sandy grass
+122 0x7a	sandy grass
+123 0x7b	sandy grass
+124 0x7c	sandy grass
+125 0x7d	sandy grass
+126 0x7e	sandy grass
+127 0x7f	sandy grass
+128 0x80	sandy grass
+129 0x81	sandy grass
+130 0x82	sandy grass
+131 0x83	sandy grass
+132 0x84	sandy grass
+133 0x85	sandy grass
+134 0x86	grassy mud
+135 0x87	grassy mud
+136 0x88	grassy mud
+137 0x89	grassy mud
+138 0x8a	grassy mud
+139 0x8b	grassy mud
+140 0x8c	grassy mud
+141 0x8d	grassy mud
+142 0x8e	grassy mud
+143 0x8f	grassy mud
+144 0x90	grassy mud
+145 0x91	grassy mud
+146 0x92	grass
+147 0x93	grass
+148 0x94	grass
+149 0x95	mud
+150 0x96	gang plank
+151 0x97	wall
+152 0x98	wall
+153 0x99	fountain
+154 0x9a	Grass
+155 0x9b	door frame
+156 0x9c	tile roof
+157 0x9d	door frame
+158 0x9e	wall
+159 0x9f	flamer
+160 0xa0	serpent gate
+161 0xa1	thatch roof
+162 0xa2	thatch roof
+163 0xa3	rock outcropping
+164 0xa4	slate roof
+165 0xa5	slate roof
+166 0xa6	slate roof
+167 0xa7	slate roof
+168 0xa8	mountain
+169 0xa9	slate roof
+170 0xaa	wood roof
+171 0xab	wood roof
+172 0xac	wood roof
+173 0xad	wood roof
+174 0xae	wood roof
+175 0xaf	wood roof
+176 0xb0	wall
+177 0xb1	lava
+178 0xb2	cloth map
+179 0xb3	monk
+180 0xb4	mountain
+181 0xb5	tree
+182 0xb6	mountain
+183 0xb7	mountain
+184 0xb8	lava
+185 0xb9	dead tree
+186 0xba	carpet
+187 0xbb	carpet
+188 0xbc	rug
+189 0xbd	floor
+190 0xbe	carpet
+191 0xbf	fortress
+192 0xc0	fortress
+193 0xc1	floor
+194 0xc2	ground
+195 0xc3	mountain
+196 0xc4	mountain
+197 0xc5	mountain
+198 0xc6	light
+199 0xc7	mast
+200 0xc8	trap
+201 0xc9	debris
+202 0xca	debris
+203 0xcb	small rock
+204 0xcc	scorch mark
+205 0xcd	wall
+206 0xce	wall
+207 0xcf	scorch mark
+208 0xd0	broken door
+209 0xd1	
+210 0xd2	chicken coop
+211 0xd3	broken door
+212 0xd4	bridge
+213 0xd5	bridge
+214 0xd6	gwani
+215 0xd7	turtle
+216 0xd8	broken wall
+217 0xd9	broken wall
+218 0xda	wall
+219 0xdb	turtle
+220 0xdc	wall
+221 0xdd	turtle
+222 0xde	pennant
+223 0xdf	broken roof
+224 0xe0	
+225 0xe1	door
+226 0xe2	mage
+227 0xe3	cloak
+228 0xe4	pikeman
+229 0xe5	man
+230 0xe6	woman
+231 0xe7	magebane sword
+232 0xe8	ice wall
+233 0xe9	platform
+234 0xea	ice
+235 0xeb	drift
+236 0xec	mountain
+237 0xed	drift
+238 0xee	tree
+239 0xef	
+240 0xf0	stairs
+241 0xf1	staff
+242 0xf2	saw
+243 0xf3	coffin
+244 0xf4	large skull
+245 0xf5	bear skeleton
+246 0xf6	door
+247 0xf7	jester
+248 0xf8	prow
+249 0xf9	oracle
+250 0xfa	monk
+251 0xfb	sails
+252 0xfc	turtle
+253 0xfd	wall
+254 0xfe	wall
+255 0xff	broken wall
+256 0x100	wall
+257 0x101	fortress gateway
+258 0x102	keg
+259 0x103	ranger
+260 0x104	fortress
+261 0x105	loom
+262 0x106	blackrock serpent
+263 0x107	fortress
+264 0x108	pinecone
+265 0x109	townsman
+266 0x10a	wall
+267 0x10b	pumice
+268 0x10c	mirror
+269 0x10d	carpet
+270 0x10e	door
+271 0x10f	portcullis
+272 0x110	portcullis
+273 0x111	wall
+274 0x112	woman
+275 0x113	Egg
+276 0x114	crossbeam
+277 0x115	crossbeam
+278 0x116	twigs
+279 0x117	cavern
+280 0x118	ignite
+281 0x119	curse
+282 0x11a	painting
+283 0x11b	desk
+284 0x11c	sundial
+285 0x11d	brush
+286 0x11e	drum
+287 0x11f	swordstrike
+288 0x120	slime attack
+289 0x121	fire
+290 0x122	shutters
+291 0x123	shutters
+292 0x124	seat
+293 0x125	tapestry
+294 0x126	carpet
+295 0x127	snow mountain
+296 0x128	ring
+297 0x129	hollow tree
+298 0x12a	penguin
+299 0x12b	Cantra
+300 0x12c	cooking utensil
+301 0x12d	barrier
+302 0x12e	bear
+303 0x12f	sliding door
+304 0x130	man
+305 0x131	serpent statue
+306 0x132	evergreen
+307 0x133	burner
+308 0x134	wall
+309 0x135	fallen tree
+310 0x136	tree
+311 0x137	trophy
+312 0x138	ghoul
+313 0x139	stump
+314 0x13a	weeds
+315 0x13b	fallen tree
+316 0x13c	large rock
+317 0x13d	Anti-Shamino
+318 0x13e	Batlin
+319 0x13f	peasant
+320 0x140	brambles
+321 0x141	reeds
+322 0x142	basin
+323 0x143	cattails
+324 0x144	mountain
+325 0x145	dead tree
+326 0x146	fountain
+327 0x147	cypress tree
+328 0x148	baobab tree
+329 0x149	boar
+330 0x14a	serpent rune
+331 0x14b	rock
+332 0x14c	
+333 0x14d	table
+334 0x14e	wildman
+335 0x14f	bubbles
+336 0x150	light source
+337 0x151	ghost
+338 0x152	lit light source
+339 0x153	dispel magic
+340 0x154	/potion//s
+341 0x155	rock
+342 0x156	boulder
+343 0x157	boulder
+344 0x158	wall
+345 0x159	wall
+346 0x15a	wall
+347 0x15b	broken wall
+348 0x15c	wall
+349 0x15d	wall
+350 0x15e	wall
+351 0x15f	wall
+352 0x160	fortress
+353 0x161	wall
+354 0x162	Goblin King
+355 0x163	wall
+356 0x164	broken wall
+357 0x165	wall
+358 0x166	wall
+359 0x167	wall
+360 0x168	sign
+361 0x169	sign
+362 0x16a	wall
+363 0x16b	magic gremlin
+364 0x16c	platform
+365 0x16d	wall
+366 0x16e	wall
+367 0x16f	floor
+368 0x170	floor
+369 0x171	floor
+370 0x172	floor
+371 0x173	wall
+372 0x174	ice troll
+373 0x175	mummy
+374 0x176	wall
+375 0x177	unicorn
+376 0x178	door
+377 0x179	/food item//s
+378 0x17a	fence
+379 0x17b	sign
+380 0x17c	Wall of Lights
+381 0x17d	Fawn guard
+382 0x17e	ratman
+383 0x17f	magic helm
+384 0x180	waves
+385 0x181	stairs
+386 0x182	stairs
+387 0x183	stairs
+388 0x184	floor
+389 0x185	cavern
+390 0x186	cavern
+391 0x187	cavern
+392 0x188	Xenka
+393 0x189	wall
+394 0x18a	roof
+395 0x18b	mountain
+396 0x18c	mountain
+397 0x18d	
+398 0x18e	
+399 0x18f	energy mist
+400 0x190	body
+401 0x191	mage
+402 0x192	body
+403 0x193	cloak
+404 0x194	food
+405 0x195	ship's hold
+406 0x196	nightstand
+407 0x197	desk
+408 0x198	paralyze
+409 0x199	trophy
+410 0x19a	saw
+411 0x19b	wall
+412 0x19c	fountain
+413 0x19d	carpet
+414 0x19e	body
+415 0x19f	garbage
+416 0x1a0	drawers
+417 0x1a1	/magic bolt//s
+418 0x1a2	wall
+419 0x1a3	breast plate
+420 0x1a4	fence
+421 0x1a5	fence
+422 0x1a6	fence
+423 0x1a7	stalks
+424 0x1a8	poison
+425 0x1a9	wall
+426 0x1aa	stairs
+427 0x1ab	stairs
+428 0x1ac	stairs
+429 0x1ad	stairs
+430 0x1ae	stairs
+431 0x1af	bellows
+432 0x1b0	door
+433 0x1b1	door
+434 0x1b2	cask
+435 0x1b3	lit sconce
+436 0x1b4	snow mountain
+437 0x1b5	snow mountain
+438 0x1b6	window
+439 0x1b7	wall
+440 0x1b8	light
+441 0x1b9	floor
+442 0x1ba	fireplace
+443 0x1bb	telekinesis
+444 0x1bc	snow mountain
+445 0x1bd	soul prism
+446 0x1be	ugly old woman
+447 0x1bf	timberwolf
+448 0x1c0	snow mountain
+449 0x1c1	bear
+450 0x1c2	orb
+451 0x1c3	noble
+452 0x1c4	wand
+453 0x1c5	tree
+454 0x1c6	shopkeeper
+455 0x1c7	shopkeeper
+456 0x1c8	flux analyzer
+457 0x1c9	gypsy
+458 0x1ca	pirate
+459 0x1cb	turtle
+460 0x1cc	skeletal dragon
+461 0x1cd	ranger
+462 0x1ce	fighter
+463 0x1cf	floor
+464 0x1d0	paladin
+465 0x1d1	Iolo
+466 0x1d2	snow mountain
+467 0x1d3	magic plants
+468 0x1d4	stranger
+469 0x1d5	woman
+470 0x1d6	well
+471 0x1d7	door
+472 0x1d8	child
+473 0x1d9	Wall of Lights
+474 0x1da	magic sling
+475 0x1db	Wall of Lights
+476 0x1dc	wand
+477 0x1dd	snow mountain
+478 0x1de	goblin
+479 0x1df	
+480 0x1e0	gargoyle
+481 0x1e1	sconce
+482 0x1e2	ghost
+483 0x1e3	rug
+484 0x1e4	bars
+485 0x1e5	key ring
+486 0x1e6	Usecode Container
+487 0x1e7	Shamino
+488 0x1e8	Dupre
+489 0x1e9	rod
+490 0x1ea	Dupre's shield
+491 0x1eb	acid slug
+492 0x1ec	alligator
+493 0x1ed	bat
+494 0x1ee	undead
+495 0x1ef	cat
+496 0x1f0	dog
+497 0x1f1	wall
+498 0x1f2	chicken
+499 0x1f3	corpser
+500 0x1f4	cow
+501 0x1f5	cyclops
+502 0x1f6	deer
+503 0x1f7	barge
+504 0x1f8	ice raft
+505 0x1f9	magic lens
+506 0x1fa	magic harp
+507 0x1fb	corpse
+508 0x1fc	hammer
+509 0x1fd	fish
+510 0x1fe	fox
+511 0x1ff	gazer
+512 0x200	worm
+513 0x201	floor
+514 0x202	headless
+515 0x203	drawbridge
+516 0x204	door
+517 0x205	insects
+518 0x206	glass counter top
+519 0x207	Moon's Eye
+520 0x208	wooden sword
+521 0x209	dream creature
+522 0x20a	locked chest
+523 0x20b	rat
+524 0x20c	reaper
+525 0x20d	dust
+526 0x20e	lit lamp
+527 0x20f	death bolt
+528 0x210	skeleton
+529 0x211	slime
+530 0x212	snake
+531 0x213	cavern
+532 0x214	harpie
+533 0x215	troll
+534 0x216	wall
+535 0x217	dragonslayer sword
+536 0x218	tentacles
+537 0x219	wolf
+538 0x21a	fence
+539 0x21b	chain coif
+540 0x21c	douse
+541 0x21d	great helm
+542 0x21e	crested helm
+543 0x21f	buckler
+544 0x220	broken column
+545 0x221	curved heater
+546 0x222	broken dish
+547 0x223	magic sword
+548 0x224	sceptre
+549 0x225	lightning whip
+550 0x226	suit of armour
+551 0x227	fire sword
+552 0x228	magic axe
+553 0x229	firedoom staff
+554 0x22a	/burst arrow//s
+555 0x22b	serpent jawbone
+556 0x22c	/magic arrow//s
+557 0x22d	juggernaut hammer
+558 0x22e	/lucky arrow//s
+559 0x22f	serpent tooth
+560 0x230	priestess
+561 0x231	blue flame
+562 0x232	bane jail
+563 0x233	blowgun
+564 0x234	poison dagger
+565 0x235	fighter
+566 0x236	glimmer
+567 0x237	sword of defense
+568 0x238	/sleep arrow//s
+569 0x239	leather armour
+570 0x23a	scale armour
+571 0x23b	chain armour
+572 0x23c	wooden shield
+573 0x23d	plate armour
+574 0x23e	leather leggings
+575 0x23f	chain leggings
+576 0x240	plate leggings
+577 0x241	nest
+578 0x242	spiked shield
+579 0x243	gloves
+580 0x244	gauntlets
+581 0x245	old man
+582 0x246	catwalk
+583 0x247	bed roll
+584 0x248	kidney belt
+585 0x249	door shield
+586 0x24a	brass shield
+587 0x24b	boots
+588 0x24c	vampire
+589 0x24d	pitchfork
+590 0x24e	club
+591 0x24f	/serpent arrow//s
+592 0x250	/spear//s
+593 0x251	/throwing axe//s
+594 0x252	/dagger//s
+595 0x253	torch
+596 0x254	morning star
+597 0x255	bow
+598 0x256	crossbow
+599 0x257	sword
+600 0x258	two-handed hammer
+601 0x259	two handed axe 
+602 0x25a	two-handed sword
+603 0x25b	halberd
+604 0x25c	glass sword
+605 0x25d	boomerang
+606 0x25e	magic bow
+607 0x25f	path
+608 0x260	decorative sword
+609 0x261	kite shield
+610 0x262	scale
+611 0x263	lily pads
+612 0x264	surf
+613 0x265	surf
+614 0x266	magic music player
+615 0x267	Wall of Lights
+616 0x268	bottle
+617 0x269	Well of Enthusiasm
+618 0x26a	scythe
+619 0x26b	Catwalk
+620 0x26c	rake
+621 0x26d	delayed explosion
+622 0x26e	whip
+623 0x26f	/hammer//s
+624 0x270	pick
+625 0x271	shovel
+626 0x272	hoe
+627 0x273	/lockpick//s
+628 0x274	cup
+629 0x275	lightning wand
+630 0x276	fire wand
+631 0x277	tree
+632 0x278	surf
+633 0x279	table
+634 0x27a	standing stone
+635 0x27b	Serpent Earrings
+636 0x27c	/serpent dagger//s
+637 0x27d	serpent sword
+638 0x27e	Serpent Armour
+639 0x27f	death vortex
+640 0x280	Serpent Staff
+641 0x281	/key//s
+642 0x282	book
+643 0x283	tree
+644 0x284	/gold coin//s
+645 0x285	/gold nugget//s
+646 0x286	/gold bar//s
+647 0x287	female pikeman
+648 0x288	sleeping powder
+649 0x289	artifact
+650 0x28a	sextant
+651 0x28b	spinning wheel
+652 0x28c	woman
+653 0x28d	bale of wool
+654 0x28e	spindle of thread
+655 0x28f	Planet
+656 0x290	wine press
+657 0x291	curtain
+658 0x292	automaton
+659 0x293	mace
+660 0x294	skinless woman
+661 0x295	mongbat
+662 0x296	fishing rod
+663 0x297	magic shield
+664 0x298	stove
+665 0x299	dark female monk
+666 0x29a	magic armor
+667 0x29b	cobwebs
+668 0x29c	metal
+669 0x29d	Gwenno
+670 0x29e	maple tree
+671 0x29f	mushrooms
+672 0x2a0	shrubbery
+673 0x2a1	strange plant
+674 0x2a2	silverleaf tree
+675 0x2a3	desk item
+676 0x2a4	
+677 0x2a5	stockings
+678 0x2a6	curtain
+679 0x2a7	drawers
+680 0x2a8	deck
+681 0x2a9	jar
+682 0x2aa	glass item
+683 0x2ab	tree
+684 0x2ac	trellis
+685 0x2ad	grapevine
+686 0x2ae	magic leggings
+687 0x2af	pillar
+688 0x2b0	serpent carving
+689 0x2b1	harpsichord
+690 0x2b2	xylophone
+691 0x2b3	goblin
+692 0x2b4	lute
+693 0x2b5	whistle
+694 0x2b6	cave door
+695 0x2b7	grandfather clock
+696 0x2b8	bed 
+697 0x2b9	podium
+698 0x2ba	shears
+699 0x2bb	surf
+700 0x2bc	deck
+701 0x2bd	lit torch
+702 0x2be	phoenix
+703 0x2bf	ice corpser
+704 0x2c0	keg
+705 0x2c1	book
+706 0x2c2	scorpion
+707 0x2c3	scroll
+708 0x2c4	stocks
+709 0x2c5	plaque
+710 0x2c6	ophidian sword
+711 0x2c7	infinity bow
+712 0x2c8	stove
+713 0x2c9	post
+714 0x2ca	basin
+715 0x2cb	magic scroll
+716 0x2cc	bird
+717 0x2cd	plate
+718 0x2ce	pedestal
+719 0x2cf	water trough
+720 0x2d0	guard
+721 0x2d1	Avatar
+722 0x2d2	/arrow//s
+723 0x2d3	/bolt//s
+724 0x2d4	pedestal
+725 0x2d5	goblin
+726 0x2d6	pulsating object
+727 0x2d7	Dream Crystal
+728 0x2d8	Force_Wall
+729 0x2d9	shield of Monitor
+730 0x2da	dead baby
+731 0x2db	
+732 0x2dc	window
+733 0x2dd	carpet
+734 0x2de	automaton
+735 0x2df	archery target
+736 0x2e0	surf
+737 0x2e1	surf
+738 0x2e2	wall
+739 0x2e3	firepit
+740 0x2e4	wine press
+741 0x2e5	water trough
+742 0x2e6	wench
+743 0x2e7	statue
+744 0x2e8	goblin
+745 0x2e9	harp
+746 0x2ea	pillar
+747 0x2eb	automaton
+748 0x2ec	wall
+749 0x2ed	alchemist apparatus
+750 0x2ee	carpet
+751 0x2ef	surf
+752 0x2f0	music box
+753 0x2f1	stone harpy
+754 0x2f2	leopard
+755 0x2f3	ice block
+756 0x2f4	caltrops
+757 0x2f5	wall
+758 0x2f6	carpet
+759 0x2f7	bell
+760 0x2f8	gem
+761 0x2f9	spellbook
+762 0x2fa	body
+763 0x2fb	ice worm
+764 0x2fc	wall
+765 0x2fd	wall
+766 0x2fe	woman
+767 0x2ff	wall
+768 0x300	energy field
+769 0x301	wall
+770 0x302	wall
+771 0x303	Rudyom's Wand
+772 0x304	parrot
+773 0x305	wall
+774 0x306	wall
+775 0x307	ship rails
+776 0x308	podium
+777 0x309	Pillar
+778 0x30a	body
+779 0x30b	magical wave
+780 0x30c	bubbles
+781 0x30d	gang plank
+782 0x30e	wall
+783 0x30f	tree
+784 0x310	Web of Fate
+785 0x311	pillar
+786 0x312	table
+787 0x313	lever
+788 0x314	switch
+789 0x315	assimilation machine
+790 0x316	engine
+791 0x317	ship
+792 0x318	magicians wand
+793 0x319	Lord British
+794 0x31a	severed limb
+795 0x31b	mantle
+796 0x31c	campfire
+797 0x31d	scroll
+798 0x31e	baby ice dragon
+799 0x31f	body part
+800 0x320	chest
+801 0x321	backpack
+802 0x322	bag
+803 0x323	basket
+804 0x324	crate
+805 0x325	fighter
+806 0x326	The Black Sword
+807 0x327	lightning
+808 0x328	surf
+809 0x329	mage
+810 0x32a	bucket
+811 0x32b	rabbit
+812 0x32c	iron maiden
+813 0x32d	rack
+814 0x32e	mage
+815 0x32f	monster
+816 0x330	fighter
+817 0x331	man
+818 0x332	counselor
+819 0x333	barrel
+820 0x334	plaque
+821 0x335	painting
+822 0x336	diaper
+823 0x337	artist's equipment
+824 0x338	pitcher
+825 0x339	fire
+826 0x33a	wall
+827 0x33b	bandage
+828 0x33c	Wall
+829 0x33d	floor
+830 0x33e	man
+831 0x33f	baking hearth
+832 0x340	frost serpent
+833 0x341	glass wall
+834 0x342	surf
+835 0x343	magic gauntlets
+836 0x344	antique armor
+837 0x345	easel
+838 0x346	bird cage
+839 0x347	hourglass
+840 0x348	chasm
+841 0x349	glass wall
+842 0x34a	/reagent//s
+843 0x34b	chasm
+844 0x34c	chasm
+845 0x34d	Wall
+846 0x34e	naga
+847 0x34f	table 
+848 0x350	mirror
+849 0x351	tapestry
+850 0x352	carpet
+851 0x353	cloth
+852 0x354	crenellations
+853 0x355	ghost
+854 0x356	statue
+855 0x357	captain
+856 0x358	fire bolt
+857 0x359	dragon breath
+858 0x35a	bookshelf
+859 0x35b	casting frames
+860 0x35c	fencing dummy
+861 0x35d	Fire Elemental
+862 0x35e	gwani
+863 0x35f	kitchen item
+864 0x360	moongate
+865 0x361	spider
+866 0x362	thumbscrews
+867 0x363	gwani child
+868 0x364	wall mount
+869 0x365	wall
+870 0x366	drawbridge
+871 0x367	wall
+872 0x368	stove
+873 0x369	chair
+874 0x36a	hound
+875 0x36b	surf
+876 0x36c	sliding door
+877 0x36d	ice dragon
+878 0x36e	crenellations
+879 0x36f	wall
+880 0x370	Mad Iolo
+881 0x371	shattered statue
+882 0x372	winged viper
+883 0x373	wingless Gargoyle
+884 0x374	melted door
+885 0x375	nightmare
+886 0x376	pressure plate
+887 0x377	ring
+888 0x378	mage
+889 0x379	lamp post
+890 0x37a	table
+891 0x37b	Avatar
+892 0x37c	body
+893 0x37d	
+894 0x37e	monolith
+895 0x37f	fire field
+896 0x380	crenellations
+897 0x381	seat
+898 0x382	altar
+899 0x383	wall
+900 0x384	poison field
+901 0x385	crenellations
+902 0x386	sleep field
+903 0x387	crenellations
+904 0x388	wall
+905 0x389	cavern
+906 0x38a	Anti-Dupre
+907 0x38b	surf
+908 0x38c	tile roof
+909 0x38d	wall
+910 0x38e	wall
+911 0x38f	surf
+912 0x390	blood
+913 0x391	pillar
+914 0x392	urn
+915 0x393	tentacle
+916 0x394	mageling
+917 0x395	Trapper
+918 0x396	surf
+919 0x397	bookshelf
+920 0x398	pillar
+921 0x399	Avatar
+922 0x39a	small bush
+923 0x39b	piece of wood
+924 0x39c	cavern
+925 0x39d	cavern
+926 0x39e	serpent sceptre
+927 0x39f	serpent slot
+928 0x3a0	cavern
+929 0x3a1	Philanderer's Friend
+930 0x3a2	Avatar
+931 0x3a3	mountain
+932 0x3a4	tree
+933 0x3a5	Avatar
+934 0x3a6	magic telescope
+935 0x3a7	sliding door
+936 0x3a8	sliding door
+937 0x3a9	jewelry
+938 0x3aa	Avatar
+939 0x3ab	wall
+940 0x3ac	wall
+941 0x3ad	waterfall
+942 0x3ae	hammer of dedication
+943 0x3af	wall
+944 0x3b0	pot
+945 0x3b1	
+946 0x3b2	healer
+947 0x3b3	man
+948 0x3b4	/filari//
+949 0x3b5	winch
+950 0x3b6	winch
+951 0x3b7	/monetari//
+952 0x3b8	/guilder//s
+953 0x3b9	wall
+954 0x3ba	glass roof
+955 0x3bb	amulet
+956 0x3bc	wood roof
+957 0x3bd	catman
+958 0x3be	brass well
+959 0x3bf	mountain
+960 0x3c0	mushroom
+961 0x3c1	barge
+962 0x3c2	slate roof
+963 0x3c3	slate roof
+964 0x3c4	table
+965 0x3c5	glowing sphere
+966 0x3c6	tile roof
+967 0x3c7	broken wall
+968 0x3c8	magical ice creature
+969 0x3c9	mountain
+970 0x3ca	sheep
+971 0x3cb	table
+972 0x3cc	wall
+973 0x3cd	stairs
+974 0x3ce	stairs
+975 0x3cf	madman
+976 0x3d0	dartboard
+977 0x3d1	fur pelt
+978 0x3d2	dragon
+979 0x3d3	manspider
+980 0x3d4	wall
+981 0x3d5	Aram Dol
+982 0x3d6	chimney
+983 0x3d7	mountain
+984 0x3d8	piece of wood
+985 0x3d9	waves
+986 0x3da	stove top
+987 0x3db	baby in a cradle
+988 0x3dc	magic compass
+989 0x3dd	Avatar
+990 0x3de	Erinons Axe
+991 0x3df	anvil
+992 0x3e0	burning urn
+993 0x3e1	mushroom
+994 0x3e2	tongs
+995 0x3e3	cauldron
+996 0x3e4	Belt of Strength
+997 0x3e5	spent light source
+998 0x3e6	statue
+999 0x3e7	plant
+1000 0x3e8	table
+1001 0x3e9	Gauntlets of Quickness
+1002 0x3ea	table
+1003 0x3eb	table
+1004 0x3ec	helm
+1005 0x3ed	Bellows
+1006 0x3ee	broken wall
+1007 0x3ef	crematorium machine
+1008 0x3f0	waves
+1009 0x3f1	waves
+1010 0x3f2	crematorium machine
+1011 0x3f3	bed 
+1012 0x3f4	surf
+1013 0x3f5	Helm of Light
+1014 0x3f6	floor
+1015 0x3f7	woman
+1016 0x3f8	floor
+1017 0x3f9	ship
+1018 0x3fa	table
+1019 0x3fb	crematorium machine
+1020 0x3fc	surf
+1021 0x3fd	berry bush
+1022 0x3fe	surf
+1023 0x3ff	Silver Tree
+1024 0x400	"Step aside!"
+1025 0x401	"Stand away!"
+1026 0x402	"Move on!"
+1027 0x403	"Strive for unity!"
+1028 0x404	"Trust thy brother!"
+1029 0x405	"Worthiness precedes reward!"
+1030 0x406	"Heed thine inner voice!"
+1031 0x407	"You are all individuals!"
+1032 0x408	"Say it with me, brother!"
+1033 0x409	"Art thou with us, brother?"
+1034 0x40a	"Let me shake thine hand!"
+1035 0x40b	"Thou must believe!"
+1036 0x40c	"I am worthy!"
+1037 0x40d	"I believe!"
+1038 0x40e	"Yes!"
+1039 0x40f	"Yea, verily!"
+1040 0x410	"Nice weather today."
+1041 0x411	"Good day."
+1042 0x412	"How art thou doing?"
+1043 0x413	"Greetings."
+1044 0x414	"Stop!"
+1045 0x415	"I would have words with thee."
+1046 0x416	"I wish to speak to thee."
+1047 0x417	"Come here!"
+1048 0x418	"Surrender!"
+1049 0x419	"Resist not!"
+1050 0x41a	"Stop!"
+1051 0x41b	"Can I help thee?"
+1052 0x41c	"What wilt thou have?"
+1053 0x41d	"The vegetables are good."
+1054 0x41e	"Hast thou decided yet?"
+1055 0x41f	"Try the ale."
+1056 0x420	"More food!"
+1057 0x421	"Service!"
+1058 0x422	"Barkeeper!"
+1059 0x423	"Ale!"
+1060 0x424	"Menu!"
+1061 0x425	"Mmmm, tasty!"
+1062 0x426	"Burp!"
+1063 0x427	"Mmmm..."
+1064 0x428	"Who made this slop?"
+1065 0x429	"Ouch!"
+1066 0x42a	"Ooof!"
+1067 0x42b	"Argh!"
+1068 0x42c	"Eeow!"
+1069 0x42d	"Thou wilt pay for that!"
+1070 0x42e	"Thou wilt regret that!"
+1071 0x42f	"Unnhhh!"
+1072 0x430	"To my side!"
+1073 0x431	"Cover me!"
+1074 0x432	"Defend me!"
+1075 0x433	"Protect me!"
+1076 0x434	"I shall protect thee!"
+1077 0x435	"On my way!"
+1078 0x436	"Hold on!"
+1079 0x437	"Aiiieeee!"
+1080 0x438	"Boom!"
+1081 0x439	"To Battle!"
+1082 0x43a	"To Arms!"
+1083 0x43b	"To the Death!"
+1084 0x43c	"Stop, thief!"
+1085 0x43d	"Thieving scoundrel!"
+1086 0x43e	"Guards!  Guards!"
+1087 0x43f	"Blast!"
+1088 0x440	"Ouch - cut myself!"
+1089 0x441	"These crops are tough!"
+1090 0x442	"Still no gold!"
+1091 0x443	"Whew!"
+1092 0x444	"Am I not worthy?"
+1093 0x445	"Eureka!"
+1094 0x446	"I am rich!"
+1095 0x447	"I must be worthy!"
+1096 0x448	"Mercy!"
+1097 0x449	"Pity me!"
+1098 0x44a	"Spare me!"
+1099 0x44b	"Let me be!"
+1100 0x44c	"I surrender!"
+1101 0x44d	"I give up!"
+1102 0x44e	"Please, no more!"
+1103 0x44f	"I will have my revenge!"
+1104 0x450	"Thou wilt regret this day!"
+1105 0x451	"Thou wilt pay for this!"
+1106 0x452	"We shall meet again!"
+1107 0x453	"Curse thine offspring!"
+1108 0x454	"Damn thee!"
+1109 0x455	"Take this!"
+1110 0x456	"Vultures will pick thy bones!"
+1111 0x457	"I shall have thine head!"
+1112 0x458	"Die, fool!"
+1113 0x459	"Thy blood will soil the land!"
+1114 0x45a	"Watch out!"
+1115 0x45b	"Move!"
+1116 0x45c	"Stand aside, I am practicing!"
+1117 0x45d	"Step aside so that I can practice!"
+1118 0x45e	"Thou art in my way!"
+1119 0x45f	"Kindly step aside!"
+1120 0x460	"Whew!  'Tis hot!";
+1121 0x461	"Work...work...work..."
+1122 0x462	"We need rain..."
+1123 0x463	"Ah, 'tis better."
+1124 0x464	"Much better!"
+1125 0x465	"'Tis better."
+1126 0x466	"I can see again!"
+1127 0x467	"This need not be on."
+1128 0x468	"This needs replacing."
+1129 0x469	"Guards!  Guards!"
+1130 0x46a	"Help!"
+1131 0x46b	"Save me!"
+1132 0x46c	"Call the guards!"
+1133 0x46d	"Alert the town guard!"
+1134 0x46e	"Do not touch that!"
+1135 0x46f	"Stop that, or else!"
+1136 0x470	"Leave that be!"
+1137 0x471	"These should be closed."
+1138 0x472	"Too cold for these to be open!"
+1139 0x473	"Who left these open?"
+1140 0x474	"Ah, 'tis better!"
+1141 0x475	"That will let some light in!"
+1142 0x476	"Too nice a day for these to be shut!"
+1143 0x477	"I could use a little food."
+1144 0x478	"I am a bit hungry."
+1145 0x479	"When do we eat?"
+1146 0x47a	"I am very hungry."
+1147 0x47b	"I must eat now."
+1148 0x47c	"I must have food."
+1149 0x47d	"I'm famished!"
+1150 0x47e	"I'm starving!"
+1151 0x47f	"I need food!"
+1152 0x480	"Catch me if thou canst!"
+1153 0x481	"Tag!  Thou art it!"
+1154 0x482	"Thou cannot catch me!"
+1155 0x483	"Nyah nyah!  Thou art it!"
+1156 0x484	"Gargoyle boy!"
+1157 0x485	"Ghosts!"
+1158 0x486	"Shades!"
+1159 0x487	"Spectres!"
+1160 0x488	"I hear something to the north!"
+1161 0x489	"I hear something to the east!"
+1162 0x48a	"I hear something to the south!"
+1163 0x48b	"I hear something to the west!"
+1164 0x48c	"Die!"
+1165 0x48d	"Bastard!"
+1166 0x48e	"Murderer!"
+1167 0x48f	"Suffer my wrath!"
+1168 0x490	"I will kill thee!"
+1169 0x491	"For that thou shalt perish!"
+1170 0x492	"Mmmmm..."
+1171 0x493	"Burp!"
+1172 0x494	"I hate leftovers..."
+1173 0x495	"What was that noise?"
+1174 0x496	"Who goes there?"
+1175 0x497	"What art thou doing here?"
+1176 0x498	"Away with thee!"
+1177 0x499	"I am trying to sleep!"
+1178 0x49a	"Begone, fool!"
+1179 0x49b	"No!!  The magebane struck true!"
+1180 0x49c	"My pretty spells are gone!"
+1181 0x49d	"My magic?!!"
+1182 0x49e	"Methinks it's colder."
+1183 0x49f	"It's a bit nippy out."
+1184 0x4a0	"It's a bit chilly."
+1185 0x4a1	"It's colder!"
+1186 0x4a2	"My teeth are chattering!"
+1187 0x4a3	"A bit frosty out."
+1188 0x4a4	"Keep's getting colder!"
+1189 0x4a5	"I'm shivering!"
+1190 0x4a6	"I need some warmth!"
+1191 0x4a7	"My toes!!"
+1192 0x4a8	"My face has gone numb!"
+1193 0x4a9	"I'm getting frostbite!"
+1194 0x4aa	"I am no longer cold."
+1195 0x4ab	"Whew, much better."
+1196 0x4ac	"Feels about right, I'd say."
+1197 0x4ad	"Not so cold anymore."
+1198 0x4ae	"The heat feels good!"
+1199 0x4af	"I feel much warmer."
+1200 0x4b0	"It's getting warmer!"
+1201 0x4b1	"I'm warming up!"
+1202 0x4b2	"Tis not so cold as was before!"
+1203 0x4b3	"I can feel my toes!"
+1204 0x4b4	"It's getting warmer!"
+1205 0x4b5	"I'm thawing!"
+1206 0x4b6	"Biting wind."
+1207 0x4b7	"Getting cold."
+1208 0x4b8	"Gnawing cold."
+1209 0x4b9	"C-c-c-cold."
+1210 0x4ba	"Gnashing teeth."
+1211 0x4bb	"Getting c-c-c-colder."
+1212 0x4bc	"Frozen flesh."
+1213 0x4bd	"F-f-freezing."
+1214 0x4be	"Not cold anymore."
+1215 0x4bf	"Better now."
+1216 0x4c0	"Feels warm."
+1217 0x4c1	"It is warmer."
+1218 0x4c2	"Stilled teeth."
+1219 0x4c3	"Not so c-c-cold."
+1220 0x4c4	"Thawing flesh."
+1221 0x4c5	"I feel my feet."
+1222 0x4c6	"Dom picuh!!"
+1223 0x4c7	"Gord fhalfa!"
+1224 0x4c8	"Dralthi rolfa?"
+1225 0x4c9	"Shirak jogh!"
+1226 0x4ca	"Traf lagar!"
+1227 0x4cb	"Halb brujis!"
+1228 0x4cc	"Gblrg!"
+1229 0x4cd	"Bojka grak!"
+1230 0x4ce	"Jorgath!"
+1231 0x4cf	"Blakath!"
+1232 0x4d0	"Cra!!!"
+1233 0x4d1	"Cra!!"
+1234 0x4d2	"Urgu jaag!"
+1235 0x4d3	"Jafal urgu!"
+1236 0x4d4	"Eeeeerrrr!"
+1237 0x4d5	"Blaggar don!"
+1238 0x4d6	"Urgot tranf!"
+1239 0x4d7	"Gloru gank!"
+1240 0x4d8	"Jafruk!"
+1241 0x4d9	"Krofpt!"
+1242 0x4da	"Cra!"
+1243 0x4db	"Dee dee, dee da..."
+1244 0x4dc	"Howdy folks!"
+1245 0x4dd	"Beedee, beedee, hi Buck!"
+1246 0x4de	"Rectum? Hell, it killed him!"
+1247 0x4df	"Yikes!! That was close!"
+1248 0x4e0	"Yodel yodel yoouuhoohoo!"
+1249 0x4e1	"Let it be..."
+1250 0x4e2	"Mama said knock you out!"
+1251 0x4e3	"Sqwuak?"
+1252 0x4e4	"Sqwuak."
+1253 0x4e5	"Sqwuak!"
+1254 0x4e6	"Sqwuak!!"
+1255 0x4e7	"To attack!"
+1256 0x4e8	"To waken from slumber!"
+1257 0x4e9	"To be a filthy human!"
+1258 0x4ea	"Grrrr..."
+1259 0x4eb	"Gaarrrrr!"
+1260 0x4ec	"Thou may have it."
+1261 0x4ed	"Consider it thine."
+1262 0x4ee	"A gift..."
+1263 0x4ef	"Not to excess..."
+1280 0x500	a/black pearl//s
+1281 0x501	bloodmoss
+1282 0x502	a/nightshade//s
+1283 0x503	a/mandrake root//s
+1284 0x504	a/garlic//s
+1285 0x505	ginseng
+1286 0x506	spider silk
+1287 0x507	sulfurous ash
+1288 0x508	bloodspawn
+1289 0x509	a/serpent scale//s
+1290 0x50a	a/worm heart//s
+1291 0x50b	agnium
+1292 0x50c	serpentinium
+1293 0x50d	zerine
+1294 0x50e	phosphor
+1295 0x50f	a/ruddy rock//s
+1296 0x510	bread
+1297 0x511	bread
+1298 0x512	rolls
+1299 0x513	fruitcake
+1300 0x514	cake
+1301 0x515	pie
+1302 0x516	pastry
+1303 0x517	sausage
+1304 0x518	mutton
+1305 0x519	meat
+1306 0x51a	fowl
+1307 0x51b	ham
+1308 0x51c	trout
+1309 0x51d	flounder
+1310 0x51e	meat
+1311 0x51f	dried meat
+1312 0x520	apple
+1313 0x521	bananas
+1314 0x522	carrots
+1315 0x523	grapes
+1316 0x524	pumpkin
+1317 0x525	pumpkin
+1318 0x526	onion
+1319 0x527	ribs
+1320 0x528	egg
+1321 0x529	butter
+1322 0x52a	cheese
+1323 0x52b	cheese
+1324 0x52c	green cheese
+1325 0x52d	potatoes
+1326 0x52e	fish and chips
+1327 0x52f	dried fish
+1328 0x530	gold sextant
+1329 0x531	sextant
+1330 0x532	gavel
+1331 0x533	quill
+1332 0x534	inkwell
+1333 0x535	quill holder
+1334 0x536	book mark
+1335 0x537	letter opener
+1336 0x538	parchment
+1337 0x539	sealing wax
+1338 0x53a	seal
+1339 0x53b	blotter
+1340 0x53c	parrot
+1341 0x53d	abacus
+1342 0x53e	sealing wax
+1343 0x53f	parchment
+1344 0x540	quill
+1345 0x541	quill
+1346 0x542	hand mirror
+1347 0x543	clacker
+1348 0x544	clacker
+1349 0x545	clacker
+1350 0x546	bell
+1351 0x547	pocket watch
+1352 0x548	magic orb
+1353 0x549	glowing cube
+1354 0x54a	humming box
+1355 0x54b	rune buttons
+1356 0x54c	ruined book
+1357 0x54d	ruined book
+1358 0x54e	yourself
+1359 0x54f	Boom!
+1360 0x550	"I have a bad feeling..."
+1361 0x551	Circle
+1362 0x552	First
+1363 0x553	Second
+1364 0x554	Third
+1365 0x555	Fourth
+1366 0x556	Fifth
+1367 0x557	Sixth
+1368 0x558	Seventh
+1369 0x559	Eighth
+1370 0x55a	Ninth
+1371 0x55b	empty bucket
+1372 0x55c	bucket of water
+1373 0x55d	bucket of blood
+1374 0x55e	bucket of wine
+1375 0x55f	bucket of beer
+1376 0x560	bucket of ale
+1377 0x561	watering can
+1378 0x562	brass bucket
+1379 0x563	oilskin
+1380 0x564	bucket of ice dragon blood
+1381 0x565	water of emotion
+1382 0x566	water of enthusiasm
+1383 0x567	water of tolerance
+1384 0x568	water of logic
+1385 0x569	water of ethicality
+1386 0x56a	water of discipline
+1387 0x56b	worm gem
+1388 0x56c	empty soul prism
+1389 0x56d	prism of emotion
+1390 0x56e	prism of enthusiasm
+1391 0x56f	prism of tolerance
+1392 0x570	soul prism with madnesss
+1393 0x571	soul prism with wantoness
+1394 0x572	soul prism with anarchy
+1395 0x573	comb of beauty
+1396 0x574	fiery egg
+1397 0x575	cat's eye stone
+1398 0x576	crystal rose
+1399 0x577	hound whistle
+1400 0x578	chunk of ice
+1401 0x579	ritual blooding device
+1402 0x57a	small gong
+1403 0x57b	ruined spellbook
+1404 0x57c	gwani horn
+1405 0x57d	dream crystal
+1406 0x57e	mirror of truth
+1407 0x57f	Silver Seed
+1408 0x580	rope
+1409 0x581	king's savior
+1410 0x582	varo leaf
+1411 0x583	catnip
+1412 0x584	twig
+1413 0x585	orb of elerion
+1414 0x586	energy globe
+1415 0x587	energy globe
+1416 0x588	ball of magical energy
+1417 0x589	empty orb of regeneration
+1418 0x58a	full orb of regeneration
+1419 0x58b	spectral orb
+1420 0x58c	barge
+1421 0x58d	orb
+1422 0x58e	orb
+1423 0x58f	orb
+1424 0x590	orb
+1425 0x591	burned out orb
+1426 0x592	serpent faith symbol
+1427 0x593	blackrock order serpent
+1428 0x594	blackrock balance serpent
+1429 0x595	blackrock chaos serpent
+1430 0x596	Serpent Isle map
+1431 0x597	Dark Path map
+1432 0x598	Silverpate's treasure map
+1433 0x599	Hawk's treasure map
+1434 0x59a	Shamino's map
+1435 0x59b	Ssylchar's map
+1436 0x59c	leather boots
+1437 0x59d	magic boots
+1438 0x59e	armoured boots
+1439 0x59f	fur boots
+1440 0x5a0	black boots
+1441 0x5a1	slippers
+1442 0x5a2	swamp boots
+1443 0x5a3	crested helm
+1444 0x5a4	plumed helm
+1445 0x5a5	viking helm
+1446 0x5a6	leather helm
+1447 0x5a7	fur hat
+1448 0x5a8	serpent crown
+1449 0x5a9	living toupee
+1450 0x5aa	woman's fur cap
+1451 0x5ab	penguin nest
+1452 0x5ac	blue egg
+1453 0x5ad	Dave
+1454 0x5ae	ankh amulet
+1455 0x5af	fellowship medallion
+1456 0x5b0	serpent necklace
+1457 0x5b1	amulet of protection
+1458 0x5b2	Batlin's medallion
+1459 0x5b3	diamond necklace
+1460 0x5b4	necklace
+1461 0x5b5	necklace of bones
+1462 0x5b6	white diamond necklace
+1463 0x5b7	amulet of Balance
+1464 0x5b8	invisibility ring
+1465 0x5b9	regeneration ring
+1466 0x5ba	blink ring
+1467 0x5bb	ring of reagents
+1468 0x5bc	ring
+1469 0x5bd	serpent ring
+1470 0x5be	iolo's lute
+1471 0x5bf	hourglass of fate
+1472 0x5c0	fire gem
+1473 0x5c1	cube of ice
+1474 0x5c2	cube of fire
+1475 0x5c3	flower
+1476 0x5c4	golden chain
+1477 0x5c5	ice diamond
+1478 0x5c6	abacus
+1479 0x5c7	heart
+1480 0x5c8	dagger
+1481 0x5c9	eye of serpent
+1482 0x5ca	lodestone of hate
+1483 0x5cb	lodestone of happiness
+1484 0x5cc	lodestone of despair
+1485 0x5cd	lodestone of love
+1486 0x5ce	quartz y-shape
+1487 0x5cf	obsidian y-shape
+1488 0x5d0	gold y-shape
+1489 0x5d1	y-shaped depression
+1490 0x5d2	torch
+1491 0x5d3	chaos serpent eye
+1492 0x5d4	order serpent eye
+1493 0x5d5	spent serpent candle
+1494 0x5d6	unlit serpent candle
+1495 0x5d7	lit serpent candle
+1496 0x5d8	bear skull
+1497 0x5d9	mysterious cat skull
+1498 0x5da	stone bier
+1499 0x5db	cot
+1500 0x5dc	pallet
+1501 0x5dd	fur pallet
+1502 0x5de	acid
+1503 0x5df	rotting skull
+1504 0x5e0	decomposing leg
+1505 0x5e1	decomposing leg
+1506 0x5e2	rotting arm
+1507 0x5e3	rotting torso
+1508 0x5e4	severed head
+1509 0x5e5	forearm
+1510 0x5e6	torn leg
+1511 0x5e7	torn leg
+1512 0x5e8	bloody torso
+1513 0x5e9	bloody torso
+1514 0x5ea	bloody torso
+1515 0x5eb	skull
+1516 0x5ec	hand
+1517 0x5ed	bodiless head
+1518 0x5ee	arm
+1519 0x5ef	leg
+1520 0x5f0	detached arm
+1521 0x5f1	Boydon's head
+1522 0x5f2	wine decanter
+1523 0x5f3	fawnish ale
+1524 0x5f4	ice wine
+1525 0x5f5	vintage wine
+1526 0x5f6	wineskin
+1527 0x5f7	everlasting goblet
+1528 0x5f8	claws
+1529 0x5f9	gwani amulet
+1530 0x5fa	odd hairbrush
+1531 0x5fb	broken glass
+1532 0x5fc	throne
+1533 0x5fd	brass box
+1534 0x5fe	ice chest
+1535 0x5ff	red cloak
+1536 0x600	bear cloak
+1537 0x601	snow leopard cloak
+1538 0x602	wolf cloak
+1539 0x603	gwani cloak
+1540 0x604	blue cloak
+1541 0x605	stone bier
+1542 0x606	altar
+1543 0x607	stones
+1544 0x608	meditation mat
+1545 0x609	magic goblet
+1546 0x60a	slate mantle
+1547 0x60b	iris door
+1548 0x60c	ruined painting
+1549 0x60d	bookshelf
+1550 0x60e	wall
+1551 0x60f	skull
+1552 0x610	spirit wall
+1553 0x611	pillar of purity
+1554 0x612	ophidian obelisk
+1555 0x613	button
+1556 0x614	helm of courage
+1557 0x615	lens of translating
+1558 0x616	crystal ball
+1559 0x617	whistle
+1560 0x618	bone flute
+1561 0x619	blackrock obelisk
+1562 0x61a	platter of replenishment
+1563 0x61b	cuspidor
+1564 0x61c	crucifix
+1565 0x61d	document
+1566 0x61e	slotted serpent
+1567 0x61f	leopard rug
+1568 0x620	wooden post
+1569 0x621	purple serpent
+1570 0x622	golden serpent
+1571 0x623	symbol of balance
+1572 0x624	symbol of order
+1573 0x625	symbol of chaos
+1574 0x626	stone cat head
+1575 0x627	giant skeleton
+1576 0x628	statue
+1577 0x629	ankh altar
+1578 0x62a	fine stockings
+1579 0x62b	fishnet stockings
+1580 0x62c	snowy plant
+1581 0x62d	embalming table
+1582 0x62e	torture table
+1583 0x62f	blackrock key
+1584 0x630	key of fire
+1585 0x631	key of ice
+1586 0x632	urn with ashes
+1587 0x633	pot of unguent
+1588 0x634	wine vat
+1589 0x635	large skull
+1590 0x636	spatula
+1591 0x637	cleaver
+1592 0x638	wooden spoon
+1593 0x639	kitchen knife
+1594 0x63a	fork
+1595 0x63b	spoon
+1596 0x63c	knife
+1597 0x63d	butter knife
+1598 0x63e	brass fork
+1599 0x63f	brass knife
+1600 0x640	horn fish
+1601 0x641	demon roast
+1602 0x642	spider plant
+1603 0x643	wolf meat
+1604 0x644	berry
+1605 0x645	Avatar?
+1606 0x646	candle
+1607 0x647	taper
+1608 0x648	lantern
+1609 0x649	candelabrum
+1610 0x64a	candelabrum
+1611 0x64b	candelabrum
+1612 0x64c	candle
+1613 0x64d	candle
+1614 0x64e	oil lamp
+1615 0x64f	candle
+1616 0x650	candlestick
+1617 0x651	candlestick
+1618 0x652	lantern
+1619 0x653	candlestick
+1620 0x654	candlestick
+1621 0x655	lantern
+1622 0x656	candle
+1623 0x657	lit 
+1624 0x658	spent 
+1625 0x659	dream crystal
+1626 0x65a	mirror rock
+1627 0x65b	icy column
+1628 0x65c	dust of invisibility
+1629 0x65d	strange potion
+1630 0x65e	's ashes
+1631 0x65f	potted plant
+1632 0x660	chrysanthemums
+1633 0x661	marigolds
+1634 0x662	sea blossum
+1635 0x663	bouqet
+1636 0x664	cactus
+1637 0x665	red rose
+1638 0x666	blue rose
+1639 0x667	morning poppies
+1640 0x668	dead plant
+1641 0x669	drumsticks
+1642 0x66a	's body
+1643 0x66b	flour sack
+1644 0x66c	plate
+1645 0x66d	canister
+1646 0x66e	pan
+1647 0x66f	pan with dough
+1648 0x670	flour sifter
+1649 0x671	spoon
+1650 0x672	spoon
+1651 0x673	rolling pin
+1652 0x674	rolling pin
+1653 0x675	bread paddle
+1654 0x676	basket
+1655 0x677	basket
+1656 0x678	closed sack
+1657 0x679	open sack
+1658 0x67a	churn
+1659 0x67b	flour
+1660 0x67c	dough
+1661 0x67d	orb of dough
+1662 0x67e	hunk
+1663 0x67f	babe
+1664 0x680	platform
+1665 0x681	door
+1666 0x682	table
+1667 0x683	wall
+1670 0x686	Combat
+1671 0x687	Hor. Pace
+1672 0x688	Ver. Pace
+1673 0x689	Talk
+1674 0x68a	Dance
+1675 0x68b	Eat
+1676 0x68c	Farm
+1677 0x68d	Tend Shop
+1678 0x68e	Miner
+1679 0x68f	Hound
+1680 0x690	Stand
+1681 0x691	Loiter
+1682 0x692	Wander
+1683 0x693	Blacksmith
+1684 0x694	Sleep
+1685 0x695	Wait
+1686 0x696	Major Sit
+1687 0x697	Graze
+1688 0x698	Bake
+1689 0x699	Sew
+1690 0x69a	Shy
+1691 0x69b	Lab
+1692 0x69c	Thief
+1693 0x69d	Waiter
+1694 0x69e	Special
+1695 0x69f	Kid Games
+1696 0x6a0	Eat at Inn
+1697 0x6a1	Duel
+1698 0x6a2	Preach
+1699 0x6a3	Patrol
+1700 0x6a4	Desk Work
+1701 0x6a5	Follow Avt
+1702 0x6a6	Goto Item
+1703 0x6a7	Grab Item
+1704 0x6a8	Drop Item
+1705 0x6a9	Sit
+1706 0x6aa	Fill Buckt
+1707 0x6ab	Read
+1708 0x6ac	Pay Rspcts
+1709 0x6ad	Fil Wtr Tr
+1710 0x6ae	Archery
+1711 0x6af	Fencing
+1712 0x6b0	Ready Hand
+1713 0x6b1	Pause
+1714 0x6b2	Move Item
+1715 0x6b3	Chek Light
+1716 0x6b4	Tag
+1717 0x6b5	Hack Sit
+1718 0x6b6	Arrest
+1719 0x6b7	Goto Sch D
+1720 0x6b8	Goto Rem L
+1721 0x6b9	Chek Shtrs
+1722 0x6ba	Check Area
+1723 0x6bb	
+1724 0x6bc	
+1725 0x6bd	Ref:%d, Loc:%03x %03x, %04d %04d, Alt:%d
+1726 0x6be	%s Egg
+1727 0x6bf	Criteria    = %s
+1728 0x6c0	Distance    = %d
+1729 0x6c1	Probability = %d
+1730 0x6c2	Nocturnal   = %c
+1731 0x6c3	Once ever   = %c
+1732 0x6c4	Hatched     = %c
+1733 0x6c5	Auto reset  = %c
+1734 0x6c6	Creature  = %s
+1735 0x6c7	Number    = %d
+1736 0x6c8	Alignment = %s
+1737 0x6c9	WorkType  = %s
+1738 0x6ca	score      = %d
+1739 0x6cb	continuous	= %c
+1740 0x6cc	SFX number = %d
+1741 0x6cd	continuous	= %c
+1742 0x6ce	Speech number = %d
+1743 0x6cf	Quality  = %d
+1744 0x6d0	Quantity = %d
+1745 0x6d1	Usecode  = %d
+1746 0x6d2	Missile   = %s
+1747 0x6d3	Direction = %s
+1748 0x6d4	Frequency = %d
+1749 0x6d5	Quality = %d
+1750 0x6d6	Map num = %d
+1751 0x6d7	x coord = %d
+1752 0x6d8	y coord = %d
+1753 0x6d9	Weather  = %s
+1754 0x6da	Duration = %d minutes
+1755 0x6db	Duration = continuous
+1756 0x6dc	Quality      = %d
+1757 0x6dd	Next quality = %d
+1758 0x6de	Area of effect = %d
+1759 0x6df	Hit a key.
+1760 0x6e0	Path Data
+1761 0x6e1	Qual=%3d
+1762 0x6e2	Code=%s
+1763 0x6e3	%s:  %c
+1764 0x6e4	Ref = %d
+1765 0x6e5	%s
+1766 0x6e6	Select->          
+1767 0x6e7	%lx
+1768 0x6e8	%ld
+1769 0x6e9	Npc #%3d
+1770 0x6ea	%s%3d
+1771 0x6eb	[%d]  %s
+1772 0x6ec	[9]  %s    
+1773 0x6ed	[X]  Abort
+1774 0x6ee	[X]it
+1775 0x6ef	%s%s    
+1776 0x6f0	%s%c
+1777 0x6f1	%s%s
+1778 0x6f2	WH
+1779 0x6f3	BR
+1780 0x6f4	BL
+1781 0x6f5	AL
+1782 0x6f6	%s%02d
+1783 0x6f7	%s%04d
+1784 0x6f8	What type?
+1785 0x6f9	\rshape = %d
+1786 0x6fa	Npc #%3d
+1787 0x6fb	%s  %c
+1788 0x6fc	%s%d
+1789 0x6fd	  Busy=%c Disabled=%c
+1790 0x6fe	Sit Ref=%u
+1791 0x6ff	  A=%u B=%u C=%u R=%u
+1792 0x700	Dx2=%d Dy2=%d
+1793 0x701	%c%s
+1794 0x702	S=%u
+1795 0x703	X=%u
+1796 0x704	Y=%u
+1797 0x705	Z=%u
+1798 0x706	%s %3s
+1799 0x707	%d
+1800 0x708	%s %3s%s %3s
+1801 0x709	%s %3s%s
+1802 0x70a	%s %3s
+1803 0x70b	%s %3s%s %3s
+1804 0x70c	%s %3d%s
+1805 0x70d	%s	%3s%s
+1806 0x70e	%s  %2d.%d %s
+1807 0x70f	%s (%03x,%03x)
+1808 0x710	%s (%04d,%04d)
+1809 0x711	%s %d
+1810 0x712	%s  %2d.%d %s
+1811 0x713	Bsy=%c Ded=%c Cnj=%c Sum=%c Pth=%c Sld=%c IF=%c
+1812 0x714	HP=%d S=%d I=%d CS=%d D=%d MP=%d F=%d
+1813 0x715	(x,y,z)=(%d,%d,%d) TP=%d Xp=%ld
+1814 0x716	FL=%c WA=%c SW=%c ET=%c Acty=%s SN=%d, V1=%u, V2=%u, V3=%u
+1815 0x717	As=%c Ch=%c Cu=%c Pa=%c Po=%c Pr=%c Fp=%d,%d,%d
+1816 0x718	AM=%s DAM=%s Aln=%s
+1817 0x719	None     
+1818 0x71a	PT=%d ST=%d Op=%d WP=%c IA=%c Py=%c Pd=%c
+1819 0x71b	I-Vr=(%d,%d) S-Vr=(%d,%d) D/R=%d
+1820 0x71c	CD=%d Rg=%d IR=%c LOF=%c RB=%c CW=%c
+1821 0x71d	%2d %s:
+1822 0x71e	AM
+1823 0x71f	PM
+1824 0x720	%2d %s:  (%04d,%04d) - %s
+1825 0x721	%s  %s
+1826 0x722	Contents of SFX cache:
+1827 0x723	slot %d: %d
+1828 0x724	
+1829 0x725	CurrentBackgroundMusic is %d
+1830 0x726	0  Combat     11 %-10s  22 %-10s
+1831 0x727	1  Hor. Pace  12 %-10s  23 %-10s
+1832 0x728	2  Ver. Pace  13 %-10s  24 %-10s
+1833 0x729	3  Talk       14 %-10s  25 %-10s
+1834 0x72a	4  Dance      15 %-10s  26 %-10s
+1835 0x72b	5  Eat        16 %-10s  27 %-10s
+1836 0x72c	6  Farm       17 %-10s  28 %-10s
+1837 0x72d	7  Tend Shop  18 %-10s  29 %-10s
+1838 0x72e	8  Miner      19 %-10s  30 %-10s
+1839 0x72f	9  Hound      20 %-10s  31 %-10s
+1840 0x730	10 Stand      21 %-10s  [X]it
+1841 0x731	Right-handed mouse
+1842 0x732	Left-handed mouse
+1843 0x733	Frame Limiting on
+1844 0x734	Frame Limiting off
+1845 0x735	Sprite Number:  
+1846 0x736	Hex:%x %x %x
+1847 0x737	Dec:%d %d %d
+1848 0x738	Type = %d, Frame = %d
+1849 0x739	Hps = %d, Qual = %d, Quan = %d, Busy = %c
+1850 0x73a	PartyOwned = %c, Disposable = %c
+1851 0x73b	Sets
+1852 0x73c	Voice
+1853 0x73d	Flex zoomer
+1854 0x73e	World Physics
+1855 0x73f	Sprite Manager
+1856 0x740	Shape Manager
+1857 0x741	The Red Screen
+1858 0x742	Action Queue
+1859 0x743	Collision buf
+1860 0x744	Map
+1861 0x745	Z-Buffer
+1862 0x746	Shape Dimensions
+1863 0x747	Occlusion
+1864 0x748	Chunk Cache
+1865 0x749	Weapon Tables
+1866 0x74a	Initializing SPOT...
+1867 0x74b	Game data
+1868 0x74c	Initializing Camera
+1869 0x74d	Loading polymorphs
+1870 0x74e	Initialization Complete
+1871 0x74f	TFA
+1872 0x750	WV
+1873 0x751	HOT
+1874 0x752	Item Buffer
+1875 0x753	Equipment
+1876 0x754	Missile Tracker
+1877 0x755	Shadow NPC Buffer
+1878 0x756	a1 = %x, a2 =%x, a3 = %x, a4 = %x  
+1879 0x757	Mojo bounds check failure:
+1880 0x758	Index %ld (%lx), bound %ld (%lx)
+1881 0x759	W:%d AM:%d A:%d M:%d R:%d
+1882 0x75a	Locked
+1883 0x75b	Too Far in %s
+1884 0x75c	Enter the spell number (0-79): 
+1885 0x75d	mouse3
+1886 0x75e	mouse4
+1887 0x75f	Making new game
+1888 0x760	Loading Npcs
+1889 0x761	Loading Regions
+1890 0x762	Oink!
+1891 0x763	Super Goblin has vanished!
+1892 0x764	Iolo is dancing at %s!
+1893 0x765	
+1894 0x766	 
+1895 0x767	
+1896 0x768	
+1897 0x769	
+1898 0x76a	
+1899 0x76b	
+1900 0x76c	
+1901 0x76d	
+1902 0x76e	
+1903 0x76f	
+1904 0x770	
+1905 0x771	
+1906 0x772	
+1907 0x773	
+1908 0x774	NPC %d is ethereal but solid! WE fix.
+1909 0x775	%2d
+1910 0x776	%s %d
+1911 0x777	Automaton
+1912 0x778	n/a
+1913 0x779	%6ld
+1914 0x77a	%02d/%02d
+1915 0x77b	%3d
+1916 0x77c	The Avatar is an Albino!!!
+1917 0x77d	Audio on
+1918 0x77e	Audio off
+1926 0x786	None
+1927 0x787	Wrap to 0
+1928 0x788	Pause
+1929 0x789	Sit
+1930 0x78a	Kneel at Tombstone
+1931 0x78b	Kneel
+1932 0x78c	Loiter
+1933 0x78d	Left About Face
+1934 0x78e	Right About Face
+1935 0x78f	Horizontal Pace
+1936 0x790	Vertical Pace
+1937 0x791	50% Reverse
+1938 0x792	50% Skip Next
+1939 0x793	Hammer
+1940 0x794	Check Area
+1941 0x795	Call Usecode
+1942 0x796	Bow to Ground
+1943 0x797	Bow From Ground
+1944 0x798	Wait for Semaphore
+1945 0x799	Release Semaphore
+1946 0x79a	Ready Weapon
+1947 0x79b	Unready Weapon
+1948 0x79c	One Handed Swing
+1949 0x79d	Two Handed Swing
+1950 0x79e	Read
+1951 0x79f	50% Wrap To 0
+1952 0x7a0	Combat Near...
+1953 0x7a1	Repeat Forever
+1954 0x7a2	Exc. Reserved.
+2182 0x886	[A]ttack Mode       [T]arget
+2183 0x887	[B]usiness Activity [E]xperience
+2184 0x888	[P]op Weapon        [R]eserve Dex
+2185 0x889	[W]ant Primary Tgle [S]tats
+2186 0x88a	[F]ollowing/Align
+2187 0x88b	[N]pc Status
+2188 0x88c	[~]raining Points
+2189 0x88d	[K]ill Npc:
+2190 0x88e	[X]it
+2191 0x88f	Enter command.
+2192 0x890	Enter no. of reserve dex points.
+2193 0x891	Enter no. of experience pts..
+2194 0x892	Enter no. of training pts..
+2195 0x893	Sword2H readied.
+2196 0x894	Sword2H unreadied.
+2197 0x895	[1]  Neutral
+2198 0x896	[2]  Good
+2199 0x897	[3]  Evil
+2200 0x898	[4]  Chaotic
+2201 0x899	[X]  Abort
+2202 0x89a	Enter no. of alignment.
+2203 0x89b	Enter activity number.
+2204 0x89c	----------------
+2205 0x89d	[D]exterity....
+2206 0x89e	[F]ood Level...
+2207 0x89f	[I]ntelligence.
+2208 0x8a0	[S]trength.....
+2209 0x8a1	[C]ombat Skill.
+2210 0x8a2	[M]agic Points.
+2211 0x8a3	[H]it Points...
+2212 0x8a4	[X]it
+2213 0x8a5	Enter no. of food points (0-31.)
+2214 0x8a6	Enter no. of base combat skill pts..
+2215 0x8a7	Enter no. of base intelligence pts..
+2216 0x8a8	Enter no. of base strength pts..
+2217 0x8a9	Enter no. of base dex. points.
+2218 0x8aa	Enter no. of magic points.
+2219 0x8ab	Enter no. of hit points.
+2220 0x8ac	----------------
+2221 0x8ad	[P]rimary...
+2222 0x8ae	[S]econdary.
+2223 0x8af	[O]ppressor.
+2224 0x8b0	[X]it
+2225 0x8b1	Enter command.
+2226 0x8b2	Enter npc-to-target-to.
+2227 0x8b3	Invalid npc.
+2228 0x8b4	----------------
+2229 0x8b5	Nearest
+2230 0x8b6	Weakest
+2231 0x8b7	Strongest
+2232 0x8b8	Berserk
+2233 0x8b9	Protect
+2234 0x8ba	Defend
+2235 0x8bb	Flank
+2236 0x8bc	Fleeing
+2237 0x8bd	Random
+2238 0x8be	Manual
+2239 0x8bf	----------------
+2240 0x8c0	Neutral
+2241 0x8c1	Good
+2242 0x8c2	Evil
+2243 0x8c3	Chaotic
+2244 0x8c4	----------------
+2245 0x8c5	[C]urrent Attack Mode...
+2246 0x8c6	[D]efault Attack Mode...
+2247 0x8c7	----------------
+2248 0x8c8	Teleport Menu
+2249 0x8c9	[D]ecimal Coordinates
+2250 0x8ca	[H]exadecimal Coordinates
+2251 0x8cb	[N]pc Number
+2252 0x8cc	[R]eferent
+2253 0x8cd	[X]it
+2254 0x8ce	Enter command.
+2255 0x8cf	Enter x coord.
+2256 0x8d0	Enter y coord.
+2257 0x8d1	Enter z coord.
+2258 0x8d2	Enter npc number.
+2259 0x8d3	Invalid npc.
+2260 0x8d4	Enter referent (-1 to exit.)
+2261 0x8d5	Invalid referent.
+2262 0x8d6	Invalid command.
+2263 0x8d7	----------------
+2264 0x8d8	Npc #
+2265 0x8d9	[A] Asleep.
+2266 0x8da	[B] Charmd.
+2267 0x8db	[C] Cursed.
+2268 0x8dc	[D] Prlyzd.
+2269 0x8dd	[E] Poisnd.
+2270 0x8de	[F] Prtctd.
+2271 0x8df	[G] Dead...
+2272 0x8e0	[H] In Act.
+2273 0x8e1	[I] Party..
+2274 0x8e2	[J] Invsbl.
+2275 0x8e3	[K] Fly....
+2276 0x8e4	[L] Walk...
+2277 0x8e5	[M] Swim...
+2278 0x8e6	[N] Ethrel.
+2279 0x8e7	[O] Prtcee.
+2280 0x8e8	[P] Conjrd.
+2281 0x8e9	[Q] Summnd.
+2282 0x8ea	[R] Bleedn.
+2283 0x8eb	[S] Sex....
+2284 0x8ec	[T] Met....
+2285 0x8ed	[U] NoCast.
+2286 0x8ee	[1] Skin...
+2287 0x8ef	[V] ID#:
+2288 0x8f0	[4] Read...
+2289 0x8f1	[Z] Zombie.
+2290 0x8f2	[W] Freeze.
+2291 0x8f3	[Y] Temp: 
+2292 0x8f4	Warmth: 
+2293 0x8f5	[2] Polymo.
+2294 0x8f6	[3] Tourna.
+2295 0x8f7	[5] Petra..
+2296 0x8f8	Enter ID#.
+2297 0x8f9	Enter Temperature.
+2298 0x8fa	[X]it
+2299 0x8fb	Enter command.
+2300 0x8fc	Enter race(0=W,1=BN,2=BK,3=AL).
+2301 0x8fd	Enter type to polymorph to.
+2302 0x8fe	[7] Naked..
+2303 0x8ff	----------------
+2304 0x900	Activity Dump of Npc #
+2305 0x901	[X]it
+2306 0x902	Enter command.
+2307 0x903	----------------
+2308 0x904	Sign/Tomb/Plaque/Book/sCroll
+2309 0x905	Beginning Quality
+2310 0x906	Ending Quality
+2311 0x907	Qual=
+2312 0x908	----------------
+2313 0x909	[B]usiness Schedule [H]ack Mover...:
+2314 0x90a	All
+2315 0x90b	[D]o Schedule.:
+2316 0x90c	 [L]ocation.....:
+2317 0x90d	[G]ame Flags        [I]nspect
+2318 0x90e	[N]umber ID...:
+2319 0x90f	 [M]odify Npc
+2320 0x910	[T]eleport to Npc   [U]nk BugChkin :
+2321 0x911	[P]ower Avatar:
+2322 0x912	 [Q]ueue Toggle.:
+2323 0x913	[S]et Time          [C]reate Item
+2324 0x914	[+-] Time Rate:
+2325 0x915	 [A]ctivity Dump
+2326 0x916	[F]ollowers...:
+2327 0x917		[X]it
+2328 0x918	Current time:
+2329 0x919	Enter command.
+2330 0x91a	Which npc?
+2331 0x91b	Invalid npc.
+2332 0x91c	Enter type (-1 to exit.)
+2333 0x91d	Creation aborted.
+2334 0x91e	Creation failed.
+2335 0x91f	Cannot drop item.
+2336 0x920	Enter frame (-1 to exit.)
+2337 0x921	Creation aborted.
+2338 0x922	Enter quantity.
+2339 0x923	Enter quality.
+2340 0x924	Item created.
+2341 0x925	Current time:
+2342 0x926	Enter hour (-1 to cancel.)
+2343 0x927	Enter day (-1 to cancel.)
+2344 0x928	Game time not changed.
+2345 0x929	Which npc?
+2346 0x92a	Npc=
+2347 0x92b	Invalid npc.
+2348 0x92c	[I]nspect Flag       
+2349 0x92d	[S]et Flag      
+2350 0x92e	[X]  Abort
+2351 0x92f	Enter option.
+2352 0x930	Invalid option.
+2353 0x931	Which npc?
+2354 0x932	0-255 only.
+2355 0x933	Current Activity:
+2356 0x934	Invalid npc.
+2357 0x935	Which npc?  (-1 for all.)
+2358 0x936	Which npc?
+2359 0x937	Invalid npc.
+2360 0x938	----------------
+2361 0x939	Enter commmand.
+2362 0x93a	Enter no. of attack mode.
+2363 0x93b	Invalid command.
+2364 0x93c	Coords in hex:
+2365 0x93d	Coords in dec:
+2366 0x93e	Avatar's altitude:
+2367 0x93f	Which time slot (0-7, r, x)? 
+2368 0x940	Source:
+2369 0x941	[0] Bark
+2370 0x942	[1] Converse/Default
+2371 0x943	[2] Action
+2372 0x944	[3] Trigger
+2373 0x945	[4] Combat
+2374 0x946	[5] Equip
+2375 0x947	[6] Unequip
+2376 0x948	[7] NearDeath
+2377 0x949	[8] Polymorph
+2378 0x94a	[9] Talking
+2379 0x94b	[X] Exit
+2380 0x94c	Source?
+2381 0x94d	[Y] yes
+2382 0x94e	[N] no
+2383 0x94f	[X] exit
+2384 0x950	Call for a specific index?
+2385 0x951	Enter usable index:
+2386 0x952	Enter activity number:
+2387 0x953	SFX or Music #: 
+2388 0x954	Enter x-coord:
+2389 0x955	Enter y-coord:
+2390 0x956	You sure you wish to revert? 
+2391 0x957	(c)lear (l)ocation (a)ctivity:
+2438 0x986	CHEAT KEYS
+2439 0x987	F2    Super Cheat System
+2440 0x988	F3    Goto Map Location
+2441 0x989	F4    Single Step Toggle
+2442 0x98a	F5    Cast Spell
+2443 0x98b	F6    Barge Hack Cheat
+2444 0x98c	F7    Toggle Traces
+2445 0x98d	F8    Read Sign, Book, Etc.
+2446 0x98e	F9    Target Report
+2447 0x98f	F10   Pathfind Test
+2448 0x990	Alt-1 Sound Effect
+2449 0x991	Alt-2 Frame Counter
+2450 0x992	Alt-3 Sprite Effects
+2451 0x993	Alt-4 Dump Item Contents
+2452 0x994	Alt-6 Play Music
+2453 0x995	NORMAL KEYS
+2454 0x996	C  Combat
+2455 0x997	S  Load Save
+2456 0x998	A  Audio Toggle
+2457 0x999	X  Exit
+2458 0x99a	Z  Ztats
+2459 0x99b	<ESC> Exit
+2460 0x99c	<SPACE> Toggle Keyboard Simulate Mouse
+2461 0x99d	Press return or space to continue.
+2538 0x9ea	None
+2539 0x9eb	Monster
+2540 0x9ec	Jukebox
+2541 0x9ed	Sound Effects
+2542 0x9ee	Voice
+2543 0x9ef	Usecode
+2544 0x9f0	Missile
+2545 0x9f1	Teleport
+2546 0x9f2	Weather
+2547 0x9f3	Path
+2548 0x9f4	Button
+2549 0x9f5	Cached in
+2550 0x9f6	Party near
+2551 0x9f7	Avatar Near
+2552 0x9f8	Avatar Far
+2553 0x9f9	Avatar footpad
+2554 0x9fa	Party footpad
+2555 0x9fb	Something on
+2556 0x9fc	External
+2557 0x9fd	North
+2558 0x9fe	North East
+2559 0x9ff	East
+2560 0xa00	South East
+2561 0xa01	South
+2562 0xa02	South West
+2563 0xa03	West
+2564 0xa04	North West
+2565 0xa05	Clear
+2566 0xa06	Snow
+2567 0xa07	Rain
+2568 0xa08	Sparkle
+2569 0xa09	Fog
+2570 0xa0a	Overcast
+2571 0xa0b	Cloudy
+

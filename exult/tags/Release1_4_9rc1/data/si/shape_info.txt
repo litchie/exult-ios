@@ -1,0 +1,1836 @@
+#	Various shape information for Serpent Isle.
+#
+#	February 6, 2006
+#
+
+%%section version
+:6
+%%endsection
+
+%%section explosions
+#	Format
+#		:shapenum/spritenum/sfxnum
+#	If a shape is not in the list below, it will use the 'default'
+#	explosion (spritenum 5) with no sound effect (sfxnum -1).
+#   You can leave sfxnum out, in which case there will be no SFX.
+#
+#	 Snow tile
+#
+:32/4/41
+
+#	 Delayed blast
+#
+:399/13/65
+
+#	 Death Vortex
+#
+:639/8/128
+
+#	 Burst Arrow
+#
+:554/19/40
+
+#	 Delayed Blast
+#
+:621/4/42
+
+#	 Powder Keg
+#
+:704/4/42
+
+#	 Swordstrike
+#
+:287/23/20
+
+#	 Fire Bolt
+#
+:856/5/65
+%%endsection
+
+%%section shape_sfx
+#	Format
+#		:shapenum/sfxnum/delay/range/rand
+#	Only the first two parameters are required.
+#	delay is a flag (either 0 or 1) which indicates extra delay
+#	between successive plays. If it is 1 and the shape does *not*
+#	have an associated animation (e.g., cavern), there will be
+#	a random delay. If the shape *does* have an associated animation,
+#	this flag will be ignored.
+#	range is used to specify a sequence of different sfx used by the
+#	shape: Exult will play sfx ranging from sfxnum to sfxnum + range - 1.
+#	rand is a flag controlling how range is used: if rand is 1, Exult
+#	will randomly play one sfx in the range; if rand is 0, Exult will
+#	play them sequentially, wrapping back to the first sfx.
+#
+#	Surf (109)
+:612/109
+:613/109
+:632/109
+:699/109
+:736/109
+:737/109
+:751/109
+:808/109
+:834/109
+:875/109
+:907/109
+:911/109
+:918/109
+:1012/109
+:1020/109
+:1022/109
+
+#	Bubbles (110 to 114)
+#
+:335/110/100/5/1
+#	Doesn't seem to play sounds
+#:780/110/100/5/1
+
+#	Slimes (54 to 58)
+#
+:529/110/100/5/1
+
+#	Fountains
+#
+:153/50
+:326/50
+
+#	Moongates
+#
+:864/55
+
+#	Grandfather clock
+#
+:252/117/100/2/0/16
+:695/117/100/2/0/16
+
+#	Cavern
+#
+:389/103/5
+:391/103/5
+
+#	Magic weapons -- apparently not used
+#
+#:547/75
+#:548/75
+#:559/75
+#:562/75
+
+#	Force Wall
+#
+:728/75
+
+#	Flaming weapons -- sounds awful, so it is disabled
+#
+#:551/45/50/3/1
+#:553/45/50/3/1
+#:630/45/50/3/1
+
+#	Campfire -- sounds awful, so it is disabled
+#
+#:289/45/50/3/1
+#:796/45/50/3/1
+#:825/45/50/3/1
+
+#	Burning Urn -- sounds awful, so it is disabled
+#
+#:992/45/50/3/1
+
+#	Fire Field -- sounds awful, so it is disabled
+#
+#:561/45/50/3/1
+#:895/45/50/3/1
+
+#	Fire elemental -- sounds awful, so it is disabled
+#
+#:861/45/50/3/1
+
+#	Poison/Sleep Field
+#
+:900/129
+:902/129
+
+#	Energy Field
+#
+:768/71
+
+#	Barrier
+#
+:301/71
+
+#	Pulsating object
+#
+:726:26
+
+%%endsection
+
+%%section animation
+#	The "default" animation starts at frame 0, goes through all
+#	frames and returns to frame 0 again. This list is only for
+#	animations which are NOT like that.
+#
+#	Format
+#
+#	Time Synchronized Loop
+#		:shapenum/0/frame_count/frame_delay/sfx_delay
+#	Hourly Loop (e.g., Sundials)
+#		:shapenum/1/frame_count
+#	Nonlooping (e.g., Energy fields)
+#		:shapenum/2/frame_count/frame_delay/sfx_delay
+#	Looping
+#		:shapenum/3/frame_count/frame_delay/sfx_delay/freeze_first/recycle
+#	Random Frames
+#		:shapenum/4/frame_count/frame_delay/sfx_delay
+#
+#	frame_count is the number of frames in each animation cycle; that
+#	is, the shape will be divided into sets of frame_count frames which
+#	animate independently from each other. If this field is zero or less,
+#	Exult will set it equal to the number of frames of the shape.
+#
+#	frame_delay is an additional frame delay; time between frames
+#	is multiplied by frame_delay. MUST be positive.
+#
+#	sfx_delay indicates the delay (in frames) before the sfx
+#	is played again. If it is zero or one, the sfx will be played
+#	continuously; if it is negative, it will be played only synchronized
+#	with the animation (this means frame 0 or 1; see freeze_first).
+#	On all other cases, the sfx will be played every sfx_delay frames.
+#
+#	freeze_first is the % chance of advancing the first frame of the loop;
+#	this means that if freeze_first is zero, the animation will stop at the
+#	first frame. Converselly, if freeze_first is 100, it will always advance.
+#
+#	recycle is the number of frames at the end to repeat after reaching
+#	the last frame of the loop; for example, recycle 6 means repeat the last
+#	6 frames of the loop. recycle 0 means repeat all frames.
+#
+#	A couple data patches for SI:
+#
+#	Bubbles
+#
+:335/3/6/1/-1/20/0
+
+#	Grandfather clock
+#
+:695/0/6/4/3
+%%endsection
+
+%%section usecode_events
+#	List of which items receive usecode events when readied/unreadied.
+#
+#	Format
+#		:shapenum/event
+#
+#	'event' is nonzero to receive usecode events, zero otherwise.
+#
+#	Quest items
+:209/1
+
+#	Rings
+:296/1
+
+#	Lit torch
+:701/1
+
+#	Lit light source
+:338/1
+
+#	Black sword
+:806/1
+
+#	Erinons Axe
+:990/1
+
+#	Belt of Strength
+:996/1
+
+#	Guantlets of Quickness
+:1001/1
+
+#	Helm of Light
+:1013/1
+%%endsection
+
+%%section mountain_tops
+#	Indicates if the object (which MUST be a building type) is a mountain top.
+#
+#	Format
+#		:shapenum/val
+#
+#	If 'val' is zero, it is not a mountain top. If it is 1, the shape is a normal
+#	mountain top. If 'val' is 2, the shape is a snow mountain top. It is treated
+#	as being zero in all other cases.
+#
+:180/1
+:182/1
+:183/1
+:324/1
+:394/1
+:941/1
+:969/1
+:983/1
+:436/2
+:437/2
+:444/2
+:448/2
+:466/2
+:477/2
+%%endsection
+
+%%section snowmountain
+#	Indicates if the object (which MUST be a building type) is a snow mountain top.
+#
+#	Format
+#		:shapenum/flag
+#
+#	'flag' is nonzero for mountain tops, zero otherwise.
+#
+%%endsection
+
+%%section effective_hps
+#	Effective HPs for objects which otherwise don't have them
+#	(e.g., doors, powder keg). If the object does not have
+#	HPs, they default to being indestructable; the list below
+#	is only for those which are *not* indestructable.
+#
+#	Format
+#		:shapenum/frame/quality/hps
+#
+#	If frame is -1, this entry will be used for all unlisted frames.
+#	Likewise, if quality is -1, it will be used for all unlisted qualities.
+#	If the object does not have a quality, it will also be ignored
+#	(and treated as -1).
+#	If hps are zero, the object will be indestructable.
+#
+#		Locked chest.
+#
+:522/-1/0/4
+:522/-1/255/4
+
+#		Vertical Door - 270.
+#
+:270/0/0/6
+:270/1/0/6
+:270/2/0/6
+:270/8/0/6
+:270/9/0/6
+:270/10/0/6
+:270/16/0/6
+:270/17/0/6
+:270/18/0/6
+
+#		Horizontal Door - 376.
+#
+:376/0/0/6
+:376/1/0/6
+:376/2/0/6
+:376/8/0/6
+:376/9/0/6
+:376/10/0/6
+:376/16/0/6
+:376/17/0/6
+:376/18/0/6
+
+#		Vertical Door - 432.
+#
+:432/0/0/6
+:432/1/0/6
+:432/2/0/6
+:432/4/0/6
+:432/5/0/6
+:432/6/0/6
+
+#		Horizontal Door - 433.
+#
+:433/0/0/6
+:433/1/0/6
+:433/2/0/6
+:433/4/0/6
+:433/5/0/6
+:433/6/0/6
+
+#		Powder keg
+#
+:704/-1/0/4
+%%endsection
+
+%%section lightweight_object
+#	Indicates which objects are lightweight -- that is, which objects
+#	weight one-tenth of what their shape data would otherwise indicate.
+#	In the originals, this was for coins and reagents.
+#
+#	Format
+#		:shapenum/light
+#
+#	'light' is nonzero for very light objects, zero otherwise.
+#
+:644/1
+:842/1
+:951/1
+:952/1
+:948/1
+%%endsection
+
+%%section monster_food
+#	Which frame is to be used for food if a monster specifies it as equpment.
+#
+#	Format
+#		:shapenum/food_frame
+#
+#	food_frame: Frame to be used for food carried by monsters. If this is -1,
+#	a random frame will be used. Monsters not listed have a -1 by default.
+#
+#		Chicken.
+#
+:498/10
+
+#		Cow - beef.
+#
+:500/9
+
+#		Deer - venison.
+#
+:502/14
+
+#		Fish.
+#
+:509/12
+
+#		Rabbit - same as cow?
+#
+:811/9
+
+#		Sheep - mutton.
+#
+:970/8
+
+#		Boar - pork.
+#
+:329/11
+%%endsection
+
+%%section actor_flags
+#	Lots of monster/actor data which was hardcoded in the originals.
+#
+#	Format
+#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis/quakewalk
+#
+#	The fields are flags which are true if nonzero, false otherwise.
+#	The default for actors not on the list is false.
+#	dont_eat: nonzero if actor does not need food, zero otherwise.
+#	cold_immune: nonzero if actor is immune to cold, zero otherwise.
+#	summons: nonzero if actor can summon allies, zero otherwise.
+#	teleports: nonzero if actor can teleport, zero otherwise.
+#	turn_invis: nonzero if actor can become invisible, zero otherwise.
+#	armageddon: nonzero if actor susrives armageddon, zero otherwise.
+#	quakewalk: nonzero if actor causes earthquake when walking, zero otherwise.
+#
+#
+#		Gazer
+#
+:511/0/0/0/0/1/0/0
+
+#		Automatons
+#
+:658/1/1/0/0/0/0/0
+:734/1/1/0/0/0/0/0
+:747/1/1/0/0/0/0/0
+:945/1/1/0/0/0/0/0
+
+#		Aram Dol
+#
+:981/0/0/0/0/1/0/0
+
+#		Batlin
+#
+:318/0/0/0/0/0/1/0
+
+#		Cyclops
+#
+:501/0/0/0/0/0/0/1
+%%endsection
+
+%%section warmth_data
+#	How much protection from cold is given by a given piece of clothing.
+#
+#	Format
+#		:shapenum/frame/warmth
+#
+#	If frame is -1, this entry will be used for all unlisted frames.
+#	The default warmth is zero.
+#
+#		Helms.
+#
+:383/-1/5
+:541/-1/5
+:542/2/15
+:542/-1/5
+:1004/0/10
+:1004/1/35
+:1004/2/-8
+:1004/3/20
+:1004/4/35
+:1013/-1/10
+
+#		Cloaks.
+#
+:227/0/30
+:227/1/70
+:227/2/70
+:227/3/70
+:227/4/70
+
+#		Boots.
+#
+:587/0/85
+:587/1/65
+:587/2/50
+:587/3/95
+:587/4/85
+:587/5/75
+:587/6/80
+
+#		Torso.
+#
+:419/-1/-9
+:569/-1/20
+:570/-1/-8
+:571/-1/-5
+:573/-1/-10
+:666/-1/5
+:836/-1/5
+
+#		Gloves.
+#
+:579/0/7
+:579/-1/20
+:580/-1/-5
+
+#		Legs.
+#
+:574/-1/10
+:575/-1/-5
+:576/-1/-5
+:677/-1/4
+:686/-1/5
+%%endsection
+
+%%section quantity_frames
+#	Whether shapes have quantity-dependent frames (e.g., coins, arrows).
+#	Weapons ignore this property. Objects with ammo data start from frame 24;
+#	other objects start from frame zero. Default is to NOT have quantity frames.
+#
+#	Format
+#		:shapenum/quantfr
+#
+#	If quantfr is nonzero, the shape has quantity frames.
+#
+#		Bolts.
+#
+:417/1
+:723/1
+
+#		Arrows.
+#
+:554/1
+:556/1
+:558/1
+:560/1
+:568/1
+:591/1
+:722/1
+
+#		Lockpicks.
+#
+:627/1
+
+#		Money.
+#
+:644/1
+:948/1
+:951/1
+:952/1
+%%endsection
+
+%%section locked_containers
+#	Whether a container is locked and can't be opened or added to.
+#
+#	Format
+#		:shapenum/locked
+#
+#	locked is nonzero if the container is locked, zero otherwise.
+#
+#		Locked chests.
+#
+:522/1
+
+#		Urn.
+#
+:914/1
+%%endsection
+
+%%section content_rules
+#	What shapes a give container will accept or reject.
+#
+#	Format
+#		:shapenum/shnum/accept
+#
+#	shnum is the shape number which is being added to the container or < 0
+#	for any shape (default rule).
+#
+#	accept is nonzero if the container accepts the shape, zero otherwise.
+#
+#		Jawbone.
+#
+:555/559/1
+:555/-1/0
+
+#		Urn (just to be sure).
+#
+:914/-1/0
+%%endsection
+
+%%section volatile_explosive
+#	List of which items which blow up readily (such as powder keg in the originals).
+#	Exult expects the object to be a 'quality' object with effective hps that make
+#	it indestructible for quality 1 but destructible for quality 0.
+#
+#	Format
+#		:shapenum/explosive
+#
+#	'explosive' is nonzero if the shape blows up easily, zero otherwise.
+:704/1
+%%endsection
+
+%%section framenames
+#
+#	THIS SECTION SHOULD ***NOT*** BE EDITED MANUALLY!!!!!
+#
+#	Format:
+#		:shapenum/frnum/qual/-255
+#		:shapenum/frnum/qual/-1
+#		:shapenum/frnum/qual/0/msgid
+#		:shapenum/frnum/qual/1/msgid/extramsg
+#		:shapenum/frnum/qual/2/msgid/extramsg
+#		:shapenum/frnum/qual/3/msgid/defmsg
+#		:shapenum/frnum/qual/4/msgid/defmsg
+#
+#	frnum is the frame for which the entry apllies, or < 0 for any frame.
+#
+#	qual is the quality for which the entry apllies, or < 0 for any quality.
+#
+#	If type is -255, use default shape name instead. If type is -1, display
+#	no name at all. If type is 0, display msgid and that is it.
+#
+#	If type is 1 or 2, the name will be prefixed (type 1) or suffixed (type 2)
+#	by the message indicated by extramsg.
+#
+#	If type is 3 or 4, the name will be prefixed (type 3) or suffixed (type 4)
+#	by the corresponding NPC name. The corresponding NPC must have NPC # > 0,
+#	not be unused and (for dead bodies) be met, or defmsg will be used instead.
+#	For dead bodies, the corresponding NPC is the NPC to which it will become
+#	when resurrected; for all others, this is the object's quality (hence, it
+#	is limited to 255 NPCs and the object MUST have a quality).
+#
+#	msgid, extramsg and defmsg are the name index in misc_names section
+#	of TEXT.FLX or of TEXTMSG.TXT; for SI without SS, this is actually the
+#	corresponding SS index. defmsg can be -1 or -255; if defmsg is -1, the
+#	default name will be empty; if it is -255, Exult will use the default
+#	shape name.
+#
+#	Walls.
+#
+:151/17/-1/0/385
+:152/22/-1/0/385
+:869/11/-1/0/272
+
+#	Cloth maps.
+#
+:178/0/-1/0/150
+:178/1/-1/0/151
+:178/2/-1/0/152
+:178/3/-1/0/153
+:178/4/-1/0/154
+:178/5/-1/0/155
+
+#	Artifacts.
+#
+:209/0/-1/0/192
+:209/1/-1/0/193
+:209/2/-1/0/194
+:209/3/-1/0/195
+:209/4/-1/0/196
+:209/5/-1/0/197
+:209/6/-1/0/198
+:209/7/-1/0/199
+:209/8/-1/0/200
+:209/9/-1/0/201
+:209/10/-1/0/202
+:209/11/-1/0/203
+:209/12/-1/0/204
+:209/13/-1/0/205
+:209/14/-1/0/206
+:209/15/-1/0/207
+:209/16/-1/0/208
+:209/17/-1/0/209
+:209/18/-1/0/210
+:209/19/-1/0/211
+:209/20/-1/0/212
+:209/21/-1/0/213
+:209/22/-1/0/214
+:209/23/-1/0/215
+
+#	Chicken coop.
+#
+:210/4/-1/0/384
+
+#	Cloaks.
+#
+:227/0/-1/0/255
+:227/1/-1/0/256
+:227/2/-1/0/257
+:227/3/-1/0/258
+:227/4/-1/0/259
+
+#	Coffins.
+#
+:243/7/-1/0/261
+:243/8/-1/0/262
+
+#	Large skulls.
+#
+:244/0/-1/0/216
+:244/1/-1/0/216
+:244/2/-1/0/217
+
+#	Large skeletons.
+#
+:245/2/-1/0/295
+
+#	Blackrock serpents.
+#
+:262/0/-1/0/146
+:262/1/-1/0/147
+:262/2/-1/0/148
+:262/3/-1/0/149
+
+#	Paintings.
+#
+:282/6/-1/0/268
+:282/7/-1/0/268
+:282/8/-1/0/268
+:282/9/-1/0/268
+:282/10/-1/0/268
+
+#	Brushes.
+#
+:285/6/-1/0/250
+
+#	Drums.
+#
+:286/1/-1/0/361
+:286/2/-1/0/361
+
+#	Seats.
+#
+:292/17/-1/0/252
+:292/18/-1/0/252
+:292/19/-1/0/252
+:292/22/-1/0/252
+
+#	Rings.
+#
+:296/0/-1/0/184
+:296/1/-1/0/185
+:296/2/-1/0/186
+:296/3/-1/0/187
+#	More rings.
+:887/0/-1/0/188
+:887/1/-1/0/189
+
+#	Cooking utensils.
+#
+:300/0/-1/0/310
+:300/1/-1/0/310
+:300/2/-1/0/311
+:300/3/-1/0/311
+:300/4/-1/0/312
+:300/5/-1/0/312
+:300/6/-1/0/313
+:300/7/-1/0/313
+:300/8/-1/0/314
+:300/9/-1/0/315
+:300/10/-1/0/316
+:300/11/-1/0/317
+:300/12/-1/0/314
+:300/13/-1/0/315
+:300/14/-1/0/316
+:300/15/-1/0/317
+:300/16/-1/0/314
+:300/17/-1/0/315
+:300/18/-1/0/316
+:300/19/-1/0/317
+:300/20/-1/0/314
+:300/21/-1/0/315
+:300/22/-1/0/316
+:300/23/-1/0/317
+:300/24/-1/0/318
+:300/25/-1/0/319
+:300/26/-1/0/318
+:300/27/-1/0/319
+:300/28/-1/0/318
+:300/29/-1/0/319
+:300/30/-1/0/318
+:300/31/-1/0/319
+
+#	Sliding doors.
+#
+:303/10/-1/0/267
+:303/11/-1/0/267
+:303/12/-1/0/267
+:303/13/-1/0/267
+:303/14/-1/0/267
+#	More sliding doors.
+:876/10/-1/0/267
+:876/11/-1/0/267
+:876/12/-1/0/267
+:876/13/-1/0/267
+:876/14/-1/0/267
+#	More sliding doors.
+:935/2/-1/0/267
+:936/2/-1/0/267
+
+#	Fallen tree.
+#
+:309/2/-1/0/309
+
+#	Reeds.
+#
+:321/11/-1/0/284
+
+#	Serpent runes.
+#
+:330/0/-1/0/263
+:330/1/-1/0/263
+:330/2/-1/0/263
+:330/3/-1/0/263
+:330/4/-1/0/263
+:330/5/-1/0/263
+:330/6/-1/0/263
+:330/7/-1/0/263
+
+#	(unlit) Light sources.
+#
+:336/0/-1/0/326
+:336/1/-1/0/327
+:336/2/-1/0/328
+:336/3/-1/0/329
+:336/4/-1/0/330
+:336/5/-1/0/331
+:336/6/-1/0/332
+:336/7/-1/0/333
+:336/8/-1/0/334
+:336/9/-1/0/335
+:336/10/-1/0/336
+:336/11/-1/0/337
+:336/12/-1/0/338
+:336/13/-1/0/339
+:336/14/-1/0/340
+:336/15/-1/0/341
+:336/16/-1/0/342
+
+#	Lit light sources.
+#
+:338/0/-1/1/326/343
+:338/1/-1/1/327/343
+:338/2/-1/1/328/343
+:338/3/-1/1/329/343
+:338/4/-1/1/330/343
+:338/5/-1/1/331/343
+:338/6/-1/1/332/343
+:338/7/-1/1/333/343
+:338/8/-1/1/334/343
+:338/9/-1/1/335/343
+:338/10/-1/1/336/343
+:338/11/-1/1/337/343
+:338/12/-1/1/338/343
+:338/13/-1/1/339/343
+:338/14/-1/1/340/343
+:338/15/-1/1/341/343
+:338/16/-1/1/342/343
+
+#	Floors.
+#
+:370/19/-1/0/270
+:513/5/-1/0/269
+#	More floors.
+:1016/18/-1/0/294
+:1016/19/-1/0/294
+:1016/20/-1/0/291
+:1016/21/-1/0/291
+:1016/22/-1/0/292
+:1016/23/-1/0/293
+
+
+#	Food items.
+#
+:377/0/-1/0/16
+:377/1/-1/0/17
+:377/2/-1/0/18
+:377/3/-1/0/19
+:377/4/-1/0/20
+:377/5/-1/0/21
+:377/6/-1/0/22
+:377/7/-1/0/23
+:377/8/-1/0/24
+:377/9/-1/0/25
+:377/10/-1/0/26
+:377/11/-1/0/27
+:377/12/-1/0/28
+:377/13/-1/0/29
+:377/14/-1/0/30
+:377/15/-1/0/31
+:377/16/-1/0/32
+:377/17/-1/0/33
+:377/18/-1/0/34
+:377/19/-1/0/35
+:377/20/-1/0/36
+:377/21/-1/0/37
+:377/22/-1/0/38
+:377/23/-1/0/39
+:377/24/-1/0/40
+:377/25/-1/0/41
+:377/26/-1/0/42
+:377/27/-1/0/43
+:377/28/-1/0/44
+:377/29/-1/0/45
+:377/30/-1/0/46
+:377/31/-1/0/47
+
+#	Fences.
+#
+:378/3/-1/0/270
+:378/8/-1/0/270
+:378/9/-1/0/270
+:378/10/-1/0/270
+:378/11/-1/0/270
+#	More fences.
+:538/3/-1/0/270
+:538/8/-1/0/270
+:538/9/-1/0/270
+:538/10/-1/0/270
+:538/11/-1/0/270
+
+#	Magic helmets.
+#
+:383/1/-1/0/276
+
+#	Bodies.
+#
+:400/-1/-1/3/362/-255
+:402/-1/-1/3/362/-255
+:414/-1/-1/3/362/-255
+:762/-1/-1/3/362/-255
+:778/-1/-1/3/362/-255
+:892/-1/-1/3/362/-255
+
+#	Food.
+#
+:404/0/-1/0/320
+:404/1/-1/0/321
+:404/2/-1/0/322
+:404/3/-1/0/323
+:404/4/-1/0/324
+
+#	Garbage.
+#
+:415/21/-1/0/271
+:415/22/-1/0/271
+:415/23/-1/0/271
+
+#	Fireplace.
+#
+:442/2/-1/0/288
+
+#	Soul prisms.
+#
+:445/0/-1/0/107
+:445/1/-1/0/108
+:445/2/-1/0/109
+:445/3/-1/0/110
+:445/4/-1/0/111
+:445/5/-1/0/112
+:445/6/-1/0/113
+:445/7/-1/0/114
+
+#	Orbs.
+#
+:450/0/-1/0/133
+:450/1/-1/0/134
+:450/2/-1/0/135
+:450/3/-1/0/136
+:450/4/-1/0/137
+:450/5/-1/0/138
+:450/6/-1/0/139
+:450/7/-1/0/140
+:450/8/-1/0/141
+:450/9/-1/0/142
+:450/10/-1/0/143
+:450/11/-1/0/144
+:450/12/-1/0/145
+
+#	Magic plants.
+#
+:467/0/-1/0/129
+:467/1/-1/0/129
+:467/2/-1/0/130
+:467/3/-1/0/130
+:467/0/4
+:467/5/-1/0/131
+:467/6/-1/0/132
+
+#	Wall of lights.
+#
+:475/10/-1/0/387
+
+#	Claws.
+#
+:479/0/-1/0/248
+:479/1/-1/0/248
+:479/2/-1/0/249
+:479/3/-1/0/249
+
+#	Rugs.
+#
+:483/2/-1/0/264
+
+#	Magic lenses.
+#
+:505/2/-1/0/277
+
+#	Glass counter top.
+#
+:518/26/-1/0/386
+
+#	Moon's eye.
+#
+:519/1/-1/0/278
+
+#	Helmets.
+#
+:542/0/-1/0/163
+:542/1/-1/0/164
+:542/2/-1/0/165
+
+#	Broken column.
+#
+:544/14/-1/0/273
+
+#	Nests.
+#
+:577/0/-1/0/171
+:577/1/-1/0/171
+:577/2/-1/0/171
+:577/3/-1/0/172
+:577/4/-1/0/172
+:577/5/-1/0/172
+:577/6/-1/0/173
+
+#	Boots.
+#
+:587/0/-1/0/156
+:587/1/-1/0/157
+:587/2/-1/0/158
+:587/3/-1/0/159
+:587/4/-1/0/160
+:587/5/-1/0/161
+:587/6/-1/0/162
+
+#	Bottles (a.k.a. Dupre's bane).
+#
+:616/1/-1/0/242
+:616/9/-1/0/243
+:616/16/-1/0/244
+:616/17/-1/0/245
+:616/18/-1/0/246
+:616/20/-1/0/247
+
+#	Keys.
+#
+:641/21/-1/0/304
+:641/22/-1/0/305
+:641/23/-1/0/303
+
+#	Sleeping powder.
+#
+:648/2/-1/0/348
+:648/3/-1/0/349
+
+#	Artifacts.
+#
+:649/0/-1/0/115
+:649/1/-1/0/116
+:649/2/-1/0/117
+:649/3/-1/0/118
+:649/4/-1/0/119
+:649/5/-1/0/120
+:649/6/-1/0/121
+:649/7/-1/0/122
+:649/8/-1/0/123
+:649/9/-1/0/124
+:649/10/-1/0/125
+:649/11/-1/0/126
+:649/12/-1/0/127
+:649/13/-1/0/128
+
+#	Sextants.
+#
+:650/0/-1/0/49
+:650/1/-1/0/48
+
+#	Wine press.
+#
+:656/1/-1/0/308
+
+#	Strange plants.
+#
+:673/9/-1/0/300
+:673/10/-1/0/300
+:673/11/-1/0/300
+:673/12/-1/0/300
+:673/13/-1/0/300
+:673/14/-1/0/300
+:673/15/-1/0/300
+:673/16/-1/0/300
+:673/17/-1/0/300
+:673/18/-1/0/300
+
+#	Desk items.
+#
+:675/0/-1/0/50
+:675/1/-1/0/51
+:675/2/-1/0/52
+:675/3/-1/0/53
+:675/4/-1/0/54
+:675/5/-1/0/55
+:675/6/-1/0/56
+:675/7/-1/0/57
+:675/8/-1/0/58
+:675/9/-1/0/59
+:675/10/-1/0/60
+:675/11/-1/0/61
+:675/12/-1/0/62
+:675/13/-1/0/63
+:675/14/-1/0/64
+:675/15/-1/0/65
+:675/16/-1/0/66
+:675/17/-1/0/67
+:675/18/-1/0/68
+:675/19/-1/0/69
+:675/20/-1/0/70
+:675/21/-1/0/71
+:675/22/-1/0/72
+:675/23/-1/0/73
+:675/24/-1/0/74
+:675/25/-1/0/75
+:675/26/-1/0/76
+:675/27/-1/0/77
+
+#	Stockings.
+#
+:677/0/-1/0/298
+:677/1/-1/0/299
+
+#	Pillars.
+#
+:687/11/-1/0/273
+
+#	Serpent carvings.
+#
+:688/2/-1/0/289
+:688/3/-1/0/289
+:688/4/-1/0/290
+:688/5/-1/0/290
+
+#	Lutes.
+#
+:692/2/-1/0/190
+
+#	Whistles.
+#
+:693/1/-1/0/279
+:693/4/-1/0/280
+:693/5/-1/0/280
+
+#	Beds.
+#
+:696/1/-1/0/218
+:696/2/-1/0/219
+:696/4/-1/0/220
+:696/5/-1/0/221
+#	More beds.
+:1011/1/-1/0/218
+:1011/2/-1/0/219
+:1011/4/-1/0/220
+:1011/5/-1/0/221
+
+
+#	Plates.
+#
+:717/9/-1/0/282
+
+#	Pedestals.
+#
+:718/8/-1/0/281
+
+#	Dream crystal.
+#
+:727/0/-1/0/345
+:727/1/-1/0/345
+:727/2/-1/0/346
+:727/3/-1/0/347
+:727/4/-1/0/347
+
+#	Force wall.
+#
+:728/4/-1/0/387
+
+#	Caltrops.
+#
+:756/2/-1/0/251
+:756/3/-1/0/251
+
+#	Lever.
+#
+:787/8/-1/0/275
+:787/9/-1/0/275
+
+#	Switch.
+#
+:788/6/-1/0/275
+:788/7/-1/0/275
+:788/8/-1/0/275
+:788/9/-1/0/275
+
+#	Scrolls.
+#
+:797/2/-1/0/285
+:797/3/-1/0/285
+
+#	Body parts.
+#
+:799/0/-1/0/223
+:799/1/-1/0/224
+:799/2/-1/0/225
+:799/3/-1/0/226
+:799/4/-1/0/227
+:799/5/-1/0/228
+:799/6/-1/0/229
+:799/7/-1/0/230
+:799/8/-1/0/231
+:799/9/-1/0/232
+:799/10/-1/0/233
+:799/11/-1/0/234
+:799/12/-1/0/235
+:799/13/-1/0/236
+:799/14/-1/0/237
+:799/15/-1/0/238
+:799/16/-1/0/239
+:799/17/-1/0/240
+:799/18/-1/0/241
+
+#	Chests.
+#
+:800/4/-1/0/253
+:800/5/-1/0/253
+:800/6/-1/0/254
+:800/7/-1/0/254
+
+#	Buckets.
+#
+:810/0/-1/0/91
+:810/1/10/0/101
+:810/1/11/0/102
+:810/1/12/0/103
+:810/1/13/0/104
+:810/1/14/0/105
+:810/1/15/0/106
+:810/1/-1/0/92
+:810/2/9/0/100
+:810/2/-1/0/93
+:810/3/-1/0/94
+:810/4/-1/0/95
+:810/5/-1/0/96
+:810/6/-1/0/97
+:810/7/-1/0/98
+:810/8/-1/0/99
+
+#	Iron maidens.
+#
+:812/2/-1/0/274
+
+#	Hourglasses.
+#
+:839/1/-1/0/191
+
+#	Reagents.
+#
+:842/0/-1/0/0
+:842/1/-1/0/1
+:842/2/-1/0/2
+:842/3/-1/0/3
+:842/4/-1/0/4
+:842/5/-1/0/5
+:842/6/-1/0/6
+:842/7/-1/0/7
+:842/8/-1/0/8
+:842/9/-1/0/9
+:842/10/-1/0/10
+:842/11/-1/0/11
+:842/12/-1/0/12
+:842/13/-1/0/13
+:842/14/-1/0/14
+:842/15/-1/0/15
+
+#	Kitchen items.
+#
+:863/0/-1/0/363
+:863/1/-1/0/364
+:863/2/-1/0/365
+:863/3/-1/0/366
+:863/4/-1/0/367
+:863/5/-1/0/368
+:863/6/-1/0/369
+:863/7/-1/0/370
+:863/8/-1/0/371
+:863/9/-1/0/372
+:863/10/-1/0/373
+:863/11/-1/0/374
+:863/12/-1/0/375
+:863/13/-1/0/376
+:863/14/-1/0/377
+:863/15/-1/0/378
+:863/16/-1/0/379
+:863/17/-1/0/380
+:863/18/-1/0/381
+
+#	Tables.
+#
+:890/6/-1/0/302
+:1002/1/-1/0/301
+
+
+#	Blood.
+#
+:912/0/-1/-255
+:912/1/-1/-255
+:912/2/-1/-255
+:912/3/-1/-255
+:912/24/-1/0/222
+
+#	Urns.
+#
+:914/0/0/0/306
+:914/0/-1/3/350/306
+:914/1/0/0/306
+:914/1/-1/3/350/306
+:914/-1/-1/0/307
+
+#	Bookshelves.
+#
+:919/6/-1/0/266
+
+#	Serpent slots.
+#
+:927/4/-1/0/286
+:927/5/-1/0/286
+:927/6/-1/0/286
+:927/7/-1/0/286
+
+#	Pot (not the weed!).
+#
+:944/5/-1/0/283
+
+#	Amulets.
+#
+:955/0/-1/0/174
+:955/1/-1/0/175
+:955/2/-1/0/176
+:955/3/-1/0/177
+:955/4/-1/0/178
+:955/5/-1/0/179
+:955/6/-1/0/180
+:955/7/-1/0/181
+:955/8/-1/0/182
+:955/9/-1/0/183
+
+#	Fur pelts.
+#
+:977/0/-1/0/287
+:977/8/-1/0/287
+
+#	Spent light sources.
+#
+:997/0/-1/1/326/344
+:997/1/-1/1/327/344
+:997/2/-1/1/328/344
+:997/3/-1/1/329/344
+:997/4/-1/1/330/344
+:997/5/-1/1/331/344
+:997/6/-1/1/332/344
+:997/7/-1/1/333/344
+:997/8/-1/1/334/344
+:997/9/-1/1/335/344
+:997/10/-1/1/336/344
+:997/11/-1/1/337/344
+:997/12/-1/1/338/344
+:997/13/-1/1/339/344
+:997/14/-1/1/340/344
+:997/15/-1/1/341/344
+:997/16/-1/1/342/344
+:997/17/-1/1/343/344
+
+#	Statues.
+#
+:998/0/-1/0/296
+:998/1/-1/0/296
+:998/2/-1/0/297
+:998/3/-1/0/297
+
+#	Plants.
+#
+:999/0/-1/0/351
+:999/1/-1/0/352
+:999/2/-1/0/353
+:999/3/-1/0/354
+:999/4/-1/0/355
+:999/5/-1/0/356
+:999/6/-1/0/357
+:999/7/-1/0/358
+:999/8/-1/0/359
+:999/9/-1/0/360
+
+#	Helms.
+#
+:1004/0/-1/0/166
+:1004/1/-1/0/167
+:1004/2/-1/0/168
+:1004/3/-1/0/169
+:1004/4/-1/0/170
+%%endsection
+
+%%section altready
+#
+#	Alternate spot where an object can be readied.
+#
+#	Format:
+#		:shapenum/spot1/spot2
+#
+#	spot1, spot2: Alternate spots where the item can go.
+#	-1 means no alternate spot; spot1 should not be -1 unless spot2 also is.
+#	They can take one of the following values:
+#		head = 0
+#		backpack = 1
+#		belt = 2
+#		lhand = 3
+#		lfinger = 4
+#		legs = 5
+#		feet = 6
+#		rfinger = 7
+#		rhand = 8
+#		torso = 9
+#		amulet = 10
+#		quiver = 11
+#		back2h_spot = 12		2 handed weapons, bedroll, bodies
+#		back_shield = 13		Shield behind backpack
+#		earrings = 14
+#		cloak = 15
+#		gloves = 16				Gloves, gauntlets
+#		ucont = 17				Usecode Container
+#		both_hands = 18			2 handed weapons, uses up both hands
+#		lrgloves = 19			Heavy gloves, uses both fingers and gloves spot
+#		neck = 20				Fills cloak, amulet slots
+#		scabbard = 21			Fills belt, back2h_spot and back_shield spots
+#
+#	Bodies.
+#
+:400/3/-1
+:402/3/-1
+:414/3/-1
+
+#	Torch.
+#
+:595/8/2
+:701/8/2
+
+#	SHIELDS
+#
+:490/8/13
+:543/8/13
+:545/8/13
+:572/8/13
+:578/8/13
+:585/8/13
+:586/8/13
+:609/8/13
+:663/8/13
+:729/8/13
+
+#	Serpent Sceptre
+#
+:926/2/-1
+
+#	WEAPONS 1 H
+#
+:592/8/12
+
+
+#	WEAPONS 2H
+#
+:598/2/-1
+
+#	Bed roll.
+#
+:583/1/12
+%%endsection
+
+%%section barge_type
+#
+#	The type of a barge piece.
+#
+#	Format:
+#		:shapenum/type
+#
+#	type: The type of the barge piece. Can take one of the following values:
+#		barge_generic = 0
+#		barge_raft = 1
+#		barge_seat = 2
+#		barge_sails = 3
+#		barge_wheel = 4
+#		barge_draftanimal = 5
+#		barge_turtle = 6
+#
+#	Ice raft.
+#
+:504/1
+
+#	Turtle.
+#
+:215/6
+
+#	Seat.
+#
+:292/2
+
+#	Sails.
+#
+:251/3
+%%endsection
+
+%%section frame_powers
+#
+#	Additional frame-dependent flags granted by gear.
+#
+#	Format:
+#		:shapenum/frame/quality/poison/charm/sleep/paralysis/curse/wpnpowers/deathmagic/death/cold/starvation/swamp/usecode/reagents
+#
+#	frame: The frame that grants the flag or -1 for all frames.
+#	quality: The quality that grants the flag or -1 for all qualities.
+#	Other fields: nonzero to grant the flag, zero otherwise.
+#	usecode: Special case; any container with this flag set for the
+#	frame/qualities in question will call usecode instead of
+#	showing a gump when double-clicked.
+#	reagents: Gives effectivelly infinite reagents.
+#
+#	Swamp boots.
+#
+:296/3/-1/0/0/0/0/0/0/0/0/0/0/0/0/1
+
+#	Swamp boots.
+#
+:587/6/-1/0/0/0/0/0/0/0/0/0/0/1/0/0
+
+#	Chest.
+#
+:800/-1/249/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/250/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/251/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/252/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/253/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/254/0/0/0/0/0/0/0/0/0/0/0/1/0
+:800/-1/255/0/0/0/0/0/0/0/0/0/0/0/1/0
+%%endsection
+
+%%section is_jawbone
+#	If the container is the SI jawbone.
+#
+#	Format
+#		:shapenum/flag
+#
+#	flag: If nonzero, the object is a jawbone.
+#
+#
+:555/1
+%%endsection
+
+%%section is_mirror
+#	If the container is a mirror.
+#
+#	Format
+#		:shapenum/flag
+#
+#	flag: If nonzero, the object is a mirror.
+#
+#
+:268/1
+:848/1
+%%endsection
+
+%%section field_type
+#	What kind of field this is.
+#
+#	Format
+#		:shapenum/type
+#
+#	type: Can be one of the following values:
+#		fire field = 0
+#		sleep field = 1
+#		poison field = 2
+#		caltrops = 3
+#
+#	Fire field
+#
+:561/0
+:895/0
+
+#	Sleep field
+#
+:902/1
+
+#	Poison field
+#
+:900/2
+
+#	Caltrops
+#
+:756/3
+%%endsection
+
+%%section frame_usecode
+#
+#	Frame- and quality-dependent usecode. This is used only for books in standard BG/SI,
+#	and probably shouldn't be needed for new games because Exult supports 32-bit usecode.
+#
+#	Format:
+#		:shapenum/frame/quality/type/funid
+#
+#	frame: The frame that grants the flag or -1 for all frames.
+#	quality: The quality that grants the flag or -1 for all qualities.
+#	type: Nonzero if specifying a function name, zero if specifying a number.
+#
+#	Books.
+#
+:642/-1/100/0/1592
+:642/-1/101/0/1592
+:642/-1/102/0/1592
+:642/-1/103/0/1592
+:642/-1/104/0/1592
+:642/-1/105/0/1592
+:642/-1/106/0/1592
+:642/-1/107/0/1592
+:642/-1/108/0/1592
+:642/-1/109/0/1592
+:642/-1/110/0/1592
+:642/-1/111/0/1592
+:642/-1/112/0/1592
+:642/-1/113/0/1592
+:642/-1/114/0/1592
+:642/-1/115/0/1592
+:642/-1/116/0/1592
+:642/-1/117/0/1592
+:642/-1/118/0/1592
+:642/-1/119/0/1592
+:642/-1/120/0/1592
+:642/-1/121/0/1592
+:642/-1/122/0/1592
+:642/-1/123/0/1592
+:642/-1/124/0/1592
+:642/-1/125/0/1592
+:642/-1/126/0/1592
+:642/-1/127/0/1592
+:642/-1/128/0/1592
+:642/-1/129/0/1592
+:642/-1/130/0/1592
+:642/-1/131/0/1592
+:642/-1/132/0/1592
+:642/-1/133/0/1592
+:642/-1/134/0/1592
+:642/-1/135/0/1592
+:642/-1/136/0/1592
+:642/-1/137/0/1592
+:642/-1/138/0/1592
+:642/-1/139/0/1592
+:642/-1/140/0/1592
+:642/-1/141/0/1592
+:642/-1/142/0/1592
+:642/-1/143/0/1592
+:642/-1/144/0/1592
+:642/-1/145/0/1592
+:642/-1/146/0/1592
+:642/-1/147/0/1592
+:642/-1/148/0/1592
+:642/-1/149/0/1592
+:642/-1/140/0/1592
+:642/-1/151/0/1592
+:642/-1/152/0/1592
+:642/-1/153/0/1592
+:642/-1/154/0/1592
+:642/-1/155/0/1592
+:642/-1/156/0/1592
+:642/-1/157/0/1592
+:642/-1/158/0/1592
+:642/-1/159/0/1592
+:642/-1/160/0/1592
+:642/-1/161/0/1592
+:642/-1/162/0/1592
+:642/-1/163/0/1592
+:642/-1/164/0/1592
+:642/-1/165/0/1592
+:642/-1/166/0/1592
+:642/-1/167/0/1592
+:642/-1/168/0/1592
+:642/-1/169/0/1592
+:642/-1/170/0/1592
+:642/-1/171/0/1592
+:642/-1/172/0/1592
+:642/-1/173/0/1592
+:642/-1/174/0/1592
+:642/-1/175/0/1592
+:642/-1/176/0/1592
+:642/-1/177/0/1592
+:642/-1/178/0/1592
+:642/-1/179/0/1592
+
+:642/-1/180/0/1595
+:642/-1/181/0/1595
+:642/-1/182/0/1595
+:642/-1/183/0/1595
+:642/-1/184/0/1595
+:642/-1/185/0/1595
+:642/-1/186/0/1595
+:642/-1/187/0/1595
+:642/-1/188/0/1595
+:642/-1/189/0/1595
+:642/-1/190/0/1595
+:642/-1/191/0/1595
+:642/-1/192/0/1595
+:642/-1/193/0/1595
+:642/-1/194/0/1595
+:642/-1/195/0/1595
+:642/-1/196/0/1595
+:642/-1/197/0/1595
+:642/-1/198/0/1595
+:642/-1/199/0/1595
+:642/-1/200/0/1595
+:642/-1/201/0/1595
+:642/-1/202/0/1595
+:642/-1/203/0/1595
+:642/-1/204/0/1595
+:642/-1/205/0/1595
+:642/-1/206/0/1595
+:642/-1/207/0/1595
+:642/-1/208/0/1595
+:642/-1/209/0/1595
+:642/-1/210/0/1595
+:642/-1/211/0/1595
+:642/-1/212/0/1595
+:642/-1/213/0/1595
+:642/-1/214/0/1595
+:642/-1/215/0/1595
+:642/-1/216/0/1595
+:642/-1/217/0/1595
+:642/-1/218/0/1595
+:642/-1/219/0/1595
+:642/-1/220/0/1595
+:642/-1/221/0/1595
+:642/-1/222/0/1595
+:642/-1/223/0/1595
+:642/-1/224/0/1595
+:642/-1/225/0/1595
+:642/-1/226/0/1595
+:642/-1/227/0/1595
+:642/-1/228/0/1595
+:642/-1/229/0/1595
+:642/-1/230/0/1595
+:642/-1/231/0/1595
+:642/-1/232/0/1595
+:642/-1/233/0/1595
+:642/-1/234/0/1595
+:642/-1/235/0/1595
+:642/-1/236/0/1595
+:642/-1/237/0/1595
+:642/-1/238/0/1595
+:642/-1/239/0/1595
+:642/-1/240/0/1595
+:642/-1/241/0/1595
+:642/-1/242/0/1595
+:642/-1/243/0/1595
+:642/-1/244/0/1595
+:642/-1/245/0/1595
+:642/-1/246/0/1595
+:642/-1/247/0/1595
+:642/-1/248/0/1595
+:642/-1/249/0/1595
+:642/-1/240/0/1595
+:642/-1/251/0/1595
+:642/-1/252/0/1595
+:642/-1/253/0/1595
+:642/-1/254/0/1595
+:642/-1/255/0/1595
+
+#	Serpentine Books.
+#
+:705/-1/213/0/1578
+:705/-1/214/0/1578
+:705/-1/215/0/1578
+:705/-1/216/0/1578
+:705/-1/217/0/1578
+:705/-1/218/0/1578
+:705/-1/219/0/1578
+:705/-1/220/0/1578
+:705/-1/221/0/1578
+:705/-1/222/0/1578
+:705/-1/223/0/1578
+:705/-1/224/0/1578
+:705/-1/225/0/1578
+:705/-1/226/0/1578
+:705/-1/227/0/1578
+:705/-1/228/0/1578
+:705/-1/229/0/1578
+:705/-1/230/0/1578
+:705/-1/231/0/1578
+:705/-1/232/0/1578
+:705/-1/233/0/1578
+:705/-1/234/0/1578
+:705/-1/235/0/1578
+:705/-1/236/0/1578
+:705/-1/237/0/1578
+:705/-1/238/0/1578
+:705/-1/239/0/1578
+:705/-1/240/0/1578
+:705/-1/241/0/1578
+:705/-1/242/0/1578
+:705/-1/243/0/1578
+:705/-1/244/0/1578
+:705/-1/245/0/1578
+:705/-1/246/0/1578
+:705/-1/247/0/1578
+:705/-1/248/0/1578
+:705/-1/249/0/1578
+:705/-1/240/0/1578
+:705/-1/251/0/1578
+:705/-1/252/0/1578
+:705/-1/253/0/1578
+:705/-1/254/0/1578
+:705/-1/255/0/1578
+%%endsection

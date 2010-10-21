@@ -1,0 +1,37 @@
+This is the place for publicly available subplot patches and games created with
+ExultStudio.
+
+To install it, create a directory to serve as the 'patch' area for the Black Gate,
+unpack this zip file there, and add a 'patch' directive to the 'exult.cfg' file 
+as in the following example:
+
+ <disk>
+  <u7path>
+  /home/jeff/exult
+  </u7path>
+  <data_path>
+  /home/jeff/exult/data
+  </data_path>
+  <game>
+   <blackgate>
+    <path>
+    /home/jeff/exult
+    </path>
+    <patch>
+    /home/jeff/exult/data/bg/static
+    </patch>
+...
+
+Now run Exult/Black Gate, start a new game, and you should find
+yourself on a small island East of Trinsic with a 'mage' to talk to.
+Or as was added recently you will find yourself at the "normal" starting position 
+of BG in Trinsic. There is a teleporter between the two houses in the same 
+street as Christopher's forge. This teleporter takes you to the island.
+
+(When done, you might want to remove the patch files or the patch path in exult.cfg
+so you can run the normal game again.)
+
+...
+
+To create the usecode out of the usecode.uc file you have to either grab "ucc.exe" from the tools-snapshot or build ucc from source.
+Then run "ucc -o usecode usecode.uc" in the patch directory and you should have a file called usecode.

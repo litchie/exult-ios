@@ -1,0 +1,26 @@
+The GIMP shapes plug-in
+=======================
+
+This Plug-In is for the Windows Port of The Gimp. It is tested with the latest version (1.2.3).
+With it you can edit *.shp files used by Exult and the original Ultima 7. This shapes are compressed into *.flx or *.vga files. Use expack from our tools dowmload to extract the files.
+
+Get the installer for The Gimp at http://www2.arnes.si/~sopjsimo/gimp/ . Make sure you grab the updates as well.
+
+
+Install
+=======
+
+- Install the Gimp (example: C:\Program Files\Gimp)
+- execute GimpPlugin.exe and choose C:\Program Files\Gimp\Lib\gimp\1.2\plug-ins (if you installed the Gimp somewhere else, change accordingly) for extract path. If you extracted the file to some other directory copy u7shp.exe into that directoy
+
+
+Usage
+=====
+- Drag and drop *.shp files into the Gimp. You don't need to select a palette file (press either "Ok" or "Cancel").
+- edit (see the Gimp manual on how to edit graphics)
+- save
+
+Notes
+=====
+- The Gimp already comes with our plug-in for shapes but uses a very old outdated version that can only do grey scales
+- The Gimp plug-in is far superior to Photoshop/PaintShopPro as it can handle multiple images in one shape file. Also Photoshop/PSP can not handle indexed images with Alpha correctly.

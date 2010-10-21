@@ -1,0 +1,162 @@
+Documentation for UCC, Exult's 'usecode' compiler.
+May, 21, 2002 - JSF
+
+0. Introduction
+---------------
+Ultima7's plot and conversations are controlled by a script encoded in
+'usecode', a file in the game's 'static' directory.  UCC is our
+attempt at providing a language and compiler so that we and others can
+write our own game plots.
+
+This document is my first at documenting UCC.  Please be aware that
+the UCC language is still being developed, so some language constructs
+may change to make script-writing easier.
+
+The UCC language (which I'll sometimes refer to as 'usecode') is
+generally patterned after 'C', but with many exceptions:
+	  * No type-checking.  Values can be integers, strings, and
+	  vectors.
+	  * Some constructs ('for' loops, 'case' statements) are not
+	  implemented. (This may change.)
+	  * Game-specific features have been added, such as
+	  'converse'.
+	  * Functions need to be assigned unique numbers (though this
+	  may be relaxed in the future).
+
+
+1. Command line options
+-----------------------
+-o <file>
+write output to <file>
+
+-I <path>
+add <path> to the include path
+
+-s
+compile for SI. Usecode for SI needs to be compiled with this option.
+
+
+2. Top-Level
+------------
+At the top-level, UCC supports pre-processor directives, functions,
+function prototypes, and integer constant declarations.
+
+    2.1  Pre-processing
+    -------------------
+    UCC only supports the "#include <filename>" for pulling in another
+    source file.  In the future, support for macros ("#define") may be
+    added.  And although we have not done so yet, we should also
+    provide header files that declare various Exult constants.
+
+    2.2  Functions
+    --------------
+    Functions are similar to those in C, but without type
+    declarations.  Plus, one must assign a unique number
+    which may be used to reference that function in
+    ExultStudio.
+
+    Example:	Add2 0x793 (a, b)
+		     {
+		     return a + b;
+		     }
+
+    Ranges of function numbers have specific meanings in Exult:
+
+    0-0x3ff	       Function # is called for a game shape of that
+		       number.
+    0x400-0x5ff	       Function # 0x400+N applies to NPC #N.
+    0x600-0x7ff	       Used for 'Usecode eggs' (trigger points on the
+		       game map), except that 0x640-?? are used for
+		       spells.
+    0x800-	       I think these are for general-purpose use.
+
+    2.3  Function Prototypes
+    ------------------------
+    These are declarations of other functions that can be called.  In
+    particular, these can refer to functions in U7 usecode.  Example:
+
+	extern Ask_yesno 0x90a();  // Rets. true if 'Yes'.
+
+    2.4  Constant Declarations
+    --------------------------
+    One can declare integer constants globally, as follows:
+
+        const int AMY = 0x168;	   // Amy's NPC #.
+	const int AVATAR = -356;
+
+3. Statements
+-------------
+.... Mainly want to document conversations at the moment:
+
+    3.x  Conversations
+    ------------------
+    Since conversations are one of the game's strong points, I've tried
+    to make their creation as easy as possible.  The structure is:
+
+    converse (<array of choices to enable>)
+	     {
+    case <answer string> [(remove)]:
+	 <Code to execute if answer is chosen>
+    ...
+	     }
+
+    The above works like a loop, getting a choice from the user at the
+    top, and then executing the code under the 'case' for that
+    choice.  The process ends when a 'break;' is encountered.
+
+    If "(remove)" appears on the 'case' line, the choice is removed
+    from the screen when the user selects it.  Otherwise, it remains.
+
+    One conversation can be nested in another.  When a 'converse' is
+    encountered within the code of another 'converse', the inner
+    'converse' choices replace the outer 'converse' choices (they're
+    pushed onto a stack).  When the inner 'converse' ends, the outer
+    'converse' choices are automatically restored.
+
+    While any code can be executed inside a 'case', there are several
+    that are especially useful for conversations.  These are:
+
+	 3.x.1:  Say
+	 -----------
+	 This causes an NPC to 'say' something in the conversation.
+	 To specify which NPC (whose face will appear), we provide an
+	 interface similar to a method-call in C++.  Example:
+
+	 npc->say("Hello Avatar");
+
+	 'Say' may also be used without specifying an npc.  In this
+	 case, the text will appear next to the face of the last npc
+	 that spoke.
+
+	 Each 'say()' call will require a click from the user to
+	 proceed.  More than one string can be specified in 'say', in
+	 which case they are concatenated together.  A '~' in a string
+	 will cause text output to pause until the user clicks.
+	 Example:
+
+	 npc->say("Hello Avatar,", " it is good to see you.~",
+			 "How may I help you?");
+
+        3.x.2:  Add/Remove
+	------------------
+	These allow you to enable/disable possible choices that the
+	user may make.  This only makes sense for choices that appear
+	in 'case' entries in the conversation.  Example:
+
+	converse (["Name", "Bye"])	// 2 choices enabled.
+		 {
+        case "Bye":
+	     break;
+	case "xyzzy" (remove):
+	     say("Please don't make fun of my name.");
+	     add("Bye");
+	case "Name" (remove):
+	     say("My name is xyzzy");
+	     add("xyzzy");		// Now this is enabled.
+	     remove("Bye");
+		 }
+
+        3.x.3:  Hide
+	------------
+	While "npc->say()" will bring up a portrait of an NPC during a
+	conversation, "npc->hide()" will remove that portrait.

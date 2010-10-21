@@ -1,0 +1,166 @@
+#	Serpentisle bodies.  Each entry contains NPCshape:bodyshape/bodyframe
+#
+#	July 31, 2006 - Derived from shapes/bodies.cc
+#
+
+%%section version
+:2
+%%endsection
+
+%%section bodyshapes
+:400
+:402
+:414
+:762
+:778
+:892
+%%endsection
+%%section bodylist
+:179/402/23 		# black robe mage no face
+:214/402/3 		# male gwani
+:226/414/10 		# old red robe mage
+:228/402/11 		# pikeman
+:229/414/8 		# naked white man brown hair
+:230/414/27 		# naked white woman blonde hair
+:247/400/24 		# jester
+:250/414/23 		# xenka monk (male?) no face gold belt
+:259/402/12 		# male ranger (winemaker) with mask
+:265/400/27 		# male shopkeeper (red outfit)
+:274/414/15 		# female noble (green dress) wth green crown
+:298/892/16 		# pinguin (Linux?)
+:299/414/21 		# Cantra (little girl from Monitor)
+:302/762/3 		# grizzly bear (brown)
+:304/400/28 		# male forger
+:312/892/19 		# kid goblins
+:317/402/13 		# possessed Shamino
+:318/414/16 		# Batlin
+:319/400/9 		# male peasant (brown outfit)
+:329/892/25 		# boar
+:334/762/22 		# green monster with long neck
+:354/762/11 		# Gurnodir (king Goblin)
+:363/892/14 		# magic gremlins
+:372/778/1 		# ice troll
+:373/402/31 		# skeletton with ripped robe
+:375/778/2 		# unicorn
+:381/414/17 		# male thief (black band on eyes)
+:382/762/10 		# ratman
+:401/402/15 		# male noble-mage with orange-red coat and blue undies
+:446/400/4 		# old female wild mage
+:447/402/18 		# red eye wolf
+:449/762/29 		# polar bear (white)
+:451/400/13 		# male mayor (blue outfit)
+:454/400/12 		# female citizen (orange outfit)
+:455/400/11 		# male citizen (orange outfit)
+:457/400/15 		# male gypsy
+:458/400/16 		# male pirate
+:460/778/7 		# skeletal dragon
+:461/400/19 		# female ranger (no mask)
+:462/400/20 		# male fighter (mail arms and legs)
+:464/400/22 		# paladin (square helm)
+:465/414/18 		# Iolo
+:468/400/25 		# male shopkeeper (beige outfit)
+:469/400/26 		# female gypsie
+:472/892/29 		# noble little boy
+:478/414/4 		# male goblins
+:480/414/1 		# noble winged gargoyle
+:487/414/19 		# Shamino
+:488/414/20 		# Dupre
+:491/892/12 		# acid slug
+:492/762/1 		# alligator
+:493/892/9 		# bat
+:494/402/19 		# Goul (?)
+:495/892/18 		# cat
+:496/892/24 		# dog
+:498/892/11 		# chicken
+:499/892/13 		# corpser
+:500/778/11 		# cow
+:501/778/4 		# cyclop
+:502/778/12 		# deer
+:509/377/12 		# trout
+:510/892/27 		# fox
+:511/892/1 		# gazer
+:514/762/6 		# headless
+:517/892/2 		# insect
+:523/892/4 		# rat
+:524/762/12 		# reaper
+:528/762/16 		# skelet
+:529/892/8 		# slime
+:530/892/6 		# serpent
+:532/762/5 		# harpie
+:533/778/5 		# Troll
+:537/892/7 		# wolf (normal)
+:550/762/7 		# brass automaton
+:560/400/3 		# female beauty priestess
+:565/400/6 		# Caladin
+:581/400/7 		# old male mage with cane (green outfit)
+:588/762/8 		# male vampire (very blue outfit)
+:647/400/5 		# female fighter
+:652/400/17 		# female mayor (blue outfit)
+:658/400/30 		# Petra
+:660/400/10 		# no skin gwani (?)
+:661/762/9 		# Mongbat
+:665/402/22 		# female mage (black outfit, red belt)
+:669/400/8 		# trapper (Gwenno)
+:691/414/4 		# male goblins
+:702/892/20 		# phoenix
+:706/762/26 		# scorpio
+:716/892/10 		# bird
+:720/400/23 		# male guard (purple/red outfit + chain helm)
+:721/400/1 		# male bonde avatar
+:725/414/4 		# male goblins
+:734/402/21 		# gold automaton
+:742/400/21 		# female worker (black top, white skirt)
+:744/414/5 		# female goblins
+:747/762/27 		# iron automaton
+:753/762/20 		# stone harpie
+:754/762/2 		# snow leopard
+:763/892/28 		# ice snake
+:766/402/2 		# female spanish dancer
+:772/892/31 		# parrot
+:798/402/16 		# small ice dragon
+:805/402/4 		# black male fighter
+:809/414/2 		# young male mage (dark blue coat + gold trim)
+:811/892/17 		# rabbit
+:814/402/5 		# male artist (blue outfit)
+:815/402/6 		# tall male individual (ripped clothes)
+:816/402/7 		# male fighter (orange outfit + chain mail)
+:817/402/14 		# young male mage (brown coat + grey undies)
+:818/402/9 		# Zulith (?)
+:830/402/8 		# Chancellor (Monitor)
+:832/778/8 		# ice sea serpent
+:846/762/24 		# snake woman
+:855/414/6 		# Great Captain
+:861/762/23 		# fire elemental
+:862/414/7 		# male gwani
+:865/762/19 		# spider
+:867/892/30 		# baby gwani
+:874/762/17 		# St-Bernard (Hound)
+:877/778/6 		# Big ice dragon
+:880/762/18 		# possessed Iolo
+:882/892/21 		# flying red snake
+:883/414/3 		# wingless gargoyle
+:885/778/3 		# magic black horse
+:888/414/11 		# female spanish dancer
+:906/762/21 		# possessed Dupre
+:915/400/0 		# brown tentacle
+:916/414/12 		# male artist (purple coat + blue undies)
+:917/402/10 		# male trapper (?)
+:945/402/29 		# dressed iron automaton
+:946/402/27 		# male mage (very blue outfit)
+:947/402/28 		# gold male fighter (Silver Seed)
+:957/402/30 		# catman creature (SS)
+:968/402/17 		# ice golem
+:970/892/5 		# sheep
+:975/400/20 		# male fighter (brown outfit + chain mail)
+:978/778/9 		# green dragon
+:979/778/10 		# man spider
+:981/402/25 		# liche
+:989/400/2 		# white female avatar
+:1015/402/26 		# female citizen (blue dress + green sleeves)
+:1024/414/28 		# black male avatar
+:1025/414/29 		# black female avatar
+:1026/414/30 		# brown male avatar
+:1027/414/31 		# brown female avatar
+:1028/400/1 		# blonde male avatar
+:1029/400/2 		# blonde female avatar
+%%endsection

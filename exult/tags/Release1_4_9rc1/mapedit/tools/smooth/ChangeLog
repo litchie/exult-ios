@@ -1,0 +1,5 @@
+2003-07-21  Aurelien Marchand  <artaxerxes at users.sourceforge.net>
+
+	* ChangeLog, README, COPYING, AUTHORS, INSTALL: files added
+	* plugins/plugin_smooth.c: finished plugin
+	

@@ -1,0 +1,21 @@
+CXX = g++
+SRC = src/
+IDIR   = -Iinclude -I../ -I../../ -I../../conf/ -I../../files/
+
+CXXFLAGS = -g -Wall -O $(IDIR)
+
+EXTOBJS = ../../conf/Configuration.o ../../conf/XMLEntity.o \
+	../../files/utils.o
+
+PGM = ucxt
+OBJS = $(SRC)opcodec_.o $(SRC)printucc.o $(SRC)stacki.o \
+	$(SRC)ucdata.o $(SRC)ucdump.o $(SRC)ucfunc.o \
+	$(SRC)opcodes.o
+	 
+all: $(PGM)
+
+$(PGM): $(OBJS)
+	$(CXX) -o $(PGM) $(OBJS) $(EXTOBJS)
+
+clean:
+	rm src/*.o
