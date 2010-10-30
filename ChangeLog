@@ -1,3 +1,7 @@
+2010-10-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/eggs.cc: fix nocturnal egg 12h/24h confusion. (Thanks to Malignant
+	Manor on the forum)
+
 2010-10-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* scale_*.cc: add missing guard bands. This should fix artifacts along the
 	  bottom edge of the screen.
