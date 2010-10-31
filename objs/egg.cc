@@ -726,7 +726,7 @@ int Egg_object::is_active
 	if (flags & (1 << (int) nocturnal))
 		{			// Nocturnal.
 		int hour = gclock->get_hour();
-		if (!(hour >= 21 || hour <= 5))
+		if (!(hour >= 21 || hour <= 4))
 			return (0);	// It's not night.
 		}
 	Egg_criteria cri = (Egg_criteria) get_criteria();
