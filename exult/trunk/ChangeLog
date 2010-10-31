@@ -1,3 +1,6 @@
+2010-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/eggs.cc, gameclk.cc: match night time with original (bug #3099477)
+
 2010-10-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/eggs.cc: fix nocturnal egg 12h/24h confusion. (Thanks to Malignant
 	Manor on the forum)
