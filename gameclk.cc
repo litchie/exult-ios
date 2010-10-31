@@ -51,12 +51,10 @@ static inline bool is_day_palette(int pal)
 
 static inline int get_time_palette(int hour, bool dungeon)
 	{
-	if (dungeon || hour < 6)
+	if (dungeon || hour < 5)
 		return PALETTE_NIGHT;
-	else if (hour == 6)
+	else if (hour == 5)
 		return PALETTE_DAWN;
-	else if (hour == 7)
-		return PALETTE_DAY;
 	else if (hour < 20)
 		return PALETTE_DAY;
 	else if (hour == 20)
