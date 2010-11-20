@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -808,8 +808,8 @@ public:
 
 	xx += x - map->get_xleft() + border;
 	yy += y - map->get_yabove() + border;
-	gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-	gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
+	gwin->get_win()->fill8(50, 1, 5, xx, yy - 2);
+	gwin->get_win()->fill8(50, 5, 1, xx - 2, yy);
 	}
 	};
 
