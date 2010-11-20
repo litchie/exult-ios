@@ -1326,8 +1326,8 @@ public:
 			Shape_frame *s = sid->get_shape();
 			xx += x - s->get_xleft();
 			yy += y - s->get_yabove();
-			gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-			gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
+			gwin->get_win()->fill8(50, 1, 5, xx, yy - 2);
+			gwin->get_win()->fill8(50, 5, 1, xx - 2, yy);
 			}
 		}
 	};

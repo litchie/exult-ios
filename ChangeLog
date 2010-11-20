@@ -1,3 +1,9 @@
+2010-11-20 Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac, Makefile.common, msvc9/msvc_kludges.h, msvcstuff/msvc_kludges.h, 
+	  win32/*.rc: changed version number to 1.5.0svn - the idea is to have even version 
+	  numbers for final releases.
+	* cheat.cc, usecode/intrinsics.cc: location cross on normal and cheat map is yellow again
+
 2010-11-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* desktop/exult.desktop: apply changes from gentoo's exult package
 

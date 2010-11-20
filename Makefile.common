@@ -1,4 +1,4 @@
-VERSION=1.4.9RC1
+VERSION=1.5.0svn
 
 MAIN_OBJS=actions.o \
 	actorio.o \
