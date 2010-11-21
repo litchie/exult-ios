@@ -2927,6 +2927,9 @@ int Actor::reduce_health
 			}
 		}
 
+	// query this here because die() will reset is_in_party.
+	bool in_party = is_in_party();
+
 	if (is_dying())
 		die(attacker);
 	else if (val <= 0 && !get_flag(Obj_flags::asleep))
@@ -2934,12 +2937,17 @@ int Actor::reduce_health
 		Combat_schedule::stop_attacking_npc(this);
 		set_flag(Obj_flags::asleep);
 		}
-	else if (npc && !target && !is_in_party())
+	else if (npc && !target && !in_party)
 		{
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 		set_oppressor(npc->get_npc_num());
 		}
-	fight_back(attacker);
+
+	// CHECKME: Not sure if this check is correct. It is added to fix bug
+	// #3011711, but something more general (such as
+	// "Don't fight back against allies"?) might be better? (-wjp, 20101121)
+	if (!in_party)
+		fight_back(attacker);
 	return delta;
 	}
 
