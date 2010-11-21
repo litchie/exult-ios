@@ -217,7 +217,7 @@ bool Spellbook_object::can_do_spell
 		return false;		// We don't have that spell.
 	int mana = act->get_property(Actor::mana);
 	// ++++TAG: Need to de-hard-code cost.
-	int cost = circle + GAME_SI ? 1 : 0;
+	int cost = circle + (GAME_SI ? 1 : 0);
 	int level = act->get_level();
 	if ((mana < cost) || (level < circle))
 			// Not enough mana or not yet at required level?

@@ -1,3 +1,6 @@
+2010-11-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/spellbook.cc: fix mana cost check (thanks malignantmanor; #3001287)
+
 2010-11-20 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, Makefile.common, msvc9/msvc_kludges.h, msvcstuff/msvc_kludges.h, 
 	  win32/*.rc: changed version number to 1.5.0svn - the idea is to have even version 
