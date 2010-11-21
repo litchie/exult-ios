@@ -1730,7 +1730,6 @@ inline void Cloud::next
 		start_time = curtime + 2000*randcnt + rand()%2000;
 		randcnt = (randcnt + 1)%4;
 		start_time = Game::get_ticks() + 2000*randcnt + rand()%500;
-cout << "Cloud: start_time = " << start_time << endl;
 		count = max_count;
 		cloud.set_frame(rand()%cloud.get_num_frames());
 		int x, y;		// Get screen pos.
