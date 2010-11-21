@@ -512,7 +512,7 @@ Approach_actor_action::Approach_actor_action
 	{
 					// Get length of path.
 	int nsteps = path->get_num_steps();
-	cout << "Aproach nsteps is " << nsteps << "." << endl;
+	//cout << "Approach nsteps is " << nsteps << "." << endl;
 	if (nsteps >= 6)		// (May have to play with this).
 		check_step = nsteps > 18 ? 9 : nsteps/2;
 	else
