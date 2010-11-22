@@ -153,9 +153,13 @@ void ShapeBrowser::browse_shapes()
 	
 						snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
 						font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
-	
-						//font->draw_text(ibuf, 32, 16, item_names[current_shape]);
-						font->paint_text_fixedwidth(ibuf, item_names[current_shape], 2, 2, 8);
+
+						// TODO: do we want to display something other than
+						// this for shapes >= 1024?
+						if (current_shape < num_item_names) {
+							//font->draw_text(ibuf, 32, 16, item_names[current_shape]);
+							font->paint_text_fixedwidth(ibuf, item_names[current_shape], 2, 2, 8);
+						}
 	
 						//draw outline
 						gwin->get_win()->fill8(255,
