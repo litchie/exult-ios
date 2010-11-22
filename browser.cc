@@ -156,7 +156,7 @@ void ShapeBrowser::browse_shapes()
 
 						// TODO: do we want to display something other than
 						// this for shapes >= 1024?
-						if (current_shape < num_item_names) {
+						if (current_shape < num_item_names && item_names[current_shape]) {
 							//font->draw_text(ibuf, 32, 16, item_names[current_shape]);
 							font->paint_text_fixedwidth(ibuf, item_names[current_shape], 2, 2, 8);
 						}
