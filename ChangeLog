@@ -1,3 +1,7 @@
+2010-12-06 Dominik Reichardt <dominus@users.sourceforge.net>
+	* data/si/autonotes.txt, content/sifixes/src/header/si/si_gflags.uc: corrections 
+	  about some flags set when talking to Harnna
+
 2010-11-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/spellbook.cc: fix mana cost check (thanks malignantmanor; #3001287)
 	* actors.cc: don't make dying party members call guards
