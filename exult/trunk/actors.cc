@@ -1398,8 +1398,8 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	if (Actor::is_dead())
-		return;			// Not when dead.
+	if (Actor::is_dead() || !can_act())
+		return;			// Not when dead, paralyzed, or asleep.
 	int delay = 0;
 	int dist;			// How close to aim for.
 	Tile_coord leaderpos = leader->get_tile();

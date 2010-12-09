@@ -1,4 +1,12 @@
 2010-12-09 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc, gamewin.*, objs/eggs.cc, usecode/intrinsics.cc: Added a check
+		to make sure party members don't teleport with teleport_party if paralyzed, or asleep.
+		Added an optional parameter for teleport_party, teleport_to_saved_pos, move_object,
+		and recall_virtue_stone to override the check. Teleport cheats don't use the check.
+		Changed Actor::follow so that paralyzed or asleep actors don't follow. This fixes bug #2799398.
+	* added  cmanip.exe, mockup.exe, smooth.exe, and u7voice2syx.exe to the trunk's svn:ignore
+
+2010-12-09 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Make more schedule created items temporary
 	* added Exult.exe to the trunk's svn:ignore
 

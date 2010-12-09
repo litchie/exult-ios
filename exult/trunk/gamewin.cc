@@ -1970,7 +1970,8 @@ void Game_window::teleport_party
 	(
 	Tile_coord t,			// Where to go.
 	bool skip_eggs,			// Don't activate eggs at dest.
-	int newmap			// New map #, or -1 for same map.
+	int newmap,			// New map #, or -1 for same map.
+	bool no_status_check
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
@@ -1992,7 +1993,8 @@ void Game_window::teleport_party
 		int party_member=party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person && !person->is_dead() && 
-		    person->get_schedule_type() != Schedule::wait)
+		    person->get_schedule_type() != Schedule::wait
+			&& (person->can_act() || no_status_check))
 			{
 			person->set_action(0);
 			Tile_coord t1 = Map_chunk::find_spot(t, 8,

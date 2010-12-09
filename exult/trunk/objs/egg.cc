@@ -366,7 +366,7 @@ public:
 					pos.ty << ')' << endl;
 		if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
 					// Teleport everyone!!!
-			gwin->teleport_party(pos, false, mapnum);
+			gwin->teleport_party(pos, false, mapnum, false);
 	}
 };
 
