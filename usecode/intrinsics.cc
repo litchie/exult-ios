@@ -1088,7 +1088,7 @@ USECODE_INTRINSIC(move_object)
 	modified_map = true;
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
-		gwin->teleport_party(tile, false, map);
+		gwin->teleport_party(tile, false, map, parms[2].get_int_value());
 		return (no_ret);
 		}
 	Game_object *obj = get_item(parms[0]);
@@ -1925,7 +1925,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 			}
 		Tile_coord t = vs->get_target_pos();
 		if (t.tx > 0 || t.ty > 0)
-			gwin->teleport_party(t, false, vs->get_target_map());
+			gwin->teleport_party(t, false, vs->get_target_map(), parms[1].get_int_value());
 		}
 	return no_ret;
 }
@@ -3351,7 +3351,7 @@ USECODE_INTRINSIC(teleport_to_saved_pos)
 		if (saved_pos.tx < 0 || saved_pos.tx >= c_num_tiles)
 					// Fix old games.  Send to Monitor.
 			saved_pos = Tile_coord(719, 2608, 1);
-		gwin->teleport_party(saved_pos, false, saved_map);
+		gwin->teleport_party(saved_pos, false, saved_map, parms[1].get_int_value());
 		}
 	return no_ret;
 }
