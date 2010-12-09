@@ -1,3 +1,7 @@
+2010-12-09 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: Make more schedule created items temporary
+	* added Exult.exe to the trunk's svn:ignore
+
 2010-12-09 Dominik Reichardt <dominus@users.sourceforge.net>
 	* paths.cc: fixed talking through locked doors. If NPCs can't pathfind to you, no conversation (thanks to Malignant Manor)
 	* actors.cc, gumps/Face_stats.cc: applied highlight patch #3132882 to match the order with the original (also thanks to Malignant Manor)
