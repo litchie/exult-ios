@@ -1,3 +1,7 @@
+2010-12-09 Dominik Reichardt <dominus@users.sourceforge.net>
+	* paths.cc: fixed talking through locked doors. If NPCs can't pathfind to you, no conversation (thanks to Malignant Manor)
+	* actors.cc, gumps/Face_stats.cc: applied highlight patch #3132882 to match the order with the original (also thanks to Malignant Manor)
+	
 2010-12-06 Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/si/autonotes.txt, content/sifixes/src/header/si/si_gflags.uc: corrections 
 	  about some flags set when talking to Harnna
