@@ -134,6 +134,8 @@ protected:
 	int		pois;
 	int		prot;
 	int		para;
+	int		charm;
+	int		curse;
 public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
 	virtual ~Portrait_button();
@@ -163,6 +165,8 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 	pois = actor->get_flag(Obj_flags::poisoned);
 	prot = actor->get_flag(Obj_flags::protection);
 	para = actor->get_flag(Obj_flags::paralyzed);
+	charm = actor->get_flag(Obj_flags::charmed);
+	curse = actor->get_flag(Obj_flags::cursed);
 
 	gwin->add_dirty(get_rect());
 }
@@ -204,7 +208,9 @@ void Portrait_button::update_widget()
 	if (hit != actor->was_hit() ||
 		pois != actor->get_flag(Obj_flags::poisoned) ||
 		prot != actor->get_flag(Obj_flags::protection) ||
-		para != actor->get_flag(Obj_flags::paralyzed))
+		para != actor->get_flag(Obj_flags::paralyzed) ||
+		charm != actor->get_flag(Obj_flags::charmed) ||
+		curse != actor->get_flag(Obj_flags::cursed))
 	{
 		Rectangle r = get_rect();
 		gwin->add_dirty(r);
@@ -212,6 +218,8 @@ void Portrait_button::update_widget()
 		pois = actor->get_flag(Obj_flags::poisoned);
 		prot = actor->get_flag(Obj_flags::protection);
 		para = actor->get_flag(Obj_flags::paralyzed);
+		charm = actor->get_flag(Obj_flags::charmed);
+		curse = actor->get_flag(Obj_flags::cursed);
 		r = get_rect();
 		gwin->add_dirty(r);
 	}
@@ -242,17 +250,21 @@ void Portrait_button::paint()
 		{
 			sman->paint_outline(px, py, s, HIT_PIXEL);
 		}
-		else if (pois)
+		else if (charm)
+			sman->paint_outline(px, py, s, CHARMED_PIXEL);
+		else if (para)
 		{
-			sman->paint_outline(px, py, s, POISON_PIXEL);
+			sman->paint_outline(px, py, s, PARALYZE_PIXEL);
 		}
 		else if (prot)
 		{
 			sman->paint_outline(px, py, s, PROTECT_PIXEL);
 		}
-		else if (para)
+		else if (curse)
+			sman->paint_outline(px, py, s, CURSED_PIXEL);
+		else if (pois)
 		{
-			sman->paint_outline(px, py, s, PARALYZE_PIXEL);
+			sman->paint_outline(px, py, s, POISON_PIXEL);
 		}
 	}
 
@@ -263,7 +275,7 @@ void Portrait_button::paint()
 Rectangle Portrait_button::get_rect()
 {
 	Rectangle rect = Face_button::get_rect();
-	if (hit || pois || prot || para) rect.enlarge(2);
+	if (hit || pois || prot || para || charm || curse) rect.enlarge(2);
 
 	if (hp)
 	{

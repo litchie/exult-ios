@@ -448,7 +448,7 @@ int Fast_pathfinder_client::is_grabable
 	{
 	if (from->distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(MAX_GRAB_DIST, 
+	Fast_pathfinder_client client(1, 
 	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from->get_tile(), to->get_tile(), &client);
