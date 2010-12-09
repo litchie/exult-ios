@@ -508,7 +508,7 @@ public:
 	inline void set_allow_double_right_move(bool a) { allow_double_right_move = a; }
 	inline bool get_allow_double_right_move() { return allow_double_right_move; }
 	void teleport_party(Tile_coord t, bool skip_eggs = false, 
-							int new_map = -1);
+							int new_map = -1, bool no_status_check = true);
 	bool activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
