@@ -1352,8 +1352,12 @@ void Talk_schedule::now_what
 			}
 		else
 			{
-			if (rand()%3 == 0)
-				npc->say(first_talk, last_talk);
+			if (Fast_pathfinder_client::is_grabable(npc,
+					gwin->get_main_actor()))
+				{
+				if (rand()%3 == 0)
+					npc->say(first_talk, last_talk);
+				}
 					// Walk there, and retry if
 					//   blocked.
 			npc->set_action(pact);
@@ -1365,8 +1369,12 @@ void Talk_schedule::now_what
 	case 1:				// Wait a second.
 	case 2:
 		{
-		if (rand()%3 == 0)
-			npc->say(first_talk, last_talk);
+		if (Fast_pathfinder_client::is_grabable(npc,
+				gwin->get_main_actor()))
+			{
+			if (rand()%3 == 0)
+				npc->say(first_talk, last_talk);
+			}
 		// Step towards Avatar.
 		Tile_coord pos = npc->get_tile(), 
 			   dest = gwin->get_main_actor()->get_tile();
@@ -3194,13 +3202,14 @@ void Sew_schedule::ending
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
 	oven(0), worktable(0), displaytable(0), flourbag(0),
-	dough(0), dough_in_oven(0), baked_count(0), state(to_flour)
+	dough(0), dough_in_oven(0), state(to_flour)
 	{ }
 
 void Bake_schedule::now_what()
 {
 	Tile_coord npcpos = npc->get_tile();
 	Actor_pathfinder_client cost(npc, 1);
+	Actor_pathfinder_client cost2(npc, 2);
 	int delay = 100;
 
 	switch (state) {
@@ -3284,7 +3293,7 @@ void Bake_schedule::now_what()
 		cpos.tz = 0;
 
 		Actor_action *pact = Path_walking_actor_action::create_path(
-					npcpos, cpos, cost);
+					npcpos, cpos, cost2);
 		if (pact) {
 			if (dough) {
 				dough->remove_this();
@@ -3395,33 +3404,72 @@ void Bake_schedule::now_what()
 			break;
 		}
 
-		baked_count++;
-
-		Tile_coord tpos = displaytable->get_tile();
+		Rectangle r = displaytable->get_footprint();
+		Perimeter p(r);		// Find spot adjacent to table.
+		Tile_coord spot;	// Also get closest spot on table.
+		Tile_coord spot_on_table;
+		p.get(rand()%p.size(), spot, spot_on_table);
 		Actor_action *pact = Path_walking_actor_action::create_path(
-					npcpos, tpos, cost);
-					// Find where to put cloth.
-		Rectangle foot = displaytable->get_footprint();
+							npcpos, spot, cost2);
 		Shape_info& info = displaytable->get_info();
-		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
-			displaytable->get_lift() + info.get_3d_height());
-		if (pact) {
-			if (baked_count <= 5) {
-				npc->set_action(new Sequence_actor_action(pact,
-					new Pickup_actor_action(dough_in_oven,
-							 cpos, 250, true)));
-			} else {
-				npc->set_action(pact);
-				dough_in_oven->remove_this();
-			}
-			dough_in_oven = 0;
-		} else {
-			// just make it vanish
-			dough_in_oven->remove_this();
-			dough_in_oven = 0;
-		}
+		spot_on_table.tz += info.get_3d_height();
 
-		state = get_dough;
+		// Place baked goods if spot is empty.
+		Tile_coord t = Map_chunk::find_spot(spot_on_table, 0,
+						377, 0, 0);
+		if (t.tx != -1 && t.tz == spot_on_table.tz)
+		{
+			npc->set_action(new Sequence_actor_action(pact,
+					new Pickup_actor_action(dough_in_oven,
+							 spot_on_table, 250, true)));
+			dough_in_oven = 0;
+			state = get_dough;
+		}
+		else
+		{
+			Actor_action *pact = Path_walking_actor_action::create_path(
+							npcpos, displaytable->get_tile(), cost);
+			npc->set_action(new Sequence_actor_action(pact,
+				new Face_pos_actor_action(displaytable->get_tile(), 250)));
+			delay = 250;
+			state = clear_display;
+		}		
+		clearing = false;
+		break;
+	}
+	case clear_display:
+	{
+		Game_object_vector food;
+		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum);
+		if (!food.size() && !clearing)
+		{
+			if (dough_in_oven)
+				dough_in_oven->remove_this();
+			dough_in_oven = 0;
+			state = get_dough;
+			break;
+		}
+		clearing = true;
+		for (int i = 0; i < food.size(); i++)
+		{
+				delay = 500;
+				state = remove_food;
+				break;
+		}
+		if (!food.size())
+			state = display_wares;
+		break;
+	}
+	case remove_food:
+	{
+		Game_object *food = npc->find_closest(377);
+		if (food)
+		{
+			delay = 500;
+			state = clear_display;
+			gwin->add_dirty(food);
+			food->remove_this();
+		}
 		break;
 	}
 	case get_dough:
@@ -3443,7 +3491,7 @@ void Bake_schedule::now_what()
 
 		Tile_coord tpos = dough->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
-					npcpos, tpos, cost);
+					npcpos, tpos, cost2);
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(
 				pact,

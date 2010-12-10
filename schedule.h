@@ -525,7 +525,7 @@ class Bake_schedule : public Schedule
 	Game_object *flourbag;
 	Game_object *dough;
 	Game_object *dough_in_oven;
-	int baked_count;
+	bool clearing;
 	enum {
 		to_flour,
 		get_flour,
@@ -533,6 +533,8 @@ class Bake_schedule : public Schedule
 		make_dough,
 		remove_from_oven,
 		display_wares,
+		clear_display,
+		remove_food,
 		get_dough,
 		put_in_oven
 	} state;

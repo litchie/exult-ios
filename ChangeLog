@@ -1,3 +1,10 @@
+2010-12-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.*: Added checks in Talk_schedule::now_what so the npcs doesn't item_say if the
+		Avatar is unreachable. Changed costs in baking schedule to help prevent failures.
+		Changed baking schedule so that the display table is cleared of food before getting full.
+		It needs some further pathfinding added to each food item cleared since it currently only
+		walks to the table.
+		
 2010-12-09 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc, gamewin.*, objs/eggs.cc, usecode/intrinsics.cc: Added a check
 		to make sure party members don't teleport with teleport_party if paralyzed, or asleep.
