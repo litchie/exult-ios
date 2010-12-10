@@ -280,6 +280,10 @@ void ActionFullscreen(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->get_win()->toggle_fullscreen();
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())
+		Set_renderer(gwin->get_win(), gwin->get_pal(), true);
+#endif
 	gwin->paint();
 }
 

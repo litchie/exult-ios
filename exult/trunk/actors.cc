@@ -4332,7 +4332,14 @@ void Actor::mend_hourly
 	(
 	)
 	{
-	if (is_dead())
+	bool starving = (get_property(static_cast<int>(food_level)) <= 0
+					&& is_in_party() && !get_info().does_not_eat());
+	// It should be okay to leave is_cold_immune out.
+	// It blocks raising temperature in the first place.
+	bool freezing = (is_in_party() && get_temperature() == 63 &&
+					!(gear_powers&Frame_flags::cold_immune));
+	if (is_dead() || get_flag(Obj_flags::poisoned) || starving ||
+			freezing)
 		return;
 	int maxhp = properties[static_cast<int>(strength)];
 	int hp = properties[static_cast<int>(health)];
