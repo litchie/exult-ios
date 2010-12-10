@@ -1,4 +1,12 @@
 2010-12-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Actors.cc: Npcs do not heal hourly if poisoned. If in the party, they also don't heal if
+		starving or freezing. Overheating in SI is not checked since overheating is handled by
+		usecode function 0x6AF.
+	* keyactions.cc: I fixed fullscreen toggle for OpenGL.
+	* defaultkeys.txt: Alt-V (Cmd-V) is now an alternate key to create last shape due to newer
+		Apple Macintosh keyboards lacking the insert key.
+
+2010-12-10 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.*: Added checks in Talk_schedule::now_what so the npcs doesn't item_say if the
 		Avatar is unreachable. Changed costs in baking schedule to help prevent failures.
 		Changed baking schedule so that the display table is cleared of food before getting full.
