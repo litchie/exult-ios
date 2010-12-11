@@ -3199,7 +3199,7 @@ void Sew_schedule::ending
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
 	oven(0), worktable(0), displaytable(0), flourbag(0),
-	dough(0), dough_in_oven(0), state(to_flour)
+	dough(0), dough_in_oven(0), state(find_leftovers)
 	{ }
 
 void Bake_schedule::now_what()
@@ -3208,8 +3208,59 @@ void Bake_schedule::now_what()
 	Actor_pathfinder_client cost(npc, 1);
 	Actor_pathfinder_client cost2(npc, 2);
 	int delay = 100;
+	int dough_shp (GAME_SI ? 863 : 658);
 
 	switch (state) {
+	case find_leftovers:
+	{
+		state = to_flour;
+		if (!dough_in_oven)
+		{
+			// look for baking dough
+			Game_object_vector baking_dough;
+			int frnum (GAME_SI ? 18 : 2);
+			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum);
+			if (!baking_dough.empty())
+			{
+				dough_in_oven = baking_dough[0];
+				state = remove_from_oven;
+				break;
+			}
+			// looking for cooked food left in oven
+			Game_object_vector food;
+			Tile_coord Oven = npc->find_closest(831)->get_tile();
+			npc->find_nearby(food, Oven, 377, 2, 0, 51, c_any_framenum);
+			if (!food.empty())
+			{
+				dough_in_oven = food[0];
+				state = remove_from_oven;
+				break;
+			}
+		}
+		if (!dough) // looking for unused dough on tables
+		{
+			Game_object_vector leftovers;
+			if (GAME_SI)
+			{
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 16);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 17);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18);
+			}
+			else
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum);
+			if (!leftovers.empty())
+			{
+				dough = leftovers[0];
+				state = make_dough;
+				delay = 0;
+				Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, dough->get_tile(), cost2);
+				if (pact)
+					npc->set_action(pact);
+			}
+		}
+		break;
+	}
 	case to_flour:
 	{
 		Game_object_vector items;
@@ -3297,9 +3348,10 @@ void Bake_schedule::now_what()
 				dough = 0;
 			}
 			if (Game::get_game_type() == SERPENT_ISLE)
-				dough = new Ireg_game_object(863, 16, 0, 0);
+				dough = new Ireg_game_object(dough_shp, 16, 0, 0);
 			else
-				dough = new Ireg_game_object(658, 0, 0, 0);
+				dough = new Ireg_game_object(dough_shp, 0, 0, 0);
+			dough->set_quality(50);
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
 		} else {
@@ -3326,13 +3378,22 @@ void Bake_schedule::now_what()
 		fr[0] = npc->get_dir_framenum(dir, 3);
 		fr[1] = npc->get_dir_framenum(dir, 0);
 
-		npc->set_action(new Sequence_actor_action(
+		int frame = dough->get_framenum();
+		if (GAME_SI ? frame == 16: frame == 0)
+			npc->set_action(new Sequence_actor_action(
 				new Frames_actor_action(fr, 2, 500),
-		((Game::get_game_type() == SERPENT_ISLE) ?
+			((GAME_SI) ?
 				new Frames_actor_action((signed char *)"\x11",1,250,dough) :
 				new Frames_actor_action((signed char *)"\x01",1,250,dough)),
 				new Frames_actor_action(fr, 2, 500),
-		((Game::get_game_type() == SERPENT_ISLE) ?
+			((GAME_SI) ?
+				new Frames_actor_action((signed char *)"\x12",1,250,dough) :
+				new Frames_actor_action((signed char *)"\x02",1,250,dough))
+			));
+		if (GAME_SI ? frame == 17: frame == 1)
+			npc->set_action(new Sequence_actor_action(
+				new Frames_actor_action(fr, 2, 500),
+				((GAME_SI) ?
 				new Frames_actor_action((signed char *)"\x12",1,250,dough) :
 				new Frames_actor_action((signed char *)"\x02",1,250,dough))
 				));
@@ -3386,7 +3447,7 @@ void Bake_schedule::now_what()
 		if (!dough_in_oven) {
 			// try again
 			delay = 2500;
-			state = to_flour;
+			state = find_leftovers;
 			break;
 		}
 		displaytable = npc->find_closest(633);
@@ -3396,7 +3457,7 @@ void Bake_schedule::now_what()
 			dough_in_oven = 0;
 
 			delay = 2500;
-			state = to_flour;
+			state = find_leftovers;
 			break;
 		}
 
@@ -3473,7 +3534,7 @@ void Bake_schedule::now_what()
 		if (!dough) {
 			// try again
 			delay = 2500;
-			state = to_flour;
+			state = find_leftovers;
 			break;
 		}
 
@@ -3481,7 +3542,7 @@ void Bake_schedule::now_what()
 		if (!oven) {
 			// wait a while
 			delay = 2500;
-			state = to_flour;
+			state = find_leftovers;
 			break;
 		}
 
@@ -3505,7 +3566,7 @@ void Bake_schedule::now_what()
 		if (!dough) {
 			// try again
 			delay = 2500;
-			state = to_flour;
+			state = find_leftovers;
 			break;
 		}
 
@@ -3535,6 +3596,7 @@ void Bake_schedule::now_what()
 				pact,
 				new Pickup_actor_action(dough, cpos, 250)));
 
+			dough->set_quality(51);
 			dough_in_oven = dough;
 			dough = 0;
 		} else {
@@ -3542,7 +3604,7 @@ void Bake_schedule::now_what()
 			dough = 0;
 		}
 
-		state = to_flour;
+		state = find_leftovers;
 		break;
 	}
 	}
