@@ -1,3 +1,7 @@
+2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: Reverting 6515 changes since the temporary schedule items will likely crash
+		during chunk cache out (Avatar death is a good example).
+
 2010-12-10 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Actors.cc: Npcs do not heal hourly if poisoned. If in the party, they also don't heal if
 		starving or freezing. Overheating in SI is not checked since overheating is handled by

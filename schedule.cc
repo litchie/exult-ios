@@ -2444,7 +2444,6 @@ void Lab_schedule::now_what
 					ShapeID::get_info(340), 340,
 					rand()%nframes, 0, 0, 0);
 				p->move(t);
-				p->set_flag(Obj_flags::is_temporary);
 				}
 			}
 		signed char frames[2];
@@ -2749,7 +2748,6 @@ Game_object *Waiter_schedule::find_serving_spot
 			plate = gmap->create_ireg_object(717, 0);
 			plate->move(spot);
 			spot.tz++;	// Food goes above plate.
-			plate->set_flag(Obj_flags::is_temporary);
 			return plate;
 			}
 		}
@@ -2841,7 +2839,6 @@ void Waiter_schedule::now_what
 			int frame = rand()%nfoods;
 			food = new Ireg_game_object(377, frame, 0, 0, 0);
 			npc->add_readied(food, lhand);
-			food->set_flag(Obj_flags::is_temporary);
 		}
 		if (!walk_to_customer(3000)) {
 			state = get_customer;
@@ -3303,7 +3300,6 @@ void Bake_schedule::now_what()
 				dough = new Ireg_game_object(863, 16, 0, 0);
 			else
 				dough = new Ireg_game_object(658, 0, 0, 0);
-			dough->set_flag(Obj_flags::is_temporary);
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
 		} else {
