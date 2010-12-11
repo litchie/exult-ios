@@ -1,4 +1,10 @@
 2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.*: The baking schedule should now clean up when needed. Flour, dough, and baked
+		goods from left over from old saved games will not be cleaned up since this relies on
+		quality number. Quality 50 is for dough	and quality 51 is for items that have been
+		placed in the oven.
+
+2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: Reverting 6515 changes since the temporary schedule items will likely crash
 		during chunk cache out (Avatar death is a good example).
 

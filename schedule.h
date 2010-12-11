@@ -527,6 +527,7 @@ class Bake_schedule : public Schedule
 	Game_object *dough_in_oven;
 	bool clearing;
 	enum {
+		find_leftovers,
 		to_flour,
 		get_flour,
 		to_table,
