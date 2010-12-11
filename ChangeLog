@@ -1,4 +1,8 @@
 2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: I fixed a crash in the baking schedule state find_leftovers caused by the
+		oven getting cached out.
+
+2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: In baking schedule, clear_display and remove_food now use the new baked
 		quality. I changed size() check to empty() for use_potion.
 
