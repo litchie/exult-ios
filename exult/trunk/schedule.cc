@@ -2427,7 +2427,7 @@ void Lab_schedule::now_what
 		state = start;
 		vector<Game_object *> potions;
 		Game_object::find_nearby(potions, spot_on_table, 340, 0, 0);
-		if (potions.size())	// Found a potion.  Remove it.
+		if (!potions.empty())	// Found a potion.  Remove it.
 			{
 			gwin->add_dirty(potions[0]);
 			potions[0]->remove_this();
@@ -3497,7 +3497,7 @@ void Bake_schedule::now_what()
 	case clear_display:
 	{
 		Game_object_vector food;
-		npc->find_nearby(food, npcpos, 377, 4, 0, c_any_qual, c_any_framenum);
+		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
 		if (!food.size() && !clearing)
 		{
 			if (dough_in_oven)
@@ -3519,13 +3519,14 @@ void Bake_schedule::now_what()
 	}
 	case remove_food:
 	{
-		Game_object *food = npc->find_closest(377);
-		if (food)
+		Game_object_vector food;
+		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
+		if (food.size())
 		{
 			delay = 500;
 			state = clear_display;
-			gwin->add_dirty(food);
-			food->remove_this();
+			gwin->add_dirty(food[0]);
+			food[0]->remove_this();
 		}
 		break;
 	}
