@@ -1,4 +1,8 @@
 2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: In baking schedule, clear_display and remove_food now use the new baked
+		quality. I changed size() check to empty() for use_potion.
+
+2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.*: The baking schedule should now clean up when needed. Flour, dough, and baked
 		goods from left over from old saved games will not be cleaned up since this relies on
 		quality number. Quality 50 is for dough	and quality 51 is for items that have been
