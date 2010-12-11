@@ -3227,14 +3227,18 @@ void Bake_schedule::now_what()
 				break;
 			}
 			// looking for cooked food left in oven
-			Game_object_vector food;
-			Tile_coord Oven = npc->find_closest(831)->get_tile();
-			npc->find_nearby(food, Oven, 377, 2, 0, 51, c_any_framenum);
-			if (!food.empty())
+			oven = npc->find_closest(831);
+			if (oven)
 			{
-				dough_in_oven = food[0];
-				state = remove_from_oven;
-				break;
+				Game_object_vector food;
+				Tile_coord Opos = oven->get_tile();
+				npc->find_nearby(food, Opos, 377, 2, 0, 51, c_any_framenum);
+				if (!food.empty())
+				{
+					dough_in_oven = food[0];
+					state = remove_from_oven;
+					break;
+				}
 			}
 		}
 		if (!dough) // looking for unused dough on tables
