@@ -3209,6 +3209,7 @@ void Bake_schedule::now_what()
 	Actor_pathfinder_client cost2(npc, 2);
 	int delay = 100;
 	int dough_shp (GAME_SI ? 863 : 658);
+	Game_object *stove = npc->find_closest(664);
 
 	switch (state) {
 	case find_leftovers:
@@ -3317,8 +3318,21 @@ void Bake_schedule::now_what()
 	{
 		Game_object *table1 = npc->find_closest(1003);
 		Game_object *table2 = npc->find_closest(1018);
-
-		if (!table1)
+		if (stove)
+		{
+			Game_object_vector table;
+			npc->find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 5);
+			if (table.size() == 1)
+				worktable = table[0];
+			else if (table.size() > 1)
+			{
+				if (rand()%2)
+					worktable = table[0];
+				else
+					worktable = table[1];
+			}
+		}
+		else if (!table1)
 			worktable = table2;
 		else if (!table2)
 			worktable = table1;
@@ -3412,8 +3426,10 @@ void Bake_schedule::now_what()
 			state = get_dough;
 			break;
 		}
-
-		oven = npc->find_closest(831);
+		if (stove)
+			oven = stove;
+		else
+			oven = npc->find_closest(831);
 		if (!oven) {
 			// this really shouldn't happen...
 			dough_in_oven->remove_this();
@@ -3454,11 +3470,18 @@ void Bake_schedule::now_what()
 			state = find_leftovers;
 			break;
 		}
-		displaytable = npc->find_closest(633);
-		if (!displaytable) // look for Moonshade table
+		displaytable = npc->find_closest(633); // Britain
+		if (!displaytable)
 		{
 			Game_object_vector table;
-			npc->find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 1);
+			int table_shp = 890; // Moonshade table
+			int table_frm = 1;
+			if (stove)
+			{
+				table_shp = 1003;
+				table_frm = 2;
+			}
+			npc->find_nearby(table, npcpos, table_shp, -1, 0, c_any_qual, table_frm);
 			if (table.size() == 1)
 				displaytable = table[0];
 			else if (table.size() > 1)
@@ -3484,8 +3507,9 @@ void Bake_schedule::now_what()
 		Tile_coord spot;	// Also get closest spot on table.
 		Tile_coord spot_on_table;
 		p.get(rand()%p.size(), spot, spot_on_table);
+		Actor_pathfinder_client COST = (GAME_SI ? cost : cost2);
 		Actor_action *pact = Path_walking_actor_action::create_path(
-							npcpos, spot, cost2);
+							npcpos, spot, COST);
 		Shape_info& info = displaytable->get_info();
 		spot_on_table.tz += info.get_3d_height();
 
@@ -3556,8 +3580,10 @@ void Bake_schedule::now_what()
 			state = find_leftovers;
 			break;
 		}
-
-		oven = npc->find_closest(831);
+		if (stove)
+			oven = stove;
+		else
+			oven = npc->find_closest(831);
 		if (!oven) {
 			// wait a while
 			delay = 2500;
@@ -3588,8 +3614,10 @@ void Bake_schedule::now_what()
 			state = find_leftovers;
 			break;
 		}
-
-		oven = npc->find_closest(831);
+		if (stove)
+			oven = stove;
+		else
+			oven = npc->find_closest(831);
 		if (!oven) {
 			// oops... retry
 			dough->remove_this();
@@ -3605,10 +3633,15 @@ void Bake_schedule::now_what()
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
 
+		// offsets for oven placement
+		int offX = +1, offY = 0, offZ = 0;
+		if (stove) // hide dough
+			offX = -3, offY = 0, offZ = -2;
+
 		Rectangle foot = oven->get_footprint();
 		Shape_info& info = oven->get_info();
-		Tile_coord cpos(foot.x + 1, foot.y,
-				oven->get_lift() + info.get_3d_height());
+		Tile_coord cpos(foot.x + offX, foot.y + offY, 
+				oven->get_lift() + info.get_3d_height() + offZ);
 
 		if (pact) {
 			npc->set_action(new Sequence_actor_action(
