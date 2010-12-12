@@ -1,3 +1,9 @@
+2010-12-12 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: The Moonshade Baker now displays goods. Removed accidental temporary flag.
+		gamemgr\sigame.cc: Map patches were added to remove	the bread, dough, and flour in
+		Moonshade that are on the wrong tables. Dev games are now excluded from	all the SI
+		map patches.
+
 2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: Reverted baking to_table cost. Added missing else statement in to_table.
 
