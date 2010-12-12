@@ -3455,6 +3455,20 @@ void Bake_schedule::now_what()
 			break;
 		}
 		displaytable = npc->find_closest(633);
+		if (!displaytable) // look for Moonshade table
+		{
+			Game_object_vector table;
+			npc->find_nearby(table, npcpos, 890, -1, 0, c_any_qual, 1);
+			if (table.size() == 1)
+				displaytable = table[0];
+			else if (table.size() > 1)
+			{
+				if (rand()%2)
+					displaytable = table[0];
+				else
+					displaytable = table[1];
+			}
+		}
 		if (!displaytable) {
 			// uh-oh...
 			dough_in_oven->remove_this();
@@ -3482,7 +3496,7 @@ void Bake_schedule::now_what()
 		{
 			npc->set_action(new Sequence_actor_action(pact,
 					new Pickup_actor_action(dough_in_oven,
-							 spot_on_table, 250, true)));
+							 spot_on_table, 250)));
 			dough_in_oven = 0;
 			state = get_dough;
 		}
