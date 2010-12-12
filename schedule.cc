@@ -1300,6 +1300,10 @@ void Patrol_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	// This is called every hour. It is most likely not needed
+	// if the same schedule type.
+	if (new_type == patrol)
+		return;
 	if (hammer)
 		{
 		hammer->remove_this();
@@ -2887,6 +2891,10 @@ void Waiter_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	// This is called every hour. It is most likely not needed
+	// if the same schedule type.
+	if (new_type == waiter)
+		return;
 					// Remove what he/she is carrying.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -3177,6 +3185,10 @@ void Sew_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	// This is called every hour. It is most likely not needed
+	// if the same schedule type.
+	if (new_type == sew)
+		return;
 					// Remove shears.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -3665,6 +3677,10 @@ void Bake_schedule::now_what()
 
 void Bake_schedule::ending(int new_type)
 {
+	// This is called every hour. It is most likely not needed
+	// if the same schedule type.
+	if (new_type == bake)
+		return;
 	if (dough) {
 		dough->remove_this();
 		dough = 0;
@@ -4053,6 +4069,10 @@ void Forge_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	// This is called every hour. It is most likely not needed
+	// if the same schedule type.
+	if (new_type == blacksmith)
+		return;
 					// Remove any tools.
 	if (tongs) {
 		tongs->remove_this();
