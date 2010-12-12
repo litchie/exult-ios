@@ -194,6 +194,8 @@ SI_Game::SI_Game()
 	fontManager.add_font("SIINTRO_FONT", INTRO_DAT, PATCH_INTRO, 14, 0);
 	fontManager.add_font("SMALL_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 2, 0);
 	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
+	if (GAME_SI)
+		{
 	Map_patch_collection *mp = gwin->get_map_patches();
 					// Egg by "PC pirate" in forest:
 	mp->add(new Map_patch_remove(Object_spec(
@@ -210,6 +212,16 @@ SI_Game::SI_Game()
 				Tile_coord(1012, 873, 0), 867, 13, 0), 
 					Object_spec(
 				Tile_coord(1013, 873, 1), 867, 13, 0)));
+		// Bread on the prep table in Moonshade
+		mp->add(new Map_patch_remove(Object_spec(
+					Tile_coord(2381, 1896, 2), 377, 1, 0)));
+		// Flour on Moonshade display table
+		mp->add(new Map_patch_remove(Object_spec(
+					Tile_coord(2378, 1890, 2), 863, 16, 0)));
+		// Dough on Moonshade display table
+		mp->add(new Map_patch_remove(Object_spec(
+					Tile_coord(2369, 1896, 2), 863, 17, 0)));
+		}
 
 	}
 
