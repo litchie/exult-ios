@@ -1,4 +1,7 @@
 2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: Reverted baking to_table cost. Added missing else statement in to_table.
+
+2010-12-11 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: I fixed a crash in the baking schedule state find_leftovers caused by the
 		oven getting cached out.
 

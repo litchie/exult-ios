@@ -3345,7 +3345,7 @@ void Bake_schedule::now_what()
 		cpos.tz = 0;
 
 		Actor_action *pact = Path_walking_actor_action::create_path(
-					npcpos, cpos, cost2);
+					npcpos, cpos, cost);
 		if (pact) {
 			if (dough) {
 				dough->remove_this();
@@ -3394,7 +3394,7 @@ void Bake_schedule::now_what()
 				new Frames_actor_action((signed char *)"\x12",1,250,dough) :
 				new Frames_actor_action((signed char *)"\x02",1,250,dough))
 			));
-		if (GAME_SI ? frame == 17: frame == 1)
+		else if (GAME_SI ? frame == 17: frame == 1)
 			npc->set_action(new Sequence_actor_action(
 				new Frames_actor_action(fr, 2, 500),
 				((GAME_SI) ?
@@ -3502,8 +3502,8 @@ void Bake_schedule::now_what()
 	{
 		Game_object_vector food;
 		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
-		if (!food.size() && !clearing)
-		{
+		if (!food.size() && !clearing) // none of our food on the table
+		{							   // so we can't clear it
 			if (dough_in_oven)
 				dough_in_oven->remove_this();
 			dough_in_oven = 0;
