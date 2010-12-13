@@ -1,4 +1,8 @@
 2010-12-13 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*combat.cc: Added check in Combat_schedule::find_opponents to make party members be
+		attacked while sleeping if there are no other viable targets. Fixes bug # 2961387.
+
+2010-12-13 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: Added missing check for stove in find_leftovers.
 	*schedule.*: added comments
 	*svn:ignore: added exconfig.dll to the trunk's ignore list
