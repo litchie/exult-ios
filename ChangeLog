@@ -1,4 +1,8 @@
 2010-12-12 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*conf/Configuration.cc: Prevent wrong error messages about moving and copying the
+		configuration file in Windows if home is the Exult folder.
+
+2010-12-12 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*schedule.cc: A check was added for the ending of some schedules. Every hour the ending
 		is called and this check will prevent some erratic behavior.
 
