@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -196,7 +196,8 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 #if defined(WIN32)
 		// Note: this first check misses some cases of path equality, but it
 		// does eliminates some spurious warnings.
-		if (fname != input_filename && U7exists(input_filename.c_str()))
+		if (fname != input_filename && U7exists(input_filename.c_str())
+					&& get_system_path("<HOME>") != ".")
 			{
 			if (!U7exists(fname.c_str()))
 				{
@@ -223,7 +224,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 				     << "' is being ignored in favor of file '"
 				     << fname << "'." << endl;
 			}
-#endif
+#endif // WIN32
 	}
 #ifdef UNDER_CE
     if (fname[0] != '/' && fname[0] != '\\')
