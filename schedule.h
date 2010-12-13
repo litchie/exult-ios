@@ -527,17 +527,18 @@ class Bake_schedule : public Schedule
 	Game_object *dough_in_oven;
 	bool clearing;
 	enum {
-		find_leftovers,
-		to_flour,
-		get_flour,
-		to_table,
-		make_dough,
-		remove_from_oven,
-		display_wares,
-		clear_display,
-		remove_food,
-		get_dough,
-		put_in_oven
+		find_leftovers,		// Look for misplaced dough already made by this schedule
+		to_flour,			// Looks for flourbag and walks to it if found
+		get_flour,			// Bend over flourbag and change the frame to zero if nonzero
+		to_table,			// Walk over to worktable and create flour
+		make_dough,			// Changes flour to flat dough then dough ball
+		remove_from_oven,	// Changes dough in oven to food %7 and picks it up
+		display_wares,		// Walk to displaytable. Put food on it. If table full, go to
+							// clear_display which eventualy comes back here to place food
+		clear_display,		// Mark food for deletion by remove_food
+		remove_food,		// Delete food on display table one by one with a slight delay
+		get_dough,			// Walk to work table and pick up dough
+		put_in_oven			// Walk to oven and put dough on in.
 	} state;
 public:
 	Bake_schedule(Actor *n);
