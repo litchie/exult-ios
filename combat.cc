@@ -378,7 +378,7 @@ void Combat_schedule::find_opponents
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
-		if (actor->is_dead() || actor->get_flag(Obj_flags::asleep) ||
+		if (actor->is_dead() || (actor->get_flag(Obj_flags::asleep) && !opponents.empty())||
 		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
 			continue;	// Dead, sleeping or invisible.
 		if (is_enemy(npc_align, actor->get_effective_alignment()))
