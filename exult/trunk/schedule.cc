@@ -3206,7 +3206,7 @@ void Sew_schedule::ending
 /*
  *	Bake bread/pastries
  *
- * TODO: fix for SI tables... (specifically in Moonglow)
+ *	Dough gets set to quality 50 and dough placed in oven is quality 51
  */
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
@@ -3224,7 +3224,7 @@ void Bake_schedule::now_what()
 	Game_object *stove = npc->find_closest(664);
 
 	switch (state) {
-	case find_leftovers:
+	case find_leftovers:	// Look for misplaced dough already made by this schedule
 	{
 		state = to_flour;
 		if (!dough_in_oven)
@@ -3233,7 +3233,7 @@ void Bake_schedule::now_what()
 			Game_object_vector baking_dough;
 			int frnum (GAME_SI ? 18 : 2);
 			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum);
-			if (!baking_dough.empty())
+			if (!baking_dough.empty())	// found dough
 			{
 				dough_in_oven = baking_dough[0];
 				state = remove_from_oven;
@@ -3241,12 +3241,14 @@ void Bake_schedule::now_what()
 			}
 			// looking for cooked food left in oven
 			oven = npc->find_closest(831);
+			if (!oven)
+				oven = stove;
 			if (oven)
 			{
 				Game_object_vector food;
 				Tile_coord Opos = oven->get_tile();
 				npc->find_nearby(food, Opos, 377, 2, 0, 51, c_any_framenum);
-				if (!food.empty())
+				if (!food.empty())	// found food
 				{
 					dough_in_oven = food[0];
 					state = remove_from_oven;
@@ -3254,7 +3256,7 @@ void Bake_schedule::now_what()
 				}
 			}
 		}
-		if (!dough) // looking for unused dough on tables
+		if (!dough)		// Looking for unused dough on tables
 		{
 			Game_object_vector leftovers;
 			if (GAME_SI)
@@ -3265,20 +3267,20 @@ void Bake_schedule::now_what()
 			}
 			else
 				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum);
-			if (!leftovers.empty())
+			if (!leftovers.empty())	// found dough
 			{
 				dough = leftovers[0];
 				state = make_dough;
 				delay = 0;
 				Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, dough->get_tile(), cost2);
-				if (pact)
+				if (pact)	// walk to dough if we can
 					npc->set_action(pact);
 			}
 		}
 		break;
 	}
-	case to_flour:
+	case to_flour:		// Looks for flourbag and walks to it if found
 	{
 		Game_object_vector items;
 		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 0);
@@ -3307,7 +3309,7 @@ void Bake_schedule::now_what()
 		state = get_flour;
 		break;
 	}
-	case get_flour:
+	case get_flour:		// Bend over flourbag and change the frame to zero if nonzero
 	{
 		if (!flourbag) {
 			// what are we doing here then? back to start
@@ -3326,7 +3328,7 @@ void Bake_schedule::now_what()
 		state = to_table;
 		break;
 	}
-	case to_table:
+	case to_table:		// Walk over to worktable and create flour
 	{
 		Game_object *table1 = npc->find_closest(1003);
 		Game_object *table2 = npc->find_closest(1018);
@@ -3394,7 +3396,7 @@ void Bake_schedule::now_what()
 		state = make_dough;
 		break;
 	}
-	case make_dough:
+	case make_dough:	// Changes flour to flat dough then dough ball
 	{
 		if (!dough) {
 			// better try again...
@@ -3431,7 +3433,7 @@ void Bake_schedule::now_what()
 		state = remove_from_oven;
 		break;
 	}
-	case remove_from_oven:
+	case remove_from_oven:	// Changes dough in oven to food %7 and picks it up
 	{
 		if (!dough_in_oven) {
 			// nothing in oven yet
@@ -3474,8 +3476,8 @@ void Bake_schedule::now_what()
 		state = display_wares;
 		break;
 	}
-	case display_wares:
-	{
+	case display_wares:		// Walk to displaytable. Put food on it. If table full, go to
+	{						// clear_display which eventualy comes back here to place food
 		if (!dough_in_oven) {
 			// try again
 			delay = 2500;
@@ -3548,7 +3550,7 @@ void Bake_schedule::now_what()
 		clearing = false;
 		break;
 	}
-	case clear_display:
+	case clear_display:		// Mark food for deletion by remove_food
 	{
 		Game_object_vector food;
 		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
@@ -3571,7 +3573,7 @@ void Bake_schedule::now_what()
 			state = display_wares;
 		break;
 	}
-	case remove_food:
+	case remove_food:	// Delete food on display table one by one with a slight delay
 	{
 		Game_object_vector food;
 		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
@@ -3584,7 +3586,7 @@ void Bake_schedule::now_what()
 		}
 		break;
 	}
-	case get_dough:
+	case get_dough:		// Walk to work table and pick up dough
 	{
 		if (!dough) {
 			// try again
@@ -3618,7 +3620,7 @@ void Bake_schedule::now_what()
 		state = put_in_oven;
 		break;
 	}
-	case put_in_oven:
+	case put_in_oven:	// Walk to oven and put dough on in.
 	{
 		if (!dough) {
 			// try again
@@ -3674,6 +3676,13 @@ void Bake_schedule::now_what()
 	}
 	npc->start(250, delay);		// Back in queue.
 }
+
+/*
+ *	TODO: Eventually, this should be used to finish baking all
+ *	leftovers which is basically duplicating the regular schedule
+ *	minus to_flour, get_flour, and any future added kitchen items
+ *	usage. Special checks for when to just give up should be added.
+ */
 
 void Bake_schedule::ending(int new_type)
 {

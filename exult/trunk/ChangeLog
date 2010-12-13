@@ -1,3 +1,8 @@
+2010-12-13 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*schedule.cc: Added missing check for stove in find_leftovers.
+	*schedule.*: added comments
+	*svn:ignore: added exconfig.dll to the trunk's ignore list
+
 2010-12-12 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*conf/Configuration.cc: Prevent wrong error messages about moving and copying the
 		configuration file in Windows if home is the Exult folder.
