@@ -1,3 +1,6 @@
+2010-12-14 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*combat.cc: Added checks for charmed party members in Combat_schedule::find_opponents.
+
 2010-12-13 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*combat.cc: Added check in Combat_schedule::find_opponents to make party members be
 		attacked while sleeping if there are no other viable targets. Fixes bug # 2961387.

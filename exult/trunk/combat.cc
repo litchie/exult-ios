@@ -378,27 +378,43 @@ void Combat_schedule::find_opponents
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
+		bool oneCharmedPartyM = (!actor->is_in_party() ||
+			(actor->get_flag(Obj_flags::charmed) != npc->get_flag(Obj_flags::charmed)));
 		if (actor->is_dead() || (actor->get_flag(Obj_flags::asleep) && !opponents.empty())||
 		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
 			continue;	// Dead, sleeping or invisible.
-		if (is_enemy(npc_align, actor->get_effective_alignment()))
+		if (is_enemy(npc_align, actor->get_effective_alignment())
+											&& oneCharmedPartyM){
 			opponents.push_back(actor);
-		else if (attack_avatar && actor == avatar)
+			if (combat_trace)
+				cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
+		}
+		else if (attack_avatar && actor == avatar && oneCharmedPartyM){
 			opponents.push_back(actor);
-		else if (in_party)
-			{		// Attacking party member?
+			if (combat_trace)
+				cout << npc->get_name() << " pushed back(2) " << actor->get_name() << endl;
+		}
+		else if (in_party){	// Attacking party member?
 			Game_object *t = actor->get_target();
 			if (!t)
 				continue;
-			if (t->get_flag(Obj_flags::in_party) || t == avatar)
+			if ((t->get_flag(Obj_flags::in_party) || t == avatar) && oneCharmedPartyM){
 				opponents.push_back(actor);
+				if (combat_trace)
+					cout << npc->get_name() << " pushed back(3) " << actor->get_name() << endl;
+			}
 			int oppressor = actor->get_oppressor();
 			if (oppressor < 0)
 				continue;
 			Actor *oppr = gwin->get_npc(oppressor);
-			if (oppr->get_flag(Obj_flags::in_party) || oppr == avatar)
+			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar)
+					&& ((actor->get_flag(Obj_flags::charmed) !=
+							npc->get_flag(Obj_flags::charmed)))){
 				opponents.push_back(actor);
+				if (combat_trace)
+					cout << npc->get_name() << " pushed back(4) " << actor->get_name() << endl;
 			}
+		}
 	}
 					// None found?  Use Avatar's.
 	if (opponents.empty() && in_party)
