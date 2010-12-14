@@ -398,7 +398,9 @@ void Combat_schedule::find_opponents
 			Game_object *t = actor->get_target();
 			if (!t)
 				continue;
-			if ((t->get_flag(Obj_flags::in_party) || t == avatar) && oneCharmedPartyM){
+			if ((t->get_flag(Obj_flags::in_party) || t == avatar) && oneCharmedPartyM &&
+			// make sure actor is not attacking itself when not in tournament
+					(t != actor || (actor->get_flag(Obj_flags::tournament) && t == actor))){
 				opponents.push_back(actor);
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(3) " << actor->get_name() << endl;
