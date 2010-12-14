@@ -1,4 +1,8 @@
 2010-12-14 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*combat.cc: Added check to make sure that party members do not target themselves unless
+		in tournament mode. Bugs 3053811 and 2797068 should be fixed now.
+
+2010-12-14 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*combat.cc: Added checks for charmed party members in Combat_schedule::find_opponents.
 
 2010-12-13 Malignant Manor <malignantmanor@users.sourceforge.net>
