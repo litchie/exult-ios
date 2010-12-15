@@ -1,3 +1,7 @@
+2010-12-15 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*cheat.cc: heal_party now cures charmed, paralysis, and cursed flags. It also resets
+		temperature but does not remove the freezing flag.
+
 2010-12-14 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*combat.cc: Added check to make sure that party members do not target themselves unless
 		in tournament mode. Bugs 3053811 and 2797068 should be fixed now.

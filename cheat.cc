@@ -952,6 +952,10 @@ void Cheat::heal_party (void) const {
 			party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));
 			// cure poison
 			party[i]->clear_flag(Obj_flags::poisoned);
+			party[i]->clear_flag(Obj_flags::charmed);	// cure charmed
+			party[i]->clear_flag(Obj_flags::cursed);	// cure cursed
+			party[i]->clear_flag(Obj_flags::paralyzed);	// cure paralysis
+			party[i]->set_temperature(0);				// reset freezing
 
 			// remove hunger  +++++ what is "normal" food level??
 			party[i]->set_property(Actor::food_level, 30);
