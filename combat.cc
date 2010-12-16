@@ -371,6 +371,7 @@ void Combat_schedule::find_opponents
 	bool in_party = npc->is_in_party() || npc == avatar;
 	int npc_align = npc->get_effective_alignment();
 	bool attack_avatar = is_enemy(npc_align, Npc_actor::friendly);
+	int neutral = 0;
 	Monster_info *minf = npc->get_info().get_monster_info();
 	bool see_invisible = minf ?
 		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
@@ -378,18 +379,23 @@ void Combat_schedule::find_opponents
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
-		bool oneCharmedPartyM = (!actor->is_in_party() ||
+		bool oneCharmedPartyM = ((!actor->is_in_party() || !in_party) || // one not in party or only one charmed
 			(actor->get_flag(Obj_flags::charmed) != npc->get_flag(Obj_flags::charmed)));
 		if (actor->is_dead() || (actor->get_flag(Obj_flags::asleep) && !opponents.empty())||
 		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
 			continue;	// Dead, sleeping or invisible.
-		if (is_enemy(npc_align, actor->get_effective_alignment())
-											&& oneCharmedPartyM){
+		if ((actor->is_in_party() || actor == avatar) && attack_avatar &&   // hostiles should attack charmed party members
+				 !opponents.empty() && actor->get_flag(Obj_flags::charmed)) // last (won't work well if already charmed)
+			continue;
+		if (is_enemy(npc_align, actor->get_effective_alignment()) && // attack taking charmed status into account 
+				oneCharmedPartyM && !(in_party && // make sure that charmed party member don't attack each other by mistake
+				npc->get_alignment() == neutral)){ // don't have neutral party members attack based on alignment
 			opponents.push_back(actor);
 			if (combat_trace)
 				cout << npc->get_name() << " pushed back(1) " << actor->get_name() << endl;
 		}
-		else if (attack_avatar && actor == avatar && oneCharmedPartyM){
+		else if (attack_avatar && (actor->is_in_party() || // hostiles attack neutral or charmed party members
+				actor == avatar) && !in_party){			   // charmed party members don't attack each other
 			opponents.push_back(actor);
 			if (combat_trace)
 				cout << npc->get_name() << " pushed back(2) " << actor->get_name() << endl;
@@ -398,8 +404,10 @@ void Combat_schedule::find_opponents
 			Game_object *t = actor->get_target();
 			if (!t)
 				continue;
-			if ((t->get_flag(Obj_flags::in_party) || t == avatar) && oneCharmedPartyM &&
-			// make sure actor is not attacking itself when not in tournament
+			if (((t->get_flag(Obj_flags::in_party) || t == avatar) // actor is attacking a party member
+					&& !t->get_flag(Obj_flags::charmed) &&		   // don't help party member if he's charmed
+					!npc->get_flag(Obj_flags::charmed)) &&		   // or if you are charmed
+					// make sure actor is not attacking itself when not in tournament (ie. Monitor Arena)
 					(t != actor || (actor->get_flag(Obj_flags::tournament) && t == actor))){
 				opponents.push_back(actor);
 				if (combat_trace)
@@ -409,9 +417,9 @@ void Combat_schedule::find_opponents
 			if (oppressor < 0)
 				continue;
 			Actor *oppr = gwin->get_npc(oppressor);
-			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar)
-					&& ((actor->get_flag(Obj_flags::charmed) !=
-							npc->get_flag(Obj_flags::charmed)))){
+			if ((oppr->get_flag(Obj_flags::in_party) || oppr == avatar) &&	// Actor is being attacked by a party member
+					(actor->get_flag(Obj_flags::charmed) || !in_party) &&	// don't attack uncharmed party member
+								 !npc->get_flag(Obj_flags::charmed)){		// don't help them if charmed
 				opponents.push_back(actor);
 				if (combat_trace)
 					cout << npc->get_name() << " pushed back(4) " << actor->get_name() << endl;
@@ -419,7 +427,8 @@ void Combat_schedule::find_opponents
 		}
 	}
 					// None found?  Use Avatar's.
-	if (opponents.empty() && in_party)
+	if (opponents.empty() && in_party &&	// don't want Avatar giving party members with differing charm flags targets
+		npc->get_flag(Obj_flags::charmed) != npc->get_flag(Obj_flags::charmed))
 	{
 		Game_object *opp = avatar->get_target();
 		Actor *oppnpc = opp ? opp->as_actor() : 0;
