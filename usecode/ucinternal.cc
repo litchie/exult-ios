@@ -963,6 +963,8 @@ void Usecode_internal::item_say
 		Effects_manager *eman = gwin->get_effects();
 					// Added Nov01,01 to fix 'locate':
 		eman->remove_text_effect(obj);
+		if (gwin->failed_copy_protection())
+			str = "Oink!";
 		eman->add_text(str, obj);
 		}
 	}
