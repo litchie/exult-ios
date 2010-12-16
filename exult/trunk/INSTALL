@@ -2,15 +2,17 @@ Exult Installation
 ==================
 
 If you're reading this you have either downloaded a source distribution and 
-untarred it, or you've checked out the latest tree from CVS. Good.
-Make sure you have the following things installed:
+untarred it, or you've checked out the latest tree from SVN. Good.
+Make sure you have the following things installed (and make sure you install the devel 
+packages if you use a packet manager):
 
 - SDL
 	The Simple DirectMedia Library by Sam Lantinga of Loki Games.
 		http://www.libsdl.org
 
 - OGG Vorbis 
-	Fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed audio format for audio and music.
+	Fully open, non-proprietary, patent-and-royalty-free, general-purpose compressed 
+	audio format for audio and music.
 		http://www.vorbis.com/
 		
 - zlib
@@ -18,7 +20,7 @@ Make sure you have the following things installed:
 		http://www.zlib.net/
 
 - Timidity patches
-	If you want MIDI music, SDL_mixer needs Timidity patches.
+	If you want MIDI music, Exult needs Timidity patches.
 	Your distribution might already provide these.
 
 		http://sca.uwaterloo.ca/www.cgs.fi/tt/timidity/
@@ -57,6 +59,27 @@ mailing list:
 
 	http://lists.sourceforge.net/mailman/listinfo/exult-general
 
+--------------------------------------------------
+
+Exult Studio Installation
+=========================
+
+To compile Exult Studio you additionally need to install:
+
+- libglade
+	a library that provides interfaces for loading graphical interfaces described 
+	in glade xml files and for accessing the widgets built in the loading process.
+	Libglade depends on many other programs and libraries (gtk+, pango, cairo...),
+	so best install it via a package manager (but make sure you install the devel 
+	package) to get everything you need.
+		http://library.gnome.org/devel/libglade/stable/
+	
+Now follow the above steps to build Exult, only add the switch --enable-exult-studio
+to the configure step:
+
+./autogen.sh
+./configure --enable-exult-studio
+make
 
 
 --------------------------------------------------
