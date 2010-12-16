@@ -1045,6 +1045,8 @@ void Game_object::say
 	const char *text
 	)
 	{
+	if (gwin->failed_copy_protection())
+		text = "Oink!";
 	eman->add_text(text, this);
 	}
 

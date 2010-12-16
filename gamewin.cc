@@ -2201,6 +2201,12 @@ void Game_window::show_items
 	{			// Show name.
 		std::string namestr = Get_object_name(obj);
 		const char *objname = namestr.c_str();
+		if (Game_window::get_instance()->failed_copy_protection() &&
+				(npc==main_actor || !npc)){		// Avatar and items
+			char oink[6];
+			snprintf(oink, 6, "Oink!");
+			objname = &oink[0];
+		}
 			// Combat and an NPC?
 		if (in_combat() && Combat::mode != Combat::original && npc)
 			{
@@ -3179,4 +3185,13 @@ bool Game_window::is_hostile_nearby()
 		}
 	}
 	return nearby_hostile;
+}
+
+bool Game_window::failed_copy_protection()
+{
+	Game_window* gwin = Game_window::get_instance();
+	Usecode_machine *usecode = gwin->get_usecode();
+	bool confused = gwin->get_main_actor()->get_flag(Obj_flags::confused);
+	bool failureFlag = usecode->get_global_flag(56);
+	return ((GAME_SI && confused) || (GAME_BG && failureFlag));
 }
