@@ -1,3 +1,9 @@
+2010-12-16 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*actors.cc, gamewin.*, objs/objs.cc, usecode/ucinternal.cc: The missing Black Gate
+		failed copy protection function call (random speak) has been added. Oink! is now
+		used for all item say and all click descriptions except non-Avatar npc names when
+		the copy protection flag is set. Discrepancies are posted in feature # 611028.
+
 2010-12-15 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*cheat.cc: heal_party now cures charmed, paralysis, and cursed flags. It also resets
 		temperature but does not remove the freezing flag.

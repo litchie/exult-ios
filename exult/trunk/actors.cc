@@ -2202,8 +2202,7 @@ void Actor::activate
 		return;			// Too busy fighting.
 					// Usecode
 					// Failed copy-protection?
-	else if (GAME_SI &&
-		gwin->get_main_actor()->get_flag(Obj_flags::confused))
+	else if (gwin->failed_copy_protection())
 		ucmachine->call_usecode(0x63d, this,
 			(Usecode_machine::Usecode_events) event);	
 	else if (usecode == -1)

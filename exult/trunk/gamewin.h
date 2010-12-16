@@ -352,6 +352,7 @@ public:
 	void call_guards(Actor *witness = 0);
 	void attack_avatar(int num_guards = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
+	bool failed_copy_protection();
 	/*
 	 *	Rendering:
 	 */
