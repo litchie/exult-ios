@@ -76,18 +76,27 @@ void CombatStats_gump::paint()
 
 	Gump::paint();
 
-	// stats for all party members
-	for (int i = 0; i < party_size; i++) {
-		gman->paint_num(party[i]->get_effective_prop(Actor::combat),
-			  x + colx + i*coldx, y + rowy[1]);		
-		gman->paint_num(party[i]->get_property(Actor::health),
-				  x + colx + i*coldx, y + rowy[2]);
+	if (gwin->failed_copy_protection()){
+		int oinkx = 91;
+		for (int i = 0; i < party_size; i++) {
+			sman->paint_text(2, "Oink", x + oinkx +i*coldx, y + rowy[1]);
+			sman->paint_text(2, "Oink", x + oinkx +i*coldx, y + rowy[2]);
+		}
+		sman->paint_text(2, "Oink", x + oinkx, y + rowy[5]);
+		sman->paint_text(2, "Oink", x + oinkx, y + rowy[6]);
+	}else{
+		// stats for all party members
+		for (int i = 0; i < party_size; i++) {
+			gman->paint_num(party[i]->get_effective_prop(Actor::combat),
+				  x + colx + i*coldx, y + rowy[1]);
+			gman->paint_num(party[i]->get_property(Actor::health),
+					  x + colx + i*coldx, y + rowy[2]);
+		}
+		// magic stats only for Avatar
+		gman->paint_num(party[0]->get_property(Actor::magic),
+							x + colx, y + rowy[5]);
+		gman->paint_num(party[0]->get_property(Actor::mana),
+							x + colx, y + rowy[6]);
 	}
-
-	// magic stats only for Avatar
-  	gman->paint_num(party[0]->get_property(Actor::magic),
-						x + colx, y + rowy[5]);
-  	gman->paint_num(party[0]->get_property(Actor::mana),
-						x + colx, y + rowy[6]);	
 }
 
