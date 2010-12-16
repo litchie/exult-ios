@@ -207,25 +207,40 @@ void Stats_gump::paint
 	std::string nm = act->get_name();
 	sman->paint_text(2, nm.c_str(), x + namex +
 		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
-	gman->paint_num(act->get_effective_prop(Actor::strength),
-						x + textx, y + texty[0]);
-	gman->paint_num(act->get_effective_prop(Actor::dexterity),
-						x + textx, y + texty[1]);
-	gman->paint_num(act->get_effective_prop(Actor::intelligence),
-						x + textx, y + texty[2]);
-  	gman->paint_num(act->get_effective_prop(Actor::combat),
-						x + textx, y + texty[3]);
-  	gman->paint_num(act->get_property(Actor::magic),
-						x + textx, y + texty[4]);
-  	gman->paint_num(act->get_property(Actor::health),
-						x + textx, y + texty[5]);
-  	gman->paint_num(act->get_property(Actor::mana),
-						x + textx, y + texty[6]);
-  	gman->paint_num(act->get_property(Actor::exp),
-						x + textx, y + texty[7]);
-	gman->paint_num(act->get_level(), x + textx, y + texty[8]);
-  	gman->paint_num(act->get_property(Actor::training),
-						x + textx, y + texty[9]);
+	if (gwin->failed_copy_protection()){
+		int oinkx = 96;
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[0]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[1]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[2]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[3]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[4]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[5]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[6]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[7]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[8]);
+		sman->paint_text(2, "Oink!", x + oinkx, y + texty[9]);
+	}
+	else{
+		gman->paint_num(act->get_effective_prop(Actor::strength),
+							x + textx, y + texty[0]);
+		gman->paint_num(act->get_effective_prop(Actor::dexterity),
+							x + textx, y + texty[1]);
+		gman->paint_num(act->get_effective_prop(Actor::intelligence),
+							x + textx, y + texty[2]);
+		gman->paint_num(act->get_effective_prop(Actor::combat),
+							x + textx, y + texty[3]);
+		gman->paint_num(act->get_property(Actor::magic),
+							x + textx, y + texty[4]);
+		gman->paint_num(act->get_property(Actor::health),
+							x + textx, y + texty[5]);
+		gman->paint_num(act->get_property(Actor::mana),
+							x + textx, y + texty[6]);
+		gman->paint_num(act->get_property(Actor::exp),
+							x + textx, y + texty[7]);
+		gman->paint_num(act->get_level(), x + textx, y + texty[8]);
+		gman->paint_num(act->get_property(Actor::training),
+							x + textx, y + texty[9]);
+	}
 					// Now show atts. at bottom.
 	const int attsy = 130, attsx0 = 29;
 	int attsx = attsx0;

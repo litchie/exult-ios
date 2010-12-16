@@ -1,4 +1,8 @@
 2010-12-16 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*gumps/CombatStats_gump.cc, gumps/Paperdoll_gump.cc, gumps/Stats_gump.cc: Added Oink!
+	text when failed copy protection flag is set
+
+2010-12-16 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*actors.cc, gamewin.*, objs/objs.cc, usecode/ucinternal.cc: The missing Black Gate
 		failed copy protection function call (random speak) has been added. Oink! is now
 		used for all item say and all click descriptions except non-Avatar npc names when
