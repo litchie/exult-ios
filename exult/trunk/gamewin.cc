@@ -423,10 +423,10 @@ Game_window::Game_window
 							Combat::difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
 						Combat::difficulty, true);
-	config->value("config/gameplay/combat/mode", str, "original");
 	config->value("config/gameplay/combat/charmDifficulty", str, "normal");
 	Combat::charmed_more_difficult = (str == "hard" ? true : false);
 	config->set("config/gameplay/combat/charmDifficulty", str, true);
+	config->value("config/gameplay/combat/mode", str, "original");
 	if (str == "keypause")
 		Combat::mode = Combat::keypause;
 	else
@@ -2325,7 +2325,9 @@ void Game_window::paused_combat_select
 	Actor *npc = obj ? obj->as_actor() : 0;
 	if (!npc || !npc->is_in_party() ||
 	    npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
-	    npc->get_flag(Obj_flags::paralyzed))
+	    npc->get_flag(Obj_flags::paralyzed) ||
+		(npc->get_flag(Obj_flags::charmed) &&
+		Combat::charmed_more_difficult))
 		return;			// Want an active party member.
 	npc->paint_outline(PROTECT_PIXEL);
 	show(true);			// Flash white outline.
