@@ -545,6 +545,7 @@ public:
 	static bool roll_to_win(int attacker, int defender);
 					// Hit-point algorithm:
 	bool can_act();
+	bool can_act_charmed(); // checks for charmed and charmed_more_difficult
 	virtual void fall_down();
 	virtual void lay_down(bool die);
 	virtual void die(Game_object *attacker);		// We're dead.

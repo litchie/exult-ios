@@ -184,7 +184,7 @@ void Portrait_button::double_clicked(int x, int y)
 		hp->double_clicked(x, y);
 	else if (mana && mana->on_button(x, y)) 
 		mana->double_clicked(x, y);
-	else if (!actor->get_flag(Obj_flags::charmed) || !Combat::charmed_more_difficult)
+	else if (actor->can_act_charmed())
 		actor->show_inventory();
 }
 

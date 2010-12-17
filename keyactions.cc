@@ -369,10 +369,10 @@ void ActionInventory(int *params)
 			bool skip;
 			shapenum = actor->inventory_shapenum();
 			// Check if this actor's inventory page is open or not
-			if (!gump_man->find_gump(actor, shapenum) || skip)
+			if (!gump_man->find_gump(actor, shapenum) && skip)
 			{
 				skip = false;
-				if (!actor->get_flag(Obj_flags::charmed) || !Combat::charmed_more_difficult){
+				if (actor->can_act_charmed()){
 					gump_man->add_gump(actor, shapenum, true); //force showing inv.
 					inventory_page = i;
 					return;
@@ -389,7 +389,7 @@ void ActionInventory(int *params)
 	}
 	
 	actor = Get_party_member(inventory_page);
-	if (actor && (!actor->get_flag(Obj_flags::charmed) || !Combat::charmed_more_difficult)) {
+	if (actor && actor->can_act_charmed()) {
 		actor->show_inventory(); //force showing inv.
 	}
 

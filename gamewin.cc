@@ -2326,8 +2326,7 @@ void Game_window::paused_combat_select
 	if (!npc || !npc->is_in_party() ||
 	    npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
 	    npc->get_flag(Obj_flags::paralyzed) ||
-		(npc->get_flag(Obj_flags::charmed) &&
-		Combat::charmed_more_difficult))
+		!npc->can_act_charmed())
 		return;			// Want an active party member.
 	npc->paint_outline(PROTECT_PIXEL);
 	show(true);			// Flash white outline.
