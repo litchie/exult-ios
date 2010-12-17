@@ -1,3 +1,13 @@
+2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Added an option to make charmed combat more difficult.
+		actors.cc, combat.cc, combat_opts.h, gamewin.cc,
+		keyactions.cc, gumps/Face_stats.cc: It currently blocks
+		inventory access to charmed party members and you cannot
+		talk to charmed npcs through doubleclick event.
+
+		'config/gameplay/combat/charmDifficulty' option is hard or
+		normal with hard having these restrictions. Default is normal
+
 2010-12-16 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*combat.cc: fix (hopefully) find_opponent bugs not fixed
 		properly in 6557 and 6558.
