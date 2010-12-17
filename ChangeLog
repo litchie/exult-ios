@@ -1,4 +1,8 @@
 2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* charmDifficulty: Space pauses excluded for charmed party members
+	* Fixed space pauses failed read caused by last revision
+
+2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Added charm difficulty to combat options gump.
 		gumps/CombatOptions_gump.*
 	* Indenting: gamemgr/sigame.cc
