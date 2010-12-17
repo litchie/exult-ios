@@ -2188,8 +2188,8 @@ void Actor::activate
 							gwin->in_combat();
 	Schedule::Schedule_types sched = 
 				(Schedule::Schedule_types) get_schedule_type();
-	if (get_flag(Obj_flags::charmed) && Combat::charmed_more_difficult && // if in party and charmed more
-			!cheat.in_pickpocket() && event == 1) // difficult and not pickpocket, return if double click
+	if (!can_act_charmed() &&					  // if in party and charmed more difficult
+			!cheat.in_pickpocket() && event == 1) // and not pickpocket, return if double click
 		return;
 	if (!npc_num ||		// Avatar
 			(show_party_inv && party_id >= 0) || // Party
@@ -2581,6 +2581,11 @@ bool Actor::can_act()
 	{
 	return !(get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep)
 			|| is_dead() || get_property(static_cast<int>(health)) <= 0);
+	}
+
+bool Actor::can_act_charmed()
+	{
+	return !(Combat::charmed_more_difficult && get_flag(Obj_flags::charmed));
 	}
 
 void Actor::fight_back
