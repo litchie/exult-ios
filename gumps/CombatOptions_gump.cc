@@ -42,7 +42,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 17, 43, 69, 130 };
+static const int rowy[] = { 17, 43, 69, 95, 130 };
 static const int colx[] = { 35, 50, 120, 170, 192 };
 
 static const char* oktext = "OK";
@@ -121,6 +121,8 @@ void CombatOptions_gump::toggle(Gump_button* btn, int state)
 		show_hits = state;
 	else if (btn == elems[btn0 + 2])
 		mode = state;
+	else if (btn == elems[btn0 + 3])
+		charmDiff = state;
 }
 
 void CombatOptions_gump::build_buttons()
@@ -143,10 +145,15 @@ void CombatOptions_gump::build_buttons()
 	modes[1] = "Space pauses";
 	add_elem(new CombatTextToggle (this, modes, colx[3], rowy[2],
 							   85, mode, 2));
+	std::string *charmedDiff = new std::string[2]; 
+	charmedDiff[0] = "Normal";
+	charmedDiff[1] = "Hard";
+	add_elem(new CombatTextToggle (this, charmedDiff, colx[3], rowy[3],
+							   85, charmDiff, 2));
 	// Ok
-	add_elem(new CombatOptions_button(this, oktext, colx[0], rowy[3]));
+	add_elem(new CombatOptions_button(this, oktext, colx[0], rowy[4]));
 	// Cancel
-	add_elem(new CombatOptions_button(this, canceltext, colx[4], rowy[3]));
+	add_elem(new CombatOptions_button(this, canceltext, colx[4], rowy[4]));
 }
 
 void CombatOptions_gump::load_settings()
@@ -161,6 +168,7 @@ void CombatOptions_gump::load_settings()
 	mode = (int) Combat::mode;
 	if (mode < 0 || mode > 1)
 		mode = 0;
+	charmDiff = Combat::charmed_more_difficult ? 1: 0;
 }
 
 CombatOptions_gump::CombatOptions_gump() 
@@ -188,6 +196,9 @@ void CombatOptions_gump::save_settings()
 	std::string str = Combat::mode == Combat::keypause ? "keypause"
 					: "original";
 	config->set("config/gameplay/combat/mode", str, true);
+	Combat::charmed_more_difficult = (charmDiff != 0);
+	config->set("config/gameplay/combat/charmDifficulty",
+					charmDiff ? "hard" : "normal", true);
 }
 
 void CombatOptions_gump::paint()
@@ -198,6 +209,7 @@ void CombatOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[0], y + rowy[1] + 1);
 	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Charmed Difficulty:", x + colx[0], y + rowy[3] + 1);
 	gwin->set_painted();
 }
 

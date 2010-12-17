@@ -196,19 +196,19 @@ SI_Game::SI_Game()
 	fontManager.add_font("TINY_BLACK_FONT", FONTS_VGA, PATCH_FONTS, 4, 0);
 	if (GAME_SI)
 		{
-	Map_patch_collection *mp = gwin->get_map_patches();
+		Map_patch_collection *mp = gwin->get_map_patches();
 					// Egg by "PC pirate" in forest:
-	mp->add(new Map_patch_remove(Object_spec(
+		mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(647, 1899, 0), 275, 7, 1)));
 					// Carpets above roof in Monitor:
-	mp->add(new Map_patch_remove(Object_spec(
+		mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1035, 2572, 8), 483, 1, 0), true));
-	mp->add(new Map_patch_remove(Object_spec(
+		mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1034, 2571, 6), 483, 1, 0)));
-	mp->add(new Map_patch_remove(Object_spec(
+		mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1034, 2571, 5), 483, 1, 0), true));
 					// Neyobi under a fur:
-	mp->add(new Map_patch_modify(Object_spec(
+		mp->add(new Map_patch_modify(Object_spec(
 				Tile_coord(1012, 873, 0), 867, 13, 0), 
 					Object_spec(
 				Tile_coord(1013, 873, 1), 867, 13, 0)));
