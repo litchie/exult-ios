@@ -33,6 +33,7 @@ class CombatOptions_gump : public Modal_gump
 	int difficulty;			// Setting for the buttons.
 	int show_hits;
 	int mode;
+	bool charmDiff;
 	void build_buttons();
  public:
 	CombatOptions_gump();
