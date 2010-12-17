@@ -1,4 +1,8 @@
 2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* add can_act_charmed and made checks use it
+	* keyactions.cc: fix inventory skip bug introduced in 6571
+
+2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* charmDifficulty: Space pauses excluded for charmed party members
 	* Fixed space pauses failed read caused by last revision
 
