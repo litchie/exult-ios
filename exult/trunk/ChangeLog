@@ -1,5 +1,10 @@
 2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
-	* Added an option to make charmed combat more difficult.
+	* Added charm difficulty to combat options gump.
+		gumps/CombatOptions_gump.*
+	* Indenting: gamemgr/sigame.cc
+
+2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Added an option to make charmed more difficult.
 		actors.cc, combat.cc, combat_opts.h, gamewin.cc,
 		keyactions.cc, gumps/Face_stats.cc: It currently blocks
 		inventory access to charmed party members and you cannot
