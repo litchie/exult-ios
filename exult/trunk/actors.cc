@@ -2188,6 +2188,9 @@ void Actor::activate
 							gwin->in_combat();
 	Schedule::Schedule_types sched = 
 				(Schedule::Schedule_types) get_schedule_type();
+	if (get_flag(Obj_flags::charmed) && Combat::charmed_more_difficult && // if in party and charmed more
+			!cheat.in_pickpocket() && event == 1) // difficult and not pickpocket, return if double click
+		return;
 	if (!npc_num ||		// Avatar
 			(show_party_inv && party_id >= 0) || // Party
 					// Pickpocket cheat && double click
