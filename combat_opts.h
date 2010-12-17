@@ -41,6 +41,7 @@ public:
 	static void resume();		// Always resume.
 	static bool is_paused()
 		{ return paused; }
+	static bool charmed_more_difficult;
 	};
 
 #endif

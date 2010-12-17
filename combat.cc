@@ -63,6 +63,7 @@ bool Combat::paused = false;
 int Combat::difficulty = 0;
 Combat::Mode Combat::mode = Combat::original;
 bool Combat::show_hits = false;
+bool Combat::charmed_more_difficult = false;
 
 extern bool combat_trace;
 

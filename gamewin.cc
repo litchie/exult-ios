@@ -424,6 +424,9 @@ Game_window::Game_window
 	config->set("config/gameplay/combat/difficulty",
 						Combat::difficulty, true);
 	config->value("config/gameplay/combat/mode", str, "original");
+	config->value("config/gameplay/combat/charmDifficulty", str, "normal");
+	Combat::charmed_more_difficult = (str == "hard" ? true : false);
+	config->set("config/gameplay/combat/charmDifficulty", str, true);
 	if (str == "keypause")
 		Combat::mode = Combat::keypause;
 	else

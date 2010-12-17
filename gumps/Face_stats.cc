@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "game.h"
 #include "Gump_manager.h"
+#include "combat_opts.h"
 
 
 #define PALETTE_INDEX_RED	22
@@ -183,7 +184,7 @@ void Portrait_button::double_clicked(int x, int y)
 		hp->double_clicked(x, y);
 	else if (mana && mana->on_button(x, y)) 
 		mana->double_clicked(x, y);
-	else 
+	else if (!actor->get_flag(Obj_flags::charmed) || !Combat::charmed_more_difficult)
 		actor->show_inventory();
 }
 
