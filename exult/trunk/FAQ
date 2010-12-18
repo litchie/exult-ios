@@ -1,26 +1,27 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 13 October 2010(GMT)
+last changed: 18 December 2010(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 13 October 2010
-0.2. - 23 August 2010
-0.3. - 15 August 2010
-0.4. - 12 March 2010
-0.5. - 10 March 2010
-0.6. - 16 July 2009
-0.7. - 03 June 2009
-0.8. - 20 May 2009
-0.9. - 30 April 2009
-0.10. - 21 October 2007
-0.11. - 08 April 2006
-0.12. - 04 October 2004
-0.13. - 14 August 2004
-0.14. - 23 May 2004
-0.15. - 27 January 2004
-0.16. - 12 December 2003
+0.1. - 18 December 2010
+0.2. - 13 October 2010
+0.3. - 23 August 2010
+0.4. - 15 August 2010
+0.5. - 12 March 2010
+0.6. - 10 March 2010
+0.7. - 16 July 2009
+0.8. - 03 June 2009
+0.9. - 20 May 2009
+0.10. - 30 April 2009
+0.11. - 21 October 2007
+0.12. - 08 April 2006
+0.13. - 04 October 2004
+0.14. - 14 August 2004
+0.15. - 23 May 2004
+0.16. - 27 January 2004
+0.17. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -52,22 +53,24 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3. Miscellaneous
 3.1. Where do I find a walkthrough?
 3.2. Where do I find the configuration file?
-3.3. Do the carriages, ships and the magic carpet work?
-3.4. So why can't I sail a ship in BG?
-3.5. Will you implement the extended intro for SI?
-3.6. Why is the party formation different?
-3.7. What should I do when Exult keeps crashing when I try to save?
-3.8. Why does the game run so choppy?
-3.9. Why can't I hear the Sound Effects?
-3.10. What does the red crossed out speaker next to the gamename mean?
-3.11. Why do I hear strange, noisy effects in Linux?
-3.12. Why is the music so much louder/softer than the sfx/speech?
-3.13. Why does my monitor stay black when I try to run Exult?
-3.14. What are the improvements in Exult over the original Ultima 7?
-3.15. Are there issues with the SI style paperdoll in BG?
-3.16. How do I disable all improvements?
-3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
-3.18. Are there patches or Mods for Exult
+3.3. I updated Exult to the new version. Where have my savegames gone?
+3.4. Do the carriages, ships and the magic carpet work?
+3.5. So why can't I sail a ship in BG?
+3.6. Will you implement the extended intro for SI?
+3.7. Why is the party formation different?
+3.8. What should I do when Exult keeps crashing when I try to save?
+3.9. Why does the game run so choppy?
+3.10. Why can't I hear the Sound Effects?
+3.11. Why can't I hear the speech in the intro?
+3.12. What does the red crossed out speaker next to the gamename mean?
+3.13. Why do I hear strange, noisy effects in Linux?
+3.14. Why is the music so much louder/softer than the sfx/speech?
+3.15. Why does my monitor stay black when I try to run Exult?
+3.16. What are the improvements in Exult over the original Ultima 7?
+3.17. Are there issues with the SI style paperdoll in BG?
+3.18. How do I disable all improvements?
+3.19. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.20. Are there patches or Mods for Exult
 
 4. Bugs, known issues and not yet implemented features
 4.1. Bugs
@@ -82,23 +85,24 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.1. Why is there a gameplay FAQ?
 5.2. Why don't all NPCs have audible speech (BG+SI)?
 5.3. Why do spells require different reagents than the manual lists (BG+SI)?
-5.4. Why can't I cast mark/recall on the Virtue Runes (BG)?
-5.5. Why can't I get the sacrifice in Skara Brae to work (BG)?
-5.6. Why can't I talk to the mayor of Skara Brae (BG)?
-5.7. Multiple problems with the tetrahedron generator and prism (BG)?
-5.8. Why is Alagnar not dead (BG)?
-5.9. Where did my gem of the Demon vanish to (FoV)?
-5.10. Attacking the Stone of Castambre doesn't work (FoV)
-5.11. Where is the pikeman that lets you train in Monitor (SI)?
-5.12. How to break the game by closing Capt. Hawk's gangplank (SI)?
-5.13. How do I get the Mandrake Roots for Fedabiblio (SI)?
-5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
-5.15. Why can't I summon the Great Hierophant (SI)?
-5.16. Why won't Xenka speak about sacrifice (SI)?
-5.17. Where did XY disappear to (SI)?
-5.18. Why can't I find Karnax and the other monks (SI)?
-5.19. An important note about the Serpent Staff (SI)
-5.20. How to break the plot by double clicking some pillars (SI-SS)
+5.4. Why can't I see my location on the map (BG+SI)?
+5.5. Why can't I cast mark/recall on the Virtue Runes (BG)?
+5.6. Why can't I get the sacrifice in Skara Brae to work (BG)?
+5.7. Why can't I talk to the mayor of Skara Brae (BG)?
+5.8. Multiple problems with the tetrahedron generator and prism (BG)?
+5.9. Why is Alagnar not dead (BG)?
+5.10. Where did my gem of the Demon vanish to (FoV)?
+5.11. Attacking the Stone of Castambre doesn't work (FoV)
+5.12. Where is the pikeman that lets you train in Monitor (SI)?
+5.13. How to break the game by closing Capt. Hawk's gangplank (SI)?
+5.14. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.15. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
+5.16. Why can't I summon the Great Hierophant (SI)?
+5.17. Why won't Xenka speak about sacrifice (SI)?
+5.18. Where did XY disappear to (SI)?
+5.19. Why can't I find Karnax and the other monks (SI)?
+5.20. An important note about the Serpent Staff (SI)
+5.21. How to break the plot by double clicking some pillars (SI-SS)
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -112,27 +116,36 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 13 October 2010
+0.1. - 18 December 2010
+* 1.1. Exult Version back to snapshot.
+* 3.3. I updated Exult to the new version. Where have my savegames gone? since 1.4.9rc1 savegames location changed.
+* 3.11. Why can't I hear the speech in the intro? if introsnd.dat becomes corrupt.
+* 4.2. How do I submit a proper bug report? we require SF log in for bug reports due to spam on the tracker.
+* 5.4. Why can't I see my location on the map (BG+SI)? sometimes peopel don't know how to see their position.
+
+
+
+0.2. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 1.10. What is a snapshot? Are these screenshots or what? this FAQis not mainly about the snapshot atm.
 * 1.12. What is the latest version of Exult? 1.4.9 RC1 is the latest version and we recommend this one.
 * 2.7. Do Exult savegames work on all Operating Systems? don't use 1.4.9 RC1 savegames with 1.2.
-* 3.14. What are the improvements in Exult over the original Ultima 7? added notebook.
+* 3.16. What are the improvements in Exult over the original Ultima 7? added notebook.
 * 4.4. Known Issues got rid of 1.2 issues.
 
 
 
-0.2. - 23 August 2010
+0.3. - 23 August 2010
 * 1.12. What is the latest version of Exult? better use the snapshots than the ooooold version.
 * 2.2. Does Exult work on all versions of the game? cleaned up a bit.
-* 3.6. Why is the party formation different? Recently was a couple of years ago.
+* 3.7. Why is the party formation different? Recently was a couple of years ago.
 * 4.4. Known Issues I pity whoever still uses the Nvidia 40.x reference drivers.
 * Fullscreen switching bug should be fixed and thus I'm removing this item.
 * 6.1. How can I get answers concerning Ultima 7/Exult? pointing the Google groups instead of the old newsgroup link.
 
 
 
-0.3. - 15 August 2010
+0.4. - 15 August 2010
 * 1.9. Where do I find Exult? also OS X snapshots available.
 * 1.13. On what platform does Exult run? The Amiga port homepage is only available in the Wayback Machine these days.
 * 4.2. How do I submit a proper bug report? name and location of log files.
@@ -141,39 +154,39 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 12 March 2010
+0.5. - 12 March 2010
 * 0.1. No more 8bit scaler issues.
 
 
 
-0.5. - 10 March 2010
+0.6. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
 * 0.1. added.
-* 5.12. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
+* 5.13. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-0.6. - 16 July 2009
+0.7. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-0.7. - 03 June 2009
+0.8. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-0.8. - 20 May 2009
+0.9. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
 * 2.7. Do Exult savegames work on all Operating Systems? do not use 1.4x saves with 1.2.
 * 3.1. Where do I find a walkthrough? Excalibur's World of Ultima has disappeared.
-* 3.6. Why is the party formation different? the original's formation has become the default.
-* 3.10. What does the red crossed out speaker next to the gamename mean? added.
-* 3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? changed a bit.
-* 3.18. Are there patches or Mods for Exult link to the ReadMe installation instructions.
+* 3.7. Why is the party formation different? the original's formation has become the default.
+* 3.12. What does the red crossed out speaker next to the gamename mean? added.
+* 3.19. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? changed a bit.
+* 3.20. Are there patches or Mods for Exult link to the ReadMe installation instructions.
 * 4.1. Bugs link to the bug tracker changed.
 * 4.2. How do I submit a proper bug report? many changes to the SF bug tracker.
 * 4.3. Broken by Design cleaned up.
@@ -186,15 +199,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.9. - 30 April 2009
-* 3.18. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
+0.10. - 30 April 2009
+* 3.20. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
 * removed the keyboard movement question.
 
 
 
-0.10. - 21 October 2007
+0.11. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -205,31 +218,31 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.11. - 08 April 2006
-* 3.18. Are there patches or Mods for Exult a list of where to find those.
+0.12. - 08 April 2006
+* 3.20. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
-* 5.8. Why is Alagnar not dead (BG)? a bug that also exists in the original.
+* 5.9. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-0.12. - 04 October 2004
+0.13. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
-* 5.7. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
-* 5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
+* 5.8. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
+* 5.15. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-0.13. - 14 August 2004
+0.14. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
-* 5.10. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
-* 5.17. Where did XY disappear to (SI)? teleporting is dangerous.
-* 5.18. Why can't I find Karnax and the other monks (SI)? example for above.
+* 5.11. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
+* 5.18. Where did XY disappear to (SI)? teleporting is dangerous.
+* 5.19. Why can't I find Karnax and the other monks (SI)? example for above.
 
 
 
-0.14. - 23 May 2004
+0.15. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -237,16 +250,16 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.15. - 27 January 2004
+0.16. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
-* 5.16. Why won't Xenka speak about sacrifice (SI)? added.
-* 5.19. An important note about the Serpent Staff (SI) Willem fixed this.
+* 5.17. Why won't Xenka speak about sacrifice (SI)? added.
+* 5.20. An important note about the Serpent Staff (SI) Willem fixed this.
 
 
 
-0.16. - 12 December 2003
-* 5.5. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
+0.17. - 12 December 2003
+* 5.6. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
 
@@ -256,7 +269,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.4.9 RC1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+These frequently asked questions are for the snapshot version of Exult. If you have another Exult version, its documentation can be found where you installed it.
 
 
 1.2. Why is it called Exult - what is the meaning of this name?
@@ -405,20 +418,24 @@ You can find exult.cfg in specific directories:
 
 
 
-3.3. Do the carriages, ships and the magic carpet work?
+3.3. I updated Exult to the new version. Where have my savegames gone?
+With version 1.4.9rc1 we changed the location where Exult saves its savegames to. The new location differs depending on your operating system, for details see Path-Settings. Your old savegames are probably still in the folder of the original games as we used to save them there.
+
+
+3.4. Do the carriages, ships and the magic carpet work?
 Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
 
-3.4. So why can't I sail a ship in BG?
+3.5. So why can't I sail a ship in BG?
 To sail a ship in BG you naturally need to have the deed to this ship in your party. Then double-click on the sail of the ship and your party moves aboard it and sits down. Once they are all seated, double-click the gangplank to close it. Now double-click on the sail once more to have it unfold. You should be able to move the ship then.
 
 
-3.5. Will you implement the extended intro for SI?
+3.6. Will you implement the extended intro for SI?
 The extended intro for Serpent Isle can be found at http://www.io.com/~dloubet/. At this moment we don't even think about implementing this extended intro. Why not? It sure would be nice to use it. But you may have noticed some effects missing from the intro. You may have noticed that there is no sound. You may have noticed that there is neither speech nor subtitles. All that would have to be addressed and add to that the longer running time and that you have to synchronize the music with it. Then what about the size of it? You would need to compress it and make sure all our supported platforms make use of it.
 Everyone volunteering to do it is welcome to.
 
 
-3.6. Why is the party formation different?
+3.7. Why is the party formation different?
 In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
 Some time ago Jeff added an optional formation that behaves way more like in the original game and it has become the default formation now. This can be changed in the exult.cfg.
 
@@ -426,38 +443,42 @@ Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
 
-3.7. What should I do when Exult keeps crashing when I try to save?
+3.8. What should I do when Exult keeps crashing when I try to save?
 This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
 Please do not play further at this point. You should restore to an earlier save game, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
 Please also avoid saving when a scripted sequence is running. Whenever you can't control the Avatar on your own a scripted scene is running and saving at this time will break the game on reloading.
 
 
-3.8. Why does the game run so choppy?
+3.9. Why does the game run so choppy?
 Well, every Ultima required a fast computer. Even though Exult is just an engine that runs the ancient Ultima 7 it still requires a fast computer.
 Seriously, if the game runs choppy for you, try the speed setting in the Game Options menu and if that doesn't help also play with the original resolution (320x200), try a different scaler or disable scaling altogether.
 
 
-3.9. Why can't I hear the Sound Effects?
+3.10. Why can't I hear the Sound Effects?
 Please read the Audio section of our ReadMe.txt.
 
 
-3.10. What does the red crossed out speaker next to the gamename mean?
+3.11. Why can't I hear the speech in the intro?
+We've been made aware that if your introsnd.dat file becomes corrupt you might lose speech in the intro. The file is located in your games static folder. So if you hit this problem you need to restore this file.
+
+
+3.12. What does the red crossed out speaker next to the gamename mean?
 It means that you have not configured the sound effects yet or correctly. Please read the Audio section of our ReadMe.txt.
 
 
-3.11. Why do I hear strange, noisy effects in Linux?
+3.13. Why do I hear strange, noisy effects in Linux?
 This is due to a bug with OSS. We advice installing ALSA. Please read this chapter in the ReadMe.txt for a little more extensive explanation.
 
 
-3.12. Why is the music so much louder/softer than the sfx/speech?
+3.14. Why is the music so much louder/softer than the sfx/speech?
 Music is played via midi but the sfx (sound effects) and speech are played via wave. Midi and wave volume are set up separately in the settings of your Operating System and not by Exult.
 
 
-3.13. Why does my monitor stay black when I try to run Exult?
+3.15. Why does my monitor stay black when I try to run Exult?
 The most common reason for this is that you try to run Exult full screen in a resolution that isn't supported by either your monitor or your graphics card. Edit your exult.cfg (see ReadMe.txt) to disable full screen. If Exult now runs fine in a window you have to select a different resolution (also editable in exult.cfg) to run it full screen. If it still doesn't run contact us.
 
 
-3.14. What are the improvements in Exult over the original Ultima 7?
+3.16. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game Options menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Options Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options . This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
@@ -473,7 +494,7 @@ The most common reason for this is that you try to run Exult full screen in a re
 
 
 
-3.15. Are there issues with the SI style paperdoll in BG?
+3.17. Are there issues with the SI style paperdoll in BG?
 There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
 * You can either equip a pair of gauntlets or one/two rings.
 * The 'shield behind back', 'weapon behind back' and 'belt' slots are one and the same in BG. (So if you have a weapon on your back, you can't use your belt slot)
@@ -482,7 +503,7 @@ There are some issues. The paperdoll in BG is still limited to the slots it had 
 Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
 
-3.16. How do I disable all improvements?
+3.18. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
 * make custom key bindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. To enable the old save game menu you have to assign 's' to old_file_gump (the line in your custom key bindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
@@ -493,7 +514,7 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 
 
 
-3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.19. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 We've been working on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7 and it is coming along nicely.
 For much more information "Exult Studio" see exult_studio.txt.
 
@@ -501,7 +522,7 @@ Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
 
 
-3.18. Are there patches or Mods for Exult
+3.20. Are there patches or Mods for Exult
 With Exult Studio advancing more and more, there are actually now a couple of patches and Mods (modifications) for Exult. A nice collection can be found at Seven Towers, Marzo Junior's Mods and his documentation of U7/Exult Usecode. Other patches/mods can be found at:
 1. Ultima VII: The Feudal Lands a very ambitious and massive mod under development.
 2. Ultima 6 conversion an unfinished mod to convert Ultima 7 to Ultima 6.
@@ -521,7 +542,7 @@ To see a list of open bugs and bug reports go to http://sourceforge.net/tracker/
 4.2. How do I submit a proper bug report?
 1. Read the Documentation and this FAQ to see if that is not already covered and you have all set up correctly.
 2. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else already reported the bug (in the bug tracker).
-3. If you are not a SourceForge member please include your e-mail address in the bug report. This is important so we can get back to you. If you are a SourceForge member please log in before submitting a bug. If you are a member of SourceForge you will also get notified of follow ups on your bug automatically by eMail.
+3. Right now you can only submit a bug report in our tracker if you are a SourceForge member. We are sorry for this slight inconvenience (signing up on SourceForge is free and easy) but the bug tracker had been plagued by spam attacks and valid bugs were pushed further down. The upside of this is that if we have questions or fix this bug you will get automatically notified by eMail.
 4. Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more sense. Sadly the space for the topics is limited. Explain the topic in "Detailed Description".
 5. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
 6. State which Operating System you use (Windows 9X, Linux, ...).
@@ -597,81 +618,85 @@ The manuals of both BG and SI listed different requirements for two spells than 
 Unfortunately Exult version 1.2 was also wrong in more spell requirements and reagent costs. This has been corrected in snapshots.
 
 
-5.4. Why can't I cast mark/recall on the Virtue Runes (BG)?
+5.4. Why can't I see my location on the map (BG+SI)?
+To see your location marked on the map with a yellow cross you need to have sextant in your inventory. And you need to be in the open. Since you can't use a sextant under a roof, in a cave or in a dungeon you will not see your position marked there.
+
+
+5.5. Why can't I cast mark/recall on the Virtue Runes (BG)?
 You never could do this in the original as well. You have to use the Virtue Stones that you find in the same building as the runes.
 
 
-5.5. Why can't I get the sacrifice in Skara Brae to work (BG)?
+5.6. Why can't I get the sacrifice in Skara Brae to work (BG)?
 "I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
 Stuart Hillman told us of another way around this bug: Stand next to Trent when talking to Rowenna and next to her when talking to Trent.
 
 
-5.6. Why can't I talk to the mayor of Skara Brae (BG)?
+5.7. Why can't I talk to the mayor of Skara Brae (BG)?
 You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae town hall that looks like Forsythe, but isn't. This was fixed in more recent versions of Exult but with games started with earlier versions this bug is still present. You need to start a new game of Exult to fix this. But this bug poses no problem, so if you don't want to start a new game, just ignore that clone and search for the real Forsythe.
 
 
-5.7. Multiple problems with the tetrahedron generator and prism (BG)?
+5.8. Multiple problems with the tetrahedron generator and prism (BG)?
 Some of our users have problems entering the generator and finding the prism afterwards.
 To enter the tetrahedron generator you have to wear the ethereal ring (enchanted by Penumbra). It is important to wear the ring on a finger and not just hold it like a weapon.
 After you defeated the enemy you have to double click the prism to destroy the generator. You will then find the black prism (without the yellow outline) to your feet. Look closely and take it with you.
 
 
-5.8. Why is Alagnar not dead (BG)?
+5.9. Why is Alagnar not dead (BG)?
 At a certain point in the game Alagnar is supposed to be murdered. Unfortunately there is a bug in the original game data, that lets him walk around alive in his own murder scene. To avoid this bug you have to enter his house through the south door.
 
 
-5.9. Where did my gem of the Demon vanish to (FoV)?
+5.10. Where did my gem of the Demon vanish to (FoV)?
 For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
 
 
-5.10. Attacking the Stone of Castambre doesn't work (FoV)
+5.11. Attacking the Stone of Castambre doesn't work (FoV)
 You need to use (double-click) the pick while it's in your hands instead of attacking with it. After that, select the tree with the resulting crosshairs.
 
 
-5.11. Where is the pikeman that lets you train in Monitor (SI)?
+5.12. Where is the pikeman that lets you train in Monitor (SI)?
 The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
 
 
-5.12. How to break the game by closing Capt. Hawk's gangplank (SI)?
+5.13. How to break the game by closing Capt. Hawk's gangplank (SI)?
 When you are at the Sleeping Bull, do NOT close the gangplank to Captain Hawk's ship. After you've got him out of Jail and you are ready for him to take you to Moonshade, he will not be able to do so when the gangplank is closed. If you have accidentaly done that you will have to resort to cheating (enable hackmover) for fixing that.
 
 
-5.13. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.14. How do I get the Mandrake Roots for Fedabiblio (SI)?
 Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
 
 
-5.14. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
+5.15. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
 Pothos won't take the moss if he hasn't sent you to fetch it for him. If you want him to tell you about the mad mage and how to get to him you first have to talk with Bucia (also in Moonshade) about Pothos. Then you can talk to Pothos about it and he will sent you off to fetch him fresh blood moss. Read what he says because it is important to get fresh blood moss.
 
 
-5.15. Why can't I summon the Great Hierophant (SI)?
+5.16. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
 If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor.
 
 
-5.16. Why won't Xenka speak about sacrifice (SI)?
+5.17. Why won't Xenka speak about sacrifice (SI)?
 For Xenka to speak about sacrifice some parts of the game need to have been played correctly. The sacrifice conversation option will only turn up if:
 * you have returned the amulet to the Gwani AND
 * you have spoken with the Chaos Hierophant AND
-* you have picked up the Serpent Staff from its proper location (see 5.19.) AND
+* you have picked up the Serpent Staff from its proper location (see 5.20.) AND
 * you have not yet healed the Chaos Serpent
 
 
 
-5.17. Where did XY disappear to (SI)?
+5.18. Where did XY disappear to (SI)?
 SI is very plot driven, so to stop people from breaking the plot, certain NPCs stay in a unaccessible spot on the map until you meet them by following the plot, or disappear from the map until they are needed again. If you cheat by teleporting to them before the scripted meeting you are bound to break the plot and most likely forced to reload an earlier savegame or start the whole game again. So please take care when teleporting around the map.
 
 
-5.18. Why can't I find Karnax and the other monks (SI)?
+5.19. Why can't I find Karnax and the other monks (SI)?
 See the above question. You have to use the Dark Path to make the monks appear on Monk Island. If you just use the teleport cheat they won't show up.
 
 
-5.19. An important note about the Serpent Staff (SI)
+5.20. An important note about the Serpent Staff (SI)
 The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
 Just picking it up and not transferring it to the inventory at once, but instead putting it on the ground again could break later plot. Willem coded a workaround in Exult so the problem might disappear.
 
 
-5.20. How to break the plot by double clicking some pillars (SI-SS)
+5.21. How to break the plot by double clicking some pillars (SI-SS)
 In the dining hall of the fort in the add-on Silver Seed you can double click the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
 Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
 
