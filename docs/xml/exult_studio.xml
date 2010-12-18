@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="11 March 2010(GMT)">
+<studiodoc title="Exult" changed="18 December 2010(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="18122010">
+			<header>- 18 December 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="usecode_edit"/> added intriniscs docs from TFL and fixed the link to Pertex' site.</li>
+				<li><ref1 target="linux_bugs"/> the patch folder NEEDS to be writeable.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="11032010">
 			<header>- 11 March 2010</header>
 			<body>
@@ -826,7 +835,12 @@
 				<para>
 					Someone does have to write extensive documentation for this but I (Dominus) am not
 					really up for that task.<br/>
-					Pertex has written some documentation at <extref target="http://www.sophen.de/exult/"/>
+					Wizardry Dragon and Marzo made a good list of intrinsics 
+					<extref target="http://www.thefeudallands.ca/srcdocs/files/intrinsics-uc.html"/> and
+					Pertex has written some documentation at 
+					<extref target="http://web.archive.org/web/20071217233843/http://www.sophen.de/exult/"/> 
+					(unfortunately Pertex original documentation has vanished but at least the wayback machine
+					 can be of great help)
 					that might be able help you.
 				</para>
 			</body>
@@ -1739,6 +1753,20 @@
 					Windows 3.x). However there may still be unexpected crashes. If you can reproduce 
 					a crash, please contact us.
 				</para>
+			</body>
+		</sub>
+		<sub name="linux_bugs">
+			<header>Known Bugs with the Linux port</header>
+			<body>
+				<para>
+					On Linux two issues have surfaced:
+				</para>
+				<ul>
+					<li>on case sensitive OS the static folder of the games need to be lower case 
+						or <Studio/> won't find the files in it.</li>
+					<li>when you load games or mods with more than one map, <Studio/> has problems 
+					creating and saving the extra maps.</li>
+				</ul>
 			</body>
 		</sub>
 	</section>
