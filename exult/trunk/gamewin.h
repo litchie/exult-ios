@@ -292,6 +292,7 @@ public:
 					skip_above_actor : skip_lift; }
 	bool main_actor_dont_move();
 	bool main_actor_can_act();
+	bool main_actor_can_act_charmed();
 	inline bool set_in_dungeon(unsigned int lift)
 		{ 
 		if (in_dungeon == lift)

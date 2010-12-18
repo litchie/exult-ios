@@ -1325,7 +1325,8 @@ static void Handle_events
 		// Moved this out of the animation loop, since we want movement to be
 		// more responsive. Also, if the step delta is only 1 tile,
 		// always check every loop
-		if (!gwin->is_moving() || gwin->get_step_tile_delta() == 1)
+		if ((!gwin->is_moving() || gwin->get_step_tile_delta() == 1) &&
+			gwin->main_actor_can_act_charmed())
 			{
 			int x, y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
@@ -1515,7 +1516,7 @@ static void Handle_event
 				gump = 0;
 				right_on_gump = true;
 				}
-			else if (avatar_can_act)
+			else if (avatar_can_act && gwin->main_actor_can_act_charmed())
 				{
 				// Try removing old queue entry.
 				gwin->get_tqueue()->remove(gwin->get_main_actor());
@@ -1570,7 +1571,7 @@ static void Handle_event
 					right_on_gump = false;
 					}
 				}
-			else if (avatar_can_act)
+			else if (avatar_can_act && gwin->main_actor_can_act_charmed())
 				{
 					// Last click within .5 secs?
 				if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
@@ -1684,7 +1685,7 @@ static void Handle_event
 					// Dragging with right?
 		else if ((event.motion.state & SDL_BUTTON(3)) && !right_on_gump)
 			{
-			if (avatar_can_act)
+			if (avatar_can_act && gwin->main_actor_can_act_charmed())
 				gwin->start_actor(mx, my, Mouse::mouse->avatar_speed);
 			}
 #ifdef USE_EXULTSTUDIO			// Painting?

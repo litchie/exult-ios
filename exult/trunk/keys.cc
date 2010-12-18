@@ -320,7 +320,8 @@ bool KeyBinder::DoAction(ActionType a, bool press)
 
 	// Restrict keys if avatar is sleeping/paralyzed/unconscious/dead
 	if (!a.action->allow_if_cant_act
-	    && !Game_window::get_instance()->main_actor_can_act())
+	    && (!Game_window::get_instance()->main_actor_can_act()
+		|| !Game_window::get_instance()->main_actor_can_act_charmed()))
 		return true;
 
 	if (press)

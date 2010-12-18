@@ -1,3 +1,8 @@
+2010-12-18 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* charmDifficulty: Stop actor movement when charmed. Exult.cc,
+		gamewin.*, keys.cc:
+	* actors.cc: Combat is toggled if a party member gets charmed.
+
 2010-12-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* add can_act_charmed and made checks use it
 	* keyactions.cc: fix inventory skip bug introduced in 6571
