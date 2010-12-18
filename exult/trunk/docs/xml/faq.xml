@@ -10,7 +10,7 @@
 				<li><ref1 target="savegames_gone"/> since 1.4.9rc1 savegames location changed.</li>
 				<li><ref1 target="no_intro_speech"/> if introsnd.dat becomes corrupt.</li>
 				<li><ref1 target="bug_report"/> we require SF log in for bug reports due to spam on the tracker.</li>
-				<li><ref1 target="sextant_roof"/> sometimes peopel don't know how to see their position.</li>
+				<li><ref1 target="sextant_roof"/> sometimes people don't know how to see their position.</li>
 				</ul>
 			</body>
 		</sub>
