@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="13 October 2010(GMT)">
+<faqs title="Exult" changed="18 December 2010(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="18122010">
+			<header>- 18 December 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> back to snapshot.</li>
+				<li><ref1 target="savegames_gone"/> since 1.4.9rc1 savegames location changed.</li>
+				<li><ref1 target="no_intro_speech"/> if introsnd.dat becomes corrupt.</li>
+				<li><ref1 target="bug_report"/> we require SF log in for bug reports due to spam on the tracker.</li>
+				<li><ref1 target="sextant_roof"/> sometimes peopel don't know how to see their position.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="13102010">
 			<header>- 13 October 2010</header>
 			<body>
@@ -199,8 +211,8 @@
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.4.9 RC1 version of <Exult/>.
-					If you have another <Exult/> version, its documentation can be found where you installed the release.
+					These frequently asked questions are for the snapshot version of <Exult/>.
+					If you have another <Exult/> version, its documentation can be found where you installed it.
 				</para>
 			</body>
 		</sub>
@@ -600,6 +612,18 @@
 				</ul>
 			</body>
 		</sub>
+		<sub name="savegames_gone">
+			<header>I updated Exult to the new version. Where have my savegames gone?</header>
+			<body>
+				<para>
+					With version 1.4.9rc1 we changed the location where Exult saves its savegames to. 
+					The new location differs depending on your operating system, for details see 
+					<extref doc="docs" target="path_config">Path-Settings</extref>.<br/>
+					Your old savegames are probably still in the folder of the original games as 
+					we used to save them there.
+				</para>
+			</body>
+		</sub>
 		<sub name="transports_work">
 			<header>Do the carriages, ships and the magic carpet work?</header>
 			<body>
@@ -704,6 +728,16 @@
 			<body>
 				<para>
 					Please read the Audio section of our <extref doc="docs" target="wave_sfx"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="no_intro_speech">
+			<header>Why can't I hear the speech in the intro?</header>
+			<body>
+				<para>
+					We've been made aware that if your introsnd.dat file becomes corrupt you might lose 
+					speech in the intro. The file is located in your games static folder. So if you hit 
+					this problem you need to restore this file.
 				</para>
 			</body>
 		</sub>
@@ -921,10 +955,11 @@
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
 					If the bug still occurs make sure that no one else already reported the bug
 					(in the bug tracker).</li>
-				<li>If you are not a SourceForge member please include your e-mail address in the bug report.
-					This is important so we can get back to you. If you are a SourceForge member please log in
-					before submitting a bug. If you are a member of SourceForge you will also get notified
-					of follow ups on your bug automatically by eMail.</li>
+				<li>Right now you can only submit a bug report in our tracker if you are a SourceForge member.
+					We are sorry for this slight inconvenience (signing up on SourceForge is free and easy) but 
+					the bug tracker had been plagued by spam attacks and valid bugs were pushed further down.
+					The upside of this is that if we have questions or fix this bug you will get automatically 
+					notified by eMail.</li>
 				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae
 					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more
 					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed
@@ -1107,8 +1142,9 @@
 				<para>
 					The documentation and installation files of the original may be a bit misleading.
 					There are only a few NPCs in the games that have audible speech. In BG only the 
-					Guardian can be heard during the game. Apart from the Intro you can only hear the
-					Guardian and the Great Earth Serpent in SI.
+					Guardian can be heard during the game.<br/>
+					Apart from the Intro you can only hear the Guardian and the Great Earth Serpent 
+					in SI.
 				</para>
 			</body>
 		</sub>
@@ -1131,6 +1167,16 @@
 				<para>
 					Unfortunately <Exult/> version 1.2 was also wrong in more spell requirements and 
 					reagent costs. This has been corrected in snapshots.
+				</para>
+			</body>
+		</sub>
+		<sub name="sextant_roof">
+			<header>Why can't I see my location on the map (BG+SI)?</header>
+			<body>
+				<para>
+					To see your location marked on the map with a yellow cross you need to have sextant 
+					in your inventory. And you need to be in the open. Since you can't use a sextant 
+					under a roof, in a cave or in a dungeon you will not see your position marked there.
 				</para>
 			</body>
 		</sub>
