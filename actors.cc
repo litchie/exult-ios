@@ -3200,6 +3200,9 @@ void Actor::set_flag
 				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_charm();
+		if (!gwin->in_combat() && Combat::charmed_more_difficult &&
+				(is_in_party() || this == gwin->get_main_actor()))
+			gwin->toggle_combat();
 		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:

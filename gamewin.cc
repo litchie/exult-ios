@@ -692,6 +692,11 @@ bool Game_window::main_actor_can_act()
 	return main_actor->can_act();
 	}
 
+bool Game_window::main_actor_can_act_charmed()
+	{
+	return main_actor->can_act_charmed();
+	}
+
 /*
  *	Add time for a light spell.
  */
@@ -2475,7 +2480,7 @@ void Game_window::double_clicked
 	if (!obj || !avatar_can_act)
 		return;			// Nothing found or avatar disabled.
 	if (combat && !gump &&		// In combat?
-	    !Combat::is_paused() &&
+	    !Combat::is_paused() && main_actor_can_act_charmed() &&
 	    (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game()))
 		{
 		Actor *npc = obj->as_actor();
