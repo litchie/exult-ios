@@ -306,6 +306,7 @@ int main
 
 	// Process the args
 	parameters.process(argc,argv);
+	add_system_path("<alt_cfg>", arg_configfile.c_str());
 
 	if(needhelp)
 	{
