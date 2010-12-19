@@ -543,12 +543,6 @@ if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
-if test "$WINDOWING_SYSTEM" = -DXWIN ; then
-	if test enable_exult_studio_support = xyes
-
-	SYSLIBS="$SYSLIBS -lX11"
-fi
-
 AC_ARG_ENABLE(macosx-studio-support, AS_HELP_STRING([--enable-macosx-studio-support], [Force ExultStudio support in Mac OS X @<:@EXPERIMENTAL@:>@ @<:@default no@:>@]),,enable_macosx_studio_support=no)
 if test "$WINDOWING_SYSTEM" != -DMACOSX; then
 	enable_macosx_studio_support=no
