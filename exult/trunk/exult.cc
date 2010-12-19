@@ -1571,10 +1571,11 @@ static void Handle_event
 					right_on_gump = false;
 					}
 				}
-			else if (avatar_can_act && gwin->main_actor_can_act_charmed())
+			else if (avatar_can_act)
 				{
 					// Last click within .5 secs?
-				if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
+				if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500
+						&& gwin->main_actor_can_act_charmed())
 					gwin->start_actor_along_path(x, y,
 							Mouse::mouse->avatar_speed);
 				else

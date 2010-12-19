@@ -772,11 +772,15 @@ void Game_window::toggle_combat
 		Actor *person=get_npc(party_member);
 		if (!person)
 			continue;
+		if (!person->can_act_charmed())
+			newsched = Schedule::combat;
 		int sched = person->get_schedule_type();
 		if (sched != newsched && sched != Schedule::wait &&
 		    sched != Schedule::loiter)
 			person->set_schedule_type(newsched);
 		}
+	if (!main_actor_can_act_charmed())
+		newsched = Schedule::combat;
 	if (main_actor->get_schedule_type() != newsched)
 		main_actor->set_schedule_type(newsched);
 	if (combat)			// Get rid of flee modes.

@@ -1,3 +1,10 @@
+2010-12-19 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* charmDifficulty hard setting changes
+	* keys.*: Separate keys allowed when Avatar is charmed
+	* exult.cc: Allow paused_combat_select to work again when the Avatar
+	is charmed (for uncharmed party members)
+	* gamewin.cc: Charmed party members stay in combat mode
+
 2010-12-18 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* charmDifficulty: Stop actor movement when charmed. Exult.cc,
 		gamewin.*, keys.cc:
