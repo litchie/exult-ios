@@ -543,6 +543,12 @@ if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
+if test "$WINDOWING_SYSTEM" = -DXWIN ; then
+	if test enable_exult_studio_support = xyes
+
+	SYSLIBS="$SYSLIBS -lX11"
+fi
+
 AC_ARG_ENABLE(macosx-studio-support, AS_HELP_STRING([--enable-macosx-studio-support], [Force ExultStudio support in Mac OS X @<:@EXPERIMENTAL@:>@ @<:@default no@:>@]),,enable_macosx_studio_support=no)
 if test "$WINDOWING_SYSTEM" != -DMACOSX; then
 	enable_macosx_studio_support=no
@@ -557,6 +563,13 @@ fi
 if test x$enable_exult_studio_support = xyes ; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use Exult Studio])
+	
+	# due to bug 2129731 and 3139441 some Linux distributions need -lX11 explicitly set 
+	# when enabling Exult Studio support or linking fails
+	if test "$WINDOWING_SYSTEM" = -DXWIN ; then
+		SYSLIBS="$SYSLIBS -lX11"
+	fi
+	
 else
 	AC_MSG_RESULT(no)
 fi
@@ -934,7 +947,8 @@ echo
 echo Build tools................ : $enable_tools
 echo Build usecode compiler..... : $enable_compiler
 echo Build Exult mods........... : $enable_mods
-echo Build ExultStudio.......... : $enable_exult_studio
+echo Build Exult Studio......... : $enable_exult_studio
+echo Exult Studio support....... : $enable_exult_studio_support
 
 echo
 echo "Now type 'make' to build Exult"
