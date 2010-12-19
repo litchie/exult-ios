@@ -1,4 +1,9 @@
 2010-12-19 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Alternate configuration files work for Exult and Exult Studio.
+		cheat.cc, exult.cc, mapedit/studio.cc
+	* gamewin.cc: use get_effective_alignment() for is_hostile_nearby()
+
+2010-12-19 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* charmDifficulty hard setting changes
 	* keys.*: Separate keys allowed when Avatar is charmed
 	* exult.cc: Allow paused_combat_select to work again when the Avatar

@@ -527,18 +527,12 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
-	setup_program_paths();
-	config = new Configuration;
-	config->read_config_file(USER_CONFIGURATION_FILE);
-	// Setup virtual directories
-	string data_path;
-	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
-	setup_data_dir(data_path, argv[0]);
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	string game = "";			// Game to look up in .exult.cfg.
 	string modtitle = "";		// Mod title to look up in <MODS>/*.cfg.
-	static const char *optstring = "g:x:d:m:";
+	string alt_cfg = "";
+	static const char *optstring = "c:g:x:m:";
 	extern int opterr/*, optind, optopt*/;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
@@ -546,6 +540,9 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
 		switch (optchr)
 			{
+		case 'c':		// Configuration file
+			alt_cfg = optarg;
+			break;
 		case 'g':		// Game.  Replaces use of -d, -x.
 			game = optarg;
 			break;
@@ -555,6 +552,22 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 		case 'm':		// Mod.
 			modtitle = optarg;
 			}
+	setup_program_paths();
+	config = new Configuration;
+	if (alt_cfg != "")
+		config->read_abs_config_file(alt_cfg);
+	else{
+#ifdef EASY_USER_CONFIGURATION_FILE
+		if (U7exists(EASY_USER_CONFIGURATION_FILE))
+			config->read_config_file(EASY_USER_CONFIGURATION_FILE);
+		else
+#endif
+			config->read_config_file(USER_CONFIGURATION_FILE);
+		}
+	// Setup virtual directories
+	string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	setup_data_dir(data_path, argv[0]);
 	string dirstr, datastr;
 	config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 	add_system_path("<DATA>", datastr);
