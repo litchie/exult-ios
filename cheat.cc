@@ -183,6 +183,12 @@ void Cheat::toggle_map_editor (void) {
 						strcat(cmnd, " -m ");
 						strcat(cmnd, modnamestr.c_str());
 					}
+					std::string alt_cfg = get_system_path("<alt_cfg>");
+					if (alt_cfg != "<alt_cfg>")
+					{
+						strcat(cmnd, " -c ");
+						strcat(cmnd, alt_cfg.c_str());
+					}
 					strcat(cmnd, " &");
 					cout << "Executing: " << cmnd << endl;
 #ifndef WIN32

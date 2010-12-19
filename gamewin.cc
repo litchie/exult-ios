@@ -3186,7 +3186,7 @@ bool Game_window::is_hostile_nearby()
 		Actor *actor = *it;
 
 		if( !actor->is_dead() && actor->get_schedule() &&
-			actor->get_alignment() >= Npc_actor::hostile && 
+			actor->get_effective_alignment() >= Npc_actor::hostile && 
 			actor->get_schedule_type() == Schedule::combat && 
 			static_cast<Combat_schedule*>(actor->get_schedule())->
 						has_started_battle())
