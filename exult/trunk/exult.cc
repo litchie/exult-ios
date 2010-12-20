@@ -303,10 +303,19 @@ int main
 	parameters.declare("-c",&arg_configfile,"");
 	parameters.declare("--edit",&arg_edit_mode,true);
 	parameters.declare("--write-xml",&arg_write_xml,true);
-
+#if defined WIN32
+	bool portable = false;
+	parameters.declare("-p",&portable,true);
+#endif
 	// Process the args
 	parameters.process(argc,argv);
 	add_system_path("<alt_cfg>", arg_configfile.c_str());
+#if defined WIN32
+	if (portable)
+		add_system_path("<HOME>", ".");
+	setup_program_paths();
+	redirect_output("std");
+#endif
 
 	if(needhelp)
 	{
@@ -336,6 +345,10 @@ int main
 			 << "\t\t(for multimap games or mods) whose map is desired" << endl
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
 			 << "--edit\t\tStart in map-edit mode" << endl
+#if defined WIN32
+			 << "--portable\tMakes the home path the Exult directory (old Windows way)" << endl
+			 << " -p\t\tMakes the home path the Exult directory (old Windows way)" << endl
+#endif
 			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl;
 			
 		exit(1);
@@ -506,8 +519,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	if (hLib != NULL)
 		FreeLibrary(hLib);
 
-	redirect_output("std");
-
 	int argc;
 	char **argv = CommandLineToArgvA(GetCommandLineA(), &argc);
 
@@ -547,9 +558,9 @@ int exult_main(const char *runpath)
 #ifdef UNDER_CE
 	WINCE_exepath = string(runpath).substr(0, string(runpath).find_last_of("\\")+1);
 #endif
-
+#ifndef WIN32
 	setup_program_paths();
-
+#endif
 	// Read in configuration file
 	config = new Configuration;
 
