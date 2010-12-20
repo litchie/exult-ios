@@ -2,7 +2,7 @@
  *	actors.h - Game actors.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -104,6 +104,7 @@ protected:
 	void paint_weapon();
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Tile_coord schedule_loc;	// Location (x,y) of Shedule
+	Tile_coord old_schedule_loc;	// Location (x,y) of old Shedule
 	unsigned char next_schedule;	// Used so correct schedule type 
 					//   will be saved
 	Schedule *schedule;		// Current schedule.

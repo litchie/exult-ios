@@ -346,7 +346,6 @@ int main
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
 			 << "--edit\t\tStart in map-edit mode" << endl
 #if defined WIN32
-			 << "--portable\tMakes the home path the Exult directory (old Windows way)" << endl
 			 << " -p\t\tMakes the home path the Exult directory (old Windows way)" << endl
 #endif
 			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl;
