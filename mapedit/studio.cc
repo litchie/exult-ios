@@ -527,12 +527,15 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
+#ifdef WIN32
+	bool portable = false;
+#endif
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	string game = "";			// Game to look up in .exult.cfg.
 	string modtitle = "";		// Mod title to look up in <MODS>/*.cfg.
 	string alt_cfg = "";
-	static const char *optstring = "c:g:x:m:";
+	static const char *optstring = "c:g:x:m:p:";
 	extern int opterr/*, optind, optopt*/;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
@@ -551,8 +554,21 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 			break;
 		case 'm':		// Mod.
 			modtitle = optarg;
+			break;
+#ifdef WIN32
+		case 'p':
+			portable = true;
+			break;
+#endif
 			}
+#ifdef WIN32
+	if (portable)
+		add_system_path("<HOME>", ".");
+#endif
 	setup_program_paths();
+#ifdef WIN32
+	redirect_output("studio_");
+#endif
 	config = new Configuration;
 	if (alt_cfg != "")
 		config->read_abs_config_file(alt_cfg);

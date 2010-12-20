@@ -10,10 +10,6 @@
 
 int main(int argc, char **argv)
 {
-#ifdef WIN32
-	redirect_output("studio_");
-#endif
-
 	ExultStudio studio(argc, argv);
 	studio.run();
 
