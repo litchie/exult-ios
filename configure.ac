@@ -99,7 +99,7 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_DEFINE(NETBSD, 1, [Using NetBSD])
 		AC_MSG_RESULT([X11 (FreeBSD)])
-		CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include"
+		CXXFLAGS="$CXXFLAGS -I/usr/local/include"
 		;;
 	netbsd* )
 		WINDOWING_SYSTEM="-DXWIN"
@@ -365,7 +365,7 @@ fi
 # ---------------------------------------------------------------------
 # Black magic for static linking.
 # ---------------------------------------------------------------------
-if test x$ARCH == xmacosx; then
+if test x$ARCH = xmacosx; then
 	AC_ARG_WITH(macosx-static-lib-path,
 		AS_HELP_STRING([--with-macosx-static-lib-path=path], [path to location of static library files (Mac OS X bundles only)]),
 		[with_macosx_static_lib_path="$withval"],
@@ -492,7 +492,7 @@ if test x$enable_zip_support = xyes ; then
 	# if test x$GCC = xyes ; then
 	#	ZLIB_LIBS="-Wl,-Bstatic -lz -Wl,-Bdynamic"
 	# else
-	if test x$enable_static_libs == xno -o x$ARCH != xmacosx; then
+	if test x$enable_static_libs = xno -o x$ARCH != xmacosx; then
 		ZLIB_LIBS="-lz"
 	fi
 	# fi
