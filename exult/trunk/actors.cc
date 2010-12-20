@@ -2,7 +2,7 @@
  *	actors.cc - Game actors.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1953,6 +1953,7 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
+	old_schedule_loc = dest;
 	int mapnum = get_map_num();
 	if (mapnum < 0) mapnum = gmap->get_num();
 	if ((mapnum != gmap->get_num()) ||
@@ -5044,10 +5045,11 @@ void Npc_actor::update_schedule
 			i = find_schedule_change((--hour3 + 8)%8);
 		if (i < 0)
 			return;
-		// This is bad, not always true
-		// location might be different
-		//if (schedule_type == schedules[i].get_type())
-		//	return;		// Already in it.
+		// TODO: need to find a way to get the initial
+		// schedule location so they is no needless change
+		if (schedule_type == schedules[i].get_type() &&
+				old_schedule_loc == schedules[i].get_pos())
+			return;		// Already in it.
 		}
 	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
 								delay);
