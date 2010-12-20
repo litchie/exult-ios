@@ -173,6 +173,10 @@ void Cheat::toggle_map_editor (void) {
 					if (data_path.find(' ') != std::string::npos)
 						data_path = "\"" + data_path + "\"";
 					strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
+#ifdef WIN32
+					if (get_system_path("<HOME>") == ".")	// portable
+						strcat(cmnd, " -p");
+#endif
 					strcat(cmnd, " -g ");	// Now want game name.
 					std::string gamenamestr = Game::get_gametitle();
 					strcat(cmnd, gamenamestr.c_str());

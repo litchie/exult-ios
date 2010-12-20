@@ -740,12 +740,17 @@ const string Get_home()
 #ifdef PORTABLE_EXULT_WIN32
 	home_dir = ".";
 #else
-	shell32_wrapper shell32;
-	home_dir = shell32.Get_local_appdata();
-	if (home_dir != "")
-		home_dir += "\\Exult";
-	else
+	if (get_system_path("<HOME>") == ".")
 		home_dir = ".";
+	else
+		{
+		shell32_wrapper shell32;
+		home_dir = shell32.Get_local_appdata();
+		if (home_dir != "")
+			home_dir += "\\Exult";
+		else
+			home_dir = ".";
+		}
 #endif // PORTABLE_WIN32_EXULT
 #elif !defined(MACOS)
 	const char *home = 0;
@@ -844,6 +849,9 @@ void setup_program_paths()
 #elif defined(XWIN)
 	savehome_dir += "/.exult";
 	gamehome_dir = EXULT_DATADIR;
+#endif
+#ifdef WIN32
+	if (get_system_path("<HOME>") != ".")
 #endif
 	add_system_path("<HOME>", home_dir);
 	add_system_path("<CONFIG>", config_dir);
