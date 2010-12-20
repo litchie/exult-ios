@@ -1,3 +1,6 @@
+2010-12-20 Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac: fixed X11 includes on FeeBSD, and warning of ==
+	
 2010-12-20 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Made npc behavior less erratic when changing to the same
 		schedule and location. It doesn't help until after the
@@ -10,7 +13,7 @@
 		cheat.cc, exult.cc, files.utils.cc, mapedit/exult_studio.cc,
 		mapedit/studio.cc
 
-2010-12-06 Dominik Reichardt <dominus@users.sourceforge.net>
+2010-12-19 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac: enable_exult_studio_support will add -lX11 to SYSLIBS. Fixes some
 	  final linking problems in some Linux distributions
 	
