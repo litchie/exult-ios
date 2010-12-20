@@ -1,3 +1,9 @@
+2010-12-20 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Made npc behavior less erratic when changing to the same
+		schedule and location. It doesn't help until after the
+		1st hour change in every reloaded or new game. Actors.*
+	* Remove parameter message for nonexistent parameter. exult.cc
+
 2010-12-19 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Portable option in Win32 can be accessed from command line
 		for Exult and Exult Studio. -p is the parameter for both.
