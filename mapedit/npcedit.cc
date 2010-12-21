@@ -68,6 +68,7 @@ C_EXPORT void on_npc_apply_btn_clicked
 	gpointer user_data
 	)
 	{
+	ExultStudio::get_instance()->set_npc_modified();
 	ExultStudio::get_instance()->save_npc_window();
 	}
 

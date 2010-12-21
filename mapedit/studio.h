@@ -73,6 +73,7 @@ private:
 	static ExultStudio	*self;
 						// Modified one of the .dat's?
 	bool			shape_info_modified, shape_names_modified;
+	bool			npc_modified;
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
@@ -336,6 +337,8 @@ public:
 	bool has_expansion() const { return expansion; }
 	void set_shapeinfo_modified()
 		{ shape_info_modified = true; }
+	void set_npc_modified()
+		{ npc_modified = true; }
 	const string& get_encoding() const
 		{ return game_encoding; }
 	void set_encoding(const string& enc)

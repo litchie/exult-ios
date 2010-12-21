@@ -1,4 +1,8 @@
 2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* mapedit/npcedit.cc, mapedit/studio.*: Add check for saving
+		npc editing when apply is clicked.
+
+2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*actors.cc, schedule.*: Add eat schedule. (eat was using sit)
 		It doesn't work yet if there is no plate nearby.
 
