@@ -661,7 +661,7 @@ void Eat_at_inn_schedule::now_what
 void Eat_at_inn_schedule::ending (int new_type) // new schedule type
 {
 	Game_object_vector foods;			// Food nearby?
-	int cnt = npc->find_nearby(foods, 377, 1, 0);
+	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt){			// Found?
 		Game_object *food = 0;
 		for (Game_object_vector::const_iterator it = foods.begin();
@@ -4106,6 +4106,114 @@ void Forge_schedule::ending
 
 	}
 
+/*
+ *	Eat without a server
+ *	TODO: Make creating plates work.
+ */
+Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0), state(eat){}
+
+void Eat_schedule::now_what()
+{
+	int delay = 5000 + rand()%12000;
+	int frnum = npc->get_framenum();
+	if ((frnum&0xf) != Actor::sit_frame){
+		if (!Sit_schedule::set_action(npc)) // First have to sit down.
+			npc->start(250, 5000); // Try again in a while.
+		return;
+	}
+	switch(state){
+	case eat:{
+		Game_object_vector foods;			// Food nearby?
+		int cnt = npc->find_nearby(foods, 377, 2, 0);
+		if (cnt){			// Found?
+			Game_object *food = 0; // Find closest.
+			int dist = 500;
+			for (Game_object_vector::const_iterator it = foods.begin();
+						it != foods.end(); ++it){
+				Game_object *obj = *it;
+				int odist = obj->distance(npc);
+				if (odist < dist){
+					dist = odist;
+					food = obj;
+				}
+			}
+			if (rand()%5 == 0){
+				gwin->add_dirty(food);
+				food->remove_this();
+			}
+			if (rand()%4)
+				npc->say(first_munch, last_munch -1); // leave out "Who made this slop?"
+		}
+		else{
+			state = find_plate;
+			delay = 500;
+		}
+		break;
+	}
+	case find_plate:{
+		state = serve_food;
+		delay = 500;
+		plate = 0; // make sure moved plate doesn't get food sent to it
+		Game_object_vector plates;	// First look for a nearby plate.
+		int cnt = npc->find_nearby(plates, 717, 1, 0);
+		Game_object_vector::const_iterator it;
+		int floor = npc->get_lift()/5;	// Make sure it's on same floor.
+		for (it = plates.begin(); it != plates.end(); ++it){
+			plate = *it;
+			if (plate->get_lift()/5 == floor)
+				break;
+		}
+		break;
+	}
+	case serve_food:{
+		state = eat;
+		if (!plate){
+			state = find_plate;
+			break;
+		}
+		Tile_coord t = plate->get_tile();
+		Game_object *food = gmap->create_ireg_object(377, rand()%31);
+		food->move(t.tx, t.ty, t.tz +1);
+		break;
+	}
+	}
+	npc->start(250, delay);
+}
+
+// TODO: This should be in a loop to remove food one at a time with a delay then the plate
+void Eat_schedule::ending (int new_type) // new schedule type
+{
+	Game_object_vector foods;			// Food nearby?
+	int cnt = npc->find_nearby(foods, 377, 2, 0);
+	if (cnt){			// Found?
+		for (Game_object_vector::const_iterator it = foods.begin();
+					it != foods.end(); ++it){
+			Game_object *food = *it;
+			if (food){
+				gwin->add_dirty(food);
+				food->remove_this();
+				npc->say(first_munch, last_munch -1); // leave out "Who made this slop?"
+			}
+		}
+	}
+	Game_object_vector platesV;
+	int plates = npc->find_nearby(platesV, 717, 2, 0);
+	if (plate && created_plate && plates){		// Found nearby?
+		plate->remove_this();
+		plate = 0;
+	}
+	if (plate)
+		plate = 0;
+}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Eat_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == plate)		// Someone stole the plate!
+		plate = 0;
+}
 
 /*
  *	Modify goal to walk off the screen.

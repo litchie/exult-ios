@@ -1,7 +1,7 @@
 /*
  *	Schedule.h - Schedules for characters.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -578,6 +578,26 @@ public:
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
 };
+
+/*
+ *	Eat without a server
+ */
+class Eat_schedule : public Schedule
+	{
+	bool created_plate;
+	Game_object *plate;
+	vector<Game_object*> eating_tables;// Tables with chairs around them.
+	enum {
+		eat,		// eat food and say food barks
+		find_plate, // make sure there is a plate, create one if not
+		serve_food  // put food on the plate
+		} state;
+public:
+	Eat_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype); // Switching to another schedule
+	virtual void notify_object_gone(Game_object *obj);
+	};
 
 /*
  *	Walk to the destination for a new schedule.

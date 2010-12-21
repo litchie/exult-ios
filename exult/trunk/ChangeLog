@@ -1,4 +1,8 @@
 2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*actors.cc, schedule.*: Add eat schedule. (eat was using sit)
+		It doesn't work yet if there is no plate nearby.
+
+2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.*: Made Eat_at_inn clear food when ending. Fix bug
 		where leftover food in oven would be set to a random frame.
 		Set the maximum display count for clothes to 3. Remove
