@@ -513,7 +513,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	bargewin(0), barge_ctx(0), barge_status_id(0),
 	eggwin(0), egg_monster_draw(0), egg_ctx(0), egg_status_id(0),
 	npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), npc_status_id(0),
+	npc_ctx(0), npc_status_id(0), npc_modified(false),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
 	shape_draw(0), gump_draw(0),
 	body_draw(0), explosion_draw(0),
@@ -1555,6 +1555,8 @@ bool ExultStudio::need_to_save
 		return true;
 	if (shape_info_modified || shape_names_modified)
 		return true;
+	if (npc_modified)
+		return true;
 					// Ask Exult about the map.
 	if (Send_data(server_socket, Exult_server::info) != -1)
 		{			// Should get immediate answer.
@@ -1582,6 +1584,7 @@ void ExultStudio::write_map
 	(
 	)
 	{
+	npc_modified = false;
 	send_to_server(Exult_server::write_map);
 	}
 
