@@ -200,6 +200,7 @@ public:
 	Eat_at_inn_schedule(Actor *n) : Schedule(n)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype); // Switching to another schedule
 	};
 
 /*
