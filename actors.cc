@@ -1853,7 +1853,10 @@ void Actor::set_schedule_type
 		case Schedule::wait:
 			schedule = new Wait_schedule(this);
 			break;
-		case Schedule::eat:		// For now.
+		case Schedule::eat:
+			unready_weapon();
+			schedule = new Eat_schedule(this);
+			break;
 		case Schedule::sit:
 			unready_weapon();
 			schedule = new Sit_schedule(this);
