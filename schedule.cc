@@ -4110,7 +4110,8 @@ void Forge_schedule::ending
  *	Eat without a server
  *	TODO: Make creating plates work.
  */
-Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0), state(eat){}
+Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0),
+	created_plate(false), state(eat){}
 
 void Eat_schedule::now_what()
 {

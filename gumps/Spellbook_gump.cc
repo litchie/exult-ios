@@ -283,7 +283,7 @@ Spellbook_gump::Spellbook_gump
 		int spindex = c*8;
 		unsigned char cflags = book->circles[c];
 		for (int s = 0; s < 8; s++)
-			if ((cflags & (1<<s)) || cheat.in_wizard_mode())
+			if ((cflags & (1<<s)) || cheat.in_wizard_mode() || cheat.in_map_editor())
 				{
 				int spnum = spindex + s;
 				spells[spnum] = new Spell_button(this,
@@ -325,6 +325,16 @@ void Spellbook_gump::do_spell
 	int spell
 	)
 {
+#ifdef USE_EXULTSTUDIO
+	if (cheat.in_map_editor()){
+		if (book->has_spell(spell))
+			book->remove_spell(spell);
+		else
+			book->add_spell(spell);
+		gwin->paint();
+		}
+	else
+#endif
 	if (!book->can_do_spell(gwin->get_main_actor(), spell))
 		Mouse::mouse->flash_shape(Mouse::redx);
 	else
@@ -469,22 +479,33 @@ void Spellbook_gump::paint
 		{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(spell);
-			if (GAME_BG && page == 0)	// No quantities for 0th circle in BG.
+			if (GAME_BG && page == 0 && !cheat.in_map_editor())	// No quantities for 0th circle in BG.
 				continue;
 			int num = avail[spindex + s];
+			char text[6];
+#ifdef USE_EXULTSTUDIO
+			if (cheat.in_map_editor()){
+				unsigned char cflags = book->circles[page];
+				if (cflags & (1<<s)) // has spell
+					std::strcpy(text, "remove");
+				else
+					std::strcpy(text, "add");
+			}
+			else
+#endif
 			if (num > 0 || cheat.in_wizard_mode()) {
-				char text[6];
 				if ((num >= 1000 || cheat.in_wizard_mode()) && GAME_SI)
 					std::strcpy(text, "#"); // # = infinity in SI's font 5
 				else if (num > 99 || cheat.in_wizard_mode())
 					std::strcpy(text, "99");
 				else
 					snprintf(text, 6, "%d", num);
-
-				sman->paint_text(5, text,
-						x + spell->x + numx - sman->get_text_width(5, text),
-						y + spell->y + numy);
 			}
+			else	// prevent garbage text
+				std::strcpy(text, "");
+			sman->paint_text(5, text,
+					x + spell->x + numx - sman->get_text_width(5, text),
+					y + spell->y + numy);
 		}
 	if (page > 0 ||	GAME_SI)		// Paint circle.
 	{

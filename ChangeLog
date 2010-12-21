@@ -1,4 +1,11 @@
 2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/Spellbook_gump.cc: Spellbooks can now be edited in map
+		edit mode. Exult Studio doesn't detect any changes in it so
+		Save all is unreliable with it. Choose File->Save...->Map
+	* schedule.cc: Make sure plate used in Eat isn't deleted if it
+		wasn't created.
+
+2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* mapedit/npcedit.cc, mapedit/studio.*: Add check for saving
 		npc editing when apply is clicked.
 
