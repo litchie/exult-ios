@@ -1,7 +1,7 @@
 /*
  *	Schedule.cc - Schedules for characters.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -657,6 +657,26 @@ void Eat_at_inn_schedule::now_what
 	npc->start(250, 5000 + rand()%12000);
 	}
 
+// TODO: This should be in a loop to remove food one at a time with a delay
+void Eat_at_inn_schedule::ending (int new_type) // new schedule type
+{
+	Game_object_vector foods;			// Food nearby?
+	int cnt = npc->find_nearby(foods, 377, 1, 0);
+	if (cnt){			// Found?
+		Game_object *food = 0;
+		for (Game_object_vector::const_iterator it = foods.begin();
+					it != foods.end(); ++it){
+			Game_object *food = *it;
+			if (food){
+				gwin->add_dirty(food);
+				food->remove_this();
+				npc->say(first_munch, last_munch);
+			}
+		}
+	}
+}
+
+
 /*
  *	Find someone listening to the preacher.
  */
@@ -1300,10 +1320,6 @@ void Patrol_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	// This is called every hour. It is most likely not needed
-	// if the same schedule type.
-	if (new_type == patrol)
-		return;
 	if (hammer)
 		{
 		hammer->remove_this();
@@ -2891,10 +2907,6 @@ void Waiter_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	// This is called every hour. It is most likely not needed
-	// if the same schedule type.
-	if (new_type == waiter)
-		return;
 					// Remove what he/she is carrying.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -3161,7 +3173,7 @@ void Sew_schedule::now_what
 			cnt += npc->find_nearby(vec, 738, 4, 0);
 			cnt += npc->find_nearby(vec, 249, 4, 0);
 			}
-		if (cnt > 5)
+		if (cnt >= 3)
 			{
 			Game_object *obj = vec[rand()%cnt];
 			gwin->add_dirty(obj);
@@ -3185,10 +3197,6 @@ void Sew_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	// This is called every hour. It is most likely not needed
-	// if the same schedule type.
-	if (new_type == sew)
-		return;
 					// Remove shears.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -3454,10 +3462,12 @@ void Bake_schedule::now_what()
 			break;
 		}
 
-		gwin->add_dirty(dough_in_oven);
-		dough_in_oven->set_shape(377);
-		dough_in_oven->set_frame(rand()%7);
-		gwin->add_dirty(dough_in_oven);
+		if (dough_in_oven->get_shapenum() != 377){
+			gwin->add_dirty(dough_in_oven);
+			dough_in_oven->set_shape(377);
+			dough_in_oven->set_frame(rand()%7);
+			gwin->add_dirty(dough_in_oven);
+		}
 
 		Tile_coord tpos = oven->get_tile() + 
 						Tile_coord(1, 1, 0);
@@ -3686,10 +3696,6 @@ void Bake_schedule::now_what()
 
 void Bake_schedule::ending(int new_type)
 {
-	// This is called every hour. It is most likely not needed
-	// if the same schedule type.
-	if (new_type == bake)
-		return;
 	if (dough) {
 		dough->remove_this();
 		dough = 0;
@@ -4078,10 +4084,6 @@ void Forge_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	// This is called every hour. It is most likely not needed
-	// if the same schedule type.
-	if (new_type == blacksmith)
-		return;
 					// Remove any tools.
 	if (tongs) {
 		tongs->remove_this();
