@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001 The Exult Team
+ *  Copyright (C) 2001-2010 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -143,6 +143,7 @@ const struct Action {
 	{ "CENTER_SCREEN", ActionCenter, 0, "Center screen", Action::cheat_keys, NONE, false, true, true },
 	{ "SHAPE_BROWSER",
 	  ActionShapeBrowser, 0, "Shape browser", Action::cheat_keys, NONE, false, true, true },
+	{ "SHAPE_BROWSER_HELP", ActionShapeBrowserHelp, 0, "List shape browser keys", Action::cheat_keys, NONE, false, true, true },
 	{ "CREATE_ITEM",
 	  ActionCreateShape, 0, "Create last shape", Action::cheat_keys, NONE, false, true, true },
 	{ "DELETE_OBJECT", 
@@ -455,6 +456,54 @@ void KeyBinder::ShowMapeditHelp()
 	delete scroll;
 }
 
+void KeyBinder::ShowBrowserKeys()
+{
+	Scroll_gump *scroll = new Scroll_gump();
+	scroll->add_text("Esc - Exits the shape browser");
+	scroll->add_text("down - Increase shape by 1");
+	scroll->add_text("S - Increase shape by 1");
+	scroll->add_text("up - Decrease shape by 1");
+	scroll->add_text("Shift-S - Decrease shape by 1");
+	scroll->add_text("Page down - Increase shape by 20");
+	scroll->add_text("J - Increase shape by 20");
+	scroll->add_text("Page up - Decrease shape by 20");
+	scroll->add_text("Shift-J - Decrease shape by 20");
+	scroll->add_text("right - Increase frame by 1");
+	scroll->add_text("F - Increase frame by 1");
+	scroll->add_text("left - Decrease frame by 1");
+	scroll->add_text("Shift-F - Decrease frame by 1");
+	scroll->add_text("V - Increase vga file by 1");
+	scroll->add_text("Shift-V - Decrease vga file by 1");
+	scroll->add_text("P - Increase palette by 1");
+	scroll->add_text("Shift-P - Decrease palette by 1");
+	scroll->add_text("X - Increase xform by 1");
+	scroll->add_text("Shift-X - Decrease xform by 1");
+	int x = 0;
+	char returned_key[100];
+	if (last_created_key.empty())
+		strcpy(returned_key, "Error: No key assigned");
+	else{
+		strcpy(returned_key, "");	// prevent garbage text
+		std::vector<string>::iterator iter;
+		for (iter = last_created_key.begin();
+					iter != last_created_key.end(); ++iter){
+			if (x > 0)
+				strcat(returned_key, " or ");
+			strcat(returned_key, iter->c_str());
+			x += 1;
+		}
+	}
+	strcat(returned_key, " - when pressed in game will create the last shape viewed in shapes.vga.");
+	scroll->add_text(returned_key);
+	scroll->paint();
+	do{
+		int x, y;
+		Get_click(x,y, Mouse::hand, 0, false, scroll);
+	} while (scroll->show_next_page());
+	Game_window::get_instance()->paint();
+	delete scroll;
+}
+
 void KeyBinder::ParseText(char *text, int len)
 {
 	char *ptr, *end;
@@ -632,6 +681,8 @@ void KeyBinder::ParseLine(char *line)
 		if (k.mod & KMOD_SHIFT)
 			desc += "Shift-";
 		desc += keycode;
+		if (a.action->desc == "Create last shape" && a.params[0] == -1)
+			last_created_key.push_back(desc);
 		
 		desc += " - " + d;
 		

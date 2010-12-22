@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include "font.h"
 #include "items.h"
 #include "shapeid.h"
+#include "keys.h"
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);
@@ -120,6 +121,7 @@ void ShapeBrowser::browse_shapes()
 
 				if (GL_manager::get_instance())
 					pal.apply();
+				font->paint_text_fixedwidth(ibuf, "Show [K]eys", 2, maxy-50, 8);
 
 				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);
@@ -251,6 +253,9 @@ void ShapeBrowser::browse_shapes()
 					break;
 				case SDLK_RIGHT:
 					handle_key(0, current_frame, num_frames);
+					break;
+				case SDLK_k:
+					keybinder->ShowBrowserKeys();
 					break;
 				default:
 
