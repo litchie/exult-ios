@@ -74,6 +74,7 @@ void ActionWalkSouthWest(int* params);
 void ActionStopWalking(int* params);
 void ActionCenter(int* params);
 void ActionShapeBrowser(int* params);
+void ActionShapeBrowserHelp(int* params);
 void ActionCreateShape(int* params);
 void ActionDeleteObject(int* params);
 void ActionDeleteSelected(int *params);

@@ -651,6 +651,11 @@ void ActionShapeBrowser(int *params)
 	cheat.shape_browser();
 }
 
+void ActionShapeBrowserHelp(int* params)
+{
+	keybinder->ShowBrowserKeys();
+}
+
 //  { ActionCreateShape, 3, "Create last shape", cheat_keys, NONE },
 // params[0] = shape nr., or -1 for 'last selected shape in browser'
 // params[1] = frame nr.
