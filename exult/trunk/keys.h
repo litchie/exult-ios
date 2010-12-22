@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001 The Exult Team
+ *  Copyright (C) 2001-2010 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ class KeyBinder {
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
 	std::vector<std::string> mapedithelp;
+	std::vector<std::string> last_created_key;
  	void LoadFromFileInternal(const char* filename);
 public:
 	KeyBinder();
@@ -68,6 +69,7 @@ public:
 	/* Other methods */
 	void Flush() {
 		bindings.clear(); keyhelp.clear(); cheathelp.clear(); mapedithelp.clear();
+		last_created_key.clear();
 	}
 	bool DoAction(ActionType action, bool press);
 	bool HandleEvent(SDL_Event &ev);
@@ -81,7 +83,7 @@ public:
 	void ShowHelp();
 	void ShowCheatHelp();
 	void ShowMapeditHelp();
-	
+	void ShowBrowserKeys();
  private:
 	void ParseText(char *text, int len);
 	void ParseLine(char *line);

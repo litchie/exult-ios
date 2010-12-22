@@ -1,3 +1,8 @@
+2010-12-22 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* browser.cc, keyaction.*, keys.*: Add shape_browser_help
+		key binding that displays the shape browser keys. Shape
+		browser menu now shows the keys when you press 'K'.
+
 2010-12-21 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Spellbook_gump.cc: Spellbooks can now be edited in map
 		edit mode. Exult Studio doesn't detect any changes in it so
