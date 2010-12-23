@@ -1,4 +1,9 @@
 2010-12-23 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* game.cc: Disabled into and ending for new games not based
+		on U7 data
+	* keyactions.cc: Only allow one cstat gump to show
+
+2010-12-23 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Made party member only not call fight_back() if
 		dead and the attacker is a party member. Made fight_back()
 		have the party fight back if in combat mode and one of the
