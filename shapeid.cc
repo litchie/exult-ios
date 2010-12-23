@@ -168,7 +168,7 @@ void Shape_manager::load
 
 	if (GAME_SI)
 		got_si_shapes = true;
-	else
+	else if (GAME_BG)
 		{
 		// Source for importing SI data.
 		pair<string, int> source;

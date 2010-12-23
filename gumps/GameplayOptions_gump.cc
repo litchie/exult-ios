@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -344,7 +344,7 @@ void GameplayOptions_gump::save_settings()
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	if (GAME_BG && sman->can_use_paperdolls())
+	if (sman->can_use_paperdolls() && (GAME_BG || Game::get_game_type() == EXULT_DEVEL_GAME))
 		sman->set_paperdoll_status(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", true);
