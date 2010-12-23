@@ -351,6 +351,8 @@ bool Game::show_menu(bool skip)
 			delete menu;
 			throw quit_exception();
 		case 0: // Intro
+			if (game_type == EXULT_DEVEL_GAME)
+				break;
 			pal->fade_out(c_fade_out_time);
 			play_intro();
 			gwin->clear_screen(true);
@@ -393,6 +395,8 @@ bool Game::show_menu(bool skip)
 			top_menu();
 			break;
 		case 5: // End Game
+			if (game_type == EXULT_DEVEL_GAME)
+				break;
 			pal->fade_out(c_fade_out_time);
 			end_game(true);
 			top_menu();
