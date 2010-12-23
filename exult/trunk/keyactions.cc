@@ -484,7 +484,7 @@ void ActionCombatStats(int* params)
 {
 	Game_window *gwin = Game_window::get_instance();
 	int cnt = gwin->get_party_man()->get_count();
-	gwin->get_gump_man()->add_gump(gwin->get_main_actor(), game->get_shape("gumps/cstats/1") + cnt);
+	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
 
 //  { ActionFaceStats, 0, "Change Face Stats State", normal_keys, NONE }
