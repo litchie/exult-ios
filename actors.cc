@@ -2604,6 +2604,16 @@ void Actor::fight_back
 	Actor *npc = attacker ? attacker->as_actor() : 0;
 	if (!npc)
 		return;
+	if (is_in_party() && gwin->in_combat()){
+		Actor *party[9];		// Get entire party, including Avatar.
+		int cnt = gwin->get_party(party, 1);
+		for (int i = 0; i < cnt; i++){
+			int sched = party[i]->get_schedule_type();
+			if (sched != Schedule::combat && sched != Schedule::wait
+					&& sched != Schedule::loiter)
+				party[i]->set_schedule_type(Schedule::combat);
+		}
+	}
 	if (!target && !is_in_party())
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
@@ -2957,8 +2967,15 @@ int Actor::reduce_health
 	// CHECKME: Not sure if this check is correct. It is added to fix bug
 	// #3011711, but something more general (such as
 	// "Don't fight back against allies"?) might be better? (-wjp, 20101121)
-	if (!in_party)
-		fight_back(attacker);
+	//
+	// When a party member dies, he is no longer in party so they call guards
+	// if a party member is the attacker. Things like firedoom staff and
+	// burst arrows will set the party member that uses it as the attacker.
+	// I changed the check to better reflect this. fight_back also used to be
+	// worthless for a party member to call.	 (-Malignant Manor, 20101223)
+	if (in_party && is_dead() && attacker->as_actor()->is_in_party())
+		return delta;
+	fight_back(attacker);
 	return delta;
 	}
 

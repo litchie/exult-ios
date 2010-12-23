@@ -2375,6 +2375,8 @@ void Game_window::paused_combat_select
 	add_dirty(obj);
 	paint_dirty();
 	show();
+	if (npc->get_schedule_type() != Schedule::combat)
+		npc->set_schedule_type(Schedule::combat);
 	}
 
 /*
