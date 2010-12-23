@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001-2004 The Exult Team
+Copyright (C) 2001-2010 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -562,8 +562,6 @@ void Face_stats::save_config(Configuration *config)
 void Face_stats::load_config(Configuration *config)
 {
 	int nmode;
-	if (Game::get_game_type() == EXULT_DEVEL_GAME)
-		return;			// FOR NOW, skip if new game.
 	config->value("config/gameplay/facestats",nmode,-1);
 	if(self)
 		RemoveGump();

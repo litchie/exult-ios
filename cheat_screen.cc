@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -694,7 +694,8 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 
 		// Paperdolls
 		case 'p':
-			if (Game::get_game_type() == BLACK_GATE 
+			if ((Game::get_game_type() == BLACK_GATE 
+				|| Game::get_game_type() == EXULT_DEVEL_GAME)
 				&& sman->can_use_paperdolls()) {
 				sman->set_paperdoll_status(!sman->are_paperdolls_enabled());
 				config->set("config/gameplay/bg_paperdolls",
