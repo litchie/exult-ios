@@ -1,4 +1,11 @@
 2010-12-23 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* cheat.cc: Fix bug that prevented -p command line from
+		connecting with Exult Studio properly.
+	* gumps/Face_stats.cc: Remove Dev game loading restriction
+	* cheat_screen.cc, gumps/GameplayOptions_gump.cc, shapeid.cc:
+		Allow SI style paper dolls in Dev games.
+
+2010-12-23 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* game.cc: Disabled into and ending for new games not based
 		on U7 data
 	* keyactions.cc: Only allow one cstat gump to show
