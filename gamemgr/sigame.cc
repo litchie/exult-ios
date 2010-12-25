@@ -108,7 +108,7 @@ SI_Game::SI_Game()
 		add_shape("sprites/map", 22);
 		add_shape("sprites/cheatmap", EXULT_SI_FLX_SIMAP_SHP);
 
-		// Need to be done
+		add_shape("gumps/scroll_spells", 66);
 		add_shape("gumps/spell_scroll",65);
 		add_shape("gumps/jawbone", 56);
 		add_shape("gumps/tooth", 57);

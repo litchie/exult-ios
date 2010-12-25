@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ const int REAGENTS = 842;		// Shape #.
 #define BOOKMARK  (GAME_BG ? 42 : 37)	// Red ribbon, 5 frames.
 #define LEFTPAGE  (GAME_BG ? 44 : 39)	// At top-left of left page.
 #define RIGHTPAGE  (GAME_BG ? 45 : 40)	// At top-right of right page.
-#define SCROLLSPELLS  66		// First group of scroll spells (SI).
+#define SCROLLSPELLS  game->get_shape("gumps/scroll_spells") // First group of scroll spells
 
 /*
  *	And in 'text.flx' (indices are offset from 0x500):
@@ -541,7 +541,7 @@ void Spellbook_gump::paint
 Spellscroll_gump::Spellscroll_gump
 	(
 	Game_object *s
-	) : Spelltype_gump(65), scroll(s), spell(0)
+	) : Spelltype_gump(game->get_shape("gumps/spell_scroll")), scroll(s), spell(0)
 	{
 	set_object_area(Rectangle(30, 29, 50, 29), 8, 68);
 
