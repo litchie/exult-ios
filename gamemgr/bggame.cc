@@ -136,6 +136,11 @@ BG_Game::BG_Game()
 		add_shape("gumps/goldsign", 51);
 		add_shape("gumps/body", 53);
 
+		add_shape("gumps/scroll_spells", 0xfff);
+		add_shape("gumps/spell_scroll", 0xfff);
+		add_shape("gumps/jawbone", 0xfff);
+		add_shape("gumps/tooth", 0xfff);
+
 		add_shape("sprites/map", 22);
 		add_shape("sprites/cheatmap", EXULT_BG_FLX_BGMAP_SHP);
 
