@@ -64,7 +64,7 @@
 #include "gameclk.h"
 #include "gamerend.h"
 #include "items.h"
-#include "jawbone.h"
+//#include "jawbone.h" // CHECKME: this doesn't seem to be needed
 #include "keys.h"
 #include "mouse.h"
 #include "npcnear.h"

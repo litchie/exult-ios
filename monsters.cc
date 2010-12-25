@@ -1,7 +1,7 @@
 /*
  *	monsters.cc - Monsters.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ void Monster_actor::equip
 		int frnum = (elem.shapenum == 377) ? 
 			get_info().get_monster_food() : 0;
 		if (frnum < 0)	// Food.
-			frnum = rand()%32;
+			frnum = rand()%ShapeID(377, 0).get_num_frames();
 		Shape_info& einfo = ShapeID::get_info(elem.shapenum);
 		Weapon_info *winfo = einfo.get_weapon_info();
 		if (einfo.has_quality() && winfo && winfo->uses_charges())
