@@ -1,3 +1,10 @@
+2010-12-25 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* jawbone.cc: Don't allow two teeth with the same frame and shape
+		to be placed in the same jawbone container.
+	* monsters.cc: Use get_num_frames() to get max number of frames
+		for random food drops
+	* gamewin.cc: Commented out seemingly useless jawbone.h include
+
 2010-12-23 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* cheat.cc: Fix bug that prevented -p command line from
 		connecting with Exult Studio properly.
