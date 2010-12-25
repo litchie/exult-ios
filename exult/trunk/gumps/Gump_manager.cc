@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.cc - Object that manages all available gumps
  *
- *  Copyright (C) 2001-2004  The Exult Team
+ *  Copyright (C) 2001-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -301,17 +301,14 @@ void Gump_manager::add_gump
 		new_gump = Stats_gump::create(obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
 		new_gump = new Spellbook_gump((Spellbook_object *) obj);
-	else if (Game::get_game_type() == SERPENT_ISLE)
-	{
-		if (shapenum == game->get_shape("gumps/spell_scroll"))
-			new_gump = new Spellscroll_gump(obj);
-		else if (shapenum >= game->get_shape("gumps/cstats/1")&&
-				shapenum <= game->get_shape("gumps/cstats/6"))
-			new_gump = new CombatStats_gump(x, y);
-		else if (shapenum == game->get_shape("gumps/jawbone"))
-			new_gump = new Jawbone_gump(
-					(Jawbone_object*) obj, x, y);
-	}
+	else if (Game::get_game_type() == SERPENT_ISLE &&
+			shapenum >= game->get_shape("gumps/cstats/1") &&
+			shapenum <= game->get_shape("gumps/cstats/6"))
+		new_gump = new CombatStats_gump(x, y);
+	else if (shapenum == game->get_shape("gumps/jawbone"))
+		new_gump = new Jawbone_gump((Jawbone_object*) obj, x, y);
+	else if (shapenum == game->get_shape("gumps/spell_scroll"))
+		new_gump = new Spellscroll_gump(obj);
 
 	if (!new_gump)
 		new_gump = new Container_gump((Container_game_object *) obj, x, y, shapenum);

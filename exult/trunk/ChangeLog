@@ -1,6 +1,11 @@
 2010-12-25 Malignant Manor <malignantmanor@users.sourceforge.net>
-	* jawbone.cc: Don't allow two teeth with the same frame and shape
-		to be placed in the same jawbone container.
+	* gamemgr/bggame.cc, gamemgr/sigame.cc, gumps/Gump_manager.cc,
+		gumps/Spellbookgump.cc: Allow spell scrolls, jawbone, and
+		teeth in all games.
+
+2010-12-25 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* objs/jawbone.cc: Don't allow two teeth with the same frame and
+	shape to be placed in the same jawbone container.
 	* monsters.cc: Use get_num_frames() to get max number of frames
 		for random food drops
 	* gamewin.cc: Commented out seemingly useless jawbone.h include
