@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2010 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -249,6 +249,7 @@ public:
 	void init_new_npc();
 	int init_npc_window(unsigned char *data, int datalen);
 	int save_npc_window();
+	void update_npc(); // updates the npc browser if it is open
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_npc_shape(int shape, int frame);
 	void show_npc_face(int x = 0, int y = 0, int w = -1, int h = -1);

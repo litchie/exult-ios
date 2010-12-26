@@ -1,3 +1,8 @@
+2010-12-26 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* mapedit/npcedit.cc, mapedit/npclst.cc, mapedit/studio.h:
+		Make npcs update properly in the npc browser when apply is
+		clicked or a newly created npc is placed in game.
+
 2010-12-25 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamemgr/bggame.cc, gamemgr/sigame.cc, gumps/Gump_manager.cc,
 		gumps/Spellbookgump.cc: Allow spell scrolls, jawbone, and

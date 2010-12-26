@@ -5,7 +5,7 @@
  **/
 
 /*
-Copyright (C) 2005  The Exult Team
+Copyright (C) 2005-2010  The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -561,6 +561,7 @@ void Npc_chooser::update_npc
 	)
 	{
 	((Npcs_file_info *) file_info)->read_npc(num);
+	render();
 	update_statusbar();
 	}
 
