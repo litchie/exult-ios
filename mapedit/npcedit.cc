@@ -5,7 +5,7 @@
  **/
 
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2010 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -614,6 +614,21 @@ int ExultStudio::init_npc_window
 	}
 
 /*
+ * This is used because calling npcchoose->update_npc(npc_num) in
+ * save_npc_window() means "Click on map at place to insert npc" will not
+ * show up until after the npc is placed and the npc editor window won't
+ * close. You can't call it in Npc_response because browser is private.
+ */
+void ExultStudio::update_npc()	// update npc browser display (if open)
+{
+	Npc_chooser *npcchoose = dynamic_cast<Npc_chooser *>(browser);
+	if (npcchoose){
+		short npc_num = get_num_entry("npc_num_entry");
+		npcchoose->update_npc(npc_num);
+	}
+}
+
+/*
  *	Callback for when user clicked where NPC should be inserted.
  */
 
@@ -626,8 +641,10 @@ static void Npc_response
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	if (id == Exult_server::user_responded)
+	if (id == Exult_server::user_responded){
 		studio->close_npc_window();
+		studio->update_npc();
+		}
 	//+++++cancel??
 	}
 
@@ -713,10 +730,6 @@ int ExultStudio::save_npc_window
 		return 0;
 		}
 	cout << "Sent npc data to server" << endl;
-		// Update NPC browser information.
-	Npc_chooser *npcchoose = dynamic_cast<Npc_chooser *>(browser);
-	if (npcchoose)
-		npcchoose->update_npc(npc_num);
 	if (!addr)
 		{
 		npc_status_id = set_statusbar("npc_status", npc_ctx,
@@ -727,6 +740,10 @@ int ExultStudio::save_npc_window
 		waiting_for_server = Npc_response;
 		return 1;		// Leave window open.
 		}
+	// Update NPC browser information.
+	Npc_chooser *npcchoose = dynamic_cast<Npc_chooser *>(browser);
+	if (npcchoose)
+		npcchoose->update_npc(npc_num);
 	close_npc_window();
 	return 1;
 	}
