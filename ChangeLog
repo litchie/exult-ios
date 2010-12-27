@@ -1,3 +1,7 @@
+2010-12-27 Malignant Manor <malignantmanor@users.sourceforge.net>
+	*/objs/jawbone.cc: Revert same tooth restriction since Marzo
+		plans to do something different.
+
 2010-12-26 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* mapedit/npcedit.cc, mapedit/npclst.cc, mapedit/studio.h:
 		Make npcs update properly in the npc browser when apply is
