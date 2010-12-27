@@ -33,9 +33,6 @@ bool Jawbone_object::add
 	bool noset		// True to prevent actors from setting sched. weapon.
 	)
 {
-	if (Container_game_object::find_item(obj->get_shapenum(),
-			c_any_qual, obj->get_framenum()))	// same tooth?
-		return false;
 	if (!Container_game_object::add(obj, dont_check, combine))
 		return false; // Can't be added to.
 
