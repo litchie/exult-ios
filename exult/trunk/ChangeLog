@@ -1,3 +1,7 @@
+2010-12-28 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* /mapedit/exult_studio.glade: Fix swapped neutral and friendly
+		alignment display in monster eggs and monster info.
+
 2010-12-27 Malignant Manor <malignantmanor@users.sourceforge.net>
 	*/objs/jawbone.cc: Revert same tooth restriction since Marzo
 		plans to do something different.
