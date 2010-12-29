@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2010 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -535,7 +535,7 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	string game = "";			// Game to look up in .exult.cfg.
 	string modtitle = "";		// Mod title to look up in <MODS>/*.cfg.
 	string alt_cfg = "";
-	static const char *optstring = "c:g:x:m:p:";
+	static const char *optstring = "c:g:x:m:p";
 	extern int opterr/*, optind, optopt*/;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
