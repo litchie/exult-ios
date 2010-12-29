@@ -1,4 +1,8 @@
 2010-12-29 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* objs/objs.cc: Fix triple crossbow bolt quantity frames offset
+		being wrong making it seem to disappear. Bug 3053282
+
+2010-12-29 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* /objs/eggs.cc: Fix SS stairs so they autoreset. Bug 3115182
 	* /mapedit/studio.cc: Fix typo that messed up -p command line.
 
