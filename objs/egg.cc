@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2003  The Exult Team
+ *  Copyright (C) 2000-2010  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1035,6 +1035,17 @@ void Egg_object::hatch
 	if (GAME_SI && eggpos.tx == 1287 && eggpos.ty == 2568 && eggpos.tz == 0) {
 		flags &= ~(1 << (int) hatched);
 	}
+	// Fixing some stairs in SS bug # 3115182 by making them auto_reset
+	if (GAME_SS && type == teleport &&
+		   ((eggpos.tx == 2844 && eggpos.ty == 2934 && eggpos.tz == 2) ||
+			(eggpos.tx == 2843 && eggpos.ty == 2934 && eggpos.tz == 1) ||
+			(eggpos.tx == 3015 && eggpos.ty == 2840 && eggpos.tz == 0) ||
+			(eggpos.tx == 2950 && eggpos.ty == 2887 && eggpos.tz == 0) ||
+			(eggpos.tx == 2859 && eggpos.ty == 3048 && eggpos.tz == 2) ||
+			(eggpos.tx == 2884 && eggpos.ty == 3047 && eggpos.tz == 2) ||
+			(eggpos.tx == 2983 && eggpos.ty == 2887 && eggpos.tz == 0)))
+		flags |= (1 << (int) auto_reset);
+
 	/* end hack */
 
 
