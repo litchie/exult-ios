@@ -568,6 +568,8 @@ int Game_object::modify_quantity
 			// This is actually hard-coded in the originals, but doing
 			// it this way is consistent with musket ammo.
 		int base = get_info().has_ammo_info() ? 24 : 0;
+		if (get_info().get_ready_type() == triple_bolts)
+			base = 24;
 			// Verified.
 		int new_frame = newquant > 12 ? 7 : (newquant > 6 ? 6 : newquant - 1);
 		set_frame(base + new_frame);
