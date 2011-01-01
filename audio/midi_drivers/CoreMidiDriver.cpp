@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2003-2005  The Pentagram Team
+Copyright (C) 2003-2011  The Pentagram Team
  
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -77,8 +77,8 @@ void CoreMidiDriver::close() {
 }
 
 void CoreMidiDriver::send(uint32 b) {
-	assert(mOutPort != NULL);
-	assert(mDest != NULL);
+	assert(mOutPort != 0);
+	assert(mDest != 0);
 
 	// Extract the MIDI data
 	uint8 status_byte = (b & 0x000000FF);
@@ -121,8 +121,8 @@ void CoreMidiDriver::send(uint32 b) {
 }
 
 void CoreMidiDriver::send_sysex(uint8 status, const uint8 *msg, uint16 length) {
-	assert(mOutPort != NULL);
-	assert(mDest != NULL);
+	assert(mOutPort != 0);
+	assert(mDest != 0);
 
 	uint8 buf[384];
 	MIDIPacketList *packetList = (MIDIPacketList *)buf;
