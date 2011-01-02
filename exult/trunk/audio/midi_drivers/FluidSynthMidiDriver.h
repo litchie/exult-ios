@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2001-2005 The ScummVM project
+ * Copyright (C) 2001-2011 The ScummVM project
  * Copyright (C) 2005 The Pentagram Team
  *
  * This program is free software; you can redistribute it and/or

@@ -1,7 +1,7 @@
 /*
  *  Gump_factory.cc - A gump factory.
  *
- *  Copyright (C) 2001-2005  The Exult Team
+ *  Copyright (C) 2001-2011  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001-2010 The Exult Team
+ *  Copyright (C) 2001-2011 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -203,7 +203,7 @@ void ActionAbout(int *params)
 	scroll = new Scroll_gump();
 	
 	scroll->add_text("Exult V"VERSION"\n");
-	scroll->add_text("(C) 1998-2010 Exult Team\n\n");
+	scroll->add_text("(C) 1998-2011 Exult Team\n\n");
 	scroll->add_text("Available under the terms of the ");
 	scroll->add_text("GNU General Public License\n\n");
 	scroll->add_text("http://exult.sourceforge.net\n");
