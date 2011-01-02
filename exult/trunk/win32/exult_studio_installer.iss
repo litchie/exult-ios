@@ -36,6 +36,7 @@ Source: Studio\lib\pango\1.4.0\modules\pango-basic-win32.dll; DestDir: {app}\lib
 Source: Studio\exult_studio.exe; DestDir: {app}; Flags: ignoreversion
 Source: Studio\exult_studio.html; DestDir: {app}; Flags: ignoreversion
 Source: Studio\exult_studio.txt; DestDir: {app}; Flags: ignoreversion
+Source: Studio\iconv.dll; DestDir: {app}; Flags: ignoreversion
 Source: Studio\intl.dll; DestDir: {app}; Flags: ignoreversion
 Source: Studio\libatk-1.0-0.dll; DestDir: {app}; Flags: ignoreversion
 Source: Studio\libgdk_pixbuf-2.0-0.dll; DestDir: {app}; Flags: ignoreversion
