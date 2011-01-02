@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2003-2005  The Pentagram Team
+Copyright (C) 2009 The ScummVM project
+Copyright (C) 2009-2011  The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
