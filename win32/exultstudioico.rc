@@ -45,7 +45,7 @@ BEGIN
             VALUE "FileDescription", "Exult Studio\0"
             VALUE "FileVersion", "1.5.0svn\0"
             VALUE "InternalName", "Exult Studio\0"
-            VALUE "LegalCopyright", "Copyright © 2010\0"
+            VALUE "LegalCopyright", "Copyright © 2011\0"
             VALUE "OriginalFilename", "exult_studio.exe\0"
             VALUE "ProductName", "Exult Studio\0"
             VALUE "ProductVersion", "1.5.0svn\0"

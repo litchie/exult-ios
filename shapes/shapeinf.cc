@@ -6,7 +6,7 @@
 
 /*
 Copyright (C) 1998  Jeffrey S. Freedman
-Copyright (C) 1999-2002 The Exult Team
+Copyright (C) 1999-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

@@ -1,7 +1,7 @@
 /*
  * Scale2X algorithm by Andrea Mazzoleni.
  *
- * Copyright (C) 2001-2002 Andrea Mazzoleni
+ * Copyright (C) 2001-2011 Andrea Mazzoleni
  *
  *	This library is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU Library General Public
