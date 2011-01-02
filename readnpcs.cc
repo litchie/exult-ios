@@ -2,7 +2,7 @@
  *	readnpcs.cc - Read in NPC's from npc.dat & schedule.dat.  Also writes npc.dat back out.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2004  The Exult Team
+ *  Copyright (C) 2000-2011  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
