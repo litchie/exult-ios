@@ -1,3 +1,9 @@
+2011-01-03 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* imagewin/imagewin.cc: Fix 8 bit video checks in static_init
+	* actors.cc: Made the Avatar immune to charm in normal charm
+		difficulty. The original allowed the Avatar to be charmed. It
+		only showed the highlight and status icon. It wasn't harmful.
+
 2010-12-29 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* objs/objs.cc: Fix triple crossbow bolt quantity frames offset
 		being wrong making it seem to disappear. Bug 3053282

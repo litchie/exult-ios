@@ -3218,7 +3218,8 @@ void Actor::set_flag
 		break;
 	case Obj_flags::charmed:
 		if (minf->charm_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)) ||
+				(this == gwin->get_main_actor() && !Combat::charmed_more_difficult))
 			return;		// Don't do anything.
 		need_timers()->start_charm();
 		if (!gwin->in_combat() && Combat::charmed_more_difficult &&
