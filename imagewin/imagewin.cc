@@ -294,7 +294,7 @@ void Image_window::static_init()
 
 	desktop_depth = SDL_GetVideoInfo()->vfmt->BitsPerPixel;
 
-	windowed_8 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE|SDL_HWPALETTE);
+	windowed_8 = SDL_VideoModeOK(640, 400, 8, SDL_SWSURFACE|SDL_HWPALETTE);
 	windowed_16 = SDL_VideoModeOK(640, 400, 16, SDL_SWSURFACE);
 	windowed_32 = SDL_VideoModeOK(640, 400, 32, SDL_SWSURFACE);
 
@@ -405,7 +405,7 @@ void Image_window::static_init()
 		Image_window::Resolution &res = it->second;
 		bool ok = false;
 
-		if (SDL_VideoModeOK(res.width, res.height, 32, SDL_FULLSCREEN|SDL_SWSURFACE|SDL_HWPALETTE)) {
+		if (SDL_VideoModeOK(res.width, res.height, 8, SDL_FULLSCREEN|SDL_SWSURFACE|SDL_HWPALETTE)) {
 			res.palette = true;
 			ok_pal = true;
 			ok = true;
