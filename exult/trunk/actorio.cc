@@ -363,8 +363,9 @@ void Actor::read
 		if (get_flag(Obj_flags::invisible))	/* Force timer.	*/
 			need_timers()->start_invisibility();
 
-		// SIFlags -- no longer used.
-		nfile->skip (2);
+		// Was SIFlags -- now used for schedule z coord
+		schedule_loc.tz = nfile->read1();
+		nfile->skip (1); // 1 free from old SIFLAGS
 
 		// Flags2	But don't set polymorph.
 		bool polym = get_flag(Obj_flags::polymorph)!= false;
@@ -398,7 +399,7 @@ void Actor::read
 		// Flags
 		nfile->skip (4);
 
-		// SIFlags
+		// SIFlags -- now used for schedule z coord
 		nfile->skip (2);
 
 		// Flags2 
@@ -657,8 +658,8 @@ void Actor::write
 
 	nfile->write4(0);	// Skip 2*2
 	
-	nfile->write2(schedule_loc.tx);	//S-Vr Where npc is supposed to 
-	nfile->write2(schedule_loc.ty);	//be for schedule)
+	nfile->write2(old_schedule_loc.tx);	//S-Vr Where npc is supposed to 
+	nfile->write2(old_schedule_loc.ty);	//be for schedule)
 	//nfile->write4(0);
 
 	nfile->write2(get_type_flags());	// Typeflags
@@ -687,8 +688,9 @@ void Actor::write
 	// Flags
 	nfile->write4(flags);
 
-	// SIFlags 
-	nfile->write2(0);
+	// was SIFlags -- now used for schedule z coord
+	nfile->write1(old_schedule_loc.tz);
+	nfile->write1(0); // 1 free from old SIFLAGS
 
 	// flags2
 	nfile->write4(flags2);

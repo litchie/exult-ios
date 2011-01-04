@@ -108,6 +108,7 @@ protected:
 	unsigned char next_schedule;	// Used so correct schedule type 
 					//   will be saved
 	Schedule *schedule;		// Current schedule.
+	int restored_schedule;	// Just restored schedule type.
 	bool dormant;			// I.e., off-screen.
 	bool hit;			// Just hit in combat.
 	bool combat_protected;		// 'Halo' on paperdoll screen.
