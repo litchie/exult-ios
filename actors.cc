@@ -1777,8 +1777,11 @@ void Actor::restore_schedule
 		if (next_schedule != 255 && 
 				schedule_type == Schedule::walk_to_schedule)
 			set_schedule_and_loc(next_schedule, schedule_loc);
-		else
+		else{
+			old_schedule_loc = schedule_loc;
+			restored_schedule = schedule_type;
 			set_schedule_type(schedule_type);
+			}
 		}
 	}
 
@@ -5066,12 +5069,15 @@ void Npc_actor::update_schedule
 			i = find_schedule_change((--hour3 + 8)%8);
 		if (i < 0)
 			return;
-		// TODO: need to find a way to get the initial
-		// schedule location so they is no needless change
-		if (schedule_type == schedules[i].get_type() &&
-				old_schedule_loc == schedules[i].get_pos())
+		if ((schedule_type == schedules[i].get_type() ||
+				restored_schedule == schedules[i].get_type()) &&
+				old_schedule_loc == schedules[i].get_pos()){
+			restored_schedule = -1;
 			return;		// Already in it.
+			}
 		}
+	restored_schedule = -1;
+	old_schedule_loc = schedules[i].get_pos();
 	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
 								delay);
 	}

@@ -1,3 +1,10 @@
+2011-01-04 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actorio.cc, actors.*: Fixed broken schedule location write.
+		Schedule z coord is now saved. Fixed npcs changing schedules
+		when the schedule hasn't changed. Existing saved games need
+		to be saved again after a time change for this to work on
+		reload. New games should work right away.
+
 2011-01-03 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* imagewin/imagewin.cc: Fix 8 bit video checks in static_init
 	* actors.cc: Made the Avatar immune to charm in normal charm
