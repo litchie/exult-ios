@@ -1,4 +1,8 @@
 2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* istring.h, imagewin/manip.h: Applied modified patch 3152619
+		that allows Clang (LLVM) to compile.
+
+2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* audio\midi_drivers\XMidiFile.*: Uncommented VolumeCurve, chorus,
 		and reverb. Chorus and reverb still don't seem to work.
 
