@@ -19,6 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef XMIDIFILE_H_INCLUDED
 #define XMIDIFILE_H_INCLUDED
 
+#ifdef PENTAGRAM_IN_EXULT
+#include "gamma.h"
+#endif
+
 class IDataSource;
 class OIDataSource;
 struct XMidiEvent;
@@ -63,8 +67,10 @@ private:
 	int					chorus_value;
 	int					reverb_value;
 
+#ifdef PENTAGRAM_IN_EXULT
 	// Midi Volume Curve Modification
-	//static GammaTable<unsigned char>	VolumeCurve;
+	static GammaTable<unsigned char>	VolumeCurve;
+#endif
 
 public:
 	XMidiFile(IDataSource *source, int pconvert);
