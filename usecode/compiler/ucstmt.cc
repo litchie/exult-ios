@@ -5,7 +5,7 @@
  **/
 
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -409,7 +409,7 @@ void Uc_arrayloop_statement::finish
 		sprintf(buf, "_%s_index", array->get_name());
 		index = fun->add_symbol(buf);
 		}
-	if (!array_size);
+	if (!array_size)
 		{
 		sprintf(buf, "_%s_size", array->get_name());
 		array_size = fun->add_symbol(buf);

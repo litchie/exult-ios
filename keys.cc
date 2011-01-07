@@ -681,7 +681,7 @@ void KeyBinder::ParseLine(char *line)
 		if (k.mod & KMOD_SHIFT)
 			desc += "Shift-";
 		desc += keycode;
-		if (a.action->desc == "Create last shape" && a.params[0] == -1)
+		if (strcmp(a.action->desc, "Create last shape") && a.params[0] == -1)
 			last_created_key.push_back(desc);
 		
 		desc += " - " + d;

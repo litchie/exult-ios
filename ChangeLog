@@ -1,4 +1,11 @@
 2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* usecode\compiler\ucstmt.cc: Fix if statement that had a ';'
+		typo after it that caused it to always be executed
+	* compiler warnings:
+		keys.cc: Fix const char* comparision with string
+		tools/u7voice2syx.cc: Changed char * to const char *
+
+2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* istring.h, imagewin/manip.h: Applied modified patch 3152619
 		that allows Clang (LLVM) to compile.
 
