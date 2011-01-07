@@ -162,19 +162,19 @@ public:
 
 	_Myt& operator+=(const _Myt& _Right)
 		{	// append _Right
-		append(_Right);
+		this->append(_Right);
 		return (*this);
 		}
 
 	_Myt& operator+=(const _Elem *_Ptr)
 		{	// append [_Ptr, <null>)
-		append(_Ptr);
+		this->append(_Ptr);
 		return (*this);
 		}
 
 	_Myt& operator+=(_Elem _Ch)
 		{	// append 1 * _Ch
-		append(static_cast<size_type>(1), _Ch);
+		this->append(static_cast<size_type>(1), _Ch);
 		return (*this);
 		}
 

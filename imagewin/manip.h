@@ -319,7 +319,7 @@ public:
 	static uintD copy(uintS src)
 	{
 		unsigned int r, g, b;
-		split_source(src,r,g,b);
+		ManipBaseSrc<color_s,color_d>::split_source(src,r,g,b);
 		return ManipBaseDest<color_d>::rgb(r,g,b);
 	}
 	static void copy(uintD& dest, uintS src)
