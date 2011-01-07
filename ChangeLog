@@ -1,3 +1,7 @@
+2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* audio\midi_drivers\XMidiFile.*: Uncommented VolumeCurve, chorus,
+		and reverb. Chorus and reverb still don't seem to work.
+
 2011-01-06 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Fixed crash caused by having a NULL pointer as the
 		object of as_actor(). Fixes bug 3150216 (introduced 6615)
