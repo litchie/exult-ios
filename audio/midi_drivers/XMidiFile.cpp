@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef PENTAGRAM_IN_EXULT
 #include "game.h"
 #include "databuf.h"
+#include "Configuration.h"
 #else
 #include "IDataSource.h"
 #include "ODataSource.h"
@@ -520,7 +521,9 @@ static RhythmSetupData U7PercussionData[] = {
 	{	4,	0x64,	0x08,	1	}	// 87
 };
 
-//GammaTable<unsigned char> XMidiFile::VolumeCurve(128);
+#ifdef PENTAGRAM_IN_EXULT
+GammaTable<unsigned char> XMidiFile::VolumeCurve(128);
+#endif
 
 // Constructor
 XMidiFile::XMidiFile(IDataSource *source, int pconvert) : num_tracks(0),
@@ -706,8 +709,11 @@ void XMidiFile::ApplyFirstState(first_state &fs, int chan_mask)
 
 		if (!temp)
 		{
-//			if (convert_type) vol->data[1] = VolumeCurve[90];
+#ifdef PENTAGRAM_IN_EXULT
+			if (convert_type) vol->data[1] = VolumeCurve[90];
+#else
 			if (convert_type) vol->data[1] = 90;
+#endif
 			else vol->data[1] = 90;
 		}
 		else
@@ -1201,9 +1207,11 @@ int XMidiFile::ConvertEvent (const int time, const unsigned char status, IDataSo
 
 	current->data[1] = source->read1();
 
+#ifdef PENTAGRAM_IN_EXULT
 	// Volume modify the volume controller, only if converting
-//	if (convert_type && (current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
-//		current->data[1] = VolumeCurve[current->data[1]];
+	if (convert_type && (current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
+		current->data[1] = VolumeCurve[current->data[1]];
+#endif
 
 	return 2;
 }
@@ -1221,9 +1229,11 @@ int XMidiFile::ConvertNote (const int time, const unsigned char status, IDataSou
 	current->data[0] = data;
 	current->data[1] = source->read1();
 
+#ifdef PENTAGRAM_IN_EXULT
 	// Volume modify the note on's, only if converting
-//	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
-//		current->data[1] = VolumeCurve[current->data[1]];
+	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
+		current->data[1] = VolumeCurve[current->data[1]];
+#endif
 
 	// Perc track note on
 	if (status == 0x99 && current->data[1] != 0 && convert_type == XMIDIFILE_CONVERT_NOCONVERSION)
@@ -1583,7 +1593,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 	if (convert_type >= XMIDIFILE_HINT_U7VOICE_MT_FILE)
 		convert_type = XMIDIFILE_CONVERT_NOCONVERSION;
 
-	/*
+#ifdef PENTAGRAM_IN_EXULT
 	string s;
 	
 	config->value("config/audio/midi/reverb/enabled",s,"no");
@@ -1614,12 +1624,12 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 	int igam = (int) ((VolumeCurve.get_gamma()*10000)+0.5); 
 	snprintf (buf, 32, "%d.%04d", igam/10000, igam%10000); 
 	config->set("config/audio/midi/volume_curve",buf,true);
-	*/
+#else
 	do_reverb = false;
 	do_chorus = false;
 	reverb_value = 0;
 	chorus_value = 0;
-
+#endif
 	// Read first 4 bytes of header
 	source->read (buf, 4);
 
