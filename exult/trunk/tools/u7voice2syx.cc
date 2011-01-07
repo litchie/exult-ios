@@ -226,10 +226,10 @@ int main(int argc, char *argv[])
 	std::size_t num_to_write;
 
 	char name[11];
-	char *filenames[] = { "u7voice.flx",
+	const char *filenames[] = { "u7voice.flx",
 							"u7intro.tim",
 							"mainmenu.tim" };
-	char *outnames[] = { "u7voice.syx",
+	const char *outnames[] = { "u7voice.syx",
 							"u7intro.syx",
 							"mainmenu.syx" };
 	bool bgsi[] = { true, true, false };
@@ -238,8 +238,8 @@ int main(int argc, char *argv[])
 
 	for (int num = 0; num < 3; num++)
 	{
-		char *filename = filenames[num];
-		char *outname = outnames[num];
+		const char *filename = filenames[num];
+		const char *outname = outnames[num];
 
 		try {
 			if (!U7exists(filename))
