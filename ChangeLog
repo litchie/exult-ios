@@ -1,3 +1,8 @@
+2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/AudioOptions_gump.cc: Fix midi_sfx crash and mishandling
+		when no digital sfx are found. Changed the sizes of some
+		buttons that were too small for the text.
+
 2011-01-07 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* usecode\compiler\ucstmt.cc: Fix if statement that had a ';'
 		typo after it that caused it to always be executed
