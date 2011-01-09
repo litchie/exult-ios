@@ -344,7 +344,9 @@ void MyMidiPlayer::load_timbres()
 	const char *u7voice = 0;
 
 	// Black Gate Settings
-	if (Game::get_game_type() == BLACK_GATE && timbre_lib != TIMBRE_LIB_ENDGAME)
+	if (GAME_BG && timbre_lib == TIMBRE_LIB_INTRO)
+		u7voice = INTRO_TIM;
+	else if (GAME_BG && timbre_lib != TIMBRE_LIB_ENDGAME)
 		u7voice = U7VOICE_FLX;
 	// Serpent Isle
 	else if (Game::get_game_type() == SERPENT_ISLE && timbre_lib == TIMBRE_LIB_MAINMENU)
