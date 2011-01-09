@@ -1,4 +1,8 @@
 2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* fnames.h, audio/midi.cc: Use u7intro.tim sysex info for
+		BG intro. (MT-32)
+
+2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* audio\midi_drivers\XMidiFile.h, gumps\AudioOptions_gump.cc:
 		CoreAudio (default for OSX) no longer has MT-32 as an option.
 
