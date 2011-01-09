@@ -1,4 +1,8 @@
 2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* audio\midi_drivers\XMidiFile.h, gumps\AudioOptions_gump.cc:
+		CoreAudio (default for OSX) no longer has MT-32 as an option.
+
+2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/AudioOptions_gump.cc: Fix midi_sfx crash and mishandling
 		when no digital sfx are found. Changed the sizes of some
 		buttons that were too small for the text.
