@@ -276,17 +276,26 @@ void AudioOptions_gump::rebuild_mididriveroption_buttons()
 
 	if (s != "FMOpl" && s != "MT32Emu" && s != "Disabled")
 	{
-		std::string* midi_conversiontext = new std::string[5];
-		midi_conversiontext[0] = std::string("MT32");
+		int string_size = 5;
+#ifdef MACOSX
+		if (s == "Default" || s == "CoreAudio"){
+			if (midi_conversion > 3)
+				midi_conversion = 3;
+			string_size = 4;
+		}
+#endif
+		std::string* midi_conversiontext = new std::string[string_size];
+		midi_conversiontext[0] = std::string("Fake MT32");
 		midi_conversiontext[1] = std::string("GM");
 		midi_conversiontext[2] = std::string("GS");
 		midi_conversiontext[3] = std::string("GS127");
-		midi_conversiontext[4] = std::string("Fake MT32");
+		if (string_size == 5)
+			midi_conversiontext[4] = std::string("MT32");
 
 		// midi conversion
 		buttons[id_midi_conv] = new AudioTextToggle(this, midi_conversiontext, 
 										 colx[2]-7, rowy[5], 66,
-										 midi_conversion, 5);
+										 midi_conversion, string_size);
 	}
 
 	if (s != "FMOpl" && s != "Disabled")
