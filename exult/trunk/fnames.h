@@ -159,6 +159,7 @@
 
 #define U7VOICE_FLX  "<STATIC>/u7voice.flx"
 #define MAINMENU_TIM "<STATIC>/mainmenu.tim"
+#define INTRO_TIM "<STATIC>/u7intro.tim"
 
 #define EXULT_FLX "<DATA>/exult.flx"
 #define EXULT_BG_FLX "<DATA>/exult_bg.flx"
