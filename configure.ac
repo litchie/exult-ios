@@ -533,6 +533,16 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+# Midi Sfx
+
+AC_ARG_ENABLE(midi-sfx, AS_HELP_STRING([--enable-midi-sfx], [Support for Midi Sfx @<:@default no@:>@]),,enable_midi_sfx=no)
+AC_MSG_CHECKING([whether to enable midi sfx])
+if test x$enable_midi_sfx = xyes; then
+	AC_DEFINE(ENABLE_MIDISFX, 1, [Enable Midi Sfx])
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
 
 # ---------------------------------------------------------------------
 # support for Exult Studio
