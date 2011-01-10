@@ -416,6 +416,8 @@ void	Audio::Init_sfx()
 		sfx_file = new FlexFile(flex.c_str());
 		return;
 		}
+	else if (!have_midi_sfx(&flex))
+		config->set("config/audio/effects/midi", "no", true);
 #endif
 	if (!have_config_sfx(Game::get_gametitle(), &flex))
 		{
@@ -676,13 +678,16 @@ int	Audio::play_sound_effect (int num, int volume, int balance, int repeat, int 
 {
 	if (!audio_enabled || !effects_enabled) return -1;
 
+#ifdef ENABLE_MIDISFX
+	string v; // TODO: should make this check faster
+	config->value("config/audio/effects/midi", v, "no");
+	if (v != "no" && mixer && mixer->getMidiPlayer())
+		mixer->getMidiPlayer()->start_sound_effect(num);
+	else
+#endif
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
 		return play_wave_sfx(num, volume, balance, repeat, distance);
-#ifdef ENABLE_MIDISFX
-	else if (mixer && mixer->getMidiPlayer()) 
-		mixer->getMidiPlayer()->start_sound_effect(num);
-#endif
 	return -1;
 }
 
