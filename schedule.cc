@@ -3167,11 +3167,11 @@ void Sew_schedule::now_what
 		Game_object_vector vec;		// Don't create too many.
 		int cnt = 0;
 		if (GAME_SI)
-			cnt += npc->find_nearby(vec, 403, 4, 0);
+			cnt += npc->find_nearby(vec, 403, 5, 0);
 		else				// BG shapes.
 			{
-			cnt += npc->find_nearby(vec, 738, 4, 0);
-			cnt += npc->find_nearby(vec, 249, 4, 0);
+			cnt += npc->find_nearby(vec, 738, 5, 0);
+			cnt += npc->find_nearby(vec, 249, 5, 0);
 			}
 		if (cnt >= 3)
 			{
