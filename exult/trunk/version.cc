@@ -143,6 +143,12 @@ void getVersionInfo(std::ostream& out)
 	out << "HAVE_OPENGL";
 #endif
 
+#ifdef ENABLE_MIDISFX
+	if (!firstoption) out << ", ";
+	firstoption = false;
+	out << "ENABLE_MIDISFX";
+#endif
+
 	out << std::endl;
 
 
