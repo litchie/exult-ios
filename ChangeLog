@@ -1,8 +1,21 @@
-2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+2011-01-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: Increase search range for clothes in sew sched.
+	* audio/audio.cc: Fix midi sfx not playing.
+	* gumps/AudioOptions_gump.cc: Fix midi_sfx conversion after
+		revision 6703 changed conversion numbers.
+	* configure.ac: Stressing that midi_sfx will likely sound terrible
+
+2011-01-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* configure.ac: Add --enable-midi-sfx configure option
+	* version.cc: ENABLE_MIDISFX shows as a Compile-time option
+	* gumps/AudioOptions_gump.cc: If MT32 was in config make it
+		Fake MT32 for CoreAudio (default OSX).
+
+2011-01-09 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* fnames.h, audio/midi.cc: Use u7intro.tim sysex info for
 		BG intro. (MT-32)
 
-2011-01-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+2011-01-09 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* audio\midi_drivers\XMidiFile.h, gumps\AudioOptions_gump.cc:
 		CoreAudio (default for OSX) no longer has MT-32 as an option.
 

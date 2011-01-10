@@ -260,7 +260,7 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 
 		// sfx conversion
 		buttons[id_sfx_pack] = new AudioTextToggle(this, sfx_conversiontext, colx[2],
-										 rowy[9], 59, sfx_conversion/4,2);
+										 rowy[9], 59, sfx_conversion == 5 ? 1: 0,2);
 		}
 #endif
 }
