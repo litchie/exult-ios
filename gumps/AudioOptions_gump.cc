@@ -280,7 +280,7 @@ void AudioOptions_gump::rebuild_mididriveroption_buttons()
 #ifdef MACOSX
 		if (s == "Default" || s == "CoreAudio"){
 			if (midi_conversion > 3)
-				midi_conversion = 3;
+				midi_conversion = 0;
 			string_size = 4;
 		}
 #endif
