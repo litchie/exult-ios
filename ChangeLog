@@ -1,4 +1,10 @@
 2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.cc, gamewin.*: Add new cfg option to disable scrolling
+		the game view with the scrollwheel (when in cheat mode).
+		"config/gameplay/scroll_with_mouse" "yes" to allow scrolling.
+		"no" to disable it. Default is "no".
+
+2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/VideoOptions_gump.cc: Straiten out row values. More
 		code changes for separate fullscreen and window settings
 	* data/*: new video options gump shape added

@@ -1457,7 +1457,7 @@ static void Handle_event
 		// Mousewheel scrolling of view port.
 		if (event.button.button == 4 || event.button.button == 5) 
 			{
-			if (!cheat()) break;
+			if (!cheat() || !gwin->can_scroll_with_mouse()) break;
 			SDLMod mod = SDL_GetModState();
 			if (event.button.button == 4)
 				if (mod & KMOD_ALT)
