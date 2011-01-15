@@ -70,6 +70,19 @@ extern void Wait_for_arrival
 extern void change_gamma (bool down);
 extern void increase_resolution();
 extern void decrease_resolution();
+extern void setup_video(bool fullscreen, int setup_video_type,
+				int resx = 0, int resy = 0, int gw = 0,
+				int gh = 0, int scaleval = 0, int scaler = 0,
+				Image_window::FillMode fillmode = Image_window::Fill,
+				int fill_scaler = 0);
+
+enum setup_video_type {
+	VIDEO_INIT = 0,
+	TOGGLE_FULLSCREEN = 1,
+	MENU_INIT = 2,
+	SET_CONFIG = 3,
+	MENU_APPLY = 4
+};
 
 typedef enum 
 {

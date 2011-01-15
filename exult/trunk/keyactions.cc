@@ -279,12 +279,7 @@ void ActionDarker(int *params)
 void ActionFullscreen(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	gwin->get_win()->toggle_fullscreen();
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())
-		Set_renderer(gwin->get_win(), gwin->get_pal(), true);
-#endif
-	gwin->paint();
+	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
 }
 
 //  { ActionUseItem, 3, "Use item", dont_show, NONE },

@@ -98,6 +98,7 @@
 #include "items.h"
 #include "gamemgr/modmgr.h"
 #include "AudioMixer.h"
+#include "VideoOptions_gump.h"
 using namespace Pentagram;
 
 #ifdef UNDER_CE
@@ -811,93 +812,15 @@ static void Init
 #ifndef MACOSX		// Don't set icon on OS X; the external icon is *much* nicer
 	SetIcon();
 #endif
-
-	int w, h, sc, sclr;
-
-#ifdef UNDER_CE
-	// WinCE default resolution is 320x240 with no scaling
-	w = 320;
-	h = 240;
-	sc = 1;
-	sclr = Image_window::SaI;
-#else
-	// Default resolution is now 320x240 with 2x scaling
-	w = 320;
-	h = 240;
-	sc = 2;
-	sclr = Image_window::SaI;
-#endif
-	int sw, sh, scaleval, gw ,gh;
-	string gr, gg, gb, scaler;
-
-	config->value("config/video/scale_method", scaler, "---");
+	string gr, gg, gb;
+	config->value("config/video/gamma/red", gr, "1.0");
+	config->value("config/video/gamma/green", gg, "1.0");
+	config->value("config/video/gamma/blue", gb, "1.0");
+	
 	string	fullscreenstr;		// Check config. for fullscreen mode.
 	config->value("config/video/fullscreen",fullscreenstr,"no");
 	bool	fullscreen = (fullscreenstr=="yes");
 	config->set("config/video/fullscreen",fullscreen?"yes":"no",false);
-
-	config->value("config/video/scale", scaleval, sc);
-	sclr = Image_window::get_scaler_for_name(scaler.c_str());
-		// Ensure proper values for scaleval based on sclr.
-	if (sclr == Image_window::NoScaler)
-		{
-		config->set("config/video/scale_method","2xSaI",false);
-		sclr = Image_window::SaI;
-		scaleval = 2;
-		}
-	else if (sclr == Image_window::Hq3x)
-		scaleval = 3;
-	else if (sclr != Image_window::point && sclr != Image_window::interlaced &&
-			sclr != Image_window::OpenGL&&
-			sclr != Image_window::bilinear)
-		scaleval = 2;
-	config->set("config/video/scale", scaleval, false);
-
-	config->value("config/video/gamma/red", gr, "1.0");
-	config->value("config/video/gamma/green", gg, "1.0");
-	config->value("config/video/gamma/blue", gb, "1.0");
-
-	// Convert from old video dims to new
-	
-	if (config->key_exists("config/video/width"))
-	{
-		config->value("config/video/width", sw, w);
-		config->remove("config/video/width",false);
-	}
-	else
-		sw = w;
-
-	if (config->key_exists("config/video/height"))
-	{
-		config->value("config/video/height", sh, h);
-		config->remove("config/video/height",false);
-	}
-	else
-		sh = h;
-
-	config->value("config/video/display/width", sw, sw*scaleval);
-	config->value("config/video/display/height", sh, sh*scaleval);
-
-	config->value("config/video/game/width", gw, 320);
-	config->value("config/video/game/height", gh, 200);
-	
-	config->set("config/video/display/width", sw, false);
-	config->set("config/video/display/height", sh, false);
-	config->set("config/video/game/width", gw, false);
-	config->set("config/video/game/height", gh, false);
-
-	std::string fmode_string;
-	config->value("config/video/fill_mode",fmode_string,"");
-	Image_window::FillMode fillmode = Image_window::string_to_fillmode(fmode_string.c_str());
-	if (fillmode == 0) fillmode = Image_window::AspectCorrectCentre;
-	Image_window::fillmode_to_string(fillmode,fmode_string);
-	config->set("config/video/fill_mode",fmode_string,false);
-	
-	std::string fill_scaler_str;
-	config->value("config/video/fill_scaler",fill_scaler_str,"bilinear");
-	int fill_scaler = Image_window::get_scaler_for_name(fill_scaler_str.c_str());
-	if (fill_scaler == Image_window::NoScaler) fill_scaler = Image_window::bilinear;
-	config->set("config/video/fill_scaler",Image_window::get_name_for_scaler(fill_scaler),false);
 
 	int border_red, border_green, border_blue;
 
@@ -918,8 +841,6 @@ static void Init
 
 	Palette::set_border(border_red,border_green,border_blue);
 
-	config->write_back();
-
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 
@@ -927,12 +848,9 @@ static void Init
 
 	if (arg_buildmap < 0)
 		{
-		gwin = new Game_window(sw, sh, fullscreen, gw ,gh, scaleval, sclr, fillmode, fill_scaler);
-		//gwin->resized(sw, sh, gwin->get_win()->is_fullscreen(), gw ,gh, scaleval, sclr);
-		// Ensure proper clipping:
-		gwin->get_win()->clear_clip();
+		setup_video(fullscreen, VIDEO_INIT);
+		config->write_back();
 
-		current_res = find_resolution(sw, sh, scaleval);
 		Audio::Init();
 
 		bool disable_fades;
@@ -2352,6 +2270,180 @@ void BuildGameMap(BaseGameInfo *game, int mapnum)
 	}
 }
 
+/*
+ *  Most of the game setable video configuration stuff is stored here so
+ *  it isn't duplicated all over the place. fullscreen is determined
+ *  before coming here, config->write_back() is done after (if needed)
+ */
+void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
+				 int gw , int gh, int scaleval, int scaler,
+				 Image_window::FillMode fillmode, int fill_scaler)
+{
+	string fmode_string, sclr, scalerName, fillScalerName;
+	bool video_init = false, set_config = false,
+		 change_gwin = false, menu_init = false,
+		 toggle_fullscreen = false, read_config = false;
+	if (setup_video_type == VIDEO_INIT)
+		read_config = video_init = set_config = true;
+	else if (setup_video_type == TOGGLE_FULLSCREEN)
+		read_config = change_gwin = toggle_fullscreen = true;
+	else if (setup_video_type == MENU_INIT)
+		read_config = menu_init = true;
+	else if (setup_video_type == SET_CONFIG)
+		set_config = true;
+	else if (setup_video_type == MENU_APPLY) // may need something special for
+		set_config = change_gwin = true; // toggling fullscreen with menu
+#if 0 // menu isn't done yet
+	const string &vidStr = fullscreen? "config/video" : "config/video/window";
+#else
+	const string &vidStr = "config/video";
+#endif
+	if (read_config) {
+#ifdef DEBUG
+		cout << "Reading video menu adjustable configuration options" << endl;
+#endif
+		int w, h, sc;
+		string default_scaler, fill_scaler_str;
+#ifdef UNDER_CE
+		// WinCE default resolution is 320x240 with no scaling
+		w = 320, h = 240, sc = 1;
+		default_scaler = "point";
+#else
+		// Default resolution is now 320x240 with 2x scaling
+		w = 320, h = 240, sc = 2;
+		default_scaler = "2xSaI";
+#endif
+		if (video_init) {
+			// Convert from old video dims to new
+			if (config->key_exists("config/video/width")) {
+				config->value("config/video/width", resx, w);
+				config->remove("config/video/width",false);
+			}
+			else
+				resx = w;
+			if (config->key_exists("config/video/height")) {
+				config->value("config/video/height", resy, h);
+				config->remove("config/video/height",false);
+			}
+			else
+				resy = h;
+		}
+		else {
+			resx = w, resy = h;
+		}
+		config->value(vidStr + "/scale_method", sclr, default_scaler.c_str());
+		config->value(vidStr + "/scale", scaleval, sc);
+		scaler = Image_window::get_scaler_for_name(sclr.c_str());
+		// Ensure proper values for scaleval based on scaler.
+		if (scaler == Image_window::Hq3x)
+			scaleval = 3;
+		else if (scaler != Image_window::point &&
+				 scaler != Image_window::interlaced &&
+				 scaler != Image_window::OpenGL &&
+				 scaler != Image_window::bilinear)
+			scaleval = 2;
+		config->value(vidStr + "/display/width", resx, resx*scaleval);
+		config->value(vidStr + "/display/height", resy, resy*scaleval);
+		config->value(vidStr + "/game/width", gw, 320);
+		config->value(vidStr + "/game/height", gh, 200);
+		config->value(vidStr + "/fill_mode",fmode_string,"Centre");
+		fillmode = Image_window::string_to_fillmode(fmode_string.c_str());
+		if (fillmode == 0)
+			fillmode = Image_window::AspectCorrectCentre;
+		config->value(vidStr + "/fill_scaler",fill_scaler_str,"bilinear");
+		fill_scaler = Image_window::get_scaler_for_name(fill_scaler_str.c_str());
+		if (fill_scaler == Image_window::NoScaler)
+			fill_scaler = Image_window::bilinear;
+	}
+	if (set_config) {
+		scalerName = Image_window::get_name_for_scaler(scaler);
+		fillScalerName = Image_window::get_name_for_scaler(fill_scaler);
+		Image_window::fillmode_to_string(fillmode,fmode_string);
+#ifdef DEBUG
+		cout << "Setting video menu adjustable configuration options" <<
+				resx << " resX, " << resy <<
+				" resY, " << gw << " gameW, " << gh << " gameH, " << scaleval <<
+				" scale, " << scalerName << " scaler, " << fmode_string <<
+				" fill mode, " << fillScalerName << " fill scaler, " <<
+				(fullscreen ? "full screen" : "window") <<endl;
+#endif
+		config->set((vidStr + "/display/width").c_str(), resx, false);
+		config->set((vidStr + "/display/height").c_str(), resy, false);
+		config->set((vidStr + "/game/width").c_str(), gw, false);
+		config->set((vidStr + "/game/height").c_str(), gh, false);
+		config->set((vidStr + "/scale").c_str(), scaleval, false);
+		config->set((vidStr + "/scale_method").c_str(), scalerName , false);
+		config->set((vidStr + "/fill_mode").c_str(),fmode_string, false);
+		config->set((vidStr + "/fill_scaler").c_str(), fillScalerName, false);
+	}
+	if (video_init) {
+#ifdef DEBUG
+		cout << "Initializing Game_window to " << resx << " resX, " << resy <<
+				" resY, " << gw << " gameW, " << gh << " gameH, " << scaleval <<
+				" scale, " << scalerName << " scaler, " << fmode_string <<
+				" fill mode, " << fillScalerName << " fill scaler, " <<
+				(fullscreen ? "full screen" : "window") <<endl;
+#endif
+		gwin = new Game_window(resx, resy, fullscreen, gw ,gh, scaleval, scaler,
+														fillmode, fill_scaler);
+		// Ensure proper clipping:
+		gwin->get_win()->clear_clip();
+		// is find_resolution outdated?
+		current_res = find_resolution(resx, resy, scaleval);
+	}
+	else if (change_gwin) {
+#ifdef DEBUG
+		if (!set_config) {
+			Image_window::fillmode_to_string(fillmode,fmode_string);
+			scalerName = Image_window::get_name_for_scaler(scaler);
+			fillScalerName = Image_window::get_name_for_scaler(fill_scaler);
+		}
+		cout << "Changing Game_window to " << resx << " resX, " << resy <<
+				" resY, " << gw << " gameW, " << gh << " gameH, " << scaleval <<
+				" scale, " << scalerName << " scaler, " << fmode_string <<
+				" fill mode, " << fillScalerName << " fill scaler, " <<
+				(fullscreen ? "full screen" : "window") <<endl;
+#endif
+		if (fillmode == 0)	// just in case
+			fillmode = Image_window::AspectCorrectCentre;
+		if (toggle_fullscreen)
+			fullscreen != fullscreen;
+		gwin->resized(resx, resy, fullscreen, gw, gh, scaleval, scaler,
+					fillmode, fill_scaler);
+	}
+	if (menu_init) {
+#ifdef DEBUG
+		Image_window::fillmode_to_string(fillmode,fmode_string);
+		scalerName = Image_window::get_name_for_scaler(scaler);
+		fillScalerName = Image_window::get_name_for_scaler(fill_scaler);
+		cout << "Initializing video options menu settings " << resx << " resX, " <<
+				resy << " resY, " << gw << " gameW, " << gh << " gameH, " << scaleval <<
+				" scale, " << scalerName << " scaler, " << fmode_string <<
+				" fill mode, " << fillScalerName << " fill scaler, " <<
+				(fullscreen ? "full screen" : "window") <<endl;
+#endif
+#if 1 // menu needs finished
+		fullscreen = true;
+#endif
+		VideoOptions_gump *videoGump = VideoOptions_gump::get_instance();
+		if (fullscreen) {
+			videoGump->set_scaling(scaleval - 1);
+			videoGump->set_scaler(scaler);
+			videoGump->set_resolution(resx << 16 | resy);
+			videoGump->set_game_resolution(gw << 16 | gh);
+			videoGump->set_fill_scaler(fill_scaler == Image_window::bilinear?1:0);
+			videoGump->set_fill_mode(fillmode);
+		}
+		else {
+			videoGump->set_win_scaling(scaleval - 1);
+			videoGump->set_win_scaler(scaler);
+			videoGump->set_win_resolution(resx << 16 | resy);
+			videoGump->set_win_game_resolution(gw << 16 | gh);
+			videoGump->set_win_fill_scaler(fill_scaler == Image_window::bilinear?1:0);
+			videoGump->set_win_fill_mode(fillmode);
+		}
+	}
+}
 
 #ifdef USE_EXULTSTUDIO
 

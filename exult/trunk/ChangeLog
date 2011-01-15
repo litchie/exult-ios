@@ -1,3 +1,9 @@
+2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.*, keyactions.cc, gumps/VideoOptions_gump.*: New function
+		"setup_video" to consolidate menu settable video configuration
+		reading and writing and implementing it into existing code.
+		Start code changes for separate fullscreen and window settings.
+
 2011-01-10 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Increase search range for clothes in sew sched.
 	* audio/audio.cc: Fix midi sfx not playing.
