@@ -1,4 +1,7 @@
 2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.cc: only write to cfg once in Game_window::Game_window
+
+2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.cc, gamewin.*: Add new cfg option to disable scrolling
 		the game view with the scrollwheel (when in cheat mode).
 		"config/gameplay/scroll_with_mouse" "yes" to allow scrolling.
