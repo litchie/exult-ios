@@ -132,6 +132,7 @@ class Game_window
 	int text_bg;			// draw a dark background behind text
 	int	step_tile_delta;	// multiplier for the delta in start_actor_alt
 	bool allow_double_right_move;	// If moving with right click is allowed
+	bool scroll_with_mouse; 		// scroll game view with mousewheel
 
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -239,6 +240,10 @@ public:
 		{ return text_bg; }
 	void set_text_bg(int t)
 		{ text_bg = t; }
+	bool can_scroll_with_mouse() const  // scroll game view with mousewheel
+		{ return scroll_with_mouse; }
+//	void set_mouse_scroll(bool ms)		// not currently used since
+//		{ scroll_with_mouse = ms; } // there is no room in the menu
 	/*
 	 *	Game components:
 	 */

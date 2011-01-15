@@ -456,6 +456,10 @@ Game_window::Game_window
 	// For now this is being set to default enabled because everyone wants it...
 	config->value("config/gameplay/smooth_scrolling", lerping_enabled, 0);
 	config->set("config/gameplay/smooth_scrolling", lerping_enabled, true);
+	config->value("config/gameplay/scroll_with_mouse", str, "no");
+	scroll_with_mouse = str == "yes";
+	config->set("config/gameplay/scroll_with_mouse",
+								 scroll_with_mouse ? "yes" : "no", true);
 	}
 
 /*
