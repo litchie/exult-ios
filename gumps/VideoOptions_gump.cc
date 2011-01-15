@@ -44,11 +44,12 @@ using std::cerr;
 using std::endl;
 using std::string;
 
+VideoOptions_gump *VideoOptions_gump::video_options_gump = 0;
 static const int rowy[] = { 20, 45, 60, 5, 155, 85, 100, 115, 130 };
 static const int colx[] = { 35, 50, 115, 127, 130 };
 
 static const char* applytext = "APPLY";
-
+// TODO: add win resolutions here;
 uint32 *VideoOptions_gump::resolutions = 0;
 int VideoOptions_gump::num_resolutions = 0;
 
@@ -321,9 +322,9 @@ void VideoOptions_gump::rebuild_dynamic_buttons()
 void VideoOptions_gump::load_settings()
 {
 	int i;
-	int w = gwin->get_win()->get_display_width();
-	int h = gwin->get_win()->get_display_height();
-
+	setup_video(true, MENU_INIT);
+	int w = resolution >> 16;
+	int h = resolution & 0xFFFF;
 	if (resolutions == 0)
 	{
 		std::map<uint32, Image_window::Resolution> Resolutions = gwin->get_win()->Resolutions;
@@ -354,18 +355,11 @@ void VideoOptions_gump::load_settings()
 		for (std::map<uint32, Image_window::Resolution>::const_iterator it = Resolutions.begin(); it != Resolutions.end(); ++it)
 			win_resolutions[i++] = it->first;
 	}
-
-	resolution = (w<<16)|h;
-
 	if (startup_fill_mode == 0)
 		startup_fill_mode = gwin->get_win()->get_fill_mode();
-
 	has_ac = 0;
-
-	int gw, gh; 
-	config->value("config/video/game/width", gw, w);
-	config->value("config/video/game/height", gh, h);
-
+	int gw = game_resolution >> 16;
+	int gh = game_resolution & 0xFFFF;
 	if (gw == 0 && gh == 0)
 		game_resolution = 0;
 	else if (gw == 320 && gh == 200)
@@ -381,12 +375,7 @@ void VideoOptions_gump::load_settings()
 		game_resolutions[2] = (gw<<16)|gh;
 		num_game_resolutions = (game_resolutions[0] != game_resolutions[2] && game_resolutions[1] != game_resolutions[2])?3:2;
 	}
-
-	scaling = gwin->get_win()->get_scale_factor()-1;
-	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
-	fill_scaler = gwin->get_win()->get_fill_scaler()==Image_window::bilinear?1:0;
-	fill_mode = gwin->get_win()->get_fill_mode();
 
 	gclock->set_palette();
 
@@ -402,6 +391,7 @@ void VideoOptions_gump::load_settings()
 
 VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
 {
+	video_options_gump = this;
 	set_object_area(Rectangle(0,0,0,0), 8, 170);//++++++ ???
 
 	for (int i=0; i<10; i++) buttons[i] = 0;
@@ -436,22 +426,9 @@ void VideoOptions_gump::save_settings()
 		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT")) 
 			return;
 	}
-
-	config->set("config/video/display/width", resx, false);
-	config->set("config/video/display/height", resy, false);
-	config->set("config/video/game/width", gw, false);
-	config->set("config/video/game/height", gh, false);
-	config->set("config/video/scale", scaling+1, false);
-	config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),false);
 	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
-	
-	std::string fmode_string;
-	Image_window::fillmode_to_string(fill_mode,fmode_string);
-	config->set("config/video/fill_mode",fmode_string,false);
-
-	config->set("config/video/fill_scaler",fill_scaler?"Bilinear":"Point",false);
-
-	gwin->resized(resx, resy, fullscreen!=0, gw, gh, scaling+1, scaler, fill_mode, fill_scaler?Image_window::bilinear:Image_window::point);
+	setup_video(fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, scaling+1, scaler, fill_mode,
+				fill_scaler?Image_window::bilinear:Image_window::point);
 	gclock->set_palette();
 	set_pos();
 	gwin->set_all_dirty();
@@ -462,21 +439,9 @@ void VideoOptions_gump::save_settings()
 		resy = o_resolution&0xFFFF;
 		gw = game_resolutions[o_game_resolution]>>16;
 		gh = game_resolutions[o_game_resolution]&0xFFFF; 
-
-		config->set("config/video/display/width", resx, false);
-		config->set("config/video/display/height", resy, false);
-		config->set("config/video/game/width", gw, false);
-		config->set("config/video/game/height", gh, false);
-		config->set("config/video/scale", o_scaling +1, false);
-		config->set("config/video/scale_method",Image_window::get_name_for_scaler(o_scaler),false);
 		config->set("config/video/fullscreen", o_fullscreen ? "yes" : "no", false);
-		
-		Image_window::fillmode_to_string(o_fill_mode,fmode_string);
-		config->set("config/video/fill_mode",fmode_string,false);
-
-		config->set("config/video/fill_scaler",o_fill_scaler?"Bilinear":"Point",false);
-
-		gwin->resized(resx, resy, o_fullscreen!=0, gw, gh, o_scaling+1, o_scaler, o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
+		setup_video(o_fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, o_scaling+1, o_scaler,
+				o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
 		gclock->set_palette();
 		set_pos();
 		gwin->set_all_dirty();
