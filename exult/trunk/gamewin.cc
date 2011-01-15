@@ -410,56 +410,57 @@ Game_window::Game_window
 	config->value("config/gameplay/mouse3rd", str, "no");
 	if (str == "yes")
 		mouse3rd = true;
-	config->set("config/gameplay/mouse3rd", str, true);
+	config->set("config/gameplay/mouse3rd", str, false);
 	config->value("config/gameplay/fastmouse", str, "no");
 	if (str == "yes")
 		fastmouse = true;
-	config->set("config/gameplay/fastmouse", str, true);
+	config->set("config/gameplay/fastmouse", str, false);
 	config->value("config/gameplay/double_click_closes_gumps", str, "no");
 	if (str == "yes")
 		double_click_closes_gumps = true;
-	config->set("config/gameplay/double_click_closes_gumps", str, true);
+	config->set("config/gameplay/double_click_closes_gumps", str, false);
 	config->value("config/gameplay/combat/difficulty",
 							Combat::difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
-						Combat::difficulty, true);
+						Combat::difficulty, false);
 	config->value("config/gameplay/combat/charmDifficulty", str, "normal");
 	Combat::charmed_more_difficult = (str == "hard" ? true : false);
-	config->set("config/gameplay/combat/charmDifficulty", str, true);
+	config->set("config/gameplay/combat/charmDifficulty", str, false);
 	config->value("config/gameplay/combat/mode", str, "original");
 	if (str == "keypause")
 		Combat::mode = Combat::keypause;
 	else
 		Combat::mode = Combat::original;
-	config->set("config/gameplay/combat/mode", str, true);
+	config->set("config/gameplay/combat/mode", str, false);
 	config->value("config/gameplay/combat/show_hits", str, "no");
 	Combat::show_hits = (str == "yes");
-	config->set("config/gameplay/combat/show_hits", str, true);
+	config->set("config/gameplay/combat/show_hits", str, false);
 	config->value("config/audio/disablepause", str, "no");
-	config->set("config/audio/disablepause", str, true);
+	config->set("config/audio/disablepause", str, false);
 
 	config->value("config/gameplay/step_tile_delta", step_tile_delta, 8);
 	if (step_tile_delta < 1) step_tile_delta = 1;
-	config->set("config/gameplay/step_tile_delta", step_tile_delta, true);
+	config->set("config/gameplay/step_tile_delta", step_tile_delta, false);
 
 	config->value("config/gameplay/allow_double_right_move", str, "yes");
 	allow_double_right_move = str == "yes";
 	config->set("config/gameplay/allow_double_right_move", 
-				allow_double_right_move?"yes":"no", true);
+				allow_double_right_move?"yes":"no", false);
 					// New 'formation' walking?
 	config->value("config/gameplay/formation", str, "yes");
 		// Assume "yes" on anything but "no".
 	walk_in_formation = str != "no";
 	config->set("config/gameplay/formation", walk_in_formation?"yes":"no",
-								true);
+								false);
 
 	// For now this is being set to default enabled because everyone wants it...
 	config->value("config/gameplay/smooth_scrolling", lerping_enabled, 0);
-	config->set("config/gameplay/smooth_scrolling", lerping_enabled, true);
+	config->set("config/gameplay/smooth_scrolling", lerping_enabled, false);
 	config->value("config/gameplay/scroll_with_mouse", str, "no");
 	scroll_with_mouse = str == "yes";
 	config->set("config/gameplay/scroll_with_mouse",
-								 scroll_with_mouse ? "yes" : "no", true);
+								 scroll_with_mouse ? "yes" : "no", false);
+	config->write_back();
 	}
 
 /*
