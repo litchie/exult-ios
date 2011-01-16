@@ -1,3 +1,10 @@
+2011-01-16 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.cc: Move cfg options so they don't get needlessly read
+		during map build. Move config->write_back() to before
+		initializing the Game_window. Use USE_OLD_VIDEO_OPTIONS_GUMP
+	* gumps/VideoOptions_gump.cc : Move forced define of
+		USE_OLD_VIDEO_OPTIONS_GUMP to header.
+
 2011-01-15 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamewin.cc: only write to cfg once in Game_window::Game_window
 

@@ -812,45 +812,42 @@ static void Init
 #ifndef MACOSX		// Don't set icon on OS X; the external icon is *much* nicer
 	SetIcon();
 #endif
-	string gr, gg, gb;
-	config->value("config/video/gamma/red", gr, "1.0");
-	config->value("config/video/gamma/green", gg, "1.0");
-	config->value("config/video/gamma/blue", gb, "1.0");
-	
-	string	fullscreenstr;		// Check config. for fullscreen mode.
-	config->value("config/video/fullscreen",fullscreenstr,"no");
-	bool	fullscreen = (fullscreenstr=="yes");
-	config->set("config/video/fullscreen",fullscreen?"yes":"no",false);
-
-	int border_red, border_green, border_blue;
-
-	config->value("config/video/game/border/red", border_red, 0);
-	if (border_red<0) border_red = 0;
-	else if (border_red>255) border_red = 255;
-	config->set("config/video/game/border/red", border_red, false);
-
-	config->value("config/video/game/border/green", border_green, 0);
-	if (border_green<0) border_green= 0;
-	else if (border_green>255) border_green = 255;
-	config->set("config/video/game/border/green", border_green, false);
-
-	config->value("config/video/game/border/blue", border_blue, 0);
-	if (border_blue<0) border_blue = 0;
-	else if (border_blue>255) border_blue = 255;
-	config->set("config/video/game/border/blue", border_blue, false);
-
-	Palette::set_border(border_red,border_green,border_blue);
 
 	// Load games and mods; also stores system paths:
 	gamemanager = new GameManager();
 
-	Image_window8::set_gamma((float)atof(gr.c_str()), (float)atof(gg.c_str()), (float)atof(gb.c_str()));
-
 	if (arg_buildmap < 0)
 		{
-		setup_video(fullscreen, VIDEO_INIT);
-		config->write_back();
+		string gr, gg, gb;
+		config->value("config/video/gamma/red", gr, "1.0");
+		config->value("config/video/gamma/green", gg, "1.0");
+		config->value("config/video/gamma/blue", gb, "1.0");
+		Image_window8::set_gamma((float)atof(gr.c_str()),
+				(float)atof(gg.c_str()), (float)atof(gb.c_str()));
+		string	fullscreenstr;		// Check config. for fullscreen mode.
+		config->value("config/video/fullscreen",fullscreenstr,"no");
+		bool	fullscreen = (fullscreenstr=="yes");
+		config->set("config/video/fullscreen",fullscreen?"yes":"no",false);
 
+		int border_red, border_green, border_blue;
+		config->value("config/video/game/border/red", border_red, 0);
+		if (border_red<0) border_red = 0;
+		else if (border_red>255) border_red = 255;
+		config->set("config/video/game/border/red", border_red, false);
+
+		config->value("config/video/game/border/green", border_green, 0);
+		if (border_green<0) border_green= 0;
+		else if (border_green>255) border_green = 255;
+		config->set("config/video/game/border/green", border_green, false);
+
+		config->value("config/video/game/border/blue", border_blue, 0);
+		if (border_blue<0) border_blue = 0;
+		else if (border_blue>255) border_blue = 255;
+		config->set("config/video/game/border/blue", border_blue, false);
+
+		Palette::set_border(border_red,border_green,border_blue);
+
+		setup_video(fullscreen, VIDEO_INIT);
 		Audio::Init();
 
 		bool disable_fades;
@@ -2273,7 +2270,8 @@ void BuildGameMap(BaseGameInfo *game, int mapnum)
 /*
  *  Most of the game setable video configuration stuff is stored here so
  *  it isn't duplicated all over the place. fullscreen is determined
- *  before coming here, config->write_back() is done after (if needed)
+ *  before coming here. config->write_back() is done after (if needed).
+ *  video_init does save before trying to open the Game_window just in case
  */
 void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				 int gw , int gh, int scaleval, int scaler,
@@ -2293,10 +2291,10 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		set_config = true;
 	else if (setup_video_type == MENU_APPLY) // may need something special for
 		set_config = change_gwin = true; // toggling fullscreen with menu
-#if 0 // menu isn't done yet
-	const string &vidStr = fullscreen? "config/video" : "config/video/window";
-#else
+#ifdef USE_OLD_VIDEO_OPTIONS_GUMP
 	const string &vidStr = "config/video";
+#else
+	const string &vidStr = fullscreen? "config/video" : "config/video/window";
 #endif
 	if (read_config) {
 #ifdef DEBUG
@@ -2384,6 +2382,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				" fill mode, " << fillScalerName << " fill scaler, " <<
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
+		config->write_back();
 		gwin = new Game_window(resx, resy, fullscreen, gw ,gh, scaleval, scaler,
 														fillmode, fill_scaler);
 		// Ensure proper clipping:
@@ -2422,7 +2421,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				" fill mode, " << fillScalerName << " fill scaler, " <<
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
-#if 1 // menu needs finished
+#ifdef USE_OLD_VIDEO_OPTIONS_GUMP
 		fullscreen = true;
 #endif
 		VideoOptions_gump *videoGump = VideoOptions_gump::get_instance();
