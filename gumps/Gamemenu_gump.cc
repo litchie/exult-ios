@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "AudioOptions_gump.h"
 #include "VideoOptions_gump.h"
 #include "GameplayOptions_gump.h"
-#include "CombatOptions_gump.h"
+#include "MiscOptions_gump.h"
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -49,7 +49,7 @@ static const char* loadsavetext = "Load/Save Game";
 static const char* videoopttext = "Video Options";
 static const char* audioopttext = "Audio Options";
 static const char* gameopttext = "Gameplay Options";
-static const char *combattext = "Combat Options";
+static const char* misctext = "Misc Options";
 static const char* quitmenutext = "Quit to Menu";
 static const char* quittext = "Quit";
 
@@ -74,8 +74,8 @@ bool Gamemenu_button::activate(int button)
 		((Gamemenu_gump*)parent)->audio_options();
 	} else if (text == gameopttext) {
 		((Gamemenu_gump*)parent)->gameplay_options();
-	} else if (text == combattext) {
-		((Gamemenu_gump*)parent)->combat_options();
+	} else if (text == misctext) {
+		((Gamemenu_gump*)parent)->misc_options();
 	} else if (text == quitmenutext) {
 		((Gamemenu_gump*)parent)->quit(true);
 	} else if (text == quittext) {
@@ -96,7 +96,7 @@ Gamemenu_gump::Gamemenu_gump(bool in_exult_menu) : Modal_gump(0, EXULT_FLX_GAMEM
 	buttons[1] = new Gamemenu_button(this, videoopttext, colx, rowy[y++]);
 	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[y++]);
 	if (!in_exult_menu) buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[y++]);
-	if (!in_exult_menu) buttons[4] = new Gamemenu_button(this, combattext, colx, rowy[y++]);
+	if (!in_exult_menu) buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
 	if (!in_exult_menu) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
 }
 
@@ -162,9 +162,9 @@ void Gamemenu_gump::gameplay_options()
 	delete gp_opts;
 }
 
-void Gamemenu_gump::combat_options()
+void Gamemenu_gump::misc_options()
 {
-	CombatOptions_gump *cbt_opts = new CombatOptions_gump();
+	MiscOptions_gump *cbt_opts = new MiscOptions_gump();
 	gumpman->do_modal_gump(cbt_opts, Mouse::hand);
 	delete cbt_opts;
 }

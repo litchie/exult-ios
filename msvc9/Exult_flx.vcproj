@@ -879,6 +879,10 @@
 				RelativePath="..\data\videooptions.shp"
 				>
 			</File>
+			<File
+				RelativePath="..\data\newvideooptions.shp"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\data\flx.in"

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,17 +16,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _COMBATOPTIONS_GUMP_H
-#define _COMBATOPTIONS_GUMP_H
+#ifndef _MISCOPTIONS_GUMP_H
+#define _MISCOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
 #include <string>
 
 class Gump_button;
 
-class CombatOptions_gump : public Modal_gump
+class MiscOptions_gump : public Modal_gump
 {
-	UNREPLICATABLE_CLASS_I(CombatOptions_gump,Modal_gump(0,0,0,0));
+	UNREPLICATABLE_CLASS_I(MiscOptions_gump,Modal_gump(0,0,0,0));
 
  private:
 	int btn0;			// Below settings, + ok, cancel.
@@ -36,8 +36,8 @@ class CombatOptions_gump : public Modal_gump
 	bool charmDiff;
 	void build_buttons();
  public:
-	CombatOptions_gump();
-	virtual ~CombatOptions_gump();
+	MiscOptions_gump();
+	virtual ~MiscOptions_gump();
 
 					// Paint it and its contents.
 	virtual void paint();
