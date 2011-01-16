@@ -1,4 +1,13 @@
 2011-01-16 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/Gamemenu_gump.cc: Allow more menus in Exult menu
+	* gamewin.h: can_scroll_with_mouse() and set_mouse_with_scroll()
+	* gumps/MiscOptionsGump.*: Add 3 options.
+	* gumps/GameplayOptions_gump.cc: Don't show paperdolls when it is
+		not an option.
+	* all gumps except Gamemenu_gump.*: Only write to cfg once in
+		save_settings()
+
+2011-01-16 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Renamed CombatOptionsGump.* to MiscOptionsGump.*
 	* Updated project files for this and newvideooptions.shp
 

@@ -34,6 +34,9 @@ class MiscOptions_gump : public Modal_gump
 	int show_hits;
 	int mode;
 	bool charmDiff;
+	bool scroll_mouse;
+	bool usecode_intro;
+	bool menu_intro;
 	void build_buttons();
  public:
 	MiscOptions_gump();

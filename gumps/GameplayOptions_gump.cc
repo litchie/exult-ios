@@ -222,7 +222,8 @@ void GameplayOptions_gump::build_buttons()
 										 facestats, 4);
 	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-41, 
 										 rowy[1], 100, text_bg, 18);
-	if (GAME_BG)
+	if (sman->can_use_paperdolls() && (GAME_BG ||
+			Game::get_game_type() == EXULT_DEVEL_GAME))
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
@@ -321,42 +322,45 @@ GameplayOptions_gump::~GameplayOptions_gump()
 void GameplayOptions_gump::save_settings()
 {
 	gwin->set_text_bg(text_bg-1);
-	config->set("config/gameplay/textbackground", text_bg-1, true);
+	config->set("config/gameplay/textbackground", text_bg-1, false);
 	int fps = framerates[frames];
 	gwin->set_std_delay(1000/fps);
-	config->set("config/video/fps", fps, true);
+	config->set("config/video/fps", fps, false);
 	gwin->set_fastmouse(fastmouse!=false);
-	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
+	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", false);
 #ifdef UNDER_CE
-	config->set("config/gameplay/dpadopt", dpadopt, true);
+	config->set("config/gameplay/dpadopt", dpadopt, false);
 	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
 #else
 	gwin->set_mouse3rd(mouse3rd!=false);
-	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
+	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", false);
 #endif
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
-				doubleclick ? "yes" : "no", true);
+				doubleclick ? "yes" : "no", false);
 	gumpman->set_right_click_close(rightclick_close!=false);
 	config->set("config/gameplay/right_click_closes_gumps", 
-				rightclick_close ? "yes" : "no" , true);
+				rightclick_close ? "yes" : "no" , false);
 	cheat.set_enabled(cheats!=false);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	if (sman->can_use_paperdolls() && (GAME_BG || Game::get_game_type() == EXULT_DEVEL_GAME))
+	if (sman->can_use_paperdolls() && (GAME_BG ||
+			Game::get_game_type() == EXULT_DEVEL_GAME)) {
 		sman->set_paperdoll_status(paperdolls!=false);
-	config->set("config/gameplay/bg_paperdolls", 
-				paperdolls ? "yes" : "no", true);
+		config->set("config/gameplay/bg_paperdolls", 
+				paperdolls ? "yes" : "no", false);
+	}
 	gwin->set_allow_double_right_move(doubleright_move != false);
-	config->set("config/gameplay/allow_double_right_move", doubleright_move?"yes":"no", true);
+	config->set("config/gameplay/allow_double_right_move", doubleright_move?"yes":"no", false);
 	gumpman->set_gumps_dont_pause_game(!gumps_pause);
-	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", true);
+	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", false);
 
 	if (smooth_scrolling < 0) smooth_scrolling = 0;
 	else if (smooth_scrolling > 4) smooth_scrolling = 4;
 	gwin->set_lerping_enabled(smooth_scrolling*25);
-	config->set("config/gameplay/smooth_scrolling", smooth_scrolling*25,true);
+	config->set("config/gameplay/smooth_scrolling", smooth_scrolling*25,false);
+	config->write_back();
 }
 
 void GameplayOptions_gump::paint()
@@ -371,7 +375,7 @@ void GameplayOptions_gump::paint()
 
 	font->paint_text(iwin->get_ib8(), "Status Bars:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "Text Background:", x + colx[0], y + rowy[1] + 1);
-	if (GAME_BG)
+	if (sman->can_use_paperdolls() && (GAME_BG || Game::get_game_type() == EXULT_DEVEL_GAME))
 		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[2] + 1);
 	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 #ifdef UNDER_CE
