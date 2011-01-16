@@ -95,8 +95,8 @@ Gamemenu_gump::Gamemenu_gump(bool in_exult_menu) : Modal_gump(0, EXULT_FLX_GAMEM
 	if (!in_exult_menu) buttons[0] = new Gamemenu_button(this, loadsavetext, colx, rowy[y++]);
 	buttons[1] = new Gamemenu_button(this, videoopttext, colx, rowy[y++]);
 	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[y++]);
-	if (!in_exult_menu) buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[y++]);
-	if (!in_exult_menu) buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
+	buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[y++]);
+	buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
 	if (!in_exult_menu) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
 }
 

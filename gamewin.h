@@ -242,8 +242,8 @@ public:
 		{ text_bg = t; }
 	bool can_scroll_with_mouse() const  // scroll game view with mousewheel
 		{ return scroll_with_mouse; }
-//	void set_mouse_scroll(bool ms)		// not currently used since
-//		{ scroll_with_mouse = ms; } // there is no room in the menu
+	void set_mouse_with_scroll(bool ms)
+		{ scroll_with_mouse = ms; }
 	/*
 	 *	Game components:
 	 */

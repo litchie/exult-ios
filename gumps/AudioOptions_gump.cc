@@ -489,14 +489,14 @@ void AudioOptions_gump::save_settings()
 	Audio::get_ptr()->set_speech_enabled(speech_enabled == 1);
 	Audio::get_ptr()->set_allow_music_looping(midi_looping == 1);
 
-	config->set("config/audio/enabled", audio_enabled ? "yes" : "no", true);
-	config->set("config/audio/midi/enabled",midi_enabled ? "yes" : "no", true);
-	config->set("config/audio/effects/enabled",sfx_enabled?"yes":"no", true);
-	config->set("config/audio/speech/enabled",speech_enabled?"yes":"no", true);
+	config->set("config/audio/enabled", audio_enabled ? "yes" : "no", false);
+	config->set("config/audio/midi/enabled",midi_enabled ? "yes" : "no", false);
+	config->set("config/audio/effects/enabled",sfx_enabled?"yes":"no", false);
+	config->set("config/audio/speech/enabled",speech_enabled?"yes":"no", false);
 
-	config->set("config/audio/midi/chorus/enabled", (midi_reverb_chorus&2) ? "yes" : "no", true);
-	config->set("config/audio/midi/reverb/enabled", (midi_reverb_chorus&1)? "yes" : "no", true);
-	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", true);
+	config->set("config/audio/midi/chorus/enabled", (midi_reverb_chorus&2) ? "yes" : "no", false);
+	config->set("config/audio/midi/reverb/enabled", (midi_reverb_chorus&1)? "yes" : "no", false);
+	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", false);
 
 	std::string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
 	std::string waves;
@@ -507,9 +507,9 @@ void AudioOptions_gump::save_settings()
 		waves = blasterpack;
 	else if (have_custom_pack && sfx_package == i++)
 		waves = sfx_custompack;
-	config->set(d.c_str(), waves, true);
+	config->set(d.c_str(), waves, false);
 #ifdef ENABLE_MIDISFX
-	config->set("config/audio/effects/midi",sfx_enabled==1 + have_digital_sfx()?"yes":"no",true);
+	config->set("config/audio/effects/midi",sfx_enabled==1 + have_digital_sfx()?"yes":"no",false);
 #endif
 
 	MyMidiPlayer *midi = Audio::get_ptr()->get_midi();
@@ -525,39 +525,39 @@ void AudioOptions_gump::save_settings()
 	} else {
 		switch(midi_conversion) {
 		case XMIDIFILE_CONVERT_MT32_TO_GS:
-			config->set("config/audio/midi/convert","gs",true);
+			config->set("config/audio/midi/convert","gs",false);
 			break;
 		case XMIDIFILE_CONVERT_NOCONVERSION:
-			config->set("config/audio/midi/convert","mt32",true);
+			config->set("config/audio/midi/convert","mt32",false);
 			break;
 		case XMIDIFILE_CONVERT_MT32_TO_GS127:
-			config->set("config/audio/midi/convert","gs127",true);
+			config->set("config/audio/midi/convert","gs127",false);
 			break;
 		case XMIDIFILE_CONVERT_GM_TO_MT32:
-			config->set("config/audio/midi/convert","fakemt32",true);
+			config->set("config/audio/midi/convert","fakemt32",false);
 			break;
 		default:
-			config->set("config/audio/midi/convert","gm",true);
+			config->set("config/audio/midi/convert","gm",false);
 			break;
 		}
 
 		if (midi_driver == MidiDriver::getDriverCount())
-			config->set("config/audio/midi/driver","default",true);
+			config->set("config/audio/midi/driver","default",false);
 		else
-			config->set("config/audio/midi/driver",MidiDriver::getDriverName(midi_driver),true);
+			config->set("config/audio/midi/driver",MidiDriver::getDriverName(midi_driver),false);
 
 #ifdef ENABLE_MIDISFX
 		switch(sfx_conversion) {
 		case XMIDIFILE_CONVERT_NOCONVERSION:
-			config->set("config/audio/effects/convert","mt32",true);
+			config->set("config/audio/effects/convert","mt32",false);
 			break;
 		default:
-			config->set("config/audio/effects/convert","gs",true);
+			config->set("config/audio/effects/convert","gs",false);
 			break;
 		}
 #endif
 	}
-
+	config->write_back();
 	Audio::get_ptr()->Init_sfx();
 }
 
