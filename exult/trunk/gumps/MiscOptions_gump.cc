@@ -37,18 +37,19 @@
 #include "Text_button.h"
 #include "Enabled_button.h"
 #include "font.h"
+#include "gamewin.h"
 
 using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 17, 43, 69, 95, 130 };
-static const int colx[] = { 35, 50, 120, 170, 192 };
+static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148 };
+static const int colx[] = { 35, 50, 120, 170, 192, 215 };
 
 static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
 
-const int nbuttons = 5;
+const int nbuttons = 8;
 
 static int framerates[] = { 2, 4, 6, 8, 10, -1 };
  // -1 is placeholder for custom framerate
@@ -116,17 +117,32 @@ void MiscOptions_gump::cancel()
 void MiscOptions_gump::toggle(Gump_button* btn, int state)
 {
 	if (btn == elems[btn0])
-		difficulty = state;
+		scroll_mouse = state;
 	else if (btn == elems[btn0 + 1])
-		show_hits = state;
+		usecode_intro = state;
 	else if (btn == elems[btn0 + 2])
-		mode = state;
+		menu_intro = state;
 	else if (btn == elems[btn0 + 3])
+		difficulty = state;
+	else if (btn == elems[btn0 + 4])
+		show_hits = state;
+	else if (btn == elems[btn0 + 5])
+		mode = state;
+	else if (btn == elems[btn0 + 6])
 		charmDiff = state;
 }
 
 void MiscOptions_gump::build_buttons()
 {
+	string *yesNo1 = new string[2]; // TODO:need to make this like enabled
+	yesNo1[0] = "No";			   // if I am going to add much more
+	yesNo1[1] = "Yes";
+	string *yesNo2 = new string[2];
+	yesNo2[0] = "No";
+	yesNo2[1] = "Yes";
+	string *yesNo3 = new string[2];
+	yesNo3[0] = "No";
+	yesNo3[1] = "Yes";
 	std::string *diffs = new std::string[7];
 	diffs[0] = "Easiest (-3)";
 	diffs[1] = "Easier (-2)";
@@ -136,28 +152,40 @@ void MiscOptions_gump::build_buttons()
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
 	btn0 = elems.size();
-	add_elem(new MiscTextToggle (this, diffs, colx[3], rowy[0], 
+	add_elem(new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
+							   40, scroll_mouse, 2));
+	add_elem(new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
+							   40, usecode_intro, 2));
+	add_elem(new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
+							   40, menu_intro, 2));
+	add_elem(new MiscTextToggle (this, diffs, colx[3], rowy[8], 
 							   85, difficulty, 7));
-	add_elem(new MiscEnabledToggle(this, colx[3], rowy[1],
+	add_elem(new MiscEnabledToggle(this, colx[3], rowy[9],
 							 85, show_hits));
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
-	add_elem(new MiscTextToggle (this, modes, colx[3], rowy[2],
+	add_elem(new MiscTextToggle (this, modes, colx[3], rowy[10],
 							   85, mode, 2));
 	std::string *charmedDiff = new std::string[2]; 
 	charmedDiff[0] = "Normal";
 	charmedDiff[1] = "Hard";
-	add_elem(new MiscTextToggle (this, charmedDiff, colx[3], rowy[3],
+	add_elem(new MiscTextToggle (this, charmedDiff, colx[3], rowy[11],
 							   85, charmDiff, 2));
 	// Ok
-	add_elem(new MiscOptions_button(this, oktext, colx[0], rowy[4]));
+	add_elem(new MiscOptions_button(this, oktext, colx[0], rowy[12]));
 	// Cancel
-	add_elem(new MiscOptions_button(this, canceltext, colx[4], rowy[4]));
+	add_elem(new MiscOptions_button(this, canceltext, colx[4], rowy[12]));
 }
 
 void MiscOptions_gump::load_settings()
 {
+	string yn;
+	scroll_mouse = gwin->can_scroll_with_mouse();
+	config->value("config/gameplay/skip_intro", yn, "no");
+	usecode_intro = (yn == "yes");
+	config->value("config/gameplay/skip_splash", yn, "no");
+	menu_intro = (yn == "yes");
 	difficulty = Combat::difficulty;
 	if (difficulty < -3)
 		difficulty = -3;
@@ -186,19 +214,27 @@ MiscOptions_gump::~MiscOptions_gump()
 
 void MiscOptions_gump::save_settings()
 {
+	config->set("config/gameplay/scroll_with_mouse", 
+			scroll_mouse ? "yes" : "no", false);
+		gwin->set_mouse_with_scroll(scroll_mouse);
+	config->set("config/gameplay/skip_intro", 
+			usecode_intro ? "yes" : "no", false);
+	config->set("config/gameplay/skip_splash", 
+			menu_intro ? "yes" : "no", false);
 	Combat::difficulty = difficulty - 3;
 	config->set("config/gameplay/combat/difficulty",
-						Combat::difficulty, true);
+						Combat::difficulty, false);
 	Combat::show_hits = (show_hits != 0);
 	config->set("config/gameplay/combat/show_hits", 
-					show_hits ? "yes" : "no", true);
+					show_hits ? "yes" : "no", false);
 	Combat::mode = (Combat::Mode) mode;
 	std::string str = Combat::mode == Combat::keypause ? "keypause"
 					: "original";
-	config->set("config/gameplay/combat/mode", str, true);
+	config->set("config/gameplay/combat/mode", str, false);
 	Combat::charmed_more_difficult = (charmDiff != 0);
 	config->set("config/gameplay/combat/charmDifficulty",
-					charmDiff ? "hard" : "normal", true);
+					charmDiff ? "hard" : "normal", false);
+	config->write_back();
 }
 
 void MiscOptions_gump::paint()
@@ -206,10 +242,14 @@ void MiscOptions_gump::paint()
 	Gump::paint();
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
-	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[0], y + rowy[0] + 1);
-	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[0], y + rowy[1] + 1);
-	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[0], y + rowy[2] + 1);
-	font->paint_text(iwin->get_ib8(), "Charmed Difficulty:", x + colx[0], y + rowy[3] + 1);
+	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[0] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip usecode intro:", x + colx[0], y + rowy[1] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip menu intro:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[7] + 1);
+	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[8] + 1);
+	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[1], y + rowy[9] + 1);
+	font->paint_text(iwin->get_ib8(), "Mode:", x + colx[1], y + rowy[10] + 1);
+	font->paint_text(iwin->get_ib8(), "Charmed Difficulty:", x + colx[1], y + rowy[11] + 1);
 	gwin->set_painted();
 }
 
