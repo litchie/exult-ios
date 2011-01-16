@@ -45,7 +45,7 @@ using std::endl;
 using std::string;
 
 VideoOptions_gump *VideoOptions_gump::video_options_gump = 0;
-#define USE_OLD_VIDEO_OPTIONS_GUMP
+
 #ifdef USE_OLD_VIDEO_OPTIONS_GUMP
 static const int rowy[] = { 5, 20, 45, 60, 85, 100, 115, 130, 155 };
 static const int colx[] = { 35, 50, 115, 127, 130 };
