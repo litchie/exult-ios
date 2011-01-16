@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ class Gamemenu_gump : public Modal_gump
 	void video_options();
 	void audio_options();
 	void gameplay_options();
-	void combat_options();
+	void misc_options();
 
 	static void do_exult_menu();
 };
