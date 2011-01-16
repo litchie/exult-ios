@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Modal_gump.h"
 #include <string>
 #include "imagewin/imagewin.h"
-
+#define USE_OLD_VIDEO_OPTIONS_GUMP
 class Gump_button;
 
 class VideoOptions_gump : public Modal_gump
