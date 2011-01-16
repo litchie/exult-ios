@@ -147,7 +147,7 @@ GUMPS_OBJS= \
 	gumps/Actor_gump.o \
 	gumps/AudioOptions_gump.o \
 	gumps/Book_gump.o \
-	gumps/CombatOptions_gump.o \
+	gumps/MiscOptions_gump.o \
 	gumps/CombatStats_gump.o \
 	gumps/Enabled_button.o \
 	gumps/Face_button.o \
@@ -300,6 +300,7 @@ EXULT_FLX_OBJECTS = \
 	data/gamemenu.shp \
 	data/audiooptions.shp \
 	data/videooptions.shp \
+	data/newvideooptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
 	data/mtgm.mid
@@ -416,7 +417,7 @@ audio/Midi.o : audio/Midi.cc $(EXULT_FLX)
 
 gumps/AudioOptions_gump.o : gumps/AudioOptions_gump.cc $(EXULT_FLX)
 
-gumps/CombatOptions_gump.o : gumps/CombatOptions_gump.cc $(EXULT_FLX)
+gumps/MiscOptions_gump.o : gumps/MiscOptions_gump.cc $(EXULT_FLX)
 
 gumps/Face_stats.o : gumps/Face_stats.cc $(EXULT_FLX)
 

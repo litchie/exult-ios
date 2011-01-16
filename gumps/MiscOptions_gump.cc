@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2011  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "Configuration.h"
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
-#include "CombatOptions_gump.h"
+#include "MiscOptions_gump.h"
 #include "exult.h"
 #include "exult_flx.h"
 #include "gamewin.h"
@@ -55,9 +55,9 @@ static int framerates[] = { 2, 4, 6, 8, 10, -1 };
 static int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
 
 
-class CombatOptions_button : public Text_button {
+class MiscOptions_button : public Text_button {
 public:
-	CombatOptions_button(Gump *par, string text, int px, int py)
+	MiscOptions_button(Gump *par, string text, int px, int py)
 		: Text_button(par, text, px, py, 59, 11)
 		{ }
 					// What to do when 'clicked':
@@ -66,54 +66,54 @@ public:
 		if (button != 1) return false;
 
 		if (text == canceltext) {
-			((CombatOptions_gump*)parent)->cancel();
+			((MiscOptions_gump*)parent)->cancel();
 		} else if (text == oktext) {
-			((CombatOptions_gump*)parent)->close();
+			((MiscOptions_gump*)parent)->close();
 		}
 		return true;
 	}
 };
 
-class CombatTextToggle : public Gump_ToggleTextButton {
+class MiscTextToggle : public Gump_ToggleTextButton {
 public:
-	CombatTextToggle(Gump* par, std::string *s, int px, int py, int width,
+	MiscTextToggle(Gump* par, std::string *s, int px, int py, int width,
 					   int selectionnum, int numsel)
 	: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width)
 	{ }
 
-	friend class CombatOptions_gump;
+	friend class MiscOptions_gump;
 	virtual void toggle(int state) { 
-		((CombatOptions_gump*)parent)->toggle((Gump_button*)this, 
+		((MiscOptions_gump*)parent)->toggle((Gump_button*)this, 
 									state);
 	}
 };
 
-class CombatEnabledToggle : public Enabled_button {
+class MiscEnabledToggle : public Enabled_button {
 public:
-	CombatEnabledToggle(Gump* par, int px, int py, int width, 
+	MiscEnabledToggle(Gump* par, int px, int py, int width, 
 						  int selectionnum)
 		: Enabled_button(par, selectionnum, px, py, width)
 	{ }
 
-	friend class CombatOptions_gump;
+	friend class MiscOptions_gump;
 	virtual void toggle(int state) {
-		((CombatOptions_gump*)parent)->toggle((Gump_button*)this, 
+		((MiscOptions_gump*)parent)->toggle((Gump_button*)this, 
 									state);
 	}
 };	
 
-void CombatOptions_gump::close()
+void MiscOptions_gump::close()
 {
 	save_settings();
 	done = 1;
 }
 
-void CombatOptions_gump::cancel()
+void MiscOptions_gump::cancel()
 {
 	done = 1;
 }
 
-void CombatOptions_gump::toggle(Gump_button* btn, int state)
+void MiscOptions_gump::toggle(Gump_button* btn, int state)
 {
 	if (btn == elems[btn0])
 		difficulty = state;
@@ -125,7 +125,7 @@ void CombatOptions_gump::toggle(Gump_button* btn, int state)
 		charmDiff = state;
 }
 
-void CombatOptions_gump::build_buttons()
+void MiscOptions_gump::build_buttons()
 {
 	std::string *diffs = new std::string[7];
 	diffs[0] = "Easiest (-3)";
@@ -136,27 +136,27 @@ void CombatOptions_gump::build_buttons()
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
 	btn0 = elems.size();
-	add_elem(new CombatTextToggle (this, diffs, colx[3], rowy[0], 
+	add_elem(new MiscTextToggle (this, diffs, colx[3], rowy[0], 
 							   85, difficulty, 7));
-	add_elem(new CombatEnabledToggle(this, colx[3], rowy[1],
+	add_elem(new MiscEnabledToggle(this, colx[3], rowy[1],
 							 85, show_hits));
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
-	add_elem(new CombatTextToggle (this, modes, colx[3], rowy[2],
+	add_elem(new MiscTextToggle (this, modes, colx[3], rowy[2],
 							   85, mode, 2));
 	std::string *charmedDiff = new std::string[2]; 
 	charmedDiff[0] = "Normal";
 	charmedDiff[1] = "Hard";
-	add_elem(new CombatTextToggle (this, charmedDiff, colx[3], rowy[3],
+	add_elem(new MiscTextToggle (this, charmedDiff, colx[3], rowy[3],
 							   85, charmDiff, 2));
 	// Ok
-	add_elem(new CombatOptions_button(this, oktext, colx[0], rowy[4]));
+	add_elem(new MiscOptions_button(this, oktext, colx[0], rowy[4]));
 	// Cancel
-	add_elem(new CombatOptions_button(this, canceltext, colx[4], rowy[4]));
+	add_elem(new MiscOptions_button(this, canceltext, colx[4], rowy[4]));
 }
 
-void CombatOptions_gump::load_settings()
+void MiscOptions_gump::load_settings()
 {
 	difficulty = Combat::difficulty;
 	if (difficulty < -3)
@@ -171,7 +171,7 @@ void CombatOptions_gump::load_settings()
 	charmDiff = Combat::charmed_more_difficult ? 1: 0;
 }
 
-CombatOptions_gump::CombatOptions_gump() 
+MiscOptions_gump::MiscOptions_gump() 
 	: Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
 {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
@@ -180,11 +180,11 @@ CombatOptions_gump::CombatOptions_gump()
 	build_buttons();
 }
 
-CombatOptions_gump::~CombatOptions_gump()
+MiscOptions_gump::~MiscOptions_gump()
 {
 }
 
-void CombatOptions_gump::save_settings()
+void MiscOptions_gump::save_settings()
 {
 	Combat::difficulty = difficulty - 3;
 	config->set("config/gameplay/combat/difficulty",
@@ -201,7 +201,7 @@ void CombatOptions_gump::save_settings()
 					charmDiff ? "hard" : "normal", true);
 }
 
-void CombatOptions_gump::paint()
+void MiscOptions_gump::paint()
 {
 	Gump::paint();
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
@@ -213,7 +213,7 @@ void CombatOptions_gump::paint()
 	gwin->set_painted();
 }
 
-bool CombatOptions_gump::mouse_down(int mx, int my, int button)
+bool MiscOptions_gump::mouse_down(int mx, int my, int button)
 {
 	// Only left and right buttons
 	if (button != 1 && button != 3) return false;
@@ -240,7 +240,7 @@ bool CombatOptions_gump::mouse_down(int mx, int my, int button)
 	return button == 1 || pushed != 0;
 }
 
-bool CombatOptions_gump::mouse_up(int mx, int my, int button)
+bool MiscOptions_gump::mouse_up(int mx, int my, int button)
 {
 	// Not Pushing a button?
 	if (!pushed) return false;

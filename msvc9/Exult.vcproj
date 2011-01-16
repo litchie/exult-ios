@@ -3052,7 +3052,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\gumps\CombatOptions_gump.cc"
+					RelativePath="..\gumps\MiscOptions_gump.cc"
 					>
 				</File>
 				<File
@@ -3183,7 +3183,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\gumps\CombatOptions_gump.h"
+						RelativePath="..\gumps\MiscOptions_gump.h"
 						>
 					</File>
 					<File
