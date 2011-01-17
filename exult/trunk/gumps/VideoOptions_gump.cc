@@ -150,17 +150,13 @@ void VideoOptions_gump::rebuild_buttons()
 {
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		{
-		delete buttons[i];
-		buttons[i] = 0;
+		if (i != 3) {
+			delete buttons[i];
+			buttons[i] = 0;
+			}
 		}
 
 	// the text arrays are freed by the destructors of the buttons
-
-	std::string *enabledtext = new std::string[2];
-	enabledtext[0] = "Disabled";
-	enabledtext[1] = "Enabled";
-	buttons[3] = new VideoTextToggle (this, enabledtext, colx[2], rowy[0], 74,
-									  fullscreen, 2);
 
 	std::string *scalers = new std::string[Image_window::NumScalers];
 	for (int i = 0; i < Image_window::NumScalers; i++)
@@ -382,8 +378,14 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 	set_object_area(Rectangle(0,0,0,0), 8, 170);
 
 	for (int i=0; i < sizeof(buttons)/sizeof(buttons[0]); i++)buttons[i] = 0;
+	fullscreen = gwin->get_win()->is_fullscreen();
+	std::string *enabledtext = new std::string[2];
+	enabledtext[0] = "Disabled";
+	enabledtext[1] = "Enabled";
+	buttons[3] = new VideoTextToggle (this, enabledtext, colx[2], rowy[0], 74,
+									  fullscreen, 2);
 
-	load_settings(gwin->get_win()->is_fullscreen());
+	load_settings(fullscreen);
 	
 	rebuild_buttons();
 }
