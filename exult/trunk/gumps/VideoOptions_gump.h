@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Modal_gump.h"
 #include <string>
 #include "imagewin/imagewin.h"
-#define USE_OLD_VIDEO_OPTIONS_GUMP
+
 class Gump_button;
 
 class VideoOptions_gump : public Modal_gump
@@ -31,24 +31,16 @@ class VideoOptions_gump : public Modal_gump
 	static VideoOptions_gump *video_options_gump;
  private:
 	Gump_button* buttons[10];
-// fullscreen
+
 	uint32 resolution;
 	int scaling;
 	int scaler;
-	int fullscreen; // window and fullscreen
+	int fullscreen;
 	uint32 game_resolution;
 	int fill_scaler;
 	Image_window::FillMode fill_mode;
 	bool has_ac;
-// window
-	uint32 win_resolution;
-	int win_scaling;
-	int win_scaler;
-	uint32 win_game_resolution;
-	int win_fill_scaler;
-	Image_window::FillMode win_fill_mode;
-	bool win_has_ac;
-// fullscreen
+
 	uint32 o_resolution;
 	int o_scaling;
 	int o_scaler;
@@ -56,25 +48,18 @@ class VideoOptions_gump : public Modal_gump
 	uint32 o_game_resolution;
 	int o_fill_scaler;
 	Image_window::FillMode o_fill_mode;
-// window
-	uint32 o_win_resolution;
-	int o_win_scaling;
-	int o_win_scaler;
-	uint32 o_win_game_resolution;
-	int o_win_fill_scaler;
-	Image_window::FillMode o_win_fill_mode;
-// fullscreen
+
 	static uint32 *resolutions;
 	static int num_resolutions;
-	static uint32 game_resolutions[3];
-	static int num_game_resolutions;
-	static Image_window::FillMode startup_fill_mode;
-//window
+
 	static uint32 *win_resolutions;
 	static int num_win_resolutions;
-	static uint32 win_game_resolutions[3];
-	static int num_win_game_resolutions;
-	static Image_window::FillMode startup_win_fill_mode;
+
+	static uint32 game_resolutions[3];
+	static int num_game_resolutions;
+
+	static Image_window::FillMode startup_fill_mode;
+
  public:
 	VideoOptions_gump();
 	virtual ~VideoOptions_gump();
@@ -93,10 +78,10 @@ class VideoOptions_gump : public Modal_gump
 	void rebuild_buttons();
 	void rebuild_dynamic_buttons();
 
-	void load_settings();
+	void load_settings(bool Fullscreen);
 	void save_settings();
 	void cancel();
-// fullscreen
+
 	void set_scaling(int scaleVal)
 	{ scaling = scaleVal; }
 	void set_scaler(int scalerNum)
@@ -109,19 +94,6 @@ class VideoOptions_gump : public Modal_gump
 	{ fill_scaler = f_scaler; }
 	void set_fill_mode(Image_window::FillMode f_mode)
 	{ fill_mode = f_mode; }
-// window
-	void set_win_scaling(int win_scaleVal)
-	{ win_scaling = win_scaleVal; }
-	void set_win_scaler(int win_scalerNum)
-	{ win_scaler = win_scalerNum; }
-	void set_win_resolution(uint32 win_Res)
-	{ win_resolution = win_Res; }
-	void set_win_game_resolution(uint32 win_gRes)
-	{ win_game_resolution = win_gRes; }
-	void set_win_fill_scaler(int win_f_scaler)
-	{ win_fill_scaler = win_f_scaler; }
-	void set_win_fill_mode(Image_window::FillMode win_f_mode)
-	{ win_fill_mode = win_f_mode; }
 };
 
 #endif
