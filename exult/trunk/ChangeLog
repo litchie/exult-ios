@@ -1,4 +1,8 @@
 2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/GameplayOptions_gump.cc: Make paperdolls the bottom
+		option so that there isn't a gap if it isn't a choice.
+
+2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/VideoOptions_gump.cc: Fix crash on toggle
 
 2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>

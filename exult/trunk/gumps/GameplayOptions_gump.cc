@@ -224,7 +224,7 @@ void GameplayOptions_gump::build_buttons()
 										 rowy[1], 100, text_bg, 18);
 	if (sman->can_use_paperdolls() && (GAME_BG ||
 			Game::get_game_type() == EXULT_DEVEL_GAME))
-		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
+		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[12], 59,
 											   paperdolls);
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
@@ -247,7 +247,7 @@ void GameplayOptions_gump::build_buttons()
 										   59, cheats);
 	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
 										59, frames, num_framerates);
-	buttons[14] = new GameplayTextToggle(this, smooth_text, colx[3], rowy[12],
+	buttons[14] = new GameplayTextToggle(this, smooth_text, colx[3], rowy[2],
 										   59, smooth_scrolling, 5);
 }
 
@@ -376,7 +376,7 @@ void GameplayOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Status Bars:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (sman->can_use_paperdolls() && (GAME_BG || Game::get_game_type() == EXULT_DEVEL_GAME))
-		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[2] + 1);
+		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[12] + 1);
 	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 #ifdef UNDER_CE
 	font->paint_text(iwin->get_ib8(), "D-Pad:", x + colx[0], y + rowy[4] + 1);
@@ -389,7 +389,7 @@ void GameplayOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
 	font->paint_text(iwin->get_ib8(), "Cheats:", x + colx[0], y + rowy[9] + 1);
 	font->paint_text(iwin->get_ib8(), "Speed:", x + colx[0], y + rowy[10] + 1);
-	font->paint_text(iwin->get_ib8(), "Smooth scrolling:", x + colx[0], y + rowy[12] + 1);
+	font->paint_text(iwin->get_ib8(), "Smooth scrolling:", x + colx[0], y + rowy[2] + 1);
 	gwin->set_painted();
 }
 
