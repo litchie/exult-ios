@@ -1,4 +1,8 @@
 2011-01-16 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/MiscOptionsGump.cc: Changed position and description
+		of two options
+
+2011-01-16 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gamemenu_gump.cc: Allow more menus in Exult menu
 	* gamewin.h: can_scroll_with_mouse() and set_mouse_with_scroll()
 	* gumps/MiscOptionsGump.*: Add 3 options.
