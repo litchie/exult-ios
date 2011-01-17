@@ -371,7 +371,6 @@ void VideoOptions_gump::load_settings(bool Fullscreen)
 	o_resolution = resolution;
 	o_scaling = scaling;
 	o_scaler = scaler;
-	o_fullscreen = fullscreen;
 	o_fill_scaler = fill_scaler;
 	o_fill_mode = fill_mode;
 	o_game_resolution = game_resolution;
@@ -409,11 +408,9 @@ void VideoOptions_gump::save_settings()
 		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT")) 
 			return;
 	}
-	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
 	setup_video(fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, scaling+1, scaler, fill_mode,
 				fill_scaler?Image_window::bilinear:Image_window::point);
 	gclock->set_palette();
-	set_pos();
 	gwin->set_all_dirty();
 
 	if (!Countdown_gump::ask("Settings applied.\nKeep? %i...",20))
@@ -421,20 +418,29 @@ void VideoOptions_gump::save_settings()
 		resx = o_resolution>>16;
 		resy = o_resolution&0xFFFF;
 		gw = game_resolutions[o_game_resolution]>>16;
-		gh = game_resolutions[o_game_resolution]&0xFFFF; 
-		config->set("config/video/fullscreen", o_fullscreen ? "yes" : "no", false);
-		setup_video(o_fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, o_scaling+1, o_scaler,
-				o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
+		gh = game_resolutions[o_game_resolution]&0xFFFF;
+		string	fullscreenstr;		// Check config. for old fullscreen mode.
+		config->value("config/video/fullscreen",fullscreenstr,"no");
+		bool o_fullscreen = (fullscreenstr=="yes");
+		if (o_fullscreen == fullscreen)
+			setup_video(fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, o_scaling+1, o_scaler,
+					o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
+		else {
+			setup_video(fullscreen!=0, SET_CONFIG, resx, resy, gw, gh, o_scaling+1, o_scaler,
+					o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
+			gwin->resized(resx, resy, o_fullscreen, gw, gh, o_scaling+1, o_scaler,
+					o_fill_mode, o_fill_scaler);
+		}
 		gclock->set_palette();
 		set_pos();
 		gwin->set_all_dirty();
 	}
 	else
 	{
+		config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
 		o_resolution = resolution;
 		o_scaling = scaling;
 		o_scaler = scaler;
-		o_fullscreen = fullscreen;
 		o_game_resolution = game_resolution;
 		o_fill_mode = fill_mode;
 		o_fill_scaler = fill_scaler;

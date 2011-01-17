@@ -2103,15 +2103,16 @@ void set_resolution (int new_res, bool save)
 	if(new_res>=0 && new_res<num_res) {
 		int scaler = gwin->get_win()->get_scaler();
 		current_res = new_res;
-
+		bool fullscreen = gwin->get_win()->is_fullscreen();
+		const string &vidStr = fullscreen? "config/video" : "config/video/window";
 		int gw, gh;
 
-		config->value("config/video/game/width", gw, res_list[current_res].x);
-		config->value("config/video/game/height", gh, res_list[current_res].y);
+		config->value(vidStr + "/game/width", gw, res_list[current_res].x);
+		config->value(vidStr + "/game/height", gh, res_list[current_res].y);
 
 		gwin->resized(res_list[current_res].x,
 			res_list[current_res].y,
-			gwin->get_win()->is_fullscreen(),
+			fullscreen,
 			gw, gh,
 			res_list[current_res].scale, scaler,
 			gwin->get_win()->get_fill_mode(),
@@ -2119,16 +2120,16 @@ void set_resolution (int new_res, bool save)
 		if(save) {
 			char val[20];
 			snprintf(val, 20, "%d", res_list[current_res].x);
-			config->set("config/video/display/width",val,false);
+			config->set(vidStr + "/display/width",val,false);
 			snprintf(val, 20, "%d", res_list[current_res].y);
-			config->set("config/video/display/height",val,false);
+			config->set(vidStr + "/display/height",val,false);
 			snprintf(val, 20, "%d", res_list[current_res].scale);
-			config->set("config/video/scale",val,false);
+			config->set(vidStr + "/scale",val,false);
 			config->write_back();
 
 			// Scaler
 			if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
-				config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
+				config->set(vidStr + "/scale_method",Image_window::get_name_for_scaler(scaler),true);
 		}
 	}
 }
