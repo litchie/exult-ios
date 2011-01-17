@@ -1,4 +1,7 @@
 2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/VideoOptions_gump.cc: Fix crash on toggle
+
+2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/VideoOptions_gump.cc: Fix accidental commit and left out
 		conversion
 
