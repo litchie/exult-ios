@@ -44,7 +44,6 @@ class VideoOptions_gump : public Modal_gump
 	uint32 o_resolution;
 	int o_scaling;
 	int o_scaler;
-	int o_fullscreen;
 	uint32 o_game_resolution;
 	int o_fill_scaler;
 	Image_window::FillMode o_fill_mode;

@@ -1,4 +1,9 @@
 2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
+	gumps/VideoOptions_gump.*: Fix canceling an apply saving the wrong
+		values and not toggling fullscreen when needed.
+	exult.cc: have set_resolution use new config values
+
+2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.cc, gumps/VideoOptions_gump.*: Separate video settings for
 		full screen and window. Revert changes that were meant to be
 		used with newvideooptionsgump.shp.
