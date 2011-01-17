@@ -2291,11 +2291,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		set_config = true;
 	else if (setup_video_type == MENU_APPLY) // may need something special for
 		set_config = change_gwin = true; // toggling fullscreen with menu
-#ifdef USE_OLD_VIDEO_OPTIONS_GUMP
-	const string &vidStr = "config/video";
-#else
 	const string &vidStr = fullscreen? "config/video" : "config/video/window";
-#endif
 	if (read_config) {
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
@@ -2421,26 +2417,13 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				" fill mode, " << fillScalerName << " fill scaler, " <<
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
-#ifdef USE_OLD_VIDEO_OPTIONS_GUMP
-		fullscreen = true;
-#endif
 		VideoOptions_gump *videoGump = VideoOptions_gump::get_instance();
-		if (fullscreen) {
-			videoGump->set_scaling(scaleval - 1);
-			videoGump->set_scaler(scaler);
-			videoGump->set_resolution(resx << 16 | resy);
-			videoGump->set_game_resolution(gw << 16 | gh);
-			videoGump->set_fill_scaler(fill_scaler == Image_window::bilinear?1:0);
-			videoGump->set_fill_mode(fillmode);
-		}
-		else {
-			videoGump->set_win_scaling(scaleval - 1);
-			videoGump->set_win_scaler(scaler);
-			videoGump->set_win_resolution(resx << 16 | resy);
-			videoGump->set_win_game_resolution(gw << 16 | gh);
-			videoGump->set_win_fill_scaler(fill_scaler == Image_window::bilinear?1:0);
-			videoGump->set_win_fill_mode(fillmode);
-		}
+		videoGump->set_scaling(scaleval - 1);
+		videoGump->set_scaler(scaler);
+		videoGump->set_resolution(resx << 16 | resy);
+		videoGump->set_game_resolution(gw << 16 | gh);
+		videoGump->set_fill_scaler(fill_scaler == Image_window::bilinear?1:0);
+		videoGump->set_fill_mode(fillmode);
 	}
 }
 
