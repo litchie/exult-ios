@@ -119,9 +119,9 @@ void MiscOptions_gump::toggle(Gump_button* btn, int state)
 	if (btn == elems[btn0])
 		scroll_mouse = state;
 	else if (btn == elems[btn0 + 1])
-		usecode_intro = state;
-	else if (btn == elems[btn0 + 2])
 		menu_intro = state;
+	else if (btn == elems[btn0 + 2])
+		usecode_intro = state;
 	else if (btn == elems[btn0 + 3])
 		difficulty = state;
 	else if (btn == elems[btn0 + 4])
@@ -155,9 +155,9 @@ void MiscOptions_gump::build_buttons()
 	add_elem(new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
 							   40, scroll_mouse, 2));
 	add_elem(new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
-							   40, usecode_intro, 2));
-	add_elem(new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
 							   40, menu_intro, 2));
+	add_elem(new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
+							   40, usecode_intro, 2));
 	add_elem(new MiscTextToggle (this, diffs, colx[3], rowy[8], 
 							   85, difficulty, 7));
 	add_elem(new MiscEnabledToggle(this, colx[3], rowy[9],
@@ -216,7 +216,7 @@ void MiscOptions_gump::save_settings()
 {
 	config->set("config/gameplay/scroll_with_mouse", 
 			scroll_mouse ? "yes" : "no", false);
-		gwin->set_mouse_with_scroll(scroll_mouse);
+	gwin->set_mouse_with_scroll(scroll_mouse);
 	config->set("config/gameplay/skip_intro", 
 			usecode_intro ? "yes" : "no", false);
 	config->set("config/gameplay/skip_splash", 
@@ -243,8 +243,8 @@ void MiscOptions_gump::paint()
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
 	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[0] + 1);
-	font->paint_text(iwin->get_ib8(), "Skip usecode intro:", x + colx[0], y + rowy[1] + 1);
-	font->paint_text(iwin->get_ib8(), "Skip menu intro:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[1] + 1);
+	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[2] + 1);
 	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[7] + 1);
 	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[8] + 1);
 	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[1], y + rowy[9] + 1);
