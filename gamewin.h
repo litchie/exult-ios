@@ -133,7 +133,7 @@ class Game_window
 	int	step_tile_delta;	// multiplier for the delta in start_actor_alt
 	bool allow_double_right_move;	// If moving with right click is allowed
 	bool scroll_with_mouse; 		// scroll game view with mousewheel
-
+	bool in_exult_menu; 	// used for menu options
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
 	void clear_world();		// Clear out world's contents.
@@ -244,6 +244,10 @@ public:
 		{ return scroll_with_mouse; }
 	void set_mouse_with_scroll(bool ms)
 		{ scroll_with_mouse = ms; }
+	bool is_in_exult_menu() const		// used for menu options
+		{ return in_exult_menu; }
+	void set_in_exult_menu (bool im)
+		{ in_exult_menu = im; }
 	/*
 	 *	Game components:
 	 */

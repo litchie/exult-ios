@@ -185,13 +185,16 @@ void AudioOptions_gump::rebuild_buttons()
 	std::string* sfx_options = new std::string[nsfxopts];
 	sfx_options[0] = "Disabled";
 	int i = 1;
+	midi_state = -1;
 	if (have_digital_sfx())
 #ifndef ENABLE_MIDISFX
 		sfx_options[i++] = "Enabled";
 #else
 		sfx_options[i++] = "Digital";
-	if (have_midi_pack)
+	if (have_midi_pack) {
 		sfx_options[i++] = "Midi";
+		midi_state = i -1;
+	}
 #endif
 	buttons[id_sfx_enabled] = new AudioTextToggle(this, sfx_options, colx[2], rowy[8],
 									 59, sfx_enabled, nsfxopts);
@@ -238,7 +241,7 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 
 	if (!sfx_enabled)
 		return;
-	else if (sfx_enabled == 1 && have_digital_sfx())
+	else if (sfx_enabled == 1 && have_digital_sfx() && !gwin->is_in_exult_menu())
 		{
 		std::string* sfx_digitalpacks = new std::string[nsfxpacks];
 		int i = 0;
@@ -252,7 +255,7 @@ void AudioOptions_gump::rebuild_sfx_buttons()
 										 rowy[9], 92, sfx_package, nsfxpacks);
 		}
 #ifdef ENABLE_MIDISFX
-	else
+	else if (sfx_enabled == midi_state)
 		{
 		std::string* sfx_conversiontext = new std::string[2];
 		sfx_conversiontext[0] = "None";
@@ -500,14 +503,17 @@ void AudioOptions_gump::save_settings()
 
 	std::string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
 	std::string waves;
-	int i = 0;
-	if (have_roland_pack && sfx_package == i++)
-		waves = rolandpack;
-	else if (have_blaster_pack && sfx_package == i++)
-		waves = blasterpack;
-	else if (have_custom_pack && sfx_package == i++)
-		waves = sfx_custompack;
-	config->set(d.c_str(), waves, false);
+	if (!gwin->is_in_exult_menu()) {
+		int i = 0;
+		if (have_roland_pack && sfx_package == i++)
+			waves = rolandpack;
+		else if (have_blaster_pack && sfx_package == i++)
+			waves = blasterpack;
+		else if (have_custom_pack && sfx_package == i++)
+			waves = sfx_custompack;
+		if (waves != sfx_custompack)
+			config->set(d.c_str(), waves, false);
+	}
 #ifdef ENABLE_MIDISFX
 	config->set("config/audio/effects/midi",sfx_enabled==1 + have_digital_sfx()?"yes":"no",false);
 #endif
@@ -583,11 +589,11 @@ void AudioOptions_gump::paint()
 		}
 		font->paint_text(iwin->get_ib8(), "SFX options:", x + colx[0], y + rowy[7] + 1);
 		font->paint_text(iwin->get_ib8(), "SFX", x + colx[1], y + rowy[8] + 1);
-		if (sfx_enabled == 1 && have_digital_sfx()) {
+		if (sfx_enabled == 1 && have_digital_sfx() && !gwin->is_in_exult_menu()) {
 			font->paint_text(iwin->get_ib8(), "pack", x + colx[1], y + rowy[9] + 1);
 		}
 #ifdef ENABLE_MIDISFX
-		else if (sfx_enabled && have_midi_pack) {
+		else if (sfx_enabled == midi_state) {
 			font->paint_text(iwin->get_ib8(), "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif

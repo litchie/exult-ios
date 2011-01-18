@@ -31,7 +31,7 @@ class Gamemenu_gump : public Modal_gump
 	Gump_button* buttons[6];
 
  public:
-	Gamemenu_gump(bool in_exult_menu=false);
+	Gamemenu_gump();
 	virtual ~Gamemenu_gump();
 
 					// Paint it and its contents.

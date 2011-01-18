@@ -178,7 +178,9 @@ void ExultMenu::setup()
 	Palette *gpal = gwin->get_pal();
 	gpal->fade(0,1,0);
 
+	gwin->set_in_exult_menu(true);
 	Gamemenu_gump::do_exult_menu();
+	gwin->set_in_exult_menu(false);
 
 	Mouse::mouse = 0;
 	delete exult_menu_game; 
