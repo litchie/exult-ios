@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2003-2004 The Exult Team
+Copyright (C) 2003-2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@ class AudioOptions_gump : public Modal_gump
 
 	// Auxiliary variables for digital SFX packages:
 	int nsfxopts, nsfxpacks;
+	int midi_state;
 	bool have_config_pack, have_roland_pack, have_blaster_pack,
 	     have_midi_pack, have_custom_pack;
 	std::string sfx_custompack;
