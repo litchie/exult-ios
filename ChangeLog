@@ -1,3 +1,12 @@
+2011-01-18 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.h: is_in_exult_menu and set_in_exult_menu used
+		for menu options when in the Exult menu
+	* exultmenu.cc, gumps/Gamemenu_gump.*: use the new functions
+	* gumps/AudioOptions_gump.*: Don't save custom sfx package if it
+		doesn't change. Fixes bug id 3152567. 
+		Don't allow changing sfx package in Exult menu. Sfx can still
+		be enabled or disabled.
+
 2011-01-17 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/GameplayOptions_gump.cc: Make paperdolls the bottom
 		option so that there isn't a gap if it isn't a choice.

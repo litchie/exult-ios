@@ -84,7 +84,7 @@ bool Gamemenu_button::activate(int button)
 	return true;
 }
 
-Gamemenu_gump::Gamemenu_gump(bool in_exult_menu) : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_FLX)
+Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_FLX)
 {	
 	set_object_area(Rectangle(0,0,0,0), 8, 82); //+++++ ???
 
@@ -92,12 +92,12 @@ Gamemenu_gump::Gamemenu_gump(bool in_exult_menu) : Modal_gump(0, EXULT_FLX_GAMEM
 
 	std::memset(buttons,0,sizeof(buttons));
 
-	if (!in_exult_menu) buttons[0] = new Gamemenu_button(this, loadsavetext, colx, rowy[y++]);
+	if (!gwin->is_in_exult_menu()) buttons[0] = new Gamemenu_button(this, loadsavetext, colx, rowy[y++]);
 	buttons[1] = new Gamemenu_button(this, videoopttext, colx, rowy[y++]);
 	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[y++]);
 	buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[y++]);
 	buttons[4] = new Gamemenu_button(this, misctext, colx, rowy[y++]);
-	if (!in_exult_menu) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
+	if (!gwin->is_in_exult_menu()) buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[y++]);
 }
 
 Gamemenu_gump::~Gamemenu_gump()
@@ -219,7 +219,7 @@ void Gamemenu_gump::do_exult_menu()
 	// Need to do a very small init of game data... palette, mouse, gumps
 
 
-	Gamemenu_gump *gmenu = new Gamemenu_gump(true);
+	Gamemenu_gump *gmenu = new Gamemenu_gump();
 
 	Game_window::get_instance()->get_gump_man()->do_modal_gump(gmenu,
 															   Mouse::hand);
