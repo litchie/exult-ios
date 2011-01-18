@@ -853,6 +853,7 @@ static void Init
 		bool disable_fades;
 		config->value("config/video/disable_fades", disable_fades, false);
 		gwin->get_pal()->set_fades_enabled(!disable_fades);
+		gwin->set_in_exult_menu(false);
 		}
 
 	SDL_SetEventFilter(0);
