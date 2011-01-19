@@ -1,3 +1,8 @@
+2011-01-19 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* keys.cc: Fix regression in 6701 where the last created key
+		description was using every key except it. Prevent buffer
+		overflow from having a lot of last created keys.
+
 2011-01-19 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/*.xml, *.xsl: Updated documentations and FAQ, changes
 		section moved to the bottom.

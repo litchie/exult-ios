@@ -478,19 +478,21 @@ void KeyBinder::ShowBrowserKeys()
 	scroll->add_text("Shift-P - Decrease palette by 1");
 	scroll->add_text("X - Increase xform by 1");
 	scroll->add_text("Shift-X - Decrease xform by 1");
-	int x = 0;
-	char returned_key[100];
+	char returned_key[200];
 	if (last_created_key.empty())
 		strcpy(returned_key, "Error: No key assigned");
 	else{
 		strcpy(returned_key, "");	// prevent garbage text
 		std::vector<string>::iterator iter;
+		int extra_keys = 0;
 		for (iter = last_created_key.begin();
 					iter != last_created_key.end(); ++iter){
-			if (x > 0)
+			if (extra_keys >= 5)
+				continue;
+			else if (extra_keys > 0)
 				strcat(returned_key, " or ");
 			strcat(returned_key, iter->c_str());
-			x += 1;
+			extra_keys += 1;
 		}
 	}
 	strcat(returned_key, " - when pressed in game will create the last shape viewed in shapes.vga.");
@@ -681,7 +683,7 @@ void KeyBinder::ParseLine(char *line)
 		if (k.mod & KMOD_SHIFT)
 			desc += "Shift-";
 		desc += keycode;
-		if (strcmp(a.action->desc, "Create last shape") && a.params[0] == -1)
+		if (!strcmp(a.action->s, "CREATE_ITEM") && a.params[0] == -1)
 			last_created_key.push_back(desc);
 		
 		desc += " - " + d;
