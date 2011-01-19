@@ -1,250 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="13 October 2010(GMT)">
-	<section title="Changes to the Documentation">
-		<sub name="13102010">
-			<header>- 13 October 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> new official version.</li>
-				<li><ref1 target="scaler"/> OpenGL is only availlable in snapshots.</li>
-				<li><ref1 target="exult_cheats"/> Alt+KP+/- no longer works.</li>
-				<li><ref1 target="studio_keys"/> only with a snapshot.</li>
-				<li><ref1 target="notebook"/> added.</li>
-				<li><ref1 target="autonotebook"/> added.</li>
-				<li><ref1 target="screenshots"/> added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="30082010">
-			<header>- 30 August 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added the new config options for video.</li>
-				<li><ref1 target="resolution"/> rewrote some more with Colourless' latest changes.</li>
-				<li><ref1 target="video_fill_modes"/> added.</li>
-				<li><ref1 target="video_gump"/> more changes to the video gump.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="25082010">
-			<header>- 25 August 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added the new config options for video and audio.</li>
-				<li><ref1 target="resolution"/> rewrote a bit to explain the new rendering.</li>
-				<li><ref1 target="res_cheating"/> added.</li>
-				<li><ref1 target="video_gump"/> added new game res setting.</li>
-				<li><ref1 target="audio_gump"/> forgot the speech option.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="15082010">
-			<header>- 15 August 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="midi_music"/> Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.</li>
-				<li><ref1 target="win32_device"/> the log files are now where exult.cfg is saved to not necessarily where exult.exe is.</li>
-				<li><ref1 target="error_log"/> also about location of log files.</li>
-				<li><ref1 target="bg_manual"/> some *nix command.</li>
-				<li><ref1 target="si_manual"/> some *nix command.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="28042010">
-			<header>- 28 April 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> audio options for sample rate and stereo added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="11032010">
-			<header>- 11 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="path_config_osx"/> we changed the default paths for OS X once more.</li>
-				<li><ref1 target="wave_sfx"/> the SFX pack can now be chosen in the Game Menu.</li>
-				<li><ref1 target="audio_gump"/> added new SFX pack option and updated screenshot.</li>
-				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="10032010">
-			<header>- 10 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="path_config"/> I've split this up for all the different OS'.</li>
-				<li> added Path-Settings chapters for the most common OS with examples.</li>
-				<li><ref1 target="midi_music"/> CoreMIDI driver added.</li>
-				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
-				<li><ref1 target="mods_savegames_location"/> added this so savegames of modded games can be found.</li>
-				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08032010">
-			<header>- 08 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="whatis_exult"/> fixed typo in Jakob Schonberg's name.</li>
-				<li><ref1 target="exult_config_location"/> needs its own chapter now.</li>
-				<li><ref1 target="path_config"/> needed a lot of changes because of the LOCAL_APPDATA changes.</li>
-				<li><ref1 target="midi_music"/> the MT32 option will no longer crash <Exult/> on OS X.</li>
-				<li><ref1 target="scaler"/> OpenGl scaler is not considered stable.</li>
-				<li><ref1 target="mods_path"/> be aware of the LOCAL_APPDATA changes.</li>
-				<li><ref1 target="osx_digital"/> is probably not needed for newer versions of OS X.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="16072009">
-			<header>- 16 July 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="midi_music"/> MT32 device type is not supported on Mac OS X.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="03062009">
-			<header>- 03 June 2009</header>
-			<body>
-				<ul>
-				<li>Spell checked the whole documentation.</li>
-				<li><ref1 target="midi_music"/> slightly rewrote the FluidSynth section and 
-					explained fakemt32 option a bit better.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="20052009">
-			<header>- 20 May 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="digital_music"/> mentioned two issues with it.</li>
-				<li><ref1 target="digital_music_install"/> cleaned up.</li>
-				<li><ref1 target="wave_sfx"/> some more information.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="19052009">
-			<header>- 19 May 2009</header>
-			<body>
-				<ul>
-				<li><section_ref target="Configurations"/> coloured tags to differentiate between manual and in game settings.</li>
-				<li><ref1 target="path_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
-				<li><ref1 target="advanced_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
-				<li><ref1 target="command_line"/> some more information on '--buildmap' and '--mod'.</li>
-				<li><ref1 target="linux_alsa"/> mentioned different, configurable ports.</li>
-				<li><ref1 target="studio_keys"/>  got their own help screen now.</li>
-				<li><section_ref target="Mods and Patches"/> added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="18052009">
-			<header>- 18 May 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> this docs are for the SVN version.</li>
-				<li><ref1 target="installation"/> the Windows installer asks for BG/SI location.</li>
-				<li><ref1 target="exult_config"/> now up to date with SVN.</li>
-				<li><ref1 target="path_config"/> again recommend the Windows installer.</li>
-				<li><ref1 target="advanced_config"/> added.</li>
-				<li><ref1 target="command_line"/> now up to date with SVN.</li>
-				<li><ref1 target="midi_music"/> split from the general music part.</li>
-				<li>removed TiMidity chapter, since the cfg issue is explained in <ref1 target="midi_music"/>.</li>
-				<li><ref1 target="scaler"/> updated.</li>
-				<li><ref1 target="exult_keys"/> updated.</li>
-				<li><ref1 target="exult_cheats"/> updated.</li>
-				<li><ref1 target="studio_keys"/> needed their own chapter.</li>
-				<li><ref1 target="video_gump"/> updated.</li>
-				<li><ref1 target="audio_gump"/> updated, also updated the screenshot.</li>
-				<li><ref1 target="gameplay_gump"/> updated, also updated the screenshot.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="28042009">
-			<header>- 28 April 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> tried to explain data_path a bit more.</li>
-				<li><ref1 target="speech"/> can also be toggled via the in-game menu.</li>
-				<li><ref1 target="cdrom_install"/> added EA Compilation to the list.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="21102007">
-			<header>- 21 October 2007</header>
-			<body>
-				<ul>
-				<li><ref1 target="osx_digital"/> added.</li>
-				<li><ref1 target="cd_permissions"/> added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08042006">
-			<header>- 08 April 2006</header>
-			<body>
-				<ul>
-				<li><ref1 target="installation"/> needed some polishing.</li>
-				<li><ref1 target="path_config"/> synched the path settings with the new Installation section.</li>
-				<li><section_ref target="Installing the original Ultima VII games for use with Exult"/> 
-					might help some people.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="14032005">
-			<header>- 14 March 2005</header>
-			<body>
-				<ul>
-				<li><section_ref target="Zaurus Guide"/> Newest ROM instructions updated.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="14082004">
-			<header>- 14 August 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="installation"/> on Windows you can use Notepad to edit exult.cfg.</li>
-				</ul>
-			</body>
-		</sub>	
-		<sub name="23052004">
-			<header>- 23 May 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> I'm confident that the new Version will be 1.2.</li>
-				<li><ref1 target="zaurus_install"/> we shouldn't call our data files shared files..</li>
-				</ul>
-			</body>
-		</sub>		
-		<sub name="11022004">
-			<header>- 11 February 2004</header>
-			<body>
-				<ul>
-				<li> A lot of clean up and small changes, too numerous to list.</li>
-				<li><ref1 target="path_config"/> fixed some outdated instructions.</li>
-				<li><ref1 target="digital_music_install"/> added as the instructions in the music-pack 
-					readme.txt are no longer valid.</li>
-				<li><ref1 target="movement"/> fixed up a bit.</li>
-				<li><ref1 target="exult_keys"/> fixed up a bit as well.</li>
-				<li><section_ref target="Game Menu"/> added screenshots showing the Game menu gumps and removed 
-					"Quit to Menu".</li>
-				<li><ref1 target="thanks"/> time to thank Sourceforge as well.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="12122003">
-			<header>- 12 December 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> fixed bad path settings and updated audio settings.</li>
-				<li><ref1 target="path_config"/> moved stuff over to next point.</li>
-				<li><ref1 target="dir_config"/> added to give some explanation for Static/Gamedat.</li>
-				<li><ref1 target="music"/> updated with 'recent' audio changes.</li>
-				<li><ref1 target="audio_gump"/> updated with 'recent' audio changes.</li>
-				</ul>
-			</body>
-		</sub>		
-	</section>
+<readme title="Exult" changed="19 January 2011 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -556,8 +312,7 @@
 							</configtag>
 							<configtag name="skip_intro" manual="true">
 							no
-							<comment>**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears, </comment>
-							<comment>Iolo talks to you, the mayor talks to you and so on.</comment>
+							<comment>**this skips the scripted first scne in BG and SI during which you can't move.</comment>
 							</configtag>
 							<configtag name="skip_splash" manual="true">
 							no
@@ -591,6 +346,12 @@
 								no
 								<comment>**no is default. With yes you see the hitpoints of NPCs </comment>
 								<comment>in brackets after their name.</comment>
+								</configtag>
+								<configtag name="charmDifficulty">
+								normal
+								<comment>**with normal the Avatar behaves as in the original game. When he is charmed </comment>
+								<comment>he will be highlighted as charmed and the status icon will show but you can control him as usual. </comment>
+								<comment>"hard" will neither allow the player to control the Avatar nor access his inventory.</comment>
 								</configtag>
 							</configtag>
 						</configtag>
@@ -660,7 +421,7 @@
 									</configtag>
 									<configtag name="level" manual="true">
 									0
-									<comment>**how much the MIDI is altered.</comment>
+									<comment>**how much the MIDI is altered. Value can be 0-127.</comment>
 									</configtag>
 								</configtag>
 								<configtag name="reverb">
@@ -670,7 +431,7 @@
 									</configtag>
 									<configtag name="level" manual="true">
 									0
-									<comment>**how much the MIDI is altered.</comment>
+									<comment>**how much the MIDI is altered. Value can be 0-127.</comment>
 									</configtag>
 								</configtag>
 								<configtag name="precacheTimbers" manual="true">
@@ -716,18 +477,19 @@
 							</configtag>
 							<configtag name="scale_method">
 								2xSaI
-							<comment>**choose different scalers here - see <ref target="scaler"/></comment>
+							<comment>**choose different scalers here - see <ref target="scaler"/> - applies to fullscreen.</comment>
 							</configtag>
 							<configtag name="scale">
 								2
 							<comment>**2 enables / 1 disables scaling, some scalers support higher values. </comment>
-							<comment>See <ref target="scaler"/>.</comment>
+							<comment>See <ref target="scaler"/> - applies to fullscreen.</comment>
 							</configtag>
 							<configtag name="display">
 								<configtag name="width">
 									640
 									<comment>**here you choose the resolution of the Exult window.</comment>
 									<comment>The default will be the lowest resolution that your system supports.</comment>
+									<comment>Applies to fullscreen</comment>
 								</configtag>
 								<configtag name="height">
 									240
@@ -739,7 +501,7 @@
 									<comment>**here you choose at what resolution you run the games in the</comment>
 									<comment><Exult/> window. 320x200 is the resolution of the original.</comment>
 									<comment>0x0 means that <Exult/> will determine the best way to match</comment>
-									<comment>game resolution to <Exult/> resolution.</comment>
+									<comment>game resolution to <Exult/> resolution - applies to fullscreen.</comment>
 								</configtag>
 								<configtag name="height">
 									200
@@ -749,7 +511,7 @@
 										0
 										<comment>**if game resolution doesn't match <Exult/> resolution</comment>
 										<comment>you have borders around the game res. With these you can</comment>
-										<comment>change the black defult border color.</comment>
+										<comment>change the black defult border color - applies to fullscreen.</comment>
 									</configtag>
 									<configtag name="green" manual="true">
 										0
@@ -766,8 +528,51 @@
 							</configtag>
 							<configtag name="fill_scaler">
 								Bilinear
-							<comment>**Chose between Point and Bilinear..</comment>
+							<comment>**Chose between Point and Bilinear.</comment>
+							<comment>Please see <ref target="video_fill_modes"/> for more information about this - applies to fullscreen.</comment>
+							</configtag>
+							<configtag name="windows">
+								<comment>settings for display ina  window. Same applies as to fullscreen.</comment>
+							<configtag name="scale_method">
+							2xSaI
+							</configtag>
+							<configtag name="scale">
+								2
+							</configtag>
+							<configtag name="display">
+								<configtag name="width">
+									640
+								</configtag>
+								<configtag name="height">
+									240
+								</configtag>
+							</configtag>
+							<configtag name="game">
+								<configtag name="width">
+									320
+								</configtag>
+								<configtag name="height">
+									200
+								</configtag>
+								<configtag name="border" manual="true">
+									<configtag name="red" manual="true">
+										0
+									</configtag>
+									<configtag name="green" manual="true">
+										0
+									</configtag>
+									<configtag name="blue" manual="true">
+										0
+									</configtag>
+								</configtag>
+							</configtag>
+							<configtag name="fill_mode">
+								Centre
+							</configtag>
+							<configtag name="fill_scaler">
+								Bilinear
 							<comment>Please see <ref target="video_fill_modes"/> for more information about this.</comment>
+							</configtag>
 							</configtag>
 							<configtag name="force_bpp" manual="true">
 								0
@@ -1590,6 +1395,10 @@
 					changes will be reverted. This way we try to prevent that some bad video options 
 					combinations prevent you from playing the games.
 				</para>
+				<para>
+					Settings can be set for either fullscreen or windows mode just by selecting different 
+					settings while using either mode.
+				</para>
 			</body>
 		</sub>
 		<sub name="video_fill_modes">
@@ -1836,6 +1645,7 @@
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
 					<keydesc name="Insert">Create object (that is chosen in  the shape browser)</keydesc>
+					<keydesc name="Cmd-V">Create object (that is chosen in  the shape browser) on OS X</keydesc>
 					<keydesc name="Ctrl-d">Delete object</keydesc>
 					<keydesc name="e">Toggle egg display</keydesc>
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
@@ -2039,7 +1849,7 @@
 						shows a tinted background behind text in conversations to make it easier to read.
 						Either disable it or choose between the colors purple, orange, light gray, green,
 						yellow, pale blue, dark green, red, bright white, dark gray and white.</li>
-					<li><strong>Fast Mouse</strong><br/>
+					<li><strong>Fulscreen Fast Mouse</strong><br/>
 						makes the mouse cursor move faster in full screen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>
 						In the normal game, the middle mouse button activates the target-function
@@ -2062,30 +1872,40 @@
 					<li><strong>Speed</strong><br/>
 						if <Exult/> seems too fast lower this setting. If it seems to sluggish raising
 						this setting may help.</li>
-					<li><strong>Paperdolls</strong><br/>
-						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls
-						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>Smooth scrolling</strong><br/>
 						Disabled/25%/50%/75%/100% percentage of how smooth the game scrolls when the avatar 
 						moves. When disabled <Exult/> uses the "jerky" scrolling of the original game.</li>
+					<li><strong>Paperdolls</strong><br/>
+						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls
+						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
 			</body>
 		</sub>
-		<sub name="combat_gump">
-			<header>Combat Options</header>
+		<sub name="misc_gump">
+			<header>Misc Options</header>
 			<body>
 				<para>
-					As many people think that the U7 combat engine is far too easy, too hard or
-					just can't stand the real-time-combat Jeff put in some options to make combat more
-					interesting.<br/>
-					<img alt="Combat Options" src="images/docs06.png"/>
+					<img alt="Misc Options" src="images/docs06.png"/>
 				</para>
 				<ul>
+					<li><strong>Scroll game view with mouse</strong><br/>
+						When cheats are enabled you can scroll the game view with the scroll wheel of the mouse.</li>
+					<li><strong>Skip intro</strong><br/>
+						When enabled you don't have to watch the splash screen and intro when you select a game 
+						from the <Exult/> menu.</li>
+					<li><strong>Skip scripted first scene</strong><br/>
+						When you start a new game of BG or SI the game starts with a scripted scene during which 
+						you can't move the Avatar. Enable this to skip this part but only do this 
+						if you have already played the game and have seen this scene.</li>
+					<li><strong>Combat options:</strong><br/>
+						As many people think that the U7 combat engine is far too easy, too hard or
+						just can't stand the real-time-combat Jeff put in some options to make combat more
+						interesting.</li>
 					<li><strong>Difficulty</strong><br/>
 						Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and
-						the HP's lost if a hit occurs.</li>
+						the HP that is lost if a hit occurs.</li>
 					<li><strong>ShowHits</strong><br/>
 						With this enabled you can see the hitpoints of NPCs in brackets after their name when
 						you left-click on them.</li>
@@ -2094,7 +1914,15 @@
 						combat. When you hit space the game pauses and you can direct a party member by
 						right-clicking, then clicking on a target to attack. Or change weapons, choose a
 						favourite spell.</li>
+					<li><strong>Charmed difficulty</strong><br/>
+						choose between Normal and Hard. With Normal the Avatar behaves as in the original game. 
+						When he is charmed he will be highlighted as charmed and the charmed status icon will show 
+						but you can control him as usual. Hard will neither allow the player to control the Avatar 
+						nor access his inventory.</li>
 				</ul>
+				<para>
+					
+				</para>
 			</body>
 		</sub>
 		<sub name="quit_game">
@@ -2742,5 +2570,262 @@
 				</para>
 			</body>
 		</sub>
+	</section>
+	<section title="Changes to the Documentation">
+		<sub name="19012011">
+			<header>- 19 January 2011</header>
+			<body>
+				<ul>
+				<li><section_ref target="Changes to the Documentation"/> moved to the bottom.</li>
+				<li><ref1 target="exult_config"/> new options for combat and windowed video settings.</li>
+				<li><ref1 target="resolution"/> Video settings are for either fullscreen or windows mode.</li>
+				<li><ref1 target="exult_cheats"/> Cmd-V added for insert shape.</li>
+				<li><ref1 target="gameplay_gump"/> reordered.</li>
+				<li><ref1 target="misc_gump"/> formerly named Combat Options but now added non combat options to it.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="13102010">
+			<header>- 13 October 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> new official version.</li>
+				<li><ref1 target="scaler"/> OpenGL is only availlable in snapshots.</li>
+				<li><ref1 target="exult_cheats"/> Alt+KP+/- no longer works.</li>
+				<li><ref1 target="studio_keys"/> only with a snapshot.</li>
+				<li><ref1 target="notebook"/> added.</li>
+				<li><ref1 target="autonotebook"/> added.</li>
+				<li><ref1 target="screenshots"/> added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="30082010">
+			<header>- 30 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added the new config options for video.</li>
+				<li><ref1 target="resolution"/> rewrote some more with Colourless' latest changes.</li>
+				<li><ref1 target="video_fill_modes"/> added.</li>
+				<li><ref1 target="video_gump"/> more changes to the video gump.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="25082010">
+			<header>- 25 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added the new config options for video and audio.</li>
+				<li><ref1 target="resolution"/> rewrote a bit to explain the new rendering.</li>
+				<li><ref1 target="res_cheating"/> added.</li>
+				<li><ref1 target="video_gump"/> added new game res setting.</li>
+				<li><ref1 target="audio_gump"/> forgot the speech option.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="15082010">
+			<header>- 15 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="midi_music"/> Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.</li>
+				<li><ref1 target="win32_device"/> the log files are now where exult.cfg is saved to not necessarily where exult.exe is.</li>
+				<li><ref1 target="error_log"/> also about location of log files.</li>
+				<li><ref1 target="bg_manual"/> some *nix command.</li>
+				<li><ref1 target="si_manual"/> some *nix command.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="28042010">
+			<header>- 28 April 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> audio options for sample rate and stereo added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="11032010">
+			<header>- 11 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="path_config_osx"/> we changed the default paths for OS X once more.</li>
+				<li><ref1 target="wave_sfx"/> the SFX pack can now be chosen in the Game Menu.</li>
+				<li><ref1 target="audio_gump"/> added new SFX pack option and updated screenshot.</li>
+				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="10032010">
+			<header>- 10 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="path_config"/> I've split this up for all the different OS'.</li>
+				<li> added Path-Settings chapters for the most common OS with examples.</li>
+				<li><ref1 target="midi_music"/> CoreMIDI driver added.</li>
+				<li><ref1 target="wave_sfx"/> <Exult/> finds and uses the SFX pack automatically and defaults to MT32 SFX.</li>
+				<li><ref1 target="mods_savegames_location"/> added this so savegames of modded games can be found.</li>
+				<li><ref1 target="error_log"/> added where to find the error log on OS X.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="08032010">
+			<header>- 08 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="whatis_exult"/> fixed typo in Jakob Schonberg's name.</li>
+				<li><ref1 target="exult_config_location"/> needs its own chapter now.</li>
+				<li><ref1 target="path_config"/> needed a lot of changes because of the LOCAL_APPDATA changes.</li>
+				<li><ref1 target="midi_music"/> the MT32 option will no longer crash <Exult/> on OS X.</li>
+				<li><ref1 target="scaler"/> OpenGl scaler is not considered stable.</li>
+				<li><ref1 target="mods_path"/> be aware of the LOCAL_APPDATA changes.</li>
+				<li><ref1 target="osx_digital"/> is probably not needed for newer versions of OS X.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="16072009">
+			<header>- 16 July 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="midi_music"/> MT32 device type is not supported on Mac OS X.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="03062009">
+			<header>- 03 June 2009</header>
+			<body>
+				<ul>
+				<li>Spell checked the whole documentation.</li>
+				<li><ref1 target="midi_music"/> slightly rewrote the FluidSynth section and 
+					explained fakemt32 option a bit better.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="20052009">
+			<header>- 20 May 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="digital_music"/> mentioned two issues with it.</li>
+				<li><ref1 target="digital_music_install"/> cleaned up.</li>
+				<li><ref1 target="wave_sfx"/> some more information.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="19052009">
+			<header>- 19 May 2009</header>
+			<body>
+				<ul>
+				<li><section_ref target="Configurations"/> coloured tags to differentiate between manual and in game settings.</li>
+				<li><ref1 target="path_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
+				<li><ref1 target="advanced_config"/> <Exult/> and <Studio/> don't trust exult.cfg.</li>
+				<li><ref1 target="command_line"/> some more information on '--buildmap' and '--mod'.</li>
+				<li><ref1 target="linux_alsa"/> mentioned different, configurable ports.</li>
+				<li><ref1 target="studio_keys"/>  got their own help screen now.</li>
+				<li><section_ref target="Mods and Patches"/> added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="18052009">
+			<header>- 18 May 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> this docs are for the SVN version.</li>
+				<li><ref1 target="installation"/> the Windows installer asks for BG/SI location.</li>
+				<li><ref1 target="exult_config"/> now up to date with SVN.</li>
+				<li><ref1 target="path_config"/> again recommend the Windows installer.</li>
+				<li><ref1 target="advanced_config"/> added.</li>
+				<li><ref1 target="command_line"/> now up to date with SVN.</li>
+				<li><ref1 target="midi_music"/> split from the general music part.</li>
+				<li>removed TiMidity chapter, since the cfg issue is explained in <ref1 target="midi_music"/>.</li>
+				<li><ref1 target="scaler"/> updated.</li>
+				<li><ref1 target="exult_keys"/> updated.</li>
+				<li><ref1 target="exult_cheats"/> updated.</li>
+				<li><ref1 target="studio_keys"/> needed their own chapter.</li>
+				<li><ref1 target="video_gump"/> updated.</li>
+				<li><ref1 target="audio_gump"/> updated, also updated the screenshot.</li>
+				<li><ref1 target="gameplay_gump"/> updated, also updated the screenshot.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="28042009">
+			<header>- 28 April 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> tried to explain data_path a bit more.</li>
+				<li><ref1 target="speech"/> can also be toggled via the in-game menu.</li>
+				<li><ref1 target="cdrom_install"/> added EA Compilation to the list.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="21102007">
+			<header>- 21 October 2007</header>
+			<body>
+				<ul>
+				<li><ref1 target="osx_digital"/> added.</li>
+				<li><ref1 target="cd_permissions"/> added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="08042006">
+			<header>- 08 April 2006</header>
+			<body>
+				<ul>
+				<li><ref1 target="installation"/> needed some polishing.</li>
+				<li><ref1 target="path_config"/> synched the path settings with the new Installation section.</li>
+				<li><section_ref target="Installing the original Ultima VII games for use with Exult"/> 
+					might help some people.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="14032005">
+			<header>- 14 March 2005</header>
+			<body>
+				<ul>
+				<li><section_ref target="Zaurus Guide"/> Newest ROM instructions updated.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="14082004">
+			<header>- 14 August 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="installation"/> on Windows you can use Notepad to edit exult.cfg.</li>
+				</ul>
+			</body>
+		</sub>	
+		<sub name="23052004">
+			<header>- 23 May 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> I'm confident that the new Version will be 1.2.</li>
+				<li><ref1 target="zaurus_install"/> we shouldn't call our data files shared files..</li>
+				</ul>
+			</body>
+		</sub>		
+		<sub name="11022004">
+			<header>- 11 February 2004</header>
+			<body>
+				<ul>
+				<li> A lot of clean up and small changes, too numerous to list.</li>
+				<li><ref1 target="path_config"/> fixed some outdated instructions.</li>
+				<li><ref1 target="digital_music_install"/> added as the instructions in the music-pack 
+					readme.txt are no longer valid.</li>
+				<li><ref1 target="movement"/> fixed up a bit.</li>
+				<li><ref1 target="exult_keys"/> fixed up a bit as well.</li>
+				<li><section_ref target="Game Menu"/> added screenshots showing the Game menu gumps and removed 
+					"Quit to Menu".</li>
+				<li><ref1 target="thanks"/> time to thank Sourceforge as well.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="12122003">
+			<header>- 12 December 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> fixed bad path settings and updated audio settings.</li>
+				<li><ref1 target="path_config"/> moved stuff over to next point.</li>
+				<li><ref1 target="dir_config"/> added to give some explanation for Static/Gamedat.</li>
+				<li><ref1 target="music"/> updated with 'recent' audio changes.</li>
+				<li><ref1 target="audio_gump"/> updated with 'recent' audio changes.</li>
+				</ul>
+			</body>
+		</sub>		
 	</section>
 </readme>

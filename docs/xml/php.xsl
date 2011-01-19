@@ -20,8 +20,7 @@
 		<a><xsl:attribute name="href">#<xsl:value-of select="@title"/></xsl:attribute>
 			<xsl:number level="multiple"
 						count="section"
-						format="1. "
-						value="position() -1"/>
+						format="1. "/>
 				<xsl:value-of select="@title"/>
 		</a>
 		<br/>
@@ -30,7 +29,7 @@
 				<xsl:number level="multiple"
 							count="section|sub"
 							format="1."
-							value="count(ancestor::section/preceding-sibling::section)"/>
+							value="count(ancestor::section/preceding-sibling::section)+1"/>
 				<xsl:number format="1. "/>
 				<xsl:apply-templates select="header"/>
 			</a>
@@ -106,8 +105,7 @@
 	<table width="100%">
 		<tr><th align="left">
 			<a><xsl:attribute name="name"><xsl:value-of select="@title"/></xsl:attribute>
-				<xsl:number format="1. "
-				value="position() -1"/>
+				<xsl:number format="1. "/>
 				<xsl:value-of select="@title"/>
 			</a>
 		</th></tr>
@@ -122,7 +120,7 @@
 		<xsl:number level="single"
 					count="section"
 					format="1."
-					value="count(ancestor::section/preceding-sibling::section)"/>
+					value="count(ancestor::section/preceding-sibling::section)+1"/>
 		<xsl:number format="1. "/>
 	</xsl:variable>
 	<tr><td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></tr>
@@ -161,7 +159,7 @@
 <!-- Internal Link Templates -->
 <xsl:template match="ref">
 	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute>
-		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
+		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)+1"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
 		<xsl:text>.</xsl:text>
@@ -171,7 +169,7 @@
 
 <xsl:template match="ref1">
 	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute>
-		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
+		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)+1"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
 		<xsl:text>. </xsl:text>
@@ -182,7 +180,7 @@
 
 <xsl:template match="section_ref">
 	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute>
-		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
+		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)+1"/>
 		<xsl:text>. </xsl:text>
   		<xsl:apply-templates select="key('section_ref',@target)/@title"/>
 	</a>

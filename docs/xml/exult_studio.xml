@@ -1,66 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="18 December 2010(GMT)">
-	<section title="Changes to the Documentation">
-		<sub name="18122010">
-			<header>- 18 December 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="usecode_edit"/> added intriniscs docs from TFL and fixed the link to Pertex' site.</li>
-				<li><ref1 target="linux_bugs"/> the patch folder NEEDS to be writeable.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="11032010">
-			<header>- 11 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="installation"/> added Vista/W7 to the Windows list, Windows 95 is not supported.</li>
-				<li><ref1 target="can_do_atm"/> the patch folder NEEDS to be writeable.</li>
-				<li><ref1 target="win32_bugs"/> Windows 95 is not supported.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="01032005">
-			<header>- 01 March 2005</header>
-			<body>
-				<ul>
-				<li><ref1 target="edit_menu"/> Create Barg added.</li>
-				<li><ref1 target="map_menu"/> added this menu option.</li>
-				<li><ref1 target="eggs_type"/> intermap egg added.</li>
-				<li><ref1 target="intermap_eggs"/> explains how to use this egg type.</li>
-				<li><ref1 target="multi_map"/> explained.</li>
-				<li><ref1 target="barge_edit"/> added.</li>
-				<li><ref1 target="custom_shapes"/> added.</li>
-				<li><ref1 target="custom_font"/> explained.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="23052004">
-			<header>- 23 May 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="palettes_files"/> palette files are compatible with the Gimp.</li>
-				<li><ref1 target="edit_menu"/> note about map-editing operations.</li>
-				<li><ref1 target="eggs_properties"/> some more infos.</li>
-				<li><ref1 target="creature_schedules"/> more on the patrol schedule.</li>
-				<li><ref1 target="npc_flags"/> removed some unused flags.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="06022004">
-			<header>- 06 February 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="studio_terms"/> some corrections by Willem.</li>
-				<li><ref1 target="run_steps"/> some corrections.</li>
-				<li><ref1 target="studio_run"/> some corrections.</li>
-				<li><ref1 target="map_files"/> More right click options.</li>
-				<li><section_ref target="NPC editing"/> finally took on that task.</li>
-				</ul>
-			</body>
-		</sub>
-	</section>
+<studiodoc title="Exult" changed="19 January 2011 (GMT)">
 	<section title="Introduction">
 		<sub name="whatis_studio">
 			<header>What is <Studio/>?</header>
@@ -1777,6 +1717,66 @@
 				<ul>
 					<li>Colourless, Kirben and Mark Siewart invested a lot of effort to port
 					<Studio/> to Windows.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Changes to the Documentation">
+		<sub name="18122010">
+			<header>- 18 December 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="usecode_edit"/> added intriniscs docs from TFL and fixed the link to Pertex' site.</li>
+				<li><ref1 target="linux_bugs"/> the patch folder NEEDS to be writeable.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="11032010">
+			<header>- 11 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="installation"/> added Vista/W7 to the Windows list, Windows 95 is not supported.</li>
+				<li><ref1 target="can_do_atm"/> the patch folder NEEDS to be writeable.</li>
+				<li><ref1 target="win32_bugs"/> Windows 95 is not supported.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="01032005">
+			<header>- 01 March 2005</header>
+			<body>
+				<ul>
+				<li><ref1 target="edit_menu"/> Create Barg added.</li>
+				<li><ref1 target="map_menu"/> added this menu option.</li>
+				<li><ref1 target="eggs_type"/> intermap egg added.</li>
+				<li><ref1 target="intermap_eggs"/> explains how to use this egg type.</li>
+				<li><ref1 target="multi_map"/> explained.</li>
+				<li><ref1 target="barge_edit"/> added.</li>
+				<li><ref1 target="custom_shapes"/> added.</li>
+				<li><ref1 target="custom_font"/> explained.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="23052004">
+			<header>- 23 May 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="palettes_files"/> palette files are compatible with the Gimp.</li>
+				<li><ref1 target="edit_menu"/> note about map-editing operations.</li>
+				<li><ref1 target="eggs_properties"/> some more infos.</li>
+				<li><ref1 target="creature_schedules"/> more on the patrol schedule.</li>
+				<li><ref1 target="npc_flags"/> removed some unused flags.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="06022004">
+			<header>- 06 February 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="studio_terms"/> some corrections by Willem.</li>
+				<li><ref1 target="run_steps"/> some corrections.</li>
+				<li><ref1 target="studio_run"/> some corrections.</li>
+				<li><ref1 target="map_files"/> More right click options.</li>
+				<li><section_ref target="NPC editing"/> finally took on that task.</li>
 				</ul>
 			</body>
 		</sub>

@@ -1,31 +1,8 @@
 Exult Documentation
-last changed: 13 October 2010(GMT)
+last changed: 19 January 2011 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
-
-0. Changes to the Documentation
-0.1. - 13 October 2010
-0.2. - 30 August 2010
-0.3. - 25 August 2010
-0.4. - 15 August 2010
-0.5. - 28 April 2010
-0.6. - 11 March 2010
-0.7. - 10 March 2010
-0.8. - 08 March 2010
-0.9. - 16 July 2009
-0.10. - 03 June 2009
-0.11. - 20 May 2009
-0.12. - 19 May 2009
-0.13. - 18 May 2009
-0.14. - 28 April 2009
-0.15. - 21 October 2007
-0.16. - 08 April 2006
-0.17. - 14 March 2005
-0.18. - 14 August 2004
-0.19. - 23 May 2004
-0.20. - 11 February 2004
-0.21. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -79,7 +56,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 7.3. Video Options
 7.4. Audio Options
 7.5. Gameplay Options
-7.6. Combat Options
+7.6. Misc Options
 7.7. Quit
 
 8. Mods and Patches
@@ -121,184 +98,29 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.1. Thanks
 12.2. Contacting us
 
-
---------------------------------------------------------------------------------
-
-0. Changes to the Documentation
-0.1. - 13 October 2010
-* 1.1. Exult Version new official version.
-* 4.4. Scaler OpenGL is only availlable in snapshots.
-* 5.3. Cheat keys Alt+KP+/- no longer works.
-* 5.4. Map Editing keys only with a snapshot.
-* 6.1. Using the Notebook added.
-* 6.2. The automatic Notebook added.
-* 6.3. Screenshots added.
-
-
-
-0.2. - 30 August 2010
-* 2.3. Settings in exult.cfg added the new config options for video.
-* 4.1. Resolution rewrote some more with Colourless' latest changes.
-* 4.2. Fill modes added.
-* 7.3. Video Options more changes to the video gump.
-
-
-
-0.3. - 25 August 2010
-* 2.3. Settings in exult.cfg added the new config options for video and audio.
-* 4.1. Resolution rewrote a bit to explain the new rendering.
-* 4.3. Higher resolution is cheating added.
-* 7.3. Video Options added new game res setting.
-* 7.4. Audio Options forgot the speech option.
-
-
-
-0.4. - 15 August 2010
-* 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
-* 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
-* 9.2. Error Log also about location of log files.
-* 11.5. Manual installation of the BG floppy disks some *nix command.
-* 11.6. Manual installation of the SI floppy disks some *nix command.
-
-
-
-0.5. - 28 April 2010
-* 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
-
-
-
-0.6. - 11 March 2010
-* 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
-* 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
-* 7.4. Audio Options added new SFX pack option and updated screenshot.
-* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
-
-
-
-0.7. - 10 March 2010
-* 2.4. Path-Settings I've split this up for all the different OS'.
-* added Path-Settings chapters for the most common OS with examples.
-* 3.2. MIDI Music CoreMIDI driver added.
-* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
-* 8.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
-* 9.2. Error Log added where to find the error log on OS X.
-
-
-
-0.8. - 08 March 2010
-* 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
-* 2.2. Location of exult.cfg needs its own chapter now.
-* 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
-* 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
-* 4.4. Scaler OpenGl scaler is not considered stable.
-* 8.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
-* 9.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
-
-
-
-0.9. - 16 July 2009
-* 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
-
-
-
-0.10. - 03 June 2009
-* Spell checked the whole documentation.
-* 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
-
-
-
-0.11. - 20 May 2009
-* 3.5. Digital Music mentioned two issues with it.
-* 3.6. Installation of the digital music packs cleaned up.
-* 3.7. Digital Wave Sound Effects some more information.
-
-
-
-0.12. - 19 May 2009
-* 2. Configurations coloured tags to differentiate between manual and in game settings.
-* 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
-* 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
-* 2.10. Command line options some more information on '--buildmap' and '--mod'.
-* 3.10. Linux and Audio mentioned different, configurable ports.
-* 5.4. Map Editing keys got their own help screen now.
-* 8. Mods and Patches added.
-
-
-
-0.13. - 18 May 2009
-* 1.1. Exult Version this docs are for the SVN version.
-* 2.1. Installation the Windows installer asks for BG/SI location.
-* 2.3. Settings in exult.cfg now up to date with SVN.
-* 2.4. Path-Settings again recommend the Windows installer.
-* 2.9. Advanced Configuration: Using both the original and the Add-Ons added.
-* 2.10. Command line options now up to date with SVN.
-* 3.2. MIDI Music split from the general music part.
-* removed TiMidity chapter, since the cfg issue is explained in 3.2. MIDI Music.
-* 4.4. Scaler updated.
-* 5.2. Keyboard commands updated.
-* 5.3. Cheat keys updated.
-* 5.4. Map Editing keys needed their own chapter.
-* 7.3. Video Options updated.
-* 7.4. Audio Options updated, also updated the screenshot.
-* 7.5. Gameplay Options updated, also updated the screenshot.
-
-
-
-0.14. - 28 April 2009
-* 2.3. Settings in exult.cfg tried to explain data_path a bit more.
-* 3.8. Speech can also be toggled via the in-game menu.
-* 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
-
-
-
-0.15. - 21 October 2007
-* 9.3. Making Digital Sound work on Mac OS X added.
-* 11.8. Fixing permissions of Ultima Collection on *nix systems added.
-
-
-
-0.16. - 08 April 2006
-* 2.1. Installation needed some polishing.
-* 2.4. Path-Settings synched the path settings with the new Installation section.
-* 11. Installing the original Ultima VII games for use with Exult might help some people.
-
-
-
-0.17. - 14 March 2005
-* 10. Zaurus Guide Newest ROM instructions updated.
-
-
-
-0.18. - 14 August 2004
-* 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
-
-
-
-0.19. - 23 May 2004
-* 1.1. Exult Version I'm confident that the new Version will be 1.2.
-* 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
-
-
-
-0.20. - 11 February 2004
-* A lot of clean up and small changes, too numerous to list.
-* 2.4. Path-Settings fixed some outdated instructions.
-* 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
-* 5.1. Movement fixed up a bit.
-* 5.2. Keyboard commands fixed up a bit as well.
-* 7. Game Menu added screenshots showing the Game menu gumps and removed "Quit to Menu".
-* 12.1. Thanks time to thank Sourceforge as well.
-
-
-
-0.21. - 12 December 2003
-* 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
-* 2.4. Path-Settings moved stuff over to next point.
-* 0.1. added to give some explanation for Static/Gamedat.
-* 3.1. Music updated with 'recent' audio changes.
-* 7.4. Audio Options updated with 'recent' audio changes.
-
-
+13. Changes to the Documentation
+13.1. - 19 January 2011
+13.2. - 13 October 2010
+13.3. - 30 August 2010
+13.4. - 25 August 2010
+13.5. - 15 August 2010
+13.6. - 28 April 2010
+13.7. - 11 March 2010
+13.8. - 10 March 2010
+13.9. - 08 March 2010
+13.10. - 16 July 2009
+13.11. - 03 June 2009
+13.12. - 20 May 2009
+13.13. - 19 May 2009
+13.14. - 18 May 2009
+13.15. - 28 April 2009
+13.16. - 21 October 2007
+13.17. - 08 April 2006
+13.18. - 14 March 2005
+13.19. - 14 August 2004
+13.20. - 23 May 2004
+13.21. - 11 February 2004
+13.22. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -504,8 +326,7 @@ Note: yes means enabled, no means disabled
     </smooth_scrolling>
     <skip_intro>
     no
-				**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears, 
-				Iolo talks to you, the mayor talks to you and so on.
+				**this skips the scripted first scne in BG and SI during which you can't move.
     </skip_intro>
     <skip_splash>
     no
@@ -540,6 +361,12 @@ Note: yes means enabled, no means disabled
 				**no is default. With yes you see the hitpoints of NPCs 
 				in brackets after their name.
       </show_hits>
+      <charmDifficulty>
+      normal
+				**with normal the Avatar behaves as in the original game. When he is charmed 
+				he will be highlighted as charmed and the status icon will show but you can control him as usual. 
+				"hard" will neither allow the player to control the Avatar nor access his inventory.
+      </charmDifficulty>
     </combat>
   </gameplay>
   <audio>
@@ -608,7 +435,7 @@ Note: yes means enabled, no means disabled
         </enabled>
         <level>
         0
-				**how much the MIDI is altered.
+				**how much the MIDI is altered. Value can be 0-127.
         </level>
       </chorus>
       <reverb>
@@ -618,7 +445,7 @@ Note: yes means enabled, no means disabled
         </enabled>
         <level>
         0
-				**how much the MIDI is altered.
+				**how much the MIDI is altered. Value can be 0-127.
         </level>
       </reverb>
       <precacheTimbers>
@@ -664,18 +491,19 @@ Note: yes means enabled, no means disabled
     </fullscreen>
     <scale_method>
     2xSaI
-				**choose different scalers here - see 4.4.
+				**choose different scalers here - see 4.4. - applies to fullscreen.
     </scale_method>
     <scale>
     2
 				**2 enables / 1 disables scaling, some scalers support higher values. 
-				See 4.4..
+				See 4.4. - applies to fullscreen.
     </scale>
     <display>
       <width>
       640
 				**here you choose the resolution of the Exult window.
 				The default will be the lowest resolution that your system supports.
+				Applies to fullscreen
       </width>
       <height>
       240
@@ -687,7 +515,7 @@ Note: yes means enabled, no means disabled
 				**here you choose at what resolution you run the games in the
 				Exult window. 320x200 is the resolution of the original.
 				0x0 means that Exult will determine the best way to match
-				game resolution to Exult resolution.
+				game resolution to Exult resolution - applies to fullscreen.
       </width>
       <height>
       200
@@ -697,7 +525,7 @@ Note: yes means enabled, no means disabled
         0
 				**if game resolution doesn't match Exult resolution
 				you have borders around the game res. With these you can
-				change the black defult border color.
+				change the black defult border color - applies to fullscreen.
         </red>
         <green>
         0
@@ -714,9 +542,51 @@ Note: yes means enabled, no means disabled
     </fill_mode>
     <fill_scaler>
     Bilinear
-				**Chose between Point and Bilinear..
-				Please see 4.2. for more information about this.
+				**Chose between Point and Bilinear.
+				Please see 4.2. for more information about this - applies to fullscreen.
     </fill_scaler>
+    <windows>
+      <scale_method>
+      2xSaI
+      </scale_method>
+      <scale>
+      2
+      </scale>
+      <display>
+        <width>
+        640
+        </width>
+        <height>
+        240
+        </height>
+      </display>
+      <game>
+        <width>
+        320
+        </width>
+        <height>
+        200
+        </height>
+        <border>
+          <red>
+          0
+          </red>
+          <green>
+          0
+          </green>
+          <blue>
+          0
+          </blue>
+        </border>
+      </game>
+      <fill_mode>
+      Centre
+      </fill_mode>
+      <fill_scaler>
+      Bilinear
+				Please see 4.2. for more information about this.
+      </fill_scaler>
+    </windows>
     <force_bpp>
     0
 				**force output bpp. Valid values are 	0 (for any), 8, 16 or 32.
@@ -1100,6 +970,7 @@ You can now configure the ALSA port for your distribution in .exult.cfg (see 2.3
 We distinguish between the Exult display resolution (which determines the size of the Exult window and its fullscreen rendering) and the game area, which determines how big the in-game viewing area is.
 By default Exult runs the games at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 or even triple the the size to 960x600 while increasing the quality of the graphics and maintaining the same viewing area. This allows Exult to show the game as an enhanced version of how it originally appeared, and not show locations that were originally off-screen. When you first start Exult we apply the scaler 2xSaI which doubles the size of each pixel, resulting in a 640x400 window.
 You will also have to hit "Apply" in the Video gump to apply your changes. Exult will then use the new settings and will show you a countdown which asks you to confirm that the new video settings are working. When yo don't confirm by hitting "YES", the changes will be reverted. This way we try to prevent that some bad video options combinations prevent you from playing the games.
+Settings can be set for either fullscreen or windows mode just by selecting different settings while using either mode.
 
 
 4.2. Fill modes
@@ -1235,6 +1106,7 @@ F10 : Show endgame
 F11 : SI: Play alternate intro
 Ctrl-b : Shape browser
 Insert : Create object (that is chosen in  the shape browser)
+Cmd-V : Create object (that is chosen in  the shape browser) on OS X
 Ctrl-d : Delete object
 e : Toggle egg display
 Alt-g : Toggle God mode
@@ -1342,7 +1214,7 @@ Look at 3. Audio to see explanation on the settings.
 
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
 * Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
-* Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
+* Fulscreen Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
 * Right click closes gumps the same but different.
@@ -1350,17 +1222,23 @@ Look at 3. Audio to see explanation on the settings.
 * Gumps pause games In the original the game got paused when Gumps were shown. Enable/disable it.
 * Cheats Enables or disables all the cheats that we implemented in Exult. See 5.3. Cheat keys what those cheats are.
 * Speed if Exult seems too fast lower this setting. If it seems to sluggish raising this setting may help.
-* Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
 * Smooth scrolling Disabled/25%/50%/75%/100% percentage of how smooth the game scrolls when the avatar moves. When disabled Exult uses the "jerky" scrolling of the original game.
+* Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
 
 
-7.6. Combat Options
-As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
-* Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP's lost if a hit occurs.
+7.6. Misc Options
+
+* Scroll game view with mouse When cheats are enabled you can scroll the game view with the scroll wheel of the mouse.
+* Skip intro When enabled you don't have to watch the splash screen and intro when you select a game from the Exult menu.
+* Skip scripted first scene When you start a new game of BG or SI the game starts with a scripted scene during which you can't move the Avatar. Enable this to skip this part but only do this if you have already played the game and have seen this scene.
+* Combat options: As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
+* Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP that is lost if a hit occurs.
 * ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
 * Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
+* Charmed difficulty choose between Normal and Hard. With Normal the Avatar behaves as in the original game. When he is charmed he will be highlighted as charmed and the charmed status icon will show but you can control him as usual. Hard will neither allow the player to control the Avatar nor access his inventory.
+
 
 
 
@@ -1563,5 +1441,194 @@ On OS X select both game folders, bring up info, go to Ownership and Permissions
 
 12.2. Contacting us
 You can contact the Exult team and/or get more information from: http://exult.sourceforge.net/ or http://sourceforge.net/projects/exult/
+
+
+
+--------------------------------------------------------------------------------
+
+13. Changes to the Documentation
+13.1. - 19 January 2011
+* 13. Changes to the Documentation moved to the bottom.
+* 2.3. Settings in exult.cfg new options for combat and windowed video settings.
+* 4.1. Resolution Video settings are for either fullscreen or windows mode.
+* 5.3. Cheat keys Cmd-V added for insert shape.
+* 7.5. Gameplay Options reordered.
+* 7.6. Misc Options formerly named Combat Options but now added non combat options to it.
+
+
+
+13.2. - 13 October 2010
+* 1.1. Exult Version new official version.
+* 4.4. Scaler OpenGL is only availlable in snapshots.
+* 5.3. Cheat keys Alt+KP+/- no longer works.
+* 5.4. Map Editing keys only with a snapshot.
+* 6.1. Using the Notebook added.
+* 6.2. The automatic Notebook added.
+* 6.3. Screenshots added.
+
+
+
+13.3. - 30 August 2010
+* 2.3. Settings in exult.cfg added the new config options for video.
+* 4.1. Resolution rewrote some more with Colourless' latest changes.
+* 4.2. Fill modes added.
+* 7.3. Video Options more changes to the video gump.
+
+
+
+13.4. - 25 August 2010
+* 2.3. Settings in exult.cfg added the new config options for video and audio.
+* 4.1. Resolution rewrote a bit to explain the new rendering.
+* 4.3. Higher resolution is cheating added.
+* 7.3. Video Options added new game res setting.
+* 7.4. Audio Options forgot the speech option.
+
+
+
+13.5. - 15 August 2010
+* 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
+* 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
+* 9.2. Error Log also about location of log files.
+* 11.5. Manual installation of the BG floppy disks some *nix command.
+* 11.6. Manual installation of the SI floppy disks some *nix command.
+
+
+
+13.6. - 28 April 2010
+* 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
+
+
+
+13.7. - 11 March 2010
+* 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
+* 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
+* 7.4. Audio Options added new SFX pack option and updated screenshot.
+* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
+
+
+
+13.8. - 10 March 2010
+* 2.4. Path-Settings I've split this up for all the different OS'.
+* added Path-Settings chapters for the most common OS with examples.
+* 3.2. MIDI Music CoreMIDI driver added.
+* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
+* 8.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
+* 9.2. Error Log added where to find the error log on OS X.
+
+
+
+13.9. - 08 March 2010
+* 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
+* 2.2. Location of exult.cfg needs its own chapter now.
+* 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
+* 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
+* 4.4. Scaler OpenGl scaler is not considered stable.
+* 8.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
+* 9.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
+
+
+
+13.10. - 16 July 2009
+* 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
+
+
+
+13.11. - 03 June 2009
+* Spell checked the whole documentation.
+* 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
+
+
+
+13.12. - 20 May 2009
+* 3.5. Digital Music mentioned two issues with it.
+* 3.6. Installation of the digital music packs cleaned up.
+* 3.7. Digital Wave Sound Effects some more information.
+
+
+
+13.13. - 19 May 2009
+* 2. Configurations coloured tags to differentiate between manual and in game settings.
+* 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
+* 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
+* 2.10. Command line options some more information on '--buildmap' and '--mod'.
+* 3.10. Linux and Audio mentioned different, configurable ports.
+* 5.4. Map Editing keys got their own help screen now.
+* 8. Mods and Patches added.
+
+
+
+13.14. - 18 May 2009
+* 1.1. Exult Version this docs are for the SVN version.
+* 2.1. Installation the Windows installer asks for BG/SI location.
+* 2.3. Settings in exult.cfg now up to date with SVN.
+* 2.4. Path-Settings again recommend the Windows installer.
+* 2.9. Advanced Configuration: Using both the original and the Add-Ons added.
+* 2.10. Command line options now up to date with SVN.
+* 3.2. MIDI Music split from the general music part.
+* removed TiMidity chapter, since the cfg issue is explained in 3.2. MIDI Music.
+* 4.4. Scaler updated.
+* 5.2. Keyboard commands updated.
+* 5.3. Cheat keys updated.
+* 5.4. Map Editing keys needed their own chapter.
+* 7.3. Video Options updated.
+* 7.4. Audio Options updated, also updated the screenshot.
+* 7.5. Gameplay Options updated, also updated the screenshot.
+
+
+
+13.15. - 28 April 2009
+* 2.3. Settings in exult.cfg tried to explain data_path a bit more.
+* 3.8. Speech can also be toggled via the in-game menu.
+* 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
+
+
+
+13.16. - 21 October 2007
+* 9.3. Making Digital Sound work on Mac OS X added.
+* 11.8. Fixing permissions of Ultima Collection on *nix systems added.
+
+
+
+13.17. - 08 April 2006
+* 2.1. Installation needed some polishing.
+* 2.4. Path-Settings synched the path settings with the new Installation section.
+* 11. Installing the original Ultima VII games for use with Exult might help some people.
+
+
+
+13.18. - 14 March 2005
+* 10. Zaurus Guide Newest ROM instructions updated.
+
+
+
+13.19. - 14 August 2004
+* 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
+
+
+
+13.20. - 23 May 2004
+* 1.1. Exult Version I'm confident that the new Version will be 1.2.
+* 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
+
+
+
+13.21. - 11 February 2004
+* A lot of clean up and small changes, too numerous to list.
+* 2.4. Path-Settings fixed some outdated instructions.
+* 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
+* 5.1. Movement fixed up a bit.
+* 5.2. Keyboard commands fixed up a bit as well.
+* 7. Game Menu added screenshots showing the Game menu gumps and removed "Quit to Menu".
+* 12.1. Thanks time to thank Sourceforge as well.
+
+
+
+13.22. - 12 December 2003
+* 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
+* 2.4. Path-Settings moved stuff over to next point.
+* 1.1. added to give some explanation for Static/Gamedat.
+* 3.1. Music updated with 'recent' audio changes.
+* 7.4. Audio Options updated with 'recent' audio changes.
+
 
 

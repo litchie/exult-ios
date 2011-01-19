@@ -1,3 +1,7 @@
+2011-01-19 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/*.xml, *.xsl: Updated documentations and FAQ, changes
+		section moved to the bottom.
+
 2011-01-18 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.cc: Make sure to initialize in_exult_menu variable
 
