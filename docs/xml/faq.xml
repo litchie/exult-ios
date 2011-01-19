@@ -1,211 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="18 December 2010(GMT)">
-	<section title="Changes to the FAQ">
-		<sub name="18122010">
-			<header>- 18 December 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> back to snapshot.</li>
-				<li><ref1 target="savegames_gone"/> since 1.4.9rc1 savegames location changed.</li>
-				<li><ref1 target="no_intro_speech"/> if introsnd.dat becomes corrupt.</li>
-				<li><ref1 target="bug_report"/> we require SF log in for bug reports due to spam on the tracker.</li>
-				<li><ref1 target="sextant_roof"/> sometimes people don't know how to see their position.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="13102010">
-			<header>- 13 October 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> new official version.</li>
-				<li><ref1 target="whatis_snapshot"/> this FAQis not mainly about the snapshot atm.</li>
-				<li><ref1 target="latest_version"/> 1.4.9 RC1 is the latest version and we recommend this one.</li>
-				<li><ref1 target="saves_compatibility"/> don't use 1.4.9 RC1 savegames with 1.2.</li>
-				<li><ref1 target="improvements"/> added notebook.</li>
-				<li><ref1 target="known_issues"/> got rid of 1.2 issues.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="23082010">
-			<header>- 23 August 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> better use the snapshots than the ooooold version.</li>
-				<li><ref1 target="u7_versions"/> cleaned up a bit.</li>
-				<li><ref1 target="party_formation"/> Recently was a couple of years ago.</li>
-				<li><ref1 target="known_issues"/> I pity whoever still uses the Nvidia 40.x reference drivers.</li>
-				<li>Fullscreen switching bug should be fixed and thus I'm removing this item.</li>
-				<li><ref1 target="howto_get_answers"/> pointing the Google groups instead of the old newsgroup link.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="15082010">
-			<header>- 15 August 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="whereis_exult"/> also OS X snapshots available.</li>
-				<li><ref1 target="what_platforms"/> The Amiga port homepage is only available in the Wayback Machine these days.</li>
-				<li><ref1 target="bug_report"/> name and location of log files.</li>
-				<li><ref1 target="fullscreen_bugs"/> workaround added.</li>
-				<li><ref1 target="osx_issues"/> should be fixed but if not we need to know.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="12032010">
-			<header>- 12 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="fullscreen_bugs"/> No more 8bit scaler issues.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="10032010">
-			<header>- 10 March 2010</header>
-			<body>
-				<ul>
-				<li><ref1 target="where_cfg"/> On Windows this changed.</li>
-				<li><ref1 target="fullscreen_bugs"/> added.</li>
-				<li><ref1 target="hawk_gangplank"/> added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="16072009">
-			<header>- 16 July 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="known_issues"/> re-added some things that are fixed in snapshots.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="03062009">
-			<header>- 03 June 2009</header>
-			<body>
-				<ul>
-				<li>Spell checked the whole FAQ</li>
-				<li><ref1 target="any_port"/> added.</li>
-				</ul>
-			</body>
-		</sub>	
-		<sub name="20052009">
-			<header>- 20 May 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> leveled up.</li>
-				<li><ref1 target="play_through_u7"/> yes you can.</li>
-				<li><ref1 target="si_support"/> has been working for ages.</li>
-				<li><ref1 target="saves_compatibility"/> do not use 1.4x saves with 1.2.</li>
-				<li><ref1 target="walkthroughs"/> Excalibur's World of Ultima has disappeared.</li>
-				<li><ref1 target="party_formation"/> the original's formation has become the default.</li>
-				<li><ref1 target="red_x"/> added.</li>
-				<li><ref1 target="exult_engine"/> changed a bit.</li>
-				<li><ref1 target="mods_patches"/> link to the ReadMe installation instructions.</li>
-				<li><ref1 target="known_bugs"/> link to the bug tracker changed.</li>
-				<li><ref1 target="bug_report"/> many changes to the SF bug tracker.</li>
-				<li><ref1 target="by_design"/> cleaned up.</li>
-				<li><ref1 target="known_issues"/> also cleaned up.</li>
-				<li><ref1 target="compile_issues"/> added Ubuntu issue.</li>
-				<li>removed "Not yet implemented" as the only issue is stealing and killing and 
-					that is mentioned in <ref1 target="known_issues"/>.</li>
-				<li><ref1 target="w9x_issues"/> added and moved the sound issue to that.</li>
-				<li><ref1 target="osx_issues"/> added because of the audio crashes.</li>
-				<li><ref1 target="howto_get_answers"/> the #exult logs have moved ages ago.</li>
-				</ul>
-			</body>
-		</sub>	
-		<sub name="30042009">
-			<header>- 30 April 2009</header>
-			<body>
-				<ul>
-				<li><ref1 target="mods_patches"/> eguides disappeared, but Marzo's Seven Towers takes its place
-				(as well as TFL url fix).</li>
-				<li><ref1 target="known_issues"/> added that we were wrong with spell requirements and costs.</li>
-				<li><ref1 target="reagents_differ"/> added.</li>
-				<li>removed the keyboard movement question.</li>
-				</ul>
-			</body>
-		</sub>		
-		<sub name="21102007">
-			<header>- 21 October 2007</header>
-			<body>
-				<ul>
-				<li><ref1 target="whereis_exult"/> neither the BeOS nor the Amiga port are available 
-					anymore, but we do have the PocketPC snapshots.</li>
-				<li><ref1 target="compile_snapshot"/> compile instructions for Linux are in INSTALL.</li>
-				<li><ref1 target="what_platforms"/> Amiga port is not downloadable.</li>	
-				<li><ref1 target="pocketpc_port"/> Lanica ported to PocketPC.</li>	
-				<li><ref1 target="known_issues"/> bug with summoning Chaos Hierophant in 1.2.</li>
-				<li><ref1 target="who_speaks"/> added since there was confusion about this before.</li>
-				<li><ref1 target="contact"/> removed a defunct eMail address.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08042006">
-			<header>- 08 April 2006</header>
-			<body>
-				<ul>
-				<li><ref1 target="mods_patches"/> a list of where to find those.</li>
-				<li><ref1 target="why_gameplayfaq"/> explained the mark in the questions.</li>
-				<li><ref1 target="alagnar_dead"/> a bug that also exists in the original.</li>
-				</ul>
-			</body>
-		</sub>		
-		<sub name="04102004">
-			<header>- 04 October 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="why_gameplayfaq"/> walkthroughs, the source of evil.</li>
-				<li><ref1 target="tetrahedron"/> two issues come up from time to time.</li>
-				<li><ref1 target="pothos_mad_mage"/> needed to be added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="14082004">
-			<header>- 14 August 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="is_exult_free"/> contact us via the forum.</li>
-				<li><ref1 target="pentagram"/> the homepage is actually informative now.</li>
-				<li><ref1 target="pocketpc_port"/> time to have this answered.</li>
-				<li><ref1 target="stone_of_castambre"/> Willem added this useful information.</li>
-				<li><ref1 target="si_npc_gone"/> teleporting is dangerous.</li>
-				<li><ref1 target="karnax_gone"/> example for above.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="23052004">
-			<header>- 23 May 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> 1.2 now.</li>
-				<li><ref1 target="exult_donation"/> No we don't but SF would be happy.</li>
-				<li><ref1 target="latest_version"/> 1.2 now.</li>
-				<li><ref1 target="where_cfg"/> if you really can't find it.</li>				
-				</ul>
-			</body>
-		</sub>
-		<sub name="27012004">
-			<header>- 27 January 2004</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> 1.1.9rc1 now.</li>
-				<li><ref1 target="known_issues"/> Items descriptions in SI-only work now.</li>
-				<li><ref1 target="xenka_sacrifice"/> added.</li>
-				<li><ref1 target="serpent_staff"/> Willem fixed this.</li>				
-				</ul>
-			</body>
-		</sub>
-		<sub name="12122003">
-			<header>- 12 December 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="skarabrae_sacrifice"/> Stuart told me another workaround.</li>
-				<li><ref1 target="howto_get_answers"/> still used the old invalid address for irc and #exultlog 
-					(thanks Lars).</li>
-				</ul>
-			</body>
-		</sub>
-	</section>
+<faqs title="Exult" changed="19 January 2011 (GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -405,7 +200,12 @@
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
 					in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher),
-					OS X, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP/Vista/7).
+					OS X, OpenBSD, FreeBSD, Solaris, BeOS and Winndows (Windows 9x/ME/NT4/2000/XP/Vista/7).
+				</para>
+				<para>
+					Jeff, Dr.Code, is currently porting <Exult/> to Android by rewriting it in Java. If 
+					you want to follow the progress of the port take a look at our 
+					<extref target="http://exult.sourceforge.net/forum/">forum</extref>.
 				</para>
 				 <para>
 					Artaxerxes developed the port to
@@ -422,6 +222,16 @@
 					<extref target="http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html"/>.
 					Unfortunately the download is no longer available and thus the port is probably abandoned.
 				 </para>
+				<para>
+					Additionally, <Exult/> has been ported to Dingoo (see 
+					<extref target="http://exult.sourceforge.net/forum/">our forum</extref> and 
+					<extref target="http://crankgaming.blogspot.com/2010/09/exult-v14svn6317-for-dingux-beta2.html">this Announcement</extref>) 
+					by SiENcE.<br/>
+					Also <Exult/> 1.2 has been ported to <extref target="http://www.thefoodsucks.com/sony-psp">Sony PSP</extref> 
+					by Phantom Fighter.<br/>
+					And Cancerous1 is in the progress of porting <Exult/> to 
+					<extref target="http://code.google.com/p/exultx-nosdlmixer/">XBox 360</extref>.
+				</para>
 			</body>
 		</sub>
 		<sub name="pocketpc_port">
@@ -429,7 +239,7 @@
 			<body>
 				<para>
 					Lanica Dragon successfully ported <Exult/> to the PocketPC and made snapshots 
-					available on our download page.
+					available on our <extref target="http://exult.sourceforge.net/download.php">download page</extref>.
 				</para>
 			</body>
 		</sub>
@@ -620,7 +430,8 @@
 					The new location differs depending on your operating system, for details see 
 					<extref doc="docs" target="path_config">Path-Settings</extref>.<br/>
 					Your old savegames are probably still in the folder of the original games as 
-					we used to save them there.
+					we used to save them there.<br/>
+					Just copy them from the old location to the new location.
 				</para>
 			</body>
 		</sub>
@@ -1477,6 +1288,221 @@
 					Thanks go to <strong>Matt0</strong> who really got me thinking about doing
 					this FAQ (though he just did it to tease me).
 				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Changes to the FAQ">
+		<sub name="19012011">
+			<header>- 19 January 2011</header>
+			<body>
+				<ul>
+				<li><section_ref target="Changes to the FAQ"/> moved to the bottom.</li>
+				<li><ref1 target="what_platforms"/> news about ports for Android, Dingoo, XBox 360 and PSP.</li>
+				<li><ref1 target="savegames_gone"/> added hint about copying the saves to the new location.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="18122010">
+			<header>- 18 December 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> back to snapshot.</li>
+				<li><ref1 target="savegames_gone"/> since 1.4.9rc1 savegames location changed.</li>
+				<li><ref1 target="no_intro_speech"/> if introsnd.dat becomes corrupt.</li>
+				<li><ref1 target="bug_report"/> we require SF log in for bug reports due to spam on the tracker.</li>
+				<li><ref1 target="sextant_roof"/> sometimes people don't know how to see their position.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="13102010">
+			<header>- 13 October 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> new official version.</li>
+				<li><ref1 target="whatis_snapshot"/> this FAQis not mainly about the snapshot atm.</li>
+				<li><ref1 target="latest_version"/> 1.4.9 RC1 is the latest version and we recommend this one.</li>
+				<li><ref1 target="saves_compatibility"/> don't use 1.4.9 RC1 savegames with 1.2.</li>
+				<li><ref1 target="improvements"/> added notebook.</li>
+				<li><ref1 target="known_issues"/> got rid of 1.2 issues.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="23082010">
+			<header>- 23 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> better use the snapshots than the ooooold version.</li>
+				<li><ref1 target="u7_versions"/> cleaned up a bit.</li>
+				<li><ref1 target="party_formation"/> Recently was a couple of years ago.</li>
+				<li><ref1 target="known_issues"/> I pity whoever still uses the Nvidia 40.x reference drivers.</li>
+				<li>Fullscreen switching bug should be fixed and thus I'm removing this item.</li>
+				<li><ref1 target="howto_get_answers"/> pointing the Google groups instead of the old newsgroup link.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="15082010">
+			<header>- 15 August 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> also OS X snapshots available.</li>
+				<li><ref1 target="what_platforms"/> The Amiga port homepage is only available in the Wayback Machine these days.</li>
+				<li><ref1 target="bug_report"/> name and location of log files.</li>
+				<li><ref1 target="fullscreen_bugs"/> workaround added.</li>
+				<li><ref1 target="osx_issues"/> should be fixed but if not we need to know.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="12032010">
+			<header>- 12 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="fullscreen_bugs"/> No more 8bit scaler issues.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="10032010">
+			<header>- 10 March 2010</header>
+			<body>
+				<ul>
+				<li><ref1 target="where_cfg"/> On Windows this changed.</li>
+				<li><ref1 target="fullscreen_bugs"/> added.</li>
+				<li><ref1 target="hawk_gangplank"/> added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="16072009">
+			<header>- 16 July 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="known_issues"/> re-added some things that are fixed in snapshots.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="03062009">
+			<header>- 03 June 2009</header>
+			<body>
+				<ul>
+				<li>Spell checked the whole FAQ</li>
+				<li><ref1 target="any_port"/> added.</li>
+				</ul>
+			</body>
+		</sub>	
+		<sub name="20052009">
+			<header>- 20 May 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> leveled up.</li>
+				<li><ref1 target="play_through_u7"/> yes you can.</li>
+				<li><ref1 target="si_support"/> has been working for ages.</li>
+				<li><ref1 target="saves_compatibility"/> do not use 1.4x saves with 1.2.</li>
+				<li><ref1 target="walkthroughs"/> Excalibur's World of Ultima has disappeared.</li>
+				<li><ref1 target="party_formation"/> the original's formation has become the default.</li>
+				<li><ref1 target="red_x"/> added.</li>
+				<li><ref1 target="exult_engine"/> changed a bit.</li>
+				<li><ref1 target="mods_patches"/> link to the ReadMe installation instructions.</li>
+				<li><ref1 target="known_bugs"/> link to the bug tracker changed.</li>
+				<li><ref1 target="bug_report"/> many changes to the SF bug tracker.</li>
+				<li><ref1 target="by_design"/> cleaned up.</li>
+				<li><ref1 target="known_issues"/> also cleaned up.</li>
+				<li><ref1 target="compile_issues"/> added Ubuntu issue.</li>
+				<li>removed "Not yet implemented" as the only issue is stealing and killing and 
+					that is mentioned in <ref1 target="known_issues"/>.</li>
+				<li><ref1 target="w9x_issues"/> added and moved the sound issue to that.</li>
+				<li><ref1 target="osx_issues"/> added because of the audio crashes.</li>
+				<li><ref1 target="howto_get_answers"/> the #exult logs have moved ages ago.</li>
+				</ul>
+			</body>
+		</sub>	
+		<sub name="30042009">
+			<header>- 30 April 2009</header>
+			<body>
+				<ul>
+				<li><ref1 target="mods_patches"/> eguides disappeared, but Marzo's Seven Towers takes its place
+				(as well as TFL url fix).</li>
+				<li><ref1 target="known_issues"/> added that we were wrong with spell requirements and costs.</li>
+				<li><ref1 target="reagents_differ"/> added.</li>
+				<li>removed the keyboard movement question.</li>
+				</ul>
+			</body>
+		</sub>		
+		<sub name="21102007">
+			<header>- 21 October 2007</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> neither the BeOS nor the Amiga port are available 
+					anymore, but we do have the PocketPC snapshots.</li>
+				<li><ref1 target="compile_snapshot"/> compile instructions for Linux are in INSTALL.</li>
+				<li><ref1 target="what_platforms"/> Amiga port is not downloadable.</li>	
+				<li><ref1 target="pocketpc_port"/> Lanica ported to PocketPC.</li>	
+				<li><ref1 target="known_issues"/> bug with summoning Chaos Hierophant in 1.2.</li>
+				<li><ref1 target="who_speaks"/> added since there was confusion about this before.</li>
+				<li><ref1 target="contact"/> removed a defunct eMail address.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="08042006">
+			<header>- 08 April 2006</header>
+			<body>
+				<ul>
+				<li><ref1 target="mods_patches"/> a list of where to find those.</li>
+				<li><ref1 target="why_gameplayfaq"/> explained the mark in the questions.</li>
+				<li><ref1 target="alagnar_dead"/> a bug that also exists in the original.</li>
+				</ul>
+			</body>
+		</sub>		
+		<sub name="04102004">
+			<header>- 04 October 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="why_gameplayfaq"/> walkthroughs, the source of evil.</li>
+				<li><ref1 target="tetrahedron"/> two issues come up from time to time.</li>
+				<li><ref1 target="pothos_mad_mage"/> needed to be added.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="14082004">
+			<header>- 14 August 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="is_exult_free"/> contact us via the forum.</li>
+				<li><ref1 target="pentagram"/> the homepage is actually informative now.</li>
+				<li><ref1 target="pocketpc_port"/> time to have this answered.</li>
+				<li><ref1 target="stone_of_castambre"/> Willem added this useful information.</li>
+				<li><ref1 target="si_npc_gone"/> teleporting is dangerous.</li>
+				<li><ref1 target="karnax_gone"/> example for above.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="23052004">
+			<header>- 23 May 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> 1.2 now.</li>
+				<li><ref1 target="exult_donation"/> No we don't but SF would be happy.</li>
+				<li><ref1 target="latest_version"/> 1.2 now.</li>
+				<li><ref1 target="where_cfg"/> if you really can't find it.</li>				
+				</ul>
+			</body>
+		</sub>
+		<sub name="27012004">
+			<header>- 27 January 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> 1.1.9rc1 now.</li>
+				<li><ref1 target="known_issues"/> Items descriptions in SI-only work now.</li>
+				<li><ref1 target="xenka_sacrifice"/> added.</li>
+				<li><ref1 target="serpent_staff"/> Willem fixed this.</li>				
+				</ul>
+			</body>
+		</sub>
+		<sub name="12122003">
+			<header>- 12 December 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="skarabrae_sacrifice"/> Stuart told me another workaround.</li>
+				<li><ref1 target="howto_get_answers"/> still used the old invalid address for irc and #exultlog 
+					(thanks Lars).</li>
+				</ul>
 			</body>
 		</sub>
 	</section>
