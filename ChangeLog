@@ -1,6 +1,9 @@
 2011-01-19 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/*.xml, *.xsl: Updated documentations and FAQ, changes
 		section moved to the bottom.
+	* docs/xml: Removed README and added HowTo instead to avoid a
+		conflict with the generated documentation.
+	* docs/xml/makefile: use gsed instead of sed
 
 2011-01-18 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.cc: Make sure to initialize in_exult_menu variable

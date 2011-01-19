@@ -29,7 +29,7 @@ duplicate: faq.txt docs.txt
 
 # rule for stripping the unneded <test> tag from the PHP files
 phpfix: docs.dat faq.dat exult_studio.dat
-	sed -i -e 's@<test xmlns="http://www.w3.org/1999/xhtml">@@; s@</test>@@' *.dat
+	gsed -i -e 's@<test xmlns="http://www.w3.org/1999/xhtml">@@; s@</test>@@' *.dat
 
 # remove all generated files
 clean:
