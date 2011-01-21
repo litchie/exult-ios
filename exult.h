@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2011  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,11 +77,10 @@ extern void setup_video(bool fullscreen, int setup_video_type,
 				int fill_scaler = 0);
 
 enum setup_video_type {
-	VIDEO_INIT = 0,
-	TOGGLE_FULLSCREEN = 1,
-	MENU_INIT = 2,
-	SET_CONFIG = 3,
-	MENU_APPLY = 4
+	VIDEO_INIT = 0,			// read and write initial settings and create gwin
+	TOGGLE_FULLSCREEN = 1,	// toggle fullscreen using proper settings
+	MENU_INIT = 2,			// read and set initial settings for video gump menu
+	SET_CONFIG = 3,			// sets the config settings (doesn't write)
 };
 
 typedef enum 
