@@ -46,8 +46,8 @@ using std::string;
 
 VideoOptions_gump *VideoOptions_gump::video_options_gump = 0;
 
-static const int rowy[] = { 5, 20, 45, 60, 85, 100, 115, 130, 155 };
-static const int colx[] = { 35, 50, 115, 127, 130 };
+static const int rowy[] = { 5, 17, 29, 41, 53, 65, 77, 89, 101, 113, 130, 139, 156 };
+static const int colx[] = { 35, 50, 115, 127, 130, 148 };
 static const char* applytext = "APPLY";
 
 uint32 *VideoOptions_gump::resolutions = 0;
@@ -125,8 +125,12 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 		rebuild_dynamic_buttons();
 	}
 	else if(btn==buttons[3]) {
-		load_settings(state);
-		rebuild_buttons();
+		if (share_settings)
+			fullscreen = state;
+		else {
+			load_settings(state); // overwrites old settings
+			rebuild_buttons();
+		}
 	}
 	else if(btn==buttons[4])
 		game_resolution = state;
@@ -142,6 +146,8 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 		has_ac = state!=0;
 		fill_mode = (Image_window::FillMode) ((fill_mode&~1) | (has_ac?1:0));
 	}
+	else if(btn==buttons[8])
+		share_settings = state;
 
 	paint();
 }
@@ -150,9 +156,9 @@ void VideoOptions_gump::rebuild_buttons()
 {
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		{
-		if (i != 3) {
-			delete buttons[i];
-			buttons[i] = 0;
+		if (i != 3 && i != 8 && i != 9) { // TODO: make 3, 8, & 9 buttons 0-2
+			delete buttons[i];			  // then int i = 3; and move the
+			buttons[i] = 0;				  // other buttons and deletes around
 			}
 		}
 
@@ -162,7 +168,7 @@ void VideoOptions_gump::rebuild_buttons()
 	for (int i = 0; i < Image_window::NumScalers; i++)
 		scalers[i] = Image_window::get_name_for_scaler(i);
 
-	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74,
+	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[3], 74,
 									  scaler, Image_window::NumScalers);
 
 	std::string *game_restext = new std::string[3];
@@ -170,13 +176,13 @@ void VideoOptions_gump::rebuild_buttons()
 	game_restext[1] = "320x200";
 	game_restext[2] = resolutionstring(game_resolutions[2]>>16, game_resolutions[2]&0xFFFF);
 
-	buttons[4] = new VideoTextToggle (this, game_restext, colx[2], rowy[4], 74,
+	buttons[4] = new VideoTextToggle (this, game_restext, colx[2], rowy[6], 74,
 									  game_resolution, num_game_resolutions);
 
 	std::string *fill_scaler_text = new std::string[2];
 	fill_scaler_text[0] = "Point";
 	fill_scaler_text[1] = "Bilinear";
-	buttons[5] = new VideoTextToggle (this, fill_scaler_text , colx[2], rowy[5], 74,
+	buttons[5] = new VideoTextToggle (this, fill_scaler_text , colx[2], rowy[7], 74,
 									  fill_scaler, 2);
 
 	int sel_fill_mode;
@@ -208,12 +214,7 @@ void VideoOptions_gump::rebuild_buttons()
 	fill_mode_text[2] = "Centre";
 	fill_mode_text[3] = "Custom";
 
-	buttons[6] = new VideoTextToggle (this, fill_mode_text, colx[2], rowy[6], 74, sel_fill_mode, num_fill_modes);
-
-	// Ok
-	//buttons[8] = new VideoOptions_button(this, oktext, colx[0], rowy[4]);
-	// Cancel
-	buttons[9] = new VideoOptions_button(this, applytext, colx[4], rowy[8], 59);
+	buttons[6] = new VideoTextToggle (this, fill_mode_text, colx[2], rowy[8], 74, sel_fill_mode, num_fill_modes);
 
 	rebuild_dynamic_buttons();
 }
@@ -290,7 +291,7 @@ void VideoOptions_gump::rebuild_dynamic_buttons()
 			snprintf(buf, sizeof(buf), "x%d", i+1);
 			scalingtext[i] = buf;
 			}
-		buttons[1] = new VideoTextToggle (this, scalingtext, colx[2], rowy[3], 
+		buttons[1] = new VideoTextToggle (this, scalingtext, colx[2], rowy[4], 
 				74, scaling, num_scales);
 	}
 	else if (scaler == Image_window::Hq3x)
@@ -303,7 +304,7 @@ void VideoOptions_gump::rebuild_dynamic_buttons()
 		std::string *ac_text = new std::string[2];
 		ac_text[0] = "Disabled";
 		ac_text[1] = "Enabled";
-		buttons[7] = new VideoTextToggle (this, ac_text, colx[3], rowy[7], 62, has_ac?1:0, 2);
+		buttons[7] = new VideoTextToggle (this, ac_text, colx[3], rowy[9], 62, has_ac?1:0, 2);
 	}
 }
 
@@ -384,6 +385,17 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 	enabledtext[1] = "Enabled";
 	buttons[3] = new VideoTextToggle (this, enabledtext, colx[2], rowy[0], 74,
 									  fullscreen, 2);
+	config->value("config/video/share_video_settings", share_settings, false);
+	std::string *yesNO = new std::string[2];
+	yesNO[0] = "No";
+	yesNO[1] = "Yes";
+	buttons[8] = new VideoTextToggle (this, yesNO , colx[5], rowy[11], 40,
+									  share_settings, 2);
+	o_share_settings = share_settings;
+	// Ok
+	//buttons[8] = new VideoOptions_button(this, oktext, colx[0], rowy[4]);
+	// Cancel
+	buttons[9] = new VideoOptions_button(this, applytext, colx[4], rowy[12], 59);
 
 	load_settings(fullscreen);
 	
@@ -410,8 +422,8 @@ void VideoOptions_gump::save_settings()
 		if (!Yesno_gump::ask("Scaled size less than 320x200.\nExult may be unusable.\nApply anyway?", "TINY_BLACK_FONT")) 
 			return;
 	}
-	setup_video(fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, scaling+1, scaler, fill_mode,
-				fill_scaler?Image_window::bilinear:Image_window::point);
+	gwin->resized(resx, resy, fullscreen!=0, gw, gh, scaling+1, scaler, fill_mode,
+				  fill_scaler?Image_window::bilinear:Image_window::point);
 	gclock->set_palette();
 	set_pos();
 	gwin->set_all_dirty();
@@ -422,18 +434,13 @@ void VideoOptions_gump::save_settings()
 		resy = o_resolution&0xFFFF;
 		gw = game_resolutions[o_game_resolution]>>16;
 		gh = game_resolutions[o_game_resolution]&0xFFFF;
-		string	fullscreenstr;		// Check config. for old fullscreen mode.
-		config->value("config/video/fullscreen",fullscreenstr,"no");
-		bool o_fullscreen = (fullscreenstr=="yes");
-		if (o_fullscreen == fullscreen)
-			setup_video(fullscreen!=0, MENU_APPLY, resx, resy, gw, gh, o_scaling+1, o_scaler,
-					o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
-		else {
-			setup_video(fullscreen!=0, SET_CONFIG, resx, resy, gw, gh, o_scaling+1, o_scaler,
-					o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
-			gwin->resized(resx, resy, o_fullscreen, gw, gh, o_scaling+1, o_scaler,
-					o_fill_mode, o_fill_scaler?Image_window::bilinear:Image_window::point);
-		}
+		bool o_fullscreen;
+		config->value("config/video/fullscreen", o_fullscreen, true);
+		if (fullscreen != o_fullscreen) // use old settings from the config
+			setup_video(o_fullscreen, TOGGLE_FULLSCREEN);
+		else
+			gwin->resized(resx, resy, o_fullscreen, gw, gh, o_scaling+1, o_scaler, o_fill_mode,
+						  o_fill_scaler?Image_window::bilinear:Image_window::point);
 		gclock->set_palette();
 		set_pos();
 		gwin->set_all_dirty();
@@ -441,15 +448,18 @@ void VideoOptions_gump::save_settings()
 	else
 	{
 		config->set("config/video/fullscreen", fullscreen ? "yes" : "no", false);
+		config->set("config/video/share_video_settings", share_settings ? "yes" : "no", false);
+		setup_video(fullscreen!=0, SET_CONFIG, resx, resy, gw, gh, scaling+1, scaler, fill_mode,
+				fill_scaler?Image_window::bilinear:Image_window::point);
+		config->write_back();
 		o_resolution = resolution;
 		o_scaling = scaling;
 		o_scaler = scaler;
 		o_game_resolution = game_resolution;
 		o_fill_mode = fill_mode;
 		o_fill_scaler = fill_scaler;
+		o_share_settings = share_settings;
 	}
-
-	config->write_back();
 }
 
 void VideoOptions_gump::paint()
@@ -464,12 +474,14 @@ void VideoOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Full Screen:", x + colx[0], y + rowy[0] + 1);
 	if (fullscreen) font->paint_text(iwin->get_ib8(), "Display Mode:", x + colx[0], y + rowy[1] + 1);
 	else font->paint_text(iwin->get_ib8(), "Window Size:", x + colx[0], y + rowy[1] + 1);
-	font->paint_text(iwin->get_ib8(), "Scaler:", x + colx[0], y + rowy[2] + 1);
-	if (buttons[1]) font->paint_text(iwin->get_ib8(), "Scaling:", x + colx[0], y + rowy[3] + 1);
-	font->paint_text(iwin->get_ib8(), "Game Area:", x + colx[0], y + rowy[4] + 1);
-	font->paint_text(iwin->get_ib8(), "Fill Quality:", x + colx[0], y + rowy[5] + 1);
-	font->paint_text(iwin->get_ib8(), "Fill Mode:", x + colx[0], y + rowy[6] + 1);
-	if (buttons[7]) font->paint_text(iwin->get_ib8(), "AR Correction:", x + colx[0], y + rowy[7] + 1);
+	font->paint_text(iwin->get_ib8(), "Scaler:", x + colx[0], y + rowy[3] + 1);
+	if (buttons[1]) font->paint_text(iwin->get_ib8(), "Scaling:", x + colx[0], y + rowy[4] + 1);
+	font->paint_text(iwin->get_ib8(), "Game Area:", x + colx[0], y + rowy[6] + 1);
+	font->paint_text(iwin->get_ib8(), "Fill Quality:", x + colx[0], y + rowy[7] + 1);
+	font->paint_text(iwin->get_ib8(), "Fill Mode:", x + colx[0], y + rowy[8] + 1);
+	if (buttons[7]) font->paint_text(iwin->get_ib8(), "AR Correction:", x + colx[0], y + rowy[9] + 1);
+	font->paint_text(iwin->get_ib8(), "Same settings for window", x + colx[0], y + rowy[10] + 1);
+	font->paint_text(iwin->get_ib8(), "    and fullscreen:", x + colx[0], y + rowy[11] + 1);
 	gwin->set_painted();
 }
 
