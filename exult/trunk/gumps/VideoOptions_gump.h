@@ -40,7 +40,9 @@ class VideoOptions_gump : public Modal_gump
 	int fill_scaler;
 	Image_window::FillMode fill_mode;
 	bool has_ac;
+	bool share_settings;
 
+	bool o_share_settings;
 	uint32 o_resolution;
 	int o_scaling;
 	int o_scaler;

@@ -846,12 +846,12 @@ static void Init
 		config->set("config/video/game/border/blue", border_blue, false);
 
 		Palette::set_border(border_red,border_green,border_blue);
+		bool disable_fades;
+		config->value("config/video/disable_fades", disable_fades, false);
 
 		setup_video(fullscreen, VIDEO_INIT);
 		Audio::Init();
 
-		bool disable_fades;
-		config->value("config/video/disable_fades", disable_fades, false);
 		gwin->get_pal()->set_fades_enabled(!disable_fades);
 		gwin->set_in_exult_menu(false);
 		}
@@ -2105,9 +2105,11 @@ void set_resolution (int new_res, bool save)
 		int scaler = gwin->get_win()->get_scaler();
 		current_res = new_res;
 		bool fullscreen = gwin->get_win()->is_fullscreen();
-		const string &vidStr = fullscreen? "config/video" : "config/video/window";
+		bool share_settings;
+		config->value("config/video/share_video_settings", share_settings, true);
+		const string &vidStr = (fullscreen || share_settings)?
+								"config/video" : "config/video/window";
 		int gw, gh;
-
 		config->value(vidStr + "/game/width", gw, res_list[current_res].x);
 		config->value(vidStr + "/game/height", gh, res_list[current_res].y);
 
@@ -2126,11 +2128,10 @@ void set_resolution (int new_res, bool save)
 			config->set(vidStr + "/display/height",val,false);
 			snprintf(val, 20, "%d", res_list[current_res].scale);
 			config->set(vidStr + "/scale",val,false);
-			config->write_back();
-
 			// Scaler
 			if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
-				config->set(vidStr + "/scale_method",Image_window::get_name_for_scaler(scaler),true);
+				config->set(vidStr + "/scale_method",Image_window::get_name_for_scaler(scaler),false);
+			config->write_back();
 		}
 	}
 }
@@ -2291,9 +2292,10 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		read_config = menu_init = true;
 	else if (setup_video_type == SET_CONFIG)
 		set_config = true;
-	else if (setup_video_type == MENU_APPLY) // may need something special for
-		set_config = change_gwin = true; // toggling fullscreen with menu
-	const string &vidStr = fullscreen? "config/video" : "config/video/window";
+	bool share_settings;
+	config->value("config/video/share_video_settings", share_settings, true);
+	const string &vidStr = (fullscreen || share_settings)?
+							"config/video" : "config/video/window";
 	if (read_config) {
 #ifdef DEBUG
 		cout << "Reading video menu adjustable configuration options" << endl;
@@ -2380,6 +2382,8 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				" fill mode, " << fillScalerName << " fill scaler, " <<
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
+		config->set("config/video/share_video_settings", share_settings?
+														"yes" : "no", false);
 		config->write_back();
 		gwin = new Game_window(resx, resy, fullscreen, gw ,gh, scaleval, scaler,
 														fillmode, fill_scaler);
@@ -2401,9 +2405,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				" fill mode, " << fillScalerName << " fill scaler, " <<
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
-		if (fillmode == 0)	// just in case
-			fillmode = Image_window::AspectCorrectCentre;
-		if (toggle_fullscreen)
+		if (toggle_fullscreen) // currently always true
 			fullscreen != fullscreen;
 		gwin->resized(resx, resy, fullscreen, gw, gh, scaleval, scaler,
 					fillmode, fill_scaler);

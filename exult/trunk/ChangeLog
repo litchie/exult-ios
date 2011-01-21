@@ -1,3 +1,11 @@
+2011-01-21 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* exult.*: Add "config/video/share_video_settings". "yes"
+		means that fullscreen and window share the same video
+		settings (else "no"). Default is yes.
+		Removed unused MENU_APPLY.
+	* gumps/VideoOptions_gump.*: Only set video options in the config
+		after yes/no gump. Add button for share_video_settings.
+
 2011-01-19 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* keys.cc: Fix regression in 6701 where the last created key
 		description was using every key except it. Prevent buffer
