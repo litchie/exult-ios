@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 19 January 2011 (GMT)
+last changed: 23 January 2011 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -50,8 +50,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.2. The automatic Notebook
 6.3. Screenshots
 
-7. Game Menu
-7.1. Access to the Game menu
+7. Exult Setup and Game Menu
+7.1. Access to the Exult Setup and Game menu
 7.2. Load/Save Game
 7.3. Video Options
 7.4. Audio Options
@@ -99,7 +99,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 19 January 2011
+13.1. - 23 January 2011
 13.2. - 13 October 2010
 13.3. - 30 August 2010
 13.4. - 25 August 2010
@@ -205,6 +205,7 @@ Note: yes means enabled, no means disabled
       <blackgate>
         <path>
         path_to/blackgate
+				**path to the BG game. See 2.4. before changing it.
         </path>
         <savegame_path>
         optional_path
@@ -240,6 +241,7 @@ Note: yes means enabled, no means disabled
       <serpentisle>
         <path>
         path_to/serpentisle
+				**path to the SI game. See 2.4. before changing it.
         </path>
         <savegame_path>
         optional_path
@@ -306,6 +308,10 @@ Note: yes means enabled, no means disabled
 				**double right-click lets the Avatar walk automatically 
 				to where you clicked.
     </allow_double_right_move>
+    <scroll_with_mouse>
+    no
+				**when in cheat mode allow to scroll the gameview with the mouse-
+    </scroll_with_mouse>
     <gumps_dont_pause_game>
     yes
 				**yes doesn't pause the game when gumps are shown.
@@ -485,25 +491,30 @@ Note: yes means enabled, no means disabled
     </midi>
   </audio>
   <video>
+    <share_video_settings>
+    yes
+				**yes means that fullscreen and windowed mode share the same
+				video settings.
+    </share_video_settings>
     <fullscreen>
     no
 				**do you want to play full screen?
     </fullscreen>
     <scale_method>
     2xSaI
-				**choose different scalers here - see 4.4. - applies to fullscreen.
+				**choose different scalers here - see 4.4. - applies to fullscreen if video settings are not shared.
     </scale_method>
     <scale>
     2
 				**2 enables / 1 disables scaling, some scalers support higher values. 
-				See 4.4. - applies to fullscreen.
+				See 4.4. - applies to fullscreen if video settings are not shared.
     </scale>
     <display>
       <width>
       640
 				**here you choose the resolution of the Exult window.
 				The default will be the lowest resolution that your system supports.
-				Applies to fullscreen
+				Applies to fullscreen if video settings are not shared.
       </width>
       <height>
       240
@@ -515,7 +526,7 @@ Note: yes means enabled, no means disabled
 				**here you choose at what resolution you run the games in the
 				Exult window. 320x200 is the resolution of the original.
 				0x0 means that Exult will determine the best way to match
-				game resolution to Exult resolution - applies to fullscreen.
+				game resolution to Exult resolution - applies to fullscreen if video settings are not shared.
       </width>
       <height>
       200
@@ -525,7 +536,7 @@ Note: yes means enabled, no means disabled
         0
 				**if game resolution doesn't match Exult resolution
 				you have borders around the game res. With these you can
-				change the black defult border color - applies to fullscreen.
+				change the black defult border color - applies to fullscreen if video settings are not shared.
         </red>
         <green>
         0
@@ -539,11 +550,12 @@ Note: yes means enabled, no means disabled
     Centre
 				**Possible options are Fill, Fit, Aspect Correct Fit, Centre and Aspect Correct Centre.
 				Please see 4.2. for more information about these options.
+				Applies to fullscreen if video settings are not shared.
     </fill_mode>
     <fill_scaler>
     Bilinear
 				**Chose between Point and Bilinear.
-				Please see 4.2. for more information about this - applies to fullscreen.
+				Please see 4.2. for more information about this - applies to fullscreen if video settings are not shared.
     </fill_scaler>
     <windows>
       <scale_method>
@@ -848,6 +860,7 @@ Exult offers some "hidden" command line options:
 * -h or --help Shows all the command line parameters in stderr (stderr.txt on Windows systems).
 * -v or --version Shows version information in stderr.
 * -c configfile Specify alternate config file (relative or absolute paths work).
+* -p configfile Portable option for Windows only. Exult will read cfg file from the folder it got installed to (or make one) and will save to the game folders.
 * --bg Starts the game with the Black Gate menu (prefers original game).
 * --fov Starts the game with the menu of the Black Gate with Forge of Virtue expansion. Only useful if you have FoV added as described at 2.9., otherwise it will just work like the command '--bg'.
 * --si Starts the game with the Serpent Isle menu (prefers original game).
@@ -970,7 +983,7 @@ You can now configure the ALSA port for your distribution in .exult.cfg (see 2.3
 We distinguish between the Exult display resolution (which determines the size of the Exult window and its fullscreen rendering) and the game area, which determines how big the in-game viewing area is.
 By default Exult runs the games at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 or even triple the the size to 960x600 while increasing the quality of the graphics and maintaining the same viewing area. This allows Exult to show the game as an enhanced version of how it originally appeared, and not show locations that were originally off-screen. When you first start Exult we apply the scaler 2xSaI which doubles the size of each pixel, resulting in a 640x400 window.
 You will also have to hit "Apply" in the Video gump to apply your changes. Exult will then use the new settings and will show you a countdown which asks you to confirm that the new video settings are working. When yo don't confirm by hitting "YES", the changes will be reverted. This way we try to prevent that some bad video options combinations prevent you from playing the games.
-Settings can be set for either fullscreen or windows mode just by selecting different settings while using either mode.
+When you disallow same settings for window and fullscreen mode in the Game menu, settings can be set for either fullscreen or windows mode just by selecting different settings while using either mode.
 
 
 4.2. Fill modes
@@ -1171,13 +1184,14 @@ When you press 'Ctrl-Alt-s'Exult will make a screenshot of your game window in P
 
 --------------------------------------------------------------------------------
 
-7. Game Menu
-7.1. Access to the Game menu
-You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. You then have the following options.
+7. Exult Setup and Game Menu
+7.1. Access to the Exult Setup and Game menu
+The Exult Setup and Game menu share mostly the same options, except for the option to "Save/Load games" and to "Quit" the game which are only availlable in the Game menu once you loaded a game.
+Exult Setup can only be opened on the Exult menu by selecting the "Setup" option. And you can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. The have the following options are availlable for the Exult Setup menu and the Game menu:
 
 
 7.2. Load/Save Game
-This one is pretty straightforward. You can load and save a game, delete a game and view some information of a save game on the right side (a screenshot and some stats). If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options.
+This one is pretty straightforward. You can load and save a game, delete a game and view some information of a save game on the right side (a screenshot and some stats). If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options. This is only availlable in game through the Game menu.
 
 
 7.3. Video Options
@@ -1190,6 +1204,7 @@ In this option screen you are able to determine how Exult displays the game.
 * Fill Quality the scaler used by the different fill modes. You can chose between Point and Bilinear.
 * Fill Mode Different modes on how to display the Game Area in the Exult window size. Please see 4.2. Fill modes.
 * AR Correction Aspect Ratio Correction for the fill modes "Fit" and "Centre".
+* Same setting for window and fullscreen When you disable this you can select different settings for window and fullscreen mode by changing the settings while bein in either mode.
 * APPLY Checks whether your changes can cause problems, applies your changes and gives you a countdown to confirm that the new settings are working correctly. If you don't want to apply your changes, click on the red checkmark to the left.
 
 
@@ -1204,7 +1219,7 @@ Look at 3. Audio to see explanation on the settings.
 * device type choose between different device types for MIDI music, see 3.2..
 * effects alters the way the MIDI is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
 * SFX Enable or disable digital sound effects.
-* Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.7..
+* Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.7.. This option is not availlable in the Exult Setup.
 * Speech enable or disable speech. When disabled you will see subtitles when the Guardian or the Great Earth Serpent speaks
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
@@ -1237,13 +1252,13 @@ Look at 3. Audio to see explanation on the settings.
 * Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP that is lost if a hit occurs.
 * ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
 * Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
-* Charmed difficulty choose between Normal and Hard. With Normal the Avatar behaves as in the original game. When he is charmed he will be highlighted as charmed and the charmed status icon will show but you can control him as usual. Hard will neither allow the player to control the Avatar nor access his inventory.
+* Charmed difficulty choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed him to be charmed though that only highlighted him as charmed and the charmed status icon showed but you could control him as usual. Hard will neither allow the player to control charmed party members, including the Avatar, nor access the inventory of a charmed party member.
 
 
 
 
 7.7. Quit
-Exits Exult.
+Exits Exult. This option is only availlable in the Game menu.
 
 
 
@@ -1447,13 +1462,19 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 19 January 2011
+13.1. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
-* 2.3. Settings in exult.cfg new options for combat and windowed video settings.
+* 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
+* 2.10. Command line options added portable option.
 * 4.1. Resolution Video settings are for either fullscreen or windows mode.
 * 5.3. Cheat keys Cmd-V added for insert shape.
+* 7. Exult Setup and Game Menu renamed since Exult Setup and Game menu share the same gump.
+* 7.1. Access to the Exult Setup and Game menu same and some explanation.
+* 7.2. Load/Save Game only availlable in the Game menu.
+* 7.4. Audio Options You cannot choose the SFX pack in the Exult setup.
 * 7.5. Gameplay Options reordered.
 * 7.6. Misc Options formerly named Combat Options but now added non combat options to it.
+* 7.7. Quit only in the Game menu.
 
 
 
@@ -1618,7 +1639,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 * 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
 * 5.1. Movement fixed up a bit.
 * 5.2. Keyboard commands fixed up a bit as well.
-* 7. Game Menu added screenshots showing the Game menu gumps and removed "Quit to Menu".
+* 1. added screenshots showing the Game menu gumps and removed "Quit to Menu".
 * 12.1. Thanks time to thank Sourceforge as well.
 
 

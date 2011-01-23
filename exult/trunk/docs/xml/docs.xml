@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="19 January 2011 (GMT)">	
+<readme title="Exult" changed="23 January 2011 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -191,6 +191,7 @@
 								<configtag name="blackgate">
 									<configtag name="path"  manual="true">
 									path_to/blackgate
+									<comment>**path to the BG game. See <ref target="path_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
 									optional_path
@@ -210,7 +211,7 @@
 									<comment>**configure custom key bindings or leave the (default)</comment>
 									<comment>- see <ref target="exult_keys"/></comment>
 									</configtag>
-									<configtag name="waves"  manual="true">
+									<configtag name="waves">
 									jmsfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
 									</configtag>
@@ -226,6 +227,7 @@
 								<configtag name="serpentisle">
 									<configtag name="path"  manual="true">
 									path_to/serpentisle
+									<comment>**path to the SI game. See <ref target="path_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
 									optional_path
@@ -245,7 +247,7 @@
 									<comment>**configure custom key bindings or leave the (default)</comment>
 									<comment>- see <ref target="exult_keys"/></comment>
 									</configtag>
-									<configtag name="waves"  manual="true">
+									<configtag name="waves">
 									jmsisfx.flx
 									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
 									</configtag>
@@ -292,6 +294,10 @@
 							<comment>**double right-click lets the Avatar walk automatically </comment>
 							<comment>to where you clicked.</comment>
 							</configtag>
+							<configtag name="scroll_with_mouse">
+							no
+							<comment>**when in cheat mode allow to scroll the gameview with the mouse-</comment>
+							</configtag>
 							<configtag name="gumps_dont_pause_game">
 							yes
 							<comment>**yes doesn't pause the game when gumps are shown.</comment>
@@ -310,11 +316,11 @@
 							<comment>moves. 0 disables smooth scrolling and uses the "jerky" scrolling of the </comment>
 							<comment>original game.</comment>
 							</configtag>
-							<configtag name="skip_intro" manual="true">
+							<configtag name="skip_intro">
 							no
 							<comment>**this skips the scripted first scne in BG and SI during which you can't move.</comment>
 							</configtag>
-							<configtag name="skip_splash" manual="true">
+							<configtag name="skip_splash">
 							no
 							<comment>**this skips the splash screen, the intro before you get to the</comment>
 							<comment> game menu. Disabling it brings you straight to the game menu.</comment>
@@ -362,7 +368,7 @@
 							<comment>other audio settings. (You can change this in game via </comment>
 							<comment><key>Esc</key> - the setting is saved.)</comment>
 							</configtag>
-							<configtag name="disablepause" manual="true">
+							<configtag name="disablepause">
 							no
 							<comment>**enable/disable the pausing of SFX and digital music when the </comment>
 							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
@@ -471,25 +477,30 @@
 							</configtag>
 						</configtag>
 						<configtag name="video">
+							<configtag name="share_video_settings">
+							yes
+							<comment>**yes means that fullscreen and windowed mode share the same</comment>
+							<comment>video settings.</comment>
+							</configtag>
 							<configtag name="fullscreen">
 							no
 							<comment>**do you want to play full screen?</comment>
 							</configtag>
 							<configtag name="scale_method">
 								2xSaI
-							<comment>**choose different scalers here - see <ref target="scaler"/> - applies to fullscreen.</comment>
+							<comment>**choose different scalers here - see <ref target="scaler"/> - applies to fullscreen if video settings are not shared.</comment>
 							</configtag>
 							<configtag name="scale">
 								2
 							<comment>**2 enables / 1 disables scaling, some scalers support higher values. </comment>
-							<comment>See <ref target="scaler"/> - applies to fullscreen.</comment>
+							<comment>See <ref target="scaler"/> - applies to fullscreen if video settings are not shared.</comment>
 							</configtag>
 							<configtag name="display">
 								<configtag name="width">
 									640
 									<comment>**here you choose the resolution of the Exult window.</comment>
 									<comment>The default will be the lowest resolution that your system supports.</comment>
-									<comment>Applies to fullscreen</comment>
+									<comment>Applies to fullscreen if video settings are not shared.</comment>
 								</configtag>
 								<configtag name="height">
 									240
@@ -501,7 +512,7 @@
 									<comment>**here you choose at what resolution you run the games in the</comment>
 									<comment><Exult/> window. 320x200 is the resolution of the original.</comment>
 									<comment>0x0 means that <Exult/> will determine the best way to match</comment>
-									<comment>game resolution to <Exult/> resolution - applies to fullscreen.</comment>
+									<comment>game resolution to <Exult/> resolution - applies to fullscreen if video settings are not shared.</comment>
 								</configtag>
 								<configtag name="height">
 									200
@@ -511,7 +522,7 @@
 										0
 										<comment>**if game resolution doesn't match <Exult/> resolution</comment>
 										<comment>you have borders around the game res. With these you can</comment>
-										<comment>change the black defult border color - applies to fullscreen.</comment>
+										<comment>change the black defult border color - applies to fullscreen if video settings are not shared.</comment>
 									</configtag>
 									<configtag name="green" manual="true">
 										0
@@ -525,14 +536,15 @@
 								Centre
 							<comment>**Possible options are Fill, Fit, Aspect Correct Fit, Centre and Aspect Correct Centre.</comment>
 							<comment>Please see <ref target="video_fill_modes"/> for more information about these options.</comment>
+							<comment>Applies to fullscreen if video settings are not shared.</comment>
 							</configtag>
 							<configtag name="fill_scaler">
 								Bilinear
 							<comment>**Chose between Point and Bilinear.</comment>
-							<comment>Please see <ref target="video_fill_modes"/> for more information about this - applies to fullscreen.</comment>
+							<comment>Please see <ref target="video_fill_modes"/> for more information about this - applies to fullscreen if video settings are not shared.</comment>
 							</configtag>
 							<configtag name="windows">
-								<comment>settings for display ina  window. Same applies as to fullscreen.</comment>
+								<comment>settings for display in a  window. Same applies as to fullscreen.</comment>
 							<configtag name="scale_method">
 							2xSaI
 							</configtag>
@@ -1011,6 +1023,9 @@
 						Shows version information in stderr.</li>
 					<li>-c configfile<br/>
 						Specify alternate config file (relative or absolute paths work).</li>
+					<li>-p configfile<br/>
+						Portable option for Windows only. <Exult/> will read cfg file from the folder it got 
+						installed to (or make one) and will save to the game folders.</li>
 					<li>--bg<br/>
 						Starts the game with the Black Gate menu (prefers original game).</li>
 					<li>--fov<br/>
@@ -1396,7 +1411,8 @@
 					combinations prevent you from playing the games.
 				</para>
 				<para>
-					Settings can be set for either fullscreen or windows mode just by selecting different 
+					When you disallow same settings for window and fullscreen mode in the Game menu, 
+					settings can be set for either fullscreen or windows mode just by selecting different 
 					settings while using either mode.
 				</para>
 			</body>
@@ -1737,14 +1753,20 @@
 			</body>
 		</sub>
 	</section>
-  	<section title="Game Menu">
+  	<section title="Exult Setup and Game Menu">
 		<sub name="open_menu">
-			<header>Access to the Game menu</header>
+			<header>Access to the <Exult/> Setup and Game menu</header>
 			<body>
 				<para>
-					You can access the Game menu either by pressing the disk icon in the Avatar's
+					The <Exult/> Setup and Game menu share mostly the same options, except for
+					the option to "Save/Load games" and to "Quit" the game which are only availlable
+					in the Game menu once you loaded a game.
+				</para>
+				<para>
+					<Exult/> Setup can only be opened on the <Exult/> menu by selecting the "Setup" option.<br/>
+					And you can access the Game menu either by pressing the disk icon in the Avatar's
 					inventory screen or by pressing <key>Esc</key>.<br/>
-					You then have the following options.<br/>
+					The have the following options are availlable for the <Exult/> Setup menu and the Game menu:<br/>
 					<img alt="the Game menu" src="images/docs01.png"/>
 				</para>
 			</body>
@@ -1758,6 +1780,7 @@
 					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing
 					<key>Alt</key> while using the wheel scrolls by pages.<br/>
 					Pressing <strong>Cancel</strong> exits the Load/Save options.<br/>
+					This is only availlable in game through the Game menu.<br/>
 					<img alt="saving/loading a game" src="images/docs02.png"/>
 				</para>
 			</body>
@@ -1793,6 +1816,9 @@
 						Please see <ref1 target="video_fill_modes"/>.</li>
 					<li><strong>AR Correction</strong><br/>
 						Aspect Ratio Correction for the fill modes "Fit" and "Centre".</li>
+					<li><strong>Same setting for window and fullscreen</strong><br/>
+						When you disable this you can select different settings for window and fullscreen mode by changing
+						the settings while bein in either mode.</li>
 					<li><strong>APPLY</strong><br/>
 						Checks whether your changes can cause problems, applies your changes and gives you a countdown 
 						to confirm that the new settings are working correctly. If you don't want to apply your changes,
@@ -1826,7 +1852,8 @@
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
 					<li><strong>Pack</strong><br/>
-						choose between our standard SFX packs, Roland MT32 and Soundblaster, see <ref target="wave_sfx"/>.</li>
+						choose between our standard SFX packs, Roland MT32 and Soundblaster, see <ref target="wave_sfx"/>. 
+						This option is not availlable in the <Exult/> Setup.</li>
 					<li><strong>Speech</strong><br/>
 						enable or disable speech. When disabled you will see subtitles when the Guardian 
 						or the Great Earth Serpent speaks</li>
@@ -1915,10 +1942,10 @@
 						right-clicking, then clicking on a target to attack. Or change weapons, choose a
 						favourite spell.</li>
 					<li><strong>Charmed difficulty</strong><br/>
-						choose between Normal and Hard. With Normal the Avatar behaves as in the original game. 
-						When he is charmed he will be highlighted as charmed and the charmed status icon will show 
-						but you can control him as usual. Hard will neither allow the player to control the Avatar 
-						nor access his inventory.</li>
+						choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed 
+						him to be charmed though that only highlighted him as charmed and the charmed status icon showed 
+						but you could control him as usual. Hard will neither allow the player to control charmed party members, 
+						including the Avatar, nor access the inventory of a charmed party member.</li>
 				</ul>
 				<para>
 					
@@ -1929,7 +1956,7 @@
 			<header>Quit</header>
 			<body>
 				<para>
-					Exits <Exult/>.
+					Exits <Exult/>. This option is only availlable in the Game menu.
 				</para>
 			</body>
 		</sub>
@@ -2572,16 +2599,22 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
-		<sub name="19012011">
-			<header>- 19 January 2011</header>
+		<sub name="23012011">
+			<header>- 23 January 2011</header>
 			<body>
 				<ul>
 				<li><section_ref target="Changes to the Documentation"/> moved to the bottom.</li>
-				<li><ref1 target="exult_config"/> new options for combat and windowed video settings.</li>
+				<li><ref1 target="exult_config"/> new options for combat and windowed video settings and several other settings added.</li>
+				<li><ref1 target="command_line"/> added portable option.</li>
 				<li><ref1 target="resolution"/> Video settings are for either fullscreen or windows mode.</li>
 				<li><ref1 target="exult_cheats"/> Cmd-V added for insert shape.</li>
+				<li><section_ref target="Exult Setup and Game Menu"/> renamed since <Exult/> Setup and Game menu share the same gump.</li>
+				<li><ref1 target="open_menu"/> same and some explanation.</li>
+				<li><ref1 target="savemenu"/> only availlable in the Game menu.</li>
+				<li><ref1 target="audio_gump"/> You cannot choose the SFX pack in the <Exult/> setup.</li>
 				<li><ref1 target="gameplay_gump"/> reordered.</li>
 				<li><ref1 target="misc_gump"/> formerly named Combat Options but now added non combat options to it.</li>
+				<li><ref1 target="quit_game"/> only in the Game menu.</li>
 				</ul>
 			</body>
 		</sub>
