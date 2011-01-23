@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="19 January 2011 (GMT)">
+<studiodoc title="Exult" changed="23 January 2011 (GMT)">
 	<section title="Introduction">
 		<sub name="whatis_studio">
 			<header>What is <Studio/>?</header>
@@ -301,6 +301,9 @@
 					<Studio/> offers some "hidden" command line options:
 				</para>
 				<ul>
+					<li>-p<br/>
+						Portable option for Windows only. <Studio/> will read cfg file from the folder <Exult/> got 
+						installed to.</li>
 					<li>-gGAMENAME<br/>
 						specifies GAMENAME and <Studio/> will read the game base folder from exult.cfg.
 						GAMENAME can be chosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
@@ -1722,6 +1725,15 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="23012011">
+			<header>- 23 January 2011</header>
+			<body>
+				<ul>
+				<li><section_ref target="Changes to the Documentation"/> moved to the bottom.</li>
+				<li><ref1 target="command_line"/> added portable option.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="18122010">
 			<header>- 18 December 2010</header>
 			<body>
