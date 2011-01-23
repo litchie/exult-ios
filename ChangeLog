@@ -1,3 +1,8 @@
+2011-01-23 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/*.xml: Updated documentations
+	* docs/images/docs*.png: updated documentation screenshots with 
+		newer options and added transparency.
+	
 2011-01-21 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* exult.*: Add "config/video/share_video_settings". "yes"
 		means that fullscreen and window share the same video
