@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="23 January 2011 (GMT)">	
+<readme title="Exult" changed="24 January 2011 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -566,17 +566,6 @@
 								<configtag name="height">
 									200
 								</configtag>
-								<configtag name="border" manual="true">
-									<configtag name="red" manual="true">
-										0
-									</configtag>
-									<configtag name="green" manual="true">
-										0
-									</configtag>
-									<configtag name="blue" manual="true">
-										0
-									</configtag>
-								</configtag>
 							</configtag>
 							<configtag name="fill_mode">
 								Centre
@@ -1023,9 +1012,14 @@
 						Shows version information in stderr.</li>
 					<li>-c configfile<br/>
 						Specify alternate config file (relative or absolute paths work).</li>
-					<li>-p configfile<br/>
+					<li>-p<br/>
 						Portable option for Windows only. <Exult/> will read cfg file from the folder it got 
-						installed to (or make one) and will save to the game folders.</li>
+						installed to (or make one) and will also save to gamename folders in the <Exult/> 
+						install folder.<br/>
+						For example if <Exult/> got installed to E:\Exult, a BG game will be saved to 
+						E:\Exult\blackgate.<br/>
+						Be careful that you have actually writing permissions in the <Exult/> folder or 
+						this will fail.</li>
 					<li>--bg<br/>
 						Starts the game with the Black Gate menu (prefers original game).</li>
 					<li>--fov<br/>
@@ -1340,10 +1334,6 @@
 						</configtag>
 					</configtag>
 				</configdesc>
-				<para>
-					<em>Note</em>: Currently when you switch the sfx pack during game play, you need to restart the 
-					game for all sound effects to use the new pack. This is a known issue and will not be there forever.
-				</para>
 			</body>
 		</sub>
 		<sub name="speech">
@@ -1406,7 +1396,7 @@
 				<para>
 					You will also have to hit "Apply" in the Video gump to apply your changes. <Exult/> 
 					will then use the new settings and will show you a countdown which asks you to confirm 
-					that the new video settings are working. When yo don't confirm by hitting "YES", the 
+					that the new video settings are working. When you don't confirm by hitting "YES", the 
 					changes will be reverted. This way we try to prevent that some bad video options 
 					combinations prevent you from playing the games.
 				</para>
@@ -1517,7 +1507,7 @@
 					<li><strong>OpenGL</strong><br/>
 						Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered 
 						stable. You can expect errors when using this scaler. Because of this OpenGL is only 
-						availlable in snapshots of <Exult/>, not in official releases.</li>
+						available in snapshots of <Exult/>, not in official releases.</li>
 				</ul>
 				<para>
 					The scalers by Derek Liauw are slower than the ones above it but look much better from 
@@ -1759,14 +1749,14 @@
 			<body>
 				<para>
 					The <Exult/> Setup and Game menu share mostly the same options, except for
-					the option to "Save/Load games" and to "Quit" the game which are only availlable
+					the option to "Save/Load games" and to "Quit" the game which are only available
 					in the Game menu once you loaded a game.
 				</para>
 				<para>
 					<Exult/> Setup can only be opened on the <Exult/> menu by selecting the "Setup" option.<br/>
 					And you can access the Game menu either by pressing the disk icon in the Avatar's
 					inventory screen or by pressing <key>Esc</key>.<br/>
-					The have the following options are availlable for the <Exult/> Setup menu and the Game menu:<br/>
+					The have the following options are available for the <Exult/> Setup menu and the Game menu:<br/>
 					<img alt="the Game menu" src="images/docs01.png"/>
 				</para>
 			</body>
@@ -1780,7 +1770,7 @@
 					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing
 					<key>Alt</key> while using the wheel scrolls by pages.<br/>
 					Pressing <strong>Cancel</strong> exits the Load/Save options.<br/>
-					This is only availlable in game through the Game menu.<br/>
+					This is only available in game through the Game menu.<br/>
 					<img alt="saving/loading a game" src="images/docs02.png"/>
 				</para>
 			</body>
@@ -1853,7 +1843,7 @@
 						Enable or disable digital sound effects.</li>
 					<li><strong>Pack</strong><br/>
 						choose between our standard SFX packs, Roland MT32 and Soundblaster, see <ref target="wave_sfx"/>. 
-						This option is not availlable in the <Exult/> Setup.</li>
+						This option is not available in the <Exult/> Setup.</li>
 					<li><strong>Speech</strong><br/>
 						enable or disable speech. When disabled you will see subtitles when the Guardian 
 						or the Great Earth Serpent speaks</li>
@@ -1918,7 +1908,8 @@
 				</para>
 				<ul>
 					<li><strong>Scroll game view with mouse</strong><br/>
-						When cheats are enabled you can scroll the game view with the scroll wheel of the mouse.</li>
+						When cheats are enabled you can scroll the game view with the scroll wheel of the mouse, 
+						when you hold down the <key>Alt</key> you will scroll sideways (to the west or to the east).</li>
 					<li><strong>Skip intro</strong><br/>
 						When enabled you don't have to watch the splash screen and intro when you select a game 
 						from the <Exult/> menu.</li>
@@ -1944,8 +1935,11 @@
 					<li><strong>Charmed difficulty</strong><br/>
 						choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed 
 						him to be charmed though that only highlighted him as charmed and the charmed status icon showed 
-						but you could control him as usual. Hard will neither allow the player to control charmed party members, 
-						including the Avatar, nor access the inventory of a charmed party member.</li>
+						but you could control him as usual.<br/> 
+						Hard will neither allow the player to control charmed party members, including the Avatar, nor 
+						access the inventory of a charmed party member. But you can still manipulate objects that are not 
+						in the charmed party members possessions even if the Avatar is the one who is charmed. Charmed 
+						party members will continue to attack, even if the player ends combat.</li>
 				</ul>
 				<para>
 					
@@ -1956,7 +1950,7 @@
 			<header>Quit</header>
 			<body>
 				<para>
-					Exits <Exult/>. This option is only availlable in the Game menu.
+					Exits <Exult/>. This option is only available in the Game menu.
 				</para>
 			</body>
 		</sub>
@@ -2599,6 +2593,17 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="24012011">
+			<header>- 24 January 2011</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> there is no extra border setting for windows mode settings.</li>
+				<li><ref1 target="command_line"/> fixed copy/paste error and added more explanations.</li>
+				<li><ref1 target="wave_sfx"/> switching sfx works right away, removed note.</li>
+				<li><ref1 target="misc_gump"/> more information on the charmed combat options and on mouse wheel scroll.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="23012011">
 			<header>- 23 January 2011</header>
 			<body>
@@ -2606,11 +2611,11 @@
 				<li><section_ref target="Changes to the Documentation"/> moved to the bottom.</li>
 				<li><ref1 target="exult_config"/> new options for combat and windowed video settings and several other settings added.</li>
 				<li><ref1 target="command_line"/> added portable option.</li>
-				<li><ref1 target="resolution"/> Video settings are for either fullscreen or windows mode.</li>
+				<li><ref1 target="resolution"/> Video settings can be set for either fullscreen or windows mode.</li>
 				<li><ref1 target="exult_cheats"/> Cmd-V added for insert shape.</li>
 				<li><section_ref target="Exult Setup and Game Menu"/> renamed since <Exult/> Setup and Game menu share the same gump.</li>
 				<li><ref1 target="open_menu"/> same and some explanation.</li>
-				<li><ref1 target="savemenu"/> only availlable in the Game menu.</li>
+				<li><ref1 target="savemenu"/> only available in the Game menu.</li>
 				<li><ref1 target="audio_gump"/> You cannot choose the SFX pack in the <Exult/> setup.</li>
 				<li><ref1 target="gameplay_gump"/> reordered.</li>
 				<li><ref1 target="misc_gump"/> formerly named Combat Options but now added non combat options to it.</li>
@@ -2623,7 +2628,7 @@
 			<body>
 				<ul>
 				<li><ref1 target="exult_version"/> new official version.</li>
-				<li><ref1 target="scaler"/> OpenGL is only availlable in snapshots.</li>
+				<li><ref1 target="scaler"/> OpenGL is only available in snapshots.</li>
 				<li><ref1 target="exult_cheats"/> Alt+KP+/- no longer works.</li>
 				<li><ref1 target="studio_keys"/> only with a snapshot.</li>
 				<li><ref1 target="notebook"/> added.</li>
