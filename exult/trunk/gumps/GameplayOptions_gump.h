@@ -29,7 +29,6 @@ class GameplayOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(GameplayOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[15];
 	int facestats;
 	int fastmouse;
 #ifdef UNDER_CE
@@ -48,6 +47,30 @@ class GameplayOptions_gump : public Modal_gump
 	std::string* frametext;
 	int num_framerates;
 	int smooth_scrolling;
+
+	enum button_ids {
+		id_first = 0,
+		id_ok = id_first,
+		id_cancel,
+		id_facestats,
+		id_text_bg,
+		id_fastmouse,
+#ifdef UNDER_CE
+		id_dpadopt,
+#else
+		id_mouse3rd,
+#endif
+		id_doubleclick,
+		id_rightclick_close,
+		id_doubleright_move,
+		id_gumps_pause,
+		id_cheats,
+		id_frames,
+		id_smooth_scrolling,
+		id_paperdolls,
+		id_count,
+	};
+	Gump_button* buttons[id_count];
 
  public:
 	GameplayOptions_gump();
