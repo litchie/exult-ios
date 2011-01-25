@@ -1,3 +1,11 @@
+2011-01-25 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/AudioOptions_gump.*: Add sample rate and speaker type
+		buttons. Music tracks now restart if changing audio options
+		caused it to stop. Remove unused using std::cerr and std::endl
+	* menulist.cc: Add alt-q as quit for Exult menu. For Macs,
+		cmd-x has also been added.
+	* data/audiooptions.shp: Made 15 pixels taller
+
 2011-01-23 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/*.xml: Updated documentations
 	* docs/images/docs*.png: updated documentation screenshots with 
