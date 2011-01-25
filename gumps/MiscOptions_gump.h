@@ -29,7 +29,6 @@ class MiscOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(MiscOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	int btn0;			// Below settings, + ok, cancel.
 	int difficulty;			// Setting for the buttons.
 	int show_hits;
 	int mode;
@@ -38,6 +37,22 @@ class MiscOptions_gump : public Modal_gump
 	bool usecode_intro;
 	bool menu_intro;
 	void build_buttons();
+
+	enum button_ids {
+		id_first = 0,
+		id_ok = id_first,
+		id_cancel,
+		id_scroll_mouse,
+		id_menu_intro,
+		id_usecode_intro,
+		id_difficulty,
+		id_show_hits,
+		id_mode,
+		id_charmDiff,
+		id_count,
+	};
+	Gump_button* buttons[id_count];
+
  public:
 	MiscOptions_gump();
 	virtual ~MiscOptions_gump();

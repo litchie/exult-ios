@@ -1,4 +1,9 @@
 2011-01-25 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/GameplayOptions_gump.cc, gumps/MiscOptions_gump.*,
+		gumps/VideoOptions_gump.*: Make code more consistent with
+		AudioOptions_gump. Remove some unused code.
+
+2011-01-25 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/AudioOptions_gump.*: Add sample rate and speaker type
 		buttons. Music tracks now restart if changing audio options
 		caused it to stop. Remove unused using std::cerr and std::endl

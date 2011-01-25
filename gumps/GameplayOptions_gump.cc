@@ -41,8 +41,6 @@
 #include "Enabled_button.h"
 #include "font.h"
 
-using std::cerr;
-using std::endl;
 using std::string;
 
 static const int rowy[] = { 4, 16, 124, 28, 40, 52, 64, 76, 88, 100, 112, 148, 136 };
@@ -123,60 +121,39 @@ void GameplayOptions_gump::cancel()
 
 void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if (btn == buttons[0])
+	if (btn == buttons[id_facestats])
 		facestats = state;
-	else if (btn == buttons[1])
+	else if (btn == buttons[id_fastmouse])
 		fastmouse = state;
-	else if (btn == buttons[2])
 #ifdef UNDER_CE
+	else if (btn == buttons[id_dpadopt])
 		dpadopt = state;
 #else
+	else if (btn == buttons[id_mouse3rd])
 		mouse3rd = state;
 #endif
-	else if (btn == buttons[3])
+	else if (btn == buttons[id_doubleclick])
 		doubleclick = state;
-	else if (btn == buttons[4])
+	else if (btn == buttons[id_cheats])
 		cheats = state;
-	else if (btn == buttons[5])
+	else if (btn == buttons[id_paperdolls])
 		paperdolls = state;
-	else if (btn == buttons[6])
+	else if (btn == buttons[id_text_bg])
 		text_bg = state;
-	else if (btn == buttons[8])
+	else if (btn == buttons[id_frames])
 		frames = state;
-	else if (btn == buttons[11])
+	else if (btn == buttons[id_rightclick_close])
 		rightclick_close = state;
-	else if (btn == buttons[12])
+	else if (btn == buttons[id_doubleright_move])
 		doubleright_move = state;
-	else if (btn == buttons[13])
+	else if (btn == buttons[id_gumps_pause])
 		gumps_pause = state;
-	else if (btn == buttons[14])
+	else if (btn == buttons[id_smooth_scrolling])
 		smooth_scrolling = state;
 }
 
 void GameplayOptions_gump::build_buttons()
 {
-#if 0
-	std::string *enabledtext1 = new std::string[2];
-	enabledtext1[0] = "Disabled";
-	enabledtext1[1] = "Enabled";
-
-	std::string *enabledtext2 = new std::string[2];
-	enabledtext2[0] = "Disabled";
-	enabledtext2[1] = "Enabled";
-
-	std::string *enabledtext3 = new std::string[2];
-	enabledtext3[0] = "Disabled";
-	enabledtext3[1] = "Enabled";
-
-	std::string *enabledtext4 = new std::string[2];
-	enabledtext4[0] = "Disabled";
-	enabledtext4[1] = "Enabled";
-
-	std::string *enabledtext5 = new std::string[2];
-	enabledtext5[0] = "Disabled";
-	enabledtext5[1] = "Enabled";
-#endif
-
 	std::string *stats = new std::string[4];
 	stats[0] = "Disabled";
 	stats[1] = "Left";
@@ -218,37 +195,37 @@ void GameplayOptions_gump::build_buttons()
 	smooth_text[3] = "75%";
 	smooth_text[4] = "100%";
 
-	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
+	buttons[id_facestats] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
-	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-41, 
+	buttons[id_text_bg] = new GameplayTextToggle (this, textbgcolor, colx[3]-41, 
 										 rowy[1], 100, text_bg, 18);
 	if (sman->can_use_paperdolls() && (GAME_BG ||
 			Game::get_game_type() == EXULT_DEVEL_GAME))
-		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[12], 59,
+		buttons[id_paperdolls] = new GameplayEnabledToggle(this, colx[3], rowy[12], 59,
 											   paperdolls);
-	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
+	buttons[id_fastmouse] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
 #ifdef UNDER_CE
-	buttons[2] = new GameplayTextToggle(this, dpadtext, colx[3]-21, rowy[4], 
+	buttons[id_dpadopt] = new GameplayTextToggle(this, dpadtext, colx[3]-21, rowy[4], 
 										80, dpadopt, 4);
 #else
-	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
+	buttons[id_mouse3rd] = new GameplayEnabledToggle(this, colx[3], rowy[4],
 										   59, mouse3rd);
 #endif
-	buttons[3] = new GameplayEnabledToggle(this, colx[3], rowy[5],
+	buttons[id_doubleclick] = new GameplayEnabledToggle(this, colx[3], rowy[5],
 										   59, doubleclick);
-	buttons[11] = new GameplayEnabledToggle(this, colx[3], rowy[6],
+	buttons[id_rightclick_close] = new GameplayEnabledToggle(this, colx[3], rowy[6],
 										   59, rightclick_close);
-	buttons[12] = new GameplayEnabledToggle(this, colx[3], rowy[7],
+	buttons[id_doubleright_move] = new GameplayEnabledToggle(this, colx[3], rowy[7],
 										   59, doubleright_move);
-	buttons[13] = new GameplayEnabledToggle(this, colx[3], rowy[8],
+	buttons[id_gumps_pause] = new GameplayEnabledToggle(this, colx[3], rowy[8],
 										   59, gumps_pause);
-	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[9],
+	buttons[id_cheats] = new GameplayEnabledToggle(this, colx[3], rowy[9],
 										   59, cheats);
-	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
+	buttons[id_frames] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
 										59, frames, num_framerates);
-	buttons[14] = new GameplayTextToggle(this, smooth_text, colx[3], rowy[2],
-										   59, smooth_scrolling, 5);
+	buttons[id_smooth_scrolling] = new GameplayTextToggle(this, smooth_text, colx[3],
+										rowy[2], 59, smooth_scrolling, 5);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -298,7 +275,7 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
 
-	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+	for (int i = id_first; i < id_count; i++)
 		buttons[i] = 0;
 
 	load_settings();
@@ -306,15 +283,15 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 	build_buttons();
 
 	// Ok
-	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[11]);
+	buttons[id_ok] = new GameplayOptions_button(this, oktext, colx[0], rowy[11]);
 	// Cancel
-	buttons[10] = new GameplayOptions_button(this, canceltext, 
+	buttons[id_cancel] = new GameplayOptions_button(this, canceltext, 
 											 colx[4], rowy[11]);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
 {
-	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+	for (int i = id_first; i < id_count; i++)
 		if (buttons[i])
 			delete buttons[i];
 }
@@ -366,7 +343,7 @@ void GameplayOptions_gump::save_settings()
 void GameplayOptions_gump::paint()
 {
 	Gump::paint();
-	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+	for (int i = id_first; i < id_count; i++)
 		if (buttons[i])
 			buttons[i]->paint();
 
@@ -375,7 +352,7 @@ void GameplayOptions_gump::paint()
 
 	font->paint_text(iwin->get_ib8(), "Status Bars:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "Text Background:", x + colx[0], y + rowy[1] + 1);
-	if (sman->can_use_paperdolls() && (GAME_BG || Game::get_game_type() == EXULT_DEVEL_GAME))
+	if (buttons[id_paperdolls])
 		font->paint_text(iwin->get_ib8(), "Paperdolls:", x + colx[0], y + rowy[12] + 1);
 	font->paint_text(iwin->get_ib8(), "Fullscreen Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 #ifdef UNDER_CE
@@ -406,7 +383,7 @@ bool GameplayOptions_gump::mouse_down(int mx, int my, int button)
 					
 	// Try buttons at bottom.
 	if (!pushed) {
-		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++) {
+		for (int i = id_first; i < id_count; i++) {
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;

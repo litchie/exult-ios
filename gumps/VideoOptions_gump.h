@@ -30,7 +30,6 @@ class VideoOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(VideoOptions_gump,Modal_gump(0,0,0,0));
 	static VideoOptions_gump *video_options_gump;
  private:
-	Gump_button* buttons[10];
 
 	uint32 resolution;
 	int scaling;
@@ -60,6 +59,22 @@ class VideoOptions_gump : public Modal_gump
 	static int num_game_resolutions;
 
 	static Image_window::FillMode startup_fill_mode;
+
+	enum button_ids {
+		id_first = 0,
+		id_apply = id_first,
+		id_fullscreen,
+		id_share_settings,
+		id_resolution,	// id_resolution and all past it
+		id_scaler,		// are deleted by rebuild_buttons
+		id_scaling,
+		id_game_resolution,
+		id_fill_scaler,
+		id_fill_mode,
+		id_has_ac,
+		id_count,
+	};
+	Gump_button* buttons[id_count];
 
  public:
 	VideoOptions_gump();

@@ -39,8 +39,6 @@
 #include "font.h"
 #include "gamewin.h"
 
-using std::cerr;
-using std::endl;
 using std::string;
 
 static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148 };
@@ -48,13 +46,6 @@ static const int colx[] = { 35, 50, 120, 170, 192, 215 };
 
 static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
-
-const int nbuttons = 8;
-
-static int framerates[] = { 2, 4, 6, 8, 10, -1 };
- // -1 is placeholder for custom framerate
-static int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
-
 
 class MiscOptions_button : public Text_button {
 public:
@@ -116,19 +107,19 @@ void MiscOptions_gump::cancel()
 
 void MiscOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if (btn == elems[btn0])
+	if (btn == buttons[id_scroll_mouse])
 		scroll_mouse = state;
-	else if (btn == elems[btn0 + 1])
+	else if (btn == buttons[id_menu_intro])
 		menu_intro = state;
-	else if (btn == elems[btn0 + 2])
+	else if (btn == buttons[id_usecode_intro])
 		usecode_intro = state;
-	else if (btn == elems[btn0 + 3])
+	else if (btn == buttons[id_difficulty])
 		difficulty = state;
-	else if (btn == elems[btn0 + 4])
+	else if (btn == buttons[id_show_hits])
 		show_hits = state;
-	else if (btn == elems[btn0 + 5])
+	else if (btn == buttons[id_mode])
 		mode = state;
-	else if (btn == elems[btn0 + 6])
+	else if (btn == buttons[id_charmDiff])
 		charmDiff = state;
 }
 
@@ -151,31 +142,30 @@ void MiscOptions_gump::build_buttons()
 	diffs[4] = "Harder (+1)";
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
-	btn0 = elems.size();
-	add_elem(new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
-							   40, scroll_mouse, 2));
-	add_elem(new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
-							   40, menu_intro, 2));
-	add_elem(new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
-							   40, usecode_intro, 2));
-	add_elem(new MiscTextToggle (this, diffs, colx[3], rowy[8], 
-							   85, difficulty, 7));
-	add_elem(new MiscEnabledToggle(this, colx[3], rowy[9],
-							 85, show_hits));
+	buttons[id_scroll_mouse] = new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
+							   40, scroll_mouse, 2);
+	buttons[id_menu_intro] = new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
+							   40, menu_intro, 2);
+	buttons[id_usecode_intro] = new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
+							   40, usecode_intro, 2);
+	buttons[id_difficulty] = new MiscTextToggle (this, diffs, colx[3], rowy[8], 
+							   85, difficulty, 7);
+	buttons[id_show_hits] = new MiscEnabledToggle(this, colx[3], rowy[9],
+							   85, show_hits);
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
-	add_elem(new MiscTextToggle (this, modes, colx[3], rowy[10],
-							   85, mode, 2));
+	buttons[id_mode] = new MiscTextToggle (this, modes, colx[3], rowy[10],
+							   85, mode, 2);
 	std::string *charmedDiff = new std::string[2]; 
 	charmedDiff[0] = "Normal";
 	charmedDiff[1] = "Hard";
-	add_elem(new MiscTextToggle (this, charmedDiff, colx[3], rowy[11],
-							   85, charmDiff, 2));
+	buttons[id_charmDiff] = new MiscTextToggle (this, charmedDiff, colx[3], rowy[11],
+							   85, charmDiff, 2);
 	// Ok
-	add_elem(new MiscOptions_button(this, oktext, colx[0], rowy[12]));
+	buttons[id_ok] = new MiscOptions_button(this, oktext, colx[0], rowy[12]);
 	// Cancel
-	add_elem(new MiscOptions_button(this, canceltext, colx[4], rowy[12]));
+	buttons[id_cancel] = new MiscOptions_button(this, canceltext, colx[4], rowy[12]);
 }
 
 void MiscOptions_gump::load_settings()
@@ -210,6 +200,9 @@ MiscOptions_gump::MiscOptions_gump()
 
 MiscOptions_gump::~MiscOptions_gump()
 {
+	for (int i = id_first; i < id_count; i++)
+		if (buttons[i])
+			delete buttons[i];
 }
 
 void MiscOptions_gump::save_settings()
@@ -240,6 +233,9 @@ void MiscOptions_gump::save_settings()
 void MiscOptions_gump::paint()
 {
 	Gump::paint();
+	for (int i = id_first; i < id_count; i++)
+		if (buttons[i])
+			buttons[i]->paint();
 	Font *font = fontManager.get_font("SMALL_BLACK_FONT");
 	Image_window8 *iwin = gwin->get_win();
 	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[0] + 1);
@@ -266,9 +262,9 @@ bool MiscOptions_gump::mouse_down(int mx, int my, int button)
 					
 	// Try buttons at bottom.
 	if (!pushed) {
-		for (int i = btn0; i < btn0 + nbuttons; i++) {
-			if (elems[i] && elems[i]->on_button(mx, my)) {
-				pushed = (Gump_button *)elems[i];
+		for (int i = id_first; i < id_count; i++) {
+			if (buttons[i] && buttons[i]->on_button(mx, my)) {
+				pushed = (Gump_button *)buttons[i];
 				break;
 			}
 		}
