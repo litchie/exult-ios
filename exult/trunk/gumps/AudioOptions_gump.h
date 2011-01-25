@@ -35,6 +35,8 @@ class AudioOptions_gump : public Modal_gump
 		id_ok = id_first,
 		id_cancel,
 		id_audio_enabled,
+		id_sample_rate,
+		id_speaker_type,
 		id_music_enabled,
 		id_music_looping,
 		id_music_digital,
@@ -49,7 +51,14 @@ class AudioOptions_gump : public Modal_gump
 		};
 	Gump_button* buttons[id_count];
 
+	bool speaker_type; // only mono and stereo atm
+	bool o_speaker_type;
+	std::string sample_rate_str;
+	static uint32 sample_rates[5];
+	static int num_sample_rates;
 	int audio_enabled;
+	int sample_rate;
+	int o_sample_rate;
 	int midi_enabled;
 	int midi_conversion;
 	int midi_ogg_enabled;
