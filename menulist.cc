@@ -391,18 +391,16 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				mouse->hide();
 				mouse->blit_dirty();
 				switch(event.key.keysym.sym) {
-				case SDLK_x:
-					if(event.key.keysym.mod & KMOD_ALT) {
-						return -1;
-					}
-					break;
-#if defined(MACOS) || defined(MACOSX)
 				case SDLK_q:
-					if(event.key.keysym.mod & KMOD_META) {
+				case SDLK_x:
+					if(event.key.keysym.mod & KMOD_ALT
+#if defined(MACOS) || defined(MACOSX)
+					|| event.key.keysym.mod & KMOD_META
+#endif
+													   ) {
 						return -1;
 					}
 					break;
-#endif
 				case SDLK_UP:
 					if (!selected)
 					{
