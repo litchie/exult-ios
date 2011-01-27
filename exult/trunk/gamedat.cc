@@ -265,7 +265,8 @@ void Game_window::restore_gamedat
 	{
 	char fname[50];			// Set up name.
 	snprintf(fname, 50, SAVENAME, num, 
-		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+		Game::get_game_type() == BLACK_GATE ? "bg" :
+		Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
 	restore_gamedat(fname);
 	}
 
@@ -476,7 +477,8 @@ void Game_window::save_gamedat
 	{
 	char fname[50];			// Set up name.
 	snprintf(fname, 50, SAVENAME, num,
-		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+		Game::get_game_type() == BLACK_GATE ? "bg" :
+		Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
 	save_gamedat(fname, savename);
 	if (num >=0 && num < 10)
 	{
@@ -496,7 +498,8 @@ void Game_window::read_save_names
 	{
 		char fname[50];		// Set up name.
 		snprintf(fname, 50, SAVENAME, i,
-			Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+			Game::get_game_type() == BLACK_GATE ? "bg" :
+			Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
 		ifstream in;
 		try
 		{
@@ -696,7 +699,8 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 {
 	char fname[50];			// Set up name.
 	snprintf(fname, 50, SAVENAME, num, 
-		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+		Game::get_game_type() == BLACK_GATE ? "bg" :
+		Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
 
 	// First check for compressed save game
 #ifdef HAVE_ZIP_SUPPORT
