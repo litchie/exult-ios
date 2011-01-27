@@ -1153,7 +1153,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	// Now read save game details
 	char	mask[256];
 
-	snprintf(mask, 256, SAVENAME2, Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+	snprintf(mask, 256, SAVENAME2, GAME_BG ? "bg" : GAME_SI ? "si" : "dev");
 
 	FileList filenames;
 	U7ListFiles (mask, filenames);
