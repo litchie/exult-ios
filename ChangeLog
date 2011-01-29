@@ -1,3 +1,7 @@
+2011-01-29 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* combat.cc: Fix regression in 5915 that caused an endless loop.
+		Bug 3131920
+
 2011-01-27 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamedat, gumps/Newfile_gump.cc: Dev games now use exult??dev.sav
 		instead of exult??si.sav for saved game names.
