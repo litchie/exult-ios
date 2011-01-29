@@ -72,6 +72,15 @@ Or these with MacPorts:
 (for the experts: old versions of the automake package should also work,
 e.g. you could also use automake1.10 or automake1.9).
 
+Open terminal and enter the following to allow the compile to find all the 
+headers.
+If you use Fink:
+  export CFLAGS=-I/sw/include
+  export CXXFLAGS=$CFLAGS
+If you use MacPorts:
+  export CFLAGS=-I/opt/local/include
+  export CXXFLAGS=$CFLAGS
+
 Now you are ready to compile Exult. If you are compiling from SVN, the
 first thing you have to run is this:
   ./autogen.sh
