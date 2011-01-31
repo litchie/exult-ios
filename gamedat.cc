@@ -857,7 +857,7 @@ const char *Game_window::get_game_identity(const char *savename)
 		in.read(identity, len);
 		// Truncate identity
 		char *ptr = identity;
-		for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+		for(; (*ptr!=0x1a && *ptr!=0x0d && *ptr != 0x0a); ptr++)
 			;
 		*ptr = 0;
 		game_identity = identity;
@@ -1438,7 +1438,7 @@ const char *Game_window::get_game_identity_zip
 	unzCloseCurrentFile(unzipfile);
 	unzClose(unzipfile);
 	char *ptr = buf;
-	for(; (*ptr != 0 && *ptr!=0x1a && *ptr!=0x0d); ptr++)
+	for(; (*ptr != 0 && *ptr!=0x1a && *ptr!=0x0d && *ptr != 0x0a); ptr++)
 	      	;
 	*ptr = 0;
 	return newstrdup(buf);
