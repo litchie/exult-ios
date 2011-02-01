@@ -1,3 +1,7 @@
+2011-02-01 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gumps/GameplayOptions_gump.cc: Make face stats work properly in
+		the Exult menu. Bug 3169747
+
 2011-01-31 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamedat.cc: Don't return newlines in get_game_identity and
 		get_game_identity_zip.
