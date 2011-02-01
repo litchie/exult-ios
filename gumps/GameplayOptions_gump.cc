@@ -237,7 +237,12 @@ void GameplayOptions_gump::load_settings()
 	mouse3rd = gwin->get_mouse3rd();
 #endif
 	cheats = cheat();
-	facestats = Face_stats::get_state() + 1;
+	if (gwin->is_in_exult_menu()) {
+		config->value("config/gameplay/facestats", facestats, -1);
+		facestats += 1;
+	}
+	else
+		facestats = Face_stats::get_state() + 1;
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
@@ -319,9 +324,13 @@ void GameplayOptions_gump::save_settings()
 	config->set("config/gameplay/right_click_closes_gumps", 
 				rightclick_close ? "yes" : "no" , false);
 	cheat.set_enabled(cheats!=false);
-	while (facestats != Face_stats::get_state() + 1)
-		Face_stats::AdvanceState();
-	Face_stats::save_config(config);
+	if (gwin->is_in_exult_menu())
+		config->set("config/gameplay/facestats", facestats - 1 , false);
+	else {
+		while (facestats != Face_stats::get_state() + 1)
+			Face_stats::AdvanceState();
+		Face_stats::save_config(config);
+	}
 	if (sman->can_use_paperdolls() && (GAME_BG ||
 			Game::get_game_type() == EXULT_DEVEL_GAME)) {
 		sman->set_paperdoll_status(paperdolls!=false);
