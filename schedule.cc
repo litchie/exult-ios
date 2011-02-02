@@ -4142,8 +4142,12 @@ void Eat_schedule::now_what()
 				gwin->add_dirty(food);
 				food->remove_this();
 			}
-			if (rand()%4)
-				npc->say(first_munch, last_munch -1); // leave out "Who made this slop?"
+			if (rand()%4) {
+				if (GAME_SI) // leave out "Who made this slop?"
+					npc->say(first_munch, last_munch -1);
+				else
+					npc->say(first_munch, last_munch);
+			}
 		}
 		else{
 			state = find_plate;
