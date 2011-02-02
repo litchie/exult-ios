@@ -997,7 +997,7 @@ void Actor::check_temperature
 			return;		// Nothing to do.
 					// Warming up.
 		temperature -= (temperature >= 5 ? 5 : temperature);
-		if (GAME_SI && rand()%3 == 0)
+		if (rand()%3 == 0)
 			{
 			if (temperature >= 30)
 				say(194, 197);
@@ -1019,7 +1019,7 @@ void Actor::check_temperature
 		int decr = 1 + (warmth - 100)/10;
 		decr = decr > temperature ? temperature : decr;
 		temperature -= decr;
-		if (GAME_SI && rand()%3 == 0)
+		if (rand()%3 == 0)
 			{
 			if (temperature >= 30)
 				say(177, 181);
@@ -1032,7 +1032,7 @@ void Actor::check_temperature
 	temperature += incr;
 	if (temperature > 63)
 		temperature = 63;
-	if (GAME_SI && rand()%3 == 0)
+	if (rand()%3 == 0)
 		switch (temperature/10)
 			{
 		case 0:
@@ -1058,8 +1058,6 @@ void Actor::check_temperature
 			reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 			break;
 			}
-	else if (rand()%3 == 0 && temperature/10 == 6)
-		reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 	}
 
 /*
@@ -4046,11 +4044,9 @@ int Actor::figure_hit_points
 						// to prevent monsters from teleporting or
 						// doing other such things.
 					set_flag(Obj_flags::no_spell_casting);
-					if (GAME_SI)
-						{
-						eman->remove_text_effect(this);
-						say(first_magebane_struck, last_magebane_struck);
-						}
+					eman->remove_text_effect(this);
+					say(first_magebane_struck, last_magebane_struck);
+
 						// Tell schedule we need a new weapon.
 					if (schedule && spots[lhand] == 0)
 						schedule->set_weapon();
