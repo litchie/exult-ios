@@ -1,3 +1,11 @@
+2011-02-02 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: Add missing eat schedule saying in non-SI games.
+	* actors.cc: Allow freezing (0x9e - 0xc5) and magebane
+		(0x9b - 0x9d) messages in all games. They get added to
+		%%section msgs of textmsg.txt. See docs/siitems.txt for more
+		information about the messages Subtract 0x400 from siitems
+		to get the correct textmsg number.
+
 2011-02-01 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/GameplayOptions_gump.cc: Make face stats work properly in
 		the Exult menu. Bug 3169747
