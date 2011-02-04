@@ -1,3 +1,9 @@
+2011-02-04 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.cc: Don't have shape 846 (naga) use different dancing
+		frames unless the game is SI.
+	* objs/objs.cc: Fix missing spell scroll de-hard-coding in SI.
+		(Also used in other games even though it seems unnecessary)
+
 2011-02-02 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Add missing eat schedule saying in non-SI games.
 	* actors.cc: Allow freezing (0x9e - 0xc5) and magebane

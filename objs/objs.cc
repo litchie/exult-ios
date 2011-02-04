@@ -1120,8 +1120,7 @@ void Game_object::activate
 	if (edit())
 		return;			// Map-editing.
 	int gump = get_info().get_gump_shape();
-					// Serpent Isle spell scrolls:
-	if (gump == 65 && Game::get_game_type() == SERPENT_ISLE)
+	if (gump == game->get_shape("gumps/spell_scroll"))
 		{
 		gumpman->add_gump(this, gump);
 		return;
