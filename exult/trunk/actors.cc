@@ -533,10 +533,18 @@ bool Actor::ready_best_shield
 	(
 	)
 	{
+	if (spots[both_hands])
+		return false;
 	if (spots[rhand])
 		{
 		Shape_info& inf = spots[rhand]->get_info();
-		return inf.get_armor() || inf.get_armor_immunity();
+		if (is_in_party() || inf.get_armor() || inf.get_armor_immunity())
+			return inf.get_armor() || inf.get_armor_immunity();
+		}
+	Game_object *old_rhand = 0;
+	if (spots[rhand]) {		// remove old offhand item
+			old_rhand = spots[rhand];
+			old_rhand->remove_this(1);
 		}
 	Game_object_vector vec;		// Get list of all possessions.
 	vec.reserve(50);
@@ -564,11 +572,16 @@ bool Actor::ready_best_shield
 			best_strength = strength;
 			}
 		}
-	if (!best)
+	if (!best) {
+		if (old_rhand)	// add offhand item back to where it was
+			add(old_rhand, 1);
 		return false;
+		}
 	// Spot is free already.
 	best->remove_this(1);
 	add(best, 1);			// Should go to the right place.
+	if (old_rhand && old_rhand != best) // don't add twice
+		add(old_rhand, 1);
 	return true;
 	}
 
@@ -652,8 +665,7 @@ bool Actor::ready_best_weapon
 		add_readied(best, lhand);
 	else
 		add(best, 1);			// Should go to the right place.
-	if (wtype == lhand || wtype == rhand || wtype == backpack)
-		ready_best_shield();	// Also add a shield for 1-handed weapons.
+	ready_best_shield();	// Also add a shield for 1-handed weapons.
 	if (remove1)			// Put back other things.
 		add(remove1, 1);
 	if (remove2)
