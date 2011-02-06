@@ -1,3 +1,8 @@
+2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc: Fix ready_best_weapon not equipping dragon breath
+		and some spells because they are backpack or rhand ready type.
+		Added more shield equipping checks.
+
 2011-02-04 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Don't have shape 846 (naga) use different dancing
 		frames unless the game is SI.
