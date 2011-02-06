@@ -583,14 +583,18 @@ bool Actor::ready_best_weapon
 	)
 	{
 	int points;
-	if (Actor::get_weapon(points) != 0 && ready_ammo())
+	if (Actor::get_weapon(points) != 0 && ready_ammo()) {
+		ready_best_shield();
 		return true;		// Already have one.
+		}
 	// Check for spellbook.
 	Game_object *obj = get_readied(lhand);
 	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
 		{
-		if ((static_cast<Spellbook_object*> (obj))->can_do_spell(this))
+		if ((static_cast<Spellbook_object*> (obj))->can_do_spell(this)) {
+			ready_best_shield();
 			return true;
+			}
 		}
 	Game_object_vector vec;		// Get list of all possessions.
 	vec.reserve(50);
@@ -606,7 +610,9 @@ bool Actor::ready_best_weapon
 			continue;
 		Shape_info& info = obj->get_info();
 		int ready = info.get_ready_type();
-		if (ready != lhand && ready != both_hands)
+			// backpack and rhand added for dragon breath and some spells
+		if (ready != lhand && ready != both_hands &&
+				 ready != rhand && ready != backpack)
 			continue;
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
@@ -623,8 +629,10 @@ bool Actor::ready_best_weapon
 			best_strength = strength;
 			}
 		}
-	if (!best)
+	if (!best) {
+		ready_best_shield();
 		return false;
+		}
 		// If nothing is in left hand, nothing will happen.
 	Game_object *remove1 = spots[lhand], *remove2 = 0;
 	if (wtype == both_hands)
@@ -640,8 +648,11 @@ bool Actor::ready_best_weapon
 	if (remove2)
 		remove2->remove_this(1);
 	best->remove_this(1);
-	add(best, 1);			// Should go to the right place.
-	if (wtype == lhand)
+	if (wtype == rhand) // tell it the correct ready spot
+		add_readied(best, lhand);
+	else
+		add(best, 1);			// Should go to the right place.
+	if (wtype == lhand || wtype == rhand || wtype == backpack)
 		ready_best_shield();	// Also add a shield for 1-handed weapons.
 	if (remove1)			// Put back other things.
 		add(remove1, 1);
