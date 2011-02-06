@@ -1,4 +1,8 @@
 2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc, combat.cc: Make sure non-party members equip a shield
+		if they have one and aren't using a two handed weapon.
+
+2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Fix ready_best_weapon not equipping dragon breath
 		and some spells because they are backpack or rhand ready type.
 		Added more shield equipping checks.
