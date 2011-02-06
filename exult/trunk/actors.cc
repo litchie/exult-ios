@@ -533,7 +533,7 @@ bool Actor::ready_best_shield
 	(
 	)
 	{
-	if (spots[both_hands])
+	if (two_handed)
 		return false;
 	if (spots[rhand])
 		{
