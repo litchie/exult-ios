@@ -1210,6 +1210,8 @@ void Combat_schedule::set_weapon
 		npc->ready_best_weapon();
 		info = npc->get_weapon(points, weapon_shape, weapon);
 		}
+	else
+		npc->ready_best_shield();
 	if (!info)			// Still nothing.
 		{
 		if (spellbook)		// Did we find a spellbook?
