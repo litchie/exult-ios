@@ -6,6 +6,7 @@
 
 /*
 Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 2000? - 2011 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -80,14 +81,26 @@ const int first_close_shutters = 0x71;
 const int last_close_shutters = 0x73;
 const int first_open_shutters = 0x74;
 const int last_open_shutters = 0x76;
-const int first_hunger = 0x77;		// A little hungry.  (3 of each).
-const int first_needfood = 0x7a;	// Must have food.
-const int first_starving = 0x7b;	// Starving.
+const int first_hunger = 0x77, last_hunger = 0x79;		// A little hungry.
+const int first_needfood = 0x7a, last_needfood = 0x7c;	// Must have food.
+const int first_starving = 0x7d, last_starving = 0x7f;	// Starving.
 const int heard_something = 0x95;
 const int first_awakened = 0x95;
 const int last_awakened = 0x9a;
-const int first_magebane_struck = 0x9b;	// (SI only).
-const int last_magebane_struck = 0x9d;	// (SI only).
+const int first_magebane_struck = 0x9b;
+const int last_magebane_struck = 0x9d;
+const int first_chilly = 0x9e, last_chilly = 0xa0;	// 0 - 9 temp
+const int first_cold = 0xa1, last_cold = 0xa3;	// 10 - 19 temp
+const int first_colder = 0xa4, last_colder = 0xa6;	// 20 - 29 temp
+const int first_frostbite = 0xa7, last_frostbite = 0xa9;	// 30 - 39 temp
+const int first_warming_in_cold_2 = 0xaa, last_warming_in_cold_2 = 0xb0; // < 30 temp
+const int first_warming_in_cold = 0xb1, last_warming_in_cold = 0xb5; // 30+ temp
+const int first_frostbite_2 = 0xb6, last_frostbite_2 = 0xb8;	// 40 - 49 temp
+const int first_frostbite_3 = 0xb9, last_frostbite_3 = 0xbb;	// 50 - 59 temp
+const int first_frozen = 0xbc, last_frozen = 0xbd;	// 60+ temp
+const int first_warming_up_2 = 0xbe, last_warming_up_2 = 0xc1; // < 30 temp (warm area)
+const int first_warming_up = 0xc2, last_warming_up = 0xc5;	// 30+ temp (warm area)
+const int first_goblin_to_battle = 0xc9, last_goblin_to_battle = 0xd1;	// (SI only).
 
 //	Messages in exultmsg.txt ( - 0x400):
 const int first_chair_thief = 0x100, last_chair_thief = 0x104;
@@ -95,7 +108,7 @@ const int first_waiter_banter = 0x105, last_waiter_banter = 0x107;
 const int first_waiter_serve = 0x108, last_waiter_serve = 0x109;
 const int first_bed_occupied = 0x10a, num_bed_occupied = 3;
 const int first_catchup = 0x10d, last_catchup = 0x10f;
-const int with_help_from = 0x110, exult_team = 0x111, driven_by_exult = 0x112;
+//const int with_help_from = 0x110, exult_team = 0x111, driven_by_exult = 0x112;
 const int end_of_ultima7 = 0x113, end_of_britannia = 0x114;
 const int you_cannot_do_that = 0x115, damn_avatar = 0x116;
 const int blackgate_destroyed = 0x117, guardian_has_stopped = 0x118;
