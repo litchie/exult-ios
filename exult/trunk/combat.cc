@@ -720,7 +720,7 @@ void Combat_schedule::approach_foe
 				  npc->get_shapenum() == 0x2b3 ||
 				  npc->get_shapenum() == 0x2d5 ||
 				  npc->get_shapenum() == 0x2e8))
-				npc->say(0x4c9, 0x4d1);
+				npc->say(first_goblin_to_battle, last_goblin_to_battle);
 	    		else
 				npc->say(first_to_battle, last_to_battle);
 			}

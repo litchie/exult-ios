@@ -1,4 +1,8 @@
 2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc, combat.cc, shapes/items.h: Fix starving message.
+		Add some message constants.
+
+2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc, combat.cc: Make sure non-party members equip a shield
 		if they have one and aren't using a two handed weapon.
 
