@@ -584,7 +584,6 @@ public:
  */
 class Eat_schedule : public Schedule
 	{
-	bool created_plate;
 	Game_object *plate;
 	vector<Game_object*> eating_tables;// Tables with chairs around them.
 	enum {

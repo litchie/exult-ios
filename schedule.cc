@@ -643,7 +643,7 @@ void Eat_at_inn_schedule::now_what
 				food = obj;
 				}
 			}
-		if (rand()%5 == 0)
+		if (rand()%5 == 0 && food)
 			{
 			gwin->add_dirty(food);
 			food->remove_this();
@@ -4108,10 +4108,16 @@ void Forge_schedule::ending
 
 /*
  *	Eat without a server
- *	TODO: Make creating plates work.
+ *	The original seems to pathfind to a plate, then place the food on
+ *	the plate, sit down, and then eat it if the food is close enough.
+ *	They only seemed to eat one food item and then sit there doing nothing.
+ *	If there is no plate, they will wander around in a loiter like
+ *	schedule saying 0x410-0x413 randomly until a plate becomes available.
+ *	When eating, there are no barks.
+ *	TODO: Add plate pathfinding
  */
 Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0),
-	created_plate(false), state(eat){}
+	state(find_plate){}
 
 void Eat_schedule::now_what()
 {
@@ -4138,26 +4144,16 @@ void Eat_schedule::now_what()
 					food = obj;
 				}
 			}
-			if (rand()%5 == 0){
+			if (rand()%5 == 0 && food) {
 				gwin->add_dirty(food);
 				food->remove_this();
 			}
-			if (rand()%4) {
-				if (GAME_SI) // leave out "Who made this slop?"
-					npc->say(first_munch, last_munch -1);
-				else
-					npc->say(first_munch, last_munch);
-			}
-		}
-		else{
-			state = find_plate;
-			delay = 500;
-		}
-		break;
+		}		// loops back to itself since npc can be pushed 
+		break;	// out of their chair and not eat right away
 	}
 	case find_plate:{
 		state = serve_food;
-		delay = 500;
+		delay = 0;
 		plate = 0; // make sure moved plate doesn't get food sent to it
 		Game_object_vector plates;	// First look for a nearby plate.
 		int cnt = npc->find_nearby(plates, 717, 1, 0);
@@ -4185,7 +4181,7 @@ void Eat_schedule::now_what()
 	npc->start(250, delay);
 }
 
-// TODO: This should be in a loop to remove food one at a time with a delay then the plate
+// TODO: This should be in a loop to remove food one at a time with a delay
 void Eat_schedule::ending (int new_type) // new schedule type
 {
 	Game_object_vector foods;			// Food nearby?
@@ -4197,18 +4193,9 @@ void Eat_schedule::ending (int new_type) // new schedule type
 			if (food){
 				gwin->add_dirty(food);
 				food->remove_this();
-				npc->say(first_munch, last_munch -1); // leave out "Who made this slop?"
 			}
 		}
 	}
-	Game_object_vector platesV;
-	int plates = npc->find_nearby(platesV, 717, 2, 0);
-	if (plate && created_plate && plates){		// Found nearby?
-		plate->remove_this();
-		plate = 0;
-	}
-	if (plate)
-		plate = 0;
 }
 
 /*
