@@ -1,3 +1,8 @@
+2011-02-07 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* schedule.*: Don't have eat schedule use messages or add more
+		than one piece of food since the original doesn't and remove
+		unused create plate stuff. Add check to stop possible crash.
+
 2011-02-06 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc, combat.cc, shapes/items.h: Fix starving message.
 		Add some message constants.
