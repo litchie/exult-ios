@@ -989,18 +989,18 @@ void Actor::use_food
 	if (food <= 0)			// Really low?
 		{
 		if (rand()%4)
-			say(first_starving, first_starving + 2);
+			say(first_starving, last_starving);
 					// Set timer for damage.
 		need_timers()->start_hunger();
 		}
 	else if (food <= 4)
 		{
 		if (rand()%3)
-			say(first_needfood, first_needfood + 2);
+			say(first_needfood, last_needfood);
 		}
 	else if (food <= 8)
 		if (rand()%2)
-			say(first_hunger, first_hunger + 2);
+			say(first_hunger, last_hunger);
 	}
 
 /**
@@ -1023,9 +1023,9 @@ void Actor::check_temperature
 		if (rand()%3 == 0)
 			{
 			if (temperature >= 30)
-				say(194, 197);
+				say(first_warming_up, last_warming_up);
 			else
-				say(190, 193);
+				say(first_warming_up_2, last_warming_up_2);
 			}
 		return;
 		}
@@ -1045,9 +1045,9 @@ void Actor::check_temperature
 		if (rand()%3 == 0)
 			{
 			if (temperature >= 30)
-				say(177, 181);
+				say(first_warming_in_cold, last_warming_in_cold);
 			else
-				say(170, 176);
+				say(first_warming_in_cold_2, last_warming_in_cold_2);
 			}
 		return;
 		}
@@ -1059,25 +1059,25 @@ void Actor::check_temperature
 		switch (temperature/10)
 			{
 		case 0:
-			say(158, 160);	// A bit chilly.
+			say(first_chilly, last_chilly);	// A bit chilly.
 			break;
 		case 1:
-			say(161, 163);	// It's colder.
+			say(first_cold, last_cold);	// It's colder.
 			break;
 		case 2:
-			say(164, 166);
+			say(first_colder, last_colder);
 			break;
 		case 3:
-			say(167, 169);	// Frostbite.
+			say(first_frostbite, last_frostbite);	// Frostbite.
 			break;
 		case 4:
-			say(182, 184);
+			say(first_frostbite_2, last_frostbite_2);
 			break;
 		case 5:
-			say(185, 187);
+			say(first_frostbite_3, last_frostbite_3);
 			break;
 		case 6:
-			say(188, 189);	// Frozen.
+			say(first_frozen, last_frozen);	// Frozen.
 			reduce_health(1 + rand()%3, Weapon_data::sonic_damage);
 			break;
 			}
