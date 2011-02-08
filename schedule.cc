@@ -1577,8 +1577,12 @@ void Tool_schedule::now_what
 	if (rand()%10 == 0)
 		{
 		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
-		if (ty == Schedule::farm)
-			npc->say(first_farmer, last_farmer);
+		if (ty == Schedule::farm) {
+			if (rand()%2)
+				npc->say(first_farmer, last_farmer);
+			else
+				npc->say(first_farmer2, last_farmer2);
+			}
 		}
 	signed char frames[12];		// Use tool.
 	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
