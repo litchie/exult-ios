@@ -89,7 +89,7 @@
 0x54E:to destroy Britannia!
 0x54F:Batlin! Know that my face is most
 0x550:muppet like!
-0x551:You must go to the Serpent Isl
+0x551:You must go to the Serpent Isle
 0x552:to learn the secret of Acne Medication
 0x553:Soon I and my horde of muppets will
 0x554:destroy Britannia!

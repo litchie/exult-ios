@@ -1,3 +1,8 @@
+2011-02-08 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* gamewin.*, schedule.cc, shapes/items.h: Add unused npc messages.
+		Fix wrong message number for SI alt intro.
+	* data/exultmsg.txt: Fix typo in alt SI intro
+
 2011-02-07 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.*: Don't have eat schedule use messages or add more
 		than one piece of food since the original doesn't and remove

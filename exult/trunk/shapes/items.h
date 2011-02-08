@@ -63,11 +63,13 @@ const int first_will_help = 0x34;
 const int last_will_help = 0x36;
 const int first_to_battle = 0x39;
 const int last_to_battle = 0x3b;
+const int first_call_guards_theft = 0x3c, last_call_guards_theft = 0x3e;
 const int first_farmer = 0x3f, last_farmer = 0x41;
 const int first_miner = 0x42, last_miner = 0x44;
 const int first_miner_gold = 0x45, last_miner_gold = 0x47;
 const int first_flee = 0x48;
 const int last_flee = 0x4e;
+const int first_farmer2 = 0x60, last_farmer2 = 0x62;
 const int first_lamp_on = 0x63;
 const int last_lamp_on = 0x66;
 const int lamp_off = 0x67;
@@ -119,7 +121,7 @@ const int txt_screen3 = 0x12F; //to 0x134
 const int txt_screen4 = 0x135; //to 0x138
 const int lord_castle = 0x139, dick_castle = 0x13A;
 const int bg_fellow = 0x13B; //to 0x13D
-const int my_leige = 0x13E, yo_homes = 0x53F;
+const int my_leige = 0x13E, yo_homes = 0x13F;
 const int all_we0 = 0x140; //to 0x541
 const int and_a0 = 0x142; //to 0x543
 const int indeed = 0x144; //to 0x545

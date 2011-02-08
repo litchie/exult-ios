@@ -2711,7 +2711,7 @@ void Game_window::theft
 		return;
 		}
 	gump_man->close_all_gumps();	// Get gumps off screen.
-	call_guards(witness);
+	call_guards(witness, true);
 	}
 
 /*
@@ -2720,14 +2720,19 @@ void Game_window::theft
 
 void Game_window::call_guards
 	(
-	Actor *witness			// ->witness, or 0 to find one.
+	Actor *witness,			// ->witness, or 0 to find one.
+	bool theft				// called from Game_window::theft
 	)
 	{
 	Actor *closest;
 	if (armageddon || in_dungeon)
 		return;
-	if (witness || (witness = find_witness(closest)) != 0)
-		witness->say(first_call_guards, last_call_guards);
+	if (witness || (witness = find_witness(closest)) != 0) {
+		if (theft)
+			witness->say(first_call_guards_theft, last_call_guards_theft);
+		else
+			witness->say(first_call_guards, last_call_guards);
+		}
 	int gshape = Get_guard_shape(main_actor->get_tile());
 	if (gshape < 0)	// No local guards; lets forward to attack_avatar.
 		{
