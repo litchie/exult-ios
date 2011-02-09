@@ -271,14 +271,18 @@ osxdmg: bundle
 	cp $(srcdir)/docs/ReadMe.html ./Exult-snapshot/ReadMe.html
 	cp $(srcdir)/docs/faq.html ./Exult-snapshot/FAQ.html
 	cp $(srcdir)/docs/images/* ./Exult-snapshot/images
+	cp $(srcdir)/macosx/diskback.png ./Exult-snapshot/images/diskback.png
 	cp $(srcdir)/macosx/DS_Store ./Exult-snapshot/.DS_Store
 	/Developer/Tools/SetFile -a V ./Exult-snapshot/.DS_Store
 	/Developer/Tools/SetFile -a V ./Exult-snapshot/images
-	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/*
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/Authors
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/License
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/News
+	/Developer/Tools/SetFile -t ttro -c ttxt ./Exult-snapshot/ReadMe.MacOSX
 	/Developer/Tools/CpMac -r $(bundle_name) ./Exult-snapshot/
 	hdiutil create -ov -format UDZO -imagekey zlib-level=9 -fs HFS+ \
 					-srcfolder Exult-snapshot \
-					-volname "Exult" \
+					-volname "Exult SVN snapshot" \
 					Exult-snapshot.dmg
 	rm -rf Exult-snapshot
 
