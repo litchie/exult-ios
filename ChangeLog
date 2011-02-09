@@ -1,3 +1,8 @@
+2011-02-09 Dominik Reichardt <dominus@users.sourceforge.net>
+	* macosx/diskback.png: added a background image for the OS X snapshot disk image
+	* macosx/DS_Store: above backgrund added and a new layout of the snapshot disk image
+	* Makefile.am: some disk image tweaking
+	
 2011-02-08 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gamewin.*, schedule.cc, shapes/items.h: Add unused npc messages.
 		Fix wrong message number for SI alt intro.
