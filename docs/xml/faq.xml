@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="19 January 2011 (GMT)">
+<faqs title="Exult" changed="19 February 2012 (GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -199,38 +199,51 @@
 				<para>
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
-					in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher),
-					OS X, OpenBSD, FreeBSD, Solaris, BeOS and Winndows (Windows 9x/ME/NT4/2000/XP/Vista/7).
+					in <strong>Linux, Mac OS X, OpenBSD, FreeBSD,</strong> and <strong>Windows (Windows 9x/ME/NT4/2000/XP/Vista/7)</strong>.
 				</para>
-				<para>
+				<ul>
+					<li><strong>Android, Java</strong><br/>
 					Jeff, Dr.Code, is currently porting <Exult/> to Android by rewriting it in Java. If 
 					you want to follow the progress of the port take a look at our 
-					<extref target="http://exult.sourceforge.net/forum/">forum</extref>.
-				</para>
-				 <para>
+					<extref target="http://goo.gl/VJCNG">forum</extref>.</li>
+					
+					<li><strong>Android, native</strong><br/>
+					KenC ported <Exult/> directly to Android, without rewriting it in Java. He has 
+					posted about it in our
+					<extref target="http://goo.gl/E2y7Z">forum</extref>.</li>
+					
+					<li><strong>Zaurus</strong><br/>
 					Artaxerxes developed the port to
 					<extref target="http://www.myzaurus.com/">Zaurus</extref>, a Linux/ARM based PDA.
 					It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus
 					running SI can be found at
 					<extref target="http://exult.sourceforge.net/images/screenshots/zaurus/"/> and an
-					IPK package at <extref target="http://exult.sourceforge.net/download.php"/>.
-				 </para>
-				<para>
+					IPK package at <extref target="http://exult.sourceforge.net/download.php"/>.</li>
+					
+					<li><strong>Amiga/MorphOS</strong><br/>
 					Ruediger Hanke's ported <Exult/> to MorphOS and AmigaOS. Unfortunately the port has 
-					been abandoned for quite some time now
-					You can only find the archived homepage for this port at 
+					been abandoned for quite some time now. But you can only find the archived homepage 
+					for this port at 
 					<extref target="http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html"/>.
-					Unfortunately the download is no longer available and thus the port is probably abandoned.
-				 </para>
-				<para>
-					Additionally, <Exult/> has been ported to Dingoo (see 
+					Unfortunately the download is no longer available.</li>
+					
+					<li><strong>Dingoo</strong><br/>
+					<Exult/> has been ported to Dingoo (see 
 					<extref target="http://exult.sourceforge.net/forum/">our forum</extref> and 
 					<extref target="http://crankgaming.blogspot.com/2010/09/exult-v14svn6317-for-dingux-beta2.html">this Announcement</extref>) 
-					by SiENcE.<br/>
-					Also <Exult/> 1.2 has been ported to <extref target="http://www.thefoodsucks.com/sony-psp">Sony PSP</extref> 
-					by Phantom Fighter.<br/>
+					by SiENcE.</li>
+					
+					<li><strong>Sony PSP</strong><br/>
+					Phantom Fighter ported <Exult/> 1.2 to <extref target="http://www.thefoodsucks.com/sony-psp">Sony PSP</extref></li>
+					
+					<li><strong>XBox 360</strong><br/>
 					And Cancerous1 is in the progress of porting <Exult/> to 
-					<extref target="http://code.google.com/p/exultx-nosdlmixer/">XBox 360</extref>.
+					<extref target="http://code.google.com/p/exultx-nosdlmixer/">XBox 360</extref>.</li>
+				</ul>
+				<para>
+					A long time ago <Exult/> used to compile on <strong>MacOS 8.5</strong> (or higher), 
+					<strong>Solaris</strong> and <strong>BeOS</strong>. We have no idea if this is still 
+					the case.
 				</para>
 			</body>
 		</sub>
@@ -609,7 +622,7 @@
 				<li>SI style paperdoll (inventory screen) in BG. Very impressive. For this you
 					need to have Serpent Isle installed on your hard drive and you must set the
 					path to it in exult.cfg (see the Documentation) and activate it in the
-					Gameplay Options<br/>.
+					Gameplay Options.<br/>
 					This new inventory screen acts sometimes a little buggy, so if an item seems
 					to have disappeared disable the paperdolls in the Gameplay Options.</li>
 				<li>A beautiful new save game box. This allows you much more save games than
@@ -1292,6 +1305,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="19012011">
+			<header>- 19 February 2011</header>
+			<body>
+				<ul>
+				<li><ref1 target="what_platforms"/> added native Android port and restructured it.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19012011">
 			<header>- 19 January 2011</header>
 			<body>

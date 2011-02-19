@@ -1,5 +1,5 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 19 January 2011 (GMT)
+last changed: 19 February 2012 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
@@ -94,24 +94,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 7.2. Thanks
 
 8. Changes to the FAQ
-8.1. - 19 January 2011
-8.2. - 18 December 2010
-8.3. - 13 October 2010
-8.4. - 23 August 2010
-8.5. - 15 August 2010
-8.6. - 12 March 2010
-8.7. - 10 March 2010
-8.8. - 16 July 2009
-8.9. - 03 June 2009
-8.10. - 20 May 2009
-8.11. - 30 April 2009
-8.12. - 21 October 2007
-8.13. - 08 April 2006
-8.14. - 04 October 2004
-8.15. - 14 August 2004
-8.16. - 23 May 2004
-8.17. - 27 January 2004
-8.18. - 12 December 2003
+8.1. - 19 February 2011
+8.2. - 19 January 2011
+8.3. - 18 December 2010
+8.4. - 13 October 2010
+8.5. - 23 August 2010
+8.6. - 15 August 2010
+8.7. - 12 March 2010
+8.8. - 10 March 2010
+8.9. - 16 July 2009
+8.10. - 03 June 2009
+8.11. - 20 May 2009
+8.12. - 30 April 2009
+8.13. - 21 October 2007
+8.14. - 08 April 2006
+8.15. - 04 October 2004
+8.16. - 14 August 2004
+8.17. - 23 May 2004
+8.18. - 27 January 2004
+8.19. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -181,11 +182,16 @@ Even though it is labeled RC1 (release candidate 1) we recommend that people use
 
 
 1.13. On what platform does Exult run?
-Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OS X, OpenBSD, FreeBSD, Solaris, BeOS and Winndows (Windows 9x/ME/NT4/2000/XP/Vista/7).
-Jeff, Dr.Code, is currently porting Exult to Android by rewriting it in Java. If you want to follow the progress of the port take a look at our forum.
-Artaxerxes developed the port to Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
-Ruediger Hanke's ported Exult to MorphOS and AmigaOS. Unfortunately the port has been abandoned for quite some time now You can only find the archived homepage for this port at http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available and thus the port is probably abandoned.
-Additionally, Exult has been ported to Dingoo (see our forum and this Announcement) by SiENcE. Also Exult 1.2 has been ported to Sony PSP by Phantom Fighter. And Cancerous1 is in the progress of porting Exult to XBox 360.
+Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux, Mac OS X, OpenBSD, FreeBSD, and Windows (Windows 9x/ME/NT4/2000/XP/Vista/7).
+* Android, Java Jeff, Dr.Code, is currently porting Exult to Android by rewriting it in Java. If you want to follow the progress of the port take a look at our forum.
+* Android, native KenC ported Exult directly to Android, without rewriting it in Java. He has posted about it in our forum.
+* Zaurus Artaxerxes developed the port to Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+* Amiga/MorphOS Ruediger Hanke's ported Exult to MorphOS and AmigaOS. Unfortunately the port has been abandoned for quite some time now. But you can only find the archived homepage for this port at http://web.archive.org/web/20070927190600/http://www.muenster.de/~tomjoad/exult.html. Unfortunately the download is no longer available.
+* Dingoo Exult has been ported to Dingoo (see our forum and this Announcement) by SiENcE.
+* Sony PSP Phantom Fighter ported Exult 1.2 to Sony PSP
+* XBox 360 And Cancerous1 is in the progress of porting Exult to XBox 360.
+
+A long time ago Exult used to compile on MacOS 8.5 (or higher), Solaris and BeOS. We have no idea if this is still the case.
 
 
 1.14. Will a port for Pocket PC be available anytime?
@@ -332,7 +338,7 @@ The most common reason for this is that you try to run Exult full screen in a re
 3.16. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game Options menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Options Menu by pressing 'Esc' in the game.
-* SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options . This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
+* SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options. This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
 * A beautiful new save game box. This allows you much more save games than the original (you should run out of disc space before you run out of save game slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The save game box is opened either via the game menu or the 's' key.
 * Face status bars at the bottom of the screen that show your health (and that of your party members) as well as your mana. Double-clicking on the face opens the inventory and double-clicking on the bars shows the status screen.
 * Middle mouse button support. In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). for modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations.
@@ -590,14 +596,19 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 --------------------------------------------------------------------------------
 
 8. Changes to the FAQ
-8.1. - 19 January 2011
+8.1. - 19 February 2011
+* 1.13. On what platform does Exult run? added native Android port and restructured it.
+
+
+
+8.2. - 19 January 2011
 * 8. Changes to the FAQ moved to the bottom.
 * 1.13. On what platform does Exult run? news about ports for Android, Dingoo, XBox 360 and PSP.
 * 3.3. I updated Exult to the new version. Where have my savegames gone? added hint about copying the saves to the new location.
 
 
 
-8.2. - 18 December 2010
+8.3. - 18 December 2010
 * 1.1. Exult Version back to snapshot.
 * 3.3. I updated Exult to the new version. Where have my savegames gone? since 1.4.9rc1 savegames location changed.
 * 3.11. Why can't I hear the speech in the intro? if introsnd.dat becomes corrupt.
@@ -606,7 +617,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.3. - 13 October 2010
+8.4. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 1.10. What is a snapshot? Are these screenshots or what? this FAQis not mainly about the snapshot atm.
 * 1.12. What is the latest version of Exult? 1.4.9 RC1 is the latest version and we recommend this one.
@@ -616,7 +627,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.4. - 23 August 2010
+8.5. - 23 August 2010
 * 1.12. What is the latest version of Exult? better use the snapshots than the ooooold version.
 * 2.2. Does Exult work on all versions of the game? cleaned up a bit.
 * 3.7. Why is the party formation different? Recently was a couple of years ago.
@@ -626,7 +637,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.5. - 15 August 2010
+8.6. - 15 August 2010
 * 1.9. Where do I find Exult? also OS X snapshots available.
 * 1.13. On what platform does Exult run? The Amiga port homepage is only available in the Wayback Machine these days.
 * 4.2. How do I submit a proper bug report? name and location of log files.
@@ -635,30 +646,30 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.6. - 12 March 2010
+8.7. - 12 March 2010
 * 1.1. No more 8bit scaler issues.
 
 
 
-8.7. - 10 March 2010
+8.8. - 10 March 2010
 * 3.2. Where do I find the configuration file? On Windows this changed.
 * 1.1. added.
 * 5.13. How to break the game by closing Capt. Hawk's gangplank (SI)? added.
 
 
 
-8.8. - 16 July 2009
+8.9. - 16 July 2009
 * 4.4. Known Issues re-added some things that are fixed in snapshots.
 
 
 
-8.9. - 03 June 2009
+8.10. - 03 June 2009
 * Spell checked the whole FAQ
 * 1.15. Will there be a port of Exult for <insert platform here>? added.
 
 
 
-8.10. - 20 May 2009
+8.11. - 20 May 2009
 * 1.1. Exult Version leveled up.
 * 2.3. Can you play through U7 yet? yes you can.
 * 2.4. How about Serpent Isle? has been working for ages.
@@ -680,7 +691,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.11. - 30 April 2009
+8.12. - 30 April 2009
 * 3.20. Are there patches or Mods for Exult eguides disappeared, but Marzo's Seven Towers takes its place (as well as TFL url fix).
 * 4.4. Known Issues added that we were wrong with spell requirements and costs.
 * 5.3. Why do spells require different reagents than the manual lists (BG+SI)? added.
@@ -688,7 +699,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.12. - 21 October 2007
+8.13. - 21 October 2007
 * 1.9. Where do I find Exult? neither the BeOS nor the Amiga port are available anymore, but we do have the PocketPC snapshots.
 * 1.11. How do I compile a source code snapshot for my OS? compile instructions for Linux are in INSTALL.
 * 1.13. On what platform does Exult run? Amiga port is not downloadable.
@@ -699,21 +710,21 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.13. - 08 April 2006
+8.14. - 08 April 2006
 * 3.20. Are there patches or Mods for Exult a list of where to find those.
 * 5.1. Why is there a gameplay FAQ? explained the mark in the questions.
 * 5.9. Why is Alagnar not dead (BG)? a bug that also exists in the original.
 
 
 
-8.14. - 04 October 2004
+8.15. - 04 October 2004
 * 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
 * 5.8. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
 * 5.15. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
 
 
 
-8.15. - 14 August 2004
+8.16. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
@@ -723,7 +734,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.16. - 23 May 2004
+8.17. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -731,7 +742,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.17. - 27 January 2004
+8.18. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.17. Why won't Xenka speak about sacrifice (SI)? added.
@@ -739,7 +750,7 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 
 
-8.18. - 12 December 2003
+8.19. - 12 December 2003
 * 5.6. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 

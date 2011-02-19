@@ -1,14 +1,8 @@
 Exult Studio Documentation
-last changed: 11 March 2010(GMT)
+last changed: 19 February 2011 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
-
-0. Changes to the Documentation
-0.1. - 11 March 2010
-0.2. - 01 March 2005
-0.3. - 23 May 2004
-0.4. - 06 February 2004
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -92,50 +86,19 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9.7. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
 9.8. What's next?
 9.9. Known Bugs with the Windows port
+9.10. Known Bugs with the Linux port
 
 10. Credits
 10.1. Thanks
 
-
---------------------------------------------------------------------------------
-
-0. Changes to the Documentation
-0.1. - 11 March 2010
-* 2.1. Installation added Vista/W7 to the Windows list, Windows 95 is not supported.
-* 2.4. What you can do at the moment the patch folder NEEDS to be writeable.
-* 9.9. Known Bugs with the Windows port Windows 95 is not supported.
-
-
-
-0.2. - 01 March 2005
-* 4.3. Edit Create Barg added.
-* 4.6. Map added this menu option.
-* 6.2. The different types of eggs intermap egg added.
-* 6.14. Intermap eggs explains how to use this egg type.
-* 6.15. Multi-map support explained.
-* 9.1. Creating a boat, flying carpet, or horse drawn carriage added.
-* 9.2. Importing and creating your own custom shapes added.
-* 9.3. How to create a custom font? explained.
-
-
-
-0.3. - 23 May 2004
-* 3.4. Palettes files palette files are compatible with the Gimp.
-* 4.3. Edit note about map-editing operations.
-* 6.4. Properties of eggs some more infos.
-* 6.6. Schedules of Creatures more on the patrol schedule.
-* 7.5. NPC Flags removed some unused flags.
-
-
-
-0.4. - 06 February 2004
-* 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
-* 2.3. Step-by-step instructions to run Exult Studio some corrections.
-* 2.2. Running Exult Studio some corrections.
-* 3.3. Map files More right click options.
-* 7. NPC editing finally took on that task.
-
-
+11. Changes to the Documentation
+11.1. - 19 February 2011
+11.2. - 23 January 2011
+11.3. - 18 December 2010
+11.4. - 11 March 2010
+11.5. - 01 March 2005
+11.6. - 23 May 2004
+11.7. - 06 February 2004
 
 
 --------------------------------------------------------------------------------
@@ -276,8 +239,11 @@ You can change the settings of Exult Studio either with the preferences dialog o
 
 2.6. Command line options
 Exult Studio offers some "hidden" command line options:
-* -gGAMENAME specifies GAMENAME and Exult Studio will read the game base folder from exult.cfg. GAMENAME can be chosen from the games specified in <game> part of exult.cfg.
-* -xFOLDER tells exult_studio to look in FOLDER for its user-interface specification (exult_studio.glade). You can enter the full path (e.g. "exult_studio -xc:\exult\data") to the glade file or you can use the relative path (e.g. exult_studio -x./data). This option is only useful to developers who want to edit exult_studio.glade themselves.
+* -c configfile Specify alternate config file (relative or absolute paths work).
+* -p Portable option for Windows only. Exult Studio will read cfg file from the folder Exult got installed to.
+* -g GAMENAME specifies GAMENAME and Exult Studio will read the game base folder from exult.cfg. GAMENAME can be chosen from the games specified in <game> part of exult.cfg.
+* -m modname Must be used together with '-g gamename'; runs the specified game using the mod with title equal to 'modname'. 'modname' is the name of the mod cfg file (e.g. keyring.cfg means 'modname' 'keyring'.
+* -x FOLDER tells exult_studio to look in FOLDER for its user-interface specification (exult_studio.glade). You can enter the full path (e.g. "exult_studio -xc:\exult\data") to the glade file or you can use the relative path (e.g. exult_studio -x./data). This option is only useful to developers who want to edit exult_studio.glade themselves.
 
 
 
@@ -442,7 +408,7 @@ Create 'combination shapes', like a fence or an entire roof by selecting "Tools-
 As hinted at (see 1.3.) Usecode is actually what runs Ultima 7 and therefore any game created with Exult Studio. As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not that easy.
 For an example of how Usecode may look like download our experimental patch for BG at http://exult.sourceforge.net/snapshots/patch.zip. In that zip you'll find a readme.txt which tells you how to run it. You will also see two files called usecode.uc and usecode.
 Usecode.uc is the usecode script that will help you understand our usecode language. When you run ucc (see 9.4.) with that file (e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 'usecode' should be the same as the one in the zip file.
-Someone does have to write extensive documentation for this but I (Dominus) am not really up for that task. Pertex has written some documentation at http://www.sophen.de/exult/ that might be able help you.
+Someone does have to write extensive documentation for this but I (Dominus) am not really up for that task. Wizardry Dragon and Marzo made a good list of intrinsics http://www.thefeudallands.ca/srcdocs/files/intrinsics-uc.html and Pertex has written some documentation at http://web.archive.org/web/20071217233843/http://www.sophen.de/exult/ (unfortunately Pertex original documentation has vanished but at least the wayback machine can be of great help) that might be able help you.
 
 
 
@@ -743,12 +709,77 @@ The next things to be implemented are:
 Exult Studio runs fine on all versions of Windows, except Windows 95 (and of course Windows 3.x). However there may still be unexpected crashes. If you can reproduce a crash, please contact us.
 
 
+9.10. Known Bugs with the Linux port
+On Linux two issues have surfaced:
+* on case sensitive OS the static folder of the games need to be lower case or Exult Studio won't find the files in it.
+* when you load games or mods with more than one map, Exult Studio has problems creating and saving the extra maps.
+
+
+
 
 --------------------------------------------------------------------------------
 
 10. Credits
 10.1. Thanks
 * Colourless, Kirben and Mark Siewart invested a lot of effort to port Exult Studio to Windows.
+
+
+
+
+--------------------------------------------------------------------------------
+
+11. Changes to the Documentation
+11.1. - 19 February 2011
+* 2.6. Command line options added -c -m, added space between -x -g, even though it works without space as well.
+
+
+
+11.2. - 23 January 2011
+* 11. Changes to the Documentation moved to the bottom.
+* 2.6. Command line options added portable option.
+
+
+
+11.3. - 18 December 2010
+* 5.3. Custom Usecode added intriniscs docs from TFL and fixed the link to Pertex' site.
+* 9.10. Known Bugs with the Linux port the patch folder NEEDS to be writeable.
+
+
+
+11.4. - 11 March 2010
+* 2.1. Installation added Vista/W7 to the Windows list, Windows 95 is not supported.
+* 2.4. What you can do at the moment the patch folder NEEDS to be writeable.
+* 9.9. Known Bugs with the Windows port Windows 95 is not supported.
+
+
+
+11.5. - 01 March 2005
+* 4.3. Edit Create Barg added.
+* 4.6. Map added this menu option.
+* 6.2. The different types of eggs intermap egg added.
+* 6.14. Intermap eggs explains how to use this egg type.
+* 6.15. Multi-map support explained.
+* 9.1. Creating a boat, flying carpet, or horse drawn carriage added.
+* 9.2. Importing and creating your own custom shapes added.
+* 9.3. How to create a custom font? explained.
+
+
+
+11.6. - 23 May 2004
+* 3.4. Palettes files palette files are compatible with the Gimp.
+* 4.3. Edit note about map-editing operations.
+* 6.4. Properties of eggs some more infos.
+* 6.6. Schedules of Creatures more on the patrol schedule.
+* 7.5. NPC Flags removed some unused flags.
+
+
+
+11.7. - 06 February 2004
+* 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
+* 2.3. Step-by-step instructions to run Exult Studio some corrections.
+* 2.2. Running Exult Studio some corrections.
+* 3.3. Map files More right click options.
+* 7. NPC editing finally took on that task.
 
 
 
