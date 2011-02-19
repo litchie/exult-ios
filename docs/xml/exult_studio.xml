@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="23 January 2011 (GMT)">
+<studiodoc title="Exult" changed="19 February 2011 (GMT)">
 	<section title="Introduction">
 		<sub name="whatis_studio">
 			<header>What is <Studio/>?</header>
@@ -301,13 +301,19 @@
 					<Studio/> offers some "hidden" command line options:
 				</para>
 				<ul>
+					<li>-c configfile<br/>
+						Specify alternate config file (relative or absolute paths work).</li>
 					<li>-p<br/>
 						Portable option for Windows only. <Studio/> will read cfg file from the folder <Exult/> got 
-						installed to.</li>
-					<li>-gGAMENAME<br/>
+						installed to.</li>	
+					<li>-g GAMENAME<br/>
 						specifies GAMENAME and <Studio/> will read the game base folder from exult.cfg.
 						GAMENAME can be chosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
-					<li>-xFOLDER<br/>
+					<li>-m modname<br/>
+						Must be used together with '-g gamename'; runs the specified 
+						game using the mod with title equal to 'modname'. 'modname' is the name of the mod 
+						cfg file (e.g. keyring.cfg means 'modname' 'keyring'.</li>
+					<li>-x FOLDER<br/>
 						tells exult_studio to look in FOLDER for its user-interface specification
 						(exult_studio.glade).<br/>
 						You can enter the full path (e.g. "exult_studio -xc:\exult\data") to the glade file
@@ -1725,6 +1731,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="19022011">
+			<header>- 19 February 2011</header>
+			<body>
+				<ul>
+				<li><ref1 target="command_line"/> added -c -m, added space between -x -g, even though it works without space as well.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="23012011">
 			<header>- 23 January 2011</header>
 			<body>

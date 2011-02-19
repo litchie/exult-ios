@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 24 January 2011 (GMT)
+last changed: 19 February 2011 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -27,11 +27,13 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3.3. Abilities and limitations of the MIDI music engine
 3.4. Windows MIDI Mapper
 3.5. Digital Music
-3.6. Installation of the digital music packs
-3.7. Digital Wave Sound Effects
-3.8. Speech
-3.9. Turn off Audio
-3.10. Linux and Audio
+3.6. Digital Wave Sound Effects
+3.7. All-in-One Audio Data pack and installers
+3.8. Installation of the digital music packs
+3.9. Installation of the digital wave sound effects
+3.10. Speech
+3.11. Turn off Audio
+3.12. Linux and Audio
 
 4. Video
 4.1. Resolution
@@ -99,29 +101,30 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 24 January 2011
-13.2. - 23 January 2011
-13.3. - 13 October 2010
-13.4. - 30 August 2010
-13.5. - 25 August 2010
-13.6. - 15 August 2010
-13.7. - 28 April 2010
-13.8. - 11 March 2010
-13.9. - 10 March 2010
-13.10. - 08 March 2010
-13.11. - 16 July 2009
-13.12. - 03 June 2009
-13.13. - 20 May 2009
-13.14. - 19 May 2009
-13.15. - 18 May 2009
-13.16. - 28 April 2009
-13.17. - 21 October 2007
-13.18. - 08 April 2006
-13.19. - 14 March 2005
-13.20. - 14 August 2004
-13.21. - 23 May 2004
-13.22. - 11 February 2004
-13.23. - 12 December 2003
+13.1. - 19 February 2011
+13.2. - 24 January 2011
+13.3. - 23 January 2011
+13.4. - 13 October 2010
+13.5. - 30 August 2010
+13.6. - 25 August 2010
+13.7. - 15 August 2010
+13.8. - 28 April 2010
+13.9. - 11 March 2010
+13.10. - 10 March 2010
+13.11. - 08 March 2010
+13.12. - 16 July 2009
+13.13. - 03 June 2009
+13.14. - 20 May 2009
+13.15. - 19 May 2009
+13.16. - 18 May 2009
+13.17. - 28 April 2009
+13.18. - 21 October 2007
+13.19. - 08 April 2006
+13.20. - 14 March 2005
+13.21. - 14 August 2004
+13.22. - 23 May 2004
+13.23. - 11 February 2004
+13.24. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -228,7 +231,7 @@ Note: yes means enabled, no means disabled
         </keys>
         <waves>
         jmsfx.flx
-				**optional setting see 3.7. for configuration
+				**optional setting see 3.6. for configuration
         </waves>
         <mods>
         optional_path/mods
@@ -264,7 +267,7 @@ Note: yes means enabled, no means disabled
         </keys>
         <waves>
         jmsisfx.flx
-				**optional setting see 3.7. for configuration
+				**optional setting see 3.6. for configuration
         </waves>
         <mods>
         optional_path/mods
@@ -279,9 +282,9 @@ Note: yes means enabled, no means disabled
   </disk>
   <gameplay>
     <facestats>
-    0
+    -1
 				**activates the status faces and the position on the screen.
-				-1 disable,0 right, 1 middle, 2 right.
+				-1 disable,0 left, 1 middle, 2 right.
     </facestats>
     <textbackground>
     -1
@@ -393,7 +396,7 @@ Note: yes means enabled, no means disabled
 				**set the sample rate of Exult. Default is 22050, Windows CE defaults to 11025.
     </sample_rate>
     <stereo>
-    true
+    yes
 				**enable/disable stereo sound. Windows CE is set to disabled.
     </stereo>
     <effects>
@@ -535,9 +538,9 @@ Note: yes means enabled, no means disabled
       <border>
         <red>
         0
-				**if game resolution doesn't match Exult resolution
-				you have borders around the game res. With these you can
-				change the black defult border color - applies to fullscreen if video settings are not shared.
+				**if game resolution doesn't match Exult resolution 
+				you have borders around the game res. With these you can 
+				change the black default border color - applies to fullscreen if video settings are not shared.
         </red>
         <green>
         0
@@ -922,7 +925,18 @@ Exult needs the Digital Music pack to play Digital Music in the game. The music 
 The digital music pack seems to have two issue, though, some tracks seem to have been recorded at lower volume than the others. Also, since both the digital music and the sound effects are played by the Wave / PCM of your sound card, you can no longer have a different volume for music and sound effects.
 
 
-3.6. Installation of the digital music packs
+3.6. Digital Wave Sound Effects
+Exult needs the so called SFX packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the SFX in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with SFX playback in SI: In combat the SFX may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the SFX that the original did.
+
+
+3.7. All-in-One Audio Data pack and installers
+We've combined all the audio data we offer, Digital Music and Digital Wave Sound Effects, into an all-in-one pack which saves you downloading several smaller zip files. You can download a zip file for manual installation or an installer for either Windows or Mac OS X. Chose the one you want to use on our download page at http://exult.sourceforge.net/download.php. If you are using Exult on either Windows or Mac OS X, we recommend you download and run the installer. On *nix or if you want to manually install the all-in-one pack, you will need to grab the zip file.
+To install the zip file, extract its content to the Exult data folder. On *nix systems this is by default /usr/local/share/exult. On Mac OS X it is /Library/Applcation Support/Exult/data and on Windows it's in the folder data in the folder where you installed Exult to (by default C:\Program Files\Exult).
+Below you can read the instructions on how to use and install the individual packs for digital music and wave effects if. You don't need them if you downloaded the All-in-One zip or installer.
+
+
+3.8. Installation of the digital music packs
+If you downloaded and installed the above All-in-One Audio Data pack you don't need to bother with the following instructions.
 The Digital Music pack can be downloaded from http://exult.sourceforge.net/download.php, the files are called Ogg encoded Music files for Exult Part 1 (U7MusicOGG_1of2.zip) and Ogg encoded Music files for Exult Part 2 (U7MusicOGG_2of2.zip). The readme.txt found in the ZIP files contains installation instructions that are no longer 100% valid and should not be followed. Create a music folder in exult/data (i.e. exult/data/music/) and extract the two ZIP files U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip into this folder. If you are not sure where the data folder is, search for the file exult_bg.flx on your hard drive as this file is always in the data folder. Now start up Exult and start either a game of BG or SI. Hit 'ESC' to enter the game menu. Here select Audio Options and in the "Music options" enable the digital music option.
 It isn't necessary but you can also customize the location of the music files by adding <music_path> to exult.cfg. Example:
 <config>
@@ -935,8 +949,8 @@ It isn't necessary but you can also customize the location of the music files by
     </music_path>
 
 
-3.7. Digital Wave Sound Effects
-Exult needs the so called SFX packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the SFX in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with SFX playback in SI: In combat the SFX may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the SFX that the original did.
+3.9. Installation of the digital wave sound effects
+If you downloaded and installed the above All-in-One Audio Data pack you don't need to bother with the following instructions.
 We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster SFX and Simon Quinn recorded the Roland MT32 SFX. You can find them on our download page at http://exult.sourceforge.net/download.php. "Sound pack for Blackgate" and "Sound pack for Serpent Isle" are the SoundBlaster sound effects. "Sound pack for Black Gate (Roland MT-32)" and "Sound pack for Serpent Isle (Roland MT-32)" are the Roland MT32 sound effects. Don't be confused by the "Zaurus SI/BG SFX package", these are just the repackaged SoundBlaster sound effects for the Zaurus device. If you don't have such a device, these don't concern you.
 Extract the zip files into your Exult data folder. Exult will automatically find and use the SFX packs and will default to use the Roland MT32 pack when both both packs (SoundBlaster and Roland MT-32) are present. You can then choose between the packs in the Game Menu (7.4.), of course you can override this setting in the exult.cfg (see 2.3.). An example of how the relevant part of exult.cfg looks when you prefer the SoundBlaster SFX:
 <blackgate>
@@ -951,15 +965,15 @@ Extract the zip files into your Exult data folder. Exult will automatically find
 </serpentisle>
 
 
-3.8. Speech
+3.10. Speech
 Exult can play the Ultima VII's speech through SDL, and its own internal mixer. You can turn on/off speech via the in-game menu or change the settings in exult.cfg - see 2.3..
 
 
-3.9. Turn off Audio
+3.11. Turn off Audio
 Press 'Esc' to turn on/off Music, Speech and SoundFX via the in-game menu or change the settings in exult.cfg - see 2.3..
 
 
-3.10. Linux and Audio
+3.12. Linux and Audio
 Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the SoundBlaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
 You can now configure the ALSA port for your distribution in .exult.cfg (see 2.3.). By default we use 65:0, Gentoo needs 128:0.
 
@@ -1108,7 +1122,7 @@ F10 : Show endgame
 F11 : SI: Play alternate intro
 Ctrl-b : Shape browser
 Insert : Create object (that is chosen in  the shape browser)
-Cmd-V : Create object (that is chosen in  the shape browser) on OS X
+Alt-V : Create object (alternative key combination)
 Ctrl-d : Delete object
 e : Toggle egg display
 Alt-g : Toggle God mode
@@ -1208,7 +1222,7 @@ Look at 3. Audio to see explanation on the settings.
 * device type choose between different device types for MIDI music, see 3.2..
 * effects alters the way the MIDI is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
 * SFX Enable or disable digital sound effects.
-* Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.7.. This option is not available in the Exult Setup.
+* Pack choose between our standard SFX packs, Roland MT32 and Soundblaster, see 3.6.. This option is not available in the Exult Setup.
 * Speech enable or disable speech. When disabled you will see subtitles when the Guardian or the Great Earth Serpent speaks
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
@@ -1451,15 +1465,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 24 January 2011
+13.1. - 19 February 2011
+* 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
+* 3.6. Digital Wave Sound Effects split off the installation part.
+* 3.7. All-in-One Audio Data pack and installers added.
+* 3.8. Installation of the digital music packs moved below the all-in-one pack.
+* 3.9. Installation of the digital wave sound effects added and moved below the all-in-one pack.
+* 5.3. Cheat keys Alt-V for create objects is not only for OS X.
+
+
+
+13.2. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
-* 3.7. Digital Wave Sound Effects switching sfx works right away, removed note.
+* 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
 * 7.6. Misc Options more information on the charmed combat options and on mouse wheel scroll.
 
 
 
-13.2. - 23 January 2011
+13.3. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1475,7 +1499,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.3. - 13 October 2010
+13.4. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1486,7 +1510,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.4. - 30 August 2010
+13.5. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1494,7 +1518,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.5. - 25 August 2010
+13.6. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1503,7 +1527,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.6. - 15 August 2010
+13.7. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1512,30 +1536,30 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 28 April 2010
+13.8. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.8. - 11 March 2010
+13.9. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
-* 3.7. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
+* 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
-* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
+* 3.6. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
 
 
 
-13.9. - 10 March 2010
+13.10. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
-* 3.7. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
+* 3.6. Digital Wave Sound EffectsExult finds and uses the SFX pack automatically and defaults to MT32 SFX.
 * 8.5. Where to find the savegames of modded games added this so savegames of modded games can be found.
 * 9.2. Error Log added where to find the error log on OS X.
 
 
 
-13.10. - 08 March 2010
+13.11. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1546,36 +1570,36 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 16 July 2009
+13.12. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.12. - 03 June 2009
+13.13. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.13. - 20 May 2009
+13.14. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
-* 3.6. Installation of the digital music packs cleaned up.
-* 3.7. Digital Wave Sound Effects some more information.
+* 3.8. Installation of the digital music packs cleaned up.
+* 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.14. - 19 May 2009
+13.15. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
 * 2.10. Command line options some more information on '--buildmap' and '--mod'.
-* 3.10. Linux and Audio mentioned different, configurable ports.
+* 3.12. Linux and Audio mentioned different, configurable ports.
 * 5.4. Map Editing keys got their own help screen now.
 * 8. Mods and Patches added.
 
 
 
-13.15. - 18 May 2009
+13.16. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1594,46 +1618,46 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.16. - 28 April 2009
+13.17. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
-* 3.8. Speech can also be toggled via the in-game menu.
+* 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.17. - 21 October 2007
+13.18. - 21 October 2007
 * 9.3. Making Digital Sound work on Mac OS X added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.18. - 08 April 2006
+13.19. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.19. - 14 March 2005
+13.20. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.20. - 14 August 2004
+13.21. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.21. - 23 May 2004
+13.22. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.22. - 11 February 2004
+13.23. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
-* 3.6. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
+* 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
 * 5.1. Movement fixed up a bit.
 * 5.2. Keyboard commands fixed up a bit as well.
 * 1. added screenshots showing the Game menu gumps and removed "Quit to Menu".
@@ -1641,7 +1665,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.23. - 12 December 2003
+13.24. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
