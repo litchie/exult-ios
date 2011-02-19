@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="24 January 2011 (GMT)">	
+<readme title="Exult" changed="19 February 2011 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -264,9 +264,9 @@
 						</configtag>
 						<configtag name="gameplay">
 							<configtag name="facestats">
-							0
+							-1
 							<comment>**activates the status faces and the position on the screen.</comment>
-							<comment>-1 disable,0 right, 1 middle, 2 right.</comment>
+							<comment>-1 disable,0 left, 1 middle, 2 right.</comment>
 							</configtag>
 							<configtag name="textbackground">
 							-1
@@ -378,7 +378,7 @@
 							<comment>**set the sample rate of <Exult/>. Default is 22050, Windows CE defaults to 11025.</comment>
 							</configtag>
 							<configtag name="stereo" manual="true">
-							true
+							yes
 							<comment>**enable/disable stereo sound. Windows CE is set to disabled.</comment>
 							</configtag>
 							<configtag name="effects">
@@ -520,9 +520,9 @@
 								<configtag name="border" manual="true">
 									<configtag name="red" manual="true">
 										0
-										<comment>**if game resolution doesn't match <Exult/> resolution</comment>
-										<comment>you have borders around the game res. With these you can</comment>
-										<comment>change the black defult border color - applies to fullscreen if video settings are not shared.</comment>
+										<comment>**if game resolution doesn't match <Exult/> resolution </comment>
+										<comment>you have borders around the game res. With these you can </comment>
+										<comment>change the black default border color - applies to fullscreen if video settings are not shared.</comment>
 									</configtag>
 									<configtag name="green" manual="true">
 										0
@@ -1252,9 +1252,54 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="wave_sfx">
+			<header>Digital Wave Sound Effects</header>
+			<body>
+				<para>
+					<Exult/> needs the so called SFX packs to enable sound effects for Ultima 7.
+					You have to download separate packs for each game as order of the SFX in BG
+					and SI varies a bit and otherwise will sound odd. However there is a little
+					issue with SFX playback in SI: In combat the SFX may be a little wrong as we
+					still haven't figured out all the data in the 'weapons.dat'.<br/>
+					Also <Exult/> doesn't yet playback all the SFX that the original did.
+				</para>
+			</body>
+		</sub>
+		<sub name="all_in_one_pack">
+			<header>All-in-One Audio Data pack and installers</header>
+			<body>
+				<para>
+					We've combined all the audio data we offer, Digital Music and Digital Wave 
+					Sound Effects, into an all-in-one pack which saves you downloading several 
+					smaller zip files. You can download a zip file for manual installation or 
+					an installer for either Windows or Mac OS X. Chose the one you want
+					to use on our download page at
+					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
+					If you are using <Exult/> on either Windows or Mac OS X, we recommend you download 
+					and run the installer.<br/>
+					On *nix or if you want to manually install the all-in-one pack, you will need to
+					grab the zip file.
+				</para>
+				<para>
+					To install the zip file, extract its content to the <Exult/> data folder. On *nix
+					systems this is by default /usr/local/share/exult. On Mac OS X it is 
+					/Library/Applcation Support/Exult/data and on Windows it's in the folder data in 
+					the folder where you installed <Exult/> to (by default C:\Program Files\Exult).
+				</para>
+				<para>
+					Below you can read the instructions on how to use and install the individual packs
+					for digital music and wave effects if. You <strong>don't</strong> need them if you
+					downloaded the All-in-One zip or installer.
+				</para>
+			</body>
+		</sub>
 		<sub name="digital_music_install">
 			<header>Installation of the digital music packs</header>
 			<body>
+				<para>
+					If you downloaded and installed the above All-in-One Audio Data pack you don't need to
+					bother with the following instructions.
+				</para>
 				<para>
 					The Digital Music pack can be downloaded from
 					<extref target="http://exult.sourceforge.net/download.php"/>, the files are called
@@ -1290,16 +1335,12 @@
 				</configdesc>
 			</body>
 		</sub>
-		<sub name="wave_sfx">
-			<header>Digital Wave Sound Effects</header>
+		<sub name="wave_sfx_install">
+			<header>Installation of the digital wave sound effects</header>
 			<body>
 				<para>
-					<Exult/> needs the so called SFX packs to enable sound effects for Ultima 7.
-					You have to download separate packs for each game as order of the SFX in BG
-					and SI varies a bit and otherwise will sound odd. However there is a little
-					issue with SFX playback in SI: In combat the SFX may be a little wrong as we
-					still haven't figured out all the data in the 'weapons.dat'.<br/>
-					Also <Exult/> doesn't yet playback all the SFX that the original did.
+					If you downloaded and installed the above All-in-One Audio Data pack you don't need to
+					bother with the following instructions.
 				</para>
 				<para>
 					 We currently have two soundpacks for each game. Joseph Morris recorded the original
@@ -1651,7 +1692,7 @@
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
 					<keydesc name="Insert">Create object (that is chosen in  the shape browser)</keydesc>
-					<keydesc name="Cmd-V">Create object (that is chosen in  the shape browser) on OS X</keydesc>
+					<keydesc name="Alt-V">Create object (alternative key combination)</keydesc>
 					<keydesc name="Ctrl-d">Delete object</keydesc>
 					<keydesc name="e">Toggle egg display</keydesc>
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
@@ -2593,6 +2634,19 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="19022011">
+			<header>- 19 February 2011</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> stereo/mono is switched by yes/no, facestats needed the setting for left status bars.</li>
+				<li><ref1 target="wave_sfx"/> split off the installation part.</li>
+				<li><ref1 target="all_in_one_pack"/> added.</li>
+				<li><ref1 target="digital_music_install"/> moved below the all-in-one pack.</li>
+				<li><ref1 target="wave_sfx_install"/> added and moved below the all-in-one pack.</li>
+				<li><ref1 target="exult_cheats"/> Alt-V for create objects is not only for OS X.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="24012011">
 			<header>- 24 January 2011</header>
 			<body>
