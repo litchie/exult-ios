@@ -2011,7 +2011,9 @@ int Actor::get_effective_alignment
 	(
 	) const
 	{
-	if (!(flags&(1<<Obj_flags::charmed)))
+	bool avatar = (this == gwin->get_main_actor());
+	if (!(flags&(1<<Obj_flags::charmed)) ||
+		(avatar && !Combat::charmed_more_difficult))
 		return alignment;
 	else switch(alignment)
 		{
@@ -2405,6 +2407,9 @@ void Actor::update_from_studio
 				schedules[i].tz,
 				schedules[i].type, schedules[i].time);
 	npc->set_schedules(scheds, num_schedules);
+	// Force Avatar and party members to be friendly
+	if (npc_num == 0 || npc->get_flag (Obj_flags::in_party))
+		npc->set_alignment(friendly);
 	cout << "Npc updated" << endl;
 #endif
 	}
@@ -3242,8 +3247,7 @@ void Actor::set_flag
 		break;
 	case Obj_flags::charmed:
 		if (minf->charm_safe() || minf->power_safe() ||
-				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)) ||
-				(this == gwin->get_main_actor() && !Combat::charmed_more_difficult))
+				(gear_powers&(Frame_flags::power_safe|Frame_flags::charm_safe)))
 			return;		// Don't do anything.
 		need_timers()->start_charm();
 		if (!gwin->in_combat() && Combat::charmed_more_difficult &&

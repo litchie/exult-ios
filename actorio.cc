@@ -488,7 +488,9 @@ void Actor::read
 	// and we are the Avatar or Iolo
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
 		ready_best_weapon();
-			
+	// Force Avatar and all party members to be friendly
+	if (get_flag(Obj_flags::in_party) || num == 0)
+		set_alignment(friendly);
 #if defined(DEBUG) && 0
 
 	cout << get_npc_num() << " Creating ";

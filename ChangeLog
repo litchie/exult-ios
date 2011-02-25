@@ -1,3 +1,13 @@
+2011-02-25 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actorio.cc, actors.cc, party.cc: Force party members and Avatar
+		alignment to friendly.
+	* combat.cc: Simplify find_opponents due to the above change. Fix
+		regression in 6548 that caused party members to attack
+		unconscious npcs.
+	* actors.cc: Avatar can be charmed again in normal charmed
+		difficulty but effective alignment doesn't change.
+		(behaves like the original)
+
 2011-02-09 Dominik Reichardt <dominus@users.sourceforge.net>
 	* macosx/diskback.png: added a background image for the OS X snapshot disk image
 	* macosx/DS_Store: above backgrund added and a new layout of the snapshot disk image
