@@ -1,3 +1,8 @@
+2011-03-02 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* combat.cc: Fix regression in 6824 that could cause a crash
+		because ready_best_shield was being called without checking
+		several conditions. (Bug 3196072)
+
 2011-02-25 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actorio.cc, actors.cc, party.cc: Force party members and Avatar
 		alignment to friendly.

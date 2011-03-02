@@ -1187,19 +1187,22 @@ void Combat_schedule::set_weapon
 	int points;
 	spellbook = 0;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape, weapon);
-	if (!info && !removed &&	// No weapon?
-	    !(spellbook = readied_spellbook()) &&	// No spellbook?
+	if (!removed &&
 					// Not dragging?
 	    !gwin->is_dragging() &&
 					// And not dueling?
 	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.
 		{
-		npc->ready_best_weapon();
-		info = npc->get_weapon(points, weapon_shape, weapon);
+		if (!info &&	// No weapon?
+		    !(spellbook = readied_spellbook()))	// No spellbook?
+			{
+			npc->ready_best_weapon();
+			info = npc->get_weapon(points, weapon_shape, weapon);
+			}
+		else
+			npc->ready_best_shield();
 		}
-	else
-		npc->ready_best_shield();
 	if (!info)			// Still nothing.
 		{
 		if (spellbook)		// Did we find a spellbook?
