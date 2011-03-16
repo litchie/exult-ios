@@ -1,3 +1,9 @@
+2011-03-16 Dominik Reichardt <dominus@users.sourceforge.net>
+	* audio/midi_drivers/CoreAudioMidiDriver.cpp: accepted patch #3214169 which
+	  adds soundfont loading to OS X' CoreAudio driver. Full path to soundfont needs
+	  to be in <audio><midi><coreaudio_soundfont>
+	* Redme docs changed accordingly
+	
 2011-03-02 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* combat.cc: Fix regression in 6824 that could cause a crash
 		because ready_best_shield was being called without checking
