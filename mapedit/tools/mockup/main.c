@@ -50,7 +50,7 @@ int main(int argc, char **argv){
   int i,j,found;                
   u7map mymap;            // a table in which the map is created and is then written to a file
   FILE *f;                // to write to the file
-  char cmd[256],buff[6];
+  char cmd[256],buff[8];
   int mapping[MAX_COLOURS];
  
   if(argc < 3 || argc > 3){
