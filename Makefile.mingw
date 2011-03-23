@@ -15,7 +15,7 @@ SDL_CFLAGS:=-I$(SRC)/sdl/include
 #SDL_LIBS:=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 SDL_LIBS:=-L$(SRC)/sdl/lib -lSDL
 
-SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
