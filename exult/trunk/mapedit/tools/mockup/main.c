@@ -59,7 +59,7 @@ int main(int argc, char **argv){
   int i,j,found;                
   u7map mymap;            // a table in which the map is created and is then written to a file
   FILE *f;                // to write to the file
-  char cmd[256],buff[8];
+  char cmd[256],buff[7];
   int mapping[MAX_COLOURS];
  
   if(argc < 3 || argc > 3){
@@ -102,7 +102,7 @@ int main(int argc, char **argv){
   for(i=0;i<fmt->palette->ncolors;i++){
     found = 0;
     SDL_GetRGB(i,fmt,&red,&green,&blue);
-    sprintf(buff,"%02x%02x%02x",red,green,blue);
+    sprintf(buff,"%02x%02x%02x\0",red,green,blue);
     // red, green and blue contains the colour definition. Now we need to enter the u7chunk retrieved for that one
 
     fseek(f,0,SEEK_SET); // back to the beginning for each colour
