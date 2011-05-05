@@ -35,6 +35,9 @@ Source: Tools\tools\intrins1.txt; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\intrins2.txt; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\ipack.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\ipack.txt; DestDir: {app}\tools\; Flags: ignoreversion
+Source: Tools\tools\libsmooth_randomize.dll; DestDir: {app}\tools\; Flags: ignoreversion
+Source: Tools\tools\libsmooth_smooth.dll; DestDir: {app}\tools\; Flags: ignoreversion
+Source: Tools\tools\libsmooth_stream.dll; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\mklink.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\mockup.exe; DestDir: {app}\tools\; Flags: ignoreversion
 Source: Tools\tools\rip.exe; DestDir: {app}\tools\; Flags: ignoreversion
