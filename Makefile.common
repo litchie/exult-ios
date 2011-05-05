@@ -492,6 +492,15 @@ mockup$(EXEEXT): mapedit/tools/mockup/main.o
 rip$(EXEEXT) : tools/rip.o
 	$(CXX) $(LFLAGS) -o $(@) tools/rip.o
 
+libsmooth_randomize$(LIBEXT): mapedit/tools/smooth/plugins/plugin_randomize.o
+	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_randomize.o $(SDL_LIBS) -lstdc++
+
+libsmooth_smooth$(LIBEXT): mapedit/tools/smooth/plugins/plugin_smooth.o
+	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_smooth.o $(SDL_LIBS) -lstdc++
+
+libsmooth_stream$(LIBEXT): mapedit/tools/smooth/plugins/plugin_stream.o
+	$(CXX) -shared -o $@ mapedit/tools/smooth/plugins/plugin_stream.o -o $@ $(SDL_LIBS) -lstdc++
+
 SMOOTH_OBJS=\
 	mapedit/tools/smooth/config.o \
 	mapedit/tools/smooth/image.o \
@@ -571,7 +580,8 @@ head2data.test:
 clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) expack$(EXEEXT) tools/ipack.o ipack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h data/bg/bg_paperdol.vga data/bg/bg_mr_faces.vga data/bg/bg_paperdol_vga.h data/bg/bg_mr_faces_vga.h
 
-tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
+tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT)  \
+	 head2data$(EXEEXT) head2data.test libsmooth_randomize$(LIBEXT) libsmooth_smooth$(LIBEXT) libsmooth_stream$(LIBEXT)
 
 toolsclean:
 	rm -f tools/expack.o expack$(EXEEXT) $(FILE_OBJS)
@@ -583,6 +593,7 @@ toolsclean:
 	rm -f tools/shp2pcx.o shp2pcx$(EXEEXT)
 	rm -f tools/splitshp.o splitshp$(EXEEXT)
 	rm -f $(SMOOTH_OBJS) smooth$(EXEEXT)
+	rm -f libsmooth_randomize$(LIBEXT) libsmooth_smooth$(LIBEXT) libsmooth_stream$(LIBEXT)
 	rm -f tools/textpack.o textpack$(EXEEXT)
 	rm -f tools/u7voice2syx.o u7voice2syx$(EXEEXT)
 	rm -f tools/wuc.o wuc$(EXEEXT)
@@ -591,5 +602,3 @@ toolsclean:
 	rm -f $(UCC_OBJS) ucc$(EXEEXT) ucparse.cc ucparse.h uclex.cc
 	rm -f $(CONFREGRESS_OBJS) confregress$(EXEEXT)
 	rm -f usecode/ucxt/head2data.o head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data
-
-

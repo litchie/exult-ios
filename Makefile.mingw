@@ -120,6 +120,7 @@ LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) -lfluidsynth -
 
 EXEC=Exult.exe
 EXEEXT=.exe
+LIBEXT=.dll
 
 EXP_FILE=exult_studio.exp
 SERVER_OBJS=\
@@ -312,6 +313,9 @@ toolsinstall: tools
 	cp data/bginclude.uc $(U7PATH)/data
 	cp data/u7bgintrinsics.data $(U7PATH)/data
 	cp data/u7siintrinsics.data $(U7PATH)/data
+	cp libsmooth_randomize$(LIBEXT) $(U7PATH)/tools
+	cp libsmooth_smooth$(LIBEXT) $(U7PATH)/tools
+	cp libsmooth_stream$(LIBEXT) $(U7PATH)/tools
 	cp SDL/lib/SDL.dll $(U7PATH)/tools
 
 toolsdist: tools
@@ -341,6 +345,9 @@ toolsdist: tools
 	cp data/bginclude.uc $(U7PATH)/Tools/data
 	cp data/u7bgintrinsics.data $(U7PATH)/Tools/data
 	cp data/u7siintrinsics.data $(U7PATH)/Tools/data
+	cp libsmooth_randomize$(LIBEXT) $(U7PATH)/Tools/tools
+	cp libsmooth_smooth$(LIBEXT) $(U7PATH)/Tools/tools
+	cp libsmooth_stream$(LIBEXT) $(U7PATH)/Tools/tools
 	cp tools/expack.txt $(U7PATH)/Tools/tools
 	cp tools/intrins1.txt $(U7PATH)/Tools/tools
 	cp tools/intrins2.txt $(U7PATH)/Tools/tools
