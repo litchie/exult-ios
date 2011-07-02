@@ -13,7 +13,7 @@ SRC=.
 SDL_CFLAGS:=-I$(SRC)/sdl/include
 ### We want to do our own stdout/stderr redirection, thank you.
 #SDL_LIBS:=-L$(SRC)/sdl/lib -lSDLmain -lSDL
-SDL_LIBS:=-L$(SRC)/sdl/lib -lSDL
+SDL_LIBS:=-L$(SRC)/sdl/lib -lSDL -lwinmm
 
 SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDL_image -lSDL -lpng -ltiff -ljpeg -lz
 
@@ -115,7 +115,7 @@ CXX=g++
 CFLAGS=$(strip $(OPT_LEVEL) -mms-bitfields)
 CC=gcc
 
-LFLAGS=-static-libgcc -static-libstdc++
+LDFLAGS=-static-libgcc -static-libstdc++
 LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) $(OPENGL_LIBS) $(OGG_LIBS) -lfluidsynth -ldsound -lwinmm -lole32 -luuid -lws2_32 -mwindows $(MTHREADS)
 
 EXEC=Exult.exe
@@ -225,7 +225,7 @@ exconfig.dll: win32/exconfig.def $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o win32/e
 	dllwrap --def win32/exconfig.def -o $@ $(FILE_OBJS) $(CONF_OBJS) exconfig_rc.o win32/exconfig.o -static -lstdc++
 
 exult_studio$(EXEEXT): $(BG_PAPERDOLL) $(FLEXES) $(ES_OBJS) $(EXP_FILE)
-	$(CXX) $(EXP_FILE) -o $@ $(ES_OBJS) $(ES_LIBS)
+	$(CXX) $(LDFLAGS) $(EXP_FILE) -o $@ $(ES_OBJS) $(ES_LIBS)
 
 $(EXP_FILE): $(ES_OBJS)
 	dlltool --output-exp $@ $(ES_OBJS) -D exult_studio$(EXEEXT)
@@ -234,7 +234,7 @@ exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
 u7shp$(EXEEXT) : u7shp.o
-	$(CXX) -o $(@) $+ $(GTK_LIBS) $(GIMP_LIBS) -mwindows
+	$(CXX) $(LDFLAGS) -o $(@) $+ $(GTK_LIBS) $(GIMP_LIBS) -mwindows
 
 install: $(EXEC)
 	mkdir -p $(U7PATH)
