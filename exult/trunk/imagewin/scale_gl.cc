@@ -23,6 +23,7 @@
 
 #include "SDL_video.h"
 #include "imagewin.h"
+#include "sdl-compat.h"
 
 //
 // OpenGL 'scaler':

@@ -24,6 +24,8 @@
 #  include <cstring>
 #  include <cstdlib>
 #endif
+
+#include "sdl-compat.h"
 #include "exult_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
@@ -34,7 +36,12 @@
 
 #include "SDL_timer.h"
 #include "SDL_events.h"
-#include "SDL_keysym.h"
+#ifdef SDL_VER_1_3
+  #include "SDL_stdinc.h"
+  #include "SDL_scancode.h"
+#else
+  #include "SDL_keysym.h"
+#endif
 
 #ifndef UNDER_EMBEDDED_CE
 using std::atoi;

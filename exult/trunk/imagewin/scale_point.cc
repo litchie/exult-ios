@@ -28,7 +28,7 @@
 #include "exult_types.h"
 #include "manip.h"
 #include "scale_point.h"
-
+#include "sdl-compat.h"
 //
 // Point Sampling
 //
