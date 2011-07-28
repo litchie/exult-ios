@@ -20,6 +20,7 @@
 #  include <config.h>
 #endif
 
+#include "sdl-compat.h"
 #include "SDL_keyboard.h"
 
 #include "actors.h"
@@ -292,8 +293,12 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 {
 	SDL_keysym k;
 	ActionType a;
-	
+
+	#ifdef SDL_VER_1_3
+	k.scancode = (SDL_Scancode)0;	
+	#else
 	k.scancode = 0;
+	#endif
 	k.sym      = key;
 	k.mod      = (SDLMod) mod;
 	k.unicode  = 0;

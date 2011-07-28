@@ -31,6 +31,7 @@
 #  include <cctype>
 #endif
 
+#include "sdl-compat.h"
 #include <SDL.h>
 
 #define Font _XFont_
@@ -856,7 +857,7 @@ static void Init
 		gwin->set_in_exult_menu(false);
 		}
 
-	SDL_SetEventFilter(0);
+	SDL_SETEVENTFILTER(0);
 	// Show the banner
 	game = 0;
 
@@ -1820,7 +1821,9 @@ static int Get_click
 				case SDLK_RSHIFT: case SDLK_LSHIFT:
 				case SDLK_RCTRL: case SDLK_LCTRL:
 				case SDLK_RALT: case SDLK_LALT:
+				#ifndef SDL_VER_1_3
 				case SDLK_RMETA: case SDLK_LMETA:
+				#endif
 				case SDLK_RSUPER: case SDLK_LSUPER:
 				case SDLK_NUMLOCK: case SDLK_CAPSLOCK:
 				case SDLK_SCROLLOCK:

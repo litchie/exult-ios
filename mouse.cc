@@ -22,6 +22,7 @@
 #  include <config.h>
 #endif
 
+#include "sdl-compat.h"
 #include "SDL_mouse.h"
 #include "SDL_timer.h"
 #include "mouse.h"
