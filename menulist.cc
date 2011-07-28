@@ -20,6 +20,7 @@
 #  include <config.h>
 #endif
 
+#include "sdl-compat.h"
 #include "menulist.h"
 #include "exult.h"
 #include "font.h"
