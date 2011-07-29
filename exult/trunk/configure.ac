@@ -13,6 +13,39 @@ VER_MINOR=5
 VER_EXTRA=.0svn
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
+# Do iPhone stuff first, as we may need to manipulate the host variable
+AC_ARG_WITH(iphone_sdk, AS_HELP_STRING([--with-iphone-sdk=SDK_NAME], [Compile using iPhone SDK]),,)
+if test x$with_iphone_sdk != x; then
+        osplat="/Developer/Platforms"
+	iphone_sdk="$with_iphone_sdk"
+        if test "$(echo $iphone_sdk | grep -c 'iPhoneSimulator')" != "0"; then
+                DEV_iOS="${osplat}/iPhoneSimulator.platform/Developer"
+                SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
+                host_alias="i686-apple-darwin10"
+                ARCH_iOS="i686"
+        else
+                DEV_iOS="${osplat}/iPhoneOS.platform/Developer"
+                SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
+                host_alias="arm-apple-darwin10"
+                ARCH_iOS="armv6"
+        fi
+        #LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
+        COMPILER_iOS=${DEV_iOS}/usr/bin
+	CC=${COMPILER_iOS}/gcc
+        CXX=${COMPILER_iOS}/g++
+        LDFLAGS="-arch ${ARCH_iOS} -pipe -Os -gdwarf-2 -no-cpp-precomp -mthumb -isysroot ${SDK_iOS}"
+        CFLAGS=${LDFLAGS}
+        CXXFLAGS=${LDFLAGS}
+        #CPPFLAGS="-DSDL_VER_1_3 -D__IPHONEOS__"
+        AC_DEFINE(__IPHONEOS__, 1, [Using iPhone])
+        AC_DEFINE(SDL_VER_1_3, 1, [SDL 1.3])
+        enable_sdltest="no"
+        if test ! -d "${SDK_iOS}"; then
+                AC_MSG_ERROR([*** iPhone SDK directory does not exist! -> ${SDK_iOS}])
+        fi
+	echo "iPhone SDK ... ${iphone_sdk} (${host_alias})"
+fi
+
 # check host/target systems
 # (build = system we're building on, host = system we're building for,
 # target = system the program we're building will build for)
@@ -121,7 +154,11 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DMACOSX"
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT([Mac OS X])
-		SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
+		if test x$iphone_sdk != x; then
+		   SYSLIBS="-framework CoreFoundation -framework CoreAudio  -framework CoreMIDI"
+	        else	
+		   SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
+		fi
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
 		ARCH=macosx
