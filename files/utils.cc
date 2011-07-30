@@ -842,7 +842,11 @@ void setup_program_paths()
 	string home_dir(Get_home()), config_dir(home_dir),
 		savehome_dir(home_dir), gamehome_dir(".");
 
-#ifdef MACOSX
+#if defined(__IPHONEOS__)
+        config_dir = "";
+        savehome_dir = "save";
+        gamehome_dir = "game";
+#elif defined(MACOSX)
 	config_dir += "/Library/Preferences";
 	savehome_dir += "/Library/Application Support/Exult";
 	gamehome_dir = "/Library/Application Support/Exult";
