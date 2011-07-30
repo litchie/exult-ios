@@ -551,6 +551,14 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 
 	// Get best bpp
 	flags = SDL_SWSURFACE|(fullscreen?SDL_FULLSCREEN:0);
+#ifdef __IPHONEOS__
+	// Turn on landscape mode if desired
+        if (w > h)
+        {
+           SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" ); 
+           flags |= SDL_RESIZABLE;
+        }
+#endif
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
 
@@ -590,6 +598,20 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 
 	if ((uses_palette = (bpp == 8))) paletted_surface = display_surface;
 	else paletted_surface = draw_surface;
+
+#ifdef __IPHONEOS__
+	// Dirty little hack to help with landscape mode
+	// Something within the "create_surface" flow needs to be ran
+	// after landscape mode is "hinted" at.
+	// However, something within create_surface calls this function...
+        static bool RECREATED_ONCE = false;
+        if (w > h && !RECREATED_ONCE)
+        {
+           RECREATED_ONCE = true;
+           free_surface();
+           create_surface(w, h);
+        }
+#endif 
 	return true;
 }
 
