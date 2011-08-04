@@ -450,6 +450,9 @@ void Gump_manager::paint(bool modal)
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
+#ifdef __IPHONEOS__
+	gkeybb->paint();
+#endif
 }
 
 
@@ -502,6 +505,10 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 		if (gkeyboard->handle_event(&event))
 			break;
 #endif
+#ifdef __IPHONEOS__
+		if (gkeybb->handle_event(&event))
+			break;
+#endif
 		if (event.button.button == 1) {
 			gump->mouse_down(gx, gy, event.button.button);
 		} else if (event.button.button == 2) {
@@ -526,6 +533,10 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 			if (gkeyboard->handle_event(&event))
 				break;
 #endif
+#ifdef __IPHONEOS__
+			if (gkeybb->handle_event(&event))
+				break;
+#endif
 		if (event.button.button != 3)
 			gump->mouse_up(gx,gy, event.button.button);
 		else if (rightclick) {
@@ -546,6 +557,11 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 	case SDL_QUIT:
 		if (okay_to_quit())
 			return (0);
+#ifdef SDL_VER_1_3
+	case SDL_TEXTINPUT:
+		event.key.keysym.sym = NULL;
+		event.key.keysym.unicode = event.text.text[0];
+#endif
 	case SDL_KEYDOWN:
 		{
 			if (event.key.keysym.sym == SDLK_ESCAPE)
@@ -562,6 +578,12 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 						? toupper(chr) : chr, event);
 #else
+  #ifdef SDL_VER_1_3
+			if (event.key.keysym.sym != NULL && event.key.keysym.sym > (int)'~')
+			{
+			   event.key.keysym.unicode = event.key.keysym.sym;
+			}
+  #endif
 			gump->key_down(event.key.keysym.sym);
 			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
 #endif
@@ -613,6 +635,9 @@ int Gump_manager::do_modal_gump
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
+#ifdef __IPHONEOS__
+	gkeybb->paint();
+#endif
 	do
 	{
 		Delay();		// Wait a fraction of a second.
@@ -634,6 +659,9 @@ int Gump_manager::do_modal_gump
 			Mouse::mouse->blit_dirty();
 #ifdef UNDER_CE
 		gkeyboard->paint();
+#endif
+#ifdef __IPHONEOS__
+		gkeybb->paint();
 #endif
 	}
 	while (!gump->is_done() && !escaped);

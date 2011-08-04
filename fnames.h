@@ -174,6 +174,10 @@
 #if defined(UNDER_CE)
   #define POCKETPC_FLX "<DATA>/exult_pocketpc.flx"
 #endif
+#ifdef __IPHONEOS__
+  #define IPHONE_FLX "<DATA>/exult_iphone.flx"
+#endif
+
 #define AUTONOTES	"autonotes.txt"
 
 #define PATCH_KEYS	"<PATCH>/patchkeys.txt"
