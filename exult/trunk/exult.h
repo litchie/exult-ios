@@ -102,5 +102,9 @@ extern bool minimized;
 extern class Keyboard_gump *gkeyboard;
 extern class clsTouchscreen *Touchscreen;
 #endif
+#ifdef __IPHONEOS__
+#include "iphone_gumps.h"
+extern class KeyboardButton_gump *gkeybb;
+#endif
 
 #endif

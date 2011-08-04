@@ -70,6 +70,8 @@ libgumps_la_SOURCES = \
 	Text_button.h	\
 	Text_button.cc \
 	Enabled_button.h \
-	Enabled_button.cc
+	Enabled_button.cc \
+	iphone_gumps.h \
+	iphone_gumps.cc
 
 CLEANFILES = *~

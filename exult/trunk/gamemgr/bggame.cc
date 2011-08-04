@@ -67,6 +67,11 @@ using std::toupper;
 #ifdef UNDER_CE
 #include "exult_pocketpc_flx.h"
 #endif
+#ifdef __IPHONEOS__
+#include "data/exult_iphone_flx.h"
+#include "iphone_gumps.h"
+#endif
+
 
 enum
 {
@@ -1851,6 +1856,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 #endif
+#ifdef __IPHONEOS__
+	gkeybb->autopaint = false;
+#endif
 	do
 	{
 		Delay();
@@ -1880,6 +1888,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
+#ifdef __IPHONEOS__
+			gkeybb->paint();
+#endif
 			gwin->get_win()->show();
 			redraw = false;
 		}
@@ -1889,8 +1900,24 @@ bool BG_Game::new_game(Vga_file &shapes)
 			if (gkeyboard->handle_event(&event))
 				redraw = true;
 #endif
+#ifdef __IPHONEOS__
+			if (gkeybb->handle_event(&event))
+				redraw = true;
+#endif
+#ifdef SDL_VER_1_3
+			bool isTextInput = false;
+			if (event.type==SDL_TEXTINPUT)
+			{
+				std::cout << "SDL_TEXTINPUT" << std::endl;
+				isTextInput = true;
+				event.type = SDL_KEYDOWN;
+                		event.key.keysym.sym = NULL;
+                		event.key.keysym.unicode = event.text.text[0];
+			}
+#endif
 			if(event.type==SDL_KEYDOWN)
 			{
+				std::cout << "SDL_KEYDOWN" << std::endl;
 				redraw = true;
 				switch(event.key.keysym.sym)
 				{
@@ -1949,13 +1976,20 @@ bool BG_Game::new_game(Vga_file &shapes)
 					else
 						editing = ok = false;
 					break;
+#ifdef __IPHONEOS__
+				case SDLK_DELETE:
+#endif
 				case SDLK_BACKSPACE:
 					if(selected == 0 && strlen(npc_name) > 0)
 						npc_name[strlen(npc_name)-1] = 0;
 					break;
 				default:
 					{
+#ifdef SDL_VER_1_3
+						if ((isTextInput && selected == 0) || (!isTextInput && event.key.keysym.unicode > (int)'~' && selected == 0))
+#else 
 						if (selected == 0) // on the text input field?
+#endif
 						{
 							int len = strlen(npc_name);
 							char chr = 0;
@@ -1989,6 +2023,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 		gkeyboard->minimize();
 		gkeyboard->autopaint = true;
+#endif
+#ifdef __IPHONEOS__
+		gkeybb->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);
