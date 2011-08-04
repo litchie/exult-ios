@@ -106,7 +106,9 @@ using namespace Pentagram;
   #include "Keyboard_gump.h"
   #include "touchscreen.h"
 #endif
-
+#ifdef __IPHONEOS__
+  #include "iphone_gumps.h"
+#endif
 #ifndef UNDER_EMBEDDED_CE
 using std::atof;
 using std::cerr;
@@ -145,6 +147,9 @@ string WINCE_exepath;
 bool minimized;
 Keyboard_gump *gkeyboard;
 clsTouchscreen *Touchscreen;
+#endif
+#ifdef __IPHONEOS__
+KeyboardButton_gump *gkeybb;
 #endif
 
 #if 0 && USECODE_DEBUGGER
@@ -699,7 +704,9 @@ int exult_main(const char *runpath)
 	gkeyboard = new Keyboard_gump();
 	Touchscreen = new clsTouchscreen();
 #endif
-
+#ifdef __IPHONEOS__
+	gkeybb = new KeyboardButton_gump();
+#endif
 	Init();				// Create main window.
 
 	cheat.finish_init();
@@ -714,6 +721,9 @@ int exult_main(const char *runpath)
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 	gkeyboard->autopaint = true;
+#endif
+#ifdef __IPHONEOS__
+	gkeybb->autopaint = true;
 #endif
 
 	int result = Play();		// start game
@@ -1355,6 +1365,7 @@ static void Handle_event
 	SDL_Event& event
 	)
 	{
+
 	// Mouse scale factor
 	bool dont_move_mode = gwin->main_actor_dont_move();
 	bool avatar_can_act = gwin->main_actor_can_act();
@@ -1376,6 +1387,10 @@ static void Handle_event
 		if (gkeyboard->handle_event(&event))
 			break;
 		Touchscreen->handle_event(&event);
+#endif
+#ifdef __IPHONEOS__
+		if (gkeybb->handle_event(&event))
+			break;
 #endif
 		int x, y;
 		gwin->get_win()->screen_to_game(event.button.x,event.button.y,gwin->get_fastmouse(),x,y);
@@ -1763,6 +1778,10 @@ static int Get_click
 					break;
 				Touchscreen->handle_event(&event);
 #endif
+#ifdef __IPHONEOS__
+				if (gkeybb->handle_event(&event))
+					break;
+#endif
 				if (event.button.button == 3)
 					rightclick = true;
 				else if (drag_ok && event.button.button == 1)
@@ -1777,6 +1796,10 @@ static int Get_click
 				if (gkeyboard->handle_event(&event))
 					break;
 				Touchscreen->handle_event(&event);
+#endif
+#ifdef __IPHONEOS__
+				if (gkeybb->handle_event(&event))
+					break;
 #endif
 				if (event.button.button == 1)
 					{

@@ -50,6 +50,11 @@ using std::rand;
 using std::strlen;
 using std::toupper;
 #endif
+#ifdef __IPHONEOS__
+#include "data/exult_iphone_flx.h"
+#include "exult.h"
+#include "iphone_gumps.h"
+#endif
 
 SI_Game::SI_Game()
 	{
@@ -1317,6 +1322,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 	gkeyboard->autopaint = false;
 	gkeyboard->minimize();
 #endif
+#ifdef __IPHONEOS__
+        gkeybb->autopaint = false;
+#endif
 	do
 	{
 		Delay();
@@ -1344,6 +1352,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 			gkeyboard->paint();
 #endif
+#ifdef __IPHONEOS__
+                        gkeybb->paint();
+#endif
 			gwin->get_win()->show();
 			redraw = false;
 		}
@@ -1352,6 +1363,21 @@ bool SI_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 			if (gkeyboard->handle_event(&event))
 				redraw = true;
+#endif
+#ifdef __IPHONEOS__
+                        if (gkeybb->handle_event(&event))
+                                redraw = true;
+#endif
+#ifdef SDL_VER_1_3
+                        bool isTextInput = false;
+                        if (event.type==SDL_TEXTINPUT)
+                        {
+                                std::cout << "SDL_TEXTINPUT" << std::endl;
+                                isTextInput = true;
+                                event.type = SDL_KEYDOWN;
+                                event.key.keysym.sym = NULL;
+                                event.key.keysym.unicode = event.text.text[0];
+                        }
 #endif
 			if(event.type==SDL_KEYDOWN)
 			{
@@ -1413,6 +1439,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 					else
 						editing = ok = false;
 					break;
+#ifdef __IPHONEOS__
+                                case SDLK_DELETE:
+#endif
 				case SDLK_BACKSPACE:
 					if(selected == 0 && strlen(npc_name) > 0)
 						npc_name[strlen(npc_name)-1] = 0;
@@ -1453,6 +1482,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 #ifdef UNDER_CE
 		gkeyboard->minimize();
 		gkeyboard->autopaint = true;
+#endif
+#ifdef __IPHONEOS__
+                gkeybb->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);

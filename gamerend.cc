@@ -579,6 +579,9 @@ void Game_window::paint_dirty()
 #ifdef UNDER_CE
 	gkeyboard->paint();
 #endif
+#ifdef __IPHONEOS_
+	gkeybb->paint();
+#endif
 }
 
 /*

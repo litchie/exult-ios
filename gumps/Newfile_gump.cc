@@ -916,10 +916,9 @@ void Newfile_gump::text_input(int chr, int unicode)
 	// Are we selected on some text?
 	if (selected == -3)
 		return;
-
-
+	
 	switch (chr) {
-
+	
 	case SDLK_RETURN:		// If only 'Save', do it.
 	case SDLK_KP_ENTER:
 		if (!buttons[0] && buttons[1])
@@ -934,7 +933,9 @@ void Newfile_gump::text_input(int chr, int unicode)
 		}
 		update_details = true;
 		break;
-
+#ifdef __IPHONEOS__
+	case SDLK_DELETE:
+#endif
 	case SDLK_BACKSPACE:
 		if (BackspacePressed())
 		{	
@@ -953,6 +954,7 @@ void Newfile_gump::text_input(int chr, int unicode)
 		}
 		break;
 
+#ifndef __IPHONEOS__
 	case SDLK_DELETE:
 		if (DeletePressed())
 		{	
@@ -970,7 +972,7 @@ void Newfile_gump::text_input(int chr, int unicode)
 			update_details = true;
 		}
 		break;
-
+#endif
 	case SDLK_LEFT:
 		repaint = MoveCursor(-1);
 		break;
@@ -988,12 +990,10 @@ void Newfile_gump::text_input(int chr, int unicode)
 		break;
 
 	default:
-
 		if ((unicode & 0xFF80) == 0 )
 			chr = unicode & 0x7F;
 		else
 			chr = 0;
-
 		if (chr < ' ')
 			return;			// Ignore other special chars.
 
