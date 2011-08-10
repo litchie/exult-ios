@@ -39,6 +39,10 @@
 #define	CYCLE_RED_PLASMA()
 #endif
 
+#ifdef __IPHONEOS__
+#include "objs/objs.h"
+#endif
+
 class Actor;
 class Barge_object;
 class Map_chunk;
@@ -524,6 +528,10 @@ public:
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
+#ifdef __IPHONEOS__
+	void find_nearby_objects(Game_object_vector *vobjs, int x, int y);
+#endif
+
 					// Show names of items clicked on.
 	void show_items(int x, int y, bool ctrl = false);
 					// Right-click while combat paused.
