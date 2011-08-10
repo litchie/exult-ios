@@ -2153,6 +2153,35 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 	return (best);
 	}
 
+#ifdef __IPHONEOS__
+void Game_window::find_nearby_objects(Game_object_vector *vobjs, int x, int y)
+{
+		// Find object at each pixel
+                for (int iy = y - 10; iy < (y + 10); iy++)
+                {
+                   for (int ix = x - 10; ix < (x + 10); ix++)
+                   {
+                       Game_object *iobj = find_object(ix, iy);
+                       if (iobj)
+		       {
+			  bool found_dupe = false;
+			  // Make sure we do not add a duplicate
+			  Game_object_vector::iterator it;
+			  for (it = vobjs->begin(); it < vobjs->end(); it++)
+			  { 
+			     if (iobj == *it)
+			     {
+			        found_dupe = true;
+				break;
+			     }
+			  }
+			  if (!found_dupe)
+                             vobjs->push_back(iobj);
+			}
+                   }
+                }
+}
+#endif
 static inline string Get_object_name(Game_object *obj)
 	{
 	if (obj == Game_window::get_instance()->get_main_actor())
@@ -2186,7 +2215,20 @@ void Game_window::show_items
 		if (!obj) obj = gump->get_cont_or_actor(x, y);
 	}
 	else				// Search rest of world.
+	{
 		obj = find_object(x, y);
+#ifdef __IPHONEOS__
+		Game_object_vector vobjs;
+		find_nearby_objects(&vobjs, x, y);
+                Game_object_vector::iterator it;
+		for (it = vobjs.begin(); it < vobjs.end(); it++)
+		{
+		   Game_object *o = *it;
+	 	   std::string namestr = Get_object_name(o);
+		   std::cout << "Found nearby object: " << namestr.c_str() << std::endl;
+		}
+#endif
+	}
 					// Map-editing?
 	if (obj && cheat.in_map_editor())
 		{

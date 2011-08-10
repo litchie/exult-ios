@@ -1372,7 +1372,6 @@ bool SI_Game::new_game(Vga_file &shapes)
                         bool isTextInput = false;
                         if (event.type==SDL_TEXTINPUT)
                         {
-                                std::cout << "SDL_TEXTINPUT" << std::endl;
                                 isTextInput = true;
                                 event.type = SDL_KEYDOWN;
                                 event.key.keysym.sym = NULL;

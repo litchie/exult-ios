@@ -843,8 +843,8 @@ void setup_program_paths()
 		savehome_dir(home_dir), gamehome_dir(".");
 
 #if defined(__IPHONEOS__)
-        config_dir = "";
-        savehome_dir = "save";
+        config_dir = "../Library/Preferences";
+        savehome_dir = "../Documents/save";
         gamehome_dir = "game";
 #elif defined(MACOSX)
 	config_dir += "/Library/Preferences";
