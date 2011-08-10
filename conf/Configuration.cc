@@ -182,9 +182,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Or if it's not a relative path.
 	if (!is_path_absolute(input_filename))
 	{
-#if defined(__IPHONEOS__)
-                fname = input_filename;
-#elif (defined(XWIN) || defined(BEOS) || defined(MACOSX) || defined(WIN32))
+#if (defined(XWIN) || defined(BEOS) || defined(MACOSX) || defined(WIN32))
 		fname = "<CONFIG>/";
 #	if (defined(XWIN) && !defined(MACOSX))
 		fname += ".";
@@ -195,6 +193,12 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 		fname=input_filename;
 #endif
 
+#ifdef __IPHONEOS__
+		//if (!U7exists(fname.c_str()))
+		//{
+		   U7copy(input_filename.c_str(), get_system_path(fname.c_str()).c_str());
+		//}
+#endif
 #if defined(WIN32)
 		// Note: this first check misses some cases of path equality, but it
 		// does eliminates some spurious warnings.
