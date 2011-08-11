@@ -2220,12 +2220,13 @@ void Game_window::show_items
 #ifdef __IPHONEOS__
 		Game_object_vector vobjs;
 		find_nearby_objects(&vobjs, x, y);
-                Game_object_vector::iterator it;
-		for (it = vobjs.begin(); it < vobjs.end(); it++)
+		if (vobjs.size() > 0)
 		{
-		   Game_object *o = *it;
-	 	   std::string namestr = Get_object_name(o);
-		   std::cout << "Found nearby object: " << namestr.c_str() << std::endl;
+		   Itemmenu_gump *itemgump = new Itemmenu_gump(&vobjs, x, y);
+        	   Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
+		   itemgump->postCloseActions();
+		   delete itemgump;
+		   obj = NULL;
 		}
 #endif
 	}

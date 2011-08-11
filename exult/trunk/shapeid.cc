@@ -234,6 +234,10 @@ void Shape_manager::load
 #ifdef UNDER_CE
 	files[SF_POCKETPC_FLX].load(POCKETPC_FLX);
 #endif
+#ifdef __IPHONEOS__
+	files[SF_IPHONE_FLX].load(IPHONE_FLX);
+#endif
+
 
 					// Get translucency tables.
 	unsigned char *blends = 0;
