@@ -57,8 +57,9 @@ EXULT_SI_FLX_OBJECTS = \
 	si/container.dat
 
 EXULT_IPHONE_FLX_OBJECTS = \
-	iphone/flx.in
-	iphone/keyboardbutton.shp
+	iphone/flx.in \
+	iphone/keyboardbutton.shp \
+	iphone/transparentmenu.shp
 
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \
 	bg/amulets.shp \
