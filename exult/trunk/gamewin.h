@@ -529,7 +529,8 @@ public:
 					// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
 #ifdef __IPHONEOS__
-	void find_nearby_objects(Game_object_vector *vobjs, int x, int y);
+	typedef std::map<Game_object*, int*> Game_object_map_xy;
+	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y);
 #endif
 
 					// Show names of items clicked on.
