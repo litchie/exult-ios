@@ -57,19 +57,21 @@ private:
 
 class Gump_button;
 typedef std::vector<Gump_button *> Gump_button_vector;
+typedef std::map<Game_object*, int*> Game_object_map_xy;
 
-enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_COUNT };
+enum ITEMMENU_ACTIONS { ITEMMENU_ACTION_NONE, ITEMMENU_ACTION_MENU, ITEMMENU_ACTION_USE, ITEMMENU_ACTION_PICKUP, ITEMMENU_ACTION_MOVE, ITEMMENU_ACTION_COUNT };
 class Itemmenu_gump : public Modal_gump
 {
         UNREPLICATABLE_CLASS_I(Itemmenu_gump,Modal_gump(0,0,0,0));
  public:
         Gump_button_vector buttons;
-	Game_object_vector objects;
+	Game_object_map_xy objects;
 	Game_object *objectSelected;
+	int objectSelectedClickXY[2];
 	int objectAction;
 
-        Itemmenu_gump(Game_object_vector *vobjs, int cx, int cy);
-        Itemmenu_gump(Game_object *obj, int cx, int cy);
+        Itemmenu_gump(Game_object_map_xy *mobjxy, int cx, int cy);
+        Itemmenu_gump(Game_object *obj, int ox, int oy, int cx, int cy);
         virtual ~Itemmenu_gump();
 
                                         // Paint it and its contents.
