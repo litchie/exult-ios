@@ -530,7 +530,7 @@ public:
 	Game_object *find_object(int x, int y);
 #ifdef __IPHONEOS__
 	typedef std::map<Game_object*, int*> Game_object_map_xy;
-	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y);
+	void find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump = NULL);
 #endif
 
 					// Show names of items clicked on.
