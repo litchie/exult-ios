@@ -2154,27 +2154,36 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 	}
 
 #ifdef __IPHONEOS__
-void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y)
+void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, Gump *gump)
 {
-		// Find object at each pixel
-                for (int iy = y - 10; iy < (y + 10); iy++)
-                {
-                   for (int ix = x - 10; ix < (x + 10); ix++)
-                   {
-                       Game_object *iobj = find_object(ix, iy);
-                       if (iobj)
-		       {
-			  int *arrXY = new int[2];
-			  arrXY[0] = ix;
-			  arrXY[1] = iy;
-			  std::pair<Game_object_map_xy::iterator,bool> ret;
+	Game_object *iobj;
+	// Find object at each pixel
+        for (int iy = y - 10; iy < (y + 10); iy++)
+        {
+           for (int ix = x - 10; ix < (x + 10); ix++)
+           {
+	      if (gump)
+	      {
+                 iobj = gump->find_object(ix, iy);
+              }
+	      else
+	      {
+                 iobj = find_object(ix, iy);
+              }
+	      
+              if (iobj)
+              {
+  	         int *arrXY = new int[2];
+		 arrXY[0] = ix;
+		 arrXY[1] = iy;
+		 std::pair<Game_object_map_xy::iterator,bool> ret;
 			  
-			  ret = mobjxy->insert(std::pair<Game_object *, int*>(iobj, arrXY));
-			  if (ret.second == false)
-			     delete arrXY;
-		       }
-                   }
-                }
+		 ret = mobjxy->insert(std::pair<Game_object *, int*>(iobj, arrXY));
+		 if (ret.second == false)
+		     delete arrXY;
+  	      }
+           }
+        }
 }
 #endif
 static inline string Get_object_name(Game_object *obj)
@@ -2212,19 +2221,19 @@ void Game_window::show_items
 	else				// Search rest of world.
 	{
 		obj = find_object(x, y);
-#ifdef __IPHONEOS__
-		Game_object_map_xy mobjxy;
-		find_nearby_objects(&mobjxy, x, y);
-		if (mobjxy.size() > 0)
-		{
-		   Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
-        	   Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
-		   itemgump->postCloseActions();
-		   delete itemgump;
-		   obj = NULL;
-		}
-#endif
 	}
+#ifdef __IPHONEOS__
+	Game_object_map_xy mobjxy;
+	find_nearby_objects(&mobjxy, x, y, gump);
+	if (mobjxy.size() > 0)
+	{
+	   Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
+       	   Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
+	   itemgump->postCloseActions();
+	   delete itemgump;
+	   obj = NULL;
+	}
+#endif
 					// Map-editing?
 	if (obj && cheat.in_map_editor())
 		{
