@@ -121,7 +121,7 @@ void Game_clock::set_time_palette
 		}
 	old_invisible = invis;
 
-	if (!main_actor || cheat.in_infravision() && !old_infravision)
+	if (!main_actor || (cheat.in_infravision() && !old_infravision))
 		{
 		if (transition)
 			{

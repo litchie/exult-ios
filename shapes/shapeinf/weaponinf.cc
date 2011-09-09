@@ -164,7 +164,7 @@ bool Weapon_info::read
 	else
 		missile_speed = !speed ? 3 : (speed < 3 ? 2 : 1); 
 	powers = *ptr++;
-	*ptr++;				// Skip (0).
+	ptr++;				// Skip (0).
 	usecode = Read2(ptr);
 					// BG:  Subtract 1 from each sfx.
 	int sfx_delta = game == BLACK_GATE ? -1 : 0;

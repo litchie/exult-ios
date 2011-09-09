@@ -1193,7 +1193,7 @@ Image_window::FillMode Image_window::string_to_fillmode(const char *str)
 
 		unsigned long fx = std::strtoul(str,const_cast<char**>(&str),10);
 
-		if (fx > 65535 || *str != 'X' && *str != 'x') return (FillMode) 0;
+		if (fx > 65535 || (*str != 'X' && *str != 'x')) return (FillMode) 0;
 
 		++str;
 		if (*str < '0' || *str > '9') return (FillMode) 0;
