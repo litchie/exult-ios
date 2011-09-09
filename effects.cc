@@ -963,7 +963,7 @@ void Homing_projectile::handle_event
 		Tile_coord tpos = stationary ? dest : target->get_tile();
 		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty,
 			deltaz = tpos.tz +
-				stationary ? 0 : target->get_info().get_3d_height()/2 - pos.tz;
+				(stationary ? 0 : target->get_info().get_3d_height()/2) - pos.tz;
 		int absx = deltax >= 0 ? deltax : -deltax;
 		int absy = deltay >= 0 ? deltay : -deltay;
 		int absz = deltaz >= 0 ? deltaz : -deltaz;
