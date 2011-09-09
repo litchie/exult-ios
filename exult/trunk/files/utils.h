@@ -273,7 +273,7 @@ template<typename T>
 inline T ReadNhigh (std::istream &in)
 {
 	T val = 0;
-	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+	for(int i = sizeof(T) - 1; i >= 0; i--)
 		val |= static_cast<T>(T(in.get())<<(8*i));
 	return val;
 }
@@ -289,7 +289,7 @@ inline T ReadNhigh
 	)
 	{
 	T val = 0;
-	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+	for(int i = sizeof(T) - 1; i >= 0; i--)
 		val |= static_cast<T>(T((*in++))<<(8*i));
 	return val;
 	}
@@ -305,7 +305,7 @@ inline T ReadNhigh
 	)
 	{
 	T val = 0;
-	for(size_t i = sizeof(T) - 1; i >= 0; i--)
+	for(int i = sizeof(T) - 1; i >= 0; i--)
 		{
 		uint8 b0;
 		if (std::fread(&b0,sizeof(uint8),1,in) != 1)
@@ -559,7 +559,7 @@ inline void WriteNhigh
 	T val
 	)
 	{
-	for(size_t i = sizeof(T) - 1; i >= 0 ; i--)
+	for(int i = sizeof(T) - 1; i >= 0 ; i--)
 		out.put(static_cast<char>((val>>(8*i))&0xff));
 	}
 

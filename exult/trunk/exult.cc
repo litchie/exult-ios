@@ -2484,7 +2484,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 				(fullscreen ? "full screen" : "window") <<endl;
 #endif
 		if (toggle_fullscreen) // currently always true
-			fullscreen != fullscreen;
+			fullscreen = !fullscreen;
 		gwin->resized(resx, resy, fullscreen, gw, gh, scaleval, scaler,
 					fillmode, fill_scaler);
 	}
