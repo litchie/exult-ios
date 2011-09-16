@@ -2361,11 +2361,11 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 	string fmode_string, sclr, scalerName, fillScalerName;
 	bool video_init = false, set_config = false,
 		 change_gwin = false, menu_init = false,
-		 toggle_fullscreen = false, read_config = false;
+		 read_config = false;
 	if (setup_video_type == VIDEO_INIT)
 		read_config = video_init = set_config = true;
 	else if (setup_video_type == TOGGLE_FULLSCREEN)
-		read_config = change_gwin = toggle_fullscreen = true;
+		read_config = change_gwin = true;
 	else if (setup_video_type == MENU_INIT)
 		read_config = menu_init = true;
 	else if (setup_video_type == SET_CONFIG)
