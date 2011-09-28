@@ -18,6 +18,7 @@
 #define DATA_H
 
 #include <cstdio>
+#include <cstddef>
 #include <cstring>
 #include <cassert>
 #include <fstream>
