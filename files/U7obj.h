@@ -26,6 +26,7 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <cstddef>
 #include "common_types.h"
 #include "utils.h"
 
