@@ -147,7 +147,11 @@ public:
 		}
 					// Get array elem. 0, or this.
 	inline Usecode_value& get_elem0()
-		{ return (type == array_type) ? value.array.elems[0] : *this; }
+		{
+		static Usecode_value zval(0);
+		return (type == array_type) ? (get_array_size() ? value.array.elems[0]
+		                               : zval) : *this;
+		}
 	void steal_array(Usecode_value& v2);
 	inline bool is_false() const	// Represents a FALSE value?
 		{
