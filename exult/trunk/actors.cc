@@ -912,7 +912,7 @@ Actor::Actor
 		target_object(0), target_tile(Tile_coord(-1, -1, 0)), attack_weapon(-1),
 		attack_mode(nearest),
 		schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
-		dormant(true), hit(false), combat_protected(false), 
+		restored_schedule(-1), dormant(true), hit(false), combat_protected(false), 
 		user_set_attack(false), alignment(0), two_handed(false),
 		two_fingered(false), use_scabbard(false), use_neck(false),
 		light_sources(0), usecode_dir(0), type_flags(0),
@@ -5197,7 +5197,7 @@ void Npc_actor::handle_event
 				schedule_type != Schedule::patrol ||
 				schedule_type != Schedule::sleep ||
 				schedule_type != Schedule::wait) &&
-			!rand()%3)	// Don't do it every time. FIXME: "!rand()" ??
+			!(rand()%3))	// Don't do it every time.
 		schedule->seek_foes();
 
 	if (!action)			// Not doing anything?
@@ -5216,7 +5216,7 @@ void Npc_actor::handle_event
 						schedule_type != Schedule::patrol ||
 						schedule_type != Schedule::sleep ||
 						schedule_type != Schedule::wait) &&
-					!rand()%4)	// Don't do it every time. FIXME: "!rand()" ??
+					!(rand()%4))	// Don't do it every time.
 				{
 				schedule->seek_foes();
 					// Get back into queue.

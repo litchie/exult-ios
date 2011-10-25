@@ -1,3 +1,17 @@
+2011-10-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed uninitialized variable restored_schedule. Fixed two cases
+	  of '!rand()%XX'.
+	* effects.cc: Uninitialized 'start' variables in Snowstorm_effect and in
+	  Sparkle_effect could cause these weather effects to fail.
+	* keyactions.cc: 'skip' was used initialized, and in a useless manner. This
+	  caused actor/paperdoll gumps to use a wrong sequence.
+	* schedule.cc: Made sure to set removed objects to zero.
+	* usecode/intrinsics.cc: Intrinsics using Game_window::teleport_party were
+	  assuming an extra optional parameter; now they explicitly check for the
+	  presence of said parameter.
+	* usecode/useval.h: In some cases, an Usecode array with no elements could
+	  get passed to Usecode_internal::get_item, resulting in an invalid value.
+
 2011-09-28 Dominik Reichardt <dominus@users.sourceforge.net>
 	* shapes/pngio.cc: 'jmpbuf' has been deprecated for a long time and libpng >=1.5 will
 	  will give an error instead of a warning. 'png_jmpbuf' has been availlable before 

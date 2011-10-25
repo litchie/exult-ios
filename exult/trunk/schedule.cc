@@ -1601,7 +1601,10 @@ void Tool_schedule::ending
 	)
 	{
 	if (tool)
+		{
 		tool->remove_this();	// Should safely remove from NPC.
+		tool = 0;
+		}
 	}
 
 /*
@@ -1680,6 +1683,7 @@ void Miner_schedule::now_what
 				npc->say(first_miner_gold, last_miner_gold);
 				Tile_coord pos = ore->get_tile();
 				ore->remove_this();
+				ore = 0;
 				if (frnum == 0) {	// Gold.
 					shnum = 645;
 					frnum = rand()%2;
