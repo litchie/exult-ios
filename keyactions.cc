@@ -361,18 +361,14 @@ void ActionInventory(int *params)
 			actor = Get_party_member(i);
 			if (!actor)
 				continue;
-			bool skip;
+
 			shapenum = actor->inventory_shapenum();
 			// Check if this actor's inventory page is open or not
-			if (!gump_man->find_gump(actor, shapenum) && skip)
+			if (!gump_man->find_gump(actor, shapenum) && actor->can_act_charmed())
 			{
-				skip = false;
-				if (actor->can_act_charmed()){
-					gump_man->add_gump(actor, shapenum, true); //force showing inv.
-					inventory_page = i;
-					return;
-				}else
-					skip = true;
+				gump_man->add_gump(actor, shapenum, true); //force showing inv.
+				inventory_page = i;
+				return;
 			}
 		}
 		inventory_page = (inventory_page+1)%(party_count+1);

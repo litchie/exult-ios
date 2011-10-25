@@ -1580,7 +1580,7 @@ Snowstorm_effect::Snowstorm_effect
 	int duration,			// In game minutes.
 	int delay,			// In msecs.
 	Game_object *egg		// Egg that caused it, or null.
-	) : Weather_effect(duration, delay, 1, egg)
+	) : Weather_effect(duration, delay, 1, egg), start(true)
 	{
 					// Start snowing soon.
 	eman->add_effect(new Clouds_effect(duration + 1, delay));
@@ -1616,7 +1616,7 @@ Sparkle_effect::Sparkle_effect
 	int duration,			// In game minutes.
 	int delay,			// In msecs.
 	Game_object *egg		// Egg that caused it, or null.
-	) : Weather_effect(duration, delay, 1, egg)
+	) : Weather_effect(duration, delay, 1, egg), start(true)
 	{
 					// Start snowing soon.
 	eman->add_effect(new Rain_effect<Sparkle>(duration, delay, MAXDROPS/2, 3));
