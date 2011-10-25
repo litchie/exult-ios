@@ -1,0 +1,140 @@
+Ipack Documentation
+JSF
+Feb 22, 2002
+
+Overview
+--------
+Ipack (Image Packer) is a tool for creating and updating Exult and U7 image
+archives,  such as 'shapes.vga'. It is script-based, accepts '.png'
+files as inputs, and is also capable of extracting '.png' files from
+an image archive.
+
+Usage
+-----
+Ipack is invoked as 'ipack [-c|-u|-x] [scriptfile]', where:
+      -c means 'create a new archive'
+      -u means 'update an existing archive'
+      -x means 'extract .png's from an archive'
+
+Script
+------
+The script file contains the following entries:
+
+    1. Comments:	 Any line beginning with a '#'.
+    2. Archive name:	 archive <path to archive file>
+    3. Palette name:	 palette <path to palette file>
+    4. Shape spec.:	 sss/fff: <basename> [flat]
+			 Here 'sss' is the shape#, fff is the #frames,
+			 and the basename is used to create each
+			 frame's filename as 'basenameNN.png', where
+			 NN ranges from 00 to #frames - 1.  'Flat' is
+			 optional, and indicates an 8x8 non-encoded
+			 shape is to be stored (which Exult requires
+			 for shapes 0-0x95 in 'shapes.vga').
+         OR:		 sss/fff: <tile-filename> flat
+			 In this case (for flat only), tile-filename
+			 is a .png file containing a series of 8x8
+			 tiles.  It is specified as:
+				 xxx.png(nn across) OR
+				 xxx.png(nn down)
+			 In the first case, the tiles are taken across
+			 first (nn being the #columns), a row at a
+			 time.  In the second, the tiles are taken
+			 downward first (nn being the #rows), a column
+			 at a time.
+	OR:		 all: <basename>
+			 This will extract every shape/frame into its
+			 own .png file of the form basenameMMMM_NN,
+			 where MMMM is the shape# and NN is the
+			 frame#.  
+
+Examples will be given below.
+
+Functions
+---------
+Create
+------
+
+Use:  'ipack -c scriptfile'
+
+A new archive is created, consisting entirely of shapes specified in
+the script.  If the archive already exists, it is entirely replaced.
+
+The archive name is required.
+
+The palette name is optional.  If provided, and if the file doesn't
+yet exist, ipack will create it as a Flex file with the first input
+.png's palette stored as entry 0, and entries 1-10 automatically
+generated to approximate what we use in Exult (see palettes.h).  
+It will also write palette 0 in text format with .txt appended to the 
+paletted name.  This format is recognized by the Gimp.
+
+     Example:
+
+     archive ../static/shapes.vga
+     palette ../static/palettes.flx
+     0/8:    flats/grass.png(4 across) flat
+     1/2:    flats/sand flat
+     783/1:   trees/birch
+
+This will create a 'shapes.vga' from the following files:
+     flats/grass.png, consisting of 2 rows, each 4 columns of 8x8 tiles.
+     flats/sand00.png	flats/sand01.png
+     trees/birch00.png
+
+Shape 0 will have 8 frames; shape 1 will have 2, and shape 783 will
+have 1.  Note that the files for all the frames must exist.
+
+The shapes that aren't specified (2-782) are set to null (which Exult
+should handle with warnings).
+
+Update
+-------
+
+Use:  'ipack -u scriptfile'
+
+An existing archive is updated with the shapes specified in the
+scripts. This is useful for patching 'shapes.vga' with new shapes.
+
+The archive name is required, and the file must already exist.
+
+The palette name is optional, and is created if it doesn't exist, as
+described above in the 'Create' description.
+
+     Example:
+
+     archive ../static/shapes.vga
+     783/2:   trees/birch
+
+The 'shapes.vga' file will have shape # 783 replaced by the files
+'trees/birch00.png' (frame 0) and 'trees/birch01.png' (frame 1).
+
+Extract
+-------
+
+Use: 'ipack -x scriptfile'
+
+The shapes listed in the script are extracted from the archive, and
+stored as .png files.
+
+The archive name is required, and the file must exist.
+The palette name is also required, and the file must exist.
+
+    Example:
+
+    archive ../static/shapes.vga
+    palette ../static/palettes.flx
+    781/2:   ships/gangplank
+
+The files 'ships/gangplank00.png' and 'ships/gangplank01.png' should
+be extracted from the shapes file using palette 0 in 'palettes.flx'.
+
+    Example:
+
+    archive ../static/shapes.vga
+    palette ../static/palettes.flx
+    all:    allshapes/shape
+
+All frames will be extracted into files of the form
+allshapes/shapeMMMM_NN.
+

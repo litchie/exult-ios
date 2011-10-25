@@ -1,0 +1,77 @@
+Textpack Documentation
+======================
+ 
+  
+NAME
+====
+
+textpack - Pack and unpack Flex files containing text 
+  
+
+SYNOPSIS
+========
+
+textpack -c FLEXFILE [TEXTFILE] 
+textpack -x FLEXFILE [TEXTFILE] 
+  
+
+DESCRIPTION
+===========
+
+Text Flex files are used for the storage of strings by the games Exult supports. 
+While expack(1) can operate on such files, using textpack to pack and unpack 
+them is more comfortable. 
+The first parameter determines the mode of operation, -c stands for creation, -x 
+for extraction. 
+  
+
+Creation
+========
+
+TEXTFILE (or stdin if it is missing) is read and must conform to the file format 
+(see below). FLEXFILE will be created containing the strings from this input. 
+  
+Extraction
+The strings contained in FLEXFILE are extracted and written to TEXTFILE (if 
+given, stdout otherwise) in the file format documented below. 
+  
+File Format
+Empty lines, and lines starting with a pound sign (#) are ignored. Other lines 
+must begin with a number, followed by a colon (:). The number is the index of 
+the string and may be given either in decimal, in octal prefixed with 0; or in 
+hexadecimal prefixed with 0x. Anything following the colon belongs to the string 
+and gets stored in the Flex verbatim. Lines are limited in length to 1024 
+characters. 
+  
+
+EXAMPLES
+========
+
+  textpack -x text.flx 
+  Writes all the strings contained in text.flx to stdout in the format discussed 
+  above.
+ 
+  textpack -c text.flx strings.list 
+  Reads strings.list and puts its contents into the Flex file text.flx 
+  
+Example text file:
+# An example 
+0:the zeroth string 
+# strings may be empty 
+1: 
+# holes are allowed, strings 2 to 16 will be empty 
+17:string seventeen 
+# 13 hexadecimal == 19 decimal, 24 octal == 20 decimal 
+0x13:nineteen 
+024:twenty 
+# numbers need not go up 
+18:eighteen 
+# this will overwrite the definition from above 
+19:overwritten 
+  
+
+AUTHOR
+======
+
+This manpage was written by Robert Bihlmeyer. It may be freely redistributed and 
+modified under the terms of the GNU General Public License version 2 or higher. 

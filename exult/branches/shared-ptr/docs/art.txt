@@ -1,0 +1,64 @@
+Custom art for Exult BG paperdolls
+-----------------------------------
+
+NPCs:
+
+Name			shape		Artist
+
+Jaana			490		Oblivious
+Katrina			452		Philip Gottschalk
+Julia			454		Philip, modified by Berty Zhang
+Sentri			462		Philip, modified by Berty Zhang
+Tseramed		460		Philip
+Spark			489		Philip
+
+Non-partymember NPCs?
+
+
+
+Items:
+
+Name			shape/frame	Artist		Notes
+
+Leather Collar		582		Crysta
+Gorget			586		Crysta
+Magic gorget		843		Crysta
+Ankh Amulet		955/0		Oblivious
+Heart Amulet		955/2		Adam Delman
+FoV amulets		955/7-10	Willem Jan
+Grey cloak		285/0		Oblivious
+Green cloak		285/1		Oblivious
+Brown (fur?) cloak	285/2		Adam
+Green top		249/0		sbx
+Brown/orange dress	249/1		sbx
+Blue dress		249/2		sbx
+Dark-brown hood		444/0		Sam Matthews
+Light-brown hood	444/1		Sam
+Caddellite helmet	638/0		Crysta
+Greaves			353		Oblivious
+Brown pants		738/0,1		Sam
+Green pants		738/2,4		Sam
+Brownish pants		738/3,5		Sam
+Shoes			585		Willem Jan
+Spiked Shield		578		Oblivious (equipped), Crysta (back)
+Magic boomerang		550		Willem Jan
+Fire sword		551		Oblivious
+Hawk			555		Willem Jan
+Great dagger		561		Willem Jan
+Star bursts		565		Crysta
+Main gauche		591		Crysta
+Cleaver			614		Adam
+Knives			615		Willem Jan
+Custom sword		635		Willem Jan
+Hoe of destruction	548		Tristan
+Firedoom staff		553		Adam
+Death Scythe		562		Willem Jan
+Fellowship staff	885		Crysta
+Triple crossbow		647		Willem Jan
+Musket			278		Sam
+Musket ammo		581		WishStone Dragon
+Fire wand		630		Willem Jan
+Avatar costume		838		-
+Lightning whip		549		Crysta
+Magic helmet		383		Crysta
+Throwing axe		593		Crysta

@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "smooth", "smooth.vcproj", "{EAEB2E50-C789-4D91-A827-685D226E708C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_stream", "plugins\plugin_stream.vcproj", "{D1C75D24-1C61-46AB-BF31-80CD5A6A00DE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plugin_randomize", "plugins\plugin_randomize.vcproj", "{BF8AFD09-9D1A-4B3C-8450-956B1F26A672}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{EAEB2E50-C789-4D91-A827-685D226E708C}.Debug.ActiveCfg = Debug|Win32
+		{EAEB2E50-C789-4D91-A827-685D226E708C}.Debug.Build.0 = Debug|Win32
+		{EAEB2E50-C789-4D91-A827-685D226E708C}.Release.ActiveCfg = Release|Win32
+		{EAEB2E50-C789-4D91-A827-685D226E708C}.Release.Build.0 = Release|Win32
+		{D1C75D24-1C61-46AB-BF31-80CD5A6A00DE}.Debug.ActiveCfg = Debug|Win32
+		{D1C75D24-1C61-46AB-BF31-80CD5A6A00DE}.Debug.Build.0 = Debug|Win32
+		{D1C75D24-1C61-46AB-BF31-80CD5A6A00DE}.Release.ActiveCfg = Release|Win32
+		{D1C75D24-1C61-46AB-BF31-80CD5A6A00DE}.Release.Build.0 = Release|Win32
+		{BF8AFD09-9D1A-4B3C-8450-956B1F26A672}.Debug.ActiveCfg = Debug|Win32
+		{BF8AFD09-9D1A-4B3C-8450-956B1F26A672}.Debug.Build.0 = Debug|Win32
+		{BF8AFD09-9D1A-4B3C-8450-956B1F26A672}.Release.ActiveCfg = Release|Win32
+		{BF8AFD09-9D1A-4B3C-8450-956B1F26A672}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

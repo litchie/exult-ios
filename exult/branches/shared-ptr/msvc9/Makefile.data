@@ -1,0 +1,87 @@
+EXEC=Exult.exe
+EXEEXT=.exe
+
+!include Makefile.common
+
+
+# Exult.flx
+build_ex :
+!if !EXIST(data\exult.flx)
+	cd data 
+	..\expack$(EXEEXT) -i flx.in
+	cd ..
+!endif
+
+install_ex : 
+	copy data\exult.flx "$(EXULT_INSTALL_PATH)\data"
+	
+clean_ex :
+	del data\exult_flx.h
+	del data\exult.flx
+
+rebuild_ex : clean_ex build_ex
+
+reinstall_ex : clean_ex install_ex
+
+
+# exult_bg.flx
+build_bg :
+!if !EXIST(data\exult_bg.flx)
+	cd data\bg
+	..\..\expack$(EXEEXT) -i bg_mr_faces.in
+	..\..\expack$(EXEEXT) -i bg_paperdol.in
+	..\..\expack$(EXEEXT) -i flx.in
+	cd ..\..
+!endif
+
+install_bg : 
+	copy data\exult_bg.flx "$(EXULT_INSTALL_PATH)\data"
+	
+clean_bg :
+	del data\exult_bg_flx.h
+	del data\exult_bg.flx
+
+rebuild_bg : clean_bg build_bg
+
+reinstall_bg : clean_bg install_bg
+
+
+# exult_si.flx
+build_si :
+!if !EXIST(data\exult_si.flx)
+	cd data\si
+	..\..\expack$(EXEEXT) -i flx.in
+	cd ..\..
+!endif
+
+install_si : 
+	copy data\exult_si.flx "$(EXULT_INSTALL_PATH)\data"
+
+clean_si :
+	del data\exult_si_flx.h
+	del data\exult_si.flx
+
+rebuild_si : clean_si build_si
+
+reinst_si : clean_si install_si
+
+
+# exult_pocketpc.flx
+build_pocketpc :
+!if !EXIST(data\exult_pocketpc.flx)
+	cd data\pocketpc
+	..\..\expack$(EXEEXT) -i flx.in
+	cd ..\..
+!endif
+
+install_pocketpc : 
+	copy data\exult_pocketpc.flx "$(EXULT_INSTALL_PATH)\data"
+
+clean_pocketpc :
+	del data\exult_pocketpc_flx.h
+	del data\exult_pocketpc.flx
+
+rebuild_pocketpc : clean_pocketpc build_pocketpc
+
+reinst_pocketpc : clean_pocketpc install_pocketpc
+

@@ -1,0 +1,196 @@
+				Creating a NEW Game in Exult
+				Feb. 16, 2002
+				JSF
+
+Introduction
+------------
+This document will describe the steps and rules for creating a
+complete new game that will run with the Exult engine.  As the
+development of the tools for this is still in progress, this document
+will need updating in the future.
+
+The Steps
+---------
+
+These instructions are for building a new game that I will refer to as
+'mygame'.
+
+1.  Directory and Configuration
+
+    NEW:
+    Start up ExultStudio, and use the "File - New game..." menu entry.
+    Specify a directory (which may not yet exist) where you'd like
+    your new game's 'static' and 'patch' data to be stored.
+    Generally, Exult will look first in 'patch', then in 'static', for
+    its data files.  (NB, this is still not implemented for ALL files
+    yet.)  The directories will be created, and an appropriate section
+    added to your 'exult.cfg' file.
+
+    If you look at the new section in 'exult.cfg', note the 'editing'
+    section.  This tells Exult that it's okay if certain non-essential
+    data files don't exist yet.  For example, the 'mainshp.flx' file
+    is needed for the opening menu, which you may not want to develop
+    until your game is further along.  If it doesn't exist, and if
+    'editing' is set to 'yes', Exult will skip the menu display, and
+    create a default new game if necessary, or continue the previously
+    saved game if it exists.
+
+2.  Artwork
+
+    The following files containing the game's artwork need to exist.
+    These files are described in 'u7tech.txt'.
+
+    Name	  Tools for Creation
+    ----	  ------------------
+    shapes.vga	  Gimp or Photoshop plugin; also 'expack', 'shp2pcx'.
+    faces.vga
+    fonts.vga
+    gumps.vga
+    paperdol.vga
+    pointers.shp
+    sprites.vga
+    palettes.flx  Export palettes from Gimp.  Import to ExultStudio.
+    text.flx	  Can use 'expack' or 'textpack'.
+
+    Of course, doing the above is easier said than done.  It's
+    possible that some of the above can be only partly done before
+    proceeding to the next step.
+
+    NEW:
+    If you right-click on a shape in one of the .vga files, you'll get
+    a popup menu with choices for creating new shapes, or for bringing
+    up an image-editor (specified in Preferences) for editing a shape.
+
+3.  Shape Data
+
+Once you've done some artwork, you're ready to describe some of the
+game's objects.  To do this, start up ExultStudio, giving it the
+location of your new game's 'static' directory.  In my case, I run
+'exult_studio -g mygame'.
+
+Then click on 'shapes.vga' in the 'Files' area, so your game shapes
+are displayed.  To describe a shape, double-click on it to bring up
+the (huge) 'Shape Info' dialog.  You can now describe the shape's
+'origin' (generally near the bottom-right corner), it's 3D tile
+dimensions, and various other aspects.  In addition, you can specify
+if it is a weapon, ammo, armor, or monster, and provide the details
+for each.  (NB:  A few fields in this dialog -- frame info., name, and
+'file' field -- don't do anything yet.)
+
+When you are done, be sure to use the pulldown 'File/Save shape info'
+to write out the new data into your 'patch' directory.
+
+4.  Work on the Map
+
+You're now ready to run Exult itself.  In fact you need to, since it
+works with ExultStudio to edit the map.  Start it for your new game
+using 'exult --game mygame', where the game name matches what you put
+in your configuration file.  You should see a world where the terrain
+consists entirely of shape #0, with a main character in the center
+whose shape is (for now) 721.  You won't be able to walk anywhere.
+
+Hit ctrl-alt-m to bring up ExultStudio, and then select 'u7chunks' in
+the File area.  There should be only one chunk shown, filled with
+shape 0.  Select it.
+
+Before doing anything else, you'll want to create some 'terrain'
+chunks.  You can create new, empty (or duplicate) chunks by hitting
+the 'New' or 'Dup' buttons in the Chunk Browser.  You can set a chunk
+on your map to one of these by dragging it into Exult.  Then, to edit
+the terrain, set the 'Edit terrain' checkbox in the top row of
+ExultStudio's window, and select 'shapes.vga'.  Select a shape
+(usually, but not always, one of the 8x8 flats), and draw with it in
+Exult.  Note that if you've created and dragged, say, Chunk #3 to
+several places on your map, they'll all get the changes that you're
+drawing.
+
+Uncheck the 'Edit terrain' box when you're done.  Note that at any
+time, you can save your changes into the 'patch' directory with
+'File/Save map'.
+
+Now you can do the fun stuff.  Just drag objects into Exult to build
+your world.  If you want to make it easy to place objects at a certain
+height, set the 'Edit lift' control in ExultStudio.
+
+One thing you'll want to do right away, if you want your character to
+be able to walk, is to double click on him to bring up the 'Npc'
+dialog.  At the least, go to the 'Flags' page and click 'walk'.  You
+can also place other NPC's in the game using the 'Objects/Npc' menu
+selection in ExultStudio.
+
+You can also create a new 'Egg' using the 'Objects/Egg' menu
+selection, or edit existing ones by double-clicking.  The description
+of Egg's is in 'u7tect.txt'.  Note that if you create a 'Monster' egg
+with a given shape, you should set that shape's 'Monster Info' by
+double-clicking it in the 'shapes.vga' display.  This will let you set
+the monster's attributes, alignment, and movement.
+
+5.  Usecode
+
+This could fill half a book, but I won't go into detail.  Assuming you
+know our Usecode language (which isn't necessarily solidified yet:-)),
+you'll want to write code for various shapes (shape #'s in
+'shapes.vga') and for various NPC's (with function # 0x400 + (npc #)),
+use the tool 'ucc' to compile your file, and move the resulting output
+file into 'patch', with name 'usecode'.  If for example, you created
+shape 0x237 as a 'door', and wrote a usecode function #0x237 to handle
+it, you should be able to start up Exult, double-click on a door, and
+have that usecode function executed.
+
+You can also write usecode functions for eggs, and then, in
+ExultStudio, assign those functions to 'Usecode' eggs that you create.
+
+6.  Opening menu, intro. movie, ending movie
+
+Can't do those yet.  These are currently hard-coded for playing the U7
+games; but one of our developers has volunteered to make them script-driven.
+
+Caveats
+-------
+
+There are some names and numbers currently hard-coded in the Exult
+engine.  Eventually, we hope to make these all data-driven, but for
+now, here are some that I can think of:
+
+1.  shapes.vga
+
+    Shapes 0-149 are the 'flat' 8x8 terrain shapes.
+    The game's main character is #721.
+    The frames for actors are described in 'actors.h'.
+
+2.  palettes.flx
+
+    Palette 0 is for daytime, 1 for dusk/dawn, 2 for night, 3 for when
+    you're invisible, 10 for lightning.  (NB:  The others????)
+
+    Palette colors 0xf4 - 0xfe are the translucent colors.  These
+    cause certain colors to be blended with what's already been
+    painted.  For example, the 7'th one of these is used for (red)
+    blood.  Currently, the color blends are hard-coded in 'gamewin.cc'
+    (search for 'alpha').
+
+    Several other groups of colors are used for palette animation:
+        Start	  Group size
+	-----	  ----------
+	0xf8	  4
+	0xf4	  4
+	0xf0	  4
+	0xe8	  8
+	0xe0	  8
+
+3.  gumps.vga
+
+    These are currently set up in 'bggame.cc' and 'sigame.cc'.  For
+    now, new games use the numbers in 'sigame.cc'.  Locations of gump
+    pieces are hard-coded.
+
+4.  fonts.vga
+
+    Also hard-coded; see 'shapes/fontvga.cc'.  Each font is one shape,
+    with frame==ASCII code.
+
+5.  filenames
+
+    All filenames currently are fixed, and are the same as U7's.  This
+    should change in the future, and we may also make it possible to
+    combine several of the data files into one Flex file.

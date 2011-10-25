@@ -1,0 +1,378 @@
+# Yet another Random Datafile format: only lines with '>' in the
+# 0th column are considered data, the rest is comments.
+# Probabially wants to be conf/ed sometime in the future.
+# UPDATE: Really, REALLY needs to be conf/ed, or something.
+
+# Column 1: hex opcode
+# Column 2: assembler opcode nmonic
+# Column 3: assembler output format
+# Column 4: assembler comment output format
+# Column 5: script function output format
+# Column 6: number of data bytes
+# Column 7: data types of bytes
+# Column 8: number of elements it pops from the stack
+# Column 9: number of elements it pushes to the stack
+# Column 10: the 'call effect' true false (1/0) if this is a 'call type' opcode
+# Column 11: Flags. Each 0/1 reperesents a false/true condition for each of the
+#		flags listed below:
+#	Flag 1: Return flag. If true, it signifises that the function this
+#		opcode is found in, returns a variable on the stack.
+#	Flag 2: Paren output flag. If true, we output a pair of parenthesis
+#		around the usecode script output.
+#	The following flags are specific only to the usecode script output.
+#	Flag 3: Increment indent. If true, output the opcode, then increment
+#		the indent level by 1.
+#	Flag 4: Decrement indent. If true, decrement the indent level by 1,
+#		then output the opcode.
+#	Flag 5: Temporarly increment indent. If true, increment the indent
+#		level by 1, output the opcode, then decrement the indent level
+#		by 1.
+#	Flag 6: Temporarly decrement indent. If trye, decrement the indent
+#		level by 1, output the opcode, then increment the indent level
+#		by 1.
+
+# DataType Notes:
+# long == 4 bytes
+# flag == extoffset == dataoffset == varoffset == offset == short == 2 bytes
+# byte == 1 byte
+
+# offset is calculated from the relative offset it
+# A "false" value is defined as integer 0, a null string, or an empty array.
+# (stateing obvious) Logically a "true" value would be the opposite of this.
+
+# "Truth value"s pushed on the stack are integer 1 for true, and integer 0
+# for false.
+
+# REMEMBER: All arrays are indexed with as 1 based rather then 0 based.
+
+# Notes on number of bytes poped/pushed:
+# All numbers are the number of bytes poped/pushed from the stack, with the
+# exception of 0xFF, which currently means the number of bytes in the first
+# opcode parameter (see opcode 0x07). and 0xFE means the second parameter.
+# Logic: parameter referenced is abs(0x100 - value)
+
+# NOTE: Description of function appears below the relevant function.
+
+> 0x00	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x01	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x02	NEXT	"next\t[%1], [%2], [%3], [%4], %5"	"\t\t\t;"	"for (var%3 in var%4 with var%1 to var%2 atend label%f*_%5)"	10	{short,short,short,varoffset,offset}	0	0	0	000000
+
+TODO: To be done...
+* {varoffset} is the array to loop over.
+* {short}(1st) is used to store the "counter".
+* {short}(2nd) is used to store the "max" value. Which is the number of elements
+  stored in {varoffset} or 1 if it's a string or integer.
+* {offset} is the relative offset to jump to after the loop is completed.
+
+> 0x03	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x04	ASK	"ask\t%1"	""	"UcAsk"	2	{offset}	0	0	0	000000
+
+Display the Avatar's conversation options and ask for the user's input.
+It jumps to {offset} if there is no conversation answers available.
+
+> 0x05	JNE	"jne\t%1"	""	"if(!%p1) goto label%f*_%1"	2	{offset}	1	0	0	000000
+
+Pops a value from the stack, tests if it's false, if it's false jumps to
+the relative {offset}.
+
+> 0x06	JMP	"jmp\t%1"	""	"goto label%f*_%1"	2	{offset}	0	0	0	000000
+
+Jumps to the relative {offset} provided.
+
+> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t;"	"cmps(%p,)"		4	{short,offset} 0xFF	0	0	000000
+
+Pop {short} number of values from the stack, compare each one to the
+last response from the user, and jumps to the {offset} if it's not found,
+else continue as normal.
+NOTE: only do this comparing if we haven't found a correct answer on
+any of the previous CMPSs since the last ASK.
+
+> 0x08	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x09	ADD	"add"	""	"%p2 + %p1"	0	{}	2	1	0	010000
+
+Adds %p1 to %p2.
+
+> 0x0A	SUB	"sub"	""	"%p2 - %p1"	0	{}	2	1	0	010000
+
+Subtracts %p1 from %p2.
+
+> 0x0B	DIV	"div"	""	"%p2 / %p1"	0	{}	2	1	0	010000
+
+Divides %p2 by %p1.
+
+> 0x0C	MUL	"mul"	""	"%p2 * %p1"	0	{}	2	1	0	010000
+
+Multiplies %p1 by %p2.
+
+> 0x0D	MOD	"mod"	""	"%p2 %% %p1"	0	{}	2	1	0	010000
+
+Mods %p2 by %p1.
+
+> 0x0E	AND	"and"	""	"%p2 && %p1"	0	{}	2	1	0	010000
+
+Pops two elements from the stack, converts them to true/false, logically
+"and"s the values, and pushes the resulting truth value back on the stack
+as a 1/0(true/false).
+
+> 0x0F	OR	"or"	""	"%p2 || %p1"	0	{}	2	1	0	010000
+
+The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to
+that opcode for more information.
+
+> 0x10	NOT	"not"	""	"!%p1"	0	{}	1	1	0	010000
+
+Pops one element from the stack converts it to a truth value, logically "not"s
+it, and then pushes the resulting truth value on the stack.
+
+> 0x11	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x12	POP	"pop\t[%1]"	"\t\t\t;"	"var%1 = %p1"	2	{varoffset}	1	0	0	000000
+
+Pops one element from the stack and assigns it to the local varitable pointed
+to by {varoffset}.
+MENTAL NOTE: assert(varoffset>=0 && varoffset<num_local_variables);
+
+> 0x13	PUSHT	"push\ttrue"	""	"true"	0	{}	0	1	0	000000
+
+Pushes true onto the stack.
+
+> 0x14	PUSHF	"push\tfalse"	""	"false"	0	{}	0	1	0	000000
+
+Pushes false onto the stack.
+
+> 0x15	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x16	CMPGT	"cmpgt"	""	"%p2 > %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is greater then %p1.
+
+> 0x17	CMPLT	"cmplt"	""	"%p2 < %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is less then %p1.
+
+> 0x18	CMPGE	"cmpge"	""	"%p2 >= %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is greater then or equal to %p1.
+
+> 0x19	CMPLE	"cmple"	""	"%p2 <= %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is less then or equal to %p1.
+
+> 0x1A	CMPNE	"cmpne"	""	"%p2 != %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is not equal to %p1.
+
+> 0x1B	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x1C	ADDSI	"addsi\t%1H"	"\t\t\t; %tc1"	"UcMessage(\"%t1\")"	2	{dataoffset}	0	0	0	000000
+
+Appends a string from the data segment {dataoffset} to the string register.
+
+> 0x1D	PUSHS	"pushs\t%1H"	"\t\t\t; %tc1"	"\"%t1\""	2	{dataoffset}	0	1	0	000000
+
+Pushes the string at {dataoffset} onto the stack.
+
+> 0x1E	ARRC	"arrc\t%1H"	"\t\t\t;"	"[%p,]"	2	{short}	0xFF	1	0	000000
+
+Pops {short} number of elements from the stack, and creates an array of
+them, first off the stack is the first appended to the end of the array
+(ie. the elements were appended originally to the stack in the order 3, 2,
+1 would create an array of the form {1, 2, 3}). The created array is then
+appended to the stack.
+
+> 0x1F	PUSHI	"pushi\t%1H"	"\t\t\t; %d1"	"0x%1"	2	{short}	0	1	0	000000
+
+Pushes the element {short} to the stack as a signed 16bit integer.
+
+> 0x20	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x21	PUSH	"push\t[%1]"	"\t\t\t;"	"var%1"	2	{varoffset}	0	1	0	000000
+
+Pushes the variable stored at {varoffset} onto the stack.
+
+> 0x22	CMPEQ	"cmpeq"	""	"%p2 == %p1"	0	{}	2	1	0	010000
+
+Tests if %p2 is equal to %p1.
+
+> 0x23	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x24	CALL	"call\textern:[%1]"	"\t\t;"	"%f1(%p,)"	2	{extoffset}	0	0	1	000000
+
+References the "external usecode function table" (Exult code calls this
+"externals"), with the {extoffset} value passed in the opcode call
+(eg: external_table[extoffset]), then "calls" that function to continue
+execution.
+
+> 0x25	RET	"ret"	""	"return"	0	{}	0	0	0	000000
+
+Returns to the "caller" function, after showing any text remaining in the
+string buffer (Exult: say_string() buffer). Does not return any elements
+on the stack (ie: returns "void").
+
+> 0x26	AIDX	"aid\t[%1]"	"\t\t\t;"	"var%1[%p1]"	2	{varoffset}	1	1	0	000000
+
+Pops one (pop v1) element off the stack (the array index), and uses it as an
+index of the local variable {varoffset}. (varoffset[v1]) The element obtained
+is then pushed onto the stack.
+TODO: NOTE: This opcode has been changed... need to redocument.
+
+> 0x27	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x28	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x29	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x2A	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x2B	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x2C	EXIT2	"exit2"	""	"exit2()"	0	{}	0	0	0	000000
+
+Yet Another Return. Exult implements this identically to the RET opcode (0x25).
+
+> 0x2D	SETR	"setr"	""	"rr = %p1"	0	{}	1	0	0	000000
+
+Pops the top most element off the stack and stores it in the return register.
+
+> 0x2E	ENUM	"enum"	""	"enum()"	0	{}	0	0	0	000000
+
+Part one of the two opcode for...each opcode loop. Details under opcode 0x02.
+
+> 0x2F	ADDSV	"addsv\t[%1]"	"\t\t\t;"	"UcMessage(var%1)"	2	{varoffset}	0	0	0	000000
+
+Appends the local variable pointed to by {varoffset} onto the end of the
+string register.
+
+> 0x30	IN	"in"	"\t\t\t\t;"	"in(%p2, %p1)"	0	{}	2	1	0	000000
+
+Tests if a value is in an array. Pops two elements from the stack (pop v1,
+then pop v2) test if any of the elements inside the array v1 are equal to
+the element v2 (v2 cannot be an array), and pushes the resulting truth value
+on the stack.
+
+> 0x31	SMTH	"smth\t%1 %2"	"\t\t\t;"	"smth()"	4	{short,offset}	0	0	0	000000
+
+Does something related to conversations. Only occurs (2x) in the usecode
+function handling the 'audition' in Britain. Current implementation
+produces same result as original, although we're unsure of the exact
+function of this opcode.
+(Doesn't push or pop anything)
+
+> 0x32	RTS	"rts"	""	"return rr"	0	{}	0	0	0	100000
+
+(ucdump calls this "retr")  Same as RET except pushes the return register
+onto the stack before returning.
+EXULT NOTE: unlike ret, it doesn't show any remaining text in the string
+buffer. Bug?
+
+> 0x33	SAY	"say"	""	"UcSay"	0	{}	0	0	0	000000
+
+Displays the string register to the screen (as appropriate talk, sign, scroll,
+book, whatever). Has the side effect of clearing the string register.
+
+> 0x34	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x35	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x36	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x37	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"UI_%i1(%p,)"	3	{short,byte}	0xFE 1	0	000000
+
+Calls the intrinsic {short} with {byte} number of parameters popped from the
+stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
+parameters, and the stack looked like this: {4, 3, 2, 1} (4 was the first
+element pushed upon the stack), the intrinsic function call in a c-like form
+would look like: intrinsic23( 1, 2, 3);
+
+The intrinsic called will return a value on the stack.
+
+The intrinsic called also has the same "event" flag as the caller function.
+
+> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1, %d2"	"UI_%i1(%p,)"	3	{short,byte}	0xFE	0	0	000000
+
+Same as opcode CALLIS (0x38), except no return value.
+
+> 0x3A	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x3B	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x3C	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x3D	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x3E	PUSHITM	"push\titemref"	"\t\t\t;"	"item"	0	{}	0	1	0	000000
+
+(ucdump & exult call this "push itemref") Pushes the identifier of the item
+(for which the usecode event handler is called) onto the stack.
+
+> 0x3F	ABRT	"abrt"	""	"abrt()"	0	{}	0	0	0	000000
+
+(ucdump calles this "exit") (exult says this is "really like a throw") Shows
+any text in the string register, and exits the function immediatly.
+ABRT also exits all calling functions, effectively stopping the usecode interpreter.
+
+> 0x40 END_CONV "end_conv" ""	"end_conv()"	0	{}	0	0	0	000000
+
+Always seems to be called right before a "goodbye", so guessing
+it means 'end conversation'.
+
+> 0x41	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x42	PUSHF	"pushf\tflag:[%1]"	"\t\t\t;"	"gflags[%1]"	2	{flag}	0	1	0	000000
+
+TODO: document
+
+> 0x43	POPF	"popf\tflag:[%1]"	"\t\t;"	"gflags[%1] = %p1"	2	{flag}	1	0	0	000000
+
+TODO: document
+
+> 0x44	PUSHB	"pushb\t%b1H"	"\t\t\t; %d1"	"0x%b1"	1	{byte}	0	1	0	000000
+
+(ucdump calls this "pushbi")
+TODO: document
+
+> 0x45	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x46	APUT	"aput\t[%1]"	"\t\t\t;"	"var%1[%p1] = %p2"	2	{varoffset}	2	0	0	000000
+
+TODO: document
+
+> 0x47	CALLE	"calle\t%1H"	"\t\t\t;"	"calle()"	2	{short}	0	0	0	000000
+
+# TODO: Needs more documenting, need to find the pop/push numbers.
+{short} == usecode function number to call
+TODO: document
+
+> 0x48	PUSHEID	"push\teventid"	""	"event"	0	{}	0	1	0	000000
+
+(ucdump & exult calles this "push eventid")
+TODO: document
+
+> 0x49	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
+
+> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"%p2 & %p1"	0	{}	2	1	0	010000
+
+Appends second param. to the list in first param.
+
+> 0x4b	POPEID	"pop\teventid"	""	"event = %p1"	0	{}	1	0	0	000000
+
+# TODO: Needs more documenting
+(ucdump & exult calls this "pop eventid")
+TODO: document
+
+# Debug opcodes -- currently only found in the .es version of SI
+
+> 0x4c	DBGLINE	"dbgline %1"	""	"// Line: %1"	2	{short}	0	0	0	000000
+
+> 0x4d	DBGFUNC	"dbgfunc %1 %2 "	"; %t1"	"// Function: %t1 %2"	4	{short,dataoffset}	0	0	0	000000
+
+# Fake opcodes for use with optimsations in ucxt
+
+> 0x101	LABEL	"(invalid)" "" "label%f*_%1"	2	{offset}	1	0	0	000001
+

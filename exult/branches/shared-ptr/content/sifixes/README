@@ -1,0 +1,44 @@
+You can obtain a full build of the SI Fixes mod at the author's website:
+http://www.seventowers.org/
+
+If, instead, you want to build it yourself, you will have to obtain UCC and expack;
+both can be built from source (or, if you use Windows, you can obtain a copy of
+them in the Tools Snapshot in the Exult Downloads page).
+
+It is recommended that you place both executables in your system's PATH variable
+(whether by placing them in a directory found in that variable or by adding the
+directory they are in to said variable); I will assume that you have done so.
+
+Then you proceed with:
+  1) Change to the 'sifixes/src' directory and run "ucc -o usecode usecode.uc";
+
+  2) OPTIONAL: Run "expack -i mainshp.in";
+
+  3) Move the 'usecode' file (generated in (1), above) to 'sifixes/data'.
+
+Congratulations, the 'sifixes/data' directory now contains all that is needed
+to run the SI Fixes. If you executed step (2), you will have a new title screen
+which can confirm that you are indeed playing SI Fixes.
+
+There are script files for automating this proccess (both in 'sifixes/src'):
+  1) Windows users can run the supplied 'make.bat' DOS Batch file;
+
+  2) Users of POSIX-compliant systems can use the supplied 'make.sh' script.
+
+Be aware that both script files file assume that UCC and Expack are somewhere
+in your PATH variable.
+
+To actually use the SI Fixes in Exult, you will need to use the 'sifixes.cfg'
+found in the same directory as this file, as well as needing to know the path to
+your SI's 'mods' directory. The 'mods' directory is usually a directory called
+'mods' you create in the same level as your SI's 'STATIC' directory.
+
+Then, to install the SI Fixes:
+
+  1) Copy the supplied 'sifixes.cfg' to your mods folder.
+  
+  2) Create the directory 'mods/sifixes' (CASE SENSITIVE -- use the exact same
+     case you used in the 'sifixes.cfg' file name) and copy (or move) the
+	 'sifixes/data' directory to this newly-created 'mods/sifixes' directory.
+	 
+That is it! Just run Exult and enjoy!

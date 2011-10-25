@@ -1,0 +1,61 @@
+Hello,
+
+This .ZIP contains the following files:
+
+README		This File
+B.EXE		Decompiler by Maxim & Wody
+MKLINK.EXE	Creates the link-dependencies U7 uses
+RIP.COM		Rips usecode to little files, and builds usecode-file by Wody
+WUC.COM		Usecode assembler by Wody
+INTRINS1.TXT	List of used intrinsic functions for U7BG by Wody
+INTRINS2.TXT	List of used intrinsic functions for U7SI by Wody
+U7BGFLAG.TXT	Flags used with PUSHF/POPF for U7BG by Wody
+U7SIFLAG.TXT	Flags used with PUSHF/POPF for U7SI by Wody
+UCFORMAT.TXT	Format of Usecode-file by various people
+SOURCE.ZIP	ZIP file of source for all programs included
+
+Maxim is Maxim S. Shatskih, Email: maxim__s@mtu-net.ru
+Wody is Wouter Dijkslag, Email: wody@wody.demon.nl
+(more credits in UCFORMAT.TXT)
+
+If you want to do anything with it, you need the usecode file from
+Ultima 7: The Black Gate or Ultima7: Serpent Isle. With this file, you can then
+create a list by running B.EXE, which shows it on your screen. To redirect it
+to a file, use B > FILE, where FILE is the file you want it to.
+
+This file has a lot of functions in it, in the form of:
+
+            Number
+Function #0 (0096H), offset = 00000000, size = 00a2, data = 005d
+
+The most interesting part is number. If you run B with that number (B 0096)
+you will get the source of that function, as far as is known. Off course, this
+can be redirected too.
+
+You can then change that function, and recompile it!
+
+If you want to change a function, you first need to create compiled files and
+an index file for all functions. You could do this by hand, but there is a
+program for it, called RIP. You can rip a single function (RIP 0096), take all
+functions out of the usecode (RIP ALL), only create an index (RIP INDEX), or
+put all files and the index back together (RIP GLUE).
+
+The compile is done by the program WUC. You run this by WUC infile outfile.
+This means, if you have function 0096 written in file 0096.TXT, you need to run
+WUC 0096.TXT 0096, but you could also write FUNCTION.TXT 0096 or something to
+that effect.
+
+If you just change a single function, and didn't change the size, you can put
+it back with RIP PUT. Otherwise you have to rebuild the entire file with RIP
+GLUE, and run MKLINK. When the usecode file is built, copy it over the old
+version, and run U7. If you ran MKLINK, also copy the LINKDEP1 and LINKDEP2
+files over the old versions. Then it's testing.. Don't forget to make backups!
+
+Read the decompiled usecode to see how to program for U7. If you find out
+anything (functions, meanings of opcodes, etc) which is unknown, or have any
+comments, please tell Wouter so this package can become better!
+
+
+
+Ultima & The Serpent Isle are trademarks or registered trademarks of ORIGIN
+Systems, Inc.

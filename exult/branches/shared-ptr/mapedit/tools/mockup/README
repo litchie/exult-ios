@@ -1,0 +1,19 @@
+This is a simple prog that converts a 8 bpp indexed file into a u7map based on a colour<->u7chunk association.
+The command will create and fill a "u7map" file.
+
+To call the prog:
+
+./mockup <image file> <mapping file>
+where <image file> contains a 8 bpp indexed image at 192x192 resolution (BMP, GIF and PNG)
+and <mapping file> contains a simple colour u7chunk# association separated with a space.
+
+Peek at mockup.bmp and mappings.txt to get a better idea of what I mean.
+
+The u7chunk number can be found using Exult Studio. Your graphical program will tell you what is the hex colour code of any colour you are using.
+
+Don't forget: the image MUST BE 8 bit per pixel. It will not work otherwise. Also, being 8bpp, the max number of different colour is 255.
+
+Have fun,
+Artaxerxes
+
+Artaxerxes2@iname.com

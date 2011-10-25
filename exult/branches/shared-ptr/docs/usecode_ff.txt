@@ -1,0 +1,49 @@
+
+Documentation for the STATIC/USECODE file.
+
+PsudoBNF overview:
+* LEFTVALUE = RIGHTVALUE is read as "LEFTVALUE consists of RIGHTVALUE".
+* [TOKEN]* is read as "zero or more of TOKEN(s)".
+* TOKEN = lots of text. "lots of text" is the details of what TOKEN is
+  ususally data size, and vague description of relevance.
+
+USECODE_FILE = [FUNCTION]*
+
+FUNCTION = FUNCTION_HEADER DATASEGMENT CODESEGMENT
+
+FUNCTION_HEADER = FUNCID FUNCSIZE
+
+DATASEGMENT = DATASEG_SIZE DATASEG_DATA
+
+CODESEGMENT = NUM_ARGS NUM_LOCALS EXTERNS USECODE_BLOCK
+
+EXTERNS = NUM_EXTERNS EXTERN_LIST
+
+FUNCID = (uint16) The "id" of the function. (Also referenced as "function
+	number".)
+
+FUNCSIZE = (uint16) The total size of the function (code + data). Am unsure
+	if this also includes the "header".
+
+DATASEG_SIZE = (uint16) The total size of the data segment (in number
+	of bytes).
+
+DATASEG_DATA = Consists of DATASEG_SIZE bytes of string data of the
+	format "string\0" where \0 is the NULL byte.
+
+NUM_ARGC = (uint16) The number of arguments to the function on the stack.
+
+NUM_LOCALS = (uint16) The number of local "variables" used in the function.
+
+NUM_EXTERNS = (uint16) The number of external function numbers in the
+	external function list.
+
+EXTERN_LIST = NUM_EXTERNS number of external numbers, each is (uint16) in
+	size.
+
+USECODE_BLOCK = [USECODE_CALL]+
+
+USECODE_CALL = Consists of (ubyte8) opcode and a variable number of trailing
+	bytes, depending upon which opcode.
+	See: usecode/ucxt/Docs/opcodes.txt for more information.
+

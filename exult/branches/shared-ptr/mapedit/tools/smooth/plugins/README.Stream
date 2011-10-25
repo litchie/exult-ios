@@ -1,0 +1,52 @@
+README for [stream]
+===================
+
+This README file will talk about the internals of [stream], that is,
+how it knows which colour to pick.
+
+The difficulty resides with the number of different possible cases. If
+we were to allow the check for the 8 surrounding chunks, that would
+give a 2^8 (256) possibilities and thus 256 different colours which is
+too much since the image is indexed and thus already has a limit of
+256 colours. So we'll check for only the 4 cardinal directions (N, E,
+S, W), which gives 2^4 (16) possibilities.
+
+The goal is to find who around the chunk we want to transform is of
+same nature, that is, has the same colour as the chunk under
+consideration, this way we'll know if we should transform it into a
+straight line, a right corner angle, a dead-end or a 4-way crossing
+for instance.
+
+Let's give arbitrary values of:
+- 1 for "same chunk on north side" (binary: 0001)
+- 2 for "same chunk on east side"  (binary: 0010)
+- 4 for "same chunk on south side" (binary: 0100)
+- 8 for "same chunk on west side"  (binary: 1000)
+
+We can image 4 functions that will return either 1 or 0 if a chunk
+exists around the one being transformed on each side. Let's call those
+is_north, is_east, is_south and is_west.
+
+To know what identical chunk is around, we just make the sum of the 4
+tests multiplied by the arbitrary value of each:
+1 x is_north() + 2 x is_east() + 4 x is_south() + 8 x is_west().
+This will return a value between 0 and 15 (16 different cases) which
+cover all possible cases. All we have to do is to retrieve a colour
+value for this newly calculated index. 
+
+In a word, we have, is the chunk is for a 4-way crossing, we'd have:
+1111
+WSEN
+
+A T-crossing, would be:
+1110
+WSE-
+
+This is why we store in the config file the colour in the following order:
+0 1-n 1-e 2-ne 1-s 2-ns 2-es 3-nes 1-w 2-nw 2-ew 3-new 2-sww 3-nsw 3-esw 4
+If you were to calculate the corresponding index in the same order
+you'd find it goes from 0 to 15 by step of 1, so we can store the
+appropriate colour at the right index.
+
+Written by Artaxerxes2 at iname dot com
+=======================================
