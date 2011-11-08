@@ -188,6 +188,7 @@ IMAGEWIN_OBJS=\
 	imagewin/scale_bilinear.o \
 	imagewin/scale_hq2x.o \
 	imagewin/scale_hq3x.o \
+	imagewin/scale_hq4x.o \
 	imagewin/scale_interlace.o \
 	imagewin/scale_point.o \
 	imagewin/BilinearScaler.o \

@@ -26,6 +26,8 @@ libimagewin_la_SOURCES = \
 	scale_hq2x.h \
 	scale_hq3x.cc \
 	scale_hq3x.h \
+	scale_hq4x.cc \
+	scale_hq4x.h \
 	scale_hqnx.h \
 	scale_interlace.cc \
 	scale_interlace.h \

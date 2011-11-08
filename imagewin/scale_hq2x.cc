@@ -32,7 +32,6 @@
 #include "exult_types.h"
 
 #include "manip.h"
-#include "scale_hqnx.h"
 #include "scale_hq2x.h"
 
 //

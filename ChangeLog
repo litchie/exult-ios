@@ -1,3 +1,7 @@
+2011-11-08 Dominik Reichardt <dominus@users.sourceforge.net>
+	* imagewin/scale_hq4x.cc & .h and various other files: added hq4x scaler.
+	* imagewin/scale_hq2x.cc & .h, scale_hq3x.cc: streamlined scale_hqnx.h include
+	
 2011-10-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.cc: Fixed uninitialized variable restored_schedule. Fixed two cases
 	  of '!rand()%XX'.

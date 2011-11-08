@@ -285,6 +285,8 @@ void VideoOptions_gump::rebuild_dynamic_buttons()
 	}
 	else if (scaler == Image_window::Hq3x)
 		scaling = 2;
+	else if (scaler == Image_window::Hq4x)
+		scaling = 3;
 	else
 		scaling = 1;
 
