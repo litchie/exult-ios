@@ -32,19 +32,19 @@
 #include "exult_types.h"
 
 #include "manip.h"
-#include "scale_hq3x.h"
+#include "scale_hq4x.h"
 
 //
-// Hq3x Filtering
+// Hq4x Filtering
 //
-void Image_window::show_scaled8to16_Hq3x
+void Image_window::show_scaled8to16_Hq4x
 (
  int x, int y, int w, int h	// Area to show.
  )
 {
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 		inter_surface->format);
-	Scale_Hq3x<uint16, Manip8to16>
+	Scale_Hq4x<uint16, Manip8to16>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		ibuf->line_width, ibuf->height+guard_band, 
 		(uint16 *) inter_surface->pixels, 
@@ -53,14 +53,14 @@ void Image_window::show_scaled8to16_Hq3x
 		manip);
 }
 
-void Image_window::show_scaled8to555_Hq3x
+void Image_window::show_scaled8to555_Hq4x
 (
  int x, int y, int w, int h	// Area to show.
  )
 {
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
-	Scale_Hq3x<uint16, Manip8to555>
+	Scale_Hq4x<uint16, Manip8to555>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		ibuf->line_width, ibuf->height+guard_band, 
 		(uint16 *) inter_surface->pixels, 
@@ -69,14 +69,14 @@ void Image_window::show_scaled8to555_Hq3x
 		manip);
 }
 
-void Image_window::show_scaled8to565_Hq3x
+void Image_window::show_scaled8to565_Hq4x
 (
  int x, int y, int w, int h	// Area to show.
  )
 {
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
-	Scale_Hq3x<uint16, Manip8to565>
+	Scale_Hq4x<uint16, Manip8to565>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		ibuf->line_width, ibuf->height+guard_band, 
 		(uint16 *) inter_surface->pixels, 
@@ -85,14 +85,14 @@ void Image_window::show_scaled8to565_Hq3x
 		manip);
 }
 
-void Image_window::show_scaled8to32_Hq3x
+void Image_window::show_scaled8to32_Hq4x
 (
  int x, int y, int w, int h	// Area to show.
  )
 {
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 		inter_surface->format);
-	Scale_Hq3x<uint32, Manip8to32>
+	Scale_Hq4x<uint32, Manip8to32>
 		((uint8*)draw_surface->pixels, x+guard_band, y+guard_band, w, h,
 		ibuf->line_width, ibuf->height+guard_band, 
 		(uint32 *) inter_surface->pixels,

@@ -28,6 +28,8 @@
  ** are used anyway.
  **/
 
+#include "scale_hqnx.h"
+
 /*
  *	2X scaler.
  */

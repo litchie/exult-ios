@@ -140,6 +140,7 @@ public:
 	static const ScalerConst	Scale2x;
 	static const ScalerConst	Hq2x;
 	static const ScalerConst	Hq3x;
+	static const ScalerConst	Hq4x;
 	static const ScalerConst	OpenGL;
 	static const ScalerConst	NumScalers;
 
@@ -237,7 +238,12 @@ protected:
 	void show_scaled8to555_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to565_Hq3x(int x, int y, int w, int h);
 	void show_scaled8to32_Hq3x(int x, int y, int w, int h);	
-
+	
+	void show_scaled8to16_Hq4x(int x, int y, int w, int h);
+	void show_scaled8to555_Hq4x(int x, int y, int w, int h);
+	void show_scaled8to565_Hq4x(int x, int y, int w, int h);
+	void show_scaled8to32_Hq4x(int x, int y, int w, int h);	
+	
 	void show_scaledOpenGL(int x, int y, int w, int h);
 
 	/*

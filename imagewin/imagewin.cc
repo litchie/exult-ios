@@ -82,6 +82,7 @@ const Image_window::ScalerConst	Image_window::Super2xSaI("Super2xSaI");
 const Image_window::ScalerConst	Image_window::Scale2x("Scale2x");
 const Image_window::ScalerConst	Image_window::Hq2x("Hq2X");
 const Image_window::ScalerConst	Image_window::Hq3x("Hq3x");
+const Image_window::ScalerConst	Image_window::Hq4x("Hq4x");
 const Image_window::ScalerConst	Image_window::OpenGL("OpenGL");
 const Image_window::ScalerConst	Image_window::NumScalers(0);
 
@@ -202,7 +203,17 @@ Image_window::ScalerVector::ScalerVector()
 		0
 	};
 	push_back(Hq3x);
-
+	
+	const ScalerInfo Hq4x = { 
+		"Hq4x", SCALE_BIT(4), 0,
+		&Image_window::show_scaled8to565_Hq4x,
+		&Image_window::show_scaled8to555_Hq4x,
+		&Image_window::show_scaled8to16_Hq4x,
+		&Image_window::show_scaled8to32_Hq4x,
+		0
+	};
+	push_back(Hq4x);
+	
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 
 		"OpenGL", 0xFFFFFFFF, 0,

@@ -113,6 +113,17 @@ inline void Interp7(Dest_pixel *pc, int c1, int c2, int c3,
 	}
 
 template<class Dest_pixel, class Manip_pixels>
+inline void Interp8(Dest_pixel *pc, int c1, int c2,
+						const Manip_pixels& manip)
+	{
+	//*((int*)pc) = (c1*5+c2*3)/8;
+
+	StoreRGB(pc, ((((c1 & 0x00FF00)*5 + (c2 & 0x00FF00)*3 ) & 0x0007F800) +
+	             (((c1 & 0xFF00FF)*5 + (c2 & 0xFF00FF) *3) & 0x07F807F8)) >> 3,
+                 manip);
+	}
+
+template<class Dest_pixel, class Manip_pixels>
 inline void Interp9(Dest_pixel *pc, int c1, int c2, int c3, 
 						const Manip_pixels& manip)
 	{
