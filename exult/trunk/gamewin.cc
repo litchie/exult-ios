@@ -456,6 +456,9 @@ Game_window::Game_window
 	// For now this is being set to default enabled because everyone wants it...
 	config->value("config/gameplay/smooth_scrolling", lerping_enabled, 0);
 	config->set("config/gameplay/smooth_scrolling", lerping_enabled, false);
+	config->value("config/gameplay/alternate_drop", str, "no");
+	alternate_drop = str == "yes";
+	config->set("config/gameplay/alternate_drop", alternate_drop?"yes":"no", false);
 	config->value("config/gameplay/scroll_with_mouse", str, "no");
 	scroll_with_mouse = str == "yes";
 	config->set("config/gameplay/scroll_with_mouse",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="19 February 2011 (GMT)">
+<faqs title="Exult" changed="01 December 2011(GMT)">
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -140,6 +140,10 @@
 				<para>
 					The latest official version is found on
 					<extref target="http://exult.sourceforge.net/"/><br/>
+					The source of <Exult/> is hosted on Sourceforge's SVN server. Instructions on how 
+					to download the source code from SVN can be found at 
+					<extref target="http://sourceforge.net/scm/?type=svn&amp;group_id=2335"/>. You 
+					can also browse the source online from this link.<br/>
 					Daily snapshots (by Travis Howell) of the Win32 binary and of the SVN source tree
 					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
@@ -1305,6 +1309,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="01122011">
+			<header>- 01 December 2011</header>
+			<body>
+				<ul>
+				<li><ref1 target="whereis_exult"/> Link to our SVN added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19012011">
 			<header>- 19 February 2011</header>
 			<body>

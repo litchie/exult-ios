@@ -532,10 +532,16 @@ bool Dragging_info::drop
 	int old_top = old_pos.tz + obj->get_info().get_3d_height();
 					// First see if it's a gump.
 	Gump *on_gump = gumpman->find_gump(x, y);
-					// Don't prompt if within same gump.
-	if (quantity > 1 && (!on_gump || on_gump != gump))
-		quantity = gumpman->prompt_for_number(0, quantity, 
-														   1, quantity);
+					// Don't prompt if within same gump 
+					//or if alternate drop is enabled (ctrl inverts).
+
+	Uint8 *keystate = SDL_GetKeyState(NULL);
+	bool drop = (keystate[SDLK_LCTRL] || keystate[SDLK_RCTRL]) ? 
+	             gwin->get_alternate_drop() : !gwin->get_alternate_drop();
+
+	if (quantity > 1 && (!on_gump || on_gump != gump) && drop)
+		quantity = gumpman->prompt_for_number(0, quantity, 1, quantity);
+		
 	if (quantity <= 0)
 		return false;
 	if (quantity < obj->get_quantity())
