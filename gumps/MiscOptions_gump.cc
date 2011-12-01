@@ -121,6 +121,8 @@ void MiscOptions_gump::toggle(Gump_button* btn, int state)
 		mode = state;
 	else if (btn == buttons[id_charmDiff])
 		charmDiff = state;
+        else if (btn == buttons[id_alternate_drop])
+		alternate_drop = state;
 }
 
 void MiscOptions_gump::build_buttons()
@@ -142,16 +144,23 @@ void MiscOptions_gump::build_buttons()
 	diffs[4] = "Harder (+1)";
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
+	std::string *stacks_text = new std::string[2];
+        stacks_text[0] = "No";
+        stacks_text[1] = "Yes";
 	buttons[id_scroll_mouse] = new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
 							   40, scroll_mouse, 2);
 	buttons[id_menu_intro] = new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
 							   40, menu_intro, 2);
 	buttons[id_usecode_intro] = new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
 							   40, usecode_intro, 2);
+
+	buttons[id_alternate_drop] = new MiscTextToggle(this, stacks_text, colx[5], rowy[3], 40, alternate_drop, 2);	
+
 	buttons[id_difficulty] = new MiscTextToggle (this, diffs, colx[3], rowy[8], 
 							   85, difficulty, 7);
 	buttons[id_show_hits] = new MiscEnabledToggle(this, colx[3], rowy[9],
 							   85, show_hits);
+
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
@@ -187,6 +196,7 @@ void MiscOptions_gump::load_settings()
 	if (mode < 0 || mode > 1)
 		mode = 0;
 	charmDiff = Combat::charmed_more_difficult ? 1: 0;
+	alternate_drop = gwin->get_alternate_drop();
 }
 
 MiscOptions_gump::MiscOptions_gump() 
@@ -227,6 +237,9 @@ void MiscOptions_gump::save_settings()
 	Combat::charmed_more_difficult = (charmDiff != 0);
 	config->set("config/gameplay/combat/charmDifficulty",
 					charmDiff ? "hard" : "normal", false);
+
+	gwin->set_alternate_drop(alternate_drop);
+	config->set("config/gameplay/alternate_drop", alternate_drop ? "yes" : "no", false);	
 	config->write_back();
 }
 
@@ -241,6 +254,8 @@ void MiscOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Scroll game view with mouse:", x + colx[0], y + rowy[0] + 1);
 	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[1] + 1);
 	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[2] + 1);
+	font->paint_text(iwin->get_ib8(), "Alternate drag'n'drop:", x+colx[0], y+ rowy[3] + 1);
+
 	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[7] + 1);
 	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[8] + 1);
 	font->paint_text(iwin->get_ib8(), "Show Hits:", x + colx[1], y + rowy[9] + 1);
