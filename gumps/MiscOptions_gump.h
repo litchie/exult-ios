@@ -36,6 +36,7 @@ class MiscOptions_gump : public Modal_gump
 	bool scroll_mouse;
 	bool usecode_intro;
 	bool menu_intro;
+	bool alternate_drop;
 	void build_buttons();
 
 	enum button_ids {
@@ -45,6 +46,7 @@ class MiscOptions_gump : public Modal_gump
 		id_scroll_mouse,
 		id_menu_intro,
 		id_usecode_intro,
+		id_alternate_drop,
 		id_difficulty,
 		id_show_hits,
 		id_mode,
