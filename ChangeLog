@@ -14,6 +14,8 @@
 	* imagewin/imagewin.cc: Initialization order (removing warning).
 	* mapedit/shapeedit.cc: Fixed insertion bugs on vector data, as well as
 	  allocation with new/dealocation with gtk_tree_iter_free.
+	* objs/chunks.cc: Invalid world-wrapping caused assertions to fail at the
+	  edges of the world.
 	* all others: Replaced pre-processor hackery for Game_Object::find_nearby*
 	  with templates and added a few more overloads.
 
