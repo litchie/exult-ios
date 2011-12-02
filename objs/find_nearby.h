@@ -18,21 +18,50 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef FN_VECTOR
-#error(Can't Include find_nearby.h if FN_VECTOR is not #define'd)
-#endif
+#ifndef FIND_NEARBY_H
+#define FIND_NEARBY_H
 
-#ifndef FN_OBJECT
-#error(Can't Include find_nearby.h if FN_OBJECT is not #define'd)
-#endif
 
-#ifndef FN_CAST
-#error(Can't Include find_nearby.h if FN_CAST is not #define'd)
-#endif
+/*
+ *	Check an object in find_nearby() against the mask.
+ *
+ *	Output:	1 if it passes.
+ */
+static int Check_mask
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	int mask
+	)
+	{
+	Shape_info& info = obj->get_info();
+	if ((mask&(4|8)) &&		// Both seem to be all NPC's.
+	    !info.is_npc())
+		return 0;
+	Shape_info::Shape_class sclass = info.get_shape_class();
+					// Egg/barge?
+	if ((sclass == Shape_info::hatchable || sclass == Shape_info::barge) &&
+	    !(mask&0x10))		// Only accept if bit 16 set.
+		return 0;
+	if (info.is_transparent() &&	// Transparent?
+	    !(mask&0x80))
+		return 0;
+					// Invisible object?
+	if (obj->get_flag(Obj_flags::invisible))
+		if (!(mask&0x20))	// Guess:  0x20 == invisible.
+			{
+			if (!(mask&0x40))	// Guess:  Inv. party member.
+				return 0;
+			if (!obj->get_flag(Obj_flags::in_party))
+				return 0;
+			}
+	return 1;			// Passed all tests.
+}
 
+template <typename VecType, typename Cast>
 int Game_object::find_nearby
 	(
-	FN_VECTOR& vec,			// Objects appended to this.
+	VecType& vec,			// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
@@ -40,7 +69,8 @@ int Game_object::find_nearby
 	int delta,			// # tiles to look in each direction.
 	int mask,			// See Check_mask() above.
 	int qual,			// Quality, or c_any_qual for any.
-	int framenum			// Frame #, or c_any_framenum for any.
+	int framenum,			// Frame #, or c_any_framenum for any.
+	Cast obj_cast			// Cast functor.
 	)
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
@@ -85,7 +115,7 @@ int Game_object::find_nearby
 					continue;
 				Tile_coord t = obj->get_tile();
 				if (tiles.has_point(t.tx, t.ty)) {
-					FN_OBJECT* castobj = obj FN_CAST;
+					typename VecType::value_type castobj = obj_cast(obj);
 					if (castobj) vec.push_back(castobj);
 				}
 				}
@@ -94,6 +124,4 @@ int Game_object::find_nearby
 	return (vec.size() - vecsize);
 	}
 
-#undef FN_VECTOR
-#undef FN_OBJECT
-#undef FN_CAST
+#endif

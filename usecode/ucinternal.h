@@ -392,6 +392,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_usecode_fun);
 	USECODE_INTRINSIC_DECL(has_spell);
 	USECODE_INTRINSIC_DECL(remove_spell);
+	USECODE_INTRINSIC_DECL(create_barge_object);
+	USECODE_INTRINSIC_DECL(in_usecode_path);
 	
 	/*
 	 *	Other private methods:

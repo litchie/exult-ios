@@ -982,7 +982,7 @@ void Usecode_internal::activate_cached
 		return;			// ++++Since we're not sure about it.
 	const int dist = 16;
 	Egg_vector vec;			// Find all usecode eggs.
-	Game_object::find_nearby(vec, pos, 275, dist, 16, c_any_qual, 7);
+	Game_object::find_nearby_eggs(vec, pos, 275, dist, c_any_qual, 7);
 	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); 
 									++it)
 		{
@@ -1055,8 +1055,7 @@ Usecode_value Usecode_internal::find_nearby
 			Tile_coord(objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value(),
 				   objval.get_elem(3).get_int_value()),
-			shapenum,
-			distval.get_int_value(), mval.get_int_value());
+				   shapenum, distval.get_int_value(), mval.get_int_value());
 		}
 	else if (arraysize == 3 || arraysize == 5)
 		{			// Coords(x,y,z) [qual, frame]

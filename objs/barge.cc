@@ -648,6 +648,8 @@ void Barge_object::move
 	if (!chunk)			// Not currently on map?
 		{	// UNTIL drag-n-drop does the gather properly.
 		Container_game_object::move(newtx, newty, newlift, newmap);
+		set_center();
+		set_to_gather();
 		return;
 		}
 	if (!gathered)			// Happens in SI with turtle.
@@ -659,6 +661,7 @@ void Barge_object::move
 	if (newmap == -1) newmap = get_map_num();
 					// Move the barge itself.
 	Container_game_object::move(newtx, newty, newlift, newmap);
+	set_center();
 					// Get deltas.
 	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
 	int cnt = objects.size();	// We'll move each object.
