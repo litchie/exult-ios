@@ -598,8 +598,8 @@ int Barge_object::okay_to_land
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		for (int ty = tiles.y; ty < tiles.y + tiles.h; ty++)
 			for (int tx = tiles.x; tx < tiles.x + tiles.w; tx++)
-				if (chunk->get_highest_blocked(lift, tx, ty)
-								!= -1)
+				if (chunk->get_highest_blocked(lift, tx, ty) != -1 || 
+				    chunk->get_flat(tx, ty).get_info().is_water())
 					return (0);
 		}
 	return (1);

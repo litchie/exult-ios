@@ -9,7 +9,8 @@
 	  mode (defaults to true in SI, false otherwise).
 	* objs/barge.cc: Force a barge to reset its center as well as to gather its
 	  objects when it is being moved into the game world. Also, force a reset of
-	  the barge's center when moving it.
+	  the barge's center when moving it. Fixed long-standing bug (at least 10
+	  years old) that allowed a flying carpet to land on water.
 	* imagewin/imagewin.cc: Initialization order (removing warning).
 	* mapedit/shapeedit.cc: Fixed insertion bugs on vector data, as well as
 	  allocation with new/dealocation with gtk_tree_iter_free.
