@@ -45,6 +45,7 @@
 #include "weaponinf.h"
 #include "frusefun.h"
 #include "frflags.h"
+#include "find_nearby.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -703,51 +704,52 @@ void Game_object::clear_dependencies
 	}
 
 /*
- *	Check an object in find_nearby() against the mask.
- *
- *	Output:	1 if it passes.
- */
-static int Check_mask
-	(
-	Game_window *gwin,
-	Game_object *obj,
-	int mask
-	)
-	{
-	Shape_info& info = obj->get_info();
-	if ((mask&(4|8)) &&		// Both seem to be all NPC's.
-	    !info.is_npc())
-		return 0;
-	Shape_info::Shape_class sclass = info.get_shape_class();
-					// Egg/barge?
-	if ((sclass == Shape_info::hatchable || sclass == Shape_info::barge) &&
-	    !(mask&0x10))		// Only accept if bit 16 set.
-		return 0;
-	if (info.is_transparent() &&	// Transparent?
-	    !(mask&0x80))
-		return 0;
-					// Invisible object?
-	if (obj->get_flag(Obj_flags::invisible))
-		if (!(mask&0x20))	// Guess:  0x20 == invisible.
-			{
-			if (!(mask&0x40))	// Guess:  Inv. party member.
-				return 0;
-			if (!obj->get_flag(Obj_flags::in_party))
-				return 0;
-			}
-	return 1;			// Passed all tests.
-}
-
-/*
  *	Find objects near a given position.
  *
  *	Output:	# found, appended to vec.
  */
 
-#define FN_VECTOR Egg_vector
-#define FN_OBJECT Egg_object
-#define FN_CAST ->as_egg()
-#include "find_nearby.h"
+int Game_object::find_nearby_eggs
+	(
+	Egg_vector& vec,
+	Tile_coord pos,
+	int shapenum,
+	int delta,
+	int qual,
+	int frnum
+	)
+	{
+	return Game_object::find_nearby(vec, pos, shapenum, delta, 16,
+					qual, frnum, Egg_cast_functor());
+	}
+
+int Game_object::find_nearby_actors
+	(
+	Actor_vector& vec,
+	Tile_coord pos,
+	int shapenum,
+	int delta,
+	int mask
+	)
+	{
+	return Game_object::find_nearby(vec, pos, shapenum, delta, mask|8,
+					c_any_qual, c_any_framenum, Actor_cast_functor());
+	}
+
+int Game_object::find_nearby
+	(
+	Game_object_vector& vec,
+	Tile_coord pos,
+	int shapenum,
+	int delta,
+	int mask,
+	int qual,
+	int frnum
+	)
+	{
+	return Game_object::find_nearby(vec, pos, shapenum, delta, mask,
+					qual, frnum, Game_object_cast_functor());
+	}
 
 int Game_object::find_nearby_eggs
 	(
@@ -758,14 +760,9 @@ int Game_object::find_nearby_eggs
 	int frnum
 	) const
 	{
-	return Game_object::find_nearby (vec, get_tile(), shapenum,
-					delta, 16, qual, frnum);
+	return Game_object::find_nearby(vec, get_tile(), shapenum, delta, 16,
+					qual, frnum, Egg_cast_functor());
 	}
-
-#define FN_VECTOR Actor_vector
-#define FN_OBJECT Actor
-#define FN_CAST ->as_actor()
-#include "find_nearby.h"
 
 int Game_object::find_nearby_actors
 	(
@@ -775,14 +772,9 @@ int Game_object::find_nearby_actors
 	int mask
 	) const
 	{
-	return Game_object::find_nearby(vec, get_tile(), shapenum,
-						delta, mask|8, c_any_qual, c_any_framenum);
+	return Game_object::find_nearby(vec, get_tile(), shapenum, delta, mask|8,
+					c_any_qual, c_any_framenum, Actor_cast_functor());
 	}
-
-#define FN_VECTOR Game_object_vector
-#define FN_OBJECT Game_object
-#define FN_CAST
-#include "find_nearby.h"
 
 int Game_object::find_nearby
 	(
@@ -794,8 +786,8 @@ int Game_object::find_nearby
 	int framenum
 	) const
 	{
-	return Game_object::find_nearby(vec, get_tile(), shapenum,
-					delta, mask, qual, framenum);
+	return Game_object::find_nearby(vec, get_tile(), shapenum, delta, mask,
+					qual, framenum, Game_object_cast_functor());
 	}
 
 /*

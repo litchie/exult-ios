@@ -1150,22 +1150,32 @@ static inline int Find_unary_iter
 	T newval
 	)
 	{
-	iter = new GtkTreeIter();
+	iter = (GtkTreeIter *)g_malloc (sizeof (GtkTreeIter));
 	if (!gtk_tree_model_get_iter_first(model, iter))
 		{
-		delete iter;
+		gtk_tree_iter_free(iter);
 		iter = 0;
 		return 1;
 		}
+	GtkTreeIter *iter2;
 	do
 		{
+		iter2 = gtk_tree_iter_copy(iter);
 		T val;
 		gtk_tree_model_get(model, iter, 0, &val, -1);
 		if (val == newval)
+			{
+			gtk_tree_iter_free(iter2);
 			return 0;
+			}
 		else if (newval < val)
+			{
+			gtk_tree_iter_free(iter2);
 			return -1;
+			}
 		} while (gtk_tree_model_iter_next(model, iter));
+	gtk_tree_iter_free(iter);
+	iter = iter2;
 	return 1;
 	}
 
@@ -1178,23 +1188,34 @@ static inline int Find_binary_iter
 	T2 newval2
 	)
 	{
-	iter = new GtkTreeIter();
+	iter = (GtkTreeIter *)g_malloc (sizeof (GtkTreeIter));
 	if (!gtk_tree_model_get_iter_first(model, iter))
 		{
-		delete iter;
+		gtk_tree_iter_free(iter);
 		iter = 0;
 		return 1;
 		}
+	GtkTreeIter *iter2;
 	do
 		{
+		iter2 = gtk_tree_iter_copy(iter);
 		T1 val1;
 		T2 val2;
 		gtk_tree_model_get(model, iter, 0, &val1, 1, &val2, -1);
 		if (val1 == newval1 && val2 == newval2)
+			{
+			gtk_tree_iter_free(iter2);
 			return 0;
+			}
 		else if ((newval1 == val1 && newval2 < val2) || (newval1 < val1))
+			{
+			gtk_tree_iter_free(iter2);
 			return -1;
+			}
+			
 		} while (gtk_tree_model_iter_next(model, iter));
+	gtk_tree_iter_free(iter);
+	iter = iter2;
 	return 1;
 	}
 
