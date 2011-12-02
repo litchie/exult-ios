@@ -1,3 +1,21 @@
+2011-12-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* exult_intrinsics.txt: Updated with new intrinsics create_barge_object and
+	  and in_usecode_path. Also documented optional parameters to the following
+	  intrinsics: path_run_usecode, move_object, recall_virtue_stone and
+	  teleport_to_saved_pos.
+	* usecode/intrinsics.cc, usecode/bgintrinsics.h, usecode/siintrinsics.h,
+	  ucinternal.h: Added create_barge_object and in_usecode_path intrinsics.
+	  Added a new and optional parameter to path_run_usecode that can toggle SI
+	  mode (defaults to true in SI, false otherwise).
+	* objs/barge.cc: Force a barge to reset its center as well as to gather its
+	  objects when it is being moved into the game world. Also, force a reset of
+	  the barge's center when moving it.
+	* imagewin/imagewin.cc: Initialization order (removing warning).
+	* mapedit/shapeedit.cc: Fixed insertion bugs on vector data, as well as
+	  allocation with new/dealocation with gtk_tree_iter_free.
+	* all others: Replaced pre-processor hackery for Game_Object::find_nearby*
+	  with templates and added a few more overloads.
+
 2011-12-01 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamewin.*, gumps/misc_options.*: applied patch by i30817 (forum) for
 	  dropping stacks of items without confirmation of amount (CTRL drop) 

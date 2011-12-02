@@ -48,6 +48,7 @@
 #include "ucsched.h"
 #include "useval.h"
 #include "virstone.h"
+#include "barge.h"
 #include "egg.h"
 #include "monsters.h"
 #include "monstinf.h"
@@ -2426,11 +2427,12 @@ USECODE_INTRINSIC(path_run_usecode)
 	// Think it should have Avatar walk path to loc, return 0
 	//  if he can't get there (and return), 1 if he can.
 	Usecode_value ava(gwin->get_main_actor());
+	bool simode = num_parms > 4 ? parms[4].get_int_value() != 0 : GAME_SI;
 	return Usecode_value(path_run_usecode(ava, parms[0], parms[1],
 				parms[2], parms[3],
 					// SI:  Look for free spot. (Guess).
-			GAME_SI, false, 
-			GAME_SI));	// SI:  Bring companions.
+			simode, false, 
+			simode));	// SI:  Bring companions.
 }
 
 USECODE_INTRINSIC(close_gump)
@@ -3491,3 +3493,34 @@ USECODE_INTRINSIC(can_avatar_reach_pos)
 	return ret;
 }
 
+USECODE_INTRINSIC(create_barge_object)
+{
+	// create_barge_object (width, height, dir(0-7)).   Stores it in 'last_created'.
+	if (num_parms < 2)
+		return Usecode_value(0);
+
+	Barge_object *b = new Barge_object(961, 0, 0, 0, 0,
+		parms[0].get_int_value(), parms[1].get_int_value(),
+		num_parms >= 2 ? ((parms[2].get_int_value()>>1)&3) : 0);
+
+	b->set_invalid();		// Not in world yet.
+	b->set_flag(Obj_flags::okay_to_take);
+	last_created.push_back(b);
+
+	Usecode_value u(b);
+	return(u);
+}
+
+USECODE_INTRINSIC(in_usecode_path)
+{
+	// in_usecode_path (npc).   Returns true if actor is in a usecode path.
+	
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return Usecode_value(0);
+
+	if (npc->get_action() && npc->get_action()->as_usecode_path())
+		return Usecode_value(1);
+
+	return Usecode_value(0);
+}

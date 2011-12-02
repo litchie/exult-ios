@@ -2,16 +2,16 @@
 GENERAL DEFINITIONS
 ================================================================================
 
-For UCC purposes, the avatar is an NPC just like any other. Constants referred
-to below (usually in ALL CAPS) are defined in 'src/headers/contants.uc' unless
-otherwise stated.
+For Usecode C purposes, the avatar is an NPC just like any other. Constants
+referred to below (usually in ALL CAPS) are defined in 'src/headers/contants.uc'
+unless otherwise stated.
 
-Unlike UCC-defined functions, intrinsics do not have a 'prototype'; you can pass
-as many (or as few) parameters to an intrinsic as you like. The only 'hard'
-limits are that Exult will not like if you (1) call an intrinsic with more than
-12 parameters or (2) the intrinsic expects parameters which you haven't
-supplied. The parameter lists in the list below is the minimum safe number of
-parameters.
+Unlike Usecode C-defined functions, intrinsics do not have a 'prototype'; you
+can pass as many (or as few) parameters to an intrinsic as you like. The only
+'hard' limits are that Exult will not like if you (1) call an intrinsic with
+more than 12 parameters or (2) the intrinsic expects parameters which you
+haven't supplied. The parameter lists in the list below is the minimum safe
+number of parameters.
 
 To the right of many intrinsic 'prototypes', you can see an indicator between
 square brackets. This indicator is a quick way to see if that intrinsic is
@@ -32,11 +32,11 @@ The '[Exult]', '[BG, Exult]' and '[SI, Exult]' indicators are essentially
 equivalent to no indicator at all; they are used in this document only for
 completeness.
 
-The intrinsic prototypes below are in UCC-esque form. It is actually more like C
-than UCC. Specifically, all parameters have a type instead of the UCC-'var'. The
-parameter type indicates what Exult will be expecting; the UCC compiler won't
-care in the slightest what you pass as a parameter. The parameter types I use
-are as follows:
+The intrinsic prototypes below are in Usecode C-esque form. It is actually more
+like C than Usecode C. Specifically, all parameters have a type instead of the
+Usecode C-'var'. The parameter type indicates what Exult will be expecting; the
+Usecode C compiler won't care in the slightest what you pass as a parameter. The
+parameter types I use are as follows:
 
     Keyword     Description
     int         This means any integer, positive or negative.
@@ -55,12 +55,12 @@ are as follows:
                 by prefixing them with a backslash: "\""; alternatively, Exult
                 converts '@' into a double-quote.
     function    A usecode function, which *must* be declared with either, the
-                shape# /or/ the object# specifiers. In UCC, this can be the
-                function name or its usecode number. For example: 'extern Bolt
-                shape#(0x2D3) ();' can be passed as 'Bolt' (the function name),
-                '0x2D3' (its function number since 'shape#(shnum) == shnum' if
-                shnum < 0x400) or as '&Bolt' (using the 'address of' operator
-                '&' to get the function number).
+                shape# /or/ the object# specifiers. In Usecode C, this can be
+                the function name or its usecode number. For example: 'extern
+                Bolt shape#(0x2D3) ();' can be passed as 'Bolt' (the function
+                name), '0x2D3' (its function number since 'shape#(shnum) ==
+                shnum' if shnum < 0x400) or as '&Bolt' (using the 'address of'
+                operator '&' to get the function number).
 
 If the parameter name is followed by a '[]', it indicates an array with elements
 of the specified type. Example: 'actor npc[]' means an array of NPCs. If there
@@ -152,8 +152,8 @@ SCRIPTING INTRINSICS
 int UI_execute_usecode_array(object obj, int script[])
 int obj->execute_usecode_array(int script[])
 
-    Deprecated; use UCC script blocks instead. Animates an object according to
-    the supplied script.
+    Deprecated; use Usecode C script blocks instead. Animates an object
+    according to the supplied script.
 
   Parameters:
     obj       The object to be animated.
@@ -165,9 +165,9 @@ int obj->execute_usecode_array(int script[])
 int UI_delayed_execute_usecode_array(object obj, int script[], int delay)
 int obj->delayed_execute_usecode_array(int script[], int delay)
 
-    Deprecated; use UCC script blocks instead. Animates an object according to
-    the supplied script after a delay. Works exactly like execute_usecode_array,
-    but starts only after the specified delay.
+    Deprecated; use Usecode C script blocks instead. Animates an object
+    according to the supplied script after a delay. Works exactly like
+    execute_usecode_array, but starts only after the specified delay.
 
   Parameters:
     obj       The object to be animated.
@@ -215,8 +215,8 @@ int attacker->set_to_attack(mixed[4] target, int weapon)
     Schedules a NPC to attack the object with a given weapon. This intrinsic
     does not animate the NPC in any way; the scheduled attack only emulates the
     actual hit with the selected weapon. The actual attack is triggered by a
-    script; in an UCC script, use the 'attack' command to actually perform the
-    attack.
+    script; in an Usecode C script, use the 'attack' command to actually perform
+    the attack.
 
   Parameters:
     attacker    Who is attacking.
@@ -232,7 +232,8 @@ int attacker->set_to_attack(mixed[4] target, int weapon)
   Return:
     true if attacking a valid target with a valid weapon, false otherwise.
 
-bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
+bool UI_path_run_usecode(int pos[], function fun, object obj, int event, int
+        simode)
 
     Causes the avatar to walk to a location and execute the specified usecode
     function when he/she arrives at the destination. If a path cannot be found
@@ -253,14 +254,17 @@ bool UI_path_run_usecode(int pos[], function fun, object obj, int event)
     **** END SI SPECIFIC ****
 
   Parameters:
-    pos      The location that the avatar should walk to. Can be a (x, y)
-             position or a (x, y, z) position. If the z coordinate is missing,
-             or if it is negative, it is assumed to be zero.
-    fun      The usecode function to be called if the destination is reached.
-    obj      The object that should be used as item if the usecode function is
-             called. If this parameter is zero, usecode will *not be called* at
-             all.
-    event    The event that should be used if the usecode function is called.
+    pos       The location that the avatar should walk to. Can be a (x, y)
+              position or a (x, y, z) position. If the z coordinate is missing,
+              or if it is negative, it is assumed to be zero.
+    fun       The usecode function to be called if the destination is reached.
+    obj       The object that should be used as item if the usecode function is
+              called. If this parameter is zero, usecode will *not be called* at
+              all.
+    event     The event that should be used if the usecode function is called.
+    simode    This optional parameter can be used to control whether or not to
+              use the SI-specific behavior described above. It defaults to true
+              in SI and to false in BG.
 
   Return:
     If no path can be found to the destination, returns false; otherwise,
@@ -315,14 +319,26 @@ UI_set_path_failure(function fun, object obj, int event)
              all.
     event    The event that should be used if the usecode function is called.
 
+bool UI_in_usecode_path(actor npc)
+bool npc->in_usecode_path()
+
+    Checks whether or not the actor is transversing a path due to
+    path_run_usecode or si_path_run_usecode inteinsics.
+
+  Parameters:
+    npc    The NPC to be checked.
+
+  Return:
+    true if the NPC is still walking a usecode path, false otherwise.
+
 UI_telekenesis(function fun)
 
     Deprecated; stores a usecode function for special script behavior. The next
     *script* call to the stored function (e.g., 'script item call fun;') will
     have an event ID of 'DOUBLECLICK' instead of the standard 'SCRIPTED' event
-    ID used for scripts. Since UCC scripts allow calling a function with an
-    event ID of your choice (e.g., 'script item call fun, DOUBLECLICK;') it is
-    best to simply ignore this intrinsic.
+    ID used for scripts. Since Usecode C scripts allow calling a function with
+    an event ID of your choice (e.g., 'script item call fun, DOUBLECLICK;') it
+    is best to simply ignore this intrinsic.
 
   Parameters:
     fun    The function to be stored.
@@ -353,7 +369,7 @@ face->show_npc_face(int frnum)
     If 'face' is an NPC, the Exult Studio-set face for that NPC is displayed;
     the "default" face is equal to the NPC's number.
 
-    For the cases when 'frnum is zero, you should use UCC's 'npc.say()' to
+    For the cases when 'frnum is zero, you should use Usecode C's 'npc.say()' to
     display the NPC's face and display any text within the parenthesis (or set
     with 'message') too.
 
@@ -375,7 +391,7 @@ face->show_npc_face0(int frnum)
     If 'face' is an NPC, the Exult Studio-set face for that NPC is displayed;
     the "default" face is equal to the NPC's number.
 
-    For the cases when 'frnum is zero, you should use UCC's 'npc.say()' to
+    For the cases when 'frnum is zero, you should use Usecode C's 'npc.say()' to
     display the NPC's face and display any text within the parenthesis (or set
     with 'message') too.
 
@@ -397,7 +413,7 @@ npc->show_npc_face1(int face)
     If 'face' is an NPC, the Exult Studio-set face for that NPC is displayed;
     the "default" face is equal to the NPC's number.
 
-    For the cases when 'frnum is zero, you should use UCC's 'npc.say()' to
+    For the cases when 'frnum is zero, you should use Usecode C's 'npc.say()' to
     display the NPC's face and display any text within the parenthesis (or set
     with 'message') too.
 
@@ -405,8 +421,8 @@ UI_remove_npc_face(int face)
 UI_remove_npc_face(actor face)
 face->remove_npc_face()
 
-    Deprecated; use UCC's 'npc.hide()' statement instead. Hides the specified
-    face if it is being shown.
+    Deprecated; use Usecode C's 'npc.hide()' statement instead. Hides the
+    specified face if it is being shown.
 
   Parameters:
     face    The face to be hidden. May be an integer or an NPC.
@@ -460,7 +476,7 @@ UI_end_conversation()                                                       [SI]
 UI_add_answer(string answer)
 UI_add_answer(string answer[])
 
-    Deprecated; use UCC's 'add(string answer)' or 'add(string answer[])'
+    Deprecated; use Usecode C's 'add(string answer)' or 'add(string answer[])'
     statements instead. Adds the specified strings as dialog options that the
     player can select.
 
@@ -471,8 +487,8 @@ UI_add_answer(string answer[])
 UI_remove_answer(string answer)
 UI_remove_answer(string answer[])
 
-    Deprecated; use UCC's '(remove)' construct instead. Removes the supplied
-    strings from the dialog options available to the player.
+    Deprecated; use Usecode C's '(remove)' construct instead. Removes the
+    supplied strings from the dialog options available to the player.
 
   Parameters:
     answer    A string or array of strings containing the dialog options to be
@@ -918,6 +934,23 @@ object UI_create_new_object2(int shape, int pos[])                   [SI, Exult]
     the game world exactly as if UI_update_last_created(pos) had been called,
     and hence will *not* be in the 'last created' stack.
 
+UI_create_barge_object(int width, int height, int dir)                   [Exult]
+
+    Creates a barge object with the specified width, height and direction.
+
+  Parameters:
+    width     The width (x), in tiles, of the barge object.
+    height    The height (y), in tiles, of the barge object.
+    dir       This optional parameter sets the barge's initial direction. If
+              missing, it is assumed to be north (0).
+
+  Return:
+    An object reference to the newly created barge object. This object is pushed
+    into the 'last created' LIFO stack, and starts out in 'limbo'; it will
+    remain there until placed either, in the game world through the
+    'UI_update_last_created' intrinsic or inside a container through the
+    'UI_give_last_created' intrinsic.
+
 object UI_set_last_created(object obj)
 object obj->set_last_created()
 
@@ -996,19 +1029,23 @@ int[3] obj->get_object_position()
   Return:
     An array containing the (x, y, z) position of the object.
 
-UI_move_object(object obj, int pos[])
-obj->move_object(int pos[])
+UI_move_object(object obj, int pos[], bool flag)
+obj->move_object(int pos[], bool flag)
 
     Moves the specified object to a new location in the game world. This move is
     instantaneous, and is often used for teleportation in the original usecode.
 
   Parameters:
-    obj    The object to be moved. Can be PARTY = -357 to teleport the entire
-           party.
-    pos    The object's new location. Can be a (x, y) position, a (x, y, z)
-           position or a (x, y, z, map) position. If no z coordinate is
-           specified, it is assumed to be zero. If no map is specified, or if it
-           is set to a negative number, the avatar's map will be used instead.
+    obj     The object to be moved. Can be PARTY = -357 to teleport the entire
+            party.
+    pos     The object's new location. Can be a (x, y) position, a (x, y, z)
+            position or a (x, y, z, map) position. If no z coordinate is
+            specified, it is assumed to be zero. If no map is specified, or if
+            it is set to a negative number, the avatar's map will be used
+            instead.
+    flag    This optional parameter controls controls whether or party members
+            that are paralyzed or asleep; if true, these members will be
+            teleported, otherwise, they won't defaults to false.
 
     If the avatar (or the party) is being teleported, the view will center in
     the new location and nearby eggs will be activated normally.
@@ -2500,15 +2537,18 @@ obj->save_pos()
   Parameters:
     obj    The object whose position we want.
 
-UI_teleport_to_saved_pos(object obj)                                 [SI, Exult]
-obj->teleport_to_saved_pos()
+UI_teleport_to_saved_pos(object obj, bool flag)                      [SI, Exult]
+obj->teleport_to_saved_pos(bool flag)
 
     Teleports the avatar and party to the last saved position. Note that only
     the last position stored by the UI_save_pos intrinsic is available.
 
   Parameters:
-    obj    If this is not the avatar, nothing happens. Otherwise, the party is
-           teleported to the stored position.
+    obj     If this is not the avatar, nothing happens. Otherwise, the party is
+            teleported to the stored position.
+    flag    This optional parameter controls controls whether or party members
+            that are paralyzed or asleep; if true, these members will be
+            teleported, otherwise, they won't defaults to false.
 
 ================================================================================
 WEATHER/TIME INTRINSICS
@@ -3139,14 +3179,17 @@ obj->mark_virtue_stone()
   Parameters:
     obj    The virtue stone to be marked.
 
-UI_recall_virtue_stone(object obj)                                          [BG]
-obj->recall_virtue_stone()
+UI_recall_virtue_stone(object obj, bool flag)                               [BG]
+obj->recall_virtue_stone(bool flag)
 
     Teleports the party to the virtue stone's stored location. The stone is
     forcibly given to the avatar if needed.
 
   Parameters:
-    obj    The virtue stone that contains the destination.
+    obj     The virtue stone that contains the destination.
+    flag    This optional parameter controls controls whether or party members
+            that are paralyzed or asleep; if true, these members will be
+            teleported, otherwise, they won't defaults to false.
 
 UI_set_orrery(int pos[3], int state)                                        [BG]
 
@@ -3208,5 +3251,4 @@ bool UI_can_avatar_reach_pos(int pos[])                                     [SI]
   Return:
     false if the supplied position is invalid or if the avatar cannot reach the
     supplied destination, true otherwise.
-
 

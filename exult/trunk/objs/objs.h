@@ -178,25 +178,46 @@ public:
 		{ return dependencies; }
 	void clear_dependencies();	// Remove all dependencies.
 
-					// Find nearby objects.
-#define HDR_DECLARE_FIND_NEARBY(decl_type) \
-	static int find_nearby(decl_type vec, Tile_coord pos, \
-			int shapenum, int delta, int mask,  \
-			int qual = c_any_qual, int framenum = c_any_framenum)
+	class Egg_cast_functor
+	{
+	public:
+		Egg_object *operator()(Game_object *obj)
+		{	return obj->as_egg();	}
+	};
 
-	HDR_DECLARE_FIND_NEARBY(Egg_vector&);
-	HDR_DECLARE_FIND_NEARBY(Actor_vector&);
-	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
+	class Actor_cast_functor
+	{
+	public:
+		Actor *operator()(Game_object *obj)
+		{	return obj->as_actor();	}
+	};
 
-#undef HDR_DECLARE_FIND_NEARBY
+	class Game_object_cast_functor
+	{
+	public:
+		Game_object *operator()(Game_object *obj)
+		{	return obj;	}
+	};
 
+	template <typename VecType, typename Cast>
+	static int find_nearby(VecType& vec, Tile_coord pos,
+			int shapenum, int delta, int mask, int qual,
+			int framenum, Cast obj_cast);
+
+	static int find_nearby_actors(Actor_vector& vec, Tile_coord pos,
+			int shapenum, int delta, int mask = 8);
+	static int find_nearby_eggs(Egg_vector& vec, Tile_coord pos,
+			int shapenum, int delta, int qual = c_any_qual,
+			int framenum = c_any_framenum);
+	static int find_nearby(Game_object_vector& vec, Tile_coord pos,
+			int shapenum, int delta, int mask, int qual = c_any_qual,
+			int framenum = c_any_framenum);
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta,
 		int mask = 8) const;
 	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta,
 		int qual = c_any_qual, int frnum = c_any_framenum) const;
 	int find_nearby(Game_object_vector& vec, int shapenum, int delta, 
-		int mask, int qual = c_any_qual, 
-					int framenum = c_any_framenum) const;
+		int mask, int qual = c_any_qual, int framenum = c_any_framenum) const;
 
 	Game_object *find_closest(Game_object_vector& vec,
 				int *shapenums, int num_shapes, int dist = 24);

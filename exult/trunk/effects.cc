@@ -982,8 +982,7 @@ void Homing_projectile::handle_event
 		{
 		//The target has been killed; find another one
 		Actor_vector npcs;	// Find NPC's.
-		Game_object::find_nearby(npcs, pos, -1, 30, 
-									8);
+		Game_object::find_nearby_actors(npcs, pos, -1, 30);
 		Actor *nearest = 0;
 		uint32 bestdist = 100000;
 		for (Actor_vector::const_iterator it = npcs.begin();
@@ -1009,8 +1008,7 @@ void Homing_projectile::handle_event
 		{			// Do it every second.
 		next_damage_time = curtime + 1000;
 		Actor_vector npcs;	// Find NPC's.
-		Game_object::find_nearby(npcs, pos, -1, width/(2*c_tilesize), 
-									8);
+		Game_object::find_nearby_actors(npcs, pos, -1, width/(2*c_tilesize));
 		for (Actor_vector::const_iterator it = npcs.begin();
 							it != npcs.end(); ++it)
 			{
