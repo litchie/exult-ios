@@ -989,8 +989,8 @@ int Map_chunk::is_blocked
 	Game_map *gmap = gwin->get_map();
 	int tx, ty;
 	new_lift = 0;
-	startx %= c_num_tiles;		// Watch for wrapping.
-	starty %= c_num_tiles;
+	startx = (startx + c_num_tiles) % c_num_tiles;		// Watch for wrapping.
+	starty = (starty + c_num_tiles) % c_num_tiles;
 	int stopy = (starty + ytiles)%c_num_tiles, 
 	    stopx = (startx + xtiles)%c_num_tiles;
 	for (ty = starty; ty != stopy; ty = INCR_TILE(ty))
