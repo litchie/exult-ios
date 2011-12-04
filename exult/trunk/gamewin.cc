@@ -2131,7 +2131,7 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		while ((obj = next.get_next()) != 0)
 			{
 			if (obj->get_lift() >= not_above ||
-			    !get_shape_rect(obj).has_point(x, y) ||
+			    !get_shape_rect(obj).has_world_point(x, y) ||
 			    !obj->is_findable())
 				continue;
 					// Check the shape itself.

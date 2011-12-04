@@ -109,7 +109,7 @@ void Npc_proximity_handler::handle_event
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(10);
 	Tile_coord t = npc->get_tile();
-	if (!tiles.has_point(t.tx, t.ty) ||	// No longer visible?
+	if (!tiles.has_world_point(t.tx, t.ty) ||	// No longer visible?
 					// Not on current map?
 	    npc->get_map() != gwin->get_map() ||
 	    npc->is_dead())		// Or no longer living?
