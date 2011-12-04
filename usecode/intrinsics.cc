@@ -799,7 +799,7 @@ USECODE_INTRINSIC(npc_nearby)
 		return Usecode_value(0);
 	Tile_coord pos = obj->get_tile();
 	Actor *npc;
-	int is_near = gwin->get_win_tile_rect().has_point(pos.tx, pos.ty) &&
+	int is_near = gwin->get_win_tile_rect().has_world_point(pos.tx, pos.ty) &&
 		// Guessing: true if non-NPC, false if NPC is dead, asleep or paralyzed.
 		((npc = as_actor(obj)) == 0 || npc->can_act());
 	Usecode_value u(is_near);
@@ -1831,7 +1831,7 @@ static inline void Armageddon_death(Actor *npc, bool barks, Rectangle screen)
 		const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
 		const int numtext = sizeof(text)/sizeof(text[0]);
 		Tile_coord loc = npc->get_tile();
-		if (barks && screen.has_point(loc.tx, loc.ty))
+		if (barks && screen.has_world_point(loc.tx, loc.ty))
 			npc->say(text[rand()%numtext]);
 		// Lay down and lie animation.
 		npc->lay_down(false);
@@ -2107,7 +2107,7 @@ USECODE_INTRINSIC(on_barge)
 			{
 			Actor *act = party[i];
 			Tile_coord t = act->get_tile();
-			if (!foot.has_point(t.tx, t.ty))
+			if (!foot.has_world_point(t.tx, t.ty))
 				return Usecode_value(0);
 			}
 					// Force 'gather()' for turtle.

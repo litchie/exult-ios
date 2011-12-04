@@ -308,7 +308,7 @@ void Barge_object::gather
 			if (obj->is_egg()) // don't pick up eggs
 				continue;
 			Tile_coord t = obj->get_tile();
-			if (!tiles.has_point(t.tx, t.ty) ||
+			if (!tiles.has_world_point(t.tx, t.ty) ||
 				obj->get_owner() == this)
 				continue;
 			Shape_info& info = obj->get_info();

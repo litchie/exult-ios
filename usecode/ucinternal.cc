@@ -1125,8 +1125,7 @@ Barge_object *Get_barge
 							it != vec.end(); it++)
 		{
 		barge = (*it)->as_barge();
-		if (barge && barge->get_tile_footprint().has_point(
-							pos.tx, pos.ty))
+		if (barge && barge->get_tile_footprint().has_world_point(pos.tx, pos.ty))
 			{
 			int lift = barge->get_lift();
 			if (!best || 	// First qualifying?

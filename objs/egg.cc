@@ -89,7 +89,7 @@ void Missile_launcher::handle_event
 	{
 	Tile_coord src = egg->get_tile();
 					// Is egg off the screen?
-	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
+	if (!gwin->get_win_tile_rect().has_world_point(src.tx, src.ty))
 		return;			// Return w'out adding back to queue.
 	Projectile_effect *proj = 0;
 	if (dir < 8)			// Direction given?
@@ -746,13 +746,13 @@ int Egg_object::is_active
 				flags |= (1 << (int) hatched);
 			return 0;
 			}
-		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
+		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
 			return 0;	// Not in square.
 		if (!(flags & (1 << (int) hatched)))
 			return 1;	// First time.
 					// Must have autoreset.
 					// Just activate when reentering.
-		return !area.has_point(from_tx, from_ty);
+		return !area.has_world_point(from_tx, from_ty);
 		}
 	case avatar_near:
 		if (obj != gwin->get_main_actor())
@@ -766,38 +766,38 @@ int Egg_object::is_active
 			return 0;
 		if (type == teleport ||	// Teleports:  Any tile, exact lift.
 		    type == intermap)
-			return deltaz == 0 && area.has_point(tx, ty);
+			return deltaz == 0 && area.has_world_point(tx, ty);
 		else if (type == jukebox || type == soundsfx || type == voice)
 			// Guessing. Fixes shrine of Spirituality and Sacrifice.
-			return area.has_point(tx, ty);
+			return area.has_world_point(tx, ty);
 		if (!((deltaz/2 == 0 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
 						type != missile) ||
 				(type == missile && deltaz/5 == 0)) &&
 					// New tile is in, old is out.
-					area.has_point(tx, ty) &&
-					!area.has_point(from_tx, from_ty)))
+					area.has_world_point(tx, ty) &&
+					!area.has_world_point(from_tx, from_ty)))
 			return 0;
 		return 1;
 	case avatar_far:		// New tile is outside, old is inside.
 		{
-		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
+		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
 			return (0);
 		Rectangle inside(area.x + 1, area.y + 1, 
 						area.w - 2, area.h - 2);
-		return inside.has_point(from_tx, from_ty) &&
-			!inside.has_point(tx, ty);
+		return inside.has_world_point(from_tx, from_ty) &&
+			!inside.has_world_point(tx, ty);
 		}
 	case avatar_footpad:
 		return obj == gwin->get_main_actor() && deltaz == 0 &&
-						area.has_point(tx, ty);
+						area.has_world_point(tx, ty);
 	case party_footpad:
-		return area.has_point(tx, ty) && deltaz == 0 &&
+		return area.has_world_point(tx, ty) && deltaz == 0 &&
 					obj->get_flag(Obj_flags::in_party);
 	case something_on:
 		return	 		// Guessing.  At SI end, deltaz == -1.
-			deltaz/4 == 0 && area.has_point(tx, ty) && !obj->as_actor();
+			deltaz/4 == 0 && area.has_world_point(tx, ty) && !obj->as_actor();
 	case external_criteria:
 	default:
 		return 0;

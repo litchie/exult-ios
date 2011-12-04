@@ -56,7 +56,7 @@ using std::strlen;
 using std::vector;
 using std::string;
 
-enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
+enum Arch_mode { NOMODE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
 
 /*
@@ -93,7 +93,7 @@ bool is_null_entry(const char *fname)
 
 void set_mode(Arch_mode &mode, Arch_mode new_mode)
 {
-	if(mode!=NONE) {
+	if(mode!=NOMODE) {
 		cerr << "Error: cannot specify multiple modes" << endl;
 		exit(1);
 	} else
@@ -258,7 +258,7 @@ int mac_main(int argc, char **argv)
 int main(int argc, char **argv)
 #endif
 {
-	Arch_mode mode = NONE;
+	Arch_mode mode = NOMODE;
 	char fname[1024];
 	char hname[1024];
 	char hprefix[1024];
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
 				set_mode(mode,ADD);
 				break;
 			default:
-				mode = NONE;
+				mode = NOMODE;
 				break;
 	      		}
 		}

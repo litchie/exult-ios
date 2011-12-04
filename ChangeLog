@@ -1,3 +1,6 @@
+2011-12-03	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* all: Fixing several edge cases in world wrapping.
+
 2011-12-02	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult_intrinsics.txt: Updated with new intrinsics create_barge_object and
 	  and in_usecode_path. Also documented optional parameters to the following
