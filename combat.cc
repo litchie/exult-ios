@@ -329,7 +329,7 @@ inline bool Off_screen
 					// See if off screen.
 	Tile_coord t = npc->get_tile();
 	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
-	return (!screen.has_point(t.tx, t.ty));
+	return (!screen.has_world_point(t.tx, t.ty));
 	}
 
 static inline bool is_enemy

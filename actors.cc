@@ -855,7 +855,7 @@ Game_object *Actor::find_blocking
 	Game_object *block;
 	for (int i = footprint.x; i < footprint.x+footprint.w; i++)
 		for (int j = footprint.y; j < footprint.y+footprint.h; j++)
-			if (base.has_point(i, j))
+			if (base.has_world_point(i, j))
 				continue;
 			else if ((block = Game_object::find_blocking(
 					Tile_coord(i, j, get_tile().tz)))!=0)
@@ -1523,7 +1523,7 @@ int Actor::approach_another
 		return 0;
 					// Where are we now?
 	Tile_coord src = get_tile();
-	if (!gwin->get_win_tile_rect().has_point(src.tx - src.tz/2, 
+	if (!gwin->get_win_tile_rect().has_world_point(src.tx - src.tz/2, 
 							src.ty - src.tz/2))
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);

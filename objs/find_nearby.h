@@ -21,6 +21,7 @@
 #ifndef FIND_NEARBY_H
 #define FIND_NEARBY_H
 
+#include "citerate.h"
 
 /*
  *	Check an object in find_nearby() against the mask.
@@ -80,46 +81,43 @@ int Game_object::find_nearby
 	int vecsize = vec.size();
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
-	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
-								2*delta);
+	Rectangle bounds((pos.tx - delta + c_num_tiles) % c_num_tiles,
+	                 (pos.ty - delta + c_num_tiles) % c_num_tiles,
+	                 1 + 2*delta, 1 + 2*delta);
 					// Stay within world.
-	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
-					c_num_chunks*c_tiles_per_chunk);
-	tiles = tiles.intersect(world);
-					// Figure range of chunks.
-	int start_cx = tiles.x/c_tiles_per_chunk,
-	    end_cx = (tiles.x + tiles.w - 1)/c_tiles_per_chunk;
-	int start_cy = tiles.y/c_tiles_per_chunk,
-	    end_cy = (tiles.y + tiles.h - 1)/c_tiles_per_chunk;
-					// Go through all covered chunks.
-	for (int cy = start_cy; cy <= end_cy; cy++)
-		for (int cx = start_cx; cx <= end_cx; cx++)
-			{		// Go through objects.
-			Map_chunk *chunk = gmap->get_chunk(cx, cy);
-			Object_iterator next(chunk->get_objects());
-			Game_object *obj;
-			while ((obj = next.get_next()) != 0)
-				{	// Check shape.
-				if (shapenum >= 0)
-					{
-					if (obj->get_shapenum() != shapenum)
-						continue;
-					}
-				if (qual != c_any_qual && obj->get_quality() 
-								!= qual)
+	Chunk_intersect_iterator next_chunk(bounds);
+	Rectangle tiles;
+	int cx, cy;
+	while (next_chunk.get_next(tiles, cx, cy))
+		{		// Go through objects.
+		Map_chunk *chunk = gmap->get_chunk(cx, cy);
+		tiles.x += cx*c_tiles_per_chunk;
+		tiles.y += cy*c_tiles_per_chunk;
+		Object_iterator next(chunk->get_objects());
+		Game_object *obj;
+		while ((obj = next.get_next()) != 0)
+			{	// Check shape.
+			if (shapenum >= 0)
+				{
+				if (obj->get_shapenum() != shapenum)
 					continue;
-				if (framenum !=  c_any_framenum &&
-					obj->get_framenum() != framenum)
-					continue;
-				if (!Check_mask(gwin, obj, mask))
-					continue;
-				Tile_coord t = obj->get_tile();
-				if (tiles.has_point(t.tx, t.ty)) {
-					typename VecType::value_type castobj = obj_cast(obj);
-					if (castobj) vec.push_back(castobj);
 				}
+			if (qual != c_any_qual && obj->get_quality() 
+							!= qual)
+				continue;
+			if (framenum !=  c_any_framenum &&
+				obj->get_framenum() != framenum)
+				continue;
+			if (!Check_mask(gwin, obj, mask))
+				continue;
+			Tile_coord t = obj->get_tile();
+			if (tiles.has_point(t.tx, t.ty))
+				{
+				typename VecType::value_type castobj = obj_cast(obj);
+				if (castobj) vec.push_back(castobj);
 				}
 			}
+		}
 					// Return # added.
 	return (vec.size() - vecsize);
 	}

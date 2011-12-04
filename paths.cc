@@ -94,13 +94,13 @@ int Actor_pathfinder_client::get_step_cost
 			return -1;
 					// Can't be either end of door.
 		Rectangle foot = block->get_footprint();
-		if (foot.h == 1 && (to.tx == foot.x || to.tx == foot.x +
-							foot.w - 1))
+		if (foot.h == 1 && (to.tx == foot.x ||
+		                    to.tx == FIX_COORD(foot.x + foot.w - 1)))
 			return -1;
-		else if (foot.w == 1 && (to.ty == foot.y || to.ty == foot.y + 
-							foot.h - 1))
+		else if (foot.w == 1 && (to.ty == foot.y ||
+		                         to.ty == FIX_COORD(foot.y + foot.h - 1)))
 			return -1;
-		if (foot.has_point(from.tx, from.ty))
+		if (foot.has_world_point(from.tx, from.ty))
 			return -1;	// Don't walk within doorway.
 		cost++;			// But try to avoid them.
 		}
@@ -337,7 +337,7 @@ int Offscreen_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return !screen.has_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2);//&&
+	return !screen.has_world_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2);//&&
 					// Z-coord shouldn't matter.
 //		(goal.tz == -1 || tile.tz == goal.tz);
 	}
@@ -526,8 +526,8 @@ int Fast_pathfinder_client::is_straight_path
 	Tile_coord t;			// Check each tile.
 	bool done;
 	while (path.GetNextStep(t, done) && 
-				!tovol.has_point(t.tx, t.ty, t.tz))
-		if (!fromvol.has_point(t.tx, t.ty, t.tz) && 
+				!tovol.has_world_point(t.tx, t.ty, t.tz))
+		if (!fromvol.has_world_point(t.tx, t.ty, t.tz) && 
 					gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.

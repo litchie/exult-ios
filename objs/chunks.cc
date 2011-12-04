@@ -1330,7 +1330,7 @@ int Map_chunk::find_in_area
 		while ((each = next.get_next()) != 0)
 			if (each->get_shapenum() == shapenum &&
 			    each->get_framenum() == framenum &&
-			    tiles.has_point(each->get_tx(), each->get_ty()))
+			    tiles.has_world_point(each->get_tx(), each->get_ty()))
 				vec.push_back(each);
 		}
 	return vec.size() - savesize;

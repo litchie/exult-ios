@@ -164,7 +164,7 @@ int Schedule::try_street_maintenance
 					// Look at screen + 1/2.
 	Rectangle winrect = gwin->get_win_tile_rect();
 	winrect.enlarge(winrect.w/4);
-	if (!winrect.has_point(npcpos.tx, npcpos.ty))
+	if (!winrect.has_world_point(npcpos.tx, npcpos.ty))
 		return 0;
 					// Get to within 1 tile.
 	Actor_pathfinder_client cost(npc, 2);
@@ -446,7 +446,7 @@ void Follow_avatar_schedule::now_what
 	int ok;
 					// Get window rect. in tiles.
 	Rectangle wrect = gwin->get_win_tile_rect();
-	if (wrect.has_point(pos.tx - pos.tz/2, pos.ty - pos.tz/2))
+	if (wrect.has_world_point(pos.tx - pos.tz/2, pos.ty - pos.tz/2))
 					// Try walking off-screen.
 		ok = npc->walk_path_to_tile(Tile_coord(-1, -1, -1),
 							speed - speed/4, 0);
@@ -2321,7 +2321,7 @@ void Lab_schedule::init
 		if (!book && (book = table->find_closest(642, 4)) != 0)
 			{
 			Tile_coord p = book->get_tile();
-			if (!foot.has_point(p.tx, p.ty))
+			if (!foot.has_world_point(p.tx, p.ty))
 				book = 0;
 			}
 		if (!chair)
@@ -2769,7 +2769,7 @@ Game_object *Waiter_schedule::find_serving_spot
 		else			// North/south.
 			spot.ty = cpos.ty <= foot.y ? foot.y
 						: foot.y + foot.h - 1;
-		if (foot.has_point(spot.tx, spot.ty))
+		if (foot.has_world_point(spot.tx, spot.ty))
 			{		// Passes test.
 			Shape_info& info = table->get_info();
 			spot.tz = table->get_lift() + info.get_3d_height();
@@ -4292,9 +4292,9 @@ void Walk_to_schedule::now_what
 	Tile_coord from = npc->get_tile(),
 		   to = dest;
 					// Destination off the screen?
-	if (!screen.has_point(to.tx, to.ty))
+	if (!screen.has_world_point(to.tx, to.ty))
 		{
-		if (!screen.has_point(from.tx, from.ty))
+		if (!screen.has_world_point(from.tx, from.ty))
 			{		// Force teleport on next tick.
 			retries = 100;
 			npc->start(200, 100);
@@ -4307,7 +4307,7 @@ void Walk_to_schedule::now_what
 					// Modify 'dest'. to walk off.
 			walk_off_screen(screen, to);
 		}
-	else if (!screen.has_point(from.tx, from.ty))
+	else if (!screen.has_world_point(from.tx, from.ty))
 					// Modify src. to walk from off-screen.
 		walk_off_screen(screen, from);
 	blocked = Tile_coord(-1, -1, -1);

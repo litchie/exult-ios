@@ -27,6 +27,27 @@
 #define Rectangle RECTX
 #endif
 
+#include "exult_constants.h"
+
+static inline bool Point_in_strip(int start, int end, int pt)
+{
+	start = (start+c_num_tiles)%c_num_tiles;
+	pt = (pt+c_num_tiles)%c_num_tiles;
+	end += start;
+	// Does the strip wrap around the world?
+	if (end >= c_num_tiles)
+		{
+		// Yes. Check both halves of it.
+		if (!(pt >= start && pt < c_num_tiles) &&
+		    !(pt >= 0 && pt < (end % c_num_tiles)))
+			return false;
+		}
+	// No; check whether the point is in or not.
+	else if (!(pt >= start && pt < end))
+		return false;	// It was not.
+	return true;
+}
+
 /*
  *	A rectangle:
  */
@@ -40,8 +61,13 @@ public:					// Let's make it all public.
 		{  }
 	Rectangle() { }			// An uninitialized one.
 					// Is this point in it?
-	int has_point(int px, int py) const
+	bool has_point(int px, int py) const
 		{ return (px >= x && px < x + w && py >= y && py < y + h); }
+					// Add another to this one to get
+					//  a rect. that encloses both.
+					// Is this point in it (world wrap enabled!)?
+	bool has_world_point(int px, int py) const
+		{ return Point_in_strip(x, w, px) && Point_in_strip(y, h, py); }
 					// Add another to this one to get
 					//  a rect. that encloses both.
 	Rectangle add(Rectangle& r2) const
@@ -68,7 +94,7 @@ public:					// Let's make it all public.
 		return (r);
 		}
 					// Does it intersect another?
-	int intersects(Rectangle r2) const
+	bool intersects(Rectangle r2) const
 		{
 		return (x >= r2.x + r2.w ? 0 : r2.x >= x + w ? 0 :
 			y >= r2.y + r2.h ? 0 : r2.y >= y + h ? 0 : 1);
@@ -115,8 +141,11 @@ public:
 		{  }
 	Block() { }			// An uninitialized one.
 					// Is this point in it?
-	int has_point(int px, int py, int pz) const
+	bool has_point(int px, int py, int pz) const
 		{ return (px >= x && px < x + w && py >= y && py < y + d &&
+			  pz >= z && pz < z + h); }
+	bool has_world_point(int px, int py, int pz) const
+		{ return (Point_in_strip(x, w, px) && Point_in_strip(y, h, py) &&
 			  pz >= z && pz < z + h); }
 	};
 #endif
