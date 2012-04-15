@@ -208,7 +208,7 @@ public:
 		{
 		if (version < 3)
 			// We need this for backward compatibility.
-			// We use the setter methods sp that the info
+			// We use the setter methods so that the info
 				// will get saved by ES if that is needed.
 			info.set_gump_data(ReadInt(in, -1), -1);
 		}

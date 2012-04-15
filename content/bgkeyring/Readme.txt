@@ -18,7 +18,7 @@ Keyring Mod Readme
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
-version: 0.11.24
+version: 0.11.25
 
 	This mod (the so called "Keyring Mod") contains a lot of small
 	modifications to the Ultima 7: Black Gate game WITH the Forge
@@ -124,6 +124,8 @@ version: 0.11.24
 	  dialog based, but there are plans for major improvements in the future.
 	- Lord British now has his Crown Jewels. They don't do everything they should
 	  yet, but they are unbalanced already if you get your filthy hands on them.
+	- A rollable flying carpet you can carry around, which replaces the original
+	  flying carpet.
 
 6	Spoilers
 ------------
@@ -192,9 +194,11 @@ version: 0.11.24
 
 7	Version history
 -------------------
+version: 0.11.25
+	- Added the rollable flying carpet.
 version: 0.11.24
 	- Fixed dialog bug where Shamino would interject to insult Dupre even if
-	  the later is not in the party
+	  the later is not in the party.
 version: 0.11.23
 	- Fixed Skara Brae/New Magincia moongate destinations.
 version: 0.11.22

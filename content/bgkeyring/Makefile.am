@@ -165,6 +165,7 @@ MAINSHP_FLX_OBJECTS = \
 PAPERDOL_VGA_OBJECTS = \
 	src/graphics/paperdol.in	\
 	src/graphics/paperdol/Female_Paperdoll.shp	\
+	src/graphics/paperdol/FlyingCarpet.shp	\
 	src/graphics/paperdol/Laurianna_Paperdoll.shp	\
 	src/graphics/paperdol/LB_Crown_Paperdoll.shp	\
 	src/graphics/paperdol/LB_Sceptre_Paperdoll.shp	\
@@ -203,6 +204,9 @@ SHAPES_VGA_OBJECTS = \
 	src/graphics/shapes/Flame_of_Infinity.shp	\
 	src/graphics/shapes/Flame_of_Principle.shp	\
 	src/graphics/shapes/Flame_of_Singularity.shp	\
+	src/graphics/shapes/FlyingCarpet-rolled.shp	\
+	src/graphics/shapes/FlyingCarpet-roller.shp	\
+	src/graphics/shapes/FlyingCarpet-unrolled.shp	\
 	src/graphics/shapes/Iolo.shp	\
 	src/graphics/shapes/Iolos_Lute.shp	\
 	src/graphics/shapes/Item_of_Principle.shp	\
@@ -261,6 +265,7 @@ bgkeyringdata_DATA = \
 	data/bodies.txt	\
 	data/combos.flx	\
 	data/container.dat	\
+	data/equip.dat	\
 	data/initgame.dat	\
 	data/minimaps.vga	\
 	data/monsters.dat	\

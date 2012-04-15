@@ -171,6 +171,7 @@ MAINSHP_FLX_OBJECTS = \
 PAPERDOL_VGA_OBJECTS = \
 	src/graphics/paperdol.in	\
 	src/graphics/paperdol/Female_Paperdoll.shp	\
+	src/graphics/paperdol/FlyingCarpet.shp	\
 	src/graphics/paperdol/Laurianna_Paperdoll.shp	\
 	src/graphics/paperdol/LB_Crown_Paperdoll.shp	\
 	src/graphics/paperdol/LB_Sceptre_Paperdoll.shp	\
@@ -209,6 +210,9 @@ SHAPES_VGA_OBJECTS = \
 	src/graphics/shapes/Flame_of_Infinity.shp	\
 	src/graphics/shapes/Flame_of_Principle.shp	\
 	src/graphics/shapes/Flame_of_Singularity.shp	\
+	src/graphics/shapes/FlyingCarpet-rolled.shp	\
+	src/graphics/shapes/FlyingCarpet-roller.shp	\
+	src/graphics/shapes/FlyingCarpet-unrolled.shp	\
 	src/graphics/shapes/Iolo.shp	\
 	src/graphics/shapes/Iolos_Lute.shp	\
 	src/graphics/shapes/Item_of_Principle.shp	\
@@ -306,6 +310,7 @@ install: all
 	cp data/bodies.txt $(bgkeyringdir)/Keyring/data/bodies.txt
 	cp data/combos.flx $(bgkeyringdir)/Keyring/data/combos.flx
 	cp data/container.dat $(bgkeyringdir)/Keyring/data/container.dat
+	cp data/equip.dat $(bgkeyringdir)/Keyring/data/equip.dat
 	cp data/initgame.dat $(bgkeyringdir)/Keyring/data/initgame.dat
 	cp data/minimaps.vga $(bgkeyringdir)/Keyring/data/minimaps.vga
 	cp data/monsters.dat $(bgkeyringdir)/Keyring/data/monsters.dat
