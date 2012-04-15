@@ -51,6 +51,12 @@ const int SHAPE_MARIAH					= 1122;	//0x462
 const int SHAPE_SHRINE					= 1123;	//0x463
 const int SHAPE_ITEM_OF_PRINCIPLE		= 1124; //0x464
 const int SHAPE_CODEX_CARPET			= 1125;	//0x465
+const int SHAPE_LB_SCEPTER				= 1126;	//0x466
+const int SHAPE_LB_CROWN				= 1127;	//0x467
+const int SHAPE_LB_AMULET				= 1128;	//0x468
+const int SHAPE_MAGIC_CARPET			= 1129;	//0x469
+const int SHAPE_ROLLED_CARPET			= 1130;	//0x46A
+const int SHAPE_CARPET_ROLLER			= 1131;	//0x46B
 
 //Added to SHAPE_STONE_CHIPS
 //added for Rune of Honor quest

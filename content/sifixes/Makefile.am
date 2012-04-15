@@ -52,6 +52,10 @@ MAINSHP_FLX_OBJECTS = \
 	src/graphics/mainshp.in	\
 	src/graphics/mainshp/title.shp	
 
+SHAPES_VGA_OBJECTS = \
+	src/graphics/shapes.in	\
+	src/graphics/shapes/sails.shp	
+
 sifixesdir = $(datadir)/exult/silverseed/mods
 
 sifixes_DATA = \
@@ -62,12 +66,15 @@ sifixesdatadir = $(sifixesdir)/sifixes/data
 sifixesdata_DATA = \
 	data/usecode	\
 	data/mainshp.flx	\
+	data/shapes.vga	\
 	data/initgame.dat	
 
 CLEANFILES = \
 	data/usecode	\
 	data/mainshp.flx	\
-	data/mainshp_flx.h	
+	data/mainshp_flx.h	\
+	data/shapes.vga	\
+	data/shapes_vga.h	
 
 $(EXPACK):
 	+(cd $(EXPACKDIR);$(MAKE) expack)
@@ -81,4 +88,7 @@ data/usecode: $(UCC) $(USECODE_OBJECTS)
 
 data/mainshp.flx: $(EXPACK) $(MAINSHP_FLX_OBJECTS)
 	$(EXPACK) -i $(srcdir)/src/graphics/mainshp.in
+
+data/shapes.vga: $(EXPACK) $(SHAPES_VGA_OBJECTS)
+	$(EXPACK) -i $(srcdir)/src/graphics/shapes.in
 

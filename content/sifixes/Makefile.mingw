@@ -58,10 +58,16 @@ MAINSHP_FLX_OBJECTS = \
 	src/graphics/mainshp.in	\
 	src/graphics/mainshp/title.shp	
 
+SHAPES_VGA_OBJECTS = \
+	src/graphics/shapes.in	\
+	src/graphics/shapes/sails.shp	
+
 CLEANFILES = \
 	data/usecode	\
 	data/mainshp.flx	\
-	data/mainshp_flx.h	
+	data/mainshp_flx.h	\
+	data/shapes.vga	\
+	data/shapes_vga.h	
 
 $(EXPACK):
 	+(cd $(EXPACKDIR);$(MAKE) -f Makefile.mingw expack.exe)
@@ -76,10 +82,13 @@ data/usecode: $(UCC) $(USECODE_OBJECTS)
 data/mainshp.flx: $(EXPACK) $(MAINSHP_FLX_OBJECTS)
 	$(EXPACK) -i $(srcdir)/src/graphics/mainshp.in
 
+data/shapes.vga: $(EXPACK) $(SHAPES_VGA_OBJECTS)
+	$(EXPACK) -i $(srcdir)/src/graphics/shapes.in
+
 clean:
 	rm -f $(CLEANFILES)
 
-all: data/usecode data/mainshp.flx
+all: data/usecode data/mainshp.flx data/shapes.vga
 
 install: all
 	mkdir $(sifixesdir)
@@ -87,6 +96,7 @@ install: all
 	mkdir -p $(sifixesdir)/sifixes/data
 	cp data/usecode $(sifixesdir)/sifixes/data/usecode
 	cp data/mainshp.flx $(sifixesdir)/sifixes/data/mainshp.flx
+	cp data/shapes.vga $(sifixesdir)/sifixes/data/shapes.vga
 	cp data/initgame.dat $(sifixesdir)/sifixes/data/initgame.dat
 
 uninstall:

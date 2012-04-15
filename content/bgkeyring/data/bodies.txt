@@ -1,4 +1,4 @@
-#	Exult 1.4.05cvs text message file.	Written by ExultStudio.
+#	Exult 1.5.0svn text message file.	Written by ExultStudio.
 %%section version
 :2
 %%endsection
