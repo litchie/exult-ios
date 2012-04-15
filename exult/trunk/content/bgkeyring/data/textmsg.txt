@@ -1053,6 +1053,9 @@ Exult 1.4.05cvs text message file.  Written by ExultStudio.
 0x466:Lord British's Scepter
 0x467:Lord British's Crown
 0x468:Lord British's Amulet
+0x469:flying carpet
+0x46a:flying carpet
+0x46b:flying carpet
 %%endsection shapes
 %%section msgs
 0x0:"Step aside!"

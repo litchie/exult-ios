@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15.08
+version: 0.15.09
 
 	This modification fixes a few of the Usecode bugs that plague
 	Ultima VII: Serpent Isle. I have tested it *only* with Silver Seed
@@ -167,9 +167,13 @@ version: 0.15.08
 	  
 	    *	Thanks to Neutronium Dragon for the suggestions.
 	    **	Perhaps "Kal Vas In Grav" is a better fit to the spell...
+	- Ankh-less sails, as there was no reason the residents would use one of the
+	  symbols of Beast British's tyrannical commands.
 	    
 6	Version history
 -------------------
+version: 0.15.09
+	- Ship sails no longer have an ankh.
 version: 0.15.08
 	- Fixed serpent bond bug.
 version: 0.15.07

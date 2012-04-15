@@ -1,4 +1,4 @@
-#	Exult 1.4.05cvs text message file.	Written by ExultStudio.
+#	Exult 1.5.0svn text message file.	Written by ExultStudio.
 %%section version
 :6
 %%endsection
@@ -18,4 +18,7 @@
 :1124/0/-1/0/263
 :1124/1/-1/0/264
 :1124/2/-1/0/265
+%%endsection
+%%section altready
+:1130/1/12
 %%endsection
