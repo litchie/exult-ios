@@ -1,3 +1,8 @@
+2012-05-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/chunks.cc: Changed ints->bools.
+	* objs/objs.cc: Fixed memory leak caused by non-deletion of terrain game
+	  objects on cache-out.
+
 2012-04-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Keyring: Merged in the rollable carpet mod.
 	* SI Fixes: Ankh-less ship sails since there is little reason for the locals

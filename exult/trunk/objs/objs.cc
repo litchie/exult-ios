@@ -1787,11 +1787,10 @@ void Terrain_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	if (chunk && !nodel)
+	if (chunk && !nodel && !chunk->get_map()->is_caching_out())
 		{
-		// Do NOT remove object if the map is being cached out.
-		if (chunk->get_map()->is_caching_out())
-			return;
+		// This code removes the terrain object if the object was deleted.
+		// This should NOT be run if the map is being cached out!
 		chunk->get_map()->set_map_modified();
 		Chunk_terrain *ter = chunk->get_terrain();
 		if (!prev_flat.is_invalid())
