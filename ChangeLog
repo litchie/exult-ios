@@ -2,6 +2,7 @@
 	* objs/chunks.cc: Changed ints->bools.
 	* objs/objs.cc: Fixed memory leak caused by non-deletion of terrain game
 	  objects on cache-out.
+	* objs/objlist.h: Removed theoretical object list corruption bug.
 
 2012-04-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Keyring: Merged in the rollable carpet mod.
