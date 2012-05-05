@@ -748,7 +748,6 @@ void Map_chunk::set_terrain
 		for (Game_object_vector::const_iterator it=removes.begin(); 
 						it!=removes.end(); ++it)
 			// We don't want to edit the chunks here:
-			// TODO: will cause duplicates of ifix objects to appear.
 			(*it)->Game_object::remove_this();
 		}
 	terrain = ter;
