@@ -94,6 +94,12 @@ public:
 		{
 		if (iter_count)
 			report_problem();
+		if (nobj == before)
+			{
+			std::cerr << "Danger! Danger! Object being placed before itself." << std::endl;
+			std::cerr.flush();
+			return;
+			}
 		nobj->next = before;
 		nobj->prev = before->prev;
 		before->prev->next = nobj;
