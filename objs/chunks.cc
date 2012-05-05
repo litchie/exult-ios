@@ -393,9 +393,9 @@ void Chunk_cache::setup
 	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
 		if (obj->is_egg())
-			update_egg(chunk, (Egg_object *) obj, 1);
+			update_egg(chunk, (Egg_object *) obj, true);
 		else
-			update_object(chunk, obj, 1);
+			update_object(chunk, obj, true);
 			
 	obj_list = chunk;
 	}
@@ -748,6 +748,7 @@ void Map_chunk::set_terrain
 		for (Game_object_vector::const_iterator it=removes.begin(); 
 						it!=removes.end(); ++it)
 			// We don't want to edit the chunks here:
+			// TODO: will cause duplicates of ifix objects to appear.
 			(*it)->Game_object::remove_this();
 		}
 	terrain = ter;
@@ -874,7 +875,7 @@ void Map_chunk::add
 		first_nonflat = newobj;	// Inserted before old first_nonflat.
 		}
 	if (cache)			// Add to cache.
-		cache->update_object(this, newobj, 1);
+		cache->update_object(this, newobj, true);
 	if (ord.info.is_light_source())	// Count light sources.
 		{
 		if (dungeon_levels && is_dungeon(newobj->get_tx(),
@@ -902,7 +903,7 @@ void Map_chunk::add_egg
 	add(egg);			// Add it normally.
 	egg->set_area();
 // Messed up Moonshade after Banes if (cache)		// Add to cache.
-	need_cache()->update_egg(this, egg, 1);
+	need_cache()->update_egg(this, egg, true);
 	}
 
 /*
@@ -916,7 +917,7 @@ void Map_chunk::remove_egg
 	{
 	remove(egg);			// Remove it normally.
 	if (cache)			// Remove from cache.
-		cache->update_egg(this, egg, 0);
+		cache->update_egg(this, egg, false);
 	}
 
 /*
@@ -930,7 +931,7 @@ void Map_chunk::remove
 	)
 	{
 	if (cache)			// Remove from cache.
-		cache->update_object(this, remove, 0);
+		cache->update_object(this, remove, false);
 	remove->clear_dependencies();	// Remove all dependencies.
 	Game_map *gmap = gwin->get_map();
 	Shape_info& info = remove->get_info();
