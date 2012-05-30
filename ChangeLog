@@ -1,3 +1,7 @@
+2012-05-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actor.cc: Fixed bug #3530273: cannot switch bodies with Petra.
+	* content/sifixes/src/header/si/si_externals.uc: Out of synch comment.
+	
 2012-05-04	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* objs/chunks.cc: Changed ints->bools.
 	* objs/objs.cc: Fixed memory leak caused by non-deletion of terrain game
