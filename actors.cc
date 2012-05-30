@@ -4795,6 +4795,8 @@ void Actor::set_polymorph (int shape)
 
 		Skin_data *skin = Shapeinfo_lookup::GetSkinInfoSafe(avatar);
 		shape = avatar->get_flag(Obj_flags::naked) ? skin->naked_shape : skin->shape_num;
+		if (this == avatar)
+			shape_save = shape;	// Revert to default un-polymorphed shape.
 	}
 	set_file(SF_SHAPES_VGA);
 
