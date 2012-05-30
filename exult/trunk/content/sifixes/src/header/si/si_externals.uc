@@ -136,7 +136,7 @@ extern var getNonAutomatonPartyMembers 0x98E ();
  */
 extern var partyUtters 0x992 (var npcnum, var partyutter, var avatarutter, var isbark);
 
-// Gets the Avatar's location ID; see getLocationID in "headers/functions.uc"
+// Gets the Avatar's location ID; see getLocationID in "misc/location_ids.uc"
 // for details:
 extern var getAvatarLocationID 0x994 ();
 
