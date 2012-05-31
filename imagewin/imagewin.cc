@@ -184,6 +184,7 @@ Image_window::ScalerVector::ScalerVector()
 	};
 	push_back(Scale2X);
 
+#ifdef USE_HQ2X_SCALER
 	const ScalerInfo Hq2x = { 
 		"Hq2x", SCALE_BIT(2), 0,
 		&Image_window::show_scaled8to565_Hq2x,
@@ -193,7 +194,9 @@ Image_window::ScalerVector::ScalerVector()
 		0
 	};
 	push_back(Hq2x);
+#endif
 
+#ifdef USE_HQ3X_SCALER
 	const ScalerInfo Hq3x = { 
 		"Hq3x", SCALE_BIT(3), 0,
 		&Image_window::show_scaled8to565_Hq3x,
@@ -203,7 +206,9 @@ Image_window::ScalerVector::ScalerVector()
 		0
 	};
 	push_back(Hq3x);
-	
+#endif
+
+#ifdef USE_HQ4X_SCALER
 	const ScalerInfo Hq4x = { 
 		"Hq4x", SCALE_BIT(4), 0,
 		&Image_window::show_scaled8to565_Hq4x,
@@ -213,6 +218,7 @@ Image_window::ScalerVector::ScalerVector()
 		0
 	};
 	push_back(Hq4x);
+#endif
 	
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 

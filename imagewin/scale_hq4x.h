@@ -22,6 +22,8 @@
 #ifndef INCL_SCALE_HQ4X_H
 #define INCL_SCALE_HQ4X_H	1
 
+#ifdef USE_HQ4X_SCALER
+
 /** 
  ** Note: This file should only be included by source files that use the
  ** templates below; the templates will only be instantiated when they
@@ -5219,4 +5221,6 @@ void Scale_Hq4x
 		}
 	}
 
-#endif
+#endif //USE_HQ4X_SCALER
+
+#endif //INCL_SCALE_HQ4X_H
