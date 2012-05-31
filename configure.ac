@@ -539,6 +539,47 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+# HQnX scaler
+AC_ARG_ENABLE(all_hq_scalers, AS_HELP_STRING([--enable-all-hq-scalers], [Enable hq2x, hq3x, hq4x scaler support @<:@default yes@:>@]),,enable_all_hq_scalers=yes)
+AC_MSG_CHECKING([if we should build all hq scaler])
+if test x$enable_all_hq_scalers = xyes; then
+	enable_hq2x=yes
+	enable_hq3x=yes
+	enable_hq4x=yes
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
+# HQ2X scaler
+AC_ARG_ENABLE(hq2x, AS_HELP_STRING([--enable-hq2x],[Enable hq2x scaler support @<:@default no@:>@]),,enable_hq2x=no)
+AC_MSG_CHECKING(if we should build the hq2x scaler)
+if test x$enable_hq2x = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(USE_HQ2X_SCALER, 1, [Build hq2x scaler])
+else
+	AC_MSG_RESULT(no)
+fi
+
+# HQ3X scaler
+AC_ARG_ENABLE(hq3x, AS_HELP_STRING([--enable-hq3x],[Enable hq3x scaler support @<:@default no@:>@]),,enable_hq3x=no)
+AC_MSG_CHECKING(if we should build the hq3x scaler)
+if test x$enable_hq3x = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(USE_HQ3X_SCALER, 1, [Build hq3x scaler])
+else
+	AC_MSG_RESULT(no)
+fi
+
+# HQ4X scaler
+AC_ARG_ENABLE(hq4x, AS_HELP_STRING([--enable-hq4x],[Enable hq4x scaler support @<:@default no@:>@]),,enable_hq4x=no)
+AC_MSG_CHECKING(if we should build the hq4x scaler)
+if test x$enable_hq4x = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(USE_HQ4X_SCALER, 1, [Build hq4x scaler])
+else
+	AC_MSG_RESULT(no)
+fi
 
 # OpenGL rendering
 
@@ -990,6 +1031,13 @@ echo Build usecode compiler..... : $enable_compiler
 echo Build Exult mods........... : $enable_mods
 echo Build Exult Studio......... : $enable_exult_studio
 echo Exult Studio support....... : $enable_exult_studio_support
-
+echo
+if test x$enable_all_hq_scalers = xyes; then
+echo Build all HQ scalers....... : $enable_all_hq_scalers
+else
+echo Build HQ2X scaler.......... : $enable_hq2x
+echo Build HQ3X scaler.......... : $enable_hq3x
+echo Build HQ4X scaler.......... : $enable_hq4x
+fi
 echo
 echo "Now type 'make' to build Exult"
