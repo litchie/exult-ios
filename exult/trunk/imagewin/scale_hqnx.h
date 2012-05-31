@@ -22,6 +22,8 @@
 #ifndef INCL_SCALE_HQNX_H
 #define INCL_SCALE_HQNX_H	1
 
+#if defined(USE_HQ2X_SCALER) || defined(USE_HQ3X_SCALER) || defined(USE_HQ4X_SCALER)
+
 /** 
  ** Note: This file should only be included by source files that use the
  ** templates below; the templates will only be instantiated when they
@@ -234,4 +236,6 @@ inline int hqx_init(int *w, int *c, int *yuv, unsigned char *from,
 	return pattern;
 	}
 
-#endif
+#endif //defined(USE_HQ2X_SCALER) || defined(USE_HQ3X_SCALER) || defined(USE_HQ4X_SCALER)
+
+#endif //INCL_SCALE_HQNX_H

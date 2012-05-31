@@ -23,6 +23,8 @@
 #  include <config.h>
 #endif
 
+#ifdef USE_HQ3X_SCALER
+
 #include "SDL_video.h"
 
 #include "imagewin.h"
@@ -100,3 +102,5 @@ void Image_window::show_scaled8to32_Hq3x
 		inter_surface->format->BytesPerPixel,
 		manip);
 }
+
+#endif //USE_HQ3X_SCALER

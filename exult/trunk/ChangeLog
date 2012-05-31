@@ -1,3 +1,10 @@
+2012-05-31 Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac, imagewin/imagewin.cc, imagewin/scale_hq*.*: Added
+	  configure option --enable-all-hq-scalers, --enable-hq2x, --enable-hq3x,
+	  --enable-hq4x. This makes it easier to leave out HQ scalers for quicker
+	  compiles, when you need to test things. By default all HQ scalers are 
+	  enabled.
+
 2012-05-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actor.cc: Fixed bug #3530273: cannot switch bodies with Petra.
 	* content/sifixes/src/header/si/si_externals.uc: Out of synch comment.
