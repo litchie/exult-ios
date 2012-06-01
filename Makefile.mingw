@@ -98,7 +98,8 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/imagewin -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/server -I$(SRC)/shapes \
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) -DUSE_EXULTSTUDIO \
-	-DHAVE_PNG_H -DHAVE_FREETYPE2 $(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
+	-DHAVE_PNG_H -DHAVE_FREETYPE2 -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER \
+	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
 	$(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL
