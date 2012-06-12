@@ -1,3 +1,7 @@
+2012-06-12	 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* mapedit/shapeedit.cc: Fix spot frame editing for helmet
+	  Fix alt frames editing for ammo, rings, and torso
+
 2012-05-31 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, imagewin/imagewin.cc, imagewin/scale_hq*.*: Added
 	  configure option --enable-all-hq-scalers, --enable-hq2x, --enable-hq3x,

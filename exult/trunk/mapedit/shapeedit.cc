@@ -5,7 +5,7 @@
  **/
 
 /*
-Copyright (C) 2002-2011 The Exult Team
+Copyright (C) 2002-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -2173,10 +2173,13 @@ static inline void Get_objpaperdoll_fields
 	)
 	{
 	int ready = studio->get_optmenu("shinfo_ready_spot");
-	bool fron = ready == 3 || ready == 9 || ready == 10 || ready == 11;
+	bool fron = ready == 8 || ready == 9 || ready == 10 || ready == 12;
+	int altspot = studio->get_optmenu("shinfo_altready1_spot");
+	bool armor = ready == 15 && altspot !=5;
+	if (armor) fron = true;
 	spot = studio->get_optmenu("shinfo_objpaperdoll_spot");
 	int max;
-	if (spot == 0 && ready == 4)
+	if (spot == 0 && ready ==14) // helmet
 		max = 1;
 	else if (spot == 3 && ready == 2)
 		max = 2;
@@ -2196,7 +2199,7 @@ static inline void Get_objpaperdoll_fields
 	if (frame2)
 		*frame2 = fron ? studio->get_spin("shinfo_objpaperdoll_frame2") : -1;
 	if (frame3)
-		*frame3 = ready == 9 ? studio->get_spin("shinfo_objpaperdoll_frame3") : -1;
+		*frame3 = armor ? studio->get_spin("shinfo_objpaperdoll_frame3") : -1;
 	if (type)
 		*type = max > 0 ? studio->get_spin("shinfo_objpaperdoll_spotframe") : 0;
 	if (trans)
@@ -2215,9 +2218,12 @@ static void Set_objpaperdoll_fields
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 	int ready = studio->get_optmenu("shinfo_ready_spot");
-	bool fron = ready == 3 || ready == 9 || ready == 10 || ready == 11;
+	bool fron = ready == 8 || ready == 9 || ready == 10 || ready == 12;
+	int altspot = studio->get_optmenu("shinfo_altready1_spot");
+	bool armor = ready == 15 && altspot !=5;
+	if (armor) fron = true;
 	int max;
-	if (spot == 0 && ready == 4)
+	if (spot == 0 && ready ==14) // helmet
 		max = 1;
 	else if (spot == 3 && ready == 2)
 		max = 2;
@@ -2240,7 +2246,7 @@ static void Set_objpaperdoll_fields
 	studio->set_spin("shinfo_objpaperdoll_frame2",
 			fron ? frame2 : 0, fron);
 	studio->set_spin("shinfo_objpaperdoll_frame3",
-			ready == 9 ? frame3 : 0, ready == 9);
+			armor ? frame3 : 0, armor);
 	}
 
 static inline void Set_objpaperdoll_sensitivity
@@ -2251,7 +2257,7 @@ static inline void Set_objpaperdoll_sensitivity
 	)
 	{
 	int max;
-	if (spot == 0 && ready == 4)
+	if (spot == 0 && ready ==14) // helmet
 		max = 1;
 	else if (spot == 3 && ready == 2)
 		max = 2;
@@ -2259,10 +2265,13 @@ static inline void Set_objpaperdoll_sensitivity
 		max = 0;
 	studio->set_spin("shinfo_objpaperdoll_spotframe", 0, max);
 	studio->set_sensitive("shinfo_objpaperdoll_spotframe", max > 0);
-	bool fron = ready == 3 || ready == 9 || ready == 10 || ready == 11;
+	bool fron = ready == 8 || ready == 9 || ready == 10 || ready == 12;
+	int altspot = studio->get_optmenu("shinfo_altready1_spot");
+	bool armor = ready == 15 && altspot !=5;
+	if (armor) fron = true;
 	studio->set_sensitive("shinfo_objpaperdoll_frame1", fron);
 	studio->set_sensitive("shinfo_objpaperdoll_frame2", fron);
-	studio->set_sensitive("shinfo_objpaperdoll_frame3", ready == 9);
+	studio->set_sensitive("shinfo_objpaperdoll_frame3", armor);
 	}
 
 /*
