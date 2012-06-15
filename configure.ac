@@ -848,17 +848,6 @@ if test -n "$FT2CONFIG"; then
 	AC_SUBST(FREETYPE2_INCLUDES)
 fi
 
-# gconftool2 (optional, used in Gnome SHP thumbnailer)
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
-if test -n "$GCONFTOOL"; then
-	AC_DEFINE(HAVE_GCONFTOOL2, 1, [Have gconftool-2])
-	have_gconftool=yes
-	# We will leave this for later:
-	#AM_GCONF_SOURCE_2
-else
-	have_gconftool=no
-fi
-
 # exult-studio
 AC_ARG_ENABLE(exult-studio, AS_HELP_STRING([--enable-exult-studio], [Build Exult Studio @<:@default no@:>@]),,enable_exult_studio=no)
 AC_MSG_CHECKING([whether to build Exult Studio])
@@ -880,22 +869,13 @@ AC_ARG_ENABLE(gnome-shp-thumbnailer, AS_HELP_STRING([--enable-gnome-shp-thumbnai
 AC_MSG_CHECKING([whether to build the Gnome SHP Thumbnailer])
 if test x$enable_gnome_shp_thumbnailer = xyes; then
 	AC_MSG_RESULT(yes)
-	if test x$have_gconftool = xno; then
-		echo "Umm, but we don't have gconftool-2."
-		echo "Try again, either with gconftool-2, or with --disable-gnome-shp-thumbnailer"
-		exit 1
-	elif test x$have_gnomeui = xno; then
+	if test x$have_gnomeui = xno; then
 		echo "Umm, but we don't have any libgnomeui stuff."
 		echo "Try again, either with libgnomeui, or with --disable-gnome-shp-thumbnailer"
 		exit 1
 	fi
-	# And here it is:
-	# Not all systems will have this macro.
-	m4_ifdef([AM_GCONF_SOURCE_2], [AM_GCONF_SOURCE_2], [AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)])
-	# AM_GCONF_SOURCE_2
 	AM_CONDITIONAL(BUILD_GTHUMB, true)
 else
-	AM_CONDITIONAL(GCONF_SCHEMAS_INSTALL, false)
 	AM_CONDITIONAL(BUILD_GTHUMB, false)
 	AC_MSG_RESULT(no)
 fi

@@ -52,6 +52,21 @@ gnome_shp_thumbnailer_LDADD = \
 	../files/libu7file.la \
 	-lpng -lz $(SYSLIBS) $(LIBGNOMEUI_LIBS)
 
+if BUILD_GTHUMB
+## Does not work:
+#thumbnailerdir=$(datadir)/thumbnailers
+## Needs to be in /usr/share/thumbnailers
+thumbnailerdir=/usr/share/thumbnailers
+thumbnailer_in_files=gnome_u7shapes.thumbnailer.in
+thumbnailer_DATA=$(thumbnailer_in_files:.thumbnailer.in=.thumbnailer)
+gnome_shp_thumbnailer_DATA=x-shapefile.xml
+gnome_shp_thumbnailerdir=$(DESTDIR)$(datadir)/mime/packages
+
+# Rule to make the service file with bindir expanded
+$(thumbnailer_DATA): $(thumbnailer_in_files)
+	@$(SED) -e "s|\@bindir\@|$(bindir)|" $< > $@
+endif
+
 wuc_SOURCES = \
 	wuc.c \
 	uctools.h
@@ -91,61 +106,15 @@ cmanip_LDADD = \
 	../files/libu7file.la \
 	$(SYSLIBS)
 
-# From gnome-xcf-thumbnailer makefile.
-schemasdir = $(GCONF_SCHEMA_FILE_DIR)
-schemas_in_files = gnome_shp_thumbnailer.schemas.in
-
-if GCONF_SCHEMAS_INSTALL
-schemas_DATA = gnome_shp_thumbnailer.schemas
-
-# Rule to make the service file with bindir expanded
-$(schemas_DATA): $(schemas_in_files) Makefile
-	@$(SED) -e "s|\@bindir\@|$(bindir)|" $< > $@
-
-install-data-local:
-	if test -z "$(DESTDIR)" ; then \
-		for p in $(schemas_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p ; \
-		done \
-	fi; \
-	echo "*** MIME types not installed. Run 'cd tools; make desktop-install; cd ..'"; \
-	echo "*** (or 'cd tools; make home-desktop-install; cd ..' for installation in home directory)."
-else
-schemas_DATA =
-
-install-data-local:
-endif
-
 if BUILD_GTHUMB
-desktop-install:
-	if test "$(datadir)" = "/usr/share"; then \
-		desktopdir=/usr/share; \
-	else \
-		desktopdir=/usr/local/share; \
-	fi; \
-	$(INSTALL_DATA) x-shapefile.xml $(DESTDIR)$$desktopdir/mime/packages; \
-	if test -z "$(DESTDIR)"; then \
-		echo "Updating mime."; \
-		update-mime-database $$desktopdir/mime; \
-	else \
-		echo "*** Not updating mime database. After install, run:"; \
-		echo "*** update-mime-database $$desktopdir/mime"; \
-	fi
+install-data-hook:
+	update-mime-database $(DESTDIR)$(datadir)/mime || :
 
-home-desktop-install:
-	desktopdir=$(HOME)/.local/share; \
-	$(INSTALL_DATA) x-shapefile.xml $(DESTDIR)$$desktopdir/mime/packages; \
-	if test -z "$(DESTDIR)"; then \
-		echo "Updating mime."; \
-		update-mime-database $$desktopdir/mime; \
-	else \
-		echo "*** Not updating mime database. After install, run:"; \
-		echo "*** update-mime-database $$desktopdir/mime"; \
-	fi
+uninstall-hook:
+	update-mime-database $(DESTDIR)$(datadir)/mime || :
 else
-desktop-install:
-
-home-desktop-install:
+install-data-hook:
+uninstall-hook:
 endif
 
 EXTRA_DIST = \
@@ -157,4 +126,4 @@ EXTRA_DIST = \
 	ucformat.txt \
 	expack.txt
 
-CLEANFILES = *~ gnome_shp_thumbnailer.schemas
+CLEANFILES = *~ gnome_u7shapes.thumbnailer

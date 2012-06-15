@@ -1,3 +1,6 @@
+2012-06-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* all: Updating Gnome shp thumbnailer to work on Gnome 3.
+
 2012-06-12	 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* mapedit/shapeedit.cc: Fix spot frame editing for helmet
 	  Fix alt frames editing for ammo, rings, and torso
