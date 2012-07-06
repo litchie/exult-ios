@@ -1731,7 +1731,7 @@ Usecode_value Usecode_internal::call_intrinsic
 	int num_parms			// # parms on stack.
 	)
 	{
-	Usecode_value parms[12];	// Get parms.
+	Usecode_value parms[13];	// Get parms.
 	for (int i = 0; i < num_parms; i++)
 		{
 		Usecode_value val = pop();

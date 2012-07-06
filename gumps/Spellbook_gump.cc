@@ -482,7 +482,7 @@ void Spellbook_gump::paint
 			if (GAME_BG && page == 0 && !cheat.in_map_editor())	// No quantities for 0th circle in BG.
 				continue;
 			int num = avail[spindex + s];
-			char text[6];
+			char text[7];
 #ifdef USE_EXULTSTUDIO
 			if (cheat.in_map_editor()){
 				unsigned char cflags = book->circles[page];
