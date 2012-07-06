@@ -1,3 +1,11 @@
+2012-07-06	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc: Have party members fight back if Avatar is disabled,
+		not in combat mode, and a party member is hit. The original only
+		switched to combat mode when the Avatar got hit.
+		Fix use of || instead of && that has any actor schedule seek foes
+	* gumps/Spellbook_gump.cc: fix character size
+	* usecode/ucinternal.cc: fix array size
+
 2012-06-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* all: Updating Gnome shp thumbnailer to work on Gnome 3.
 

@@ -2633,7 +2633,9 @@ void Actor::fight_back
 	Actor *npc = attacker ? attacker->as_actor() : 0;
 	if (!npc)
 		return;
-	if (is_in_party() && gwin->in_combat()){
+	if (is_in_party() && (gwin->in_combat() || !gwin->main_actor_can_act())){
+		if(!gwin->in_combat())
+			gwin->toggle_combat();
 		Actor *party[9];		// Get entire party, including Avatar.
 		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++){
@@ -5194,10 +5196,10 @@ void Npc_actor::handle_event
 		return;
 		}
 	if (schedule && party_id < 0 && can_act() && 
-			(schedule_type != Schedule::combat ||	// Not if already in combat.
+			(schedule_type != Schedule::combat &&	// Not if already in combat.
 						// Patrol schedule already does this.
-				schedule_type != Schedule::patrol ||
-				schedule_type != Schedule::sleep ||
+				schedule_type != Schedule::patrol &&
+				schedule_type != Schedule::sleep &&
 				schedule_type != Schedule::wait) &&
 			!rand()%3)	// Don't do it every time. FIXME: "!rand()" ??
 			            // This !rand()%3 doesn't do what it appears to do,
@@ -5216,10 +5218,10 @@ void Npc_actor::handle_event
 				// Should try seeking foes?
 			if (party_id < 0 && can_act() &&
 						// Not if already in combat.
-					(schedule_type != Schedule::combat ||
+					(schedule_type != Schedule::combat &&
 						// Patrol schedule already does this.
-						schedule_type != Schedule::patrol ||
-						schedule_type != Schedule::sleep ||
+						schedule_type != Schedule::patrol &&
+						schedule_type != Schedule::sleep &&
 						schedule_type != Schedule::wait) &&
 					!rand()%4)	// Don't do it every time. FIXME: "!rand()" ??
 			            // This !rand()%4 doesn't do what it appears to do,
