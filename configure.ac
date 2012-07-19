@@ -437,7 +437,7 @@ if test x$enable_static_libs != xno; then
 		# SDL MacOS X readme lists this as needed.
 		# We should have sdl-config by this point, or we would have
 		# died in AM_PATH_SDL.
-		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs -Wl,-dynamic`
+		SDL_LIBS=`$SDL_CONFIG $sdl_config_args --static-libs`
 		OGG_LIBS="$with_macosx_static_lib_path/libogg.a"
 		VORBISFILE_LIBS="$with_macosx_static_lib_path/libvorbisfile.a"
 		VORBIS_LIBS="$with_macosx_static_lib_path/libvorbis.a -lm"
