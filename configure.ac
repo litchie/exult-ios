@@ -1045,7 +1045,7 @@ if test x$ARCH = xmacosx; then
 		echo Mac OS X static libs....... : $with_macosx_static_lib_path
 	fi
 fi
-if test x$"with_macosx_code_signature" = x; then
+if test x"$with_macosx_code_signature" != x; then
 	echo Mac OS X code sign ID...... : $with_macosx_code_signature
 fi
 echo
