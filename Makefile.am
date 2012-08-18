@@ -256,6 +256,9 @@ bundle: ${EXE_TARGET}
 	$(INSTALL_DATA) NEWS $(bundle_name)
 	$(INSTALL_DATA) README $(bundle_name)
 	$(INSTALL_DATA) README.MacOSX $(bundle_name)
+if WITH_OSX_CODE_SIGNATURE
+	codesign -f -s "$(OSX_CODE_SIGNATURE)" $(bundle_name)
+endif
 
 install-exec-local: bundle
 	mkdir -p $(DESTDIR)/Applications/
