@@ -446,6 +446,26 @@ if test x$enable_static_libs != xno; then
 fi
 
 # ---------------------------------------------------------------------
+# Mac OS X code signing
+# ---------------------------------------------------------------------
+
+AM_CONDITIONAL(WITH_OSX_CODE_SIGNATURE, false)
+AC_ARG_WITH(macosx-code-signature,
+	AS_HELP_STRING([--with-macosx-code-signature=identity], [identity for code signing (Mac OS X bundles only) @<:@default "Developer ID Application"@:>@]),
+	[with_macosx_code_signature="$withval"],
+	[with_macosx_code_signature=""])
+if test x$ARCH = xmacosx; then
+	if test x"$with_macosx_code_signature" != x; then
+		if test x"$with_macosx_code_signature" = xyes; then
+			with_macosx_code_signature="Developer ID Application"
+		fi
+		AM_CONDITIONAL(WITH_OSX_CODE_SIGNATURE, true)
+		OSX_CODE_SIGNATURE="$with_macosx_code_signature"
+		AC_SUBST(OSX_CODE_SIGNATURE)
+	fi
+fi
+
+# ---------------------------------------------------------------------
 # Optional components
 # ---------------------------------------------------------------------
 
@@ -1018,6 +1038,15 @@ else
 echo Build HQ2X scaler.......... : $enable_hq2x
 echo Build HQ3X scaler.......... : $enable_hq3x
 echo Build HQ4X scaler.......... : $enable_hq4x
+fi
+echo
+if test x$ARCH = xmacosx; then
+	if test x$enable_static_libs != xno; then
+		echo Mac OS X static libs....... : $with_macosx_static_lib_path
+	fi
+fi
+if test x$"with_macosx_code_signature" = x; then
+	echo Mac OS X code sign ID...... : $with_macosx_code_signature
 fi
 echo
 echo "Now type 'make' to build Exult"
