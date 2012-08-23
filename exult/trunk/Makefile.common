@@ -253,6 +253,7 @@ OBJS_OBJS= \
 	objs/iregobjs.o \
 	objs/jawbone.o \
 	objs/mappatch.o \
+	objs/objclient.o \
 	objs/objiter.o \
 	objs/objnames.o \
 	objs/objs.o \
