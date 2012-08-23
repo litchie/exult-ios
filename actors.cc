@@ -1275,7 +1275,7 @@ void Actor::notify_object_gone
 	)
 	{
 	if (schedule)
-		schedule->notify_object_gone(obj);
+		schedule->object_gone(obj);
 	}
 
 /*

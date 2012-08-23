@@ -23,6 +23,7 @@
 
 #include "tiles.h"
 #include "singles.h"
+#include "objclient.h"
 #include <vector>
 
 #ifdef WIN32
@@ -41,7 +42,7 @@ using std::vector;
 /*
  *	A Schedule controls the NPC it is assigned to.
  */
-class Schedule : public Game_singletons
+class Schedule : public Game_singletons, public Object_client
 	{
 protected:
 	Actor *npc;			// Who this controls.
@@ -96,14 +97,14 @@ public:
 					// Set where to sleep.
 	virtual void set_bed(Game_object *b)
 		{  }
-					// Notify that schedule's obj. has
-					//   been moved.
-	virtual void notify_object_gone(Game_object *obj)
-		{  }
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
 					// Look for foes.
 	bool seek_foes();
+	/* For Object_client: +++++ Override in sub-classes. */
+					// Notify that schedule's obj. has been moved or deleted.
+	virtual void notify_object_gone(Game_object *obj)
+	  	{  }
 	};
 
 /*

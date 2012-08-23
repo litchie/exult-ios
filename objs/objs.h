@@ -48,6 +48,7 @@ class Usecode_machine;
 class Vga_file;
 class DataSource;
 class Game_map;
+class Object_client;
 
 template<class T>
 class T_Object_list;
@@ -82,6 +83,7 @@ private:
 					//   this can be rendered.
 	Game_object_set dependors;	// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
+	std::vector <Object_client *> clients; // Notify when deleted.
 public:
 	uint32 render_seq;		// Render sequence #.
 public:
@@ -171,6 +173,8 @@ public:
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	void move(Tile_coord t, int newmap = -1)
 		{ move(t.tx, t.ty, t.tz, newmap); }
+	bool add_client(Object_client *c);
+	void remove_client(Object_client *c);
 	void change_frame(int frnum);	// Change frame & set to repaint.
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
