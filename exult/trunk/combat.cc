@@ -22,12 +22,12 @@
 #  include <config.h>
 #endif
 
+#include "actors.h"
 #include "combat.h"
 #include "combat_opts.h"
 #include "gamewin.h"
 #include "gameclk.h"
 #include "gamemap.h"
-#include "actors.h"
 #include "paths.h"
 #include "Astar.h"
 #include "actions.h"

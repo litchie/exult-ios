@@ -24,6 +24,7 @@
 #endif
 
 #include "objs.h"
+#include "objclient.h"
 #include "chunks.h"
 #include "objiter.h"
 #include "egg.h"
@@ -640,6 +641,35 @@ void Game_object::move
 	}
 
 /*
+ *	Add/remove a client.
+ */
+bool Game_object::add_client
+        (
+       	Object_client *c
+       	) {
+	for (vector<Object_client*>::iterator it = clients.begin();
+		    		it != clients.end(); ++it)
+		if ((*it) == c)
+		        return false;
+       	clients.push_back(c);
+		return true;
+	}
+
+void Game_object::remove_client
+        (
+       	Object_client *c
+       	)
+       	{
+	for (vector<Object_client*>::iterator it = clients.begin();
+		    		it != clients.end(); ++it)
+		if ((*it) == c)
+		   	{
+			clients.erase(it);
+		        return;
+			}
+	}
+
+/*
  *	Change the frame and set to repaint areas.
  */
 
@@ -1206,7 +1236,14 @@ void Game_object::remove_this
 	if (chunk)
 		chunk->remove(this);
 	if (!nodel)
+		{
+		for (vector<Object_client*>::iterator it = 
+			   				clients.begin(); it != clients.end(); ++it) {
+		    (*it)->object_gone(this);
+		}
+		clients.clear();
 		gwin->delete_object(this);
+		}
 	}
 
 /*

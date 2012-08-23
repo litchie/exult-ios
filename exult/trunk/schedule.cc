@@ -23,8 +23,8 @@
 #endif
 
 #include "SDL_timer.h"
-#include "schedule.h"
 #include "actors.h"
+#include "schedule.h"
 #include "Zombie.h"
 #include "gamewin.h"
 #include "gameclk.h"
@@ -3252,6 +3252,7 @@ void Bake_schedule::now_what()
 			if (!baking_dough.empty())	// found dough
 			{
 				dough_in_oven = baking_dough[0];
+				add_client(dough_in_oven);
 				state = remove_from_oven;
 				break;
 			}
@@ -3261,12 +3262,14 @@ void Bake_schedule::now_what()
 				oven = stove;
 			if (oven)
 			{
+				add_client(oven);
 				Game_object_vector food;
 				Tile_coord Opos = oven->get_tile();
 				npc->find_nearby(food, Opos, 377, 2, 0, 51, c_any_framenum);
 				if (!food.empty())	// found food
 				{
 					dough_in_oven = food[0];
+					add_client(dough_in_oven);
 					state = remove_from_oven;
 					break;
 				}
@@ -3286,6 +3289,7 @@ void Bake_schedule::now_what()
 			if (!leftovers.empty())	// found dough
 			{
 				dough = leftovers[0];
+				add_client(dough);
 				state = make_dough;
 				delay = 0;
 				Actor_action *pact = Path_walking_actor_action::create_path(
@@ -3310,6 +3314,7 @@ void Bake_schedule::now_what()
 
 		int nr = rand()%items.size();
 		flourbag = items[nr];
+		add_client(flourbag);
 
 		Tile_coord tpos = flourbag->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
@@ -3379,7 +3384,7 @@ void Bake_schedule::now_what()
 			state = to_flour;
 			break;
 		}
-
+		add_client(worktable);
 					// Find where to put dough.
 		Rectangle foot = worktable->get_footprint();
 		Shape_info& info = worktable->get_info();
@@ -3399,6 +3404,7 @@ void Bake_schedule::now_what()
 				dough = new Ireg_game_object(dough_shp, 16, 0, 0);
 			else
 				dough = new Ireg_game_object(dough_shp, 0, 0, 0);
+			add_client(dough);
 			dough->set_quality(50);
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
@@ -3469,7 +3475,7 @@ void Bake_schedule::now_what()
 			state = to_table;
 			break;
 		}
-
+		add_client(oven);
 		if (dough_in_oven->get_shapenum() != 377){
 			gwin->add_dirty(dough_in_oven);
 			dough_in_oven->set_shape(377);
@@ -3533,6 +3539,7 @@ void Bake_schedule::now_what()
 			state = find_leftovers;
 			break;
 		}
+		add_client(displaytable);
 
 		Rectangle r = displaytable->get_footprint();
 		Perimeter p(r);		// Find spot adjacent to table.
@@ -3622,7 +3629,7 @@ void Bake_schedule::now_what()
 			state = find_leftovers;
 			break;
 		}
-
+		add_client(oven);
 		Tile_coord tpos = dough->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost2);
@@ -3659,7 +3666,7 @@ void Bake_schedule::now_what()
 			state = to_table;
 			break;
 		}
-
+		add_client(oven);
 		Tile_coord tpos = oven->get_tile() + 
 						Tile_coord(1, 1, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
@@ -3704,11 +3711,11 @@ void Bake_schedule::now_what()
 
 void Bake_schedule::ending(int new_type)
 {
+	remove_clients();
 	if (dough) {
 		dough->remove_this();
 		dough = 0;
 	}
-
 	if (dough_in_oven) {
 		dough_in_oven->remove_this();
 		dough_in_oven = 0;
@@ -3720,9 +3727,17 @@ void Bake_schedule::ending(int new_type)
  */
 void Bake_schedule::notify_object_gone(Game_object *obj)
 {
-	if (obj == dough)		// Someone stole the dough!
+    if (obj == oven)
+	    oven = 0;
+	else if (obj == worktable)
+		worktable = 0;
+	else if (obj == displaytable)
+		displaytable = 0;
+	else if (obj == flourbag)
+		flourbag = 0;
+	else if (obj == dough)		// Someone stole the dough!
 		dough = 0;
-	if (obj == dough_in_oven)
+	else if (obj == dough_in_oven)
 		dough_in_oven = 0;
 }
 

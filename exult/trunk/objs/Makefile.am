@@ -26,6 +26,8 @@ libobjs_la_SOURCES = \
 	iregobjs.h \
 	mappatch.cc \
 	mappatch.h \
+	objclient.cc \
+	objclient.h \
 	objiter.h \
 	objiter.cc \
 	objlist.h \
