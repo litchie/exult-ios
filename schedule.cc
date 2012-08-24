@@ -319,7 +319,7 @@ void Street_maintenance_schedule::now_what
 		paction = 0;
 		return;
 		}
-	if (npc->distance(obj) <= 2 &&	// We're there.
+	if (obj && npc->distance(obj) <= 2 &&	// We're there.
 	    obj->get_shapenum() == shapenum && obj->get_framenum() == framenum)
 		{
 		cout << npc->get_name() << 
@@ -381,6 +381,15 @@ int Street_maintenance_schedule::get_actual_type
 	{
 	return prev_type;
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Street_maintenance_schedule::notify_object_gone(Game_object *o)
+{
+	if (o == obj)
+		obj = 0;
+}
 
 /*
  *	What do we do now?
@@ -1001,6 +1010,8 @@ void Patrol_schedule::now_what
 				case 24:		// Read
 					// Find the book which will be read.
 					book = npc->find_closest(642, 4);
+					if (book)
+					    add_client(book);
 					// Fall through to sit.
 				case 3:			// Sit.
 					if (Sit_schedule::set_action(npc))
@@ -1320,12 +1331,24 @@ void Patrol_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	remove_clients();
 	if (hammer)
 		{
 		hammer->remove_this();
 		hammer = 0;
 		}
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Patrol_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == hammer)	/* I don't think this can happen, but just in case.*/
+		hammer = 0;
+	else if (obj == book)
+		book = 0;
+}
 
 /*
  *	Schedule change for 'talk':
@@ -1842,6 +1865,8 @@ void Sleep_schedule::now_what
 			bed = npc->find_closest(gbeds, 2);
 			}
 		}
+	if (bed)
+	    add_client(bed);
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
@@ -1923,6 +1948,7 @@ void Sleep_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	remove_clients();
 					// Needed for Skara Brae.
 	if (new_type == static_cast<int>(wait) ||	
 					// Not time to get up, Penumbra!
@@ -1958,6 +1984,17 @@ void Sleep_schedule::ending
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Sleep_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == bed) {
+		bed = 0;
+		state = 0;
+	}
+}
 
 /*
  *	Create a 'sit' schedule.
@@ -2014,9 +2051,21 @@ void Sit_schedule::now_what
 					// Wait a while if we got up.
 	if (!set_action(npc, chair, sat ? (2000 + rand()%3000) : 0, &chair))
 		npc->start(200, 5000);	// Failed?  Try again later.
-	else
+	else {
+		add_client(chair);
 		sat = true;
 	}
+}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Sit_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == chair) {
+		chair = 0;
+	}
+}
 
 /*
  *	Action to sit in the chair NPC is in front of.
@@ -2197,6 +2246,7 @@ void Desk_schedule::now_what
 			npc->start(200, 5000);
 			return;	
 			}
+		add_client(chair);
 		}
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) != Actor::sit_frame)
@@ -2220,6 +2270,16 @@ void Desk_schedule::now_what
 		npc->start(250, 10000 + rand()%5000);
 		}
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Desk_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == chair) {
+		chair = 0;
+	}
+}
 
 /*
  *	A class for indexing the perimeter of a rectangle.
@@ -2915,6 +2975,7 @@ void Waiter_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	remove_clients();
 					// Remove what he/she is carrying.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -3205,6 +3266,7 @@ void Sew_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	remove_clients();
 					// Remove shears.
 	Game_object *obj = npc->get_readied(lhand);
 	if (obj)
@@ -4107,6 +4169,7 @@ void Forge_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
+	remove_clients();
 					// Remove any tools.
 	if (tongs) {
 		tongs->remove_this();
@@ -4207,6 +4270,7 @@ void Eat_schedule::now_what()
 // TODO: This should be in a loop to remove food one at a time with a delay
 void Eat_schedule::ending (int new_type) // new schedule type
 {
+	remove_clients();
 	Game_object_vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt){			// Found?

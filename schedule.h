@@ -53,7 +53,7 @@ protected:
 public:
 	Schedule(Actor *n);
 	virtual ~Schedule()
-		{  }
+		{ remove_clients(); }
 	int get_prev_type() const
 		{ return prev_type; }
 	void set_blocked(Tile_coord b)
@@ -148,6 +148,7 @@ public:
 	virtual void now_what();
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
 /*
@@ -250,6 +251,7 @@ public:
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
 /*
@@ -375,6 +377,7 @@ public:
 					// Set where to sleep.
 	virtual void set_bed(Game_object *b)
 		{ bed = b; state = 0; }
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
 /*
@@ -388,6 +391,7 @@ class Sit_schedule : public Schedule
 public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void notify_object_gone(Game_object *obj);
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = 0,
 				int delay = 0, Game_object **chair_found = 0);
@@ -402,8 +406,10 @@ class Desk_schedule : public Schedule
 public:
 	Desk_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
+//+++++++++++++++ Add 'notify_' methods below this line.
 /*
  *	Shy away from Avatar.
  */
