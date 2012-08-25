@@ -74,6 +74,7 @@ protected:
 	short quality;			// Some sort of game attribute.
 	int get_cxi() const;
 	int get_cyi() const;
+	void remove_clients();
 private:
 	Game_object *next, *prev;	// ->next in chunk list or container.
 public:

@@ -1224,6 +1224,18 @@ void Game_object::update_from_studio
 	}
 
 /*
+ *	Remove from clients list.
+ */
+void Game_object::remove_clients()
+{
+	for (vector<Object_client*>::iterator it = 
+			   				clients.begin(); it != clients.end(); ++it) {
+	    (*it)->object_gone(this);
+	}
+	clients.clear();
+}
+
+/*
  *	Remove an object from the world.
  *	The object is deleted.
  */
@@ -1237,11 +1249,7 @@ void Game_object::remove_this
 		chunk->remove(this);
 	if (!nodel)
 		{
-		for (vector<Object_client*>::iterator it = 
-			   				clients.begin(); it != clients.end(); ++it) {
-		    (*it)->object_gone(this);
-		}
-		clients.clear();
+		remove_clients();
 		gwin->delete_object(this);
 		}
 	}
