@@ -27,6 +27,16 @@
 #include "objclient.h"
 
 /*
+ *		Add a list of clients.
+ */
+void Object_client::add_client(Game_object_vector& objs)
+{
+	for (Game_object_vector::iterator it = objs.begin();
+									  it != objs.end(); ++it)
+	    add_client(*it);
+}
+
+/*
  *		Remove all clients.
  */
 void Object_client::remove_clients() {
