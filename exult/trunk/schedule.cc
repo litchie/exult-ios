@@ -1088,8 +1088,10 @@ void Patrol_schedule::now_what
 					}
 				case 13:		// Hammer.
 					{
-					if (!hammer)	// Create hammer if does not exist.
+					if (!hammer) {	// Create hammer if does not exist.
 						hammer = new Ireg_game_object(623, 0, 0, 0);
+						add_client(hammer);
+					}
 						// For safety, unready weapon first.
 					npc->unready_weapon();
 					npc->add_dirty();
@@ -3078,6 +3080,7 @@ void Sew_schedule::now_what
 			state = sit_at_wheel;
 			break;
 			}
+		add_client(bale);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, bale->get_tile(), cost);
 		if (pact)
@@ -3090,6 +3093,7 @@ void Sew_schedule::now_what
 		}
 	case sit_at_wheel:
 		chair = npc->find_closest(873);
+		add_client(chair);
 		if (!chair || !Sit_schedule::set_action(npc, chair, 200)) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -3104,6 +3108,7 @@ void Sew_schedule::now_what
 			npc->start(250, 2500);
 			return;
 		}
+		add_client(spinwheel);
 		npc->set_action(new Object_animate_actor_action(spinwheel,
 								8, 200));
 		state = get_thread;
@@ -3115,6 +3120,7 @@ void Sew_schedule::now_what
 		if (t.tx != -1)		// Space to create thread?
 			{
 			spindle = new Ireg_game_object(654, 0, 0, 0);
+			add_client(spindle);
 			spindle->move(t);
 			gwin->add_dirty(spindle);
 			npc->set_action(
@@ -3134,6 +3140,7 @@ void Sew_schedule::now_what
 			state = get_wool;
 			break;
 			}
+		add_client(loom);
 		Tile_coord lpos = loom->get_tile() +
 						Tile_coord(-1, 0, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
@@ -3153,6 +3160,7 @@ void Sew_schedule::now_what
 		if (t.tx != -1)		// Space to create it?
 			{
 			cloth = new Ireg_game_object(851, rand()%2, 0, 0);
+			add_client(cloth);
 			cloth->move(t);
 			gwin->add_dirty(cloth);
 			npc->set_action(
@@ -3164,6 +3172,7 @@ void Sew_schedule::now_what
 	case to_work_table:
 		{
 		work_table = npc->find_closest(971);
+		add_client(work_table);
 		if (!work_table || !cloth)
 			{
 			state = get_wool;
@@ -3260,6 +3269,7 @@ void Sew_schedule::now_what
 		{
 		state = done;
 		wares_table = npc->find_closest(890);
+		add_client(wares_table);
 		if (!wares_table)
 			{
 			cloth->remove_this();
@@ -3331,6 +3341,29 @@ void Sew_schedule::ending
 		}
 	}
 
+/*
+ *	Notify that an object is no longer present.
+ */
+void Sew_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == bale) {
+		bale = 0;
+	} else if (obj == spinwheel) {
+	    spinwheel = 0;
+	} else if (obj == chair) {
+	    chair = 0;
+	} else if (obj == spindle) {
+	    spindle = 0;
+	} else if (obj == loom) {
+	    loom = 0;
+	} else if (obj == cloth) {
+	    cloth = 0;
+	} else if (obj == work_table) {
+	    work_table = 0;
+	} else if (obj == wares_table) {
+	    wares_table = 0;
+	}
+}
 
 /*
  *	Bake bread/pastries
@@ -3854,7 +3887,6 @@ void Bake_schedule::notify_object_gone(Game_object *obj)
 		dough_in_oven = 0;
 }
 
-
 /*
  *	Blacksmith.
  *
@@ -3884,14 +3916,14 @@ void Forge_schedule::now_what
 		}
 		if (!blank)
 			blank = new Ireg_game_object(668, 0, 0, 0);
-
+		add_client(blank);
 		firepit = npc->find_closest(739);
 		if (!firepit) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
 			return;
 		}
-
+		add_client(firepit);
 		Tile_coord tpos = firepit->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, tpos, cost);
@@ -3915,6 +3947,8 @@ void Forge_schedule::now_what
 	{
 		bellows = npc->find_closest(431);
 		firepit = npc->find_closest(739);
+		add_client(bellows);
+		add_client(firepit);
 		if (!bellows || !firepit || !blank) {
 			// uh-oh... try again in a few second
 			npc->start(250, 2500);
@@ -3977,9 +4011,10 @@ void Forge_schedule::now_what
 			//TODO: go and get it...
 		}
 #endif
-		if (!tongs)
+		if (!tongs) {
 			tongs = new Ireg_game_object(994, 0, 0, 0);
-
+			add_client(tongs);
+		}
 		npc->add_dirty();
 		npc->unready_weapon(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
@@ -3992,6 +4027,8 @@ void Forge_schedule::now_what
 	{
 		anvil = npc->find_closest(991);
 		firepit = npc->find_closest(739);
+		add_client(anvil);
+		add_client(firepit);
 		if (!anvil || !firepit || !blank) {
 			// uh-oh... try again in a few second
 			npc->start(250, 2500);
@@ -4033,9 +4070,10 @@ void Forge_schedule::now_what
 		}
 #endif
 
-		if (!hammer)
+		if (!hammer) {
 			hammer = new Ireg_game_object(623, 0, 0, 0);
-
+			add_client(hammer);
+		}
 		npc->add_dirty();
 		if (tongs) {
 			tongs->remove_this();
@@ -4052,6 +4090,8 @@ void Forge_schedule::now_what
 	{
 		anvil = npc->find_closest(991);
 		firepit = npc->find_closest(739);
+		add_client(anvil);
+		add_client(firepit);
 		if (!anvil || !firepit || !blank) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -4090,6 +4130,7 @@ void Forge_schedule::now_what
 		npc->add_dirty();
 
 		trough = npc->find_closest(719);
+		add_client(trough);
 		if (!trough) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -4119,7 +4160,7 @@ void Forge_schedule::now_what
 			state = put_sword_on_firepit;
 			return;
 		}
-
+		add_client(trough);
 		int dir = npc->get_direction(trough);
 		trough->change_frame(3);
 		npc->change_frame(
@@ -4136,9 +4177,10 @@ void Forge_schedule::now_what
 			//TODO: go and get it...
 		}
 #endif
-		if (!tongs)
+		if (!tongs) {
 			tongs = new Ireg_game_object(994, 0, 0, 0);
-
+			add_client(tongs);
+		}
 		npc->add_dirty();
 		npc->unready_weapon(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
@@ -4151,6 +4193,8 @@ void Forge_schedule::now_what
 	{
 		trough = npc->find_closest(719);
 		anvil = npc->find_closest(991);
+		add_client(trough);
+		add_client(anvil);
 		if (!trough || !anvil || !blank) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
@@ -4202,12 +4246,9 @@ void Forge_schedule::now_what
 			tongs = 0;
 		}
 		npc->add_dirty();
-		
-
 		state = put_sword_on_firepit;
 	}
 	}
-
 	npc->start(250, 100);		// Back in queue.
 	}
 
@@ -4242,6 +4283,27 @@ void Forge_schedule::ending
 		blank->change_frame(0);
 
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Forge_schedule::notify_object_gone(Game_object *obj)
+{
+    if (obj == tongs)
+	    tongs = 0;
+	else if (obj == hammer)
+		hammer = 0;
+	else if (obj == blank)
+		blank = 0;
+	else if (obj == firepit)
+		firepit = 0;
+	else if (obj == anvil)
+		anvil = 0;
+	else if (obj == trough)
+		trough = 0;
+	else if (obj == bellows)
+		bellows = 0;
+}
 
 /*
  *	Eat without a server
@@ -4301,6 +4363,7 @@ void Eat_schedule::now_what()
 			if (plate->get_lift()/5 == floor)
 				break;
 		}
+		add_client(plate);
 		break;
 	}
 	case serve_food:{
