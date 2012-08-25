@@ -490,7 +490,6 @@ public:
 	virtual void notify_object_gone(Game_object *obj);
 	};
 
-//+++++++++++++++ Add 'notify_' methods below this line.
 /*
  *	Sew/weave schedule.
  */
@@ -522,6 +521,7 @@ public:
 	Sew_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
 /*
@@ -586,6 +586,7 @@ public:
 	Forge_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
+	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*
@@ -594,7 +595,6 @@ public:
 class Eat_schedule : public Schedule
 	{
 	Game_object *plate;
-	vector<Game_object*> eating_tables;// Tables with chairs around them.
 	enum {
 		eat,		// eat food and say food barks
 		find_plate, // make sure there is a plate, create one if not
