@@ -409,7 +409,6 @@ public:
 	virtual void notify_object_gone(Game_object *obj);
 	};
 
-//+++++++++++++++ Add 'notify_' methods below this line.
 /*
  *	Shy away from Avatar.
  */
@@ -445,6 +444,7 @@ class Lab_schedule : public Schedule
 public:
 	Lab_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
 /*
@@ -487,8 +487,10 @@ public:
 	Waiter_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
+	virtual void notify_object_gone(Game_object *obj);
 	};
 
+//+++++++++++++++ Add 'notify_' methods below this line.
 /*
  *	Sew/weave schedule.
  */

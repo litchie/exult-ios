@@ -32,9 +32,10 @@ protected:
 					// Notify that schedule's obj. has been moved or deleted.
 	virtual void notify_object_gone(Game_object *obj) = 0;
 	void add_client(Game_object *obj) {
-		if (obj->add_client(this))
+		if (obj && obj->add_client(this))
 		    objs.push_back(obj);
 	}
+	void add_client(Game_object_vector& objs);
 	void remove_clients();
 public:
 	void object_gone(Game_object *obj);

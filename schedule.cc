@@ -1010,8 +1010,7 @@ void Patrol_schedule::now_what
 				case 24:		// Read
 					// Find the book which will be read.
 					book = npc->find_closest(642, 4);
-					if (book)
-					    add_client(book);
+				    add_client(book);
 					// Fall through to sit.
 				case 3:			// Sit.
 					if (Sit_schedule::set_action(npc))
@@ -1865,8 +1864,7 @@ void Sleep_schedule::now_what
 			bed = npc->find_closest(gbeds, 2);
 			}
 		}
-	if (bed)
-	    add_client(bed);
+    add_client(bed);
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
@@ -2368,12 +2366,13 @@ void Lab_schedule::init
 	{
 	chair = book = 0;
 	cauldron = npc->find_closest(995, 20);
+	add_client(cauldron);
 					// Find 'lab' tables.
 	npc->find_nearby(tables, 1003, 20, 0);
 	npc->find_nearby(tables, 1018, 20, 0);
+	add_client(tables);
 	int cnt = tables.size();	// Look for book, chair.
-	for (int i = 0; (!book || !chair) && i < cnt; i++)
-		{
+	for (int i = 0; (!book || !chair) && i < cnt; i++) {
 		static int chairs[2] = {873,292};
 		Game_object *table = tables[i];
 		Rectangle foot = table->get_footprint();
@@ -2383,11 +2382,15 @@ void Lab_schedule::init
 			Tile_coord p = book->get_tile();
 			if (!foot.has_world_point(p.tx, p.ty))
 				book = 0;
+			else
+				add_client(book);
 			}
-		if (!chair)
+		if (!chair) {
 			chair = table->find_closest(chairs, 2, 4);
+			add_client(chair);
 		}
 	}
+}
 
 /*
  *	Create lab schedule.
@@ -2545,6 +2548,29 @@ void Lab_schedule::now_what
 		}
 	npc->start(gwin->get_std_delay(), delay);	// Back in queue.
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Lab_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == chair) {
+		chair = 0;
+	} else if (obj == book) {
+	  	book = 0;
+	} else if (obj == cauldron) {
+	  	cauldron = 0;
+		state = start;
+	} else {
+	    for (vector<Game_object*>::iterator it = tables.begin();
+											it != tables.end(); ++it) {
+		    if (*it == obj) {
+			    tables.erase(it);
+				break;
+			}
+		}
+	}
+}
 
 /*
  *	Schedule change for 'shy':
@@ -2712,6 +2738,7 @@ bool Waiter_schedule::walk_to_prep
 {
 	if (prep_tables.size())	{	// Walk to a 'prep' table.
 		prep_table = prep_tables[rand()%prep_tables.size()];
+		add_client(prep_table);
 		Tile_coord pos = Map_chunk::find_spot(
 			prep_table->get_tile(), 1, npc);
 		if (pos.tx != -1 &&
@@ -2780,6 +2807,7 @@ void Waiter_schedule::find_tables
 			prep_tables.push_back(table);
 		else
 			eating_tables.push_back(table);
+		add_client(table);
 		}
 	}
 
@@ -2984,6 +3012,29 @@ void Waiter_schedule::ending
 	if (obj)
 		obj->remove_this();
 	}
+
+/*
+ *	Notify that an object is no longer present.
+ */
+void Waiter_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == prep_table) {
+		prep_table = 0;
+	}
+	vector<Game_object*>::iterator it;
+	for (it = prep_tables.begin(); it != prep_tables.end(); ++it) {
+		if (*it == obj) {
+			prep_tables.erase(it);
+			break;
+		}
+	}
+	for (it = eating_tables.begin(); it != eating_tables.end(); ++it) {
+		if (*it == obj) {
+			eating_tables.erase(it);
+			break;
+		}
+	}
+}
 
 /*
  *	Sew/weave schedule.
