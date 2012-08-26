@@ -56,6 +56,9 @@ static int Check_mask
 			if (!obj->get_flag(Obj_flags::in_party))
 				return 0;
 			}
+	if((mask&0x160) && obj->get_flag(Obj_flags::okay_to_take)) // Exult only
+		return 0;
+
 	return 1;			// Passed all tests.
 }
 

@@ -3394,8 +3394,8 @@ void Bake_schedule::now_what()
 			// look for baking dough
 			Game_object_vector baking_dough;
 			int frnum (GAME_SI ? 18 : 2);
-			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum);
-			if (!baking_dough.empty())	// found dough
+			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0x160, c_any_qual, frnum);
+			if (!baking_dough.empty() && baking_dough[0] != dough)	// found dough
 			{
 				dough_in_oven = baking_dough[0];
 				add_client(dough_in_oven);
@@ -3411,7 +3411,7 @@ void Bake_schedule::now_what()
 				add_client(oven);
 				Game_object_vector food;
 				Tile_coord Opos = oven->get_tile();
-				npc->find_nearby(food, Opos, 377, 2, 0, 51, c_any_framenum);
+				npc->find_nearby(food, Opos, 377, 2, 0x160, c_any_qual, c_any_framenum);
 				if (!food.empty())	// found food
 				{
 					dough_in_oven = food[0];
@@ -3426,13 +3426,13 @@ void Bake_schedule::now_what()
 			Game_object_vector leftovers;
 			if (GAME_SI)
 			{
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 16);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 17);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0x160, c_any_qual, 16);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0x160, c_any_qual, 17);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0x160, c_any_qual, 18);
 			}
 			else
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum);
-			if (!leftovers.empty())	// found dough
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0x160, c_any_qual, c_any_framenum);
+			if (!leftovers.empty() && leftovers[0] != dough_in_oven)	// found dough
 			{
 				dough = leftovers[0];
 				add_client(dough);
@@ -3551,7 +3551,6 @@ void Bake_schedule::now_what()
 			else
 				dough = new Ireg_game_object(dough_shp, 0, 0, 0);
 			add_client(dough);
-			dough->set_quality(50);
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
 		} else {
@@ -3724,7 +3723,7 @@ void Bake_schedule::now_what()
 	case clear_display:		// Mark food for deletion by remove_food
 	{
 		Game_object_vector food;
-		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
+		npc->find_nearby(food, npcpos, 377, 4, 0x160, c_any_qual, c_any_framenum);
 		if (!food.size() && !clearing) // none of our food on the table
 		{							   // so we can't clear it
 			if (dough_in_oven)
@@ -3747,7 +3746,7 @@ void Bake_schedule::now_what()
 	case remove_food:	// Delete food on display table one by one with a slight delay
 	{
 		Game_object_vector food;
-		npc->find_nearby(food, npcpos, 377, 4, 0, 51, c_any_framenum);
+		npc->find_nearby(food, npcpos, 377, 4, 0x160, c_any_qual, c_any_framenum);
 		if (food.size())
 		{
 			delay = 500;
@@ -3833,7 +3832,6 @@ void Bake_schedule::now_what()
 				pact,
 				new Pickup_actor_action(dough, cpos, 250)));
 
-			dough->set_quality(51);
 			dough_in_oven = dough;
 			dough = 0;
 		} else {
