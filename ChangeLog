@@ -1,3 +1,8 @@
+2012-08-25	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Add 0x160 mask to find_nearby. This will only return objects that are not
+		okay to take. Make baking schedule use this mask instead of a quality
+		setting since quality isn't saved on quality flags objects.
+
 2012-08-18 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac, makefile.am: added configure "--with-macosx-code-signature=identity"
 	  for using an ID to codesign the Mac OS X bundle. The default identity is
