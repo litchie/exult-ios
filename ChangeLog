@@ -1,3 +1,6 @@
+2012-09-07	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Revert previous change and implement it another way
+
 2012-08-25	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Add 0x160 mask to find_nearby. This will only return objects that are not
 		okay to take. Make baking schedule use this mask instead of a quality

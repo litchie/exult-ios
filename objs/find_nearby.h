@@ -56,8 +56,6 @@ static int Check_mask
 			if (!obj->get_flag(Obj_flags::in_party))
 				return 0;
 			}
-	if((mask&0x160) && obj->get_flag(Obj_flags::okay_to_take)) // Exult only
-		return 0;
 
 	return 1;			// Passed all tests.
 }
@@ -74,7 +72,8 @@ int Game_object::find_nearby
 	int mask,			// See Check_mask() above.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum,			// Frame #, or c_any_framenum for any.
-	Cast obj_cast			// Cast functor.
+	Cast obj_cast,			// Cast functor.
+	bool exclude_okay_to_take
 	)
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
@@ -112,6 +111,8 @@ int Game_object::find_nearby
 				obj->get_framenum() != framenum)
 				continue;
 			if (!Check_mask(gwin, obj, mask))
+				continue;
+			if (exclude_okay_to_take && obj->get_flag(Obj_flags::okay_to_take))
 				continue;
 			Tile_coord t = obj->get_tile();
 			if (tiles.has_point(t.tx, t.ty))

@@ -207,7 +207,7 @@ public:
 	template <typename VecType, typename Cast>
 	static int find_nearby(VecType& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, int qual,
-			int framenum, Cast obj_cast);
+			int framenum, Cast obj_cast, bool exclude_okay_to_take = false);
 
 	static int find_nearby_actors(Actor_vector& vec, Tile_coord pos,
 			int shapenum, int delta, int mask = 8);
@@ -216,7 +216,7 @@ public:
 			int framenum = c_any_framenum);
 	static int find_nearby(Game_object_vector& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, int qual = c_any_qual,
-			int framenum = c_any_framenum);
+			int framenum = c_any_framenum, bool exclude_okay_to_take = false);
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta,
 		int mask = 8) const;
 	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta,

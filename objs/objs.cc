@@ -774,11 +774,12 @@ int Game_object::find_nearby
 	int delta,
 	int mask,
 	int qual,
-	int frnum
+	int frnum,
+	bool exclude_okay_to_take
 	)
 	{
 	return Game_object::find_nearby(vec, pos, shapenum, delta, mask,
-					qual, frnum, Game_object_cast_functor());
+					qual, frnum, Game_object_cast_functor(), exclude_okay_to_take);
 	}
 
 int Game_object::find_nearby_eggs
