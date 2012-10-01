@@ -48,7 +48,7 @@
 0xB5:MET_WILLY
 0xBB:MET_GORDON
 0xA4:MET_CSIL
-	
+
 #0x1B:MET_JULIA
 0x1B:Julia, my old friend is living in Minoc. Perhaps she will join me.
 
@@ -104,7 +104,7 @@
 0x278:I saved baby Riky from the harpies!
 0x27A:KNOWS_LEIGH_IS_HEALER
 0x259:CAN_EXAMINE_STONE_CHIPS
-0x25EDOING_STATUE_QUEST
+0x25E:DOING_STATUE_QUEST
 0x25F:EXAMINED_CHIPS
 
 
