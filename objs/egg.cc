@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1270,7 +1270,8 @@ bool Field_object::field_effect
 	case fire_field:
 		actor->reduce_health(2 + rand()%3, Weapon_data::fire_damage);
 					// But no sleeping here.
-		actor->clear_flag(Obj_flags::asleep);
+		if (actor->get_flag(Obj_flags::asleep))
+			actor->clear_flag(Obj_flags::asleep);
 		break;
 	case caltrops_field:
 		if (actor->get_effective_prop(Actor::intelligence) < rand()%40)
