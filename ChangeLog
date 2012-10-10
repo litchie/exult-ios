@@ -1,3 +1,9 @@
+2012-10-10 Dominik Reichardt <dominus@users.sourceforge.net>
+	* objs/egg.cc: fixed bug #3433026, in a fire field only clear asleep flag 
+	  when the NPC is actually sleeping. Otherwise we get a cloned passive 
+	  standing NPC. This is due to Usecode_script::terminate(this); in actors.cc
+	  which might need further looking into.
+	  
 2012-09-07	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Revert previous change and implement it another way
 
