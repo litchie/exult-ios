@@ -5276,7 +5276,6 @@ int Npc_actor::step
 		return 0;
 	Tile_coord oldtile = get_tile();
 					// Get old chunk.
-	Map_chunk *olist = get_chunk();
 	t.fixme();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
@@ -5312,6 +5311,7 @@ int Npc_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to repaint old area.
 					// Move it.
+	Map_chunk *olist = get_chunk();
 	movef(olist, nlist, tx, ty, frame, t.tz);
 
 					// Near an egg?  (Do this last, since
