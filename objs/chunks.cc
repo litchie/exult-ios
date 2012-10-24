@@ -929,6 +929,7 @@ void Map_chunk::remove
 	Game_object *remove
 	)
 	{
+	assert(remove->get_chunk() == this);
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, false);
 	remove->clear_dependencies();	// Remove all dependencies.
