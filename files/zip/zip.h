@@ -58,6 +58,11 @@ extern "C" {
 #include "zlib.h"
 #endif
 
+/* Added by wjp */
+#ifndef _Z_OF
+#define _Z_OF OF
+#endif
+
 #if defined(STRICTZIP) || defined(STRICTZIPUNZIP)
 /* like the STRICT of WIN32, we define a pointer that cannot be converted
     from (void*) without cast */
@@ -93,7 +98,7 @@ typedef struct
     uLong       external_fa;    /* external file attributes        4 bytes */
 } zip_fileinfo;
 
-extern zipFile ZEXPORT zipOpen OF((const char *pathname, int append));
+extern zipFile ZEXPORT zipOpen _Z_OF((const char *pathname, int append));
 /*
   Create a zipfile.
 	 pathname contain on Windows NT a filename like "c:\\zlib\\zlib111.zip" or on
@@ -107,7 +112,7 @@ extern zipFile ZEXPORT zipOpen OF((const char *pathname, int append));
 
 */
 
-extern int ZEXPORT zipOpenNewFileInZip OF((zipFile file,
+extern int ZEXPORT zipOpenNewFileInZip _Z_OF((zipFile file,
 					   const char* filename,
 					   const zip_fileinfo* zipfi,
 					   const void* extrafield_local,
@@ -130,19 +135,19 @@ extern int ZEXPORT zipOpenNewFileInZip OF((zipFile file,
   level contain the level of compression (can be Z_DEFAULT_COMPRESSION)
 */
 
-extern int ZEXPORT zipWriteInFileInZip OF((zipFile file,
+extern int ZEXPORT zipWriteInFileInZip _Z_OF((zipFile file,
 					   const voidp buf,
 					   unsigned len));
 /*
   Write data in the zipfile
 */
 
-extern int ZEXPORT zipCloseFileInZip OF((zipFile file));
+extern int ZEXPORT zipCloseFileInZip _Z_OF((zipFile file));
 /*
   Close the current file in the zipfile
 */
 
-extern int ZEXPORT zipClose OF((zipFile file,
+extern int ZEXPORT zipClose _Z_OF((zipFile file,
 				const char* global_comment));
 /*
   Close the zipfile
