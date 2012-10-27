@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001-2011  The Exult Team
+ *  Copyright (C) 2001-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ static const char* canceltext = "CANCEL";
 
 static int framerates[] = { 2, 4, 6, 8, 10, -1 };
  // -1 is placeholder for custom framerate
-static int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
+static const int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
 
 
 static string framestring(int fr)
@@ -61,6 +61,9 @@ static string framestring(int fr)
 	sprintf(buf, "%i fps", fr);
 	return buf;
 }
+
+static const char* pathfind_texts[3] = {"no", "single", "double"};
+static int num_pathfind_texts = 3;
 
 class GameplayOptions_button : public Text_button {
 public:
@@ -144,8 +147,8 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		frames = state;
 	else if (btn == buttons[id_rightclick_close])
 		rightclick_close = state;
-	else if (btn == buttons[id_doubleright_move])
-		doubleright_move = state;
+	else if (btn == buttons[id_right_pathfind])
+		right_pathfind = state;
 	else if (btn == buttons[id_gumps_pause])
 		gumps_pause = state;
 	else if (btn == buttons[id_smooth_scrolling])
@@ -194,6 +197,11 @@ void GameplayOptions_gump::build_buttons()
 	smooth_text[2] = "50%";
 	smooth_text[3] = "75%";
 	smooth_text[4] = "100%";
+	
+	std::string *pathfind_text = new std::string[3];
+	pathfind_text[0] = "Disabled";
+	pathfind_text[1] = "Single";
+	pathfind_text[2] = "Double";
 
 	buttons[id_facestats] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
 										 facestats, 4);
@@ -216,8 +224,8 @@ void GameplayOptions_gump::build_buttons()
 										   59, doubleclick);
 	buttons[id_rightclick_close] = new GameplayEnabledToggle(this, colx[3], rowy[6],
 										   59, rightclick_close);
-	buttons[id_doubleright_move] = new GameplayEnabledToggle(this, colx[3], rowy[7],
-										   59, doubleright_move);
+	buttons[id_right_pathfind] = new GameplayTextToggle(this, pathfind_text, colx[3], rowy[7],
+										   59, right_pathfind, num_pathfind_texts);
 	buttons[id_gumps_pause] = new GameplayEnabledToggle(this, colx[3], rowy[8],
 										   59, gumps_pause);
 	buttons[id_cheats] = new GameplayEnabledToggle(this, colx[3], rowy[9],
@@ -249,7 +257,7 @@ void GameplayOptions_gump::load_settings()
 	paperdolls = sman->are_paperdolls_enabled();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	rightclick_close = gumpman->can_right_click_close();
-	doubleright_move = gwin->get_allow_double_right_move();
+	right_pathfind = gwin->get_allow_right_pathfind();
 	text_bg = gwin->get_text_bg()+1;
 	gumps_pause = !gumpman->gumps_dont_pause_game();
 	int realframes = 1000/gwin->get_std_delay();
@@ -337,8 +345,10 @@ void GameplayOptions_gump::save_settings()
 		config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", false);
 	}
-	gwin->set_allow_double_right_move(doubleright_move != false);
-	config->set("config/gameplay/allow_double_right_move", doubleright_move?"yes":"no", false);
+
+	gwin->set_allow_right_pathfind(right_pathfind);
+	config->set("config/gameplay/allow_right_pathfind", pathfind_texts[right_pathfind], false);
+
 	gumpman->set_gumps_dont_pause_game(!gumps_pause);
 	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", false);
 
@@ -371,7 +381,7 @@ void GameplayOptions_gump::paint()
 #endif
 	font->paint_text(iwin->get_ib8(), "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
 	font->paint_text(iwin->get_ib8(), "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
-	font->paint_text(iwin->get_ib8(), "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);
+	font->paint_text(iwin->get_ib8(), "Right click Pathfinds:", x + colx[0], y + rowy[7] + 1);
 	font->paint_text(iwin->get_ib8(), "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
 	font->paint_text(iwin->get_ib8(), "Cheats:", x + colx[0], y + rowy[9] + 1);
 	font->paint_text(iwin->get_ib8(), "Speed:", x + colx[0], y + rowy[10] + 1);

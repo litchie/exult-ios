@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ class GameplayOptions_gump : public Modal_gump
 	int paperdolls;
 	int text_bg;
 	int frames;
-	int	doubleright_move;
+	int right_pathfind;
 	int	gumps_pause;
 
 	std::string* frametext;
@@ -62,7 +62,7 @@ class GameplayOptions_gump : public Modal_gump
 #endif
 		id_doubleclick,
 		id_rightclick_close,
-		id_doubleright_move,
+		id_right_pathfind,
 		id_gumps_pause,
 		id_cheats,
 		id_frames,

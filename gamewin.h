@@ -2,7 +2,7 @@
  *	gamewin.h - X-windows Ultima7 map browser.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -135,7 +135,7 @@ class Game_window
 	bool double_click_closes_gumps;
 	int text_bg;			// draw a dark background behind text
 	int	step_tile_delta;	// multiplier for the delta in start_actor_alt
-	bool allow_double_right_move;	// If moving with right click is allowed
+	int allow_right_pathfind;	// If moving with right click is allowed
 	bool scroll_with_mouse; 		// scroll game view with mousewheel
 	bool alternate_drop;	// don't split stacks, can be inverted with a CTRL key modifier
 	bool in_exult_menu; 	// used for menu options
@@ -525,8 +525,8 @@ public:
 	void stop_actor();		// Stop main actor.
 	inline void set_step_tile_delta(int size) { step_tile_delta = size; }
 	inline int get_step_tile_delta() { return step_tile_delta; };
-	inline void set_allow_double_right_move(bool a) { allow_double_right_move = a; }
-	inline bool get_allow_double_right_move() { return allow_double_right_move; }
+	inline void set_allow_right_pathfind(int a) { allow_right_pathfind = a; }
+	inline int get_allow_right_pathfind() { return allow_right_pathfind; }
 	void teleport_party(Tile_coord t, bool skip_eggs = false, 
 							int new_map = -1, bool no_status_check = true);
 	bool activate_item(int shnum, int frnum=c_any_framenum,
