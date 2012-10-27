@@ -2410,6 +2410,9 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		config->value(vidStr + "/scale_method", sclr, default_scaler.c_str());
 		config->value(vidStr + "/scale", scaleval, sc);
 		scaler = Image_window::get_scaler_for_name(sclr.c_str());
+		// Ensure a default scaler if a wrong scaler name is set
+		if(scaler == Image_window::NoScaler)
+			scaler = Image_window::get_scaler_for_name(default_scaler.c_str());
 		// Ensure proper values for scaleval based on scaler.
 		if (scaler == Image_window::Hq3x)
 			scaleval = 3;
