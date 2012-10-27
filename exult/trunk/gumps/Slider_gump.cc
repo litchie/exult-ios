@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2011 The Exult Team
+Copyright (C) 2000-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -221,11 +221,9 @@ bool Slider_gump::mouse_down
 	} else {
 		if(my-get_y()<diamondy || my-get_y()>diamondy+d_shape->get_height())
 			return true;
+		if(mx-get_x() < xmin || mx-get_x() > xmax)
+			return true;
 		diamondx = mx-get_x();
-		if(diamondx<xmin)
-			diamondx = xmin;
-		if(diamondx>xmax)
-			diamondx = xmax;
 		static int xdist = xmax - xmin;
 		int delta = (diamondx - xmin)*(max_val - min_val)/xdist;
 					// Round down to nearest step.
