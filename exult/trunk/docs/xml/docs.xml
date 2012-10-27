@@ -195,7 +195,7 @@
 									</configtag>
 									<configtag name="savegame_path"  manual="true">
 									optional_path
-									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
+									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like. </comment>
 									<comment>Also see <ref target="path_config"/> before changing it.</comment>
 									</configtag>
 									<configtag name="static_path"  manual="true">
@@ -271,9 +271,10 @@
 							<configtag name="textbackground">
 							-1
 							<comment>**with this enabled all the text in the games have a coloured background </comment>
-							<comment>to improve readability. 0 gives a purple background, 1 orange, 2 light gray, </comment>
-							<comment>3 green, 4 yellow, 5 pale blue, 6 dark green, 7 red, 8 bright white, 9 dark </comment>
-							<comment>gray, 10 white. -1 disables this.</comment>
+							<comment>to improve readability. 0 gives a solid light gray,  1 dark purple, </comment>
+							<comment>2 bright yellow, 3 light blue, 4 dark green, 5 dark red, 6 purple, </comment>
+							<comment>7 orange, 8 light gray, 9 green, 10 yellow, 11 pale blue, 12 dark green, </comment>
+							<comment>13 red, 14 bright white, 15 dark gray, 16 white. -1 disables this.</comment>
 							</configtag>
 							<configtag name="fastmouse">
 							no
@@ -289,10 +290,11 @@
 							<configtag name="right_click_closes_gumps">
 							no
 							</configtag>
-							<configtag name="allow_double_right_move">
-							yes
-							<comment>**double right-click lets the Avatar walk automatically </comment>
-							<comment>to where you clicked.</comment>
+							<configtag name="allow_right_pathfind">
+							double
+							<comment>**right-clicking lets the Avatar walk automatically </comment>
+							<comment>to where you clicked. it defaults to double click but </comment>
+							<comment>you can opt for a single click or disable it.</comment>
 							</configtag>
 							<configtag name="scroll_with_mouse">
 							no
@@ -378,11 +380,11 @@
 							<comment>**enable/disable the pausing of SFX and digital music when the </comment>
 							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
 							</configtag>
-							<configtag name="sample_rate" manual="true">
+							<configtag name="sample_rate">
 							22050
 							<comment>**set the sample rate of <Exult/>. Default is 22050, Windows CE defaults to 11025.</comment>
 							</configtag>
-							<configtag name="stereo" manual="true">
+							<configtag name="stereo">
 							yes
 							<comment>**enable/disable stereo sound. Windows CE is set to disabled.</comment>
 							</configtag>
@@ -448,12 +450,12 @@
 								<configtag name="precacheTimbers" manual="true">
 									<configtag name="onStartup" manual="true">
 									no
-									<comment>**when enabled it preloads the entire timbre bank on starting</comment>
+									<comment>**when enabled it preloads the entire timbre bank on starting </comment>
 									<comment>up <Exult/> with a penalty on start up time.</comment>
 									</configtag>
 									<configtag name="onPlay" manual="true">
 									yes
-									<comment>**only preloads needed timbres and patches when a song gets</comment>
+									<comment>**only preloads needed timbres and patches when a song gets </comment>
 									<comment>loaded.</comment>
 									</configtag>
 								</configtag>
@@ -904,7 +906,7 @@
 					In the root of your OS X system hard drive is the folder /Library. The folder ~/Library is a 
 					sub folder of your homefolder. If your username is foobar then the folder ~/Library is located at
 					/Users/foobar/Library on your hard drive.<br/>
-					On OS X 10.7 (Lion) the folder ~/Library is hidden by default. To access it anyway open Finder, 
+					On OS X 10.7 (Lion) and newer the folder ~/Library is hidden by default. To access it anyway open Finder, 
 					click on the menu item "Go" while pressing <key>Option/Alt</key> and "Library" will be an option 
 					to click on.
 				</para>
@@ -948,7 +950,7 @@
 					</configtag>
 				</configdesc>
 				<para>
-					Like on OS X, <Exult/> uses on *nix systems a default path for its data folder and the game files. 
+					As on OS X, <Exult/> uses on *nix systems a default path for its data folder and the game files. 
 					Unless you use a different path in exult.cfg, <Exult/> will look for these in /usr/local/share/exult.<br/>
 					<strong>But</strong> you will need to follow our gamename standard when you name the game 
 					folders, see <ref1 target="terms"/>, otherwise <Exult/> will not find them there.
@@ -1573,9 +1575,8 @@
 						available in snapshots of <Exult/>, not in official releases.</li>
 				</ul>
 				<para>
-					The scalers by Derek Liauw are slower than the ones above it but look much better from 
-					my personal point of view. Try out for yourself which one you like most since this is a 
-					highly subjective topic.
+					The scalers by Derek Liauw are slower than the ones above it but many prefer them. Try out for 
+					yourself which one you like most since this is a highly subjective topic.
 				</para>
 			</body>
 		</sub>
@@ -1586,8 +1587,9 @@
 			<body>
 				<ul>
 					<li>Hold right mouse button down to move Avatar.</li>
-					<li>Double-click with the right mouse button will make the Avatar
-						find a path to the selected spot.</li>
+					<li>Clicking with the right mouse button will make the Avatar
+						find a path to the selected spot. Default is a double click 
+						but you can also choose a single click in the options.</li>
 					<li>Click on objects with left button to identify them.</li>
 					<li>Double-click on characters to hold conversations.</li>
 					<li>Double-click on doors, shutters with left button to open or
@@ -1824,7 +1826,7 @@
 					<Exult/> Setup can only be opened on the <Exult/> menu by selecting the "Setup" option.<br/>
 					And you can access the Game menu either by pressing the disk icon in the Avatar's
 					inventory screen or by pressing <key>Esc</key>.<br/>
-					The have the following options are available for the <Exult/> Setup menu and the Game menu:<br/>
+					The following options are available for the <Exult/> Setup menu and the Game menu:<br/>
 					<img alt="the Game menu" src="images/docs01.png"/>
 				</para>
 			</body>
@@ -1876,7 +1878,7 @@
 						Aspect Ratio Correction for the fill modes "Fit" and "Centre".</li>
 					<li><strong>Same setting for window and fullscreen</strong><br/>
 						When you disable this you can select different settings for window and fullscreen mode by changing
-						the settings while bein in either mode.</li>
+						the settings while being in either mode.</li>
 					<li><strong>APPLY</strong><br/>
 						Checks whether your changes can cause problems, applies your changes and gives you a countdown 
 						to confirm that the new settings are working correctly. If you don't want to apply your changes,
@@ -1947,8 +1949,9 @@
 						pretty straightforward, right?</li>
 					<li><strong>Right click closes gumps</strong><br/>
 						the same but different.</li>
-					<li><strong>Double Right Pathfinds</strong><br/>
-						Double right-clicking on a spot makes the avatar walk to it.</li>
+					<li><strong>Right click Pathfinds</strong><br/>
+						Right-clicking on a spot makes the avatar walk to it. Default is a double click 
+						but you can set it to a single one or disable it.</li>
 					<li><strong>Gumps pause games</strong><br/>
 						In the original the game got paused when Gumps were shown. Enable/disable it.</li>
 					<li><strong>Cheats</strong><br/>
@@ -1961,7 +1964,8 @@
 						Disabled/25%/50%/75%/100% percentage of how smooth the game scrolls when the avatar 
 						moves. When disabled <Exult/> uses the "jerky" scrolling of the original game.</li>
 					<li><strong>Paperdolls</strong><br/>
-						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls
+						only available in <strong>Black Gate</strong> and only if you have 
+						<strong>Serpent Isle</strong> installed as well. Enables or disable Paperdolls
 						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
@@ -2633,6 +2637,23 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="gog_windows">
+			<header>Using the version for Windows from GOG.com</header>
+			<body>
+				<para>
+					Since November 2011 you can buy Ultima 7 from <extref target="http://www.gog.com">GOG</extref>.
+					Unfortunately GOG only offers a Windows installer that you can't easily circumvent, which makes 
+					it a challenge for users that use a different OS than Windows.
+				</para>
+				<para>
+					Right now the only way to get at the game files is to run the installer on Windows (or in WINE 
+					if you are not a Windows user). After the installation you will find the game files in 
+					<strong>C:\Program Files\GOG.com\The Complete Ultima VII\Ultima7</strong> and 
+					<strong>C:\Program Files\GOG.com\The Complete Ultima VII\Serpent</strong>.<br/>
+					If you are on a 64bit Windows OS the path will be <strong>C:\Program Files (x86)\GOG.com\...</strong>.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Credits and Contact">
 		<sub name="thanks">
@@ -2665,6 +2686,18 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="28102012">
+			<header>- 28 October 2012</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added right click pathfind, fixed the text backgrounds 
+					and some other small fixes.</li>
+				<li><ref1 target="movement"/> righht click pathfinding can be single or double.</li>
+				<li><ref1 target="gameplay_gump"/> same as above and the paperdolls option needs SI installed.</li>
+				<li><ref1 target="gog_windows"/> added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="01122011">
 			<header>- 01 December 2011</header>
 			<body>
