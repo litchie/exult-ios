@@ -5,7 +5,7 @@
  **/
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -583,7 +583,19 @@ int exult_main(const char *runpath)
 		config->read_config_file(USER_CONFIGURATION_FILE);
 #endif
 	}
-
+	
+	if (config->key_exists("config/gameplay/allow_double_right_move")) 
+	{
+		string str;
+		config->value("config/gameplay/allow_double_right_move", str, "yes");
+		if (str == "no")
+		{
+			config->value("config/gameplay/allow_right_pathfind", str, "no");
+			config->set("config/gameplay/allow_right_pathfind", str, false);
+		}
+		config->remove("config/gameplay/allow_double_right_move",false);
+	}
+	
 	// Setup virtual directories
 	string data_path;
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
@@ -1536,11 +1548,16 @@ static void Handle_event
 				}
 			else if (avatar_can_act)
 				{
-					// Last click within .5 secs?
-				if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500
-						&& gwin->main_actor_can_act_charmed())
+					// Last right click not within .5 secs (not a doubleclick or rapid right clicking)?
+				if (gwin->get_allow_right_pathfind() == 1 && curtime - last_b3_click > 500 && gwin->main_actor_can_act_charmed())
 					gwin->start_actor_along_path(x, y,
 							Mouse::mouse->avatar_speed);
+				
+					// Last right click within .5 secs (doubleclick)?
+				else if (gwin->get_allow_right_pathfind() == 2 && curtime - last_b3_click < 500 && gwin->main_actor_can_act_charmed())
+					gwin->start_actor_along_path(x, y,
+							Mouse::mouse->avatar_speed);
+
 				else
 					{
 					gwin->stop_actor();
