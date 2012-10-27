@@ -743,7 +743,7 @@ AC_MSG_CHECKING([whether to enable unoptimized debugging mode with GDB symbols])
 if test x$enable_heavy_gdb_debug = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_DEFINE(DEBUG, 1, [Enable unoptimized debug mode plus GDB symbols])
-	DEBUG_FLAGS="-ggdb3"
+	DEBUG_FLAGS="-g3"
 	CXXFLAGS="-O0"
 	CFLAGS="-O0"
 else
