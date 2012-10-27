@@ -147,10 +147,10 @@
 					Daily snapshots (by Travis Howell) of the Win32 binary and of the SVN source tree
 					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
-					Lanica Dragon also provides very infrequent snapshots for the PocketPC port at 
-					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 					Dominus provides snapshots for OS X 10.4 and upwards whenever he manages to at
 					<extref target="http://exult.sourceforge.net/download.php"/>.
+					Lanica Dragon provided very infrequent snapshots for the PocketPC port at 
+					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 				</para>
 			</body>
 		</sub>
@@ -382,9 +382,9 @@
 			<header>Where do I find Ultima 7 on the net to download?</header>
 			<body>
 				<para>
-					<em>Don't!</em> You may be able to find it on the net but it would be
-					pirating the game and the <Exult/> team doesn't support pirates. Look for
-					the Ultima Collection in stores or on <extref target="http://www.ebay.com">eBay</extref>.
+					If you are looking for a legitimate copy of the games, got to 
+					<extref target="http://www.gog.com">GOG.com</extref>. They are offering the 
+					complete Ultima VII since November 2011 for a decent price.
 				</para>
 				<para>
 					<em>Don't</em> ask the team for copies. <em>Don't</em> ask on the forum for copies,
@@ -745,6 +745,8 @@
 					found at:
 				</para>
 				<ol>
+				<li><extref target="http://www.ultima6.realmofultima.com/">Ultima VI Remake</extref><br/>
+					a remake that is still very active and promising.</li>
 				<li><extref target="http://www.thefeudallands.ca/">Ultima VII: The Feudal Lands</extref><br/>
 					a very ambitious and massive mod under development.</li>
 				<li><extref target="http://tinyurl.com/m9du2">Ultima 6 conversion</extref><br/>
@@ -1309,6 +1311,15 @@
 		</sub>
 	</section>
 	<section title="Changes to the FAQ">
+		<sub name="28102012">
+			<header>- 28 October 2012</header>
+			<body>
+				<ul>
+				<li><ref1 target="u7_download"/> at GOG.com.</li>
+				<li><ref1 target="mods_patches"/> link to the Ultima 6 remake added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="01122011">
 			<header>- 01 December 2011</header>
 			<body>

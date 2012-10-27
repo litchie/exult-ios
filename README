@@ -95,38 +95,40 @@ The latest version of this document can be found at http://exult.sourceforge.net
 11.6. Manual installation of the SI floppy disks
 11.7. Installing the CD-ROM versions of Ultima VII
 11.8. Fixing permissions of Ultima Collection on *nix systems
+11.9. Using the version for Windows from GOG.com
 
 12. Credits and Contact
 12.1. Thanks
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 01 December 2011
-13.2. - 16 March 2011
-13.3. - 19 February 2011
-13.4. - 24 January 2011
-13.5. - 23 January 2011
-13.6. - 13 October 2010
-13.7. - 30 August 2010
-13.8. - 25 August 2010
-13.9. - 15 August 2010
-13.10. - 28 April 2010
-13.11. - 11 March 2010
-13.12. - 10 March 2010
-13.13. - 08 March 2010
-13.14. - 16 July 2009
-13.15. - 03 June 2009
-13.16. - 20 May 2009
-13.17. - 19 May 2009
-13.18. - 18 May 2009
-13.19. - 28 April 2009
-13.20. - 21 October 2007
-13.21. - 08 April 2006
-13.22. - 14 March 2005
-13.23. - 14 August 2004
-13.24. - 23 May 2004
-13.25. - 11 February 2004
-13.26. - 12 December 2003
+13.1. - 28 October 2012
+13.2. - 01 December 2011
+13.3. - 16 March 2011
+13.4. - 19 February 2011
+13.5. - 24 January 2011
+13.6. - 23 January 2011
+13.7. - 13 October 2010
+13.8. - 30 August 2010
+13.9. - 25 August 2010
+13.10. - 15 August 2010
+13.11. - 28 April 2010
+13.12. - 11 March 2010
+13.13. - 10 March 2010
+13.14. - 08 March 2010
+13.15. - 16 July 2009
+13.16. - 03 June 2009
+13.17. - 20 May 2009
+13.18. - 19 May 2009
+13.19. - 18 May 2009
+13.20. - 28 April 2009
+13.21. - 21 October 2007
+13.22. - 08 April 2006
+13.23. - 14 March 2005
+13.24. - 14 August 2004
+13.25. - 23 May 2004
+13.26. - 11 February 2004
+13.27. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -215,7 +217,7 @@ Note: yes means enabled, no means disabled
         </path>
         <savegame_path>
         optional_path
-				**optional. Default is the same as <path>, change to whatever you like.
+				**optional. Default is the same as <path>, change to whatever you like. 
 				Also see 2.4. before changing it.
         </savegame_path>
         <static_path>
@@ -291,9 +293,10 @@ Note: yes means enabled, no means disabled
     <textbackground>
     -1
 				**with this enabled all the text in the games have a coloured background 
-				to improve readability. 0 gives a purple background, 1 orange, 2 light gray, 
-				3 green, 4 yellow, 5 pale blue, 6 dark green, 7 red, 8 bright white, 9 dark 
-				gray, 10 white. -1 disables this.
+				to improve readability. 0 gives a solid light gray,  1 dark purple, 
+				2 bright yellow, 3 light blue, 4 dark green, 5 dark red, 6 purple, 
+				7 orange, 8 light gray, 9 green, 10 yellow, 11 pale blue, 12 dark green, 
+				13 red, 14 bright white, 15 dark gray, 16 white. -1 disables this.
     </textbackground>
     <fastmouse>
     no
@@ -309,11 +312,12 @@ Note: yes means enabled, no means disabled
     <right_click_closes_gumps>
     no
     </right_click_closes_gumps>
-    <allow_double_right_move>
-    yes
-				**double right-click lets the Avatar walk automatically 
-				to where you clicked.
-    </allow_double_right_move>
+    <allow_right_pathfind>
+    double
+				**right-clicking lets the Avatar walk automatically 
+				to where you clicked. it defaults to double click but 
+				you can opt for a single click or disable it.
+    </allow_right_pathfind>
     <scroll_with_mouse>
     no
 				**when in cheat mode allow to scroll the gameview with the mouse-
@@ -468,12 +472,12 @@ Note: yes means enabled, no means disabled
       <precacheTimbers>
         <onStartup>
         no
-				**when enabled it preloads the entire timbre bank on starting
+				**when enabled it preloads the entire timbre bank on starting 
 				up Exult with a penalty on start up time.
         </onStartup>
         <onPlay>
         yes
-				**only preloads needed timbres and patches when a song gets
+				**only preloads needed timbres and patches when a song gets 
 				loaded.
         </onPlay>
       </precacheTimbers>
@@ -794,7 +798,7 @@ On Mac OS X Exult uses a couple of different folders to follow Apple's guideline
       </gamename>
 Note that on OS X Exult also has a default folder (/Library/Application Support/Exult/) for Exult's data and the files of the games. On purpose this folder is not in the User-only space, so other users on the same mac can play the games and use the Exult.app. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there. Another specialty on OS X is that the Exult.app comes bundled with the Exult data, so Exult will first use the data in the Exult.app and then use the data in the default location (/Library/Application Support/Exult/data) or the location written down in exult.cfg's <data_path>. This means that you can copy the sfx files and the digital music folder into the app bundle (Exult.app/Contents/Resources/data) and Exult will automatically use these.
 Example: User named Dominus on Mac OS X 10.6. BG is installed to /Library/Application Support/Exult/blackgate and SI is installed to /Library/Application Support/Exult/serpentisle. The app Exult.app is saved to /Applications. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exult.cfg, which is saved to /Users/Dominus/Library/Preferences/exult.cfg. When you save a game in BG the savegame will be saved to /Users/Dominus/Library/Application Support/exult/blackgate/exult00bg.sav, for SI to Users/Dominus/Library/Application Support/exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /Library/Application Support/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in /Users/Dominus/Library/Application Support/exult/blackgate/mods/keyring/exult00bg.sav.
-Please be aware of the difference between /Library/... and ~/Library/... In the root of your OS X system hard drive is the folder /Library. The folder ~/Library is a sub folder of your homefolder. If your username is foobar then the folder ~/Library is located at /Users/foobar/Library on your hard drive. On OS X 10.7 (Lion) the folder ~/Library is hidden by default. To access it anyway open Finder, click on the menu item "Go" while pressing 'Option/Alt' and "Library" will be an option to click on.
+Please be aware of the difference between /Library/... and ~/Library/... In the root of your OS X system hard drive is the folder /Library. The folder ~/Library is a sub folder of your homefolder. If your username is foobar then the folder ~/Library is located at /Users/foobar/Library on your hard drive. On OS X 10.7 (Lion) and newer the folder ~/Library is hidden by default. To access it anyway open Finder, click on the menu item "Go" while pressing 'Option/Alt' and "Library" will be an option to click on.
 
 
 2.8. Path-Settings for *nix based systems
@@ -825,7 +829,7 @@ On *nix based systems Exult uses:
         /usr/local/share/exult/gamename/patch
         </patch>
       </gamename>
-Like on OS X, Exult uses on *nix systems a default path for its data folder and the game files. Unless you use a different path in exult.cfg, Exult will look for these in /usr/local/share/exult. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there.
+As on OS X, Exult uses on *nix systems a default path for its data folder and the game files. Unless you use a different path in exult.cfg, Exult will look for these in /usr/local/share/exult. But you will need to follow our gamename standard when you name the game folders, see 1.3. Terms we use in regard to Exult and Ultima 7, otherwise Exult will not find them there.
 Example: User named Dominus on Ubuntu. BG is installed to /usr/local/share/exult/blackgate and SI is installed to /usr/local/share/exult/serpentisle. When you run Exult it will automatically recognize that BG and SI are installed. You do not need to edit exult.cfg, which is saved to $HOME/.exult.cfg. When you save a game in BG the savegame will be saved to $HOME/.exult/blackgate/exult00bg.sav, for SI to $HOME/.exult/serpentisle/exult00si.sav. If you install for example the keyring mod, you copy the contents of the Keyring.zip to /usr/local/share/Exult/blackgate/mods. When you save a game with the Keyring mod, this savegame will be found in $HOME/.exult/blackgate/mods/keyring/exult00bg.sav.
 
 
@@ -1033,7 +1037,7 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * HQ4X High quality scaler, that uses a *lot* of CPU cycles. Only 4x.
 * OpenGL Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered stable. You can expect errors when using this scaler. Because of this OpenGL is only available in snapshots of Exult, not in official releases.
 
-The scalers by Derek Liauw are slower than the ones above it but look much better from my personal point of view. Try out for yourself which one you like most since this is a highly subjective topic.
+The scalers by Derek Liauw are slower than the ones above it but many prefer them. Try out for yourself which one you like most since this is a highly subjective topic.
 
 
 
@@ -1042,7 +1046,7 @@ The scalers by Derek Liauw are slower than the ones above it but look much bette
 5. Movement and Keys
 5.1. Movement
 * Hold right mouse button down to move Avatar.
-* Double-click with the right mouse button will make the Avatar find a path to the selected spot.
+* Clicking with the right mouse button will make the Avatar find a path to the selected spot. Default is a double click but you can also choose a single click in the options.
 * Click on objects with left button to identify them.
 * Double-click on characters to hold conversations.
 * Double-click on doors, shutters with left button to open or close them.
@@ -1206,7 +1210,7 @@ When you press 'Ctrl-Alt-s'Exult will make a screenshot of your game window in P
 7. Exult Setup and Game Menu
 7.1. Access to the Exult Setup and Game menu
 The Exult Setup and Game menu share mostly the same options, except for the option to "Save/Load games" and to "Quit" the game which are only available in the Game menu once you loaded a game.
-Exult Setup can only be opened on the Exult menu by selecting the "Setup" option. And you can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. The have the following options are available for the Exult Setup menu and the Game menu:
+Exult Setup can only be opened on the Exult menu by selecting the "Setup" option. And you can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. The following options are available for the Exult Setup menu and the Game menu:
 
 
 7.2. Load/Save Game
@@ -1223,7 +1227,7 @@ In this option screen you are able to determine how Exult displays the game.
 * Fill Quality the scaler used by the different fill modes. You can chose between Point and Bilinear.
 * Fill Mode Different modes on how to display the Game Area in the Exult window size. Please see 4.2. Fill modes.
 * AR Correction Aspect Ratio Correction for the fill modes "Fit" and "Centre".
-* Same setting for window and fullscreen When you disable this you can select different settings for window and fullscreen mode by changing the settings while bein in either mode.
+* Same setting for window and fullscreen When you disable this you can select different settings for window and fullscreen mode by changing the settings while being in either mode.
 * APPLY Checks whether your changes can cause problems, applies your changes and gives you a countdown to confirm that the new settings are working correctly. If you don't want to apply your changes, click on the red checkmark to the left.
 
 
@@ -1252,12 +1256,12 @@ Look at 3. Audio to see explanation on the settings.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
 * Right click closes gumps the same but different.
-* Double Right Pathfinds Double right-clicking on a spot makes the avatar walk to it.
+* Right click Pathfinds Right-clicking on a spot makes the avatar walk to it. Default is a double click but you can set it to a single one or disable it.
 * Gumps pause games In the original the game got paused when Gumps were shown. Enable/disable it.
 * Cheats Enables or disables all the cheats that we implemented in Exult. See 5.3. Cheat keys what those cheats are.
 * Speed if Exult seems too fast lower this setting. If it seems to sluggish raising this setting may help.
 * Smooth scrolling Disabled/25%/50%/75%/100% percentage of how smooth the game scrolls when the avatar moves. When disabled Exult uses the "jerky" scrolling of the original game.
-* Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
+* Paperdolls only available in Black Gate and only if you have Serpent Isle installed as well. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
 
 
@@ -1460,6 +1464,11 @@ If you are following the above guide and copied the games from the Ultima Collec
 On OS X select both game folders, bring up info, go to Ownership and Permissions, expand details, change Access under Group from read only to read and write, then click Apply.
 
 
+11.9. Using the version for Windows from GOG.com
+Since November 2011 you can buy Ultima 7 from GOG. Unfortunately GOG only offers a Windows installer that you can't easily circumvent, which makes it a challenge for users that use a different OS than Windows.
+Right now the only way to get at the game files is to run the installer on Windows (or in WINE if you are not a Windows user). After the installation you will find the game files in C:\Program Files\GOG.com\The Complete Ultima VII\Ultima7 and C:\Program Files\GOG.com\The Complete Ultima VII\Serpent. If you are on a 64bit Windows OS the path will be C:\Program Files (x86)\GOG.com\....
+
+
 
 --------------------------------------------------------------------------------
 
@@ -1482,7 +1491,15 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 01 December 2011
+13.1. - 28 October 2012
+* 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
+* 5.1. Movement righht click pathfinding can be single or double.
+* 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
+* 11.9. Using the version for Windows from GOG.com added.
+
+
+
+13.2. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1491,13 +1508,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.2. - 16 March 2011
+13.3. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.3. - 19 February 2011
+13.4. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.6. Digital Wave Sound Effects split off the installation part.
 * 3.7. All-in-One Audio Data pack and installers added.
@@ -1507,7 +1524,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.4. - 24 January 2011
+13.5. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1515,7 +1532,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.5. - 23 January 2011
+13.6. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1531,7 +1548,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.6. - 13 October 2010
+13.7. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1542,7 +1559,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 30 August 2010
+13.8. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1550,7 +1567,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 25 August 2010
+13.9. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1559,7 +1576,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 15 August 2010
+13.10. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1568,12 +1585,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 28 April 2010
+13.11. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.11. - 11 March 2010
+13.12. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1581,7 +1598,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.12. - 10 March 2010
+13.13. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1591,7 +1608,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 08 March 2010
+13.14. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1602,25 +1619,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.14. - 16 July 2009
+13.15. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.15. - 03 June 2009
+13.16. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.16. - 20 May 2009
+13.17. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.8. Installation of the digital music packs cleaned up.
 * 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.17. - 19 May 2009
+13.18. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1631,7 +1648,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.18. - 18 May 2009
+13.19. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1650,43 +1667,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.19. - 28 April 2009
+13.20. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.20. - 21 October 2007
+13.21. - 21 October 2007
 * 9.3. Making Digital Sound work on Mac OS X added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.21. - 08 April 2006
+13.22. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.22. - 14 March 2005
+13.23. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.23. - 14 August 2004
+13.24. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.24. - 23 May 2004
+13.25. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.25. - 11 February 2004
+13.26. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1697,7 +1714,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.26. - 12 December 2003
+13.27. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
