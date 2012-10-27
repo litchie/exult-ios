@@ -1,6 +1,8 @@
 2012-10-27 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gumps/Slider_gump.cc: fixed bug #2801339, clicks outside of the slider gump 
 	  but on the x-axis of the slider were registered as clicks on the slider.
+	* exult.cc: when scale_method in exult.cfg wasn't a valid scaler Exult would crash.
+	  Thanks to sh4rm4 on #exult for this fix.
 
 2012-10-10 Dominik Reichardt <dominus@users.sourceforge.net>
 	* objs/egg.cc: fixed bug #3433026, in a fire field only clear asleep flag 
