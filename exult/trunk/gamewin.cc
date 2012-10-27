@@ -7,7 +7,7 @@
 /*
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -384,7 +384,7 @@ Game_window::Game_window
 	    moving_barge(0), main_actor(0), camera_actor(0), npcs(0), bodies(0),
 	    removed(new Deleted_objects()), dirty(0,0,0,0),
 	    mouse3rd(false), fastmouse(false), double_click_closes_gumps(false),
-	    text_bg(false), step_tile_delta(8), allow_double_right_move(true),
+	    text_bg(false), step_tile_delta(8), allow_right_pathfind(2),
 #ifdef RED_PLASMA
 	    load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0),
 #endif
@@ -442,10 +442,13 @@ Game_window::Game_window
 	if (step_tile_delta < 1) step_tile_delta = 1;
 	config->set("config/gameplay/step_tile_delta", step_tile_delta, false);
 
-	config->value("config/gameplay/allow_double_right_move", str, "yes");
-	allow_double_right_move = str == "yes";
-	config->set("config/gameplay/allow_double_right_move", 
-				allow_double_right_move?"yes":"no", false);
+	config->value("config/gameplay/allow_right_pathfind", str, "double");
+	if (str == "no")
+			allow_right_pathfind = 0;
+	else if (str == "single")
+		allow_right_pathfind = 1;
+	config->set("config/gameplay/allow_right_pathfind", str, false);
+
 					// New 'formation' walking?
 	config->value("config/gameplay/formation", str, "yes");
 		// Assume "yes" on anything but "no".
