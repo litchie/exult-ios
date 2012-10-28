@@ -37,6 +37,9 @@ OPENGL_LIBS:=-lopengl32
 OPENGL_OBJS:=shapes/glshape.o
 OPENGL_CFLAGS:=-DHAVE_OPENGL
 
+### NxBR scaler support (experimental)
+NXBR_CFLAGS:=-DUSE_XBR_SCALER
+
 ### GTK+ libs and includes, for Exult Studio.
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES:=$(shell pkg-config --cflags gtk+-win32-2.0)
@@ -99,7 +102,7 @@ CPPFLAGS=$(strip -DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DSIZEOF_SHOR
 	-I$(SRC)/tools -I$(SRC)/usecode -I$(SRC)/usecode/compiler -I$(SRC)/usecode/ucxt/include \
 	-I$(SRC)/mapedit -I$(SRC)/shapes/shapeinf $(SDL_CFLAGS) -DUSE_EXULTSTUDIO \
 	-DHAVE_PNG_H -DHAVE_FREETYPE2 -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER \
-	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(ES_INCLUDES) \
+	$(ZIP_CFLAGS) $(OPENGL_CFLAGS) $(NXBR_CFLAGS) $(ES_INCLUDES) \
 	$(EXTRA_OPTIONS))
 
 ifndef OPT_LEVEL

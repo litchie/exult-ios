@@ -83,6 +83,9 @@ const Image_window::ScalerConst	Image_window::Scale2x("Scale2x");
 const Image_window::ScalerConst	Image_window::Hq2x("Hq2X");
 const Image_window::ScalerConst	Image_window::Hq3x("Hq3x");
 const Image_window::ScalerConst	Image_window::Hq4x("Hq4x");
+const Image_window::ScalerConst	Image_window::_2xBR("2xBR");
+const Image_window::ScalerConst	Image_window::_3xBR("3xBR");
+const Image_window::ScalerConst	Image_window::_4xBR("4xBR");
 const Image_window::ScalerConst	Image_window::OpenGL("OpenGL");
 const Image_window::ScalerConst	Image_window::NumScalers(0);
 
@@ -109,7 +112,7 @@ SDL_Color ManipBase::colors[256];		// Palette for source window.
 // Constructor for the ScalerVector, setup the list
 Image_window::ScalerVector::ScalerVector()
 {
-	reserve(12);
+	reserve(13);
 
 // This is all the names of the scalers. It needs to match the ScalerType enum
 	const ScalerInfo point = { 
@@ -220,6 +223,36 @@ Image_window::ScalerVector::ScalerVector()
 	push_back(Hq4x);
 #endif
 	
+#ifdef USE_XBR_SCALER
+	const ScalerInfo _2xbr = { 
+		"2xBR", SCALE_BIT(2), 0,
+		&Image_window::show_scaled8to565_2xBR,
+		&Image_window::show_scaled8to555_2xBR,
+		&Image_window::show_scaled8to16_2xBR,
+		&Image_window::show_scaled8to32_2xBR,
+		0
+	};
+	push_back(_2xbr);
+	const ScalerInfo _3xbr = { 
+		"3xBR", SCALE_BIT(3), 0,
+		&Image_window::show_scaled8to565_3xBR,
+		&Image_window::show_scaled8to555_3xBR,
+		&Image_window::show_scaled8to16_3xBR,
+		&Image_window::show_scaled8to32_3xBR,
+		0
+	};
+	push_back(_3xbr);
+	const ScalerInfo _4xbr = { 
+		"4xBR", SCALE_BIT(4), 0,
+		&Image_window::show_scaled8to565_4xBR,
+		&Image_window::show_scaled8to555_4xBR,
+		&Image_window::show_scaled8to16_4xBR,
+		&Image_window::show_scaled8to32_4xBR,
+		0
+	};
+	push_back(_4xbr);
+#endif
+	
 #ifdef HAVE_OPENGL
 	const ScalerInfo opengl = { 
 		"OpenGL", 0xFFFFFFFF, 0,
@@ -328,7 +361,7 @@ void Image_window::static_init()
 	int bpps[] = { 0, 8, 16, 32 };
 
 	/* Get available fullscreen/hardware modes */
-	for (int i = 0; i < sizeof(bpps)/sizeof(bpps[0]); i++)
+	for (size_t i = 0; i < sizeof(bpps)/sizeof(bpps[0]); i++)
 	{
 		SDL_PixelFormat *pformat = 0;
 		if (bpps[i]) {

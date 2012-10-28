@@ -283,9 +283,9 @@ void VideoOptions_gump::rebuild_dynamic_buttons()
 		buttons[id_scaling] = new VideoTextToggle (this, scalingtext, colx[2], rowy[4], 
 				74, scaling, num_scales);
 	}
-	else if (scaler == Image_window::Hq3x)
+	else if (scaler == Image_window::Hq3x || scaler == Image_window::_3xBR)
 		scaling = 2;
-	else if (scaler == Image_window::Hq4x)
+	else if (scaler == Image_window::Hq4x || scaler == Image_window::_4xBR)
 		scaling = 3;
 	else
 		scaling = 1;
