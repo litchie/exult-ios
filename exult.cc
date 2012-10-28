@@ -2431,9 +2431,9 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		if(scaler == Image_window::NoScaler)
 			scaler = Image_window::get_scaler_for_name(default_scaler.c_str());
 		// Ensure proper values for scaleval based on scaler.
-		if (scaler == Image_window::Hq3x)
+		if (scaler == Image_window::Hq3x || scaler == Image_window::_3xBR)
 			scaleval = 3;
-		else if (scaler == Image_window::Hq4x)
+		else if (scaler == Image_window::Hq4x || scaler == Image_window::_4xBR)
 			scaleval = 4;
 		else if (scaler != Image_window::point &&
 				 scaler != Image_window::interlaced &&

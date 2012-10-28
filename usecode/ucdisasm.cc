@@ -71,7 +71,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	int func_ip = (int)(ip - code);
 	int opcode = *ip++;
 	uint8* param_ip = ip;
-	_opcode_desc* pdesc;
+	_opcode_desc* pdesc = 0;
 
 	if (opcode >=0 && (unsigned)opcode < (sizeof(opcode_table)/sizeof(opcode_table[0])))
 		pdesc = &(opcode_table[opcode]);
