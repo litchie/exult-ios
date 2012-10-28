@@ -324,6 +324,15 @@ public:
 	}
 	static void copy(uintD& dest, uintS src)
 	{ dest = copy(src); }
+	template <unsigned int N, unsigned int M>
+	static inline void blend(uintD& dest, unsigned int rs, unsigned int gs, unsigned int bs)
+	{
+		unsigned int rd, gd, bd;
+		ManipBaseDest<color_d>::split_dest(dest, rd, gd, bd);
+		dest = ManipBaseDest<color_d>::rgb((rs * N + rd * (M - N)) / M,
+		                                   (gs * N + gd * (M - N)) / M,
+		                                   (bs * N + bd * (M - N)) / M);
+	}
 };
 
 // Src and dest are the same

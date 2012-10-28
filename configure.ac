@@ -601,6 +601,16 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+# NxBR scalers
+AC_ARG_ENABLE(nxbr, AS_HELP_STRING([--enable-nxbr],[Enable 2xBR, 3xBR and 4xBR scaler support (experimental) @<:@default no@:>@]),,enable_nxbr=no)
+AC_MSG_CHECKING([if we should build the 2xBR, 3xBR and 4xBR scalers])
+if test x$enable_nxbr = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(USE_XBR_SCALER, 1, [Build NxBR scalers])
+else
+	AC_MSG_RESULT(no)
+fi
+
 # OpenGL rendering
 
 AC_ARG_ENABLE(opengl, AS_HELP_STRING([--enable-opengl], [Enable OpenGL rendering support @<:@EXPERIMENTAL@:>@]),,enable_opengl=no)
@@ -1039,6 +1049,7 @@ echo Build HQ2X scaler.......... : $enable_hq2x
 echo Build HQ3X scaler.......... : $enable_hq3x
 echo Build HQ4X scaler.......... : $enable_hq4x
 fi
+echo Build NxBR scalers......... : $enable_nxbr
 echo
 if test x$ARCH = xmacosx; then
 	if test x$enable_static_libs != xno; then

@@ -141,6 +141,9 @@ public:
 	static const ScalerConst	Hq2x;
 	static const ScalerConst	Hq3x;
 	static const ScalerConst	Hq4x;
+	static const ScalerConst	_2xBR;
+	static const ScalerConst	_3xBR;
+	static const ScalerConst	_4xBR;
 	static const ScalerConst	OpenGL;
 	static const ScalerConst	NumScalers;
 
@@ -243,6 +246,21 @@ protected:
 	void show_scaled8to555_Hq4x(int x, int y, int w, int h);
 	void show_scaled8to565_Hq4x(int x, int y, int w, int h);
 	void show_scaled8to32_Hq4x(int x, int y, int w, int h);	
+	
+	void show_scaled8to16_2xBR(int x, int y, int w, int h);
+	void show_scaled8to555_2xBR(int x, int y, int w, int h);
+	void show_scaled8to565_2xBR(int x, int y, int w, int h);
+	void show_scaled8to32_2xBR(int x, int y, int w, int h);	
+	
+	void show_scaled8to16_3xBR(int x, int y, int w, int h);
+	void show_scaled8to555_3xBR(int x, int y, int w, int h);
+	void show_scaled8to565_3xBR(int x, int y, int w, int h);
+	void show_scaled8to32_3xBR(int x, int y, int w, int h);	
+	
+	void show_scaled8to16_4xBR(int x, int y, int w, int h);
+	void show_scaled8to555_4xBR(int x, int y, int w, int h);
+	void show_scaled8to565_4xBR(int x, int y, int w, int h);
+	void show_scaled8to32_4xBR(int x, int y, int w, int h);	
 	
 	void show_scaledOpenGL(int x, int y, int w, int h);
 

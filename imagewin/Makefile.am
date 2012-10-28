@@ -44,6 +44,8 @@ libimagewin_la_SOURCES = \
 	BilinearScalerInternal_X1Y12.cpp \
 	BilinearScalerInternal_X2Y24.cpp \
 	PointScaler.cpp \
-	PointScaler.h
+	PointScaler.h \
+	scale_xbr.cc \
+	scale_xbr.h
 
 EXTRA_DIST =

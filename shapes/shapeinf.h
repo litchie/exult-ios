@@ -189,7 +189,7 @@ protected:
 	char ready_type;	// From "ready.dat": where item can be worn.
 	char alt_ready1;	// Alternate spot where item can be worn.
 	char alt_ready2;	// Second alternate spot where item can be worn.
-	bool spell_flag;		// Flagged as epsll in 'ready.dat'.
+	bool spell_flag;		// Flagged as spell in 'ready.dat'.
 	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	void set_tfa_data()		// Set fields from tfa.
 		{

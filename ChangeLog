@@ -1,3 +1,10 @@
+2012-10-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/ucdisasm.cc: Eliminated warning.
+	* shapes/shapeinf.h: Typo in comment.
+	* All others: Added 2xBR, 3xBR and 4xBR scalers to Exult. They are considered
+	  experimental, and require --enable-nxbr to be passed to ./configure to use.
+	  Performance is likely atrocious for the time being.
+
 2012-10-27 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gumps/Slider_gump.cc: fixed bug #2801339, clicks outside of the slider gump 
 	  but on the x-axis of the slider were registered as clicks on the slider.
