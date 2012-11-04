@@ -1,3 +1,6 @@
+2012-11-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* imagewin/ibuf8.cc: Fix out of bounds memory access in 'static' screens
+
 2012-10-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/ucdisasm.cc: Eliminated warning.
 	* shapes/shapeinf.h: Typo in comment.
@@ -13,6 +16,10 @@
 	* exult.cc, gamewin.*, gumps/GameplayOptions_gump.cc: added single rightclick 
 	  pathfind option. Default is still a double rightclick. Thanks to wjp for 
 	  debugging this.
+
+2012-10-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: Fix hang when swapping positions on chunk boundary
+	* files/zip/*: Fix build with recent zlib
 
 2012-10-10 Dominik Reichardt <dominus@users.sourceforge.net>
 	* objs/egg.cc: fixed bug #3433026, in a fire field only clear asleep flag 
