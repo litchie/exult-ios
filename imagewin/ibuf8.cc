@@ -124,7 +124,7 @@ void Image_buffer8::put
 void Image_buffer8::fill_static(int black, int gray, int white)
 {
 	for (int y = 0; y < height; ++y) {
-		unsigned char *p = bits + y*line_width;
+		unsigned char *p = bits + (y - offset_y)*line_width - offset_x;
 		for (int x = 0; x < width; ++x) {
 			switch (std::rand()%5) {
 				case 0: case 1: *p++ = black; break;
