@@ -5233,8 +5233,10 @@ void Npc_actor::handle_event
 				gwin->get_tqueue()->add(
 						curtime + gwin->get_std_delay(), this, udata);
 				}
-			else
+			else if (!dormant)
 				schedule->now_what();
+			else
+				schedule->im_dormant();
 			}
 		}
 	else
