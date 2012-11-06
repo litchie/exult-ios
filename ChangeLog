@@ -1,3 +1,7 @@
+2012-11-06	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Fix bug #3581649 by stopping Actor::ready_best_shield from trying to equip
+	  the lhand object (weapon).
+
 2012-11-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: Prevent schedules from being executed for off-screen actors.
 

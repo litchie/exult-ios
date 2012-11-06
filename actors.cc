@@ -565,6 +565,8 @@ bool Actor::ready_best_shield
 		Armor_info *arinf = info.get_armor_info();
 		if (!arinf)
 			continue;	// Not a shield.
+		if (spots[lhand] == obj) // Don't take the weapon.
+			continue;
 		int strength = arinf->get_base_strength();
 		if (strength > best_strength)
 			{
