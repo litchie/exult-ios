@@ -26,6 +26,11 @@
 
 #ifdef USE_XBR_SCALER
 
+#define XBR_VARIANT 4	// Tweaked xBR-z (Zenju's version)
+//#define XBR_VARIANT 3  // xBR-C: Hyllian's "squared flavor" version
+//#define XBR_VARIANT 2  // xBR-B: Hyllian's "semi-rounded flavor" version
+//#define XBR_VARIANT 1  // xBR-A: Hyllian's "rounded flavor" version
+
 enum RotationDegree //clock-wise
 {
 	ROT_0,
@@ -83,27 +88,26 @@ struct YUVColor
 template <class Manip_pixels, int tol>
 struct RGBColor
 {
-	unsigned int rs, gs, bs;
+	unsigned int r, g, b;
 	RGBColor(unsigned char c, const Manip_pixels& manip)
 	{
-		unsigned int r, g, b;
 		manip.split_source(c, r, g, b);
-		rs = 3 * r * r;
-		gs = 4 * g * g;
-		bs = 2 * b * b;
+		r *= 3;
+		g *= 4;
+		b *= 2;
 	}
 	// See http://www.compuphase.com/cmetric.htm
 	int dist(RGBColor<Manip_pixels, tol> const& other) const
 	{
-		return abs(rs - other.rs) +
-			   abs(gs - other.gs) +
-			   abs(bs - other.bs);
+		return abs(r - other.r) +
+			   abs(g - other.g) +
+			   abs(b - other.b);
 	}
 	bool equals(RGBColor<Manip_pixels, tol> const& other) const
 	{
-		return abs(rs - other.rs) <= (tol *  9)
-		    && abs(gs - other.gs) <= (tol * 16)
-		    && abs(bs - other.bs) <= (tol *  4);
+		return abs(r - other.r) <= (tol *  9)
+		    && abs(g - other.g) <= (tol * 16)
+		    && abs(b - other.b) <= (tol *  4);
 	}
 };
 
@@ -144,7 +148,6 @@ void scalePixel
 {
 	int const weight = 4;
 	double const detectSteepWeight = 2.2;
-	double const detectDirectionWeight = 3.6;
 	
 	if (e == h || e == f)
 		return;
@@ -160,7 +163,8 @@ void scalePixel
 
 	unsigned char px = ey.dist(fy) <= ey.dist(hy) ? f : h;
 
-#if 1
+#if XBR_VARIANT == 4
+	double const detectDirectionWeight = 3.6;
 	const int dh = d0y.dist(gy) + gy.dist(h5y) + ay.dist(ey) + ey.dist(iy)  + weight * dy.dist(hy);
 	const int eg = by.dist(dy)  + dy.dist(g0y) + fy.dist(hy) + hy.dist(g5y) + weight * ey.dist(gy);
 
@@ -178,10 +182,19 @@ void scalePixel
 	                         (dy.equals(hy) && hy.equals(fy) && ay.equals(ey) && ey.equals(cy) && !hy.equals(ey)) ||
                              (hy.equals(fy) && fy.equals(by) && gy.equals(ey) && ey.equals(ay) && !fy.equals(ey)) ||
                              detectDirectionWeight * hf < ei;
-#else
+#elif XBR_VARIANT == 3
+	const bool doBlendLine = (!fy.equals(by) && !fy.equals(cy)) ||
+		                     (!hy.equals(dy) && !hy.equals(gy)) ||
+		                     (ey.equals(iy) && ((!fy.equals(f4y) && !fy.equals(i4y)) || (!hy.equals(h5y) && !hy.equals(i5y)))) ||
+		                     ey.equals(gy) ||
+	                         ey.equals(cy);
+#elif XBR_VARIANT == 2
 	const bool doBlendLine = (!fy.equals(by) && !hy.equals(dy)) ||
-                             (!ey.equals(iy) && !fy.equals(i4y) && !hy.equals(i5y)) ||
-	                         ey.equals(gy) || ey.equals(cy);
+		                     (ey.equals(iy) && !fy.equals(i4y) && !hy.equals(i5y)) ||
+		                     ey.equals(gy) ||
+		                     ey.equals(cy);
+#elif XBR_VARIANT == 1
+	const bool doBlendLine = true;
 #endif
 	if (hf < ei)
 	{

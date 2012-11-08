@@ -203,6 +203,11 @@ int Schedule::try_street_maintenance
 	return 1;
 	}
 
+void Schedule::im_dormant()
+{
+	npc->set_action(0);
+}
+
 /*
  *	Get actual schedule (for Usecode intrinsic).
  */
@@ -333,6 +338,7 @@ void Street_maintenance_schedule::now_what
 			new Frames_actor_action(frames, sizeof(frames)),
 			new Activate_actor_action(obj),
 			new Frames_actor_action(&standframe, 1)));
+		add_client(obj);
 		npc->start(250);
 		switch (shapenum)
 			{
@@ -370,6 +376,11 @@ void Street_maintenance_schedule::now_what
 	npc->update_schedule(period, 7, 0);
 	}
 
+void Street_maintenance_schedule::ending(int newtype)
+{
+	remove_clients();
+}
+
 /*
  *	Get actual schedule (for Usecode intrinsic).
  */
@@ -388,7 +399,11 @@ int Street_maintenance_schedule::get_actual_type
 void Street_maintenance_schedule::notify_object_gone(Game_object *o)
 {
 	if (o == obj)
+	{
 		obj = 0;
+		// Stops a random segfault.
+		npc->set_action(0);		
+	}
 }
 
 /*
@@ -618,6 +633,16 @@ void Pace_schedule::now_what
 			break;
 		}
 	}
+
+/*
+ *  Just went dormant.
+ */
+void Eat_at_inn_schedule::im_dormant()
+{
+	// Force NPCs to sit down again after cache-out/cache-in.
+	//npc->set_frame(Actor::standing);
+	npc->set_action(0);
+}
 
 /*
  *	Eat at inn.
@@ -1940,6 +1965,16 @@ void Sleep_schedule::now_what
 	}
 
 /*
+ *  Just went dormant.
+ */
+void Sleep_schedule::im_dormant()
+{
+	// Force NPCs to lay down again after cache-out/cache-in.
+	//npc->set_frame(Actor::standing);
+	npc->set_action(0);
+}
+
+/*
  *	Wakeup time.
  */
 
@@ -2058,12 +2093,23 @@ void Sit_schedule::now_what
 }
 
 /*
+ *  Just went dormant.
+ */
+void Sit_schedule::im_dormant()
+{
+	// Force NPCs to sit down again after cache-out/cache-in.
+	//npc->set_frame(Actor::standing);
+	npc->set_action(0);
+}
+
+/*
  *	Notify that an object is no longer present.
  */
 void Sit_schedule::notify_object_gone(Game_object *obj)
 {
 	if (obj == chair) {
 		chair = 0;
+		sat = false;
 	}
 }
 
@@ -2270,6 +2316,16 @@ void Desk_schedule::now_what
 		npc->start(250, 10000 + rand()%5000);
 		}
 	}
+
+/*
+ *  Just went dormant.
+ */
+void Desk_schedule::im_dormant()
+{
+	// Force NPCs to sit down again after cache-out/cache-in.
+	//npc->set_frame(Actor::standing);
+	npc->set_action(0);
+}
 
 /*
  *	Notify that an object is no longer present.
@@ -4316,6 +4372,16 @@ void Forge_schedule::notify_object_gone(Game_object *obj)
 Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0),
 	state(find_plate){}
 
+/*
+ *  Just went dormant.
+ */
+void Eat_schedule::im_dormant()
+{
+	// Force NPCs to sit down again after cache-out/cache-in.
+	//npc->set_frame(Actor::standing);
+	npc->set_action(0);
+}
+
 void Eat_schedule::now_what()
 {
 	int delay = 5000 + rand()%12000;
@@ -4500,7 +4566,10 @@ void Walk_to_schedule::now_what
 		}
 	else if (!screen.has_world_point(from.tx, from.ty))
 					// Modify src. to walk from off-screen.
-		walk_off_screen(screen, from);
+					// Causes NPCs to teleport to on-screen far too often
+					// (e.g., Blue Boar bartenders)
+		//walk_off_screen(screen, from);
+		from = Tile_coord(-1, -1, -1);
 	blocked = Tile_coord(-1, -1, -1);
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
@@ -4530,6 +4599,7 @@ void Walk_to_schedule::im_dormant
 	(
 	)
 	{
+	npc->set_action(0); // Prevent segfault when opening/closing doors.
 	Walk_to_schedule::now_what();	// Get there by any means.
 	}
 
