@@ -1,3 +1,17 @@
+2012-10-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* tools/gnome_shp_thumbnailer.cc: Eliminated deprecation warning.
+	* content/bgkeyring/*: Finally fixed forging of blacksword, courtesy of
+	  Malignant Manor.
+	* imagewin/scale_xbr: Added option (by editing the .h file) to use other
+	  variants of the algorithm (but still defaulting to Zenju's version, as it
+	  looks best). Changed color metric to a Manhattan metric over RGB space for
+	  a small speed boost without visual loss.
+	* paths.cc: Fixed opening crates through wall in Monitor store.
+	* All others: Fixed sitting on air/sleeping on ground bugs. Fixed a few
+	  schedule-related segfaults due to using objects after they have been
+	  deleted by more throughly stopping NPCs when offscreen (may have some
+	  side-effects, needs testing).
+
 2012-11-08 Dominik Reichardt <dominus@users.sourceforge.net>
 	* cheat_screen.cc: changed cheat screen keyboard commands so you can easily use 
 	  them on non-US keyboards.

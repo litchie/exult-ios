@@ -256,8 +256,8 @@ static void Write_thumbnail
 		if (!Export_png32(filename, size, size, 4 * size, 0, 0,
 					gdk_pixbuf_get_pixels(smallpixbuf)))
 			throw file_write_exception(filename);
-		gdk_pixbuf_unref(smallpixbuf);
-		gdk_pixbuf_unref(pixbuf);
+		g_object_unref(smallpixbuf);
+		g_object_unref(pixbuf);
 		}
 		// Write out to the .png.
 	else if (!Export_png32(filename, w1, h1, 4 * w1, 0, 0, bits))

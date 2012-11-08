@@ -1952,7 +1952,10 @@ void Actor::set_schedule_type
 	next_schedule = 255;
 
 	if (!gmap->is_chunk_read(get_cx(), get_cy()))
+		{
 		dormant = true;		// Chunk hasn't been read in yet.
+		schedule->im_dormant();
+		}
 	else if (schedule)		// Try to start it.
 		{
 		dormant = false;
@@ -1984,20 +1987,25 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 		schedule->ending(new_schedule_type);
 	old_schedule_loc = dest;
 	int mapnum = get_map_num();
-	if (mapnum < 0) mapnum = gmap->get_num();
+	if (mapnum < 0)
+		mapnum = gmap->get_num();
 	if ((mapnum != gmap->get_num()) ||
 	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
 	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
 						dest.ty/c_tiles_per_chunk)))
 		{			// Not on current map, or
-					//   src, dest. are off the screen.
-		move(dest.tx, dest.ty, dest.tz, mapnum);
+					//   src, dest. are off the screen
+			// Teleport if more than 16 tiles from target
+		if (get_tile().distance(dest) > 16)
+			move(dest.tx, dest.ty, dest.tz, mapnum);
 		set_schedule_type(new_schedule_type);
 		return;
 		}
 					// Going to walk there.
 	schedule_loc = dest; 
 	next_schedule = new_schedule_type;
+	if (schedule_type == Schedule::walk_to_schedule)
+		set_action(0);  // Force NPC to go to the right place.
 	schedule_type = Schedule::walk_to_schedule;
 	delete schedule;
 	schedule = new Walk_to_schedule(this, dest, next_schedule, delay);
@@ -3762,6 +3770,10 @@ int Actor::move_aside
 	int dir				// Direction to avoid (0-7).
 	)
 	{
+	// Do not move aside if sitting, bending over, kneeling or sleeping.
+	if (get_framenum() >= sit_frame && get_framenum() <= sleep_frame)
+		return 0;
+
 	Tile_coord cur = get_tile();
 	Tile_coord to(-1, -1, -1);
 	int i;

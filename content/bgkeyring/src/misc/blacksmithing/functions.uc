@@ -52,9 +52,9 @@ void setCooledFrame object#() ()
 
 	if (isBlackSword(item))
 	{
-		if (quality == SWORDBLANK_READY)
+		if (gflags[FINISHED_BLADE_FORGING])
 			target_frame = 15;
-		else if (quality >= SWORDBLANK_IMPROVED)
+		else if (gflags[IMPROVED_BLADE])
 			target_frame = 14;
 		else
 			target_frame = 13;
@@ -185,7 +185,8 @@ void heatSwordBlank object#() ()
 	else
 	{
 		target_frame = current_frame + 1;
-		if (target_frame > max_frame) target_frame = max_frame;
+		if (target_frame > max_frame)
+			target_frame = max_frame;
 	}
 
 	//Now, set the swordblank to the target frame then start it
@@ -217,34 +218,28 @@ void temperSword object#() ()
 	if (isBlackSword(swordblank))
 	{
 		//Sword is as good as it gets
-		if (quality == SWORDBLANK_READY)
-		{
+		if (gflags[FINISHED_BLADE_FORGING])
 			avatarSay("The blade has been worked as well as it can be. It will take some form of magic to make this sword blank into a usable weapon.");
-		}
 		//Sword has been improved
-		else if (quality == SWORDBLANK_IMPROVED)
+		else if (gflags[IMPROVED_BLADE])
 		{
 			if (rand > 66)
 			{
-				swordblank->set_item_quality(SWORDBLANK_READY);
 				gflags[FINISHED_BLADE_FORGING] = true;
 				avatarSay("You feel that you've done the best job that you can, but the sword doesn't feel quite right. It's much too heavy and cumbersome to wield as a weapon.");
 			}
 			//Whoops! There goes your hard work!
 			else if (rand < 20)
 			{
-				swordblank->set_item_quality(0);
+				gflags[IMPROVED_BLADE] = false;
 				avatarSay("That last blow was perhaps a bit too hard, It'll take a while to hammer out the flaws.");
 			}
 		}
 		//Sword is at its shittiest state
-		else
+		else if (rand > 66)
 		{
-			if (rand > 66)
-			{
-				swordblank->set_item_quality(SWORDBLANK_IMPROVED);
-				avatarSay("After a short while you notice that the edge has definitely improved.");
-			}
+			gflags[IMPROVED_BLADE] = true;
+			avatarSay("After a short while you notice that the edge has definitely improved.");
 		}
 	}
 

@@ -326,8 +326,12 @@ struct Scaler2xBR
 	{
 		unsigned int r, g, b;
 		manip.split_source(col, r, g, b);
+#if XBR_VARIANT == 4
 		//model a round corner
 		manip.template blend<21, 100>(out.template get<1, 1>(), r, g, b); //exact: 1 - pi/4 = 0.2146018366
+#else
+		manip.template blend<1, 2>(out.template get<1, 1>(), r, g, b);
+#endif
 	}
 };
 
@@ -385,10 +389,14 @@ struct Scaler3xBR
 	{
 		unsigned int r, g, b;
 		manip.split_source(col, r, g, b);
+#if XBR_VARIANT == 4
 		//model a round corner
 		manip.template blend<45, 100>(out.template get<2, 2>(), r, g, b); //exact: 0.4545939598
-		//manip.template blend<14, 1000>(out.template get<2, 1>(), col); //0.01413008627 -> negliable
+		//manip.template blend<14, 1000>(out.template get<2, 1>(), col); //0.01413008627 -> negligible
 		//manip.template blend<14, 1000>(out.template get<1, 2>(), col); //0.01413008627
+#else
+		manip.template blend<1, 2>(out.template get<2, 2>(), r, g, b);
+#endif
 	}
 };
 
@@ -451,10 +459,14 @@ struct Scaler4xBR
 	{
 		unsigned int r, g, b;
 		manip.split_source(col, r, g, b);
+#if XBR_VARIANT == 4
 		//model a round corner
 		manip.template blend<68, 100>(out.template get<3, 3>(), r, g, b); //exact: 0.6848532563
 		manip.template blend< 9, 100>(out.template get<3, 2>(), r, g, b); //0.08677704501
 		manip.template blend< 9, 100>(out.template get<2, 3>(), r, g, b); //0.08677704501
+#else
+		manip.template blend<1, 2>(out.template get<3, 3>(), r, g, b);
+#endif
 	}
 };
 
