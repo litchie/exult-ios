@@ -88,8 +88,8 @@ public:
 	int try_street_maintenance();	// Handle street-lamps, shutters.
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
-	virtual void im_dormant()	// Npc calls this when it goes from
-		{  }			//   being active to dormant.
+	virtual void im_dormant();	// Npc calls this when it goes from
+					//  being active to dormant.
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
 	virtual void set_weapon(bool removed = false)	// Set weapon info.
@@ -149,6 +149,7 @@ public:
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
 	virtual void notify_object_gone(Game_object *obj);
+	virtual void ending(int newtype);
 	};
 
 /*
@@ -203,6 +204,7 @@ public:
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
+	virtual void im_dormant();	// Just went dormant.
 	};
 
 /*
@@ -378,6 +380,7 @@ public:
 	virtual void set_bed(Game_object *b)
 		{ bed = b; state = 0; }
 	virtual void notify_object_gone(Game_object *obj);
+	virtual void im_dormant();	// Just went dormant.
 	};
 
 /*
@@ -392,6 +395,7 @@ public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void notify_object_gone(Game_object *obj);
+	virtual void im_dormant();	// Just went dormant.
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = 0,
 				int delay = 0, Game_object **chair_found = 0);
@@ -407,6 +411,7 @@ public:
 	Desk_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void notify_object_gone(Game_object *obj);
+	virtual void im_dormant();	// Just went dormant.
 	};
 
 /*
@@ -605,6 +610,7 @@ public:
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
 	virtual void notify_object_gone(Game_object *obj);
+	virtual void im_dormant();	// Just went dormant.
 	};
 
 /*
