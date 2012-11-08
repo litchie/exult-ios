@@ -1954,7 +1954,8 @@ void Actor::set_schedule_type
 	if (!gmap->is_chunk_read(get_cx(), get_cy()))
 		{
 		dormant = true;		// Chunk hasn't been read in yet.
-		schedule->im_dormant();
+		if (schedule)
+			schedule->im_dormant();
 		}
 	else if (schedule)		// Try to start it.
 		{
