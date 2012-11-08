@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1173,11 +1173,11 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 	if (actor) font->paint_text_fixedwidth(ibuf, "[N]pc Flags", 0, maxy-72, 8);
 
 	// Name
-	if (actor) font->paint_text_fixedwidth(ibuf, "[\\]ame", 0, maxy-63, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[1] Name", 0, maxy-63, 8);
 
 #if 0
-	// Pop Weapon
-	if (actor) font->paint_text_fixedwidth(ibuf, "[P]op Weapon", 0, maxy-45, 8);
+	// draw Weapon
+	if (actor) font->paint_text_fixedwidth(ibuf, "[D]raw Weapon", 0, maxy-45, 8);
 #endif
 
 	// eXit
@@ -1191,14 +1191,14 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 
 #if 0
 	// Target
-	if (actor) font->paint_text_fixedwidth(ibuf, "[T]arget", 160, maxy-90, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[Z] Target", 160, maxy-90, 8);
 #endif
 
 	// Training Points
-	if (actor) font->paint_text_fixedwidth(ibuf, "[~]raining Points", 160, maxy-90, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[2] Training Points", 160, maxy-90, 8);
 
 	// Teleport
-	if (actor) font->paint_text_fixedwidth(ibuf, "[']eleport", 160, maxy-81, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, maxy-81, 8);
 
 	// Change NPC
 	font->paint_text_fixedwidth(ibuf, "[*] Change NPC", 160, maxy-45, 8);
@@ -1253,7 +1253,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 #if 0
-		case 'p':	// pop weapon
+		case 'd':	// draw weapon
 		mode = CP_NotAvail;
 		break;
 #endif
@@ -1263,12 +1263,12 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 #if 0
-		case 't':	// Target
+		case 'z':	// Target
 		mode = CP_NotAvail;
 		break;
 #endif
 
-		case '\'':	// Teleport
+		case 't':	// Teleport
 		Game_window::get_instance()->teleport_party(actor->get_tile(),
 					false, actor->get_map_num());
 		break;
@@ -1279,7 +1279,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		else actor->set_property (Actor::exp, i);
 		break;
 
-		case '`':	// Training Points
+		case '2':	// Training Points
 		if (i < 0) mode = CP_InvalidNPC;
 		else actor->set_property (Actor::training, i);
 		break;
@@ -1308,7 +1308,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		}
 		break;
 
-		case '\\':	// Name
+		case '1':	// Name
 		if (!std::strlen(input)) mode = CP_Canceled;
 		else
 		{
@@ -1333,10 +1333,10 @@ bool CheatScreen::NPCCheck (char *input, int &command, Cheat_Prompt &mode, bool 
 		case 'a':	// Attack mode
 		case 'b':	// BUsiness
 		case 'n':	// Npc flags
-		case 'p':	// pop weapon
+		case 'd':	// pop weapon
 		case 's':	// stats
-		case 't':	// Target
-		case '\'':	// Teleport
+		case 'z':	// Target
+		case 't':	// Teleport
 		input[0] = command;
 		if (!actor) mode = CP_InvalidCom;
 		else activate = true;
@@ -1344,7 +1344,7 @@ bool CheatScreen::NPCCheck (char *input, int &command, Cheat_Prompt &mode, bool 
 
 		// Value entries
 		case 'e':	// Experience
-		case '`':	// Training Points
+		case '2':	// Training Points
 		if (!actor) mode = CP_InvalidCom;
 		else mode = CP_EnterValue;
 		break;
@@ -1356,7 +1356,7 @@ bool CheatScreen::NPCCheck (char *input, int &command, Cheat_Prompt &mode, bool 
 		break;
 
 		// Name
-		case '\\':
+		case '1':
 		if (!actor) mode = CP_InvalidCom;
 		else mode = CP_Name;
 		break;
