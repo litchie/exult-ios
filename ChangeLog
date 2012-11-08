@@ -1,3 +1,7 @@
+2012-11-08 Dominik Reichardt <dominus@users.sourceforge.net>
+	* cheat_screen.cc: changed cheat screen keyboard commands so you can easily use 
+	  them on non-US keyboards.
+	  
 2012-11-06	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix bug #3581649 by stopping Actor::ready_best_shield from trying to equip
 	  the lhand object (weapon).
