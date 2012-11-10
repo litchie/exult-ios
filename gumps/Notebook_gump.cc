@@ -273,6 +273,7 @@ void Notebook_gump::clear
 		delete note;
 		notes.pop_back();
 		}
+	page_info.clear();
 	initialized = false;
 	}
 
@@ -312,7 +313,8 @@ Notebook_gump::Notebook_gump
 	cursor.offset = 0;
 					// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
-	page_info.push_back(Notebook_top(0, 0));
+	if (page_info.empty())
+	    page_info.push_back(Notebook_top(0, 0));
 					// Where to paint page marks:
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
