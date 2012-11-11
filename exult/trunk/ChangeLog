@@ -1,3 +1,6 @@
+2012-11-11 Dominik Reichardt <dominus@users.sourceforge.net>
+	* gumps/Notebook_gump.cc: when cheating show location of notes in the notebook.
+	  
 2012-10-28	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* tools/gnome_shp_thumbnailer.cc: Eliminated deprecation warning.
 	* content/bgkeyring/*: Finally fixed forging of blacksword, courtesy of
