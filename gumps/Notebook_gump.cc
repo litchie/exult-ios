@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2011 The Exult Team
+Copyright (C) 2000-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "msgfile.h"
 #include "fnames.h"
+#include "cheat.h"
 
 using std::ofstream;
 using std::ifstream;
@@ -386,6 +387,13 @@ bool Notebook_gump::paint_page
 		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d%s",
 			note->day, h?h:12, note->minute, ampm);
 		sman->paint_text(2, buf, x + box.x, y + pagey);
+		//when cheating show location of entry (in dec - could use sextant postions)
+		if (cheat())
+			{
+			snprintf(buf, sizeof(buf), "%d, %d",
+			note->tx, note->ty);
+			sman->paint_text(4, buf, x + box.x + 80, y + pagey - 4);
+			}
 		// Use bright green for automatic text.
 		gwin->get_win()->fill8(sman->get_special_pixel(
 			note->gflag >= 0 ? POISON_PIXEL : CHARMED_PIXEL),
