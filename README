@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 01 December 2011 (GMT)
+last changed: 14 November 2012 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -102,40 +102,41 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 28 October 2012
-13.2. - 01 December 2011
-13.3. - 16 March 2011
-13.4. - 19 February 2011
-13.5. - 24 January 2011
-13.6. - 23 January 2011
-13.7. - 13 October 2010
-13.8. - 30 August 2010
-13.9. - 25 August 2010
-13.10. - 15 August 2010
-13.11. - 28 April 2010
-13.12. - 11 March 2010
-13.13. - 10 March 2010
-13.14. - 08 March 2010
-13.15. - 16 July 2009
-13.16. - 03 June 2009
-13.17. - 20 May 2009
-13.18. - 19 May 2009
-13.19. - 18 May 2009
-13.20. - 28 April 2009
-13.21. - 21 October 2007
-13.22. - 08 April 2006
-13.23. - 14 March 2005
-13.24. - 14 August 2004
-13.25. - 23 May 2004
-13.26. - 11 February 2004
-13.27. - 12 December 2003
+13.1. - 14 November 2012
+13.2. - 28 October 2012
+13.3. - 01 December 2011
+13.4. - 16 March 2011
+13.5. - 19 February 2011
+13.6. - 24 January 2011
+13.7. - 23 January 2011
+13.8. - 13 October 2010
+13.9. - 30 August 2010
+13.10. - 25 August 2010
+13.11. - 15 August 2010
+13.12. - 28 April 2010
+13.13. - 11 March 2010
+13.14. - 10 March 2010
+13.15. - 08 March 2010
+13.16. - 16 July 2009
+13.17. - 03 June 2009
+13.18. - 20 May 2009
+13.19. - 19 May 2009
+13.20. - 18 May 2009
+13.21. - 28 April 2009
+13.22. - 21 October 2007
+13.23. - 08 April 2006
+13.24. - 14 March 2005
+13.25. - 14 August 2004
+13.26. - 23 May 2004
+13.27. - 11 February 2004
+13.28. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.4.9 RC1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+This documentation is for the 1.5.0 SVN version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. What is Exult?
@@ -148,7 +149,7 @@ Exult aims to let those people who own Ultima 7 (copyright 1993) play the game o
 We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
 * eggs: these are trip-wires that can cause monsters to spawn, execute scripts, play music, change weather, trigger traps or teleport when you get near them.
-* flex files: also known as flexes, these are used by the original to store the data files. Also when you choose to not use compressed save games (see save_compression_level in ReadMe.txt) our save games are also "flexed".
+* flex files: also known as flexes, these are used by the original to store the data files. Also when you choose to not use compressed save games (see save_compression_level in 2.3.) our save games are also "flexed".
 * gumps: the windows used in the game interface for containers, characters, menus, etc..
 * paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party members) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
 * shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
@@ -230,9 +231,14 @@ Note: yes means enabled, no means disabled
         </gamedat_path>
         <keys>
         (default)
-				**configure custom key bindings or leave the (default)
+				**configure custom key bindings or leave the (default) 
 				- see 5.2.
         </keys>
+        <autonotes>
+        (default)
+				**set path to a custom autonotes file or leave the (default) 
+				- see 6.2.
+        </autonotes>
         <waves>
         jmsfx.flx
 				**optional setting see 3.6. for configuration
@@ -269,6 +275,11 @@ Note: yes means enabled, no means disabled
 				**configure custom key bindings or leave the (default)
 				- see 5.2.
         </keys>
+        <autonotes>
+        (default)
+				**set path to a custom autonotes file or leave the (default)
+				- see 6.2.
+        </autonotes>
         <waves>
         jmsisfx.flx
 				**optional setting see 3.6. for configuration
@@ -362,9 +373,14 @@ Note: yes means enabled, no means disabled
     </step_tile_delta>
     <alternate_drop>
     no
-				**Dropping stacks of items will drop the whole stack without asking how many when enabled.
+				**Dropping stacks of items will drop the whole stack without asking how many when enabled. 
 				Hold 'Ctrl' while dropping to split the stack. 
     </alternate_drop>
+    <allow_autonotes>
+    no
+				**Automatically fill the notebook with entries when game flags are set. 
+				See 6.2.
+    </allow_autonotes>
     <combat>
       <difficulty>
       0
@@ -1189,12 +1205,24 @@ Ctrl-Alt-m : Toggle Map editor
 
 6. Notebook and Screenshots
 6.1. Using the Notebook
-We implemented a notebook you can access by pressing 'n'. With this you can make notes of things you saw, or "heard" from any of the NPCs. Entries will be saved automatically when you close the notebook.
+We implemented a notebook you can access by pressing 'n'. With this you can make notes of things you saw, or "heard" from any of the NPCs. Entries will be saved when you close the notebook and save the game.
+Additionally when you have cheats enabled you will see the coordinates (in decimal) where you wrote your note.
 
 
 6.2. The automatic Notebook
-If you want you can also have Exult make some notes on its own when certain things happen in game. This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what was noted. Currently it's also not yet comfortable to set up.
-You need to download the autonotes.txt file for each game (BG or SI) and put it into the games static folder. For BG download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt For SI download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt
+If you want you can also have Exult automatically make some notes on its own when certain things happen in game. This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what was noted. You can enable autonotes in the 7.6. Misc Options.
+You can also write your own autonotes and override the ones that come with Exult. For BG download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt. For SI download http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt. Then change the <autonotes> setting in exult.cfg to point at the path of these files instead of being set to (default). Example:
+<config>
+  <disk>
+    <game>
+      <gamename>
+        <path>
+        path_to\gamename
+        </path>
+        <autonotes>
+        path_to/gamename/autonotes.txt
+        </autonotes>
+      </gamename>
 
 
 6.3. Screenshots
@@ -1272,12 +1300,12 @@ Look at 3. Audio to see explanation on the settings.
 * Skip intro When enabled you don't have to watch the splash screen and intro when you select a game from the Exult menu.
 * Skip scripted first scene When you start a new game of BG or SI the game starts with a scripted scene during which you can't move the Avatar. Enable this to skip this part but only do this if you have already played the game and have seen this scene.
 * Alternate drag'n'drop When enabled dropping a stack of items (coins, bolts...) will drop the whole stack without asking for confirmation of the amount of items to drop. Hold 'Ctrl' while dropping if you need to split a stack.
+* Autonotes Toggle writing automatic notes to the notebook - see 6.2. The automatic Notebook.
 * Combat options: As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
 * Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP that is lost if a hit occurs.
 * ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
 * Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
 * Charmed difficulty choose between Normal and Hard. With Normal the Avatar can't be charmed. The original game allowed him to be charmed though that only highlighted him as charmed and the charmed status icon showed but you could control him as usual. Hard will neither allow the player to control charmed party members, including the Avatar, nor access the inventory of a charmed party member. But you can still manipulate objects that are not in the charmed party members possessions even if the Avatar is the one who is charmed. Charmed party members will continue to attack, even if the player ends combat.
-
 
 
 
@@ -1491,7 +1519,16 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 28 October 2012
+13.1. - 14 November 2012
+* 1.1. Exult Version it's for the SVN of Exult.
+* 2.3. Settings in exult.cfg added autonotes options.
+* 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
+* 6.2. The automatic Notebook Autonotes are bundled and can be toggled.
+* 7.6. Misc Options Autonotes option added.
+
+
+
+13.2. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1499,7 +1536,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.2. - 01 December 2011
+13.3. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1508,13 +1545,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.3. - 16 March 2011
+13.4. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.4. - 19 February 2011
+13.5. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.6. Digital Wave Sound Effects split off the installation part.
 * 3.7. All-in-One Audio Data pack and installers added.
@@ -1524,7 +1561,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.5. - 24 January 2011
+13.6. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1532,7 +1569,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.6. - 23 January 2011
+13.7. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1548,7 +1585,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 13 October 2010
+13.8. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1559,7 +1596,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 30 August 2010
+13.9. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1567,7 +1604,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 25 August 2010
+13.10. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1576,7 +1613,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 15 August 2010
+13.11. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1585,12 +1622,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 28 April 2010
+13.12. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.12. - 11 March 2010
+13.13. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1598,7 +1635,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 10 March 2010
+13.14. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1608,7 +1645,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.14. - 08 March 2010
+13.15. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1619,25 +1656,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 16 July 2009
+13.16. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.16. - 03 June 2009
+13.17. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.17. - 20 May 2009
+13.18. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.8. Installation of the digital music packs cleaned up.
 * 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.18. - 19 May 2009
+13.19. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1648,7 +1685,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.19. - 18 May 2009
+13.20. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1667,43 +1704,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.20. - 28 April 2009
+13.21. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.21. - 21 October 2007
+13.22. - 21 October 2007
 * 9.3. Making Digital Sound work on Mac OS X added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.22. - 08 April 2006
+13.23. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.23. - 14 March 2005
+13.24. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.24. - 14 August 2004
+13.25. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.25. - 23 May 2004
+13.26. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.26. - 11 February 2004
+13.27. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1714,7 +1751,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.27. - 12 December 2003
+13.28. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
