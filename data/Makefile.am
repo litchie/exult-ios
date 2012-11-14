@@ -42,7 +42,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/avatar_data.txt \
 	bg/shape_info.txt \
 	bg/blends.dat \
-	bg/container.dat
+	bg/container.dat \
+	bg/autonotes.txt
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in \
@@ -54,7 +55,8 @@ EXULT_SI_FLX_OBJECTS = \
 	si/avatar_data.txt \
 	si/shape_info.txt \
 	si/blends.dat \
-	si/container.dat
+	si/container.dat \
+	si/autonotes.txt
 
 EXULT_IPHONE_FLX_OBJECTS = \
 	iphone/flx.in \

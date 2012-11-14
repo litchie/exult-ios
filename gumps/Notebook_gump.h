@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2011 The Exult Team
+Copyright (C) 2000-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -99,6 +99,7 @@ public:
 	static void write();		// Write it out to gamedat.
 	static void read();		// Read it in.
 	static void read_auto_text();
+	static void read_auto_text_file(const char* filename);
 };
 
 #endif

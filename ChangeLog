@@ -1,4 +1,8 @@
 2012-11-11 Dominik Reichardt <dominus@users.sourceforge.net>
+	* varios files: added data/bg|si/autonotes.txt to game flx bundles and the 
+	  misc option to toggle it.
+	
+2012-11-11 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gumps/Notebook_gump.cc: when cheating show location of notes in the notebook.
 	  
 2012-10-28	Marzo Sette Torres Junior <marzojr@yahoo.com>

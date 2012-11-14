@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -139,6 +139,7 @@ SI_Game::SI_Game()
 		add_resource("config/shape_info", gameflx, EXULT_SI_FLX_SHAPE_INFO_TXT);
 		add_resource("config/shape_files", gameflx, EXULT_SI_FLX_SHAPE_FILES_TXT);
 		add_resource("config/avatar_data", gameflx, EXULT_SI_FLX_AVATAR_DATA_TXT);
+		add_resource("config/autonotes", gameflx, EXULT_SI_FLX_AUTONOTES_TXT);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);

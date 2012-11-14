@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "msgfile.h"
 #include "fnames.h"
 #include "cheat.h"
+#include "U7file.h"
 
 using std::ofstream;
 using std::ifstream;
@@ -794,8 +795,10 @@ bool Notebook_gump::handle_kbd_event
 		break;		
 	}
 	updnx = cursor.x - x - (curpage%2 ? rpagex : lpagex);
+#if DEBUG
 	std::cout << "updnx = " << updnx << std::endl;
 //	std::cout << "Notebook chr: " << chr << std::endl;
+#endif
 	return true;
 	}
 
@@ -816,6 +819,7 @@ void Notebook_gump::add_gflag_text
 					it != notes.end(); ++it)
 		if ((*it)->gflag == gflag)
 			return;
+	if (gwin->get_allow_autonotes())
 	add_new(newstrdup(text), gflag);
 	}
 
@@ -855,8 +859,10 @@ void Notebook_gump::read
 
 	conf.read_abs_config_file(NOTEBOOKXML, root);
 	string identstr;
+	// not spamming the terminal with all the notes in normal play
+#if DEBUG
 	conf.dump(cout, identstr);
-
+#endif
 	Configuration::KeyTypeList note_nds;
 	string basekey = "notebook";
 	conf.getsubkeys(note_nds, basekey);
@@ -908,14 +914,38 @@ void Notebook_gump::read
  *	Read in text to be inserted automatically when global flags are set.
  */
 
+// read in from external file
+void Notebook_gump::read_auto_text_file(const char* filename)
+{
+	ifstream notesfile;
+	if (gwin->get_allow_autonotes())
+		{
+		cout << "Loading autonotes from file " << filename << endl;
+		initialized_auto_text = true;
+		U7open(notesfile, filename, true);
+		Read_text_msg_file(notesfile, auto_text);
+		notesfile.close();
+		}
+}
+
+// read in from flx bundled file
 void Notebook_gump::read_auto_text
 	(
 	)
 	{
-	ifstream in;
-	initialized_auto_text = true;
-	if (!U7open_static(in, AUTONOTES, true))
-		return;
-	Read_text_msg_file(in, auto_text);
+	if (gwin->get_allow_autonotes())
+		{
+		//cout << "Loading default autonotes" << endl;
+		initialized_auto_text = true;
+		const str_int_pair& resource = game->get_resource("config/autonotes");
+		U7object txtobj(resource.str, resource.num);
+		size_t len;
+		char *txt = txtobj.retrieve(len);
+		if (txt && len > 0)
+			{
+			BufferDataSource buf(txt,len);
+			Read_text_msg_file(&buf, auto_text);
+			delete[] txt;
+			}
+		}
 	}
-
