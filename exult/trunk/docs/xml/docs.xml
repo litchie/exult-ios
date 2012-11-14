@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="01 December 2011 (GMT)">	
+<readme title="Exult" changed="14 November 2012 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.4.9 RC1 version of <Exult/>.
+					This documentation is for the 1.5.0 SVN version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -59,7 +59,7 @@
 					<li><strong>flex files</strong>:<br/>
 						 also known as flexes, these are used by the original to store the data files.
 						Also when you choose to not use compressed save games (see save_compression_level in
-						<extref doc="docs" target="exult_config"/>) our save games are also "flexed".</li>
+						<ref target="exult_config"/>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br/>
 						the windows used in the game interface for containers, characters, menus, etc..</li>
 					<li><strong>paperdoll</strong>:<br/>
@@ -208,8 +208,13 @@
 									</configtag>
 									<configtag name="keys"  manual="true">
 									(default)
-									<comment>**configure custom key bindings or leave the (default)</comment>
+									<comment>**configure custom key bindings or leave the (default) </comment>
 									<comment>- see <ref target="exult_keys"/></comment>
+									</configtag>
+									<configtag name="autonotes"  manual="true">
+									(default)
+									<comment>**set path to a custom autonotes file or leave the (default) </comment>
+									<comment>- see <ref target="autonotebook"/></comment>
 									</configtag>
 									<configtag name="waves">
 									jmsfx.flx
@@ -246,6 +251,11 @@
 									(default)
 									<comment>**configure custom key bindings or leave the (default)</comment>
 									<comment>- see <ref target="exult_keys"/></comment>
+									</configtag>
+									<configtag name="autonotes"  manual="true">
+									(default)
+									<comment>**set path to a custom autonotes file or leave the (default)</comment>
+									<comment>- see <ref target="autonotebook"/></comment>
 									</configtag>
 									<configtag name="waves">
 									jmsisfx.flx
@@ -340,8 +350,13 @@
 							</configtag>
 							<configtag name="alternate_drop">
 							no
-							<comment>**Dropping stacks of items will drop the whole stack without asking how many when enabled.</comment>
+							<comment>**Dropping stacks of items will drop the whole stack without asking how many when enabled. </comment>
 							<comment>Hold <key>Ctrl</key> while dropping to split the stack. </comment>
+							</configtag>
+							<configtag name="allow_autonotes">
+							no
+							<comment>**Automatically fill the notebook with entries when game flags are set. </comment>
+							<comment>See <ref target="autonotebook"/></comment>
 							</configtag>
 							<configtag name="combat">
 								<configtag name="difficulty">
@@ -1777,8 +1792,12 @@
 			<body>
 				<para>
 					We implemented a notebook you can access by pressing <key>n</key>. With this you can make 
-					notes of things you saw, or "heard" from any of the NPCs. Entries will be saved automatically 
-					when you close the notebook.
+					notes of things you saw, or "heard" from any of the NPCs. Entries will be saved when you 
+					close the notebook and save the game.
+				</para>
+				<para>
+					Additionally when you have cheats enabled you will see the coordinates (in decimal) where 
+					you wrote your note.
 				</para>
 			</body>
 		</sub>
@@ -1786,16 +1805,35 @@
 			<header>The automatic Notebook</header>
 			<body>
 				<para>
-					If you want you can also have <Exult/> make some notes on its own when certain things happen in game. 
+					If you want you can also have <Exult/> automatically make some notes on its own when certain things happen in game. 
 					This feature has not yet progressed very far, especially for SI we have mostly basic pointers of what 
-					was noted. Currently it's also not yet comfortable to set up.
+					was noted.<br/>
+					You can enable autonotes in the <ref1 target="misc_gump"/>.
 				</para>
 				<para>
-					You need to download the autonotes.txt file for each game (BG or SI) and put it into the games 
-					static folder.<br/>
-					For BG download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt"/><br/>
-					For SI download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt"/><br/>
-				</para>	
+					You can also write your own autonotes and override the ones that come with <Exult/>.<br/>
+					For BG download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/bg/autonotes.txt"/>.<br/>
+					For SI download <extref target="http://exult.svn.sourceforge.net/viewvc/exult/exult/trunk/data/si/autonotes.txt"/>.<br/>
+					Then change the &lt;autonotes&gt; setting in exult.cfg to point at the path of these files instead 
+					of being set to (default).<br/>
+					Example:
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="game" closing-tag="no">
+								<configtag name="gamename">
+									<configtag name="path" manual="true">
+									path_to\gamename
+									</configtag>
+									<configtag name="autonotes" manual="true">
+									path_to/gamename/autonotes.txt
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
 			</body>
 		</sub>
 		<sub name="screenshots">
@@ -1992,7 +2030,9 @@
 					<li><strong>Alternate drag'n'drop</strong><br/>
 						When enabled dropping a stack of items (coins, bolts...) will drop the whole stack without 
 						asking for confirmation of the amount of items to drop. Hold <key>Ctrl</key> while dropping
-						if you need to split a stack.</li>	
+						if you need to split a stack.</li>
+					<li><strong>Autonotes</strong><br/>
+						Toggle writing automatic notes to the notebook - see <ref1 target="autonotebook"/>.</li>
 					<li><strong>Combat options:</strong><br/>
 						As many people think that the U7 combat engine is far too easy, too hard or
 						just can't stand the real-time-combat Jeff put in some options to make combat more
@@ -2017,9 +2057,6 @@
 						in the charmed party members possessions even if the Avatar is the one who is charmed. Charmed 
 						party members will continue to attack, even if the player ends combat.</li>
 				</ul>
-				<para>
-					
-				</para>
 			</body>
 		</sub>
 		<sub name="quit_game">
@@ -2686,6 +2723,18 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="14112012">
+			<header>- 14 November 2012</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_version"/> it's for the SVN of Exult.</li>
+				<li><ref1 target="exult_config"/> added autonotes options.</li>
+				<li><ref1 target="notebook"/> saved when saved game and when cheating you see the coordinates.</li>
+				<li><ref1 target="autonotebook"/> Autonotes are bundled and can be toggled.</li>
+				<li><ref1 target="misc_gump"/> Autonotes option added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="28102012">
 			<header>- 28 October 2012</header>
 			<body>

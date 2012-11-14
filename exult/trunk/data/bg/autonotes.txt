@@ -67,7 +67,7 @@
 
 # serpents hold flags
 
-0x26E:In Serpent's Hold. I met Horffe who is head of security. He reminds me of someone else.
+0x26E:In Serpent's Hold, I met Horffe who is head of security. He reminds me of someone else.
 0x271:Lady Tory of Serpent's Hold reminds of someone named Deanna.
 0x272:Lady Leigh, the healer of Serpent's Hold, reminds me of a certain doctor.
 0x25E:Someone defaced the statue of my friend Lord British in Serpent's Hold. Sir John-Paul wants me to find out who it was.
@@ -88,11 +88,11 @@
 
 # FoV flags:
 
-0x2FE: I mentioned the earthquake to Lord British and he tells me that the Isle of Fire, where I defeated Exodus, has risen. He also told me of three shrines he erected there. He offers me use of his ship, the Golden Ankh, anchored at Vesper, to visit this island.
+0x2FE: I mentioned the earthquake to Lord British, and he tells me that the Isle of Fire, where I defeated Exodus, has risen. He also told me of three shrines he erected there. He offers me use of his ship, the Golden Ankh, anchored at Vesper, to visit this island.
 0x30C:I managed to banish Exodus' dark core to the ethereal void!
 0x30E:SCROLL_OF_INFINITY
 0x310:An exiled and blind man named Erethian lives on the Isle of Fire.
-0x313:On the Isle of Fire I met a demon called Arcadion, trapped in a mirror. He wants me to free him
+0x313:On the Isle of Fire, I met a demon called Arcadion, trapped in a mirror. He wants me to free him.
 0x032F:With the gem I broke the mirror to free the demon Arcadion, but instead he is now imprisoned in the gem.
 0x030:I bound the demon Arcadion to the blackrock sword
 0x331:I'm not helping a demon!
@@ -178,10 +178,10 @@
 
 0x04:BROKE_SPHERE
 0x11F:Oh no, another murder. This time in Minoc's sawmill. Something is wrong here.
-0x100:A gypsy told me my future. I really need to find the Time Lord and the Wisps know how to contact him.
-0x150:Finally I have talked to the wisps. Only with the whistle the nice emp Trellek gave me, was I able to talk to them
+0x100:A gypsy told me my future. I really need to find the Time Lord, and the Wisps know how to contact him.
+0x150:Finally, I have talked to the wisps. Only with the whistle the nice emp Trellek gave me, was I able to talk to them.
 0x133:The wisps won't help me for free. They have asked me to deliver them the notebook of Alagner, the wisest Britannian, who lives on the island of New Magincia.
-0x157:Delivered the cursed notebok to the wisps.In return they delivered me the message from the Time Lord, and told me how to reach him at the Shrine of Spirituality.
+0x157:Delivered the cursed notebook to the wisps. In return they delivered me the message from the Time Lord, and told me how to reach him at the Shrine of Spirituality.
 0x127:The Time Lord told me about the evil Guardian and his plan to enter Britannia through a black moongate at the time of the Astronomical Alignment.
 0xDA:BATLIN_MISSING - Batlin has buggered off (after you talk to him with the cube in your possession)
 0x80:HEARD_ABOUT_PATTERSONS_AFFAIR - Heard that Patterson is having an affair
