@@ -3,25 +3,17 @@
 
 
 #Used the armageddon spell
-# 0x1E:CAST_ARMAGEDDON
 0x1E: Oops, this armageddon spell is more dangerous than I thought. Hello? Anyone around?
 
 
 # Trinsic murder investigation
 
-# 0x4C:MET_FINNIGAN
-0x4C:The mayor of Trinsic is called Finnigan, he wants me to investigate a ritual murder.
-# 0x3c:GOT_CHRISTOPHERS_KEY
+0x4C:The mayor of Trinsic is called Finnigan. he wants me to investigate a ritual murder.
 0x3c:What's this? A body! And a key? Could this be a clue?
-# 0x42:NEEDS_TRINSIC_PASSWORD
 0x42:Because of the murder in Trinsic, all gates are locked. I need a password to get out.
-# 0x3D:GOT_TRINSIC_PASSWORD
-0x3D:Now I know the password to leave Trinsic. It's Blackbird!
-# 0x44:FINISHED_MURDER_INVESTIGATION
+0x3D:Now I know the password I need to leave Trinsic. It's Blackbird!
 0x44:I finished the investigation of the gruesome murder in Trinsic.
-# 0x40:LEARNED_ABOUT_CROWN_JEWE
 0x40:There is a ship named Crown Jewel which was anchored in Trinsic when the murder happened.
-# 0x43:LEARNED_ABOUT_HOOK
 0x43:A man with a hook was in Trinsic.
 
 0x5A:EXPECTED_TO_LOOK_IN_STABLES
@@ -37,21 +29,14 @@
 
 # Who the player has met.
 
-# 0x98:MET_LORD_BRITISH
 0x98:I've met my old friend Lord British again.
-# 0x99:MET_NYSTUL
 0x99:My old friend Nystul seems to have lost his marbles.
-# 0x9A:MET_CHUCKLES
-0x9A:Chuckles, Lord British' court jester wants to play a silly game with me.
-# 0xAA:MET_CANDICE
-0xAA:Candice, a nice woman works at the royal museum.
+0x9A:Chuckles, Lord British's court jester, wants to play a silly game with me.
+0xAA:Candice, a nice woman, works at the royal museum.
+0x1B:Julia, my old friend, is living in Minoc. Perhaps she will join me.
 0xB5:MET_WILLY
 0xBB:MET_GORDON
 0xA4:MET_CSIL
-
-#0x1B:MET_JULIA
-0x1B:Julia, my old friend is living in Minoc. Perhaps she will join me.
-
 0x110:MET_GLADSTONE
 0x22A:MET_CAMILLE
 0x269:MET_MENION
@@ -62,18 +47,12 @@
 
 # Talking to LB
 
-# 0xCC:WESTON_FREED
-0xCC:Lord British investigated Weston's imprionment and let's him go free. 
-#0xCD:AGREED_TO_FREE_WESTON
-0xCD:A man named Weston is imprisoned atop Britain's castle. His imprisonment may be unjust. I must talk to my friend Lord British about that.
-# 0xDD:GOT_ORB
-0xDD:Lord British gave me his Orb of the moon but warned me that the moongates are not stable anymore.
-# 0x66:ASKED_LB_ABOUT_MAGIC
-0x66:Lord British tells me that magic doesn't work anymore. But he thinks that I might still be able to cast magic and tells me that he has a spellbook ready for me with my other equipment. Hmm, what does he mean with equipment?
-# 0xD1:LEARNED_ABOUT_BRITAIN_MURDER - allows you to ask Patterson about it
-0xD1:There has also been a ritualistic murder in Britain some years ago. Some kind of serial killer? I need to investigate this!
-# 0xD3:ASKED_LB_ABOUT_HEAL
-0xD3:Even though magic doesn't work reliably anymore, Lord British can still heal me and sometimes even resurrect a memebr of my party. This might come in handy at times.
+0xCC:Lord British investigated Weston's imprionment and lets him go free. 
+0xCD:A man named Weston is imprisoned atop Britain's castle. His imprisonment may be unjust. I must talk to my friend Lord British about this.
+0xDD:Lord British gave me his Orb of the moon, but warned me that the moongates are no longer stable.
+0x66:Lord British tells me that magic doesn't work anymore, but he thinks that I might still be able to cast magic. He put a spellbook for me with my other equipment. Hmm, what does he mean with equipment?
+0xD1:There has also been a ritualistic murder in Britain some years ago. I need to investigate this!
+0xD3:Even though magic doesn't work reliably anymore, Lord British can still heal me and sometimes even resurrect a member of my party. This might come in handy at times.
 0x65:LEARNED_ABOUT_BLACKROCK - allows you to ask Rudyom about it?
 0xD4:ASKED_LB_ABOUT_GUARDIAN - stops you ever asking him again (yes, plaster over those plot-holes)
 0x30D:LB_REWARDED_FOR_FV - Received Lord British's reward for completing the Forge of Virtue
@@ -88,19 +67,12 @@
 
 # serpents hold flags
 
-# 0x26E:MET_HORFFE
-0x26E:In Serpent's Hold I met Horffe who is head of security. He rminds of someone else.
-# 0x271:MET_TORY
+0x26E:In Serpent's Hold. I met Horffe who is head of security. He reminds me of someone else.
 0x271:Lady Tory of Serpent's Hold reminds of someone named Deanna.
-# 0x272:MET_LEIGH
-0x272:Lady Leigh, the healer of Serpent's Hold reminds me of a certain doctor.
-# 0x25E:STARTED_HOLD_INVESTIGATION
-0x25E:Someone defaced the statue of my friend Lord British in Serpent's Hold. Sir John-Paul wants me to find out who it was
-# 0x261:FINISHED_HOLD_INVESTIGATION
-0x261:Sir Pendaran was the one who defaced the statue of Lord British in Serpent's Hold
-# 0x277:HEARD_ABOUT_RIKY
+0x272:Lady Leigh, the healer of Serpent's Hold, reminds me of a certain doctor.
+0x25E:Someone defaced the statue of my friend Lord British in Serpent's Hold. Sir John-Paul wants me to find out who it was.
+0x261:Sir Pendaran was the one who defaced the statue of Lord British in Serpent's Hold.
 0x277:Lady Tory's baby son Riky was kidnapped by harpies. I must save him.
-# 0x278: RESCUED_RIKY
 0x278:I saved baby Riky from the harpies!
 0x27A:KNOWS_LEIGH_IS_HEALER
 0x259:CAN_EXAMINE_STONE_CHIPS
@@ -116,30 +88,21 @@
 
 # FoV flags:
 
-# 0x2FE:TALKED_ABOUT_RUMBLE
-0x2FE: I mentioned the earthquake to Lord British and he tells me that the Isle of Fire, where I defeated Exodus, has risen. He also told me of three shrines he erected there. He offers me to use his ship, the Golden Ankh, anchored at Vesper, to visit this island.
-# 0x30C:BANISHED_EXODUS
-0x30C:I managed to banish Exodus' darc core to the eternal void!
+0x2FE: I mentioned the earthquake to Lord British and he tells me that the Isle of Fire, where I defeated Exodus, has risen. He also told me of three shrines he erected there. He offers me use of his ship, the Golden Ankh, anchored at Vesper, to visit this island.
+0x30C:I managed to banish Exodus' dark core to the ethereal void!
 0x30E:SCROLL_OF_INFINITY
-# 0x310:MET_ERETHIAN
 0x310:An exiled and blind man named Erethian lives on the Isle of Fire.
-# 0x313:MET_ARCADION
 0x313:On the Isle of Fire I met a demon called Arcadion, trapped in a mirror. He wants me to free him
-# 0x32F:BROKE_MIRROR
-0x32F:With the gem I broke the mirror to free the demon Arcadion. But he wasn't freed instead he is now imprioned in the gem.
-# 0x330:COMMANDED_BOND
+0x032F:With the gem I broke the mirror to free the demon Arcadion, but instead he is now imprisoned in the gem.
 0x030:I bound the demon Arcadion to the blackrock sword
-# 0x331:REFUSED_HELP_ARCADION
 0x331:I'm not helping a demon!
-# 0x0332:HELPING_ARCADION
 0x332:I mistrust Erethian and have agreed to help the demon Arcadion.
 0x32D:Improved the blackrock sword.
+0x337:Blacksmithing is hard work. Finally managed to forge the blackrock sword.
 0x333:TALKED_ARCADION_WITH_GEM
 0x333:ACCEPTED_GEM_POWER
 0x334:ARCADION_SLAVE
 0x335:REFUSED_GEM_POWER
-#0x337:FINISHED_BLADE_FORGING
-0x337:Blacksmithing is hard work. Finally managed to forge the blackrock sword.
 0x338:TALKED_ABOUT_BINDING_GEM
 0x343:BEGIN_BOND
 0x344:FINISHED_BOND
@@ -166,9 +129,9 @@
 0x212:HEARD_ABOUT_PAWS_THEFT - Heard from an NPC about the theft
 0x213:TOBIAS_ACCUSED - Feridwyn accused Tobias of the theft
 0x218:SOLVED_PAWS_THEFT - Found Garritt was the thief
-0x234:HEARD_CAMILLES_DEFENSE - Camille has run out to say that her son is innocent of the theft (prevents conversation recurring)
-0x21A:GOT_CAMILLES_WHEAT - Given the wheat by Camille (prevents her offering it again)
-0x21D:DELIVERED_CAMILLES_WHEAT- Delivered the wheat to Thurston (so you don't get paid for it twice)
+0x234:HEARD_CAMILLES_DEFENSE - Camille has run out to say that her son is innocent of the theft.
+0x21A:GOT_CAMILLES_WHEAT - Given the wheat by Camille
+0x21D:DELIVERED_CAMILLES_WHEAT- Delivered the wheat to Thurston
 
 
 #Some Cove flags:
@@ -214,20 +177,14 @@
 # Random flags
 
 0x04:BROKE_SPHERE
-# 0x11F:LEARNED_ABOUT_MINOC_MURDER
 0x11F:Oh no, another murder. This time in Minoc's sawmill. Something is wrong here.
-# 0x100:TALKED_TO_GYPSY
 0x100:A gypsy told me my future. I really need to find the Time Lord and the Wisps know how to contact him.
-# 0x150:HAD_FIRST_WISP_TALK
-0x150:Finally I have talked to the wisps. Only with the whistle the nice emp Trellek gave me was I able to talk to them
-# 0x133:WISP_OFFERED_TRADE
-0x133:The wisps won't help me for free. They have asked me to deliver them the notebook of Alagner, the most intelligent Britanian, living on the island of New Magincia.
-# 0x157:DELIVERED_NOTEBOOK_TO_WISPS
-0x157:Delivered the cursed notebok to the wisps.In return they delivered me the message from the Time Lord and told me how to reach him at the Shrine of Spirituality.
-# 0x127:LEARNED_ABOUT_ALIGNMENT
+0x150:Finally I have talked to the wisps. Only with the whistle the nice emp Trellek gave me, was I able to talk to them
+0x133:The wisps won't help me for free. They have asked me to deliver them the notebook of Alagner, the wisest Britannian, who lives on the island of New Magincia.
+0x157:Delivered the cursed notebok to the wisps.In return they delivered me the message from the Time Lord, and told me how to reach him at the Shrine of Spirituality.
 0x127:The Time Lord told me about the evil Guardian and his plan to enter Britannia through a black moongate at the time of the Astronomical Alignment.
 0xDA:BATLIN_MISSING - Batlin has buggered off (after you talk to him with the cube in your possession)
-0x80:HEARD_ABOUT_PATTERSONS_AFFAIR - Heard that Patterson is having an affair with Candice
+0x80:HEARD_ABOUT_PATTERSONS_AFFAIR - Heard that Patterson is having an affair
 0x8C:HEARD_ABOUT_VOICE - Heard about the Inner Voice
 0x85:JEANETTE_LOVES_WILLY - heard about Jeanette's crush on Willy the Baker
 0xCB:HIRED_BY_WILLY -hired by Willy to bake bread
