@@ -462,6 +462,9 @@ Game_window::Game_window
 	config->value("config/gameplay/alternate_drop", str, "no");
 	alternate_drop = str == "yes";
 	config->set("config/gameplay/alternate_drop", alternate_drop?"yes":"no", false);
+	config->value("config/gameplay/allow_autonotes", str, "no");
+	allow_autonotes = str == "yes";
+	config->set("config/gameplay/allow_autonotes", allow_autonotes?"yes":"no", false);
 	config->value("config/gameplay/scroll_with_mouse", str, "no");
 	scroll_with_mouse = str == "yes";
 	config->set("config/gameplay/scroll_with_mouse",
@@ -2921,6 +2924,18 @@ void Game_window::setup_game
 	CYCLE_RED_PLASMA();
 
 	Notebook_gump::initialize();		// Read in journal.
+	
+	//read autonotes
+	std::string d, autonotesfilename;
+	d = "config/disk/game/"+Game::get_gametitle()+"/autonotes";
+	config->value(d.c_str(),autonotesfilename,"(default)");
+	if (autonotesfilename == "(default)") {
+	  config->set(d.c_str(), autonotesfilename, true);
+	  Notebook_gump::read_auto_text();
+	} else {
+	  Notebook_gump::read_auto_text_file(autonotesfilename.c_str());
+	}
+	
 	usecode->read();		// Read the usecode flags
 	CYCLE_RED_PLASMA();
 

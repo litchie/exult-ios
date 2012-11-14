@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001-2011  The Exult Team
+ *  Copyright (C) 2001-2012  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@
 #include "Enabled_button.h"
 #include "font.h"
 #include "gamewin.h"
-
+#include "Notebook_gump.h"
 using std::string;
 
 static const int rowy[] = { 4, 16, 28, 40, 52, 64, 76, 88, 100, 112, 124, 136, 148 };
@@ -121,8 +121,10 @@ void MiscOptions_gump::toggle(Gump_button* btn, int state)
 		mode = state;
 	else if (btn == buttons[id_charmDiff])
 		charmDiff = state;
-        else if (btn == buttons[id_alternate_drop])
+	else if (btn == buttons[id_alternate_drop])
 		alternate_drop = state;
+	else if (btn == buttons[id_allow_autonotes])
+		allow_autonotes = state;
 }
 
 void MiscOptions_gump::build_buttons()
@@ -147,15 +149,20 @@ void MiscOptions_gump::build_buttons()
 	std::string *stacks_text = new std::string[2];
         stacks_text[0] = "No";
         stacks_text[1] = "Yes";
+	std::string *autonotes_text = new std::string[2];
+        autonotes_text[0] = "No";
+	    autonotes_text[1] = "Yes";
+
 	buttons[id_scroll_mouse] = new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
 							   40, scroll_mouse, 2);
 	buttons[id_menu_intro] = new MiscTextToggle (this, yesNo2, colx[5], rowy[1], 
 							   40, menu_intro, 2);
 	buttons[id_usecode_intro] = new MiscTextToggle (this, yesNo3, colx[5], rowy[2], 
 							   40, usecode_intro, 2);
-
-	buttons[id_alternate_drop] = new MiscTextToggle(this, stacks_text, colx[5], rowy[3], 40, alternate_drop, 2);	
-
+	buttons[id_alternate_drop] = new MiscTextToggle(this, stacks_text, colx[5], rowy[3], 
+							   40, alternate_drop, 2);
+	buttons[id_allow_autonotes] = new MiscTextToggle(this, autonotes_text, colx[5], rowy[4],
+							   40, allow_autonotes, 2);
 	buttons[id_difficulty] = new MiscTextToggle (this, diffs, colx[3], rowy[8], 
 							   85, difficulty, 7);
 	buttons[id_show_hits] = new MiscEnabledToggle(this, colx[3], rowy[9],
@@ -197,6 +204,7 @@ void MiscOptions_gump::load_settings()
 		mode = 0;
 	charmDiff = Combat::charmed_more_difficult ? 1: 0;
 	alternate_drop = gwin->get_alternate_drop();
+	allow_autonotes = gwin->get_allow_autonotes();
 }
 
 MiscOptions_gump::MiscOptions_gump() 
@@ -237,9 +245,13 @@ void MiscOptions_gump::save_settings()
 	Combat::charmed_more_difficult = (charmDiff != 0);
 	config->set("config/gameplay/combat/charmDifficulty",
 					charmDiff ? "hard" : "normal", false);
-
 	gwin->set_alternate_drop(alternate_drop);
-	config->set("config/gameplay/alternate_drop", alternate_drop ? "yes" : "no", false);	
+	config->set("config/gameplay/alternate_drop", 
+						alternate_drop ? "yes" : "no", false);
+	gwin->set_allow_autonotes(allow_autonotes);
+	config->set("config/gameplay/allow_autonotes", 
+						allow_autonotes ? "yes" : "no", false);
+
 	config->write_back();
 }
 
@@ -255,6 +267,7 @@ void MiscOptions_gump::paint()
 	font->paint_text(iwin->get_ib8(), "Skip intro:", x + colx[0], y + rowy[1] + 1);
 	font->paint_text(iwin->get_ib8(), "Skip scripted first scene:", x + colx[0], y + rowy[2] + 1);
 	font->paint_text(iwin->get_ib8(), "Alternate drag'n'drop:", x+colx[0], y+ rowy[3] + 1);
+	font->paint_text(iwin->get_ib8(), "Allow Autonotes:", x+colx[0], y+ rowy[4] + 1);
 
 	font->paint_text(iwin->get_ib8(), "Combat Options:", x + colx[0], y + rowy[7] + 1);
 	font->paint_text(iwin->get_ib8(), "Difficulty:", x + colx[1], y + rowy[8] + 1);
