@@ -138,6 +138,7 @@ class Game_window
 	int allow_right_pathfind;	// If moving with right click is allowed
 	bool scroll_with_mouse; 		// scroll game view with mousewheel
 	bool alternate_drop;	// don't split stacks, can be inverted with a CTRL key modifier
+	bool allow_autonotes;
 	bool in_exult_menu; 	// used for menu options
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -253,6 +254,10 @@ public:
 		{ return alternate_drop; }
 	void set_alternate_drop(bool s)
 		{ alternate_drop = s; }
+	bool get_allow_autonotes() const
+		{ return allow_autonotes; }
+	void set_allow_autonotes(bool s)
+		{ allow_autonotes = s; }
 	bool is_in_exult_menu() const		// used for menu options
 		{ return in_exult_menu; }
 	void set_in_exult_menu (bool im)

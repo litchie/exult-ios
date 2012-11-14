@@ -322,7 +322,8 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/paperdol_info.txt \
 	data/bg/shape_info.txt \
 	data/bg/blends.dat \
-	data/bg/container.dat
+	data/bg/container.dat \
+	data/bg/autonotes.txt
 
 EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
@@ -335,7 +336,8 @@ EXULT_SI_FLX_OBJECTS = \
 	data/si/paperdol_info.txt \
 	data/si/shape_info.txt \
 	data/si/blends.dat \
-	data/si/container.dat
+	data/si/container.dat \
+	data/si/autonotes.txt
 
 EXULT_BG_PAPERDOL_VGA = data/bg/bg_paperdol.vga data/bg/bg_paperdol_vga.h
 EXULT_BG_PAPERDOL_VGA_OBJECTS = \

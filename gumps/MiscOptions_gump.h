@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001-2011 The Exult Team
+Copyright (C) 2001-2012 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -37,6 +37,7 @@ class MiscOptions_gump : public Modal_gump
 	bool usecode_intro;
 	bool menu_intro;
 	bool alternate_drop;
+	bool allow_autonotes;
 	void build_buttons();
 
 	enum button_ids {
@@ -47,6 +48,7 @@ class MiscOptions_gump : public Modal_gump
 		id_menu_intro,
 		id_usecode_intro,
 		id_alternate_drop,
+		id_allow_autonotes,
 		id_difficulty,
 		id_show_hits,
 		id_mode,
