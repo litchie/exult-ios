@@ -285,52 +285,42 @@ struct Scaler2xBR
 {
 	enum {scale = 2};
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteepAndShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteepAndShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 4>(out.template get<1, 0>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 1>(), r, g, b);
-		manip.template blend<5, 6>(out.template get<1, 1>(), r, g, b); //[!] fixes 7/8 used in original
+		out.template get<1, 0>().template blend<1, 4>(col);
+		out.template get<0, 1>().template blend<1, 4>(col);
+		out.template get<1, 1>().template blend<5, 6>(col); //[!] fixes 7/8 used in original
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 4>(out.template get<1, 0>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 1>(), r, g, b);
+		out.template get<1, 0>().template blend<1, 4>(col);
+		out.template get<1, 1>().template blend<3, 4>(col);
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteep(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteep(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 1>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 1>(), r, g, b);
+		out.template get<0, 1>().template blend<1, 4>(col);
+		out.template get<1, 1>().template blend<3, 4>(col);
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineDiagonal(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineDiagonal(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 2>(out.template get<1, 1>(), r, g, b);
+		out.template get<1, 1>().template blend<1, 2>(col);
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendCorner(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendCorner(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
 #if XBR_VARIANT == 4
 		//model a round corner
-		manip.template blend<21, 100>(out.template get<1, 1>(), r, g, b); //exact: 1 - pi/4 = 0.2146018366
+		out.template get<1, 1>().template blend<21, 100>(col); //exact: 1 - pi/4 = 0.2146018366
 #else
-		manip.template blend<1, 2>(out.template get<1, 1>(), r, g, b);
+		out.template get<1, 1>().template blend<1, 2>(col);
 #endif
 	}
 };
@@ -339,63 +329,52 @@ struct Scaler3xBR
 {
 	enum {scale = 3};
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteepAndShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteepAndShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 4>(out.template get<2, 0>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 2>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<2, 1>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 2>(), r, g, b);
-		manip.copy(out.template get<2, 2>(), col);
+		out.template get<2, 0>().template blend<1, 4>(col);
+		out.template get<0, 2>().template blend<1, 4>(col);
+		out.template get<2, 1>().template blend<3, 4>(col);
+		out.template get<1, 2>().template blend<3, 4>(col);
+		out.template get<2, 2>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<3, 4>(out.template get<2, 1>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<1, 2>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<2, 0>(), r, g, b);
-		manip.copy(out.template get<2, 2>(), col);
+		out.template get<2, 1>().template blend<3, 4>(col);
+		out.template get<1, 2>().template blend<1, 4>(col);
+		out.template get<2, 0>().template blend<1, 4>(col);
+		out.template get<2, 2>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteep(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteep(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 2>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<2, 1>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 2>(), r, g, b);
-		manip.copy(out.template get<2, 2>(), col);
-			
+		out.template get<1, 2>().template blend<3, 4>(col);
+		out.template get<2, 1>().template blend<1, 4>(col);
+		out.template get<0, 2>().template blend<1, 4>(col);
+		out.template get<2, 2>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineDiagonal(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineDiagonal(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<7, 8>(out.template get<2, 2>(), r, g, b);
-		manip.template blend<1, 8>(out.template get<1, 2>(), r, g, b);
-		manip.template blend<1, 8>(out.template get<2, 1>(), r, g, b);
+		out.template get<2, 2>().template blend<7, 8>(col);
+		out.template get<1, 2>().template blend<1, 8>(col);
+		out.template get<2, 1>().template blend<1, 8>(col);
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendCorner(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendCorner(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
 #if XBR_VARIANT == 4
 		//model a round corner
-		manip.template blend<45, 100>(out.template get<2, 2>(), r, g, b); //exact: 0.4545939598
-		//manip.template blend<14, 1000>(out.template get<2, 1>(), col); //0.01413008627 -> negligible
-		//manip.template blend<14, 1000>(out.template get<1, 2>(), col); //0.01413008627
+		out.template get<2, 2>().template blend<45, 100>(col); //exact: 0.4545939598
+		//out.template get<2, 1>().template blend<14, 1000>(col); //0.01413008627 -> negligible
+		//out.template get<1, 2>().template blend<14, 1000>(col); //0.01413008627
 #else
-		manip.template blend<1, 2>(out.template get<2, 2>(), r, g, b);
+		out.template get<2, 2>().template blend<1, 2>(col);
 #endif
 	}
 };
@@ -404,68 +383,55 @@ struct Scaler4xBR
 {
 	enum {scale = 4};
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteepAndShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteepAndShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<3, 4>(out.template get<3, 1>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 3>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<3, 0>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 3>(), r, g, b);
-		manip.template blend<1, 3>(out.template get<2, 2>(), r, g, b); //[!] fixes 1/4 used in original
-		typename Manip_pixels::uintD clr = manip.copy(col);
-		out.template get<3, 3>() = out.template get<3, 2>() = out.template get<2, 3>() = clr;
+		out.template get<3, 1>().template blend<3, 4>(col);
+		out.template get<1, 3>().template blend<3, 4>(col);
+		out.template get<3, 0>().template blend<1, 4>(col);
+		out.template get<0, 3>().template blend<1, 4>(col);
+		out.template get<2, 2>().template blend<1, 3>(col); //[!] fixes 1/4 used in original
+		out.template get<3, 3>() = out.template get<3, 2>() = out.template get<2, 3>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineShallow(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineShallow(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<3, 4>(out.template get<2, 3>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<3, 1>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<2, 2>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<3, 0>(), r, g, b);
-		typename Manip_pixels::uintD clr = manip.copy(col);
-		out.template get<3, 2>() = out.template get<3, 3>() = clr;
+		out.template get<2, 3>().template blend<3, 4>(col);
+		out.template get<3, 1>().template blend<3, 4>(col);
+		out.template get<2, 2>().template blend<1, 4>(col);
+		out.template get<3, 0>().template blend<1, 4>(col);
+		out.template get<3, 2>() = out.template get<3, 3>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineSteep(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineSteep(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<3, 4>(out.template get<3, 2>(), r, g, b);
-		manip.template blend<3, 4>(out.template get<1, 3>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<2, 2>(), r, g, b);
-		manip.template blend<1, 4>(out.template get<0, 3>(), r, g, b);
-		typename Manip_pixels::uintD clr = manip.copy(col);
-		out.template get<2, 3>() = out.template get<3, 3>() = clr;
+		out.template get<3, 2>().template blend<3, 4>(col);
+		out.template get<1, 3>().template blend<3, 4>(col);
+		out.template get<2, 2>().template blend<1, 4>(col);
+		out.template get<0, 3>().template blend<1, 4>(col);
+		out.template get<2, 3>() = out.template get<3, 3>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendLineDiagonal(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendLineDiagonal(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
-		manip.template blend<1, 2>(out.template get<2, 3>(), r, g, b);
-		manip.template blend<1, 2>(out.template get<3, 2>(), r, g, b);
-		manip.copy(out.template get<3, 3>(), col);
+		out.template get<2, 3>().template blend<1, 2>(col);
+		out.template get<3, 2>().template blend<1, 2>(col);
+		out.template get<3, 3>() = col;
 	}
 
-	template <class Manip_pixels, class OutMatrix>
-	static void blendCorner(OutMatrix& out, unsigned char col, const Manip_pixels& manip)
+	template <class OutMatrix, class Buffer_Type>
+	static void blendCorner(OutMatrix& out, Buffer_Type const& col)
 	{
-		unsigned int r, g, b;
-		manip.split_source(col, r, g, b);
 #if XBR_VARIANT == 4
 		//model a round corner
-		manip.template blend<68, 100>(out.template get<3, 3>(), r, g, b); //exact: 0.6848532563
-		manip.template blend< 9, 100>(out.template get<3, 2>(), r, g, b); //0.08677704501
-		manip.template blend< 9, 100>(out.template get<2, 3>(), r, g, b); //0.08677704501
+		out.template get<3, 3>().template blend<68, 100>(col); //exact: 0.6848532563
+		out.template get<3, 2>().template blend< 9, 100>(col); //0.08677704501
+		out.template get<2, 3>().template blend< 9, 100>(col); //0.08677704501
 #else
-		manip.template blend<1, 2>(out.template get<3, 3>(), r, g, b);
+		out.template get<3, 3>().template blend<1, 2>(col);
 #endif
 	}
 };

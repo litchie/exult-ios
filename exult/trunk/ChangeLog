@@ -1,3 +1,6 @@
+2012-11-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* imagewin/scale_xbr.*: Performance improvements for NxBR scalers.
+
 2012-11-11 Dominik Reichardt <dominus@users.sourceforge.net>
 	* varios files: added data/bg|si/autonotes.txt to game flx bundles and the 
 	  misc option to toggle it.
