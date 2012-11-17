@@ -451,8 +451,8 @@ void Scale_xBR
 			}
 
 			//fill block of size n * n with the given color
-			RGBColor<Manip_pixels, 2> buffer[Scaler::scale * Scaler::scale] = *e;
-			//fill_block(buffer, *e, Scaler::scale);
+			RGBColor<Manip_pixels, 2> buffer[Scaler::scale * Scaler::scale];
+			fill_block(buffer, *e, Scaler::scale);
 			//perf: no disadvantage compared to hand written assign!
 
 			OutputMatrix<RGBColor<Manip_pixels, 2>, Scaler::scale, ROT_0> om0(buffer, Scaler::scale);
