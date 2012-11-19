@@ -234,6 +234,7 @@ static int arg_mapnum = -1;
 static bool arg_nomenu = false;
 static bool arg_edit_mode = false;	// Start up ExultStudio.
 static bool arg_write_xml = false;	// Write out game's config. as XML.
+static bool arg_reset_video = false;	// Resets the video setings.
 
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
@@ -311,6 +312,7 @@ int main
 	parameters.declare("-c",&arg_configfile,"");
 	parameters.declare("--edit",&arg_edit_mode,true);
 	parameters.declare("--write-xml",&arg_write_xml,true);
+	parameters.declare("--reset-video",&arg_reset_video,true);
 #if defined WIN32
 	bool portable = false;
 	parameters.declare("-p",&portable,true);
@@ -330,7 +332,7 @@ int main
 		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]"<<endl
 			 << "             [--bg|--fov|--si|--ss|--game <game>] [--mod <mod>]" << endl
 			 << "             [--nomenu] [--buildmap 0|1|2] [--mapnum <num>]" << endl
-			 << "             [--nocrc] [--edit] [--write-xml]" << endl
+			 << "             [--nocrc] [--edit] [--write-xml] [--reset-video]" << endl
 			 << "--help\t\tShow this information" << endl
 			 << "--version\tShow version info" << endl
 			 << " -c configfile\tSpecify alternate config file" << endl
@@ -356,7 +358,8 @@ int main
 #if defined WIN32
 			 << " -p\t\tMakes the home path the Exult directory (old Windows way)" << endl
 #endif
-			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl;
+			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl
+			 << "--reset-video\tResets to the default video settings" << endl;
 			
 		exit(1);
 	}
@@ -584,6 +587,23 @@ int exult_main(const char *runpath)
 #endif
 	}
 	
+	// reset-video command line option
+	if (arg_reset_video)
+	{
+		config->set("config/video/display/width", 640, false);
+		config->set("config/video/display/height", 480, false);
+		config->set("config/video/game/width", 320, false);
+		config->set("config/video/game/height", 200, false);
+		config->set("config/video/scale", 2, false);
+		config->set("config/video/scale_method", "2xSaI" , false);
+		config->set("config/video/fill_mode", "center", false);
+		config->set("config/video/fill_scaler", "Bilinear", false);
+		config->set("config/video/share_video_settings", "yes", false);
+		config->set("config/video/fullscreen", "no", false);
+		config->set("config/video/force_bpp", 0, false);
+
+		config->write_back();
+	}
 	if (config->key_exists("config/gameplay/allow_double_right_move")) 
 	{
 		string str;

@@ -1,3 +1,9 @@
+2012-11-19 Dominik Reichardt <dominus@users.sourceforge.net>
+	* exult.cc: added command line option to reset the video settings (patch by 
+	  Malignant Manor).
+	* win32/exult_installer.iss: "reset video settings" shortcut to the Exult 
+	  Start Menu group on Windows (again thanks to Malignant Manor).
+	  
 2012-11-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* imagewin/scale_xbr.*: Performance improvements for NxBR scalers.
 
