@@ -1998,7 +1998,10 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 					//   src, dest. are off the screen
 			// Teleport if more than 16 tiles from target
 		if (get_tile().distance(dest) > 16)
+			{
 			move(dest.tx, dest.ty, dest.tz, mapnum);
+			set_frame(Actor::standing);
+			}
 		set_schedule_type(new_schedule_type);
 		return;
 		}
