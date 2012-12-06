@@ -2355,12 +2355,13 @@ void BuildGameMap(BaseGameInfo *game, int mapnum)
 		
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
+		Image_window::FillMode fillmode = Image_window::Fit;
 
 		//string	fullscreenstr;		// Check config. for fullscreen mode.
 		//config->value("config/video/fullscreen",fullscreenstr,"no");
 		// set windowed mode
 		//config->set("config/video/fullscreen","no",false);
-		gwin = new Game_window(w, h, false, w, h, sc, sclr);
+		gwin = new Game_window(w, h, false, w, h, sc, sclr, fillmode, sclr);
 		// restore original fullscreen setting
 		//config->set("config/video/fullscreen",fullscreenstr,true);
 		Audio::Init();
