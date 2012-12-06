@@ -2,6 +2,7 @@
 	* schedule.cc: Walk-to-schedule caused instances of the sit-on-air bug because
 	  it would teleport the NPC if off-screen and leave him/her sitting/lying down.
 	* actors.cc: Fixed another case of potential sit-on-air source.
+	* exult.cc: Fixed buildmap guard band issue.
 
 2012-11-19 Dominik Reichardt <dominus@users.sourceforge.net>
 	* exult.cc: added command line option to reset the video settings (patch by 
