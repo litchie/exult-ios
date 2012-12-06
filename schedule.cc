@@ -4539,6 +4539,8 @@ void Walk_to_schedule::now_what
 	  				//   Patterson takes about 30.)
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
+					// Force actor to sit down/lie down again
+		npc->set_frame(Actor::standing);
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
