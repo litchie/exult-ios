@@ -64,6 +64,7 @@ public:
 		}
 	};
 
+
 Monster_actor *Monster_actor::in_world = 0;
 
 /*

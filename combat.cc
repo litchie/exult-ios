@@ -1393,10 +1393,13 @@ void Combat_schedule::now_what
 		npc->start_std();
 		Actor *safenpc = npc;
 			// Change back to ready frame.
-		signed char frame =
-				(signed char)npc->get_dir_framenum(Actor::ready_frame);
 		int delay = gwin->get_std_delay();
-		npc->set_action(new Frames_actor_action(&frame, 1, delay));
+		if (npc->get_shapenum() != 529)
+			{
+			signed char frame =
+					(signed char)npc->get_dir_framenum(Actor::ready_frame);
+			npc->set_action(new Frames_actor_action(&frame, 1, delay));
+			}
 		npc->start(delay, delay);
 		if (attack_target(npc, opponent, Tile_coord(-1, -1, 0), weapon_shape, true))
 			{		// Strike but once at objects.
@@ -1429,9 +1432,12 @@ void Combat_schedule::now_what
 			}
 		delay *= gwin->get_std_delay();
 			// Change back to ready frame.
-		signed char frame =
-				(signed char)npc->get_dir_framenum(Actor::ready_frame);
-		npc->set_action(new Frames_actor_action(&frame, 1, delay));
+		if (npc->get_shapenum() != 529)
+			{
+			signed char frame =
+					(signed char)npc->get_dir_framenum(Actor::ready_frame);
+			npc->set_action(new Frames_actor_action(&frame, 1, delay));
+			}
 		npc->start(gwin->get_std_delay(), delay);
 
 		// Strike but once at objects.
