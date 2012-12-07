@@ -62,6 +62,8 @@ public:
 		remove_this(1);			// Remove (but don't delete this).
 		set_invalid();
 		}
+	virtual bool is_slime() const
+		{ return true; }
 	};
 
 
@@ -538,11 +540,11 @@ void Slime_actor::update_frames
 	Game_object_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
 		if (dest.tx != -1)	// Assume within 2 tiles.
-			Game_object::find_nearby(nearby, dest, 529, 4, 8);
+			Game_object::find_nearby(nearby, dest, get_shapenum(), 4, 8);
 		else
-			Game_object::find_nearby(nearby, src, 529, 2, 8);
+			Game_object::find_nearby(nearby, src, get_shapenum(), 2, 8);
 	else				// Assume they're both not invalid.
-		Game_object::find_nearby(nearby, dest, 529, 2, 8);
+		Game_object::find_nearby(nearby, dest, get_shapenum(), 2, 8);
 	if (src.tx != -1)		// Update neighbors we moved from.
 		{
 		Get_slime_neighbors(src, neighbors);
