@@ -2027,7 +2027,10 @@ void Game_window::teleport_party
 				person->get_shapenum(), person->get_framenum(),
 									1);
 			if (t1.tx != -1)
+				{
 				person->move(t1, newmap);
+				person->set_frame(person->get_dir_framenum(Actor::standing));
+				}
 			}
 		}
 	main_actor->get_followers();

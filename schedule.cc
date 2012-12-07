@@ -640,7 +640,7 @@ void Pace_schedule::now_what
 void Eat_at_inn_schedule::im_dormant()
 {
 	// Force NPCs to sit down again after cache-out/cache-in.
-	//npc->set_frame(Actor::standing);
+	//npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	npc->set_action(0);
 }
 
@@ -1970,7 +1970,7 @@ void Sleep_schedule::now_what
 void Sleep_schedule::im_dormant()
 {
 	// Force NPCs to lay down again after cache-out/cache-in.
-	//npc->set_frame(Actor::standing);
+	//npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	npc->set_action(0);
 }
 
@@ -2015,7 +2015,7 @@ void Sleep_schedule::ending
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
 	npc->clear_sleep();
-	npc->set_frame(Actor::standing);
+	npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}
@@ -2084,8 +2084,8 @@ void Sit_schedule::now_what
 		return;
 		}
 					// Wait a while if we got up.
-	if (!set_action(npc, chair, sat ? (2000 + rand()%3000) : 0, &chair))
-		npc->start(200, 5000);	// Failed?  Try again later.
+	if (!set_action(npc, chair, sat ? (1000 + rand()%1000) : 0, &chair))
+		npc->start(200, 1000);	// Failed?  Try again later.
 	else {
 		add_client(chair);
 		sat = true;
@@ -2098,7 +2098,7 @@ void Sit_schedule::now_what
 void Sit_schedule::im_dormant()
 {
 	// Force NPCs to sit down again after cache-out/cache-in.
-	//npc->set_frame(Actor::standing);
+	//npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	npc->set_action(0);
 }
 
@@ -2323,7 +2323,7 @@ void Desk_schedule::now_what
 void Desk_schedule::im_dormant()
 {
 	// Force NPCs to sit down again after cache-out/cache-in.
-	//npc->set_frame(Actor::standing);
+	//npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	npc->set_action(0);
 }
 
@@ -4378,7 +4378,7 @@ Eat_schedule::Eat_schedule(Actor *n): Schedule(n), plate(0),
 void Eat_schedule::im_dormant()
 {
 	// Force NPCs to sit down again after cache-out/cache-in.
-	//npc->set_frame(Actor::standing);
+	//npc->set_frame(npc->get_dir_framenum(Actor::standing));
 	npc->set_action(0);
 }
 
@@ -4540,7 +4540,7 @@ void Walk_to_schedule::now_what
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 					// Force actor to sit down/lie down again
-		npc->set_frame(Actor::standing);
+		npc->set_frame(npc->get_dir_framenum(Actor::standing));
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
