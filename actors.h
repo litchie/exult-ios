@@ -507,6 +507,8 @@ public:
 		{ return usecode_dir; }
 	virtual Actor *as_actor()	// An actor?
 		{ return this; }
+	virtual bool is_slime() const
+		{ return false; }
 	void init_readied();		// Call Usecode to init. readied objs.
 					// Remove an object.
 	virtual void remove(Game_object *obj);

@@ -1394,11 +1394,18 @@ void Combat_schedule::now_what
 		Actor *safenpc = npc;
 			// Change back to ready frame.
 		int delay = gwin->get_std_delay();
-		if (npc->get_shapenum() != 529)
+		if (!npc->get_info().has_strange_movement())	// Neither slime nor BG sea serpent?
 			{
 			signed char frame =
 					(signed char)npc->get_dir_framenum(Actor::ready_frame);
 			npc->set_action(new Frames_actor_action(&frame, 1, delay));
+			}
+		else if (!npc->is_slime())  // Sea serpent?
+			{
+			signed char frames[] = {(signed char)npc->get_dir_framenum(3),
+			                        (signed char)npc->get_dir_framenum(2),
+			                        (signed char)npc->get_dir_framenum(1)};
+			npc->set_action(new Frames_actor_action(frames, sizeof(frames), delay));
 			}
 		npc->start(delay, delay);
 		if (attack_target(npc, opponent, Tile_coord(-1, -1, 0), weapon_shape, true))
@@ -1432,11 +1439,18 @@ void Combat_schedule::now_what
 			}
 		delay *= gwin->get_std_delay();
 			// Change back to ready frame.
-		if (npc->get_shapenum() != 529)
+		if (!npc->get_info().has_strange_movement())	// Neither slime nor BG sea serpent?
 			{
 			signed char frame =
 					(signed char)npc->get_dir_framenum(Actor::ready_frame);
 			npc->set_action(new Frames_actor_action(&frame, 1, delay));
+			}
+		else if (!npc->is_slime())  // Sea serpent?
+			{
+			signed char frames[] = {(signed char)npc->get_dir_framenum(3),
+			                        (signed char)npc->get_dir_framenum(2),
+			                        (signed char)npc->get_dir_framenum(1)};
+			npc->set_action(new Frames_actor_action(frames, sizeof(frames), delay));
 			}
 		npc->start(gwin->get_std_delay(), delay);
 

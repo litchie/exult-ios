@@ -175,8 +175,7 @@ uint8 visible_frames[16] = {
 
 Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
-const signed char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
-								13, 14};
+const signed char sea_serpent_attack_frames[] = {1, 2, 3};
 const signed char reach_attack_frames1[] = {3, 6};
 const signed char raise_attack_frames1[] = {3, 4, 6};
 const signed char fast_swing_attack_frames1[] = {3, 5, 6};
@@ -1102,15 +1101,15 @@ int Actor::get_attack_frames
 	signed char baseframes[4];
 	const signed char *which = baseframes;
 	int cnt = 4;
-	switch (get_shapenum())		// Special cases.
+	if (is_slime())
+		return 0;
+	else if (get_info().has_strange_movement())
 		{
-	case 525:			// Sea serpent.
 		which = sea_serpent_attack_frames;
 		cnt = sizeof(sea_serpent_attack_frames);
-		break;
-	case 529:			// Slimes.
-		return 0;		// None, I believe.
-	default:
+		}
+	else
+		{
 		const signed char *reach_attack_frames;
 		const signed char *raise_attack_frames;
 		const signed char *fast_swing_attack_frames;
@@ -1155,7 +1154,6 @@ int Actor::get_attack_frames
 				cnt = sizeof(slow_swing_attack_frames1);
 				break;
 			}
-		break;
 		}
 	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
 		{
@@ -3070,14 +3068,14 @@ void Actor::lay_down(bool die)
 			<< (Ucscript::npc_frame + Actor::bow_frame)
 			<< (Ucscript::npc_frame + Actor::sit_frame);
 		}
-	else if (GAME_BG && get_shapenum() == 525)	// BG Sea serpent
-		{
+	else if (get_info().has_strange_movement())
+		{	// BG Sea serpent; slimes are done elsewhere.
 		(*scr) << (Ucscript::npc_frame + Actor::bow_frame)
 			<< (Ucscript::npc_frame + Actor::kneel_frame)
 			<< (Ucscript::npc_frame + Actor::sleep_frame);
 		}
 	else
-		{	// Slimes are done elsewhere.
+		{
 		(*scr) << (Ucscript::npc_frame + Actor::kneel_frame)
 			<< Ucscript::sfx << Audio::game_sfx(86);
 		if (!die)
