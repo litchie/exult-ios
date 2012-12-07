@@ -1223,7 +1223,7 @@ void Actor::stand_at_rest
 	)
 	{
 	rest_time = 0;			// Reset timer.
-	int frame = get_framenum()&0xff;// Base frame #.
+	int frame = get_framenum()&0xf;// Base frame #.
 	if (frame == standing || frame == sit_frame || frame == sleep_frame)
 		return;			// Already standing/sitting/sleeping.
 	if (!is_dead() && schedule_type == Schedule::follow_avatar &&
@@ -1998,7 +1998,7 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 		if (get_tile().distance(dest) > 16)
 			{
 			move(dest.tx, dest.ty, dest.tz, mapnum);
-			set_frame(Actor::standing);
+			set_frame(get_dir_framenum(Actor::standing));
 			}
 		set_schedule_type(new_schedule_type);
 		return;
@@ -3773,7 +3773,8 @@ int Actor::move_aside
 	)
 	{
 	// Do not move aside if sitting, bending over, kneeling or sleeping.
-	if (get_framenum() >= sit_frame && get_framenum() <= sleep_frame)
+	int frnum = get_framenum()&0xf; 
+	if (frnum >= sit_frame && frnum <= sleep_frame)
 		return 0;
 
 	Tile_coord cur = get_tile();
