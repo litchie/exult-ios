@@ -215,13 +215,10 @@ bool Gamemenu_gump::mouse_up(int mx, int my, int button)
 
 void Gamemenu_gump::do_exult_menu()
 {
-
 	// Need to do a very small init of game data... palette, mouse, gumps
-
-
-	Gamemenu_gump *gmenu = new Gamemenu_gump();
-
-	Game_window::get_instance()->get_gump_man()->do_modal_gump(gmenu,
+	Gamemenu_gump gmenu;
+	// Does not return until gump can be deleted:
+	Game_window::get_instance()->get_gump_man()->do_modal_gump(&gmenu,
 															   Mouse::hand);
 }
 

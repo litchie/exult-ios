@@ -105,6 +105,7 @@ public:
 
 	struct ScalerVector : public std::vector<Image_window::ScalerInfo> {
 		ScalerVector();
+		~ScalerVector();
 	};
 private:
 	static ScalerVector p_scalers;
