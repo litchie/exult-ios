@@ -767,6 +767,7 @@ int Font::load_internal
 	)
 	{
 	size_t len;
+	delete [] orig_font_buf;
 	font_buf = font_obj.retrieve(len);
 
 	if (!font_buf || !len)
@@ -785,6 +786,8 @@ int Font::load_internal
 		// Is it an IFF archive?
 		if(!strncmp(font_buf,"font",4))
 			font_buf += 8;		// Yes, skip first 8 bytes.
+		delete font_data;
+		delete font_shapes;
 		font_data = new BufferDataSource(font_buf, len);
 		font_shapes = new Shape_file(font_data);
 		hor_lead = hlead;
