@@ -395,6 +395,8 @@ VideoOptions_gump::~VideoOptions_gump()
 {
 	for (int i = id_first; i < id_count; i++)
 		if (buttons[i]) delete buttons[i];
+	delete [] resolutions;
+	delete [] win_resolutions;
 }
 
 void VideoOptions_gump::save_settings()

@@ -2012,6 +2012,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	}
 	while(editing);
 
+	delete [] transto;
 	gwin->clear_screen();
 
 	if(ok)
