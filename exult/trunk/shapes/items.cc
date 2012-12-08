@@ -184,6 +184,7 @@ static void Setup_text
 
 void Setup_text(bool si, bool expansion)
 	{
+	Free_text();
 	bool is_patch = is_system_path_defined("<PATCH>");
 
 					// Exult new-style messages?
