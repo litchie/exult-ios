@@ -141,7 +141,7 @@ Game_map::Game_map
 	(
 	int n
 	) : 
-            num(n), 
+        num(n), didinit(false),
 	    map_modified(false), caching_out(0),
 	    map_patches(new Map_patch_collection)
 	{
@@ -263,6 +263,7 @@ void Game_map::init
 	memset(schunk_modified, 0, sizeof(schunk_modified));
 	memset(schunk_cache, 0, sizeof(schunk_cache));
 	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
+	didinit = true;
 	}
 
 /*
@@ -296,21 +297,24 @@ void Game_map::clear
 	{
 	if (num == 0)
 		clear_chunks();
-					// Delete all chunks (& their objs).
-	for (int y = 0; y < c_num_chunks; y++)
-		for (int x = 0; x < c_num_chunks; x++)
-			{
-			delete objects[x][y];
-			objects[x][y] = 0;
-			}
+
+	if (didinit)
+		{			// Delete all chunks (& their objs).
+		for (int y = 0; y < c_num_chunks; y++)
+			for (int x = 0; x < c_num_chunks; x++)
+				{
+				delete objects[x][y];
+				objects[x][y] = 0;
+				}
+		for (int i = 0; i < 144; i++) delete [] schunk_cache[i];
+		}
+	else
+		memset(objects, 0, sizeof(objects));
 	map_modified = false;
 					// Clear 'read' flags.
-	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
-	memset(reinterpret_cast<char*>(schunk_modified), 0, 
-						sizeof(schunk_modified));
-
-	for (int i = 0; i < 144; i++) delete [] schunk_cache[i];
-	memset(schunk_cache, 0, sizeof (schunk_cache));
+	memset(schunk_read, 0, sizeof(schunk_read));
+	memset(schunk_modified, 0, sizeof(schunk_modified));
+	memset(schunk_cache, 0, sizeof(schunk_cache));
 	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
 
 	}
