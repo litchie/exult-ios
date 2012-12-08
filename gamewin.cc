@@ -394,6 +394,7 @@ Game_window::Game_window
 	    scrolltx_lo(0), scrollty_lo(0), avposx_ld(0), avposy_ld(0),
 	    lerping_enabled(0)
 	{
+	memset(save_names, 0, sizeof(save_names));
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.

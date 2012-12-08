@@ -61,6 +61,7 @@ class Game_map
 	static bool v2_chunks;		// True if 3 bytes/entry.
 	static bool read_all_terrain;	// True if we've read them all.
 	static bool chunk_terrains_modified;
+	bool didinit;
 	bool map_modified;		// True if any map changes from
 					//   map-editing.
 					// Chunk_terrain index for each chunk:
