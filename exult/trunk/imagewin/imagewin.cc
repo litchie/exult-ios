@@ -266,6 +266,13 @@ Image_window::ScalerVector::ScalerVector()
 #endif
 }
 
+Image_window::ScalerVector::~ScalerVector()
+{
+	for (std::vector<Image_window::ScalerInfo>::iterator it = begin();
+	     it != end(); ++it)
+		delete it->arb;
+}
+
 Image_window::ScalerType Image_window::get_scaler_for_name(const char *scaler)
 {
 	for (int s = 0; s < NumScalers; s++) {
