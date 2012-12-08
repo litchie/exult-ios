@@ -602,7 +602,7 @@ else
 fi
 
 # NxBR scalers
-AC_ARG_ENABLE(nxbr, AS_HELP_STRING([--enable-nxbr],[Enable 2xBR, 3xBR and 4xBR scaler support (experimental) @<:@default no@:>@]),,enable_nxbr=no)
+AC_ARG_ENABLE(nxbr, AS_HELP_STRING([--enable-nxbr],[Enable 2xBR, 3xBR and 4xBR scaler support (experimental) @<:@default yes@:>@]),,enable_nxbr=yes)
 AC_MSG_CHECKING([if we should build the 2xBR, 3xBR and 4xBR scalers])
 if test x$enable_nxbr = xyes; then
 	AC_MSG_RESULT(yes)

@@ -216,6 +216,7 @@ class Frames_actor_action : public Actor_action
 	Game_object *obj;		// Object to animate
 public:
 	Frames_actor_action(signed char *f, int c, int spd = 200, Game_object *o = 0);
+	Frames_actor_action(char f, int spd = 200, Game_object *o = 0);
 	virtual ~Frames_actor_action()
 		{ delete [] frames; }
 					// Handle time event.

@@ -44,7 +44,7 @@ public:
 	U7FileManager()
 		{  }
 	~U7FileManager()
-		{  }
+		{ reset(); }
 
 	void reset();
 

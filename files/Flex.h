@@ -67,6 +67,9 @@ public:
 	Flex(const File_spec &spec)
 		: U7file(spec)
 		{  }
+	virtual ~Flex()
+		{	}
+
 
 	///	Inspect the version of a flex file.
 	///	@return	The flex version.

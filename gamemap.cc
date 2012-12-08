@@ -258,14 +258,10 @@ void Game_map::init
 	}
 	u7map.close();
 					// Clear object lists, flags.
-	// No casting _should_ be necessary at this point.
-	// Who needs this?
-	memset(reinterpret_cast<char*>(objects), 0, sizeof(objects));
-	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
-	memset(reinterpret_cast<char*>(schunk_modified), 0, 
-						sizeof(schunk_modified));
-
-	memset(schunk_cache, 0, sizeof (schunk_cache));
+	memset(objects, 0, sizeof(objects));
+	memset(schunk_read, 0, sizeof(schunk_read));
+	memset(schunk_modified, 0, sizeof(schunk_modified));
+	memset(schunk_cache, 0, sizeof(schunk_cache));
 	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
 	}
 
@@ -738,7 +734,7 @@ void Game_map::write_attributes
 		{
 		const char *att = attlist[i].first;
 		int val = attlist[i].second;
-		ireg->write((void *)att, strlen(att) + 1);
+		ireg->write(att, strlen(att) + 1);
 		ireg->write2(val);
 		}
 	}
@@ -792,7 +788,7 @@ int Game_map::write_string
 		ireg->write1(IREG_SPECIAL);
 		ireg->write1(IREG_STRING);
 		ireg->write2(len);
-		ireg->write((void *)str, len);
+		ireg->write(str, len);
 		}
 	return len + 4;
 	}

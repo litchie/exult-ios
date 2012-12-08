@@ -635,6 +635,9 @@ BaseGameInfo *ExultMenu::run()
 			case -1: // Exit
 				gpal->fade_out(c_fade_out_time);
 				Audio::get_ptr()->stop_music();
+				delete menu;
+				delete logobg;
+				delete menu_mouse;
 				throw quit_exception();
 			default:
 				if (choice>=0 && choice<MAX_GAMES)
