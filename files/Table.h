@@ -54,6 +54,8 @@ public:
 	Table(const File_spec &spec)
 		: U7file(spec)
 		{  }
+	virtual ~Table()
+		{	}
 
 		virtual size_t number_of_objects(void)
 			{ return object_list.size(); };

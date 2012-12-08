@@ -404,7 +404,15 @@ int main
 	}
 	catch( const quit_exception & /*e*/ )
 	{
+		// Your basic "shutup Valgrind" code.
+		Free_text();
+		fontManager.reset();
+		delete config;
+		delete gamemanager;
+		delete Game_window::get_instance();
 		Audio::Destroy();	// Deinit the sound system.
+		SDL_VideoQuit();
+		SDL_Quit();
 		result = 0;
 	}
 	catch( const exult_exception & e )
@@ -1034,6 +1042,7 @@ static void Init
 
 	// Should not be needed anymore:
 	delete gamemanager;
+	gamemanager = 0;
 
 	Audio *audio = Audio::get_ptr();
 	if (audio) {

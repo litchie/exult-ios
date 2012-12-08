@@ -364,7 +364,7 @@ int Path_walking_actor_action::open_door
 			dir = 2;
 			}
 		}
-	Tile_coord tmp = Map_chunk::find_spot(past, 1, actor, 1);
+	Map_chunk::find_spot(past, 1, actor, 1);
 	if (past.tx != -1)		// Succeeded.  Walk past and close it.
 		{
 #ifdef DEBUG
@@ -761,6 +761,21 @@ Frames_actor_action::Frames_actor_action
 	{
 	frames = new signed char[cnt];
 	std::memcpy(frames, f, cnt);
+	}
+
+/**
+ *	Create sequence of frames.
+ */
+
+Frames_actor_action::Frames_actor_action
+	(
+	char f,				// Frames.  -1 means don't change.
+	int spd,			// Frame delay in 1/1000 secs.
+	Game_object *o
+	) : cnt(1), index(0), speed(spd), obj(o)
+	{
+	frames = new signed char[1];
+	frames[0] = f;
 	}
 
 /**

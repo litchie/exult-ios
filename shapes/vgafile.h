@@ -181,13 +181,13 @@ protected:
 	bool modified;
 	bool from_patch;
 					// Create reflected frame.
-	Shape_frame *reflect(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
-		int frnum, std::vector<int> counts);
+	Shape_frame *reflect(std::vector<std::pair<DataSource *,bool> > const& shapes, int shnum,
+		int frnum, std::vector<int> const& counts);
 	void enlarge(int newsize);	// Increase 'frames'.
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
-	Shape_frame *read(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
-		int frnum, std::vector<int> counts, int src=-1);
+	Shape_frame *read(std::vector<std::pair<DataSource *,bool> > const& shapes, int shnum,
+		int frnum, std::vector<int> const& counts, int src=-1);
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -211,8 +211,8 @@ public:
 		{ from_patch = true; }
 	bool get_from_patch()
 		{ return from_patch; }
-	Shape_frame *get(std::vector<std::pair<DataSource *,bool> > shapes, int shnum,
-		int frnum, std::vector<int> counts, int src=-1)
+	Shape_frame *get(std::vector<std::pair<DataSource *,bool> > const& shapes, int shnum,
+		int frnum, std::vector<int> const& counts, int src=-1)
 		{ 
 		return (frames && frnum < static_cast<int>(frames_size) &&
 			frames[frnum]) ? frames[frnum] : 
@@ -283,19 +283,19 @@ protected:
 					//   loaded.
 public:
 	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
-	Vga_file(std::vector<std::pair<std::string, int> > sources, int u7drag = -1);
+	Vga_file(std::vector<std::pair<std::string, int> > const& sources, int u7drag = -1);
 	Vga_file();
 	int get_u7drag_type() const
 		{ return u7drag_type; }
 	DataSource *U7load(
-			std::pair<std::string, int> resource,
-			std::vector<std::ifstream *> &fs,
-			std::vector<char *> &bs,
-			std::vector<std::pair<DataSource *,bool> > &shps);
+			std::pair<std::string, int> const& resource,
+			std::vector<std::ifstream *>& fs,
+			std::vector<char *>& bs,
+			std::vector<std::pair<DataSource *,bool> >& shps);
 	bool load(const char *nm, const char *nm2 = 0);
-	bool load(std::vector<std::pair<std::string, int> > sources);
-	bool import_shapes(std::pair<std::string, int> source,
-		std::vector<std::pair<int, int> > imports);
+	bool load(std::vector<std::pair<std::string, int> > const& sources);
+	bool import_shapes(std::pair<std::string, int> const& source,
+		std::vector<std::pair<int, int> > const& imports);
 	bool is_shape_imported(int shnum);
 	bool get_imported_shape_data(int shnum, imported_map& data);
 	void reset();

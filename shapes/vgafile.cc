@@ -781,10 +781,10 @@ void Shape_frame::set_offset
 
 Shape_frame *Shape::reflect
 	(
-	vector<pair<DataSource *,bool> > shapes,		// shapes data source to read.
+	vector<pair<DataSource *,bool> > const& shapes,		// shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # without the 'reflect' bit.
-	vector<int> counts
+	vector<int> const& counts
 	)
 	{
 					// Get normal frame.
@@ -875,10 +875,10 @@ inline void Shape::create_frames_list
 
 Shape_frame *Shape::read
 	(
-	vector<pair<DataSource *,bool> > shapes,	// Shapes data source to read.
+	vector<pair<DataSource *,bool> > const& shapes,	// Shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum,			// Frame # within shape.
-	vector<int> counts,		// Number of shapes in files.
+	vector<int> const& counts,		// Number of shapes in files.
 	int src
 	)
 	{
@@ -891,7 +891,7 @@ Shape_frame *Shape::read
 	int i = counts.size();
 	if (src < 0)
 		{
-		vector<pair<DataSource *,bool> >::reverse_iterator it = shapes.rbegin();
+		vector<pair<DataSource *,bool> >::const_reverse_iterator it = shapes.rbegin();
 		for ( ; it != shapes.rend(); ++it)
 			{
 			i--;
@@ -1292,7 +1292,7 @@ Vga_file::Vga_file
 
 Vga_file::Vga_file
 	(
-	vector<pair<string, int> > sources,
+	vector<pair<string, int> > const& sources,
 	int u7drag		// # from u7drag.h, or -1
 	) : u7drag_type(u7drag), num_shapes(0), flex(true)
 	{
@@ -1318,10 +1318,10 @@ bool Vga_file::load
 
 DataSource *Vga_file::U7load
 	(
-	pair<string, int> resource,
-	vector<ifstream *> &fs,
-	vector<char *> &bs,
-	vector<pair<DataSource *,bool> > &shps
+	pair<string, int> const& resource,
+	vector<ifstream *>& fs,
+	vector<char *>& bs,
+	vector<pair<DataSource *,bool> >& shps
 	)
 	{
 	DataSource *source = 0;
@@ -1359,7 +1359,7 @@ DataSource *Vga_file::U7load
 
 bool Vga_file::load
 	(
-	vector<pair<string, int> > sources
+	vector<pair<string, int> > const& sources
 	)
 	{
 	reset();
@@ -1371,7 +1371,7 @@ bool Vga_file::load
 	bool is_good = true;
 	if (!U7exists(sources[0].first.c_str()))
 		is_good = false;
-	for (vector<pair<string, int> >::iterator it = sources.begin();
+	for (vector<pair<string, int> >::const_iterator it = sources.begin();
 		it != sources.end(); ++it)
 		{
 		DataSource *source = U7load(*it, files, buffers, shape_sources);
@@ -1424,8 +1424,8 @@ bool Vga_file::get_imported_shape_data(int shnum, imported_map& data)
 
 bool Vga_file::import_shapes
 	(
-	pair<string, int> source,
-	vector<pair<int, int> > imports
+	pair<string, int> const& source,
+	vector<pair<int, int> > const& imports
 	)
 	{
 	DataSource *ds =
@@ -1438,13 +1438,14 @@ bool Vga_file::import_shapes
 		flex = Flex::is_flex(ds);
 		assert(flex);
 		imported_shapes.reserve(imported_shapes.size() + imports.size());
-		for (vector<pair<int, int> >::iterator it = imports.begin();
+		for (vector<pair<int, int> >::const_iterator it = imports.begin();
 			it != imports.end(); ++it)
 			{
+			int shpsize = imported_shapes.size(), srcsize = imported_sources.size() - 1;
 			imported_map data = {
 					(*it).second,	// The real shape
-					imported_shapes.size(),	// The index of the data pointer.
-					imported_sources.size() - 1};	// The data source index.
+					shpsize,	// The index of the data pointer.
+					srcsize};	// The data source index.
 			imported_shape_table[(*it).first] = data;
 			imported_shapes.push_back(new Shape());
 			}
@@ -1453,7 +1454,7 @@ bool Vga_file::import_shapes
 	else
 		{
 		// Set up the import table anyway.
-		for (vector<pair<int, int> >::iterator it = imports.begin();
+		for (vector<pair<int, int> >::const_iterator it = imports.begin();
 			it != imports.end(); ++it)
 			{
 			imported_map data = {(*it).second, -1, -1};

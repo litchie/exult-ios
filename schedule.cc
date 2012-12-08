@@ -697,7 +697,6 @@ void Eat_at_inn_schedule::ending (int new_type) // new schedule type
 	Game_object_vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt){			// Found?
-		Game_object *food = 0;
 		for (Game_object_vector::const_iterator it = foods.begin();
 					it != foods.end(); ++it){
 			Game_object *food = *it;
@@ -3638,19 +3637,19 @@ void Bake_schedule::now_what()
 			npc->set_action(new Sequence_actor_action(
 				new Frames_actor_action(fr, 2, 500),
 			((GAME_SI) ?
-				new Frames_actor_action((signed char *)"\x11",1,250,dough) :
-				new Frames_actor_action((signed char *)"\x01",1,250,dough)),
+				new Frames_actor_action(0x11,250,dough) :
+				new Frames_actor_action(0x01,250,dough)),
 				new Frames_actor_action(fr, 2, 500),
 			((GAME_SI) ?
-				new Frames_actor_action((signed char *)"\x12",1,250,dough) :
-				new Frames_actor_action((signed char *)"\x02",1,250,dough))
+				new Frames_actor_action(0x12,250,dough) :
+				new Frames_actor_action(0x02,250,dough))
 			));
 		else if (GAME_SI ? frame == 17: frame == 1)
 			npc->set_action(new Sequence_actor_action(
 				new Frames_actor_action(fr, 2, 500),
 				((GAME_SI) ?
-				new Frames_actor_action((signed char *)"\x12",1,250,dough) :
-				new Frames_actor_action((signed char *)"\x02",1,250,dough))
+				new Frames_actor_action(0x12,250,dough) :
+				new Frames_actor_action(0x02,250,dough))
 				));
 		
 		state = remove_from_oven;
@@ -3789,11 +3788,11 @@ void Bake_schedule::now_what()
 			break;
 		}
 		clearing = true;
-		for (int i = 0; i < food.size(); i++)
+		for (size_t i = 0; i < food.size(); i++)
 		{
-				delay = 500;
-				state = remove_food;
-				break;
+			delay = 500;
+			state = remove_food;
+			break;
 		}
 		if (!food.size())
 			state = display_wares;
@@ -4018,38 +4017,38 @@ void Forge_schedule::now_what
 		Actor_action **a = new Actor_action*[35];
 		a[0] = pact;
 		a[1] = new Face_pos_actor_action(bellows, 250);
-		a[2] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[2] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[3] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[4] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[5] = new Frames_actor_action((signed char *)"\x01", 1, 0, firepit);
-		a[6] = new Frames_actor_action((signed char *)"\x01", 1, 0, blank);
-		a[7] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[4] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[5] = new Frames_actor_action(0x01, 0, firepit);
+		a[6] = new Frames_actor_action(0x01, 0, blank);
+		a[7] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[8] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[9] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[10] = new Frames_actor_action((signed char *)"\x02", 1, 0, blank);
-		a[11] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[9] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[10] = new Frames_actor_action(0x02, 0, blank);
+		a[11] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[12] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[13] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[14] = new Frames_actor_action((signed char *)"\x02", 1, 0, firepit);
-		a[15] = new Frames_actor_action((signed char *)"\x03", 1, 0, blank);
-		a[16] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[13] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[14] = new Frames_actor_action(0x02, 0, firepit);
+		a[15] = new Frames_actor_action(0x03, 0, blank);
+		a[16] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[17] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[18] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[19] = new Frames_actor_action((signed char *)"\x03", 1, 0, firepit);
-		a[20] = new Frames_actor_action((signed char *)"\x04", 1, 0, blank);
-		a[21] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[18] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[19] = new Frames_actor_action(0x03, 0, firepit);
+		a[20] = new Frames_actor_action(0x04, 0, blank);
+		a[21] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[22] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[23] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[24] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[23] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[24] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[25] =	new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[26] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[27] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[26] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[27] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[28] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[29] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[30] = new Frames_actor_action((signed char *)"\x2b", 1, 0);
+		a[29] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[30] = new Frames_actor_action(0x20|Actor::bow_frame, 0);
 		a[31] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[32] = new Frames_actor_action((signed char *)"\x20", 1, 0);
-		a[33] = new Frames_actor_action((signed char *)"\x00", 1, 0, bellows);
+		a[32] = new Frames_actor_action(0x20|Actor::standing, 0);
+		a[33] = new Frames_actor_action(0x00, 0, bellows);
 		a[34] = 0;
 
 
@@ -4160,14 +4159,14 @@ void Forge_schedule::now_what
 		
 		Actor_action **a = new Actor_action*[10];
 		a[0] = new Frames_actor_action(frames, cnt);
-		a[1] = new Frames_actor_action((signed char *)"\x03", 1, 0, blank);
-		a[2] = new Frames_actor_action((signed char *)"\x02", 1, 0, firepit);
+		a[1] = new Frames_actor_action(0x03, 0, blank);
+		a[2] = new Frames_actor_action(0x02, 0, firepit);
 		a[3] = new Frames_actor_action(frames, cnt);
-		a[4] = new Frames_actor_action((signed char *)"\x02", 1, 0, blank);
-		a[5] = new Frames_actor_action((signed char *)"\x01", 1, 0, firepit);
+		a[4] = new Frames_actor_action(0x02, 0, blank);
+		a[5] = new Frames_actor_action(0x01, 0, firepit);
 		a[6] = new Frames_actor_action(frames, cnt);
-		a[7] = new Frames_actor_action((signed char *)"\x01", 1, 0, blank);
-		a[8] = new Frames_actor_action((signed char *)"\x00", 1, 0, firepit);
+		a[7] = new Frames_actor_action(0x01, 0, blank);
+		a[8] = new Frames_actor_action(0x00, 0, firepit);
 		a[9] = 0;
 		npc->set_action(new Sequence_actor_action(a));
 
@@ -4279,14 +4278,14 @@ void Forge_schedule::now_what
 			a[2] = pact2;
 			a[3] = new Frames_actor_action(&npcframe, 1, 250);
 			a[4] = new Frames_actor_action(&troughframe, 1, 0, trough);
-			a[5] = new Frames_actor_action((signed char *)"\x00", 1, 0, blank);
+			a[5] = new Frames_actor_action(0x00, 0, blank);
 			a[6] = 0;
 			npc->set_action(new Sequence_actor_action(a));
 		} else {
 			// no path found, just pick up sword blank
 			npc->set_action(new Sequence_actor_action(
 			 	new Pickup_actor_action(blank, 250),
-				new Frames_actor_action((signed char *)"\0", 1, 0, blank)));
+				new Frames_actor_action(0, 0, blank)));
 		}	
 
 		state = done;
@@ -4419,7 +4418,7 @@ void Eat_schedule::now_what()
 		delay = 0;
 		plate = 0; // make sure moved plate doesn't get food sent to it
 		Game_object_vector plates;	// First look for a nearby plate.
-		int cnt = npc->find_nearby(plates, 717, 1, 0);
+		npc->find_nearby(plates, 717, 1, 0);
 		Game_object_vector::const_iterator it;
 		int floor = npc->get_lift()/5;	// Make sure it's on same floor.
 		for (it = plates.begin(); it != plates.end(); ++it){
