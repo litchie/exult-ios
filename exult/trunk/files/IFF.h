@@ -76,6 +76,8 @@ public:
 	IFF(const File_spec &spec)
 		: U7file(spec)
 		{  }
+	virtual ~IFF()
+		{	}
 
 	virtual size_t number_of_objects(void)
 		{ return object_list.size(); };
