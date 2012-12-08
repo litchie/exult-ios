@@ -135,6 +135,8 @@ void Shape_manager::load
 	(
 	)
 	{
+	shapes.reset_imports();
+	
 	// Determine some colors based on the default palette
 	Palette pal;
 			// could throw!
@@ -152,7 +154,7 @@ void Shape_manager::load
 					// Purple for paralyze.
 	special_pixels[PARALYZE_PIXEL] = pal.find_color(49, 27, 49);
 
-	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
+	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS, true);
 	
 	if (!files[SF_PAPERDOL_VGA].load(*Shapeinfo_lookup::GetPaperdollSources()))
 		{
@@ -353,7 +355,7 @@ bool Shape_manager::load_gumps_minimal()
 {
 	bool ok = false;
 	try {
-		ok = files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
+		ok = files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS, true);
 	}
 	catch(exult_exception &) {
 	}

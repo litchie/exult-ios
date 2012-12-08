@@ -401,6 +401,7 @@ unsigned int Shape_frame::read
 	xleft = yabove = c_tilesize;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
 	shapes->seek(shapeoff + framenum*c_num_tile_bytes);
+	delete [] data;
 	data = new unsigned char[c_num_tile_bytes];	// Read in 8x8 pixels.
 	datalen = c_num_tile_bytes;
 	shapes->read((char *) data, c_num_tile_bytes);
@@ -424,6 +425,7 @@ void Shape_frame::get_rle_shape
 	yabove = shapes->read2();
 	ybelow = shapes->read2();
 	len -= 8;			// Subtract what we just read.
+	delete [] data;	
 	data = new unsigned char[len + 2];	// Allocate and read data.
 	datalen = len+2;
 	shapes->read((char*)data, len);
@@ -1306,14 +1308,15 @@ Vga_file::Vga_file
 bool Vga_file::load
 	(
 	const char *nm,
-	const char *nm2
+	const char *nm2,
+	bool resetimports
 	)
 	{
 	vector<pair<string, int> > src;
 	src.push_back(pair<string, int>(string(nm), -1));
 	if (nm2 != 0)
 		src.push_back(pair<string, int>(string(nm2), -1));
-	return load(src);
+	return load(src, resetimports);
 	}
 
 DataSource *Vga_file::U7load
@@ -1359,10 +1362,13 @@ DataSource *Vga_file::U7load
 
 bool Vga_file::load
 	(
-	vector<pair<string, int> > const& sources
+	vector<pair<string, int> > const& sources,
+	bool resetimports
 	)
 	{
 	reset();
+	if (resetimports)
+		reset_imports();
 	int count = sources.size();
 	shape_sources.reserve(count);
 	files.reserve(count);
@@ -1428,6 +1434,7 @@ bool Vga_file::import_shapes
 	vector<pair<int, int> > const& imports
 	)
 	{
+	reset_imports();
 	DataSource *ds =
 			U7load(source, imported_files, imported_buffers, imported_sources);
 	if (ds)
