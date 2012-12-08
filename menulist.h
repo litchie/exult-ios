@@ -73,8 +73,8 @@ public:
 	Font *font;
 	Font *font_on;
 	const char *text;
-	MenuTextObject() {}
-	virtual ~MenuTextObject() { }
+	MenuTextObject() : text(0) {}
+	virtual ~MenuTextObject() { delete [] text; }
 
 	virtual int get_height() { return (y2-y1); }
 	virtual void paint(Game_window *gwin) =0;

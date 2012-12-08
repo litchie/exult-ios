@@ -79,7 +79,7 @@ MenuTextEntry::MenuTextEntry(Font *fnton, Font *fnt, const char *txt, int xpos, 
 {
 	font_on = fnton;
 	font = fnt;
-	text = txt;
+	text = newstrdup(txt);
 	int max_width = font->get_text_width(text);
 	int max_height = font->get_text_height();
 	x = xpos;
@@ -129,8 +129,8 @@ MenuGameEntry::MenuGameEntry(
 	int max_width = 0, width;
 	int max_height = font->get_text_height();
 	//For game titles, which may have more than one line:
-	char *ptr = strdup(txt);
-	char *lineptr = ptr;
+	char * const rootptr = newstrdup(txt);
+	char *ptr = rootptr, *lineptr = rootptr;
 	int lines = 1;
 	while (*ptr != 0)
 	{
@@ -147,6 +147,7 @@ MenuGameEntry::MenuGameEntry(
 		ptr++;
 	}
 	width = font->get_text_width(lineptr);
+	delete [] rootptr;
 	if (width > max_width)
 		max_width = width;
 	max_height *= lines;
@@ -195,7 +196,7 @@ MenuTextChoice::MenuTextChoice(Font *fnton, Font *fnt, const char *txt, int xpos
 {
 	font_on = fnton;
 	font = fnt;
-	text = txt;
+	text = newstrdup(txt);
 	int max_width = font->get_text_width(text);
 	int max_height = font->get_text_height();
 	x = xpos;
