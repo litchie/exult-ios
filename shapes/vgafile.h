@@ -292,8 +292,8 @@ public:
 			std::vector<std::ifstream *>& fs,
 			std::vector<char *>& bs,
 			std::vector<std::pair<DataSource *,bool> >& shps);
-	bool load(const char *nm, const char *nm2 = 0);
-	bool load(std::vector<std::pair<std::string, int> > const& sources);
+	bool load(const char *nm, const char *nm2 = 0, bool resetimports = false);
+	bool load(std::vector<std::pair<std::string, int> > const& sources, bool resetimports = false);
 	bool import_shapes(std::pair<std::string, int> const& source,
 		std::vector<std::pair<int, int> > const& imports);
 	bool is_shape_imported(int shnum);
