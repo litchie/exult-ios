@@ -303,8 +303,6 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 	for(int i=first; i<last; i++) {
 		int menux = xpos+(i%2)*gwin->get_win()->get_full_width()/2 + gwin->get_win()->get_start_x();
 		ModManager& exultgame = game_list[i];
-		char *menustringname = new char[strlen(exultgame.get_menu_string().c_str())+1];
-		strcpy(menustringname, exultgame.get_menu_string().c_str());
 		bool have_sfx = Audio::have_config_sfx(exultgame.get_cfgname()) ||
 				Audio::have_roland_sfx(exultgame.get_game_type()) ||
 				Audio::have_sblaster_sfx(exultgame.get_game_type()) ||
@@ -313,7 +311,7 @@ MenuList *ExultMenu::create_main_menu(Shape_frame *bg, int first)
 		Shape_frame *sfxicon = exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP,
 				have_sfx ? 1 : 0);
 		MenuGameEntry *entry = new MenuGameEntry(fonton, font,
-							menustringname,
+							exultgame.get_menu_string().c_str(),
 							sfxicon, menux, ypos);
 		entry->set_id(i);
 		menu->add_entry(entry);
