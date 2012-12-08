@@ -33,6 +33,7 @@
 #include "databuf.h"
 #include "exult.h"
 #include "exult_flx.h"
+#include "files/U7fileman.h"
 #include "files/U7file.h"
 #include "files/utils.h"
 #include "flic/playfli.h"
@@ -47,6 +48,7 @@
 #include "palette.h"
 #include "shapeid.h"
 #include "gamemgr/modmgr.h"
+#include "shapes/miscinf.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -101,6 +103,8 @@ Game::~Game()
 		xmlstrings.pop_back();
 		delete [] str;
 		}
+	U7FileManager::get_ptr()->reset();
+	Shapeinfo_lookup::reset();
 }
 
 Game *Game::create_game(BaseGameInfo *mygame)

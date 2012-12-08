@@ -155,7 +155,7 @@ public:
 		if (*eptr == '%')
 			{
 			data.first = shape;		// The assigned shape.
-			string key(strdup(eptr));
+			string key(eptr);
 			(*shapevars)[key] = shape;
 			shape++;	// Leave it ready for the next shape.
 			}
@@ -182,7 +182,7 @@ public:
 		eptr++;
 		if (*eptr == '%')
 			{
-			string key(strdup(eptr));
+			string key(eptr);
 			map<string, int>::iterator it = shapevars->find(key);
 			if (it != shapevars->end())
 				data.second = (*it).second;	// The shape #.
@@ -728,4 +728,21 @@ int Shapeinfo_lookup::GetFaceReplacement(int facenum)
 			return (*it).second;
 		}
 	return facenum;
+}
+
+void Shapeinfo_lookup::reset()
+{
+	FORGET_OBJECT(paperdoll_source_table);
+	FORGET_OBJECT(imported_gump_shapes);
+	FORGET_OBJECT(blue_shapes);
+	FORGET_OBJECT(imported_skin_shapes);
+	FORGET_OBJECT(gumpvars);
+	FORGET_OBJECT(skinvars);
+	FORGET_OBJECT(def_av_info);
+	FORGET_OBJECT(base_av_info);
+	FORGET_OBJECT(skins_table);
+	FORGET_OBJECT(unselectable_skins);
+	FORGET_OBJECT(petra_table);
+	FORGET_OBJECT(usecode_funs);
+	last_skin = 0;
 }
