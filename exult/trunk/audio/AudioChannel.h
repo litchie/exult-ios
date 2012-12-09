@@ -58,7 +58,16 @@ public:
 	AudioChannel(uint32 sample_rate, bool stereo);
 	~AudioChannel(void);
 
-	void stop() { if (sample) sample->Release(); sample = 0; }
+	void stop()
+	{
+		if (sample)
+		{
+			if (playdata)
+				sample->freeDecompressor(playdata);
+			sample->Release();
+			sample = 0;
+		}
+	}
 
 	void playSample(AudioSample *sample, int loop, int priority, bool paused, uint32 pitch_shift, int lvol, int rvol, sint32 instance_id);
 	void resampleAndMix(sint16 *stream, uint32 bytes);

@@ -333,6 +333,8 @@ void Shape_manager::load
 						sizeof(xforms[0].colors));
 			delete[] data;
 			}
+		delete sxf;
+		delete pxf;
 		}
 	else				// Create algorithmically.
 		{

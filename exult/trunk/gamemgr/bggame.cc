@@ -538,9 +538,18 @@ void BG_Game::scene_butterfly()
 		// Wait till the music finished playing
 		while(Audio::get_ptr()->is_track_playing(bird_song_midi))
 			WAITDELAY(20);
+		FORGET_OBJECT(backup);
 	}
 	catch(const UserSkipException &/*x*/)
 	{
+		// Waste disposal
+		FORGET_OBJECT(backup);
+	}
+	catch(const UserBreakException &/*x*/)
+	{
+		// Waste disposal
+		FORGET_OBJECT(backup);
+		throw;
 	}
 }
 
