@@ -644,29 +644,30 @@ void Game_object::move
  *	Add/remove a client.
  */
 bool Game_object::add_client
-        (
-       	Object_client *c
-       	) {
+	(
+	Object_client *c
+	)
+	{
 	for (vector<Object_client*>::iterator it = clients.begin();
-		    		it != clients.end(); ++it)
+	     it != clients.end(); ++it)
 		if ((*it) == c)
-		        return false;
-       	clients.push_back(c);
-		return true;
+			return false;
+	clients.push_back(c);
+	return true;
 	}
 
 void Game_object::remove_client
-        (
-       	Object_client *c
-       	)
-       	{
+	(
+	Object_client *c
+	)
+	{
 	for (vector<Object_client*>::iterator it = clients.begin();
-		    		it != clients.end(); ++it)
-		if ((*it) == c)
-		   	{
-			clients.erase(it);
-		        return;
-			}
+	     it != clients.end(); ++it)
+	if ((*it) == c)
+		{
+		clients.erase(it);
+		return;
+		}
 	}
 
 /*

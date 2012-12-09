@@ -57,6 +57,7 @@ public:
 	friend class Map_patch_collection;
 	Map_patch(Object_spec s) : spec(s)
 		{  }
+	virtual ~Map_patch() {  }
 	Game_object *find();		// Find matching object.
 	virtual bool apply() = 0;	// Perform action.
 	};

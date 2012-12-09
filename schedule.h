@@ -120,7 +120,7 @@ class Scripted_schedule : public Schedule
 	void run(int id);
 public:
 	Scripted_schedule(Actor *n, int ty);
-	~Scripted_schedule();
+	virtual ~Scripted_schedule();
 	virtual void now_what()
 		{ run(now_what_id); }
 	virtual void im_dormant()
