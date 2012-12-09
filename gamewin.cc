@@ -559,7 +559,6 @@ void Analyze_xform(unsigned char *xform, int alpha, Palette *pal)
 
 void Game_window::init_files(bool cycle)
 {
-	
 #ifdef RED_PLASMA
 	// Display red plasma during load...
 	if (cycle)
@@ -949,6 +948,11 @@ void Game_window::clear_world
 	(
 	)
 	{
+	// Most NPCs were deleted when the map is cleared; we have to deal with some stragglers.
+	for (vector<Actor*>::iterator it = npcs.begin();
+							it != npcs.end(); ++it)
+		if ((*it)->is_unused())
+			delete *it;
 	Combat::resume();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
