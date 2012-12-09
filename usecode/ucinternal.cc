@@ -3488,34 +3488,34 @@ void Usecode_internal::read_usevars
 	)
 	{
 	int cnt = Read4(in);		// Global statics.
-	StreamDataSource *nfile = new StreamDataSource(&in);
+	StreamDataSource nfile(&in);
 	statics.resize(cnt);
 	int i;
 	for (i = 0; i < cnt; i++)
-		statics[i].restore(nfile);
+		statics[i].restore(&nfile);
 	unsigned long funid;
-	while (!nfile->eof() && (funid = nfile->read4()) != 0xffffffffU)
+	while (!nfile.eof() && (funid = nfile.read4()) != 0xffffffffU)
 		{
 		if (funid == 0xfffffffeU)
 			{
 			// ++++ FIXME: Write code for the cases when symtbl == 0 or
 			// fsym == 0 (neither of which *should* happen...)
-			int len = nfile->read2();
+			int len = nfile.read2();
 			char *nm = new char[len + 1];
-			nfile->read(nm, len);
+			nfile.read(nm, len);
 			nm[len] = 0;
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[nm] : 0;
 			if (fsym)
 				funid = fsym->get_val();
 			delete [] nm;
 			}
-		int cnt = nfile->read4();
+		int cnt = nfile.read4();
 		Usecode_function *fun = find_function(funid);
 		if (!fun)
 			continue;
 		fun->statics.resize(cnt);
 		for (i = 0; i < cnt; i++)
-			fun->statics[i].restore(nfile);
+			fun->statics[i].restore(&nfile);
 		}
 	}
 

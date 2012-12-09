@@ -450,6 +450,8 @@ Audio::~Audio()
 { 
 	if (!initialized)
 	{
+		delete sfxs;
+		delete sfx_file;
 		self = 0;
 		//SDL_open = false;
 		return;
