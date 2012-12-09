@@ -57,7 +57,7 @@ void Time_queue::clear
 		Queue_entry ent = *it;
 		Time_sensitive *obj = ent.handler;
 		data.erase(it);
-		obj->queue_cnt--;
+		obj->dequeue();
 		}
 	}
 

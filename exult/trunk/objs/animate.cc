@@ -74,17 +74,32 @@ Object_sfx::Object_sfx(Game_object *o, int s, int delay)
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
 	}
 
-void Object_sfx::stop()
-	{
-	while (gwin->get_tqueue()->remove(this))
-		;
+void Object_sfx::stop_playing()
+{
 	if(channel >= 0)
 		{
 		Audio::get_ptr()->stop_sound_effect(channel);
 		channel = -1;
 		}
+}
+
+void Object_sfx::stop()
+	{
+	while (gwin->get_tqueue()->remove(this))
+		;
+	stop_playing();
 	delete this;
 	}
+
+void Object_sfx::dequeue()
+{
+	Time_sensitive::dequeue();
+	if (!in_queue())
+	{
+		stop_playing();
+		delete this;
+	}
+}
 
 void Object_sfx::handle_event
 	(

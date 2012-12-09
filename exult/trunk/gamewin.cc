@@ -948,16 +948,16 @@ void Game_window::clear_world
 	(
 	)
 	{
-	// Most NPCs were deleted when the map is cleared; we have to deal with some stragglers.
-	for (vector<Actor*>::iterator it = npcs.begin();
-							it != npcs.end(); ++it)
-		if ((*it)->is_unused())
-			delete *it;
 	Combat::resume();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 	removed->flush();		// Delete.
 	Usecode_script::clear();	// Clear out all scheduled usecode.
+	// Most NPCs were deleted when the map is cleared; we have to deal with some stragglers.
+	for (vector<Actor*>::iterator it = npcs.begin();
+							it != npcs.end(); ++it)
+		if ((*it)->is_unused())
+			delete *it;
 	for (vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->clear();
