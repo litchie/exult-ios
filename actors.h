@@ -622,6 +622,7 @@ public:
 	Main_actor(const std::string &nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
 		{  frames = &avatar_frames[0]; }
+	virtual ~Main_actor();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
