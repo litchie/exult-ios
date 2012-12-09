@@ -2219,25 +2219,42 @@ int Usecode_internal::run()
 			{
 				Usecode_value v2 = pop();
 				Usecode_value v1 = pop();
-				Usecode_value sum = v1 + v2;
-				push(sum);
+				Usecode_value retval = v1 + v2;
+				push(retval);
 				break;
 			}
 			case 0x0a:		// SUB.
-				sval = popi();
-				pushi(popi() - sval);
+			{
+				Usecode_value v2 = pop();
+				Usecode_value v1 = pop();
+				Usecode_value retval = v1 - v2;
+				push(retval);
 				break;
+			}
 			case 0x0b:		// DIV.
-				sval = popi();
-				pushi(popi()/sval);
+			{
+				Usecode_value v2 = pop();
+				Usecode_value v1 = pop();
+				Usecode_value retval = v1 / v2;
+				push(retval);
 				break;
+			}
 			case 0x0c:		// MUL.
-				pushi(popi()*popi());
+			{
+				Usecode_value v2 = pop();
+				Usecode_value v1 = pop();
+				Usecode_value retval = v1 * v2;
+				push(retval);
 				break;
+			}
 			case 0x0d:		// MOD.
-				sval = popi();
-				pushi(popi() % sval);
+			{
+				Usecode_value v2 = pop();
+				Usecode_value v1 = pop();
+				Usecode_value retval = v1 % v2;
+				push(retval);
 				break;
+			}
 			case 0x0e:		// AND.
 			{
 				Usecode_value v1 = pop();
@@ -2688,7 +2705,7 @@ int Usecode_internal::run()
 					if (frame->locals[offset].get_int_value() >= 0) {
 						char buf[20];
 						snprintf(buf, 20, "%ld",
-				 frame->locals[offset].get_int_value());
+						frame->locals[offset].get_int_value());
 						append_string(buf);
 					}
 				}
