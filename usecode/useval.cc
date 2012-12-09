@@ -32,6 +32,8 @@
   #include <cstdio>
 #endif
 
+#include <functional>
+#include <limits>
 #include "useval.h"
 #include "utils.h"
 #include "ucsymtbl.h"
@@ -456,9 +458,15 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 	else if (v1.get_type() == Usecode_value::int_type)
 	{
 		if (v2.get_type() == Usecode_value::int_type) {
-			sum = Usecode_value(v1.get_int_value()
-					+ v2.get_int_value());
+			sum = v1.get_int_value() + v2.get_int_value();
 		} else if (v2.get_type() == Usecode_value::string_type) {
+#if 0
+			// This seems to be how addition of int + string was done in the
+			// original, but I won't do it here.
+			sum = v1.get_int_value() + v2.need_int_value();
+#else
+			// Note: this actually seems wrong compared to the originals,
+			// but I am leaving this the way it is unless it causes a bug.
 			unsigned int newlen = strlen(v2.get_str_value()) + 32;
 			char* buf = new char[newlen];
 			snprintf(buf, newlen, "%ld%s",
@@ -466,6 +474,7 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 					 v2.get_str_value());
 			sum = Usecode_value(buf);
 			delete[] buf;
+#endif
 		} else {
 			sum = v1;
 		}
@@ -494,6 +503,86 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 		}
 	}
 	return sum;
+}
+
+template <typename T, template <typename> class Op>
+struct safe_divide : Op<T> {
+	T operator() (const T& x, const T& y) const
+	{
+		// Watch for division by zero. Originals do this, but they return
+		// 32768 in all cases.
+		if (y == 0)
+			return x < 0 ? std::numeric_limits<T>::min() : std::numeric_limits<T>::max();  
+		else
+			return x%y;
+	}
+};
+
+template <typename Op>
+Usecode_value Usecode_value::operate(const Usecode_value& v2)
+{
+	Op op;
+	Usecode_value& v1 = *this;
+	Usecode_value result(0);
+
+	if (v1.is_undefined())
+	   // Seems correct.
+		result = op(0, v2.need_int_value());
+	else if (v2.is_undefined())
+	{   // Just return zero
+	} 
+	else if (v1.get_type() == Usecode_value::int_type)
+	{
+		if (v2.get_type() == Usecode_value::int_type)
+			result = op(v1.get_int_value(), v2.get_int_value());
+		else if (v2.get_type() == Usecode_value::string_type)
+			result = op(v1.get_int_value(), v2.need_int_value());
+		else
+			result = v1;
+	}
+	else if (v1.get_type() == Usecode_value::string_type)
+	{
+		if (v2.get_type() == Usecode_value::string_type) {
+			// Note: SI usecode seems to assume this in two cases: selling
+			// leather stuff to Krayg in Monitor and party members when
+			// you ask Boydon to leave. However, the engine behaves unlike
+			// what the usecode expects.
+			// I decided to go the way usecode expects, adding a space along
+			// the way, to "fix" this as it seems to be the only places in
+			// the originals where this matters.
+			unsigned int newlen = strlen(v1.get_str_value()) +
+				strlen(v2.get_str_value()) + 32;
+			char* buf = new char[newlen];
+			snprintf(buf, newlen, "%s %s", 
+					v1.get_str_value(),
+					v2.get_str_value());
+			result = Usecode_value(buf);
+			delete[] buf;
+		} else
+			// This seems right.
+			result = v1;
+	}
+	return result;
+}
+
+Usecode_value Usecode_value::operator-(const Usecode_value& v2)
+{
+	return operate<std::less<long> >(v2);
+}
+
+Usecode_value Usecode_value::operator*(const Usecode_value& v2)
+{
+	return operate<std::multiplies<long> >(v2);
+}
+
+Usecode_value Usecode_value::operator/(const Usecode_value& v2)
+{
+	return operate<safe_divide<long, std::divides> >(v2);
+}
+
+Usecode_value Usecode_value::operator%(const Usecode_value& v2)
+{
+	return operate<safe_divide<long, std::modulus> >(v2);
 }
 
 /*
