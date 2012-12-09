@@ -172,7 +172,7 @@ static void strip_path(std::string& file)
 
 void AudioOptions_gump::rebuild_buttons()
 {
-	for (size_t i = id_music_enabled; i < id_count; ++i) {
+	for (size_t i = id_sample_rate; i < id_count; ++i) {
 		FORGET_OBJECT(buttons[i]);
 	}
 

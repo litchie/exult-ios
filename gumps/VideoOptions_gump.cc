@@ -397,6 +397,8 @@ VideoOptions_gump::~VideoOptions_gump()
 		if (buttons[i]) delete buttons[i];
 	delete [] resolutions;
 	delete [] win_resolutions;
+	num_resolutions = num_win_resolutions = num_game_resolutions = 0;
+	resolutions = win_resolutions = 0;
 }
 
 void VideoOptions_gump::save_settings()

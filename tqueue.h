@@ -36,6 +36,8 @@ class Time_sensitive
 	{
 	int queue_cnt;			// # of entries for this in queue.
 	bool always;			// Always do this, even if paused.
+protected:
+	virtual void dequeue() { queue_cnt--; }
 public:
 	friend class Time_queue;
 	Time_sensitive() : queue_cnt(0), always(false)

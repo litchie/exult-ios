@@ -37,6 +37,9 @@ class Object_sfx : public Time_sensitive, public Game_singletons
 	Game_object *obj;	// Object that caused the sound.
 	int sfx;			// ID of sound effect being played.
 	int channel;		// Channel of sfx being played.
+	void stop_playing();
+protected:
+	virtual void dequeue();
 public:
 	Object_sfx(Game_object *o, int sfx, int delay = 20);
 	void stop();
