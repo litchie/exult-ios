@@ -12,6 +12,8 @@
 	  with Speech disabled" [sic].
 	* exult.cc, imagewin/imagewin.cc: Missing space in video debug output. Fixed
 	  "fill" and "fit" fill modes (and aspect correction) when scale is 1.
+	* imagewin/imagewin.cc: Fixed resolution changed oddities from the previous
+	  commit while still keeping the fix for scale 1.
 
 2012-12-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changelog: Previous two entries (what was wrong with me?).
