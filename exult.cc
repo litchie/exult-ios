@@ -410,6 +410,7 @@ int main
 		delete config;
 		delete gamemanager;
 		delete Game_window::get_instance();
+		delete game;
 		Audio::Destroy();	// Deinit the sound system.
 		SDL_VideoQuit();
 		SDL_Quit();
@@ -773,14 +774,18 @@ int exult_main(const char *runpath)
 	GXCloseInput();
 #endif
 
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#ifdef USE_EXULTSTUDIO
 	// Currently, leaving the game results in destruction of the window.
 	//  Maybe sometime in the future, there is an option like "return to
 	//  main menu and select another scenario". Becaule DnD isn't registered until
 	//  you really enter the game, we remove it here to prevent possible bugs
 	//  invilved with registering DnD a second time over an old variable.
+#if defined(WIN32)
     RevokeDragDrop(hgwin);
 	delete windnd;
+#else
+	delete xdnd;
+#endif
 #endif
 
 	return result;
@@ -1099,12 +1104,16 @@ static int Play()
 		}
 	}
 	while (quitting_time == QUIT_TIME_RESTART);
+
 	delete gwin;
 	delete Mouse::mouse;
 
 	Audio::Destroy();	// Deinit the sound system.
-
+	delete keybinder;
 	delete config;
+	Free_text();
+	fontManager.reset();
+	delete game;
 	return (0);
 }
 
