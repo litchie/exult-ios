@@ -184,7 +184,7 @@ void ExultMenu::setup()
 
 	Mouse::mouse = 0;
 	delete exult_menu_game; 
-	exult_menu_game = 0;
+	game = exult_menu_game = 0;
 
 	gwin->clear_screen(true);
 	gpal->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX), EXULT_FLX_EXULT0_PAL);
