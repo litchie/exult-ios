@@ -206,12 +206,8 @@ void Party_manager::link_party
 	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
 					// You own your own stuff.
 	gwin->get_main_actor()->set_flag_recursively(Obj_flags::okay_to_take);
-	const int maxparty = sizeof(party)/sizeof(party[0]);
-	int tmp_party[maxparty];
 	int tmp_party_count = party_count;
 	int i;
-	for (i = 0; i < maxparty; i++)
-		tmp_party[i] = party[i];
 	party_count = dead_party_count = 0;
 					// Now process them.
 	for (i = 0; i < tmp_party_count; i++)

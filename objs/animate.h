@@ -96,7 +96,7 @@ public:
 		objsfx = new Shape_sfx(obj);
 		}
 	static Animator *create(Game_object *ob);
-	~Animator();
+	virtual ~Animator();
 	void want_animation()		// Want animation on.
 		{
 		if (!animating)
