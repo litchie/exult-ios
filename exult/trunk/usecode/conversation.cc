@@ -173,8 +173,25 @@ void Conversation::set_face_rect
 		face_w = face->get_width(); 
 		face_h = face->get_height();
 		}
-	int starty;
-	if (prev)
+	int startx, extraw;
+	if (face_w >= 300)
+	{
+		startx = (screenw - face_w)/2;
+		extraw = 0;
+		info->large_face = true;
+	}
+	else
+	{
+		startx = 8;
+		extraw = 4;
+	}
+	int starty, extrah;
+	if (face_h >= 180)
+	{
+		starty = (screenh - face_h)/2;
+		extrah = 0;
+	}
+	else if (prev)
 		{
 		starty = prev->text_rect.y + prev->last_text_height;
 		if (starty < prev->face_rect.y + prev->face_rect.h)
@@ -182,23 +199,26 @@ void Conversation::set_face_rect
 		starty += 2*text_height;
 		if (starty + face_h > screenh - 1)
 			starty = screenh - face_h - 1;
+		extrah = 4;
 		}
 	else
+	{
 		starty = 1;
-	info->face_rect = gwin->clip_to_win(Rectangle(8, starty,
-		face_w + 4, face_h + 4));
+		extrah = 4;
+	}
+	info->face_rect = gwin->clip_to_win(Rectangle(startx, starty,
+		face_w + extraw, face_h + extrah));
 	Rectangle& fbox = info->face_rect;
 				// This is where NPC text will go.
 	info->text_rect = gwin->clip_to_win(Rectangle(
 		fbox.x + fbox.w + 3, fbox.y + 3,
 		screenw - fbox.x - fbox.w - 6, 4*text_height));
 				// No room?  (Serpent?)
-	if (info->text_rect.w < 16 || info->text_rect.h < 16)
+	if (info->large_face)
 		{		// Show in lower center.
 		int x = screenw/5, y = 3*(screenh/4);
 		info->text_rect = Rectangle(x, y,
 			screenw-(2*x), screenh - y - 4);
-		info->large_face = true;
 		}
 	info->last_text_height = info->text_rect.h;
 }
