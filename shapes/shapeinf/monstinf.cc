@@ -120,7 +120,6 @@ const Monster_info *Monster_info::get_default
 		default_info.immune =
 		default_info.vulnerable = 
 		default_info.m_byte13;
-		default_info.flags = 0;
 		default_info.m_can_be_invisible = 
 		default_info.m_can_summon = 
 		default_info.m_can_teleport = 

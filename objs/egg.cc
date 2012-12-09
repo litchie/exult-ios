@@ -209,16 +209,17 @@ public:
 		}
 	}
 	virtual void hatch_now(Game_object *obj, bool must) {
-		Monster_info *inf = 
-				ShapeID::get_info(mshape).get_monster_info();
-		if (inf) {
+		Shape_info& inf = ShapeID::get_info(mshape);
+		Monster_info *minf = inf.is_npc() ?
+		            inf.get_monster_info_safe() : 0;
+		if (minf) {
 			if (gwin->armageddon)
 				return;
 			int num = cnt;
 			if (num > 1)	// Randomize.
 				num = 1 + (rand()%num);
 			while (num--)
-				create_monster(inf);
+				create_monster(minf);
 		} else {		// Create item.
 			Shape_info& info = ShapeID::get_info(mshape);
 			Game_object *nobj = get_map()->create_ireg_object(info,
