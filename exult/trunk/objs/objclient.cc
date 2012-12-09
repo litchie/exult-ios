@@ -47,6 +47,14 @@ void Object_client::remove_clients() {
 }
 
 /*
+ *  Remove all clients without notifying them. Do not use unless
+ *  you know what you are doing.
+ */
+void Object_client::kill_client_list() {
+	objs.clear();
+}
+
+/*
  *		An object should call this when it's about to be removed.
  */
 void Object_client::object_gone(Game_object *obj) {

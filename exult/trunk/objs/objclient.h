@@ -39,5 +39,7 @@ protected:
 	void remove_clients();
 public:
 	void object_gone(Game_object *obj);
+	virtual ~Object_client() {  }
+	void kill_client_list();
 };
 #endif	/* OBJCLIENT_H */

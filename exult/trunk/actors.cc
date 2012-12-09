@@ -1185,10 +1185,10 @@ void Actor::init_default_frames
 					// Most NPC's walk with a 'stand'
 					//   frame between steps.
 	const int FRAME_NUM = 5;
-	uint8		npc_north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
-			npc_south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
-			npc_east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
-			npc_west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
+	uint8 npc_north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
+	      npc_south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
+	      npc_east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
+	      npc_west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
 	npc_frames[static_cast<int> (north)/2] = 
 			new Frames_sequence(FRAME_NUM, npc_north_frames);
 	npc_frames[static_cast<int> (south)/2] = 
@@ -1198,10 +1198,10 @@ void Actor::init_default_frames
 	npc_frames[static_cast<int> (west)/2] = 
 			new Frames_sequence(FRAME_NUM, npc_west_frames);
 					// Avatar just walks left, right.
-	uint8		avatar_north_frames[3] = {0, 1, 2},
-			avatar_south_frames[3] = {16, 17, 18},
-			avatar_east_frames[3] = {48, 49, 50},
-			avatar_west_frames[3] = {32, 33, 34};
+	uint8 avatar_north_frames[3] = {0, 1, 2},
+	      avatar_south_frames[3] = {16, 17, 18},
+	      avatar_east_frames[3] = {48, 49, 50},
+	      avatar_west_frames[3] = {32, 33, 34};
 	avatar_frames[static_cast<int> (north)/2] = 
 			new Frames_sequence(3, avatar_north_frames);
 	avatar_frames[static_cast<int> (south)/2] = 
@@ -4917,6 +4917,12 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
+	// If we are here, then the NPC is being deleted due to the map being
+	// deleted. This means that objects all around are being deleted.
+	// So we **CANNOT** let the schedule, if any, notify anything that it
+	// no longer needs it. The schedule itself if destroyed in Actor::~Actor.
+	if (schedule)
+		schedule->kill_client_list();
 	delete [] schedules;
 	}
 
@@ -5493,4 +5499,15 @@ Frames_sequence::Frames_sequence
 	memcpy(frames, f, cnt);		// Copy in the list.
 	}
 
-
+Main_actor::~Main_actor()
+{
+	// For improving Valgrind's signal-to-noise ratio.
+	FORGET_OBJECT(npc_frames[static_cast<int> (north)/2]);
+	FORGET_OBJECT(npc_frames[static_cast<int> (south)/2]);
+	FORGET_OBJECT(npc_frames[static_cast<int> (east)/2]);
+	FORGET_OBJECT(npc_frames[static_cast<int> (west)/2]);
+	FORGET_OBJECT(avatar_frames[static_cast<int> (north)/2]);
+	FORGET_OBJECT(avatar_frames[static_cast<int> (south)/2]);
+	FORGET_OBJECT(avatar_frames[static_cast<int> (east)/2]);
+	FORGET_OBJECT(avatar_frames[static_cast<int> (west)/2]);
+}
