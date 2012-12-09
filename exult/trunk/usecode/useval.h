@@ -61,6 +61,8 @@ private:
 		Game_object *ptr;
 		Usecode_class_symbol *cptr;
 	} value;
+	template <typename Op>
+	Usecode_value operate(const Usecode_value& v2);
 
 	bool undefined;
 public:
@@ -92,6 +94,10 @@ public:
 		{ *this = v2; }
 
 	Usecode_value operator+(const Usecode_value& v2);
+	Usecode_value operator-(const Usecode_value& v2);
+	Usecode_value operator*(const Usecode_value& v2);
+	Usecode_value operator/(const Usecode_value& v2);
+	Usecode_value operator%(const Usecode_value& v2);
 					// Comparator.
 	void	push_back(int);
 	bool operator==(const Usecode_value& v2) const;
@@ -119,7 +125,12 @@ public:
 		{ return ((type == pointer_type) ? value.ptr : 0); }
 					// Get string value.
 	const char *get_str_value() const
-		{ return ((type == string_type) ? value.str : 0); }
+		{
+		static char const *emptystr = "";
+		return ((type == string_type) ? value.str : 
+			          ((undefined ||
+			            (type == array_type && value.array.cnt == 0)) ? emptystr : 0));
+		}
 	long need_int_value() const
 		{
 					// Convert strings.
