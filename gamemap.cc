@@ -310,6 +310,7 @@ void Game_map::clear
 		}
 	else
 		memset(objects, 0, sizeof(objects));
+	didinit = false;
 	map_modified = false;
 					// Clear 'read' flags.
 	memset(schunk_read, 0, sizeof(schunk_read));
@@ -943,8 +944,8 @@ void Read_special_ireg
 	ireg->read(reinterpret_cast<char*>(buf), len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
-		BufferDataSource *nbuf = new BufferDataSource(buf, len);
-		Usecode_script *scr = Usecode_script::restore(obj, nbuf);
+		BufferDataSource nbuf(buf, len);
+		Usecode_script *scr = Usecode_script::restore(obj, &nbuf);
 		if (scr)
 			{
 			scr->start(scr->get_delay());

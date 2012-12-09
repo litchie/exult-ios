@@ -125,6 +125,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	vorbis_info *info = ov_info(&decomp->ov,-1);
 	*const_cast<uint32*>(&sample_rate) = decomp->last_rate = info->rate;
 	*const_cast<bool*>(&stereo) = decomp->last_stereo = info->channels == 2;
+	decomp->freed = false;
 }
 
 void OggAudioSample::rewind(void *DecompData) const
@@ -136,6 +137,9 @@ void OggAudioSample::rewind(void *DecompData) const
 void OggAudioSample::freeDecompressor(void *DecompData) const
 {
 	OggDecompData *decomp = reinterpret_cast<OggDecompData *>(DecompData);
+	if (decomp->freed)
+		return;
+	decomp->freed = true;
 	ov_clear(&decomp->ov);
 
 	if (this->oggdata) *const_cast<bool*>(&locked) = false;		

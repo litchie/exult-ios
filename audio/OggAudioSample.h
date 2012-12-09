@@ -55,6 +55,7 @@ protected:
 		int last_rate;
 		bool last_stereo;
 		IDataSource *datasource;
+		bool freed;
 	};
 
 	IDataSource *oggdata;

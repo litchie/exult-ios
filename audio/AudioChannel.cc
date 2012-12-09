@@ -46,13 +46,15 @@ AudioChannel::AudioChannel(uint32 sample_rate_, bool stereo_) :
 
 AudioChannel::~AudioChannel(void)
 {
+	if (sample && playdata) sample->freeDecompressor(playdata);
 	if (sample) sample->Release();
+	delete [] playdata;
 	sample = 0;
 }
 
 void AudioChannel::playSample(AudioSample *sample_, int loop_, int priority_, bool paused_, uint32 pitch_shift_, int lvol_, int rvol_, sint32 instance_id_)
 {
-	if (sample) sample->Release();
+	stop();
 	sample = sample_; 
 
 	loop = loop_;
