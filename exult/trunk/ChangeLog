@@ -16,6 +16,7 @@
 	  commit while still keeping the fix for scale 1.
 	* usecode/ucinternal.cc, usecode/useval.*: Fixed bug #3001289: "Strange
 	  things in NPC dialogues", also fixing a couple of bugs in SI usecode.
+	* usecode/useval.*: Fixing dumb mistake: std::less is operator<, not operator-.
 
 2012-12-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changelog: Previous two entries (what was wrong with me?).

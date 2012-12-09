@@ -567,7 +567,7 @@ Usecode_value Usecode_value::operate(const Usecode_value& v2)
 
 Usecode_value Usecode_value::operator-(const Usecode_value& v2)
 {
-	return operate<std::less<long> >(v2);
+	return operate<std::minus<long> >(v2);
 }
 
 Usecode_value Usecode_value::operator*(const Usecode_value& v2)
