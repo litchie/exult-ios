@@ -2497,7 +2497,7 @@ void setup_video(bool fullscreen, int setup_video_type, int resx, int resy,
 		fillScalerName = Image_window::get_name_for_scaler(fill_scaler);
 		Image_window::fillmode_to_string(fillmode,fmode_string);
 #ifdef DEBUG
-		cout << "Setting video menu adjustable configuration options" <<
+		cout << "Setting video menu adjustable configuration options " <<
 				resx << " resX, " << resy <<
 				" resY, " << gw << " gameW, " << gh << " gameH, " << scaleval <<
 				" scale, " << scalerName << " scaler, " << fmode_string <<

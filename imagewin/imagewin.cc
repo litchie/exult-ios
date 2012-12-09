@@ -547,7 +547,7 @@ void Image_window::create_surface
 
 	get_draw_dims(w, h, scale, fill_mode, game_width, game_height, inter_width, inter_height);
 
-	if ((game_width != inter_width || game_height != inter_height || force_bpp) && try_scaler(w, h) == false)
+	if ((w != game_width * scale || h != game_height * scale || force_bpp) && try_scaler(w, h) == false)
 	{
 		// Try fallback to point scaler if it failed, if it doesn't work, we probably can't run
 		scaler = point;
@@ -733,7 +733,7 @@ bool Image_window::try_scaler(int w, int h)
 		scaler = point;
 	}
 	
-	if (game_width != inter_width || game_height != inter_height || force_bpp)
+	if (w != game_width * scale || h != game_height * scale || force_bpp)
 	{
 		const ScalerInfo *info;
 
