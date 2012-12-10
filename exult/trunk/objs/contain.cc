@@ -217,7 +217,8 @@ int Container_game_object::add_quantity
 	int shapenum,			// Shape #.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum,			// Frame, or c_any_framenum for any.
-	int dontcreate			// If 1, don't create new objs.
+	int dontcreate,			// If 1, don't create new objs.
+	bool temporary		// If objects should be temporary
 	)
 {
 	if (delta <= 0 || !Can_be_added(this, shapenum))
@@ -264,13 +265,13 @@ int Container_game_object::add_quantity
 		next.reset();			// Now try recursively.
 		while ((obj = next.get_next()) != 0)
 			delta = obj->add_quantity(
-					delta, shapenum, qual, framenum, 1);
+					delta, shapenum, qual, framenum, 1, temporary);
 		}
 	if (!delta || dontcreate)	// All added?
 		return (delta + cant_add);
 	else
 		return cant_add + create_quantity(delta, shapenum, qual,
-				framenum == c_any_framenum ? 0 : framenum);
+				framenum == c_any_framenum ? 0 : framenum, temporary);
 }
 
 /*
