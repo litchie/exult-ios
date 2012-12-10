@@ -21,6 +21,9 @@
 	  information (and aren't flagged by monster data otherwise) instead of
 	  leaving a default dead body. Fixes the Beatrix part of bug #3186722: "SI:
 	  Body issues in Shamino's Castle".
+	* usecode/ucinternal.cc: remove_party_items should return 1 only if it has
+	  really removed any items (fixes Cantra's body in bug #3186722: "SI: Body
+	  issues in Shamino's Castle").
 
 2012-12-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changelog: Previous two entries (what was wrong with me?).
