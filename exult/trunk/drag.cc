@@ -538,6 +538,7 @@ bool Dragging_info::drop
 	Uint8 *keystate = SDL_GetKeyState(NULL);
 	bool drop = (keystate[SDLK_LCTRL] || keystate[SDLK_RCTRL]) ? 
 	             gwin->get_alternate_drop() : !gwin->get_alternate_drop();
+	bool temp = obj->get_flag(Obj_flags::is_temporary);
 
 	if (quantity > 1 && (!on_gump || on_gump != gump) && drop)
 		quantity = gumpman->prompt_for_number(0, quantity, 1, quantity);
@@ -551,6 +552,8 @@ bool Dragging_info::drop
 		to_drop->modify_quantity(quantity - 1);
 		if (okay_to_move)	// Make sure copy is okay to take.
 			to_drop->set_flag(Obj_flags::okay_to_take);
+		if (temp)
+			to_drop->set_flag(Obj_flags::is_temporary);
 		}
 					// Drop it.
 	if (!(on_gump ? drop_on_gump(x, y, to_drop, on_gump)
