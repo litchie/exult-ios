@@ -101,7 +101,7 @@ class Usecode_internal : public Usecode_machine
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
 	void stack_error(int under);
-	void push(Usecode_value& val);	// Push/pop stack.
+	void push(Usecode_value const& val);	// Push/pop stack.
 	Usecode_value pop();
 	Usecode_value peek();
 	void pushref(Game_object* obj); // Push itemref
@@ -155,7 +155,7 @@ class Usecode_internal : public Usecode_machine
 			Usecode_value& frameval, Usecode_value& flagval);
 	Usecode_value add_party_items(Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
-			Usecode_value& frameval, Usecode_value& flagval);
+			Usecode_value& frameval, Usecode_value& temporary);
 	Usecode_value add_cont_items(Usecode_value& container, Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);

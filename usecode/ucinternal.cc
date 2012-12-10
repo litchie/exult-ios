@@ -447,7 +447,7 @@ void Usecode_internal::append_string
 	}
 
 // Push/pop stack.
-inline void Usecode_internal::push(Usecode_value& val)
+inline void Usecode_internal::push(Usecode_value const& val)
 {
 	*sp++ = val;
 }
@@ -1319,7 +1319,7 @@ Usecode_value Usecode_internal::add_party_items
 	Usecode_value& shapeval,	// Shape.
 	Usecode_value& qualval,		// Quality.
 	Usecode_value& frameval,	// Frame.
-	Usecode_value& flagval		// Flag??
+	Usecode_value& temporary	// If the objects are to be temporary or not
 	)
 	{
 	int quantity = quantval.get_int_value();
@@ -1327,6 +1327,9 @@ Usecode_value Usecode_internal::add_party_items
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
+		// Note: the temporary flag only applies to items placed on the
+		// ground in SI.
+	bool temp = temporary.get_int_value() != 0;
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
@@ -1338,7 +1341,7 @@ Usecode_value Usecode_internal::add_party_items
 			continue;
 		int prev = quantity;
 		quantity = obj->add_quantity(quantity, shapenum,
-							quality, framenum);
+							quality, framenum, GAME_BG && temp);
 		if (quantity < prev)	// Added to this NPC.
 			result.concat(party.get_elem(i));
 		}
@@ -1361,6 +1364,8 @@ Usecode_value Usecode_internal::add_party_items
 		if (quality != c_any_qual)
 			newobj->set_quality(quality); // set quality
 		newobj->set_flag(Obj_flags::okay_to_take);
+		if (temp)	   // Mark as temporary.
+			newobj->set_flag(Obj_flags::is_temporary);
 		newobj->move(pos);
 		todo--;
 		if (todo > 0)		// Create quantity if possible.
@@ -1385,19 +1390,20 @@ Usecode_value Usecode_internal::add_cont_items
 	Usecode_value& shapeval,	// Shape.
 	Usecode_value& qualval,		// Quality.
 	Usecode_value& frameval,	// Frame.
-	Usecode_value& flagval		// Flag??
+	Usecode_value& temporary	// If the objects are to be temporary or not
 	)
 	{
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
+	bool temp = temporary.get_int_value() != 0;
 		// e.g., Knight's Test wolf meat.
 	if (quality == -359)
 		quality = 0;
 
 	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum));
+	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum, temp));
 	return Usecode_value(0);
 	}
 
