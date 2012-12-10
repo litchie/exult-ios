@@ -4284,7 +4284,7 @@ void Actor::die
 #endif
 
 	Dead_body *body;		// See if we need a body.
-	if (!minfo || !minfo->has_no_body())
+	if (info.has_body_info() && (!minfo || !minfo->has_no_body()))
 		{
 				// Get body shape/frame.
 		shnum = info.get_body_shape();		// Default 400.
