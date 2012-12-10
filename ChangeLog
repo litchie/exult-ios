@@ -28,6 +28,9 @@
 	  programs under X11.
 	* drag.cc: Temporary objects should not stop being temporary because you
 	  split a stack in two.
+	* objs/contain.*, objs/obj.h, usecode/ucinternal.*: Implemented previously
+	  unknown flags in UI_add_party_items and in UI_add_cont_items, as per bug
+	  #3132098: "UI_add_party_items unk is temporary bool".
 
 2012-12-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* Changelog: Previous two entries (what was wrong with me?).
