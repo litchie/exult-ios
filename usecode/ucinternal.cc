@@ -1295,6 +1295,7 @@ Usecode_value Usecode_internal::remove_party_items
 		quantity = avail.get_int_value();
 	else if (avail.get_int_value() < quantity)
 		return Usecode_value(0);
+	int orig_cnt = quantity;
 					// Look through whole party.
 	for (int i = 0; i < cnt && quantity > 0; i++)
 		{
@@ -1303,7 +1304,7 @@ Usecode_value Usecode_internal::remove_party_items
 			quantity = obj->remove_quantity(quantity, shapenum,
 							quality, framenum);
 		}
-	return Usecode_value(quantity == 0);
+	return Usecode_value(quantity != orig_cnt);
 	}
 
 /*
