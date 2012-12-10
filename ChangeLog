@@ -1,3 +1,8 @@
+2012-12-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* keyactions.cc: Toggling fullscreen displays a timed popup asking if you
+	  want to keep the change or not. If yes, config is saved; if not, then full
+	  screen is toggled back.
+
 2012-12-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exultmenu.cc: Fixing now relevant double-free in menu.
 	* gamewin.cc: Clear the time queue before deleting unused NPCs (just in case).
