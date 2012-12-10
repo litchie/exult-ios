@@ -45,6 +45,7 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "palette.h"
+#include "Yesno_gump.h"
 
 #ifdef UNDER_CE
   #include "Keyboard_gump.h"
@@ -280,6 +281,12 @@ void ActionFullscreen(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
 	setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
+	if (Countdown_gump::ask("Fullscreen applied.\nKeep? %i...",20))
+		config->set("config/video/fullscreen",
+		            gwin->get_win()->is_fullscreen() ? "yes" : "no",
+		            true);
+	else
+		setup_video(!gwin->get_win()->is_fullscreen(), TOGGLE_FULLSCREEN);
 }
 
 //  { ActionUseItem, 3, "Use item", dont_show, NONE },
