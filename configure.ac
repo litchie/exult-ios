@@ -602,7 +602,7 @@ else
 fi
 
 # NxBR scalers
-AC_ARG_ENABLE(nxbr, AS_HELP_STRING([--enable-nxbr],[Enable 2xBR, 3xBR and 4xBR scaler support (experimental) @<:@default yes@:>@]),,enable_nxbr=yes)
+AC_ARG_ENABLE(nxbr, AS_HELP_STRING([--enable-nxbr],[Enable 2xBR, 3xBR and 4xBR scaler support @<:@default yes@:>@]),,enable_nxbr=yes)
 AC_MSG_CHECKING([if we should build the 2xBR, 3xBR and 4xBR scalers])
 if test x$enable_nxbr = xyes; then
 	AC_MSG_RESULT(yes)
@@ -656,7 +656,7 @@ fi
 # support for Exult Studio
 # ---------------------------------------------------------------------
 AC_MSG_CHECKING([whether to enable support for Exult Studio])
-AC_ARG_ENABLE(exult-studio-support, AS_HELP_STRING([--enable-exult-studio-support], [Enable ExultStudio support @<:@default yes@:>@]),,enable_exult_studio_support=yes)
+AC_ARG_ENABLE(exult-studio-support, AS_HELP_STRING([--enable-exult-studio-support], [Enable ExultStudio support @<:@default no@:>@]),,enable_exult_studio_support=no)
 if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
@@ -836,7 +836,7 @@ else
 fi
 
 # Build compiler?
-AC_ARG_ENABLE(compiler, AS_HELP_STRING([--enable-compiler], [Build the usecode compiler @<:@default yes@:>@]),,enable_compiler=yes)
+AC_ARG_ENABLE(compiler, AS_HELP_STRING([--enable-compiler], [Build the usecode compiler @<:@default no@:>@]),,enable_compiler=no)
 AC_MSG_CHECKING([whether to build the usecode compiler])
 if test x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
