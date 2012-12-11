@@ -107,7 +107,13 @@ static const string remove_trainling_slash(const string& value)
 void add_system_path(const string& key, const string& value)
 {
 	if (!value.empty()) {
-		path_map[key] = remove_trainling_slash(value);
+		if (value.find(key) != string::npos) {
+			std::cerr << "Error: system path '" << key
+			          << "' is being defined in terms of itself: '"
+			          << value << "'." << std::endl;
+			exit(1);
+		} else
+			path_map[key] = remove_trainling_slash(value);
 	} else {
 		clear_system_path(key);
 	}
@@ -163,7 +169,8 @@ string get_system_path(const string &path)
 	pos = new_path.find('>');
 	pos2 = new_path.find('<');
 	// If there is no separator, return the path as is
-	while (pos != string::npos && pos2 == 0)
+	int cnt = 10;
+	while (pos != string::npos && pos2 == 0 && cnt-- > 0)
 	{
 		pos += 1;
 		// See if we can translate this prefix
@@ -183,6 +190,13 @@ string get_system_path(const string &path)
 #endif
 			break;
 		}
+	}
+	if (cnt <= 0)
+	{
+		std::cerr << "Could not convert path '" << path
+			      << "' into a filesystem path, due to mutually recursive system paths." << std::endl;
+		std::cerr << "Expansion resulted in '" << new_path << "'." << std::endl; 
+		exit(1);
 	}
 #ifdef UNDER_CE
 	if (new_path[0] != '/' && new_path[0] != '\\')
