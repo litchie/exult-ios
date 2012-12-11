@@ -8,6 +8,8 @@
 	  paths can now be recursively defined, so putting "<HOME>" as a path in
 	  exult.cfg will correctly translate if used in the definition of other
 	  system paths (if correctly escaping < and > as &lt; and &gt; for XML).
+	  Added a few security features for recursive system paths, such as a cap
+	  to the recursion depth.
 
 2012-12-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* keyactions.cc: Toggling fullscreen displays a timed popup asking if you
