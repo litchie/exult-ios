@@ -180,7 +180,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Don't frob the filename if it starts with a dot and
 	// a slash or with two dots and a slash.
 	// Or if it's not a relative path.
-	if (!is_path_absolute(input_filename))
+	if (!is_path_absolute(get_system_path(input_filename)))
 	{
 #if (defined(XWIN) || defined(BEOS) || defined(MACOSX) || defined(WIN32))
 		fname = "<CONFIG>/";
