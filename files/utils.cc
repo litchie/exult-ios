@@ -32,9 +32,9 @@
 #include <map>
 #include <list>
 #ifdef MACOS
-  #include <stat.h>
+#	include <stat.h>
 #elif !defined(UNDER_CE)
-  #include <sys/stat.h>
+#	include <sys/stat.h>
 #endif
 #include <unistd.h>
 
@@ -138,7 +138,7 @@ bool is_system_path_defined(const string& path)
 }
 
 /*
- *  Convert an exult path (e.g. "<DATA>/exult.flx") into a system path
+ *	Convert an exult path (e.g. "<DATA>/exult.flx") into a system path
  */
 
 string get_system_path(const string &path)
@@ -148,52 +148,44 @@ string get_system_path(const string &path)
 	string::size_type pos2;
 	
 #if defined(__MORPHOS__) || defined(AMIGA)
-  pos = path.find( "../" );
-  if( pos != string::npos )
-	  new_path = path.substr( 0, pos )+path.substr( pos+2 );
-  else
-	  new_path = path;
-
-  pos = new_path.find( "./" );
-  if( pos != string::npos )
-	  new_path = new_path.substr( 0, pos )+new_path.substr( pos+2 );
-
-  pos = new_path.find('>');
-  pos2 = new_path.find('<');
-  // If there is no separator, return the path as is
-  if(pos != string::npos && pos2 == 0)
-  {
-	  pos += 1;
-	  // See if we can translate this prefix
-	  string syspath = new_path.substr(0, pos);
-	  if (is_system_path_defined(syspath)) {
-		  string new_prefix = path_map[syspath];
-		  new_path = new_prefix + new_path.substr(pos);
-	  }
-  }
-#else
-	pos = path.find('>');
-	pos2 = path.find('<');
-	// If there is no separator, return the path as is
-	if(pos == string::npos || pos2 != 0) {
-		new_path = path;
-	}
+	pos = path.find( "../" );
+	if( pos != string::npos )
+		new_path = path.substr( 0, pos )+path.substr( pos+2 );
 	else
+		new_path = path;
+
+	pos = new_path.find( "./" );
+	if( pos != string::npos )
+		new_path = new_path.substr( 0, pos )+new_path.substr( pos+2 );
+#else
+	new_path = path;
+#endif
+	pos = new_path.find('>');
+	pos2 = new_path.find('<');
+	// If there is no separator, return the path as is
+	while (pos != string::npos && pos2 == 0)
 	{
 		pos += 1;
 		// See if we can translate this prefix
-		string syspath = path.substr(0, pos);
-		if (is_system_path_defined(syspath)) {
-
+		string syspath = new_path.substr(0, pos);
+		if (is_system_path_defined(syspath))
+		{
 			string new_prefix = path_map[syspath];
-			new_path = new_prefix + path.substr(pos);
-		} else {
-			new_path = path;
+			new_path = new_prefix + new_path.substr(pos);
+			pos = new_path.find('>');
+			pos2 = new_path.find('<');
+		}
+		else
+		{
+#ifdef DEBUG
+			std::cerr << "Unrecognized system path '" << syspath
+				      << "' in path '" << path << "'." << std::endl;  
+#endif
+			break;
 		}
 	}
-#endif
 #ifdef UNDER_CE
-    if (new_path[0] != '/' && new_path[0] != '\\')
+	if (new_path[0] != '/' && new_path[0] != '\\')
 	{// Its a relative path, so we need to make it into a full path
 		new_path = WINCE_exepath + new_path;
 	}
@@ -243,7 +235,7 @@ void to_uppercase(string &str)
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));
-#endif         
+#endif
 	}
 }
 
@@ -256,7 +248,7 @@ string to_uppercase(const string &str)
 
 /*
  *	Convert just the last 'count' parts of a filename to uppercase.
- *  returns false if there are less than 'count' parts
+ *	returns false if there are less than 'count' parts
  */
 
 static bool base_to_uppercase(string& str, int count)
@@ -278,7 +270,7 @@ static bool base_to_uppercase(string& str, int count)
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = static_cast<char>(std::toupper(*X));
-#endif         
+#endif
 	}
 	if (X == str.rend())
 		todo--; // start of pathname counts as separator too
@@ -297,7 +289,7 @@ static void switch_slashes(
 	for(string::iterator X = name.begin(); X != name.end(); ++X)
 	{
 		if(*X == '/' )
-			*X =  '\\';
+			*X = '\\';
 	}
 #elif defined(MACOS)
 	// We use a component-wise algorithm (suggested by Yorick)
@@ -339,7 +331,7 @@ static void switch_slashes(
 /*
  *	Open a file for input, 
  *	trying the original name (lower case), and the upper case version 
- *	of the name.  
+ *	of the name.
  *
  *	Output: 0 if couldn't open.
  */
@@ -385,7 +377,7 @@ bool U7open
 /*
  *	Open a file for output,
  *	trying the original name (lower case), and the upper case version 
- *	of the name.  
+ *	of the name.
  *
  *	Output: 0 if couldn't open.
  */
@@ -427,7 +419,7 @@ bool U7open
 
 /*
  *	Open a file with the access rights specified in mode,
- *	works just like fopen but in a system independant fashion.  
+ *	works just like fopen but in a system independant fashion.
  *
  *	Output: A pointer to a FILE
  */
@@ -490,7 +482,7 @@ void U7remove
 /*
  *	Open a "static" game file by first looking in <PATCH>, then
  *	<STATIC>.
- *	Output: 0 if couldn't open.  We do NOT throw exceptions.
+ *	Output: 0 if couldn't open. We do NOT throw exceptions.
  */
 
 bool U7open_static
@@ -566,7 +558,7 @@ int U7mkdir
 	// remove any trailing slashes
 	string::size_type pos = name.find_last_not_of('/');
 	if (pos != string::npos)
-	  name.resize(pos+1);
+		name.resize(pos+1);
 #endif
 #if defined(WIN32) && defined(UNICODE)
 	const char *n = name.c_str();
@@ -598,7 +590,7 @@ protected:
 	/*
 	// Will leave this for someone with Vista/W7 to implement.
 	typedef HRESULT (*SHGetKnownFolderPathFunc)
-		(      
+		(
 		REFKNOWNFOLDERID rfid,
 		DWORD dwFlags,
 		HANDLE hToken,
@@ -843,9 +835,9 @@ void setup_program_paths()
 		savehome_dir(home_dir), gamehome_dir(".");
 
 #if defined(__IPHONEOS__)
-        config_dir = "../Library/Preferences";
-        savehome_dir = "../Documents/save";
-        gamehome_dir = "game";
+	config_dir = "../Library/Preferences";
+	savehome_dir = "../Documents/save";
+	gamehome_dir = "game";
 #elif defined(MACOSX)
 	config_dir += "/Library/Preferences";
 	savehome_dir += "/Library/Application Support/Exult";
@@ -890,9 +882,9 @@ int U7chdir
 }
 
 /*
- *	Copy a file.  May throw an exception.
+ *	Copy a file. May throw an exception.
  *
- *  TODO: Make this work in WinCE - Colourless
+ *	TODO: Make this work in WinCE - Colourless
  */
 void U7copy
 	(
@@ -1053,9 +1045,9 @@ int Find_next_map
 int errno;
 char *myce_strdup(const char *s)
 {
-   int l = strlen(s);
-   char *newstr = (char *)malloc(sizeof(char)*(l+1));
-   strcpy(newstr, s);
-   return newstr;
+	int l = strlen(s);
+	char *newstr = (char *)malloc(sizeof(char)*(l+1));
+	strcpy(newstr, s);
+	return newstr;
 }
 #endif
