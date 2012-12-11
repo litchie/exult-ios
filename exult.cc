@@ -875,11 +875,6 @@ static void Init
 					// KBD repeat should be nice.
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 
 						SDL_DEFAULT_REPEAT_INTERVAL);
-#ifdef XWIN
-	// Workaround for issues with touchpad in fullscreen: 
-	SDL_putenv(const_cast<char *>("SDL_MOUSE_RELATIVE=0")); // Damn you SDL for not being const-aware!
-#endif
-
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
