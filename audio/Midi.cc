@@ -468,7 +468,7 @@ void MyMidiPlayer::set_music_conversion(int conv)
 		break;
 	case XMIDIFILE_CONVERT_NOCONVERSION:
 		config->set("config/audio/midi/convert","mt32",true);
-		if (!midi_driver->isFMSynth() && !midi_driver->isMT32()) load_timbres();
+		if (midi_driver && !midi_driver->isFMSynth() && !midi_driver->isMT32()) load_timbres();
 		break;
 	case XMIDIFILE_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
