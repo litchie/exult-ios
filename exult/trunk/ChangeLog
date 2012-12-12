@@ -1,3 +1,7 @@
+2012-12-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Midi.cc: Fixing segfault when you change the Midi device type and
+	  disable midi in one go.
+	
 2012-12-11	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc: Reverting revision 7197 as it can sometimes cause the mouse to
 	  lock on the center of the screen. A better workaround for touchpad issues
