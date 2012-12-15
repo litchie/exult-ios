@@ -107,7 +107,7 @@ void Container_game_object::remove
 bool Container_game_object::add
 	(
 	Game_object *obj,
-	bool dont_check,		// 1 to skip volume/recursion check.
+	bool dont_check,		// True to skip volume/recursion check.
 	bool combine,			// True to try to combine obj.  MAY
 					//   cause obj to be deleted.
 	bool noset		// True to prevent actors from setting sched. weapon.
@@ -217,7 +217,7 @@ int Container_game_object::add_quantity
 	int shapenum,			// Shape #.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum,			// Frame, or c_any_framenum for any.
-	int dontcreate,			// If 1, don't create new objs.
+	bool dontcreate,		// If true, don't create new objs.
 	bool temporary		// If objects should be temporary
 	)
 {
@@ -265,7 +265,7 @@ int Container_game_object::add_quantity
 		next.reset();			// Now try recursively.
 		while ((obj = next.get_next()) != 0)
 			delta = obj->add_quantity(
-					delta, shapenum, qual, framenum, 1, temporary);
+					delta, shapenum, qual, framenum, true, temporary);
 		}
 	if (!delta || dontcreate)	// All added?
 		return (delta + cant_add);
