@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,7 @@ void rebuild(void)
 	char s[10];
 	char filename[18];
 	char *pos;
+	char *err;
 	FILE *fi=fopen("index","r"),*fi2,*fo=fopen("usecode","wb");
 	if (fi==NULL)
 		{
@@ -20,7 +22,9 @@ void rebuild(void)
 			exit(0);
 		}
 	while (!feof(fi)) {
-		fgets(s,10,fi);
+		err = fgets(s,10,fi);
+		assert (err != NULL);
+
 		strcpy(filename, s);
 		pos = strchr(filename, '\n');
 		if (pos) *pos = '\0';
@@ -58,6 +62,8 @@ int main(int argc,char *argv[])
 	char s[10];
 	char filename[18];
 	FILE *fi,*fo,*fo2;
+	size_t err;
+
 	printf("Wody's Rip v0.005\nCopyright (c) 1999 Wody Dragon (a.k.a. Wouter Dijkslag)\n");
 	if (argc<2||(!strcasecmp(argv[1],"put")&&argc!=3))
 		{
@@ -96,11 +102,14 @@ int main(int argc,char *argv[])
 		if (fread(&fn,2,1,fi)!=1) break;
 		if (fn == 0xFFFF) {
 			extended = 1;
-			fread(&fn,2,1,fi);
-			fread(&fs,4,1,fi);
+			err = fread(&fn,2,1,fi);
+			assert (err == 1);
+			err = fread(&fs,4,1,fi);
+			assert (err == 1);
 		} else {
 			extended = 0;
-			fread(&temp,2,1,fi);
+			err = fread(&temp,2,1,fi);
+			assert (err == 1);
 			fs = temp;
 		}
 
@@ -146,20 +155,25 @@ int main(int argc,char *argv[])
 					printf("Can't open file %s\n", filename);
 					exit(0);
 				}
-				fread(&fnc,2,1,fo);
+				err = fread(&fnc,2,1,fo);
+				assert (err == 1);
+
 				if (fnc == 0xFFFF) {
 					if (extended == 0) {
 						printf("Wrong header (u7) in object\n");
 						exit(0);
 					}
-					fread(&fnc,2,1,fo);
-					fread(&fsc,4,1,fo);
+					err = fread(&fnc,2,1,fo);
+					assert (err == 1);
+					err = fread(&fsc,4,1,fo);
+					assert (err == 1);
 				} else {
 					if (extended == 1) {
 						printf("Wrong header (extended) in object\n");
 						exit(0);
 					}
-					fread(&temp,2,1,fo);
+					err = fread(&temp,2,1,fo);
+					assert (err == 1);
 					fsc = temp;
 				}
 				if (fnc!=fn)

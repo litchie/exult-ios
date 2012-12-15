@@ -15,6 +15,7 @@
 	* gamewin.cc: Default back to '(default)' if could not open custom keys or
 	  autonotes files. Made alignment and spacing consistent.
 	* all: Made alignment and spacing consistent.
+	* all: Applied patch #3591998 "Fixed compiler warnings".
 	
 2012-12-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixing segfault when you change the Midi device type and

@@ -595,7 +595,7 @@ void Newfile_gump::paint
 		else if ((details->real_day%10) == 3 && details->real_day != 13)
 			suffix = "rd";
 
-		snprintf (info, 320, infostring, party[0].name,
+		snprintf (info, sizeof (info), infostring, party[0].name,
 			party[0].exp, party[0].health,
 			party[0].str, party[0].dext,
 			party[0].intel, party[0].training,
@@ -606,7 +606,7 @@ void Newfile_gump::paint
 
 		if (filename)
 		{
-			std::strncat (info, "\nFile: ", 320);
+			std::strncat (info, "\nFile: ", sizeof (info) - strlen (info));
 
 			int offset = strlen(filename);
 			
@@ -618,7 +618,7 @@ void Newfile_gump::paint
 					break;
 				}
 			}
-			std::strncat (info, filename+offset, 320);
+			std::strncat (info, filename+offset, sizeof (info) - strlen (info));
 
 		}
 
@@ -631,7 +631,7 @@ void Newfile_gump::paint
 		{
 			char	info[64] = {0};
 
-			std::strncat (info, "File: ", 64);
+			std::strncat (info, "File: ", sizeof (info));
 
 			int offset = strlen(filename);
 			
@@ -643,7 +643,7 @@ void Newfile_gump::paint
 					break;
 				}
 			}
-			std::strncat (info, filename+offset, 64);
+			std::strncat (info, filename+offset, sizeof (info) - strlen (info));
 			sman->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
 
 		}
