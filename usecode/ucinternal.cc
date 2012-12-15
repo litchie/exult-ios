@@ -1341,7 +1341,7 @@ Usecode_value Usecode_internal::add_party_items
 			continue;
 		int prev = quantity;
 		quantity = obj->add_quantity(quantity, shapenum,
-							quality, framenum, GAME_BG && temp);
+							quality, framenum, false, GAME_BG && temp);
 		if (quantity < prev)	// Added to this NPC.
 			result.concat(party.get_elem(i));
 		}
@@ -1403,7 +1403,7 @@ Usecode_value Usecode_internal::add_cont_items
 		quality = 0;
 
 	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum, temp));
+	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum, false, temp));
 	return Usecode_value(0);
 	}
 

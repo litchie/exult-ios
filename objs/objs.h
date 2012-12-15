@@ -306,7 +306,7 @@ public:
 				int dont_check = 0, int force_pos = 0, bool noset = false)
 		{ return add(obj, dont_check!=0, false, noset); }
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
-				int framenum = c_any_framenum, int dontcreate = 0, bool temporary = false)
+				int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false)
 		{ return delta; }
 	virtual int create_quantity(int delta, int shapenum, int qual,
 						int framenum, bool temporary = false)

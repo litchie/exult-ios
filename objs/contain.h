@@ -72,7 +72,7 @@ public:
 					// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum, 
 			int qual = c_any_qual,
-			int framenum = c_any_framenum, int dontcreate = 0, bool temporary = false);
+			int framenum = c_any_framenum, bool dontcreate = false, bool temporary = false);
 	virtual int create_quantity(int delta, int shapenum, int qual,
 					int framenum, bool temporary = false);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
