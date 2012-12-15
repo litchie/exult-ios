@@ -386,7 +386,7 @@ int main(int argc, char **argv)
 				delete [] buf;
 			}
 		}
-    		break;
+		break;
   	case EXTRACT:
 		{
 			if(argc==4) {
@@ -401,19 +401,18 @@ int main(int argc, char **argv)
 					exit(1);
 				}
 				char outfile[32];
-				snprintf(outfile,32,"%lu.%s", n, ext);
+				snprintf(outfile,32,"%05lu.%s", n, ext);
 				Write_Object(f, outfile);	// may throw!
 			} else {
-			U7FileManager *fm = U7FileManager::get_ptr();
+				U7FileManager *fm = U7FileManager::get_ptr();
 				U7file *f = fm->get_file_object(fname);
 				int count = static_cast<int>(f->number_of_objects());
 				for(index=0; index<count; index++) {
 					U7object o(fname,index);
 					char outfile[32];
-					snprintf(outfile,32,"%d.%s",index,ext);
+					snprintf(outfile,32,"%05d.%s", index, ext);
 					Write_Object(o, outfile);
 				}
-				delete f;
 			}
 		}
 		break;
