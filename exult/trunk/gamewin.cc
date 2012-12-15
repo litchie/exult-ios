@@ -590,10 +590,15 @@ void Game_window::init_files(bool cycle)
 	d = "config/disk/game/"+Game::get_gametitle()+"/keys";
 	config->value(d.c_str(),keyfilename,"(default)");
 	if (keyfilename == "(default)") {
-	  config->set(d.c_str(), keyfilename, true);
-	  keybinder->LoadDefaults();
+		config->set(d.c_str(), keyfilename, true);
+		keybinder->LoadDefaults();
 	} else {
-	  keybinder->LoadFromFile(keyfilename.c_str());
+		try {
+			keybinder->LoadFromFile(keyfilename.c_str());
+		} catch (file_open_exception& err) {
+			cerr << "Key mappings file '" << keyfilename << "' not found, falling back to default mappings." << endl;
+			keybinder->LoadDefaults();
+		}
 	}
 	keybinder->LoadFromPatch();
 #ifdef UNDER_CE
@@ -612,7 +617,7 @@ void Game_window::init_files(bool cycle)
 }
 
 /*
- *	Read any map.  (This is for "multimap" games, not U7.)
+ *	Read any map. (This is for "multimap" games, not U7.)
  */
 
 Game_map *Game_window::get_map
@@ -735,8 +740,8 @@ void Game_window::add_special_light
 void Game_window::set_time_stopped
 	(
 	long delay			// Delay in ticks (1/1000 secs.),
-					//   -1 to stop indefinitely, or 0
-					//   to end.
+					// -1 to stop indefinitely, or 0
+					// to end.
 	)
 	{
 	if (delay == -1)
@@ -827,7 +832,7 @@ void Game_window::toggle_combat
 void Game_window::add_npc
 	(
 	Actor *npc,
-	int num				// Number.  Has to match npc->num.
+	int num				// Number. Has to match npc->num.
 	)
 	{
 	assert(num == npc->get_npc_num());
@@ -941,7 +946,7 @@ void Game_window::resized
 	}
 
 /*
- *	Clear out world's contents.  Should be used during a 'restore'.
+ *	Clear out world's contents. Should be used during a 'restore'.
  */
 
 void Game_window::clear_world
@@ -979,7 +984,7 @@ void Game_window::clear_world
 	}
 
 /*
- *	Look throughout the map for a given shape.  The search starts at
+ *	Look throughout the map for a given shape. The search starts at
  *	the first currently-selected shape, if possible.
  *
  *	Output:	true if found, else 0.
@@ -1097,7 +1102,7 @@ void Game_window::set_scrolls
 	}
 
 /*
- *	Set the scroll position so that a given tile is centered.  (Used by
+ *	Set the scroll position so that a given tile is centered. (Used by
  *	center_view.)
  */
 
@@ -1113,7 +1118,7 @@ void Game_window::set_scrolls
 	}
 
 /*
- *	Center view around a given tile.  This is called during a 'restore'
+ *	Center view around a given tile. This is called during a 'restore'
  *	to init. stuff as well.
  */
 
@@ -1139,13 +1144,13 @@ void Game_window::set_camera_actor
 	    camera_actor &&		// Change in chunk?
 	    (camera_actor->get_cx() != main_actor->get_cx() ||
 	     camera_actor->get_cy() != main_actor->get_cy()))
-	    				// Cache out temp. objects.
+					// Cache out temp. objects.
 		emulate_cache(camera_actor->get_chunk(),
 						main_actor->get_chunk());
 	camera_actor = a;
 	Tile_coord t = a->get_tile();
 	set_scrolls(t);			// Set scrolling around position,
-					//   and read in map there.
+					// and read in map there.
 	set_all_dirty();
 	}
 
@@ -1386,7 +1391,7 @@ bool Game_window::init_gamedat(bool create)
 					return false;
 				}
 			delete [] static_identity;
-					//   scroll coords.
+					// scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.	
 	return true;
@@ -1405,7 +1410,7 @@ void Game_window::write
 	// Lets just show a nice message on screen first
 
 	int width = get_width();
-	int centre_x  = width/2;
+	int centre_x = width/2;
 	int height = get_height();
 	int centre_y = height/2;
 	int text_height = shape_man->get_text_height(0);
@@ -1445,7 +1450,7 @@ void Game_window::read
 	clear_world();			// Wipe clean.
 	read_gwin();			// Read our data.
 					// DON'T do anything that might paint()
-					//   before calling read_npcs!!
+					// before calling read_npcs!!
 	setup_game(cheat.in_map_editor());	// Read NPC's, usecode.
 	}
 
@@ -1572,7 +1577,7 @@ bool Game_window::was_map_modified
  *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static, and also
  *	save 'gamedat' to <PATCH>/initgame.dat.
  *
- *	Note:  This is for map-editing.
+ *	Note: This is for map-editing.
  *
  *	Output:	Errors are reported.
  */
@@ -1643,7 +1648,7 @@ void Game_window::view_right
 		}
 	map->read_map_data();		// Be sure objects are present.
 #ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+	if (GL_manager::get_instance())	// OpenGL? Just repaint all.
 		paint();
 	else
 #endif
@@ -1676,7 +1681,7 @@ void Game_window::view_left
 		}
 	map->read_map_data();		// Be sure objects are present.
 #ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+	if (GL_manager::get_instance())	// OpenGL? Just repaint all.
 		paint();
 	else
 #endif
@@ -1710,7 +1715,7 @@ void Game_window::view_down
 		}
 	map->read_map_data();		// Be sure objects are present.
 #ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+	if (GL_manager::get_instance())	// OpenGL? Just repaint all.
 		paint();
 	else
 #endif
@@ -1741,7 +1746,7 @@ void Game_window::view_up
 		}
 	map->read_map_data();		// Be sure objects are present.
 #ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+	if (GL_manager::get_instance())	// OpenGL? Just repaint all.
 		paint();
 	else
 #endif
@@ -1775,8 +1780,8 @@ Gump *Game_window::get_dragging_gump
  */
 void Game_window::start_actor_alt
 	(
-	int winx, int winy, 		// Mouse position to aim for.
-	int speed			// Msecs. between frames.
+	int winx, int winy, // Mouse position to aim for.
+	int speed           // Msecs. between frames.
 	)
 	{
 	int ax, ay;
@@ -1804,7 +1809,7 @@ void Game_window::start_actor_alt
 		dir = (dir+7)%8;
 	else if (blocked[dir])
 	{
-	   	Game_object *block = main_actor->is_moving() ? 0
+		Game_object *block = main_actor->is_moving() ? 0
 			: main_actor->find_blocking(start.get_neighbor(dir), dir);
 		// We already know the blocking object isn't the avatar, so don't
 		// double check it here.
@@ -1825,7 +1830,7 @@ void Game_window::start_actor_alt
 	}
 
 	const int delta = step_tile_delta*c_tilesize;// Bigger # here avoids jerkiness,
-					//   but causes probs. with followers.
+					// but causes probs. with followers.
 	switch (dir)
 		{
 		case north:
@@ -1895,8 +1900,8 @@ void Game_window::start_actor_alt
 
 void Game_window::start_actor
 	(
-	int winx, int winy, 		// Mouse position to aim for.
-	int speed			// Msecs. between frames.
+	int winx, int winy, // Mouse position to aim for.
+	int speed           // Msecs. between frames.
 	)
 	{
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
@@ -1950,8 +1955,8 @@ void Game_window::start_actor
 
 void Game_window::start_actor_along_path
 	(
-	int winx, int winy, 		// Mouse position to aim for.
-	int speed			// Msecs. between frames.
+	int winx, int winy, // Mouse position to aim for.
+	int speed           // Msecs. between frames.
 	)
 	{
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
@@ -2175,32 +2180,32 @@ void Game_window::find_nearby_objects(Game_object_map_xy *mobjxy, int x, int y, 
 {
 	Game_object *iobj;
 	// Find object at each pixel
-        for (int iy = y - 10; iy < (y + 10); iy++)
-        {
-           for (int ix = x - 10; ix < (x + 10); ix++)
-           {
-	      if (gump)
-	      {
-                 iobj = gump->find_object(ix, iy);
-              }
-	      else
-	      {
-                 iobj = find_object(ix, iy);
-              }
-	      
-              if (iobj)
-              {
-  	         int *arrXY = new int[2];
-		 arrXY[0] = ix;
-		 arrXY[1] = iy;
-		 std::pair<Game_object_map_xy::iterator,bool> ret;
-			  
-		 ret = mobjxy->insert(std::pair<Game_object *, int*>(iobj, arrXY));
-		 if (ret.second == false)
-		     delete arrXY;
-  	      }
-           }
-        }
+	for (int iy = y - 10; iy < (y + 10); iy++)
+	{
+		for (int ix = x - 10; ix < (x + 10); ix++)
+		{
+			if (gump)
+			{
+				iobj = gump->find_object(ix, iy);
+			}
+			else
+			{
+				iobj = find_object(ix, iy);
+			}
+
+			if (iobj)
+			{
+				int *arrXY = new int[2];
+				arrXY[0] = ix;
+				arrXY[1] = iy;
+				std::pair<Game_object_map_xy::iterator,bool> ret;
+
+				ret = mobjxy->insert(std::pair<Game_object *, int*>(iobj, arrXY));
+				if (ret.second == false)
+					delete arrXY;
+			}
+		}
+	}
 }
 #endif
 static inline string Get_object_name(Game_object *obj)
@@ -2244,11 +2249,11 @@ void Game_window::show_items
 	find_nearby_objects(&mobjxy, x, y, gump);
 	if (mobjxy.size() > 0)
 	{
-	   Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
-       	   Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
-	   itemgump->postCloseActions();
-	   delete itemgump;
-	   obj = NULL;
+		Itemmenu_gump *itemgump = new Itemmenu_gump(&mobjxy, x, y);
+		Game_window::get_instance()->get_gump_man()->do_modal_gump(itemgump, Mouse::hand);
+		itemgump->postCloseActions();
+		delete itemgump;
+		obj = NULL;
 	}
 #endif
 					// Map-editing?
@@ -2537,7 +2542,7 @@ void Game_window::double_clicked
 		{
 		obj = find_object(x, y);
 		if (!avatar_can_act && obj && obj->as_actor()
-		    	&& obj->as_actor() == main_actor->as_actor())
+		    && obj->as_actor() == main_actor->as_actor())
 			{
 			ActionFileGump(0);
 			return;
@@ -2938,10 +2943,15 @@ void Game_window::setup_game
 	d = "config/disk/game/"+Game::get_gametitle()+"/autonotes";
 	config->value(d.c_str(),autonotesfilename,"(default)");
 	if (autonotesfilename == "(default)") {
-	  config->set(d.c_str(), autonotesfilename, true);
-	  Notebook_gump::read_auto_text();
+		config->set(d.c_str(), autonotesfilename, true);
+		Notebook_gump::read_auto_text();
 	} else {
-	  Notebook_gump::read_auto_text_file(autonotesfilename.c_str());
+		try {
+			Notebook_gump::read_auto_text_file(autonotesfilename.c_str());
+		} catch (file_open_exception& err) {
+			cerr << "Autonotes file '" << autonotesfilename << "' not found, falling back to default autonotes." << endl;
+			Notebook_gump::read_auto_text();
+		}
 	}
 	
 	usecode->read();		// Read the usecode flags
@@ -3029,7 +3039,7 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 }
 
 /*
- *	Chunk caching emulation:  swap out chunks which are now at least
+ *	Chunk caching emulation: swap out chunks which are now at least
  *	3 chunks away.
  */
 void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
@@ -3037,7 +3047,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 	if (!olist)
 		return;			// Seems like there's nothing to do.
 					// Cancel weather from eggs that are
-					//   far away.
+					// far away.
 	effects->remove_weather_effects(120);
 	int newx = nlist->get_cx(), newy = nlist->get_cy(),
 	    oldx = olist->get_cx(), oldy = olist->get_cy();
@@ -3204,7 +3214,7 @@ void Game_window::setup_load_palette()
 		plasma_start_color = BG_PLASMA_START_COLOR;
 		plasma_cycle_range = BG_PLASMA_CYCLE_RANGE;
 	}
-	else // Default:  if (Game::get_game_type()==SERPENT_ISLE)
+	else // Default: if (Game::get_game_type()==SERPENT_ISLE)
 	{
 		plasma_start_color = SI_PLASMA_START_COLOR;
 		plasma_cycle_range = SI_PLASMA_CYCLE_RANGE;
