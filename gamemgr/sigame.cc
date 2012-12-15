@@ -865,7 +865,7 @@ void SI_Game::top_menu()
 
 void SI_Game::show_journey_failed()
 {
-    pal->fade_out(50);
+	pal->fade_out(50);
 	gwin->clear_screen(true);
 	sman->paint_shape(topx,topy,get_menu_shape());
 	journey_failed_text();
@@ -1117,7 +1117,6 @@ Sound Index
 28 = "back to britannia..."
 29 = "perhaps you..."
 
-
       0 - Repeat 9
    6350 - Play 10
   14643 - Repeat 10, Play 22
@@ -1133,7 +1132,6 @@ Sound Index
   74750 - play 29
   75500 - big g's hand
   78000 - "we do have a score to settle"
-
 */
 
 	// Flic List
@@ -1324,7 +1322,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 	gkeyboard->minimize();
 #endif
 #ifdef __IPHONEOS__
-        gkeybb->autopaint = false;
+	gkeybb->autopaint = false;
 #endif
 	do
 	{
@@ -1354,7 +1352,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 			gkeyboard->paint();
 #endif
 #ifdef __IPHONEOS__
-                        gkeybb->paint();
+			gkeybb->paint();
 #endif
 			gwin->get_win()->show();
 			redraw = false;
@@ -1366,18 +1364,18 @@ bool SI_Game::new_game(Vga_file &shapes)
 				redraw = true;
 #endif
 #ifdef __IPHONEOS__
-                        if (gkeybb->handle_event(&event))
-                                redraw = true;
+			if (gkeybb->handle_event(&event))
+				redraw = true;
 #endif
 #ifdef SDL_VER_1_3
-                        bool isTextInput = false;
-                        if (event.type==SDL_TEXTINPUT)
-                        {
-                                isTextInput = true;
-                                event.type = SDL_KEYDOWN;
-                                event.key.keysym.sym = NULL;
-                                event.key.keysym.unicode = event.text.text[0];
-                        }
+			bool isTextInput = false;
+			if (event.type==SDL_TEXTINPUT)
+			{
+				isTextInput = true;
+				event.type = SDL_KEYDOWN;
+				event.key.keysym.sym = NULL;
+				event.key.keysym.unicode = event.text.text[0];
+			}
 #endif
 			if(event.type==SDL_KEYDOWN)
 			{
@@ -1440,7 +1438,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 						editing = ok = false;
 					break;
 #ifdef __IPHONEOS__
-                                case SDLK_DELETE:
+				case SDLK_DELETE:
 #endif
 				case SDLK_BACKSPACE:
 					if(selected == 0 && strlen(npc_name) > 0)
@@ -1484,7 +1482,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		gkeyboard->autopaint = true;
 #endif
 #ifdef __IPHONEOS__
-                gkeybb->autopaint = true;
+		gkeybb->autopaint = true;
 #endif
 		set_avskin(skindata->skin_id);
 		set_avname (npc_name);

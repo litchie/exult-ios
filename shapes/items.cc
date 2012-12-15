@@ -206,7 +206,7 @@ void Setup_text(bool si, bool expansion)
 		if (is_patch && U7exists(PATCH_TEXT))
 			U7open(textflx, PATCH_TEXT);
 		else
-  			U7open(textflx, TEXT_FLX);
+			U7open(textflx, TEXT_FLX);
 		const char *msgs = BUNDLE_CHECK(BUNDLE_EXULTMSG, EXULTMSG);
 		if (is_patch && U7exists(PATCH_EXULTMSG))
 			U7open(exultmsg, PATCH_EXULTMSG, true);

@@ -321,7 +321,7 @@ void map_type_size(const std::vector<std::string> &param_types, std::vector<std:
 	std::vector<std::string> vs; // the resulting strings
 	stack<char> vbound; // the "bounding" chars used to deonte collections of characters
 	unsigned int lasti=0;
-  std::string currstr; // the current string, gets appended to vs
+	std::string currstr; // the current string, gets appended to vs
 
 	// if it's empty return null
 	if(s.size()==0) return vs;

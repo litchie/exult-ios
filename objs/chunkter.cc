@@ -128,7 +128,7 @@ Chunk_terrain::Chunk_terrain
 			else
 				{
 				shnum = data[0]+256*(data[1]&3),
-			    	frnum = (data[1]>>2)&0x1f;
+				frnum = (data[1]>>2)&0x1f;
 				data += 2;
 				}
 			ShapeID id(shnum, frnum);

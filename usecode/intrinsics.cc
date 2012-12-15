@@ -893,7 +893,7 @@ USECODE_INTRINSIC(click_on_item)
 		// Special case for weapon hit:
 	else if (event == weapon && caller_item)
 		{
-        // Special hack for weapons (needed for hitting Draygan with
+		// Special hack for weapons (needed for hitting Draygan with
 		// sleep arrows (SI) and worms with worm hammer (also SI)).
 		// Spells cast from readied spellbook in combat have been
 		// changed to use the intercept_item instead, setting it

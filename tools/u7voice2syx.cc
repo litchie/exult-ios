@@ -163,9 +163,9 @@ uint8 U7PercussionNotes[] = {
 // The RhythmSetup data 
 RhythmSetupData U7PercussionData[] = {
 	{	0,	0x5A,	0x07,	0	},	// 28
-   	{	6,	0x64,	0x07,	1	},	// 33
-   	{	1,	0x5A,	0x05,	0	},	// 74
-   	{	1,	0x5A,	0x06,	0	},	// 76
+	{	6,	0x64,	0x07,	1	},	// 33
+	{	1,	0x5A,	0x05,	0	},	// 74
+	{	1,	0x5A,	0x06,	0	},	// 76
 	{	1,	0x5A,	0x07,	0	},	// 77
 	{	2,	0x64,	0x07,	1	},	// 78
 	{	1,	0x5A,	0x08,	0	},	// 79

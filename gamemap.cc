@@ -141,7 +141,7 @@ Game_map::Game_map
 	(
 	int n
 	) : 
-        num(n), didinit(false),
+	    num(n), didinit(false),
 	    map_modified(false), caching_out(0),
 	    map_patches(new Map_patch_collection)
 	{
@@ -1003,7 +1003,7 @@ inline unsigned long Get_quality_flags
 	unsigned char qualbyte		// Quality byte containing flags.
 	)
 	{
-	return 	((qualbyte&1) << Obj_flags::invisible) |
+	return ((qualbyte&1) << Obj_flags::invisible) |
 		(((qualbyte>>3)&1) << Obj_flags::okay_to_take);
 	}
 
@@ -1080,7 +1080,7 @@ void Game_map::read_ireg_objects
 			}
 		else
 			{
-		 	tilex = entry[0] & 0xf;
+			tilex = entry[0] & 0xf;
 			tiley = entry[1] & 0xf;
 			}
 		int shnum, frnum;	// Get shape #, frame #.
@@ -1151,7 +1151,7 @@ void Game_map::read_ireg_objects
 			oflags =	// Override flags (I think).
 				Get_quality_flags(entry[11 + extbody]);
 			int npc_num;
-			if (quality == 1 && (extbody || (entry[8] >= 0x80 || 	 
+			if (quality == 1 && (extbody || (entry[8] >= 0x80 ||
 					Game::get_game_type() == SERPENT_ISLE)))
 				npc_num = extbody ? (entry[8] + 256*entry[9]) :
 						((entry[8] - 0x80) & 0xFF);

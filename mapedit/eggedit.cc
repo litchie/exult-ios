@@ -46,7 +46,7 @@ using std::string;
 C_EXPORT void on_open_egg_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -141,7 +141,7 @@ C_EXPORT gboolean on_monst_shape_focus_out_event
 C_EXPORT void on_teleport_coord_toggled
 	(
 	GtkToggleButton *btn,
-        gpointer user_data
+	gpointer user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();

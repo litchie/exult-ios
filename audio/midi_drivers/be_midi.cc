@@ -32,54 +32,54 @@ const MidiDriver::MidiDriverDesc Be_midi::desc =
 
 int Be_midi::open()
 {
-  FileOpen = false;
-  return 0;
+	FileOpen = false;
+	return 0;
 }
 
 void Be_midi::close()
 {
-  stop_track();
+	stop_track();
 }
 
 void Be_midi::stop_track(void)
 {
-  if (FileOpen) {
-    midiSynthFile.UnloadFile();
-    FileOpen = false;
-  }
+	if (FileOpen) {
+		midiSynthFile.UnloadFile();
+		FileOpen = false;
+	}
 }
 
 bool	Be_midi::is_playing(void)
 {
-  if (!FileOpen)
-    return false;
+	if (!FileOpen)
+		return false;
 
-  return !midiSynthFile.IsFinished();
+	return !midiSynthFile.IsFinished();
 }
 
 
 void Be_midi::start_track(const char *name,bool repeat,int vol)
 {
 #if DEBUG
-  cerr << "Stopping any running track" << endl;
+	cerr << "Stopping any running track" << endl;
 #endif
-  stop_track();
+	stop_track();
 
 #if DEBUG
-  cerr << "Starting midi sequence with Be_midi, repeat = " 
-       << (repeat?"true":"false") << endl;
+	cerr << "Starting midi sequence with Be_midi, repeat = " 
+		<< (repeat?"true":"false") << endl;
 #endif
 
-  //open file
-  get_ref_for_path(name, &midiRef);
-  midiSynthFile.LoadFile(&midiRef);
-  FileOpen = true;
+	//open file
+	get_ref_for_path(name, &midiRef);
+	midiSynthFile.LoadFile(&midiRef);
+	FileOpen = true;
 
-  //set repeating
-  midiSynthFile.EnableLooping(repeat);
+	//set repeating
+	midiSynthFile.EnableLooping(repeat);
 
-  //play file
-  midiSynthFile.Start();
+	//play file
+	midiSynthFile.Start();
 }
 
 #endif // USE_BEOS_MIDI

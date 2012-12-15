@@ -70,14 +70,14 @@ void IFF::index_file(void)
 
 /*
 -the objects entries
-  entry   = type, size, object, [even]
-  type    = 4 chars representing the type of this object
-  size    = reversed longint (size of the entry excluding the first 8 bytes)
-  even    = 1 byte (set to 0) present only to get an even number of bytes
-  (the objects found in U7 IFF files have the following format:)
-  object  = name, data
-  name    = 8 chars (filled with 0s)
-  data    = the data of the object
+	entry   = type, size, object, [even]
+	type    = 4 chars representing the type of this object
+	size    = reversed longint (size of the entry excluding the first 8 bytes)
+	even    = 1 byte (set to 0) present only to get an even number of bytes
+	(the objects found in U7 IFF files have the following format:)
+	object  = name, data
+	name    = 8 chars (filled with 0s)
+	data    = the data of the object
 */
 
 	while(data->getPos() < full_length)

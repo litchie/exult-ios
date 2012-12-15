@@ -186,7 +186,7 @@ void Slider_gump::paint
 					// Paint slider diamond.
 	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
-  	gumpman->paint_num(val, x + textx, y + texty);
+	gumpman->paint_num(val, x + textx, y + texty);
 	gwin->set_painted();
 }
 

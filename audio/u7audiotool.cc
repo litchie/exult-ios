@@ -46,10 +46,10 @@ SEQ_DEFINEBUF(2048);
 int	main(void)
 {
 	config->read_config_file(USER_CONFIGURATION_FILE);
-        string  data_directory;
-        config->value("config/disk/u7path",data_directory,".");
-        cout << "chdir to " << data_directory << endl;
-        chdir(data_directory.c_str());
+	string  data_directory;
+	config->value("config/disk/u7path",data_directory,".");
+	cout << "chdir to " << data_directory << endl;
+	chdir(data_directory.c_str());
 
 	Table instrument_patches=AccessTableFile("static/xmidi.mt");
 	Flex midi_files=AccessFlexFile("static/adlibmus.dat");

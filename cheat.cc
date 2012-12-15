@@ -432,7 +432,7 @@ void Cheat::change_skin (void) const {
 	int color = gwin->get_main_actor()->get_skin_color();
 	bool sex = gwin->get_main_actor()->get_type_flag(Actor::tf_sex)!=0;
 	color = Shapeinfo_lookup::GetNextSkin(color, sex, sman->have_si_shapes());
-  
+	
 	gwin->get_main_actor()->set_skin_color(color);
 	gwin->set_all_dirty();
 }
@@ -808,11 +808,10 @@ public:
 
 	virtual void paint() {
 	sman->paint_shape(x, y, map, true);
-  
+	
 	// mark current location
 	int xx, yy;
 	Tile_coord t = gwin->get_main_actor()->get_tile();
-  
 
 	xx = ((t.tx * (w - border*2)) / worldsize);
 	yy = ((t.ty * (h - border*2)) / worldsize);

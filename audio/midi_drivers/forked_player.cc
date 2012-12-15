@@ -49,7 +49,7 @@ forked_player::forked_player() : repeat_(false), forked_job(-1)
 
 forked_player::~forked_player(void)
 {
-      stop_track();
+	stop_track();
 }
 
 int forked_player::open()

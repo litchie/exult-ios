@@ -41,8 +41,8 @@
 //
 void Image_window::show_scaled8to16_Hq4x
 (
- int x, int y, int w, int h	// Area to show.
- )
+	int x, int y, int w, int h	// Area to show.
+)
 {
 	Manip8to16 manip(paletted_surface->format->palette->colors,
 		inter_surface->format);
@@ -57,8 +57,8 @@ void Image_window::show_scaled8to16_Hq4x
 
 void Image_window::show_scaled8to555_Hq4x
 (
- int x, int y, int w, int h	// Area to show.
- )
+	int x, int y, int w, int h	// Area to show.
+)
 {
 	Manip8to555 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
@@ -73,8 +73,8 @@ void Image_window::show_scaled8to555_Hq4x
 
 void Image_window::show_scaled8to565_Hq4x
 (
- int x, int y, int w, int h	// Area to show.
- )
+	int x, int y, int w, int h	// Area to show.
+)
 {
 	Manip8to565 manip(paletted_surface->format->palette->colors,
 						inter_surface->format);
@@ -89,8 +89,8 @@ void Image_window::show_scaled8to565_Hq4x
 
 void Image_window::show_scaled8to32_Hq4x
 (
- int x, int y, int w, int h	// Area to show.
- )
+	int x, int y, int w, int h	// Area to show.
+)
 {
 	Manip8to32 manip(paletted_surface->format->palette->colors,
 		inter_surface->format);

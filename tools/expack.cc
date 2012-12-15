@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 	int index;
 	vector<string>	file_names;
 	file_names.reserve(1200);
-  	hname[0] = 0;
+	hname[0] = 0;
 
 	if(argc>2) {
 		strncpy(fname, argv[2], 1024);
@@ -361,10 +361,10 @@ int main(int argc, char **argv)
 			default:
 				mode = NOMODE;
 				break;
-	      		}
+			}
 		}
 	}
-  
+	
 	switch(mode) {
 	case LIST:
 		{
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
 			}
 		}
 		break;
-  	case EXTRACT:
+	case EXTRACT:
 		{
 			if(argc==4) {
 				U7object f(fname,atoi(argv[3]));

@@ -272,7 +272,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
 
 		if (ticks > SDL_GetTicks()) SDL_Delay(ticks - SDL_GetTicks());
-  
+		
 		ticks += fli_speed*10;
 
 		if(win && !dont_show && !skip_frame)

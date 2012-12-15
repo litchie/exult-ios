@@ -352,7 +352,7 @@ public:
 		Tile_coord pos(-1, -1, -1);	// Get position to jump to.
 		int eggnum = 255;
 		if (mapnum == -1)
- 			eggnum = get_quality();
+			eggnum = get_quality();
 		if (eggnum == 255) {		// Jump to coords.
 			pos = Tile_coord(destx, desty, destz);
 		} else {
@@ -797,7 +797,7 @@ int Egg_object::is_active
 		return area.has_world_point(tx, ty) && deltaz == 0 &&
 					obj->get_flag(Obj_flags::in_party);
 	case something_on:
-		return	 		// Guessing.  At SI end, deltaz == -1.
+		return			// Guessing.  At SI end, deltaz == -1.
 			deltaz/4 == 0 && area.has_world_point(tx, ty) && !obj->as_actor();
 	case external_criteria:
 	default:
@@ -956,13 +956,13 @@ void Egg_object::update_from_studio
 		case intermap:
 		case teleport:frame = 5; break;
 		case path:    frame = 6; break;
-	        case missile:
-        		shape = 200; 
-            		if ((data2 & 0xFF) < 8)
-                		frame = 2 + ((data2 & 0xFF) / 2);
-            		else
-                		frame = 1;
-            		break;
+		case missile:
+			shape = 200; 
+			if ((data2 & 0xFF) < 8)
+				frame = 2 + ((data2 & 0xFF) / 2);
+			else
+				frame = 1;
+			break;
 		default:      frame = 7; break;
 			}
 	
@@ -1165,15 +1165,15 @@ void Egg_object::move
  */
 
 void Egg_object::remove_this
-         (
-         int nodel                       // 1 to not delete.
-         )
+	(
+		int nodel                       // 1 to not delete.
+	)
 	{
 	if (get_owner())		// Watch for this.
 		get_owner()->remove(this);
 	else
 		{
-	 	if (chunk)
+		if (chunk)
 			{
 			gwin->add_dirty(this);	// (Make's ::move() simpler.).
 			chunk->remove_egg(this);

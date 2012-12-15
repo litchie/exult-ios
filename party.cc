@@ -388,7 +388,7 @@ static Actor *Find_member_blocking
 			return npc;	// Found.
 		}
 	return 0;
- 	}
+	}
 
 /*
  *	Get the direction from a tile to NPC's position.
@@ -591,7 +591,7 @@ int Party_manager::step
 					// Could have died from stepping on
 					//   something.
 	else if (npc->is_dead() ||
-		 !Take_best_step(npc, leader, pos, frame, 	
+		 !Take_best_step(npc, leader, pos, frame,
 						npc->get_direction(dest)))
 		{			// Failed to take a step.
 		cout << npc->get_name() << " failed to take a step" << endl;

@@ -195,7 +195,7 @@ void Shape_sfx::update
 	for (size_t i = 0; i < sizeof(channel)/sizeof(channel[0]); i++)
 		{
 		if (channel[i] != -1)
-	 		active[i] = mixer->isPlaying(channel[i]);
+			active[i] = mixer->isPlaying(channel[i]);
 		if (!active[i] && channel[i] != -1)
 			{
 			Audio::get_ptr()->stop_sound_effect(channel[i]);

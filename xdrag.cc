@@ -150,7 +150,7 @@ void Xdnd::client_msg
 			XGetWindowProperty(display, drag_win,
 				xdnd_typelist, 0, 65536,
 				false, XA_ATOM, &type, &format, &nitems,
-			  	&after, reinterpret_cast<unsigned char **>(
+				&after, reinterpret_cast<unsigned char **>(
 								&data));
 			if (format != 32 || type != XA_ATOM)
 				return;	// No good.

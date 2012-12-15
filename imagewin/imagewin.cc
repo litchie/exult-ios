@@ -511,9 +511,7 @@ void Image_window::static_init()
 *	Destroy window.
 */
 
-Image_window::~Image_window
-(
- )
+Image_window::~Image_window()
 {
 	free_surface();
 	delete ibuf;
@@ -525,9 +523,9 @@ Image_window::~Image_window
 
 void Image_window::create_surface
 (
- unsigned int w, 
- unsigned int h
- )
+	unsigned int w, 
+	unsigned int h
+)
 {
 	uses_palette = true;
 	draw_surface = paletted_surface = inter_surface = display_surface = 0;
@@ -611,11 +609,11 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 	flags = SDL_SWSURFACE|(fullscreen?SDL_FULLSCREEN:0);
 #ifdef __IPHONEOS__
 	// Turn on landscape mode if desired
-        if (w > h)
-        {
-           SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" ); 
-           flags |= SDL_RESIZABLE;
-        }
+	if (w > h)
+	{
+		SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" ); 
+		flags |= SDL_RESIZABLE;
+	}
 #endif
 	hwdepth = Get_best_bpp(w, h, hwdepth, flags);
 	if (!hwdepth) return false;
@@ -662,13 +660,13 @@ bool Image_window::create_scale_surfaces(int w, int h, int bpp)
 	// Something within the "create_surface" flow needs to be ran
 	// after landscape mode is "hinted" at.
 	// However, something within create_surface calls this function...
-        static bool RECREATED_ONCE = false;
-        if (w > h && !RECREATED_ONCE)
-        {
-           RECREATED_ONCE = true;
-           free_surface();
-           create_surface(w, h);
-        }
+	static bool RECREATED_ONCE = false;
+	if (w > h && !RECREATED_ONCE)
+	{
+		RECREATED_ONCE = true;
+		free_surface();
+		create_surface(w, h);
+	}
 #endif 
 	return true;
 }
@@ -781,9 +779,7 @@ bool Image_window::try_scaler(int w, int h)
 *	Free the surface.
 */
 
-void Image_window::free_surface
-(
- )
+void Image_window::free_surface()
 {
 	if (draw_surface != 0 && draw_surface != display_surface && draw_surface != inter_surface) SDL_FreeSurface(draw_surface);
 	if (inter_surface != 0 && inter_surface != display_surface) SDL_FreeSurface(inter_surface);
@@ -800,8 +796,8 @@ void Image_window::free_surface
 
 Image_buffer *Image_window::create_buffer
 (
- int w, int h			// Dimensions.
- )
+	int w, int h			// Dimensions.
+)
 {
 	Image_buffer *newbuf = ibuf->create_another(w, h);
 	return (newbuf);
@@ -813,16 +809,16 @@ Image_buffer *Image_window::create_buffer
 
 void Image_window::resized
 (
- unsigned int neww, 
- unsigned int newh,
- bool newfs, 
- unsigned int newgw, 
- unsigned int newgh,
- int newsc,
- int newscaler,
- FillMode fmode, 
- int fillsclr
- )
+	unsigned int neww, 
+	unsigned int newh,
+	bool newfs, 
+	unsigned int newgw, 
+	unsigned int newgh,
+	int newsc,
+	int newscaler,
+	FillMode fmode, 
+	int fillsclr
+)
 {
 	if (paletted_surface)
 	{
@@ -847,8 +843,8 @@ void Image_window::resized
 
 void Image_window::show
 (
- int x, int y, int w, int h
- )
+	int x, int y, int w, int h
+)
 {
 	if (!ready())
 		return;
@@ -1029,10 +1025,10 @@ void Image_window::set_title(const char *title)
 
 void Image_window::opengl_fill8
 (
- unsigned char pix,
- int srcw, int srch,
- int destx, int desty
- )
+	unsigned char pix,
+	int srcw, int srch,
+	int destx, int desty
+)
 {
 	SDL_Color *colors = paletted_surface->format->palette->colors;
 	SDL_Color& color = colors[pix];
@@ -1059,11 +1055,11 @@ void Image_window::opengl_fill8
 
 void Image_window::opengl_fill_translucent8
 (
- unsigned char /* val */,	// Not used.
- int srcw, int srch,
- int destx, int desty,
- Xform_palette& xform		// Transform table.
- )
+	unsigned char /* val */,	// Not used.
+	int srcw, int srch,
+	int destx, int desty,
+	Xform_palette& xform		// Transform table.
+)
 {
 	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
 	int x = destx;			// Left edge.

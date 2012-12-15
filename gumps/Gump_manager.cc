@@ -279,7 +279,7 @@ void Gump_manager::add_gump
 	    y = (1 + cnt)*gwin->get_height()/10;
 
 	ShapeID s_id(shapenum, 0, paperdoll ? SF_PAPERDOL_VGA : SF_GUMPS_VGA);
-    	Shape_frame *shape = s_id.get_shape();
+	Shape_frame *shape = s_id.get_shape();
 		
 	if (x + shape->get_xright() > gwin->get_width() ||
 	    y + shape->get_ybelow() > gwin->get_height())
@@ -291,8 +291,8 @@ void Gump_manager::add_gump
 
 	Gump *new_gump = 0;
 	Actor *npc = 0;
-    if (obj)
-        npc = obj->as_actor();
+	if (obj)
+		npc = obj->as_actor();
 	if (npc && paperdoll)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
 	else if (npc && actorgump) 
@@ -374,7 +374,7 @@ void Gump_manager::set_kbd_focus
 	if (gump && gump->can_handle_kbd())
 		{
 		kbd_focus = gump;
-		SDL_EnableUNICODE(1); 	// Enable unicode translation.
+		SDL_EnableUNICODE(1);   // Enable unicode translation.
 		}
 	else
 		{
@@ -390,7 +390,7 @@ void Gump_manager::set_kbd_focus
 
 bool Gump_manager::double_clicked
 	(
-	int x, int y, 			// Coords in window.
+	int x, int y,		   // Coords in window.
 	Game_object *&obj
 	)
 	{
@@ -410,7 +410,7 @@ bool Gump_manager::double_clicked
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
 			{
-		 	Gump_button *btn = gump->on_button(x, y);
+			Gump_button *btn = gump->on_button(x, y);
 			if (btn) btn->double_clicked(x, y);
 			else if (gwin->get_double_click_closes_gumps())
 				{
@@ -578,12 +578,12 @@ cout << "(x,y) rel. to gump is (" << (gx - gump->get_x())
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 						? toupper(chr) : chr, event);
 #else
-  #ifdef SDL_VER_1_3
+#  ifdef SDL_VER_1_3
 			if (event.key.keysym.sym != NULL && event.key.keysym.sym > (int)'~')
 			{
 			   event.key.keysym.unicode = event.key.keysym.sym;
 			}
-  #endif
+#  endif
 			gump->key_down(event.key.keysym.sym);
 			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
 #endif
@@ -720,7 +720,7 @@ void Gump_manager::paint_num
 	//	Shape_manager *sman = Shape_manager::get_instance();
 	const int font = 2;
 	char buf[20];
-  	snprintf(buf, 20, "%d", num);
+	snprintf(buf, 20, "%d", num);
 	sman->paint_text(font, buf, x - sman->get_text_width(font, buf), y);
 }
 

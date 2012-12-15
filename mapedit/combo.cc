@@ -53,7 +53,7 @@ const int maxtiles = 32;		// Max. width/height in tiles.
 C_EXPORT void on_new_combo1_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -1074,8 +1074,7 @@ void Combo_chooser::drag_data_get
 	//							time);
 					// Set data.
 	gtk_selection_data_set(seldata,
-			gdk_atom_intern(U7_TARGET_COMBOID_NAME, 0),
-                                				8, buf, len);
+			gdk_atom_intern(U7_TARGET_COMBOID_NAME, 0), 8, buf, len);
 #endif
 	delete [] buf;
 	delete [] ents;
@@ -1519,15 +1518,13 @@ gint Combo_chooser::mouse_press
 	gtk_widget_grab_focus(widget);	// Enables keystrokes.
 	Combo_chooser *chooser = (Combo_chooser *) data;
 
-    if (event->button == 4) {
-        chooser->scroll(true);
-        return(TRUE);
-    } else if (event->button == 5) {
-        chooser->scroll(false);
-        return(TRUE);
-    }
-
-
+	if (event->button == 4) {
+		chooser->scroll(true);
+		return(TRUE);
+	} else if (event->button == 5) {
+		chooser->scroll(false);
+		return(TRUE);
+	}
 
 	int old_selected = chooser->selected;
 	int i;				// Search through entries.

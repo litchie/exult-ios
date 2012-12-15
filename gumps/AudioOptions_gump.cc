@@ -513,7 +513,7 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 
 
 	// audio on/off
-    buttons[id_audio_enabled] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
+	buttons[id_audio_enabled] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
 	// Ok
 	buttons[id_ok] = new AudioOptions_button(this, oktext, colx[0], rowy[14]);
 	// Cancel

@@ -79,15 +79,15 @@ static void Gen_shadow
 
 static bool Gen_font_shape_win32
 (
- HDC dc,
- HFONT font,
- Shape *shape,			// Shape to set frames.
- int nframes,			// # frames to generate, starting at 0.
- int pixels_ht,			// Desired height in pixels.
- unsigned char fg,		// Foreground color index.
- unsigned char bg,		// Background color index.
- int shadow			// Shadow color, or -1
- )
+	HDC dc,
+	HFONT font,
+	Shape *shape,			// Shape to set frames.
+	int nframes,			// # frames to generate, starting at 0.
+	int pixels_ht,			// Desired height in pixels.
+	unsigned char fg,		// Foreground color index.
+	unsigned char bg,		// Background color index.
+	int shadow			// Shadow color, or -1
+)
 {
 	MAT2 matrix;
 	memset(&matrix,0,sizeof(matrix));
@@ -178,10 +178,10 @@ static bool Gen_font_shape_win32
 }
 
 int CALLBACK EnumFontFamProc(
-  ENUMLOGFONT *lpelf,    // logical-font data
-  NEWTEXTMETRIC *lpntm,  // physical-font data
-  DWORD FontType,        // type of font
-  LPARAM lParam          // application-defined data
+	ENUMLOGFONT *lpelf,    // logical-font data
+	NEWTEXTMETRIC *lpntm,  // physical-font data
+	DWORD FontType,        // type of font
+	LPARAM lParam          // application-defined data
 )
 {
 	//MessageBox(NULL,(const char*)lpelf->elfFullName,"lpelf->elfFullName",MB_OK);
@@ -197,15 +197,15 @@ int CALLBACK EnumFontFamProc(
 
 static bool Gen_font_shape_win32
 (
- Shape *shape,			// Shape to set frames.
- const char *famname,		
- const char *stylename,
- int nframes,			// # frames to generate, starting at 0.
- int pixels_ht,			// Desired height in pixels.
- unsigned char fg,		// Foreground color index.
- unsigned char bg,		// Background color index.
- int shadow			// Shadow color, or -1
- )
+	Shape *shape,			// Shape to set frames.
+	const char *famname,		
+	const char *stylename,
+	int nframes,			// # frames to generate, starting at 0.
+	int pixels_ht,			// Desired height in pixels.
+	unsigned char fg,		// Foreground color index.
+	unsigned char bg,		// Background color index.
+	int shadow			// Shadow color, or -1
+)
 {
 	HDC dc = CreateCompatibleDC(NULL);
 
@@ -226,7 +226,7 @@ static bool Gen_font_shape_win32
 	logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS; 
 	logfont.lfQuality = DEFAULT_QUALITY; 
 	logfont.lfPitchAndFamily = DEFAULT_PITCH; 
-  
+	
 	if (font == 0 && stylename) {
 		snprintf(logfont.lfFaceName,LF_FACESIZE-1,"%s %s", famname, stylename);
 		logfont.lfFaceName[LF_FACESIZE-1] = 0;

@@ -122,9 +122,9 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 	if(num == 0 && flex == MAINMUS && Game::get_game_type() == BLACK_GATE)
 		return;		
 
-  #ifdef DEBUG
-        cout << "Audio subsystem request: Music track # " << num << " in "<< flex << endl;
-  #endif
+#ifdef DEBUG
+	cout << "Audio subsystem request: Music track # " << num << " in "<< flex << endl;
+#endif
 
 	stop_music();
 
@@ -157,7 +157,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,std::string flex)
 		else if (flex == MAINSHP_FLX) num--;
 	}
 
-	DataSource 	*mid_data = 0;
+	DataSource  *mid_data = 0;
 
 	// Try in patch dir first.
 	string pflex("<PATCH>/");
@@ -215,9 +215,9 @@ void	MyMidiPlayer::start_music(std::string fname,int num,bool repeat)
 	current_track = -1;
 	repeating = repeat;
 
-  #ifdef DEBUG
-        cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
-  #endif
+#ifdef DEBUG
+	cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
+#endif
 
 	// OGG Handling
 	if (ogg_enabled) {
@@ -320,7 +320,7 @@ int MyMidiPlayer::setup_timbre_for_track(std::string &str)
 		return XMIDIFILE_CONVERT_NOCONVERSION;
 	}
 
-    return music_conversion;
+	return music_conversion;
 }
 
 void MyMidiPlayer::load_timbres()
@@ -503,7 +503,7 @@ void MyMidiPlayer::set_effects_conversion(int conv)
 
 void MyMidiPlayer::set_midi_driver(std::string desired_driver, bool use_oggs)
 {
-    // Don't kill the device if we don't need to
+	// Don't kill the device if we don't need to
 	if (midi_driver_name != desired_driver || ogg_enabled != use_oggs) {
 		stop_music();
 		if (midi_driver) midi_driver->destroyMidiDriver();
@@ -715,13 +715,13 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	
 	char		*buffer;
 	size_t		size;
-	DataSource 	*mid_data;
+	DataSource  *mid_data;
 
 	U7object	*track =
 #ifdef MACOSX
 		is_system_path_defined("<BUNDLE>") ?
 			new U7multiobject("<DATA>/midisfx.flx",
-			    	"<BUNDLE>/midisfx.flx", real_num) :
+			                  "<BUNDLE>/midisfx.flx", real_num) :
 #endif
 			new U7object("<DATA>/midisfx.flx", real_num);
 
@@ -837,7 +837,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 		ogg_name = get_system_path("<PATCH>/music/" + ogg_name);
 #ifdef MACOSX
 	else if (is_system_path_defined("<BUNDLE>") &&
-	    	U7exists("<BUNDLE>/music/" + ogg_name))
+	         U7exists("<BUNDLE>/music/" + ogg_name))
 		ogg_name = get_system_path("<BUNDLE>/music/" + ogg_name);
 #endif
 	else

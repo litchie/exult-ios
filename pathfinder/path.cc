@@ -249,8 +249,8 @@ public:
 class Equal_nodes
 	{
 public:
-     	bool operator() (const Search_node *a, const Search_node *b) const
-     		{
+	bool operator() (const Search_node *a, const Search_node *b) const
+		{
 		Tile_coord ta = a->get_tile(), tb = b->get_tile();
 		return ta == tb;
 		}
@@ -264,17 +264,17 @@ public:
 class Less_nodes
 	{
 public:
-     	bool operator() (const Search_node *a, const Search_node *b) const
-     		{
-			Tile_coord ta = a->get_tile(), tb = b->get_tile();
-			uint32 apos = ta.tx << 16, bpos = tb.tx << 16;
-			apos |= ta.ty << 4;
-			bpos |= tb.ty << 4;
-			apos |= ta.tz;
-			bpos |= tb.tz;
-			/* Because #(short x short) is <= #int, we can define an injective projection,
-			** which is all we need. */
-			return apos < bpos;
+	bool operator() (const Search_node *a, const Search_node *b) const
+		{
+		Tile_coord ta = a->get_tile(), tb = b->get_tile();
+		uint32 apos = ta.tx << 16, bpos = tb.tx << 16;
+		apos |= ta.ty << 4;
+		bpos |= tb.ty << 4;
+		apos |= ta.tz;
+		bpos |= tb.tz;
+		/* Because #(short x short) is <= #int, we can define an injective projection,
+		** which is all we need. */
+		return apos < bpos;
 		}
 	};
 
