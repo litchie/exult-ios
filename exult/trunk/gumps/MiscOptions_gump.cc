@@ -147,11 +147,11 @@ void MiscOptions_gump::build_buttons()
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
 	std::string *stacks_text = new std::string[2];
-        stacks_text[0] = "No";
-        stacks_text[1] = "Yes";
+	stacks_text[0] = "No";
+	stacks_text[1] = "Yes";
 	std::string *autonotes_text = new std::string[2];
-        autonotes_text[0] = "No";
-	    autonotes_text[1] = "Yes";
+	autonotes_text[0] = "No";
+	autonotes_text[1] = "Yes";
 
 	buttons[id_scroll_mouse] = new MiscTextToggle (this, yesNo1, colx[5], rowy[0], 
 							   40, scroll_mouse, 2);

@@ -11,7 +11,7 @@
 #include <fstream>
 #include <iostream>
 #ifdef MACOS
-  #include <cassert>
+#  include <cassert>
 #endif
 #include "fontvga.h"
 #include "fnames.h"

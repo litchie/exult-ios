@@ -103,11 +103,11 @@
 using namespace Pentagram;
 
 #ifdef UNDER_CE
-  #include "Keyboard_gump.h"
-  #include "touchscreen.h"
+#  include "Keyboard_gump.h"
+#  include "touchscreen.h"
 #endif
 #ifdef __IPHONEOS__
-  #include "iphone_gumps.h"
+#  include "iphone_gumps.h"
 #endif
 #ifndef UNDER_EMBEDDED_CE
 using std::atof;
@@ -781,7 +781,7 @@ int exult_main(const char *runpath)
 	//  you really enter the game, we remove it here to prevent possible bugs
 	//  invilved with registering DnD a second time over an old variable.
 #if defined(WIN32)
-    RevokeDragDrop(hgwin);
+	RevokeDragDrop(hgwin);
 	delete windnd;
 #else
 	delete xdnd;
@@ -1025,7 +1025,7 @@ static void Init
 		
 		// Make sure we have a proper palette before playing the intro.
 		gwin->get_pal()->load(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
-		    		EXULT_FLX_EXULT0_PAL);
+		                      EXULT_FLX_EXULT0_PAL);
 		gwin->get_pal()->apply();
 		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME
 				|| U7exists(INTRO_DAT)))
@@ -1064,19 +1064,19 @@ static void Init
 	xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
-	    		info.info.x11.window,
-	    		Move_dragged_shape, Move_dragged_combo,
-	    		Drop_dragged_shape, Drop_dragged_chunk, 
-	    		Drop_dragged_npc, Drop_dragged_combo);
+	                info.info.x11.window,
+	                Move_dragged_shape, Move_dragged_combo,
+	                Drop_dragged_shape, Drop_dragged_chunk,
+	                Drop_dragged_npc, Drop_dragged_combo);
 #elif !defined(UNDER_CE)
 	SDL_GetWMInfo(&info);
 	Server_init();			// Initialize server (for map-editor).
 	hgwin = info.window;
 	OleInitialize(NULL);
 	windnd = new Windnd(hgwin,
-	    		Move_dragged_shape, Move_dragged_combo,
-	    		Drop_dragged_shape, Drop_dragged_chunk,
-	    		Drop_dragged_npc, Drop_dragged_combo);
+	                    Move_dragged_shape, Move_dragged_combo,
+	                    Drop_dragged_shape, Drop_dragged_chunk,
+	                    Drop_dragged_npc, Drop_dragged_combo);
 	if (FAILED(RegisterDragDrop(hgwin, windnd))) {
 		cout << "Something's wrong with OLE2 ..." << endl;
 	};
@@ -1451,8 +1451,8 @@ static void Handle_event
 		{
 	case SDL_MOUSEBUTTONDOWN:
 		{
-	   	if (dont_move_mode)
-	   		break;
+		if (dont_move_mode)
+			break;
 #ifdef UNDER_CE
 		if (gkeyboard->handle_event(&event))
 			break;
@@ -1761,35 +1761,35 @@ static void Handle_event
 		break;
 #ifdef __IPHONEOS__
 	case SDL_JOYAXISMOTION:
-           ax = SDL_JoystickGetAxis(sdl_joy, 0);
-           ay = SDL_JoystickGetAxis(sdl_joy, 1);
-           //std::cout << "joystick  ax: " << ax << ", ay: " << ay << std::endl;
-           event.type = SDL_KEYDOWN;
-           event.key.type = SDL_KEYDOWN;
-           event.key.state = SDL_PRESSED;
-           event.key.keysym.mod = KMOD_NONE;
-           if (ax >= JOY_RIGHT_VAL)
-           {
-              event.key.keysym.sym = SDLK_RIGHT;
-	   }
-	   else if (ax <= JOY_LEFT_VAL)
-	   {
-              event.key.keysym.sym = SDLK_LEFT;
-	   }
-	   else if (ay >= JOY_UP_VAL)
-	   {
-              event.key.keysym.sym = SDLK_UP;
-	   }
-	   else if (ay <= JOY_DOWN_VAL)
-	   {
-              event.key.keysym.sym = SDLK_DOWN;
-	   }
-	   else
-	   {
-	      break;
-	   }
-           event.key.keysym.unicode = event.key.keysym.sym;
-	// Should continue on to the SDL_KEY* cases
+		ax = SDL_JoystickGetAxis(sdl_joy, 0);
+		ay = SDL_JoystickGetAxis(sdl_joy, 1);
+		//std::cout << "joystick  ax: " << ax << ", ay: " << ay << std::endl;
+		event.type = SDL_KEYDOWN;
+		event.key.type = SDL_KEYDOWN;
+		event.key.state = SDL_PRESSED;
+		event.key.keysym.mod = KMOD_NONE;
+		if (ax >= JOY_RIGHT_VAL)
+		{
+			event.key.keysym.sym = SDLK_RIGHT;
+		}
+		else if (ax <= JOY_LEFT_VAL)
+		{
+			event.key.keysym.sym = SDLK_LEFT;
+		}
+		else if (ay >= JOY_UP_VAL)
+		{
+			event.key.keysym.sym = SDLK_UP;
+		}
+		else if (ay <= JOY_DOWN_VAL)
+		{
+			event.key.keysym.sym = SDLK_DOWN;
+		}
+		else
+		{
+			break;
+		}
+		event.key.keysym.unicode = event.key.keysym.sym;
+		// Should continue on to the SDL_KEY* cases
 #endif
 	case SDL_KEYDOWN:		// Keystroke.
 	case SDL_KEYUP:
@@ -1960,8 +1960,8 @@ static int Get_click
 					break;
 				default:
 					if ((c == 's') && 
- 					   (event.key.keysym.mod & KMOD_ALT) &&
-					   (event.key.keysym.mod & KMOD_CTRL)){
+					    (event.key.keysym.mod & KMOD_ALT) &&
+					    (event.key.keysym.mod & KMOD_CTRL)){
 						make_screenshot(true);
 						break;
 					}

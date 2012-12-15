@@ -181,7 +181,7 @@ void Ireg_game_object::write_ireg
 	if (info.has_quality_flags())
 		{			// Store 'quality_flags'.
 		*ptr = get_flag((Obj_flags::invisible) != 0) +
-		 	((get_flag(Obj_flags::okay_to_take) != 0) << 3);
+				((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 		}
 					// Special case for 'quantity' items:
 	else if (get_flag(Obj_flags::okay_to_take) && info.has_quantity())

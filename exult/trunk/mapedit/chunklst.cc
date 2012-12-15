@@ -440,14 +440,14 @@ gint Chunk_chooser::mouse_press
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 
-    if (event->button == 4) {
-        chooser->scroll(true);
-        return(TRUE);
-    } else if (event->button == 5) {
-        chooser->scroll(false);
-        return(TRUE);
-    }
-
+	if (event->button == 4) {
+		chooser->scroll(true);
+		return(TRUE);
+	} else if (event->button == 5) {
+		chooser->scroll(false);
+		return(TRUE);
+	}
+	
 	//int old_selected = chooser->selected;
 	int i;				// Search through entries.
 	for (i = 0; i < chooser->info_cnt; i++)
@@ -529,8 +529,7 @@ void Chunk_chooser::drag_data_get
 	//							time);
 					// Set data.
 	gtk_selection_data_set(seldata,
-			gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0),
-                                				8, buf, len);
+			gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0), 8, buf, len);
 #endif
 	}
 

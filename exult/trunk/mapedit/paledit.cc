@@ -352,8 +352,8 @@ gint Palette_edit::mouse_press
 	{
 	Palette_edit *paled = (Palette_edit *) data;
 
-    if (event->button == 4 || event->button == 5) // mouse wheel
-        return (TRUE);
+	if (event->button == 4 || event->button == 5) // mouse wheel
+		return (TRUE);
 
 	if (paled->colorsel)
 		return (TRUE);		// Already editing a color.
@@ -423,8 +423,7 @@ void Palette_edit::drag_data_get
 	//							time);
 					// Set data.
 	gtk_selection_data_set(seldata,
-			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
-                                				8, buf, len);
+			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0), 8, buf, len);
 #endif
 	}
 

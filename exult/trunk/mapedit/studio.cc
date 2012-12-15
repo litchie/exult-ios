@@ -96,18 +96,18 @@ enum ExultFileTypes {
 typedef struct _FileTreeItem FileTreeItem;
 struct _FileTreeItem
 {
-  const gchar    *label;
-  ExultFileTypes datatype;
-  FileTreeItem   *children;
+	const gchar    *label;
+	ExultFileTypes datatype;
+	FileTreeItem   *children;
 };
 
 /* columns */
 enum
 {
-  FOLDER_COLUMN = 0,
-  FILE_COLUMN,
-  DATA_COLUMN,
-  NUM_COLUMNS
+	FOLDER_COLUMN = 0,
+	FILE_COLUMN,
+	DATA_COLUMN,
+	NUM_COLUMNS
 };
 
 
@@ -1176,7 +1176,7 @@ void ExultStudio::open_game_dialog
 	GtkWidget *dlg_list[2] = {
 		glade_xml_get_widget( app_xml, "gameselect_gamelist" ),
 		glade_xml_get_widget( app_xml, "gameselect_modlist" )};
-  	GtkTreeStore *model;
+	GtkTreeStore *model;
 
 	/* create the store for both trees */
 	for(int i=0; i<2; i++)
@@ -3001,8 +3001,8 @@ C_EXPORT void on_gameinfo_apply_clicked
 	gchar *modmenu = gtk_text_iter_get_text(&startpos, &endpos);
 	// Titles need to be displayable in Exult menu, hence should not
 	// have any extra characters.
- 	codepageStr menu(modmenu, "CP437");
- 	string menustr = menu.get_str();
+	codepageStr menu(modmenu, "CP437");
+	string menustr = menu.get_str();
 	for (size_t i = 0; i < strlen(menustr.c_str()); i++)
 		if (menustr[i] < 0)
 			menustr[i] = '?';

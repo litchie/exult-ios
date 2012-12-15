@@ -626,7 +626,7 @@ static const int mouth_num_frames = sizeof(mouth_times)/sizeof(int);
 
 
 static int text_times[] =
-  { 45, 74, 145, 204, 251, 298, 360, 439, 494, 584, 688, 768, 833, 888 };
+	{ 45, 74, 145, 204, 251, 298, 360, 439, 494, 584, 688, 768, 833, 888 };
 
 static const int text_num_frames = sizeof(text_times)/sizeof(int);
 
@@ -874,7 +874,7 @@ void BG_Game::scene_guardian()
 				ERASE_TEXT();		\
 				ERASE_AND_DRAW_EYES();	\
 				ERASE_AND_DRAW_MOUTH();	\
-				if (text_index > 0) 	\
+				if (text_index > 0) \
 					DRAW_TEXT();	\
 			} while (0)
 
@@ -1500,7 +1500,7 @@ void BG_Game::end_game(bool success)
 		Font *endfont3 = fontManager.get_font("END3_FONT");
 		Font *normal = fontManager.get_font("NORMAL_FONT");
 
-		const char 	*message = text_msgs[you_cannot_do_that];
+		const char *message = text_msgs[you_cannot_do_that];
 		int	height = topy+200 - endfont2->get_text_height()*2;
 		int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
@@ -1848,7 +1848,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		Shapeinfo_lookup::GetSkinInfoSafe(
 				defskin->default_skin, defskin->default_female, si_installed);
 	
-	Palette *pal = 	gwin->get_pal();
+	Palette *pal = gwin->get_pal();
 	// This should work because the palette in exult_bg.flx is
 	// a single-file object.
 	pal->load(INTROPAL_DAT,
@@ -1920,8 +1920,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 			{
 				isTextInput = true;
 				event.type = SDL_KEYDOWN;
-                		event.key.keysym.sym = NULL;
-                		event.key.keysym.unicode = event.text.text[0];
+				event.key.keysym.sym = NULL;
+				event.key.keysym.unicode = event.text.text[0];
 			}
 #endif
 			if(event.type==SDL_KEYDOWN)

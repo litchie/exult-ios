@@ -101,7 +101,7 @@ int main
 					// Set border width of top window.
 	gtk_container_border_width(GTK_CONTAINER(topwin), 10);
 	/*
- 	 *	Create shape chooser.
+	 *	Create shape chooser.
 	 */
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(topwin), vbox);

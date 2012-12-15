@@ -2067,7 +2067,7 @@ void Actor::paint
 			ShapeID::paint_outline(xoff, yoff, HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed) |
-		    	(1 << Obj_flags::charmed) | (1 << Obj_flags::paralyzed)))
+		    (1 << Obj_flags::charmed) | (1 << Obj_flags::paralyzed)))
 			{
 			if (flags & (1L << Obj_flags::charmed))
 				ShapeID::paint_outline(xoff, yoff,
@@ -4651,7 +4651,7 @@ int Main_actor::step
 		gwin->set_all_dirty();
 		}
 	else if (roof_height < 31 && gwin->set_in_dungeon(nlist->has_dungeon()?
- 					nlist->is_dungeon(tx, ty):0))
+					nlist->is_dungeon(tx, ty):0))
 		gwin->set_all_dirty();
 					// Near an egg?  (Do this last, since
 					//   it may teleport.)
@@ -4899,7 +4899,7 @@ bool Actor::quake_on_walk
 
 Npc_actor::Npc_actor
 	(
-	const std::string &nm, 			// Name.  A copy is made.
+	const std::string &nm,		  // Name.  A copy is made.
 	int shapenum, 
 	int num, 
 	int uc

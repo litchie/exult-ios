@@ -699,12 +699,12 @@ int	Audio::play_sound_effect (int num, int volume, int balance, int repeat, int 
 */
 int Audio::play_wave_sfx
 (
- int num,
- int volume,		// 0-256.
- int balance,		// balance, -256 (left) - +256 (right)
- int repeat,		// Keep playing.
- int distance
- )
+	int num,
+	int volume,		// 0-256.
+	int balance,		// balance, -256 (left) - +256 (right)
+	int repeat,		// Keep playing.
+	int distance
+)
 {
 	if (!effects_enabled || !sfx_file || !mixer) 
 		return -1;  // no .wav sfx available

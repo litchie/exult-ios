@@ -352,7 +352,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 {
 	SDL_Event event;
 
-  	while (1) {
+	while (1) {
 		Delay();
 		while (SDL_PollEvent(&event)) {
 			if (event.type != SDL_KEYDOWN)

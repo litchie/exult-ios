@@ -765,9 +765,9 @@ void Map_chunk::set_terrain
 				Shape_info& info = id.get_info();
 				Game_object *obj = info.is_animated() ?
 					new Animated_object(shapenum,
-					    	framenum, tilex, tiley)
+					                    framenum, tilex, tiley)
 					: new Terrain_game_object(shapenum,
-					    	framenum, tilex, tiley);
+					                          framenum, tilex, tiley);
 				add(obj);
 				}
 			}
@@ -1381,8 +1381,7 @@ void Map_chunk::try_all_eggs
 				if (egg->get_type() != Egg_object::jukebox &&
 					// And don't teleport a 2nd time.
 				    egg->get_type() != Egg_object::teleport &&
-			    	    egg->is_active(obj,
-						tx, ty, tz, from_tx, from_ty))
+				    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 					eggs.push_back(egg);
 				}
 		}
@@ -1548,8 +1547,7 @@ void Map_chunk::gravity
 		Rectangle foot = obj->get_footprint();
 					// Let drop as far as possible.
 		if (!is_blocked(1, t.tz - 1, foot.x, foot.y,
-			foot.w, foot.h, new_lift, MOVE_ALL_TERRAIN, 100) &&
-			    				new_lift < t.tz)
+			foot.w, foot.h, new_lift, MOVE_ALL_TERRAIN, 100) && new_lift < t.tz)
 			{		// Drop & recurse.
 			obj->move(t.tx, t.ty, new_lift);
 			gravity(foot, obj->get_lift() +

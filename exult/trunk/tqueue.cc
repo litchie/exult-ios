@@ -97,9 +97,9 @@ void Time_queue::add
 
 bool    operator <(const Queue_entry &q1,const Queue_entry &q2)
 {
-        if(q1.time<q2.time)
-                return true;
-        return false;
+	if(q1.time<q2.time)
+		return true;
+	return false;
 }
 
 /*

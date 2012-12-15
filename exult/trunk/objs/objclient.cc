@@ -41,7 +41,7 @@ void Object_client::add_client(Game_object_vector& objs)
  */
 void Object_client::remove_clients() {
 	for (Game_object_vector::iterator it = objs.begin();
-	    							   it != objs.end(); ++it)
+	     it != objs.end(); ++it)
 		(*it)->remove_client(this);
 	objs.clear();
 }
@@ -59,7 +59,7 @@ void Object_client::kill_client_list() {
  */
 void Object_client::object_gone(Game_object *obj) {
 	for (Game_object_vector::iterator it = objs.begin();
-	    							   it != objs.end(); ++it) {
+	     it != objs.end(); ++it) {
 		if ((*it) == obj) {
 		    objs.erase(it);
 			notify_object_gone(obj);

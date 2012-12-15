@@ -423,12 +423,12 @@ gint Npc_chooser::mouse_press
 	gtk_widget_grab_focus(widget);
 
 	if (event->button == 4) {
-        	if (row0 > 0)
-            		scroll_row_vertical(row0-1);
-        	return(TRUE);
-    	} else if (event->button == 5) {
-        	scroll_row_vertical(row0+1);
-        	return(TRUE);
+		if (row0 > 0)
+			scroll_row_vertical(row0-1);
+		return(TRUE);
+	} else if (event->button == 5) {
+		scroll_row_vertical(row0+1);
+		return(TRUE);
 	}
 	int old_selected = selected, new_selected = -1;
 	int i;				// Search through entries.
@@ -596,8 +596,7 @@ void Npc_chooser::drag_data_get
 	//							time);
 					// Set data.
 	gtk_selection_data_set(seldata,
-			gdk_atom_intern(U7_TARGET_NPCID_NAME, 0),
-                                				8, buf, len);
+			gdk_atom_intern(U7_TARGET_NPCID_NAME, 0), 8, buf, len);
 #endif
 	}
 

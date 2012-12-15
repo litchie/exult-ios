@@ -253,9 +253,8 @@ int Container_game_object::add_quantity
 		while (delta && (obj = next.get_next()) != 0)
 			{
 			if (has_quantity && obj->get_shapenum() == shapenum &&
-		    	 (framenum == c_any_framenum || has_quantity_frame ||
-					obj->get_framenum() == framenum))
-
+			    (framenum == c_any_framenum || has_quantity_frame ||
+			     obj->get_framenum() == framenum))
 				delta = obj->modify_quantity(delta);
 					// Adding key to SI keyring?
 			else if (GAME_SI && shapenum == 641 &&

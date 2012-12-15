@@ -398,7 +398,7 @@ inline void Sprites_effect::add_dirty
 
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 			xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-	  		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize
+			yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize
 		).enlarge((3*c_tilesize)/2)));
 	}
 
@@ -1866,7 +1866,7 @@ void Earthquake::handle_event
 	{
 		eqsoundonce = 1;
 		// Play earthquake SFX once
-  		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(60));
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(60));
 	}
 
 	Game_window *gwin = Game_window::get_instance();

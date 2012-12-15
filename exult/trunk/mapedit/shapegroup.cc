@@ -515,9 +515,9 @@ on_group_list_row_activated		(GtkTreeView	*treeview,
 /* columns */
 enum
 {
-  GRP_FILE_COLUMN = 0,
-  GRP_GROUP_COLUMN,
-  GRP_NUM_COLUMNS
+	GRP_FILE_COLUMN = 0,
+	GRP_GROUP_COLUMN,
+	GRP_NUM_COLUMNS
 };
 
 /*
@@ -542,12 +542,12 @@ void ExultStudio::setup_groups
 	gulong addsig = 0, delsig = 0, chgsig = 0;
 	if (!oldmod)			// Create model first time.
 		{
-  		model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
+		model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
 						G_TYPE_STRING, G_TYPE_POINTER);
 		gtk_tree_view_set_model(tview, GTK_TREE_MODEL(model));
 		g_object_unref(model);
 					// Create column.
-	  	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 		g_object_set (renderer, "xalign", 0.0, NULL);
 		gint col_offset = gtk_tree_view_insert_column_with_attributes(
 				tview,
@@ -649,7 +649,7 @@ void ExultStudio::add_group
 		return;
 	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
-  	GtkTreeStore *model = GTK_TREE_STORE(gtk_tree_view_get_model(tview));
+	GtkTreeStore *model = GTK_TREE_STORE(gtk_tree_view_get_model(tview));
 	const char *nm = get_text_entry("groups_new_name");
 	Shape_group_file *groups = curfile->get_groups();
 					// Make sure name isn't already there.
@@ -874,8 +874,8 @@ void ExultStudio::open_group_window
 								TRUE, TRUE, 0);
 					// Auto-connect doesn't seem to work.
 	gtk_signal_connect (GTK_OBJECT(grpwin), "delete_event",
-                      GTK_SIGNAL_FUNC (on_group_window_delete_event),
-                      this);
+	                    GTK_SIGNAL_FUNC (on_group_window_delete_event),
+	                    this);
 	group_windows.push_back(GTK_WINDOW(grpwin));
 	gtk_widget_show(grpwin);
 	}

@@ -363,7 +363,7 @@ static void Setup_equip
 							&rows[row]);
 			}
 					// Shape #:
-  		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
+		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
 			gtk_adjustment_new (1, 0, c_max_shapes-1, 1, 50, 50)), 1, 0);
 		rows[row].shape = spin;
 		gtk_widget_show(spin);

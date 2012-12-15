@@ -284,7 +284,7 @@ bool Usecode_internal::call_function(int funcid,
 	if (fsym)
 		cout << fsym->get_name();
 	else
- 		cout << hex << setfill((char)0x30) 
+		cout << hex << setfill((char)0x30) 
 			<< funcid << dec << setfill(' ');
 	cout << " (";
 	for (i = 0; i < num_args; i++)
@@ -1128,7 +1128,7 @@ Barge_object *Get_barge
 		if (barge && barge->get_tile_footprint().has_world_point(pos.tx, pos.ty))
 			{
 			int lift = barge->get_lift();
-			if (!best || 	// First qualifying?
+			if (!best ||	// First qualifying?
 					// First beneath obj.?
 			    (best->get_lift() > pos.tz && lift <= pos.tz) ||
 					// Highest beneath?
@@ -2594,7 +2594,7 @@ int Usecode_internal::run()
 						: (opcode == 0x5f ?
 							frame->get_this().nth_class_var(local4) :
 							frame->locals[local4]);
- 				if (initializing_loop && arr.is_undefined())
+				if (initializing_loop && arr.is_undefined())
 				{	// If the local 'array' is not initialized, do not loop
 					// (verified in FoV and SS):
 					initializing_loop = false;
@@ -3149,8 +3149,8 @@ int Usecode_internal::run()
 
 int Usecode_internal::call_usecode
 	(
-	int id, 			// Function #.
-	Game_object *item,		// Item ref.
+	int id,                 // Function #.
+	Game_object *item,      // Item ref.
 	Usecode_events event
 	)
 	{
@@ -3194,9 +3194,9 @@ int Usecode_internal::call_usecode
 
 bool Usecode_internal::call_method
 	(
-	Usecode_value *inst,		// Instance, or NULL.
-	int id, 			// Function # or -1 for free inst.
-	Game_object *item		// Item ref.
+	Usecode_value *inst,        // Instance, or NULL.
+	int id,                     // Function # or -1 for free inst.
+	Game_object *item           // Item ref.
 	)
 	{
 	if (id == -1)
@@ -3245,7 +3245,7 @@ bool Usecode_internal::call_method
 	if (fsym)
 		cout << fsym->get_name();
 	else
- 		cout << hex << setfill((char)0x30) 
+		cout << hex << setfill((char)0x30) 
 			<< id << dec << setfill(' ');
 	cout << " (";
 	for (i = 0; i < frame->num_args; i++)

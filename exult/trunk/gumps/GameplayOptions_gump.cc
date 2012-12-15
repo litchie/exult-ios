@@ -51,7 +51,7 @@ static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
 
 static int framerates[] = { 2, 4, 6, 8, 10, -1 };
- // -1 is placeholder for custom framerate
+// -1 is placeholder for custom framerate
 static const int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
 
 
@@ -263,7 +263,7 @@ void GameplayOptions_gump::load_settings()
 	int realframes = 1000/gwin->get_std_delay();
 	int i;
 
-    frames = -1;
+	frames = -1;
 	framerates[num_default_rates] = realframes;
 	for (i=0; i < num_default_rates; i++) {
 		if (realframes == framerates[i]) {

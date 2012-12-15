@@ -138,7 +138,7 @@ void SoundTester::test_sound()
 		SDL_WaitEvent(&event);
 		if(event.type==SDL_KEYDOWN)
 		{
-       			redraw = true;
+			redraw = true;
 			switch(event.key.keysym.sym)
 			{
 

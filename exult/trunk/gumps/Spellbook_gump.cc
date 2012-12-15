@@ -269,7 +269,7 @@ Spellbook_gump::Spellbook_gump
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
 	leftpage = new Page_button(this, lpagex, lrpagey, 0);
- 	rightpage = new Page_button(this, rpagex, lrpagey, 1);
+	rightpage = new Page_button(this, rpagex, lrpagey, 1);
 	bookmark = new Bookmark_button(this);
 					// Get dims. of a spell.
 	Shape_frame *spshape = ShapeID(SPELLS, 0, SF_GUMPS_VGA).get_shape();

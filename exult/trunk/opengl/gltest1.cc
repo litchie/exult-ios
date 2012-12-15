@@ -151,8 +151,8 @@ void Render
 		glColor3f(.5, .5, 1.0);	// Light blue for grid.
 		for (int y = -15; y < 16; y++)	// Horizontal.
 			{
-		  	glVertex3f(-16, y, 0);
-		  	glVertex3f(16,  y, 0);
+			glVertex3f(-16, y, 0);
+			glVertex3f(16,  y, 0);
 			}
 		for (int x = -15; x < 16; x++)	// Vertical.
 			{

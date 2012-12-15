@@ -52,7 +52,7 @@ using	std::endl;
 C_EXPORT void on_open_npc_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
