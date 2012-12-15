@@ -465,7 +465,7 @@ int Game_object::get_weapon_ammo
 
 int Game_object::get_effective_obj_hp(int weapon_shape) const
 {
- 	int hps = get_obj_hp();
+	int hps = get_obj_hp();
 	if (!hps)
 		{
 		Shape_info& inf = get_info();
@@ -1042,7 +1042,7 @@ int Game_object::is_closed_door
 		}
 					// Should be blocked before/after.
 	return (gmap->is_tile_occupied(before) &&
-	    	gmap->is_tile_occupied(after));
+	        gmap->is_tile_occupied(after));
 	}
 
 /*
@@ -1230,8 +1230,8 @@ void Game_object::update_from_studio
  */
 void Game_object::remove_clients()
 {
-	for (vector<Object_client*>::iterator it = 
-			   				clients.begin(); it != clients.end(); ++it) {
+	for (vector<Object_client*>::iterator it = clients.begin();
+	     it != clients.end(); ++it) {
 	    (*it)->object_gone(this);
 	}
 	clients.clear();
@@ -1615,7 +1615,7 @@ int Game_object::reduce_health
 		*exp = 0;
 		// Returns 0 if doesn't have HP's or is indestructible.
 	int hp = get_effective_obj_hp();
-	if (!hp	|| 	// Object is indestructible.
+	if (!hp	|| // Object is indestructible.
 				// These damage types do not affect objects.
 			type == Weapon_data::lightning_damage ||
 			type == Weapon_data::ethereal_damage)

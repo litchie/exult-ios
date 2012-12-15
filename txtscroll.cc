@@ -37,10 +37,10 @@
 #include "SDL_timer.h"
 #include "SDL_events.h"
 #ifdef SDL_VER_1_3
-  #include "SDL_stdinc.h"
-  #include "SDL_scancode.h"
+#  include "SDL_stdinc.h"
+#  include "SDL_scancode.h"
 #else
-  #include "SDL_keysym.h"
+#  include "SDL_keysym.h"
 #endif
 
 #ifndef UNDER_EMBEDDED_CE

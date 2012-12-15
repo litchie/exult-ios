@@ -813,59 +813,59 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
  */
 const char *Game_window::get_game_identity(const char *savename)
 {
-    const char *game_identity = 0;
+	const char *game_identity = 0;
 #ifdef HAVE_ZIP_SUPPORT
-    game_identity = get_game_identity_zip(savename);
-    if (game_identity)
+	game_identity = get_game_identity_zip(savename);
+	if (game_identity)
 	return game_identity;
 #endif
-    ifstream in_stream;
-    try {
-        U7open(in_stream, savename);		// Open file.
-    } catch (const exult_exception &e) {
-	if (Game::is_editing()) {	// Okay if creating a new game.
-		std::string titlestr = Game::get_gametitle();
-		return newstrdup(titlestr.c_str());
+	ifstream in_stream;
+	try {
+		U7open(in_stream, savename);		// Open file.
+	} catch (const exult_exception &e) {
+		if (Game::is_editing()) {	// Okay if creating a new game.
+			std::string titlestr = Game::get_gametitle();
+			return newstrdup(titlestr.c_str());
+		}
+		throw e;
 	}
-	throw e;
-    }
 	StreamDataSource in(&in_stream);
 
-    in.seek(0x54);			// Get to where file count sits.
-    int numfiles = in.read4();
-    in.seek(0x80);			// Get to file info.
-    // Read pos., length of each file.
-    sint32 *finfo = new sint32[2*numfiles];
-    int i;
-    for (i = 0; i < numfiles; i++)
-      {
-	finfo[2*i] = in.read4();	// The position, then the length.
-	finfo[2*i + 1] = in.read4();
-      }
-    for (i = 0; i < numfiles; i++)	// Now read each file.
-      {
-	// Get file length.
-	int len = finfo[2*i + 1] - 13;
-	if (len <= 0)
-	  continue;
-	in.seek(finfo[2*i]);	// Get to it.
-	char fname[50];		// Set up name.
-	in.read(fname, 13);
-	if (!strcmp("identity",fname))
-	    {
-		char *identity = new char[len];
-		in.read(identity, len);
-		// Truncate identity
-		char *ptr = identity;
-		for(; (*ptr!=0x1a && *ptr!=0x0d && *ptr != 0x0a); ptr++)
-			;
-		*ptr = 0;
-		game_identity = identity;
-		break;
-	    }
-      }
-    delete [] finfo;
-    return game_identity;
+	in.seek(0x54);			// Get to where file count sits.
+	int numfiles = in.read4();
+	in.seek(0x80);			// Get to file info.
+	// Read pos., length of each file.
+	sint32 *finfo = new sint32[2*numfiles];
+	int i;
+	for (i = 0; i < numfiles; i++)
+	{
+		finfo[2*i] = in.read4();	// The position, then the length.
+		finfo[2*i + 1] = in.read4();
+	}
+	for (i = 0; i < numfiles; i++)	// Now read each file.
+	{
+		// Get file length.
+		int len = finfo[2*i + 1] - 13;
+		if (len <= 0)
+			continue;
+		in.seek(finfo[2*i]);	// Get to it.
+		char fname[50];		// Set up name.
+		in.read(fname, 13);
+		if (!strcmp("identity",fname))
+		{
+			char *identity = new char[len];
+			in.read(identity, len);
+			// Truncate identity
+			char *ptr = identity;
+			for(; (*ptr!=0x1a && *ptr!=0x0d && *ptr != 0x0a); ptr++)
+				;
+			*ptr = 0;
+			game_identity = identity;
+			break;
+		}
+	}
+	delete [] finfo;
+	return game_identity;
 }
 
 // Zip file support
@@ -1439,7 +1439,7 @@ const char *Game_window::get_game_identity_zip
 	unzClose(unzipfile);
 	char *ptr = buf;
 	for(; (*ptr != 0 && *ptr!=0x1a && *ptr!=0x0d && *ptr != 0x0a); ptr++)
-	      	;
+		;
 	*ptr = 0;
 	return newstrdup(buf);
 	}

@@ -84,7 +84,7 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 		minor_delta2 = abs_deltay;
 		}
 	else if (abs_deltay >= abs_deltax &&	// Moving fastest along y?
-	    	 abs_deltay >= abs_deltaz)
+	         abs_deltay >= abs_deltaz)
 		{
 		major_coord = &cur.ty;
 		minor_coord1 = &cur.tx;

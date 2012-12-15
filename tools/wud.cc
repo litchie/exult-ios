@@ -34,13 +34,13 @@ void printdataseg(istream& in, unsigned int ds)
 			tempstr[len] = '\0';
 			if (!localoff)
 				printf("L%04X:",off);
-			  while (strchr(tempstr,13))
-			  {
-			   tempstr2=strchr(tempstr,13)+2;
- 			   tempstr[strchr(tempstr,13) - (char *) tempstr]=0;
-			   printf("\tdb\t\'%s\'\n\tdb\t0d\n\tdb\t0a\n", tempstr);
-			   strcpy(tempstr,tempstr2);
-			  }
+			while (strchr(tempstr,13))
+			{
+				tempstr2=strchr(tempstr,13)+2;
+				tempstr[strchr(tempstr,13) - (char *) tempstr]=0;
+				printf("\tdb\t\'%s\'\n\tdb\t0d\n\tdb\t0a\n", tempstr);
+				strcpy(tempstr,tempstr2);
+			}
 			printf("\tdb\t\'%s\'\n", tempstr);
 			localoff += len; 
 			pp += len;

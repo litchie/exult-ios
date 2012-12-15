@@ -260,7 +260,7 @@ GtkWidget *Object_browser::create_popup
  */
 static void
 on_find_down				(GtkButton       *button,
-                                         gpointer         user_data)
+				             gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->search(gtk_entry_get_text(
@@ -268,7 +268,7 @@ on_find_down				(GtkButton       *button,
 }
 static void
 on_find_up				(GtkButton       *button,
-                                         gpointer         user_data)
+				         gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->search(gtk_entry_get_text(
@@ -291,14 +291,14 @@ on_find_key				(GtkEntry	*entry,
 
 static void
 on_loc_down				(GtkButton       *button,
-                                         gpointer         user_data)
+				         gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->locate(false);
 }
 static void
 on_loc_up				(GtkButton       *button,
-                                         gpointer         user_data)
+				         gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->locate(true);
@@ -306,14 +306,14 @@ on_loc_up				(GtkButton       *button,
 
 static void
 on_move_down				(GtkButton       *button,
-                                         gpointer         user_data)
+				             gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->move(false);
 }
 static void
 on_move_up				(GtkButton       *button,
-                                         gpointer         user_data)
+				         gpointer         user_data)
 {
 	Object_browser *chooser = (Object_browser *) user_data;
 	chooser->move(true);
@@ -372,7 +372,7 @@ GtkWidget *Object_browser::create_controls
 				GTK_SIGNAL_FUNC(on_find_up), this);
 		gtk_box_pack_start(GTK_BOX(hbox3), find_up, TRUE, TRUE, 2);
 		gtk_signal_connect (GTK_OBJECT(find_text), "key-press-event",
-		      	GTK_SIGNAL_FUNC(on_find_key), this);
+				GTK_SIGNAL_FUNC(on_find_key), this);
 		}
 	/*
 	 *	The 'Locate' controls.
@@ -393,7 +393,7 @@ GtkWidget *Object_browser::create_controls
 		gtk_box_pack_start(GTK_BOX (bbox), loc_down, TRUE, TRUE, 2);
 
 		loc_up = Create_arrow_button(GTK_ARROW_UP,
-	                    	GTK_SIGNAL_FUNC(on_loc_up), this);
+	            GTK_SIGNAL_FUNC(on_loc_up), this);
 		gtk_box_pack_start(GTK_BOX (bbox), loc_up, TRUE, TRUE, 2);
 		if (controls & (int) locate_frame)
 			{

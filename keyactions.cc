@@ -48,8 +48,8 @@
 #include "Yesno_gump.h"
 
 #ifdef UNDER_CE
-  #include "Keyboard_gump.h"
-  #include "Touchscreen.h"
+#  include "Keyboard_gump.h"
+#  include "Touchscreen.h"
 #endif
 
 /*
@@ -58,7 +58,7 @@
 
 static Actor *Get_party_member
 (
- int num				// 0=avatar.
+	int num				// 0=avatar.
 )
 {
 	int npc_num = 0;	 	// Default to Avatar

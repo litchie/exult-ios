@@ -153,7 +153,7 @@ void read_params(const int argc, char *argv[])
 void process_ops()
 {
 	for(DoList::iterator i=dolist.begin(); i!=dolist.end(); i++)
-    {
+	{
 		if(i->first==DoAdd)
 		{
 			assert(i->second.size()==2);
@@ -209,7 +209,7 @@ void process_ops()
 			cout << s << endl;
 			
 		}
-    }
+	}
 }
 
 int main(int argc, char *argv[])

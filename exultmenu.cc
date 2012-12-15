@@ -530,7 +530,7 @@ BaseGameInfo *ExultMenu::run()
 
 	}
 	ExultDataSource mouse_data(BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
-	    	EXULT_FLX_POINTERS_SHP);
+	                           EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 
 	//Must check this or it will crash as midi 
@@ -608,10 +608,10 @@ BaseGameInfo *ExultMenu::run()
 				{
 					gpal->fade_out(c_fade_out_time);
 					TextScroller credits(
-					    		BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
-					    		EXULT_FLX_CREDITS_TXT, 
-								fontManager.get_font("CREDITS_FONT"),
-								exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
+			                     BUNDLE_CHECK(BUNDLE_EXULT_FLX, EXULT_FLX),
+			                     EXULT_FLX_CREDITS_TXT,
+			                     fontManager.get_font("CREDITS_FONT"),
+			                     exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 					credits.run(gwin);
 					gwin->clear_screen(true);
 					gpal->apply();
@@ -621,10 +621,10 @@ BaseGameInfo *ExultMenu::run()
 				{
 					gpal->fade_out(c_fade_out_time);
 					TextScroller quotes(BUNDLE_CHECK(
-					    		BUNDLE_EXULT_FLX, EXULT_FLX),
-					    		EXULT_FLX_QUOTES_TXT, 
-								fontManager.get_font("CREDITS_FONT"),
-			 					exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
+								BUNDLE_EXULT_FLX, EXULT_FLX),
+			                    EXULT_FLX_QUOTES_TXT,
+			                    fontManager.get_font("CREDITS_FONT"),
+			                    exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 					quotes.run(gwin);
 					gwin->clear_screen(true);
 					gpal->apply();

@@ -218,7 +218,7 @@ string Game_object::get_name
 	if (name == 0)
 		return "";
 
-    if (ShapeID::get_info(shnum).has_quantity())
+	if (ShapeID::get_info(shnum).has_quantity())
 		quantity = quality & 0x7f;
 	else
 		quantity = 1;

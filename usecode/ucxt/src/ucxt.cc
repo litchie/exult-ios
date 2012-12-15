@@ -394,7 +394,7 @@ void usage()
 	     << "\t\t\t  sorted both by \"flags within a function\" and" << endl
 	     << "\t\t\t  \"functions using flag\"" << endl
 	     ;
-  exit(1);
+	exit(1);
 }
 
 

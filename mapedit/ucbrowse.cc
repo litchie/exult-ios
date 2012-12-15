@@ -83,9 +83,9 @@ C_EXPORT void on_usecodes_ok_clicked
 C_EXPORT void on_usecodes_treeview_row_activated
 	(
 	GtkTreeView *treeview,
-        GtkTreePath *path,
-        GtkTreeViewColumn *column,
-        gpointer user_data
+	GtkTreePath *path,
+	GtkTreeViewColumn *column,
+	gpointer user_data
 	)
 	{
 	Usecode_browser *ucb = (Usecode_browser *) gtk_object_get_user_data(
@@ -303,22 +303,22 @@ void Usecode_browser::okay
 	GtkTreeIter iter;
 
 	choice = "";
-  	/* This will only work in single or browse selection mode! */
+	/* This will only work in single or browse selection mode! */
 	GtkTreeSelection *selection = 
 		gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
-  	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-    		gchar *name;
-    		gtk_tree_model_get(model, &iter, NAME_COL, &name, -1);
+	if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+		gchar *name;
+		gtk_tree_model_get(model, &iter, NAME_COL, &name, -1);
 		if (name[0])
 			choice = name;
-    		g_free(name);
+		g_free(name);
 		if (choice == "") {	// No name? Get number.
-	    		gtk_tree_model_get(model, &iter, NUM_COL, &name, -1);
+			gtk_tree_model_get(model, &iter, NUM_COL, &name, -1);
 			choice = name;
 			g_free(name);
 		}
 		g_print ("selected row is: %s\n", choice.c_str());
-  	}
+	}
 	show(FALSE);
 }
 

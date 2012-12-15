@@ -85,7 +85,7 @@ C_EXPORT void on_main_map_activate
 C_EXPORT void on_newmap_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -136,7 +136,7 @@ static bool Copy_static_file
 C_EXPORT void on_newmap_ok_clicked
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	char fname[128], sname[128];

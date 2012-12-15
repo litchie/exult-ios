@@ -85,12 +85,12 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	switch(indent)
 	{
 		case 0:                    break;
-	 	case 1: o << '\t';         break;
-	 	case 2: o << "\t\t";       break;
-	 	case 3: o << "\t\t\t";     break;
-	 	case 4: o << "\t\t\t\t";   break;
-	 	case 5: o << "\t\t\t\t\t"; break;
-	 	default:
+		case 1: o << '\t';         break;
+		case 2: o << "\t\t";       break;
+		case 3: o << "\t\t\t";     break;
+		case 4: o << "\t\t\t\t";   break;
+		case 5: o << "\t\t\t\t\t"; break;
+		default:
 			for(unsigned int i=0; i<indent; ++i) o << '\t';
 			break;
 	}
@@ -548,7 +548,7 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 			{
 				unsigned int calcvar = static_cast<unsigned int>(ucop._params[first++]);
 				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
- 				unsigned int reloffset = calc16reloffset(ucop, calcvar);
+				unsigned int reloffset = calc16reloffset(ucop, calcvar);
 				ucop._params_parsed.push_back(reloffset);
 				ucop._jump_offsets.push_back(reloffset);
 			}
@@ -565,7 +565,7 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
 				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 16);
 				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 24);
- 				unsigned int reloffset = calc32reloffset(ucop, calcvar);
+				unsigned int reloffset = calc32reloffset(ucop, calcvar);
 				ucop._params_parsed.push_back(reloffset);
 				ucop._jump_offsets.push_back(reloffset);
 			}

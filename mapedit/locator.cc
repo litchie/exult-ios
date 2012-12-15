@@ -42,7 +42,7 @@ using	std::endl;
 C_EXPORT void on_locator1_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -491,7 +491,7 @@ void Locator::goto_mouse
 		GdkRectangle newbox;	// Figure dirty rectangle;
 		GdkRectangle dirty;
 		newbox.x = (cx*draw->allocation.width)/c_num_chunks,
-	    	newbox.y = (cy*draw->allocation.height)/c_num_chunks;
+		newbox.y = (cy*draw->allocation.height)/c_num_chunks;
 		newbox.width = oldbox.width;
 		newbox.height = oldbox.height;
 		gdk_rectangle_union(&oldbox, &newbox, &dirty);

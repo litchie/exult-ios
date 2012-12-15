@@ -160,14 +160,14 @@ void getVersionInfo(std::ostream& out)
 	// GCC
 #if (defined(__GNUC__))
 	out << "gcc";
- #if defined(__VERSION__)
+#  if defined(__VERSION__)
 	out << ", version: " << __VERSION__;
- #elif (defined(__GNUC_MINOR__))
+#  elif (defined(__GNUC_MINOR__))
 	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
-  #if (defined(__GNUC_PATCHLEVEL__))
+#    if (defined(__GNUC_PATCHLEVEL__))
 	out << "." << __GNUC_PATCHLEVEL__;
-  #endif
- #endif
+#    endif
+#  endif
 
 	// Microsoft C/C++ Compiler (used by MSVC)
 #elif (defined(_MSC_FULL_VER))

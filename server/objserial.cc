@@ -141,7 +141,7 @@ void Barge_object_io
 	Serial &io,			// Where to store data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
- 	int& shape, int& frame,
+	int& shape, int& frame,
 	int& xtiles,
 	int& ytiles,
 	int& dir

@@ -1890,7 +1890,7 @@ void Sleep_schedule::now_what
 			bed = npc->find_closest(gbeds, 2);
 			}
 		}
-    add_client(bed);
+	add_client(bed);
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
@@ -2614,9 +2614,9 @@ void Lab_schedule::notify_object_gone(Game_object *obj)
 	if (obj == chair) {
 		chair = 0;
 	} else if (obj == book) {
-	  	book = 0;
+		book = 0;
 	} else if (obj == cauldron) {
-	  	cauldron = 0;
+		cauldron = 0;
 		state = start;
 	} else {
 	    for (vector<Game_object*>::iterator it = tables.begin();
@@ -3926,7 +3926,7 @@ void Bake_schedule::ending(int new_type)
  */
 void Bake_schedule::notify_object_gone(Game_object *obj)
 {
-    if (obj == oven)
+	if (obj == oven)
 	    oven = 0;
 	else if (obj == worktable)
 		worktable = 0;
@@ -4284,7 +4284,7 @@ void Forge_schedule::now_what
 		} else {
 			// no path found, just pick up sword blank
 			npc->set_action(new Sequence_actor_action(
-			 	new Pickup_actor_action(blank, 250),
+				new Pickup_actor_action(blank, 250),
 				new Frames_actor_action(0, 0, blank)));
 		}	
 
@@ -4342,7 +4342,7 @@ void Forge_schedule::ending
  */
 void Forge_schedule::notify_object_gone(Game_object *obj)
 {
-    if (obj == tongs)
+	if (obj == tongs)
 	    tongs = 0;
 	else if (obj == hammer)
 		hammer = 0;
@@ -4535,7 +4535,7 @@ void Walk_to_schedule::now_what
 		return;
 		}
 	if (legs >= 40 || retries >= 2)	// Trying too hard?  (Following
-	  				//   Patterson takes about 30.)
+					//   Patterson takes about 30.)
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 					// Force actor to sit down/lie down again

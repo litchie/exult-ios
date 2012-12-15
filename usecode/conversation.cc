@@ -47,34 +47,34 @@ using std::vector;
  *	a conversation:
  */
 class Npc_face_info {
- public:
-  ShapeID shape;
-  int face_num;			// NPC's face shape #.
-  //int frame;
-  bool text_pending;		// Text has been written, but user
-			  	//   has not yet been prompted.
-  Rectangle face_rect;		// Rectangle where face is shown.
-  Rectangle text_rect;		// Rectangle NPC statement is shown in.
-  bool large_face;		// Guardian, snake.
-  int last_text_height;		// Height of last text painted.
-  string cur_text;		// Current text being shown.
-  Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), 
-		text_pending(0), large_face(false)
-  {  }
+public:
+	ShapeID shape;
+	int face_num;           // NPC's face shape #.
+	//int frame;
+	bool text_pending;      // Text has been written, but user
+	                        //   has not yet been prompted.
+	Rectangle face_rect;    // Rectangle where face is shown.
+	Rectangle text_rect;    // Rectangle NPC statement is shown in.
+	bool large_face;        // Guardian, snake.
+	int last_text_height;   // Height of last text painted.
+	string cur_text;        // Current text being shown.
+	Npc_face_info(ShapeID &sid, int num)
+	 : shape(sid), face_num(num), 
+	   text_pending(0), large_face(false)
+	{  }
 };
 
-Conversation::Conversation() :
-  num_faces(0), last_face_shown(0), avatar_face(0,0,0,0), conv_choices(0)
+Conversation::Conversation()
+	: num_faces(0), last_face_shown(0), avatar_face(0,0,0,0), conv_choices(0)
 {
-
-  const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
-  for (int i = 0; i < max_faces; i++)
-    face_info[i] = 0;
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)
+		face_info[i] = 0;
 }
 
 Conversation::~Conversation()
 {
-  delete [] conv_choices;
+	delete [] conv_choices;
 }
 
 
@@ -629,27 +629,27 @@ void Conversation::paint_faces
 
 int Conversation::locate_answer(const char *str)
 {
-  int num;
-  std::vector<string>::iterator it;
-  num = 0;
-  for(it=answers.begin(); it!=answers.end(); ++it) {
-    if(*it==str)
-      return num;
-    num++;
-  }
+	int num;
+	std::vector<string>::iterator it;
+	num = 0;
+	for(it=answers.begin(); it!=answers.end(); ++it) {
+		if(*it==str)
+			return num;
+		num++;
+	}
 
-  return -1;
+	return -1;
 }
 
 void Conversation::push_answers()
 {
-  answer_stack.push_front(answers);
-  answers.clear();
+	answer_stack.push_front(answers);
+	answers.clear();
 }
 
 void Conversation::pop_answers()
 {
-  answers=answer_stack.front();
-  answer_stack.pop_front();
-  gwin->paint();			// Really just need to figure tbox.
+	answers = answer_stack.front();
+	answer_stack.pop_front();
+	gwin->paint();			// Really just need to figure tbox.
 }

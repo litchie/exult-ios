@@ -283,9 +283,9 @@ int main(int argc, char *argv[])
 	char* framefiles[255];
 	
 	if (argc < 2) {
-	  cout << "Usage: To split: splitshp [shape file]" << endl
-           << "     or to pack: splitshp [shape file] [frame files]" << endl;
-	  return 0;
+		cout << "Usage: To split: splitshp [shape file]" << endl
+		   << "     or to pack: splitshp [shape file] [frame files]" << endl;
+		return 0;
 	}
 	
 	shapefile = argv[1];

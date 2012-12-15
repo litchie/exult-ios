@@ -24,12 +24,12 @@
 #endif
 
 #ifndef ALPHA_LINUX_CXX
-  #include <fstream>
-  #include <cstring>
-  #include <iomanip>
-  #include <iostream>
-  #include <cstdlib>
-  #include <cstdio>
+#  include <fstream>
+#  include <cstring>
+#  include <iomanip>
+#  include <iostream>
+#  include <cstdlib>
+#  include <cstdio>
 #endif
 
 #include <functional>

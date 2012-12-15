@@ -102,7 +102,7 @@ Dragging_info::Dragging_info
 			cout << "(x,y) rel. to gump is (" << (x-paintx) << ", " <<
 							(y-painty) << ")"<<endl;
 			}
-		else 			// the gump isn't draggable
+		else			// the gump isn't draggable
 			return;
 		}
 	else if (x >0 && y > 0 && x < gwin->get_width() && y < gwin->get_height())	// Not found in gump?
@@ -164,9 +164,8 @@ bool Dragging_info::start
 		Game_object *owner = obj->get_outermost();
 		if (owner == obj)
 			{
-		    	if (!cheat.in_hack_mover() && 
-				!Fast_pathfinder_client::is_grabable(
-				   gwin->get_main_actor(), obj))
+			if (!cheat.in_hack_mover() && 
+			    !Fast_pathfinder_client::is_grabable(gwin->get_main_actor(), obj))
 				{
 				Mouse::mouse->flash_shape(Mouse::blocked);
 				obj = 0;
@@ -396,7 +395,7 @@ bool Dragging_info::drop_on_gump
 	// Check the range
 	if (owner_obj && !cheat.in_hack_mover() &&
 		!Fast_pathfinder_client::is_grabable(main_actor, owner_obj))
-		{	  		// Object was not grabable
+		{			// Object was not grabable
 		Mouse::mouse->flash_shape(Mouse::outofrange);
 		return false;
 		}

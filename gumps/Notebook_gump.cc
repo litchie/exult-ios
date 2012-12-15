@@ -320,7 +320,7 @@ Notebook_gump::Notebook_gump
 					// Where to paint page marks:
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
- 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
+	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	add_new();			// Add new note to end.
 	}
 
@@ -917,11 +917,11 @@ void Notebook_gump::read
 // read in from external file
 void Notebook_gump::read_auto_text_file(const char* filename)
 {
-	ifstream notesfile;
 	if (gwin->get_allow_autonotes())
 		{
 		cout << "Loading autonotes from file " << filename << endl;
 		initialized_auto_text = true;
+		ifstream notesfile;
 		U7open(notesfile, filename, true);
 		Read_text_msg_file(notesfile, auto_text);
 		notesfile.close();
@@ -945,7 +945,7 @@ void Notebook_gump::read_auto_text
 			{
 			BufferDataSource buf(txt,len);
 			Read_text_msg_file(&buf, auto_text);
-			delete[] txt;
 			}
+		delete[] txt;
 		}
 	}

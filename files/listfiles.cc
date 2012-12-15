@@ -336,7 +336,7 @@ int U7ListFiles(const std::string& pathMask, FileList& files)
 		entry.GetName(filename);
 		if (MatchString(filename, mask)) {
 			cout << "Filename: " << filename << endl;
- 			files.push_back(filename);				
+			files.push_back(filename);				
 		}
 	} while (true);
 	
@@ -353,32 +353,32 @@ static struct AnchorPath ap __attribute__((aligned(4)));
 
 int U7ListFiles(const std::string& mask, FileList& files)
 {
-  string path(get_system_path(mask));
-  char   buffer[ 256 ];
-  size_t pos;
+	string path(get_system_path(mask));
+	char   buffer[ 256 ];
+	size_t pos;
 
-  // convert MS-DOS jokers to AmigaDOS wildcards
-  while( (pos = path.find( '*' )) != string::npos )
-	  path.replace( pos, 1, "#?" );
+	// convert MS-DOS jokers to AmigaDOS wildcards
+	while( (pos = path.find( '*' )) != string::npos )
+		path.replace( pos, 1, "#?" );
 
-  if( ParsePattern( path.c_str(), buffer, sizeof( buffer ) ) != -1 )
-  {
-	  LONG error = MatchFirst( buffer, &ap );
+	if( ParsePattern( path.c_str(), buffer, sizeof( buffer ) ) != -1 )
+	{
+		LONG error = MatchFirst( buffer, &ap );
 
-	  while( error == DOSFALSE )
-	  {
-		  char *filename = (char *)malloc( strlen( ap.ap_Info.fib_FileName )+1 );
-		  strcpy( filename, ap.ap_Info.fib_FileName );
-		  files.push_back( filename );
-		  error = MatchNext( &ap );
-	  }
+		while( error == DOSFALSE )
+		{
+			char *filename = (char *)malloc( strlen( ap.ap_Info.fib_FileName )+1 );
+			strcpy( filename, ap.ap_Info.fib_FileName );
+			files.push_back( filename );
+			error = MatchNext( &ap );
+		}
 
-	  MatchEnd( &ap );
-  }
-  else
-	  cout << "ParsePattern() failed." << endl;
+		MatchEnd( &ap );
+	}
+	else
+		cout << "ParsePattern() failed." << endl;
 
-  return 0;
+	return 0;
 }
 
 
@@ -387,27 +387,26 @@ int U7ListFiles(const std::string& mask, FileList& files)
 #include <glob.h>
 
 int U7ListFiles(const std::string& mask, FileList& files)
-
 {
-        glob_t globres;
+		glob_t globres;
 		string path(get_system_path(mask));
-        int err = glob(path.c_str(), GLOB_NOSORT, 0, &globres);
+		int err = glob(path.c_str(), GLOB_NOSORT, 0, &globres);
 
 
-        switch (err) {
-        case 0:   //OK
+		switch (err) {
+			case 0:   //OK
 				for (size_t i=0; i<globres.gl_pathc; i++)
 				{
 					files.push_back(globres.gl_pathv[i]);
 				}
 				globfree(&globres);
-                return 0;               
-        case 3:   //no matches
-                return 0;
-        default:  //error
-                cerr << "Glob error " << err << endl;
-                return err;
-        }
+				return 0;
+			case 3:   //no matches
+				return 0;
+			default:  //error
+				cerr << "Glob error " << err << endl;
+				return err;
+		}
 }
 
 #endif

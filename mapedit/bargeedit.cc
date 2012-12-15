@@ -42,7 +42,7 @@ using std::endl;
 C_EXPORT void on_open_barge_activate
 	(
 	GtkMenuItem     *menuitem,
-        gpointer         user_data
+	gpointer         user_data
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();

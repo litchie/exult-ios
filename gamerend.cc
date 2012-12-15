@@ -567,8 +567,8 @@ void Game_render::paint_object
 void Game_window::paint_dirty()
 {
 	// Update the gumps before painting, unless in dont_move mode (may change dirty area)
-    if (!main_actor_dont_move())
-        gump_man->update_gumps();
+	if (!main_actor_dont_move())
+		gump_man->update_gumps();
 
 	effects->update_dirty_text();
 
