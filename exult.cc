@@ -425,6 +425,7 @@ int main
 		if( e.get_errno() != 0)
 			perror("Error Description");
 		cerr << "============================" << endl;
+		result = e.get_errno();
 	}
 	
 	return result;

@@ -359,9 +359,6 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 				continue;
 			SDL_keysym& key = event.key.keysym;
 
-			bool shift = false;
-			if (key.mod & KMOD_SHIFT)
-				shift = true;
 			if ((key.sym == SDLK_s) && (key.mod & KMOD_ALT) && (key.mod & KMOD_CTRL))
 			{
 				make_screenshot(true);
