@@ -70,6 +70,7 @@ void UnixSeqMidiDriver::close()
 void UnixSeqMidiDriver::send(uint32 b) {
 	unsigned char buf[256];
 	int position = 0;
+	size_t err;
 
 	switch (b & 0xF0) {
 	case 0x80:
@@ -107,7 +108,8 @@ void UnixSeqMidiDriver::send(uint32 b) {
 		break;
 	}
 
-	::write(device, buf, position);
+	err = ::write(device, buf, position);
+	assert (err == position);
 }
 
 void UnixSeqMidiDriver::send_sysex(uint8 status,const uint8 *msg,uint16 length)
@@ -121,6 +123,7 @@ void UnixSeqMidiDriver::send_sysex(uint8 status,const uint8 *msg,uint16 length)
 	unsigned char buf [2048];
 	int position = 0;
 	const uint8 *chr = msg;
+	size_t err;
 
 	buf[position++] = SEQ_MIDIPUTC;
 	buf[position++] = status;
@@ -134,7 +137,8 @@ void UnixSeqMidiDriver::send_sysex(uint8 status,const uint8 *msg,uint16 length)
 		buf[position++] = 0;
 	}
 
-	::write (device, buf, position);
+	err = ::write (device, buf, position);
+	assert (err == position);
 }
 
 #endif

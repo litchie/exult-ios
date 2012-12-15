@@ -51,7 +51,6 @@ using std::ofstream;
 using std::size_t;
 using std::strrchr;
 using std::strncpy;
-using std::strncat;
 using std::strlen;
 using std::vector;
 using std::string;
@@ -269,7 +268,7 @@ int main(int argc, char **argv)
 	hname[0] = 0;
 
 	if(argc>2) {
-		strncpy(fname, argv[2], 1024);
+		strncpy(fname, argv[2], sizeof (fname));
 		if((argv[1][0]=='-')&&(strlen(argv[1])==2)) {
 			switch(argv[1][1]) {
 			case 'i':
@@ -295,23 +294,20 @@ int main(int argc, char **argv)
 					}
 					
 					// Read the output file name
-					getline(respfile, temp, 1024);
-					strncpy(fname, path_prefix, 1024);
-					strncat(fname, temp, 1024);
+					getline(respfile, temp, sizeof (temp));
+					snprintf(fname, sizeof (fname), "%s%s", path_prefix, temp);
 
 					// Header file name
-					strncpy (hprefix, temp, 1024);
+					strncpy (hprefix, temp, sizeof (hprefix));
 					make_header_name(hprefix);
-					strncpy (hname, path_prefix, 1024);
-					strncat (hname, hprefix, 1024);
-					strncat (hname, ".h", 1024);
+					snprintf (hname, sizeof (hname), "%s%s.h", path_prefix, hprefix);
 					strip_path (hprefix);
 					make_uppercase (hprefix);
 
 					unsigned int shnum = 0;
 					int linenum = 2;
 					while(respfile.good()) {
-						getline(respfile, temp, 1024);
+						getline(respfile, temp, sizeof (temp));
 						if(strlen(temp)>0) {
 							char *ptr = temp;
 							if (*ptr == ':')
@@ -329,8 +325,7 @@ int main(int argc, char **argv)
 								ptr++;
 								}
 							char temp2[1024];
-							strncpy(temp2, path_prefix,1024);
-							strncat(temp2, ptr, 1024);
+							snprintf (temp2, sizeof (temp2), "%s%s", path_prefix, ptr);
 							if (shnum >= file_names.size())
 								file_names.resize(shnum + 1);
 							file_names[shnum] = temp2;
@@ -430,10 +425,9 @@ int main(int argc, char **argv)
 			char hline[1024];
 			ofstream header;
 			if (!hname[0]) {	// Need header name.
-				strncpy (hprefix, fname, 1024);
+				strncpy (hprefix, fname, sizeof (hprefix));
 				make_header_name(hprefix);
-				strncat (hname, hprefix, 1024);
-				strncat (hname, ".h", 1024);
+				snprintf (hname, sizeof (hname), "%s.h", hprefix);
 			}		
 			try {
 				U7open(header, hname, true);
@@ -471,7 +465,7 @@ int main(int argc, char **argv)
 							delete [] buf;
 							infile.close();
 
-							strncpy (hline, file_names[i].c_str(), 1024);
+							strncpy (hline, file_names[i].c_str(), sizeof (hline));
 							strip_path(hline);
 							make_header_name(hline);
 							make_uppercase(hline);

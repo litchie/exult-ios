@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sdl-compat.h"
 #include SDL_BYTEORDERH
 
+#include <cassert>
 #include <iostream>
 
 #ifndef ALPHA_LINUX_CXX
@@ -145,6 +146,7 @@ u7shape* load_shape(char* filename)
 	uint8 block;
 	uint8 pix;
 	int i, j;
+	size_t err;
 
 	int temp_int;
 
@@ -176,7 +178,8 @@ u7shape* load_shape(char* filename)
 			frame->leftX = 0;
 			frame->leftY = 0;
 			frame->pixels = new uint8[64];
-			fread(frame->pixels, 1, 64, fp);
+			err = fread(frame->pixels, 1, 64, fp);
+			assert (err == 64);
 		}
 	} else {
 		hdr_size = read4(fp);

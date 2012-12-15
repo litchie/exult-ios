@@ -79,9 +79,11 @@ static sint32 getvl(void)
 {
   sint32 l=0;
   uint8 c;
+  size_t err;
   for (;;)
     {
-      fread(&c,1,1,fp);
+      err = fread(&c,1,1,fp);
+      assert (err == 1);
       l += (c & 0x7f);
       if (!(c & 0x80)) return l;
       l<<=7;
@@ -126,6 +128,7 @@ static MidiEventList *read_midi_event(void)
   uint8 me, type, a,b,c;
   sint32 len;
   MidiEventList *event;
+  size_t err;
 
   for (;;)
     {
@@ -144,7 +147,9 @@ static MidiEventList *read_midi_event(void)
 	}
       else if(me==0xFF) /* Meta event */
 	{
-	  fread(&type,1,1,fp);
+	  err = fread(&type,1,1,fp);
+	  assert (err == 1);
+
 	  len=getvl();
 	  if (type>0 && type<16)
 	    {
@@ -160,7 +165,12 @@ static MidiEventList *read_midi_event(void)
 		return MAGIC_EOT;
 
 	      case 0x51: /* Tempo */
-		fread(&a,1,1,fp); fread(&b,1,1,fp); fread(&c,1,1,fp);
+		err = fread(&a,1,1,fp); 
+		assert (err == 1);
+		err = fread(&b,1,1,fp); 
+		assert (err == 1);
+		err = fread(&c,1,1,fp);
+		assert (err == 1);
 		MIDIEVENT(at, ME_TEMPO, c, a, b);
 		
 	      default:
@@ -177,28 +187,33 @@ static MidiEventList *read_midi_event(void)
 	    {
 	      lastchan=a & 0x0F;
 	      laststatus=(a>>4) & 0x07;
-	      fread(&a, 1,1, fp);
+	      err = fread(&a, 1,1, fp);
+	      assert (err == 1);
 	      a &= 0x7F;
 	    }
 	  switch(laststatus)
 	    {
 	    case 0: /* Note off */
-	      fread(&b, 1,1, fp);
+	      err = fread(&b, 1,1, fp);
+	      assert (err == 1);
 	      b &= 0x7F;
 	      MIDIEVENT(at, ME_NOTEOFF, lastchan, a,b);
 
 	    case 1: /* Note on */
-	      fread(&b, 1,1, fp);
+	      err = fread(&b, 1,1, fp);
+	      assert (err == 1);
 	      b &= 0x7F;
 	      MIDIEVENT(at, ME_NOTEON, lastchan, a,b);
 
 	    case 2: /* Key Pressure */
-	      fread(&b, 1,1, fp);
+	      err = fread(&b, 1,1, fp);
+	      assert (err == 1);
 	      b &= 0x7F;
 	      MIDIEVENT(at, ME_KEYPRESSURE, lastchan, a, b);
 
 	    case 3: /* Control change */
-	      fread(&b, 1,1, fp);
+	      err = fread(&b, 1,1, fp);
+	      assert (err == 1);
 	      b &= 0x7F;
 	      {
 		int control=255;
@@ -281,7 +296,8 @@ static MidiEventList *read_midi_event(void)
 	      break;
 
 	    case 6: /* Pitch wheel */
-	      fread(&b, 1,1, fp);
+	      err = fread(&b, 1,1, fp);
+	      assert (err == 1);
 	      b &= 0x7F;
 	      MIDIEVENT(at, ME_PITCHWHEEL, lastchan, a, b);
 
@@ -539,6 +555,7 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
   sint16 format, tracks, divisions_tmp;
   int i;
   char tmp[4];
+  size_t err;
 
   fp=mfp;
   event_count=0;
@@ -565,9 +582,12 @@ MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp)
       return 0;
     }
 
-  fread(&format, 2, 1, fp);
-  fread(&tracks, 2, 1, fp);
-  fread(&divisions_tmp, 2, 1, fp);
+  err = fread(&format, 2, 1, fp);
+  assert (err == 1);
+  err = fread(&tracks, 2, 1, fp);
+  assert (err == 1);
+  err = fread(&divisions_tmp, 2, 1, fp);
+  assert (err == 1);
   format=BE_SHORT(format);
   tracks=BE_SHORT(tracks);
   divisions_tmp=BE_SHORT(divisions_tmp);
