@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include <cassert>
 #include <iostream>
 #include <cstdlib>
 
@@ -129,6 +130,7 @@ void split_shape(char* filename)
 	uint8 *data;
 	char *framename;
 	int i;
+	size_t err;
 	
 	shpfile = fopen (filename, "rb");
 	if (!shpfile) {
@@ -150,7 +152,8 @@ void split_shape(char* filename)
 			framename = framefilename(filename, i);
 			cout << "writing " << framename << "..." << endl;
 			framefile = fopen(framename, "wb");
-			fread(data, 1, 64, shpfile);
+			err = fread(data, 1, 64, shpfile);
+			assert (err == 64);
 			fwrite(data, 1, 64, framefile);
 			fclose(framefile);
 			delete[] framename;
@@ -183,7 +186,8 @@ void split_shape(char* filename)
 			write4(framefile, 8);
 
 			data = new uint8[datalen];
-			fread(data, 1, datalen, shpfile);
+			err = fread(data, 1, datalen, shpfile);
+			assert (err == datalen);
 			fwrite(data, 1, datalen, framefile);
 			fclose(framefile);
 			delete[] framename;
@@ -203,6 +207,7 @@ void merge_frames(char *shapefile, char** framefiles, int numframefiles)
 	int file_size, shape_size, hdr_size, frame_size;
 	int total_size;
 	uint8 *data;
+	size_t err;
 
 	shpfile = fopen(shapefile, "wb");
 
@@ -231,7 +236,8 @@ void merge_frames(char *shapefile, char** framefiles, int numframefiles)
 
 			data = new uint8[64];
 
-			fread(data, 1, 64, framefile);
+			err = fread(data, 1, 64, framefile);
+			assert (err == 64);
 			fwrite(data, 1, 64, shpfile);
 			fclose(framefile);
 
@@ -253,7 +259,8 @@ void merge_frames(char *shapefile, char** framefiles, int numframefiles)
 
 			data = new uint8[frame_size];
 			fseek(framefile, hdr_size, SEEK_SET);
-			fread(data, 1, frame_size, framefile);
+			err = fread(data, 1, frame_size, framefile);
+			assert (err == frame_size);
 			fclose(framefile);
 
 			fseek(shpfile, 4 + (i*4), SEEK_SET);

@@ -81,6 +81,7 @@
 	( x - 933 ) / 10, ( y - 1134 ) / 10
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -859,11 +860,15 @@ void process_data_seg(FILE* f, unsigned short ds)
 	unsigned char* p;
 	unsigned char* pp;
 	unsigned char* tempstr;
+	size_t err;
+
 	/* Allocate a temporary buffer */
 	tempstr = malloc(70 + 1);
 	pos = ftell(f);
 	pp = p = malloc(ds);
-	fread(p, 1, ds, f);
+	err = fread(p, 1, ds, f);
+	assert (err == ds);
+
 	fseek(f, pos, SEEK_SET);
 	/* Print all strings & their offsets */
 	while( off < ds )
@@ -1092,14 +1097,20 @@ void process_code_seg(FILE* f, unsigned short ds, unsigned short s, unsigned cha
 	unsigned char* pp;
 	unsigned char* pdata;
 	unsigned short* pextern;
+	size_t err; 
+
 	pos = ftell(f);
 	size = s - ds - sizeof(unsigned short);
 	pp = p = malloc(size);
 	pdata = malloc(ds);
-	fread(pdata, 1, ds, f);
+	err = fread(pdata, 1, ds, f);
+	assert (err == ds);
+
 	if( !mute )
 		printf("Code segment at file offset %08lXH\n", ftell(f));
-	fread(p, 1, size, f);
+	err = fread(p, 1, size, f);
+	assert (err == size);
+
 	fseek(f, pos, SEEK_SET);
 	/* Print code segment header */
 	if( size < 3 * sizeof(unsigned short) )
@@ -1160,14 +1171,22 @@ void process_func(FILE* f, long func, int i, int* found, unsigned char* opcode_b
 {
 	unsigned short s, ds, funcnum;	
 	long off, bodyoff;
+	size_t err;
+
 	/* Save start offset */
 	off = ftell(f);
 	/* Read function header */
-	fread(&funcnum, sizeof(unsigned short), 1, f);
-	fread(&s, sizeof(unsigned short), 1, f);
+	err = fread(&funcnum, sizeof(unsigned short), 1, f);
+	assert (err == 1);
+
+	err = fread(&s, sizeof(unsigned short), 1, f);
+	assert (err == 1);
+
 	/* Save body offset */
 	bodyoff = ftell(f);
-	fread(&ds, sizeof(unsigned short), 1, f);
+	err = fread(&ds, sizeof(unsigned short), 1, f);
+	assert (err == 1);
+
 	if( ( ( func == -1 ) || scan_mode ) && ( opcode == -1 ) && ( intrinsic == -1 ) )
 		/* Only for general list & scan mode */
 		printf("\tFunction #%d (%04XH), offset = %08lx, size = %04x, data = %04x\n", i,
