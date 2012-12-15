@@ -235,7 +235,7 @@ int Export_png8
 		{
 		int tindex = transp_to_0 ? 0 : transp_index;
 		png_byte trans[256];	// Only desired index is transparent.
-		memset(&trans[0], 255, tindex);
+		memset(&trans[0], 255, sizeof(trans));
 		trans[(png_byte) tindex] = 0;
 		png_set_tRNS(png, info, &trans[0], tindex + 1, 0);
 		}

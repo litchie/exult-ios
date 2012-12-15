@@ -821,7 +821,7 @@ Chunk_chooser::Chunk_chooser
 		headersz(0), info(0), info_cnt(0), locate_cx(-1), locate_cy(-1),
 		drop_enabled(false), to_del(-1), sel_changed(0)
 	{
-	static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
+	static char v2hdr[] = {-1, -1, -1, -1, 'e', 'x', 'l', 't',
 								0, 0};
 	char v2buf[V2_CHUNK_HDR_SIZE];	// Check for V2 chunks.
 	chunkfile.seekg(0);

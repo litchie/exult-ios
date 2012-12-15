@@ -262,7 +262,6 @@ void SI_Game::play_intro()
 	size_t	shapesize;
 	char *	shape_buf = 0;
 	int		i,j;
-	Font *font = fontManager.get_font("MENU_FONT");
 	Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
 	bool speech = Audio::get_ptr()->is_audio_enabled() &&

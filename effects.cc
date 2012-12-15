@@ -769,7 +769,7 @@ void Projectile_effect::handle_event
 		int new_frame = sprite.get_framenum() + winf->get_rotation_speed();
 		sprite.set_frame(new_frame > 23 ? ((new_frame - 8)%16) + 8 : new_frame);
 		}
-	bool path_finished;
+	bool path_finished = false;
 	for (int i = 0; i < speed; i++)
 		{	// This speeds up the missile.
 		path_finished = (path->GetNextStep(pos) == 0) ||	// Get next spot.

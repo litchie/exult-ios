@@ -357,8 +357,6 @@ void BG_Game::scene_lord_british()
 			 //     and LB presents screen
 	
 	
-	Font *font = fontManager.get_font("END2_FONT");
-
 	// Lord British presents...  (sh. 0x11)
 	pal->load(INTROPAL_DAT, PATCH_INTROPAL, 3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
@@ -443,10 +441,9 @@ static int butterfly_end_delay[] = { 167, 416, 250, 416, 416, 416, 416, 333 };
 
 void BG_Game::scene_butterfly()
 {
-	Font *font = fontManager.get_font("END2_FONT");
 	Image_buffer *backup = 0;
 	Shape_frame *butterfly = 0;
-	int	i, j, frame, dir;
+	int	i, j, frame, dir = 0;
 	
 	try
 	{
@@ -473,9 +470,6 @@ void BG_Game::scene_butterfly()
 		
 		WAITDELAY(4000); 
 				
-		// clear 'Exult' text
-		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		win->show();
 		
 		WAITDELAY(7100);
