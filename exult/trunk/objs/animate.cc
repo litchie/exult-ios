@@ -110,7 +110,7 @@ void Object_sfx::handle_event
 	const int delay = 100;		// Guessing this will be enough.
 
 	AudioMixer *mixer = AudioMixer::get_instance();
-	bool active = channel != -1 ? mixer->isPlaying(channel) : false;
+	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
 	if (obj->is_pos_invalid())// || (distance >= 0 && !active))
 		{	// Quitting time.
@@ -403,6 +403,7 @@ int Frame_animator::get_next_frame()
 		}
 
 	case Animation_info::FA_LOOPING:
+	default:
 		{
 		int chance = aniinf->get_freeze_first_chance();
 		if (currpos || chance == 100

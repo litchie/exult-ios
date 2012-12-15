@@ -1540,7 +1540,6 @@ void Combat_schedule::ending
 		{			// See if being a coward.
 		find_opponents();
 		bool found = false;	// Find a close-by enemy.
-		Tile_coord pos = npc->get_tile();
 		for (list<Actor*>::const_iterator it = opponents.begin(); 
 						it != opponents.end(); ++it)
 			{

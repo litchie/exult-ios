@@ -49,7 +49,7 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), kbd_focus(0	),
+	: open_gumps(0), kbd_focus(0), non_persistent_count(0),
 	  modal_gump_count(0), right_click_close(true), dont_pause_game(false)
 {
 	std::string str;

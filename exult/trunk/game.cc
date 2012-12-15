@@ -537,7 +537,6 @@ int wait_delay(int ms, int startcol, int ncol)
 	SDL_Event event;
 	unsigned long delay;
 	int loops;
-	bool mouse_down = false;
 
 	int loopinterval = (ncol == 0) ? 50 : 10;
 	if (!ms) ms = 1;
@@ -614,7 +613,6 @@ int wait_delay(int ms, int startcol, int ncol)
 					}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				mouse_down = true;
 				break;
 			case SDL_MOUSEBUTTONUP:
 #ifdef HAVE_OPENGL
