@@ -81,9 +81,33 @@ to the configure step:
 ./configure --enable-exult-studio
 make
 
-
 --------------------------------------------------
 
+Usecode Compiler
+================
+
+Our Usecode compiler also needs:
+
+- Flex
+	a tool for generating programs that require
+	pattern-matching on text. It is usually used together with
+	yacc/bison to automatically generate a parser for a
+	language grammar, e.g. the syntax of a configuration file.
+		http://flex.sourceforge.net/
+	
+- Bison
+	a general-purpose parser generator that converts
+	a grammar description for an LALR context-free grammar
+	into a C program to parse that grammar. Once you are
+	proficient with Bison, you can use it to develop a wide
+	range of language parsers, from those used in simple desk
+	calculators to complex programming languages.
+		http://www.gnu.org/software/bison/
+
+You only need to add the switch --enable-compiler
+to the configure step.
+
+--------------------------------------------------
 
 Basic Installation
 ==================
