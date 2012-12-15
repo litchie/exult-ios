@@ -2,6 +2,12 @@
 	* usecode/ucinternal.cc: Fixed bug #3596110 '"Your hands are too full" even
 	  when carrying no inventory'.
 	* objs/contain.*, objs/objs.h: Use bool instead of int for add_quantity.
+	* mapedit/shapeedit.cc: Fixed bug #3172487 "Exult Studio crash from removing
+	  frame name property". Fixed incorrect pointer initialization. Also fixed
+	  incorrect initialization of fields for all vector data if all entries are
+	  invalid (e.g., present in static data but deleted in patch) and ensured
+	  that treeview rows are only created if the element in question is not an
+	  invalid one.
 	
 2012-12-12	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Midi.cc: Fixing segfault when you change the Midi device type and
