@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 14 November 2012 (GMT)
+last changed: 16 December 2012 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -72,7 +72,6 @@ The latest version of this document can be found at http://exult.sourceforge.net
 9. OS specific notes
 9.1. How to get the Zaurus port working
 9.2. Error Log
-9.3. Making Digital Sound work on Mac OS X
 
 10. Zaurus Guide
 10.1. Author of this Guide
@@ -102,34 +101,35 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 14 November 2012
-13.2. - 28 October 2012
-13.3. - 01 December 2011
-13.4. - 16 March 2011
-13.5. - 19 February 2011
-13.6. - 24 January 2011
-13.7. - 23 January 2011
-13.8. - 13 October 2010
-13.9. - 30 August 2010
-13.10. - 25 August 2010
-13.11. - 15 August 2010
-13.12. - 28 April 2010
-13.13. - 11 March 2010
-13.14. - 10 March 2010
-13.15. - 08 March 2010
-13.16. - 16 July 2009
-13.17. - 03 June 2009
-13.18. - 20 May 2009
-13.19. - 19 May 2009
-13.20. - 18 May 2009
-13.21. - 28 April 2009
-13.22. - 21 October 2007
-13.23. - 08 April 2006
-13.24. - 14 March 2005
-13.25. - 14 August 2004
-13.26. - 23 May 2004
-13.27. - 11 February 2004
-13.28. - 12 December 2003
+13.1. - 16 December 2012
+13.2. - 14 November 2012
+13.3. - 28 October 2012
+13.4. - 01 December 2011
+13.5. - 16 March 2011
+13.6. - 19 February 2011
+13.7. - 24 January 2011
+13.8. - 23 January 2011
+13.9. - 13 October 2010
+13.10. - 30 August 2010
+13.11. - 25 August 2010
+13.12. - 15 August 2010
+13.13. - 28 April 2010
+13.14. - 11 March 2010
+13.15. - 10 March 2010
+13.16. - 08 March 2010
+13.17. - 16 July 2009
+13.18. - 03 June 2009
+13.19. - 20 May 2009
+13.20. - 19 May 2009
+13.21. - 18 May 2009
+13.22. - 28 April 2009
+13.23. - 21 October 2007
+13.24. - 08 April 2006
+13.25. - 14 March 2005
+13.26. - 14 August 2004
+13.27. - 23 May 2004
+13.28. - 11 February 2004
+13.29. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -553,7 +553,7 @@ Note: yes means enabled, no means disabled
 				Applies to fullscreen if video settings are not shared.
       </width>
       <height>
-      240
+      480
       </height>
     </display>
     <game>
@@ -892,12 +892,14 @@ Exult offers some "hidden" command line options:
 * --si Starts the game with the Serpent Isle menu (prefers original game).
 * --ss Starts the game with the menu of the Serpent Isle with Silver Seed expansion. Only useful if you have SS added as described at 2.9., otherwise it will just work like the command '--si'.
 * --nomenu Skips game menu.
-* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map. You need to specify a game, either by '--bg' (or '--si', '--fov', '--ss') or with the '--game'/'--mod' option.
-* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data folder aren't the same it got compiled with. This parameter lets the game start nevertheless. Don't try this if you don't know what you are doing.
 * --game gamename Loads a game specified in exult.cfg when there are other games made with Exult Studio.
+* --mod modname Must be used together with '--bg', '--si' or '--game gamename'; runs the specified game using the mod with title equal to 'modname'. 'modname' is the name of the mod cfg file (e.g. keyring.cfg means 'modname' 'keyring'.
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map. You need to specify a game, either by '--bg' (or '--si', '--fov', '--ss') or with the '--game'/'--mod' option.
+* --mapnum This must be used with '--buildmap'. Selects which map (for multimap games or mods) whose map is desired.
+* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data folder aren't the same it got compiled with. This parameter lets the game start nevertheless. Don't try this if you don't know what you are doing.
 * --edit Start in map-edit mode. This will also load Exult Studio when the game is started.
 * --write-xml Write 'patch/exultgame.xml'. Only useful for game editing.
-* --mod modname Must be used together with '--bg', '--si' or '--game gamename'; runs the specified game using the mod with title equal to 'modname'. 'modname' is the name of the mod cfg file (e.g. keyring.cfg means 'modname' 'keyring'.
+* --reset-video resets Exult's video settings to the default values. Very helpful when Exult isn't playable anymore because of wrong settings.
 
 
 
@@ -1051,6 +1053,9 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * HQ2X High quality scaler, that uses a lot of CPU cycles. Only 2x.
 * HQ3X High quality scaler, that uses a lot of CPU cycles. Only 3x.
 * HQ4X High quality scaler, that uses a *lot* of CPU cycles. Only 4x.
+* 2xBR High quality scaler by Hyllian Github, that uses a lot of CPU cycles. Only 2x.
+* 3xBR Same as 2xBR but only 3x.
+* 4xBR Same as 2xBR but only 4x.
 * OpenGL Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered stable. You can expect errors when using this scaler. Because of this OpenGL is only available in snapshots of Exult, not in official releases.
 
 The scalers by Derek Liauw are slower than the ones above it but many prefer them. Try out for yourself which one you like most since this is a highly subjective topic.
@@ -1382,10 +1387,6 @@ Some people were confused where to put the Exult and U7 files and this is just a
 
 
 
-9.3. Making Digital Sound work on Mac OS X
-Older versions of OS X do not have built-in support for ogg files. You need to go to http://xiph.org/quicktime/download.html to download and install xiphqt. Please try it out whether it works for you before installing xiphqt.
-
-
 
 --------------------------------------------------------------------------------
 
@@ -1519,7 +1520,15 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 14 November 2012
+13.1. - 16 December 2012
+* 2.3. Settings in exult.cfg wrong height for windowed default.
+* 2.10. Command line options added --reset-video and --mapnum and sorted it a bit.
+* 4.4. Scaler xBR scalers added.
+* deleted "Making Digital Sound work on Mac OS X" since Exult works fine on all supported OS X versions.
+
+
+
+13.2. - 14 November 2012
 * 1.1. Exult Version it's for the SVN of Exult.
 * 2.3. Settings in exult.cfg added autonotes options.
 * 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
@@ -1528,7 +1537,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.2. - 28 October 2012
+13.3. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1536,7 +1545,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.3. - 01 December 2011
+13.4. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1545,13 +1554,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.4. - 16 March 2011
+13.5. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.5. - 19 February 2011
+13.6. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.6. Digital Wave Sound Effects split off the installation part.
 * 3.7. All-in-One Audio Data pack and installers added.
@@ -1561,7 +1570,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.6. - 24 January 2011
+13.7. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1569,7 +1578,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 23 January 2011
+13.8. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1585,7 +1594,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 13 October 2010
+13.9. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1596,7 +1605,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 30 August 2010
+13.10. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1604,7 +1613,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 25 August 2010
+13.11. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1613,7 +1622,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 15 August 2010
+13.12. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1622,12 +1631,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.12. - 28 April 2010
+13.13. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.13. - 11 March 2010
+13.14. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1635,7 +1644,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.14. - 10 March 2010
+13.15. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1645,36 +1654,36 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 08 March 2010
+13.16. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
 * 3.2. MIDI Music the MT32 option will no longer crash Exult on OS X.
 * 4.4. Scaler OpenGl scaler is not considered stable.
 * 8.4. Adapting the location of Mods and Patches be aware of the LOCAL_APPDATA changes.
-* 9.3. Making Digital Sound work on Mac OS X is probably not needed for newer versions of OS X.
+* 1.1. is probably not needed for newer versions of OS X.
 
 
 
-13.16. - 16 July 2009
+13.17. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.17. - 03 June 2009
+13.18. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.18. - 20 May 2009
+13.19. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.8. Installation of the digital music packs cleaned up.
 * 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.19. - 19 May 2009
+13.20. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1685,7 +1694,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.20. - 18 May 2009
+13.21. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1704,43 +1713,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.21. - 28 April 2009
+13.22. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.22. - 21 October 2007
-* 9.3. Making Digital Sound work on Mac OS X added.
+13.23. - 21 October 2007
+* 1.1. added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.23. - 08 April 2006
+13.24. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.24. - 14 March 2005
+13.25. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.25. - 14 August 2004
+13.26. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.26. - 23 May 2004
+13.27. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.27. - 11 February 2004
+13.28. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1751,7 +1760,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.28. - 12 December 2003
+13.29. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.

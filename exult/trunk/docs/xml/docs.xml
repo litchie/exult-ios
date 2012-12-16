@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="14 November 2012 (GMT)">	
+<readme title="Exult" changed="16 December 2012 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -530,7 +530,7 @@
 									<comment>Applies to fullscreen if video settings are not shared.</comment>
 								</configtag>
 								<configtag name="height">
-									240
+									480
 								</configtag>
 							</configtag>
 							<configtag name="game">
@@ -1070,9 +1070,15 @@
 						otherwise it will just work like the command '--si'.</li>
 					<li>--nomenu<br/>
 						Skips game menu.</li>
+					<li>--game gamename<br/>
+						Loads a game specified in exult.cfg when there are other games made
+						with <Studio/>.</li>
+					<li>--mod modname<br/>
+						Must be used together with '--bg', '--si' or '--game gamename'; runs the specified 
+						game using the mod with title equal to 'modname'. 'modname' is the name of the mod 
+						cfg file (e.g. keyring.cfg means 'modname' 'keyring'.</li>
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
-						You have to specify the game first (Example: exult --bg --buildmap 0).<br/>
 						Builds the map of the game specified. The map is <strong>huge</strong> and in pcx
 						format, you will need a lot of ram to even look at this map once it is build
 						(and even that requires a lot of patience)<br/>
@@ -1080,22 +1086,21 @@
 						started a new game before you build the map.<br/>
 						You need to specify a game, either by '--bg' (or '--si', '--fov', '--ss') or 
 						with the '--game'/'--mod' option.</li>
+					<li>--mapnum<br/>
+						This must be used with '--buildmap'. Selects which map (for multimap games or mods) 
+						whose map is desired.</li>
 					<li>--nocrc<br/>
 						Recently we added a crc check that <Exult/> doesn't start when the
 						exult*.flx files in the data folder aren't the same it got compiled with.
 						This parameter lets the game start nevertheless. Don't try this if you
 						don't know what you are doing.</li>
-					<li>--game gamename<br/>
-						Loads a game specified in exult.cfg when there are other games made
-						with <Studio/>.</li>
 					<li>--edit<br/>
 						Start in map-edit mode. This will also load <Studio/> when the game is started.</li>
 					<li>--write-xml<br/>
 						Write 'patch/exultgame.xml'. Only useful for game editing.</li>
-					<li>--mod modname<br/>
-						Must be used together with '--bg', '--si' or '--game gamename'; runs the specified 
-						game using the mod with title equal to 'modname'. 'modname' is the name of the mod 
-						cfg file (e.g. keyring.cfg means 'modname' 'keyring'.</li>
+					<li>--reset-video<br/>
+						resets <Exult/>'s video settings to the default values. Very helpful when <Exult/> 
+						isn't playable anymore because of wrong settings.</li>
 				</ul>
 			</body>
 		</sub>
@@ -1584,6 +1589,14 @@
 						High quality scaler, that uses a lot of CPU cycles. Only 3x.</li>
 					<li><strong>HQ4X</strong><br/>
 						High quality scaler, that uses a *lot* of CPU cycles. Only 4x.</li>
+					<li><strong>2xBR</strong><br/>
+						High quality scaler by Hyllian 
+						<extref target="https://github.com/libretro/common-shaders/tree/master/xBR">Github</extref>, 
+						that uses a lot of CPU cycles. Only 2x.</li>
+					<li><strong>3xBR</strong><br/>
+						Same as 2xBR but only 3x.</li>
+					<li><strong>4xBR</strong><br/>
+						Same as 2xBR but only 4x.</li>
 					<li><strong>OpenGL</strong><br/>
 						Can be used for arbitrary integer scales (2x, 3x, 4x...). But this scaler is not considered 
 						stable. You can expect errors when using this scaler. Because of this OpenGL is only 
@@ -2236,16 +2249,6 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="osx_digital">
-			<header>Making Digital Sound work on Mac OS X</header>
-			<body>
-				<para>
-					Older versions of OS X do not have built-in support for ogg files. You need to go to
-					<extref target="http://xiph.org/quicktime/download.html"/> to download 
-					and install xiphqt. Please try it out whether it works for you before installing xiphqt.
-				</para>
-			</body>
-		</sub>
 	</section>
   	<section title="Zaurus Guide">
 		<sub name="author_zaurus">
@@ -2723,6 +2726,17 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="16122012">
+			<header>- 16 December 2012</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> wrong height for windowed default.</li>
+				<li><ref1 target="command_line"/> added --reset-video and --mapnum and sorted it a bit.</li>
+				<li><ref1 target="scaler"/> xBR scalers added.</li>
+				<li>deleted "Making Digital Sound work on Mac OS X" since Exult works fine on all supported OS X versions.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="14112012">
 			<header>- 14 November 2012</header>
 			<body>
