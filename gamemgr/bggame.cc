@@ -835,11 +835,15 @@ void BG_Game::scene_guardian()
 		int time = 0;
 		unsigned long start = SDL_GetTicks();
 		
+		bool speech = Audio::get_ptr()->is_audio_enabled() &&
+						Audio::get_ptr()->is_speech_enabled();
+		
 		#define ERASE_TEXT() do { \
 				win->put(backup3, win->get_start_x(), txt_ypos); \
 			} while(0)
 
-		#define DRAW_TEXT() do { \
+		#define DRAW_TEXT() if (!speech) \
+			do { \
 				font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr); \
 			} while (0)
 		

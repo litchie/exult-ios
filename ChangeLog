@@ -1,3 +1,7 @@
+2012-12-17 Dominik Reichardt <dominus@users.sourceforge.net>
+	* gamemgr/bggame.cc: Only show the BG intro subtitles when audio and speech 
+	  are disabled.
+	
 2012-12-15	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* usecode/ucinternal.cc: Fixed bug #3596110 '"Your hands are too full" even
 	  when carrying no inventory'.
