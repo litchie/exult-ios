@@ -3,6 +3,10 @@
 	  pedantic warnings, which is independent of other warning options. Removed
 	  some stray left-overs from GIMP plugin code, and fixed version numbers.
 	  Some identation changes.
+	* usecode/useval.cc: Fixed bugs #3597062 "Buying reagents from Wis-Sur is
+	  broken" and #3597307 "Training in SI broken - result 0 combat points",
+	  both due to hard-coding a modulus operator in a generic division/modulus
+	  operator.
 
 2012-12-17 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamemgr/bggame.cc: Only show the BG intro subtitles when audio and speech 
