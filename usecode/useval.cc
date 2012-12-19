@@ -514,7 +514,7 @@ struct safe_divide : Op<T> {
 		if (y == 0)
 			return x < 0 ? std::numeric_limits<T>::min() : std::numeric_limits<T>::max();  
 		else
-			return x%y;
+			return Op<T>::operator()(x, y);
 	}
 };
 
