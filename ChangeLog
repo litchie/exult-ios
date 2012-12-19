@@ -7,6 +7,8 @@
 	  broken" and #3597307 "Training in SI broken - result 0 combat points",
 	  both due to hard-coding a modulus operator in a generic division/modulus
 	  operator.
+	* exult.cc: Fixed bug #3597039 "segfault on main menu quit with only Speech 
+	  enabled audio".
 
 2012-12-17 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamemgr/bggame.cc: Only show the BG intro subtitles when audio and speech 
