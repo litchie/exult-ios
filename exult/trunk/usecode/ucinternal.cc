@@ -1893,7 +1893,7 @@ Usecode_internal::Usecode_internal
 	catch(const file_exception & f)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
-			throw f;
+			throw;
 		std::cerr << "Warning (map-editing): Couldn't open '" << 
 							USECODE << "'" << endl;
 		}
@@ -3445,9 +3445,9 @@ void Usecode_internal::read
 		memset(&gflags[0], 0, sizeof(gflags));
 		in.read((char*)gflags, filesize);
 		in.close();
-	} catch(exult_exception &e) {
+	} catch(exult_exception const& e) {
 		if (!Game::is_editing())
-			throw e;
+			throw;
 		memset(&gflags[0], 0, sizeof(gflags));
 	}
 

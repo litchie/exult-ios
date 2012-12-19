@@ -68,10 +68,10 @@ void Game_window::read_npcs
 		num_npcs = num_npcs1 + nfile.read2();
 		main_actor->read(&nfile, 0, false, fix_unused);
 		}
-	catch(exult_exception &e)
+	catch(coexult_exception const& e)
 		{
 		if (!Game::is_editing())
-			throw e;
+			throw;
 		num_npcs1 = num_npcs = 1; 
 		if (Game::get_avname())
 			main_actor->set_npc_name(Game::get_avname());
@@ -267,7 +267,7 @@ void Game_window::read_schedules
 	{
 		U7open(sfile_stream, GSCHEDULE);
 	}
-	catch(exult_exception e)
+	catch(exult_exception const& e)
 	{
 #ifdef DEBUG
 		cerr << "Couldn't open " << GSCHEDULE << ". Falling back to "
@@ -277,10 +277,10 @@ void Game_window::read_schedules
 		{
 			U7open(sfile_stream, SCHEDULE_DAT);
 		}
-		catch(exult_exception e1)
+		catch(exult_exception const& e1)
 		{
 		if (!Game::is_editing())
-			throw e1;
+			throw;
 		else
 			return;
 		}

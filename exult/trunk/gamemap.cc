@@ -182,7 +182,7 @@ void Game_map::init_chunks
 		{
 		if (!Game::is_editing() ||	// Ok if map-editing.
 		    !patch_exists)	// But only if patch exists.
-			throw f;
+			throw;
 		ofstream ochunks;	// Create one in 'patch'.
 		U7open(ochunks, PATCH_U7CHUNKS);
 		unsigned char buf[16*16*3];	

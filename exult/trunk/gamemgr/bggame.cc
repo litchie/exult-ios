@@ -1005,7 +1005,7 @@ void BG_Game::scene_guardian()
 		gl_clear_win();
 		enable_direct_gl_render();
 		
-		throw x;
+		throw;
 	}
 }
 
@@ -1081,7 +1081,7 @@ void BG_Game::scene_desk()
 			SDL_FreeSurface(zoomed_surf);
 			FORGET_OBJECT(unzoomed); 
 			FORGET_OBJECT(zoomed); 
-			throw x;
+			throw;
 		}
 
 		win->put(unzoomed, 0+(win->get_game_width()-320)/2, 0+(win->get_game_height()-200)/2);
@@ -1213,7 +1213,7 @@ void BG_Game::scene_desk()
 		// Waste disposal
 		FORGET_OBJECT(backup);
 		enable_direct_gl_render();
-		throw x;
+		throw;
 	}
 }
 
@@ -1323,7 +1323,7 @@ void BG_Game::scene_moongate()
 		SDL_FreeSurface(zoomed_surf);
 		FORGET_OBJECT(unzoomed); 
 		FORGET_OBJECT(zoomed); 
-		throw x;
+		throw;
 	}
 	SDL_FreeSurface(unzoomed_surf);
 	SDL_FreeSurface(zoomed_surf);
