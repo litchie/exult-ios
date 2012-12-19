@@ -68,7 +68,7 @@ void Game_window::read_npcs
 		num_npcs = num_npcs1 + nfile.read2();
 		main_actor->read(&nfile, 0, false, fix_unused);
 		}
-	catch(coexult_exception const& e)
+	catch(exult_exception const& e)
 		{
 		if (!Game::is_editing())
 			throw;
