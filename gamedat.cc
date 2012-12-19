@@ -216,7 +216,7 @@ void Game_window::restore_gamedat
 	catch(const file_exception & f)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
-			throw f;
+			throw;
 		std::cerr << "Warning (map-editing): Couldn't open '" << 
 							fname << "'" << endl;
 		return;
@@ -315,7 +315,7 @@ static long Savefile
 	} catch (exult_exception& e) {
 		if (Game::is_editing())
 			return 0;	// Newly developed game.
-		throw e;
+		throw;
 	}
 	StreamDataSource in(&in_stream);
 	long len = in.getSize();
@@ -827,7 +827,7 @@ const char *Game_window::get_game_identity(const char *savename)
 			std::string titlestr = Game::get_gametitle();
 			return newstrdup(titlestr.c_str());
 		}
-		throw e;
+		throw;
 	}
 	StreamDataSource in(&in_stream);
 
@@ -1190,7 +1190,7 @@ static bool Save_level1 (zipFile zipfile, const char *fname)
 	} catch (exult_exception& e) {
 		if (Game::is_editing())
 			return false;	// Newly developed game.
-		throw e;
+		throw;
 	}
 
 
@@ -1239,7 +1239,7 @@ static bool Save_level2 (zipFile zipfile, const char *fname)
 	} catch (exult_exception& e) {
 		if (Game::is_editing())
 			return false;	// Newly developed game.
-		throw e;
+		throw;
 	}
 
 	StreamDataSource ds(&in);

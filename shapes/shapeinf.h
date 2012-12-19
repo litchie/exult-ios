@@ -302,7 +302,7 @@ public:
 	// This copy constructor and assignment operator intentionally cause
 	// errors.
 	Shape_info(const Shape_info & other);
-	const Shape_info & operator = (const Shape_info & other);
+	Shape_info & operator = (const Shape_info & other);
 	~Shape_info();
 	void copy(const Shape_info& inf2, bool skip_dolls = false);
 

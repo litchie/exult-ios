@@ -81,7 +81,7 @@ Game::Game() : xml(0), menushapes()
 		menushapes.load(MAINSHP_FLX, PATCH_MAINSHP);
 	} catch (const exult_exception &e) {
 		if (!is_editing())
-			throw e;
+			throw;
 	}
 	jive = false;
 	gwin = Game_window::get_instance();

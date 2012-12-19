@@ -73,7 +73,7 @@ struct File_spec
 		}
 	~File_spec()
 		{ if (ownstr) delete [] name; }
-	const File_spec& operator=(const File_spec& other)
+	File_spec& operator=(const File_spec& other)
 		{
 		if (this != &other)
 			{

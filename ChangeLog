@@ -9,6 +9,13 @@
 	  operator.
 	* exult.cc: Fixed bug #3597039 "segfault on main menu quit with only Speech 
 	  enabled audio".
+	* shapeinf/aniinf.cc: Removing dead code.
+	* game.cc, gamedat.cc, gamemap.cc, readnpcs.cc, gamemgr/bggame.cc,
+	  shapes/miscinf.cc, usecode/ucinternal.cc: Using const reference exceptions.
+	  Rethrowing using empty throw to avoid unnecessary copies.
+	* windrag.h, files/U7obj.h, shapes/shapeinf.*: More 'correct' assignment
+	  operators (ward against self-assignment, non-const return).
+	* imagewin/scale_xbr.h: Made template parameters more explicit.
 
 2012-12-17 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamemgr/bggame.cc: Only show the BG intro subtitles when audio and speech 

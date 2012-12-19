@@ -397,10 +397,10 @@ void Shapeinfo_lookup::Read_data_file
 					static_strings, sections, numsections);
 			in.close();
 			}
-		catch (std::exception &e)
+		catch (std::exception const& e)
 			{
 			if (!Game::is_editing())
-				throw e;
+				throw;
 			static_strings.resize(numsections);
 			}
 		}

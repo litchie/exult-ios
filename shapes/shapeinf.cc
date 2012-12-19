@@ -81,8 +81,8 @@ Shape_info::Shape_info(const Shape_info & other)
 		ready_type(-1), alt_ready1(-1), alt_ready2(-1), spell_flag(false),
 		occludes_flag(false)
 	{ copy(other); }
-const Shape_info & Shape_info::operator = (const Shape_info & other)
-	{ copy(other); return *this; }
+Shape_info & Shape_info::operator = (const Shape_info & other)
+	{ if (this != &other) copy(other); return *this; }
 /*
  *	Clean up.
  */
