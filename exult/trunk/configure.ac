@@ -16,33 +16,33 @@ VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 # Do iPhone stuff first, as we may need to manipulate the host variable
 AC_ARG_WITH(iphone_sdk, AS_HELP_STRING([--with-iphone-sdk=SDK_NAME], [Compile using iPhone SDK]),,)
 if test x$with_iphone_sdk != x; then
-        osplat="/Developer/Platforms"
+	osplat="/Developer/Platforms"
 	iphone_sdk="$with_iphone_sdk"
-        if test "$(echo $iphone_sdk | grep -c 'iPhoneSimulator')" != "0"; then
-                DEV_iOS="${osplat}/iPhoneSimulator.platform/Developer"
-                SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
-                host_alias="i686-apple-darwin10"
-                ARCH_iOS="i686"
-        else
-                DEV_iOS="${osplat}/iPhoneOS.platform/Developer"
-                SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
-                host_alias="arm-apple-darwin10"
-                ARCH_iOS="armv6"
-        fi
-        #LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
-        COMPILER_iOS=${DEV_iOS}/usr/bin
+	if test "$(echo $iphone_sdk | grep -c 'iPhoneSimulator')" != "0"; then
+		DEV_iOS="${osplat}/iPhoneSimulator.platform/Developer"
+		SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
+		host_alias="i686-apple-darwin10"
+		ARCH_iOS="i686"
+	else
+		DEV_iOS="${osplat}/iPhoneOS.platform/Developer"
+		SDK_iOS="${DEV_iOS}/SDKs/${iphone_sdk}.sdk"
+		host_alias="arm-apple-darwin10"
+		ARCH_iOS="armv6"
+	fi
+	#LD_LIBRARY_PATH=${COMPILER_iOS}/usr/lib
+	COMPILER_iOS=${DEV_iOS}/usr/bin
 	CC=${COMPILER_iOS}/gcc
-        CXX=${COMPILER_iOS}/g++
-        LDFLAGS="-arch ${ARCH_iOS} -pipe -Os -gdwarf-2 -no-cpp-precomp -mthumb -isysroot ${SDK_iOS}"
-        CFLAGS=${LDFLAGS}
-        CXXFLAGS=${LDFLAGS}
-        #CPPFLAGS="-DSDL_VER_1_3 -D__IPHONEOS__"
-        AC_DEFINE(__IPHONEOS__, 1, [Using iPhone])
-        AC_DEFINE(SDL_VER_1_3, 1, [SDL 1.3])
-        enable_sdltest="no"
-        if test ! -d "${SDK_iOS}"; then
-                AC_MSG_ERROR([*** iPhone SDK directory does not exist! -> ${SDK_iOS}])
-        fi
+	CXX=${COMPILER_iOS}/g++
+	LDFLAGS="-arch ${ARCH_iOS} -pipe -Os -gdwarf-2 -no-cpp-precomp -mthumb -isysroot ${SDK_iOS}"
+	CFLAGS=${LDFLAGS}
+	CXXFLAGS=${LDFLAGS}
+	#CPPFLAGS="-DSDL_VER_1_3 -D__IPHONEOS__"
+	AC_DEFINE(__IPHONEOS__, 1, [Using iPhone])
+	AC_DEFINE(SDL_VER_1_3, 1, [SDL 1.3])
+	enable_sdltest="no"
+	if test ! -d "${SDK_iOS}"; then
+		AC_MSG_ERROR([*** iPhone SDK directory does not exist! -> ${SDK_iOS}])
+	fi
 	echo "iPhone SDK ... ${iphone_sdk} (${host_alias})"
 fi
 
@@ -155,9 +155,9 @@ case "$host_os" in
 		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT([Mac OS X])
 		if test x$iphone_sdk != x; then
-		   SYSLIBS="-framework CoreFoundation -framework CoreAudio  -framework CoreMIDI"
-	        else	
-		   SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
+			SYSLIBS="-framework CoreFoundation -framework CoreAudio -framework CoreMIDI"
+		else	
+			SYSLIBS="-framework CoreFoundation -framework AudioUnit -framework CoreMIDI"
 		fi
 		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="/Library/Application\ Support/Exult/data"
@@ -282,8 +282,8 @@ AC_TRY_COMPILE([
 	struct addrinfo a;
 	//getaddrinfo(0, 0, 0, 0);
 ],
-  ac_cv_func_getaddrinfo=yes,
-  ac_cv_func_getaddrinfo=no)
+	ac_cv_func_getaddrinfo=yes,
+	ac_cv_func_getaddrinfo=no)
 AC_MSG_RESULT($ac_cv_func_getaddrinfo)
 if test x$ac_cv_func_getaddrinfo = xyes ; then
 	AC_DEFINE(HAVE_GETADDRINFO, 1, [Have addrinfo/getaddrinfo])
@@ -299,8 +299,8 @@ AC_TRY_LINK([
 [
 	mkstemp(0);
 ],
-  ac_cv_func_mkstemp=yes,
-  ac_cv_func_mkstemp=no)
+	ac_cv_func_mkstemp=yes,
+	ac_cv_func_mkstemp=no)
 AC_MSG_RESULT($ac_cv_func_mkstemp)
 if test x$ac_cv_func_mkstemp = xyes ; then
 	AC_DEFINE(HAVE_MKSTEMP, 1, [Have mkstemp])
@@ -313,8 +313,8 @@ AC_TRY_LINK([
 [
 	snprintf(0,0,0,0);
 ],
-  ac_cv_func_snprintf=yes,
-  ac_cv_func_snprintf=no)
+	ac_cv_func_snprintf=yes,
+	ac_cv_func_snprintf=no)
 AC_MSG_RESULT($ac_cv_func_snprintf)
 if test x$ac_cv_func_snprintf = xyes ; then
 	AC_DEFINE(HAVE_SNPRINTF, 1, [Have snprintf])
@@ -508,15 +508,15 @@ AC_CHECK_HEADER(fluidsynth.h, HAVEFLUIDSYNTH=yes, HAVEFLUIDSYNTH=no)
 AC_ARG_ENABLE(fluidsynth, AS_HELP_STRING([--disable-fluidsynth], [Disable fluidsynth midi support]),,enable_fluidsynth=yes)
 AC_MSG_CHECKING([if we want to use fluidsynth midi])
 if test x$HAVEFLUIDSYNTH = xyes; then
-        if test x$enable_fluidsynth = xyes; then
-                AC_MSG_RESULT(yes)
-                AC_DEFINE(USE_FLUIDSYNTH_MIDI, 1, [Enable fluidsynth midi])
-                LIBS="$LIBS -lfluidsynth"
-        else
-                AC_MSG_RESULT(no)
-        fi
+		if test x$enable_fluidsynth = xyes; then
+				AC_MSG_RESULT(yes)
+				AC_DEFINE(USE_FLUIDSYNTH_MIDI, 1, [Enable fluidsynth midi])
+				LIBS="$LIBS -lfluidsynth"
+		else
+				AC_MSG_RESULT(no)
+		fi
 else
-        AC_MSG_RESULT([no; fluidsynth.h not found])
+		AC_MSG_RESULT([no; fluidsynth.h not found])
 fi
 
 # mt32emu midi driver
@@ -693,7 +693,7 @@ fi
 
 DESKTOPDIR="${datadir}/applications"
 AC_ARG_WITH([desktopdir],
-            AS_HELP_STRING([--with-desktopdir=DIR],[change desktop directory]),
+	AS_HELP_STRING([--with-desktopdir=DIR],[change desktop directory]),
 	[case "${withval}" in
 		yes)
 		;;
@@ -707,7 +707,7 @@ AC_SUBST([DESKTOPDIR])
 
 ICONDIR="${datadir}/icons"
 AC_ARG_WITH([icondir],
-            AS_HELP_STRING([--with-icondir=DIR],[change icon directory]),
+	AS_HELP_STRING([--with-icondir=DIR],[change icon directory]),
 	[case "${withval}" in
 		yes)
 		;;
@@ -747,7 +747,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# heavy unoptimized GDB  debugging mode
+# heavy unoptimized GDB debugging mode
 AC_ARG_ENABLE(heavy-gdb-debug, AS_HELP_STRING([--enable-heavy-gdb-debug], [Enable debug messages with GDB symbols @<:@default no@:>@]),,enable_heavy_gdb_debug=no)
 AC_MSG_CHECKING([whether to enable unoptimized debugging mode with GDB symbols])
 if test x$enable_heavy_gdb_debug = xyes; then
@@ -764,10 +764,10 @@ fi
 AC_ARG_ENABLE(sdl-parachute, AS_HELP_STRING([--enable-sdl-parachute], [Use SDL parachute @<:@default yes@:>@]),,enable_sdl_parachute=yes)
 AC_MSG_CHECKING([if we should disable the SDL parachute])
 if test x$enable_sdl_parachute = xno; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(NO_SDL_PARACHUTE, 1, [Disable SDL parachute])
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(NO_SDL_PARACHUTE, 1, [Disable SDL parachute])
 else
-  AC_MSG_RESULT(no)
+	AC_MSG_RESULT(no)
 fi
 
 # Usecode debugger
@@ -800,6 +800,18 @@ if test x$enable_paranoid_warnings = xyes; then
 elif test x$enable_warnings = xyes; then
  	DEBUG_FLAGS="$DEBUG_FLAGS -O -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings"
 	WARNING_LEVEL="all"
+fi
+
+# yet more warnings
+AC_ARG_ENABLE(pedantic-warnings, AS_HELP_STRING([--enable-pedantic-warnings], [Enable pedantic warnings @<:@default no@:>@]),,enable_pedantic_warnings=no)
+if test x$enable_pedantic_warnings = xyes; then
+	WARNINGS="$WARNINGS -pedantic"
+	DEBUG_FLAGS="$DEBUG_FLAGS -pedantic"
+	if test x$enable_warnings = xyes -o x$enable_paranoid_warnings = xyes; then
+		WARNING_LEVEL="$WARNING_LEVEL, pedantic"
+	else
+		WARNING_LEVEL="pedantic"
+	fi
 fi
 
 # Output result
@@ -922,12 +934,11 @@ if test x$enable_gimp_plugin = xyes; then
 		AC_MSG_RESULT([no, not building GIMP plugin])
 	else
 		AC_MSG_CHECKING([for GIMP version])
-		gimp_version=`$GIMPTOOL --version |  awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
+		gimp_version=`$GIMPTOOL --version | awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
 		if test "$gimp_version" -ge 1312; then
 			AC_MSG_RESULT([found >= 1.3.12])
 			AC_SUBST(GIMPTOOL)
 			AM_CONDITIONAL(GIMP_PLUGIN, true)
-			CPPFLAGS="$save_cppflags"
 			GIMP_PLUGIN_PREFIX=`$GIMPTOOL --gimpplugindir`
 			GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
 			AC_SUBST(GIMP_PLUGIN_PREFIX)
@@ -937,11 +948,10 @@ if test x$enable_gimp_plugin = xyes; then
 			AC_SUBST(GIMP_INCLUDES)
 			AC_SUBST(GIMP_LIBS)
 		elif test "$gimp_version" -ge 1200 -a \
-			  "$gimp_version" -lt 1300; then
+				"$gimp_version" -lt 1300; then
 			AC_MSG_RESULT([found 1.2.x])
 			AC_SUBST(GIMPTOOL)
 			AM_CONDITIONAL(GIMP_PLUGIN, true)
-			CPPFLAGS="$save_cppflags"
 			GIMP_PLUGIN_PREFIX=`$GIMPTOOL --gimpplugindir`
 			GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
 			AC_SUBST(GIMP_PLUGIN_PREFIX)
@@ -952,7 +962,7 @@ if test x$enable_gimp_plugin = xyes; then
 			AC_SUBST(GIMP_INCLUDES)
 			AC_SUBST(GIMP_LIBS)
 		else
-			AC_MSG_RESULT([found < 1.3.12 - disabling plugin])
+			AC_MSG_RESULT([found < 1.2.00 - disabling plugin])
 		fi
 	fi
 else
