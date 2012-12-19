@@ -407,11 +407,11 @@ int main
 		// Your basic "shutup Valgrind" code.
 		Free_text();
 		fontManager.reset();
-		delete config;
 		delete gamemanager;
 		delete Game_window::get_instance();
 		delete game;
 		Audio::Destroy();	// Deinit the sound system.
+		delete config;
 		SDL_VideoQuit();
 		SDL_Quit();
 		result = 0;
