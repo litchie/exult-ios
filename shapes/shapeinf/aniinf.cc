@@ -101,8 +101,6 @@ Animation_info *Animation_info::create_from_tfa
 		case 13:
 			inf->set(FA_NON_LOOPING, nframes);
 			break;
-			inf->set(FA_TIMESYNCHED, nframes, 0, 100, 4, -1);
-			break;
 		case 15:
 			inf->set(FA_TIMESYNCHED, 6, 0, 100, 4, 0);
 			break;

@@ -61,11 +61,13 @@ public:
 	}
 	// Copy constructor
 	inline windragdata & operator = (windragdata &o) {
-		delete [] data;
-		id = o.id;
-		size = o.size;
-		data = new unsigned char [size];
-		std::memcpy(data, o.data, size);
+		if (this != &o) {
+			delete [] data;
+			id = o.id;
+			size = o.size;
+			data = new unsigned char [size];
+			std::memcpy(data, o.data, size);
+		}
 		return *this;
 	}
 	inline void assign(sint32 i, uint32 s, unsigned char * d) {

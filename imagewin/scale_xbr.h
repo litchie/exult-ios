@@ -81,7 +81,7 @@ struct RGBColor
 		manip.split_source(c, r, g, b);
 		fix();
 	}
-	RGBColor const& operator=(RGBColor const& other)
+	RGBColor<Manip_pixels, tol>& operator=(RGBColor<Manip_pixels, tol> const& other)
 	{
 		if (this != &other)
 		{
@@ -90,9 +90,9 @@ struct RGBColor
 		}
 		return *this;
 	}
-	bool operator==(RGBColor const& other) const
+	bool operator==(RGBColor<Manip_pixels, tol> const& other) const
 	{	return r == other.r && g == other.g && b == other.b;	}
-	bool operator!=(RGBColor const& other) const
+	bool operator!=(RGBColor<Manip_pixels, tol> const& other) const
 	{	return !(*this == other);	}
 	// See http://www.compuphase.com/cmetric.htm
 	int dist(RGBColor<Manip_pixels, tol> const& other) const
@@ -108,7 +108,7 @@ struct RGBColor
 		    && abs(db - other.db) <= (tol *  4);
 	}
 	template <unsigned int N, unsigned int M>
-	inline void blend(RGBColor const& other)
+	inline void blend(RGBColor<Manip_pixels, tol> const& other)
 	{
 		r = (other.r * N + r * (M - N)) / M;
 		g = (other.g * N + g * (M - N)) / M;
