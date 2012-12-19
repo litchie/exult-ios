@@ -1,3 +1,9 @@
+2012-12-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* configure.ac: Added an option (--enable-pedantic-warnings) to build with
+	  pedantic warnings, which is independent of other warning options. Removed
+	  some stray left-overs from GIMP plugin code, and fixed version numbers.
+	  Some identation changes.
+
 2012-12-17 Dominik Reichardt <dominus@users.sourceforge.net>
 	* gamemgr/bggame.cc: Only show the BG intro subtitles when audio and speech 
 	  are disabled.
