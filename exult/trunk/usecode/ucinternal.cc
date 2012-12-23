@@ -197,7 +197,8 @@ inline bool Usecode_internal::is_object_fun(int n)
 bool Usecode_internal::call_function(int funcid,
 					 int eventid,
 					 Game_object *caller,
-					 bool entrypoint, bool orig)
+					 bool entrypoint, bool orig,
+					 int givenargs)
 {
 	Usecode_function *fun = find_function(funcid);
 	if (!fun)
@@ -237,11 +238,12 @@ bool Usecode_internal::call_function(int funcid,
 
 	Stack_frame *frame = new Stack_frame(fun, eventid, caller, chain, depth);
 
-	int num_args = frame->num_args;
+	int num_args = std::max(frame->num_args, givenargs);
 	// Many functions have 'itemref' as a 'phantom' arg.
 	// In the originals, this was probably so that the games
 	// could know how much memory the function would need.
-	if (is_object_fun(funcid))
+	// In any case, do this only if this was not an indirect call.
+	if (givenargs == 0 && is_object_fun(funcid))
 		{
 		if (--num_args < 0)
 			{
@@ -3038,12 +3040,14 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x53:		// CALLIND:  call indirect.
+			case 0xD3:		// CALLINDEX2: call indirect with arguments.
 			{			//  Function # is on stack.
 				Usecode_value funval = pop();
 				int offset = funval.get_int_value();
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
-				call_function(offset, frame->eventid, caller);
+				int numargs = (opcode < 0x80) ? 0 : popi();
+				call_function(offset, frame->eventid, caller, false, false, numargs);
 				frame_changed = true;
 				break;
 			}
