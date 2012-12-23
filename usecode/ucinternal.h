@@ -414,7 +414,7 @@ class Usecode_internal : public Usecode_machine
 
 	// execution functions
 	bool call_function(int funcid, int event, Game_object *caller = 0,
-			   bool entrypoint = false, bool orig = false);
+			   bool entrypoint = false, bool orig = false, int givenargs = 0);
 	void previous_stack_frame();
 	void return_from_function(Usecode_value& retval);
 	void return_from_procedure();

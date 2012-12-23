@@ -77,6 +77,7 @@ const char UC_LOOPTOPTHV = 0x5f;		// Loop with this->var array.
 const char UC_PUSHCHOICE = (char)0x60;	// Pushes last selected user choice.
 const char UC_PUSHFVAR = (char)0xc2;		// PUSH global flag using stack value.
 const char UC_POPFVAR = (char)0xc3;		// POP global flag using stack value.
+const char UC_CALLINDEX = (char)0xD3;		// Call indirect.  Addr. on stack. with arguments
 
 // 32-bit usecode
 const char UC_LOOPTOP32 = (char)0x82;

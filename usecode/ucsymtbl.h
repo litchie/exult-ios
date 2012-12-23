@@ -48,11 +48,11 @@ private:
 	friend class Usecode_scope_symbol;
 	std::string name;
 	Symbol_kind kind;
-	int val;			// Function #.
+	int value;			// Function #.
 	int extra;			// Extra symbol info.
 public:
 	Usecode_symbol(const char *nm, Symbol_kind k, int v, int e = -1)
-		: name(nm), kind(k), val(v), extra(e)
+		: name(nm), kind(k), value(v), extra(e)
 		{  }
 	virtual ~Usecode_symbol()
 		{  }
@@ -61,7 +61,7 @@ public:
 	Symbol_kind get_kind() const
 		{ return kind; }
 	int get_val() const
-		{ return val; }
+		{ return value; }
 	int get_extra() const
 		{ return extra; }
 };
@@ -98,8 +98,8 @@ public:
 	Usecode_class_symbol *get_class(int n)
 		{ return (unsigned)n < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
-	int get_high_shape_fun(int n);
-	bool is_object_fun(int n);
+	int get_high_shape_fun(int val);
+	bool is_object_fun(int val);
 	const Syms_vector& get_symbols()
 		{ return symbols; }
 	};

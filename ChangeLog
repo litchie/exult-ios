@@ -1,4 +1,9 @@
 2012-12-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* usecode/*: Fixed longstanding bug in usecode symbol table. Also fixed bug
+	  #3011723 "Keyring Mod - targeted NPC spells" by adding a second opcode for
+	  indirect function calls with parameters.
+
+2012-12-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* configure.ac: Added an option (--enable-pedantic-warnings) to build with
 	  pedantic warnings, which is independent of other warning options. Removed
 	  some stray left-overs from GIMP plugin code, and fixed version numbers.
