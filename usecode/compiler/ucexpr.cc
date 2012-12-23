@@ -910,6 +910,12 @@ void Uc_call_expression::gen_value
 	{
 	if (ind)			// Indirect?
 		{
+		size_t parmcnt = parms->gen_values(out);	// Want to push parm. values.
+		if (parmcnt)
+			{
+			Uc_int_expression iexpr(parmcnt);
+			iexpr.gen_value(out);
+			}
 		if (!itemref)
 			{
 			Uc_item_expression item;
@@ -918,7 +924,7 @@ void Uc_call_expression::gen_value
 		else
 			itemref->gen_value(out);
 		ind->gen_value(out);	// Function #.
-		WriteOp(out, (char) UC_CALLIND);
+		WriteOp(out, parmcnt ? (char) UC_CALLINDEX : (char) UC_CALLIND);
 		return;
 		}
 	if (!sym)

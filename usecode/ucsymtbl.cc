@@ -133,7 +133,7 @@ void Usecode_scope_symbol::setup_by_val(int start)
 	for (Syms_vector::iterator it = symbols.begin() + start; 
 						it != symbols.end(); ++it) {
 		Usecode_symbol *sym = *it;
-		by_val[sym->val] = sym;
+		by_val[sym->value] = sym;
 	}
 }
 void Usecode_scope_symbol::setup_class_names(int start)
@@ -185,12 +185,12 @@ Usecode_class_symbol *Usecode_scope_symbol::get_class(const char *nm)
 /*
  *	Lookup shape function.
  */
-int Usecode_scope_symbol::get_high_shape_fun(int n)
+int Usecode_scope_symbol::get_high_shape_fun(int val)
 {
 	if (shape_funs.empty())
 		// Default to 'old style' high shape functions.
-		return 0x1000 + (n - 0x400);
-	Shape_table::iterator it = shape_funs.find(n);
+		return 0x1000 + (val - 0x400);
+	Shape_table::iterator it = shape_funs.find(val);
 	if (it == shape_funs.end())
 		return -1;
 	else
@@ -200,14 +200,14 @@ int Usecode_scope_symbol::get_high_shape_fun(int n)
 /*
  *	See if the function requires an itemref.
  */
-bool Usecode_scope_symbol::is_object_fun(int n)
+bool Usecode_scope_symbol::is_object_fun(int val)
 {
 	if (by_val.empty())
 		setup_by_val();
 	Val_table::iterator it = by_val.find(val);
 	// Symbol not found; default to original behavior
 	if (it == by_val.end())
-		return (n < 0x800);
+		return (val < 0x800);
 	Usecode_symbol *sym = (*it).second;
 	if (sym &&
 		(sym->get_kind() == shape_fun || sym->get_kind() == object_fun))
