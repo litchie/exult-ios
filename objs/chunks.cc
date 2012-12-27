@@ -1057,7 +1057,7 @@ int Map_chunk::is_blocked
 	(
 					// Object dims:
 	int xtiles, int ytiles, int ztiles,
-	Tile_coord from,		// Stepping from here.
+	Tile_coord const& from,		// Stepping from here.
 	Tile_coord& to,			// Stepping to here.  Tz updated.
 	const int move_flags,
 	int max_drop,			// Max drop/rise allowed.
@@ -1286,7 +1286,7 @@ Tile_coord Map_chunk::find_spot
 
 Tile_coord Map_chunk::find_spot
 	(
-	Tile_coord pos,			// Starting point.
+	Tile_coord const& pos,	// Starting point.
 	int dist,			// Distance to look outwards.  (0 means
 					//   only check 'pos'.
 	Game_object *obj,		// Object that we want to move.
@@ -1310,7 +1310,7 @@ Tile_coord Map_chunk::find_spot
 int Map_chunk::find_in_area
 	(
 	Game_object_vector& vec,	// Returned here.
-	Rectangle area,			// Area to search.
+	Rectangle const& area,			// Area to search.
 	int shapenum,
 	int framenum
 	)
@@ -1504,7 +1504,7 @@ void Map_chunk::setup_dungeon_levels
 
 void Map_chunk::gravity
 	(
-	Rectangle area,			// Unblocked tiles (in abs. coords).
+	Rectangle const& area,			// Unblocked tiles (in abs. coords).
 	int lift			// Lift where tiles are free.
 	)
 	{

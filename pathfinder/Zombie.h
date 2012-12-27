@@ -46,7 +46,7 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(Tile_coord s, Tile_coord d,
+	virtual	int	NewPath(Tile_coord const& s, Tile_coord const& d,
 					Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path

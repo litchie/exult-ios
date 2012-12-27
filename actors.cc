@@ -828,7 +828,7 @@ int Actor::is_blocked
 
 Game_object *Actor::find_blocking
 	(
-	Tile_coord tile,
+	Tile_coord const& tile,
 	int dir
 	)
 	{
@@ -1299,7 +1299,7 @@ Tile_coord Actor::get_dest
 
 void Actor::walk_to_tile
 	(
-	Tile_coord dest,		// Destination.
+	Tile_coord const& dest,		// Destination.
 	int speed,			// Time between frames (msecs).
 	int delay,			// Delay before starting (msecs) (only
 					//   if not already moving).
@@ -1323,9 +1323,9 @@ void Actor::walk_to_tile
 
 int Actor::walk_path_to_tile
 	(
-	Tile_coord src,			// Our location, or an off-screen
+	Tile_coord const& src,			// Our location, or an off-screen
 					//   location to try path from.
-	Tile_coord dest,		// Destination.
+	Tile_coord const& dest,		// Destination.
 	int speed,			// Time between frames (msecs).
 	int delay,			// Delay before starting (msecs) (only
 					//   if not already moving).
@@ -1978,7 +1978,7 @@ void Actor::cache_out()
  *	Set new schedule by type AND location.
  */
 
-void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
+void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord const& dest,
 				int delay)	// -1 for random delay.
 {
 	stop();				// Stop moving.

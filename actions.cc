@@ -78,8 +78,8 @@ int Actor_action::handle_event_safely
 Actor_action *Actor_action::walk_to_tile
 	(
 	Actor * /* npc */,
-	Tile_coord src,
-	Tile_coord dest,
+	Tile_coord const& src,
+	Tile_coord const& dest,
 	int /* dist */			// Ignored.
 	)
 	{
@@ -105,7 +105,7 @@ Actor_action *Actor_action::walk_to_tile
 Actor_action *Actor_action::create_action_sequence
 	(
 	Actor *actor,			// Whom to activate.
-	Tile_coord dest,		// Where to walk to.
+	Tile_coord const& dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
 	bool from_off_screen		// Have actor walk from off-screen.
 	)
@@ -185,8 +185,8 @@ Path_walking_actor_action::~Path_walking_actor_action
 
 Path_walking_actor_action *Path_walking_actor_action::create_path
 	(
-	Tile_coord src,			// Starting position.
-	Tile_coord dest,		// Destination.
+	Tile_coord const& src,		// Starting position.
+	Tile_coord const& dest,		// Destination.
 	Pathfinder_client& cost		// Cost for Astar.
 	)
 	{
@@ -411,8 +411,8 @@ void Path_walking_actor_action::stop
 Actor_action *Path_walking_actor_action::walk_to_tile
 	(
 	Actor *npc,
-	Tile_coord src,			// tx=-1 or ty=-1 means don't care.
-	Tile_coord dest,		// Same here.
+	Tile_coord const& src,		// tx=-1 or ty=-1 means don't care.
+	Tile_coord const& dest,		// Same here.
 	int dist			// Distance to get to within dest.
 	)
 	{
@@ -528,7 +528,7 @@ Approach_actor_action::Approach_actor_action
 
 Approach_actor_action *Approach_actor_action::create_path
 	(
-	Tile_coord src,			// Starting position.
+	Tile_coord const& src,	// Starting position.
 	Game_object *dest,		// Destination.
 	int gdist,			// Stop when this close to dest.
 	Pathfinder_client& cost		// Cost for Astar.
@@ -591,7 +591,7 @@ int Approach_actor_action::handle_event
 If_else_path_actor_action::If_else_path_actor_action
 	(
 	Actor *actor,
-	Tile_coord dest,
+	Tile_coord const& dest,
 	Actor_action *s,
 	Actor_action *f
 	) : Path_walking_actor_action(0, 6),	// Maxblk = 6.
@@ -913,7 +913,7 @@ Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
 	{
 	}
 					// To put down an object:
-Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord opos, 
+Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord const& opos, 
 								int spd, bool t)
 	: obj(o), pickup(0), speed(spd), cnt(0), objpos(opos), dir(0), temp(t)
 	{
@@ -971,7 +971,7 @@ int Pickup_actor_action::handle_event
  *	Action to turn towards a position or an object.
  */
 
-Face_pos_actor_action::Face_pos_actor_action(Tile_coord p, int spd)
+Face_pos_actor_action::Face_pos_actor_action(Tile_coord const& p, int spd)
 	: speed(spd), pos(p)
 	{
 	}

@@ -368,7 +368,7 @@ Notebook_gump::~Notebook_gump
 
 bool Notebook_gump::paint_page
 	(
-	Rectangle box,			// Display box rel. to gump.
+	Rectangle const& box,			// Display box rel. to gump.
 	One_note *note,			// Note to print.
 	int& offset,			// Starting offset into text.  Updated.
 	int pagenum

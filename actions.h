@@ -53,12 +53,12 @@ public:
 	virtual void stop(Actor *actor)	// Stop moving.
 		{  }
 					// Set simple path to destination.
-	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord src, 
-			Tile_coord dest, int dist = 0);
+	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const& src, 
+			Tile_coord const& dest, int dist = 0);
 					// Set action to walk to dest, then
 					//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor, 
-			Tile_coord dest, Actor_action *when_there, 
+			Tile_coord const& dest, Actor_action *when_there, 
 					bool from_off_screen = false);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest)
@@ -113,15 +113,15 @@ private:
 public:
 	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3);
 	virtual ~Path_walking_actor_action();
-	static Path_walking_actor_action *create_path(Tile_coord src,
-			Tile_coord dest, Pathfinder_client& cost);
+	static Path_walking_actor_action *create_path(Tile_coord const& src,
+			Tile_coord const& dest, Pathfinder_client& cost);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	int open_door(Actor *actor, Game_object *door);
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
-	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord src, 
-				Tile_coord dest, int dist = 0);
+	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const& src, 
+				Tile_coord const& dest, int dist = 0);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest);
 					// Check for Astar.
@@ -150,7 +150,7 @@ class Approach_actor_action : public Path_walking_actor_action
 public:
 	Approach_actor_action(PathFinder *p, Game_object *d, 
 			int gdist = -1, bool for_proj = false);
-	static Approach_actor_action *create_path(Tile_coord src,
+	static Approach_actor_action *create_path(Tile_coord const& src,
 		Game_object *dest, int gdist, Pathfinder_client& cost);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
@@ -165,7 +165,7 @@ class If_else_path_actor_action : public Path_walking_actor_action
 	bool succeeded, failed, done;
 	Actor_action *success, *failure;
 public:
-	If_else_path_actor_action(Actor *actor, Tile_coord dest, 
+	If_else_path_actor_action(Actor *actor, Tile_coord const& dest, 
 		Actor_action *s, Actor_action *f = 0);
 	~If_else_path_actor_action();
 	void set_failure(Actor_action *f);
@@ -184,7 +184,7 @@ class Move_actor_action : public Actor_action
 	{
 	Tile_coord dest;		// Where to go.
 public:
-	Move_actor_action(Tile_coord d) : dest(d)
+	Move_actor_action(Tile_coord const& d) : dest(d)
 		{  }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
@@ -308,7 +308,7 @@ public:
 					// To pick up an object:
 	Pickup_actor_action(Game_object *o, int spd);
 					// To put down an object:
-	Pickup_actor_action(Game_object *o, Tile_coord opos, int spd, bool t = false);
+	Pickup_actor_action(Game_object *o, Tile_coord const& opos, int spd, bool t = false);
 	virtual int handle_event(Actor *actor);
 	virtual int get_speed() const
 		{ return speed; }
@@ -324,7 +324,7 @@ class Face_pos_actor_action : public Actor_action
 	int speed;			// Time between frames.
 	Tile_coord pos;			// Where to put it.
 public:
-	Face_pos_actor_action(Tile_coord p, int spd);
+	Face_pos_actor_action(Tile_coord const& p, int spd);
 					// To pick up an object:
 	Face_pos_actor_action(Game_object *o, int spd);
 	virtual int handle_event(Actor *actor);

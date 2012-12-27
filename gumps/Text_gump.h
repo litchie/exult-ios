@@ -42,7 +42,7 @@ public:
 	virtual ~Text_gump()
 		{ delete [] text; }
 	void add_text(const char *str);	// Append text.
-	int paint_page(Rectangle box, int start);
+	int paint_page(Rectangle const& box, int start);
 					// Next page of book/scroll.
 	int show_next_page();
 };

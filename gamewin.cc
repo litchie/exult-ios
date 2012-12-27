@@ -1124,7 +1124,7 @@ void Game_window::set_scrolls
 
 void Game_window::center_view
 	(
-	Tile_coord t
+	Tile_coord const& t
 	)
 	{
 	set_scrolls(t);
@@ -1285,7 +1285,7 @@ void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 	x -= scrolltx_lo;
 	y -= scrollty_lo;
 }
-void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
+void Game_window::get_shape_location(Tile_coord const& t, int&x, int& y)
 {
 	Get_shape_location(t, scrolltx, scrollty, x, y);
 	x -= scrolltx_lo;
@@ -2004,7 +2004,7 @@ void Game_window::stop_actor
 
 void Game_window::teleport_party
 	(
-	Tile_coord t,			// Where to go.
+	Tile_coord const& t,	// Where to go.
 	bool skip_eggs,			// Don't activate eggs at dest.
 	int newmap,			// New map #, or -1 for same map.
 	bool no_status_check
@@ -2678,7 +2678,7 @@ void Game_window::mend_npcs
 
 int Get_guard_shape
 	(
-	Tile_coord pos			// Position to use.
+	Tile_coord const& pos			// Position to use.
 	)
 	{
 	if (!GAME_SI)			// Default (BG).

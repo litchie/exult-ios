@@ -56,7 +56,7 @@ public:
 		{ remove_clients(); }
 	int get_prev_type() const
 		{ return prev_type; }
-	void set_blocked(Tile_coord b)
+	void set_blocked(Tile_coord const& b)
 		{ blocked = b; }
 	enum Schedule_types {
 		combat = 0,	horiz_pace = 1,
@@ -82,7 +82,7 @@ public:
 		};
 					// Set actor to walk somewhere, then
 					//   do something.
-	static void set_action_sequence(Actor *actor, Tile_coord dest,
+	static void set_action_sequence(Actor *actor, Tile_coord const& dest,
 		Actor_action *when_there, bool from_off_screen = false,
 							int delay = 0);
 	int try_street_maintenance();	// Handle street-lamps, shutters.
@@ -185,7 +185,7 @@ class Pace_schedule : public Schedule
 	Tile_coord loc;	// The starting position of the schedule
 	int phase;		// Current phase
 public:
-	Pace_schedule(Actor *n, char dir, Tile_coord pos)
+	Pace_schedule(Actor *n, char dir, Tile_coord const& pos)
 		: Schedule(n), which(dir), loc(pos), phase(0)
 		{  }
 					// Create common schedules:
@@ -626,7 +626,7 @@ class Walk_to_schedule : public Schedule
 					// Set to walk off screen.
 	void walk_off_screen(Rectangle& screen, Tile_coord& goal);
 public:
-	Walk_to_schedule(Actor *n, Tile_coord d, int new_sched,
+	Walk_to_schedule(Actor *n, Tile_coord const& d, int new_sched,
 							int delay = -1);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void im_dormant();	// Just went dormant.

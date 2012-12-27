@@ -54,7 +54,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 		{ return objects[i]; }
 	void swap_dims();
 	void set_center();
-	int okay_to_rotate(Tile_coord pos);
+	int okay_to_rotate(Tile_coord const& pos);
 	void add_dirty();
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions, int newmap = -1);
@@ -85,7 +85,7 @@ public:
 	void gather();			// Gather up objects on barge.
 	void face_direction(int ndir);	// Face dir. (0-7).
 					// Start rolling/sailing.
-	void travel_to_tile(Tile_coord dest, int speed);
+	void travel_to_tile(Tile_coord const& dest, int speed);
 	void turn_right();		// Turn 90 degrees right.
 	void turn_left();
 	void turn_around();

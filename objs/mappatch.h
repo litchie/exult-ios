@@ -41,7 +41,7 @@ public:
 	int shapenum;			// Shape #, or -359 for 'dont care'.
 	int framenum;			// Frame #, or -359.
 	int quality;			// Quality, or -359.
-	Object_spec(Tile_coord t, int shnum = c_any_shapenum,
+	Object_spec(Tile_coord const& t, int shnum = c_any_shapenum,
 			int frnum = c_any_framenum, int qual = c_any_qual) 
 		: loc(t), shapenum(shnum), framenum(frnum), quality(qual)
 		{  }

@@ -64,8 +64,8 @@ Barge_object *Barge_object::editing = 0;
 
 inline Tile_coord Rotate90r
 	(
-	Tile_coord t,			// Tile to move.
-	Tile_coord c			// Center to rotate around.
+	Tile_coord const& t,			// Tile to move.
+	Tile_coord const& c			// Center to rotate around.
 	)
 	{
 					// Get cart. coords. rel. to center.
@@ -82,8 +82,8 @@ inline Tile_coord Rotate90r
 
 inline Tile_coord Rotate90l
 	(
-	Tile_coord t,			// Tile to move.
-	Tile_coord c			// Center to rotate around.
+	Tile_coord const& t,			// Tile to move.
+	Tile_coord const& c			// Center to rotate around.
 	)
 	{
 					// Get cart. coords. rel. to center.
@@ -100,8 +100,8 @@ inline Tile_coord Rotate90l
 
 inline Tile_coord Rotate180
 	(
-	Tile_coord t,			// Tile to move.
-	Tile_coord c			// Center to rotate around.
+	Tile_coord const& t,			// Tile to move.
+	Tile_coord const& c			// Center to rotate around.
 	)
 	{
 					// Get cart. coords. rel. to center.
@@ -120,7 +120,7 @@ inline Tile_coord Rotate90r
 	Game_window *gwin,
 	Game_object *obj,
 	int xtiles, int ytiles,		// Object dimensions.
-	Tile_coord c			// Rotate around this.
+	Tile_coord const& c			// Rotate around this.
 	)
 	{
 					// Rotate hot spot.
@@ -142,7 +142,7 @@ inline Tile_coord Rotate90l
 	Game_window *gwin,
 	Game_object *obj,
 	int xtiles, int ytiles,		// Object dimensions.
-	Tile_coord c			// Rotate around this.
+	Tile_coord const& c			// Rotate around this.
 	)
 	{
 					// Rotate hot spot.
@@ -163,7 +163,7 @@ inline Tile_coord Rotate180
 	Game_window *gwin,
 	Game_object *obj,
 	int xtiles, int ytiles,		// Object dimensions.
-	Tile_coord c			// Rotate around this.
+	Tile_coord const& c			// Rotate around this.
 	)
 	{
 					// Rotate hot spot.
@@ -223,7 +223,7 @@ inline void Barge_object::set_center
 
 int Barge_object::okay_to_rotate
 	(
-	Tile_coord pos			// New position (bottom-right).
+	Tile_coord const& pos			// New position (bottom-right).
 	)
 	{
 	int lift = get_lift();
@@ -426,7 +426,7 @@ void Barge_object::face_direction
 
 void Barge_object::travel_to_tile
 	(
-	Tile_coord dest,		// Destination.
+	Tile_coord const& dest,		// Destination.
 	int speed			// Time between frames (msecs).
 	)
 	{

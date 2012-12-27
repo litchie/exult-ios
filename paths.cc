@@ -22,6 +22,7 @@
 #  include <config.h>
 #endif
 
+#include <cstdlib>
 #include "paths.h"
 #include "Astar.h"
 #include "Zombie.h"
@@ -68,7 +69,7 @@ int Actor_pathfinder_client::get_max_cost
 
 int Actor_pathfinder_client::get_step_cost
 	(
-	Tile_coord from,
+	Tile_coord const& frm,
 	Tile_coord& to			// The tile we're going to.  The 'tz'
 					//   field may be modified.
 	)
@@ -83,6 +84,7 @@ int Actor_pathfinder_client::get_step_cost
 	int water, poison;		// Get tile info.
 	Actor::get_tile_info(0, gwin, olist, tx, ty, water, poison);
 	int old_lift = to.tz;		// Might climb/descend.
+	Tile_coord from(frm);
 	if (npc->is_blocked(to, &from))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_door(to);
@@ -131,8 +133,8 @@ int Actor_pathfinder_client::get_step_cost
 
 int Actor_pathfinder_client::estimate_cost
 	(
-	Tile_coord& from,
-	Tile_coord& to
+	Tile_coord const& from,
+	Tile_coord const& to
 	)
 	{
 	int dx = to.tx - from.tx;
@@ -165,8 +167,8 @@ int Actor_pathfinder_client::estimate_cost
 
 int Actor_pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	return (goal.tz==-1 ? tile.distance_2d(goal) : tile.distance(goal))<= dist;
@@ -178,8 +180,8 @@ int Actor_pathfinder_client::at_goal
 
 int Onecoord_pathfinder_client::estimate_cost
 	(
-	Tile_coord& from,
-	Tile_coord& to			// Should be the goal.
+	Tile_coord const& from,
+	Tile_coord const& to			// Should be the goal.
 	)
 	{
 	if (to.tx == -1)		// Just care about Y?
@@ -210,8 +212,8 @@ int Onecoord_pathfinder_client::estimate_cost
 
 int Onecoord_pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	return ((goal.tx == -1 || tile.tx == goal.tx) && 
@@ -239,7 +241,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
 	Actor *n,
-	Tile_coord b			// Best offscreen pt. to aim for.
+	Tile_coord const& b			// Best offscreen pt. to aim for.
 	) : Actor_pathfinder_client(n), screen(
 	      Game_window::get_instance()->get_win_tile_rect().enlarge(3)),
 	    best(b)
@@ -280,7 +282,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 
 int Offscreen_pathfinder_client::get_step_cost
 	(
-	Tile_coord from,
+	Tile_coord const& from,
 	Tile_coord& to			// The tile we're going to.  The 'tz'
 					//   field may be modified.
 	)
@@ -304,8 +306,8 @@ int Offscreen_pathfinder_client::get_step_cost
 
 int Offscreen_pathfinder_client::estimate_cost
 	(
-	Tile_coord& from,
-	Tile_coord& to			// Should be the goal.
+	Tile_coord const& from,
+	Tile_coord const& to			// Should be the goal.
 	)
 	{
 	if (best.tx != -1)		// Off-screen goal?
@@ -333,8 +335,8 @@ int Offscreen_pathfinder_client::estimate_cost
 
 int Offscreen_pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	return !screen.has_world_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2);//&&
@@ -368,7 +370,7 @@ int Fast_pathfinder_client::get_max_cost
 
 int Fast_pathfinder_client::get_step_cost
 	(
-	Tile_coord from,
+	Tile_coord const& from,
 	Tile_coord& to			// The tile we're going to.  The 'tz'
 					//   field may be modified.
 	)
@@ -380,14 +382,11 @@ int Fast_pathfinder_client::get_step_cost
 	int ty = to.ty%c_tiles_per_chunk;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
-					// For now, look at 2 tile's height,
-					//   and step up/down 2 (needed for SI
-					//   Crystal Ball).
-	if (olist->is_blocked(2, to.tz, tx, ty, new_lift, get_move_flags(), 
-									2, 2))
+					// Look at 1 tile's height, and step up/down 1.
+	if (olist->is_blocked(1, to.tz, tx, ty, new_lift, get_move_flags(), 
+									1, 1))
 		return -1;
-	to.tz = new_lift;		// (I don't think we should do this
-					//    above...)
+	to.tz = new_lift;		// (I don't think we should do this above...)
 	return 1;
 	}
 
@@ -397,8 +396,8 @@ int Fast_pathfinder_client::get_step_cost
 
 int Fast_pathfinder_client::estimate_cost
 	(
-	Tile_coord& from,
-	Tile_coord& to
+	Tile_coord const& from,
+	Tile_coord const& to
 	)
 	{
 	return from.distance_2d(to);	// Distance() does world-wrapping.
@@ -410,8 +409,8 @@ int Fast_pathfinder_client::estimate_cost
 
 int Fast_pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	if (tile.distance_2d(goal) > dist)
@@ -428,8 +427,8 @@ int Fast_pathfinder_client::at_goal
 
 int Fast_pathfinder_client::is_grabable
 	(
-	Tile_coord from,		// From this spot.
-	Tile_coord to			// To this spot.
+	Tile_coord const& from,		// From this spot.
+	Tile_coord const& to			// To this spot.
 	)
 	{
 	if (from.distance(to) <= 1)
@@ -448,16 +447,22 @@ int Fast_pathfinder_client::is_grabable
 	{
 	if (from->distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(1, 
+				// Effectively enlarge object by its smallest 2d dimension.
+	Shape_info& inf = to->get_info();
+	int dx = inf.get_3d_xtiles(to->get_framenum()), dy = inf.get_3d_ytiles(to->get_framenum());
+	int mindelta = dx < dy ? dx : dy;
+				// Halve this (round up) for a radius, then increase by 1.
+	Fast_pathfinder_client client((mindelta + 1) / 2 + 1, 
 	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
-	return path.NewPath(from->get_tile(), to->get_tile(), &client);
+				// We search centered on the target object.
+	return path.NewPath(from->get_tile(), to->get_center_tile(), &client);
 	}
 
 int Fast_pathfinder_client::is_grabable
 	(
 	Game_object *from,		// From this object.
-	Tile_coord to			// To this spot.
+	Tile_coord const& to			// To this spot.
 	)
 	{
 	if (from->distance(to) <= 1)
@@ -476,8 +481,8 @@ int Fast_pathfinder_client::is_grabable
 
 int Fast_pathfinder_client::is_straight_path
 	(
-	Tile_coord from,		// From this spot.
-	Tile_coord to			// To this spot.
+	Tile_coord const& from,		// From this spot.
+	Tile_coord const& to			// To this spot.
 	)
 	{
 	Game_map *gmap = Game_window::get_instance()->get_map();
@@ -541,7 +546,7 @@ int Fast_pathfinder_client::is_straight_path
 Monster_pathfinder_client::Monster_pathfinder_client
 	(
 	Actor *npc,			// 'Monster'.
-	Tile_coord dest,
+	Tile_coord const& dest,
 	int dist
 	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
 	{
@@ -612,8 +617,8 @@ int Monster_pathfinder_client::get_max_cost
 
 int Monster_pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	int dz = tile.tz - goal.tz;	// Got to be on same floor.
@@ -633,7 +638,7 @@ int Monster_pathfinder_client::at_goal
 
 int Monster_pathfinder_client::get_step_cost
 	(
-	Tile_coord from,
+	Tile_coord const& from,
 	Tile_coord& to			// The tile we're going to.  The 'tz'
 					//   field may be modified.
 	)
@@ -644,5 +649,3 @@ int Monster_pathfinder_client::get_step_cost
 	else
 		return 1;
 	}
-
-

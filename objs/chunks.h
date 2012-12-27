@@ -166,7 +166,7 @@ public:
 	void remove_egg(Egg_object *egg);
 	void remove(Game_object *obj);	// Remove an object.
 					// Apply gravity over given area.
-	static void gravity(Rectangle area, int lift);
+	static void gravity(Rectangle const& area, int lift);
 					// Is there a roof? Returns height
 	int is_roof(int tx, int ty, int lift);
 
@@ -233,7 +233,7 @@ public:
 		const int move_flags, int max_drop = 1, int max_rise = -1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
-			Tile_coord from, Tile_coord& to, const int move_flags,
+			Tile_coord const& from, Tile_coord& to, const int move_flags,
 					int max_drop = 1, int max_rise = -1);
 					// Check tile WITHIN chunk.
 	bool is_tile_occupied(int tx, int ty, int tz)
@@ -249,7 +249,7 @@ public:
 		int shapenum, int framenum, int max_drop = 0,int dir = -1,
 				Find_spot_where where = anywhere);
 					// For approaching 'pos' by an object:
-	static Tile_coord find_spot(Tile_coord pos, int dist,
+	static Tile_coord find_spot(Tile_coord const& pos, int dist,
 				Game_object *obj, int max_drop = 0,
 					Find_spot_where where = anywhere);
 					// Set area within egg's influence.
@@ -260,9 +260,9 @@ public:
 		{ need_cache()->activate_eggs(obj, 
 				this, tx, ty, tz, from_tx, from_ty, now);}
 					// Find door blocking given tile.
-	Game_object *find_door(Tile_coord t)
+	Game_object *find_door(Tile_coord const& t)
 		{ return need_cache()->find_door(t); }
-	static int find_in_area(vector<Game_object*>& vec, Rectangle area,
+	static int find_in_area(vector<Game_object*>& vec, Rectangle const& area,
 					int shapenum, int framenum);
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
