@@ -456,7 +456,21 @@ int Fast_pathfinder_client::is_grabable
 	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
 				// We search centered on the target object.
-	return path.NewPath(from->get_tile(), to->get_center_tile(), &client);
+	if (!path.NewPath(from->get_tile(), to->get_center_tile(), &client))
+		return 0;
+	
+	Tile_coord t;			// Check each tile.
+	if (path.get_num_steps() > 0)
+		{
+		bool done;
+		Game_map *gmap = Game_window::get_instance()->get_map();
+		while (path.GetNextStep(t, done))
+			if (t != from->get_tile() && t != to->get_center_tile() && gmap->is_tile_occupied(t))
+				return 0;	// Blocked.
+		}
+	else
+		t = from->get_center_tile();
+	return Fast_pathfinder_client::is_straight_path(t, to->get_center_tile());
 	}
 
 int Fast_pathfinder_client::is_grabable
