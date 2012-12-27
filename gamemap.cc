@@ -1358,7 +1358,7 @@ void Game_map::get_superchunk_objects
 
 bool Game_map::is_tile_occupied
 	(
-	Tile_coord tile
+	Tile_coord const& tile
 	)
 	{
 	Map_chunk *chunk = get_chunk_safely(

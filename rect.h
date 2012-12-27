@@ -70,7 +70,7 @@ public:					// Let's make it all public.
 		{ return Point_in_strip(x, w, px) && Point_in_strip(y, h, py); }
 					// Add another to this one to get
 					//  a rect. that encloses both.
-	Rectangle add(Rectangle& r2) const
+	Rectangle add(Rectangle const& r2) const
 		{
 		int xend = x + w, yend = y + h;
 		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
@@ -82,7 +82,7 @@ public:					// Let's make it all public.
 		return (r);
 		}
 					// Intersect another with this.
-	Rectangle intersect(Rectangle& r2) const
+	Rectangle intersect(Rectangle const& r2) const
 		{
 		int xend = x + w, yend = y + h;
 		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
@@ -94,7 +94,7 @@ public:					// Let's make it all public.
 		return (r);
 		}
 					// Does it intersect another?
-	bool intersects(Rectangle r2) const
+	bool intersects(Rectangle const& r2) const
 		{
 		return (x >= r2.x + r2.w ? 0 : r2.x >= x + w ? 0 :
 			y >= r2.y + r2.h ? 0 : r2.y >= y + h ? 0 : 1);
@@ -109,7 +109,7 @@ public:					// Let's make it all public.
 		x -= delta; y -= delta; w += 2*delta; h += 2*delta; 
 		return *this;
 		}
-	int distance(int px, int py)	// Get distance from a point (max.
+	int distance(int px, int py) const	// Get distance from a point (max.
 					//   dist. along x or y coord.)
 		{
 		int xdist = px <= x ? (x - px) : (px - x - w + 1);
@@ -117,12 +117,12 @@ public:					// Let's make it all public.
 		int dist = xdist > ydist ? xdist : ydist;
 		return dist < 0 ? 0 : dist;
 		}
-	bool operator==(const Rectangle& rect2)
+	bool operator==(Rectangle const& rect2) const
 		{
 		return x == rect2.x && y == rect2.y &&
 		       w == rect2.w && h == rect2.h;
 		}
-	bool operator!=(const Rectangle& rect2)
+	bool operator!=(Rectangle const& rect2) const
 		{
 		return !(*this == rect2);
 		}

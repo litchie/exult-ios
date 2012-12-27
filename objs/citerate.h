@@ -38,7 +38,7 @@ class Chunk_intersect_iterator
 	int startcx, stopcx, stopcy;
 	int curcx, curcy;		// Next chunk to return.
 public:
-	Chunk_intersect_iterator(Rectangle t) : tiles(t),
+	Chunk_intersect_iterator(Rectangle const& t) : tiles(t),
 		  startcx(t.x/c_tiles_per_chunk),
 		  stopcx(INCR_CHUNK((t.x + t.w - 1)/c_tiles_per_chunk)),
 		  stopcy(INCR_CHUNK((t.y + t.h - 1)/c_tiles_per_chunk)),

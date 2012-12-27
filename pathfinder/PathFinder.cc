@@ -43,8 +43,8 @@ int Pathfinder_client::get_max_cost
 
 int Pathfinder_client::at_goal
 	(
-	Tile_coord& tile,
-	Tile_coord& goal
+	Tile_coord const& tile,
+	Tile_coord const& goal
 	)
 	{
 	return (tile.tx == goal.tx && tile.ty == goal.ty &&

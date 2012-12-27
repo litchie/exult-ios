@@ -206,12 +206,12 @@ public:
 			(win->get_game_width() + c_tilesize - 1)/c_tilesize,
 			(win->get_game_height() + c_tilesize - 1)/c_tilesize); }
 					// Clip rectangle to window's.
-	Rectangle clip_to_game(Rectangle r)
+	Rectangle clip_to_game(Rectangle const& r)
 		{
 		Rectangle wr = get_game_rect();
 		return (r.intersect(wr));
 		}
-	Rectangle clip_to_win(Rectangle r)
+	Rectangle clip_to_win(Rectangle const& r)
 		{
 		Rectangle wr = get_full_rect();
 		return (r.intersect(wr));
@@ -411,7 +411,7 @@ public:
 	void paint_dirty();
 	void set_all_dirty()		// Whole window.
 		{ dirty = Rectangle(win->get_start_x(), win->get_start_y(), win->get_full_width(), win->get_full_height()); }
-	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
+	void add_dirty(Rectangle const& r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
 					// Add dirty rect. for obj. Rets. false
 					//   if not on screen.
@@ -430,13 +430,13 @@ public:
 		}
 					// Set view (upper-left).
 	void set_scrolls(int newscrolltx, int newscrollty);
-	void center_view(Tile_coord t);	// Center view around t.
+	void center_view(Tile_coord const& t);	// Center view around t.
 	void set_camera_actor(Actor *a);
 	Actor *get_camera_actor()
 		{ return camera_actor; }
 					// Scroll if necessary.
 	bool scroll_if_needed(Tile_coord t);
-	bool scroll_if_needed(Actor *a, Tile_coord t)
+	bool scroll_if_needed(Actor *a, Tile_coord const& t)
 		{ if (a == camera_actor) return scroll_if_needed(t); 
 							else return false; }
 #if 1
@@ -453,7 +453,7 @@ public:
 	Rectangle get_shape_rect(Game_object *obj);
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
-	void get_shape_location(Tile_coord t, int& x, int& y);
+	void get_shape_location(Tile_coord const& t, int& x, int& y);
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	/*
 	 *	Save/restore/startup:
@@ -532,7 +532,7 @@ public:
 	inline int get_step_tile_delta() { return step_tile_delta; };
 	inline void set_allow_right_pathfind(int a) { allow_right_pathfind = a; }
 	inline int get_allow_right_pathfind() { return allow_right_pathfind; }
-	void teleport_party(Tile_coord t, bool skip_eggs = false, 
+	void teleport_party(Tile_coord const& t, bool skip_eggs = false, 
 							int new_map = -1, bool no_status_check = true);
 	bool activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.

@@ -104,7 +104,7 @@ protected:
 	int reps;			// Repetitions, or -1.
 	void add_dirty(int frnum);
 public:
-	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0, 
+	Sprites_effect(int num, Tile_coord const& p, int dx = 0, int dy = 0, 
 			int delay = 0, int frm = 0, int rps = -1);
 	Sprites_effect(int num, Game_object *it, 
 		int xf, int yf, int dx, int dy, int frm = 0, int rps = -1);
@@ -127,7 +127,7 @@ class Explosion_effect : public Sprites_effect
 							//otherwise, explosion and delayed blast spells
 							//would not trigger a response from target
 public:
-	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0, int weap = -1,
+	Explosion_effect(Tile_coord const& p, Game_object *exp, int delay = 0, int weap = -1,
 			int proj = -1, Game_object *att = 0);
 	virtual void handle_event(unsigned long time, long udata);
 	};
@@ -154,15 +154,15 @@ class Projectile_effect : public Special_effect
 	int attval;			// Attack value of projectile.
 	bool autohit;
 	void add_dirty();
-	void init(Tile_coord s, Tile_coord t);
+	void init(Tile_coord const& s, Tile_coord const& t);
 public:
 	Projectile_effect(Game_object *att, Game_object *to, int weap,
 					int proj, int spr, int attpts = 60, int speed = -1);
 					// For missile traps:
-	Projectile_effect(Game_object *att, Tile_coord d, int weap,
+	Projectile_effect(Game_object *att, Tile_coord const& d, int weap,
 					int proj, int spr, int attpts = 60, int speed = -1,
 					bool retpath = false);
-	Projectile_effect(Tile_coord s, Game_object *to, int weap,
+	Projectile_effect(Tile_coord const& s, Game_object *to, int weap,
 					int proj, int spr, int attpts = 60, int speed = -1,
 					bool retpath = false);
 	~Projectile_effect();
@@ -196,7 +196,8 @@ class Homing_projectile : public Special_effect
 	int channel;
 	int add_dirty();
 public:
-	Homing_projectile(int shnum, Game_object *att, Game_object *trg, Tile_coord sp, Tile_coord tp);
+	Homing_projectile(int shnum, Game_object *att, Game_object *trg,
+	                  Tile_coord const& sp, Tile_coord const& tp);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
@@ -381,7 +382,7 @@ class Fire_field_effect : public Special_effect
 	{
 	Game_object *field;		// What we create.
 public:
-	Fire_field_effect(Tile_coord t);
+	Fire_field_effect(Tile_coord const& t);
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 

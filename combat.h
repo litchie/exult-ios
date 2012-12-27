@@ -98,7 +98,7 @@ public:
 	void set_state(Phase s)
 		{ state = s; }
 	static bool attack_target(Game_object *attacker,
-			Game_object *target, Tile_coord tile, int weapon, bool combat = false);
+			Game_object *target, Tile_coord const& tile, int weapon, bool combat = false);
 	};
 
 /*

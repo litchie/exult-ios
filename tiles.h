@@ -36,13 +36,13 @@ public:
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
 		{  }
 	Tile_coord(): tx(0),ty(0),tz(0) { }
-	Tile_coord(const Tile_coord& other)
+	Tile_coord(Tile_coord const& other)
 		: tx(other.tx),ty(other.ty),tz(other.tz) { }
-	int operator==(Tile_coord t2)
+	int operator==(Tile_coord const& t2) const
 		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
-	int operator!=(Tile_coord t2)
+	int operator!=(Tile_coord const& t2) const
 		{ return !(*this == t2); }
-	int distance(Tile_coord t2)	// Distance to another tile?
+	int distance(Tile_coord const& t2) const	// Distance to another tile?
 		{
 		int delta = distance_2d(t2);
 		int dz = t2.tz - tz;
@@ -51,7 +51,7 @@ public:
 					// Take larger abs. value.
 		return (delta > dz ? delta : dz);
 		}
-	int distance_2d(Tile_coord t2)	// For pathfinder.
+	int distance_2d(Tile_coord const& t2) const	// For pathfinder.
 		{			// Handle wrapping round the world.
 		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
 		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
@@ -62,7 +62,7 @@ public:
 					// Take larger abs. value.
 		return (dy > dx ? dy : dx);
 		}
-	int square_distance_2d(Tile_coord t2)
+	int square_distance_2d(Tile_coord const& t2) const
 		{
 		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
 		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
@@ -73,7 +73,7 @@ public:
 
 		return dx*dx + dy*dy;
 		}
-	int square_distance_3d(Tile_coord t2)
+	int square_distance_3d(Tile_coord const& t2) const
 		{
 		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
 		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
@@ -85,7 +85,7 @@ public:
 
 		return dx*dx + dy*dy + dz*dz;
 		}
-	int square_distance_screen_space(Tile_coord t2)
+	int square_distance_screen_space(Tile_coord const& t2) const
 		{
 		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
 		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
@@ -101,7 +101,7 @@ public:
 		return (dx*dx + dy*dy)/4;
 		}
 					// Get neighbor in given dir (0-7).
-	inline Tile_coord get_neighbor(int dir)
+	inline Tile_coord get_neighbor(int dir) const
 		{ return Tile_coord(
 			(tx + neighbors[2*dir] + c_num_tiles)%c_num_tiles,
 			(ty + neighbors[2*dir + 1] + c_num_tiles)%c_num_tiles,
@@ -124,7 +124,7 @@ public:
 		}
 	};
 					// Add two coords.
-inline Tile_coord operator+(Tile_coord a, Tile_coord b)
+inline Tile_coord operator+(Tile_coord const& a, Tile_coord const& b)
 	{ return Tile_coord(a.tx + b.tx, a.ty + b.ty, a.tz + b.tz); }
 
 #endif

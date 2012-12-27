@@ -1823,7 +1823,7 @@ USECODE_INTRINSIC(is_pc_female)
 	return(u);
 }
 
-static inline void Armageddon_death(Actor *npc, bool barks, Rectangle screen)
+static inline void Armageddon_death(Actor *npc, bool barks, Rectangle const& screen)
 {
 		// Leave a select few alive (like LB, Batlin).
 	if (npc && !npc->is_dead() && !npc->get_info().survives_armageddon())
