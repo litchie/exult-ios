@@ -43,7 +43,7 @@ class Party_manager : public Game_singletons
 	int validcnt;
 					// Formation-walking:
 	void move_followers(Actor *npc, int vindex, int dir);
-	int step(Actor *npc, Actor *leader, int dir, Tile_coord dest);
+	int step(Actor *npc, Actor *leader, int dir, Tile_coord const& dest);
 public:
 	Party_manager();
 	void set_count(int n)		// For initializing from file.

@@ -137,7 +137,7 @@ class Usecode_internal : public Usecode_machine
 	void remove_item(Game_object *obj);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
-	void activate_cached(Tile_coord pos);
+	void activate_cached(Tile_coord const& pos);
 	Usecode_value find_nearby(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qval,
 							Usecode_value& mval);
@@ -170,7 +170,7 @@ class Usecode_internal : public Usecode_machine
 		bool always = false, bool companions = false);
 	void create_script(Usecode_value& objval, Usecode_value& codeval,
 								long delay);
-	bool is_dest_reachable(Actor *npc, Tile_coord dest);
+	bool is_dest_reachable(Actor *npc, Tile_coord const& dest);
 
 	/*
 	 *	Embedded intrinsics

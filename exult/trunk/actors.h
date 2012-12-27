@@ -153,7 +153,7 @@ public:
 	virtual ~Actor();
 					// Blocked moving onto tile 't'?
 	int is_blocked(Tile_coord& t, Tile_coord *f = 0, const int move_flags = 0);
-	Game_object *find_blocking(Tile_coord tile, int dir);
+	Game_object *find_blocking(Tile_coord const& tile, int dir);
 
 	void swap_ammo(Game_object *newammo);
 	bool ready_ammo();		// Find and ready appropriate ammo.
@@ -321,15 +321,15 @@ public:
 	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();		// Get destination.
 					// Walk to a desired spot.
-	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0,
+	void walk_to_tile(Tile_coord const& dest, int speed = 250, int delay = 0,
 							int maxblk = 3);
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
 					int delay = 0, int maxblk = 3)
 		{ walk_to_tile(Tile_coord(tx, ty, tz), speed, delay, maxblk); }
 					// Get there, avoiding obstacles.
-	int walk_path_to_tile(Tile_coord src, Tile_coord dest, 
+	int walk_path_to_tile(Tile_coord const& src, Tile_coord const& dest, 
 		int speed = 250, int delay = 0, int dist = 0, int maxblk = 3);
-	int walk_path_to_tile(Tile_coord dest, 
+	int walk_path_to_tile(Tile_coord const& dest, 
 		int speed = 250, int delay = 0, int dist = 0, int maxblk = 3)
 		{ return walk_path_to_tile(get_tile(), dest,
 						speed, delay, dist, maxblk); }
@@ -361,7 +361,7 @@ public:
 						Schedule *newsched = 0);
 					// Change to new schedule at loc
 	virtual void set_schedule_and_loc(int new_schedule_type, 
-					Tile_coord dest, int delay = -1);
+					Tile_coord const& dest, int delay = -1);
 	int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.
@@ -417,7 +417,7 @@ public:
 		target_object = t;
 		attack_weapon = w;
 		}
-	void set_attack_target(Tile_coord t, int w)
+	void set_attack_target(Tile_coord const& t, int w)
 		{
 		target_object = 0;
 		target_tile = t;

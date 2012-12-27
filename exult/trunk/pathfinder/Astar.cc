@@ -28,9 +28,9 @@
  *
  *	Output:	1 if successful, else 0.
  */
-int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
+int Astar::NewPath(Tile_coord const& s, Tile_coord const& d, Pathfinder_client *client)
 {
-	extern Tile_coord *Find_path(Tile_coord, Tile_coord,
+	extern Tile_coord *Find_path(Tile_coord const&, Tile_coord const&,
 					Pathfinder_client *client, int& plen);
 	src = s;			// Store start, destination.
 	dest = d;

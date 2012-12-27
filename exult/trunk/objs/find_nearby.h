@@ -64,7 +64,7 @@ template <typename VecType, typename Cast>
 int Game_object::find_nearby
 	(
 	VecType& vec,			// Objects appended to this.
-	Tile_coord pos,			// Look near this point.
+	Tile_coord const& pos,	// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
 					//   c_any_shapenum=any.
@@ -72,7 +72,7 @@ int Game_object::find_nearby
 	int mask,			// See Check_mask() above.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum,			// Frame #, or c_any_framenum for any.
-	Cast obj_cast,			// Cast functor.
+	Cast const& obj_cast,			// Cast functor.
 	bool exclude_okay_to_take
 	)
 	{

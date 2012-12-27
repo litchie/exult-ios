@@ -346,7 +346,7 @@ void Special_effect::paint
 Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
-	Tile_coord p,			// Position within world.
+	Tile_coord const& p,	// Position within world.
 	int dx, int dy,			// Add to offset for each frame.
 	int delay,			// Delay (msecs) before starting.
 	int frm,			// Starting frame.
@@ -482,7 +482,7 @@ static inline int get_explosion_sfx
 
 Explosion_effect::Explosion_effect
 	(
-	Tile_coord p, 
+	Tile_coord const& p, 
 	Game_object *exp,
 	int delay,			// Delay before starting (msecs).
 	int weap,			// Weapon to use for damage calcs., or
@@ -560,8 +560,8 @@ inline int Get_dir16
 
 void Projectile_effect::init
 	(
-	Tile_coord s,			// Source,
-	Tile_coord d			// Destination.
+	Tile_coord const& s,			// Source,
+	Tile_coord const& d			// Destination.
 	)
 	{
 	no_blocking = false;		// We'll check the ammo & weapon.
@@ -592,17 +592,18 @@ void Projectile_effect::init
 	else
 		pos = s;			// Get starting position.
 
+	Tile_coord dst = d;
 	if (target)			// Try to set end better.
-		d = target->get_center_tile();
+		dst = target->get_center_tile();
 	else
-		d.tz = pos.tz;
+		dst.tz = pos.tz;
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	bool explodes = (winfo && winfo->explodes()) || (ainfo && ainfo->explodes());
 	if (explodes && ainfo && ainfo->is_homing())
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
-		path->NewPath(pos, d, 0);
+		path->NewPath(pos, dst, 0);
 	int sprite_shape = sprite.get_shapenum();
 	set_sprite_shape(sprite_shape);
 					// Start after a slight delay.
@@ -663,7 +664,7 @@ Projectile_effect::Projectile_effect
 Projectile_effect::Projectile_effect
 	(
 	Game_object *att,		// Source of spell/attack.
-	Tile_coord d,			// End here.
+	Tile_coord const& d,	// End here.
 	int weap,			// Weapon (bow, gun, etc.) shape.
 	int proj,			// Projectile shape # in 'shapes.vga'.
 	int spr,			// Shape to render on-screen or -1 for none.
@@ -683,7 +684,7 @@ Projectile_effect::Projectile_effect
 
 Projectile_effect::Projectile_effect
 	(
-	Tile_coord s,			// Start here.
+	Tile_coord const& s,	// Start here.
 	Game_object *to,		// End here, 'attack' it with shape.
 	int weap,			// Weapon (bow, gun, etc.) shape.
 	int proj,			// Projectile shape # in 'shapes.vga'.
@@ -905,8 +906,8 @@ Homing_projectile::Homing_projectile	// A better name is welcome...
 	int shnum,				// The projectile shape.
 	Game_object *att,		// Who cast the spell.
 	Game_object *trg,		// What to aim for.
-	Tile_coord sp,			// Where to start.
-	Tile_coord tp			// Target pos, if trg isn't an actor.
+	Tile_coord const& sp,	// Where to start.
+	Tile_coord const& tp	// Target pos, if trg isn't an actor.
 	) : sprite(ShapeID::get_info(shnum).get_explosion_sprite(), 0, SF_SPRITES_VGA),
 		next_damage_time(0), sfx(ShapeID::get_info(shnum).get_explosion_sfx()),
 		channel(-1)
@@ -1296,6 +1297,7 @@ protected:
 			int ascrollx, int ascrolly)
 		{  }
 public:
+	virtual ~Particledrop() {  }
 	void move
 		(
 		Particle& drop,
@@ -1912,7 +1914,7 @@ void Earthquake::handle_event
 
 Fire_field_effect::Fire_field_effect
 	(
-	Tile_coord t			// Where to create it.
+	Tile_coord const& t			// Where to create it.
 	)
 	{
 	field = gmap->create_ireg_object(895, 0);

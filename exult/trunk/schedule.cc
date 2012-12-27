@@ -72,7 +72,7 @@ Schedule::Schedule
 void Schedule::set_action_sequence
 	(
 	Actor *actor,			// Whom to activate.
-	Tile_coord dest,		// Where to walk to.
+	Tile_coord const& dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
 	bool from_off_screen,		// Have actor walk from off-screen.
 	int delay			// Msecs. to delay.
@@ -2131,7 +2131,7 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 		frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 		return frames;
 		}
-	static bool is_occupied(Tile_coord sitloc, Actor *actor)
+	static bool is_occupied(Tile_coord const& sitloc, Actor *actor)
 		{
 		Game_object_vector occ;	// See if occupied.
 		if (Game_object::find_nearby(occ, sitloc,c_any_shapenum, 0, 8))
@@ -4512,7 +4512,7 @@ void Walk_to_schedule::walk_off_screen
 Walk_to_schedule::Walk_to_schedule
 	(
 	Actor *n,
-	Tile_coord d,			// Destination.
+	Tile_coord const& d,			// Destination.
 	int new_sched,			// Schedule when we get there.
 	int delay			// Msecs, or -1 for random delay.
 	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)

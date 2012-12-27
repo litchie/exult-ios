@@ -108,7 +108,7 @@ void Gump::set_pos()
 
 void Gump::set_object_area
 	(
-	Rectangle area,
+	Rectangle const& area,
 	int checkx,
 	int checky
 	)

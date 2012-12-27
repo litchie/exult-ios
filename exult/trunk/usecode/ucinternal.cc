@@ -977,7 +977,7 @@ void Usecode_internal::item_say
 
 void Usecode_internal::activate_cached
 	(
-	Tile_coord pos
+	Tile_coord const& pos
 	)
 	{
 	if (Game::get_game_type() != BLACK_GATE)
@@ -1575,7 +1575,7 @@ int Usecode_internal::path_run_usecode
 bool Usecode_internal::is_dest_reachable
 	(
 	Actor *npc,
-	Tile_coord dest
+	Tile_coord const& dest
 	)
 	{
 	if (dest.tz < 0)

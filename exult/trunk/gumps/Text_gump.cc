@@ -66,7 +66,7 @@ void Text_gump::add_text
 
 int Text_gump::paint_page
 	(
-	Rectangle box,			// Display box rel. to gump.
+	Rectangle const& box,			// Display box rel. to gump.
 	int start			// Starting offset into text.
 	)
 {

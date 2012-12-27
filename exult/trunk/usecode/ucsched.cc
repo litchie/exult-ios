@@ -263,7 +263,7 @@ void Usecode_script::clear
 
 void Usecode_script::purge
 	(
-	Tile_coord spot,
+	Tile_coord const& spot,
 	int dist			// In tiles.
 	)
 	{

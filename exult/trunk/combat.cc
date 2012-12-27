@@ -916,7 +916,7 @@ bool Combat_schedule::attack_target
 	(
 	Game_object *attacker,		// Who/what is attacking.
 	Game_object *target,		// Who/what is being attacked.
-	Tile_coord tile,			// What tile is under fire, if no target.
+	Tile_coord const& tile,		// What tile is under fire, if no target.
 	int weapon,					// What is being used as weapon.
 								// or < 0 for none.
 	bool combat					// We got here from combat schedule.

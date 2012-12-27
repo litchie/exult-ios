@@ -36,8 +36,8 @@ using std::vector;
 
 Tile_coord *Find_path
 	(
-	Tile_coord start,		// Where to start from.
-	Tile_coord goal,		// Where to end up.
+	Tile_coord const& start,		// Where to start from.
+	Tile_coord const& goal,		// Where to end up.
 	Pathfinder_client *client,	// Provides costs.
 	int& pathlen			// Length of path returned.
 	);
@@ -52,7 +52,7 @@ class Neighbor_iterator
 	static int coords[16];		// Coords to go through ((x,y) pairs)
 	int index;			// 0-7.
 public:
-	Neighbor_iterator(Tile_coord t) : tile(t), index(0)
+	Neighbor_iterator(Tile_coord const& t) : tile(t), index(0)
 		{  }
 					// Get next neighbor.
 	int operator()(Tile_coord& newt)
@@ -93,14 +93,14 @@ class Search_node
 	Search_node *priority_next;	// ->next with same total_cost, or
 					//   NULL if not in 'open' set.
 public:
-	Search_node(Tile_coord& t, short scost, short gcost, Search_node *p)
+	Search_node(Tile_coord const& t, short scost, short gcost, Search_node *p)
 		: tile(t), start_cost(scost), goal_cost(gcost),
 		  parent(p), priority_next(0)
 		{
 		total_cost = gcost + scost;
 		}
 					// For creating a key to search for.
-	Search_node(Tile_coord& t) : tile(t)
+	Search_node(Tile_coord const& t) : tile(t)
 		{  }
 	Tile_coord get_tile() const
 		{ return tile; }
@@ -414,8 +414,8 @@ static int tracing = 0;
 
 Tile_coord *Find_path
 	(
-	Tile_coord start,		// Where to start from.
-	Tile_coord goal,		// Where to end up.
+	Tile_coord const& start,		// Where to start from.
+	Tile_coord const& goal,		// Where to end up.
 	Pathfinder_client *client,	// Provides costs.
 	int& pathlen			// Length of path returned.
 	)
@@ -430,9 +430,9 @@ Tile_coord *Find_path
 	while ((node = nodes.pop()) != 0)
 		{
 		if (tracing)
-			cout << "Goal: (" << goal.tx << ", " << goal.ty <<
+			cout << "Goal: (" << goal.tx << ", " << goal.ty << ", " << goal.tz <<
 			"), Node: (" << node->get_tile().tx << ", " <<
-			node->get_tile().ty << ")" << endl;
+			node->get_tile().ty << ", " << node->get_tile().tz << ")" << endl;
 		Tile_coord curtile = node->get_tile();
 		if (client->at_goal(curtile, goal))
 					// Success.

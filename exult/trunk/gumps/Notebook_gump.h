@@ -61,7 +61,7 @@ class Notebook_gump : public Gump
 	Gump_button *leftpage, *rightpage;
 					// Add new note.
 	static void add_new(char *text = 0, int gflag = -1);
-	bool paint_page(Rectangle box, One_note *note, int& offset, 
+	bool paint_page(Rectangle const& box, One_note *note, int& offset, 
 								int pagenum);
 	bool need_next_page() const
 		{

@@ -51,7 +51,7 @@ inline void Figure_dir
  *
  *	Output:	1 if successful, else 0.
  */
-int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
+int Zombie::NewPath(Tile_coord const& s, Tile_coord const& d, Pathfinder_client *)
 {
 	src = s;			// Store start, destination.
 	dest = d;

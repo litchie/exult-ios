@@ -124,7 +124,7 @@ public:
 	int distance(Tile_coord t2) const;
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
-	int get_direction(Tile_coord t2) const;
+	int get_direction(Tile_coord const& t2) const;
 	int get_facing_direction(Game_object *o2) const;
 	Map_chunk *get_chunk() const	// Get chunk this is in.
 		{ return chunk; }
@@ -172,7 +172,7 @@ public:
 	int get_dir_facing() const;
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
-	void move(Tile_coord t, int newmap = -1)
+	void move(Tile_coord const& t, int newmap = -1)
 		{ move(t.tx, t.ty, t.tz, newmap); }
 	bool add_client(Object_client *c);
 	void remove_client(Object_client *c);
@@ -186,35 +186,35 @@ public:
 	class Egg_cast_functor
 	{
 	public:
-		Egg_object *operator()(Game_object *obj)
+		Egg_object *operator()(Game_object *obj) const
 		{	return obj->as_egg();	}
 	};
 
 	class Actor_cast_functor
 	{
 	public:
-		Actor *operator()(Game_object *obj)
+		Actor *operator()(Game_object *obj) const
 		{	return obj->as_actor();	}
 	};
 
 	class Game_object_cast_functor
 	{
 	public:
-		Game_object *operator()(Game_object *obj)
+		Game_object *operator()(Game_object *obj) const
 		{	return obj;	}
 	};
 
 	template <typename VecType, typename Cast>
-	static int find_nearby(VecType& vec, Tile_coord pos,
+	static int find_nearby(VecType& vec, Tile_coord const& pos,
 			int shapenum, int delta, int mask, int qual,
-			int framenum, Cast obj_cast, bool exclude_okay_to_take = false);
+			int framenum, Cast const& obj_cast, bool exclude_okay_to_take = false);
 
-	static int find_nearby_actors(Actor_vector& vec, Tile_coord pos,
+	static int find_nearby_actors(Actor_vector& vec, Tile_coord const& pos,
 			int shapenum, int delta, int mask = 8);
-	static int find_nearby_eggs(Egg_vector& vec, Tile_coord pos,
+	static int find_nearby_eggs(Egg_vector& vec, Tile_coord const& pos,
 			int shapenum, int delta, int qual = c_any_qual,
 			int framenum = c_any_framenum);
-	static int find_nearby(Game_object_vector& vec, Tile_coord pos,
+	static int find_nearby(Game_object_vector& vec, Tile_coord const& pos,
 			int shapenum, int delta, int mask, int qual = c_any_qual,
 			int framenum = c_any_framenum, bool exclude_okay_to_take = false);
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta,
@@ -226,7 +226,7 @@ public:
 
 	Game_object *find_closest(Game_object_vector& vec,
 				int *shapenums, int num_shapes, int dist = 24);
-	static Game_object *find_closest(Tile_coord pos, 
+	static Game_object *find_closest(Tile_coord const& pos, 
 			int *shapenums, int num_shapes, int dist = 24);
 	Game_object *find_closest(int *shapenums, int num_shapes, 
 							int dist = 24)
@@ -234,12 +234,12 @@ public:
 							num_shapes, dist); }
 	Game_object *find_closest(int shapenum, int dist = 24)
 		{ return find_closest(&shapenum, 1, dist); }
-	static Game_object *find_closest(Tile_coord pos, int shapenum,
+	static Game_object *find_closest(Tile_coord const& pos, int shapenum,
 						int dist = 24)
 		{ return find_closest(pos, &shapenum, 1, dist); }
 	Rectangle get_footprint();	// Get tile footprint.
 	Block get_block();
-	bool blocks(Tile_coord tile);	// Do we block a given tile?
+	bool blocks(Tile_coord const& tile);	// Do we block a given tile?
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 	static Game_object *find_door(Tile_coord tile);

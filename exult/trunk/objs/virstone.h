@@ -40,7 +40,7 @@ public:
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
 			pos(0, 0, 0), map(0)
 		{  }
-	void set_target_pos(Tile_coord t)	// Set/get position.
+	void set_target_pos(Tile_coord const& t)	// Set/get position.
 		{ pos = t; }
 	void set_target_pos(unsigned char tilex, unsigned char tiley,
 			unsigned char schunk, unsigned char lft);

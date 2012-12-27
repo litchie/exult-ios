@@ -184,7 +184,7 @@ public:
 	Ifix_game_object *create_ifix_object(int shnum, int frnum);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
-	bool is_tile_occupied(Tile_coord tile);
+	bool is_tile_occupied(Tile_coord const& tile);
 					// Locate chunk with desired terrain.
 	bool locate_terrain(int tnum, int& cx, int& cy, bool upwards = false);
 	static bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.

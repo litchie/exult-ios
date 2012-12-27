@@ -321,7 +321,7 @@ int Game_object::get_direction
 
 int Game_object::get_direction
 	(
-	Tile_coord t2
+	Tile_coord const& t2
 	) const
 	{
 	Tile_coord t1 = get_center_tile();
@@ -743,7 +743,7 @@ void Game_object::clear_dependencies
 int Game_object::find_nearby_eggs
 	(
 	Egg_vector& vec,
-	Tile_coord pos,
+	Tile_coord const& pos,
 	int shapenum,
 	int delta,
 	int qual,
@@ -757,7 +757,7 @@ int Game_object::find_nearby_eggs
 int Game_object::find_nearby_actors
 	(
 	Actor_vector& vec,
-	Tile_coord pos,
+	Tile_coord const& pos,
 	int shapenum,
 	int delta,
 	int mask
@@ -770,7 +770,7 @@ int Game_object::find_nearby_actors
 int Game_object::find_nearby
 	(
 	Game_object_vector& vec,
-	Tile_coord pos,
+	Tile_coord const& pos,
 	int shapenum,
 	int delta,
 	int mask,
@@ -829,7 +829,7 @@ class Object_closest_sorter
 	{
 	Tile_coord pos;			// Pos. to get closest to.
 public:
-	Object_closest_sorter(Tile_coord p) : pos(p)
+	Object_closest_sorter(Tile_coord const& p) : pos(p)
 		{  }
 	bool operator()(const Game_object *o1, const Game_object *o2)
 		{
@@ -875,7 +875,7 @@ Game_object *Game_object::find_closest
 
 Game_object *Game_object::find_closest
 	(
-	Tile_coord pos,			// Where to look from.
+	Tile_coord const& pos,	// Where to look from.
 	int *shapenums,			// Shapes to look for. 
 					//   c_any_shapenum=any NPC.
 	int num_shapes,			// Size of shapenums.
@@ -955,7 +955,7 @@ Block Game_object::get_block
 
 bool Game_object::blocks
 	(
-	Tile_coord tile
+	Tile_coord const& tile
 	)
 	{
 	Tile_coord t = get_tile();

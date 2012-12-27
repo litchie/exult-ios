@@ -33,11 +33,11 @@ public:
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
-	virtual int get_step_cost(Tile_coord from, Tile_coord& to) = 0;
+	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to) = 0;
 					// Estimate cost between two points.
-	virtual int estimate_cost(Tile_coord& from, Tile_coord& to) = 0;
+	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to) = 0;
 					// Is tile at the goal?
-	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
 
 	int get_move_flags() { return move_flags; }
 	void set_move_flags(int m) { move_flags = m;}
@@ -57,7 +57,7 @@ public:
 	// Return !0 if path found
 	PathFinder() : src(),dest()
 		{  }
-	virtual	int NewPath(Tile_coord s, Tile_coord d, 
+	virtual	int NewPath(Tile_coord const& s, Tile_coord const& d, 
 					Pathfinder_client *client)=0;
 	// Retrieve starting point (set by subclasses).
 	Tile_coord get_src()

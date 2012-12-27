@@ -345,8 +345,8 @@ void Party_manager::move_followers
 
 inline Tile_coord Get_step_tile
 	(
-	Tile_coord pos,			// Current pos.
-	Tile_coord dest,		// Desired dest.
+	Tile_coord const& pos,			// Current pos.
+	Tile_coord const& dest,		// Desired dest.
 	int dir				// Dir. party is moving (0-7).
 	)
 	{
@@ -569,7 +569,7 @@ int Party_manager::step
 	Actor *npc,
 	Actor *leader,			// Who NPC is following.
 	int dir,			// Direction we're walking (0-7).
-	Tile_coord dest			// Destination tile.
+	Tile_coord const& dest			// Destination tile.
 	)
 	{
 	Tile_coord pos = npc->get_tile();	// Current position.
