@@ -865,7 +865,7 @@ void Combat_schedule::start_strike
 		}
 	// At this point, we're within range, with state set.
 	if (check_lof &&
-	    !Fast_pathfinder_client::is_straight_path(npc->get_center_tile(), opponent->get_center_tile()))
+	    !Fast_pathfinder_client::is_straight_path(npc, opponent))
 		{
 		state = approach;
 		approach_foe(true);	// Try to get adjacent.

@@ -145,7 +145,7 @@ public:
 		{ return (px >= x && px < x + w && py >= y && py < y + d &&
 			  pz >= z && pz < z + h); }
 	bool has_world_point(int px, int py, int pz) const
-		{ return (Point_in_strip(x, w, px) && Point_in_strip(y, h, py) &&
+		{ return (Point_in_strip(x, w, px) && Point_in_strip(y, d, py) &&
 			  pz >= z && pz < z + h); }
 	};
 #endif
