@@ -17,7 +17,7 @@
 	  before the end of the path.
 	* rect.h: Truly fixed Fixed bug #3594342 "Attacking through walls and doors"
 	  (and who knows how many other bugs).
-	Rev 7230:
+	Rev 7231:
 	* npcnear.cc: Disabling old proximity usecode method. The rabbit hack is not
 	  needed anymore since patrol schedule does what it should, so it has gone.
 	* schedule.*: Only loiter, tend shop, dance, hound, sew and bake schedules
