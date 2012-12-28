@@ -3772,6 +3772,11 @@ int Actor::move_aside
 	int dir				// Direction to avoid (0-7).
 	)
 	{
+	// ++++ FIXME: Ugly workaround: preventing stepping aside in combat
+	// also prevents some cases of double-moving aside that result in
+	// walking through walls or doors.
+	if (get_schedule_type() == Schedule::combat)
+		return 0;
 	// Do not move aside if sitting, bending over, kneeling or sleeping.
 	int frnum = get_framenum()&0xf; 
 	if (frnum >= sit_frame && frnum <= sleep_frame)
