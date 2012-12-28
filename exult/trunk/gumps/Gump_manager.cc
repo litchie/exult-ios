@@ -186,6 +186,9 @@ void Gump_manager::add_gump(Gump *gump)
 bool Gump_manager::close_gump(Gump *gump)
 {
 	bool ret = remove_gump(gump);
+	Gump *dragged = gwin->get_dragging_gump();
+	if (dragged == gump)
+		gwin->stop_dragging();
 	delete gump;
 	return ret;
 }
@@ -196,9 +199,6 @@ bool Gump_manager::close_gump(Gump *gump)
 
 bool Gump_manager::remove_gump(Gump *gump)
 {
-	Gump *dragged = gwin->get_dragging_gump();
-	if (dragged == gump)
-		gwin->stop_dragging();
 	if (gump == kbd_focus)
 		set_kbd_focus(0);
 	if (open_gumps)
