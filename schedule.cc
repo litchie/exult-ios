@@ -1599,19 +1599,57 @@ void Dance_schedule::now_what
 		// Pure guess. Since only some schedules seem to call proximity
 		// usecode, I guess I should put it in here.
 		// Seems quite rare.
-	if (try_proximity_usecode(12))
-		return;
-	signed char frames[4];
-	for (int i = 0; i < 4; i++)
-					// Spin with 'hands outstretched'.
-		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 
-				   (npc->get_shapenum() == 846 && GAME_SI) ? 15 : 9);
-					// Create action to walk.
+	if (try_proximity_usecode(8))
+		return;		
+	signed char *frames;
+	int nframes;
+	static char base_frames[] = {Actor::standing, Actor::up_frame, Actor::out_frame};
+	int danceroutine = rand() % 5;
+	int speed = 2 * gwin->get_std_delay();
+	switch (danceroutine)
+		{
+		default:
+			{			// Spin in place using one of several frames.
+			signed char basefr = base_frames[danceroutine];
+			nframes = 6;
+			frames = new signed char[nframes];
+			int i;
+			for (i = 0; i < nframes - 2; i++)
+				frames[i] = npc->get_dir_framenum((dir + 2*i)%8, basefr);
+			frames[i] = npc->get_dir_framenum((dir + 2*i)%8, basefr);
+			frames[i+1] = npc->get_dir_framenum((dir + 2*i)%8, Actor::standing);
+			break;
+			}
+		case 3: // Flap arms
+			{
+				// Seems to repeat a random number of times.
+			static char flap_frames[] = {Actor::up_frame, Actor::out_frame};
+			nframes = 5 + 4 * (rand() % 4);
+			frames = new signed char[nframes];
+			int i;
+			for (i = 0; i < nframes - 1; i++)
+				frames[i] = npc->get_dir_framenum(dir, flap_frames[i % 2]);
+			frames[i] = npc->get_dir_framenum(dir, Actor::standing);
+			break;
+			}
+		case 4: // Punch
+			{
+			static signed char swing_frames[] = {Actor::ready_frame, Actor::raise1_frame,
+					Actor::reach1_frame, Actor::strike1_frame, Actor::ready_frame};
+			nframes = sizeof(swing_frames);
+			frames = new signed char[nframes];
+			for (int i = 0; i < nframes; i++)
+				frames[i] = npc->get_dir_framenum(dir, swing_frames[i]);
+			break;
+			}
+		}
+							// Create action to walk.
 	Actor_action *walk = new Path_walking_actor_action(new Zombie());
 	walk->walk_to_tile(npc, cur, dest);
 					// Walk, then spin.
 	npc->set_action(new Sequence_actor_action(walk,
-		new Frames_actor_action(frames, sizeof(frames), 100)));
+		new Frames_actor_action(frames, nframes, speed)));
+	delete [] frames;
 	npc->start(gwin->get_std_delay(), 500);		// Start in 1/2 sec.
 	}
 

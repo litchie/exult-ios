@@ -23,6 +23,9 @@
 	* schedule.*: Only loiter, tend shop, dance, hound, sew and bake schedules
 	  seem to call proximity usecode in the original. This fixes bug #3598581
 	  "Barks in Serpents' Isle".
+	Rev 7233:
+	* schedule.cc: Completing dance schedule (fixes bug #3435764 "Dance Schedule
+	  broken". Tweaked odds of proximity barks for dance schedule.
 
 2012-12-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* all: Removed ungodly amount of uneeded data copies when passing tiles and
