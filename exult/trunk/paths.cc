@@ -439,6 +439,29 @@ int Fast_pathfinder_client::is_grabable
 	return path.NewPath(from, to, &client);
 	}
 
+static void Get_closest_edge
+	(
+	Block const& fromvol,
+	Block const& tovol,
+	Tile_coord& pos1,
+	Tile_coord& pos2
+	)
+	{
+	int ht1 = fromvol.h;
+	int ht2 = tovol.h;
+	if (pos2.tx < pos1.tx)	// Going left?
+		pos1.tx = fromvol.x;
+	else			// Right?
+		pos2.tx = tovol.x;
+	if (pos2.ty < pos1.ty)	// Going north?
+		pos1.ty = fromvol.y;
+	else			// South.
+		pos2.ty = tovol.y;
+				// Use top tile.
+	pos1.tz += ht1 - 1;
+	pos2.tz += ht2 - 1;
+	}
+
 int Fast_pathfinder_client::is_grabable
 	(
 	Game_object *from,		// From this object.
@@ -469,8 +492,17 @@ int Fast_pathfinder_client::is_grabable
 				return 0;	// Blocked.
 		}
 	else
-		t = from->get_center_tile();
-	return Fast_pathfinder_client::is_straight_path(t, to->get_center_tile());
+		t = from->get_tile();
+
+		// Now we must check if the path ended somewhere we can get the object
+		// or not. We check for the closest sides.
+	Block fromvol = from->get_block(),
+	      tovol = to->get_block();
+	fromvol.x = t.tx - fromvol.w + 1;
+	fromvol.y = t.ty - fromvol.d + 1;
+	Tile_coord pos2(to->get_tile());
+	Get_closest_edge(fromvol, tovol, t, pos2);
+	return Fast_pathfinder_client::is_straight_path(t, pos2);
 	}
 
 int Fast_pathfinder_client::is_grabable
@@ -521,23 +553,10 @@ int Fast_pathfinder_client::is_straight_path
 	Game_object *from, Game_object *to
 	)
 	{
-	Block fromvol = from->get_block(),
-	      tovol = to->get_block();
-	Tile_coord pos1 = from->get_tile();
-	Tile_coord pos2 = to->get_tile();
-	int ht1 = fromvol.h;
-	int ht2 = tovol.h;
-	if (pos2.tx < pos1.tx)	// Going left?
-		pos1.tx = fromvol.x;
-	else			// Right?
-		pos2.tx = tovol.x;
-	if (pos2.ty < pos1.ty)	// Going north?
-		pos1.ty = fromvol.y;
-	else			// South.
-		pos2.ty = tovol.y;
-				// Use top tile.
-	pos1.tz += ht1 - 1;
-	pos2.tz += ht2 - 1;
+	Block fromvol = from->get_block(), tovol = to->get_block();
+	Tile_coord pos1(from->get_tile()), pos2(to->get_tile());
+	Get_closest_edge(fromvol, tovol, pos1, pos2);
+
 	Game_map *gmap = Game_window::get_instance()->get_map();
 	Zombie path;
 	if (!path.NewPath(pos1, pos2, 0))	// Should always succeed.
