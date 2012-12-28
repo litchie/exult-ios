@@ -653,6 +653,12 @@ bool Game_window::drop_dragged
 	return handled;
 	}
 
+void Game_window::stop_dragging()
+{
+	delete dragging;
+	dragging = 0;
+}
+
 /*
  *	Try to drop at a given lift.  Note:  None of the drag state variables
  *	may be used here, as it's also called from the outside.

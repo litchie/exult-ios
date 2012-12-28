@@ -555,6 +555,7 @@ public:
 	bool start_dragging(int x, int y);
 	bool drag(int x, int y);	// During dragging.
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
+	void stop_dragging();
 	bool is_dragging() const { return dragging != 0; }
 	int drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	Gump *get_dragging_gump();
