@@ -220,6 +220,18 @@ int Schedule::get_actual_type
 	return npc->get_schedule_type();
 	}
 
+bool Schedule::try_proximity_usecode(int odds)
+{
+	if ((rand()%odds) == 0)
+	{
+		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
+					Usecode_machine::npc_proximity);
+		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
+		return true;
+	}
+	return false;
+}
+
 /*
  *	Run usecode function.
  */
@@ -1510,6 +1522,12 @@ void Loiter_schedule::now_what
 	if (rand() % 3 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
+		// Pure guess. Since only some schedules seem to call proximity
+		// usecode, I guess I should put it in here.
+		// Seems rare for pure loiter, quite frequent for tend shop.
+	if ((npc->get_schedule_type() == Schedule::loiter && try_proximity_usecode(12)) ||
+	    (npc->get_schedule_type() == Schedule::tend_shop && try_proximity_usecode(8)))
+		return;
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
@@ -1578,6 +1596,11 @@ void Dance_schedule::now_what
 	Tile_coord cur = npc->get_tile();
 	int dir = static_cast<int>(Get_direction4(cur.ty - dest.ty, 
 							dest.tx - cur.tx));
+		// Pure guess. Since only some schedules seem to call proximity
+		// usecode, I guess I should put it in here.
+		// Seems quite rare.
+	if (try_proximity_usecode(12))
+		return;
 	signed char frames[4];
 	for (int i = 0; i < 4; i++)
 					// Spin with 'hands outstretched'.
@@ -1785,6 +1808,11 @@ void Hound_schedule::now_what
 		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
 		return;
 		}
+		// Pure guess. Since only some schedules seem to call proximity
+		// usecode, I guess I should put it in here.
+		// Seems quite rare.
+	if (try_proximity_usecode(12))
+		return;
 	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
 	Fast_pathfinder_client cost(newdist);
 	avpos.tx += rand()%3 - 1;	// Vary a bit randomly.
@@ -3117,6 +3145,11 @@ void Sew_schedule::now_what
 	Tile_coord npcpos = npc->get_tile();
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
+		// Pure guess. Since only some schedules seem to call proximity
+		// usecode, I guess I should put it in here.
+		// Seems quite rare.
+	if (try_proximity_usecode(12))
+		return;
 	switch (state)
 		{
 	case get_wool:
@@ -3439,6 +3472,11 @@ void Bake_schedule::now_what()
 	int delay = 100;
 	int dough_shp (GAME_SI ? 863 : 658);
 	Game_object *stove = npc->find_closest(664);
+		// Pure guess. Since only some schedules seem to call proximity
+		// usecode, I guess I should put it in here.
+		// Seems quite common.
+	if (try_proximity_usecode(8))
+		return;
 
 	switch (state) {
 	case find_leftovers:	// Look for misplaced dough already made by this schedule

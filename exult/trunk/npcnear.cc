@@ -136,11 +136,10 @@ void Npc_proximity_handler::handle_event
 		npc->start(0, 10000);
 		extra_delay = 11;	// And don't run Usecode while up.
 		}
-			
+#if 0		// Trying out new thing in schedule.cc.
 	else if (!(curtime < wait_until) && !cheat.in_map_editor() && 
-					// Do it 50% of the time OR if
-					//   a rabbit (SI start).
-		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
+					// Do it 50% of the time
+		 (rand()%2 == 1) &&
 					// And not for party members.
 			!npc->is_in_party() &&
 					// And not if walking to sched. spot.
@@ -163,6 +162,7 @@ void Npc_proximity_handler::handle_event
 		extra_delay += 3;
 		curtime = Game::get_ticks();// Time may have passed.
 		}
+#endif
 	add(curtime, npc, extra_delay);	// Add back for next time.
 	}
 
