@@ -483,12 +483,13 @@ int Fast_pathfinder_client::is_grabable
 		return 0;
 	
 	Tile_coord t;			// Check each tile.
+	Tile_coord pos1(from->get_tile()), pos2(to->get_center_tile());
 	if (path.get_num_steps() > 0)
 		{
 		bool done;
 		Game_map *gmap = Game_window::get_instance()->get_map();
 		while (path.GetNextStep(t, done))
-			if (t != from->get_tile() && t != to->get_center_tile() && gmap->is_tile_occupied(t))
+			if (t != pos1 && t != pos2 && gmap->is_tile_occupied(t))
 				return 0;	// Blocked.
 		}
 	else
@@ -500,7 +501,7 @@ int Fast_pathfinder_client::is_grabable
 	      tovol = to->get_block();
 	fromvol.x = t.tx - fromvol.w + 1;
 	fromvol.y = t.ty - fromvol.d + 1;
-	Tile_coord pos2(to->get_tile());
+	pos2 = to->get_tile();
 	Get_closest_edge(fromvol, tovol, t, pos2);
 	return Fast_pathfinder_client::is_straight_path(t, pos2);
 	}
@@ -563,9 +564,9 @@ int Fast_pathfinder_client::is_straight_path
 		return 0;
 	Tile_coord t;			// Check each tile.
 	bool done;
-	while (path.GetNextStep(t, done) && 
-				!tovol.has_world_point(t.tx, t.ty, t.tz))
-		if (!fromvol.has_world_point(t.tx, t.ty, t.tz) && 
+	while (path.GetNextStep(t, done))
+		if (!tovol.has_world_point(t.tx, t.ty, t.tz) &&
+					!fromvol.has_world_point(t.tx, t.ty, t.tz) && 
 					gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.
