@@ -17,6 +17,12 @@
 	  before the end of the path.
 	* rect.h: Truly fixed Fixed bug #3594342 "Attacking through walls and doors"
 	  (and who knows how many other bugs).
+	Rev 7230:
+	* npcnear.cc: Disabling old proximity usecode method. The rabbit hack is not
+	  needed anymore since patrol schedule does what it should, so it has gone.
+	* schedule.*: Only loiter, tend shop, dance, hound, sew and bake schedules
+	  seem to call proximity usecode in the original. This fixes bug #3598581
+	  "Barks in Serpents' Isle".
 
 2012-12-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* all: Removed ungodly amount of uneeded data copies when passing tiles and

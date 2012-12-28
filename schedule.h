@@ -105,6 +105,7 @@ public:
 					// Notify that schedule's obj. has been moved or deleted.
 	virtual void notify_object_gone(Game_object *obj)
 	  	{  }
+	bool try_proximity_usecode(int odds);
 	};
 
 /*
