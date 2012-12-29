@@ -4326,8 +4326,6 @@ void Actor::die
 					// Tmp. monster => tmp. body.
 		if (get_flag(Obj_flags::is_temporary))
 			body->set_flag(Obj_flags::is_temporary);
-					// Okay to take its contents.
-		body->set_flag_recursively(Obj_flags::okay_to_take);
 					// Remove NPC from map to prevent the body
 					// from colliding with it.
 		Game_object::remove_this(1);
@@ -4369,6 +4367,9 @@ void Actor::die
 				tooheavy.push_back(item);
 			}
 		}
+	if (body)			// Okay to take its contents.
+		body->set_flag_recursively(Obj_flags::okay_to_take);
+
 					// Put the heavy ones back.
 	for (Game_object_vector::const_iterator it = tooheavy.begin(); 
 						it != tooheavy.end(); ++it)

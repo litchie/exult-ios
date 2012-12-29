@@ -1130,11 +1130,13 @@ void Game_map::read_ireg_objects
 					// Wierd use of flag:
 			if (info.has_quantity())
 				{
-				if (!(quality&0x80))
-					oflags &= 
-						~(1<<Obj_flags::okay_to_take);
-				else
+				if (quality&0x80)
+					{
+					oflags |= (1<<Obj_flags::okay_to_take);
 					quality &= 0x7f;
+					}
+				else
+					oflags &= ~(1<<Obj_flags::okay_to_take);
 				}
 			else if (info.has_quality_flags())
 				{	// Use those flags instead of deflt.
