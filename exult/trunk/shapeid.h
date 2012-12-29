@@ -150,6 +150,8 @@ public:
 	int find_cursor(int fontnum, const char *text, int x, int y, 
 				int w, int h, int cx, int cy, int vert_lead);
 	Font *get_font(int fontnum);
+	size_t get_xforms_cnt() const
+		{	return xforms.size();	}
 	};
 
 /*

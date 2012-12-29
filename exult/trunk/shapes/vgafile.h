@@ -105,6 +105,7 @@ public:
 	static void set_to_render(Image_buffer8 *w, GL_manager *gl = 0)
 		{ scrwin = w; glman = gl; }
 	unsigned char *get_data() { return data; }
+	unsigned char get_topleft_pix(unsigned char def = 255) const;
 	bool is_rle() const { return rle; }
 					// Convert raw image to RLE.
 	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
