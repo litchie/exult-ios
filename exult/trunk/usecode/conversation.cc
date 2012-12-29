@@ -186,7 +186,7 @@ void Conversation::set_face_rect
 		extraw = 4;
 	}
 	int starty, extrah;
-	if (face_h >= 180)
+	if (face_h >= 142)
 	{
 		starty = (screenh - face_h)/2;
 		extrah = 0;

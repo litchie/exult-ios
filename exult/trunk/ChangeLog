@@ -4,6 +4,12 @@
 	  in BG. Also, fill whole game area with background color from large faces
 	  so SI guardian and serpents cover the whole screen.
 	* usecode/conversation.h: Spacing.
+	Rev 7241:
+	* usecode/conversation.cc: Center BG guardian vertically too.
+	* actors.cc: Fixed bug #3186728 "SI: Incorrect property flags? (1.5.0svn)"
+	  by applying okay-to-take flag *after* the NPC's stuff is moved to the
+	  dead body.
+	* gamemap.cc: Make sure okay-to-take flag is read for quantity shapes.
 
 2012-12-29	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Only heal more than 1 hp through mend_hourly if the npc's
