@@ -1,3 +1,10 @@
+2012-12-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* shapeid.h, shapes/vgafile.*, usecode/conversation.cc: Fixed bug #3001914:
+	  "Cutted texts in voiceovers with Speech disabled" [sic] for the guardian
+	  in BG. Also, fill whole game area with background color from large faces
+	  so SI guardian and serpents cover the whole screen.
+	* usecode/conversation.h: Spacing.
+
 2012-12-29	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Only heal more than 1 hp through mend_hourly if the npc's
 	  schedule is sleep.
@@ -8,7 +15,7 @@
 	* actors.cc, npctime.cc, Stats_gump.cc: Fix hunger check. Food <= 9 is bad
 
 2012-12-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
-	* gamewinn.*: Fixed incorrect calling of ES if mapedit was still on when
+	* gamewin.*: Fixed incorrect calling of ES if mapedit was still on when
 	  Exult is closed (caused by rev #7236).
 
 2012-12-28	Marzo Sette Torres Junior <marzojr@yahoo.com>

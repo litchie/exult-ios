@@ -174,7 +174,7 @@ void Conversation::set_face_rect
 		face_h = face->get_height();
 		}
 	int startx, extraw;
-	if (face_w >= 300)
+	if (face_w >= 119)
 	{
 		startx = (screenw - face_w)/2;
 		extraw = 0;
@@ -340,8 +340,13 @@ void Conversation::remove_slot_face
 	Npc_face_info *info = face_info[slot];
 					// These are needed in case conversa-
 					//   tion is done.
-	gwin->add_dirty(info->face_rect);
-	gwin->add_dirty(info->text_rect);
+	if (info->large_face)
+		gwin->set_all_dirty();
+	else
+		{
+		gwin->add_dirty(info->face_rect);
+		gwin->add_dirty(info->text_rect);
+		}
 	delete face_info[slot];
 	face_info[slot] = 0;
 	num_faces--;
@@ -605,10 +610,29 @@ void Conversation::paint_faces
 			{
 			face_xleft = face->get_xleft();
 			face_yabove = face->get_yabove();
+			int fx = finfo->face_rect.x + face_xleft,
+				fy = finfo->face_rect.y + face_yabove;
+			if (finfo->large_face)
+				{		// Guardian, serpents: fill whole screen with the
+						// background pixel.
+				unsigned char px = face->get_topleft_pix();
+				const int xfstart = 0xff - sman->get_xforms_cnt();
+				int fw = finfo->face_rect.w,
+					fh = finfo->face_rect.h;
+				Image_window8 *win = gwin->get_win();
+				int gw = win->get_game_width(), gh = win->get_game_height();
+					// Fill only if (a) not transparent, (b) is a translucent
+					// color and (c) the face is not covering the entire screen.
+				if (px >= xfstart && px <= 0xfe && (gw > fw || gh > fh))
+					{
+					Xform_palette& xform = sman->get_xform(px - xfstart);
+					int gx = win->get_start_x(), gy = win->get_start_y();
+						// Another option: 4 fills outside the face area. 
+					win->fill_translucent8(0, gw, gh, gx, gy, xform);
+					}
+				}
 					// Use translucency.
-			sman->paint_shape(
-				finfo->face_rect.x + face_xleft,
-				finfo->face_rect.y + face_yabove, face, true);
+			sman->paint_shape(fx, fy, face, true);
 			}
 		if (text)		// Show text too?
 			{

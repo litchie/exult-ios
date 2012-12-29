@@ -219,6 +219,27 @@ static int Find_runs
 	return (x);
 	}
 
+unsigned char Shape_frame::get_topleft_pix
+	(
+	unsigned char def
+	) const
+	{
+	if (!data)
+		return def;
+	else if (!rle)
+		return data[0];
+	unsigned char *ptr = data;
+	int scanlen = (ptr[1] << 8) | ptr[0];
+	if (!scanlen)
+		return def;
+	ptr += 2;
+	if (*ptr++ || *ptr++ || *ptr++ || *ptr++)
+		return def;
+	if ((scanlen&1) == 0)
+		return *ptr;
+	return ptr[1];
+	}
+
 /*
  *	Encode an 8-bit image into an RLE frame.
  *
