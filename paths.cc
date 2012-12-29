@@ -38,10 +38,8 @@ Actor_pathfinder_client::Actor_pathfinder_client
 	(
 	Actor *n,
 	int d
-	) : dist(d), npc(n)
+	) : Pathfinder_client(n->get_type_flags()), dist(d), npc(n)
 	{
-					// +++++Shouldn't need this anymore?
-	set_move_flags(npc->get_type_flags());
 	}
 
 /*
@@ -345,6 +343,88 @@ int Offscreen_pathfinder_client::at_goal
 	}
 
 /*
+ *	Create client for getting within a desired distance of a
+ *	destination.
+ */
+
+Fast_pathfinder_client::Fast_pathfinder_client
+	(
+	Game_object *from,
+	Tile_coord const& dest,
+	int dist,
+	int mf
+	) : Pathfinder_client(mf),
+	    destbox(Rectangle(dest.tx, dest.ty, 0, 0).enlarge(dist))
+	{
+	init(from, 0, dist);
+	}
+
+/*
+ *	Create client for getting within a desired distance of an
+ *	object.
+ */
+
+Fast_pathfinder_client::Fast_pathfinder_client
+	(
+	Game_object *from,
+	Game_object *to,
+	int dist,
+	int mf
+	) : Pathfinder_client(mf), destbox()
+	{
+	init(from, to, dist);
+	}
+
+/*
+ *	Create client for getting within a desired distance of a
+ *	destination.
+ */
+
+Fast_pathfinder_client::Fast_pathfinder_client
+	(
+	Actor *from,
+	Tile_coord const& dest,
+	int dist,
+	int mf
+	) : Pathfinder_client(from->get_type_flags()),
+	    destbox(Rectangle(dest.tx, dest.ty, 0, 0).enlarge(dist))
+	{
+	init(from, 0, dist);
+	}
+
+/*
+ *	Create client for getting within a desired distance of an
+ *	object.
+ */
+
+Fast_pathfinder_client::Fast_pathfinder_client
+	(
+	Actor *from,
+	Game_object *to,
+	int dist,
+	int mf
+	) : Pathfinder_client(from->get_type_flags()), destbox()
+	{
+	init(from, to, dist);
+	}
+
+void Fast_pathfinder_client::init
+	(
+	Game_object *from,
+	Game_object *to,
+	int dist
+	)
+	{
+	Shape_info& info1 = from->get_info();
+	int frame1 = from->get_framenum();
+	axtiles = info1.get_3d_xtiles(frame1);
+	aytiles = info1.get_3d_ytiles(frame1);
+	aztiles = info1.get_3d_height();
+	if (to)			// Where we want to get.
+		destbox = to->get_footprint().enlarge(dist);
+	}
+
+/*
  *	Figure when to give up.
  */
 
@@ -413,111 +493,61 @@ int Fast_pathfinder_client::at_goal
 	Tile_coord const& goal
 	)
 	{
-	if (tile.distance_2d(goal) > dist)
-		return 0;		// Not close enough.
-	int dz = tile.tz - goal.tz;	// Want to be within 1 story.
-	return dz <= 5 && dz >= -5;
+	int dz = tile.tz - goal.tz;	// Got to be on same floor.
+	if (dz > 5 && dz < -5)
+		return 0;
+	Rectangle abox(tile.tx - axtiles + 1, tile.ty - aytiles + 1,
+						axtiles, aytiles);
+	return abox.intersects(destbox);
 	}
 
-#define MAX_GRAB_DIST 3
-
-/*
- *	Just test to see if an object can be grabbed.
- */
+#define MAX_GRAB_DIST 1
 
 int Fast_pathfinder_client::is_grabable
 	(
-	Tile_coord const& from,		// From this spot.
-	Tile_coord const& to			// To this spot.
+	Game_object *from,		// From this object.
+	Game_object *to,		// To this object.
+	int mf
 	)
 	{
-	if (from.distance(to) <= 1)
+	if (from->distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(MAX_GRAB_DIST,
-	   Game_window::get_instance()->get_main_actor()->get_type_flags());
+	Fast_pathfinder_client client(from, to, 1, mf);
 	Astar path;
-	return path.NewPath(from, to, &client);
-	}
-
-static void Get_closest_edge
-	(
-	Block const& fromvol,
-	Block const& tovol,
-	Tile_coord& pos1,
-	Tile_coord& pos2
-	)
-	{
-	int ht1 = fromvol.h;
-	int ht2 = tovol.h;
-	if (pos2.tx < pos1.tx)	// Going left?
-		pos1.tx = fromvol.x;
-	else			// Right?
-		pos2.tx = tovol.x;
-	if (pos2.ty < pos1.ty)	// Going north?
-		pos1.ty = fromvol.y;
-	else			// South.
-		pos2.ty = tovol.y;
-				// Use top tile.
-	pos1.tz += ht1 - 1;
-	pos2.tz += ht2 - 1;
+	return path.NewPath(from->get_tile(), to->get_center_tile(), &client);
 	}
 
 int Fast_pathfinder_client::is_grabable
 	(
 	Game_object *from,		// From this object.
+	Tile_coord const& to,	// To this spot.
+	int mf
+	)
+	{
+	if (from->distance(to) <= 1)
+		return 1;		// Already okay.
+	Fast_pathfinder_client client(from, to, MAX_GRAB_DIST, mf);
+	Astar path;
+	return path.NewPath(from->get_tile(), to, &client);
+	}
+
+
+int Fast_pathfinder_client::is_grabable
+	(
+	Actor *from,			// From this object.
 	Game_object *to			// To this object.
 	)
 	{
-	if (from->distance(to) <= 1)
-		return 1;		// Already okay.
-				// Effectively enlarge object by its smallest 2d dimension.
-	Shape_info& inf = to->get_info();
-	int dx = inf.get_3d_xtiles(to->get_framenum()), dy = inf.get_3d_ytiles(to->get_framenum());
-	int mindelta = dx < dy ? dx : dy;
-				// Halve this (round up) for a radius, then increase by 1.
-	Fast_pathfinder_client client((mindelta + 1) / 2 + 1, 
-	   Game_window::get_instance()->get_main_actor()->get_type_flags());
-	Astar path;
-				// We search centered on the target object.
-	if (!path.NewPath(from->get_tile(), to->get_center_tile(), &client))
-		return 0;
-	
-	Tile_coord t;			// Check each tile.
-	Tile_coord pos1(from->get_tile()), pos2(to->get_center_tile());
-	if (path.get_num_steps() > 0)
-		{
-		bool done;
-		Game_map *gmap = Game_window::get_instance()->get_map();
-		while (path.GetNextStep(t, done))
-			if (t != pos1 && t != pos2 && gmap->is_tile_occupied(t))
-				return 0;	// Blocked.
-		}
-	else
-		t = from->get_tile();
-
-		// Now we must check if the path ended somewhere we can get the object
-		// or not. We check for the closest sides.
-	Block fromvol = from->get_block(),
-	      tovol = to->get_block();
-	fromvol.x = t.tx - fromvol.w + 1;
-	fromvol.y = t.ty - fromvol.d + 1;
-	pos2 = to->get_tile();
-	Get_closest_edge(fromvol, tovol, t, pos2);
-	return Fast_pathfinder_client::is_straight_path(t, pos2);
+	return is_grabable(from, to, from->get_type_flags());
 	}
 
 int Fast_pathfinder_client::is_grabable
 	(
-	Game_object *from,		// From this object.
-	Tile_coord const& to			// To this spot.
+	Actor *from,			// From this object.
+	Tile_coord const& to	// To this spot.
 	)
 	{
-	if (from->distance(to) <= 1)
-		return 1;		// Already okay.
-	Fast_pathfinder_client client(MAX_GRAB_DIST, 
-	   Game_window::get_instance()->get_main_actor()->get_type_flags());
-	Astar path;
-	return path.NewPath(from->get_tile(), to, &client);
+	return is_grabable(from, to, from->get_type_flags());
 	}
 
 /*
@@ -543,6 +573,29 @@ int Fast_pathfinder_client::is_straight_path
 		if (t != from && t != to && gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.
+	}
+
+static void Get_closest_edge
+	(
+	Block const& fromvol,
+	Block const& tovol,
+	Tile_coord& pos1,
+	Tile_coord& pos2
+	)
+	{
+	int ht1 = fromvol.h;
+	int ht2 = tovol.h;
+	if (pos2.tx < pos1.tx)	// Going left?
+		pos1.tx = fromvol.x;
+	else			// Right?
+		pos2.tx = tovol.x;
+	if (pos2.ty < pos1.ty)	// Going north?
+		pos1.ty = fromvol.y;
+	else			// South.
+		pos2.ty = tovol.y;
+				// Use top tile.
+	pos1.tz += ht1 - 1;
+	pos2.tz += ht2 - 1;
 	}
 
 /*
@@ -582,16 +635,9 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	Actor *npc,			// 'Monster'.
 	Tile_coord const& dest,
 	int dist
-	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
+	) : Fast_pathfinder_client(npc, dest, dist, npc->get_type_flags()),
+	    intelligence(npc->get_property(Actor::intelligence))
 	{
-	intelligence = npc->get_property(Actor::intelligence);
-	Shape_info& info1 = npc->get_info();
-	int frame = npc->get_framenum();
-	axtiles = info1.get_3d_xtiles(frame);
-	aytiles = info1.get_3d_ytiles(frame);
-	aztiles = info1.get_3d_height();
-	set_move_flags(npc->get_type_flags());
-	destbox.enlarge(dist);		// How close we need to get.
 	}
 
 /*
@@ -603,24 +649,9 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	Actor *attacker,
 	int reach,			// Weapon reach in tiles.
 	Game_object *opponent
-	) : Fast_pathfinder_client(reach), destbox(0, 0, 0, 0)
+	) : Fast_pathfinder_client(attacker, opponent, reach, attacker->get_type_flags()),
+	    intelligence(attacker->get_property(Actor::intelligence))
 	{
-	intelligence = attacker->get_property(Actor::intelligence);
-	Shape_info& info1 = attacker->get_info();
-	int frame1 = attacker->get_framenum();
-	axtiles = info1.get_3d_xtiles(frame1);
-	aytiles = info1.get_3d_ytiles(frame1);
-	aztiles = info1.get_3d_height();
-	if (!opponent)
-		return;			// Means this isn't usable.
-	set_move_flags(attacker->get_type_flags());
-	Shape_info& info2 = opponent->get_info();
-	Tile_coord opos = opponent->get_tile();
-	int frame2 = opponent->get_framenum();
-	int oxtiles = info2.get_3d_xtiles(frame2), oytiles = info2.get_3d_ytiles(frame2);
-	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,
-							oxtiles, oytiles);
-	destbox.enlarge(reach);		// This is how close we need to get.
 	}
 
 /*
@@ -646,24 +677,6 @@ int Monster_pathfinder_client::get_max_cost
 	}
 
 /*
- *	Is tile at goal?
- */
-
-int Monster_pathfinder_client::at_goal
-	(
-	Tile_coord const& tile,
-	Tile_coord const& goal
-	)
-	{
-	int dz = tile.tz - goal.tz;	// Got to be on same floor.
-	if (dz/5 != 0)
-		return 0;
-	Rectangle abox(tile.tx - axtiles + 1, tile.ty - aytiles + 1,
-						axtiles, aytiles);
-	return abox.intersects(destbox);
-	}
-
-/*
  *	Figure cost going from one tile to an adjacent tile (for pathfinding).
  *
  *	Output:	Cost, or -1 if blocked.
@@ -677,7 +690,7 @@ int Monster_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	if (Map_chunk::is_blocked(axtiles, aytiles, aztiles,
+	if (Map_chunk::is_blocked(get_axtiles(), get_aytiles(), get_aztiles(),
 						from, to, get_move_flags()))
 		return -1;
 	else
