@@ -953,6 +953,8 @@ void Game_window::clear_world
 	(
 	)
 	{
+	bool edit = cheat.in_map_editor();
+	cheat.set_map_editor(false);
 	Combat::resume();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
@@ -981,6 +983,7 @@ void Game_window::clear_world
 	ambient_light = false;	// And ambient lighting.
 	effects->remove_all_effects(false);
 	Schedule_change::clear();
+	cheat.set_map_editor(edit);
 	}
 
 /*

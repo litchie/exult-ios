@@ -4318,10 +4318,15 @@ void Actor::die
 			body->set_flag(Obj_flags::is_temporary);
 					// Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
+					// Remove NPC from map to prevent the body
+					// from colliding with it.
+		Game_object::remove_this(1);
 					// Find a spot within 1 tile.
 		Tile_coord bp = Map_chunk::find_spot(pos, 1, shnum, frnum, 2);
 		if (bp.tx == -1)
 			bp = pos;	// Default to NPC pos, even if blocked.
+					// Add NPC back.
+		Game_object::move(pos);
 		body->move(bp);
 		}
 	else
