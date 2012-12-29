@@ -201,6 +201,8 @@ AC_SUBST(LIBTOOL_DEPS)
 # Compilation environment
 # ---------------------------------------------------------------------
 
+AC_LANG([C++])
+
 AC_DEFUN([AC_CHECK_ALPHA_LINUX_CXX],
 [
 AC_MSG_CHECKING([for Alpha/Linux with DEC CXX])
@@ -238,9 +240,7 @@ AC_CHECK_HEADERS(sys/wait.h signal.h)
 AM_CONDITIONAL(HAVE_PNG, false)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true))
 AC_CHECK_ALPHA_LINUX_CXX
-AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(hash_map hash_set ext/hash_map ext/hash_set tr1/unordered_map tr1/unordered_set sstream)
-AC_LANG_C
 
 # ---------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.
