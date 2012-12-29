@@ -337,26 +337,30 @@ void Npc_hunger_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
+	int food = npc->get_property(static_cast<int>(Actor::food_level));
 					// No longer a party member?
 	if (!npc->is_in_party() ||
 					//   or no longer hungry?
-	    npc->get_property(static_cast<int>(Actor::food_level)) > 0 ||
+	    food > 9 ||
 	    npc->is_dead())		// Obviously.
 		{
 		delete this;
 		return;
 		}
 	uint32 minute = get_minute();
-					// Once/hour.
-	if (minute >= last_time + 60)
+					// Once/minute.
+	if (minute != last_time)
 		{
-		int hp = rand()%3;
-		if (rand()%4)
-			npc->say(first_starving, first_starving + 2);
-		npc->reduce_health(hp, Weapon_data::sonic_damage);
+		if(npc->get_property(Actor::health) > 0)
+			{
+			if ((rand()%3) == 0)
+				npc->say_hunger_message();
+			if(food <= 0 && (rand()%5) < 2)
+				npc->reduce_health(1, Weapon_data::sonic_damage);
+			}
 		last_time = minute;
 		}
-	gwin->get_tqueue()->add(curtime + 30000, this, 0L);
+	gwin->get_tqueue()->add(curtime + 5000, this, 0L);
 	}
 
 /*
@@ -423,7 +427,7 @@ void Npc_sleep_timer::handle_event
 	{
 	Actor *npc = list->npc;
 		// But not someone beaten into unconsciousness.
-	if (npc->get_property(static_cast<int>(Actor::health)) >= 0
+	if (npc->get_property(static_cast<int>(Actor::health)) >= 1
 		&& (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)
 		)

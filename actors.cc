@@ -973,6 +973,26 @@ void Actor::refigure_gear()
 	gear_powers = powers;
 	}
 
+void Actor::say_hunger_message()
+{
+	int food = get_property(static_cast<int>(food_level));
+	if (food <= 0)			// Really low?
+	{
+		if (rand()%4)
+			say(first_starving, last_starving);
+	}
+	else if (food <= 4)
+	{
+		if (rand()%3)
+			say(first_needfood, last_needfood);
+	}
+	else //if (food <= 9)
+	{
+		if (rand()%2)
+			say(first_hunger, last_hunger);
+	}
+}
+
 /**
  *	Decrement food level and print complaints if it gets too low.
  *	NOTE:  Should be called every hour.
@@ -987,21 +1007,10 @@ void Actor::use_food
 	int food = get_property(static_cast<int>(food_level));
 	food -= (rand()%4);		// Average 1.5 level/hour.
 	set_property(static_cast<int>(food_level), food);
-	if (food <= 0)			// Really low?
-		{
-		if (rand()%4)
-			say(first_starving, last_starving);
-					// Set timer for damage.
-		need_timers()->start_hunger();
-		}
-	else if (food <= 4)
-		{
-		if (rand()%3)
-			say(first_needfood, last_needfood);
-		}
-	else if (food <= 8)
-		if (rand()%2)
-			say(first_hunger, last_hunger);
+	if (food > 9)
+		return;
+	say_hunger_message();
+	need_timers()->start_hunger(); // minute checks for damage and messages.
 	}
 
 /**
@@ -1076,6 +1085,7 @@ void Actor::check_temperature
 			break;
 		case 5:
 			say(first_frostbite_3, last_frostbite_3);
+			reduce_health(1, Weapon_data::sonic_damage);
 			break;
 		case 6:
 			say(first_frozen, last_frozen);	// Frozen.
@@ -4419,20 +4429,21 @@ void Actor::mend_hourly
 	(
 	)
 	{
-	bool starving = (get_property(static_cast<int>(food_level)) <= 0
+	int hp = properties[static_cast<int>(health)];
+	bool starving = (get_property(static_cast<int>(food_level)) <= 9
 					&& is_in_party() && !get_info().does_not_eat());
 	// It should be okay to leave is_cold_immune out.
 	// It blocks raising temperature in the first place.
-	bool freezing = (is_in_party() && get_temperature() == 63 &&
+	bool freezing = (is_in_party() && temperature >= 50 &&
 					!(gear_powers&Frame_flags::cold_immune));
-	if (is_dead() || get_flag(Obj_flags::poisoned) || starving ||
+	if (is_dead() || get_flag(Obj_flags::poisoned) || (starving && hp > 0) ||
 			freezing)
 		return;
 	int maxhp = properties[static_cast<int>(strength)];
-	int hp = properties[static_cast<int>(health)];
 	if (maxhp > 0 && hp < maxhp)
 		{
-		if (maxhp >= 3)  
+		// first case doesn't seem to be used in the original - will keep for npcs
+		if (maxhp >= 3 && !starving && get_schedule_type() == Schedule::sleep)
 			hp += 1 + rand()%(maxhp/3);
 		else
 			hp += 1;
@@ -4446,6 +4457,8 @@ void Actor::mend_hourly
 	int maxmana = properties[static_cast<int>(magic)];
 	int curmana = properties[static_cast<int>(mana)];
 	clear_flag(Obj_flags::no_spell_casting);
+	if(starving) // I have no idea if no_spell_casting is cleared
+		return;
 	if (maxmana > 0 && curmana < maxmana)
 		{
 		if (maxmana >= 3)	
