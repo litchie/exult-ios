@@ -1557,7 +1557,7 @@ void Kid_games_schedule::now_what
 
 	if (kid)
 	{
-		Fast_pathfinder_client cost(1);
+		Fast_pathfinder_client cost(npc, kid->get_tile(), 1);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				pos, kid->get_tile(), cost);
 		if (pact)
@@ -1852,9 +1852,9 @@ void Hound_schedule::now_what
 	if (try_proximity_usecode(12))
 		return;
 	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
-	Fast_pathfinder_client cost(newdist);
 	avpos.tx += rand()%3 - 1;	// Vary a bit randomly.
 	avpos.ty += rand()%3 - 1;
+	Fast_pathfinder_client cost(npc, avpos, newdist);
 	Actor_action *pact = Path_walking_actor_action::create_path(npcpos,
 							avpos, cost);
 	if (pact)
