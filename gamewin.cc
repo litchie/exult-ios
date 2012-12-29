@@ -496,7 +496,7 @@ Game_window::~Game_window
 	)
 	{
 	gump_man->close_all_gumps(true);
-	clear_world();			// Delete all objects, chunks.
+	clear_world(false);			// Delete all objects, chunks.
 	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 		delete [] save_names[i];
 	delete shape_man;
@@ -951,6 +951,7 @@ void Game_window::resized
 
 void Game_window::clear_world
 	(
+	bool restoremapedit
 	)
 	{
 	bool edit = cheat.in_map_editor();
@@ -983,7 +984,7 @@ void Game_window::clear_world
 	ambient_light = false;	// And ambient lighting.
 	effects->remove_all_effects(false);
 	Schedule_change::clear();
-	cheat.set_map_editor(edit);
+	cheat.set_map_editor(edit && restoremapedit);
 	}
 
 /*
@@ -1450,7 +1451,7 @@ void Game_window::read
 	setup_load_palette();
 #endif
 
-	clear_world();			// Wipe clean.
+	clear_world(true);		// Wipe clean.
 	read_gwin();			// Read our data.
 					// DON'T do anything that might paint()
 					// before calling read_npcs!!

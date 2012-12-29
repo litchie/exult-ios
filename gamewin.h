@@ -142,7 +142,7 @@ class Game_window
 	bool in_exult_menu; 	// used for menu options
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
-	void clear_world();		// Clear out world's contents.
+	void clear_world(bool restoremapedit);		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
 	long check_time_stopped();
 
