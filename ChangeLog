@@ -1,3 +1,12 @@
+2012-12-29	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc: Only heal more than 1 hp through mend_hourly if the npc's
+	  schedule is sleep.
+	  Fix freezing check. Temp of 50 should do damage
+	  Allow starving party members to regain health over time if below 0 hp.
+	* npctime.cc: Only wake up npcs over time if they have 1 or more hp. (was 0)
+	  Do hunger damage check every minute. Hunger does 1 damage instead of 0-2.
+	* actors.cc, npctime.cc, Stats_gump.cc: Fix hunger check. Food <= 9 is bad
+
 2012-12-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewinn.*: Fixed incorrect calling of ES if mapedit was still on when
 	  Exult is closed (caused by rev #7236).
