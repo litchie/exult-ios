@@ -91,10 +91,14 @@ public:
  */
 class Fast_pathfinder_client : public Pathfinder_client
 	{
-	int dist;			// Succeeds at this distance from goal.
+	Rectangle destbox;		// Got to intersect this box.
+	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
+	void init(Game_object *from, Game_object *to, int dist);
 public:
-	Fast_pathfinder_client(int d = 0, int mf = 1 << 5) : dist(d)
-		{ set_move_flags(mf); }
+	Fast_pathfinder_client(Game_object *from, Tile_coord const& dest, int dist, int mf = 1 << 5);
+	Fast_pathfinder_client(Game_object *from, Game_object *to, int dist, int mf = 1 << 5);
+	Fast_pathfinder_client(Actor *from, Tile_coord const& dest, int dist, int mf = 1 << 5);
+	Fast_pathfinder_client(Actor *from, Game_object *to, int dist, int mf = 1 << 5);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
@@ -103,9 +107,16 @@ public:
 	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
-	static int is_grabable(Tile_coord const& from, Tile_coord const& to);
-	static int is_grabable(Game_object *from, Game_object *to);
-	static int is_grabable(Game_object *from, Tile_coord const& to);
+	int get_axtiles() const
+		{	return axtiles;	}
+	int get_aytiles() const
+		{	return aytiles;	}
+	int get_aztiles() const
+		{	return aztiles;	}
+	static int is_grabable(Game_object *from, Game_object *to, int mf = 1 << 5);
+	static int is_grabable(Game_object *from, Tile_coord const& to, int mf = 1 << 5);
+	static int is_grabable(Actor *from, Game_object *to);
+	static int is_grabable(Actor *from, Tile_coord const& to);
 					// Check for unblocked straight path.
 	static int is_straight_path(Tile_coord const& from, Tile_coord const& to);
 	static int is_straight_path(Game_object *from, Game_object *to);
@@ -116,9 +127,7 @@ public:
  */
 class Monster_pathfinder_client : public Fast_pathfinder_client
 	{
-	Rectangle destbox;		// Got to intersect this box.
 	int intelligence;		// NPC's intelligence.
-	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
 public:
 	Monster_pathfinder_client(Actor *npc, Tile_coord const& dest, int dist);
 					// For combat:
@@ -126,8 +135,6 @@ public:
 						Game_object *opponent);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
 	};
