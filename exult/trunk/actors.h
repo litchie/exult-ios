@@ -165,6 +165,7 @@ public:
 	int add_dirty(int figure_rect = 0);
 	void change_frame(int frnum);	// Change frame & set to repaint.
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
+	void say_hunger_message(); 
 	void use_food();		// Decrement food level.
 					// Increment/decrement temperature.
 	void check_temperature(bool freeze);
