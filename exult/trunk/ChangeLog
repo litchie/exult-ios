@@ -30,7 +30,12 @@
 	* paths.*, schedule.cc, pathfinder/PathFinder.h: New Fast_pathfinder_client
 	  that checks it the proper way. Fixes issues with ships and beds reported
 	  on IRC.
-	  
+	Rev 7236:
+	* gamewin.cc: Eliminating segfault when loading a game if map edit mode was
+	  active (due to fixed object deletion).
+	* actors.cc: Fixed bugs #3127755 "dead NPC bodies become obstacles" and
+	  #3594344 "dead bodies hang in wall - become obstacles", which were caused
+	  by the dying NPC blocking the placement of his own body.
 
 2012-12-27	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* all: Removed ungodly amount of uneeded data copies when passing tiles and
