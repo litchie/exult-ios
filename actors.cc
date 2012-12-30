@@ -4429,7 +4429,7 @@ Monster_actor *Actor::clone
  *	Restore HP's on the hour.
  */
 
-void Actor::mend_hourly
+void Actor::mend_wounds
 	(
 	)
 	{
@@ -4454,15 +4454,12 @@ void Actor::mend_hourly
 		if (hp > maxhp)
 			hp = maxhp;
 		properties[static_cast<int>(health)] = hp;
-					// ??If asleep & hps now >= 0, should
-					//   we awaken?
 		}
 					// Restore some mana also.
 	int maxmana = properties[static_cast<int>(magic)];
 	int curmana = properties[static_cast<int>(mana)];
 	clear_flag(Obj_flags::no_spell_casting);
-	if(starving) // I have no idea if no_spell_casting is cleared
-		return;
+
 	if (maxmana > 0 && curmana < maxmana)
 		{
 		if (maxmana >= 3)	
