@@ -62,6 +62,7 @@ class KeyBinder {
 	std::vector<std::string> mapedithelp;
 	std::vector<std::string> last_created_key;
  	void LoadFromFileInternal(const char* filename);
+	KeyMap::const_iterator TranslateEvent(SDL_Event const& ev) const;
 public:
 	KeyBinder();
 	~KeyBinder();
@@ -77,19 +78,20 @@ public:
 		bindings.clear(); keyhelp.clear(); cheathelp.clear(); mapedithelp.clear();
 		last_created_key.clear();
 	}
-	bool DoAction(ActionType action, bool press);
-	bool HandleEvent(SDL_Event &ev);
-	
+	bool DoAction(ActionType const& action, bool press) const;
+	bool HandleEvent(SDL_Event const& ev) const;
+		bool IsMotionEvent(SDL_Event const& ev) const;
+
 	void LoadFromFile(const char* filename);
 	void LoadFromPatch();
 	void LoadDefaults();
 #ifdef UNDER_CE
 	void WINCE_LoadFromDPADOPT(int opt);
 #endif
-	void ShowHelp();
-	void ShowCheatHelp();
-	void ShowMapeditHelp();
-	void ShowBrowserKeys();
+	void ShowHelp() const;
+	void ShowCheatHelp() const;
+	void ShowMapeditHelp() const;
+	void ShowBrowserKeys() const;
  private:
 	void ParseText(char *text, int len);
 	void ParseLine(char *line);

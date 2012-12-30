@@ -1960,6 +1960,8 @@ static int Get_click
 				case SDLK_SCROLLOCK:
 					break;
 				default:
+					if (keybinder->IsMotionEvent(event))
+						break;
 					if ((c == 's') && 
 					    (event.key.keysym.mod & KMOD_ALT) &&
 					    (event.key.keysym.mod & KMOD_CTRL)){
