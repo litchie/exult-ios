@@ -1,3 +1,6 @@
+2012-12-30	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* actors.cc, combat.cc: Have the Avatar stop attacking unconscious actors
+
 2012-12-29	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* exult.cc, keyactions.*, keys.*: Walking and running keys no longer count
 	  for the purposes of skipping faces, maps and such, as they could prevent
