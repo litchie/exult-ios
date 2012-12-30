@@ -556,7 +556,7 @@ public:
 	virtual void die(Game_object *attacker);		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	Monster_actor *clone();		// Create another nearby to this.
-	void mend_hourly();		// Restore HP's hourly.
+	void mend_wounds();		// Restore HP's and MP's.
 					// Read from file.
 	void read(DataSource* nfile, int num, bool has_usecode,
 							bool& fix_unused);

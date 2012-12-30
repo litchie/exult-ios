@@ -24,6 +24,7 @@
 
 #include "npctime.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "gameclk.h"
 #include "actors.h"
 #include "items.h"
@@ -426,7 +427,23 @@ void Npc_sleep_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
-		// But not someone beaten into unconsciousness.
+	if (npc->get_property(static_cast<int>(Actor::health)) <= 0)
+		{
+		if (gmap->is_chunk_read(npc->get_cx(), npc->get_cy()))
+			{
+				// 1 in 6 every half minute = approx. 1 HP every 3 min.
+			if (rand()%6 == 0)
+				npc->mend_wounds();
+			}
+		else	   // If not nearby, just set health and mana to full.
+			{
+			npc->set_property(static_cast<int>(Actor::health),
+			                  npc->get_property(static_cast<int>(Actor::strength)));
+			npc->set_property(static_cast<int>(Actor::mana),
+			                  npc->get_property(static_cast<int>(Actor::magic)));
+			}
+		}
+		// Don't wake up someone beaten into unconsciousness.
 	if (npc->get_property(static_cast<int>(Actor::health)) >= 1
 		&& (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)
@@ -449,8 +466,8 @@ void Npc_sleep_timer::handle_event
 		delete this;
 		return;
 		}
-					// Check again in 2 secs.
-	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+					// Check again every half a game minute.
+	gwin->get_tqueue()->add(curtime + (ticks_per_minute * gwin->get_std_delay()) / 2, this, 0L);
 	}
 
 /*
