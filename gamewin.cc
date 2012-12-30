@@ -85,6 +85,7 @@
 #include "AudioMixer.h"
 #include "combat.h"
 #include "keyactions.h"
+#include "monstinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2800,13 +2801,20 @@ void Game_window::call_guards
 	Actor *closest;
 	if (armageddon || in_dungeon)
 		return;
-	if (witness || (witness = find_witness(closest)) != 0) {
-		if (theft)
-			witness->say(first_call_guards_theft, last_call_guards_theft);
-		else
-			witness->say(first_call_guards, last_call_guards);
-		}
 	int gshape = Get_guard_shape(main_actor->get_tile());
+	if (witness || (witness = find_witness(closest)) != 0)
+		{
+		Monster_info *minf = witness->get_info().get_monster_info_safe();
+		if (!minf || !minf->cant_yell())
+			{
+			if (gshape < 0)
+				witness->say(first_need_help, last_need_help);
+			else if (theft)
+				witness->say(first_call_guards_theft, last_call_guards_theft);
+			else
+				witness->say(first_call_guards, last_call_guards);
+			}
+		}
 	if (gshape < 0)	// No local guards; lets forward to attack_avatar.
 		{
 		attack_avatar(0);
@@ -2822,6 +2830,7 @@ void Game_window::call_guards
 			guard->get_shapenum(), guard->get_framenum(), 1);
 	if (dest.tx != -1)
 		{
+		guard->say(first_arrest, last_arrest);
 		int dir = Get_direction(dest.ty - actloc.ty,
 						actloc.tx - dest.tx);
 					
@@ -2848,7 +2857,7 @@ void Game_window::attack_avatar
 	if (armageddon)
 		return;
 	int gshape = Get_guard_shape(main_actor->get_tile());
-	if (gshape >= 0)
+	if (gshape >= 0 && !in_dungeon)
 		{
 		while (create_guards--)
 			{
