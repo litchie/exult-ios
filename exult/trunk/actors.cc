@@ -3241,6 +3241,7 @@ void Actor::set_flag
 	{
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 	Monster_info *minf = get_info().get_monster_info_safe();
+	Actor *avatar = gwin->get_main_actor();
 	switch (flag)
 		{
 	case Obj_flags::asleep:
@@ -3251,6 +3252,8 @@ void Actor::set_flag
 		if (schedule_type == Schedule::sleep && Bg_dont_wake(gwin, this))
 			break;
 					// Set timer to wake in a few secs.
+		if(avatar->get_target())
+			avatar->set_target(0);
 		need_timers()->start_sleep();
 		set_action(0);		// Stop what you're doing.
 		lay_down(false);	// Lie down.
@@ -3278,7 +3281,7 @@ void Actor::set_flag
 			return;		// Don't do anything.
 		need_timers()->start_charm();
 		if (!gwin->in_combat() && Combat::charmed_more_difficult &&
-				(is_in_party() || this == gwin->get_main_actor()))
+				(is_in_party() || this == avatar))
 			gwin->toggle_combat();
 		set_target(0);		// Need new opponent if in combat.
 		break;
