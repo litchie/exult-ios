@@ -2673,7 +2673,7 @@ void Game_window::mend_npcs
 		{
 		Npc_actor *npc = (Npc_actor *) *it;
 		if (npc)
-			npc->mend_wounds();
+			npc->mend_wounds(true);
 		}
 	}
 
