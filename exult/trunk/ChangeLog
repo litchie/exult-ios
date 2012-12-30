@@ -1,4 +1,5 @@
 2012-12-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	Rev 7246:
 	* actors.*, gamewin.cc, npctime.cc, objs/egg.cc, usecode/intrinsics.cc:
 	  Party members no longer heal to full if knocked out when they cache out.
 	  UI_clear_item_flag no longer awakens unconscious NPCs (matches original in
@@ -6,6 +7,8 @@
 	  Mana no longer regenerates quickly for knocked out NPCs. Trying new dead
 	  body positioning method. Fixed last commit to not randomly remove the
 	  avatar's target.
+	Rev 7248:
+	* defaultkeys.txt: Fix description of walk keys
 
 2012-12-30	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc, combat.cc: Have the Avatar stop attacking unconscious actors

@@ -6,33 +6,33 @@ KP+		brighter
 KP- 		darker
 Esc		close_or_menu
 
-right		walk_east
-left		walk_west
-up		walk_north
-down		walk_south
-KP7		walk_north_west
-KP8		walk_north
-KP9		walk_north_east
-KP4		walk_west
+right		walk_east	# Run east
+left		walk_west	# Run west
+up		walk_north	# Run north
+down		walk_south	# Run south
+KP7		walk_north_west	# Run north-west
+KP8		walk_north	# Run north
+KP9		walk_north_east	# Run north-east
+KP4		walk_west	# Run west
 KP5		center_screen
-KP6		walk_east
-KP1		walk_south_west
-KP2		walk_south
-KP3		walk_south_east
+KP6		walk_east	# Run east
+KP1		walk_south_west	# Run south west
+KP2		walk_south	# Run south
+KP3		walk_south_east	# Run south-east
 
-Shift-right	walk_east	1	# Run east
-Shift-left	walk_west	1	# Run west
-Shift-up	walk_north	1	# Run north
-Shift-down	walk_south	1	# Run south
+Shift-right	walk_east	1
+Shift-left	walk_west	1
+Shift-up	walk_north	1
+Shift-down	walk_south	1
 
-Shift-KP7	walk_north_west	1	# Run north-west
-Shift-KP8	walk_north	1	# Run north
-Shift-KP9	walk_north_east	1	# Run north-east
-Shift-KP4	walk_west	1	# Run west
-Shift-KP6	walk_east	1	# Run east
-Shift-KP1	walk_south_west	1	# Run south west
-Shift-KP2	walk_south	1	# Run south
-Shift-KP3	walk_south_east	1	# Run south-east
+Shift-KP7	walk_north_west	1
+Shift-KP8	walk_north	1
+Shift-KP9	walk_north_east	1
+Shift-KP4	walk_west	1
+Shift-KP6	walk_east	1
+Shift-KP1	walk_south_west	1
+Shift-KP2	walk_south	1
+Shift-KP3	walk_south_east	1
 
 Alt-right	scroll_right
 Alt-left	scroll_left
