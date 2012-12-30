@@ -1381,6 +1381,44 @@ static void Debug_lt
 	}
 #endif
 
+//#define DEBUG_COMPARE
+#ifdef DEBUG_COMPARE
+#include <iomanip>
+using std::setw;
+static inline std::ostream& operator<<(std::ostream& out, Rectangle const& rc)
+{
+	out << "Rectangle { x = " << setw(4) << rc.x << ", y = " << setw(4) << rc.y << ", w = " << setw(4) << rc.w << ", h = " << setw(4) << rc.h << "}";
+	return out;
+}
+
+static inline std::ostream& operator<<(std::ostream& out, Ordering_info const& ord)
+{
+	out << "Ordering_info { area = " << ord.area << "," << endl;
+	out << "                tx     = " << setw(4) << ord.tx     << ", ty    = " << setw(4) << ord.ty    << ", tz   = " << setw(4) << ord.tz << "," << endl;
+	out << "                xs     = " << setw(4) << ord.xs     << ", ys    = " << setw(4) << ord.ys    << ", zs   = " << setw(4) << ord.zs   << "," << endl;
+	out << "                xleft  = " << setw(4) << ord.xleft  << ", yfar  = " << setw(4) << ord.yfar  << ", zbot = " << setw(4) << ord.zbot << "," << endl;
+	out << "                xright = " << setw(4) << ord.xright << ", ynear = " << setw(4) << ord.ynear << ", ztop = " << setw(4) << ord.ztop << "}";
+	return out;
+}
+
+static int Trace_Compare(int retv, int xcmp, int ycmp, int zcmp,
+                         bool xover, bool yover, bool zover,
+                         Ordering_info& inf1, Ordering_info& inf2,
+                         char const *file, int line)
+{
+	cerr << "Game_object::compare (@" << file << ":" << line << "): " << retv << endl;
+	cerr << inf1 << endl;
+	cerr << inf2 << endl;
+	cerr << "xcmp  = " << xcmp  << ", ycmp  = " << ycmp  << ", zcmp  = " << zcmp  << endl;
+	cerr << "xover = " << xover << ", yover = " << yover << ", zover = " << zover << endl;
+	return retv;
+}
+
+#   define TRACE_COMPARE(x) Trace_Compare(x, xcmp, ycmp, zcmp, xover, yover, zover, inf1, inf2, __FILE__, __LINE__)
+#else
+#   define TRACE_COMPARE(x) (x)
+#endif
+
 /*
  *	Compare ranges along a given dimension.
  */
@@ -1404,16 +1442,17 @@ inline void Compare_ranges
 		overlap = false;
 		cmp = 1;
 		}
-	else				// X's overlap.
+	else				// coords overlap.
 		{
 		overlap = true;
 		if (from1 < from2)
 			cmp = -1;
 		else if (from1 > from2)
 			cmp = 1;
-		else if (to1 - from1 < to2 - from2)
+		// from1 == from2
+		else if (to1 < to2)
 			cmp = 1;
-		else if (to1 - from1 > to2 - from2)
+		else if (to1 > to2)
 			cmp = -1;
 		else
 			cmp = 0;
@@ -1454,75 +1493,74 @@ int Game_object::compare
 					// Same space?
 					// Paint biggest area sec. (Fixes 
 					//   plaque at Penumbra's.)
-		return (inf1.area.w < inf2.area.w  && 
+		return TRACE_COMPARE((inf1.area.w < inf2.area.w  && 
 			inf1.area.h < inf2.area.h) ? -1 : 
 			(inf1.area.w > inf2.area.w &&
-			inf1.area.h > inf2.area.h) ? 1 : 0;
+			inf1.area.h > inf2.area.h) ? 1 : 0);
 //		return 0;		// Equal.
-	if (xover & yover & zover)	// Complete overlap?
+	if (xover && yover && zover)	// Complete overlap?
 		{
 		if (!inf1.zs)		// Flat one is always drawn first.
-			return !inf2.zs ? 0 : -1;
+			return TRACE_COMPARE(!inf2.zs ? 0 : -1);
 		else if (!inf2.zs)
-			return 1;
+			return TRACE_COMPARE(1);
 		}
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
-		return 1;		// GTE in all dimensions.
+		return TRACE_COMPARE(1);		// GTE in all dimensions.
 	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
-		return -1;		// LTE in all dimensions.
+		return TRACE_COMPARE(-1);		// LTE in all dimensions.
 	if (yover)			// Y's overlap.
 		{
 		if (xover)		// X's too?
-			return zcmp;
+			return TRACE_COMPARE(zcmp);
 		else if (zover)		// Y's and Z's?
-			return xcmp;
+			return TRACE_COMPARE(xcmp);
 					// Just Y's overlap.
 		else if (!zcmp)		// Z's equal?
-			return xcmp;
-		else			// See if X and Z dirs. agree.
-			if (xcmp == zcmp)
-				return xcmp;
+			return TRACE_COMPARE(xcmp);
+		else if (xcmp == zcmp)		// See if X and Z dirs. agree.
+			return TRACE_COMPARE(xcmp);
 #if 1 /* Woohoo!  Seems to work without messing up N. Trinsic gate. */
 					// Experiment:  Fixes Trinsic mayor
 					//   statue-through-roof.
 		else if (inf1.ztop/5 < inf2.zbot/5 && inf2.info.occludes())
-			return -1;	// A floor above/below.
+			return TRACE_COMPARE(-1);	// A floor above/below.
 		else if (inf2.ztop/5 < inf1.zbot/5 && inf1.info.occludes())
-			return 1;
+			return TRACE_COMPARE(1);
 #endif
 		else
-			return 0;
+			return TRACE_COMPARE(0);
 		}
 	else if (xover)			// X's overlap.
 		{
 		if (zover)		// X's and Z's?
-			return ycmp;
+			return TRACE_COMPARE(ycmp);
 		else if (!zcmp)		// Z's equal?
-			return ycmp;
+			return TRACE_COMPARE(ycmp);
 		else
-			return ycmp == zcmp ? ycmp : 0;
+			return TRACE_COMPARE(ycmp == zcmp ? ycmp : 0);
 		}
 					// Neither X nor Y overlap.
 	else if (xcmp == -1)		// o1 X before o2 X?
 		{
 		if (ycmp == -1)		// o1 Y before o2 Y?
 					// If Z agrees or overlaps, it's LT.
-			return (zover || zcmp <= 0) ? -1 : 0;
+			return TRACE_COMPARE((zover || zcmp <= 0) ? -1 : 0);
 		}
 	else if (ycmp == 1)		// o1 Y after o2 Y?
 		{
 		if (zover || zcmp >= 0)
-			return 1;
+			return TRACE_COMPARE(1);
 #if 1	/* So far, this seems to work without causing problems: */
 					// Experiment:  Fixes Brit. museum
 					//   statue-through-roof.
 		else if (inf1.ztop/5 < inf2.zbot/5)
-			return -1;	// A floor above.
+			return TRACE_COMPARE(-1);	// A floor above.
 		else
 #endif
-			return 0;
+			return TRACE_COMPARE(0);
 		}
-	return 0;
+	return TRACE_COMPARE(0);
 	}
 
 

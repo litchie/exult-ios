@@ -17,6 +17,9 @@
 	  of calling guards. Guards are no longer called in dungeons, and people
 	  will not yell for them in such places. This should fix bug #3186715
 	  "SI: Automatons in MoF call guards (1.5.0svn)".
+	Rev 7243:
+	* objs/objs.cc: Added some (disabled by default) tracing facilities to debug
+	  render order. One day...
 
 2012-12-29	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* actors.cc: Only heal more than 1 hp through mend_hourly if the npc's
