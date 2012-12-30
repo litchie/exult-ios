@@ -2621,7 +2621,9 @@ USECODE_INTRINSIC(clear_item_flag)
 	int flag = parms[1].get_int_value();
 	if (obj)
 		{
-		obj->clear_flag(flag);
+		Actor *npc = obj->as_actor();
+		if (flag != Obj_flags::asleep || !npc || !npc->is_knocked_out()) 
+			obj->clear_flag(flag);
 		if (flag == Obj_flags::dont_move || flag == Obj_flags::bg_dont_move)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.

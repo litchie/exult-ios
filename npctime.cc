@@ -352,7 +352,7 @@ void Npc_hunger_timer::handle_event
 					// Once/minute.
 	if (minute != last_time)
 		{
-		if(npc->get_property(Actor::health) > 0)
+		if(!npc->is_knocked_out())
 			{
 			if ((rand()%3) == 0)
 				npc->say_hunger_message();
@@ -429,13 +429,13 @@ void Npc_sleep_timer::handle_event
 	Actor *npc = list->npc;
 	if (npc->get_property(static_cast<int>(Actor::health)) <= 0)
 		{
-		if (gmap->is_chunk_read(npc->get_cx(), npc->get_cy()))
+		if (npc->is_in_party() || gmap->is_chunk_read(npc->get_cx(), npc->get_cy()))
 			{
 				// 1 in 6 every half minute = approx. 1 HP every 3 min.
 			if (rand()%6 == 0)
-				npc->mend_wounds();
+				npc->mend_wounds(false);
 			}
-		else	   // If not nearby, just set health and mana to full.
+		else	   // If not nearby, and not in party, just set health and mana to full.
 			{
 			npc->set_property(static_cast<int>(Actor::health),
 			                  npc->get_property(static_cast<int>(Actor::strength)));

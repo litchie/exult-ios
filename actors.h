@@ -435,6 +435,8 @@ public:
 	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
 					-(properties[(int) strength]/3); }
+	bool is_knocked_out() const
+		{ return get_property(static_cast<int>(health)) <= 0; }
 	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Get/set generic attribute.
@@ -556,7 +558,7 @@ public:
 	virtual void die(Game_object *attacker);		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	Monster_actor *clone();		// Create another nearby to this.
-	void mend_wounds();		// Restore HP's and MP's.
+	void mend_wounds(bool mendmana);		// Restore HP's and MP's.
 					// Read from file.
 	void read(DataSource* nfile, int num, bool has_usecode,
 							bool& fix_unused);

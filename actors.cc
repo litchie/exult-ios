@@ -2635,7 +2635,7 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 bool Actor::can_act()
 	{
 	return !(get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep)
-			|| is_dead() || get_property(static_cast<int>(health)) <= 0);
+			|| is_dead() || is_knocked_out());
 	}
 
 bool Actor::can_act_charmed()
@@ -3136,7 +3136,7 @@ int Actor::get_effective_prop
 	case Actor::dexterity:
 	case Actor::combat:
 		if (get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep) ||
-			get_property(Actor::health) < 0)
+			is_knocked_out())
 			return prop == Actor::dexterity ? 0 : 1;
 	case Actor::intelligence:
 		if (is_dead())
@@ -3252,7 +3252,7 @@ void Actor::set_flag
 		if (schedule_type == Schedule::sleep && Bg_dont_wake(gwin, this))
 			break;
 					// Set timer to wake in a few secs.
-		if(avatar->get_target())
+		if (this != avatar && avatar->get_target() == this)
 			avatar->set_target(0);
 		need_timers()->start_sleep();
 		set_action(0);		// Stop what you're doing.
@@ -4335,10 +4335,25 @@ void Actor::die
 					// Remove NPC from map to prevent the body
 					// from colliding with it.
 		Game_object::remove_this(1);
-					// Find a spot within 1 tile.
-		Tile_coord bp = Map_chunk::find_spot(pos, 1, shnum, frnum, 2);
+		Shape_info& binf = body->get_info();
+		int dx = binf.get_3d_xtiles(frnum) - info.get_3d_xtiles(get_framenum()),
+			dy = binf.get_3d_ytiles(frnum) - info.get_3d_ytiles(get_framenum());
+		Tile_coord bp;
+					// First, try matching corners of the NPC with corners of the body.
+		bp = Map_chunk::find_spot(pos + Tile_coord( 0,  0, 0), 0, shnum, frnum, 0);
 		if (bp.tx == -1)
-			bp = pos;	// Default to NPC pos, even if blocked.
+			bp = Map_chunk::find_spot(pos + Tile_coord(dx,  0, 0), 0, shnum, frnum, 0);
+		if (bp.tx == -1)
+			bp = Map_chunk::find_spot(pos + Tile_coord( 0, dy, 0), 0, shnum, frnum, 0);
+		if (bp.tx == -1)
+			bp = Map_chunk::find_spot(pos + Tile_coord(dx, dy, 0), 0, shnum, frnum, 0);
+					// Try to find a spot within 1 tile.
+					// ++++ Places MoF automaton in odd places.
+		//if (bp.tx == -1)
+		//	bp = Map_chunk::find_spot(pos, 1, shnum, frnum, 2);
+					// If still no spot, force to NPC pos, even if blocked.
+		if (bp.tx == -1)
+			bp = pos;
 					// Add NPC back.
 		Game_object::move(pos);
 		body->move(bp);
@@ -4434,6 +4449,7 @@ Monster_actor *Actor::clone
 
 void Actor::mend_wounds
 	(
+	bool mendmana
 	)
 	{
 	int hp = properties[static_cast<int>(health)];
@@ -4458,6 +4474,9 @@ void Actor::mend_wounds
 			hp = maxhp;
 		properties[static_cast<int>(health)] = hp;
 		}
+	
+	if (!mendmana)
+		return;
 					// Restore some mana also.
 	int maxmana = properties[static_cast<int>(magic)];
 	int curmana = properties[static_cast<int>(mana)];
@@ -5226,8 +5245,7 @@ void Npc_actor::handle_event
 	{
 	purge_deleted_actions();
 	if ((cheat.in_map_editor() && party_id < 0) ||
-			(get_flag(Obj_flags::paralyzed) || is_dead() ||
-			get_property(static_cast<int>(health)) <= 0 ||
+			(get_flag(Obj_flags::paralyzed) || is_dead() || is_knocked_out() ||
 			(get_flag(Obj_flags::asleep) && schedule_type != Schedule::sleep)))
 		{
 		gwin->get_tqueue()->add(

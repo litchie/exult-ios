@@ -1271,7 +1271,7 @@ bool Field_object::field_effect
 	case fire_field:
 		actor->reduce_health(2 + rand()%3, Weapon_data::fire_damage);
 					// But no sleeping here.
-		if (actor->get_flag(Obj_flags::asleep))
+		if (actor->get_flag(Obj_flags::asleep) && !actor->is_knocked_out())
 			actor->clear_flag(Obj_flags::asleep);
 		break;
 	case caltrops_field:
