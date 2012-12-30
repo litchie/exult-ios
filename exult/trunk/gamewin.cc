@@ -1490,6 +1490,7 @@ void Game_window::write_gwin
 	}
 	gout.write1(armageddon ? 1 : 0);
 	gout.write1(ambient_light ? 1 : 0);
+	gout.write1(combat ? 1 : 0);
 	gout_stream.flush();
 	if (!gout_stream.good())
 		throw file_write_exception(GWINDAT);
@@ -1556,6 +1557,10 @@ void Game_window::read_gwin
 	ambient_light = gin.read1() == 1 ? true : false;
 	if (!gin_stream.good())
 		ambient_light = false;
+
+	combat = gin.read1() == 1 ? true : false;
+	if (!gin_stream.good())
+		combat = false;
 	}
 
 /*
