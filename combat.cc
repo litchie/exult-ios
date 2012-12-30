@@ -368,7 +368,8 @@ void Combat_schedule::find_opponents
 	gwin->get_nearby_npcs(nearby);
 	Actor *avatar = gwin->get_main_actor();
 	nearby.push_back(avatar);	// Incl. Avatar!
-	bool npcCharmed = npc->get_flag(Obj_flags::charmed);
+	bool charmed_avatar = Combat::charmed_more_difficult &&
+	                      avatar->get_effective_alignment() !=  Npc_actor::friendly;
 					// See if we're a party member.
 	bool in_party = npc->is_in_party() || npc == avatar;
 	int npc_align = npc->get_effective_alignment();
@@ -380,8 +381,7 @@ void Combat_schedule::find_opponents
 	{
 		Actor *actor = *it;
 		if (actor->is_dead() || (!see_invisible && actor->get_flag(Obj_flags::invisible)) ||
-				(in_party && !npcCharmed && actor->get_flag(Obj_flags::asleep)) ||
-				((!in_party || npcCharmed) && actor->get_flag(Obj_flags::asleep) && !opponents.empty()))
+		    (actor->get_flag(Obj_flags::asleep) && (!opponents.empty() || (npc == avatar && !charmed_avatar))))
 			continue;	// Dead, sleeping or invisible.
 		if (is_enemy(npc_align, actor->get_effective_alignment())) {
 			opponents.push_back(actor);
@@ -493,11 +493,15 @@ Game_object *Combat_schedule::find_foe
 		opponents.clear();
 		alignment = new_align;
 		}
+	Actor *avatar = gwin->get_main_actor();
+	bool charmed_avatar = Combat::charmed_more_difficult &&
+	                      avatar->get_effective_alignment() !=  Npc_actor::friendly;
 					// Remove any that died.
 	for (list<Actor*>::iterator it = opponents.begin(); 
 						it != opponents.end(); )
 		{
-		if ((*it)->is_dead())
+		if ((*it)->is_dead() ||
+		    (npc == avatar && !charmed_avatar && (*it)->get_flag(Obj_flags::asleep)))
 			it = opponents.erase(it);
 		else
 			++it;
