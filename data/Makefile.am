@@ -191,3 +191,12 @@ exult_si.flx: ../tools/expack $(EXULT_SI_FLX_OBJECTS)
 
 exult_iphone.flx: ../tools/expack $(EXULT_IPHONE_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/iphone/flx.in
+	
+exult_bg_flx.h: exult.flx
+
+data/exult_flx.h: exult_si.flx
+
+data/exult_iphone_flx.h: exult_iphone.flx
+
+data/exult_si_flx.h: exult_si.flx
+
