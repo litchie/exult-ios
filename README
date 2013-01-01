@@ -1,5 +1,5 @@
 Exult Documentation
-last changed: 16 December 2012 (GMT)
+last changed: 01 January 2013 (GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
@@ -101,35 +101,36 @@ The latest version of this document can be found at http://exult.sourceforge.net
 12.2. Contacting us
 
 13. Changes to the Documentation
-13.1. - 16 December 2012
-13.2. - 14 November 2012
-13.3. - 28 October 2012
-13.4. - 01 December 2011
-13.5. - 16 March 2011
-13.6. - 19 February 2011
-13.7. - 24 January 2011
-13.8. - 23 January 2011
-13.9. - 13 October 2010
-13.10. - 30 August 2010
-13.11. - 25 August 2010
-13.12. - 15 August 2010
-13.13. - 28 April 2010
-13.14. - 11 March 2010
-13.15. - 10 March 2010
-13.16. - 08 March 2010
-13.17. - 16 July 2009
-13.18. - 03 June 2009
-13.19. - 20 May 2009
-13.20. - 19 May 2009
-13.21. - 18 May 2009
-13.22. - 28 April 2009
-13.23. - 21 October 2007
-13.24. - 08 April 2006
-13.25. - 14 March 2005
-13.26. - 14 August 2004
-13.27. - 23 May 2004
-13.28. - 11 February 2004
-13.29. - 12 December 2003
+13.1. - 01 January 2013
+13.2. - 16 December 2012
+13.3. - 14 November 2012
+13.4. - 28 October 2012
+13.5. - 01 December 2011
+13.6. - 16 March 2011
+13.7. - 19 February 2011
+13.8. - 24 January 2011
+13.9. - 23 January 2011
+13.10. - 13 October 2010
+13.11. - 30 August 2010
+13.12. - 25 August 2010
+13.13. - 15 August 2010
+13.14. - 28 April 2010
+13.15. - 11 March 2010
+13.16. - 10 March 2010
+13.17. - 08 March 2010
+13.18. - 16 July 2009
+13.19. - 03 June 2009
+13.20. - 20 May 2009
+13.21. - 19 May 2009
+13.22. - 18 May 2009
+13.23. - 28 April 2009
+13.24. - 21 October 2007
+13.25. - 08 April 2006
+13.26. - 14 March 2005
+13.27. - 14 August 2004
+13.28. - 23 May 2004
+13.29. - 11 February 2004
+13.30. - 12 December 2003
 
 
 --------------------------------------------------------------------------------
@@ -916,7 +917,7 @@ The Music driver options can be changed in the in-game menu that you open by hit
 The MIDI driver can be changed to:
 * Default This setting utilizes the default MIDI driver of your system.
 * FMOPL This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib).
-* TiMidity is a software synthesizer that can play MIDI files without a hardware synthesizer. You can install TiMidity on all major Operating systems. You need to place tmidity.cfg into the same folder where the Exult executable is installed to, otherwise TiMidity will not work.
+* TiMidity is a software synthesizer that can play MIDI files without a hardware synthesizer. You can install TiMidity on all major Operating systems. You need to place tmidity.cfg into the same folder where the Exult executable is installed to, otherwise TiMidity will not work. On linux systems it needs to be in ~/.exult.
 * FluidSynth is another software synthesizer, which uses SoundFont 2 technology without need for a SoundFont-compatible sound card. It is available for many Operating Systems and opposed to TiMidity still actively developed. Since Fluidsynth pulls in many dependencies it is not compiled into Exult at the moment. If you compiled Exult ourself and you enabled Fluidsynth you just need to edit exult.cfg and point <config><audio><midi><fluidsynth_soundfont> to the SoundFont you want to use.
 * MT32Emu Roland MT32 emulation requires either the ROM set "MT32_CONTROL.ROM" and "MT32_PCM.ROM" or the ROM set "CM32L_CONTROL.ROM" and "CM32L_PCM.ROM" in the Exult data folder. If both sets are present the CM32L ROM set will be used.
 * Windows When you are using Windows and for some reason the Default driver doesn't work.
@@ -1075,7 +1076,7 @@ The scalers by Derek Liauw are slower than the ones above it but many prefer the
 * Press 'Ctrl' while dropping a stack of items (coins, bolts...) to drop the whole stack without being asked for confirmation of the amount of items to drop.
 
 Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to have the functionality of a right mouse button.
-Nadir implemented keyboard walking in the post 1.0 versions of Exult. The Avatar can be moved with the arrow keys (or the keypad keys for more precise movement). When you move while holding shift the Avatar runs.
+Nadir implemented keyboard walking in the post 1.0 versions of Exult. The Avatar can be moved with the arrow keys (or the keypad keys for more precise movement). When you move while holding shift the Avatar walks slowly otherwise he is in running mode.
 
 
 5.2. Keyboard commands
@@ -1086,31 +1087,31 @@ During the game press 'h' to see a help screen with all the keys (for MacOS chan
 Default keyboard commands
 KP+/- : Change brightness
 Esc : Show Game menu box and closes all open boxes
-right : walk east
-left : walk west
-up : walk north
-down : walk south
-KP1 : walk southwest
-KP2 : walk south
-KP3 : walk southeast
-KP4 : walk west
+right : run east
+left : run west
+up : run north
+down : run south
+KP1 : run southwest
+KP2 : run south
+KP3 : run southeast
+KP4 : run west
 KP5 : recenter map
-KP6 : walk east
-KP7 : walk northwest
-KP8 : walk north
-KP9 : walk northeast
-Shift-right : run east
-Shift-left : run west
-Shift-up : run north
-Shift-down : run south
-Shift-KP1 : run southwest
-Shift-KP2 : run south
-Shift-KP3 : run southeast
-Shift-KP4 : run west
-Shift-KP6 : run east
-Shift-KP7 : run northwest
-Shift-KP8 : run north
-Shift-KP9 : run northeast
+KP6 : run east
+KP7 : run northwest
+KP8 : run north
+KP9 : run northeast
+Shift-right : walk east
+Shift-left : walk west
+Shift-up : walk north
+Shift-down : walk south
+Shift-KP1 : walk southwest
+Shift-KP2 : walk south
+Shift-KP3 : walk southeast
+Shift-KP4 : walk west
+Shift-KP6 : walk east
+Shift-KP7 : walk northwest
+Shift-KP8 : walk north
+Shift-KP9 : walk northeast
 F4 : Toggle full screen
 Alt-Enter : Toggle full screen
 b : Use spell book
@@ -1520,7 +1521,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 --------------------------------------------------------------------------------
 
 13. Changes to the Documentation
-13.1. - 16 December 2012
+13.1. - 01 January 2013
+* 3.2. MIDI Music timidity.cfg needs to be in ~/.exult on Linux systems.
+* 5.1. Movement and 5.2. Keyboard commands walk and run keys were switched.
+
+
+
+13.2. - 16 December 2012
 * 2.3. Settings in exult.cfg wrong height for windowed default.
 * 2.10. Command line options added --reset-video and --mapnum and sorted it a bit.
 * 4.4. Scaler xBR scalers added.
@@ -1528,7 +1535,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.2. - 14 November 2012
+13.3. - 14 November 2012
 * 1.1. Exult Version it's for the SVN of Exult.
 * 2.3. Settings in exult.cfg added autonotes options.
 * 6.1. Using the Notebook saved when saved game and when cheating you see the coordinates.
@@ -1537,7 +1544,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.3. - 28 October 2012
+13.4. - 28 October 2012
 * 2.3. Settings in exult.cfg added right click pathfind, fixed the text backgrounds and some other small fixes.
 * 5.1. Movement righht click pathfinding can be single or double.
 * 7.5. Gameplay Options same as above and the paperdolls option needs SI installed.
@@ -1545,7 +1552,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.4. - 01 December 2011
+13.5. - 01 December 2011
 * 2.3. Settings in exult.cfg added alternate_drop setting.
 * 2.7. Path-Settings for Mac OS X explained difference between the Library folders and how to access ~/Library on Lion.
 * 4.4. Scaler added HQ4x.
@@ -1554,13 +1561,13 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.5. - 16 March 2011
+13.6. - 16 March 2011
 * 2.3. Settings in exult.cfg added coreaudio_soundfont setting.
 * 3.2. MIDI Music as above.
 
 
 
-13.6. - 19 February 2011
+13.7. - 19 February 2011
 * 2.3. Settings in exult.cfg stereo/mono is switched by yes/no, facestats needed the setting for left status bars.
 * 3.6. Digital Wave Sound Effects split off the installation part.
 * 3.7. All-in-One Audio Data pack and installers added.
@@ -1570,7 +1577,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.7. - 24 January 2011
+13.8. - 24 January 2011
 * 2.3. Settings in exult.cfg there is no extra border setting for windows mode settings.
 * 2.10. Command line options fixed copy/paste error and added more explanations.
 * 3.6. Digital Wave Sound Effects switching sfx works right away, removed note.
@@ -1578,7 +1585,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.8. - 23 January 2011
+13.9. - 23 January 2011
 * 13. Changes to the Documentation moved to the bottom.
 * 2.3. Settings in exult.cfg new options for combat and windowed video settings and several other settings added.
 * 2.10. Command line options added portable option.
@@ -1594,7 +1601,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.9. - 13 October 2010
+13.10. - 13 October 2010
 * 1.1. Exult Version new official version.
 * 4.4. Scaler OpenGL is only available in snapshots.
 * 5.3. Cheat keys Alt+KP+/- no longer works.
@@ -1605,7 +1612,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.10. - 30 August 2010
+13.11. - 30 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video.
 * 4.1. Resolution rewrote some more with Colourless' latest changes.
 * 4.2. Fill modes added.
@@ -1613,7 +1620,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.11. - 25 August 2010
+13.12. - 25 August 2010
 * 2.3. Settings in exult.cfg added the new config options for video and audio.
 * 4.1. Resolution rewrote a bit to explain the new rendering.
 * 4.3. Higher resolution is cheating added.
@@ -1622,7 +1629,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.12. - 15 August 2010
+13.13. - 15 August 2010
 * 3.2. MIDI Music Fluidsynth support is not compiled into the snapshots, also MT32 is supported on OS X.
 * 3.4. Windows MIDI Mapper the log files are now where exult.cfg is saved to not necessarily where exult.exe is.
 * 9.2. Error Log also about location of log files.
@@ -1631,12 +1638,12 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.13. - 28 April 2010
+13.14. - 28 April 2010
 * 2.3. Settings in exult.cfg audio options for sample rate and stereo added.
 
 
 
-13.14. - 11 March 2010
+13.15. - 11 March 2010
 * 2.7. Path-Settings for Mac OS X we changed the default paths for OS X once more.
 * 3.6. Digital Wave Sound Effects the SFX pack can now be chosen in the Game Menu.
 * 7.4. Audio Options added new SFX pack option and updated screenshot.
@@ -1644,7 +1651,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.15. - 10 March 2010
+13.16. - 10 March 2010
 * 2.4. Path-Settings I've split this up for all the different OS'.
 * added Path-Settings chapters for the most common OS with examples.
 * 3.2. MIDI Music CoreMIDI driver added.
@@ -1654,7 +1661,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.16. - 08 March 2010
+13.17. - 08 March 2010
 * 1.2. What is Exult? fixed typo in Jakob Schonberg's name.
 * 2.2. Location of exult.cfg needs its own chapter now.
 * 2.4. Path-Settings needed a lot of changes because of the LOCAL_APPDATA changes.
@@ -1665,25 +1672,25 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.17. - 16 July 2009
+13.18. - 16 July 2009
 * 3.2. MIDI Music MT32 device type is not supported on Mac OS X.
 
 
 
-13.18. - 03 June 2009
+13.19. - 03 June 2009
 * Spell checked the whole documentation.
 * 3.2. MIDI Music slightly rewrote the FluidSynth section and explained fakemt32 option a bit better.
 
 
 
-13.19. - 20 May 2009
+13.20. - 20 May 2009
 * 3.5. Digital Music mentioned two issues with it.
 * 3.8. Installation of the digital music packs cleaned up.
 * 3.6. Digital Wave Sound Effects some more information.
 
 
 
-13.20. - 19 May 2009
+13.21. - 19 May 2009
 * 2. Configurations coloured tags to differentiate between manual and in game settings.
 * 2.4. Path-SettingsExult and Exult Studio don't trust exult.cfg.
 * 2.9. Advanced Configuration: Using both the original and the Add-OnsExult and Exult Studio don't trust exult.cfg.
@@ -1694,7 +1701,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.21. - 18 May 2009
+13.22. - 18 May 2009
 * 1.1. Exult Version this docs are for the SVN version.
 * 2.1. Installation the Windows installer asks for BG/SI location.
 * 2.3. Settings in exult.cfg now up to date with SVN.
@@ -1713,43 +1720,43 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.22. - 28 April 2009
+13.23. - 28 April 2009
 * 2.3. Settings in exult.cfg tried to explain data_path a bit more.
 * 3.10. Speech can also be toggled via the in-game menu.
 * 11.7. Installing the CD-ROM versions of Ultima VII added EA Compilation to the list.
 
 
 
-13.23. - 21 October 2007
+13.24. - 21 October 2007
 * 1.1. added.
 * 11.8. Fixing permissions of Ultima Collection on *nix systems added.
 
 
 
-13.24. - 08 April 2006
+13.25. - 08 April 2006
 * 2.1. Installation needed some polishing.
 * 2.4. Path-Settings synched the path settings with the new Installation section.
 * 11. Installing the original Ultima VII games for use with Exult might help some people.
 
 
 
-13.25. - 14 March 2005
+13.26. - 14 March 2005
 * 10. Zaurus Guide Newest ROM instructions updated.
 
 
 
-13.26. - 14 August 2004
+13.27. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-13.27. - 23 May 2004
+13.28. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 9.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-13.28. - 11 February 2004
+13.29. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.4. Path-Settings fixed some outdated instructions.
 * 3.8. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -1760,7 +1767,7 @@ You can contact the Exult team and/or get more information from: http://exult.so
 
 
 
-13.29. - 12 December 2003
+13.30. - 12 December 2003
 * 2.3. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.4. Path-Settings moved stuff over to next point.
 * 1.1. added to give some explanation for Static/Gamedat.
