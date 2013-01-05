@@ -3525,10 +3525,11 @@ void Bake_schedule::now_what()
 			// look for baking dough
 			Game_object_vector baking_dough;
 			int frnum (GAME_SI ? 18 : 2);
-			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, c_any_qual, frnum, true);
+			npc->find_nearby(baking_dough, npcpos, dough_shp, 20, 0, 51, frnum, false);
 			if (!baking_dough.empty() && baking_dough[0] != dough)	// found dough
 			{
 				dough_in_oven = baking_dough[0];
+				dough_in_oven->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 				add_client(dough_in_oven);
 				state = remove_from_oven;
 				break;
@@ -3546,6 +3547,7 @@ void Bake_schedule::now_what()
 				if (!food.empty())	// found food
 				{
 					dough_in_oven = food[0];
+					dough_in_oven->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 					add_client(dough_in_oven);
 					state = remove_from_oven;
 					break;
@@ -3557,15 +3559,16 @@ void Bake_schedule::now_what()
 			Game_object_vector leftovers;
 			if (GAME_SI)
 			{
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, c_any_qual, 16, true);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, c_any_qual, 17, true);
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, c_any_qual, 18, true);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 16, false);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 17, false);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, 18, false);
 			}
 			else
-				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, c_any_qual, c_any_framenum, true);
+				npc->find_nearby(leftovers, npcpos, dough_shp, 20, 0, 50, c_any_framenum, false);
 			if (!leftovers.empty() && leftovers[0] != dough_in_oven)	// found dough
 			{
 				dough = leftovers[0];
+				dough->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 				add_client(dough);
 				state = make_dough;
 				delay = 0;
@@ -3682,6 +3685,7 @@ void Bake_schedule::now_what()
 			else
 				dough = new Ireg_game_object(dough_shp, 0, 0, 0);
 			add_client(dough);
+			dough->set_quality(50); // doesn't save okay_to_take
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
 		} else {
@@ -3702,6 +3706,7 @@ void Bake_schedule::now_what()
 			state = to_table;
 			break;
 		}
+		dough->clear_flag(Obj_flags::okay_to_take); // doesn't save okay_to_take
 
 		int dir = npc->get_direction(dough);
 		signed char fr[2];
@@ -3756,6 +3761,7 @@ void Bake_schedule::now_what()
 			gwin->add_dirty(dough_in_oven);
 			dough_in_oven->set_shape(377);
 			dough_in_oven->set_frame(rand()%7);
+			dough_in_oven->clear_flag(Obj_flags::okay_to_take);  // doesn't save okay_to_take
 			gwin->add_dirty(dough_in_oven);
 		}
 
@@ -3963,6 +3969,7 @@ void Bake_schedule::now_what()
 				pact,
 				new Pickup_actor_action(dough, cpos, 250)));
 
+			dough->set_quality(51); // doesn't save okay_to_take
 			dough_in_oven = dough;
 			dough = 0;
 		} else {
