@@ -591,6 +591,15 @@ int Usecode_script::exec
 			{
 			Usecode_value& val = code->get_elem(++i);
 			int fun = val.get_int_value();
+					// HACK: Prevent function 0x6fb in FoV from triggering while
+					// the screen is faded out, as it can cause the screen to
+					// remain faded due to eliminating the script that does the
+					// fade in.
+			if (GAME_BG && fun == 0x6fb && gwin->get_pal()->is_faded_out())
+				{	// Simply put back the opcode for later.
+				i -= 2;
+				break;
+				}
 					// Watch for eggs:
 			Usecode_internal::Usecode_events ev = 
 					Usecode_internal::internal_exec;
@@ -695,9 +704,9 @@ int Usecode_script::exec
 				}
 			else
 				{
-			        cout << "Und sched. opcode " << hex << 
-					"0x" << setfill((char)0x30) << setw(2) 
-					<< opcode << std::dec << endl;
+				cout << "Und sched. opcode " << hex 
+				     << "0x" << setfill((char)0x30) << setw(2) 
+				     << opcode << std::dec << endl;
 				}
 			break;
 			}

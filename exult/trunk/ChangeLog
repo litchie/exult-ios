@@ -4,6 +4,11 @@
 	* effects.cc: Fixing bug #3599105 "Cannons don't fire correctly".
 	* gamewin.cc: Use c_tilesize/2 instead of hard-coded 4.
 	* objs/chunks.cc: Eliminated irrelevant comparison translation.
+	Rev 7255:
+	* usecode/ucsched.cc: Fixed bug #3598888 "fade out doesn't always fade back
+	  in" which was caused by usecode function 0x6fb in FoV killing the script
+	  that caused the screen to fade back in. This function will now be delayed
+	  until the screen is faded in again.
 
 2012-12-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*, gamewin.cc, npctime.cc, objs/egg.cc, usecode/intrinsics.cc:
