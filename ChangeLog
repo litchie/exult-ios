@@ -1,3 +1,10 @@
+2013-01-05	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Fixed dying fish turning into bread then fish by only using the
+	  'frame 0 then script to set correct frame' trick if first frame is empty.
+	* effects.cc: Fixing bug #3599105 "Cannons don't fire correctly".
+	* gamewin.cc: Use c_tilesize/2 instead of hard-coded 4.
+	* objs/chunks.cc: Eliminated irrelevant comparison translation.
+
 2012-12-30	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actors.*, gamewin.cc, npctime.cc, objs/egg.cc, usecode/intrinsics.cc:
 	  Party members no longer heal to full if knocked out when they cache out.

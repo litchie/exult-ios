@@ -4318,9 +4318,17 @@ void Actor::die
 #else
 		body = new Dead_body(shnum, 0, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
-		Usecode_script *scr = new Usecode_script(body);
-		(*scr) << Ucscript::delay_ticks << 4 << Ucscript::frame << frnum;
-		scr->start();
+		Shape_frame *shp;
+		if ((shp = body->get_shape()) != 0 && shp->is_empty())
+			{
+					// Note: only do this if target shape is an actual
+					// body shape.
+			Usecode_script *scr = new Usecode_script(body);
+			(*scr) << Ucscript::delay_ticks << 4 << Ucscript::frame << frnum;
+			scr->start();
+			}
+		else
+			body->set_frame(frnum);
 #endif
 		if (npc_num > 0)
 			{	// Originals would use body->set_quality(2) instead

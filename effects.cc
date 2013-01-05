@@ -604,6 +604,17 @@ void Projectile_effect::init
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
 		path->NewPath(pos, dst, 0);
+		if (attacker)
+		{
+			// Getprojectile  out of shooter's volume.
+		Block vol = attacker->get_block();
+		Tile_coord t;
+		bool done;
+		while (path->GetNextStep(t, done))
+			if (!vol.has_world_point(t.tx, t.ty, t.tz))
+				break;
+		pos = t;
+		}
 	int sprite_shape = sprite.get_shapenum();
 	set_sprite_shape(sprite_shape);
 					// Start after a slight delay.

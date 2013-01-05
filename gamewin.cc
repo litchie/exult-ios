@@ -1238,7 +1238,7 @@ Rectangle Game_window::get_shape_rect(Game_object *obj)
 		return Rectangle(0,0,0,0);
 	}
 	Tile_coord t = obj->get_tile();	// Get tile coords.
-	int lftpix = 4*t.tz;
+	int lftpix = (c_tilesize*t.tz)/2;
 	t.tx += 1 - get_scrolltx();
 	t.ty += 1 - get_scrollty();
 					// Watch for wrapping.
