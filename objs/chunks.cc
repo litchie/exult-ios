@@ -789,14 +789,13 @@ void Map_chunk::add_dependencies
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
 		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
-		int newcmp = Game_object::compare(newinfo, obj);
-		int cmp = newcmp == -1 ? 1 : newcmp == 1 ? 0 : -1;
-		if (!cmp)		// Bigger than this object?
+		int cmp = Game_object::compare(newinfo, obj);
+		if (cmp == 1)		// Bigger than this object?
 			{
 			newobj->dependencies.insert(obj);
 			obj->dependors.insert(newobj);
 			}
-		else if (cmp == 1)	// Smaller than?
+		else if (cmp == -1)	// Smaller than?
 			{
 			obj->dependencies.insert(newobj);
 			newobj->dependors.insert(obj);
