@@ -1956,14 +1956,13 @@ void Sleep_schedule::now_what
 		npc->move(bedloc.tx + delta, bedloc.ty + delta, bedloc.tz + 
 				(bedspread ? 0 : info.get_3d_height()));
 					// Either call bed usecode for avatar or put NPC to sleep.
+		npc->force_sleep();
 		state = 2;
 		if (for_nap_time)		// Usecode 622 handles sleeping.
 			{					// Calling it may delete us, though.
 			ucmachine->call_usecode(0x622, bed, Usecode_machine::double_click);
 			return; 			// So leave nothing to chance.
 			}
-		else
-			npc->force_sleep();
 		break;
 		}
 	default:
