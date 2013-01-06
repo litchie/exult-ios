@@ -538,8 +538,17 @@ int Fast_pathfinder_client::is_grabable
 		return 0;
 	if (zpath.get_num_steps() == 0)
 		return 0;
+	Block fromvol = from->get_block(), tovol = to->get_block();
+	Block srcvol(fromvol);
+	Tile_coord src = from->get_tile();
+	fromvol.x += t.tx - src.tx;
+	fromvol.y += t.ty - src.ty;
+	fromvol.z += t.tz - src.tz;
 	while (zpath.GetNextStep(t, done))
-		if (t != from->get_tile() && !client.at_goal(t, dt) && gmap->is_tile_occupied(t))
+		if (!tovol.has_world_point(t.tx, t.ty, t.tz) &&
+					!srcvol.has_world_point(t.tx, t.ty, t.tz) &&
+					!fromvol.has_world_point(t.tx, t.ty, t.tz) && 
+					gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;
 	}
@@ -579,7 +588,7 @@ int Fast_pathfinder_client::is_grabable
 	if (zpath.get_num_steps() == 0)
 		return 0;
 	while (zpath.GetNextStep(t, done))
-		if (t != from->get_tile() && !client.at_goal(t, to) && gmap->is_tile_occupied(t))
+		if (t != from->get_tile() && t != to && gmap->is_tile_occupied(t))
 			return 0;	// Blocked.
 	return 1;
 	}
