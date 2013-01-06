@@ -18,6 +18,9 @@
 	* actions.*, schedule.*, tqueue.*, usecode/ucsched.*: Const-correctness.
 	Rev 7258:
 	* schedule.cc: Set sleep flag on avatar too for nap_time intrinsic.
+	Rev 7259:
+	* paths.cc: Fixed object manipulation regression due to incorrect condition
+	  on rev 7257.
 
 2013-01-05	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Add back quality check for dough and clear okay_to_take flag
