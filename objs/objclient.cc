@@ -1,7 +1,7 @@
 /*
  *	objclient.cc - Game objects that have been removed, but need deleting.
  *
- *  Copyright (C) 2000-2012  The Exult Team
+ *  Copyright (C) 2000-2013  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
