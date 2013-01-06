@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2011  The Exult Team
+ *  Copyright (C) 2000-2013  The Exult Team
  *
  *	Original file by Dancer A.L Vesperman
  *
