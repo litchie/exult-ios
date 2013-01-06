@@ -1914,9 +1914,7 @@ void Game_window::start_actor
 	int speed           // Msecs. between frames.
 	)
 	{
-	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
-	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
-	    main_actor->get_schedule_type() == Schedule::sleep)
+	if (main_actor->Actor::get_flag(Obj_flags::asleep))
 		return;			// Zzzzz....
 	if (!cheat.in_map_editor() &&
 		(main_actor->in_usecode_control() ||

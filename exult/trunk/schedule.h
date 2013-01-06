@@ -98,7 +98,7 @@ public:
 	virtual void set_bed(Game_object *b)
 		{  }
 					// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc);
+	virtual int get_actual_type(Actor *npc) const;
 					// Look for foes.
 	bool seek_foes();
 	/* For Object_client: +++++ Override in sub-classes. */
@@ -148,7 +148,7 @@ public:
 	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);
 	virtual void now_what();
 					// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc);
+	virtual int get_actual_type(Actor *npc) const;
 	virtual void notify_object_gone(Game_object *obj);
 	virtual void ending(int newtype);
 	};
@@ -192,6 +192,7 @@ public:
 					// Create common schedules:
 	static Pace_schedule *create_horiz(Actor *n);
 	static Pace_schedule *create_vert(Actor *n);
+	static void pace(Actor *npc, char& which, int& phase, Tile_coord& blocked, int delay);
 	virtual void now_what();	// Now what should NPC do?
 	};
 
@@ -241,6 +242,7 @@ class Patrol_schedule : public Schedule
 	int state;				// The patrol state.
 	Tile_coord center;		// For 'loiter' and 'pace' path eggs.
 	char whichdir;			// For 'pace' path eggs.
+	int phase;				// For 'pace' path eggs.
 	int pace_count;			// For 'pace' path eggs.
 	Game_object *hammer;	// For 'hammer' path eggs.
 	Game_object *book;		// For 'read' path eggs.
@@ -249,7 +251,7 @@ public:
 	Patrol_schedule(Actor *n)
 		: Schedule(n), pathnum(-1), dir(1), wrap(true),
 		  failures(0), state(0), center(0, 0, 0),
-		  whichdir(0), pace_count(0), hammer(0), book(0),
+		  whichdir(0), phase(1), pace_count(0), hammer(0), book(0),
 		  seek_combat(false)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
@@ -373,13 +375,13 @@ class Sleep_schedule : public Schedule
 	Game_object *bed;		// Bed being slept on, or 0.
 	int state;
 	int spread0, spread1;		// Range of bedspread frames.
+	bool for_nap_time;
 public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
 					// Set where to sleep.
-	virtual void set_bed(Game_object *b)
-		{ bed = b; state = 0; }
+	virtual void set_bed(Game_object *b);
 	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();	// Just went dormant.
 	};
@@ -632,7 +634,7 @@ public:
 	virtual void now_what();	// Now what should NPC do?
 	virtual void im_dormant();	// Just went dormant.
 					// For Usecode intrinsic.
-	virtual int get_actual_type(Actor *npc);
+	virtual int get_actual_type(Actor *npc) const;
 	};
 
 /*
@@ -654,7 +656,7 @@ public:
 		{ return script_names; }
 	void set4(unsigned char *ent);	// Create from 4-byte entry.
 	void set8(unsigned char *ent);	// Create from Exult entry (v. -1).
-	void write8(unsigned char *ent);// Write out 8-byte Exult entry.
+	void write8(unsigned char *ent) const;// Write out 8-byte Exult entry.
 	void set(int ax, int ay, int az, 
 			unsigned char stype, unsigned char stime);
 	int get_type() const

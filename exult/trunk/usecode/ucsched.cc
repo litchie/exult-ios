@@ -766,7 +766,7 @@ void Usecode_script::step
 int Usecode_script::save
 	(
 	DataSource *out
-	)
+	) const
 	{
 					// Get delay to when due.
 	long when = Game_window::get_instance()->get_tqueue()->find_delay(
@@ -834,7 +834,7 @@ Usecode_script *Usecode_script::restore
 void Usecode_script::print
 	(
 	std::ostream& out
-	)
+	) const
 	{
 	out << hex << "Obj = 0x" << setfill((char)0x30) << setw(2)
 		<< (void *) obj << ": " "(";

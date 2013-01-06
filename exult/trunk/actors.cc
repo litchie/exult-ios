@@ -1826,10 +1826,15 @@ void Actor::set_schedule_type
 	Schedule *newsched		// New sched., or 0 to create here.
 	)
 	{
-	stop();				// Stop moving.
+		// Don't stop path_run_usecode unless it is done.
+	If_else_path_actor_action *act = action ? action->as_usecode_path() : 0;
+	if (!act || act->is_done())
+		{
+		stop();				// Stop moving
+		set_action(0);		// Clear out old action.
+		}
 	if (schedule)			// Finish up old if necessary.
 		schedule->ending(new_schedule_type);
-	set_action(0);			// Clear out old action.
 					// Save old for a moment.
 	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
 								schedule_type;

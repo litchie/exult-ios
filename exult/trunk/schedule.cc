@@ -215,7 +215,7 @@ void Schedule::im_dormant()
 int Schedule::get_actual_type
 	(
 	Actor *npc
-	)
+	) const
 	{
 	return npc->get_schedule_type();
 	}
@@ -400,7 +400,7 @@ void Street_maintenance_schedule::ending(int newtype)
 int Street_maintenance_schedule::get_actual_type
 	(
 	Actor * /* npc */
-	)
+	) const
 	{
 	return prev_type;
 	}
@@ -528,50 +528,25 @@ Pace_schedule *Pace_schedule::create_vert
 	return (new Pace_schedule(n, 0, t));
 	}
 
-/*
- *	Schedule change for pacing:
- */
-
-void Pace_schedule::now_what
-	(
-	)
+void Pace_schedule::pace(Actor *npc, char& which, int& phase, Tile_coord& blocked, int delay)
 	{
-	if (rand() % 6 == 0)		// Check for lamps, etc.
-		if (try_street_maintenance())
-			return;		// We no longer exist.
-	
 	int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
-	int delay = gwin->get_std_delay();
-	
 	switch (phase)
 		{
-		case 0:
-			phase++;
-			if (loc != npc->get_tile())
-				npc->walk_to_tile(loc, delay, delay);
-			else
-				npc->start(delay, delay);
-			break;
-
 		case 1:
 			{
 			bool changedir = false;
-			Tile_coord offset;
 			switch (dir)
 				{
 				case north:
 				case south:
 					if (which)
 						changedir = true;
-					else
-						offset = Tile_coord(0, dir == south ? 1 : -1, 0);
 					break;
 				case east:
 				case west:
 					if (!which)
 						changedir = true;
-					else
-						offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
 					break;
 				}
 			if (changedir)
@@ -610,7 +585,7 @@ void Pace_schedule::now_what
 				phase++;
 			else
 				{
-				Tile_coord p0 = npc->get_tile() + offset;
+				Tile_coord p0 = npc->get_tile().get_neighbor(dir);
 				Frames_sequence *frames = npc->get_frames(dir);
 				int& step_index = npc->get_step_index();
 				if (!step_index)		// First time?  Init.
@@ -644,6 +619,31 @@ void Pace_schedule::now_what
 			npc->start(2*delay, 2*delay);
 			break;
 		}
+	}
+
+/*
+ *	Schedule change for pacing:
+ */
+
+void Pace_schedule::now_what
+	(
+	)
+	{
+	if (rand() % 6 == 0)		// Check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
+
+	int delay = gwin->get_std_delay();
+	if (!phase)
+		{
+		phase++;
+		if (loc != npc->get_tile())
+			npc->walk_to_tile(loc, delay, delay);
+		else
+			npc->start(delay, delay);
+		}
+	else
+		Pace_schedule::pace(npc, which, phase, blocked, delay);
 	}
 
 /*
@@ -922,7 +922,7 @@ void Patrol_schedule::now_what
 			if (pathnum >= (int)paths.size())
 				paths.resize(pathnum + 1);
 							// Already know its location?
-			path =  pathnum >= 0 ? paths[pathnum] : 0;
+			path = pathnum >= 0 ? paths[pathnum] : 0;
 			if (!path)			// No, so look around.
 				{
 				Game_object_vector nearby;
@@ -1012,7 +1012,6 @@ void Patrol_schedule::now_what
 				(unsigned int)pathnum < paths.size() &&
 				(path = paths[pathnum]) != 0 &&	npc->distance(path) < 2)
 				{
-				whichdir = 1;	// Default to East-West pace.
 				int delay = 2;
 				// Scripts for all actions. At worst, display standing frame
 				// once the path egg is reached.
@@ -1102,16 +1101,15 @@ void Patrol_schedule::now_what
 				// Both 9 and 10 appear to pace vertically in the originals.
 				// I am having 9 as vert. pace for the guards in Fawn.
 				case 9:			// Vert. pace.
-					whichdir = 0;
 				case 10:		// Horiz. pace.
-					{
+					whichdir = (qual&1)^1;
 					pace_count = -1;
+					phase = 1;
 					scr->start();	// Start next tick.
 					center = path->get_tile();
 					state = 5;
 					npc->start(speed, speed*delay);
 					return;
-					}
 				case 11:		// 50% reverse.
 					if (rand()%2)
 						dir *= -1;
@@ -1213,7 +1211,6 @@ void Patrol_schedule::now_what
 				}
 			break;
 		case 2:	// Sitting/reading.
-			{
 					// Stay 5-15 secs.
 			if ((npc->get_framenum()&0xf) == Actor::sit_frame)
 				{
@@ -1231,9 +1228,7 @@ void Patrol_schedule::now_what
 				npc->start(250, rand()%1000);
 			state = 3;	// Continue on afterward.
 			break;
-			}
 		case 3:	// Stand up.
-			{
 			if ((npc->get_framenum()&0xf) == Actor::sit_frame)
 				{
 				if (book)
@@ -1253,9 +1248,7 @@ void Patrol_schedule::now_what
 				}
 			state = 0;
 			break;
-			}
 		case 4:	// Loiter.
-			{
 			if (rand()%5 == 0)
 				{
 				state = 0;
@@ -1271,87 +1264,23 @@ void Patrol_schedule::now_what
 											rand()%2000);
 				}
 			break;
-			}
 		case 5:	// Pacing.
-			{
 			if (npc->get_tile().distance(center) < 1)
 				{
 				pace_count++;
-				if (pace_count > 0 && pace_count == 6)
+				if (pace_count == 6)
 					{
-					Usecode_script *scr = new Usecode_script(npc);
-					(*scr) << Ucscript::npc_frame + Actor::standing;
-					scr->start();	// Start next tick.
+					npc->change_frame(npc->get_dir_framenum(
+						npc->get_dir_facing(), Actor::standing));
+					npc->start(3*speed, 3*speed);
 					state = 0;
-					npc->start(speed, 2*speed);
-					return;
-					}
-				}
-			int dir = npc->get_dir_facing();	// Use NPC facing for starting direction
-			bool changedir = false;
-			Tile_coord offset;
-			switch (dir)
-				{
-				case north:
-				case south:
-					if (whichdir)
-						changedir = true;
-					else
-						offset = Tile_coord(0, dir == south ? 1 : -1, 0);
 					break;
-				case east:
-				case west:
-					if (!whichdir)
-						changedir = true;
-					else
-						offset = Tile_coord(dir == east ? 1 : -1, 0, 0);
-					break;
-				}
-			
-			if (blocked.tx != -1)		// Blocked?
-				{
-				Game_object *obj = npc->find_blocking(blocked, dir);
-				if (obj)
-					{
-					blocked.tx = -1;
-					changedir = true;
-					if (obj->as_actor())
-						{
-						Monster_info *minfo = npc->get_info().get_monster_info();
-						if (!minfo || !minfo->cant_yell())
-							{
-							npc->say(first_move_aside, last_move_aside);
-								// Wait longer.
-							npc->start(speed, speed);
-							return;
-							}
-						}
 					}
-				}
-
-			if (changedir)
-				{
-				if (npc->get_tile().distance(center) < 1)
+				if (phase >= 2 && phase <= 4)
 					pace_count--;
-				const int facedirs[] = {west, north, north, east, east, south, south, west};
-				npc->change_frame(npc->get_dir_framenum(
-					facedirs[dir], Actor::standing));
-				npc->start(2*speed, 2*speed);
-				return;
 				}
-
-			Tile_coord p0 = npc->get_tile() + offset;
-			Frames_sequence *frames = npc->get_frames(dir);
-			int& step_index = npc->get_step_index();
-			if (!step_index)		// First time?  Init.
-				step_index = frames->find_unrotated(npc->get_framenum());
-							// Get next (updates step_index).
-			int frame = frames->get_next(step_index);
-				// One step at a time.
-			npc->step(p0, frame);
-			npc->start(speed, speed);
+			Pace_schedule::pace(npc, whichdir, phase, blocked, speed);
 			break;
-			}
 		default:
 			// Just in case.
 			break;
@@ -1921,7 +1850,7 @@ static void Stand_up
 Sleep_schedule::Sleep_schedule
 	(
 	Actor *n
-	) : Schedule(n), bed(0), state(0)
+	) : Schedule(n), bed(0), state(0), for_nap_time(false)
 	{
 	floorloc.tx = -1;		// Set to invalid loc.
 	if (Game::get_game_type() == BLACK_GATE)
@@ -1975,12 +1904,15 @@ void Sleep_schedule::now_what
 		state = 1;
 		Game_object_vector tops;	// Want to find top of bed.
 		bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
+		int floor = (bed->get_tile().tz) / 5;
 		for (Game_object_vector::const_iterator it = tops.begin(); 
 						it != tops.end(); ++it)
 			{
 			Game_object *top = *it;
 			int frnum = top->get_framenum();
-			if (frnum >= spread0 && frnum <= spread1)
+			Tile_coord tpos = top->get_tile();
+					// Restrict to sheets on the same floor as the selected bed.
+			if (frnum >= spread0 && frnum <= spread1 && floor == (tpos.tz/5))
 				{
 				bed = top;
 				break;
@@ -2017,11 +1949,21 @@ void Sleep_schedule::now_what
 			bed->change_frame(bedframe);
 			}
 		int bedspread = (bedframe >= spread0 && !(bedframe%2));
-					// Put NPC on top of bed.
-		npc->move(bedloc.tx, bedloc.ty, bedloc.tz + 
+					// Put NPC on top of bed, making sure that children are
+					// not completely covered by sheets.
+		int delta = npc->get_info().get_3d_height();
+		delta = (delta < 4) ? (delta - 4) : 0;
+		npc->move(bedloc.tx + delta, bedloc.ty + delta, bedloc.tz + 
 				(bedspread ? 0 : info.get_3d_height()));
-		npc->force_sleep();
+					// Either call bed usecode for avatar or put NPC to sleep.
 		state = 2;
+		if (for_nap_time)		// Usecode 622 handles sleeping.
+			{					// Calling it may delete us, though.
+			ucmachine->call_usecode(0x622, bed, Usecode_machine::double_click);
+			return; 			// So leave nothing to chance.
+			}
+		else
+			npc->force_sleep();
 		break;
 		}
 	default:
@@ -2054,14 +1996,22 @@ void Sleep_schedule::ending
 					// Not time to get up, Penumbra!
 	    new_type == static_cast<int>(sleep))
 		return;			// ++++Does this leave NPC's stuck?++++
+
+	bool makebed = false;
+	int dir;
 	if (bed &&			// Still in bed?
 	    (npc->get_framenum()&0xf) == Actor::sleep_frame &&
 	    npc->distance(bed) < 8)
 		{			// Locate free spot.
 		if (floorloc.tx == -1)
+			{
 					// Want spot on floor.
 			floorloc = npc->get_tile();
-		floorloc.tz -= floorloc.tz%5;
+					// Note: doing this in all cases may cause incorrect
+					// placement when getting out of bed (e.g., top floor
+					// bed in Spark's house.
+			floorloc.tz -= floorloc.tz%5;
+			}
 		Tile_coord pos = Map_chunk::find_spot(floorloc, 
 				6, npc->get_shapenum(), 
 				static_cast<int>(Actor::standing), 0);
@@ -2075,12 +2025,31 @@ void Sleep_schedule::ending
 		Actor_vector occ;	// Unless there's another occupant.
 		if (frnum >= spread0 && frnum <= spread1 && !(frnum%2) &&
 			  bed->find_nearby_actors(occ, c_any_shapenum, 0) < 2)
-			bed->set_frame(frnum - 1);
+			{				// Make the bed set itself after a small delay.
+			makebed = true;
+			Usecode_script *scr = new Usecode_script(bed);
+			(*scr) << Ucscript::dont_halt << Ucscript::finish
+			       << Ucscript::delay_ticks << 3 << Ucscript::frame << frnum - 1;
+			scr->start();
+			Tile_coord bloc = bed->get_center_tile();
+							// Treat as cartesian coords.
+			dir = static_cast<int>(Get_direction(floorloc.ty - bloc.ty, bloc.tx - floorloc.tx));
+			}
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
 	npc->clear_sleep();
 	npc->set_frame(npc->get_dir_framenum(Actor::standing));
+	if (makebed)
+		{				// Animation for making bed.
+		Usecode_script *scr = new Usecode_script(npc);
+		(*scr) << Ucscript::dont_halt << Ucscript::face_dir << dir
+		       << Ucscript::npc_frame + Actor::ready_frame
+		       << Ucscript::delay_ticks << 1 << Ucscript::npc_frame + Actor::raise1_frame
+		       << Ucscript::delay_ticks << 1 << Ucscript::npc_frame + Actor::ready_frame
+		       << Ucscript::delay_ticks << 1 << Ucscript::npc_frame + Actor::standing;
+		scr->start();
+		}
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}
@@ -2094,6 +2063,16 @@ void Sleep_schedule::notify_object_gone(Game_object *obj)
 		bed = 0;
 		state = 0;
 	}
+}
+
+void Sleep_schedule::set_bed(Game_object *b)
+{
+	if (bed)
+		remove_clients();
+	npc->set_action(0);
+	bed = b;
+	state = 0;
+	for_nap_time = true;
 }
 
 /*
@@ -4694,7 +4673,7 @@ void Walk_to_schedule::im_dormant
 int Walk_to_schedule::get_actual_type
 	(
 	Actor * /* npc */
-	)
+	) const
 	{
 	return new_schedule;
 	}
@@ -4757,7 +4736,7 @@ void Schedule_change::set8
 void Schedule_change::write8
 	(
 	unsigned char *entry		// 8 bytes to write to schedule.dat.
-	)
+	) const
 	{
 	Write2(entry, pos.tx);
 	Write2(entry, pos.ty);		// 4

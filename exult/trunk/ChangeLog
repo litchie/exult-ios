@@ -1,3 +1,22 @@
+2013-01-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actions.cc: Fixed Fawn guards sometimes not being able to open doors.
+	* actions.*, actors.cc: Prevent schedule changes from stopping intrinsics
+	  path_run_usecode and si_path_run_usecode. This fixes avatar not animating
+	  to roll bedroll if sleep is cancelled, and maybe a few other things.
+	* gamewin.cc: Eliminate double check for avatar paralysis. Sleep schedule no
+	  longer prevents avatar from moving (sleep flag does that).
+	* paths.cc: More changes to Fast_pathfinder_client::is_grabable, as previous
+	  version prevented, for example, the gavel at Spark's from being used.
+	* schedule.*: Refactored code common to patrol and pace schedules. NPCs will
+	  now make their beds when getting out of sleep schedule. Children are now
+	  better positioned in beds.
+	* schedule.*, usecode/intrinsics.cc: Fixed bugs #3599106 "beds not working
+	  properly again" and #3330452 "Sleeping on the first or higher floor not
+	  working correctly" (and comments). Also, double-clicking on beds can now
+	  be 'cancelled' by moving away while moving towards the bed, as happens in
+	  the originals.
+	* actions.*, schedule.*, tqueue.*, usecode/ucsched.*: Const-correctness.
+
 2013-01-05	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* schedule.cc: Add back quality check for dough and clear okay_to_take flag
 	  since okay_to_take doesn't get saved. This should fix dough not being used

@@ -61,10 +61,10 @@ public:
 			Tile_coord const& dest, Actor_action *when_there, 
 					bool from_off_screen = false);
 					// Get destination, or ret. 0.
-	virtual int get_dest(Tile_coord& dest)
+	virtual int get_dest(Tile_coord& dest) const
 		{ return 0; }
 					// Check for Astar.
-	virtual int following_smart_path()
+	virtual int following_smart_path() const
 		{ return 0; }
 	virtual If_else_path_actor_action *as_usecode_path()
 		{ return 0; }
@@ -123,9 +123,9 @@ public:
 	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const& src, 
 				Tile_coord const& dest, int dist = 0);
 					// Get destination, or ret. 0.
-	virtual int get_dest(Tile_coord& dest);
+	virtual int get_dest(Tile_coord& dest) const;
 					// Check for Astar.
-	virtual int following_smart_path();
+	virtual int following_smart_path() const;
 	virtual int get_speed() const
 		{ return speed; }
 	virtual Actor_action *kill()
@@ -169,8 +169,10 @@ public:
 		Actor_action *s, Actor_action *f = 0);
 	~If_else_path_actor_action();
 	void set_failure(Actor_action *f);
-	bool done_and_failed()		// Happens if no path found in ctor.
+	bool done_and_failed() const		// Happens if no path found in ctor.
 		{ return done && failed; }
+	bool is_done() const
+		{ return done; }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	virtual If_else_path_actor_action *as_usecode_path()
@@ -221,7 +223,7 @@ public:
 		{ delete [] frames; }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
-	int get_index()
+	int get_index() const
 		{ return index; }
 	virtual int get_speed() const
 		{ return speed; }
