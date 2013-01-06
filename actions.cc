@@ -37,6 +37,7 @@
 #include "ucmachine.h"
 #include "cheat.h"
 #include "party.h"
+#include "monstinf.h"
 
 using std::cout;
 using std::endl;
@@ -244,7 +245,9 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	if (!speed)
 		return 0;		// Not moving.
 	bool done;			// So we'll know if this is the last.
-	if (!path->GetNextStep(tile, done))
+	if (!path->GetNextStep(tile, done)
+				   // This happens sometimes (bedroll cancel).
+	    || tile == actor->get_tile())
 		{
 		reached_end = true;	// Did it.
 		return (0);
@@ -284,12 +287,17 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	if (deleted) return 0;
 	reached_end = false;
 	frames->decrement(step_index);	// We didn't take the step.
+	Monster_info *minf;
 					// Blocked by a door?
 	if (actor->distance(tile) <= 2 &&
 	    !cheat.in_map_editor() &&	// And NOT map-editing?
-		(actor->get_info().get_shape_class() == Shape_info::human ||
-			actor->get_effective_prop(Actor::intelligence) > 7))
 				// +++++Check for intelligence; guessing how to do it.
+		(actor->get_info().get_shape_class() == Shape_info::human ||
+			actor->get_effective_prop(Actor::intelligence) >= 6 ||
+				// Also try based on average monster intelligence
+				// (Fawn guards need this half the time).
+			((minf = actor->get_info().get_monster_info()) != 0 &&
+			 minf->get_intelligence() >= 6)))
 		{
 		Game_object *door = Game_object::find_door(tile);
 		if (door != 0 && door->is_closed_door() &&
@@ -372,7 +380,7 @@ int Path_walking_actor_action::open_door
 #endif
 		signed char frames[2];
 		frames[0] = actor->get_dir_framenum(dir, Actor::standing);
-		frames[1] = actor->get_dir_framenum(dir, 3);
+		frames[1] = actor->get_dir_framenum(dir, Actor::ready_frame);
 		signed char standframe = frames[0];
 		set_subseq(create_action_sequence(actor, past,
 			new Sequence_actor_action(
@@ -479,7 +487,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 int Path_walking_actor_action::get_dest
 	(
 	Tile_coord& dest		// Returned here.
-	)
+	) const
 	{
 	dest = path->get_dest();
 	return (1);
@@ -491,7 +499,7 @@ int Path_walking_actor_action::get_dest
 
 int Path_walking_actor_action::following_smart_path
 	(
-	)
+	) const
 	{
 	return path != 0 && path->following_smart_path();
 	}

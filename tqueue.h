@@ -43,7 +43,7 @@ public:
 	Time_sensitive() : queue_cnt(0), always(false)
 		{  }
 	virtual ~Time_sensitive();
-	int in_queue()
+	int in_queue() const
 		{ return queue_cnt > 0; }
 	void set_always(bool tf)	// Should be called before placing in
 					//   queue.
@@ -97,9 +97,9 @@ public:
 					// Remove object's entry.
 	int remove(Time_sensitive *obj);
 	int remove(Time_sensitive *obj, long udata);
-	int find(Time_sensitive *obj);	// Find an entry.
+	int find(Time_sensitive const *obj) const;	// Find an entry.
 					// Find delay when obj. is due.
-	long find_delay(Time_sensitive *obj, uint32 curtime);
+	long find_delay(Time_sensitive const *obj, uint32 curtime) const;
 					// Activate entries that are 'due'.
 	inline void activate(uint32 curtime)
 		{
