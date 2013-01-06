@@ -48,14 +48,14 @@ class Usecode_script : public Time_sensitive
 						int nhalt, int del);
 public:
 	Usecode_script(Game_object *o, Usecode_value *cd = 0);
-	~Usecode_script();
+	virtual ~Usecode_script();
 	void start(long delay = 1);	// Start after 'delay' msecs.
 	long get_delay() const
 		{ return delay; }
 	void halt();			// Stop executing.
 	bool is_no_halt() const		// Is the 'no_halt' flag set?
 		{ return no_halt; }
-	int is_activated()		// Started already?
+	int is_activated() const	// Started already?
 		{ return i > 0; }
 	void add(int v1);		// Append new instructions:
 	void add(int v1, int v2);
@@ -81,9 +81,9 @@ public:
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir, int dz);
 					// Save/restore.
-	int save(DataSource *out);
+	int save(DataSource *out) const;
 	static Usecode_script *restore(Game_object *item, DataSource *in);
-	void print(std::ostream& out);	// Print values.
+	void print(std::ostream& out) const;	// Print values.
 	void kill_barks()
 		{ killed_barks = true; }
 	};

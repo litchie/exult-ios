@@ -2381,12 +2381,6 @@ USECODE_INTRINSIC(nap_time)
 	Schedule *sched = gwin->get_main_actor()->get_schedule();
 	if (sched)			// Tell (sleep) sched. to use bed.
 		sched->set_bed(bed);
-					// Give him a chance to get there (at
-					//   most 5 seconds.)
-	Wait_for_arrival(gwin->get_main_actor(), bed->get_tile(),
-								5000);
-					// !!! Seems 622 handles sleeping.
-	call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }
 

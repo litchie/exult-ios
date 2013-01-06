@@ -163,12 +163,12 @@ int Time_queue::remove
 
 int Time_queue::find
 	(
-	Time_sensitive *obj
-	)
+	Time_sensitive const *obj
+	) const
 	{
 	if(data.size()==0)
 		return 0;
-	for(Temporal_sequence::iterator it=data.begin();
+	for(Temporal_sequence::const_iterator it=data.begin();
 		it!=data.end(); ++it)
 		{
 		if(it->handler==obj)
@@ -185,13 +185,13 @@ int Time_queue::find
 
 long Time_queue::find_delay
 	(
-	Time_sensitive *obj,
+	Time_sensitive const *obj,
 	uint32 curtime
-	)
+	) const
 	{
 	if(data.size()==0)
 		return -1;
-	for(Temporal_sequence::iterator it=data.begin();
+	for(Temporal_sequence::const_iterator it=data.begin();
 		it!=data.end(); ++it)
 		{
 		if(it->handler==obj)

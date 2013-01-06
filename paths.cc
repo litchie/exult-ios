@@ -501,7 +501,7 @@ int Fast_pathfinder_client::at_goal
 	return abox.intersects(destbox);
 	}
 
-#define MAX_GRAB_DIST 1
+#define MAX_GRAB_DIST 3
 
 int Fast_pathfinder_client::is_grabable
 	(
@@ -512,9 +512,36 @@ int Fast_pathfinder_client::is_grabable
 	{
 	if (from->distance(to) <= 1)
 		return 1;		// Already okay.
-	Fast_pathfinder_client client(from, to, 1, mf);
+	Game_map *gmap = Game_window::get_instance()->get_map();
+
+	Fast_pathfinder_client client(from, to, MAX_GRAB_DIST, mf);
 	Astar path;
-	return path.NewPath(from->get_tile(), to->get_center_tile(), &client);
+	Tile_coord dt = to->get_center_tile();
+	if (!path.NewPath(from->get_tile(), dt, &client))
+		return 0;
+	Tile_coord t;			// Check each tile.
+	bool done;
+	if (path.get_num_steps() == 0)
+		t = from->get_center_tile();
+	else
+		{
+		while (path.GetNextStep(t, done))
+			if (t != from->get_tile() && !client.at_goal(t, dt) && gmap->is_tile_occupied(t))
+				return 0;	// Blocked.
+		t.tz += from->get_info().get_3d_height();
+		}
+
+	if (!client.at_goal(t, dt))
+		return 0;
+	Zombie zpath;
+	if (!zpath.NewPath(t, dt, 0))	// Should always succeed.
+		return 0;
+	if (zpath.get_num_steps() == 0)
+		return 0;
+	while (zpath.GetNextStep(t, done))
+		if (t != from->get_tile() && !client.at_goal(t, dt) && gmap->is_tile_occupied(t))
+			return 0;	// Blocked.
+	return 1;
 	}
 
 int Fast_pathfinder_client::is_grabable
@@ -526,9 +553,35 @@ int Fast_pathfinder_client::is_grabable
 	{
 	if (from->distance(to) <= 1)
 		return 1;		// Already okay.
+	Game_map *gmap = Game_window::get_instance()->get_map();
+
 	Fast_pathfinder_client client(from, to, MAX_GRAB_DIST, mf);
 	Astar path;
-	return path.NewPath(from->get_tile(), to, &client);
+	if (!path.NewPath(from->get_tile(), to, &client))
+		return 0;
+	Tile_coord t;			// Check each tile.
+	bool done;
+	if (path.get_num_steps() == 0)
+		t = from->get_center_tile();
+	else
+		{
+		while (path.GetNextStep(t, done))
+			if (t != from->get_tile() && !client.at_goal(t, to) && gmap->is_tile_occupied(t))
+				return 0;	// Blocked.
+		t.tz += from->get_info().get_3d_height();
+		}
+
+	if (!client.at_goal(t, to))
+		return 0;
+	Zombie zpath;
+	if (!zpath.NewPath(t, to, 0))	// Should always succeed.
+		return 0;
+	if (zpath.get_num_steps() == 0)
+		return 0;
+	while (zpath.GetNextStep(t, done))
+		if (t != from->get_tile() && !client.at_goal(t, to) && gmap->is_tile_occupied(t))
+			return 0;	// Blocked.
+	return 1;
 	}
 
 
