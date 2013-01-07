@@ -1132,7 +1132,7 @@ void Patrol_schedule::now_what
 					npc->add_readied(hammer, lhand, 0, 1);
 					npc->add_dirty();
 
-					int hammersfx= Game::get_game_type() == BLACK_GATE ? 45:49;
+					int hammersfx= GAME_BG ? 45 : 49;
 					(*scr) << Ucscript::delay_ticks << 2 <<
 						Ucscript::npc_frame + Actor::ready_frame <<
 						Ucscript::delay_ticks << 2 <<
@@ -2075,7 +2075,7 @@ void Sleep_schedule::ending
 		int frnum = bed->get_framenum();
 		if (new_type != static_cast<int>(combat) &&	 // Not if going into combat
 		      frnum >= spread0 && frnum <= spread1 && !(frnum%2) &&
-			  is_bed_occupied(bed, npc)) // And not if there is another occupant.
+			  !is_bed_occupied(bed, npc)) // And not if there is another occupant.
 			{				// Make the bed set itself after a small delay.
 			makebed = true;
 			Usecode_script *scr = new Usecode_script(bed);
