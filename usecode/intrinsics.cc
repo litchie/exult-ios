@@ -2349,34 +2349,20 @@ USECODE_INTRINSIC(nap_time)
 	Game_object *bed = get_item(parms[0]);
 	if (!bed)
 		return no_ret;
-	Actor_vector npcs;		// See if bed is occupied by an NPC.
-	int cnt = bed->find_nearby_actors(npcs, c_any_shapenum, 0);
-	if (cnt > 0)
-		{
-		Actor_vector::const_iterator it;
-		for (it = npcs.begin(); it != npcs.end(); ++it)
-			{
-			Game_object *npc = *it;
-			int zdiff = npc->get_lift() - bed->get_lift();
-			if (npc != gwin->get_main_actor() &&
-			    (npc->get_framenum()&0xf) == Actor::sleep_frame &&
-						zdiff <= 2 && zdiff >= -2)
-				break;	// Found one.
-			}
-		if (it != npcs.end())
-			{		// Show party member's face.
-			int party_cnt = partyman->get_count();
-			int npcnum = party_cnt ? partyman->get_member(
-						rand()%party_cnt) : 356;
-			Usecode_value actval(-npcnum), frval(0);
-			show_npc_face(actval, frval);
-			conv->show_npc_message(text_msgs[first_bed_occupied +
-						rand()%num_bed_occupied]);
-			remove_npc_face(actval);
-			gwin->get_main_actor()->set_schedule_type(
-						Schedule::follow_avatar);
-			return no_ret;
-			}
+	// See if bed is occupied by an NPC.
+	if (Sleep_schedule::is_bed_occupied(bed, gwin->get_main_actor()))
+		{		// Show party member's face.
+		int party_cnt = partyman->get_count();
+		int npcnum = party_cnt ? partyman->get_member(
+					rand()%party_cnt) : 356;
+		Usecode_value actval(-npcnum), frval(0);
+		show_npc_face(actval, frval);
+		conv->show_npc_message(text_msgs[first_bed_occupied +
+					rand()%num_bed_occupied]);
+		remove_npc_face(actval);
+		gwin->get_main_actor()->set_schedule_type(
+					Schedule::follow_avatar);
+		return no_ret;
 		}
 	Schedule *sched = gwin->get_main_actor()->get_schedule();
 	if (sched)			// Tell (sleep) sched. to use bed.
