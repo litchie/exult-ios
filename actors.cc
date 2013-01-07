@@ -693,8 +693,15 @@ void Actor::unready_weapon
 	gwin->add_dirty(this);
 	if (!spots[belt])		// Belt free?
 		{
+		add_dirty();
 		obj->remove_this(1);
 		add_readied(obj, belt);
+		}
+	if (party_id < 0)
+		{
+		add_dirty();
+		obj->remove_this(1);
+		Container_game_object::add(obj, true);
 		}
 	}
 

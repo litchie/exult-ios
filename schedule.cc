@@ -1128,7 +1128,6 @@ void Patrol_schedule::now_what
 					}
 						// For safety, unready weapon first.
 					npc->unready_weapon();
-					npc->add_dirty();
 						// Ready the hammer in the weapon hand.
 					npc->add_readied(hammer, lhand, 0, 1);
 					npc->add_dirty();
@@ -4182,7 +4181,6 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 			add_client(tongs);
 		}
-		npc->add_dirty();
 		npc->unready_weapon(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
@@ -4348,7 +4346,6 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 			add_client(tongs);
 		}
-		npc->add_dirty();
 		npc->unready_weapon(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
