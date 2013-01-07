@@ -1866,6 +1866,36 @@ Sleep_schedule::Sleep_schedule
 	}
 
 /*
+ * Checks if a bed is being used by a sleeping NPC. The second
+ * parameter is a 'whitelist' NPC which will be ignored, and
+ * should be used for preventing an NPC from detecting himself
+ * as occupying the bed.
+ */
+
+bool Sleep_schedule::is_bed_occupied
+	(
+	Game_object *bed,
+	Actor *npc
+	)
+	{
+			// Check if someone is already in the bed.
+	Actor_vector occ;	// Unless there's another occupant.
+	bed->find_nearby_actors(occ, c_any_shapenum, 2);
+	Rectangle foot = bed->get_footprint();
+	int bedz = bed->get_tile().tz/5;
+	for (Actor_vector::iterator it = occ.begin(); it != occ.end(); ++it)
+		{
+		if (npc == *it)
+			continue;
+		Tile_coord tn = (*it)->get_tile();
+		if (tn.tz/5 == bedz && ((*it)->get_framenum()&0xf) == Actor::sleep_frame &&
+				foot.has_world_point(tn.tx, tn.ty))
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Schedule change for 'sleep':
  */
 
@@ -1873,16 +1903,38 @@ void Sleep_schedule::now_what
 	(
 	)
 	{
+	if (bed && state <= 1 && is_bed_occupied(bed, npc))
+		{
+		bed = 0;
+		state = 0;
+		npc->stop();
+		}
 	if (!bed && state == 0 &&		// Always find bed.
 			!npc->get_flag(Obj_flags::asleep))	// Unless flag already set
 		{			// Find closest EW or NS bed.
-		static int bedshapes[2] = {696, 1011};
-		Stand_up(npc);
-		bed = npc->find_closest(bedshapes, 2);
-		if (!bed && GAME_BG)	// Check for Gargoyle beds.
+		vector<int> bedshapes;
+		bedshapes.push_back(696);
+		bedshapes.push_back(1011);
+		if (GAME_BG)
 			{
-			static int gbeds[2] = {363, 312};
-			bed = npc->find_closest(gbeds, 2);
+			bedshapes.push_back(363);
+			bedshapes.push_back(312);
+			}
+		Game_object_vector beds;	// Want to find top of bed.
+		for (vector<int>::iterator it = bedshapes.begin();
+		     it != bedshapes.end(); ++it)
+			npc->find_nearby(beds, *it, 24, 0);
+		int best_dist = 100;
+		for (Game_object_vector::iterator it = beds.begin();
+		     it != beds.end(); ++it)
+			{
+			Game_object *newbed = *it;
+			int newdist = npc->distance(newbed);
+			if (newdist < best_dist && !is_bed_occupied(newbed, npc))
+				{
+				best_dist = newdist;
+				bed = newbed;
+				}
 			}
 		}
 	add_client(bed);
@@ -1942,6 +1994,7 @@ void Sleep_schedule::now_what
 		Shape_info& info = bed->get_info();
 		Tile_coord bedloc = bed->get_tile();
 		floorloc = npc->get_tile();
+		Usecode_script::terminate(bed);
 		int bedframe = bed->get_framenum();// Unmake bed.
 		if (bedframe >= spread0 && bedframe < spread1 && (bedframe%2))
 			{
@@ -2021,13 +2074,13 @@ void Sleep_schedule::ending
 		floorloc = pos;
 					// Make bed.
 		int frnum = bed->get_framenum();
-		Actor_vector occ;	// Unless there's another occupant.
-		if (frnum >= spread0 && frnum <= spread1 && !(frnum%2) &&
-			  bed->find_nearby_actors(occ, c_any_shapenum, 0) < 2)
+		if (new_type != static_cast<int>(combat) &&	 // Not if going into combat
+		      frnum >= spread0 && frnum <= spread1 && !(frnum%2) &&
+			  is_bed_occupied(bed, npc)) // And not if there is another occupant.
 			{				// Make the bed set itself after a small delay.
 			makebed = true;
 			Usecode_script *scr = new Usecode_script(bed);
-			(*scr) << Ucscript::dont_halt << Ucscript::finish
+			(*scr) << Ucscript::finish
 			       << Ucscript::delay_ticks << 3 << Ucscript::frame << frnum - 1;
 			scr->start();
 			Tile_coord bloc = bed->get_center_tile();
