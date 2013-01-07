@@ -384,6 +384,7 @@ public:
 	virtual void set_bed(Game_object *b);
 	virtual void notify_object_gone(Game_object *obj);
 	virtual void im_dormant();	// Just went dormant.
+	static bool is_bed_occupied(Game_object *bed, Actor *npc);
 	};
 
 /*
