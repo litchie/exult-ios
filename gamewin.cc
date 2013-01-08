@@ -626,7 +626,7 @@ Game_map *Game_window::get_map
 	int num				// Should be > 0.
 	)
 	{
-	if (num >= (int)maps.size())
+	if (num >= static_cast<int>(maps.size()))
 		maps.resize(num + 1);
 	if (maps[num] == 0)
 		{
@@ -837,8 +837,8 @@ void Game_window::add_npc
 	)
 	{
 	assert(num == npc->get_npc_num());
-	assert(num <= (int)npcs.size());
-	if (num == (int)npcs.size())		// Add at end.
+	assert(num <= static_cast<int>(npcs.size()));
+	if (num == static_cast<int>(npcs.size()))		// Add at end.
 		npcs.push_back(npc);
 	else
 		{			// Better be unused.
@@ -1313,6 +1313,10 @@ void Game_window::init_actors
 		return;
 	}
 	read_npcs();			// Read in all U7 NPC's.
+	int avsched = combat ? Schedule::combat : Schedule::follow_avatar;
+	if (!main_actor_can_act_charmed())
+		avsched = Schedule::combat;
+	main_actor->set_schedule_type(avsched);
 
 	// Was a name, sex or skincolor set in Game
 	// this bascially detects 
@@ -1457,6 +1461,7 @@ void Game_window::read
 					// DON'T do anything that might paint()
 					// before calling read_npcs!!
 	setup_game(cheat.in_map_editor());	// Read NPC's, usecode.
+	Mouse::mouse->set_speed_cursor();
 	}
 
 /*
@@ -2356,11 +2361,11 @@ void Game_window::show_items
 			", hp = " << obj->get_obj_hp() << ", weight = "<< obj->get_weight()
 			 << ", volume = " << obj->get_volume()
 			<< endl;
-		cout << "obj = " << (void *) obj << endl;
+		cout << "obj = " << static_cast<void *>(obj) << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
 		if (obj->is_egg())	// Show egg info. here.
-			((Egg_object *)obj)->print_debug();
+			obj->as_egg()->print_debug();
 		}
 	else				// Obj==0
 		{
@@ -2650,9 +2655,11 @@ void Game_window::schedule_npcs
 	for (Actor_vector::iterator it = npcs.begin() + 1; 
 						it != npcs.end(); ++it)
 		{
-		Npc_actor *npc = (Npc_actor *) *it;
+		Npc_actor *npc;
+		if (!*it || (npc = (*it)->as_npc()) == 0)
+			continue;
 					// Don't want companions leaving.
-		if (npc && npc->get_schedule_type() != Schedule::wait &&
+		if (npc->get_schedule_type() != Schedule::wait &&
 				(npc->get_schedule_type() != Schedule::combat ||
 					npc->get_target() == 0))
 			npc->update_schedule(hour/3, backwards, hour%3 == 0 ? -1 : 0);
@@ -2674,8 +2681,8 @@ void Game_window::mend_npcs
 	for (Actor_vector::iterator it = npcs.begin(); 
 						it != npcs.end(); ++it)
 		{
-		Npc_actor *npc = (Npc_actor *) *it;
-		if (npc)
+		Npc_actor *npc;
+		if (*it && (npc = (*it)->as_npc()) != 0)
 			npc->mend_wounds(true);
 		}
 	}
@@ -2878,7 +2885,7 @@ void Game_window::attack_avatar
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 							it != npcs.end();++it)
 		{
-		Actor *npc = (Actor *) *it;
+		Actor *npc = *it;
 					// No monsters, except guards; unless no local guards.
 		if ((gshape < 0 || npc->get_shapenum() == gshape || !npc->is_monster())
 				&& !npc->is_in_party())
@@ -3130,7 +3137,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 			while ((each = it.get_next()) != 0)
 				{
 				if (each->is_egg())
-					((Egg_object *) each)->reset();
+					each->as_egg()->reset();
 				else if (each->get_flag(Obj_flags::is_temporary))
 					removes.push_back(each);
 				}
@@ -3141,7 +3148,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 #ifdef DEBUG
 		Tile_coord t = (*it)->get_tile();
 		cout << "Culling object: " << (*it)->get_name() <<
-			'(' << (void *)(*it) << ")@" << 
+			'(' << static_cast<void *>(*it) << ")@" << 
 			t.tx << "," << t.ty << "," << t.tz <<endl;
 #endif
 		(*it)->delete_contents();  // first delete item's contents

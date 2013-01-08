@@ -15,6 +15,10 @@
 	* objs/objnames.cc: Incorrect branch caused undefined behavior.
 	Rev 7266:
 	* shapes/*: Eliminating warnings.
+	Rev 7267:
+	* gamewin.cc: Avatar now properly restores into combat if the game was saved
+	  during combat. Correct mouse shape is set in all cases.
+	* gamewin.*, mouse.*: Eliminating warnings.
 
 2013-01-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actions.cc: Fixed Fawn guards sometimes not being able to open doors.
