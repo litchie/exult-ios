@@ -665,45 +665,52 @@ bool Actor::ready_best_weapon
 	if (wtype == rhand) // tell it the correct ready spot
 		add_readied(best, lhand);
 	else
-		add(best, 1);			// Should go to the right place.
+		add(best, true);			// Should go to the right place.
 	ready_best_shield();	// Also add a shield for 1-handed weapons.
 	if (remove1)			// Put back other things.
-		add(remove1, 1);
+		add(remove1, true);
 	if (remove2)
-		add(remove2, 1);
+		add(remove2, true);
 	if (best_ammo)
 		swap_ammo(best_ammo);
 	return true;
 	}
 
 /**
- *	Try to store the readied weapon.
+ *	Try to store given object.
  */
 
-void Actor::unready_weapon
+bool Actor::empty_hand
+	(
+	Game_object *obj
+	)
+	{
+	if (!obj)
+		return true;
+	static int chkspots[] = {belt, backpack};		
+	add_dirty();
+	obj->remove_this(1);
+	for (size_t i = 0; i < sizeof(chkspots)/sizeof(chkspots[0]); i++)
+		if (add_readied(obj, chkspots[i], true, true))		// Slot free?
+			return true;
+
+	return false;
+	}
+
+/**
+ *	Try to store what is the hands.
+ */
+
+void Actor::empty_hands
 	(
 	)
 	{
 	Game_object *obj = spots[lhand];
-	if (!obj)
-		return;
-	Shape_info& info = obj->get_info();
-	if (!info.get_weapon_info())	// A weapon?
-		return;
-	gwin->add_dirty(this);
-	if (!spots[belt])		// Belt free?
-		{
-		add_dirty();
-		obj->remove_this(1);
-		add_readied(obj, belt);
-		}
-	if (party_id < 0)
-		{
-		add_dirty();
-		obj->remove_this(1);
-		Container_game_object::add(obj, true);
-		}
-	}
+	if (!empty_hand(obj))
+		add(obj, true);
+	obj = spots[rhand];
+	if (!empty_hand(obj))
+		add(obj, true);	}
 
 /**
  *	Get effective weapon shape, taking casting frames in consideration.
@@ -1865,14 +1872,14 @@ void Actor::set_schedule_type
 			schedule = new Talk_schedule(this);
 			break;
 		case Schedule::dance:
-			unready_weapon();
+			empty_hands();
 			schedule = new Dance_schedule(this);
 			break;
 		case Schedule::farm:	// Use a scythe.
 			schedule = new Tool_schedule(this, 618);
 			break;
 		case Schedule::tend_shop:// For now.
-			unready_weapon();
+			empty_hands();
 			schedule = new Loiter_schedule(this, 3);
 			break;
 		case Schedule::miner:	// Use a pick.
@@ -1893,18 +1900,19 @@ void Actor::set_schedule_type
 			schedule = new Forge_schedule(this);
 			break;
 		case Schedule::sleep:
-			unready_weapon();
+			if (party_id < 0 && npc_num != 0)
+				empty_hands();
 			schedule = new Sleep_schedule(this);
 			break;
 		case Schedule::wait:
 			schedule = new Wait_schedule(this);
 			break;
 		case Schedule::eat:
-			unready_weapon();
+			empty_hands();
 			schedule = new Eat_schedule(this);
 			break;
 		case Schedule::sit:
-			unready_weapon();
+			empty_hands();
 			schedule = new Sit_schedule(this);
 			break;
 		case Schedule::bake:
@@ -1914,26 +1922,26 @@ void Actor::set_schedule_type
 			schedule = new Sew_schedule(this);
 			break;
 		case Schedule::shy:
-			unready_weapon();
+			empty_hands();
 			schedule = new Shy_schedule(this);
 			break;
 		case Schedule::lab:
 			schedule = new Lab_schedule(this);
 			break;
 		case Schedule::thief:
-			unready_weapon();
+			empty_hands();
 			schedule = new Thief_schedule(this);
 			break;
 		case Schedule::waiter:
-			unready_weapon();
+			empty_hands();
 			schedule = new Waiter_schedule(this);
 			break;
 		case Schedule::kid_games:
-			unready_weapon();
+			empty_hands();
 			schedule = new Kid_games_schedule(this);
 			break;
 		case Schedule::eat_at_inn:
-			unready_weapon();
+			empty_hands();
 			schedule = new Eat_at_inn_schedule(this);
 			break;
 		case Schedule::duel:
@@ -1948,7 +1956,7 @@ void Actor::set_schedule_type
 			schedule = new Patrol_schedule(this);
 			break;
 		case Schedule::desk_work:
-			unready_weapon();
+			empty_hands();
 			schedule = new Desk_schedule(this);
 			break;
 		case Schedule::follow_avatar:
@@ -2077,7 +2085,7 @@ void Actor::paint
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
 		bool invis = flags & (1L << Obj_flags::invisible);
-		if (invis && party_id < 0 && this != gwin->get_main_actor())
+		if (invis && party_id < 0 && npc_num != 0)
 			return;	// Don't render invisible NPCs not in party.
 		else if (invis)
 			paint_invisible(xoff, yoff);

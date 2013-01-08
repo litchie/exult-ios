@@ -145,6 +145,7 @@ protected:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 	bool is_really_blocked(Tile_coord& t, bool force);
+	bool empty_hand(Game_object *obj);		// Empty one hand
 public:
 	friend class Clear_casting;
 	friend class Clear_hit;
@@ -159,7 +160,7 @@ public:
 	bool ready_ammo();		// Find and ready appropriate ammo.
 	bool ready_best_weapon();	// Find best weapon and ready it.
 	bool ready_best_shield();	// Find best shield and ready it.
-	void unready_weapon();		// Try to sheath weapon.
+	void empty_hands();		// Make sure both hands are empty.
 					// Force repaint of area taken.
 	int get_effective_weapon_shape();//For displaying casting frames.
 	int add_dirty(int figure_rect = 0);
