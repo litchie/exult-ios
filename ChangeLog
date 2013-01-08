@@ -11,8 +11,8 @@
 	  weapon has been unreadied. Forcibly remove the weapon from hand if not a
 	  party NPC and belt slot is being used. Places where Actor::unready_weapon
 	  were called together with Game_object::add_dirty see the latter removed.
-	Rev 7264:
-	* schedule.cc: Incorrect condition prevented beds from ever being made.
+	Rev 7265:
+	* objs/objnames.cc: Incorrect branch caused undefined behavior.
 
 2013-01-06	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actions.cc: Fixed Fawn guards sometimes not being able to open doors.

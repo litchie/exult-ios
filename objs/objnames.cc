@@ -159,10 +159,10 @@ string Game_object::get_name
 						item_names[shnum] : 0;
 	int type = nminf ? nminf->get_type() : -255;
 	int msgid;
-	if (type == -255 || (msgid = nminf->get_msgid()) >= num_misc_names)
-		name = shpname;
-	else if (type < 0)
+	if (type < 0 && type != -255)   // This is a "catch all" default.
 		return "";	// None.
+	else if (type == -255 || (msgid = nminf->get_msgid()) >= num_misc_names)
+		name = shpname;
 	else if (!type)
 		name = misc_names[msgid];
 	else if (!info.has_quality() && !info.is_body_shape())
