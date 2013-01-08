@@ -94,11 +94,14 @@ class Fast_pathfinder_client : public Pathfinder_client
 	Rectangle destbox;		// Got to intersect this box.
 	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
 	void init(Game_object *from, Game_object *to, int dist);
+	static int is_grabable_internal(Game_object *from, Tile_coord const& ct,
+	                                Tile_coord const& dt, Block const& tovol,
+	                                Fast_pathfinder_client& client);
 public:
 	Fast_pathfinder_client(Game_object *from, Tile_coord const& dest, int dist, int mf = 1 << 5);
 	Fast_pathfinder_client(Game_object *from, Game_object *to, int dist, int mf = 1 << 5);
-	Fast_pathfinder_client(Actor *from, Tile_coord const& dest, int dist, int mf = 1 << 5);
-	Fast_pathfinder_client(Actor *from, Game_object *to, int dist, int mf = 1 << 5);
+	Fast_pathfinder_client(Actor *from, Tile_coord const& dest, int dist);
+	Fast_pathfinder_client(Actor *from, Game_object *to, int dist);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.

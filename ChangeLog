@@ -1,3 +1,11 @@
+2013-01-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actor.*, schedule.cc: Renamed Actor::unready_weapon to Actor::empty_hands,
+	  which will now empty both hands. The function tries to place on the belt
+	  and backpack slots, trying to add to containers if present, or forcing the
+	  slot to accept the item if not. This fixes weapons disappearing on sleep
+	  bug. Also, party members will not hide their weapons on sleep.
+	* paths.*: Yet more fixes to grabbing.
+
 2013-01-07	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* schedule.*, usecode/intrinsics.cc: Fixed bug #3599714 "Attacked npcs make
 	  their bed before defending themselves". Also fixed bug where NPCs were not
