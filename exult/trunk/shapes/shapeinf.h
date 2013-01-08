@@ -88,10 +88,10 @@ template <int flag, typename T, class Info, T Info::*data, int bit>
 class Bit_text_writer_functor;
 template <int flag, typename T, class Info, T Info::*data>
 class Bit_field_text_writer_functor;
-template <int flag, typename T, class Info, T Info::*data, unsigned pad>
+template <int flag, typename T, class Info, T Info::*data, int pad>
 class Binary_writer_functor;
 template <int flag, typename T1, typename T2, class Info,
-		T1 Info::*data1, T2 Info::*data2, unsigned pad>
+		T1 Info::*data1, T2 Info::*data2, int pad>
 class Binary_pair_writer_functor;
 template <typename T, class Info, T *Info::*data>
 class Class_writer_functor;
@@ -286,10 +286,10 @@ public:
 	friend class Bit_text_writer_functor;
 	template <int flag, typename T, class Info, T Info::*data>
 	friend class Bit_field_text_writer_functor;
-	template <int flag, typename T, class Info, T Info::*data, unsigned pad>
+	template <int flag, typename T, class Info, T Info::*data, int pad>
 	friend class Binary_writer_functor;
 	template <int flag, typename T1, typename T2, class Info,
-			T1 Info::*data1, T2 Info::*data2, unsigned pad>
+			T1 Info::*data1, T2 Info::*data2, int pad>
 	friend class Binary_pair_writer_functor;
 	template <typename T, class Info, T *Info::*data>
 	friend class Class_writer_functor;
@@ -455,10 +455,10 @@ public:
 		{ return monster_food; }
 	void set_monster_food(int sh)
 		{
-		if (monster_food != (short)sh)
+		if (monster_food != static_cast<short>(sh))
 			{
 			modified_flags |= monster_food_flag;
-			monster_food = (short)sh;
+			monster_food = static_cast<short>(sh);
 			}
 		}
 
@@ -466,10 +466,10 @@ public:
 		{ return mountain_top; }
 	void set_mountain_top(int sh)
 		{
-		if (mountain_top != (unsigned char)sh)
+		if (mountain_top != static_cast<unsigned char>(sh))
 			{
 			modified_flags |= mountain_top_flag;
-			mountain_top = (unsigned char)sh;
+			mountain_top = static_cast<unsigned char>(sh);
 			}
 		}
 
@@ -477,10 +477,10 @@ public:
 		{ return barge_type; }
 	void set_barge_type(int sh)
 		{
-		if (barge_type != (unsigned char)sh)
+		if (barge_type != static_cast<unsigned char>(sh))
 			{
 			modified_flags |= barge_type_flag;
-			barge_type = (unsigned char)sh;
+			barge_type = static_cast<unsigned char>(sh);
 			}
 		}
 
@@ -488,10 +488,10 @@ public:
 		{ return field_type; }
 	void set_field_type(int sh)
 		{
-		if (field_type != (char)sh)
+		if (field_type != static_cast<char>(sh))
 			{
 			modified_flags |= field_type_flag;
-			field_type = (char)sh;
+			field_type = static_cast<char>(sh);
 			}
 		}
 
@@ -501,11 +501,12 @@ public:
 		{ return gump_font; }
 	void set_gump_data(int sh, int fnt)
 		{
-		if (gump_shape != (short)sh || gump_font != (short)sh)
+		if (gump_shape != static_cast<short>(sh)
+		    || gump_font != static_cast<short>(sh))
 			{
 			modified_flags |= gump_shape_flag;
-			gump_shape = (short) sh;
-			gump_font = (short) fnt;
+			gump_shape = static_cast<short>(sh);
+			gump_font = static_cast<short>(fnt);
 			}
 		}
 
@@ -685,9 +686,9 @@ public:
 		building = 14		// Roof, window, mountain.
 		};
 	Shape_class get_shape_class()
-		{ return (Shape_class) (tfa[1]&15); }
+		{ return static_cast<Shape_class>(tfa[1]&15); }
 	void set_shape_class(Shape_class c)
-		{ tfa[1] = (tfa[1]&~15)|(int) c; }
+		{ tfa[1] = (tfa[1]&~15)|static_cast<int>(c); }
 	bool is_npc()
 		{
 		Shape_class c = get_shape_class();

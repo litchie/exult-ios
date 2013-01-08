@@ -153,7 +153,7 @@ public:
 	void operator()(std::istream& in, int version, bool patch,
 			Exult_Game game, Shape_info& info)
 		{
-		unsigned char ready = (unsigned char)info.ready_type;
+		unsigned char ready = static_cast<unsigned char>(info.ready_type);
 		info.spell_flag = ready&1;
 		ready >>= 3;
 		char spot = game == BLACK_GATE ? Ready_spot_from_BG(ready)
@@ -460,8 +460,8 @@ void Shapes_vga_file::read_info
 		for (i = c_first_obj_shape; 
 					i < num_shapes && !shpdims.eof(); i++)
 			{
-			shpdims.get((char&) info[i].shpdims[0]);
-			shpdims.get((char&) info[i].shpdims[1]);
+			info[i].shpdims[0] = shpdims.get();
+			info[i].shpdims[1] = shpdims.get();
 			}
 
 	// WGTVOL
@@ -469,8 +469,8 @@ void Shapes_vga_file::read_info
 	if (U7open2(wgtvol, patch_name(PATCH_WGTVOL), WGTVOL, editing))
 		for (i = 0; i < num_shapes && !wgtvol.eof(); i++)
 			{
-			wgtvol.get((char&) info[i].weight);
-			wgtvol.get((char&) info[i].volume);
+			info[i].weight = wgtvol.get();
+			info[i].volume = wgtvol.get();
 			}
 
 	// TFA
@@ -478,7 +478,7 @@ void Shapes_vga_file::read_info
 	if (U7open2(tfa, patch_name(PATCH_TFA), TFA, editing))
 		for (i = 0; i < num_shapes && !tfa.eof(); i++)
 			{
-			tfa.read((char*)&info[i].tfa[0], 3);
+			tfa.read(reinterpret_cast<char *>(&info[i].tfa[0]), 3);
 			info[i].set_tfa_data();
 			}
 
@@ -489,7 +489,7 @@ void Shapes_vga_file::read_info
 		U7open(stfa, TFA);
 		stfa.seekg(3*1024);
 		unsigned char buf[512];
-		stfa.read((char *)buf, 512);
+		stfa.read(reinterpret_cast<char *>(buf), 512);
 		stfa.close();
 		unsigned char *ptr = buf;
 		for (int i = 0; i < 512; i++, ptr++)
@@ -549,7 +549,7 @@ void Shapes_vga_file::read_info
 		unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
 			// Ensure sensible defaults.
 		memset(&occbits[0], 0, sizeof(occbits));
-		occ.read((char *)occbits, sizeof(occbits));
+		occ.read(reinterpret_cast<char *>(occbits), sizeof(occbits));
 		for (i = 0; i < occ.gcount(); i++)
 			{
 			unsigned char bits = occbits[i];

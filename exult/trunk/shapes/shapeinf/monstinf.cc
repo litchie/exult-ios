@@ -45,7 +45,7 @@ bool Monster_info::read
 	)
 	{
 	uint8 buf[Monster_info::entry_size-2];		// Entry length.
-	in.read((char *) buf, sizeof(buf));
+	in.read(reinterpret_cast<char *>(buf), sizeof(buf));
 	uint8 *ptr = buf;
 	if (buf[Monster_info::entry_size-3] == 0xff)	// means delete entry.
 		{
@@ -93,7 +93,7 @@ bool Monster_info::read
 	ptr++;
 	ptr++;		// Byte 16: Unknown (0).
 	int sfx_delta = game == BLACK_GATE ? -1 : 0;
-	sfx = ((signed char)*ptr++) + sfx_delta;	// Byte 17.
+	sfx = *reinterpret_cast<signed char *>(ptr++) + sfx_delta;	// Byte 17.
 	return true;
 	}
 
@@ -115,7 +115,7 @@ const Monster_info *Monster_info::get_default
 		default_info.armor = 
 		default_info.weapon = 0;
 		default_info.reach = 3;
-		default_info.flags = (1<<(int) walk);
+		default_info.flags = (1<<static_cast<int>(walk));
 		default_info.equip_offset = 0;
 		default_info.immune =
 		default_info.vulnerable = 

@@ -142,7 +142,10 @@ public:
 	static int get_equip_cnt()
 		{ return equip.size(); }
 	static Equip_record& get_equip(int i)
-		{ assert(i >= 0 && (size_t)i < equip.size()); return equip[i]; }
+		{
+		assert(i >= 0 && static_cast<size_t>(i) < equip.size());
+		return equip[i];
+		}
 	bool splits() const
 		{ return m_splits; }
 	void set_splits(bool tf)

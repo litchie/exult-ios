@@ -49,7 +49,7 @@ public:
 		: Base_info(m, p, inv, s), frame(f), warmth(w)
 		{  }
 	Warmth_info(const Warmth_info& other)
-		: frame(other.frame), warmth(other.warmth)
+		: Base_info(other), frame(other.frame), warmth(other.warmth)
 		{ info_flags = other.info_flags; }
 		// Read in from file.
 	bool read(std::istream& in, int version, Exult_Game game);
@@ -70,7 +70,7 @@ public:
 			}
 		}
 	bool operator<(const Warmth_info& other) const
-		{ return ((unsigned short)frame < (unsigned short)other.frame); }
+		{ return (static_cast<unsigned short>(frame) < static_cast<unsigned short>(other.frame)); }
 	bool operator==(const Warmth_info& other) const
 		{ return this == &other || (!(*this < other) && !(other < *this)); }
 	bool operator!=(const Warmth_info& other) const

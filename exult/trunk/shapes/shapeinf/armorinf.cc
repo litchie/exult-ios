@@ -50,7 +50,7 @@ bool Armor_info::read
 	)
 	{
 	uint8 buf[Armor_info::entry_size-2];			// Entry length.
-	in.read((char *) buf, sizeof(buf));
+	in.read(reinterpret_cast<char *>(buf), sizeof(buf));
 	uint8 *ptr = buf;
 	if (buf[Armor_info::entry_size-3] == 0xff)	// means delete entry.
 		{

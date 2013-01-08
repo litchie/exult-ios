@@ -230,11 +230,11 @@ inline void Write_count
 	{
 	if (cnt >= 255)
 		{	// Exult extension.
-		out.put((char)255);
+		out.put(static_cast<char>(255));
 		Write2(out, cnt);
 		}
 	else
-		out.put((char)cnt);
+		out.put(static_cast<char>(cnt));
 	}
 
 /*
@@ -244,7 +244,7 @@ class Base_reader
 	{
 protected:
 	bool haveversion;
-	virtual void read_data(std::istream& in, int index, int version,
+	virtual void read_data(std::istream& in, size_t index, int version,
 			bool patch, Exult_Game game, bool binary)
 		{  }
 		// Binary data file.
@@ -253,8 +253,8 @@ protected:
 		int vers = 0;
 		if (haveversion)
 			vers = Read1(in);
-		int cnt = Read_count(in);
-		for (int j = 0; j < cnt; j++)
+		size_t cnt = Read_count(in);
+		for (size_t j = 0; j < cnt; j++)
 			read_data(in, j, vers, patch, game, true);
 		}
 public:
@@ -355,7 +355,7 @@ protected:
 	Functor reader;
 	Transform postread;
 	ReadID idread;
-	virtual void read_data(std::istream& in, int index, int version,
+	virtual void read_data(std::istream& in, size_t index, int version,
 			bool patch, Exult_Game game, bool binary)
 		{
 		int id = idread(in, index, version, binary);
@@ -384,7 +384,7 @@ protected:
 	Info& info;
 	Functor reader;
 	Transform postread;
-	virtual void read_data(std::istream& in, int index, int version,
+	virtual void read_data(std::istream& in, size_t index, int version,
 			bool patch, Exult_Game game, bool binary)
 		{
 		reader(in, version, patch, game, info);
@@ -436,9 +436,9 @@ public:
 			// For backwards compatibility.
 		bool biton = ReadInt(in, 1) != 0;
 		if (biton)
-			info.*data |= ((T)1 << bit);
+			info.*data |= (static_cast<T>(1) << bit);
 		else
-			info.*data &= ~((T)1 << bit);
+			info.*data &= ~(static_cast<T>(1) << bit);
 		return true;
 		}
 	};
@@ -456,9 +456,9 @@ public:
 		while (in.good() && bit < size)
 			{
 			if (ReadInt(in) != 0)
-				flags |= ((T)1 << bit);
+				flags |= (static_cast<T>(1) << bit);
 			else
-				flags &= ~((T)1 << bit);
+				flags &= ~(static_cast<T>(1) << bit);
 			bit++;
 			}
 		info.*data = flags;
@@ -473,7 +473,7 @@ public:
 	bool operator()(std::istream& in, int version, bool patch, 
 			Exult_Game game, Info& info)
 		{
-		in.read((char *)(&(info.*data)), sizeof(T)/sizeof(char));
+		in.read(reinterpret_cast<char *>(&(info.*data)), sizeof(T));
 		if (pad)	// Skip some bytes.
 			in.ignore(pad);
 		return true;
@@ -488,8 +488,8 @@ public:
 	bool operator()(std::istream& in, int version, bool patch, 
 			Exult_Game game, Info& info)
 		{
-		in.read((char *)(&(info.*data1)), sizeof(T1)/sizeof(char));
-		in.read((char *)(&(info.*data2)), sizeof(T2)/sizeof(char));
+		in.read(reinterpret_cast<char *>(&(info.*data1)), sizeof(T1));
+		in.read(reinterpret_cast<char *>(&(info.*data2)), sizeof(T2));
 		if (pad)	// Skip some bytes.
 			in.ignore(pad);
 		return true;
@@ -792,7 +792,7 @@ class Bit_text_writer_functor
 public:
 	void operator()(std::ostream& out, int index, Exult_Game game, Info& info)
 		{
-		bool val = ((info.*data) & ((T)1 << bit));
+		bool val = ((info.*data) & (static_cast<T>(1) << bit));
 		out << ":";
 		WriteIndex(out, index);
 		WriteInt(out, val, true);
@@ -815,16 +815,16 @@ public:
 		T flags = info.*data;
 		while (bit < size)
 			{
-			out << (bool)((flags & ((T)1 << bit)) != 0) << '/';
+			out << static_cast<bool>((flags & (static_cast<T>(1) << bit)) != 0) << '/';
 			bit++;
 			}
-		out << (bool)((flags & ((T)1 << size)) != 0) << std::endl;
+		out << static_cast<bool>((flags & (static_cast<T>(1) << size)) != 0) << std::endl;
 		}
 	bool operator()(Info& info)
 		{ return check(info); }
 	};
 
-template <int flag, typename T, class Info, T Info::*data, unsigned pad>
+template <int flag, typename T, class Info, T Info::*data, int pad>
 class Binary_writer_functor
 	{
 	Flag_check_functor<flag, Info> check;
@@ -832,8 +832,8 @@ public:
 	void operator()(std::ostream& out, int index, Exult_Game game, Info& info)
 		{
 		Write2(out, index);
-		out.write((char *)(&(info.*data)), sizeof(T)/sizeof(char));
-		for (unsigned i = 0; i < pad; i++)
+		out.write(reinterpret_cast<char *>(&(info.*data)), sizeof(T));
+		for (int i = 0; i < pad; i++)
 			out.put(0);
 		}
 	bool operator()(Info& info)
@@ -841,7 +841,7 @@ public:
 	};
 
 template <int flag, typename T1, typename T2, class Info,
-		T1 Info::*data1, T2 Info::*data2, unsigned pad>
+		T1 Info::*data1, T2 Info::*data2, int pad>
 class Binary_pair_writer_functor
 	{
 	Flag_check_functor<flag, Info> check;
@@ -849,9 +849,9 @@ public:
 	void operator()(std::ostream& out, int index, Exult_Game game, Info& info)
 		{
 		Write2(out, index);
-		out.write((char *)(&(info.*data1)), sizeof(T1)/sizeof(char));
-		out.write((char *)(&(info.*data2)), sizeof(T2)/sizeof(char));
-		for (unsigned i = 0; i < pad; i++)
+		out.write(reinterpret_cast<char *>(&(info.*data1)), sizeof(T1));
+		out.write(reinterpret_cast<char *>(&(info.*data2)), sizeof(T2));
+		for (int i = 0; i < pad; i++)
 			out.put(0);
 		}
 	bool operator()(Info& info)
@@ -879,7 +879,7 @@ public:
 				if (T::entry_size >= 4)
 					memset(ptr, 0, T::entry_size-3);
 				buf[T::entry_size-1] = 0xff;
-				out.write((const char *)buf, T::entry_size);
+				out.write(reinterpret_cast<const char *>(buf), T::entry_size);
 				delete [] buf;
 				}
 			}

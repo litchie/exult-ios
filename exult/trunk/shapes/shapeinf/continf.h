@@ -48,7 +48,7 @@ public:
 			bool st = false, bool inv = false)
 		{ set(sh, a, p, m, st, inv); }
 	Content_rules(const Content_rules& other)
-		: shape(other.shape), accept(other.accept)
+		: Base_info(other), shape(other.shape), accept(other.accept)
 		{ info_flags = other.info_flags; }
 		// Read in from file.
 	bool read(std::istream& in, int version, Exult_Game game);
@@ -76,8 +76,8 @@ public:
 		}
 	bool operator<(const Content_rules& other) const
 		{
-		unsigned short shp1 = (unsigned int)shape,
-				shp2 = (unsigned int)other.shape;
+		unsigned short shp1 = static_cast<unsigned short>(shape),
+				shp2 = static_cast<unsigned short>(other.shape);
 		return (shp1 < shp2);
 		}
 	bool operator==(const Content_rules& other) const

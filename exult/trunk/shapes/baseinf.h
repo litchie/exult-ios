@@ -64,7 +64,6 @@ namespace Weapon_data
 class Base_info
 	{
 protected:
-	char info_flags:4;
 	enum Info_bit_flags
 		{
 		Info_modified = 1,
@@ -72,19 +71,20 @@ protected:
 		Have_static = 4,
 		Is_invalid = 8
 		};
+	Info_bit_flags info_flags;
 	void set_flag(bool tf, int flag)
 		{
 		if (tf)
-			info_flags |= flag;
+			info_flags = static_cast<Info_bit_flags>(info_flags | flag);
 		else
-			info_flags &= (~flag);
+			info_flags = static_cast<Info_bit_flags>(info_flags & ~flag);
 		}
 	bool get_flag(int flag) const
 		{ return (info_flags & flag) != 0; }
 public:
 	friend class Shape_info;
 	Base_info()
-		{ info_flags = 0; }
+		{ info_flags = static_cast<Info_bit_flags>(0); }
 	Base_info(bool patch)
 		{ set_patch(patch); }
 	Base_info(bool mod, bool patch, bool inv, bool st)

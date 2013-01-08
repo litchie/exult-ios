@@ -425,7 +425,7 @@ unsigned int Shape_frame::read
 	delete [] data;
 	data = new unsigned char[c_num_tile_bytes];	// Read in 8x8 pixels.
 	datalen = c_num_tile_bytes;
-	shapes->read((char *) data, c_num_tile_bytes);
+	shapes->read(reinterpret_cast<char *>(data), c_num_tile_bytes);
 	return (shapelen/c_num_tile_bytes);		// That's how many frames.
 	}
 	
@@ -449,7 +449,7 @@ void Shape_frame::get_rle_shape
 	delete [] data;	
 	data = new unsigned char[len + 2];	// Allocate and read data.
 	datalen = len+2;
-	shapes->read((char*)data, len);
+	shapes->read(reinterpret_cast<char *>(data), len);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
 	rle = true;
@@ -819,7 +819,7 @@ Shape_frame *Shape::reflect
 	if (!reflected)
 		return (0);
 	framenum |= 32;			// Put back 'reflect' flag.
-	if ((unsigned)framenum >= frames_size - 1)// Expand list if necessary.
+	if (static_cast<unsigned>(framenum) >= frames_size - 1)// Expand list if necessary.
 		enlarge(framenum + 1);
 	frames[framenum] = reflected;	// Store new frame.
 	return reflected;
@@ -854,20 +854,20 @@ void Shape::resize
 	int newsize
 	)
 	{
-	if (newsize < 0 || (unsigned)newsize == frames_size)
+	if (newsize < 0 || static_cast<unsigned>(newsize) == frames_size)
 		return;
-	if ((unsigned)newsize > frames_size)
+	if (static_cast<unsigned>(newsize) > frames_size)
 		enlarge(newsize);	// Growing.
 	else
 		{			// Shrinking.
 		Shape_frame **newframes = new Shape_frame *[newsize];
 		size_t i;
-		for (i = 0; i < (unsigned)newsize; i++)
+		for (i = 0; i < static_cast<unsigned>(newsize); i++)
 			newframes[i] = frames[i];
 					// Delete past new end.
 		for ( ; i < frames_size; i++)
 			delete frames[i];
-		frames_size = (unsigned)newsize;
+		frames_size = static_cast<unsigned>(newsize);
 		delete [] frames;
 		frames = newframes;
 		}
@@ -886,7 +886,7 @@ inline void Shape::create_frames_list
 	{
 	num_frames = frames_size = nframes;
 	frames = new Shape_frame *[frames_size];
-	memset((char *) frames, 0, frames_size * sizeof(Shape_frame *));
+	memset(reinterpret_cast<char *>(frames), 0, frames_size * sizeof(Shape_frame *));
 	}
 
 /*
@@ -1046,22 +1046,22 @@ Shape_frame *Shape::store_frame
 		{
 		delete frame;
 		cerr << "Shape::store_frame:  framenum < 0 ("
-			 << framenum << " >= " << (unsigned int)(frames_size)
+			 << framenum << " >= " << frames_size
 			 << ")" << endl;
 		return (0);
 		}
-	else if ((unsigned)framenum >= frames_size)	// Something fishy?
+	else if (static_cast<unsigned>(framenum) >= frames_size)	// Something fishy?
 		{
 		delete frame;
 		cerr << "Shape::store_frame:  framenum >= frames_size ("
-			 << framenum << " >= " << (unsigned int)(frames_size)
+			 << framenum << " >= " << frames_size
 			 << ")" << endl;
 		return (0);
 		}
 	if (!frames)	// First one?
 		{
 		frames = new Shape_frame *[num_frames];
-		memset((char *) frames, 0, num_frames * sizeof(Shape_frame *));
+		memset(reinterpret_cast<char *>(frames), 0, num_frames * sizeof(Shape_frame *));
 		}
 	frames[framenum] = frame;
 	return (frame);
@@ -1105,7 +1105,7 @@ void Shape::reset()
 		}
 	else if (frames_size)
 		cerr << "Shape::~Shape(): 'frames' is null, while frames_size="
-				<< (int) frames_size << endl;
+				<< frames_size << endl;
 	}
 
 /*
@@ -1166,7 +1166,7 @@ void Shape::set_frame
 	int framenum
 	)
 	{
-	assert (framenum >= 0 && (unsigned)framenum < num_frames);
+	assert (framenum >= 0 && static_cast<unsigned>(framenum) < num_frames);
 	delete frames[framenum];	// Delete existing.
 	frames[framenum] = frame;
 	modified = true;
@@ -1182,7 +1182,7 @@ void Shape::add_frame
 	int framenum			// Insert here.
 	)
 	{
-	assert (framenum >= 0 && (unsigned)framenum <= num_frames);// Can append.
+	assert (framenum >= 0 && static_cast<unsigned>(framenum) <= num_frames);// Can append.
 	enlarge(frames_size + 1);	// Make room.
 	for (int i = frames_size - 1; i > framenum; i--)
 		frames[i] = frames[i - 1];
@@ -1200,7 +1200,7 @@ void Shape::del_frame
 	int framenum
 	)
 	{
-	assert (framenum >= 0 && (unsigned)framenum < num_frames);
+	assert (framenum >= 0 && static_cast<unsigned>(framenum) < num_frames);
 	delete frames[framenum];
 					// Shift down.
 	for (size_t i = framenum + 1; i < frames_size; i++)
@@ -1287,7 +1287,7 @@ void Shape_file::save(DataSource* shape_source)
 		shape_source->write2(frames[i]->xleft);
 		shape_source->write2(frames[i]->yabove);
 		shape_source->write2(frames[i]->ybelow);
-		shape_source->write((char*)(frames[i]->data), frames[i]->get_size());
+		shape_source->write(reinterpret_cast<char*>(frames[i]->data), frames[i]->get_size());
 	}
 	delete [] offsets;
 }
