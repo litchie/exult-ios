@@ -124,7 +124,7 @@ public:
 	void set_shape(Mouse_shapes shape)
 		{ set_shape(static_cast<int>(shape)); }
 	Mouse_shapes get_shape()
-		{ return (Mouse_shapes) cur_framenum; }
+		{ return static_cast<Mouse_shapes>(cur_framenum); }
 	void move(int x, int y);	// Move to new location (mouse motion).
 	void blit_dirty()		// Blit dirty area.
 		{ 			// But not in OpenGL.
