@@ -49,7 +49,7 @@ public:
 			bool s = false, bool inv = false)
 		{ set(f, q, h, p, m, s, inv); }
 	Effective_hp_info(const Effective_hp_info& other)
-		: frame(other.frame), quality(other.quality), hps(other.hps)
+		: Base_info(other), frame(other.frame), quality(other.quality), hps(other.hps)
 		{ info_flags = other.info_flags; }
 		// Read in from file.
 	bool read(std::istream& in, int version, Exult_Game game);
@@ -79,10 +79,10 @@ public:
 		}
 	bool operator<(const Effective_hp_info& other) const
 		{
-		unsigned short qual1 = (unsigned short)quality,
-				qual2 = (unsigned short)other.quality;
-		unsigned short frame1 = (unsigned short)frame,
-				frame2 = (unsigned short)other.frame;
+		unsigned short qual1 = static_cast<unsigned short>(quality),
+				qual2 = static_cast<unsigned short>(other.quality);
+		unsigned short frame1 = static_cast<unsigned short>(frame),
+				frame2 = static_cast<unsigned short>(other.frame);
 		return (frame1 == frame2 && qual1 < qual2) || (frame1 < frame2);
 		}
 	bool operator==(const Effective_hp_info& other) const

@@ -63,7 +63,7 @@ public:
 		frame[0] = fr0; frame[1] = fr1; frame[2] = fr2; frame[3] = fr3;
 		}
 	Paperdoll_item(const Paperdoll_item& other)
-		:	world_frame(other.world_frame), spot(other.spot),
+		:	Base_info(other), world_frame(other.world_frame), spot(other.spot),
 			type(other.type), translucent(other.translucent),
 			gender(other.gender), shape(other.shape)
 		{
@@ -146,7 +146,9 @@ public:
 		}
 	bool operator<(const Paperdoll_item& other) const
 		{
-		return ((unsigned short)world_frame < (unsigned short)other.world_frame)
+		unsigned short wf1 = static_cast<unsigned short>(world_frame),
+		               wf2 = static_cast<unsigned short>(other.world_frame);
+		return (wf1 < wf2)
 			|| (world_frame == other.world_frame && spot < other.spot);
 		}
 	bool operator==(const Paperdoll_item& other) const

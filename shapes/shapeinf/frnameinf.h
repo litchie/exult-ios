@@ -51,7 +51,7 @@ public:
 			bool m = false, bool s = false, bool inv = false)
 		{ set(f, q, ty, msg, ot, p, m, s, inv); }
 	Frame_name_info(const Frame_name_info& other)
-		: frame(other.frame), quality(other.quality), type(other.type),
+		: Base_info(other), frame(other.frame), quality(other.quality), type(other.type),
 			msgid(other.msgid), othermsg(other.othermsg)
 		{ info_flags = other.info_flags; }
 		// Read in from file.
@@ -102,10 +102,10 @@ public:
 		}
 	bool operator<(const Frame_name_info& other) const
 		{
-		unsigned short qual1 = (unsigned short)quality,
-				qual2 = (unsigned short)other.quality;
-		unsigned short frame1 = (unsigned short)frame,
-				frame2 = (unsigned short)other.frame;
+		unsigned short qual1 = static_cast<unsigned short>(quality),
+				qual2 = static_cast<unsigned short>(other.quality);
+		unsigned short frame1 = static_cast<unsigned short>(frame),
+				frame2 = static_cast<unsigned short>(other.frame);
 		return (frame1 == frame2 && qual1 < qual2) || (frame1 < frame2);
 		}
 	bool operator==(const Frame_name_info& other) const
