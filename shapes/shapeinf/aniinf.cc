@@ -48,7 +48,7 @@ bool Animation_info::read
 		set_invalid(true);
 		return true;
 		}
-	set((AniType)ty, ReadInt(in));		// Sensible defaults.
+	set(static_cast<AniType>(ty), ReadInt(in));		// Sensible defaults.
 	if (type != FA_HOURLY)
 		{	// We still have things to read.
 		frame_delay = ReadInt(in);
@@ -116,6 +116,6 @@ Animation_info *Animation_info::create_from_tfa
 			delete inf;
 			return 0;
 		}
-	inf->info_flags = 0;
+	inf->info_flags = static_cast<Info_bit_flags>(0);
 	return inf;
 	}

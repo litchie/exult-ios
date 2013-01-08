@@ -67,9 +67,9 @@ public:
 		{
 		Write2(out, index);
 		unsigned char data = info.ready_type;
-		data = game == BLACK_GATE ? Ready_spot_to_BG((int)data)
-		                          : Ready_spot_to_SI((int)data);
-		data = ((unsigned char)data << 3) | info.spell_flag;
+		data = game == BLACK_GATE ? Ready_spot_to_BG(data)
+		                          : Ready_spot_to_SI(data);
+		data = (data << 3) | info.spell_flag;
 		Write1(out, data);
 		for (unsigned i = 0; i < 6; i++)
 			out.put(0);
@@ -242,8 +242,8 @@ void Shapes_vga_file::write_info
 	U7open(shpdims, PATCH_SHPDIMS);
 	for (i = c_first_obj_shape; i < num_shapes; i++)
 		{
-		shpdims.put((char&) info[i].shpdims[0]);
-		shpdims.put((char&) info[i].shpdims[1]);
+		shpdims.put(info[i].shpdims[0]);
+		shpdims.put(info[i].shpdims[1]);
 		}
 
 	// WGTVOL
@@ -251,15 +251,15 @@ void Shapes_vga_file::write_info
 	U7open(wgtvol, PATCH_WGTVOL);
 	for (i = 0; i < num_shapes; i++)
 		{
-		wgtvol.put((char&) info[i].weight);
-		wgtvol.put((char&) info[i].volume);
+		wgtvol.put(info[i].weight);
+		wgtvol.put(info[i].volume);
 		}
 
 	// TFA
 	ofstream tfa;
 	U7open(tfa, PATCH_TFA);
 	for (i = 0; i < num_shapes; i++)
-		tfa.write((char*)&info[i].tfa[0], 3);
+		tfa.write(reinterpret_cast<char *>(&info[i].tfa[0]), 3);
 
 	// Write data about drawing the weapon in an actor's hand
 	ofstream wihh;
@@ -273,7 +273,7 @@ void Shapes_vga_file::write_info
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon_offsets)
 				// There are two bytes per frame: 64 total
-			wihh.write((char *)(info[i].weapon_offsets), 64);
+			wihh.write(reinterpret_cast<char *>(info[i].weapon_offsets), 64);
 	wihh.close();
 
 	ofstream(occ);			// Write occlude.dat.
@@ -281,7 +281,7 @@ void Shapes_vga_file::write_info
 	unsigned char occbits[c_occsize];	// c_max_shapes bit flags.
 					// +++++This could be rewritten better!
 	memset(&occbits[0], 0, sizeof(occbits));
-	for (i = 0; i < (int)sizeof(occbits); i++)
+	for (i = 0; i < static_cast<int>(sizeof(occbits)); i++)
 		{
 		unsigned char bits = 0;
 		int shnum = i*8;	// Check each bit.
@@ -292,7 +292,7 @@ void Shapes_vga_file::write_info
 				bits |= (1<<b);
 		occbits[i] = bits;	
 		}
-	occ.write((char *)occbits, sizeof(occbits));
+	occ.write(reinterpret_cast<char *>(occbits), sizeof(occbits));
 
 	ofstream mfile;			// Now get monster info.
 	U7open(mfile, PATCH_EQUIP);	// Write 'equip.dat'.
@@ -357,7 +357,7 @@ void Animation_info::write
 	{
 	out << ":";
 	WriteInt(out, shapenum);
-	WriteInt(out, (int)type);
+	WriteInt(out, type);
 	WriteInt(out, frame_count, type == FA_HOURLY);
 	if (type != FA_HOURLY)
 		{	// We still have things to write.
@@ -421,10 +421,10 @@ void Frame_flags_info::write
 	int bit = 0;
 	while (bit < size)
 		{
-		out << (bool)((flags & (1 << bit)) != 0) << '/';
+		out << static_cast<bool>((flags & (1 << bit)) != 0) << '/';
 		bit++;
 		}
-	out << (bool)((flags & (1 << size)) != 0) << endl;
+	out << static_cast<bool>((flags & (1 << size)) != 0) << endl;
 	}
 
 void Frame_usecode_info::write
@@ -610,7 +610,7 @@ void Weapon_info::write
 	Write2(ptr, hitsfx - sfx_delta);
 					// Last 2 bytes unknown/unused.
 	Write2(ptr, 0);
-	out.write((char *) buf, sizeof(buf));
+	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
 	}
 
 /*
@@ -638,7 +638,7 @@ void Ammo_info::write
 	*ptr++ = damage_type<<4;
 	*ptr++ = powers;
 	Write2(ptr, 0);			// Unknown.
-	out.write((char *) buf, sizeof(buf));
+	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
 	}
 
 /*
@@ -660,7 +660,7 @@ void Armor_info::write
 	*ptr++ = immune;		// Immunity flags.
 	Write4(ptr, 0);			// Last 5 are unknown/unused.
 	*ptr = 0;
-	out.write((char *) buf, sizeof(buf));
+	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
 	}
 
 /*
@@ -701,6 +701,6 @@ void Monster_info::write
 		 (m_can_be_invisible ? (1<<2) : 0);
 	*ptr++ = 0;			// Unknown.
 	int sfx_delta = game == BLACK_GATE ? -1 : 0;
-	*ptr++ = (signed char)((sfx&0xff) - sfx_delta);
-	out.write((char *) buf, sizeof(buf));
+	*ptr++ = static_cast<unsigned char>((sfx&0xff) - sfx_delta);
+	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
 	}

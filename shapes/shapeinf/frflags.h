@@ -56,19 +56,19 @@ namespace Frame_flags
 		};
 	enum Enum_Frame_Flags
 		{
-		poison_safe = ((unsigned)1 << fp_poison_safe),
-		charm_safe = ((unsigned)1 << fp_charm_safe),
-		sleep_safe = ((unsigned)1 << fp_sleep_safe),
-		paralysis_safe = ((unsigned)1 << fp_paralysis_safe),
-		curse_safe = ((unsigned)1 << fp_curse_safe),
-		power_safe = ((unsigned)1 << fp_power_safe),
-		death_safe = ((unsigned)1 << fp_death_safe),
-		cant_die = ((unsigned)1 << fp_cant_die),
-		cold_immune = ((unsigned)1 << fp_cold_immune),
-		doesnt_eat = ((unsigned)1 << fp_doesnt_eat),
-		swamp_safe = ((unsigned)1 << fp_swamp_safe),
-		force_usecode = ((unsigned)1 << fp_force_usecode),
-		infinite_reagents = ((unsigned)1 << fp_infinite_reagents)
+		poison_safe = (1u << fp_poison_safe),
+		charm_safe = (1u << fp_charm_safe),
+		sleep_safe = (1u << fp_sleep_safe),
+		paralysis_safe = (1u << fp_paralysis_safe),
+		curse_safe = (1u << fp_curse_safe),
+		power_safe = (1u << fp_power_safe),
+		death_safe = (1u << fp_death_safe),
+		cant_die = (1u << fp_cant_die),
+		cold_immune = (1u << fp_cold_immune),
+		doesnt_eat = (1u << fp_doesnt_eat),
+		swamp_safe = (1u << fp_swamp_safe),
+		force_usecode = (1u << fp_force_usecode),
+		infinite_reagents = (1u << fp_infinite_reagents)
 		};
 	}
 
@@ -86,7 +86,7 @@ public:
 			bool m = false, bool s = false, bool inv = false)
 		{ set(fr, q, fl, p, m, s, inv); }
 	Frame_flags_info(const Frame_flags_info& other)
-		: frame(other.frame), quality(other.quality), m_flags(other.m_flags)
+		: Base_info(other), frame(other.frame), quality(other.quality), m_flags(other.m_flags)
 		{ info_flags = other.info_flags; }
 		// Read in from file.
 	bool read(std::istream& in, int version, Exult_Game game);
@@ -118,10 +118,10 @@ public:
 		}
 	bool operator<(const Frame_flags_info& other) const
 		{
-		unsigned short qual1 = (unsigned short)quality,
-				qual2 = (unsigned short)other.quality;
-		unsigned short frame1 = (unsigned short)frame,
-				frame2 = (unsigned short)other.frame;
+		unsigned short qual1 = static_cast<unsigned short>(quality),
+				qual2 = static_cast<unsigned short>(other.quality);
+		unsigned short frame1 = static_cast<unsigned short>(frame),
+				frame2 = static_cast<unsigned short>(other.frame);
 		return (frame1 == frame2 && qual1 < qual2) || (frame1 < frame2);
 		}
 	bool operator==(const Frame_flags_info& other) const
