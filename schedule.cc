@@ -1127,7 +1127,7 @@ void Patrol_schedule::now_what
 						add_client(hammer);
 					}
 						// For safety, unready weapon first.
-					npc->unready_weapon();
+					npc->empty_hands();
 						// Ready the hammer in the weapon hand.
 					npc->add_readied(hammer, lhand, 0, 1);
 					npc->add_dirty();
@@ -1175,7 +1175,7 @@ void Patrol_schedule::now_what
 					delay += 2;
 					(*scr) << Ucscript::delay_ticks << 2;
 				case 21:		// Unready weapon
-					npc->unready_weapon();
+					npc->empty_hands();
 					break;
 				case 22:		// One-handed swing.
 				case 23:		// Two-handed swing.
@@ -4181,7 +4181,7 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 			add_client(tongs);
 		}
-		npc->unready_weapon(); // make sure the tongs can be equipped
+		npc->empty_hands(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
 
@@ -4244,7 +4244,7 @@ void Forge_schedule::now_what
 			tongs->remove_this();
 			tongs = 0;
 		}
-		npc->unready_weapon(); // make sure the hammer can be equipped
+		npc->empty_hands(); // make sure the hammer can be equipped
 		npc->add_readied(hammer, lhand);
 		npc->add_dirty();
 
@@ -4346,7 +4346,7 @@ void Forge_schedule::now_what
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 			add_client(tongs);
 		}
-		npc->unready_weapon(); // make sure the tongs can be equipped
+		npc->empty_hands(); // make sure the tongs can be equipped
 		npc->add_readied(tongs, lhand);
 		npc->add_dirty();
 
