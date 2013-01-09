@@ -86,6 +86,7 @@
 #include "combat.h"
 #include "keyactions.h"
 #include "monstinf.h"
+#include "usefuns.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2697,7 +2698,7 @@ int Get_guard_shape
 	)
 	{
 	if (!GAME_SI)			// Default (BG).
-		return (0x3b2);
+		return 0x3b2;
 					// Moonshade?
 	if (pos.tx >= 2054 && pos.ty >= 1698 &&
 	    pos.tx < 2590 && pos.ty < 2387)
@@ -2849,7 +2850,7 @@ void Game_window::call_guards
 		frames[1] = guard->get_dir_framenum(dir, 3);
 		Actor_action *action = new Sequence_actor_action(
 				new Frames_actor_action(frames, 2),
-				new Usecode_actor_action(0x625, guard,
+				new Usecode_actor_action(ArrestUsecode, guard,
 					Usecode_machine::double_click));
 		Schedule::set_action_sequence(guard, dest, action, true);
 		}

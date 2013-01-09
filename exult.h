@@ -80,7 +80,7 @@ enum setup_video_type {
 	VIDEO_INIT = 0,			// read and write initial settings and create gwin
 	TOGGLE_FULLSCREEN = 1,	// toggle fullscreen using proper settings
 	MENU_INIT = 2,			// read and set initial settings for video gump menu
-	SET_CONFIG = 3,			// sets the config settings (doesn't write)
+	SET_CONFIG = 3			// sets the config settings (doesn't write)
 };
 
 typedef enum 

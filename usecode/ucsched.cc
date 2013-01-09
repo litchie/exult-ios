@@ -142,7 +142,7 @@ void Usecode_script::start
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
-					(long) gwin->get_usecode());
+					reinterpret_cast<long>(gwin->get_usecode()));
 	}
 
 /*
@@ -294,12 +294,12 @@ inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 {
 	if (!e || !e->is_egg())
 		return;
-	int type = ((Egg_object *) e)->get_type();
+	Egg_object *egg = e->as_egg();
+	int type = egg->get_type();
 					// Guess:  Only certain types:
 	if (type == Egg_object::monster || type == Egg_object::button ||
 	    type == Egg_object::missile)
-		((Egg_object *) e)->hatch(
-			usecode->gwin->get_main_actor(), true);
+		egg->hatch(usecode->gwin->get_main_actor(), true);
 }
 
 
@@ -316,7 +316,7 @@ void Usecode_script::handle_event
 	Actor *act = obj->as_actor();
 	if (act && act->get_casting_mode() == Actor::init_casting)
 		act->display_casting_frames();
-	Usecode_internal *usecode = (Usecode_internal *) udata;
+	Usecode_internal *usecode = reinterpret_cast<Usecode_internal *>(udata);
 	int delay = exec(usecode, false);
 	if (i < cnt)			// More to do?
 		{
@@ -609,7 +609,7 @@ int Usecode_script::exec
 				&& ((Egg_object *)obj)->get_type() == Egg_object::usecode
 #endif
 				//Fixes the Blacksword's 'Fire' power in BG:
-				&& ((Egg_object *)obj)->get_type() < Egg_object::fire_field
+				&& obj->as_egg()->get_type() < Egg_object::fire_field
 				)
 				ev = Usecode_internal::egg_proximity;
 					// And for telekenesis spell fun:
@@ -626,7 +626,7 @@ int Usecode_script::exec
 			Usecode_value& val = code->get_elem(++i);
 			int evid = code->get_elem(++i).get_int_value();
 			usecode->call_usecode(val.get_int_value(), obj, 
-				(Usecode_internal::Usecode_events) evid);
+					static_cast<Usecode_internal::Usecode_events>(evid));
 			break;
 			}
 		case speech:		// Play speech track.
@@ -683,7 +683,9 @@ int Usecode_script::exec
 			}
 		case resurrect:
 			{
-			Dead_body *body = (Dead_body *) obj;
+			Dead_body *body = dynamic_cast<Dead_body *>(obj);
+			if (!body)
+				break;
 			Actor *act = gwin->get_npc(body->get_live_npc_num());
 			if (act)
 				act->resurrect(body);
@@ -705,7 +707,7 @@ int Usecode_script::exec
 			else
 				{
 				cout << "Und sched. opcode " << hex 
-				     << "0x" << setfill((char)0x30) << setw(2) 
+				     << "0x" << setfill('0') << setw(2) 
 				     << opcode << std::dec << endl;
 				}
 			break;
@@ -836,8 +838,8 @@ void Usecode_script::print
 	std::ostream& out
 	) const
 	{
-	out << hex << "Obj = 0x" << setfill((char)0x30) << setw(2)
-		<< (void *) obj << ": " "(";
+	out << hex << "Obj = 0x" << setfill('0') << setw(2)
+		<< static_cast<void *>(obj) << ": " "(";
 	for (int i = 0; i < cnt; i++)
 		{
 		if (i > 0)

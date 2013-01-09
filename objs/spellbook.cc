@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "ucmachine.h"
 #include "frflags.h"
+#include "usefuns.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::memcpy;
@@ -120,7 +121,7 @@ unsigned short Spellbook_object::si_reagents[9*8] = {
  *	Get usecode function for a given spell:
  */
 int Get_usecode(int spell)
-	{ return 0x640 + spell; }
+	{ return BaseSpellsUsecode + spell; }
 
 /*
  *	Test for "Ring" of Reagants.
