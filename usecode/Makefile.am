@@ -38,6 +38,7 @@ libusecode_la_SOURCES = \
 	ucfunction.h	\
 	ucfunction.cc	\
 	ucsymtbl.cc	\
-	ucsymtbl.h
+	ucsymtbl.h	\
+	usefuns.h
 
 CLEANFILES = *~

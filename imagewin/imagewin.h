@@ -79,7 +79,7 @@ public:
 		// And so on....
 		
 		// Arbitrarty scaling support => (x<<16)|y
-		Centre_640x480 = (640<<16)|480,	///< Scale to specific dimentions and centre
+		Centre_640x480 = (640<<16)|480	///< Scale to specific dimentions and centre
 	};
 
 	struct ScalerInfo

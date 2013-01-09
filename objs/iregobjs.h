@@ -71,23 +71,23 @@ public:
 	virtual void set_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
-			flags |= ((uint32) 1 << flag);
+			flags |= (static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
-			flags2 |= ((uint32) 1 << (flag-32));
+			flags2 |= (static_cast<uint32>(1) << (flag-32));
 		}
 	virtual void clear_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
-			flags &= ~((uint32) 1 << flag);
+			flags &= ~(static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
-			flags2 &= ~((uint32) 1 << (flag-32));
+			flags2 &= ~(static_cast<uint32>(1) << (flag-32));
 		}
 	virtual int get_flag(int flag) const
 		{
 		if (flag >= 0 && flag < 32)
-			return flags & ((uint32) 1 << flag);
+			return flags & (static_cast<uint32>(1) << flag);
 		else if (flag >= 32 && flag < 64)
-			return flags2 & ((uint32) 1 << (flag-32));
+			return flags2 & (static_cast<uint32>(1) << (flag-32));
 		return 0;
 		}
 	virtual void set_flag_recursively(int flag)

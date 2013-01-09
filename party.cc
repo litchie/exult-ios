@@ -46,8 +46,8 @@ Party_manager::Party_manager
 	) : party_count(0), dead_party_count(0), validcnt(0)
 	{  
 					// Clear party list.
-	std::memset((char *) &party[0], 0, sizeof(party));
-	std::memset((char *) &dead_party[0], 0, sizeof(dead_party));
+	std::memset(reinterpret_cast<char *>(&party[0]), 0, sizeof(party));
+	std::memset(reinterpret_cast<char *>(&dead_party[0]), 0, sizeof(dead_party));
 	}
 
 /*
@@ -225,7 +225,7 @@ void Party_manager::link_party
 		if (npc->is_dead())	// Put dead in special list.
 			{
 			npc->set_party_id(-1);
-			if ((unsigned int)dead_party_count >= 
+			if (static_cast<unsigned int>(dead_party_count) >= 
 				    sizeof(dead_party)/sizeof(dead_party[0]))
 				continue;
 			dead_party[dead_party_count++] = npc_num;

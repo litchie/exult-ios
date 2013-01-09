@@ -434,8 +434,8 @@ public:
 	int get_property(int prop) const;
 	int get_effective_prop(int prop) const;
 	bool is_dying() const		// Dead when health below -1/3 str.
-		{ return properties[(int) health] < 
-					-(properties[(int) strength]/3); }
+		{ return properties[static_cast<int>(health)] < 
+					-(properties[static_cast<int>(strength)]/3); }
 	bool is_knocked_out() const
 		{ return get_property(static_cast<int>(health)) <= 0; }
 	int get_level() const		// Get experience level.
@@ -451,7 +451,7 @@ public:
 					// Set/clear/get actor flag.
 	void force_sleep();
 	void clear_sleep()
-		{ flags &= ~((uint32) 1 << Obj_flags::asleep); }
+		{ flags &= ~(static_cast<uint32>(1) << Obj_flags::asleep); }
 	virtual void set_flag(int flag);
 	void set_type_flag(int flag);
 	virtual void clear_flag(int flag);
@@ -526,7 +526,7 @@ public:
 	virtual Game_object *get_readied(int index) const
 		{
 		return index >= 0 && 
-			index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
+			index < static_cast<int>(sizeof(spots)/sizeof(spots[0])) ? 
 				spots[index] : 0; 
 		}
 	virtual void call_readied_usecode(int index,

@@ -27,7 +27,7 @@
 #include <map>
 
 #define UCSYMTBL_MAGIC0	0xffffffff
-#define UCSYMTBL_MAGIC1	(((long)'U'<<24)+((long)'C'<<16)+((long)'S'<<8)+'Y')
+#define UCSYMTBL_MAGIC1	((static_cast<long>('U')<<24)+(static_cast<long>('C')<<16)+(static_cast<long>('S')<<8)+'Y')
 
 class Usecode_class_symbol;
 class Usecode_symbol_table;
@@ -96,7 +96,7 @@ public:
 	Usecode_symbol *operator[](const char *nm);
 	Usecode_symbol *operator[](int val);
 	Usecode_class_symbol *get_class(int n)
-		{ return (unsigned)n < classes.size() ? classes[n] : 0; }
+		{ return static_cast<unsigned>(n) < classes.size() ? classes[n] : 0; }
 	Usecode_class_symbol *get_class(const char *nm);
 	int get_high_shape_fun(int val);
 	bool is_object_fun(int val);
@@ -117,7 +117,7 @@ public:
 	void add_method_num(int val)
 		{ methods.push_back(val); }
 	int get_method_id(int i)
-		{ return (i >= 0 && (unsigned)i < methods.size()) ? methods[i] : -1; }
+		{ return (i >= 0 && static_cast<unsigned>(i) < methods.size()) ? methods[i] : -1; }
 	int get_num_vars()
 		{ return num_vars; }
 	void read(std::istream& in);

@@ -1,3 +1,9 @@
+2013-01-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* all: Collecting all hard-coded usecode functions in separate header until
+	  they are properly de-hard-coded. Eliminated warnings. Consolidated  32-bit
+	  usecode opcodes with their 16-bit counterparts when they were otherwise
+	  identical except for size of data read. Improved string reading functions.
+
 2013-01-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actor.*, schedule.cc: Renamed Actor::unready_weapon to Actor::empty_hands,
 	  which will now empty both hands. The function tries to place on the belt

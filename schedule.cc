@@ -41,6 +41,7 @@
 #include "frameseq.h"
 #include "ucsymtbl.h"
 #include "useval.h"
+#include "usefuns.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -919,7 +920,7 @@ void Patrol_schedule::now_what
 			pathnum += dir;			// Find next path.
 			if (pathnum == 0 && dir == -1)
 				dir = 1;	// Start over from zero.
-			if (pathnum >= (int)paths.size())
+			if (pathnum >= static_cast<int>(paths.size()))
 				paths.resize(pathnum + 1);
 							// Already know its location?
 			path = pathnum >= 0 ? paths[pathnum] : 0;
@@ -1009,7 +1010,7 @@ void Patrol_schedule::now_what
 			}
 		case 1:	// Walk to next path.
 			if (pathnum >= 0 &&		// Arrived at path?
-				(unsigned int)pathnum < paths.size() &&
+				static_cast<unsigned int>(pathnum) < paths.size() &&
 				(path = paths[pathnum]) != 0 &&	npc->distance(path) < 2)
 				{
 				int delay = 2;
@@ -1613,7 +1614,7 @@ void Tool_schedule::now_what
 		}
 	if (rand()%10 == 0)
 		{
-		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
+		Schedule_types ty = static_cast<Schedule_types>(npc->get_schedule_type());
 		if (ty == Schedule::farm) {
 			if (rand()%2)
 				npc->say(first_farmer, last_farmer);
@@ -2012,7 +2013,7 @@ void Sleep_schedule::now_what
 		state = 2;
 		if (for_nap_time)		// Usecode 622 handles sleeping.
 			{					// Calling it may delete us, though.
-			ucmachine->call_usecode(0x622, bed, Usecode_machine::double_click);
+			ucmachine->call_usecode(SleepUsecode, bed, Usecode_machine::double_click);
 			return; 			// So leave nothing to chance.
 			}
 		break;
@@ -2169,12 +2170,10 @@ void Sit_schedule::now_what
 		Game_object *barge = chair->find_closest(961);
 		if (!barge)
 			return;
-		int usefun = 0x634;	// I hate using constants like this.
-		did_barge_usecode = true;
 					// Special usecode for barge pieces:
 					// (Call with item=Avatar to avoid
 					//   running nearby barges.)
-		ucmachine->call_usecode(usefun, gwin->get_main_actor(),
+		ucmachine->call_usecode(BargeUsecode, gwin->get_main_actor(),
 					Usecode_machine::double_click);
 		return;
 		}
@@ -4789,7 +4788,7 @@ void Schedule_change::write8
 	{
 	Write2(entry, pos.tx);
 	Write2(entry, pos.ty);		// 4
-	*entry++ = (uint8) pos.tz;		// 5
+	*entry++ = static_cast<uint8>(pos.tz);		// 5
 	*entry++ = time;		// 6
 	*entry++ = type;		// 7
 	*entry++ = days;		// 8

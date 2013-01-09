@@ -72,6 +72,7 @@
 #include "weaponinf.h"
 #include "npcdollinf.h"
 #include "spellbook.h"
+#include "usefuns.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -344,7 +345,7 @@ int Actor::get_effective_range
 			}
 		reach = winf->get_range();
 		}
-	int uses = winf ? winf->get_uses() : Weapon_info::melee;
+	int uses = winf ? winf->get_uses() : static_cast<int>(Weapon_info::melee);
 	if (!uses || uses == Weapon_info::ranged)
 		return reach;
 	else
@@ -1631,7 +1632,7 @@ void Actor::set_target
 		opponent->set_oppressor(get_npc_num());
 		// Pure guess.
 	Actor *oppr = oppressor >= 0 ? gwin->get_npc(oppressor) : 0;
-	if (oppr && (oppr->get_target() != (Game_object *)this ||
+	if (oppr && (oppr->get_target() != this ||
 			oppr->get_schedule_type() != Schedule::combat))
 		oppressor = -1;
 	}
@@ -1850,12 +1851,12 @@ void Actor::set_schedule_type
 	if (schedule)			// Finish up old if necessary.
 		schedule->ending(new_schedule_type);
 					// Save old for a moment.
-	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
-								schedule_type;
+	Schedule::Schedule_types old_schedule = 
+			static_cast<Schedule::Schedule_types>(schedule_type);
 	delete schedule;		// Done with the old.
 	schedule = newsched;
 	if (!schedule)
-		switch ((Schedule::Schedule_types) new_schedule_type)
+		switch (static_cast<Schedule::Schedule_types>(new_schedule_type))
 			{
 		case Schedule::combat:
 			schedule = new Combat_schedule(this, old_schedule);
@@ -2259,7 +2260,7 @@ void Actor::activate
 	bool show_party_inv = gumpman->showing_gumps(true) || 
 							gwin->in_combat();
 	Schedule::Schedule_types sched = 
-				(Schedule::Schedule_types) get_schedule_type();
+				static_cast<Schedule::Schedule_types>(get_schedule_type());
 	if (!can_act_charmed() &&					  // if in party and charmed more difficult
 			!cheat.in_pickpocket() && event == 1) // and not pickpocket, return if double click
 		return;
@@ -2278,14 +2279,14 @@ void Actor::activate
 					// Usecode
 					// Failed copy-protection?
 	else if (gwin->failed_copy_protection())
-		ucmachine->call_usecode(0x63d, this,
-			(Usecode_machine::Usecode_events) event);	
+		ucmachine->call_usecode(FailCopyProtectionUsecode, this,
+			static_cast<Usecode_machine::Usecode_events>(event));	
 	else if (usecode == -1)
 		ucmachine->call_usecode(get_usecode(), this,
-			(Usecode_machine::Usecode_events) event);
+			static_cast<Usecode_machine::Usecode_events>(event));
 	else if (party_id >= 0 || !gwin->is_time_stopped())
 		ucmachine->call_usecode(get_usecode(), this, 
-			(Usecode_machine::Usecode_events) event);
+			static_cast<Usecode_machine::Usecode_events>(event));
 	
 	}
 
@@ -2369,7 +2370,7 @@ void Actor::update_from_studio
 		cout << "Error decoding npc" << endl;
 		return;
 		}
-	Actor *npc = (Actor *) addr;
+	Actor *npc = reinterpret_cast<Actor *>(addr);
 	if (npc && npc != editing)
 		{
 		cout << "Npc from ExultStudio is not being edited" << endl;
@@ -2436,7 +2437,7 @@ void Actor::update_from_studio
 	int i;
 	for (i = 0; i < 12; i++)
 		npc->set_property(i, properties[i]);
-	npc->set_attack_mode((Actor::Attack_mode) attack_mode);
+	npc->set_attack_mode(static_cast<Actor::Attack_mode>(attack_mode));
 	npc->set_alignment(alignment);
 	npc->flags = oflags;
 	npc->flags2 = xflags;
@@ -3227,7 +3228,7 @@ void Actor::read_attributes
 	unsigned char *ptr = buf, *endbuf = buf + len;
 	while (ptr < endbuf)
 		{
-		char *att = (char *) ptr;
+		char *att = reinterpret_cast<char *>(ptr);
 		ptr += strlen(att) + 1;
 		assert(ptr + 2 <= endbuf);
 		int val = Read2(ptr);
@@ -3241,7 +3242,7 @@ void Actor::read_attributes
 
 void Actor::force_sleep()
 	{
-	flags |= ((uint32) 1 << Obj_flags::asleep);
+	flags |= (static_cast<uint32>(1) << Obj_flags::asleep);
 	need_timers()->start_sleep();
 	set_action(0);		// Stop what you're doing.
 	lay_down(false);	// Lie down.
@@ -3313,7 +3314,7 @@ void Actor::set_flag
 		need_timers()->start_paralyze();
 		break;
 	case Obj_flags::invisible:
-		flags |= ((uint32) 1 << flag);
+		flags |= (static_cast<uint32>(1) << flag);
 		need_timers()->start_invisibility();
 		Combat_schedule::stop_attacking_invisible(this);
 		gclock->set_palette();
@@ -3327,7 +3328,7 @@ void Actor::set_flag
 		{
 		// set_polymorph needs this, and there are no problems
 		// in setting this twice.
-		flags2 |= ((uint32) 1 << (flag-32));
+		flags2 |= (static_cast<uint32>(1) << (flag-32));
 		if (get_npc_num() != 0)	// Ignore for all but avatar.
 			break;
 		int sn;
@@ -3347,9 +3348,9 @@ void Actor::set_flag
 
 	// Doing it here to prevent problems with immunities.
 	if (flag >= 0 && flag < 32)
-		flags |= ((uint32) 1 << flag);
+		flags |= (static_cast<uint32>(1) << flag);
 	else if (flag >= 32 && flag < 64)
-		flags2 |= ((uint32) 1 << (flag-32));
+		flags2 |= (static_cast<uint32>(1) << (flag-32));
 					// Update stats if open.
 	if (gumpman->showing_gumps())
 		gwin->set_all_dirty();
@@ -3516,7 +3517,7 @@ void Actor::call_readied_usecode
 	Shape_info& info = obj->get_info();
 	if (info.get_shape_class() != Shape_info::container)
 		ucmachine->call_usecode(obj->get_usecode(),
-		    obj, (Usecode_machine::Usecode_events) eventid);
+		    obj, static_cast<Usecode_machine::Usecode_events>(eventid));
 	}
 
 /*
@@ -4147,7 +4148,7 @@ int Actor::figure_hit_points
 			if (npc)	// Just to be sure.
 				set_oppressor(npc->get_npc_num());
 			// Allowing for BG too, as it doesn't have a function 0x7e1.
-			ucmachine->call_usecode(0x7e1, this,
+				ucmachine->call_usecode(SleepArrowsUsecode, this,
 						Usecode_machine::weapon);
 			}
 		}
@@ -4193,7 +4194,7 @@ bool Actor::try_to_hit
 			prob = 1;	// 30 always hits.
 		prob *= 100;
 		cout << name << " is attacking " << get_name()
-			<< " with hit probability " << (float)prob/30 << "%" << endl;
+			<< " with hit probability " << static_cast<float>(prob)/30 << "%" << endl;
 		}
 
 	return Actor::roll_to_win(attval, defval);
@@ -4253,7 +4254,7 @@ Game_object *Actor::attacked
 			cout << " causing an explosion." << endl;
 		}
 
-	if (attacker && (is_dead() || properties[(int) health] < 0))
+	if (attacker && (is_dead() || properties[static_cast<int>(health)] < 0))
 		return 0;
 	return this;
 	}
@@ -4298,7 +4299,7 @@ void Actor::die
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
 	    Game::get_game_type() == BLACK_GATE))
 		{			// Exec. usecode before dying.
-		ucmachine->call_usecode(shnum, this, 
+		ucmachine->call_usecode(ucmachine->get_shape_fun(shnum), this, 
 					Usecode_machine::internal_exec);
 		if (is_pos_invalid())	// Invalid now?
 			return;
@@ -4839,7 +4840,7 @@ void Main_actor::die
 					// Special function for dying:
 	Usecode_function_data *info = Shapeinfo_lookup::GetAvUsecode(0);
 	ucmachine->call_usecode(info->fun_id, this,
-			(Usecode_machine::Usecode_events)info->event_id);
+			static_cast<Usecode_machine::Usecode_events>(info->event_id));
 	}
 
 /*
@@ -5547,11 +5548,11 @@ void Dead_body::write_ireg
 		// Here, store NPC # more simply.
 	Write2(ptr, npc);	// Allowing larger range of NPC bodies.
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
-	*ptr++ = (unsigned char)get_obj_hp();		// Resistance.
+	*ptr++ = static_cast<unsigned char>(get_obj_hp());		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	

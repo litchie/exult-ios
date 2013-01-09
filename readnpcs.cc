@@ -334,7 +334,7 @@ void Game_window::write_schedules ()
 	StreamDataSource sfile(&sfile_stream);
 	vector<char *>& script_names = Schedule_change::get_script_names();
 
-	sfile.write4((unsigned int)-2);		// Exult version #.
+	sfile.write4(static_cast<unsigned int>(-2));		// Exult version #.
 	sfile.write4(num);		// # of NPC's, not include Avatar.
 	sfile.write2(script_names.size());
 	sfile.write2(0);		// First offset
