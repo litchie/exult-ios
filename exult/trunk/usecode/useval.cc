@@ -396,16 +396,16 @@ void Usecode_value::print
 	 ostream& out, bool shortformat
 	)
 	{
-	switch ((Val_type) type)
+	switch (static_cast<Val_type>(type))
 		{
 	case int_type:
-		out << hex << setfill((char)0x30) << setw(4);
+		out << hex << setfill('0') << setw(4);
 		out << (value.intval&0xffff);
 		out << dec;
 		break;
 	case pointer_type:
-		out << hex << setfill((char)0x30) << setw(8);
-		out << (long)value.ptr;
+		out << hex << setfill('0') << setw(8);
+		out << reinterpret_cast<long>(value.ptr);
 		out << dec;
 		break;
 	case string_type:
@@ -596,8 +596,8 @@ bool Usecode_value::save
 	DataSource *out
 	)
 	{
-	out->write1((int)type);
-	switch ((Val_type) type)
+	out->write1(static_cast<int>(type));
+	switch (static_cast<Val_type>(type))
 		{
 	case int_type:
 		out->write4(value.intval);
@@ -649,7 +649,7 @@ bool Usecode_value::restore
 	)
 	{
 	undefined = false;
-	type = (Val_type) in->read1();
+	type = static_cast<Val_type>(in->read1());
 	switch (type)
 		{
 	case int_type:

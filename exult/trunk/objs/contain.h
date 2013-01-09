@@ -102,7 +102,7 @@ public:
 	virtual void write_contents(DataSource* out);
 
 	virtual int get_obj_hp() const { return resistance; }
-	virtual void set_obj_hp(int hp) { resistance = (char)hp; }
+	virtual void set_obj_hp(int hp) { resistance = static_cast<char>(hp); }
 
 	virtual Game_object *find_weapon_ammo(int weapon, int needed = 1,
 			bool recursive = false);

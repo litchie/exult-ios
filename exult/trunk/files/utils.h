@@ -217,6 +217,24 @@ inline uint32 Read4high
 	}
 
 /*
+ *	Read a 2-byte value, lsb first, unsigned.
+ */
+inline sint16 Read2s (uint8 *& in)
+{	return static_cast<sint16>(Read2(in));	}
+
+inline sint16 Read2s (std::istream &in)
+{	return static_cast<sint16>(Read2(in));	}
+
+/*
+ *	Read a 4-byte value, lsb first, unsigned.
+ */
+inline sint32 Read4s (uint8 *& in)
+{	return static_cast<sint32>(Read4(in));	}
+
+inline sint32 Read4s (std::istream &in)
+{	return static_cast<sint32>(Read4(in));	}
+
+/*
  *	Read a N-byte long value, lsb first.
  */
 
@@ -395,20 +413,16 @@ inline std::string ReadStr(char *&eptr, int off = 1)
 	{
 	eptr += off;
 	char *pos = std::strchr(eptr, '/');
-	char buf[150];
-	std::strncpy(buf, eptr, pos - eptr);
-	buf[pos - eptr] = 0;
+	std::string retval(eptr, pos - eptr);
 	eptr = pos;
-	return std::string(buf);
+	return retval;
 	}
 
 inline std::string ReadStr(std::istream& in)
 	{
-	char buf[250];
-	in.getline(buf, sizeof(buf)/sizeof(buf[0]), '/');
-	std::streamsize size = in.gcount();
-	buf[size] = 0;
-	return std::string(buf);
+	std::string retval;
+	std::getline(in, retval, '/');
+	return retval;
 	}
 
 inline void WriteStr

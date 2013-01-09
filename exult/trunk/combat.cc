@@ -48,6 +48,7 @@
 #include "ammoinf.h"
 #include "weaponinf.h"
 #include "ready.h"
+#include "usefuns.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -56,7 +57,7 @@ using std::rand;
 #endif
 using std::list;
 
-unsigned long Combat_schedule::battle_time = (unsigned long) (-30000);
+unsigned long Combat_schedule::battle_time = static_cast<unsigned long>(-30000);
 unsigned long Combat_schedule::battle_end_time = 0;
 
 bool Combat::paused = false;
@@ -284,7 +285,7 @@ bool Combat_schedule::summon
 	// Not again for 30-40 seconds.
 	summon_time = curtime + 30000 + rand()%10000;
 #endif
-	ucmachine->call_usecode(0x685,
+	ucmachine->call_usecode(SummonSpellUsecode,
 			    npc, Usecode_machine::double_click);
 	npc->start_std();		// Back into queue.
 	return true;
@@ -513,7 +514,7 @@ Game_object *Combat_schedule::find_foe
 			return practice_target;
 		}
 	list<Actor*>::iterator new_opp_link = opponents.end();
-	switch ((Actor::Attack_mode) mode)
+	switch (static_cast<Actor::Attack_mode>(mode))
 		{
 	case Actor::weakest:
 		{
@@ -1398,17 +1399,20 @@ void Combat_schedule::now_what
 		Actor *safenpc = npc;
 			// Change back to ready frame.
 		int delay = gwin->get_std_delay();
-		if (!npc->get_info().has_strange_movement())	// Neither slime nor BG sea serpent?
+			// Neither slime nor BG sea serpent?
+		if (!npc->get_info().has_strange_movement())
 			{
-			signed char frame =
-					(signed char)npc->get_dir_framenum(Actor::ready_frame);
+			signed char frame = 
+				static_cast<signed char>(npc->get_dir_framenum(Actor::ready_frame));
 			npc->set_action(new Frames_actor_action(&frame, 1, delay));
 			}
 		else if (!npc->is_slime())  // Sea serpent?
 			{
-			signed char frames[] = {(signed char)npc->get_dir_framenum(3),
-			                        (signed char)npc->get_dir_framenum(2),
-			                        (signed char)npc->get_dir_framenum(1)};
+			signed char frames[] = {
+				static_cast<signed char>(npc->get_dir_framenum(3)),
+				static_cast<signed char>(npc->get_dir_framenum(2)),
+				static_cast<signed char>(npc->get_dir_framenum(1))
+			};
 			npc->set_action(new Frames_actor_action(frames, sizeof(frames), delay));
 			}
 		npc->start(delay, delay);
@@ -1443,17 +1447,20 @@ void Combat_schedule::now_what
 			}
 		delay *= gwin->get_std_delay();
 			// Change back to ready frame.
-		if (!npc->get_info().has_strange_movement())	// Neither slime nor BG sea serpent?
+			// Neither slime nor BG sea serpent?
+		if (!npc->get_info().has_strange_movement())
 			{
 			signed char frame =
-					(signed char)npc->get_dir_framenum(Actor::ready_frame);
+				static_cast<signed char>(npc->get_dir_framenum(Actor::ready_frame));
 			npc->set_action(new Frames_actor_action(&frame, 1, delay));
 			}
 		else if (!npc->is_slime())  // Sea serpent?
 			{
-			signed char frames[] = {(signed char)npc->get_dir_framenum(3),
-			                        (signed char)npc->get_dir_framenum(2),
-			                        (signed char)npc->get_dir_framenum(1)};
+			signed char frames[] = {
+				static_cast<signed char>(npc->get_dir_framenum(3)),
+				static_cast<signed char>(npc->get_dir_framenum(2)),
+				static_cast<signed char>(npc->get_dir_framenum(1))
+			};
 			npc->set_action(new Frames_actor_action(frames, sizeof(frames), delay));
 			}
 		npc->start(gwin->get_std_delay(), delay);

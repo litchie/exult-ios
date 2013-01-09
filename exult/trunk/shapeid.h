@@ -62,7 +62,7 @@ class Shape_manager : public Game_singletons
 	{
 	static Shape_manager *instance;	// There shall be only one.
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
-	Vga_file files[(int) SF_COUNT];	// The files we manage.
+	Vga_file files[static_cast<int>(SF_COUNT)];	// The files we manage.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	std::vector<Xform_palette> xforms;	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -85,7 +85,7 @@ public:
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	void reload_shape_info();
 	Vga_file& get_file(enum ShapeFile f)
-		{ return files[(int) f]; };
+		{ return files[static_cast<int>(f)]; };
 	Shapes_vga_file& get_shapes()
 		{ return shapes; }
 	inline Xform_palette& get_xform(int i)
@@ -129,10 +129,10 @@ public:
 							Pixel_colors pix)
 		{
 		if (shape) shape->paint_rle_outline(
-					xoff, yoff, special_pixels[(int) pix]);
+					xoff, yoff, special_pixels[static_cast<int>(pix)]);
 		}
 	unsigned char get_special_pixel(Pixel_colors pix)
-		{ return special_pixels[(int) pix]; }
+		{ return special_pixels[static_cast<int>(pix)]; }
 
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 

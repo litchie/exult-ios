@@ -47,6 +47,7 @@
 #include "frusefun.h"
 #include "frflags.h"
 #include "find_nearby.h"
+#include "usefuns.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -1673,7 +1674,7 @@ int Game_object::reduce_health
 		{
 		// object destroyed
 		eman->remove_text_effect(this);
-		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
+		ucmachine->call_usecode(DestroyObjectsUsecode, this, Usecode_machine::weapon);
 		}
 	return delta;
 	}

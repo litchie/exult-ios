@@ -70,6 +70,7 @@
 #include "party.h"
 #include "ucsymtbl.h"
 #include "databuf.h"
+#include "usefuns.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -248,7 +249,7 @@ bool Usecode_internal::call_function(int funcid,
 		if (--num_args < 0)
 			{
 			// Backwards compatibility with older mods.
-			cerr << "Called usecode function " << hex << setfill((char)0x30) 
+			cerr << "Called usecode function " << hex << setfill('0') 
 				 << funcid << dec << setfill(' ');
 			cerr << " with negative number of arguments." << endl
 				 << "The mod/game was likely compiled with an outdated version of UCC"
@@ -286,7 +287,7 @@ bool Usecode_internal::call_function(int funcid,
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setfill((char)0x30) 
+		cout << hex << setfill('0') 
 			<< funcid << dec << setfill(' ');
 	cout << " (";
 	for (i = 0; i < num_args; i++)
@@ -298,7 +299,7 @@ bool Usecode_internal::call_function(int funcid,
 	cout << ") with event " << eventid 
 		 << ", depth " << frame->call_depth << endl;
 	if (added_args)
-		cout << added_args << (const char*)(added_args > 1 ? " args" : " arg")
+		cout << added_args << (added_args > 1 ? " args" : " arg")
 			 << " had to be added to the stack for this call" << endl;
 #endif
 
@@ -350,7 +351,7 @@ void Usecode_internal::return_from_function(Usecode_value& retval)
 		cout << fsym->get_name();
 	else
 		cout << hex << setw(4) << 
-		    setfill((char)0x30) << oldfunction << dec << setfill(' ');
+		    setfill('0') << oldfunction << dec << setfill(' ');
 	cout << endl;
 
 
@@ -363,7 +364,7 @@ void Usecode_internal::return_from_function(Usecode_value& retval)
 			cout << fsym->get_name();
 		else
 			cout << hex << setw(4) << 
-				setfill((char)0x30) << newfunction << dec << 
+				setfill('0') << newfunction << dec << 
 				setfill(' ');
 		cout << endl;
 	}
@@ -389,7 +390,7 @@ void Usecode_internal::return_from_procedure()
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setw(4) << setfill((char)0x30) << 
+		cout << hex << setw(4) << setfill('0') << 
 				oldfunction << dec << setfill(' ');
 	cout << endl;
 
@@ -401,7 +402,7 @@ void Usecode_internal::return_from_procedure()
 		if (fsym)
 			cout << fsym->get_name();
 		else
-			cout << hex << setw(4) << setfill((char)0x30) << 
+			cout << hex << setw(4) << setfill('0') << 
 				newfunction << dec << setfill(' ');
 		cout << endl;
 	}
@@ -414,7 +415,7 @@ void Usecode_internal::abort_function()
 	int functionid = call_stack.front()->function->id;
 
 	cout << "Aborting from usecode " << hex << setw(4)
-		 << setfill((char)0x30) << functionid << dec << setfill(' ')
+		 << setfill('0') << functionid << dec << setfill(' ')
 		 << endl;
 #endif
 
@@ -1154,7 +1155,7 @@ Usecode_value Usecode_internal::find_nearest
 	{
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value((Game_object*) NULL);
+		return Usecode_value(static_cast<Game_object *>(NULL));
 	Game_object_vector vec;			// Gets list.
 	obj = obj->get_outermost();	// Might be inside something.
 	int dist = distval.get_int_value();
@@ -1196,7 +1197,7 @@ Usecode_value Usecode_internal::find_direction
 	Tile_coord t1 = get_position(from);
 	Tile_coord t2 = get_position(to);
 					// Treat as cartesian coords.
-	angle = (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
+	angle = static_cast<int>(Get_direction(t1.ty - t2.ty, t2.tx - t1.tx));
 	return Usecode_value(angle);
 	}
 
@@ -1250,7 +1251,7 @@ Usecode_value Usecode_internal::get_objects
 	{
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value((Game_object*) NULL);
+		return Usecode_value(static_cast<Game_object *>(NULL));
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
@@ -1436,7 +1437,7 @@ Usecode_value Usecode_internal::remove_cont_items
 	int quantity = quantval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
-	unsigned int quality = (unsigned int) qualval.get_int_value();
+	unsigned int quality = static_cast<unsigned int>(qualval.get_int_value());
 		
 	if (quantity == c_any_quantity)
 		{
@@ -1467,9 +1468,9 @@ Game_object *Usecode_internal::create_object
 		// don't add equipment (Erethian's transform sequence)
 		Monster_actor *monster = Monster_actor::create(shapenum,
 			Tile_coord(-1, -1, -1), Schedule::wait, 
-					(int) Actor::neutral, true, equip);
+					static_cast<int>(Actor::neutral), true, equip);
 					// FORCE it to be neutral (dec04,01).
-		monster->set_alignment((int) Actor::neutral);
+		monster->set_alignment(static_cast<int>(Actor::neutral));
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
@@ -1639,7 +1640,7 @@ static void Usecode_Trace
 	Usecode_value parms[12]
 	)
 	{
-	cout << hex << "    [0x" << setfill((char)0x30) << setw(2)
+	cout << hex << "    [0x" << setfill('0') << setw(2)
 		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
 		{
@@ -2165,9 +2166,9 @@ int Usecode_internal::run()
 			case 0x84: // (32 bit version)
 			{
 				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
+					offset = Read2s(frame->ip);
 				else
-					offset = (sint32) Read4(frame->ip);
+					offset = Read4s(frame->ip);
 				
 				found_answer = false;
 				if (!get_user_choice())  // Exit conv. if no choices.
@@ -2175,27 +2176,23 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x05:		// JNE.
-			{
-				offset = (short) Read2(frame->ip);
-				Usecode_value val = pop();
-				if (val.is_false())
-					frame->ip += offset;
-				break;
-			}
 			case 0x85:		// JNE32
 			{
-				offset = (sint32) Read4(frame->ip);
+				if (opcode < 0x80)
+					offset = Read2s(frame->ip);
+				else
+					offset = Read4s(frame->ip);
 				Usecode_value val = pop();
 				if (val.is_false())
 					frame->ip += offset;
 				break;
 			}
 			case 0x06:		// JMP.
-				offset = (short) Read2(frame->ip);
-				frame->ip += offset;
-				break;
 			case 0x86:		// JMP32
-				offset = (sint32) Read4(frame->ip);
+				if (opcode < 0x80)
+					offset = Read2s(frame->ip);
+				else
+					offset = Read4s(frame->ip);
 				frame->ip += offset;
 				break;
 			case 0x07:		// CMPS.
@@ -2203,9 +2200,9 @@ int Usecode_internal::run()
 			{
 				int cnt = Read2(frame->ip);	// # strings.
 				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
+					offset = Read2s(frame->ip);
 				else
-					offset = (sint32) Read4(frame->ip);
+					offset = Read4s(frame->ip);
 				
 				bool matched = false;
 				
@@ -2293,8 +2290,8 @@ int Usecode_internal::run()
 				} else {
 					frame->locals[offset] = val;
 				}
+				break;
 			}
-			break;
 			case 0x13:		// PUSH true.
 				pushi(1);
 				break;
@@ -2325,36 +2322,28 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x1c:		// ADDSI.
-				offset = Read2(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				append_string((char*)(frame->data + offset));
-				break;
 			case 0x9c:		// ADDSI32
-				offset = (sint32)Read4(frame->ip);
+				if (opcode < 0x80)
+					offset = Read2(frame->ip);
+				else
+					offset = Read4s(frame->ip);
 				if (offset < 0 || frame->data + offset >= frame->externs-6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
-				append_string((char*)(frame->data + offset));
+				append_string(frame->data + offset);
 				break;
 			case 0x1d:		// PUSHS.
-				offset = Read2(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				pushs((char*)(frame->data + offset));
-				break;
 			case 0x9d:		// PUSHS32
-				offset = (sint32)Read4(frame->ip);
+				if (opcode < 0x80)
+					offset = Read2(frame->ip);
+				else
+					offset = Read4s(frame->ip);
 				if (offset < 0 || frame->data + offset >= frame->externs-6) {
 					DATA_SEGMENT_ERROR();
 					break;
 				}
-				pushs((char*)(frame->data + offset));
+				pushs(frame->data + offset);
 				break;
 			case 0x1e:		// ARRC.
 			{		// Get # values to pop into array.
@@ -2370,17 +2359,16 @@ int Usecode_internal::run()
 				if (to < num)// 1 or more vals empty arrays?
 					arr.resize(to);
 				push(arr);
-			}
-			break;
-			case 0x1f:		// PUSHI.
-			{		// Might be negative.
-				short ival = Read2(frame->ip);
-				pushi(ival);
 				break;
 			}
+			case 0x1f:		// PUSHI.
 			case 0x9f:		// PUSHI32
-			{
-				int ival = (sint32)Read4(frame->ip);
+			{		// Might be negative.
+				int ival;
+				if (opcode < 0x80)
+					ival = Read2(frame->ip);
+				else
+					ival = Read4s(frame->ip);
 				pushi(ival);
 				break;
 			}
@@ -2418,7 +2406,7 @@ int Usecode_internal::run()
 			}
 			case 0xa4:		// 32-bit CALL.
 			{
-				offset = (sint32)Read4(frame->ip);
+				offset = Read4s(frame->ip);
 				call_function(offset, frame->eventid);
 				frame_changed = true;
 				break;
@@ -2456,9 +2444,9 @@ int Usecode_internal::run()
 					}
 					val = &(ths.nth_class_var(offset));
 				} else {
-					offset = (sint16)Read2(frame->ip);
+					offset = Read2s(frame->ip);
 					if (offset < 0) {// Global static.
-						if ((unsigned)(-offset) < statics.size())
+						if (static_cast<unsigned>(-offset) < statics.size())
 							val = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";\
@@ -2466,7 +2454,7 @@ int Usecode_internal::run()
 							break;
 						}
 					} else {
-						if ((unsigned)offset < frame->function->statics.size())
+						if (static_cast<unsigned>(offset) < frame->function->statics.size())
 							val = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";\
@@ -2539,14 +2527,14 @@ int Usecode_internal::run()
 				// Mask off 32bit flag.
 				opcode &= 0x7f;
 				if (opcode == 0x5C)
-					local4 = (sint16)Read2(frame->ip);
+					local4 = Read2s(frame->ip);
 				else
 					local4 = Read2(frame->ip);
 				// Get offset to end of loop.
 				if (is_32bit)
-					offset = (sint32) Read4(frame->ip); // 32 bit offset
+					offset = Read4s(frame->ip); // 32 bit offset
 				else
-					offset = (short) Read2(frame->ip);
+					offset = Read2s(frame->ip);
 
 
 				if (local1 < 0 || local1 >= num_locals) {
@@ -2563,13 +2551,13 @@ int Usecode_internal::run()
 				}
 				if (opcode == 0x5c) {
 					if (local4 < 0) {// Global static.
-						if ((unsigned)(-local4) >= statics.size()) {
+						if (static_cast<unsigned>(-local4) >= statics.size()) {
 							cerr << "Global static variable #" << (-local4) << " out of range!";\
 							CERR_CURRENT_IP();
 							break;
 						}
 					} else {
-						if ((unsigned)local4 >= frame->function->statics.size()) {
+						if (static_cast<unsigned>(local4) >= frame->function->statics.size()) {
 							cerr << "Local static variable #" << (local4) << " out of range!";\
 							CERR_CURRENT_IP();
 							break;
@@ -2735,9 +2723,9 @@ int Usecode_internal::run()
 			// in the same behaviour as the original
 				frame->ip += 2;
 				if (opcode < 0x80)
-					offset = (short)Read2(frame->ip);
+					offset = Read2s(frame->ip);
 				else
-					offset = (sint32)Read4(frame->ip);
+					offset = Read4s(frame->ip);
 				
 				if (!found_answer)
 					found_answer = true;
@@ -2792,7 +2780,7 @@ int Usecode_internal::run()
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
-				if (offset < 0 || (unsigned)offset >= sizeof(gflags)) {
+				if (offset < 0 || static_cast<unsigned>(offset) >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 					pushi(0);
 				} else {
@@ -2805,10 +2793,10 @@ int Usecode_internal::run()
 					offset = popi();
 				else
 					offset = Read2(frame->ip);
-				if (offset < 0 || (unsigned)offset >= sizeof(gflags)) {
+				if (offset < 0 || static_cast<unsigned>(offset) >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 				} else {
-					gflags[offset] = (unsigned char) popi();
+					gflags[offset] = static_cast<unsigned char>(popi());
 					if (gflags[offset]) {
 						Notebook_gump::add_gflag_text(offset);
 #ifdef DEBUG
@@ -2848,9 +2836,9 @@ int Usecode_internal::run()
 					}
 					arr = &(ths.nth_class_var(offset));
 				} else {
-					offset = (sint16)Read2(frame->ip);
+					offset = Read2s(frame->ip);
 					if (offset < 0) {// Global static.
-						if ((unsigned)(-offset) < statics.size())
+						if (static_cast<unsigned>(-offset) < statics.size())
 							arr = &(statics[-offset]);
 						else {
 							cerr << "Global static variable #" << (offset) << " out of range!";\
@@ -2858,7 +2846,7 @@ int Usecode_internal::run()
 							break;
 						}
 					} else {
-						if ((unsigned)offset < frame->function->statics.size())
+						if (static_cast<unsigned>(offset) < frame->function->statics.size())
 							arr = &(frame->function->statics[offset]);
 						else {
 							cerr << "Local static variable #" << (offset) << " out of range!";\
@@ -2885,7 +2873,7 @@ int Usecode_internal::run()
 				if (opcode < 0x80)
 					offset = Read2(frame->ip);
 				else
-					offset = (sint32)Read4(frame->ip);
+					offset = Read4s(frame->ip);
 				call_function(offset, frame->eventid, caller);
 				frame_changed = true;
 				break;
@@ -2920,8 +2908,8 @@ int Usecode_internal::run()
 				}
 				else
 				{
-					funcname = (sint32)Read4(frame->ip);
-					paramnames = (sint32)Read4(frame->ip);
+					funcname = Read4s(frame->ip);
+					paramnames = Read4s(frame->ip);
 				}
 				if (funcname < 0 || frame->data + funcname >= frame->externs-6)
 				{
@@ -2938,8 +2926,8 @@ int Usecode_internal::run()
 					 << current_IP << dec << setfill(' ') << "." << endl;
 				cout << "Information is: funcname = '"
 					// This is a complete guess:
-				     << (char*)(frame->data + funcname) << "'." << endl;
-				char *ptr = (char*)(frame->data + paramnames);
+				     << (frame->data + funcname) << "'." << endl;
+				char const *ptr = reinterpret_cast<char const*>(frame->data + paramnames);
 					// This is an even bigger complete guess:
 				if (*ptr)
 				{
@@ -2998,14 +2986,14 @@ int Usecode_internal::run()
 				break;
 			}
 			case 0x50:		// PUSH static.
-				offset = (sint16)Read2(frame->ip);
+				offset = Read2s(frame->ip);
 				if (offset < 0) {// Global static.
-					if ((unsigned)(-offset) < statics.size())
+					if (static_cast<unsigned>(-offset) < statics.size())
 						push(statics[-offset]);
 					else
 						pushi(0);
 				} else {
-					if ((unsigned)offset < frame->function->statics.size())
+					if (static_cast<unsigned>(offset) < frame->function->statics.size())
 						push(frame->function->statics[offset]);
 					else
 						pushi(0);
@@ -3013,15 +3001,15 @@ int Usecode_internal::run()
 				break;
 			case 0x51:		// POP static.
 			{
-				offset = (sint16)Read2(frame->ip);
+				offset = Read2s(frame->ip);
 				// Get value.
 				Usecode_value val = pop();
 				if (offset < 0) {
-					if ((unsigned)(-offset) >= statics.size())
+					if (static_cast<unsigned>(-offset) >= statics.size())
 						statics.resize(-offset + 1);
 					statics[-offset] = val;
 				} else {
-					if ((unsigned)offset >= frame->function->statics.size())
+					if (static_cast<unsigned>(offset) >= frame->function->statics.size())
 						frame->function->statics.resize(offset + 1);
 					frame->function->statics[offset]=val;
 				}
@@ -3034,8 +3022,7 @@ int Usecode_internal::run()
 				push(ival); // put caller_item back on stack
 
 				offset = Read2(frame->ip);
-				call_function(offset, frame->eventid, caller,
-								false, true);
+				call_function(offset, frame->eventid, caller, false, true);
 				frame_changed = true;
 				break;
 			}
@@ -3249,7 +3236,7 @@ bool Usecode_internal::call_method
 	if (fsym)
 		cout << fsym->get_name();
 	else
-		cout << hex << setfill((char)0x30) 
+		cout << hex << setfill('0') 
 			<< id << dec << setfill(' ');
 	cout << " (";
 	for (i = 0; i < frame->num_args; i++)
@@ -3312,7 +3299,7 @@ void Usecode_internal::do_speech
 	speech_track = num;		// Used in Usecode function.
 	if (!Audio::get_ptr()->start_speech(num))
 					// No speech?  Call text function.
-		call_usecode(0x614, 0, double_click);
+		call_usecode(SpeechUsecode, 0, double_click);
 	}
 
 /*
@@ -3352,7 +3339,7 @@ void Usecode_internal::write
 
 	ofstream out;
 	U7open(out, FLAGINIT);	// Write global flags.
-	out.write((char*)gflags, sizeof(gflags));
+	out.write(reinterpret_cast<char*>(gflags), sizeof(gflags));
 	out.close();
 	U7open(out, USEDAT);
 	Write2(out, partyman->get_count());	// Write party.
@@ -3447,7 +3434,7 @@ void Usecode_internal::read
 		if (filesize > sizeof(gflags))
 			filesize = sizeof(gflags);
 		memset(&gflags[0], 0, sizeof(gflags));
-		in.read((char*)gflags, filesize);
+		in.read(reinterpret_cast<char*>(gflags), filesize);
 		in.close();
 	} catch(exult_exception const& e) {
 		if (!Game::is_editing())

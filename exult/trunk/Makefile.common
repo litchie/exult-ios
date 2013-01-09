@@ -407,7 +407,7 @@ BG_MR_FACES = $(EXULT_BG_MR_FACES_VGA)
 
 all: $(EXEC)
 
-ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h
+ucinternal.o : ucinternal.cc ucinternal.h bgintrinsics.h siintrinsics.h usefuns.h
 
 # Generated flex dependencies...
 

@@ -133,7 +133,7 @@ public:
 	///	@param spec	Unique identifier for this data object.
 	///	@param dt	BufferDataSource that we shoud use.
 	U7DataBuffer(const File_spec &spec, BufferDataSource *dt)
-		: T(spec), _buffer((const char *)dt->getPtr()), _len(dt->getSize())
+		: T(spec), _buffer(reinterpret_cast<const char *>(dt->getPtr())), _len(dt->getSize())
 		{
 		this->data = dt;
 		this->index_file();
