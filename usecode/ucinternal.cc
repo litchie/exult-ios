@@ -2366,7 +2366,7 @@ int Usecode_internal::run()
 			{		// Might be negative.
 				int ival;
 				if (opcode < 0x80)
-					ival = Read2(frame->ip);
+					ival = Read2s(frame->ip);
 				else
 					ival = Read4s(frame->ip);
 				pushi(ival);
