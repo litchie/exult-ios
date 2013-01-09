@@ -3324,9 +3324,19 @@ bool Game_window::is_hostile_nearby()
 
 bool Game_window::failed_copy_protection()
 {
-	Game_window* gwin = Game_window::get_instance();
-	Usecode_machine *usecode = gwin->get_usecode();
-	bool confused = gwin->get_main_actor()->get_flag(Obj_flags::confused);
+	bool confused = main_actor->get_flag(Obj_flags::confused);
 	bool failureFlag = usecode->get_global_flag(56);
 	return ((GAME_SI && confused) || (GAME_BG && failureFlag));
+}
+
+void Game_window::got_bad_feeling(int odds)
+{
+	if (!(GAME_BG || GAME_SI))
+		return;
+	if ((rand()%odds) == 0)
+	{
+		char const *badfeeling = GAME_BG ? misc_names[0x44] : misc_names[0x50];
+		effects->remove_text_effect(main_actor);
+		effects->add_text(badfeeling, main_actor);
+	}
 }

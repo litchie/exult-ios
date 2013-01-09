@@ -79,8 +79,9 @@ void Schedule::set_action_sequence
 	int delay			// Msecs. to delay.
 	)
 	{
+	bool persistant = actor->get_npc_num() == 0 || actor->get_party_id() >= 0;
 	actor->set_action(Actor_action::create_action_sequence(
-			actor, dest, when_there, from_off_screen));
+			actor, dest, when_there, from_off_screen, persistant));
 	actor->start(250, delay);	// Get into time queue.
 	}
 

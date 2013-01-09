@@ -37,10 +37,12 @@ class Actor_pathfinder_client : public Pathfinder_client
 	{
 	int dist;			// Distance for success.
 	Actor *npc;			// Who this represents.
+	bool ignore_npcs;   // If NPCs are nonblocking.
+	int check_blocking(Tile_coord const& from, Tile_coord const& tile);
 public:
 //	Actor_pathfinder_client(Actor *npc, int d = 0) : dist(d)
 //		{ set_move_flags(mf); }
-	Actor_pathfinder_client(Actor *npc, int d = 0);
+	Actor_pathfinder_client(Actor *npc, int d = 0, bool ign = false);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
@@ -49,6 +51,8 @@ public:
 	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
+	bool ignores_npcs() const
+		{	return ignore_npcs;	}
 	};
 
 /*
@@ -58,7 +62,7 @@ public:
 class Onecoord_pathfinder_client : public Actor_pathfinder_client
 	{
 public:
-	Onecoord_pathfinder_client(Actor *n) : Actor_pathfinder_client(n)
+	Onecoord_pathfinder_client(Actor *n, bool ign = false) : Actor_pathfinder_client(n, 0, ign)
 		{  }
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord const& from, Tile_coord const& to);
@@ -75,8 +79,8 @@ class Offscreen_pathfinder_client : public Actor_pathfinder_client
 	Rectangle screen;		// Screen rect. in tiles.
 	Tile_coord best;		// Best offscreen pt. to aim for.
 public:
-	Offscreen_pathfinder_client(Actor *n);
-	Offscreen_pathfinder_client(Actor *n, Tile_coord const& b);
+	Offscreen_pathfinder_client(Actor *n, bool ign = false);
+	Offscreen_pathfinder_client(Actor *n, Tile_coord const& b, bool ign = false);
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord const& from, Tile_coord& to);
 					// Estimate cost between two points.

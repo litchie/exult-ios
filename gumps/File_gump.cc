@@ -456,6 +456,7 @@ void File_gump::save
 	gwin->save_gamedat(num, focus->get_text());
 	cout << "Saved game #" << num << " successfully." << endl;
 	remove_focus();
+	gwin->got_bad_feeling(4);
 }
 
 /*

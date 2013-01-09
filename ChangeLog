@@ -3,6 +3,15 @@
 	  they are properly de-hard-coded. Eliminated warnings. Consolidated  32-bit
 	  usecode opcodes with their 16-bit counterparts when they were otherwise
 	  identical except for size of data read. Improved string reading functions.
+	Rev 7271:
+	* all: Made party members less prone to teleporting while trying to sit on
+	  barges. This is done by having party members persistently repathfinding if
+	  the path is blocked, and by ignoring NPCs that aren't sitting, lying down,
+	  etc. when determining if it is possible to reach the seat. Also, some more
+	  warnings eliminated. Further, actors no longer move aside when they are on
+	  the move. Moreover, party members will also stand at rest after a while,
+	  as the avatar does, matching the original games. Finally, the avatar will
+	  have bad feelings when saving too often.
 
 2013-01-08	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* actor.*, schedule.cc: Renamed Actor::unready_weapon to Actor::empty_hands,

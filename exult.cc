@@ -91,6 +91,7 @@
 #include "combat_opts.h"
 #include "U7file.h"
 #include "U7fileman.h"
+#include "party.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -1338,7 +1339,19 @@ static void Handle_events
 					Mouse::mouse->avatar_speed);
 			else if (ticks > last_rest)
 				{
-				gwin->get_main_actor()->resting(ticks - last_rest);
+				int resttime = ticks - last_rest;
+				//gwin->get_main_actor()->resting(ticks - last_rest);
+
+				Party_manager *party_man = gwin->get_party_man();
+				int cnt = party_man->get_count();
+				for (int i = 0; i < cnt; i++)
+					{
+					int party_member = party_man->get_member(i);
+					Actor *person = gwin->get_npc(party_member);
+					if (!person)
+						continue;
+					person->resting(resttime);
+					}
 				last_rest = ticks;
 				}
 			}
