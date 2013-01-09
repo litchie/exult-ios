@@ -81,18 +81,19 @@ Actor_action *Actor_action::walk_to_tile
 	Actor * /* npc */,
 	Tile_coord const& src,
 	Tile_coord const& dest,
-	int /* dist */			// Ignored.
+	int /* dist */,			// Ignored.
+	bool /* ignnpc */		// Ignored
 	)
 	{
 	Zombie *path = new Zombie();
 	get_party = false;
 					// Set up new path.
 	if (path->NewPath(src, dest, 0))
-		return (new Path_walking_actor_action(path));
+		return new Path_walking_actor_action(path);
 	else
 		{
 		delete path;
-		return (0);
+		return 0;
 		}
 	}
 
@@ -108,7 +109,10 @@ Actor_action *Actor_action::create_action_sequence
 	Actor *actor,			// Whom to activate.
 	Tile_coord const& dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
-	bool from_off_screen		// Have actor walk from off-screen.
+	bool from_off_screen,		// Have actor walk from off-screen.
+	bool persistant				// Whether or not to keep retrying. Since NPCs
+	                            // move around, this causes them to be ignored
+	                            // as obstacles under many conditions.
 	)
 	{
 	Actor_action *act = when_there;
@@ -117,8 +121,11 @@ Actor_action *Actor_action::create_action_sequence
 		actloc.tx = actloc.ty = -1;
 	if (dest != actloc)		// Get to destination.
 		{
-		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actor, actloc, dest);
+			// A persistence of 30 allows sitting on LB's ship from far away without
+			// party members teleporting.
+		int persistence = persistant ? 30 : 0;
+		Actor_action *w = new Path_walking_actor_action(new Astar(), 3, persistence);
+		Actor_action *w2 = w->walk_to_tile(actor, actloc, dest, 0, persistant);
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.
@@ -152,9 +159,11 @@ int Null_action::handle_event
 Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
-	int maxblk			// Max. retries when blocked.
+	int maxblk,			// Max. retries when blocked.
+	int pers			// Keeps retrying this many times.
 	) : reached_end(false), path(p), deleted(false), speed(0),
-	    from_offscreen(false), subseq(0), blocked(0), max_blocked(maxblk)
+	    from_offscreen(false), subseq(0), blocked(0), max_blocked(maxblk),
+		persistence(pers)
 	{
 	if (!path)
 		path = new Astar();
@@ -237,20 +246,63 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 			actor->set_frame_time(speed);
 			return speed;
 			}
-					// Wait up to 1.6 secs.
-		return deleted ? 0 : (blocked++ > max_blocked ? 0 
-					: 100 + blocked*(std::rand()%500));
+		if (deleted)	// step() deleted us.
+			return 0;
+		else if (blocked++ > max_blocked)
+			{		// Persistant pathfinder?
+			if (!persistence)
+				return 0;		// No.
+				// "Tire" a bit from retrying.
+			persistence--;
+			Game_object *block = Game_object::find_blocking(blocked_tile);
+			Actor *blk;
+				// Being blocked by an NPC?
+			if (block && (blk = block->as_actor()) != 0)
+				{
+				// Try to create a new path -- the old one might be blocked
+				// due to (say) the previously 'non-blocking' NPC now being
+				// in a blocking state.
+				if (walk_to_tile(actor, actor->get_tile(), path->get_dest(), 0, true))
+					{	// Got new path.
+					blocked = 0;
+					return speed;
+					}
+				}
+			return 0;
+			}
+		else		// Wait up to 1.6 secs.
+			return 100 + std::rand()%500;
 		}
-	speed = actor->get_frame_time();// Get time between frames.
-	if (!speed)
-		return 0;		// Not moving.
+	int newspeed = actor->get_frame_time();// Get time between frames.
+	if (!newspeed)
+		{
+			// This may mean bumping into another NPC, then having
+			// another NPC call move_aside on you then (e.g., large
+			// parties trying to sit on a barge).
+			// If the pathfinding NPC is supposed to be persistant, then
+			// try to create a new path -- the old one might be blocked
+			// due to (say) the previously 'non-blocking' NPC now being
+			// in a blocking state.
+		if (!persistence ||
+			!walk_to_tile(actor, actor->get_tile(), path->get_dest(), 0, true))
+			{
+			speed = newspeed;
+			return 0;		// Not moving.
+			}
+		else
+			{
+			actor->set_frame_time(speed);
+			return speed;
+			}
+		}
+	speed = newspeed;
 	bool done;			// So we'll know if this is the last.
 	if (!path->GetNextStep(tile, done)
 				   // This happens sometimes (bedroll cancel).
-	    || tile == actor->get_tile())
+	    || (tile == actor->get_tile() && !path->GetNextStep(tile, done)))
 		{
 		reached_end = true;	// Did it.
-		return (0);
+		return 0;
 		}
 	if (done)			// In case we're deleted.
 		reached_end = true;
@@ -281,7 +333,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 				gwin->get_main_actor()->get_followers();
 			}
 		if (done)		// Was this the last step?
-			return (0);
+			return 0;
 		return cur_speed;
 		}
 	if (deleted) return 0;
@@ -316,7 +368,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	blocked = 1;
 	blocked_tile = tile;
 	blocked_frame = frame;
-	return (100 + std::rand()%500);	// Wait .1 to .6 seconds.
+	return 100 + std::rand()%500;	// Wait .1 to .6 seconds.
 	}
 
 /**
@@ -421,7 +473,8 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	Actor *npc,
 	Tile_coord const& src,		// tx=-1 or ty=-1 means don't care.
 	Tile_coord const& dest,		// Same here.
-	int dist			// Distance to get to within dest.
+	int dist,			// Distance to get to within dest.
+	bool ignnpc			// If pathfinder should ignore NPCs in many cases.
 	)
 	{
 	blocked = 0;			// Clear 'blocked' count.
@@ -435,15 +488,15 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		{
 		if (dest.tx == dest.ty)	// Completely off-screen?
 			{
-			Offscreen_pathfinder_client cost(npc);
+			Offscreen_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(src, dest, &cost))
-				return (0);
+				return 0;
 			}
 		else
 			{
-			Onecoord_pathfinder_client cost(npc);
+			Onecoord_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(src, dest, &cost))
-				return (0);
+				return 0;
 			}
 		}
 					// How about from source?
@@ -451,31 +504,31 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		{			// Figure path in opposite dir.
 		if (src.tx == src.ty)	// Both -1?
 			{		// Aim from NPC's current pos.
-			Offscreen_pathfinder_client cost(npc, npc->get_tile());
+			Offscreen_pathfinder_client cost(npc, npc->get_tile(), ignnpc);
 			if (!path->NewPath(dest, src, &cost))
-				return (0);
+				return 0;
 			}
 		else
 			{
-			Onecoord_pathfinder_client cost(npc);
+			Onecoord_pathfinder_client cost(npc, ignnpc);
 			if (!path->NewPath(dest, src, &cost))
-				return (0);
+				return 0;
 			}
 		from_offscreen = true;
 					// Set to go backwards.
 		if (!path->set_backwards())
-			return (0);
+			return 0;
 		}
 	else
 		{
-		Actor_pathfinder_client cost(npc, dist);
+		Actor_pathfinder_client cost(npc, dist, ignnpc);
 		if (!path->NewPath(src, dest, &cost))
-			return (0);
+			return 0;
 		}
 					// Reset direction (but not index).
 	original_dir = static_cast<int>(Get_direction4(
 				src.ty - dest.ty, dest.tx - src.tx));
-	return (this);
+	return this;
 	}
 
 /**
@@ -490,7 +543,7 @@ int Path_walking_actor_action::get_dest
 	) const
 	{
 	dest = path->get_dest();
-	return (1);
+	return 1;
 	}
 
 /**
@@ -712,14 +765,14 @@ int Move_actor_action::handle_event
 	)
 	{
 	if (dest.tx < 0 || actor->get_tile() == dest)
-		return (0);		// Done.
+		return 0;		// Done.
 	actor->move(dest);		// Zip right there.
 	Game_window *gwin = Game_window::get_instance();
 	if (actor == gwin->get_main_actor())
 					// Teleported Avatar?
 		gwin->center_view(dest);
 	dest.tx = -1;			// Set to stop.
-	return (100);			// Wait 1/10 sec.
+	return 100;			// Wait 1/10 sec.
 	}
 
 /**
@@ -750,7 +803,7 @@ int Usecode_actor_action::handle_event
 	{
 	Game_window *gwin = Game_window::get_instance();
 	gwin->get_usecode()->call_usecode(fun, item, 
-			(Usecode_machine::Usecode_events) eventid);
+			static_cast<Usecode_machine::Usecode_events>(eventid));
 	gwin->set_all_dirty();		// Clean up screen.
 	return 0;			// That's all.
 	}
@@ -799,7 +852,7 @@ int Frames_actor_action::handle_event
 	{
 	Game_object *o = obj;
 	if (index == cnt)
-		return (0);		// Done.
+		return 0;		// Done.
 	int frnum = frames[index++];	// Get frame.
 	if (frnum >= 0)
 		{
@@ -808,7 +861,7 @@ int Frames_actor_action::handle_event
 		else
 			actor->change_frame(frnum);
 		}
-	return (speed);
+	return speed;
 	}
 
 /**
@@ -856,7 +909,7 @@ int Sequence_actor_action::handle_event
 	)
 	{
 	if (!actions[index])		// Done?
-		return (0);
+		return 0;
 					// Do current action.
 	bool deleted;
 	int delay = actions[index]->handle_event_safely(actor, deleted);
@@ -869,7 +922,7 @@ int Sequence_actor_action::handle_event
 			return handle_event(actor);
 		delay = speed;
 		}
-	return (delay);
+	return delay;
 	}
 
 /**
@@ -909,7 +962,7 @@ int Object_animate_actor_action::handle_event
 	if (!frnum)			// New cycle?
 		--cycles;
 	obj->change_frame(frnum);
-	return (cycles ? speed : 0);
+	return cycles ? speed : 0;
 	}
 
 /**

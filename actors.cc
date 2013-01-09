@@ -1195,7 +1195,7 @@ int Actor::get_attack_frames
 			}
 		*frames++ = frame;
 		}
-	return (cnt);
+	return cnt;
 	}		
 
 /*
@@ -1363,10 +1363,10 @@ int Actor::walk_path_to_tile
 	if (action)			// Successful at setting path?
 		{
 		start(speed, delay);
-		return (1);
+		return 1;
 		}
 	frame_time = 0;			// Not moving.
-	return (0);
+	return 0;
 	}
 
 /*
@@ -1430,9 +1430,9 @@ inline int Approach
 	)
 	{
 	if (from <= to)			// Going forwards?
-		return (to - from <= dist ? from : to - dist);
+		return to - from <= dist ? from : to - dist;
 	else				// Going backwards.
-		return (from - to <= dist ? from : to + dist);
+		return from - to <= dist ? from : to + dist;
 	}
 
 /*
@@ -2489,12 +2489,12 @@ int Actor::inventory_shapenum()
 			}
 		if (gump < 0)
 			// No gump at ALL; should never happen...
-			return (65);	// Default to male (Pickpocket Cheat)
+			return 65;	// Default to male (Pickpocket Cheat)
 		
 		return gump;
 		}
 	else /* if (serpent) */
-		return (123);		// Show paperdolls
+		return 123;		// Show paperdolls
 }
 
 
@@ -3137,7 +3137,7 @@ int Actor::get_property(int prop) const
 		Weapon_info *winf = weapon ? weapon->get_info().get_weapon_info() : 0;
 		if (!winf)
 			return 0;
-		return (winf->get_uses() >= 2);
+		return winf->get_uses() >= 2;
 		}
 	return (prop >= 0 && prop < Actor::sex_flag) ? properties[prop] : 0;
 	}
@@ -3710,12 +3710,12 @@ int Actor::add_readied
 {
 	// Is Out of range?
 	if (index < 0 || index >= static_cast<int>(sizeof(spots)/sizeof(spots[0])))
-		return (0);		
+		return 0;		
 
 	// Already something there? Try to drop into it.
 	// +++++Danger:  drop() can potentially delete the object.
-//	if (spots[index]) return (spots[index]->drop(obj));
-	if (spots[index]) return (spots[index]->add(obj, dont_check != 0));
+//	if (spots[index]) return spots[index]->drop(obj);
+	if (spots[index]) return spots[index]->add(obj, dont_check != 0);
 
 	int prefered, alt1, alt2;
 
@@ -3779,8 +3779,8 @@ int Actor::find_readied
 	{
 	for (size_t i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		if (spots[i] == obj)
-			return (i);
-	return (-1);
+			return i;
+	return -1;
 	}
 
 /*
@@ -3812,7 +3812,9 @@ int Actor::move_aside
 	// ++++ FIXME: Ugly workaround: preventing stepping aside in combat
 	// also prevents some cases of double-moving aside that result in
 	// walking through walls or doors.
-	if (get_schedule_type() == Schedule::combat)
+	// Also, don't move if the other actor is moving, as this may break
+	// pathfinding.
+	if (get_schedule_type() == Schedule::combat || get_frame_time())
 		return 0;
 	// Do not move aside if sitting, bending over, kneeling or sleeping.
 	int frnum = get_framenum()&0xf; 
@@ -3852,7 +3854,7 @@ int Actor::move_aside
 					// Step, and face direction.
 	step(to, get_dir_framenum(stepdir,static_cast<int>(Actor::standing)));
 	Tile_coord newpos = get_tile();
-	return (newpos.tx == to.tx && newpos.ty == to.ty);
+	return newpos.tx == to.tx && newpos.ty == to.ty;
 	}
 
 /*
@@ -4538,7 +4540,7 @@ Actor *Actor::resurrect
 		{
 		if (body->get_owner() ||	// Must be on ground.
 			npc_num <= 0 || gwin->get_body(npc_num) != body)
-			return (0);
+			return 0;
 		gwin->set_body(npc_num, 0);	// Clear from gwin's list.
 		Game_object *item;		// Get back all the items.
 		while ((item = body->get_objects().get_first()) != 0)
@@ -4570,13 +4572,13 @@ Actor *Actor::resurrect
 					: Schedule::loiter);
 					// Stand up.
 	if (!body)
-		return (this);
+		return this;
 	Usecode_script *scr = new Usecode_script(this);
 	(*scr) << (Ucscript::npc_frame + Actor::sleep_frame)
 		<< (Ucscript::npc_frame + Actor::kneel_frame)
 		<< (Ucscript::npc_frame + Actor::standing);
 	scr->start(1);
-	return (this);
+	return this;
 	}
 
 /*
@@ -4600,7 +4602,7 @@ bool Actor::is_really_blocked
 	if (block->move_aside(this, get_direction(block)))
 		return false;
 	// (May have swapped places.)  If okay, try one last time.
-	return (t != get_tile() && is_blocked(t, 0, force ? MOVE_ALL : 0));
+	return t != get_tile() && is_blocked(t, 0, force ? MOVE_ALL : 0);
 	}
 
 /*
@@ -4700,7 +4702,7 @@ int Main_actor::step
 			if (schedule)		// Tell scheduler.
 				schedule->set_blocked(t);
 			stop();
-			return (0);
+			return 0;
 			}
 		}
 	if (poison && t.tz == 0)
@@ -4733,7 +4735,7 @@ int Main_actor::step
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 						oldtile.tx, oldtile.ty);
 	quake_on_walk();
-	return (1);
+	return 1;
 	}
 
 /*
@@ -5165,7 +5167,7 @@ int Npc_actor::find_schedule_change
 	)
 	{
 	if (party_id >= 0 || is_dead())
-		return (-1);		// Fail if a party member or dead.
+		return -1;		// Fail if a party member or dead.
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
 			return i;
@@ -5385,7 +5387,7 @@ int Npc_actor::step
 	if (!nlist)			// Shouldn't happen!
 		{
 		stop();
-		return (0);
+		return 0;
 		}
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
@@ -5401,7 +5403,7 @@ int Npc_actor::step
 						// And > a screenful away?
 				distance(gwin->get_camera_actor()) > 1 + c_screen_tile_size)
 				dormant = true;	// Go dormant.
-			return (0);		// Done.
+			return 0;		// Done.
 			}
 		}
 	if (poison && t.tz == 0)
@@ -5427,10 +5429,10 @@ int Npc_actor::step
 		{			// No longer on screen.
 		stop();
 		dormant = true;
-		return (0);
+		return 0;
 		}
 	quake_on_walk();
-	return (1);			// Add back to queue for next time.
+	return 1;			// Add back to queue for next time.
 	}
 
 /*

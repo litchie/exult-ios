@@ -412,6 +412,7 @@ void Newfile_gump::save()
 	LoadSaveGameDetails();
 	paint();
 	gwin->set_painted();
+	gwin->got_bad_feeling(4);
 }
 
 /*

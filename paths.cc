@@ -29,6 +29,7 @@
 #include "gamewin.h"
 #include "gamemap.h"
 #include "actors.h"
+#include "schedule.h"
 
 /*
  *	Create for given NPC.
@@ -37,8 +38,9 @@
 Actor_pathfinder_client::Actor_pathfinder_client
 	(
 	Actor *n,
-	int d
-	) : Pathfinder_client(n->get_type_flags()), dist(d), npc(n)
+	int d,
+	bool ign
+	) : Pathfinder_client(n->get_type_flags()), dist(d), npc(n), ignore_npcs(ign)
 	{
 	}
 
@@ -57,6 +59,52 @@ int Actor_pathfinder_client::get_max_cost
 	int min_max_cost = (gwin->get_width()/c_tilesize)*2*3;
 	return max_cost > min_max_cost ? max_cost : min_max_cost;
 	}
+
+int Actor_pathfinder_client::check_blocking
+	(
+	Tile_coord const& from,
+	Tile_coord const& to
+	)
+	{
+	if (ignores_npcs())
+		{
+		Game_object *block = Game_object::find_blocking(to);
+		if (!block)
+			return -1;
+		Actor *blk = block->as_actor();
+		if (blk)
+			{
+				// If the blocking NPC is sitting, kneeling, lying down,
+				// or in combat, he is an obstacle.
+			int frnum = blk->get_framenum() & 0xf;
+			if ((frnum >= Actor::sit_frame && frnum <= Actor::sleep_frame) ||
+					blk->get_schedule_type() == Schedule::combat)
+				return -1;
+				// Otherwise, try to avoid non-moving NPCs.
+			return blk->get_frame_time() ? 0 : 1;			// Try to avoid them.
+			}
+		}
+
+	Game_object *block = Game_object::find_door(to);
+	if (!block)
+		return -1;
+	if (!block->is_closed_door() ||
+				// Can't get past locked doors.
+	    block->get_framenum()%4 >= 2)
+		return -1;
+				// Can't be either end of door.
+	Rectangle foot = block->get_footprint();
+	if (foot.h == 1 && (to.tx == foot.x ||
+	                    to.tx == FIX_COORD(foot.x + foot.w - 1)))
+		return -1;
+	else if (foot.w == 1 && (to.ty == foot.y ||
+	                         to.ty == FIX_COORD(foot.y + foot.h - 1)))
+		return -1;
+	if (foot.has_world_point(from.tx, from.ty))
+		return -1;	// Don't walk within doorway.
+	return 1;			// But try to avoid them.
+	}
+
 
 /*
  *	Figure cost going from one tile to an adjacent tile (for pathfinding).
@@ -84,25 +132,12 @@ int Actor_pathfinder_client::get_step_cost
 	int old_lift = to.tz;		// Might climb/descend.
 	Tile_coord from(frm);
 	if (npc->is_blocked(to, &from))
-		{			// Blocked, but check for a door.
-		Game_object *block = Game_object::find_door(to);
-		if (!block)
+		{			// Blocked, but check for a door or blocking NPC.
+		int ret = check_blocking(from, to);
+		if (ret < 0)
 			return -1;
-		if (!block->is_closed_door() ||
-					// Can't get past locked doors.
-		    block->get_framenum()%4 >= 2)
-			return -1;
-					// Can't be either end of door.
-		Rectangle foot = block->get_footprint();
-		if (foot.h == 1 && (to.tx == foot.x ||
-		                    to.tx == FIX_COORD(foot.x + foot.w - 1)))
-			return -1;
-		else if (foot.w == 1 && (to.ty == foot.y ||
-		                         to.ty == FIX_COORD(foot.y + foot.h - 1)))
-			return -1;
-		if (foot.has_world_point(from.tx, from.ty))
-			return -1;	// Don't walk within doorway.
-		cost++;			// But try to avoid them.
+		else
+			cost += ret;
 		}
 	if (old_lift != to.tz)
 		cost++;
@@ -122,7 +157,7 @@ int Actor_pathfinder_client::get_step_cost
 		if (framenum <= 1)
 			cost--;
 		}
-	return (cost);
+	return cost;
 	}
 
 /*
@@ -225,8 +260,9 @@ int Onecoord_pathfinder_client::at_goal
 
 Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
-	Actor *n
-	) : Actor_pathfinder_client(n), screen(
+	Actor *n,
+	bool ign
+	) : Actor_pathfinder_client(n, 0, ign), screen(
 	      Game_window::get_instance()->get_win_tile_rect().enlarge(3)),
 	    best(-1, -1, -1)
 	{
@@ -239,8 +275,9 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
 	Actor *n,
-	Tile_coord const& b			// Best offscreen pt. to aim for.
-	) : Actor_pathfinder_client(n), screen(
+	Tile_coord const& b,			// Best offscreen pt. to aim for.
+	bool ign
+	) : Actor_pathfinder_client(n, 0, ign), screen(
 	      Game_window::get_instance()->get_win_tile_rect().enlarge(3)),
 	    best(b)
 	{
@@ -581,7 +618,7 @@ int Fast_pathfinder_client::is_grabable_internal
 					gmap->is_tile_occupied(t) &&
 					(block = Game_object::find_blocking(t)) != 0 &&
 					// Ignore all blocking actors and movable objects.
-					block->as_actor() == 0 && block->get_weight() == 0)
+					block->as_actor() == 0 && !block->is_dragable())
 			return 0;	// Blocked.
 	return 1;
 	}

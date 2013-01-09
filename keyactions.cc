@@ -179,6 +179,7 @@ void ActionQuicksave(int const *params)
 		return;
 	}
 	gwin->get_effects()->center_text("Game saved");
+	gwin->got_bad_feeling(8);
 }
 
 //  { ActionQuickrestore, 0, "Quick-restore", normal_keys, NONE },
