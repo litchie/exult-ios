@@ -54,12 +54,12 @@ public:
 		{  }
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const& src, 
-			Tile_coord const& dest, int dist = 0);
+			Tile_coord const& dest, int dist = 0, bool ignnpc = false);
 					// Set action to walk to dest, then
 					//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor, 
 			Tile_coord const& dest, Actor_action *when_there, 
-					bool from_off_screen = false);
+					bool from_off_screen = false, bool ignnpc = false);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest) const
 		{ return 0; }
@@ -104,6 +104,7 @@ private:
 	unsigned char blocked;		// Blocked-tile retries.
 	unsigned char max_blocked;	// Try this many times.
 	unsigned char blocked_frame;	// Frame for blocked tile.
+	unsigned char persistence;
 	Tile_coord blocked_tile;	// Tile to retry.
 	void set_subseq(Actor_action *sub)
 		{
@@ -111,7 +112,7 @@ private:
 		subseq = sub;
 		}
 public:
-	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3);
+	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3, int pers = 0);
 	virtual ~Path_walking_actor_action();
 	static Path_walking_actor_action *create_path(Tile_coord const& src,
 			Tile_coord const& dest, Pathfinder_client& cost);
@@ -121,7 +122,7 @@ public:
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Actor *npc, Tile_coord const& src, 
-				Tile_coord const& dest, int dist = 0);
+				Tile_coord const& dest, int dist = 0, bool persistant = false);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest) const;
 					// Check for Astar.

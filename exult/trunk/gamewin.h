@@ -377,6 +377,7 @@ public:
 	void attack_avatar(int num_guards = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
 	bool failed_copy_protection();
+	void got_bad_feeling(int odds);
 	/*
 	 *	Rendering:
 	 */
