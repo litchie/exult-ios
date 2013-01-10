@@ -111,7 +111,7 @@ void Combat_schedule::start_battle
 					// .5 minute since last start?
 	if (curtime - battle_time >= 30000)
 		{
-		Audio::get_ptr()->start_music_combat(rand()%2 ? 
+		Audio::get_ptr()->start_music_combat((rand()%2) ? 
 					CSAttacked1 : CSAttacked2, 0);
 		battle_time = curtime;
 		battle_end_time = curtime - 1;

@@ -75,7 +75,7 @@ public:
 	~Uc_function();
 	static void set_intrinsics();
 	static void setup_intrinsics()		// Init. the 1st time.
-		{ if (!intrinsics.size())
+		{ if (intrinsics.empty())
 			set_intrinsics();
 		}
 	static void set_intrinsic_type(Intrinsic_type ty)

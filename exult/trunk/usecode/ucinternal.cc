@@ -707,10 +707,10 @@ int Usecode_internal::get_face_shape
 	// Checks for Petra flag.
 	shape = Shapeinfo_lookup::GetFaceReplacement(shape);
 
-	Actor *iact;
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{			// Special case: Nightmare Smith.
 					//   (But don't mess up Guardian.)
+		Actor *iact;
 		if (shape == 296 && this->frame->caller_item &&
 		    (iact = this->frame->caller_item->as_actor()) != 0 &&
 		    iact->get_npc_num() == 277)
@@ -1771,10 +1771,10 @@ void Usecode_internal::click_to_continue
 	(
 	)
 	{
-	int xx, yy;
-	char c;
 	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
 		{
+		int xx, yy;
+		char c;
 		gwin->paint();		// Repaint scenery.
 		Get_click(xx, yy, Mouse::hand, &c, false, conv, true);
 		}

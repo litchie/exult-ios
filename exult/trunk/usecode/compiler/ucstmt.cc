@@ -759,7 +759,7 @@ void Uc_converse_statement::gen
 	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	if (!cases.size())	// Nothing to do; optimize whole block away.
+	if (cases.empty())	// Nothing to do; optimize whole block away.
 		return;
 	if (nest++ > 0 || nestconv)			// Not the outermost?
 					// Generate a 'push_answers()'.

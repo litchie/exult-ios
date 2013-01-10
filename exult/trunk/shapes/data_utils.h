@@ -118,7 +118,7 @@ static T *Search_vector_data_single_wildcard
 	U T::*dat
 	)
 	{
-	if (!vec.size())	// Not found.
+	if (vec.empty())	// Not found.
 		return 0;
 	T inf;
 	inf.*dat = src;
@@ -147,7 +147,7 @@ static T *Search_vector_data_double_wildcards
 	short T::*fr, short T::*qual
 	)
 	{
-	if (!vec.size())
+	if (vec.empty())
 		return 0;	// No name.
 	T inf;
 	inf.*fr = frame;
@@ -912,7 +912,7 @@ public:
 	bool operator()(Info& info)
 		{
 		std::vector<T>& vec = info.*data;
-		if (!vec.size())	// Nothing to do.
+		if (vec.empty())	// Nothing to do.
 			return false;
 		for (typename std::vector<T>::iterator it = vec.begin();
 				it != vec.end(); ++it)

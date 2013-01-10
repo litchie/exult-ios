@@ -794,7 +794,7 @@ bool Notebook_gump::handle_kbd_event
 			}
 		break;		
 	}
-	updnx = cursor.x - x - (curpage%2 ? rpagex : lpagex);
+	updnx = cursor.x - x - ((curpage%2) ? rpagex : lpagex);
 #if DEBUG
 	std::cout << "updnx = " << updnx << std::endl;
 //	std::cout << "Notebook chr: " << chr << std::endl;

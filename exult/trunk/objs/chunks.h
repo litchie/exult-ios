@@ -276,7 +276,7 @@ public:
 	inline int is_dungeon(int tx, int ty)	// Is object within dungeon? (returns height)
 		{
 		int tnum = ty*c_tiles_per_chunk + tx;
-		return tnum%2? dungeon_levels[tnum/2] >> 4: dungeon_levels[tnum/2] & 0xF;
+		return (tnum%2)? dungeon_levels[tnum/2] >> 4: dungeon_levels[tnum/2] & 0xF;
 		}
 					// Is the dungeon an ICE dungeon.NOTE: This is a
 					// Hack and splits the chunk into 4 parts. Only if

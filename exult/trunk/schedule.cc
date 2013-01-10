@@ -1715,7 +1715,7 @@ void Miner_schedule::now_what
 		}
 		state = attack_ore;
 		if (rand()%6 == 0) {		// Break up piece.
-			int shnum, frnum = ore->get_framenum();
+			int frnum = ore->get_framenum();
 			if (frnum == 3)
 				state = find_ore;	// Dust.
 			else if (rand()%(4+2*frnum) == 0) {
@@ -1723,6 +1723,7 @@ void Miner_schedule::now_what
 				Tile_coord pos = ore->get_tile();
 				ore->remove_this();
 				ore = 0;
+				int shnum;
 				if (frnum == 0) {	// Gold.
 					shnum = 645;
 					frnum = rand()%2;
@@ -2327,12 +2328,12 @@ bool Sit_schedule::set_action
 	Game_object **chair_found	// ->chair ret'd if not NULL.
 	)
 	{
-	static int chairshapes[] = {873,292};
 	Game_object_vector chairs;
 	if (chair_found)
 		*chair_found = 0;	// Init. in case we fail.
 	if (!chairobj)			// Find chair if not given.
 		{
+		static int chairshapes[] = {873,292};
 		actor->find_closest(chairs, chairshapes,
 					sizeof(chairs)/sizeof(chairs[0]));
 		for (Game_object_vector::const_iterator it = chairs.begin();
@@ -2377,11 +2378,13 @@ void Desk_schedule::now_what
 	if (!chair)			// No chair found yet.
 		{
 		static int desks[2] = {283, 407};
-		static int chairs[2] = {873,292};
 		Stand_up(npc);
 		Game_object *desk = npc->find_closest(desks, 2);
 		if (desk)
+			{
+			static int chairs[2] = {873,292};
 			chair = desk->find_closest(chairs, 2);
+			}
 		if (!chair)		// Failed.
 			{		// Try again in a few seconds.
 			npc->start(200, 5000);
@@ -2526,7 +2529,6 @@ void Lab_schedule::init
 	add_client(tables);
 	int cnt = tables.size();	// Look for book, chair.
 	for (int i = 0; (!book || !chair) && i < cnt; i++) {
-		static int chairs[2] = {873,292};
 		Game_object *table = tables[i];
 		Rectangle foot = table->get_footprint();
 					// Book on table?
@@ -2539,6 +2541,7 @@ void Lab_schedule::init
 				add_client(book);
 			}
 		if (!chair) {
+			static int chairs[2] = {873,292};
 			chair = table->find_closest(chairs, 2, 4);
 			add_client(chair);
 		}

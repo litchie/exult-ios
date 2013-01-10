@@ -136,7 +136,7 @@ void Palette_edit::load
 			size_t len;
 			unsigned char *buf = (unsigned char *)
 						flex_info->get(pnum, len);
-			assert(len = 3*256);
+			assert(len == 3*256);
 			guint32 colors[256];
 			for (int i = 0; i < 256; i++)
 				colors[i] = (buf[3*i]<<16)*4 + 
