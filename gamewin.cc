@@ -2656,8 +2656,8 @@ void Game_window::schedule_npcs
 	for (Actor_vector::iterator it = npcs.begin() + 1; 
 						it != npcs.end(); ++it)
 		{
-		Npc_actor *npc;
-		if (!*it || (npc = (*it)->as_npc()) == 0)
+		Actor *npc = *it;
+		if (!npc)
 			continue;
 					// Don't want companions leaving.
 		if (npc->get_schedule_type() != Schedule::wait &&
@@ -2682,8 +2682,8 @@ void Game_window::mend_npcs
 	for (Actor_vector::iterator it = npcs.begin(); 
 						it != npcs.end(); ++it)
 		{
-		Npc_actor *npc;
-		if (*it && (npc = (*it)->as_npc()) != 0)
+		Actor *npc = *it;
+		if (npc)
 			npc->mend_wounds(true);
 		}
 	}

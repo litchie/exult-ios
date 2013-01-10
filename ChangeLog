@@ -1,3 +1,8 @@
+2013-01-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gamewin.cc: Fixing bug exposed by revision 7267 (bug #3600300 "as_npc()
+	  causes issues (warning fix regression)") before which the the avatar was
+	  being incorrectly cast from Main_actor to unrelated class Npc_actor.
+
 2013-01-10	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* all: Eliminate some Cppcheck errors and noise
 
