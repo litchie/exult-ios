@@ -66,7 +66,7 @@ int	main(void)
 		if(t)
 			{
 			char	buf[64];
-			sprintf(buf,"/tmp/u7patch/patch%d",i);
+			sprintf(buf,"/tmp/u7patch/patch%u",i);
 			FILE	*fp=fopen(buf,"wb");
 			if(!fp) continue;
 			fwrite(t,length,1,fp);
@@ -84,7 +84,7 @@ int	main(void)
 		if(t)
 			{
 			char	buf[64];
-			sprintf(buf,"/tmp/u7mid/midi%d",i);
+			sprintf(buf,"/tmp/u7mid/midi%u",i);
 			FILE	*fp=fopen(buf,"wb");
 			if(!fp) continue;
 			fwrite(t,length,1,fp);

@@ -441,7 +441,7 @@ public:
 
 inline void PopOpcode(Basic_block *dest)
 	{
-	if (!dest->instructions.size())
+	if (dest->instructions.empty())
 		return;
 	Opcode *op = dest->instructions.back();
 	dest->instructions.pop_back();
@@ -465,7 +465,7 @@ inline void WriteOp(Basic_block *dest, unsigned short val)
 
 inline void WriteOpParam1(Basic_block *dest, unsigned short val)
 	{
-	if (!dest->instructions.size())
+	if (dest->instructions.empty())
 		return;
 	dest->instructions.back()->WriteParam1(val);
 	}
@@ -476,7 +476,7 @@ inline void WriteOpParam1(Basic_block *dest, unsigned short val)
 
 inline void WriteOpParam2(Basic_block *dest, unsigned short val)
 	{
-	if (!dest->instructions.size())
+	if (dest->instructions.empty())
 		return;
 	dest->instructions.back()->WriteParam2(val);
 	}
@@ -487,7 +487,7 @@ inline void WriteOpParam2(Basic_block *dest, unsigned short val)
 
 inline void WriteOpParam4(Basic_block *dest, unsigned int val)
 	{
-	if (!dest->instructions.size())
+	if (dest->instructions.empty())
 		return;
 	dest->instructions.back()->WriteParam4(val);
 	}

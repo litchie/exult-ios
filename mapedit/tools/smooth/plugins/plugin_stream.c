@@ -183,7 +183,7 @@ char * plugin_apply(char colour[6], glob_variables *g_var){
   if(strncasecmp(col[loc_idx][1],a_star,1) == 0 || has_around(col[loc_idx][1])){
     calc_value = (1*calculate(col_num,my_g_var.global_x,(my_g_var.global_y - 1))) + (2*calculate(col_num,(my_g_var.global_x + 1),my_g_var.global_y)) + (4*calculate(col_num,my_g_var.global_x,(my_g_var.global_y + 1))) + (8*calculate(col_num,(my_g_var.global_x - 1),my_g_var.global_y));
     
-    if(my_g_stat.debug > 4) printf("calc_value is %d at (%d,%d) -- col_num = %d\n",calc_value,my_g_var.global_x,my_g_var.global_y,col_num);
+    if(my_g_stat.debug > 4) printf("calc_value is %u at (%d,%d) -- col_num = %u\n",calc_value,my_g_var.global_x,my_g_var.global_y,col_num);
     return(col[loc_idx][calc_value + 2]); // the first 2 cells are taken by slave and trigger
   } else {
     return(colour);

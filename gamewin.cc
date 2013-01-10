@@ -942,7 +942,7 @@ void Game_window::resized
 	// Do the following only if in game (not for menus)
 	if(!gump_man->gump_mode()) {
 		char msg[80];
-		snprintf(msg, 80, "%dx%dx%d", neww, newh, newsc);
+		snprintf(msg, 80, "%ux%ux%u", neww, newh, newsc);
 		effects->center_text(msg);
 	}
 	}
@@ -1555,7 +1555,7 @@ void Game_window::read_gwin
 		return;
 	}
 
-	Audio::get_ptr()->start_music(track_num, repeat != false);
+	Audio::get_ptr()->start_music(track_num, repeat != 0);
 	armageddon = gin.read1() == 1 ? true : false;
 	if (!gin_stream.good())
 		armageddon = false;

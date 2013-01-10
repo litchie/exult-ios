@@ -422,7 +422,6 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 
-			char hline[1024];
 			ofstream header;
 			if (!hname[0]) {	// Need header name.
 				strncpy (hprefix, fname, sizeof (hprefix));
@@ -465,6 +464,7 @@ int main(int argc, char **argv)
 							delete [] buf;
 							infile.close();
 
+							char hline[1024];
 							strncpy (hline, file_names[i].c_str(), sizeof (hline));
 							strip_path(hline);
 							make_header_name(hline);

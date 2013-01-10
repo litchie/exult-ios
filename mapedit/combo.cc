@@ -316,7 +316,7 @@ void Combo::add
 	    ztiles = info.get_3d_height();
 					// Get tile footprint.
 	Rectangle box(tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles);
-	if (!members.size())		// First one?
+	if (members.empty())		// First one?
 		tilefoot = box;		// Init. total footprint.
 	else
 		{			// Too far away?

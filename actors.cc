@@ -500,8 +500,8 @@ bool Actor::ready_ammo
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return false;
-	int ammo;
-	if ((ammo = winf->get_ammo_consumed()) < 0)
+	int ammo = winf->get_ammo_consumed();
+	if (ammo < 0)
 		{			// Ammo not needed.
 		if (winf->uses_charges() && info.has_quality() &&
 					weapon->get_quality() <= 0)
@@ -514,10 +514,8 @@ bool Actor::ready_ammo
 	bool usable = Is_weapon_usable(this, weapon, &found, false);
 	if (usable)	// Ammo is available and ready.
 		return true;
-	else if (winf->get_ammo_consumed() < 0)
-		return false;	// Weapon can't be used.
 		// Try recursive search now.
-	found = find_best_ammo(winf->get_ammo_consumed());
+	found = find_best_ammo(ammo);
 	if (!found)
 		return false;
 	swap_ammo(found);
@@ -3823,7 +3821,6 @@ int Actor::move_aside
 
 	Tile_coord cur = get_tile();
 	Tile_coord to(-1, -1, -1);
-	int i;
 	int d = 8;
 	// Try orthogonal directions first.
 	to = cur.get_neighbor((dir + 2)%8);
@@ -3836,7 +3833,7 @@ int Actor::move_aside
 			d = (dir + 6)%8;
 		else
 			{
-			for (i = 0; i < 4; i++)		// Try diagonals now.
+			for (int i = 0; i < 4; i++)		// Try diagonals now.
 				{
 				to = cur.get_neighbor(2*i+1);
 				if (!is_blocked(to, 0, get_type_flags()))

@@ -78,7 +78,7 @@ void Time_queue::add
 					// Messy, but we need to fix time.
 		t -= SDL_GetTicks() - pause_time;
 	newent.set(t,obj,ud);
-	if(!data.size())
+	if(data.empty())
 		{
 		data.push_back(newent);
 		return;
@@ -113,7 +113,7 @@ int Time_queue::remove
 	Time_sensitive *obj
 	)
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return 0;
 	for(Temporal_sequence::iterator it=data.begin();
 		it!=data.end(); ++it)
@@ -140,7 +140,7 @@ int Time_queue::remove
 	long udata
 	)
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return 0;
 	for(Temporal_sequence::iterator it=data.begin();
 		it!=data.end(); ++it)
@@ -166,7 +166,7 @@ int Time_queue::find
 	Time_sensitive const *obj
 	) const
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return 0;
 	for(Temporal_sequence::const_iterator it=data.begin();
 		it!=data.end(); ++it)
@@ -189,7 +189,7 @@ long Time_queue::find_delay
 	uint32 curtime
 	) const
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return -1;
 	for(Temporal_sequence::const_iterator it=data.begin();
 		it!=data.end(); ++it)
@@ -215,7 +215,7 @@ void Time_queue::activate0
 	uint32 curtime		// Current time.
 	)
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return;
 	Queue_entry ent;
 	do
@@ -240,7 +240,7 @@ void Time_queue::activate_always
 	uint32 curtime		// Current time.
 	)
 	{
-	if(data.size()==0)
+	if(data.empty())
 		return;
 	Queue_entry ent;
 	for(Temporal_sequence::iterator it=data.begin();

@@ -241,7 +241,6 @@ void Mouse::set_speed_cursor()
 	Gump_manager *gump_man = gwin->get_gump_man();
 
 	int cursor = dontchange;
-	int ax, ay;			// Get Avatar/barge screen location.
 
 	// Check if we are in dont_move mode, in this case display the hand cursor
 	if (gwin->main_actor_dont_move())
@@ -286,6 +285,7 @@ void Mouse::set_speed_cursor()
 		cursor = short_combat_arrows[0];	// Short N red arrow.
 	if (cursor == dontchange)
 	{
+		int ax, ay;			// Get Avatar/barge screen location.
 		Barge_object *barge = gwin->get_moving_barge();
 		if (barge)
 		{			// Use center of barge.

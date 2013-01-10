@@ -497,7 +497,7 @@ void Game_window::read_save_names
 	for (unsigned int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
-		snprintf(fname, 50, SAVENAME, i,
+		snprintf(fname, 50, SAVENAME, (int)i,
 			Game::get_game_type() == BLACK_GATE ? "bg" :
 			Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
 		ifstream in;

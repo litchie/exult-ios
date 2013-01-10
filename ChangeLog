@@ -1,3 +1,6 @@
+2013-01-10	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* all: Eliminate some Cppcheck errors and noise
+
 2013-01-09	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* all: Collecting all hard-coded usecode functions in separate header until
 	  they are properly de-hard-coded. Eliminated warnings. Consolidated  32-bit

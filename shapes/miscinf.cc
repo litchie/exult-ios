@@ -473,7 +473,7 @@ void Shapeinfo_lookup::setup_shape_files()
 		};
 	Read_data_file("shape_files", sections, parsers, size);
 	// For safety.
-	if (paperdoll_source_table->size() == 0)
+	if (paperdoll_source_table->empty())
 		paperdoll_source_table->push_back(pair<string, int>(string(PAPERDOL), -1));
 	// Add in patch paperdolls too.
 	paperdoll_source_table->push_back(pair<string, int>(string(PATCH_PAPERDOL), -1));
