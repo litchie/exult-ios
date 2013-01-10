@@ -459,7 +459,7 @@ int Shape_info::get_object_flags(int frame, int qual)
 
 Paperdoll_item *Shape_info::get_item_paperdoll(int frame, int spot)
 	{
-	if (!objpaperdoll.size())
+	if (objpaperdoll.empty())
 		return 0;	// No paperdoll.
 	Paperdoll_item inf;
 	inf.world_frame = frame;

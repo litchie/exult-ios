@@ -955,7 +955,7 @@ int portable_snprintf(char *str, size_t str_m, const char *fmt, /*args*/ ...) {
 				}
 				/* zero padding as requested by the precision or by the minimal field width
 				 * for numeric conversions required? */
-				if (number_of_zeros_to_pad <= 0) {
+				if (number_of_zeros_to_pad == 0) {
 					/* will not copy first part of numeric right now, *
 					 * force it to be copied later in its entirety    */
 					zero_padding_insertion_ind = 0;

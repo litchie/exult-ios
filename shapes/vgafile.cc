@@ -1414,7 +1414,7 @@ bool Vga_file::load
 				}
 			}
 		}
-	if (!shape_sources.size())
+	if (shape_sources.empty())
 		throw file_open_exception(get_system_path(sources[0].first));
 	if (!flex)			// Just one shape, which we preload.
 		{

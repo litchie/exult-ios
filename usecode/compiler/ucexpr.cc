@@ -111,9 +111,9 @@ void Uc_var_expression::gen_value
 	Basic_block *out
 	)
 	{
-	char buf[150];
 	if (!var->gen_value(out))
 		{
+		char buf[150];
 		sprintf(buf, "Can't use value of '%s'", var->get_name());
 		error(buf);
 		}
@@ -128,9 +128,9 @@ void Uc_var_expression::gen_assign
 	Basic_block *out
 	)
 	{
-	char buf[150];
 	if (!var->gen_assign(out))
 		{
+		char buf[150];
 		sprintf(buf, "Can't assign to '%s'", var->get_name());
 		error(buf);
 		}

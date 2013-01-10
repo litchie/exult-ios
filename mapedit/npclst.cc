@@ -174,7 +174,7 @@ void Npc_chooser::setup_shapes_info
 	)
 	{
 	vector<Estudio_npc>& npcs = get_npcs();
-	if (!npcs.size())		// No NPC's?  Try to get them.
+	if (npcs.empty())		// No NPC's?  Try to get them.
 		((Npcs_file_info *) file_info)->setup();
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width;

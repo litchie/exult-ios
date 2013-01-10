@@ -74,7 +74,7 @@ public:
 
 	void push_answers();
 	void pop_answers();
-	bool stack_empty() const { return !answer_stack.size(); }
+	bool stack_empty() const { return answer_stack.empty(); }
 
 private:
 	void set_face_rect(Npc_face_info *info, Npc_face_info *prev, int screenw, int screenh);

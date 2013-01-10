@@ -523,7 +523,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 
 	size_t len;
 	uint8 *buf = (uint8 *)sample.retrieve(len);
-	if (!buf || len <= 0)
+	if (!buf || len == 0)
 	{
 		// Failed to find file in patch or static dirs.
 		CERR("Audio::playfile: Error reading file '" << fname << "'");
@@ -663,7 +663,7 @@ bool Audio::start_speech(int num, bool wait)
 
 	size_t len;
 	uint8 *buf = (uint8 *)sample.retrieve(len);
-	if (!buf || len <= 0)
+	if (!buf || len == 0)
 	{
 		delete [] buf;
 		return false;

@@ -316,22 +316,22 @@ void GameplayOptions_gump::save_settings()
 	int fps = framerates[frames];
 	gwin->set_std_delay(1000/fps);
 	config->set("config/video/fps", fps, false);
-	gwin->set_fastmouse(fastmouse!=false);
+	gwin->set_fastmouse(fastmouse!=0);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", false);
 #ifdef UNDER_CE
 	config->set("config/gameplay/dpadopt", dpadopt, false);
 	keybinder->WINCE_LoadFromDPADOPT(dpadopt);
 #else
-	gwin->set_mouse3rd(mouse3rd!=false);
+	gwin->set_mouse3rd(mouse3rd!=0);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", false);
 #endif
-	gwin->set_double_click_closes_gumps(doubleclick!=false);
+	gwin->set_double_click_closes_gumps(doubleclick!=0);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", false);
-	gumpman->set_right_click_close(rightclick_close!=false);
+	gumpman->set_right_click_close(rightclick_close!=0);
 	config->set("config/gameplay/right_click_closes_gumps", 
 				rightclick_close ? "yes" : "no" , false);
-	cheat.set_enabled(cheats!=false);
+	cheat.set_enabled(cheats!=0);
 	if (gwin->is_in_exult_menu())
 		config->set("config/gameplay/facestats", facestats - 1 , false);
 	else {
@@ -341,7 +341,7 @@ void GameplayOptions_gump::save_settings()
 	}
 	if (sman->can_use_paperdolls() && (GAME_BG ||
 			Game::get_game_type() == EXULT_DEVEL_GAME)) {
-		sman->set_paperdoll_status(paperdolls!=false);
+		sman->set_paperdoll_status(paperdolls!=0);
 		config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", false);
 	}

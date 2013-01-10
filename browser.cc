@@ -106,9 +106,9 @@ void ShapeBrowser::browse_shapes()
 				const str_int_pair& pal_tuple = game->get_resource(buf);
 				snprintf(buf,255,"palettes/patch/%d", current_palette);
 				const str_int_pair& patch_tuple = game->get_resource(buf);
-				char xfrsc[256];
 				if (current_xform > 0)
 					{
+					char xfrsc[256];
 					snprintf(xfrsc, 255, "xforms/%d",
 							current_xform);
 					const str_int_pair& xform_tuple = game->

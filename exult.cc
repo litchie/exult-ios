@@ -690,7 +690,7 @@ int exult_main(const char *runpath)
 
 	// Convert from old format if needed
 	vector<string> vs = config->listkeys("config/disk/game",false);
-	if (vs.size() == 0 && config->key_exists("config/disk/u7path"))
+	if (vs.empty() && config->key_exists("config/disk/u7path"))
 		{
 		// Convert from the older format
 		string data_directory;
@@ -2375,8 +2375,6 @@ void change_gamma (bool down)
 
 void BuildGameMap(BaseGameInfo *game, int mapnum)
 {
-	int w, h, sc, sclr;
-
 	// create 2048x2048 screenshots of the full Ultima 7 map.
 	// WARNING!! Takes up lots of memory and diskspace!
 	if (arg_buildmap >= 0) {
@@ -2386,7 +2384,7 @@ void BuildGameMap(BaseGameInfo *game, int mapnum)
 			case 1: maplift = 10; break;
 			case 2: maplift = 5; break;
 		}
-		
+		int w, h, sc, sclr;
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
 		Image_window::FillMode fillmode = Image_window::Fit;

@@ -312,7 +312,7 @@ void Shape_manager::load
 			std::size_t len = 0;
 			if (pxf)
 				data = (uint8 *)pxf->retrieve(i, len);
-			if (!data || len <= 0)
+			if (!data || len == 0)
 				{
 					// Not in patch;
 				delete [] data;
@@ -320,7 +320,7 @@ void Shape_manager::load
 				if (sxf)
 					data = (uint8 *)sxf->retrieve(i, len);
 				}
-			if (!data || len <= 0)
+			if (!data || len == 0)
 				{
 				delete [] data;
 					// No XForm data at all. Make this XForm into an
