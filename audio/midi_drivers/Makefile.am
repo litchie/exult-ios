@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. \
+AM_CPPFLAGS = -I$(srcdir)/../../headers -I$(srcdir)/../../conf -I$(srcdir)/../.. \
 		-I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../../imagewin \
 		-I../../conf -I../../files -I../../objs -I$(srcdir)/../../shapes \
 		$(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \

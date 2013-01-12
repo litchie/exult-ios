@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
+AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../imagewin -I$(srcdir)/../conf -I$(srcdir)/../gamemgr \
 	-I$(srcdir)/../files -I$(srcdir)/../server  -I$(srcdir)/../usecode \
 	-I$(srcdir)/../shapes/shapeinf \
