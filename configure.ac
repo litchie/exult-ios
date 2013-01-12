@@ -1,17 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.53)
-AC_INIT(exult.cc)
+AC_INIT(exult, 1.5.0svn)
+AC_CONFIG_SRCDIR(exult.cc)
+
 
 
 # ---------------------------------------------------------------------
 # System/version info
 # ---------------------------------------------------------------------
 
-PACKAGE=exult
-VER_MAJOR=1
-VER_MINOR=5
-VER_EXTRA=.0svn
-VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 # Do iPhone stuff first, as we may need to manipulate the host variable
 AC_ARG_WITH(iphone_sdk, AS_HELP_STRING([--with-iphone-sdk=SDK_NAME], [Compile using iPhone SDK]),,)
@@ -52,14 +49,11 @@ fi
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE($PACKAGE,$VERSION,no-define)
+AM_INIT_AUTOMAKE
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Package Name])
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Package Version])
-AC_DEFINE_UNQUOTED(VER_MAJOR, "$VER_MAJOR", [Version Number Major])
-AC_DEFINE_UNQUOTED(VER_MINOR, "$VER_MINOR", [Version Number Minor])
-AC_DEFINE_UNQUOTED(VER_EXTRA, "$VER_EXTRA", [Version Number Extra])
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 
 AH_BOTTOM([
 #ifdef ALPHA_LINUX_CXX

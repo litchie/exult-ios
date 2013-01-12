@@ -1,3 +1,7 @@
+2013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
+	* configure.ac and all makefile.am files: fixed compiling with current 
+	  autotools and removed many autotools warnings.
+
 2013-01-10	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gamewin.cc: Fixing bug exposed by revision 7267 (bug #3600300 "as_npc()
 	  causes issues (warning fix regression)") before which the the avatar was

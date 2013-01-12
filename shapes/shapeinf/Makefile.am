@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../.. -I$(srcdir)/../../files \
+AM_CPPFLAGS = -I$(srcdir)/../../headers -I$(srcdir)/../.. -I$(srcdir)/../../files \
 	-I$(srcdir)/../../shapes $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libshapeinf.la
