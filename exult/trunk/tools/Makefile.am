@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode \
+AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode \
 	-I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
 	-I$(srcdir)/../conf $(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS) \
 	$(LIBGNOMEUI_CFLAGS)

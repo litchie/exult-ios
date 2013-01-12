@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
+AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		-I$(srcdir)/../conf -I../conf \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 

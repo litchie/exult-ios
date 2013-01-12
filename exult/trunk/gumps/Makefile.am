@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files \
+AM_CPPFLAGS = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files \
 		-I$(srcdir)/../imagewin -I$(srcdir)/../shapes -I$(srcdir)/../objs \
 		-I$(srcdir)/../audio -I$(srcdir)/../audio/midi_drivers \
 		-I$(srcdir)/../conf -I$(srcdir)/../usecode -I$(srcdir)/../data \
