@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="01 January 2013 (GMT)">	
+<readme title="Exult" changed="15 January 2013 (GMT)">	
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
@@ -1657,7 +1657,7 @@
 				</para>
 				<para>
 					During the game press <key>h</key> to see a help
-					screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen
+					screen with most of the keys (for MacOS change Alt for Cmd - the in-game help screen
 					shows the correct key combination for MacOS). <key>KP</key> means keypad.
 				</para>
 				<keytable title="Default keyboard commands">
@@ -1704,6 +1704,7 @@
 					<keydesc name="l">SI: Show combat stats</keydesc>
 					<keydesc name="m">Show map</keydesc>
 					<keydesc name="n">Show notebook</keydesc>
+					<keydesc name="o">BG: Use the Orb of the Moons</keydesc>
 					<keydesc name="p">Use lockpicks</keydesc>
 					<keydesc name="Alt-q">Exit game</keydesc>
 					<keydesc name="r">Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.</keydesc>
@@ -2727,6 +2728,14 @@
 		</sub>
 	</section>
 	<section title="Changes to the Documentation">
+		<sub name="01152013">
+			<header>- 15 January 2013</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_keys"/> orb of the moons keyboard command.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="01012013">
 			<header>- 01 January 2013</header>
 			<body>
