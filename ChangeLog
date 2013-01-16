@@ -5,6 +5,11 @@
 	Rev 7278
 	* ./content/bgkeyring/src/items/orb_of_the_moons.uc: Fixed bug #3600802
 	  "Orb of the Moons - teleport only avatar".
+	Rev 7279
+	* gamewin.cc, audio/Audio.*, audio/conv.*: Added song number conversion from
+	  BG IDs to SI IDs, similar to what was in place for SFX. Fixed bug #3600800
+	  "Snow weather effect missing sound effect" and bug #3600838 "Dungeon music
+	  not playing upon entering". Also added weather track for rain (song 4).
 
 013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 
