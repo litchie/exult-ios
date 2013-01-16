@@ -64,6 +64,7 @@ public:
 	void update_dirty_text();
 					// Remove just the weather.
 	void remove_weather_effects(int dist = 0);
+	void remove_usecode_lightning();
 	int get_weather();		// Get # of last weather added.
 	void paint();			// Draw all sprites/proj./weather.
 	void paint_text();		// Draw text.
@@ -277,11 +278,14 @@ class Lightning_effect : public Weather_effect
 	{
 	static int active;		// Just want one at a time.
 	bool flashing;			// Lightning palette is set.
+	bool fromusecode;
 	friend class Storm_effect;
 public:
-	Lightning_effect(int duration, int delay = 0) 
-		: Weather_effect(duration, delay, -1), flashing(false)
+	Lightning_effect(int duration, int delay = 0, bool uc = false) 
+		: Weather_effect(duration, delay, -1), flashing(false), fromusecode(uc)
 		{ }
+	bool from_usecode() const
+		{ return fromusecode; }
 	virtual ~Lightning_effect();
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
