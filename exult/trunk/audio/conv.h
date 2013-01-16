@@ -20,5 +20,6 @@
 #define CONV_H
 
 extern const int bgconv[];
+extern const int bgconvsong[];
 
 #endif
