@@ -1278,7 +1278,7 @@ bool Field_object::field_effect
 		if (actor->get_effective_prop(Actor::intelligence) < rand()%40)
 			//actor->reduce_health(2 + rand()%3, Weapon_info::normal_damage);
 			// Caltrops don't seem to cause much damage.
-			actor->reduce_health(1 + rand()%1, Weapon_data::normal_damage);
+			actor->reduce_health(1 + rand()%2, Weapon_data::normal_damage);
 		return false;
 		}
 	if (!del)			// Tell animator to keep checking.
