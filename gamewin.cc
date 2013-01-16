@@ -124,8 +124,20 @@ class Background_noise : public Time_sensitive
 	int last_sound;			// # of last sound played.
 	Game_window *gwin;
 	int laststate;			// Last state for SFX music tracks, 
-							// 1 outside, 2 dungeon, 3 nighttime
-
+							// 1 outside, 2 dungeon, 3 nighttime, 4 rainstorm,
+							// 5 snowstorm
+	static bool is_combat_music(int num)
+		{
+		// Lumping music 16 as if it were a combat music in order to simplify
+		// the check.
+		return (num >= Audio::game_music( 9) && num <= Audio::game_music(12)) ||
+				(num >= Audio::game_music(15) && num <= Audio::game_music(18));
+		}
+	static bool is_bg_track(int num)
+		{
+		return (num >= Audio::game_music(4) && num <= Audio::game_music(8)) ||
+				num == Audio::game_music(52);
+		}
 public:
 	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
 					gwin(gw), laststate(0)
@@ -151,85 +163,100 @@ void Background_noise::handle_event
 	unsigned long delay = 8000;
 	int currentstate;
 	int bghour = gwin->get_clock()->get_hour();
-	if(gwin->is_in_dungeon())
+	int weather = gwin->get_effects()->get_weather();
+	bool nighttime = bghour < 6 || bghour > 20;
+	if (gwin->is_in_dungeon())
 		currentstate = 2;
+	else if (weather == 2)
+		currentstate = 4;	//Rainstorm
+	else if (weather == 1)
+		currentstate = 5;	//Snowstorm
+	else if (nighttime)
+		currentstate = 3;	//Night time
 	else
-		if (bghour < 6 || bghour > 20)
-			currentstate = 3;	//Night time
-		else
-			currentstate = 1;
+		currentstate = 1;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	if (player && player->get_ogg_enabled())
+	// Lets allow this for midi music too. It might be best to restrict this to
+	// MT32 or MT32Emu, but I won't worry about it yet.
+	//if (player && player->get_ogg_enabled())
+	if (player)
 	{
 		delay = 1500;	//Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
 
 		int curr_track = player->get_current_track();
 
-		if(curr_track == 7 && currentstate == 3)
+		// Testing. Original seems to allow crickets for all songs at night,
+		// except when in a dungeon.
+		//if (curr_track == Audio::game_music(7) && currentstate == 3)
+		if (nighttime && currentstate != 2)
 		{
 			//Play the cricket sounds at night 
 			delay = 3000 + rand()%5000;
-			Audio::get_ptr()->play_sound_effect(61, AUDIO_MAX_VOLUME - 30);
+			Audio::get_ptr()->play_sound_effect(Audio::game_sfx(61),
+			                                    AUDIO_MAX_VOLUME - 30);
 		}
 
-		if((curr_track == -1 || laststate != currentstate ) && Audio::get_ptr()->is_music_enabled())
+		if ((curr_track == -1 || laststate != currentstate) &&
+		    Audio::get_ptr()->is_music_enabled())
 		{
-			if(curr_track == -1 || (curr_track >=4 && curr_track <=8) || curr_track == 52)		//Not already playing music
+			// ++++ TODO: Need to come up with a way to replace repeating songs
+			// here, just so they don't loop forever.
+			// Conditions: not playing music, playing a background music
+			if (curr_track == -1 || is_bg_track(curr_track) ||
+			    (currentstate == 2 && !is_combat_music(curr_track)))
 			{
-				int tracknum=255;
+				//Not already playing music
+				int tracknum = 255;
 
-				//Get the relevant track number. SI tracks are converted back to BG ones later on
-				if(gwin->is_in_dungeon())
+				//Get the relevant track number.
+				if (gwin->is_in_dungeon())
 				{
 					//Start the SFX music track then
-					if(Game::get_game_type() == BLACK_GATE)
-						tracknum = 52;
-					else
-						tracknum = 42;	
+					tracknum = Audio::game_music(52);
 					laststate = 2;
 				}
-				else				
+				else if (weather == 1)   // Snowstorm
 				{
-					if (bghour < 6 || bghour > 20)
-					{
-						if(Game::get_game_type() == BLACK_GATE)					
-							tracknum = 7;
-						else
-							tracknum = 66;
-						laststate = 3;
-					}
-					else
-					{
-						//Start the SFX music track then
-						if(Game::get_game_type() == BLACK_GATE)
-							tracknum = 6;
-						else
-							tracknum = 67;
-						laststate = 1;
-					}
+					tracknum = Audio::game_music(5);
+					laststate = 5;
 				}
-				Audio::get_ptr()->start_music(tracknum,true);
+				else if (weather == 2)   // Rainstorm
+				{
+					tracknum = Audio::game_music(4);
+					laststate = 4;
+				}
+				else if (bghour < 6 || bghour > 20)
+				{
+					tracknum = Audio::game_music(7);
+					laststate = 3;
+				}
+				else
+				{
+					//Start the SFX music track then
+					tracknum = Audio::game_music(6);
+					laststate = 1;
+				}
+				Audio::get_ptr()->start_music(tracknum, true);
 			}
 		}
 	}
+#if 0
 	else
 	{
-		
 		//Tests to see if track is playing the SFX tracks, possible 
 		//when the game has been restored
 		//and the Audio option was changed from OGG to something else
-		if(player && player->get_current_track() >=4 && 
-		   player->get_current_track() <= 8)
+		if (player && player->get_current_track() >= Audio::game_music(4) && 
+					player->get_current_track() <= Audio::game_music(8))
 			player->stop_music();
 
-
 		//Not OGG so play the SFX sounds manually
-					// Only if outside.
+		// Only if outside.
 		if (ava && !gwin->is_main_actor_inside()  &&
 			// +++++SI SFX's don't sound right.
-			Game::get_game_type() == BLACK_GATE )
+			Game::get_game_type() == BLACK_GATE)
 		{
 			int sound;		// BG SFX #.
 			static unsigned char bgnight[] = {61, 61, 255},
@@ -259,6 +286,7 @@ void Background_noise::handle_event
 			}
 		}
 	}
+#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 #endif

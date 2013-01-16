@@ -101,6 +101,7 @@ struct	Chunk
 
 Audio *Audio::self = 0;
 int const *Audio::bg2si_sfxs = 0;
+int const *Audio::bg2si_songs = 0;
 
 //----- Utilities ----------------------------------------------------
 
@@ -402,9 +403,15 @@ void	Audio::Init_sfx()
 
 	Exult_Game game = Game::get_game_type();
 	if (game == SERPENT_ISLE)
+	{
 		bg2si_sfxs = bgconv;
+		bg2si_songs = bgconvsong;
+	}
 	else
+	{
 		bg2si_sfxs = 0;
+		bg2si_songs = 0;
+	}
 	// Collection of .wav's?
 	string flex;
 #ifdef ENABLE_MIDISFX
@@ -560,76 +567,42 @@ void	Audio::start_music_combat (Combat_song song, bool continuous)
 
 	int num = -1;
 
-	if (Game::get_game_type()!=SERPENT_ISLE) switch (song)
+	switch (song)
 	{
-case CSBattle_Over:
-	num = 9;
-	break;
+	case CSBattle_Over:
+		num = Audio::game_music(9);
+		break;
 
-case CSAttacked1:
-	num = 11;
-	break;
+	case CSAttacked1:
+		num = Audio::game_music(11);
+		break;
 
-case CSAttacked2:
-	num = 12;
-	break;
+	case CSAttacked2:
+		num = Audio::game_music(12);
+		break;
 
-case CSVictory:
-	num = 15;
-	break;
+	case CSVictory:
+		num = Audio::game_music(15);
+		break;
 
-case CSRun_Away:
-	num = 16;
-	break;
+	case CSRun_Away:
+		num = Audio::game_music(16);
+		break;
 
-case CSDanger:
-	num = 10;
-	break;
+	case CSDanger:
+		num = Audio::game_music(10);
+		break;
 
-case CSHidden_Danger:
-	num = 18;
-	break;
+	case CSHidden_Danger:
+		num = Audio::game_music(18);
+		break;
 
-default:
-	CERR("Error: Unable to Find combat track for song " << song << ".");
-	break;
-	}
-	else switch (song)
-	{
-case CSBattle_Over:
-	num = 0;
-	break;
-
-case CSAttacked1:
-	num = 2;
-	break;
-
-case CSAttacked2:
-	num = 3;
-	break;
-
-case CSVictory:
-	num = 6;
-	break;
-
-case CSRun_Away:
-	num = 7;
-	break;
-
-case CSDanger:
-	num = 1;
-	break;
-
-case CSHidden_Danger:
-	num = 9;
-	break;
-
-default:
-	CERR("Error: Unable to Find combat track for song " << song << ".");
-	break;
+	default:
+		CERR("Error: Unable to Find combat track for song " << song << ".");
+		break;
 	}
 
-	mixer->getMidiPlayer()->start_music(num,continuous && allow_music_looping);
+	mixer->getMidiPlayer()->start_music(num, continuous && allow_music_looping);
 }
 
 void	Audio::stop_music()
@@ -779,7 +752,7 @@ void Audio::get_2d_position_for_tile(const Tile_coord &tile, int &distance, int 
 int Audio::play_sound_effect (int num, const Game_object *obj, int volume, int repeat)
 {
 	Tile_coord tile = obj->get_center_tile();
-	return play_sound_effect(num,tile, volume,repeat);
+	return play_sound_effect(num, tile, volume, repeat);
 }
 
 int Audio::play_sound_effect (int num, const Tile_coord &tile, int volume, int repeat)
