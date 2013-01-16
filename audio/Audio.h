@@ -56,6 +56,7 @@ class Audio
 private:
 	UNREPLICATABLE_CLASS(Audio);
 	static	Audio	*self;
+	static	const int *bg2si_songs;	// Converts BG songs to SI songs.
 	static	const int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
 	bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled;
@@ -84,6 +85,10 @@ public:
 	// Given BG sfx, get SI if playing SI.
 	static	int game_sfx(int sfx)
 		{ return bg2si_sfxs ? bg2si_sfxs[sfx] : sfx; }
+
+	// Given BG song, get SI if playing SI.
+	static	int game_music(int mus)
+		{ return bg2si_songs ? bg2si_songs[mus] : mus; }
 
 	void	Init_sfx(void);
 
