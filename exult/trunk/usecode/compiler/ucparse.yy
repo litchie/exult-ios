@@ -568,8 +568,7 @@ var_decl_list:
 			$$ = $3;
 		else			/* Both nonzero.  Need a list. */
 			{
-			Uc_block_statement *b = 
-				dynamic_cast<Uc_block_statement *>($1);
+			Uc_block_statement *b = dynamic_cast<Uc_block_statement *>($1);
 			if (!b)
 				{
 				b = new Uc_block_statement();
@@ -712,7 +711,7 @@ class_decl:
 			cur_fun->add_symbol($1, class_type);
 		else
 			// Unsupported for now
-			;
+			{   }
 		$$ = 0;
 		}
 	| IDENTIFIER '=' class_expr
@@ -796,7 +795,7 @@ class_expr:
 			char buf[150];
 			sprintf(buf, "'%s' not declared", $1);
 			yyerror(buf);
-			sym = cur_fun->add_symbol($1);
+			cur_fun->add_symbol($1);
 			}
 		else if (!sym->get_sym_type() == Uc_symbol::Class)
 			{
@@ -1841,7 +1840,7 @@ addressof:
 			yyerror(buf);
 			$$ = 0;
 			}
-		Uc_function_symbol *fun = (Uc_function_symbol *) sym;
+		Uc_function_symbol *fun = dynamic_cast<Uc_function_symbol *>(sym);
 		if (!fun)	/* See if the symbol is a function */
 			{
 			char buf[150];
@@ -1894,7 +1893,7 @@ primary:
 				}
 			else
 				sprintf(buf, "Interpreting integer '%d' as the signed 16-bit integer '%d'. If this is incorrect, use '(long)' cast.",
-						$1, (short)$1);
+						$1, static_cast<short>($1));
 			yywarning(buf);
 			}
 		$$ = new Uc_int_expression($1, op);
@@ -2106,7 +2105,7 @@ int_literal:				/* A const. integer value.	*/
 				}
 			else
 				sprintf(buf, "Interpreting integer '%d' as the signed 16-bit integer '%d'. If this is incorrect, use '(long)' cast.",
-						$1, (short)$1);
+						$1, static_cast<short>($1));
 			yywarning(buf);
 			}
 		$$ = new Uc_int_expression($1, op);
@@ -2347,7 +2346,7 @@ static Uc_call_expression *cls_method_call
 static bool Uc_is_valid_calle
 	(
 	Uc_symbol *sym,
-	Uc_expression *ths,
+	Uc_expression *&ths,
 	char *nm
 	)
 	{

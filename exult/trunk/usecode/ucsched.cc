@@ -727,7 +727,6 @@ void Usecode_script::step
 	int dz
 	)
 	{
-	int frame = obj->get_framenum();
 	Barge_object *barge;
 	Actor *act = usecode->as_actor(obj);
 	if (act)
@@ -739,7 +738,7 @@ void Usecode_script::step
 		act->clear_rest_time();
 		Frames_sequence *frames = act->get_frames(dir);
 					// Get frame (updates frame_index).
-		frame = frames->get_next(frame_index);
+		int frame = frames->get_next(frame_index);
 		if (tile.tz < 0)
 			tile.tz = 0;
 		obj->step(tile, frame, true);

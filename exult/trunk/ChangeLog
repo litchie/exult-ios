@@ -18,6 +18,8 @@
 	Rev 7283
 	* files/utils.h, tools/wud.cc: WUD is no longer the unportable mess it was.
 	  Eliminated warnings.
+	Rev 7284
+	* all: Eliminating warnings.
 
 013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 

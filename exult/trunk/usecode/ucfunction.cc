@@ -41,7 +41,7 @@ Usecode_function::Usecode_function
 
 	// support for our extended usecode format. (32 bit lengths and ids)
 	if (id == 0xfffe) {
-		id = (sint32)Read4(file);
+		id = Read4s(file);
 		len = Read4(file);
 		extended = true;
 	// older extended usecode format. (32 bit lengths)
@@ -55,6 +55,6 @@ Usecode_function::Usecode_function
 	}
 
 	code = new unsigned char[len];	// Allocate buffer & read it in.
-	file.read((char*)code, len);
+	file.read(reinterpret_cast<char *>(code), len);
 }
 

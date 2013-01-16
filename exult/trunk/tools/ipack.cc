@@ -513,6 +513,7 @@ static void Write_frame
 	delete [] fullname;
 	}
 
+#if 0   // Unused
 /*
  *	Write out all (8x8 flat) frames by tiling them into one file.
  */
@@ -566,6 +567,7 @@ static void Write_tiled_frames
 					palette, 256))
 		throw file_write_exception(filename);
 	}
+#endif
 
 /*
  *	Write out palettes.  The first is the one given, and the rest are
@@ -589,56 +591,57 @@ void Write_palettes
 	U7open(out, palname);		// May throw exception.
 	Flex_writer writer(out, "Exult palette by Ipack", 11);
 					// Entry 0 (DAY):
+	char const *palptr = reinterpret_cast<const char*>(palbuf);
 	Convert_palette63(palette, &palbuf[0], palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 1 (DUSK):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -64, -64, -64);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 2 (NIGHT):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -128, -128, -128);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 3 (INVISIBLE):
 	Greyify_palette(palette, palbuf, palsize);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 4 (unknown):
 	Convert_palette63(palette, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 5 (HAZE):
 	Modify_palette(palette, palbuf, palsize, 184, 184, 184, -32, -32, -32);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 6 (a bit brighter than 2):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -96, -96, -96);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 7 (a bit warmer):
 	Modify_palette(palette, palbuf, palsize, 30, 0, 0, -96, -96, -96);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 8 (hit in combat):
 	Modify_palette(palette, palbuf, palsize, 64, 0, 0, 384, -20, -20);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 9 (unknown):
 	Convert_palette63(palette, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 10 (LIGHTNING):
 	Modify_palette(palette, palbuf, palsize, 32, 32, 0, 256, 256, -20);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write((const char*)&palbuf[0], sizeof(palbuf));
+	out.write(palptr, sizeof(palbuf));
 	writer.mark_section_done();
 	if (!writer.close())
 		throw file_write_exception(palname);
@@ -880,8 +883,8 @@ static void Extract
 		}
 	U7object pal(palname, 0);	// Get palette 0.
 	size_t len;
-	unsigned char *palbuf = (unsigned char *)
-		pal.retrieve(len);	// This may throw an exception
+			// This may throw an exception
+	unsigned char *palbuf = reinterpret_cast<unsigned char*>(pal.retrieve(len));
 	for (size_t i = 0; i < len; i++)	// Turn into full bytes.
 		palbuf[i] *= 4;		// Exult palette vals are 0-63.
 	Vga_file ifile(imagename);	// May throw an exception.

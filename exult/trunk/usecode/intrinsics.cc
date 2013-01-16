@@ -72,7 +72,6 @@ using std::rand;
 using std::strchr;
 #endif
 
-Barge_object *Get_barge	(Game_object *obj);
 extern Usecode_value no_ret;
 
 static Game_object *sailor = 0;		// The current barge captain.  Maybe
@@ -288,7 +287,7 @@ USECODE_INTRINSIC(set_item_quality)
 		Shape_info& info = obj->get_info();
 		if (info.has_quality())
 			{
-			obj->set_quality((unsigned int) qual);
+			obj->set_quality(static_cast<unsigned int>(qual));
 			return Usecode_value(1);
 			}
 		}
@@ -565,7 +564,7 @@ USECODE_INTRINSIC(update_last_created)
 	modified_map = true;
 	if (last_created.empty())
 		{
-		Usecode_value u((Game_object*) NULL);
+		Usecode_value u(static_cast<Game_object*>(NULL));
 		return(u);
 		}
 	Game_object *obj = last_created.back();
@@ -675,7 +674,7 @@ USECODE_INTRINSIC(find_object)
 				   parms[0].get_elem(2).get_int_value()),
 			shnum, 1, 0, qual, frnum);
 		if (vec.empty())
-			return Usecode_value((Game_object *) 0);
+			return Usecode_value(static_cast<Game_object *>(NULL));
 		else
 			return Usecode_value(vec.front());
 		}
@@ -687,14 +686,14 @@ USECODE_INTRINSIC(find_object)
 		Game_object::find_nearby(vec,
 			Tile_coord(scr.x + scr.w/2, scr.y + scr.h/2, 0),
 			shnum, scr.h/2, 0, qual, frnum);
-		return vec.empty() ? Usecode_value((Game_object*)NULL)
+		return vec.empty() ? Usecode_value(static_cast<Game_object *>(NULL))
 				   : Usecode_value(vec[0]);
 		}
 	if (oval != -357)		// Not the whole party?
 		{			// Find inside owner.
 		Game_object *obj = get_item(parms[0]);
 		if (!obj)
-			return Usecode_value((Game_object*) NULL);
+			return Usecode_value(static_cast<Game_object *>(NULL));
 		Game_object *f = obj->find_item(shnum, qual, frnum);
 		return Usecode_value(f);
 		}
@@ -711,7 +710,7 @@ USECODE_INTRINSIC(find_object)
 				return Usecode_value(f);
 			}
 		}
-	return Usecode_value((Game_object*) NULL);
+	return Usecode_value(static_cast<Game_object *>(NULL));
 }
 
 USECODE_INTRINSIC(get_cont_items)
@@ -1316,14 +1315,14 @@ public:
 			int xx, yy;
 			Tile_coord t = gwin->get_main_actor()->get_tile();
 			if (Game::get_game_type()==BLACK_GATE) {
-				xx = (int)(t.tx/16.05 + 5 + 0.5);
-				yy = (int)(t.ty/15.95 + 4 + 0.5);
+				xx = static_cast<int>(t.tx/16.05 + 5 + 0.5);
+				yy = static_cast<int>(t.ty/15.95 + 4 + 0.5);
 			} else if (Game::get_game_type()==SERPENT_ISLE) {
-				xx = (int)(t.tx/16.0 + 18 + 0.5);
-				yy = (int)(t.ty/16.0 + 9.4 + 0.5);
+				xx = static_cast<int>(t.tx/16.0 + 18 + 0.5);
+				yy = static_cast<int>(t.ty/16.0 + 9.4 + 0.5);
 			} else {
-				xx = (int)(t.tx/16.0 + 5 + 0.5);
-				yy = (int)(t.ty/16.0 + 5 + 0.5);
+				xx = static_cast<int>(t.tx/16.0 + 5 + 0.5);
+				yy = static_cast<int>(t.ty/16.0 + 5 + 0.5);
 			}
 			Shape_frame *s = sid->get_shape();
 			xx += x - s->get_xleft();
@@ -1409,7 +1408,7 @@ USECODE_INTRINSIC(roll_to_win)
 	// roll_to_win(attackpts, defendpts)
 	int attack = parms[0].get_int_value();
 	int defend = parms[1].get_int_value();
-	return Usecode_value((int) Actor::roll_to_win(attack, defend));
+	return Usecode_value(static_cast<int>(Actor::roll_to_win(attack, defend)));
 }
 
 USECODE_INTRINSIC(set_attack_mode)
@@ -1417,8 +1416,7 @@ USECODE_INTRINSIC(set_attack_mode)
 	// set_attack_mode(npc, mode).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
-		npc->set_attack_mode((Actor::Attack_mode) 
-					parms[1].need_int_value());
+		npc->set_attack_mode(static_cast<Actor::Attack_mode>(parms[1].need_int_value()));
 	return (no_ret);
 }
 
@@ -1427,7 +1425,7 @@ USECODE_INTRINSIC(get_attack_mode)
 	// get_attack_mode(npc).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
-		return Usecode_value((int) npc->get_attack_mode());
+		return Usecode_value(static_cast<int>(npc->get_attack_mode()));
 	return Usecode_value(0);
 }
 
@@ -1604,7 +1602,7 @@ USECODE_INTRINSIC(resurrect)
 	Game_object *body = get_item(parms[0]);
 	int npc_num = body ? body->get_live_npc_num() : -1;
 	if (npc_num < 0)
-		return Usecode_value((Game_object*) NULL);
+		return Usecode_value(static_cast<Game_object*>(NULL));
 	Actor *actor = gwin->get_npc(npc_num);
 	if (actor)
 		{			// Want to resurrect after returning.
@@ -1642,9 +1640,7 @@ USECODE_INTRINSIC(add_spell)
 	// add_spell(spell# (0-71), ??, spellbook).
 	// Returns 0 if book already has that spell.
 	Game_object *obj = get_item(parms[2]);
-	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
-		return Usecode_value(0);
-	Spellbook_object *book = (Spellbook_object *) (obj);
+	Spellbook_object *book = dynamic_cast<Spellbook_object *>(obj);
 	if (!book)
 		{
 		cout << "Add_spell - Not a spellbook!" << endl;
@@ -1658,9 +1654,7 @@ USECODE_INTRINSIC(remove_all_spells)
 	// remove_all_spells(spellbook).
 	// Removes all spells from spellbook.
 	Game_object *obj = get_item(parms[0]);
-	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
-		return no_ret;
-	Spellbook_object *book = (Spellbook_object *) (obj);
+	Spellbook_object *book = dynamic_cast<Spellbook_object *>(obj);
 	if (!book)
 		{
 		cout << "remove_all_spells - Not a spellbook!" << endl;
@@ -1675,9 +1669,7 @@ USECODE_INTRINSIC(has_spell)
 	// has_spell(spellbook, spell#).
 	// Returns true if the spellbook has desired spell, false if not.
 	Game_object *obj = get_item(parms[0]);
-	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
-		return Usecode_value(0);
-	Spellbook_object *book = (Spellbook_object *) (obj);
+	Spellbook_object *book = dynamic_cast<Spellbook_object *>(obj);
 	if (!book)
 		{
 		cout << "has_spell - Not a spellbook!" << endl;
@@ -1691,9 +1683,7 @@ USECODE_INTRINSIC(remove_spell)
 	// remove_spell(spellbook, spell#).
 	// Returns true if the spellbook has desired spell, false if not.
 	Game_object *obj = get_item(parms[0]);
-	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
-		return Usecode_value(0);
-	Spellbook_object *book = (Spellbook_object *) (obj);
+	Spellbook_object *book = dynamic_cast<Spellbook_object *>(obj);
 	if (!book)
 		{
 		cout << "remove_spell - Not a spellbook!" << endl;
@@ -1804,7 +1794,7 @@ USECODE_INTRINSIC(get_barge)
 
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
-		return Usecode_value((Game_object*) NULL);
+		return Usecode_value(static_cast<Game_object*>(NULL));
 	return Usecode_value(Get_barge(obj));
 }
 
@@ -1812,7 +1802,7 @@ USECODE_INTRINSIC(earthquake)
 {
 	int len = parms[0].get_int_value();
 	gwin->get_tqueue()->add(Game::get_ticks() + 10,
-		new Earthquake(len), (long) this);
+		new Earthquake(len), reinterpret_cast<long>(this));
 	return(no_ret);
 }
 
@@ -1893,9 +1883,9 @@ USECODE_INTRINSIC(get_array_size)
 USECODE_INTRINSIC(mark_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
+	if (vs)
 		{
-		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_target_pos(obj->get_outermost()->get_tile());
 		vs->set_target_map(obj->get_outermost()->get_map_num());
 		}
@@ -1905,9 +1895,9 @@ USECODE_INTRINSIC(mark_virtue_stone)
 USECODE_INTRINSIC(recall_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *>(obj);
+	if (vs)
 		{
-		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		gumpman->close_all_gumps();
 					// Pick it up if necessary.
 		if (!obj->get_owner())
@@ -2123,7 +2113,7 @@ USECODE_INTRINSIC(get_container)
 {
 	// Takes itemref, returns container.
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u((Game_object *) NULL);
+	Usecode_value u(static_cast<Game_object *>(NULL));
 	if (obj)
 		u = Usecode_value(obj->get_owner());
 	return(u);
@@ -2495,15 +2485,15 @@ static int Is_moving_barge_flag
 	{
 	if (Game::get_game_type() == BLACK_GATE)
 		{
-		return fnum == (int) Obj_flags::on_moving_barge ||
-			fnum == (int) Obj_flags::in_motion;
+		return fnum == static_cast<int>(Obj_flags::on_moving_barge) ||
+			fnum == static_cast<int>(Obj_flags::in_motion);
 		}
 	else				// SI.
 		{
-		return fnum == (int) Obj_flags::si_on_moving_barge ||
+		return fnum == static_cast<int>(Obj_flags::si_on_moving_barge) ||
 					// Ice raft needs this one:
-			fnum == (int) Obj_flags::on_moving_barge ||
-			fnum == (int) Obj_flags::in_motion;
+			fnum == static_cast<int>(Obj_flags::on_moving_barge) ||
+			fnum == static_cast<int>(Obj_flags::in_motion);
 		}
 	}
 
@@ -2522,21 +2512,21 @@ USECODE_INTRINSIC(get_item_flag)
 			return Usecode_value(0);
 		return Usecode_value(barge == gwin->get_moving_barge());
 		}
-	else if (fnum == (int) Obj_flags::okay_to_land)
+	else if (fnum == static_cast<int>(Obj_flags::okay_to_land))
 		{			// Okay to land flying carpet?
 		Barge_object *barge = Get_barge(obj);
 		if (!barge)
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
 		}
-	else if (fnum == (int) Obj_flags::immunities)
+	else if (fnum == static_cast<int>(Obj_flags::immunities))
 		{
 		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value((inf != 0 && inf->power_safe()) ||
 				(npc && npc->check_gear_powers(Frame_flags::power_safe)));
 		}
-	else if (fnum == (int) Obj_flags::cant_die)
+	else if (fnum == static_cast<int>(Obj_flags::cant_die))
 		{
 		Actor *npc = obj->as_actor();
 		Monster_info *inf = obj->get_info().get_monster_info();
@@ -2547,7 +2537,7 @@ USECODE_INTRINSIC(get_item_flag)
 					//   blocked gangplank. What is it?????
 	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
 		return Usecode_value(1);
-	else if (fnum == (int) Obj_flags::in_dungeon)
+	else if (fnum == static_cast<int>(Obj_flags::in_dungeon))
 		return Usecode_value(obj == gwin->get_main_actor() &&
 					gwin->is_in_dungeon());
 	else if (fnum == 0x14)		// Must be the sailor, as this is used

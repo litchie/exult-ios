@@ -51,13 +51,13 @@ LocationBreakpoint::LocationBreakpoint(int functionid, int ip, bool once)
 bool LocationBreakpoint::check(Stack_frame *frame) const
 {
 	return (frame->function->id == functionid) &&
-		((int)(frame->ip - frame->code) == ip);
+		(static_cast<int>(frame->ip - frame->code) == ip);
 }
 
 void LocationBreakpoint::serialize(int fd) const
 {
 	unsigned char d[13];
-	d[0] = (unsigned char)(Exult_server::dbg_set_location_bp);
+	d[0] = static_cast<unsigned char>(Exult_server::dbg_set_location_bp);
 	unsigned char *dptr = &d[1];
 	Write4(dptr, functionid);
 	Write4(dptr, ip);
@@ -144,7 +144,7 @@ int Breakpoints::check(Stack_frame* frame)
 		}
 	}
 
-	breaks.remove((Breakpoint*)0); // delete all NULLs from the list
+	breaks.remove(static_cast<Breakpoint *>(0)); // delete all NULLs from the list
 
 	return breakID;
 }
@@ -176,7 +176,7 @@ bool Breakpoints::remove(int id)
 		}
 	}
 
-	breaks.remove((Breakpoint*)0); // delete all NULLs from the list
+	breaks.remove(static_cast<Breakpoint *>(0)); // delete all NULLs from the list
 
 	return found;
 }

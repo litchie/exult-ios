@@ -635,7 +635,7 @@ static int Optimize_jumps
 						default:		opcode = -1; break;
 						}
 					if (opcode == -1)
-						WriteOp(block, (char) UC_NOT);
+						WriteOp(block, UC_NOT);
 					else
 						{
 						PopOpcode(block);
@@ -843,9 +843,9 @@ void Uc_function::gen
 		if (proto->has_ret())
 			// Function specifies a return value.
 			// When in doubt, return zero by default.
-			code.push_back((char) UC_RETZ);
+			code.push_back(UC_RETZ);
 		else
-			code.push_back((char) UC_RET);
+			code.push_back(UC_RET);
 		}
 
 		// Free up the blocks.
