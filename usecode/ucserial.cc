@@ -49,7 +49,7 @@ void Stack_frame_io
 	int& num_vars
 	)
 {
-	unsigned char c = (unsigned char)Exult_server::dbg_stackframe;
+	unsigned char c = static_cast<unsigned char>(Exult_server::dbg_stackframe);
 	io << c << functionid << ip << call_chain << call_depth
 	   << eventid << caller_item << num_args << num_vars;
 	// locals!
@@ -114,6 +114,6 @@ bool Stack_frame_in
 	}
 
 
-	return ds.getPos() == (unsigned)datalen;
+	return ds.getPos() == static_cast<unsigned>(datalen);
 	// locals!
 }

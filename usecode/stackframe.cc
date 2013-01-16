@@ -50,7 +50,7 @@ Stack_frame::Stack_frame(Usecode_function *fun,
 	if (!fun->extended)
 		data_len = Read2(ip);	// Get length of (text) data.
 	else
-		data_len = (sint32)(Read4(ip)); // 32 bit lengths
+		data_len = Read4s(ip); // 32 bit lengths
 
 	data = ip;
 
@@ -86,9 +86,9 @@ std::ostream& operator<<(std::ostream& out, Stack_frame& frame)
 
 	out << "#" << frame.call_depth << ": 0x" 
 		<< std::hex << std::setw(4) << std::setfill('0')
-		<< (int)(frame.ip - frame.code) << " in 0x"
+		<< static_cast<int>(frame.ip - frame.code) << " in 0x"
 		<< std::setw(4) << frame.function->id
-		<< "(obj=" << std::setw(8) << (long)frame.caller_item
+		<< "(obj=" << std::setw(8) << reinterpret_cast<long>(frame.caller_item)
 		<< ",ev=" << frame.eventid
 		<< std::setfill(' ') << std::dec;
 	

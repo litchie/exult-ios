@@ -184,12 +184,12 @@ void Uc_fun_name_expression::gen_value
 	int funid = fun->get_usecode_num();
 	if (fun->has_high_id())
 		{
-		WriteOp(out, (char) UC_PUSHI32);
+		WriteOp(out, UC_PUSHI32);
 		WriteOpParam4(out, funid);
 		}
 	else
 		{
-		WriteOp(out, (char) UC_PUSHI);
+		WriteOp(out, UC_PUSHI);
 		WriteOpParam2(out, funid);
 		}
 	}
@@ -206,7 +206,7 @@ void Uc_arrayelem_expression::gen_value
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_AIDX);	// Opcode, var #.
+	WriteOp(out, UC_AIDX);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -222,7 +222,7 @@ void Uc_arrayelem_expression::gen_assign
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_POPARR);	// Opcode, var #.
+	WriteOp(out, UC_POPARR);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -238,7 +238,7 @@ void Uc_static_arrayelem_expression::gen_value
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_AIDXS);	// Opcode, var #.
+	WriteOp(out, UC_AIDXS);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -254,7 +254,7 @@ void Uc_static_arrayelem_expression::gen_assign
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_POPARRS);	// Opcode, var #.
+	WriteOp(out, UC_POPARRS);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -270,7 +270,7 @@ void Uc_class_arrayelem_expression::gen_value
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_AIDXTHV);	// Opcode, var #.
+	WriteOp(out, UC_AIDXTHV);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -286,7 +286,7 @@ void Uc_class_arrayelem_expression::gen_assign
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	WriteOp(out, (char) UC_POPARRTHV);	// Opcode, var #.
+	WriteOp(out, UC_POPARRTHV);	// Opcode, var #.
 	WriteOpParam2(out, array->get_offset());
 	}
 
@@ -302,13 +302,13 @@ void Uc_flag_expression::gen_value
 	int ival;
 	if (flag->eval_const(ival))
 		{
-		WriteOp(out, (char) UC_PUSHF);	// Opcode, flag #.
+		WriteOp(out, UC_PUSHF);	// Opcode, flag #.
 		WriteOpParam2(out, ival);
 		}
 	else
 		{
 		flag->gen_value(out);
-		WriteOp(out, (char) UC_PUSHFVAR);	// Opcode
+		WriteOp(out, UC_PUSHFVAR);	// Opcode
 		}
 	}
 
@@ -324,13 +324,13 @@ void Uc_flag_expression::gen_assign
 	int ival;
 	if (flag->eval_const(ival))
 		{
-		WriteOp(out, (char) UC_POPF);	// Opcode, flag #.
+		WriteOp(out, UC_POPF);	// Opcode, flag #.
 		WriteOpParam2(out, ival);
 		}
 	else
 		{
 		flag->gen_value(out);
-		WriteOp(out, (char) UC_POPFVAR);	// Opcode
+		WriteOp(out, UC_POPFVAR);	// Opcode
 		}
 	}
 
@@ -393,7 +393,7 @@ void Uc_binary_expression::gen_value
 		{
 		left->gen_value(out);		// First the left.
 		right->gen_value(out);		// Then the right.
-		WriteOp(out, (char) opcode);
+		WriteOp(out, opcode);
 		}
 	}
 
@@ -468,7 +468,7 @@ void Uc_unary_expression::gen_value
 	else
 		{
 		operand->gen_value(out);
-		WriteOp(out, (char) opcode);
+		WriteOp(out, opcode);
 		}
 	}
 
@@ -519,7 +519,7 @@ void Uc_int_expression::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) opcode);
+	WriteOp(out, opcode);
 	if (opcode == UC_PUSHB)
 		WriteOpParam1(out, value);
 	else if (opcode == UC_PUSHI)
@@ -590,9 +590,9 @@ void Uc_bool_expression::gen_value
 	)
 	{
 	if (tf)
-		WriteOp(out, (char) UC_PUSHTRUE);
+		WriteOp(out, UC_PUSHTRUE);
 	else
-		WriteOp(out, (char) UC_PUSHFALSE);
+		WriteOp(out, UC_PUSHFALSE);
 	}
 
 /*
@@ -604,7 +604,7 @@ void Uc_event_expression::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHEVENTID);
+	WriteOp(out, UC_PUSHEVENTID);
 	}
 
 /*
@@ -616,7 +616,7 @@ void Uc_event_expression::gen_assign
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_POPEVENTID);
+	WriteOp(out, UC_POPEVENTID);
 	}
 
 /*
@@ -628,7 +628,7 @@ void Uc_item_expression::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHITEMREF);
+	WriteOp(out, UC_PUSHITEMREF);
 	}
 
 /*
@@ -640,7 +640,7 @@ void Uc_choice_expression::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHCHOICE);
+	WriteOp(out, UC_PUSHCHOICE);
 	}
 
 /*
@@ -654,12 +654,12 @@ void Uc_string_expression::gen_value
 	{
 	if (is_int_32bit(offset))
 		{
-		WriteOp(out, (char) UC_PUSHS32);
+		WriteOp(out, UC_PUSHS32);
 		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		WriteOp(out, (char) UC_PUSHS);
+		WriteOp(out, UC_PUSHS);
 		WriteOpParam2(out, offset);
 		}
 	}
@@ -675,12 +675,12 @@ void Uc_string_prefix_expression::gen_value
 	{
 	if (is_int_32bit(get_string_offset()))
 		{
-		WriteOp(out, (char) UC_PUSHS32);
+		WriteOp(out, UC_PUSHS32);
 		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		WriteOp(out, (char) UC_PUSHS);
+		WriteOp(out, UC_PUSHS);
 		WriteOpParam2(out, offset);
 		}
 	}
@@ -748,7 +748,7 @@ void Uc_array_expression::gen_value
 	)
 	{
 	int actual = Uc_array_expression::gen_values(out);
-	WriteOp(out, (char) UC_ARRC);
+	WriteOp(out, UC_ARRC);
 	WriteOpParam2(out, actual);
 	}
 
@@ -924,7 +924,7 @@ void Uc_call_expression::gen_value
 		else
 			itemref->gen_value(out);
 		ind->gen_value(out);	// Function #.
-		WriteOp(out, parmcnt ? (char) UC_CALLINDEX : (char) UC_CALLIND);
+		WriteOp(out, parmcnt ? UC_CALLINDEX : UC_CALLIND);
 		return;
 		}
 	if (!sym)
@@ -1019,7 +1019,7 @@ void Uc_new_expression::gen_value
 	{
 	(void)parms->gen_values(out);
 	Uc_class *cls = var->get_cls();
-	WriteOp(out, (char) UC_CLSCREATE);
+	WriteOp(out, UC_CLSCREATE);
 	WriteOpParam2(out, cls->get_num());
 	}
 
@@ -1033,5 +1033,5 @@ void Uc_del_expression::gen_value
 	)
 	{
 	cls->gen_value(out);
-	WriteOp(out, (char) UC_CLASSDEL);
+	WriteOp(out, UC_CLASSDEL);
 	}

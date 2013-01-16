@@ -81,7 +81,7 @@ public:
 		Variable,
 		//Struct,
 		Class,		// Class *instances*.
-		Member_var,		// Class member variable.
+		Member_var		// Class member variable.
 		//Member_struct
 		};
 	friend class Uc_scope;
@@ -416,11 +416,11 @@ public:
 		: Uc_symbol(nm), opcode(op)
 		{
 		if (opcode == UC_PUSHB)
-			value = (char)(v & 0xff);
+			value = static_cast<char>(v & 0xff);
 		else if (opcode == UC_PUSHI)
-			value = (short)(v & 0xffff);
+			value = static_cast<short>(v & 0xffff);
 		else
-			value = (int)(v & 0xffffffff);
+			value = static_cast<int>(v & 0xffffffff);
 		}
 					// Gen. code to put result on stack.
 	virtual int gen_value(Basic_block *out);
@@ -529,9 +529,9 @@ public:
 				Uc_scope *scope = 0, Function_kind kind = utility_fun);
 	const std::vector<Uc_var_symbol *>& get_parms()
 		{ return parms; }
-	int get_usecode_num()
+	int get_usecode_num() const
 		{ return usecode_num; }
-	const bool has_high_id()
+	bool has_high_id() const
 		{ return high_id; }
 	void set_method_num(int n)
 		{ method_num = n; }

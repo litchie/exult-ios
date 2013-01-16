@@ -113,7 +113,7 @@ int Uc_var_symbol::gen_assign
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_POP);
+	WriteOp(out, UC_POP);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -129,7 +129,7 @@ int Uc_var_symbol::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSH);
+	WriteOp(out, UC_PUSH);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -196,7 +196,7 @@ int Uc_static_var_symbol::gen_assign
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_POPSTATIC);
+	WriteOp(out, UC_POPSTATIC);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -212,7 +212,7 @@ int Uc_static_var_symbol::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHSTATIC);
+	WriteOp(out, UC_PUSHSTATIC);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -297,7 +297,7 @@ int Uc_class_var_symbol::gen_assign
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_POPTHV);
+	WriteOp(out, UC_POPTHV);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -313,7 +313,7 @@ int Uc_class_var_symbol::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) UC_PUSHTHV);
+	WriteOp(out, UC_PUSHTHV);
 	WriteOpParam2(out, offset);
 	return 1;
 	}
@@ -329,7 +329,7 @@ int Uc_const_int_symbol::gen_value
 	Basic_block *out
 	)
 	{
-	WriteOp(out, (char) opcode);
+	WriteOp(out, opcode);
 	if (opcode == UC_PUSHB)
 		WriteOpParam1(out, value);
 	else if (opcode == UC_PUSHI)
@@ -363,12 +363,12 @@ int Uc_string_symbol::gen_value
 	{
 	if (is_int_32bit(offset))
 		{
-		WriteOp(out, (char) UC_PUSHS32);
+		WriteOp(out, UC_PUSHS32);
 		WriteOpParam4(out, offset);
 		}
 	else
 		{
-		WriteOp(out, (char) UC_PUSHS);
+		WriteOp(out, UC_PUSHS);
 		WriteOpParam2(out, offset);
 		}
 	return 1;
@@ -410,9 +410,9 @@ int Uc_intrinsic_symbol::gen_call
 		}
 					// ++++ parmcnt == num_parms.
 					// Opcode depends on val. returned.
-	WriteOp(out, (char) (retvalue ? UC_CALLIS : UC_CALLI));
+	WriteOp(out, retvalue ? UC_CALLIS : UC_CALLI);
 	WriteOpParam2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
-	WriteOpParam1(out, (char) parmcnt);	// Parm. count is 1.
+	WriteOpParam1(out, parmcnt);	// Parm. count is 1.
 	return 1;
 	}
 
@@ -491,8 +491,8 @@ Uc_function_symbol *Uc_function_symbol::create
 		num = shp;
 		
 	// Override function number if the function has been declared before this.
-	Uc_function_symbol *sym = (Uc_function_symbol *) (scope ?
-		scope->search(nm) : Uc_function::search_globals(nm));
+	Uc_function_symbol *sym = dynamic_cast<Uc_function_symbol *>(scope ?
+					scope->search(nm) : Uc_function::search_globals(nm));
 	if (sym)
 		{
 		if (sym->get_function_type() != kind)
@@ -533,7 +533,7 @@ Uc_function_symbol *Uc_function_symbol::create
 				}
 			}
 		else if (sym->is_externed() || is_extern)
-			if ((size_t)sym->get_num_parms() == p.size())
+			if (static_cast<size_t>(sym->get_num_parms()) == p.size())
 			{
 				// If the new symbol is not externed, then the function
 				// has been defined afterwards and we need to update
@@ -579,7 +579,7 @@ Uc_function_symbol *Uc_function_symbol::create
 		return sym;
 		}
 	sym = (*it).second;
-	if (sym->name != nm || (size_t)sym->get_num_parms() != p.size())
+	if (sym->name != nm || static_cast<size_t>(sym->get_num_parms()) != p.size())
 		{
 		char buf[256];
 		sprintf(buf, 
@@ -645,7 +645,7 @@ int Uc_function_symbol::gen_call
 			}
 		else
 			itemref->gen_value(out);
-		WriteOp(out, (char) UC_CALLO);
+		WriteOp(out, UC_CALLO);
 		WriteOpParam2(out, usecode_num);	// Use fun# directly.
 		}
 	else if (method_num >= 0)		// Class method?
@@ -667,13 +667,13 @@ int Uc_function_symbol::gen_call
 			itemref->gen_value(out);
 		if (scope_vtbl)
 			{
-			WriteOp(out, (char) UC_CALLMS);
+			WriteOp(out, UC_CALLMS);
 			WriteOpParam2(out, method_num);
 			WriteOpParam2(out, scope_vtbl->get_num());
 			}
 		else
 			{
-			WriteOp(out, (char) UC_CALLM);
+			WriteOp(out, UC_CALLM);
 			WriteOpParam2(out, method_num);
 			}
 		}
@@ -682,10 +682,10 @@ int Uc_function_symbol::gen_call
 		if (itemref)
 			{
 			itemref->gen_value(out);
-			WriteOp(out, (char) UC_CALLE32);
+			WriteOp(out, UC_CALLE32);
 			}
 		else
-			WriteOp(out, (char) UC_CALL32);
+			WriteOp(out, UC_CALL32);
 		WriteOpParam4(out, usecode_num);	// Use fun# directly.
 		}
 	else if (itemref)	// Doing CALLE?  Push item onto stack.
@@ -693,14 +693,14 @@ int Uc_function_symbol::gen_call
 		// The originals would need this.
 		fun->link(this);
 		itemref->gen_value(out);
-		WriteOp(out, (char) UC_CALLE);
+		WriteOp(out, UC_CALLE);
 		WriteOpParam2(out, usecode_num);	// Use fun# directly.
 		}
 	else				// Normal CALL.
 		{			// Called function sets return.
 		// Add to externs list.
 		int link = fun->link(this);
-		WriteOp(out, (char) UC_CALL);
+		WriteOp(out, UC_CALL);
 		WriteOpParam2(out, link);
 		}
 	if (!retvalue && has_ret())

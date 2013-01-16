@@ -135,7 +135,7 @@ public:
 	static Uc_intrinsic_symbol *get_intrinsic(int i)
 		{ 
 		setup_intrinsics();
-		return (i >= 0 && (unsigned)i < intrinsics.size())? intrinsics[i] : 0;
+		return (i >= 0 && static_cast<unsigned>(i) < intrinsics.size())? intrinsics[i] : 0;
 		}
 	static Uc_intrinsic_symbol *get_add_answer()
 		{ return get_intrinsic(add_answer); }

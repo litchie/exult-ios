@@ -44,7 +44,7 @@ using std::cout;
 int Usecode_internal::get_opcode_length(int opcode)
 {
 	if (opcode >=0 &&
-		(unsigned)opcode < (sizeof(opcode_table)/sizeof(opcode_table[0]))) {
+		static_cast<unsigned>(opcode) < (sizeof(opcode_table)/sizeof(opcode_table[0]))) {
 
 	    return opcode_table[opcode].nbytes + 1;
 	} else {
@@ -68,12 +68,12 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 									   uint8* data, uint8* externals,
 									   uint8* code, uint8* ip)
 {
-	int func_ip = (int)(ip - code);
+	int func_ip = static_cast<int>(ip - code);
 	int opcode = *ip++;
 	uint8* param_ip = ip;
 	_opcode_desc* pdesc = 0;
 
-	if (opcode >=0 && (unsigned)opcode < (sizeof(opcode_table)/sizeof(opcode_table[0])))
+	if (opcode >=0 && static_cast<unsigned>(opcode) < (sizeof(opcode_table)/sizeof(opcode_table[0])))
 		pdesc = &(opcode_table[opcode]);
 	signed short immed;
 	uint16 varref;
@@ -104,21 +104,21 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				std::printf("\t%04hXH\t\t; %d", immed, immed);
 				break;
 			case op_immed32:
-				immed32 = (sint32)Read4(ip);
+				immed32 = Read4s(ip);
 				std::printf("\t%04hXH\t\t; %d", immed32, immed32);
 				break;
 			case op_data_string:
 			case op_data_string32:
 				{
-					char* pstr;
+					char *pstr;
 					size_t len;
 					// Print data string operand
 					if (pdesc->type == op_data_string)
 						offset = Read2(ip);
 					else
-						offset = (sint32)Read4(ip);
+						offset = Read4s(ip);
 
-					pstr = (char*)data + offset;
+					pstr = reinterpret_cast<char *>(data + offset);
 					len = strlen(pstr);
 					if( len > 20 )
 						len = 20 - 3;
@@ -137,7 +137,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 							(offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
 			case op_relative_jump32:
-				offset = (sint32)Read4(ip);
+				offset = Read4s(ip);
 				std::printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
 				break;				
 			case op_sloop:
@@ -159,7 +159,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				Read2(ip);
 				Read2(ip);
 				varref = Read2(ip);
-				offset = (sint32)Read4(ip);
+				offset = Read4s(ip);
 				std::printf("\t[%04X], %04X\t= ", varref, 
 					   offset +func_ip+1+pdesc->nbytes);
 				locals[varref].print(cout, true); // print value (short format)
@@ -172,7 +172,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				break;
 			case op_immedreljump32:
 				immed = Read2(ip);
-				offset = (sint32)Read4(ip);
+				offset = Read4s(ip);
 				std::printf("\t%04hXH, %04X", immed, 
 					   offset + func_ip+1+pdesc->nbytes);
 				break;				
@@ -211,15 +211,15 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				break;
 			case op_staticref:
 				staticref = Read2(ip);
-				std::printf("[%04X]\t= ", (uint16)staticref);
+				std::printf("[%04X]\t= ", static_cast<uint16>(staticref));
 				if (staticref < 0) {
 					// global
-					if ((unsigned)(-staticref) < statics.size())
+					if (static_cast<unsigned>(-staticref) < statics.size())
 						statics[-staticref].print(cout, true);
 					else
 						std::printf("<out of range>");
 				} else {
-					if ((unsigned)staticref < locstatics.size())
+					if (static_cast<unsigned>(staticref) < locstatics.size())
 						locstatics[staticref].print(cout, true);
 					else
 						std::printf("<out of range>");

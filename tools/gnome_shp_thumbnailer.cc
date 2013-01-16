@@ -121,7 +121,7 @@ type intSqrt (type remainder)
 	if (remainder < 0) // if type is unsigned this will be ignored = no runtime
 		return 0; // negative number ERROR
 
-	type place = (type)1 << (sizeof (type) * 8 - 2); // calculated by precompiler = same runtime as: place = 0x40000000
+	type place = static_cast<type>(1) << (sizeof (type) * 8 - 2); // calculated by precompiler = same runtime as: place = 0x40000000
 	while (place > remainder)
 		place /= 4; // optimized by complier as place >>= 2
 
