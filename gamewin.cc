@@ -125,7 +125,7 @@ class Background_noise : public Time_sensitive
 	Game_window *gwin;
 	int laststate;			// Last state for SFX music tracks, 
 							// 1 outside, 2 dungeon, 3 nighttime, 4 rainstorm,
-							// 5 snowstorm
+							// 5 snowstorm, 6 for danger nearby
 	static bool is_combat_music(int num)
 		{
 		// Lumping music 16 as if it were a combat music in order to simplify
@@ -165,7 +165,10 @@ void Background_noise::handle_event
 	int bghour = gwin->get_clock()->get_hour();
 	int weather = gwin->get_effects()->get_weather();
 	bool nighttime = bghour < 6 || bghour > 20;
-	if (gwin->is_in_dungeon())
+	bool nearby_hostile = gwin->is_hostile_nearby();
+	if (nearby_hostile && !gwin->in_combat())
+		currentstate = 6;
+	else if (gwin->is_in_dungeon())
 		currentstate = 2;
 	else if (weather == 2)
 		currentstate = 4;	//Rainstorm
@@ -211,7 +214,12 @@ void Background_noise::handle_event
 				int tracknum = 255;
 
 				//Get the relevant track number.
-				if (gwin->is_in_dungeon())
+				if (nearby_hostile && !gwin->in_combat())
+				{
+					tracknum = Audio::game_music(10);
+					laststate = 6;
+				}
+				else if (gwin->is_in_dungeon())
 				{
 					//Start the SFX music track then
 					tracknum = Audio::game_music(52);
