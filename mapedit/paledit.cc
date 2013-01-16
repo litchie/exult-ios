@@ -136,11 +136,12 @@ void Palette_edit::load
 			size_t len;
 			unsigned char *buf = (unsigned char *)
 						flex_info->get(pnum, len);
-			assert(len == 3*256);
 			guint32 colors[256];
-			for (int i = 0; i < 256; i++)
+			for (size_t i = 0; i < len/3; i++)
 				colors[i] = (buf[3*i]<<16)*4 + 
 					(buf[3*i+1]<<8)*4 + buf[3*i+2]*4;
+			for (size_t i = len/3; i < 256; i++)
+				colors[i] = 0;
 			palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
 			}
 		}
