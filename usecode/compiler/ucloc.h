@@ -45,7 +45,7 @@ public:
 	static void set_cur(const char *s, int l);
 	static void increment_cur_line()
 		{ cur_line++; }
-	const int get_line()
+	int get_line() const
 		{ return line; }
 	const char *get_source()
 		{ return source; }

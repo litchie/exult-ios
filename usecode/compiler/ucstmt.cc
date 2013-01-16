@@ -434,7 +434,7 @@ void Uc_arrayloop_statement::gen
 	if (!stmt)
 		return;			// Nothing useful to do.
 		// Start of loop.
-	WriteOp(curr, (char) UC_LOOP);
+	WriteOp(curr, UC_LOOP);
 		// The start of a loop is a jump target and needs
 		// a new basic block.
 	Basic_block *for_top = new Basic_block();
@@ -496,15 +496,15 @@ void Uc_return_statement::gen
 		{
 		int ival;
 		if (expr->eval_const(ival) && !ival)
-			WriteOp(curr, (char) UC_RETZ);
+			WriteOp(curr, UC_RETZ);
 		else
 			{
 			expr->gen_value(curr);	// Put value on stack.
-			WriteOp(curr, (char) UC_RETV);
+			WriteOp(curr, UC_RETV);
 			}
 		}
 	else
-		WriteOp(curr, (char) UC_RET);
+		WriteOp(curr, UC_RET);
 	curr->set_targets(-1, end);
 	curr = new Basic_block();
 	blocks.push_back(curr);
@@ -646,12 +646,12 @@ void Uc_converse_case_statement::gen
 		// Push strings on stack; *it should always be >= 0.
 		if (is_int_32bit(*it))
 			{
-			WriteOp(curr, (char) UC_PUSHS32);
+			WriteOp(curr, UC_PUSHS32);
 			WriteOpParam4(curr, *it);
 			}
 		else
 			{
-			WriteOp(curr, (char) UC_PUSHS);
+			WriteOp(curr, UC_PUSHS);
 			WriteOpParam2(curr, *it);
 			}
 		}
@@ -778,7 +778,7 @@ void Uc_converse_statement::gen
 	blocks.push_back(conv_body);
 		// Block past the CONVERSE loop.
 	Basic_block *past_conv = new Basic_block();
-	WriteOp(past_conv, (char) UC_CONVERSELOC);
+	WriteOp(past_conv, UC_CONVERSELOC);
 	conv_top->set_targets(UC_CONVERSE, conv_body, past_conv);
 		// Generate loop body.
 	Uc_converse_case_statement *def = 0;
@@ -830,7 +830,7 @@ int Uc_switch_expression_case_statement::gen_check
 	)
 	{
 	check->gen_value(curr);
-	WriteOp(curr, (char) UC_CMPNE);
+	WriteOp(curr, UC_CMPNE);
 	Basic_block *block = new Basic_block();
 	curr->set_targets(UC_JNE, block, case_block);
 	blocks.push_back(curr = block);
@@ -989,12 +989,12 @@ void Uc_message_statement::gen
 			{
 			if (is_int_32bit(offset))
 				{
-				WriteOp(curr, (char) UC_ADDSI32);
+				WriteOp(curr, UC_ADDSI32);
 				WriteOpParam4(curr, offset);
 				}
 			else
 				{
-				WriteOp(curr, (char) UC_ADDSI);
+				WriteOp(curr, UC_ADDSI);
 				WriteOpParam2(curr, offset);
 				}
 			}
@@ -1003,7 +1003,7 @@ void Uc_message_statement::gen
 			Uc_var_symbol *var = msg->need_var(curr, fun);
 			if (var)	// Shouldn't fail.
 				{
-				WriteOp(curr, (char) UC_ADDSV);
+				WriteOp(curr, UC_ADDSV);
 				WriteOpParam2(curr, var->get_offset());
 				}
 			}
@@ -1027,7 +1027,7 @@ void Uc_say_statement::gen
 	{
 					// Add the messages.
 	Uc_message_statement::gen(fun, blocks, curr, end, labels, start, exit);
-	WriteOp(curr, (char) UC_SAY);		// Show on screen.
+	WriteOp(curr, UC_SAY);		// Show on screen.
 	}
 
 /*
@@ -1087,7 +1087,7 @@ void Uc_abort_statement::gen
 	Basic_block *exit			// Block used for 'break' statements.
 	)
 	{
-	WriteOp(curr, (char) UC_ABRT);
+	WriteOp(curr, UC_ABRT);
 	curr->set_targets(-1, end);
 	curr = new Basic_block();
 	blocks.push_back(curr);

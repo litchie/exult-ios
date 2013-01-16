@@ -255,11 +255,11 @@ public:
 	Uc_int_expression(int v, int op = UC_PUSHI) : opcode(op)
 		{
 		if (opcode == UC_PUSHB)
-			value = (char)(v & 0xff);
+			value = static_cast<char>(v & 0xff);
 		else if (opcode == UC_PUSHI)
-			value = (short)(v & 0xffff);
+			value = static_cast<short>(v & 0xffff);
 		else
-			value = (int)(v & 0xffffffff);
+			value = static_cast<int>(v & 0xffffffff);
 		}
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
@@ -280,7 +280,7 @@ public:
 					// Gen. code to put result on stack.
 	virtual void gen_value(Basic_block *out);
 	virtual bool eval_const(int& val)
-		{ val = (int)tf; return true; }
+		{ val = static_cast<int>(tf); return true; }
 	};
 
 /*
@@ -480,11 +480,11 @@ public:
 
 inline void Write1(vector<char>& out, unsigned short val)
 	{
-	out.push_back((char) (val&0xff));
+	out.push_back(static_cast<char>(val&0xff));
 	}
 inline void Write1(vector<char>& out, int pos, unsigned short val)
 	{
-	out[pos] = (char) (val&0xff);
+	out[pos] = static_cast<char>(val&0xff);
 	}
 
 /*
@@ -493,13 +493,13 @@ inline void Write1(vector<char>& out, int pos, unsigned short val)
 
 inline void Write2(vector<char>& out, unsigned short val)
 	{
-	out.push_back((char) (val&0xff));
-	out.push_back((char) ((val>>8)&0xff));
+	out.push_back(static_cast<char>(val&0xff));
+	out.push_back(static_cast<char>((val>>8)&0xff));
 	}
 inline void Write2(vector<char>& out, int pos, unsigned short val)
 	{
-	out[pos] = (char) (val&0xff);
-	out[pos + 1] = (char) ((val>>8)&0xff);
+	out[pos] = static_cast<char>(val&0xff);
+	out[pos + 1] = static_cast<char>((val>>8)&0xff);
 	}
 
 /*
@@ -508,16 +508,16 @@ inline void Write2(vector<char>& out, int pos, unsigned short val)
 
 inline void Write4(vector<char>& out, unsigned int val)
 	{
-	out.push_back((char) (val&0xff));
-	out.push_back((char) ((val>>8)&0xff));
-	out.push_back((char) ((val>>16)&0xff));
-	out.push_back((char) ((val>>24)&0xff));
+	out.push_back(static_cast<char>(val&0xff));
+	out.push_back(static_cast<char>((val>>8)&0xff));
+	out.push_back(static_cast<char>((val>>16)&0xff));
+	out.push_back(static_cast<char>((val>>24)&0xff));
 	}
 inline void Write4(vector<char>& out, int pos, unsigned int val)
 	{
-	out[pos] = (char) (val&0xff);
-	out[pos + 1] = (char) ((val>>8)&0xff);
-	out[pos + 3] = (char) ((val>>16)&0xff);
-	out[pos + 4] = (char) ((val>>24)&0xff);
+	out[pos] = static_cast<char>(val&0xff);
+	out[pos + 1] = static_cast<char>((val>>8)&0xff);
+	out[pos + 3] = static_cast<char>((val>>16)&0xff);
+	out[pos + 4] = static_cast<char>((val>>24)&0xff);
 	}
 #endif

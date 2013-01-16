@@ -101,10 +101,10 @@ public:
 #ifdef DEBUG	// For debugging.
 	void write_text() const
 		{
-		cout << setw(2) << setfill('0') << (int)((unsigned char)opcode) << ' ';
+		cout << setw(2) << setfill('0') << static_cast<int>(static_cast<unsigned char>(opcode)) << ' ';
 		for (vector<char>::const_iterator it = params.begin();
 				it != params.end(); ++it)
-			cout << setw(2) << setfill('0') << (int)((unsigned char)*it) << ' ';
+			cout << setw(2) << setfill('0') << static_cast<int>(static_cast<unsigned char>(*it)) << ' ';
 		if (is_jump)
 			cout << "<offset>";
 		}
@@ -419,9 +419,9 @@ public:
 #ifdef DEBUG	// For debugging.
 	void check() const
 		{
-		cout << hex << setw(8) << setfill('0') << (uintptr)(this)
-			 << '\t' << setw(8) << setfill('0') << (uintptr)(taken)
-			 << '\t' << setw(8) << setfill('0') << (uintptr)(ntaken)
+		cout << hex << setw(8) << setfill('0') << reinterpret_cast<uintptr>(this)
+			 << '\t' << setw(8) << setfill('0') << reinterpret_cast<uintptr>(taken)
+			 << '\t' << setw(8) << setfill('0') << reinterpret_cast<uintptr>(ntaken)
 			 << '\t';
 		for (vector<Opcode *>::const_iterator it = instructions.begin();
 				it != instructions.end(); ++it)

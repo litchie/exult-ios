@@ -53,14 +53,14 @@ void Usecode_scope_symbol::read(istream& in)
 	for (int i = 0; i < cnt; ++i) {
 		char nm[256];
 		in.getline(nm, sizeof(nm), 0);
-		int kind = Read2(in);
+		Usecode_symbol::Symbol_kind kind =
+		                static_cast<Usecode_symbol::Symbol_kind>(Read2(in));
 		int val = Read4(in);
 		Usecode_symbol *sym;
 		if (kind == Usecode_symbol::class_scope) {
-			Usecode_class_symbol *s = new Usecode_class_symbol(nm, 
-				(Usecode_symbol::Symbol_kind) kind, val);
+			Usecode_class_symbol *s = new Usecode_class_symbol(nm, kind, val);
 			s->read(in);
-			assert((unsigned)s->get_val() == classes.size());
+			assert(static_cast<unsigned>(s->get_val()) == classes.size());
 			classes.push_back(s);
 			sym = s;
 		} else {
@@ -70,8 +70,7 @@ void Usecode_scope_symbol::read(istream& in)
 				shape = Read4(in);
 				shape_funs[shape] = val;
 			}
-			sym = new Usecode_symbol(nm,
-				(Usecode_symbol::Symbol_kind) kind, val, shape);
+			sym = new Usecode_symbol(nm, kind, val, shape);
 		}
 		symbols.push_back(sym);
 	}
@@ -95,7 +94,7 @@ void Usecode_scope_symbol::write(ostream& out)
 		Usecode_symbol *sym = *it;
 		const char *nm = sym->get_name();
 		out.write(nm, strlen(nm) + 1);
-		Write2(out, (int) sym->get_kind());
+		Write2(out, static_cast<int>(sym->get_kind()));
 		Write4(out, sym->get_val());
 		if (sym->get_kind() == class_scope)
 			static_cast<Usecode_class_symbol*>(sym)->write(out);

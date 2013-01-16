@@ -98,7 +98,7 @@ static void Write_flex
 		const char *str = *it;
 		if (str)
 			out << str;
-		out.put((char) 0);	// 0-delimit.
+		out.put(0);	// 0-delimit.
 		writer.mark_section_done();
 		}
 	if (!writer.close())

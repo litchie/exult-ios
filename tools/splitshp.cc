@@ -126,7 +126,7 @@ void split_shape(char* filename)
 	int file_size, shape_size, hdr_size;
 	int frame_offset, next_frame_offset;
 	int num_frames;
-	int datalen;
+	size_t datalen;
 	uint8 *data;
 	char *framename;
 	int i;
@@ -204,7 +204,8 @@ void merge_frames(char *shapefile, char** framefiles, int numframefiles)
 	FILE *shpfile, *framefile;
 	int i;
 	bool tiles = false;
-	int file_size, shape_size, hdr_size, frame_size;
+	int file_size, shape_size, hdr_size;
+	size_t frame_size;
 	int total_size;
 	uint8 *data;
 	size_t err;

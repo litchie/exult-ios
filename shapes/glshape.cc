@@ -229,8 +229,8 @@ void GL_texshape::paint
 	float y = static_cast<float>(py) + texsize;
 	if (frame)
 		{
-		x += frame->get_xright() + 1 - (int) texsize;
-		y += frame->get_ybelow() + 1 - (int) texsize;
+		x += frame->get_xright() + 1 - static_cast<int>(texsize);
+		y += frame->get_ybelow() + 1 - static_cast<int>(texsize);
 		}
 					// Game y-coord goes down from top.
 	y = -y;
@@ -386,7 +386,8 @@ void gl_paint_rgba_bitmap
 					//++++CHeck py too?
 //	float x = static_cast<float>(px);
 //	float y = static_cast<float>(py);
-	glPixelZoom((float) scale, (float) -scale);	// Get right side up.
+	float fscale = scale;
+	glPixelZoom(fscale, -fscale);	// Get right side up.
 	glRasterPos2i(px, py);
 	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
