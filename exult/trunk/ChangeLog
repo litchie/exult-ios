@@ -13,6 +13,8 @@
 	Rev 7280
 	* mapedit/paledit.cc: Fixed assertion woes, as well as making empty palettes
 	  show as all black instead of random colors.
+	Rev 7282
+	* objs/egg.cc: rand()%1 is always zero; changed to rand()%2.
 
 013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 
