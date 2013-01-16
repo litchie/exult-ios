@@ -45,6 +45,11 @@ inline uint8 Read1 (std::istream &in)
 	return static_cast<uint8>(in.get());
 }
 
+inline uint8 Read1 (uint8 *& in)
+{
+	return static_cast<uint8>(*in++);
+}
+
 /*
  *	Read a 2-byte value, lsb first.
  */

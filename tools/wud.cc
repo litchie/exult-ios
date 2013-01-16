@@ -37,7 +37,7 @@ void printdataseg(istream& in, unsigned int ds)
 			while (strchr(tempstr,13))
 			{
 				tempstr2=strchr(tempstr,13)+2;
-				tempstr[strchr(tempstr,13) - (char *) tempstr]=0;
+				tempstr[strchr(tempstr,13) - tempstr]=0;
 				printf("\tdb\t\'%s\'\n\tdb\t0d\n\tdb\t0a\n", tempstr);
 				strcpy(tempstr,tempstr2);
 			}
@@ -61,21 +61,22 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 {
 	unsigned int nbytes;
 	unsigned int i;
+	unsigned int opcode = Read1(ptrc);
 	// Find the description
-	opcode_desc* pdesc = ( *ptrc >= ( sizeof(opcode_table) / sizeof( opcode_desc ) ) ) ?
-							NULL : opcode_table + ( *ptrc );
+	opcode_desc* pdesc = ( opcode >= ( sizeof(opcode_table) / sizeof( opcode_desc ) ) ) ?
+							NULL : opcode_table + opcode;
 	if( pdesc && ( pdesc->mnemonic == NULL ) )
 	{
-		printf("Unknown opcode: %x\n",*ptrc);
+		printf("Unknown opcode: %x\n", opcode);
 		// Unknown opcode
 		pdesc = NULL;
 	}
 	// Number of bytes to print
 	nbytes = pdesc ? ( pdesc->nbytes + 1 ) : 1;
 	// Print label
-	printf("%04X: ", coffset);
+	printf("%04X: %02X ", coffset, opcode);
 	// Print bytes
-	for( i = 0; i < nbytes; i++ )
+	for( i = 0; i < nbytes - 1; i++ )
 		printf("%02X ", ptrc[i]);
 	// Print mnemonic
 	if( nbytes < 4 )
@@ -83,7 +84,7 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	if (pdesc)
 		printf("\t%s", pdesc->mnemonic);
 	else
-		printf("\tdb %x\t???",ptrc[0]);
+		printf("\tdb %x\t???", opcode);
 	// Print operands if any
 	if( ( nbytes == 1 ) || ( pdesc == NULL && pdesc->type == 0) )
 	{
@@ -93,11 +94,11 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	switch( pdesc->type )
 	{
 	case op_byte:
-		printf("\t%x\n",*(unsigned char*)(ptrc+1));
+		printf("\t%x\n", Read1(ptrc));
 		break;
 	case op_push:
 		for ( i = 1; i < nbytes; i++)
-			printf("\n%04X:\t\t\tdb %x",coffset+i,ptrc[i]);
+			printf("\n%04X:\t\t\tdb %x", coffset+i, Read1(ptrc));
 		printf("\n");
 		break;
 	case op_immed:
@@ -105,36 +106,36 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	case op_funid:
 	case op_clsfun:
 	case op_clsid:
-		// Print immediate operand
-		printf("\t%04XH\t\t\t; %d\n", *(unsigned short*)( ptrc + 1 ), *(short*)( ptrc + 1 ));
-		break;
+		{
+			int immed = Read2(ptrc);
+			// Print immediate operand
+			printf("\t%04XH\t\t\t; %d\n", immed, static_cast<short>(immed));
+			break;
+		}
 	case op_immed32:
-		printf("\t%04XH\t\t\t; %d\n", *(unsigned int*)( ptrc + 1 ), *(int*)( ptrc + 1 ));
-		break;
+		{
+			int immed = Read4(ptrc);
+			printf("\t%04XH\t\t\t; %d\n", immed, static_cast<int>(immed));
+			break;
+		}
 	case op_data_string:
 	case op_data_string32:
 		{
-			char* pstr;
-			unsigned int len;
+			unsigned int ostr;
+			if (pdesc->type == op_data_string)
+				ostr = Read2(ptrc);
+			else
+				ostr = Read4(ptrc);
 			// Print data string operand
-			if (pdesc->type == op_data_string)
-				pstr = (char *)pdataseg + 
-						*(unsigned short*)( ptrc + 1 );
-			else
-				pstr = (char *)pdataseg + 
-						*(unsigned int*)( ptrc + 1 );
+			char const *pstr = reinterpret_cast<char *>(pdataseg) + ostr;
 
-			len = strlen(pstr);
-			if( len > 20 )
-				len = 20 - 3;
+			unsigned int len = strlen(pstr);
+			unsigned int minlen = len > 20 ? 20 - 3 : len;
 
-			if (pdesc->type == op_data_string)
-				printf("\tL%04X\t\t\t; ", *(unsigned short*)( ptrc + 1 ));
-			else
-				printf("\tL%04X\t\t\t; ", *(unsigned int*)( ptrc + 1 ));
-			for( i = 0; i < len; i++ )
+			printf("\tL%04X\t\t\t; ", ostr);
+			for( i = 0; i < minlen; i++ )
 				printf("%c", pstr[i]);
-			if( len < strlen(pstr) )
+			if( minlen < len )
 				// String truncated
 				printf("...");
 			printf("\n");
@@ -142,67 +143,75 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 		break;
 	case op_relative_jump:
 	case op_unconditional_jump:
+		ptrc += nbytes - 2 - 1;
 		// Print jump desination
-//		printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
-		printf("\t%04X\n", *(short*)( ptrc + nbytes - 2) + 
-				coffset + nbytes);
+		printf("\t%04X\n", Read2s(ptrc) + coffset + nbytes);
 // debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
 	case op_relative_jump32:
 	case op_uncond_jump32:
-		printf("\t%04X\n", *(int*)( ptrc + nbytes - 4) + 
-			    coffset + nbytes);
+		ptrc += nbytes - 4 - 1;
+		printf("\t%04X\n", Read4s(ptrc) + coffset + nbytes);
 		break;
 	case op_sloop:  /* WJP */
 	case op_static_sloop:
-		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
-			   *(unsigned short*)( ptrc + nbytes - 10 ),
-			   *(unsigned short*)( ptrc + nbytes - 8 ),
-			   *(unsigned short*)( ptrc + nbytes - 6 ),
-			   *(unsigned short*)( ptrc + nbytes - 4 ),
-			   *(short*)( ptrc + nbytes - 2) + coffset + nbytes);
-		break;
+		{
+			ptrc += nbytes - 10 - 1;
+			unsigned short immed1 = Read2(ptrc), immed2 = Read2(ptrc),
+			               immed3 = Read2(ptrc), immed4 = Read2(ptrc);
+			printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
+				   immed1, immed2, immed3, immed4,
+				   Read2s(ptrc) + coffset + nbytes);
+			break;
+		}
 	case op_sloop32:  /* WJP */
-		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
-			   *(unsigned short*)( ptrc + nbytes - 12 ),
-			   *(unsigned short*)( ptrc + nbytes - 10 ),
-			   *(unsigned short*)( ptrc + nbytes - 8 ),
-			   *(unsigned short*)( ptrc + nbytes - 6 ),
-			   *(int*)( ptrc + nbytes - 4) + coffset + nbytes);
-		break;
+		{
+			ptrc += nbytes - 12 - 1;
+			unsigned short immed1 = Read2(ptrc), immed2 = Read2(ptrc),
+			               immed3 = Read2(ptrc), immed4 = Read2(ptrc);
+			printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
+				   immed1, immed2, immed3, immed4,
+				   Read4s(ptrc) + coffset + nbytes);
+			break;
+		}
 	case op_immed_and_relative_jump:	/* JSF */
 	case op_argnum_reljump:
-		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
-				*(short*)( ptrc + 3 ) + coffset + 5);
-		break;
+		{
+			int immed1 = Read2(ptrc), immed2 = Read2s(ptrc);
+			printf("\t%04XH, %04X\n", immed1, immed2 + coffset + 5);
+			break;
+		}
 	case op_immedreljump32:
 	case op_argnum_reljump32:
-		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
-				*(int*)( ptrc + 3 ) + coffset + 5);
-		break;
+		{
+			int immed1 = Read2(ptrc), immed2 = Read4s(ptrc);
+			printf("\t%04XH, %04X\n", immed1, immed2 + coffset + 5);
+			break;
+		}
 	case op_call:
 		{
 			// Print call operand
-		unsigned short func = *(unsigned short*)( ptrc + 1 );
+		unsigned short func = Read2(ptrc);
+		unsigned char nparms = Read1(ptrc);
 		if( ( func < funsize ) && func_table[func] ) {
 			// Known function
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[func] : 0;
 			if (fsym)
 				printf("\t_%s@%d (%04X)\t\t\t; %s\n", 
-					func_table[func], ptrc[3], func,
+					func_table[func], nparms, func,
 					fsym->get_name());
 			else
 				printf("\t_%s@%d (%04X)\n", 
-					func_table[func], ptrc[3], func);
+					func_table[func], nparms, func);
 		} else
 			// Unknown function
-			printf("\t%04X, %d\n", func, ptrc[3]);
+			printf("\t%04X, %d\n", func, nparms);
 		}
 		break;
 	case op_extcall:
 		{
 		// Print extern call
-		unsigned short externpos = *(unsigned short*)( ptrc + 1 );
+		unsigned short externpos = Read2(ptrc);
 		if( externpos < externsize ) {
 			unsigned short func = pextern[externpos];
 			Usecode_symbol *fsym = symtbl ? (*symtbl)[func] : 0;
@@ -220,16 +229,18 @@ unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
 	case op_staticref:
 	case op_classvarref:
 		// Print variable reference
-		printf("\t[%04X]\n", *(unsigned short*)( ptrc + 1 ));
+		printf("\t[%04X]\n", Read2(ptrc));
 		break;
 	case op_immed_pair:
 	case op_clsfun_vtbl:
-		printf("\t%04XH, %04XH\n", *(unsigned short*)( ptrc + 1 ),
-						*(unsigned short*)( ptrc + 3 ));
-		break;
+		{
+			int immed1 = Read2(ptrc), immed2 = Read2(ptrc);
+			printf("\t%04XH, %04XH\n", immed1, immed2);
+			break;
+		}
 	case op_flgref:
 		// Print global flag reference
-		printf("\tflag:[%04X]\n", *(unsigned short*)( ptrc + 1 ));
+		printf("\tflag:[%04X]\n", Read2(ptrc));
 		break;
 	default:
 		// Unknown type
@@ -260,7 +271,7 @@ void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 	}
 
 	p = new char[size];
-	pp = (unsigned char *) p;
+	pp = reinterpret_cast<unsigned char *>(p);
 	pdata = new char[ds];
 	in.read(pdata, ds);
 	printf("\t\t.code\n");
@@ -289,18 +300,15 @@ void printcodeseg(istream& in, unsigned int ds, unsigned int s,
 		return;
 	}
 	size -= ( ( 3 + externsize ) * sizeof(unsigned short) );
-	pextern = (unsigned short*)pp;
+	pextern = reinterpret_cast<unsigned short*>(pp);
 	for( i = 0; i < externsize; i++ )
-	{
-		printf("\t\t.extern %04XH\n", *(unsigned short*)pp);
-		pp += sizeof(unsigned short);
-	}
+		printf("\t\t.extern %04XH\n", Read2(pp));
 	offset = 0;
 	// Print opcodes
 	while( offset < size )
 	{
-		nbytes = print_opcode((unsigned char *)pp, offset, 
-				(unsigned char *)pdata, pextern, externsize,
+		nbytes = print_opcode(pp, offset, 
+				reinterpret_cast<unsigned char *>(pdata), pextern, externsize,
 						func_table, funsize);
 		pp += nbytes;
 		offset += nbytes;
