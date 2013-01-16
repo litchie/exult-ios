@@ -1865,7 +1865,8 @@ USECODE_INTRINSIC(halt_scheduled)
 USECODE_INTRINSIC(lightning)
 {
 					// 1 sec. is long enough for 1 flash.
-	gwin->get_effects()->add_effect(new Lightning_effect(1000));
+	gwin->get_effects()->remove_usecode_lightning();
+	gwin->get_effects()->add_effect(new Lightning_effect(1000, 0, true));
 	return no_ret;
 }
 
