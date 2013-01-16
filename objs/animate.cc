@@ -112,18 +112,20 @@ void Object_sfx::handle_event
 	AudioMixer *mixer = AudioMixer::get_instance();
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
-	if (obj->is_pos_invalid())// || (distance >= 0 && !active))
+	Game_object *outer = obj->get_outermost();
+
+	if (outer->is_pos_invalid())// || (distance >= 0 && !active))
 		{	// Quitting time.
 		stop();
 		return;
 		}
 
 	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
-	bool halt = Get_sfx_out_of_range(gwin, obj);
+	bool halt = Get_sfx_out_of_range(gwin, outer);
 
 	if (!halt && channel == -1 && sfx > -1)		// First time?
 					// Start playing.
-		channel = Audio::get_ptr()->play_sound_effect(sfx, obj, volume, 0);
+		channel = Audio::get_ptr()->play_sound_effect(sfx, outer, volume, 0);
 	else if (channel != -1)
 		{
 		if (halt)
@@ -133,7 +135,7 @@ void Object_sfx::handle_event
 			}
 		else
 			{
-			channel = Audio::get_ptr()->update_sound_effect(channel,obj);
+			channel = Audio::get_ptr()->update_sound_effect(channel, outer);
 			}
 		}
 
