@@ -194,6 +194,10 @@ version: 0.11.25
 
 7	Version history
 -------------------
+version: 0.11.26
+	- Fixed Orb of the Moons only teleporting the avatar.
+	- Laurianna and Jaana no longer use the spellsystem AI when asked to heal;
+	  this will remain until the AI is more mature.
 version: 0.11.25
 	- Added the rollable flying carpet.
 version: 0.11.24
