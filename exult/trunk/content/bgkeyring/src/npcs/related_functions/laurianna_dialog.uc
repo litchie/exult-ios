@@ -164,9 +164,12 @@ void lauriannaHeal (var spellbook)
 		if (!in_party)
 		{
 			say("@Let me see what I can do.@");
+			/*
 			LAURIANNA.hide();
 			script LAURIANNA call aiMain;
 			abort;
+			*/
+			serviceHeal();
 		}
 		else
 		{

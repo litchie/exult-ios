@@ -23,6 +23,10 @@
 	Rev 7285
 	* usecode/intrinsics.cc: Intrinsic path_run_usecode drags party members in
 	  BG also (confirmed in originals).
+	Rev 7286
+	* content/bgkeyring/*: Fixing spellcasting AI by disabling it for the time
+	  being. Updating Keyring readme.
+	* docs/exult_intrinsics.txt: Updated with changes from quite a ways back.
 
 013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 

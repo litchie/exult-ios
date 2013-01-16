@@ -246,11 +246,11 @@ bool UI_path_run_usecode(int pos[], function fun, object obj, int event, int
     you want the path to be uninterruptible, the avatar's DONT_MOVE flag must be
     set (this is flag 22 in BG and 16 in SI).
 
+    The other party members will follow the avatar towards the destination.
+
     ****** SI SPECIFIC ******
     In SI, path_run_usecode finds a free spot within 3 tiles of the position
     specified by 'pos'; it also allows a rise/drop of 3 in the z direction.
-    Moreover, path_run_usecode also makes the other party members move towards
-    the destination.
     **** END SI SPECIFIC ****
 
   Parameters:
@@ -795,7 +795,7 @@ bool UI_is_not_blocked(int pos[3], int shape, int frame)
     If there is enough room in the given location for an object of the given
     shape and frame, returns true; otherwise, returns false.
 
-actor[] UI_add_party_items(int count, int shape, int qual, int frame, bool unk)
+actor[] UI_add_party_items(int count, int shape, int qual, int frame, bool temp)
 
     Creates a specified amount of objects matching the given parameters and
     gives them all to the party. Not all objects requested may be created; in
@@ -815,16 +815,20 @@ actor[] UI_add_party_items(int count, int shape, int qual, int frame, bool unk)
              to create items of any quality.
     frame    What frame will be used for the created objects. Can be FRAME_ANY =
              -359 to create items of any frame.
-    unk      Flag of unknown meaning. This parameter is ignored by Exult, and
-             can be omitted.
+    temp     Flag indicating whether the created items are temporary or not.
 
   Return:
     Returns an array of object references for all party members that received
     any of the created objects.
 
+    ****** BG SPECIFIC ******
+    The 'temp' flag applies to all objects created by this function.
+    **** END BG SPECIFIC ****
+
     ****** SI SPECIFIC ******
     If any objects were added to the ground, the number of objects on the ground
-    is appended to the end of the return array.
+    is appended to the end of the return array. The 'temp' flag applies only to
+    those objects that were added to the floor.
     **** END SI SPECIFIC ****
 
 bool UI_remove_party_items(int count, int shape, int qual, int frame)
@@ -1104,8 +1108,8 @@ int UI_find_direction(mixed param1[4], mixed param2[4])
         SOUTH    = 4    SOUTHWEST    = 5    WEST    = 6    NORTHWEST    = 7
 
 int UI_add_cont_items(object obj, int count, int shape, int          [SI, Exult]
-        qual, int frame, bool unk)
-int obj->add_cont_items(int count, int shape, int qual, int frame, bool unk)
+        qual, int frame, bool temp)
+int obj->add_cont_items(int count, int shape, int qual, int frame, bool temp)
 
     Create a number of objects inside a container.
 
@@ -1118,8 +1122,7 @@ int obj->add_cont_items(int count, int shape, int qual, int frame, bool unk)
              to create items of any quality.
     frame    What frame will be used for the created objects. Can be FRAME_ANY =
              -359 to create items of any frame.
-    unk      Flag of unknown meaning. This parameter is ignored by Exult, and
-             can be omitted.
+    temp     Flag indicating whether the created items are temporary or not.
 
   Return:
     How many objects were actually added to the container.
@@ -2613,7 +2616,7 @@ obj->nap_time()
     one of the party members to pop up and say so.
 
   Parameters:
-    obj    The bed where the avatar should sleep. This bed must be unoccupied.
+    obj    The bed where the avatar should sleep. This bed should be unoccupied.
 
 UI_advance_time(int amount)
 

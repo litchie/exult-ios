@@ -545,7 +545,7 @@ void serviceHeal ()
 				else if (reply == SERVICE_CURE)
 				{
 					var verbs = [" feeds ", " gives "];
-					var msgs = [" an infusion of Ginseng, which nullifies the potion after a while@",
+					var msgs = [" an infusion of Ginseng, which nullifies the potion after a while.@",
 								" a red potion, which cancels the poison almost immeditatelly.@",
 								" a herbal antidote. After a while, the poison is gone.@"];
 					while (numtargets)
