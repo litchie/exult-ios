@@ -27,6 +27,9 @@
 	* content/bgkeyring/*: Fixing spellcasting AI by disabling it for the time
 	  being. Updating Keyring readme.
 	* docs/exult_intrinsics.txt: Updated with changes from quite a ways back.
+	Rev 7288
+	* combat.cc, gamewin.cc: Fixing bug #2782683 "Background music #10 never
+	  played".
 
 2013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 
