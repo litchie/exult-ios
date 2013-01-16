@@ -245,7 +245,6 @@ void Effects_manager::remove_text_effects
 	gwin->set_all_dirty();
 	}
 
-
 /**
  *	Remove weather effects.
  *	@param	dist	Only remove those from eggs at least this far away.
@@ -267,6 +266,27 @@ void Effects_manager::remove_weather_effects
 		if (each->is_weather() && (!dist ||
 		    ((Weather_effect *) each)->out_of_range(apos, dist)))
 			remove_effect(each);
+		each = next;
+		}
+	gwin->set_all_dirty();
+	}
+
+/**
+ *	Remove lightning effects.
+ */
+
+void Effects_manager::remove_usecode_lightning
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+					// See if we're far enough away.
+		Lightning_effect *light = dynamic_cast<Lightning_effect *>(each);
+		if (light && light->from_usecode())
+		    remove_effect(each);
 		each = next;
 		}
 	gwin->set_all_dirty();
@@ -1531,7 +1551,7 @@ void Lightning_effect::handle_event
 		else			// Otherwise, wait several secs.
 			delay = (4000 + r%3000);
 		}
-	else if (!gwin->is_in_dungeon() && !active)// Time to flash.
+	else if ((fromusecode || !gwin->is_in_dungeon()) && !active)// Time to flash.
 		{
 					// Play thunder.
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));

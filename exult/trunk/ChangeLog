@@ -30,6 +30,11 @@
 	Rev 7288
 	* combat.cc, gamewin.cc: Fixing bug #2782683 "Background music #10 never
 	  played".
+	Rev 7289
+	* effects.*, usecode/intrinsics.cc: Fixed bug #3186737 "SI: Lightning
+	  craziness after body switch. (1.5.0svn)" by only allowing one usecode
+	  lightning effect at a time and by forcing usecode lightning to display
+	  even while in doors (matches original).
 
 2013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 
