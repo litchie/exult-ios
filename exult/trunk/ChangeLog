@@ -1,4 +1,9 @@
-2013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
+22013-01-16	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* objs/animate.cc: Using an object's outermost container to determine range
+	  for SFX attenuation instead of the object's own position. This fixes bug
+	  #3600801 "Unlocking doors and chests missing click sound effect".
+
+013-01-12 Dominik Reichardt <dominus@users.sourceforge.net>
 	* configure.ac and all makefile.am files: fixed compiling with current 
 	  autotools and removed many autotools warnings.
 
