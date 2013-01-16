@@ -99,83 +99,17 @@ void Jaana object#(0x405) ()
 					if (item in party)
 					{
 						say("@Let me see what I can do.@");
+						/*
 						JAANA.hide();
 						script JAANA call aiMain;
 						abort;
+						*/
+						serviceHeal();
 					}
 					else
 						serviceHeal();
 				else
 					say("@I would be happy to, but thou hast taken away my spellbook.@");
-				/*
-				if (spellbook)
-				{
-					if (item in party)
-					{
-						script JAANA call aiMain;
-						abort;
-					}
-					
-					var healing_spells = getLeveledSpellList(item,
-						true,
-						["Cure", "Mass cure", "Heal", "Great heal", "Restoration", "Resurrect"],
-						[1, 2, 3, 5, 7, 8],
-						[]);
-					var price = 0;
-					var doheal = true;
-					
-					say("@In which service art thou interested?@");
-					choice = askForResponse(["none", healing_spells]);
-					if (choice != "none")
-					{
-						if (choice == "Cure") price = 15;
-						else if (choice == "Mass cure") price = 45;
-						else if (choice == "Heal") price = 15;
-						else if (choice == "Great heal") price = 30;
-						else if (choice == "Restoration") price = 150;
-						else if (choice == "Resurrect") price = 400;
-						say("@My price is ", price, " gold. Is this price agreeable?@");
-						
-						doheal = false;
-						if (askYesNo())
-						{
-							var partygold = PARTY->count_objects(SHAPE_GOLD, QUALITY_ANY, FRAME_ANY);
-							if (partygold >= price)
-							{
-								doheal = true;
-								UI_remove_party_items(price, SHAPE_GOLD, QUALITY_ANY, FRAME_ANY, true);
-							}
-							else
-								say("@Thou dost not have that much gold! Mayhaps thou couldst return with more and purchase the service then.@");
-						}
-						else
-							say("@Then thou must look elsewhere for that service.@");
-						
-						if (doheal)
-						{
-							if ((choice == "Restoration") || (choice == "Mass cure"))
-								say("@I am glad to help, ", avatartitle, "!@");
-							
-							else
-							{
-								message("@Who dost thou wish to be ");
-								if ((choice == "Heal") || (choice == "Great heal")) message("healed");
-								else if (choice == "Cure") message("cured of poison");
-								else message("resurrected");
-								message("?@");
-								say();
-							}
-							
-							npcCastSpellDialog(item,
-								choice,
-								spellitemGetTalkCast(JAANA));
-						}
-					}	
-					say("@If thou hast need of my services later, I will be here.@");
-				}
-				else
-					say("@I would be happy to, but thou hast taken away my spellbook.@");
-				*/
 				
 			case "Cast spell":
 				if (spellbook)
