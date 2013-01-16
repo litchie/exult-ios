@@ -206,7 +206,7 @@ void enterMoongate 0x824 (var moongate)
 		
 		//Teleport avatar to destination:
 		var dest = getMoongateDestination(moongate);
-		AVATAR->move_object(dest);
+		PARTY->move_object(dest);
 		
 		script AVATAR {nohalt;	call exitMoongate;};
 	}
