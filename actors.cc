@@ -3048,7 +3048,7 @@ int Actor::reduce_health
 	// burst arrows will set the party member that uses it as the attacker.
 	// I changed the check to better reflect this. fight_back also used to be
 	// worthless for a party member to call.	 (-Malignant Manor, 20101223)
-	if (attacker && in_party && is_dead() && attacker->as_actor()->is_in_party())
+	if (is_dead() && in_party && npc && npc->is_in_party())
 		return delta;
 	fight_back(attacker);
 	return delta;
