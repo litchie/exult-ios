@@ -66,6 +66,6 @@ public:
 	static AudioSample *createAudioSample(uint8 *data, uint32 size);
 };
 
-};
+}
 
 #endif //AUDIOSAMPLE_H_INCLUDED

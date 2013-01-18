@@ -1,3 +1,12 @@
+2013-01-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/Audio.cc, audio/AudioMixer.*, objs/animate.*: Fixed bug #3601377
+	  'No "gulping" sound when eating food' by having Objct_sfx have clients and
+	  remember the last position of the object (or its outer container's). Also,
+	  Object_sfx will play until either the position is out of range or until it
+	  has played the SFX once, and delete itself afterwards, fixing a leak on a
+	  sound effect played with the avatar as the SFX's source.
+	* all: Eliminated some warnings.
+
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
 

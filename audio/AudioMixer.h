@@ -52,7 +52,7 @@ public:
 	void			setVolume(sint32 instance_id, int lvol, int rvol);
 	void			getVolume(sint32 instance_id, int &lvol, int &rvol);
 
-	void			set2DPosition(sint32 instance_id, int distance, int angle);
+	bool			set2DPosition(sint32 instance_id, int distance, int angle);
 	void			get2DPosition(sint32 instance_id, int &distance, int &angle);
 
 	void			openMidiOutput();
@@ -85,6 +85,6 @@ private:
 	void			Unlock();
 };
 
-};
+}
 
 #endif //AUDIOMIXER_H_INCLUDED

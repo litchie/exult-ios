@@ -709,5 +709,5 @@ void AudioChannel::calculate2DVolume(int &lvol, int &rvol)
 	rvol = rvol*(256-distance)*rbal/65536;
 }
 
-};
+}
 

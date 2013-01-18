@@ -153,7 +153,7 @@ public:
 			garbage_collect();
 
 			size_t wavlen;			// Read .wav file.
-			uint8 *wavbuf = (uint8*) sfx_file->retrieve(id, wavlen);
+			uint8 *wavbuf = reinterpret_cast<uint8*>(sfx_file->retrieve(id, wavlen));
 			loaded->second = AudioSample::createAudioSample(wavbuf,wavlen);
 		}
 
@@ -529,7 +529,7 @@ void Audio::playfile(const char *fname, const char *fpatch, bool wait)
 	U7multiobject sample(fname, fpatch, 1);
 
 	size_t len;
-	uint8 *buf = (uint8 *)sample.retrieve(len);
+	uint8 *buf = reinterpret_cast<uint8*>(sample.retrieve(len));
 	if (!buf || len == 0)
 	{
 		// Failed to find file in patch or static dirs.
@@ -635,7 +635,7 @@ bool Audio::start_speech(int num, bool wait)
 	U7multiobject sample(filename, patchfile, num);
 
 	size_t len;
-	uint8 *buf = (uint8 *)sample.retrieve(len);
+	uint8 *buf = reinterpret_cast<uint8*>(sample.retrieve(len));
 	if (!buf || len == 0)
 	{
 		delete [] buf;
@@ -687,7 +687,7 @@ int Audio::play_wave_sfx
 		num = bgconv[num];
 	CERR("; after bgconv:  " << num);
 #endif
-	if (num < 0 || (unsigned)num >= sfx_file->number_of_objects())
+	if (num < 0 || static_cast<unsigned>(num) >= sfx_file->number_of_objects())
 	{
 		cerr << "SFX " << num << " is out of range" << endl;
 		return -1;
@@ -780,10 +780,10 @@ int Audio::update_sound_effect(int chan, const Tile_coord &tile)
 	if (distance > 256) {
 		mixer->stopSample(chan);
 		return -1;
-	}
-	else {
-		mixer->set2DPosition(chan,distance,balance);
+	} else if (mixer->set2DPosition(chan,distance,balance)) {
 		return chan;
+	} else {
+		return -1;
 	}
 }
 
