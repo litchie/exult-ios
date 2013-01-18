@@ -364,9 +364,11 @@ int main
 			
 		exit(1);
 	}
-	unsigned gameparam = (unsigned)run_bg +(unsigned)run_si
-	                   + (unsigned)run_fov + (unsigned)run_ss
-	                   + (unsigned)(arg_gamename != "default");
+	unsigned gameparam = static_cast<unsigned>(run_bg)
+	                   + static_cast<unsigned>(run_si)
+	                   + static_cast<unsigned>(run_fov)
+	                   + static_cast<unsigned>(run_ss)
+	                   + static_cast<unsigned>(arg_gamename != "default");
 	if (gameparam > 1)
 	{
 		cerr << "Error: You may only specify one of --bg, --fov, --si, --ss or --game!" << 
@@ -893,8 +895,9 @@ static void Init
 		config->value("config/video/gamma/red", gr, "1.0");
 		config->value("config/video/gamma/green", gg, "1.0");
 		config->value("config/video/gamma/blue", gb, "1.0");
-		Image_window8::set_gamma((float)atof(gr.c_str()),
-				(float)atof(gg.c_str()), (float)atof(gb.c_str()));
+		Image_window8::set_gamma(static_cast<float>(atof(gr.c_str())),
+		                         static_cast<float>(atof(gg.c_str())),
+		                         static_cast<float>(atof(gb.c_str())));
 		string	fullscreenstr;		// Check config. for fullscreen mode.
 		config->value("config/video/fullscreen",fullscreenstr,"no");
 		bool	fullscreen = (fullscreenstr=="yes");
@@ -1307,8 +1310,7 @@ static void Handle_events
 		Game::set_ticks(ticks);
 #ifdef DEBUG
 		if (last_fps == 0 || ticks >= last_fps + 10000) {
-			float fps = (float)gwin->blits*1000.0f/
-							(ticks - last_fps);
+			double fps = (gwin->blits * 1000.0f) / (ticks - last_fps);
 			cerr << "***#ticks = " << ticks - last_fps <<
 				", blits = " << gwin->blits << ", ";
 			cerr << "FPS:  " << fps << endl;
@@ -1340,7 +1342,7 @@ static void Handle_events
 			else if (ticks > last_rest)
 				{
 				int resttime = ticks - last_rest;
-				//gwin->get_main_actor()->resting(ticks - last_rest);
+				gwin->get_main_actor()->resting(resttime);
 
 				Party_manager *party_man = gwin->get_party_man();
 				int cnt = party_man->get_count();
@@ -1817,9 +1819,9 @@ static void Handle_event
 		{
 		XEvent& ev = event.syswm.msg->event.xevent;
 		if (ev.type == ClientMessage)
-			xdnd->client_msg((XClientMessageEvent&) ev);
+			xdnd->client_msg(reinterpret_cast<XClientMessageEvent&>(ev));
 		else if (ev.type == SelectionNotify)
-			xdnd->select_msg((XSelectionEvent&) ev);
+			xdnd->select_msg(reinterpret_cast<XSelectionEvent&>(ev));
 		break;
 		}
 #endif
@@ -2360,15 +2362,15 @@ void change_gamma (bool down)
 #endif
 	gwin->get_effects()->center_text(text);	
 
-	int igam = (int) ((r*10000)+0.5);
+	int igam = static_cast<int>((r*10000)+0.5);
 	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/video/gamma/red", text, true);
 
-	igam = (int) ((b*10000)+0.5);
+	igam = static_cast<int>((b*10000)+0.5);
 	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/video/gamma/green", text, true);
 
-	igam = (int) ((g*10000)+0.5);
+	igam = static_cast<int>((g*10000)+0.5);
 	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/video/gamma/blue", text, true);
 }
