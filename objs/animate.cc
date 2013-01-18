@@ -54,14 +54,13 @@ using namespace Pentagram;
 static inline bool Get_sfx_out_of_range
 	(
 	Game_window *gwin,
-	Game_object *obj
+	Tile_coord const& opos
 	)
 	{
-	//distance = gwin->get_main_actor()->distance(obj);
 	Rectangle size = gwin->get_win_tile_rect();
 	Tile_coord apos(size.x+size.w/2,size.y+size.h/2,gwin->get_camera_actor()->get_lift());
 
-	return apos.square_distance_screen_space(obj->get_center_tile()) > (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
+	return apos.square_distance_screen_space(opos) > (MAX_SOUND_FALLOFF*MAX_SOUND_FALLOFF);
 	}
 
 /*
@@ -71,6 +70,7 @@ static inline bool Get_sfx_out_of_range
 Object_sfx::Object_sfx(Game_object *o, int s, int delay)
 	: obj(o), sfx(s), channel(-1)
 	{	// Start immediatelly.
+	add_client(obj);
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
 	}
 
@@ -88,6 +88,7 @@ void Object_sfx::stop()
 	while (gwin->get_tqueue()->remove(this))
 		;
 	stop_playing();
+	remove_clients();
 	delete this;
 	}
 
@@ -97,7 +98,24 @@ void Object_sfx::dequeue()
 	if (!in_queue())
 	{
 		stop_playing();
+		remove_clients();
 		delete this;
+	}
+}
+
+void Object_sfx::notify_object_gone(Game_object *o)
+{
+	if (obj == o)
+	{
+		kill_client_list();
+		Game_object *outer = obj->get_outermost();
+		if (outer == obj)
+			obj = 0;	// Use last_pos.
+		else
+		{
+			obj = outer;
+			add_client(obj);
+		}
 	}
 }
 
@@ -112,20 +130,29 @@ void Object_sfx::handle_event
 	AudioMixer *mixer = AudioMixer::get_instance();
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
-	Game_object *outer = obj->get_outermost();
+	Game_object *outer;
+	if (obj)
+		{
+		outer = obj->get_outermost();
+		last_pos = outer->get_center_tile();
+		}
+	else
+		outer = 0;
 
+	/*
 	if (outer->is_pos_invalid())// || (distance >= 0 && !active))
 		{	// Quitting time.
 		stop();
 		return;
 		}
+	*/
 
 	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
-	bool halt = Get_sfx_out_of_range(gwin, outer);
+	bool halt = Get_sfx_out_of_range(gwin, last_pos);
 
 	if (!halt && channel == -1 && sfx > -1)		// First time?
 					// Start playing.
-		channel = Audio::get_ptr()->play_sound_effect(sfx, outer, volume, 0);
+		channel = Audio::get_ptr()->play_sound_effect(sfx, last_pos, volume, 0);
 	else if (channel != -1)
 		{
 		if (halt)
@@ -135,7 +162,7 @@ void Object_sfx::handle_event
 			}
 		else
 			{
-			channel = Audio::get_ptr()->update_sound_effect(channel, outer);
+			channel = Audio::get_ptr()->update_sound_effect(channel, last_pos);
 			}
 		}
 
@@ -230,7 +257,7 @@ void Shape_sfx::update
 
 	dir = 0;
 	int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
-	bool halt = Get_sfx_out_of_range(gwin, obj);
+	bool halt = Get_sfx_out_of_range(gwin, obj->get_center_tile());
 
 	if (play && halt)
 		play = false;
