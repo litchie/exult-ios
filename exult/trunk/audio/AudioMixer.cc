@@ -62,7 +62,8 @@ num_channels(num_channels_), channels(0), id_counter(0)
 	audio_ok = (ret == 0);
 
 	if (audio_ok) {
-		pout << "Audio opened using format: " << obtained.freq << " Hz " << (int) obtained.channels << " Channels" <<  std::endl;
+		pout << "Audio opened using format: " << obtained.freq << " Hz "
+		     << static_cast<int>(obtained.channels) << " Channels" <<  std::endl;
 
 
 		Lock();
@@ -325,9 +326,10 @@ void AudioMixer::getVolume(sint32 instance_id, int &lvol, int &rvol)
 }
 
 
-void AudioMixer::set2DPosition(sint32 instance_id, int distance, int angle)
+bool AudioMixer::set2DPosition(sint32 instance_id, int distance, int angle)
 {
-	if (instance_id < 0 || !channels || !audio_ok) return;
+	if (instance_id < 0 || !channels || !audio_ok) return false;
+	bool playing = false;
 
 	Lock();
 	{
@@ -336,11 +338,13 @@ void AudioMixer::set2DPosition(sint32 instance_id, int distance, int angle)
 			if (channels[chan]->getInstanceId() == instance_id)
 			{
 				channels[chan]->set2DPosition(distance,angle);
+				playing = channels[chan]->isPlaying();
 				break;
 			}
 		}
 	}
 	Unlock();
+	return playing;
 }
 
 void AudioMixer::get2DPosition(sint32 instance_id, int &distance, int &angle)
