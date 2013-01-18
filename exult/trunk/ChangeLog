@@ -10,6 +10,9 @@
 	* objs/animate.cc,usecode/intrinsics.cc: Fixed bug #3601382 "Open book sound
 	  happens when closing book" by forcing sounds played from usecode to begin
 	  playing right away. Eliminated some warnings.
+	Rev 7293
+	* exult.cc: Fixed bug #3601383 "Avatar stuck in casting spell pose after
+	  casting", a regression introduced in rev #7271. Eliminating warnings.
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
