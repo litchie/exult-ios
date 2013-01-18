@@ -69,9 +69,26 @@ static inline bool Get_sfx_out_of_range
 
 Object_sfx::Object_sfx(Game_object *o, int s, int delay)
 	: obj(o), sfx(s), channel(-1)
-	{	// Start immediatelly.
+	{
 	add_client(obj);
-	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, (long) gwin);
+	if (!delay)
+		{	// Start right now -- so that usecode sounds will play when intended
+			// (e.g., books). We *really* don't want to call handle_event here
+			// since it can delete the object (e.g., if it is out of range),
+			// resulting in undefined behavior.
+		Game_object *outer = obj->get_outermost();
+		last_pos = outer->get_center_tile();
+
+		int volume = AUDIO_MAX_VOLUME;	// Set volume based on distance.
+		bool halt = Get_sfx_out_of_range(gwin, last_pos);
+
+		if (!halt && channel == -1 && sfx > -1)		// First time?
+						// Start playing.
+			channel = Audio::get_ptr()->play_sound_effect(sfx, last_pos, volume, 0);
+		delay = 100;
+		}
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this,
+	                        reinterpret_cast<long>(gwin));
 	}
 
 void Object_sfx::stop_playing()
@@ -127,7 +144,7 @@ void Object_sfx::handle_event
 	{
 	const int delay = 100;		// Guessing this will be enough.
 
-	AudioMixer *mixer = AudioMixer::get_instance();
+	//AudioMixer *mixer = AudioMixer::get_instance();
 	//bool active = channel != -1 ? mixer->isPlaying(channel) : false;
 
 	Game_object *outer;
@@ -327,7 +344,8 @@ void Animator::start_animation
 	{
 					// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
-	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, (long) gwin);
+	gwin->get_tqueue()->add(Game::get_ticks() + 20, this,
+	                        reinterpret_cast<long>(gwin));
 	animating = 1;
 	}
 
@@ -468,7 +486,7 @@ void Frame_animator::handle_event
 	)
 {
 	const int delay = 100;
-	Game_window *gwin = (Game_window *) udata;
+	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
 
 	if (!--frame_counter)
 		{
@@ -537,7 +555,7 @@ void Sfx_animator::handle_event
 {
 	const int delay = 100;		// Guessing this will be enough.
 
-	Game_window *gwin = (Game_window *) udata;
+	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
 	Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(obj));
 	if (rect.w <= 0 || rect.h <= 0)
 	{	// No longer on screen.
@@ -592,7 +610,7 @@ void Wiggle_animator::handle_event
 	)
 	{
 	const int delay = 100;		// Delay between frames.
-	Game_window *gwin = (Game_window *) udata;
+	Game_window *gwin = reinterpret_cast<Game_window *>(udata);
 	if (!gwin->add_dirty(obj))
 		{			// No longer on screen.
 		animating = 0;
