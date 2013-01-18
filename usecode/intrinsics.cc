@@ -2744,7 +2744,7 @@ USECODE_INTRINSIC(play_sound_effect2)
 	if (num_parms < 2) return(no_ret);
 	// Play music(songnum, item).
 	Game_object *obj = get_item(parms[1]);
-	new Object_sfx(obj, parms[0].get_int_value());
+	new Object_sfx(obj, parms[0].get_int_value(), 0);
 #ifdef DEBUG
 	cout << "Sound effect(2) " << parms[0].get_int_value() << 
 		" request in usecode" << endl;
