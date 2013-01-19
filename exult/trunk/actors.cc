@@ -2054,7 +2054,28 @@ int Actor::get_effective_alignment
 	bool avatar = (this == gwin->get_main_actor());
 	if (!(flags&(1<<Obj_flags::charmed)) ||
 		(avatar && !Combat::charmed_more_difficult))
-		return alignment;
+		{
+		// Hack warning: there are some neutral goblins in the goblin village.
+		// Here, we 'fix' their alignments to cause them to attack the avatar.
+		// The only theory I have to explain why these neutral goblins exist is
+		// that it *seems* that only neutral NPCs called guards in the original,
+		// and 'call guards in the goblin' village means 'making everyone nearby
+		// attack the avatar'.
+		// Lets not do this for non-goblins, party members (even if goblins),
+		// the avatar, or if in a dungeon -- the boundaries of 'goblin village'
+		// overlap some of the surrounding dungeons, and this behavior might not
+		// be desired there.
+		if (avatar || party_id >= 0 || !is_goblin() || gwin->is_in_dungeon())
+			return alignment;
+		// These boundaries are exact, as far as I can tell; hack-move to the
+		// rescue.
+		Rectangle gobvillage(576, 1200, 256, 336);
+		Tile_coord loc = get_tile();
+		if (gobvillage.has_world_point(loc.tx, loc.ty))
+			return evil;
+		else
+			return alignment;
+		}
 	else switch(alignment)
 		{
 	case neutral:
@@ -2704,7 +2725,10 @@ void Actor::fight_back
 			if (!gwin->is_in_dungeon())
 				{	   // Don't say anything if in a dungeon.
 				eman->remove_text_effect(this);
-				say(first_call_police, last_call_police);
+				if (is_goblin())
+					say(first_goblin_call_police, last_goblin_call_police);
+				else if (can_speak())
+					say(first_call_police, last_call_police);
 				}
 			lastcall = curtime;
 			gwin->attack_avatar(1 + rand()%2);
@@ -2886,14 +2910,9 @@ int Actor::reduce_health
 		}
 	if (oldhp >= maxhp/2 && val < maxhp/2 && rand()%2 != 0)
 		{			// A little oomph.
-					// Goblin?
-		if (GAME_SI &&
-			 (get_shapenum() == 0x1de ||
-			  get_shapenum() == 0x2b3 ||
-			  get_shapenum() == 0x2d5 ||
-			  get_shapenum() == 0x2e8))
-			say(0x4d2, 0x4da);	// ++++ TODO: Not sure they use all these.
-		else if (!minf || !minf->cant_yell())
+		if (is_goblin())			// Goblin?
+			say(goblin_ouch);
+		else if (can_speak())
 			say(first_ouch, last_ouch);
 		}
 	Game_object_vector vec;		// Create blood.
@@ -3909,6 +3928,11 @@ int Actor::is_immune
 	else
 		return 0;
 	}
+
+bool Actor::is_goblin() const
+{
+	return get_info().is_goblin();
+}
 
 bool Actor::can_see_invisible() const
 {

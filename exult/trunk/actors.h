@@ -542,6 +542,7 @@ public:
 					// Gets whether the actor is immune or vulnerable to a given
 					// form of damage:
 	int is_immune(int type) const;
+	bool is_goblin() const;
 	bool can_see_invisible() const;
 	bool can_speak() const;
 	bool is_sentient() const;
