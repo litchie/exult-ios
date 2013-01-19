@@ -1,3 +1,7 @@
+2013-01-19	Malignant Manor <malignantmanor@users.sourceforge.net>
+	* shape_info.txt: Fix typos that caused books to run the wrong usecode. This
+	  fixes bug #3601322 Exploding books in Castle of White dragon don't explode
+
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* schedule.cc: Fixing bug #3601456 "NPCs teleport out of bed when woken up".
 	  Reduced random delay for Walk_to_schedule as it caused NPCs to stand still
