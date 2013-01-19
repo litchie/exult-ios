@@ -373,6 +373,7 @@ public:
 					// Find witness to Avatar's 'crime'.
 	Actor *find_witness(Actor *& closest_npc, bool for_theft);
 	void theft();			// Handle thievery.
+	static int get_guard_shape(Tile_coord const& pos);
 	void call_guards(Actor *witness = 0, bool theft = false);
 	void attack_avatar(int num_guards = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed

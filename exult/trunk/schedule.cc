@@ -1318,6 +1318,25 @@ void Patrol_schedule::notify_object_gone(Game_object *obj)
 		book = 0;
 }
 
+Talk_schedule::Talk_schedule
+	(
+	Actor *n,
+	int fb,
+	int lb,
+	int eid
+	) : Schedule(n), firstbark(fb), lastbark(lb), eventid(eid), phase(0)
+{
+}
+
+Talk_schedule::Talk_schedule
+	(
+	Actor *n
+	) : Schedule(n), firstbark(first_talk), lastbark(last_talk),
+	    eventid(GAME_BG ? Usecode_machine::double_click : Usecode_machine::chat),
+	    phase(0)
+{
+}
+
 /*
  *	Schedule change for 'talk':
  */
@@ -1326,7 +1345,6 @@ void Talk_schedule::now_what
 	(
 	)
 	{
-
 	int speed = gwin->get_std_delay();
 	// Switch to phase 3 if we are reasonable close
 	if (phase < 3 && 
@@ -1375,7 +1393,7 @@ void Talk_schedule::now_what
 					gwin->get_main_actor()))
 				{
 				if (rand()%3 == 0)
-					npc->say(first_talk, last_talk);
+					npc->say(firstbark, lastbark);
 				}
 					// Walk there, and retry if
 					//   blocked.
@@ -1392,7 +1410,7 @@ void Talk_schedule::now_what
 				gwin->get_main_actor()))
 			{
 			if (rand()%3 == 0)
-				npc->say(first_talk, last_talk);
+				npc->say(firstbark, lastbark);
 			}
 		// Step towards Avatar.
 		Tile_coord pos = npc->get_tile(), 
@@ -1425,10 +1443,7 @@ void Talk_schedule::now_what
 	case 4:
 		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
-		if (Game::get_game_type() == SERPENT_ISLE)
-			npc->activate(9);
-		else
-			npc->activate(1);
+		npc->activate(eventid);
 					// SO don't refer to any instance
 					//   variables from here on.
 		gwin->paint();
@@ -1437,6 +1452,34 @@ void Talk_schedule::now_what
 		break;
 		}
 	}
+
+/*
+ *	Schedule change for 'arrest':
+ */
+
+Arrest_avatar_schedule::Arrest_avatar_schedule
+	(
+	Actor *n
+	) : Talk_schedule(n, first_arrest, last_arrest, Usecode_machine::double_click)
+{
+	npc->set_usecode(ArrestUsecode);
+}
+
+/*
+ *	Schedule change for 'arrest avatar':
+ */
+
+void Arrest_avatar_schedule::ending
+	(
+	int newtype
+	)
+	{
+	if (newtype != combat)
+		npc->set_alignment(Actor::neutral);
+	}
+				// For Usecode intrinsic.
+int Arrest_avatar_schedule::get_actual_type(Actor *npc) const
+	{	return combat;	}
 
 /*
  *	Create a loiter schedule.
@@ -1529,7 +1572,7 @@ void Dance_schedule::now_what
 	(
 	)
 	{
-	Tile_coord dest = center;	// Pick new spot to walk to.
+		Tile_coord dest = center;	// Pick new spot to walk to.
 	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
 	Tile_coord cur = npc->get_tile();
