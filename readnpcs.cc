@@ -120,6 +120,7 @@ void Game_window::read_npcs
 				break;	// Watch for corrupted file.
 			Monster_actor *act = Monster_actor::create(shnum);
 			act->read(&nfile, -1, false, fix_unused);
+			act->set_schedule_loc(act->get_tile());
 			act->restore_schedule();
 			CYCLE_RED_PLASMA();
 		}

@@ -126,6 +126,13 @@ class Background_noise : public Time_sensitive
 	int laststate;			// Last state for SFX music tracks, 
 							// 1 outside, 2 dungeon, 3 nighttime, 4 rainstorm,
 							// 5 snowstorm, 6 for danger nearby
+public:
+	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
+					gwin(gw), laststate(0)
+		{ gwin->get_tqueue()->add(5000, this, 0L); }
+	virtual ~Background_noise()
+		{ gwin->get_tqueue()->remove(this); }
+	virtual void handle_event(unsigned long curtime, long udata);
 	static bool is_combat_music(int num)
 		{
 		// Lumping music 16 as if it were a combat music in order to simplify
@@ -138,13 +145,6 @@ class Background_noise : public Time_sensitive
 		return (num >= Audio::game_music(4) && num <= Audio::game_music(8)) ||
 				num == Audio::game_music(52);
 		}
-public:
-	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
-					gwin(gw), laststate(0)
-		{ gwin->get_tqueue()->add(5000, this, 0L); }
-	virtual ~Background_noise()
-		{ gwin->get_tqueue()->remove(this); }
-	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -207,7 +207,7 @@ void Background_noise::handle_event
 			// here, just so they don't loop forever.
 			// Conditions: not playing music, playing a background music
 			if (curr_track == -1 || is_bg_track(curr_track) ||
-			    (currentstate == 2 && !is_combat_music(curr_track)))
+			    ((currentstate == 2 || currentstate == 6) && !is_combat_music(curr_track)))
 			{
 				//Not already playing music
 				int tracknum = 255;
@@ -2729,7 +2729,7 @@ void Game_window::mend_npcs
  *	Get guard shape.
  */
 
-int Get_guard_shape
+int Game_window::get_guard_shape
 	(
 	Tile_coord const& pos			// Position to use.
 	)
@@ -2874,7 +2874,7 @@ void Game_window::call_guards
 	Actor *closest;
 	if (armageddon || in_dungeon)
 		return;
-	int gshape = Get_guard_shape(main_actor->get_tile());
+	int gshape = get_guard_shape(main_actor->get_tile());
 	if (witness || (witness = find_witness(closest, false)) != 0)
 		{
 		if (witness->is_goblin())
@@ -2901,28 +2901,28 @@ void Game_window::call_guards
 		attack_avatar(0);
 		return;
 		}
-					// Show guard running up.
-					// Create it off-screen.
-	Monster_actor *guard = Monster_actor::create(gshape,
-		main_actor->get_tile() + Tile_coord(128, 128, 0));
-	add_nearby_npc(guard);
-	Tile_coord actloc = main_actor->get_tile();
-	Tile_coord dest = Map_chunk::find_spot(actloc, 5, 
-			guard->get_shapenum(), guard->get_framenum(), 1);
+
+	Tile_coord dest = Map_chunk::find_spot(main_actor->get_tile(), 5, gshape, 0, 1);
 	if (dest.tx != -1)
-		{
-		guard->say(first_arrest, last_arrest);
-		int dir = Get_direction(dest.ty - actloc.ty,
-						actloc.tx - dest.tx);
-					
-		signed char frames[2];	// Use frame for starting attack.
-		frames[0] = guard->get_dir_framenum(dir, Actor::standing);
-		frames[1] = guard->get_dir_framenum(dir, 3);
-		Actor_action *action = new Sequence_actor_action(
-				new Frames_actor_action(frames, 2),
-				new Usecode_actor_action(ArrestUsecode, guard,
-					Usecode_machine::double_click));
-		Schedule::set_action_sequence(guard, dest, action, true);
+		{				// Show guard running up.
+						// Create it off-screen.
+		int numguards = 1 + rand()%3;
+		Tile_coord offscreen(main_actor->get_tile() + Tile_coord(128, 128, 0));
+						// Start in combat if avatar is fighting.
+		Schedule::Schedule_types sched = combat ? Schedule::combat
+		                                        : Schedule::arrest_avatar;
+		for (int i = 0; i < numguards; i++)
+			{
+			Monster_actor *guard = Monster_actor::create(gshape, offscreen,
+			                                             sched, Actor::chaotic);
+			add_nearby_npc(guard);
+			guard->approach_another(main_actor);
+			}
+			// Guaranteed way to do it.
+		MyMidiPlayer *player = Audio::get_ptr()->get_midi();
+		if (player &&
+				!Background_noise::is_combat_music(player->get_current_track()))			
+			Audio::get_ptr()->start_music(Audio::game_music(10), true);
 		}
 	}
 
@@ -2937,14 +2937,15 @@ void Game_window::attack_avatar
 	{
 	if (armageddon)
 		return;
-	int gshape = Get_guard_shape(main_actor->get_tile());
+	int gshape = get_guard_shape(main_actor->get_tile());
 	if (gshape >= 0 && !in_dungeon)
 		{
 		while (create_guards--)
 			{
 						// Create it off-screen.
 			Monster_actor *guard = Monster_actor::create(gshape,
-				main_actor->get_tile() + Tile_coord(128, 128, 0));
+				main_actor->get_tile() + Tile_coord(128, 128, 0),
+				Schedule::combat, Actor::chaotic);
 			add_nearby_npc(guard);
 			guard->set_target(main_actor, true);
 			guard->approach_another(main_actor);
@@ -2962,6 +2963,11 @@ void Game_window::attack_avatar
 				&& !npc->is_in_party())
 			npc->set_target(main_actor, true);
 		}
+			// Guaranteed way to do it.
+		MyMidiPlayer *player = Audio::get_ptr()->get_midi();
+		if (player &&
+				!Background_noise::is_combat_music(player->get_current_track()))			
+			Audio::get_ptr()->start_music(Audio::game_music(10), true);
 	}
 
 /*
@@ -3377,11 +3383,12 @@ bool Game_window::is_hostile_nearby()
 	for( Actor_vector::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
 		Actor *actor = *it;
 
-		if( !actor->is_dead() && actor->get_schedule() &&
+		if (!actor->is_dead() && actor->get_schedule() &&
 			actor->get_effective_alignment() >= Npc_actor::evil && 
-			actor->get_schedule_type() == Schedule::combat && 
-			static_cast<Combat_schedule*>(actor->get_schedule())->
-						has_started_battle())
+			((actor->get_schedule_type() == Schedule::combat &&
+			  static_cast<Combat_schedule*>(actor->get_schedule())->
+						has_started_battle()) ||
+			 actor->get_schedule_type() == Schedule::arrest_avatar))
 		{
 			/* TODO- I think invisibles still trigger the
 			 * slowdown, verify this. */

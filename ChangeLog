@@ -1,3 +1,18 @@
+2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of
+	  resuming their schedule on reload.
+	* schedule.*: Created an 'arrest avatar' schedule for guards summoned to
+	  arrest a thieving avatar.
+	* gamewin.cc: Danger music will override all but combat music. Creating 1-3
+	  guards to arrest avatar instead of 1, and all of them use the new schedule
+	  to arrest the avatar. Danger music is forced to play when guards approach,
+	  as happens on the original. Arrest schedule is considered to be combat for
+	  determining if the NPC is hostile. Guards are of chaotic alignment as they
+	  are in the original.
+	* actors.cc: Arrest schedule does not seek foes. Local guards call for more
+	  guards. All together, this fixes bug #3599723 "guards that were called by
+	  npcs stop attacking on reload".
+
 2013-01-19	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* shape_info.txt: Fix typos that caused books to run the wrong usecode. This
 	  fixes bug #3601322 Exploding books in Castle of White dragon don't explode

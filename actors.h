@@ -359,6 +359,8 @@ public:
 	int find_best_spot(Game_object *obj);
 	int get_prev_schedule_type();	// Get previous schedule.
 	void restore_schedule();	// Set schedule after reading in.
+	void set_schedule_loc(Tile_coord const& loc)	// For monsters ONLY.
+		{	schedule_loc = loc;	}
 					// Set new schedule.
 	void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);
