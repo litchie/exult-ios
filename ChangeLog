@@ -13,6 +13,9 @@
 	Rev 7293
 	* exult.cc: Fixed bug #3601383 "Avatar stuck in casting spell pose after
 	  casting", a regression introduced in rev #7271. Eliminating warnings.
+	Rev 7294
+	* objs/objs.cc, objs/iregobjs.cc: Remove object clients before removing them
+	  from the map or owner (missing from rev #7291).
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
