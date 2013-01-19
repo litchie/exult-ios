@@ -93,6 +93,9 @@ void Ireg_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
+		// Do this before all else.
+	if (!nodel)
+		remove_clients();
 	if (owner)			// In a bag, box, or person.
 		owner->remove(this);
 	else				// In the outside world.
@@ -103,7 +106,6 @@ void Ireg_game_object::remove_this
 	if (!nodel)
 		{
 		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
-		remove_clients();
 		gwin->delete_object(this);
 		}
 	}

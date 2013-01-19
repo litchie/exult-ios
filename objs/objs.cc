@@ -1248,13 +1248,13 @@ void Game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
+		// Do this before all else.
+	if (!nodel)
+		remove_clients();
 	if (chunk)
 		chunk->remove(this);
 	if (!nodel)
-		{
-		remove_clients();
 		gwin->delete_object(this);
-		}
 	}
 
 /*
