@@ -34,6 +34,11 @@
 	  schedule, which will cause the NPC to face the avatar if the NPC is within
 	  3 tiles. Avatar will no longer lay down on the ground if double-clicking
 	  an occupied bed.
+	Rev 7299
+	* actor.cc: Checked wjp's CHECKME, and decided to use alignment to decide if
+	  the NPC should fight back or not, instead of only party-vs-nonparty. Check
+	  is done in Actor::fight_back, and covers the cases mentioned in the (now
+	  deleted) comments, as well as a few other possibilities of friendly fire.
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap

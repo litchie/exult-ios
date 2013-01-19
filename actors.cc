@@ -2671,7 +2671,8 @@ void Actor::fight_back
 	// not just when the avatar & party attack. Although this is tricky to
 	// test (except, maybe, by exploiting the agressive U7 & SI duel schedule.
 	Actor *npc = attacker ? attacker->as_actor() : 0;
-	if (!npc)
+	// No attacker, or friendly fire, should not cause a fight.
+	if (!npc || alignment == npc->alignment)
 		return;
 	if (is_in_party() && (gwin->in_combat() || !gwin->main_actor_can_act()))
 		{
@@ -3039,18 +3040,10 @@ int Actor::reduce_health
 		set_oppressor(npc->get_npc_num());
 		}
 
-	// CHECKME: Not sure if this check is correct. It is added to fix bug
-	// #3011711, but something more general (such as
-	// "Don't fight back against allies"?) might be better? (-wjp, 20101121)
-	//
-	// When a party member dies, he is no longer in party so they call guards
-	// if a party member is the attacker. Things like firedoom staff and
-	// burst arrows will set the party member that uses it as the attacker.
-	// I changed the check to better reflect this. fight_back also used to be
-	// worthless for a party member to call.	 (-Malignant Manor, 20101223)
-	if (is_dead() && in_party && npc && npc->is_in_party())
-		return delta;
-	fight_back(attacker);
+	// Dead people caused attacks on the avatar back in Actor::die, so don't do
+	// it again here.
+	if (!is_dead())
+		fight_back(attacker);
 	return delta;
 	}
 
