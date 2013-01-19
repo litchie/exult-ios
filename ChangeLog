@@ -11,7 +11,16 @@
 	Rev 7304
 	* effects.cc: Fixed incorrect checking of prjectile hits, which caused a bow
 	  to miss at point blank range sometimes (and likely in other occasions).
-
+	Rev 7305
+	* all: Alignment and charm now works like the original: the charmed creature
+	  gets the alignment of the person that charmed him (or chaotic if an object
+	  did it). Usecode gets/sets charmed alignment if the NPC is not charmed, or
+	  the real alignment otherwise. Setting charm flag from usecode sets charmed
+	  alignment to good, as in the originals. The charmed alignment is saved and
+	  restored. Actor::fight_back should use effective alignment for its tests.
+	  Several locations that got the real alignment use the effective alignment
+	  now. Chat screen displays alignment (real and effective).
+	
 2013-01-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.cc, audio/AudioMixer.*, objs/animate.*: Fixed bug #3601377
 	  'No "gulping" sound when eating food' by having Objct_sfx have clients and

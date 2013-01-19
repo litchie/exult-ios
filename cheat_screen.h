@@ -29,6 +29,7 @@ class CheatScreen {
 	Actor			*grabbed;
 	static const char	*schedules[33];
 	static const char	*flag_names[64];
+	static const char   *alignments[4];
 public:
 		CheatScreen();
 		~CheatScreen();

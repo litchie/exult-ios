@@ -154,7 +154,14 @@ const char *CheatScreen::flag_names[64] = {
 	0,			// 0x3E
 	0,			// 0x3F
 };
-	
+
+const char *CheatScreen::alignments[4] = {
+	"Neutral",
+	"Good",
+	"Evil",
+	"Chaotic"
+};
+
 CheatScreen::CheatScreen() : grabbed(NULL)
 	{
 	}
@@ -1135,10 +1142,16 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 		}
 
+		if (actor->get_flag(Obj_flags::charmed))
+			snprintf (buf, 512, "Alignment: %s (orig: %s)", alignments[actor->get_effective_alignment()], alignments[actor->get_alignment()]);
+		else
+			snprintf (buf, 512, "Alignment: %s", alignments[actor->get_alignment()]);
+		font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+		
 		if (actor->get_polymorph() != -1)
 		{
 			snprintf (buf, 512, "Polymorphed from %04i", actor->get_polymorph());
-			font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
+			font->paint_text_fixedwidth(ibuf, buf, 0, 81, 8);
 		}
 	}
 	else

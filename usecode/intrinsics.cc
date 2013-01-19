@@ -1052,7 +1052,7 @@ USECODE_INTRINSIC(get_alignment)
 {
 	// Get npc's alignment.
 	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc ? npc->get_alignment() : 0);
+	Usecode_value u(npc ? npc->get_effective_alignment() : 0);
 	return(u);
 }
 
@@ -1064,10 +1064,13 @@ USECODE_INTRINSIC(set_alignment)
 	int val = parms[1].get_int_value();
 	if (npc)
 		{
-		int oldalign = npc->get_alignment();
-		npc->set_alignment(val);
-		if (oldalign != val)	// Changed?  Force search for new opp.
+		int oldalign = npc->get_effective_alignment();
+		npc->set_effective_alignment(val);
+		if (oldalign != val)	// Changed? Force search for new opp.
+			{
+			Combat_schedule::stop_attacking_npc(this);
 			npc->set_target(0);
+			}
 					// For fixing List Field fleeing:
 		if (npc->get_attack_mode() == Actor::flee)
 			npc->set_attack_mode(Actor::nearest);
@@ -1269,7 +1272,7 @@ USECODE_INTRINSIC(summon)
 	Actor *npc = as_actor(caller_item);
 	int align = Actor::good;
 	if (npc && !npc->is_in_party())
-		align = npc->get_alignment();
+		align = npc->get_effective_alignment();
 	Monster_actor *monst = Monster_actor::create(shapenum, dest,
 					Schedule::combat, align);
 	return Usecode_value(monst);
@@ -2566,6 +2569,14 @@ USECODE_INTRINSIC(set_item_flag)
 					// Show change in status.
 		gwin->set_all_dirty();
 		break;
+	case Obj_flags::charmed:
+		{
+		obj->set_flag(flag);
+		Actor *npc = obj->as_actor();
+		if (npc)
+			npc->set_effective_alignment(Actor::good);  // Verified.
+		break;
+		}
 	case Obj_flags::invisible:
 		obj->set_flag(flag);
 		gwin->add_dirty(obj);

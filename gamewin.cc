@@ -2380,8 +2380,9 @@ void Game_window::show_items
 		Actor *npc = obj->as_actor();
 		if (npc)
 			cout  << ", sched = " << 
-			npc->get_schedule_type() << ", align = " <<
-			npc->get_alignment() << ", npcnum = " <<
+			npc->get_schedule_type() << ", real align = " <<
+			npc->get_alignment() << ", eff. align = " <<
+			npc->get_effective_alignment() << ", npcnum = " <<
 			npc->get_npc_num();
 		cout << endl;
 		if (obj->get_chunk())

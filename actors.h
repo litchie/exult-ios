@@ -114,6 +114,7 @@ protected:
 	bool combat_protected;		// 'Halo' on paperdoll screen.
 	bool user_set_attack;		// True if player set attack_mode.
 	short alignment;		// 'Feelings' towards Ava. See below.
+	short charmalign;		// Alignment of charmed NPC.
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
 	bool two_handed;		// Carrying a two-handed item.
@@ -373,6 +374,9 @@ public:
 	void set_alignment(short a)
 		{ alignment = a; }
 	int get_effective_alignment() const;	// Include 'charmed' flag.
+	void set_effective_alignment(int newalign);	// Include 'charmed' flag.
+	void reset_effective_alignment()
+		{	charmalign = alignment;	}
 					// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
 		{  }
