@@ -131,7 +131,10 @@ void Npc_proximity_handler::handle_event
 					// Trick:  Stand, but stay in
 					//   sleep_schedule.
 		npc->get_schedule()->ending(Schedule::stand);
-		npc->say(first_awakened, last_awakened);
+		if (npc->is_goblin())
+			npc->say(goblin_awakened);
+		else if (npc->can_speak())
+			npc->say(first_awakened, last_awakened);
 					// In 10 seconds, go back to sleep.
 		npc->start(0, 10000);
 		extra_delay = 11;	// And don't run Usecode while up.

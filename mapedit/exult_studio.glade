@@ -10582,7 +10582,7 @@ Coordinates</property>
                         <child>
                           <widget class="GtkTable" id="table32">
                             <property name="visible">True</property>
-                            <property name="n_rows">7</property>
+                            <property name="n_rows">8</property>
                             <child>
                               <widget class="GtkCheckButton" id="shinfo_actor_flag2">
                                 <property name="label" translatable="yes">Can teleport</property>
@@ -10616,8 +10616,22 @@ Coordinates</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkCheckButton" id="shinfo_actor_flag1">
+                              <widget class="GtkCheckButton" id="shinfo_actor_flag0">
                                 <property name="label" translatable="yes">Cold immune</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="shinfo_actor_flag1">
+                                <property name="label" translatable="yes">Doesn't eat</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -10627,20 +10641,6 @@ Coordinates</property>
                               <packing>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
-                                <property name="x_options">GTK_FILL</property>
-                                <property name="y_options"></property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkCheckButton" id="shinfo_actor_flag0">
-                                <property name="label" translatable="yes">Doesn't eat</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="draw_indicator">True</property>
-                              </widget>
-                              <packing>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>
@@ -10689,6 +10689,22 @@ Coordinates</property>
                               <packing>
                                 <property name="top_attach">6</property>
                                 <property name="bottom_attach">7</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="shinfo_actor_flag7">
+                                <property name="label" translatable="yes">Is goblin</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="top_attach">7</property>
+                                <property name="bottom_attach">8</property>
                                 <property name="x_options">GTK_FILL</property>
                                 <property name="y_options"></property>
                               </packing>

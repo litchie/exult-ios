@@ -2822,8 +2822,22 @@ void Game_window::theft
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
-			closest_npc->say(heard_something);
+			{
+			if (closest_npc->is_goblin())
+				closest_npc->say(goblin_heard_something);
+			else if (closest_npc->can_speak())
+				closest_npc->say(heard_something);
+			}
 		return;			// Didn't get caught.
+		}
+	bool avainvisible = main_actor->get_flag(Obj_flags::invisible);
+	if (avainvisible && !witness->can_see_invisible())
+		{
+		if (witness->is_goblin())
+			witness->say(goblin_invis_theft);
+		else if (witness->can_speak())
+			witness->say(first_invis_theft, last_invis_theft);
+		return;			// Didn't get caught because was invisible.
 		}
 	int dir = witness->get_direction(main_actor);
 					// Face avatar.
@@ -2837,7 +2851,10 @@ void Game_window::theft
 	theft_warnings++;
 	if (theft_warnings < 2 + rand()%3)
 		{			// Just a warning this time.
-		witness->say(first_theft, last_theft);
+		if (witness->is_goblin())
+			witness->say(goblin_theft);
+		else if (witness->can_speak())
+			witness->say(first_theft, last_theft);
 		return;
 		}
 	gump_man->close_all_gumps();	// Get gumps off screen.
@@ -2860,8 +2877,16 @@ void Game_window::call_guards
 	int gshape = Get_guard_shape(main_actor->get_tile());
 	if (witness || (witness = find_witness(closest, false)) != 0)
 		{
-		Monster_info *minf = witness->get_info().get_monster_info_safe();
-		if (!minf || !minf->cant_yell())
+		if (witness->is_goblin())
+			{
+			if (gshape < 0)
+				witness->say(goblin_need_help);
+			else if (theft)
+				witness->say(goblin_call_guards_theft);
+			else
+				witness->say(first_goblin_call_guards, last_goblin_call_guards);
+			}
+		else if (witness->can_speak())
 			{
 			if (gshape < 0)
 				witness->say(first_need_help, last_need_help);

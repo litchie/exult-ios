@@ -51,6 +51,18 @@
 	  Evil and chaotic NPCs no longer care if you steal. If an NPC is in hound
 	  schedule, he will always be a witness to your crimes. A witness will be
 	  changed to the hound schedule, and will keep an eye on the avatar.
+	Rev 7302
+	* all: Several barks were implemented, for goblins and non-goblins.
+	* content/*, data/*, mapedit/*, shapes/shapeinf.h: De-hard-coded what shapes
+	  are goblins, including ES. Description of format for actor_flags sections
+	  of shape_info.txt files is now correct (was wrong before).
+	* actors.cc: Added an ugly hack to handle the neutral goblins in the goblin
+	  village by shifting their effective alignment within the boundaries of the
+	  village; see the comment in Actor::get_effective_alignment for additional
+	  information. This should fix the remaining cases of bug #2694957 "Non-
+	  hostile Hostiles".
+	* gamewin.cc: Invisible thieving avatar will not be caught (but NPCs will
+	  have appropriate barks).
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap

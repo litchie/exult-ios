@@ -465,7 +465,12 @@ list<Actor*>::iterator Combat_schedule::find_protected_attacker
 	if (best_opp == opponents.end())
 		return opponents.end();
 	if (failures < 5 && yelled && rand()%2 && npc != prot_actor)
-		npc->say(first_will_help, last_will_help);
+		{
+		if (npc->is_goblin())
+			npc->say(goblin_will_help);
+		else if (can_yell)
+			npc->say(first_will_help, last_will_help);
+		}
 	return best_opp;
 	}
 
@@ -703,14 +708,9 @@ void Combat_schedule::approach_foe
 		yelled++;
 		if (can_yell && rand()%2)// Half the time.
 			{
-					// Goblin?
-			if (Game::get_game_type() == SERPENT_ISLE &&
-				 (npc->get_shapenum() == 0x1de ||
-				  npc->get_shapenum() == 0x2b3 ||
-				  npc->get_shapenum() == 0x2d5 ||
-				  npc->get_shapenum() == 0x2e8))
-				npc->say(first_goblin_to_battle, last_goblin_to_battle);
-			else
+			if (npc->is_goblin())		// Goblin?
+				npc->say(goblin_to_battle);
+			else if (can_yell)
 				npc->say(first_to_battle, last_to_battle);
 			}
 		}
@@ -874,6 +874,14 @@ void Combat_schedule::start_strike
 		}
 	if (!started_battle)
 		start_battle();	// Play music if first time.
+		// Some battle cries. Guessing at where to do it, and how often.
+	if (yelled && !(rand()%20))
+		{
+		if (npc->is_goblin())
+			npc->say(first_goblin_taunt, last_goblin_taunt);
+		else if (can_yell)
+			npc->say(first_taunt, last_taunt);
+		}
 	if (combat_trace) {
 		cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	}
@@ -1141,8 +1149,20 @@ void Combat_schedule::run_away
 					rand()%3 && gwin->add_dirty(npc))
 		{
 		yelled++;
-		if (can_yell)
-			npc->say(first_flee, last_flee);
+		if (npc->is_goblin())
+			{
+			if (rand()%4)
+				npc->say(goblin_flee_screaming);
+			else
+				npc->say(first_goblin_flee, last_goblin_flee);
+			}
+		else if (can_yell)
+			{
+			if (rand()%4)
+				npc->say(flee_screaming);
+			else
+				npc->say(first_flee, last_flee);
+			}
 		}
 	}
 
