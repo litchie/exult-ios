@@ -1815,15 +1815,22 @@ void Actor::restore_schedule
 					// Make sure it's in valid chunk.
 	Map_chunk *olist = get_chunk();
 					// Activate schedule if not in party.
-	if (olist && party_id < 0)
+	if (olist && !is_in_party())
 		{
 		if (next_schedule != 255 && 
 				schedule_type == Schedule::walk_to_schedule)
 			set_schedule_and_loc(next_schedule, schedule_loc);
-		else{
+		else
+			{
 			old_schedule_loc = schedule_loc;
 			restored_schedule = schedule_type;
-			set_schedule_type(schedule_type);
+				// If far enough away, use set_schedule_and_loc so that the NPC
+				// walks to schedule (prevents some cases of sleeping on the
+				// wrong bed).
+			if (distance(schedule_loc) > 12)
+				set_schedule_and_loc(schedule_type, schedule_loc);
+			else
+				set_schedule_type(schedule_type);
 			}
 		}
 	}
@@ -2001,6 +2008,27 @@ void Actor::cache_out()
 		set_schedule_type(get_schedule_type());
 }
 
+bool Actor::teleport_offscreen_to_schedule(Tile_coord const& dest, int dist)
+{
+	int mapnum = get_map_num();
+	if (mapnum < 0)
+		mapnum = gmap->get_num();
+	if ((mapnum != gmap->get_num()) ||
+	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
+	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
+						dest.ty/c_tiles_per_chunk)))
+		{			// Not on current map, or
+					//   src, dest. are off the screen
+			// Teleport if more than dist tiles from target
+		if (distance(dest) > dist)
+			{
+			move(dest.tx, dest.ty, dest.tz, mapnum);
+			set_frame(get_dir_framenum(Actor::standing));
+			}
+		return true;
+		}
+	return false;
+}
 
 /*
  *	Set new schedule by type AND location.
@@ -2013,21 +2041,8 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord const& dest,
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
 	old_schedule_loc = dest;
-	int mapnum = get_map_num();
-	if (mapnum < 0)
-		mapnum = gmap->get_num();
-	if ((mapnum != gmap->get_num()) ||
-	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
-	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
-						dest.ty/c_tiles_per_chunk)))
-		{			// Not on current map, or
-					//   src, dest. are off the screen
-			// Teleport if more than 16 tiles from target
-		if (get_tile().distance(dest) > 16)
-			{
-			move(dest.tx, dest.ty, dest.tz, mapnum);
-			set_frame(get_dir_framenum(Actor::standing));
-			}
+	if (teleport_offscreen_to_schedule(dest, 12))
+		{
 		set_schedule_type(new_schedule_type);
 		return;
 		}
@@ -2069,7 +2084,7 @@ int Actor::get_effective_alignment
 			return alignment;
 		// These boundaries are exact, as far as I can tell; hack-move to the
 		// rescue.
-		Rectangle gobvillage(576, 1200, 256, 336);
+		static const Rectangle gobvillage(576, 1200, 256, 336);
 		Tile_coord loc = get_tile();
 		if (gobvillage.has_world_point(loc.tx, loc.ty))
 			return evil;
@@ -2639,6 +2654,7 @@ public:
 		{  }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
+
 void Clear_casting::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
@@ -2664,6 +2680,7 @@ public:
 		{  }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
+
 void Clear_hit::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
@@ -2671,6 +2688,7 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 	a->add_dirty();
 	delete this;
 	}
+
 bool Actor::can_act()
 	{
 	return !(get_flag(Obj_flags::paralyzed) || get_flag(Obj_flags::asleep)

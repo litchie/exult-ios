@@ -1907,7 +1907,9 @@ bool Sleep_schedule::is_bed_occupied
 		if (npc == *it)
 			continue;
 		Tile_coord tn = (*it)->get_tile();
-		if (tn.tz/5 == bedz && ((*it)->get_framenum()&0xf) == Actor::sleep_frame &&
+			// Don't check frame -- prevents wounded man shape from being
+			// considered as an occupant.
+		if (tn.tz/5 == bedz /*&& ((*it)->get_framenum()&0xf) == Actor::sleep_frame*/ &&
 				foot.has_world_point(tn.tx, tn.ty))
 			return true;
 		}
@@ -2011,6 +2013,11 @@ void Sleep_schedule::now_what
 	case 1:				// Go to bed.
 		{
 		npc->stop();		// Just to be sure.
+		if (npc->distance(bed) > 3)
+			{
+			state = 0;
+			npc->start(200);	// Try again.
+			}
 		int bedshape = bed->get_shapenum();
 		int dir = (bedshape == 696 || bedshape == 363) ? west : north;
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
@@ -4654,8 +4661,8 @@ Walk_to_schedule::Walk_to_schedule
 	int delay			// Msecs, or -1 for random delay.
 	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)
 	{
-					// Delay 0-20 secs.
-	first_delay = delay >= 0 ? delay : 2*(rand()%10000);
+					// Delay 0-5 secs.
+	first_delay = delay >= 0 ? delay : (rand()%5000);
 	}
 
 /*
