@@ -857,16 +857,16 @@ object UI_summon(int shape)
 object UI_summon(int shape, bool unk)
 
     Creates a monster with shape 'shape'. The created monster has equipment as
-    defined in its equipment record, and has a 'FRIENDLY' alignment. If the
-    creation is successful, the return value is a reference to the monster;
-    otherwise, the return is '0'. In the originals, there was an additional
-    'bool' parameter, but it is unimplemented in Exult.
+    defined in its equipment record, and has a 'GOOD' alignment. If the creation
+    is successful, the return value is a reference to the monster; otherwise,
+    the return is '0'. In the originals, there was an additional 'bool'
+    parameter, but it is unimplemented in Exult.
 
     Creates a monster of the supplied shape. This monster has equipment as
     defined in its equipment record, starts with an IN_COMBAT schedule, and will
     have the same alignment as item; for the cases in which item is not an NPC,
-    the summoned monster's alignment will be FRIENDLY instead. The monster will
-    be placed within five tiles of the avatar.
+    the summoned monster's alignment will be GOOD instead. The monster will be
+    placed within five tiles of the avatar.
 
   Parameters:
     shape    The shape in 'SHAPES.VGA' to be used for the summoned monster. It
@@ -882,9 +882,9 @@ object UI_summon(int shape, bool unk)
 actor UI_clone(actor npc)
 actor npc->clone()
 
-    Creates a duplicate of the supplied NPC. This duplicate is always of
-    FRIENDLY alignment and starts with an IN_COMBAT schedule. The clone is
-    placed in a spot near to the original NPC.
+    Creates a duplicate of the supplied NPC. This duplicate is always of GOOD
+    alignment and starts with an IN_COMBAT schedule. The clone is placed in a
+    spot near to the original NPC.
 
   Parameters:
     npc    The NPC that should be cloned.
@@ -2050,8 +2050,8 @@ int npc->get_alignment()
     Returns a number describing the NPC's attitude towards the avatar. Can be
     one of the following values:
 
-        FRIENDLY        = 0    NEUTRAL    = 1    HOSTILE    = 2
-        RANDOM_ALIGN    = 3    
+        GOOD       = 0    NEUTRAL    = 1    EVIL    = 2
+        CHAOTIC    = 3    
 
 UI_set_alignment(actor npc, int align)
 npc->set_alignment(int align)
@@ -2416,7 +2416,7 @@ npc->add_to_party()
 
     Makes the specified NPC join the avatar's party, if there is enough room.
     The NPC's schedule is changed to FOLLOW_AVATAR, and his/her alignment is
-    changed to FRIENDLY.
+    changed to GOOD.
 
   Parameters:
     npc    Who should be added to the party.

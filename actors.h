@@ -179,10 +179,10 @@ public:
 	int get_attack_frames(int weapon, bool projectile,
 				int dir, signed char *frames) const;
 	enum Alignment {		// Describes alignment field.
-		neutral = 0,
-		friendly = 1,
-		hostile = 2,
-		unknown_align = 3 };	// Bees have this, & don't attack until
+		neutral = 0,		// See [I]nspect NPC screen in SI for names.
+		good = 1,
+		evil = 2,
+		chaotic = 3 };	// Bees have this, & don't attack until
 					// Spots where items are carried.
 	int free_hand() const		// Get index of a free hand, or -1.
 		{ 			// PREFER right hand.
@@ -542,6 +542,9 @@ public:
 					// Gets whether the actor is immune or vulnerable to a given
 					// form of damage:
 	int is_immune(int type) const;
+	bool can_see_invisible() const;
+	bool can_speak() const;
+	bool is_sentient() const;
 	void refigure_gear();
 	bool check_gear_powers(int flags) const
 		{ return (gear_powers&flags) != 0; }

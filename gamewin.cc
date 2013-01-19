@@ -159,7 +159,6 @@ void Background_noise::handle_event
 	{
 #ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
-	Main_actor *ava = gwin->get_main_actor();
 	unsigned long delay = 8000;
 	int currentstate;
 	int bghour = gwin->get_clock()->get_hour();
@@ -253,6 +252,7 @@ void Background_noise::handle_event
 #if 0
 	else
 	{
+		Main_actor *ava = gwin->get_main_actor();
 		//Tests to see if track is playing the SFX tracks, possible 
 		//when the game has been restored
 		//and the Audio option was changed from OGG to something else
@@ -3344,7 +3344,7 @@ bool Game_window::is_hostile_nearby()
 		Actor *actor = *it;
 
 		if( !actor->is_dead() && actor->get_schedule() &&
-			actor->get_effective_alignment() >= Npc_actor::hostile && 
+			actor->get_effective_alignment() >= Npc_actor::evil && 
 			actor->get_schedule_type() == Schedule::combat && 
 			static_cast<Combat_schedule*>(actor->get_schedule())->
 						has_started_battle())

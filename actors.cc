@@ -1237,8 +1237,7 @@ void Actor::init_default_frames
 
 /*
  *	This is called for the Avatar to return to a normal standing position
- *	when not doing anything else.  It could work for other party members,
- *	but currently isn't called for them.
+ *	when not doing anything else.
  */
 
 void Actor::stand_at_rest
@@ -2059,12 +2058,12 @@ int Actor::get_effective_alignment
 	else switch(alignment)
 		{
 	case neutral:
-		return unknown_align;
-	case friendly:
-		return hostile;
-	case hostile:
-		return friendly;
-	case unknown_align:
+		return chaotic;
+	case good:
+		return evil;
+	case evil:
+		return good;
+	case chaotic:
 		return neutral;
 		}
 	return neutral;
@@ -2448,9 +2447,9 @@ void Actor::update_from_studio
 				schedules[i].tz,
 				schedules[i].type, schedules[i].time);
 	npc->set_schedules(scheds, num_schedules);
-	// Force Avatar and party members to be friendly
+	// Force Avatar and party members to be good
 	if (npc_num == 0 || npc->get_flag (Obj_flags::in_party))
-		npc->set_alignment(friendly);
+		npc->set_alignment(good);
 	cout << "Npc updated" << endl;
 #endif
 	}
@@ -2674,24 +2673,25 @@ void Actor::fight_back
 	Actor *npc = attacker ? attacker->as_actor() : 0;
 	if (!npc)
 		return;
-	if (is_in_party() && (gwin->in_combat() || !gwin->main_actor_can_act())){
+	if (is_in_party() && (gwin->in_combat() || !gwin->main_actor_can_act()))
+		{
 		if(!gwin->in_combat())
 			gwin->toggle_combat();
 		Actor *party[9];		// Get entire party, including Avatar.
 		int cnt = gwin->get_party(party, 1);
-		for (int i = 0; i < cnt; i++){
+		for (int i = 0; i < cnt; i++)
+			{
 			int sched = party[i]->get_schedule_type();
 			if (sched != Schedule::combat && sched != Schedule::wait
 					&& sched != Schedule::loiter)
 				party[i]->set_schedule_type(Schedule::combat);
+			}
 		}
-	}
 	if (!target && !is_in_party())
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
-	if (npc->is_in_party() &&
-	    npc_num > 0 &&
-	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
+	if (npc->is_in_party() && npc_num > 0 &&
+	    (alignment == Actor::good || alignment == Actor::neutral) &&
 	    !(flags & (1<<Obj_flags::charmed)) && !is_in_party() &&
 	    get_info().get_shape_class() == Shape_info::human)
 		{
@@ -3917,6 +3917,31 @@ int Actor::is_immune
 		return 0;
 	}
 
+bool Actor::can_see_invisible() const
+{
+	Monster_info *minf = get_info().get_monster_info();
+	return !minf || (minf->get_flags() & (1<<Monster_info::see_invisible)) != 0;
+}
+
+bool Actor::can_speak() const
+{
+	Monster_info *minf = get_info().get_monster_info();
+	// TODO: Check for SI monks that don't speak (vows of silence, deafness).
+	return !minf || !minf->cant_yell();
+}
+
+bool Actor::is_sentient() const
+{
+		// +++++Check for intelligence; guessing how to do it.
+	if (get_info().get_shape_class() == Shape_info::human ||
+			get_effective_prop(Actor::intelligence) >= 6)
+		return true;
+		// Also try based on average monster intelligence
+		// (Fawn guards need this half the time).
+	Monster_info *minf = get_info().get_monster_info();
+	return minf && minf->get_intelligence() >= 6;
+}
+
 /*
  *	Get weapon value.
  */
@@ -4438,7 +4463,7 @@ void Actor::die
 				// Is this a bad guy?
 				// Party defeated an evil monster?
 		if (npc->is_in_party() && !is_in_party() && 
-				alignment != neutral && alignment != friendly)
+				alignment != neutral && alignment != good)
 			Combat_schedule::monster_died();
 		}
 		// Move party member to 'dead' list.

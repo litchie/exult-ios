@@ -18,6 +18,13 @@
 	  from the map or owner (missing from rev #7291).
 	Rev 7295
 	* shapes/shapevga.cc: Incorrect flag type in Actor_flags_functor.
+	Rev 7296
+	* all: Changed alingments to use the names from the original games, as seen
+	  in the 'inspect NPC' screen. This means: friendly->good, hostile->evil,
+	  unknown_align->chaotic. Added some convenience functions for actors.
+	  Eliminated more warnings.
+	* schedule.cc:  Changed to correct alignment checking for foes. Only NPCs
+	  that can speak will actually say the schedule barks.
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
