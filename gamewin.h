@@ -371,7 +371,7 @@ public:
 	void schedule_npcs(int hour, int backwards = 7, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
 					// Find witness to Avatar's 'crime'.
-	Actor *find_witness(Actor *& closest_npc);
+	Actor *find_witness(Actor *& closest_npc, bool for_theft);
 	void theft();			// Handle thievery.
 	void call_guards(Actor *witness = 0, bool theft = false);
 	void attack_avatar(int num_guards = 0);
