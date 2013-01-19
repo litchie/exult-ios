@@ -231,7 +231,15 @@ void Actor::read
 	user_set_attack = (amode&(1<<5)) != 0;
 	attack_mode = static_cast<Attack_mode>(amode&0xf);
 
-	nfile->skip(1); 		// Unknown
+		// Charmed flag has been read by now.
+	if (fix_first || !get_flag(Obj_flags::charmed))
+	{
+		nfile->skip(1); 		// Unknown/irrelevant
+		charmalign = alignment; // Sane default.
+	}
+	else
+		charmalign = nfile->read1(); // Alignment when charmed.
+
 	int unk0 = nfile->read1();	// We set high bit of this value.
 	int unk1 = nfile->read1();
 	int magic = 0, mana= 0, temp, flags3, ident = 0;
@@ -633,7 +641,7 @@ void Actor::write
 		(combat_protected ? (1<<4) : 0) |
 		(user_set_attack ? (1<<5) : 0);
 	nfile->write1(amode);
-	nfile->write1(0);		// Skip 1.
+	nfile->write1(get_effective_alignment());		// Effective alignment
 	// Exult is using the 2 unknown bytes to store magic, mana for all
 	//   NPC's, and to store temperature more simply.
 	int magic = get_property(static_cast<int>(Actor::magic));

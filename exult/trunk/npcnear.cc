@@ -55,7 +55,7 @@ void Npc_proximity_handler::add
 	)
 	{
 	int msecs;			// Hostile?  Wait 0-2 secs.
-	if (npc->get_alignment() >= Npc_actor::evil)
+	if (npc->get_effective_alignment() >= Npc_actor::evil)
 		msecs = rand() % 2000;
 	else				// Wait between 2 & 6 secs.
 		msecs = (rand() % 4000) + 2000;
