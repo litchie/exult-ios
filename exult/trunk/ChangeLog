@@ -20,6 +20,8 @@
 	  restored. Actor::fight_back should use effective alignment for its tests.
 	  Several locations that got the real alignment use the effective alignment
 	  now. Chat screen displays alignment (real and effective).
+	Rev 7306
+	* usecode/intrinsics.cc: Fixed error in previous commit.
 	
 2013-01-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.cc, audio/AudioMixer.*, objs/animate.*: Fixed bug #3601377

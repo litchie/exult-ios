@@ -1068,7 +1068,7 @@ USECODE_INTRINSIC(set_alignment)
 		npc->set_effective_alignment(val);
 		if (oldalign != val)	// Changed? Force search for new opp.
 			{
-			Combat_schedule::stop_attacking_npc(this);
+			Combat_schedule::stop_attacking_npc(npc);
 			npc->set_target(0);
 			}
 					// For fixing List Field fleeing:
