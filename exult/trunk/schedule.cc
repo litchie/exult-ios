@@ -96,8 +96,8 @@ bool Schedule::seek_foes
 	(
 	)
 	{
-	Actor_vector vec;		// Look within 10 tiles (guess).
-	npc->find_nearby_actors(vec, c_any_shapenum, 10, 0x28);
+	Actor_vector vec;		// Look within 20 tiles, but check LOF.
+	npc->find_nearby_actors(vec, c_any_shapenum, 20, 0x28);
 	int npc_align = npc->get_effective_alignment();
 	Actor *foe = 0;
 	bool see_invisible = npc->can_see_invisible();
@@ -106,7 +106,8 @@ bool Schedule::seek_foes
 		{
 		Actor *actor = *it;
 		if (actor->is_dead() || actor->get_flag(Obj_flags::asleep) ||
-		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
+		    (!see_invisible && actor->get_flag(Obj_flags::invisible)) ||
+		    !Fast_pathfinder_client::is_straight_path(npc, actor))
 			continue;	// Dead, asleep or invisible and can't see invisible.
 		if (Combat_schedule::is_enemy(npc_align,
 		                              actor->get_effective_alignment()))
