@@ -2758,7 +2758,8 @@ int Get_guard_shape
 
 Actor *Game_window::find_witness
 	(
-	Actor *& closest_npc		// Closest one returned.
+	Actor *& closest_npc,		// Closest one returned.
+	bool for_theft
 	)
 	{
 	Actor_vector npcs;			// See if someone is nearby.
@@ -2771,19 +2772,22 @@ Actor *Game_window::find_witness
 							it != npcs.end();++it)
 		{
 		Actor *npc = *it;
-		if (npc->is_monster() || npc->is_in_party() ||
-		    (npc->get_framenum()&15) == Actor::sleep_frame ||
-		    npc->get_npc_num() >= num_npcs1)
+		if (npc->is_in_party() || !npc->is_sentient() ||
+				// Evil and chaotic NPCs don't care if you steal
+		    (!for_theft && npc->get_effective_alignment() >= Actor::evil) ||
+		    (npc->get_framenum()&15) == Actor::sleep_frame)
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist >= closest_witness_dist ||
 		    !Fast_pathfinder_client::is_grabable(npc, main_actor))
 			continue;
 					// Looking toward Avatar?
+		Schedule::Schedule_types sched =
+				static_cast<Schedule::Schedule_types>(npc->get_schedule_type());
 		int dir = npc->get_direction(main_actor);
 		int facing = npc->get_dir_facing();
 		int dirdiff = (dir - facing + 8)%8;
-		if (dirdiff < 3 || dirdiff > 5)
+		if (dirdiff < 3 || dirdiff > 5 || sched == Schedule::hound)
 			{		// Yes.
 			witness = npc;
 			closest_witness_dist = dist;
@@ -2814,7 +2818,7 @@ void Game_window::theft
 		theft_warnings = 0;
 		}
 	Actor *closest_npc;
-	Actor *witness = find_witness(closest_npc);
+	Actor *witness = find_witness(closest_npc, true);
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
@@ -2825,6 +2829,11 @@ void Game_window::theft
 					// Face avatar.
 	witness->change_frame(witness->get_dir_framenum(dir,
 							Actor::standing));
+		// If not in combat, change to hound schedule.
+	Schedule::Schedule_types sched =
+			static_cast<Schedule::Schedule_types>(witness->get_schedule_type());
+	if (sched != Schedule::combat && sched != Schedule::hound)
+		witness->set_schedule_type(Schedule::hound);
 	theft_warnings++;
 	if (theft_warnings < 2 + rand()%3)
 		{			// Just a warning this time.
@@ -2849,7 +2858,7 @@ void Game_window::call_guards
 	if (armageddon || in_dungeon)
 		return;
 	int gshape = Get_guard_shape(main_actor->get_tile());
-	if (witness || (witness = find_witness(closest)) != 0)
+	if (witness || (witness = find_witness(closest, false)) != 0)
 		{
 		Monster_info *minf = witness->get_info().get_monster_info_safe();
 		if (!minf || !minf->cant_yell())

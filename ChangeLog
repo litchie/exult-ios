@@ -45,6 +45,12 @@
 	* schedule.cc: Increased range of seek_foes, but requiring line-of-sight.
 	  These two combined fix most of the issues in bug #2694957 "Non-hostile
 	  Hostiles", with a few more fixes to come.
+	Rev 7301
+	* gamewin.cc: Changed conditions on who can be a witness so (1) the BG royal
+	  mint guards can call you up for stealing and (2) mod NPCs can do the same.
+	  Evil and chaotic NPCs no longer care if you steal. If an NPC is in hound
+	  schedule, he will always be a witness to your crimes. A witness will be
+	  changed to the hound schedule, and will keep an eye on the avatar.
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
