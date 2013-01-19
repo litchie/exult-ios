@@ -78,6 +78,7 @@ public:
 					// Our own:
 		walk_to_schedule = 32,
 		street_maintenance = 33,
+		arrest_avatar = 34,
 		first_scripted_schedule = 0x80
 		};
 					// Set actor to walk somewhere, then
@@ -264,11 +265,26 @@ public:
  */
 class Talk_schedule : public Schedule
 	{
+	int firstbark, lastbark;
+	int eventid;
+protected:
 	int phase;			// 0=walk to Av., 1=talk, 2=done.
+	Talk_schedule(Actor *n, int fb, int lb, int eid);
 public:
-	Talk_schedule(Actor *n) : Schedule(n), phase(0)
-		{  }
+	Talk_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Arrest avatar.
+ */
+class Arrest_avatar_schedule : public Talk_schedule
+	{
+public:
+	Arrest_avatar_schedule(Actor *n);
+					// For Usecode intrinsic.
+	virtual int get_actual_type(Actor *npc) const;
+	virtual void ending(int newtype);// Switching to another schedule.
 	};
 
 /*

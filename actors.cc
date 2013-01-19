@@ -1970,6 +1970,9 @@ void Actor::set_schedule_type
 		case Schedule::walk_to_schedule:
 			cerr << "Attempted to set a \"walk to schedule\" activity for NPC "<< get_npc_num() << endl;
 			break;
+		case Schedule::arrest_avatar:
+			schedule = new Arrest_avatar_schedule(this);
+			break;
 		default:
 			if (new_schedule_type >= 
 					Schedule::first_scripted_schedule)
@@ -2737,9 +2740,10 @@ void Actor::fight_back
 	if (!target && !is_in_party())
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
-	if (npc->is_in_party() && npc_num > 0 &&
-	    (get_effective_alignment() <= Actor::good) && !is_in_party() &&
-	    get_info().get_shape_class() == Shape_info::human)
+	if (npc->is_in_party() && !is_in_party() && 
+	    (get_shapenum() == Game_window::get_guard_shape(get_tile()) ||
+			(npc_num > 0 && get_effective_alignment() <= Actor::good &&
+			 get_info().get_shape_class() == Shape_info::human)))
 		{
 		static long lastcall = 0L;	// Last time yelled.
 		long curtime = SDL_GetTicks();
@@ -5374,7 +5378,8 @@ void Npc_actor::handle_event
 						// Patrol schedule already does this.
 				schedule_type != Schedule::patrol &&
 				schedule_type != Schedule::sleep &&
-				schedule_type != Schedule::wait))
+				schedule_type != Schedule::wait &&
+				schedule_type != Schedule::arrest_avatar))
 		schedule->seek_foes();
 
 	if (!action)			// Not doing anything?
