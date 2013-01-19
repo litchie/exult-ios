@@ -2772,10 +2772,9 @@ Actor *Game_window::find_witness
 							it != npcs.end();++it)
 		{
 		Actor *npc = *it;
-		if (npc->is_in_party() || !npc->is_sentient() ||
+		if (npc->is_in_party() || !npc->is_sentient() || !npc->can_act() ||
 				// Evil and chaotic NPCs don't care if you steal
-		    (!for_theft && npc->get_effective_alignment() >= Actor::evil) ||
-		    (npc->get_framenum()&15) == Actor::sleep_frame)
+		    (!for_theft && npc->get_effective_alignment() >= Actor::evil))
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist >= closest_witness_dist ||
