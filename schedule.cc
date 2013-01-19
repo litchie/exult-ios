@@ -1335,6 +1335,14 @@ void Talk_schedule::now_what
 		npc->start(speed, 250);
 		return;
 		}
+		// Don't talk to invisible avatar unless NPC can see invisible.
+	if (gwin->get_main_actor()->get_flag(Obj_flags::invisible) &&
+			!npc->can_see_invisible())
+		{				// Try a little later.
+		phase = 0;
+		npc->start(speed, 5000);
+		return;
+		}
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
@@ -1773,16 +1781,23 @@ void Hound_schedule::now_what
 		   npcpos = npc->get_tile();
 					// How far away is Avatar?
 	int dist = npc->distance(av);
-	if (dist > 20 || dist < 3)	// Too far, or close enough?
-		{			// Check again in a few seconds.
-		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
-		return;
-		}
 		// Pure guess. Since only some schedules seem to call proximity
 		// usecode, I guess I should put it in here.
 		// Seems quite rare.
 	if (try_proximity_usecode(12))
 		return;
+	if (dist < 3)   // Close enough?
+		{			// Face avatar and check again soon.
+		int dir = npc->get_direction(av);
+		npc->change_frame(npc->get_dir_framenum(dir, Actor::standing));
+		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
+		return;
+		}
+	else if (dist > 20)	// Too far?
+		{			// Check again in a few seconds.
+		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
+		return;
+		}
 	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
 	avpos.tx += rand()%3 - 1;	// Vary a bit randomly.
 	avpos.ty += rand()%3 - 1;
@@ -1939,6 +1954,11 @@ void Sleep_schedule::now_what
 				bed = newbed;
 				}
 			}
+		}
+	if (!bed && npc == gwin->get_main_actor())
+		{
+		npc->start(gwin->get_std_delay());
+		return;
 		}
 	add_client(bed);
 	int frnum = npc->get_framenum();

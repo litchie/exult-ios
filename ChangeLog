@@ -28,6 +28,12 @@
 	Rev 7297
 	* combat.cc: Battle music only changes if there are anyone in the avatar's
 	  oponent list; this prevents battle music when attacking a chest.
+	Rev 7298
+	* schedule.cc:  Talk schedule will not talk to invisible avatar unless the
+	  NPC can see invisible. Proximity usecode happens more often for the hound
+	  schedule, which will cause the NPC to face the avatar if the NPC is within
+	  3 tiles. Avatar will no longer lay down on the ground if double-clicking
+	  an occupied bed.
 
 2013-01-17	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix crash when a party member dies due to a trap
