@@ -364,6 +364,7 @@ public:
 					// Change to new schedule at loc
 	virtual void set_schedule_and_loc(int new_schedule_type, 
 					Tile_coord const& dest, int delay = -1);
+	bool teleport_offscreen_to_schedule(Tile_coord const& dest, int dist);
 	int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.

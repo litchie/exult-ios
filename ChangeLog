@@ -1,3 +1,14 @@
+2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* schedule.cc: Fixing bug #3601456 "NPCs teleport out of bed when woken up".
+	  Reduced random delay for Walk_to_schedule as it caused NPCs to stand still
+	  for far too long in many cases.
+	* actors.*: On schedule restore, party_id hasn't been set for party members
+	  yet, so use Actor::is_in_party instead. Also, allow moving to schedule if
+	  NPC is sufficiently far away from schedule center on restore. This could
+	  cause (say) NPCs to sleep on the wrong bed.
+	* gamewin.cc: Fixed bug #3601457 "asleep and paralyzed npcs should not call
+	  guards".
+
 2013-01-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.cc, audio/AudioMixer.*, objs/animate.*: Fixed bug #3601377
 	  'No "gulping" sound when eating food' by having Objct_sfx have clients and
