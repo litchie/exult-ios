@@ -179,7 +179,7 @@ public:
 
 class Actor_flags_functor
 	{
-	Patch_flags_functor<ready_type_flag, Shape_info> setflags;
+	Patch_flags_functor<actor_flags_flag, Shape_info> setflags;
 public:
 	void operator()(std::istream& in, int version, bool patch,
 			Exult_Game game, Shape_info& info)
