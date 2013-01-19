@@ -335,10 +335,10 @@ enum cursors
 //NPC atitudes toward the avatar
 enum alignments
 {
-	FRIENDLY		= 0,
+	GOOD			= 0,
 	NEUTRAL			= 1,
-	HOSTILE			= 2,
-	RANDOM_ALIGN	= 3
+	EVIL			= 2,
+	CHAOTIC			= 3
 };
 
 enum weather_types

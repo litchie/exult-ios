@@ -1022,7 +1022,7 @@ void Homing_projectile::handle_event
 			{
 			Actor *npc = *it;
 			if (!npc->is_in_party() && !npc->is_dead() &&
-					(npc->get_effective_alignment() >= Actor::hostile))
+					(npc->get_effective_alignment() >= Actor::evil))
 				{
 				Tile_coord npos = npc->get_tile();
 				int dx = npos.tx - pos.tx, dy = npos.ty - pos.ty, dz = npos.tz - pos.tz;

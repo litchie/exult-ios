@@ -55,7 +55,7 @@ void Npc_proximity_handler::add
 	)
 	{
 	int msecs;			// Hostile?  Wait 0-2 secs.
-	if (npc->get_alignment() >= Npc_actor::hostile)
+	if (npc->get_alignment() >= Npc_actor::evil)
 		msecs = rand() % 2000;
 	else				// Wait between 2 & 6 secs.
 		msecs = (rand() % 4000) + 2000;
@@ -104,7 +104,7 @@ void Npc_proximity_handler::handle_event
 	long udata
 	)
 	{
-	Npc_actor *npc = (Npc_actor *) udata;
+	Npc_actor *npc = reinterpret_cast<Npc_actor *>(udata);
 	int extra_delay = 5;		// For next time.
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(10);
@@ -117,8 +117,8 @@ void Npc_proximity_handler::handle_event
 		npc->clear_nearby();
 		return;
 		}
-	Schedule::Schedule_types sched = (Schedule::Schedule_types)
-						npc->get_schedule_type();
+	Schedule::Schedule_types sched =
+			static_cast<Schedule::Schedule_types>(npc->get_schedule_type());
 					// Sleep schedule?
 	if (npc->get_schedule() &&
 	    sched == Schedule::sleep &&
@@ -193,5 +193,5 @@ void Npc_proximity_handler::get_all
 	Time_sensitive *obj;
 	long data;			// NPC is the data.
 	while (next(obj, data))
-		alist.push_back((Npc_actor *) data);
+		alist.push_back(reinterpret_cast<Npc_actor *>(data));
 	}

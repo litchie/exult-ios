@@ -42,6 +42,7 @@
 #include "ucsymtbl.h"
 #include "useval.h"
 #include "usefuns.h"
+#include "combat.h"
 
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
@@ -99,9 +100,7 @@ bool Schedule::seek_foes
 	npc->find_nearby_actors(vec, c_any_shapenum, 10, 0x28);
 	int npc_align = npc->get_effective_alignment();
 	Actor *foe = 0;
-	Monster_info *minf = npc->get_info().get_monster_info();
-	bool see_invisible = minf ?
-		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
+	bool see_invisible = npc->can_see_invisible();
 	for (Actor_vector::const_iterator it = vec.begin(); 
 						it != vec.end(); ++it)
 		{
@@ -109,10 +108,8 @@ bool Schedule::seek_foes
 		if (actor->is_dead() || actor->get_flag(Obj_flags::asleep) ||
 		    (!see_invisible && actor->get_flag(Obj_flags::invisible)))
 			continue;	// Dead, asleep or invisible and can't see invisible.
-		if ((npc_align == Npc_actor::friendly &&
-				actor->get_effective_alignment() >= Npc_actor::hostile) ||
-			(npc_align == Npc_actor::hostile &&
-				actor->get_effective_alignment() == Npc_actor::friendly))
+		if (Combat_schedule::is_enemy(npc_align,
+		                              actor->get_effective_alignment()))
 			{
 			foe = actor;
 			break;
@@ -354,31 +351,34 @@ void Street_maintenance_schedule::now_what
 			new Frames_actor_action(&standframe, 1)));
 		add_client(obj);
 		npc->start(250);
-		switch (shapenum)
+		if (npc->can_speak())
 			{
-		case 322:		// Closing shutters.
-		case 372:
-			npc->say(first_close_shutters, last_close_shutters);
-			break;
-		case 290:		// Open shutters (or both for SI).
-		case 291:
-			if (Game::get_game_type() == BLACK_GATE)
-				npc->say(first_open_shutters, 
-							last_open_shutters);
-			else		// SI.
-				if (framenum <= 3)
+			switch (shapenum)
+				{
+			case 322:		// Closing shutters.
+			case 372:
+				npc->say(first_close_shutters, last_close_shutters);
+				break;
+			case 290:		// Open shutters (or both for SI).
+			case 291:
+				if (Game::get_game_type() == BLACK_GATE)
 					npc->say(first_open_shutters, 
-							last_open_shutters);
-				else
-					npc->say(first_close_shutters, 
-							last_close_shutters);
-			break;
-		case 889:		// Turn on lamp.
-			npc->say(first_lamp_on, last_lamp_on);
-			break;
-		case 526:		// Turn off lamp.
-			npc->say(lamp_off, lamp_off);
-			break;
+								last_open_shutters);
+				else		// SI.
+					if (framenum <= 3)
+						npc->say(first_open_shutters, 
+								last_open_shutters);
+					else
+						npc->say(first_close_shutters, 
+								last_close_shutters);
+				break;
+			case 889:		// Turn on lamp.
+				npc->say(first_lamp_on, last_lamp_on);
+				break;
+			case 526:		// Turn off lamp.
+				npc->say(lamp_off, lamp_off);
+				break;
+				}
 			}
 		shapenum = 0;		// Don't want to repeat.
 		return;
@@ -564,8 +564,7 @@ void Pace_schedule::pace(Actor *npc, char& which, int& phase, Tile_coord& blocke
 					{
 					if (obj->as_actor())
 						{
-						Monster_info *minfo = npc->get_info().get_monster_info();
-						if (!minfo || !minfo->cant_yell())
+						if (npc->can_speak())
 							{
 							npc->say(first_move_aside, last_move_aside);
 								// Ask NPC to move aside.
@@ -696,10 +695,10 @@ void Eat_at_inn_schedule::now_what
 			gwin->add_dirty(food);
 			food->remove_this();
 			}
-		if (rand()%4)
+		if (npc->can_speak() && rand()%4)
 			npc->say(first_munch, last_munch);
 		}
-	else if (rand()%4)
+	else if (npc->can_speak() && rand()%4)
 		npc->say(first_more_food, last_more_food);
 					// Wake up in a little while.
 	npc->start(250, 5000 + rand()%12000);
@@ -717,7 +716,8 @@ void Eat_at_inn_schedule::ending (int new_type) // new schedule type
 			if (food){
 				gwin->add_dirty(food);
 				food->remove_this();
-				npc->say(first_munch, last_munch);
+				if (npc->can_speak())
+					npc->say(first_munch, last_munch);
 			}
 		}
 	}
@@ -1613,7 +1613,7 @@ void Tool_schedule::now_what
 		Loiter_schedule::now_what();
 		return;
 		}
-	if (rand()%10 == 0)
+	if (npc->can_speak() && rand()%10 == 0)
 		{
 		Schedule_types ty = static_cast<Schedule_types>(npc->get_schedule_type());
 		if (ty == Schedule::farm) {
@@ -1719,7 +1719,8 @@ void Miner_schedule::now_what
 			if (frnum == 3)
 				state = find_ore;	// Dust.
 			else if (rand()%(4+2*frnum) == 0) {
-				npc->say(first_miner_gold, last_miner_gold);
+				if (npc->can_speak())
+					npc->say(first_miner_gold, last_miner_gold);
 				Tile_coord pos = ore->get_tile();
 				ore->remove_this();
 				ore = 0;
@@ -1743,7 +1744,7 @@ void Miner_schedule::now_what
 					state = find_ore;// Dust.
 			}
 		}
-		if (rand()%4 == 0) {
+		if (npc->can_speak() && rand()%4 == 0) {
 			npc->say(first_miner, last_miner);
 		}
 		delay = 500 + rand()%2000;
@@ -2784,7 +2785,8 @@ void Thief_schedule::steal
 	Actor *from
 	)
 	{
-	npc->say(first_thief, last_thief);
+	if (npc->can_speak())
+		npc->say(first_thief, last_thief);
 	int shnum = rand()%3;		// Gold coin, nugget, bar.
 	Game_object *obj = 0;
 	for (int i = 0; !obj && i < 3; ++i)
@@ -2870,7 +2872,7 @@ bool Waiter_schedule::find_customer
 		for (Actor_vector::const_iterator it = vec.begin();
 							it != vec.end(); ++it)
 		{		// Filter them.
-			Actor *each = (Actor *) *it;
+			Actor *each = *it;
 			if (each->get_schedule_type() == Schedule::eat_at_inn)
 				customers.push_back(each);
 		}

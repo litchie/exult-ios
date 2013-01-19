@@ -99,6 +99,7 @@ public:
 		{ state = s; }
 	static bool attack_target(Game_object *attacker,
 			Game_object *target, Tile_coord const& tile, int weapon, bool combat = false);
+	static bool is_enemy(int align, int other);
 	};
 
 /*

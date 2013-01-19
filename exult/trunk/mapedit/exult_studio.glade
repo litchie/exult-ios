@@ -17504,21 +17504,21 @@ will be added automatically</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget48">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Friendly</property>
+        <property name="label" translatable="yes">Good</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget49">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Hostile</property>
+        <property name="label" translatable="yes">Evil</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget50">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Random</property>
+        <property name="label" translatable="yes">Chaotic</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
@@ -17653,21 +17653,21 @@ will be added automatically</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget67">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Friendly</property>
+        <property name="label" translatable="yes">Good</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget69">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Hostile</property>
+        <property name="label" translatable="yes">Evil</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget70">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Random</property>
+        <property name="label" translatable="yes">Chaotic</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
@@ -18557,21 +18557,21 @@ will be added automatically</property>
     <child>
       <widget class="GtkMenuItem" id="convertwidget138">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Friendly</property>
+        <property name="label" translatable="yes">Good</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget139">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Hostile</property>
+        <property name="label" translatable="yes">Evil</property>
         <property name="use_underline">True</property>
       </widget>
     </child>
     <child>
       <widget class="GtkMenuItem" id="convertwidget140">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Random</property>
+        <property name="label" translatable="yes">Chaotic</property>
         <property name="use_underline">True</property>
       </widget>
     </child>

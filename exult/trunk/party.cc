@@ -65,7 +65,7 @@ bool Party_manager::add_to_party
 	if (!npc || party_count == maxparty || npc->is_in_party())
 		return false;
 	remove_from_dead_party(npc);	// Just to be sure.
-	npc->set_alignment(Actor::friendly);
+	npc->set_alignment(Actor::good);
 	npc->set_party_id(party_count);
 	npc->set_flag (Obj_flags::in_party);
 					// We can take items.
