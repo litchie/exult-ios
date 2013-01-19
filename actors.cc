@@ -2068,7 +2068,7 @@ int Actor::get_effective_alignment
 	{
 	bool avatar = (this == gwin->get_main_actor());
 	if (!(flags&(1<<Obj_flags::charmed)) ||
-		(avatar && !Combat::charmed_more_difficult))
+			(avatar && !Combat::charmed_more_difficult))
 		{
 		// Hack warning: there are some neutral goblins in the goblin village.
 		// Here, we 'fix' their alignments to cause them to attack the avatar.
@@ -2091,18 +2091,25 @@ int Actor::get_effective_alignment
 		else
 			return alignment;
 		}
-	else switch(alignment)
-		{
-	case neutral:
-		return chaotic;
-	case good:
-		return evil;
-	case evil:
-		return good;
-	case chaotic:
-		return neutral;
-		}
-	return neutral;
+	else
+		return charmalign;
+	}
+
+/*
+ *	Set effective alignment.
+ */
+
+void Actor::set_effective_alignment
+	(
+	int newalign
+	)
+	{
+	bool avatar = (this == gwin->get_main_actor());
+	if (!(flags&(1<<Obj_flags::charmed)) ||
+			(avatar && !Combat::charmed_more_difficult))
+		alignment = newalign;
+	else
+		charmalign = newalign;
 	}
 
 /*
@@ -2711,7 +2718,7 @@ void Actor::fight_back
 	// test (except, maybe, by exploiting the agressive U7 & SI duel schedule.
 	Actor *npc = attacker ? attacker->as_actor() : 0;
 	// No attacker, or friendly fire, should not cause a fight.
-	if (!npc || alignment == npc->alignment)
+	if (!npc || get_effective_alignment() == npc->get_effective_alignment())
 		return;
 	if (is_in_party() && (gwin->in_combat() || !gwin->main_actor_can_act()))
 		{
@@ -2731,8 +2738,7 @@ void Actor::fight_back
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
 	if (npc->is_in_party() && npc_num > 0 &&
-	    (alignment == Actor::good || alignment == Actor::neutral) &&
-	    !(flags & (1<<Obj_flags::charmed)) && !is_in_party() &&
+	    (get_effective_alignment() <= Actor::good) && !is_in_party() &&
 	    get_info().get_shape_class() == Shape_info::human)
 		{
 		static long lastcall = 0L;	// Last time yelled.
@@ -3332,6 +3338,8 @@ void Actor::set_flag
 		if (!gwin->in_combat() && Combat::charmed_more_difficult &&
 				(is_in_party() || this == avatar))
 			gwin->toggle_combat();
+		// Actual alignment shift must be done elsewhere.
+		Combat_schedule::stop_attacking_npc(this);
 		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:
@@ -3429,7 +3437,11 @@ void Actor::clear_flag
 		Usecode_script::terminate(this);
 		}
 	else if (flag == Obj_flags::charmed)
+		{
+		reset_effective_alignment();
+		Combat_schedule::stop_attacking_npc(this);
 		set_target(0);			// Need new opponent.
+		}
 	else if (flag == Obj_flags::bg_dont_move || flag == Obj_flags::dont_move)
 		// Start again after a little while
 		start_std();
@@ -4157,7 +4169,13 @@ int Actor::figure_hit_points
 			if ((powers & Weapon_data::curse) && roll_to_win(attint, defint))
 				set_flag(Obj_flags::cursed);
 			if ((powers & Weapon_data::charm) && roll_to_win(attint, defint))
+				{
 				set_flag(Obj_flags::charmed);
+				if (npc)
+					charmalign = npc->get_effective_alignment();
+				else
+					charmalign = chaotic;   // Verified.
+				}
 			if ((powers & Weapon_data::sleep) && roll_to_win(attint, defint))
 				set_flag(Obj_flags::asleep);
 			if ((powers & Weapon_data::paralyze) && roll_to_win(attint, defstr))
@@ -4527,7 +4545,7 @@ Monster_actor *Actor::clone
 					// Create, temporary & with equip.
 	Monster_actor *monst = Monster_actor::create(
 			get_shapenum(), pos, get_schedule_type(),
-			get_alignment(), true, true);
+			get_effective_alignment(), true, true);
 	return monst;
 	}
 
