@@ -8,6 +8,9 @@
 	  cause (say) NPCs to sleep on the wrong bed.
 	* gamewin.cc: Fixed bug #3601457 "asleep and paralyzed npcs should not call
 	  guards".
+	Rev 7304
+	* effects.cc: Fixed incorrect checking of prjectile hits, which caused a bow
+	  to miss at point blank range sometimes (and likely in other occasions).
 
 2013-01-18	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/Audio.cc, audio/AudioMixer.*, objs/animate.*: Fixed bug #3601377

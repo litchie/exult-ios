@@ -794,7 +794,6 @@ void Projectile_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	int delay = gwin->get_std_delay()/2;
 	add_dirty();			// Force repaint of old pos.
-	Tile_coord epos = pos;		// Save pos.
 	Weapon_info *winf = ShapeID::get_info(weapon).get_weapon_info();
 	if (winf && winf->get_rotation_speed())
 		{	// The missile rotates (such as axes/boomerangs)
@@ -802,7 +801,7 @@ void Projectile_effect::handle_event
 		sprite.set_frame(new_frame > 23 ? ((new_frame - 8)%16) + 8 : new_frame);
 		}
 	bool path_finished = false;
-	for (int i = 0; i < speed; i++)
+		for (int i = 0; i < speed; i++)
 		{	// This speeds up the missile.
 		path_finished = (path->GetNextStep(pos) == 0) ||	// Get next spot.
 				// If missile egg, detect target.
@@ -822,7 +821,7 @@ void Projectile_effect::handle_event
 				{
 				obj->set_flag(Obj_flags::okay_to_take);
 				obj->set_flag(Obj_flags::is_temporary);
-				obj->move(epos.tx, epos.ty, epos.tz, -1);
+				obj->move(pos.tx, pos.ty, pos.tz, -1);
 				}
 			}
 		else if (explodes)	// Do this here (don't want to explode
@@ -844,7 +843,9 @@ void Projectile_effect::handle_event
 			{		// Not teleported away ?
 			bool returns = (winf && winf->returns()) || (ainf && ainf->returns());
 			bool hit = false;
-			if (target && attacker != target && target->distance(epos) < 3)
+			if (target && attacker != target &&
+					// Aims for center tile, so check center tile.
+					target->get_center_tile().distance(pos) < 3)
 				{
 				hit = autohit || target->try_to_hit(attacker, attval);
 				if (hit)
@@ -863,7 +864,7 @@ void Projectile_effect::handle_event
 								Usecode_machine::weapon);
 				}
 			if (returns && attacker &&	// boomerangs
-					attacker->distance(epos) < 50)
+					attacker->distance(pos) < 50)
 				{ 	// not teleported away
 				Projectile_effect *proj = new Projectile_effect(
 							pos, attacker, weapon, projectile_shape,
@@ -888,7 +889,7 @@ void Projectile_effect::handle_event
 					}
 				if (drop)
 					{
-					Tile_coord pos = Map_chunk::find_spot(epos, 3,
+					Tile_coord pos = Map_chunk::find_spot(pos, 3,
 								sprite.get_shapenum(), 0, 1);
 					if (pos.tx != -1)
 						{
