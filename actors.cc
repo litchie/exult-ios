@@ -5314,11 +5314,7 @@ void Npc_actor::handle_event
 						// Patrol schedule already does this.
 				schedule_type != Schedule::patrol &&
 				schedule_type != Schedule::sleep &&
-				schedule_type != Schedule::wait) &&
-			!rand()%3)	// Don't do it every time. FIXME: "!rand()" ??
-			            // This !rand()%3 doesn't do what it appears to do,
-			            // but simply changing it into !(rand()%3) breaks
-			            // combat by making opponents far less aggressive.
+				schedule_type != Schedule::wait))
 		schedule->seek_foes();
 
 	if (!action)			// Not doing anything?
@@ -5329,25 +5325,7 @@ void Npc_actor::handle_event
 					curtime + gwin->get_std_delay(), this, udata);
 		else if (schedule)
 			{
-				// Should try seeking foes?
-			if (party_id < 0 && can_act() &&
-						// Not if already in combat.
-					(schedule_type != Schedule::combat &&
-						// Patrol schedule already does this.
-						schedule_type != Schedule::patrol &&
-						schedule_type != Schedule::sleep &&
-						schedule_type != Schedule::wait) &&
-					!rand()%4)	// Don't do it every time. FIXME: "!rand()" ??
-			            // This !rand()%4 doesn't do what it appears to do,
-			            // but simply changing it into !(rand()%4) breaks
-			            // combat by making opponents far less aggressive.
-				{
-				schedule->seek_foes();
-					// Get back into queue.
-				gwin->get_tqueue()->add(
-						curtime + gwin->get_std_delay(), this, udata);
-				}
-			else if (!dormant)
+			if (!dormant)
 				schedule->now_what();
 			else
 				schedule->im_dormant();
