@@ -210,7 +210,8 @@ public:
 		summons,
 		turns_invisible,
 		armageddon_safe,
-		quake_walk
+		quake_walk,
+		goblin
 		};
 	enum Shape_flags
 		{
@@ -600,6 +601,8 @@ public:
 		{ return get_actor_flag(armageddon_safe); }
 	bool quake_on_walk() const
 		{ return get_actor_flag(quake_walk); }
+	bool is_goblin() const
+		{ return get_actor_flag(goblin); }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum)

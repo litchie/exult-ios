@@ -4,7 +4,7 @@
 #
 
 %%section version
-:6
+:7
 %%endsection
 
 %%section explosions
@@ -413,41 +413,56 @@
 #	Lots of monster/actor data which was hardcoded in the originals.
 #
 #	Format
-#		:shapenum/dont_eat/cold_immune/summons/teleports/turn_invis/quakewalk
+#		:shapenum/cold_immune/dont_eat/teleports/summons/turn_invis/armageddon_safe/quake_walk/goblin
 #
 #	The fields are flags which are true if nonzero, false otherwise.
 #	The default for actors not on the list is false.
-#	dont_eat: nonzero if actor does not need food, zero otherwise.
 #	cold_immune: nonzero if actor is immune to cold, zero otherwise.
-#	summons: nonzero if actor can summon allies, zero otherwise.
+#	dont_eat: nonzero if actor does not need food, zero otherwise.
 #	teleports: nonzero if actor can teleport, zero otherwise.
+#	summons: nonzero if actor can summon allies, zero otherwise.
 #	turn_invis: nonzero if actor can become invisible, zero otherwise.
-#	armageddon: nonzero if actor susrives armageddon, zero otherwise.
-#	quakewalk: nonzero if actor causes earthquake when walking, zero otherwise.
+#	armageddon_safe: nonzero if actor susrives armageddon, zero otherwise.
+#	quake_walk: nonzero if actor causes earthquake when walking, zero otherwise.
+#	goblin: nonzero if goblin, zero otherwise
 #
 #
 #		Gazer
 #
-:511/0/0/0/0/1/0/0
+:511/0/0/0/0/1/0/0/0
 
 #		Automatons
 #
-:658/1/1/0/0/0/0/0
-:734/1/1/0/0/0/0/0
-:747/1/1/0/0/0/0/0
-:945/1/1/0/0/0/0/0
+:658/1/1/0/0/0/0/0/0
+:734/1/1/0/0/0/0/0/0
+:747/1/1/0/0/0/0/0/0
+:945/1/1/0/0/0/0/0/0
 
 #		Aram Dol
 #
-:981/0/0/0/0/1/0/0
+:981/0/0/0/0/1/0/0/0
 
 #		Batlin
 #
-:318/0/0/0/0/0/1/0
+:318/0/0/0/0/0/1/0/0
 
 #		Cyclops
 #
-:501/0/0/0/0/0/0/1
+:501/0/0/0/0/0/0/1/0
+
+#		Goblins -- They are described as being immune to cold.
+#
+:354/1/0/0/0/0/0/0/1
+:478/1/0/0/0/0/0/0/1
+:691/1/0/0/0/0/0/0/1
+:725/1/0/0/0/0/0/0/1
+:744/1/0/0/0/0/0/0/1
+
+#		Gwani -- They are described as being immune to cold.
+#
+:214/1/0/0/0/0/0/0/0
+:862/1/0/0/0/0/0/0/0
+:867/1/0/0/0/0/0/0/0
 %%endsection
 
 %%section warmth_data
