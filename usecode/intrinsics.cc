@@ -428,7 +428,7 @@ USECODE_INTRINSIC(add_to_party)
 	if (!partyman->add_to_party(npc))
 		return no_ret;		// Can't add.
 	npc->set_schedule_type(Schedule::follow_avatar);
-	npc->set_alignment(Actor::friendly);
+	npc->set_alignment(Actor::good);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
 	return no_ret;
 }
@@ -1267,7 +1267,7 @@ USECODE_INTRINSIC(summon)
 	if (dest.tx == -1)
 		return Usecode_value(0);
 	Actor *npc = as_actor(caller_item);
-	int align = Actor::friendly;
+	int align = Actor::good;
 	if (npc && !npc->is_in_party())
 		align = npc->get_alignment();
 	Monster_actor *monst = Monster_actor::create(shapenum, dest,
@@ -1447,7 +1447,7 @@ USECODE_INTRINSIC(clone)
 		{
 		modified_map = true;
 		Actor *clonednpc = npc->clone();
-		clonednpc->set_alignment(Actor::friendly);
+		clonednpc->set_alignment(Actor::good);
 		clonednpc->set_schedule_type(Schedule::combat);
 		return Usecode_value(clonednpc);
 		}

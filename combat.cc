@@ -140,7 +140,7 @@ void Combat_schedule::monster_died
 		Actor *actor = *it;
 		if (!actor->is_dead() && 
 			actor->get_attack_mode() != Actor::flee &&
-			actor->get_effective_alignment() >= Npc_actor::hostile)
+			actor->get_effective_alignment() >= Npc_actor::evil)
 			return;		// Still possible enemies.
 		}
 	battle_end_time = Game::get_ticks();
@@ -189,12 +189,8 @@ void Combat_schedule::stop_attacking_invisible
 						it != nearby.end(); ++it)
 		{
 		Actor *actor = *it;
-		if (actor->get_target() == npc)
-			{
-			Monster_info *minf = actor->get_info().get_monster_info();
-			if ((minf && minf->get_flags() & (1<<Monster_info::see_invisible))==0)
-				actor->set_target(0);
-			}
+		if (actor->get_target() == npc && actor->can_see_invisible())
+			actor->set_target(0);
 		}
 	}
 
@@ -334,24 +330,24 @@ inline bool Off_screen
 	return (!screen.has_world_point(t.tx, t.ty));
 	}
 
-static inline bool is_enemy
+bool Combat_schedule::is_enemy
 	(
 	int align, int other
 	)
 	{
 	switch (align)
 		{
-		case Npc_actor::friendly:
-			return other == Npc_actor::hostile
-				|| other == Npc_actor::unknown_align; 
-		case Npc_actor::hostile:
-			return other == Npc_actor::friendly
-				|| other == Npc_actor::unknown_align; 
+		case Npc_actor::good:
+			return other == Npc_actor::evil
+				|| other == Npc_actor::chaotic; 
+		case Npc_actor::evil:
+			return other == Npc_actor::good
+				|| other == Npc_actor::chaotic; 
 		case Npc_actor::neutral:
 			return false; 
-		case Npc_actor::unknown_align:
-			return other == Npc_actor::hostile
-				|| other == Npc_actor::friendly; 
+		case Npc_actor::chaotic:
+			return other == Npc_actor::evil
+				|| other == Npc_actor::good; 
 		}
 	return true;	// This should never happen.
 	}
@@ -371,13 +367,11 @@ void Combat_schedule::find_opponents
 	Actor *avatar = gwin->get_main_actor();
 	nearby.push_back(avatar);	// Incl. Avatar!
 	bool charmed_avatar = Combat::charmed_more_difficult &&
-	                      avatar->get_effective_alignment() !=  Npc_actor::friendly;
+	                      avatar->get_effective_alignment() !=  Npc_actor::good;
 					// See if we're a party member.
 	bool in_party = npc->is_in_party() || npc == avatar;
 	int npc_align = npc->get_effective_alignment();
-	Monster_info *minf = npc->get_info().get_monster_info();
-	bool see_invisible = minf ?
-		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
+	bool see_invisible = npc->can_see_invisible();
 	for (Actor_vector::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
@@ -497,7 +491,7 @@ Game_object *Combat_schedule::find_foe
 		}
 	Actor *avatar = gwin->get_main_actor();
 	bool charmed_avatar = Combat::charmed_more_difficult &&
-	                      avatar->get_effective_alignment() !=  Npc_actor::friendly;
+	                      avatar->get_effective_alignment() !=  Npc_actor::good;
 					// Remove any that died.
 	for (list<Actor*>::iterator it = opponents.begin(); 
 						it != opponents.end(); )
@@ -1275,9 +1269,7 @@ inline int Need_new_opponent
 	{
 	Game_object *opponent = npc->get_target();
 	Actor *act;
-	Monster_info *minf = npc->get_info().get_monster_info();
-	bool see_invisible = minf ?
-		(minf->get_flags() & (1<<Monster_info::see_invisible))!=0 : false;
+	bool see_invisible = npc->can_see_invisible();
 					// Nonexistent or dead?
 	if (!opponent || 
 	    ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
@@ -1306,8 +1298,7 @@ Combat_schedule::Combat_schedule
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
-	Monster_info *minf = npc->get_info().get_monster_info();
-	can_yell = !minf || !minf->cant_yell();
+	can_yell = npc->can_speak();
 	unsigned int curtime = SDL_GetTicks();
 	summon_time = curtime + 4000;
 	invisible_time = curtime + 4500;
@@ -1502,7 +1493,7 @@ void Combat_schedule::now_what
 			gwin->get_tqueue()->remove(npc);
 			npc->set_dormant();
 			}
-		else if (npc->get_alignment() == Npc_actor::friendly &&
+		else if (npc->get_alignment() == Npc_actor::good &&
 				prev_schedule != Schedule::combat)
 			{		// Return to normal schedule.
 			npc->update_schedule(gclock->get_hour()/3, 7);
@@ -1530,9 +1521,9 @@ void Combat_schedule::im_dormant
 	(
 	)
 	{
-	if (npc->get_effective_alignment() == Npc_actor::friendly && 
+	if (npc->get_effective_alignment() == Npc_actor::good && 
 		prev_schedule != npc->get_schedule_type() && npc->is_monster())
-					// Friendly, so end combat.
+					// Good, so end combat.
 		npc->set_schedule_type(prev_schedule);
 	}
 

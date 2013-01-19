@@ -229,7 +229,7 @@ void Actor::read
 					// Just stealing 2 spare bits:
 	combat_protected = (amode&(1<<4)) != 0;
 	user_set_attack = (amode&(1<<5)) != 0;
-	attack_mode = (Attack_mode) (amode&0xf);
+	attack_mode = static_cast<Attack_mode>(amode&0xf);
 
 	nfile->skip(1); 		// Unknown
 	int unk0 = nfile->read1();	// We set high bit of this value.
@@ -337,7 +337,7 @@ void Actor::read
 		else
 			set_shape(shnum);		// 16 Bit Shape Number
 
-		shnum = (sint16) nfile->read2();	// 16 Bit Polymorph Shape Number
+		shnum = static_cast<sint16>(nfile->read2());	// 16 Bit Polymorph Shape Number
 		if (get_flag (Obj_flags::polymorph)) 
 			{			// Try to fix messed-up flag.
 			if (shnum != get_shapenum())
@@ -441,7 +441,7 @@ void Actor::read
 		name = Game::get_avname();
 	}
 	else
-		name = (char *)namebuf;		// Store copy of it.
+		name = reinterpret_cast<char const *>(namebuf);		// Store copy of it.
 
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
@@ -488,9 +488,9 @@ void Actor::read
 	// and we are the Avatar or Iolo
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
 		ready_best_weapon();
-	// Force Avatar and all party members to be friendly
+	// Force Avatar and all party members to be good
 	if (get_flag(Obj_flags::in_party) || num == 0)
-		set_alignment(friendly);
+		set_alignment(good);
 #if defined(DEBUG) && 0
 
 	cout << get_npc_num() << " Creating ";
@@ -707,7 +707,7 @@ void Actor::write
 		delete [] nm;
 	}
 
-	nfile->write1((char)get_skin_color());
+	nfile->write1(static_cast<char>(get_skin_color()));
 
 	// Skip 14
 	for (i = 0; i < 14; i++)
