@@ -1518,6 +1518,80 @@ void Loiter_schedule::now_what
 	}
 
 /*
+ *	Schedule change for graze.
+ */
+
+void Graze_schedule::now_what
+	(
+	)
+	{
+	int delay = 2 * gwin->get_std_delay();
+	switch (phase)
+		{
+		case 0:
+			{
+			int newx = center.tx - dist + rand()%(2*dist);
+			int newy = center.ty - dist + rand()%(2*dist);
+							// Wait a bit.
+			npc->walk_to_tile(newx, newy, center.tz, 2*gwin->get_std_delay(), 
+										rand()%2000);
+			phase++;
+			break;
+			}
+		case 1:
+		case 2:
+			if (npc->get_shapenum() == 0x1fd)   // Fish?
+				{
+				if (rand()%12 == 0)
+					{
+					signed char frames[3];
+					int dir = npc->get_dir_facing();
+					frames[0] = npc->get_dir_framenum(dir, 0xe);
+					frames[1] = npc->get_dir_framenum(dir, 0xf);
+					frames[2] = npc->get_dir_framenum(dir, Actor::standing);
+					npc->set_action(new Frames_actor_action(frames,
+					                                        sizeof(frames)));
+					}
+				}
+			else
+				{
+				npc->add_dirty();
+				npc->set_frame(npc->get_dir_framenum(npc->get_dir_facing(),
+				                                     Actor::standing));
+				npc->add_dirty();
+				}
+			phase++;
+			break;
+		case 3:
+			if (npc->get_shapenum() == 0x1fd)   // Fish?
+				phase = 0;
+			else
+				phase++;
+			break;
+		default:
+			{
+				// Non-fish only.
+			signed char frames[12];
+			int dir = npc->get_dir_facing();
+			int cnt = 0;
+			int max = 2 + rand()%4;
+			for ( ; cnt < max; cnt++)
+				frames[cnt] = npc->get_dir_framenum(dir, 0xe);
+			max += 2 + rand()%4;
+			for ( ; cnt < max; cnt++)
+				frames[cnt] = npc->get_dir_framenum(dir, 0xf);
+			npc->set_action(new Frames_actor_action(frames, cnt));
+			if (4 + rand()%4 < phase)
+				phase = 0;
+			else
+				phase++;
+			break;
+			}
+		}
+	npc->start(delay, delay);
+	}
+
+/*
  *	Schedule change for kid games.
  */
 
@@ -1572,7 +1646,7 @@ void Dance_schedule::now_what
 	(
 	)
 	{
-		Tile_coord dest = center;	// Pick new spot to walk to.
+	Tile_coord dest = center;	// Pick new spot to walk to.
 	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
 	Tile_coord cur = npc->get_tile();

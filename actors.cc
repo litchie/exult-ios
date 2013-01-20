@@ -1895,8 +1895,10 @@ void Actor::set_schedule_type
 			schedule = new Hound_schedule(this);
 			break;
 		case Schedule::loiter:
-		case Schedule::graze:	// For now.
 			schedule = new Loiter_schedule(this);
+			break;
+		case Schedule::graze:	// For now.
+			schedule = new Graze_schedule(this);
 			break;
 		case Schedule::wander:
 			schedule = new Wander_schedule(this);
