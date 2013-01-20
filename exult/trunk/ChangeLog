@@ -16,6 +16,9 @@
 	  NPCs of all alignments help NPCs of the same alignment, while ignoring any
 	  friendly fire. Disabled actors no longer call for help -- instead, if any
 	  sympathetic witnesses are nearby, they will call for help and assist.
+	Rev 7315
+	* gamewin.cc: Fixed bug #3601519 "Breaking glass displays results in guards
+	  attacking" by having guards try to arrest for theft on all cases.
 
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of
