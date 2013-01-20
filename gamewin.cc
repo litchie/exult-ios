@@ -123,12 +123,20 @@ class Background_noise : public Time_sensitive
 	int repeats;			// Repeats in quick succession.
 	int last_sound;			// # of last sound played.
 	Game_window *gwin;
-	int laststate;			// Last state for SFX music tracks, 
+	enum Song_states {
+		Invalid,
+		Outside,
+		Dungeon,
+		Nighttime,
+		RainStorm,
+		SnowStorm,
+		DangerNear
+	} laststate;			// Last state for SFX music tracks, 
 							// 1 outside, 2 dungeon, 3 nighttime, 4 rainstorm,
 							// 5 snowstorm, 6 for danger nearby
 public:
 	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
-					gwin(gw), laststate(0)
+					gwin(gw), laststate(Invalid)
 		{ gwin->get_tqueue()->add(5000, this, 0L); }
 	virtual ~Background_noise()
 		{ gwin->get_tqueue()->remove(this); }
@@ -142,8 +150,13 @@ public:
 		}
 	static bool is_bg_track(int num)
 		{
-		return (num >= Audio::game_music(4) && num <= Audio::game_music(8)) ||
-				num == Audio::game_music(52);
+			// Have to do it this way because of SI.
+		if (num == Audio::game_music(4) || num == Audio::game_music(5) ||
+		    num == Audio::game_music(6) || num == Audio::game_music(7) ||
+		    num == Audio::game_music(8) || num == Audio::game_music(52))
+			return true;
+		else
+			return false;
 		}
 	};
 
@@ -160,23 +173,23 @@ void Background_noise::handle_event
 #ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
 	unsigned long delay = 8000;
-	int currentstate;
+	Song_states currentstate;
 	int bghour = gwin->get_clock()->get_hour();
 	int weather = gwin->get_effects()->get_weather();
 	bool nighttime = bghour < 6 || bghour > 20;
 	bool nearby_hostile = gwin->is_hostile_nearby();
 	if (nearby_hostile && !gwin->in_combat())
-		currentstate = 6;
+		currentstate = DangerNear;
 	else if (gwin->is_in_dungeon())
-		currentstate = 2;
+		currentstate = Dungeon;
 	else if (weather == 2)
-		currentstate = 4;	//Rainstorm
+		currentstate = RainStorm;
 	else if (weather == 1)
-		currentstate = 5;	//Snowstorm
+		currentstate = SnowStorm;
 	else if (nighttime)
-		currentstate = 3;	//Night time
+		currentstate = Nighttime;	//Night time
 	else
-		currentstate = 1;
+		currentstate = Outside;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
 	// Lets allow this for midi music too. It might be best to restrict this to
@@ -184,18 +197,16 @@ void Background_noise::handle_event
 	//if (player && player->get_ogg_enabled())
 	if (player)
 	{
-		delay = 1500;	//Quickly get back to this function check
+		delay = 1000;	//Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
 
 		int curr_track = player->get_current_track();
 
 		// Testing. Original seems to allow crickets for all songs at night,
-		// except when in a dungeon.
-		//if (curr_track == Audio::game_music(7) && currentstate == 3)
-		if (nighttime && currentstate != 2)
+		// except when in a dungeon. Also, only do it sometimes.
+		if (nighttime && currentstate != Dungeon && rand()%6 == 0)
 		{
 			//Play the cricket sounds at night 
-			delay = 3000 + rand()%5000;
 			Audio::get_ptr()->play_sound_effect(Audio::game_sfx(61),
 			                                    AUDIO_MAX_VOLUME - 30);
 		}
@@ -207,7 +218,8 @@ void Background_noise::handle_event
 			// here, just so they don't loop forever.
 			// Conditions: not playing music, playing a background music
 			if (curr_track == -1 || is_bg_track(curr_track) ||
-			    ((currentstate == 2 || currentstate == 6) && !is_combat_music(curr_track)))
+			    ((currentstate == Dungeon || currentstate == DangerNear) &&
+			 	   !is_combat_music(curr_track)))
 			{
 				//Not already playing music
 				int tracknum = 255;
@@ -216,34 +228,34 @@ void Background_noise::handle_event
 				if (nearby_hostile && !gwin->in_combat())
 				{
 					tracknum = Audio::game_music(10);
-					laststate = 6;
+					laststate = DangerNear;
 				}
 				else if (gwin->is_in_dungeon())
 				{
 					//Start the SFX music track then
 					tracknum = Audio::game_music(52);
-					laststate = 2;
+					laststate = Dungeon;
 				}
 				else if (weather == 1)   // Snowstorm
 				{
 					tracknum = Audio::game_music(5);
-					laststate = 5;
+					laststate = SnowStorm;
 				}
 				else if (weather == 2)   // Rainstorm
 				{
 					tracknum = Audio::game_music(4);
-					laststate = 4;
+					laststate = RainStorm;
 				}
 				else if (bghour < 6 || bghour > 20)
 				{
 					tracknum = Audio::game_music(7);
-					laststate = 3;
+					laststate = Nighttime;
 				}
 				else
 				{
 					//Start the SFX music track then
 					tracknum = Audio::game_music(6);
-					laststate = 1;
+					laststate = Outside;
 				}
 				Audio::get_ptr()->start_music(tracknum, true);
 			}
@@ -3403,10 +3415,9 @@ bool Game_window::is_hostile_nearby()
 		Actor *actor = *it;
 
 		if (!actor->is_dead() && actor->get_schedule() &&
-			actor->get_effective_alignment() >= Npc_actor::evil && 
+			actor->get_effective_alignment() >= Actor::evil && 
 			((actor->get_schedule_type() == Schedule::combat &&
-			  static_cast<Combat_schedule*>(actor->get_schedule())->
-						has_started_battle()) ||
+			  dynamic_cast<Combat_schedule *>(actor->get_schedule())->has_started_battle()) ||
 			 actor->get_schedule_type() == Schedule::arrest_avatar))
 		{
 			/* TODO- I think invisibles still trigger the
