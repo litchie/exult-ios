@@ -2917,8 +2917,11 @@ void Game_window::call_guards
 		int numguards = 1 + rand()%3;
 		Tile_coord offscreen(main_actor->get_tile() + Tile_coord(128, 128, 0));
 						// Start in combat if avatar is fighting.
-		Schedule::Schedule_types sched = combat ? Schedule::combat
-		                                        : Schedule::arrest_avatar;
+						// FIXME: Disabled for now, as causes guards to attack
+						// avatar if you break glass, when they should arrest
+						// instead.
+		Schedule::Schedule_types sched = /*combat ? Schedule::combat
+		                                        :*/ Schedule::arrest_avatar;
 		for (int i = 0; i < numguards; i++)
 			{
 			Monster_actor *guard = Monster_actor::create(gshape, offscreen,
