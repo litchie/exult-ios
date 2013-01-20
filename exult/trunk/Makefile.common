@@ -576,7 +576,7 @@ CONFREGRESS_OBJS=$(CONF_OBJS) conf/xmain.o files/utils.o
 confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LDFLAGS) -o $(@) $(CONFREGRESS_OBJS)
 
-head2data.* : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h
+head2data.o : usecode/ucxt/head2data.cc usecode/bgintrinsics.h usecode/siintrinsics.h
 
 head2data$(EXEEXT) : usecode/ucxt/head2data.o $(FILE_OBJS) usecode/bgintrinsics.h usecode/siintrinsics.h
 	$(CXX) $(LDFLAGS) -o $(@) usecode/ucxt/head2data.o $(FILE_OBJS)
@@ -600,7 +600,9 @@ toolsclean:
 	rm -f tools/shp2pcx.o shp2pcx$(EXEEXT)
 	rm -f tools/splitshp.o splitshp$(EXEEXT)
 	rm -f $(SMOOTH_OBJS) smooth$(EXEEXT)
-	rm -f libsmooth_randomize$(LIBEXT) libsmooth_smooth$(LIBEXT) libsmooth_stream$(LIBEXT)
+	rm -f libsmooth_randomize$(LIBEXT) mapedit/tools/smooth/plugins/plugin_smooth.o
+	rm -f libsmooth_smooth$(LIBEXT) mapedit/tools/smooth/plugins/plugin_randomize.o
+	rm -f libsmooth_stream$(LIBEXT) mapedit/tools/smooth/plugins/plugin_stream.o
 	rm -f tools/textpack.o textpack$(EXEEXT)
 	rm -f tools/u7voice2syx.o u7voice2syx$(EXEEXT)
 	rm -f tools/wuc.o wuc$(EXEEXT)
