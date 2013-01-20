@@ -2731,9 +2731,10 @@ void Game_window::mend_npcs
 
 int Game_window::get_guard_shape
 	(
-	Tile_coord const& pos			// Position to use.
 	)
 	{
+		// Base on avatar's position.
+	Tile_coord const pos = Game_window::get_instance()->main_actor->get_tile();
 	if (!GAME_SI)			// Default (BG).
 		return 0x3b2;
 					// Moonshade?
@@ -2760,7 +2761,7 @@ int Game_window::get_guard_shape
 Actor *Game_window::find_witness
 	(
 	Actor *& closest_npc,		// Closest one returned.
-	bool for_theft
+	int align					// Desired alignment.
 	)
 	{
 	Actor_vector npcs;			// See if someone is nearby.
@@ -2769,26 +2770,32 @@ Actor *Game_window::find_witness
 	int closest_dist = 5000;
 	Actor *witness = 0;		// And closest facing us.
 	int closest_witness_dist = 5000;
+	int gshape = get_guard_shape();
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 							it != npcs.end();++it)
 		{
 		Actor *npc = *it;
-		if (npc->is_in_party() || !npc->is_sentient() || !npc->can_act() ||
-				// Evil and chaotic NPCs don't care if you steal
-		    (!for_theft && npc->get_effective_alignment() >= Actor::evil))
+			// Want non-party intelligent and not disabled NPCs only.
+		if (npc->is_in_party() || !npc->is_sentient() || !npc->can_act())
+			continue;
+			// Witnesses must either match desired alignment or they must be
+			// local guards and the alignment must be neutral. This makes guards
+			// assist neutral and chaotic NPCs.
+		if (npc->get_effective_alignment() != align ||
+				(npc->get_shapenum() == gshape && align != Actor::neutral))
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist >= closest_witness_dist ||
 		    !Fast_pathfinder_client::is_grabable(npc, main_actor))
 			continue;
-					// Looking toward Avatar?
+			// Looking toward Avatar?
 		Schedule::Schedule_types sched =
 				static_cast<Schedule::Schedule_types>(npc->get_schedule_type());
 		int dir = npc->get_direction(main_actor);
 		int facing = npc->get_dir_facing();
 		int dirdiff = (dir - facing + 8)%8;
 		if (dirdiff < 3 || dirdiff > 5 || sched == Schedule::hound)
-			{		// Yes.
+			{	// Yes.
 			witness = npc;
 			closest_witness_dist = dist;
 			}
@@ -2818,7 +2825,7 @@ void Game_window::theft
 		theft_warnings = 0;
 		}
 	Actor *closest_npc;
-	Actor *witness = find_witness(closest_npc, true);
+	Actor *witness = find_witness(closest_npc, Actor::neutral);
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
@@ -2874,8 +2881,9 @@ void Game_window::call_guards
 	Actor *closest;
 	if (armageddon || in_dungeon)
 		return;
-	int gshape = get_guard_shape(main_actor->get_tile());
-	if (witness || (witness = find_witness(closest, false)) != 0)
+	int gshape = get_guard_shape(),
+	    align = witness ? witness->get_effective_alignment() : Actor::neutral;
+	if (witness || (witness = find_witness(closest, align)) != 0)
 		{
 		if (witness->is_goblin())
 			{
@@ -2898,7 +2906,7 @@ void Game_window::call_guards
 		}
 	if (gshape < 0)	// No local guards; lets forward to attack_avatar.
 		{
-		attack_avatar(0);
+		attack_avatar(0, align);
 		return;
 		}
 
@@ -2932,12 +2940,13 @@ void Game_window::call_guards
 
 void Game_window::attack_avatar
 	(
-	int create_guards		// # of extra guards to create.
+	int create_guards,		// # of extra guards to create.
+	int align
 	)
 	{
 	if (armageddon)
 		return;
-	int gshape = get_guard_shape(main_actor->get_tile());
+	int gshape = get_guard_shape();
 	if (gshape >= 0 && !in_dungeon)
 		{
 		while (create_guards--)
@@ -2952,16 +2961,23 @@ void Game_window::attack_avatar
 			}
 		}
 
+	int numhelpers = 0;
+	int const maxhelpers = 3;
 	Actor_vector npcs;		// See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20, 0x28);
 	for (Actor_vector::const_iterator it = npcs.begin(); 
-							it != npcs.end();++it)
+							it != npcs.end() && numhelpers < maxhelpers; ++it)
 		{
 		Actor *npc = *it;
-					// No monsters, except guards; unless no local guards.
-		if ((gshape < 0 || npc->get_shapenum() == gshape || !npc->is_monster())
-				&& !npc->is_in_party())
+		if (npc->can_act() && !npc->is_in_party() && npc->is_sentient() &&
+				(gshape < 0 || npc->get_shapenum() == gshape ||
+				  align == npc->get_effective_alignment()) &&
+				// Only if can get there.
+				Fast_pathfinder_client::is_grabable(npc, main_actor))
+			{
+			numhelpers++;
 			npc->set_target(main_actor, true);
+			}
 		}
 			// Guaranteed way to do it.
 		MyMidiPlayer *player = Audio::get_ptr()->get_midi();

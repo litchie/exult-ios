@@ -371,11 +371,11 @@ public:
 	void schedule_npcs(int hour, int backwards = 7, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
 					// Find witness to Avatar's 'crime'.
-	Actor *find_witness(Actor *& closest_npc, bool for_theft);
+	Actor *find_witness(Actor *& closest_npc, int align);
 	void theft();			// Handle thievery.
-	static int get_guard_shape(Tile_coord const& pos);
+	static int get_guard_shape();
 	void call_guards(Actor *witness = 0, bool theft = false);
-	void attack_avatar(int num_guards = 0);
+	void attack_avatar(int num_guards = 0, int align = 0);
 	bool is_hostile_nearby(); // detects if hostiles are nearby for movement speed
 	bool failed_copy_protection();
 	void got_bad_feeling(int odds);
