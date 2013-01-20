@@ -1,3 +1,8 @@
+2013-01-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* content/makefile_builder.sh: Updated to work without doing a 'clean'.
+	* content/{bgkeyring,sifixes}/{README,Readme.txt}: Massive update, clean-up
+	  and reformatting.
+
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of
 	  resuming their schedule on reload.
