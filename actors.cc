@@ -1824,13 +1824,7 @@ void Actor::restore_schedule
 			{
 			old_schedule_loc = schedule_loc;
 			restored_schedule = schedule_type;
-				// If far enough away, use set_schedule_and_loc so that the NPC
-				// walks to schedule (prevents some cases of sleeping on the
-				// wrong bed).
-			if (distance(schedule_loc) > 12)
-				set_schedule_and_loc(schedule_type, schedule_loc);
-			else
-				set_schedule_type(schedule_type);
+			set_schedule_type(schedule_type);
 			}
 		}
 	}
