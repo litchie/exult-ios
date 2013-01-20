@@ -19,6 +19,10 @@
 	Rev 7315
 	* gamewin.cc: Fixed bug #3601519 "Breaking glass displays results in guards
 	  attacking" by having guards try to arrest for theft on all cases.
+	Rev 7316
+	* all: Alignments are an enum of Actor class, not Npc_actor.
+	* gamewin.cc: Crickets are now random, instead of adding large random delays
+	  to background music change. Defined private enum for BGM states.
 
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of
