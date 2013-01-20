@@ -23,6 +23,10 @@
 	* all: Alignments are an enum of Actor class, not Npc_actor.
 	* gamewin.cc: Crickets are now random, instead of adding large random delays
 	  to background music change. Defined private enum for BGM states.
+	Rev 7317
+	* actors.cc: Partially reverted rev #7304 as it breaks BG intro.
+	* monsters.cc: Don't ask for tile before we know we have one (reduces stdout
+	  noise).
 
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of

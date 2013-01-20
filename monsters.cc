@@ -648,9 +648,11 @@ void Slime_actor::move
 	)
 	{
 					// Save old pos.
-	Tile_coord pos = get_tile();
+	Tile_coord pos;
 	if (is_pos_invalid())		// Invalid?
 		pos = Tile_coord(-1, -1, -1);
+	else
+		pos = get_tile();
 	Monster_actor::move(newtx, newty, newlift, newmap);
 					// Update surrounding frames (& this).
 	update_frames(pos, get_tile());
