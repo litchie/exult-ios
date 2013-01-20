@@ -20,50 +20,56 @@ Author: Marzo Sette Torres Junior
 e-mail: marzojr@yahoo.com
 version: 0.11.25
 
-	This mod (the so called "Keyring Mod") contains a lot of small
-	modifications to the Ultima 7: Black Gate game WITH the Forge
-	of Virtue add-on. There are also a number of not-so-small changes.
-	There is a lot of original usecode and art in the mod too.
+	This mod (the so called "Keyring Mod") contains a lot of small modifications
+	to the Ultima 7: Black Gate game WITH the Forge of Virtue add-on. There are
+	also a number of not-so-small changes. There is a lot of original usecode
+	and art in the mod too.
 
-	There are many acknowledgements I have to make. One is for Team
-	Lazarus; I borrowed some ideas for the Shrines and Codex from
-	them. The other acknowledgements are to those that gave me some
-	useful suggestions in the old Phorum thread. They are Crysta the Elf,
-	gruck, Gradilla Dragon, Dominus and Artaxerxes.
+	There are many acknowledgements I have to make. One is for Team Lazarus; I
+	borrowed some ideas for the Shrines and Codex from them.
+	
+	The other acknowledgements are to those that gave me some useful suggestions
+	in the old Phorum thread. They are Crysta the Elf, gruck, Gradilla Dragon,
+	Dominus and Artaxerxes.
 
-	I must also thank Crysta the Elf for some graphics she made/edited.
-	The full list is in the version history, below.
+	I must also thank Crysta the Elf for some graphics she made/edited. The full
+	list is in the version history, below.
 
-	Also, the structure of the mod is based on Alun Bestor's Quests and
-	Iteractions mod.
+	Also, I must acknowledge the fact that the structure of the mod is based on
+	Alun Bestor's Quests and Iteractions mod, which is included almost entirely.
 
 2	Installing the mod
 ----------------------
-	First, I must be explicit that I have tested this mod *only* with
-	Forge of Virtue add-on installed; it will *not* work without that
-	add-on since it uses some of the add-on's data.
-
-	Secondly (and just as importantly), this mod is will *not* work in
-	Exult 1.2, nor it will work on any but *the* latest snapshots. There
-	were some bugs I had to fix to get everything working as is.
-
-	With that out of the way: to install the mod, simply unzip the contents
-	of the zip file into your Black Gate's 'mods' folder. By default (that
-	is, unless you changed it specifically in your 'Exult.cfg' file), this
-	would be the 'mods' subdirectory of the path you set for Black Gate in
-	your 'Exult.cfg' file. If the folder is not there, simply create an empty
-	folder called 'mods' in your Black Gate directory and proceed as above.
+	Note: These instructions are for installing from the zip distribution found
+	on my website. If you want to build it yourself, its source code is included
+	with Exult's source in the "content/bgkeyring directory". In it, there is a
+	README file with instructions for building it.
 	
-	There are two optional (but highly recommended) additional steps you may
-	want to perform:
+	First, I must be explicit that I have tested this mod *only* with Forge of
+	Virtue add-on installed; it will *not* work without that add-on since it
+	uses some of the add-on's data.
 
-	OPTIONAL: You can create a shortcut to start Exult directly in the
-	Keyring mod. To do so, make sure that the command-line is similar to
-	the following example:
+	Secondly (and just as importantly), this mod is will NOT work in Exult 1.2,
+	and neither will work on any but *the* latest snapshots. There were several
+	bugs and new features I had to fix to get everything working as is.
+
+	With that out of the way: to install the mod, simply unzip the contents of
+	the zip file into your Forge of Virtue's 'mods' folder. By default (that is,
+	unless you changed it specifically in your 'Exult.cfg' file), this would be
+	the 'mods' subdirectory of the path you set for Forge of Virtue in your
+	'Exult.cfg' file. If the folder is not there, simply create an empty folder
+	called 'mods' in your Forge of Virtue directory and proceed as above.
+	
+	There are two optional (but highly recommended) additional steps you might
+	want to do:
+
+	OPTIONAL: You can create a shortcut to start Exult directly in the Keyring
+	mod. To do so, make sure that the command-line is similar to the following
+	example:
 		<path to Exult>\Exult --fov --mod Keyring
-	You can use the supplied 'Keyring.ico' file for the shortcut (if you
-	use Windows) or use the supplied 'Keyring.png' file to make your own
-	icon for other OSes.
+	You can use the supplied 'Keyring.ico' file for the shortcut (if you use
+	Windows) or use the supplied 'Keyring.png' file to make your own icon for
+	other OSes.
 
 	OPTIONAL: This mod adds a custom keybinding *patch* file, which alters what
 	two key combinations do:
@@ -77,22 +83,21 @@ version: 0.11.25
 
 3	Contributing to this mod
 ----------------------------
-	If you have any bugs that you would like to see fixed -- or that you
-	*have* fixed -- please send them to me! You can either e-mail them
-	to me or you can post them in the Exult Phorum.
+	If you have any bugs that you would like to see fixed -- or that you *have*
+	fixed -- please send them to me! You can either e-mail them to me or you can
+	post them in the Exult Phorum.
 
 4	Using it in your own mods
 -----------------------------
-	You are free to use anything I have written in your own mods;
-	I ask only that you give me proper credit -- and maybe tell me
-	about the mod you are doing, as I might be interested enough to
-	help and/or to include as a part of this mod.
+	You are free to use anything I have written in your own mods; I ask only for
+	proper credit -- and maybe tell me about the mod you are doing, as I might
+	be interested enough to help and/or to include as a part of this mod.
 
-	In previous releases of this mod, the mod's full source was included
-	in the zip file. Starting with version 0.11.01, only the files required
-	to play the mod are included. You can obtain the source of the mod in
-	the Exult source code, available at the 'Downloads' page or through
-	anonymous CVS. It is in the 'content/bgkeyring' directory.
+	In previous releases of this mod, the mod's full source was included in the
+	zip file. Starting with version 0.11.01, only the files required to play the
+	mod are included. You can obtain the source of the mod in the Exult source
+	code, available at the 'Downloads' page or through anonymous SVN access.
+	It is in the 'content/bgkeyring' directory.
 
 5	What this mod does
 ----------------------
@@ -100,83 +105,82 @@ version: 0.11.25
 	new NPCs, several new items and graphics and the following things:
 	- You can now meditate at the Shrines of the Virtues.
 	- You can now view the Codex; you must be in a sacred quest, though.
-	- A brand new Shrine of the Codex, based on the one at the Mysterious
+	- A brand new Shrine of the Codex, based on the image from the Mysterious
 	  Sosaria website.
-	- The three items of Principles (Book of Truth, Candle of Love and
-	  Bell of Courage), as well as the three Flames of Principles.
-	- Lock Lake Cleanup: Once Miranda's bill is signed, the Lake will
-	  be gradually cleaned up of garbage.
-	- A brand new Shrine of Spirituality and a basement for Serpent's Hold,
-	  where the Flame of Courage is located. Both are located in a new map,
-	  thus using Exult's Multimap support.
+	- The three items of Principles (Book of Truth, Candle of Love and Bell of
+	  Courage), as well as the three Flames of Principles.
+	- Lock Lake Cleanup: Once Miranda's bill is signed, the Lake will be slowly
+	  and gradually cleaned up of garbage.
+	- A brand new Shrine of Spirituality and a new basement for Serpent's Hold,
+	  where the Flame of Courage is located. Both are located in a new map, thus
+	  using Exult's Multimap support.
 	- An improved Orb of the Moons, allowing you to visit the shrines too.
-	- Innkeepers will reclaim the room keys when you are leaving the inn.
-	  They will also lock the doors and make the beds.
-	- The rudiments of a brand-new spellcasting system which allows NPCs
-	  to cast spells are now in place. Each NPC has his/her own spellcasting
-	  item which can be used to cast spells, and they will use mana and
-	  reagents. There are also some new NPC-only spells.
+	- Innkeepers will reclaim the room keys when you are leaving the inn. They
+	  will also lock the doors and make the beds.
+	- The rudiments of a brand-new spellcasting system which allows NPCs to cast
+	  spells are now in place. Each NPC has his/her own spellcasting item which
+	  can be used to cast spells, and they will use mana and reagents. There are
+	  also some new NPC-only spells.
 	- The 'Iteractions' mod by Alun Bestor; you can bake pastries, forge swords,
 	  milk cows, shear sheep...
-	- The 'Avatar Pack' mod by yours truly, with several shiny new portraits
-	  for your avatar.
-	- NPCs can now cast spells too! The system is very rudimentary yet, being
-	  dialog based, but there are plans for major improvements in the future.
-	- Lord British now has his Crown Jewels. They don't do everything they should
-	  yet, but they are unbalanced already if you get your filthy hands on them.
+	- The 'Avatar Pack' mod by yours truly, with several shiny new portraits for
+	  your avatar.
+	- NPCs can now cast spells too! The spellcasting system is very rudimentary,
+	  being dialog based, but it will get better in the future.
+	- Lord British now has his Crown Jewels, based on their Ultima 5 versions.
+	  They don't do everything they should yet, but they are unbalanced already
+	  if you get your filthy hands on them.
 	- A rollable flying carpet you can carry around, which replaces the original
 	  flying carpet.
 
 6	Spoilers
 ------------
-	So, you can't keep away... very well. Here they are. Proceed at your
-	own peril...
+	So, you just can't keep away... fine: here they are.
+	Proceed at your own peril...
 
 	Keyring Spoilers
 	----------------
-		- The Quest is started by Zauriel. He is located just outside of
-		  Lord British's castle. You can't miss him :-)
+		- The Quest is started by Zauriel. He is located just outside of  Lord
+		  British's castle. You can't miss him :-)
 		- Most dialogs have a 'shortcut' out with no ill effects.
 		- You must be very powerful to survive the quest.
-		- Try hackmoving Laurianna to Zauriel without giving her some
-		  blackrock first. Then talk to Zauriel.
-		- It is Laurianna that will give you the keyring. She will only
-		  do so *after* you give her Zauriel's Journal.
-		- Using the keyring on the Avatar causes all party keys to be
-		  added to it.
+		- Try hackmoving Laurianna to Zauriel without giving her some blackrock
+		  first. Then talk to Zauriel.
+		- It is Laurianna that will give you the keyring. She will only do so
+		  *after* you give her Zauriel's Journal.
+		- Use the keyring on the Avatar to add all party keys to it.
 
 	Shrines of Virtues
 	------------------
-		- The Shrine of Sacrifice starts out defiled; you can restore it
-		  with the correct Word of Power.
-		- Before cleasing the Shrine of Sacrifice, look for the "Book of
-		  Forgotten Mantras" and take it with you. When you choose to say
-		  a Mantra, you can also select those from the book.
-		- After you meditate for the right amount of cycles and with the
-		  right mantra, each shrine will give you a quest to go see the
-		  Codex of Ultimate Wisdom.
-		- After going through seven shrines, and if you don't have access
-		  to the Shrine of Spirituality, you will be able to attune the
-		  white Virtue Stone to the Shrine with the Codex. Be sure to
-		  have a way out, or you may be trapped!
+		- The Shrine of Sacrifice starts out defiled; you can restore it  with
+		  the correct Word of Power.
+		- Before cleasing the Shrine of Sacrifice, find the "Book of Forgotten
+		  Mantras" and take it with you.
+		- After you meditate for the right amount of cycles and with the right
+		  mantra, each shrine will give you a quest to see the Codex of Ultimate
+		  Wisdom. This allows you to go pst the guardians.
+		- After going through seven shrines, and if you don't have access to the
+		  Shrine of Spirituality, you will be able to attune the white Virtue
+		  Stone to the Shrine with the Codex. Be sure to have a way out, or you
+		  may be trapped!
 		- Returning to the Shrine after seeing the Codex gives you a reward.
 
 	Shrine of the Codex
 	-------------------
 		- You can only enter if you are in a sacred quest.
-		- You must have both lenses to view the Codex. You can double-click
-		  the lenses to rotate them.
-		- Be sure to carry the lenses with you, or they may be trapped inside
-		  the shrine if you can no longer enter!
-		- Returning the Items of Principles to their original places is the
-		  right thing to do.
+		- You must have both lenses to view the Codex. You can double-click the
+		  lenses to rotate them.
+		- Make sure to carry the lenses with you on your way out -- otherwise,
+		  they may be trapped inside the shrine if you can no longer enter!
+		- Returning the Items of Principles to their rightful places is always
+		  the right thing to do.
 		- Try teleporting inside the Shrine and viewing the Codex when you are
 		  not on a quest to see it.
 
 	Improved Orb of the Moons
 	-------------------------
-		- You can now teleport to the Shrines too; just throw the orb far
-		  from you. Here are the new destinations of the Orb:
+		- You can now teleport to the Shrines too; just throw the orb far from
+		  you. Here are the new destinations of the Orb:
 		Honesty                         Compassion                  Valor
 
 		                Moonglow        Britain         Jhelom
@@ -189,8 +193,8 @@ version: 0.11.25
 
 	Lock Lake Cleanup
 	-----------------
-		- Eventually, Mack's key will be in possession of Lord Heather. You
-		  can ask him for it.
+		- Eventually, Mack's key will be in possession of Lord Heather. You can
+		  ask him for it.
 
 7	Version history
 -------------------

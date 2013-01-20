@@ -192,7 +192,7 @@ $datafiles_mingw"
 			dirrule="${dirname#$moddir/}"
 			dirrule="${dirrule//[^a-zA-Z0-9]/}"
 			# Gather files. Maybe replace with a more targetted list?
-			dirfiles=$(find $dirname -maxdepth 1 -type f \! -iname "*.h" | sort)
+			dirfiles=$(find $dirname -maxdepth 1 -type f \( \! -iname "*.h" -a \! -iname "*~" -a \! -iname "usecode" -a \! -iname "*.flx" -a \! -iname "*.vga" \) -o -iname "combos.flx" -o -iname "minimaps.vga" | sort)
 			if [[ -n "$dirfiles" || -n "$datafiles_am" ]]; then
 				echo "${moddir}${dirrule}dir = $destdir_am/${dirname#$moddir/}
 " >> $modmakefile_am

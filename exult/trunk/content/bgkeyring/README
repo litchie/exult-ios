@@ -1,39 +1,37 @@
-You can obtain a full build of the Keyring mod at the author's website:
-http://www.seventowers.org/
+You can obtain a full build of the BG Keyring mod at the author's website:
+http://seventowers.thefeudallands.ca/
 
-If, instead, you want to build it yourself, you will have to obtain UCC and expack;
-both can be built from source (or, if you use Windows, you can obtain a copy of
-them in the Tools Snapshot in the Exult Downloads page).
+To build it yourself, there are 4 different methods:
 
-It is recommended that you place both executables in your system's PATH variable
-(whether by placing them in a directory found in that variable or by adding the
-directory they are in to said variable); I will assume that you have done so.
+1)	The Autotools way: If you have gotten the mod together with Exult's source,
+	and you will be building Exult/ES too using Autotools, just add the options
+	"--enable-compiler --enable-mods" to "./configure" and they will get built
+	when you build Exult and installed when you install Exult. They will install
+	to "$DATAROOTDIR/exult/{base-game}/mods", which may need some tweaking in
+	".exult.cfg".
 
-Then you proceed with:
-  1) Change to the 'bgkeyring/src' directory and run "ucc -o usecode usecode.uc";
+2)	The MinGW way: If you are using MinGW, go into the "content/bgkeyring" and
+	call "make -f Makefile.mingw". Assumes you have UCC and ExPack, or have a
+	way to compile them. You should edit the first few variables for the correct
+	paths for tools and installation.
+	
+3)	Scripts: There are two scripts in "content/bgkeyring/src": "make.bat" (for
+	Windows) and "make.sh" (for POSIX systems with bash); both scripts require
+	UCC and ExPack. Call te appropriate one and you are done.
 
-  2) Run "expack -i faces.in", "expack -i gumps.in", "expack -i paperdol.in" and
-     "expack -i shapes.in" "expack -i mainshp.in" (in any order you prefer);
+4)	The manual way: You will need UCC and ExPack to do it. You can do it in any
+	order you want, but you have to:
+	(a)	Change to the "content/sifixes/src" directory;
+	(b) run "expack -i *.in";
+	(c) run "ucc -o ../data/usecode usecode.uc".
 
-  3) Move the 'usecode' file (generated in (1), above) to 'bgkeyring/data'.
-
-Congratulations, the 'bgkeyring/data' directory now contains all that is needed
-to run the Keyring mod.
-
-There are script files for automating this proccess (both in 'bgkeyring/src'):
-  1) Windows users can run the supplied 'make.bat' DOS Batch file;
-
-  2) Users of POSIX-compliant systems can use the supplied 'make.sh' script.
-
-Be aware that both script files file assume that UCC and Expack are somewhere
-in your PATH variable.
-
-To actually use the Keyring mod in Exult, you will need to use the 'Keyring.cfg'
+To actually use BG Keyring mod in Exult, you will need to use the 'Keyring.cfg'
 found in the same directory as this file, as well as needing to know the path to
-your BG's 'mods' directory. The 'mods' directory is usually a directory called
-'mods' you create in the same level as your BG's 'STATIC' directory.
+your Forge of Virtue's 'mods' directory. The 'mods' directory is, by default,
+called 'mods', and should be created in the same level as your Forge of Virtue's
+'static' directory.
 
-Then, to install the Keyring mod:
+Then, to install BG Keyring mod:
 
   1) Copy the supplied 'Keyring.cfg' to your mods folder.
   
