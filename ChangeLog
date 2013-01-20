@@ -4,6 +4,10 @@
 	  and reformatting.
 	Rev 7312
 	* combat.cc: Combat music should start if the avatar is targetting an NPC.
+	Rev 7313
+	* actors.cc: Doing a raw intelligence check causes some animals to be able
+	  to open doors; so I am basing the sentince test only on monster intellect,
+	  which is 10 for 'default' monster information.
 
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of

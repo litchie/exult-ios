@@ -3985,14 +3985,16 @@ bool Actor::can_speak() const
 
 bool Actor::is_sentient() const
 {
-		// +++++Check for intelligence; guessing how to do it.
+#if 0
+	// +++++Check for intelligence; guessing how to do it.
 	if (get_info().get_shape_class() == Shape_info::human ||
 			get_effective_prop(Actor::intelligence) >= 6)
 		return true;
-		// Also try based on average monster intelligence
-		// (Fawn guards need this half the time).
-	Monster_info *minf = get_info().get_monster_info();
-	return minf && minf->get_intelligence() >= 6;
+#endif
+	// Try based on average monster intelligence (prevents some random animals
+	// from opening doors or assisting in battle).
+	Monster_info *minf = get_info().get_monster_info_safe();
+	return minf->get_intelligence() >= 6;
 }
 
 /*
