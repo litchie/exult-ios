@@ -8,6 +8,14 @@
 	* actors.cc: Doing a raw intelligence check causes some animals to be able
 	  to open doors; so I am basing the sentince test only on monster intellect,
 	  which is 10 for 'default' monster information.
+	Rev 7314
+	* all: Research into the originals shows that only neutral NPCs and guards
+	  call guards -- good NPCs ignore theft, murder and being attacked, evil and
+	  chaotic are out for your blood anyway. Based on this, I revamped the call
+	  guards/attack avatar bit so only neutral NPCs and guards call guards and
+	  NPCs of all alignments help NPCs of the same alignment, while ignoring any
+	  friendly fire. Disabled actors no longer call for help -- instead, if any
+	  sympathetic witnesses are nearby, they will call for help and assist.
 
 2013-01-19	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* readnpcs.cc: Fixed bug that caused monster actors to go away instead of

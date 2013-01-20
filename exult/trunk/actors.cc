@@ -2742,33 +2742,50 @@ void Actor::fight_back
 	if (!target && !is_in_party())
 		set_target(npc, npc->get_schedule_type() != Schedule::duel);
 	// Being a bully?
-	if (npc->is_in_party() && !is_in_party() && 
-	    (get_shapenum() == Game_window::get_guard_shape(get_tile()) ||
-			(npc_num > 0 && get_effective_alignment() <= Actor::good &&
-			 get_info().get_shape_class() == Shape_info::human)))
+	if (npc->is_in_party() && !is_in_party() && is_sentient())
 		{
-		static long lastcall = 0L;	// Last time yelled.
-		long curtime = SDL_GetTicks();
-		long delta = curtime - lastcall;
-		if (delta > 10000)	// Call if 10 secs. has passed.
+		Actor *witness = this, *closest = 0;
+		int align = get_effective_alignment();
+		// Attack avatar if the NPC is not disabled...
+		if (can_act() ||
+		    // ... or if there is a sympathetic witness or local guard...
+				(witness = gwin->find_witness(closest, align)) != 0 ||
+		    // ... or if there is someone sympathetic nearby who heard it.
+				((witness = closest) != 0 && rand()%10 == 0))
 			{
-			if (!gwin->is_in_dungeon())
-				{	   // Don't say anything if in a dungeon.
+			static long lastcall = 0L;	// Last time yelled.
+			long curtime = SDL_GetTicks();
+			long delta = curtime - lastcall;
+				// Call if 10 secs. has passed or by the luck of the die.
+			if ((delta > 10000) || (rand()%20 == 0))
+				{
+				int numguards = 0, gshape = Game_window::get_guard_shape();
+					// No guards in dungeons or if gshape < 0.
+				if (!gwin->is_in_dungeon() && gshape >= 0 &&
+				    // And only neutral NPCs and guards call more guards.
+						(witness->get_shapenum() == gshape ||
+							align == Actor::neutral))
+					numguards = 1 + rand()%2;
+
 				eman->remove_text_effect(this);
-				if (is_goblin())
-					say(first_goblin_call_police, last_goblin_call_police);
-				else if (can_speak())
-					say(first_call_police, last_call_police);
+				if (numguards > 0)
+					{   // Call guards.
+					if (witness->is_goblin())
+						witness->say(first_goblin_call_police, last_goblin_call_police);
+					else if (witness->can_speak())
+						witness->say(first_call_police, last_call_police);
+					}
+				else
+					{   // Cry for help.
+					if (witness->is_goblin())
+						witness->say(goblin_need_help);
+					else if (witness->can_speak())
+						witness->say(first_need_help, last_need_help);
+					}
+				// To reduce the guard pile-up.
+				lastcall = curtime;
+				gwin->attack_avatar(numguards, align);
 				}
-			lastcall = curtime;
-			gwin->attack_avatar(1 + rand()%2);
-			}
-		else if (rand()%20 == 0)
-			{
-			cout << "Rand()%20" << endl;
-			gwin->attack_avatar(1 + rand()%2);
-			// To reduce the guard pile-up.
-			lastcall = curtime;
 			}
 		}
 	}
