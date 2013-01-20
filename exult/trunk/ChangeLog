@@ -12,6 +12,9 @@
 	* actors.cc: Arrest schedule does not seek foes. Local guards call for more
 	  guards. All together, this fixes bug #3599723 "guards that were called by
 	  npcs stop attacking on reload".
+	Rev 7309
+	* actors.cc, schedule.*: Implemented graze schedule, fixing bug #3601321
+	  "Graze schedule not working properly".
 
 2013-01-19	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* shape_info.txt: Fix typos that caused books to run the wrong usecode. This

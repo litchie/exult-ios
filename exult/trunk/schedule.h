@@ -302,6 +302,18 @@ public:
 	};
 
 /*
+ *	Graze within a rectangle.
+ */
+class Graze_schedule : public Loiter_schedule
+	{
+protected:
+	int phase;
+public:
+	Graze_schedule(Actor *n, int d = 12) : Loiter_schedule(n, d), phase(0) {  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Kid games.
  */
 class Kid_games_schedule : public Loiter_schedule
