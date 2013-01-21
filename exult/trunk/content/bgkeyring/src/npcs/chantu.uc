@@ -56,7 +56,7 @@ void Chantu object#(0x411) ()
 				say("@'Tis a sad state for Britannia when events such as these happen. Christopher was a good man. I hope that the villain is caught.@");
 			
 			case "services":
-				//chantuHeal(15, 30, 400);
+				//chantuHeal(30, 50, 400);
 				serviceHeal();
 			
 			case "Fellowship" (remove):
