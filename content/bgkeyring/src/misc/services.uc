@@ -163,6 +163,11 @@ var promptForPayment (var price, var dialog)
 				say(dialog[4]);
 				return false;
 			}
+			else
+			{
+				chargeGold(price);
+				return true;
+			}
 		}
 		else
 		{

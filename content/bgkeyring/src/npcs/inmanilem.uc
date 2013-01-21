@@ -25,7 +25,7 @@
  */
 
 //Externs:
-extern void inmanilemHeal 0x89D (var price_heal, var price_cure, var price_resurrect);
+//extern void inmanilemHeal 0x89D (var price_heal, var price_cure, var price_resurrect);
 extern void scheduleGargishBarks 0x92F (var npc);
 
 void Inmanilem object#(0x4B6) ()
