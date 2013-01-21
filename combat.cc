@@ -190,7 +190,7 @@ void Combat_schedule::stop_attacking_invisible
 						it != nearby.end(); ++it)
 		{
 		Actor *actor = *it;
-		if (actor->get_target() == npc && actor->can_see_invisible())
+		if (actor->get_target() == npc && !actor->can_see_invisible())
 			actor->set_target(0);
 		}
 	}
