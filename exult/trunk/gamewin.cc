@@ -1865,7 +1865,7 @@ void Game_window::start_actor_alt
 			blocked[dir] = true;
 	}
 
-	dir = Get_direction (ay - winy, winx - ax);
+	dir = Get_direction_NoWrap (ay - winy, winx - ax);
 
 	if (blocked[dir] && !blocked[(dir+1)%8])
 		dir = (dir+1)%8;

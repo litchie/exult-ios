@@ -24,6 +24,20 @@
 #endif
 
 #include "dir.h"
+#include "exult_constants.h"
+
+static int Wrap_Delta
+	(
+	int delta
+	)
+{
+	if (delta >= c_num_tiles/2)// World-wrapping.
+		return  c_num_tiles/2 - delta;
+	else if (delta <= -c_num_tiles/2)
+		return -c_num_tiles/2 - delta;
+	else
+		return delta;
+}
 
 /*
  *	Return the direction for a given slope (0-7).
@@ -31,7 +45,7 @@
  *		growing downwards).
  */
 
-Direction Get_direction
+Direction Get_direction_NoWrap
 	(
 	int deltay,
 	int deltax
@@ -57,6 +71,21 @@ Direction Get_direction
 }
 
 /*
+ *	Return the direction for a given slope (0-7).
+ *	NOTE:  Assumes cartesian coords, NOT screen coords. (which have y
+ *		growing downwards).
+ */
+
+Direction Get_direction
+	(
+	int deltay,
+	int deltax
+	)
+{
+	return Get_direction_NoWrap(Wrap_Delta(deltay), Wrap_Delta(deltax));
+}
+
+/*
  *	Return the direction for a given slope (0-7), rounded to NSEW.
  *	NOTE:  Assumes cartesian coords, NOT screen coords. (which have y
  *		growing downwards).
@@ -68,6 +97,8 @@ Direction Get_direction4
 	int deltax
 	)
 {
+	deltax = Wrap_Delta(deltax);
+	deltay = Wrap_Delta(deltay);
 	if (deltax >= 0)		// Right side?
 		return (deltay > deltax ? north : deltay < -deltax ? south
 								: east);
@@ -88,6 +119,8 @@ int Get_direction16
 	int deltax
 	)
 {
+	deltax = Wrap_Delta(deltax);
+	deltay = Wrap_Delta(deltay);
 	if (deltax == 0)
 		return deltay > 0 ? 0 : 8;
 	int dydx = (1024*deltay)/deltax;// Figure 1024*tan.

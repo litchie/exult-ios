@@ -2128,7 +2128,7 @@ static void Shift_wizards_eye
 					// Figure dir. from center.
 	int cx = gwin->get_width()/2, cy = gwin->get_height()/2;
 	int dy = cy - my, dx = mx - cx;
-	Direction dir = Get_direction(dy, dx);
+	Direction dir = Get_direction_NoWrap(dy, dx);
 	static int deltas[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1, 
 						-1,1, -1,0, -1,-1};
 	int dirx = deltas[2*dir], diry = deltas[2*dir + 1];
@@ -2177,7 +2177,7 @@ void Wizard_eye
 				Mouse::mouse->move(mx, my);
 				Mouse::mouse->set_shape(
 					Mouse::mouse->get_short_arrow(
-					Get_direction(cy - my, mx - cx)));
+					Get_direction_NoWrap(cy - my, mx - cx)));
 				Mouse::mouse_update = true;
 				break;
 				}
