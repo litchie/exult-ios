@@ -1,5 +1,7 @@
 2013-01-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/bgkeyring/*: Healing services were not charging any money.
+	Rev 7319
+	* all: World-wrapping for finding directions.
 
 2013-01-20	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/makefile_builder.sh: Updated to work without doing a 'clean'.

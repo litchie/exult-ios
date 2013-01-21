@@ -37,6 +37,11 @@ enum Direction
 	northwest = 7
 	};
 
+Direction Get_direction_NoWrap
+	(
+	int deltay,
+	int deltax
+	);
 Direction Get_direction
 	(
 	int deltay,
