@@ -32,7 +32,7 @@ class Combat_mode_button;
  */
 class Actor_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Actor_gump);
+	UNREPLICATABLE_CLASS_I(Actor_gump, Gump());
 
 protected:
 	static short coords[24];	// Coords. of where to draw things,

@@ -68,7 +68,7 @@ class GameplayOptions_gump : public Modal_gump
 		id_frames,
 		id_smooth_scrolling,
 		id_paperdolls,
-		id_count,
+		id_count
 	};
 	Gump_button* buttons[id_count];
 
