@@ -45,7 +45,7 @@ public:
  */
 class Notebook_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Notebook_gump);
+	UNREPLICATABLE_CLASS_I(Notebook_gump, Gump());
 	static vector<One_note *> notes;// The text.
 					// Indexed by page#.
 	static vector<Notebook_top> page_info;

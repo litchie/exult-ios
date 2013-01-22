@@ -53,7 +53,7 @@ class MiscOptions_gump : public Modal_gump
 		id_show_hits,
 		id_mode,
 		id_charmDiff,
-		id_count,
+		id_count
 	};
 	Gump_button* buttons[id_count];
 

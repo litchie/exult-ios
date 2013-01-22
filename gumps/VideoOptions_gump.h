@@ -72,7 +72,7 @@ class VideoOptions_gump : public Modal_gump
 		id_fill_scaler,
 		id_fill_mode,
 		id_has_ac,
-		id_count,
+		id_count
 	};
 	Gump_button* buttons[id_count];
 

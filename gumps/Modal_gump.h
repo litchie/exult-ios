@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Modal_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Modal_gump);
+	UNREPLICATABLE_CLASS_I(Modal_gump, Gump());
 
 protected:
 	bool done;			// true when user clicks checkmark.

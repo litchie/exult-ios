@@ -47,7 +47,7 @@ class AudioOptions_gump : public Modal_gump
 		id_sfx_pack,
 		id_sfx_conv = id_sfx_pack,
 		id_speech_enabled,
-		id_count,
+		id_count
 		};
 	Gump_button* buttons[id_count];
 

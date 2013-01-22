@@ -71,6 +71,7 @@ public:
 	virtual void paint_button(Gump_button *btn);
 					// Paint it and its contents.
 	virtual void paint();
+	virtual bool handle_kbd_event(void *ev);
 	};
 
 /*

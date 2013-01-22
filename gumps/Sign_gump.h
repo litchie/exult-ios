@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Sign_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Sign_gump);
+	UNREPLICATABLE_CLASS_I(Sign_gump, Gump());
 
 protected:
 	std::string *lines;			// Lines of text.
