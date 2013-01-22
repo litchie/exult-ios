@@ -32,7 +32,7 @@ class Game_window;
  */
 class Gump_widget : public ShapeID
 {
-	UNREPLICATABLE_CLASS(Gump_widget);
+	UNREPLICATABLE_CLASS_I(Gump_widget, ShapeID());
 
 protected:
 	Gump_widget() : parent(0) {  }

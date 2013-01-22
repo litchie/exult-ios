@@ -108,7 +108,7 @@ bool Page_button::activate
 	)
 	{
 	if (button != 1) return false;
-	((Spellbook_gump *) parent)->change_page(leftright ? 1 : -1);
+	reinterpret_cast<Spellbook_gump *>(parent)->change_page(leftright ? 1 : -1);
 	return true;
 	}
 
@@ -136,7 +136,7 @@ void Bookmark_button::set
 	(
 	)
 	{
-	Spellbook_gump *sgump = (Spellbook_gump *) parent;
+	Spellbook_gump *sgump = reinterpret_cast<Spellbook_gump *>(parent);
 	Rectangle& object_area = sgump->object_area;
 	int spwidth = sgump->spwidth;	// Spell width.
 	Spellbook_object *book = sgump->book;
@@ -164,7 +164,7 @@ bool Bookmark_button::activate
 	)
 	{
 	if (button != 1) return false;
-	Spellbook_gump *sgump = (Spellbook_gump *) parent;
+	Spellbook_gump *sgump = reinterpret_cast<Spellbook_gump *>(parent);
 	int bmpage = sgump->book->bookmark/8;	// Bookmark's page.
 					// On a different, valid page?
 	if (bmpage >= 0 && bmpage != sgump->page)
@@ -201,7 +201,7 @@ bool Spell_button::activate
 	)
 	{
 	if (button != 1) return false;
-	((Spelltype_gump *) parent)->select_spell(spell);
+	reinterpret_cast<Spelltype_gump *>(parent)->select_spell(spell);
 	return true;
 	}
 
@@ -214,7 +214,7 @@ void Spell_button::double_clicked
 	int x, int y
 	)
 	{
-	((Spelltype_gump *) parent)->do_spell(spell);
+	reinterpret_cast<Spelltype_gump *>(parent)->do_spell(spell);
 	}
 
 /*
@@ -259,6 +259,7 @@ Spellbook_gump::Spellbook_gump
 	Spellbook_object *b
 	) : Spelltype_gump(SPELLBOOK), page(0), turning_page(0), book(b)
 {
+	handles_kbd = true;
 	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
 
 					// Where to paint page marks:
@@ -388,6 +389,7 @@ void Spellbook_gump::change_page
 		gwin->show();
 		SDL_Delay(50);		// 1/20 sec.
 		}
+	gwin->add_dirty(get_rect());
 	paint();
 }
 
@@ -496,8 +498,8 @@ void Spellbook_gump::paint
 			if (num > 0 || cheat.in_wizard_mode()) {
 				if ((num >= 1000 || cheat.in_wizard_mode()) && GAME_SI)
 					std::strcpy(text, "#"); // # = infinity in SI's font 5
-				else if (num > 99 || cheat.in_wizard_mode())
-					std::strcpy(text, "99");
+				else if (num >= 1000 || cheat.in_wizard_mode())
+					std::strcpy(text, "999");
 				else
 					snprintf(text, 6, "%d", num);
 			}
@@ -532,6 +534,69 @@ void Spellbook_gump::paint
 			turning_page = 0;	// Last one.
 		}
 	gwin->set_painted();
+}
+
+/*
+ *	Handle keystroke.
+ */
+
+bool Spellbook_gump::handle_kbd_event(void *vev)
+{
+	SDL_Event& ev = *static_cast<SDL_Event *>(vev);
+	int chr = ev.key.keysym.sym;
+
+	if (ev.type == SDL_KEYUP)
+		return true;		// Ignoring key-up at present.
+	if (ev.type != SDL_KEYDOWN)
+		return false;
+	switch (chr) {
+	case SDLK_RETURN:
+	case SDLK_KP_ENTER:
+		{
+		if (book->bookmark >= 0)
+			change_page(book->bookmark/8 - page);
+		break;
+		}
+	case SDLK_HOME:
+		change_page(0 - page);
+		break;
+	case SDLK_END:
+		change_page(8 - page);
+		break;
+	case SDLK_PAGEUP:
+		change_page(-1);
+		break;
+	case SDLK_PAGEDOWN:
+		change_page(1);
+		break;
+	case SDLK_LEFT:
+		select_spell((page * 8) | (book->bookmark & 3));
+		break;
+	case SDLK_RIGHT:
+		select_spell((page * 8) | (book->bookmark & 3) |  4);
+		break;
+	case SDLK_UP:
+		{
+		int snum = book->bookmark & 3;
+		if (snum == 0)
+			break;
+		int side = book->bookmark & 4;
+		select_spell((page * 8) | side | (snum - 1));
+		break;
+		}
+	case SDLK_DOWN:
+		{
+		int snum = book->bookmark & 3;
+		if (snum == 3)
+			break;
+		int side = book->bookmark & 4;
+		select_spell((page * 8) | side |  (snum + 1));
+		break;
+		}
+	default:
+		return false;
+	}
+	return true;
 }
 
 /*

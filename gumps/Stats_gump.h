@@ -29,7 +29,7 @@ class Actor;
  */
 class Stats_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Stats_gump);
+	UNREPLICATABLE_CLASS_I(Stats_gump, Gump());
 
 protected:
 	Actor *get_actor()

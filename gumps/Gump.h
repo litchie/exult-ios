@@ -37,7 +37,7 @@ class Gump_widget;
  */
 class Gump : public ShapeID, public Paintable
 {
-	UNREPLICATABLE_CLASS(Gump);
+	UNREPLICATABLE_CLASS_I(Gump, ShapeID());
 
 protected:
 	Gump() : ShapeID() {   };
@@ -127,7 +127,7 @@ public:
  */
 class Container_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Container_gump);
+	UNREPLICATABLE_CLASS_I(Container_gump, Gump());
 
 	void initialize(int shnum);		// Initialize object_area.
 

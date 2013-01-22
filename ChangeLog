@@ -1,4 +1,10 @@
 2013-01-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will
+	  change current page, arrow keys will move the bookmark, home/end will move
+	  to first/last page, enter moves to the bookmark.
+	* gumps/*.h: Removing some warnings.
+
+2013-01-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* content/bgkeyring/*: Healing services were not charging any money.
 	Rev 7319
 	* all: World-wrapping for finding directions.

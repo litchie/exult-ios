@@ -36,7 +36,7 @@ class Paperdoll_npc;
 class Paperdoll_gump : public Gump 
 {
 private:
-	UNREPLICATABLE_CLASS(Paperdoll_gump);
+	UNREPLICATABLE_CLASS_I(Paperdoll_gump, Gump());
 
 protected:
 

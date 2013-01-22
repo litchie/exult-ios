@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Text_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(Text_gump);
+	UNREPLICATABLE_CLASS_I(Text_gump, Gump());
 
 protected:
 	char *text;			// The text.

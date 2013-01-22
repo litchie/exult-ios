@@ -30,7 +30,7 @@ class Actor;
  */
 class CombatStats_gump : public Gump
 {
-	UNREPLICATABLE_CLASS(CombatStats_gump);
+	UNREPLICATABLE_CLASS_I(CombatStats_gump, Gump());
 
 public:
 	CombatStats_gump(int initx, int inity);
