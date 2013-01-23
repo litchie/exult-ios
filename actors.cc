@@ -2057,6 +2057,15 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord const& dest,
 	schedule->now_what();
 }
 
+static bool in_goblin_village(Actor const *npc)
+{
+	// These boundaries are exact, as far as I can tell; hack-move to the
+	// rescue.
+	static const Rectangle gobvillage(576, 1200, 256, 336);
+	Tile_coord loc = npc->get_tile();
+	return GAME_SI && gobvillage.has_world_point(loc.tx, loc.ty);
+}
+
 /*
  *	Get alignment, taking into account 'charmed' flag.
  */
@@ -2081,11 +2090,8 @@ int Actor::get_effective_alignment
 		// be desired there.
 		if (avatar || party_id >= 0 || !is_goblin() || gwin->is_in_dungeon())
 			return alignment;
-		// These boundaries are exact, as far as I can tell; hack-move to the
-		// rescue.
-		static const Rectangle gobvillage(576, 1200, 256, 336);
-		Tile_coord loc = get_tile();
-		if (gobvillage.has_world_point(loc.tx, loc.ty))
+
+		if (in_goblin_village(this))
 			return evil;
 		else
 			return alignment;
@@ -2104,11 +2110,9 @@ void Actor::set_effective_alignment
 	)
 	{
 	bool avatar = (this == gwin->get_main_actor());
-	if (!(flags&(1<<Obj_flags::charmed)) ||
-			(avatar && !Combat::charmed_more_difficult))
+	if (!(flags&(1<<Obj_flags::charmed)))
 		alignment = newalign;
-	else
-		charmalign = newalign;
+	charmalign = newalign;
 	}
 
 /*
@@ -2478,6 +2482,8 @@ void Actor::update_from_studio
 		npc->set_property(i, properties[i]);
 	npc->set_attack_mode(static_cast<Actor::Attack_mode>(attack_mode));
 	npc->set_alignment(alignment);
+	if (!(npc->flags&(1<<Obj_flags::charmed)))
+		npc->charmalign = alignment;
 	npc->flags = oflags;
 	npc->flags2 = xflags;
 	npc->type_flags = type_flags;
@@ -4534,8 +4540,7 @@ void Actor::die
 
 				// Is this a bad guy?
 				// Party defeated an evil monster?
-		if (npc->is_in_party() && !is_in_party() && 
-				alignment != neutral && alignment != good)
+		if (npc->is_in_party() && !is_in_party() && alignment >= evil)
 			Combat_schedule::monster_died();
 		}
 		// Move party member to 'dead' list.
@@ -5388,7 +5393,10 @@ void Npc_actor::handle_event
 			schedule->im_dormant();
 		return;
 		}
-	if (schedule && party_id < 0 && can_act() && 
+
+		// Goblins in goblin village should be overly aggressive.
+	if (is_goblin() && in_goblin_village(this) && party_id < 0 && can_act() &&
+			schedule &&
 			(schedule_type != Schedule::combat &&	// Not if already in combat.
 						// Patrol schedule already does this.
 				schedule_type != Schedule::patrol &&

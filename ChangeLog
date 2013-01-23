@@ -1,4 +1,12 @@
-2013-01-21	Marzo Sette Torres Junior <marzojr@yahoo.com>
+2013-01-23	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: A few improvements to charm alignment, which is now generally
+	  updated when alignment is and the NPC is not charmed. Inverted rev #7300
+	  so that only goblins in goblin ville are always on the lookout for foes.
+	  This matches the originals, in which only combat and patrol schedules will
+	  seek foes and fixes bug #3601595 "Bee's in Bee Cave Hostile before picking
+	  up honey".
+
+2013-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will
 	  change current page, arrow keys will move the bookmark, home/end will move
 	  to first/last page, enter moves to the bookmark.
