@@ -5,6 +5,8 @@
 	  This matches the originals, in which only combat and patrol schedules will
 	  seek foes and fixes bug #3601595 "Bee's in Bee Cave Hostile before picking
 	  up honey".
+	Rev 7323
+	* gamewin.cc: Fixed bug #3601596 "Music in Bee Cave conflict".
 
 2013-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will
