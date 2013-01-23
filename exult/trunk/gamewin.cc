@@ -214,12 +214,14 @@ void Background_noise::handle_event
 		if ((curr_track == -1 || laststate != currentstate) &&
 		    Audio::get_ptr()->is_music_enabled())
 		{
+			// Don't override bee cave music with dungeon music.
+			bool notbees = !GAME_BG || curr_track != 54;
 			// ++++ TODO: Need to come up with a way to replace repeating songs
 			// here, just so they don't loop forever.
 			// Conditions: not playing music, playing a background music
 			if (curr_track == -1 || is_bg_track(curr_track) ||
-			    ((currentstate == Dungeon || currentstate == DangerNear) &&
-			 	   !is_combat_music(curr_track)))
+			    (((currentstate == Dungeon && notbees) ||
+				  currentstate == DangerNear) && !is_combat_music(curr_track)))
 			{
 				//Not already playing music
 				int tracknum = 255;
