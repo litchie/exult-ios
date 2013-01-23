@@ -564,7 +564,7 @@ UCXT_OBJS=\
 	$(CONF_OBJS) \
 	$(ZIP_OBJS) \
 	$(FILE_OBJS) \
-	$(GAMEMGR_OBJS) \
+	gamemgr/modmgr.o \
 	usecode/ucxt/src/ops.o \
 	usecode/ucxt/src/ucdata.o \
 	usecode/ucxt/src/ucfunc.o \
