@@ -9,9 +9,13 @@ ucxt_SOURCES = \
 	ucfunc.cc
 
 ucxt_LDADD = \
-	$(SYSLIBS) \
 	../../../conf/libconf.la \
-	../../../files/libu7file.la
+	../../../gamemgr/libgamemgr.la \
+	../../../files/libu7file.la \
+	../../../files/zip/libminizip.la \
+	$(ZLIB_LIBS) \
+	$(SYSLIBS)
+	
 
 
 if BUILD_TOOLS

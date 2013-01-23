@@ -13,7 +13,7 @@ MODSDIR=content
 endif
 
 SUBDIRS =  files conf data shapes imagewin flic pathfinder \
-	usecode tools audio gumps objs server gamemgr \
+	gamemgr usecode tools audio gumps objs server \
 	mapedit desktop docs $(MODSDIR)
 
 bin_PROGRAMS = exult
