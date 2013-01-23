@@ -562,6 +562,9 @@ uclex.cc: usecode/compiler/uclex.ll
 
 UCXT_OBJS=\
 	$(CONF_OBJS) \
+	$(ZIP_OBJS) \
+	$(FILE_OBJS) \
+	$(GAMEMGR_OBJS) \
 	files/utils.o \
 	usecode/ucxt/src/ucdata.o \
 	usecode/ucxt/src/ucxt.o \

@@ -36,6 +36,10 @@
 	  which did not work in the original. Fixed a list corruption bug with the
 	  patrol hammer. Implemented hard-coded ugliness in SS maze for usecode path
 	  eggs in patrol schedule.
+	Rev 7324
+	* gamemgr/modmgr.*: Eliminating warnings.
+	* Makefile.{am,common}, usecode/ucxt/src/*: Making UCXT use the GameManager
+	  class if loading from config file.
 
 2013-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will

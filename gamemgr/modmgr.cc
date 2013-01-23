@@ -58,7 +58,7 @@ void BaseGameInfo::setup_game_paths ()
 	string mod_path_tag = path_prefix;
 
 	if (!mod_title.empty())
-		mod_path_tag += ("_" + to_uppercase((const string)mod_title));
+		mod_path_tag += ("_" + to_uppercase(static_cast<const string>(mod_title)));
 
 	clone_system_path("<GAMEDAT>", "<" + mod_path_tag + "_GAMEDAT>");
 	clone_system_path("<SAVEGAME>", "<" + mod_path_tag + "_SAVEGAME>");
@@ -164,7 +164,7 @@ ModInfo::ModInfo
 			}
 		}
 
-	string tagstr(to_uppercase((const string)mod_title)),
+	string tagstr(to_uppercase(static_cast<const string>(mod_title))),
 		system_path_tag(path_prefix + "_" + tagstr),
 		mods_dir("<" + path_prefix + "_MODS>"),
 		data_directory(mods_dir + "/" + mod_title),
@@ -316,7 +316,8 @@ static const char *get_game_identity(const char *savename, const string& title)
 	}
 
 // ModManager: class that manages a game's modlist and paths
-ModManager::ModManager (const string& name, const string& menu, bool needtitle)
+ModManager::ModManager (const string& name, const string& menu, bool needtitle,
+                        bool silent)
 	{
 	cfgname = name;
 	mod_title = "";
@@ -357,8 +358,8 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		editing = (cfgediting == "yes");
 		}
 
-	cout << "Looking for '" << cfgname
-		<< "' at '" << game_path << "'... ";
+	if (!silent)
+		cout << "Looking for '" << cfgname << "' at '" << game_path << "'... ";
 	string initgam_path(static_dir + "/initgame.dat");
 	found = U7exists(initgam_path);
 
@@ -366,12 +367,14 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 	if (found)
 		{
 		static_identity = get_game_identity(initgam_path.c_str(), cfgname);
-		cout << "found game with identity '" << static_identity << "'" << endl;
+		if (!silent)
+			cout << "found game with identity '" << static_identity << "'" << endl;
 		}
 	else	// New game still under development.
 		{
 		static_identity = "DEVEL GAME";
-		cout << "but it wasn't there." << endl;
+		if (!silent)
+			cout << "but it wasn't there." << endl;
 		}
 
 	string new_title;
@@ -437,14 +440,17 @@ ModManager::ModManager (const string& name, const string& menu, bool needtitle)
 		config->value(config_path.c_str(), patch_dir, default_dir.c_str());
 		add_system_path("<" + path_prefix + "_PATCH>", patch_dir);
 #ifdef DEBUG_PATHS
-		cout << "path prefix of " << cfgname
-			<< " is: " << path_prefix << endl;
-		cout << "setting " << cfgname
-			<< " static directory to: " << static_dir << endl;
-		cout << "setting " << cfgname
-			<< " patch directory to: " << patch_dir << endl;
-		cout << "setting " << cfgname
-			<< " modifications directory to: " << mods_dir << endl;
+		if (!silent)
+			{
+			cout << "path prefix of " << cfgname
+				<< " is: " << path_prefix << endl;
+			cout << "setting " << cfgname
+				<< " static directory to: " << static_dir << endl;
+			cout << "setting " << cfgname
+				<< " patch directory to: " << patch_dir << endl;
+			cout << "setting " << cfgname
+				<< " modifications directory to: " << mods_dir << endl;
+			}
 #endif
 		}
 
@@ -570,7 +576,7 @@ void ModManager::get_game_paths(const string& game_path)
 	}
 
 // GameManager: class that manages the installed games
-GameManager::GameManager()
+GameManager::GameManager(bool silent)
 	{
 	games.clear();
 	bg = fov = si = ss = 0;
@@ -614,7 +620,7 @@ GameManager::GameManager()
 				game_title, base_title.c_str());
 		bool need_title = game_title == base_title;
 			// This checks static identity and sets game type.
-		ModManager game = ModManager(gameentry, game_title, need_title);
+		ModManager game = ModManager(gameentry, game_title, need_title, silent);
 		if (!game.being_edited() && !game.is_there())
 			continue;
 		if (game.get_game_type() == BLACK_GATE)
@@ -647,11 +653,10 @@ GameManager::GameManager()
 		// Sane defaults.
 	add_system_path("<ULTIMA7_STATIC>", ".");
 	add_system_path("<SERPENT_STATIC>", ".");
-	print_found(bg, "exult_bg.flx", "Black Gate", CFG_BG_NAME, "ULTIMA7");
-	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7");
-	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT");
-	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT");
-
+	print_found(bg, "exult_bg.flx", "Black Gate", CFG_BG_NAME, "ULTIMA7", silent);
+	print_found(fov, "exult_bg.flx", "Forge of Virtue", CFG_FOV_NAME, "ULTIMA7", silent);
+	print_found(si, "exult_si.flx", "Serpent Isle", CFG_SI_NAME, "SERPENT", silent);
+	print_found(ss, "exult_si.flx", "Silver Seed", CFG_SS_NAME, "SERPENT", silent);
 	store_system_paths();
 	}
 
@@ -661,7 +666,8 @@ void GameManager::print_found
 	const char *flex,
 	const char *title,
 	const char *cfgname,
-	const char *basepath
+	const char *basepath,
+	bool silent
 	)
 	{
 	char path[50];
@@ -669,22 +675,23 @@ void GameManager::print_found
 	to_uppercase(cfgstr);
 	snprintf(path, sizeof(path), "<%s_STATIC>/", cfgstr.c_str());
 
-	if (game != 0)
-		cout << title << "   : found" << endl;
-	else
+	if (game == 0)
 		{
-		cout << title << "   : not found (" 
-				  << get_system_path(path) << ")" << endl;
+		if (!silent)
+			cout << title << "   : not found (" 
+					<< get_system_path(path) << ")" << endl;
 		return;
 		}
-
+	if (!silent)
+		cout << title << "   : found" << endl;
 	// This stores the BG/SI static paths (preferring the expansions)
 	// for easier support of things like multiracial avatars in BG.
 	char staticpath[50];
 	snprintf(path, sizeof(path), "<%s_STATIC>", cfgstr.c_str());
 	snprintf(staticpath, sizeof(staticpath), "<%s_STATIC>", basepath);
 	clone_system_path(staticpath, path);
-
+	if (silent)
+		return;
 	snprintf(path, sizeof(path), "<DATA>/%s", flex);
 	if (U7exists(path))
 		cout << flex << " : found" << endl;
