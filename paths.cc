@@ -384,6 +384,52 @@ int Offscreen_pathfinder_client::at_goal
  *	destination.
  */
 
+Approach_object_pathfinder_client::Approach_object_pathfinder_client
+	(
+	Actor *from,
+	Tile_coord const& dest,
+	int dist
+	) : Actor_pathfinder_client(from, dist, false),
+	    destbox(Rectangle(dest.tx, dest.ty, 0, 0).enlarge(dist))
+	{
+	}
+
+/*
+ *	Create client for getting within a desired distance of a
+ *	destination.
+ */
+
+Approach_object_pathfinder_client::Approach_object_pathfinder_client
+	(
+	Actor *from,
+	Game_object *to,
+	int dist
+	) : Actor_pathfinder_client(from, dist, false),
+	    destbox(to->get_footprint().enlarge(dist))
+	{
+	}
+
+/*
+ *	Is tile at goal?
+ */
+
+int Approach_object_pathfinder_client::at_goal
+	(
+	Tile_coord const& tile,
+	Tile_coord const& goal
+	)
+	{
+	int dz = tile.tz - goal.tz;	// Got to be on same floor.
+	if (dz > 5 || dz < -5)
+		return 0;
+	return destbox.has_world_point(tile.tx, tile.ty);
+	}
+
+/*
+ *	Create client for getting within a desired distance of a
+ *	destination.
+ */
+
 Fast_pathfinder_client::Fast_pathfinder_client
 	(
 	Game_object *from,

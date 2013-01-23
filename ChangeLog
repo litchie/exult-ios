@@ -7,6 +7,35 @@
 	  up honey".
 	Rev 7323
 	* gamewin.cc: Fixed bug #3601596 "Music in Bee Cave conflict".
+	Rev 7324
+	* actions.*: Improved pickup/put down action to show the standing frame at
+	  the end. Added new action to change the shape, frame and quality of a game
+	  object.
+	* paths.*: Added pathfinder to approach an object or actor that takes into
+	  consideration the size of the destination.
+	* actors.*: Added optional override for schedule location. This is mainly
+	  useful for street maintenance schedule, so the NPC continues from where he
+	  left off.
+	* schedule.*, shapes/items.h, usecode/usefuns.h: Added 3 static methods to
+	  Schedule class: one to procure an item (tries inventory first, then tries
+	  to find a match nearby, then creates it as a last resort); one to create
+	  a pick-up action sequence; and one to scan for the closest object in the
+	  given object vector. Added light sources to street maintenance schedule,
+	  so candles will be lit/put out/replaced as needed. Street maintenance will
+	  now return the NPC to his/her pre-street maintenance position (for patrol
+	  schedule mainly). Pace schedule no longer checks for street maintenance.
+	  Patrol schedule now starts from the nearest path egg as a workaround to
+	  fix the automaton at Freedom when saving/reloading (until saving the state
+	  of schedules is implemented). Patrol schedule reanalyzed and updated; only
+	  missing are 'kneel at tombstone' (which dropped flowers at tombs in BG but
+	  not in SI, as there are no tombs), and 'wait for semaphore' and 'release
+	  semaphore' activities, as they are all unused in the original (see their
+	  comments for more on them). Most notably, patrol should work identically
+	  to the original games except for 'repeat forever' (which works around a
+	  few quality bugs in BG's Isle of the Avatar pirate fort) and 'horiz. pace'
+	  which did not work in the original. Fixed a list corruption bug with the
+	  patrol hammer. Implemented hard-coded ugliness in SS maze for usecode path
+	  eggs in patrol schedule.
 
 2013-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will

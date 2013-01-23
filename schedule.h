@@ -86,6 +86,11 @@ public:
 	static void set_action_sequence(Actor *actor, Tile_coord const& dest,
 		Actor_action *when_there, bool from_off_screen = false,
 							int delay = 0);
+	static Game_object *set_procure_item_action(Actor *actor, Game_object *obj,
+	                                            int dist, int shnum, int frnum);
+	static bool set_pickup_item_action(Actor *actor, Game_object *obj,
+	                                           int delay);
+	static Game_object *find_nearest(Actor *actor, Game_object_vector& nearby);
 	int try_street_maintenance();	// Handle street-lamps, shutters.
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
@@ -145,6 +150,7 @@ class Street_maintenance_schedule : public Schedule
 	Game_object *obj;		// Lamp/shutters.
 	int shapenum, framenum;		// Save original shapenum.
 	Actor_action *paction;		// Path to follow to get there.
+	Tile_coord oldloc;
 public:
 	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);
 	virtual void now_what();
@@ -235,10 +241,12 @@ public:
  */
 class Patrol_schedule : public Schedule
 	{
+	enum {PATH_SHAPE = 607};
+	static int num_path_eggs;
 	vector<Game_object*> paths;	// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 	int dir;				// 1 or -1;
-	bool wrap;				// If true, wraps to zero when reached last path
+	bool gotpath;			// If true, there are path eggs nearby.
 	int failures;			// # of failures to find marker.
 	int state;				// The patrol state.
 	Tile_coord center;		// For 'loiter' and 'pace' path eggs.
@@ -248,13 +256,9 @@ class Patrol_schedule : public Schedule
 	Game_object *hammer;	// For 'hammer' path eggs.
 	Game_object *book;		// For 'read' path eggs.
 	bool seek_combat;		// The NPC should seek enemies while patrolling.
+	bool forever;			// If should keep executing last path egg.
 public:
-	Patrol_schedule(Actor *n)
-		: Schedule(n), pathnum(-1), dir(1), wrap(true),
-		  failures(0), state(0), center(0, 0, 0),
-		  whichdir(0), phase(1), pace_count(0), hammer(0), book(0),
-		  seek_combat(false)
-		{  }
+	Patrol_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype); // Switching to another schedule
 	virtual void notify_object_gone(Game_object *obj);

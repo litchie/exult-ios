@@ -336,5 +336,19 @@ public:
 	};
 	
 
+/*
+ *	Action to modify another actor.
+ */
+
+class Change_actor_action : public Actor_action
+	{
+	Game_object *obj;		// What to modify.
+	int shnum, frnum, qual; // New shape, frame and quality.
+public:
+	Change_actor_action(Game_object *o, int sh, int fr, int ql);
+	virtual int handle_event(Actor *actor);
+	};
+	
+
 #endif	/* INCL_ACTIONS */
 
