@@ -62,6 +62,7 @@ const int first_miner_gold = 0x45, last_miner_gold = 0x47;
 const int first_farmer2 = 0x60, last_farmer2 = 0x62;
 const int first_lamp_on = 0x63, last_lamp_on = 0x66;
 const int lamp_off = 0x67;
+const int new_candle = 0x68;
 const int first_close_shutters = 0x71, last_close_shutters = 0x73;
 const int first_open_shutters = 0x74, last_open_shutters = 0x76;
 // Combat-related barks.

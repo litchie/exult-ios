@@ -5280,8 +5280,9 @@ int Npc_actor::find_schedule_change
 void Npc_actor::update_schedule
 	(
 	int hour3,			// 0=midnight, 1=3am, etc.
-	int backwards,			// Extra periods to look backwards.
-	int delay			// Delay in msecs, or -1 for random.
+	int backwards,		// Extra periods to look backwards.
+	int delay,			// Delay in msecs, or -1 for random.
+	Tile_coord *pos		// Were we want to return to.
 	)
 	{
 	int i = find_schedule_change(hour3);
@@ -5304,8 +5305,8 @@ void Npc_actor::update_schedule
 		}
 	restored_schedule = -1;
 	old_schedule_loc = schedules[i].get_pos();
-	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
-								delay);
+	Tile_coord newloc = pos ? *pos : schedules[i].get_pos();
+	set_schedule_and_loc (schedules[i].get_type(), newloc, delay);
 	}
 
 /*

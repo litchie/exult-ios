@@ -90,6 +90,20 @@ public:
 	};
 
 /*
+ *	This class provides A* cost methods for going to an object.
+ */
+class Approach_object_pathfinder_client : public Actor_pathfinder_client
+	{
+	Rectangle destbox;		// Got to intersect this box.
+public:
+	Approach_object_pathfinder_client(Actor *from, Tile_coord const& dest,
+	                                  int dist);
+	Approach_object_pathfinder_client(Actor *from, Game_object *to, int dist);
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord const& tile, Tile_coord const& goal);
+	};
+
+/*
  *	This client is supposed to fail quickly, so that it can be used to
  *	test for when an object can be grabbed.
  */

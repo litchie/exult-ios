@@ -1003,7 +1003,7 @@ int Pickup_actor_action::handle_event
 				}
 			gwin->add_dirty(obj);
 			obj->remove_this(1);
-			actor->add(obj, 1);
+			actor->add(obj, true);
 			}
 		else
 			{
@@ -1013,6 +1013,10 @@ int Pickup_actor_action::handle_event
 				obj->set_flag(Obj_flags::is_temporary);
 			gwin->add_dirty(obj);
 			}
+		break;
+	case 2:
+		frnum = actor->get_dir_framenum(dir, Actor::standing);
+		cnt++;
 		break;
 	default:
 		return 0;		// Done.
@@ -1052,3 +1056,33 @@ int Face_pos_actor_action::handle_event
 	return speed;
 	}
 
+/**
+ *	Action to change the shape, frame and quality of an object.
+ */
+
+Change_actor_action::Change_actor_action
+	(
+	Game_object *o,
+	int sh,
+	int fr,
+	int ql
+	) : obj(o), shnum(sh), frnum(fr), qual(ql)
+	{
+	}
+
+/**
+ *	Just change the object.
+ */
+
+int Change_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->add_dirty(obj);
+	obj->set_shape(shnum, frnum);
+	obj->set_quality(qual);
+	gwin->add_dirty(obj);
+	return 0;
+	}
