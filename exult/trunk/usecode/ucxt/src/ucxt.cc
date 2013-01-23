@@ -50,6 +50,7 @@
 #include "ucdata.h"
 #include "ucfunc.h"
 #include "files/utils.h"
+#include "gamemgr/modmgr.h"
 
 // include xml configuration stuff
 #include "Configuration.h"
@@ -61,6 +62,7 @@ void usage();
 void open_usecode_file(UCData &uc, const Configuration &config);
 
 UCData uc;
+Configuration *config = new Configuration();
 
 using std::setw;
 using std::cerr;
@@ -79,25 +81,26 @@ int main(int argc, char** argv)
 	uc.parse_params(argc, argv);
 	if(uc.options.verbose) cout << "Parameters parsed..." << endl;
 
-	Configuration config;
-	
 	// attempt to find an exult.cfg file... _somewhere_
 	if(uc.options.noconf == false)
 	{
 		if(uc.options.verbose) cout << "Loading exult configuration file..." << endl;
 		setup_program_paths();
-		if(config.read_config_file("exult.cfg") == false)
+		if(config->read_config_file("exult.cfg") == false)
 		{
 			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
 			exit(1);
 		}
+		string data_path;
+		config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+		setup_data_dir(data_path, argv[0]);
 	}
 	
 	// init the run time tables
 	if(uc.options.verbose) cout << "Initing runtime tables..." << endl;
 	
 	ucxtInit init;
-	init.init(config, uc.options);
+	init.init(*config, uc.options);
 	
 	#if 0
 	{
@@ -156,7 +159,7 @@ int main(int argc, char** argv)
 	}
 	// you may now uncover your eyes <grin>
 
-	open_usecode_file(uc, config);
+	open_usecode_file(uc, *config);
 
 	if(uc.opt().output_extern_header)
 	{
@@ -184,6 +187,8 @@ int main(int argc, char** argv)
 
 void open_usecode_file(UCData &uc, const Configuration &config)
 {
+	GameManager *gamemanager = 0;
+	if(uc.options.noconf == false) gamemanager = new GameManager(true);
 	string bgpath;
 	if(uc.options.noconf == false) config.value("config/disk/game/blackgate/path", bgpath);
 	string fovpath;
@@ -238,34 +243,94 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	if(uc.options.game_bg())
 	{
 		if(uc.options.verbose) cout << "Configuring for bg." << endl;
-		path      = bgpath;
+		if (gamemanager)
+		{
+			if (gamemanager->is_bg_installed())
+				path = "<BLACKGATE_STATIC>";
+			else
+			{
+				cout << "Failed to locate usecode file. Exiting." << endl;
+				exit(1);
+			}
+			mucc_sl = "";
+			mucc_sc = "";
+		}
+		else
+		{
+			path      = bgpath;
+			mucc_l  = mucc_bgl;
+			mucc_c  = mucc_bgc;
+		}
 		ucspecial = "usecode.bg";
-		mucc_l  = mucc_bgl;
-		mucc_c  = mucc_bgc;
 	}
 	else if(uc.options.game_fov())
 	{
-		if(uc.options.verbose) cout << "Configuring for bg." << endl;
-		path      = fovpath;
-		ucspecial = "usecode.si";
-		mucc_l  = mucc_sil;
-		mucc_c  = mucc_sic;
+		if(uc.options.verbose) cout << "Configuring for fov." << endl;
+		if (gamemanager)
+		{
+			if (gamemanager->is_fov_installed())
+				path = "<FORGEOFVIRTUE_STATIC>";
+			else
+			{
+				cout << "Failed to locate usecode file. Exiting." << endl;
+				exit(1);
+			}
+			mucc_sl = "";
+			mucc_sc = "";
+		}
+		else
+		{
+			path      = fovpath;
+			mucc_l  = mucc_bgl;
+			mucc_c  = mucc_bgc;
+		}
+		ucspecial = "usecode.bg";
 	}
 	else if(uc.options.game_si())
 	{
 		if(uc.options.verbose) cout << "Configuring for si." << endl;
-		path      = sipath;
+		if (gamemanager)
+		{
+			if (gamemanager->is_si_installed())
+				path = "<SERPENTISLE_STATIC>";
+			else
+			{
+				cout << "Failed to locate usecode file. Exiting." << endl;
+				exit(1);
+			}
+			mucc_sl = "";
+			mucc_sc = "";
+		}
+		else
+		{
+			path      = sipath;
+			mucc_l  = mucc_sil;
+			mucc_c  = mucc_sic;
+		}
 		ucspecial = "usecode.si";
-		mucc_l  = mucc_sil;
-		mucc_c  = mucc_sic;
 	}
 	else if(uc.options.game_ss())
 	{
-		if(uc.options.verbose) cout << "Configuring for si." << endl;
-		path      = sspath;
+		if(uc.options.verbose) cout << "Configuring for ss." << endl;
+		if (gamemanager)
+		{
+			if (gamemanager->is_ss_installed())
+				path = "<SILVERSEED_STATIC>";
+			else
+			{
+				cout << "Failed to locate usecode file. Exiting." << endl;
+				exit(1);
+			}
+			mucc_sl = "";
+			mucc_sc = "";
+		}
+		else
+		{
+			path      = sspath;
+			mucc_l  = mucc_sil;
+			mucc_c  = mucc_sic;
+		}
 		ucspecial = "usecode.si";
-		mucc_l  = mucc_sil;
-		mucc_c  = mucc_sic;
 	}
 	else if(uc.options.game_u8())
 	{
@@ -339,6 +404,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	if(uc.fail())
 		uc.open_usecode(mucc_ul);
 
+	delete gamemanager;
 	// if we get through all this, usecode can't be installed anywhere sane
 	if(uc.fail())
 	{

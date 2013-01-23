@@ -119,7 +119,8 @@ class ModManager : public BaseGameInfo
 protected:
 	std::vector<ModInfo> modlist;
 public:
-	ModManager (const string& name, const string& menu, bool needtitle);
+	ModManager (const string& name, const string& menu, bool needtitle,
+	            bool silent = false);
 	ModManager () {  }
 	ModManager (const ModManager& other)
 		: BaseGameInfo(other.type, other.cfgname.c_str(),
@@ -141,7 +142,7 @@ public:
 	bool has_mods () const { return modlist.size() > 0; }
 	ModInfo *get_mod (int i)
 		{
-		if (i >= 0 && (unsigned)i < modlist.size())
+		if (i >= 0 && static_cast<unsigned>(i) < modlist.size())
 			return &(modlist[i]);
 		return 0;
 		}
@@ -169,9 +170,10 @@ protected:
 	ModManager *ss;
 	std::vector<ModManager> games;
 	void print_found(ModManager *game, const char *flex,
-			const char *title, const char *cfgname, const char *basepath);
+			const char *title, const char *cfgname, const char *basepath,
+	        bool silent);
 public:
-	GameManager ();
+	GameManager (bool silent = false);
 	virtual ~GameManager ()
 		{ games.clear(); }
 
@@ -179,7 +181,7 @@ public:
 	int get_game_count () const { return games.size(); }
 	ModManager *get_game (int i)
 		{
-		if (i >= 0 && (unsigned)i < games.size())
+		if (i >= 0 && static_cast<unsigned>(i) < games.size())
 			return &(games[i]);
 		return 0;
 		}
