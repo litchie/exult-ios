@@ -383,8 +383,8 @@ public:
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
 		{  }
 					// Update schedule for new 3-hour time.
-	virtual void update_schedule(int hour3, 
-					int backwards = 0, int delay = -1)
+	virtual void update_schedule(int hour3, int backwards = 0, int delay = -1,
+	                             Tile_coord *pos = 0)
 		{  }
 					// Render.
 	virtual void paint();
@@ -682,8 +682,8 @@ public:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
-	virtual void update_schedule(int hour3, 
-					int backwards = 0, int delay = -1);
+	virtual void update_schedule(int hour3, int backwards = 0, int delay = -1,
+	                             Tile_coord *pos = 0);
 					// Render.
 	virtual void paint();
 					// Run usecode function.
