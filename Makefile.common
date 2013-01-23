@@ -565,14 +565,13 @@ UCXT_OBJS=\
 	$(ZIP_OBJS) \
 	$(FILE_OBJS) \
 	$(GAMEMGR_OBJS) \
-	files/utils.o \
+	usecode/ucxt/src/ops.o \
 	usecode/ucxt/src/ucdata.o \
-	usecode/ucxt/src/ucxt.o \
 	usecode/ucxt/src/ucfunc.o \
-	usecode/ucxt/src/ops.o
+	usecode/ucxt/src/ucxt.o
 
 ucxt$(EXEEXT) : $(UCXT_OBJS)
-	$(CXX) $(LDFLAGS) -o $(@) $(UCXT_OBJS)
+	$(CXX) $(LDFLAGS) -o $(@) $(UCXT_OBJS) $(ZIP_LIBS)
 
 CONFREGRESS_OBJS=$(CONF_OBJS) conf/xmain.o files/utils.o
 
