@@ -39,7 +39,7 @@ extern int recompute_envelope(int v);
 extern void apply_envelope_to_amp(int v);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

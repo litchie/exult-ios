@@ -222,8 +222,8 @@ public:
 		{  }
 					// What to do when 'clicked':
 	virtual bool activate(int button=1);
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual bool push(int) { return false; }
+	virtual void unpush(int) {}
 	};
 
 /*
@@ -236,7 +236,7 @@ bool Notebook_page_button::activate
 	)
 	{
 	if (button != 1) return false;
-	((Notebook_gump *) parent)->change_page(leftright ? 1 : -1);
+	reinterpret_cast<Notebook_gump *>(parent)->change_page(leftright ? 1 : -1);
 	return true;
 	}
 
@@ -437,7 +437,7 @@ void Notebook_gump::change_page
 	if (delta > 0)
 		{
 		int nxt = topleft + 2;
-		if (nxt >= page_info.size())
+		if (nxt >= static_cast<int>(page_info.size()))
 			return;
 		curpage = nxt;
 		curnote = page_info[curpage].notenum;
@@ -495,7 +495,7 @@ Gump_button *Notebook_gump::on_button
 		offset += -coff;		// New offset.
 		if (offset >= note->textlen)
 			{
-			if (notenum == notes.size() - 1)
+			if (notenum == static_cast<int>(notes.size()) - 1)
 				return 0;	// No more.
 			note = notes[++notenum];
 			offset = 0;
@@ -540,13 +540,13 @@ void Notebook_gump::paint
 	if (paint_page(Get_text_area(false, offset == 0), 
 						note, offset, topleft))
 		{			// Finished note?
-		if (notenum == notes.size() - 1)
+		if (notenum == static_cast<int>(notes.size()) - 1)
 			return;
 		++notenum;
 		note = notes[notenum];
 		offset = 0;
 		}
-	if (topleft + 1 >= page_info.size())	// Store right-page info.
+	if (topleft + 1 >= static_cast<int>(page_info.size()))	// Store right-page info.
 		page_info.resize(topleft + 2);
 	page_info[topleft + 1].notenum = notenum;
 	page_info[topleft + 1].offset = offset;
@@ -554,14 +554,14 @@ void Notebook_gump::paint
 	if (paint_page(Get_text_area(true, offset == 0), 
 						note, offset, topleft + 1))
 		{			// Finished note?
-		if (notenum == notes.size() - 1)
+		if (notenum == static_cast<int>(notes.size()) - 1)
 			return;		// No more.
 		++notenum;
 		offset = 0;
 		}
 	rightpage->paint();
 	int nxt = topleft + 2;		// For next pair of pages.
-	if (nxt >= page_info.size())
+	if (nxt >= static_cast<int>(page_info.size()))
 		page_info.resize(nxt + 1);
 	page_info[nxt].notenum = notenum;
 	page_info[nxt].offset = offset;
@@ -594,7 +594,7 @@ void Notebook_gump::next_page
 	(
 	)
 	{
-	if (curpage >= page_info.size())
+	if (curpage >= static_cast<int>(page_info.size()))
 		return;
 	++curpage;
 	Notebook_top &pinfo = page_info[curpage];
@@ -634,7 +634,7 @@ void Notebook_gump::down_arrow
 	int ht = sman->get_text_height(font);
 	if (on_last_page_line())
 		{
-		if (curpage >= page_info.size() - 1)
+		if (curpage >= static_cast<int>(page_info.size()) - 1)
 			return;
 		next_page();
 		paint();
@@ -699,14 +699,14 @@ bool Notebook_gump::handle_kbd_event
 	void *vev
 	)
 	{
-	SDL_Event& ev = *(SDL_Event *)vev;
+	SDL_Event& ev = *reinterpret_cast<SDL_Event *>(vev);
 	int chr = ev.key.keysym.sym, unicode = ev.key.keysym.unicode;
 
 	if (ev.type == SDL_KEYUP)
 		return true;		// Ignoring key-up at present.
 	if (ev.type != SDL_KEYDOWN)
 		return false;
-	if (curpage >= page_info.size())
+	if (curpage >= static_cast<int>(page_info.size()))
 		return false;		// Shouldn't happen.
 	Notebook_top& pinfo = page_info[curpage];
 	One_note *note = notes[pinfo.notenum];

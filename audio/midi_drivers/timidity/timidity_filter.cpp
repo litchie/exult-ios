@@ -50,33 +50,33 @@ namespace NS_TIMIDITY {
 /*  bessel  function   */
 static float ino(float x)
 {
-    float y, de, e, sde;
-    int i;
-    
-    y = x / 2;
-    e = 1.0;
-    de = 1.0;
-    i = 1;
-    do {
-	de = de * y / (float) i;
-	sde = de * de;
-	e += sde;
-    } while (!( (e * 1.0e-08 - sde > 0) || (i++ > 25) ));
-    return(e);
+	float y, de, e, sde;
+	int i;
+
+	y = x / 2;
+	e = 1.0;
+	de = 1.0;
+	i = 1;
+	do {
+		de = de * y / static_cast<float>(i);
+		sde = de * de;
+		e += sde;
+	} while (!( (e * 1.0e-08 - sde > 0) || (i++ > 25) ));
+	return(e);
 }	
 
 /* Kaiser Window (symetric) */
 static void kaiser(float *w,int n,float beta)
 {
-    float xind, xi;
-    int i;
-    
-    xind = (float)((2*n - 1) * (2*n - 1));
-    for (i =0; i<n ; i++) 
+	float xind, xi;
+	int i;
+
+	xind = static_cast<float>((2*n - 1) * (2*n - 1));
+	for (i =0; i<n ; i++) 
 	{
-	    xi = (float)(i + 0.5);
-	    w[i] = ino((float)(beta * sqrt((double)(1. - 4 * xi * xi / xind))))
-		/ ino((float)beta);
+		xi = static_cast<float>(i + 0.5);
+		w[i] = ino(static_cast<float>(beta * sqrt(static_cast<double>(1. - 4 * xi * xi / xind))))
+			/ ino(static_cast<float>(beta));
 	}
 }
 
@@ -85,25 +85,25 @@ static void kaiser(float *w,int n,float beta)
  */
 static void designfir(float *g , float fc)
 {
-    int i;
-    float xi, omega, att, beta ;
-    float w[ORDER2];
-    
-    for (i =0; i < ORDER2 ;i++) 
+	int i;
+	float xi, omega, att, beta ;
+	float w[ORDER2];
+
+	for (i =0; i < ORDER2 ;i++) 
 	{
-	    xi = (float) (i + 0.5);
-	    omega = (float)(PI * xi);
-	    g[i] = (float)(sin( (double) omega * fc) / omega);
+		xi = static_cast<float>(i + 0.5);
+		omega = static_cast<float>(PI * xi);
+		g[i] = static_cast<float>(sin( static_cast<double>(omega * fc)) / omega);
 	}
-    
-    att = 40.; /* attenuation  in  db */
-    beta = (float) (exp(log((double)0.58417 * (att - 20.96)) * 0.4) + 0.07886 
-	* (att - 20.96));
-    kaiser( w, ORDER2, beta);
-    
-    /* Matrix product */
-    for (i =0; i < ORDER2 ; i++)
-	g[i] = g[i] * w[i];
+
+	att = 40.; /* attenuation  in  db */
+	beta = static_cast<float>(exp(log(static_cast<double>(0.58417) * (att - 20.96)) * 0.4) + 0.07886 
+	                          * (att - 20.96));
+	kaiser( w, ORDER2, beta);
+
+	/* Matrix product */
+	for (i =0; i < ORDER2 ; i++)
+		g[i] = g[i] * w[i];
 }
 
 /*
@@ -113,60 +113,60 @@ static void designfir(float *g , float fc)
  */
 static void filter(sample_t *result,sample_t *data, sint32 length,float coef[])
 {
-    sint32 sample,i,sample_window;
-    sint16 peak = 0;
-    float sum;
+	sint32 sample,i,sample_window;
+	sint16 peak = 0;
+	float sum;
 
-    /* Simulate leading 0 at the begining of the buffer */
-     for (sample = 0; sample < ORDER2 ; sample++ )
+	/* Simulate leading 0 at the begining of the buffer */
+	for (sample = 0; sample < ORDER2 ; sample++ )
 	{
-	    sum = 0.0;
-	    sample_window= sample - ORDER2;
-	   
-	    for (i = 0; i < ORDER ;i++) 
-		sum += (float)(coef[i] *
-		    ((sample_window<0)? 0.0 : data[sample_window++])) ;
-	    
-	    /* Saturation ??? */
-	    if (sum> 32767.) { sum=32767.; peak++; }
-	    if (sum< -32768.) { sum=-32768; peak++; }
-	    result[sample] = (sample_t) sum;
+		sum = 0.0;
+		sample_window= sample - ORDER2;
+
+		for (i = 0; i < ORDER ;i++) 
+			sum += static_cast<float>(coef[i] *
+			                          ((sample_window<0)? 0.0 : data[sample_window++])) ;
+
+		/* Saturation ??? */
+		if (sum> 32767.) { sum=32767.; peak++; }
+		if (sum< -32768.) { sum=-32768; peak++; }
+		result[sample] = static_cast<sample_t>(sum);
 	}
 
-    /* The core of the buffer  */
-    for (sample = ORDER2; sample < length - ORDER + ORDER2 ; sample++ )
+	/* The core of the buffer  */
+	for (sample = ORDER2; sample < length - ORDER + ORDER2 ; sample++ )
 	{
-	    sum = 0.0;
-	    sample_window= sample - ORDER2;
+		sum = 0.0;
+		sample_window= sample - ORDER2;
 
-	    for (i = 0; i < ORDER ;i++) 
-		sum += data[sample_window++] * coef[i];
-	    
-	    /* Saturation ??? */
-	    if (sum> 32767.) { sum=32767.; peak++; }
-	    if (sum< -32768.) { sum=-32768; peak++; }
-	    result[sample] = (sample_t) sum;
-	}
-    
-    /* Simulate 0 at the end of the buffer */
-    for (sample = length - ORDER + ORDER2; sample < length ; sample++ )
-	{
-	    sum = 0.0;
-	    sample_window= sample - ORDER2;
-	    
-	    for (i = 0; i < ORDER ;i++) 
-		sum += (float)(coef[i] *
-		    ((sample_window>=length)? 0.0 : data[sample_window++])) ;
-	    
-	    /* Saturation ??? */
-	    if (sum> 32767.) { sum=32767.; peak++; }
-	    if (sum< -32768.) { sum=-32768; peak++; }
-	    result[sample] = (sample_t) sum;
+		for (i = 0; i < ORDER ;i++) 
+			sum += data[sample_window++] * coef[i];
+
+		/* Saturation ??? */
+		if (sum> 32767.) { sum=32767.; peak++; }
+		if (sum< -32768.) { sum=-32768; peak++; }
+		result[sample] = static_cast<sample_t>(sum);
 	}
 
-    if (peak)
-	ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
-		  "Saturation %2.3f %%.", 100.0*peak/ (float) length);
+	/* Simulate 0 at the end of the buffer */
+	for (sample = length - ORDER + ORDER2; sample < length ; sample++ )
+	{
+		sum = 0.0;
+		sample_window= sample - ORDER2;
+
+		for (i = 0; i < ORDER ;i++) 
+			sum += static_cast<float>(coef[i] *
+			                          ((sample_window>=length)? 0.0 : data[sample_window++])) ;
+
+		/* Saturation ??? */
+		if (sum> 32767.) { sum=32767.; peak++; }
+		if (sum< -32768.) { sum=-32768; peak++; }
+		result[sample] = static_cast<sample_t>(sum);
+	}
+
+	if (peak)
+		ctl->cmsg(CMSG_ERROR, VERB_NORMAL, 
+		          "Saturation %2.3f %%.", 100.0*peak/ static_cast<float>(length));
 }
 
 /***********************************************************************/
@@ -177,41 +177,41 @@ static void filter(sample_t *result,sample_t *data, sint32 length,float coef[])
 /***********************************************************************/
 void antialiasing(Sample *sp, sint32 output_rate )
 {
-    sample_t *temp;
-    int i;
-    float fir_symetric[ORDER];
-    float fir_coef[ORDER2];
-    float freq_cut;  /* cutoff frequency [0..1.0] FREQ_CUT/SAMP_FREQ*/
- 
+	sample_t *temp;
+	int i;
+	float fir_symetric[ORDER];
+	float fir_coef[ORDER2];
+	float freq_cut;  /* cutoff frequency [0..1.0] FREQ_CUT/SAMP_FREQ*/
 
-    ctl->cmsg(CMSG_INFO, VERB_NOISY, "Antialiasing: Fsample=%iKHz",
-	      sp->sample_rate);
- 
-    /* No oversampling  */
-    if (output_rate>=sp->sample_rate)
-	return;
-    
-    freq_cut= (float) output_rate / (float) sp->sample_rate;
-    ctl->cmsg(CMSG_INFO, VERB_NOISY, "Antialiasing: cutoff=%f%%",
-	      freq_cut*100.);
 
-    designfir(fir_coef,freq_cut);
-    
-    /* Make the filter symetric */
-    for (i = 0 ; i<ORDER2 ;i++) 
-	fir_symetric[ORDER-1 - i] = fir_symetric[i] = fir_coef[ORDER2-1 - i];
-    
-    /* We apply the filter we have designed on a copy of the patch */
-    temp = safe_Malloc<sample_t>(sp->data_length);
-    memcpy(temp,sp->data,sp->data_length);
-    
-    filter(sp->data,temp,sp->data_length/sizeof(sample_t),fir_symetric);
-    
-    free(temp);
+	ctl->cmsg(CMSG_INFO, VERB_NOISY, "Antialiasing: Fsample=%iKHz",
+	          sp->sample_rate);
+
+	/* No oversampling  */
+	if (output_rate>=sp->sample_rate)
+		return;
+
+	freq_cut= static_cast<float>(output_rate) / sp->sample_rate;
+	ctl->cmsg(CMSG_INFO, VERB_NOISY, "Antialiasing: cutoff=%f%%",
+	          freq_cut*100.);
+
+	designfir(fir_coef,freq_cut);
+
+	/* Make the filter symetric */
+	for (i = 0 ; i<ORDER2 ;i++) 
+		fir_symetric[ORDER-1 - i] = fir_symetric[i] = fir_coef[ORDER2-1 - i];
+
+	/* We apply the filter we have designed on a copy of the patch */
+	temp = safe_Malloc<sample_t>(sp->data_length);
+	memcpy(temp,sp->data,sp->data_length);
+
+	filter(sp->data,temp,sp->data_length/sizeof(sample_t),fir_symetric);
+
+	free(temp);
 }
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif //USE_TIMIDITY_MIDI

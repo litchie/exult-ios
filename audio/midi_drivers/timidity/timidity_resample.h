@@ -35,7 +35,7 @@ extern sample_t *resample_voice(int v, sint32 *countptr);
 extern void pre_resample(Sample *sp);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

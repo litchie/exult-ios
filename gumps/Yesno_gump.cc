@@ -70,7 +70,7 @@ bool Yesno_button::activate
 	)
 {
 	if (button != 1) return false;
-	((Yesno_gump *) parent)->set_answer(isyes);
+	reinterpret_cast<Yesno_gump *>(parent)->set_answer(isyes);
 	return true;
 }
 

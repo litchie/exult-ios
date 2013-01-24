@@ -41,7 +41,7 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 	size_t  l = 0;
 	int		compression = 0;
 	int		adpcm_reference = -1;
-	int		adpcm_scale = 0;
+	//int		adpcm_scale = 0;
 
 	// Parse the file, get the 'important' details
 	sample_rate = 0;
@@ -140,7 +140,7 @@ VocAudioSample::VocAudioSample(uint8* buffer_, uint32 size_)
 				CERR("Can't handle VOC compression type"); 
 			}
 
-			if (dec_len > frame_size) frame_size = dec_len;
+			if (dec_len > static_cast<size_t>(frame_size)) frame_size = dec_len;
 			length += dec_len;
 		}
 
@@ -324,7 +324,7 @@ uint32 VocAudioSample::decompressFrame(void *DecompData, void *samples) const
 	{
 		bytes_used = num_samples/2;
 		if (decomp->adpcm_reference == -1) bytes_used++;
-		decode_ADPCM_4(buffer+decomp->pos, bytes_used, (uint8*)samples, decomp->adpcm_reference, decomp->adpcm_scale);
+		decode_ADPCM_4(buffer+decomp->pos, bytes_used, reinterpret_cast<uint8*>(samples), decomp->adpcm_reference, decomp->adpcm_scale);
 	}
 	else
 	{

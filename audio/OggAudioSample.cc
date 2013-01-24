@@ -59,7 +59,7 @@ OggAudioSample::~OggAudioSample()
 
 size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *datasource)
 {
-	IDataSource *ids = (IDataSource*) datasource;
+	IDataSource *ids = static_cast<IDataSource*>(datasource);
 	//if (ids->eof()) return 0;
 	size_t limit = ids->getSize() - ids->getPos();
 	if (limit == 0) return 0;
@@ -69,24 +69,24 @@ size_t OggAudioSample::read_func  (void *ptr, size_t size, size_t nmemb, void *d
 }
 int    OggAudioSample::seek_func  (void *datasource, ogg_int64_t offset, int whence)
 {
-	IDataSource *ids = (IDataSource*) datasource;
+	IDataSource *ids = static_cast<IDataSource*>(datasource);
 	switch(whence)
 	{
 	case SEEK_SET:
-		ids->seek((size_t)offset);
+		ids->seek(static_cast<size_t>(offset));
 		return 0;
 	case SEEK_END:
-		ids->seek(ids->getSize()-(size_t)offset);
+		ids->seek(ids->getSize()-static_cast<size_t>(offset));
 		return 0;
 	case SEEK_CUR:
-		ids->skip((size_t)offset);
+		ids->skip(static_cast<size_t>(offset));
 		return 0;
 	}
 	return -1;
 }
 long   OggAudioSample::tell_func  (void *datasource)
 {
-	IDataSource *ids = (IDataSource*) datasource;
+	IDataSource *ids = static_cast<IDataSource*>(datasource);
 	return ids->getPos();
 }
 
@@ -94,7 +94,7 @@ bool OggAudioSample::isThis(IDataSource *oggdata)
 {
 	OggVorbis_File vf;
 	oggdata->seek(0);
-	int res = ov_test_callbacks((void*)oggdata,&vf,0,0,callbacks);
+	int res = ov_test_callbacks(static_cast<void*>(oggdata),&vf,0,0,callbacks);
 	ov_clear(&vf);
 
 	return res == 0;
@@ -119,7 +119,7 @@ void OggAudioSample::initDecompressor(void *DecompData) const
 	}
 
 	oggdata->seek(0);
-	ov_open_callbacks((void*)decomp->datasource,&decomp->ov,NULL,0,callbacks);
+	ov_open_callbacks(static_cast<void*>(decomp->datasource),&decomp->ov,NULL,0,callbacks);
 	decomp->bitstream = 0;
 	
 	vorbis_info *info = ov_info(&decomp->ov,-1);
@@ -167,7 +167,7 @@ uint32 OggAudioSample::decompressFrame(void *DecompData, void *samples) const
 	const int bigendianp = 1;
 #endif
 
-	long count = ov_read(&decomp->ov,(char*)samples,frame_size,bigendianp,2,1,&decomp->bitstream);
+	long count = ov_read(&decomp->ov,reinterpret_cast<char*>(samples),frame_size,bigendianp,2,1,&decomp->bitstream);
 
 	//if (count == OV_EINVAL || count == 0) {
 	if (count <= 0) return 0;

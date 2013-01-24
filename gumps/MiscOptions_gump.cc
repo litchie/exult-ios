@@ -58,9 +58,9 @@ public:
 		if (button != 1) return false;
 
 		if (text == canceltext) {
-			((MiscOptions_gump*)parent)->cancel();
+			reinterpret_cast<MiscOptions_gump*>(parent)->cancel();
 		} else if (text == oktext) {
-			((MiscOptions_gump*)parent)->close();
+			reinterpret_cast<MiscOptions_gump*>(parent)->close();
 		}
 		return true;
 	}
@@ -75,8 +75,7 @@ public:
 
 	friend class MiscOptions_gump;
 	virtual void toggle(int state) { 
-		((MiscOptions_gump*)parent)->toggle((Gump_button*)this, 
-									state);
+		reinterpret_cast<MiscOptions_gump*>(parent)->toggle(this, state);
 	}
 };
 
@@ -89,8 +88,7 @@ public:
 
 	friend class MiscOptions_gump;
 	virtual void toggle(int state) {
-		((MiscOptions_gump*)parent)->toggle((Gump_button*)this, 
-									state);
+		reinterpret_cast<MiscOptions_gump*>(parent)->toggle(this, state);
 	}
 };	
 
@@ -199,7 +197,7 @@ void MiscOptions_gump::load_settings()
 		difficulty = 3;
 	difficulty += 3;		// Scale to choices (0-6).
 	show_hits = Combat::show_hits ? 1 : 0;
-	mode = (int) Combat::mode;
+	mode = static_cast<int>(Combat::mode);
 	if (mode < 0 || mode > 1)
 		mode = 0;
 	charmDiff = Combat::charmed_more_difficult ? 1: 0;
@@ -238,7 +236,7 @@ void MiscOptions_gump::save_settings()
 	Combat::show_hits = (show_hits != 0);
 	config->set("config/gameplay/combat/show_hits", 
 					show_hits ? "yes" : "no", false);
-	Combat::mode = (Combat::Mode) mode;
+	Combat::mode = static_cast<Combat::Mode>(mode);
 	std::string str = Combat::mode == Combat::keypause ? "keypause"
 					: "original";
 	config->set("config/gameplay/combat/mode", str, false);
@@ -292,7 +290,7 @@ bool MiscOptions_gump::mouse_down(int mx, int my, int button)
 	if (!pushed) {
 		for (int i = id_first; i < id_count; i++) {
 			if (buttons[i] && buttons[i]->on_button(mx, my)) {
-				pushed = (Gump_button *)buttons[i];
+				pushed = buttons[i];
 				break;
 			}
 		}
@@ -314,7 +312,7 @@ bool MiscOptions_gump::mouse_up(int mx, int my, int button)
 	bool res = false;
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
-		res = ((Gump_button*)pushed)->activate(button);
+		res = pushed->activate(button);
 	pushed = 0;
 	return res;
 }

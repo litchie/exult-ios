@@ -386,7 +386,7 @@ inline void set_ksl_tl(FM_OPL *OPL,int slot,int v)
 	int ksl = v>>6; /* 0 / 1.5 / 3 / 6 db/OCT */
 
 	SLOT->ksl = ksl ? 3-ksl : 31;
-	SLOT->TL  = (int)((v&0x3f)*(0.75/EG_STEP)); /* 0.75db step */
+	SLOT->TL  = static_cast<int>((v&0x3f)*(0.75/EG_STEP)); /* 0.75db step */
 
 	if( !(OPL->mode&0x80) )
 	{	/* not CSM latch total level */
@@ -569,9 +569,9 @@ static void init_timetables( FM_OPL *OPL , int ARRATE , int DRRATE )
 		rate  = OPL->freqbase;						/* frequency rate */
 		if( i < 60 ) rate *= 1.0+(i&3)*0.25;		/* b0-1 : x1 , x1.25 , x1.5 , x1.75 */
 		rate *= 1<<((i>>2)-1);						/* b2-5 : shift bit */
-		rate *= (double)(EG_ENT<<ENV_BITS);
-		OPL->AR_TABLE[i] = (int)(rate / ARRATE);
-		OPL->DR_TABLE[i] = (int)(rate / DRRATE);
+		rate *= static_cast<double>(EG_ENT<<ENV_BITS);
+		OPL->AR_TABLE[i] = static_cast<int>(rate / ARRATE);
+		OPL->DR_TABLE[i] = static_cast<int>(rate / DRRATE);
 	}
 	for (i = 60;i < 76;i++)
 	{
@@ -589,30 +589,14 @@ static int OPLOpenTable( void )
 	double pom;
 
 	/* allocate dynamic tables */
-	if( (TL_TABLE = (int *)malloc(TL_MAX*2*sizeof(int))) == NULL)
-		return 0;
-	if( (SIN_TABLE = (int **)malloc(SIN_ENT*4 *sizeof(int *))) == NULL)
-	{
-		free(TL_TABLE);
-		return 0;
-	}
-	if( (AMS_TABLE = (int *)malloc(AMS_ENT*2 *sizeof(int))) == NULL)
-	{
-		free(TL_TABLE);
-		free(SIN_TABLE);
-		return 0;
-	}
-	if( (VIB_TABLE = (int *)malloc(VIB_ENT*2 *sizeof(int))) == NULL)
-	{
-		free(TL_TABLE);
-		free(SIN_TABLE);
-		free(AMS_TABLE);
-		return 0;
-	}
+	TL_TABLE = new int[2*TL_MAX];
+	SIN_TABLE = new int *[4*SIN_ENT];
+	AMS_TABLE = new int[2*AMS_ENT];
+	VIB_TABLE = new int[2*VIB_ENT];
 	/* make total level table */
 	for (t = 0;t < EG_ENT-1 ;t++){
 		rate = ((1<<TL_BITS)-1)/std::pow(10.0,EG_STEP*t/20);	/* dB -> voltage */
-		TL_TABLE[       t] =  (int)rate;
+		TL_TABLE[       t] =  static_cast<int>(rate);
 		TL_TABLE[TL_MAX+t] = -TL_TABLE[t];
 	}
 	/* fill volume off area */
@@ -644,9 +628,9 @@ static int OPLOpenTable( void )
 	for (i=0; i<EG_ENT; i++)
 	{
 		/* ATTACK curve */
-		pom = std::pow( ((double)(EG_ENT-1-i)/EG_ENT) , 8 ) * EG_ENT;
+		pom = std::pow((static_cast<double>(EG_ENT-1-i)/EG_ENT) , 8) * EG_ENT;
 		/* if( pom >= EG_ENT ) pom = EG_ENT-1; */
-		ENV_CURVE[i] = (int)pom;
+		ENV_CURVE[i] = static_cast<int>(pom);
 		/* DECAY ,RELEASE curve */
 		ENV_CURVE[(EG_DST>>ENV_BITS)+i]= i;
 	}
@@ -656,16 +640,16 @@ static int OPLOpenTable( void )
 	for (i=0; i<AMS_ENT; i++)
 	{
 		pom = (1.0+std::sin(2*PI*i/AMS_ENT))/2; /* sin */
-		AMS_TABLE[i]         = (int)((1.0/EG_STEP)*pom); /* 1dB   */
-		AMS_TABLE[AMS_ENT+i] = (int)((4.8/EG_STEP)*pom); /* 4.8dB */
+		AMS_TABLE[i]         = static_cast<int>((1.0/EG_STEP)*pom); /* 1dB   */
+		AMS_TABLE[AMS_ENT+i] = static_cast<int>((4.8/EG_STEP)*pom); /* 4.8dB */
 	}
 	/* make LFO vibrate table */
 	for (i=0; i<VIB_ENT; i++)
 	{
 		/* 100cent = 1seminote = 6% ?? */
-		pom = (double)VIB_RATE*0.06*std::sin(2*PI*i/VIB_ENT); /* +-100sect step */
-		VIB_TABLE[i]         = (int)(VIB_RATE + (pom*0.07)); /* +- 7cent */
-		VIB_TABLE[VIB_ENT+i] = (int)(VIB_RATE + (pom*0.14)); /* +-14cent */
+		pom = static_cast<double>(VIB_RATE*0.06*std::sin(2*PI*i/VIB_ENT)); /* +-100sect step */
+		VIB_TABLE[i]         = static_cast<int>(VIB_RATE + (pom*0.07)); /* +- 7cent */
+		VIB_TABLE[VIB_ENT+i] = static_cast<int>(VIB_RATE + (pom*0.14)); /* +-14cent */
 	}
 	return 1;
 }
@@ -673,10 +657,10 @@ static int OPLOpenTable( void )
 
 static void OPLCloseTable( void )
 {
-	free(TL_TABLE);
-	free(SIN_TABLE);
-	free(AMS_TABLE);
-	free(VIB_TABLE);
+	delete [] TL_TABLE;
+	delete [] SIN_TABLE;
+	delete [] AMS_TABLE;
+	delete [] VIB_TABLE;
 }
 
 /* CSM Key Controll */
@@ -702,19 +686,19 @@ static void OPL_initalize(FM_OPL *OPL)
 	int fn;
 
 	/* frequency base */
-	OPL->freqbase = (OPL->rate) ? ((double)OPL->clock / OPL->rate) / 72  : 0;
+	OPL->freqbase = (OPL->rate) ? (static_cast<double>(OPL->clock) / OPL->rate) / 72  : 0;
 	/* Timer base time */
-	OPL->TimerBase = 1.0/((double)OPL->clock / 72.0 );
+	OPL->TimerBase = 1.0/(static_cast<double>(OPL->clock) / 72.0 );
 	/* make time tables */
 	init_timetables( OPL , OPL_ARRATE , OPL_DRRATE );
 	/* make fnumber -> increment counter table */
 	for( fn=0 ; fn < 1024 ; fn++ )
 	{
-		OPL->FN_TABLE[fn] = (uint32)(OPL->freqbase * fn * FREQ_RATE * (1<<7) / 2);
+		OPL->FN_TABLE[fn] = static_cast<uint32>(OPL->freqbase * fn * FREQ_RATE * (1<<7) / 2);
 	}
 	/* LFO freq.table */
-	OPL->amsIncr = (int)(OPL->rate ? (double)AMS_ENT*(1<<AMS_SHIFT) / OPL->rate * 3.7 * ((double)OPL->clock/3600000) : 0);
-	OPL->vibIncr = (int)(OPL->rate ? (double)VIB_ENT*(1<<VIB_SHIFT) / OPL->rate * 6.4 * ((double)OPL->clock/3600000) : 0);
+	OPL->amsIncr = static_cast<int>(OPL->rate ? static_cast<double>(AMS_ENT)*(1<<AMS_SHIFT) / OPL->rate * 3.7 * (static_cast<double>(OPL->clock)/3600000.0) : 0);
+	OPL->vibIncr = static_cast<int>(OPL->rate ? static_cast<double>(VIB_ENT)*(1<<VIB_SHIFT) / OPL->rate * 6.4 * (static_cast<double>(OPL->clock)/3600000.0) : 0);
 }
 
 /* ---------- write a OPL registers ---------- */
@@ -767,14 +751,14 @@ void OPLWriteReg(FM_OPL *OPL, int r, int v)
 				/* timer 2 */
 				if(OPL->st[1] != st2)
 				{
-					double interval = st2 ? (double)OPL->T[1]*OPL->TimerBase : 0.0;
+					double interval = st2 ? static_cast<double>(OPL->T[1]*OPL->TimerBase) : 0.0;
 					OPL->st[1] = st2;
 					if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+1,interval);
 				}
 				/* timer 1 */
 				if(OPL->st[0] != st1)
 				{
-					double interval = st1 ? (double)OPL->T[0]*OPL->TimerBase : 0.0;
+					double interval = st1 ? static_cast<double>(OPL->T[0]*OPL->TimerBase) : 0.0;
 					OPL->st[0] = st1;
 					if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+0,interval);
 				}
@@ -960,8 +944,8 @@ void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length)
 	uint8 rythm = OPL->rythm&0x20;
 	OPL_CH *CH,*R_CH;
 
-	if( (void *)OPL != cur_chip ){
-		cur_chip = (void *)OPL;
+	if (static_cast<void *>(OPL) != cur_chip ){
+		cur_chip = static_cast<void *>(OPL);
 		/* channel pointers */
 		S_CH = OPL->P_CH;
 		E_CH = &S_CH[9];
@@ -1012,8 +996,8 @@ void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length)
 	uint8 rythm = OPL->rythm&0x20;
 	OPL_CH *CH,*R_CH;
 
-	if( (void *)OPL != cur_chip ){
-		cur_chip = (void *)OPL;
+	if (static_cast<void *>(OPL) != cur_chip ){
+		cur_chip = static_cast<void *>(OPL);
 		/* channel pointers */
 		S_CH = OPL->P_CH;
 		E_CH = &S_CH[9];
@@ -1117,13 +1101,13 @@ FM_OPL *OPLCreate(int type, int clock, int rate)
 	state_size += sizeof(OPL_CH)*max_ch;
 
 	/* allocate memory block */
-	ptr = (char *)malloc(state_size);
+	ptr = new char[state_size];
 	if(ptr==NULL) return NULL;
 
 	/* clear */
 	memset(ptr,0,state_size);
-	OPL        = (FM_OPL *)ptr; ptr+=sizeof(FM_OPL);
-	OPL->P_CH  = (OPL_CH *)ptr; ptr+=sizeof(OPL_CH)*max_ch;
+	OPL        = reinterpret_cast<FM_OPL *>(ptr); ptr+=sizeof(FM_OPL);
+	OPL->P_CH  = reinterpret_cast<OPL_CH *>(ptr); ptr+=sizeof(OPL_CH)*max_ch;
 
 	/* set channel state pointer */
 	OPL->type  = type;
@@ -1143,7 +1127,7 @@ FM_OPL *OPLCreate(int type, int clock, int rate)
 void OPLDestroy(FM_OPL *OPL)
 {
 	OPL_UnLockTable();
-	free(OPL);
+	delete [] OPL;
 }
 
 /* ----------  Option handlers ----------       */
@@ -1219,7 +1203,7 @@ int OPLTimerOver(FM_OPL *OPL,int c)
 		}
 	}
 	/* reload timer */
-	if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+c,(double)OPL->T[c]*OPL->TimerBase);
+	if (OPL->TimerHandler) (OPL->TimerHandler)(OPL->TimerParam+c,static_cast<double>(OPL->T[c])*OPL->TimerBase);
 	return OPL->status>>7;
 }
 
@@ -1229,7 +1213,7 @@ void OPLSetPan(FM_OPL *OPL,int c, int pan)
 		OPL->P_CH[c].PAN = pan;
 }
 
-};
+}
 
 #endif //USE_FMOPL_MIDI
 

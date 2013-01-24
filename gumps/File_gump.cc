@@ -107,9 +107,9 @@ bool Load_save_button::activate
 	if (button != 1) return false;
 
 	if (get_shapenum() == game->get_shape("gumps/loadbtn"))
-		((File_gump *) parent)->load();
+		reinterpret_cast<File_gump *>(parent)->load();
 	else
-		((File_gump *) parent)->save();
+		reinterpret_cast<File_gump *>(parent)->save();
 
 	return true;
 }
@@ -124,7 +124,7 @@ bool Quit_button::activate
 	)
 {
 	if (button != 1) return false;
-	((File_gump *) parent)->quit();
+	reinterpret_cast<File_gump *>(parent)->quit();
 	return true;
 }
 
@@ -138,7 +138,7 @@ bool Sound_button::activate
 	)
 {
 	if (button != 1) return false;
-	set_pushed(((File_gump *) parent)->toggle_option(this) != 0);
+	set_pushed(reinterpret_cast<File_gump *>(parent)->toggle_option(this) != 0);
 	parent->paint();
 	return true;
 }

@@ -644,8 +644,6 @@ bool MyMidiPlayer::init_device(bool timbre_load)
 
 	std::cout << "OGG Vorbis Digital Music: " << (ogg_enabled?"Enabled":"Disabled") << std::endl;
 
-	Audio *audio = Audio::get_ptr();
-
 	Pentagram::AudioMixer *mixer = Pentagram::AudioMixer::get_instance();
 	midi_driver = MidiDriver::createInstance(s,mixer->getSampleRate(),mixer->getStereo());
 
@@ -813,7 +811,7 @@ bool MyMidiPlayer::ogg_play_track(std::string filename, int num, bool repeat)
 			ogg_name = "si13.ogg";
 		else if (filename == MAINMUS || filename == MAINMUS_AD)
 			{
-			if ((unsigned)num < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
+			if (static_cast<unsigned>(num) < sizeof(bgconvmusic)/sizeof(bgconvmusic[0]))
 				ogg_name = bgconvmusic[num];
 			else
 				{

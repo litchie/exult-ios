@@ -224,7 +224,7 @@ int FMOplMidiDriver::open()
 		myinsbank[i][INDEX_PERC] = 0x80;
 
 		// Setup square root table here
-		lucas_fm_vol_table[i] = (int)((double)std::sqrt((double)my_midi_fm_vol_table[i]) * 11);	/* TO CHANGE !!! */
+		lucas_fm_vol_table[i] = static_cast<int>(static_cast<double>(std::sqrt(static_cast<double>(my_midi_fm_vol_table[i])) * 11));	/* TO CHANGE !!! */
 
 		// Clear the xmidibanks
 		xmidibanks[i] = 0;
@@ -320,7 +320,7 @@ int FMOplMidiDriver::midi_calc_volume(int channel, int vel)
 //
 void FMOplMidiDriver::send(uint32 b)
 {
-	unsigned char channel = (char)(b & 0x0F);
+	unsigned char channel = static_cast<char>(b & 0x0F);
 
 	// Discard everything on channel 9 for now
 	if (channel == 9 && !xmidibanks[127]) return;
@@ -330,8 +330,8 @@ void FMOplMidiDriver::send(uint32 b)
 			// Quick hack, but we should never use it. since note offs will never be sent
 			b &= 0xFFFF;
 	case 0x90:{									/*note on */
-			unsigned char note = (unsigned char)((b >> 8) & 0x7F);
-			unsigned char vel = (unsigned char)((b >> 16) & 0x7F);
+			unsigned char note = static_cast<unsigned char>((b >> 8) & 0x7F);
+			unsigned char vel = static_cast<unsigned char>((b >> 16) & 0x7F);
 			int i, j;
 			int onl, on, nv;
 			on = -1;
@@ -396,8 +396,8 @@ void FMOplMidiDriver::send(uint32 b)
 		break;
 
 	case 0xa0:{									/*key after touch */
-			unsigned char note = (unsigned char)((b >> 8) & 0x7F);
-			unsigned char vel = (unsigned char)((b >> 16) & 0x7F);
+			unsigned char note = static_cast<unsigned char>((b >> 8) & 0x7F);
+			unsigned char vel = static_cast<unsigned char>((b >> 16) & 0x7F);
 			int nv = midi_calc_volume(channel, vel);
 
 			for (int i = 0; i < 9; i++)
@@ -410,8 +410,8 @@ void FMOplMidiDriver::send(uint32 b)
 
 	case 0xb0:{									/* control change */
 			int i;
-			unsigned char ctrl = (unsigned char)((b >> 8) & 0x7F);
-			unsigned char vel = (unsigned char)((b >> 16) & 0x7F);
+			unsigned char ctrl = static_cast<unsigned char>((b >> 8) & 0x7F);
+			unsigned char vel = static_cast<unsigned char>((b >> 16) & 0x7F);
 
 			/* FIXME: Except for Volume, the Modulation and Sustain
 			   code is just a random guess. */
@@ -503,9 +503,9 @@ void FMOplMidiDriver::send(uint32 b)
 		break;
 
 	case 0xc0:{									/* patch change */
-			unsigned char instrument = (unsigned char)((b >> 8) & 0x7F);
+			unsigned char instrument = static_cast<unsigned char>((b >> 8) & 0x7F);
 			ch[channel].inum = instrument;
-			//std::POUT << "Setting instrument: " << ((unsigned int) instrument) << " for chan " << ((unsigned int) channel) << std::endl;
+			//std::POUT << "Setting instrument: " << static_cast<unsigned int>(instrument) << " for chan " << static_cast<unsigned int>(channel) << std::endl;
 
 			unsigned char *ins = 0;
 			int b = -1;
@@ -642,10 +642,9 @@ void FMOplMidiDriver::midi_fm_volume(int voice, int volume)
 
 	if ((adlib_data[0xc0 + voice] & 1) == 1)
 		midi_write_adlib(0x40 + adlib_opadd[voice],
-										 (unsigned char)((63 - volume) |
-																		 (adlib_data[0x40 + adlib_opadd[voice]] & 0xc0)));
+									 static_cast<unsigned char>((63 - volume) | (adlib_data[0x40 + adlib_opadd[voice]] & 0xc0)));
 	midi_write_adlib(0x43 + adlib_opadd[voice],
-									 (unsigned char)((63 - volume) | (adlib_data[0x43 + adlib_opadd[voice]] & 0xc0)));
+									 static_cast<unsigned char>((63 - volume) | (adlib_data[0x43 + adlib_opadd[voice]] & 0xc0)));
 }
 
 const int FMOplMidiDriver::fnums[12] =
@@ -771,13 +770,12 @@ void FMOplMidiDriver::midi_fm_playnote(int voice, int note, int volume, int pitc
 	if (pitchbend != 0) {
 		pitchbend *= 2;
 		if (pitchbend >= 0)
-			pf = (float)(bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]);
+			pf = static_cast<float>(bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]);
 		else {
 			pitchbend = -pitchbend;
-			pf =
-				(float)(1.0 / (bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]));
+			pf =static_cast<float>(1.0 / (bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]));
 		}
-		freq = (int)((float)freq * pf);
+		freq = static_cast<int>(static_cast<float>(freq) * pf);
 
 		while (freq >= (fnums[0] * 2)) {
 			freq /= 2;
@@ -790,15 +788,15 @@ void FMOplMidiDriver::midi_fm_playnote(int voice, int note, int volume, int pitc
 	}
 
 	midi_fm_volume(voice, volume);
-	midi_write_adlib(0xa0 + voice, (unsigned char)(freq & 0xff));
+	midi_write_adlib(0xa0 + voice, static_cast<unsigned char>(freq & 0xff));
 
 	c = ((freq & 0x300) >> 8) + (oct << 2) + (1 << 5);
-	midi_write_adlib(0xb0 + voice, (unsigned char)c);
+	midi_write_adlib(0xb0 + voice, static_cast<unsigned char>(c));
 }
 
 void FMOplMidiDriver::midi_fm_endnote(int voice)
 {
-	midi_write_adlib(0xb0 + voice, (unsigned char)(adlib_data[0xb0 + voice] & (255 - 32)));
+	midi_write_adlib(0xb0 + voice, static_cast<unsigned char>(adlib_data[0xb0 + voice] & (255 - 32)));
 }
 
 void FMOplMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType type)
@@ -830,8 +828,8 @@ void FMOplMidiDriver::loadXMIDITimbres(IDataSource *ds)
 		// Seek to the entry
 		ds->seek(i*6);
 
-		uint32 patch = (uint8) ds->read1();
-		uint32 bank = (uint8) ds->read1();
+		uint32 patch = static_cast<uint8>(ds->read1());
+		uint32 bank = static_cast<uint8>(ds->read1());
 
 		// If we read both == 255 then we've read all of them
 		if (patch == 255 || bank == 255) {
@@ -990,7 +988,7 @@ void FMOplMidiDriver::loadU7VoiceTimbres(IDataSource *ds)
 			transpose = ds->read1();
 			next_partial = ds->read1();
 			key_follow = ds->read1();
-			ds->read((char *) reserved, 7);
+			ds->read(reinterpret_cast<char *>(reserved), 7);
 		
 			prog_num = ds->read1();
 		}

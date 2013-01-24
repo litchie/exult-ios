@@ -39,12 +39,12 @@ namespace NS_TIMIDITY {
 #define dpm sdl_play_mode
 
 PlayMode dpm = {
-  DEFAULT_RATE, PE_16BIT|PE_SIGNED,
-  "SDL audio"
+	DEFAULT_RATE, PE_16BIT|PE_SIGNED,
+	"SDL audio"
 };
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif //USE_TIMIDITY_MIDI

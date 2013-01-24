@@ -33,7 +33,7 @@ namespace NS_TIMIDITY {
 #endif
 
 #ifdef SDL
-  extern ControlMode sdl_control_mode;
+	extern ControlMode sdl_control_mode;
 # ifndef DEFAULT_CONTROL_MODE
 #  define DEFAULT_CONTROL_MODE &sdl_control_mode
 # endif
@@ -41,15 +41,15 @@ namespace NS_TIMIDITY {
 
 ControlMode *ctl_list[]={
 #ifdef SDL
-  &sdl_control_mode,
+	&sdl_control_mode,
 #endif
-  0
+	0
 };
 
 ControlMode *ctl=DEFAULT_CONTROL_MODE;
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif //USE_TIMIDITY_MIDI

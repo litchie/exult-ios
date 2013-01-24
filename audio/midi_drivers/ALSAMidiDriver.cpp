@@ -154,7 +154,7 @@ void ALSAMidiDriver::send(uint32 b) {
 	case 0xE0:{
 			// long theBend = ((((long)midiCmd[1] + (long)(midiCmd[2] << 7))) - 0x2000) / 4;
 			// snd_seq_ev_set_pitchbend(&ev, chanID, theBend);
-			long theBend = ((long)midiCmd[1] + (long)(midiCmd[2] << 7)) - 0x2000;
+			long theBend = (static_cast<long>(midiCmd[1]) + static_cast<long>(midiCmd[2] << 7)) - 0x2000;
 			snd_seq_ev_set_pitchbend(&ev, chanID, theBend);
 			send_event(1);
 		}
@@ -162,7 +162,7 @@ void ALSAMidiDriver::send(uint32 b) {
 
 	default:
 		perr << "ALSAMidiDriver: Unknown Command: "
-			 << std::hex << (int)b << std::dec << std::endl;
+			 << std::hex << static_cast<int>(b) << std::dec << std::endl;
 		/* I don't know if this works but, well... */
 		send_event(1);
 		break;

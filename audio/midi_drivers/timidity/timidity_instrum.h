@@ -33,22 +33,22 @@ namespace NS_TIMIDITY {
 #endif
 
 struct Sample {
-  sint32
-    loop_start, loop_end, data_length,
-    sample_rate, low_freq, high_freq, root_freq;
-  sint32
-    envelope_rate[6], envelope_offset[6];
-  float
-    volume;
-  sample_t *data;
-  sint32 
-    tremolo_sweep_increment, tremolo_phase_increment, 
-    vibrato_sweep_increment, vibrato_control_ratio;
-  uint8
-    tremolo_depth, vibrato_depth,
-    modes;
-  sint8
-    panning, note_to_use;
+	sint32
+		loop_start, loop_end, data_length,
+	sample_rate, low_freq, high_freq, root_freq;
+	sint32
+		envelope_rate[6], envelope_offset[6];
+	float
+		volume;
+	sample_t *data;
+	sint32 
+		tremolo_sweep_increment, tremolo_phase_increment, 
+	vibrato_sweep_increment, vibrato_control_ratio;
+	uint8
+		tremolo_depth, vibrato_depth,
+	modes;
+	sint8
+		panning, note_to_use;
 };
 
 /* Bits in modes: */
@@ -61,22 +61,22 @@ struct Sample {
 #define MODES_ENVELOPE	(1<<6)
 
 struct Instrument {
-  int samples;
-  Sample *sample;
+	int samples;
+	Sample *sample;
 };
 
 struct ToneBankElement {
-  char *name;
-  Instrument *instrument;
-  int note, amp, pan, strip_loop, strip_envelope, strip_tail;
+	char *name;
+	Instrument *instrument;
+	int note, amp, pan, strip_loop, strip_envelope, strip_tail;
 };
 
 /* A hack to delay instrument loading until after reading the
    entire MIDI file. */
-#define MAGIC_LOAD_INSTRUMENT ((Instrument *)(-1))
+#define MAGIC_LOAD_INSTRUMENT (reinterpret_cast<Instrument *>(-1))
 
 struct ToneBank {
-  ToneBankElement tone[128];
+	ToneBankElement tone[128];
 };
 
 extern ToneBank *tonebank[], *drumset[];
@@ -94,7 +94,7 @@ extern void free_instruments(void);
 extern int set_default_instrument(char *name);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif
