@@ -1,3 +1,6 @@
+2013-01-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* keys.cc: Missing is_movement initializer for ActionScrollLeft. Warnings.
+
 2013-01-24	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gump_manager.cc: Fix main_actor_can_act check that could be bypassed
 	  if double click closes gumps was disabled.

@@ -130,7 +130,7 @@ const struct Action {
 	{ "SHOW_SI_INTRO",
 	  ActionSIIntro, 0, "Show Alternate SI intro", Action::cheat_keys, SERPENT_ISLE, false, true, true, false },
 	{ "SHOW_ENDGAME", ActionEndgame, 0, "Show endgame", Action::cheat_keys, NONE, false, true, true, false },
-	{ "SCROLL_LEFT", ActionScrollLeft, 0, "Scroll left", Action::cheat_keys, NONE, false, true , true},
+	{ "SCROLL_LEFT", ActionScrollLeft, 0, "Scroll left", Action::cheat_keys, NONE, false, true , true, false},
 	{ "SCROLL_RIGHT", ActionScrollRight, 0, "Scroll right", Action::cheat_keys, NONE, false, true, true, false },
 	{ "SCROLL_UP", ActionScrollUp, 0, "Scroll up", Action::cheat_keys, NONE, false, true, true, false },
 	{ "SCROLL_DOWN", ActionScrollDown, 0, "Scroll down", Action::cheat_keys, NONE, false, true, true, false },
@@ -296,12 +296,12 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	ActionType a;
 
 	#ifdef SDL_VER_1_3
-	k.scancode = (SDL_Scancode)0;	
+	k.scancode = static_cast<SDL_Scancode>(0);	
 	#else
 	k.scancode = 0;
 	#endif
 	k.sym      = key;
-	k.mod      = (SDLMod) mod;
+	k.mod      = static_cast<SDLMod>(mod);
 	k.unicode  = 0;
 	a.action    = action;
 	int i;	// For MSVC
@@ -382,16 +382,16 @@ KeyMap::const_iterator KeyBinder::TranslateEvent(SDL_Event const& ev) const
 	
 	key.mod = KMOD_NONE;
 	if (ev.key.keysym.mod & KMOD_SHIFT)
-		key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
+		key.mod = static_cast<SDLMod>(key.mod | KMOD_SHIFT);
 	if (ev.key.keysym.mod & KMOD_CTRL)
-		key.mod = (SDLMod)(key.mod | KMOD_CTRL);
+		key.mod = static_cast<SDLMod>(key.mod | KMOD_CTRL);
 #if defined(MACOS) || defined(MACOSX)
 	// map Meta to Alt on MacOS
 	if (ev.key.keysym.mod & KMOD_META)
 		key.mod = (SDLMod)(key.mod | KMOD_ALT);
 #else
 	if (ev.key.keysym.mod & KMOD_ALT)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+		key.mod = static_cast<SDLMod>(key.mod | KMOD_ALT);
 #endif
 	
 	return bindings.find(key);
@@ -572,15 +572,15 @@ void KeyBinder::ParseLine(char *line)
 		// check modifiers
 		//    if (u.compare("ALT-",0,4) == 0) {
 		if (u.substr(0,4) == "ALT-") {
-			k.mod = (SDLMod)(k.mod | KMOD_ALT);
+			k.mod = static_cast<SDLMod>(k.mod | KMOD_ALT);
 			s.erase(0,4); u.erase(0,4);
 			//    } else if (u.compare("CTRL-",0,5) == 0) {
 		} else if (u.substr(0,5) == "CTRL-") {
-			k.mod = (SDLMod)(k.mod | KMOD_CTRL);
+			k.mod = static_cast<SDLMod>(k.mod | KMOD_CTRL);
 			s.erase(0,5); u.erase(0,5);
 			//    } else if (u.compare("SHIFT-",0,6) == 0) {
 		} else if (u.substr(0,6) == "SHIFT-") {
-			k.mod = (SDLMod)(k.mod | KMOD_SHIFT);
+			k.mod = static_cast<SDLMod>(k.mod | KMOD_SHIFT);
 			s.erase(0,6); u.erase(0,6);
 		} else {
 			
