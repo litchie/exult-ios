@@ -197,7 +197,7 @@ void ucxtInit::opcodes()
 	
 	/* Create an {opcode, parameter_index} array of all opcodes that
 		execute a 'jump' statement */
-	for(std::vector<UCOpcodeData>::iterator op=opcode_table_data.begin(); op!=opcode_table_data.end(); op++)
+	for(std::vector<UCOpcodeData>::iterator op=opcode_table_data.begin(); op!=opcode_table_data.end(); ++op)
 	{
 		for(unsigned int i=0; i<op->param_sizes.size(); i++)
 		{
@@ -210,7 +210,7 @@ void ucxtInit::opcodes()
 	
 	#if 0
 	std::cout << "Calculated Opcode pairs:" << std::endl;
-	for(std::vector<std::pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); i++)
+	for(std::vector<std::pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); ++i)
 		std::cout << setw(4) << i->first << '\t' << setw(4) << i->second << std::endl;
 	#endif
 }
@@ -223,7 +223,7 @@ void ucxtInit::intrinsics(const string &intrinsic_data, const string &intrinsic_
 		
 	intdata.getsubkeys(ktl, intrinsic_root);
 	
-	for(Configuration::KeyTypeList::iterator k=ktl.begin(); k!=ktl.end(); k++)
+	for(Configuration::KeyTypeList::iterator k=ktl.begin(); k!=ktl.end(); ++k)
 		uc_intrinsics.insert(pair<unsigned int, string>(static_cast<unsigned int>(strtol(k->first.c_str(), 0, 0)), k->second));
 }
 

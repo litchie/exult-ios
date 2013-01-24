@@ -171,7 +171,7 @@ class UCOpcodeData
 			o << "ucs_nmo: " << ucs_nmo << std::endl;
 			o << "num_bytes: " << num_bytes << std::endl;
 			o << "param_types: ";
-			for(typeof(param_types.begin()) i=param_types.begin(); i!=param_types.end(); i++)
+			for(typeof(param_types.begin()) i=param_types.begin(); i!=param_types.end(); ++i)
 				o << *i << ',';
 			o << std::endl;
 			o << "num_pop: " << num_pop << std::endl;

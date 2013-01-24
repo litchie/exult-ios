@@ -167,17 +167,17 @@ class GotoSet
 					
 					GotoSet::iterator rem(j);
 					
-					if(begin==false) j--;
+					if(begin==false) --j;
 					
 					_uccs.erase(rem);
 					
 					if(begin==true) j=_uccs.begin();
-					else            j++;
+					else            ++j;
 					
 					if(j==_uccs.end()) std::cout << "POTENTIAL PROBLEM" << std::endl;
 				}
 				else
-					j++;
+					++j;
 				
 				#ifdef DEBUG_GOTOSET
 				std::cout << std::endl;
