@@ -69,7 +69,10 @@ using std::setw;
 using std::less;
 
 const string VARNAME = "var";
+const string NORETURN = "void";
 const string VARPREFIX = "var";
+const string SHAPENUM = "shape#(";
+const string OBJECTNUM = "object#(";
 
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output);
 
@@ -123,7 +126,7 @@ bool UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	
 	if(_externs.size()) tab_indent(indent, o) << "// externs" << endl;
 	// output the 'externs'
-	for(vector<unsigned int>::iterator e=_externs.begin(); e!=_externs.end(); e++)
+	for(vector<unsigned int>::iterator e=_externs.begin(); e!=_externs.end(); ++e)
 	{
 		FuncMap::const_iterator fmp = funcmap.find(*e);
 		output_ucs_funcname(tab_indent(indent, o) << "extern ", funcmap, *e, fmp->second.num_args, fmp->second.return_var) << ';' << endl;
@@ -158,6 +161,7 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 {
 	// do we return a variable
 	if(return_var) o << VARNAME << ' ';
+	else o << NORETURN << ' ';
 	
 	// output the "function name"
 	// TODO: Probably want to grab this from a file in the future...
@@ -175,9 +179,16 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 		o << "Func" << std::setw(4) << funcid;
 	
 	// output the "function number"
-	o << " 0x" << funcid
+	o << " ";
+	if (funcid < 0x400)
+		o << SHAPENUM;
+	else if (funcid < 0x800)
+		o << OBJECTNUM;
+	o << "0x" << funcid;
+	if (funcid < 0x800)
+		o << ")";
 	// output ObCurly braces
-	  << " (";
+	o << " (";
 	
 	for(unsigned int i=0; i<numargs; i++)
 		o << VARNAME << ' ' << VARPREFIX << std::setw(4) << i << ((i==numargs-1) ? "" : ", ");
@@ -201,10 +212,10 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 		if(i!=gotoset.begin())
 		{
 			labeltmp[0]=i->offset();
-			tab_indent(indent++, o) << demunge_ocstring(*this, funcmap, "label%f*_%1:", labeltmp, intrinsics, UCc(), true) << endl;
+			tab_indent(indent-1, o) << demunge_ocstring(*this, funcmap, "label%f*_%1:", labeltmp, intrinsics, UCc(), true) << endl;
 		}
 		
-		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
+		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); ++j)
 		{
 			const UCc &ucc = *(j->first);
 			
@@ -213,7 +224,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 
 			output_ucs_opcode(o, funcmap, opcode_table_data, ucc, intrinsics, indent);
 		}
-		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
+		//if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
 		
 	}
 }
@@ -223,7 +234,7 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, op._params_parsed, intrinsics, op, true) << ';' << endl;
 	
 	#ifdef DEBUG_PRINT
-	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
+	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); ++i)
 	{
 		if((*i)->_popped.size())
 			output_ucs_opcode(o, funcmap, opcode_table_data, **i, intrinsics, indent+1);
@@ -242,7 +253,7 @@ void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, co
 		output_asm_opcode(tab_indent(indent, o), funcmap, opcode_table_data, intrinsics, *(ucn->ucc), options);
 	
 	if(ucn->nodelist.size())
-		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); i++)
+		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); ++i)
 		{
 			//tab_indent(indent, o);
 			output_ucs_node(o, funcmap, *i, intrinsics, indent+1, options);
@@ -255,7 +266,7 @@ void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, co
 /* Just a quick function to remove all the ucc structured flagged as removable */
 inline void gc_gotoset(vector<GotoSet> &gotoset)
 {
-	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
 		i->gc();
 		#ifdef DEBUG_GOTOSET
@@ -266,7 +277,7 @@ inline void gc_gotoset(vector<GotoSet> &gotoset)
 
 void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options)
 {
-	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
+	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); ++i)
 		node.nodelist.push_back(new UCNode(&(*i)));
 	
 	parse_ucs_pass1(node.nodelist);
@@ -279,11 +290,11 @@ void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &
 	}
 	
 	#ifdef DEBUG_PARSE2
-	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
 		cout << std::setw(4) << i->offset() << endl;
 		
-		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
+		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); ++j)
 		{
 			cout << '\t' << std::setw(4) << j->first->_offset << '\t' << j->first->_id << endl;
 		}
@@ -303,7 +314,7 @@ void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
 		if(nodes[i]->ucc!=0)
 		{
 			unsigned int isjump=0;
-			for(vector<pair<unsigned int, unsigned int> >::iterator op=opcode_jumps.begin(); op!=opcode_jumps.end(); op++)
+			for(vector<pair<unsigned int, unsigned int> >::iterator op=opcode_jumps.begin(); op!=opcode_jumps.end(); ++op)
 				if(op->first==nodes[i]->ucc->_id)
 				{
 					isjump=op->second;
@@ -423,7 +434,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 						#ifdef DEBUG_PARSE2a
 						output_asm_opcode(tab_indent(1, cout), *this, funcmap, opcode_table_data, intrinsics, *(ret->first));
 						
-						for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); i++)
+						for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); ++i)
 							output_asm_opcode(tab_indent(2, cout), *this, funcmap, opcode_table_data, intrinsics, **i);
 						#endif
 					}
@@ -485,7 +496,7 @@ bool UCFunc::output_tt(std::ostream &o)
 {
 	o << "\t<0x" << setw(4) << _funcid << ">" << endl;
 	
-	for(map<unsigned int, string, less<unsigned int> >::iterator i=_data.begin(); i!=_data.end(); i++)
+	for(map<unsigned int, string, less<unsigned int> >::iterator i=_data.begin(); i!=_data.end(); ++i)
 	{
 		o << "\t\t<0x" << setw(4) << i->first << ">" << endl
 		  << "\t\t`" << i->second << "`" << endl
@@ -605,12 +616,12 @@ bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	o << "\t.localc      " << std::setw(4) << _num_locals << "H" << endl;
 	o << "\t.externsize  " << std::setw(4) << _externs.size() << "H" << endl;
 	
-	for(typeof(_externs.begin()) i=_externs.begin(); i!=_externs.end(); i++)
+	for(typeof(_externs.begin()) i=_externs.begin(); i!=_externs.end(); ++i)
 		o << '\t' << "  .extern    " << std::setw(4) << *i << "H" << endl;
 /*	for(unsigned int i=0; i<_externs.size(); i++) //FIXME: ::iterators
 		o << '\t' << "  .extern    " << std::setw(4) << _externs[i] << "H" << endl;*/
 	
-	for(vector<UCc>::iterator op=_opcodes.begin(); op!=_opcodes.end(); op++)
+	for(vector<UCc>::iterator op=_opcodes.begin(); op!=_opcodes.end(); ++op)
 		output_asm_opcode(o, funcmap, opcode_table_data, intrinsics, *op, options);
 	
 	return true;
@@ -620,7 +631,7 @@ void UCFunc::output_asm_data(ostream &o)
 {
 	static const unsigned int nochars=60;
 	// limit of about 60 chars to a line, wrap to the next line if longer then this...
-	for(map<unsigned int, string, less<unsigned int> >::iterator i=_data.begin(); i!=_data.end(); i++)
+	for(map<unsigned int, string, less<unsigned int> >::iterator i=_data.begin(); i!=_data.end(); ++i)
 	{
 		for(unsigned int j=0; j<i->second.size(); j++)
 		{
@@ -894,7 +905,13 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						if(t!=0)
 						{
 							assert(params.size()>=t);
-							str << std::setw(width) << params[t-1];
+							// Small hack to make variable name equal to the
+							// order in the function name, so that the function
+							// call has the same order as parameter name.
+							unsigned int paramval = params[t-1];
+							if (paramval < ucf._num_args)
+								paramval = ucf._num_args - paramval - 1;
+							str << std::setw(width) << paramval;
 						}
 						else if(c=='%')
 							str << '%';
@@ -983,7 +1000,7 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 
 	#if 0	
 	if(ucf._funcid==_search_func)
-		for(map<unsigned int, string>::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
+		for(map<unsigned int, string>::iterator i=ucf._data.begin(); i!=ucf._data.end(); ++i)
 			cout << i->first << "\t" << i->second << endl;
 	#endif
 	
@@ -995,6 +1012,9 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 		// get the number of arguments to the function
 		ucf._num_args = Read2(f);
 
+		if (options.output_ucs && ucf._funcid < 0x800)
+			ucf._num_args--;
+		
 		// get the number of local variables
 		ucf._num_locals = Read2(f);
 

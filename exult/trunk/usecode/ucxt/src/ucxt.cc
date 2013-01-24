@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 	{
 		cout << "<opcodes>" << endl;
 		
-		for(typeof(opcode_table_data.begin()) i=opcode_table_data.begin(); i!=opcode_table_data.end(); i++)
+		for(typeof(opcode_table_data.begin()) i=opcode_table_data.begin(); i!=opcode_table_data.end(); ++i)
 		{
 			if(i->opcode!=0 && i->name!="NULL")
 			{
@@ -119,7 +119,7 @@ int main(int argc, char** argv)
 				cout << "\t\t<num_bytes> " << i->num_bytes << " </>" << endl;
 				
 				cout << "\t\t<param_types> {";
-				for(typeof(i->param_types.begin()) j=i->param_types.begin(); j!=i->param_types.end(); j++)
+				for(typeof(i->param_types.begin()) j=i->param_types.begin(); j!=i->param_types.end(); ++j)
 					cout << *j << ',';
 				cout << "} </>" << endl;
 				
