@@ -145,5 +145,5 @@ bool BilinearScalerInternal_X2Y24(SDL_Surface *tex, sint32 sx, sint32 sy, sint32
 
 InstantiateBilinearScalerFunc(BilinearScalerInternal_X2Y24);
 
-};
+}
 

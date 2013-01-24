@@ -312,12 +312,12 @@ PointScaler::PointScaler() : ArbScaler()
 	Scale565To565 = PointScalerInternal<uint16, Manip565to565, uint16>::Scale;
 }
 
-const uint32 PointScaler::ScaleBits() const { return 0xFFFFFFFF; }
-const bool PointScaler::ScaleArbitrary() const { return true; }
+uint32 PointScaler::ScaleBits() const { return 0xFFFFFFFF; }
+bool PointScaler::ScaleArbitrary() const { return true; }
 
 const char *PointScaler::ScalerName() const { return "point"; }
 const char *PointScaler::ScalerDesc() const { return "Fast Simple Point Scaler"; }
 const char *PointScaler::ScalerCopyright() const { return "Copyright (C) 2005 The Pentagram Team, 2010 The Exult Team"; }
 
 
-};
+}

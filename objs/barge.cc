@@ -817,7 +817,7 @@ bool Barge_object::edit
 		{
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = (unsigned long) this;
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		if (Barge_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
 			xtiles, ytiles, dir) != -1)
@@ -856,7 +856,7 @@ void Barge_object::update_from_studio
 		cout << "Error decoding barge" << endl;
 		return;
 		}
-	Barge_object *barge = (Barge_object *) addr;
+	Barge_object *barge = reinterpret_cast<Barge_object *>(addr);
 	if (barge && barge != editing)
 		{
 		cout << "Barge from ExultStudio is not being edited" << endl;
@@ -964,7 +964,7 @@ void Barge_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
 	*ptr++ = 0;			// 
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 					// Write permanent objects.
 	for (int i = 0; i < perm_count; i++)
 		{

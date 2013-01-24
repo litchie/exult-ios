@@ -268,9 +268,9 @@ Monster_actor *Monster_actor::create
 	int prob = rand()%100;
 	int i;
 	for (i = 0; i < 3; i++)
-		if (prob < monster_mode_odds[(int)inf->m_attackmode][i])
+		if (prob < monster_mode_odds[static_cast<int>(inf->m_attackmode)][i])
 			break;
-	monster->set_attack_mode(monster_modes[(int)inf->m_attackmode][i]);
+	monster->set_attack_mode(monster_modes[static_cast<int>(inf->m_attackmode)][i]);
 
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);

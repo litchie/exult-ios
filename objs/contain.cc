@@ -114,7 +114,8 @@ bool Container_game_object::add
 	)
 	{
 	// Prevent dragging the avatar into a container.
-	if (obj == (Game_object *)gwin->get_main_actor())
+	// Casting to void* to avoid including actors.h.
+	if (obj == static_cast<void *>(gwin->get_main_actor()))
 		return false;
 	Shape_info& info = get_info();
 	if (get_shapenum() == obj->get_shapenum()	// Shape can't be inside itself.
@@ -443,7 +444,7 @@ void Container_game_object::activate
 	if (!show_gump(event))
 					// Try to run normal usecode fun.
 		ucmachine->call_usecode(get_usecode(), this,
-					(Usecode_machine::Usecode_events) event);
+					static_cast<Usecode_machine::Usecode_events>(event));
 	}
 
 /*
@@ -460,7 +461,7 @@ bool Container_game_object::edit
 		{
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = (unsigned long) this;
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		std::string name = get_name();
 		if (Container_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), get_quality(), name,
@@ -502,7 +503,7 @@ void Container_game_object::update_from_studio
 		cout << "Error decoding object" << endl;
 		return;
 		}
-	Container_game_object *obj = (Container_game_object *) addr;
+	Container_game_object *obj = reinterpret_cast<Container_game_object *>(addr);
 	if (!editing || obj != editing)
 		{
 		cout << "Obj from ExultStudio is not being edited" << endl;
@@ -661,11 +662,11 @@ void Container_game_object::write_ireg
 	*ptr++ = get_quality();
 	*ptr++ = 0;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
-	*ptr++ = (unsigned char)resistance;		// Resistance.
+	*ptr++ = static_cast<unsigned char>(resistance);		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = (get_flag(Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	

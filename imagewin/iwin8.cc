@@ -51,10 +51,10 @@ GammaTable<uint8> Image_window8::GammaGreen(256);
 
 Image_window8::Image_window8(unsigned int w, unsigned int h, unsigned int gwidth, unsigned int gheight, 
 				int scl, bool fs, int sclr, Image_window::FillMode fillmode, unsigned int fillsclr)
-	: Image_window(new Image_buffer8(0, 0, (Image_buffer *) 0), w, h, gwidth, gheight,
+	: Image_window(new Image_buffer8(0, 0, static_cast<Image_buffer8 *>(0)), w, h, gwidth, gheight,
 	  scl, fs, sclr, fillmode, fillsclr)
 {
-	ib8 = (Image_buffer8 *) ibuf;
+	ib8 = reinterpret_cast<Image_buffer8 *>(ibuf);
 }
 
 Image_window8::~Image_window8()
@@ -87,9 +87,8 @@ inline unsigned char Get_color8
 	int brightness			// 100=normal.
 	)
 	{
-	uint32 c = (((uint32) val)*brightness*255L)/
-							(100*maxval);
-	return (c <= 255L ? (unsigned char) c : 255);
+	uint32 c = (static_cast<uint32>(val)*brightness*255L) / (100*maxval);
+	return (c <= 255L ? static_cast<unsigned char>(c) : 255);
 	}
 
 /*

@@ -89,8 +89,9 @@ bool Game_map::read_all_terrain = false;
 bool Game_map::chunk_terrains_modified = false;
 
 const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
-static char v2hdr[] = {(char)0xff, (char)0xff, (char)0xff, (char)0xff, 'e', 'x', 'l', 't',
-								0, 0};
+static char v2hdr[] = {static_cast<char>(0xff), static_cast<char>(0xff),
+                       static_cast<char>(0xff), static_cast<char>(0xff),
+                       'e', 'x', 'l', 't', 0, 0};
 
 /*
  *	Create a chunk.
@@ -114,7 +115,7 @@ Chunk_terrain *Game_map::read_terrain
 	)
 	{
 	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
-	assert(chunk_num >= 0 && chunk_num < chunk_terrains->size());
+	assert(chunk_num >= 0 && static_cast<unsigned>(chunk_num) < chunk_terrains->size());
 	unsigned char buf[ntiles*3];
 	if (v2_chunks)
 		{
@@ -127,7 +128,7 @@ Chunk_terrain *Game_map::read_terrain
 		chunks->read(reinterpret_cast<char*>(buf), ntiles*2);
 		}
 	Chunk_terrain *ter = new Chunk_terrain(&buf[0], v2_chunks);
-	if (chunk_num >= chunk_terrains->size())
+	if (static_cast<unsigned>(chunk_num) >= chunk_terrains->size())
 		chunk_terrains->resize(chunk_num + 1);
 	(*chunk_terrains)[chunk_num] = ter;
 	return ter;
@@ -188,7 +189,7 @@ void Game_map::init_chunks
 		unsigned char buf[16*16*3];	
 		ochunks.write(v2hdr, sizeof(v2hdr));
 		memset(&buf[0], 0, sizeof(buf));
-		ochunks.write((char *) buf, sizeof(buf));
+		ochunks.write(reinterpret_cast<char *>(buf), sizeof(buf));
 		ochunks.close();
 		U7open(*chunks, PATCH_U7CHUNKS);
 		}
@@ -204,7 +205,7 @@ void Game_map::init_chunks
 					// Get to end so we can get length.
 	chunks->seekg(0, ios::end);
 					// 2 bytes/tile.
-	num_chunk_terrains = ((int)chunks->tellg() - hdrsize)/chunksz;
+	num_chunk_terrains = (static_cast<int>(chunks->tellg()) - hdrsize)/chunksz;
 	if (!chunk_terrains)
 		chunk_terrains = new vector<Chunk_terrain*>();
 					// Resize list to hold all.
@@ -629,7 +630,7 @@ void Game_map::get_ifix_objects
 		return;
 		}
 	FlexFile flex(fname);
-	int vers = (int) flex.get_vers();
+	int vers = static_cast<int>(flex.get_vers());
 	StreamDataSource ifix(&ifix_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
@@ -668,7 +669,7 @@ void Game_map::get_ifix_chunk_objects
 	ifix->read(reinterpret_cast<char*>(entries), len);
 					// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
-	if ((Flex::Flex_vers)vers == Flex::orig)
+	if (static_cast<Flex::Flex_vers>(vers) == Flex::orig)
 		{
 		int cnt = len/4;
 		for (int i = 0; i < cnt; i++, ent += 4)
@@ -683,7 +684,7 @@ void Game_map::get_ifix_chunk_objects
 			olist->add(obj);
 			}
 		}
-	else if ((Flex::Flex_vers)vers == Flex::exult_v2)
+	else if (static_cast<Flex::Flex_vers>(vers) == Flex::exult_v2)
 		{	// b0 = tx,ty, b1 = lift, b2-3 = shnum, b4=frnum
 		int cnt = len/5;
 		for (int i = 0; i < cnt; i++, ent += 5)
@@ -1042,7 +1043,7 @@ void Game_map::read_ireg_objects
 		// Detect the 2 byte index id
 		else if (entlen == 2)
 		{
-			index_id = (sint8) ireg->read2();
+			index_id = static_cast<sint8>(ireg->read2());
 			continue;
 		}
 		else if (entlen == IREG_SPECIAL)
@@ -1251,7 +1252,7 @@ void Game_map::read_ireg_objects
 			}
 		Map_chunk *chunk = get_chunk(scx + cx, scy + cy);
 		if (is_egg)
-			chunk->add_egg((Egg_object *) obj);
+			chunk->add_egg(obj->as_egg());
 		else
 			chunk->add(obj);
 		}
@@ -1434,7 +1435,7 @@ bool Game_map::swap_terrains
 	int tnum			// Swap tnum and tnum + 1.
 	)
 	{
-	if (tnum < 0 || tnum >= chunk_terrains->size() - 1)
+	if (tnum < 0 || static_cast<unsigned>(tnum) >= chunk_terrains->size() - 1)
 		return false;		// Out of bounds.
 					// Swap in list.
 	Chunk_terrain *tmp = get_terrain(tnum);
@@ -1482,7 +1483,7 @@ bool Game_map::insert_terrain
 	{
 	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
 	const int nbytes = v2_chunks ? 3 : 2;
-	if (tnum < -1 || tnum >= chunk_terrains->size())
+	if (tnum < -1 || tnum >= static_cast<int>(chunk_terrains->size()))
 		return false;		// Invalid #.
 	get_all_terrain();		// Need all of 'u7chunks' read in.
 	unsigned char buf[ntiles*3];	// Set up buffer with shape #'s.
@@ -1552,7 +1553,7 @@ bool Game_map::delete_terrain
 	int tnum
 	)
 	{
-	if (tnum < 0 || tnum >= chunk_terrains->size())
+	if (tnum < 0 || static_cast<unsigned>(tnum) >= chunk_terrains->size())
 		return false;		// Out of bounds.
 	int sz = chunk_terrains->size();
 	delete (*chunk_terrains)[tnum];

@@ -74,7 +74,7 @@ public:
 	inline bool Scale(	SDL_Surface *texture, sint32 sx, sint32 sy, sint32 sw, sint32 sh, 
 						SDL_Surface *dest, sint32 dx, sint32 dy, sint32 dw, sint32 dh, bool clamp_src) const
 	{
-		uint8* pixel = (uint8*)dest->pixels + dx*dest->format->BytesPerPixel + dy*dest->pitch;
+		uint8* pixel = reinterpret_cast<uint8*>(dest->pixels) + dx*dest->format->BytesPerPixel + dy*dest->pitch;
 		sint32 pitch = dest->pitch;
 
 		SDL_PixelFormat *src_format = texture->format;

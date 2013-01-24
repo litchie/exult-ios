@@ -313,7 +313,7 @@ int Game_object::get_direction
 	Tile_coord t1 = get_center_tile();
 	Tile_coord t2 = o2->get_center_tile();
 					// Treat as cartesian coords.
-	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
+	return static_cast<int>(Get_direction(t1.ty - t2.ty, t2.tx - t1.tx));
 	}
 
 /*
@@ -327,7 +327,7 @@ int Game_object::get_direction
 	{
 	Tile_coord t1 = get_center_tile();
 					// Treat as cartesian coords.
-	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
+	return static_cast<int>(Get_direction(t1.ty - t2.ty, t2.tx - t1.tx));
 	}
 
 /*
@@ -343,16 +343,16 @@ int Game_object::get_facing_direction
 	Rectangle torect = o2->get_footprint();
 	if (torect.x + torect.w <= t1.tx && 
 	    t1.ty >= torect.y && t1.ty < torect.y + torect.h)
-		return (int) west;
+		return static_cast<int>(west);
 	else if (t1.tx < torect.x &&
 	    t1.ty >= torect.y && t1.ty < torect.y + torect.h)
-		return (int) east;
+		return static_cast<int>(east);
 	else if (torect.y + torect.h <= t1.ty &&
 	    t1.tx >= torect.x && t1.tx < torect.w + torect.h)
-		return (int) south;
+		return static_cast<int>(south);
 	else if (t1.ty < torect.y &&
 	    t1.tx >= torect.x && t1.tx < torect.w + torect.h)
-		return (int) north;
+		return static_cast<int>(north);
 	else
 		return get_direction(o2);
 	}
@@ -413,7 +413,7 @@ int Game_object::get_effective_range
 			return 3;
 		reach = winf->get_range();
 		}
-	int uses = winf ? winf->get_uses() : Weapon_info::melee;
+	int uses = winf ? winf->get_uses() : static_cast<int>(Weapon_info::melee);
 	if (!uses || uses == Weapon_info::ranged)
 		return reach;
 	else
@@ -562,7 +562,7 @@ int Game_object::modify_quantity
 		return (delta + quant);
 		}
 	int oldvol = get_volume();	// Get old volume used.
-	quality = (char) newquant;	// Store new value.
+	quality = static_cast<char>(newquant);	// Store new value.
 					// Set appropriate frame.
 	if (get_info().has_weapon_info())	// Starbursts, serpent(ine) daggers, knives.
 		set_frame(0);		// (Fixes messed-up games.)
@@ -597,14 +597,14 @@ int Game_object::get_dir_facing
 	switch (reflect)
 		{
 	case 0:
-		return (int) north;
+		return static_cast<int>(north);
 	case 48:
-		return (int) east;
+		return static_cast<int>(east);
 	case 16:
-		return (int) south;
+		return static_cast<int>(south);
 	case 32:
 	default:
-		return (int) west;
+		return static_cast<int>(west);
 		}
 	}
 
@@ -1151,7 +1151,7 @@ void Game_object::activate
 		return;
 		}
 	ucmachine->call_usecode(get_usecode(), this,
-			(Usecode_machine::Usecode_events) event);
+			static_cast<Usecode_machine::Usecode_events>(event));
 	}
 
 /*
@@ -1168,7 +1168,7 @@ bool Game_object::edit
 		{
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = (unsigned long) this;
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		std::string name = get_name();
 		if (Object_out(client_socket, Exult_server::obj, 
 			addr, t.tx, t.ty, t.tz,
@@ -1207,7 +1207,7 @@ void Game_object::update_from_studio
 		cout << "Error decoding object" << endl;
 		return;
 		}
-	Game_object *obj = (Game_object *) addr;
+	Game_object *obj = reinterpret_cast<Game_object *>(addr);
 	if (!editing || obj != editing)
 		{
 		cout << "Obj from ExultStudio is not being edited" << endl;
@@ -1957,13 +1957,13 @@ void Ifix_game_object::write_ifix
 		buf[2] = shapenum&0xff;
 		buf[3] = (shapenum>>8)&0xff;
 		buf[4] = framenum;
-		ifix->write((char*)buf, 5);
+		ifix->write(reinterpret_cast<char*>(buf), 5);
 		}
 	else
 		{
 		buf[2] = shapenum&0xff;
 		buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-		ifix->write((char*)buf, 4);
+		ifix->write(reinterpret_cast<char*>(buf), 4);
 		}
 	}
 

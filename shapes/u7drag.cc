@@ -152,7 +152,7 @@ int Store_u7_comboid
 		Write2(ptr, ents[i].ty);
 		Write2(ptr, ents[i].tz);
 		Write2(ptr, ents[i].shape);
-		*ptr++ = (unsigned char) ents[i].frame;
+		*ptr++ = static_cast<unsigned char>(ents[i].frame);
 		}
 	return (ptr - data);
 	}
@@ -183,9 +183,9 @@ void Get_u7_comboid
 	ents = new U7_combo_data[cnt];
 	for (int i = 0; i < cnt; i++)
 		{			// Tiles can be negative!
-		ents[i].tx = (int) (short) Read2(ptr);
-		ents[i].ty = (int) (short) Read2(ptr);
-		ents[i].tz = (int) (short) Read2(ptr);
+		ents[i].tx = static_cast<short>(Read2(ptr));
+		ents[i].ty = static_cast<short>(Read2(ptr));
+		ents[i].tz = static_cast<short>(Read2(ptr));
 		ents[i].shape = Read2(ptr);
 		ents[i].frame = *ptr++;
 		}

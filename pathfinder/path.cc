@@ -303,7 +303,7 @@ public:
 	A_star_queue() : open(256), lookup()
 #endif
 		{
-		open.insert(open.begin(), 256, (Search_node *) 0);
+		open.insert(open.begin(), 256, static_cast<Search_node *>(0));
 		best = open.size();	// Best is past end.
 		}
 	~A_star_queue()
@@ -327,14 +327,14 @@ public:
 		}
 	void add_open(int pri, Search_node *nd)
 		{
-		if (pri >= (int)open.size())
+		if (pri >= static_cast<int>(open.size()))
 			open.resize(pri + 2);
 		open[pri] = nd;
 		}
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.
 		{
 		int total_cost = nd->get_total_cost();
-		Search_node *last = total_cost < (int)open.size() ?
+		Search_node *last = total_cost < static_cast<int>(open.size()) ?
 						open[total_cost] : 0;
 		nd->add_to_chain(last);	// Add node to this chain.
 		add_open(total_cost, last);
@@ -352,7 +352,7 @@ public:
 		if (!nd->is_open())
 			return;		// Nothing to do.
 		int total_cost = nd->get_total_cost();
-		Search_node *last = total_cost < (int)open.size() ?
+		Search_node *last = total_cost < static_cast<int>(open.size()) ?
 						open[total_cost] : 0;
 		nd->remove_from_chain(last);
 					// Store updated 'last'.
@@ -370,7 +370,7 @@ public:
 		}
 	Search_node *pop()		// Pop best from priority queue.
 		{
-		Search_node *last = best < (int)open.size() ? open[best] : 0;
+		Search_node *last = best < static_cast<int>(open.size()) ? open[best] : 0;
 		if (!last)
 			return (0);
 					// Return 1st in list.
