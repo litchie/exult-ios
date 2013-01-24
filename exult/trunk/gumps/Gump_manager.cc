@@ -403,10 +403,13 @@ bool Gump_manager::double_clicked
 		{
 		// If avatar cannot act, a double-click will only close gumps, and
 		// nothing else.
-		if (!gwin->main_actor_can_act() && gwin->get_double_click_closes_gumps())
+		if (!gwin->main_actor_can_act())
 			{
-			gump->close();
-			gwin->paint();
+			if(gwin->get_double_click_closes_gumps())
+				{
+				gump->close();
+				gwin->paint();
+				}
 			return true;
 			}
 		// Find object in gump.
