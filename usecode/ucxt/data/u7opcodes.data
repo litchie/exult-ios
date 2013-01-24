@@ -507,6 +507,7 @@ Yet Another Return. Exult implements this identically to the RET opcode (0x25).
 		<num_pop> 1 </>
 		<num_push> 0 </>
 		<call_effect> 0 </>
+		<return/>
 		<!--
 Pops the top most element off the stack, stores it in the return register and returns from function.
 		-->

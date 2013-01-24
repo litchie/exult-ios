@@ -130,7 +130,7 @@ void UCData::disassamble()
 
 	if(options.verbose)
 	{
-		for(vector<unsigned int>::iterator i=search_funcs.begin(); i!=search_funcs.end(); i++)
+		for(vector<unsigned int>::iterator i=search_funcs.begin(); i!=search_funcs.end(); ++i)
 			cout << "Looking for function number " << setw(8) << (*i) << endl;
 		cout << endl;
 	}
@@ -204,8 +204,8 @@ void UCData::dump_flags(ostream &o)
 	vector<FlagData> flags;
 
 	// *BLEH* ugly!
-	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
-		for(vector<UCc>::iterator op=(*func)->_opcodes.begin(); op!=(*func)->_opcodes.end(); op++)
+	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); ++func)
+		for(vector<UCc>::iterator op=(*func)->_opcodes.begin(); op!=(*func)->_opcodes.end(); ++op)
 		{
 			if(op->_id==0x42)
 				flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::GETFLAG));
@@ -332,11 +332,11 @@ void UCData::load_funcs()
 	
 	if(options.verbose) cout << "Creating function map..." << endl;
 	
-	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); i++)
+	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); ++i)
 	{
 		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->return_var, (*i)->funcname)));
 	}
-/*	for(map<unsigned int, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
+/*	for(map<unsigned int, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); ++i)
 		cout << i->first << "\t" << i->second.num_args << endl;*/
 }
 
@@ -350,7 +350,7 @@ void UCData::output_extern_header(ostream &o)
 	}
 	load_funcs();
 
-	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
+	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); ++func)
 	{
 		//(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
 		(*func)->output_ucs_funcname(o << "extern ", _funcmap) << ';' << endl;
