@@ -114,7 +114,7 @@ const struct Action {
 	  ActionFullscreen, 0, "Toggle fullscreen", Action::normal_keys, NONE, true, true, true, false },
 	
 	{ "USEITEM", ActionUseItem, 0, "Use item", Action::dont_show, NONE, false, false, false, false },
-	{ "USEFOOD", ActionUseFood, 0, "Use food", Action::dont_show, NONE, false, false, false, false },
+	{ "USEFOOD", ActionUseFood, 0, "Feed", Action::normal_keys, NONE, false, false, false, false },
 	{ "CALL_USECODE", ActionCallUsecode, 0, "Call Usecode", Action::dont_show, NONE, false, false, false, false },
 	{ "TOGGLE_COMBAT", ActionCombat, 0, "Toggle combat", Action::normal_keys, NONE, false, false, true, false },
 	{ "PAUSE_COMBAT", ActionCombatPause, 0, "Pause combat", Action::normal_keys, NONE, false, false, true, false },
@@ -681,9 +681,12 @@ void KeyBinder::ParseLine(char *line)
 			s.erase(0,1);
 			skipspace(s);
 			d = s;
+			// Always show if there is a comment.
 			show = true;
 		}
 	} else {
+		// Action::dont_show doesn't have default display names, so do not
+		// show them if they don't have a comment.
 		d = a.action->desc;
 		show = a.action->key_type != Action::dont_show;
 	}
@@ -708,12 +711,12 @@ void KeyBinder::ParseLine(char *line)
 		desc += " - " + d;
 		
 		// add to help list
-		if (a.action->key_type == Action::normal_keys)
-			keyhelp.push_back(desc);
-		else if (a.action->key_type == Action::cheat_keys)
+		if (a.action->key_type == Action::cheat_keys)
 			cheathelp.push_back(desc);
 		else if (a.action->key_type == Action::mapedit_keys)
 			mapedithelp.push_back(desc);
+		else	// Either Action::normal_keys or Action::dont_show with comment.
+			keyhelp.push_back(desc);
 	}
 	
 	// bind key

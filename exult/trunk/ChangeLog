@@ -49,6 +49,13 @@
 	  Functions with no params are decompiled as having one". Fixed bug #1205910
 	  "UCXT: Parameter order reversed in function definitions".
 	* all: Performance: using ++it instead of it++ for iterators.
+	Rev 7329
+	* keys.cc, keyactions.cc: Made "usefood" more useful and shown by default.
+	  Key actions of type Action::dont_show will now show under normal keys if
+	  they have a supplied optional comment; this fixes bug #3601627 'help gump
+	  doesn't show "useitem" commands'.
+	* data/bg/defaultkeys.txt: Using improved "usefood" for feeding.
+	* data/si/defaultkeys.txt: Removing redundant "usefood" Ctrl+F keybinding.
 
 2013-01-22	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* gumps/Spellbook_gump.*: Keyboard controls for spellbook: page up/down will
