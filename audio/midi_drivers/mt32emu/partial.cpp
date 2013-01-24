@@ -953,4 +953,4 @@ void Partial::startDecay(EnvelopeType envnum, Bit32s startval) {
 	tStat->envsize++;
 }
 
-};
+}
