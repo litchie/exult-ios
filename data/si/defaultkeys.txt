@@ -69,7 +69,6 @@ SPACE		pause_combat
 Ctrl-D		delete_object
 E		toggle_eggs
 F		call_usecode		1557 0		# Feed
-Ctrl-F		usefood					# Feed
 G		useitem			675	11	# Use abacus
 Alt-G		toggle_god_mode
 Ctrl-G		change_gender

@@ -307,10 +307,10 @@ void ActionUseItem(int const *params)
 void ActionUseFood(int const *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	if (!gwin->activate_item(377) &&	// First try normal food items.
-	    GAME_SI)			// SI has 'everlasting goblet'.
-		gwin->activate_item(0x268, 20);
-	Mouse::mouse->set_speed_cursor();
+	if (gwin->activate_item(377) &&	// Food
+			(GAME_SI && !gwin->activate_item(404))  &&  // Special SI food
+			!gwin->activate_item(616))  // Drinks
+		Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionCallUsecode, 2, "Call usecode", dont_show, NONE },
