@@ -277,4 +277,4 @@ const Partial *PartialManager::getPartial(unsigned int partialNum) const {
 	return partialTable[partialNum];
 }
 
-};
+}

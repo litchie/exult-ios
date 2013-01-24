@@ -9,6 +9,10 @@
 	* audio/midi_drivers/fmopl.cpp: malloc/free to new[]/delete[].
 	* audio/midi_drivers/timidity/timidity.cpp: Reformatted for more consistent
 	  spacing.
+	Rev 7334
+	* audio/midi_drivers/mt32emu/*: Last MT32Emu warnings I will eliminate until
+	  bug #3149070 "MT-32: sysex is not delayed properly (exc. buffer overflow)"
+	  is fixed.
 
 2013-01-24	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gump_manager.cc: Fix main_actor_can_act check that could be bypassed
