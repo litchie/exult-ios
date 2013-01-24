@@ -447,7 +447,11 @@ static const PatchMemData patch_template = {
 //
 static const uint32 system_base = 0x100000;	// Note, these are 7 bit!
 static const uint32 system_mem_size = 0x17;	// Display is 20 ASCII characters (32-127)
-#define system_mem_offset(setting) ((uintptr)(&((systemArea*)0)->setting))
+#include <cstddef>
+#ifndef offsetof	// Broken <cstddef>? Just in case...
+#   define offsetof(type, field) reinterpret_cast<uintptr>(&(static_cast<type *>(0)->field))
+#endif
+#define system_mem_offset(setting) offsetof(systemArea, setting)
 
 struct systemArea {
 	char masterTune;					// MASTER TUNE 0-127 432.1-457.6Hz
@@ -1621,7 +1625,7 @@ int XMidiFile::ExtractTracks (IDataSource *source)
 	config->value("config/audio/midi/volume_curve",s,"---");
 	if (s == "---") config->value("config/audio/midi/gamma",s,"1");
 	VolumeCurve.set_gamma (atof(s.c_str()));
-	int igam = (int) ((VolumeCurve.get_gamma()*10000)+0.5); 
+	int igam = static_cast<int>((VolumeCurve.get_gamma()*10000)+0.5); 
 	snprintf (buf, 32, "%d.%04d", igam/10000, igam%10000); 
 	config->set("config/audio/midi/volume_curve",buf,true);
 #else

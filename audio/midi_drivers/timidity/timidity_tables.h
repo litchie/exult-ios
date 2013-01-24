@@ -57,7 +57,7 @@ extern sint8 *iplookup;
 extern void init_tables(void);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

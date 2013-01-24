@@ -41,7 +41,7 @@ const MidiDriver::MidiDriverDesc forked_player::desc =
 // NB: This function doesn't return unless execlp fails!
 static  void    playFJmidifile(const char *name)
 {
-	execlp("playmidi","playmidi","-v","-v","-e",name,(char *)0);
+	execlp("playmidi","playmidi","-v","-v","-e",name,static_cast<char *>(0));
 }
 
 forked_player::forked_player() : repeat_(false), forked_job(-1)

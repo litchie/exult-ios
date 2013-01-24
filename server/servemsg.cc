@@ -114,7 +114,7 @@ int Receive_data
 		}
 	int dlen = buf[0] | (buf[1]<<8);
 					// Message type.
-	id = (Exult_server::Msg_type) buf[2];
+	id = static_cast<Exult_server::Msg_type>(buf[2]);
 	if (dlen > Exult_server::maxlength || dlen > datalen)
 		{
 		cout << "Length " << datalen << " exceeds max" << endl;

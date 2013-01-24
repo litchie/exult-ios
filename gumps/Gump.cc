@@ -231,7 +231,7 @@ Gump_button *Gump::on_button
 		{
 		Gump_widget *w = *it;
 		if (w->on_button(mx, my))
-			return (Gump_button *) w;
+			return dynamic_cast<Gump_button *>(w);
 		}
 	return 0;
 }

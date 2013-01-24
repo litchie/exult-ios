@@ -33,8 +33,8 @@ namespace NS_TIMIDITY {
 #endif
 
 struct MidiEvent {
-  sint32 time;
-  uint8 channel, type, a, b;
+	sint32 time;
+	uint8 channel, type, a, b;
 };
 
 /* Midi events */
@@ -61,41 +61,41 @@ struct MidiEvent {
 #define ME_EOT		99
 
 struct Channel {
-  int
-    bank, program, volume, sustain, panning, pitchbend, expression, 
-    mono, /* one note only on this channel -- not implemented yet */
-    pitchsens;
-  /* chorus, reverb... Coming soon to a 300-MHz, eight-way superscalar
-     processor near you */
-  float
-    pitchfactor; /* precomputed pitch bend factor to save some fdiv's */
+	int
+		bank, program, volume, sustain, panning, pitchbend, expression, 
+	mono, /* one note only on this channel -- not implemented yet */
+	pitchsens;
+	/* chorus, reverb... Coming soon to a 300-MHz, eight-way superscalar
+	 processor near you */
+	float
+		pitchfactor; /* precomputed pitch bend factor to save some fdiv's */
 };
 
 /* Causes the instrument's default panning to be used. */
 #define NO_PANNING -1
 
 struct Voice {
-  uint8
-    status, channel, note, velocity;
-  Sample *sample;
-  sint32
-    orig_frequency, frequency,
-    sample_offset, sample_increment,
-    envelope_volume, envelope_target, envelope_increment,
-    tremolo_sweep, tremolo_sweep_position,
-    tremolo_phase, tremolo_phase_increment,
-    vibrato_sweep, vibrato_sweep_position;
-  
-  final_volume_t left_mix, right_mix;
+	uint8
+		status, channel, note, velocity;
+	Sample *sample;
+	sint32
+		orig_frequency, frequency,
+	sample_offset, sample_increment,
+	envelope_volume, envelope_target, envelope_increment,
+	tremolo_sweep, tremolo_sweep_position,
+	tremolo_phase, tremolo_phase_increment,
+	vibrato_sweep, vibrato_sweep_position;
 
-  float
-    left_amp, right_amp, tremolo_volume;
-  sint32
-    vibrato_sample_increment[VIBRATO_SAMPLE_INCREMENTS];
-  int
-    vibrato_phase, vibrato_control_ratio, vibrato_control_counter,
-    envelope_stage, control_counter, panning, panned;
+	final_volume_t left_mix, right_mix;
 
+	float
+		left_amp, right_amp, tremolo_volume;
+	sint32
+		vibrato_sample_increment[VIBRATO_SAMPLE_INCREMENTS];
+	int
+		vibrato_phase, vibrato_control_ratio, vibrato_control_counter,
+		envelope_stage, control_counter, panning, panned;
+	
 };
 
 /* Voice status options: */
@@ -127,7 +127,7 @@ extern int play_midi_file(char *fn);
 extern void dumb_pass_playing_list(int number_of_files, char *list_of_files[]);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

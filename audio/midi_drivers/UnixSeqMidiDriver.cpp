@@ -69,7 +69,7 @@ void UnixSeqMidiDriver::close()
 
 void UnixSeqMidiDriver::send(uint32 b) {
 	unsigned char buf[256];
-	int position = 0;
+	size_t position = 0;
 	size_t err;
 
 	switch (b & 0xF0) {
@@ -79,32 +79,32 @@ void UnixSeqMidiDriver::send(uint32 b) {
 	case 0xB0:
 	case 0xE0:
 		buf[position++] = SEQ_MIDIPUTC;
-		buf[position++] = (unsigned char)b;
+		buf[position++] = static_cast<unsigned char>(b);
 		buf[position++] = deviceNum;
 		buf[position++] = 0;
 		buf[position++] = SEQ_MIDIPUTC;
-		buf[position++] = (unsigned char)((b >> 8) & 0x7F);
+		buf[position++] = static_cast<unsigned char>((b >> 8) & 0x7F);
 		buf[position++] = deviceNum;
 		buf[position++] = 0;
 		buf[position++] = SEQ_MIDIPUTC;
-		buf[position++] = (unsigned char)((b >> 16) & 0x7F);
+		buf[position++] = static_cast<unsigned char>((b >> 16) & 0x7F);
 		buf[position++] = deviceNum;
 		buf[position++] = 0;
 		break;
 	case 0xC0:
 	case 0xD0:
 		buf[position++] = SEQ_MIDIPUTC;
-		buf[position++] = (unsigned char)b;
+		buf[position++] = static_cast<unsigned char>(b);
 		buf[position++] = deviceNum;
 		buf[position++] = 0;
 		buf[position++] = SEQ_MIDIPUTC;
-		buf[position++] = (unsigned char)((b >> 8) & 0x7F);
+		buf[position++] = static_cast<unsigned char>((b >> 8) & 0x7F);
 		buf[position++] = deviceNum;
 		buf[position++] = 0;
 		break;
 	default:
 		perr << "UnixSeqMidiDriver: Unknown Command: "
-			 << std::hex << (int)b << std::dec << std::endl;
+			 << std::hex << static_cast<int>(b) << std::dec << std::endl;
 		break;
 	}
 
@@ -121,7 +121,7 @@ void UnixSeqMidiDriver::send_sysex(uint8 status,const uint8 *msg,uint16 length)
 	}
 
 	unsigned char buf [2048];
-	int position = 0;
+	size_t position = 0;
 	const uint8 *chr = msg;
 	size_t err;
 

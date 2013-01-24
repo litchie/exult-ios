@@ -46,7 +46,7 @@ namespace NS_TIMIDITY {
 extern void antialiasing(Sample *sp, sint32 output_rate);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

@@ -303,18 +303,18 @@ void Gump_manager::add_gump
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = Stats_gump::create(obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
-		new_gump = new Spellbook_gump((Spellbook_object *) obj);
+		new_gump = new Spellbook_gump(reinterpret_cast<Spellbook_object *>(obj));
 	else if (Game::get_game_type() == SERPENT_ISLE &&
 			shapenum >= game->get_shape("gumps/cstats/1") &&
 			shapenum <= game->get_shape("gumps/cstats/6"))
 		new_gump = new CombatStats_gump(x, y);
 	else if (shapenum == game->get_shape("gumps/jawbone"))
-		new_gump = new Jawbone_gump((Jawbone_object*) obj, x, y);
+		new_gump = new Jawbone_gump(reinterpret_cast<Jawbone_object *>(obj), x, y);
 	else if (shapenum == game->get_shape("gumps/spell_scroll"))
 		new_gump = new Spellscroll_gump(obj);
 
 	if (!new_gump)
-		new_gump = new Container_gump((Container_game_object *) obj, x, y, shapenum);
+		new_gump = new Container_gump(reinterpret_cast<Container_game_object *>(obj), x, y, shapenum);
 
 					// Paint new one last.
 	add_gump(new_gump);

@@ -253,13 +253,13 @@ bool Newfile_button::activate
 	if (button != 1) return false;
 	int shapenum = get_shapenum();
 	if (shapenum == EXULT_FLX_SAV_DOWNDOWN_SHP)
-		((Newfile_gump *) parent)->scroll_page(1);
+		reinterpret_cast<Newfile_gump *>(parent)->scroll_page(1);
 	else if (shapenum == EXULT_FLX_SAV_DOWN_SHP)
-		((Newfile_gump *) parent)->scroll_line(1);
+		reinterpret_cast<Newfile_gump *>(parent)->scroll_line(1);
 	else if (shapenum == EXULT_FLX_SAV_UP_SHP)
-		((Newfile_gump *) parent)->scroll_line(-1);
+		reinterpret_cast<Newfile_gump *>(parent)->scroll_line(-1);
 	else if (shapenum == EXULT_FLX_SAV_UPUP_SHP)
-		((Newfile_gump *) parent)->scroll_page(-1);
+		reinterpret_cast<Newfile_gump *>(parent)->scroll_page(-1);
 	return true;
 }
 
@@ -267,11 +267,11 @@ bool Newfile_Textbutton::activate(int button)
 {
 	if (button != 1) return false;
 	if (text == loadtext)
-		((Newfile_gump *) parent)->load();
+		reinterpret_cast<Newfile_gump *>(parent)->load();
 	else if (text == savetext)
-		((Newfile_gump *) parent)->save();
+		reinterpret_cast<Newfile_gump *>(parent)->save();
 	else if (text == deletetext)
-		((Newfile_gump *) parent)->delete_file();
+		reinterpret_cast<Newfile_gump *>(parent)->delete_file();
 	else if (text == canceltext)
 		parent->close();
 	return true;
@@ -575,13 +575,13 @@ void Newfile_gump::paint
 
 		for (i=0; i<4 && i<details->party_size; i++)
 		{
-			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
+			ShapeID shape(party[i].shape, 16, static_cast<ShapeFile>(party[i].shape_file));
 			shape.paint_shape(x + 249 + i*23, y + 169);
 		}
 
 		for (i=4; i<8 && i<details->party_size; i++)
 		{
-			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
+			ShapeID shape(party[i].shape, 16, static_cast<ShapeFile>(party[i].shape_file));
 			shape.paint_shape(x + 249 + (i-4)*23, y + 198);
 		}
 
@@ -1047,8 +1047,9 @@ int Newfile_gump::BackspacePressed()
 }
 int Newfile_gump::DeletePressed()
 {
-	if (cursor == -1 || cursor == strlen (newname)) return 0;
-	for (int i = cursor; i < strlen (newname); i++)
+	if (cursor == -1 || cursor == static_cast<int>(strlen(newname)))
+		return 0;
+	for (unsigned i = cursor; i < strlen(newname); i++)
 		newname[i] = newname[i+1];
 
 	return 1;
@@ -1059,7 +1060,7 @@ int Newfile_gump::MoveCursor(int count)
 
 	cursor += count;
 	if (cursor < 0) cursor = 0;
-	if (cursor > strlen (newname)) cursor = strlen (newname);
+	if (cursor > static_cast<int>(strlen(newname))) cursor = strlen(newname);
 
 	return 1;
 }
@@ -1104,7 +1105,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	else cur_details->save_count = 0;
 
 	cur_details->party_size = partyman->get_count()+1;
-	cur_details->game_day = (short) (gclock->get_total_hours() / 24);
+	cur_details->game_day = static_cast<short>(gclock->get_total_hours() / 24);
 	cur_details->game_hour = gclock->get_hour();
 	cur_details->game_minute = gclock->get_minute();
 	
@@ -1126,7 +1127,7 @@ void Newfile_gump::LoadSaveGameDetails()
 		if (i == 0)
 			npc = gwin->get_main_actor();
 		else
-			npc = (Npc_actor *) gwin->get_npc(partyman->get_member(i-1));
+			npc = gwin->get_npc(partyman->get_member(i-1));
 
 		std::string namestr = npc->get_npc_name();
 		strncpy (cur_party[i].name, namestr.c_str(), 18);
@@ -1309,5 +1310,5 @@ int Newfile_gump::SaveInfo::CompareThis(const SaveInfo *other) const
 // Compare Games Static
 int Newfile_gump::SaveInfo::CompareGames(const void *a, const void *b)
 {
-	return ((Newfile_gump::SaveInfo*)a)->CompareThis((Newfile_gump::SaveInfo*)b);
+	return static_cast<Newfile_gump::SaveInfo const*>(a)->CompareThis(static_cast<Newfile_gump::SaveInfo const *>(b));
 }

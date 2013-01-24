@@ -98,7 +98,7 @@ void Sign_gump::add_text
 
 	if (!serpentine && avatar->get_flag(Obj_flags::read))
 	{
-		for (int i = 0; i < txt.size(); i++)
+		for (unsigned i = 0; i < txt.size(); i++)
 		{
 			if (txt[i] == 40) 
 			{

@@ -161,7 +161,7 @@ void Server_init
 		struct sockaddr_un addr;
 		addr.sun_family = AF_UNIX;
 		strcpy(addr.sun_path, servename.c_str());
-		if (bind(listen_socket, (struct sockaddr *) &addr, 
+		if (bind(listen_socket, reinterpret_cast<struct sockaddr *>(&addr), 
 		      sizeof(addr.sun_family) + strlen(addr.sun_path) + 1) == -1 ||
 		    listen(listen_socket, 1) == -1)
 #endif
@@ -247,7 +247,7 @@ static void Handle_client_message
 			cheat.in_map_editor(),
 			cheat.show_tile_grid(),
 			gwin->was_map_modified(),
-			(int) cheat.get_edit_mode());
+			static_cast<int>(cheat.get_edit_mode()));
 		break;
 	case Exult_server::write_map:
 		gwin->write_map();	// Send feedback?+++++
@@ -281,8 +281,8 @@ static void Handle_client_message
 	case Exult_server::locate_terrain:
 		{
 		int tnum = Read2(ptr);
-		int cx = (short) Read2(ptr);
-		int cy = (short) Read2(ptr);
+		int cx = Read2s(ptr);
+		int cy = Read2s(ptr);
 		bool up = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->locate_terrain(tnum, cx, cy, up);
 		ptr = &data[2];		// Set back reply.
@@ -305,7 +305,7 @@ static void Handle_client_message
 		}
 	case Exult_server::insert_terrain:
 		{
-		int tnum = (short) Read2(ptr);
+		int tnum = Read2s(ptr);
 		bool dup = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		*ptr++ = okay ? 1 : 0;
@@ -315,7 +315,7 @@ static void Handle_client_message
 		}
 	case Exult_server::delete_terrain:
 		{
-		int tnum = (short) Read2(ptr);
+		int tnum = Read2s(ptr);
 		bool okay = gwin->get_map()->delete_terrain(tnum);
 		*ptr++ = okay ? 1 : 0;
 		Exult_server::Send_data(client_socket,
@@ -324,7 +324,7 @@ static void Handle_client_message
 		}
 	case Exult_server::send_terrain:
 		{			// Send back #, total, 512-bytes data.
-		int tnum = (short) Read2(ptr);
+		int tnum = Read2s(ptr);
 		Write2(ptr, gwin->get_map()->get_num_chunk_terrains());
 		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
 					// Serialize it.
@@ -335,7 +335,7 @@ static void Handle_client_message
 		}
 	case Exult_server::terrain_editing_mode:
 		{			// 1=on, 0=off, -1=undo.
-		int onoff = (short) Read2(ptr);
+		int onoff = Read2s(ptr);
 					// skip_lift==0 <==> terrain-editing.
 		gwin->skip_lift = onoff == 1 ? 0 : 256;
 		static const char *msgs[3] = {"Terrain-Editing Aborted",
@@ -352,8 +352,8 @@ static void Handle_client_message
 		}
 	case Exult_server::set_edit_shape:
 		{
-		int shnum = (short) Read2(ptr);
-		int frnum = (short) Read2(ptr);
+		int shnum = Read2s(ptr);
+		int frnum = Read2s(ptr);
 		cheat.set_edit_shape(shnum, frnum);
 		break;
 		}
@@ -384,7 +384,7 @@ static void Handle_client_message
 		{
 		int md = Read2(ptr);
 		if (md >= 0 && md <= 4)
-			cheat.set_edit_mode((Cheat::Map_editor_mode) md);
+			cheat.set_edit_mode(static_cast<Cheat::Map_editor_mode>(md));
 		break;
 		}
 	case Exult_server::hide_lift:
@@ -410,8 +410,8 @@ static void Handle_client_message
 	case Exult_server::locate_shape:
 		{
 		int shnum = Read2(ptr);
-		int frnum = (short) Read2(ptr);
-		int qual = (short) Read2(ptr);
+		int frnum = Read2s(ptr);
+		int qual = Read2s(ptr);
 		bool up = *ptr++ ? true : false;
 		bool okay = gwin->locate_shape(shnum, up, frnum, qual);
 		ptr = &data[4];		// Send back reply.
@@ -442,12 +442,12 @@ static void Handle_client_message
 			Write2(ptr, npc->get_shapenum());
 			*ptr++ = npc->is_unused();
 			std::string nm = npc->get_npc_name();
-			strcpy((char *) ptr, nm.c_str());
+			strcpy(reinterpret_cast<char *>(ptr), nm.c_str());
 					// Point past ending NULL.
-			ptr += strlen((char *)ptr) + 1;
+			ptr += strlen(reinterpret_cast<char *>(ptr)) + 1;
 			}
 		else
-			Write2(ptr, (unsigned short) -1);
+			Write2(ptr, static_cast<unsigned short>(-1));
 		Exult_server::Send_data(client_socket, 
 				Exult_server::npc_info, data, ptr - data);
 		break;
@@ -477,7 +477,7 @@ static void Handle_client_message
 		break;
 		}
 	case Exult_server::set_edit_chunknum:
-		cheat.set_edit_chunknum((short) Read2(ptr));
+		cheat.set_edit_chunknum(Read2s(ptr));
 		break;
 	case Exult_server::game_pos:
 		{
@@ -504,7 +504,7 @@ static void Handle_client_message
 		Serial_in io(ptr);
 		unsigned long addr;
 		io << addr;
-		Game_object *p = (Game_object *)addr;
+		Game_object *p = reinterpret_cast<Game_object *>(addr);
 		Container_game_object *obj = dynamic_cast<Container_game_object *>(p);
 		if (!obj)
 			{

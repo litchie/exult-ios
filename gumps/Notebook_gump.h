@@ -65,7 +65,7 @@ class Notebook_gump : public Gump
 								int pagenum);
 	bool need_next_page() const
 		{
- 		return (curpage%2 == 1 && curpage < page_info.size() - 1 &&
+ 		return (curpage%2 == 1 && curpage < static_cast<int>(page_info.size()) - 1 &&
 			page_info[curpage + 1].offset > 0 &&
 			cursor.offset >= page_info[curpage + 1].offset);
 		}
@@ -91,7 +91,7 @@ public:
 		{
 		if (!initialized_auto_text)
 			read_auto_text();
-		if (gflag < auto_text.size() && auto_text[gflag])
+		if (gflag < static_cast<int>(auto_text.size()) && auto_text[gflag])
 			add_gflag_text(gflag, auto_text[gflag]);
 		}
 	virtual bool is_draggable() const { return false; }
