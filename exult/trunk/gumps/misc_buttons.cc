@@ -188,7 +188,7 @@ Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
 	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py), 
 	  actor(a)
 {
-	set_frame((int) actor->get_attack_mode());
+	set_frame(static_cast<int>(actor->get_attack_mode()));
 }
 
 /*
@@ -205,7 +205,7 @@ bool Combat_mode_button::activate
 	int nframes = actor == gwin->get_main_actor() ? 10 : 9;
 	set_frame((get_framenum() + 1)%nframes);
 					// Flag that player set the mode.
-	actor->set_attack_mode((Actor::Attack_mode) get_framenum(), true);
+	actor->set_attack_mode(static_cast<Actor::Attack_mode>(get_framenum()), true);
 	paint();
 	gwin->set_painted();
 	return true;

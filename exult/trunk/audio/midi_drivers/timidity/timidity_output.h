@@ -33,8 +33,8 @@ namespace NS_TIMIDITY {
 #endif
 
 struct PlayMode {
-  sint32 rate, encoding;
-  const char *id_name;
+	sint32 rate, encoding;
+	const char *id_name;
 };
 
 extern PlayMode *play_mode_list[], *play_mode;
@@ -78,7 +78,7 @@ extern void s32toulaw(void *dp, sint32 *lp, sint32 c);
 #endif
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

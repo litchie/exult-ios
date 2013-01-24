@@ -1629,7 +1629,7 @@ void LowLevelMidiDriver::setPatchBank(int bank, int patch)
 	mt32_patch_bank_sel[patch] = bank;
 
 	// Upload the patch
-	pout << "LLMD: Uploading Patch for " << bank << ":" << patch << " using timbre " << (int) p.timbre_bank << ":" << (int) p.timbre_num << std::endl;
+	pout << "LLMD: Uploading Patch for " << bank << ":" << patch << " using timbre " << static_cast<int>(p.timbre_bank) << ":" << static_cast<int>(p.timbre_num) << std::endl;
 	sendMT32SystemMessage(patch_base,patch_mem_offset(patch),patch_mem_size, &p );
 }
 
@@ -1657,7 +1657,7 @@ void LowLevelMidiDriver::loadRhythmTemp(int temp)
 		mt32_rhythm_bank[temp]->timbre = mt32_timbre_banks[2][timbre]->index;
 	}
 
-	pout << "LLMD: Uploading Rhythm Temp " << temp << " using timbre " << (int) mt32_rhythm_bank[temp]->timbre << std::endl;
+	pout << "LLMD: Uploading Rhythm Temp " << temp << " using timbre " << static_cast<int>(mt32_rhythm_bank[temp]->timbre) << std::endl;
 	sendMT32SystemMessage(rhythm_base,rhythm_mem_offset(temp),rhythm_mem_size, mt32_rhythm_bank[temp] );
 
 	delete mt32_rhythm_bank[temp];
@@ -1743,8 +1743,8 @@ void LowLevelMidiDriver::loadXMidiTimbreLibrary(IDataSource *ds)
 		// Seek to the entry
 		ds->seek(i*6);
 
-		uint32 patch = (uint8) ds->read1();
-		uint32 bank = (uint8) ds->read1();
+		uint32 patch = static_cast<uint8>(ds->read1());
+		uint32 bank = static_cast<uint8>(ds->read1());
 
 		// If we read both == 255 then we've read all of them
 		if (patch == 255 || bank == 255) {

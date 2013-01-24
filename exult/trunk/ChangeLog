@@ -4,6 +4,11 @@
 	* all: Eliminating more warnings.
 	* imagewin/savepcx.cc: malloc/free to new[]/delete[].
 	* audio/midi_drivers/mt32emu/freeverb.h: Updated handling of denormals.
+	Rev 7333
+	* all: Eliminating more warnings.
+	* audio/midi_drivers/fmopl.cpp: malloc/free to new[]/delete[].
+	* audio/midi_drivers/timidity/timidity.cpp: Reformatted for more consistent
+	  spacing.
 
 2013-01-24	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gump_manager.cc: Fix main_actor_can_act check that could be bypassed

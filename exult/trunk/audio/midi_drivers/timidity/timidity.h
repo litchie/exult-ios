@@ -267,8 +267,8 @@ extern void Timidity_GenerateSamples(void *stream, int samples);
 #  define FSCALE(a,b) ldexp((a),(b))
 #  define FSCALENEG(a,b) ldexp((a),-(b))
 #else
-#  define FSCALE(a,b) (float)((a) * (double)(1<<(b)))
-#  define FSCALENEG(a,b) (float)((a) * (1.0L / (double)(1<<(b))))
+#  define FSCALE(a,b) static_cast<float>((a) * static_cast<double>(1<<(b)))
+#  define FSCALENEG(a,b) static_cast<float>((a) * (1.0L / static_cast<double>(1<<(b))))
 #endif
 
 /* Vibrato and tremolo Choices of the Day */
@@ -297,7 +297,7 @@ extern void Timidity_GenerateSamples(void *stream, int samples);
 #endif
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

@@ -78,9 +78,9 @@ bool GameplayOptions_button::activate(int button)
 {
 	if (button != 1) return false;
 	if (text == canceltext) {
-		((GameplayOptions_gump*)parent)->cancel();
+		reinterpret_cast<GameplayOptions_gump *>(parent)->cancel();
 	} else if (text == oktext) {
-		((GameplayOptions_gump*)parent)->close();
+		reinterpret_cast<GameplayOptions_gump *>(parent)->close();
 	}
 	return true;
 }
@@ -94,7 +94,7 @@ public:
 
 	friend class GameplayOptions_gump;
 	virtual void toggle(int state) { 
-		((GameplayOptions_gump*)parent)->toggle((Gump_button*)this, state);
+		reinterpret_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
@@ -107,7 +107,7 @@ public:
 
 	friend class GameplayOptions_gump;
 	virtual void toggle(int state) {
-		((GameplayOptions_gump*)parent)->toggle((Gump_button*)this, state);
+		reinterpret_cast<GameplayOptions_gump *>(parent)->toggle(this, state);
 	}
 };	
 
@@ -426,7 +426,7 @@ bool GameplayOptions_gump::mouse_up(int mx, int my, int button)
 	bool res = false;
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
-		res = ((Gump_button*)pushed)->activate(button);
+		res = pushed->activate(button);
 	pushed = 0;
 	return res;
 }

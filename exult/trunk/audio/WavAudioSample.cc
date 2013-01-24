@@ -77,10 +77,12 @@ WavAudioSample::WavAudioSample(uint8* buffer, uint32 size) : RawAudioSample(buff
 	uint16 format_tag = ds.read2(); 
 	uint16 channels = ds.read2();
 	sample_rate = ds.read4();
-	uint32 bytes_per_second = ds.read4();;
-	uint16 block_align = ds.read2();
+	//uint32 bytes_per_second = ds.read4();
+	//uint16 block_align = ds.read2();
+	ds.skip(6);
 	uint16 bits_per_sample = ds.read2();
-	uint16 extra_bytes = ds.read2();
+	//uint16 extra_bytes = ds.read2();
+	ds.skip(2);
 
 	if (format_tag != 1) return;
 	if (channels != 1 && channels != 2) return;
@@ -160,11 +162,13 @@ bool WavAudioSample::isThis(IDataSource *ds)
 
 	uint16 format_tag = ds->read2(); 
 	uint16 channels = ds->read2();
-	uint32 sample_rate = ds->read4();
-	uint32 bytes_per_second = ds->read4();;
-	uint16 block_align = ds->read2();
+	//uint32 sample_rate = ds->read4();
+	//uint32 bytes_per_second = ds->read4();;
+	//uint16 block_align = ds->read2();
+	ds->skip(10);
 	uint16 bits_per_sample = ds->read2();
-	uint16 extra_bytes = ds->read2();
+	//uint16 extra_bytes = ds->read2();
+	ds->skip(2);
 
 	if (format_tag != 1) return false;
 	if (channels != 1 && channels != 2) return false;

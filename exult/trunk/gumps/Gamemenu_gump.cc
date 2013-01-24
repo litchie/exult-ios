@@ -59,7 +59,7 @@ public:
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 					// What to do when 'clicked':
-	virtual bool activate(int button=1);
+	virtual bool activate(int button);
 };
 
 bool Gamemenu_button::activate(int button)
@@ -67,19 +67,19 @@ bool Gamemenu_button::activate(int button)
 	if (button != 1) return false;
 
 	if (text == loadsavetext) {
-		((Gamemenu_gump*)parent)->loadsave();
+		reinterpret_cast<Gamemenu_gump *>(parent)->loadsave();
 	} else if (text == videoopttext) {
-		((Gamemenu_gump*)parent)->video_options();
+		reinterpret_cast<Gamemenu_gump *>(parent)->video_options();
 	} else if (text == audioopttext) {
-		((Gamemenu_gump*)parent)->audio_options();
+		reinterpret_cast<Gamemenu_gump *>(parent)->audio_options();
 	} else if (text == gameopttext) {
-		((Gamemenu_gump*)parent)->gameplay_options();
+		reinterpret_cast<Gamemenu_gump *>(parent)->gameplay_options();
 	} else if (text == misctext) {
-		((Gamemenu_gump*)parent)->misc_options();
+		reinterpret_cast<Gamemenu_gump *>(parent)->misc_options();
 	} else if (text == quitmenutext) {
-		((Gamemenu_gump*)parent)->quit(true);
+		reinterpret_cast<Gamemenu_gump *>(parent)->quit(true);
 	} else if (text == quittext) {
-		((Gamemenu_gump*)parent)->quit(false);
+		reinterpret_cast<Gamemenu_gump *>(parent)->quit(false);
 	}
 	return true;
 }
@@ -206,7 +206,7 @@ bool Gamemenu_gump::mouse_up(int mx, int my, int button)
 	{
 		pushed->unpush(button);
 		if (pushed->on_button(mx, my))
-			((Gamemenu_button*)pushed)->activate();
+			pushed->activate(1);
 		pushed = 0;
 	}
 

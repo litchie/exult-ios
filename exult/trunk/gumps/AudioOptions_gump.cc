@@ -65,9 +65,9 @@ public:
 		if (button != 1) return false;
 		
 		if (text == canceltext) {
-			((AudioOptions_gump*)parent)->cancel();
+			reinterpret_cast<AudioOptions_gump *>(parent)->cancel();
 		} else if (text == oktext) {
-			((AudioOptions_gump*)parent)->close();
+			reinterpret_cast<AudioOptions_gump *>(parent)->close();
 		}
 		return true;
 	}
@@ -82,7 +82,7 @@ public:
 
 	friend class AudioOptions_gump;
 	virtual void toggle(int state) { 
-		((AudioOptions_gump*)parent)->toggle((Gump_button*)this, state);
+		reinterpret_cast<AudioOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 
@@ -95,7 +95,7 @@ public:
 
 	friend class AudioOptions_gump;
 	virtual void toggle(int state) {
-		((AudioOptions_gump*)parent)->toggle((Gump_button*)this, state);
+		reinterpret_cast<AudioOptions_gump *>(parent)->toggle(this, state);
 	}
 };	
 
@@ -499,8 +499,9 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 	if (have_digital_sfx())
 		{	// Have digital sfx.
 		nsfxopts++;
-		nsfxpacks += (int)have_roland_pack + (int)have_blaster_pack
-		           + (int)have_custom_pack;
+		nsfxpacks += static_cast<int>(have_roland_pack)
+		           + static_cast<int>(have_blaster_pack)
+		           + static_cast<int>(have_custom_pack);
 		if (have_custom_pack)
 			sfx_custompack = configpack;
 		}
@@ -533,7 +534,7 @@ void AudioOptions_gump::save_settings()
 		track_playing = Audio::get_ptr()->get_midi()->get_current_track();
 	config->set("config/audio/sample_rate", sample_rates[sample_rate], false);
 	config->set("config/audio/stereo", speaker_type ? "yes": "no", false);
-	if (sample_rates[sample_rate] != o_sample_rate ||
+	if (sample_rates[sample_rate] != static_cast<uint32>(o_sample_rate) ||
 			speaker_type != o_speaker_type) {
 		Audio::Destroy();
 		Audio::Init();
@@ -706,7 +707,7 @@ bool AudioOptions_gump::mouse_up(int mx, int my, int button)
 	bool res = false;
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
-		res = ((Gump_button*)pushed)->activate(button);
+		res = pushed->activate(button);
 	pushed = 0;
 	return res;
 }

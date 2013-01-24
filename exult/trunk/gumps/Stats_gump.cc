@@ -250,7 +250,7 @@ void Stats_gump::paint
 		attsx += Show_atts(x + attsx, y + attsy, POISONED);
 	if (act->get_flag(Obj_flags::charmed))
 		attsx += Show_atts(x + attsx, y + attsy, CHARMED);
-	if (act->get_property((int) Actor::food_level) <= 9)
+	if (act->get_property(static_cast<int>(Actor::food_level)) <= 9)
 		attsx += Show_atts(x + attsx, y + attsy, HUNGRY);
 	if (act->get_flag(Obj_flags::protection))
 		attsx += Show_atts(x + attsx, y + attsy, PROTECTED);

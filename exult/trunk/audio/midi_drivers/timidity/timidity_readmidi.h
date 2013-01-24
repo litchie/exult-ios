@@ -33,8 +33,8 @@ namespace NS_TIMIDITY {
 #endif
 
 struct MidiEventList {
-  MidiEvent event;
-  MidiEventList *next;
+	MidiEvent event;
+	MidiEventList *next;
 };
 
 extern sint32 quietchannels;
@@ -42,7 +42,7 @@ extern sint32 quietchannels;
 extern MidiEvent *read_midi_file(FILE *mfp, sint32 *count, sint32 *sp);
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

@@ -192,7 +192,7 @@ void OPLSetPan(FM_OPL *OPL,int c, int pan);
 void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length);
 void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length);
 
-};
+}
 
 #endif //USE_FMOPL_MIDI
 

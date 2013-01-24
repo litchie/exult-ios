@@ -57,7 +57,7 @@ int VideoOptions_gump::num_win_resolutions = 0;
 uint32 VideoOptions_gump::game_resolutions[3] = {0,0,0};
 int VideoOptions_gump::num_game_resolutions = 0;
 
-Image_window::FillMode VideoOptions_gump::startup_fill_mode = (Image_window::FillMode)0;
+Image_window::FillMode VideoOptions_gump::startup_fill_mode = static_cast<Image_window::FillMode>(0);
 
 static string resolutionstring(int w, int h)
 {
@@ -80,7 +80,7 @@ bool VideoOptions_button::activate(int button)
 {
 	if (button != 1) return false;
 	if (text == applytext) {
-		((VideoOptions_gump*)parent)->save_settings();
+		reinterpret_cast<VideoOptions_gump *>(parent)->save_settings();
 	}
 	return true;
 }
@@ -93,7 +93,7 @@ public:
 
 	friend class VideoOptions_gump;
 	virtual void toggle(int state) { 
-		((VideoOptions_gump*)parent)->toggle((Gump_button*)this, state);
+		reinterpret_cast<VideoOptions_gump *>(parent)->toggle(this, state);
 	}
 };
 void VideoOptions_gump::close()
@@ -137,12 +137,12 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 	else if(btn==buttons[id_fill_mode]) {
 		if (state == 0) fill_mode = Image_window::Fill;
 		else if (state == 3) fill_mode = startup_fill_mode;
-		else fill_mode = (Image_window::FillMode) ((state << 1) | (has_ac?1:0));
+		else fill_mode = static_cast<Image_window::FillMode>((state << 1) | (has_ac?1:0));
 		rebuild_dynamic_buttons();
 	}
 	else if(btn==buttons[id_has_ac]) {
 		has_ac = state!=0;
-		fill_mode = (Image_window::FillMode) ((fill_mode&~1) | (has_ac?1:0));
+		fill_mode = static_cast<Image_window::FillMode>((fill_mode&~1) | (has_ac?1:0));
 	}
 	else if(btn==buttons[id_share_settings])
 		share_settings = state;
@@ -515,7 +515,7 @@ bool VideoOptions_gump::mouse_up(int mx, int my, int button)
 	bool res = false;
 	pushed->unpush(button);
 	if (pushed->on_button(mx, my))
-		res = ((Gump_button*)pushed)->activate(button);
+		res = pushed->activate(button);
 	pushed = 0;
 	return res;
 }

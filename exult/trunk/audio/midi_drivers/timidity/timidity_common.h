@@ -37,8 +37,8 @@ extern char *program_name, current_filename[];
 extern FILE *msgfp;
 
 struct PathList {
-  const char *path;
-  PathList *next;
+	const char *path;
+	PathList *next;
 };
 
 /* Noise modes for open_file */
@@ -57,7 +57,7 @@ template<class T> T*safe_Malloc(size_t count=1) {
 }
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif

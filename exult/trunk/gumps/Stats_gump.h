@@ -33,7 +33,7 @@ class Stats_gump : public Gump
 
 protected:
 	Actor *get_actor()
-		{ return (Actor *) container; }
+		{ return reinterpret_cast<Actor *>(container); }
 	static short textx;		// X-coord. of where to write.
 	static short texty[10];		// Y-coords.
 

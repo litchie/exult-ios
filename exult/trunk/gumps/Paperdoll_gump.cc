@@ -194,7 +194,7 @@ Paperdoll_gump::Paperdoll_gump
 
 	// Create Heart button
 	heart_button = new Heart_button(this, heartx, hearty);
-	Actor *actor = (Actor *) cont;
+	Actor *actor = cont->as_actor();
 	// Create Cstats button or Halo and Cmode
 	if (Game::get_game_type() == BLACK_GATE)
 	{

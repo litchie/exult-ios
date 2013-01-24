@@ -65,42 +65,42 @@ static int cmsg(int type, int verbosity_level, const char *fmt, ...);
 
 ControlMode ctl= 
 {
-  "SDL interface", 's',
-  OF_NORMAL,0,0,
-  ctl_open,NULL, ctl_close, ctl_read, cmsg,
-  ctl_refresh, ctl_reset, ctl_file_name, ctl_total_time, ctl_current_time, 
-  ctl_note, 
-  ctl_master_volume, ctl_program, ctl_volume, 
-  ctl_expression, ctl_panning, ctl_sustain, ctl_pitch_bend
+	"SDL interface", 's',
+	OF_NORMAL,0,0,
+	ctl_open,NULL, ctl_close, ctl_read, cmsg,
+	ctl_refresh, ctl_reset, ctl_file_name, ctl_total_time, ctl_current_time, 
+	ctl_note, 
+	ctl_master_volume, ctl_program, ctl_volume, 
+	ctl_expression, ctl_panning, ctl_sustain, ctl_pitch_bend
 };
 
 static int ctl_open(int using_stdin, int using_stdout)
 {
-  ctl.opened=1;
-  return 0;
+	ctl.opened=1;
+	return 0;
 }
 
 static void ctl_close(void)
 { 
-  ctl.opened=0;
+	ctl.opened=0;
 }
 
 static int ctl_read(sint32 *valp)
 {
-  return TM_RC_NONE;
+	return TM_RC_NONE;
 }
 
 static int cmsg(int type, int verbosity_level, const char *fmt, ...)
 {
-  va_list ap;
-  if ((type==CMSG_TEXT || type==CMSG_INFO || type==CMSG_WARNING) &&
-      ctl.verbosity<verbosity_level)
-    return 0;
-  va_start(ap, fmt);
-  vsprintf(timidity_error, fmt, ap);
-  va_end(ap);
-  //perr.printf ("%s\n", timidity_error);
-  return 0;
+	va_list ap;
+	if ((type==CMSG_TEXT || type==CMSG_INFO || type==CMSG_WARNING) &&
+	    ctl.verbosity<verbosity_level)
+		return 0;
+	va_start(ap, fmt);
+	vsprintf(timidity_error, fmt, ap);
+	va_end(ap);
+	//perr.printf ("%s\n", timidity_error);
+	return 0;
 }
 
 static void ctl_refresh(void) { }
@@ -130,7 +130,7 @@ static void ctl_pitch_bend(int channel, int val) {}
 static void ctl_reset(void) {}
 
 #ifdef NS_TIMIDITY
-};
+}
 #endif
 
 #endif //USE_TIMIDITY_MIDI
