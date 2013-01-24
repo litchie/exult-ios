@@ -2109,7 +2109,6 @@ void Actor::set_effective_alignment
 	int newalign
 	)
 	{
-	bool avatar = (this == gwin->get_main_actor());
 	if (!(flags&(1<<Obj_flags::charmed)))
 		alignment = newalign;
 	charmalign = newalign;

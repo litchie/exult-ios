@@ -84,11 +84,11 @@ BilinearScaler::BilinearScaler() : ArbScaler()
 #endif
 }
 
-const uint32 BilinearScaler::ScaleBits() const { return 0xFFFFFFFF; }
-const bool BilinearScaler::ScaleArbitrary() const { return true; }
+uint32 BilinearScaler::ScaleBits() const { return 0xFFFFFFFF; }
+bool BilinearScaler::ScaleArbitrary() const { return true; }
 
 const char *BilinearScaler::ScalerName() const { return "bilinear"; }
 const char *BilinearScaler::ScalerDesc() const { return "Bilinear Filtering Scaler"; }
 const char *BilinearScaler::ScalerCopyright() const { return "Copyright (C) 2005 The Pentagram Team, 2010 The Exult Team"; }
 
-};
+}

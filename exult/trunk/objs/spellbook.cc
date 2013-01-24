@@ -340,7 +340,7 @@ void Spellbook_object::write_ireg
 	*ptr++ = 0;
 	*ptr++ = 0;
 	*ptr++ = bookmark >= 0 ? bookmark : 255;
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

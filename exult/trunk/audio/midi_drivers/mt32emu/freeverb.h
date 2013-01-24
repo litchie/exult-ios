@@ -36,7 +36,18 @@
 
 namespace Pentagram {
 
-#define undenormalise(sample) if (((*(unsigned int*)&sample) & 0x7f800000) == 0) sample = 0.0f
+// From more recent Munt.
+static inline float undenormalise(float x)
+{
+	union {
+		float f;
+		unsigned int i;
+	} u;
+	u.f = x;
+	if ((u.i & 0x7f800000) == 0)
+		return 0.0f;
+	return x;
+}
 
 // Comb filter class declaration
 
@@ -67,10 +78,10 @@ inline float comb::process(float input) {
 	float output;
 
 	output = buffer[bufidx];
-	undenormalise(output);
+	output = undenormalise(output);
 
 	filterstore = (output * damp2) + (filterstore * damp1);
-	undenormalise(filterstore);
+	filterstore = undenormalise(filterstore);
 
 	buffer[bufidx] = input + (filterstore * feedback);
 
@@ -105,7 +116,7 @@ inline float allpass::process(float input) {
 	float bufout;
 	
 	bufout = buffer[bufidx];
-	undenormalise(bufout);
+	bufout = undenormalise(bufout);
 	
 	output = -input + bufout;
 	buffer[bufidx] = input + (bufout * feedback);
@@ -239,6 +250,6 @@ private:
 	float bufallpassR4[allpasstuningR4];
 };
 
-};
+}
 
 #endif

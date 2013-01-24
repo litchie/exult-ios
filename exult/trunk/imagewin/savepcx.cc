@@ -122,7 +122,7 @@ static void save_24 (SDL_RWops *dst, int width, int height,
 	int x, y, c;
 	Uint8 *line;
 
-	line = (Uint8 *) malloc (width);
+	line = new Uint8[width];
 
 	for (y = 0; y < height; ++y) {
 		for (c = 2; c >= 0; --c) {
@@ -133,7 +133,7 @@ static void save_24 (SDL_RWops *dst, int width, int height,
 		}
 		buffer += pitch;
 	}
-	free (line);
+	delete [] line;
 }
 
 static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
@@ -147,7 +147,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 	width = surface->w;
 	height = surface->h;
-	pixels = (Uint8*)surface->pixels;
+	pixels = reinterpret_cast<Uint8*>(surface->pixels);
 	pitch = surface->pitch;
 
 	header.manufacturer = 0x0a;
@@ -156,7 +156,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 
 	if (surface->format->palette && surface->format->BitsPerPixel == 8) {
 		colors = surface->format->palette->ncolors;
-		cmap = (Uint8*)malloc(3*colors);
+		cmap = new Uint8[3*colors];
 		for (i = 0; i < colors; i++) {
 			cmap[3*i] = surface->format->palette->colors[i].r;
 			cmap[3*i+1] = surface->format->palette->colors[i].g;
@@ -204,7 +204,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
 			SDL_RWwrite(dst, &tmp, 1, 1);
 		}
 
-		free(cmap);
+		delete [] cmap;
 	} else {
 		save_24 (dst, width, height, pitch, pixels);
 	}

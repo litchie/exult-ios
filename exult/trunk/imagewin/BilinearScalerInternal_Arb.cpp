@@ -247,5 +247,5 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 
 InstantiateBilinearScalerFunc(BilinearScalerInternal_Arb);
 
-};
+}
 

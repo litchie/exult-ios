@@ -252,7 +252,7 @@ void Shape_manager::load
 		U7open(fin, PATCH_BLENDS);
 		nblends = Read1(fin);
 		ptr = blends = new unsigned char[nblends * 4];
-		fin.read((char *)blends, nblends * 4);
+		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
 		}
 	else if (GAME_BG || GAME_SI)
@@ -263,7 +263,7 @@ void Shape_manager::load
 		U7object txtobj(flexfile,
 				GAME_BG ? EXULT_BG_FLX_BLENDS_DAT : EXULT_SI_FLX_BLENDS_DAT);
 		std::size_t len;
-		ptr = blends = (unsigned char *)txtobj.retrieve(len);
+		ptr = blends = reinterpret_cast<unsigned char *>(txtobj.retrieve(len));
 		nblends = *blends++;
 		}
 	else if (U7exists(BLENDS))
@@ -272,7 +272,7 @@ void Shape_manager::load
 		U7open(fin, BLENDS);
 		nblends = Read1(fin);
 		ptr = blends = new unsigned char[nblends * 4];
-		fin.read((char *)blends, nblends * 4);
+		fin.read(reinterpret_cast<char *>(blends), nblends * 4);
 		fin.close();
 		}
 	if (!blends)
@@ -290,7 +290,7 @@ void Shape_manager::load
 			};
 		nblends = 17;
 		blends = hard_blends;
-		ptr = (unsigned char *)0;
+		ptr = 0;
 		}
 	xforms.resize(nblends);
 	std::size_t nxforms = xforms.size();
@@ -311,14 +311,14 @@ void Shape_manager::load
 			uint8 *data = 0;
 			std::size_t len = 0;
 			if (pxf)
-				data = (uint8 *)pxf->retrieve(i, len);
+				data = reinterpret_cast<uint8 *>(pxf->retrieve(i, len));
 			if (!data || len == 0)
 				{
 					// Not in patch;
 				delete [] data;
 				data = 0;
 				if (sxf)
-					data = (uint8 *)sxf->retrieve(i, len);
+					data = reinterpret_cast<uint8 *>(sxf->retrieve(i, len));
 				}
 			if (!data || len == 0)
 				{
@@ -506,7 +506,7 @@ Shape_frame *ShapeID::cache_shape()
 		}
 	else if (shapefile < SF_OTHER)
 		{
-		shape = sman->files[(int) shapefile].get_shape(
+		shape = sman->files[static_cast<int>(shapefile)].get_shape(
 							shapenum, framenum);
 		if (shapefile == SF_SPRITES_VGA)
 			has_trans = 1;
@@ -526,9 +526,9 @@ int ShapeID::get_num_frames() const
 		return sman->shapes.get_num_frames(shapenum);
 	else if (shapefile < SF_OTHER)
 		{
-		if (!sman->files[(int) shapefile].is_good())
+		if (!sman->files[static_cast<int>(shapefile)].is_good())
 			return 0;
-		return sman->files[(int) shapefile].get_num_frames(shapenum);
+		return sman->files[static_cast<int>(shapefile)].get_num_frames(shapenum);
 		}
 	std::cerr << "Error! Wrong ShapeFile!" << std::endl;
 	return 0;

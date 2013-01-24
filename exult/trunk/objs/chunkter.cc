@@ -183,8 +183,9 @@ void Chunk_terrain::set_flat
 	if (!undo_shapes)		// Create backup.
 		{
 		undo_shapes = new ShapeID[256];
-		std::memcpy((char *) undo_shapes, (char *) &shapes[0],
-							sizeof(shapes));
+		std::memcpy(reinterpret_cast<char *>(undo_shapes),
+		            reinterpret_cast<char *>(&shapes[0]),
+		            sizeof(shapes));
 		}
 	shapes[16*tiley + tilex] = id;
 	modified = true;
@@ -219,8 +220,9 @@ void Chunk_terrain::abort_edits
 	{
 	if (undo_shapes)
 		{
-		std::memcpy((char *) &shapes[0], (char *) undo_shapes,
-							sizeof(shapes));
+		std::memcpy(reinterpret_cast<char *>(&shapes[0]),
+		            reinterpret_cast<char *>(undo_shapes),
+		            sizeof(shapes));
 		delete [] undo_shapes;
 		undo_shapes = 0;
 		}

@@ -548,7 +548,7 @@ int wait_delay(int ms, int startcol, int ncol)
 	else
 		{
 		delay = loopinterval;
-		loops = ms/(long)delay;
+		loops = ms/static_cast<long>(delay);
 		}
 	Game_window *gwin = Game_window::get_instance();
 	int rot_speed = 100 << (gwin->get_win()->fast_palette_rotate()?0:1);

@@ -204,4 +204,4 @@ bool BilinearScalerInternal_Arb(SDL_Surface *tex, sint32 sx, sint32 sy, sint32 s
 	InstantiateFunc(func,uint32,Manip8to32,uint8); \
 	InstantiateFunc(func,uint32,Manip32to32,uint32)
 #endif
-};
+}

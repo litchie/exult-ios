@@ -1372,7 +1372,7 @@ DataSource *Vga_file::U7load
 			{
 			CERR("Resource '" << resource.first << "' not found.");
 			delete [] buf;
-			return (DataSource *)0;
+			return 0;
 			}
 		source = new BufferDataSource(buf, len);
 		bs.push_back(buf);

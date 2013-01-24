@@ -117,7 +117,7 @@ Image_window::ScalerVector::ScalerVector()
 // This is all the names of the scalers. It needs to match the ScalerType enum
 	const ScalerInfo point = { 
 		"Point", 0xFFFFFFFF, new Pentagram::PointScaler(),
-		0
+		0, 0, 0, 0, 0
 	};
 	push_back(point);
 
@@ -133,7 +133,7 @@ Image_window::ScalerVector::ScalerVector()
 
 	const ScalerInfo Bilinear = { 
 		"Bilinear", 0xFFFFFFFF, new Pentagram::BilinearScaler(),
-		0
+		0, 0, 0, 0, 0
 	};
 	push_back(Bilinear);
 
@@ -277,7 +277,7 @@ Image_window::ScalerType Image_window::get_scaler_for_name(const char *scaler)
 {
 	for (int s = 0; s < NumScalers; s++) {
 		if (!Pentagram::strcasecmp(scaler, Scalers[s].name)) 
-			return (ScalerType) s;
+			return static_cast<ScalerType>(s);
 	}
 
 	return NoScaler;
@@ -383,7 +383,7 @@ void Image_window::static_init()
 			continue;
 		}
 		// In theory this should never happen in fullscreen mode
-		else if (modes == (SDL_Rect **)-1) {
+		else if (modes == reinterpret_cast<SDL_Rect **>(-1)) {
 			//if (bpps[i] == 8) any_mode8 = true;
 			//else any_mode == true;
 			continue;
@@ -546,7 +546,8 @@ void Image_window::create_surface
 	get_draw_dims(w, h, scale, fill_mode, game_width, game_height, inter_width, inter_height);
 
 	if ((game_width != inter_width || game_height != inter_height ||
-	     w != game_width * scale || h != game_height * scale || force_bpp) && try_scaler(w, h) == false)
+	     static_cast<int>(w) != game_width * scale || static_cast<int>(h) != game_height * scale ||
+	     force_bpp) && try_scaler(w, h) == false)
 	{
 		// Try fallback to point scaler if it failed, if it doesn't work, we probably can't run
 		scaler = point;
@@ -590,7 +591,7 @@ void Image_window::create_surface
 	// Offset it set to the top left pixel if the game window
 	ibuf->offset_x = (get_full_width()-get_game_width())/2; 
 	ibuf->offset_y = (get_full_height()-get_game_height())/2; 
-	ibuf->bits = ((unsigned char *) draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
+	ibuf->bits = reinterpret_cast<unsigned char *>(draw_surface->pixels) - get_start_x() - get_start_y() * ibuf->line_width;
 	// Scaler guardband is in effect
 	if (draw_surface != display_surface && scaler != OpenGL) ibuf->bits += guard_band + ibuf->line_width*guard_band;
 }
@@ -889,7 +890,7 @@ void Image_window::show
 
 		// Need to apply an offset to compensate for the guard_band
 		if (inter_surface == display_surface)
-			inter_surface->pixels = (uint8*)inter_surface->pixels - inter_surface->pitch*guard_band*scale - inter_surface->format->BytesPerPixel*guard_band*scale;
+			inter_surface->pixels = reinterpret_cast<uint8*>(inter_surface->pixels) - inter_surface->pitch*guard_band*scale - inter_surface->format->BytesPerPixel*guard_band*scale;
 
 		if (sel_scaler.arb)
 		{
@@ -925,7 +926,7 @@ void Image_window::show
 
 		// Undo guard_band offset 
 		if (inter_surface == display_surface)
-			inter_surface->pixels = (uint8*)inter_surface->pixels + inter_surface->pitch*guard_band*scale + inter_surface->format->BytesPerPixel*guard_band*scale;
+			inter_surface->pixels = reinterpret_cast<uint8*>(inter_surface->pixels) + inter_surface->pitch*guard_band*scale + inter_surface->format->BytesPerPixel*guard_band*scale;
 
 		x *= scale;
 		y *= scale;
@@ -1036,7 +1037,7 @@ void Image_window::opengl_fill8
 	glPushMatrix();
 	int x = destx;			// Left edge.
 	int y = -(desty + srch);
-	glTranslatef((float)x, (float)y, 0);
+	glTranslatef(static_cast<float>(x), static_cast<float>(y), 0);
 	glBegin(GL_QUADS);
 	{
 		glColor3ub(color.r, color.g, color.b);
@@ -1217,47 +1218,47 @@ Image_window::FillMode Image_window::string_to_fillmode(const char *str)
 	else if (!Pentagram::strncasecmp(str, "Centre ", 7) || !Pentagram::strncasecmp(str, "Center ", 7)) 
 	{
 		str += 7;
-		if (*str != 'X' && *str != 'x') return (FillMode) 0;
+		if (*str != 'X' && *str != 'x') return static_cast<FillMode>(0);
 
 		++str;
-		if (*str < '0' || *str > '9') return (FillMode) 0;
+		if (*str < '0' || *str > '9') return static_cast<FillMode>(0);
 
 		unsigned long f = std::strtoul(str,const_cast<char**>(&str),10);
 
-		if (f >= (65536-Centre)/2 || *str) return (FillMode) 0;
+		if (f >= (65536-Centre)/2 || *str) return static_cast<FillMode>(0);
 
-		return (FillMode) (Centre + f*2);
+		return static_cast<FillMode>(Centre + f*2);
 	}
 	else if (!Pentagram::strncasecmp(str, "Aspect Correct Centre ", 22) || !Pentagram::strncasecmp(str, "Aspect Correct Center ", 22) || !Pentagram::strncasecmp(str, "Centre Aspect Correct ", 22) || !Pentagram::strncasecmp(str, "Center Aspect Correct ", 22)) 
 	{
 		str += 22;
-		if (*str != 'X' && *str != 'x') return (FillMode) 0;
+		if (*str != 'X' && *str != 'x') return static_cast<FillMode>(0);
 
 		++str;
-		if (*str < '0' || *str > '9') return (FillMode) 0;
+		if (*str < '0' || *str > '9') return static_cast<FillMode>(0);
 
 		unsigned long f = std::strtoul(str,const_cast<char**>(&str),10);
 
-		if (f >= (65536-AspectCorrectCentre)/2 || *str) return (FillMode) 0;
+		if (f >= (65536-AspectCorrectCentre)/2 || *str) return static_cast<FillMode>(0);
 
-		return (FillMode) (AspectCorrectCentre + f*2);
+		return static_cast<FillMode>(AspectCorrectCentre + f*2);
 	}
 	else
 	{
-		if (*str < '0' || *str > '9') return (FillMode) 0;
+		if (*str < '0' || *str > '9') return static_cast<FillMode>(0);
 
 		unsigned long fx = std::strtoul(str,const_cast<char**>(&str),10);
 
-		if (fx > 65535 || (*str != 'X' && *str != 'x')) return (FillMode) 0;
+		if (fx > 65535 || (*str != 'X' && *str != 'x')) return static_cast<FillMode>(0);
 
 		++str;
-		if (*str < '0' || *str > '9') return (FillMode) 0;
+		if (*str < '0' || *str > '9') return static_cast<FillMode>(0);
 
 		unsigned long fy = std::strtoul(str,const_cast<char**>(&str),10);
 
-		if (fy > 65535 || *str) return (FillMode) 0;
+		if (fy > 65535 || *str) return static_cast<FillMode>(0);
 
-		return (FillMode) (fx | (fy<<16));
+		return static_cast<FillMode>(fx | (fy<<16));
 	}
 }
 

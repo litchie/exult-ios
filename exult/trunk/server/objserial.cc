@@ -62,7 +62,7 @@ Serial_in& Serial_in::operator<<
 	{
 	int len;
 	(*this) << len;			// Get length.
-	s.assign((char *) buf, len);	// Set string.
+	s.assign(reinterpret_cast<char *>(buf), len);	// Set string.
 	buf += len;
 	return *this;
 	}

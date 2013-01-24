@@ -264,7 +264,7 @@ void Effects_manager::remove_weather_effects
 		Special_effect *next = each->next;
 					// See if we're far enough away.
 		if (each->is_weather() && (!dist ||
-		    ((Weather_effect *) each)->out_of_range(apos, dist)))
+		    reinterpret_cast<Weather_effect *>(each)->out_of_range(apos, dist)))
 			remove_effect(each);
 		each = next;
 		}
@@ -306,7 +306,7 @@ int Effects_manager::get_weather
 		Special_effect *next = each->next;
 		if (each->is_weather())
 			{
-			Weather_effect *weather = (Weather_effect *) each;
+			Weather_effect *weather = reinterpret_cast<Weather_effect *>(each);
 			if (weather->get_num() >= 0)
 				return weather->get_num();
 			}
@@ -1338,8 +1338,8 @@ public:
 		)
 		{
 		int frame = drop.get_framenum();
-		uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-				  ascrolly = scrollty*(uint32)c_tilesize;
+		uint32 ascrollx = scrolltx*static_cast<uint32>(c_tilesize),
+				  ascrolly = scrollty*static_cast<uint32>(c_tilesize);
 		int ax = drop.get_ax(), ay = drop.get_ay();
 		int x = ax - ascrollx, y = ay - ascrolly;
 						// Still on screen?  Restore pix.
@@ -1358,8 +1358,8 @@ public:
 		int w, int h
 		)
 		{
-		uint32 ascrollx = scrolltx*(uint32)c_tilesize,
-				  ascrolly = scrollty*(uint32)c_tilesize;
+		uint32 ascrollx = scrolltx*static_cast<uint32>(c_tilesize),
+				  ascrolly = scrollty*static_cast<uint32>(c_tilesize);
 		int ax = drop.get_ax(), ay = drop.get_ay();
 		int x = ax - ascrollx, y = ay - ascrolly;
 						// Still on screen?  Restore pix.
@@ -1976,7 +1976,7 @@ void Fire_field_effect::handle_event
 		{
 		if (frnum > 3)		// Starting to wind down?
 			{
-			((Egg_object *) field)->stop_animation();
+			field->as_egg()->stop_animation();
 			frnum = 3;
 			}
 		else

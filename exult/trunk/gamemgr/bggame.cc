@@ -1378,7 +1378,7 @@ bool ExVoiceBuffer::play_it()
 {
 	size_t	size;
 	U7multiobject voc(file, patch, index);
-	uint8 *buffer = (uint8 *) voc.retrieve (size);
+	uint8 *buffer = reinterpret_cast<uint8 *>(voc.retrieve (size));
 	uint8 *buf = buffer;
 	if (!memcmp(buf, "voc", sizeof("voc")-1))
 		{
@@ -1630,7 +1630,7 @@ void BG_Game::end_game(bool success)
 		next = SDL_GetTicks();
 		for (i = next+28000; i > next; )
 		{
-			for (j = 0; j < (unsigned)finfo.frames; j++)
+			for (j = 0; j < static_cast<unsigned>(finfo.frames); j++)
 			{
 				next = fli3.play(win, j, j, next);
 				for(m=0; m<6; m++)

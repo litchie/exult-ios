@@ -319,7 +319,7 @@ void ActionUseFood(int const *params)
 void ActionCallUsecode(int const *params)
 {
 	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
-	usecode->call_usecode(params[0], (Game_object *)0,
+	usecode->call_usecode(params[0], static_cast<Game_object *>(0),
 		static_cast<Usecode_machine::Usecode_events>(params[1]));
 
 	Mouse::mouse->set_speed_cursor();
