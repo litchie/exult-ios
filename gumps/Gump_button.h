@@ -51,6 +51,7 @@ public:
 	bool is_pushed() { return pushed_button != 0; }
 	void set_pushed(int button) { pushed_button = button; }
 	void set_pushed(bool set) { pushed_button = set?1:0; }
+	virtual bool is_checkmark() const { return false; }
 
 };
 

@@ -34,6 +34,7 @@ public:
 		{ return new Checkmark_button(par, x, y); }
 					// What to do when 'clicked':
 	virtual bool activate(int button=1);
+	virtual bool is_checkmark() const { return true; }
 };
 
 /*
