@@ -59,6 +59,11 @@
 #include "party.h"
 #include "version.h"
 
+#include <cstddef>
+#ifndef offsetof	// Broken <cstddef>? Just in case...
+#   define offsetof(type, field) reinterpret_cast<long>(&(static_cast<type *>(0)->field))
+#endif
+
 #ifndef UNDER_EMBEDDED_CE
 using std::cerr;
 using std::cout;
@@ -497,9 +502,8 @@ void Game_window::read_save_names
 	for (unsigned int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
-		snprintf(fname, 50, SAVENAME, (int)i,
-			Game::get_game_type() == BLACK_GATE ? "bg" :
-			Game::get_game_type() == SERPENT_ISLE ? "si" : "dev");
+		snprintf(fname, 50, SAVENAME, static_cast<int>(i),
+		                 GAME_BG ? "bg" : (GAME_SI ? "si" : "dev"));
 		ifstream in;
 		try
 		{
@@ -573,7 +577,7 @@ void Game_window::write_saveinfo()
 	out.write1(timeinfo->tm_sec);	// 15
 
 	// Packing for the rest of the structure
-	for (size_t j = reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0));
+	for (size_t j = offsetof(SaveGame_Details, reserved0);
 			j < sizeof(SaveGame_Details); j++)
 		out.write1(0);
 
@@ -583,7 +587,7 @@ void Game_window::write_saveinfo()
 		if (i == 0)
 			npc = main_actor;
 		else
-			npc = (Npc_actor *)get_npc(party_man->get_member(i-1));
+			npc = get_npc(party_man->get_member(i-1));
 
 		char name[18];
 		std::string namestr = npc->get_npc_name();
@@ -608,7 +612,7 @@ void Game_window::write_saveinfo()
 		out.write2(npc->get_shapefile());
 
 		// Packing for the rest of the structure
-		for (size_t j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1));
+		for (size_t j = offsetof(SaveGame_Details, reserved1);
 				j < sizeof(SaveGame_Party); j++)
 			out.write1(0);
 	}
@@ -666,7 +670,7 @@ void Game_window::read_saveinfo(DataSource *in,
 	details->real_second = in->read1();	// 15
 
 	// Packing for the rest of the structure
-	in->skip(sizeof(SaveGame_Details) - reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0)));
+	in->skip(sizeof(SaveGame_Details) - offsetof(SaveGame_Details, reserved0));
 
 	party = new SaveGame_Party[details->party_size];
 	for (i=0; i<8 && i<details->party_size ; i++)
@@ -691,7 +695,7 @@ void Game_window::read_saveinfo(DataSource *in,
 		party[i].shape_file = in->read2();
 
 		// Packing for the rest of the structure
-		in->skip (sizeof(SaveGame_Party) -  reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)));
+		in->skip(sizeof(SaveGame_Party) - offsetof(SaveGame_Details, reserved1));
 	}
 }
 

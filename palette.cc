@@ -204,7 +204,7 @@ void Palette::loadxform(const char *buf, const char *xfname, int& xindex)
 	{
 	U7object xform(xfname, xindex);
 	size_t xlen;
-	unsigned char *xbuf = (unsigned char *) xform.retrieve(xlen);
+	unsigned char *xbuf = reinterpret_cast<unsigned char *>(xform.retrieve(xlen));
 	if (!xbuf || xlen <= 0)
 		xindex = -1;
 	else
@@ -579,12 +579,12 @@ void Palette::create_trans_table
 	{
 	for (int i = 0; i < 256; i++)
 		{
-		int newr = ((int) br * alpha)/255 + 
-				((int) pal1[i*3] * (255 - alpha))/255;
-		int newg = ((int) bg * alpha)/255 + 
-				((int) pal1[i*3 + 1] * (255 - alpha))/255;
-		int newb = ((int) bb * alpha)/255 + 
-				((int) pal1[i*3 + 2] * (255 - alpha))/255;
+		int newr = (static_cast<int>(br) * alpha)/255 + 
+				(static_cast<int>(pal1[i*3]) * (255 - alpha))/255;
+		int newg = (static_cast<int>(bg) * alpha)/255 + 
+				(static_cast<int>(pal1[i*3 + 1]) * (255 - alpha))/255;
+		int newb = (static_cast<int>(bb) * alpha)/255 + 
+				(static_cast<int>(pal1[i*3 + 2]) * (255 - alpha))/255;
 		table[i] = find_color(newr, newg, newb);
 		}
 	}

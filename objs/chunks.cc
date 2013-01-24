@@ -61,7 +61,7 @@ Chunk_cache::Chunk_cache
 	(
 	) : egg_objects(4)
 	{
-	memset((char *) &eggs[0], 0, sizeof(eggs));
+	memset(reinterpret_cast<char *>(&eggs[0]), 0, sizeof(eggs));
 	}
 
 /*
@@ -107,7 +107,7 @@ inline void Set_blocked_tile
 	{
 	uint16& val = blocked[ty*c_tiles_per_chunk + tx];
 					// Get mask for the bit0's:
-	uint16 mask0 = (uint16)(tmasks[ztiles]<<2*lift);
+	uint16 mask0 = static_cast<uint16>(tmasks[ztiles]<<2*lift);
 	uint16 mask1 = mask0<<1;	// Mask for the bit1's.
 	uint16 val0s = val&mask0;
 	uint16 Nval0s = (~val)&mask0;
@@ -134,7 +134,7 @@ inline void Clear_blocked_tile
 	{
 	uint16& val = blocked[ty*c_tiles_per_chunk + tx];
 					// Get mask for the bit0's:
-	uint16 mask0 = (uint16)(tmasks[ztiles]<<2*lift);
+	uint16 mask0 = static_cast<uint16>(tmasks[ztiles]<<2*lift);
 	uint16 mask1 = mask0<<1;	// Mask for the bit1's.
 	uint16 val0s = val&mask0;
 	uint16 Nval0s = (~val)&mask0;
@@ -154,7 +154,7 @@ Chunk_cache::blocked8z Chunk_cache::new_blocked_level
 	int zlevel
 	)
 	{
-	if ((unsigned)zlevel >= blocked.size())
+	if (static_cast<unsigned>(zlevel) >= blocked.size())
 		blocked.resize(zlevel + 1);
 	blocked8z block = blocked[zlevel] = new uint16[256];
 //	std::cout << "***Creating block for level " << zlevel << ", cache = " 
@@ -393,7 +393,7 @@ void Chunk_cache::setup
 	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
 		if (obj->is_egg())
-			update_egg(chunk, (Egg_object *) obj, true);
+			update_egg(chunk, obj->as_egg(), true);
 		else
 			update_object(chunk, obj, true);
 			
@@ -1295,7 +1295,7 @@ Tile_coord Map_chunk::find_spot
 	{
 	Tile_coord t2 = obj->get_tile();
 					// Get direction from pos. to object.
-	int dir = (int) Get_direction(pos.ty - t2.ty, t2.tx - pos.tx);
+	int dir = static_cast<int>(Get_direction(pos.ty - t2.ty, t2.tx - pos.tx));
 	return find_spot(pos, dist, obj->get_shapenum(), obj->get_framenum(),
 			max_drop, dir, where);
 	}
@@ -1375,7 +1375,7 @@ void Map_chunk::try_all_eggs
 		while ((each = next.get_next()) != 0)
 			if (each->is_egg())
 				{
-				Egg_object *egg = (Egg_object *) each;
+				Egg_object *egg = each->as_egg();
 					// Music eggs are causing problems.
 				if (egg->get_type() != Egg_object::jukebox &&
 					// And don't teleport a 2nd time.

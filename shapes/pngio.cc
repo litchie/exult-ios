@@ -93,8 +93,8 @@ int Import_png8
 	int depth, color, interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 		&interlace, 0, 0);
-	width = (int) w;
-	height = (int) h;
+	width = static_cast<int>(w);
+	height = static_cast<int>(h);
 	if (color != PNG_COLOR_TYPE_PALETTE)
 		{
 		png_destroy_read_struct(&png, &info, 0);
@@ -236,7 +236,7 @@ int Export_png8
 		int tindex = transp_to_0 ? 0 : transp_index;
 		png_byte trans[256];	// Only desired index is transparent.
 		memset(&trans[0], 255, sizeof(trans));
-		trans[(png_byte) tindex] = 0;
+		trans[static_cast<png_byte>(tindex)] = 0;
 		png_set_tRNS(png, info, &trans[0], tindex + 1, 0);
 		}
 					// Write out info.
@@ -320,8 +320,8 @@ int Import_png32
 	int depth, color, interlace;
 	png_get_IHDR(png, info, &w, &h, &depth, &color,
 		&interlace, 0, 0);
-	width = (int) w;
-	height = (int) h;
+	width = static_cast<int>(w);
+	height = static_cast<int>(h);
 	png_int_32 pngxoff, pngyoff;	// Get offsets.
 	int utype;
 	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&

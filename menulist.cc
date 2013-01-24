@@ -246,7 +246,7 @@ bool MenuTextChoice::handle_event(SDL_Event& event)
 	if(event.type==SDL_MOUSEBUTTONUP) {
 		dirty = true;
 		choice++;
-		if(choice >= (int)choices->size())
+		if(choice >= static_cast<int>(choices->size()))
 			choice = 0;
 	} else if(event.type==SDL_KEYDOWN) {
 		switch(event.key.keysym.sym) {
@@ -259,7 +259,7 @@ bool MenuTextChoice::handle_event(SDL_Event& event)
 		case SDLK_RIGHT:
 			dirty = true;
 			choice++;
-			if(choice >= (int)choices->size())
+			if(choice >= static_cast<int>(choices->size()))
 				choice = 0;
 			break;
 		default:

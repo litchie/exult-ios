@@ -91,5 +91,5 @@ int ichar_traits::compare(const char_type * s1, const char_type * s2, size_t len
 
 #endif
 
-};
+}
 

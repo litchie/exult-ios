@@ -29,14 +29,14 @@ class PointScaler : public ArbScaler
 public:
 	PointScaler();
 
-	virtual const uint32	ScaleBits() const;			//< bits for supported integer scaling
-	virtual const bool		ScaleArbitrary() const;		//< supports arbitrary scaling of any degree 
+	virtual       uint32	ScaleBits() const;			//< bits for supported integer scaling
+	virtual       bool		ScaleArbitrary() const;		//< supports arbitrary scaling of any degree 
 
 	virtual const char *	ScalerName() const;			//< Name Of the Scaler (1 word)
 	virtual const char *	ScalerDesc() const;			//< Desciption of the Scaler
 	virtual const char *	ScalerCopyright() const;	//< Scaler Copyright info
 };
 
-};
+}
 
 #endif

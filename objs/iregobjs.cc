@@ -105,7 +105,7 @@ void Ireg_game_object::remove_this
 		}
 	if (!nodel)
 		{
-		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
+		cheat.clear_this_grabbed_actor(this->as_actor());	// Could be an actor
 		gwin->delete_object(this);
 		}
 	}
@@ -193,7 +193,7 @@ void Ireg_game_object::write_ireg
 	*ptr++ = 0;			// Filler, I guess.
 	*ptr++ = 0;
 	*ptr++ = 0;
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

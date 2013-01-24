@@ -53,7 +53,7 @@ public:
 		gamma = g;
 
 		for (unsigned i = 0; i < size; i++)
-			table[i] = (T) (pow (i / sizef, 1 / gamma) * sizef);
+			table[i] = static_cast<T>(pow (i / sizef, 1 / gamma) * sizef);
 	}
 
 	GammaTable (unsigned int s, float g = 1) : sizef(-1), gamma(-1)

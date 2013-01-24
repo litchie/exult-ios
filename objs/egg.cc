@@ -225,7 +225,7 @@ public:
 			Game_object *nobj = get_map()->create_ireg_object(info,
 			    mshape, mframe, get_tx(), get_ty(), get_lift());
 			if (nobj->is_egg())
-				chunk->add_egg((Egg_object *) nobj);
+				chunk->add_egg(nobj->as_egg());
 			else
 				chunk->add(nobj);
 			gwin->add_dirty(nobj);
@@ -264,10 +264,10 @@ public:
 		else {			// Do on next animation frame.
 			Usecode_script *scr = new Usecode_script(this);
 			scr->add(Ucscript::usecode, fun);
-			if (flags & (1<<(int)once)) {
+			if (flags & (1<<static_cast<int>(once))) {
 					// Don't remove until done.
 				scr->add(Ucscript::remove);
-				flags &= ~(1<<(int)once);
+				flags &= ~(1<<static_cast<int>(once));
 			}
 			scr->start(gwin->get_std_delay());
 		}
@@ -406,7 +406,7 @@ public:
 			if (egg != this &&
 			    egg->criteria == external_criteria && 
 				// Attempting to fix problem in Silver Seed
-			    !(egg->flags & (1 << (int) hatched))) 
+			    !(egg->flags & (1 << static_cast<int>(hatched)))) 
 				egg->hatch(obj, 0);
 		}
 	}
@@ -721,16 +721,16 @@ int Egg_object::is_active
 	{
 	if (cheat.in_map_editor())
 		return 0;		// Disable in map-editor.
-	if ((flags & (1 << (int) hatched)) &&
-			!(flags & (1 << (int) auto_reset)))
+	if ((flags & (1 << static_cast<int>(hatched))) &&
+			!(flags & (1 << static_cast<int>(auto_reset))))
 		return (0);		// For now... Already hatched.
-	if (flags & (1 << (int) nocturnal))
+	if (flags & (1 << static_cast<int>(nocturnal)))
 		{			// Nocturnal.
 		int hour = gclock->get_hour();
 		if (!(hour >= 21 || hour <= 4))
 			return (0);	// It's not night.
 		}
-	Egg_criteria cri = (Egg_criteria) get_criteria();
+	Egg_criteria cri = static_cast<Egg_criteria>(get_criteria());
 
 	int deltaz = tz - get_lift();
 	switch (cri)
@@ -743,13 +743,13 @@ int Egg_object::is_active
 		if (GAME_SI && deltaz/5 != 0 && type == monster)
 			{
 			// Mark hatched if not auto-reset.
-			if (!(flags & (1 << (int) auto_reset)))
-				flags |= (1 << (int) hatched);
+			if (!(flags & (1 << static_cast<int>(auto_reset))))
+				flags |= (1 << static_cast<int>(hatched));
 			return 0;
 			}
 		if (obj != gwin->get_main_actor() || !area.has_world_point(tx, ty))
 			return 0;	// Not in square.
-		if (!(flags & (1 << (int) hatched)))
+		if (!(flags & (1 << static_cast<int>(hatched))))
 			return 1;	// First time.
 					// Must have autoreset.
 					// Just activate when reentering.
@@ -853,7 +853,7 @@ void Egg_object::activate
 	if (!edit())
 		hatch(0, 0);
 	if (animator)
-		flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
+		flags &= ~(1 << static_cast<int>(hatched));	// Moongate:  reset always.
 	}
 
 /*
@@ -872,7 +872,7 @@ bool Egg_object::edit
 		{
 		editing = 0;
 		Tile_coord t = get_tile();
-		unsigned long addr = (unsigned long) this;
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		// Usecode function name.
 		string str1 = get_str1();
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
@@ -924,7 +924,7 @@ void Egg_object::update_from_studio
 		cout << "Error decoding egg" << endl;
 		return;
 		}
-	Egg_object *oldegg = (Egg_object *) addr;
+	Egg_object *oldegg = reinterpret_cast<Egg_object *>(addr);
 	if (oldegg && oldegg != editing)
 		{
 		cout << "Egg from ExultStudio is not being edited" << endl;
@@ -1034,7 +1034,7 @@ void Egg_object::hatch
 	*/
 	Tile_coord eggpos = get_tile();
 	if (GAME_SI && eggpos.tx == 1287 && eggpos.ty == 2568 && eggpos.tz == 0) {
-		flags &= ~(1 << (int) hatched);
+		flags &= ~(1 << static_cast<int>(hatched));
 	}
 	// Fixing some stairs in SS bug # 3115182 by making them auto_reset
 	if (GAME_SS && type == teleport &&
@@ -1045,7 +1045,7 @@ void Egg_object::hatch
 			(eggpos.tx == 2859 && eggpos.ty == 3048 && eggpos.tz == 2) ||
 			(eggpos.tx == 2884 && eggpos.ty == 3047 && eggpos.tz == 2) ||
 			(eggpos.tx == 2983 && eggpos.ty == 2887 && eggpos.tz == 0)))
-		flags |= (1 << (int) auto_reset);
+		flags |= (1 << static_cast<int>(auto_reset));
 
 	/* end hack */
 
@@ -1055,14 +1055,14 @@ void Egg_object::hatch
 		{
 		// Time to hatch the egg.
 		hatch_now(obj, must);
-		if (flags & (1 << (int) once))
+		if (flags & (1 << static_cast<int>(once)))
 			{
 			remove_this(0);
 			return;
 			}
 		}
 		// Flag it as done, whether or not it has been hatched.
-	flags |= (1 << (int) hatched);
+	flags |= (1 << static_cast<int>(hatched));
 	}
 
 /*
@@ -1073,14 +1073,14 @@ void Egg_object::print_debug
 	(
 	)
 	{
-	cout << "Egg type is " << (int) type << ", prob = " << 
-		(int) probability <<
-		", distance = " << (int) distance << ", crit = " <<
-		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once)) != 0) << ", hatched = " <<
-	((flags & (1<<(int)hatched)) != 0) <<
+	cout << "Egg type is " << static_cast<int>(type) << ", prob = " << 
+		static_cast<int>(probability) <<
+		", distance = " << static_cast<int>(distance) << ", crit = " <<
+		static_cast<int>(criteria) << ", once = " <<
+	((flags & (1<<static_cast<int>(once))) != 0) << ", hatched = " <<
+	((flags & (1<<static_cast<int>(hatched))) != 0) <<
 	", areset = " <<
-	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
+	((flags & (1<<static_cast<int>(auto_reset))) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 
 		<< ", data3 = " << data3 << endl;
 	}
@@ -1209,7 +1209,7 @@ void Egg_object::write_ireg
 	Write2(ptr, data2);
 	if (data3 > 0)
 		Write2(ptr, data3);
-	out->write((char*)buf, ptr - buf);
+	out->write(reinterpret_cast<char*>(buf), ptr - buf);
 	const char *str1 = get_str1();
 	if (*str1)			// This will be usecode fun. name.
 		Game_map::write_string(out, str1);
@@ -1251,6 +1251,8 @@ bool Field_object::field_effect
 	Actor *actor
 	)
 	{
+	if (!actor)
+		return false;
 	bool del = false;		// Only delete poison, sleep fields.
 	switch (type)
 		{
@@ -1282,7 +1284,7 @@ bool Field_object::field_effect
 		return false;
 		}
 	if (!del)			// Tell animator to keep checking.
-		((Field_frame_animator *) animator)->activated = true;
+		reinterpret_cast<Field_frame_animator *>(animator)->activated = true;
 	return del;
 	}
 
@@ -1321,7 +1323,7 @@ void Field_object::activate
 	npcs.push_back(gwin->get_main_actor());	// Include Avatar.
 	Rectangle eggfoot = get_footprint();
 					// Clear flag to check.
-	((Field_frame_animator *) animator)->activated = false;
+	reinterpret_cast<Field_frame_animator *>(animator)->activated = false;
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 						it != npcs.end(); ++it)
 		{
@@ -1343,7 +1345,7 @@ void Field_object::hatch
 	bool /* must */			// If 1, skip dice roll.
 	)
 	{
-	if (field_effect((Actor *) obj))// Apply field.
+	if (field_effect(obj->as_actor()))// Apply field.
 		remove_this(0);		// Delete sleep/poison if applied.
 	}
 

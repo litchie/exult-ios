@@ -32,7 +32,7 @@ class Image_buffer16 : public Image_buffer
 	unsigned short *palette;	// Palette for 8-bit graphics.
 	void create_default_palette();
 	unsigned short *get_pixels()	// Cast bits.
-		{ return (unsigned short *) bits; }
+		{ return reinterpret_cast<unsigned short *>(bits); }
 public:
 	Image_buffer16(unsigned int w, unsigned int h, int dpth)
 		: Image_buffer(w, h, dpth), palette(0)

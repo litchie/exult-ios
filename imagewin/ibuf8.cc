@@ -67,7 +67,8 @@ void Image_buffer8::copy
 					// Go through lines.
 	while (srch--)
 		{
-		std::memmove((char *) to, (char *) from, srcw);
+		std::memmove(reinterpret_cast<char *>(to),
+		             reinterpret_cast<char *>(from), srcw);
 		to += ynext;
 		from += ynext;
 		}
@@ -89,9 +90,9 @@ void Image_buffer8::get
 					//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	unsigned char *to = (unsigned char *) dest->bits + 
+	unsigned char *to = reinterpret_cast<unsigned char *>(dest->bits) + 
 				desty*dest->line_width + destx;
-	unsigned char *from = (unsigned char *) bits + srcy*line_width + srcx;
+	unsigned char *from = reinterpret_cast<unsigned char *>(bits) + srcy*line_width + srcx;
 					// Figure # pixels to next line.
 	int to_next = dest->line_width - srcw;
 	int from_next = line_width - srcw;
@@ -114,7 +115,7 @@ void Image_buffer8::put
 	int destx, int desty		// Copy to here.
 	)
 	{
-	Image_buffer8::copy8((unsigned char *) src->bits,
+	Image_buffer8::copy8(reinterpret_cast<unsigned char *>(src->bits),
 		src->get_width(), src->get_height(), destx, desty);
 	}
 
@@ -165,7 +166,7 @@ void Image_buffer8::fill8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned char *pixels = (unsigned char *) bits + 
+	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) + 
 						desty*line_width + destx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	while (srch--)			// Do each line.
@@ -191,7 +192,7 @@ void Image_buffer8::fill_line8
 					// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *pixels = (unsigned char *) bits + 
+	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) + 
 						desty*line_width + destx;
 	std::memset(pixels, pix, srcw);
 	}
@@ -221,8 +222,8 @@ void Image_buffer8::copy8
 		return;
 
 #if !(defined(__sparc__) || defined(__zaurus__) || defined(UNDER_CE))
-	uint32 *to = (uint32*) (bits + desty*line_width + destx);
-	uint32 *from = (uint32*) (src_pixels + srcy*src_width + srcx);
+	uint32 *to = reinterpret_cast<uint32*>(bits + desty*line_width + destx);
+	uint32 *from = reinterpret_cast<uint32*>(src_pixels + srcy*src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
 
@@ -239,14 +240,14 @@ void Image_buffer8::copy8
 		int counter = aligned;
 		while (counter--) *to++ = *from++;
 
-		to8 = (uint8*) to;
-		from8 = (uint8*) from;
+		to8 = reinterpret_cast<uint8*>(to);
+		from8 = reinterpret_cast<uint8*>(from);
 
 		counter = end_align;
 		while (counter--) *to8++ = *from8++;
 
-		to = (uint32*) (to8+to_next);
-		from = (uint32*) (from8+from_next);
+		to = reinterpret_cast<uint32*>(to8+to_next);
+		from = reinterpret_cast<uint32*>(from8+from_next);
 	}
 #else
 	uint8 *to = bits + desty*line_width + destx;
@@ -299,7 +300,8 @@ void Image_buffer8::copy_line_translucent8
 					// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *to = (unsigned char *) bits + desty*line_width + destx;
+	unsigned char *to = reinterpret_cast<unsigned char *>(bits) +
+					desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
 	for (int i = srcw; i; i--)
 		{
@@ -328,7 +330,7 @@ void Image_buffer8::fill_line_translucent8
 					// Constrain to window's space.
 	if (!clip_x(srcx, srcw, destx, desty))
 		return;
-	unsigned char *pixels = (unsigned char *) bits + 
+	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
 						desty*line_width + destx;
 	while (srcw--)
 		{
@@ -353,7 +355,7 @@ void Image_buffer8::fill_translucent8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned char *pixels = (unsigned char *) bits + 
+	unsigned char *pixels = reinterpret_cast<unsigned char *>(bits) +
 						desty*line_width + destx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	while (srch--)			// Do each line.
@@ -411,8 +413,8 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		int scanx = xoff + (sint16) Read2(in);
-		int scany = yoff + (sint16) Read2(in);
+		int scanx = xoff + static_cast<sint16>(Read2(in));
+		int scany = yoff + static_cast<sint16>(Read2(in));
 
 		// Is there somthing on screen?
 		bool on_screen = true;
@@ -574,8 +576,8 @@ void Image_buffer8::paint_rle_remapped
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		int scanx = xoff + (sint16) Read2(in);
-		int scany = yoff + (sint16) Read2(in);
+		int scanx = xoff + static_cast<sint16>(Read2(in));
+		int scany = yoff + static_cast<sint16>(Read2(in));
 
 		// Is there somthing on screen?
 		bool on_screen = true;

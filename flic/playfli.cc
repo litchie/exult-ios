@@ -169,7 +169,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 					if (change == 0)
 					    change = 256;
-					fli_data->read((char*)&colors[current*3], change*3);
+					fli_data->read(reinterpret_cast<char*>(&colors[current*3]), change*3);
 				}
 				// Set palette
 				palette->set_palette (colors);

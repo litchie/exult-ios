@@ -166,7 +166,8 @@ void Image_buffer16::copy
 					// Go through lines.
 	while (srch--)
 		{
-		memmove((char *) to, (char *) from, srcw * 2);
+		memmove(reinterpret_cast<char *>(to),
+		        reinterpret_cast<char *>(from), srcw * 2);
 		to += ynext;
 		from += ynext;
 		}
@@ -188,7 +189,7 @@ void Image_buffer16::get
 					//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	unsigned short *to = (unsigned short *) dest->bits + 
+	unsigned short *to = reinterpret_cast<unsigned short *>(dest->bits) + 
 				desty*dest->line_width + destx;
 	unsigned short *from = get_pixels() + srcy*line_width + srcx;
 					// Figure # pixels to next line.
@@ -213,7 +214,7 @@ void Image_buffer16::put
 	int destx, int desty		// Copy to here.
 	)
 	{
-	Image_buffer16::copy16((unsigned short *) src->bits,
+	Image_buffer16::copy16(reinterpret_cast<unsigned short *>(src->bits),
 		src->get_width(), src->get_height(), destx, desty);
 	}
 
@@ -248,7 +249,7 @@ inline unsigned char Get_color16
 	int brightness			// 100=normal.
 	)
 	{
-	unsigned int c = (((unsigned int) val)*brightness*32)/
+	unsigned int c = (static_cast<unsigned int>(val)*brightness*32)/
 							(100*(maxval + 1));
 	return (c < 32 ? c : 31);
 	}
@@ -286,7 +287,7 @@ void Image_buffer16::rotate_colors
 	)
 	{
 	int cnt = num - 1;		// Shift downward.
-	int c0 = palette[first];
+	unsigned short c0 = palette[first];
 	for (int i = first; cnt; i++, cnt--)
 		palette[i] = palette[i + 1];
 	palette[first + num - 1] = c0;	// Shift 1st to end.
