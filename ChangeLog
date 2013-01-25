@@ -5,6 +5,9 @@
 	  the fluidsynth_soundfontN keys (N = 0 to 9) which are loaded in numerical
 	  order (0 first), plus the old fluidsynth_soundfont key, which loads after
 	  all others.
+	Rev 7338
+	* files/listfiles.cc: Fixed memory leak on Amiga and MorphOS. Would be good
+	  to be able to test...
 
 2013-01-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* keys.cc: Missing is_movement initializer for ActionScrollLeft. Warnings.
