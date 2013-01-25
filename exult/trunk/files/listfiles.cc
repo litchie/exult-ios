@@ -367,9 +367,7 @@ int U7ListFiles(const std::string& mask, FileList& files)
 
 		while( error == DOSFALSE )
 		{
-			char *filename = (char *)malloc( strlen( ap.ap_Info.fib_FileName )+1 );
-			strcpy( filename, ap.ap_Info.fib_FileName );
-			files.push_back( filename );
+			files.push_back( ap.ap_Info.fib_FileName );
 			error = MatchNext( &ap );
 		}
 
