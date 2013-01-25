@@ -20,6 +20,8 @@
 
 #include "pent_include.h"
 #include "FluidSynthMidiDriver.h"
+#include <string>
+#include <vector>
 
 #ifdef USE_FLUIDSYNTH_MIDI
 
@@ -31,7 +33,7 @@ const MidiDriver::MidiDriverDesc FluidSynthMidiDriver::desc =
 // MidiDriver method implementations
 
 FluidSynthMidiDriver::FluidSynthMidiDriver()
-	: LowLevelMidiDriver(), _settings(0), _synth(0), _soundFont(-1) 
+	: LowLevelMidiDriver(), _settings(0), _synth(0) 
 {
 }
 
@@ -69,9 +71,20 @@ int FluidSynthMidiDriver::open() {
 		return -1;
 	}
 
-	std::string soundfont = getConfigSetting("fluidsynth_soundfont", "");
+	std::string sfsetting = "fluidsynth_soundfont";
+	std::vector<std::string> soundfonts;
+	std::string soundfont;
+	for (size_t i = 0; i < 10; i++) {
+		std::string settingkey = sfsetting + static_cast<char>(i + '0');
+		soundfont = getConfigSetting(settingkey.c_str(), "");
+		if (!soundfont.empty())
+			soundfonts.push_back(soundfont);
+	}
+	soundfont = getConfigSetting(sfsetting.c_str(), "");
+	if (!soundfont.empty())
+		soundfonts.push_back(soundfont);
 
-	if (soundfont == "") {
+	if (soundfonts.empty()) {
 		perr << "FluidSynth requires a 'fluidsynth_soundfont' setting" << std::endl;
 		return -2;
 	}
@@ -93,9 +106,22 @@ int FluidSynthMidiDriver::open() {
 	// fluid_synth_set_reverb_on(_synth, 0);
 	// fluid_synth_set_chorus_on(_synth, 0);
 
-	_soundFont = fluid_synth_sfload(_synth, soundfont.c_str(), 1);
-	if (_soundFont == -1) {
-		perr << "Failed loading custom sound font '" << soundfont << "'" << std::endl;
+	int numloaded = 0;
+	for (std::vector<std::string>::const_iterator it = soundfonts.begin();
+	     it != soundfonts.end(); ++it)
+	{
+		int soundFont = fluid_synth_sfload(_synth, it->c_str(), 1);
+		if (soundFont == -1) {
+			perr << "Failed loading custom sound font '" << *it << "'" << std::endl;
+		} else {
+			perr << "Loaded custom sound font '" << *it << "'" << std::endl;
+			_soundFont.push(soundFont);
+			numloaded++;
+		}
+		
+	}
+	if (numloaded == 0) {
+		perr << "Failed to load any custom sound fonts; giving up." << std::endl;
 		return -3;
 	}
 
@@ -103,10 +129,11 @@ int FluidSynthMidiDriver::open() {
 }
 
 void FluidSynthMidiDriver::close() {
-
-	if (_soundFont != -1)
-		fluid_synth_sfunload(_synth, _soundFont, 1);
-	_soundFont = -1;
+	while (!_soundFont.empty()) {
+		int soundfont = _soundFont.top();
+		_soundFont.pop();
+		fluid_synth_sfunload(_synth, soundfont, 1);
+	}
 
 	delete_fluid_synth(_synth);
 	_synth = 0;
@@ -115,11 +142,11 @@ void FluidSynthMidiDriver::close() {
 }
 
 void FluidSynthMidiDriver::send(uint32 b) {
-	//uint8 param3 = (uint8) ((b >> 24) & 0xFF);
-	uint32 param2 = (uint8) ((b >> 16) & 0xFF);
-	uint32 param1 = (uint8) ((b >>  8) & 0xFF);
-	uint8 cmd    = (uint8) (b & 0xF0);
-	uint8 chan   = (uint8) (b & 0x0F);
+	//uint8 param3 = static_cast<uint8>((b >> 24) & 0xFF);
+	uint32 param2 = static_cast<uint8>((b >> 16) & 0xFF);
+	uint32 param1 = static_cast<uint8>((b >>  8) & 0xFF);
+	uint8 cmd     = static_cast<uint8>(b & 0xF0);
+	uint8 chan    = static_cast<uint8>(b & 0x0F);
 
 	switch (cmd) {
 	case 0x80:	// Note Off
