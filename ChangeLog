@@ -1,3 +1,11 @@
+2013-01-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* audio/midi_drivers/FluidSynthMidiDriver.*: Eliminated warnings. Added the
+	  ability to specify multiple soundfonts for FluidSynth in exult.cfg which
+	  will make use of FuildSynth's soundfont stack. Soundfonts are specified in
+	  the fluidsynth_soundfontN keys (N = 0 to 9) which are loaded in numerical
+	  order (0 first), plus the old fluidsynth_soundfont key, which loads after
+	  all others.
+
 2013-01-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* keys.cc: Missing is_movement initializer for ActionScrollLeft. Warnings.
 	Rev 7332
