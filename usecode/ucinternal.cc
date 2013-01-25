@@ -283,12 +283,13 @@ bool Usecode_internal::call_function(int funcid,
 
 #ifdef DEBUG
 	Usecode_symbol *fsym = symtbl ? (*symtbl)[funcid] : 0;
-	cout << "Running usecode " << setw(4);
+	cout << "Running usecode ";
 	if (fsym)
-		cout << fsym->get_name();
-	else
-		cout << hex << setfill('0') 
-			<< funcid << dec << setfill(' ');
+		cout << fsym->get_name() << " [";
+	cout << setw(4) << hex << setfill('0') 
+		<< funcid << dec << setfill(' ');
+	if (fsym)
+		cout << "]";
 	cout << " (";
 	for (i = 0; i < num_args; i++)
 	{

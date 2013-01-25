@@ -16,6 +16,9 @@
 	Rev 7335
 	* gamedat.cc: Fixed regression from rev #7332 causing corruption on the save
 	  screen.
+	Rev 7336
+	* usecode/ucinternal.cc: Also print usecode function number in debug tracing
+	  if the function has an associated name.
 
 2013-01-24	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gump_manager.cc: Fix main_actor_can_act check that could be bypassed
