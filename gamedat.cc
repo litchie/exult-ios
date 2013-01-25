@@ -612,7 +612,7 @@ void Game_window::write_saveinfo()
 		out.write2(npc->get_shapefile());
 
 		// Packing for the rest of the structure
-		for (size_t j = offsetof(SaveGame_Details, reserved1);
+		for (size_t j = offsetof(SaveGame_Party, reserved1);
 				j < sizeof(SaveGame_Party); j++)
 			out.write1(0);
 	}
@@ -695,7 +695,7 @@ void Game_window::read_saveinfo(DataSource *in,
 		party[i].shape_file = in->read2();
 
 		// Packing for the rest of the structure
-		in->skip(sizeof(SaveGame_Party) - offsetof(SaveGame_Details, reserved1));
+		in->skip(sizeof(SaveGame_Party) - offsetof(SaveGame_Party, reserved1));
 	}
 }
 
