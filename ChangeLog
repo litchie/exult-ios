@@ -13,6 +13,9 @@
 	* audio/midi_drivers/mt32emu/*: Last MT32Emu warnings I will eliminate until
 	  bug #3149070 "MT-32: sysex is not delayed properly (exc. buffer overflow)"
 	  is fixed.
+	Rev 7335
+	* gamedat.cc: Fixed regression from rev #7332 causing corruption on the save
+	  screen.
 
 2013-01-24	Malignant Manor <malignantmanor@users.sourceforge.net>
 	* gumps/Gump_manager.cc: Fix main_actor_can_act check that could be bypassed
