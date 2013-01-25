@@ -21,12 +21,13 @@
 
 #include "LowLevelMidiDriver.h"
 #include <fluidsynth.h>
+#include <stack>
 
 class FluidSynthMidiDriver : public LowLevelMidiDriver {
 private:
 	fluid_settings_t *_settings;
 	fluid_synth_t *_synth;
-	int _soundFont;
+	std::stack<int> _soundFont;
 
 	const static MidiDriverDesc	desc;
 	static MidiDriver *createInstance() {
