@@ -616,7 +616,7 @@ bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	o << "\t.localc      " << std::setw(4) << _num_locals << "H" << endl;
 	o << "\t.externsize  " << std::setw(4) << _externs.size() << "H" << endl;
 	
-	for(typeof(_externs.begin()) i=_externs.begin(); i!=_externs.end(); ++i)
+	for(std::vector<unsigned int>::iterator i=_externs.begin(); i!=_externs.end(); ++i)
 		o << '\t' << "  .extern    " << std::setw(4) << *i << "H" << endl;
 /*	for(unsigned int i=0; i<_externs.size(); i++) //FIXME: ::iterators
 		o << '\t' << "  .extern    " << std::setw(4) << _externs[i] << "H" << endl;*/

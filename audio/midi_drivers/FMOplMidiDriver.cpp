@@ -629,7 +629,7 @@ void FMOplMidiDriver::midi_fm_instrument(int voice, unsigned char *inst)
 void FMOplMidiDriver::midi_update_volume(int channel)
 {
 	for (int i = 0; i < 9; i++)
-		if ((chp[i][CHP_CHAN] == channel)) {
+		if (chp[i][CHP_CHAN] == channel) {
 
 			int nv = midi_calc_volume(channel, chp[i][CHP_VEL]);
 			midi_fm_volume(i, nv * 2);

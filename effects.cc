@@ -623,17 +623,19 @@ void Projectile_effect::init
 	if (explodes && ainfo && ainfo->is_homing())
 		path->NewPath(pos, pos, 0);	//A bit of a hack, I know...
 	else
+		{
 		path->NewPath(pos, dst, 0);
 		if (attacker)
-		{
-			// Getprojectile  out of shooter's volume.
-		Block vol = attacker->get_block();
-		Tile_coord t;
-		bool done;
-		while (path->GetNextStep(t, done))
-			if (!vol.has_world_point(t.tx, t.ty, t.tz))
-				break;
-		pos = t;
+			{
+				// Getprojectile  out of shooter's volume.
+			Block vol = attacker->get_block();
+			Tile_coord t;
+			bool done;
+			while (path->GetNextStep(t, done))
+				if (!vol.has_world_point(t.tx, t.ty, t.tz))
+					break;
+			pos = t;
+			}
 		}
 	int sprite_shape = sprite.get_shapenum();
 	set_sprite_shape(sprite_shape);
@@ -889,16 +891,16 @@ void Projectile_effect::handle_event
 					}
 				if (drop)
 					{
-					Tile_coord pos = Map_chunk::find_spot(pos, 3,
+					Tile_coord dpos = Map_chunk::find_spot(pos, 3,
 								sprite.get_shapenum(), 0, 1);
-					if (pos.tx != -1)
+					if (dpos.tx != -1)
 						{
 						Game_object *aobj = gmap->create_ireg_object(
 									sprite.get_shapenum(), 0);
 						if (!attacker || attacker->get_flag(Obj_flags::is_temporary))
 							aobj->set_flag(Obj_flags::is_temporary);
 						aobj->set_flag(Obj_flags::okay_to_take);
-						aobj->move(pos);
+						aobj->move(dpos);
 						}
 					}
 				}

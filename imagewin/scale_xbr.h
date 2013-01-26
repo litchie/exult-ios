@@ -498,9 +498,9 @@ void Scale_xBR
 	}
 }
 
-class Scaler2xBR;
-class Scaler3xBR;
-class Scaler4xBR;
+struct Scaler2xBR;
+struct Scaler3xBR;
+struct Scaler4xBR;
 
 #endif //USE_XBR_SCALER
 

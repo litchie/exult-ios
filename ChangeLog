@@ -1,3 +1,21 @@
+2013-01-26	Marzo Sette Torres Junior <marzojr@yahoo.com>
+	* actors.cc: Clearing frame_time when avatar and NPCs aren't performing an
+	  action (since actions force a delay at the end to prevent skipping steps).
+	  When clearing casting frames, add them as dirty before changing mode so
+	  they will be cleared from the screen.
+	* effects.cc: Fixed Death Vortex and Energy Mist. Fixed missile drops.
+	* exult.cc: SetIcon is unused on MacOSX. Deprecated literal conversion to
+	  char * in Windows and Mac OSX. Variable last_fps is debug-only.
+	* conf/Configuration.cc: Spacing.
+	* files/zip/*.c, audio/midi_drivers/FMOplMidiDriver.cpp: Clang noise.
+	* imagewin/manip.h: Uninitialized variable being assigned to itself.
+	* imagewin/scale_xbr.h: Fixed forward declaration.
+	* tools/wuc.c: Missing initializers.
+	* usecode/ucdisasm.cc: 32-bits is 8 hex digits.
+	* usecode/ucinternal.cc: Usecode_Trace and Usecode_TraceReturn are used only
+	  in debug.
+	* usecode/ucxt/*/*: Portability: typeof is GNU extension.
+
 2013-01-25	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* audio/midi_drivers/FluidSynthMidiDriver.*: Eliminated warnings. Added the
 	  ability to specify multiple soundfonts for FluidSynth in exult.cfg which

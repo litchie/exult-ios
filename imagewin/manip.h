@@ -188,7 +188,7 @@ public:
 	{
 		uintD best = 0;
 		int best_error = get_error(r,g,b,0);
-		for (int i = i; i < 256; i++) {
+		for (int i = 0; i < 256; i++) {
 			int error = get_error(r,g,b,i);
 			if (error < best_error) {
 				best = i;
