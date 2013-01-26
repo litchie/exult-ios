@@ -218,10 +218,11 @@ int Export_png8
 	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_PALETTE,
 			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
 						PNG_FILTER_TYPE_DEFAULT);
+	bool dotransp_to_0 = transp_to_0;
 	if (transp_index == 0)
-		transp_to_0 = false;	// Don't need to rotate if already 0.
+		dotransp_to_0 = false;	// Don't need to rotate if already 0.
 	png_color pngpal[256];		// Set palette.
-	int rot = transp_to_0 ? (pal_size - transp_index) : 0;
+	int rot = dotransp_to_0 ? (pal_size - transp_index) : 0;
 	for (int i = 0; i < pal_size; i++)
 		{
 		int desti = (i + rot)%pal_size;
@@ -233,7 +234,7 @@ int Export_png8
 	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
 	if (transp_index >= 0 && transp_index < 256)
 		{
-		int tindex = transp_to_0 ? 0 : transp_index;
+		int tindex = dotransp_to_0 ? 0 : transp_index;
 		png_byte trans[256];	// Only desired index is transparent.
 		memset(&trans[0], 255, sizeof(trans));
 		trans[static_cast<png_byte>(tindex)] = 0;
@@ -245,7 +246,7 @@ int Export_png8
 	int r;
 	for (r = 0, rowptr = pixels; r < height; r++, rowptr += rowbytes)
 		{
-		if (!transp_to_0)		// Normal?
+		if (!dotransp_to_0)		// Normal?
 			png_write_row(png, rowptr);
 		else
 			{

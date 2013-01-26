@@ -135,7 +135,7 @@ u7shape* load_shape(char* filename)
 {
 	FILE *fp;
 	int file_size, shape_size, hdr_size;
-	uint8 *pixptr, *eod;
+	uint8 *pixptr/*, *eod*/;
 	int frame_offset;
 	int slice;
 	int slice_type, slice_length;
@@ -216,7 +216,7 @@ u7shape* load_shape(char* filename)
 			frame->pixels = pixptr;
 			memset(pixptr, 0, frame->width*frame->height);
 
-			eod = frame->pixels+frame->width*frame->height;
+			//eod = frame->pixels+frame->width*frame->height;
 			while((slice=read2(fp))!=0) {
 				slice_type = slice & 0x1;
 				slice_length = slice >> 1;

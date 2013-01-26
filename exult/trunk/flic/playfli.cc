@@ -103,9 +103,9 @@ void playfli::info(fliinfo *fi)
 int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned long ticks, int brightness)
 {
 	int frame_size;
-	int frame_magic;
+	//int frame_magic;
 	int frame_chunks;
-	int chunk_size;
+	//int chunk_size;
 	int chunk_type;
 	uint8 *pixbuf;
 	int xoffset=(win->get_game_width()-fli_width)/2;
@@ -142,12 +142,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	{
 		fli_data->seek(streampos);
 		frame_size = fli_data->read4();
-		frame_magic = fli_data->read2();
+		//frame_magic = fli_data->read2();
+		fli_data->skip(2);
 		frame_chunks = fli_data->read2();
 		fli_data->skip(8);
 		for (int chunk = 0; chunk < frame_chunks; chunk++)
 		{
-			chunk_size = fli_data->read4();
+			//chunk_size = fli_data->read4();
+			fli_data->skip(4);
 			chunk_type = fli_data->read2();
 
 			switch (chunk_type)
