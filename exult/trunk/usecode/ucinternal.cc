@@ -1629,6 +1629,7 @@ void Usecode_internal::create_script
 	script->start(delay);
 	}
 
+#ifdef DEBUG
 /*
  *	Report unhandled intrinsic.
  */
@@ -1669,6 +1670,7 @@ static void Unhandled
 	{
 	Usecode_Trace("UNKNOWN",intrinsic,num_parms,parms);
 	}
+#endif
 #endif
 
 Usecode_value no_ret;

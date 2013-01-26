@@ -304,7 +304,7 @@ void Configuration::write_back(void)
 	
 	std::ofstream ofile;
 	try {
-	U7open(ofile, filename.c_str(), true);
+		U7open(ofile, filename.c_str(), true);
 	} catch (const file_open_exception &)
 	{
 		perror("Failed to write configuration file");

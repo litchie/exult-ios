@@ -800,6 +800,7 @@ namespace ExultIcon {
 	#include "exulticon.h"
 }
 
+#ifndef MACOSX		// Don't set icon on OS X; the external icon is *much* nicer
 static void SetIcon()
 {
 	SDL_Surface* iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,
@@ -822,6 +823,7 @@ static void SetIcon()
 
 	SDL_FreeSurface(iconsurface);
 }
+#endif
 
 /*
  *	Initialize and create main window.
@@ -841,7 +843,7 @@ static void Init
 	// I don't know if this will be problem in other OSes,
 	// so I leave it Windows-specific for now.
 	// Maybe it would be best to use SDL_putenv instead?
-	SDL_putenv("SDL_VIDEO_CENTERED=center");
+	SDL_putenv(const_cast<char *>("SDL_VIDEO_CENTERED=center"));
 	// Yes, SDL_putenv is GOOD.  putenv does NOT work with wince. -PTG 2007/06/11
 #elif defined(MACOSX) && defined(USE_EXULTSTUDIO)
 	// Just in case:
@@ -850,7 +852,7 @@ static void Init
 	#endif
 	// Exult Studio support in Mac OS X is experimental and requires
 	// SDL to use X11. Hence, we force the issue.
-	SDL_putenv("SDL_VIDEODRIVER=x11");
+	SDL_putenv(const_cast<char *>("SDL_VIDEODRIVER=x11"));
 #endif
 #ifdef __IPHONEOS__
 	init_flags |= SDL_INIT_JOYSTICK;
@@ -1279,7 +1281,9 @@ static void Handle_events
 	uint32 last_repaint = 0;	// For insuring animation repaints.
 	uint32 last_rotate = 0;
 	uint32 last_rest = 0;
+#ifdef DEBUG
 	uint32 last_fps = 0;
+#endif
 	/*
 	 *	Main event loop.
 	 */

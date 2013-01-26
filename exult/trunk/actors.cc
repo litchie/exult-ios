@@ -2669,6 +2669,7 @@ public:
 void Clear_casting::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
+	a->add_dirty();
 	a->hide_casting_frames();
 	a->add_dirty();
 	delete this;
@@ -4733,11 +4734,17 @@ void Main_actor::handle_event
 				curtime + delay, this, udata);
 		}
 	else if (in_usecode_control() || get_flag(Obj_flags::paralyzed))
+		{
+		frame_time = 0;
 		// Keep trying if we are in usecode control.
 		gwin->get_tqueue()->add(
 				curtime + gwin->get_std_delay(), this, udata);
+		}
 	else if (schedule)
+		{
+		frame_time = 0;
 		schedule->now_what();
+		}
 	}
 
 /*
@@ -5407,6 +5414,7 @@ void Npc_actor::handle_event
 
 	if (!action)			// Not doing anything?
 		{
+		frame_time = 0;
 		if (in_usecode_control() || !can_act())
 				// Can't move on our own. Keep trying.
 			gwin->get_tqueue()->add(

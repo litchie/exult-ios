@@ -6,15 +6,15 @@
 
 static opcode_desc push_table[]=
 	{
-		{"true",0,0x13},
-		{"false",0,0x14},
-		{"itemref",0,0x3e},
-		{"eventid",0,0x48}
+		{"true",0,0x13,0,0},
+		{"false",0,0x14,0,0},
+		{"itemref",0,0x3e,0,0},
+		{"eventid",0,0x48,0,0}
 	};
 
 static opcode_desc pop_table[]=
 	{
-		{"eventid",0,0x4b}
+		{"eventid",0,0x4b,0,0}
 	};
 
 static const char* compiler_table[]=
