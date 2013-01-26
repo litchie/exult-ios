@@ -42,8 +42,6 @@ It has been partly rewritten to use an SDL surface as input.
 #ifndef UNDER_EMBEDDED_CE
 using std::cout;
 using std::endl;
-using std::free;
-using std::malloc;
 #endif
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN

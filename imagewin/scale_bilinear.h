@@ -84,7 +84,7 @@ void Scale_2xBilinear
 	Dest_pixel *to_odd = to + dline_pixels;
 
 	// the following are static because we don't want to be freeing and
-	// reallocating space on each call, as malloc()s are usually very
+	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
 	static int buff_size = 0;
 	static COMPONENT *rgb_row_cur  = 0;
@@ -193,7 +193,7 @@ void Scale_2xBilinearPlus
 	Dest_pixel *to_odd = to + dline_pixels;
 
 	// the following are static because we don't want to be freeing and
-	// reallocating space on each call, as malloc()s are usually very
+	// reallocating space on each call, as new[]s are usually very
 	// expensive; we do allow it to grow though
 	static int buff_size = 0;
 	static COMPONENT *rgb_row_cur  = 0;

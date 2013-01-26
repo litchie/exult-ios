@@ -507,13 +507,13 @@ C_EXPORT gboolean on_main_window_focus_in_event
 
 ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	image_editor(0), default_game(0), background_color(0),
-	shape_info_modified(false), shape_names_modified(false),
-	files(0), curfile(0), vgafile(0), facefile(0), gumpfile(0), spritefile(0),
-	browser(0), palbuf(0),
+	shape_info_modified(false), shape_names_modified(false), npc_modified(false),
+	files(0), curfile(0), vgafile(0), facefile(0), fontfile(0), gumpfile(0),
+	spritefile(0), browser(0), palbuf(0),
 	bargewin(0), barge_ctx(0), barge_status_id(0),
 	eggwin(0), egg_monster_draw(0), egg_ctx(0), egg_status_id(0),
 	npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), npc_status_id(0), npc_modified(false),
+	npc_ctx(0), npc_status_id(0),
 	objwin(0), obj_draw(0), contwin(0), cont_draw(0), shapewin(0), 
 	shape_draw(0), gump_draw(0),
 	body_draw(0), explosion_draw(0),
@@ -601,9 +601,10 @@ ExultStudio::ExultStudio(int argc, char **argv): glade_path(0), static_path(0),
 	// Load the Glade interface
 	app_xml = glade_xml_new(path, NULL, NULL);
 	assert(app_xml);
-	app = glade_xml_get_widget( app_xml, "main_window" );
+	app = glade_xml_get_widget(app_xml, "main_window");
 	assert(app);
 	glade_path = g_strdup(path);
+	mainnotebook = GTK_NOTEBOOK(glade_xml_get_widget(app_xml, "notebook3"));
 
 	// More setting up...
 					// Connect signals automagically.
@@ -1315,13 +1316,45 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	string patch_path = get_system_path("<PATCH>");
 	if (!U7exists(patch_path))	// Create patch if not there.
 		U7mkdir(patch_path.c_str(), 0755);
+					// Reset EVERYTHING.
 					// Clear file cache!
 	U7FileManager::get_ptr()->reset();
-
 	delete [] palbuf;			// Delete old.
+	delete files;			// Close old shape files.
+	Free_text();			// Delete old names.
+	// These were owned by 'files':
+	curfile = 0;
+	browser = 0;
+	shape_info_modified = shape_names_modified = npc_modified = false;
+	vector<GtkWindow*>::const_iterator it;
+	for (it = group_windows.begin(); it != group_windows.end(); ++it)
+	{
+		GtkWidget *grpwin = GTK_WIDGET(*it);
+		GladeXML *xml = (GladeXML *) gtk_object_get_data(GTK_OBJECT(grpwin), 
+								"xml");
+		Object_browser *chooser = (Object_browser *) gtk_object_get_data(
+				GTK_OBJECT(grpwin), "browser");
+		delete chooser;
+		gtk_widget_destroy(grpwin);
+		g_object_unref(G_OBJECT(xml));
+	}
+	group_windows.clear();
+	close_obj_window();
+	close_cont_window();
+	close_barge_window();
+	close_egg_window();
+	close_npc_window();
+	close_shape_window();
+	close_equip_window();
+	close_combo_window();
+	close_compile_window();
+	if (gameinfowin)
+		gtk_widget_hide(gameinfowin);
+
+	gtk_notebook_prev_page(mainnotebook);
 	U7multiobject palobj(PALETTES_FLX, PATCH_PALETTES, 0);
 	size_t len;
-	palbuf = (unsigned char *) palobj.retrieve(len);
+	palbuf = reinterpret_cast<unsigned char *>(palobj.retrieve(len));
 	if (!palbuf || !len)
 		{			// No palette file, so create fake.
 		if (palbuf)	// Just in case.
@@ -1333,9 +1366,6 @@ void ExultStudio::set_game_path(string gamename, string modname)
 	palbuf[3*255] = (background_color>>18)&0x3f;
 	palbuf[3*255 + 1] = (background_color>>10)&0x3f;
 	palbuf[3*255 + 2] = (background_color>>2)&0x3f;
-	Free_text();			// Delete old names.
-	delete files;			// Close old shape files.
-	browser = 0;			// This was owned by 'files'.
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");

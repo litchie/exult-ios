@@ -159,7 +159,7 @@ struct Equip_row_widgets
 	GtkWidget *shape, *name, *chance, *count;
 	};
 					// Holds widgets from equip. dialog.
-static Equip_row_widgets equip_rows[10] = {{0}};
+static Equip_row_widgets equip_rows[10] = {{0, 0, 0, 0, 0}};
 
 /*
  *	Equip window's Okay, Apply buttons.
@@ -1150,10 +1150,10 @@ static inline int Find_unary_iter
 	T newval
 	)
 	{
-	iter = (GtkTreeIter *)g_malloc (sizeof (GtkTreeIter));
+	iter = static_cast<GtkTreeIter *>(g_malloc (sizeof (GtkTreeIter)));
 	if (!gtk_tree_model_get_iter_first(model, iter))
 		{
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 		iter = 0;
 		return 1;
 		}
@@ -1165,16 +1165,16 @@ static inline int Find_unary_iter
 		gtk_tree_model_get(model, iter, 0, &val, -1);
 		if (val == newval)
 			{
-			gtk_tree_iter_free(iter2);
+			g_free(iter2);
 			return 0;
 			}
 		else if (newval < val)
 			{
-			gtk_tree_iter_free(iter2);
+			g_free(iter2);
 			return -1;
 			}
 		} while (gtk_tree_model_iter_next(model, iter));
-	gtk_tree_iter_free(iter);
+	g_free(iter);
 	iter = iter2;
 	return 1;
 	}
@@ -1188,10 +1188,10 @@ static inline int Find_binary_iter
 	T2 newval2
 	)
 	{
-	iter = (GtkTreeIter *)g_malloc (sizeof (GtkTreeIter));
+	iter = static_cast<GtkTreeIter *>(g_malloc (sizeof (GtkTreeIter)));
 	if (!gtk_tree_model_get_iter_first(model, iter))
 		{
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 		iter = 0;
 		return 1;
 		}
@@ -1204,17 +1204,17 @@ static inline int Find_binary_iter
 		gtk_tree_model_get(model, iter, 0, &val1, 1, &val2, -1);
 		if (val1 == newval1 && val2 == newval2)
 			{
-			gtk_tree_iter_free(iter2);
+			g_free(iter2);
 			return 0;
 			}
 		else if ((newval1 == val1 && newval2 < val2) || (newval1 < val1))
 			{
-			gtk_tree_iter_free(iter2);
+			g_free(iter2);
 			return -1;
 			}
 			
 		} while (gtk_tree_model_iter_next(model, iter));
-	gtk_tree_iter_free(iter);
+	g_free(iter);
 	iter = iter2;
 	return 1;
 	}
@@ -1306,7 +1306,7 @@ C_EXPORT void on_shinfo_effhps_update_clicked
 					HP_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1329,7 +1329,7 @@ C_EXPORT void on_shinfo_effhps_remove_clicked
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1466,7 +1466,7 @@ C_EXPORT void on_shinfo_warmth_update_clicked
 					WARM_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1489,7 +1489,7 @@ C_EXPORT void on_shinfo_warmth_remove_clicked
 	if (!Find_unary_iter(model, iter, newfrnum))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1586,7 +1586,7 @@ C_EXPORT void on_shinfo_cntrules_update_clicked
 					CNT_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1609,7 +1609,7 @@ C_EXPORT void on_shinfo_cntrules_remove_clicked
 	if (!Find_unary_iter(model, iter, newshnum))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1748,7 +1748,7 @@ C_EXPORT void on_shinfo_frameflags_update_clicked
 					FRFLAG_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1772,7 +1772,7 @@ C_EXPORT void on_shinfo_frameflags_remove_clicked
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1880,7 +1880,7 @@ C_EXPORT void on_shinfo_frameusecode_update_clicked
 					FRUC_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -1904,7 +1904,7 @@ C_EXPORT void on_shinfo_frameusecode_remove_clicked
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -2100,7 +2100,7 @@ C_EXPORT void on_shinfo_framenames_update_clicked
 					FNAME_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -2123,7 +2123,7 @@ C_EXPORT void on_shinfo_framenames_remove_clicked
 	if (!Find_binary_iter(model, iter, newfrnum, newqual))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -2383,7 +2383,7 @@ C_EXPORT void on_shinfo_objpaperdoll_update_clicked
 					DOLL_MODIFIED, 1, -1);
 		}
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*
@@ -2407,7 +2407,7 @@ C_EXPORT void on_shinfo_objpaperdoll_remove_clicked
 	if (!Find_binary_iter(model, iter, newfrnum, newspot))
 		gtk_tree_store_remove(store, iter);
 	if (iter)
-		gtk_tree_iter_free(iter);
+		g_free(iter);
 	}
 
 /*

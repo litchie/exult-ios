@@ -8,6 +8,14 @@
 	Rev 7338
 	* files/listfiles.cc: Fixed memory leak on Amiga and MorphOS. Would be good
 	  to be able to test...
+	Rev 7339
+	* files/snprintf.cc: Fixed spacing.
+	* imagewin/savepcx.cc: Removing no longer needed using directives.
+	* imagewin/*.h: Synchronized comments with code.
+	* mapedit/*: Removed a handful of warnings. Fixed GtkTreeIter memory leaks.
+	  Close all windows, unload all data, free all memory and switch out of the
+	  groups tab when switching games or mods. These changes fix bug #3136375
+	  "Exult Studio crash, Groups tab doesn't update on game change".
 
 2013-01-24	Marzo Sette Torres Junior <marzojr@yahoo.com>
 	* keys.cc: Missing is_movement initializer for ActionScrollLeft. Warnings.
